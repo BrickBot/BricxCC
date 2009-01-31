@@ -1,0 +1,30 @@
+- Moves
+EmptyMove\=
+Forward\=
+ForwardFive\=
+TurnLeft\=
+TurnLeftTwo\=
+TurnRight\=
+TurnRightTwo\=
+Backward\=
+BackwardFive\=
+BackLeft\=
+BackLeftTwo\=
+BackRight\=
+BackRightTwo\=
+- Tones
+PlayToneOne\=
+PlayToneTwo\=
+- Waiting
+EmptyWait\=
+WaitForLight\=
+WaitForObject\=
+WaitForSound\=
+WaitForTouch\=
+WaitTwoSeconds\=
+WaitFiveSeconds\=
+WaitTenSeconds\=
+WaitForDark\=
+- Endings
+EndLoop\=
+EndStop\=

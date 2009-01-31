@@ -1,0 +1,19 @@
+#include "NXTDefs.h"
+
+dseg segment 
+  dtArgs TDrawText
+dseg ends
+
+#define MyTextOut(x, y, erase, msg) \
+  mov dtArgs.Location.X, x \
+  mov dtArgs.Location.Y, y \
+  mov dtArgs.Options, erase \
+  mov dtArgs.Text, msg \
+  syscall DrawText, dtArgs
+
+thread main
+
+  MyTextOut(0, 0, FALSE, 'Testing')
+  wait 2000
+
+endt

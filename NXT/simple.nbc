@@ -1,0 +1,51 @@
+dseg segment
+  l uword
+  str ubyte[]
+  ret_hello uword
+dseg ends
+
+thread hello
+       // unconditional debugbreak breaks at the following line every time
+       // debugbreaks only work with instrumentation level 1 and 2
+       #pragma debugbreak
+       
+       // simple debuglog instruction
+       // debuglogs work with all instrumentation level
+       #pragma debuglog 'HELLO'
+       
+       subret ret_hello
+endt
+
+thread main
+     subcall hello, ret_hello
+     mov str, '1st run'
+
+loop:
+     // use up to 16 sections in complex debuglog
+     // each can be a string constant in '' marks, a string or a numeric variable
+     // log will be truncated after the 56th character
+     #pragma debuglog '1234567890', '123456789012345', '67890123456789012345678901234567890'
+     
+     // conditional debugbreak breaks only if condition is true
+     // only simple conditions are allowed: [variable1 or value1][logical expression][variable2 or value2]
+     // logical expression can be ==, =, <>, !=, <, <=, =<, >=, =>, <, >
+     #pragma debugbreak if l<5
+     
+     add l,l,1
+     
+     // next 2 are bit more involved debuglog expressions
+     #pragma debuglog 'L=', l, '!'
+     #pragma debuglog 'This is the ', str, ' in this session!', ' L is still: ', l
+     
+     mov str, 'next run'
+     brcmp LT, loop, l, 1000
+
+     #pragma debuglog 'Loop is done'
+
+     // just stop before exit
+     #pragma debugbreak
+
+     #pragma debuglog 'Exiting...'
+     exit
+endt
+

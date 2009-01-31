@@ -1,0 +1,249 @@
+// requires b30
+long a=-40, b = 23, __b=34;
+
+byte zz;
+
+byte buf[];
+long data[];
+byte foo[][];
+string weird = "fred";
+
+void George(byte b);
+
+//void MyTestSub(int x, int y, short j);
+void MyTestSub(int x, int y, short j)
+//void MyTestSub(x, y, j)
+{
+  byte g1=3,
+       g2=5;
+  int foo=-3;
+  foo = GetOutput(OUT_A, TachoCount);
+  SetSensor(IN_3, SENSOR_ROTATION);
+  George(g2*10);
+  foo = x + y * j;
+  g1 = foo/4;
+  NumOut(0, 0, true, g1);
+  OnFwd(OUT_BC, g1);
+  Wait(4000);
+}
+
+task Fred()
+{
+  ArrayInit(data, 0, 4);
+  data[0] = 23;
+  weird[2] = "Wd" ;
+//  data[0] = weird[0];
+//  NumOut(0, LCD_LINE4, data[0], true);
+  weird += BrickDataName();
+  TextOut(50, LCD_LINE1, weird, true);
+  GetBrickDataAddress(buf);
+  b = ArrayLen(buf);
+  NumOut(0, LCD_LINE1, b);
+  for (a=0, b=2; a < b; a++)
+  {
+    NumOut(a*15, LCD_LINE2, buf[a]);
+  }
+  Wait(10000);
+  OnFwd(OUT_BC, -75);
+  Wait(5000);
+}
+
+char j=-40, k = 23, x=4;
+mutex myMutex;
+
+string msg="test" , blech;
+
+string FooBar(int a, string b)
+{
+  string result ="r=" ;
+  result += NumToStr(a);
+  result += b;
+  return (result);
+}
+
+int Multiply(int a, int b)
+{
+  return (a * b);
+}
+
+task main (){
+  int xxxx = 23;
+  Precedes(Fred);
+//  Stop( xxxx == 23 );
+
+//  Fred;
+
+  msg = FooBar(10, "_fred" );
+  TextOut(0, LCD_LINE1, msg, true);
+  NumOut(0, LCD_LINE2, xxxx);
+  xxxx = Multiply(2, 3) + 4;
+  NumOut(0, LCD_LINE3, xxxx);
+  xxxx = Multiply(2, 3);
+  NumOut(0, LCD_LINE4, xxxx);
+  NumOut(0, LCD_LINE5, Multiply(10, xxxx));
+  xxxx = ("fred" == "fred") + 2 + (5 >= (2*2));
+  NumOut(0, LCD_LINE6, xxxx);
+  Wait(10000);
+  Stop( "fred" == "fred" );
+  
+  RotateMotorEx(OUT_BC, 75, 90, 0, true, true);
+  RotateMotorEx(OUT_BC, 75, 90, 100, true, true);
+  RotateMotorEx(OUT_BC, 75, 90, -100, true, true);
+  RotateMotorEx(OUT_BC, -75, 90, 0, true, true);
+  RotateMotorEx(OUT_BC, -75, 90, 100, true, true);
+  RotateMotorEx(OUT_BC, -75, 90, -100, true, true);
+  Stop(true);
+
+  a = (j < 5) ? 23 : 48;
+
+  if (j < 5 && ((k&0x7f) != 0)) {
+    OnRev(OUT_B, 40);
+  }
+  else {
+    OnFwd(OUT_B, 70);
+  }
+
+  Random(5000);
+  
+  if (true)
+    OnRev(OUT_B, 40);
+  else {
+    OnFwd(OUT_C, 30);
+  }
+    
+  {
+    OnFwd(OUT_A, 20);
+    a=Random(5000) * 2;
+    NumOut(0, 20, true, a);
+    Wait(a);
+    Off(OUT_A);
+  }
+
+  do
+  {
+//    foobar;
+    OnFwd(OUT_BC, 50+40);
+    Wait(500);
+    Off(OUT_BC);
+    Wait(1000);
+    a++; b++;
+  } while (a < 10);
+
+  repeat(10)
+  {
+    repeat(4)
+    {
+      OnFwd(OUT_BC, 50);
+      Wait(1000);
+      Off(OUT_BC);
+      Wait(2000);
+    }
+  }
+
+  Acquire(myMutex);
+  asm {
+    add a, a, 1
+    sub b, a, 2
+    OnRev(OUT_BC, 50)
+  }
+  Release(myMutex);
+  
+  SetSensorType(IN_1, IN_TYPE_SWITCH);
+
+  PlayTone(TONE_A4, MS_500);
+  while(!SoundState())
+    /* do nothing */ ;
+  Wait(500);
+
+  PlayFile( "test.rso" );
+  
+myLoop: LineOut(30, 50, 50, 30, false);
+
+  LineOut(0, 0, 30, 50, false);
+  PointOut(30, 40, false);
+  CircleOut(30, 40, 10, false);
+  RectOut(30, 50, 20, 10, false);
+  
+//  goto myLoop
+  
+  msg += ".r" + "s" + "o" ;
+  
+  PlayFile(msg);
+//  Wait(1000);
+
+  msg = NumToStr(10);
+  TextOut(0, 50, msg);
+  msg = StrCat("test" , " " , "please" );
+  TextOut(0, 35, msg);
+  msg = SubStr("please" , 1, 3);
+  TextOut(0, 0, msg);
+  msg = Flatten(0x31);
+  NumOut(50, 0, StrLen(msg));
+  TextOut(60, 0, msg);
+  msg = StrReplace("please" , 2, "AA" );
+  TextOut(50, 8, msg);
+
+
+
+  a = 100 - FreeMemory();
+//  a = FreeMemory();
+
+  NumOut(50, LCD_LINE2, a, true);
+  NumOut(50, LCD_LINE3, FreeMemory());
+  NumOut(50, LCD_LINE4, BatteryLevel());
+
+
+  PlayTone(440, 2000);
+  NumOut(10, LCD_LINE1, SoundState(), true);
+  NumOut(10, LCD_LINE2, SoundFlags());
+  Wait(50);
+  StopSound();
+
+  x--;
+  if ((x%3)!=0) {
+    TextOut(10, LCD_LINE1, "whoops");
+  }
+
+
+  until(ButtonPressed(BTN2, true));
+  until(!ButtonPressed(BTN2, true));
+
+  SetSensorLowspeed(IN_1);
+//  SetButtonState(BTN2, 0);
+  ResetSensor(IN_1);
+  
+  while(BluetoothStatus(0) != 0);
+  while(!BluetoothStatus(0));
+
+  while (!ButtonPressed(BTN2, true))
+  {
+     NumOut(10, LCD_LINE5, SensorUS(IN_1), true);
+     Wait(10);
+  }
+
+  while(!ButtonPressed(BTN4, true)) ;
+  
+  MyTestSub(12, 45, 10);
+
+}
+
+
+#define Testing OnRev(OUT_BC, 50)
+
+byte d, e, f;
+
+void George(b)
+{
+  int g1 = 4, g2=-3;
+  byte b1[], b2=33;
+  
+  b2 = g1+g2+b;
+//  b1 = OUT_BC;
+  OnFwd(OUT_BC, b2);
+  Wait(1000);
+//  byte b1[], b2=33;
+  Testing;
+  Wait(1000);
+}
+
+

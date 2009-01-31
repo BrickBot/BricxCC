@@ -1,0 +1,162 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="5"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value="./"/>
+      <TargetFileExt Value=""/>
+      <Title Value="NBC"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <CommandLineParams Value="-T=NXT g:\nxt\programs\test.nxc -O=g:\nxt\programs\testnxc.rxe"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <Units Count="11">
+      <Unit0>
+        <Filename Value="nbc.dpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="nbc"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="25"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="..\mwGenericLex.pas"/>
+        <UnitName Value="mwGenericLex"/>
+        <CursorPos X="1" Y="975"/>
+        <TopLine Value="962"/>
+        <UsageCount Value="10"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="..\uCommonUtils.pas"/>
+        <UnitName Value="uCommonUtils"/>
+        <CursorPos X="41" Y="85"/>
+        <TopLine Value="72"/>
+        <UsageCount Value="11"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="..\uVersionInfo.pas"/>
+        <UnitName Value="uVersionInfo"/>
+        <CursorPos X="44" Y="22"/>
+        <TopLine Value="15"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="uPreprocess.pas"/>
+        <UnitName Value="uPreprocess"/>
+        <CursorPos X="34" Y="636"/>
+        <TopLine Value="628"/>
+        <UsageCount Value="10"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="uNXTClasses.pas"/>
+        <UnitName Value="uNXTClasses"/>
+        <CursorPos X="1" Y="5766"/>
+        <TopLine Value="5753"/>
+        <UsageCount Value="10"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="P10Build.pas"/>
+        <UnitName Value="P10Build"/>
+        <CursorPos X="28" Y="1648"/>
+        <TopLine Value="1630"/>
+        <UsageCount Value="10"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\classes\classesh.inc"/>
+        <CursorPos X="32" Y="530"/>
+        <TopLine Value="528"/>
+        <UsageCount Value="10"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="C:\lazarus\fpcsrc\rtl\objpas\classes\stringl.inc"/>
+        <CursorPos X="26" Y="1111"/>
+        <TopLine Value="1108"/>
+        <UsageCount Value="10"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="C:\lazarus\fpcsrc\rtl\win32\classes.pp"/>
+        <UnitName Value="Classes"/>
+        <CursorPos X="9" Y="32"/>
+        <TopLine Value="16"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="uTiny.pas"/>
+        <UnitName Value="uTiny"/>
+        <CursorPos X="1" Y="2294"/>
+        <TopLine Value="2281"/>
+        <UsageCount Value="10"/>
+      </Unit10>
+    </Units>
+    <JumpHistory Count="2" HistoryIndex="1">
+      <Position1>
+        <Filename Value="nbc.dpr"/>
+        <Caret Line="309" Column="47" TopLine="292"/>
+      </Position1>
+      <Position2>
+        <Filename Value="nbc.dpr"/>
+        <Caret Line="14" Column="1" TopLine="14"/>
+      </Position2>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <OtherUnitFiles Value="..\"/>
+    </SearchPaths>
+    <Parsing>
+      <SyntaxOptions>
+        <DelphiCompat Value="True"/>
+        <UseAnsiStrings Value="True"/>
+      </SyntaxOptions>
+    </Parsing>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+      <CreateMakefileOnBuild Value="True"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="3">
+      <Item1>
+        <Source Value="nbc.dpr"/>
+        <Line Value="114"/>
+      </Item1>
+      <Item2>
+        <Source Value="nbc.dpr"/>
+        <Line Value="305"/>
+      </Item2>
+      <Item3>
+        <Source Value="uTiny.pas"/>
+        <Line Value="2621"/>
+      </Item3>
+    </BreakPoints>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

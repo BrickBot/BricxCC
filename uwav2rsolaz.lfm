@@ -1,0 +1,230 @@
+object frmWave2RSO: TfrmWave2RSO
+  Left = 472
+  Height = 430
+  Top = 152
+  Width = 450
+  ActiveControl = btnConvert
+  BorderStyle = bsDialog
+  Caption = 'Wav 2 RSO 2 Wav'
+  ClientHeight = 430
+  ClientWidth = 450
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  ShowHint = True
+  LCLVersion = '0.9.25'
+  object lblMessages: TLabel
+    Left = 40
+    Height = 14
+    Top = 299
+    Width = 52
+    Caption = 'Messages:'
+    ParentColor = False
+  end
+  object btnConvert: TButton
+    Left = 8
+    Height = 25
+    Hint = 'Convert to RSO'
+    Top = 67
+    Width = 81
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Convert'
+    OnClick = btnConvertClick
+    TabOrder = 4
+  end
+  object mmoMessages: TMemo
+    Left = 104
+    Height = 121
+    Hint = 'Messages'
+    Top = 299
+    Width = 337
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 6
+  end
+  object btnSelect: TButton
+    Left = 8
+    Height = 25
+    Hint = 'Select the WAV files you wish to convert to RSO format'
+    Top = 36
+    Width = 81
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Select Files...'
+    OnClick = btnSelectClick
+    TabOrder = 2
+  end
+  object btnOutputDir: TButton
+    Left = 8
+    Height = 25
+    Hint = 'Choose a directory where you want the RSO files written'
+    Top = 7
+    Width = 81
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Directory...'
+    OnClick = btnOutputDirClick
+    TabOrder = 0
+  end
+  object edtPath: TEdit
+    Cursor = crNo
+    Left = 104
+    Height = 21
+    Hint = 'The specified output directory'
+    Top = 9
+    Width = 337
+    ReadOnly = True
+    TabOrder = 1
+  end
+  object lstWavFiles: TListBox
+    Left = 104
+    Height = 233
+    Hint = 'WAV files to be converted'
+    Top = 34
+    Width = 337
+    ItemHeight = 13
+    TabOrder = 3
+  end
+  object grpResample: TGroupBox
+    Left = 8
+    Height = 172
+    Top = 95
+    Width = 81
+    Caption = 'Resample'
+    ClientHeight = 154
+    ClientWidth = 77
+    TabOrder = 5
+    object lblRate: TLabel
+      Left = 8
+      Height = 14
+      Top = 114
+      Width = 28
+      Caption = 'Rate:'
+      ParentColor = False
+    end
+    object radSinc1: TRadioButton
+      Left = 8
+      Height = 19
+      Top = 2
+      Width = 54
+      Caption = 'Sinc 1'
+      TabOrder = 0
+    end
+    object radSinc2: TRadioButton
+      Tag = 1
+      Left = 8
+      Height = 19
+      Top = 19
+      Width = 54
+      Caption = 'Sinc 2'
+      TabOrder = 1
+    end
+    object radSinc3: TRadioButton
+      Tag = 2
+      Left = 8
+      Height = 19
+      Top = 36
+      Width = 54
+      Caption = 'Sinc 3'
+      TabOrder = 2
+    end
+    object radZoh: TRadioButton
+      Tag = 3
+      Left = 8
+      Height = 19
+      Top = 53
+      Width = 47
+      Caption = 'ZOH'
+      TabOrder = 3
+    end
+    object radLinear: TRadioButton
+      Tag = 4
+      Left = 8
+      Height = 19
+      Top = 70
+      Width = 55
+      Caption = 'Linear'
+      TabOrder = 4
+    end
+    object radNone: TRadioButton
+      Tag = 4
+      Left = 8
+      Height = 19
+      Top = 88
+      Width = 51
+      Caption = 'None'
+      Checked = True
+      State = cbChecked
+      TabOrder = 5
+    end
+    object edtRate: TSpinEdit
+      Left = 8
+      Height = 20
+      Top = 129
+      Width = 60
+      MaxValue = 16000
+      MinValue = 2000
+      TabOrder = 6
+      Value = 8000
+    end
+  end
+  object btnOK: TButton
+    Left = 8
+    Height = 25
+    Top = 340
+    Width = 81
+    HelpContext = 3522
+    BorderSpacing.InnerBorder = 4
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    OnClick = btnOKClick
+    TabOrder = 7
+  end
+  object btnCancel: TButton
+    Left = 8
+    Height = 25
+    Top = 368
+    Width = 81
+    HelpContext = 3523
+    BorderSpacing.InnerBorder = 4
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    OnClick = btnCancelClick
+    TabOrder = 8
+  end
+  object btnHelp: TButton
+    Left = 8
+    Height = 25
+    Top = 396
+    Width = 81
+    HelpContext = 3524
+    Anchors = [akRight, akBottom]
+    BorderSpacing.InnerBorder = 4
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 9
+  end
+  object chkUseCompression: TCheckBox
+    Left = 10
+    Height = 19
+    Top = 272
+    Width = 85
+    Caption = 'Compressed'
+    TabOrder = 10
+  end
+  object dlgOpen: TOpenDialog
+    Filter = 'WAV files (*.wav)|*.wav|RSO files (*.rso)|*.rso|All files (*.*)|*.*'
+    FilterIndex = 0
+    Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing, ofDontAddToRecent]
+    left = 144
+    top = 152
+  end
+  object pumFiles: TPopupMenu
+    left = 232
+    top = 152
+    object mniClear: TMenuItem
+      Caption = 'Clear'
+      OnClick = mniClearClick
+    end
+  end
+end

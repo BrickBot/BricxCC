@@ -1,0 +1,7 @@
+- Programs
+task "number"\=\>"body"\=endt\=\=
+sub "number"\=\>"body"\=ends\=\=
+#define "macro"\=
+#include "file"\=
+- Loops etc...
+"label":\=\>"body"\<\=jmp "label"\=

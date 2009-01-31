@@ -1,0 +1,40 @@
+; nested.rxe
+; -------------- variable declarations --------------
+dseg	segment
+;------- definitions -------
+;------- declarations -------
+ub0000	byte	
+ub0001	byte	
+ub0002	byte	
+ub0003	byte	
+ub0004	byte	
+ub0005	byte	
+ub0006	byte	
+sb0007	sbyte	4
+sb0008	sbyte	16
+ub0009	byte	
+ub000A	byte	
+ub000B	byte	
+ub000C	byte	
+ub000D	byte	
+ub000E	byte	
+ub000F	byte	
+ub0010	byte	
+sb0011	sbyte	
+ub0012	byte	
+ub0013	byte	
+ub0014	byte	
+ub0015	byte	
+ub0016	byte	
+ub0017	byte	
+a0018	sword[]	
+a001A	sword[][]	
+a001D	sdword[]	
+dseg	ends
+; -------------- program code --------------
+	thread t000
+	arrinit	a001D, sb0011, sb0008
+	arrinit	a0018, sb0011, sb0007
+	arrinit	a001A, a0018, sb0007
+	exit	-1, -1
+	endt

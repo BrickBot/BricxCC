@@ -1,0 +1,16 @@
+COMPILE BITMAP ..\img\img_compile.bmp
+DECOMPILE BITMAP ..\img\img_decompile.bmp
+FILENEW BITMAP ..\img\img_new.bmp
+OPEN BITMAP ..\img\img_open.bmp
+SAVE BITMAP ..\img\img_save.bmp
+SAVEAS BITMAP ..\img\img_saveas.bmp
+PRINT BITMAP ..\img\img_print.bmp
+CUT BITMAP ..\img\img_cut.bmp
+COPY BITMAP ..\img\img_copy.bmp
+PASTE BITMAP ..\img\img_paste.bmp
+IMG_SELECTALL BITMAP ..\img\img_selectall.bmp
+FIND BITMAP ..\img\img_search.bmp
+REPLACE BITMAP ..\img\img_replace.bmp
+IMG_FINDNEXT BITMAP ..\img\img_findnext.bmp
+ABOUT BITMAP ..\img\img_about.bmp
+IMG_EXIT BITMAP ..\img\img_exit.bmp

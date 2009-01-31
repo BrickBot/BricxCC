@@ -1,0 +1,538 @@
+- Programs
+task "name"()\={\>"body"\<}\=\=
+sub "name"()\={\>"body"\<}\=\=
+void "name"("arguments")\={\>"body"\<}\=\=
+int "name"("arguments")\={\>"body"\=return "value";\<}\=\=
+string "name"("arguments")\={\>"body"\=return "strvalue";\<}\=\=
+int "name";\=
+unsigned int "name";\=
+short "name";\=
+long "name";\=
+unsigned long "name";\=
+bool "name";\=
+char "name";\=
+byte "name";\=
+mutex "name";\=
+string "name";\=
+struct "name" {\>"members"\<};\=\=
+#define "macro"\=
+#include "file"\=
+- Debugging
+#pragma debugbreak "msg"\=
+- If statements
+if ("condition")\={\>"statements"\<}\=
+if ("condition")\>"statement"\<else\>"statement"\=
+if ("condition")\={\>"body"\<}\=else\={\>"body"\<}\=
+if ("condition")\>"statement"\<else if ("condition")\>"statement"\<else\>"statement"\=
+- Loops etc...
+while ("condition")\={\>"body"\<}\=
+do\={\>"body"\<}\=while ("condition")\=
+repeat ("value")\={\>"body"\<}\=
+for ("init";"condition";"increment")\={\>"body"\<}\=
+until ("condition")\={\>"body"\<}\=
+switch ("var")\={\>case "num" :\=\>"body"\=break;\=default :\=\>"body"\<}\=
+break;\=
+continue;\=
+return;\=
+return "value";\=
+goto "label";\=
+| Outputs
+OnFwd("ports", "pwr");\=
+OnFwdEx("ports", "pwr", "reset");\=
+OnRev("ports", "pwr");\=
+OnRevEx("ports", "pwr", "reset");\=
+OnFwdReg("ports", "pwr", "regmode");\=
+OnFwdRegEx("ports", "pwr", "regmode", "reset");\=
+OnRevReg("ports", "pwr", "regmode");\=
+OnRevRegEx("ports", "pwr", "regmode", "reset");\=
+OnFwdSync("ports", "pwr", "turnpct");\=
+OnFwdSyncEx("ports", "pwr", "turnpct", "reset");\=
+OnRevSync("ports", "pwr", "turnpct");\=
+OnRevSyncEx("ports", "pwr", "turnpct", "reset");\=
+RotateMotor("ports", "pwr", "angle");\=
+RotateMotorPID("ports", "pwr", "angle", "p", "i", "d");\=
+RotateMotorEx("ports", "pwr", "angle", "turnpct", "bsync", "bstop");\=
+RotateMotorExPID("ports", "pwr", "angle", "turnpct", "bsync", "bstop", "p", "i", "d");\=
+Off("ports");\=
+OffEx("ports", "reset");\=
+Coast("ports");\=
+CoastEx("ports", "reset");\=
+ResetTachoCount("ports");\=
+ResetBlockTachoCount("ports");\=
+ResetRotationCount("ports");\=
+ResetAllTachoCounts("ports");\=
+SetOutput("ports", "field", "value");\=
+GetOutput("port", "field")
+MotorTachoLimit("port")
+MotorTachoCount("port")
+MotorMode("port")
+MotorPower("port")
+MotorActualSpeed("port")
+MotorRunState("port")
+MotorTurnRatio("port")
+MotorRegulation("port")
+MotorOverload("port")
+MotorRegPValue("port")
+MotorRegIValue("port")
+MotorRegDValue("port")
+MotorBlockTachoCount("port")
+MotorRotationCount("port")
+IOMA("val")
+- Timing
+Wait("time(1 ms)");\=
+CurrentTick()
+FirstTick()
+- Sensors
+SetInput("port", "field", "value");\=
+GetInput("port", "field")
+SetSensorTouch("port");\=
+SetSensorLight("port");\=
+SetSensorSound("port");\=
+SetSensorLowspeed("port");\=
+SetSensor("port", SENSOR_TOUCH);\=
+SetSensor("port", SENSOR_LIGHT);\=
+SetSensor("port", SENSOR_ROTATION);\=
+SetSensor("port", SENSOR_CELSIUS);\=
+SetSensor("port", SENSOR_FAHRENHEIT);\=
+SetSensor("port", SENSOR_PULSE);\=
+SetSensor("port", SENSOR_EDGE);\=
+| Sensor types
+SetSensorType("port", "type");\=
+SetSensorType("port", IN_TYPE_SWITCH);\=
+SetSensorType("port", IN_TYPE_REFLECTION);\=
+SetSensorType("port", IN_TYPE_TEMPERATURE);\=
+SetSensorType("port", IN_TYPE_ANGLE);\=
+SetSensorType("port", IN_TYPE_LIGHT_ACTIVE);\=
+SetSensorType("port", IN_TYPE_LIGHT_INACTIVE);\=
+SetSensorType("port", IN_TYPE_SOUND_DB);\=
+SetSensorType("port", IN_TYPE_SOUND_DBA);\=
+SetSensorType("port", IN_TYPE_LOWSPEED);\=
+SetSensorType("port", IN_TYPE_LOWSPEED_9V);\=
+SetSensorType("port", IN_TYPE_HISPEED);\=
+SetSensorType("port", IN_TYPE_CUSTOM);\=
+- Sensor modes
+SetSensorMode("port", "mode");\=
+SetSensorMode("port", IN_MODE_RAW + "slope");\=
+SetSensorMode("port", IN_MODE_BOOLEAN);\=
+SetSensorMode("port", IN_MODE_TRANSITIONCNT);\=
+SetSensorMode("port", IN_MODE_PERIODCOUNTER);\=
+SetSensorMode("port", IN_MODE_PCTFULLSCALE);\=
+SetSensorMode("port", IN_MODE_CELSIUS);\=
+SetSensorMode("port", IN_MODE_FAHRENHEIT);\=
+SetSensorMode("port", IN_MODE_ANGLESTEP);\=
+- Sensor misc
+ClearSensor("port");\=
+ResetSensor("port");\=
+Sensor("port")
+SensorUS("port")
+SensorType("port")
+SensorMode("port")
+SensorRaw("port") 
+SensorNormalized("port")
+SensorScaled("port") 
+SensorInvalid("port")
+- Digital Sensors
+LowspeedStatus("port", "bready")\=
+I2CStatus("port", "bready")\=
+LowspeedCheckStatus("port")\=
+I2CCheckStatus("port")\=
+LowspeedBytesReady("port")\=
+I2CBytesReady("port")\=
+LowspeedWrite("port", "retlen", "buffer")\=
+I2CWrite("port", "retlen", "buffer")\=
+LowspeedRead("port", "buflen", "buffer")\=
+I2CRead("port", "buflen", "buffer")\=
+I2CBytes("port", "inbuf", "count", "outbuf")\=
+- Multitasking
+Precedes("task list");\=
+Follows("task list");\=
+Acquire("mutex");\=
+Release("mutex");\=
+ExitTo("task");\=
+start "task";\=
+Stop("stop?");\=
+- Sounds
+PlayTone("frequency", "duration");\=
+PlayToneEx("frequency", "duration", "volume", "loop?");\=
+PlayFile("filename");\=
+PlayFileEx("filename", "volume", "loop?");\=
+SoundState()
+SoundFlags()
+StopSound();\=
+| Drawing
+ClearScreen();\=
+ResetScreen();\=
+TextOut("x", "y", "txt");\=
+TextOut("x", "y", "txt", "cls");\=
+NumOut("x", "y", "val");\=
+NumOut("x", "y", "val", "cls");\=
+PointOut("x", "y");\=
+PointOut("x", "y", "cls");\=
+LineOut("x1", "y1", "x2", "y2");\=
+LineOut("x1", "y1", "x2", "y2", "cls");\=
+RectOut("x", "y", "width", "height");\=
+RectOut("x", "y", "width", "height", "cls");\=
+CircleOut("x", "y", "radius");\=
+CircleOut("x", "y", "radius", "cls");\=
+GraphicOut("x", "y", "filename");\=
+GraphicOut("x", "y", "filename", "cls");\=
+GraphicOutEx("x", "y", "filename", "vars");\=
+GraphicOutEx("x", "y", "filename", "vars", "cls");\=
+- Buttons
+ButtonPressed("btn")
+ButtonCount("btn")
+ReadButtonEx("btn", "pressedvar", "countvar");\=
+- Misc stuff
+abs("expression")
+sign("expression")
+Random("expression")
+Random()
+ResetSleepTimer();\=
+PowerDown();\=
+RebootInFirmwareMode();\=
+BatteryLevel()
+FreeMemory()
+- Strings
+NumToStr("val")
+StrCat("str1", "str2", "strN")
+SubStr("str", "idx", "len")
+Flatten("val")
+StrReplace("str", "idx", "strnew")
+StrToNum("str")
+StrLen("str")
+StrIndex("str", "idx")
+- File IO
+CreateFile("fname", "fsize", "handle")\=
+OpenFileAppend("fname", "fsize", "handle")\=
+OpenFileRead("fname", "fsize", "handle")\=
+CloseFile("handle")\=
+ResolveHandle("fname", "handle", "writeable")\=
+RenameFile("oldname", "newname")\=
+DeleteFile("fname")\=
+Read("handle", "n")\=
+ReadLn("handle", "n")\=
+ReadBytes("handle", "len", "buf")\=
+ReadLnString("handle", "output")\=
+Write("handle", "n")\=
+WriteLn("handle", "n")\=
+WriteString("handle", "str", "cnt")\=
+WriteLnString("handle", "str", "cnt")\=
+WriteBytes("handle", "buf", "cnt")\=
+WriteBytesEx("handle", "len", "buf")\=
+- Messaging
+SendMessage("queue", "msg")\=
+ReceiveMessage("queue", "clear", "msg")\=
+ReceiveRemoteBool("queue", "clear", "bval")\=
+ReceiveRemoteNumber("queue", "clear", "val")\=
+ReceiveRemoteString("queue", "clear", "str")\=
+ReceiveRemoteMessageEx("queue", "clear", "str", "val", "bval")\=
+SendResponseBool("queue", "bval")\=
+SendResponseNumber("queue", "val")\=
+SendResponseString("queue", "msg")\=
+BluetoothStatus("conn")\=
+BluetoothWrite("conn", "buffer")\=
+SendRemoteBool("conn", "queue", "bval")\=
+SendRemoteNumber("conn", "queue", "val")\=
+SendRemoteString("conn", "queue", "str")\=
+RemoteMessageRead("conn", "queue")\=
+RemoteMessageWrite("conn", "queue", "msg")\=
+RemoteStartProgram("conn", "filename")\=
+RemoteStopProgram("conn")\=
+RemotePlaySoundFile("conn", "filename", "bloop")\=
+RemotePlayTone("conn", "frequency", "duration")\=
+RemoteStopSound("conn")\=
+RemoteKeepAlive("conn")\=
+RemoteResetScaledValue("conn", "port")\=
+RemoteResetMotorPosition("conn", "port", "brelative")\=
+RemoteSetInputMode("conn", "port", "type", "mode")\=
+RemoteSetOutputState("conn", "port", "speed", "mode", "regmode", "turnpct", "runstate", "tacholimit")\=
+- Low-level System Calls
+SysCall("func", "args")
+SysFileOpenRead("args");\=
+SysFileOpenWrite("args");\=
+SysFileOpenAppend("args");\=
+SysFileRead("args");\=
+SysFileWrite("args");\=
+SysFileClose("args");\=
+SysFileResolveHandle("args");\=
+SysFileRename("args");\=
+SysFileDelete("args");\=
+SysSoundPlayFile("args");\=
+SysSoundPlayTone("args");\=
+SysSoundGetState("args");\=
+SysSoundSetState("args");\=
+SysDrawText("args");\=
+SysDrawPoint("args");\=
+SysDrawLine("args");\=
+SysDrawCircle("args");\=
+SysDrawRect("args");\=
+SysDrawGraphic("args");\=
+SysSetScreenMode("args");\=
+SysReadButton("args");\=
+SysCommLSWrite("args");\=
+SysCommLSRead("args");\=
+SysCommLSCheckStatus("args");\=
+SysRandomNumber("args");\=
+SysGetStartTick("args");\=
+SysMessageWrite("args");\=
+SysMessageRead("args");\=
+SysCommBTWrite("args");\=
+SysCommBTCheckStatus("args");\=
+SysKeepAlive("args");\=
+SysIOMapRead("args");\=
+SysIOMapWrite("args");\=
+SysIOMapReadByID("args");\=
+SysIOMapWriteByID("args");\=
+SysDisplayExecuteFunction("args");\=
+SysCommExecuteFunction("args");\=
+SysLoaderExecuteFunction("args");\=
+- HiTechnic API functions
+SetSensorHTGyro("port")\=
+SensorHTGyro("port", "offset")\=
+SensorHTCompass("port")\=
+SensorHTColorNum("port")\=
+SensorHTIRSeekerDir("port")\=
+ReadSensorHTAccel("port", "x", "y", "z")\=
+ReadSensorHTColor("port", "ColorNum", "Red", "Green", "Blue")\= 
+ReadSensorHTRawColor("port", "Red", "Green", "Blue")\=
+ReadSensorHTNormalizedColor("port", "ColorIdx", "Red", "Green", "Blue")\=
+ReadSensorHTIRSeeker("port", "dir", "s1", "s3", "s5", "s7", "s9")\=
+HTPFComboDirect("port", "channel", "outa", "outb")\=
+HTPFSinglePin("port", "channel", "out", "pin", "func", "cont")\=
+HTPFSingleOutputCST("port", "channel", "out", "func")\=
+HTPFSingleOutputPWM("port", "channel", "out", "func")\=
+HTPFComboPWM("port", "channel", "outa", "outb")\=
+HTPFTrain("port", "channel", "func")\=
+HTIRTrain("port", "channel", "func")\=
+HTPFRawOutput("port", "nibble0", "nibble1", "nibble2")\=
+HTPFRepeat("port", "count", "delay")\=
+HTRCXSetIRLinkPort("port")\=
+HTRCXPoll("src", "value")\=
+HTRCXBatteryLevel()\=
+HTRCXPing()\=
+HTRCXDeleteTasks()\=
+HTRCXStopAllTasks()\=
+HTRCXPBTurnOff()\=
+HTRCXDeleteSubs()\=
+HTRCXClearSound()\=
+HTRCXClearMsg()\=
+HTRCXMuteSound()\=
+HTRCXUnmuteSound()\=
+HTRCXClearAllEvents()\=
+HTRCXSetOutput("outputs", "mode")\=
+HTRCXSetDirection("outputs", "dir")\=
+HTRCXSetPower("outputs", "pwrsrc", "pwrval")\=
+HTRCXOn("outputs")\=
+HTRCXOff("outputs")\=
+HTRCXFloat("outputs")\=
+HTRCXToggle("outputs")\=
+HTRCXFwd("outputs")\=
+HTRCXRev("outputs")\=
+HTRCXOnFwd("outputs")\=
+HTRCXOnRev("outputs")\=
+HTRCXOnFor("outputs", "ms")\=
+HTRCXSetTxPower("pwr")\=
+HTRCXPlaySound("snd")\=
+HTRCXDeleteTask("tasknum")\=
+HTRCXStartTask("tasknum")\=
+HTRCXStopTask("tasknum")\=
+HTRCXSelectProgram("prog")\=
+HTRCXClearTimer("timer")\=
+HTRCXSetSleepTime("time")\=
+HTRCXDeleteSub("subnum")\=
+HTRCXClearSensor("port")\=
+HTRCXPlayToneVar("varnum", "duration")\=
+HTRCXSetWatch("hours", "minutes")\=
+HTRCXSetSensorType("port", "type")\=
+HTRCXSetSensorMode("port", "mode")\=
+HTRCXCreateDatalog("size")\=
+HTRCXAddToDatalog("src", "value")\=
+HTRCXSendSerial("first", "count")\=
+HTRCXRemote("cmd")\=
+HTRCXEvent("src", "value")\=
+HTRCXPlayTone("freq", "duration")\=
+HTRCXSelectDisplay("src", "value")\=
+HTRCXPollMemory("address")\=
+HTRCXSetEvent("evt", "src", "type")\=
+HTRCXSetGlobalOutput("outputs", "mode")\=
+HTRCXSetGlobalDirection("outputs", "dir")\=
+HTRCXSetMaxPower("outputs", "pwrsrc", "pwrval")\=
+HTRCXEnableOutput("outputs")\=
+HTRCXDisableOutput("outputs")\=
+HTRCXInvertOutput("outputs")\=
+HTRCXObvertOutput("outputs")\=
+HTRCXIncCounter("counter")\=
+HTRCXDecCounter("counter")\=
+HTRCXClearCounter("counter")\=
+HTRCXSetPriority("port")\=
+HTRCXSetMessage("msg")\=
+HTScoutCalibrateSensor()\=
+HTScoutMuteSound()\=
+HTScoutUnmuteSound()\=
+HTScoutSelectSounds("grp")\=
+HTScoutSetLight("x")\=
+HTScoutSetSensorClickTime("src", "value")\=
+HTScoutSetSensorHysteresis("src", "value")\=
+HTScoutSetSensorLowerLimit("src", "value")\=
+HTScoutSetSensorUpperLimit("src", "value")\=
+HTScoutSetEventFeedback("src", "value")\=
+HTScoutSendVLL("src", "value")\=
+HTScoutSetScoutMode("mode")\=
+- Mindsensor API functions
+SetSensorMSPressure("port");\=
+SensorMSPressure("port");\=
+SensorMSPressureRaw("port");\=
+SensorMSCompassEx("port", "addr");\=
+SensorMSCompass("port");\=
+ReadSensorMSRTClock("port", "sec", "min", "hrs", "dow", "date", "month", "year");\=
+ReadSensorMSTilt("port", "x", "y", "z");\=
+ReadSensorMSTiltEx("port", "addr", "x", "y", "z");\=
+ReadSensorMSAccel("port", "x", "y", "z");\=
+ReadSensorMSAccelEx("port", "addr", "x", "y", "z");\=
+MSSendCommandEx("port", "addr", "cmd");\=
+MSSendCommand("port", "cmd");\=
+MSReadValueEx("port", "addr", "reg", "bytes");\=
+MSReadValue("port", "reg", "bytes");\=
+DISTNxGP2D12("port");\=
+DISTNxGP2D120("port");\=
+DISTNxGP2YA21("port");\=
+DISTNxGP2YA02("port");\=
+DISTNxEnergize("port");\=
+DISTNxDistance("port");\=
+DISTNxVoltage("port");\=
+DISTNxModuleType("port");\=
+DISTNxNumPoints("port");\=
+DISTNxMinDistance("port");\=
+DISTNxMaxDistance("port");\=
+SetSensorMSDRODActive("port");\=
+SetSensorMSDRODInactive("port");\=
+SensorMSDROD("port");\=
+PSPNxEnergize("port");\=
+ReadSensorMSPlayStationEx("port", "addr", "b1", "b2", "xleft", "yleft", "xright", "yright");\=
+ReadSensorMSPlayStation("port", "b1", "b2", "xleft", "yleft", "xright", "yright");\=
+NRLink2400("port");\=
+NRLink4800("port");\=
+NRLinkFlush("port");\=
+NRLinkIRLong("port");\=
+NRLinkIRShort("port");\=
+NRLinkTxRaw("port");\=
+NRLinkSetRCX("port");\=
+NRLinkSetTrain("port");\=
+NRLinkSetPF("port");\=
+RunNRLinkMacroEx("port", "addr", "macro");\=
+RunNRLinkMacro("port", "macro");\=
+NRLinkStatusEx("port", "addr");\=
+NRLinkStatus("port");\=
+WriteNRLinkBytesEx("port", "addr", "bytes");\=
+WriteNRLinkBytes("port", "bytes");\=
+ReadNRLinkBytesEx("port", "addr", "bytes");\=
+ReadNRLinkBytes("port", "bytes");\=
+MSPFComboDirectEx("port", "addr", "channel", "outa", "outb");\=
+MSPFComboDirect("port", "channel", "outa", "outb");\=
+MSPFSinglePinEx("port", "addr", "channel", "out", "pin", "func", "cont");\=
+MSPFSinglePin("port", "channel", "out", "pin", "func", "cont");\=
+MSPFSingleOutputCSTEx("port", "addr", "channel", "out", "func");\=
+MSPFSingleOutputCST("port", "channel", "out", "func");\=
+MSPFSingleOutputPWMEx("port", "addr", "channel", "out", "func");\=
+MSPFSingleOutputPWM("port", "channel", "out", "func");\=
+MSPFComboPWMEx("port", "addr", "channel", "outa", "outb");\=
+MSPFComboPWM("port", "channel", "outa", "outb");\=
+MSPFTrainEx("port", "addr", "channel", "func");\=
+MSPFTrain("port", "channel", "func");\=
+MSIRTrainEx("port", "addr", "channel", "func");\=
+MSIRTrain("port", "channel", "func");\=
+MSPFRawOutputEx("port", "addr", "nibble0", "nibble1", "nibble2");\=
+MSPFRawOutput("port", "nibble0", "nibble1", "nibble2");\=
+MSPFRepeatEx("port", "addr", "count", "delay");\=
+MSPFRepeat("port", "count", "delay");\=
+MSRCXSetNRLinkEx("port", "addr");\=
+MSRCXSetNRLinkPort("port");\=
+MSRCXPoll("src", "value")\=
+MSRCXBatteryLevel()\=
+MSRCXPing();\=
+MSRCXDeleteTasks();\=
+MSRCXStopAllTasks();\=
+MSRCXPBTurnOff();\=
+MSRCXDeleteSubs();\=
+MSRCXClearSound();\=
+MSRCXClearMsg();\=
+MSRCXMuteSound();\=
+MSRCXUnmuteSound();\=
+MSRCXClearAllEvents();\=
+MSRCXSetOutput("outputs", "mode");\=
+MSRCXSetDirection("outputs", "dir");\=
+MSRCXSetPower("outputs", "pwrsrc", "pwrval");\=
+MSRCXOn("outputs");\=
+MSRCXOff("outputs");\=
+MSRCXFloat("outputs");\=
+MSRCXToggle("outputs");\=
+MSRCXFwd("outputs");\=
+MSRCXRev("outputs");\=
+MSRCXOnFwd("outputs");\=
+MSRCXOnRev("outputs");\=
+MSRCXOnFor("outputs", "ms");\=
+MSRCXSetTxPower("pwr");\=
+MSRCXPlaySound("snd");\=
+MSRCXDeleteTask("tasknum");\=
+MSRCXStartTask("tasknum");\=
+MSRCXStopTask("tasknum");\=
+MSRCXSelectProgram("prog");\=
+MSRCXClearTimer("timer");\=
+MSRCXSetSleepTime("time");\=
+MSRCXDeleteSub("subnum");\=
+MSRCXClearSensor("port");\=
+MSRCXPlayToneVar("varnum", "duration");\=
+MSRCXSetWatch("hours", "minutes");\=
+MSRCXSetSensorType("port", "type");\=
+MSRCXSetSensorMode("port", "mode");\=
+MSRCXCreateDatalog("size");\=
+MSRCXAddToDatalog("src", "value");\=
+MSRCXSendSerial("first", "count");\=
+MSRCXRemote("cmd");\=
+MSRCXEvent("src", "value");\=
+MSRCXPlayTone("freq", "duration");\=
+MSRCXSelectDisplay("src", "value");\=
+MSRCXPollMemory("address", "count");\=
+MSRCXSetEvent("evt", "src", "type");\=
+MSRCXSetGlobalOutput("outputs", "mode");\=
+MSRCXSetGlobalDirection("outputs", "dir");\=
+MSRCXSetMaxPower("outputs", "pwrsrc", "pwrval");\=
+MSRCXEnableOutput("outputs");\=
+MSRCXDisableOutput("outputs");\=
+MSRCXInvertOutput("outputs");\=
+MSRCXObvertOutput("outputs");\=
+MSRCXCalibrateEvent("evt", "low", "hi", "hyst");\=
+MSRCXSetVar("varnum", "src", "value");\=
+MSRCXSumVar("varnum", "src", "value");\=
+MSRCXSubVar("varnum", "src", "value");\=
+MSRCXDivVar("varnum", "src", "value");\=
+MSRCXMulVar("varnum", "src", "value");\=
+MSRCXSgnVar("varnum", "src", "value");\=
+MSRCXAbsVar("varnum", "src", "value");\=
+MSRCXAndVar("varnum", "src", "value");\=
+MSRCXOrVar("varnum", "src", "value");\= 
+MSRCXSet("dstsrc", "dstval", "src", "value");\=
+MSRCXUnlock();\=
+MSRCXReset();\=
+MSRCXBoot();\= 
+MSRCXSetUserDisplay("src", "value", "precision");\=
+MSRCXIncCounter("counter");\=
+MSRCXDecCounter("counter");\=
+MSRCXClearCounter("counter");\=
+MSRCXSetPriority("port");\=
+MSRCXSetMessage("msg");\=
+MSScoutCalibrateSensor();\=
+MSScoutMuteSound();\=
+MSScoutUnmuteSound();\=
+MSScoutSelectSounds("grp");\=
+MSScoutSetLight("x");\=
+MSScoutSetCounterLimit("ctr", "src", "value");\=
+MSScoutSetTimerLimit("tmr", "src", "value");\=
+MSScoutSetSensorClickTime("src", "value");\=
+MSScoutSetSensorHysteresis("src", "value");\=
+MSScoutSetSensorLowerLimit("src", "value");\=
+MSScoutSetSensorUpperLimit("src", "value");\=
+MSScoutSetEventFeedback("src", "value");\=
+MSScoutSendVLL("src", "value");\=
+MSScoutSetScoutRules("m", "t", "l", "tm", "fx");\=
+MSScoutSetScoutMode("mode");\=

@@ -1,0 +1,17 @@
+LazarusResources.Add('TfrmPortPrompt','FORMDATA',[
+  'TPF0'#14'TfrmPortPrompt'#13'frmPortPrompt'#4'Left'#3#162#1#3'Top'#3'C'#1#11
+  +'BorderStyle'#7#8'bsDialog'#7'Caption'#6#11'Select Port'#12'ClientHeight'#2
+  +'W'#11'ClientWidth'#3#172#0#5'Color'#7#9'clBtnFace'#12'Font.Charset'#7#15'DE'
+  +'FAULT_CHARSET'#10'Font.Color'#7#12'clWindowText'#11'Font.Height'#2#245#9'Fo'
+  +'nt.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#0#7'OnClose'#7#9'FormClose'#8
+  +'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'`'#10'TextHeight'#2#13#0#6'T'
+  +'Label'#7'lblPort'#4'Left'#2#8#3'Top'#2#12#5'Width'#2#22#6'Height'#2#13#7'Ca'
+  +'ption'#6#5'Port:'#0#0#9'TCheckBox'#15'chkUseBluetooth'#4'Left'#2'('#3'Top'#2
+  +' '#5'Width'#2'a'#6'Height'#2#17#7'Caption'#6#13'Use bluetooth'#8'TabOrder'#2
+  +#1#0#0#7'TButton'#5'btnOK'#4'Left'#2#24#3'Top'#2'8'#5'Width'#2'A'#6'Height'#2
+  +#25#7'Caption'#6#2'OK'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#2#0#0#7
+  +'TButton'#9'btnCancel'#4'Left'#2'`'#3'Top'#2'8'#5'Width'#2'A'#6'Height'#2#25
+  +#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#3#0#0#9
+  +'TComboBox'#7'cboPort'#4'Left'#2'('#3'Top'#2#8#5'Width'#2'y'#6'Height'#2#21
+  +#10'ItemHeight'#2#13#8'TabOrder'#2#0#4'Text'#6#3'usb'#0#0#0
+]);
