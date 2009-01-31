@@ -1,0 +1,258 @@
+object frmMidiBatch: TfrmMidiBatch
+  Left = 531
+  Height = 480
+  Top = 100
+  Width = 392
+  HorzScrollBar.Page = 391
+  VertScrollBar.Page = 479
+  ActiveControl = edtOutputDir
+  BorderIcons = [biSystemMenu]
+  BorderStyle = bsDialog
+  Caption = 'Batch Convert MIDI to NXT Melody'
+  ClientHeight = 480
+  ClientWidth = 392
+  OnCreate = FormCreate
+  object lblOutDir: TLabel
+    Left = 16
+    Height = 17
+    Top = 8
+    Width = 135
+    Caption = '&Output Directory:'
+    FocusControl = edtOutputDir
+    ParentColor = False
+  end
+  object lblInputDirs: TLabel
+    Left = 16
+    Height = 17
+    Top = 51
+    Width = 133
+    Caption = '&Input Directories:'
+    FocusControl = edtDir
+    ParentColor = False
+  end
+  object btnSelectDir: TSpeedButton
+    Left = 304
+    Height = 22
+    Top = 24
+    Width = 23
+    Caption = '...'
+    Color = clBtnFace
+    NumGlyphs = 0
+    OnClick = btnSelectDirClick
+  end
+  object edtOutputDir: TEdit
+    Left = 16
+    Height = 23
+    Top = 24
+    Width = 280
+    OnChange = edtOutputDirChange
+    ReadOnly = True
+    TabOrder = 0
+  end
+  object edtDir: TEdit
+    Left = 16
+    Height = 23
+    Top = 67
+    Width = 280
+    OnChange = edtDirChange
+    TabOrder = 1
+  end
+  object lstDirs: TListBox
+    Left = 16
+    Height = 94
+    Top = 94
+    Width = 280
+    PopupMenu = pumDirs
+    TabOrder = 2
+    TopIndex = -1
+  end
+  object grpTracks: TGroupBox
+    Left = 16
+    Height = 67
+    Top = 192
+    Width = 110
+    Caption = 'Tracks'
+    ClientHeight = 46
+    ClientWidth = 106
+    TabOrder = 8
+    object radAllTracks: TRadioButton
+      Left = 8
+      Height = 24
+      Width = 41
+      Caption = 'All'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+    end
+    object radFirstTrack: TRadioButton
+      Left = 8
+      Height = 24
+      Top = 20
+      Width = 86
+      Caption = '1st track'
+      TabOrder = 1
+    end
+  end
+  object grpParameters: TGroupBox
+    Left = 130
+    Height = 131
+    Top = 192
+    Width = 166
+    Caption = 'Parameters'
+    ClientHeight = 110
+    ClientWidth = 162
+    TabOrder = 9
+    object lblGap: TLabel
+      Left = 8
+      Height = 17
+      Top = 5
+      Width = 36
+      Caption = 'Gap:'
+      ParentColor = False
+    end
+    object lblTranspose: TLabel
+      Left = 8
+      Height = 17
+      Top = 30
+      Width = 81
+      Caption = 'Transpose:'
+      ParentColor = False
+    end
+    object lblPBS: TLabel
+      Left = 8
+      Height = 17
+      Top = 85
+      Width = 77
+      Caption = 'Sensitivity:'
+      ParentColor = False
+    end
+    object chkUsePB: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 58
+      Width = 144
+      Caption = 'Track pitch bend'
+      OnClick = chkUsePBClick
+      TabOrder = 2
+    end
+    object edtGap: TSpinEdit
+      Left = 103
+      Height = 20
+      Top = 2
+      Width = 52
+      MaxValue = 99
+      TabOrder = 0
+      Value = 2
+    end
+    object edtPBS: TSpinEdit
+      Left = 103
+      Height = 20
+      Top = 82
+      Width = 52
+      MaxValue = 99
+      TabOrder = 3
+      Value = 2
+    end
+    object barTranspose: TTrackBar
+      Left = 98
+      Height = 33
+      Top = 28
+      Width = 62
+      Max = 2
+      Min = -2
+      ScalePos = trTop
+      TabOrder = 1
+    end
+  end
+  object grpTempo: TGroupBox
+    Left = 16
+    Height = 61
+    Top = 262
+    Width = 110
+    Caption = 'Tempo'
+    ClientHeight = 40
+    ClientWidth = 106
+    TabOrder = 10
+    object edtTempo: TSpinEdit
+      Left = 8
+      Height = 20
+      Top = 10
+      Width = 63
+      MaxValue = 999
+      TabOrder = 0
+      Value = 150
+    end
+  end
+  object mmoLog: TMemo
+    Left = 16
+    Height = 138
+    Top = 328
+    Width = 283
+    ScrollBars = ssBoth
+    TabOrder = 7
+    WordWrap = False
+  end
+  object btnAdd: TButton
+    Left = 304
+    Height = 25
+    Top = 62
+    Width = 84
+    BorderSpacing.InnerBorder = 4
+    Caption = '&Add'
+    OnClick = mniAddClick
+    TabOrder = 3
+  end
+  object btnDelete: TButton
+    Left = 304
+    Height = 25
+    Top = 96
+    Width = 84
+    BorderSpacing.InnerBorder = 4
+    Caption = '&Delete'
+    TabOrder = 4
+  end
+  object btnClear: TButton
+    Left = 304
+    Height = 25
+    Top = 136
+    Width = 84
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Clear'
+    TabOrder = 5
+  end
+  object btnExecute: TButton
+    Left = 304
+    Height = 25
+    Top = 198
+    Width = 84
+    BorderSpacing.InnerBorder = 4
+    Caption = 'Execute'
+    OnClick = btnExecuteClick
+    TabOrder = 6
+  end
+  object pumDirs: TPopupMenu
+    OnPopup = pumDirsPopup
+    left = 117
+    top = 162
+    object mniAdd: TMenuItem
+      Caption = 'Add'
+      OnClick = mniAddClick
+    end
+    object mniDelete: TMenuItem
+      Caption = 'Delete'
+      OnClick = mniDeleteClick
+    end
+    object mniSep1: TMenuItem
+      Caption = '-'
+    end
+    object mniClear: TMenuItem
+      Caption = 'Clear'
+      OnClick = mniClearClick
+    end
+  end
+  object dlgSelectDirectory: TSelectDirectoryDialog
+    Title = 'Select Directory'
+    left = 344
+    top = 16
+  end
+end

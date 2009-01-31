@@ -1,0 +1,19 @@
+/* syntax highlighting */
+#include "NXCDefs.h"
+// This is a Comment
+// #define is a Preprocessor
+#define NUM_LOOPS 4
+task main() // task is a Keyword
+{ // {},+(); are all Symbols
+  // NUM_LOOPS is an Identifier
+  repeat(NUM_LOOPS)
+  {
+    // TextOut is a Command
+    // "power_level" is a Field (aka String)
+    TextOut(0, 0, true, "power_level");
+    // OUT_AB is a Constant
+    OnFwd(OUT_AB, 75);
+    // 4000 is a Number
+    Wait(4000);
+  }
+}

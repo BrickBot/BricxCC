@@ -1,0 +1,17 @@
+#include "NXTDefs.h"
+
+dseg	segment
+  x slong
+  y slong
+  z slong
+dseg	ends
+
+thread main
+//  set x, 30
+  set x, 10
+  set y, 40
+  add z, x, y
+//  set x, 12
+//  mov y, z
+endt
+

@@ -1,0 +1,112 @@
+- Programs
+task "name" ()\={\>"body"\<}\=\=
+sub "name" ()\={\>"body"\<}\=\=
+void "name" ("arguments")\={\>"body"\<}\=\=
+int "name";\=
+#define "macro"\=
+#include "file"\=
+#pragma reserve "num"\=
+- If statements
+if ("condition") "statement";\=
+if ("condition")\={\>"statements"\<}\=
+if ("condition")\={\>"body"\<}\=else\={\>"body"\<}\=
+- Loops etc...
+while ("condition")\={\>"body"\<}\=
+do\={\>"body"\<}\=while ("condition")\=
+repeat ("value")\={\>"body"\<}\=
+until ("condition");\=
+until ("condition")\={\>"body"\<}\=
+switch ("var")\={\>case "num" :\=\>"body"\=break;\=default :\=\>"body"\<}\=
+acquire (ACQUIRE_)\={\>"body"\<}\=catch\={ \>"handler"\<}\=
+monitor (EVENT_MASK ("num"))\={\>"body"\<}\=catch\={ \>"handler"\<}\=
+- Tasks
+start "taskname";\=
+stop "taskname";\=
+StopAllTasks ();\=
+SelectProgram ("num");\=
+- Events
+SetPriority ("num");\=
+ActiveEvents ("task_ number");\=
+SetEvent ("event", "source", "type");\=
+ClearEvent ("event");\=
+ClearAllEvents ();\=
+EventState ("event")
+CalibrateEvent ("event", "lower", "upper", "hyst");\=
+| More events
+SetUpperLimit ("event", "limit");\=
+SetLowerLimit ("event", "limit");\=
+UpperLimit ("event")
+LowerLimit ("event")
+SetHysteresis ("event", "num");\=
+Hysteresis ("event")
+SetClickTime ("event", "num");\=
+ClickTime ("event")
+SetClickCounter ("event", "num");\=
+ClickCounter ("event")
+- Outputs
+OnFwd ("outs");\=
+OnRev ("outs");\=
+Off ("outs");\=
+Float ("outs");\=
+OnFor ("outs", "time (10 ms)");\=
+SetPower ("outs","speed");\=
+Wait ("time (10 ms)");\=
+- Sensors
+SetSensor ("sensor", SENSOR_TOUCH);\=
+SetSensor ("sensor", SENSOR_LIGHT);\=
+SetSensor ("sensor", SENSOR_ROTATION);\=
+SetSensor ("sensor", SENSOR_CELSIUS);\=
+SetSensor ("sensor", SENSOR_FAHRENHEIT);\=
+SetSensor ("sensor", SENSOR_PULSE);\=
+SetSensor ("sensor", SENSOR_EDGE);\=
+| Sensor types
+SetSensorType ("sensor", SENSOR_TYPE_TOUCH);\=
+SetSensorType ("sensor", SENSOR_TYPE_LIGHT);\=
+SetSensorType ("sensor", SENSOR_TYPE_TEMPERATURE);\=
+SetSensorType ("sensor", SENSOR_TYPE_ROTATION);\=
+- Sensor modes
+SetSensorMode ("sensor", SENSOR_MODE_RAW + "slope");\=
+SetSensorMode ("sensor", SENSOR_MODE_BOOL);\=
+SetSensorMode ("sensor", SENSOR_MODE_EDGE);\=
+SetSensorMode ("sensor", SENSOR_MODE_PULSE);\=
+SetSensorMode ("sensor", SENSOR_MODE_PERCENT);\=
+SetSensorMode ("sensor", SENSOR_MODE_CELSIUS);\=
+SetSensorMode ("sensor", SENSOR_MODE_FAHRENHEIT);\=
+SetSensorMode ("sensor", SENSOR_MODE_ROTATION);\=
+- Sensor misc
+ClearSensor ("sensor");\=
+Sensor ("sensor")
+- Messages and datalogs
+Message ()
+SendMessage ("num");\=
+ClearMessage ();\=
+CreateDatalog ("num");\=
+AddToDatalog ("var");\=
+- Timers
+Timer ("num")
+ClearTimer ("num");\=
+SetTimer ("num", "val (100 ms)");\=
+FastTimer ("num")
+| Counters
+Counter ("num")
+ClearCounter ("num");\=
+IncCounter ("num");\=
+DecCounter ("num");\=
+- Sounds
+PlaySound (SOUND_CLICK);\=
+PlaySound (SOUND_DOUBLE_BEEP);\=
+PlaySound (SOUND_DOWN);\=
+PlaySound (SOUND_UP);\=
+PlaySound (SOUND_LOW_BEEP);\=
+PlaySound (SOUND_FAST_UP);\=
+PlayTone ("freq", "ticks");\=
+MuteSound ();\=
+UnmuteSound ();\=
+ClearSound ();\=
+- Misc stuff
+SetUserDisplay ("var", "prec");\=
+SetRandomSeed ("expr");\=
+SetWatch ("hours", "min");\=
+SetSleepTime ("minutes");\=
+SleepNow ();\=
+BatteryLevel ()

@@ -1,0 +1,125 @@
+; -------------- variable declarations --------------
+dseg	segment
+;------- definitions -------
+;------- declarations -------
+myVar1	byte
+boolval2	byte	1
+another_var	byte	1
+b2	byte
+bTrue	byte	1
+PleaseWork	byte	1
+
+dtArgs TDrawText
+
+MOT_AB byte[] OUT_A, OUT_B
+MOT_BC byte[] OUT_B, OUT_C
+MOT_ABC byte[] OUT_A, OUT_B, OUT_C
+
+buf byte[] 'test one, two'
+
+dseg	ends
+; -------------- program code --------------
+/*
+dseg segment
+  __main_wait_return byte
+  __main_wait_ms word
+  __main_wait_now dword
+  __main_wait_then dword
+dseg ends
+*/
+
+#define TEXTOUT(x,y,cls,txt)  mov dtArgs.Location.X,x \
+                              mov dtArgs.Location.Y,y \
+                              mov dtArgs.Options,cls \
+                              mov dtArgs.Text,txt \
+                              syscall DrawText,dtArgs
+
+#define FOO 75
+#define BAR FOO*-1
+
+#define FILEREAD(h,l,r,b)  acquire frMutex \
+                           mov frArgs.FileHandle,h \
+                           mov frArgs.Length,l \
+                           syscall FileRead,frArgs \
+                           mov l, frArgs.Length \
+                           mov b,frArgs.Buffer \
+                           mov r,frArgs.Result \
+                           release frMutex
+                           
+#define testing \
+  __##__THREADNAME__##_##__I__##: \
+  set b2, 100 \
+  jmp __##__THREADNAME__##_##__I__ \
+  __IncI__
+
+// also __J__, __IncJ__, __DecI__, __DecJ__, __ResetI__, and __ResetJ__
+
+
+thread main
+  dseg segment
+    fredfred byte 23
+  dseg ends
+
+#pragma debugbreak
+  
+  testing
+  testing
+  testing
+  
+	mov	another_var, PleaseWork
+	mov	boolval2, bTrue
+	mov	myVar1, b2
+	set	myVar1, 4<<5
+	mov myVar1, fredfred
+  OnFwd( MOT_AB, FOO )
+	waitv 4000
+	Off(MOT_AB)
+	waitv 1500
+  OnRev(MOT_AB, fredfred)
+
+  mov dtArgs.Text, buf
+  mov dtArgs.Text, 'please work, wont you?'
+
+  TEXTOUT(10,60,1,'HELLO; // , / . WORLD!')
+
+//  mov 10, myVar1
+
+	waitv 4000
+	Coast(MOT_AB)
+	waitv 4000
+	call MySub
+	waitv 1500
+	abs myVar1, -50
+	jmp BadLabelLocation
+//	set __main_wait_ms, 65534
+//	subcall __main_wait, __main_wait_return
+//	exit
+BadLabelLocation:
+	abs myVar1, -60
+endt
+
+thread Testing
+  dseg segment
+    fredfred2 byte 10
+  dseg ends
+  mov boolval2, fredfred2
+endt
+
+subroutine MySub
+  mov boolval2, fredfred
+  OnFwd( MOT_AB, FOO )
+  wait 3000
+  Off(MOT_AB)
+  return
+ends
+
+/*
+thread __main_wait
+	gettick __main_wait_now
+	add	__main_wait_then, __main_wait_now, __main_wait_ms
+__main_waiting:
+	gettick __main_wait_now
+	brcmp	LT, __main_waiting, __main_wait_now, __main_wait_then
+	subret __main_wait_return
+endt
+*/

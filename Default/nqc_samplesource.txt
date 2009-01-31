@@ -1,0 +1,18 @@
+/* syntax highlighting */
+// This is a Comment
+// #define is a Preprocessor
+#define NUM_LOOPS 4
+task main() // task is a Keyword
+{ // {},+(); are all Symbols
+  // NUM_LOOPS is an Identifier
+  repeat(NUM_LOOPS)
+  {
+    // SetPower is a Command
+    // "power_level" is a Field
+    SetPower(OUT_A+OUT_B,"power_level");
+    // OUT_A is a Constant
+    OnFwd(OUT_A+OUT_B);
+    // 400 is a Number
+    Wait(400);
+  }
+}

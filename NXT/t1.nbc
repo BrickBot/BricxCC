@@ -1,0 +1,183 @@
+/*
+testtny.rxe
+Header
+----------------
+FormatString = MindstormsNXT
+Version = 5
+DSCount = 24 (0x18)
+DSSize = 76 (0x4C)
+DSStaticSize = 56 (0x38)
+DSDefaultsSize = 23 (0x17)
+DynDSDefaultsOffset = 3 (0x3)
+DynDSDefaultsSize = 20 (0x14)
+MemMgrHead = 0 (0x0)
+MemMgrTail = 1 (0x1)
+DVArrayOffset = 56 (0x38)
+ClumpCount = 3 (0x3)
+CodespaceCount = 216 (0xD8)
+----------------
+DataSpace
+----------------
+DSTOC
+  ul0000: 05 01 0000
+  ul0001: 05 01 0004
+  ul0002: 05 01 0008
+  ul0003: 05 01 000C
+  ul0004: 05 01 0010
+  uw0005: 03 01 0014
+  uw0006: 03 01 0016
+  sw0007: 04 01 0018
+  sw0008: 04 01 001A
+  sb0009: 02 00 001C
+  ub000A: 01 01 001D
+  ub000B: 01 01 001E
+  ub000C: 01 01 001F
+   c000D: 08 00 0002
+  sb000E: 02 01 0020
+  ul000F: 05 01 0024
+   c0010: 08 00 0004
+  sb0011: 02 01 0028
+   c0012: 08 00 0002
+  sw0013: 04 01 002C
+  sw0014: 04 01 002E
+   a0015: 07 00 0030
+  ub0016: 01 01 0000
+  ul0017: 05 01 0034
+Static DS Defaults
+01 01 00 
+Dynamic DS Defaults
+Dope Vectors (offset, elem size, count, back ptr, link)
+00 38 00 0A 00 02 FF FF 00 01
+FF FF 00 01 00 00 00 30 FF FF
+----------------
+ClumpRecords
+----------------
+3 record(s) (Fire Cnt, Dependent Cnt, Code Start)
+t000: 00 00 0000
+t001: 01 00 00B7
+t002: 01 00 00CA
+----------------
+*/
+; -------------- variable declarations --------------
+dseg	segment
+;------- definitions -------
+c000D_def	struct
+sb000E	sbyte	
+ul000F	dword	
+c000D_def	ends
+c0012_def	struct
+sw0013	sword	
+sw0014	sword	
+c0012_def	ends
+c0010_def	struct
+sb0011	sbyte	
+c0012	c0012_def
+a0015	byte[]	
+ul0017	dword	
+c0010_def	ends
+;------- declarations -------
+ul0000	dword	
+ul0001	dword	
+ul0002	dword	
+ul0003	dword	
+ul0004	dword	
+uw0005	word	
+uw0006	word	
+sw0007	sword	
+sw0008	sword	
+sb0009	sbyte	1
+ub000A	byte	
+ub000B	byte	
+ub000C	byte	
+c000D	c000D_def
+c0010	c0010_def
+dseg	ends
+; -------------- program code --------------
+	thread t000
+	set	ul0003, 0x0
+	mov	ul0000, ul0003
+	set	ul0003, 0x82
+	sub	ul0003, ul0000, ul0003
+	mov	sw0008, ul0003
+	set	ul0003, 0x28
+	mov	ul0000, ul0003
+	set	ul0003, 0xA
+	mov	ul0001, ul0003
+	set	ul0003, 0xC
+	sub	ul0003, ul0001, ul0003
+	mov	ul0001, ul0003
+	set	ul0003, 0x3
+	div	ul0003, ul0001, ul0003
+	add	ul0003, ul0000, ul0003
+	mov	sw0007, ul0003
+lbl002E:	mov	ul0003, sw0008
+	mov	ul0000, ul0003
+	set	ul0003, 0xA
+	cmp	LT, ub000A, ul0000, ul0003
+	brtst	EQ, lbl005D, ub000A
+	subcall	t001, ub000B
+	set	ul0003, 0x4
+	sub	sw0007, sw0007, ul0003
+	set	ul0003, 0x0
+	tst	NEQ, ub000A, ul0003
+	brtst	EQ, lbl0050, ub000A
+	jmp	lbl002E
+lbl0050:	set	ul0003, 0x1F4
+	mov	uw0006, ul0003
+	subcall	t002, ub000C
+	add	sw0008, sw0008, sb0009
+	jmp	lbl002E
+lbl005D:	set	c000D.ul000F, 0x0
+	syscall	SetScreenMode, c000D
+	set	ul0003, 0x1F4
+	mov	uw0005, ul0003
+	mov	ul0003, uw0005
+	mov	ul0000, ul0003
+	set	ul0003, 0x1F4
+	add	ul0003, ul0000, ul0003
+	mov	uw0006, ul0003
+	subcall	t002, ub000C
+	set	ul0003, 0x0
+	mov	sw0007, ul0003
+lbl007C:	mov	ul0003, sw0007
+	mov	ul0000, ul0003
+	set	ul0003, 0xA
+	cmp	LT, ub000A, ul0000, ul0003
+	brtst	EQ, lbl00AD, ub000A
+	jmp	lbl0092
+lbl008C:	add	sw0007, sw0007, sb0009
+	jmp	lbl007C
+lbl0092:	subcall	t001, ub000B
+	mov	ul0003, sw0007
+	mov	ul0000, ul0003
+	set	ul0003, 0x0
+	cmp	LT, ub000A, ul0000, ul0003
+	brtst	EQ, lbl00A4, ub000A
+	jmp	lbl00AD
+lbl00A4:	set	ul0003, 0x1F4
+	mov	uw0006, ul0003
+	subcall	t002, ub000C
+	jmp	lbl008C
+lbl00AD:	set	ul0003, 0xBB8
+	mov	uw0006, ul0003
+	subcall	t002, ub000C
+	exit	-1, -1
+	endt
+;-----------------------------------
+	thread t001
+	mov	ul0003, sw0007
+	set	c0010.ul0017, 0x1
+	set	c0010.c0012.sw0013, 0x0
+	set	c0010.c0012.sw0014, 0x38
+	numtostr	c0010.a0015, ul0003
+	syscall	DrawText, c0010
+	subret	ub000B
+	endt
+;-----------------------------------
+	thread t002
+	gettick	ul0002
+	add	ul0004, ul0002, uw0006
+lbl00D0:	gettick	ul0002
+	brcmp	LT, lbl00D0, ul0002, ul0004
+	subret	ub000C
+	endt

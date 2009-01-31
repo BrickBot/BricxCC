@@ -1,0 +1,822 @@
+object MainForm: TMainForm
+  Left = 638
+  Height = 575
+  Top = 155
+  Width = 751
+  Caption = 'MainForm'
+  ClientHeight = 555
+  ClientWidth = 751
+  Menu = mnuMain
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object cbrTop: TPanel
+    Height = 47
+    Width = 751
+    Align = alTop
+    BevelOuter = bvNone
+    ClientHeight = 47
+    ClientWidth = 751
+    TabOrder = 0
+    object ogpFile: TPanel
+      Height = 23
+      Width = 180
+      ClientHeight = 23
+      ClientWidth = 180
+      TabOrder = 0
+      object osbNew: TSpeedButton
+        Left = 7
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object bvlFile1: TBevel
+        Left = 1
+        Height = 21
+        Top = 1
+        Width = 6
+        Align = alLeft
+        Shape = bsFrame
+      end
+      object osbOpen: TSpeedButton
+        Left = 30
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbSave: TSpeedButton
+        Left = 53
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbClose: TSpeedButton
+        Left = 76
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbCloseAll: TSpeedButton
+        Left = 99
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object bvlFile2: TBevel
+        Left = 122
+        Height = 21
+        Top = 1
+        Width = 8
+        Align = alLeft
+      end
+      object osbPreview: TSpeedButton
+        Left = 130
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbPrint: TSpeedButton
+        Left = 153
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+    end
+    object ogpEdit: TPanel
+      Height = 23
+      Top = 24
+      Width = 188
+      ClientHeight = 23
+      ClientWidth = 188
+      TabOrder = 1
+      object bvlEdit1: TBevel
+        Left = 1
+        Height = 21
+        Top = 1
+        Width = 6
+        Align = alLeft
+        Shape = bsFrame
+      end
+      object osbUndo: TSpeedButton
+        Left = 7
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbRedo: TSpeedButton
+        Left = 30
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object bvlEdit2: TBevel
+        Left = 53
+        Height = 21
+        Top = 1
+        Width = 8
+        Align = alLeft
+      end
+      object osbCut: TSpeedButton
+        Left = 61
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbCopy: TSpeedButton
+        Left = 84
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbPaste: TSpeedButton
+        Left = 107
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbDelete: TSpeedButton
+        Left = 130
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object Bevel1: TBevel
+        Left = 153
+        Height = 21
+        Top = 1
+        Width = 8
+        Align = alLeft
+      end
+      object osbPreferences: TSpeedButton
+        Left = 161
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+    end
+    object ogpSearch: TPanel
+      Left = 182
+      Height = 23
+      Width = 112
+      ClientHeight = 23
+      ClientWidth = 112
+      TabOrder = 2
+      object Bevel2: TBevel
+        Left = 1
+        Height = 21
+        Top = 1
+        Width = 6
+        Align = alLeft
+        Shape = bsFrame
+      end
+      object osbFind: TSpeedButton
+        Left = 7
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbReplace: TSpeedButton
+        Left = 30
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object Bevel3: TBevel
+        Left = 53
+        Height = 21
+        Top = 1
+        Width = 8
+        Align = alLeft
+      end
+      object osbGoto: TSpeedButton
+        Left = 61
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+      object osbProcList: TSpeedButton
+        Left = 84
+        Height = 21
+        Top = 1
+        Width = 23
+        Align = alLeft
+        Color = clBtnFace
+        Flat = True
+        NumGlyphs = 0
+      end
+    end
+  end
+  object barStatus: TStatusBar
+    Height = 23
+    Top = 532
+    Width = 751
+    Panels = <    
+      item
+        Width = 80
+      end    
+      item
+        Width = 80
+      end    
+      item
+        Width = 80
+      end    
+      item
+        Width = 80
+      end    
+      item
+        Width = 80
+      end    
+      item
+        Width = 50
+      end>
+    SimplePanel = False
+  end
+  object pnlCodeExplorer: TPanel
+    Height = 483
+    Top = 49
+    Width = 146
+    Align = alLeft
+    BevelOuter = bvNone
+    DockSite = True
+    TabOrder = 2
+    OnDockOver = pnlCodeExplorerDockOver
+    OnGetSiteInfo = pnlCodeExplorerGetSiteInfo
+  end
+  object splCodeExplorer: TSplitter
+    Left = 146
+    Height = 483
+    Top = 49
+    Width = 5
+    ResizeStyle = rsPattern
+  end
+  object pnlPageControl: TPanel
+    Left = 232
+    Height = 104
+    Top = 360
+    Width = 160
+    BevelOuter = bvNone
+    Caption = 'pnlPageControl'
+    ClientHeight = 104
+    ClientWidth = 160
+    TabOrder = 4
+    object pagMain: TPageControl
+      Height = 104
+      Width = 160
+      Align = alClient
+      TabOrder = 0
+    end
+  end
+  object pnlSep: TPanel
+    Height = 2
+    Top = 47
+    Width = 751
+    Align = alTop
+    BevelOuter = bvNone
+    TabOrder = 5
+  end
+  object mnuMain: TMainMenu
+    left = 232
+    top = 112
+    object mniFile: TMenuItem
+      Caption = '&File'
+      object mniNew: TMenuItem
+        Caption = '&New'
+        ShortCut = 16462
+      end
+      object mniOpen: TMenuItem
+        Caption = '&Open...'
+      end
+      object mniSave: TMenuItem
+        Caption = '&Save'
+        ShortCut = 16467
+      end
+      object mniSaveAs: TMenuItem
+        Caption = 'Save &As...'
+      end
+      object mniSaveAll: TMenuItem
+        Caption = 'Sa&ve All'
+      end
+      object mniClose: TMenuItem
+        Caption = '&Close'
+        ShortCut = 16499
+      end
+      object mniCloseAll: TMenuItem
+        Caption = 'C&lose All'
+      end
+      object mniSep1: TMenuItem
+        Caption = '-'
+      end
+      object mniInsertFile: TMenuItem
+        Caption = 'Insert File...'
+      end
+      object mniSep2: TMenuItem
+        Caption = '-'
+      end
+      object mniPageSetup: TMenuItem
+        Caption = 'Page Setup...'
+      end
+      object mniPrintPreview: TMenuItem
+        Caption = 'Print Preview...'
+      end
+      object mniPrint: TMenuItem
+        Caption = 'Print...'
+        ShortCut = 16464
+      end
+      object mniSepFiles: TMenuItem
+        Caption = '-'
+      end
+      object mniSep3: TMenuItem
+        Caption = '-'
+      end
+      object mniExit: TMenuItem
+        Caption = 'E&xit'
+      end
+    end
+    object mniEdit: TMenuItem
+      Caption = '&Edit'
+      object mniUndo: TMenuItem
+        Caption = '&Undo'
+        ShortCut = 16474
+      end
+      object mniRedo: TMenuItem
+        Caption = '&Redo'
+        ShortCut = 24666
+      end
+      object N1: TMenuItem
+        Caption = '-'
+      end
+      object mniCut: TMenuItem
+        Caption = 'Cu&t'
+        ShortCut = 16472
+      end
+      object mniCopy: TMenuItem
+        Caption = '&Copy'
+        ShortCut = 16451
+      end
+      object mniPaste: TMenuItem
+        Caption = '&Paste'
+        ShortCut = 16470
+      end
+      object mniDelete: TMenuItem
+        Caption = '&Delete'
+        ShortCut = 16430
+      end
+      object N2: TMenuItem
+        Caption = '-'
+      end
+      object mniSelectAll: TMenuItem
+        Caption = 'Select &All'
+        ShortCut = 16449
+      end
+      object mniCopySpecial: TMenuItem
+        Caption = 'Copy &Special'
+        object mniCopyHTML: TMenuItem
+          Caption = '&HTML'
+        end
+        object mniCopyRTF: TMenuItem
+          Caption = '&RTF'
+        end
+      end
+      object N3: TMenuItem
+        Caption = '-'
+      end
+      object mniNextField: TMenuItem
+        Caption = 'N&ext Field'
+        ShortCut = 121
+      end
+      object N4: TMenuItem
+        Caption = '-'
+      end
+      object mniPreferences: TMenuItem
+        Caption = '&Preferences...'
+      end
+    end
+    object mniSearch: TMenuItem
+      Caption = '&Search'
+      object mniFind: TMenuItem
+        Caption = '&Find...'
+        ShortCut = 16454
+      end
+      object mniFindNext: TMenuItem
+        Caption = 'Find &Next'
+        ShortCut = 114
+      end
+      object mniFindPrevious: TMenuItem
+        Caption = 'Find &Previous'
+        ShortCut = 8306
+      end
+      object mniReplace: TMenuItem
+        Caption = '&Replace...'
+        ShortCut = 16466
+      end
+      object N5: TMenuItem
+        Caption = '-'
+      end
+      object mniGotoLineNumber: TMenuItem
+        Caption = '&Go to Line Number...'
+        ShortCut = 16455
+      end
+      object mniProcedureList: TMenuItem
+        Caption = 'Procedure &List...'
+        ShortCut = 24647
+      end
+    end
+    object mniView: TMenuItem
+      Caption = '&View'
+      object mniProjectManager: TMenuItem
+        Caption = '&Project Manager'
+        ShortCut = 49274
+      end
+      object mniCodeExplorer: TMenuItem
+        Caption = 'Code E&xplorer'
+      end
+      object mniStatusbar: TMenuItem
+        Caption = '&Status bar'
+      end
+      object mniShowTemplates: TMenuItem
+        Caption = 'T&emplates'
+        ShortCut = 120
+      end
+      object mniShowCodeListing: TMenuItem
+        Caption = '&Code/Error Listing'
+        ShortCut = 123
+      end
+      object mniHideErrors: TMenuItem
+        Caption = '&Hide Errors'
+        ShortCut = 16456
+      end
+      object mniViewToolWindows: TMenuItem
+        Caption = '&Tool Windows'
+      end
+      object mniMacroManager: TMenuItem
+        Caption = '&Macro Manager...'
+      end
+      object mniPBForthConsole: TMenuItem
+        Caption = 'pbForth Console'
+      end
+      object mniWindowList: TMenuItem
+        Caption = '&Window List...'
+        ShortCut = 32816
+      end
+      object N7: TMenuItem
+        Caption = '-'
+      end
+      object mniToolbars: TMenuItem
+        Caption = 'Tool&bars'
+        object mniFileToolbar1: TMenuItem
+          Caption = 'File'
+        end
+        object mniSearchToolbar1: TMenuItem
+          Caption = 'Search'
+        end
+        object mniCompileToolbar1: TMenuItem
+          Caption = 'Compile'
+        end
+        object mniHelpToolbar1: TMenuItem
+          Caption = 'Help'
+        end
+        object mniEditToolbar1: TMenuItem
+          Caption = 'Edit'
+        end
+        object mniToolsToolbar1: TMenuItem
+          Caption = 'Tools'
+        end
+      end
+    end
+    object mniCompile: TMenuItem
+      Caption = '&Compile'
+      OnClick = mniCompileClick
+      object mniCompileProgram: TMenuItem
+        Caption = '&Compile'
+        ShortCut = 116
+      end
+      object mniDownload: TMenuItem
+        Caption = 'Down&load'
+        ShortCut = 117
+      end
+      object mniDownloadAndRun: TMenuItem
+        Caption = '&Download and Run'
+        ShortCut = 16500
+      end
+      object N8: TMenuItem
+        Caption = '-'
+      end
+      object mniRun: TMenuItem
+        Caption = '&Run'
+        ShortCut = 118
+      end
+      object mniStop: TMenuItem
+        Caption = '&Stop'
+        ShortCut = 119
+      end
+      object mniStepOver: TMenuItem
+        Caption = 'Step Over'
+        ShortCut = 8311
+      end
+      object mniTraceInto: TMenuItem
+        Caption = 'Trace Into'
+        ShortCut = 8310
+      end
+    end
+    object mniTools: TMenuItem
+      Caption = '&Tools'
+      object mniDirectControl: TMenuItem
+        Caption = 'Direct &Control'
+      end
+      object mniDiagnostics: TMenuItem
+        Caption = '&Diagnostics'
+      end
+      object mniWatch: TMenuItem
+        Caption = '&Watching the Brick'
+      end
+      object mniRCXPiano: TMenuItem
+        Caption = 'Brick &Piano'
+      end
+      object mniRCXJoystick: TMenuItem
+        Caption = 'Brick &Joystick'
+      end
+      object mniRemote: TMenuItem
+        Caption = 'Rem&ote'
+      end
+      object mniNewWatch: TMenuItem
+        Caption = 'Confi&gurable Watch'
+      end
+      object mniSetvalues: TMenuItem
+        Caption = 'Set va&lues'
+      end
+      object mniSpybotEEPROM: TMenuItem
+        Caption = 'Sp&ybot EEPROM'
+      end
+      object mniNXTExplorer: TMenuItem
+        Caption = 'N&XT Explorer'
+      end
+      object mniNXTScreen: TMenuItem
+        Caption = 'N&XT Screen'
+      end
+      object N9: TMenuItem
+        Caption = '-'
+      end
+      object mniSendMessage: TMenuItem
+        Caption = '&Send Messages'
+      end
+      object mniDatalog: TMenuItem
+        Caption = 'D&atalog'
+      end
+      object mniMemoryMap: TMenuItem
+        Caption = 'M&emory Map'
+      end
+      object mniClearMemory: TMenuItem
+        Caption = 'Clear &Memory'
+      end
+      object mniMIDIConversion: TMenuItem
+        Caption = 'MIDI Con&version...'
+      end
+      object mniSoundConvert: TMenuItem
+        Caption = 'Sound Convers&ion...'
+      end
+      object N10: TMenuItem
+        Caption = '-'
+      end
+      object mniFirmware: TMenuItem
+        Caption = 'Download &Firmware...'
+      end
+      object mniUnlockFirmware: TMenuItem
+        Caption = 'Unloc&k Firmware'
+      end
+      object mniConfigureTools: TMenuItem
+        Caption = 'Configure &Tools...'
+      end
+      object mniSepTools: TMenuItem
+        Caption = '-'
+      end
+    end
+    object mniWindow: TMenuItem
+      Caption = '&Window'
+      object mniTileHorizontal: TMenuItem
+        Caption = 'Tile &Horizontal'
+      end
+      object mniTileVertical: TMenuItem
+        Caption = 'Tile &Vertical'
+      end
+      object mniCascade: TMenuItem
+        Caption = '&Cascade'
+      end
+      object mniArrangeIcons: TMenuItem
+        Caption = '&Arrange Icons'
+      end
+      object N11: TMenuItem
+        Caption = '-'
+      end
+      object mniPositions: TMenuItem
+        Caption = '&Positions'
+        object mniPosSave: TMenuItem
+          Caption = '&Save...'
+        end
+        object mniPosLoad: TMenuItem
+          Caption = '&Load...'
+        end
+      end
+    end
+    object mniHelp: TMenuItem
+      Caption = '&Help'
+      object mniContents: TMenuItem
+        Caption = '&Contents'
+      end
+      object mniIndex: TMenuItem
+        Caption = '&Index'
+      end
+      object mniNqcGuide: TMenuItem
+        Caption = '&NQC Guide'
+      end
+      object mniHowTo: TMenuItem
+        Caption = '&How to Use Help'
+      end
+      object N12: TMenuItem
+        Caption = '-'
+      end
+      object mniWebpage: TMenuItem
+        Caption = '&Web page'
+      end
+      object N13: TMenuItem
+        Caption = '-'
+      end
+      object mniAbout: TMenuItem
+        Caption = '&About...'
+      end
+    end
+  end
+  object ce: TPSScriptDebugger
+    OnCompile = ceCompile
+    OnExecute = ceExecute
+    OnAfterExecute = ceAfterExecute
+    Plugins = <    
+      item
+        Plugin = PSImport_DateUtils
+      end    
+      item
+        Plugin = PSImport_Classes
+      end    
+      item
+        Plugin = PSImport_Controls
+      end    
+      item
+        Plugin = PSImport_StdCtrls
+      end    
+      item
+        Plugin = PSImport_Forms
+      end    
+      item
+        Plugin = PSDllPlugin
+      end>
+    MainFileName = 'Unnamed'
+    UsePreProcessor = True
+    OnNeedFile = ceNeedFile
+    OnIdle = ceIdle
+    OnLineInfo = ceLineInfo
+    OnBreakpoint = ceBreakpoint
+    left = 501
+    top = 135
+  end
+  object PSImport_Classes: TPSImport_Classes
+    EnableStreams = True
+    EnableClasses = True
+    left = 501
+    top = 168
+  end
+  object PSImport_DateUtils: TPSImport_DateUtils
+    left = 501
+    top = 200
+  end
+  object PSImport_Forms: TPSImport_Forms
+    EnableForms = True
+    EnableMenus = True
+    left = 501
+    top = 234
+  end
+  object PSImport_Controls: TPSImport_Controls
+    EnableStreams = True
+    EnableGraphics = True
+    EnableControls = True
+    left = 501
+    top = 267
+  end
+  object PSImport_StdCtrls: TPSImport_StdCtrls
+    EnableExtCtrls = True
+    EnableButtons = True
+    left = 501
+    top = 302
+  end
+  object PSDllPlugin: TPSDllPlugin
+    left = 472
+    top = 136
+  end
+  object dlgOpen: TOpenDialog
+    Title = 'Open'
+    Options = [ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 320
+    top = 94
+  end
+  object dlgOpenINI: TOpenDialog
+    Title = 'Open file'
+    DefaultExt = '.ini'
+    Filter = 'INI files|*.ini|All files|*.*'
+    Options = [ofPathMustExist, ofFileMustExist, ofEnableSizing, ofViewDetail]
+    left = 352
+    top = 94
+  end
+  object dlgSaveINI: TSaveDialog
+    Title = 'Save file'
+    DefaultExt = '.ini'
+    Filter = 'INI files|*.ini|All files|*.*'
+    left = 352
+    top = 127
+  end
+  object dlgSave: TSaveDialog
+    Title = 'Save Current File'
+    DefaultExt = '.nqc'
+    Options = [ofOverwritePrompt, ofEnableSizing, ofViewDetail]
+    left = 320
+    top = 127
+  end
+  object aeApplicationEvents: TApplicationProperties
+    CaptureExceptions = True
+    HintColor = clInfoBk
+    HintHidePause = 2500
+    HintPause = 500
+    HintShortCuts = True
+    ShowHint = True
+    OnHelp = HandleOnHelp
+    left = 352
+    top = 160
+  end
+end

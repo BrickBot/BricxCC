@@ -1,0 +1,65 @@
+package BricxCCSyn_D7;
+
+{$R *.res}
+{$R 'BricxccSynReg.dcr'}
+{$ALIGN 8}
+{$ASSERTIONS ON}
+{$BOOLEVAL OFF}
+{$DEBUGINFO ON}
+{$EXTENDEDSYNTAX ON}
+{$IMPORTEDDATA ON}
+{$IOCHECKS ON}
+{$LOCALSYMBOLS ON}
+{$LONGSTRINGS ON}
+{$OPENSTRINGS ON}
+{$OPTIMIZATION ON}
+{$OVERFLOWCHECKS OFF}
+{$RANGECHECKS OFF}
+{$REFERENCEINFO ON}
+{$SAFEDIVIDE OFF}
+{$STACKFRAMES OFF}
+{$TYPEDADDRESS OFF}
+{$VARSTRINGCHECKS ON}
+{$WRITEABLECONST ON}
+{$MINENUMSIZE 1}
+{$IMAGEBASE $400000}
+{$DESCRIPTION 'BricxCC SynEdit component suite'}
+{$IMPLICITBUILD OFF}
+
+requires
+  vcl,
+  vclx,
+  vcldb,
+  SynEdit_D7,
+  rtl,
+  visualclx,
+  designide,
+  vclactnband,
+  dbrtl;
+
+contains
+  BricxccSynReg in 'BricxccSynReg.pas',
+  SynHighlighterRuby in 'SynHighlighterRuby.pas',
+  uInstanceControl in 'uInstanceControl.pas',
+  uNewHotKey in 'uNewHotKey.pas',
+  uOfficeComp in 'uOfficeComp.pas',
+  uTreeSaver in 'uTreeSaver.pas',
+  BricxccSpin in 'BricxccSpin.pas',
+  BricxccSynEdit in 'BricxccSynEdit.pas',
+  SynEditAutoComplete in 'SynEditAutoComplete.pas',
+  SynEditEx in 'SynEditEx.pas',
+  SynHighlighterCS in 'SynHighlighterCS.pas',
+  SynHighlighterForth in 'SynHighlighterForth.pas',
+  SynHighlighterLASM in 'SynHighlighterLASM.pas',
+  SynHighlighterLua in 'SynHighlighterLua.pas',
+  SynHighlighterMindScript in 'SynHighlighterMindScript.pas',
+  SynHighlighterNBC in 'SynHighlighterNBC.pas',
+  SynHighlighterNPG in 'SynHighlighterNPG.pas',
+  SynHighlighterNQC in 'SynHighlighterNQC.pas',
+  SynHighlighterH8 in 'SynHighlighterH8.pas',
+  SynHighlighterRS in 'SynHighlighterRS.pas',
+  SynHighlighterROPS in 'SynHighlighterROPS.pas',
+  DirectoryEdit in 'DirectoryEdit.pas',
+  uSpin in 'uSpin.pas';
+
+end.

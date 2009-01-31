@@ -1,0 +1,32 @@
+[aaaa | bbbbbb]
+cccccc
+
+[forb | block for statement]
+for (| ; ; ) {
+
+}
+
+[fors | for (no block)]
+for (| ; ; )
+
+[ifb | block if statement]
+if (|) {
+
+}
+
+[ife | if then (no block) else (no block)]
+if (|)
+
+else
+
+[ifeb | if then else]
+if (|) {
+
+}
+else {
+
+}
+
+[ifs | if (no block)]
+if (|)
+

@@ -1,0 +1,53 @@
+object ConstructForm: TConstructForm
+  Left = 237
+  Top = 136
+  Width = 148
+  Height = 250
+  HelpContext = 8
+  BorderIcons = []
+  BorderStyle = bsSizeToolWin
+  Caption = 'Templates'
+  Color = clBtnFace
+  Constraints.MinHeight = 40
+  Constraints.MinWidth = 40
+  DragKind = dkDock
+  DragMode = dmAutomatic
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnEndDock = FormEndDock
+  OnShow = FormShow
+  PixelsPerInch = 96
+  TextHeight = 13
+  object ConstructPanel: TPanel
+    Left = 0
+    Top = 0
+    Width = 140
+    Height = 216
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 0
+  end
+  object treTemplates: TTreeView
+    Left = 0
+    Top = 0
+    Width = 140
+    Height = 216
+    Align = alClient
+    DragMode = dmAutomatic
+    HideSelection = False
+    Indent = 19
+    ReadOnly = True
+    TabOrder = 1
+    OnClick = treTemplatesClick
+    OnDblClick = treTemplatesDblClick
+    OnDeletion = treTemplatesDeletion
+    OnMouseDown = treTemplatesMouseDown
+    OnStartDrag = treTemplatesStartDrag
+  end
+end

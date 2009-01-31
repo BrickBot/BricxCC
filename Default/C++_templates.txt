@@ -1,0 +1,12 @@
+- Programs
+int "name";\=
+#define "macro"\=
+#include "file"\=
+- If statements
+if ("condition") "statement";\=
+if ("condition")\={\>"statements"\<}\=
+if ("condition")\={\>"body"\<}\=else\={\>"body"\<}\=
+- Loops etc...
+while ("condition")\={\>"body"\<}\=
+do\={\>"body"\<}\=while ("condition")\=
+switch ("var")\={\>case "num" :\=\>"body"\=break;\=default :\=\>"body"\<}\=

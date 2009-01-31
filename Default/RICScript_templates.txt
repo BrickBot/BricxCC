@@ -1,0 +1,13 @@
+- Programs
+desc ("options", "width", "height");\=
+sprite ("address", "row1", "row2", "rowN");\=
+varmap ("address", "func1", "func2", "funcN");\=
+copybits ("options", "address", "srcX", "srcY", "srcWidth", "srcHeight", "dstX", "dstY");\=
+line ("options", "x1", "y1", "x2", "y2");\=
+rect ("options", "x1", "y1", "width", "height");\=
+pixel ("options", "x", "y", "value");\=
+circle ("options", "x", "y", "radius");\=
+numbox ("options", "x", "y", "value");\=
+arg ("index")\=
+maparg ("map idx", "arg idx")\=
+f ("xval")="yval"\=

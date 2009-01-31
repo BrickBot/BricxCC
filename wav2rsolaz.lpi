@@ -1,0 +1,193 @@
+<?xml version="1.0"?>
+<CONFIG>
+  <ProjectOptions>
+    <PathDelim Value="\"/>
+    <Version Value="6"/>
+    <General>
+      <MainUnit Value="0"/>
+      <IconPath Value=".\"/>
+      <TargetFileExt Value=".exe"/>
+      <UseXPManifest Value="True"/>
+      <ActiveEditorIndexAtStart Value="0"/>
+    </General>
+    <PublishOptions>
+      <Version Value="2"/>
+      <DestinationDirectory Value="$(TestDir)\publishedproject\"/>
+      <IgnoreBinaries Value="False"/>
+      <IncludeFileFilter Value="*.(pas|pp|inc|lfm|lpr|lrs|lpi|lpk|sh|xml)"/>
+      <ExcludeFileFilter Value="*.(bak|ppu|ppw|o|so);*~;backup"/>
+    </PublishOptions>
+    <RunParams>
+      <local>
+        <FormatVersion Value="1"/>
+        <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
+      </local>
+    </RunParams>
+    <RequiredPackages Count="1">
+      <Item1>
+        <PackageName Value="LCL"/>
+      </Item1>
+    </RequiredPackages>
+    <Units Count="7">
+      <Unit0>
+        <Filename Value="wav2rsolaz.lpr"/>
+        <IsPartOfProject Value="True"/>
+        <UnitName Value="wav2rsolaz"/>
+        <CursorPos X="1" Y="15"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="1"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+      </Unit0>
+      <Unit1>
+        <Filename Value="uwav2rsolaz.pas"/>
+        <ComponentName Value="frmWave2RSO"/>
+        <IsPartOfProject Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <ResourceFilename Value="uwav2rsolaz.lrs"/>
+        <UnitName Value="uwav2rsolaz"/>
+        <CursorPos X="38" Y="9"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="0"/>
+        <UsageCount Value="21"/>
+        <Loaded Value="True"/>
+      </Unit1>
+      <Unit2>
+        <Filename Value="BricxccSpin.pas"/>
+        <UnitName Value="BricxccSpin"/>
+        <CursorPos X="6" Y="5"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit2>
+      <Unit3>
+        <Filename Value="samplerate\uSrc.pas"/>
+        <UnitName Value="uSrc"/>
+        <CursorPos X="32" Y="153"/>
+        <TopLine Value="121"/>
+        <UsageCount Value="10"/>
+      </Unit3>
+      <Unit4>
+        <Filename Value="uWav2RsoCvt.pas"/>
+        <UnitName Value="uWav2RsoCvt"/>
+        <CursorPos X="26" Y="736"/>
+        <TopLine Value="719"/>
+        <EditorIndex Value="2"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="samplerate\uSrcCommon.pas"/>
+        <UnitName Value="uSrcCommon"/>
+        <CursorPos X="1" Y="12"/>
+        <TopLine Value="1"/>
+        <EditorIndex Value="3"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="samplerate\uSrcSinc.pas"/>
+        <UnitName Value="uSrcSinc"/>
+        <CursorPos X="3" Y="371"/>
+        <TopLine Value="351"/>
+        <EditorIndex Value="4"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit6>
+    </Units>
+    <JumpHistory Count="13" HistoryIndex="12">
+      <Position1>
+        <Filename Value="wav2rsolaz.lpr"/>
+        <Caret Line="8" Column="12" TopLine="1"/>
+      </Position1>
+      <Position2>
+        <Filename Value="wav2rsolaz.lpr"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position2>
+      <Position3>
+        <Filename Value="wav2rsolaz.lpr"/>
+        <Caret Line="3" Column="34" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="wav2rsolaz.lpr"/>
+        <Caret Line="8" Column="7" TopLine="1"/>
+      </Position4>
+      <Position5>
+        <Filename Value="wav2rsolaz.lpr"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position5>
+      <Position6>
+        <Filename Value="uwav2rsolaz.pas"/>
+        <Caret Line="58" Column="28" TopLine="37"/>
+      </Position6>
+      <Position7>
+        <Filename Value="uwav2rsolaz.pas"/>
+        <Caret Line="98" Column="15" TopLine="81"/>
+      </Position7>
+      <Position8>
+        <Filename Value="uWav2RsoCvt.pas"/>
+        <Caret Line="499" Column="3" TopLine="481"/>
+      </Position8>
+      <Position9>
+        <Filename Value="uwav2rsolaz.pas"/>
+        <Caret Line="101" Column="75" TopLine="81"/>
+      </Position9>
+      <Position10>
+        <Filename Value="uwav2rsolaz.pas"/>
+        <Caret Line="85" Column="8" TopLine="84"/>
+      </Position10>
+      <Position11>
+        <Filename Value="uwav2rsolaz.pas"/>
+        <Caret Line="37" Column="21" TopLine="37"/>
+      </Position11>
+      <Position12>
+        <Filename Value="uwav2rsolaz.pas"/>
+        <Caret Line="31" Column="13" TopLine="17"/>
+      </Position12>
+      <Position13>
+        <Filename Value="uwav2rsolaz.pas"/>
+        <Caret Line="9" Column="45" TopLine="1"/>
+      </Position13>
+    </JumpHistory>
+  </ProjectOptions>
+  <CompilerOptions>
+    <Version Value="5"/>
+    <PathDelim Value="\"/>
+    <SearchPaths>
+      <IncludeFiles Value="samplerate\"/>
+      <OtherUnitFiles Value="samplerate\"/>
+      <SrcPath Value="$(LazarusDir)\lcl\;$(LazarusDir)\lcl\interfaces\$(LCLWidgetType)\"/>
+    </SearchPaths>
+    <CodeGeneration>
+      <Generate Value="Faster"/>
+    </CodeGeneration>
+    <Linking>
+      <Debugging>
+        <StripSymbols Value="True"/>
+      </Debugging>
+      <LinkSmart Value="True"/>
+    </Linking>
+    <Other>
+      <CompilerPath Value="$(CompPath)"/>
+    </Other>
+  </CompilerOptions>
+  <Debugging>
+    <BreakPoints Count="2">
+      <Item1>
+        <Source Value="NXT\nbc.dpr"/>
+        <Line Value="114"/>
+      </Item1>
+      <Item2>
+        <Source Value="NXT\nbc.dpr"/>
+        <Line Value="297"/>
+      </Item2>
+    </BreakPoints>
+    <Exceptions Count="2">
+      <Item1>
+        <Name Value="ECodetoolError"/>
+      </Item1>
+      <Item2>
+        <Name Value="EFOpenError"/>
+      </Item2>
+    </Exceptions>
+  </Debugging>
+</CONFIG>

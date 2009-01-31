@@ -1,0 +1,36 @@
+#------------------------------------------------------------------------------
+VERSION = BWS.01
+#------------------------------------------------------------------------------
+!ifndef ROOT
+ROOT = $(MAKEDIR)\..
+!endif
+#------------------------------------------------------------------------------
+MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
+DCC = $(ROOT)\bin\dcc32.exe $**
+BRCC = $(ROOT)\bin\brcc32.exe $**
+#------------------------------------------------------------------------------
+PROJECTS = BricxCC.exe BricxCC.NLD BricxCC.FRA BricxCC.DEU BricxCC.RUS \
+  BricxCC.ESP
+#------------------------------------------------------------------------------
+default: $(PROJECTS)
+#------------------------------------------------------------------------------
+
+BricxCC.exe: BricxCC.dpr
+  $(DCC)
+
+BricxCC.NLD: NLD\BricxCC.dpr
+  $(DCC)
+
+BricxCC.FRA: FRA\BricxCC.dpr
+  $(DCC)
+
+BricxCC.DEU: DEU\BricxCC.dpr
+  $(DCC)
+
+BricxCC.RUS: RUS\BricxCC.dpr
+  $(DCC)
+
+BricxCC.ESP: ESP\BricxCC.dpr
+  $(DCC)
+
+
