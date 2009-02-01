@@ -1842,6 +1842,7 @@ begin
           InternalNXTUploadFileToStream(FIR.FileHandle, FIR.Name, FIR.TotalSize, FIR.AvailableSize, MS);
           NXTCloseFile(FIR.FileHandle);
           // now try to save the file
+          tmpFilename := FIR.Name;
           if dir <> '' then
             tmpFilename := IncludeTrailingPathDelimiter(dir) + tmpFilename;
           if Result then
