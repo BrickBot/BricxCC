@@ -209,11 +209,17 @@ begin
 
   { Directive, Identifier}
   Pat := TAny.Create(nil);
-  Pat.Key:= '#include';
+  Pat.Key:= '#download';
   Pat.Id:= piDirective;
   Pat.Min:= 1;
   TAlphaNumeric.Create(Pat);
   Lex.Add(Pat);
+  OptPat := TAny.Create(nil);
+  OptPat.Key := '#include';
+  OptPat.Id:= piDirective;
+  OptPat.Min:= 1;
+  Pat.AddOption(OptPat);
+  TAlphaNumeric.Create(OptPat);
   OptPat := TAny.Create(nil);
   OptPat.Key := '#define';
   OptPat.Id:= piDirective;

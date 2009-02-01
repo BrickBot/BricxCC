@@ -54,11 +54,13 @@ type
     fBCCreated : boolean;
     fUsePort: boolean;
     fPortName: string;
+    fDownloadList : string;
 {$IFDEF CAN_DOWNLOAD}
     fBC : TBrickComm;
     function GetBrickComm : TBrickComm;
     procedure SetBrickComm(Value : TBrickComm);
     procedure DoBeep;
+    procedure DownloadRequestedFiles;
 {$ENDIF}
     procedure DoWriteCompilerOutput(aStrings: TStrings);
     procedure DoWriteSymbolTable(C : TRXEProgram);
@@ -293,6 +295,7 @@ var
   incDirs : string;
   bNXCErrors : boolean;
 begin
+  fDownloadList := '';
   Result := 0;
   if WriteOutput then
     NXTName := OutputFilename
@@ -481,7 +484,7 @@ begin
               try
                 C.IncludeDirs.AddStrings(tmpIncDirs);
                 C.CurrentFile := GetCurrentFilename;
-                C.Parse(sIn);
+                fDownloadList := C.Parse(sIn);
                 sOut := TMemoryStream.Create;
                 try
                   if C.SaveToStream(sOut) then
@@ -526,6 +529,9 @@ begin
   finally
     sIn.Free;
   end;
+{$IFDEF CAN_DOWNLOAD}
+  DownloadRequestedFiles;
+{$ENDIF}
 end;
 
 procedure TNBCCompiler.DoWriteMessages(aStrings: TStrings);
@@ -595,6 +601,44 @@ begin
     3 : WriteBytes(nxc_defs_data);
   end;
 end;
+
+{$IFDEF CAN_DOWNLOAD}
+procedure TNBCCompiler.DownloadRequestedFiles;
+var
+  tmpSL : TStringList;
+  i : integer;
+  tmpFilename, ext : string;
+begin
+  if Download and (fDownloadList <> '') then
+  begin
+    tmpSL := TStringList.Create;
+    try
+      tmpSL.Text := fDownloadList;
+      for i := 0 to tmpSL.Count - 1 do
+      begin
+        tmpFilename := tmpSL[i];
+        ext := AnsiLowercase(ExtractFileExt(tmpFilename));
+        // all files other than .npg, .rs, .nxc, and .nbc should
+        // just be downloaded and not compiled first.
+        BinaryInput := not ((ext = '.npg') or (ext = '.rs') or
+                            (ext = '.nxc') or (ext = '.nbc'));
+        InputFilename := tmpFilename;
+        // never write any output for these files
+        WriteOutput           := False;
+        WriteCompilerOutput   := False;
+        WriteSymbolTable      := False;
+        WriteIntermediateCode := False;
+        WriteCompilerMessages := False;
+        // don't use a special name either
+        UseSpecialName        := False;
+        Execute;
+      end;
+    finally
+      tmpSL.Free;
+    end;
+  end;
+end;
+{$ENDIF}
 
 initialization
   VerCompanyName      := 'JoCar Consulting';

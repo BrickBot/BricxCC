@@ -394,6 +394,8 @@ resourcestring
 // uPreprocess unit
 resourcestring
   sInvalidPreprocDirective  = 'Invalid preprocessor directive';
+  sDownloadNotFound         = 'Unable to find download file: "%s"';
+  sDownloadMissingQuotes    = '#download directive requires a filename (e.g., #download "foo.ric")';
   sIncludeNotFound          = 'Unable to find include file: "%s"';
   sIncludeMissingQuotes     = '#include directive requires a filename (e.g., #include "foo.h")';
   sMacroMismatch            = 'Preprocessor macro function does not match instance (%s)';
