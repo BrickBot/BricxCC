@@ -1,0 +1,132 @@
+struct Ball {
+       int centerx;
+       int centery;
+       int radius;
+       int deltax;
+       int deltay;
+};
+
+#define NUMBALLS 10
+
+void moveball(Ball &outball)
+{
+
+     outball.centerx += outball.deltax;
+     outball.centery += outball.deltay;
+     
+     if (outball.centerx + outball.radius >= 99)
+        outball.deltax = -1;
+     else if (outball.centerx - outball.radius <= 0)
+        outball.deltax = 1;
+     if (outball.centery + outball.radius >= 63)
+        outball.deltay = -1;
+     else if (outball.centery - outball.radius <= 0)
+        outball.deltay = 1;
+}
+
+int balls_touch(Ball ball1,Ball ball2)
+{
+   int d;
+
+   d = (ball2.centerx-ball1.centerx)*
+       (ball2.centerx-ball1.centerx)+
+       (ball2.centery-ball1.centery)*
+       (ball2.centery-ball1.centery);
+
+   if (Sqrt(d) < ball2.radius + ball1.radius)
+      return true;
+   else
+      return false;
+}
+
+void swapdirection(Ball &ball1, Ball &ball2)
+{
+   int temp;
+
+   temp = ball1.deltax;
+   ball1.deltax = ball2.deltax;
+   ball2.deltax = temp;
+
+   temp = ball1.deltay;
+   ball1.deltay = ball2.deltay;
+   ball2.deltay = temp;
+}
+
+void drawballs(Ball balls[]);
+{
+   int i;
+   Ball tempball;
+
+   ClearScreen();
+   for (i = 0; i < 3; i++)
+   {
+       tempball = balls[i];
+       CircleOut(tempball.centerx,tempball.centery,tempball.radius,false);
+   }
+}
+
+void moveballs(Ball &balls[]);
+{
+   int i;
+   Ball tempball;
+
+   for (i = 0; i < 3; i++)
+   {
+       tempball = balls[i];
+       moveball(tempball);
+       balls[i] = tempball;
+   }
+}
+
+task main()
+{
+     Ball ball1,ball2,balls[NUMBALLS];
+     int d,i,j;
+     bool ok;
+
+     for (i = 0; i < NUMBALLS; i++)
+     {
+       ball2.radius = Random(10)+1;
+       ball2.deltax = Random(3) - 1;
+       ball2.deltay = Random(3) - 1;
+       ball2.centerx = Random(100-ball2.radius*2)+ball2.radius;
+       ball2.centery = Random(64-ball2.radius*2)+ball2.radius;
+
+       ok = true;
+       for (j = 0; j < i; j++)
+       {
+          ball1 = balls[j];
+          if (balls_touch(ball1,ball2))
+            ok = false;
+       }
+       
+       if (ok)
+         balls[i] = ball2;
+       else
+         i--;
+     }
+     
+     while (true)
+     {
+        drawballs(balls);
+        moveballs(balls);
+        for (i = 0; i < NUMBALLS-1; i++)
+          for (j = i+1; j < NUMBALLS; j++)
+          {
+            ball1 = balls[i];
+            ball2 = balls[j];
+
+            if (balls_touch(ball1,ball2))
+            {
+               swapdirection(ball1,ball2);
+               balls[i] = ball1;
+               balls[j] = ball2;
+            }
+           }
+           //PlayTone(500,500);
+        Wait(100);
+     }
+
+}
+
+

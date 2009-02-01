@@ -1,0 +1,37 @@
+// working as of 2009-01-29 JCH
+string all_0[] = {"Text","Graphic","Sound","Program","Other"};
+string all_1[];
+string all_2[] = {"Open","Delete","Send"};
+string all_3[] = {"Yes","No"};
+string all[][];
+
+task main()
+{
+    ArrayBuild(all, all_0, all_1, all_2, all_3);
+    string text;
+    text = all[2][1];
+    TextOut(0,LCD_LINE1,text);         //should output "Delete"
+    TextOut(0,LCD_LINE2,all[2][2]);    //should output "Send"
+    TextOut(0,LCD_LINE3,all[0][1]);    //should output "Graphic"
+    all[0][1] = "Foobar";
+    TextOut(0,LCD_LINE4,all[0][0]);    //should output "Text"
+    TextOut(0,LCD_LINE5,all[0][1]);    //should output "Foobar"
+    byte chr;
+    chr = all[0][1][0];
+    NumOut(0,LCD_LINE6,chr);           // should output 70
+    NumOut(40,LCD_LINE6,all[0][1][1]); // should output 111
+    NumOut(0,LCD_LINE7,text[0]);       // should output 68
+    chr = text[1];
+    NumOut(0,LCD_LINE8,chr);           // should output 101
+    
+    all = all;
+    all[0] = all[2];
+    all[0][1] = all[2][2];
+    all[0] = all_3;
+    all[0][1] = all_3[0];
+    all[0][1][1] = 32;
+    TextOut(50,LCD_LINE8,all[0][1]);    //should output "Y s"
+
+    Wait(30000);
+}
+

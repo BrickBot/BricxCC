@@ -1,0 +1,38 @@
+// Working correctly - 2009-01-28
+
+typedef struct {
+  int x; //X coordinate
+  int y; //Y coordinate
+  int z ; //Z coordinate
+} PointType; //end definition of type PointType
+
+typedef struct //defines user defined type LineType
+{
+  int Ca; //number of the first point of a line
+  int Cb; //number of the second point of a line
+} LineTypes; //end definition of type LineType
+
+#define MaxPoints 8
+#define MaxLines 12
+
+task main();
+{
+  PointType points[MaxPoints]; //points at start
+  LineTypes Lne[MaxLines]; //line data
+
+  points[0].x = -10;
+  points[0].y = 10;
+  points[0].z = -10;
+  points[1].x = -10;
+  points[1].y = -10;
+  points[1].z = -10;
+
+  Lne[0].Ca = 1;
+  Lne[0].Cb = 2;
+
+  PointType tmp;
+  for(int i=0;i<MaxPoints;i++)
+    tmp = points[i];
+};
+
+

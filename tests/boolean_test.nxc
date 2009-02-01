@@ -1,0 +1,20 @@
+// working as of 2009-01-29 JCH
+// verified on OS X 2009-01-30 MG
+
+#define ELEMENT_OUT(n) NumOut(0, LCD_LINE##n, b##n)
+
+// Global use of reserved words 'true' and 'false'
+bool b1 = false;
+bool b2 = true;
+
+task main()
+{
+	// Local use of reserved words 'true' and 'false'
+	bool b3 = false;
+	bool b4 = true;
+   ELEMENT_OUT(1);
+   ELEMENT_OUT(2);
+   ELEMENT_OUT(3);
+   ELEMENT_OUT(4);
+   Wait(SEC_2);
+}

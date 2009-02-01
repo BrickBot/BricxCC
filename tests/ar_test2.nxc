@@ -1,0 +1,18 @@
+// working as of 2009-01-29 JCH
+task main()
+{
+    int xyz[][] = {{1, 2, 3}, {2, 3, 4}, {3, 4, 5}};
+    int tmp[];
+
+    int member;
+
+    tmp = xyz[0];                        // valid code
+    member = xyz[0][1];                  // valid code
+    NumOut(0, LCD_LINE1, member);        // outputs 2
+    member = tmp[1];                     // valid code
+    NumOut(0, LCD_LINE2, member);        // outputs 2
+    NumOut(0, LCD_LINE3, xyz[0][1] * 2); // outputs 4
+    while(true);
+}
+
+

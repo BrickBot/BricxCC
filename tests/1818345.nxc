@@ -1,0 +1,34 @@
+
+// fixed
+task main(){
+  for (int i=0; i<2; i++){
+  // do something
+  }
+
+  for (int i=0; i<3; i++){
+  // THIS CRASHES
+  }
+}
+
+/*
+it crashes in the second for, saying that 'i' is an used identifier:
+
+Error: Duplicate Identifier __main__7qG2__i__7qG2__001
+
+Something like that happens when declaring a variable on a new compound
+statement when it was declared another one before:
+*/
+/*
+// fixed
+task main() {
+  {
+    string w;
+  }
+
+  {
+    string w; // This fails;
+  }
+
+  string w;
+}
+*/

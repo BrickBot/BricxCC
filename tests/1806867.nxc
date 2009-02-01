@@ -1,0 +1,9 @@
+void FooBar(string x, int y) {
+  // do stuff
+}
+
+
+task main()
+{
+  FooBar("test" 12);  // should not compile
+}

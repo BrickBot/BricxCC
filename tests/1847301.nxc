@@ -1,0 +1,19 @@
+// fixed
+
+int
+mal2 (int x)
+{
+  return (x*2);
+}
+
+task
+main ()
+{
+  int y;
+
+  y = mal2 (7);
+  NumOut(0, LCD_LINE1, y);
+  NumOut(0, LCD_LINE2, mal2 (7));
+  while(true);
+}
+

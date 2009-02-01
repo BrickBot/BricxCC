@@ -1,0 +1,12 @@
+// fixed
+task main ()
+{
+  byte a, b;
+
+  a = 0x17;
+  b = ~a;
+  NumOut(0, LCD_LINE1, a);
+  NumOut(0, LCD_LINE2, b);
+  while(true);
+}
+
