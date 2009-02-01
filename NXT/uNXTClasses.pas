@@ -594,8 +594,8 @@ type
     constructor Create;
     destructor Destroy; override;
     procedure Clear;
-    procedure Parse(aStream : TStream); overload;
-    procedure Parse(aStrings : TStrings); overload;
+    function  Parse(aStream : TStream) : string; overload;
+    function  Parse(aStrings : TStrings) : string; overload;
     procedure LoadFromStream(aStream : TStream);
     function  SaveToStream(aStream : TStream) : boolean;
     function  SaveToFile(const filename : string) : boolean;
@@ -3874,14 +3874,14 @@ begin
   Result := fHeader.MemMgrTail;
 end;
 
-procedure TRXEProgram.Parse(aStream: TStream);
+function TRXEProgram.Parse(aStream: TStream) : string;
 var
   S : TStrings;
 begin
   S := TStringList.Create;
   try
     S.LoadFromStream(aStream);
-    Parse(S);
+    Result := Parse(S);
   finally
     S.Free;
   end;
@@ -3901,12 +3901,13 @@ begin
   S.Write(PChar(tmp)^, Length(tmp));
 end;
 
-procedure TRXEProgram.Parse(aStrings: TStrings);
+function TRXEProgram.Parse(aStrings: TStrings) : string;
 var
   i : integer;
   P : TLangPreprocessor;
   S : TMemoryStream;
 begin
+  Result := '';
   try
     if not IgnoreSystemFile then
     begin
@@ -3939,7 +3940,8 @@ begin
         P.SkipIncludeFile('NBCCommon.h');
         P.SkipIncludeFile('NXTDefs.h');
       end;
-      P.Preprocess(GetCurrentFile(true), aStrings);
+      // Preprocess returns a list of files from #download statements
+      Result := P.Preprocess(GetCurrentFile(true), aStrings);
     finally
       P.Free;
     end;

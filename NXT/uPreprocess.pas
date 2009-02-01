@@ -56,8 +56,8 @@ type
     procedure SetVarI(val : integer);
     procedure LoadStandardMacros;
 }
-    procedure DoProcessStream(name: string; lineNo: integer;
-      Stream: TMemoryStream; OutStrings: TStrings);
+    function DoProcessStream(name: string; lineNo: integer;
+      Stream: TMemoryStream; OutStrings: TStrings) : string;
     function GetLevelIgnoreValue(const lineno : integer): boolean;
     procedure SwitchLevelIgnoreValue(const lineno : integer);
     function ProcessIdentifier(Lex: TGenLexer; var lineNo: integer): string;
@@ -75,13 +75,13 @@ type
     procedure ReleaseLexer;
     procedure InitializeLexers(const num: integer);
   public
-    class procedure PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings);
-    class procedure PreprocessFile(GLType : TGenLexerClass; const fin, fout : string);
+    class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings) : string;
+    class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string) : string;
     constructor Create(GLType : TGenLexerClass; const defIncDir : string);
     destructor Destroy; override;
     procedure SkipIncludeFile(const fname : string);
-    procedure Preprocess(const fname: string; aStrings: TStrings); overload;
-    procedure Preprocess(const fname: string; aStream: TMemoryStream); overload;
+    function Preprocess(const fname: string; aStrings: TStrings) : string; overload;
+    function Preprocess(const fname: string; aStream: TMemoryStream) : string; overload;
     procedure AddIncludeDirs(aStrings : TStrings);
     property Defines : TStrings read GetDefines write SetDefines;
   end;
@@ -124,35 +124,35 @@ end;
 
 { TLangPreprocessor }
 
-class procedure TLangPreprocessor.PreprocessStrings(GLType : TGenLexerClass;
-  const fname : string; aStrings : TStrings);
+class function TLangPreprocessor.PreprocessStrings(GLType : TGenLexerClass;
+  const fname : string; aStrings : TStrings) : string;
 var
   P : TLangPreprocessor;
 begin
   P := TLangPreprocessor.Create(GLType, ExtractFilePath(fname));
   try
-    P.Preprocess(fname, aStrings);
+    Result := P.Preprocess(fname, aStrings);
   finally
     P.Free;
   end;
 end;
 
-class procedure TLangPreprocessor.PreprocessFile(GLType : TGenLexerClass;
-  const fin, fout : string);
+class function TLangPreprocessor.PreprocessFile(GLType : TGenLexerClass;
+  const fin, fout : string) : string;
 var
   SL : TStringList;
 begin
   SL := TStringList.Create;
   try
     SL.LoadFromFile(fin);
-    TLangPreprocessor.PreprocessStrings(GLType, fin, SL);
+    Result := TLangPreprocessor.PreprocessStrings(GLType, fin, SL);
     SL.SaveToFile(fout);
   finally
     SL.Free;
   end;
 end;
 
-procedure TLangPreprocessor.Preprocess(const fname: string; aStream: TMemoryStream);
+function TLangPreprocessor.Preprocess(const fname: string; aStream: TMemoryStream) : string;
 var
   Strings : TStringList;
 begin
@@ -164,7 +164,7 @@ begin
   fRecursionDepth := 0;
   Strings := TStringList.Create;
   try
-    DoProcessStream(fname, 0, aStream, Strings);
+    Result := DoProcessStream(fname, 0, aStream, Strings);
     aStream.Size := 0; // empty the stream
     Strings.SaveToStream(aStream);
     aStream.Position := 0;
@@ -173,7 +173,7 @@ begin
   end;
 end;
 
-procedure TLangPreprocessor.Preprocess(const fname : string; aStrings : TStrings);
+function TLangPreprocessor.Preprocess(const fname : string; aStrings : TStrings) : string;
 var
   Stream: TMemoryStream;
 begin
@@ -181,7 +181,7 @@ begin
   try
     aStrings.SaveToStream(Stream);
     aStrings.Clear;
-    Preprocess(fname, Stream);
+    Result := Preprocess(fname, Stream);
     aStrings.LoadFromStream(Stream);
   finally
     Stream.Free;
@@ -536,8 +536,8 @@ begin
   end;
 end;
 
-procedure TLangPreprocessor.DoProcessStream(name : string; lineNo : integer;
-  Stream : TMemoryStream; OutStrings : TStrings);
+function TLangPreprocessor.DoProcessStream(name : string; lineNo : integer;
+  Stream : TMemoryStream; OutStrings : TStrings) : string;
 var
   Lex: TGenLexer;
   S, dir, dirText, tmpname, usePath, macro : string;
@@ -546,6 +546,7 @@ var
   bFileFound, bDefined, bProcess : boolean;
   origName : string;
 begin
+  Result := '';
   origName := name;
   S := '';
   origLevel := fLevel;
@@ -581,7 +582,53 @@ begin
           // some sort of preprocessor directive.
           dir := AnsiLowerCase(Lex.Token);
           dirText := '';
-          if dir = '#include' then
+          if dir = '#download' then
+          begin
+            // collect to end of line
+            Lex.Next;
+            while (Lex.Id <> piLineEnd) and not Lex.AtEnd do
+            begin
+              dirText := dirText + Lex.Token;
+              Lex.Next;
+            end;
+            if bProcess then
+            begin
+              dirText := Trim(dirText);
+              // get filename
+              qPos := Pos('"', dirText);
+              if qPos > 0 then
+              begin
+                System.Delete(dirText, 1, qPos);
+                qPos := Pos('"', dirText);
+                if qPos > 0 then
+                begin
+                  tmpName := Copy(dirText, 1, qPos-1);
+                  usePath := '';
+                  bFileFound := False;
+                  for i := 0 to IncludeDirs.Count - 1 do
+                  begin
+                    usePath := IncludeTrailingPathDelimiter(IncludeDirs[i]);
+                    bFileFound := FileExists(usePath+tmpName);
+                    if bFileFound then Break;
+                  end;
+                  if bFileFound then
+                  begin
+                    // add this filename to the result
+                    Result := Result + usePath+tmpName + #13#10;
+                  end
+                  else
+                    raise EPreprocessorException.Create(Format(sDownloadNotFound, [tmpName]), lineNo);
+                  // output a blank line to replace directive
+                  OutStrings.Add('');
+                end
+                else
+                  raise EPreprocessorException.Create(sDownloadMissingQuotes, lineNo);
+              end
+              else
+                raise EPreprocessorException.Create(sDownloadMissingQuotes, lineNo);
+            end;
+          end
+          else if dir = '#include' then
           begin
             // collect to end of line
             Lex.Next;

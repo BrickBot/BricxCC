@@ -8,458 +8,460 @@
   resources were bound to the produced executable.
 */
 
-#define P10Build_msgTooComplex 64464
-#define P10Build_msgInternalError 64465
-#define uRICImage_sNXTIconFile 64466
-#define uRICImage_sFailedRICPaste 64467
-#define GIFImage_sInvalidStream 64480
-#define GIFImage_sInvalidColor 64481
-#define GIFImage_sEmptyColorMap 64482
-#define GIFImage_sEmptyImage 64483
-#define GIFImage_sInvalidReduction 64484
-#define GIFImage_sGIFImageFile 64485
-#define GIFImage_sProgressLoading 64486
-#define GIFImage_sProgressSaving 64487
-#define GIFImage_sProgressConverting 64488
-#define GIFImage_sProgressRendering 64489
-#define GIFImage_sProgressCopying 64490
-#define GIFImage_sProgressOptimizing 64491
-#define P10Build_msgErrBlanks 64492
-#define P10Build_msgMissingBrackets 64493
-#define P10Build_msgParseError 64494
-#define P10Build_msgNestings 64495
-#define GIFImage_sDecodeCircular 64496
-#define GIFImage_sBadTrailer 64497
-#define GIFImage_sBadExtensionInstance 64498
-#define GIFImage_sBadBlockSize 64499
-#define GIFImage_sBadBlock 64500
-#define GIFImage_sUnsupportedClass 64501
-#define GIFImage_sInvalidData 64502
-#define GIFImage_sBadHeight 64503
-#define GIFImage_sBadWidth 64504
-#define GIFImage_sFailedPaste 64505
-#define GIFImage_sScreenSizeExceeded 64506
-#define GIFImage_sNoColorTable 64507
-#define GIFImage_sBadPixelCoordinates 64508
-#define GIFImage_sInvalidPixelFormat 64509
-#define GIFImage_sBadDimension 64510
-#define GIFImage_sNoDIB 64511
-#define pnglang_EPNGUnexpectedEndText 64512
-#define pnglang_EPNGNoImageDataText 64513
-#define pnglang_EPNGOutMemoryText 64514
-#define pnglang_EPNGHeaderNotPresentText 64515
-#define pnglang_EInvalidNewSize 64516
-#define GIFImage_sOutOfData 64517
-#define GIFImage_sTooManyColors 64518
-#define GIFImage_sBadColorIndex 64519
-#define GIFImage_sBadVersion 64520
-#define GIFImage_sBadSignature 64521
-#define GIFImage_sScreenBadColorSize 64522
-#define GIFImage_sImageBadColorSize 64523
-#define GIFImage_sUnknownExtension 64524
-#define GIFImage_sBadExtensionLabel 64525
-#define GIFImage_sOutOfMemDIB 64526
-#define GIFImage_sDecodeTooFewBits 64527
-#define JConsts_sChangeJPGSize 64528
-#define JConsts_sJPEGError 64529
-#define JConsts_sJPEGImageFile 64530
-#define pnglang_EPngInvalidCRCText 64531
-#define pnglang_EPNGInvalidIHDRText 64532
-#define pnglang_EPNGMissingMultipleIDATText 64533
-#define pnglang_EPNGZLIBErrorText 64534
-#define pnglang_EPNGInvalidPaletteText 64535
-#define pnglang_EPNGInvalidFileHeaderText 64536
-#define pnglang_EPNGIHDRNotFirstText 64537
-#define pnglang_EPNGSizeExceedsText 64538
-#define pnglang_EPNGUnknownPalEntryText 64539
-#define pnglang_EPNGUnknownCriticalChunkText 64540
-#define pnglang_EPNGUnknownCompressionText 64541
-#define pnglang_EPNGUnknownInterlaceText 64542
-#define pnglang_EPNGCannotAssignChunkText 64543
-#define TeeConst_TeeMsg_DefaultFontName 64544
-#define TeeConst_TeeMsg_CheckPointerSize 64545
-#define TeeConst_TeeMsg_FunctionPeriod 64546
-#define TeeConst_TeeMsg_PieOther 64547
-#define TeeConst_TeeMsg_ValuesX 64548
-#define TeeConst_TeeMsg_ValuesY 64549
-#define TeeConst_TeeMsg_ValuesPie 64550
-#define TeeConst_TeeMsg_ValuesBar 64551
-#define TeeConst_TeeMsg_ValuesAngle 64552
-#define ShellConsts_SShellDefaultNameStr 64553
-#define ShellConsts_SShellDefaultSizeStr 64554
-#define ShellConsts_SShellDefaultTypeStr 64555
-#define ShellConsts_SShellDefaultModifiedStr 64556
-#define ShellConsts_SShellNoDetails 64557
-#define ShellConsts_SCallLoadDetails 64558
-#define ShellConsts_SRenamedFailedError 64559
-#define TeeConst_TeeMsg_PieSample3 64560
-#define TeeConst_TeeMsg_PieSample4 64561
-#define TeeConst_TeeMsg_PieSample5 64562
-#define TeeConst_TeeMsg_PieSample6 64563
-#define TeeConst_TeeMsg_PieSample7 64564
-#define TeeConst_TeeMsg_PieSample8 64565
-#define TeeConst_TeeMsg_GalleryStandard 64566
-#define TeeConst_TeeMsg_GalleryFunctions 64567
-#define TeeConst_TeeMsg_DefaultFontSize 64568
-#define TeeConst_TeeMsg_FunctionAdd 64569
-#define TeeConst_TeeMsg_FunctionSubtract 64570
-#define TeeConst_TeeMsg_FunctionMultiply 64571
-#define TeeConst_TeeMsg_FunctionDivide 64572
-#define TeeConst_TeeMsg_FunctionHigh 64573
-#define TeeConst_TeeMsg_FunctionLow 64574
-#define TeeConst_TeeMsg_FunctionAverage 64575
-#define TeeConst_TeeMsg_BarOffsetPercent 64576
-#define TeeConst_TeeMsg_DefaultPercentOf 64577
-#define TeeConst_TeeMsg_DefPercentFormat 64578
-#define TeeConst_TeeMsg_DefValueFormat 64579
-#define TeeConst_TeeMsg_AxisTitle 64580
-#define TeeConst_TeeMsg_AxisLabels 64581
-#define TeeConst_TeeMsg_GalleryLine 64582
-#define TeeConst_TeeMsg_GalleryPoint 64583
-#define TeeConst_TeeMsg_GalleryArea 64584
-#define TeeConst_TeeMsg_GalleryBar 64585
-#define TeeConst_TeeMsg_GalleryHorizBar 64586
-#define TeeConst_TeeMsg_GalleryPie 64587
-#define TeeConst_TeeMsg_GalleryFastLine 64588
-#define TeeConst_TeeMsg_Rotation 64589
-#define TeeConst_TeeMsg_PieSample1 64590
-#define TeeConst_TeeMsg_PieSample2 64591
-#define TeeConst_TeeMsg_LegendColorWidth 64592
-#define TeeConst_TeeMsg_SeriesSetDataSource 64593
-#define TeeConst_TeeMsg_SeriesInvDataSource 64594
-#define TeeConst_TeeMsg_FillSample 64595
-#define TeeConst_TeeMsg_Angle 64596
-#define TeeConst_TeeMsg_AxisLogDateTime 64597
-#define TeeConst_TeeMsg_AxisLogNotPositive 64598
-#define TeeConst_TeeMsg_AxisLabelSep 64599
-#define TeeConst_TeeMsg_AxisIncrementNeg 64600
-#define TeeConst_TeeMsg_AxisMinMax 64601
-#define TeeConst_TeeMsg_AxisMaxMin 64602
-#define TeeConst_TeeMsg_AxisLogBase 64603
-#define TeeConst_TeeMsg_MaxPointsPerPage 64604
-#define TeeConst_TeeMsg_3dPercent 64605
-#define TeeConst_TeeMsg_CircularSeries 64606
-#define TeeConst_TeeMsg_BarWidthPercent 64607
-#define uPSPreProcessor_RPS_IncludeNotFound 64608
-#define uPSPreProcessor_RPS_DefineTooManyParameters 64609
-#define uPSPreProcessor_RPS_NoIfdefForEndif 64610
-#define uPSPreProcessor_RPS_NoIfdefForElse 64611
-#define uPSPreProcessor_RPS_ElseTwice 64612
-#define uPSPreProcessor_RPS_UnknownCompilerDirective 64613
-#define uPSPreProcessor_RPs_DefineNotClosed 64614
-#define uPSComponent_RPS_UnableToReadVariant 64615
-#define uPSComponent_RPS_UnableToWriteVariant 64616
-#define uPSComponent_RPS_ScripEngineAlreadyRunning 64617
-#define uPSComponent_RPS_ScriptNotCompiled 64618
-#define uPSComponent_RPS_NotRunning 64619
-#define uPSComponent_RPS_NoScript 64620
-#define FakeSpirit_sErrorInvalidMessage 64621
-#define TeeConst_TeeMsg_LegendTopPos 64622
-#define TeeConst_TeeMsg_LegendFirstValue 64623
-#define uPSCompiler_RPS_ForwardParameterMismatch 64624
-#define uPSCompiler_RPS_InvalidNumberOfParameter 64625
-#define uPSCompiler_RPS_UnknownError 64626
-#define uPSCompiler_RPS_Hint 64627
-#define uPSCompiler_RPS_VariableNotUsed 64628
-#define uPSCompiler_RPS_FunctionNotUsed 64629
-#define uPSCompiler_RPS_UnknownHint 64630
-#define uPSCompiler_RPS_Warning 64631
-#define uPSCompiler_RPS_CalculationAlwaysEvaluatesTo 64632
-#define uPSCompiler_RPS_IsNotNeeded 64633
-#define uPSCompiler_RPS_AbstractClass 64634
-#define uPSCompiler_RPS_UnknownWarning 64635
-#define uPSCompiler_RPS_NotArrayProperty 64636
-#define uPSCompiler_RPS_NotProperty 64637
-#define uPSCompiler_RPS_UnknownProperty 64638
-#define uPSPreProcessor_RPS_TooManyNestedInclude 64639
-#define uPSCompiler_RPS_IsExpected 64640
-#define uPSCompiler_RPS_OfExpected 64641
-#define uPSCompiler_RPS_CloseBlockExpected 64642
-#define uPSCompiler_RPS_VariableExpected 64643
-#define uPSCompiler_RPS_StringExpected 64644
-#define uPSCompiler_RPS_EndExpected 64645
-#define uPSCompiler_RPS_UnSetLabel 64646
-#define uPSCompiler_RPS_NotInLoop 64647
-#define uPSCompiler_RPS_InvalidJump 64648
-#define uPSCompiler_RPS_OpenBlockExpected 64649
-#define uPSCompiler_RPS_WriteOnlyProperty 64650
-#define uPSCompiler_RPS_ReadOnlyProperty 64651
-#define uPSCompiler_RPS_ClassTypeExpected 64652
-#define uPSCompiler_RPS_DivideByZero 64653
-#define uPSCompiler_RPS_MathError 64654
-#define uPSCompiler_RPS_UnsatisfiedForward 64655
-#define uPSCompiler_RPS_SemiColonExpected 64656
-#define uPSCompiler_RPS_BeginExpected 64657
-#define uPSCompiler_RPS_PeriodExpected 64658
-#define uPSCompiler_RPS_DuplicateIdent 64659
-#define uPSCompiler_RPS_ColonExpected 64660
-#define uPSCompiler_RPS_UnknownType 64661
-#define uPSCompiler_RPS_CloseRoundExpected 64662
-#define uPSCompiler_RPS_TypeMismatch 64663
-#define uPSCompiler_RPS_InternalError 64664
-#define uPSCompiler_RPS_AssignmentExpected 64665
-#define uPSCompiler_RPS_ThenExpected 64666
-#define uPSCompiler_RPS_DoExpected 64667
-#define uPSCompiler_RPS_NoResult 64668
-#define uPSCompiler_RPS_OpenRoundExpected 64669
-#define uPSCompiler_RPS_CommaExpected 64670
-#define uPSCompiler_RPS_ToExpected 64671
-#define uPSCompiler_RPS_UnableToRegisterFunction 64672
-#define uPSCompiler_RPS_UnableToRegisterConst 64673
-#define uPSCompiler_RPS_InvalidTypeForVar 64674
-#define uPSCompiler_RPS_InvalidType 64675
-#define uPSCompiler_RPS_UnableToRegisterType 64676
-#define uPSCompiler_RPS_UnknownInterface 64677
-#define uPSCompiler_RPS_ConstantValueMismatch 64678
-#define uPSCompiler_RPS_ConstantValueNotAssigned 64679
-#define uPSCompiler_RPS_Error 64680
-#define uPSCompiler_RPS_UnknownIdentifier 64681
-#define uPSCompiler_RPS_IdentifierExpected 64682
-#define uPSCompiler_RPS_CommentError 64683
-#define uPSCompiler_RPS_StringError 64684
-#define uPSCompiler_RPS_CharError 64685
-#define uPSCompiler_RPS_SyntaxError 64686
-#define uPSCompiler_RPS_EOF 64687
-#define uPSRuntime_RPS_CouldNotCallProc 64688
-#define uPSRuntime_RPS_OutofRecordRange 64689
-#define uPSRuntime_RPS_NullPointerException 64690
-#define uPSRuntime_RPS_NullVariantError 64691
-#define uPSRuntime_RPS_OutOfMemory 64692
-#define uPSRuntime_RPS_InterfaceNotSupported 64693
-#define uPSRuntime_RPS_UnknownError 64694
-#define uPSRuntime_RPS_InvalidArray 64695
-#define uPSRuntime_RPS_OutOfStringRange 64696
-#define uPSRuntime_RPS_CannotCastInterface 64697
-#define uPSRuntime_RPS_CannotCastObject 64698
-#define uPSRuntime_RPS_CapacityLength 64699
-#define uPSRuntime_RPS_NILInterfaceException 64700
-#define uPSRuntime_RPS_UnknownMethod 64701
-#define uPSDebugger_RPS_ExpectedReturnAddressStackBase 64702
-#define uPSCompiler_RPS_OnUseEventOnly 64703
-#define uPSRuntime_RPS_CannotImport 64704
-#define uPSRuntime_RPS_InvalidType 64705
-#define uPSRuntime_RPS_InternalError 64706
-#define uPSRuntime_RPS_InvalidHeader 64707
-#define uPSRuntime_RPS_InvalidOpcode 64708
-#define uPSRuntime_RPS_InvalidOpcodeParameter 64709
-#define uPSRuntime_RPS_NoMainProc 64710
-#define uPSRuntime_RPS_OutOfGlobalVarsRange 64711
-#define uPSRuntime_RPS_OutOfProcRange 64712
-#define uPSRuntime_RPS_OutOfRange 64713
-#define uPSRuntime_RPS_OutOfStackRange 64714
-#define uPSRuntime_RPS_TypeMismatch 64715
-#define uPSRuntime_RPS_UnexpectedEof 64716
-#define uPSRuntime_RPS_VersionError 64717
-#define uPSRuntime_RPS_DivideByZero 64718
-#define uPSRuntime_RPS_MathError 64719
-#define SynHighlighterROPS_SYNS_FilterPascalScript 64720
-#define SynHighlighterLua_SYNS_FilterLua 64721
-#define SynHighlighterLua_SYNS_LangLua 64722
-#define SynHighlighterLua_SYNS_AttrLuaMString 64723
-#define SynHighlighterLua_SYNS_AttrNumber 64724
-#define SynHighlighterRuby_SYNS_FilterRuby 64725
-#define SynHighlighterRuby_SYNS_LangRuby 64726
-#define SynHighlighterNPG_SYNS_AttrCommand 64727
-#define SynHighlighterNPG_SYNS_FilterNPG 64728
-#define SynHighlighterNPG_SYNS_LangNPG 64729
-#define SynHighlighterRS_SYNS_AttrCommand 64730
-#define SynHighlighterRS_SYNS_FilterRS 64731
-#define SynHighlighterRS_SYNS_LangRS 64732
-#define uPSUtils_RPS_InvalidFloat 64733
-#define uPSRuntime_RPS_Exception 64734
-#define uPSRuntime_RPS_NoError 64735
-#define SynHighlighterForth_SYNS_AttrException 64736
-#define SynHighlighterForth_SYNS_AttrMemory 64737
-#define SynHighlighterForth_SYNS_AttrOther 64738
-#define SynHighlighterForth_SYNS_AttrStringword 64739
-#define SynHighlighterNBC_SYNS_AttrCommand 64740
-#define SynHighlighterNBC_SYNS_AttrConstant 64741
-#define SynHighlighterNBC_SYNS_FilterNBC 64742
-#define SynHighlighterNBC_SYNS_LangNBC 64743
-#define SynHighlighterMindScript_SYNS_FilterMindScript 64744
-#define SynHighlighterMindScript_SYNS_LangMindScript 64745
-#define SynHighlighterMindScript_SYNS_AttrCommand 64746
-#define SynHighlighterMindScript_SYNS_AttrConstant 64747
-#define SynHighlighterMindScript_SYNS_AttrProperty 64748
-#define SynHighlighterLASM_SYNS_FilterLASM 64749
-#define SynHighlighterLASM_SYNS_LangLASM 64750
-#define SynHighlighterROPS_SYNS_LangPascalScript 64751
-#define SynHighlighterForth_SYNS_AttrDouble 64752
-#define SynHighlighterForth_SYNS_AttrDoubleExt 64753
-#define SynHighlighterForth_SYNS_AttrFacility 64754
-#define SynHighlighterForth_SYNS_AttrFacilityExt 64755
-#define SynHighlighterForth_SYNS_AttrFile 64756
-#define SynHighlighterForth_SYNS_AttrFileExt 64757
-#define SynHighlighterForth_SYNS_AttrFloating 64758
-#define SynHighlighterForth_SYNS_AttrFloatingExt 64759
-#define SynHighlighterForth_SYNS_AttrLocal 64760
-#define SynHighlighterForth_SYNS_AttrLocalExt 64761
-#define SynHighlighterForth_SYNS_AttrSearch 64762
-#define SynHighlighterForth_SYNS_AttrSearchExt 64763
-#define SynHighlighterForth_SYNS_AttrTools 64764
-#define SynHighlighterForth_SYNS_AttrToolsExt 64765
-#define SynHighlighterForth_SYNS_AttrRCX 64766
-#define SynHighlighterForth_SYNS_AttrCustom 64767
-#define SynHighlighterNQC_SYNS_AttrKeyword 64768
-#define SynHighlighterNQC_SYNS_AttrCommand 64769
-#define SynHighlighterNQC_SYNS_AttrConstant 64770
-#define SynHighlighterNQC_SYNS_AttrField 64771
-#define SynHighlighterNQC_SYNS_FilterNQC 64772
-#define SynHighlighterNQC_SYNS_LangNQC 64773
-#define SynMacroRecorder_sCannotRecord 64774
-#define SynMacroRecorder_sCannotPlay 64775
-#define SynMacroRecorder_sCannotPause 64776
-#define SynMacroRecorder_sCannotResume 64777
-#define SynHighlighterForth_SYNS_FilterForth 64778
-#define SynHighlighterForth_SYNS_LangForth 64779
-#define SynHighlighterForth_SYNS_AttrCore 64780
-#define SynHighlighterForth_SYNS_AttrCoreExt 64781
-#define SynHighlighterForth_SYNS_AttrBlock 64782
-#define SynHighlighterForth_SYNS_AttrBlockExt 64783
-#define SynEditStrConst_SYNS_FilterPascal 64784
-#define SynEditStrConst_SYNS_FilterCPP 64785
-#define SynEditStrConst_SYNS_FilterJava 64786
-#define SynEditStrConst_SYNS_FilterHTML 64787
-#define SynEditStrConst_SYNS_FilterRTF 64788
-#define SynEditStrConst_SYNS_LangCPP 64789
-#define SynEditStrConst_SYNS_LangJava 64790
-#define SynEditStrConst_SYNS_LangPascal 64791
-#define ComConst_SOleError 64792
-#define ComConst_SNoMethod 64793
-#define ComConst_SVarNotObject 64794
-#define ComConst_STooManyParams 64795
-#define OleConst_SCannotActivate 64796
-#define OleConst_SNoWindowHandle 64797
-#define OleConst_SInvalidLicense 64798
-#define OleConst_SNotLicensed 64799
-#define SynEditStrConst_SYNS_AttrNumber 64800
-#define SynEditStrConst_SYNS_AttrOctal 64801
-#define SynEditStrConst_SYNS_AttrPreprocessor 64802
-#define SynEditStrConst_SYNS_AttrReservedWord 64803
-#define SynEditStrConst_SYNS_AttrSecondReservedWord 64804
-#define SynEditStrConst_SYNS_AttrSpace 64805
-#define SynEditStrConst_SYNS_AttrString 64806
-#define SynEditStrConst_SYNS_AttrSymbol 64807
-#define SynEditStrConst_SYNS_ExporterFormatHTML 64808
-#define SynEditStrConst_SYNS_ExporterFormatRTF 64809
-#define SynEditStrConst_SYNS_ScrollInfoFmt 64810
-#define SynEditStrConst_SYNS_ScrollInfoFmtTop 64811
-#define SynEditStrConst_SYNS_PreviewScrollInfoFmt 64812
-#define SynEditStrConst_SYNS_EDuplicateShortcut 64813
-#define SynEditStrConst_SYNS_ShortcutNone 64814
-#define SynEditStrConst_SYNS_DuplicateShortcutMsg 64815
-#define uLocalizedStrings_sTooManyArgs 64816
-#define uLocalizedStrings_sTooFewArgs 64817
-#define uLocalizedStrings_sTooFewParams 64818
-#define uLocalizedStrings_sMaxParamCountExceeded 64819
-#define uLocalizedStrings_sConstNotAllowed 64820
-#define SynEditTextBuffer_SListIndexOutOfBounds 64821
-#define SynEditStrConst_SYNS_Untitled 64822
-#define SynEditStrConst_SYNS_AttrAssembler 64823
-#define SynEditStrConst_SYNS_AttrCharacter 64824
-#define SynEditStrConst_SYNS_AttrComment 64825
-#define SynEditStrConst_SYNS_AttrDocumentation 64826
-#define SynEditStrConst_SYNS_AttrFloat 64827
-#define SynEditStrConst_SYNS_AttrHexadecimal 64828
-#define SynEditStrConst_SYNS_AttrIdentifier 64829
-#define SynEditStrConst_SYNS_AttrIllegalChar 64830
-#define SynEditStrConst_SYNS_AttrInvalidSymbol 64831
-#define uLocalizedStrings_sExpectedString 64832
-#define uLocalizedStrings_sDataType 64833
-#define uLocalizedStrings_sIdentifier 64834
-#define uLocalizedStrings_sNumber 64835
-#define uLocalizedStrings_sHexNumber 64836
-#define uLocalizedStrings_sCharLiteral 64837
-#define uLocalizedStrings_sStringLiteral 64838
-#define uLocalizedStrings_sStringType 64839
-#define uLocalizedStrings_sStringVarType 64840
-#define uLocalizedStrings_sStructType 64841
-#define uLocalizedStrings_sMutexType 64842
-#define uLocalizedStrings_sIntegerType 64843
-#define uLocalizedStrings_sMathFactor 64844
-#define uLocalizedStrings_sArrayDatatype 64845
-#define uLocalizedStrings_sUndefinedIdentifier 64846
-#define uLocalizedStrings_sDuplicateIdentifier 64847
-#define uLocalizedStrings_sUnknownAPICommand 64848
-#define uLocalizedStrings_sDefaultInvalid 64849
-#define uLocalizedStrings_sCaseInvalid 64850
-#define uLocalizedStrings_sInvalidUseOfTaskName 64851
-#define uLocalizedStrings_sInvalidArrayExpr 64852
-#define uLocalizedStrings_sRecursiveInlineError 64853
-#define uLocalizedStrings_sNestedCallsError 64854
-#define uLocalizedStrings_sRecursiveNotAllowed 64855
-#define uLocalizedStrings_sExpNotSupported 64856
-#define uLocalizedStrings_sEnhancedFirmwareReqd 64857
-#define uLocalizedStrings_sSymbolTableFull 64858
-#define uLocalizedStrings_sInvalidArrayDim 64859
-#define uLocalizedStrings_sAssignTaskError 64860
-#define uLocalizedStrings_sArgMustBeTask 64861
-#define uLocalizedStrings_sInvalidReturnType 64862
-#define uLocalizedStrings_sInvalidStringAssign 64863
-#define uLocalizedStrings_sInvalidArrayDeclaration 64864
-#define uLocalizedStrings_sInvalidGlobalArrayInit 64865
-#define uLocalizedStrings_sUnknownUDT 64866
-#define uLocalizedStrings_sReturnInvalid 64867
-#define uLocalizedStrings_sInvalidBreakContinue 64868
-#define uLocalizedStrings_sProtoAlreadyDefined 64869
-#define uLocalizedStrings_sNotValidForPrototype 64870
-#define uLocalizedStrings_sMissingDataType 64871
-#define uLocalizedStrings_sDataTypesAlreadyDefined 64872
-#define uLocalizedStrings_sParameterList 64873
-#define uLocalizedStrings_sUnexpectedChar 64874
-#define uLocalizedStrings_sValidProgBlock 64875
-#define uLocalizedStrings_sConstInitialization 64876
-#define uLocalizedStrings_sInitNotAllowed 64877
-#define uLocalizedStrings_sInvalidStringInit 64878
-#define uLocalizedStrings_sConstLocArrNotSupported 64879
-#define uLocalizedStrings_sCompCheckFailed 64880
-#define uLocalizedStrings_sCompCheckTypFailed 64881
-#define uLocalizedStrings_sInvalidCompCheck 64882
-#define uLocalizedStrings_sInvalidCompCheckTyp 64883
-#define uLocalizedStrings_sUnsafeDivision 64884
-#define uLocalizedStrings_sUnusedVar 64885
-#define uLocalizedStrings_sTaskName 64886
-#define uLocalizedStrings_sVariableName 64887
-#define uLocalizedStrings_sStringReturnValue 64888
-#define uLocalizedStrings_sInvalidAssignment 64889
-#define uLocalizedStrings_sDatatypesNotCompatible 64890
-#define uLocalizedStrings_sInlineInvalid 64891
-#define uLocalizedStrings_sSafeCallInvalid 64892
-#define uLocalizedStrings_sBadPrototype 64893
-#define uLocalizedStrings_sMainMustBeTask 64894
-#define uLocalizedStrings_sUDTNotEqual 64895
-#define uLocalizedStrings_sConstOutOfRange 64896
-#define uLocalizedStrings_sInvalidOpcode 64897
-#define uLocalizedStrings_sDuplicateLabel 64898
-#define uLocalizedStrings_sDuplicateDSEntry 64899
-#define uLocalizedStrings_sDuplicateType 64900
-#define uLocalizedStrings_sInvalidVarDecl 64901
-#define uLocalizedStrings_sInvalidVarArg 64902
-#define uLocalizedStrings_sInvalidMutexArg 64903
-#define uLocalizedStrings_sInvalidClusterArg 64904
-#define uLocalizedStrings_sInvalidArrayArg 64905
-#define uLocalizedStrings_sInvalidScalarArg 64906
-#define uLocalizedStrings_sInvalidStringArg 64907
-#define uLocalizedStrings_sInvalidLabelArg 64908
-#define uLocalizedStrings_sInvalidClumpArg 64909
-#define uLocalizedStrings_sReturnNotInSub 64910
-#define uLocalizedStrings_sNoReturnAtEndOfSub 64911
+#define P10Build_msgParseError 64464
+#define P10Build_msgNestings 64465
+#define P10Build_msgTooComplex 64466
+#define P10Build_msgInternalError 64467
+#define uRICImage_sNXTIconFile 64468
+#define uRICImage_sFailedRICPaste 64469
+#define GIFImage_sBadDimension 64480
+#define GIFImage_sNoDIB 64481
+#define GIFImage_sInvalidStream 64482
+#define GIFImage_sInvalidColor 64483
+#define GIFImage_sEmptyColorMap 64484
+#define GIFImage_sEmptyImage 64485
+#define GIFImage_sInvalidReduction 64486
+#define GIFImage_sGIFImageFile 64487
+#define GIFImage_sProgressLoading 64488
+#define GIFImage_sProgressSaving 64489
+#define GIFImage_sProgressConverting 64490
+#define GIFImage_sProgressRendering 64491
+#define GIFImage_sProgressCopying 64492
+#define GIFImage_sProgressOptimizing 64493
+#define P10Build_msgErrBlanks 64494
+#define P10Build_msgMissingBrackets 64495
+#define GIFImage_sOutOfMemDIB 64496
+#define GIFImage_sDecodeTooFewBits 64497
+#define GIFImage_sDecodeCircular 64498
+#define GIFImage_sBadTrailer 64499
+#define GIFImage_sBadExtensionInstance 64500
+#define GIFImage_sBadBlockSize 64501
+#define GIFImage_sBadBlock 64502
+#define GIFImage_sUnsupportedClass 64503
+#define GIFImage_sInvalidData 64504
+#define GIFImage_sBadHeight 64505
+#define GIFImage_sBadWidth 64506
+#define GIFImage_sFailedPaste 64507
+#define GIFImage_sScreenSizeExceeded 64508
+#define GIFImage_sNoColorTable 64509
+#define GIFImage_sBadPixelCoordinates 64510
+#define GIFImage_sInvalidPixelFormat 64511
+#define pnglang_EPNGUnknownInterlaceText 64512
+#define pnglang_EPNGCannotAssignChunkText 64513
+#define pnglang_EPNGUnexpectedEndText 64514
+#define pnglang_EPNGNoImageDataText 64515
+#define pnglang_EPNGOutMemoryText 64516
+#define pnglang_EPNGHeaderNotPresentText 64517
+#define pnglang_EInvalidNewSize 64518
+#define GIFImage_sOutOfData 64519
+#define GIFImage_sTooManyColors 64520
+#define GIFImage_sBadColorIndex 64521
+#define GIFImage_sBadVersion 64522
+#define GIFImage_sBadSignature 64523
+#define GIFImage_sScreenBadColorSize 64524
+#define GIFImage_sImageBadColorSize 64525
+#define GIFImage_sUnknownExtension 64526
+#define GIFImage_sBadExtensionLabel 64527
+#define ShellConsts_SCallLoadDetails 64528
+#define ShellConsts_SRenamedFailedError 64529
+#define JConsts_sChangeJPGSize 64530
+#define JConsts_sJPEGError 64531
+#define JConsts_sJPEGImageFile 64532
+#define pnglang_EPngInvalidCRCText 64533
+#define pnglang_EPNGInvalidIHDRText 64534
+#define pnglang_EPNGMissingMultipleIDATText 64535
+#define pnglang_EPNGZLIBErrorText 64536
+#define pnglang_EPNGInvalidPaletteText 64537
+#define pnglang_EPNGInvalidFileHeaderText 64538
+#define pnglang_EPNGIHDRNotFirstText 64539
+#define pnglang_EPNGSizeExceedsText 64540
+#define pnglang_EPNGUnknownPalEntryText 64541
+#define pnglang_EPNGUnknownCriticalChunkText 64542
+#define pnglang_EPNGUnknownCompressionText 64543
+#define TeeConst_TeeMsg_FunctionLow 64544
+#define TeeConst_TeeMsg_FunctionAverage 64545
+#define TeeConst_TeeMsg_DefaultFontName 64546
+#define TeeConst_TeeMsg_CheckPointerSize 64547
+#define TeeConst_TeeMsg_FunctionPeriod 64548
+#define TeeConst_TeeMsg_PieOther 64549
+#define TeeConst_TeeMsg_ValuesX 64550
+#define TeeConst_TeeMsg_ValuesY 64551
+#define TeeConst_TeeMsg_ValuesPie 64552
+#define TeeConst_TeeMsg_ValuesBar 64553
+#define TeeConst_TeeMsg_ValuesAngle 64554
+#define ShellConsts_SShellDefaultNameStr 64555
+#define ShellConsts_SShellDefaultSizeStr 64556
+#define ShellConsts_SShellDefaultTypeStr 64557
+#define ShellConsts_SShellDefaultModifiedStr 64558
+#define ShellConsts_SShellNoDetails 64559
+#define TeeConst_TeeMsg_PieSample1 64560
+#define TeeConst_TeeMsg_PieSample2 64561
+#define TeeConst_TeeMsg_PieSample3 64562
+#define TeeConst_TeeMsg_PieSample4 64563
+#define TeeConst_TeeMsg_PieSample5 64564
+#define TeeConst_TeeMsg_PieSample6 64565
+#define TeeConst_TeeMsg_PieSample7 64566
+#define TeeConst_TeeMsg_PieSample8 64567
+#define TeeConst_TeeMsg_GalleryStandard 64568
+#define TeeConst_TeeMsg_GalleryFunctions 64569
+#define TeeConst_TeeMsg_DefaultFontSize 64570
+#define TeeConst_TeeMsg_FunctionAdd 64571
+#define TeeConst_TeeMsg_FunctionSubtract 64572
+#define TeeConst_TeeMsg_FunctionMultiply 64573
+#define TeeConst_TeeMsg_FunctionDivide 64574
+#define TeeConst_TeeMsg_FunctionHigh 64575
+#define TeeConst_TeeMsg_CircularSeries 64576
+#define TeeConst_TeeMsg_BarWidthPercent 64577
+#define TeeConst_TeeMsg_BarOffsetPercent 64578
+#define TeeConst_TeeMsg_DefaultPercentOf 64579
+#define TeeConst_TeeMsg_DefPercentFormat 64580
+#define TeeConst_TeeMsg_DefValueFormat 64581
+#define TeeConst_TeeMsg_AxisTitle 64582
+#define TeeConst_TeeMsg_AxisLabels 64583
+#define TeeConst_TeeMsg_GalleryLine 64584
+#define TeeConst_TeeMsg_GalleryPoint 64585
+#define TeeConst_TeeMsg_GalleryArea 64586
+#define TeeConst_TeeMsg_GalleryBar 64587
+#define TeeConst_TeeMsg_GalleryHorizBar 64588
+#define TeeConst_TeeMsg_GalleryPie 64589
+#define TeeConst_TeeMsg_GalleryFastLine 64590
+#define TeeConst_TeeMsg_Rotation 64591
+#define TeeConst_TeeMsg_LegendTopPos 64592
+#define TeeConst_TeeMsg_LegendFirstValue 64593
+#define TeeConst_TeeMsg_LegendColorWidth 64594
+#define TeeConst_TeeMsg_SeriesSetDataSource 64595
+#define TeeConst_TeeMsg_SeriesInvDataSource 64596
+#define TeeConst_TeeMsg_FillSample 64597
+#define TeeConst_TeeMsg_Angle 64598
+#define TeeConst_TeeMsg_AxisLogDateTime 64599
+#define TeeConst_TeeMsg_AxisLogNotPositive 64600
+#define TeeConst_TeeMsg_AxisLabelSep 64601
+#define TeeConst_TeeMsg_AxisIncrementNeg 64602
+#define TeeConst_TeeMsg_AxisMinMax 64603
+#define TeeConst_TeeMsg_AxisMaxMin 64604
+#define TeeConst_TeeMsg_AxisLogBase 64605
+#define TeeConst_TeeMsg_MaxPointsPerPage 64606
+#define TeeConst_TeeMsg_3dPercent 64607
+#define uPSCompiler_RPS_UnknownProperty 64608
+#define uPSPreProcessor_RPS_TooManyNestedInclude 64609
+#define uPSPreProcessor_RPS_IncludeNotFound 64610
+#define uPSPreProcessor_RPS_DefineTooManyParameters 64611
+#define uPSPreProcessor_RPS_NoIfdefForEndif 64612
+#define uPSPreProcessor_RPS_NoIfdefForElse 64613
+#define uPSPreProcessor_RPS_ElseTwice 64614
+#define uPSPreProcessor_RPS_UnknownCompilerDirective 64615
+#define uPSPreProcessor_RPs_DefineNotClosed 64616
+#define uPSComponent_RPS_UnableToReadVariant 64617
+#define uPSComponent_RPS_UnableToWriteVariant 64618
+#define uPSComponent_RPS_ScripEngineAlreadyRunning 64619
+#define uPSComponent_RPS_ScriptNotCompiled 64620
+#define uPSComponent_RPS_NotRunning 64621
+#define uPSComponent_RPS_NoScript 64622
+#define FakeSpirit_sErrorInvalidMessage 64623
+#define uPSCompiler_RPS_MathError 64624
+#define uPSCompiler_RPS_UnsatisfiedForward 64625
+#define uPSCompiler_RPS_ForwardParameterMismatch 64626
+#define uPSCompiler_RPS_InvalidNumberOfParameter 64627
+#define uPSCompiler_RPS_UnknownError 64628
+#define uPSCompiler_RPS_Hint 64629
+#define uPSCompiler_RPS_VariableNotUsed 64630
+#define uPSCompiler_RPS_FunctionNotUsed 64631
+#define uPSCompiler_RPS_UnknownHint 64632
+#define uPSCompiler_RPS_Warning 64633
+#define uPSCompiler_RPS_CalculationAlwaysEvaluatesTo 64634
+#define uPSCompiler_RPS_IsNotNeeded 64635
+#define uPSCompiler_RPS_AbstractClass 64636
+#define uPSCompiler_RPS_UnknownWarning 64637
+#define uPSCompiler_RPS_NotArrayProperty 64638
+#define uPSCompiler_RPS_NotProperty 64639
+#define uPSCompiler_RPS_CommaExpected 64640
+#define uPSCompiler_RPS_ToExpected 64641
+#define uPSCompiler_RPS_IsExpected 64642
+#define uPSCompiler_RPS_OfExpected 64643
+#define uPSCompiler_RPS_CloseBlockExpected 64644
+#define uPSCompiler_RPS_VariableExpected 64645
+#define uPSCompiler_RPS_StringExpected 64646
+#define uPSCompiler_RPS_EndExpected 64647
+#define uPSCompiler_RPS_UnSetLabel 64648
+#define uPSCompiler_RPS_NotInLoop 64649
+#define uPSCompiler_RPS_InvalidJump 64650
+#define uPSCompiler_RPS_OpenBlockExpected 64651
+#define uPSCompiler_RPS_WriteOnlyProperty 64652
+#define uPSCompiler_RPS_ReadOnlyProperty 64653
+#define uPSCompiler_RPS_ClassTypeExpected 64654
+#define uPSCompiler_RPS_DivideByZero 64655
+#define uPSCompiler_RPS_SyntaxError 64656
+#define uPSCompiler_RPS_EOF 64657
+#define uPSCompiler_RPS_SemiColonExpected 64658
+#define uPSCompiler_RPS_BeginExpected 64659
+#define uPSCompiler_RPS_PeriodExpected 64660
+#define uPSCompiler_RPS_DuplicateIdent 64661
+#define uPSCompiler_RPS_ColonExpected 64662
+#define uPSCompiler_RPS_UnknownType 64663
+#define uPSCompiler_RPS_CloseRoundExpected 64664
+#define uPSCompiler_RPS_TypeMismatch 64665
+#define uPSCompiler_RPS_InternalError 64666
+#define uPSCompiler_RPS_AssignmentExpected 64667
+#define uPSCompiler_RPS_ThenExpected 64668
+#define uPSCompiler_RPS_DoExpected 64669
+#define uPSCompiler_RPS_NoResult 64670
+#define uPSCompiler_RPS_OpenRoundExpected 64671
+#define uPSDebugger_RPS_ExpectedReturnAddressStackBase 64672
+#define uPSCompiler_RPS_OnUseEventOnly 64673
+#define uPSCompiler_RPS_UnableToRegisterFunction 64674
+#define uPSCompiler_RPS_UnableToRegisterConst 64675
+#define uPSCompiler_RPS_InvalidTypeForVar 64676
+#define uPSCompiler_RPS_InvalidType 64677
+#define uPSCompiler_RPS_UnableToRegisterType 64678
+#define uPSCompiler_RPS_UnknownInterface 64679
+#define uPSCompiler_RPS_ConstantValueMismatch 64680
+#define uPSCompiler_RPS_ConstantValueNotAssigned 64681
+#define uPSCompiler_RPS_Error 64682
+#define uPSCompiler_RPS_UnknownIdentifier 64683
+#define uPSCompiler_RPS_IdentifierExpected 64684
+#define uPSCompiler_RPS_CommentError 64685
+#define uPSCompiler_RPS_StringError 64686
+#define uPSCompiler_RPS_CharError 64687
+#define uPSRuntime_RPS_DivideByZero 64688
+#define uPSRuntime_RPS_MathError 64689
+#define uPSRuntime_RPS_CouldNotCallProc 64690
+#define uPSRuntime_RPS_OutofRecordRange 64691
+#define uPSRuntime_RPS_NullPointerException 64692
+#define uPSRuntime_RPS_NullVariantError 64693
+#define uPSRuntime_RPS_OutOfMemory 64694
+#define uPSRuntime_RPS_InterfaceNotSupported 64695
+#define uPSRuntime_RPS_UnknownError 64696
+#define uPSRuntime_RPS_InvalidArray 64697
+#define uPSRuntime_RPS_OutOfStringRange 64698
+#define uPSRuntime_RPS_CannotCastInterface 64699
+#define uPSRuntime_RPS_CannotCastObject 64700
+#define uPSRuntime_RPS_CapacityLength 64701
+#define uPSRuntime_RPS_NILInterfaceException 64702
+#define uPSRuntime_RPS_UnknownMethod 64703
+#define uPSRuntime_RPS_Exception 64704
+#define uPSRuntime_RPS_NoError 64705
+#define uPSRuntime_RPS_CannotImport 64706
+#define uPSRuntime_RPS_InvalidType 64707
+#define uPSRuntime_RPS_InternalError 64708
+#define uPSRuntime_RPS_InvalidHeader 64709
+#define uPSRuntime_RPS_InvalidOpcode 64710
+#define uPSRuntime_RPS_InvalidOpcodeParameter 64711
+#define uPSRuntime_RPS_NoMainProc 64712
+#define uPSRuntime_RPS_OutOfGlobalVarsRange 64713
+#define uPSRuntime_RPS_OutOfProcRange 64714
+#define uPSRuntime_RPS_OutOfRange 64715
+#define uPSRuntime_RPS_OutOfStackRange 64716
+#define uPSRuntime_RPS_TypeMismatch 64717
+#define uPSRuntime_RPS_UnexpectedEof 64718
+#define uPSRuntime_RPS_VersionError 64719
+#define SynHighlighterLASM_SYNS_LangLASM 64720
+#define SynHighlighterROPS_SYNS_LangPascalScript 64721
+#define SynHighlighterROPS_SYNS_FilterPascalScript 64722
+#define SynHighlighterLua_SYNS_FilterLua 64723
+#define SynHighlighterLua_SYNS_LangLua 64724
+#define SynHighlighterLua_SYNS_AttrLuaMString 64725
+#define SynHighlighterLua_SYNS_AttrNumber 64726
+#define SynHighlighterRuby_SYNS_FilterRuby 64727
+#define SynHighlighterRuby_SYNS_LangRuby 64728
+#define SynHighlighterNPG_SYNS_AttrCommand 64729
+#define SynHighlighterNPG_SYNS_FilterNPG 64730
+#define SynHighlighterNPG_SYNS_LangNPG 64731
+#define SynHighlighterRS_SYNS_AttrCommand 64732
+#define SynHighlighterRS_SYNS_FilterRS 64733
+#define SynHighlighterRS_SYNS_LangRS 64734
+#define uPSUtils_RPS_InvalidFloat 64735
+#define SynHighlighterForth_SYNS_AttrRCX 64736
+#define SynHighlighterForth_SYNS_AttrCustom 64737
+#define SynHighlighterForth_SYNS_AttrException 64738
+#define SynHighlighterForth_SYNS_AttrMemory 64739
+#define SynHighlighterForth_SYNS_AttrOther 64740
+#define SynHighlighterForth_SYNS_AttrStringword 64741
+#define SynHighlighterNBC_SYNS_AttrCommand 64742
+#define SynHighlighterNBC_SYNS_AttrConstant 64743
+#define SynHighlighterNBC_SYNS_FilterNBC 64744
+#define SynHighlighterNBC_SYNS_LangNBC 64745
+#define SynHighlighterMindScript_SYNS_FilterMindScript 64746
+#define SynHighlighterMindScript_SYNS_LangMindScript 64747
+#define SynHighlighterMindScript_SYNS_AttrCommand 64748
+#define SynHighlighterMindScript_SYNS_AttrConstant 64749
+#define SynHighlighterMindScript_SYNS_AttrProperty 64750
+#define SynHighlighterLASM_SYNS_FilterLASM 64751
+#define SynHighlighterForth_SYNS_AttrBlock 64752
+#define SynHighlighterForth_SYNS_AttrBlockExt 64753
+#define SynHighlighterForth_SYNS_AttrDouble 64754
+#define SynHighlighterForth_SYNS_AttrDoubleExt 64755
+#define SynHighlighterForth_SYNS_AttrFacility 64756
+#define SynHighlighterForth_SYNS_AttrFacilityExt 64757
+#define SynHighlighterForth_SYNS_AttrFile 64758
+#define SynHighlighterForth_SYNS_AttrFileExt 64759
+#define SynHighlighterForth_SYNS_AttrFloating 64760
+#define SynHighlighterForth_SYNS_AttrFloatingExt 64761
+#define SynHighlighterForth_SYNS_AttrLocal 64762
+#define SynHighlighterForth_SYNS_AttrLocalExt 64763
+#define SynHighlighterForth_SYNS_AttrSearch 64764
+#define SynHighlighterForth_SYNS_AttrSearchExt 64765
+#define SynHighlighterForth_SYNS_AttrTools 64766
+#define SynHighlighterForth_SYNS_AttrToolsExt 64767
+#define OleConst_SInvalidLicense 64768
+#define OleConst_SNotLicensed 64769
+#define SynHighlighterNQC_SYNS_AttrKeyword 64770
+#define SynHighlighterNQC_SYNS_AttrCommand 64771
+#define SynHighlighterNQC_SYNS_AttrConstant 64772
+#define SynHighlighterNQC_SYNS_AttrField 64773
+#define SynHighlighterNQC_SYNS_FilterNQC 64774
+#define SynHighlighterNQC_SYNS_LangNQC 64775
+#define SynMacroRecorder_sCannotRecord 64776
+#define SynMacroRecorder_sCannotPlay 64777
+#define SynMacroRecorder_sCannotPause 64778
+#define SynMacroRecorder_sCannotResume 64779
+#define SynHighlighterForth_SYNS_FilterForth 64780
+#define SynHighlighterForth_SYNS_LangForth 64781
+#define SynHighlighterForth_SYNS_AttrCore 64782
+#define SynHighlighterForth_SYNS_AttrCoreExt 64783
+#define SynEditStrConst_SYNS_ShortcutNone 64784
+#define SynEditStrConst_SYNS_DuplicateShortcutMsg 64785
+#define SynEditStrConst_SYNS_FilterPascal 64786
+#define SynEditStrConst_SYNS_FilterCPP 64787
+#define SynEditStrConst_SYNS_FilterJava 64788
+#define SynEditStrConst_SYNS_FilterHTML 64789
+#define SynEditStrConst_SYNS_FilterRTF 64790
+#define SynEditStrConst_SYNS_LangCPP 64791
+#define SynEditStrConst_SYNS_LangJava 64792
+#define SynEditStrConst_SYNS_LangPascal 64793
+#define ComConst_SOleError 64794
+#define ComConst_SNoMethod 64795
+#define ComConst_SVarNotObject 64796
+#define ComConst_STooManyParams 64797
+#define OleConst_SCannotActivate 64798
+#define OleConst_SNoWindowHandle 64799
+#define SynEditStrConst_SYNS_AttrIllegalChar 64800
+#define SynEditStrConst_SYNS_AttrInvalidSymbol 64801
+#define SynEditStrConst_SYNS_AttrNumber 64802
+#define SynEditStrConst_SYNS_AttrOctal 64803
+#define SynEditStrConst_SYNS_AttrPreprocessor 64804
+#define SynEditStrConst_SYNS_AttrReservedWord 64805
+#define SynEditStrConst_SYNS_AttrSecondReservedWord 64806
+#define SynEditStrConst_SYNS_AttrSpace 64807
+#define SynEditStrConst_SYNS_AttrString 64808
+#define SynEditStrConst_SYNS_AttrSymbol 64809
+#define SynEditStrConst_SYNS_ExporterFormatHTML 64810
+#define SynEditStrConst_SYNS_ExporterFormatRTF 64811
+#define SynEditStrConst_SYNS_ScrollInfoFmt 64812
+#define SynEditStrConst_SYNS_ScrollInfoFmtTop 64813
+#define SynEditStrConst_SYNS_PreviewScrollInfoFmt 64814
+#define SynEditStrConst_SYNS_EDuplicateShortcut 64815
+#define uLocalizedStrings_sUndefinedIdentifier 64816
+#define uLocalizedStrings_sDuplicateIdentifier 64817
+#define uLocalizedStrings_sTooManyArgs 64818
+#define uLocalizedStrings_sTooFewArgs 64819
+#define uLocalizedStrings_sTooFewParams 64820
+#define uLocalizedStrings_sMaxParamCountExceeded 64821
+#define uLocalizedStrings_sConstNotAllowed 64822
+#define SynEditTextBuffer_SListIndexOutOfBounds 64823
+#define SynEditStrConst_SYNS_Untitled 64824
+#define SynEditStrConst_SYNS_AttrAssembler 64825
+#define SynEditStrConst_SYNS_AttrCharacter 64826
+#define SynEditStrConst_SYNS_AttrComment 64827
+#define SynEditStrConst_SYNS_AttrDocumentation 64828
+#define SynEditStrConst_SYNS_AttrFloat 64829
+#define SynEditStrConst_SYNS_AttrHexadecimal 64830
+#define SynEditStrConst_SYNS_AttrIdentifier 64831
+#define uLocalizedStrings_sInvalidReturnType 64832
+#define uLocalizedStrings_sInvalidStringAssign 64833
+#define uLocalizedStrings_sExpectedString 64834
+#define uLocalizedStrings_sDataType 64835
+#define uLocalizedStrings_sIdentifier 64836
+#define uLocalizedStrings_sNumber 64837
+#define uLocalizedStrings_sHexNumber 64838
+#define uLocalizedStrings_sCharLiteral 64839
+#define uLocalizedStrings_sStringLiteral 64840
+#define uLocalizedStrings_sStringType 64841
+#define uLocalizedStrings_sStringVarType 64842
+#define uLocalizedStrings_sStructType 64843
+#define uLocalizedStrings_sMutexType 64844
+#define uLocalizedStrings_sIntegerType 64845
+#define uLocalizedStrings_sMathFactor 64846
+#define uLocalizedStrings_sArrayDatatype 64847
+#define uLocalizedStrings_sInvalidStringInit 64848
+#define uLocalizedStrings_sConstLocArrNotSupported 64849
+#define uLocalizedStrings_sUnknownAPICommand 64850
+#define uLocalizedStrings_sDefaultInvalid 64851
+#define uLocalizedStrings_sCaseInvalid 64852
+#define uLocalizedStrings_sInvalidUseOfTaskName 64853
+#define uLocalizedStrings_sInvalidArrayExpr 64854
+#define uLocalizedStrings_sRecursiveInlineError 64855
+#define uLocalizedStrings_sNestedCallsError 64856
+#define uLocalizedStrings_sRecursiveNotAllowed 64857
+#define uLocalizedStrings_sExpNotSupported 64858
+#define uLocalizedStrings_sEnhancedFirmwareReqd 64859
+#define uLocalizedStrings_sSymbolTableFull 64860
+#define uLocalizedStrings_sInvalidArrayDim 64861
+#define uLocalizedStrings_sAssignTaskError 64862
+#define uLocalizedStrings_sArgMustBeTask 64863
+#define uLocalizedStrings_sMainMustBeTask 64864
+#define uLocalizedStrings_sUDTNotEqual 64865
+#define uLocalizedStrings_sInvalidArrayDeclaration 64866
+#define uLocalizedStrings_sInvalidGlobalArrayInit 64867
+#define uLocalizedStrings_sUnknownUDT 64868
+#define uLocalizedStrings_sReturnInvalid 64869
+#define uLocalizedStrings_sInvalidBreakContinue 64870
+#define uLocalizedStrings_sProtoAlreadyDefined 64871
+#define uLocalizedStrings_sNotValidForPrototype 64872
+#define uLocalizedStrings_sMissingDataType 64873
+#define uLocalizedStrings_sDataTypesAlreadyDefined 64874
+#define uLocalizedStrings_sParameterList 64875
+#define uLocalizedStrings_sUnexpectedChar 64876
+#define uLocalizedStrings_sValidProgBlock 64877
+#define uLocalizedStrings_sConstInitialization 64878
+#define uLocalizedStrings_sInitNotAllowed 64879
+#define uLocalizedStrings_sReturnNotInSub 64880
+#define uLocalizedStrings_sNoReturnAtEndOfSub 64881
+#define uLocalizedStrings_sCompCheckFailed 64882
+#define uLocalizedStrings_sCompCheckTypFailed 64883
+#define uLocalizedStrings_sInvalidCompCheck 64884
+#define uLocalizedStrings_sInvalidCompCheckTyp 64885
+#define uLocalizedStrings_sUnsafeDivision 64886
+#define uLocalizedStrings_sUnusedVar 64887
+#define uLocalizedStrings_sTaskName 64888
+#define uLocalizedStrings_sVariableName 64889
+#define uLocalizedStrings_sStringReturnValue 64890
+#define uLocalizedStrings_sInvalidAssignment 64891
+#define uLocalizedStrings_sDatatypesNotCompatible 64892
+#define uLocalizedStrings_sInlineInvalid 64893
+#define uLocalizedStrings_sSafeCallInvalid 64894
+#define uLocalizedStrings_sBadPrototype 64895
+#define uLocalizedStrings_sInvalidCompareCode 64896
+#define uLocalizedStrings_sBadConstExpression 64897
+#define uLocalizedStrings_sConstOutOfRange 64898
+#define uLocalizedStrings_sInvalidOpcode 64899
+#define uLocalizedStrings_sDuplicateLabel 64900
+#define uLocalizedStrings_sDuplicateDSEntry 64901
+#define uLocalizedStrings_sDuplicateType 64902
+#define uLocalizedStrings_sInvalidVarDecl 64903
+#define uLocalizedStrings_sInvalidVarArg 64904
+#define uLocalizedStrings_sInvalidMutexArg 64905
+#define uLocalizedStrings_sInvalidClusterArg 64906
+#define uLocalizedStrings_sInvalidArrayArg 64907
+#define uLocalizedStrings_sInvalidScalarArg 64908
+#define uLocalizedStrings_sInvalidStringArg 64909
+#define uLocalizedStrings_sInvalidLabelArg 64910
+#define uLocalizedStrings_sInvalidClumpArg 64911
 #define uLocalizedStrings_sInvalidHexLength 64912
 #define uLocalizedStrings_sInvalidPreprocDirective 64913
-#define uLocalizedStrings_sIncludeNotFound 64914
-#define uLocalizedStrings_sIncludeMissingQuotes 64915
-#define uLocalizedStrings_sMacroMismatch 64916
-#define uLocalizedStrings_sUnmatchedDirective 64917
-#define uLocalizedStrings_sInvalidPreprocExpression 64918
-#define uLocalizedStrings_sInvalidCharConstant 64919
-#define uLocalizedStrings_sMaxRecursionDepthError 64920
-#define uLocalizedStrings_sInvalidStatement 64921
-#define uLocalizedStrings_sInvalidLine 64922
-#define uLocalizedStrings_sInvalidNumArgs 64923
-#define uLocalizedStrings_sInvalidNumArgsVar 64924
-#define uLocalizedStrings_sInvalidNumArgsOdd 64925
-#define uLocalizedStrings_sInvalidCompareCode 64926
-#define uLocalizedStrings_sBadConstExpression 64927
+#define uLocalizedStrings_sDownloadNotFound 64914
+#define uLocalizedStrings_sDownloadMissingQuotes 64915
+#define uLocalizedStrings_sIncludeNotFound 64916
+#define uLocalizedStrings_sIncludeMissingQuotes 64917
+#define uLocalizedStrings_sMacroMismatch 64918
+#define uLocalizedStrings_sUnmatchedDirective 64919
+#define uLocalizedStrings_sInvalidPreprocExpression 64920
+#define uLocalizedStrings_sInvalidCharConstant 64921
+#define uLocalizedStrings_sMaxRecursionDepthError 64922
+#define uLocalizedStrings_sInvalidStatement 64923
+#define uLocalizedStrings_sInvalidLine 64924
+#define uLocalizedStrings_sInvalidNumArgs 64925
+#define uLocalizedStrings_sInvalidNumArgsVar 64926
+#define uLocalizedStrings_sInvalidNumArgsOdd 64927
 #define uLocalizedStrings_sSuccess 64928
 #define uLocalizedStrings_sException 64929
 #define uLocalizedStrings_sProgramError 64930
@@ -1070,10 +1072,14 @@
 #define SysConst_SInvalidInput 65535
 STRINGTABLE
 BEGIN
+	P10Build_msgParseError,	"Error parsing expression:"
+	P10Build_msgNestings,	"Expression contains too many nestings"
 	P10Build_msgTooComplex,	"Expression is too complex"
 	P10Build_msgInternalError,	"TParser internal error"
 	uRICImage_sNXTIconFile,	"NXT Icon File"
 	uRICImage_sFailedRICPaste,	"Failed to store RIC on clipboard"
+	GIFImage_sBadDimension,	"Invalid image dimensions"
+	GIFImage_sNoDIB,	"Image has no DIB"
 	GIFImage_sInvalidStream,	"Invalid stream operation"
 	GIFImage_sInvalidColor,	"Color not in color table"
 	GIFImage_sEmptyColorMap,	"Color table is empty"
@@ -1088,8 +1094,8 @@ BEGIN
 	GIFImage_sProgressOptimizing,	"Optimizing..."
 	P10Build_msgErrBlanks,	"Expression has blanks"
 	P10Build_msgMissingBrackets,	"Missing brackets in expression"
-	P10Build_msgParseError,	"Error parsing expression:"
-	P10Build_msgNestings,	"Expression contains too many nestings"
+	GIFImage_sOutOfMemDIB,	"Failed to allocate memory for GIF DIB"
+	GIFImage_sDecodeTooFewBits,	"Decoder bit buffer under-run"
 	GIFImage_sDecodeCircular,	"Circular decoder table entry"
 	GIFImage_sBadTrailer,	"Invalid Image trailer"
 	GIFImage_sBadExtensionInstance,	"Internal error: Extension Instance does not match Extension Label"
@@ -1104,8 +1110,8 @@ BEGIN
 	GIFImage_sNoColorTable,	"No global or local color table defined"
 	GIFImage_sBadPixelCoordinates,	"Invalid pixel coordinates"
 	GIFImage_sInvalidPixelFormat,	"Unsupported PixelFormat"
-	GIFImage_sBadDimension,	"Invalid image dimensions"
-	GIFImage_sNoDIB,	"Image has no DIB"
+	pnglang_EPNGUnknownInterlaceText,	"This \"Portable Network Graphics\" image uses an unknown interlace scheme which could not be decoded."
+	pnglang_EPNGCannotAssignChunkText,	"The chunks must be compatible to be assigned."
 	pnglang_EPNGUnexpectedEndText,	"This \"Portable Network Graphics\" image is invalid because the decoder found an unexpected end of the file."
 	pnglang_EPNGNoImageDataText,	"This \"Portable Network Graphics\" image contains no data."
 	pnglang_EPNGOutMemoryText,	"Some operation could not be performed because the system is out of resources. Close some windows and try again."
@@ -1120,8 +1126,8 @@ BEGIN
 	GIFImage_sImageBadColorSize,	"Invalid number of colors specified in Image Descriptor"
 	GIFImage_sUnknownExtension,	"Unknown extension type"
 	GIFImage_sBadExtensionLabel,	"Invalid extension introducer"
-	GIFImage_sOutOfMemDIB,	"Failed to allocate memory for GIF DIB"
-	GIFImage_sDecodeTooFewBits,	"Decoder bit buffer under-run"
+	ShellConsts_SCallLoadDetails,	"%s: Missing call to LoadColumnDetails"
+	ShellConsts_SRenamedFailedError,	"Rename to %s failed"
 	JConsts_sChangeJPGSize,	"Cannot change the size of a JPEG image"
 	JConsts_sJPEGError,	"JPEG error #%d"
 	JConsts_sJPEGImageFile,	"JPEG Image File"
@@ -1136,8 +1142,8 @@ BEGIN
 	pnglang_EPNGUnknownPalEntryText,	"There is no such palette entry."
 	pnglang_EPNGUnknownCriticalChunkText,	"This \"Portable Network Graphics\" image contains an unknown critical part which could not be decoded."
 	pnglang_EPNGUnknownCompressionText,	"This \"Portable Network Graphics\" image is encoded with an unknown compression scheme which could not be decoded."
-	pnglang_EPNGUnknownInterlaceText,	"This \"Portable Network Graphics\" image uses an unknown interlace scheme which could not be decoded."
-	pnglang_EPNGCannotAssignChunkText,	"The chunks must be compatible to be assigned."
+	TeeConst_TeeMsg_FunctionLow,	"Low"
+	TeeConst_TeeMsg_FunctionAverage,	"Average"
 	TeeConst_TeeMsg_DefaultFontName,	"Arial"
 	TeeConst_TeeMsg_CheckPointerSize,	"Pointer size must be greater than zero"
 	TeeConst_TeeMsg_FunctionPeriod,	"Function Period should be >= 0"
@@ -1152,8 +1158,8 @@ BEGIN
 	ShellConsts_SShellDefaultTypeStr,	"Type"
 	ShellConsts_SShellDefaultModifiedStr,	"Modified"
 	ShellConsts_SShellNoDetails,	"Unable to retrieve folder details for \"%s\". Error code $%x"
-	ShellConsts_SCallLoadDetails,	"%s: Missing call to LoadColumnDetails"
-	ShellConsts_SRenamedFailedError,	"Rename to %s failed"
+	TeeConst_TeeMsg_PieSample1,	"Cars"
+	TeeConst_TeeMsg_PieSample2,	"Phones"
 	TeeConst_TeeMsg_PieSample3,	"Tables"
 	TeeConst_TeeMsg_PieSample4,	"Monitors"
 	TeeConst_TeeMsg_PieSample5,	"Lamps"
@@ -1168,8 +1174,8 @@ BEGIN
 	TeeConst_TeeMsg_FunctionMultiply,	"Multiply"
 	TeeConst_TeeMsg_FunctionDivide,	"Divide"
 	TeeConst_TeeMsg_FunctionHigh,	"High"
-	TeeConst_TeeMsg_FunctionLow,	"Low"
-	TeeConst_TeeMsg_FunctionAverage,	"Average"
+	TeeConst_TeeMsg_CircularSeries,	"Circular Series dependences are not allowed"
+	TeeConst_TeeMsg_BarWidthPercent,	"Bar Width Percent must be between 1 and 100"
 	TeeConst_TeeMsg_BarOffsetPercent,	"Bar Offset Percent must be between -100% and 100%"
 	TeeConst_TeeMsg_DefaultPercentOf,	"%s of %s"
 	TeeConst_TeeMsg_DefPercentFormat,	"##0.## %"
@@ -1184,8 +1190,8 @@ BEGIN
 	TeeConst_TeeMsg_GalleryPie,	"Pie"
 	TeeConst_TeeMsg_GalleryFastLine,	"Fast Line"
 	TeeConst_TeeMsg_Rotation,	"Rotation"
-	TeeConst_TeeMsg_PieSample1,	"Cars"
-	TeeConst_TeeMsg_PieSample2,	"Phones"
+	TeeConst_TeeMsg_LegendTopPos,	"Top Legend Position must be between 0 and 100 %"
+	TeeConst_TeeMsg_LegendFirstValue,	"First Legend Value must be > 0"
 	TeeConst_TeeMsg_LegendColorWidth,	"Legend Color Width must be between 0 and 100 %"
 	TeeConst_TeeMsg_SeriesSetDataSource,	"No ParentChart to validate DataSource"
 	TeeConst_TeeMsg_SeriesInvDataSource,	"No valid DataSource: %s"
@@ -1200,8 +1206,8 @@ BEGIN
 	TeeConst_TeeMsg_AxisLogBase,	"Axis Logarithmic Base should be >= 2"
 	TeeConst_TeeMsg_MaxPointsPerPage,	"MaxPointsPerPage must be >= 0"
 	TeeConst_TeeMsg_3dPercent,	"3D effect percent must be between %d and %d"
-	TeeConst_TeeMsg_CircularSeries,	"Circular Series dependences are not allowed"
-	TeeConst_TeeMsg_BarWidthPercent,	"Bar Width Percent must be between 1 and 100"
+	uPSCompiler_RPS_UnknownProperty,	"Unknown Property"
+	uPSPreProcessor_RPS_TooManyNestedInclude,	"Too many nested include files while processing '%s' from '%s'"
 	uPSPreProcessor_RPS_IncludeNotFound,	"Unable to find file '%s' used from '%s'"
 	uPSPreProcessor_RPS_DefineTooManyParameters,	"Too many parameters at %d:%d"
 	uPSPreProcessor_RPS_NoIfdefForEndif,	"No IFDEF for ENDIF at %d:%d"
@@ -1216,8 +1222,8 @@ BEGIN
 	uPSComponent_RPS_NotRunning,	"Not running"
 	uPSComponent_RPS_NoScript,	"No script"
 	FakeSpirit_sErrorInvalidMessage,	"Invalid raw message"
-	TeeConst_TeeMsg_LegendTopPos,	"Top Legend Position must be between 0 and 100 %"
-	TeeConst_TeeMsg_LegendFirstValue,	"First Legend Value must be > 0"
+	uPSCompiler_RPS_MathError,	"Math Error"
+	uPSCompiler_RPS_UnsatisfiedForward,	"Unsatisfied Forward %s"
 	uPSCompiler_RPS_ForwardParameterMismatch,	"Forward Parameter Mismatch"
 	uPSCompiler_RPS_InvalidNumberOfParameter,	"Invalid number of parameters"
 	uPSCompiler_RPS_UnknownError,	"Unknown error"
@@ -1232,8 +1238,8 @@ BEGIN
 	uPSCompiler_RPS_UnknownWarning,	"Unknown warning"
 	uPSCompiler_RPS_NotArrayProperty,	"Not an array property"
 	uPSCompiler_RPS_NotProperty,	"Not a property"
-	uPSCompiler_RPS_UnknownProperty,	"Unknown Property"
-	uPSPreProcessor_RPS_TooManyNestedInclude,	"Too many nested include files while processing '%s' from '%s'"
+	uPSCompiler_RPS_CommaExpected,	"comma (',') expected"
+	uPSCompiler_RPS_ToExpected,	"'TO' expected"
 	uPSCompiler_RPS_IsExpected,	"is ('=') expected"
 	uPSCompiler_RPS_OfExpected,	"'OF' expected"
 	uPSCompiler_RPS_CloseBlockExpected,	"Close block(']') expected"
@@ -1248,8 +1254,8 @@ BEGIN
 	uPSCompiler_RPS_ReadOnlyProperty,	"Read-only property"
 	uPSCompiler_RPS_ClassTypeExpected,	"Class type expected"
 	uPSCompiler_RPS_DivideByZero,	"Divide by Zero"
-	uPSCompiler_RPS_MathError,	"Math Error"
-	uPSCompiler_RPS_UnsatisfiedForward,	"Unsatisfied Forward %s"
+	uPSCompiler_RPS_SyntaxError,	"Syntax error"
+	uPSCompiler_RPS_EOF,	"Unexpected end of file"
 	uPSCompiler_RPS_SemiColonExpected,	"Semicolon (';') expected"
 	uPSCompiler_RPS_BeginExpected,	"'BEGIN' expected"
 	uPSCompiler_RPS_PeriodExpected,	"period ('.') expected"
@@ -1264,8 +1270,8 @@ BEGIN
 	uPSCompiler_RPS_DoExpected,	"'DO' expected"
 	uPSCompiler_RPS_NoResult,	"No result"
 	uPSCompiler_RPS_OpenRoundExpected,	"open round ('(')expected"
-	uPSCompiler_RPS_CommaExpected,	"comma (',') expected"
-	uPSCompiler_RPS_ToExpected,	"'TO' expected"
+	uPSDebugger_RPS_ExpectedReturnAddressStackBase,	"Expected return address at stack base"
+	uPSCompiler_RPS_OnUseEventOnly,	"This function can only be called from within the OnUses event"
 	uPSCompiler_RPS_UnableToRegisterFunction,	"Unable to register function %s"
 	uPSCompiler_RPS_UnableToRegisterConst,	"Unable to register constant %s"
 	uPSCompiler_RPS_InvalidTypeForVar,	"Invalid type for variable %s"
@@ -1280,8 +1286,8 @@ BEGIN
 	uPSCompiler_RPS_CommentError,	"Comment error"
 	uPSCompiler_RPS_StringError,	"String error"
 	uPSCompiler_RPS_CharError,	"Char error"
-	uPSCompiler_RPS_SyntaxError,	"Syntax error"
-	uPSCompiler_RPS_EOF,	"Unexpected end of file"
+	uPSRuntime_RPS_DivideByZero,	"divide by Zero"
+	uPSRuntime_RPS_MathError,	"Math error"
 	uPSRuntime_RPS_CouldNotCallProc,	"Could not call proc"
 	uPSRuntime_RPS_OutofRecordRange,	"Out of Record Fields Range"
 	uPSRuntime_RPS_NullPointerException,	"Null Pointer Exception"
@@ -1296,8 +1302,8 @@ BEGIN
 	uPSRuntime_RPS_CapacityLength,	"Capacity < Length"
 	uPSRuntime_RPS_NILInterfaceException,	"Nil interface"
 	uPSRuntime_RPS_UnknownMethod,	"Unknown method"
-	uPSDebugger_RPS_ExpectedReturnAddressStackBase,	"Expected return address at stack base"
-	uPSCompiler_RPS_OnUseEventOnly,	"This function can only be called from within the OnUses event"
+	uPSRuntime_RPS_Exception,	"Exception: %s"
+	uPSRuntime_RPS_NoError,	"No Error"
 	uPSRuntime_RPS_CannotImport,	"Cannot Import %s"
 	uPSRuntime_RPS_InvalidType,	"Invalid Type"
 	uPSRuntime_RPS_InternalError,	"Internal error"
@@ -1312,8 +1318,8 @@ BEGIN
 	uPSRuntime_RPS_TypeMismatch,	"Type Mismatch"
 	uPSRuntime_RPS_UnexpectedEof,	"Unexpected End Of File"
 	uPSRuntime_RPS_VersionError,	"Version error"
-	uPSRuntime_RPS_DivideByZero,	"divide by Zero"
-	uPSRuntime_RPS_MathError,	"Math error"
+	SynHighlighterLASM_SYNS_LangLASM,	"LEGO Assembler"
+	SynHighlighterROPS_SYNS_LangPascalScript,	"Pascal Script"
 	SynHighlighterROPS_SYNS_FilterPascalScript,	"Pascal Script Files (*.rops)|*.rops"
 	SynHighlighterLua_SYNS_FilterLua,	"Lua Files (*.lua, *.lpr)|*.lua;*.lpr"
 	SynHighlighterLua_SYNS_LangLua,	"Lua"
@@ -1328,8 +1334,8 @@ BEGIN
 	SynHighlighterRS_SYNS_FilterRS,	"RICScript Files (*.rs)|*.rs"
 	SynHighlighterRS_SYNS_LangRS,	"RICScript"
 	uPSUtils_RPS_InvalidFloat,	"Invalid float"
-	uPSRuntime_RPS_Exception,	"Exception: %s"
-	uPSRuntime_RPS_NoError,	"No Error"
+	SynHighlighterForth_SYNS_AttrRCX,	"RCX word"
+	SynHighlighterForth_SYNS_AttrCustom,	"Custom word"
 	SynHighlighterForth_SYNS_AttrException,	"Exception word"
 	SynHighlighterForth_SYNS_AttrMemory,	"Memory word"
 	SynHighlighterForth_SYNS_AttrOther,	"Other word"
@@ -1344,8 +1350,8 @@ BEGIN
 	SynHighlighterMindScript_SYNS_AttrConstant,	"Constant"
 	SynHighlighterMindScript_SYNS_AttrProperty,	"Property"
 	SynHighlighterLASM_SYNS_FilterLASM,	"LASM Files (*.lasm)|*.lasm"
-	SynHighlighterLASM_SYNS_LangLASM,	"LEGO Assembler"
-	SynHighlighterROPS_SYNS_LangPascalScript,	"Pascal Script"
+	SynHighlighterForth_SYNS_AttrBlock,	"Block word"
+	SynHighlighterForth_SYNS_AttrBlockExt,	"Block word Ext"
 	SynHighlighterForth_SYNS_AttrDouble,	"Double word"
 	SynHighlighterForth_SYNS_AttrDoubleExt,	"Double word Ext"
 	SynHighlighterForth_SYNS_AttrFacility,	"Facility word"
@@ -1360,8 +1366,8 @@ BEGIN
 	SynHighlighterForth_SYNS_AttrSearchExt,	"Search word Ext"
 	SynHighlighterForth_SYNS_AttrTools,	"Tools word"
 	SynHighlighterForth_SYNS_AttrToolsExt,	"Tools word Ext"
-	SynHighlighterForth_SYNS_AttrRCX,	"RCX word"
-	SynHighlighterForth_SYNS_AttrCustom,	"Custom word"
+	OleConst_SInvalidLicense,	"License information for %s is invalid"
+	OleConst_SNotLicensed,	"License information for %s not found. You cannot use this control in design mode"
 	SynHighlighterNQC_SYNS_AttrKeyword,	"Keyword"
 	SynHighlighterNQC_SYNS_AttrCommand,	"Command"
 	SynHighlighterNQC_SYNS_AttrConstant,	"Constant"
@@ -1376,8 +1382,8 @@ BEGIN
 	SynHighlighterForth_SYNS_LangForth,	"Forth"
 	SynHighlighterForth_SYNS_AttrCore,	"Core word"
 	SynHighlighterForth_SYNS_AttrCoreExt,	"Core word Ext"
-	SynHighlighterForth_SYNS_AttrBlock,	"Block word"
-	SynHighlighterForth_SYNS_AttrBlockExt,	"Block word Ext"
+	SynEditStrConst_SYNS_ShortcutNone,	"<none>"
+	SynEditStrConst_SYNS_DuplicateShortcutMsg,	"The keystroke \"%s\" is already assigned to another editor command. (%s)"
 	SynEditStrConst_SYNS_FilterPascal,	"Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc"
 	SynEditStrConst_SYNS_FilterCPP,	"C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp"
 	SynEditStrConst_SYNS_FilterJava,	"Java Files (*.java)|*.java"
@@ -1392,8 +1398,8 @@ BEGIN
 	ComConst_STooManyParams,	"Dispatch methods do not support more than 64 parameters"
 	OleConst_SCannotActivate,	"OLE control activation failed"
 	OleConst_SNoWindowHandle,	"Could not obtain OLE control window handle"
-	OleConst_SInvalidLicense,	"License information for %s is invalid"
-	OleConst_SNotLicensed,	"License information for %s not found. You cannot use this control in design mode"
+	SynEditStrConst_SYNS_AttrIllegalChar,	"Illegal Char"
+	SynEditStrConst_SYNS_AttrInvalidSymbol,	"Invalid Symbol"
 	SynEditStrConst_SYNS_AttrNumber,	"Number"
 	SynEditStrConst_SYNS_AttrOctal,	"Octal"
 	SynEditStrConst_SYNS_AttrPreprocessor,	"Preprocessor"
@@ -1408,8 +1414,8 @@ BEGIN
 	SynEditStrConst_SYNS_ScrollInfoFmtTop,	"Top Line: %d"
 	SynEditStrConst_SYNS_PreviewScrollInfoFmt,	"Page: %d"
 	SynEditStrConst_SYNS_EDuplicateShortcut,	"Shortcut already exists"
-	SynEditStrConst_SYNS_ShortcutNone,	"<none>"
-	SynEditStrConst_SYNS_DuplicateShortcutMsg,	"The keystroke \"%s\" is already assigned to another editor command. (%s)"
+	uLocalizedStrings_sUndefinedIdentifier,	"Undefined Identifier %s"
+	uLocalizedStrings_sDuplicateIdentifier,	"Duplicate Identifier %s"
 	uLocalizedStrings_sTooManyArgs,	"Too many arguments"
 	uLocalizedStrings_sTooFewArgs,	"Too few arguments"
 	uLocalizedStrings_sTooFewParams,	"Too few parameters"
@@ -1424,8 +1430,8 @@ BEGIN
 	SynEditStrConst_SYNS_AttrFloat,	"Float"
 	SynEditStrConst_SYNS_AttrHexadecimal,	"Hexadecimal"
 	SynEditStrConst_SYNS_AttrIdentifier,	"Identifier"
-	SynEditStrConst_SYNS_AttrIllegalChar,	"Illegal Char"
-	SynEditStrConst_SYNS_AttrInvalidSymbol,	"Invalid Symbol"
+	uLocalizedStrings_sInvalidReturnType,	"Invalid return type"
+	uLocalizedStrings_sInvalidStringAssign,	"Invalid string assignment"
 	uLocalizedStrings_sExpectedString,	"%s expected"
 	uLocalizedStrings_sDataType,	"Data type"
 	uLocalizedStrings_sIdentifier,	"Identifier"
@@ -1440,8 +1446,8 @@ BEGIN
 	uLocalizedStrings_sIntegerType,	"integer type"
 	uLocalizedStrings_sMathFactor,	"Math Factor"
 	uLocalizedStrings_sArrayDatatype,	"array data type"
-	uLocalizedStrings_sUndefinedIdentifier,	"Undefined Identifier %s"
-	uLocalizedStrings_sDuplicateIdentifier,	"Duplicate Identifier %s"
+	uLocalizedStrings_sInvalidStringInit,	"Invalid string initialization"
+	uLocalizedStrings_sConstLocArrNotSupported,	"Constant local arrays are not supported"
 	uLocalizedStrings_sUnknownAPICommand,	"Unknown API command"
 	uLocalizedStrings_sDefaultInvalid,	"default is invalid outside a switch statement"
 	uLocalizedStrings_sCaseInvalid,	"case is invalid outside a switch statement"
@@ -1456,8 +1462,8 @@ BEGIN
 	uLocalizedStrings_sInvalidArrayDim,	"Invalid array dimensions - must be from 1 to 4"
 	uLocalizedStrings_sAssignTaskError,	"Can not assign to a task or subroutine"
 	uLocalizedStrings_sArgMustBeTask,	"Argument must be a task"
-	uLocalizedStrings_sInvalidReturnType,	"Invalid return type"
-	uLocalizedStrings_sInvalidStringAssign,	"Invalid string assignment"
+	uLocalizedStrings_sMainMustBeTask,	"main must be a task"
+	uLocalizedStrings_sUDTNotEqual,	"User-defined types do not match"
 	uLocalizedStrings_sInvalidArrayDeclaration,	"Invalid array declaration"
 	uLocalizedStrings_sInvalidGlobalArrayInit,	"Invalid global array initialization"
 	uLocalizedStrings_sUnknownUDT,	"Unknown user-defined type"
@@ -1472,8 +1478,8 @@ BEGIN
 	uLocalizedStrings_sValidProgBlock,	"Valid Program Block Statement"
 	uLocalizedStrings_sConstInitialization,	"constant initialization"
 	uLocalizedStrings_sInitNotAllowed,	"Initialization is not allowed for mutex variables"
-	uLocalizedStrings_sInvalidStringInit,	"Invalid string initialization"
-	uLocalizedStrings_sConstLocArrNotSupported,	"Constant local arrays are not supported"
+	uLocalizedStrings_sReturnNotInSub,	"The return opcode can only be used within a subroutine"
+	uLocalizedStrings_sNoReturnAtEndOfSub,	"The last operation in a subroutine must be a return"
 	uLocalizedStrings_sCompCheckFailed,	"compchk failed.  %d is not %s %d."
 	uLocalizedStrings_sCompCheckTypFailed,	"compchktype failed.  %s is not %s."
 	uLocalizedStrings_sInvalidCompCheck,	"invalid compchk operation"
@@ -1488,8 +1494,8 @@ BEGIN
 	uLocalizedStrings_sInlineInvalid,	"The inline keyword may only be used with functions"
 	uLocalizedStrings_sSafeCallInvalid,	"The safecall keyword may only be used with functions"
 	uLocalizedStrings_sBadPrototype,	"Prototypes without parameter names are not supported"
-	uLocalizedStrings_sMainMustBeTask,	"main must be a task"
-	uLocalizedStrings_sUDTNotEqual,	"User-defined types do not match"
+	uLocalizedStrings_sInvalidCompareCode,	"Invalid comparison code: %s"
+	uLocalizedStrings_sBadConstExpression,	"Invalid constant expression: %s"
 	uLocalizedStrings_sConstOutOfRange,	"%d is outside the valid range [%d,%d]"
 	uLocalizedStrings_sInvalidOpcode,	"Invalid opcode: %s"
 	uLocalizedStrings_sDuplicateLabel,	"Duplicate label (%s)"
@@ -1504,10 +1510,10 @@ BEGIN
 	uLocalizedStrings_sInvalidStringArg,	"Invalid string argument: %s"
 	uLocalizedStrings_sInvalidLabelArg,	"Invalid label argument: %s"
 	uLocalizedStrings_sInvalidClumpArg,	"Invalid thread argument: %s"
-	uLocalizedStrings_sReturnNotInSub,	"The return opcode can only be used within a subroutine"
-	uLocalizedStrings_sNoReturnAtEndOfSub,	"The last operation in a subroutine must be a return"
 	uLocalizedStrings_sInvalidHexLength,	"Invalid length of hex string: %d"
 	uLocalizedStrings_sInvalidPreprocDirective,	"Invalid preprocessor directive"
+	uLocalizedStrings_sDownloadNotFound,	"Unable to find download file: \"%s\""
+	uLocalizedStrings_sDownloadMissingQuotes,	"#download directive requires a filename (e.g., #download \"foo.ric\")"
 	uLocalizedStrings_sIncludeNotFound,	"Unable to find include file: \"%s\""
 	uLocalizedStrings_sIncludeMissingQuotes,	"#include directive requires a filename (e.g., #include \"foo.h\")"
 	uLocalizedStrings_sMacroMismatch,	"Preprocessor macro function does not match instance (%s)"
@@ -1520,8 +1526,6 @@ BEGIN
 	uLocalizedStrings_sInvalidNumArgs,	"Invalid number of arguments: %d expected, %d found"
 	uLocalizedStrings_sInvalidNumArgsVar,	"Invalid number of arguments: at least %d expected, %d found"
 	uLocalizedStrings_sInvalidNumArgsOdd,	"Invalid number of arguments: argument count must be odd"
-	uLocalizedStrings_sInvalidCompareCode,	"Invalid comparison code: %s"
-	uLocalizedStrings_sBadConstExpression,	"Invalid constant expression: %s"
 	uLocalizedStrings_sSuccess,	"Success: %s"
 	uLocalizedStrings_sException,	"Exception"
 	uLocalizedStrings_sProgramError,	"%d errors during compilation"
