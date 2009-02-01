@@ -703,57 +703,54 @@ begin
   origFileList := TStringList.Create;
   try
     Result := NXTListFiles('*.*', origFileList);
-    // if there aren't any files then we are done.
-    if origFileList.Count = 0 then Exit;
-    // upload all files
-    Result := NXTUploadFile('*.*');
-    if Result then
+    // if there aren't any files then we are nearly done.
+    if origFileList.Count > 0 then
     begin
-      // in theory we have all the files in our list now
-      // let's just quickly make sure.
-      for i := 0 to origFileList.Count - 1 do begin
-        if not FileExists(origFileList.Names[i]) then
-        begin
-          // do something clever here???
-          Result := False;
-          Exit;
-        end;
-      end;
-      // ok.
-      Result := ClearMemory;
-{
-      for i := 0 to origFileList.Count - 1 do begin
-        filename := origFileList.Names[i];
-        Result := NXTDeleteFile(filename, True);
-        if not Result then begin
-          // something clever here
-          Exit;
-        end;
-      end;
-}
+      // upload all files
+      Result := NXTUploadFile('*.*');
       if Result then
       begin
-        // we are committed now.
-        // figure out the correct order using the file ext
-        // (.rxe or .ric first) and file size (within each category
-        // of file type.
-        origFileList.CustomSort(@DefragFileCompare);
-        // now download these files in order
+        // in theory we have all the files in our list now
+        // let's just quickly make sure.
         for i := 0 to origFileList.Count - 1 do begin
-          filename := origFileList.Names[i];
-          Result := NXTDownloadFile(filename, NameToNXTFileType(filename));
-          if not Result then begin
-            // do something clever here
+          if not FileExists(origFileList.Names[i]) then
+          begin
+            // do something clever here???
+            Result := False;
             Exit;
           end;
         end;
-        // if we were able to download all the files we uploaded then
-        // it is safe to delete them from the PC
-        for i := 0 to origFileList.Count - 1 do begin
-          // delete files locally
-          Result := SysUtils.DeleteFile(origFileList.Names[i]);
+        // ok.
+        Result := ClearMemory;
+        if Result then
+        begin
+          // we are committed now.
+          // figure out the correct order using the file ext
+          // (.rxe or .ric first) and file size (within each category
+          // of file type.
+          origFileList.CustomSort(@DefragFileCompare);
+          // now download these files in order
+          for i := 0 to origFileList.Count - 1 do begin
+            filename := origFileList.Names[i];
+            Result := NXTDownloadFile(filename, NameToNXTFileType(filename));
+            if not Result then begin
+              // do something clever here
+              Exit;
+            end;
+          end;
+          // if we were able to download all the files we uploaded then
+          // it is safe to delete them from the PC
+          for i := 0 to origFileList.Count - 1 do begin
+            // delete files locally
+            Result := SysUtils.DeleteFile(origFileList.Names[i]);
+          end;
         end;
       end;
+    end
+    else
+    begin
+      // even if there aren't any files we clear the flash
+      Result := ClearMemory;
     end;
   finally
     FreeAndNil(origFileList);
