@@ -1,0 +1,46 @@
+// working as of 2009-01-29 JCH
+
+task main()
+{
+  int aaa[4][4][4][4];
+  int xyz[][] = {{1, 2, 3}, {2, 3, 4}, {3, 4, 5}};
+  int pdq[3][4];
+  int tmp[4] = {1, 2, 3, 4};
+  
+  int x, y;
+  x = 0;
+  y = 1;
+
+  int a;
+
+  xyz[1][0] = 12;
+  xyz[x][y] = 45;
+  xyz = xyz;
+  xyz[x] = xyz[y];
+  a = xyz[x][y];
+  xyz[x][y] = xyz[x][y] + 2;
+
+  a = tmp[x];
+  a = xyz[y][x];
+  tmp = xyz[y];
+  tmp = aaa[0][2][3];
+  
+  pdq[0][0] = aaa[0][2][3][3] + 4;
+
+  tmp = xyz[x];
+  tmp[y] = 45;
+  xyz[x] = tmp;
+
+  pdq[0] = tmp;
+  a = xyz[x][y];
+  aaa[0][2][3][3] = 23;
+  pdq[0][0] = 20;
+
+  NumOut(0, LCD_LINE1, a);
+  NumOut(0, LCD_LINE2, tmp[y]);
+  NumOut(0, LCD_LINE3, pdq[0][0]);
+  NumOut(0, LCD_LINE4, aaa[0][2][3][3] + pdq[0][0]);
+  NumOut(0, LCD_LINE5, xyz[x][y]);
+  while(true);
+
+}

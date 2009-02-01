@@ -1,0 +1,27 @@
+// working as of 2009-01-29 JCH
+
+task main()
+{
+  string aaa[] = {"one" , "two" , "three" };
+  string bbb[] = {"four" , "five" , "six" };
+  string ccc[2][3];
+  string msg;
+  ArrayBuild(ccc, aaa, bbb);
+  ccc[0][1] = "fred" ;
+  ccc[0][0] = ccc[1][2];
+  msg = aaa[2];
+  TextOut(50, LCD_LINE1, msg); // three  GOOD
+  msg = ccc[0][1];
+  TextOut(50, LCD_LINE2, msg); // fred   GOOD
+  bbb = ccc[0];
+  TextOut(0, LCD_LINE1, bbb[0]); // six     GOOD
+  TextOut(0, LCD_LINE2, bbb[1]); // fred    GOOD
+  TextOut(0, LCD_LINE3, bbb[2]); // three   GOOD
+  aaa = ccc[1];
+  TextOut(0, LCD_LINE4, aaa[0]); // four    GOOD
+  TextOut(0, LCD_LINE5, aaa[1]); // five    GOOD
+  TextOut(0, LCD_LINE6, aaa[2]); // six     GOOD
+  TextOut(0, LCD_LINE7, ccc[0][1]); // fred GOOD
+  NumOut(0, LCD_LINE8, ccc[0][1][0]); // 102 GOOD
+  while(true);
+}

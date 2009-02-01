@@ -1,0 +1,36 @@
+// working as of 2009-01-29 JCH
+/*
+task main()
+{
+  short a,b;
+
+  a=2;
+  b=10;
+  if (b>-1)
+  {
+    a=b+1;
+  }
+  NumOut(0,LCD_LINE1,a,false);
+  NumOut(0,LCD_LINE2,b,false);
+  Wait(10000);
+}
+*/
+//Will correctly display a=11, b=10
+
+//but
+
+task main()
+{
+  short a,e;
+
+  a=2;
+  e=10;
+  if (e>-1)
+  {
+    a=e+1;
+  }
+  NumOut(0,LCD_LINE1,a,false);
+  NumOut(0,LCD_LINE2,e,false);
+  Wait(10000);
+}
+//Will uncorrectly display a=0, b=10

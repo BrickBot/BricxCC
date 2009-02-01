@@ -1,0 +1,10 @@
+// fixed
+;----------------------------------accessvio.nbc
+dseg segment
+;k_sw4 sword
+dseg ends
+
+thread main
+shr k_sw4, k_sw4, 2
+endt
+;----------------------------------accessvio.nbc

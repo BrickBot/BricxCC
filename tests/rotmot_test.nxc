@@ -1,0 +1,18 @@
+task main()
+{
+  /* The robot moves forward for 5 secs. */
+  TextOut(0, LCD_LINE1, "OnFwdReg", true);
+  OnFwdReg(OUT_BC, 50, OUT_REGMODE_SYNC);
+  Wait(5000);
+  /* The robot rotates 90 degrees. */
+  TextOut(0, LCD_LINE1, "RotateMotorEx", true);
+  RotateMotorEx(OUT_BC, 50, 720, -100, true, true);
+  /* !!!The robot rotates for 5 secs
+  instead of moving forward!!! */
+  TextOut(0, LCD_LINE1, "OnFwdReg", true);
+  OnFwdReg(OUT_BC, 50, OUT_REGMODE_SYNC);
+  Wait(5000);
+  Off(OUT_BC);
+  Wait(1000);
+}
+

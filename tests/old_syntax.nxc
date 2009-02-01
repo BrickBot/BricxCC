@@ -1,0 +1,77 @@
+// working as of 2009-01-29 JCH
+
+// Draws a white vertical bar between two black vertical bars, then inverts the
+// screen, and then re-inverts the screen. Uses old syntax.
+
+// This program runs correctly when compiled with b35, but it fails when
+// compiled with b36.
+
+#define FAST  // comment out to test old syntax in InvertBlock
+
+#define SCREEN_WIDTH 100
+#define SCREEN_HEIGHT 64
+
+byte screen_block[][];
+byte screen_line[] = 
+   {
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 
+      0, 0, 0, 0, 0, 0, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 
+      1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 
+      0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0
+   };
+
+void DrawScreen()
+{
+//   PlayTone(1024, SEC_1);
+   for (byte row = 0; row < SCREEN_HEIGHT; row++)
+   {
+      byte vector[SCREEN_WIDTH];
+      vector = screen_block[row];
+      for (byte col = 0; col < SCREEN_WIDTH; col++)
+      {
+#ifdef FAST
+         PointOut(col, row, vector[col] ? DRAW_OPT_CLEAR_PIXELS : DRAW_OPT_NORMAL);
+#else
+         PointOut(col, row, vector[col]);
+#endif
+      }
+   }
+//   PlayTone(1024, SEC_1);
+//   Wait(SEC_1);
+}
+
+void InvertBlock()
+{
+//   PlayTone(2048, SEC_1);
+#ifdef FAST
+  asm {
+    not screen_block, screen_block;
+  }
+#else
+   for (byte row = 0; row < SCREEN_HEIGHT; row++)
+   {
+      byte vector[SCREEN_WIDTH];
+      vector = screen_block[row];
+      for (byte col = 0; col < SCREEN_WIDTH; col++)
+      {
+         vector[col] = vector[col] ? DRAW_OPT_NORMAL : DRAW_OPT_CLEAR_PIXELS;
+      }
+      screen_block[row] = vector;
+   }
+#endif
+//   PlayTone(2048, SEC_1);
+//   Wait(SEC_1);
+}
+
+task main()
+{
+   ArrayInit(screen_block, screen_line, SCREEN_HEIGHT);
+   ClearScreen();
+   InvertBlock();
+   DrawScreen();
+   InvertBlock();
+   DrawScreen();
+   InvertBlock();
+   DrawScreen();
+   Wait(SEC_2);
+}

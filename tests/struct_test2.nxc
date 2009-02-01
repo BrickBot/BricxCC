@@ -1,0 +1,49 @@
+// Working correctly - 2009-01-28 JCH
+
+struct radar_map_entry
+{
+  int foobar;
+};
+
+struct RADAR_t
+{
+	radar_map_entry radar_map[];
+	unsigned short map_size;
+	bool scanning; //!! This is not properly accessed from the tasks?! :-o
+};
+
+RADAR_t radar;
+
+bool radar_scanning = 0;	// this *is* seen from tasks (unlike the struct member above)
+
+//...
+
+task task1()
+{
+	radar.scanning = 1; //!! NEVER MADE A DIFFERENCE... :(
+	radar_scanning = 1; // OK
+//	...
+}
+
+task main()
+{
+  start task1;
+	while (true)
+	{
+		if (radar.scanning) {
+      TextOut(0, LCD_LINE1, "radar.scanning 1");
+     //!! NEVER OCCURED... :(
+    }
+		if (radar_scanning) // OK
+		{
+      TextOut(0, LCD_LINE2, "radar_scanning 1");
+			// Do stuff...
+    }
+  }
+}
+#if 1
+task foobar()
+{
+  // do stuff
+}
+#endif

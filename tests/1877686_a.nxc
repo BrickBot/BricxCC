@@ -1,0 +1,16 @@
+// fixed
+task main()
+{
+  int x = 0;
+  NumOut(0, LCD_LINE1, x);
+  NumOut(0, LCD_LINE2, ++x);
+  NumOut(0, LCD_LINE3, x+1);
+  x = x + 1; // doesn't add one to x
+  NumOut(0, LCD_LINE4, x);
+  x = 1 + x;
+  NumOut(0, LCD_LINE5, x);
+  x += 1;
+  NumOut(0, LCD_LINE6, x);
+  while(true);
+}
+
