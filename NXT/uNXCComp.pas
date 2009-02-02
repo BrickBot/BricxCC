@@ -135,7 +135,6 @@ type
     procedure DoAssignValue(const aName : string; dt : char);
     procedure DoLocalArrayInit(const aName, ival : string; dt : char);
     procedure DoArrayAssignValue(const aName, idx : string; dt : char);
-//    procedure DoArrayIndex(rhsBaseDT : char; aLHSName, aName : string);
     procedure DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string);
     procedure Assignment;
     procedure CheckNotConstant(const aName : string);
@@ -2513,19 +2512,9 @@ begin
   else if Look = '[' then
   begin
     val := Value;
-//    if not (DataType(val) in [TOK_ARRAYSTRING..TOK_ARRAYSTRING4]) then
-//      Expected(sArrayOfString);
     Next;
     fArrayIndexStack.Clear;
-//    DoArrayIndex(DataType(StrRetValName), StrRetValName, val);
-//    DoArrayIndex(ArrayBaseType(DataType(val)), StrRetValName, val);
     DoNewArrayIndex(DataType(val), val, StrRetValName);
-(*
-    Next;
-    BoolExpression;
-    MatchString(']');
-    EmitLn(Format('index %s, %s, %s', [StrRetValName, GetDecoratedIdent(val), RegisterName]));
-*)
     if bAdd then
       asmStr := Format('strcat %s, %s, %s', [StrBufName, GetDecoratedIdent(Name), StrRetValName])
     else
@@ -3472,34 +3461,6 @@ begin
       Value := tmpUDTName;
       // recurse to the Assignment procedure
       Assignment;
-(*
-      while Token = '.' do
-      begin
-        // append the "."
-        tmpUDTName := tmpUDTName + Value;
-        Next;
-        // next value
-        tmpUDTName := tmpUDTName + Value;
-        Next;
-      end;
-      dt := DataType(tmpUDTName);
-      fLHSDataType := dt;
-      fLHSName     := tmpUDTName;
-      try
-        if IsUDT(dt) then
-          UDTAssignment(tmpUDTName)
-        else
-        begin
-          MatchString('=');
-          //
-          DoAssignValue(tmpUDTName, dt);
-        end;
-      finally
-        fLHSDataType := TOK_LONGDEF;
-        fLHSName     := '';
-      end;
-      // pass its name into the call to UDTAssignment
-*)
       // store temporary thread-safe variable back into previous array
       StoreArray(name, tmp, aval);
     finally
@@ -3508,7 +3469,7 @@ begin
   end
   else if Token in ['+', '-', '/', '*', '%', '&', '|', '^', '>', '<'] then
   begin
-    if dt in IntegralTypes then
+    if (dt in IntegralTypes) and bIndexed then
     begin
       // get the indexed value
       push;
@@ -3519,7 +3480,9 @@ begin
       pop;
     end
     else
-      AbortMsg(sInvalidArrayExpr);
+    begin
+      MathAssignment(name);
+    end;
   end
   else
   begin
@@ -3565,7 +3528,15 @@ begin
   begin
     // lhs is an array.  That means we can only have a factor on the rhs.
     if idx = '' then
-      NotNumericFactor
+    begin
+      if Token = '!' then begin
+        Next;
+        NumericFactor;
+        EmitLn(Format('not %0:s, %0:s', [GetDecoratedIdent(aName)]));
+      end
+      else
+        NumericFactor;
+    end
     else
     begin
       if Look = '[' then
@@ -3599,21 +3570,6 @@ begin
         StoreArray(aName, idx, GetDecoratedValue);
         Next;
       end;
-(*
-      // if we have an indexed array on the LHS and it is still an array
-      // then we need to do a replace with just the rhs
-      CheckIdent;
-      CheckDataType(dt);
-      // no indexing of the rhs is allowed
-      if Look = '[' then
-      begin
-        AbortMsg(sInvalidArrayExpr);
-        SkipLine;
-      end
-      else
-        StoreArray(aName, idx, GetDecoratedValue);
-      Next;
-*)
     end;
   end
   else
@@ -4191,12 +4147,6 @@ begin
     fSemiColonRequired := False;
   end;
   Next;
-(*
-  // if the current token happens to be a semi-colon then
-  // eat it since it is not required
-  OptionalSemi;
-  Scan;
-*)
 end;
 
 {--------------------------------------------------------------}
@@ -6823,7 +6773,7 @@ var
   x, y : string;
   bCls : boolean;
 begin
-  //DrawPoint(x,y,cls=false)
+  //PointOut(x,y,cls=false)
   OpenParen;
   // arg1 = x
   BoolExpression;
@@ -6867,8 +6817,8 @@ var
   x, y, x2, y2 : string;
   bCls : boolean;
 begin
-  //DrawLine(x1,y1,x2,y2,cls=false)
-  //DrawRect(x1,y1,width,height,cls=false)
+  //LineOut(x1,y1,x2,y2,cls=false)
+  //RectOut(x1,y1,width,height,cls=false)
   OpenParen;
   // arg1 = x
   BoolExpression;
@@ -7974,113 +7924,8 @@ begin
   asmstr := Format('arrbuild %s', [aName]);
   tmp := StripBraces(ival);
   asmstr := asmstr + ', ' + tmp;
-(*
-  tmp := Replace(ival, '{', '');
-  tmp := Replace(tmp, '}', '');
-  while Length(tmp) > 0 do
-  begin
-    i := Pos(',', tmp);
-    if i = 0 then
-      i := MaxInt;
-    src := Trim(Copy(tmp, 1, i-1));
-    System.Delete(tmp, 1, i);
-    if src = '' then
-      src := '0';
-    asmstr := asmstr + Format(', %s', [src]);
-  end;
-*)
   EmitLn(asmstr);
 end;
-
-(*
-procedure TNXCComp.DoArrayIndex(rhsBaseDT : char; aLHSName, aName : string);
-var
-  oldType, tmpDT : char;
-  tmp, udType, aval, idxName, tmpUDTName : string;
-  AHV : TArrayHelperVar;
-begin
-  AHV := nil;
-  Next;
-  oldType := fLHSDataType;
-  try
-    fLHSDataType := TOK_LONGDEF;
-    BoolExpression;
-  finally
-    fLHSDataType := oldType;
-  end;
-  MatchString(']');
-  push;
-  tmp := tos;
-  EmitLn(Format('mov %s, %s', [tmp, RegisterName]));
-  fArrayIndexStack.Add(tmp);
-  if Token = '[' then
-  begin
-    tmpDT := AddArrayDimension(rhsBaseDT);
-//    if ArrayBaseType(tmpDT) <> ArrayBaseType(rhsBaseDT) then
-//      AbortMsg(sInvalidArrayIndex);
-    udType := '';
-    if IsUDT(ArrayBaseType(tmpDT)) then
-      udType := GetUDTType(aName);
-    // get a temporary thread-safe variable of the right type
-    AHV := fArrayHelpers.GetHelper(fCurrentThreadName, udType, tmpDT);
-    aval := AHV.Name;
-    if fGlobals.IndexOfName(aval) = -1 then
-      AddEntry(aval, tmpDT, udType, '');
-    DoArrayIndex(tmpDT, aval, aName);
-    // now replace original rhs name with temporary name
-    aName := aval;
-  end
-  else if Token = '.' then
-  begin
-    tmpDT := RemoveArrayDimension(DataType(aName));
-    udType := '';
-    if IsUDT(ArrayBaseType(tmpDT)) then
-      udType := GetUDTType(aName);
-    // get a temporary thread-safe variable of the right type
-    AHV := fArrayHelpers.GetHelper(fCurrentThreadName, udType, tmpDT);
-    aval := AHV.Name;
-    if fGlobals.IndexOfName(aval) = -1 then
-      AddEntry(aval, tmpDT, udType, '');
-  end;
-  fCCSet := False;
-  idxName := fArrayIndexStack[0];
-  fArrayIndexStack.Delete(0);
-{
-  if aLHSName = '' then
-    aLHSName := RegisterName;
-  if aLHSName = '' then
-    lhsDT := TOK_LONGDEF
-  else
-    lhsDT := DataType(aLHSName);
-  rhsDT := RemoveArrayDimension(DataType(aName));
-  if not TypesAreCompatible(lhsDT, rhsDT) then
-    AbortMsg(sInvalidArrayExpr);
-}
-  if Token = '.' then
-  begin
-    EmitLn(Format('index %s, %s, %s',[GetDecoratedIdent(aval), GetDecoratedIdent(aName), idxName]));
-    // process dots
-    tmpUDTName := aval;
-    // add the "."
-    tmpUDTName := tmpUDTName + Value;
-    Next;
-    // add rest of struct member name
-    tmpUDTName := tmpUDTName + Value;
-    Next; // move to next token
-  end
-  else if IsArrayType(rhsBaseDT) or IsUDT(rhsBaseDT) or ({lhsDT}rhsBaseDT = TOK_STRINGDEF) then
-  begin
-    EmitLn(Format('index %s, %s, %s',[GetDecoratedIdent(aLHSName), GetDecoratedIdent(aName), idxName]));
-  end
-  else
-  begin
-    EmitLn(Format('index %s, %s, %s',[RegisterName, GetDecoratedIdent(aName), idxName]));
-  end;
-  if Assigned(AHV) then
-    fArrayHelpers.ReleaseHelper(AHV);
-  pop;
-end;
-*)
 
 procedure TNXCComp.DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string);
 var

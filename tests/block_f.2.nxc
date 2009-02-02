@@ -408,9 +408,7 @@ void DrawLetter()
 void InvertLetter()
 {
 //   PlayTone(2048, SEC_1);
-   asm {
-     not block_f, block_f
-   }
+   block_f = !block_f;
 //   PlayTone(2048, SEC_1);
 //   Wait(SEC_1);
 }
