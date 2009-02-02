@@ -113,9 +113,9 @@ begin
     300 : begin
       SetLength(Result, 1);
       if chkBoolValue.Checked then
-        Result := #0
+        Result := #1
       else
-        Result := #1;
+        Result := #0;
     end;
     400 : begin
       SetLength(Result, 4);
