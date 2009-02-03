@@ -185,7 +185,7 @@ object frmMacroManager: TfrmMacroManager
     TabOrder = 12
     OnClick = btnHelpClick
   end
-  object hkMacro: TBricxCCHotKey
+  object hkMacro2: TEdit
     Left = 64
     Top = 261
     Width = 121
@@ -194,8 +194,6 @@ object frmMacroManager: TfrmMacroManager
     TabOrder = 4
     Text = 'None'
     OnExit = hkMacroExit
-    HotKey = 0
-    InvalidKeys = [hcNone, hcShift]
   end
   object dlgOpen: TOpenDialog
     Filter = 'Macro Library (*.mlb)|*.mlb|All Files (*.*)|*.*'

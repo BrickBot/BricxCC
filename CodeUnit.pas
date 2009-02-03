@@ -8,7 +8,6 @@ uses
 
 type
   TCodeForm = class(TForm)
-    CodeEdit: TSynEdit;
     procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
@@ -28,8 +27,10 @@ type
     procedure mniCodeFindNextClick(Sender: TObject);
     procedure mniCodeFindPrevClick(Sender: TObject);
     procedure CreatePopupMenu;
+    procedure CreateSynEditComponents;
   public
     { Public declarations }
+    CodeEdit: TSynEdit;
   end;
 
 var
@@ -77,6 +78,7 @@ end;
 
 procedure TCodeForm.FormCreate(Sender: TObject);
 begin
+  CreateSynEditComponents;
   CreatePopupMenu;
   CodeEdit.PopupMenu := pmnuCodeView;
 end;
@@ -147,6 +149,37 @@ begin
     Caption := sStayOnTop;
     RadioItem := True;
     OnClick := mniStayOnTopClick;
+  end;
+end;
+
+procedure TCodeForm.CreateSynEditComponents;
+begin
+  CodeEdit := TSynEdit.Create(Self);
+  with CodeEdit do
+  begin
+    Name := 'CodeEdit';
+    Parent := Self;
+    Left := 0;
+    Top := 0;
+    Width := 536;
+    Height := 341;
+    Cursor := crIBeam;
+    Align := alClient;
+    Font.Charset := DEFAULT_CHARSET;
+    Font.Color := clWindowText;
+    Font.Height := -13;
+    Font.Name := 'Courier New';
+    Font.Pitch := fpFixed;
+    Font.Style := [];
+    ParentColor := False;
+    ParentFont := False;
+    TabOrder := 0;
+    Gutter.Font.Charset := DEFAULT_CHARSET;
+    Gutter.Font.Color := clWindowText;
+    Gutter.Font.Height := -11;
+    Gutter.Font.Name := 'Terminal';
+    Gutter.Font.Style := [];
+    ReadOnly := True;
   end;
 end;
 
