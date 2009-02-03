@@ -78,7 +78,6 @@ type
     chkBold: TCheckBox;
     chkItalic: TCheckBox;
     chkUnderline: TCheckBox;
-    SynEditColors: TSynEdit;
     grpFGBG: TGroupBox;
     chkFG: TCheckBox;
     chkBG: TCheckBox;
@@ -108,16 +107,6 @@ type
     btnEditCodeTemplates: TButton;
     btnClaimExt: TButton;
     shtAPI: TTabSheet;
-    pagAPI: TPageControl;
-    shtAPIKeywords: TTabSheet;
-    shtAPICommands: TTabSheet;
-    shtAPIConstants: TTabSheet;
-    lstKeywords: TListBox;
-    lstCommands: TListBox;
-    lstConstants: TListBox;
-    edtKeyword: TEdit;
-    edtCommand: TEdit;
-    edtConstant: TEdit;
     btnAddAPI: TButton;
     btnDeleteAPI: TButton;
     chkIncludeSrcInList: TCheckBox;
@@ -223,7 +212,6 @@ type
     radPBForth: TRadioButton;
     radLejos: TRadioButton;
     radOtherFirmware: TRadioButton;
-    NewTemplatesList: TSynEdit;
     lblLangTemp: TLabel;
     cboLangTemp: TComboBox;
     btnSaveTemplates: TButton;
@@ -286,12 +274,6 @@ type
     cbxStructureColor: TColorBox;
     cbxActiveLineColor: TColorBox;
     cbxGutterColor: TColorBox;
-    edtNQCExePath: TDirectoryEdit;
-    edtLCCExePath: TDirectoryEdit;
-    edtNBCExePath: TDirectoryEdit;
-    edtCygwin: TDirectoryEdit;
-    edtJavaPath: TDirectoryEdit;
-    edtLeJOSRoot: TDirectoryEdit;
     cbxFGColor: TColorBox;
     cbxBGColor: TColorBox;
     Label5: TLabel;
@@ -315,6 +297,41 @@ type
     inpLeftOffset: TSpinEdit;
     inpDigitCount: TSpinEdit;
     inpGutterWidth: TSpinEdit;
+    edtNQCExePath2: TEdit;
+    edtLCCExePath2: TEdit;
+    edtNBCExePath2: TEdit;
+    edtCygwin2: TEdit;
+    edtJavaPath2: TEdit;
+    edtLeJOSRoot2: TEdit;
+    pagAPILang: TPageControl;
+    shtNQCAPI: TTabSheet;
+    pagNQCAPI: TPageControl;
+    shtAPIKeywords: TTabSheet;
+    lstKeywords: TListBox;
+    edtKeyword: TEdit;
+    shtAPICommands: TTabSheet;
+    lstCommands: TListBox;
+    edtCommand: TEdit;
+    shtAPIConstants: TTabSheet;
+    lstConstants: TListBox;
+    edtConstant: TEdit;
+    shtNXCAPI: TTabSheet;
+    pagNXCAPI: TPageControl;
+    shtNXCKeywords: TTabSheet;
+    lstNXCKeywords: TListBox;
+    edtNXCKeyword: TEdit;
+    shtNXCCommands: TTabSheet;
+    lstNXCCommands: TListBox;
+    edtNXCCommand: TEdit;
+    shtNXCConstants: TTabSheet;
+    lstNXCConstants: TListBox;
+    edtNXCConstant: TEdit;
+    NewTemplatesList2: TMemo;
+    SynEditColors2: TMemo;
+    hkCodeComp2: TEdit;
+    hkParamComp2: TEdit;
+    hkRecMacro2: TEdit;
+    hkPlayMacro2: TEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -346,7 +363,7 @@ type
     procedure lstAPIClick(Sender: TObject);
     procedure edtAPIChange(Sender: TObject);
     procedure pagPrefsChange(Sender: TObject);
-    procedure pagAPIChange(Sender: TObject);
+    procedure pagNQCAPIChange(Sender: TObject);
     procedure cboLanguagesChange(Sender: TObject);
     procedure edtLCCIncludePathExit(Sender: TObject);
     procedure edtNQCIncludePathExit(Sender: TObject);
@@ -357,7 +374,7 @@ type
     procedure btnGetNBCVersionClick(Sender: TObject);
     procedure edtNBCIncludePathExit(Sender: TObject);
     procedure cboLangTempChange(Sender: TObject);
-    procedure NewTemplatesListChange(Sender: TObject);
+    procedure NewTemplatesList2Change(Sender: TObject);
     procedure btnSaveTemplatesClick(Sender: TObject);
     procedure btnLoadTemplatesClick(Sender: TObject);
     procedure btnPrecompileClick(Sender: TObject);
@@ -366,6 +383,12 @@ type
     procedure cbxBGColorChange(Sender: TObject);
   private
     { Private declarations }
+    cc_keywords: TStringList;
+    cc_commands: TStringList;
+    cc_constants: TStringList;
+    cc_nxc_keywords: TStringList;
+    cc_nxc_commands: TStringList;
+    cc_nxc_constants: TStringList;
     fColorsChanged : boolean;
     fKeystrokes : TSynEditKeyStrokes;
     fCodeTemplates: TStrings;
@@ -440,12 +463,23 @@ type
     procedure SetPrefLang(const Value: Integer);
     procedure CreatePrefFormHighlighters;
     procedure CreateHotKeyEdits;
+    procedure CreateSynEditComponents;
+    procedure CreateDirectoryEdits;
+    function CreateSortedStringList : TStringList;
   public
     { Public declarations }
     hkCodeComp: TBricxCCHotKey;
     hkParamComp: TBricxCCHotKey;
     hkRecMacro: TBricxCCHotKey;
     hkPlayMacro: TBricxCCHotKey;
+    edtNQCExePath: TDirectoryEdit;
+    edtLCCExePath: TDirectoryEdit;
+    edtNBCExePath: TDirectoryEdit;
+    edtCygwin: TDirectoryEdit;
+    edtJavaPath: TDirectoryEdit;
+    edtLeJOSRoot: TDirectoryEdit;
+    NewTemplatesList: TSynEdit;
+    SynEditColors: TSynEdit;
     property ColorsChanged : boolean read fColorsChanged;
     property Keystrokes : TSynEditKeyStrokes read fKeystrokes write SetKeystrokes;
     property CodeTemplates : TStrings read fCodeTemplates write SetCodeTemplates;
@@ -478,7 +512,6 @@ var
 
 {Templates}
 const
-  MAX_TEMPLATES = 200;
   NUM_LANGS = 15;
   LANG_CS = 0;
   LANG_CPP = 1;
@@ -489,40 +522,13 @@ type
   TemplateCount = array[0..NUM_LANGS-1] of integer;
 
 var
-//  templates:array[1..MAX_TEMPLATES] of string;
   templates : TemplateArray;
-{
-  templates : array of string;
-  templates : array of string;
-  templates : array of string;
-  templates : array of string;
-  templates : array of string;
-  templates : array of string;
-}
   templatenumb : TemplateCount;
   ShowTemplateForm:boolean;
   ShowTemplatePopup:boolean;
   TemplatesChanged:boolean;
   TemplatesUseDblClick : Boolean;
   TemplateLanguageName : string = 'NQC';
-
-{Keywords}
-
-var
-  cc_keywords:array of string;
-  cc_commands:array of string;
-  cc_constants:array of string;
-  cc_keynumb:integer;
-  cc_commandnumb:integer;
-  cc_constantnumb:integer;
-
-var
-  cc_nxc_keywords:array of string;
-  cc_nxc_commands:array of string;
-  cc_nxc_constants:array of string;
-  cc_nxc_keynumb:integer;
-  cc_nxc_commandnumb:integer;
-  cc_nxc_constantnumb:integer;
 
 {Recent Files}
 procedure ShowRecentFiles(parent : TOfficeMenuItem; handler : TNotifyEvent);
@@ -775,7 +781,7 @@ uses
   uVersionInfo, uHighlighterProcs, uExtensionDlg, {ActiveX, ShlObj,}
   uSetValues, uEEPROM, uNewWatch, uForthConsole, Themes,
   uSpirit, brick_common, Transfer, uNXTExplorer, uNXTController,
-  uNXTExplorerSettings, uLocalizedStrings;
+  uNXTExplorerSettings, uLocalizedStrings, uGuiUtils;
 
 {$R *.DFM}
 
@@ -1646,50 +1652,26 @@ begin
 end;
 
 procedure PutValuesInSyntaxHighlighter;
-var
-  i : integer;
 begin
   if not Assigned(PrefForm) then Exit;
+  // NQC API
   // keywords
-  PrefForm.SynNQCSyn.KeyWords.Clear;
-  for i := 1 to cc_keynumb do
-  begin
-    PrefForm.SynNQCSyn.KeyWords.Add(cc_keywords[i-1]);
-  end;
+  PrefForm.SynNQCSyn.KeyWords.Assign(PrefForm.cc_keywords);
   // commands
-  PrefForm.SynNQCSyn.Commands.Clear;
-  for i := 1 to cc_commandnumb do
-  begin
-    PrefForm.SynNQCSyn.Commands.Add(cc_commands[i-1]);
-  end;
+  PrefForm.SynNQCSyn.Commands.Assign(PrefForm.cc_commands);
   // constants
-  PrefForm.SynNQCSyn.Constants.Clear;
-  for i := 1 to cc_constantnumb do
-  begin
-    PrefForm.SynNQCSyn.Constants.Add(cc_constants[i-1]);
-  end;
+  PrefForm.SynNQCSyn.Constants.Assign(PrefForm.cc_constants);
   // now copy to main form
   MainForm.SynNQCSyn.KeyWords.Assign(PrefForm.SynNQCSyn.KeyWords);
   MainForm.SynNQCSyn.Commands.Assign(PrefForm.SynNQCSyn.Commands);
   MainForm.SynNQCSyn.Constants.Assign(PrefForm.SynNQCSyn.Constants);
+  // NXC API
   // nxc keywords
-  PrefForm.SynNXCSyn.KeyWords.Clear;
-  for i := 1 to cc_nxc_keynumb do
-  begin
-    PrefForm.SynNXCSyn.KeyWords.Add(cc_nxc_keywords[i-1]);
-  end;
+  PrefForm.SynNXCSyn.KeyWords.Assign(PrefForm.cc_nxc_keywords);
   // commands
-  PrefForm.SynNXCSyn.Commands.Clear;
-  for i := 1 to cc_nxc_commandnumb do
-  begin
-    PrefForm.SynNXCSyn.Commands.Add(cc_nxc_commands[i-1]);
-  end;
+  PrefForm.SynNXCSyn.Commands.Assign(PrefForm.cc_nxc_commands);
   // constants
-  PrefForm.SynNXCSyn.Constants.Clear;
-  for i := 1 to cc_nxc_constantnumb do
-  begin
-    PrefForm.SynNXCSyn.Constants.Add(cc_nxc_constants[i-1]);
-  end;
+  PrefForm.SynNXCSyn.Constants.Assign(PrefForm.cc_nxc_constants);
   // now copy to main form
   MainForm.SynNXCSyn.KeyWords.Assign(PrefForm.SynNXCSyn.KeyWords);
   MainForm.SynNXCSyn.Commands.Assign(PrefForm.SynNXCSyn.Commands);
@@ -1707,31 +1689,13 @@ begin
   if Assigned(PrefForm) then
   begin
     // nqc
-    cc_keynumb      := PrefForm.SynNQCSyn.KeyWords.Count;
-    cc_commandnumb  := PrefForm.SynNQCSyn.Commands.Count;
-    cc_constantnumb := PrefForm.SynNQCSyn.Constants.Count;
-    SetLength(cc_keywords, cc_keynumb);
-    SetLength(cc_commands, cc_commandnumb);
-    SetLength(cc_constants, cc_constantnumb);
-    for i := 1 to cc_keynumb do
-      cc_keywords[i-1] := PrefForm.SynNQCSyn.KeyWords[i-1];
-    for i := 1 to cc_commandnumb do
-      cc_commands[i-1] := PrefForm.SynNQCSyn.Commands[i-1];
-    for i := 1 to cc_constantnumb do
-      cc_constants[i-1] := PrefForm.SynNQCSyn.Constants[i-1];
+    PrefForm.cc_keywords.Assign(PrefForm.SynNQCSyn.KeyWords);
+    PrefForm.cc_commands.Assign(PrefForm.SynNQCSyn.Commands);
+    PrefForm.cc_constants.Assign(PrefForm.SynNQCSyn.Constants);
     // nxc
-    cc_nxc_keynumb      := PrefForm.SynNXCSyn.KeyWords.Count;
-    cc_nxc_commandnumb  := PrefForm.SynNXCSyn.Commands.Count;
-    cc_nxc_constantnumb := PrefForm.SynNXCSyn.Constants.Count;
-    SetLength(cc_nxc_keywords, cc_nxc_keynumb);
-    SetLength(cc_nxc_commands, cc_nxc_commandnumb);
-    SetLength(cc_nxc_constants, cc_nxc_constantnumb);
-    for i := 1 to cc_nxc_keynumb do
-      cc_nxc_keywords[i-1] := PrefForm.SynNXCSyn.KeyWords[i-1];
-    for i := 1 to cc_nxc_commandnumb do
-      cc_nxc_commands[i-1] := PrefForm.SynNXCSyn.Commands[i-1];
-    for i := 1 to cc_nxc_constantnumb do
-      cc_nxc_constants[i-1] := PrefForm.SynNXCSyn.Constants[i-1];
+    PrefForm.cc_nxc_keywords.Assign(PrefForm.SynNXCSyn.KeyWords);
+    PrefForm.cc_nxc_commands.Assign(PrefForm.SynNXCSyn.Commands);
+    PrefForm.cc_nxc_constants.Assign(PrefForm.SynNXCSyn.Constants);
   end;
   {Loads the keyword values from the registry}
   if not Reg_KeyExists(reg, 'Keywords') then
@@ -1741,35 +1705,17 @@ begin
     try
       if FileExists(ProgramDir+'Default\keywords.txt') then
       begin
-        SL.LoadFromFile(ProgramDir+'Default\keywords.txt');
-        cc_keynumb := SL.Count;
-        SetLength(cc_keywords, cc_keynumb);
-        for i := 0 to SL.Count - 1 do
-        begin
-          cc_keywords[i] := SL[i];
-        end;
+        PrefForm.cc_keywords.LoadFromFile(ProgramDir+'Default\keywords.txt');
       end;
 
       if FileExists(ProgramDir+'Default\commands.txt') then
       begin
-        SL.LoadFromFile(ProgramDir+'Default\commands.txt');
-        cc_commandnumb := SL.Count;
-        SetLength(cc_commands, cc_commandnumb);
-        for i := 0 to SL.Count - 1 do
-        begin
-          cc_commands[i] := SL[i];
-        end;
+        PrefForm.cc_commands.LoadFromFile(ProgramDir+'Default\commands.txt');
       end;
 
       if FileExists(ProgramDir+'Default\constants.txt') then
       begin
-        SL.LoadFromFile(ProgramDir+'Default\constants.txt');
-        cc_constantnumb := SL.Count;
-        SetLength(cc_constants, cc_constantnumb);
-        for i := 0 to SL.Count - 1 do
-        begin
-          cc_constants[i] := SL[i];
-        end;
+        PrefForm.cc_constants.LoadFromFile(ProgramDir+'Default\constants.txt');
       end;
     finally
       SL.Free;
@@ -1780,14 +1726,22 @@ begin
     Reg_OpenKey(reg, 'Keywords');
     try
       i:=1;
-      while reg.ValueExists('Keyword'+MyIntToStr(i)) do
+      if reg.ValueExists('Keyword'+MyIntToStr(i)) then
       begin
-        if i > Length(cc_keywords) then
-          SetLength(cc_keywords, i);
-        cc_keywords[i-1] := Reg_ReadString(reg, 'Keyword'+MyIntToStr(i),'');
-        i := i+1;
+        // old style
+        PrefForm.cc_keywords.Clear;
+        while reg.ValueExists('Keyword'+MyIntToStr(i)) do
+        begin
+          PrefForm.cc_keywords.Add(Reg_ReadString(reg, 'Keyword'+MyIntToStr(i),''));
+          reg.DeleteValue('Keyword'+MyIntToStr(i));
+          i := i+1;
+        end;
+      end
+      else
+      begin
+        // new style
+        PrefForm.cc_keywords.Text := Reg_ReadString(reg, 'Keywords', '');
       end;
-      cc_keynumb := i-1;
     finally
       reg.CloseKey;
     end;
@@ -1795,14 +1749,22 @@ begin
     Reg_OpenKey(reg, 'Commands');
     try
       i:=1;
-      while reg.ValueExists('Command'+MyIntToStr(i)) do
+      if reg.ValueExists('Command'+MyIntToStr(i)) then
       begin
-        if i > Length(cc_commands) then
-          SetLength(cc_commands, i);
-        cc_commands[i-1] := Reg_ReadString(reg, 'Command'+MyIntToStr(i),'');
-        i := i+1;
+        // old style
+        PrefForm.cc_commands.Clear;
+        while reg.ValueExists('Command'+MyIntToStr(i)) do
+        begin
+          PrefForm.cc_commands.Add(Reg_ReadString(reg, 'Command'+MyIntToStr(i),''));
+          reg.DeleteValue('Command'+MyIntToStr(i));
+          i := i+1;
+        end;
+      end
+      else
+      begin
+        // new style
+        PrefForm.cc_commands.Text := Reg_ReadString(reg, 'Commands', '');
       end;
-      cc_commandnumb := i-1;
     finally
       reg.CloseKey;
     end;
@@ -1810,14 +1772,22 @@ begin
     Reg_OpenKey(reg, 'Constants');
     try
       i:=1;
-      while reg.ValueExists('Constant'+MyIntToStr(i)) do
+      if reg.ValueExists('Constant'+MyIntToStr(i)) then
       begin
-        if i > Length(cc_constants) then
-          SetLength(cc_constants, i);
-        cc_constants[i-1] := Reg_ReadString(reg, 'Constant'+MyIntToStr(i),'');
-        i := i+1;
+        // old style
+        PrefForm.cc_constants.Clear;
+        while reg.ValueExists('Constant'+MyIntToStr(i)) do
+        begin
+          PrefForm.cc_constants.Add(Reg_ReadString(reg, 'Constant'+MyIntToStr(i),''));
+          reg.DeleteValue('Constant'+MyIntToStr(i));
+          i := i+1;
+        end;
+      end
+      else
+      begin
+        // new style
+        PrefForm.cc_constants.Text := Reg_ReadString(reg, 'Constants', '');
       end;
-      cc_constantnumb := i-1;
     finally
       reg.CloseKey;
     end;
@@ -1830,35 +1800,17 @@ begin
     try
       if FileExists(ProgramDir+'Default\nxc_keywords.txt') then
       begin
-        SL.LoadFromFile(ProgramDir+'Default\nxc_keywords.txt');
-        cc_nxc_keynumb := SL.Count;
-        SetLength(cc_nxc_keywords, cc_nxc_keynumb);
-        for i := 0 to SL.Count - 1 do
-        begin
-          cc_nxc_keywords[i] := SL[i];
-        end;
+        PrefForm.cc_nxc_keywords.LoadFromFile(ProgramDir+'Default\nxc_keywords.txt');
       end;
 
       if FileExists(ProgramDir+'Default\nxc_commands.txt') then
       begin
-        SL.LoadFromFile(ProgramDir+'Default\nxc_commands.txt');
-        cc_nxc_commandnumb := SL.Count;
-        SetLength(cc_nxc_commands, cc_nxc_commandnumb);
-        for i := 0 to SL.Count - 1 do
-        begin
-          cc_nxc_commands[i] := SL[i];
-        end;
+        PrefForm.cc_nxc_commands.LoadFromFile(ProgramDir+'Default\nxc_commands.txt');
       end;
 
       if FileExists(ProgramDir+'Default\nxc_constants.txt') then
       begin
-        SL.LoadFromFile(ProgramDir+'Default\nxc_constants.txt');
-        cc_nxc_constantnumb := SL.Count;
-        SetLength(cc_nxc_constants, cc_nxc_constantnumb);
-        for i := 0 to SL.Count - 1 do
-        begin
-          cc_nxc_constants[i] := SL[i];
-        end;
+        PrefForm.cc_nxc_constants.LoadFromFile(ProgramDir+'Default\nxc_constants.txt');
       end;
     finally
       SL.Free;
@@ -1868,45 +1820,21 @@ begin
   begin
     Reg_OpenKey(reg, 'NXC_Keywords');
     try
-      i:=1;
-      while reg.ValueExists('NXC_Keyword'+MyIntToStr(i)) do
-      begin
-        if i > Length(cc_nxc_keywords) then
-          SetLength(cc_nxc_keywords, i);
-        cc_nxc_keywords[i-1] := Reg_ReadString(reg, 'NXC_Keyword'+MyIntToStr(i),'');
-        i := i+1;
-      end;
-      cc_nxc_keynumb := i-1;
+      PrefForm.cc_nxc_keywords.Text := Reg_ReadString(reg, 'Keywords', '');
     finally
       reg.CloseKey;
     end;
 
     Reg_OpenKey(reg, 'NXC_Commands');
     try
-      i:=1;
-      while reg.ValueExists('NXC_Command'+MyIntToStr(i)) do
-      begin
-        if i > Length(cc_nxc_commands) then
-          SetLength(cc_nxc_commands, i);
-        cc_nxc_commands[i-1] := Reg_ReadString(reg, 'NXC_Command'+MyIntToStr(i),'');
-        i := i+1;
-      end;
-      cc_nxc_commandnumb := i-1;
+      PrefForm.cc_nxc_commands.Text := Reg_ReadString(reg, 'Commands', '');
     finally
       reg.CloseKey;
     end;
 
     Reg_OpenKey(reg, 'NXC_Constants');
     try
-      i:=1;
-      while reg.ValueExists('NXC_Constant'+MyIntToStr(i)) do
-      begin
-        if i > Length(cc_nxc_constants) then
-          SetLength(cc_nxc_constants, i);
-        cc_nxc_constants[i-1] := Reg_ReadString(reg, 'NXC_Constant'+MyIntToStr(i),'');
-        i := i+1;
-      end;
-      cc_nxc_constantnumb := i-1;
+      PrefForm.cc_nxc_constants.Text := Reg_ReadString(reg, 'Constants', '');
     finally
       reg.CloseKey;
     end;
@@ -1915,16 +1843,13 @@ begin
 end;
 
 procedure SaveAPIValues(reg : TRegistry);
-var
-  i : integer;
 begin
   {Saves the keyword values to the registry}
   // NQC
   Reg_DeleteKey(reg, 'Keywords');
   Reg_OpenKey(reg, 'Keywords');
   try
-    for i:=1 to cc_keynumb do
-      reg.WriteString('Keyword'+MyIntToStr(i),cc_keywords[i-1]);
+    reg.WriteString('Keywords',PrefForm.cc_keywords.Text);
   finally
     reg.CloseKey;
   end;
@@ -1932,8 +1857,7 @@ begin
   Reg_DeleteKey(reg, 'Commands');
   Reg_OpenKey(reg, 'Commands');
   try
-    for i:=1 to cc_commandnumb do
-      reg.WriteString('Command'+MyIntToStr(i),cc_commands[i-1]);
+    reg.WriteString('Commands',PrefForm.cc_commands.Text);
   finally
     reg.CloseKey;
   end;
@@ -1941,8 +1865,7 @@ begin
   Reg_DeleteKey(reg, 'Constants');
   Reg_OpenKey(reg, 'Constants');
   try
-    for i:=1 to cc_constantnumb do
-      reg.WriteString('Constant'+MyIntToStr(i),cc_constants[i-1]);
+    reg.WriteString('Constants',PrefForm.cc_constants.Text);
   finally
     reg.CloseKey;
   end;
@@ -1950,8 +1873,7 @@ begin
   Reg_DeleteKey(reg, 'NXC_Keywords');
   Reg_OpenKey(reg, 'NXC_Keywords');
   try
-    for i:=1 to cc_nxc_keynumb do
-      reg.WriteString('NXC_Keyword'+MyIntToStr(i),cc_nxc_keywords[i-1]);
+    reg.WriteString('Keywords', PrefForm.cc_nxc_keywords.Text);
   finally
     reg.CloseKey;
   end;
@@ -1959,8 +1881,7 @@ begin
   Reg_DeleteKey(reg, 'NXC_Commands');
   Reg_OpenKey(reg, 'NXC_Commands');
   try
-    for i:=1 to cc_nxc_commandnumb do
-      reg.WriteString('NXC_Command'+MyIntToStr(i),cc_nxc_commands[i-1]);
+    reg.WriteString('Commands', PrefForm.cc_nxc_commands.Text);
   finally
     reg.CloseKey;
   end;
@@ -1968,8 +1889,7 @@ begin
   Reg_DeleteKey(reg, 'NXC_Constants');
   Reg_OpenKey(reg, 'NXC_Constants');
   try
-    for i:=1 to cc_nxc_constantnumb do
-      reg.WriteString('NXC_Constant'+MyIntToStr(i),cc_nxc_constants[i-1]);
+    reg.WriteString('Constants', PrefForm.cc_nxc_constants.Text);
   finally
     reg.CloseKey;
   end;
@@ -3954,8 +3874,6 @@ end;
 { The API information }
 
 procedure DisplayAPIValues;
-var
-  i : Integer;
 begin
   if not Assigned(PrefForm) then Exit;
   // NQC API
@@ -3966,34 +3884,21 @@ begin
   PrefForm.lstCommands.Items.Clear;
   PrefForm.lstConstants.Items.Clear;
 
-  for i := 1 to cc_keynumb do begin
-    PrefForm.lstKeywords.Items.Add(cc_keywords[i-1]);
-  end;
-  for i := 1 to cc_commandnumb do begin
-    PrefForm.lstCommands.Items.Add(cc_commands[i-1]);
-  end;
-  for i := 1 to cc_constantnumb do begin
-    PrefForm.lstConstants.Items.Add(cc_constants[i-1]);
-  end;
-(*
-  // NXC API
-  PrefForm.edtKeyword.Text := '';
-  PrefForm.edtCommand.Text := '';
-  PrefForm.edtConstant.Text := '';
-  PrefForm.lstKeywords.Items.Clear;
-  PrefForm.lstCommands.Items.Clear;
-  PrefForm.lstConstants.Items.Clear;
+  PrefForm.lstKeywords.Items.Assign(PrefForm.cc_keywords);
+  PrefForm.lstCommands.Items.Assign(PrefForm.cc_commands);
+  PrefForm.lstConstants.Items.Assign(PrefForm.cc_constants);
 
-  for i := 1 to cc_keynumb do begin
-    PrefForm.lstKeywords.Items.Add(cc_keywords[i-1]);
-  end;
-  for i := 1 to cc_commandnumb do begin
-    PrefForm.lstCommands.Items.Add(cc_commands[i-1]);
-  end;
-  for i := 1 to cc_constantnumb do begin
-    PrefForm.lstConstants.Items.Add(cc_constants[i-1]);
-  end;
-*)
+  // NXC API
+  PrefForm.edtNXCKeyword.Text := '';
+  PrefForm.edtNXCCommand.Text := '';
+  PrefForm.edtNXCConstant.Text := '';
+  PrefForm.lstNXCKeywords.Items.Clear;
+  PrefForm.lstNXCCommands.Items.Clear;
+  PrefForm.lstNXCConstants.Items.Clear;
+
+  PrefForm.lstNXCKeywords.Items.Assign(PrefForm.cc_nxc_keywords);
+  PrefForm.lstNXCCommands.Items.Assign(PrefForm.cc_nxc_commands);
+  PrefForm.lstNXCConstants.Items.Assign(PrefForm.cc_nxc_constants);
 end;
 
 procedure RememberAPIValues;
@@ -4001,44 +3906,16 @@ begin
 end;
 
 procedure GetAPIValues;
-var
-  i : Integer;
 begin
   if not Assigned(PrefForm) then Exit;
   // NQC API
-  cc_keynumb      := PrefForm.lstKeywords.Items.Count;
-  cc_commandnumb  := PrefForm.lstCommands.Items.Count;
-  cc_constantnumb := PrefForm.lstConstants.Items.Count;
-  SetLength(cc_keywords, cc_keynumb);
-  SetLength(cc_commands, cc_commandnumb);
-  SetLength(cc_constants, cc_constantnumb);
-  for i := 1 to cc_keynumb do begin
-    cc_keywords[i-1] := PrefForm.lstKeywords.Items[i-1];
-  end;
-  for i := 1 to cc_commandnumb do begin
-    cc_commands[i-1] := PrefForm.lstCommands.Items[i-1];
-  end;
-  for i := 1 to cc_constantnumb do begin
-    cc_constants[i-1] := PrefForm.lstConstants.Items[i-1];
-  end;
-(*
+  PrefForm.cc_keywords.Assign(PrefForm.lstKeywords.Items);
+  PrefForm.cc_commands.Assign(PrefForm.lstCommands.Items);
+  PrefForm.cc_constants.Assign(PrefForm.lstConstants.Items);
   // NXC API
-  cc_keynumb      := PrefForm.lstKeywords.Items.Count;
-  cc_commandnumb  := PrefForm.lstCommands.Items.Count;
-  cc_constantnumb := PrefForm.lstConstants.Items.Count;
-  SetLength(cc_keywords, cc_keynumb);
-  SetLength(cc_commands, cc_commandnumb);
-  SetLength(cc_constants, cc_constantnumb);
-  for i := 1 to cc_keynumb do begin
-    cc_keywords[i-1] := PrefForm.lstKeywords.Items[i-1];
-  end;
-  for i := 1 to cc_commandnumb do begin
-    cc_commands[i-1] := PrefForm.lstCommands.Items[i-1];
-  end;
-  for i := 1 to cc_constantnumb do begin
-    cc_constants[i-1] := PrefForm.lstConstants.Items[i-1];
-  end;
-*)
+  PrefForm.cc_nxc_keywords.Assign(PrefForm.lstNXCKeywords.Items);
+  PrefForm.cc_nxc_commands.Assign(PrefForm.lstNXCCommands.Items);
+  PrefForm.cc_nxc_constants.Assign(PrefForm.lstNXCConstants.Items);
   PutValuesInSyntaxHighlighter;
 end;
 
@@ -4534,7 +4411,9 @@ procedure TPrefForm.FormShow(Sender: TObject);
 begin
   fColorsChanged := False;
   pagPrefs.ActivePage    := shtGeneral;
-  pagAPI.ActivePage      := shtAPIKeywords;
+  pagAPILang.ActivePage  := shtNQCAPI;
+  pagNQCAPI.ActivePage   := shtAPIKeywords;
+  pagNXCAPI.ActivePage   := shtNXCKeywords;
   pagCompiler.ActivePage := shtCompilerCommon;
   pagEditor.ActivePage   := shtEditorOptions;
   // load values
@@ -4569,6 +4448,14 @@ procedure TPrefForm.FormCreate(Sender: TObject);
 var
   i : integer;
 begin
+  cc_keywords := CreateSortedStringList;
+  cc_commands := CreateSortedStringList;
+  cc_constants := CreateSortedStringList;
+  cc_nxc_keywords := CreateSortedStringList;
+  cc_nxc_commands := CreateSortedStringList;
+  cc_nxc_constants := CreateSortedStringList;
+  CreateDirectoryEdits;
+  CreateSynEditComponents;
   CreateHotKeyEdits;
   CreatePrefFormHighlighters;
   LoadNXTPorts(cboPort.Items);
@@ -4607,10 +4494,16 @@ procedure TPrefForm.FormDestroy(Sender: TObject);
 begin
   if not RunningAsCOMServer then
     SaveAllValues(fReg, Keystrokes, CodeTemplates);
-  fReg.Free;
-  fKeystrokes.Free;
-  fCodeTemplates.Free;
-  fLocalHighlighters.Free;
+  FreeAndNil(fReg);
+  FreeAndNil(fKeystrokes);
+  FreeAndNil(fCodeTemplates);
+  FreeAndNil(fLocalHighlighters);
+  FreeAndNil(cc_keywords);
+  FreeAndNil(cc_commands);
+  FreeAndNil(cc_constants);
+  FreeAndNil(cc_nxc_keywords);
+  FreeAndNil(cc_nxc_commands);
+  FreeAndNil(cc_nxc_constants);
 end;
 
 procedure TPrefForm.DisplayColorValues;
@@ -5054,22 +4947,46 @@ end;
 
 function TPrefForm.GetActiveAPIEdit: TEdit;
 begin
-  if pagAPI.ActivePage = shtAPIKeywords then
-    Result := edtKeyword
-  else if pagAPI.ActivePage = shtAPICommands then
-    Result := edtCommand
+  if pagAPILang.ActivePage = shtNQCAPI then
+  begin
+    if pagNQCAPI.ActivePage = shtAPIKeywords then
+      Result := edtKeyword
+    else if pagNQCAPI.ActivePage = shtAPICommands then
+      Result := edtCommand
+    else
+      Result := edtConstant;
+  end
   else
-    Result := edtConstant;
+  begin
+    if pagNXCAPI.ActivePage = shtNXCKeywords then
+      Result := edtNXCKeyword
+    else if pagNXCAPI.ActivePage = shtNXCCommands then
+      Result := edtNXCCommand
+    else
+      Result := edtNXCConstant;
+  end;
 end;
 
 function TPrefForm.GetActiveAPIListBox: TListBox;
 begin
-  if pagAPI.ActivePage = shtAPIKeywords then
-    Result := lstKeywords
-  else if pagAPI.ActivePage = shtAPICommands then
-    Result := lstCommands
+  if pagAPILang.ActivePage = shtNQCAPI then
+  begin
+    if pagNQCAPI.ActivePage = shtAPIKeywords then
+      Result := lstKeywords
+    else if pagNQCAPI.ActivePage = shtAPICommands then
+      Result := lstCommands
+    else
+      Result := lstConstants;
+  end
   else
-    Result := lstConstants;
+  begin
+    if pagNXCAPI.ActivePage = shtNXCKeywords then
+      Result := lstNXCKeywords
+    else if pagNXCAPI.ActivePage = shtNXCCommands then
+      Result := lstNXCCommands
+    else
+      Result := lstNXCConstants;
+  end;
 end;
 
 procedure TPrefForm.btnAddAPIClick(Sender: TObject);
@@ -5119,7 +5036,7 @@ begin
     UpdateAPIButtonState;
 end;
 
-procedure TPrefForm.pagAPIChange(Sender: TObject);
+procedure TPrefForm.pagNQCAPIChange(Sender: TObject);
 begin
   UpdateAPIButtonState;
 end;
@@ -5510,7 +5427,7 @@ begin
   NewTemplatesList.Highlighter := GetActiveHighlighter(ahTemplates);
 end;
 
-procedure TPrefForm.NewTemplatesListChange(Sender: TObject);
+procedure TPrefForm.NewTemplatesList2Change(Sender: TObject);
 begin
   TemplatesChanged := True;
 end;
@@ -5560,21 +5477,21 @@ end;
 
 procedure TPrefForm.CreatePrefFormHighlighters;
 begin
-  SynCppSyn := TSynCppSyn.Create(Self);
+  SynCppSyn        := TSynCppSyn.Create(Self);
   SynMindScriptSyn := TSynMindScriptSyn.Create(Self);
-  SynNPGSyn := TSynNPGSyn.Create(Self);
-  SynForthSyn := TSynForthSyn.Create(Self);
-  SynJavaSyn := TSynJavaSyn.Create(Self);
-  SynNQCSyn := TSynNQCSyn.Create(Self);
-  SynNXCSyn := TSynNQCSyn.Create(Self);
-  SynRSSyn := TSynRSSyn.Create(Self);
-  SynROPSSyn := TSynROPSSyn.Create(Self);
-  SynLASMSyn := TSynLASMSyn.Create(Self);
-  SynLuaSyn := TSynLuaSyn.Create(Self);
-  SynRubySyn := TSynRubySyn.Create(Self);
-  SynPasSyn := TSynPasSyn.Create(Self);
-  SynNBCSyn := TSynNBCSyn.Create(Self);
-  SynCSSyn := TSynCSSyn.Create(Self);
+  SynNPGSyn        := TSynNPGSyn.Create(Self);
+  SynForthSyn      := TSynForthSyn.Create(Self);
+  SynJavaSyn       := TSynJavaSyn.Create(Self);
+  SynNQCSyn        := TSynNQCSyn.Create(Self);
+  SynNXCSyn        := TSynNQCSyn.Create(Self);
+  SynRSSyn         := TSynRSSyn.Create(Self);
+  SynROPSSyn       := TSynROPSSyn.Create(Self);
+  SynLASMSyn       := TSynLASMSyn.Create(Self);
+  SynLuaSyn        := TSynLuaSyn.Create(Self);
+  SynRubySyn       := TSynRubySyn.Create(Self);
+  SynPasSyn        := TSynPasSyn.Create(Self);
+  SynNBCSyn        := TSynNBCSyn.Create(Self);
+  SynCSSyn         := TSynCSSyn.Create(Self);
   with SynCppSyn do
   begin
     Name := 'SynCppSyn';
@@ -5666,66 +5583,46 @@ end;
 
 procedure TPrefForm.CreateHotKeyEdits;
 begin
-  hkCodeComp := TBricxCCHotKey.Create(Self);
+  hkCodeComp  := TBricxCCHotKey.Create(Self);
   hkParamComp := TBricxCCHotKey.Create(Self);
-  hkRecMacro := TBricxCCHotKey.Create(Self);
+  hkRecMacro  := TBricxCCHotKey.Create(Self);
   hkPlayMacro := TBricxCCHotKey.Create(Self);
-  with hkCodeComp do
-  begin
-    Name := 'hkCodeComp';
-    Parent := grpHotKeys;
-    Left := 8;
-    Top := 32;
-    Width := 138;
-    Height := 21;
-    HelpContext := 11251;
-    TabOrder := 0;
-    Text := 'None';
-    HotKey := 0;
-    InvalidKeys := [hcNone, hcShift];
-  end;
-  with hkParamComp do
-  begin
-    Name := 'hkParamComp';
-    Parent := grpHotKeys;
-    Left := 8;
-    Top := 72;
-    Width := 138;
-    Height := 21;
-    HelpContext := 11252;
-    TabOrder := 1;
-    Text := 'None';
-    HotKey := 0;
-    InvalidKeys := [hcNone, hcShift];
-  end;
-  with hkRecMacro do
-  begin
-    Name := 'hkRecMacro';
-    Parent := grpHotKeys;
-    Left := 8;
-    Top := 112;
-    Width := 138;
-    Height := 21;
-    HelpContext := 11253;
-    TabOrder := 2;
-    Text := 'None';
-    HotKey := 0;
-    InvalidKeys := [hcNone, hcShift];
-  end;
-  with hkPlayMacro do
-  begin
-    Name := 'hkPlayMacro';
-    Parent := grpHotKeys;
-    Left := 8;
-    Top := 152;
-    Width := 138;
-    Height := 21;
-    HelpContext := 11254;
-    TabOrder := 3;
-    Text := 'None';
-    HotKey := 0;
-    InvalidKeys := [hcNone, hcShift];
-  end;
+  CloneHotKey(hkCodeComp, hkCodeComp2);
+  CloneHotKey(hkParamComp, hkParamComp2);
+  CloneHotKey(hkRecMacro, hkRecMacro2);
+  CloneHotKey(hkPlayMacro, hkPlayMacro2);
+end;
+
+procedure TPrefForm.CreateDirectoryEdits;
+begin
+  edtNQCExePath := TDirectoryEdit.Create(Self);
+  edtLCCExePath := TDirectoryEdit.Create(Self);
+  edtNBCExePath := TDirectoryEdit.Create(Self);
+  edtCygwin     := TDirectoryEdit.Create(Self);
+  edtJavaPath   := TDirectoryEdit.Create(Self);
+  edtLeJOSRoot  := TDirectoryEdit.Create(Self);
+  CloneDE(edtNQCExePath, edtNQCExePath2);
+  CloneDE(edtLCCExePath, edtLCCExePath2);
+  CloneDE(edtNBCExePath, edtNBCExePath2);
+  CloneDE(edtCygwin, edtCygwin2);
+  CloneDE(edtJavaPath, edtJavaPath2);
+  CloneDE(edtLeJOSRoot, edtLeJOSRoot2);
+end;
+
+procedure TPrefForm.CreateSynEditComponents;
+begin
+  NewTemplatesList := TSynEdit.Create(Self);
+  SynEditColors    := TSynEdit.Create(Self);
+  CloneSynEdit(NewTemplatesList, NewTemplatesList2);
+  CloneSynEdit(SynEditColors, SynEditColors2);
+  NewTemplatesList.Gutter.Visible := False;
+end;
+
+function TPrefForm.CreateSortedStringList: TStringList;
+begin
+  Result := TStringList.Create;
+  Result.Sorted := True;
+  Result.Duplicates := dupIgnore;
 end;
 
 initialization

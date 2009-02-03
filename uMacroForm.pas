@@ -26,7 +26,7 @@ type
     lblHotKey: TLabel;
     chkSuspend: TCheckBox;
     btnHelp: TButton;
-    hkMacro: TBricxCCHotKey;
+    hkMacro2: TEdit;
     procedure btnBrowseClick(Sender: TObject);
     procedure btnRunClick(Sender: TObject);
     procedure btnEditClick(Sender: TObject);
@@ -41,9 +41,9 @@ type
     procedure cboLibraryExit(Sender: TObject);
     procedure mmoDescriptionChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
-    procedure hkMacroExit(Sender: TObject);
     procedure chkSuspendClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
+    procedure hkMacroExit(Sender: TObject);
   private
     { Private declarations }
     FMacroLibrary: TMacroLibrary;
@@ -65,7 +65,10 @@ type
     procedure EndUpdates;
     function InUpdatingState : Boolean;
     procedure SaveLibrary;
+    procedure CreateHotKeyEdit;
     property ChangesMade : Boolean read FChangesMade write SetChangesMade;
+  public
+    hkMacro: TBricxCCHotKey;
   public
     { Public declarations }
     constructor Create(AOwner: TComponent); override;
@@ -82,7 +85,7 @@ implementation
 {$R *.DFM}
 
 uses
-  uMacroEditor, uLocalizedStrings;
+  uMacroEditor, uLocalizedStrings, uGuiUtils;
 
 procedure TfrmMacroManager.btnBrowseClick(Sender: TObject);
 begin
@@ -177,6 +180,7 @@ end;
 
 procedure TfrmMacroManager.FormCreate(Sender: TObject);
 begin
+  CreateHotKeyEdit;
   UpdateButtonState;
 end;
 
@@ -406,6 +410,13 @@ end;
 procedure TfrmMacroManager.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
+end;
+
+procedure TfrmMacroManager.CreateHotKeyEdit;
+begin
+  hkMacro := TBricxCCHotKey.Create(Self);
+  CloneHotKey(hkMacro, hkMacro2);
+  hkMacro.OnExit := hkMacroExit;
 end;
 
 end.

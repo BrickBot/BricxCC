@@ -207,7 +207,7 @@ object frmWave2RSO: TfrmWave2RSO
     Caption = 'Compressed'
     TabOrder = 8
   end
-  object edtPath: TDirectoryEdit
+  object edtPath2: TEdit
     Left = 104
     Top = 8
     Width = 337
@@ -217,8 +217,7 @@ object frmWave2RSO: TfrmWave2RSO
     AutoSize = False
     ReadOnly = True
     TabOrder = 9
-    OnChange = edtPathChange
-    SetHint = False
+    OnChange = OnPathChange
   end
   object dlgOpen: TOpenDialog
     Filter = 

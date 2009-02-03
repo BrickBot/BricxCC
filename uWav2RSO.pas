@@ -28,8 +28,8 @@ type
     btnHelp: TButton;
     lblRate: TLabel;
     chkUseCompression: TCheckBox;
-    edtPath: TDirectoryEdit;
     edtRate: TSpinEdit;
+    edtPath2: TEdit;
     procedure btnSelectClick(Sender: TObject);
     procedure btnConvertClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -37,13 +37,15 @@ type
     procedure btnHelpClick(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure btnCancelClick(Sender: TObject);
-    procedure edtPathChange(Sender: TObject);
+    procedure OnPathChange(Sender: TObject);
   private
     function GetResampleMethod: integer;
     function GetSampleRate: integer;
     function GetUseCompression: boolean;
+    procedure CreateDirectoryEdit;
   private
     { Private declarations }
+    edtPath: TDirectoryEdit;
     property ResampleMethod : integer read GetResampleMethod;
     property SampleRate : integer read GetSampleRate;
     property UseCompression : boolean read GetUseCompression;
@@ -59,7 +61,7 @@ implementation
 {$R *.dfm}
 
 uses
-  SysUtils, uSrcCommon, uWav2RsoCvt;
+  SysUtils, uSrcCommon, uWav2RsoCvt, uGuiUtils;
 
 procedure TfrmWave2RSO.btnSelectClick(Sender: TObject);
 begin
@@ -88,6 +90,7 @@ end;
 
 procedure TfrmWave2RSO.FormCreate(Sender: TObject);
 begin
+  CreateDirectoryEdit;
   edtPath.Text := ExcludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
   dlgOpen.InitialDir := edtPath.Text;
 end;
@@ -141,9 +144,31 @@ begin
   Result := chkUseCompression.Checked;
 end;
 
-procedure TfrmWave2RSO.edtPathChange(Sender: TObject);
+procedure TfrmWave2RSO.OnPathChange(Sender: TObject);
 begin
   dlgOpen.InitialDir := edtPath.Text;
+end;
+
+procedure TfrmWave2RSO.CreateDirectoryEdit;
+begin
+  edtPath := TDirectoryEdit.Create(Self);
+  CloneDE(edtPath, edtPath2);
+  with edtPath do
+  begin
+    Name := 'edtPath';
+    Parent := Self;
+    Left := 104;
+    Top := 8;
+    Width := 337;
+    Height := 21;
+    Cursor := crNo;
+    Hint := 'The specified output directory';
+    AutoSize := False;
+    ReadOnly := True;
+    TabOrder := 9;
+    OnChange := OnPathChange;
+    SetHint := False;
+  end;
 end;
 
 end.
