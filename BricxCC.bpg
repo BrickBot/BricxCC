@@ -9,13 +9,16 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = BricxCC.exe BricxCC.NLD BricxCC.FRA BricxCC.DEU BricxCC.RUS \
-  BricxCC.ESP
+PROJECTS = BricxCC.exe BricxCC.CHS BricxCC.NLD BricxCC.FRA BricxCC.DEU \
+  BricxCC.RUS BricxCC.ESP
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
 BricxCC.exe: BricxCC.dpr
+  $(DCC)
+
+BricxCC.CHS: CHS\BricxCC.dpr
   $(DCC)
 
 BricxCC.NLD: NLD\BricxCC.dpr
