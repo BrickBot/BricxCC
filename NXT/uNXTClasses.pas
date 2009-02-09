@@ -713,7 +713,7 @@ const
 //  DataTypeCount      = 17;
 //  DataTypeStartIndex = 63;
   PseudoOpcodeCount  = 66;
-  NXTInstructionsCount = 54+PseudoOpcodeCount;
+  NXTInstructionsCount = 52+PseudoOpcodeCount;
   NXTInstructions : array[0..NXTInstructionsCount-1] of NXTInstruction =
   (
     ( Encoding: OP_ADD           ; CCType: 0; Arity: 3; Name: 'add'; ),
@@ -784,7 +784,6 @@ const
     ( Encoding: OPS_ATAN         ; CCType: 0; Arity: 2; Name: 'atan'; ),
     ( Encoding: OPS_CEIL         ; CCType: 0; Arity: 2; Name: 'ceil'; ),
     ( Encoding: OPS_EXP          ; CCType: 0; Arity: 2; Name: 'exp'; ),
-    ( Encoding: OPS_FABS         ; CCType: 0; Arity: 2; Name: 'fabs'; ),
     ( Encoding: OPS_FLOOR        ; CCType: 0; Arity: 2; Name: 'floor'; ),
     ( Encoding: OPS_SQRT         ; CCType: 0; Arity: 2; Name: 'sqrt'; ),
     ( Encoding: OPS_TAN          ; CCType: 0; Arity: 2; Name: 'tan'; ),
@@ -796,7 +795,6 @@ const
     ( Encoding: OPS_SIN          ; CCType: 0; Arity: 2; Name: 'sin'; ),
     ( Encoding: OPS_SINH         ; CCType: 0; Arity: 2; Name: 'sinh'; ),
     ( Encoding: OPS_ATAN2        ; CCType: 0; Arity: 3; Name: 'atan2'; ),
-    ( Encoding: OPS_FMOD         ; CCType: 0; Arity: 3; Name: 'fmod'; ),
     ( Encoding: OPS_POW          ; CCType: 0; Arity: 3; Name: 'pow'; ),
     ( Encoding: OPS_THREAD       ; CCType: 0; Arity: 0; Name: 'thread'; ),
     ( Encoding: OPS_ENDT         ; CCType: 0; Arity: 0; Name: 'endt'; ),
@@ -4399,6 +4397,7 @@ begin
       LineCounter  := StrToIntDef(Copy(line, 1, i - 1), LineCounter);
       Delete(line, 1, i);
       tmpFile      := Replace(line, '"', '');
+      tmpFile      := Replace(tmpFile, '''', '');
       CurrentFile  := tmpFile;
       if fMainStateCurrent in [masClump, masClumpSub] then
       begin
