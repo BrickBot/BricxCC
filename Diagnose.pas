@@ -372,16 +372,14 @@ end;
 
 procedure TDiagForm.btnRefreshNXTClick(Sender: TObject);
 var
-  btaddr : array[0..5] of Byte;
   btsig : cardinal;
   memFree : Cardinal;
-  bname : string;
+  bname, baddr : string;
 begin
-  if BrickComm.NXTGetDeviceInfo(bname, @btaddr[0], btsig, memFree) then
+  if BrickComm.NXTGetDeviceInfo(bname, baddr, btsig, memFree) then
   begin
     NXTName.Caption   := bname;
-    BTAddress.Caption := Format('%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
-      [btaddr[0], btaddr[1], btaddr[2], btaddr[3], btaddr[4], btaddr[5]]);
+    BTAddress.Caption := baddr;
     BTSignal.Caption  := Format('%d,%d,%d,%d', [GetByte(btsig, 0),
        GetByte(btsig, 1), GetByte(btsig, 2), GetByte(btsig, 3)]);
     FreeMemory.Caption := IntToStr(memFree);
