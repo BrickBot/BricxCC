@@ -239,7 +239,7 @@ type
     function NXTCloseModuleHandle(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
     function NXTBootCommand(const chkResponse: boolean = false) : boolean; override;
     function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; override;
-    function NXTGetDeviceInfo(var name : string; BTAddress : PByte;
+    function NXTGetDeviceInfo(var name : string; var BTAddress : string;
       var BTSignal : Cardinal; var memFree : Cardinal) : boolean; override;
     function NXTFreeMemory : integer; override;
     function NXTDeleteUserFlash(const chkResponse: boolean = false) : boolean; override;
@@ -1738,16 +1738,22 @@ begin
 end;
 
 function TFantomSpirit.NXTGetDeviceInfo(var name: string;
-  BTAddress : PByte; var BTSignal : Cardinal; var memFree : Cardinal): boolean;
+  var BTAddress : String; var BTSignal : Cardinal; var memFree : Cardinal): boolean;
 var
-  status : integer;
+  i, status : integer;
   buf : array[0..20] of Char;
+  addr : array[0..6] of Byte;
 begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iNXT_getDeviceInfo(fNXTHandle, buf, BTAddress, @BTSignal, memFree, status);
+  iNXT_getDeviceInfo(fNXTHandle, buf, @addr[0], @BTSignal, memFree, status);
   name := buf;
+  BTAddress := '';
+  for i := 0 to 5 do
+  begin
+    BTAddress := BTAddress + Format('%2.2x', [addr[i]]);
+  end;
   Result := status >= kStatusNoError;
 end;
 
@@ -3325,23 +3331,17 @@ end;
 
 function TFantomSpirit.NXTFreeMemory: integer;
 var
-  BTAddr : PByte;
   memFree, BTSig : Cardinal;
-  nxtName : string;
+  nxtName, nxtAddr : string;
 begin
-  Result := 0;
-  BTAddr := nil;
-  GetMem(BTAddr, 7);
-  try
-    memFree := 0;
-    BTSig := 0;
-    nxtName := '';
-    if NXTGetDeviceInfo(nxtName, BTAddr, BTSig, memFree) then
-    begin
-      Result := memFree;
-    end;
-  finally
-    FreeMem(BTAddr);
+  Result  := 0;
+  memFree := 0;
+  BTSig   := 0;
+  nxtName := '';
+  nxtAddr := '';
+  if NXTGetDeviceInfo(nxtName, nxtAddr, BTSig, memFree) then
+  begin
+    Result := memFree;
   end;
 end;
 

@@ -351,7 +351,7 @@ type
     function NXTBootCommand(const chkResponse: boolean = false) : boolean; virtual; abstract;
     function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
     function NXTGetBrickName : string;
-    function NXTGetDeviceInfo(var name : string; BTAddress : PByte;
+    function NXTGetDeviceInfo(var name : string; var BTAddress : string;
       var BTSignal : Cardinal; var memFree : Cardinal) : boolean; virtual; abstract;
     function NXTFreeMemory : integer; virtual; abstract;
     function NXTDeleteUserFlash(const chkResponse: boolean = false) : boolean; virtual; abstract;
@@ -761,11 +761,12 @@ function TBrickComm.NXTGetBrickName: string;
 var
   bt : array[0..5] of byte;
   btsig, memfree : Cardinal;
+  tmpAddr : string;
 begin
   Result := '';
   memfree := 0;
   btsig := 0;
-  NXTGetDeviceInfo(Result, @bt[0], btsig, memfree);
+  NXTGetDeviceInfo(Result, tmpAddr, btsig, memfree);
 end;
 
 end.
