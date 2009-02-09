@@ -194,7 +194,7 @@ begin
     RegisterMethod('Function NXTBootCommand( const chkResponse : boolean) : boolean');
     RegisterMethod('Function NXTSetBrickName( const name : string; const chkResponse : boolean) : boolean');
     RegisterMethod('Function NXTGetBrickName : string');
-    RegisterMethod('Function NXTGetDeviceInfo( var name : string; BTAddress : PByte; var BTSignal : Cardinal; var memFree : Cardinal) : boolean');
+    RegisterMethod('Function NXTGetDeviceInfo( var name : string; var BTAddress : string; var BTSignal : Cardinal; var memFree : Cardinal) : boolean');
     RegisterMethod('Function NXTFreeMemory : integer');
     RegisterMethod('Function NXTDeleteUserFlash( const chkResponse : boolean) : boolean');
     RegisterMethod('Function NXTBTFactoryReset( const chkResponse : boolean) : boolean');

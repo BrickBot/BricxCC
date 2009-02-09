@@ -237,7 +237,7 @@ type
     function NXTCloseModuleHandle(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
     function NXTBootCommand(const chkResponse: boolean = false) : boolean; override;
     function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; override;
-    function NXTGetDeviceInfo(var name : string; BTAddress : PByte;
+    function NXTGetDeviceInfo(var name : string; var BTAddress : string;
       var BTSignal : Cardinal; var memFree : Cardinal) : boolean; override;
     function NXTFreeMemory : integer; override;
     function NXTDeleteUserFlash(const chkResponse: boolean = false) : boolean; override;
@@ -3174,10 +3174,10 @@ begin
 end;
 
 function TFakeSpirit.NXTGetDeviceInfo(var name: string;
-  BTAddress : PByte; var BTSignal : Cardinal; var memFree : Cardinal): boolean;
+  var BTAddress : String; var BTSignal : Cardinal; var memFree : Cardinal): boolean;
 var
   cmd : TBaseCmd;
-  len{, i} : integer;
+  len, i : integer;
 begin
   Result := Open;
   if not Result then Exit;
@@ -3190,13 +3190,11 @@ begin
       Exit;
     end;
     name      := fLink.GetReplyString(0, 14);
-{
     BTAddress := '';
-    for i := 0 to 6 do
+    for i := 0 to 5 do
     begin
       BTAddress := BTAddress + Format('%2.2x', [fLink.GetReplyByte(15+i)]);
     end;
-}
     BTSignal  := fLink.GetReplyCardinal(22);
     memFree   := fLink.GetReplyCardinal(26);
     Result := len >= kRCX_OK;
