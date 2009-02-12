@@ -137,7 +137,7 @@ const
 
 const
   PreProcDirectives: string =
-    '#include,#define,#ifndef,#pragma,#endif,#error,#ifdef,#undef,#elif,#else,#line,#if';
+    '#download,#include,#define,#ifndef,#pragma,#endif,#error,#ifdef,#undef,#elif,#else,#line,#if';
   OpCodes: string =
     'add,sub,neg,mul,div,mod,and,or,xor,not,'+
     'cmnt,lsl,lsr,asl,asr,rotl,rotr,'+
@@ -147,8 +147,8 @@ const
     'syscall,stop,exit,exitto,acquire,release,subcall,subret,'+
     'setin,setout,getin,getout,wait,gettick,'+
     'waitv,abs,sign,stopthread,start,priority,fmtnum,'+
-    'arrop,acos,asin,atan,ceil,exp,fabs,floor,sqrt,tan,tanh,'+
-    'cos,cosh,log,log10,sin,sinh,atan2,fmod,pow,'+
+    'arrop,acos,asin,atan,ceil,exp,floor,sqrt,tan,tanh,'+
+    'cos,cosh,log,log10,sin,sinh,atan2,pow,'+
     'thread,endt,subroutine,'+
     'follows,precedes,segment,ends,typedef,struct,db,byte,sbyte,ubyte,dw,'+
     'word,sword,uword,dd,dword,sdword,udword,long,slong,ulong,void,mutex,'+
@@ -366,6 +366,7 @@ const
     'SetScreenMode,ReadButton,CommLSWrite,CommLSRead,CommLSCheckStatus,'+
     'RandomNumber,GetStartTick,MessageWrite,MessageRead,'+
     'CommBTCheckStatus,CommBTWrite,CommBTRead,KeepAlive,IOMapRead,IOMapWrite,'+
+    'MAILBOX1,MAILBOX2,MAILBOX3,MAILBOX4,MAILBOX5,MAILBOX6,MAILBOX7,MAILBOX8,MAILBOX9,MAILBOX10,'+
     'MS_1,MS_2,MS_3,MS_4,MS_5,MS_6,MS_7,MS_8,MS_9,'+
     'MS_10,MS_20,MS_30,MS_40,MS_50,MS_60,MS_70,MS_80,MS_90,'+
     'MS_100,MS_150,MS_200,MS_250,MS_300,MS_350,MS_400,MS_450,MS_500,'+

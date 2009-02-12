@@ -1,7 +1,7 @@
 // fixed
-//inline void methodName() // (ok)
 //inline int methodName() // error message (ok)
-void inline ResetMotors() // BricX hangs
+//void inline ResetMotors() // BricX hangs (fixed)
+inline void methodName() // (ok)
 {
 //just some code:
 ResetRotationCount(OUT_A);

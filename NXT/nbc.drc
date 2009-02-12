@@ -111,14 +111,14 @@
 #define uLocalizedStrings_UsageIncludes 65293
 #define uLocalizedStrings_UsageNBCOutput 65294
 #define uLocalizedStrings_UsageListing 65295
-#define uLocalizedStrings_sStringLiteral 65296
-#define uLocalizedStrings_sStringType 65297
-#define uLocalizedStrings_sStringVarType 65298
-#define uLocalizedStrings_sStructType 65299
-#define uLocalizedStrings_sMutexType 65300
-#define uLocalizedStrings_sIntegerType 65301
-#define uLocalizedStrings_sMathFactor 65302
-#define uLocalizedStrings_sArrayOfString 65303
+#define uLocalizedStrings_sCharLiteral 65296
+#define uLocalizedStrings_sStringLiteral 65297
+#define uLocalizedStrings_sStringType 65298
+#define uLocalizedStrings_sStringVarType 65299
+#define uLocalizedStrings_sStructType 65300
+#define uLocalizedStrings_sMutexType 65301
+#define uLocalizedStrings_sIntegerType 65302
+#define uLocalizedStrings_sMathFactor 65303
 #define uLocalizedStrings_sArrayDatatype 65304
 #define uLocalizedStrings_sUndefinedIdentifier 65305
 #define uLocalizedStrings_sDuplicateIdentifier 65306
@@ -127,86 +127,86 @@
 #define uLocalizedStrings_sTooFewParams 65309
 #define uLocalizedStrings_sMaxParamCountExceeded 65310
 #define uLocalizedStrings_sConstNotAllowed 65311
-#define uLocalizedStrings_sNestedCallsError 65312
-#define uLocalizedStrings_sRecursiveNotAllowed 65313
-#define uLocalizedStrings_sExpNotSupported 65314
-#define uLocalizedStrings_sEnhancedFirmwareReqd 65315
-#define uLocalizedStrings_sSymbolTableFull 65316
-#define uLocalizedStrings_sInvalidArrayDim 65317
-#define uLocalizedStrings_sAssignTaskError 65318
-#define uLocalizedStrings_sArgMustBeTask 65319
-#define uLocalizedStrings_sInvalidReturnType 65320
-#define uLocalizedStrings_sInvalidStringAssign 65321
-#define uLocalizedStrings_sExpectedString 65322
-#define uLocalizedStrings_sDataType 65323
-#define uLocalizedStrings_sIdentifier 65324
-#define uLocalizedStrings_sNumber 65325
-#define uLocalizedStrings_sHexNumber 65326
-#define uLocalizedStrings_sCharLiteral 65327
-#define uLocalizedStrings_sNotValidForPrototype 65328
-#define uLocalizedStrings_sMissingDataType 65329
-#define uLocalizedStrings_sDataTypesAlreadyDefined 65330
-#define uLocalizedStrings_sParameterList 65331
-#define uLocalizedStrings_sUnexpectedChar 65332
-#define uLocalizedStrings_sValidProgBlock 65333
-#define uLocalizedStrings_sConstInitialization 65334
-#define uLocalizedStrings_sInitNotAllowed 65335
-#define uLocalizedStrings_sInvalidStringInit 65336
-#define uLocalizedStrings_sConstLocArrNotSupported 65337
-#define uLocalizedStrings_sUnknownAPICommand 65338
-#define uLocalizedStrings_sDefaultInvalid 65339
-#define uLocalizedStrings_sCaseInvalid 65340
-#define uLocalizedStrings_sInvalidUseOfTaskName 65341
-#define uLocalizedStrings_sInvalidArrayExpr 65342
-#define uLocalizedStrings_sRecursiveInlineError 65343
-#define uLocalizedStrings_sTaskName 65344
-#define uLocalizedStrings_sVariableName 65345
-#define uLocalizedStrings_sStringReturnValue 65346
-#define uLocalizedStrings_sInvalidAssignment 65347
-#define uLocalizedStrings_sDatatypesNotCompatible 65348
-#define uLocalizedStrings_sInlineInvalid 65349
-#define uLocalizedStrings_sSafeCallInvalid 65350
-#define uLocalizedStrings_sBadPrototype 65351
-#define uLocalizedStrings_sMainMustBeTask 65352
-#define uLocalizedStrings_sUDTNotEqual 65353
-#define uLocalizedStrings_sInvalidArrayDeclaration 65354
-#define uLocalizedStrings_sInvalidGlobalArrayInit 65355
-#define uLocalizedStrings_sUnknownUDT 65356
-#define uLocalizedStrings_sReturnInvalid 65357
-#define uLocalizedStrings_sInvalidBreakContinue 65358
-#define uLocalizedStrings_sProtoAlreadyDefined 65359
-#define uLocalizedStrings_sInvalidVarArg 65360
-#define uLocalizedStrings_sInvalidMutexArg 65361
-#define uLocalizedStrings_sInvalidClusterArg 65362
-#define uLocalizedStrings_sInvalidArrayArg 65363
-#define uLocalizedStrings_sInvalidScalarArg 65364
-#define uLocalizedStrings_sInvalidStringArg 65365
-#define uLocalizedStrings_sInvalidLabelArg 65366
-#define uLocalizedStrings_sInvalidClumpArg 65367
-#define uLocalizedStrings_sReturnNotInSub 65368
-#define uLocalizedStrings_sNoReturnAtEndOfSub 65369
-#define uLocalizedStrings_sCompCheckFailed 65370
-#define uLocalizedStrings_sCompCheckTypFailed 65371
-#define uLocalizedStrings_sInvalidCompCheck 65372
-#define uLocalizedStrings_sInvalidCompCheckTyp 65373
-#define uLocalizedStrings_sUnsafeDivision 65374
-#define uLocalizedStrings_sUnusedVar 65375
-#define uLocalizedStrings_sInvalidPreprocExpression 65376
-#define uLocalizedStrings_sInvalidCharConstant 65377
-#define uLocalizedStrings_sMaxRecursionDepthError 65378
-#define uLocalizedStrings_sInvalidStatement 65379
-#define uLocalizedStrings_sInvalidLine 65380
-#define uLocalizedStrings_sInvalidNumArgs 65381
-#define uLocalizedStrings_sInvalidNumArgsVar 65382
-#define uLocalizedStrings_sInvalidNumArgsOdd 65383
-#define uLocalizedStrings_sInvalidCompareCode 65384
-#define uLocalizedStrings_sBadConstExpression 65385
-#define uLocalizedStrings_sConstOutOfRange 65386
-#define uLocalizedStrings_sInvalidOpcode 65387
-#define uLocalizedStrings_sDuplicateLabel 65388
-#define uLocalizedStrings_sDuplicateDSEntry 65389
-#define uLocalizedStrings_sDuplicateType 65390
-#define uLocalizedStrings_sInvalidVarDecl 65391
+#define uLocalizedStrings_sRecursiveInlineError 65312
+#define uLocalizedStrings_sNestedCallsError 65313
+#define uLocalizedStrings_sRecursiveNotAllowed 65314
+#define uLocalizedStrings_sExpNotSupported 65315
+#define uLocalizedStrings_sEnhancedFirmwareReqd 65316
+#define uLocalizedStrings_sSymbolTableFull 65317
+#define uLocalizedStrings_sInvalidArrayDim 65318
+#define uLocalizedStrings_sAssignTaskError 65319
+#define uLocalizedStrings_sArgMustBeTask 65320
+#define uLocalizedStrings_sInvalidReturnType 65321
+#define uLocalizedStrings_sInvalidStringAssign 65322
+#define uLocalizedStrings_sExpectedString 65323
+#define uLocalizedStrings_sDataType 65324
+#define uLocalizedStrings_sIdentifier 65325
+#define uLocalizedStrings_sNumber 65326
+#define uLocalizedStrings_sHexNumber 65327
+#define uLocalizedStrings_sInvalidBreakContinue 65328
+#define uLocalizedStrings_sProtoAlreadyDefined 65329
+#define uLocalizedStrings_sNotValidForPrototype 65330
+#define uLocalizedStrings_sMissingDataType 65331
+#define uLocalizedStrings_sDataTypesAlreadyDefined 65332
+#define uLocalizedStrings_sParameterList 65333
+#define uLocalizedStrings_sUnexpectedChar 65334
+#define uLocalizedStrings_sValidProgBlock 65335
+#define uLocalizedStrings_sConstInitialization 65336
+#define uLocalizedStrings_sInitNotAllowed 65337
+#define uLocalizedStrings_sInvalidStringInit 65338
+#define uLocalizedStrings_sConstLocArrNotSupported 65339
+#define uLocalizedStrings_sUnknownAPICommand 65340
+#define uLocalizedStrings_sDefaultInvalid 65341
+#define uLocalizedStrings_sCaseInvalid 65342
+#define uLocalizedStrings_sInvalidUseOfTaskName 65343
+#define uLocalizedStrings_sUnsafeDivision 65344
+#define uLocalizedStrings_sUnusedVar 65345
+#define uLocalizedStrings_sTaskName 65346
+#define uLocalizedStrings_sVariableName 65347
+#define uLocalizedStrings_sStringReturnValue 65348
+#define uLocalizedStrings_sInvalidAssignment 65349
+#define uLocalizedStrings_sDatatypesNotCompatible 65350
+#define uLocalizedStrings_sInlineInvalid 65351
+#define uLocalizedStrings_sSafeCallInvalid 65352
+#define uLocalizedStrings_sBadPrototype 65353
+#define uLocalizedStrings_sMainMustBeTask 65354
+#define uLocalizedStrings_sUDTNotEqual 65355
+#define uLocalizedStrings_sInvalidArrayDeclaration 65356
+#define uLocalizedStrings_sInvalidGlobalArrayInit 65357
+#define uLocalizedStrings_sUnknownUDT 65358
+#define uLocalizedStrings_sReturnInvalid 65359
+#define uLocalizedStrings_sDuplicateType 65360
+#define uLocalizedStrings_sInvalidVarDecl 65361
+#define uLocalizedStrings_sInvalidVarArg 65362
+#define uLocalizedStrings_sInvalidMutexArg 65363
+#define uLocalizedStrings_sInvalidClusterArg 65364
+#define uLocalizedStrings_sInvalidArrayArg 65365
+#define uLocalizedStrings_sInvalidScalarArg 65366
+#define uLocalizedStrings_sInvalidStringArg 65367
+#define uLocalizedStrings_sInvalidLabelArg 65368
+#define uLocalizedStrings_sInvalidClumpArg 65369
+#define uLocalizedStrings_sReturnNotInSub 65370
+#define uLocalizedStrings_sNoReturnAtEndOfSub 65371
+#define uLocalizedStrings_sCompCheckFailed 65372
+#define uLocalizedStrings_sCompCheckTypFailed 65373
+#define uLocalizedStrings_sInvalidCompCheck 65374
+#define uLocalizedStrings_sInvalidCompCheckTyp 65375
+#define uLocalizedStrings_sMacroMismatch 65376
+#define uLocalizedStrings_sUnmatchedDirective 65377
+#define uLocalizedStrings_sInvalidPreprocExpression 65378
+#define uLocalizedStrings_sInvalidCharConstant 65379
+#define uLocalizedStrings_sMaxRecursionDepthError 65380
+#define uLocalizedStrings_sInvalidStatement 65381
+#define uLocalizedStrings_sInvalidLine 65382
+#define uLocalizedStrings_sInvalidNumArgs 65383
+#define uLocalizedStrings_sInvalidNumArgsVar 65384
+#define uLocalizedStrings_sInvalidNumArgsOdd 65385
+#define uLocalizedStrings_sInvalidCompareCode 65386
+#define uLocalizedStrings_sBadConstExpression 65387
+#define uLocalizedStrings_sConstOutOfRange 65388
+#define uLocalizedStrings_sInvalidOpcode 65389
+#define uLocalizedStrings_sDuplicateLabel 65390
+#define uLocalizedStrings_sDuplicateDSEntry 65391
 #define uLocalizedStrings_sNothingAfterEnd 65392
 #define uLocalizedStrings_sUnknownCommand 65393
 #define uLocalizedStrings_sTooManyCommands 65394
@@ -219,10 +219,10 @@
 #define uLocalizedStrings_sStringNotBinary 65401
 #define uLocalizedStrings_sInvalidHexLength 65402
 #define uLocalizedStrings_sInvalidPreprocDirective 65403
-#define uLocalizedStrings_sIncludeNotFound 65404
-#define uLocalizedStrings_sIncludeMissingQuotes 65405
-#define uLocalizedStrings_sMacroMismatch 65406
-#define uLocalizedStrings_sUnmatchedDirective 65407
+#define uLocalizedStrings_sDownloadNotFound 65404
+#define uLocalizedStrings_sDownloadMissingQuotes 65405
+#define uLocalizedStrings_sIncludeNotFound 65406
+#define uLocalizedStrings_sIncludeMissingQuotes 65407
 #define RTLConsts_SReadError 65408
 #define RTLConsts_SReadOnlyProperty 65409
 #define RTLConsts_SSeekNotImplemented 65410
@@ -456,6 +456,7 @@ BEGIN
 	uLocalizedStrings_UsageIncludes,	"   -I=<path>: search <path> for include files"
 	uLocalizedStrings_UsageNBCOutput,	"   -nbc=<filename> : save NXC intermediate NBC code to <filename>"
 	uLocalizedStrings_UsageListing,	"   -L=<filename> : generate code listing to <filename>"
+	uLocalizedStrings_sCharLiteral,	"Character literal"
 	uLocalizedStrings_sStringLiteral,	"String literal"
 	uLocalizedStrings_sStringType,	"string constant or variable of type string"
 	uLocalizedStrings_sStringVarType,	"string type"
@@ -463,7 +464,6 @@ BEGIN
 	uLocalizedStrings_sMutexType,	"mutex type"
 	uLocalizedStrings_sIntegerType,	"integer type"
 	uLocalizedStrings_sMathFactor,	"Math Factor"
-	uLocalizedStrings_sArrayOfString,	"array of string"
 	uLocalizedStrings_sArrayDatatype,	"array data type"
 	uLocalizedStrings_sUndefinedIdentifier,	"Undefined Identifier %s"
 	uLocalizedStrings_sDuplicateIdentifier,	"Duplicate Identifier %s"
@@ -472,6 +472,7 @@ BEGIN
 	uLocalizedStrings_sTooFewParams,	"Too few parameters"
 	uLocalizedStrings_sMaxParamCountExceeded,	"Max param count exceeded"
 	uLocalizedStrings_sConstNotAllowed,	"Constant not allowed"
+	uLocalizedStrings_sRecursiveInlineError,	"Calling an inline function from an inline function is not supported"
 	uLocalizedStrings_sNestedCallsError,	"Nested calls to the same function are not supported."
 	uLocalizedStrings_sRecursiveNotAllowed,	"Recursive function calls are not supported"
 	uLocalizedStrings_sExpNotSupported,	"Expressions are not supported for struct, array, or reference parameters"
@@ -487,7 +488,8 @@ BEGIN
 	uLocalizedStrings_sIdentifier,	"Identifier"
 	uLocalizedStrings_sNumber,	"Number"
 	uLocalizedStrings_sHexNumber,	"Hex number"
-	uLocalizedStrings_sCharLiteral,	"Character literal"
+	uLocalizedStrings_sInvalidBreakContinue,	"%s is invalid outside of a loop"
+	uLocalizedStrings_sProtoAlreadyDefined,	"Prototype already defined - \"begin\""
 	uLocalizedStrings_sNotValidForPrototype,	"Not valid for a prototype"
 	uLocalizedStrings_sMissingDataType,	"Missing Data Type"
 	uLocalizedStrings_sDataTypesAlreadyDefined,	"Data types already defined in prototype"
@@ -502,8 +504,8 @@ BEGIN
 	uLocalizedStrings_sDefaultInvalid,	"default is invalid outside a switch statement"
 	uLocalizedStrings_sCaseInvalid,	"case is invalid outside a switch statement"
 	uLocalizedStrings_sInvalidUseOfTaskName,	"Invalid use of task name"
-	uLocalizedStrings_sInvalidArrayExpr,	"Invalid array expression"
-	uLocalizedStrings_sRecursiveInlineError,	"Calling an inline function from an inline function is not supported"
+	uLocalizedStrings_sUnsafeDivision,	"Dividing a signed number by an unsigned number is unsafe"
+	uLocalizedStrings_sUnusedVar,	"Unused variable: %s.  Enable optimization with -Z1 to remove."
 	uLocalizedStrings_sTaskName,	"Task name"
 	uLocalizedStrings_sVariableName,	"Variable name"
 	uLocalizedStrings_sStringReturnValue,	"String return value"
@@ -518,8 +520,8 @@ BEGIN
 	uLocalizedStrings_sInvalidGlobalArrayInit,	"Invalid global array initialization"
 	uLocalizedStrings_sUnknownUDT,	"Unknown user-defined type"
 	uLocalizedStrings_sReturnInvalid,	"return is invalid outside a subroutine"
-	uLocalizedStrings_sInvalidBreakContinue,	"%s is invalid outside of a loop"
-	uLocalizedStrings_sProtoAlreadyDefined,	"Prototype already defined - \"begin\""
+	uLocalizedStrings_sDuplicateType,	"Duplicate type declaration (%s)"
+	uLocalizedStrings_sInvalidVarDecl,	"Invalid variable declaration (%s)"
 	uLocalizedStrings_sInvalidVarArg,	"Invalid variable argument: %s"
 	uLocalizedStrings_sInvalidMutexArg,	"Invalid mutex argument: %s"
 	uLocalizedStrings_sInvalidClusterArg,	"Invalid struct argument: %s"
@@ -534,8 +536,8 @@ BEGIN
 	uLocalizedStrings_sCompCheckTypFailed,	"compchktype failed.  %s is not %s."
 	uLocalizedStrings_sInvalidCompCheck,	"invalid compchk operation"
 	uLocalizedStrings_sInvalidCompCheckTyp,	"invalid compchktype operation"
-	uLocalizedStrings_sUnsafeDivision,	"Dividing a signed number by an unsigned number is unsafe"
-	uLocalizedStrings_sUnusedVar,	"Unused variable: %s.  Enable optimization with -Z1 to remove."
+	uLocalizedStrings_sMacroMismatch,	"Preprocessor macro function does not match instance (%s)"
+	uLocalizedStrings_sUnmatchedDirective,	"Unmatched preprocessor directive"
 	uLocalizedStrings_sInvalidPreprocExpression,	"Invalid preprocessor expression : %s"
 	uLocalizedStrings_sInvalidCharConstant,	"Invalid char constant"
 	uLocalizedStrings_sMaxRecursionDepthError,	"Max recursion depth (%d) exceeded"
@@ -550,8 +552,6 @@ BEGIN
 	uLocalizedStrings_sInvalidOpcode,	"Invalid opcode: %s"
 	uLocalizedStrings_sDuplicateLabel,	"Duplicate label (%s)"
 	uLocalizedStrings_sDuplicateDSEntry,	"Duplicate variable declaration (%s)"
-	uLocalizedStrings_sDuplicateType,	"Duplicate type declaration (%s)"
-	uLocalizedStrings_sInvalidVarDecl,	"Invalid variable declaration (%s)"
 	uLocalizedStrings_sNothingAfterEnd,	"Commands are not allowed after EndLoop or EndStop"
 	uLocalizedStrings_sUnknownCommand,	"Unknown RPG command"
 	uLocalizedStrings_sTooManyCommands,	"Too many RPG commands in program"
@@ -564,10 +564,10 @@ BEGIN
 	uLocalizedStrings_sStringNotBinary,	"String is not a valid binary number: %s"
 	uLocalizedStrings_sInvalidHexLength,	"Invalid length of hex string: %d"
 	uLocalizedStrings_sInvalidPreprocDirective,	"Invalid preprocessor directive"
+	uLocalizedStrings_sDownloadNotFound,	"Unable to find download file: \"%s\""
+	uLocalizedStrings_sDownloadMissingQuotes,	"#download directive requires a filename (e.g., #download \"foo.ric\")"
 	uLocalizedStrings_sIncludeNotFound,	"Unable to find include file: \"%s\""
 	uLocalizedStrings_sIncludeMissingQuotes,	"#include directive requires a filename (e.g., #include \"foo.h\")"
-	uLocalizedStrings_sMacroMismatch,	"Preprocessor macro function does not match instance (%s)"
-	uLocalizedStrings_sUnmatchedDirective,	"Unmatched preprocessor directive"
 	RTLConsts_SReadError,	"Stream read error"
 	RTLConsts_SReadOnlyProperty,	"Property is read-only"
 	RTLConsts_SSeekNotImplemented,	"%s.Seek not implemented"

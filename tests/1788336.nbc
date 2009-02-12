@@ -1,7 +1,7 @@
 // fixed
 ;----------------------------------accessvio.nbc
 dseg segment
-;k_sw4 sword
+k_sw4 sword
 dseg ends
 
 thread main

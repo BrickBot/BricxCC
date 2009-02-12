@@ -2,11 +2,11 @@
 #define NXTDEFS__H 1
 //==============================================================================
 //
-// Copyright (C) 2006 - John Hansen. All rights reserved.
+// Copyright (C) 2009 - John Hansen. All rights reserved.
 //
 // Workfile:: NXTDefs.h
-// Date:: 2008-03-06
-// Revision:: 37
+// Date:: 2009-02-09
+// Revision:: 38
 //
 //------------------------------------------------------------------------------
 //
@@ -256,6 +256,8 @@ TIOMapWrite	struct
  Buffer		byte[]
 TIOMapWrite	ends
 
+#ifdef __ENHANCED_FIRMWARE
+
 TIOMapReadByID struct
   Result    sbyte
   ModuleID  long
@@ -323,6 +325,107 @@ TCommHSReadWrite	struct
  Status	sbyte
  Buffer	byte[]
 TCommHSReadWrite	ends
+
+// CommLSWriteEx
+TCommLSWriteEx	struct
+ Result		sbyte
+ Port		byte
+ Buffer		byte[]
+ ReturnLen	byte
+ NoRestartOnRead	byte
+TCommLSWriteEx	ends
+
+#if __FIRMWARE_VERSION > 107
+//FileSeek
+TFileSeek	struct
+ Result		word
+ FileHandle	byte
+ Origin		byte
+ Length		sdword
+TFileSeek	ends
+
+//FileResize
+TFileResize	struct
+ Result		word
+ FileHandle	byte
+ NewSize	word
+TFileResize	ends
+
+// DrawGraphicArray
+TDrawGraphicArray	struct
+ Result		sbyte
+ Location	TLocation
+ Data		byte[]
+ Variables	sdword[]
+ Options	dword
+TDrawGraphicArray	ends
+
+#endif
+#endif
+
+#if __FIRMWARE_VERSION > 107
+
+// DatalogWrite
+TDatalogWrite	struct
+ Result		sbyte
+ Message	byte[]
+TDatalogWrite	ends
+
+// DatalogGetTimes
+TDatalogGetTimes	struct
+ SyncTime	dword
+ SyncTick	dword
+TDatalogGetTimes	ends
+
+// SetSleepTimeout
+TSetSleepTimeout	struct
+ Result		sbyte
+ SleepTimeout	dword
+TSetSleepTimeout	ends
+
+// CommBTOnOff
+TCommBTOnOff	struct
+ Result		sbyte
+ PowerState	byte
+TCommBTOnOff	ends
+
+// CommBTConnection
+TCommBTConnection	struct
+ Result		sbyte
+ Action		byte
+ Name		byte[]
+ ConnectionSlot	byte
+TCommBTConnection	ends
+
+//cCmdWrapReadSemData
+//ArgV[0]: return data, U8
+//ArgV[1]: which (0=used, 1=request), U8
+
+//cCmdWrapWriteSemData
+//ArgV[0]: return data, U8
+//ArgV[1]: which (0=used, 1=request), U8
+//ArgV[2]: newValue, U8
+//ArgV[3]: action (0= OR, 1= AND), U8
+
+//cCmdWrapUpdateCalibCacheInfo
+//ArgV[0]: return data, U8
+//ArgV[1]: nm, UBYTE array CStr
+//ArgV[2]: min, U16
+//ArgV[3]: max , U16
+
+//cCmdWrapComputeCalibValue
+//ArgV[0]: return data, U8
+//ArgV[1]: nm, UBYTE array CStr
+//ArgV[2]: raw, U16 ref in out
+
+// ListFiles
+TListFiles	struct
+ Result		sbyte
+ Pattern	byte[]
+ FileList	byte[][]
+TListFiles	ends
+
+#endif
 
 dseg	ends
 
@@ -1573,6 +1676,26 @@ dseg ends
   mov __GraphicOutArgs.Options,_cls \
   syscall DrawGraphic,__GraphicOutArgs \
   release __GraphicOutMutex
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+
+dseg segment
+  __GraphicArrayOutArgs TDrawGraphicArray
+dseg ends
+
+#define GraphicArrayOut(_x,_y,_data) GraphicArrayOutEx(_x,_y,_data,__GraphicOutEmptyVars,0)
+
+#define GraphicArrayOutEx(_x,_y,_data,_vars,_cls) \
+  acquire __GraphicOutMutex \
+  mov __GraphicArrayOutArgs.Location.X,_x \
+  mov __GraphicArrayOutArgs.Location.Y,_y \
+  mov __GraphicArrayOutArgs.Data,_data \
+  mov __GraphicArrayOutArgs.Variables,_vars \
+  mov __GraphicArrayOutArgs.Options,_cls \
+  syscall DrawGraphicArray,__GraphicArrayOutArgs \
+  release __GraphicOutMutex
+
+#endif
 
 ; generic I2C read routine
 
@@ -3969,7 +4092,6 @@ dseg segment
   __FDMutex mutex
   __FDArgs TFileDelete
   __FFMutex mutex
-  __FFArgs TFileFind
 dseg ends
 
 #define CreateFile(_fname, _fsize, _handle, _result) __createFile(_fname, _fsize, _handle, _result)
@@ -3982,6 +4104,9 @@ dseg ends
 #define ResizeFile(_fname, _newsize, _result) __fileResize(_fname, _newsize, _result)
 
 #ifdef __ENHANCED_FIRMWARE
+dseg segment
+  __FFArgs TFileFind
+dseg ends
 #define CreateFileLinear(_fname, _fsize, _handle, _result) __createFileLinear(_fname, _fsize, _handle, _result)
 #define CreateFileNonLinear(_fname, _fsize, _handle, _result) __createFileNonLinear(_fname, _fsize, _handle, _result)
 #define OpenFileReadLinear(_fname, _fsize, _handle, _result) __openFileReadLinear(_fname, _fsize, _handle, _result)
@@ -4001,32 +4126,6 @@ dseg ends
 #define WriteBytes(_handle, _buf, _cnt, _result) __writeBytes(_handle, _buf, _cnt, _result)
 #define WriteBytesEx(_handle, _len, _buf, _result) __writeBytesEx(_handle, _len, _buf, _result)
 
-// stdio functions
-/*
-  int fclose(FILE*); // EOF if failure, 0 otherwise
-  int feof(FILE*);   // non-zero if EOF, 0 otherwise
-  int fflush(FILE*); // EOF if failure, 0 otherwise
-  int fgetc(FILE*); // EOF if failure, otherwise the character read from stream
-  int getc(FILE*);  // ditto
-  long int ftell(FILE*); // -1 if failure, otherwise the file position
-  char* fgets(char* str, int num, FILE*); read num bytes from file into str.  Appends null.  Newline stops reading
-  FILE* fopen(char* filename, char* mode); // open file
-  int fprintf(FILE*, char* format, ...); // write to file
-  int fputc(int ch, FILE*); // write chracter to str.  Returns character written or EOF if error occurs
-  int putc(int ch, FILE*); // ditto
-  int fputs(char* str, FILE*); // write string to file (not including null); return EOF if error or non-negative value if success
-  size_t fread(ptr, size, count, FILE*); // read blocks of data from file; returns number of blocks read
-  int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
-  size_t fwrite(ptr, size, count, FILE*); // write blocks of data to stream; returns number of blocks written
-  int getchar(void); // read character from stdin (returns which button was pressed) 
-  int printf(char* format, ...);
-  int putchar(int character); // write character to stdout
-  int remove(char* filename); // delete file; zero if success, nonzero if failure
-  int rename(char* old, char* new); // rename file; ditto
-  void rewind(FILE*); // same as seeking to start of file (and clears error indicator)
-  int sprintf(char* str, char* format, ...); // write formatted data to string
-
-*/
 
 subroutine __fileResizeSub
   dseg segment
@@ -4190,6 +4289,7 @@ ends
   mov _result, __FDArgs.Result \
   release __FDMutex
 
+#ifdef __ENHANCED_FIRMWARE
 #define __findFirstFile(_fname, _handle, _result) \
   acquire __FFMutex \
   mov __FFArgs.Filename, _fname \
@@ -4207,6 +4307,7 @@ ends
   mov _handle, __FFArgs.FileHandle \
   mov _fname, __FFArgs.Filename \
   release __FFMutex
+#endif
 
 dseg segment
   __FReadArgs TFileReadWrite
@@ -4627,6 +4728,7 @@ dseg ends
   release __CBTWMutex
 
 
+#ifdef __ENHANCED_FIRMWARE
 dseg segment
   __CHSCSArgs TCommHSCheckStatus
   __CHSCSMutex mutex
@@ -4641,7 +4743,6 @@ dseg segment
   __SHSSFlattenBuf byte[]
 dseg ends
 
-#ifdef __ENHANCED_FIRMWARE
 #define RS485Status(_sendingData, _dataAvail) __RS485Status(_sendingData, _dataAvail)
 #define RS485Write(_buffer, _status) __RS485Write(_buffer, _status)
 #define RS485Read(_buffer, _status) __RS485Read(_buffer, _status)
@@ -4649,7 +4750,6 @@ dseg ends
 #define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, _result)
 #define RS485Uart(_baud, _result) __RS485Control(HS_CTRL_UART, _baud, _result)
 #define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, _result)
-#endif
 
 #define __RS485Status(_sendingData, _dataAvail) \
   acquire __CHSCSMutex \
@@ -4680,11 +4780,9 @@ dseg ends
   mov _result, __CHSCArgs.Result \
   release __CHSCMutex
 
-#ifdef __ENHANCED_FIRMWARE
 #define SendRS485Bool(_bval, _status) __sendRS485Bool(_bval, _status)
 #define SendRS485Number(_val, _status) __sendRS485Number(_val, _status)
 #define SendRS485String(_str, _status) __sendRS485String(_str, _status)
-#endif
 
 #define __sendRS485Bool(_bval, _status) \
   acquire __CHSWMutex \
@@ -4707,6 +4805,7 @@ dseg ends
   syscall CommHSWrite, __CHSWArgs \
   mov _status, __CHSWArgs.Status \
   release __CHSWMutex
+#endif
 
 
 // standard firmware math functions written by Tamas Sorosy (www.sorosy.com)
@@ -4995,6 +5094,28 @@ dseg ends
   getin _val, _p, RawValue \
   sub _val, _val, 600 \
   sub _val, _val, _offset
+
+dseg segment
+  __HTMplexRaw word
+  __HTMplexScaled dword
+  __HTMplexMutex mutex
+dseg ends
+
+#define __ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) \
+  acquire __HTMplexMutex \
+  getin __HTMplexRaw, _p, RawValue \
+  mul __HTMplexScaled, __HTMplexRaw, 339 \
+  sub __HTMplexScaled, 346797, __HTMplexScaled \
+  div __HTMplexScaled, __HTMplexScaled, __HTMplexRaw \
+  add __HTMplexScaled, __HTMplexScaled, 5 \
+  div __HTMplexScaled, __HTMplexScaled, 10 \
+  and _t4, __HTMplexScaled, 8 \
+  and _t3, __HTMplexScaled, 4 \
+  and _t2, __HTMplexScaled, 2 \
+  and _t1, __HTMplexScaled, 1 \
+  release __HTMplexMutex
+
+#define ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) __ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4)
 
 dseg segment
   __HTPFStartIRLink  byte[] 0x02, 0x42

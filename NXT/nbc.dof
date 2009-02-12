@@ -100,11 +100,11 @@ Conditionals=FAST_MM, CAN_DOWNLOAD
 DebugSourceDirs=d:\nxt\nxt\BricxCC\source\bricktools\;d:\nxt\nxt\BricxCC\source\
 UsePackages=0
 [Parameters]
-RunParams=-Z1 test_e.nxc
+RunParams=test.nxc
 HostApplication=
 Launcher=
 UseLauncher=0
-DebugCWD=f:\nxt\programs
+DebugCWD=
 [Resource DLL Projects]
 Item0=Chinese (Hong Kong S.A.R.)*$00000C04*ZHH*ZHH
 [RDP Source Files]

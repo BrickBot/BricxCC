@@ -16,6 +16,7 @@ default
 do
 else
 false
+float
 for
 goto
 if

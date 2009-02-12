@@ -1303,6 +1303,8 @@ begin
       commandstr := commandstr + Format(' -ER=%d', [NBCMaxErrors]);
     if EnhancedFirmware then
       commandstr := commandstr + ' -EF';
+    if NXT2Firmware then
+      commandstr := commandstr + ' -v=120';
     if IgnoreSysFiles then
       commandstr := commandstr + ' -n';
     sIncludePath := sIncludePath + ';' + ExtractFilePath(sFilename);

@@ -2,11 +2,11 @@
 #define NBCCOMMON_H
 //==============================================================================
 //
-// Copyright (C) 2006 - John Hansen. All rights reserved.
+// Copyright (C) 2009 - John Hansen. All rights reserved.
 //
 // Workfile:: NBCCommon.h
-// Date:: 2008-02-20
-// Revision:: 22
+// Date:: 2009-02-09
+// Revision:: 23
 //
 //------------------------------------------------------------------------------
 //
@@ -48,6 +48,7 @@
 #define EQ   0x04
 #define NEQ  0x05
 
+#ifdef __ENHANCED_FIRMWARE
 // array operation definitions
 #define OPARR_SUM    0x00
 #define OPARR_MEAN   0x01
@@ -56,6 +57,7 @@
 #define OPARR_MIN    0x04
 #define OPARR_MAX    0x05
 #define OPARR_SORT   0x06
+#endif
 
 
 // update flags
@@ -108,12 +110,15 @@
 #define IN_TYPE_LOWSPEED       0x0A
 #define IN_TYPE_LOWSPEED_9V    0x0B
 #define IN_TYPE_HISPEED        0x0C
+
+#if __FIRMWARE_VERSION > 107
 #define IN_TYPE_COLORFULL      0x0D
 #define IN_TYPE_COLORRED       0x0E
 #define IN_TYPE_COLORGREEN     0x0F
 #define IN_TYPE_COLORBLUE      0x10
 #define IN_TYPE_COLORNONE      0x11
 #define IN_TYPE_COLOREXIT      0x12 // for internal use
+#endif
 
 // flags passed into the InputMode field of the RCXInput
 #define IN_MODE_RAW           0x00
@@ -161,6 +166,8 @@
 #define ScaledValue     4
 #define InvalidData     5
 
+
+#if __FIRMWARE_VERSION <= 107
 //==============================================================================
 // Direct IOMap data addresses
 //==============================================================================
@@ -265,59 +272,100 @@
 #define OutputIOBlockTachoCount2 0xc22b
 #define OutputIORotationCount2   0xc22c
 
+#endif
+
 //==============================================================================
 // System Call function constants
 // Command use:
 //==============================================================================
 
-#define FileOpenRead 0
-#define FileOpenWrite 1
-#define FileOpenAppend 2
-#define FileRead 3
-#define FileWrite 4
-#define FileClose 5
-#define FileResolveHandle 6
-#define FileRename 7
-#define FileDelete 8
-#define SoundPlayFile 9
-#define SoundPlayTone 10
-#define SoundGetState 11
-#define SoundSetState 12
-#define DrawText 13
-#define DrawPoint 14
-#define DrawLine 15
-#define DrawCircle 16
-#define DrawRect 17
-#define DrawGraphic 18
-#define SetScreenMode 19
-#define ReadButton 20
-#define CommLSWrite 21
-#define CommLSRead 22
+#define FileOpenRead       0
+#define FileOpenWrite      1
+#define FileOpenAppend     2
+#define FileRead           3
+#define FileWrite          4
+#define FileClose          5
+#define FileResolveHandle  6
+#define FileRename         7
+#define FileDelete         8
+#define SoundPlayFile      9
+#define SoundPlayTone     10
+#define SoundGetState     11
+#define SoundSetState     12
+#define DrawText          13
+#define DrawPoint         14
+#define DrawLine          15
+#define DrawCircle        16
+#define DrawRect          17
+#define DrawGraphic       18
+#define SetScreenMode     19
+#define ReadButton        20
+#define CommLSWrite       21
+#define CommLSRead        22
 #define CommLSCheckStatus 23
-#define RandomNumber 24
-#define GetStartTick 25
-#define MessageWrite 26
-#define MessageRead 27
+#define RandomNumber      24
+#define GetStartTick      25
+#define MessageWrite      26
+#define MessageRead       27
 #define CommBTCheckStatus 28
-#define CommBTWrite 29
-#define CommBTRead 30
-#define KeepAlive 31
-#define IOMapRead 32
-#define IOMapWrite 33
-#define IOMapReadByID 34
-#define IOMapWriteByID 35
+#define CommBTWrite       29
+#define CommBTRead        30
+#define KeepAlive         31
+#define IOMapRead         32
+#define IOMapWrite        33
+
+#if __FIRMWARE_VERSION <= 107
+#ifdef __ENHANCED_FIRMWARE
+#define IOMapReadByID          34
+#define IOMapWriteByID         35
 #define DisplayExecuteFunction 36
-#define CommExecuteFunction 37
-#define LoaderExecuteFunction 38
-#define FileFindFirst 39
-#define FileFindNext 40
-#define FileOpenWriteLinear 41
+#define CommExecuteFunction    37
+#define LoaderExecuteFunction  38
+#define FileFindFirst          39
+#define FileFindNext           40
+#define FileOpenWriteLinear    41
 #define FileOpenWriteNonLinear 42
-#define FileOpenReadLinear 43
-#define CommHSControl 44
-#define CommHSCheckStatus 45
-#define CommHSWrite 46
-#define CommHSRead 47
+#define FileOpenReadLinear     43
+#define CommHSControl          44
+#define CommHSCheckStatus      45
+#define CommHSWrite            46
+#define CommHSRead             47
+#endif
+#else
+// NXT 2.0 firmwares
+#define ColorSensorRead        34 
+#define CommBTOnOff            35
+#define CommBTConnection       36
+#define CommHSWrite            37
+#define CommHSRead             38
+#define CommHSCheckStatus      39
+#define ReadSemData            40
+#define WriteSemData           41
+#define ComputeCalibValue      42
+#define UpdateCalibCacheInfo   43
+#define DatalogWrite           44
+#define DatalogGetTimes        45
+#define SetSleepTimeout        46
+#define ListFiles              47
+
+#ifdef __ENHANCED_FIRMWARE
+#define IOMapReadByID          78
+#define IOMapWriteByID         79
+#define DisplayExecuteFunction 80
+#define CommExecuteFunction    81
+#define LoaderExecuteFunction  82
+#define FileFindFirst          83
+#define FileFindNext           84
+#define FileOpenWriteLinear    85
+#define FileOpenWriteNonLinear 86
+#define FileOpenReadLinear     87
+#define CommHSControl          88
+#define CommLSWriteEx          89
+#define FileSeek               90
+#define FileResize             91
+#define DrawGraphicArray       92
+#endif
+#endif
 
 // line numbers for use with DrawText system function
 #define LCD_LINE8 0
@@ -537,8 +585,11 @@
 #define CommandOffsetDeactivateFlag 31
 #define CommandOffsetFileName       32
 #define CommandOffsetMemoryPool     52
+
+#if __FIRMWARE_VERSION > 107
 #define CommandOffsetSyncTime       32820
 #define CommandOffsetSyncTick       32824
+#endif
 
 
 //==============================================================================
@@ -596,7 +647,10 @@
 #define LDR_FILETX_SRCMISSING   0x9900
 #define LDR_FILETX_STREAMERROR  0x9A00
 #define LDR_FILETX_CLOSEERROR   0x9B00
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define LDR_INVALIDSEEK         0x9C00
+#endif
 
 // loader module functions
 #define LDR_CMD_OPENREAD        0x80
@@ -612,7 +666,11 @@
 #define LDR_CMD_OPENREADLINEAR  0x8A
 #define LDR_CMD_OPENWRITEDATA   0x8B
 #define LDR_CMD_OPENAPPENDDATA  0x8C
+
+#if __FIRMWARE_VERSION > 107
 #define LDR_CMD_CROPDATAFILE    0x8D
+#endif
+
 #define LDR_CMD_FINDFIRSTMODULE 0x90
 #define LDR_CMD_FINDNEXTMODULE  0x91
 #define LDR_CMD_CLOSEMODHANDLE  0x92
@@ -628,11 +686,12 @@
 #define LDR_CMD_RENAMEFILE      0xA3
 #define LDR_CMD_BTFACTORYRESET  0xA4
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define LDR_CMD_RESIZEDATAFILE  0xD0
 #define LDR_CMD_SEEKFROMSTART   0xD1
 #define LDR_CMD_SEEKFROMCURRENT 0xD2
 #define LDR_CMD_SEEKFROMEND     0xD3
-
+#endif
 
 //==============================================================================
 // Sound module constants
@@ -797,6 +856,8 @@
 
 #define INPUT_INVALID_DATA   0x01
 
+#if __FIRMWARE_VERSION > 107
+
 // constants related to Colorstruct
 #define INPUT_RED          0
 #define INPUT_GREEN        1
@@ -824,6 +885,7 @@
 #define INPUT_CAL_POINT_2  2
 #define INPUT_NO_OF_POINTS 3
 
+#endif
 
 
 // offsets
@@ -840,6 +902,8 @@
 #define InputOffsetCustomPctFullScale(p) (((p)*20)+14) // Sets the Pct full scale of the custom sensor
 #define InputOffsetCustomActiveStatus(p) (((p)*20)+15) // Sets the active or inactive state of the custom sensor
 #define InputOffsetInvalidData(p)        (((p)*20)+16) // Indicates whether data is invalid (1) or valid (0)
+
+#if __FIRMWARE_VERSION > 107
 // color structure offsets
 #define InputOffsetColorCalibration(p, np, nc) (80+((p)*84)+0+((np)*16)+((nc)*4))
 #define InputOffsetColorCalLimits(p, np)       (80+((p)*84)+48+((np)*2))
@@ -848,7 +912,7 @@
 #define InputOffsetColorSensorValue(p, nc)     (80+((p)*84)+68+((nc)*2))
 #define InputOffsetColorSensorBoolean(p, nc)   (80+((p)*84)+76+((nc)*2))
 #define InputOffsetColorCalibrationState(p)    (80+((p)*84)+80)
-
+#endif
 
 //==============================================================================
 // Output module constants
@@ -930,6 +994,19 @@
 #define LowSpeedOffsetState            164
 #define LowSpeedOffsetSpeed            165
 
+#ifdef __ENHANCED_FIRMWARE
+#define LowSpeedOffsetNoRestartOnRead  166
+
+#define LSREAD_RESTART_ALL     0x00
+#define LSREAD_NO_RESTART_1    0x01
+#define LSREAD_NO_RESTART_2    0x02
+#define LSREAD_NO_RESTART_3    0x04
+#define LSREAD_NO_RESTART_4    0x08
+#define LSREAD_RESTART_NONE    0x0F
+#define LSREAD_NO_RESTART_MASK 0x10
+
+#endif
+
 
 //==============================================================================
 // Display module constants
@@ -947,22 +1024,20 @@
 #define DISPLAY_FILL_REGION     0x06     // W - fill screen region      (CMD,TRUE/FALSE,X1,Y1,X2,Y2)
 #define DISPLAY_FRAME           0x07     // W - draw a frame (on/off)   (CMD,TRUE/FALSE,X1,Y1,X2,Y2)
 
-#define DISPLAY_DRAW_PIXELS_SET    0x00
-#define DISPLAY_DRAW_PIXELS_CLEAR  0x01
-#define DISPLAY_DRAW_PIXELS_INVERT 0x02
+#define DRAW_OPT_NORMAL                     (0x0000)
+#define DRAW_OPT_LOGICAL_COPY               (0x0000)
 
-#define DISPLAY_DRAW_SHAPE_HOLLOW  0x00
-#define DISPLAY_DRAW_SHAPE_FILLED  0x01
+#define DRAW_OPT_CLEAR_WHOLE_SCREEN         (0x0001)
+#define DRAW_OPT_CLEAR_EXCEPT_STATUS_SCREEN (0x0002)
+#define DRAW_OPT_INVERT                     (0x0004)
+#define DRAW_OPT_LOGICAL_AND                (0x0008)
+#define DRAW_OPT_LOGICAL_OR                 (0x0010)
+#define DRAW_OPT_LOGICAL_XOR                (0x0018)
+#define DRAW_OPT_FILL_SHAPE                 (0x0020)
 
-#define DISPLAY_DRAW_BITMAP_PLAIN  0x00
-#define DISPLAY_DRAW_BITMAP_INVERT 0x01
-
-#define DRAW_OPT_NORMAL        0x00
-#define DRAW_OPT_LOGICAL_COPY  0x00
-#define DRAW_OPT_LOGICAL_AND   0x01
-#define DRAW_OPT_LOGICAL_OR    0x02
-#define DRAW_OPT_LOGICAL_XOR   0x03
-
+// Combined parameter masks:
+#define DRAW_OPT_CLEAR_SCREEN_MODES         (0x0003)
+#define DRAW_OPT_LOGICAL_OPERATIONS         (0x0018)
 
 // Constants related to Flags
 #define DISPLAY_ON               0x01     // W  - Display on
@@ -970,17 +1045,6 @@
 #define DISPLAY_POPUP            0x08     // W  - Use popup display memory
 #define DISPLAY_REFRESH_DISABLED 0x40     // R  - Refresh disabled
 #define DISPLAY_BUSY             0x80     // R  - Refresh in progress
-
-
-#define DRAW_OPT_CLEAR_WHOLE_SCREEN         (0x0001)
-#define DRAW_OPT_CLEAR_EXCEPT_STATUS_SCREEN (0x0002)
-#define DRAW_OPT_INVERT                     (0x0004)
-#define DRAW_OPT_CLEAR_PIXELS               (0x0004)
-#define DRAW_OPT_FILL_SHAPE                 (0x0020)
-
-// Combined parameter masks:
-#define DRAW_OPT_CLEAR_SCREEN_MODES         (0x0003)
-#define DRAW_OPT_LOGICAL_OPERATIONS         (0x0018)
 
 #define SCREEN_MODE_RESTORE 0x00
 #define SCREEN_MODE_CLEAR   0x01
@@ -1134,10 +1198,11 @@
 #define HS_DISABLE       4
 #define HS_ENABLE        5
 
+#ifdef __ENHANCED_FIRMWARE
 #define HS_CTRL_INIT 0
 #define HS_CTRL_UART 1
 #define HS_CTRL_EXIT 2
-
+#endif
 
 //Constants refering to DeviceStatus within DeviceTable
 #define BT_DEVICE_EMPTY   0x00
@@ -1165,7 +1230,10 @@
 #define INTF_EXTREAD       15
 #define INTF_PINREQ        16
 #define INTF_CONNECTREQ    17
+
+#if __FIRMWARE_VERSION > 107
 #define INTF_CONNECTBYNAME 18
+#endif
 
 #define LR_SUCCESS        0x50
 #define LR_COULD_NOT_SAVE 0x51
