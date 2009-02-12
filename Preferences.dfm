@@ -86,7 +86,7 @@ object PrefForm: TPrefForm
       Top = 1
       Width = 450
       Height = 313
-      ActivePage = shtAPI
+      ActivePage = shtCompiler
       Align = alClient
       TabOrder = 0
       OnChange = pagPrefsChange
@@ -830,7 +830,7 @@ object PrefForm: TPrefForm
           Top = 8
           Width = 425
           Height = 274
-          ActivePage = shtCompilerCommon
+          ActivePage = shtNBC
           TabOrder = 0
           object shtCompilerCommon: TTabSheet
             Caption = 'Common'
@@ -1145,7 +1145,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11107
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNBCIncludePathExit
             end
@@ -1207,6 +1207,14 @@ object PrefForm: TPrefForm
               HelpContext = 11105
               AutoSize = False
               TabOrder = 2
+            end
+            object chkNXT2Firmare: TCheckBox
+              Left = 76
+              Top = 160
+              Width = 173
+              Height = 17
+              Caption = 'NXT 2.0 compatible firmware'
+              TabOrder = 9
             end
           end
           object shtCompilerBrickOS: TTabSheet
@@ -2611,7 +2619,7 @@ object PrefForm: TPrefForm
   object dlgSaveTemplates: TSaveDialog
     DefaultExt = 'txt'
     Filter = 'Template files (*.txt)|*.txt|All files (*.*)|*.*'
-    Left = 229
-    Top = 217
+    Left = 261
+    Top = 177
   end
 end

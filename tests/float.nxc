@@ -1,0 +1,12 @@
+float foobar=123.456;
+
+task main()
+{
+  string msg;
+  float my_float=foobar*2.4/3.14159;
+  asm {
+    numtostr msg, my_float
+  }
+  TextOut(0, LCD_LINE1, msg);
+  Wait(1000);
+}

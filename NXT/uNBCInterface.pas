@@ -49,6 +49,7 @@ type
     fIgnoreSystemFile: boolean;
     fSafeCalls: boolean;
     fMaxErrors: word;
+    fFirmwareVersion: word;
   protected
     fDump : TStrings;
     fBCCreated : boolean;
@@ -106,6 +107,7 @@ type
     property IncludePaths : string read fIncludePaths write fIncludePaths;
     property WarningsAreOn : boolean read fWarningsAreOn write fWarningsAreOn;
     property EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
+    property FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
     property SafeCalls : boolean read fSafeCalls write fSafeCalls;
     property OnWriteMessages : TWriteMessages read fOnWriteMessages write fOnWriteMessages;
 {$IFDEF CAN_DOWNLOAD}
@@ -127,6 +129,7 @@ begin
   fMaxErrors := 0;
   fIgnoreSystemFile := False;
   fEnhancedFirmware := False;
+  fFirmwareVersion := 105; // 1.05 NXT 1.1 firmware 
   fWarningsAreOn := False;
   fMoreIncludes := False;
   fBinaryInput := False;
@@ -243,6 +246,7 @@ begin
   begin
     D := TRXEDumper.Create;
     try
+      D.FirmwareVersion := FirmwareVersion;
       D.LoadFromFile(fFilename);
       D.Decompile(fDump);
     finally
@@ -452,6 +456,7 @@ begin
               NC.WarningsOff := not WarningsAreOn;
               NC.IgnoreSystemFile := IgnoreSystemFile;
               NC.EnhancedFirmware := EnhancedFirmware;
+              NC.FirmwareVersion  := FirmwareVersion;
               NC.SafeCalls := SafeCalls;
               NC.MaxErrors := MaxErrors;
               try
@@ -479,6 +484,7 @@ begin
               C.OptimizeLevel := OptimizationLevel;
               C.WarningsOff   := not WarningsAreOn;
               C.EnhancedFirmware := EnhancedFirmware;
+              C.FirmwareVersion  := FirmwareVersion;
               C.IgnoreSystemFile := IgnoreSystemFile;
               C.MaxErrors        := MaxErrors;
               try
@@ -573,6 +579,7 @@ begin
   IncludePaths             := ParamValue('-I', False, Value);
   WarningsAreOn            := ParamSwitch('-w+', False, Value);
   EnhancedFirmware         := ParamSwitch('-EF', False, Value);
+  FirmwareVersion          := ParamIntValue('-v', 105, False, Value);
   SafeCalls                := ParamSwitch('-safecall', False, Value);
   WriteCompilerMessages    := ParamSwitch('-E', False, Value);
   CompilerMessagesFilename := ParamValue('-E', False, Value);

@@ -29,6 +29,8 @@ type
   public
     constructor Create;
     function  AddEntry(const aName, aValue : string) : integer;
+    procedure AddDefines(aValue : TStrings);
+    procedure Define(const aName : string);
     procedure Clear; override;
     procedure Delete(Index: Integer); override;
     property MapValue[index : integer] : string read GetMapValue write SetMapValue;
@@ -67,8 +69,7 @@ type
     function ProcessMacroDefinition(bUndefine : boolean; Lex: TGenLexer;
       var lineNo: integer): integer;
     function GenLexerType : TGenLexerClass;
-    procedure SetDefines(const aValue: TStrings);
-    function GetDefines: TStrings;
+    function GetDefines: TMapList;
     function ProcessDefinedFunction(expr : string) : string;
     function EvaluateExpression(expr : string; lineno : integer) : boolean;
     function AcquireLexer(const lineNo : integer) : TGenLexer;
@@ -83,7 +84,7 @@ type
     function Preprocess(const fname: string; aStrings: TStrings) : string; overload;
     function Preprocess(const fname: string; aStream: TMemoryStream) : string; overload;
     procedure AddIncludeDirs(aStrings : TStrings);
-    property Defines : TStrings read GetDefines write SetDefines;
+    property Defines : TMapList read GetDefines;
   end;
 
 implementation
@@ -955,15 +956,7 @@ begin
   end;
 end;
 
-procedure TLangPreprocessor.SetDefines(const aValue: TStrings);
-var
-  i : integer;
-begin
-  for i := 0 to aValue.Count - 1 do
-    MacroDefs.AddEntry(aValue.Names[i], aValue.ValueFromIndex[i]);
-end;
-
-function TLangPreprocessor.GetDefines: TStrings;
+function TLangPreprocessor.GetDefines: TMapList;
 begin
   Result := MacroDefs;
 end;
@@ -1125,6 +1118,19 @@ begin
     result := AnsiCompareText(s1,s2);
 end;
 {$ENDIF}
+
+procedure TMapList.AddDefines(aValue: TStrings);
+var
+  i : integer;
+begin
+  for i := 0 to aValue.Count - 1 do
+    AddEntry(aValue.Names[i], aValue.ValueFromIndex[i]);
+end;
+
+procedure TMapList.Define(const aName: string);
+begin
+  AddEntry(aName, '1');
+end;
 
 { TPreprocLevel }
 

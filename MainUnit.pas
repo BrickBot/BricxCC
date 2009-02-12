@@ -5649,6 +5649,7 @@ begin
   begin
     Name := 'ogpFile';
     Parent := cbrTop;
+    Caption := '';
     Left := 11;
     Top := 2;
     Width := 170;

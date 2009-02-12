@@ -1,0 +1,23 @@
+Bricx Command Center Release Notes
+-----------------
+
+Please send bug reports to bricxcc@comcast.net.
+
+For updates and additional documentation, visit the BricxCC Web Site:
+http://bricxcc.sourceforge.net/.  Send emails to bricxcc@comcast.net.
+
+Version 3.3.7.20
+-----------------
+- Added a simple hex viewer for files on the NXT.  Within the NXT Explorer
+  you can right click an NXT file and select View or use the equivalent
+  toolbar or File menu option.
+- Added AVI video capture to the NXT Screen tool.  
+- Added support for \" or \' in NXC and NBC strings to the NBC and NXC
+  syntax highlighters.
+- Fixed an access violation when closing the main window while unsaved changes
+  exist in open editor windows and you choose "cancel" when prompted to
+  save your changes.
+- Fixed NXTDeviceInfo function in TSpirit class for the bluetooth address value
+- Fixed broken defragment operation in the NXT Explorer
+- Fixed SendMessage boolean NXT message bug (inverted logic)
+

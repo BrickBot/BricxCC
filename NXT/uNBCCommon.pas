@@ -5,6 +5,9 @@ interface
 uses
   Parser10, uNXTConstants, Classes;
 
+const
+  NXT2_MIN_FIRMWARE_VERSION = 120;
+
 type
   TNBCExpParser = class(TExpParser)
   private
@@ -18,6 +21,7 @@ type
     property ExtraDefines : boolean read fExtraDefs write SetExtraDefs;
   end;
 
+  TStatementType = (stUnsigned, stSigned, stFloat);
   TSymbolType = (stUnknown, stParam, stLocal, stGlobal, stAPIFunc, stAPIStrFunc);
   TOnCompilerMessage = procedure(const msg : string; var stop : boolean) of object;
   TFuncParamType = (fptUBYTE, fptSBYTE, fptUWORD, fptSWORD, fptULONG, fptSLONG, fptUDT, fptString, fptMutex, fptFloat);
@@ -177,9 +181,6 @@ type
     procedure ReleaseHelper(aHelper : TArrayHelperVar);
     property  Items[Index: Integer]: TArrayHelperVar read GetItem write SetItem; default;
   end;
-
-var
-  maxsd : integer;
 
 const
   LABEL_PREFIX = '__NXC_Label_';
@@ -1080,8 +1081,10 @@ const
   TOK_FLOATDEF      = 'O';
   TOK_STRINGDEF     = 'S';
   TOK_STRINGLIT     = 'G';
-  TOK_SAFECALL      = #222;
-  TOK_USERDEFINEDTYPE = #223;
+  TOK_SAFECALL        = #218;
+  TOK_USERDEFINEDTYPE = #219;
+  TOK_ARRAYFLOAT      = #220;
+  TOK_ARRAYFLOAT4     = #223;
   TOK_ARRAYSTRING     = #224;
   TOK_ARRAYSTRING4    = #227;
   TOK_ARRAYUDT        = #228;
@@ -1102,30 +1105,41 @@ const
   TOK_LINE_COMMENT    = #02;
 
 const
-  REGVARS_ARRAY : array[0..7] of string = (
+  REGVARS_ARRAY : array[0..11] of string = (
     '__tmpsbyte%s',
     '__tmpsword%s',
     '__tmpslong%s',
+    '__tmplong%s',
     '__D0%s',
+    '__DU0%s',
     '__zf%s',
     '__strtmpbuf%s',
     '__strbuf%s',
-    '__strretval%s'
+    '__strretval%s',
+    '__tmpfloat%s',
+    '__DF0%s'
   );
-  REGVARTYPES_ARRAY : array[0..7] of string = (
+  REGVARTYPES_ARRAY : array[0..11] of string = (
     'sbyte',
     'sword',
     'slong',
+    'long',
     'slong',
+    'long',
     'byte',
     'byte[]',
     'byte[]',
-    'byte[]'
+    'byte[]',
+    'float',
+    'float'
   );
 
 const
   DECOR_SEP = '_7qG2_';
 
+
+var
+  MaxStackDepth : integer;
 
 implementation
 
@@ -1351,10 +1365,22 @@ begin
     oldname := Format('__result_%s', [Name]);
     newname := Format('__result_%s', [NameInline]);
     tmpCode := Replace(tmpCode, oldName, newName);
-    for i := 1 to maxsd do
+    for i := 1 to MaxStackDepth do
     begin
-      oldname := Format('__stack_%3.3d%s', [i, Name]);
-      newname := Format('__stack_%3.3d%s', [i, NameInline]);
+      oldname := Format('__signed_stack_%3.3d%s', [i, Name]);
+      newname := Format('__signed_stack_%3.3d%s', [i, NameInline]);
+      tmpCode := Replace(tmpCode, oldName, newName);
+    end;
+    for i := 1 to MaxStackDepth do
+    begin
+      oldname := Format('__unsigned_stack_%3.3d%s', [i, Name]);
+      newname := Format('__unsigned_stack_%3.3d%s', [i, NameInline]);
+      tmpCode := Replace(tmpCode, oldName, newName);
+    end;
+    for i := 1 to MaxStackDepth do
+    begin
+      oldname := Format('__float_stack_%3.3d%s', [i, Name]);
+      newname := Format('__float_stack_%3.3d%s', [i, NameInline]);
       tmpCode := Replace(tmpCode, oldName, newName);
     end;
     tmpCode := tmpCode + #13#10 + EndLabel + ':';

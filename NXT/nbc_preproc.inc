@@ -1,4 +1,4 @@
 // nbc_preproc.inc
 const
   DEFAULT_INCLUDE_DIR = '.';
-  COMPILATION_TIMESTAMP = 'Wed Jan 28 19:45:23 CST 2009';
+  COMPILATION_TIMESTAMP = 'Wed Feb 11 22:09:27 CST 2009';

@@ -332,6 +332,7 @@ type
     hkParamComp2: TEdit;
     hkRecMacro2: TEdit;
     hkPlayMacro2: TEdit;
+    chkNXT2Firmare: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -682,6 +683,7 @@ var
   NBCExePath : string;
   UseInternalNBC : Boolean;
   EnhancedFirmware : Boolean;
+  NXT2Firmware : Boolean;
   IgnoreSysFiles : Boolean;
   JavaCompilerPath : string;
   LeJOSRoot :  string;
@@ -2614,6 +2616,7 @@ begin
     NBCExePath              := Reg_ReadString(reg, 'NBCExePath', '');
     UseInternalNBC          := Reg_ReadBool(reg, 'UseInternalNBC', False);
     EnhancedFirmware        := Reg_ReadBool(reg, 'EnhancedFirmware', False);
+    NXT2Firmware            := Reg_ReadBool(reg, 'NXT2Firmware', False);
     IgnoreSysFiles          := Reg_ReadBool(reg, 'IgnoreSysFiles', False);
     LeJOSRoot               := Reg_ReadString(reg, 'LeJOSRoot', K_LEJOS_ROOT);
     JavaCompilerPath        := Reg_ReadString(reg, 'JavaCompilerPath', '');
@@ -2669,6 +2672,7 @@ begin
     reg.WriteString('NBCExePath', NBCExePath);
     reg.WriteBool('UseInternalNBC', UseInternalNBC);
     reg.WriteBool('EnhancedFirmware', EnhancedFirmware);
+    reg.WriteBool('NXT2Firmware', NXT2Firmware);
     reg.WriteBool('IgnoreSysFiles', IgnoreSysFiles);
     reg.WriteString('LeJOSRoot', LeJOSRoot);
     reg.WriteString('JavaCompilerPath', JavaCompilerPath);
@@ -3804,6 +3808,7 @@ begin
   NBCExePath              := PrefForm.edtNBCExePath.Text;
   UseInternalNBC          := PrefForm.chkUseIntNBCComp.Checked;
   EnhancedFirmware        := PrefForm.chkEnhancedFirmware.Checked;
+  NXT2Firmware            := PrefForm.chkNXT2Firmare.Checked;
   IgnoreSysFiles          := PrefForm.chkIgnoreSysFiles.Checked;
   LeJOSRoot               := PrefForm.edtLeJOSRoot.Text;
   JavaCompilerPath        := PrefForm.edtJavaPath.Text;
@@ -3849,6 +3854,7 @@ begin
   PrefForm.edtNBCExePath.Text             := NBCExePath;
   PrefForm.chkUseIntNBCComp.Checked       := UseInternalNBC;
   PrefForm.chkEnhancedFirmware.Checked    := EnhancedFirmware;
+  PrefForm.chkNXT2Firmare.Checked         := NXT2Firmware;
   PrefForm.chkIgnoreSysFiles.Checked      := IgnoreSysFiles;
   PrefForm.edtLeJOSRoot.Text              := LeJOSRoot;
   PrefForm.edtJavaPath.Text               := JavaCompilerPath;

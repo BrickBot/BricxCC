@@ -3,11 +3,14 @@ unit uNXCComp;
 interface
 
 uses
-  Classes, uNBCCommon, uGenLexer, uNXTClasses, uPreprocess;
+  Classes, uNBCCommon, uGenLexer, uNXTClasses, uPreprocess, Contnrs;
 
 type
   TNXCComp = class
   private
+    fStackDepth : integer;
+    fStatementType : TStatementType;
+    fInlineFunctionStack : TObjectStack;
     fLastErrLine : integer;
     fLastErrMsg : string;
     endofallsource : boolean;
@@ -16,6 +19,7 @@ type
     fParenDepth : integer;
     fSafeCalls: boolean;
     fMaxErrors: word;
+    fFirmwareVersion: word;
     function FunctionParameterTypeName(const name: string;
       idx: integer): string;
     function GlobalDataType(const n: string): char;
@@ -31,6 +35,9 @@ type
     procedure InitializeGraphicOutVars;
     procedure LocalEmitLn(SL: TStrings; const line: string);
     procedure LocalEmitLnNoTab(SL: TStrings; const line: string);
+    procedure pop;
+    procedure push;
+    procedure SetStatementType(const Value: TStatementType);
   protected
     fDD: TDataDefs;
     fCurrentStruct : TDataspaceEntry;
@@ -316,9 +323,13 @@ type
     procedure StringFunction(const Name : string);
     function  TempWordName: string;
     function  TempByteName: string;
-    function  TempLongName : string;
+    function  TempSignedLongName : string;
+    function  TempUnsignedLongName : string;
+    function  TempFloatName : string;
     function  RegisterName(name : string = '') : string;
+    function  SignedRegisterName(name : string = '') : string;
     function  UnsignedRegisterName(name : string = '') : string;
+    function  FloatRegisterName(name : string = '') : string;
     function  ZeroFlag : string;
     function  tos: string;
     function  StrTmpBufName(name : string = '') : string;
@@ -399,6 +410,7 @@ type
     function  GetPreProcLexerClass : TGenLexerClass; virtual;
     // dataspace definitions property
     property  DataDefinitions : TDataDefs read fDD;
+    property  StatementType : TStatementType read fStatementType write SetStatementType;
   public
     constructor Create;
     destructor Destroy; override;
@@ -413,6 +425,7 @@ type
     property  OptimizeLevel : integer read fOptimizeLevel write fOptimizeLevel;
     property  WarningsOff : boolean read fWarningsOff write fWarningsOff;
     property  EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
+    property  FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
     property  IgnoreSystemFile : boolean read fIgnoreSystemFile write fIgnoreSystemFile;
     property  SafeCalls : boolean read fSafeCalls write fSafeCalls;
     property  MaxErrors : word read fMaxErrors write fMaxErrors;
@@ -567,17 +580,17 @@ const
   );
 
 const
-  IntegralTypes = [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF,
-                   TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
+  NonAggregateTypes = [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF,
+                       TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF, TOK_FLOATDEF];
+  IntegerTypes = [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF,
+                  TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
 const
-  UnsignedIntegralTypes = [TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
-
-var
-  sd : integer;
+  UnsignedIntegerTypes = [TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
 
 function GetArrayDimension(dt : char) : integer;
 begin
   case dt of
+    TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4         : Result := Ord(dt) - Ord(TOK_ARRAYFLOAT) + 1;
     TOK_ARRAYSTRING..TOK_ARRAYSTRING4       : Result := Ord(dt) - Ord(TOK_ARRAYSTRING) + 1;
     TOK_ARRAYUDT..TOK_ARRAYUDT4             : Result := Ord(dt) - Ord(TOK_ARRAYUDT) + 1;
     TOK_ARRAYCHARDEF..TOK_ARRAYCHARDEF4     : Result := Ord(dt) - Ord(TOK_ARRAYCHARDEF) + 1;
@@ -593,7 +606,7 @@ end;
 
 function IsArrayType(dt: char): boolean;
 begin
-  Result := (dt >= TOK_ARRAYSTRING) and (dt <= TOK_ARRAYULONGDEF4);
+  Result := (dt >= TOK_ARRAYFLOAT) and (dt <= TOK_ARRAYULONGDEF4);
 end;
 
 function IsUDT(dt: char): boolean;
@@ -604,6 +617,7 @@ end;
 function ArrayBaseType(dt: char): char;
 begin
   case dt of
+    TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4         : Result := TOK_FLOATDEF;
     TOK_ARRAYSTRING..TOK_ARRAYSTRING4       : Result := TOK_STRINGDEF;
     TOK_ARRAYUDT..TOK_ARRAYUDT4             : Result := TOK_USERDEFINEDTYPE;
     TOK_ARRAYCHARDEF..TOK_ARRAYCHARDEF4     : Result := TOK_CHARDEF;
@@ -627,15 +641,15 @@ begin
     Result := Result + '[]';
 end;
 
-procedure pop;
+procedure TNXCComp.pop;
 begin
-  dec(sd);
+  dec(fStackDepth);
 end;
 
-procedure push;
+procedure TNXCComp.push;
 begin
-  inc(sd);
-  maxsd := Max(maxsd, sd);
+  inc(fStackDepth);
+  MaxStackDepth := Max(MaxStackDepth, fStackDepth);
 end;
 
 procedure TNXCComp.GetCharX;
@@ -1018,7 +1032,10 @@ var
 begin
   // a variable is considered to be already decorated if it
   // starts with "__" followed by a task name followed by DECOR_SEP
-  // OR it starts with "__stack_"  OR it starts with %%CALLER%%_
+  // OR it starts with "__signed_stack_"
+  // OR it starts with "__unsigned_stack_"
+  // OR it starts with "__float_stack_"
+  // OR it starts with %%CALLER%%_
   Result := False;
   i := Pos('__', n);
   if i = 1 then
@@ -1031,7 +1048,8 @@ begin
     begin
       tmp := Copy(n, 1, i-1);
       i := fThreadNames.IndexOf(tmp);
-      Result := (i <> -1) or (tmp = 'stack');
+      Result := (i <> -1) or (tmp = 'signed_stack') or
+                (tmp = 'unsigned_stack') or (tmp = 'float_stack');
     end;
   end;
 end;
@@ -1230,11 +1248,11 @@ begin
   begin
     Token := TOK_NUM;
     Value := savedLook;
-    if not IsDigit(Look) then Exit;
+    if not (IsDigit(Look) or (Look = '.')) then Exit;
     repeat
       Value := Value + Look;
       GetChar;
-    until not IsDigit(Look);
+    until not (IsDigit(Look) or (Look = '.'));
   end;
 end;
 
@@ -1570,8 +1588,12 @@ begin
       // handle some special cases (register variables)
       if (Pos('__strretval', n) = 1) or (Pos('__strtmpbuf', n) = 1) or (Pos('__strbuf', n) = 1) then
         Result := TOK_STRINGDEF
-      else if (Pos('__D0', n) = 1) or (Pos('__stack_', n) = 1) or (Pos('__tmpslong', n) = 1) then
+      else if (Pos('__D0', n) = 1) or (Pos('__signed_stack_', n) = 1) or (Pos('__tmpslong', n) = 1) then
         Result := TOK_LONGDEF
+      else if (Pos('__DU0', n) = 1) or (Pos('__unsigned_stack_', n) = 1) or (Pos('__tmplong', n) = 1) then
+        Result := TOK_ULONGDEF
+      else if (Pos('__DF0', n) = 1) or (Pos('__float_stack_', n) = 1) or (Pos('__tmpfloat', n) = 1) then
+        Result := TOK_FLOATDEF
       else if (Pos('__zf', n) = 1) then
         Result := TOK_BYTEDEF
       else if (Pos('__tmpsbyte', n) = 1) then
@@ -1620,6 +1642,9 @@ begin
       end;
       TOK_STRINGDEF : begin
         Result := Char(Ord(TOK_ARRAYSTRING)+dimensions);
+      end;
+      TOK_FLOATDEF : begin
+        Result := Char(Ord(TOK_ARRAYFLOAT)+dimensions);
       end;
     else
       Result := dt;
@@ -1762,12 +1787,22 @@ var
   cval : int64;
   tmpSrc : string;
 begin
-  cval := StrToIntDef(n, 0);
-  if (cval > High(smallint)) or
-     ((cval < 0) and (not EnhancedFirmware or (cval < Low(smallint)))) then
-    tmpSrc := 'mov %s, %s'
+  if Pos('.', n) > 0 then
+  begin
+    tmpSrc := 'mov %s, %s';
+    StatementType := stFloat;
+  end
   else
-    tmpSrc := 'set %s, %s';
+  begin
+    cval := StrToIntDef(n, 0);
+    if cval < 0 then
+      StatementType := stSigned;
+    if (cval > High(smallint)) or
+       ((cval < 0) and (not EnhancedFirmware or (cval < Low(smallint)))) then
+      tmpSrc := 'mov %s, %s'
+    else
+      tmpSrc := 'set %s, %s';
+  end;
   fCCSet := False;
   EmitLn(Format(tmpSrc, [RegisterName, n]));
 end;
@@ -1788,8 +1823,15 @@ end;
 { Load a Variable to Primary Register }
 
 procedure TNXCComp.LoadVar(const Name: string);
+var
+  dt : Char;
 begin
   CheckNotProc(Name);
+  dt := DataType(Name);
+  if dt = TOK_FLOATDEF then
+    StatementType := stFloat
+  else if not (dt in UnsignedIntegerTypes) then
+    StatementType := stSigned;
   fCCSet := False;
   EmitLn(Format('mov %s, %s', [RegisterName, GetDecoratedIdent(Name)]));
 end;
@@ -2012,15 +2054,7 @@ end;
 procedure TNXCComp.Store(const Name: string);
 begin
   CheckNotProc(Name);
-(*
-  if fLHSDataType in UnsignedIntegralTypes then
-  begin
-    EmitLn(Format('mov %s, %s',[UnsignedRegisterName, RegisterName]));
-    EmitLn(Format('mov %s, %s',[GetDecoratedIdent(Name), UnsignedRegisterName]));
-  end
-  else
-*)
-    EmitLn(Format('mov %s, %s',[GetDecoratedIdent(Name), RegisterName]));
+  EmitLn(Format('mov %s, %s',[GetDecoratedIdent(Name), RegisterName]));
 end;
 
 procedure TNXCComp.StoreString(const Name : string);
@@ -2169,7 +2203,9 @@ begin
     TOK_ARRAYULONGDEF..TOK_ARRAYULONGDEF4  :
       EmitLn(Format('%s dword%s %s', [Name, aVal, Val]));
     TOK_MUTEXDEF  : EmitLn(Format('%s mutex', [Name]));
-    TOK_FLOATDEF  : EmitLn(Format('%s float', [Name]));
+    TOK_FLOATDEF,
+    TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4  :
+      EmitLn(Format('%s float%s %s', [Name, aVal, Val]));
     TOK_STRINGDEF : EmitLn(Format('%s byte[] %s', [Name, Val]));
     TOK_ARRAYSTRING..TOK_ARRAYSTRING4  :
       EmitLn(Format('%s byte[]%s %s', [Name, aVal, Val]));
@@ -2185,6 +2221,9 @@ procedure TNXCComp.Allocate(const Name, aVal, Val, tname: string; dt : char);
 var
   oldInlining : boolean;
 begin
+  if (dt in [TOK_FLOATDEF, TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4]) and
+     (FirmwareVersion < NXT2_MIN_FIRMWARE_VERSION) then
+    AbortMsg(sFloatNotSupported);
   // 2007-07-05 JCH:
   // changed this function to perform no code generation of variable
   // declarations whatsoever if the current function is marked
@@ -3042,8 +3081,8 @@ begin
     TOK_ARRAYULONGDEF..TOK_ARRAYULONGDEF4, TOK_ULONGDEF : Result := fptULONG;
     TOK_ARRAYUDT..TOK_ARRAYUDT4, TOK_USERDEFINEDTYPE : Result := fptUDT;
     TOK_ARRAYSTRING..TOK_ARRAYSTRING4, TOK_STRINGDEF : Result := fptString;
+    TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4, TOK_FLOATDEF : Result := fptFloat;
     TOK_MUTEXDEF : Result := fptMutex;
-    TOK_FLOATDEF : Result := fptFloat;
   else
     Result := fptUBYTE;
   end;
@@ -3311,9 +3350,13 @@ begin
             // tell the compiler that a UDT/Array is on stack
             fUDTOnStack := Format('__result_%s', [procname]);
           end
-          else if rdt in IntegralTypes then
+          else if rdt in NonAggregateTypes then
           begin
             // copy value from subroutine to register
+            if rdt = TOK_FLOATDEF then
+              StatementType := stFloat
+            else if not (rdt in UnsignedIntegerTypes) then
+              StatementType := stSigned;
             if bFunctionIsInline then
               EmitLn(Format('mov %s, %s', [RegisterName, RegisterName(InlineName(fCurrentThreadName, procname))]))
             else
@@ -3353,6 +3396,7 @@ begin
   if IsArrayType(dt) then
   begin
     case dt of
+      TOK_ARRAYFLOAT     : Result := TOK_FLOATDEF;
       TOK_ARRAYSTRING    : Result := TOK_STRINGDEF;
       TOK_ARRAYUDT       : Result := TOK_USERDEFINEDTYPE;
       TOK_ARRAYCHARDEF   : Result := TOK_CHARDEF;
@@ -3372,6 +3416,7 @@ end;
 function TNXCComp.AddArrayDimension(dt: char): char;
 begin
   case dt of
+    TOK_FLOATDEF        : Result := TOK_ARRAYFLOAT;
     TOK_STRINGDEF       : Result := TOK_ARRAYSTRING;
     TOK_USERDEFINEDTYPE : Result := TOK_ARRAYUDT;
     TOK_CHARDEF         : Result := TOK_ARRAYCHARDEF;
@@ -3469,7 +3514,7 @@ begin
   end
   else if Token in ['+', '-', '/', '*', '%', '&', '|', '^', '>', '<'] then
   begin
-    if (dt in IntegralTypes) and bIndexed then
+    if (dt in NonAggregateTypes) and bIndexed then
     begin
       // get the indexed value
       push;
@@ -4062,9 +4107,14 @@ begin
   Result := line; // line is already trimmed
   if Length(Result) = 0 then Exit;
   Result := Replace(Result, '__RETURN__', Format(#13#10'mov %s,', [RegisterName]));
+  Result := Replace(Result, '__RETURNS__', Format(#13#10'mov %s,', [SignedRegisterName]));
+  Result := Replace(Result, '__RETURNU__', Format(#13#10'mov %s,', [UnsignedRegisterName]));
+  Result := Replace(Result, '__RETURNF__', Format(#13#10'mov %s,', [FloatRegisterName]));
   Result := Replace(Result, '__TMPBYTE__', TempByteName);
   Result := Replace(Result, '__TMPWORD__', TempWordName);
-  Result := Replace(Result, '__TMPLONG__', TempLongName);
+  Result := Replace(Result, '__TMPLONG__', TempSignedLongName);
+  Result := Replace(Result, '__TMPULONG__', TempUnsignedLongName);
+  Result := Replace(Result, '__TMPFLOAT__', TempFloatName);
   Result := Replace(Result, '__RETVAL__', RegisterName);
   Result := Replace(Result, '__STRRETVAL__', StrRetValName);
   Result := Replace(Result, 'true', 'TRUE');
@@ -4299,6 +4349,7 @@ procedure TNXCComp.Statement(const lend, lstart : string);
 var
   dt : Char;
 begin
+  StatementType := stSigned;
   fSemiColonRequired := True;
   if Token = TOK_BEGIN then
     Block(lend, lstart)
@@ -4581,7 +4632,7 @@ begin
       Next;
     end;
     Result := Trim(Result);
-    if dt in IntegralTypes then
+    if dt in NonAggregateTypes then
     begin
       // evaluate so that constants and expressions are handled properly
       if Result = 'false' then
@@ -4592,7 +4643,12 @@ begin
       begin
         fCalc.SilentExpression := Result;
         if not fCalc.ParserError then
-          Result := IntToStr(Trunc(fCalc.Value))
+        begin
+          if dt = TOK_FLOATDEF then
+            Result := FloatToStr(fCalc.Value)
+          else
+            Result := IntToStr(Trunc(fCalc.Value));
+        end
         else
           AbortMsg(sInvalidConstExpr);
       end;
@@ -4693,9 +4749,12 @@ begin
       // is an integer type
       if bConst then
       begin
-        if dt in IntegralTypes then
+        if dt in NonAggregateTypes then
         begin
-          fCalc.SetVariable(savedval, StrToIntDef(ival, 0));
+          if dt = TOK_FLOATDEF then
+            fCalc.SetVariable(savedval, StrToFloatDef(ival, 0))
+          else
+            fCalc.SetVariable(savedval, StrToIntDef(ival, 0));
         end
         else if dt = TOK_STRINGDEF then
         begin
@@ -4725,6 +4784,8 @@ begin
       TOK_SHORTDEF : Result := TOK_USHORTDEF;
       TOK_CHARDEF : Result := TOK_BYTEDEF;
     else
+      if vt = TOK_FLOATDEF then
+        AbortMsg(sNoUnsignedFloat);
       Result := vt;
     end;
 end;
@@ -5404,8 +5465,8 @@ begin
   totallines := 1;
   linenumber := 1;
   ClearParams;
-  sd := 0;
-  maxsd := 0;
+  fStackDepth   := 0;
+  MaxStackDepth := 0;
   GetChar;
   Next;
 end;
@@ -5431,6 +5492,7 @@ begin
   NumGlobals := 0;
   endofallsource := False;
   fEnhancedFirmware := False;
+  fFirmwareVersion  := 105; // 1.05 NXT 1.1 firmware 
   fIgnoreSystemFile := False;
   fWarningsOff      := False;
   fDD := TDataDefs.Create;
@@ -5443,6 +5505,7 @@ begin
   fParams := TVariableList.Create;
   fGlobals := TVariableList.Create;
   fFuncParams := TFunctionParameters.Create;
+  fInlineFunctionStack := TObjectStack.Create;
   fInlineFunctions := TInlineFunctions.Create;
   fArrayHelpers := TArrayHelperVars.Create;
   fTmpAsmLines := TStringList.Create;
@@ -5484,6 +5547,7 @@ begin
   FreeAndNil(fParams);
   FreeAndNil(fGlobals);
   FreeAndNil(fFuncParams);
+  FreeAndNil(fInlineFunctionStack);
   FreeAndNil(fInlineFunctions);
   FreeAndNil(fArrayHelpers);
   FreeAndNil(fTmpAsmLines);
@@ -6191,9 +6255,10 @@ var
 begin
   P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)));
   try
-    P.Defines := Self.Defines;
+    P.Defines.AddDefines(Defines);
     if EnhancedFirmware then
-      P.Defines.Add('__ENHANCED_FIRMWARE');
+      P.Defines.Define('__ENHANCED_FIRMWARE');
+    P.Defines.AddEntry('__FIRMWARE_VERSION', IntToStr(FirmwareVersion));
     P.AddIncludeDirs(IncludeDirs);
     if not IgnoreSystemFile then
     begin
@@ -6286,7 +6351,12 @@ end;
 
 function TNXCComp.tos : string;
 begin
-  Result := Format('__stack_%3.3d%s', [sd, fCurrentThreadName]);
+  if fStatementType = stFloat then
+    Result := Format('__float_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
+  else if fStatementType = stUnsigned then
+    Result := Format('__unsigned_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
+  else
+    Result := Format('__signed_stack_%3.3d%s', [fStackDepth, fCurrentThreadName]);
 end;
 
 function TNXCComp.TempByteName: string;
@@ -6299,9 +6369,19 @@ begin
   Result := Format('__tmpsword%s', [fCurrentThreadName]);
 end;
 
-function TNXCComp.TempLongName: string;
+function TNXCComp.TempSignedLongName: string;
 begin
   Result := Format('__tmpslong%s', [fCurrentThreadName]);
+end;
+
+function TNXCComp.TempUnsignedLongName: string;
+begin
+  Result := Format('__tmplong%s', [fCurrentThreadName]);
+end;
+
+function TNXCComp.TempFloatName: string;
+begin
+  Result := Format('__tmpfloat%s', [fCurrentThreadName]);
 end;
 
 function TNXCComp.RegisterName(name : string): string;
@@ -6312,10 +6392,20 @@ begin
   end
   else
   begin
-    if name = '' then
-      name := fCurrentThreadName;
-    Result := Format('__D0%s',[name]);
+    if fStatementType = stFloat then
+      Result := FloatRegisterName(name)
+    else if fStatementType = stUnsigned then
+      Result := UnsignedRegisterName(name)
+    else
+    Result := SignedRegisterName(name);
   end;
+end;
+
+function TNXCComp.SignedRegisterName(name: string): string;
+begin
+  if name = '' then
+    name := fCurrentThreadName;
+  Result := Format('__D0%s',[name]);
 end;
 
 function TNXCComp.UnsignedRegisterName(name: string): string;
@@ -6323,6 +6413,13 @@ begin
   if name = '' then
     name := fCurrentThreadName;
   Result := Format('__DU0%s',[name]);
+end;
+
+function TNXCComp.FloatRegisterName(name: string): string;
+begin
+  if name = '' then
+    name := fCurrentThreadName;
+  Result := Format('__DF0%s',[name]);
 end;
 
 function TNXCComp.ZeroFlag: string;
@@ -6353,7 +6450,7 @@ end;
 
 procedure TNXCComp.EmitRegisters;
 var
-  j, k, idx : integer;
+  j, k, idx, LastRegIdx : integer;
   f : TInlineFunction;
   H : TArrayHelperVar;
   dt : Char;
@@ -6363,6 +6460,9 @@ var
     Result := REGVARS_ARRAY[idx] + ' ' + REGVARTYPES_ARRAY[idx];
   end;
 begin
+  LastRegIdx := High(REGVARS_ARRAY);
+  if FirmwareVersion < NXT2_MIN_FIRMWARE_VERSION then
+    dec(LastRegIdx, 2);
   for j := 0 to fArrayHelpers.Count - 1 do
   begin
     H  := fArrayHelpers[j];
@@ -6376,7 +6476,7 @@ begin
     name := fThreadNames[j];
     if fInlineFunctions.IndexOfName(name) = -1 then
     begin
-      for idx := Low(REGVARS_ARRAY) to High(REGVARS_ARRAY) do
+      for idx := Low(REGVARS_ARRAY) to LastRegIdx do
         EmitLn(Format(EmitFmt(idx), [name]));
       dt := FunctionReturnType(name);
       if IsUDT(dt) or IsArrayType(dt) then
@@ -6392,7 +6492,7 @@ begin
     for k := 0 to f.Callers.Count - 1 do
     begin
       name := InlineName(f.Callers[k], f.Name);
-      for idx := Low(REGVARS_ARRAY) to High(REGVARS_ARRAY) do
+      for idx := Low(REGVARS_ARRAY) to LastRegIdx do
         EmitLn(Format(EmitFmt(idx), [name]));
       dt := FunctionReturnType(f.Name);
       if IsUDT(dt) or IsArrayType(dt) then
@@ -6414,9 +6514,20 @@ begin
   begin
     name := fThreadNames[j];
     if fInlineFunctions.IndexOfName(name) = -1 then
-      for i := 1 to maxsd do begin
-        EmitLn(Format('__stack_%3.3d%s slong', [i, name]));
+    begin
+      for i := 1 to MaxStackDepth do begin
+        EmitLn(Format('__signed_stack_%3.3d%s slong', [i, name]));
       end;
+      for i := 1 to MaxStackDepth do begin
+        EmitLn(Format('__unsigned_stack_%3.3d%s long', [i, name]));
+      end;
+      if FirmwareVersion >= NXT2_MIN_FIRMWARE_VERSION then
+      begin
+        for i := 1 to MaxStackDepth do begin
+          EmitLn(Format('__float_stack_%3.3d%s float', [i, name]));
+        end;
+      end;
+    end;
   end;
   for j := 0 to fInlineFunctions.Count - 1 do
   begin
@@ -6424,8 +6535,17 @@ begin
     for k := 0 to f.Callers.Count - 1 do
     begin
       name := InlineName(f.Callers[k], f.Name);
-      for i := 1 to maxsd do begin
-        EmitLn(Format('__stack_%3.3d%s slong', [i, name]));
+      for i := 1 to MaxStackDepth do begin
+        EmitLn(Format('__signed_stack_%3.3d%s slong', [i, name]));
+      end;
+      for i := 1 to MaxStackDepth do begin
+        EmitLn(Format('__unsigned_stack_%3.3d%s long', [i, name]));
+      end;
+      if FirmwareVersion >= NXT2_MIN_FIRMWARE_VERSION then
+      begin
+        for i := 1 to MaxStackDepth do begin
+          EmitLn(Format('__float_stack_%3.3d%s float', [i, name]));
+        end;
       end;
     end;
   end;
@@ -7195,8 +7315,8 @@ begin
   begin
     expectedBase := ArrayBaseType(fp.ParameterDataType);
     providedBase := ArrayBaseType(dt);
-    if (expectedBase in IntegralTypes) and not (providedBase in IntegralTypes) then
-      Expected(sIntegerType)
+    if (expectedBase in NonAggregateTypes) and not (providedBase in NonAggregateTypes) then
+      Expected(sNumericType)
     else if (expectedBase = TOK_STRINGDEF) and (providedBase <> TOK_STRINGDEF) then
       Expected(sStringVarType)
     else if expectedBase = TOK_USERDEFINEDTYPE then
@@ -7237,9 +7357,9 @@ begin
   Next;
   Next;
   CheckIdent;
-  // identifier must be an integral type
-  if not (DataType(Value) in IntegralTypes) then
-    Expected(sIntegerType);
+  // identifier must be an integer type
+  if not (DataType(Value) in NonAggregateTypes) then
+    Expected(sNumericType);
   if bInc then
     StoreInc(Value, 1)
   else
@@ -7669,7 +7789,7 @@ begin
   dim := GetArrayDimension(dt);
   if dim = 1 then
   begin
-    if ArrayBaseType(dt) in IntegralTypes then
+    if ArrayBaseType(dt) in NonAggregateTypes then
       tmpVal := '0'
     else
     begin
@@ -7836,14 +7956,14 @@ begin
       begin
         // also base type compatible
         lBase := ArrayBaseType(lhs);
-        rBase := ArrayBaseType(lhs);
-        Result := ((lBase in IntegralTypes) and (rBase in IntegralTypes)) or (lBase = rBase);
+        rBase := ArrayBaseType(rhs);
+        Result := ((lBase in NonAggregateTypes) and (rBase in NonAggregateTypes)) or (lBase = rBase);
       end;
     end
     else
     begin
       // neither is an array
-      Result := (lhs in IntegralTypes) and (lhs in IntegralTypes);
+      Result := (lhs in NonAggregateTypes) and (rhs in NonAggregateTypes);
     end;
   end;
 end;
@@ -8008,7 +8128,7 @@ begin
       begin
         if tmpDT = TOK_STRINGDEF then
           EmitLn(Format('strcat %s, %s', [aLHSName, GetDecoratedValue]))
-        else if tmpDT in IntegralTypes then
+        else if tmpDT in NonAggregateTypes then
           LoadVar(Value)
         else
           EmitLn(Format('mov %s, %s', [GetDecoratedIdent(aLHSName), GetDecoratedValue]));
@@ -8024,6 +8144,13 @@ begin
     end;
   end;
   pop;
+end;
+
+procedure TNXCComp.SetStatementType(const Value: TStatementType);
+begin
+  fStatementType := Value;
+  if (Value = stFloat) and (FirmwareVersion < NXT2_MIN_FIRMWARE_VERSION) then
+    AbortMsg(sFloatNotSupported);
 end;
 
 end.

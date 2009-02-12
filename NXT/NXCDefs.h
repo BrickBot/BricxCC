@@ -2,11 +2,11 @@
 #define NXCDEFS_H
 //==============================================================================
 //
-// Copyright (C) 2006 - John Hansen. All rights reserved.
+// Copyright (C) 2009 - John Hansen. All rights reserved.
 //
 // Workfile:: NXCDefs.h
-// Date:: 2008-03-06
-// Revision:: 38
+// Date:: 2009-02-09
+// Revision:: 39
 //
 //------------------------------------------------------------------------------
 //
@@ -46,6 +46,15 @@
 #define SENSOR_TYPE_LOWSPEED        IN_TYPE_LOWSPEED
 #define SENSOR_TYPE_LOWSPEED_9V     IN_TYPE_LOWSPEED_9V
 #define SENSOR_TYPE_HIGHSPEED       IN_TYPE_HISPEED
+
+#if __FIRMWARE_VERSION > 107
+#define SENSOR_TYPE_COLORFULL       IN_TYPE_COLORFULL
+#define SENSOR_TYPE_COLORRED        IN_TYPE_COLORRED
+#define SENSOR_TYPE_COLORGREEN      IN_TYPE_COLORGREEN
+#define SENSOR_TYPE_COLORBLUE       IN_TYPE_COLORBLUE
+#define SENSOR_TYPE_COLORNONE       IN_TYPE_COLORNONE
+#define SENSOR_TYPE_COLOREXIT       IN_TYPE_COLOREXIT
+#endif
 
 #define SENSOR_MODE_RAW		IN_MODE_RAW
 #define SENSOR_MODE_BOOL	IN_MODE_BOOLEAN
@@ -134,7 +143,7 @@
 #define ArrayInit(_aout, _val, _cnt) asm { arrinit _aout, _val, _cnt }
 #define ArraySubset(_aout, _asrc, _idx, _len) asm { arrsubset _aout, _asrc, _idx, _len }
 
-#define GetLSInputBuffer(_p, _offset, _cnt, _data)  asm { __getLSInputBuffer(_p, _offset, _cnt, _data) }
+#define GetLSInputBuffer(_p, _offset, _cnt, _data) asm { __getLSInputBuffer(_p, _offset, _cnt, _data) }
 #define GetLSOutputBuffer(_p, _offset, _cnt, _data) asm { __getLSOutputBuffer(_p, _offset, _cnt, _data) }
 #define GetDisplayNormal(_x, _line, _cnt, _data) asm { __getDisplayNormal(_x, _line, _cnt, _data) }
 #define GetDisplayPopup(_x, _line, _cnt, _data) asm { __getDisplayPopup(_x, _line, _cnt, _data) }
@@ -407,6 +416,43 @@
 #define WriteLnString(_handle, _str, _cnt) asm { __writeLnString(_handle, _str, _cnt, __RETVAL__) }
 #define WriteBytes(_handle, _buf, _cnt) asm { __writeBytes(_handle, _buf, _cnt, __RETVAL__) }
 #define WriteBytesEx(_handle, _len, _buf) asm { __writeBytesEx(_handle, _len, _buf, __RETVAL__) }
+
+// stdio functions
+
+#define fclose(_handle) CloseFile(_handle)
+#define remove(_filename) DeleteFile(_filename)
+#define rename(_old, _new) RenameFile(_old, _new)
+#define fgetc(_handle) asm { \
+  __readValue(_handle, __FReadTmpByte, __RETVAL__) \
+  mov __RETVAL__, __FReadTmpByte \
+ }
+#define getc(_handle) fgetc(_handle)
+
+
+/*
+  char* fgets(char* str, int num, FILE*); read num bytes from file into str.  Appends null.  Newline stops reading
+#define fgets(_output, _num, _handle) ReadLnString(_handle, _output) // not quite right
+  int fgetc(FILE*); // EOF if failure, otherwise the character read from stream
+
+  int feof(FILE*);   // non-zero if EOF, 0 otherwise
+  int fflush(FILE*); // EOF if failure, 0 otherwise
+  long int ftell(FILE*); // -1 if failure, otherwise the file position
+  FILE* fopen(char* filename, char* mode); // open file
+  int fprintf(FILE*, char* format, ...); // write to file
+  int fputc(int ch, FILE*); // write chracter to file. Returns character written or EOF if error occurs
+  int putc(int ch, FILE*); // ditto
+  int fputs(char* str, FILE*); // write string to file (not including null); return EOF if error or non-negative value if success
+  size_t fread(ptr, size, count, FILE*); // read blocks of data from file; returns number of blocks read
+  int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
+  size_t fwrite(ptr, size, count, FILE*); // write blocks of data to stream; returns number of blocks written
+  int getchar(void); // read character from stdin (returns which button was pressed) 
+  int printf(char* format, ...);
+  int putchar(int character); // write character to stdout
+  void rewind(FILE*); // same as seeking to start of file (and clears error indicator)
+  int sprintf(char* str, char* format, ...); // write formatted data to string
+
+*/
+
 
 #define SendMessage(_queue, _msg) asm { __sendMessage(_queue, _msg, __RETVAL__) }
 #define ReceiveMessage(_queue, _clear, _msg) asm { __receiveMessage(_queue, _clear, _msg, __RETVAL__) }
@@ -1113,6 +1159,7 @@ struct CommHSReadWriteType {
 #define ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9) asm { __ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, __RETVAL__) }
 #define SensorHTIRSeekerDir(_port) asm { ReadSensorHTIRSeekerDir(_port, __RETVAL__) }
 #define SensorHTColorNum(_port) asm { ReadSensorHTColorNum(_port, __RETVAL__) }
+#define ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) asm { __ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) }
 
 // Mindsensors API functions
 

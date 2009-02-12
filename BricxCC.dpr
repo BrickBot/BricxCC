@@ -175,6 +175,8 @@ begin
   CompilerDebug := ParamSwitch('/DEBUG');
   if ParamSwitch('/NT') then
     LocalCompilerTimeout := ParamIntValue('/NT', LocalCompilerTimeout) * K_MSTOSEC;
+  if ParamSwitch('/UserPath') then
+    UserDataLocalPath := IncludeTrailingPathDelimiter(ParamValue('/UserPath'));
   if ParamSwitch('/HELP') or ParamSwitch('/?') then
   begin
     ShowMessage('/RESET ' + #9#9 + '= ' + S_RESET + #13#10 +
@@ -186,6 +188,7 @@ begin
                 '/POS=filename ' + #9 + '= ' + S_POS + #13#10 +
                 '/NT=timeout ' + #9 + '= ' + S_NT + #13#10 +
                 '/DEBUG ' + #9#9 + '= ' + S_DEBUG + #13#10 +
+                '/UserPath=path ' + #9#9 + '= ' + S_USERPATH + #13#10 +
                 '/? or /HELP ' + #9 + '= ' + S_HELP);
   end;
   Application.Run;

@@ -13,6 +13,7 @@ resourcestring
   S_HELP  = 'display this message before starting up';
   S_NT    = 'use compiler timeout specified for this instance (in seconds)';
   S_DEBUG = 'display debug message when launching compiler';
+  S_USERPATH = 'set the path for user configuration files';
 
 // MainUnit unit
 resourcestring
@@ -481,6 +482,8 @@ resourcestring
   sInvalidReturnType       = 'Invalid return type';
   sInvalidStringAssign     = 'Invalid string assignment';
   sInvalidArrayIndex       = 'Invalid array index';
+  sFloatNotSupported       = 'float types are not supported at the specified firmware version';
+  sNoUnsignedFloat         = 'float types cannot be declared as unsigned';
 
 // uNBCCommon unit
 resourcestring
@@ -496,6 +499,7 @@ resourcestring
   sStructType              = 'struct type';
   sMutexType               = 'mutex type';
   sIntegerType             = 'integer type';
+  sNumericType             = 'numeric type';
   sMathFactor              = 'Math Factor';
   sArrayOfString           = 'array of string';
   sArrayDatatype           = 'array data type';

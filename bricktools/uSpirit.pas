@@ -415,6 +415,9 @@ type
     property  OnOpenStateChanged : TNotifyEvent read fOnOpenStateChanged write fOnOpenStateChanged;
   end;
 
+var
+  UserDataLocalPath : string;
+
 function NameToNXTFileType(name : string) : TNXTFileType;
 function MakeValidNXTFilename(const filename : string) : string;
 function GetInitFilename: string;
@@ -426,48 +429,6 @@ implementation
 
 uses
   SysUtils, {$IFNDEF FPC}FANTOM, SHFolder, Windows{$ELSE}FANTOMFPC{$ENDIF};
-
-{$IFNDEF FPC}
-function GetSpecialFolderPath(folder : integer) : string;
-const
-  SHGFP_TYPE_CURRENT = 0;
-var
-  path: array [0..MAX_PATH] of char;
-begin
-  if SUCCEEDED(SHGetFolderPath(0,folder,0,SHGFP_TYPE_CURRENT,@path[0])) then
-    Result := path
-  else
-    Result := '';
-end;
-
-function GetInitFilename: string;
-begin
-  Result := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\nxt.dat';
-end;
-
-function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
-const
-  name_postfix : array[boolean] of string = ('r', 'p');
-begin
-  Result := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\' + Format('joybtn%2.2d%s.rops', [i, name_postfix[bPress]]);
-end;
-
-{$ELSE}
-
-function GetInitFilename: string;
-begin
-  Result := ExtractFilePath(ParamStr(0))+'nxt.dat';
-end;
-
-function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
-const
-  name_postfix : array[boolean] of string = ('r', 'p');
-begin
-  Result := ExtractFilePath(ParamStr(0))+Format('joybtn%2.2d%s.rops', [i, name_postfix[bPress]]);
-end;
-
-{$ENDIF}
-
 
 function FantomAPIAvailable : boolean;
 begin
@@ -759,14 +720,48 @@ end;
 
 function TBrickComm.NXTGetBrickName: string;
 var
-  bt : array[0..5] of byte;
   btsig, memfree : Cardinal;
   tmpAddr : string;
 begin
-  Result := '';
+  Result  := '';
+  tmpAddr := '';
   memfree := 0;
-  btsig := 0;
+  btsig   := 0;
   NXTGetDeviceInfo(Result, tmpAddr, btsig, memfree);
 end;
+
+{$IFNDEF FPC}
+function GetSpecialFolderPath(folder : integer) : string;
+const
+  SHGFP_TYPE_CURRENT = 0;
+var
+  path: array [0..MAX_PATH] of char;
+begin
+  if SUCCEEDED(SHGetFolderPath(0,folder,0,SHGFP_TYPE_CURRENT,@path[0])) then
+    Result := path
+  else
+    Result := '';
+end;
+{$ENDIF}
+
+function GetInitFilename: string;
+begin
+  Result := UserDataLocalPath+'nxt.dat';
+end;
+
+function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
+const
+  name_postfix : array[boolean] of string = ('r', 'p');
+begin
+  Result := UserDataLocalPath+Format('joybtn%2.2d%s.rops', [i, name_postfix[bPress]]);
+end;
+
+initialization
+
+{$ifndef FPC}
+  UserDataLocalPath := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\';
+{$else}
+  UserDataLocalPath := ExtractFilePath(ParamStr(0));
+{$endif}
 
 end.

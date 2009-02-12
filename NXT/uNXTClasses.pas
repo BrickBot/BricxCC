@@ -9,6 +9,14 @@ uses
   uNBCCommon;
 
 type
+  NXTInstruction = record
+    Encoding : TOpCode;
+    CCType : Byte;
+    Arity  : Byte;
+    Name : string;
+  end;
+
+type
   TAsmLineType = (altBeginDS, altEndDS, altBeginClump, altEndClump, altCode,
     altVarDecl, altTypeDecl, altBeginStruct, altEndStruct, altBeginSub,
     altEndSub, altCodeDepends, altInvalid);
@@ -323,6 +331,7 @@ type
     procedure HandleNameToDSID(const name : string; var aId : integer);
     procedure RemoveVariableReference(const arg : string; const idx : integer);
     procedure RemoveVariableReferences;
+    function  GetNXTInstruction(const idx : integer) : NXTInstruction;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -354,6 +363,7 @@ type
     procedure SetItem(Index: Integer; const Value: TAsmLine);
     procedure HandleNameToDSID(const aName : string; var aId : integer);
     procedure FixupFinalization;
+    function  GetNXTInstruction(const idx : integer) : NXTInstruction;
   public
     constructor Create(aClump : TClump);
     destructor Destroy; override;
@@ -394,6 +404,7 @@ type
     procedure FinalizeClump;
     procedure HandleNameToDSID(const aname : string; var aId : integer);
     procedure RemoveReferences;
+    function  GetNXTInstruction(const idx : integer) : NXTInstruction;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -435,6 +446,7 @@ type
     fCalc: TNBCExpParser;
     fCaseSensitive : Boolean;
     fDS: TDataspace;
+    fFirmwareVersion: word;
     function GetCaseSensitive: boolean;
     procedure SetCaseSensitive(const Value: boolean);
     procedure BuildReferences;
@@ -450,6 +462,7 @@ type
     procedure FinalizeDependencies;
     procedure FinalizeAddressesAndFireCounts;
     procedure HandleNameToDSID(const aName : string; var aId : integer);
+    function  GetNXTInstruction(const idx : integer) : NXTInstruction;
   public
     constructor Create(ds : TDataspace);
     destructor Destroy; override;
@@ -471,6 +484,7 @@ type
     property  OnNameToDSID : TOnNameToDSID read fOnNameToDSID write fOnNameToDSID;
     property  CaseSensitive : boolean read GetCaseSensitive write SetCaseSensitive;
     property  Dataspace : TDataspace read fDS;
+    property  FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
   end;
 
   TAsmArgType = (aatVariable, aatVarNoConst, aatVarOrNull, aatConstant,
@@ -498,6 +512,7 @@ type
     fEnhancedFirmware: boolean;
     fIgnoreSystemFile: boolean;
     fMaxErrors: word;
+    fFirmwareVersion: word;
     procedure SetCaseSensitive(const Value: boolean);
     procedure SetStandardDefines(const Value: boolean);
     procedure SetExtraDefines(const Value: boolean);
@@ -512,6 +527,7 @@ type
     procedure SetDefines(const Value: TStrings);
     procedure LoadSystemFile(S: TStream);
     procedure SetLineCounter(const Value: integer);
+    procedure SetFirmwareVersion(const Value: word);
   protected
     fDSData : TDSData;
     fClumpData : TClumpData;
@@ -561,6 +577,7 @@ type
     function  GetDynDSDefaultsSize: Word;
     function  GetMemMgrHead: Word;
     function  GetMemMgrTail: Word;
+    function  GetNXTInstruction(const idx : integer) : NXTInstruction;
     procedure ReportProblem(const lineNo : integer; const fName, line, msg : string; err : boolean);
     procedure ProcessASMLine(aStrings : TStrings; idx : integer);
     procedure HandleConstantExpressions(AL : TAsmLine);
@@ -633,6 +650,7 @@ type
     property  Defines : TStrings read fDefines write SetDefines;
     property  WarningsOff : boolean read fWarningsOff write fWarningsOff;
     property  EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
+    property  FirmwareVersion : word read fFirmwareVersion write SetFirmwareVersion;
     property  IgnoreSystemFile : boolean read fIgnoreSystemFile write fIgnoreSystemFile;
     property  MaxErrors : word read fMaxErrors write fMaxErrors;
     property  OnCompilerMessage : TOnNBCCompilerMessage read fOnCompMSg write fOnCompMsg;
@@ -641,6 +659,7 @@ type
   TRXEDumper = class
   private
     fOnlyDumpCode: boolean;
+    fFirmwareVersion: word;
     function TOCNameFromArg(DS : TDSData; const argValue: word): string;
   protected
     fHeader : TRXEHeader;
@@ -667,6 +686,7 @@ type
     procedure DumpRXECodeSpace(aStrings : TStrings);
     procedure FinalizeRXE;
     procedure InitializeRXE;
+    function  GetNXTInstruction(const idx : integer) : NXTInstruction;
   public
     { Public declarations }
     constructor Create;
@@ -679,6 +699,7 @@ type
     procedure Decompile(aStrings : TStrings);
     property  Filename : string read fFilename write fFilename;
     property  OnlyDumpCode : boolean read fOnlyDumpCode write fOnlyDumpCode;
+    property  FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
   end;
 
 
@@ -698,23 +719,15 @@ const
     'ClumpCount = %11:d (0x%11:x)'#13#10 +
     'CodespaceCount = %12:d (0x%12:x)';
 
-type
-  NXTInstruction = record
-    Encoding : TOpCode;
-    CCType : Byte;
-    Arity  : Byte;
-    Name : string;
-  end;
-
 const
   STR_USES = 'precedes';
 
 const
 //  DataTypeCount      = 17;
 //  DataTypeStartIndex = 63;
-  PseudoOpcodeCount  = 66;
-  NXTInstructionsCount = 52+PseudoOpcodeCount;
-  NXTInstructions : array[0..NXTInstructionsCount-1] of NXTInstruction =
+  PseudoOpcodeCount1x  = 66;
+  NXTInstructionsCount1x = 52+PseudoOpcodeCount1x;
+  NXTInstructions1x : array[0..NXTInstructionsCount1x-1] of NXTInstruction =
   (
     ( Encoding: OP_ADD           ; CCType: 0; Arity: 3; Name: 'add'; ),
     ( Encoding: OP_SUB           ; CCType: 0; Arity: 3; Name: 'sub'; ),
@@ -1030,9 +1043,9 @@ var
   i : integer;
 begin
   Result := -1;
-  for i := Low(NXTInstructions) to High(NXTInstructions) do
+  for i := Low(NXTInstructions1x) to High(NXTInstructions1x) do
   begin
-    if NXTInstructions[i].Encoding = op then
+    if NXTInstructions1x[i].Encoding = op then
     begin
       Result := i;
       Break;
@@ -1201,15 +1214,15 @@ var
   tmpName : string;
 begin
   Result := OPS_INVALID;
-  for i := Low(NXTInstructions) to High(NXTInstructions) do
+  for i := Low(NXTInstructions1x) to High(NXTInstructions1x) do
   begin
     if bUseCase then
       tmpName := op
     else
       tmpName := AnsiLowerCase(op);
-    if NXTInstructions[i].Name = tmpName then
+    if NXTInstructions1x[i].Name = tmpName then
     begin
-      Result := NXTInstructions[i].Encoding;
+      Result := NXTInstructions1x[i].Encoding;
       break;
     end;
   end;
@@ -1223,11 +1236,11 @@ begin
     Result := Format('bad op (%d)', [Ord(op)])
   else
     Result := '';
-  for i := Low(NXTInstructions) to High(NXTInstructions) do
+  for i := Low(NXTInstructions1x) to High(NXTInstructions1x) do
   begin
-    if NXTInstructions[i].Encoding = op then
+    if NXTInstructions1x[i].Encoding = op then
     begin
-      Result := NXTInstructions[i].Name;
+      Result := NXTInstructions1x[i].Name;
       break;
     end;
   end;
@@ -1572,7 +1585,7 @@ begin
   opIdx := IndexOfOpcode(op);
   if opIdx = -1 then
     raise Exception.CreateFmt(sInvalidOpcode, [Ord(op)]);
-  NI :=  NXTInstructions[opIdx];
+  NI :=  GetNXTInstruction(opIdx);
   tmpStr := tmpStr + #9 + NI.Name;
   inc(Result); // move to next word in array
   dec(instsize, 2);
@@ -1920,6 +1933,7 @@ end;
 constructor TRXEDumper.Create;
 begin
   inherited;
+  fFirmwareVersion := 105; // 1.05 NXT 1.1 firmware
   fHeader := TRXEHeader.Create;
   fDSData := TDSData.Create;
   fClumpData := TClumpData.Create;
@@ -2067,6 +2081,11 @@ procedure TRXEDumper.InitializeRXE;
 begin
   // process dynamic arrays and build the class
   // representation of the code
+end;
+
+function TRXEDumper.GetNXTInstruction(const idx: integer): NXTInstruction;
+begin
+  Result := NXTInstructions1x[idx];
 end;
 
 { TDSBase }
@@ -3719,6 +3738,7 @@ begin
   fMaxErrors        := 0;
   fIgnoreSystemFile := False;
   fEnhancedFirmware := False;
+  fFirmwareVersion  := 105; // 1.05 NXT 1.1 firmware 
   fWarningsOff      := False;
   fReturnRequired   := False;
   fCaseSensitive    := True;
@@ -3929,9 +3949,10 @@ begin
     fMainStateCurrent := masCodeSegment; // default state
     P := TLangPreprocessor.Create(TNBCLexer, ExtractFilePath(ParamStr(0)));
     try
-      P.Defines := Self.Defines;
+      P.Defines.AddDefines(Defines);
       if EnhancedFirmware then
-        P.Defines.Add('__ENHANCED_FIRMWARE');
+        P.Defines.Define('__ENHANCED_FIRMWARE');
+      P.Defines.AddEntry('__FIRMWARE_VERSION', IntToStr(FirmwareVersion));
       P.AddIncludeDirs(IncludeDirs);
       if not IgnoreSystemFile then
       begin
@@ -5259,7 +5280,7 @@ begin
     end
     else
     begin
-      NI := NXTInstructions[i];
+      NI := GetNXTInstruction(i);
       case AL.Command of
         OP_CMP, OP_TST, OP_CMPSET, OP_TSTSET, OP_BRCMP, OP_BRTST : begin
           if AL.Args.Count <> NI.Arity+1 then
@@ -6313,6 +6334,17 @@ begin
   fLineCounter := Value;
 end;
 
+function TRXEProgram.GetNXTInstruction(const idx: integer): NXTInstruction;
+begin
+  Result := NXTInstructions1x[idx];
+end;
+
+procedure TRXEProgram.SetFirmwareVersion(const Value: word);
+begin
+  fFirmwareVersion := Value;
+  CodeSpace.FirmwareVersion := Value;
+end;
+
 { TAsmLine }
 
 procedure TAsmLine.AddArgs(sargs: string);
@@ -6464,7 +6496,7 @@ begin
   idx := IndexOfOpcode(Command);
   if idx <> -1 then
   begin
-    NI := NXTInstructions[idx];
+    NI := GetNXTInstruction(idx);
     fArity := NI.Arity;
     fCC := NI.CCType;
     if fArity = 6 then
@@ -6744,6 +6776,11 @@ begin
   fSpecialStr := Value;
 end;
 
+function TAsmLine.GetNXTInstruction(const idx: integer): NXTInstruction;
+begin
+  Result := CodeSpace.GetNXTInstruction(idx);
+end;
+
 { TAsmArguments }
 
 function TAsmArguments.Add: TAsmArgument;
@@ -6868,6 +6905,7 @@ end;
 constructor TCodeSpace.Create(ds : TDataspace);
 begin
   inherited Create(TClump);
+  fFirmwareVersion := 105;
   fDS := ds;
   fInitName := 'main';
   fAddresses := TObjectList.Create;
@@ -7101,6 +7139,11 @@ end;
 procedure TCodeSpace.MultiThread(const aName: string);
 begin
   fMultiThreadedClumps.Add(aName);
+end;
+
+function TCodeSpace.GetNXTInstruction(const idx: integer): NXTInstruction;
+begin
+  Result := NXTInstructions1x[idx];
 end;
 
 { TClump }
@@ -7367,7 +7410,9 @@ end;
 
 function IsStackOrReg(const str : string) : boolean;
 begin
-  Result := (Pos('__D0', str) = 1) or (Pos('__stack_', str) = 1);
+  Result := (Pos('__D0', str) = 1) or (Pos('__signed_stack_', str) = 1) or
+            (Pos('__unsigned_stack_', str) = 1) or (Pos('__float_stack_', str) = 1) or
+            (Pos('__U0', str) = 1) or (Pos('__F0', str) = 1);
 end;
 
 procedure TClump.RemoveOrNOPLine(AL, ALNext : TAsmLine; const idx : integer);
@@ -7775,6 +7820,11 @@ begin
   Result := Codespace.fMultiThreadedClumps.IndexOf(Self.Name) <> -1;
 end;
 
+function TClump.GetNXTInstruction(const idx: integer): NXTInstruction;
+begin
+  Result := CodeSpace.GetNXTInstruction(idx);
+end;
+
 { TClumpCode }
 
 function TClumpCode.Add: TAsmLine;
@@ -7831,6 +7881,11 @@ end;
 function TClumpCode.GetItem(Index: Integer): TAsmLine;
 begin
   Result := TAsmLine(inherited GetItem(Index));
+end;
+
+function TClumpCode.GetNXTInstruction(const idx: integer): NXTInstruction;
+begin
+  Result := Clump.GetNXTInstruction(idx);
 end;
 
 procedure TClumpCode.HandleNameToDSID(const aName: string; var aId: integer);
