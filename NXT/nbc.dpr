@@ -62,7 +62,7 @@ begin
   Writeln(UsageListing);
   Writeln(UsageSymbols);
   Writeln(UsageWarnings);
-  Writeln(UsageEnhanced);
+  Writeln(UsageEnhanced);
   Writeln(UsageSafecall);
   Writeln(UsageAPI);
   Writeln(UsageFirmVer);
