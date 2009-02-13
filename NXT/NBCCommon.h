@@ -5,8 +5,8 @@
 // Copyright (C) 2009 - John Hansen. All rights reserved.
 //
 // Workfile:: NBCCommon.h
-// Date:: 2009-02-09
-// Revision:: 23
+// Date:: 2009-02-12
+// Revision:: 24
 //
 //------------------------------------------------------------------------------
 //
@@ -1029,6 +1029,8 @@
 
 #define DRAW_OPT_CLEAR_WHOLE_SCREEN         (0x0001)
 #define DRAW_OPT_CLEAR_EXCEPT_STATUS_SCREEN (0x0002)
+#define DRAW_OPT_CLEAR_PIXELS               (0x0004)
+#define DRAW_OPT_CLEAR                      (0x0004)
 #define DRAW_OPT_INVERT                     (0x0004)
 #define DRAW_OPT_LOGICAL_AND                (0x0008)
 #define DRAW_OPT_LOGICAL_OR                 (0x0010)
