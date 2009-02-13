@@ -62,9 +62,10 @@ begin
   Writeln(UsageListing);
   Writeln(UsageSymbols);
   Writeln(UsageWarnings);
-  Writeln(UsageEnhanced);
+  Writeln(UsageEnhanced);
   Writeln(UsageSafecall);
   Writeln(UsageAPI);
+  Writeln(UsageFirmVer);
   Writeln(UsageHelp);
   // compiler also takes an undocumented "nxt name" parameter which is
   // used to tell the compiler what the downloaded program should be called
@@ -130,6 +131,7 @@ try
       C.IgnoreSystemFile         := ParamSwitch('-n', False);
       C.Quiet                    := ParamSwitch('-q', False);
       C.MaxErrors                := ParamIntValue('-ER', 0, False);
+      C.FirmwareVersion          := ParamIntValue('-v', 105, False);
       C.WriteCompilerOutput      := ParamSwitch('-L', False);
       C.CompilerOutputFilename   := ParamValue('-L', False);
       C.WriteSymbolTable         := ParamSwitch('-Y', False);
