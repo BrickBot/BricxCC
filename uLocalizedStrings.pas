@@ -534,6 +534,7 @@ resourcestring
   UsageEnhanced  = '   -EF : enhanced firmware';
   UsageSafecall  = '   -safecall: NXC will wrap all function calls in Acquire/Release';
   UsageAPI       = '   -api: dump the API to stdout';
+  UsageFirmVer   = '   -v=n: set the targeted firmware version (default == 105)';
   UsageHelp      = '   -help : display command line options';
 
 
