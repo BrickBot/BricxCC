@@ -3,31 +3,27 @@
 // Tests sone 2-D array features and some rectangle drawing components of 
 // the NXC graphics API.
 
-// verified on OS X (Power PC) 2009-02-10
-// by MG using NBC compiler 1.0.1.36, built Thu Jan 29
+// Verified by MG 2009-02-14
+// Next Byte Codes Compiler 1.0.1.36, built Wed Feb 11 2009
 
 // #define TONE // Comment out to suppress tones
-
-#define SCREEN_WIDTH 100
-#define SCREEN_HEIGHT 64
 
 // The rows of following array are the parameters of the rectangles that, 
 // when drawn, will display a block letter F on the NXT display. Each row 
 // vector has the form {x, y, width, height}.
-int rectangles[][] = {{31,7,17,51}, {47,44,30,14}, {47,21,24,15}};
+int rectangles[][] = {{31, 7, 17,51}, {47, 44, 30, 14}, {47, 21, 24, 15}};
 
 void DrawBackground(unsigned long option)
 {
    option |= DRAW_OPT_FILL_SHAPE;
-   RectOut(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, option);
-   RectOut(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, option);
+   RectOut(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, option);
 #ifdef TONE
    PlayTone(512, SEC_1);
    Wait(SEC_1);
 #endif
 }
 
-void DrawForeground(int rect[][], unsigned long option)
+void DrawLetterF(int rect[][], unsigned long option)
 {
    option |= DRAW_OPT_FILL_SHAPE;
    RectOut(rect[0][0], rect[0][1], rect[0][2], rect[0][3], option);
@@ -42,11 +38,11 @@ void DrawForeground(int rect[][], unsigned long option)
 task main()
 {
    // black letter on white background
-   DrawForeground(rectangles, DRAW_OPT_NORMAL);
+   DrawLetterF(rectangles, DRAW_OPT_NORMAL);
    // white letter on black background
    DrawBackground(DRAW_OPT_NORMAL);
-   DrawForeground(rectangles, DRAW_OPT_CLEAR_PIXELS);
+   DrawLetterF(rectangles, DRAW_OPT_CLEAR);
    // black letter on black background
-   DrawBackground(DRAW_OPT_CLEAR_PIXELS);
-   DrawForeground(rectangles, DRAW_OPT_NORMAL);
+   DrawBackground(DRAW_OPT_CLEAR);
+   DrawLetterF(rectangles, DRAW_OPT_NORMAL);
 }
