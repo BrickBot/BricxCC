@@ -3,36 +3,35 @@
 // Tests sone 2-D array features and some rectangle drawing components of 
 // the NXC graphics API.
 
-// Doesn't work; suspect the DRAW_OPT_LOGICAL_XOR option is failing.
+// Verified by MG 2009-02-14
+// Next Byte Codes Compiler 1.0.1.36, built Wed Feb 11 2009
 
 // #define TONE // Comment out to suppress tones
 
-#define DRAW_OPT_LOGICAL_XOR_CORRECTED 0x18
-
-#define SCREEN_WIDTH 100
-#define SCREEN_HEIGHT 64
-#define INVERT_ALL DRAW_OPT_LOGICAL_XOR_CORRECTED | DRAW_OPT_FILL_SHAPE
+#define INVERT_ALL DRAW_OPT_NORMAL | DRAW_OPT_LOGICAL_XOR | DRAW_OPT_FILL_SHAPE
 
 // The rows of following array are the parameters of the rectangles that, 
 // when drawn, will display a block letter F on the NXT display. Each row 
 // vector has the form {x, y, width, height}.
-int rectangles[][] = {{31,7,17,51}, {47,44,30,14}, {47,21,24,15}};
+int rectangles[][] = {{31, 7, 17, 51}, {47, 44, 30, 14}, {47, 21, 24, 15}};
 
 void InvertScreen()
 {
-   RectOut(0, 0, SCREEN_WIDTH, SCREEN_HEIGHT, INVERT_ALL);
+   RectOut(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, INVERT_ALL);
 #ifdef TONE
    PlayTone(512, SEC_1);
 #endif
    Wait(SEC_1);
 }
 
-void DrawForeground(int rect[][], unsigned long option)
+void DrawLetterF(int rects[][])
 {
-   option |= DRAW_OPT_FILL_SHAPE;
-   RectOut(rect[0][0], rect[0][1], rect[0][2], rect[0][3], option);
-   RectOut(rect[1][0], rect[1][1], rect[1][2], rect[1][3], option);
-   RectOut(rect[2][0], rect[2][1], rect[2][2], rect[2][3], option);
+   int rows = ArrayLen(rects);
+   unsigned long options = DRAW_OPT_NORMAL | DRAW_OPT_FILL_SHAPE;
+   for (int i = 0; i < rows; ++i)
+   {
+      RectOut(rects[i][0], rects[i][1], rects[i][2], rects[i][3], options);
+   }
 #ifdef TONE
    PlayTone(1024, SEC_1);
 #endif
@@ -41,10 +40,7 @@ void DrawForeground(int rect[][], unsigned long option)
 
 task main()
 {
-   // black letter on white background
-   DrawForeground(rectangles, DRAW_OPT_NORMAL);
-   // white letter on black background
-   InvertScreen();
-   // black letter on black background
-   InvertScreen();
+   DrawLetterF(rectangles); // black letter on white background
+   InvertScreen(); // white letter on black background
+   InvertScreen(); // black letter on black background
 }

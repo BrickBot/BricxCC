@@ -1,0 +1,34 @@
+
+
+task main()
+
+
+{string test="ABC|DEF";
+ int i;
+
+// display YES for separator character, NO for any other character in string
+
+// first do it with the string access directly in the IF statement (doesn't work)
+
+ for (int i=0;i<StrLen(test);i++)
+  {if (test[i]==124) TextOut(0,63-(i*8), "YES");
+   else TextOut(0,63-(i*8), "NO");
+  }
+
+// now do it by copying the string character into a temporary variable (works)
+
+  for (int i=0;i<StrLen(test);i++)
+  {int j=test[i];
+   if (j==124) TextOut(50,63-(i*8), "YES");
+   else TextOut(50,63-(i*8), "NO");
+  }
+  
+  
+ Wait(4000);
+ }
+
+
+
+
+
+
