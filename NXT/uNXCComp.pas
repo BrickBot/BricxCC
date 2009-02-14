@@ -8050,17 +8050,19 @@ end;
 procedure TNXCComp.DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string);
 var
   AHV : TArrayHelperVar;
-  tmp, udType, aval, tmpUDTName : string;
+  tmp, udType, aval, tmpUDTName, oldExpStr : string;
   tmpDT : char;
 begin
   // grab the index as an expression and put it on the stack
   Next;
   tmpDT := fLHSDataType;
+  oldExpStr := fExpStr;
   try
     fLHSDataType := TOK_LONGDEF;
     BoolExpression;
   finally
     fLHSDataType := tmpDT;
+    fExpStr      := oldExpStr;
   end;
   if Value <> ']' then
     Expected(''']''');
@@ -8124,6 +8126,12 @@ begin
       end;
       Token := TOK_IDENTIFIER;
       tmpDT := DataType(Value);
+      if (tmpDT in NonAggregateTypes) and (aLHSName = '') then
+      begin
+        LoadVar(Value);
+        Next; // move to the next token
+      end
+      else
       if aLHSName <> '' then
       begin
         if tmpDT = TOK_STRINGDEF then
