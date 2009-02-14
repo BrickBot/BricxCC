@@ -144,86 +144,86 @@
 #define TeeConst_TeeMsg_AxisMinMax 64605
 #define TeeConst_TeeMsg_AxisMaxMin 64606
 #define TeeConst_TeeMsg_AxisLogBase 64607
-#define uPSCompiler_RPS_NotArrayProperty 64608
-#define uPSCompiler_RPS_NotProperty 64609
-#define uPSCompiler_RPS_UnknownProperty 64610
-#define uPSPreProcessor_RPS_TooManyNestedInclude 64611
-#define uPSPreProcessor_RPS_IncludeNotFound 64612
-#define uPSPreProcessor_RPS_DefineTooManyParameters 64613
-#define uPSPreProcessor_RPS_NoIfdefForEndif 64614
-#define uPSPreProcessor_RPS_NoIfdefForElse 64615
-#define uPSPreProcessor_RPS_ElseTwice 64616
-#define uPSPreProcessor_RPS_UnknownCompilerDirective 64617
-#define uPSPreProcessor_RPs_DefineNotClosed 64618
+#define uPSCompiler_RPS_NotProperty 64608
+#define uPSCompiler_RPS_UnknownProperty 64609
+#define uPSPreProcessor_RPS_TooManyNestedInclude 64610
+#define uPSPreProcessor_RPS_IncludeNotFound 64611
+#define uPSPreProcessor_RPS_DefineTooManyParameters 64612
+#define uPSPreProcessor_RPS_NoIfdefForEndif 64613
+#define uPSPreProcessor_RPS_NoIfdefForElse 64614
+#define uPSPreProcessor_RPS_ElseTwice 64615
+#define uPSPreProcessor_RPS_UnknownCompilerDirective 64616
+#define uPSPreProcessor_RPs_DefineNotClosed 64617
+#define uPSDebugger_RPS_ExpectedReturnAddressStackBase 64618
 #define uPSComponent_RPS_UnableToReadVariant 64619
 #define uPSComponent_RPS_UnableToWriteVariant 64620
 #define uPSComponent_RPS_ScripEngineAlreadyRunning 64621
 #define uPSComponent_RPS_ScriptNotCompiled 64622
 #define uPSComponent_RPS_NotRunning 64623
-#define uPSCompiler_RPS_ClassTypeExpected 64624
-#define uPSCompiler_RPS_DivideByZero 64625
-#define uPSCompiler_RPS_MathError 64626
-#define uPSCompiler_RPS_UnsatisfiedForward 64627
-#define uPSCompiler_RPS_ForwardParameterMismatch 64628
-#define uPSCompiler_RPS_InvalidNumberOfParameter 64629
-#define uPSCompiler_RPS_UnknownError 64630
-#define uPSCompiler_RPS_Hint 64631
-#define uPSCompiler_RPS_VariableNotUsed 64632
-#define uPSCompiler_RPS_FunctionNotUsed 64633
-#define uPSCompiler_RPS_UnknownHint 64634
-#define uPSCompiler_RPS_Warning 64635
-#define uPSCompiler_RPS_CalculationAlwaysEvaluatesTo 64636
-#define uPSCompiler_RPS_IsNotNeeded 64637
-#define uPSCompiler_RPS_AbstractClass 64638
-#define uPSCompiler_RPS_UnknownWarning 64639
-#define uPSCompiler_RPS_NoResult 64640
-#define uPSCompiler_RPS_OpenRoundExpected 64641
-#define uPSCompiler_RPS_CommaExpected 64642
-#define uPSCompiler_RPS_ToExpected 64643
-#define uPSCompiler_RPS_IsExpected 64644
-#define uPSCompiler_RPS_OfExpected 64645
-#define uPSCompiler_RPS_CloseBlockExpected 64646
-#define uPSCompiler_RPS_VariableExpected 64647
-#define uPSCompiler_RPS_StringExpected 64648
-#define uPSCompiler_RPS_EndExpected 64649
-#define uPSCompiler_RPS_UnSetLabel 64650
-#define uPSCompiler_RPS_NotInLoop 64651
-#define uPSCompiler_RPS_InvalidJump 64652
-#define uPSCompiler_RPS_OpenBlockExpected 64653
-#define uPSCompiler_RPS_WriteOnlyProperty 64654
-#define uPSCompiler_RPS_ReadOnlyProperty 64655
-#define uPSCompiler_RPS_StringError 64656
-#define uPSCompiler_RPS_CharError 64657
-#define uPSCompiler_RPS_SyntaxError 64658
-#define uPSCompiler_RPS_EOF 64659
-#define uPSCompiler_RPS_SemiColonExpected 64660
-#define uPSCompiler_RPS_BeginExpected 64661
-#define uPSCompiler_RPS_PeriodExpected 64662
-#define uPSCompiler_RPS_DuplicateIdent 64663
-#define uPSCompiler_RPS_ColonExpected 64664
-#define uPSCompiler_RPS_UnknownType 64665
-#define uPSCompiler_RPS_CloseRoundExpected 64666
-#define uPSCompiler_RPS_TypeMismatch 64667
-#define uPSCompiler_RPS_InternalError 64668
-#define uPSCompiler_RPS_AssignmentExpected 64669
-#define uPSCompiler_RPS_ThenExpected 64670
-#define uPSCompiler_RPS_DoExpected 64671
+#define uPSCompiler_RPS_DivideByZero 64624
+#define uPSCompiler_RPS_MathError 64625
+#define uPSCompiler_RPS_UnsatisfiedForward 64626
+#define uPSCompiler_RPS_ForwardParameterMismatch 64627
+#define uPSCompiler_RPS_InvalidNumberOfParameter 64628
+#define uPSCompiler_RPS_UnknownError 64629
+#define uPSCompiler_RPS_Hint 64630
+#define uPSCompiler_RPS_VariableNotUsed 64631
+#define uPSCompiler_RPS_FunctionNotUsed 64632
+#define uPSCompiler_RPS_UnknownHint 64633
+#define uPSCompiler_RPS_Warning 64634
+#define uPSCompiler_RPS_CalculationAlwaysEvaluatesTo 64635
+#define uPSCompiler_RPS_IsNotNeeded 64636
+#define uPSCompiler_RPS_AbstractClass 64637
+#define uPSCompiler_RPS_UnknownWarning 64638
+#define uPSCompiler_RPS_NotArrayProperty 64639
+#define uPSCompiler_RPS_OpenRoundExpected 64640
+#define uPSCompiler_RPS_CommaExpected 64641
+#define uPSCompiler_RPS_ToExpected 64642
+#define uPSCompiler_RPS_IsExpected 64643
+#define uPSCompiler_RPS_OfExpected 64644
+#define uPSCompiler_RPS_CloseBlockExpected 64645
+#define uPSCompiler_RPS_VariableExpected 64646
+#define uPSCompiler_RPS_StringExpected 64647
+#define uPSCompiler_RPS_EndExpected 64648
+#define uPSCompiler_RPS_UnSetLabel 64649
+#define uPSCompiler_RPS_NotInLoop 64650
+#define uPSCompiler_RPS_InvalidJump 64651
+#define uPSCompiler_RPS_OpenBlockExpected 64652
+#define uPSCompiler_RPS_WriteOnlyProperty 64653
+#define uPSCompiler_RPS_ReadOnlyProperty 64654
+#define uPSCompiler_RPS_ClassTypeExpected 64655
+#define uPSCompiler_RPS_CharError 64656
+#define uPSCompiler_RPS_SyntaxError 64657
+#define uPSCompiler_RPS_EOF 64658
+#define uPSCompiler_RPS_SemiColonExpected 64659
+#define uPSCompiler_RPS_BeginExpected 64660
+#define uPSCompiler_RPS_PeriodExpected 64661
+#define uPSCompiler_RPS_DuplicateIdent 64662
+#define uPSCompiler_RPS_ColonExpected 64663
+#define uPSCompiler_RPS_UnknownType 64664
+#define uPSCompiler_RPS_CloseRoundExpected 64665
+#define uPSCompiler_RPS_TypeMismatch 64666
+#define uPSCompiler_RPS_InternalError 64667
+#define uPSCompiler_RPS_AssignmentExpected 64668
+#define uPSCompiler_RPS_ThenExpected 64669
+#define uPSCompiler_RPS_DoExpected 64670
+#define uPSCompiler_RPS_NoResult 64671
 #define uPSRuntime_RPS_NILInterfaceException 64672
 #define uPSRuntime_RPS_UnknownMethod 64673
-#define uPSDebugger_RPS_ExpectedReturnAddressStackBase 64674
-#define uPSCompiler_RPS_OnUseEventOnly 64675
-#define uPSCompiler_RPS_UnableToRegisterFunction 64676
-#define uPSCompiler_RPS_UnableToRegisterConst 64677
-#define uPSCompiler_RPS_InvalidTypeForVar 64678
-#define uPSCompiler_RPS_InvalidType 64679
-#define uPSCompiler_RPS_UnableToRegisterType 64680
-#define uPSCompiler_RPS_UnknownInterface 64681
-#define uPSCompiler_RPS_ConstantValueMismatch 64682
-#define uPSCompiler_RPS_ConstantValueNotAssigned 64683
-#define uPSCompiler_RPS_Error 64684
-#define uPSCompiler_RPS_UnknownIdentifier 64685
-#define uPSCompiler_RPS_IdentifierExpected 64686
-#define uPSCompiler_RPS_CommentError 64687
+#define uPSCompiler_RPS_OnUseEventOnly 64674
+#define uPSCompiler_RPS_UnableToRegisterFunction 64675
+#define uPSCompiler_RPS_UnableToRegisterConst 64676
+#define uPSCompiler_RPS_InvalidTypeForVar 64677
+#define uPSCompiler_RPS_InvalidType 64678
+#define uPSCompiler_RPS_UnableToRegisterType 64679
+#define uPSCompiler_RPS_UnknownInterface 64680
+#define uPSCompiler_RPS_ConstantValueMismatch 64681
+#define uPSCompiler_RPS_ConstantValueNotAssigned 64682
+#define uPSCompiler_RPS_Error 64683
+#define uPSCompiler_RPS_UnknownIdentifier 64684
+#define uPSCompiler_RPS_IdentifierExpected 64685
+#define uPSCompiler_RPS_CommentError 64686
+#define uPSCompiler_RPS_StringError 64687
 #define uPSRuntime_RPS_UnexpectedEof 64688
 #define uPSRuntime_RPS_VersionError 64689
 #define uPSRuntime_RPS_DivideByZero 64690
@@ -320,38 +320,38 @@
 #define SynMacroRecorder_sCannotResume 64781
 #define SynHighlighterForth_SYNS_FilterForth 64782
 #define SynHighlighterForth_SYNS_LangForth 64783
-#define SynEditStrConst_SYNS_PreviewScrollInfoFmt 64784
-#define SynEditStrConst_SYNS_EDuplicateShortcut 64785
-#define SynEditStrConst_SYNS_ShortcutNone 64786
-#define SynEditStrConst_SYNS_DuplicateShortcutMsg 64787
-#define SynEditStrConst_SYNS_FilterPascal 64788
-#define SynEditStrConst_SYNS_FilterCPP 64789
-#define SynEditStrConst_SYNS_FilterJava 64790
-#define SynEditStrConst_SYNS_FilterHTML 64791
-#define SynEditStrConst_SYNS_FilterRTF 64792
-#define SynEditStrConst_SYNS_LangCPP 64793
-#define SynEditStrConst_SYNS_LangJava 64794
-#define SynEditStrConst_SYNS_LangPascal 64795
+#define SynEditStrConst_SYNS_EDuplicateShortcut 64784
+#define SynEditStrConst_SYNS_ShortcutNone 64785
+#define SynEditStrConst_SYNS_DuplicateShortcutMsg 64786
+#define SynEditStrConst_SYNS_FilterPascal 64787
+#define SynEditStrConst_SYNS_FilterCPP 64788
+#define SynEditStrConst_SYNS_FilterJava 64789
+#define SynEditStrConst_SYNS_FilterHTML 64790
+#define SynEditStrConst_SYNS_FilterRTF 64791
+#define SynEditStrConst_SYNS_LangCPP 64792
+#define SynEditStrConst_SYNS_LangJava 64793
+#define SynEditStrConst_SYNS_LangPascal 64794
+#define SynEditTextBuffer_SListIndexOutOfBounds 64795
 #define ComConst_SOleError 64796
 #define ComConst_SNoMethod 64797
 #define ComConst_SVarNotObject 64798
 #define ComConst_STooManyParams 64799
-#define SynEditStrConst_SYNS_AttrHexadecimal 64800
-#define SynEditStrConst_SYNS_AttrIdentifier 64801
-#define SynEditStrConst_SYNS_AttrIllegalChar 64802
-#define SynEditStrConst_SYNS_AttrInvalidSymbol 64803
-#define SynEditStrConst_SYNS_AttrNumber 64804
-#define SynEditStrConst_SYNS_AttrOctal 64805
-#define SynEditStrConst_SYNS_AttrPreprocessor 64806
-#define SynEditStrConst_SYNS_AttrReservedWord 64807
-#define SynEditStrConst_SYNS_AttrSecondReservedWord 64808
-#define SynEditStrConst_SYNS_AttrSpace 64809
-#define SynEditStrConst_SYNS_AttrString 64810
-#define SynEditStrConst_SYNS_AttrSymbol 64811
-#define SynEditStrConst_SYNS_ExporterFormatHTML 64812
-#define SynEditStrConst_SYNS_ExporterFormatRTF 64813
-#define SynEditStrConst_SYNS_ScrollInfoFmt 64814
-#define SynEditStrConst_SYNS_ScrollInfoFmtTop 64815
+#define SynEditStrConst_SYNS_AttrIdentifier 64800
+#define SynEditStrConst_SYNS_AttrIllegalChar 64801
+#define SynEditStrConst_SYNS_AttrInvalidSymbol 64802
+#define SynEditStrConst_SYNS_AttrNumber 64803
+#define SynEditStrConst_SYNS_AttrOctal 64804
+#define SynEditStrConst_SYNS_AttrPreprocessor 64805
+#define SynEditStrConst_SYNS_AttrReservedWord 64806
+#define SynEditStrConst_SYNS_AttrSecondReservedWord 64807
+#define SynEditStrConst_SYNS_AttrSpace 64808
+#define SynEditStrConst_SYNS_AttrString 64809
+#define SynEditStrConst_SYNS_AttrSymbol 64810
+#define SynEditStrConst_SYNS_ExporterFormatHTML 64811
+#define SynEditStrConst_SYNS_ExporterFormatRTF 64812
+#define SynEditStrConst_SYNS_ScrollInfoFmt 64813
+#define SynEditStrConst_SYNS_ScrollInfoFmtTop 64814
+#define SynEditStrConst_SYNS_PreviewScrollInfoFmt 64815
 #define uLocalizedStrings_sMathFactor 64816
 #define uLocalizedStrings_sArrayDatatype 64817
 #define uLocalizedStrings_sUndefinedIdentifier 64818
@@ -361,13 +361,13 @@
 #define uLocalizedStrings_sTooFewParams 64822
 #define uLocalizedStrings_sMaxParamCountExceeded 64823
 #define uLocalizedStrings_sConstNotAllowed 64824
-#define SynEditTextBuffer_SListIndexOutOfBounds 64825
-#define SynEditStrConst_SYNS_Untitled 64826
-#define SynEditStrConst_SYNS_AttrAssembler 64827
-#define SynEditStrConst_SYNS_AttrCharacter 64828
-#define SynEditStrConst_SYNS_AttrComment 64829
-#define SynEditStrConst_SYNS_AttrDocumentation 64830
-#define SynEditStrConst_SYNS_AttrFloat 64831
+#define SynEditStrConst_SYNS_Untitled 64825
+#define SynEditStrConst_SYNS_AttrAssembler 64826
+#define SynEditStrConst_SYNS_AttrCharacter 64827
+#define SynEditStrConst_SYNS_AttrComment 64828
+#define SynEditStrConst_SYNS_AttrDocumentation 64829
+#define SynEditStrConst_SYNS_AttrFloat 64830
+#define SynEditStrConst_SYNS_AttrHexadecimal 64831
 #define uLocalizedStrings_sInvalidReturnType 64832
 #define uLocalizedStrings_sInvalidStringAssign 64833
 #define uLocalizedStrings_sFloatNotSupported 64834
@@ -1210,7 +1210,6 @@ BEGIN
 	TeeConst_TeeMsg_AxisMinMax,	"Axis Minimum Value must be <= Maximum"
 	TeeConst_TeeMsg_AxisMaxMin,	"Axis Maximum Value must be >= Minimum"
 	TeeConst_TeeMsg_AxisLogBase,	"Axis Logarithmic Base should be >= 2"
-	uPSCompiler_RPS_NotArrayProperty,	"Not an array property"
 	uPSCompiler_RPS_NotProperty,	"Not a property"
 	uPSCompiler_RPS_UnknownProperty,	"Unknown Property"
 	uPSPreProcessor_RPS_TooManyNestedInclude,	"Too many nested include files while processing '%s' from '%s'"
@@ -1221,12 +1220,12 @@ BEGIN
 	uPSPreProcessor_RPS_ElseTwice,	"Can't use ELSE twice at %d:%d"
 	uPSPreProcessor_RPS_UnknownCompilerDirective,	"Unknown compiler directives at %d:%d"
 	uPSPreProcessor_RPs_DefineNotClosed,	"Define not closed"
+	uPSDebugger_RPS_ExpectedReturnAddressStackBase,	"Expected return address at stack base"
 	uPSComponent_RPS_UnableToReadVariant,	"Unable to read variant"
 	uPSComponent_RPS_UnableToWriteVariant,	"Unable to write variant"
 	uPSComponent_RPS_ScripEngineAlreadyRunning,	"Script engine already running"
 	uPSComponent_RPS_ScriptNotCompiled,	"Script is not compiled"
 	uPSComponent_RPS_NotRunning,	"Not running"
-	uPSCompiler_RPS_ClassTypeExpected,	"Class type expected"
 	uPSCompiler_RPS_DivideByZero,	"Divide by Zero"
 	uPSCompiler_RPS_MathError,	"Math Error"
 	uPSCompiler_RPS_UnsatisfiedForward,	"Unsatisfied Forward %s"
@@ -1242,7 +1241,7 @@ BEGIN
 	uPSCompiler_RPS_IsNotNeeded,	"%s is not needed"
 	uPSCompiler_RPS_AbstractClass,	"Abstract Class Construction"
 	uPSCompiler_RPS_UnknownWarning,	"Unknown warning"
-	uPSCompiler_RPS_NoResult,	"No result"
+	uPSCompiler_RPS_NotArrayProperty,	"Not an array property"
 	uPSCompiler_RPS_OpenRoundExpected,	"open round ('(')expected"
 	uPSCompiler_RPS_CommaExpected,	"comma (',') expected"
 	uPSCompiler_RPS_ToExpected,	"'TO' expected"
@@ -1258,7 +1257,7 @@ BEGIN
 	uPSCompiler_RPS_OpenBlockExpected,	"Open Block ('[') expected"
 	uPSCompiler_RPS_WriteOnlyProperty,	"Write-only property"
 	uPSCompiler_RPS_ReadOnlyProperty,	"Read-only property"
-	uPSCompiler_RPS_StringError,	"String error"
+	uPSCompiler_RPS_ClassTypeExpected,	"Class type expected"
 	uPSCompiler_RPS_CharError,	"Char error"
 	uPSCompiler_RPS_SyntaxError,	"Syntax error"
 	uPSCompiler_RPS_EOF,	"Unexpected end of file"
@@ -1274,9 +1273,9 @@ BEGIN
 	uPSCompiler_RPS_AssignmentExpected,	"Assignment expected"
 	uPSCompiler_RPS_ThenExpected,	"'THEN' expected"
 	uPSCompiler_RPS_DoExpected,	"'DO' expected"
+	uPSCompiler_RPS_NoResult,	"No result"
 	uPSRuntime_RPS_NILInterfaceException,	"Nil interface"
 	uPSRuntime_RPS_UnknownMethod,	"Unknown method"
-	uPSDebugger_RPS_ExpectedReturnAddressStackBase,	"Expected return address at stack base"
 	uPSCompiler_RPS_OnUseEventOnly,	"This function can only be called from within the OnUses event"
 	uPSCompiler_RPS_UnableToRegisterFunction,	"Unable to register function %s"
 	uPSCompiler_RPS_UnableToRegisterConst,	"Unable to register constant %s"
@@ -1290,6 +1289,7 @@ BEGIN
 	uPSCompiler_RPS_UnknownIdentifier,	"Unknown identifier '%s'"
 	uPSCompiler_RPS_IdentifierExpected,	"Identifier expected"
 	uPSCompiler_RPS_CommentError,	"Comment error"
+	uPSCompiler_RPS_StringError,	"String error"
 	uPSRuntime_RPS_UnexpectedEof,	"Unexpected End Of File"
 	uPSRuntime_RPS_VersionError,	"Version error"
 	uPSRuntime_RPS_DivideByZero,	"divide by Zero"
@@ -1386,7 +1386,6 @@ BEGIN
 	SynMacroRecorder_sCannotResume,	"Can only resume when paused"
 	SynHighlighterForth_SYNS_FilterForth,	"Forth Files (*.4th, *.f, *.fr, *.fth)|*.4th;*.f;*.fr;*.fth"
 	SynHighlighterForth_SYNS_LangForth,	"Forth"
-	SynEditStrConst_SYNS_PreviewScrollInfoFmt,	"Page: %d"
 	SynEditStrConst_SYNS_EDuplicateShortcut,	"Shortcut already exists"
 	SynEditStrConst_SYNS_ShortcutNone,	"<none>"
 	SynEditStrConst_SYNS_DuplicateShortcutMsg,	"The keystroke \"%s\" is already assigned to another editor command. (%s)"
@@ -1398,11 +1397,11 @@ BEGIN
 	SynEditStrConst_SYNS_LangCPP,	"C++"
 	SynEditStrConst_SYNS_LangJava,	"Java"
 	SynEditStrConst_SYNS_LangPascal,	"Object Pascal"
+	SynEditTextBuffer_SListIndexOutOfBounds,	"Invalid stringlist index %d"
 	ComConst_SOleError,	"OLE error %.8x"
 	ComConst_SNoMethod,	"Method '%s' not supported by automation object"
 	ComConst_SVarNotObject,	"Variant does not reference an automation object"
 	ComConst_STooManyParams,	"Dispatch methods do not support more than 64 parameters"
-	SynEditStrConst_SYNS_AttrHexadecimal,	"Hexadecimal"
 	SynEditStrConst_SYNS_AttrIdentifier,	"Identifier"
 	SynEditStrConst_SYNS_AttrIllegalChar,	"Illegal Char"
 	SynEditStrConst_SYNS_AttrInvalidSymbol,	"Invalid Symbol"
@@ -1418,6 +1417,7 @@ BEGIN
 	SynEditStrConst_SYNS_ExporterFormatRTF,	"RTF"
 	SynEditStrConst_SYNS_ScrollInfoFmt,	"%d - %d"
 	SynEditStrConst_SYNS_ScrollInfoFmtTop,	"Top Line: %d"
+	SynEditStrConst_SYNS_PreviewScrollInfoFmt,	"Page: %d"
 	uLocalizedStrings_sMathFactor,	"Math Factor"
 	uLocalizedStrings_sArrayDatatype,	"array data type"
 	uLocalizedStrings_sUndefinedIdentifier,	"Undefined Identifier %s"
@@ -1427,13 +1427,13 @@ BEGIN
 	uLocalizedStrings_sTooFewParams,	"Too few parameters"
 	uLocalizedStrings_sMaxParamCountExceeded,	"Max param count exceeded"
 	uLocalizedStrings_sConstNotAllowed,	"Constant not allowed"
-	SynEditTextBuffer_SListIndexOutOfBounds,	"Invalid stringlist index %d"
 	SynEditStrConst_SYNS_Untitled,	"Untitled"
 	SynEditStrConst_SYNS_AttrAssembler,	"Assembler"
 	SynEditStrConst_SYNS_AttrCharacter,	"Character"
 	SynEditStrConst_SYNS_AttrComment,	"Comment"
 	SynEditStrConst_SYNS_AttrDocumentation,	"Documentation"
 	SynEditStrConst_SYNS_AttrFloat,	"Float"
+	SynEditStrConst_SYNS_AttrHexadecimal,	"Hexadecimal"
 	uLocalizedStrings_sInvalidReturnType,	"Invalid return type"
 	uLocalizedStrings_sInvalidStringAssign,	"Invalid string assignment"
 	uLocalizedStrings_sFloatNotSupported,	"float types are not supported at the specified firmware version"
