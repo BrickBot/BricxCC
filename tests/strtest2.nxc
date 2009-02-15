@@ -5,7 +5,7 @@ task main()
   Stop(buf[0][2] == 4);
   if (2 == buf[0][2])
     Stop(true);
-  if (buf[0][1] == buf[1][0]-1)
+  if (buf[0][1] == buf[1][0] - 1)
     Stop(true);
   Stop(2 == buf[0][2]);
   int i = 4;

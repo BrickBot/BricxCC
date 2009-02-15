@@ -1,12 +1,18 @@
 float foobar=123.456;
 
+float MyFunction(float x)
+{
+  return x*2.5;
+}
+
 task main()
 {
   string msg;
-  float my_float=foobar*2.4/3.14159;
+  unsigned long my_long = 22;
+  float my_float=foobar*2.4/3.14159 + (my_long % 3) - MyFunction(12.8);
   asm {
     numtostr msg, my_float
   }
-  TextOut(0, LCD_LINE1, msg);
-  Wait(1000);
+  int result = TextOut(0, LCD_LINE1, msg);
+  Wait(5000);
 }

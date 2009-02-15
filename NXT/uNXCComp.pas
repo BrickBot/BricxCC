@@ -20,6 +20,7 @@ type
     fSafeCalls: boolean;
     fMaxErrors: word;
     fFirmwareVersion: word;
+    fStackVarNames : TStringList;
     function FunctionParameterTypeName(const name: string;
       idx: integer): string;
     function GlobalDataType(const n: string): char;
@@ -84,6 +85,7 @@ type
     fArrayIndexStack : TStringList;
     fStructDecls : TStringList;
     fUDTOnStack : string;
+    procedure ResetStatementType;
     procedure DecrementNestingLevel;
     procedure GetCharX;
     procedure GetChar;
@@ -644,12 +646,22 @@ end;
 procedure TNXCComp.pop;
 begin
   dec(fStackDepth);
+  fStackVarNames.Delete(fStackVarNames.Count - 1);
 end;
 
 procedure TNXCComp.push;
+var
+  tosName : string;
 begin
   inc(fStackDepth);
   MaxStackDepth := Max(MaxStackDepth, fStackDepth);
+  if fStatementType = stFloat then
+    tosName := Format('__float_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
+  else if fStatementType = stUnsigned then
+    tosName := Format('__unsigned_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
+  else
+    tosName := Format('__signed_stack_%3.3d%s', [fStackDepth, fCurrentThreadName]);
+  fStackVarNames.Add(tosName);
 end;
 
 procedure TNXCComp.GetCharX;
@@ -1796,7 +1808,9 @@ begin
   begin
     cval := StrToIntDef(n, 0);
     if cval < 0 then
-      StatementType := stSigned;
+      StatementType := stSigned
+    else
+      StatementType := stUnsigned;
     if (cval > High(smallint)) or
        ((cval < 0) and (not EnhancedFirmware or (cval < Low(smallint)))) then
       tmpSrc := 'mov %s, %s'
@@ -1831,7 +1845,9 @@ begin
   if dt = TOK_FLOATDEF then
     StatementType := stFloat
   else if not (dt in UnsignedIntegerTypes) then
-    StatementType := stSigned;
+    StatementType := stSigned
+  else
+    StatementType := stUnsigned;
   fCCSet := False;
   EmitLn(Format('mov %s, %s', [RegisterName, GetDecoratedIdent(Name)]));
 end;
@@ -1842,7 +1858,7 @@ end;
 procedure TNXCComp.PushPrim;
 begin
   push;
-  EmitLn(Format('mov %s, %s', [tos, RegisterName]));
+  EmitLn(Format('mov %1:s, %0:s', [RegisterName, tos]));
 end;
 
 {---------------------------------------------------------------}
@@ -1851,7 +1867,7 @@ end;
 procedure TNXCComp.PopAdd;
 begin
   fCCSet := False;
-  EmitLn(Format('add %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('add %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1861,7 +1877,7 @@ end;
 procedure TNXCComp.PopSub;
 begin
   fCCSet := False;
-  EmitLn(Format('sub %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('sub %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1871,7 +1887,7 @@ end;
 procedure TNXCComp.PopMul;
 begin
   fCCSet := False;
-  EmitLn(Format('mul %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('mul %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1881,7 +1897,7 @@ end;
 procedure TNXCComp.PopDiv;
 begin
   fCCSet := False;
-  EmitLn(Format('div %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('div %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1891,7 +1907,7 @@ end;
 procedure TNXCComp.PopMod;
 begin
   fCCSet := False;
-  EmitLn(Format('mod %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('mod %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1901,7 +1917,7 @@ end;
 procedure TNXCComp.PopAnd;
 begin
   fCCSet := False;
-  EmitLn(Format('and %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('and %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1911,7 +1927,7 @@ end;
 procedure TNXCComp.PopOr;
 begin
   fCCSet := False;
-  EmitLn(Format('or %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('or %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1921,7 +1937,7 @@ end;
 procedure TNXCComp.PopXor;
 begin
   fCCSet := False;
-  EmitLn(Format('xor %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('xor %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1932,7 +1948,7 @@ end;
 procedure TNXCComp.PopLeftShift;
 begin
   fCCSet := False;
-  EmitLn(Format('shl %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('shl %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1942,7 +1958,7 @@ end;
 procedure TNXCComp.PopRightShift;
 begin
   fCCSet := False;
-  EmitLn(Format('shr %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('shr %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -2344,6 +2360,15 @@ begin
         end;
         TOK_NUM, TOK_HEX : begin
           LoadConst(savedvalue);
+        end;
+        '-' : begin
+          if Token = TOK_NUM then
+          begin
+            LoadConst(savedvalue+value);
+            Next;
+          end
+          else
+            Expected(sMathFactor);
         end;
       else
         Expected(sMathFactor);
@@ -3008,6 +3033,7 @@ begin
     BoolExpression;
     PostLabel(L2);
   end;
+//  ResetStatementType;
 end;
 
 procedure TNXCComp.BoolSubExpression;
@@ -3356,7 +3382,9 @@ begin
             if rdt = TOK_FLOATDEF then
               StatementType := stFloat
             else if not (rdt in UnsignedIntegerTypes) then
-              StatementType := stSigned;
+              StatementType := stSigned
+            else
+              StatementType := stUnsigned;
             if bFunctionIsInline then
               EmitLn(Format('mov %s, %s', [RegisterName, RegisterName(InlineName(fCurrentThreadName, procname))]))
             else
@@ -4349,7 +4377,7 @@ procedure TNXCComp.Statement(const lend, lstart : string);
 var
   dt : Char;
 begin
-  StatementType := stSigned;
+  ResetStatementType;
   fSemiColonRequired := True;
   if Token = TOK_BEGIN then
     Block(lend, lstart)
@@ -5509,6 +5537,7 @@ begin
   fInlineFunctions := TInlineFunctions.Create;
   fArrayHelpers := TArrayHelperVars.Create;
   fTmpAsmLines := TStringList.Create;
+  fStackVarNames := TStringList.Create;
   fNBCSrc := TStringList.Create;
   fMS := TMemoryStream.Create;
   fMessages := TStringList.Create;
@@ -5551,6 +5580,7 @@ begin
   FreeAndNil(fInlineFunctions);
   FreeAndNil(fArrayHelpers);
   FreeAndNil(fTmpAsmLines);
+  FreeAndNil(fStackVarNames);
   FreeAndNil(fNBCSrc);
   FreeAndNil(fMS);
   FreeAndNil(fMessages);
@@ -6351,12 +6381,20 @@ end;
 
 function TNXCComp.tos : string;
 begin
+  Result := fStackVarNames[fStackVarNames.Count - 1];
+  // set statement type based on type on top of stack
+  if Pos('__float_stack_', Result) <> 0 then
+    StatementType := stFloat
+  else if (Pos('__signed_stack_', Result) <> 0) and (StatementType <> stFloat) then
+    StatementType := stSigned;
+{
   if fStatementType = stFloat then
     Result := Format('__float_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
   else if fStatementType = stUnsigned then
     Result := Format('__unsigned_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
   else
     Result := Format('__signed_stack_%3.3d%s', [fStackDepth, fCurrentThreadName]);
+}
 end;
 
 function TNXCComp.TempByteName: string;
@@ -6681,6 +6719,7 @@ var
   dt : char;
 begin
   fCCSet := False;
+  ResetStatementType;
   id := APIFuncNameToID(procname);
   case id of
     APIF_ASM : begin
@@ -6855,6 +6894,7 @@ begin
       EmitLn(Format('numtostr __TextOutArgs.Text, %s',[RegisterName]));
     end;
     EmitLn('syscall DrawText, __TextOutArgs');
+    ResetStatementType;
     EmitLn(Format('mov %s, __TextOutArgs.Result',[RegisterName]));
     EmitLn('release __TextOutMutex');
     if bCls then
@@ -6881,6 +6921,7 @@ begin
       EmitLn('set __TextOutArgs.Options, 0');
     EmitLn('mov __TextOutArgs.Text, ' + txt);
     EmitLn('syscall DrawText, __TextOutArgs');
+    ResetStatementType;
     EmitLn(Format('mov %s, __TextOutArgs.Result',[RegisterName]));
     EmitLn('release __TextOutMutex');
   end;
@@ -6925,6 +6966,7 @@ begin
     EmitLn('set __PointOutArgs.Options, 0');
   end;
   EmitLn('syscall DrawPoint, __PointOutArgs');
+  ResetStatementType;
   EmitLn(Format('mov %s, __PointOutArgs.Result',[RegisterName]));
   EmitLn('release __PointOutMutex');
   pop;
@@ -6986,6 +7028,7 @@ begin
       EmitLn('set __RectOutArgs.Options, 0');
     end;
     EmitLn('syscall DrawRect, __RectOutArgs');
+    ResetStatementType;
     EmitLn(Format('mov %s, __RectOutArgs.Result',[RegisterName]));
     EmitLn('release __RectOutMutex');
   end
@@ -7004,6 +7047,7 @@ begin
       EmitLn('set __LineOutArgs.Options, 0');
     end;
     EmitLn('syscall DrawLine, __LineOutArgs');
+    ResetStatementType;
     EmitLn(Format('mov %s, __LineOutArgs.Result',[RegisterName]));
     EmitLn('release __LineOutMutex');
   end;
@@ -7058,6 +7102,7 @@ begin
     EmitLn('set __CircleOutArgs.Options, 0');
   end;
   EmitLn('syscall DrawCircle, __CircleOutArgs');
+  ResetStatementType;
   EmitLn(Format('mov %s, __CircleOutArgs.Result',[RegisterName]));
   EmitLn('release __CircleOutMutex');
   pop;
@@ -7121,6 +7166,7 @@ begin
   else
     EmitLn('mov __GraphicOutArgs.Variables, __GraphicOutEmptyVars');
   EmitLn('syscall DrawGraphic, __GraphicOutArgs');
+  ResetStatementType;
   EmitLn(Format('mov %s, __GraphicOutArgs.Result',[RegisterName]));
   EmitLn('release __GraphicOutMutex');
   pop;
@@ -7161,6 +7207,7 @@ begin
   EmitLn('mov __SPTArgs.Volume, ' + vol);
   EmitLn(Format('mov __SPTArgs.Loop, %s',[RegisterName]));
   EmitLn('syscall SoundPlayTone, __SPTArgs');
+  ResetStatementType;
   EmitLn(Format('mov %s, __SPTArgs.Result',[RegisterName]));
   EmitLn('release __SPTArgsMutex');
   pop;
@@ -7193,6 +7240,7 @@ begin
   EmitLn('mov __SPFArgs.Volume, ' + vol);
   EmitLn(Format('mov __SPFArgs.Loop, %s', [RegisterName]));
   EmitLn('syscall SoundPlayFile, __SPFArgs');
+  ResetStatementType;
   EmitLn(Format('mov %s, __SPFArgs.Result', [RegisterName]));
   EmitLn('release __SPFArgsMutex');
   pop;
@@ -7235,6 +7283,7 @@ begin
   EmitLn('mov __RBtnArgs.Index, ' + btn);
   EmitLn(Format('mov __RBtnArgs.Reset, %s', [RegisterName]));
   EmitLn('syscall ReadButton, __RBtnArgs');
+  ResetStatementType;
   if idx = APIF_BUTTONCOUNT then
     EmitLn(Format('mov %s, __RBtnArgs.Count',[RegisterName]))
   else if idx = APIF_BUTTONPRESSED then
@@ -8159,6 +8208,11 @@ begin
   fStatementType := Value;
   if (Value = stFloat) and (FirmwareVersion < NXT2_MIN_FIRMWARE_VERSION) then
     AbortMsg(sFloatNotSupported);
+end;
+
+procedure TNXCComp.ResetStatementType;
+begin
+  StatementType := stSigned;
 end;
 
 end.

@@ -1,0 +1,37 @@
+// Searches the block_f array for the location of its first non-zero 
+// element, displays that location, whcih should be row= 7, column = 31, 
+// on the NXT screen.
+
+int row, col;
+
+struct display_data
+{
+   string test_name;
+   int row;
+   int col;
+   int lcd_line;
+};
+
+void display_test_data(const display_data data)
+{
+   int y = DISPLAY_HEIGHT - 8 * data.lcd_line;
+//   int y = -8 * data.lcd_line + DISPLAY_HEIGHT;
+//   int y = data.lcd_line * -8 + DISPLAY_HEIGHT;
+   // int y;
+   // y = DISPLAY_HEIGHT - 8 * data.lcd_line;
+   NumOut(0, LCD_LINE1, y);
+   TextOut(0, y, data.test_name);
+   NumOut(75, y, data.row);
+   NumOut(85, y, data.col);
+}
+
+task main()
+{
+   display_data test_data;
+   test_data.test_name = "FOR";
+   test_data.row = 7;
+   test_data.col = 31;
+   test_data.lcd_line = 2;
+   display_test_data(test_data);
+   Wait(SEC_5);
+}
