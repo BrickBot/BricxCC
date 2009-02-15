@@ -1,0 +1,6 @@
+task main()
+{
+  int y = 12;
+  int x = y-1;
+  x = y*-1;
+}

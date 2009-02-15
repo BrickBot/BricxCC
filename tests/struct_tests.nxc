@@ -80,7 +80,7 @@ task main() {
   array[0].test.a += array[0].test.b * array[0].test.b; // valid code
   NumOut(50, LCD_LINE7, array[0].test.a);    // 1978  (OKAY)
   array[0].foo += "testing";  // valid code
-  TextOut(0, LCD_LINE8, array[0].foo);    // test_123  (OKAY)
+  TextOut(0, LCD_LINE8, array[0].foo);    // test_123testing  (OKAY)
 
 /*
   array[0].y = array[0].x;
