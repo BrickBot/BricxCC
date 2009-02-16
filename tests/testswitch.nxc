@@ -1,0 +1,66 @@
+string out="AAAAAAAAAA";
+int buf[10];
+
+task main()
+{
+  while(out[0] < 80) {
+    int x = buf[0]/2;
+//    TextOut(0,LCD_LINE1,FormatNum("Mode= %2d",buf[0]));
+//    TextOut(0,LCD_LINE1,FormatNum("Mode= %2d",out[0]));
+    int temp=out[0];
+    switch(temp)
+    {
+      case 65:
+        switch(out[1])
+        {
+          case 65:
+            TextOut(0,LCD_LINE2,"RAN CASE 65a");
+            break;
+          case 66:
+            TextOut(0,LCD_LINE2,"RAN CASE 66a");
+            break;
+          default:
+            TextOut(0,LCD_LINE2,"DEFAULT");
+            NumOut(70,LCD_LINE2,out[1]);
+            break;
+        }
+        break;
+      case 66: TextOut(0,LCD_LINE3,"RAN CASE 66");
+               break;
+      default: TextOut(0,LCD_LINE4,"DEFAULT");
+               NumOut(70,LCD_LINE4,out[0]);  // this code should never run and display 65 or 66
+               break;
+    }
+
+    switch(out[0])
+    {
+      case 65: TextOut(0,LCD_LINE6,"RAN CASE 65");
+               break;
+      case 66:
+        char val = out[1];
+        switch(val)
+        {
+          case 65:
+            TextOut(0,LCD_LINE7,"RAN CASE 65b");
+            break;
+          case 66:
+            TextOut(0,LCD_LINE7,"RAN CASE 66b");
+            break;
+          default:
+            TextOut(0,LCD_LINE7,"DEFAULT");
+            NumOut(70,LCD_LINE7,out[1]);
+            break;
+        }
+        break;
+      default: TextOut(0,LCD_LINE8,"DEFAULT");
+               NumOut(70,LCD_LINE8,out[0]);  // this code should never run and display 65 or 66
+               break;
+    }
+    Wait(2000);
+    out[0]+=1;
+    out[1]+=1;
+  }
+  TextOut(0, LCD_LINE1, out);
+  Wait(5000);
+}
+
