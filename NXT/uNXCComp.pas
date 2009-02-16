@@ -69,6 +69,7 @@ type
     fCurrentThreadName : string;
     fBytesRead : integer;
     fSwitchFixups : TStrings;
+    fSwitchRegNames : TStrings;
     fSwitchDepth : integer;
     fCalc : TNBCExpParser;
     fOptimizeLevel: integer;
@@ -163,8 +164,8 @@ type
     procedure DoSwitchDefault;
     function  SwitchFixupIndex : integer;
     function  SwitchIsString : Boolean;
+    function  SwitchRegisterName : string;
     procedure ClearSwitchFixups;
-    function  SwitchFixupsCount : integer;
     procedure FixupSwitch(idx : integer; lbl : string);
     procedure DoLabel;
     procedure DoStart;
@@ -404,6 +405,7 @@ type
     procedure InternalParseStream;
     procedure Clear;
     property  SwitchFixups : TStrings read fSwitchFixups;
+    property  SwitchRegisterNames : TStrings read fSwitchRegNames;
   protected
     procedure TopDecls; virtual;
     procedure Header; virtual;
@@ -1440,12 +1442,13 @@ end;
 
 procedure TNXCComp.EmitLn(s: string);
 begin
+  EmitPoundLine;
   NBCSource.Add(#9+s);
 end;
 
 procedure TNXCComp.EmitPoundLine;
 begin
-  NBCSource.Add('#line ' + IntToStr(linenumber) + ' "' + CurrentFile + '"');
+  NBCSource.Add('#line ' + IntToStr(linenumber-1) + ' "' + CurrentFile + '"');
 end;
 
 
@@ -1807,7 +1810,7 @@ begin
   else
   begin
     cval := StrToIntDef(n, 0);
-    if cval < 0 then
+    if cval <= MaxInt then
       StatementType := stSigned
     else
       StatementType := stUnsigned;
@@ -1990,7 +1993,13 @@ begin
               ((Token = TOK_IDENTIFIER) and
                (DataType(Value) = TOK_STRINGDEF));
     if not Result then
-      Result := FunctionReturnType(Value) = TOK_STRINGDEF;
+      Result := FunctionReturnType(Value) = TOK_STRINGDEF
+    else
+    begin
+      // if we are indexing into the string then it is not really a string type
+      if Look = '[' then
+        Result := False;
+    end;
   end;
 end;
 
@@ -3995,6 +4004,7 @@ begin
   try
     ClearSwitchFixups;
     SwitchFixups.Add(Format('%d_Type=%s', [fSwitchDepth, IntToStr(Ord(bSwitchIsString))]));
+    SwitchRegisterNames.Add(Format('%d=%s', [fSwitchDepth, RegisterName]));
     Block(L2);
     PostLabel(L2);
     FixupSwitch(idx, L2);
@@ -4041,7 +4051,7 @@ begin
     if SwitchIsString then
       stackval := StrBufName
     else
-      stackval := RegisterName;
+      stackval := SwitchRegisterName;
     SwitchFixups.Add(Format('%d=brcmp EQ, %s, %s, %s', [fSwitchDepth, L1, caseval, stackval]));
     fSemiColonRequired := False;
   end
@@ -4077,6 +4087,11 @@ begin
        (SwitchFixups.Names[i] = Format('%d_Type', [fSwitchDepth])) then
       SwitchFixups.Delete(i);
   end;
+  for i := SwitchRegisterNames.Count - 1 downto 0 do
+  begin
+    if SwitchRegisterNames.Names[i] = IntToStr(fSwitchDepth) then
+      SwitchRegisterNames.Delete(i);
+  end;
 end;
 
 function TNXCComp.SwitchIsString: Boolean;
@@ -4094,15 +4109,18 @@ begin
   end;
 end;
 
-function TNXCComp.SwitchFixupsCount : integer;
+function TNXCComp.SwitchRegisterName: string;
 var
   i : integer;
 begin
-  Result := 0;
-  for i := 0 to SwitchFixups.Count - 1 do
+  Result := RegisterName;
+  for i := 0 to SwitchRegisterNames.Count - 1 do
   begin
-    if SwitchFixups.Names[i] = IntToStr(fSwitchDepth) then
-      inc(Result);
+    if SwitchRegisterNames.Names[i] = IntToStr(fSwitchDepth) then
+    begin
+      Result := SwitchRegisterNames.ValueFromIndex[i];
+      break;
+    end;
   end;
 end;
 
@@ -5550,6 +5568,7 @@ begin
   TStringList(fThreadNames).Sorted := True;
   TStringList(fThreadNames).Duplicates := dupIgnore;
   fSwitchFixups := TStringList.Create;
+  fSwitchRegNames := TStringList.Create;
   fSwitchDepth := 0;
   fFunctionNameCallStack := TStringList.Create;
   fConstStringMap := TStringList.Create;
@@ -5594,6 +5613,7 @@ begin
   FreeAndNil(fThreadNames);
 //  FreeAndNil(fParamNames);
   FreeAndNil(fSwitchFixups);
+  FreeAndNil(fSwitchRegNames);
   FreeAndNil(fCalc);
   inherited;
 end;
