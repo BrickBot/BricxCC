@@ -1620,7 +1620,7 @@ begin
           for i := 0 to tmpSL.Count - 1 do
           begin
             tmpstr := tmpSL[i];
-            if tmpstr <> '' then
+            if (tmpstr <> '') and (Pos('#line', tmpstr) <> 1) then
               CodeForm.CodeEdit.Lines.Add(tmpstr);
           end;
   //        CodeForm.CodeEdit.Lines.LoadFromFile(tempDir + 'temp.lst')
