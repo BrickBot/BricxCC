@@ -324,8 +324,8 @@ type
     procedure StringExpression(const Name : string; bAdd : boolean = False);
     procedure StringConcatAssignment(const Name : string);
     procedure StringFunction(const Name : string);
-    function  TempWordName: string;
-    function  TempByteName: string;
+    function  TempSignedByteName: string;
+    function  TempSignedWordName: string;
     function  TempSignedLongName : string;
     function  TempUnsignedLongName : string;
     function  TempFloatName : string;
@@ -1809,7 +1809,7 @@ begin
   end
   else
   begin
-    cval := StrToIntDef(n, 0);
+    cval := StrToInt64Def(n, 0);
     if cval <= MaxInt then
       StatementType := stSigned
     else
@@ -4152,16 +4152,16 @@ function TNXCComp.ReplaceTokens(const line: string) : string;
 begin
   Result := line; // line is already trimmed
   if Length(Result) = 0 then Exit;
-  Result := Replace(Result, '__RETURN__', Format(#13#10'mov %s,', [RegisterName]));
+  Result := Replace(Result, '__RETURN__', Format(#13#10'mov %s,', [SignedRegisterName]));
   Result := Replace(Result, '__RETURNS__', Format(#13#10'mov %s,', [SignedRegisterName]));
   Result := Replace(Result, '__RETURNU__', Format(#13#10'mov %s,', [UnsignedRegisterName]));
   Result := Replace(Result, '__RETURNF__', Format(#13#10'mov %s,', [FloatRegisterName]));
-  Result := Replace(Result, '__TMPBYTE__', TempByteName);
-  Result := Replace(Result, '__TMPWORD__', TempWordName);
+  Result := Replace(Result, '__TMPBYTE__', TempSignedByteName);
+  Result := Replace(Result, '__TMPWORD__', TempSignedWordName);
   Result := Replace(Result, '__TMPLONG__', TempSignedLongName);
   Result := Replace(Result, '__TMPULONG__', TempUnsignedLongName);
   Result := Replace(Result, '__TMPFLOAT__', TempFloatName);
-  Result := Replace(Result, '__RETVAL__', RegisterName);
+  Result := Replace(Result, '__RETVAL__', SignedRegisterName);
   Result := Replace(Result, '__STRRETVAL__', StrRetValName);
   Result := Replace(Result, 'true', 'TRUE');
   Result := Replace(Result, 'false', 'FALSE');
@@ -4800,7 +4800,7 @@ begin
           if dt = TOK_FLOATDEF then
             fCalc.SetVariable(savedval, StrToFloatDef(ival, 0))
           else
-            fCalc.SetVariable(savedval, StrToIntDef(ival, 0));
+            fCalc.SetVariable(savedval, StrToInt64Def(ival, 0));
         end
         else if dt = TOK_STRINGDEF then
         begin
@@ -6241,7 +6241,11 @@ begin
       Next;
   end
   else if dt <> #0 then
+  begin
     BoolExpression;
+    if (dt in UnsignedIntegerTypes) and (StatementType <> stUnsigned) then
+      EmitLn(Format('mov %s, %s', [UnsignedRegisterName, RegisterName])); 
+  end;
 //  Semi;
   EmitLn('return');
 end;
@@ -6417,12 +6421,12 @@ begin
 }
 end;
 
-function TNXCComp.TempByteName: string;
+function TNXCComp.TempSignedByteName: string;
 begin
   Result := Format('__tmpsbyte%s', [fCurrentThreadName]);
 end;
 
-function TNXCComp.TempWordName: string;
+function TNXCComp.TempSignedWordName: string;
 begin
   Result := Format('__tmpsword%s', [fCurrentThreadName]);
 end;

@@ -905,7 +905,7 @@ procedure LoadRXEDataSpace(H : TRXEHeader; DS : TDSData; aStream : TStream);
 procedure LoadRXEClumpRecords(H : TRXEHeader; CD : TClumpData; aStream : TStream);
 procedure LoadRXECodeSpace(H : TRXEHeader; CS : TCodeSpaceAry; aStream : TStream);
 
-function GetArgDataType(val : Single): TDSType;
+function GetArgDataType(val : Extended): TDSType;
 function ExpectedArgType(const op : TOpCode; const argIdx: integer): TAsmArgType;
 function ProcessCluster(aDS : TDSData; Item : TDataspaceEntry; idx : Integer;
   var staticIndex : Integer) : integer;
@@ -914,7 +914,7 @@ procedure ChunkLine(const state : TMainAsmState; namedTypes : TMapList;
   line : string; bUseCase : boolean; var lbl, opcode, args : string;
   var lineType : TAsmLineType; var bIgnoreDups : boolean);
 
-function CreateConstantVar(DSpace : TDataspace; val : Single; bIncCount : boolean) : string;
+function CreateConstantVar(DSpace : TDataspace; val : Extended; bIncCount : boolean) : string;
 
 procedure InstantiateCluster(DD : TDataDefs; DE: TDataspaceEntry; const clustername: string);
 procedure HandleVarDecl(DD : TDataDefs; NT : TMapList; bCaseSensitive : boolean;
@@ -3108,18 +3108,22 @@ begin
   Result := Trim(Result);
 end;
 
-function ValueAsCardinal(aValue : single) : Cardinal;
+function ValueAsCardinal(aValue : Extended) : Cardinal;
 var
   iVal : Int64;
+  sVal : Single;
 begin
   iVal := Trunc(aValue);
   if iVal = aValue then
     Result := Cardinal(iVal)
   else
-    Result := Cardinal(Pointer(aValue));
+  begin
+    sVal := aValue;
+    Result := Cardinal(Pointer(sVal));
+  end;
 end;
 
-function CalcDSType(aDSType : TDSType; aValue : single) : TDSType;
+function CalcDSType(aDSType : TDSType; aValue : Extended) : TDSType;
 var
   oldBPT, newBPT : byte;
 begin
@@ -3152,7 +3156,7 @@ var
   i : integer;
   SL : TStringList;
   x : Byte;
-  fVal : single;
+  fVal : Extended;
 begin
   Result := dsUByte; // default value type is unsigned byte
   sargs := Trim(sargs);
@@ -5219,7 +5223,7 @@ begin
   end;
 end;
 
-function GetArgDataType(val : Single): TDSType;
+function GetArgDataType(val : Extended): TDSType;
 var
   iVal : Int64;
 begin
@@ -7433,11 +7437,12 @@ begin
   end;
 end;
 
-function CreateConstantVar(DSpace : TDataspace; val : Single; bIncCount : boolean) : string;
+function CreateConstantVar(DSpace : TDataspace; val : Extended; bIncCount : boolean) : string;
 var
   datatype : TDSType;
   DE : TDataspaceEntry;
   iVal : Int64;
+  sVal : Single;
 begin
   iVal := Trunc(val*10000); // scale by 4 decimal places
   datatype := GetArgDataType(val);
@@ -7457,7 +7462,10 @@ begin
     DE.DataType := datatype;
     DE.DefaultValue := ValueAsCardinal(val);
     if datatype = dsFloat then
-      DE.DefaultValue := Cardinal(Pointer(val{single(iVal/10000.0)}))
+    begin
+      sVal := val;
+      DE.DefaultValue := Cardinal(Pointer(sVal))
+    end
     else
       DE.DefaultValue := Cardinal(Trunc(val));
   end;
