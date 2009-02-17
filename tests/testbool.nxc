@@ -1,0 +1,52 @@
+bool testasbool (int c)
+{return(c>50);
+}
+
+byte testasbyte (int c)
+{return (c>50);
+}
+
+int testasint (int c)
+{return (c>50);
+}
+
+
+
+task main()
+
+
+{int loopcount=0;
+ while (true)
+ {int data=Random(100);             // get random number
+
+  bool result1=(data>50);            // first test directly in task main
+  byte result2=testasbool(data);     // second test as task returning bool
+  int  result3=testasbyte(data);     // third test as task returning byte
+  char result4=testasint(data);      // fourth test as task returning int
+  
+  TextOut(0,LCD_LINE1, "EXPECTED=");
+  TextOut(0,LCD_LINE3, "BOOL =");
+  TextOut(0,LCD_LINE5, "BYTE =");
+  TextOut(0,LCD_LINE7, "INT =");
+  
+  if (result1) TextOut(65,LCD_LINE1,"TRUE ");
+   else TextOut(65,LCD_LINE1,"FALSE");
+ if (result2) TextOut(65,LCD_LINE3,"TRUE ");
+   else TextOut(65,LCD_LINE3,"FALSE");
+ if (result3) TextOut(65,LCD_LINE5,"TRUE ");
+   else TextOut(65,LCD_LINE5,"FALSE");
+ if (result4) TextOut(65,LCD_LINE7,"TRUE ");
+   else TextOut(65,LCD_LINE7,"FALSE");
+
+
+
+ 
+  loopcount++;
+  NumOut(45,0,loopcount);
+  Wait(300);
+ }
+
+
+
+
+}
