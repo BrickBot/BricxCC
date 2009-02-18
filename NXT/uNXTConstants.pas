@@ -24,38 +24,299 @@ const
   HEX_FMT = '0x%x';
 
 type
+  TOpCode = Byte;
+
+const
+  OP_ADD           = $00;
+  OP_SUB           = $01;
+  OP_NEG           = $02;
+  OP_MUL           = $03;
+  OP_DIV           = $04;
+  OP_MOD           = $05;
+  OP_AND           = $06;
+  OP_OR            = $07;
+  OP_XOR           = $08;
+  OP_NOT           = $09;
+  OP_CMNT          = $0a;
+  OP_LSL           = $0b;
+  OP_LSR           = $0c;
+  OP_ASL           = $0d;
+  OP_ASR           = $0e;
+  OP_ROTL          = $0f;
+  OP_ROTR          = $10;
+  OP_CMP           = $11;
+  OP_TST           = $12;
+  OP_CMPSET        = $13;
+  OP_TSTSET        = $14;
+  OP_INDEX         = $15;
+  OP_REPLACE       = $16;
+  OP_ARRSIZE       = $17;
+  OP_ARRBUILD      = $18;
+  OP_ARRSUBSET     = $19;
+  OP_ARRINIT       = $1a;
+  OP_MOV           = $1b;
+  OP_SET           = $1c;
+  OP_FLATTEN       = $1d;
+  OP_UNFLATTEN     = $1e;
+  OP_NUMTOSTRING   = $1f;
+  OP_STRINGTONUM   = $20;
+  OP_STRCAT        = $21;
+  OP_STRSUBSET     = $22;
+  OP_STRTOBYTEARR  = $23;
+  OP_BYTEARRTOSTR  = $24;
+  OP_JMP           = $25;
+  OP_BRCMP         = $26;
+  OP_BRTST         = $27;
+  OP_SYSCALL       = $28;
+  OP_STOP          = $29;
+  OP_FINCLUMP      = $2a;
+  OP_FINCLUMPIMMED = $2b;
+  OP_ACQUIRE       = $2c;
+  OP_RELEASE       = $2d;
+  OP_SUBCALL       = $2e;
+  OP_SUBRET        = $2f;
+  OP_SETIN         = $30;
+  OP_SETOUT        = $31;
+  OP_GETIN         = $32;
+  OP_GETOUT        = $33;
+  OP_WAIT          = $34; // standard 1.26+ or enhanced 1.07+
+  OP_GETTICK       = $35;
+
+  // enhanced firmware opcodes (1.07)
+  OPS_WAITV        = $36;
+  OPS_ABS          = $37;
+  OPS_SIGN         = $38;
+  OPS_STOPCLUMP    = $39;
+  OPS_START        = $3a;
+  OPS_PRIORITY     = $3b;
+  OPS_FMTNUM       = $3c;
+  OPS_ARROP        = $3d;
+  OPS_ACOS         = $3e;
+  OPS_ASIN         = $3f;
+  OPS_ATAN         = $40;
+  OPS_CEIL         = $41;
+  OPS_EXP          = $42;
+  OPS_FABS         = $43;
+  OPS_FLOOR        = $44;
+  OPS_SQRT         = $45;
+  OPS_TAN          = $46;
+  OPS_TANH         = $47;
+  OPS_COS          = $48;
+  OPS_COSH         = $49;
+  OPS_LOG          = $4a;
+  OPS_LOG10        = $4b;
+  OPS_SIN          = $4c;
+  OPS_SINH         = $4d;
+  OPS_ATAN2        = $4e;
+  OPS_FMOD         = $4f;
+  OPS_POW          = $50;
+
+  // standard firmware opcodes (1.26+)
+  OPS_SQRT_2       = $36;
+  OPS_ABS_2        = $37;
+
+  // enhanced firmware opcodes (1.28)
+  OPS_WAITI_2        = $64;
+  OPS_WAITV_2        = $65;
+  OPS_SIGN_2         = $66;
+  OPS_STOPCLUMP_2    = $67;
+  OPS_START_2        = $68;
+  OPS_PRIORITY_2     = $69;
+  OPS_FMTNUM_2       = $6a;
+  OPS_ARROP_2        = $6b;
+  OPS_ACOS_2         = $6c;
+  OPS_ASIN_2         = $6d;
+  OPS_ATAN_2         = $6e;
+  OPS_CEIL_2         = $6f;
+  OPS_EXP_2          = $70;
+  OPS_FLOOR_2        = $71;
+  OPS_TAN_2          = $72;
+  OPS_TANH_2         = $73;
+  OPS_COS_2          = $74;
+  OPS_COSH_2         = $75;
+  OPS_LOG_2          = $76;
+  OPS_LOG10_2        = $77;
+  OPS_SIN_2          = $78;
+  OPS_SINH_2         = $79;
+  OPS_TRUNC_2        = $7a;
+  OPS_FRAC_2         = $7b;
+  OPS_ATAN2_2        = $7c;
+  OPS_POW_2          = $7d;
+
+  // pseudo opcodes
+  OPS_THREAD       = $90;
+  OPS_ENDT         = $91;
+  OPS_SUBROUTINE   = $92;
+  OPS_REQUIRES     = $93;
+  OPS_USES         = $94;
+  OPS_SEGMENT      = $95;
+  OPS_ENDS         = $96;
+  OPS_TYPEDEF      = $97;
+  OPS_STRUCT       = $98;
+  // var declarations
+  OPS_DB           = $99;
+  OPS_BYTE         = $9a;
+  OPS_SBYTE        = $9b;
+  OPS_UBYTE        = $9c;
+  OPS_DW           = $9d;
+  OPS_WORD         = $9e;
+  OPS_SWORD        = $9f;
+  OPS_UWORD        = $a0;
+  OPS_DD           = $a1;
+  OPS_DWORD        = $a2;
+  OPS_SDWORD       = $a3;
+  OPS_UDWORD       = $a4;
+  OPS_LONG         = $a5;
+  OPS_SLONG        = $a6;
+  OPS_ULONG        = $a7;
+  OPS_VOID         = $a8;
+  OPS_MUTEX        = $a9;
+  OPS_FLOAT        = $aa;
+  // pseudo opcodes
+  OPS_CALL         = $ab;
+  OPS_RETURN       = $ac;
+  OPS_STRINDEX     = $ad;
+  OPS_STRREPLACE   = $ae;
+  OPS_SHL          = $af;
+  OPS_SHR          = $b0;
+  OPS_STRLEN       = $b1;
+  OPS_COMPCHK      = $b2;
+  OPS_COMPIF       = $b3;
+  OPS_COMPELSE     = $b4;
+  OPS_COMPEND      = $b5;
+  OPS_COMPCHKTYPE  = $b6;
+  OPS_COMMENT      = $b7;
+  // invalid opcode
+  OPS_INVALID      = $f0;
+
+(*
+type
   TOpCode = (
-    OP_ADD, OP_SUB, OP_NEG, OP_MUL, OP_DIV, OP_MOD, OP_AND, OP_OR, OP_XOR,
-    OP_NOT, OP_CMNT, OP_LSL, OP_LSR, OP_ASL, OP_ASR, OP_ROTL, OP_ROTR,
-    OP_CMP, OP_TST, OP_CMPSET, OP_TSTSET,
-    OP_INDEX, OP_REPLACE, OP_ARRSIZE, OP_ARRBUILD, OP_ARRSUBSET, OP_ARRINIT,
-    OP_MOV, OP_SET,
-    OP_FLATTEN, OP_UNFLATTEN, OP_NUMTOSTRING, OP_STRINGTONUM,
-    OP_STRCAT, OP_STRSUBSET, OP_STRTOBYTEARR, OP_BYTEARRTOSTR,
-    OP_JMP, OP_BRCMP, OP_BRTST,
-    OP_SYSCALL, OP_STOP, OP_FINCLUMP, OP_FINCLUMPIMMED, OP_ACQUIRE, OP_RELEASE,
-    OP_SUBCALL, OP_SUBRET, OP_SETIN, OP_SETOUT, OP_GETIN, OP_GETOUT,
-    OP_WAIT, OP_GETTICK,   // 0x34, 0x35
-    OPS_WAITV, OPS_ABS, OPS_SIGN,
-    OPS_STOPCLUMP, OPS_START, OPS_PRIORITY, OPS_FMTNUM,
-    OPS_ARROP, OPS_ACOS, OPS_ASIN, OPS_ATAN, OPS_CEIL,
-    OPS_EXP, OPS_FABS, OPS_FLOOR, OPS_SQRT, OPS_TAN, OPS_TANH,
-    OPS_COS, OPS_COSH, OPS_LOG, OPS_LOG10, OPS_SIN, OPS_SINH,
-    OPS_ATAN2, OPS_FMOD, OPS_POW,
-    OPS_THREAD, OPS_ENDT, OPS_SUBROUTINE,
-    OPS_REQUIRES, OPS_USES,
-    OPS_SEGMENT, OPS_ENDS, OPS_TYPEDEF, OPS_STRUCT,
-    OPS_DB, OPS_BYTE, OPS_SBYTE, OPS_UBYTE,
-    OPS_DW, OPS_WORD, OPS_SWORD, OPS_UWORD,
-    OPS_DD, OPS_DWORD, OPS_SDWORD, OPS_UDWORD,
-    OPS_LONG, OPS_SLONG, OPS_ULONG,
-    OPS_VOID, OPS_MUTEX, OPS_FLOAT,
-    OPS_CALL, OPS_RETURN,
-    OPS_STRINDEX, OPS_STRREPLACE, OPS_SHL, OPS_SHR, OPS_STRLEN,
-    OPS_COMPCHK, OPS_COMPIF, OPS_COMPELSE, OPS_COMPEND, OPS_COMPCHKTYPE,
+    OP_ADD,
+    OP_SUB,
+    OP_NEG,
+    OP_MUL,
+    OP_DIV,
+    OP_MOD,
+    OP_AND,
+    OP_OR,
+    OP_XOR,
+    OP_NOT,
+    OP_CMNT,
+    OP_LSL,
+    OP_LSR,
+    OP_ASL,
+    OP_ASR,
+    OP_ROTL,
+    OP_ROTR,
+    OP_CMP,
+    OP_TST,
+    OP_CMPSET,
+    OP_TSTSET,
+    OP_INDEX,
+    OP_REPLACE,
+    OP_ARRSIZE,
+    OP_ARRBUILD,
+    OP_ARRSUBSET,
+    OP_ARRINIT,
+    OP_MOV,
+    OP_SET,
+    OP_FLATTEN,
+    OP_UNFLATTEN,
+    OP_NUMTOSTRING,
+    OP_STRINGTONUM,
+    OP_STRCAT,
+    OP_STRSUBSET,
+    OP_STRTOBYTEARR,
+    OP_BYTEARRTOSTR,
+    OP_JMP,
+    OP_BRCMP,
+    OP_BRTST,
+    OP_SYSCALL,
+    OP_STOP,
+    OP_FINCLUMP,
+    OP_FINCLUMPIMMED,
+    OP_ACQUIRE,
+    OP_RELEASE,
+    OP_SUBCALL,
+    OP_SUBRET,
+    OP_SETIN,
+    OP_SETOUT,
+    OP_GETIN,
+    OP_GETOUT,
+    OP_WAIT,      // 0x34
+    OP_GETTICK,   // 0x35
+    OPS_WAITV,
+    OPS_ABS,
+    OPS_SIGN,
+    OPS_STOPCLUMP,
+    OPS_START,
+    OPS_PRIORITY,
+    OPS_FMTNUM,
+    OPS_ARROP,
+    OPS_ACOS,
+    OPS_ASIN,
+    OPS_ATAN,
+    OPS_CEIL,
+    OPS_EXP,
+    OPS_FABS,
+    OPS_FLOOR,
+    OPS_SQRT,
+    OPS_TAN,
+    OPS_TANH,
+    OPS_COS,
+    OPS_COSH,
+    OPS_LOG,
+    OPS_LOG10,
+    OPS_SIN,
+    OPS_SINH,
+    OPS_ATAN2,
+    OPS_FMOD,
+    OPS_POW,
+    OPS_THREAD,
+    OPS_ENDT,
+    OPS_SUBROUTINE,
+    OPS_REQUIRES,
+    OPS_USES,
+    OPS_SEGMENT,
+    OPS_ENDS,
+    OPS_TYPEDEF,
+    OPS_STRUCT,
+    OPS_DB,
+    OPS_BYTE,
+    OPS_SBYTE,
+    OPS_UBYTE,
+    OPS_DW,
+    OPS_WORD,
+    OPS_SWORD,
+    OPS_UWORD,
+    OPS_DD,
+    OPS_DWORD,
+    OPS_SDWORD,
+    OPS_UDWORD,
+    OPS_LONG,
+    OPS_SLONG,
+    OPS_ULONG,
+    OPS_VOID,
+    OPS_MUTEX,
+    OPS_FLOAT,
+    OPS_CALL,
+    OPS_RETURN,
+    OPS_STRINDEX,
+    OPS_STRREPLACE,
+    OPS_SHL,
+    OPS_SHR,
+    OPS_STRLEN,
+    OPS_COMPCHK,
+    OPS_COMPIF,
+    OPS_COMPELSE,
+    OPS_COMPEND,
+    OPS_COMPCHKTYPE,
     OPS_COMMENT,
     OPS_INVALID
   );
+*)
+
 
 const
   FILENAME_LENGTH        = 19;    // zero termination not included
