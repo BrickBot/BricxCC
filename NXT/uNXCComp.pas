@@ -2495,7 +2495,10 @@ begin
       fCalc.SilentExpression := fExpStr;
       if not fCalc.ParserError then
       begin
-        fExpStr := IntToStr(Trunc(fCalc.Value));
+        if StatementType = stFloat then
+          fExpStr := StripTrailingZeros(Format('%.5f', [fCalc.Value]))
+        else
+          fExpStr := IntToStr(Trunc(fCalc.Value));
         // in theory, we can replace all the lines between idx and
         // NBCSource.Count with one line
         while NBCSource.Count > idx do

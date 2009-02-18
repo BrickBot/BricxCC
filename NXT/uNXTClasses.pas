@@ -783,7 +783,6 @@ const
     ( Encoding: OP_GETOUT        ; CCType: 0; Arity: 3; Name: 'getout'; ),
     ( Encoding: OP_WAIT          ; CCType: 0; Arity: 1; Name: 'wait'; ),
     ( Encoding: OP_GETTICK       ; CCType: 0; Arity: 1; Name: 'gettick'; ),
-//    ( Encoding: OPS_WAIT         ; CCType: 0; Arity: 1; Name: 'wait'; ),
     ( Encoding: OPS_WAITV        ; CCType: 0; Arity: 1; Name: 'waitv'; ),
     ( Encoding: OPS_ABS          ; CCType: 0; Arity: 2; Name: 'abs'; ),
     ( Encoding: OPS_SIGN         ; CCType: 0; Arity: 2; Name: 'sign'; ),
@@ -1119,7 +1118,7 @@ begin
       dsMutex : Result := Format('%u', [aVal]);
       dsArray : Result := '';
       dsCluster : Result := '';
-      dsFloat : Result := Format('%.12g', [Single(Pointer(aVal))]);
+      dsFloat : Result := StripTrailingZeros(Format('%.5f', [Single(Pointer(aVal))]));
     else
       Result := '???';
     end;
@@ -1449,13 +1448,8 @@ begin
     OP_ARRSIZE, OP_ARRBUILD,
     OP_FLATTEN, OP_UNFLATTEN, OP_NUMTOSTRING,
     OP_STRCAT, OP_STRTOBYTEARR, OP_BYTEARRTOSTR,
-    OP_ACQUIRE, OP_RELEASE, OP_SUBRET,
-    OPS_WAITV, OPS_ABS, OPS_SIGN, OPS_FMTNUM,
-    OPS_ACOS, OPS_ASIN, OPS_ATAN, OPS_CEIL,
-    OPS_EXP, OPS_FABS, OPS_FLOOR, OPS_SQRT, OPS_TAN, OPS_TANH,
-    OPS_COS, OPS_COSH, OPS_LOG, OPS_LOG10, OPS_SIN, OPS_SINH,
-    OPS_ATAN2, OPS_FMOD, OPS_POW,
-    OP_GETTICK : begin
+    OP_ACQUIRE, OP_RELEASE, OP_SUBRET, OP_GETTICK :
+    begin
       Result := TOCNameFromArg(DS, argValue);
     end;
     OP_STOP, OP_ARRINIT, OP_INDEX, OP_REPLACE,
@@ -1463,15 +1457,6 @@ begin
     begin
       if argValue = NOT_AN_ELEMENT then
         Result := STR_NA
-      else
-        Result := TOCNameFromArg(DS, argValue);
-    end;
-    OPS_ARROP :
-    begin
-      if argValue = NOT_AN_ELEMENT then
-        Result := STR_NA
-      else if argIdx = 0 then
-        Result := Format(HEX_FMT, [argValue])
       else
         Result := TOCNameFromArg(DS, argValue);
     end;
@@ -1487,21 +1472,11 @@ begin
       else
         Result := TOCNameFromArg(DS, argValue);
     end;
-    OP_WAIT : begin
-      Result := Format(HEX_FMT, [argValue]);
-    end;
     OP_FINCLUMP : begin
       Result := Format('%d', [SmallInt(argValue)]);
     end;
     OP_FINCLUMPIMMED : begin
       Result := Format(CLUMP_FMT, [SmallInt(argValue)]);
-    end;
-    OPS_PRIORITY :
-    begin
-      if argValue = NOT_AN_ELEMENT then
-        Result := STR_NA
-      else
-        Result := Format(HEX_FMT, [argValue]);
     end;
     OP_JMP, OP_BRCMP, OP_BRTST : begin
       if argIdx = 0 then
@@ -1539,6 +1514,33 @@ begin
     OP_GETOUT : begin
       if argIdx = 2 then
         Result := OutputFieldIDToStr(argValue)
+      else
+        Result := TOCNameFromArg(DS, argValue);
+    end;
+    OP_WAIT : begin
+      Result := Format(HEX_FMT, [argValue]);
+    end;
+    OPS_WAITV, OPS_ABS, OPS_SIGN, OPS_FMTNUM,
+    OPS_ACOS, OPS_ASIN, OPS_ATAN, OPS_CEIL,
+    OPS_EXP, OPS_FABS, OPS_FLOOR, OPS_SQRT, OPS_TAN, OPS_TANH,
+    OPS_COS, OPS_COSH, OPS_LOG, OPS_LOG10, OPS_SIN, OPS_SINH,
+    OPS_ATAN2, OPS_FMOD, OPS_POW :
+    begin
+      Result := TOCNameFromArg(DS, argValue);
+    end;
+    OPS_PRIORITY :
+    begin
+      if argValue = NOT_AN_ELEMENT then
+        Result := STR_NA
+      else
+        Result := Format(HEX_FMT, [argValue]);
+    end;
+    OPS_ARROP :
+    begin
+      if argValue = NOT_AN_ELEMENT then
+        Result := STR_NA
+      else if argIdx = 0 then
+        Result := Format(HEX_FMT, [argValue])
       else
         Result := TOCNameFromArg(DS, argValue);
     end;
@@ -4108,6 +4110,8 @@ begin
   case StrToOpcode(op, bUseCase) of
     OP_ADD..OP_GETTICK : Result := altCode;
     OPS_WAITV..OPS_POW : Result := altCode; // pseudo opcodes
+//    OPS_SQRT_2..OPS_ABS_2 : Result := altCode; // standard 1.26+ opcodes (included in OPS_WAITV..OPS_POW due to overlap)
+    OPS_WAITI_2..OPS_POW_2 : Result := altCode; // enhanced 1.26+ opcodes
     OPS_SEGMENT : Result := altBeginDS;
     OPS_ENDS :
       if state in [masStruct, masStructDSClump, masStructDSClumpSub] then
@@ -4767,7 +4771,8 @@ begin
     OP_ADD, OP_SUB, OP_NEG, OP_MUL, OP_DIV, OP_MOD,
     OP_AND, OP_OR, OP_XOR, OP_NOT,
     OP_CMNT, OP_LSL, OP_LSR, OP_ASL, OP_ASR, OP_ROTL, OP_ROTR,
-    OP_MOV, OPS_ACOS, OPS_ASIN, OPS_ATAN, OPS_CEIL,
+    OP_MOV,
+    OPS_ACOS, OPS_ASIN, OPS_ATAN, OPS_CEIL,
     OPS_EXP, OPS_FABS, OPS_FLOOR, OPS_SQRT, OPS_TAN, OPS_TANH,
     OPS_COS, OPS_COSH, OPS_LOG, OPS_LOG10, OPS_SIN, OPS_SINH,
     OPS_ATAN2, OPS_FMOD, OPS_POW :

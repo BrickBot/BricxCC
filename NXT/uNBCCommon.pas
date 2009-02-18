@@ -1035,6 +1035,7 @@ function InlineName(const tname, name: string): string;
 function StripDecoration(const name : string) : string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
 function Replace(const str : string; const src, rep : string) : string;
+function StripTrailingZeros(const aNum : string) : string;
 
 const
   TOK_SEMICOLON     = ';';
@@ -1205,6 +1206,13 @@ begin
 {$ELSE}
   Result := StringReplace(str, src, rep, [rfReplaceAll]);
 {$ENDIF}
+end;
+
+function StripTrailingZeros(const aNum : string) : string;
+begin
+  Result := aNum;
+  while Result[Length(Result)] = '0' do
+    System.Delete(Result, Length(Result), 1);
 end;
 
 procedure TNBCExpParser.InitializeCalc;
