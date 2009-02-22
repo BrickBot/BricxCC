@@ -490,6 +490,7 @@ resourcestring
   sExpectedString          = '%s expected';
   sDataType                = 'Data type';
   sIdentifier              = 'Identifier';
+  sDirective               = 'Preprocessor directive';
   sNumber                  = 'Number';
   sHexNumber               = 'Hex number';
   sCharLiteral             = 'Character literal';
