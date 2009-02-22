@@ -24,10 +24,12 @@ Version 1.0.1.b36
 - Added support for #download "filename" preprocessor command in NBC/NXC
 - Added support for import keyword in RICScript
 - Added support for struct "dot" notation, e.g., mydata[0].foo = 10; int x = mydata[0].foo;
-- Added support for "typedeef struct" syntax
+- Added support for "typedef struct" syntax
 - Added support for byte array to string assignment in NXC
 - Fixed bug in Random() API function
 - Added support for arrray math operation syntax in NXC, e.g., array += 2; array = !array, etc...
+- Fixed multi-line macro parsing bugs and problems with preprocessor directives mixed in 
+  with expressions.
 
 
 
