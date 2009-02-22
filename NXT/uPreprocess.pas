@@ -49,6 +49,7 @@ type
     fGLC : TGenLexerClass;
     fLexers : TObjectList;
     fRecursionDepth : integer;
+    fAddPoundLine: boolean;
 {
     fVarI : integer;
     fVarJ : integer;
@@ -75,6 +76,8 @@ type
     function AcquireLexer(const lineNo : integer) : TGenLexer;
     procedure ReleaseLexer;
     procedure InitializeLexers(const num: integer);
+    procedure AddOneOrMoreLines(OutStrings: TStrings; const S,
+      name: string; var lineNo: integer);
   public
     class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings) : string;
     class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string) : string;
@@ -85,6 +88,7 @@ type
     function Preprocess(const fname: string; aStream: TMemoryStream) : string; overload;
     procedure AddIncludeDirs(aStrings : TStrings);
     property Defines : TMapList read GetDefines;
+    property AddPoundLineToMultiLineMacros : boolean read fAddPoundLine write fAddPoundLine;
   end;
 
 implementation
@@ -214,26 +218,32 @@ begin
     PL.Taken := True;
 end;
 
-procedure AddOneOrMoreLines(OutStrings : TStrings; const S, name : string; var lineNo : integer);
+procedure TLangPreprocessor.AddOneOrMoreLines(OutStrings : TStrings; const S, name : string; var lineNo : integer);
 var
   SL : TStringList;
+  lineCount : integer;
 begin
   if Pos(#10, S) > 0 then
   begin
     SL := TStringList.Create;
     try
-//      SL.Text := Replace(S, '##', '');
       SL.Text := S;
-      OutStrings.Add(Format('#pragma macro %d', [SL.Count]));
+      lineCount := SL.Count;
+      if AddPoundLineToMultiLineMacros then
+      begin
+        dec(lineCount);
+        if Copy(S, Length(S), 1) <> #10 then
+          dec(lineCount);
+      end;
+      OutStrings.Add(Format('#pragma macro %d', [lineCount]));
       OutStrings.AddStrings(SL);
       // at the end of each multi-line macro expansion output a #line directive
-      OutStrings.Add('#line ' + IntToStr(lineNo) + ' "' + name + '"');
+      OutStrings.Add(Format('#line %d "%s"', [lineNo, name]));
     finally
       SL.Free;
     end;
   end
   else
-//    OutStrings.Add(Replace(S, '##', ''));
     OutStrings.Add(S);
 end;
 
@@ -541,9 +551,9 @@ function TLangPreprocessor.DoProcessStream(name : string; lineNo : integer;
   Stream : TMemoryStream; OutStrings : TStrings) : string;
 var
   Lex: TGenLexer;
-  S, dir, dirText, tmpname, usePath, macro : string;
+  S, dir, dirText, tmpname, usePath, macro, tmp : string;
   X : TMemoryStream;
-  i, cnt, origLevel, qPos : integer;
+  i, cnt, origLevel, qPos, oldLineNo : integer;
   bFileFound, bDefined, bProcess : boolean;
   origName : string;
 begin
@@ -580,6 +590,17 @@ begin
           // strip all comments
         end;
         piDirective : begin
+          // if we have some non-blank text collected then output it before
+          // we process the directive
+          if Trim(S) <> '' then
+          begin
+            // output S and clear it
+            if bProcess then
+              AddOneOrMoreLines(OutStrings, S, name, lineNo)
+            else
+              OutStrings.Add('');
+            S := '';
+          end;
           // some sort of preprocessor directive.
           dir := AnsiLowerCase(Lex.Token);
           dirText := '';
@@ -873,7 +894,28 @@ begin
         piZero, piUnknown : {do nothing};
         piIdent : begin
           if bProcess then
-            S := S + ProcessIdentifier(Lex, lineNo);
+          begin
+            oldLineNo := lineNo;
+            tmp := ProcessIdentifier(Lex, lineNo);
+            if Pos(#10, tmp) > 0 then
+            begin
+              if AddPoundLineToMultiLineMacros then
+              begin
+                // add #line to multi-line macros
+                tmp := tmp + Format(#13#10'#line %d "%s"'#13#10, [oldLineNo-1, name]);
+              end;
+               // if we just processed a multi-line macro then we need to first
+              // output S (if not empty) and then set S equal to our multi-line macro
+              if Trim(S) <> '' then
+              begin
+                // output S and then set it to tmp
+                AddOneOrMoreLines(OutStrings, S, name, lineNo);
+              end;
+              S := tmp;
+            end
+            else
+              S := S + tmp;
+          end;
         end;
       else
         if bProcess then
@@ -896,6 +938,7 @@ end;
 constructor TLangPreprocessor.Create(GLType : TGenLexerClass; const defIncDir : string);
 begin
   inherited Create;
+  fAddPoundLine := False;
   fGLC := GLType;
   IncludeDirs := TStringList.Create;
   IncludeDirs.Add(defIncDir);

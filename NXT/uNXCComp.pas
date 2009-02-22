@@ -96,12 +96,13 @@ type
     procedure SkipLine;
     procedure SkipDirectiveLine;
     procedure SkipWhite;
+    procedure GetDirective;
     procedure GetName;
     procedure GetNum;
     procedure GetHexNum;
     procedure GetCharLit;
     procedure GetOp;
-    procedure Next;
+    procedure Next(bProcessDirectives : boolean = True);
     procedure MatchString(x: string);
     procedure Semi;
     procedure NotNumericFactor;
@@ -172,7 +173,7 @@ type
     procedure DoStopTask;
     procedure DoSetPriority;
     procedure Statement(const lend, lstart : string);
-    procedure ProcessDirectives;
+    procedure ProcessDirectives(bScan : boolean = True);
     procedure HandlePoundLine;
     function  ArrayOfType(dt : char; dimensions : integer) : char;
     function  GetVariableType(vt: char; bUnsigned: boolean): char;
@@ -942,7 +943,7 @@ end;
 
 procedure TNXCComp.SkipDirectiveLine;
 begin
-  fDirLine := '#' + Value + ' ';
+  fDirLine := Value + ' ';
   repeat
     GetCharX;
     fDirLine := fDirLine + Look;
@@ -1227,6 +1228,21 @@ end;
 
 
 {--------------------------------------------------------------}
+{ Get an preprocessor directive }
+
+procedure TNXCComp.GetDirective;
+begin
+  SkipWhite;
+  if Look <> '#' then Expected(sDirective);
+  Token := TOK_DIRECTIVE;
+  Value := '';
+  repeat
+    Value := Value + Look;
+    GetChar;
+  until not IsAlpha(Look);
+end;
+
+{--------------------------------------------------------------}
 { Get an Identifier }
 
 procedure TNXCComp.GetName;
@@ -1360,16 +1376,21 @@ end;
 {--------------------------------------------------------------}
 { Get the Next Input Token }
 
-procedure TNXCComp.Next;
+procedure TNXCComp.Next(bProcessDirectives : boolean);
 begin
   SkipWhite;
   if Look = '''' then GetCharLit
   else if Look = '"' then GetString
+  else if Look = '#' then GetDirective
   else if IsAlpha(Look) then GetName
   else if IsDigit(Look) then GetNum
   else if Look = '$' then GetHexNum
   else GetOp;
-  fExpStr := fExpStr + Value;
+  if bProcessDirectives then
+  begin
+    ProcessDirectives(False);
+    fExpStr := fExpStr + Value;
+  end;
 end;
 
 function IsAPICommand(const name : string) : boolean;
@@ -5408,6 +5429,7 @@ begin
     CloseParen;
     OptionalSemi;
     Scan;
+    ProcessDirectives; // just in case there are any between the ) and the {
     if Token = TOK_BEGIN then
     begin
       if pltype = 1 then
@@ -5478,6 +5500,7 @@ begin
   CloseParen;
   OptionalSemi;
   Scan;
+  ProcessDirectives; // just in case there are any in between the ) and the {
   if Token = TOK_BEGIN then
   begin
     if pltype = 1 then
@@ -6312,6 +6335,7 @@ var
 begin
   P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)));
   try
+    P.AddPoundLineToMultiLineMacros := True;
     P.Defines.AddDefines(Defines);
     if EnhancedFirmware then
       P.Defines.Define('__ENHANCED_FIRMWARE');
@@ -6328,25 +6352,25 @@ begin
   end;
 end;
 
-procedure TNXCComp.ProcessDirectives;
+procedure TNXCComp.ProcessDirectives(bScan : boolean);
 begin
   while Token = TOK_DIRECTIVE do
   begin
-    Next;
     // look for #line statements
-    if (Token = TOK_IDENTIFIER) and (LowerCase(Value) = 'line') then
+    if LowerCase(Value) = '#line' then
     begin
       SkipDirectiveLine;
       HandlePoundLine;
-      Next;
+      Next(False);
     end
     else
     begin
       SkipDirectiveLine;
-      Next;
+      Next(False);
     end;
     EmitLn(Trim(fDirLine));
-    Scan;
+    if bScan then
+      Scan;
   end;
 end;
 
