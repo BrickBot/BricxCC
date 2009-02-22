@@ -420,12 +420,8 @@ void DrawLetterF()
 
 task main()
 {
-   NumOut(0, LCD_LINE1, block_f[0][0]);
-   NumOut(0, LCD_LINE2, block_f[6][31]);
    DrawLetterF(); // black letter on white background
    block_f = ! block_f; // invert the values in the block F array
-   NumOut(0, LCD_LINE3, block_f[0][0]);
-   NumOut(0, LCD_LINE4, block_f[6][31]);
    DrawLetterF(); // white letter on black background
    block_f = ! block_f; // invert the values in the block F array
    DrawLetterF(); // black letter on white background

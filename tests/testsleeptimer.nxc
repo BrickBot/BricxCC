@@ -1,0 +1,26 @@
+int MyFunc(void)
+{ ResetSleepTimer();  int xyz=24;
+  return xyz;
+}
+
+task main()
+{ ResetSleepTimer();
+  int x = 13
+  +
+#pragma macro 44
+  14
+  ;
+  int y =
+  12;
+  y +=
+#pragma macro 44
+
+  
+  
+  23;
+  NumOut(0, LCD_LINE1, x);
+  NumOut(0, LCD_LINE1, BatteryLevel());
+  NumOut(0, LCD_LINE2, ResetSleepTimer());
+  MyFunc();
+}
+

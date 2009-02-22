@@ -6,7 +6,7 @@ task main()
   byte data[] = {0, 1, 0, 1, 1, 0};
   ArrayBuild(matrix, data, data, data);
   data = !matrix[1];
-  data = !data;
+//  data = !data;
   Element_Out(0, 1);
   Element_Out(0, 2);
   Element_Out(0, 3);
