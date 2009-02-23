@@ -5,8 +5,8 @@
 // Copyright (C) 2009 - John Hansen. All rights reserved.
 //
 // Workfile:: NXTDefs.h
-// Date:: 2009-02-09
-// Revision:: 38
+// Date:: 2009-02-22
+// Revision:: 39
 //
 //------------------------------------------------------------------------------
 //
@@ -364,6 +364,17 @@ TDrawGraphicArray	ends
 #endif
 
 #if __FIRMWARE_VERSION > 107
+
+// ColorSensorRead
+TColorSensorRead	struct
+ Result			sbyte
+ Port			byte
+ ColorValue		sword
+ RawArray		word[]
+ NormalizedArray	word[]
+ ScaledArray		sword[]
+ Invalid		byte
+TColorSensorRead	ends
 
 // DatalogWrite
 TDatalogWrite	struct
