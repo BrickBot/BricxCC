@@ -3,7 +3,7 @@ unit DataAnalysis;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Classes, Controls, Forms, Dialogs,
   ExtCtrls, TeeProcs, TeEngine, Chart, Series, StdCtrls, Menus, ActnList,
   ImgList, ToolWin, ComCtrls, Buttons;
 
@@ -103,7 +103,7 @@ implementation
 {$R *.DFM}
 
 uses
-  Printers, Clipbrd, uChartExport, uChartConfig, uSeriesConfig,
+  SysUtils, Printers, Clipbrd, uChartExport, uChartConfig, uSeriesConfig,
   uPromptSeries, Watch, uNewWatch;
 
 { TfrmDataAnalysis }

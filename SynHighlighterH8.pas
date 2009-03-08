@@ -5,15 +5,7 @@ unit SynHighlighterH8;
 interface
 
 uses
-  SysUtils,
   Classes,
-{$IFNDEF FPC}
-  Windows,
-  Messages,
-  Registry,
-{$ENDIF}
-  Controls,
-  Graphics,
   SynEditHighlighter,
   SynHighlighterHashEntries,
   SynEditTypes;
@@ -100,6 +92,8 @@ type
 implementation
 
 uses
+  SysUtils,
+  Graphics,
   SynEditStrConst;
 
 var

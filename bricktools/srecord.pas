@@ -3,7 +3,7 @@ unit srecord;
 interface
 
 uses
-  Windows, sysutils;
+  SysUtils;
 
 type
   TSRecClass = class

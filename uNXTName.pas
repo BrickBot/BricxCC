@@ -3,8 +3,7 @@ unit uNXTName;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls;
+  Classes, Controls, Forms, StdCtrls;
 
 type
   TfrmNXTName = class(TForm)

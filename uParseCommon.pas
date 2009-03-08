@@ -89,10 +89,7 @@ procedure FindCppProcs(Timeout : Cardinal; CParser : TBCBTokenList; theLang : TE
 implementation
 
 uses
-  Windows,
-  SysUtils,
-  Classes,
-  mwGenericLex;
+  SysUtils, Classes, mwGenericLex, uCommonUtils;
 
 const
   ImageIndexGear     = 0;
@@ -255,7 +252,7 @@ begin
       ctkbraceclose: Dec(BraceCount);
       ctknull: Exit;
     end;
-    if (GetTickCount - start) > Timeout then Exit;
+    if (GetTick - start) > Timeout then Exit;
   until (CParser.RunID = ctkbraceopen) or
         (CParser.RunID = ctkbracepair) or
         (CParser.RunID = ctknull);
@@ -272,11 +269,11 @@ begin
     if CParser.RunPosition = theStart then
       Break;
     CParser.PreviousNonJunk;
-    if (GetTickCount - start) > Timeout then Exit;
+    if (GetTick - start) > Timeout then Exit;
   end;
   while CParser.RunPosition < Result do begin
     CParser.NextNonJunk;
-    if (GetTickCount - start) > Timeout then Exit;
+    if (GetTick - start) > Timeout then Exit;
   end;
 end;
 
@@ -315,7 +312,7 @@ begin
       if CParser.RunPosition = InitialPosition then
         Break;
       CParser.PreviousNonJunk;
-      if (GetTickCount - start) > Timeout then Exit;
+      if (GetTick - start) > Timeout then Exit;
     end;
     // if we found a class then the next token should be the correct Name
     if FoundClass then begin
@@ -335,7 +332,7 @@ begin
     // now get back to where you belong
     while CParser.RunPosition < RestorePosition do begin
       CParser.NextNonJunk;
-      if (GetTickCount - start) > Timeout then Exit;
+      if (GetTick - start) > Timeout then Exit;
     end;
     CParser.NextNonJunk;
     result := CParser.RunPosition;
@@ -349,7 +346,7 @@ begin
       begin
         while CParser.RunPosition < ThrowRestorePos do begin
           CParser.NextNonJunk;
-          if (GetTickCount - start) > Timeout then Exit;
+          if (GetTick - start) > Timeout then Exit;
         end;
       end
       else
@@ -366,7 +363,7 @@ begin
         Result := FindBeginningProcedureBrace(CParser, theLang, start, Timeout, BraceCount, Name);
         CParser.PreviousNonJunk;
         if Name <> '' then Break;
-        if (GetTickCount - start) > Timeout then Exit;
+        if (GetTick - start) > Timeout then Exit;
       end;
       CParser.NextNonJunk;
     end;
@@ -385,7 +382,7 @@ var
   IdentifierNeeded: Boolean;
   start : cardinal;
 begin
-  start := GetTickCount;
+  start := GetTick;
   if not MoveToImplementation(Parser) then
     raise Exception.Create(SImplementationNotFound);
   ClassLast := False;
@@ -466,7 +463,7 @@ begin
     end
     else
       Parser.Next;
-    if (GetTickCount - start) > Timeout then Exit;
+    if (GetTick - start) > Timeout then Exit;
   end;
 end;
 
@@ -581,7 +578,7 @@ var
           ctkroundopen: Dec(ParenCount);
           ctknull: Exit;
         end;
-        if (GetTickCount - start) > Timeout then Exit;
+        if (GetTick - start) > Timeout then Exit;
       until ((ParenCount = 0) and ((CParser.RunID = ctkroundopen) or (CParser.RunID = ctkroundpair)));
       CParser.PreviousNonJunk; // This is the procedure name
     end;
@@ -607,7 +604,7 @@ var
           ctklower: Dec(AngleCount);
           ctknull: Exit;
         end;
-        if (GetTickCount - start) > Timeout then Exit;
+        if (GetTick - start) > Timeout then Exit;
       until  (((AngleCount = 0) and (CParser.RunID = ctklower)) or (CParser.RunIndex = 0));
       CParser.PreviousNonJunk; // This is the token before the template args
     end;
@@ -626,12 +623,12 @@ var
           Exit;
         end;
         CParser.PreviousNonJunk;
-        if (GetTickCount - start) > Timeout then Exit;
+        if (GetTick - start) > Timeout then Exit;
       end;
       // reset the parser back to where it was
       while CParser.RunPosition < theEnd do begin
         CParser.NextNonComment;
-        if (GetTickCount - start) > Timeout then Exit;
+        if (GetTick - start) > Timeout then Exit;
       end;
     end;
 
@@ -644,7 +641,7 @@ var
       NameList.Delete(NameIndex);
   end;
 begin
-  start := GetTickCount;
+  start := GetTick;
   NameList := TStringList.Create;
   try
     BraceCount := 0;
@@ -692,7 +689,7 @@ begin
               Break;
             end;
           end;
-          if (GetTickCount - start) > Timeout then Exit;
+          if (GetTick - start) > Timeout then Exit;
         end;
 
         if CParser.RunID in [ctkcolon, ctksemicolon, ctkbraceclose, ctkbraceopen, ctkbracepair] then
@@ -709,7 +706,7 @@ begin
             if (CParser.RunID = ctknull) then
               Exit;
             CParser.Next;
-            if (GetTickCount - start) > Timeout then Exit;
+            if (GetTick - start) > Timeout then Exit;
           end;
           CParser.NextNonJunk;
         end;
@@ -727,7 +724,7 @@ begin
             else
               ProcLine := ProcLine + CParser.RunToken;
           CParser.NextNonComment;
-          if (GetTickCount - start) > Timeout then Exit;
+          if (GetTick - start) > Timeout then Exit;
         end;
         // We are at the end of a procedure header
         // Go back and skip parenthesis to find the procedure name
@@ -784,7 +781,7 @@ begin
               CParser.PreviousNonJunk; // look for another ::
               if CParser.RunID = ctkcoloncolon then
                 ProcClass := CParser.RunToken + ProcClass;
-              if (GetTickCount - start) > Timeout then Exit;
+              if (GetTick - start) > Timeout then Exit;
             end;
             // we went back one step too far so go ahead once
             CParser.NextNonJunk;
@@ -815,7 +812,7 @@ begin
               ProcReturnType := ' ' + ProcReturnType
             else
               ProcReturnType := CParser.RunToken + ProcReturnType;
-            if (GetTickCount - start) > Timeout then Exit;
+            if (GetTick - start) > Timeout then Exit;
           end;
 
           // if the return type is an empty string then it must be a constructor
@@ -875,7 +872,7 @@ begin
         end;
         while (CParser.RunPosition < BeginBracePosition) do begin
           CParser.Next;
-          if (GetTickCount - start) > Timeout then Exit;
+          if (GetTick - start) > Timeout then Exit;
         end;
       end
       else begin
@@ -885,7 +882,7 @@ begin
       end;
       PreviousBraceCount := BraceCount;
       BeginBracePosition := FindBeginningProcedureBrace(CParser, theLang, start, Timeout, BraceCount, NewName);
-      if (GetTickCount - start) > Timeout then Exit;
+      if (GetTick - start) > Timeout then Exit;
     end; //while (RunPosition <= j-1) ...
   finally
     NameList.Free;

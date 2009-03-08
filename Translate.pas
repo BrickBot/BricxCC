@@ -3,15 +3,14 @@ unit Translate;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Menus, ComCtrls, Buttons, SynEdit, ExtCtrls;
+  SynEdit;
 
 procedure TranslateIt(TheEditor: TSynEdit);
 
 implementation
 
 uses
-  MainUnit, Editor, Preferences, uLocalizedStrings;
+  SysUtils, Dialogs, Controls, Editor, Preferences, uLocalizedStrings;
 
 const MAXWORD = 48;
 

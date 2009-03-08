@@ -3,9 +3,8 @@ unit uMidiBatch;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, uMidi2MS, StdCtrls, Menus, uOfficeComp, ComCtrls,
-  uSpin;
+  Classes, Controls, Forms, StdCtrls, Menus, ComCtrls, uSpin,
+  uOfficeComp, uMidi2MS;
 
 type
   TfrmMidiBatch = class(TForm)

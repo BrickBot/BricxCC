@@ -5,15 +5,7 @@ unit SynHighlighterLASM;
 interface
 
 uses
-  SysUtils,
   Classes,
-{$IFNDEF FPC}
-  Windows,
-  Messages,
-  Registry,
-{$ENDIF}
-  Controls,
-  Graphics,
   SynEditHighlighter,
   SynHighlighterHashEntries,
   SynEditTypes;
@@ -99,6 +91,8 @@ procedure LoadLASMCodeComplete(aItems : TStrings);
 implementation
 
 uses
+  SysUtils,
+  Graphics,
   SynEditStrConst;
 
 var

@@ -3,7 +3,7 @@ unit rcx_link;
 interface
 
 uses
-  Classes, SysUtils, NQCSerial, Windows, rcx_cmd, uSpirit;
+  Classes, NQCStream, rcx_cmd, uSpirit, NQCSerialWin;
 
 const
   kMaxCmdLength   = 9000;
@@ -178,7 +178,7 @@ function PortIsUSB(const aPort : string) : Boolean;
 implementation
 
 uses
-  rcx_constants, scout_def, TOWERAPI, Math;
+  SysUtils, rcx_constants, scout_def, TOWERAPI, Math, uCommonUtils;
 
 const
   cmSync : array[1..2] of Byte = (1, $FF);
@@ -720,9 +720,9 @@ begin
     // no header for USB
     if UseBluetooth then
     begin
-      ptr^ := LoByte(length);
+      ptr^ := Lo(Word(length));
       Inc(ptr);
-      ptr^ := HiByte(length);
+      ptr^ := Hi(Word(length));
       Inc(ptr);
     end;
   end
@@ -792,7 +792,7 @@ begin
       Inc(ptr);
     end;
   end;
-  fTxLength := (DWord(ptr) - DWord(fTxData)) div sizeof(Byte);
+  fTxLength := (Cardinal(ptr) - Cardinal(fTxData)) div sizeof(Byte);
 end;
 
 function TRcxLink.Close: boolean;
@@ -1617,9 +1617,7 @@ function TRcxLink.Send(data: PByte; length: integer; tryCount : integer;
   retry: boolean; timeout: integer): integer;
 var
   expected : Integer;
-  T0 : Cardinal;
 begin
-  T0 := GetTickCount;
   expected := ExpectedReplyLength(data, length);
 
   if (length > kMaxCmdLength) or (expected > kMaxReplyLength) then
@@ -1632,8 +1630,6 @@ begin
     kMaxReplyLength, retry, timeout, tryCount);
 
   result := fResult;
-  if fVerbose then
-    WriteToLog(Format('Total time = %d'#13#10, [GetTickCount-T0]));
 end;
 
 function TRcxLink.Send1(data: PByte; length: integer): integer;
@@ -1959,8 +1955,8 @@ var
   tmpStr : string;
 begin
   aIR.Clear;
-  T1 := GetTickCount;
-  while (GetTickCount - T1) < Cardinal(aSeconds * 1000) do
+  T1 := GetTick;
+  while (GetTick - T1) < Cardinal(aSeconds * 1000) do
   begin
     bread := NQCSerial.Read(@(buffer[0]), 100, -1);
     if bread > 0 then

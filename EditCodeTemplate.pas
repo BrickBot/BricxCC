@@ -3,8 +3,7 @@ unit EditCodeTemplate;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls;
+  Classes, Controls, Forms, StdCtrls;
 
 type
   TfrmEditCodeTemplate = class(TForm)

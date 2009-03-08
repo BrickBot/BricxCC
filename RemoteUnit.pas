@@ -3,8 +3,7 @@ unit RemoteUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Buttons;
+  Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Buttons;
 
 type
   TRemoteForm = class(TForm)
@@ -66,7 +65,7 @@ implementation
 {$R *.DFM}
 
 uses
-  FakeSpirit, uSpirit, brick_common;
+  uSpirit, brick_common;
 
 procedure TRemoteForm.tmrMainTimer(Sender: TObject);
 var

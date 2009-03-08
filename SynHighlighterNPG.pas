@@ -5,15 +5,7 @@ unit SynHighlighterNPG;
 interface
 
 uses
-  SysUtils,
   Classes,
-{$IFNDEF FPC}
-  Windows,
-  Messages,
-  Registry,
-{$ENDIF}
-  Controls,
-  Graphics,
   SynEditHighlighter,
   SynHighlighterHashEntries,
   SynEditTypes;
@@ -94,6 +86,8 @@ procedure LoadNPGCodeComplete(aItems : TStrings);
 implementation
 
 uses
+  SysUtils,
+  Graphics,
   SynEditStrConst;
 
 const

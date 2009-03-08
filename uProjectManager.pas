@@ -3,8 +3,7 @@ unit uProjectManager;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Menus, StdCtrls, uOfficeComp;
+  Classes, Controls, Forms, Dialogs, Menus, StdCtrls, uOfficeComp;
 
 type
   TfrmProjectManager = class(TForm)
@@ -52,7 +51,7 @@ implementation
 {$R *.DFM}
 
 uses
-  MainUnit, Preferences, SynEditHighlighter, uLocalizedStrings;
+  SysUtils, MainUnit, Preferences, SynEditHighlighter, uLocalizedStrings;
 
 procedure TfrmProjectManager.mniAddClick(Sender: TObject);
 var

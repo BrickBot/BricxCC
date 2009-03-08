@@ -5,11 +5,10 @@ unit SynHighlighterNQC;
 interface
 
 uses
-  SysUtils,
   {$IFNDEF FPC}
-  Windows, Messages,
+  Windows,
   {$ENDIF}
-  Classes, Controls, Graphics, Registry,
+  Classes, Registry,
   SynEditTypes, SynEditHighlighter;
 
 type
@@ -158,6 +157,8 @@ const
 implementation
 
 uses
+  SysUtils,
+  Graphics,
   SynEditStrConst;
 
 type

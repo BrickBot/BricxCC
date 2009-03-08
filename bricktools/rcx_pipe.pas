@@ -29,7 +29,7 @@ type
 implementation
 
 uses
-  Windows, Math;
+  uCommonUtils, Math;
 
 { TRcxPipe }
 
@@ -55,7 +55,7 @@ end;
 
 procedure TRcxUsbPipe.DoSleep(ms: Cardinal);
 begin
-  Sleep(ms);
+  OSSleep(ms);
 end;
 
 procedure TRcxUsbPipe.Wait(const cmd: Byte; const len, tryCnt : integer; const bFirst : boolean);

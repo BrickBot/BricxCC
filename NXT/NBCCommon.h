@@ -5,8 +5,8 @@
 // Copyright (C) 2009 - John Hansen. All rights reserved.
 //
 // Workfile:: NBCCommon.h
-// Date:: 2009-02-12
-// Revision:: 24
+// Date:: 2009-03-07
+// Revision:: 25
 //
 //------------------------------------------------------------------------------
 //
@@ -1201,9 +1201,54 @@
 #define HS_ENABLE        5
 
 #ifdef __ENHANCED_FIRMWARE
+
 #define HS_CTRL_INIT 0
 #define HS_CTRL_UART 1
 #define HS_CTRL_EXIT 2
+
+#if __FIRMWARE_VERSION > 107
+
+#define HS_BAUD_1200     0
+#define HS_BAUD_2400     1
+#define HS_BAUD_3600     2
+#define HS_BAUD_4800     3
+#define HS_BAUD_7200     4
+#define HS_BAUD_9600     5
+#define HS_BAUD_14400    6
+#define HS_BAUD_19200    7
+#define HS_BAUD_28800    8
+#define HS_BAUD_38400    9
+#define HS_BAUD_57600   10
+#define HS_BAUD_76800   11
+#define HS_BAUD_115200  12
+#define HS_BAUD_230400  13
+#define HS_BAUD_460800  14
+#define HS_BAUD_921600  15
+
+// constants referring to HsMode (number of bits)
+#define HS_MODE_5_DATA 0x0000
+#define HS_MODE_6_DATA 0x0040
+#define HS_MODE_7_DATA 0x0080
+#define HS_MODE_8_DATA 0x00C0
+
+// constants referring to HsMode (number of stop bits)
+#define HS_MODE_10_STOP 0x0000
+#define HS_MODE_15_STOP 0x1000
+#define HS_MODE_20_STOP 0x2000
+
+// constants referring to HsMode (parity)
+#define HS_MODE_E_PARITY 0x0000
+#define HS_MODE_O_PARITY 0x0200
+#define HS_MODE_S_PARITY 0x0400
+#define HS_MODE_M_PARITY 0x0600
+#define HS_MODE_N_PARITY 0x0800
+
+// constants referring to HsMode (D|P|S)
+#define HS_MODE_8N1 (HS_MODE_8_DATA|HS_MODE_N_PARITY|HS_MODE_10_STOP)
+#define HS_MODE_7E1 (HS_MODE_7_DATA|HS_MODE_E_PARITY|HS_MODE_10_STOP)
+
+#endif
+
 #endif
 
 //Constants refering to DeviceStatus within DeviceTable

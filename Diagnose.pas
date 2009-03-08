@@ -3,7 +3,7 @@ unit Diagnose;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, Menus, uOfficeComp, uSpin;
 
 type
@@ -251,16 +251,16 @@ begin
   end
   else if IsScout then
   begin
-    Height := WatchGroup.Top + GetSystemMetrics(SM_CYCAPTION) + V_FUDGE + V_HELP;
+    Height := WatchGroup.Top + GetWindowTitleBarHeight + V_FUDGE + V_HELP;
   end
   else if IsNXT then
   begin
     Height := grpNXTDiag.Top + grpNXTDiag.Height + 7 +
-              GetSystemMetrics(SM_CYCAPTION) + V_FUDGE + V_HELP;
+              GetWindowTitleBarHeight + V_FUDGE + V_HELP;
   end
   else
   begin
-    Height := IRGroup.Top + GetSystemMetrics(SM_CYCAPTION) + V_FUDGE + V_HELP;
+    Height := IRGroup.Top + GetWindowTitleBarHeight + V_FUDGE + V_HELP;
   end;
 end;
 

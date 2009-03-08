@@ -3,9 +3,9 @@ unit uMacroEditor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, SynEditHighlighter, SynEdit, BricxccSynEdit, SynHighlighterNQC,
-  SynCompletionProposal, SynEditEx, ExtCtrls;
+  Classes, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
+  SynEditHighlighter, SynEdit, BricxccSynEdit, SynHighlighterNQC,
+  SynCompletionProposal, SynEditEx;
 
 type
   TfrmMacroEditor = class(TForm)
@@ -43,7 +43,7 @@ implementation
 {$R *.DFM}
 
 uses
-  SynEditKeyCmds;
+  SysUtils, Graphics, SynEditKeyCmds, uCommonUtils;
 
 { TfrmMacroEditor }
 

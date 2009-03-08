@@ -3,7 +3,7 @@ unit FakeSpirit;
 interface
 
 uses
-  Classes, SysUtils, rcx_link, rcx_constants, Windows, uSpirit;
+  Classes, SysUtils, rcx_link, rcx_constants, uSpirit;
 
 type
   EMessageInvalid = class(Exception)
@@ -270,7 +270,7 @@ function GetRCXErrorString(iErrCode : Integer) : string;
 implementation
 
 uses
-  RcxLog, srecord, rcx_cmd, NQCSerial, Math;
+  RcxLog, srecord, rcx_cmd, NQCSerialWin, Math, uCommonUtils;
 
 function GetRCXErrorString(iErrCode : Integer) : string;
 begin
@@ -1490,7 +1490,7 @@ begin
     Result := Open;
     if Result then
     begin
-      Windows.Sleep(TowerExistsSleep); // sleep some milliseconds
+      OSSleep(TowerExistsSleep); // sleep some milliseconds
       val := fLink.Send(cmd.MakePing, 0, False);
       Result := (val <> kRCX_OpenSerialError) and (val <> kRCX_IREchoError);
       if not Result and (val <> kRCX_OpenSerialError) then
@@ -3178,6 +3178,7 @@ function TFakeSpirit.NXTGetDeviceInfo(var name: string;
 var
   cmd : TBaseCmd;
   len, i : integer;
+  addr : array[0..5] of Byte;
 begin
   Result := Open;
   if not Result then Exit;
@@ -3190,11 +3191,10 @@ begin
       Exit;
     end;
     name      := fLink.GetReplyString(0, 14);
-    BTAddress := '';
     for i := 0 to 5 do
-    begin
-      BTAddress := BTAddress + Format('%2.2x', [fLink.GetReplyByte(15+i)]);
-    end;
+      addr[i] := fLink.GetReplyByte(15+i);
+    BTAddress := Format('%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
+      [addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]]);
     BTSignal  := fLink.GetReplyCardinal(22);
     memFree   := fLink.GetReplyCardinal(26);
     Result := len >= kRCX_OK;

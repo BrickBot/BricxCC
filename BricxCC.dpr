@@ -46,7 +46,7 @@ uses
   CodeTemplates in 'CodeTemplates.pas' {frmCodeTemplates},
   uVersionInfo in 'uVersionInfo.pas',
   srecord in 'bricktools\srecord.pas',
-  NQCSerial in 'bricktools\NQCSerial.pas',
+  NQCStream in 'bricktools\NQCStream.pas',
   rcx_cmd in 'bricktools\rcx_cmd.pas',
   rcx_constants in 'bricktools\rcx_constants.pas',
   rcx_link in 'bricktools\rcx_link.pas',
@@ -113,7 +113,7 @@ begin
 
   if ParamSwitch('/NoNewMenuItems') then
     AddMenuItemsToNewMenu := False;
-    
+
   RegisterApp;
 
   // we need to check this switch first before we create the preferences form
@@ -122,6 +122,10 @@ begin
 
   if ParamSwitch('/PTO') then
     PingTimeout := StrToIntDef(ParamValue('/PTO'), K_DEFAULT_PING_TIMEOUT);
+    
+  //must be read before creating the SearchRCXForm
+  if ParamSwitch('/UserPath') then
+    UserDataLocalPath := IncludeTrailingPathDelimiter(ParamValue('/UserPath'));
 
   Application.CreateForm(TMainForm, MainForm);
   Application.CreateForm(TDirectForm, DirectForm);
@@ -175,8 +179,6 @@ begin
   CompilerDebug := ParamSwitch('/DEBUG');
   if ParamSwitch('/NT') then
     LocalCompilerTimeout := ParamIntValue('/NT', LocalCompilerTimeout) * K_MSTOSEC;
-  if ParamSwitch('/UserPath') then
-    UserDataLocalPath := IncludeTrailingPathDelimiter(ParamValue('/UserPath'));
   if ParamSwitch('/HELP') or ParamSwitch('/?') then
   begin
     ShowMessage('/RESET ' + #9#9 + '= ' + S_RESET + #13#10 +

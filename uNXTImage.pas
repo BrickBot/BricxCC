@@ -3,9 +3,8 @@ unit uNXTImage;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, Menus, uOfficeComp, ExtDlgs, ActnList, StdCtrls,
-  AviWriter;
+  Windows, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, Menus,
+  uOfficeComp, ExtDlgs, ActnList, StdCtrls, AviWriter;
 
 type
   TfrmNXTImage = class(TForm)
@@ -152,9 +151,9 @@ implementation
 {$R *.dfm}
 
 uses
-  Themes, Math, Clipbrd, JPEG, MMSystem, uGuiUtils, uSpirit, brick_common,
-  uNXTConstants, rcx_constants, pngimage, GIFImage, uRICImage, uNXTName,
-  uLocalizedStrings;
+  SysUtils, Themes, Math, Clipbrd, JPEG, MMSystem, uGuiUtils, uSpirit,
+  brick_common, uNXTConstants, rcx_constants, pngimage, GIFImage, uRICImage,
+  uNXTName, uLocalizedStrings;
 
 procedure TfrmNXTImage.tmrRefreshTimer(Sender: TObject);
 begin

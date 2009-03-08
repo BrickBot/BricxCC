@@ -4,7 +4,7 @@ unit MainUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Windows, Messages, Classes, Controls, Forms, Dialogs,
   StdCtrls, Menus, ComCtrls, OleCtrls, ToolWin, Buttons, ExtCtrls,
   Editor, SynEditHighlighter, SynHighlighterNQC, SynEditPrint,
   SynEditAutoComplete, SynCompletionProposal, SynEditPlugins,
@@ -626,7 +626,7 @@ implementation
 {$R *.DFM}
 
 uses
-  Themes, ClipBrd, ShellApi, Math,
+  SysUtils, Graphics, Themes, ClipBrd, ShellApi, Math,
   GotoLine, SearchRCX, Piano, About, Controller, Diagnose, Unlock, Watch,
   ExecProgram, ConstructUnit, CodeUnit, MessageUnit,
   JoystickUnit, DatalogUnit, MemoryUnit, RemoteUnit,
@@ -1393,7 +1393,7 @@ begin
     E.WindowState := wsNormal;
   E.Show;
   E.BringToFront;
-  Windows.SetFocus(E.Handle);
+  SetWindowFocus(E);
   if Assigned(E.Parent) then
   begin
     pagMain.ActivePage := TTabSheet(E.Parent);

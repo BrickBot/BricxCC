@@ -18,7 +18,7 @@ procedure FindNBCProcs(Timeout : Cardinal; MLexer : TNBCSimpleLexer; Proc : TNBC
 implementation
 
 uses
-  Windows, SysUtils;
+  SysUtils, uCommonUtils;
 
 procedure FindNBCProcs(Timeout : Cardinal; MLexer : TNBCSimpleLexer; Proc : TNBCProcessProc);
 var
@@ -30,7 +30,7 @@ var
   t: string;
   start : cardinal;
 begin
-  start := GetTickCount;
+  start := GetTick;
   bInProc := False;
   while not MLexer.AtEnd do
   begin
@@ -38,7 +38,7 @@ begin
       repeat
         MLexer.Next;
         t := MLexer.Token;
-        if (GetTickCount - start) > Timeout then Break;
+        if (GetTick - start) > Timeout then Break;
       until (not (MLexer.Id in [piSpace, piComment])) or MLexer.AtEnd;
     except
       Break;
@@ -79,7 +79,7 @@ begin
           ProcName := ProcName + '|' + t;
       end;
     end;
-    if (GetTickCount - start) > Timeout then Break;
+    if (GetTick - start) > Timeout then Break;
   end;
 end;
 

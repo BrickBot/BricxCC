@@ -100,7 +100,7 @@ Conditionals=FAST_MM, CAN_DOWNLOAD
 DebugSourceDirs=D:\BricxCC\NXT\;D:\bricxcc\bricktools\
 UsePackages=0
 [Parameters]
-RunParams=
+RunParams=/UserPath=D:\
 HostApplication=
 Launcher=
 UseLauncher=0

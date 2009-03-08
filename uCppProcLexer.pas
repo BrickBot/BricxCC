@@ -23,9 +23,7 @@ type
 implementation
 
 uses
-  Windows,
-  SysUtils,
-  mwBCBTokenList;
+  SysUtils, mwBCBTokenList;
 
 { TCppProcLexer }
 

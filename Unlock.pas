@@ -3,8 +3,7 @@ unit Unlock;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls;
+  Messages, Classes, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls;
 
 const
   CM_DOWNLOADFIRMWARE = WM_USER + 234;
@@ -46,7 +45,8 @@ implementation
 
 {$R *.DFM}
 
-uses MainUnit, FakeSpirit, Preferences, uSpirit, brick_common;
+uses
+  Windows, MainUnit, FakeSpirit, Preferences, uSpirit, brick_common;
 
 procedure TUnlockForm.FormShow(Sender: TObject);
 begin

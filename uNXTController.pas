@@ -3,8 +3,7 @@ unit uNXTController;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, StdCtrls, ComCtrls, uSpin;
+  Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls, uSpin;
 
 type
   TfrmNXTController = class(TForm)
@@ -53,6 +52,9 @@ var
 implementation
 
 {$R *.dfm}
+
+uses
+  Dialogs;
 
 procedure TfrmNXTController.edtPowerChange(Sender: TObject);
 begin

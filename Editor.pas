@@ -4,8 +4,8 @@ unit Editor;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, Menus, ImgList, BricxccSynEdit, SynEdit, ExtCtrls,
+  Messages, Classes, Graphics, Controls, Forms,
+  StdCtrls, ComCtrls, Menus, ImgList, SynEdit, ExtCtrls, BricxccSynEdit,
   SynEditHighlighter, SynEditRegexSearch, SynEditMiscClasses, SynEditSearch,
   SynEditEx, SynEditKeyCmds, uOfficeComp;
 
@@ -197,6 +197,7 @@ implementation
 {$R *.DFM}
 
 uses
+  Windows, SysUtils, Dialogs,
   MainUnit, Preferences, GotoLine, ConstructUnit, dlgSearchText,
   dlgReplaceText, dlgConfirmReplace, DTestPrintPreview, Translate, ClipBrd,
   CodeUnit, ExecProgram, SearchRCX, brick_common, FakeSpirit, uCodeExplorer, uMacroForm,

@@ -3,8 +3,8 @@ unit ConstructUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, Buttons, Menus, StdCtrls, uOfficeComp, ComCtrls, uTreeSaver;
+  Messages, Classes, Controls, Forms, ExtCtrls, StdCtrls,
+  ComCtrls, uOfficeComp, uTreeSaver;
 
 const
   WM_DODOCK = WM_USER + 400;
@@ -62,7 +62,8 @@ implementation
 {$R *.DFM}
 
 uses
-  Preferences, MainUnit, Editor, uLocalizedStrings;
+  SysUtils, Menus, Preferences, MainUnit, Editor, uLocalizedStrings,
+  uCommonUtils;
 
 const IMARGIN = 2;
       IHEIGHT = 16;
@@ -231,7 +232,7 @@ end;
 procedure TConstructForm.FormShow(Sender: TObject);
 begin
   if DockMe then
-    PostMessage(Self.Handle, WM_DODOCK, 0, 0);
+    PostWindowMessage(Self.Handle, WM_DODOCK, 0, 0);
   DockMe := False;
 end;
 

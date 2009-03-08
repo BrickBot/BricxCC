@@ -3,8 +3,7 @@ unit uMacroForm;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, uMacroLib, ComCtrls, uNewHotKey;
+  Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, uNewHotKey, uMacroLib;
 
 type
   TfrmMacroManager = class(TForm)
@@ -85,7 +84,7 @@ implementation
 {$R *.DFM}
 
 uses
-  uMacroEditor, uLocalizedStrings, uGuiUtils;
+  SysUtils, uMacroEditor, uLocalizedStrings, uGuiUtils;
 
 procedure TfrmMacroManager.btnBrowseClick(Sender: TObject);
 begin

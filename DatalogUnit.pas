@@ -3,8 +3,7 @@ unit DatalogUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls;
+  Classes, Controls, Forms, Dialogs, StdCtrls;
 
 type
   TDatalogForm = class(TForm)
@@ -45,7 +44,7 @@ implementation
 {$R *.DFM}
 
 uses
-  brick_common, DataAnalysis, Preferences;
+  SysUtils, brick_common, DataAnalysis, Preferences;
 
 procedure TDatalogForm.UploadBtnClick(Sender: TObject);
 var

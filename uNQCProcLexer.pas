@@ -16,7 +16,7 @@ type
 implementation
 
 uses
-  Windows, SysUtils, mwGenericLex;
+  SysUtils, mwGenericLex, uCommonUtils;
 
 { TNQCProcLexer }
 
@@ -42,14 +42,14 @@ begin
         MStream.LoadFromStream(Stream);
         Lex.Origin := MStream.Memory;
         Lex.EndPos := Stream.Size;
-        start := GetTickCount;
+        start := GetTick;
         while not Lex.AtEnd do
         begin
           try
             repeat
               Lex.Next;
               t := Lex.Token;
-              if (GetTickCount - start) > tOut then Break;
+              if (GetTick - start) > tOut then Break;
             until (not (Lex.Id in [piComment, piSpace])) or Lex.AtEnd;
           except
             Break;
@@ -86,7 +86,7 @@ begin
                 msg := msg + '|' + t;
             end;
           end;
-          if (GetTickCount - start) > tOut then Break;
+          if (GetTick - start) > tOut then Break;
         end;
       finally
         MStream.Free;

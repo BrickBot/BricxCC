@@ -7,7 +7,7 @@ function GetSDKRootPath : string;
 implementation
 
 uses
-  Windows, SysUtils, Registry;
+  SysUtils, Registry, uCommonUtils;
 
 function GetSDKRootPath : string;
 const

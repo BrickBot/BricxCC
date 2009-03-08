@@ -3,8 +3,7 @@ unit Controller;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, StdCtrls, ExtCtrls, Buttons;
+  Classes, Controls, Forms, ComCtrls, StdCtrls, ExtCtrls, Buttons;
 
 type
   TDirectForm = class(TForm)
@@ -116,7 +115,7 @@ implementation
 {$R *.DFM}
 
 uses
-  SearchRCX, brick_common, rcx_constants, uSources, uMiscDefines,
+  SysUtils, Dialogs, SearchRCX, brick_common, rcx_constants, uSources, uMiscDefines,
   uLocalizedStrings;
 
 var

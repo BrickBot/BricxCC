@@ -3578,6 +3578,12 @@ begin
     if (dt in NonAggregateTypes) and bIndexed then
     begin
       // get the indexed value
+      if dt = TOK_FLOATDEF then
+        StatementType := stFloat
+      else if not (dt in UnsignedIntegerTypes) then
+        StatementType := stSigned
+      else
+        StatementType := stUnsigned;
       push;
       aval := tos;
       EmitLn(Format('index %s, %s, %s',[aval, GetDecoratedIdent(name), tmp]));
@@ -4626,7 +4632,14 @@ var
       begin
         fCalc.SilentExpression := tmpExpr;
         if not fCalc.ParserError then
-          tmpExpr := IntToStr(Trunc(fCalc.Value))
+        begin
+          if ArrayBaseType(dt) = TOK_FLOATDEF then
+          begin
+            tmpExpr := FloatToStr(fCalc.Value);
+          end
+          else
+            tmpExpr := IntToStr(Trunc(fCalc.Value))
+        end
         else
           AbortMsg(sInvalidConstExpr);
         Result := Result + tmpExpr + Value;

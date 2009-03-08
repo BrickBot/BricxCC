@@ -3,8 +3,8 @@ unit uChartConfig;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, Chart, TeeProcs, TeEngine, Series;
+  Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, ExtCtrls, Chart,
+  TeeProcs, TeEngine, Series;
 
 type
   TfrmChartConfig = class(TForm)
@@ -278,7 +278,7 @@ implementation
 {$R *.DFM}
 
 uses
-  TeCanvas;
+  SysUtils, Graphics, TeCanvas;
 
 { TfrmChartConfig }
 

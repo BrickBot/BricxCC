@@ -3,8 +3,7 @@ unit CodeUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, SynEdit, Menus, uOfficeComp;
+  Classes, Controls, Forms, StdCtrls, ComCtrls, SynEdit, Menus, uOfficeComp;
 
 type
   TCodeForm = class(TForm)
@@ -41,7 +40,7 @@ implementation
 {$R *.DFM}
 
 uses
-  Editor, uLocalizedStrings;
+  Graphics, Editor, uLocalizedStrings, uCommonUtils;
 
 procedure TCodeForm.lmiEditCopyClick(Sender: TObject);
 begin

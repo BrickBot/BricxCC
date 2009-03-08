@@ -5,15 +5,7 @@ unit SynHighlighterNBC;
 interface
 
 uses
-  SysUtils,
   Classes,
-{$IFNDEF FPC}
-  Windows,
-  Messages,
-  Registry,
-{$ENDIF}
-  Controls,
-  Graphics,
   SynEditHighlighter,
   SynHighlighterHashEntries,
   SynEditTypes;
@@ -115,6 +107,8 @@ procedure LoadNXCConstants(aItems : TStrings);
 implementation
 
 uses
+  SysUtils,
+  Graphics,
   SynEditStrConst;
 
 const

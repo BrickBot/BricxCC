@@ -5,9 +5,9 @@ unit Preferences;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  Menus, StdCtrls, ComCtrls, ExtCtrls, Buttons, ColorGrd, SynEditHighlighter,
-  SynHighlighterNQC, SynEdit, SynEditKeyCmds, Registry,
+  Classes, Graphics, Controls, Forms, Dialogs,
+  Menus, StdCtrls, ComCtrls, ExtCtrls, Buttons, ColorGrd, Registry,
+  SynEditHighlighter, SynHighlighterNQC, SynEdit, SynEditKeyCmds,
   SynHighlighterForth, SynHighlighterCpp, SynHighlighterJava,
   SynHighlighterCS, SynHighlighterMindScript, SynHighlighterLua,
   SynHighlighterLASM, SynHighlighterPas, uParseCommon, uNewHotKey,
@@ -777,7 +777,7 @@ const
 implementation
 
 uses
-  MainUnit, Diagnose, Controller, Watch, Piano, ConstructUnit,
+  Windows, SysUtils, MainUnit, Diagnose, Controller, Watch, Piano, ConstructUnit,
   JoystickUnit, DatalogUnit, MemoryUnit, CodeUnit, Editor,
   MessageUnit, SynEditKeyCmdsEditor, IniFiles, CodeTemplates,
   uVersionInfo, uHighlighterProcs, uExtensionDlg, {ActiveX, ShlObj,}
@@ -856,6 +856,29 @@ const
     '%.bin: %.class $(DOBJECTS)' + #13#10 +
     #9'$(LEJOS) $* -o $@' + #13#10;
   K_MAX_OLD_PATHS = 4;
+
+const
+{$IFDEF FPC}
+  K_EDITOR_FONTNAME_DEFAULT = 'Courier 10 Pitch';
+  K_EDITOR_COLOR_DEFAULT    = clWhite;
+  K_SEL_FG_COLOR_DEFAULT    = clWhite;
+  K_SEL_BG_COLOR_DEFAULT    = clNavy;
+  K_ALINE_COLOR_DEFAULT     = clWhite;
+  K_REDGE_COLOR_DEFAULT     = clSilver;
+  K_STRUCT_COLOR_DEFAULT    = clNone;
+  K_GUTTER_COLOR_DEFAULT    = clSilver;
+  K_USEINTERNALNBC_DEFAULT  = True;
+{$ELSE}
+  K_EDITOR_FONTNAME_DEFAULT = 'Courier New';
+  K_EDITOR_COLOR_DEFAULT    = clWindow;
+  K_SEL_FG_COLOR_DEFAULT    = clHighlightText;
+  K_SEL_BG_COLOR_DEFAULT    = clHighlight;
+  K_ALINE_COLOR_DEFAULT     = clWindow;
+  K_REDGE_COLOR_DEFAULT     = clSilver;
+  K_STRUCT_COLOR_DEFAULT    = clNone;
+  K_GUTTER_COLOR_DEFAULT    = clBtnFace;
+  K_USEINTERNALNBC_DEFAULT  = False;
+{$ENDIF}
 
 var
   fMainKey : string = K_MAINKEY;
@@ -2491,7 +2514,7 @@ begin
     ColorCoding         := Reg_ReadBool(reg, 'ColorCoding', true);
     ShowTemplateForm    := Reg_ReadBool(reg, 'ShowTemplateForm', true);
     ShowTemplatePopup   := Reg_ReadBool(reg, 'ShowTemplatePopup', false);
-    FontName            := Reg_ReadString(reg, 'FontName', 'Courier New');
+    FontName            := Reg_ReadString(reg, 'FontName', K_EDITOR_FONTNAME_DEFAULT);
     FontSize            := Reg_ReadInteger(reg, 'FontSize', 9);
     AutoIndentCode      := Reg_ReadBool(reg, 'AutoIndentCode', true);
     MacrosOn            := Reg_ReadBool(reg, 'MacrosOn', false);
@@ -2517,12 +2540,12 @@ begin
     HighlightCurLine    := Reg_ReadBool(reg, 'HighlightCurLine', false);
     KeepCaretX          := Reg_ReadBool(reg, 'KeepCaretX', false);
     AutoMaxLeft         := Reg_ReadBool(reg, 'AutoMaxLeft', false);
-    RightEdgeColor      := Reg_ReadColor(reg, 'RightEdgeColor', clSilver);
-    EditorColor         := Reg_ReadColor(reg, 'EditorColor', clWindow);
-    SelectionForeground := Reg_ReadColor(reg, 'SelectionFG', clHighlightText);
-    SelectionBackground := Reg_ReadColor(reg, 'SelectionBG', clHighlight);
-    StructureColor      := Reg_ReadColor(reg, 'StructureColor', clNone);
-    ActiveLineColor     := Reg_ReadColor(reg, 'ActiveLineColor', clWindow);
+    RightEdgeColor      := Reg_ReadColor(reg, 'RightEdgeColor', K_REDGE_COLOR_DEFAULT);
+    EditorColor         := Reg_ReadColor(reg, 'EditorColor', K_EDITOR_COLOR_DEFAULT);
+    SelectionForeground := Reg_ReadColor(reg, 'SelectionFG', K_SEL_FG_COLOR_DEFAULT);
+    SelectionBackground := Reg_ReadColor(reg, 'SelectionBG', K_SEL_BG_COLOR_DEFAULT);
+    StructureColor      := Reg_ReadColor(reg, 'StructureColor', K_STRUCT_COLOR_DEFAULT);
+    ActiveLineColor     := Reg_ReadColor(reg, 'ActiveLineColor', K_ALINE_COLOR_DEFAULT);
   finally
     reg.CloseKey;
   end;
@@ -2614,7 +2637,7 @@ begin
     NQCExePath              := Reg_ReadString(reg, 'NQCExePath', '');
     LCCExePath              := Reg_ReadString(reg, 'LCCExePath', '');
     NBCExePath              := Reg_ReadString(reg, 'NBCExePath', '');
-    UseInternalNBC          := Reg_ReadBool(reg, 'UseInternalNBC', False);
+    UseInternalNBC          := Reg_ReadBool(reg, 'UseInternalNBC', K_USEINTERNALNBC_DEFAULT);
     EnhancedFirmware        := Reg_ReadBool(reg, 'EnhancedFirmware', False);
     NXT2Firmware            := Reg_ReadBool(reg, 'NXT2Firmware', False);
     IgnoreSysFiles          := Reg_ReadBool(reg, 'IgnoreSysFiles', False);
@@ -2706,7 +2729,7 @@ procedure LoadGutterValues(reg : TRegistry);
 begin
   Reg_OpenKey(reg, 'Gutter');
   try
-    GutterColor      := Reg_ReadColor(reg, 'GutterColor', clBtnFace);
+    GutterColor      := Reg_ReadColor(reg, 'GutterColor', K_GUTTER_COLOR_DEFAULT);
     GutterWidth      := Reg_ReadInteger(reg, 'GutterWidth', 30);
     DigitCount       := Reg_ReadInteger(reg, 'DigitCount', 4);
     LeftOffset       := Reg_ReadInteger(reg, 'LeftOffset', 16);

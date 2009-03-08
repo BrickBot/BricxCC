@@ -3,7 +3,7 @@ unit uMacroLib;
 interface
 
 uses
-  SysUtils, Classes, ActnList, SynMacroRecorder, SynEdit;
+  Classes, ActnList, SynMacroRecorder, SynEdit;
 
 type
   TMacroItem = class(TCollectionItem)
@@ -73,14 +73,14 @@ type
 implementation
 
 uses
-  Windows, uLocalizedStrings;
+  SysUtils, uLocalizedStrings;
 
 { TMacroItem }
 
 constructor TMacroItem.Create(Collection: TCollection);
 begin
   if not (Collection is TMacroLibrary) then
-    Exception.Create('Macro Items can only be contained in a Macro Library container');
+    raise Exception.Create('Macro Items can only be contained in a Macro Library container');
   inherited Create(Collection);
   FName        := Format('Macro%d', [Collection.Count]);
   FDescription := '';
@@ -200,7 +200,7 @@ procedure TMacroLibrary.LoadFromStream(aStream: TStream);
     aStream.Read(Len, sizeof(Len));
     GetMem(Buf, Len+1);
     try
-      FillMemory(Buf, Len+1, 0);
+      FillChar(Buf^, Len+1, 0);
       aStream.Read(Buf^, Len);
       Result := Buf;
     finally

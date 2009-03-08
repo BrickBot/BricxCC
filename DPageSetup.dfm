@@ -5,7 +5,7 @@ object PageSetupDlg: TPageSetupDlg
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Page Setup'
-  ClientHeight = 397
+  ClientHeight = 394
   ClientWidth = 632
   Color = clBtnFace
   ParentFont = True
@@ -20,7 +20,7 @@ object PageSetupDlg: TPageSetupDlg
     Left = 0
     Top = 0
     Width = 632
-    Height = 397
+    Height = 394
     ActivePage = Margins
     Align = alClient
     TabOrder = 2

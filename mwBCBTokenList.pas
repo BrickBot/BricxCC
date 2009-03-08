@@ -18,8 +18,6 @@ unit mwBCBTokenList;
 
 interface
 
-uses Windows, SysUtils;
-
 type
   TCTokenKind = (ctkapostrophe, ctk_CHAR_UNSIGNED, ctk_CPPUNWIND, ctk_M_IX86, ctk_WCHAR_T,
     ctk_WCHAR_T_DEFINED, ctk_Windows, ctk__BCOPT__, ctk__BCPLUSPLUS__,
@@ -191,6 +189,9 @@ const
     ctkdirinclude, ctkdirline, ctkdirnull, ctkdirpragma, ctkdirundef];
 
 implementation
+
+uses
+  SysUtils;
 
 constructor TLongIntList.Create;
 begin

@@ -668,13 +668,13 @@ begin
     if origFileList.Count > 0 then
     begin
       // upload all files
-      Result := NXTUploadFile('*.*');
+      Result := NXTUploadFile('*.*', UserDataLocalPath);
       if Result then
       begin
         // in theory we have all the files in our list now
         // let's just quickly make sure.
         for i := 0 to origFileList.Count - 1 do begin
-          if not FileExists(origFileList.Names[i]) then
+          if not FileExists(UserDataLocalPath + origFileList.Names[i]) then
           begin
             // do something clever here???
             Result := False;
@@ -693,7 +693,7 @@ begin
           // now download these files in order
           for i := 0 to origFileList.Count - 1 do begin
             filename := origFileList.Names[i];
-            Result := NXTDownloadFile(filename, NameToNXTFileType(filename));
+            Result := NXTDownloadFile(UserDataLocalPath + filename, NameToNXTFileType(filename));
             if not Result then begin
               // do something clever here
               Exit;
@@ -703,7 +703,7 @@ begin
           // it is safe to delete them from the PC
           for i := 0 to origFileList.Count - 1 do begin
             // delete files locally
-            Result := SysUtils.DeleteFile(origFileList.Names[i]);
+            Result := SysUtils.DeleteFile(UserDataLocalPath + origFileList.Names[i]);
           end;
         end;
       end;

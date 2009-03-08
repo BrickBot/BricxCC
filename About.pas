@@ -3,8 +3,7 @@ unit About;
 interface
 
 uses
-  Windows, SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
-  Buttons, ExtCtrls;
+  Classes, Graphics, Forms, Controls, StdCtrls, Buttons, ExtCtrls;
 
 type
   TAboutBox = class(TForm)
@@ -32,7 +31,7 @@ type
 implementation
 
 uses
-  PuzzleUnit, uVersionInfo, uLocalizedStrings;
+  SysUtils, PuzzleUnit, uVersionInfo, uLocalizedStrings;
 
 {$R *.DFM}
 

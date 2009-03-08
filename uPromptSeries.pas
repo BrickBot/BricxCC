@@ -3,8 +3,7 @@ unit uPromptSeries;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Chart;
+  Classes, Controls, Forms, StdCtrls, Chart;
 
 type
   TfrmSeriesPrompt = class(TForm)
