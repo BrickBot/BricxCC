@@ -3967,6 +3967,10 @@ begin
       end;
       // Preprocess returns a list of files from #download statements
       Result := P.Preprocess(GetCurrentFile(true), aStrings);
+      for i := 0 to P.Warnings.Count - 1 do
+      begin
+        ReportProblem(StrToIntDef(P.Warnings.Names[i], 0), GetCurrentFile(true), '', P.Warnings.ValueFromIndex[i], false);
+      end;
     finally
       P.Free;
     end;

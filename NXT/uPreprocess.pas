@@ -39,6 +39,7 @@ type
 
   TLangPreprocessor = class
   private
+    fWarnings : TStrings;
     fCalc : TNBCExpParser;
     fIncludeFilesToSkip : TStrings;
     IncludeDirs : TStringList;
@@ -89,6 +90,7 @@ type
     procedure AddIncludeDirs(aStrings : TStrings);
     property Defines : TMapList read GetDefines;
     property AddPoundLineToMultiLineMacros : boolean read fAddPoundLine write fAddPoundLine;
+    property Warnings : TStrings read fWarnings;
   end;
 
 implementation
@@ -162,6 +164,7 @@ var
   Strings : TStringList;
 begin
 //  MacroDefs.Clear;
+  fWarnings.Clear;
   fLevelIgnore.Clear;
   IncludeDirs.Add(ExtractFilePath(fname));
   fLevelIgnore.Add(TProcessLevel.Create); // level zero is NOT ignored
@@ -402,7 +405,27 @@ begin
              ((i = 1) and (prevToken <> '')) then
             Break;
           if i > 1 then
-            MacroFuncArgs.AddEntry(Copy(dirText, 1, i-1), prevToken);
+          begin
+            tmp := Copy(dirText, 1, i-1);
+            if tmp = '...' then
+            begin
+              tmp := '__VA_ARGS__';
+              // now collect the rest of the tokens all the way up to the ')'
+              while not (((Lex.Id = piSymbol) and
+                          (((nestLevel <= 0) and (Lex.Token = ')'))))) do
+              begin
+                prevToken := prevToken + Lex.Token;
+                if Lex.Token = '(' then
+                  inc(nestLevel)
+                else if Lex.Token = ')' then
+                  dec(nestLevel);
+                Lex.Next;
+                if Lex.AtEnd then break;
+              end;
+              prevToken := TrimRight(prevToken); // trim any whitespace
+            end;
+            MacroFuncArgs.AddEntry(tmp, prevToken);
+          end;
           Delete(dirText, 1, i);
           // skip whitespace following each arg instance
           SkipWhitespace(Lex, linesSkipped);
@@ -479,6 +502,10 @@ var
         begin
           dirText := dirText + prevToken + ','; // add argument
         end
+        else if (prevId = piSymbol) and (prevToken = '...') then
+        begin
+          dirText := dirText + prevToken + ','; // add argument
+        end
         else if (prevId = piSymbol) and (prevToken = ')') then
         begin
           Delete(dirText, Length(dirText), 1); // remove last character
@@ -543,6 +570,14 @@ begin
       HandleDefinition;
     end;
     dirText := Trim(dirText) + TrimTrailingSpaces(TrimLeft(macroVal));
+    // check for macro definition
+    i := MacroDefs.IndexOf(macro);
+    if i <> -1 then
+    begin
+      fWarnings.Add(IntToStr(lineNo) + '=Macro "' + macro + '" redefined');
+      // now remove the previous declaration
+      MacroDefs.Delete(i);
+    end;
     MacroDefs.AddEntry(macro, dirText);
   end;
 end;
@@ -940,6 +975,7 @@ begin
   inherited Create;
   fAddPoundLine := False;
   fGLC := GLType;
+  fWarnings := TStringList.Create;
   IncludeDirs := TStringList.Create;
   IncludeDirs.Add(defIncDir);
   MacroDefs := TMapList.Create;
@@ -975,6 +1011,7 @@ begin
   FreeAndNil(fIncludeFilesToSkip);
   FreeAndNil(fCalc);
   FreeAndNil(fLexers);
+  FreeAndNil(fWarnings);
   inherited;
 end;
 

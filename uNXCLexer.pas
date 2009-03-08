@@ -256,6 +256,21 @@ begin
   OptPat.Min := 1;
   Pat.AddOption(OptPat);
 
+  { Symbol (VA_ARGS), Symbol (period)}
+  Pat := TAny.Create(nil);
+  Pat.Key:= '...';
+  Pat.Id:= piSymbol;
+  Pat.Min:= 1;
+  TAlphaNumeric.Create(Pat);
+  Lex.Add(Pat);
+  OptPat := TAny.Create(nil);
+  OptPat.Key := '.';
+  OptPat.Id:= piSymbol;
+  OptPat.Min:= 1;
+  Pat.AddOption(OptPat);
+  TAlphaNumeric.Create(OptPat);
+  Pat.AddOption(TIdentifier.Create(nil));
+
   { Directive, Identifier}
   Pat := TAny.Create(nil);
   Pat.Key:= '#include';

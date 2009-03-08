@@ -6345,6 +6345,7 @@ end;
 procedure TNXCComp.PreProcess;
 var
   P : TLangPreprocessor;
+  i : integer;
 begin
   P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)));
   try
@@ -6360,6 +6361,10 @@ begin
       P.SkipIncludeFile('NXCDefs.h');
     end;
     P.Preprocess(CurrentFile, fMS);
+    for i := 0 to P.Warnings.Count - 1 do
+    begin
+      ReportProblem(StrToIntDef(P.Warnings.Names[i], 0), CurrentFile, P.Warnings.ValueFromIndex[i], false);
+    end;
   finally
     P.Free;
   end;
