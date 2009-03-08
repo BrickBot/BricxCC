@@ -5,8 +5,8 @@
 // Copyright (C) 2009 - John Hansen. All rights reserved.
 //
 // Workfile:: NBCCommon.h
-// Date:: 2009-03-07
-// Revision:: 25
+// Date:: 2009-03-08
+// Revision:: 26
 //
 //------------------------------------------------------------------------------
 //
@@ -345,7 +345,7 @@
 #define UpdateCalibCacheInfo   43
 #define DatalogWrite           44
 #define DatalogGetTimes        45
-#define SetSleepTimeout        46
+#define SetSleepTimeoutVal     46
 #define ListFiles              47
 
 #ifdef __ENHANCED_FIRMWARE
