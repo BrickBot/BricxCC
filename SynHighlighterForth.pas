@@ -41,13 +41,7 @@ unit SynHighlighterForth;
 interface
 
 uses
-  SysUtils,
   Classes,
-{$IFNDEF FPC}
-  Windows,
-{$ENDIF}
-  Controls,
-  Graphics,
   SynEditTypes,
   SynEditHighlighter;
 
@@ -345,6 +339,8 @@ type
 implementation
 
 uses
+  SysUtils,
+  Graphics,
   SynEditStrConst;
 
 type

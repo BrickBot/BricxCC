@@ -26,7 +26,7 @@ procedure FindMindscriptProcs(Timeout : Cardinal; MLexer : TMindScriptLexer;
 implementation
 
 uses
-  Windows, SysUtils, mwGenericLex;
+  SysUtils, mwGenericLex, uCommonUtils;
 
 procedure FindMindscriptProcs(Timeout : Cardinal; MLexer : TMindScriptLexer; Proc : TMindscriptProcessProc);
 var
@@ -38,7 +38,7 @@ var
   t, lt: string;
   start : cardinal;
 begin
-  start := GetTickCount;
+  start := GetTick;
   bInProc := False;
   while not MLexer.AtEnd do
   begin
@@ -93,7 +93,7 @@ begin
           ProcName := ProcName + '|' + t;
       end;
     end;
-    if (GetTickCount - start) > Timeout then Break;
+    if (GetTick - start) > Timeout then Break;
   end;
 end;
 

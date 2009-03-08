@@ -3,9 +3,9 @@ unit uForthConsole;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, SynEdit, SynTerm, ImgList, ComCtrls, ToolWin, ActnList, Menus,
-  SynEditEx, BricxccSynEdit, ExtCtrls, uOfficeComp;
+  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, ImgList,
+  ToolWin, ActnList, Menus, uOfficeComp, SynEdit, SynTerm, SynEditEx,
+  BricxccSynEdit;
 
 type
   TfrmForthConsole = class(TForm)
@@ -71,8 +71,8 @@ var
 implementation
 
 uses
-  MainUnit, brick_common, Preferences, rcx_link, CPDrv, Themes,
-  uGuiUtils;
+  SysUtils, Themes, CPDrv, MainUnit, Preferences, rcx_link, brick_common,  
+  uGuiUtils, uCommonUtils;
 
 {$R *.DFM}
 

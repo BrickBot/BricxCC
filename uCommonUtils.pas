@@ -5,6 +5,16 @@ interface
 uses
   Classes;
 
+const
+  DEFAULT_CHARSET = 1;
+  SW_SHOWMINNOACTIVE = 7;
+  HKEY_CLASSES_ROOT  = LongWord($80000000);
+  HKEY_CURRENT_USER  = LongWord($80000001);
+  HKEY_LOCAL_MACHINE = LongWord($80000002);
+
+type
+  HWND = type LongWord;
+
 type
   TWaveFormatEx = packed record
     wFormatTag: Word;         { format type }
@@ -50,10 +60,18 @@ function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0)
 //function BytesToCardinal(b : array of byte) : Cardinal; overload;
 procedure GetFileList(const Directory : string; const Pattern : string; List : TStringlist);
 procedure GetSubDirectories(const Directory : string; List : TStringlist);
+procedure OSSleep(const ms : Cardinal);
+function GetTick : Cardinal;
+function GetWindowTitleBarHeight : integer;
+procedure PostWindowMessage(aHwnd : HWND; aMsg : Cardinal; wParam, lParam : Integer);
+function MulDiv(const x, num, den : integer) : integer;
 
 implementation
 
 uses
+{$IFNDEF FPC}
+  Windows,
+{$ENDIF}
   SysUtils;
 
 procedure WriteWordToStream(aStream : TStream; value : Word; bLittleEndian : Boolean);
@@ -205,6 +223,47 @@ begin
   else
     Result := 0;
   end;
+end;
+
+procedure OSSleep(const ms : Cardinal);
+begin
+{$IFDEF FPC}
+// not sure what to do here yet
+{$ELSE}
+  Windows.Sleep(ms);
+{$ENDIF}
+end;
+
+function GetTick : Cardinal;
+begin
+{$IFDEF FPC}
+  Result := 0;
+{$ELSE}
+  Result := GetTickCount;
+{$ENDIF}
+end;
+
+function GetWindowTitleBarHeight : integer;
+begin
+{$IFDEF FPC}
+  Result := 0;
+{$ELSE}
+  Result := GetSystemMetrics(SM_CYCAPTION);
+{$ENDIF}
+end;
+
+procedure PostWindowMessage(aHwnd : HWND; aMsg : Cardinal; wParam, lParam : Integer);
+begin
+{$IFDEF FPC}
+//  ;
+{$ELSE}
+  PostMessage(aHwnd, aMsg, wParam, lParam);
+{$ENDIF}
+end;
+
+function MulDiv(const x, num, den : integer) : integer;
+begin
+  Result := (x * num) div den;
 end;
 
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;

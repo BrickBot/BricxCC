@@ -3,8 +3,7 @@ unit uSetLNPAddress;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, uSpin;
+  Classes, Controls, Forms, StdCtrls, uSpin;
 
 type
   TfrmSetLNPAddress = class(TForm)
@@ -27,7 +26,8 @@ implementation
 {$R *.DFM}
 
 uses
-  Editor, brick_common, ExecProgram, Preferences, MainUnit, uLocalizedStrings;
+  SysUtils, Dialogs, Editor, brick_common, ExecProgram, Preferences, MainUnit,
+  uLocalizedStrings, uCommonUtils;
 
 const
   M_NAME = 'SetLNP.mak';

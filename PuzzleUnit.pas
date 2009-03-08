@@ -3,8 +3,7 @@ unit PuzzleUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls;
+  Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls;
 
 type
   TPuzzleForm = class(TForm)
@@ -27,7 +26,7 @@ implementation
 
 {$R *.DFM}
 
-var bezig:bool;            { Busy playing }
+var bezig : boolean;            { Busy playing }
 
 var veld: array[1..4,1..4] of integer;
     xempty,yempty:integer;
@@ -66,7 +65,7 @@ begin
   end;
 end;
 
-function DoeZet(x,y:integer):bool;
+function DoeZet(x,y:integer):boolean;
 {Doet een zet op vakje (x,y). Geeft terug of dat lukte.}
 var i:integer;
 begin
@@ -94,7 +93,7 @@ begin
   end;
 end;
 
-function IsKlaar:bool;
+function IsKlaar:boolean;
 {Check of het klaar is}
 var i,j:integer;
 begin

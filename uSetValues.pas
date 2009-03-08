@@ -3,8 +3,7 @@ unit uSetValues;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, StdCtrls;
+  Classes, Controls, Forms, ComCtrls, StdCtrls;
 
 type
   TfrmSetValues = class(TForm)
@@ -48,7 +47,7 @@ implementation
 {$R *.DFM}
 
 uses
-  Preferences, uSources, brick_common, uMiscDefines;
+  SysUtils, Preferences, uSources, brick_common, uMiscDefines;
 
 procedure TfrmSetValues.cboSourceChange(Sender: TObject);
 begin

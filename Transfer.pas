@@ -3,8 +3,7 @@ unit Transfer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, Buttons;
+  Classes, Controls, Forms, StdCtrls, Buttons;
 
 type
   TfrmTransferDlg = class(TForm)
@@ -49,7 +48,7 @@ implementation
 {$R *.DFM}
 
 uses
-  Transdlg, Preferences, uLocalizedStrings;
+  SysUtils, Dialogs, Transdlg, Preferences, uLocalizedStrings;
 
 procedure TfrmTransferDlg.FormCreate(Sender: TObject);
 begin

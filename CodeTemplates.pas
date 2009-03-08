@@ -3,8 +3,7 @@ unit CodeTemplates;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  GX_IDECodeTemplates, StdCtrls, Grids, Math;
+  Classes, Controls, Forms, Dialogs, GX_IDECodeTemplates, StdCtrls, Grids;
 
 type
   TfrmCodeTemplates = class(TForm)
@@ -57,7 +56,7 @@ implementation
 {$R *.DFM}
 
 uses
-  EditCodeTemplate;
+  EditCodeTemplate, Math;
 
 procedure TfrmCodeTemplates.FormCreate(Sender: TObject);
 begin

@@ -3,8 +3,7 @@ unit MessageUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, StdCtrls, ExtCtrls, uSpin;
+  Classes, Controls, Forms, ComCtrls, StdCtrls, ExtCtrls, uSpin;
 
 type
   TMessageForm = class(TForm)
@@ -53,7 +52,7 @@ var
 implementation
 
 uses
-  Preferences, brick_common, uSpirit;
+  SysUtils, Preferences, brick_common, uSpirit, uCommonUtils;
 
 {$R *.DFM}
 
@@ -120,10 +119,10 @@ begin
     400 : begin
       SetLength(Result, 4);
       tag := edtNum.Value;
-      Result := Chr(LoByte(LoWord(tag))) +
-                Chr(HiByte(LoWord(tag))) +
-                Chr(LoByte(HiWord(tag))) +
-                Chr(HiByte(HiWord(tag)));
+      Result := Chr(Lo(Word(tag))) +
+                Chr(Hi(Word(tag))) +
+                Chr(Lo(HiWord(tag))) +
+                Chr(Hi(HiWord(tag)));
     end;
   else
     Result := 'bad tag';

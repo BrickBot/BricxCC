@@ -3,8 +3,7 @@ unit JoystickUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, ComCtrls, Buttons;
+  Classes, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls, Buttons;
 
 type
   TJoystickForm = class(TForm)
@@ -75,8 +74,8 @@ implementation
 {$R *.DFM}
 
 uses
-  MMSystem, Preferences, brick_common, SearchRCX, MainUnit, uSpirit,
-  uLocalizedStrings;
+  Windows, SysUtils, Dialogs, MMSystem, Preferences, brick_common,
+  SearchRCX, MainUnit, uSpirit, uLocalizedStrings;
 
 var oldldir:integer =100;                   // previous left motor direction
     oldrdir:integer =100;                   // previous right motor direction

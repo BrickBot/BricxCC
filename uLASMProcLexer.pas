@@ -23,7 +23,7 @@ procedure FindLASMProcs(Timeout : Cardinal; MLexer : TLASMLexer; Proc : TLASMPro
 implementation
 
 uses
-  Windows, SysUtils, mwGenericLex;
+  SysUtils, mwGenericLex, uCommonUtils;
 
 procedure FindLASMProcs(Timeout : Cardinal; MLexer : TLASMLexer; Proc : TLASMProcessProc);
 var
@@ -35,7 +35,7 @@ var
   t, lt: string;
   start : cardinal;
 begin
-  start := GetTickCount;
+  start := GetTick;
   bInProc := False;
   while not MLexer.AtEnd do
   begin
@@ -81,7 +81,7 @@ begin
           ProcName := ProcName + '|' + t;
       end;
     end;
-    if (GetTickCount - start) > Timeout then Break;
+    if (GetTick - start) > Timeout then Break;
   end;
 end;
 

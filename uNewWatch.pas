@@ -3,8 +3,8 @@ unit uNewWatch;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, DataAnalysis, ComCtrls;
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls,
+  DataAnalysis;
 
 type
   TVarControls = record
@@ -75,8 +75,8 @@ implementation
 {$R *.DFM}
 
 uses
-  SearchRCX, Preferences, uMiscDefines, brick_common, rcx_constants, uSources,
-  uLocalizedStrings;
+  SysUtils, Graphics, Dialogs, SearchRCX, Preferences, uMiscDefines,
+  brick_common, rcx_constants, uSources, uLocalizedStrings, uCommonUtils;
 
 var
   busy : boolean = false;
@@ -316,7 +316,7 @@ begin
     Width  := Trunc(154 * scale_amount);
     Height := Trunc(21 * scale_amount);
     AutoSize     := False;
-    Font.Charset := ANSI_CHARSET;
+    Font.Charset := DEFAULT_CHARSET;
     Font.Color   := clWindowText;
     Font.Height  := -12;
     Font.Name    := 'Courier New';

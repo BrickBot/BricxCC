@@ -3,9 +3,8 @@ unit uExplorerOptions;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, CheckListState, ComCtrls, ImgList, ExtCtrls,
-  uParseCommon;
+  Classes, Controls, Forms, Dialogs, StdCtrls, CheckListState, ComCtrls,
+  ImgList, ExtCtrls, uParseCommon;
 
 type
   TfrmExplorerOptions = class(TForm)
@@ -52,7 +51,7 @@ var
 implementation
 
 uses
-  uLocalizedStrings;
+  Graphics, uLocalizedStrings;
 
 {$R *.DFM}
 

@@ -1,4 +1,4 @@
-unit NQCSerial;
+unit NQCSerialWin;
 
 interface
 
@@ -353,7 +353,6 @@ begin
   end
   else
   begin
-//    fTimeoutValue := timeout_ms;
     if LegoTowerApiLoaded then
     begin
       if timeout_ms = 0 then

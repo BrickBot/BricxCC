@@ -3,8 +3,7 @@ unit Watch;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, Buttons, DataAnalysis, uSpin;
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, DataAnalysis, uSpin;
 
 type
   TVarControls = record
@@ -242,8 +241,8 @@ implementation
 {$R *.DFM}
 
 uses
-  SearchRCX, Preferences, brick_common, rcx_constants, uSpirit,
-  uLocalizedStrings;
+  SysUtils, Dialogs, SearchRCX, Preferences, brick_common, rcx_constants, uSpirit,
+  uLocalizedStrings, uCommonUtils;
 
 function GetMotorData(numb : integer) : string;
 var
@@ -307,12 +306,12 @@ begin
   BrickComm.NXTLowSpeed[port] := LSBlock;
   if edtLen.Value > 0 then
   begin
-    tick := GetTickCount;
+    tick := GetTick;
     bytesReady := 0;
     while bytesReady = 0 do
     begin
       BrickComm.LSGetStatus(port, bytesReady);
-      if (GetTickCount - tick) > 50 then break;
+      if (GetTick - tick) > 50 then break;
     end;
     if bytesReady > 0 then
     begin

@@ -41,13 +41,7 @@ unit SynHighlighterMindScript;
 interface
 
 uses
-  SysUtils,
   Classes,
-{$IFNDEF FPC}
-  Windows,
-{$ENDIF}
-  Controls,
-  Graphics,
   SynEditTypes,
   SynEditHighlighter;
 
@@ -230,6 +224,8 @@ type
 implementation
 
 uses
+  SysUtils,
+  Graphics,
   SynEditStrConst;
 
 {$IFDEF SYN_COMPILER_3_UP}

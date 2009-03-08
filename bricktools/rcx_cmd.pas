@@ -3,7 +3,7 @@ unit rcx_cmd;
 interface
 
 uses
-  Classes, SysUtils, rcx_constants;
+  Classes, rcx_constants;
   
 const
   kRCX_Cmd_MaxShortLength	= 8;
@@ -131,6 +131,9 @@ type
 function RCX_VALUE(t : TRcxValueType; d : smallint) : integer;
 
 implementation
+
+uses
+  SysUtils, uCommonUtils;
 
 function RCX_VALUE(t : TRcxValueType; d : smallint) : integer;
 begin
@@ -645,16 +648,6 @@ begin
     inc(orig);
   end;
   Result := Self;
-end;
-
-function HiWord(L: Cardinal): Word;
-begin
-  Result := Word(L shr 16);
-end;
-
-function HiByte(W: Word): Byte;
-begin
-  Result := Byte(W shr 8);
 end;
 
 function TNxtCmd.MakeCmdWithFilename(const b1, b2: byte; const filename: string;

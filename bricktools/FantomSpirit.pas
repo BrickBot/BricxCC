@@ -1740,7 +1740,7 @@ end;
 function TFantomSpirit.NXTGetDeviceInfo(var name: string;
   var BTAddress : String; var BTSignal : Cardinal; var memFree : Cardinal): boolean;
 var
-  i, status : integer;
+  status : integer;
   buf : array[0..20] of Char;
   addr : array[0..6] of Byte;
 begin
@@ -1749,11 +1749,8 @@ begin
   status := kStatusNoError;
   iNXT_getDeviceInfo(fNXTHandle, buf, @addr[0], @BTSignal, memFree, status);
   name := buf;
-  BTAddress := '';
-  for i := 0 to 5 do
-  begin
-    BTAddress := BTAddress + Format('%2.2x', [addr[i]]);
-  end;
+  BTAddress := Format('%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
+    [addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]]);
   Result := status >= kStatusNoError;
 end;
 

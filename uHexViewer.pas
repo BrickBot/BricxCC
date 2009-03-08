@@ -3,8 +3,8 @@ unit uHexViewer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, ComCtrls, uOfficeComp, Menus;
+  Messages, Classes, Controls, Forms, Dialogs, Menus,
+  StdCtrls, ComCtrls, uOfficeComp;
 
 type
   TfrmHexView = class(TForm)
@@ -41,7 +41,7 @@ implementation
 {$R *.dfm}
 
 uses
-  ShellAPI;
+  Windows, SysUtils, ShellAPI;
 
 type
   THexConversion = class(TConversion)

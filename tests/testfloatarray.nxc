@@ -1,0 +1,53 @@
+#define rows 8
+#define cols 2
+
+
+task main()
+{
+//  float tmpVec[];
+//  float tmp[][];
+//  ArrayInit(tmpVec, 0.0, 8);
+//  ArrayInit(tmp, tmpVec, 2);
+ int i,j;
+ float f;
+ // floating point constants in array initializers work now
+ float t[][]={{-2.34,-2.34,-2.34,-2.34,-2.34,-2.34,-2.34,-2.34},{-2.34,-2.34,-2.34,-2.34,-2.34,-2.34,-2.34,-2.34}};
+
+// TEST ONE - FLOAT INITIALIZED TO NEGATIVE ONE REQUIRES DECIMAL PLACE TO BE SPECIFIED
+
+f=-1; // (works now - firmware bug)
+TextOut(0,LCD_LINE3,"F=-1");
+NumOut(50,LCD_LINE3,f);
+f=-1.0;
+TextOut(0,LCD_LINE5,"F=-1.0");
+NumOut(50,LCD_LINE5,f);
+Wait(5000);
+
+
+// TEST TWO - TIMES EQUALS IN AN EXPRESSION DOESN'T WORK AS EXPECTED
+  
+ClearScreen();
+ for(i=1;i<rows;i++)              // multiple each array element by prior element in that row
+   {t[0][i]*=t[0][i-1];           // times equals doesn't do it  (works now)
+    t[1][i]=t[1][i-1]*t[1][i];    // the full expression works correctly
+
+    }
+
+
+
+  for(i=0;i<rows;i++)             // display the array results in two colums
+   for(j=0;j<cols;j++)            // both columns should be identical
+    NumOut(j*50,i*8,t[j][i]);
+
+
+
+
+
+ Wait(6000);
+}
+
+
+
+
+
+

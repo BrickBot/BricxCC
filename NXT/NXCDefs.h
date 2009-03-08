@@ -5,8 +5,8 @@
 // Copyright (C) 2009 - John Hansen. All rights reserved.
 //
 // Workfile:: NXCDefs.h
-// Date:: 2009-02-09
-// Revision:: 39
+// Date:: 2009-03-07
+// Revision:: 40
 //
 //------------------------------------------------------------------------------
 //
@@ -503,19 +503,33 @@
 
 
 #ifdef __ENHANCED_FIRMWARE
+
 #define RS485Status(_sendingData, _dataAvail) asm { __RS485Status(_sendingData, _dataAvail) }
 #define RS485SendingData() asm { __RS485Status(__RETVAL__, __TMPBYTE__) }
 #define RS485DataAvailable() asm { __RS485Status(__TMPBYTE__, __RETVAL__) }
 #define RS485Write(_buffer) asm { __RS485Write(_buffer, __RETVAL__) }
 #define RS485Read(_buffer) asm { __RS485Read(_buffer, __RETVAL__) }
+
+#if __FIRMWARE_VERSION > 107
+
+#define RS485Control(_cmd, _baud, _mode) asm { __RS485Control(_cmd, _baud, _mode, __RETVAL__) }
+#define RS485Uart(_baud, _mode) asm { __RS485Control(HS_CTRL_UART, _baud, _mode, __RETVAL__) }
+#define RS485Init() asm { __RS485Control(HS_CTRL_INIT, 0, 0, __RETVAL__) }
+#define RS485Exit() asm { __RS485Control(HS_CTRL_EXIT, 0, 0, __RETVAL__) }
+
+#else
+
 #define RS485Control(_cmd, _baud) asm { __RS485Control(_cmd, _baud, __RETVAL__) }
-#define RS485Init() asm { __RS485Control(HS_CTRL_INIT, 0, __RETVAL__) }
 #define RS485Uart(_baud) asm { __RS485Control(HS_CTRL_UART, _baud, __RETVAL__) }
+#define RS485Init() asm { __RS485Control(HS_CTRL_INIT, 0, __RETVAL__) }
 #define RS485Exit() asm { __RS485Control(HS_CTRL_EXIT, 0, __RETVAL__) }
+
+#endif
 
 #define SendRS485Bool(_bval) asm { __sendRS485Bool(_bval, __RETVAL__) }
 #define SendRS485Number(_val) asm { __sendRS485Number(_val, __RETVAL__) }
 #define SendRS485String(_str) asm { __sendRS485String(_str, __RETVAL__) }
+
 #endif
 
 
@@ -773,6 +787,7 @@ struct IOMapWriteType {
   byte Buffer[];
 };
 
+#ifdef __ENHANCED_FIRMWARE
 // IOMapReadByID
 struct IOMapReadByIDType {
   char Result;
@@ -834,6 +849,9 @@ struct CommHSControlType {
  char Result;
  byte Command;
  byte BaudRate;
+#if __FIRMWARE_VERSION > 107
+ unsigned int Mode;
+#endif
 };
 
 // CommHSCheckStatus
@@ -847,6 +865,7 @@ struct CommHSReadWriteType {
  char Status;
  byte Buffer[];
 };
+#endif
 
 #define SysCall(_func, _args) asm { syscall _func, _args }
 

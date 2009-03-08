@@ -5,8 +5,8 @@
 // Copyright (C) 2009 - John Hansen. All rights reserved.
 //
 // Workfile:: NXTDefs.h
-// Date:: 2009-02-22
-// Revision:: 39
+// Date:: 2009-03-07
+// Revision:: 40
 //
 //------------------------------------------------------------------------------
 //
@@ -313,6 +313,9 @@ TCommHSControl	struct
  Result		sbyte
  Command	byte
  BaudRate	byte
+#if __FIRMWARE_VERSION > 107
+ Mode		word
+#endif
 TCommHSControl	ends
 
 TCommHSCheckStatus	struct
@@ -4757,10 +4760,6 @@ dseg ends
 #define RS485Status(_sendingData, _dataAvail) __RS485Status(_sendingData, _dataAvail)
 #define RS485Write(_buffer, _status) __RS485Write(_buffer, _status)
 #define RS485Read(_buffer, _status) __RS485Read(_buffer, _status)
-#define RS485Control(_cmd, _baud, _result) __RS485Control(_cmd, _baud, _result)
-#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, _result)
-#define RS485Uart(_baud, _result) __RS485Control(HS_CTRL_UART, _baud, _result)
-#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, _result)
 
 #define __RS485Status(_sendingData, _dataAvail) \
   acquire __CHSCSMutex \
@@ -4783,6 +4782,29 @@ dseg ends
   mov _status, __CHSRArgs.Status \
   release __CHSRMutex
 
+#if __FIRMWARE_VERSION > 107
+
+#define RS485Control(_cmd, _baud, _mode, _result) __RS485Control(_cmd, _baud, _mode, _result)
+#define RS485Uart(_baud, _mode, _result) __RS485Control(HS_CTRL_UART, _baud, _mode, _result)
+#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, 0, _result)
+#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, 0, _result)
+
+#define __RS485Control(_cmd, _baud, _mode, _result) \
+  acquire __CHSCMutex \
+  mov __CHSCArgs.Command, _cmd \
+  mov __CHSCArgs.BaudRate, _baud \
+  mov __CHSCArgs.Mode, _mode \
+  syscall CommHSControl, __CHSCArgs \
+  mov _result, __CHSCArgs.Result \
+  release __CHSCMutex
+
+#else
+
+#define RS485Control(_cmd, _baud, _result) __RS485Control(_cmd, _baud, _result)
+#define RS485Uart(_baud, _result) __RS485Control(HS_CTRL_UART, _baud, _result)
+#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, _result)
+#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, _result)
+
 #define __RS485Control(_cmd, _baud, _result) \
   acquire __CHSCMutex \
   mov __CHSCArgs.Command, _cmd \
@@ -4790,6 +4812,8 @@ dseg ends
   syscall CommHSControl, __CHSCArgs \
   mov _result, __CHSCArgs.Result \
   release __CHSCMutex
+
+#endif
 
 #define SendRS485Bool(_bval, _status) __sendRS485Bool(_bval, _status)
 #define SendRS485Number(_val, _status) __sendRS485Number(_val, _status)

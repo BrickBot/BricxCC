@@ -5,15 +5,7 @@ unit SynHighlighterRS;
 interface
 
 uses
-  SysUtils,
   Classes,
-{$IFNDEF FPC}
-  Windows,
-  Messages,
-  Registry,
-{$ENDIF}
-  Controls,
-  Graphics,
   SynEditHighlighter,
   SynHighlighterHashEntries,
   SynEditTypes;
@@ -96,6 +88,8 @@ procedure LoadRSCodeComplete(aItems : TStrings);
 implementation
 
 uses
+  SysUtils,
+  Graphics,
   SynEditStrConst;
 
 const

@@ -3,8 +3,8 @@ unit uNXTExplorer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, ComCtrls, FileCtrl, StdCtrls, Buttons, ExtCtrls, uOfficeComp,
+  Windows, Messages, Classes, Controls, Forms,
+  ComCtrls, FileCtrl, StdCtrls, Buttons, ExtCtrls, uOfficeComp,
   ShellCtrls, ActnList, Menus, ImgList;
 
 type
@@ -191,8 +191,8 @@ implementation
 {$R *.dfm}
 
 uses
-  brick_common, uGuiUtils, uSpirit, uNXTExplorerSettings, Themes, ShellAPI,
-  uHEXViewer, uLocalizedStrings;
+  SysUtils, Graphics, Dialogs, Themes, ShellAPI, brick_common, uGuiUtils,
+  uSpirit, uNXTExplorerSettings, uHEXViewer, uLocalizedStrings;
 
 const
   K_FILTER =
@@ -633,10 +633,13 @@ begin
   NXTFiles.ViewStyle := NXTFilesViewStyle;
   lstFiles.ViewStyle := PCFilesViewStyle;
   cboMask.ItemIndex  := NXTExplorerMaskIndex;
-  try
-    treShell.Path    := NXTExplorerPath;
-  except
-    // eat any exceptions which might occur here.
+  if DirectoryExists(NXTExplorerPath) then
+  begin
+    try
+      treShell.Path    := NXTExplorerPath;
+    except
+      // eat any exceptions which might occur here.
+    end;
   end;
   cboMaskChange(nil);
 end;

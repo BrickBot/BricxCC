@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Spin, ComCtrls;
+  Dialogs, StdCtrls, Spin, ComCtrls, uSpin;
 
 type
   TfrmRICLoader = class(TForm)

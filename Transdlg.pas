@@ -3,8 +3,7 @@ unit Transdlg;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics,
-  Controls, Forms, Dialogs, StdCtrls, Buttons;
+  Classes, Controls, Graphics, Forms, Dialogs, StdCtrls, Buttons;
 
 type
   TfrmTransEdit = class(TForm)
@@ -78,7 +77,7 @@ const
 implementation
 
 uses
-  uLocalizedStrings;
+  SysUtils, uLocalizedStrings, uCommonUtils;
 
 {$R *.DFM}
 
@@ -89,7 +88,7 @@ const
 procedure TfrmTransEdit.FormCreate(Sender: TObject);
 begin
   LoadMacros;
-  fCaptionHeight := GetSystemMetrics(SM_CYCAPTION);
+  fCaptionHeight := GetWindowTitleBarHeight;
   bmpUp := TBitmap.Create;
   bmpDn := TBitmap.Create;
   bmpUp.LoadFromResourceName(HInstance, 'MACROUP');

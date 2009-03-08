@@ -3,8 +3,7 @@ unit uMIDIConversion;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, uMidi2MS, ComCtrls, uSpin;
+  Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, uSpin, uMidi2MS;
 
 type
   TMIDIDestination = (mdClipboard, mdFile);
@@ -73,7 +72,7 @@ implementation
 {$R *.DFM}
 
 uses
-  Clipbrd;
+  SysUtils, Clipbrd;
 
 { TfrmMIDIConversion }
 

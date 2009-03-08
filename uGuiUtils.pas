@@ -3,13 +3,14 @@ unit uGuiUtils;
 interface
 
 uses
-  uOfficeComp, StdCtrls, DirectoryEdit, uNewHotKey, SynEdit;
+  Controls, StdCtrls, DirectoryEdit, uNewHotKey, uOfficeComp, SynEdit;
 
 procedure ConfigBar(ogp : TOfficeGradientPanel);
 procedure SizeComboboxDropdown( cb: TCustomCombobox );
 procedure CloneDE(aDest : TDirectoryEdit; aSrc : TEdit);
 procedure CloneSynEdit(aDest : TSynEdit; aSrc : TMemo);
 procedure CloneHotKey(aDest : TBricxCCHotKey; aSrc : TEdit);
+procedure SetWindowFocus(WC : TWinControl);
 
 implementation
 
@@ -123,6 +124,15 @@ begin
   aDest.HotKey      := 0;
   aDest.InvalidKeys := [hcNone, hcShift];
   FreeAndNil(aSrc);
+end;
+
+procedure SetWindowFocus(WC : TWinControl);
+begin
+{$IFDEF FPC}
+  Result := 0;
+{$ELSE}
+  Windows.SetFocus(WC.Handle);
+{$ENDIF}
 end;
 
 end.

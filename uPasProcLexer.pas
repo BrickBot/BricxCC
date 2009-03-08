@@ -17,7 +17,6 @@ type
 implementation
 
 uses
-  Windows,
   SysUtils;
 
 function ProcessProcLine(const aLine: string; var DispName : string): Boolean;

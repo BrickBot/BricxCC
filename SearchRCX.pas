@@ -3,8 +3,7 @@ unit SearchRCX;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, uMiscDefines;
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, uMiscDefines;
 
 type
   TSearchRCXForm = class(TForm)
@@ -68,8 +67,8 @@ implementation
 {$R *.DFM}
 
 uses
-  FakeSpirit, rcx_link, uSpirit, brick_common, uGuiUtils, Math,
-  uLocalizedStrings;
+  SysUtils, Dialogs, Math, FakeSpirit, rcx_link, uSpirit, brick_common,
+  uGuiUtils, uLocalizedStrings;
 
 function IsNXT : boolean;
 begin

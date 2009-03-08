@@ -3,8 +3,7 @@ unit uChartExport;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, Chart;
+  Classes, Controls, Forms, Dialogs, StdCtrls, Chart;
 
 type
   TfrmChartExport = class(TForm)

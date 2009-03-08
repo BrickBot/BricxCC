@@ -251,9 +251,7 @@ type
 implementation
 
 uses
-  {$IFNDEF FPC}
-  Windows,
-  {$ENDIF}
+  uCommonUtils,
   SynEditStrConst;
 
 var

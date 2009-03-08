@@ -3,8 +3,8 @@ unit uSeriesConfig;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, TeEngine, Series, Buttons, Chart, ActnList;
+  Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, ExtCtrls,
+  TeEngine, Series, Buttons, Chart, ActnList;
 
 type
   TSeriesConfigMode = (scmEdit, scmAdd);
@@ -238,7 +238,7 @@ implementation
 {$R *.DFM}
 
 uses
-  TeeFunci;
+  SysUtils, Graphics, TeeFunci;
 
 type
   TCopyTeeFunction = class(TTeeFunction)

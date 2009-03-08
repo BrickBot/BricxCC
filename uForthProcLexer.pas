@@ -26,7 +26,7 @@ procedure FindForthProcs(Timeout : Cardinal; FLexer : TForthLexer;
 implementation
 
 uses
-  Windows, SysUtils, mwGenericLex;
+  SysUtils, mwGenericLex, uCommonUtils;
 
 { TForthProcLexer }
 
@@ -198,7 +198,7 @@ var
   t, lt: string;
   start : cardinal;
 begin
-  start := GetTickCount;
+  start := GetTick;
   bInProc := False;
   while not FLexer.AtEnd do
   begin
@@ -244,7 +244,7 @@ begin
           ProcName := ProcName + '|' + t;
       end;
     end;
-    if (GetTickCount - start) > Timeout then Break;
+    if (GetTick - start) > Timeout then Break;
   end;
 end;
 

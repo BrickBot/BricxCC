@@ -3,8 +3,8 @@ unit Piano;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, StdCtrls, Buttons, ComCtrls, uMidi2MS, uSpin;
+  Classes, Controls, Forms, ExtCtrls, StdCtrls, Buttons, ComCtrls, uSpin,
+  uMidi2MS;
 
 type
   TPianoForm = class(TForm)
@@ -99,7 +99,7 @@ implementation
 {$R *.DFM}
 
 uses
-  SearchRCX, brick_common, MainUnit;
+  SysUtils, SearchRCX, brick_common, MainUnit;
 
 const
   NOTE_TIME = 10;

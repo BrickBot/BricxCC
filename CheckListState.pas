@@ -159,7 +159,8 @@ procedure Register;
 
 implementation
 
-uses Consts, Math, Forms{$IFDEF VER_D6_UP},RTLConsts, Themes{$ENDIF};
+uses
+  Consts, Math, Forms, RTLConsts, Themes;
 
 type
   TCheckStateListBoxDataWrapper = class

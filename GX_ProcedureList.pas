@@ -3,7 +3,7 @@ unit GX_ProcedureList;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Messages, Classes, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, Menus, ImgList, ActnList, ToolWin,
   mPasLex, uParseCommon;
 
@@ -127,7 +127,7 @@ implementation
 {$R *.dfm}
 
 uses
-  Clipbrd,
+  Windows, SysUtils, Clipbrd,
   uMiscDefines,
   Preferences,
   mwBCBTokenList,

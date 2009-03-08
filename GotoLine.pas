@@ -3,8 +3,7 @@ unit GotoLine;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ExtCtrls, ComCtrls, uSpin;
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, uSpin;
 
 type
   TGotoForm = class(TForm)
@@ -36,7 +35,7 @@ implementation
 {$R *.DFM}
 
 uses
-  MainUnit, Editor, uLocalizedStrings;
+  Windows, SysUtils, Dialogs, MainUnit, Editor, uLocalizedStrings;
 
 procedure TGotoForm.FormShow(Sender: TObject);
 begin

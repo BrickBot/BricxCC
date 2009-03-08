@@ -3,8 +3,7 @@ unit MemoryUnit;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls;
+  Classes, Controls, Forms, StdCtrls;
 
 type
   TPointerFormat = (pfHex, pfDecimal);
@@ -33,7 +32,7 @@ var
 implementation
 
 uses
-  SearchRCX, brick_common, uLocalizedStrings;
+  SysUtils, Dialogs, SearchRCX, brick_common, uLocalizedStrings;
 
 {$R *.DFM}
 

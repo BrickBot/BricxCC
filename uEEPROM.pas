@@ -3,8 +3,7 @@ unit uEEPROM;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, 
-  ComCtrls, StdCtrls, ExtCtrls, Dialogs, uSpin;
+  Classes, Controls, Forms, ComCtrls, StdCtrls, ExtCtrls, Dialogs, uSpin;
 
 type
   TSpybotSpecies = (ssGigamesh, ssSnapTrax, ssShadowStrike, ssTechnoJaw);
@@ -212,7 +211,7 @@ implementation
 {$R *.DFM}
 
 uses
-  Math, FakeSpirit, uSpirit, brick_common, uLocalizedStrings;
+  SysUtils, Math, FakeSpirit, uSpirit, brick_common, uLocalizedStrings;
 
 const
   eMotorControl    = $00; //1 byte

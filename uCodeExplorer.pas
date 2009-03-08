@@ -3,9 +3,8 @@ unit uCodeExplorer;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, ImgList, Menus, uBricxCCProcLexer,
-  uParseCommon, uOfficeComp;
+  Classes, Controls, Forms, ComCtrls, ExtCtrls, ImgList, Menus,
+  uBricxCCProcLexer, uParseCommon, uOfficeComp;
 
 type
   TfrmCodeExplorer = class(TForm)
@@ -64,21 +63,10 @@ implementation
 {$R *.DFM}
 
 uses
-  MainUnit,
-  Editor,
-  uExplorerOptions,
-  uNQCProcLexer,
-  uNXCProcLexer,
-  uMindScriptProcLexer,
-  uCppProcLexer,
-  uPasProcLexer,
-  uForthProcLexer,
-  uNBCProcLexer,
-  uLASMProcLexer,
-  uMiscDefines,
-  uLocalizedStrings,
-  Preferences,
-  SynEditHighlighter;
+  SysUtils, MainUnit, Editor, uExplorerOptions, uNQCProcLexer,
+  uNXCProcLexer, uMindScriptProcLexer, uCppProcLexer, uPasProcLexer,
+  uForthProcLexer, uNBCProcLexer, uLASMProcLexer, uMiscDefines,
+  uLocalizedStrings, uGuiUtils, Preferences, SynEditHighlighter;
 
 procedure TfrmCodeExplorer.ClearTree;
 var
@@ -246,7 +234,7 @@ begin
     AEF := MainForm.ActiveEditorForm;
     if Assigned(AEF) then
     begin
-      Windows.SetFocus(AEF.Handle);
+      SetWindowFocus(AEF);
       if not MainForm.MDI then
         AEF.TheEditor.SetFocus;
     end;
