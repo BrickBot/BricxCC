@@ -966,7 +966,7 @@ const
     ( Encoding: OPS_FRAC_2       ; CCType: 0; Arity: 2; Name: 'frac'; ),
     ( Encoding: OPS_ATAN2_2      ; CCType: 0; Arity: 3; Name: 'atan2'; ),
     ( Encoding: OPS_POW_2        ; CCType: 0; Arity: 3; Name: 'pow'; ),
-    ( Encoding: OPS_MULDIV_2     ; CCType: 0; Arity: 3; Name: 'muldiv'; ),
+    ( Encoding: OPS_MULDIV_2     ; CCType: 0; Arity: 4; Name: 'muldiv'; ),
 // pseudo-opcodes
     ( Encoding: OPS_THREAD       ; CCType: 0; Arity: 0; Name: 'thread'; ),
     ( Encoding: OPS_ENDT         ; CCType: 0; Arity: 0; Name: 'endt'; ),
