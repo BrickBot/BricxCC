@@ -30,8 +30,10 @@ Version 1.0.1.b36
 - Added support for arrray math operation syntax in NXC, e.g., array += 2; array = !array, etc...
 - Fixed multi-line macro parsing bugs and problems with preprocessor directives mixed in 
   with expressions.
-
-
+- Compiler is now compatible with both 1.0x firmwares and 1.2x firmwares.
+- Added API support for HiTechnic touch sensor multiplexer in NBC/NXC.
+- Added support for variadic macros.
+- Added support for macro redefinition (with warnings).
 
 Version 1.0.1.b35
 -----------------
