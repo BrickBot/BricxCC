@@ -6800,6 +6800,8 @@ const
   APIF_STRLEN           = 32;
   APIF_STRINDEX         = 33;
   APIF_ASM              = 34;
+  APIF_DRAWGRAPHICAR    = 35;
+  APIF_DRAWGRAPHICAREX  = 36;
 
 procedure TNXCComp.DoCallAPIFunc(procname: string);
 var
@@ -6870,7 +6872,9 @@ begin
     APIF_DRAWLINE, APIF_DRAWRECT : DoDrawLineRect(id);
     APIF_DRAWCIRCLE : DoDrawCircle;
     APIF_DRAWGRAPHIC,
-    APIF_DRAWGRAPHICEX : DoDrawGraphic(id);
+    APIF_DRAWGRAPHICEX,
+    APIF_DRAWGRAPHICAR,
+    APIF_DRAWGRAPHICAREX : DoDrawGraphic(id);
     APIF_STRTONUM : DoStrToNum;
     APIF_STRLEN : DoStrLen;
     APIF_STRINDEX : DoStrIndex;
@@ -7207,6 +7211,8 @@ var
 begin
   //GraphicOut(x,y,fname,cls=false)
   //GraphicOutEx(x,y,fname,vars,cls=false)
+  //GraphicArrayOut(x,y,data,cls=false)
+  //GraphicArrayOutEx(x,y,data,vars,cls=false)
   OpenParen;
   // arg1 = x
   BoolExpression;
@@ -7217,11 +7223,17 @@ begin
   // arg2 = y
   BoolExpression;
   MatchString(TOK_COMMA);
-  // arg3 = fname
+  // arg3 = fname|data
   fname := GetDecoratedValue;
-  CheckString;
+  if idx in [APIF_DRAWGRAPHIC, APIF_DRAWGRAPHICEX] then
+    CheckString
+  else
+  begin
+    if DataType(Value) <> TOK_ARRAYBYTEDEF then
+      Expected(sByteArrayType);
+  end;
   Next;
-  if idx = APIF_DRAWGRAPHICEX then
+  if idx in [APIF_DRAWGRAPHICEX, APIF_DRAWGRAPHICAREX] then
   begin
     MatchString(TOK_COMMA);
     // arg4 = vars
@@ -7240,23 +7252,46 @@ begin
   end;
   CloseParen;
   EmitLn('acquire __GraphicOutMutex');
-  EmitLn('mov __GraphicOutArgs.Location.X, ' + x);
-  if bCls then begin
-    EmitLn('mov __GraphicOutArgs.Location.Y, ' + y);
-    EmitLn('mov __GraphicOutArgs.Options, ' + RegisterName);
+  if idx in [APIF_DRAWGRAPHIC, APIF_DRAWGRAPHICEX] then
+  begin
+    EmitLn('mov __GraphicOutArgs.Location.X, ' + x);
+    if bCls then begin
+      EmitLn('mov __GraphicOutArgs.Location.Y, ' + y);
+      EmitLn('mov __GraphicOutArgs.Options, ' + RegisterName);
+    end
+    else begin
+      EmitLn('mov __GraphicOutArgs.Location.Y, ' + RegisterName);
+      EmitLn('set __GraphicOutArgs.Options, 0');
+    end;
+    EmitLn('mov __GraphicOutArgs.Filename, ' + fname);
+    if idx = APIF_DRAWGRAPHICEX then
+      EmitLn('mov __GraphicOutArgs.Variables, ' + vars)
+    else
+      EmitLn('mov __GraphicOutArgs.Variables, __GraphicOutEmptyVars');
+    EmitLn('syscall DrawGraphic, __GraphicOutArgs');
+    ResetStatementType;
+    EmitLn(Format('mov %s, __GraphicOutArgs.Result',[RegisterName]));
   end
-  else begin
-    EmitLn('mov __GraphicOutArgs.Location.Y, ' + RegisterName);
-    EmitLn('set __GraphicOutArgs.Options, 0');
-  end;
-  EmitLn('mov __GraphicOutArgs.Filename, ' + fname);
-  if idx = APIF_DRAWGRAPHICEX then
-    EmitLn('mov __GraphicOutArgs.Variables, ' + vars)
   else
-    EmitLn('mov __GraphicOutArgs.Variables, __GraphicOutEmptyVars');
-  EmitLn('syscall DrawGraphic, __GraphicOutArgs');
-  ResetStatementType;
-  EmitLn(Format('mov %s, __GraphicOutArgs.Result',[RegisterName]));
+  begin
+    EmitLn('mov __GraphicArrayOutArgs.Location.X, ' + x);
+    if bCls then begin
+      EmitLn('mov __GraphicArrayOutArgs.Location.Y, ' + y);
+      EmitLn('mov __GraphicArrayOutArgs.Options, ' + RegisterName);
+    end
+    else begin
+      EmitLn('mov __GraphicArrayOutArgs.Location.Y, ' + RegisterName);
+      EmitLn('set __GraphicArrayOutArgs.Options, 0');
+    end;
+    EmitLn('mov __GraphicArrayOutArgs.Filename, ' + fname);
+    if idx = APIF_DRAWGRAPHICAREX then
+      EmitLn('mov __GraphicArrayOutArgs.Variables, ' + vars)
+    else
+      EmitLn('mov __GraphicArrayOutArgs.Variables, __GraphicOutEmptyVars');
+    EmitLn('syscall DrawGraphicArray, __GraphicArrayOutArgs');
+    ResetStatementType;
+    EmitLn(Format('mov %s, __GraphicArrayOutArgs.Result',[RegisterName]));
+  end;
   EmitLn('release __GraphicOutMutex');
   pop;
   if bCls then
@@ -7418,6 +7453,8 @@ begin
   AddAPIStringFunction('Flatten', APISF_FLATTEN);
   AddAPIStringFunction('StrReplace', APISF_STRREPLACE);
   AddAPIStringFunction('FormatNum', APISF_FORMATNUM);
+  AddAPIFunction('GraphicArrayOut', APIF_DRAWGRAPHICAR);
+  AddAPIFunction('GraphicArrayOutEx', APIF_DRAWGRAPHICAREX);
 end;
 
 function TNXCComp.GetNBCSrc: TStrings;

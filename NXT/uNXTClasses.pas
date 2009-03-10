@@ -878,7 +878,7 @@ const
   );
 
   StandardOpcodeCount2x = 56;
-  EnhancedOpcodeCount2x = 26;
+  EnhancedOpcodeCount2x = 27;
   PseudoOpcodeCount2x   = 39;
   NXTInstructionsCount2x = StandardOpcodeCount2x+EnhancedOpcodeCount2x+PseudoOpcodeCount2x;
   NXTInstructions2x : array[0..NXTInstructionsCount2x-1] of NXTInstruction =
@@ -966,6 +966,7 @@ const
     ( Encoding: OPS_FRAC_2       ; CCType: 0; Arity: 2; Name: 'frac'; ),
     ( Encoding: OPS_ATAN2_2      ; CCType: 0; Arity: 3; Name: 'atan2'; ),
     ( Encoding: OPS_POW_2        ; CCType: 0; Arity: 3; Name: 'pow'; ),
+    ( Encoding: OPS_MULDIV_2     ; CCType: 0; Arity: 3; Name: 'muldiv'; ),
 // pseudo-opcodes
     ( Encoding: OPS_THREAD       ; CCType: 0; Arity: 0; Name: 'thread'; ),
     ( Encoding: OPS_ENDT         ; CCType: 0; Arity: 0; Name: 'endt'; ),
@@ -1712,7 +1713,7 @@ begin
     OPS_WAITV_2, OPS_SIGN_2, OPS_FMTNUM_2, OPS_ACOS_2, OPS_ASIN_2,
     OPS_ATAN_2, OPS_CEIL_2, OPS_EXP_2, OPS_FLOOR_2, OPS_TAN_2, OPS_TANH_2,
     OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
-    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2 :
+    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2 :
     begin
       Result := TOCNameFromArg(DS, argValue);
     end;
@@ -4343,7 +4344,7 @@ begin
     OP_ADD..OP_GETTICK : Result := altCode;
     OPS_WAITV..OPS_POW : Result := altCode; // pseudo opcodes
 //    OPS_SQRT_2..OPS_ABS_2 : Result := altCode; // standard 1.26+ opcodes (included in OPS_WAITV..OPS_POW due to overlap)
-    OPS_WAITI_2..OPS_POW_2 : Result := altCode; // enhanced 1.26+ opcodes
+    OPS_WAITI_2..OPS_MULDIV_2 : Result := altCode; // enhanced 1.26+ opcodes
     OPS_SEGMENT : Result := altBeginDS;
     OPS_ENDS :
       if state in [masStruct, masStructDSClump, masStructDSClumpSub] then
@@ -5011,7 +5012,7 @@ begin
     OPS_ACOS_2, OPS_ASIN_2, OPS_ATAN_2, OPS_CEIL_2,
     OPS_EXP_2, OPS_FLOOR_2, OPS_TAN_2, OPS_TANH_2,
     OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
-    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2 :
+    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2 :
     begin
       if argIdx > 0 then
         Result := aatVariable

@@ -146,7 +146,8 @@ const
   OPS_FRAC_2         = $7b;
   OPS_ATAN2_2        = $7c;
   OPS_POW_2          = $7d;
-
+  OPS_MULDIV_2       = $7e;
+  
   // pseudo opcodes
   OPS_THREAD       = $90;
   OPS_ENDT         = $91;
