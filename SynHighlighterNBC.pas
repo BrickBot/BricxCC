@@ -133,16 +133,19 @@ const
   PreProcDirectives: string =
     '#download,#include,#define,#ifndef,#pragma,#endif,#error,#ifdef,#undef,#elif,#else,#line,#if';
   OpCodes: string =
+// standard opcodes
     'add,sub,neg,mul,div,mod,and,or,xor,not,'+
     'cmnt,lsl,lsr,asl,asr,rotl,rotr,'+
     'cmp,tst,index,replace,arrsize,'+
     'arrbuild,arrsubset,arrinit,mov,set,flatten,unflatten,numtostr,'+
     'strtonum,strcat,strsubset,strtoarr,arrtostr,jmp,brcmp,brtst,'+
     'syscall,stop,exit,exitto,acquire,release,subcall,subret,'+
-    'setin,setout,getin,getout,wait,gettick,'+
+    'setin,setout,getin,getout,wait,gettick,wait2,'+
+// enhanced firmware opcodes
     'waitv,abs,sign,stopthread,start,priority,fmtnum,'+
     'arrop,acos,asin,atan,ceil,exp,floor,sqrt,tan,tanh,'+
-    'cos,cosh,log,log10,sin,sinh,atan2,pow,'+
+    'cos,cosh,log,log10,sin,sinh,trunc,frac,atan2,pow,muldiv'+
+// pseudo-opcodes
     'thread,endt,subroutine,'+
     'follows,precedes,segment,ends,typedef,struct,db,byte,sbyte,ubyte,dw,'+
     'word,sword,uword,dd,dword,sdword,udword,long,slong,ulong,void,mutex,'+
@@ -153,13 +156,13 @@ const
     'OnFwdEx, OnRevEx, CoastEx, OffEx, OnFwdRegEx, OnRevRegEx, OnFwdSyncEx, OnRevSyncEx,'+
     'ResetTachoCount, ResetBlockTachoCount, ResetRotationCount, ResetAllTachoCounts,'+
     'RotateMotor, RotateMotorEx, RotateMotorPID, RotateMotorExPID,'+
-    'SetSensorLowspeed, SetSensorHTGyro,'+
+    'SetSensorLowspeed, SetSensorHTGyro, ReadSensorHTTouchMultiplexer,'+
     'SetSensorType, SetSensorMode, ReadSensor, ClearSensor,'+
     'SetSensorTouch, SetSensorLight, SetSensorSound, SetSensorUltrasonic,'+
     'ResetSensor, ReadSensorUS, ReadSensorHTGyro, PlayTone, PlayFile,'+
     'Random, ResetSleepTimer, PlayToneEx, PlayFileEx, SignedRandom,'+
-    'TextOut, NumOut, PointOut, LineOut, RectOut, CircleOut, GraphicOut,'+
-    'TextOutEx, NumOutEx, PointOutEx, LineOutEx, RectOutEx, CircleOutEx, GraphicOutEx,'+
+    'TextOut, NumOut, PointOut, LineOut, RectOut, CircleOut, GraphicOut, GraphicArrayOut,'+
+    'TextOutEx, NumOutEx, PointOutEx, LineOutEx, RectOutEx, CircleOutEx, GraphicOutEx, GraphicArrayOutEx,'+
     'RebootInFirmwareMode, HTPFComboDirect, HTPFSinglePin, HTPFSingleOutputCST,'+
     'HTPFSingleOutputPWM, HTPFComboPWM, HTPFTrain, HTIRTrain, HTPFRawOutput,'+
     'HTPFRepeat, PowerDown, ReadButtonEx, SetIOMapValue, SetUIModuleValue,'+
@@ -321,12 +324,13 @@ const
     'UF_UPDATE_RESET_COUNT,UF_UPDATE_PID_VALUES,'+
     'UF_UPDATE_RESET_BLOCK_COUNT,UF_UPDATE_RESET_ROTATION_COUNT,UF_PENDING_UPDATES,'+
     'OUT_MODE_COAST,OUT_MODE_MOTORON,OUT_MODE_BRAKE,OUT_MODE_REGULATED,OUT_MODE_REGMETHOD,'+
-    'OUT_RUNSTATE_IDLE,OUT_RUNSTATE_RAMPUP,OUT_RUNSTATE_RUNNING,OUT_RUNSTATE_RAMPDOWN,OUT_RUNSTATE_HOLD,'+
+    'OUT_RUNSTATE_IDLE,OUT_RUNSTATE_RAMPUP,OUT_RUNSTATE_RUNNING,OUT_RUNSTATE_RAMPDOWN,'+
     'OUT_REGMODE_IDLE,OUT_REGMODE_SPEED,OUT_REGMODE_SYNC,'+
     'IN_TYPE_NO_SENSOR,IN_TYPE_SWITCH,IN_TYPE_TEMPERATURE,'+
     'IN_TYPE_REFLECTION,IN_TYPE_ANGLE,IN_TYPE_LIGHT_ACTIVE,'+
     'IN_TYPE_LIGHT_INACTIVE,IN_TYPE_SOUND_DB,IN_TYPE_SOUND_DBA,'+
     'IN_TYPE_CUSTOM,IN_TYPE_LOWSPEED,IN_TYPE_LOWSPEED_9V,IN_TYPE_HISPEED,'+
+    'IN_TYPE_COLORFULL,IN_TYPE_COLORRED,IN_TYPE_COLORGREEN,IN_TYPE_COLORBLUE,IN_TYPE_COLORNONE,'+
     'IN_MODE_RAW,IN_MODE_BOOLEAN,IN_MODE_TRANSITIONCNT,IN_MODE_PERIODCOUNTER,'+
     'IN_MODE_PCTFULLSCALE,IN_MODE_CELSIUS,IN_MODE_FAHRENHEIT,'+
     'IN_MODE_ANGLESTEP,IN_MODE_SLOPEMASK,IN_MODE_MODEMASK,'+
@@ -380,7 +384,8 @@ const
     'CommandOffsetFormatString, CommandOffsetPRCHandler, CommandOffsetTick,'+
     'CommandOffsetOffsetDS, CommandOffsetOffsetDVA, CommandOffsetProgStatus,'+
     'CommandOffsetAwake, CommandOffsetActivateFlag, CommandOffsetDeactivateFlag,' +
-    'CommandOffsetFileName, CommandOffsetMemoryPool,'+
+    'CommandOffsetFileName, CommandOffsetMemoryPool,' +
+    'CommandOffsetSyncTime, CommandOffsetSyncTick,' +
     'IOCtrlOffsetPowerOn, LoaderOffsetPFunc, LoaderOffsetFreeUserFlash,'+
     'LDR_SUCCESS, LDR_INPROGRESS, LDR_REQPIN, LDR_NOMOREHANDLES, LDR_NOSPACE,'+
     'LDR_NOMOREFILES, LDR_EOFEXPECTED, LDR_ENDOFFILE, LDR_NOTLINEARFILE,'+
@@ -390,12 +395,14 @@ const
     'LDR_OUTOFBOUNDARY, LDR_ILLEGALFILENAME, LDR_ILLEGALHANDLE, LDR_BTBUSY,'+
     'LDR_BTCONNECTFAIL, LDR_BTTIMEOUT, LDR_FILETX_TIMEOUT, LDR_FILETX_DSTEXISTS,'+
     'LDR_FILETX_SRCMISSING, LDR_FILETX_STREAMERROR, LDR_FILETX_CLOSEERROR,'+
+    'LDR_INVALIDSEEK, LDR_CMD_RESIZEDATAFILE, LDR_CMD_SEEKFROMSTART,'+
+    'LDR_CMD_SEEKFROMCURRENT, LDR_CMD_SEEKFROMEND, ' +
     'LDR_CMD_OPENREAD, LDR_CMD_OPENWRITE, LDR_CMD_READ, LDR_CMD_WRITE,'+
     'LDR_CMD_CLOSE, LDR_CMD_DELETE, LDR_CMD_FINDFIRST, LDR_CMD_FINDNEXT,'+
     'LDR_CMD_OPENWRITELINEAR, LDR_CMD_OPENREADLINEAR, LDR_CMD_OPENWRITEDATA,'+
     'LDR_CMD_OPENAPPENDDATA, LDR_CMD_FINDFIRSTMODULE, LDR_CMD_FINDNEXTMODULE,'+
     'LDR_CMD_CLOSEMODHANDLE, LDR_CMD_IOMAPREAD, LDR_CMD_IOMAPWRITE,'+
-    'LDR_CMD_DELETEUSERFLASH, LDR_CMD_RENAMEFILE,'+
+    'LDR_CMD_DELETEUSERFLASH, LDR_CMD_RENAMEFILE, LDR_CMD_CROPDATAFILE,'+
     'DIST_CMD_GP2D12, DIST_CMD_GP2D120, DIST_CMD_GP2YA21, DIST_CMD_GP2YA02,'+
     'DIST_CMD_CUSTOM, DIST_CMD_ENERGIZED, DIST_CMD_DEENERGIZED, DIST_CMD_ADPA_ON,'+
     'DIST_CMD_ADPA_OFF, DIST_REG_VERSION, DIST_REG_VENDORID, DIST_REG_DEVICEID,'+
@@ -417,6 +424,9 @@ const
     'InputOffsetDigiPinsDir, InputOffsetDigiPinsIn, InputOffsetDigiPinsOut,'+
     'InputOffsetCustomPctFullScale, InputOffsetCustomActiveStatus,'+
     'InputOffsetInvalidData,'+
+    'InputOffsetColorCalibration, InputOffsetColorCalLimits, InputOffsetColorADRaw,'+
+    'InputOffsetColorSensorRaw, InputOffsetColorSensorValue,'+
+    'InputOffsetColorSensorBoolean, InputOffsetColorCalibrationState,'+
     'OutputOffsetTachoCount,'+
     'OutputOffsetBlockTachoCount, OutputOffsetRotationCount, OutputOffsetTachoLimit,'+
     'OutputOffsetMotorRPM, OutputOffsetFlags, OutputOffsetMode,'+
@@ -464,6 +474,11 @@ const
     'PROG_IDLE, PROG_OK, PROG_RUNNING, PROG_ERROR, PROG_ABORT, PROG_RESET,'+
     'INPUT_DIGI0, INPUT_DIGI1, INPUT_CUSTOMINACTIVE, INPUT_CUSTOM9V,'+
     'INPUT_CUSTOMACTIVE, INPUT_INVALID_DATA,'+
+    'INPUT_RED, INPUT_GREEN, INPUT_BLUE, INPUT_BLANK, INPUT_NO_OF_COLORS,'+
+    'INPUT_BLACKCOLOR, INPUT_BLUECOLOR, INPUT_GREENCOLOR, INPUT_YELLOWCOLOR,'+
+    'INPUT_REDCOLOR, INPUT_WHITECOLOR, INPUT_SENSORCAL, INPUT_SENSOROFF,'+
+    'INPUT_RUNNINGCAL, INPUT_STARTCAL, INPUT_RESETCAL, INPUT_CAL_POINT_0,'+
+    'INPUT_CAL_POINT_1, INPUT_CAL_POINT_2, INPUT_NO_OF_POINTS,'+
     'BTN1, BTN2, BTN3, BTN4, BTNEXIT, BTNCENTER, BTNLEFT, BTNRIGHT, NO_OF_BTNS,'+
     'BTNSTATE_PRESSED_EV, BTNSTATE_SHORT_RELEASED_EV, BTNSTATE_LONG_PRESSED_EV,'+
     'BTNSTATE_LONG_RELEASED_EV, BTNSTATE_PRESSED_STATE,'+
@@ -514,6 +529,13 @@ const
     'BT_CONNECTION_2_ENABLE, BT_CONNECTION_3_ENABLE, BT_ENABLE, BT_DISABLE,'+
     'HS_UPDATE, HS_INITIALISE, HS_INIT_RECEIVER, HS_SEND_DATA, HS_DISABLE,'+
     'HS_ENABLE, HS_CTRL_INIT, HS_CTRL_UART, HS_CTRL_EXIT,' +
+    'HS_BAUD_1200, HS_BAUD_2400, HS_BAUD_3600, HS_BAUD_4800, HS_BAUD_7200,'+
+    'HS_BAUD_9600, HS_BAUD_14400, HS_BAUD_19200, HS_BAUD_28800, HS_BAUD_38400,'+
+    'HS_BAUD_57600, HS_BAUD_76800, HS_BAUD_115200, HS_BAUD_230400, HS_BAUD_460800,'+
+    'HS_BAUD_921600, HS_MODE_5_DATA, HS_MODE_6_DATA, HS_MODE_7_DATA, HS_MODE_8_DATA,'+
+    'HS_MODE_10_STOP, HS_MODE_15_STOP, HS_MODE_20_STOP, HS_MODE_E_PARITY,'+
+    'HS_MODE_O_PARITY, HS_MODE_S_PARITY, HS_MODE_M_PARITY, HS_MODE_N_PARITY,'+
+    'HS_MODE_8N1, HS_MODE_7E1, INTF_CONNECTBYNAME,'+
     'BT_DEVICE_EMPTY, BT_DEVICE_UNKNOWN, BT_DEVICE_KNOWN, BT_DEVICE_NAME,'+
     'BT_DEVICE_AWAY, INTF_SENDFILE, INTF_SEARCH, INTF_STOPSEARCH, INTF_CONNECT,'+
     'INTF_DISCONNECT, INTF_DISCONNECTALL, INTF_REMOVEDEVICE, INTF_VISIBILITY,'+
@@ -596,7 +618,10 @@ const
     'IOMapReadByID, IOMapWriteByID, DisplayExecuteFunction, CommExecuteFunction,' +
     'LoaderExecuteFunction, FileFindFirst, FileFindNext, FileOpenWriteLinear,' +
     'FileOpenWriteNonLinear, FileOpenReadLinear, CommHSControl,' +
-    'CommHSCheckStatus, CommHSWrite, CommHSRead';
+    'CommHSCheckStatus, CommHSWrite, CommHSRead, ColorSensorRead,' +
+    'CommBTOnOff, CommBTConnection, ReadSemData, WriteSemData,' +
+    'ComputeCalibValue, UpdateCalibCacheInfo, DatalogWrite, DatalogGetTimes,' +
+    'SetSleepTimeoutVal, ListFiles, CommLSWriteEx, FileSeek, FileResize, DrawGraphicArray';
 
   NXCConstants: string =
     'S1, S2, S3, S4, SENSOR_1, SENSOR_2, SENSOR_3, SENSOR_4,'+
@@ -605,6 +630,8 @@ const
     'SENSOR_TYPE_LIGHT_INACTIVE, SENSOR_TYPE_SOUND_DB,'+
     'SENSOR_TYPE_SOUND_DBA, SENSOR_TYPE_CUSTOM, SENSOR_TYPE_LOWSPEED,'+
     'SENSOR_TYPE_LOWSPEED_9V, SENSOR_TYPE_HIGHSPEED, SENSOR_MODE_RAW,'+
+    'SENSOR_TYPE_COLORFULL, SENSOR_TYPE_COLORRED, SENSOR_TYPE_COLORGREEN,'+
+    'SENSOR_TYPE_COLORBLUE, SENSOR_TYPE_COLORNONE,'+
     'SENSOR_MODE_BOOL, SENSOR_MODE_EDGE, SENSOR_MODE_PULSE,'+
     'SENSOR_MODE_PERCENT, SENSOR_MODE_CELSIUS, SENSOR_MODE_FAHRENHEIT,'+
     'SENSOR_MODE_ROTATION, SENSOR_TOUCH, SENSOR_LIGHT, SENSOR_ROTATION,'+

@@ -496,6 +496,7 @@ resourcestring
   sCharLiteral             = 'Character literal';
   sStringLiteral           = 'String literal';
   sStringType              = 'string constant or variable of type string';
+  sByteArrayType           = 'byte array type';
   sStringVarType           = 'string type';
   sStructType              = 'struct type';
   sMutexType               = 'mutex type';
