@@ -331,7 +331,7 @@ type
     procedure HandleNameToDSID(const name : string; var aId : integer);
     procedure RemoveVariableReference(const arg : string; const idx : integer);
     procedure RemoveVariableReferences;
-    function  GetNXTInstruction(const idx : integer) : NXTInstruction;
+    function FirmwareVersion : word;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -363,7 +363,6 @@ type
     procedure SetItem(Index: Integer; const Value: TAsmLine);
     procedure HandleNameToDSID(const aName : string; var aId : integer);
     procedure FixupFinalization;
-    function  GetNXTInstruction(const idx : integer) : NXTInstruction;
   public
     constructor Create(aClump : TClump);
     destructor Destroy; override;
@@ -395,6 +394,7 @@ type
     procedure RemoveOrNOPLine(AL, ALNext: TAsmLine; const idx: integer);
     function GetCallerCount: Byte;
     function GetIsMultithreaded: boolean;
+    function FirmwareVersion : word;
   protected
     fLabelMap : TStringList;
     fUpstream : TStringList;
@@ -404,7 +404,6 @@ type
     procedure FinalizeClump;
     procedure HandleNameToDSID(const aname : string; var aId : integer);
     procedure RemoveReferences;
-    function  GetNXTInstruction(const idx : integer) : NXTInstruction;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -442,6 +441,7 @@ type
 
   TCodeSpace = class(TCollection)
   private
+    fNXTInstructions : array of NXTInstruction;
     fOnNameToDSID: TOnNameToDSID;
     fCalc: TNBCExpParser;
     fCaseSensitive : Boolean;
@@ -450,6 +450,10 @@ type
     function GetCaseSensitive: boolean;
     procedure SetCaseSensitive(const Value: boolean);
     procedure BuildReferences;
+    procedure InitializeInstructions;
+    function IndexOfOpcode(op: TOpCode): integer;
+    function OpcodeToStr(const op : TOpCode) : string;
+    procedure SetFirmwareVersion(const Value: word);
   protected
     fInitName: string;
     fAddresses : TObjectList;
@@ -484,7 +488,7 @@ type
     property  OnNameToDSID : TOnNameToDSID read fOnNameToDSID write fOnNameToDSID;
     property  CaseSensitive : boolean read GetCaseSensitive write SetCaseSensitive;
     property  Dataspace : TDataspace read fDS;
-    property  FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
+    property  FirmwareVersion : word read fFirmwareVersion write SetFirmwareVersion;
   end;
 
   TAsmArgType = (aatVariable, aatVarNoConst, aatVarOrNull, aatConstant,
@@ -496,6 +500,7 @@ type
 
   TRXEProgram = class(TPersistent)
   private
+    fNXTInstructions : array of NXTInstruction;
     fOnCompMSg: TOnNBCCompilerMessage;
     fCalc: TNBCExpParser;
     fCaseSensitive: boolean;
@@ -528,6 +533,15 @@ type
     procedure LoadSystemFile(S: TStream);
     procedure SetLineCounter(const Value: integer);
     procedure SetFirmwareVersion(const Value: word);
+    function IndexOfOpcode(op: TOpCode): integer;
+    procedure InitializeInstructions;
+    procedure ChunkLine(const state: TMainAsmState; namedTypes: TMapList;
+      line: string; bUseCase: boolean; var lbl, opcode, args: string;
+      var lineType: TAsmLineType; var bIgnoreDups: boolean);
+    function DetermineLineType(const state: TMainAsmState;
+      namedTypes: TMapList; op: string; bUseCase: boolean): TAsmLineType;
+    function StrToOpcode(const op: string; bUseCase: boolean = False): TOpCode;
+    function OpcodeToStr(const op: TOpCode): string;
   protected
     fDSData : TDSData;
     fClumpData : TClumpData;
@@ -658,9 +672,13 @@ type
 
   TRXEDumper = class
   private
+    fNXTInstructions : array of NXTInstruction;
     fOnlyDumpCode: boolean;
     fFirmwareVersion: word;
     function TOCNameFromArg(DS : TDSData; const argValue: word): string;
+    procedure SetFirmwareVersion(const Value: word);
+    procedure InitializeInstructions;
+    function IndexOfOpcode(op: TOpCode): integer;
   protected
     fHeader : TRXEHeader;
     fDSData : TDSData;
@@ -699,7 +717,7 @@ type
     procedure Decompile(aStrings : TStrings);
     property  Filename : string read fFilename write fFilename;
     property  OnlyDumpCode : boolean read fOnlyDumpCode write fOnlyDumpCode;
-    property  FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
+    property  FirmwareVersion : word read fFirmwareVersion write SetFirmwareVersion;
   end;
 
 
@@ -722,11 +740,17 @@ const
 const
   STR_USES = 'precedes';
 
+type
+  TNXTInstructions = array of NXTInstruction;
+
+var
+  NXTInstructions : array of NXTInstruction;
+
 const
-//  DataTypeCount      = 17;
-//  DataTypeStartIndex = 63;
-  PseudoOpcodeCount1x  = 66;
-  NXTInstructionsCount1x = 52+PseudoOpcodeCount1x;
+  StandardOpcodeCount1x = 54;
+  EnhancedOpcodeCount1x = 27;
+  PseudoOpcodeCount1x   = 39;
+  NXTInstructionsCount1x = StandardOpcodeCount1x+EnhancedOpcodeCount1x+PseudoOpcodeCount1x;
   NXTInstructions1x : array[0..NXTInstructionsCount1x-1] of NXTInstruction =
   (
     ( Encoding: OP_ADD           ; CCType: 0; Arity: 3; Name: 'add'; ),
@@ -783,6 +807,7 @@ const
     ( Encoding: OP_GETOUT        ; CCType: 0; Arity: 3; Name: 'getout'; ),
     ( Encoding: OP_WAIT          ; CCType: 0; Arity: 1; Name: 'wait'; ),
     ( Encoding: OP_GETTICK       ; CCType: 0; Arity: 1; Name: 'gettick'; ),
+// enhanced firmware opcodes
     ( Encoding: OPS_WAITV        ; CCType: 0; Arity: 1; Name: 'waitv'; ),
     ( Encoding: OPS_ABS          ; CCType: 0; Arity: 2; Name: 'abs'; ),
     ( Encoding: OPS_SIGN         ; CCType: 0; Arity: 2; Name: 'sign'; ),
@@ -796,6 +821,7 @@ const
     ( Encoding: OPS_ATAN         ; CCType: 0; Arity: 2; Name: 'atan'; ),
     ( Encoding: OPS_CEIL         ; CCType: 0; Arity: 2; Name: 'ceil'; ),
     ( Encoding: OPS_EXP          ; CCType: 0; Arity: 2; Name: 'exp'; ),
+    ( Encoding: OPS_FABS         ; CCType: 0; Arity: 2; Name: 'fabs'; ),
     ( Encoding: OPS_FLOOR        ; CCType: 0; Arity: 2; Name: 'floor'; ),
     ( Encoding: OPS_SQRT         ; CCType: 0; Arity: 2; Name: 'sqrt'; ),
     ( Encoding: OPS_TAN          ; CCType: 0; Arity: 2; Name: 'tan'; ),
@@ -807,7 +833,140 @@ const
     ( Encoding: OPS_SIN          ; CCType: 0; Arity: 2; Name: 'sin'; ),
     ( Encoding: OPS_SINH         ; CCType: 0; Arity: 2; Name: 'sinh'; ),
     ( Encoding: OPS_ATAN2        ; CCType: 0; Arity: 3; Name: 'atan2'; ),
+    ( Encoding: OPS_FMOD         ; CCType: 0; Arity: 3; Name: 'fmod'; ),
     ( Encoding: OPS_POW          ; CCType: 0; Arity: 3; Name: 'pow'; ),
+// pseudo-opcodes
+    ( Encoding: OPS_THREAD       ; CCType: 0; Arity: 0; Name: 'thread'; ),
+    ( Encoding: OPS_ENDT         ; CCType: 0; Arity: 0; Name: 'endt'; ),
+    ( Encoding: OPS_SUBROUTINE   ; CCType: 0; Arity: 0; Name: 'subroutine'; ),
+    ( Encoding: OPS_REQUIRES     ; CCType: 0; Arity: 0; Name: 'follows'; ),
+    ( Encoding: OPS_USES         ; CCType: 0; Arity: 0; Name: STR_USES; ),
+    ( Encoding: OPS_SEGMENT      ; CCType: 0; Arity: 0; Name: 'segment'; ),
+    ( Encoding: OPS_ENDS         ; CCType: 0; Arity: 0; Name: 'ends'; ),
+    ( Encoding: OPS_TYPEDEF      ; CCType: 0; Arity: 0; Name: 'typedef'; ),
+    ( Encoding: OPS_STRUCT       ; CCType: 0; Arity: 0; Name: 'struct'; ),
+    ( Encoding: OPS_DB           ; CCType: 0; Arity: 0; Name: 'db'; ),
+    ( Encoding: OPS_BYTE         ; CCType: 0; Arity: 0; Name: 'byte'; ),
+    ( Encoding: OPS_SBYTE        ; CCType: 0; Arity: 0; Name: 'sbyte'; ),
+    ( Encoding: OPS_UBYTE        ; CCType: 0; Arity: 0; Name: 'ubyte'; ),
+    ( Encoding: OPS_DW           ; CCType: 0; Arity: 0; Name: 'dw'; ),
+    ( Encoding: OPS_WORD         ; CCType: 0; Arity: 0; Name: 'word'; ),
+    ( Encoding: OPS_SWORD        ; CCType: 0; Arity: 0; Name: 'sword'; ),
+    ( Encoding: OPS_UWORD        ; CCType: 0; Arity: 0; Name: 'uword'; ),
+    ( Encoding: OPS_DD           ; CCType: 0; Arity: 0; Name: 'dd'; ),
+    ( Encoding: OPS_DWORD        ; CCType: 0; Arity: 0; Name: 'dword'; ),
+    ( Encoding: OPS_SDWORD       ; CCType: 0; Arity: 0; Name: 'sdword'; ),
+    ( Encoding: OPS_UDWORD       ; CCType: 0; Arity: 0; Name: 'udword'; ),
+    ( Encoding: OPS_LONG         ; CCType: 0; Arity: 0; Name: 'long'; ),
+    ( Encoding: OPS_SLONG        ; CCType: 0; Arity: 0; Name: 'slong'; ),
+    ( Encoding: OPS_ULONG        ; CCType: 0; Arity: 0; Name: 'ulong'; ),
+    ( Encoding: OPS_VOID         ; CCType: 0; Arity: 0; Name: 'void'; ),
+    ( Encoding: OPS_MUTEX        ; CCType: 0; Arity: 0; Name: 'mutex'; ),
+    ( Encoding: OPS_FLOAT        ; CCType: 0; Arity: 0; Name: 'float'; ),
+    ( Encoding: OPS_CALL         ; CCType: 0; Arity: 1; Name: 'call'; ),
+    ( Encoding: OPS_RETURN       ; CCType: 0; Arity: 0; Name: 'return'; ),
+    ( Encoding: OPS_STRINDEX     ; CCType: 0; Arity: 3; Name: 'strindex'; ),
+    ( Encoding: OPS_STRREPLACE   ; CCType: 0; Arity: 4; Name: 'strreplace'; ),
+    ( Encoding: OPS_SHL          ; CCType: 0; Arity: 3; Name: 'shl'; ),
+    ( Encoding: OPS_SHR          ; CCType: 0; Arity: 3; Name: 'shr'; ),
+    ( Encoding: OPS_STRLEN       ; CCType: 0; Arity: 2; Name: 'strlen'; ),
+    ( Encoding: OPS_COMPCHK      ; CCType: 0; Arity: 3; Name: 'compchk'; ),
+    ( Encoding: OPS_COMPIF       ; CCType: 0; Arity: 3; Name: 'compif'; ),
+    ( Encoding: OPS_COMPELSE     ; CCType: 0; Arity: 0; Name: 'compelse'; ),
+    ( Encoding: OPS_COMPEND      ; CCType: 0; Arity: 0; Name: 'compend'; ),
+    ( Encoding: OPS_COMPCHKTYPE  ; CCType: 0; Arity: 2; Name: 'compchktype'; )
+  );
+
+  StandardOpcodeCount2x = 56;
+  EnhancedOpcodeCount2x = 26;
+  PseudoOpcodeCount2x   = 39;
+  NXTInstructionsCount2x = StandardOpcodeCount2x+EnhancedOpcodeCount2x+PseudoOpcodeCount2x;
+  NXTInstructions2x : array[0..NXTInstructionsCount2x-1] of NXTInstruction =
+  (
+    ( Encoding: OP_ADD           ; CCType: 0; Arity: 3; Name: 'add'; ),
+    ( Encoding: OP_SUB           ; CCType: 0; Arity: 3; Name: 'sub'; ),
+    ( Encoding: OP_NEG           ; CCType: 0; Arity: 2; Name: 'neg'; ),
+    ( Encoding: OP_MUL           ; CCType: 0; Arity: 3; Name: 'mul'; ),
+    ( Encoding: OP_DIV           ; CCType: 0; Arity: 3; Name: 'div'; ),
+    ( Encoding: OP_MOD           ; CCType: 0; Arity: 3; Name: 'mod'; ),
+    ( Encoding: OP_AND           ; CCType: 0; Arity: 3; Name: 'and'; ),
+    ( Encoding: OP_OR            ; CCType: 0; Arity: 3; Name: 'or'; ),
+    ( Encoding: OP_XOR           ; CCType: 0; Arity: 3; Name: 'xor'; ),
+    ( Encoding: OP_NOT           ; CCType: 0; Arity: 2; Name: 'not'; ),
+    ( Encoding: OP_CMNT          ; CCType: 0; Arity: 2; Name: 'cmnt'; ),
+    ( Encoding: OP_LSL           ; CCType: 0; Arity: 3; Name: 'lsl'; ),
+    ( Encoding: OP_LSR           ; CCType: 0; Arity: 3; Name: 'lsr'; ),
+    ( Encoding: OP_ASL           ; CCType: 0; Arity: 3; Name: 'asl'; ),
+    ( Encoding: OP_ASR           ; CCType: 0; Arity: 3; Name: 'asr'; ),
+    ( Encoding: OP_ROTL          ; CCType: 0; Arity: 3; Name: 'rotl'; ),
+    ( Encoding: OP_ROTR          ; CCType: 0; Arity: 3; Name: 'rotr'; ),
+    ( Encoding: OP_CMP           ; CCType: 2; Arity: 3; Name: 'cmp'; ),
+    ( Encoding: OP_TST           ; CCType: 1; Arity: 2; Name: 'tst'; ),
+    ( Encoding: OP_CMPSET        ; CCType: 2; Arity: 4; Name: 'cmpset'; ),
+    ( Encoding: OP_TSTSET        ; CCType: 1; Arity: 3; Name: 'tstset'; ),
+    ( Encoding: OP_INDEX         ; CCType: 0; Arity: 3; Name: 'index'; ),
+    ( Encoding: OP_REPLACE       ; CCType: 0; Arity: 4; Name: 'replace'; ),
+    ( Encoding: OP_ARRSIZE       ; CCType: 0; Arity: 2; Name: 'arrsize'; ),
+    ( Encoding: OP_ARRBUILD      ; CCType: 0; Arity: 6; Name: 'arrbuild'; ),
+    ( Encoding: OP_ARRSUBSET     ; CCType: 0; Arity: 4; Name: 'arrsubset'; ),
+    ( Encoding: OP_ARRINIT       ; CCType: 0; Arity: 3; Name: 'arrinit'; ),
+    ( Encoding: OP_MOV           ; CCType: 0; Arity: 2; Name: 'mov'; ),
+    ( Encoding: OP_SET           ; CCType: 0; Arity: 2; Name: 'set'; ),
+    ( Encoding: OP_FLATTEN       ; CCType: 0; Arity: 2; Name: 'flatten'; ),
+    ( Encoding: OP_UNFLATTEN     ; CCType: 0; Arity: 4; Name: 'unflatten'; ),
+    ( Encoding: OP_NUMTOSTRING   ; CCType: 0; Arity: 2; Name: 'numtostr'; ),
+    ( Encoding: OP_STRINGTONUM   ; CCType: 0; Arity: 5; Name: 'strtonum'; ),
+    ( Encoding: OP_STRCAT        ; CCType: 0; Arity: 6; Name: 'strcat'; ),
+    ( Encoding: OP_STRSUBSET     ; CCType: 0; Arity: 4; Name: 'strsubset'; ),
+    ( Encoding: OP_STRTOBYTEARR  ; CCType: 0; Arity: 2; Name: 'strtoarr'; ),
+    ( Encoding: OP_BYTEARRTOSTR  ; CCType: 0; Arity: 2; Name: 'arrtostr'; ),
+    ( Encoding: OP_JMP           ; CCType: 0; Arity: 1; Name: 'jmp'; ),
+    ( Encoding: OP_BRCMP         ; CCType: 2; Arity: 3; Name: 'brcmp'; ),
+    ( Encoding: OP_BRTST         ; CCType: 1; Arity: 2; Name: 'brtst'; ),
+    ( Encoding: OP_SYSCALL       ; CCType: 0; Arity: 2; Name: 'syscall'; ),
+    ( Encoding: OP_STOP          ; CCType: 0; Arity: 1; Name: 'stop'; ),
+    ( Encoding: OP_FINCLUMP      ; CCType: 0; Arity: 2; Name: 'exit'; ),
+    ( Encoding: OP_FINCLUMPIMMED ; CCType: 0; Arity: 1; Name: 'exitto'; ),
+    ( Encoding: OP_ACQUIRE       ; CCType: 0; Arity: 1; Name: 'acquire'; ),
+    ( Encoding: OP_RELEASE       ; CCType: 0; Arity: 1; Name: 'release'; ),
+    ( Encoding: OP_SUBCALL       ; CCType: 0; Arity: 2; Name: 'subcall'; ),
+    ( Encoding: OP_SUBRET        ; CCType: 0; Arity: 1; Name: 'subret'; ),
+    ( Encoding: OP_SETIN         ; CCType: 0; Arity: 3; Name: 'setin'; ),
+    ( Encoding: OP_SETOUT        ; CCType: 0; Arity: 6; Name: 'setout'; ),
+    ( Encoding: OP_GETIN         ; CCType: 0; Arity: 3; Name: 'getin'; ),
+    ( Encoding: OP_GETOUT        ; CCType: 0; Arity: 3; Name: 'getout'; ),
+    ( Encoding: OP_WAIT          ; CCType: 0; Arity: 2; Name: 'wait2'; ),
+    ( Encoding: OP_GETTICK       ; CCType: 0; Arity: 1; Name: 'gettick'; ),
+    ( Encoding: OP_SQRT_2        ; CCType: 0; Arity: 2; Name: 'sqrt'; ),
+    ( Encoding: OP_ABS_2         ; CCType: 0; Arity: 2; Name: 'abs'; ),
+// enhanced firmware opcodes
+    ( Encoding: OPS_WAITI_2      ; CCType: 0; Arity: 1; Name: 'wait'; ),
+    ( Encoding: OPS_WAITV_2      ; CCType: 0; Arity: 1; Name: 'waitv'; ),
+    ( Encoding: OPS_SIGN_2       ; CCType: 0; Arity: 2; Name: 'sign'; ),
+    ( Encoding: OPS_STOPCLUMP_2  ; CCType: 0; Arity: 1; Name: 'stopthread'; ),
+    ( Encoding: OPS_START_2      ; CCType: 0; Arity: 1; Name: 'start'; ),
+    ( Encoding: OPS_PRIORITY_2   ; CCType: 0; Arity: 2; Name: 'priority'; ),
+    ( Encoding: OPS_FMTNUM_2     ; CCType: 0; Arity: 3; Name: 'fmtnum'; ),
+    ( Encoding: OPS_ARROP_2      ; CCType: 0; Arity: 5; Name: 'arrop'; ),
+    ( Encoding: OPS_ACOS_2       ; CCType: 0; Arity: 2; Name: 'acos'; ),
+    ( Encoding: OPS_ASIN_2       ; CCType: 0; Arity: 2; Name: 'asin'; ),
+    ( Encoding: OPS_ATAN_2       ; CCType: 0; Arity: 2; Name: 'atan'; ),
+    ( Encoding: OPS_CEIL_2       ; CCType: 0; Arity: 2; Name: 'ceil'; ),
+    ( Encoding: OPS_EXP_2        ; CCType: 0; Arity: 2; Name: 'exp'; ),
+    ( Encoding: OPS_FLOOR_2      ; CCType: 0; Arity: 2; Name: 'floor'; ),
+    ( Encoding: OPS_TAN_2        ; CCType: 0; Arity: 2; Name: 'tan'; ),
+    ( Encoding: OPS_TANH_2       ; CCType: 0; Arity: 2; Name: 'tanh'; ),
+    ( Encoding: OPS_COS_2        ; CCType: 0; Arity: 2; Name: 'cos'; ),
+    ( Encoding: OPS_COSH_2       ; CCType: 0; Arity: 2; Name: 'cosh'; ),
+    ( Encoding: OPS_LOG_2        ; CCType: 0; Arity: 2; Name: 'log'; ),
+    ( Encoding: OPS_LOG10_2      ; CCType: 0; Arity: 2; Name: 'log10'; ),
+    ( Encoding: OPS_SIN_2        ; CCType: 0; Arity: 2; Name: 'sin'; ),
+    ( Encoding: OPS_SINH_2       ; CCType: 0; Arity: 2; Name: 'sinh'; ),
+    ( Encoding: OPS_TRUNC_2      ; CCType: 0; Arity: 2; Name: 'trunc'; ),
+    ( Encoding: OPS_FRAC_2       ; CCType: 0; Arity: 2; Name: 'frac'; ),
+    ( Encoding: OPS_ATAN2_2      ; CCType: 0; Arity: 3; Name: 'atan2'; ),
+    ( Encoding: OPS_POW_2        ; CCType: 0; Arity: 3; Name: 'pow'; ),
+// pseudo-opcodes
     ( Encoding: OPS_THREAD       ; CCType: 0; Arity: 0; Name: 'thread'; ),
     ( Encoding: OPS_ENDT         ; CCType: 0; Arity: 0; Name: 'endt'; ),
     ( Encoding: OPS_SUBROUTINE   ; CCType: 0; Arity: 0; Name: 'subroutine'; ),
@@ -878,7 +1037,7 @@ const
   TC_ARRAY   = 7;
   TC_CLUSTER = 8;
   TC_MUTEX   = 9;
-  TC_FLOAT   = 10; // ???
+  TC_FLOAT   = 10;
 
 const
   SHOP_MASK = $08; // b00001000
@@ -892,8 +1051,6 @@ function GenerateTOCName(const TypeDesc : byte; const idx : Int64; const fmt : s
 function ShortOpEncoded(const b : byte) : boolean;
 function CompareCodeToStr(const cc : byte) : string;
 function ShortOpToLongOp(const op : byte) : TOpCode;
-function StrToOpcode(const op : string; bUseCase : boolean = False) : TOpCode;
-function OpcodeToStr(const op : TOpCode) : string;
 function GenericIDToStr(genIDs : array of IDRec; const ID : integer) : string;
 function SysCallMethodIDToStr(const ID : integer) : string;
 function InputFieldIDToStr(const ID : integer) : string;
@@ -905,13 +1062,9 @@ procedure LoadRXEClumpRecords(H : TRXEHeader; CD : TClumpData; aStream : TStream
 procedure LoadRXECodeSpace(H : TRXEHeader; CS : TCodeSpaceAry; aStream : TStream);
 
 function GetArgDataType(val : Extended): TDSType;
-function ExpectedArgType(const op : TOpCode; const argIdx: integer): TAsmArgType;
+function ExpectedArgType(const firmVer : word; const op : TOpCode; const argIdx: integer): TAsmArgType;
 function ProcessCluster(aDS : TDSData; Item : TDataspaceEntry; idx : Integer;
   var staticIndex : Integer) : integer;
-
-procedure ChunkLine(const state : TMainAsmState; namedTypes : TMapList;
-  line : string; bUseCase : boolean; var lbl, opcode, args : string;
-  var lineType : TAsmLineType; var bIgnoreDups : boolean);
 
 function CreateConstantVar(DSpace : TDataspace; val : Extended; bIncCount : boolean) : string;
 
@@ -1037,21 +1190,6 @@ begin
   end;
 end;
 
-function IndexOfOpcode(op : TOpCode) : integer;
-var
-  i : integer;
-begin
-  Result := -1;
-  for i := Low(NXTInstructions1x) to High(NXTInstructions1x) do
-  begin
-    if NXTInstructions1x[i].Encoding = op then
-    begin
-      Result := i;
-      Break;
-    end;
-  end;
-end;
-
 function LongOpToShortOp(op : TOpCode) : ShortInt;
 var
   i : integer;
@@ -1074,11 +1212,48 @@ begin
   Result := TypeToStr(Byte(Ord(aType)));
 end;
 
+const
+  NXTTypes : array[0..17] of NXTInstruction =
+   (
+    ( Encoding: OPS_DB           ; CCType: 0; Arity: 0; Name: 'db'; ),
+    ( Encoding: OPS_BYTE         ; CCType: 0; Arity: 0; Name: 'byte'; ),
+    ( Encoding: OPS_SBYTE        ; CCType: 0; Arity: 0; Name: 'sbyte'; ),
+    ( Encoding: OPS_UBYTE        ; CCType: 0; Arity: 0; Name: 'ubyte'; ),
+    ( Encoding: OPS_DW           ; CCType: 0; Arity: 0; Name: 'dw'; ),
+    ( Encoding: OPS_WORD         ; CCType: 0; Arity: 0; Name: 'word'; ),
+    ( Encoding: OPS_SWORD        ; CCType: 0; Arity: 0; Name: 'sword'; ),
+    ( Encoding: OPS_UWORD        ; CCType: 0; Arity: 0; Name: 'uword'; ),
+    ( Encoding: OPS_DD           ; CCType: 0; Arity: 0; Name: 'dd'; ),
+    ( Encoding: OPS_DWORD        ; CCType: 0; Arity: 0; Name: 'dword'; ),
+    ( Encoding: OPS_SDWORD       ; CCType: 0; Arity: 0; Name: 'sdword'; ),
+    ( Encoding: OPS_UDWORD       ; CCType: 0; Arity: 0; Name: 'udword'; ),
+    ( Encoding: OPS_LONG         ; CCType: 0; Arity: 0; Name: 'long'; ),
+    ( Encoding: OPS_SLONG        ; CCType: 0; Arity: 0; Name: 'slong'; ),
+    ( Encoding: OPS_ULONG        ; CCType: 0; Arity: 0; Name: 'ulong'; ),
+    ( Encoding: OPS_VOID         ; CCType: 0; Arity: 0; Name: 'void'; ),
+    ( Encoding: OPS_MUTEX        ; CCType: 0; Arity: 0; Name: 'mutex'; ),
+    ( Encoding: OPS_FLOAT        ; CCType: 0; Arity: 0; Name: 'float'; )
+   );
+
 function StrToType(const stype : string; bUseCase : Boolean = false) : TDSType;
 var
   op : TOpCode;
+  i : integer;
+  tmpName : string;
 begin
-  op := StrToOpcode(stype, bUseCase);
+  op := OPS_INVALID;
+  for i := Low(NXTTypes) to High(NXTTypes) do
+  begin
+    if bUseCase then
+      tmpName := stype
+    else
+      tmpName := AnsiLowerCase(stype);
+    if NXTTypes[i].Name = tmpName then
+    begin
+      op := NXTTypes[i].Encoding;
+      break;
+    end;
+  end;
   case op of
     OPS_DB,
     OPS_BYTE,
@@ -1180,8 +1355,6 @@ begin
     if CCEncodings[i].Encoding = cc then
     begin
       Result := CCEncodings[i].Mode;
-//      Result := CCEncodings[i].Symbol;
-//      Result := IntToStr(CCEncodings[i].Encoding);
       break;
     end;
   end;
@@ -1207,27 +1380,27 @@ begin
   end;
 end;
 
-function StrToOpcode(const op : string; bUseCase : boolean) : TOpCode;
+function TRXEProgram.StrToOpcode(const op : string; bUseCase : boolean) : TOpCode;
 var
   i : integer;
   tmpName : string;
 begin
   Result := OPS_INVALID;
-  for i := Low(NXTInstructions1x) to High(NXTInstructions1x) do
+  for i := Low(fNXTInstructions) to High(fNXTInstructions) do
   begin
     if bUseCase then
       tmpName := op
     else
       tmpName := AnsiLowerCase(op);
-    if NXTInstructions1x[i].Name = tmpName then
+    if fNXTInstructions[i].Name = tmpName then
     begin
-      Result := NXTInstructions1x[i].Encoding;
+      Result := fNXTInstructions[i].Encoding;
       break;
     end;
   end;
 end;
 
-function OpcodeToStr(const op : TOpCode) : string;
+function TRXEProgram.OpcodeToStr(const op : TOpCode) : string;
 var
   i : integer;
 begin
@@ -1235,11 +1408,11 @@ begin
     Result := Format('bad op (%d)', [Ord(op)])
   else
     Result := '';
-  for i := Low(NXTInstructions1x) to High(NXTInstructions1x) do
+  for i := Low(fNXTInstructions) to High(fNXTInstructions) do
   begin
-    if NXTInstructions1x[i].Encoding = op then
+    if fNXTInstructions[i].Encoding = op then
     begin
-      Result := NXTInstructions1x[i].Name;
+      Result := fNXTInstructions[i].Name;
       break;
     end;
   end;
@@ -1518,24 +1691,39 @@ begin
         Result := TOCNameFromArg(DS, argValue);
     end;
     OP_WAIT : begin
+      if FirmwareVersion > MAX_FW_VER1X then
+      begin
+        if argValue = NOT_AN_ELEMENT then
+          Result := STR_NA
+        else
+          Result := TOCNameFromArg(DS, argValue);
+      end
+      else
+        Result := Format(HEX_FMT, [argValue]);
+    end;
+    OPS_WAITI_2 : begin
       Result := Format(HEX_FMT, [argValue]);
     end;
-    OPS_WAITV, OPS_ABS, OPS_SIGN, OPS_FMTNUM,
+    OPS_WAITV, OPS_ABS, {OP_SQRT_2, OP_ABS_2, }OPS_SIGN, OPS_FMTNUM,
     OPS_ACOS, OPS_ASIN, OPS_ATAN, OPS_CEIL,
     OPS_EXP, OPS_FABS, OPS_FLOOR, OPS_SQRT, OPS_TAN, OPS_TANH,
     OPS_COS, OPS_COSH, OPS_LOG, OPS_LOG10, OPS_SIN, OPS_SINH,
-    OPS_ATAN2, OPS_FMOD, OPS_POW :
+    OPS_ATAN2, OPS_FMOD, OPS_POW,
+    OPS_WAITV_2, OPS_SIGN_2, OPS_FMTNUM_2, OPS_ACOS_2, OPS_ASIN_2,
+    OPS_ATAN_2, OPS_CEIL_2, OPS_EXP_2, OPS_FLOOR_2, OPS_TAN_2, OPS_TANH_2,
+    OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
+    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2 :
     begin
       Result := TOCNameFromArg(DS, argValue);
     end;
-    OPS_PRIORITY :
+    OPS_PRIORITY, OPS_PRIORITY_2 :
     begin
       if argValue = NOT_AN_ELEMENT then
         Result := STR_NA
       else
         Result := Format(HEX_FMT, [argValue]);
     end;
-    OPS_ARROP :
+    OPS_ARROP, OPS_ARROP_2 :
     begin
       if argValue = NOT_AN_ELEMENT then
         Result := STR_NA
@@ -1583,7 +1771,6 @@ begin
   end;
   // begin to generate the output string
   bNotFirst := False;
-//  tmpStr := Format(HEX_FMT, [Result]);
   opIdx := IndexOfOpcode(op);
   if opIdx = -1 then
     raise Exception.CreateFmt(sInvalidOpcode, [Ord(op)]);
@@ -1935,7 +2122,6 @@ end;
 constructor TRXEDumper.Create;
 begin
   inherited;
-  fFirmwareVersion := 105; // 1.05 NXT 1.1 firmware
   fHeader := TRXEHeader.Create;
   fDSData := TDSData.Create;
   fClumpData := TClumpData.Create;
@@ -1949,6 +2135,7 @@ begin
   fTmpDataspace := TDataspace.Create;
   fHeader.Head.DSCount := 0;
   fOnlyDumpCode := False;
+  FirmwareVersion := 105; // 1.05 NXT 1.1 firmware
 end;
 
 destructor TRXEDumper.Destroy;
@@ -2022,6 +2209,9 @@ procedure TRXEDumper.LoadFromStream(aStream: TStream);
 begin
   aStream.Position := 0;
   LoadRXEHeader(fHeader, aStream);
+  FirmwareVersion := MAX_FW_VER1X;
+  if fHeader.Head.Version > 5 then
+    FirmwareVersion := FirmwareVersion + 1;
   LoadRXEDataSpace(fHeader, fDSData, aStream);
   LoadRXEClumpRecords(fHeader, fClumpData, aStream);
   LoadRXECodeSpace(fHeader, fCode, aStream);
@@ -2087,7 +2277,48 @@ end;
 
 function TRXEDumper.GetNXTInstruction(const idx: integer): NXTInstruction;
 begin
-  Result := NXTInstructions1x[idx];
+  Result := fNXTInstructions[idx];
+end;
+
+procedure TRXEDumper.SetFirmwareVersion(const Value: word);
+begin
+  fFirmwareVersion := Value;
+  InitializeInstructions;
+end;
+
+procedure TRXEDumper.InitializeInstructions;
+var
+  i : integer;
+begin
+  if fFirmwareVersion > MAX_FW_VER1X then
+  begin
+    SetLength(fNXTInstructions, NXTInstructionsCount2x);
+    for i := 0 to NXTInstructionsCount2x - 1 do begin
+      fNXTInstructions[i] := NXTInstructions2x[i];
+    end;
+  end
+  else
+  begin
+    SetLength(fNXTInstructions, NXTInstructionsCount1x);
+    for i := 0 to NXTInstructionsCount1x - 1 do begin
+      fNXTInstructions[i] := NXTInstructions1x[i];
+    end;
+  end;
+end;
+
+function TRXEDumper.IndexOfOpcode(op : TOpCode) : integer;
+var
+  i : integer;
+begin
+  Result := -1;
+  for i := Low(fNXTInstructions) to High(fNXTInstructions) do
+  begin
+    if fNXTInstructions[i].Encoding = op then
+    begin
+      Result := i;
+      Break;
+    end;
+  end;
 end;
 
 { TDSBase }
@@ -3270,7 +3501,6 @@ begin
         DE := SubEntries[i];
         bpt := DE.ElementSize; // 2006-10-02 JCH recursively calculate the element size
         // this fixes a problem with the size of arrays containing nested aggregate types
-//        bpt := BytesPerType[DE.DataType];
         padBytes := bpt - (Result mod bpt);
         if padBytes < bpt then
         begin
@@ -3495,7 +3725,6 @@ begin
   ReadWordFromStream(aStream, X.DataDesc);
   // copy DSTOCEntry values to collection item
   X.TypeDesc := Byte(Ord(Self.DataType));
-//  X.Flags :=
 end;
 
 procedure TDataspaceEntry.SaveToStream(aStream: TStream);
@@ -3744,7 +3973,6 @@ begin
   fMaxErrors        := 0;
   fIgnoreSystemFile := False;
   fEnhancedFirmware := False;
-  fFirmwareVersion  := 105; // 1.05 NXT 1.1 firmware 
   fWarningsOff      := False;
   fReturnRequired   := False;
   fCaseSensitive    := True;
@@ -3754,6 +3982,7 @@ begin
   fProductVersion   := GetProductVersion;
   CreateObjects;
   InitializeHeader;
+  FirmwareVersion  := 105; // 1.05 NXT 1.1 firmware
 end;
 
 destructor TRXEProgram.Destroy;
@@ -3920,7 +4149,6 @@ begin
   S.Write(PChar(tmp)^, Length(tmp));
   S.Write(nbc_common_data, High(nbc_common_data)+1);
   S.Write(nxt_defs_data, High(nxt_defs_data)+1);
-//  tmp := Format('#line 0 "%s"'#13#10, [CurrentFile]);
   tmp := '#reset'#13#10;
   S.Write(PChar(tmp)^, Length(tmp));
 end;
@@ -4106,7 +4334,7 @@ begin
 end;
 {$ENDIF}
 
-function DetermineLineType(const state : TMainAsmState; namedTypes: TMapList;
+function TRXEProgram.DetermineLineType(const state : TMainAsmState; namedTypes: TMapList;
   op : string; bUseCase : boolean) : TAsmLineType;
 begin
   // special handling for [] at end of opcode
@@ -4207,7 +4435,7 @@ begin
   Result := values.Count;
 end;
 
-procedure ChunkLine(const state : TMainAsmState; namedTypes: TMapList;
+procedure TRXEProgram.ChunkLine(const state : TMainAsmState; namedTypes: TMapList;
   line : string; bUseCase : boolean; var lbl, opcode, args : string;
   var lineType : TAsmLineType; var bIgnoreDups : boolean);
 var
@@ -4769,7 +4997,7 @@ begin
     Abort;
 end;
 
-function ExpectedArgType(const op : TOpCode; const argIdx: integer): TAsmArgType;
+function ExpectedArgType(const firmVer : word; const op : TOpCode; const argIdx: integer): TAsmArgType;
 begin
   case op of
     OP_ADD, OP_SUB, OP_NEG, OP_MUL, OP_DIV, OP_MOD,
@@ -4779,7 +5007,11 @@ begin
     OPS_ACOS, OPS_ASIN, OPS_ATAN, OPS_CEIL,
     OPS_EXP, OPS_FABS, OPS_FLOOR, OPS_SQRT, OPS_TAN, OPS_TANH,
     OPS_COS, OPS_COSH, OPS_LOG, OPS_LOG10, OPS_SIN, OPS_SINH,
-    OPS_ATAN2, OPS_FMOD, OPS_POW :
+    OPS_ATAN2, OPS_FMOD, OPS_POW,
+    OPS_ACOS_2, OPS_ASIN_2, OPS_ATAN_2, OPS_CEIL_2,
+    OPS_EXP_2, OPS_FLOOR_2, OPS_TAN_2, OPS_TANH_2,
+    OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
+    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2 :
     begin
       if argIdx > 0 then
         Result := aatVariable
@@ -4979,15 +5211,32 @@ begin
         Result := aatScalarNoConst;
     end;
     OP_WAIT : begin
-      Result := aatConstant;
+      if firmVer > MAX_FW_VER1X then
+      begin
+        Result := aatScalarOrNull;
+      end
+      else
+        Result := aatConstant;
     end;
-    OPS_WAITV : begin
+    OPS_WAITV{, OP_SQRT_2} : begin
+      if firmVer > MAX_FW_VER1X then
+      begin
+        // OPS_WAITV == OP_SQRT_2 in 2.x firmware
+        if argIdx > 0 then
+          Result := aatVariable
+        else
+          Result := aatVarNoConst;
+      end
+      else
+        Result := aatScalar;
+    end;
+    OPS_WAITV_2 : begin
       Result := aatScalar;
     end;
     OPS_CALL : begin
       Result := aatClumpID;
     end;
-    OPS_ABS, OPS_SIGN : begin
+    OPS_ABS{, OP_ABS_2}, OPS_SIGN, OPS_SIGN_2 : begin
       if argIdx = 1 then
         Result := aatScalar
       else // 0
@@ -5044,7 +5293,7 @@ begin
       else
         Result := aatConstant;
     end;
-    OPS_FMTNUM : begin
+    OPS_FMTNUM, OPS_FMTNUM_2 : begin
       if argIdx > 1 then
         Result := aatScalar
       else if argIdx = 1 then
@@ -5117,7 +5366,7 @@ begin
     delta := 0;
   for i := delta to AL.Args.Count - 1 do
   begin
-    expected := ExpectedArgType(AL.Command, i);
+    expected := ExpectedArgType(FirmwareVersion, AL.Command, i);
     arg := AL.Args[i];
     if expected in
        [aatVariable, aatVarOrNull, aatArray, aatString, aatScalar, aatScalarOrNull] then
@@ -5368,7 +5617,7 @@ begin
       end;
       for i := 0 to AL.Args.Count - 1 do begin
         arg := AL.Args[i].Value;
-        argType := ExpectedArgType(Al.Command, i);
+        argType := ExpectedArgType(FirmwareVersion, Al.Command, i);
         case argType of
           aatVariable, aatVarNoConst, aatVarOrNull,
           aatScalar, aatScalarNoConst, aatScalarOrNull :
@@ -5593,7 +5842,7 @@ begin
       for i := 0 to AL.Args.Count - 1 do
       begin
         arg := AL.Args[i].Value;
-        argType := ExpectedArgType(Al.Command, i);
+        argType := ExpectedArgType(FirmwareVersion, Al.Command, i);
         case argType of
           aatLabelID : begin
             // check labels
@@ -5716,28 +5965,53 @@ var
 begin
   tmpLine := AL.LineNum;
   case op of
-    OP_WAIT, OPS_WAITV : begin
-      if not EnhancedFirmware then
+    OP_WAIT, OPS_WAITV, OPS_WAITI_2, OPS_WAITV_2 : begin
+      // 2.x firmwares support wait and OPS_WAITV == OP_SQRT_2
+      if (FirmwareVersion > MAX_FW_VER1X) then
       begin
-        // if this is a wait opcode we replace it with two lines of code
-        if not fClumpUsesWait then
-          DefineWaitArgs(fCurrentClump.Name);
-        fClumpUsesWait := True;
-        if op = OP_WAIT then
-          AL.Command := OP_SET
-        else
-          AL.Command := OP_MOV;
-        Arg := AL.Args.Insert(0);
-        Arg.Value := Format('__%s_wait_ms', [fCurrentClump.Name]);
-        Dataspace.FindEntryAndAddReference(Arg.Value); // inc refcount
-        AL := fCurrentClump.ClumpCode.Add;
-        AL.Command  := OP_SUBCALL;
-        AL.LineNum  := tmpLine;
-        Arg := AL.Args.Add;
-        Arg.Value := Format('__%s_wait', [fCurrentClump.Name]);
-        Arg := AL.Args.Add;
-        Arg.Value := Format('__%0:s_wait_return', [fCurrentClump.Name]);
-        Dataspace.FindEntryAndAddReference(Arg.Value); // inc refcount
+        if op in [OP_WAIT, OP_SQRT_2{, OPS_WAITV}] then
+          Exit;
+        if not EnhancedFirmware then
+        begin
+          // opcode is either OPS_WAITI_2 or OPS_WAITV_2
+          // convert it to OP_WAIT with 2 args
+          if op = OPS_WAITI_2 then
+          begin
+            //AL == waiti 12345
+            c1 := CreateConstantVar(DataSpace, StrToIntDef(AL.Args[0].Value, 0), True);
+            Arg := AL.Args[0];
+            Arg.Value := c1;
+          end;
+          Arg := AL.Args.Insert(0);
+          Arg.Value := STR_NA;
+          AL.Command := OP_WAIT;
+        end;
+      end
+      else
+      begin
+        if not EnhancedFirmware then
+        begin
+          // convert OPS_WAITV
+          // if this is a wait opcode we replace it with two lines of code
+          if not fClumpUsesWait then
+            DefineWaitArgs(fCurrentClump.Name);
+          fClumpUsesWait := True;
+          if op = OP_WAIT then
+            AL.Command := OP_SET
+          else
+            AL.Command := OP_MOV;
+          Arg := AL.Args.Insert(0);
+          Arg.Value := Format('__%s_wait_ms', [fCurrentClump.Name]);
+          Dataspace.FindEntryAndAddReference(Arg.Value); // inc refcount
+          AL := fCurrentClump.ClumpCode.Add;
+          AL.Command  := OP_SUBCALL;
+          AL.LineNum  := tmpLine;
+          Arg := AL.Args.Add;
+          Arg.Value := Format('__%s_wait', [fCurrentClump.Name]);
+          Arg := AL.Args.Add;
+          Arg.Value := Format('__%0:s_wait_return', [fCurrentClump.Name]);
+          Dataspace.FindEntryAndAddReference(Arg.Value); // inc refcount
+        end;
       end;
     end;
     OPS_STRINDEX : begin
@@ -5784,7 +6058,7 @@ begin
         de1.IncRefCount;
       end;
     end;
-    OPS_START : begin
+    OPS_START, OPS_START_2 : begin
       if AL.Args.Count < 1 then
         ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidStatement, true)
       else
@@ -5808,7 +6082,8 @@ begin
         end;
       end;
     end;
-    OPS_STOPCLUMP, OPS_PRIORITY, OPS_FMTNUM : begin
+    OPS_STOPCLUMP, OPS_PRIORITY, OPS_FMTNUM,
+    OPS_STOPCLUMP_2, OPS_PRIORITY_2, OPS_FMTNUM_2 : begin
       if not EnhancedFirmware then
       begin
         // replace with no-op if not running enhanced firmware and report error
@@ -5834,7 +6109,10 @@ begin
       Arg.Value := Format('__%s_return', [fCurrentClump.Name]);
       Dataspace.FindEntryAndAddReference(Arg.Value); // inc refcount
     end;
-    OPS_ABS : begin
+    OPS_ABS{, OP_ABS_2} : begin
+      // 2.x standard firmware supports ABS opcode
+      if FirmwareVersion > MAX_FW_VER1X then
+        Exit;
       if not EnhancedFirmware then
       begin
         if AL.Args.Count = 2 then
@@ -5866,7 +6144,7 @@ begin
         end;
       end;
     end;
-    OPS_SIGN : begin
+    OPS_SIGN, OPS_SIGN_2 : begin
       if not EnhancedFirmware then
       begin
         if AL.Args.Count = 2 then
@@ -6349,13 +6627,53 @@ end;
 
 function TRXEProgram.GetNXTInstruction(const idx: integer): NXTInstruction;
 begin
-  Result := NXTInstructions1x[idx];
+  Result := fNXTInstructions[idx];
 end;
 
 procedure TRXEProgram.SetFirmwareVersion(const Value: word);
 begin
   fFirmwareVersion := Value;
   CodeSpace.FirmwareVersion := Value;
+  if fFirmwareVersion > MAX_FW_VER1X then
+    CompilerVersion := 6
+  else
+    CompilerVersion := 5;
+  InitializeInstructions;
+end;
+
+function TRXEProgram.IndexOfOpcode(op : TOpCode) : integer;
+var
+  i : integer;
+begin
+  Result := -1;
+  for i := Low(fNXTInstructions) to High(fNXTInstructions) do
+  begin
+    if fNXTInstructions[i].Encoding = op then
+    begin
+      Result := i;
+      Break;
+    end;
+  end;
+end;
+
+procedure TRXEProgram.InitializeInstructions;
+var
+  i : integer;
+begin
+  if fFirmwareVersion > MAX_FW_VER1X then
+  begin
+    SetLength(fNXTInstructions, NXTInstructionsCount2x);
+    for i := 0 to NXTInstructionsCount2x - 1 do begin
+      fNXTInstructions[i] := NXTInstructions2x[i];
+    end;
+  end
+  else
+  begin
+    SetLength(fNXTInstructions, NXTInstructionsCount1x);
+    for i := 0 to NXTInstructionsCount1x - 1 do begin
+      fNXTInstructions[i] := NXTInstructions1x[i];
+    end;
+  end;
 end;
 
 { TAsmLine }
@@ -6506,10 +6824,10 @@ begin
   fArity := 0;
   fCC := 0;
   if Command = OPS_INVALID then Exit;
-  idx := IndexOfOpcode(Command);
+  idx := CodeSpace.IndexOfOpcode(Command);
   if idx <> -1 then
   begin
-    NI := GetNXTInstruction(idx);
+    NI := CodeSpace.GetNXTInstruction(idx);
     fArity := NI.Arity;
     fCC := NI.CCType;
     if fArity = 6 then
@@ -6658,8 +6976,8 @@ begin
         begin
           // some opcodes have clump IDs as their arguments.  Those need
           // special handling.
-          if ((Command in [OP_SUBCALL, OPS_CALL, OPS_PRIORITY]) and (i = 0)) or
-             (Command in [OP_FINCLUMPIMMED, OPS_START, OPS_STOPCLUMP]) then
+          if ((Command in [OP_SUBCALL, OPS_CALL, OPS_PRIORITY, OPS_PRIORITY_2]) and (i = 0)) or
+             (Command in [OP_FINCLUMPIMMED, OPS_START, OPS_STOPCLUMP, OPS_START_2, OPS_STOPCLUMP_2]) then
           begin
             // try to lookup the clump # from the clump name
             dsid := CodeSpace.IndexOf(Arg.Value);
@@ -6668,7 +6986,7 @@ begin
           begin
             // argument is not a valid integer (in string form)
             // could this argument be a label?
-            argType := ExpectedArgType(Self.Command, i);
+            argType := ExpectedArgType(FirmwareVersion, Self.Command, i);
             if argType = aatLabelID then
             begin
               if IsLabel(Arg.Value, dsid) then
@@ -6718,7 +7036,7 @@ begin
     Result := LineLabel;
     if Result <> '' then
       Result := Result + ': ';
-    Result := Result + OpcodeToStr(Command) + ' ' + Args.AsString;
+    Result := Result + CodeSpace.OpcodeToStr(Command) + ' ' + Args.AsString;
   end;
 end;
 
@@ -6763,7 +7081,7 @@ procedure TAsmLine.RemoveVariableReference(const arg: string; const idx : intege
 var
   argType : TAsmArgType;
 begin
-  argType := ExpectedArgType(Command, idx);
+  argType := ExpectedArgType(FirmwareVersion, Command, idx);
   case argType of
     aatVariable, aatVarNoConst, aatVarOrNull,
     aatScalar, aatScalarNoConst, aatScalarOrNull, aatMutex,
@@ -6789,9 +7107,9 @@ begin
   fSpecialStr := Value;
 end;
 
-function TAsmLine.GetNXTInstruction(const idx: integer): NXTInstruction;
+function TAsmLine.FirmwareVersion: word;
 begin
-  Result := CodeSpace.GetNXTInstruction(idx);
+  Result := CodeSpace.FirmwareVersion;
 end;
 
 { TAsmArguments }
@@ -6873,7 +7191,8 @@ begin
     begin
       AL := C.ClumpCode.Items[j];
       if AL.Command in [OP_SUBCALL, OPS_CALL, OP_FINCLUMPIMMED,
-                        OPS_START, OPS_STOPCLUMP, OPS_PRIORITY] then
+                        OPS_START, OPS_STOPCLUMP, OPS_PRIORITY,
+                        OPS_START_2, OPS_STOPCLUMP_2, OPS_PRIORITY_2] then
       begin
         // a clump name argument
         if AL.Args.Count > 0 then
@@ -6918,7 +7237,6 @@ end;
 constructor TCodeSpace.Create(ds : TDataspace);
 begin
   inherited Create(TClump);
-  fFirmwareVersion := 105;
   fDS := ds;
   fInitName := 'main';
   fAddresses := TObjectList.Create;
@@ -6926,6 +7244,7 @@ begin
   fMultiThreadedClumps := TStringList.Create;
   TStringList(fMultiThreadedClumps).CaseSensitive := True;
   TStringList(fMultiThreadedClumps).Duplicates := dupIgnore;
+  FirmwareVersion := 105;
 end;
 
 destructor TCodeSpace.Destroy;
@@ -7156,7 +7475,66 @@ end;
 
 function TCodeSpace.GetNXTInstruction(const idx: integer): NXTInstruction;
 begin
-  Result := NXTInstructions1x[idx];
+  Result := fNXTInstructions[idx];
+end;
+
+procedure TCodeSpace.InitializeInstructions;
+var
+  i : integer;
+begin
+  if fFirmwareVersion > MAX_FW_VER1X then
+  begin
+    SetLength(fNXTInstructions, NXTInstructionsCount2x);
+    for i := 0 to NXTInstructionsCount2x - 1 do begin
+      fNXTInstructions[i] := NXTInstructions2x[i];
+    end;
+  end
+  else
+  begin
+    SetLength(fNXTInstructions, NXTInstructionsCount1x);
+    for i := 0 to NXTInstructionsCount1x - 1 do begin
+      fNXTInstructions[i] := NXTInstructions1x[i];
+    end;
+  end;
+end;
+
+function TCodeSpace.IndexOfOpcode(op: TOpCode): integer;
+var
+  i : integer;
+begin
+  Result := -1;
+  for i := Low(fNXTInstructions) to High(fNXTInstructions) do
+  begin
+    if fNXTInstructions[i].Encoding = op then
+    begin
+      Result := i;
+      Break;
+    end;
+  end;
+end;
+
+procedure TCodeSpace.SetFirmwareVersion(const Value: word);
+begin
+  fFirmwareVersion := Value;
+  InitializeInstructions;
+end;
+
+function TCodeSpace.OpcodeToStr(const op: TOpCode): string;
+var
+  i : integer;
+begin
+  if op <> OPS_INVALID then
+    Result := Format('bad op (%d)', [Ord(op)])
+  else
+    Result := '';
+  for i := Low(fNXTInstructions) to High(fNXTInstructions) do
+  begin
+    if fNXTInstructions[i].Encoding = op then
+    begin
+      Result := fNXTInstructions[i].Name;
+      break;
+    end;
+  end;
 end;
 
 { TClump }
@@ -7173,12 +7551,12 @@ begin
   tmpSL := TStringList.Create;
   try
     tmpSL.CommaText := args;
-    if opcode = OpcodeToStr(OPS_REQUIRES) then
+    if opcode = CodeSpace.OpcodeToStr(OPS_REQUIRES) then
     begin
       // upstream clumps
       fUpstream.AddStrings(tmpSL);
     end
-    else if opcode = OpcodeToStr(OPS_USES) then
+    else if opcode = CodeSpace.OpcodeToStr(OPS_USES) then
     begin
       // downstream clumps
 //      fDownstream.AddStrings(tmpSL);  // this seems to do the same as the for loop does
@@ -7588,7 +7966,8 @@ begin
             inc(offset);
           end;
           // every line between Items[i] and Items[i+offset] are NOP lines.
-          if i < (ClumpCode.Count - offset) then begin
+          if i < (ClumpCode.Count - offset) then
+          begin
             ALNext := ClumpCode.Items[i+offset];
             // now check other cases
             // bricxcc-Bugs-1669679 - make sure the next line
@@ -7631,26 +8010,29 @@ begin
                     end;
                   end;
                 end;
-                OPS_WAITV : begin
-                  arg1 := AL.Args[0].Value;
-                  arg2 := ALNext.Args[0].Value;
-                  if (arg1 = arg2) then begin
-                    // set|mov __D0,whatever  (__D0 or __stack_nnn)
-                    // waitv __D0 <-- replace these two lines with
-                    // nop (if arg1 and arg2 are stack or register variables)
-                    // waitv|wait whatever
-                    if AL.Command = OP_SET then
-                      ALNext.Command := OP_WAIT;
-                    ALNext.Args[0].Value := AL.Args[1].Value;
-                    ALNext.RemoveVariableReference(arg2, 0);
-                    if IsStackOrReg(arg1) then
-                    begin
-                      // remove second reference to _D0
-                      AL.RemoveVariableReference(arg1, 0);
-                      RemoveOrNOPLine(AL, ALNext, i);
+                OPS_WAITV, OPS_WAITV_2 : begin
+                  if FirmwareVersion <= MAX_FW_VER1X then
+                  begin
+                    arg1 := AL.Args[0].Value;
+                    arg2 := ALNext.Args[0].Value;
+                    if (arg1 = arg2) then begin
+                      // set|mov __D0,whatever  (__D0 or __stack_nnn)
+                      // waitv __D0 <-- replace these two lines with
+                      // nop (if arg1 and arg2 are stack or register variables)
+                      // waitv|wait whatever
+                      if AL.Command = OP_SET then
+                        ALNext.Command := OP_WAIT;
+                      ALNext.Args[0].Value := AL.Args[1].Value;
+                      ALNext.RemoveVariableReference(arg2, 0);
+                      if IsStackOrReg(arg1) then
+                      begin
+                        // remove second reference to _D0
+                        AL.RemoveVariableReference(arg1, 0);
+                        RemoveOrNOPLine(AL, ALNext, i);
+                      end;
+                      bDone := False;
+                      Break;
                     end;
-                    bDone := False;
-                    Break;
                   end;
                 end;
                 OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD, OP_AND, OP_OR, OP_XOR : begin
@@ -7837,9 +8219,9 @@ begin
   Result := Codespace.fMultiThreadedClumps.IndexOf(Self.Name) <> -1;
 end;
 
-function TClump.GetNXTInstruction(const idx: integer): NXTInstruction;
+function TClump.FirmwareVersion: word;
 begin
-  Result := CodeSpace.GetNXTInstruction(idx);
+  Result := CodeSpace.FirmwareVersion;
 end;
 
 { TClumpCode }
@@ -7898,11 +8280,6 @@ end;
 function TClumpCode.GetItem(Index: Integer): TAsmLine;
 begin
   Result := TAsmLine(inherited GetItem(Index));
-end;
-
-function TClumpCode.GetNXTInstruction(const idx: integer): NXTInstruction;
-begin
-  Result := Clump.GetNXTInstruction(idx);
 end;
 
 procedure TClumpCode.HandleNameToDSID(const aName: string; var aId: integer);

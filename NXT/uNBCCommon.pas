@@ -5,9 +5,6 @@ interface
 uses
   Parser10, uNXTConstants, Classes;
 
-const
-  NXT2_MIN_FIRMWARE_VERSION = 120;
-
 type
   TNBCExpParser = class(TExpParser)
   private
