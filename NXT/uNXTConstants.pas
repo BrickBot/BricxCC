@@ -3,6 +3,10 @@ unit uNXTConstants;
 interface
 
 const
+  MAX_FW_VER1X = 107; // 1.07
+  MIN_FW_VER2X = 120; // 1.20
+
+const
   OPCC1_LT   = $00;
   OPCC1_GT   = $01;
   OPCC1_LTEQ = $02;
@@ -112,8 +116,8 @@ const
   OPS_POW          = $50;
 
   // standard firmware opcodes (1.26+)
-  OPS_SQRT_2       = $36;
-  OPS_ABS_2        = $37;
+  OP_SQRT_2        = $36;
+  OP_ABS_2         = $37;
 
   // enhanced firmware opcodes (1.28)
   OPS_WAITI_2        = $64;
@@ -506,7 +510,7 @@ const
   VM_FORMAT_STRING             = 'MindstormsNXT';
   VM_FORMAT_STRING_SIZE        = 16;
   VM_OLDEST_COMPATIBLE_VERSION = $0004;
-  FIRMWAREVERSION              = $0;
+  FIRMWARE_VERSION             = $0;
 
 const
   NOT_A_HANDLE   = $FF;

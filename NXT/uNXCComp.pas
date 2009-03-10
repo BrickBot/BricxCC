@@ -441,7 +441,7 @@ implementation
 
 uses
   SysUtils, Math, uNXCLexer, uNBCLexer, mwGenericLex, uLocalizedStrings,
-  NBCCommonData, NXCDefsData;
+  NBCCommonData, NXCDefsData, uNXTConstants;
 
 {--------------------------------------------------------------}
 { Constant Declarations }
@@ -591,6 +591,8 @@ const
                   TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
 const
   UnsignedIntegerTypes = [TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
+  SignedIntegerTypes = [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF];
+  SignedTypes = SignedIntegerTypes + [TOK_FLOATDEF];
 
 function GetArrayDimension(dt : char) : integer;
 begin
@@ -1717,6 +1719,13 @@ end;
 
 procedure TNXCComp.StoreDiv(const name : string);
 begin
+  // check for unsafe division (signed by unsigned)
+  if (DataType(name) in SignedTypes) and (StatementType = stUnsigned) then
+  begin
+    // cast the unsigned type to a signed type
+    EmitLn(Format('mov %s, %s', [SignedRegisterName, UnsignedRegisterName]));
+    StatementType := stSigned;
+  end;
   EmitLn(Format('div %0:s, %0:s, %s', [GetDecoratedIdent(name), RegisterName]));
 end;
 
@@ -1919,9 +1928,20 @@ end;
 { Divide Top of Stack by Primary }
 
 procedure TNXCComp.PopDiv;
+var
+  p0, p1, p2 : string;
 begin
+  p0 := RegisterName;
+  p1 := tos;
+  p2 := RegisterName;
+  if (DataType(p1) in SignedTypes) and (DataType(p0) in UnsignedIntegerTypes) then
+  begin
+    // cast the unsigned type to a signed type
+    EmitLn(Format('mov %s, %s', [SignedRegisterName, UnsignedRegisterName]));
+    p0 := SignedRegisterName;
+  end;
   fCCSet := False;
-  EmitLn(Format('div %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
+  EmitLn(Format('div %2:s, %1:s, %0:s', [p0, p1, p2]));
   pop;
 end;
 
@@ -2268,7 +2288,7 @@ var
   oldInlining : boolean;
 begin
   if (dt in [TOK_FLOATDEF, TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4]) and
-     (FirmwareVersion < NXT2_MIN_FIRMWARE_VERSION) then
+     (FirmwareVersion < MIN_FW_VER2X) then
     AbortMsg(sFloatNotSupported);
   // 2007-07-05 JCH:
   // changed this function to perform no code generation of variable
@@ -6568,7 +6588,7 @@ var
   end;
 begin
   LastRegIdx := High(REGVARS_ARRAY);
-  if FirmwareVersion < NXT2_MIN_FIRMWARE_VERSION then
+  if FirmwareVersion < MIN_FW_VER2X then
     dec(LastRegIdx, 2);
   for j := 0 to fArrayHelpers.Count - 1 do
   begin
@@ -6628,7 +6648,7 @@ begin
       for i := 1 to MaxStackDepth do begin
         EmitLn(Format('__unsigned_stack_%3.3d%s long', [i, name]));
       end;
-      if FirmwareVersion >= NXT2_MIN_FIRMWARE_VERSION then
+      if FirmwareVersion >= MIN_FW_VER2X then
       begin
         for i := 1 to MaxStackDepth do begin
           EmitLn(Format('__float_stack_%3.3d%s float', [i, name]));
@@ -6648,7 +6668,7 @@ begin
       for i := 1 to MaxStackDepth do begin
         EmitLn(Format('__unsigned_stack_%3.3d%s long', [i, name]));
       end;
-      if FirmwareVersion >= NXT2_MIN_FIRMWARE_VERSION then
+      if FirmwareVersion >= MIN_FW_VER2X then
       begin
         for i := 1 to MaxStackDepth do begin
           EmitLn(Format('__float_stack_%3.3d%s float', [i, name]));
@@ -8275,7 +8295,7 @@ end;
 procedure TNXCComp.SetStatementType(const Value: TStatementType);
 begin
   fStatementType := Value;
-  if (Value = stFloat) and (FirmwareVersion < NXT2_MIN_FIRMWARE_VERSION) then
+  if (Value = stFloat) and (FirmwareVersion < MIN_FW_VER2X) then
     AbortMsg(sFloatNotSupported);
 end;
 
