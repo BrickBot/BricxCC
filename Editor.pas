@@ -208,6 +208,13 @@ uses
 var
   localSearchFromCaret: boolean;
 
+function GetLineNumber(const aY : integer) : integer;
+begin
+  Result := aY;
+  if ZeroStart then
+    dec(Result);
+end;
+
 function HelpALink(keyword: string; bNQC : Boolean): Boolean;
 var
   MacroStr: array[0..255] of Char;
@@ -520,7 +527,7 @@ var
   i, epos, lnumb, c : integer;
   str : string;
 begin
-  lnumb := 0;
+  lnumb := -1;
   for i := TheErrors.ItemIndex downto 0 do
   begin
     epos := Pos('line ',TheErrors.Items[i]);
@@ -531,8 +538,10 @@ begin
      break;
     end;
   end;
-  if lnumb > 0 then
+  if lnumb >= 0 then
   begin
+    if ZeroStart then
+      inc(lnumb);
     TheEditor.BlockBegin := Point(1, lnumb);
     TheEditor.BlockEnd   := Point(Length(TheEditor.Lines[lnumb-1])+1, lnumb);
     TheEditor.CaretXY    := TheEditor.BlockBegin;
@@ -854,7 +863,7 @@ var
   p: TPoint;
 begin
   p := TheEditor.CaretXY;
-  MainForm.barStatus.Panels[0].Text := Format('%6d:%3d', [p.Y, p.X]);
+  MainForm.barStatus.Panels[0].Text := Format('%6d:%3d', [GetLineNumber(p.Y), p.X]);
 end;
 
 procedure TEditorForm.UpdateModeOnStatusBar;
@@ -1473,8 +1482,8 @@ end;
 function ReadAndShowErrorFile(EdFrm : TEditorForm; const tempDir, ext : string) : boolean;
 var
   tmpSL : TStrings;
-  i, j, p : integer;
-  tmpstr, errMsg, fName, testStr : string;
+  i, j, p, lineNo : integer;
+  tmpstr, errMsg, fName, tmpName, testStr : string;
   bErrors : boolean;
 begin
   Result := True;
@@ -1511,14 +1520,18 @@ begin
                 if Pos(fname, errMsg) <> 0 then
                 begin
                   System.Delete(tmpStr, 1, p);
-                  errMsg := Copy(tmpStr, 1, Pos(':', tmpStr));
-                  errMsg := 'line ' + errMsg + ' ';
-                  p := Pos('):', tmpStr);
-                  if p <> 0 then begin
-                    System.Delete(tmpStr, 1, p+1);
-                    errMsg := errMsg + Trim(tmpStr);
-                    if EdFrm.TheErrors.Items.IndexOf(errMsg) = -1 then
-                      EdFrm.TheErrors.Items.Append(errMsg);
+                  errMsg := Copy(tmpStr, 1, Pos(':', tmpStr)-1);
+                  lineNo := StrToIntDef(errMsg, -1);
+                  if lineNo <> -1 then
+                  begin
+                    lineNo := GetLineNumber(lineNo);
+                    errMsg := 'line ' + IntToStr(lineNo) + ': ';
+                    p := Pos('):', tmpStr);
+                    if p <> 0 then begin
+                      System.Delete(tmpStr, 1, p+1);
+                      errMsg := errMsg + Trim(tmpStr);
+                      EdFrm.AddErrorMessage(errMsg);
+                    end;
                   end;
                 end;
               end;
@@ -1559,11 +1572,14 @@ begin
                 end;
                 // tmpstr should be ###: error message
                 // if it doesn't start with a number then ignore the line
-                j := StrToIntDef(Copy(tmpstr, 1, Pos(':', tmpstr)-1), -1);
-                if j <> -1 then begin
-                  errMsg := 'line ' + tmpstr;
-                  if EdFrm.TheErrors.Items.IndexOf(errMsg) = -1 then
-                    EdFrm.TheErrors.Items.Append(errMsg);
+                errMsg := Copy(tmpstr, 1, Pos(':', tmpstr)-1);
+                Delete(tmpstr, 1, Length(errMsg));
+                lineNo := StrToIntDef(errMsg, -1);
+                if lineNo <> -1 then
+                begin
+                  lineNo := GetLineNumber(lineNo);
+                  errMsg := 'line ' + IntToStr(lineNo) + tmpstr;
+                  EdFrm.AddErrorMessage(errMsg);
                 end
                 else begin
                   // is this a linker error?
@@ -1571,8 +1587,7 @@ begin
                   if (Pos(Copy(tmpstr, 1, p-1), fName) <> 0) then
                   begin
                     errMsg := 'linker error:' + Copy(tmpstr, p+1, Length(tmpstr));
-                    if EdFrm.TheErrors.Items.IndexOf(errMsg) = -1 then
-                      EdFrm.TheErrors.Items.Append(errMsg);
+                    EdFrm.AddErrorMessage(errMsg);
                   end;
                 end;
               end;
@@ -1590,14 +1605,25 @@ begin
               if i < (tmpSL.Count - 1) then
               begin
                 testStr := tmpSL[i+1];
-                p := Pos('temp'+ext+'" ; line', testStr);
-                if p > 0 then
-                  errMsg := Copy(testStr, p+12, MaxInt) + ':'+tmpstr
-                else
+                tmpName := 'temp' + ext;
+                p := Pos(tmpName+'" ; line', testStr);
+                if p = 0 then
                 begin
                   p := Pos(fName+'" ; line', testStr);
                   if p > 0 then
-                    errMsg := Copy(testStr, p+Length(fName)+4, MaxInt) + ':'+tmpstr;
+                    tmpName := fName;
+                end;
+                if p > 0 then
+                begin
+                  // get the line number
+                  p := p + Length(tmpName) + 4 + 5;
+                  errMsg := Copy(testStr, p, MaxInt);
+                  lineNo := StrToIntDef(errMsg, -1);
+                  if lineNo <> -1 then
+                  begin
+                    lineNo := GetLineNumber(lineNo);
+                    errMsg := 'line ' + IntToStr(lineNo) + ':' + tmpstr;
+                  end;
                 end;
               end;
               EdFrm.AddErrorMessage(errMsg);
