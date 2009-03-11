@@ -435,6 +435,7 @@ type
     property  SafeCalls : boolean read fSafeCalls write fSafeCalls;
     property  MaxErrors : word read fMaxErrors write fMaxErrors;
     property  OnCompilerMessage : TOnCompilerMessage read fOnCompMSg write fOnCompMsg;
+    property  ErrorCount : integer read fProgErrorCount;
   end;
 
 implementation

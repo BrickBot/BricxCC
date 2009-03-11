@@ -469,7 +469,7 @@ begin
               finally
                 DoWriteMessages(NC.CompilerMessages);
               end;
-              bNXCErrors := NC.CompilerMessages.Count > 0;
+              bNXCErrors := NC.ErrorCount > 0;
             finally
               NC.Free;
             end;
