@@ -5118,7 +5118,7 @@ begin
       else
         Result := aatArray;
     end;
-    OPS_ARROP : begin
+    OPS_ARROP, OPS_ARROP_2 : begin
       if argIdx = 0 then
         Result := aatConstant
       else if argIdx = 1 then
@@ -5282,13 +5282,13 @@ begin
       else
         Result := aatTypeName;
     end;
-    OPS_START : begin
+    OPS_START, OPS_START_2 : begin
       Result := aatClumpID;
     end;
-    OPS_STOPCLUMP : begin
+    OPS_STOPCLUMP, OPS_STOPCLUMP_2 : begin
       Result := aatClumpID;
     end;
-    OPS_PRIORITY : begin
+    OPS_PRIORITY, OPS_PRIORITY_2 : begin
       if argIdx = 0 then
         Result := aatClumpID
       else
