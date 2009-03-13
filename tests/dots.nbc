@@ -1,0 +1,34 @@
+//#define OUT_A 123
+
+#define MyMacro(_var, ...) add _var, __VA_ARGS__
+
+//#define MyMacro(_var) add _var, _var, 1
+
+dseg segment
+  value float 1.23
+  msg byte[]
+dseg ends
+
+thread main
+
+  MyMacro(value, value, 3.14156)
+
+  NumOut(0, LCD_LINE1, value)
+
+  wait2 NA, 1000
+  wait 1000
+  waitv 1000
+  mov value, 129.1234
+  sqrt value, value
+
+  NumOut(0, LCD_LINE2, value)
+  NumOut(0, LCD_LINE3, 123.05)
+
+//  // fmtnum is not currently implemented in the enhanced firmware 1.28
+  fmtnum msg, '%f', -3.1415926
+  TextOut(0, LCD_LINE4, msg)
+  
+loop:
+  jmp loop
+
+endt

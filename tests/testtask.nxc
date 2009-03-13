@@ -1,0 +1,10 @@
+
+task timerset()
+{int i=1;
+while(true);
+}
+
+task main()
+{start timerset;
+while (true);
+}
