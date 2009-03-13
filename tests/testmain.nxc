@@ -1,0 +1,13 @@
+#define DEFINEONE 1
+#define DEFINETWO 2
+#define DEFINETHREE 3
+
+#define DEFINEONE 3
+
+
+
+task main()
+{while(true);
+
+
+}
