@@ -1,19 +1,18 @@
-{*********************************************************}
-{                                                         }
-{     TParser 10.1 for Borland Delphi                     }
-{                                                         }
-{       A component for parsing and evaluating            }
-{       mathematical expressions specified at runtime     }
-{                                                         }
-{         Renate Schaaf (schaaf@math.usu.edu), 1993       }
-{         Alin Flaider (aflaidar@datalog.ro), 1996        }
-{         Stefan Hoffmeister                              }
-{              Stefan.Hoffmeister@Uni-Passau.de, 1997     }
-{                                                         }
-{                                                         }
-{  See  PARSER10.TXT  for documentation                   }
-{                                                         }
-{*********************************************************}
+(*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * All Rights Reserved.
+ *
+ *)
 unit Parser10;
 
 {$H+,S-} { long strings, no stack-checking}
