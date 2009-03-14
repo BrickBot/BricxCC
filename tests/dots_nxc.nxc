@@ -1,7 +1,10 @@
-//#define OUT_A 123
+#define OUT_A 123
 #define MyMacro(_x, ...) NumOut(_x, __VA_ARGS__)
-//#define SetSleepTimeout 12314
+#define SetSleepTimeout 12314
 float value = 1.23;
+float foobar = 356;
+
+#include "test.h"
 
 task main()
 {
