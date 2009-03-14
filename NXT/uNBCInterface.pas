@@ -53,7 +53,7 @@ type
     fMoreIncludes: boolean;
     fIncludePaths: string;
     fOnWriteMessages: TWriteMessages;
-    fWarningsAreOn: boolean;
+    fWarningsAreOff: boolean;
     fEnhancedFirmware: boolean;
     fWriteCompilerOutput: boolean;
     fCompilerOutputFilename: string;
@@ -121,7 +121,7 @@ type
     property DefaultIncludeDir : string read fDefaultIncludeDir write fDefaultIncludeDir;
     property MoreIncludes : boolean read fMoreIncludes write fMoreIncludes;
     property IncludePaths : string read fIncludePaths write fIncludePaths;
-    property WarningsAreOn : boolean read fWarningsAreOn write fWarningsAreOn;
+    property WarningsAreOff : boolean read fWarningsAreOff write fWarningsAreOff;
     property EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
     property FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
     property SafeCalls : boolean read fSafeCalls write fSafeCalls;
@@ -145,8 +145,8 @@ begin
   fMaxErrors := 0;
   fIgnoreSystemFile := False;
   fEnhancedFirmware := False;
-  fFirmwareVersion := 105; // 1.05 NXT 1.1 firmware 
-  fWarningsAreOn := False;
+  fFirmwareVersion := 105; // 1.05 NXT 1.1 firmware
+  fWarningsAreOff := False;
   fMoreIncludes := False;
   fBinaryInput := False;
   fDownload := False;
@@ -469,7 +469,7 @@ begin
               NC.OptimizeLevel := OptimizationLevel;
               NC.IncludeDirs.AddStrings(tmpIncDirs);
               NC.CurrentFile := GetCurrentFilename;
-              NC.WarningsOff := not WarningsAreOn;
+              NC.WarningsOff := WarningsAreOff;
               NC.IgnoreSystemFile := IgnoreSystemFile;
               NC.EnhancedFirmware := EnhancedFirmware;
               NC.FirmwareVersion  := FirmwareVersion;
@@ -498,7 +498,7 @@ begin
               C.Defines.AddStrings(ExtraDefines);
               C.ReturnRequiredInSubroutine := True;
               C.OptimizeLevel := OptimizationLevel;
-              C.WarningsOff   := not WarningsAreOn;
+              C.WarningsOff   := WarningsAreOff;
               C.EnhancedFirmware := EnhancedFirmware;
               C.FirmwareVersion  := FirmwareVersion;
               C.IgnoreSystemFile := IgnoreSystemFile;
@@ -558,7 +558,8 @@ end;
 
 procedure TNBCCompiler.DoWriteMessages(aStrings: TStrings);
 begin
-  fMessages.Assign(aStrings);
+  fMessages.AddStrings(aStrings);
+//  fMessages.Assign(aStrings);
   if Assigned(fOnWriteMessages) then
     fOnWriteMessages(aStrings);
 end;
@@ -593,7 +594,7 @@ begin
   Download                 := ParamSwitch('-d', False, Value);
   MoreIncludes             := ParamSwitch('-I', False, Value);
   IncludePaths             := ParamValue('-I', False, Value);
-  WarningsAreOn            := ParamSwitch('-w+', False, Value);
+  WarningsAreOff           := ParamSwitch('-w-', False, Value);
   EnhancedFirmware         := ParamSwitch('-EF', False, Value);
   FirmwareVersion          := ParamIntValue('-v', 105, False, Value);
   SafeCalls                := ParamSwitch('-safecall', False, Value);

@@ -745,6 +745,9 @@ var
   tmp, tmp1, tmp2, tmp3, tmp4 : string;
   stop : boolean;
 begin
+  // exit without doing anything if this is not an error and warnings are off
+  if WarningsOff and not err then
+    Exit;
   if (lineNo <> fLastErrLine) or (msg <> fLastErrMsg) then
   begin
     fLastErrLine := lineNo;
@@ -6382,7 +6385,8 @@ end;
 procedure TNXCComp.PreProcess;
 var
   P : TLangPreprocessor;
-  i : integer;
+  i, idx : integer;
+  tmpFile, tmpMsg : string;
 begin
   P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)));
   try
@@ -6400,7 +6404,11 @@ begin
     P.Preprocess(CurrentFile, fMS);
     for i := 0 to P.Warnings.Count - 1 do
     begin
-      ReportProblem(StrToIntDef(P.Warnings.Names[i], 0), CurrentFile, P.Warnings.ValueFromIndex[i], false);
+      tmpMsg := P.Warnings.ValueFromIndex[i];
+      idx := Pos('|', tmpMsg);
+      tmpFile := Copy(tmpMsg, 1, idx-1);
+      Delete(tmpMsg, 1, idx);
+      ReportProblem(StrToIntDef(P.Warnings.Names[i], 0), tmpFile, tmpMsg, false);
     end;
   finally
     P.Free;

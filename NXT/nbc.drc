@@ -8,125 +8,130 @@
   resources were bound to the produced executable.
 */
 
-#define GIFImage_sGIFImageFile 65184
-#define GIFImage_sProgressLoading 65185
-#define GIFImage_sProgressSaving 65186
-#define GIFImage_sProgressConverting 65187
-#define GIFImage_sProgressRendering 65188
-#define GIFImage_sProgressCopying 65189
-#define GIFImage_sProgressOptimizing 65190
-#define GIFImage_sUnsupportedClass 65200
-#define GIFImage_sInvalidData 65201
-#define GIFImage_sBadHeight 65202
-#define GIFImage_sBadWidth 65203
-#define GIFImage_sFailedPaste 65204
-#define GIFImage_sScreenSizeExceeded 65205
-#define GIFImage_sNoColorTable 65206
-#define GIFImage_sBadPixelCoordinates 65207
-#define GIFImage_sInvalidPixelFormat 65208
-#define GIFImage_sBadDimension 65209
-#define GIFImage_sNoDIB 65210
-#define GIFImage_sInvalidStream 65211
-#define GIFImage_sInvalidColor 65212
-#define GIFImage_sEmptyColorMap 65213
-#define GIFImage_sEmptyImage 65214
-#define GIFImage_sInvalidReduction 65215
-#define GIFImage_sOutOfData 65216
-#define GIFImage_sTooManyColors 65217
-#define GIFImage_sBadColorIndex 65218
-#define GIFImage_sBadVersion 65219
-#define GIFImage_sBadSignature 65220
-#define GIFImage_sScreenBadColorSize 65221
-#define GIFImage_sImageBadColorSize 65222
-#define GIFImage_sUnknownExtension 65223
-#define GIFImage_sBadExtensionLabel 65224
-#define GIFImage_sOutOfMemDIB 65225
-#define GIFImage_sDecodeTooFewBits 65226
-#define GIFImage_sDecodeCircular 65227
-#define GIFImage_sBadTrailer 65228
-#define GIFImage_sBadExtensionInstance 65229
-#define GIFImage_sBadBlockSize 65230
-#define GIFImage_sBadBlock 65231
-#define pnglang_EPNGMissingMultipleIDATText 65232
-#define pnglang_EPNGZLIBErrorText 65233
-#define pnglang_EPNGInvalidPaletteText 65234
-#define pnglang_EPNGInvalidFileHeaderText 65235
-#define pnglang_EPNGIHDRNotFirstText 65236
-#define pnglang_EPNGSizeExceedsText 65237
-#define pnglang_EPNGUnknownPalEntryText 65238
-#define pnglang_EPNGUnknownCriticalChunkText 65239
-#define pnglang_EPNGUnknownCompressionText 65240
-#define pnglang_EPNGUnknownInterlaceText 65241
-#define pnglang_EPNGCannotAssignChunkText 65242
-#define pnglang_EPNGUnexpectedEndText 65243
-#define pnglang_EPNGNoImageDataText 65244
-#define pnglang_EPNGOutMemoryText 65245
-#define pnglang_EPNGHeaderNotPresentText 65246
-#define pnglang_EInvalidNewSize 65247
-#define Consts_SScanLine 65248
-#define Consts_SChangeIconSize 65249
-#define Consts_SUnknownExtension 65250
-#define Consts_SUnknownClipboardFormat 65251
-#define Consts_SOutOfResources 65252
-#define Consts_SNoCanvasHandle 65253
-#define Consts_SVMetafiles 65254
-#define Consts_SVEnhMetafiles 65255
-#define Consts_SVIcons 65256
-#define Consts_SVBitmaps 65257
-#define Consts_SIconToClipboard 65258
-#define JConsts_sChangeJPGSize 65259
-#define JConsts_sJPEGError 65260
-#define JConsts_sJPEGImageFile 65261
-#define pnglang_EPngInvalidCRCText 65262
-#define pnglang_EPNGInvalidIHDRText 65263
-#define uLocalizedStrings_UsageSymbols 65264
-#define uLocalizedStrings_UsageWarnings 65265
-#define uLocalizedStrings_UsageEnhanced 65266
-#define uLocalizedStrings_UsageSafecall 65267
-#define uLocalizedStrings_UsageAPI 65268
-#define uLocalizedStrings_UsageHelp 65269
-#define P10Build_msgErrBlanks 65270
-#define P10Build_msgMissingBrackets 65271
-#define P10Build_msgParseError 65272
-#define P10Build_msgNestings 65273
-#define P10Build_msgTooComplex 65274
-#define P10Build_msgInternalError 65275
-#define Consts_SInvalidBitmap 65276
-#define Consts_SInvalidIcon 65277
-#define Consts_SInvalidMetafile 65278
-#define Consts_SInvalidPixelFormat 65279
-#define uLocalizedStrings_UsageSyntax 65280
-#define uLocalizedStrings_UsagePort 65281
-#define uLocalizedStrings_UsageBT 65282
-#define uLocalizedStrings_UsageDownload 65283
-#define uLocalizedStrings_UsageBinary 65284
-#define uLocalizedStrings_UsageQuiet 65285
-#define uLocalizedStrings_UsageNoSystem 65286
-#define uLocalizedStrings_UsageDefine 65287
-#define uLocalizedStrings_UsageDecompile 65288
-#define uLocalizedStrings_UsageOptimize 65289
-#define uLocalizedStrings_UsageMaxErrors 65290
-#define uLocalizedStrings_UsageOutput 65291
-#define uLocalizedStrings_UsageErrors 65292
-#define uLocalizedStrings_UsageIncludes 65293
-#define uLocalizedStrings_UsageNBCOutput 65294
-#define uLocalizedStrings_UsageListing 65295
-#define uLocalizedStrings_sCharLiteral 65296
-#define uLocalizedStrings_sStringLiteral 65297
-#define uLocalizedStrings_sStringType 65298
-#define uLocalizedStrings_sStringVarType 65299
-#define uLocalizedStrings_sStructType 65300
-#define uLocalizedStrings_sMutexType 65301
-#define uLocalizedStrings_sIntegerType 65302
-#define uLocalizedStrings_sMathFactor 65303
-#define uLocalizedStrings_sArrayDatatype 65304
-#define uLocalizedStrings_sUndefinedIdentifier 65305
-#define uLocalizedStrings_sDuplicateIdentifier 65306
-#define uLocalizedStrings_sTooManyArgs 65307
-#define uLocalizedStrings_sTooFewArgs 65308
-#define uLocalizedStrings_sTooFewParams 65309
-#define uLocalizedStrings_sMaxParamCountExceeded 65310
-#define uLocalizedStrings_sConstNotAllowed 65311
+#define GIFImage_sInvalidStream 65184
+#define GIFImage_sInvalidColor 65185
+#define GIFImage_sEmptyColorMap 65186
+#define GIFImage_sEmptyImage 65187
+#define GIFImage_sInvalidReduction 65188
+#define GIFImage_sGIFImageFile 65189
+#define GIFImage_sProgressLoading 65190
+#define GIFImage_sProgressSaving 65191
+#define GIFImage_sProgressConverting 65192
+#define GIFImage_sProgressRendering 65193
+#define GIFImage_sProgressCopying 65194
+#define GIFImage_sProgressOptimizing 65195
+#define GIFImage_sDecodeCircular 65200
+#define GIFImage_sBadTrailer 65201
+#define GIFImage_sBadExtensionInstance 65202
+#define GIFImage_sBadBlockSize 65203
+#define GIFImage_sBadBlock 65204
+#define GIFImage_sUnsupportedClass 65205
+#define GIFImage_sInvalidData 65206
+#define GIFImage_sBadHeight 65207
+#define GIFImage_sBadWidth 65208
+#define GIFImage_sFailedPaste 65209
+#define GIFImage_sScreenSizeExceeded 65210
+#define GIFImage_sNoColorTable 65211
+#define GIFImage_sBadPixelCoordinates 65212
+#define GIFImage_sInvalidPixelFormat 65213
+#define GIFImage_sBadDimension 65214
+#define GIFImage_sNoDIB 65215
+#define pnglang_EPNGUnexpectedEndText 65216
+#define pnglang_EPNGNoImageDataText 65217
+#define pnglang_EPNGOutMemoryText 65218
+#define pnglang_EPNGHeaderNotPresentText 65219
+#define pnglang_EInvalidNewSize 65220
+#define GIFImage_sOutOfData 65221
+#define GIFImage_sTooManyColors 65222
+#define GIFImage_sBadColorIndex 65223
+#define GIFImage_sBadVersion 65224
+#define GIFImage_sBadSignature 65225
+#define GIFImage_sScreenBadColorSize 65226
+#define GIFImage_sImageBadColorSize 65227
+#define GIFImage_sUnknownExtension 65228
+#define GIFImage_sBadExtensionLabel 65229
+#define GIFImage_sOutOfMemDIB 65230
+#define GIFImage_sDecodeTooFewBits 65231
+#define JConsts_sChangeJPGSize 65232
+#define JConsts_sJPEGError 65233
+#define JConsts_sJPEGImageFile 65234
+#define pnglang_EPngInvalidCRCText 65235
+#define pnglang_EPNGInvalidIHDRText 65236
+#define pnglang_EPNGMissingMultipleIDATText 65237
+#define pnglang_EPNGZLIBErrorText 65238
+#define pnglang_EPNGInvalidPaletteText 65239
+#define pnglang_EPNGInvalidFileHeaderText 65240
+#define pnglang_EPNGIHDRNotFirstText 65241
+#define pnglang_EPNGSizeExceedsText 65242
+#define pnglang_EPNGUnknownPalEntryText 65243
+#define pnglang_EPNGUnknownCriticalChunkText 65244
+#define pnglang_EPNGUnknownCompressionText 65245
+#define pnglang_EPNGUnknownInterlaceText 65246
+#define pnglang_EPNGCannotAssignChunkText 65247
+#define P10Build_msgInternalError 65248
+#define Consts_SInvalidBitmap 65249
+#define Consts_SInvalidIcon 65250
+#define Consts_SInvalidMetafile 65251
+#define Consts_SInvalidPixelFormat 65252
+#define Consts_SScanLine 65253
+#define Consts_SChangeIconSize 65254
+#define Consts_SUnknownExtension 65255
+#define Consts_SUnknownClipboardFormat 65256
+#define Consts_SOutOfResources 65257
+#define Consts_SNoCanvasHandle 65258
+#define Consts_SVMetafiles 65259
+#define Consts_SVEnhMetafiles 65260
+#define Consts_SVIcons 65261
+#define Consts_SVBitmaps 65262
+#define Consts_SIconToClipboard 65263
+#define uLocalizedStrings_UsageErrors 65264
+#define uLocalizedStrings_UsageIncludes 65265
+#define uLocalizedStrings_UsageNBCOutput 65266
+#define uLocalizedStrings_UsageListing 65267
+#define uLocalizedStrings_UsageSymbols 65268
+#define uLocalizedStrings_UsageWarnings 65269
+#define uLocalizedStrings_UsageEnhanced 65270
+#define uLocalizedStrings_UsageSafecall 65271
+#define uLocalizedStrings_UsageAPI 65272
+#define uLocalizedStrings_UsageFirmVer 65273
+#define uLocalizedStrings_UsageHelp 65274
+#define P10Build_msgErrBlanks 65275
+#define P10Build_msgMissingBrackets 65276
+#define P10Build_msgParseError 65277
+#define P10Build_msgNestings 65278
+#define P10Build_msgTooComplex 65279
+#define uLocalizedStrings_sTooFewArgs 65280
+#define uLocalizedStrings_sTooFewParams 65281
+#define uLocalizedStrings_sMaxParamCountExceeded 65282
+#define uLocalizedStrings_sConstNotAllowed 65283
+#define uLocalizedStrings_UsageSyntax 65284
+#define uLocalizedStrings_UsagePort 65285
+#define uLocalizedStrings_UsageBT 65286
+#define uLocalizedStrings_UsageDownload 65287
+#define uLocalizedStrings_UsageBinary 65288
+#define uLocalizedStrings_UsageQuiet 65289
+#define uLocalizedStrings_UsageNoSystem 65290
+#define uLocalizedStrings_UsageDefine 65291
+#define uLocalizedStrings_UsageDecompile 65292
+#define uLocalizedStrings_UsageOptimize 65293
+#define uLocalizedStrings_UsageMaxErrors 65294
+#define uLocalizedStrings_UsageOutput 65295
+#define uLocalizedStrings_sDirective 65296
+#define uLocalizedStrings_sNumber 65297
+#define uLocalizedStrings_sHexNumber 65298
+#define uLocalizedStrings_sCharLiteral 65299
+#define uLocalizedStrings_sStringLiteral 65300
+#define uLocalizedStrings_sStringType 65301
+#define uLocalizedStrings_sByteArrayType 65302
+#define uLocalizedStrings_sStringVarType 65303
+#define uLocalizedStrings_sStructType 65304
+#define uLocalizedStrings_sMutexType 65305
+#define uLocalizedStrings_sNumericType 65306
+#define uLocalizedStrings_sMathFactor 65307
+#define uLocalizedStrings_sArrayDatatype 65308
+#define uLocalizedStrings_sUndefinedIdentifier 65309
+#define uLocalizedStrings_sDuplicateIdentifier 65310
+#define uLocalizedStrings_sTooManyArgs 65311
 #define uLocalizedStrings_sRecursiveInlineError 65312
 #define uLocalizedStrings_sNestedCallsError 65313
 #define uLocalizedStrings_sRecursiveNotAllowed 65314
@@ -138,11 +143,11 @@
 #define uLocalizedStrings_sArgMustBeTask 65320
 #define uLocalizedStrings_sInvalidReturnType 65321
 #define uLocalizedStrings_sInvalidStringAssign 65322
-#define uLocalizedStrings_sExpectedString 65323
-#define uLocalizedStrings_sDataType 65324
-#define uLocalizedStrings_sIdentifier 65325
-#define uLocalizedStrings_sNumber 65326
-#define uLocalizedStrings_sHexNumber 65327
+#define uLocalizedStrings_sFloatNotSupported 65323
+#define uLocalizedStrings_sNoUnsignedFloat 65324
+#define uLocalizedStrings_sExpectedString 65325
+#define uLocalizedStrings_sDataType 65326
+#define uLocalizedStrings_sIdentifier 65327
 #define uLocalizedStrings_sInvalidBreakContinue 65328
 #define uLocalizedStrings_sProtoAlreadyDefined 65329
 #define uLocalizedStrings_sNotValidForPrototype 65330
@@ -353,6 +358,11 @@
 #define SysConst_SZeroDivide 65535
 STRINGTABLE
 BEGIN
+	GIFImage_sInvalidStream,	"Invalid stream operation"
+	GIFImage_sInvalidColor,	"Color not in color table"
+	GIFImage_sEmptyColorMap,	"Color table is empty"
+	GIFImage_sEmptyImage,	"Image is empty"
+	GIFImage_sInvalidReduction,	"Invalid reduction method"
 	GIFImage_sGIFImageFile,	"GIF Image"
 	GIFImage_sProgressLoading,	"Loading..."
 	GIFImage_sProgressSaving,	"Saving..."
@@ -360,6 +370,11 @@ BEGIN
 	GIFImage_sProgressRendering,	"Rendering..."
 	GIFImage_sProgressCopying,	"Copying..."
 	GIFImage_sProgressOptimizing,	"Optimizing..."
+	GIFImage_sDecodeCircular,	"Circular decoder table entry"
+	GIFImage_sBadTrailer,	"Invalid Image trailer"
+	GIFImage_sBadExtensionInstance,	"Internal error: Extension Instance does not match Extension Label"
+	GIFImage_sBadBlockSize,	"Unsupported Application Extension block size"
+	GIFImage_sBadBlock,	"Unknown GIF block type"
 	GIFImage_sUnsupportedClass,	"Object type not supported for operation"
 	GIFImage_sInvalidData,	"Invalid GIF data"
 	GIFImage_sBadHeight,	"Image height too small for contained frames"
@@ -371,11 +386,11 @@ BEGIN
 	GIFImage_sInvalidPixelFormat,	"Unsupported PixelFormat"
 	GIFImage_sBadDimension,	"Invalid image dimensions"
 	GIFImage_sNoDIB,	"Image has no DIB"
-	GIFImage_sInvalidStream,	"Invalid stream operation"
-	GIFImage_sInvalidColor,	"Color not in color table"
-	GIFImage_sEmptyColorMap,	"Color table is empty"
-	GIFImage_sEmptyImage,	"Image is empty"
-	GIFImage_sInvalidReduction,	"Invalid reduction method"
+	pnglang_EPNGUnexpectedEndText,	"This \"Portable Network Graphics\" image is invalid because the decoder found an unexpected end of the file."
+	pnglang_EPNGNoImageDataText,	"This \"Portable Network Graphics\" image contains no data."
+	pnglang_EPNGOutMemoryText,	"Some operation could not be performed because the system is out of resources. Close some windows and try again."
+	pnglang_EPNGHeaderNotPresentText,	"This operation is not valid because the current image contains no valid header."
+	pnglang_EInvalidNewSize,	"The new size provided for image resizing is invalid."
 	GIFImage_sOutOfData,	"Premature end of data"
 	GIFImage_sTooManyColors,	"Color table overflow"
 	GIFImage_sBadColorIndex,	"Invalid color index"
@@ -387,11 +402,11 @@ BEGIN
 	GIFImage_sBadExtensionLabel,	"Invalid extension introducer"
 	GIFImage_sOutOfMemDIB,	"Failed to allocate memory for GIF DIB"
 	GIFImage_sDecodeTooFewBits,	"Decoder bit buffer under-run"
-	GIFImage_sDecodeCircular,	"Circular decoder table entry"
-	GIFImage_sBadTrailer,	"Invalid Image trailer"
-	GIFImage_sBadExtensionInstance,	"Internal error: Extension Instance does not match Extension Label"
-	GIFImage_sBadBlockSize,	"Unsupported Application Extension block size"
-	GIFImage_sBadBlock,	"Unknown GIF block type"
+	JConsts_sChangeJPGSize,	"Cannot change the size of a JPEG image"
+	JConsts_sJPEGError,	"JPEG error #%d"
+	JConsts_sJPEGImageFile,	"JPEG Image File"
+	pnglang_EPngInvalidCRCText,	"This \"Portable Network Graphics\" image is not valid because it contains invalid pieces of data (crc error)"
+	pnglang_EPNGInvalidIHDRText,	"The \"Portable Network Graphics\" image could not be loaded because one of its main piece of data (ihdr) might be corrupted"
 	pnglang_EPNGMissingMultipleIDATText,	"This \"Portable Network Graphics\" image is invalid because it has missing image parts."
 	pnglang_EPNGZLIBErrorText,	"Could not decompress the image because it contains invalid compressed data.\r\n Description: "
 	pnglang_EPNGInvalidPaletteText,	"The \"Portable Network Graphics\" image contains an invalid palette."
@@ -403,11 +418,11 @@ BEGIN
 	pnglang_EPNGUnknownCompressionText,	"This \"Portable Network Graphics\" image is encoded with an unknown compression scheme which could not be decoded."
 	pnglang_EPNGUnknownInterlaceText,	"This \"Portable Network Graphics\" image uses an unknown interlace scheme which could not be decoded."
 	pnglang_EPNGCannotAssignChunkText,	"The chunks must be compatible to be assigned."
-	pnglang_EPNGUnexpectedEndText,	"This \"Portable Network Graphics\" image is invalid because the decoder found an unexpected end of the file."
-	pnglang_EPNGNoImageDataText,	"This \"Portable Network Graphics\" image contains no data."
-	pnglang_EPNGOutMemoryText,	"Some operation could not be performed because the system is out of resources. Close some windows and try again."
-	pnglang_EPNGHeaderNotPresentText,	"This operation is not valid because the current image contains no valid header."
-	pnglang_EInvalidNewSize,	"The new size provided for image resizing is invalid."
+	P10Build_msgInternalError,	"TParser internal error"
+	Consts_SInvalidBitmap,	"Bitmap image is not valid"
+	Consts_SInvalidIcon,	"Icon image is not valid"
+	Consts_SInvalidMetafile,	"Metafile is not valid"
+	Consts_SInvalidPixelFormat,	"Invalid pixel format"
 	Consts_SScanLine,	"Scan line index out of range"
 	Consts_SChangeIconSize,	"Cannot change the size of an icon"
 	Consts_SUnknownExtension,	"Unknown picture file extension (.%s)"
@@ -419,27 +434,26 @@ BEGIN
 	Consts_SVIcons,	"Icons"
 	Consts_SVBitmaps,	"Bitmaps"
 	Consts_SIconToClipboard,	"Clipboard does not support Icons"
-	JConsts_sChangeJPGSize,	"Cannot change the size of a JPEG image"
-	JConsts_sJPEGError,	"JPEG error #%d"
-	JConsts_sJPEGImageFile,	"JPEG Image File"
-	pnglang_EPngInvalidCRCText,	"This \"Portable Network Graphics\" image is not valid because it contains invalid pieces of data (crc error)"
-	pnglang_EPNGInvalidIHDRText,	"The \"Portable Network Graphics\" image could not be loaded because one of its main piece of data (ihdr) might be corrupted"
+	uLocalizedStrings_UsageErrors,	"   -E=<filename> : write compiler errors to <filename>"
+	uLocalizedStrings_UsageIncludes,	"   -I=<path>: search <path> for include files"
+	uLocalizedStrings_UsageNBCOutput,	"   -nbc=<filename> : save NXC intermediate NBC code to <filename>"
+	uLocalizedStrings_UsageListing,	"   -L=<filename> : generate code listing to <filename>"
 	uLocalizedStrings_UsageSymbols,	"   -Y=<filename> : generate symbol table to <filename>"
-	uLocalizedStrings_UsageWarnings,	"   -w[-|+] : warnings off or on [default is off]"
+	uLocalizedStrings_UsageWarnings,	"   -w[-|+] : warnings off or on [default is on]"
 	uLocalizedStrings_UsageEnhanced,	"   -EF : enhanced firmware"
 	uLocalizedStrings_UsageSafecall,	"   -safecall: NXC will wrap all function calls in Acquire/Release"
 	uLocalizedStrings_UsageAPI,	"   -api: dump the API to stdout"
+	uLocalizedStrings_UsageFirmVer,	"   -v=n: set the targeted firmware version (default == 105)"
 	uLocalizedStrings_UsageHelp,	"   -help : display command line options"
 	P10Build_msgErrBlanks,	"Expression has blanks"
 	P10Build_msgMissingBrackets,	"Missing brackets in expression"
 	P10Build_msgParseError,	"Error parsing expression:"
 	P10Build_msgNestings,	"Expression contains too many nestings"
 	P10Build_msgTooComplex,	"Expression is too complex"
-	P10Build_msgInternalError,	"TParser internal error"
-	Consts_SInvalidBitmap,	"Bitmap image is not valid"
-	Consts_SInvalidIcon,	"Icon image is not valid"
-	Consts_SInvalidMetafile,	"Metafile is not valid"
-	Consts_SInvalidPixelFormat,	"Invalid pixel format"
+	uLocalizedStrings_sTooFewArgs,	"Too few arguments"
+	uLocalizedStrings_sTooFewParams,	"Too few parameters"
+	uLocalizedStrings_sMaxParamCountExceeded,	"Max param count exceeded"
+	uLocalizedStrings_sConstNotAllowed,	"Constant not allowed"
 	uLocalizedStrings_UsageSyntax,	"Syntax: %s [options] filename [options]"
 	uLocalizedStrings_UsagePort,	"   -S=<portname>: specify port name (COMn or usb), resource name, or alias"
 	uLocalizedStrings_UsageBT,	"   -BT: use bluetooth"
@@ -452,26 +466,22 @@ BEGIN
 	uLocalizedStrings_UsageOptimize,	"   -Z[1|2]: turn on compiler optimizations"
 	uLocalizedStrings_UsageMaxErrors,	"   -ER=n: set maximum errors before aborting (0 == no limit)"
 	uLocalizedStrings_UsageOutput,	"   -O=<outfile> : specify output file"
-	uLocalizedStrings_UsageErrors,	"   -E=<filename> : write compiler errors to <filename>"
-	uLocalizedStrings_UsageIncludes,	"   -I=<path>: search <path> for include files"
-	uLocalizedStrings_UsageNBCOutput,	"   -nbc=<filename> : save NXC intermediate NBC code to <filename>"
-	uLocalizedStrings_UsageListing,	"   -L=<filename> : generate code listing to <filename>"
+	uLocalizedStrings_sDirective,	"Preprocessor directive"
+	uLocalizedStrings_sNumber,	"Number"
+	uLocalizedStrings_sHexNumber,	"Hex number"
 	uLocalizedStrings_sCharLiteral,	"Character literal"
 	uLocalizedStrings_sStringLiteral,	"String literal"
 	uLocalizedStrings_sStringType,	"string constant or variable of type string"
+	uLocalizedStrings_sByteArrayType,	"byte array type"
 	uLocalizedStrings_sStringVarType,	"string type"
 	uLocalizedStrings_sStructType,	"struct type"
 	uLocalizedStrings_sMutexType,	"mutex type"
-	uLocalizedStrings_sIntegerType,	"integer type"
+	uLocalizedStrings_sNumericType,	"numeric type"
 	uLocalizedStrings_sMathFactor,	"Math Factor"
 	uLocalizedStrings_sArrayDatatype,	"array data type"
 	uLocalizedStrings_sUndefinedIdentifier,	"Undefined Identifier %s"
 	uLocalizedStrings_sDuplicateIdentifier,	"Duplicate Identifier %s"
 	uLocalizedStrings_sTooManyArgs,	"Too many arguments"
-	uLocalizedStrings_sTooFewArgs,	"Too few arguments"
-	uLocalizedStrings_sTooFewParams,	"Too few parameters"
-	uLocalizedStrings_sMaxParamCountExceeded,	"Max param count exceeded"
-	uLocalizedStrings_sConstNotAllowed,	"Constant not allowed"
 	uLocalizedStrings_sRecursiveInlineError,	"Calling an inline function from an inline function is not supported"
 	uLocalizedStrings_sNestedCallsError,	"Nested calls to the same function are not supported."
 	uLocalizedStrings_sRecursiveNotAllowed,	"Recursive function calls are not supported"
@@ -483,11 +493,11 @@ BEGIN
 	uLocalizedStrings_sArgMustBeTask,	"Argument must be a task"
 	uLocalizedStrings_sInvalidReturnType,	"Invalid return type"
 	uLocalizedStrings_sInvalidStringAssign,	"Invalid string assignment"
+	uLocalizedStrings_sFloatNotSupported,	"float types are not supported at the specified firmware version"
+	uLocalizedStrings_sNoUnsignedFloat,	"float types cannot be declared as unsigned"
 	uLocalizedStrings_sExpectedString,	"%s expected"
 	uLocalizedStrings_sDataType,	"Data type"
 	uLocalizedStrings_sIdentifier,	"Identifier"
-	uLocalizedStrings_sNumber,	"Number"
-	uLocalizedStrings_sHexNumber,	"Hex number"
 	uLocalizedStrings_sInvalidBreakContinue,	"%s is invalid outside of a loop"
 	uLocalizedStrings_sProtoAlreadyDefined,	"Prototype already defined - \"begin\""
 	uLocalizedStrings_sNotValidForPrototype,	"Not valid for a prototype"

@@ -4172,9 +4172,10 @@ end;
 
 function TRXEProgram.Parse(aStrings: TStrings) : string;
 var
-  i : integer;
+  i, idx : integer;
   P : TLangPreprocessor;
   S : TMemoryStream;
+  tmpFile, tmpMsg : string;
 begin
   Result := '';
   try
@@ -4214,7 +4215,11 @@ begin
       Result := P.Preprocess(GetCurrentFile(true), aStrings);
       for i := 0 to P.Warnings.Count - 1 do
       begin
-        ReportProblem(StrToIntDef(P.Warnings.Names[i], 0), GetCurrentFile(true), '', P.Warnings.ValueFromIndex[i], false);
+        tmpMsg := P.Warnings.ValueFromIndex[i];
+        idx := Pos('|', tmpMsg);
+        tmpFile := Copy(tmpMsg, 1, idx-1);
+        Delete(tmpMsg, 1, idx);
+        ReportProblem(StrToIntDef(P.Warnings.Names[i], 0), tmpFile, '', tmpMsg, false);
       end;
     finally
       P.Free;
@@ -4983,6 +4988,9 @@ var
   tmp, tmp1, tmp2, tmp3, tmp4 : string;
   stop : boolean;
 begin
+  // exit without doing anything if this is not an error and warnings are off
+  if WarningsOff and not err then
+    Exit;
   if lineNo = -1 then
   begin
     tmp := msg;
