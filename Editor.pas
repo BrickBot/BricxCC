@@ -1,3 +1,19 @@
+(*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Initial Developer of this code is Mark Overmars.
+ * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * All Rights Reserved.
+ *
+ *)
 {$B-}
 unit Editor;
 
@@ -21,6 +37,8 @@ type
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
+    procedure TheErrorsMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
   private
     { Private declarations }
     fFileName : string;
@@ -141,7 +159,7 @@ type
     {File handling}
     IsNew:boolean;                     // Whether it is a new file
     procedure NewFile(fname:string);   // Create a new file in the editor
-    procedure OpenFile(fname:string);  // Open an existing file
+    procedure OpenFile(fname:string; lineNo : integer = -1);  // Open an existing file
     procedure SaveFile;                // Saves the file
     procedure SaveFileAs(fname:string);// Saves the file as fname
     procedure InsertFile(fname:string);// Insert file at cursor
@@ -175,6 +193,7 @@ type
     procedure ExecReplace;
     procedure AddErrorMessage(const errMsg : string);
     procedure ShowTheErrors;
+    procedure SelectLine(lineNo : integer);
     function  IsMaximized : Boolean;
     property  Filename : string read fFilename write SetFilename;
     property  Highlighter : TSynCustomHighlighter read fHighlighter write fHighlighter;
@@ -249,7 +268,7 @@ begin
   frmCodeExplorer.RefreshEntireTree;
 end;
 
-procedure TEditorForm.OpenFile(fname:string);
+procedure TEditorForm.OpenFile(fname:string; lineNo : integer);
 var
   ext : string;
   D : TRXEDumper;
@@ -311,6 +330,7 @@ begin
     frmCodeExplorer.RefreshEntireTree;
     if FileIsROPS(Self) then
       MainForm.ce.Script.Assign(TheEditor.Lines);
+    SelectLine(lineNo);
   end;
 end;
 
@@ -525,28 +545,52 @@ end;
 procedure TEditorForm.TheErrorsClick(Sender: TObject);
 var
   i, epos, lnumb, c : integer;
-  str : string;
+  str, tmp : string;
+  bThisFile : boolean;
 begin
+  if TheErrors.ItemIndex <> -1 then
+    TheErrors.Hint := TheErrors.Items[TheErrors.ItemIndex];
   lnumb := -1;
   for i := TheErrors.ItemIndex downto 0 do
   begin
-    epos := Pos('line ',TheErrors.Items[i]);
+    str := TheErrors.Items[i];
+    epos := Pos('line ',str);
     if epos > 0 then
     begin
-     str := Copy(TheErrors.Items[i],epos+4,5);
-     Val(str,lnumb,c);
+     tmp := Copy(str,epos+4,6); // up to 6 digit line numbers
+     Val(tmp,lnumb,c);
      break;
     end;
+    if FileIsNBCOrNXCOrNPGOrRICScript(Self) then
+      break;
   end;
+  bThisFile := True;
   if lnumb >= 0 then
   begin
     if ZeroStart then
       inc(lnumb);
-    TheEditor.BlockBegin := Point(1, lnumb);
-    TheEditor.BlockEnd   := Point(Length(TheEditor.Lines[lnumb-1])+1, lnumb);
-    TheEditor.CaretXY    := TheEditor.BlockBegin;
+    // if there is a filename on this line and it does not match
+    // the current filename then open that file in a new editor window at the
+    // specified line
+    i := Pos('file "', str);
+    if i > 0 then
+    begin
+      str := Copy(str, i+6, MaxInt);
+      i := Pos('":', str);
+      Delete(str, i, MaxInt);
+      bThisFile := AnsiUpperCase(str) = AnsiUpperCase(Filename);
+    end;
+    if bThisFile then
+    begin
+      SelectLine(lnumb);
+    end
+    else
+    begin
+      MainForm.OpenFile(str, lnumb);
+    end;
   end;
-  TheEditor.SetFocus;
+  if bThisFile then
+    TheEditor.SetFocus;
 end;
 
 procedure TEditorForm.TheEditorKeyPress(Sender: TObject; var Key: Char);
@@ -1594,17 +1638,39 @@ begin
             end;
           end
           else begin
-            // NQC, LASM, MindScript, & NBC
+            // NQC, LASM, MindScript, NBC, & NXC
             if (Pos('# Error:',tmpSL[i])>0) or
                (Pos('# Warning:',tmpSL[i])>0) then
             begin
-              tmpstr := Copy(tmpSL[i], 2, 100);
+              tmpstr := Copy(tmpSL[i], 2, MaxInt);
               // show error with line number of following line matches either temp.ext
               // or the filename of the active editor form
               errMsg := tmpstr;
               if i < (tmpSL.Count - 1) then
               begin
                 testStr := tmpSL[i+1];
+                // modified approach to error/warning output (2009-03-14 JCH)
+                tmpName := '';
+                // pattern is File "filaname" ; line NNNN
+                p := Pos('File "', testStr);
+                if p > 0 then
+                begin
+                  Delete(testStr, 1, p+5);
+                  p := Pos('"', testStr);
+                  if p > 0 then
+                  begin
+                    tmpName := Copy(testStr, 1, p-1);
+                    Delete(testStr, 1, p);
+                  end;
+                end;
+                p := Pos('temp'+ext, tmpName);
+                if p > 0 then
+                begin
+                  // replace temporary filename with actual filename
+                  tmpName := fName;
+                end;
+                p := Pos('; line ', testStr);
+{
                 tmpName := 'temp' + ext;
                 p := Pos(tmpName+'" ; line', testStr);
                 if p = 0 then
@@ -1613,16 +1679,22 @@ begin
                   if p > 0 then
                     tmpName := fName;
                 end;
+}
                 if p > 0 then
                 begin
                   // get the line number
-                  p := p + Length(tmpName) + 4 + 5;
+                  p := p + 7;
+//                  p := p + Length(tmpName) + 4 + 5;
                   errMsg := Copy(testStr, p, MaxInt);
                   lineNo := StrToIntDef(errMsg, -1);
                   if lineNo <> -1 then
                   begin
                     lineNo := GetLineNumber(lineNo);
-                    errMsg := 'line ' + IntToStr(lineNo) + ':' + tmpstr;
+                    if AnsiUppercase(tmpName) = AnsiUppercase(fName) then
+                      errMsg := 'line ' + IntToStr(lineNo) + ':' + tmpstr
+                    else
+                      errMsg := 'line ' + IntToStr(lineNo) + ', file "' + tmpName + '":' + tmpstr;
+//                    errMsg := 'line ' + IntToStr(lineNo) + ':' + tmpstr;
                   end;
                 end;
               end;
@@ -2421,6 +2493,16 @@ begin
   TheEditor.Refresh;
 end;
 
+procedure TEditorForm.SelectLine(lineNo: integer);
+begin
+  if lineNo > -1 then
+  begin
+    TheEditor.BlockBegin := Point(1, lineNo);
+    TheEditor.BlockEnd   := Point(Length(TheEditor.Lines[lineNo-1])+1, lineNo);
+    TheEditor.CaretXY    := TheEditor.BlockBegin;
+  end;
+end;
+
 procedure TEditorForm.CreatePopupMenu;
 begin
   pmnuEditor := TOfficePopupMenu.Create(Self);
@@ -2833,6 +2915,26 @@ begin
     OnStatusChange := TheEditorStatusChange;
     StructureLineColor := clNone;
     OnMouseOverToken := TheEditorMouseOverToken;
+  end;
+end;
+
+procedure TEditorForm.TheErrorsMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+var
+  i : integer;
+  tmpStr : string;
+  P : TPoint;
+begin
+  P := Point(X, Y);
+  i := TheErrors.ItemAtPos(P, True);
+  if i <> -1 then
+  begin
+    tmpStr := TheErrors.Items[i];
+    if tmpStr <> TheErrors.Hint then
+    begin
+      TheErrors.Hint := TheErrors.Items[i];
+      Application.ActivateHint(P);
+    end;
   end;
 end;
 
