@@ -1,4 +1,4 @@
-//#define OUT_A 123
+#define OUT_A 123
 
 #define MyMacro(_var, ...) add _var, __VA_ARGS__
 
@@ -7,6 +7,7 @@
 dseg segment
   value float 1.23
   msg byte[]
+  unsued byte 12345
 dseg ends
 
 thread main
