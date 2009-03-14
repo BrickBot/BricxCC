@@ -34,6 +34,7 @@ type
       Shift: TShiftState);
     procedure GotoLineFieldExit(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     function  GetMaxLine: Integer;
@@ -51,7 +52,7 @@ implementation
 {$R *.DFM}
 
 uses
-  Windows, SysUtils, Dialogs, MainUnit, Editor, uLocalizedStrings;
+  Windows, SysUtils, Dialogs, MainUnit, Editor, uLocalizedStrings, Preferences;
 
 procedure TGotoForm.FormShow(Sender: TObject);
 begin
@@ -88,6 +89,8 @@ end;
 function TGotoForm.GetTheLine: Integer;
 begin
   Result := GotoLineField.Value;
+  if ZeroStart and ShowLineNumbers then
+    inc(Result);
 end;
 
 procedure TGotoForm.GotoLineFieldKeyDown(Sender: TObject; var Key: Word;
@@ -118,6 +121,14 @@ end;
 procedure TGotoForm.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
+end;
+
+procedure TGotoForm.FormCreate(Sender: TObject);
+begin
+  if ZeroStart and ShowLineNumbers then
+    GotoLineField.MinValue := 0
+  else
+    GotoLineField.MinValue := 1;
 end;
 
 end.

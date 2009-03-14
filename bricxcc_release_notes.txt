@@ -20,4 +20,17 @@ Version 3.3.7.20
 - Fixed NXTDeviceInfo function in TSpirit class for the bluetooth address value
 - Fixed broken defragment operation in the NXT Explorer
 - Fixed SendMessage boolean NXT message bug (inverted logic)
-
+- Added support for custom NXC API syntax highlighting
+- Added support for a new NBC command-line switch limiting errors to max error count
+- Added support for new NBC -v=version command line switch for setting NXT firmware 
+  version (1.0x vs 1.2x) compatibility
+- Added duplicate error reduction code to error list
+- Fixed NXT Explorer defragment operation
+- Added code completion and syntax highlighter support for new NBC/NXC API functions
+- Improved error list tool at the bottom of the editor window to open other files if
+  the error/warning occurs in an included file and show a hint window as you mouse 
+  over the errors/warnings.
+- Added support for adjusting line numbers if the Gutter is configured to start
+  numbering lines at zero instead of 1 and line numbers are showing.
+- Added a /UserPath command line switch for BricxCC that controls where the nxt.dat 
+  file and other user files are stored (e.g., bricxcc /UserPath=d:\)
