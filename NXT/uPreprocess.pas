@@ -84,7 +84,7 @@ type
     function EvaluateIdentifier(const ident : string) : string;
     function ReplaceTokens(const tokenstring: string; lineNo : integer;
       bArgs : boolean): string;
-    function ProcessMacroDefinition(bUndefine : boolean; Lex: TGenLexer;
+    function ProcessMacroDefinition(const fname : string; bUndefine : boolean; Lex: TGenLexer;
       var lineNo: integer): integer;
     function GenLexerType : TGenLexerClass;
     function GetDefines: TMapList;
@@ -496,10 +496,10 @@ begin
   Result := Copy(S, 1, I);
 end;
 
-function TLangPreprocessor.ProcessMacroDefinition(bUndefine : boolean;
+function TLangPreprocessor.ProcessMacroDefinition(const fname : string; bUndefine : boolean;
   Lex : TGenLexer; var lineNo : integer) : integer;
 var
-  macro, dirText, macroVal, prevToken : string;
+  macro, dirText, oldDef, macroVal, prevToken : string;
   bEndOfDefine, bArgMode : boolean;
   i, prevId : integer;
 
@@ -590,7 +590,9 @@ begin
     i := MacroDefs.IndexOf(macro);
     if i <> -1 then
     begin
-      fWarnings.Add(IntToStr(lineNo) + '=Macro "' + macro + '" redefined');
+      oldDef := MacroDefs.MapValue[i];
+      if dirText <> oldDef then
+        fWarnings.Add(IntToStr(lineNo) + '=' + fname + '|Redefinition of ''' + macro + ''' is not identical');
       // now remove the previous declaration
       MacroDefs.Delete(i);
     end;
@@ -787,7 +789,7 @@ begin
           begin
             cnt := 1; // number of lines in #define
             if bProcess then
-              cnt := cnt + ProcessMacroDefinition(dir = '#undef', Lex, lineNo);
+              cnt := cnt + ProcessMacroDefinition(name, dir = '#undef', Lex, lineNo);
             // output blank line(s) to replace #define
             for i := 0 to cnt - 1 do
               OutStrings.Add('');

@@ -172,7 +172,7 @@ try
       C.Download                 := ParamSwitch('-d', False);
       C.MoreIncludes             := ParamSwitch('-I', False);
       C.IncludePaths             := ParamValue('-I', False);
-      C.WarningsAreOn            := ParamSwitch('-w+', False);
+      C.WarningsAreOff           := ParamSwitch('-w-', False);
       C.EnhancedFirmware         := ParamSwitch('-EF', False);
       C.SafeCalls                := ParamSwitch('-safecall', False);
       if Filename <> '' then
