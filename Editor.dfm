@@ -44,9 +44,12 @@ object EditorForm: TEditorForm
     Font.Style = []
     ItemHeight = 14
     ParentFont = False
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 0
     Visible = False
     OnClick = TheErrorsClick
+    OnMouseMove = TheErrorsMouseMove
   end
   object ilBookmarkImages: TImageList
     Left = 96

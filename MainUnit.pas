@@ -1,3 +1,19 @@
+(*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Initial Developer of this code is Mark Overmars.
+ * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * All Rights Reserved.
+ *
+ *)
 {$B-}
 unit MainUnit;
 
@@ -562,7 +578,7 @@ type
     procedure HandleTransferClick(Sender: TObject);
     procedure DoSaveAll;
     function  IsStandardFirmware(aFile : string) : Boolean;
-    function  SwitchToFile(fname: string): Boolean;
+    function  SwitchToFile(fname: string; lineNo : integer = -1): Boolean;
     procedure ConfigureOtherFirmwareOptions;
     function DoCompileAction(E : TEditorForm; bDown, bRun : Boolean) : boolean;
     procedure DoToolbarExecute(act: TCustomAction; bar: TOfficeGradientPanel);
@@ -610,7 +626,7 @@ type
     function ActiveLanguageName : string;
     procedure ActivateEditorForm(index : Integer); overload;
     procedure ActivateEditorForm(E : TEditorForm); overload;
-    procedure OpenFile(aPath : string);
+    procedure OpenFile(aPath : string; lineNo : integer = -1);
     procedure SaveDesktop(aFile : string);
     procedure LoadDesktop(aFile : string);
     property EditorFormCount : integer read GetEditorFormCount;
@@ -1401,17 +1417,17 @@ begin
   end;
 end;
 
-procedure TMainForm.OpenFile(aPath: string);
+procedure TMainForm.OpenFile(aPath: string; lineNo : integer);
 var
   F : TEditorForm;
 begin
   if not FileExists(aPath) then Exit;
-  if not SwitchToFile(aPath) then
+  if not SwitchToFile(aPath, lineNo) then
   begin
     F := DoCreateEditorForm;
     if Assigned(F) then
     begin
-      F.OpenFile(aPath);
+      F.OpenFile(aPath, lineNo);
       AddRecentFile(aPath);
     end;
   end;
@@ -1947,7 +1963,7 @@ begin
   frmForthConsole.Show;
 end;
 
-function TMainForm.SwitchToFile(fname: string): Boolean;
+function TMainForm.SwitchToFile(fname: string; lineNo : integer): Boolean;
 var
   i : Integer;
   EdFrm : TEditorForm;
@@ -1961,6 +1977,7 @@ begin
     begin
       Result := True;
       ActivateEditorForm(i);
+      EdFrm.SelectLine(lineNo);
       Break;
     end;
   end;
