@@ -43,7 +43,6 @@ type
     { Private declarations }
     fFileName : string;
     fHighlighter: TSynCustomHighlighter;
-    procedure UpdatePositionOnStatusBar;
     procedure UpdateModeOnStatusBar;
     procedure UpdateModifiedOnStatusBar;
     procedure UpdateStatusBar;
@@ -195,6 +194,7 @@ type
     procedure ShowTheErrors;
     procedure SelectLine(lineNo : integer);
     function  IsMaximized : Boolean;
+    procedure UpdatePositionOnStatusBar;
     property  Filename : string read fFilename write SetFilename;
     property  Highlighter : TSynCustomHighlighter read fHighlighter write fHighlighter;
   end;
@@ -230,7 +230,7 @@ var
 function GetLineNumber(const aY : integer) : integer;
 begin
   Result := aY;
-  if ZeroStart then
+  if ZeroStart and ShowLineNumbers then
     dec(Result);
 end;
 
@@ -456,8 +456,8 @@ var
 begin
   G := TGotoForm.Create(nil);
   try
-    G.MaxLine := TheEditor.Lines.Count;
-    G.TheLine := TheEditor.CaretY;
+    G.MaxLine := GetLineNumber(TheEditor.Lines.Count);
+    G.TheLine := GetLineNumber(TheEditor.CaretY);
     if G.ShowModal = mrOK then
     begin
       with TheEditor do begin
@@ -567,7 +567,7 @@ begin
   bThisFile := True;
   if lnumb >= 0 then
   begin
-    if ZeroStart then
+    if ZeroStart and ShowLineNumbers then
       inc(lnumb);
     // if there is a filename on this line and it does not match
     // the current filename then open that file in a new editor window at the

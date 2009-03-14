@@ -2472,7 +2472,10 @@ begin
       EditorForms[i].SetValuesFromPreferences;
     end;
     if F <> nil then
+    begin
       F.SetValuesFromPreferences;
+      F.UpdatePositionOnStatusBar;
+    end;
 
     if ColorCodingChanged then
     begin
