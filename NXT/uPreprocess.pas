@@ -95,6 +95,7 @@ type
     procedure InitializeLexers(const num: integer);
     procedure AddOneOrMoreLines(OutStrings: TStrings; const S,
       name: string; var lineNo: integer);
+    function IgnoringAtLowerLevel(const lineno: integer): boolean;
   public
     class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings) : string;
     class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string) : string;
@@ -209,6 +210,25 @@ begin
     aStrings.LoadFromStream(Stream);
   finally
     Stream.Free;
+  end;
+end;
+
+function TLangPreprocessor.IgnoringAtLowerLevel(const lineno : integer) : boolean;
+var
+  PL : TPreprocLevel;
+  i : integer;
+begin
+  Result := False;
+  if (fLevel < 0) or (fLevel >= fLevelIgnore.Count) then
+    raise EPreprocessorException.Create(sInvalidPreprocDirective, lineno);
+  for i := fLevel-1 downto 0 do
+  begin
+    PL := TPreprocLevel(fLevelIgnore[i]);
+    if PL.Ignore then
+    begin
+      Result := True;
+      Break;
+    end;
   end;
 end;
 
@@ -905,7 +925,7 @@ begin
           begin
             // if we are already ignoring code because of a containing
             // if/elif/ifdef/ifndef then we just ignore the #else
-            if bProcess then
+            if not IgnoringAtLowerLevel(lineNo) then
             begin
               // switch mode at current level (must be > 0)
               SwitchLevelIgnoreValue(lineNo);
