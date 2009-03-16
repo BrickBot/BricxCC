@@ -17,7 +17,6 @@
  *
  * Workfile:: NXTDefs.h
  * Date:: 2009-03-15
-
  * Revision:: 41
  *
  * Contains declarations for the NBC NXT API resources
@@ -406,7 +405,7 @@ TDatalogGetTimes	ends
 // SetSleepTimeout
 TSetSleepTimeout	struct
  Result		sbyte
- SleepTimeout	dword
+ TheSleepTimeout	dword
 TSetSleepTimeout	ends
 
 // CommBTOnOff
@@ -1765,39 +1764,27 @@ dseg segment
   __ColorSensorReadMutex mutex
 dseg ends
 
-#define __ReadSensorColorValue(_port, _colorval, _invalid, _result) \
+#define __ReadSensorColorRaw(_port, _rawVals, _result) \
+  acquire __ColorSensorReadMutex \
+  mov __ColorSensorReadArgs.Port,_port \
+  syscall ColorSensorRead,__ColorSensorReadArgs \
+  mov _rawVals, __ColorSensorReadArgs.RawArray \
+  mov _result, __ColorSensorReadArgs.Result \
+  release __ColorSensorReadMutex
+
+#define __ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result) \
   acquire __ColorSensorReadMutex \
   mov __ColorSensorReadArgs.Port,_port \
   syscall ColorSensorRead,__ColorSensorReadArgs \
   mov _colorval, __ColorSensorReadArgs.ColorValue \
-  mov _invalid, __ColorSensorReadArgs.Invalid \
+  mov _rawVals, __ColorSensorReadArgs.RawArray \
+  mov _normVals, __ColorSensorReadArgs.NormalizedArray \
+  mov _scaledVals, __ColorSensorReadArgs.ScaledArray \
   mov _result, __ColorSensorReadArgs.Result \
   release __ColorSensorReadMutex
 
-#define __ReadSensorColorRaw(_port, _raw, _invalid, _result) \
-  acquire __ColorSensorReadMutex \
-  mov __ColorSensorReadArgs.Port,_port \
-  syscall ColorSensorRead,__ColorSensorReadArgs \
-  mov _raw, __ColorSensorReadArgs.RawArray \
-  mov _invalid, __ColorSensorReadArgs.Invalid \
-  mov _result, __ColorSensorReadArgs.Result \
-  release __ColorSensorReadMutex
-
-#define __ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid, _result) \
-  acquire __ColorSensorReadMutex \
-  mov __ColorSensorReadArgs.Port,_port \
-  syscall ColorSensorRead,__ColorSensorReadArgs \
-  mov _colorval, __ColorSensorReadArgs.ColorValue \
-  mov _raw, __ColorSensorReadArgs.RawArray \
-  mov _norm, __ColorSensorReadArgs.NormalizedArray \
-  mov _scaled, __ColorSensorReadArgs.ScaledArray \
-  mov _invalid, __ColorSensorReadArgs.Invalid \
-  mov _result, __ColorSensorReadArgs.Result \
-  release __ColorSensorReadMutex
-
-#define ReadSensorColorValue(_port, _colorval, _invalid, _result) __ReadSensorColorValue(_port, _colorval, _invalid, _result)
-#define ReadSensorColorRaw(_port, _raw, _invalid, _result) __ReadSensorColorRaw(_port, _raw, _invalid, _result)
-#define ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid, _result) __ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid, _result)
+#define ReadSensorColorRaw(_port, _rawVals, _result) __ReadSensorColorRaw(_port, _rawVals, _result)
+#define ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result) __ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result)
 
 #endif
 

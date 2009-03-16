@@ -20,11 +20,35 @@ task main()
   SetSensorColorFull(S3);
   while(true) {
     long tick = CurrentTick();
-    if (ReadSensorColorValue(S3, cv, invalid) == NO_ERR) {
+    invalid = SensorInvalid(S3);
+    if (!invalid) {
+      cv = SENSOR_3;
       tick = CurrentTick()-tick;
       NumOut(0, LCD_LINE1, cv);
       NumOut(0, LCD_LINE2, invalid);
       NumOut(0, LCD_LINE3, tick);
+      switch (cv) {
+        case INPUT_BLACKCOLOR :
+          TextOut(0, LCD_LINE4, "Black     ");
+          break;
+        case INPUT_BLUECOLOR :
+          TextOut(0, LCD_LINE4, "Blue      ");
+          break;
+        case INPUT_GREENCOLOR :
+          TextOut(0, LCD_LINE4, "Green     ");
+          break;
+        case INPUT_YELLOWCOLOR :
+          TextOut(0, LCD_LINE4, "Yellow    ");
+          break;
+        case INPUT_REDCOLOR :
+          TextOut(0, LCD_LINE4, "Red       ");
+          break;
+        case INPUT_WHITECOLOR :
+          TextOut(0, LCD_LINE4, "White     ");
+          break;
+        default:
+          TextOut(0, LCD_LINE4, "unexpected");
+      }
     }
   }
 

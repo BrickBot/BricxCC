@@ -16,9 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-03-15
-
- * Revision:: 41
+ * Date:: 2009-03-16
+ * Revision:: 42
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -95,9 +94,8 @@
 #define SetSensorColorBlue(_port) asm { __SetSensorColorBlue(_port) }
 #define SetSensorColorNone(_port) asm { __SetSensorColorNone(_port) }
 
-#define ReadSensorColorValue(_port, _colorval, _invalid) asm { __ReadSensorColorValue(_port, _colorval, _invalid, __RETVAL__) }
-#define ReadSensorColorRaw(_port, _raw, _invalid) asm { __ReadSensorColorRaw(_port, _raw, _invalid, __RETVAL__) }
-#define ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid) asm { __ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid, __RETVAL__) }
+#define ReadSensorColorRaw(_port, _rawVals) asm { __ReadSensorColorRaw(_port, _rawVals, __RETVAL__) }
+#define ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled) asm { __ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, __RETVAL__) }
 #endif
 
 #define PlayTone(_f, _d) PlayToneEx(_f, _d, 4, 0)
@@ -752,7 +750,7 @@ struct DrawGraphicType {
   char Result;
   LocationType Location;
   string Filename;
-  int Variables[];
+  long Variables[];
   unsigned long Options;
 };
 
@@ -932,7 +930,119 @@ struct CommHSReadWriteType {
  char Status;
  byte Buffer[];
 };
+
+// CommLSWriteEx
+struct CommLSWriteExType {
+ char Result;
+ byte Port;
+ byte Buffer[];
+ byte ReturnLen;
+ byte NoRestartOnRead;
+};
+
+#if __FIRMWARE_VERSION > 107
+//FileSeek
+struct FileSeekType {
+ unsigned int Result;
+ byte FileHandle;
+ byte Origin;
+ long Length;
+};
+
+//FileResize
+struct FileResizeType {
+ unsigned int Result;
+ byte FileHandle;
+ unsigned int NewSize;
+};
+
+// DrawGraphicArray
+struct DrawGraphicArrayType {
+ char Result;
+ LocationType Location;
+ byte Data[];
+ long Variables[];
+ unsigned long Options;
+};
+
 #endif
+#endif
+
+#if __FIRMWARE_VERSION > 107
+
+// ColorSensorRead
+struct ColorSensorReadType {
+ char Result;
+ byte Port;
+ int ColorValue;
+ unsigned int RawArray[];
+ unsigned int NormalizedArray[];
+ int ScaledArray[];
+ bool Invalid;
+};
+
+// DatalogWrite
+struct DatalogWriteType {
+ char Result;
+ byte Message[];
+};
+
+// DatalogGetTimes
+struct DatalogGetTimesType {
+ unsigned long SyncTime;
+ unsigned long SyncTick;
+};
+
+// SetSleepTimeout
+struct SetSleepTimeoutType {
+ char Result;
+ unsigned long TheSleepTimeout;
+};
+
+// CommBTOnOff
+struct CommBTOnOffType {
+ char Result;
+ bool PowerState;
+};
+
+// CommBTConnection
+struct CommBTConnectionType {
+ char Result;
+ byte Action;
+ string Name;
+ byte ConnectionSlot;
+};
+
+//cCmdWrapReadSemData
+//ArgV[0]: return data, U8
+//ArgV[1]: which (0=used, 1=request), U8
+
+//cCmdWrapWriteSemData
+//ArgV[0]: return data, U8
+//ArgV[1]: which (0=used, 1=request), U8
+//ArgV[2]: newValue, U8
+//ArgV[3]: action (0= OR, 1= AND), U8
+
+//cCmdWrapUpdateCalibCacheInfo
+//ArgV[0]: return data, U8
+//ArgV[1]: nm, UBYTE array CStr
+//ArgV[2]: min, U16
+//ArgV[3]: max , U16
+
+//cCmdWrapComputeCalibValue
+//ArgV[0]: return data, U8
+//ArgV[1]: nm, UBYTE array CStr
+//ArgV[2]: raw, U16 ref in out
+
+// ListFiles
+struct ListFilesType {
+ char Result;
+ string Pattern;
+ string FileList[];
+};
+
+#endif
+
 
 #define SysCall(_func, _args) asm { syscall _func, _args }
 
@@ -972,7 +1082,6 @@ struct CommHSReadWriteType {
   compchktype _args, FileDeleteType \
   syscall FileDelete, _args \
 }
-
 #define SysSoundPlayFile(_args) asm { \
   compchktype _args, SoundPlayFileType \
   syscall SoundPlayFile, _args \
@@ -989,7 +1098,6 @@ struct CommHSReadWriteType {
   compchktype _args, SoundSetStateType \
   syscall SoundSetState, _args \
 }
-
 #define SysDrawText(_args) asm { \
   compchktype _args, DrawTextType \
   syscall DrawText, _args \
@@ -1018,12 +1126,10 @@ struct CommHSReadWriteType {
   compchktype _args, SetScreenModeType \
   syscall SetScreenMode, _args \
 }
-
 #define SysReadButton(_args) asm { \
   compchktype _args, ReadButtonType \
   syscall ReadButton, _args \
 }
-
 #define SysCommLSWrite(_args) asm { \
   compchktype _args, CommLSWriteType \
   syscall CommLSWrite, _args \
@@ -1036,17 +1142,14 @@ struct CommHSReadWriteType {
   compchktype _args, CommLSCheckStatusType \
   syscall CommLSCheckStatus, _args \
 }
-
 #define SysRandomNumber(_args) asm { \
   compchktype _args, RandomNumberType \
   syscall RandomNumber, _args \
 }
-
 #define SysGetStartTick(_args) asm { \
   compchktype _args, GetStartTickType \
   syscall GetStartTick, _args \
 }
-
 #define SysMessageWrite(_args) asm { \
   compchktype _args, MessageWriteType \
   syscall MessageWrite, _args \
@@ -1055,7 +1158,6 @@ struct CommHSReadWriteType {
   compchktype _args, MessageReadType \
   syscall MessageRead, _args \
 }
-
 #define SysCommBTWrite(_args) asm { \
   compchktype _args, CommBTWriteType \
   syscall CommBTWrite, _args \
@@ -1064,12 +1166,10 @@ struct CommHSReadWriteType {
   compchktype _args, CommBTCheckStatusType \
   syscall CommBTCheckStatus, _args \
 }
-
 #define SysKeepAlive(_args) asm { \
   compchktype _args, KeepAliveType \
   syscall KeepAlive, _args \
 }
-
 #define SysIOMapRead(_args) asm { \
   compchktype _args, IOMapReadType \
   syscall IOMapRead, _args \
@@ -1136,6 +1236,59 @@ struct CommHSReadWriteType {
   compchktype _args, CommHSReadWriteType \
   syscall CommHSWrite, _args \
 }
+#define SysCommLSWriteEx(_args) asm { \
+  compchktype _args, CommLSWriteExType \
+  syscall CommLSWriteEx, _args \
+}
+#if __FIRMWARE_VERSION > 107
+#define SysFileSeek(_args) asm { \
+  compchktype _args, FileSeekType \
+  syscall FileSeek, _args \
+}
+
+#define SysFileResize(_args) asm { \
+  compchktype _args, FileResizeType \
+  syscall FileResize, _args \
+}
+#define SysDrawGraphicArray(_args) asm { \
+  compchktype _args, DrawGraphicArrayType \
+  syscall DrawGraphicArray, _args \
+}
+
+#endif
+#endif
+
+#if __FIRMWARE_VERSION > 107
+
+#define SysColorSensorRead(_args) asm { \
+  compchktype _args, ColorSensorReadType \
+  syscall ColorSensorRead, _args \
+}
+#define SysDatalogWrite(_args) asm { \
+  compchktype _args, DatalogWriteType \
+  syscall DatalogWrite, _args \
+}
+#define SysDatalogGetTimes(_args) asm { \
+  compchktype _args, DatalogGetTimesType \
+  syscall DatalogGetTimes, _args \
+}
+#define SysSetSleepTimeout(_args) asm { \
+  compchktype _args, SetSleepTimeoutType \
+  syscall SetSleepTimeoutVal, _args \
+}
+#define SysCommBTOnOff(_args) asm { \
+  compchktype _args, CommBTOnOffType \
+  syscall CommBTOnOff, _args \
+}
+#define SysCommBTConnection(_args) asm { \
+  compchktype _args, CommBTConnectionType \
+  syscall CommBTConnection, _args \
+}
+#define SysListFiles(_args) asm { \
+  compchktype _args, ListFilesType \
+  syscall ListFiles, _args \
+}
+
 #endif
 
 
