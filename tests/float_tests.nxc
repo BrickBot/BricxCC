@@ -1,3 +1,4 @@
+// JCH working as of 2009-03-16
 #define PI 3.141592
 
 task main()
@@ -8,12 +9,12 @@ task main()
    s = Sqrt(2.0);
    float A[2][2] = {{1.5, 3.5}, {5.6, 4.5}};
    TextOut(0,LCD_LINE1, FormatNum("pi: %.5f",x)); //x is printed correctly
-   TextOut(0,LCD_LINE2, FormatNum("pi: %.5f",y)); //y is printed as 3.00000
-   NumOut(70,LCD_LINE2,y); // prints 3
-   TextOut(0,LCD_LINE3, FormatNum("pi: %f",s)); // s is displayed as 0
-   NumOut( 0,LCD_LINE4,A[0][0]);
-   NumOut(40,LCD_LINE4,A[0][1]);
-   NumOut( 0,LCD_LINE5,A[1][0]);
-   NumOut(40,LCD_LINE5,A[1][1]);
+   TextOut(0,LCD_LINE2, FormatNum("pi: %.5f",y)); //y is printed correctly
+   NumOut(0,LCD_LINE3,y); // prints 3.1416
+   TextOut(0,LCD_LINE4, FormatNum("s= %f",s)); // s is displayed as 1.414214
+   NumOut( 0,LCD_LINE5,A[0][0]);
+   NumOut(40,LCD_LINE5,A[0][1]);
+   NumOut( 0,LCD_LINE6,A[1][0]);
+   NumOut(40,LCD_LINE6,A[1][1]);
    while(true);
 }
