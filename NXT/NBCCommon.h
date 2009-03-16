@@ -17,7 +17,6 @@
  *
  * Workfile:: NBCCommon.h
  * Date:: 2009-03-15
-
  * Revision:: 27
  *
  * Contains declarations for the NBC & NXC NXT API resources
