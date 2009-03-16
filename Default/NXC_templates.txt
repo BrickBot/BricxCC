@@ -297,6 +297,7 @@ ReadSensorHTColor("port", "ColorNum", "Red", "Green", "Blue")\=
 ReadSensorHTRawColor("port", "Red", "Green", "Blue")\=
 ReadSensorHTNormalizedColor("port", "ColorIdx", "Red", "Green", "Blue")\=
 ReadSensorHTIRSeeker("port", "dir", "s1", "s3", "s5", "s7", "s9")\=
+ReadSensorHTTouchMultiplexer("port", "t1", "t2", "t3", "t4")\=
 HTPFComboDirect("port", "channel", "outa", "outb")\=
 HTPFSinglePin("port", "channel", "out", "pin", "func", "cont")\=
 HTPFSingleOutputCST("port", "channel", "out", "func")\=

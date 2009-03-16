@@ -5501,7 +5501,8 @@ begin
         arg.Value := '-1'; // set to a valid numeric string
       end
       else
-        arg.Value := IntToStr(Trunc(Calc.Value));
+        arg.Value := StripTrailingZeros(Format('%.5f', [Calc.Value]));
+//        arg.Value := IntToStr(Trunc(Calc.Value));
     end;
   end;
 end;
@@ -6610,7 +6611,7 @@ begin
   end
   else
   begin
-    Arg.Value := left + IntToStr(Trunc(Calc.Value)) + right;
+    Arg.Value := left + StripTrailingZeros(Format('%.5f', [Calc.Value])) + right;
   end;
 end;
 
@@ -7942,11 +7943,12 @@ end;
 
 procedure TClump.Optimize;
 var
-  i, iArg1Val, iArg2Val, offset : integer;
+  i, offset : integer;
   iVal : Int64;
   AL, ALNext : TAsmLine;
   arg1, arg2, arg3, tmp : string;
   bDone, bArg1Numeric, bArg2Numeric : boolean;
+  iArg1Val, iArg2Val : integer;
 
   function CheckReferenceCount : boolean;
   var

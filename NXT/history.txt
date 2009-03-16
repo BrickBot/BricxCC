@@ -37,6 +37,10 @@ Version 1.0.1.b36
 - Added support for floats in NBC/NXC with 1.2x firmwares.
 - Improved support for unsigned long expressions.
 - Added API support for setting baud rate and mode of Hi Speed port with enhanced firmware.
+- Added API support for LEGO Color sensor
+- Fixed a preprocessor bug which broke nested #else statements
+- Added NXC API functions for enhanced firmware math opcodes (Atan, Ceil, Exp, Floor, Tan, Tanh, 
+  Cosh, Sinh, Log, Log10, Atan2, Pow, Trunc, Frac, and MulDiv32)
 
 
 

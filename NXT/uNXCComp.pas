@@ -4224,15 +4224,32 @@ begin
   if Length(Result) = 0 then Exit;
   Result := Replace(Result, '__RETURN__', Format(#13#10'mov %s,', [SignedRegisterName]));
   Result := Replace(Result, '__RETURNS__', Format(#13#10'mov %s,', [SignedRegisterName]));
-  Result := Replace(Result, '__RETURNU__', Format(#13#10'mov %s,', [UnsignedRegisterName]));
-  Result := Replace(Result, '__RETURNF__', Format(#13#10'mov %s,', [FloatRegisterName]));
+  if Pos('__RETURNU__', Result) > 0 then
+  begin
+    Result := Replace(Result, '__RETURNU__', Format(#13#10'mov %s,', [UnsignedRegisterName]));
+    if StatementType <> stUnsigned then
+      StatementType := stUnsigned;
+  end;
+  if Pos('__RETURNF__', Result) > 0 then
+  begin
+    Result := Replace(Result, '__RETURNF__', Format(#13#10'mov %s,', [FloatRegisterName]));
+    if StatementType <> stFloat then
+      StatementType := stFloat;
+  end;
   Result := Replace(Result, '__TMPBYTE__', TempSignedByteName);
   Result := Replace(Result, '__TMPWORD__', TempSignedWordName);
   Result := Replace(Result, '__TMPLONG__', TempSignedLongName);
   Result := Replace(Result, '__TMPULONG__', TempUnsignedLongName);
   Result := Replace(Result, '__TMPFLOAT__', TempFloatName);
   Result := Replace(Result, '__RETVAL__', SignedRegisterName);
+  if Pos('__FLTRETVAL__', Result) > 0 then
+  begin
+    Result := Replace(Result, '__FLTRETVAL__', FloatRegisterName);
+    if StatementType <> stFloat then
+      StatementType := stFloat;
+  end;
   Result := Replace(Result, '__STRRETVAL__', StrRetValName);
+  Result := Replace(Result, '__GENRETVAL__', RegisterName);
   Result := Replace(Result, 'true', 'TRUE');
   Result := Replace(Result, 'false', 'FALSE');
   Result := Replace(Result, 'asminclude', '#include');
@@ -4675,7 +4692,7 @@ var
         begin
           if ArrayBaseType(dt) = TOK_FLOATDEF then
           begin
-            tmpExpr := FloatToStr(fCalc.Value);
+            tmpExpr := StripTrailingZeros(Format('%.5f', [fCalc.Value]));
           end
           else
             tmpExpr := IntToStr(Trunc(fCalc.Value))
@@ -4768,7 +4785,7 @@ begin
         if not fCalc.ParserError then
         begin
           if dt = TOK_FLOATDEF then
-            Result := FloatToStr(fCalc.Value)
+            Result := StripTrailingZeros(Format('%.5f', [fCalc.Value]))
           else
             Result := IntToStr(Trunc(fCalc.Value));
         end

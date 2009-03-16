@@ -1226,6 +1226,8 @@ begin
   Result := aNum;
   while Result[Length(Result)] = '0' do
     System.Delete(Result, Length(Result), 1);
+  if Result[Length(Result)] = '.' then
+    System.Delete(Result, Length(Result), 1);
 end;
 
 procedure TNBCExpParser.InitializeCalc;
@@ -1643,7 +1645,12 @@ begin
         Result := Char(Ord(TOK_ARRAYUDT) + ArrayDimension-1);
     end;
     fptMutex : Result := TOK_MUTEXDEF;
-    fptFloat : Result := TOK_FLOATDEF;
+    fptFloat : begin
+      if not IsArray then
+        Result := TOK_FLOATDEF
+      else
+        Result := Char(Ord(TOK_ARRAYFLOAT) + ArrayDimension-1);
+    end;
   else
     Result := TOK_BYTEDEF;
   end;
