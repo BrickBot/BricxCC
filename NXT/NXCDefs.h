@@ -89,11 +89,15 @@
 #define SetSensor(_sensor, _tm) { SetSensorType(_sensor, _tm>>8); SetSensorMode(_sensor, _tm&0xff); }
 
 #if __FIRMWARE_VERSION > 107
-#define SetSensorColorFull(_port) __SetSensorColorFull(_port)
-#define SetSensorColorRed(_port) __SetSensorColorRed(_port)
-#define SetSensorColorGreen(_port) __SetSensorColorGreen(_port)
-#define SetSensorColorBlue(_port) __SetSensorColorBlue(_port)
-#define SetSensorColorNone(_port) __SetSensorColorNone(_port)
+#define SetSensorColorFull(_port) asm { __SetSensorColorFull(_port) }
+#define SetSensorColorRed(_port) asm { __SetSensorColorRed(_port) }
+#define SetSensorColorGreen(_port) asm { __SetSensorColorGreen(_port) }
+#define SetSensorColorBlue(_port) asm { __SetSensorColorBlue(_port) }
+#define SetSensorColorNone(_port) asm { __SetSensorColorNone(_port) }
+
+#define ReadSensorColorValue(_port, _colorval, _invalid) asm { __ReadSensorColorValue(_port, _colorval, _invalid, __RETVAL__) }
+#define ReadSensorColorRaw(_port, _raw, _invalid) asm { __ReadSensorColorRaw(_port, _raw, _invalid, __RETVAL__) }
+#define ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid) asm { __ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid, __RETVAL__) }
 #endif
 
 #define PlayTone(_f, _d) PlayToneEx(_f, _d, 4, 0)
@@ -115,6 +119,7 @@
 #define SensorInvalid(_p) GetInput(_p, InvalidData)
 #define SensorValueBool(_p) SensorBoolean(_p)
 #define SensorValueRaw(_p) SensorRaw(_p)
+
 
 // output fields
 #define MotorMode(_p) GetOutput(_p, OutputMode)
