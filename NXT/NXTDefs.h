@@ -1,18 +1,30 @@
+/*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Initial Developer of this code is John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * All Rights Reserved.
+ *
+ * ----------------------------------------------------------------------------
+ *
+ * Workfile:: NXTDefs.h
+ * Date:: 2009-03-15
+
+ * Revision:: 41
+ *
+ * Contains declarations for the NBC NXT API resources
+ *
+ */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H 1
-//==============================================================================
-//
-// Copyright (C) 2009 - John Hansen. All rights reserved.
-//
-// Workfile:: NXTDefs.h
-// Date:: 2009-03-07
-// Revision:: 40
-//
-//------------------------------------------------------------------------------
-//
-// Contains declarations for the NBC NXT API resources
-//
-//==============================================================================
 
 #include "NBCCommon.h"
 
@@ -1392,6 +1404,41 @@ dseg ends
 
 #define SetSensorUltrasonic(_port) SetSensorLowspeed(_port)
 
+#if __FIRMWARE_VERSION > 107
+
+#define __SetSensorColorFull(_port) \
+  SetSensorType(_port,IN_TYPE_COLORFULL) \
+  SetSensorMode(_port,IN_MODE_RAW) \
+  ResetSensor(_port)
+
+#define __SetSensorColorRed(_port) \
+  SetSensorType(_port,IN_TYPE_COLORRED) \
+  SetSensorMode(_port,IN_MODE_RAW) \
+  ResetSensor(_port)
+
+#define __SetSensorColorGreen(_port) \
+  SetSensorType(_port,IN_TYPE_COLORGREEN) \
+  SetSensorMode(_port,IN_MODE_RAW) \
+  ResetSensor(_port)
+
+#define __SetSensorColorBlue(_port) \
+  SetSensorType(_port,IN_TYPE_COLORBLUE) \
+  SetSensorMode(_port,IN_MODE_RAW) \
+  ResetSensor(_port)
+
+#define __SetSensorColorNone(_port) \
+  SetSensorType(_port,IN_TYPE_COLORNONE) \
+  SetSensorMode(_port,IN_MODE_RAW) \
+  ResetSensor(_port)
+
+#define SetSensorColorFull(_port) __SetSensorColorFull(_port)
+#define SetSensorColorRed(_port) __SetSensorColorRed(_port)
+#define SetSensorColorGreen(_port) __SetSensorColorGreen(_port)
+#define SetSensorColorBlue(_port) __SetSensorColorBlue(_port)
+#define SetSensorColorNone(_port) __SetSensorColorNone(_port)
+
+#endif
+
 dseg segment
   __ResetSensorMutex mutex
   __ResetSensorPort byte
@@ -1708,6 +1755,49 @@ dseg ends
   mov __GraphicArrayOutArgs.Options,_cls \
   syscall DrawGraphicArray,__GraphicArrayOutArgs \
   release __GraphicOutMutex
+
+#endif
+
+#if __FIRMWARE_VERSION > 107
+
+dseg segment
+  __ColorSensorReadArgs TColorSensorRead
+  __ColorSensorReadMutex mutex
+dseg ends
+
+#define __ReadSensorColorValue(_port, _colorval, _invalid, _result) \
+  acquire __ColorSensorReadMutex \
+  mov __ColorSensorReadArgs.Port,_port \
+  syscall ColorSensorRead,__ColorSensorReadArgs \
+  mov _colorval, __ColorSensorReadArgs.ColorValue \
+  mov _invalid, __ColorSensorReadArgs.Invalid \
+  mov _result, __ColorSensorReadArgs.Result \
+  release __ColorSensorReadMutex
+
+#define __ReadSensorColorRaw(_port, _raw, _invalid, _result) \
+  acquire __ColorSensorReadMutex \
+  mov __ColorSensorReadArgs.Port,_port \
+  syscall ColorSensorRead,__ColorSensorReadArgs \
+  mov _raw, __ColorSensorReadArgs.RawArray \
+  mov _invalid, __ColorSensorReadArgs.Invalid \
+  mov _result, __ColorSensorReadArgs.Result \
+  release __ColorSensorReadMutex
+
+#define __ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid, _result) \
+  acquire __ColorSensorReadMutex \
+  mov __ColorSensorReadArgs.Port,_port \
+  syscall ColorSensorRead,__ColorSensorReadArgs \
+  mov _colorval, __ColorSensorReadArgs.ColorValue \
+  mov _raw, __ColorSensorReadArgs.RawArray \
+  mov _norm, __ColorSensorReadArgs.NormalizedArray \
+  mov _scaled, __ColorSensorReadArgs.ScaledArray \
+  mov _invalid, __ColorSensorReadArgs.Invalid \
+  mov _result, __ColorSensorReadArgs.Result \
+  release __ColorSensorReadMutex
+
+#define ReadSensorColorValue(_port, _colorval, _invalid, _result) __ReadSensorColorValue(_port, _colorval, _invalid, _result)
+#define ReadSensorColorRaw(_port, _raw, _invalid, _result) __ReadSensorColorRaw(_port, _raw, _invalid, _result)
+#define ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid, _result) __ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, _invalid, _result)
 
 #endif
 
@@ -2486,6 +2576,80 @@ dseg ends
   release __inputModuleOffsetMutex \
   compend
 
+#if __FIRMWARE_VERSION > 107
+
+#define GetInColorCalibration(_p, _np, _nc, _n) \
+  compchk EQ, sizeof(_n), 4 \
+  compchk EQ, isconst(_p), TRUE \
+  compchk EQ, isconst(_np), TRUE \
+  compchk EQ, isconst(_nc), TRUE \
+  compchk LT, _p, 0x04 \
+  compchk GTEQ, _p, 0x00 \
+  compchk LT, _np, INPUT_NO_OF_POINTS \
+  compchk GTEQ, _np, 0x00 \
+  compchk LT, _nc, INPUT_NO_OF_COLORS \
+  compchk GTEQ, _nc, 0x00 \
+  GetInputModuleValue(InputOffsetColorCalibration(_p, _np, _nc), _n)
+
+#define GetInColorCalLimits(_p, _np, _n) \
+  compchk EQ, sizeof(_n), 2 \
+  compchk EQ, isconst(_p), TRUE \
+  compchk EQ, isconst(_np), TRUE \
+  compchk LT, _p, 0x04 \
+  compchk GTEQ, _p, 0x00 \
+  compchk LT, _np, 0x02 \
+  compchk GTEQ, _np, 0x00 \
+  GetInputModuleValue(InputOffsetColorCalLimits(_p, _np), _n)
+
+#define GetInColorADRaw(_p, _nc, _n) \
+  compchk EQ, sizeof(_n), 2 \
+  compchk EQ, isconst(_p), TRUE \
+  compchk EQ, isconst(_nc), TRUE \
+  compchk LT, _p, 0x04 \
+  compchk GTEQ, _p, 0x00 \
+  compchk LT, _nc, INPUT_NO_OF_COLORS \
+  compchk GTEQ, _nc, 0x00 \
+  GetInputModuleValue(InputOffsetColorADRaw(_p, _nc), _n)
+
+#define GetInColorSensorRaw(_p, _nc, _n) \
+  compchk EQ, sizeof(_n), 2 \
+  compchk EQ, isconst(_p), TRUE \
+  compchk EQ, isconst(_nc), TRUE \
+  compchk LT, _p, 0x04 \
+  compchk GTEQ, _p, 0x00 \
+  compchk LT, _nc, INPUT_NO_OF_COLORS \
+  compchk GTEQ, _nc, 0x00 \
+  GetInputModuleValue(InputOffsetColorSensorRaw(_p, _nc), _n)
+
+#define GetInColorSensorValue(_p, _nc, _n) \
+  compchk EQ, sizeof(_n), 2 \
+  compchk EQ, isconst(_p), TRUE \
+  compchk EQ, isconst(_nc), TRUE \
+  compchk LT, _p, 0x04 \
+  compchk GTEQ, _p, 0x00 \
+  compchk LT, _nc, INPUT_NO_OF_COLORS \
+  compchk GTEQ, _nc, 0x00 \
+  GetInputModuleValue(InputOffsetColorSensorValue(_p, _nc), _n)
+
+#define GetInColorBoolean(_p, _nc, _n) \
+  compchk EQ, sizeof(_n), 1 \
+  compchk EQ, isconst(_p), TRUE \
+  compchk EQ, isconst(_nc), TRUE \
+  compchk LT, _p, 0x04 \
+  compchk GTEQ, _p, 0x00 \
+  compchk LT, _nc, INPUT_NO_OF_COLORS \
+  compchk GTEQ, _nc, 0x00 \
+  GetInputModuleValue(InputOffsetColorBoolean(_p, _nc), _n)
+
+#define GetInColorCalibrationState(_p, _n) \
+  compchk EQ, sizeof(_n), 1 \
+  compchk EQ, isconst(_p), TRUE \
+  compchk LT, _p, 0x04 \
+  compchk GTEQ, _p, 0x00 \
+  GetInputModuleValue(InputOffsetColorCalibrationState(_p), _n)
+
+#endif
+
 #define GetOutPwnFreq(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetOutputModuleValue(OutputOffsetPwnFreq, _n)
@@ -3057,6 +3221,10 @@ dseg ends
 #define GetUSBState(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetCommModuleValue(CommOffsetUsbState, _n)
+
+#define GetHSMode(_n) \
+  compchk EQ, sizeof(_n), 2 \
+  GetCommModuleValue(CommOffsetHsMode, _n)
 
 dseg segment
   __IOMWArgs TIOMapWrite
@@ -4860,7 +5028,7 @@ dseg ends
 // X is 100* the cos value (-100->100); Y is 0->180; Y is -11 if X is outside -100->100 range
 #define Acos(_X,_R) __ACOS(_X,_R)
 
-#ifdef __ENHANCED_FIRMWARE
+#if defined(__ENHANCED_FIRMWARE)
 
 #define __SQRT(_X,_R) sqrt _R, _X
 #define __SIN(_X,_R) sin _R, _X
@@ -4870,12 +5038,16 @@ dseg ends
 
 #else
 
+#if (__FIRMWARE_VERSION > 107)
+#define __SQRT(_X,_R) sqrt _R, _X
+#else
 #define __SQRT(_X,_R) \
   acquire __sqrtMutex \
   mov __sqrtValue, _X \
   call __sqrtSub \
   mov _R, __sqrtResult \
   release __sqrtMutex
+#endif
 
 #define __SIN(_X,_R) \
   acquire __sinMutex \

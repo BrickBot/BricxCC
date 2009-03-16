@@ -1,18 +1,30 @@
+/*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Initial Developer of this code is John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * All Rights Reserved.
+ *
+ * ----------------------------------------------------------------------------
+ *
+ * Workfile:: NXCDefs.h
+ * Date:: 2009-03-15
+
+ * Revision:: 41
+ *
+ * Contains declarations for the NXC NXT API resources
+ *
+ */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
-//==============================================================================
-//
-// Copyright (C) 2009 - John Hansen. All rights reserved.
-//
-// Workfile:: NXCDefs.h
-// Date:: 2009-03-07
-// Revision:: 40
-//
-//------------------------------------------------------------------------------
-//
-// Contains declarations for the NXC NXT API resources
-//
-//==============================================================================
 
 #include "NBCCommon.h"
 
@@ -75,6 +87,14 @@
 #define SENSOR_EDGE		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_EDGE)
 
 #define SetSensor(_sensor, _tm) { SetSensorType(_sensor, _tm>>8); SetSensorMode(_sensor, _tm&0xff); }
+
+#if __FIRMWARE_VERSION > 107
+#define SetSensorColorFull(_port) __SetSensorColorFull(_port)
+#define SetSensorColorRed(_port) __SetSensorColorRed(_port)
+#define SetSensorColorGreen(_port) __SetSensorColorGreen(_port)
+#define SetSensorColorBlue(_port) __SetSensorColorBlue(_port)
+#define SetSensorColorNone(_port) __SetSensorColorNone(_port)
+#endif
 
 #define PlayTone(_f, _d) PlayToneEx(_f, _d, 4, 0)
 #define PlayFile(_f) PlayFileEx(_f, 4, 0)
@@ -201,6 +221,18 @@
 #define SensorDigiPinsStatus(_p) asm { GetInDigiPinsStatus(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define SensorDigiPinsOutputLevel(_p) asm { GetInDigiPinsOutputLevel(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
 
+#if __FIRMWARE_VERSION > 107
+
+#define ColorCalibration(_p, _np, _nc) asm { GetInColorCalibration(_p, _np, _nc, __TMPLONG__) __RETURN__ __TMPLONG__ }
+#define ColorCalLimits(_p, _np) asm { GetInColorCalLimits(_p, _np, __TMPWORD__) __RETURN__ __TMPWORD__ }
+#define ColorADRaw(_p, _nc) asm { GetInColorADRaw(_p, _nc, __TMPWORD__) __RETURN__ __TMPWORD__ } 
+#define ColorSensorRaw(_p, _nc) asm { GetInColorSensorRaw(_p, _nc, __TMPWORD__) __RETURN__ __TMPWORD__ }
+#define ColorSensorValue(_p, _nc) asm { GetInColorSensorValue(_p, _nc, __TMPWORD__) __RETURN__ __TMPWORD__ }
+#define ColorBoolean(_p, _nc) asm { GetInColorBoolean(_p, _nc, __TMPBYTE__) __RETURN__ __TMPBYTE__ } 
+#define ColorCalibrationState(_p) asm { GetInColorCalibrationState(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
+
+#endif
+
 #define MotorPwnFreq() asm { GetOutPwnFreq(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 
 #define LSInputBufferInPtr(_p) asm { GetLSInputBufferInPtr(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
@@ -251,6 +283,7 @@
 #define HSSpeed() asm { GetHSSpeed(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define HSState() asm { GetHSState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define USBState() asm { GetUSBState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define HSMode() asm { GetHSMode(__TMPWORD__) __RETURN__ __TMPWORD__ }
 
 #define SetSoundFrequency(_n) asm { __setSoundFrequency(_n) }
 #define SetSoundDuration(_n) asm { __setSoundDuration(_n) }
@@ -533,6 +566,34 @@
 #endif
 
 
+#if __FIRMWARE_VERSION > 107
+
+#define Sqrt(_X) asm { sqrt __FLTRETVAL__, _X }
+
+#ifdef __ENHANCED_FIRMWARE
+#define Sin(_X) asm { sin __FLTRETVAL__, _X }
+#define Cos(_X) asm { cos __FLTRETVAL__, _X }
+#define Asin(_X) asm { asin __FLTRETVAL__, _X }
+#define Acos(_X) asm { acos __FLTRETVAL__, _X }
+#define Atan(_X) asm { atan __FLTRETVAL__, _X }
+#define Ceil(_X) asm { ceil __FLTRETVAL__, _X }
+#define Exp(_X) asm { exp __FLTRETVAL__, _X }
+#define Floor(_X) asm { floor __FLTRETVAL__, _X }
+#define Tan(_X) asm { tan __FLTRETVAL__, _X }
+#define Tanh(_X) asm { tanh __FLTRETVAL__, _X }
+#define Cosh(_X) asm { cosh __FLTRETVAL__, _X }
+#define Sinh(_X) asm { sinh __FLTRETVAL__, _X }
+#define Log(_X) asm { log __FLTRETVAL__, _X }
+#define Log10(_X) asm { log10 __FLTRETVAL__, _X }
+#define Atan2(_X,_Y) asm { atan2 __FLTRETVAL__, _X, _Y }
+#define Pow(_X,_Y) asm { pow __FLTRETVAL__, _X, _Y }
+#define Trunc(_X) asm { trunc __RETVAL__, _X }
+#define Frac(_X) asm { frac __FLTRETVAL__, _X }
+#define MulDiv32(_A,_B,_C) asm { muldiv __RETVAL__, _A, _B, _C }
+#endif
+
+#else
+
 // math functions written by Tamas Sorosy (www.sorosy.com)
 
 // X is any integer; Y is the sqrt value (0->max); if X<0, Y is the sqrt value of absolute X
@@ -550,6 +611,7 @@
 // X is 100* the cos value (-100->100); Y is 0->180; Y is -11 if X is outside -100->100 range
 #define Acos(_X) asm { __ACOS(_X,__RETVAL__) }
 
+#endif
 
 #define bcd2dec(_bcd) asm { \
   compchk EQ, sizeof(_bcd), 1 \

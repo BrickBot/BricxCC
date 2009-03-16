@@ -903,9 +903,14 @@ begin
           end
           else if dir = '#else' then
           begin
-            // switch mode at current level (must be > 0)
-            SwitchLevelIgnoreValue(lineNo);
-            bProcess := not GetLevelIgnoreValue(lineNo);
+            // if we are already ignoring code because of a containing
+            // if/elif/ifdef/ifndef then we just ignore the #else
+            if bProcess then
+            begin
+              // switch mode at current level (must be > 0)
+              SwitchLevelIgnoreValue(lineNo);
+              bProcess := not GetLevelIgnoreValue(lineNo);
+            end;
             // output a blank line to replace directive
             OutStrings.Add('');
           end
@@ -1050,7 +1055,7 @@ begin
   fCalc.SilentExpression := Result;
   if not fCalc.ParserError then
   begin
-    Result := IntToStr(Trunc(fCalc.Value));
+    Result := StripTrailingZeros(Format('%.5f', [fCalc.Value]));
   end;
 end;
 
@@ -1067,7 +1072,7 @@ begin
   fCalc.SilentExpression := expr;
   if not fCalc.ParserError then
   begin
-    Result := Trunc(fCalc.Value) <> 0;
+    Result := fCalc.Value <> 0;
   end
   else
     raise EPreprocessorException.Create(Format(sInvalidPreprocExpression, [fCalc.ErrorMessage]), lineno);
