@@ -1,0 +1,31 @@
+task main()
+{
+  int cv;
+  bool invalid;
+  for (int i=0;i<10;i++) {
+    SetSensorColorRed(S3);
+    SetSensorColorGreen(S3);
+    SetSensorColorBlue(S3);
+  }
+  for (int i=0;i<10;i++) {
+    SetSensorType(S3, SENSOR_TYPE_COLORRED);
+    Wait(108); Wait(53);
+    SetSensorType(S3, SENSOR_TYPE_COLORGREEN);
+    Wait(108); Wait(53);
+    SetSensorType(S3, SENSOR_TYPE_COLORBLUE);
+    Wait(108); Wait(53);
+  }
+  SetSensorColorNone(S3);
+  Wait(5000);
+  SetSensorColorFull(S3);
+  while(true) {
+    long tick = CurrentTick();
+    if (ReadSensorColorValue(S3, cv, invalid) == NO_ERR) {
+      tick = CurrentTick()-tick;
+      NumOut(0, LCD_LINE1, cv);
+      NumOut(0, LCD_LINE2, invalid);
+      NumOut(0, LCD_LINE3, tick);
+    }
+  }
+
+}

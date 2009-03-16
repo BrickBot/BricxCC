@@ -1,0 +1,52 @@
+#define IN_TYPE_COLORFULL      0x0D
+#define IN_TYPE_COLORRED       0x0E
+#define IN_TYPE_COLORGREEN     0x0F
+#define IN_TYPE_COLORBLUE      0x10
+#define IN_TYPE_COLORNONE      0x11
+
+dseg	segment
+  startTick dword
+  dispValue	dword
+dseg ends
+
+thread main
+  gettick startTick
+//lblLoop:
+  // red port 3
+  SetSensorType(IN_3, IN_TYPE_COLORRED)
+//  SetSensorMode(IN_3, IN_MODE_RAW)
+//  ResetSensor(IN_3)
+  Wait(108);
+  // light is on after 108 ms
+  Wait(53);
+  // green port 3
+  SetSensorType(IN_3, IN_TYPE_COLORGREEN)
+//  SetSensorMode(IN_3, IN_MODE_RAW)
+//  ResetSensor(IN_3)
+  Wait(108);
+  // light is on after 108 ms
+  Wait(53);
+  // blue port 3
+  SetSensorType(IN_3, IN_TYPE_COLORBLUE)
+//  SetSensorMode(IN_3, IN_MODE_RAW)
+//  ResetSensor(IN_3)
+  Wait(108);
+  // light is on after 108 ms
+  Wait(53);
+  // off port 3
+  SetSensorType(IN_3, IN_TYPE_COLORNONE)
+//  SetSensorMode(IN_3, IN_MODE_RAW)
+//  ResetSensor(IN_3)
+//  Wait(110);
+
+  gettick dispValue
+  sub dispValue, dispValue, startTick
+
+  // draw timer value to LCD
+  NumOut(0, LCD_LINE1, dispValue)
+  
+lblLoop:
+  jmp lblLoop
+  exit
+endt
+
