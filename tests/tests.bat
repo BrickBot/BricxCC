@@ -33,8 +33,6 @@
 @..\nxt\nbc -EF bouncy-workaround.nxc >> output.txt 2>&1
 @echo ..\nxt\nbc -EF e_test.nxc >> output.txt 2>&1
 @..\nxt\nbc -EF e_test.nxc >> output.txt 2>&1
-@echo ..\nxt\nbc -EF -v=128 float.nxc >> output.txt 2>&1
-@..\nxt\nbc -EF -v=128 float.nxc >> output.txt 2>&1
 @echo ..\nxt\nbc -EF f_array_search.nxc >> output.txt 2>&1
 @..\nxt\nbc -EF f_array_search.nxc >> output.txt 2>&1
 @echo ..\nxt\nbc -EF math_array.nxc >> output.txt 2>&1
@@ -65,3 +63,6 @@
 @..\nxt\nbc -EF str_test2.nxc >> output.txt 2>&1
 @echo ..\nxt\nbc -EF testswitch.nxc >> output.txt 2>&1
 @..\nxt\nbc -EF testswitch.nxc >> output.txt 2>&1
+REM 1.2x tests
+@echo ..\nxt\nbc -EF -v=128 float.nxc >> output.txt 2>&1
+@..\nxt\nbc -EF -v=128 float.nxc >> output.txt 2>&1

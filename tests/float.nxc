@@ -22,19 +22,13 @@ task main()
 
   float test;
   int tmp = -1;
-  asm {
-    mov test, tmp
-  }
+  test = tmp;
   NumOut(0, LCD_LINE5, test);
   test = -1.5;
-  asm {
-    mov tmp, test
-  }
+  tmp = test;
   NumOut(0, LCD_LINE6, tmp);
   float values[] = {1, 0, 1};
-  asm {
-    not values, values
-  }
+  values = !values;
   NumOut(0, LCD_LINE7, values[0]);
   Wait(5000);
 }
