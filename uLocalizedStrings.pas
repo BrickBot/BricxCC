@@ -423,35 +423,36 @@ resourcestring
 
 // uNXTClasses
 resourcestring
-  sInvalidStatement   = 'Unknown or invalid statement';
-  sInvalidLine        = 'Line type "%s" is not valid while in the "%s" state';
-  sInvalidNumArgs     = 'Invalid number of arguments: %d expected, %d found';
-  sInvalidNumArgsVar  = 'Invalid number of arguments: at least %d expected, %d found';
-  sInvalidNumArgsOdd  = 'Invalid number of arguments: argument count must be odd';
-  sInvalidCompareCode = 'Invalid comparison code: %s';
-  sBadConstExpression = 'Invalid constant expression: %s';
-  sConstOutOfRange    = '%d is outside the valid range [%d,%d]';
-  sInvalidOpcode      = 'Invalid opcode: %s';
-  sDuplicateLabel     = 'Duplicate label (%s)';
-  sDuplicateDSEntry   = 'Duplicate variable declaration (%s)';
-  sDuplicateType      = 'Duplicate type declaration (%s)';
-  sInvalidVarDecl     = 'Invalid variable declaration (%s)';
-  sInvalidVarArg      = 'Invalid variable argument: %s';
-  sInvalidMutexArg    = 'Invalid mutex argument: %s';
-  sInvalidClusterArg  = 'Invalid struct argument: %s';
-  sInvalidArrayArg    = 'Invalid array argument: %s';
-  sInvalidScalarArg   = 'Invalid scalar argument: %s';
-  sInvalidStringArg   = 'Invalid string argument: %s';
-  sInvalidLabelArg    = 'Invalid label argument: %s';
-  sInvalidClumpArg    = 'Invalid thread argument: %s';
-  sReturnNotInSub     = 'The return opcode can only be used within a subroutine';
-  sNoReturnAtEndOfSub = 'The last operation in a subroutine must be a return';
-  sCompCheckFailed    = 'compchk failed.  %d is not %s %d.';
-  sCompCheckTypFailed = 'compchktype failed.  %s is not %s.';
-  sInvalidCompCheck   = 'invalid compchk operation';
+  sInvalidStatement    = 'Unknown or invalid statement';
+  sInvalidLine         = 'Line type "%s" is not valid while in the "%s" state';
+  sInvalidNumArgs      = 'Invalid number of arguments: %d expected, %d found';
+  sInvalidNumArgsVar   = 'Invalid number of arguments: at least %d expected, %d found';
+  sInvalidNumArgsOdd   = 'Invalid number of arguments: argument count must be odd';
+  sInvalidCompareCode  = 'Invalid comparison code: %s';
+  sBadConstExpression  = 'Invalid constant expression: %s';
+  sConstOutOfRange     = '%d is outside the valid range [%d,%d]';
+  sInvalidOpcode       = 'Invalid opcode: %s';
+  sDuplicateLabel      = 'Duplicate label (%s)';
+  sDuplicateDSEntry    = 'Duplicate variable declaration (%s)';
+  sDuplicateType       = 'Duplicate type declaration (%s)';
+  sInvalidVarDecl      = 'Invalid variable declaration (%s)';
+  sInvalidVarArg       = 'Invalid variable argument: %s';
+  sInvalidMutexArg     = 'Invalid mutex argument: %s';
+  sInvalidClusterArg   = 'Invalid struct argument: %s';
+  sInvalidArrayArg     = 'Invalid array argument: %s';
+  sInvalidScalarArg    = 'Invalid scalar argument: %s';
+  sInvalidStringArg    = 'Invalid string argument: %s';
+  sInvalidLabelArg     = 'Invalid label argument: %s';
+  sInvalidClumpArg     = 'Invalid thread argument: %s';
+  sReturnNotInSub      = 'The return opcode can only be used within a subroutine';
+  sNoReturnAtEndOfSub  = 'The last operation in a subroutine must be a return';
+  sCompCheckFailed     = 'compchk failed.  %d is not %s %d.';
+  sCompCheckTypFailed  = 'compchktype failed.  %s is not %s.';
+  sInvalidCompCheck    = 'invalid compchk operation';
   sInvalidCompCheckTyp = 'invalid compchktype operation';
-  sUnsafeDivision     = 'Dividing a signed number by an unsigned number is unsafe';
-  sUnusedVar          = 'Unused variable: %s.  Enable optimization with -Z1 to remove.';
+  sUnsafeDivision      = 'Dividing a signed number by an unsigned number is unsafe';
+  sUnusedVar           = 'Unused variable: %s.  Enable optimization with -Z1 to remove.';
+  sInvalidSetStatement = 'The set opcode cannot be used with float variables';
 
 // uNXCComp unit
 resourcestring
