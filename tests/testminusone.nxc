@@ -7,39 +7,53 @@ task main()
  byte a,b;
  int c,d;
  long e,f;
- float g,h;
+ float g,h, tmp;
 
-a=-1;
-b=-1.0;
-c=-1;
-d=-1.0;
-e=-1;
-f=-1.0;
-g=-1;
-h=-1.0;
+  a=-1;
+  b=-1.5;
+  c=-1;
+  d=-1.5;
+  e=-1;
+  f=-1.5;
+  g=-1;
+  h=-1.5;
 
+  TextOut(0,LCD_LINE1,"Set as  -1.5  -1");
 
-TextOut(0,LCD_LINE1,"Set as  -1.0  -1");
+  TextOut(0,LCD_LINE3,"Byte");
+  NumOut(43,LCD_LINE3,b);
+  NumOut(75,LCD_LINE3,a);
+  TextOut(0,LCD_LINE4,"Int");
+  NumOut(43,LCD_LINE4,d);
+  NumOut(75,LCD_LINE4,c);
+  TextOut(0,LCD_LINE5,"Long");
+  NumOut(43,LCD_LINE5,f);
+  NumOut(75,LCD_LINE5,e);
+  TextOut(0,LCD_LINE6,"Float");
+  NumOut(43,LCD_LINE6,h);
+  NumOut(75,LCD_LINE6,g);
+  TextOut(0,LCD_LINE7,"F/10");
+  g/=10;
+  h/=10;
+  NumOut(43,LCD_LINE7,h);
+  NumOut(75,LCD_LINE7,g);
 
-TextOut(0,LCD_LINE3,"Byte");
-NumOut(75,LCD_LINE3,a);
-NumOut(43,LCD_LINE3,b);
-TextOut(0,LCD_LINE4,"Int");
-NumOut(75,LCD_LINE4,c);
-NumOut(43,LCD_LINE4,d);
-TextOut(0,LCD_LINE5,"Long");
-NumOut(75,LCD_LINE5,e);
-NumOut(43,LCD_LINE5,f);
-TextOut(0,LCD_LINE6,"Float");
-NumOut(75,LCD_LINE6,g);
-NumOut(43,LCD_LINE6,h);
-TextOut(0,LCD_LINE7,"F/10");
-g/=10;
-h/=10;
-NumOut(75,LCD_LINE7,g);
-NumOut(43,LCD_LINE7,h);
+asm {
+dseg segment
+  myvar float
+  sint sword
+dseg ends
+  mov myvar, 0
+  mov sint, 0
+  mov __DF0main, 1.0
+  sub __DF0main, sint, __DF0main
+  sub __DF0main, myvar, __DF0main
+  mov tmp, __DF0main
+}
 
-while(true);
+  NumOut(0, LCD_LINE8, tmp);
+
+  while(true);
 
 }
 

@@ -1,4 +1,4 @@
-#define OUT_A 123
+#define OUT_A 0x01
 #define MyMacro(_x, ...) NumOut(_x, __VA_ARGS__)
 #define SetSleepTimeout 12314
 float value = 1.23;
@@ -15,7 +15,7 @@ task main()
   MyMacro(0, LCD_LINE1, value, true);
   NumOut(0, LCD_LINE2, value);
   
-  SetSleepTimeout(13);
+//  SetSleepTimeout(13);
 
 loop:
   goto loop;

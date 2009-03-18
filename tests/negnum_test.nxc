@@ -1,6 +1,10 @@
 task main()
 {
   int y = 12;
+  NumOut(0, LCD_LINE1, y);
   int x = y-1;
+  NumOut(0, LCD_LINE2, x);
   x = y*-1;
+  NumOut(0, LCD_LINE3, x);
+  while(true);
 }

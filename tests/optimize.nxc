@@ -1,0 +1,10 @@
+task main()
+{
+  float test;
+  int tmp=0xA;
+  asm { mov test, tmp }
+  NumOut(0, LCD_LINE1, test);
+  asm { sub test, 0x00, test }
+  NumOut(0, LCD_LINE2, test);
+  Wait(10000);
+}
