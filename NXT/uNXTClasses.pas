@@ -410,7 +410,6 @@ type
     procedure RemoveOrNOPLine(AL, ALNext: TAsmLine; const idx: integer);
     function GetCallerCount: Byte;
     function GetIsMultithreaded: boolean;
-    function FirmwareVersion : word;
   protected
     fLabelMap : TStringList;
     fUpstream : TStringList;
@@ -423,7 +422,7 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    procedure Optimize;
+    procedure Optimize(const level : Integer);
     procedure OptimizeMutexes;
     procedure AddClumpDependencies(const opcode, args : string);
     procedure AddDependant(const clumpName : string);
@@ -488,7 +487,7 @@ type
     destructor Destroy; override;
     function  Add: TClump;
     procedure Compact;
-    procedure Optimize;
+    procedure Optimize(const level : Integer);
     procedure OptimizeMutexes;
     procedure SaveToCodeData(aCD : TClumpData; aCode : TCodeSpaceAry);
     procedure SaveToSymbolTable(aStrings : TStrings);
@@ -1310,7 +1309,7 @@ begin
       dsMutex : Result := Format('%u', [aVal]);
       dsArray : Result := '';
       dsCluster : Result := '';
-      dsFloat : Result := StripTrailingZeros(Format('%.5f', [Single(Pointer(aVal))]));
+      dsFloat : Result := NBCFloatToStr(Single(Pointer(aVal)));
     else
       Result := '???';
     end;
@@ -4032,7 +4031,7 @@ begin
   Result := False;
   if fBadProgram then
   begin
-    ReportProblem(-1, GetCurrentFile(true), '', Format(sProgramError, [fProgErrorCount]), true)
+    fMsgs.Add(Format(sProgramError, [fProgErrorCount]));
   end
   else
   begin
@@ -4045,9 +4044,12 @@ begin
       Codespace.BuildReferences;
       // optimize mutexes
       Codespace.OptimizeMutexes;
-      if OptimizeLevel >= 10{2} then
-        Codespace.Optimize;
       Codespace.Compact;
+      if OptimizeLevel >= 10{2} then
+      begin
+        Codespace.Optimize(OptimizeLevel);
+        Codespace.Compact;
+      end;
       Dataspace.Compact;
     end;
     if not WarningsOff then
@@ -5015,7 +5017,6 @@ begin
   if err then
     inc(fProgErrorCount);
   stop := (MaxErrors > 0) and (fProgErrorCount >= MaxErrors);
-//  stop := false;
   if assigned(fOnCompMsg) then
     fOnCompMsg(tmp, stop);
   if stop then
@@ -5501,7 +5502,7 @@ begin
         arg.Value := '-1'; // set to a valid numeric string
       end
       else
-        arg.Value := StripTrailingZeros(Format('%.5f', [Calc.Value]));
+        arg.Value := NBCFloatToStr(Calc.Value);
 //        arg.Value := IntToStr(Trunc(Calc.Value));
     end;
   end;
@@ -6611,7 +6612,7 @@ begin
   end
   else
   begin
-    Arg.Value := left + StripTrailingZeros(Format('%.5f', [Calc.Value])) + right;
+    Arg.Value := left + NBCFloatToStr(Calc.Value) + right;
   end;
 end;
 
@@ -7446,14 +7447,14 @@ begin
   end;
 end;
 
-procedure TCodeSpace.Optimize;
+procedure TCodeSpace.Optimize(const level : Integer);
 var
   i : integer;
 begin
   // level 2 optimizations are buggy so don't do them.
   // have each clump optimize itself
   for i := 0 to Count - 1 do
-    Items[i].Optimize;
+    Items[i].Optimize(level);
 end;
 
 procedure TCodeSpace.OptimizeMutexes;
@@ -7829,7 +7830,7 @@ function IsStackOrReg(const str : string) : boolean;
 begin
   Result := (Pos('__D0', str) = 1) or (Pos('__signed_stack_', str) = 1) or
             (Pos('__unsigned_stack_', str) = 1) or (Pos('__float_stack_', str) = 1) or
-            (Pos('__U0', str) = 1) or (Pos('__F0', str) = 1);
+            (Pos('__DU0', str) = 1) or (Pos('__DF0', str) = 1);
 end;
 
 procedure TClump.RemoveOrNOPLine(AL, ALNext : TAsmLine; const idx : integer);
@@ -7941,7 +7942,7 @@ begin
   end;
 end;
 
-procedure TClump.Optimize;
+procedure TClump.Optimize(const level : Integer);
 var
   i, offset : integer;
   iVal : Int64;
@@ -7949,11 +7950,11 @@ var
   arg1, arg2, arg3, tmp : string;
   bDone, bArg1Numeric, bArg2Numeric : boolean;
   iArg1Val, iArg2Val : integer;
+  DE : TDataspaceEntry;
 
   function CheckReferenceCount : boolean;
   var
     cnt : integer;
-    DE : TDataspaceEntry;
   begin
     Result := True;
     arg1 := AL.Args[0].Value;
@@ -7982,6 +7983,14 @@ begin
           // first check reference count of output variable
           if not CheckReferenceCount then
           begin
+            bDone := False;
+            Break;
+          end;
+          if AL.Args[0].Value = AL.Args[1].Value then
+          begin
+            // set|mov X, X <-- replace with nop or delete
+            AL.RemoveVariableReferences;
+            RemoveOrNOPLine(AL, nil, i);
             bDone := False;
             Break;
           end;
@@ -8022,9 +8031,20 @@ begin
                       // set|mov __D0,whatever   (__D0 or __stack_nnn)
                       // mov X,__D0 <-- replace these two lines with
                       // nop  (if arg1 and arg2 are stack or register variables)
-                      // set|mov X,whatever
+                      // mov X,whatever
+                      if AL.Command = OP_SET then
+                        tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
+                      else
+                        tmp := AL.Args[1].Value;
+                      ALNext.Command := OP_MOV;
+                      ALNext.Args[1].Value := tmp;
+{
                       ALNext.Command := AL.Command;
                       ALNext.Args[1].Value := AL.Args[1].Value;
+}
+                      DE := CodeSpace.Dataspace.FindEntryByFullName(tmp);
+                      if Assigned(DE) then
+                        DE.IncRefCount;
                       ALNext.RemoveVariableReference(arg2, 1);
                       if IsStackOrReg(arg1) then
                       begin
@@ -8038,28 +8058,26 @@ begin
                   end;
                 end;
                 OPS_WAITV, OPS_WAITV_2 : begin
-                  if FirmwareVersion <= MAX_FW_VER1X then
-                  begin
-                    arg1 := AL.Args[0].Value;
-                    arg2 := ALNext.Args[0].Value;
-                    if (arg1 = arg2) then begin
-                      // set|mov __D0,whatever  (__D0 or __stack_nnn)
-                      // waitv __D0 <-- replace these two lines with
-                      // nop (if arg1 and arg2 are stack or register variables)
-                      // waitv|wait whatever
-                      if AL.Command = OP_SET then
-                        ALNext.Command := OP_WAIT;
-                      ALNext.Args[0].Value := AL.Args[1].Value;
-                      ALNext.RemoveVariableReference(arg2, 0);
-                      if IsStackOrReg(arg1) then
-                      begin
-                        // remove second reference to _D0
-                        AL.RemoveVariableReference(arg1, 0);
-                        RemoveOrNOPLine(AL, ALNext, i);
-                      end;
-                      bDone := False;
-                      Break;
+                  // these two opcodes are only present if EnhancedFirmware is true
+                  arg1 := AL.Args[0].Value;
+                  arg2 := ALNext.Args[0].Value;
+                  if (arg1 = arg2) then begin
+                    // set|mov __D0,whatever  (__D0 or __stack_nnn)
+                    // waitv __D0 <-- replace these two lines with
+                    // nop (if arg1 and arg2 are stack or register variables)
+                    // waitv|wait whatever
+                    if AL.Command = OP_SET then
+                      ALNext.Command := OPS_WAITI_2;
+                    ALNext.Args[0].Value := AL.Args[1].Value;
+                    ALNext.RemoveVariableReference(arg2, 0);
+                    if IsStackOrReg(arg1) then
+                    begin
+                      // remove second reference to _D0
+                      AL.RemoveVariableReference(arg1, 0);
+                      RemoveOrNOPLine(AL, ALNext, i);
                     end;
+                    bDone := False;
+                    Break;
                   end;
                 end;
                 OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD, OP_AND, OP_OR, OP_XOR : begin
@@ -8244,11 +8262,6 @@ end;
 function TClump.GetIsMultithreaded: boolean;
 begin
   Result := Codespace.fMultiThreadedClumps.IndexOf(Self.Name) <> -1;
-end;
-
-function TClump.FirmwareVersion: word;
-begin
-  Result := CodeSpace.FirmwareVersion;
 end;
 
 { TClumpCode }
