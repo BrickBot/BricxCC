@@ -320,9 +320,9 @@ begin
   if WriteOutput then
     NXTName := OutputFilename
   else if UseSpecialName then
-    nxtName := SpecialName
+    NXTName := SpecialName
   else
-    nxtName := InputFilename;
+    NXTName := InputFilename;
 
 {$IFDEF CAN_DOWNLOAD}
   if Download then
