@@ -102,6 +102,7 @@ type
     fArrayIndexStack : TStringList;
     fStructDecls : TStringList;
     fUDTOnStack : string;
+    procedure EmitNXCRequiredStructs;
     procedure ResetStatementType;
     procedure DecrementNestingLevel;
     procedure GetCharX;
@@ -776,7 +777,6 @@ begin
     if err then
       inc(fProgErrorCount);
     stop := (MaxErrors > 0) and (fProgErrorCount >= MaxErrors);
-  //  stop := false;
     if assigned(fOnCompMsg) then
       fOnCompMsg(tmp, stop);
     if stop then
@@ -2199,15 +2199,14 @@ begin
   try
     tmp.AddStrings(NBCSource);
     NBCSource.Clear;
-    if IgnoreSystemFile then
-      EmitLnNoTab('#include "NXTDefs.h"');
     // emit struct decls
     NBCSource.AddStrings(fStructDecls);
     EmitLnNoTab('dseg segment');
     // structures
-    EmitLn('__SSMArgs TSetScreenMode');
-    EmitLn('__SPTArgs TSoundPlayTone');
-    EmitLn('__SPFArgs TSoundPlayFile');
+    EmitNXCRequiredStructs;
+    EmitLn('__SSMArgs TNXCSetScreenMode');
+    EmitLn('__SPTArgs TNXCSoundPlayTone');
+    EmitLn('__SPFArgs TNXCSoundPlayFile');
     // mutexes
     EmitLn('__SSMArgsMutex mutex');
     EmitLn('__SPTArgsMutex mutex');
@@ -2551,13 +2550,13 @@ begin
      not fExpStrHasVars then
   begin
     System.Delete(fExpStr, Length(fExpStr), 1);
-    if (fExpStr <> '') and not (fExpStr[1] in ['+', '-'])then
+    if (fExpStr <> '') and not (fExpStr[1] in ['+', '-']) then
     begin
       fCalc.SilentExpression := fExpStr;
       if not fCalc.ParserError then
       begin
         if StatementType = stFloat then
-          fExpStr := StripTrailingZeros(Format('%.5f', [fCalc.Value]))
+          fExpStr := NBCFloatToStr(fCalc.Value)
         else
           fExpStr := IntToStr(Trunc(fCalc.Value));
         // in theory, we can replace all the lines between idx and
@@ -4692,7 +4691,7 @@ var
         begin
           if ArrayBaseType(dt) = TOK_FLOATDEF then
           begin
-            tmpExpr := StripTrailingZeros(Format('%.5f', [fCalc.Value]));
+            tmpExpr := NBCFloatToStr(fCalc.Value);
           end
           else
             tmpExpr := IntToStr(Trunc(fCalc.Value))
@@ -4785,7 +4784,7 @@ begin
         if not fCalc.ParserError then
         begin
           if dt = TOK_FLOATDEF then
-            Result := StripTrailingZeros(Format('%.5f', [fCalc.Value]))
+            Result := NBCFloatToStr(fCalc.Value)
           else
             Result := IntToStr(Trunc(fCalc.Value));
         end
@@ -7309,7 +7308,7 @@ begin
     if idx = APIF_DRAWGRAPHICEX then
       EmitLn('mov __GraphicOutArgs.Variables, ' + vars)
     else
-      EmitLn('mov __GraphicOutArgs.Variables, __GraphicOutEmptyVars');
+      EmitLn('mov __GraphicOutArgs.Variables, __NXCGraphicOutEmptyVars');
     EmitLn('syscall DrawGraphic, __GraphicOutArgs');
     ResetStatementType;
     EmitLn(Format('mov %s, __GraphicOutArgs.Result',[RegisterName]));
@@ -8105,6 +8104,8 @@ end;
 
 procedure TNXCComp.InitializeGraphicOutVars;
 begin
+  if IgnoreSystemFile then
+    Exit; // do not intialization if we are not including the standard headers
   if EnhancedFirmware then
     EmitLn('arrinit __GraphicOutEmptyVars, 0, 256')
   else
@@ -8381,6 +8382,37 @@ end;
 procedure TNXCComp.ResetStatementType;
 begin
   StatementType := stSigned;
+end;
+
+procedure TNXCComp.EmitNXCRequiredStructs;
+var
+  SL : TStringList;
+begin
+  SL := TStringList.Create;
+  try
+    SL.Text :=
+      'TNXCSoundPlayFile struct'#13#10 +
+      ' Result sbyte'#13#10 +
+      ' Filename byte[]'#13#10 +
+      ' Loop byte'#13#10 +
+      ' Volume byte'#13#10 +
+      'TNXCSoundPlayFile ends'#13#10 +
+      'TNXCSoundPlayTone struct'#13#10 +
+      ' Result sbyte'#13#10 +
+      ' Frequency	word'#13#10 +
+      ' Duration word'#13#10 +
+      ' Loop byte'#13#10 +
+      ' Volume byte'#13#10 +
+      'TNXCSoundPlayTone ends'#13#10 +
+      'TNXCSetScreenMode struct'#13#10 +
+      ' Result sbyte'#13#10 +
+      ' ScreenMode dword'#13#10 +
+      'TNXCSetScreenMode ends';
+    NBCSource.AddStrings(SL);
+    NBCSource.Add('');
+  finally
+    SL.Free;
+  end;
 end;
 
 end.
