@@ -1075,7 +1075,7 @@ begin
   fCalc.SilentExpression := Result;
   if not fCalc.ParserError then
   begin
-    Result := StripTrailingZeros(Format('%.5f', [fCalc.Value]));
+    Result := NBCFloatToStr(fCalc.Value);
   end;
 end;
 
