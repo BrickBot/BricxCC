@@ -1404,7 +1404,7 @@ begin
       begin
         if BrickComm.UseBluetooth then
           commandstr := commandstr + ' -BT';
-        commandstr := commandstr + ' -N="' + ExtractFileName(sFilename) + '"'; 
+        commandstr := commandstr + ' -N="' + sFilename{ExtractFileName(sFilename)} + '"'; 
       end;
     end
     else
@@ -1528,7 +1528,7 @@ var
   tmpSL : TStrings;
   i, j, p, lineNo : integer;
   tmpstr, errMsg, fName, tmpName, testStr : string;
-  bErrors : boolean;
+  bErrorsOrWarnings : boolean;
 begin
   Result := True;
   if not (Assigned(MainForm) and Assigned(EdFrm)) then Exit;
@@ -1536,13 +1536,13 @@ begin
   {Read the error file and show it}
   tmpSL := TStringList.Create;
   try
-    bErrors := False;
+    bErrorsOrWarnings := False;
     if FileExists(tempDir + 'temp.log') then
     begin
       tmpSL.LoadFromFile(tempDir + 'temp.log');
       if (tmpSL.Count > 0) then
       begin
-        bErrors := True;
+        bErrorsOrWarnings := True;
         {Show the error listing}
         if FileExists(tempDir + 'temp.log') then
         begin
@@ -1575,6 +1575,7 @@ begin
                       System.Delete(tmpStr, 1, p+1);
                       errMsg := errMsg + Trim(tmpStr);
                       EdFrm.AddErrorMessage(errMsg);
+                      Result := False; // errors exist
                     end;
                   end;
                 end;
@@ -1624,6 +1625,7 @@ begin
                   lineNo := GetLineNumber(lineNo);
                   errMsg := 'line ' + IntToStr(lineNo) + tmpstr;
                   EdFrm.AddErrorMessage(errMsg);
+                  Result := False;
                 end
                 else begin
                   // is this a linker error?
@@ -1632,6 +1634,7 @@ begin
                   begin
                     errMsg := 'linker error:' + Copy(tmpstr, p+1, Length(tmpstr));
                     EdFrm.AddErrorMessage(errMsg);
+                    Result := False;
                   end;
                 end;
               end;
@@ -1698,17 +1701,18 @@ begin
                   end;
                 end;
               end;
+              Result := Result and (Pos(': Error:', errMsg) = 0);
               EdFrm.AddErrorMessage(errMsg);
             end;
           end;
         end;
         {show the errors}
-        Result := EdFrm.TheErrors.Items.Count = 0;
+        Result := Result or (EdFrm.TheErrors.Items.Count = 0);
         EdFrm.ShowTheErrors;
       end;
     end;
     {Show the code listing}
-    if not bErrors then
+    if not bErrorsOrWarnings then
     begin
       if FileExists(tempDir + 'temp.lst') then
       begin
