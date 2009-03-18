@@ -1049,6 +1049,9 @@ function StripDecoration(const name : string) : string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
 function Replace(const str : string; const src, rep : string) : string;
 function StripTrailingZeros(const aNum : string) : string;
+function NBCStrToFloat(const AValue: string): Double;
+function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
+function NBCFloatToStr(const AValue: Double): string;
 
 const
   TOK_SEMICOLON     = ';';
@@ -1226,8 +1229,39 @@ begin
   Result := aNum;
   while Result[Length(Result)] = '0' do
     System.Delete(Result, Length(Result), 1);
-  if Result[Length(Result)] = '.' then
+  if Result[Length(Result)] in ['.', ','] then
     System.Delete(Result, Length(Result), 1);
+end;
+
+procedure NBCFormatSettings(var aFS : TFormatSettings; const aDS : Char);
+begin
+  aFS.DecimalSeparator  := aDS;
+  aFS.ThousandSeparator := ThousandSeparator;
+  aFS.CurrencyFormat    := CurrencyFormat;
+  aFS.NegCurrFormat     := NegCurrFormat;
+  aFS.CurrencyDecimals  := CurrencyDecimals;
+  aFS.CurrencyString    := CurrencyString;
+end;
+
+function NBCFloatToStr(const AValue: Double): string;
+begin
+  Result := StripTrailingZeros(NBCFormat('%.5f', [AValue]));
+end;
+
+function NBCStrToFloat(const AValue: string): Double;
+var
+  FS : TFormatSettings;
+begin
+  NBCFormatSettings(FS, '.');
+  Result := StrToFloat(AValue, FS);
+end;
+
+function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
+var
+  FS : TFormatSettings;
+begin
+  NBCFormatSettings(FS, '.');
+  Result := Format(FmtStr, theArgs, FS);
 end;
 
 procedure TNBCExpParser.InitializeCalc;
