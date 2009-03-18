@@ -1810,9 +1810,16 @@ end;
 { Clear the Primary Register }
 
 procedure TNXCComp.ClearReg;
+var
+  fmtStr : string;
 begin
   fCCSet := False;
-  EmitLn(Format('set %s, 0', [RegisterName]));
+  // 2009-03-18 JCH: It is never safe to use "set" with a float variable
+  if StatementType = stFloat then
+    fmtStr := 'mov %s, 0'
+  else
+    fmtStr := 'set %s, 0';
+  EmitLn(Format(fmtStr, [RegisterName]));
 end;
 
 {---------------------------------------------------------------}
@@ -2550,7 +2557,11 @@ begin
      not fExpStrHasVars then
   begin
     System.Delete(fExpStr, Length(fExpStr), 1);
-    if (fExpStr <> '') and not (fExpStr[1] in ['+', '-']) then
+    // 2009-03-18 JCH: I do not recall why I added the check for
+    // + and - as the first character of an expression
+    // I haven't been able to detect any harm in removing this check but
+    // it could be something very obscure that will come up again
+    if (fExpStr <> '') {and not (fExpStr[1] in ['+', '-'])} then
     begin
       fCalc.SilentExpression := fExpStr;
       if not fCalc.ParserError then

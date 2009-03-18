@@ -4044,12 +4044,20 @@ begin
       Codespace.BuildReferences;
       // optimize mutexes
       Codespace.OptimizeMutexes;
+      // compact the codespace before codespace optimizations
       Codespace.Compact;
-      if OptimizeLevel >= 10{2} then
+      // 2009-03-18 JCH: I have restored the level 2 optimizations
+      // As defects are revealed they will be fixed  Some optimizations
+      // will be only performed at levels higher than 2 so I now pass the
+      // level into the optimization function itself.
+      if OptimizeLevel >= 2 then
       begin
         Codespace.Optimize(OptimizeLevel);
+        // after optimizations we should re-compact the codespace
         Codespace.Compact;
       end;
+      // after optimizing and compacting the codespace we remove
+      // unused variables from the dataspace
       Dataspace.Compact;
     end;
     if not WarningsOff then
@@ -5621,6 +5629,10 @@ begin
           if AL.Args.Count <> NI.Arity then
             ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
               Format(sInvalidNumArgs, [NI.Arity, AL.Args.Count]), true);
+          // the first argument must not be anything other than an integer datatype
+          de := Dataspace.FindEntryByFullName(AL.Args[0].Value);
+          if de.DataType = dsFloat then
+            ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidSetStatement, true);
           // second argument must be a constant within the range of UWORD
           // or SWORD
           arg := AL.Args[1].Value; // should be a number
