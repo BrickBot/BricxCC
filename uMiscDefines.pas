@@ -22,6 +22,7 @@ uses
   uParseCommon, Editor;
 
 type
+  TProgramNames = array[0..5] of string;
   TFirmwareType = (ftStandard, ftBrickOS, ftPBForth, ftLeJOS, ftOther);
 
 const

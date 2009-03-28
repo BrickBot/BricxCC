@@ -240,20 +240,37 @@ object RemoteForm: TRemoteForm
     Height = 97
     TabOrder = 4
     object btnMotorAFwd: TSpeedButton
+      Tag = 1
       Left = 9
-      Top = 18
+      Top = 14
       Width = 23
       Height = 14
       AllowAllUp = True
       GroupIndex = 4
+      OnMouseDown = MotorMouseDown
+      OnMouseUp = MotorMouseUp
     end
     object btnMotorARwd: TSpeedButton
+      Tag = 5
       Left = 9
-      Top = 70
+      Top = 74
       Width = 23
       Height = 14
       AllowAllUp = True
       GroupIndex = 4
+      OnMouseDown = MotorMouseDown
+      OnMouseUp = MotorMouseUp
+    end
+    object barASpeed: TTrackBar
+      Left = 17
+      Top = 29
+      Width = 17
+      Height = 44
+      Max = 7
+      Orientation = trVertical
+      Position = 4
+      TabOrder = 0
+      ThumbLength = 8
     end
   end
   object grpMotorB: TGroupBox
@@ -263,20 +280,37 @@ object RemoteForm: TRemoteForm
     Height = 97
     TabOrder = 6
     object btnMotorBFwd: TSpeedButton
+      Tag = 2
       Left = 9
-      Top = 18
+      Top = 14
       Width = 23
       Height = 14
       AllowAllUp = True
       GroupIndex = 5
+      OnMouseDown = MotorMouseDown
+      OnMouseUp = MotorMouseUp
     end
     object btnMotorBRwd: TSpeedButton
+      Tag = 6
       Left = 9
-      Top = 70
+      Top = 74
       Width = 23
       Height = 14
       AllowAllUp = True
       GroupIndex = 5
+      OnMouseDown = MotorMouseDown
+      OnMouseUp = MotorMouseUp
+    end
+    object barBSpeed: TTrackBar
+      Left = 17
+      Top = 29
+      Width = 17
+      Height = 44
+      Max = 7
+      Orientation = trVertical
+      Position = 4
+      TabOrder = 0
+      ThumbLength = 8
     end
   end
   object grpMotorC: TGroupBox
@@ -286,20 +320,37 @@ object RemoteForm: TRemoteForm
     Height = 97
     TabOrder = 8
     object btnMotorCFwd: TSpeedButton
+      Tag = 4
       Left = 9
-      Top = 18
+      Top = 14
       Width = 23
       Height = 14
       AllowAllUp = True
       GroupIndex = 6
+      OnMouseDown = MotorMouseDown
+      OnMouseUp = MotorMouseUp
     end
     object btnMotorCRwd: TSpeedButton
+      Tag = 8
       Left = 9
-      Top = 70
+      Top = 74
       Width = 23
       Height = 14
       AllowAllUp = True
       GroupIndex = 6
+      OnMouseDown = MotorMouseDown
+      OnMouseUp = MotorMouseUp
+    end
+    object barCSpeed: TTrackBar
+      Left = 17
+      Top = 29
+      Width = 17
+      Height = 44
+      Max = 7
+      Orientation = trVertical
+      Position = 4
+      TabOrder = 0
+      ThumbLength = 8
     end
   end
   object lblMotorA: TStaticText
@@ -359,6 +410,7 @@ object RemoteForm: TRemoteForm
     HelpContext = 17029
     TabOrder = 9
     OnClick = ButtonClicked
+    OnMouseDown = ProgramMouseDown
   end
   object btnProg5: TButton
     Tag = 8
@@ -369,6 +421,7 @@ object RemoteForm: TRemoteForm
     HelpContext = 17030
     TabOrder = 13
     OnClick = ButtonClicked
+    OnMouseDown = ProgramMouseDown
   end
   object btnProg4: TButton
     Tag = 7
@@ -379,6 +432,7 @@ object RemoteForm: TRemoteForm
     HelpContext = 17031
     TabOrder = 12
     OnClick = ButtonClicked
+    OnMouseDown = ProgramMouseDown
   end
   object btnProg3: TButton
     Tag = 6
@@ -389,6 +443,7 @@ object RemoteForm: TRemoteForm
     HelpContext = 17032
     TabOrder = 11
     OnClick = ButtonClicked
+    OnMouseDown = ProgramMouseDown
   end
   object btnProg2: TButton
     Tag = 5
@@ -399,6 +454,7 @@ object RemoteForm: TRemoteForm
     HelpContext = 17033
     TabOrder = 10
     OnClick = ButtonClicked
+    OnMouseDown = ProgramMouseDown
   end
   object btnBeep: TButton
     Tag = 10
@@ -409,6 +465,7 @@ object RemoteForm: TRemoteForm
     HelpContext = 17034
     TabOrder = 15
     OnClick = ButtonClicked
+    OnMouseDown = ProgramMouseDown
   end
   object btnMsg1: TButton
     Tag = 1

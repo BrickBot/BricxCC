@@ -19,7 +19,7 @@ unit RemoteUnit;
 interface
 
 uses
-  Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Buttons;
+  Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls;
 
 type
   TRemoteForm = class(TForm)
@@ -62,13 +62,23 @@ type
     btnHelp: TButton;
     Shape1: TShape;
     btnStop: TButton;
+    barASpeed: TTrackBar;
+    barBSpeed: TTrackBar;
+    barCSpeed: TTrackBar;
     procedure tmrMainTimer(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure FormHide(Sender: TObject);
     procedure ButtonClicked(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
+    procedure MotorMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure MotorMouseUp(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure ProgramMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
   private
     { Private declarations }
+    function GetPower(const mtr : byte) : byte;
   public
     { Public declarations }
   end;
@@ -81,12 +91,14 @@ implementation
 {$R *.DFM}
 
 uses
-  uSpirit, brick_common;
+  SysUtils, uSpirit, brick_common, Preferences, rcx_constants, uRemoteProgMap;
 
 procedure TRemoteForm.tmrMainTimer(Sender: TObject);
 var
   msg : Word;
 begin
+  if BrickComm.BrickType = SU_NXT then
+    Exit;
   msg := kRemoteKeysReleased;
 
   if btnMotorAFwd.Down then
@@ -110,7 +122,28 @@ end;
 
 procedure TRemoteForm.FormShow(Sender: TObject);
 begin
-  tmrMain.Enabled := True;
+  tmrMain.Enabled := BrickComm.BrickType <> SU_NXT;
+  barASpeed.Visible := BrickComm.BrickType = SU_NXT;
+  barBSpeed.Visible := barASpeed.Visible;
+  barCSpeed.Visible := barASpeed.Visible;
+  if tmrMain.Enabled then
+  begin
+    btnMotorAFwd.GroupIndex := 4;
+    btnMotorARwd.GroupIndex := 4;
+    btnMotorBFwd.GroupIndex := 5;
+    btnMotorBRwd.GroupIndex := 5;
+    btnMotorCFwd.GroupIndex := 6;
+    btnMotorCRwd.GroupIndex := 6;
+  end
+  else
+  begin
+    btnMotorAFwd.GroupIndex := 0;
+    btnMotorARwd.GroupIndex := 0;
+    btnMotorBFwd.GroupIndex := 0;
+    btnMotorBRwd.GroupIndex := 0;
+    btnMotorCFwd.GroupIndex := 0;
+    btnMotorCRwd.GroupIndex := 0;
+  end;
 end;
 
 procedure TRemoteForm.FormHide(Sender: TObject);
@@ -123,24 +156,126 @@ var
   val : integer;
 begin
   val := TSpeedButton(Sender).Tag;
-  case val of
-    1 : BrickComm.SendRemote(kRemotePBMessage1);
-    2 : BrickComm.SendRemote(kRemotePBMessage2);
-    3 : BrickComm.SendRemote(kRemotePBMessage3);
-    4 : BrickComm.SendRemote(kRemoteSelProgram1);
-    5 : BrickComm.SendRemote(kRemoteSelProgram2);
-    6 : BrickComm.SendRemote(kRemoteSelProgram3);
-    7 : BrickComm.SendRemote(kRemoteSelProgram4);
-    8 : BrickComm.SendRemote(kRemoteSelProgram5);
-    9 : BrickComm.SendRemote(kRemoteStopOutOff);
-   10 : BrickComm.SendRemote(kRemotePlayASound);
+  if BrickComm.BrickType = SU_NXT then
+  begin
+    case val of
+      1 : BrickComm.SendMessage(1);
+      2 : BrickComm.SendMessage(2);
+      3 : BrickComm.SendMessage(3);
+      4..8 :
+        begin
+          BrickComm.StopProgram;
+          BrickComm.StartProgram(RemotePrograms[val-4]);
+        end;
+      9 : begin
+            BrickComm.StopProgram;
+            BrickComm.MotorsOff(7); // stop all motors
+            BrickComm.MuteSound;
+          end;
+     10 : begin
+            if (Lowercase(RemotePrograms[5]) = 'default') or (RemotePrograms[5] = '') then
+              BrickComm.PlayTone(1760,10)
+            else
+              BrickComm.PlaySoundFile(RemotePrograms[5], False);
+          end;
+    end;
+  end
+  else
+  begin
+    case val of
+      1 : BrickComm.SendRemote(kRemotePBMessage1);
+      2 : BrickComm.SendRemote(kRemotePBMessage2);
+      3 : BrickComm.SendRemote(kRemotePBMessage3);
+      4 : BrickComm.SendRemote(kRemoteSelProgram1);
+      5 : BrickComm.SendRemote(kRemoteSelProgram2);
+      6 : BrickComm.SendRemote(kRemoteSelProgram3);
+      7 : BrickComm.SendRemote(kRemoteSelProgram4);
+      8 : BrickComm.SendRemote(kRemoteSelProgram5);
+      9 : BrickComm.SendRemote(kRemoteStopOutOff);
+     10 : BrickComm.SendRemote(kRemotePlayASound);
+    end;
+    BrickComm.SendRemote(kRemoteKeysReleased);
   end;
-  BrickComm.SendRemote(kRemoteKeysReleased);
 end;
 
 procedure TRemoteForm.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
+end;
+
+procedure TRemoteForm.MotorMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  mtr : byte;
+begin
+  if BrickComm.BrickType = SU_NXT then
+  begin
+    if Button = mbLeft then
+    begin
+      mtr := TSpeedButton(Sender).Tag;
+      if mtr > 4 then
+      begin
+        dec(mtr, 4);
+        BrickComm.SetRwd(mtr);
+      end
+      else
+        BrickComm.SetFwd(mtr);
+      BrickComm.SetMotorPower(mtr, kRCX_ConstantType, GetPower(mtr));
+      BrickComm.MotorsOn(mtr);
+    end;
+  end;
+end;
+
+procedure TRemoteForm.MotorMouseUp(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  mtr : byte;
+begin
+  if BrickComm.BrickType = SU_NXT then
+  begin
+    if Button = mbLeft then
+    begin
+      mtr := TSpeedButton(Sender).Tag;
+      if mtr > 4 then
+        dec(mtr, 4);
+      BrickComm.MotorsOff(mtr);
+    end;
+  end;
+end;
+
+function TRemoteForm.GetPower(const mtr: byte): byte;
+begin
+  case mtr of
+    1 : Result := 7-barASpeed.Position;
+    2 : Result := 7-barBSpeed.Position;
+    4 : Result := 7-barCSpeed.Position;
+  else
+    Result := 4;
+  end;
+end;
+
+procedure TRemoteForm.ProgramMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+var
+  F : TfrmRemoteProgMap;
+  i : integer;
+begin
+  if (BrickComm.BrickType = SU_NXT) and (Button = mbRight) then
+  begin
+    // right click a program button and display the configuration form.
+    F := TfrmRemoteProgMap.Create(nil);
+    try
+      F.SetProgramNames(RemotePrograms);
+      F.Selected := TButton(Sender).Tag;
+      if F.ShowModal = mrOK then
+      begin
+        for i := low(RemotePrograms) to high(RemotePrograms) do
+          RemotePrograms[i] := F.ProgramName[i];
+      end;
+    finally
+      F.Free;
+    end;
+  end;
 end;
 
 end.
