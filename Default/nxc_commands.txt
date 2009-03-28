@@ -75,6 +75,7 @@ DISTNxMinDistance
 DISTNxModuleType
 DISTNxNumPoints
 DISTNxVoltage
+EllipseOut
 ExitTo
 FindFirstFile
 FindNextFile
@@ -83,6 +84,8 @@ Flatten
 FlattenVar
 Float
 Follows
+FontNumOut
+FontTextOut
 ForceOff
 FormatNum
 FreeMemory
@@ -649,9 +652,11 @@ SysCommLSRead
 SysCommLSWrite
 SysDisplayExecuteFunction
 SysDrawCircle
+SysDrawEllipse
 SysDrawGraphic
 SysDrawLine
 SysDrawPoint
+SysDrawPolygon
 SysDrawRect
 SysDrawText
 SysFileClose
