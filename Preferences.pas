@@ -27,7 +27,7 @@ uses
   SynHighlighterForth, SynHighlighterCpp, SynHighlighterJava,
   SynHighlighterCS, SynHighlighterMindScript, SynHighlighterLua,
   SynHighlighterLASM, SynHighlighterPas, uParseCommon, uNewHotKey,
-  uMiscDefines, SynHighlighterNBC, uOfficeComp, 
+  uMiscDefines, SynHighlighterNBC, uOfficeComp,
   SynHighlighterRuby, SynHighlighterNPG, SynHighlighterRS,
   SynHighlighterROPS, DirectoryEdit, uSpin;
 
@@ -349,6 +349,11 @@ type
     hkRecMacro2: TEdit;
     hkPlayMacro2: TEdit;
     chkNXT2Firmare: TCheckBox;
+    GroupBox1: TGroupBox;
+    radRICDecompScript: TRadioButton;
+    radRICDecompArray: TRadioButton;
+    Label6: TLabel;
+    edtRICDecompArrayFmt: TEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -398,6 +403,7 @@ type
     procedure btnPostcompileClick(Sender: TObject);
     procedure cbxFGColorChange(Sender: TObject);
     procedure cbxBGColorChange(Sender: TObject);
+    procedure radRICDecompScriptClick(Sender: TObject);
   private
     { Private declarations }
     cc_keywords: TStringList;
@@ -510,6 +516,10 @@ var
   ProcedureListSettings : TProcedureListProperties;
   AddMenuItemsToNewMenu : boolean = True;
 
+{Remote settings}
+var
+  RemotePrograms : TProgramNames;
+
 {Joystick settings}
 var LeftRight:boolean;              // Whether in left-right mode
     LeftMotor:integer;              // the left motor
@@ -603,6 +613,8 @@ var
   FontChanged:boolean;       // Whether the font changed
   AutoIndentCode:boolean;    // Whether to automatically indent code
   MacrosOn:boolean;          // Whether macros can be used
+  RICDecompAsData:boolean;
+  RICDecompNameFormat : string;
 
   HideSelection : boolean;
   ScrollPastEOL : boolean;
@@ -2247,6 +2259,41 @@ begin
   LoadJoystickValues(reg);
 end;
 
+procedure LoadRemoteValues(reg : TRegistry);
+var
+  i : integer;
+begin
+  Reg_OpenKey(reg, 'Remote');
+  try
+    for i := Low(RemotePrograms) to High(RemotePrograms)-1 do
+      RemotePrograms[i] := Reg_ReadString(reg, 'Program'+IntToStr(i), Format('remote%d.rxe', [i]));
+    i := High(RemotePrograms);
+    RemotePrograms[i] := Reg_ReadString(reg, 'Program'+IntToStr(i), 'default');
+  finally
+    reg.CloseKey;
+  end;
+end;
+
+procedure SaveRemoteValues(reg : TRegistry);
+var
+  i : integer;
+begin
+  Reg_DeleteKey(reg, 'Remote');
+  Reg_OpenKey(reg, 'Remote');
+  try
+    for i := Low(RemotePrograms) to High(RemotePrograms) do
+      reg.WriteString('Program'+IntToStr(i),RemotePrograms[i]);
+  finally
+    reg.CloseKey;
+  end;
+end;
+
+procedure ResetRemoteValues(reg : TRegistry);
+begin
+  Reg_DeleteKey(reg, 'Remote');
+  LoadRemoteValues(reg);
+end;
+
 procedure LoadColorValues(reg : TRegistry);
 var
   j, i : Integer;
@@ -2534,13 +2581,15 @@ begin
     FontSize            := Reg_ReadInteger(reg, 'FontSize', 9);
     AutoIndentCode      := Reg_ReadBool(reg, 'AutoIndentCode', true);
     MacrosOn            := Reg_ReadBool(reg, 'MacrosOn', false);
+    RICDecompAsData     := Reg_ReadBool(reg, 'RICDecompAsData', false);
+    RICDecompNameFormat := Reg_ReadString(reg, 'RICDecompNameFormat', '%s');
     HideSelection       := Reg_ReadBool(reg, 'HideSelection', false);
     ScrollPastEOL       := Reg_ReadBool(reg, 'ScrollPastEOL', true);
     HalfPageScroll      := Reg_ReadBool(reg, 'HalfPageScroll', false);
     DragAndDropEditing  := Reg_ReadBool(reg, 'DragDropEdit', true);
     TabWidth            := Reg_ReadInteger(reg, 'TabWidth', 2);
     MaxUndo             := Reg_ReadInteger(reg, 'MaxUndo', 10);
-    MaxLeftChar         := Reg_ReadInteger(reg, 'MaxLeftChar', 1024);
+    MaxLeftChar         := Reg_ReadInteger(reg, 'MaxLeftChar', 8192);
     ExtraLineSpacing    := Reg_ReadInteger(reg, 'ExtraLineSpacing', 0);
     RightEdgePosition   := Reg_ReadInteger(reg, 'RightEdgePosition', 80);
     ScrollBars          := Reg_ReadInteger(reg, 'ScrollBars', 0);
@@ -2580,6 +2629,8 @@ begin
     reg.WriteInteger('FontSize', FontSize);
     reg.WriteBool('AutoIndentCode', AutoIndentCode);
     reg.WriteBool('MacrosOn', MacrosOn);
+    reg.WriteBool('RICDecompAsData', RICDecompAsData);
+    reg.WriteString('RICDecompNameFormat', RICDecompNameFormat);
     reg.WriteBool('HideSelection', HideSelection);
     reg.WriteBool('ScrollPastEOL', ScrollPastEOL);
     reg.WriteBool('HalfPageScroll', HalfPageScroll);
@@ -3269,6 +3320,7 @@ begin
   LoadStartupValues(reg);
   LoadColorValues(reg);
   LoadJoystickValues(reg);
+  LoadRemoteValues(reg);
   LoadRecentValues(reg);
   LoadWindowsValues(reg);
   LoadAPIValues(reg);
@@ -3301,6 +3353,7 @@ begin
   SaveStartupValues(reg);
   SaveColorValues(reg);
   SaveJoystickValues(reg);
+  SaveRemoteValues(reg);
   SaveRecentValues(reg);
   SaveWindowsValues(reg);
   SaveAPIValues(reg);
@@ -3330,6 +3383,7 @@ begin
   ResetStartupValues(reg);
   ResetColorValues(reg);
   ResetJoystickValues(reg);
+  ResetRemoteValues(reg);
   ResetRecentValues(reg);
   ResetWindowsValues(reg);
   ResetAPIValues(reg);
@@ -3745,6 +3799,8 @@ begin
   FontChanged         := (FontName <> OldFontName) or (FontSize <> OldFontSize);
   AutoIndentCode      := PrefForm.CheckAutoIndentCode.Checked;
   MacrosOn            := PrefForm.CheckMacrosOn.Checked;
+  RICDecompAsData     := PrefForm.radRICDecompArray.Checked;
+  RICDecompNameFormat := PrefForm.edtRICDecompArrayFmt.Text;
   HideSelection       := PrefForm.cbHideSelection.Checked;
   ScrollPastEOL       := PrefForm.cbScrollPastEOL.Checked;
   HalfPageScroll      := PrefForm.cbHalfPageScroll.Checked;
@@ -3782,6 +3838,8 @@ begin
   PrefForm.CheckShowTemplates.Checked  := ShowTemplatePopup;
   PrefForm.CheckAutoIndentCode.Checked := AutoIndentCode;
   PrefForm.CheckMacrosOn.Checked       := MacrosOn;
+  PrefForm.radRICDecompArray.Checked   := RICDecompAsData;
+  PrefForm.edtRICDecompArrayFmt.Text   := RICDecompNameFormat;
   PrefForm.cbHideSelection.Checked     := HideSelection;
   PrefForm.cbScrollPastEOL.Checked     := ScrollPastEOL;
   PrefForm.cbHalfPageScroll.Checked    := HalfPageScroll;
@@ -5668,6 +5726,11 @@ begin
   Result := TStringList.Create;
   Result.Sorted := True;
   Result.Duplicates := dupIgnore;
+end;
+
+procedure TPrefForm.radRICDecompScriptClick(Sender: TObject);
+begin
+  edtRICDecompArrayFmt.Enabled := radRICDecompArray.Checked;
 end;
 
 initialization
