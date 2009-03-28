@@ -126,6 +126,8 @@ type
     function GetRefCount: integer;
     function GetClusterInit: string;
     function GetInitializationString: string;
+    function GetArrayBaseType: TDSType;
+    function GetIsArray: boolean;
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure SaveToDynamicDefaults(aDS : TDSData; const cnt, doffset : integer);
@@ -156,6 +158,8 @@ type
     property FullPathIdentifier : string read GetFullPathIdentifier;
     property InitializationString : string read GetInitializationString;
     property ArrayMember : boolean read fArrayMember write SetArrayMember;
+    property BaseDataType : TDSType read GetArrayBaseType;
+    property IsArray : boolean read GetIsArray;
     property InUse : boolean read GetInUse;
     property RefCount : integer read GetRefCount;
   end;
@@ -1082,7 +1086,10 @@ function ExpectedArgType(const firmVer : word; const op : TOpCode; const argIdx:
 function ProcessCluster(aDS : TDSData; Item : TDataspaceEntry; idx : Integer;
   var staticIndex : Integer) : integer;
 
-function CreateConstantVar(DSpace : TDataspace; val : Extended; bIncCount : boolean) : string;
+function GetTypeHint(DSpace : TDataspace; const aLine: TASMLine;
+  const idx : integer; bEnhanced : boolean): TDSType;
+function CreateConstantVar(DSpace : TDataspace; val : Extended;
+  bIncCount : boolean; aTypeHint : TDSType = dsVoid) : string;
 
 procedure InstantiateCluster(DD : TDataDefs; DE: TDataspaceEntry; const clustername: string);
 procedure HandleVarDecl(DD : TDataDefs; NT : TMapList; bCaseSensitive : boolean;
@@ -3981,6 +3988,18 @@ begin
   end;
 end;
 
+function TDataspaceEntry.GetArrayBaseType: TDSType;
+begin
+  Result := DataType;
+  if IsArray then
+    Result := SubEntries[0].BaseDataType;
+end;
+
+function TDataspaceEntry.GetIsArray: boolean;
+begin
+  Result := DataType = dsArray;
+end;
+
 { TRXEProgram }
 
 constructor TRXEProgram.Create;
@@ -4209,7 +4228,7 @@ begin
     fShiftCount       := 0;
     fMainStateLast    := masCodeSegment; // used only when we enter a block comment
     fMainStateCurrent := masCodeSegment; // default state
-    P := TLangPreprocessor.Create(TNBCLexer, ExtractFilePath(ParamStr(0)));
+    P := TLangPreprocessor.Create(TNBCLexer, ExtractFilePath(ParamStr(0)), lnNBC);
     try
       P.Defines.AddDefines(Defines);
       if EnhancedFirmware then
@@ -4697,6 +4716,19 @@ begin
         // add code to the current clump
         AL := fCurrentClump.ClumpCode.Add;
         AL.AsString := tmpLine;
+        AL.LineNum  := LineCounter;
+      end;
+    end
+    else if Pos('#download', line) = 1 then
+    begin
+      // ignore #download lines
+      // if we are in a clump then add a special asm line for the #download
+      // otherwise just skip it.
+      if fMainStateCurrent in [masClump, masClumpSub] then
+      begin
+        // add code to the current clump
+        AL := fCurrentClump.ClumpCode.Add;
+        AL.AsString := line;
         AL.LineNum  := LineCounter;
       end;
     end
@@ -5490,7 +5522,8 @@ begin
             begin
               // definitely not an IO Map Address
               // what type should this temporary be?
-              tmpName := CreateConstantVar(DataSpace, val, False);
+              tmpName := CreateConstantVar(DataSpace, val, False,
+                GetTypeHint(DataSpace, AL, i, EnhancedFirmware));
               // we have a temporary called 'tmpName' in the dataspace
               // so switch our line to use it instead
               arg.Value := tmpName;
@@ -7863,7 +7896,28 @@ begin
   end;
 end;
 
-function CreateConstantVar(DSpace : TDataspace; val : Extended; bIncCount : boolean) : string;
+function GetTypeHint(DSpace : TDataspace; const aLine: TASMLine; const idx : integer; bEnhanced : boolean): TDSType;
+var
+  DE : TDataspaceEntry;
+begin
+  Result := dsVoid;
+  case aLine.Command of
+    OP_ARRINIT : begin
+      if (idx = 1) and not bEnhanced then
+      begin
+        // the first argument is always an array.  We need the base type
+        DE := DSpace.FindEntryByFullName(aLine.Args[0].Value);
+        if Assigned(DE) then
+          Result := DE.BaseDataType;
+      end;
+    end;
+  else
+    Result := dsVoid;
+  end;
+end;
+
+function CreateConstantVar(DSpace : TDataspace; val : Extended;
+  bIncCount : boolean; aTypeHint : TDSType) : string;
 var
   datatype : TDSType;
   DE : TDataspaceEntry;
@@ -7871,8 +7925,13 @@ var
   sVal : Single;
 begin
   iVal := Trunc(val*10000); // scale by 4 decimal places
-  datatype := GetArgDataType(val);
+  if aTypeHint <> dsVoid then
+    datatype := aTypeHint
+  else
+    datatype := GetArgDataType(val);
   Result := GenerateTOCName(Byte(Ord(datatype)), Int64(abs(iVal)), '%1:d');
+  if datatype = dsFloat then
+    Result := 'f' + Result; // distinguish between float constants and integer constants
   if iVal < 0 then
     Result := '__constValNeg' + Result
   else
