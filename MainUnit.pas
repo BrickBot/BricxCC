@@ -1912,7 +1912,7 @@ begin
   actToolsWatch.Enabled          := bBALSF;
   actToolsPiano.Enabled          := bBALSF;
   actToolsJoystick.Enabled       := bBALSF;
-  actToolsRemote.Enabled         := bBALSF and (IsRCX or IsScout);
+  actToolsRemote.Enabled         := bBALSF and (IsRCX or IsScout or IsNXT);
   actToolsSendMsg.Enabled        := bBALSF and (IsRCX or IsScout or IsNXT);
   actToolsDatalog.Enabled        := bBALSF and IsRCX;
   actToolsMemory.Enabled         := bBALSF;
@@ -4099,6 +4099,7 @@ begin
     Name := 'mniViewToolWindows';
     Caption := sToolWindows;
     Hint := sToolWindows;
+    ShortCut := TextToShortCut('F11');
     OnClick := mniViewToolWindowsClick;
   end;
   with mniMacroManager do
