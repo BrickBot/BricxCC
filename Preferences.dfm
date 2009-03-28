@@ -5,7 +5,7 @@ object PrefForm: TPrefForm
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Preferences'
-  ClientHeight = 346
+  ClientHeight = 352
   ClientWidth = 452
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -23,7 +23,7 @@ object PrefForm: TPrefForm
   TextHeight = 13
   object Panel3: TPanel
     Left = 0
-    Top = 315
+    Top = 321
     Width = 452
     Height = 31
     Align = alBottom
@@ -75,7 +75,7 @@ object PrefForm: TPrefForm
     Left = 0
     Top = 0
     Width = 452
-    Height = 315
+    Height = 321
     Align = alClient
     BevelInner = bvLowered
     BevelOuter = bvNone
@@ -85,8 +85,8 @@ object PrefForm: TPrefForm
       Left = 1
       Top = 1
       Width = 450
-      Height = 313
-      ActivePage = shtCompiler
+      Height = 319
+      ActivePage = shtGeneral
       Align = alClient
       TabOrder = 0
       OnChange = pagPrefsChange
@@ -399,7 +399,7 @@ object PrefForm: TPrefForm
           Left = 0
           Top = 0
           Width = 442
-          Height = 285
+          Height = 291
           ActivePage = shtEditorOptions
           Align = alClient
           TabOrder = 0
@@ -829,8 +829,8 @@ object PrefForm: TPrefForm
           Left = 8
           Top = 8
           Width = 425
-          Height = 274
-          ActivePage = shtNBC
+          Height = 276
+          ActivePage = shtCompilerCommon
           TabOrder = 0
           object shtCompilerCommon: TTabSheet
             Caption = 'Common'
@@ -1145,7 +1145,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11107
               DropDownCount = 4
-              ItemHeight = 13
+              ItemHeight = 0
               TabOrder = 0
               OnExit = edtNBCIncludePathExit
             end
@@ -1213,8 +1213,52 @@ object PrefForm: TPrefForm
               Top = 160
               Width = 173
               Height = 17
-              Caption = 'NXT 2.0 compatible firmware'
+              Caption = 'NXT &2.0 compatible firmware'
               TabOrder = 9
+            end
+            object GroupBox1: TGroupBox
+              Left = 76
+              Top = 180
+              Width = 325
+              Height = 61
+              Caption = 'RIC Decompilation'
+              TabOrder = 10
+              object Label6: TLabel
+                Left = 160
+                Top = 16
+                Width = 88
+                Height = 13
+                Caption = '&Array name format:'
+              end
+              object radRICDecompScript: TRadioButton
+                Left = 8
+                Top = 16
+                Width = 121
+                Height = 17
+                Caption = 'RICScript'
+                Checked = True
+                TabOrder = 0
+                TabStop = True
+                OnClick = radRICDecompScriptClick
+              end
+              object radRICDecompArray: TRadioButton
+                Left = 8
+                Top = 32
+                Width = 121
+                Height = 17
+                Caption = 'Byte array'
+                TabOrder = 1
+                OnClick = radRICDecompScriptClick
+              end
+              object edtRICDecompArrayFmt: TEdit
+                Left = 160
+                Top = 30
+                Width = 121
+                Height = 21
+                Enabled = False
+                TabOrder = 2
+                Text = '%s_data'
+              end
             end
           end
           object shtCompilerBrickOS: TTabSheet

@@ -222,7 +222,7 @@ uses
   CodeUnit, ExecProgram, SearchRCX, brick_common, FakeSpirit, uCodeExplorer, uMacroForm,
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
   uMiscDefines, uSpirit, uNXTClasses, uNBCInterface, ParamUtils,
-  uPSDisassembly, uLocalizedStrings;
+  uPSDisassembly, uLocalizedStrings, uNBCCommon;
 
 var
   localSearchFromCaret: boolean;
@@ -300,13 +300,19 @@ begin
     else if (ext = '.ric') then
     begin
       IsNew := False;
-      Filename := ChangeFileExt(fname, '.rs');
+      if RICDecompAsData then
+        Filename := ChangeFileExt(fname, '.h')
+      else
+        Filename := ChangeFileExt(fname, '.rs');
       SetCaption(ExtractFileName(Filename));
       Application.ProcessMessages;
       Screen.Cursor := crHourGlass;
       try
-        TheEditor.Lines.Text := TRICComp.RICToText(fname);
-        TheEditor.Modified   := True;
+        if RICDecompAsData then
+          TheEditor.Lines.Text := TRICComp.RICToDataArray(fname, RICDecompNameFormat, lnNXCHeader)
+        else
+          TheEditor.Lines.Text := TRICComp.RICToText(fname);
+        TheEditor.Modified := True;
       finally
         Screen.Cursor := crDefault;
       end;
@@ -2941,5 +2947,6 @@ begin
     end;
   end;
 end;
+
 
 end.
