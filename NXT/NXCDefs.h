@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-03-16
- * Revision:: 42
+ * Date:: 2009-03-24
+ * Revision:: 45
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -965,6 +965,30 @@ struct DrawGraphicArrayType {
  unsigned long Options;
 };
 
+struct DrawPolygonType {
+ char Result;
+ LocationType Points[];
+ unsigned long Options;
+};
+
+// DrawEllipse
+struct DrawEllipseType {
+ char Result;
+ LocationType Center;
+ byte SizeX;
+ byte SizeY;
+ unsigned long Options;
+};
+
+// DrawFont
+struct DrawFontType {
+ char Result;
+ LocationType Location;
+ string Filename;
+ string Text;
+ unsigned long Options;
+};
+
 #endif
 #endif
 
@@ -1240,7 +1264,9 @@ struct ListFilesType {
   compchktype _args, CommLSWriteExType \
   syscall CommLSWriteEx, _args \
 }
+
 #if __FIRMWARE_VERSION > 107
+
 #define SysFileSeek(_args) asm { \
   compchktype _args, FileSeekType \
   syscall FileSeek, _args \
@@ -1253,6 +1279,18 @@ struct ListFilesType {
 #define SysDrawGraphicArray(_args) asm { \
   compchktype _args, DrawGraphicArrayType \
   syscall DrawGraphicArray, _args \
+}
+#define SysDrawPolygon(_args) asm { \
+  compchktype _args, DrawPolygonType \
+  syscall DrawPolygon, _args \
+}
+#define SysDrawEllipse(_args) asm { \
+  compchktype _args, DrawEllipseType \
+  syscall DrawEllipse, _args \
+}
+#define SysDrawFont(_args) asm { \
+  compchktype _args, DrawFontType \
+  syscall DrawFont, _args \
 }
 
 #endif
@@ -1590,5 +1628,8 @@ struct ListFilesType {
 #define MSScoutSendVLL(_src, _value) asm { __MSScoutSendVLL(_src, _value) }
 #define MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) asm { __MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) }
 #define MSScoutSetScoutMode(_mode) asm { __MSScoutSetScoutMode(_mode) }
+
+// RIC Macro wrappers
+#define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8
 
 #endif // NXCDEFS_H

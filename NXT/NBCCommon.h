@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NBCCommon.h
- * Date:: 2009-03-15
- * Revision:: 27
+ * Date:: 2009-03-24
+ * Revision:: 32
  *
  * Contains declarations for the NBC & NXC NXT API resources
  *
@@ -375,6 +375,9 @@
 #define FileSeek               90
 #define FileResize             91
 #define DrawGraphicArray       92
+#define DrawPolygon            93
+#define DrawEllipse            94
+#define DrawFont               95
 #endif
 #endif
 
@@ -1051,6 +1054,18 @@
 // Combined parameter masks:
 #define DRAW_OPT_CLEAR_SCREEN_MODES         (0x0003)
 #define DRAW_OPT_LOGICAL_OPERATIONS         (0x0018)
+#define DRAW_OPT_FONT_DIRECTIONS            (0x01C0)
+
+#define DRAW_OPT_FONT_WRAP       (0x0200)
+
+#define DRAW_OPT_FONT_DIR_L2RB   (0x0000)           // Font left to right bottom align
+#define DRAW_OPT_FONT_DIR_L2RT   (0x0040)           // Font left to right top align
+#define DRAW_OPT_FONT_DIR_R2LB   (0x0080)           // Font right to left bottom align
+#define DRAW_OPT_FONT_DIR_R2LT   (0x00C0)           // Font right to left top align
+#define DRAW_OPT_FONT_DIR_B2TL   (0x0100)           // Font bottom to top left align
+#define DRAW_OPT_FONT_DIR_B2TR   (0x0140)           // Font bottom to top right align
+#define DRAW_OPT_FONT_DIR_T2BL   (0x0180)           // Font top to bottom left align
+#define DRAW_OPT_FONT_DIR_T2BR   (0x01C0)           // Font top to bottom right align
 
 // Constants related to Flags
 #define DISPLAY_ON               0x01     // W  - Display on
@@ -1764,5 +1779,28 @@
 #define TEMP_REG_CONFIG    0x01
 #define TEMP_REG_TLOW      0x02
 #define TEMP_REG_THIGH     0x03
+
+
+// RIC Macro wrappers
+#define RICImgPoint(_X, _Y) (_X)&0xFF, (_X)>>8, (_Y)&0xFF, (_Y)>>8
+#define RICImgRect(_Pt, _W, _H) _Pt, (_W)&0xFF, (_W)>>8, (_H)&0xFF, (_H)>>8
+#define RICOpDescription(_Options, _Width, _Height) 8, 0, 0, 0, (_Width)&0xFF, (_Width)>>8, (_Height)&0xFF, (_Height)>>8
+#define RICOpCopyBits(_CopyOptions, _DataAddr, _SrcRect, _DstPoint) 18, 0, 3, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, (_DataAddr)&0xFF, (_DataAddr)>>8, _SrcRect, _DstPoint
+#define RICOpPixel(_CopyOptions, _Point, _Value) 10, 0, 4, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Value)&0xFF, (_Value)>>8
+#define RICOpLine(_CopyOptions, _Point1, _Point2) 12, 0, 5, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point1, _Point2
+#define RICOpRect(_CopyOptions, _Point, _Width, _Height) 12, 0, 6, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Width)&0xFF, (_Width)>>8, (_Height)&0xFF, (_Height)>>8
+#define RICOpCircle(_CopyOptions, _Point, _Radius) 10, 0, 7, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Radius)&0xFF, (_Radius)>>8
+#define RICOpNumBox(_CopyOptions, _Point, _Value) 10, 0, 8, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Value)&0xFF, (_Value)>>8
+#define RICOpSprite(_DataAddr, _Rows, _BytesPerRow, _SpriteData) ((_Rows*_BytesPerRow)+((_Rows*_BytesPerRow)%2)+8)&0xFF, ((_Rows*_BytesPerRow)+((_Rows*_BytesPerRow)%2)+8)>>8, 1, 0, (_DataAddr)&0xFF, (_DataAddr)>>8, (_Rows)&0xFF, (_Rows)>>8, (_BytesPerRow)&0xFF, (_BytesPerRow)>>8, _SpriteData
+#define RICSpriteData(...) __VA_ARGS__
+#define RICOpVarMap(_DataAddr, _MapCount, _MapFunction) ((_MapCount*4)+6)&0xFF, ((_MapCount*4)+6)>>8, 2, 0, (_DataAddr)&0xFF, (_DataAddr)>>8, (_MapCount)&0xFF, (_MapCount)>>8, _MapFunction
+#define RICMapElement(_Domain, _Range) (_Domain)&0xFF, (_Domain)>>8, (_Range)0xFF, (_Range)>>8
+#define RICMapFunction(_MapElement, ...) _MapElement, __VA_ARGS__
+#define RICArg(_arg) ((_arg)|0x1000)
+#define RICMapArg(_mapidx, _arg) ((_arg)|0x1000|(((_mapidx)&0xF)<<8))
+#define RICOpPolygon(_CopyOptions, _Count, _ThePoints)  ((_Count*4)+6)&0xFF, ((_Count*4)+6)>>8, 10, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, (_Count)&0xFF, (_Count)>>8, _ThePoints
+#define RICPolygonPoints(_pPoint1, _pPoint2, ...) _pPoint1, _pPoint2, __VA_ARGS__
+#define RICOpEllipse(_CopyOptions, _Point, _Radius1, _Radius1) 12, 0, 9, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Radius1)&0xFF, (_Radius1)>>8, (_Radius2)&0xFF, (_Radius2)>>8
+
 
 #endif // NBCCOMMON_H
