@@ -1,87 +1,110 @@
 
-void FillPoly(int polyX[],int polyY[]) {
+void SlowPolyOut(int polyX[],int polyY[],byte options) {
+	if(options&DRAW_OPT_CLEAR_SCREEN_MODES)
+    PointOut(100,100,(options&DRAW_OPT_CLEAR_SCREEN_MODES));
+	options &= ~DRAW_OPT_CLEAR_SCREEN_MODES;
+
 	int polyCorners = ArrayLen(polyX);
 	if (polyCorners != ArrayLen(polyY))
     return;
-	int nodes;
-	int nodeX[];
-	ArrayInit(nodeX,0,polyCorners);
-	int pixelX, pixelY;
-	int i, j;
-	int swap;
-	int IMAGE_TOP    = -1;
-	int IMAGE_BOTTOM = 1024;
-	int IMAGE_RIGHT  = -1;
-	int IMAGE_LEFT   = 1024;
-	// calculate maximum and minimum X and Y coordinate values
-	for(int i=0;i<polyCorners;i++) {
-    int tmpY = polyY[i];
-    int tmpX = polyX[i];
-		if (tmpY>IMAGE_TOP)    IMAGE_TOP    = tmpY;
-		if (tmpY<IMAGE_BOTTOM) IMAGE_BOTTOM = tmpY;
-		if (tmpX>IMAGE_RIGHT)  IMAGE_RIGHT  = tmpX;
-		if (tmpX<IMAGE_LEFT)   IMAGE_LEFT   = tmpX;
+	if(options&DRAW_OPT_FILL_SHAPE) {
+  	int nodes;
+  	int nodeX[];
+  	ArrayInit(nodeX,0,polyCorners);
+  	int pixelX, pixelY;
+  	int i, j;
+  	int swap;
+  	int IMAGE_TOP    = -1;
+  	int IMAGE_BOTTOM = 1024;
+  	int IMAGE_RIGHT  = -1;
+  	int IMAGE_LEFT   = 1024;
+  	// calculate maximum and minimum X and Y coordinate values
+  	for(int i=0;i<polyCorners;i++) {
+      int tmpY = polyY[i];
+      int tmpX = polyX[i];
+  		if (tmpY>IMAGE_TOP)    IMAGE_TOP    = tmpY;
+  		if (tmpY<IMAGE_BOTTOM) IMAGE_BOTTOM = tmpY;
+  		if (tmpX>IMAGE_RIGHT)  IMAGE_RIGHT  = tmpX;
+  		if (tmpX<IMAGE_LEFT)   IMAGE_LEFT   = tmpX;
+  	}
+
+  	//  Loop through the rows of the image.
+    for (pixelY=IMAGE_BOTTOM; pixelY<IMAGE_TOP; pixelY++) {
+  		//  Build a list of nodes.
+      nodes=0; j=polyCorners-1;
+      for (i=0; i<polyCorners; i++) {
+        if ((polyY[i]<pixelY && polyY[j]>=pixelY) ||
+            (polyY[j]<pixelY && polyY[i]>=pixelY)) {
+          nodeX[nodes++]=(polyX[i]+(pixelY-polyY[i])*(polyX[j]-polyX[i])/(polyY[j]-polyY[i]));
+        }
+        j=i;
+      }
+
+  		//  Sort the nodes, via a simple “Bubble” sort.
+      i=0;
+      while (i<nodes-1) {
+        if (nodeX[i]>nodeX[i+1]) {
+          swap=nodeX[i];
+          nodeX[i]=nodeX[i+1];
+          nodeX[i+1]=swap;
+          if (i) i--;
+        }
+        else
+          i++;
+      }
+
+      //  Fill the pixels between node pairs.
+      for (i=0; i<nodes; i+=2) {
+        if (nodeX[i  ]>=IMAGE_RIGHT) break;
+        if (nodeX[i+1]> IMAGE_LEFT) {
+          if (nodeX[i  ]< IMAGE_LEFT)  nodeX[i  ]=IMAGE_LEFT;
+          if (nodeX[i+1]> IMAGE_RIGHT) nodeX[i+1]=IMAGE_RIGHT;
+          LineOut(nodeX[i], pixelY, nodeX[i+1], pixelY, options);
+        }
+      }
+    }
 	}
-
-	//  Loop through the rows of the image.
-  for (pixelY=IMAGE_BOTTOM; pixelY<IMAGE_TOP; pixelY++) {
-		//  Build a list of nodes.
-    nodes=0; j=polyCorners-1;
-    for (i=0; i<polyCorners; i++) {
-      if ((polyY[i]<pixelY && polyY[j]>=pixelY) ||
-          (polyY[j]<pixelY && polyY[i]>=pixelY)) {
-        nodeX[nodes++]=(polyX[i]+(pixelY-polyY[i])*(polyX[j]-polyX[i])/(polyY[j]-polyY[i]));
-      }
-      j=i;
-    }
-
-		//  Sort the nodes, via a simple “Bubble” sort.
-    i=0;
-    while (i<nodes-1) {
-      if (nodeX[i]>nodeX[i+1]) {
-        swap=nodeX[i];
-        nodeX[i]=nodeX[i+1];
-        nodeX[i+1]=swap;
-        if (i) i--;
-      }
-      else
-        i++;
-    }
-
-    //  Fill the pixels between node pairs.
-    for (i=0; i<nodes; i+=2) {
-      if (nodeX[i  ]>=IMAGE_RIGHT) break;
-      if (nodeX[i+1]> IMAGE_LEFT) {
-        if (nodeX[i  ]< IMAGE_LEFT)  nodeX[i  ]=IMAGE_LEFT;
-        if (nodeX[i+1]> IMAGE_RIGHT) nodeX[i+1]=IMAGE_RIGHT;
-        LineOut(nodeX[i], pixelY, nodeX[i+1], pixelY);
-      }
-    }
-  }
+	else
+	{
+		for(int i = 0, j = polyCorners-1; i<polyCorners; j=i++)
+		{
+			LineOut(polyX[i],polyY[i],polyX[j],polyY[j],options);
+		}
+	}
 }
 
-void DrawPoly(int polyX[],int polyY[]) {
-	int polyCorners = ArrayLen(polyX);
-	if (polyCorners != ArrayLen(polyY))
-    return;
-  for(int i=0;i<polyCorners;i++) {
-    if (i<polyCorners-1)
-      LineOut(polyX[i], polyY[i], polyX[i+1], polyY[i+1]);
-    else
-      LineOut(polyX[i], polyY[i], polyX[0], polyY[0]);
-  }
-}
+int myPolyX[] = {16, 8,32,20,52,56,64,44,24};
+int myPolyY[] = {16,40,52,36,36,52,32,20,20};
+LocationType myPoints[] = {16,16, 8,40, 32,52, 20,36, 52,36, 56,52, 64,32, 44,20, 24,20};
 
 task main()
 {
 //  int myPolyX[] = { 0, 5,10,15,10, 5};
 //  int myPolyY[] = { 7, 0, 0, 7,15,15};
-  int myPolyX[] = {16, 8,32,20,52,56,64,44,24};
-  int myPolyY[] = {16,40,52,36,36,52,32,20,20};
-  DrawPoly(myPolyX,myPolyY);
-  Wait(5000);
+  PolyOut(myPoints, false);
+  Wait(2000);
   ClearScreen();
-  FillPoly(myPolyX,myPolyY);
-  Wait(10000);
+  for(int i=0;i<10;i++) {
+    PolyOut(myPoints, DRAW_OPT_LOGICAL_XOR|DRAW_OPT_FILL_SHAPE);
+    Wait(1000);
+  }
+  ClearScreen();
+  for(int i=0;i<10;i++) {
+    SlowPolyOut(myPolyX, myPolyY, DRAW_OPT_LOGICAL_XOR|DRAW_OPT_FILL_SHAPE);
+    Wait(1000);
+  }
+  PolyOut(myPoints, true|DRAW_OPT_FILL_SHAPE);
+  Wait(2000);
+  ClearScreen();
+  unsigned long tick = CurrentTick();
+  for (int i=0;i<100;i++)
+    PolyOut(myPoints, DRAW_OPT_LOGICAL_XOR|DRAW_OPT_FILL_SHAPE);
+  NumOut(0, LCD_LINE1, CurrentTick()-tick);
+  Wait(5000);
+  tick = CurrentTick();
+  for (int i=0;i<100;i++)
+    SlowPolyOut(myPolyX, myPolyY, DRAW_OPT_LOGICAL_XOR|DRAW_OPT_FILL_SHAPE);
+  NumOut(0, LCD_LINE1, CurrentTick()-tick);
+  Wait(5000);
 }
 

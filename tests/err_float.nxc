@@ -1,0 +1,32 @@
+task main ()
+{
+    long H[2];
+    H[0] = 140;
+    H[1] = 30;
+    float C = 143.1782;
+    float D = 74.9440;
+    float E = 66.1506;
+    float QQQ[2];// = {0, 0};
+//    ArrayInit(QQQ, 0, 2);
+    // no longer crashes here JCH 2009-03-20
+    QQQ[0] = (D*H[0] - E*H[1])/C;
+    QQQ[1] = (D*H[1] + E*H[0])/C;
+    NumOut(0,LCD_LINE1,C);
+    NumOut(0,LCD_LINE2,D);
+    NumOut(0,LCD_LINE3,E);
+    NumOut(0,LCD_LINE4,QQQ[0]);
+    NumOut(0,LCD_LINE5,QQQ[1]);
+    
+    float f;
+    long a;
+    int i;
+
+    f = -1564.344;
+    a = Ceil(f); // a is -1564 (fixed firmware bug JCH 2009-03-20)
+    i = Ceil(f);  // i is -1564
+    NumOut(0, LCD_LINE6, a);
+    NumOut(0, LCD_LINE7, i);
+    PlayTone(1000,10);
+
+    while(1);
+}

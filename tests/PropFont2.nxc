@@ -1,0 +1,124 @@
+#download "PropTiny.ric"
+
+/*
+#define DRAW_OPT_FONT_WRAP       (0x0200)
+
+#define DRAW_OPT_FONT_DIR_L2RB   (0x0000)           // Font left to right bottom align
+#define DRAW_OPT_FONT_DIR_L2RT   (0x0040)           // Font left to right top align
+#define DRAW_OPT_FONT_DIR_R2LB   (0x0080)           // Font right to left bottom align
+#define DRAW_OPT_FONT_DIR_R2LT   (0x00C0)           // Font right to left top align
+#define DRAW_OPT_FONT_DIR_B2TL   (0x0100)           // Font bottom to top left align
+#define DRAW_OPT_FONT_DIR_B2TR   (0x0140)           // Font bottom to top right align
+#define DRAW_OPT_FONT_DIR_T2BL   (0x0180)           // Font top to bottom left align
+#define DRAW_OPT_FONT_DIR_T2BR   (0x01C0)           // Font top to bottom right align
+*/
+#define DRAW_NORMAL     DRAW_OPT_NORMAL
+#define DRAW_INVERT     DRAW_OPT_INVERT
+#define DRAW_REMOVE     DRAW_OPT_INVERT|DRAW_OPT_LOGICAL_AND
+#define DRAW_ADD        DRAW_OPT_LOGICAL_OR
+
+/*
+#define DrawFont 95
+// DrawFont
+struct DrawFontType {
+ char Result;
+ LocationType Location;
+ string Filename;
+ string Text;
+ unsigned long Options;
+};
+
+#define SysDrawFont(_args) asm { \
+  compchktype _args, DrawFontType \
+  syscall DrawFont, _args \
+}
+*/
+
+void FontOut( int    x,
+              int    y,
+              string font_filename,
+              string text,
+              int   options )
+{
+     int param[256];                  // array for forwarding data for output
+
+     if( font_filename == "" )
+         TextOut( x,y, text, options );
+     else
+     {
+          int l = ArrayLen( text );
+          if( l > 257 )
+              l = 256;
+              
+          // 1. store the ASCII values of the characters of the string in
+          //    param beginning with param[0]
+
+          for(int i=0; i<l; i++ )
+            param[i]=text[i];
+
+          // 2. display the text with given ParamFont
+
+          GraphicOutEx( x,y, font_filename, param, options );
+     }
+}
+
+/*
+void CreateBackgroundPattern()
+{
+     for( int y=29; y<64; y++ )
+     {
+          LineOut( 80,y,99,y );
+
+          for( int x=0; x<10; x++ )
+               PointOut( 60+x*2+(y & 0x0001),y );
+     }
+}
+*/
+
+/*
+DrawFontType dfArgs;
+
+#define DoFontOut(_x, _y, _fnt, _txt, _options) \
+  dfArgs.Location.X = _x; \
+  dfArgs.Location.Y = _y; \
+  dfArgs.Filename = _fnt; \
+  dfArgs.Text = _txt; \
+  dfArgs.Options = _options; \
+  SysDrawFont(dfArgs);
+*/
+
+task main()
+{
+     int x;
+     unsigned long tick = CurrentTick();
+     FontTextOut(10,59, "PropTiny.RIC", "Hello", DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RT );
+     FontTextOut( 35,59, "PropTiny.RIC", "World", DRAW_OPT_INVERT|DRAW_OPT_FONT_DIR_T2BL );
+     FontTextOut( 10,20, "PropTiny.RIC", "Alle meine Entchen schwimmen auf dem See, Koepfchen in das Wasser und Schwaentzchen in die Hoehe!", DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RB|DRAW_OPT_FONT_WRAP );
+
+//     CreateBackgroundPattern();
+
+     FontTextOut( 50,56,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RB );
+     FontTextOut( 50,48,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_INVERT|DRAW_OPT_FONT_DIR_L2RB );
+     FontTextOut( 50,40,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_LOGICAL_OR|DRAW_OPT_FONT_DIR_L2RB );
+     FontTextOut( 50,32,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_INVERT|DRAW_OPT_LOGICAL_AND|DRAW_OPT_FONT_DIR_L2RB );
+     NumOut(0, LCD_LINE1, CurrentTick()-tick);
+     Wait(5000);
+     ClearScreen();
+
+     tick = CurrentTick();
+     FontOut( 10,59, "PropTiny.RIC", "Hello", DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RT );
+     FontOut( 35,59, "PropTiny.RIC", "World", DRAW_OPT_INVERT|DRAW_OPT_FONT_DIR_T2BL );
+     FontOut( 10,20, "PropTiny.RIC", "Alle meine Entchen schwimmen auf dem See, Koepfchen in das Wasser und Schwaentzchen in die Hoehe!", DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RB|DRAW_OPT_FONT_WRAP );
+
+//     CreateBackgroundPattern();
+
+     FontOut( 50,56,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RB );
+     FontOut( 50,48,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_INVERT|DRAW_OPT_FONT_DIR_L2RB );
+     FontOut( 50,40,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_LOGICAL_OR|DRAW_OPT_FONT_DIR_L2RB );
+     FontOut( 50,32,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_INVERT|DRAW_OPT_LOGICAL_AND|DRAW_OPT_FONT_DIR_L2RB );
+     NumOut(0, LCD_LINE1, CurrentTick()-tick);
+     
+     FontNumOut(0, 40, "PropTiny.RIC", 3.14159);
+
+     while( 1 ) ;
+}
