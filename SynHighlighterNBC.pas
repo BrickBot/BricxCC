@@ -147,7 +147,7 @@ const
 
 const
   PreProcDirectives: string =
-    '#download,#include,#define,#ifndef,#pragma,#endif,#error,#ifdef,#undef,#elif,#else,#line,#if';
+    '#download,#include,#define,#ifndef,#pragma,#endif,#error,#ifdef,#undef,#elif,#else,#line,#if,#import';
   OpCodes: string =
 // standard opcodes
     'add,sub,neg,mul,div,mod,and,or,xor,not,'+
@@ -178,7 +178,9 @@ const
     'ResetSensor, ReadSensorUS, ReadSensorHTGyro, PlayTone, PlayFile,'+
     'Random, ResetSleepTimer, PlayToneEx, PlayFileEx, SignedRandom,'+
     'TextOut, NumOut, PointOut, LineOut, RectOut, CircleOut, GraphicOut, GraphicArrayOut,'+
-    'TextOutEx, NumOutEx, PointOutEx, LineOutEx, RectOutEx, CircleOutEx, GraphicOutEx, GraphicArrayOutEx,'+
+    'FontTextOut, FontTextOutEx, FontNumOut, FontNumOutEx,'+
+    'TextOutEx, NumOutEx, PointOutEx, LineOutEx, RectOutEx, CircleOutEx,'+
+    'GraphicOutEx, GraphicArrayOutEx, PolyOut, PolyOutEx, EllipseOut, EllipseOutEx,'+
     'RebootInFirmwareMode, HTPFComboDirect, HTPFSinglePin, HTPFSingleOutputCST,'+
     'HTPFSingleOutputPWM, HTPFComboPWM, HTPFTrain, HTIRTrain, HTPFRawOutput,'+
     'HTPFRepeat, PowerDown, ReadButtonEx, SetIOMapValue, SetUIModuleValue,'+
@@ -327,9 +329,10 @@ const
     'FindFirstFile, FindNextFile, CreateFileLinear, CreateFileNonLinear,'+
     'OpenFileReadLinear, RS485Control, RS485Exit, RS485Init, RS485Read,'+
     'RS485Status, RS485Uart, RS485Write, SendRS485Bool, SendRS485Number,'+
-    'SendRS485String';
-
-
+    'SendRS485String,' +
+    'RICImgPoint, RICImgRect, RICOpDescription, RICOpCopyBits, RICOpPixel, RICOpLine,'+
+    'RICOpRect, RICOpCircle, RICOpNumBox, RICOpSprite, RICSpriteData, RICOpVarMap,'+
+    'RICMapElement, RICMapFunction, RICArg, RICMapArg';
 
   NBCConstants: string =
     'NA,TRUE,FALSE,OUT_A,OUT_B,OUT_C,OUT_AB,OUT_AC,OUT_BC,OUT_ABC,'+
@@ -637,7 +640,11 @@ const
     'CommHSCheckStatus, CommHSWrite, CommHSRead, ColorSensorRead,' +
     'CommBTOnOff, CommBTConnection, ReadSemData, WriteSemData,' +
     'ComputeCalibValue, UpdateCalibCacheInfo, DatalogWrite, DatalogGetTimes,' +
-    'SetSleepTimeoutVal, ListFiles, CommLSWriteEx, FileSeek, FileResize, DrawGraphicArray';
+    'SetSleepTimeoutVal, ListFiles, CommLSWriteEx, FileSeek, FileResize, DrawGraphicArray,' +
+    'DRAW_OPT_FONT_DIRECTIONS, DRAW_OPT_FONT_WRAP, DRAW_OPT_FONT_DIR_L2RB,' +
+    'DRAW_OPT_FONT_DIR_L2RT, DRAW_OPT_FONT_DIR_R2LB, DRAW_OPT_FONT_DIR_R2LT,' +
+    'DRAW_OPT_FONT_DIR_B2TL, DRAW_OPT_FONT_DIR_B2TR, DRAW_OPT_FONT_DIR_T2BL,' +
+    'DRAW_OPT_FONT_DIR_T2BR, DrawFont, DrawPolygon, DrawEllipse';
 
   NXCConstants: string =
     'S1, S2, S3, S4, SENSOR_1, SENSOR_2, SENSOR_3, SENSOR_4,'+
