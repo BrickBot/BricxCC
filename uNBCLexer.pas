@@ -264,6 +264,12 @@ begin
   Pat.AddOption(OptPat);
   TAlphaNumeric.Create(OptPat);
   OptPat := TAny.Create(nil);
+  OptPat.Key := '#import';
+  OptPat.Id:= piDirective;
+  OptPat.Min:= 1;
+  Pat.AddOption(OptPat);
+  TAlphaNumeric.Create(OptPat);
+  OptPat := TAny.Create(nil);
   OptPat.Key := '#pragma';
   OptPat.Id:= piDirective;
   OptPat.Min:= 1;
