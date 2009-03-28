@@ -55,6 +55,7 @@ type
 
   TLangPreprocessor = class
   private
+    fLangName : TLangName;
     fWarnings : TStrings;
     fCalc : TNBCExpParser;
     fIncludeFilesToSkip : TStrings;
@@ -96,10 +97,12 @@ type
     procedure AddOneOrMoreLines(OutStrings: TStrings; const S,
       name: string; var lineNo: integer);
     function IgnoringAtLowerLevel(const lineno: integer): boolean;
+    function ImportRIC(const fname, varname : string) : string;
+    function ImportFile(const fname : string; varname : string) : string;
   public
-    class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings) : string;
-    class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string) : string;
-    constructor Create(GLType : TGenLexerClass; const defIncDir : string);
+    class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings; aLN : TLangName) : string;
+    class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string; aLN : TLangName) : string;
+    constructor Create(GLType : TGenLexerClass; const defIncDir : string; aLN : TLangName);
     destructor Destroy; override;
     procedure SkipIncludeFile(const fname : string);
     function Preprocess(const fname: string; aStrings: TStrings) : string; overload;
@@ -113,7 +116,7 @@ type
 implementation
 
 uses
-  uVersionInfo, uLocalizedStrings;
+  Math, uVersionInfo, uLocalizedStrings, uRICComp;
 
 type
   TPreprocLevel = class
@@ -149,11 +152,11 @@ end;
 { TLangPreprocessor }
 
 class function TLangPreprocessor.PreprocessStrings(GLType : TGenLexerClass;
-  const fname : string; aStrings : TStrings) : string;
+  const fname : string; aStrings : TStrings; aLN : TLangName) : string;
 var
   P : TLangPreprocessor;
 begin
-  P := TLangPreprocessor.Create(GLType, ExtractFilePath(fname));
+  P := TLangPreprocessor.Create(GLType, ExtractFilePath(fname), aLN);
   try
     Result := P.Preprocess(fname, aStrings);
   finally
@@ -162,14 +165,14 @@ begin
 end;
 
 class function TLangPreprocessor.PreprocessFile(GLType : TGenLexerClass;
-  const fin, fout : string) : string;
+  const fin, fout : string; aLN : TLangName) : string;
 var
   SL : TStringList;
 begin
   SL := TStringList.Create;
   try
     SL.LoadFromFile(fin);
-    Result := TLangPreprocessor.PreprocessStrings(GLType, fin, SL);
+    Result := TLangPreprocessor.PreprocessStrings(GLType, fin, SL, aLN);
     SL.SaveToFile(fout);
   finally
     SL.Free;
@@ -626,7 +629,7 @@ var
   Lex: TGenLexer;
   S, dir, dirText, tmpname, usePath, macro, tmp : string;
   X : TMemoryStream;
-  i, cnt, origLevel, qPos, oldLineNo : integer;
+  i, j, cnt, origLevel, qPos, oldLineNo : integer;
   bFileFound, bDefined, bProcess : boolean;
   origName : string;
 begin
@@ -688,6 +691,7 @@ begin
             end;
             if bProcess then
             begin
+              S := dir + dirText;
               dirText := Trim(dirText);
               // get filename
               qPos := Pos('"', dirText);
@@ -713,8 +717,10 @@ begin
                   end
                   else
                     raise EPreprocessorException.Create(Format(sDownloadNotFound, [tmpName]), lineNo);
-                  // output a blank line to replace directive
-                  OutStrings.Add('');
+//                  // output a blank line to replace directive
+//                  OutStrings.Add('');
+                  OutStrings.Add(S); // leave the #download in for the next stage to process
+                  S := '';
                 end
                 else
                   raise EPreprocessorException.Create(sDownloadMissingQuotes, lineNo);
@@ -722,6 +728,68 @@ begin
               else
                 raise EPreprocessorException.Create(sDownloadMissingQuotes, lineNo);
             end;
+          end
+          else if dir = '#import' then
+          begin
+            // collect to end of line
+            Lex.Next;
+            while (Lex.Id <> piLineEnd) and not Lex.AtEnd do
+            begin
+              dirText := dirText + Lex.Token;
+              Lex.Next;
+            end;
+            if bProcess then
+            begin
+              dirText := Trim(dirText);
+              // get filename
+              qPos := Pos('"', dirText);
+              if qPos > 0 then
+              begin
+                System.Delete(dirText, 1, qPos);
+                qPos := Pos('"', dirText);
+                if qPos > 0 then
+                begin
+                  tmpName := Copy(dirText, 1, qPos-1);
+                  System.Delete(dirText, 1, qPos);
+                  usePath := '';
+                  bFileFound := False;
+                  for i := 0 to IncludeDirs.Count - 1 do
+                  begin
+                    usePath := IncludeTrailingPathDelimiter(IncludeDirs[i]);
+                    bFileFound := FileExists(usePath+tmpName);
+                    if bFileFound then Break;
+                  end;
+                  if bFileFound then
+                  begin
+                    dirtext := Trim(dirText);
+                    // the optional parameter is only up to the first space or '/'
+                    i := Pos(' ', dirText);
+                    j := Pos('/', dirText);
+                    i := Min(i, j);
+                    if i > 0 then
+                      System.Delete(dirText, i, MaxInt); // delete the rest of the line
+                    // import the file
+                    if LowerCase(ExtractFileExt(usepath+tmpName)) = '.ric' then
+                    begin
+                      S := ImportRIC(usePath+tmpName, dirText);
+//                      AddOneOrMoreLines(OutStrings, S, name, lineNo);
+//                      S := '';
+                    end
+                    else
+                      S := ImportFile(usePath+tmpName, dirText);
+//                      raise EPreprocessorException.Create(sImportRICInvalid, lineNo);
+                  end
+                  else
+                    raise EPreprocessorException.Create(Format(sImportRICNotFound, [tmpName]), lineNo);
+                end
+                else
+                  raise EPreprocessorException.Create(sImportRICMissingQuotes, lineNo);
+              end
+              else
+                raise EPreprocessorException.Create(sImportRICMissingQuotes, lineNo);
+            end
+            else
+              OutStrings.Add('');
           end
           else if dir = '#include' then
           begin
@@ -1013,9 +1081,10 @@ begin
   end;
 end;
 
-constructor TLangPreprocessor.Create(GLType : TGenLexerClass; const defIncDir : string);
+constructor TLangPreprocessor.Create(GLType : TGenLexerClass; const defIncDir : string; aLN : TLangName);
 begin
   inherited Create;
+  fLangName := aLN;
   fAddPoundLine := False;
   fGLC := GLType;
   fWarnings := TStringList.Create;
@@ -1157,6 +1226,64 @@ var
 begin
   for i := 0 to num - 1 do
     fLexers.Add(fGLC.CreateLexer);
+end;
+
+function TLangPreprocessor.ImportRIC(const fname, varname: string): string;
+var
+  RC : TRICComp;
+begin
+  RC := TRICComp.Create;
+  try
+    RC.LoadFromFile(fname);
+    Result := RC.SaveAsDataArray(fLangName, varname);
+  finally
+    RC.Free;
+  end;
+end;
+
+function TLangPreprocessor.ImportFile(const fname : string; varname: string): string;
+var
+  tmp : string;
+  i, cnt : integer;
+  Data : TMemoryStream;
+  P : PChar;
+begin
+  if fLangName in [lnNBC, lnNXC] then
+  begin
+    if varname = '' then
+      varname := ChangeFileExt(ExtractFileName(fname),'')
+    else
+      varname := Format(varname, [ChangeFileExt(ExtractFileName(fname),'')]);
+    Data := TMemoryStream.Create;
+    try
+      Data.LoadFromFile(fname);
+      Data.Position := 0;
+      tmp := '';
+      P := Data.Memory;
+      cnt := Integer(Data.Size) - 1;
+      for i := 0 to cnt do
+      begin
+        tmp := tmp + Format('0x%2.2x', [Byte(P^)]);
+        if i < cnt then
+          tmp := tmp + ', ';
+        inc(P);
+      end;
+      if fLangName = lnNXC then
+      begin
+        Result := 'byte ' + varname + '[] = {' + tmp + '};';
+      end
+      else if fLangName = lnNBC then
+      begin
+        Result := 'dseg segment'#13#10 +
+                  ' ' + varname + ' byte[] ' + tmp + #13#10 +
+                  'dseg ends';
+      end;
+    finally
+      Data.Free;
+    end;
+  end
+  else
+    Result := '// unable to import "' + ExtractFileName(fname) + '"';
 end;
 
 { EPreprocessorException }
