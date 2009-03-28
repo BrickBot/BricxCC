@@ -28,6 +28,8 @@ const
   IMG_RECTANGLE_ID   = 6;
   IMG_CIRCLE_ID      = 7;
   IMG_NUMBOX_ID      = 8;
+  IMG_ELLIPSE_ID     = 9;
+  IMG_POLYGON_ID     = 10;
 
 const
   USEARGS_MASK = $1000;
@@ -162,6 +164,25 @@ type
   end;
   PIMG_OP_NUMBOX = ^IMG_OP_NUMBOX;
 
+  IMG_OP_ELLIPSE = record
+    OpSize : Word;
+    OpCode : Word;
+    CopyOptions : Word;
+    Pt : IMG_PT;
+    Radius1 : Word;
+    Radius2 : Word;
+  end;
+  PIMG_OP_ELLIPSE = ^IMG_OP_ELLIPSE;
+
+  IMG_OP_POLYGON = record
+    OpSize : Word;
+    OpCode : Word;
+    CopyOptions : Word;
+    Count : Word;
+    Points : array[0..2] of IMG_PT; // at least 3 points per polygon
+  end;
+  PIMG_OP_POLYGON = ^IMG_OP_POLYGON;
+
   FONT_REC = record
     FormatMsb : Byte;
     FormatLsb : Byte;
@@ -176,7 +197,7 @@ type
   P_FONT = ^FONT_REC;
 
   TOpTypes = (otCore, otDescr, otSprite, otVarmap, otCopyBits, otPixel,
-    otLine, otRect, otCircle, otNumBox);
+    otLine, otRect, otCircle, otNumBox, otEllipse, otPolygon);
 
   IMG_OP_UNION = record
     case TOpTypes of
@@ -190,6 +211,8 @@ type
       otRect: (Rect : IMG_OP_RECT);
       otCircle: (Circle : IMG_OP_CIRCLE);
       otNumBox: (NumBox : IMG_OP_NUMBOX);
+      otEllipse: (Ellipse : IMG_OP_ELLIPSE);
+      otPolygon: (Polygon : IMG_OP_POLYGON);
   end;
   PIMG_OP_UNION = ^IMG_OP_UNION;
 
