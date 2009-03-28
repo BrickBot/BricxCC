@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXTDefs.h
- * Date:: 2009-03-15
- * Revision:: 41
+ * Date:: 2009-03-24
+ * Revision:: 44
  *
  * Contains declarations for the NBC NXT API resources
  *
@@ -373,6 +373,31 @@ TDrawGraphicArray	struct
  Variables	sdword[]
  Options	dword
 TDrawGraphicArray	ends
+
+// DrawPolygon
+TDrawPolygon	struct
+ Result		sbyte
+ Points		TLocation[]
+ Options	dword
+TDrawPolygon	ends
+
+// DrawEllipse
+TDrawEllipse	struct
+ Result		sbyte
+ Center		TLocation
+ SizeX		byte
+ SizeY		byte
+ Options	dword
+TDrawEllipse	ends
+
+// DrawFont
+TDrawFont	struct
+ Result		sbyte
+ Location	TLocation
+ Filename	byte[]
+ Text		byte[]
+ Options	dword
+TDrawFont	ends
 
 #endif
 #endif
@@ -1627,11 +1652,11 @@ dseg ends
 
 #define TextOut(_x,_y,_txt) TextOutEx(_x,_y,_txt,0)
 
-#define TextOutEx(_x,_y,_txt,_cls) \
+#define TextOutEx(_x,_y,_txt,_options) \
   acquire __TextOutMutex \
   mov __TextOutArgs.Location.X,_x \
   mov __TextOutArgs.Location.Y,_y \
-  mov __TextOutArgs.Options,_cls \
+  mov __TextOutArgs.Options,_options \
   mov __TextOutArgs.Text,_txt \
   syscall DrawText,__TextOutArgs \
   release __TextOutMutex
@@ -1643,11 +1668,11 @@ dseg ends
 
 #define NumOut(_x,_y,_num) NumOutEx(_x,_y,_num,0)
 
-#define NumOutEx(_x,_y,_num,_cls) \
+#define NumOutEx(_x,_y,_num,_options) \
   acquire __NumOutMutex \
   mov __NumOutArgs.Location.X,_x \
   mov __NumOutArgs.Location.Y,_y \
-  mov __NumOutArgs.Options,_cls \
+  mov __NumOutArgs.Options,_options \
   numtostr __NumOutArgs.Text,_num \
   syscall DrawText,__NumOutArgs \
   release __NumOutMutex
@@ -1659,11 +1684,11 @@ dseg ends
 
 #define PointOut(_x,_y) PointOutEx(_x,_y,0)
 
-#define PointOutEx(_x,_y,_cls) \
+#define PointOutEx(_x,_y,_options) \
   acquire __PointOutMutex \
   mov __PointOutArgs.Location.X,_x \
   mov __PointOutArgs.Location.Y,_y \
-  mov __PointOutArgs.Options,_cls \
+  mov __PointOutArgs.Options,_options \
   syscall DrawPoint,__PointOutArgs \
   release __PointOutMutex
 
@@ -1676,13 +1701,13 @@ dseg ends
 
 #define LineOut(_x1,_y1,_x2,_y2) LineOutEx(_x1,_y1,_x2,_y2,0)
 
-#define LineOutEx(_x1,_y1,_x2,_y2,_cls) \
+#define LineOutEx(_x1,_y1,_x2,_y2,_options) \
   acquire __LineOutMutex \
   mov __LineOutArgs.StartLoc.X,_x1 \
   mov __LineOutArgs.StartLoc.Y,_y1 \
   mov __LineOutArgs.EndLoc.X,_x2 \
   mov __LineOutArgs.EndLoc.Y,_y2 \
-  mov __LineOutArgs.Options,_cls \
+  mov __LineOutArgs.Options,_options \
   syscall DrawLine,__LineOutArgs \
   release __LineOutMutex
 
@@ -1693,13 +1718,13 @@ dseg ends
 
 #define RectOut(_x,_y,_w,_h) RectOutEx(_x,_y,_w,_h,0)
 
-#define RectOutEx(_x,_y,_w,_h,_cls) \
+#define RectOutEx(_x,_y,_w,_h,_options) \
   acquire __RectOutMutex \
   mov __RectOutArgs.Location.X,_x \
   mov __RectOutArgs.Location.Y,_y \
   mov __RectOutArgs.Size.Width,_w \
   mov __RectOutArgs.Size.Height,_h \
-  mov __RectOutArgs.Options,_cls \
+  mov __RectOutArgs.Options,_options \
   syscall DrawRect,__RectOutArgs \
   release __RectOutMutex
 
@@ -1710,12 +1735,12 @@ dseg ends
 
 #define CircleOut(_x,_y,_r) CircleOutEx(_x,_y,_r,0)
 
-#define CircleOutEx(_x,_y,_r,_cls) \
+#define CircleOutEx(_x,_y,_r,_options) \
   acquire __CircleOutMutex \
   mov __CircleOutArgs.Center.X,_x \
   mov __CircleOutArgs.Center.Y,_y \
   mov __CircleOutArgs.Size,_r \
-  mov __CircleOutArgs.Options,_cls \
+  mov __CircleOutArgs.Options,_options \
   syscall DrawCircle,__CircleOutArgs \
   release __CircleOutMutex
 
@@ -1727,13 +1752,13 @@ dseg ends
 
 #define GraphicOut(_x,_y,_file) GraphicOutEx(_x,_y,_file,__GraphicOutEmptyVars,0)
 
-#define GraphicOutEx(_x,_y,_file,_vars,_cls) \
+#define GraphicOutEx(_x,_y,_file,_vars,_options) \
   acquire __GraphicOutMutex \
   mov __GraphicOutArgs.Location.X,_x \
   mov __GraphicOutArgs.Location.Y,_y \
   mov __GraphicOutArgs.Filename,_file \
   mov __GraphicOutArgs.Variables,_vars \
-  mov __GraphicOutArgs.Options,_cls \
+  mov __GraphicOutArgs.Options,_options \
   syscall DrawGraphic,__GraphicOutArgs \
   release __GraphicOutMutex
 
@@ -1745,15 +1770,75 @@ dseg ends
 
 #define GraphicArrayOut(_x,_y,_data) GraphicArrayOutEx(_x,_y,_data,__GraphicOutEmptyVars,0)
 
-#define GraphicArrayOutEx(_x,_y,_data,_vars,_cls) \
+#define GraphicArrayOutEx(_x,_y,_data,_vars,_options) \
   acquire __GraphicOutMutex \
   mov __GraphicArrayOutArgs.Location.X,_x \
   mov __GraphicArrayOutArgs.Location.Y,_y \
   mov __GraphicArrayOutArgs.Data,_data \
   mov __GraphicArrayOutArgs.Variables,_vars \
-  mov __GraphicArrayOutArgs.Options,_cls \
+  mov __GraphicArrayOutArgs.Options,_options \
   syscall DrawGraphicArray,__GraphicArrayOutArgs \
   release __GraphicOutMutex
+
+dseg segment
+  __PolyOutArgs TDrawPolygon
+  __PolyOutMutex mutex
+dseg ends
+
+#define PolyOut(_points) PolyOutEx(_points,0)
+
+#define PolyOutEx(_points,_options) \
+  acquire __PolyOutMutex \
+  mov __PolyOutArgs.Points,_points \
+  mov __PolyOutArgs.Options,_options \
+  syscall DrawPolygon,__PolyOutArgs \
+  release __PolyOutMutex
+
+dseg segment
+  __EllipseOutArgs TDrawEllipse
+  __EllipseOutMutex mutex
+dseg ends
+
+#define EllipseOut(_x,_y,_rX,_rY) EllipseOutEx(_x,_y,_rX,_rY,0)
+
+#define EllipseOutEx(_x,_y,_rX,_rY,_options) \
+  acquire __EllipseOutMutex \
+  mov __EllipseOutArgs.Center.X,_x \
+  mov __EllipseOutArgs.Center.Y,_y \
+  mov __EllipseOutArgs.SizeX,_rX \
+  mov __EllipseOutArgs.SizeY,_rY \
+  mov __EllipseOutArgs.Options,_options \
+  syscall DrawEllipse,__EllipseOutArgs \
+  release __EllipseOutMutex
+
+dseg segment
+  __FontOutMutex mutex
+  __FontOutArgs TDrawFont
+dseg ends
+
+#define FontTextOut(_x,_y,_fnt,_txt) FontTextOutEx(_x,_y,_fnt,_txt,0)
+
+#define FontTextOutEx(_x,_y,_fnt,_txt,_options) \
+  acquire __FontOutMutex \
+  mov __FontOutArgs.Location.X,_x \
+  mov __FontOutArgs.Location.Y,_y \
+  mov __FontOutArgs.Options,_options \
+  mov __FontOutArgs.Filename,_fnt \
+  mov __FontOutArgs.Text,_txt \
+  syscall DrawFont,__FontOutArgs \
+  release __FontOutMutex
+
+#define FontNumOut(_x,_y,_fnt,_num) FontNumOutEx(_x,_y,_fnt,_num,0)
+
+#define FontNumOutEx(_x,_y,_fnt,_num,_options) \
+  acquire __FontOutMutex \
+  mov __FontOutArgs.Location.X,_x \
+  mov __FontOutArgs.Location.Y,_y \
+  mov __FontOutArgs.Options,_options \
+  mov __FontOutArgs.Filename,_fnt \
+  numtostr __FontOutArgs.Text,_num \
+  syscall DrawFont,__FontOutArgs \
+  release __FontOutMutex
 
 #endif
 
