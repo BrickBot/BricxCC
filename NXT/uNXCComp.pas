@@ -301,7 +301,10 @@ type
     procedure DoSetSensorTypeMode(idx : integer);
     procedure DoClearSetResetSensor;
     procedure DoTextNumOut(idx : integer);
+    procedure DoFontTextNumOut(idx : integer);
     procedure DoDrawPoint;
+    procedure DoDrawPoly;
+    procedure DoDrawEllipse;
     procedure DoDrawLineRect(idx : integer);
     procedure DoDrawCircle;
     procedure DoDrawGraphic(idx : integer);
@@ -4313,6 +4316,7 @@ end;
 procedure TNXCComp.DoAsm(var dt : char);
 var
   asmStr : string;
+  nestLevel : integer;
 begin
 // gather everything within asm block and output it
   EmitPoundLine;
@@ -4321,11 +4325,16 @@ begin
   begin
     asmStr := Value + Look;
     repeat
+      nestLevel := 0;
       repeat
         GetCharX;
-        if Look <> TOK_END then
+        if Look = TOK_BEGIN then
+          inc(nestLevel);
+        if (Look <> TOK_END) or (nestLevel > 0) then
           asmStr := asmStr + Look;
-      until (Look = LF) or (Look = TOK_END) or endofallsource;
+        if Look = TOK_END then
+          dec(nestLevel);
+      until ((nestLevel < 0) and (Look = TOK_END)) or (Look = LF) or endofallsource;
       if Pos('__STRRETVAL__', asmStr) > 0 then
         dt := TOK_STRINGDEF
       else
@@ -6415,7 +6424,7 @@ var
   i, idx : integer;
   tmpFile, tmpMsg : string;
 begin
-  P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)));
+  P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)), lnNXC);
   try
     P.AddPoundLineToMultiLineMacros := True;
     P.Defines.AddDefines(Defines);
@@ -6854,6 +6863,10 @@ const
   APIF_ASM              = 34;
   APIF_DRAWGRAPHICAR    = 35;
   APIF_DRAWGRAPHICAREX  = 36;
+  APIF_DRAWPOLY         = 37;
+  APIF_DRAWELLIPSE      = 38;
+  APIF_FONTTEXTOUT      = 39;
+  APIF_FONTNUMOUT       = 40;
 
 procedure TNXCComp.DoCallAPIFunc(procname: string);
 var
@@ -6930,6 +6943,9 @@ begin
     APIF_STRTONUM : DoStrToNum;
     APIF_STRLEN : DoStrLen;
     APIF_STRINDEX : DoStrIndex;
+    APIF_DRAWPOLY : DoDrawPoly;
+    APIF_DRAWELLIPSE : DoDrawEllipse;
+    APIF_FONTTEXTOUT, APIF_FONTNUMOUT : DoFontTextNumOut(id);
   end;
 end;
 
@@ -6996,8 +7012,8 @@ var
   x, y, txt, val : string;
   bCls : boolean;
 begin
-  //TextOut(x,y,txt,cls=false)
-  //NumOut(x,y,num,cls=false)
+  //TextOut(x,y,txt,options=false)
+  //NumOut(x,y,num,options=false)
   OpenParen;
   // arg1 = x
   BoolExpression;
@@ -7074,6 +7090,96 @@ begin
   pop;
 end;
 
+procedure TNXCComp.DoFontTextNumOut(idx: integer);
+var
+  x, y, fntname, txt, val : string;
+  bCls : boolean;
+begin
+  //FontTextOut(x,y,file,txt,options=false)
+  //FontNumOut(x,y,file,num,options=false)
+  OpenParen;
+  // arg1 = x
+  BoolExpression;
+  push;
+  x := tos;
+  EmitLn(Format('mov %s, %s', [x, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg2 = y
+  BoolExpression;
+  push;
+  y := tos;
+  EmitLn(Format('mov %s, %s', [y, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg3 = file
+  CheckString;
+  fntname := Value;
+  Next;
+  MatchString(TOK_COMMA);
+  if idx = APIF_FONTNUMOUT then
+  begin
+    BoolExpression;
+    bCls := Token = TOK_COMMA;
+    if bCls then
+    begin
+      push;
+      val := tos;
+      EmitLn(Format('mov %s, %s', [val, RegisterName]));
+      MatchString(TOK_COMMA);
+      // arg4 = cls
+      BoolExpression;
+    end;
+    CloseParen;
+    EmitLn('acquire __FontOutMutex');
+    EmitLn('mov __FontOutArgs.Location.X, ' + x);
+    EmitLn('mov __FontOutArgs.Location.Y, ' + y);
+    EmitLn('mov __FontOutArgs.Filename, ' + fntname);
+    if bCls then
+    begin
+      EmitLn('mov __FontOutArgs.Options, ' + RegisterName);
+      EmitLn(Format('numtostr __FontOutArgs.Text, %s',[val]));
+    end
+    else
+    begin
+      EmitLn('set __FontOutArgs.Options, 0');
+      EmitLn(Format('numtostr __FontOutArgs.Text, %s',[RegisterName]));
+    end;
+    EmitLn('syscall DrawFont, __FontOutArgs');
+    ResetStatementType;
+    EmitLn(Format('mov %s, __FontOutArgs.Result',[RegisterName]));
+    EmitLn('release __FontOutMutex');
+    if bCls then
+      pop;
+  end
+  else
+  begin
+    StringExpression('');
+    txt := StrBufName;
+    bCls := Token = TOK_COMMA;
+    if bCls then
+    begin
+      MatchString(TOK_COMMA);
+      // arg4 = cls
+      BoolExpression;
+    end;
+    CloseParen;
+    EmitLn('acquire __FontOutMutex');
+    EmitLn('mov __FontOutArgs.Location.X, ' + x);
+    EmitLn('mov __FontOutArgs.Location.Y, ' + y);
+    EmitLn('mov __FontOutArgs.Filename, ' + fntname);
+    if bCls then
+      EmitLn('mov __FontOutArgs.Options, ' + RegisterName)
+    else
+      EmitLn('set __FontOutArgs.Options, 0');
+    EmitLn('mov __FontOutArgs.Text, ' + txt);
+    EmitLn('syscall DrawFont, __FontOutArgs');
+    ResetStatementType;
+    EmitLn(Format('mov %s, __FontOutArgs.Result',[RegisterName]));
+    EmitLn('release __FontOutMutex');
+  end;
+  pop;
+  pop;
+end;
+
 procedure TNXCComp.DoDrawPoint;
 var
   x, y : string;
@@ -7117,6 +7223,38 @@ begin
   pop;
   if bCls then
     pop;
+end;
+
+procedure TNXCComp.DoDrawPoly;
+var
+  pts : string;
+  bCls : boolean;
+begin
+  //PolyOut(points,options=false)
+  OpenParen;
+  // arg1 = points
+  pts := Value;
+  Next;
+  bCls := Token = TOK_COMMA;
+  if bCls then
+  begin
+    MatchString(TOK_COMMA);
+    // arg2 = cls
+    BoolExpression;
+  end;
+  CloseParen;
+  EmitLn('acquire __PolyOutMutex');
+  EmitLn('mov __PolyOutArgs.Points, ' + pts);
+  if bCls then begin
+    EmitLn('mov __PolyOutArgs.Options, ' + RegisterName);
+  end
+  else begin
+    EmitLn('set __PolyOutArgs.Options, 0');
+  end;
+  EmitLn('syscall DrawPolygon, __PolyOutArgs');
+  ResetStatementType;
+  EmitLn(Format('mov %s, __PolyOutArgs.Result',[RegisterName]));
+  EmitLn('release __PolyOutMutex');
 end;
 
 procedure TNXCComp.DoDrawLineRect(idx : integer);
@@ -7256,6 +7394,67 @@ begin
     pop;
 end;
 
+procedure TNXCComp.DoDrawEllipse;
+var
+  x, y, radiusX, radiusY : string;
+  bCls : boolean;
+begin
+  //EllipseOut(x,y,radiusX,radiusY,cls=false)
+  OpenParen;
+  // arg1 = x
+  BoolExpression;
+  push;
+  x := tos;
+  EmitLn(Format('mov %s, %s', [x, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg2 = y
+  BoolExpression;
+  push;
+  y := tos;
+  EmitLn(Format('mov %s, %s', [y, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg3 = radiusX
+  BoolExpression;
+  push;
+  radiusX := tos;
+  EmitLn(Format('mov %s, %s', [radiusX, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg4 = radiusY
+  BoolExpression;
+  bCls := Token = TOK_COMMA;
+  if bCls then
+  begin
+    push;
+    radiusY := tos;
+    EmitLn(Format('mov %s, %s', [radiusY, RegisterName]));
+    MatchString(TOK_COMMA);
+    // arg5 = cls
+    BoolExpression;
+  end;
+  CloseParen;
+  EmitLn('acquire __EllipseOutMutex');
+  EmitLn('mov __EllipseOutArgs.Center.X, ' + x);
+  EmitLn('mov __EllipseOutArgs.Center.Y, ' + y);
+  EmitLn('mov __EllipseOutArgs.SizeX, ' + radiusX);
+  if bCls then begin
+    EmitLn('mov __EllipseOutArgs.SizeY, ' + radiusY);
+    EmitLn('mov __EllipseOutArgs.Options, ' + RegisterName);
+  end
+  else begin
+    EmitLn('mov __EllipseOutArgs.SizeY, ' + RegisterName);
+    EmitLn('set __EllipseOutArgs.Options, 0');
+  end;
+  EmitLn('syscall DrawEllipse, __EllipseOutArgs');
+  ResetStatementType;
+  EmitLn(Format('mov %s, __EllipseOutArgs.Result',[RegisterName]));
+  EmitLn('release __EllipseOutMutex');
+  pop;
+  pop;
+  pop;
+  if bCls then
+    pop;
+end;
+
 procedure TNXCComp.DoDrawGraphic(idx : integer);
 var
   x, y, fname, vars : string;
@@ -7319,7 +7518,7 @@ begin
     if idx = APIF_DRAWGRAPHICEX then
       EmitLn('mov __GraphicOutArgs.Variables, ' + vars)
     else
-      EmitLn('mov __GraphicOutArgs.Variables, __NXCGraphicOutEmptyVars');
+      EmitLn('mov __GraphicOutArgs.Variables, __GraphicOutEmptyVars');
     EmitLn('syscall DrawGraphic, __GraphicOutArgs');
     ResetStatementType;
     EmitLn(Format('mov %s, __GraphicOutArgs.Result',[RegisterName]));
@@ -7335,7 +7534,7 @@ begin
       EmitLn('mov __GraphicArrayOutArgs.Location.Y, ' + RegisterName);
       EmitLn('set __GraphicArrayOutArgs.Options, 0');
     end;
-    EmitLn('mov __GraphicArrayOutArgs.Filename, ' + fname);
+    EmitLn('mov __GraphicArrayOutArgs.Data, ' + fname);
     if idx = APIF_DRAWGRAPHICAREX then
       EmitLn('mov __GraphicArrayOutArgs.Variables, ' + vars)
     else
@@ -7507,6 +7706,10 @@ begin
   AddAPIStringFunction('FormatNum', APISF_FORMATNUM);
   AddAPIFunction('GraphicArrayOut', APIF_DRAWGRAPHICAR);
   AddAPIFunction('GraphicArrayOutEx', APIF_DRAWGRAPHICAREX);
+  AddAPIFunction('PolyOut', APIF_DRAWPOLY);
+  AddAPIFunction('EllipseOut', APIF_DRAWELLIPSE);
+  AddAPIFunction('FontTextOut', APIF_FONTTEXTOUT);
+  AddAPIFunction('FontNumOut', APIF_FONTNUMOUT);
 end;
 
 function TNXCComp.GetNBCSrc: TStrings;
