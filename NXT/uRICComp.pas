@@ -19,7 +19,7 @@ unit uRICComp;
 interface
 
 uses
-  Classes, Contnrs, uRIC, Parser10;
+  Classes, Contnrs, uNBCCommon, uRIC, Parser10;
 
 type
   TImgPoint = IMG_PT;
@@ -46,6 +46,7 @@ type
     destructor Destroy; override;
     procedure SaveToStream(aStream : TStream); virtual;
     procedure LoadFromStream(aStream : TStream); virtual;
+    function SaveAsDataArray(const aLangName: TLangName): string; virtual;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); virtual; abstract;
     property OpSize : Word read GetOpSize write fOpSize;
     property OpCode : Word read fOpCode write fOpCode;
@@ -60,6 +61,7 @@ type
     constructor Create(aOwner : TRICOps); override;
     procedure SaveToStream(aStream : TStream); override;
     procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
     property Options : Word read fOptions write fOptions;
     property Width : Word read fWidth write fWidth;
@@ -83,11 +85,14 @@ type
     function GetByte(Index: Integer): Byte;
     procedure SetByte(Index: Integer; const Value: Byte);
     function GetOpSize : Word; override;
+    function BytesToWrite : Integer;
+    function GetByteValue(const idx : integer) : Byte;
   public
     constructor Create(aOwner : TRICOps); override;
     destructor Destroy; override;
     procedure SaveToStream(aStream : TStream); override;
     procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
     procedure Add(aValue : Byte);
     property DataAddr : Word read fDataAddr write fDataAddr;
@@ -121,6 +126,7 @@ type
     destructor Destroy; override;
     procedure SaveToStream(aStream : TStream); override;
     procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
     procedure AddMap(aMapElement : PIOV_MAPELT);
     function Add : TMapElement;
@@ -139,6 +145,7 @@ type
     constructor Create(aOwner : TRICOps); override;
     procedure SaveToStream(aStream : TStream); override;
     procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
     property CopyOptions : Word read fCopyOptions write fCopyOptions;
     property DataAddr : Word read fDataAddr write fDataAddr;
@@ -155,6 +162,7 @@ type
     constructor Create(aOwner : TRICOps); override;
     procedure SaveToStream(aStream : TStream); override;
     procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
     property CopyOptions : Word read fCopyOptions write fCopyOptions;
     property Point : TImgPoint read fPoint write fPoint;
@@ -170,6 +178,7 @@ type
     constructor Create(aOwner : TRICOps); override;
     procedure SaveToStream(aStream : TStream); override;
     procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
     property CopyOptions : Word read fCopyOptions write fCopyOptions;
     property Point1 : TImgPoint read fPoint1 write fPoint1;
@@ -186,6 +195,7 @@ type
     constructor Create(aOwner : TRICOps); override;
     procedure SaveToStream(aStream : TStream); override;
     procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
     property CopyOptions : Word read fCopyOptions write fCopyOptions;
     property Point : TImgPoint read fPoint write fPoint;
@@ -202,6 +212,7 @@ type
     constructor Create(aOwner : TRICOps); override;
     procedure SaveToStream(aStream : TStream); override;
     procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
     property CopyOptions : Word read fCopyOptions write fCopyOptions;
     property Point : TImgPoint read fPoint write fPoint;
@@ -217,10 +228,60 @@ type
     constructor Create(aOwner : TRICOps); override;
     procedure SaveToStream(aStream : TStream); override;
     procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
 //    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
     property CopyOptions : Word read fCopyOptions write fCopyOptions;
     property Point : TImgPoint read fPoint write fPoint;
     property Value : Word read fValue write fValue;
+  end;
+
+  TRICEllipse = class(TRICOpBase)
+  protected
+    fCopyOptions : Word;
+    fPoint: TImgPoint;
+    fRadius1: Word;
+    fRadius2: Word;
+  public
+    constructor Create(aOwner : TRICOps); override;
+    procedure SaveToStream(aStream : TStream); override;
+    procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
+//    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
+    property CopyOptions : Word read fCopyOptions write fCopyOptions;
+    property Point : TImgPoint read fPoint write fPoint;
+    property Radius1 : Word read fRadius1 write fRadius1;
+    property Radius2 : Word read fRadius2 write fRadius2;
+  end;
+
+  TPolyPoint = class
+  private
+    fX: SmallInt;
+    fY: SmallInt;
+  public
+    property X : SmallInt read fX write fX;
+    property Y : SmallInt read fY write fY;
+  end;
+
+  TRICPolygon = class(TRICOpBase)
+  private
+  protected
+    fCopyOptions : Word;
+    fPolyPoints : TObjectList;
+    function GetCount: Word;
+    function GetPolyPoint(Index: Integer): TPolyPoint;
+    procedure SetPolyPoint(Index: Integer; const Value: TPolyPoint);
+  public
+    constructor Create(aOwner : TRICOps); override;
+    destructor Destroy; override;
+    procedure SaveToStream(aStream : TStream); override;
+    procedure LoadFromStream(aStream : TStream); override;
+    function SaveAsDataArray(const aLangName: TLangName): string; override;
+//    procedure Draw(aPoint : TImgPoint; Vars : TRICVariables;  Options : Cardinal; aCanvas : TImgCanvas); override;
+    procedure AddPoint(aPolyPoint : PIMG_PT);
+    function Add : TPolyPoint;
+    property Count : Word read GetCount;
+    property PolyPoints[Index : Integer] : TPolyPoint read GetPolyPoint write SetPolyPoint;
+    property CopyOptions : Word read fCopyOptions write fCopyOptions;
   end;
 
   TRICComp = class
@@ -273,6 +334,8 @@ type
     procedure DoPixel;
     procedure DoRect;
     procedure DoVarMap;
+    procedure DoEllipse;
+    procedure DoPolygon;
     procedure CloseParen;
     procedure CheckNumeric;
     function ProcessArg: SmallInt;
@@ -309,6 +372,7 @@ type
     procedure Parse(const aFilename : string); overload;
     procedure Parse(aStream : TStream); overload;
     procedure Parse(aStrings : TStrings); overload;
+    function SaveAsDataArray(const aLangName : TLangName; varname : string) : string;
     property RICOps : TRICOps read fOperations;
     property Operations[Index : integer] : TRICOpBase read GetOperation;
     property OperationCount : Integer read GetOpCount;
@@ -320,12 +384,13 @@ type
     property OnCompilerMessage : TOnCompilerMessage read fOnCompMSg write fOnCompMsg;
     class function RICToText(aStream : TStream; const aFilename : string = '') : string; overload;
     class function RICToText(const aFilename : string) : string; overload;
+    class function RICToDataArray(const aFilename, aVarName : string; const aLangName : TLangName) : string;
   end;
 
 implementation
 
 uses
-  SysUtils, Math, uCommonUtils, uNBCCommon, uLocalizedStrings,
+  SysUtils, Math, uCommonUtils, uLocalizedStrings,
   Graphics{$IFNDEF FPC}, JPEG, PNGImage, GIFImage{$ENDIF};
 
 type
@@ -462,6 +527,8 @@ const
   TOK_ARG             = 'a';
   TOK_MAPARG          = 'm';
   TOK_F               = 'f';
+  TOK_ELLIPSE         = 'e';
+  TOK_POLYGON         = 'P';
   TOK_BLOCK_COMMENT   = #01;
   TOK_LINE_COMMENT    = #02;
 
@@ -480,21 +547,21 @@ var
   totallines : integer = 0;
 
 const
-  NKW  = 13;
-  NKW1 = 14;
+  NKW  = 15;
+  NKW1 = 16;
 
 const
   KWlist: array[1..NKW] of string =
               ('desc', 'sprite', 'varmap', 'import',
                'copybits', 'line', 'rect', 'pixel',
-               'circle', 'numbox', 'maparg', 'arg', 'f');
+               'circle', 'numbox', 'maparg', 'arg', 'f', 'ellipse', 'polygon');
 
 const                                     // 'xileweRWve'
   KWcode: array[1..NKW1+1] of Char =
     (TOK_IDENTIFIER, TOK_DESC, TOK_SPRITE,
 		 TOK_VARMAP, TOK_IMPORT, TOK_COPYBITS, TOK_LINE,
      TOK_RECT, TOK_PIXEL, TOK_CIRCLE,
-     TOK_NUMBOX, TOK_MAPARG, TOK_ARG, TOK_F,
+     TOK_NUMBOX, TOK_MAPARG, TOK_ARG, TOK_F, TOK_ELLIPSE, TOK_POLYGON,
      #0);
 
 function PixelsToBytes(p : word) : word;
@@ -542,6 +609,8 @@ begin
     IMG_RECTANGLE_ID   : Result := 'rect';
     IMG_CIRCLE_ID      : Result := 'circle';
     IMG_NUMBOX_ID      : Result := 'numbox';
+    IMG_ELLIPSE_ID     : Result := 'ellipse';
+    IMG_POLYGON_ID     : Result := 'polygon';
   else
     Result := 'unknown';
   end;
@@ -573,23 +642,76 @@ begin
                       else Result := Result + '0';
 end;
 
-function RICValueToStr(val : integer) : string;
+function RICValueToStr(const val : integer; const aLangName : TLangName = lnRICScript) : string;
+var
+  fmtStr : string;
 begin
-  if IMG_SYMB_USEARGS(val) = 0 then
+  if aLangName in [lnNBC, lnNXC] then
   begin
-    Result := Format('%d', [val]);
+    Result := Format('0x%2.2x, 0x%2.2x', [Lo(val), Hi(val)]);
   end
   else
   begin
-    if IMG_SYMB_MAP(val) = 0 then
+    if IMG_SYMB_USEARGS(val) = 0 then
     begin
-      Result := Format('arg(%d)', [IMG_SYMB_ARG(val)]);
+      Result := Format('%d', [val]);
     end
     else
     begin
-      Result := Format('maparg(%d, %d)', [IMG_SYMB_MAP(val), IMG_SYMB_ARG(val)]);
+      if IMG_SYMB_MAP(val) = 0 then
+      begin
+        if aLangName = lnRICSCript then
+          fmtStr := 'arg(%d)'
+        else
+          fmtStr := 'RICArg(%d)';
+        Result := Format(fmtStr, [IMG_SYMB_ARG(val)]);
+      end
+      else
+      begin
+        if aLangName = lnRICSCript then
+          fmtStr := 'maparg(%d, %d)'
+        else
+          fmtStr := 'RICMapArg(%d, %d)';
+        Result := Format(fmtStr, [IMG_SYMB_MAP(val), IMG_SYMB_ARG(val)]);
+      end;
     end;
   end;
+end;
+
+function RICPointToStr(const val : TImgPoint; const aLangName : TLangName) : string;
+var
+  fmtStr : string;
+begin
+  if aLangName in [lnNBC, lnNXC, lnNXCHeader] then
+  begin
+    if aLangName in [lnNBC, lnNXC] then
+      fmtStr := '%s, %s'
+    else
+      fmtStr := 'RICImgPoint(%s, %s)';
+    Result := Format(fmtStr,
+      [RICValueToStr(val.X, aLangName), RICValueToStr(val.Y, aLangName)]);
+  end
+  else
+    Result := '';
+end;
+
+function RICRectToStr(const val : TImgRect; const aLangName : TLangName) : string;
+var
+  fmtStr : string;
+begin
+  if aLangName in [lnNBC, lnNXC, lnNXCHeader] then
+  begin
+    if aLangName in [lnNBC, lnNXC] then
+      fmtStr := '%s, %s, %s'
+    else
+      fmtStr := 'RICImgRect(%s, %s, %s)';
+    Result := Format(fmtStr,
+      [RICPointToStr(val.Pt, aLangName),
+       RICValueToStr(val.Width, aLangName),
+       RICValueToStr(val.Height, aLangName)]);
+  end
+  else
+    Result := '';
 end;
 
 function ImgRect(X, Y, Width, Height: SmallInt): TImgRect;
@@ -622,8 +744,11 @@ var
   pVM : PIMG_OP_VARMAP;
   pD  : PIMG_OP_DESCRIPTION;
   pPX : PIMG_OP_PIXEL;
+  pE : PIMG_OP_ELLIPSE;
+  pP : PIMG_OP_POLYGON;
   pB : PByte;
   pMAP : PIOV_MAPELT;
+  pImgPt : PIMG_PT;
   theText : TStringList;
   opDescr : TRICDescription;
   opSprite : TRICSprite;
@@ -634,6 +759,8 @@ var
   opRect : TRICRect;
   opCircle : TRICCircle;
   opNumBox : TRICNumBox;
+  opEllipse : TRICEllipse;
+  opPolygon : TRICPolygon;
 begin
   ops.Clear;
   Result := '';
@@ -742,9 +869,9 @@ begin
               SrcRect     := ImgRect(pCB^.Src.Pt.X, pCB^.Src.Pt.Y, pCB^.Src.Width, pCB^.Src.Height);
               DestPoint   := ImgPoint(pCB^.Dst.X, pCB^.Dst.Y);
             end;
-            theText.Add(Format('%s(%d, %s, %s, %s, %s, %s, %s, %s);',
+            theText.Add(Format('%s(%s, %s, %s, %s, %s, %s, %s, %s);',
               [RICOpCodeToStr(pCB^.OpCode),
-               pCB^.CopyOptions, RICValueToStr(pCB^.DataAddr), 
+               RICValueToStr(pCB^.CopyOptions), RICValueToStr(pCB^.DataAddr),
                RICValueToStr(pCB^.Src.Pt.X), RICValueToStr(pCB^.Src.Pt.Y),
                RICValueToStr(pCB^.Src.Width), RICValueToStr(pCB^.Src.Height),
                RICValueToStr(pCB^.Dst.X), RICValueToStr(pCB^.Dst.Y)]));
@@ -762,8 +889,8 @@ begin
               Point       := ImgPoint(pPX^.Pt.X, pPX^.Pt.Y);
               Value       := pPX^.Value;
             end;
-            theText.Add(Format('%s(%d, %s, %s, %s);',
-              [RICOpCodeToStr(pPX^.OpCode), pPX^.CopyOptions,
+            theText.Add(Format('%s(%s, %s, %s, %s);',
+              [RICOpCodeToStr(pPX^.OpCode), RICValueToStr(pPX^.CopyOptions),
                RICValueToStr(pPX^.Pt.X), RICValueToStr(pPX^.Pt.Y),
                RICValueToStr(pPX^.Value)]));
           end;
@@ -780,8 +907,8 @@ begin
               Point1      := ImgPoint(pL^.Pt1.X, pL^.Pt1.Y);
               Point2      := ImgPoint(pL^.Pt2.X, pL^.Pt2.Y);
             end;
-            theText.Add(Format('%s(%d, %s, %s, %s, %s);',
-              [RICOpCodeToStr(pL^.OpCode), pL^.CopyOptions,
+            theText.Add(Format('%s(%s, %s, %s, %s, %s);',
+              [RICOpCodeToStr(pL^.OpCode), RICValueToStr(pL^.CopyOptions),
                RICValueToStr(pL^.Pt1.X), RICValueToStr(pL^.Pt1.Y),
                RICValueToStr(pL^.Pt2.X), RICValueToStr(pL^.Pt2.Y)]));
           end;
@@ -799,8 +926,8 @@ begin
               Width       := pR^.Width;
               Height      := pR^.Height;
             end;
-            theText.Add(Format('%s(%d, %s, %s, %s, %s);',
-              [RICOpCodeToStr(pR^.OpCode), pR^.CopyOptions,
+            theText.Add(Format('%s(%s, %s, %s, %s, %s);',
+              [RICOpCodeToStr(pR^.OpCode), RICValueToStr(pR^.CopyOptions),
                RICValueToStr(pR^.Pt.X), RICValueToStr(pR^.Pt.Y),
                RICValueToStr(pR^.Width), RICValueToStr(pR^.Height)]));
           end;
@@ -817,8 +944,8 @@ begin
               Point       := ImgPoint(pC^.Pt.X, pC^.Pt.Y);
               Radius      := pC^.Radius;
             end;
-            theText.Add(Format('%s(%d, %s, %s, %s, %s);',
-              [RICOpCodeToStr(pC^.OpCode), pC^.CopyOptions,
+            theText.Add(Format('%s(%s, %s, %s, %s);',
+              [RICOpCodeToStr(pC^.OpCode), RICValueToStr(pC^.CopyOptions),
                RICValueToStr(pC^.Pt.X), RICValueToStr(pC^.Pt.Y),
                RICValueToStr(pC^.Radius)]));
           end;
@@ -835,10 +962,53 @@ begin
               Point       := ImgPoint(pNB^.Pt.X, pNB^.Pt.Y);
               Value       := pNB^.Value;
             end;
-            theText.Add(Format('%s(%d, %s, %s, %s);',
-              [RICOpCodeToStr(pNB^.OpCode), pNB^.CopyOptions,
+            theText.Add(Format('%s(%s, %s, %s, %s);',
+              [RICOpCodeToStr(pNB^.OpCode), RICValueToStr(pNB^.CopyOptions),
                RICValueToStr(pNB^.Pt.X), RICValueToStr(pNB^.Pt.Y),
                RICValueToStr(pNB^.Value)]));
+          end;
+        end;
+        IMG_ELLIPSE_ID : begin
+          if OpSize >= SizeOf(IMG_OP_ELLIPSE) then begin
+            pE := @(pImage^.Ellipse);
+            // add to the operations list
+            opEllipse := TRICEllipse.Create(ops);
+            with opEllipse do begin
+              OpCode      := pE^.OpCode;
+              OpSize      := pE^.OpSize;
+              CopyOptions := pE^.CopyOptions;
+              Point       := ImgPoint(pE^.Pt.X, pE^.Pt.Y);
+              Radius1     := pE^.Radius1;
+              Radius2     := pE^.Radius2;
+            end;
+            theText.Add(Format('%s(%s, %s, %s, %s, %s);',
+              [RICOpCodeToStr(pE^.OpCode), RICValueToStr(pE^.CopyOptions),
+               RICValueToStr(pE^.Pt.X), RICValueToStr(pE^.Pt.Y),
+               RICValueToStr(pE^.Radius1), RICValueToStr(pE^.Radius2)]));
+          end;
+        end;
+        IMG_POLYGON_ID : begin
+          if OpSize >= SizeOf(IMG_OP_POLYGON) then
+          begin
+            pP := @(pImage^.Polygon);
+            // add to the operations list
+            opPolygon := TRICPolygon.Create(ops);
+            with opPolygon do begin
+              OpCode   := pP^.OpCode;
+              OpSize   := pP^.OpSize;
+              CopyOptions := pP^.CopyOptions;
+            end;
+            tmpCmd := Format('%s(%s', [RICOpCodeToStr(pP^.OpCode), RICValueToStr(pP^.CopyOptions)]);
+            pImgPt := @(pP^.Points[0]);
+            for j := 0 to pP^.Count - 1 do begin
+              tmpCmd := tmpCmd + Format(', (%d, %d)', [pImgPt^.X, pImgPt^.Y]);
+              opPolygon.AddPoint(pImgPt);
+              inc(pImgPt);
+            end;
+            tmpCmd := tmpCmd + ');';
+            theText.Add(tmpCmd);
+            // set the OpSize value last since adding polygon points tries to change the OpSize value
+            opPolygon.OpSize := pP^.OpSize;
           end;
         end;
       else
@@ -1573,8 +1743,8 @@ begin
   // copybits(options, dataaddr, srcx, srcy, srcw, srch, destx, desty);
   Next;
   OpenParen;
-  CheckNumeric;
-  op.CopyOptions := ValueToWord;
+  Scan;
+  op.CopyOptions := ProcessWordArg;
   Next;
   MatchString(TOK_COMMA);
   Scan;
@@ -1620,8 +1790,8 @@ begin
   // line(options, p1x, p1y, p2x, p2y);
   Next;
   OpenParen;
-  CheckNumeric;
-  op.CopyOptions := ValueToWord;
+  Scan;
+  op.CopyOptions := ProcessWordArg;
   Next;
   MatchString(TOK_COMMA);
   Scan;
@@ -1655,8 +1825,8 @@ begin
   // rect(options, x, y, w, h);
   Next;
   OpenParen;
-  CheckNumeric;
-  op.CopyOptions := ValueToWord;
+  Scan;
+  op.CopyOptions := ProcessWordArg;
   Next;
   MatchString(TOK_COMMA);
   Scan;
@@ -1689,8 +1859,8 @@ begin
   // pixel(options, x, y, value);
   Next;
   OpenParen;
-  CheckNumeric;
-  op.CopyOptions := ValueToWord;
+  Scan;
+  op.CopyOptions := ProcessWordArg;
   Next;
   MatchString(TOK_COMMA);
   Scan;
@@ -1719,8 +1889,8 @@ begin
   // circle(options, x, y, radius);
   Next;
   OpenParen;
-  CheckNumeric;
-  op.CopyOptions := ValueToWord;
+  Scan;
+  op.CopyOptions := ProcessWordArg;
   Next;
   MatchString(TOK_COMMA);
   Scan;
@@ -1738,6 +1908,77 @@ begin
   CloseParen;
 end;
 
+procedure TRICComp.DoEllipse;
+var
+  op : TRICEllipse;
+  P : TImgPoint;
+begin
+  // add an ellipse opcode
+  op := TRICEllipse.Create(RICOps);
+  // parse and set its values
+  // ellipse(options, x, y, radius1, radius2);
+  Next;
+  OpenParen;
+  Scan;
+  op.CopyOptions := ProcessWordArg;
+  Next;
+  MatchString(TOK_COMMA);
+  Scan;
+  P.X := ProcessArg;
+  Next;
+  MatchString(TOK_COMMA);
+  Scan;
+  P.Y := ProcessArg;
+  Next;
+  MatchString(TOK_COMMA);
+  Scan;
+  op.Point := P;
+  op.Radius1 := ProcessWordArg;
+  Next;
+  MatchString(TOK_COMMA);
+  Scan;
+  op.Radius2 := ProcessWordArg;
+  Next;
+  CloseParen;
+end;
+
+procedure TRICComp.DoPolygon;
+var
+  op : TRICPolygon;
+  PP : TPolyPoint;
+begin
+  // add a polygon opcode
+  op := TRICPolygon.Create(RICOps);
+  // parse and set its values
+  // polygon(options, coord1, coord2, ..., coordN);
+  // where coordN is (xval, yval)
+  Next;
+  OpenParen;
+  Scan;
+  op.CopyOptions := ProcessWordArg;
+  Next;
+  MatchString(TOK_COMMA);
+  while (Token <> TOK_CLOSEPAREN) and not endofallsource do
+  begin
+    // (x, y)
+    OpenParen; // advance to x value
+    PP := op.Add;
+    Scan;
+    PP.X := ProcessWordArg;
+    Next; // advance to comma
+    MatchString(',');
+    Scan;
+    PP.Y := ProcessWordArg;
+    Next;
+    CloseParen; // advance to close paren or comma
+    if Token = TOK_COMMA then
+      MatchString(TOK_COMMA);
+  end;
+  CloseParen;
+  if op.Count < 3 then
+    AbortMsg(sPolygonCountError);
+end;
+
 procedure TRICComp.DoNumBox;
 var
   op : TRICNumBox;
@@ -1749,8 +1990,8 @@ begin
   // numbox(options, x, y, value);
   Next;
   OpenParen;
-  CheckNumeric;
-  op.CopyOptions := ValueToWord;
+  Scan;
+  op.CopyOptions := ProcessWordArg;
   Next;
   MatchString(TOK_COMMA);
   Scan;
@@ -1780,6 +2021,8 @@ begin
     TOK_PIXEL:      DoPixel;
     TOK_CIRCLE:     DoCircle;
     TOK_NUMBOX:     DoNumBox;
+    TOK_ELLIPSE:    DoEllipse;
+    TOK_POLYGON:    DoPolygon;
     TOK_CLOSEPAREN : CloseParen;
     ';' : ;// do nothing
   end;
@@ -1873,6 +2116,56 @@ begin
   fTempChar := ' ';
 end;
 
+function TRICComp.SaveAsDataArray(const aLangName: TLangName; varname : string): string;
+var
+  tmp : string;
+  i : integer;
+begin
+  if varname = '' then
+    varname := ChangeFileExt(ExtractFileName(CurrentFile),'')
+  else
+    varname := Format(varname, [ChangeFileExt(ExtractFileName(CurrentFile),'')]);
+  if aLangName in [lnNXC, lnNXCHeader] then
+  begin
+    Result := 'byte ' + varname + '[] = {'#13#10;
+    for i := 0 to fOperations.Count - 1 do
+    begin
+      Result := Result + TRICOpBase(fOperations[i]).SaveAsDataArray(aLangName);
+      if i < fOperations.Count - 1 then
+        Result := Result + ', ';
+      Result := Result + #13#10;
+    end;
+    Result := Result + '};';
+  end
+  else if aLangName = lnNBC then
+  begin
+    tmp := '';
+    for i := 0 to fOperations.Count - 1 do
+    begin
+      tmp := tmp + TRICOpBase(fOperations[i]).SaveAsDataArray(aLangName);
+      if i < fOperations.Count - 1 then
+        tmp := tmp + ', ';
+    end;
+    Result := 'dseg segment'#13#10 +
+              ' ' + varname + ' byte[] ' + tmp + #13#10 +
+              'dseg ends';
+  end
+  else
+    Result := '// unable to import "' + ExtractFileName(CurrentFile) + '"';
+end;
+
+class function TRICComp.RICToDataArray(const aFilename, aVarName : string;
+  const aLangName: TLangName): string;
+begin
+  with TRICComp.Create do
+  try
+    LoadFromFile(aFilename);
+    Result := SaveAsDataArray(aLangName, aVarName);
+  finally
+    Free;
+  end;
+end;
+
 { TRICDescription }
 
 constructor TRICDescription.Create(aOwner : TRICOps);
@@ -1900,6 +2193,22 @@ begin
   ReadWordFromStream(aStream, w); Options := w;
   ReadWordFromStream(aStream, w); Width   := w;
   ReadWordFromStream(aStream, w); Height  := w;
+end;
+
+function TRICDescription.SaveAsDataArray(const aLangName: TLangName): string;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s',
+      [RICValueToStr(Options, aLangName),
+       RICValueToStr(Width, aLangName),
+       RICValueToStr(Height, aLangName)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpDescription(%d, %d, %d)', [Options, Width, Height])
+  else
+    Result := '';
 end;
 
 procedure TRICDescription.SaveToStream(aStream: TStream);
@@ -1987,6 +2296,13 @@ begin
   end;
 end;
 
+function TRICSprite.BytesToWrite: Integer;
+begin
+  Result := Rows*RowBytes;
+  if (Result mod 2) = 1 then
+    Inc(Result);
+end;
+
 class function TRICSprite.CountBytes(val: string): Word;
 var
   bHex : boolean;
@@ -2041,6 +2357,14 @@ begin
   Result := fBytes.Count;
 end;
 
+function TRICSprite.GetByteValue(const idx: integer): Byte;
+begin
+  if idx < ByteCount then
+    Result := Bytes[idx]
+  else
+    Result := 0;
+end;
+
 function TRICSprite.GetOpSize: Word;
 begin
   Result := fOpSize;
@@ -2076,25 +2400,64 @@ begin
   end;
 end;
 
+function TRICSprite.SaveAsDataArray(const aLangName: TLangName): string;
+
+  function OutputBytes(bIsNXCHeader : boolean) : string;
+  var
+    i, cnt : integer;
+    B : Byte;
+  begin
+    if bIsNXCHeader then
+      Result := 'RICSpriteData('
+    else
+      Result := '';
+    cnt := BytesToWrite - 1;
+    for i := 0 to cnt do
+    begin
+      B := GetByteValue(i);
+      Result := Result + Format('0x%2.2x', [B]);
+      if i < cnt then
+      begin
+        Result := Result + ', ';
+        if bIsNXCHeader and ((i mod 8) = 0) and (i > 0) then
+          Result := Result + #13#10'    ';
+      end;
+    end;
+    if bIsNXCHeader then
+      Result := Result + ')';
+  end;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s, %s',
+      [RICValueToStr(DataAddr, aLangName),
+       RICValueToStr(Rows, aLangName),
+       RICValueToStr(RowBytes, aLangName),
+       OutputBytes(false)]);
+  end
+  else if aLangName = lnNXCHeader then
+  begin
+    Result := Format('RICOpSprite(%d, %d, %d,'#13#10'  %s)',
+      [DataAddr, Rows, RowBytes, OutputBytes(true)]);
+  end
+  else
+    Result := '';
+end;
+
 procedure TRICSprite.SaveToStream(aStream: TStream);
 var
   B : Byte;
-  BytesToWrite, i : integer;
+  i : integer;
 begin
   inherited;
   WriteWordToStream(aStream, DataAddr);
   WriteWordToStream(aStream, Rows);
   WriteWordToStream(aStream, RowBytes);
   // now write out all the bytes in the Bytes array
-  BytesToWrite := Rows*RowBytes;
-  if (BytesToWrite mod 2) = 1 then
-    Inc(BytesToWrite);
   for i := 0 to BytesToWrite - 1 do
   begin
-    if i < ByteCount then
-      B := Bytes[i]
-    else
-      B := 0;
+    B := GetByteValue(i);
     aStream.Write(B, 1);
   end;
 end;
@@ -2133,6 +2496,15 @@ begin
   w := 0;
   ReadWordFromStream(aStream, w); OpSize := w;
   ReadWordFromStream(aStream, w); OpCode := w;
+end;
+
+function TRICOpBase.SaveAsDataArray(const aLangName: TLangName): string;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+    Result := Format('%s, %s',
+      [RICValueToStr(OpSize, aLangName), RICValueToStr(OpCode, aLangName)])
+  else
+    Result := '';
 end;
 
 procedure TRICOpBase.SaveToStream(aStream: TStream);
@@ -2219,6 +2591,52 @@ begin
   end;
 end;
 
+function TRICVarMap.SaveAsDataArray(const aLangName: TLangName): string;
+  function OutputBytes(bIsNXCHeader : boolean) : string;
+  var
+    i, cnt : integer;
+    ME : TMapElement;
+  begin
+    if bIsNXCHeader then
+      Result := 'RICMapFunction('
+    else
+      Result := '';
+    cnt := MapCount - 1;
+    for i := 0 to cnt do
+    begin
+      ME := Self.MapElements[i];
+      if bIsNXCHeader then
+        Result := Result + Format('RICMapElement(%d, %d)', [ME.Domain, ME.Range])
+      else
+        Result := Result + Format('%s, %s', [RICValueToStr(ME.Domain, lnNBC), RICValueToStr(ME.Range, lnNBC)]);
+      if i < cnt then
+      begin
+        Result := Result + ', ';
+        if bIsNXCHeader {and ((i mod 4) = 0) and (i > 0)} then
+          Result := Result + #13#10'    ';
+      end;
+    end;
+    if bIsNXCHeader then
+      Result := Result + ')';
+  end;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s',
+      [RICValueToStr(DataAddr, aLangName),
+       RICValueToStr(MapCount, aLangName),
+       OutputBytes(false)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpVarMap(%d, %d,'#13#10'  %s)',
+      [DataAddr,
+       MapCount,
+       OutputBytes(true)])
+  else
+    Result := '';
+end;
+
 procedure TRICVarMap.SaveToStream(aStream: TStream);
 var
   i : integer;
@@ -2286,6 +2704,27 @@ begin
   DestPoint   := p;
 end;
 
+function TRICCopyBits.SaveAsDataArray(const aLangName: TLangName): string;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s, %s',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICValueToStr(DataAddr, aLangName),
+       RICRectToStr(SrcRect, aLangName),
+       RICPointToStr(DestPoint, aLangName)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpCopyBits(%s, %s, %s, %s)',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICValueToStr(DataAddr, aLangName),
+       RICRectToStr(SrcRect, aLangName),
+       RICPointToStr(DestPoint, aLangName)])
+  else
+    Result := '';
+end;
+
 procedure TRICCopyBits.SaveToStream(aStream: TStream);
 begin
   inherited;
@@ -2335,6 +2774,25 @@ begin
   Value       := v;
 end;
 
+function TRICPixel.SaveAsDataArray(const aLangName: TLangName): string;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Value, aLangName)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpPixel(%s, %s, %s)',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Value, aLangName)])
+  else
+    Result := '';
+end;
+
 procedure TRICPixel.SaveToStream(aStream: TStream);
 begin
   inherited;
@@ -2377,6 +2835,25 @@ begin
   CopyOptions := co;
   Point1      := p1;
   Point2      := p2;
+end;
+
+function TRICLine.SaveAsDataArray(const aLangName: TLangName): string;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point1, aLangName),
+       RICPointToStr(Point2, aLangName)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpLine(%s, %s, %s)',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point1, aLangName),
+       RICPointToStr(Point2, aLangName)])
+  else
+    Result := '';
 end;
 
 procedure TRICLine.SaveToStream(aStream: TStream);
@@ -2426,6 +2903,27 @@ begin
   Height      := h;
 end;
 
+function TRICRect.SaveAsDataArray(const aLangName: TLangName): string;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s, %s',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Width, aLangName),
+       RICValueToStr(Height, aLangName)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpRect(%s, %s, %s, %s)',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Width, aLangName),
+       RICValueToStr(Height, aLangName)])
+  else
+    Result := '';
+end;
+
 procedure TRICRect.SaveToStream(aStream: TStream);
 begin
   inherited;
@@ -2468,6 +2966,25 @@ begin
   CopyOptions := co;
   Point       := p;
   Radius      := r;
+end;
+
+function TRICCircle.SaveAsDataArray(const aLangName: TLangName): string;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Radius, aLangName)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpCircle(%s, %s, %s)',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Radius, aLangName)])
+  else
+    Result := '';
 end;
 
 procedure TRICCircle.SaveToStream(aStream: TStream);
@@ -2513,12 +3030,237 @@ begin
   Value       := v;
 end;
 
+function TRICNumBox.SaveAsDataArray(const aLangName: TLangName): string;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Value, aLangName)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpNumBox(%s, %s, %s)',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Value, aLangName)])
+  else
+    Result := '';
+end;
+
 procedure TRICNumBox.SaveToStream(aStream: TStream);
 begin
   inherited;
   WriteWordToStream(aStream, CopyOptions);
   WriteImgPointToStream(aStream, Point);
   WriteWordToStream(aStream, Value);
+end;
+
+{ TRICEllipse }
+
+constructor TRICEllipse.Create(aOwner: TRICOps);
+begin
+  inherited Create(aOwner);
+  fOpCode := IMG_ELLIPSE_ID;
+  fOpSize := SizeOf(IMG_OP_ELLIPSE) - 2;
+end;
+
+{
+procedure TRICEllipse.Draw(aPoint: TImgPoint; Vars: TRICVariables;
+  Options: Cardinal; aCanvas: TImgCanvas);
+begin
+// draw ellipse as specified
+end;
+}
+
+procedure TRICEllipse.LoadFromStream(aStream: TStream);
+var
+  p : TImgPoint;
+  r1, r2, co : Word;
+begin
+  inherited;
+  co := 0;
+  r1 := 0;
+  r2 := 0;
+  p.X := 0;
+  p.Y := 0;
+  ReadWordFromStream(aStream, co);
+  ReadImgPointFromStream(aStream, p);
+  ReadWordFromStream(aStream, r1);
+  ReadWordFromStream(aStream, r2);
+  CopyOptions := co;
+  Point       := p;
+  Radius1     := r1;
+  Radius2     := r2;
+end;
+
+function TRICEllipse.SaveAsDataArray(const aLangName: TLangName): string;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s, %s, %s',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Radius1, aLangName),
+       RICValueToStr(Radius2, aLangName)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpEllipse(%s, %s, %s, %s)',
+      [RICValueToStr(CopyOptions, aLangName),
+       RICPointToStr(Point, aLangName),
+       RICValueToStr(Radius1, aLangName),
+       RICValueToStr(Radius2, aLangName)])
+  else
+    Result := '';
+end;
+
+procedure TRICEllipse.SaveToStream(aStream: TStream);
+begin
+  inherited;
+  WriteWordToStream(aStream, CopyOptions);
+  WriteImgPointToStream(aStream, Point);
+  WriteWordToStream(aStream, Radius1);
+  WriteWordToStream(aStream, Radius2);
+end;
+
+{ TRICPolygon }
+
+function TRICPolygon.Add: TPolyPoint;
+begin
+  Result := TPolyPoint.Create;
+  fPolyPoints.Add(Result);
+  inc(fOpSize, 4);
+end;
+
+procedure TRICPolygon.AddPoint(aPolyPoint: PIMG_PT);
+var
+  PP : TPolyPoint;
+begin
+  PP := TPolyPoint.Create;
+  fPolyPoints.Add(PP);
+  PP.X := aPolyPoint^.X;
+  PP.Y := aPolyPoint^.Y;
+  inc(fOpSize, 4);
+end;
+
+constructor TRICPolygon.Create(aOwner: TRICOps);
+begin
+  inherited Create(aOwner);
+  fPolyPoints := TObjectList.Create;
+  fOpCode := IMG_POLYGON_ID;
+  fOpSize := SizeOf(IMG_OP_POLYGON) - 14; // remove 2 + 3*4
+end;
+
+destructor TRICPolygon.Destroy;
+begin
+  FreeAndNil(fPolyPoints);
+  inherited;
+end;
+
+function TRICPolygon.GetCount: Word;
+begin
+  Result := Word(fPolyPoints.Count);
+end;
+
+function TRICPolygon.GetPolyPoint(Index: Integer): TPolyPoint;
+begin
+  Result := TPolyPoint(fPolyPoints[Index]);
+end;
+
+procedure TRICPolygon.LoadFromStream(aStream: TStream);
+var
+  co, mc, x, y : word;
+  i : integer;
+  PP : TPolyPoint;
+begin
+  inherited;
+  co := 0;
+  mc := 0;
+  x  := 0;
+  y  := 0;
+  ReadWordFromStream(aStream, co);
+  ReadWordFromStream(aStream, mc);
+  CopyOptions := co;
+  for i := 0 to mc - 1 do
+  begin
+    // read polygon points from stream
+    ReadWordFromStream(aStream, x);
+    ReadWordFromStream(aStream, y);
+    PP := Add;
+    PP.X := x;
+    PP.Y := y;
+  end;
+end;
+
+function TRICPolygon.SaveAsDataArray(const aLangName: TLangName): string;
+  function OutputBytes(bIsNXCHeader : boolean) : string;
+  var
+    i, cnt : integer;
+    PP : TPolyPoint;
+  begin
+    if bIsNXCHeader then
+      Result := 'RICPolygonPoints('
+    else
+      Result := '';
+    cnt := Count - 1;
+    for i := 0 to cnt do
+    begin
+      PP := PolyPoints[i];
+      if bIsNXCHeader then
+        Result := Result + Format('RICImgPoint(%s, %s)',
+          [RICValueToStr(PP.X, aLangName), RICValueToStr(PP.Y, aLangName)])
+      else
+        Result := Result + Format('%s, %s',
+          [RICValueToStr(PP.X, lnNBC), RICValueToStr(PP.Y, lnNBC)]);
+      if i < cnt then
+      begin
+        Result := Result + ', ';
+        if bIsNXCHeader {and ((i mod 4) = 0) and (i > 0)} then
+          Result := Result + #13#10'    ';
+      end;
+    end;
+    if bIsNXCHeader then
+      Result := Result + ')';
+  end;
+begin
+  if aLangName in [lnNBC, lnNXC] then
+  begin
+    Result := inherited SaveAsDataArray(aLangName);
+    Result := Result + Format(', %s, %s',
+      [RICValueToStr(Count, aLangName),
+       OutputBytes(false)]);
+  end
+  else if aLangName = lnNXCHeader then
+    Result := Format('RICOpPolygon(%d,'#13#10'  %s)',
+      [Count,
+       OutputBytes(true)])
+  else
+    Result := '';
+end;
+
+procedure TRICPolygon.SaveToStream(aStream: TStream);
+var
+  i : integer;
+  PP : TPolyPoint;
+begin
+  inherited;
+  WriteWordToStream(aStream, CopyOptions);
+  WriteWordToStream(aStream, Count);
+  // now write out all the points in the PolyPoints array
+  for i := 0 to Count - 1 do
+  begin
+    PP := PolyPoints[i];
+    WriteWordToStream(aStream, PP.X);
+    WriteWordToStream(aStream, PP.Y);
+  end;
+end;
+
+procedure TRICPolygon.SetPolyPoint(Index: Integer; const Value: TPolyPoint);
+begin
+  TPolyPoint(fPolyPoints[Index]).X := Value.X;
+  TPolyPoint(fPolyPoints[Index]).Y := Value.Y;
 end;
 
 { TRICOps }
