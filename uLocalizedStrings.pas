@@ -404,13 +404,18 @@ resourcestring
   sInvalidCommandArgument  = 'Invalid command argument';
   sSpriteLengthError       = 'sprite command must have rows with a length > 0';
   sInvalidMapSyntax        = 'Invalid map element function syntax';
+  sInvalidPolygonSyntax    = 'Invalid polygon point syntax';
   sVarMapCountError        = 'varmap command must have at least two map elements';
+  sPolygonCountError       = 'polygon command must have at least three points';
   sStringNotBinary         = 'String is not a valid binary number: %s';
   sInvalidHexLength        = 'Invalid length of hex string: %d';
 
 // uPreprocess unit
 resourcestring
   sInvalidPreprocDirective  = 'Invalid preprocessor directive';
+  sImportRICNotFound        = 'Unable to find RIC import file: "%s"';
+  sImportRICMissingQuotes   = '#importric directive requires a filename (e.g., #importric "foo.ric")';
+  sImportRICInvalid         = '#importric directive filename must end in ".ric"';
   sDownloadNotFound         = 'Unable to find download file: "%s"';
   sDownloadMissingQuotes    = '#download directive requires a filename (e.g., #download "foo.ric")';
   sIncludeNotFound          = 'Unable to find include file: "%s"';
