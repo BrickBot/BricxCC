@@ -38,7 +38,7 @@ procedure ParseFunction( FunctionString: string; { the unparsed string }
                          FunctionOne,               { functions with ONE argument, e.g. exp() }
                          FunctionTwo: TStringList;  { functions with TWO arguments, e.g. max(,) }
 
-                         UsePascalNumbers: boolean; { true: -> Val; false: StrToFloat }
+                         UsePascalNumbers: boolean; { true: -> Val; false: NBCStrToFloat }
 
                          CaseSensitive: boolean;
 
@@ -51,6 +51,9 @@ procedure ParseFunction( FunctionString: string; { the unparsed string }
 
 
 implementation
+
+uses
+  uNBCCommon;
 
 
 resourcestring
@@ -251,7 +254,7 @@ procedure ParseFunction( FunctionString: string;
                   try
                 {$ENDIF}
                   try
-                    FloatNumber := StrToFloatDef(s, 0);
+                    FloatNumber := NBCStrToFloatDef(s, 0);
                     if (FloatNumber = 0) and (s <> '0') then
                     begin
                       // if this failed try an integer variable (handles hex notation)
@@ -264,7 +267,7 @@ procedure ParseFunction( FunctionString: string;
                       end
                       else
                       begin
-                        FloatNumber := StrToFloat(s);
+                        FloatNumber := NBCStrToFloat(s);
                         Result := true;
                       end;
                     end
