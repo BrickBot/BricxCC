@@ -22,6 +22,8 @@ uses
   Parser10, uNXTConstants, Classes;
 
 type
+  TLangName = (lnNBC, lnNXC, lnNXCHeader, lnRICScript, lnUnknown);
+
   TNBCExpParser = class(TExpParser)
   private
     fStandardDefs: boolean;
@@ -1050,6 +1052,7 @@ function ApplyDecoration(const pre, val: string; const level : integer): string;
 function Replace(const str : string; const src, rep : string) : string;
 function StripTrailingZeros(const aNum : string) : string;
 function NBCStrToFloat(const AValue: string): Double;
+function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
 function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
 function NBCFloatToStr(const AValue: Double): string;
 
@@ -1254,6 +1257,14 @@ var
 begin
   NBCFormatSettings(FS, '.');
   Result := StrToFloat(AValue, FS);
+end;
+
+function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
+var
+  FS : TFormatSettings;
+begin
+  NBCFormatSettings(FS, '.');
+  Result := StrToFloatDef(AValue, aDef, FS);
 end;
 
 function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
