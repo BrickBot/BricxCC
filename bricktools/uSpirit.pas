@@ -75,6 +75,8 @@ const
 type
 //  TBrickType = rtRCX..rtNXT;
   TDownloadStatusEvent = procedure(Sender : TObject; cur, total : Integer; var Abort : boolean) of object;
+  TGetVarInfoByIDEvent = procedure(Sender : TObject; const ID : integer; var offset, size, vartype : integer) of object;
+  TGetVarInfoByNameEvent = procedure(Sender : TObject; const name : string; var offset, size, vartype : integer) of object;
 //  TPortNum = 1..MAX_USBPORT;
 
   NXTLSBlock = record
@@ -132,6 +134,8 @@ type
     fOnDownloadStart: TNotifyEvent;
     fOnDownloadStatus: TDownloadStatusEvent;
     fOnOpenStateChanged: TNotifyEvent;
+    fOnGetVarInfoByID: TGetVarInfoByIDEvent;
+    fOnGetVarInfoByName: TGetVarInfoByNameEvent;
     fPort: string;
     fTowerExistsSleep: Word;
     fUseBT: boolean;
@@ -174,6 +178,8 @@ type
     procedure DoDownloadStart;
     procedure DoDownloadStatus(cur, total : Integer; var Abort : boolean);
     procedure DoOpenStateChanged;
+    procedure DoGetVarInfoByID(const id : integer; var offset, size, vartype : integer);
+    procedure DoGetVarInfoByName(const name : string; var offset, size, vartype : integer);
   public
     constructor Create(aType : byte = 0; const aPort : string = 'COM1'); virtual;
     destructor Destroy; override;
@@ -429,6 +435,8 @@ type
     property  OnDownloadDone : TNotifyEvent read fOnDownloadDone write fOnDownloadDone;
     property  OnDownloadStatus : TDownloadStatusEvent read fOnDownloadStatus write fOnDownloadStatus;
     property  OnOpenStateChanged : TNotifyEvent read fOnOpenStateChanged write fOnOpenStateChanged;
+    property  OnGetVarInfoByID : TGetVarInfoByIDEvent read fOnGetVarInfoByID write fOnGetVarInfoByID;
+    property  OnGetVarInfoByName : TGetVarInfoByNameEvent read fOnGetVarInfoByName write fOnGetVarInfoByName;
   end;
 
 var
@@ -562,6 +570,24 @@ procedure TBrickComm.DoOpenStateChanged;
 begin
   if Assigned(fOnOpenStateChanged) then
     fOnOpenStateChanged(self);
+end;
+
+procedure TBrickComm.DoGetVarInfoByID(const id: integer; var offset, size, vartype: integer);
+begin
+  offset  := -1;
+  size    := -1;
+  vartype := -1;
+  if Assigned(fOnGetVarInfoByID) then
+    fOnGetVarInfoByID(Self, id, offset, size, vartype);
+end;
+
+procedure TBrickComm.DoGetVarInfoByName(const name: string; var offset, size, vartype: integer);
+begin
+  offset  := -1;
+  size    := -1;
+  vartype := -1;
+  if Assigned(fOnGetVarInfoByName) then
+    fOnGetVarInfoByName(Self, name, offset, size, vartype);
 end;
 
 function TBrickComm.GetBrickTypeName: string;

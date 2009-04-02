@@ -89,9 +89,6 @@ type
 
   ClumpRecords = array of ClumpRecord; // dynamic array
 
-  TDSType = (dsVoid, dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong,
-    dsArray, dsCluster, dsMutex, dsFloat);
-
   TSTTFuncType = function(const stype : string; bUseCase : Boolean = false) : TDSType;
 
 const

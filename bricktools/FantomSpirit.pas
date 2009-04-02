@@ -24,6 +24,8 @@ uses
 type
   TFantomSpirit = class(TBrickComm)
   private
+    fOffsetDS : integer;
+    fOffsetDVA : integer;
     fResPort : string;
     fNXTHandle : Cardinal;
     fResourceNames : TStrings;
@@ -977,6 +979,9 @@ begin
   if not Result then Exit;
   cmd := TNINxtCmd.Create;
   try
+    // any time you start a program reset the stored DS and DVA offsets
+    fOffsetDS := MaxInt;
+    fOffsetDVA := MaxInt;
     status := kStatusNoError;
     cmd.MakeCmdWithFilename(kNXT_DirectCmd, kNXT_DCStartProgram, filename);
     iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
@@ -995,6 +1000,9 @@ begin
   if not Result then Exit;
   cmd := TNINxtCmd.Create;
   try
+    // reset offsets to "no program running" values
+    fOffsetDS := $FFFF;
+    fOffsetDVA := $FFFF;
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCStopProgram);
     iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
@@ -2823,9 +2831,77 @@ var
   mode, regmode, runstate : byte;
   tacholimit : cardinal;
   protmin, protmaj, firmmin, firmmaj : byte;
+  offset, size, vartype : integer;
+  dst : TDSType;
 begin
   Result := 0;
   case aSrc of
+    kRCX_VariableType : begin
+      // lookup our offsets if needed
+      if fOffsetDS = MaxInt then
+      begin
+        // IOMapRead CommandOffsetOffsetDS
+        modID := kNXT_ModuleCmd;
+        count := 2;
+        buffer.Data[0] := 0;
+        res := NXTReadIOMap(modID, CommandOffsetOffsetDS, count, buffer);
+        if res then
+          fOffsetDS := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
+      end;
+      if fOffsetDVA = MaxInt then
+      begin
+        // IOMapRead CommandOffsetOffsetDVA
+        modID := kNXT_ModuleCmd;
+        count := 2;
+        buffer.Data[0] := 0;
+        res := NXTReadIOMap(modID, CommandOffsetOffsetDVA, count, buffer);
+        if res then
+          fOffsetDVA := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
+      end;
+      if (fOffsetDS <> $FFFF) and (fOffsetDVA <> $FFFF) then
+      begin
+        DoGetVarInfoByID(aNum, offset, size, vartype);
+        if (offset <> -1) and (size <> -1) and (vartype <> -1) then
+        begin
+          dst := TDSType(Byte(vartype));
+          // if vartype == scalar type then
+          if dst in [dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong, dsFloat] then
+          begin
+            // IOMapRead from fOffsetDS+offset, size bytes
+            // IOMapRead CommandOffsetTick
+            modID := kNXT_ModuleCmd;
+            count := size; // variable size
+            buffer.Data[0] := 0;
+            res := NXTReadIOMap(modID, fOffsetDS+offset, count, buffer);
+            if res then
+            begin
+              case dst of
+                dsUByte : Result := Integer(buffer.Data[0]);
+                dsSByte : Result := Integer(Char(buffer.Data[0]));
+                dsUWord :
+                  Result := Integer(Word(BytesToCardinal(buffer.Data[0],
+                    buffer.Data[1])));
+                dsSWord :
+                  Result := Integer(SmallInt(BytesToCardinal(buffer.Data[0],
+                    buffer.Data[1])));
+                dsULong :
+                  Result := BytesToCardinal(buffer.Data[0], buffer.Data[1],
+                    buffer.Data[2], buffer.Data[2]);
+                dsSLong :
+                  Result := Integer(BytesToCardinal(buffer.Data[0],
+                    buffer.Data[1], buffer.Data[2], buffer.Data[3]));
+              else
+                Result := 0; // floats are a problem...
+              end;
+            end;
+          end
+          else if dst = dsArray then
+          begin
+            // read first value from array?????
+          end;
+        end;
+      end;
+    end;
     kRCX_ConstantType : begin
       Result := aNum;
     end;

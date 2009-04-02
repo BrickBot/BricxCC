@@ -19,11 +19,38 @@ unit uMiscDefines;
 interface
 
 uses
-  uParseCommon, Editor;
+  Classes, uParseCommon, Editor, uNXTConstants;
 
 type
   TProgramNames = array[0..5] of string;
   TFirmwareType = (ftStandard, ftBrickOS, ftPBForth, ftLeJOS, ftOther);
+
+  TDSTocEntry = class(TCollectionItem)
+  private
+    fName: string;
+    fDataType: TDSType;
+    fOffset : integer;
+    fSize : integer;
+  public
+    constructor Create(ACollection: TCollection); override;
+    property Name : string read fName write fName;
+    property DataType : TDSType read fDataType write fDataType;
+    property Offset : integer read fOffset write fOffset;
+    property Size : integer read fSize write fSize;
+  end;
+
+  TDSTocEntries = class(TCollection)
+  private
+    function GetItem(Index: Integer): TDSTocEntry;
+    procedure SetItem(Index: Integer; const Value: TDSTocEntry);
+  public
+    constructor Create; virtual;
+    function  Add: TDSTocEntry;
+    function  Insert(Index: Integer): TDSTocEntry;
+    function  IndexOfName(const name : string) : integer;
+    procedure LoadFromFile(const name : string);
+    property  Items[Index: Integer]: TDSTocEntry read GetItem write SetItem; default;
+  end;
 
 const
   SU_SHOWFORM = 0;
@@ -59,10 +86,12 @@ function FileIsJava(AEF : TEditorForm = nil): Boolean;
 function FileIsForth(AEF : TEditorForm = nil): Boolean;
 function FileIsROPS(AEF : TEditorForm = nil): Boolean;
 
+function CurrentDataSpace : TDSTocEntries;
+
 implementation
 
 uses
-  MainUnit;
+  MainUnit, SysUtils;
 
 function Min(const v1, v2: Integer): Integer;
 begin
@@ -295,5 +324,115 @@ begin
   if not Assigned(AEF) then Exit;
   Result := AEF.Highlighter = MainForm.SynROPSSyn;
 end;
+
+{ TDSTocEntries }
+
+function TDSTocEntries.Add: TDSTocEntry;
+begin
+  Result := TDSTocEntry(inherited Add);
+end;
+
+constructor TDSTocEntries.Create;
+begin
+  inherited Create(TDSTocEntry);
+end;
+
+function TDSTocEntries.GetItem(Index: Integer): TDSTocEntry;
+begin
+  Result := TDSTocEntry(inherited GetItem(Index));
+end;
+
+function TDSTocEntries.IndexOfName(const name: string): integer;
+var
+  i : integer;
+begin
+  Result := -1;
+  for i := 0 to Count - 1 do
+  begin
+    if Items[i].Name = name then
+    begin
+      Result := Items[i].Index;
+      break;
+    end;
+  end;
+end;
+
+function TDSTocEntries.Insert(Index: Integer): TDSTocEntry;
+begin
+  Result := TDSTocEntry(inherited Insert(Index));
+end;
+
+procedure TDSTocEntries.LoadFromFile(const name: string);
+var
+  SL, values : TStringList;
+  tmp : string;
+  i : integer;
+  DSE : TDSTocEntry;
+begin
+  Clear;
+// load DSTOC entries from Symbol file
+  SL := TStringList.Create;
+  try
+    SL.LoadFromFile(name);
+    if (SL.Count > 2) and (Pos('#SOURCES', SL.Text) > 0) then
+    begin
+      i := 2; // skip the first two lines
+      tmp := SL[i];
+      // each line is Index->Identifier->Type->Flag->Data->Size->RefCount
+      values := TStringList.Create;
+      try
+        while Pos('#SOURCES', tmp) = 0 do
+        begin
+          values.Clear;
+          ExtractStrings([#9], [], PChar(tmp), values);
+          DSE := Add;
+          DSE.Name     := values[1];
+          DSE.Offset   := StrToIntDef(values[4], -1);
+          DSE.Size     := StrToIntDef(values[5], -1);
+          DSE.DataType := TDSType(StrToIntDef(values[2], 0));
+          // on to the next line
+          inc(i);
+          tmp := SL[i];
+        end;
+      finally
+        values.Free;
+      end;
+    end;
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TDSTocEntries.SetItem(Index: Integer; const Value: TDSTocEntry);
+begin
+  inherited SetItem(Index, Value);
+end;
+
+{ TDSTocEntry }
+
+constructor TDSTocEntry.Create(ACollection: TCollection);
+begin
+  inherited;
+  fName     := '';
+  fDataType := dsVoid;
+  fOffset   := -1;
+  fSize     := -1;
+end;
+
+var
+  CDS : TDSTocEntries;
+
+function CurrentDataSpace : TDSTocEntries;
+begin
+  if not Assigned(CDS) then
+    CDS := TDSTocEntries.Create;
+  Result := CDS;
+end;
+
+initialization
+  CDS := nil;
+
+finalization
+  FreeAndNil(CDS);
 
 end.
