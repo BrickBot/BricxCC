@@ -600,6 +600,8 @@ type
     procedure CreateHelpToolbar;
     procedure CreateToolsToolbar;
     procedure CreateMiscSynEditComponents;
+    procedure HandleOnGetVarInfoByID(Sender : TObject; const ID : integer; var offset, size, vartype : integer);
+    procedure HandleOnGetVarInfoByName(Sender : TObject; const name : string; var offset, size, vartype : integer);
   public
     { Public declarations }
     FActiveLine : integer;
@@ -1013,6 +1015,9 @@ begin
         else
           binext := '.rxe';
         BrickComm.StartProgram(ChangeFileExt(ExtractFileName(AEF.Filename), binext));
+        // make sure the variable watch event handlers are hooked up
+        BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
+        BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
       end
       else
         ShowNXTTools;
@@ -3360,6 +3365,41 @@ begin
     fNXTClump   := 0;
     fNXTProgramCounter := 0;
     BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+  end;
+end;
+
+procedure TMainForm.HandleOnGetVarInfoByID(Sender: TObject;
+  const ID: integer; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
+begin
+  // read offset, size, and vartype from compiler symbol table output
+  if CurrentDataSpace.Count > ID then
+  begin
+    DSE     := CurrentDataSpace[ID];
+    offset  := DSE.Offset;
+    size    := DSE.Size;
+    vartype := Ord(DSE.DataType);
+  end;
+end;
+
+procedure TMainForm.HandleOnGetVarInfoByName(Sender: TObject;
+  const name: string; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
+  ID : integer;
+begin
+  // read offset, size, and vartype from compiler symbol table output
+  if CurrentDataSpace.Count > 0 then
+  begin
+    ID := CurrentDataSpace.IndexOfName(name);
+    if ID <> -1 then
+    begin
+      DSE     := CurrentDataSpace[ID];
+      offset  := DSE.Offset;
+      size    := DSE.Size;
+      vartype := Ord(DSE.DataType);
+    end;
   end;
 end;
 

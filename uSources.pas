@@ -321,7 +321,7 @@ const
     ),
     // NXT
     (
-      (Has: False; X: 0),
+      (Has:  True; VMin:      0; VMax: 32767; RO:  False;  Name: 'Variable'),
       (Has:  True; VMin:      0; VMax:     0; RO:   True;  Name: 'Timer'),
       (Has:  True; VMin: -32768; VMax: 32767; RO:   True;  Name: 'Constant'),
       (Has:  True; VMin:      0; VMax:     2; RO:   True;  Name: 'Motor status'),

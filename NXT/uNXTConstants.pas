@@ -18,6 +18,10 @@ unit uNXTConstants;
 
 interface
 
+type
+  TDSType = (dsVoid, dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong,
+    dsArray, dsCluster, dsMutex, dsFloat);
+
 const
   MAX_FW_VER1X = 107; // 1.07
   MIN_FW_VER2X = 120; // 1.20

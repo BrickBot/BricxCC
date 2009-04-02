@@ -1357,6 +1357,7 @@ begin
 
   if FileIsNBCOrNXCOrNPGOrRICScript(E) then
   begin
+    commandstr := commandstr + ' -Y="' + ChangeFileExt(sFilename, '.sym') + '"';
     if NBCOptLevel > 0 then
       commandstr := commandstr + Format(' -Z%d', [NBCOptLevel]);
     if NBCMaxErrors > 0 then
@@ -1749,6 +1750,15 @@ begin
   end;
 end;
 
+procedure ReadSymbolFile(const sFilename : string);
+begin
+  if FileExists(sFilename) then
+  begin
+    CurrentDataSpace.LoadFromFile(sFilename);
+    DeleteFile(sFilename);
+  end;
+end;
+
 function InternalNBCCompile(const cmdLine : string) : integer;
 var
   C : TNBCCompiler;
@@ -1925,6 +1935,9 @@ begin
     end;
 
     Result := ReadAndShowErrorFile(EdFrm, tempDir, ext);
+    
+    if FileIsNBCOrNXCOrNPGOrRICScript(EdFrm) then
+      ReadSymbolFile(ChangeFileExt(fName, '.sym'));
 
     if (not execError) and ShowCompilerStatus then
     begin

@@ -19,7 +19,8 @@ unit Watch;
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, DataAnalysis, uSpin;
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, DataAnalysis, uSpin,
+  ComCtrls;
 
 type
   TVarControls = record
@@ -28,17 +29,12 @@ type
   end;
 
   TWatchForm = class(TForm)
+    Timer1: TTimer;
+    pagWatch: TPageControl;
+    shtNXT: TTabSheet;
+    shtCommon: TTabSheet;
+    shtCybermaster: TTabSheet;
     grpVar: TGroupBox;
-    grpTimer: TGroupBox;
-    CheckTimer0: TCheckBox;
-    ValueTimer0: TEdit;
-    CheckTimer1: TCheckBox;
-    ValueTImer1: TEdit;
-    CheckTimer2: TCheckBox;
-    ValueTimer2: TEdit;
-    btnPollNow: TButton;
-    ValueTimer3: TEdit;
-    CheckTimer3: TCheckBox;
     VVar0: TEdit;
     CVar0: TCheckBox;
     CVar1: TCheckBox;
@@ -117,14 +113,17 @@ type
     ValueSensor2: TEdit;
     CheckSensor3: TCheckBox;
     ValueSensor3: TEdit;
-    grpMessage: TGroupBox;
-    CheckMessage: TCheckBox;
-    ValueMessage: TEdit;
-    btnCheckAll: TButton;
-    btnCheckNone: TButton;
-    btnPollRegular: TSpeedButton;
-    cboTimes: TComboBox;
-    Timer1: TTimer;
+    ValueSensor4: TEdit;
+    CheckSensor4: TCheckBox;
+    grpTimer: TGroupBox;
+    CheckTimer0: TCheckBox;
+    ValueTimer0: TEdit;
+    CheckTimer1: TCheckBox;
+    ValueTImer1: TEdit;
+    CheckTimer2: TCheckBox;
+    ValueTimer2: TEdit;
+    ValueTimer3: TEdit;
+    CheckTimer3: TCheckBox;
     grpTacho: TGroupBox;
     CheckTCounterL: TCheckBox;
     ValueTCounterL: TEdit;
@@ -132,6 +131,10 @@ type
     ValueTSpeedR: TEdit;
     CheckMCurrent: TCheckBox;
     ValueMCurrent: TEdit;
+    ValueTCounterR: TEdit;
+    CheckTCounterR: TCheckBox;
+    ValueTSpeedL: TEdit;
+    CheckTSpeedL: TCheckBox;
     grpCounter: TGroupBox;
     CheckCounter0: TCheckBox;
     ValueCounter0: TEdit;
@@ -139,17 +142,20 @@ type
     ValueCounter1: TEdit;
     CheckCounter2: TCheckBox;
     ValueCounter2: TEdit;
+    grpMessage: TGroupBox;
+    CheckMessage: TCheckBox;
+    ValueMessage: TEdit;
+    Panel1: TPanel;
+    btnPollRegular: TSpeedButton;
     btnGraph: TSpeedButton;
+    btnPollNow: TButton;
+    btnCheckAll: TButton;
+    btnCheckNone: TButton;
+    cboTimes: TComboBox;
     chkIfActive: TCheckBox;
-    ValueTCounterR: TEdit;
-    CheckTCounterR: TCheckBox;
-    ValueTSpeedL: TEdit;
-    CheckTSpeedL: TCheckBox;
     chkSyncSeries: TCheckBox;
     btnClear: TButton;
     btnHelp: TButton;
-    ValueSensor4: TEdit;
-    CheckSensor4: TCheckBox;
     grpNXTMotors: TGroupBox;
     chkPortA: TCheckBox;
     edtPAPower: TEdit;
@@ -181,28 +187,6 @@ type
     edtPARotationCount: TEdit;
     edtPBRotationCount: TEdit;
     edtPCRotationCount: TEdit;
-    grpI2C: TGroupBox;
-    chkI2C1: TCheckBox;
-    edtI2CVal1: TEdit;
-    chkI2C2: TCheckBox;
-    edtI2CVal2: TEdit;
-    chkI2C3: TCheckBox;
-    edtI2CVal3: TEdit;
-    edtI2CVal4: TEdit;
-    chkI2C4: TCheckBox;
-    lblI2CPort: TLabel;
-    lblI2CResponse: TLabel;
-    chkUltra1: TCheckBox;
-    chkUltra2: TCheckBox;
-    chkUltra3: TCheckBox;
-    chkUltra4: TCheckBox;
-    lblI2CUltra: TLabel;
-    edtI2CBuf1: TEdit;
-    edtI2CBuf2: TEdit;
-    edtI2CBuf3: TEdit;
-    edtI2CBuf4: TEdit;
-    lblI2CBuffer: TLabel;
-    lblI2CLen: TLabel;
     chkNXTPower: TCheckBox;
     chkNXTMode: TCheckBox;
     chkNXTRegMode: TCheckBox;
@@ -212,6 +196,28 @@ type
     chkNXTTachoCount: TCheckBox;
     chkNXTBlockTachoCount: TCheckBox;
     chkNXTRotationCount: TCheckBox;
+    grpI2C: TGroupBox;
+    lblI2CPort: TLabel;
+    lblI2CResponse: TLabel;
+    lblI2CUltra: TLabel;
+    lblI2CBuffer: TLabel;
+    lblI2CLen: TLabel;
+    chkI2C1: TCheckBox;
+    edtI2CVal1: TEdit;
+    chkI2C2: TCheckBox;
+    edtI2CVal2: TEdit;
+    chkI2C3: TCheckBox;
+    edtI2CVal3: TEdit;
+    edtI2CVal4: TEdit;
+    chkI2C4: TCheckBox;
+    chkUltra1: TCheckBox;
+    chkUltra2: TCheckBox;
+    chkUltra3: TCheckBox;
+    chkUltra4: TCheckBox;
+    edtI2CBuf1: TEdit;
+    edtI2CBuf2: TEdit;
+    edtI2CBuf3: TEdit;
+    edtI2CBuf4: TEdit;
     edtI2CLen1: TSpinEdit;
     edtI2CLen2: TSpinEdit;
     edtI2CLen4: TSpinEdit;
@@ -795,8 +801,8 @@ var
   bVis : boolean;
   cb : TCheckBox;
 begin
-  grpVar.Visible   := not IsNXT;
-  grpMotor.Visible := grpVar.Visible;
+  grpVar.Visible   := True;
+  grpMotor.Visible := not IsNXT;
   if grpVar.Visible then
   begin
     for i := Low(fVarArray) to High(fVarArray) do
@@ -836,20 +842,22 @@ begin
   busy := false;
   if IsRCX or IsScout or IsSpybotic or IsNXT then
   begin
-    grpMessage.Visible     := not IsSpybotic;
-    grpTacho.Visible       := False;
-    grpNXTMotors.Visible   := IsNXT;
-    grpI2C.Visible         := grpNXTMotors.Visible;
-    CheckTCounterL.Checked := False;
-    CheckTSpeedL.Checked   := False;
-    CheckTCounterR.Checked := False;
-    CheckTSpeedR.Checked   := False;
-    CheckMCurrent.Checked  := False;
-    grpCounter.Visible     := IsRCX2 or IsScout or IsSpybotic;
+    grpMessage.Visible        := not IsSpybotic;
+    shtCybermaster.TabVisible := False;
+    grpTacho.Visible          := False;
+    grpNXTMotors.Visible      := IsNXT;
+    shtNXT.TabVisible         := IsNXT;
+    grpI2C.Visible            := grpNXTMotors.Visible;
+    CheckTCounterL.Checked    := False;
+    CheckTSpeedL.Checked      := False;
+    CheckTCounterR.Checked    := False;
+    CheckTSpeedR.Checked      := False;
+    CheckMCurrent.Checked     := False;
+    grpCounter.Visible        := IsRCX2 or IsScout or IsSpybotic;
     if IsRCX or IsScout or IsSpybotic then
     begin
-      // move counter box on top of tacho box
-      grpCounter.Top := grpTacho.Top;
+//      // move counter box on top of tacho box
+//      grpCounter.Top := grpTacho.Top;
       if IsScout then
       begin
         // move up the motors and shorten the height of the variable box
@@ -862,25 +870,29 @@ begin
   end
   else
   begin
-    grpTacho.Visible      := True;
-    grpNXTMotors.Visible  := False;
-    grpI2C.Visible        := False;
-    grpMessage.Visible    := False;
-    CheckMessage.Checked  := False;
-    grpCounter.Visible    := False;
-    CheckCounter0.Checked := False;
-    CheckCounter1.Checked := False;
-    CheckCounter2.Checked := False;
-    chkPortA.Checked      := False;
-    chkPortB.Checked      := False;
-    chkPortC.Checked      := False;
-    chkI2C1.Checked       := False;
-    chkI2C2.Checked       := False;
-    chkI2C3.Checked       := False;
-    chkI2C4.Checked       := False;
-    // move the grpTacho on top of the message box
-    grpTacho.Top := grpMessage.Top;
+    // cybermaster
+    shtNXT.TabVisible         := False;
+    shtCybermaster.TabVisible := True;
+    grpTacho.Visible          := True;
+    grpNXTMotors.Visible      := False;
+    grpI2C.Visible            := False;
+    grpMessage.Visible        := False;
+    CheckMessage.Checked      := False;
+    grpCounter.Visible        := False;
+    CheckCounter0.Checked     := False;
+    CheckCounter1.Checked     := False;
+    CheckCounter2.Checked     := False;
+    chkPortA.Checked          := False;
+    chkPortB.Checked          := False;
+    chkPortC.Checked          := False;
+    chkI2C1.Checked           := False;
+    chkI2C2.Checked           := False;
+    chkI2C3.Checked           := False;
+    chkI2C4.Checked           := False;
+//    // move the grpTacho on top of the message box
+//    grpTacho.Top := grpMessage.Top;
   end;
+  pagWatch.ActivePage := shtCommon;
 end;
 
 procedure TWatchForm.FormCreate(Sender: TObject);
@@ -980,17 +992,22 @@ end;
 
 procedure TWatchForm.btnClearClick(Sender: TObject);
 var
-  i, j : Integer;
+  i, j, k : Integer;
   Grp : TGroupBox;
+  sht : TTabSheet;
 begin
-  for i := 0 to Self.ControlCount - 1 do
+  for k := 0 to pagWatch.PageCount - 1 do
   begin
-    if Controls[i] is TGroupBox then
+    sht := pagWatch.Pages[k];
+    for i := 0 to sht.ControlCount - 1 do
     begin
-      Grp := TGroupBox(Controls[i]);
-      for j := 0 to Grp.ControlCount - 1 do
-        if (Grp.Controls[j] is TEdit) and (Pos('edtI2CBuf', TEdit(Grp.Controls[j]).Name) = 0) then
-          TEdit(Grp.Controls[j]).Text := '';
+      if sht.Controls[i] is TGroupBox then
+      begin
+        Grp := TGroupBox(sht.Controls[i]);
+        for j := 0 to Grp.ControlCount - 1 do
+          if (Grp.Controls[j] is TEdit) and (Pos('edtI2CBuf', TEdit(Grp.Controls[j]).Name) = 0) then
+            TEdit(Grp.Controls[j]).Text := '';
+      end;
     end;
   end;
 end;
