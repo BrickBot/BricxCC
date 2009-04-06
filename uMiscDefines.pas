@@ -27,8 +27,8 @@ type
 
   TDSTocEntry = class(TCollectionItem)
   private
-    fName: string;
-    fDataType: TDSType;
+    fName : string;
+    fDataType : TDSType;
     fOffset : integer;
     fSize : integer;
   public
@@ -45,11 +45,80 @@ type
     procedure SetItem(Index: Integer; const Value: TDSTocEntry);
   public
     constructor Create; virtual;
-    function  Add: TDSTocEntry;
-    function  Insert(Index: Integer): TDSTocEntry;
+    function Add: TDSTocEntry;
+    function Insert(Index: Integer): TDSTocEntry;
+    function IndexOfName(const name : string) : integer;
+    property Items[Index: Integer]: TDSTocEntry read GetItem write SetItem; default;
+  end;
+
+  TOffset = class(TCollectionItem)
+  private
+    fLineNo : integer;
+    fPC : integer;
+    fFilename : string;
+    function GetClumpName: string;
+    function GetClumpID: integer;
+    procedure SetPC(const Value: integer);
+  public
+    constructor Create(ACollection: TCollection); override;
+    property PC : integer read fPC write SetPC;
+    property LineNumber : integer read fLineNo write fLineNo;
+    property Filename : string read fFilename write fFilename;
+    property ClumpID : integer read GetClumpID;
+    property ClumpName : string read GetClumpName;
+  end;
+
+  TClumpData = class;
+  
+  TClumpOffsets = class(TCollection)
+  private
+    fClumpData : TClumpData;
+    function GetItem(Index: Integer): TOffset;
+    procedure SetItem(Index: Integer; const Value: TOffset);
+  public
+    constructor Create(aOwner : TClumpData); virtual;
+    function Add: TOffset;
+    function Insert(Index: Integer): TOffset;
+    function IndexOfLine(const line : integer) : integer;
+    function IndexOfPC(const pc: word): integer;
+    property Items[Index: Integer]: TOffset read GetItem write SetItem; default;
+    property ClumpData : TClumpData read fClumpData;
+  end;
+
+  TClumpData = class(TCollectionItem)
+  private
+    fName : string;
+    fOffset : integer;
+    fFilename : string;
+    fOffsets : TClumpOffsets;
+    function GetClumpID: integer;
+  public
+    constructor Create(ACollection: TCollection); override;
+    destructor Destroy; override;
+    procedure AddOffset(const lineNo, PC : integer; const fname : string);
+    property Name : string read fName write fName;
+    property Offset : integer read fOffset write fOffset;
+    property Filename : string read fFilename write fFilename;
+    property Offsets : TClumpOffsets read fOffsets;
+    property ClumpID : integer read GetClumpID;
+  end;
+
+  TProgram = class(TCollection)
+  private
+    fDS: TDSTocEntries;
+    function GetItem(Index: Integer): TClumpData;
+    procedure SetItem(Index: Integer; const Value: TClumpData);
+    procedure LoadDataspace(SL : TStrings);
+    procedure LoadClumpData(SL : TStrings);
+  public
+    constructor Create; virtual;
+    destructor Destroy; override;
+    function  Add: TClumpData;
+    function  Insert(Index: Integer): TClumpData;
     function  IndexOfName(const name : string) : integer;
     procedure LoadFromFile(const name : string);
-    property  Items[Index: Integer]: TDSTocEntry read GetItem write SetItem; default;
+    property  Items[Index: Integer]: TClumpData read GetItem write SetItem; default;
+    property  Dataspace : TDSTocEntries read fDS;
   end;
 
 const
@@ -86,7 +155,7 @@ function FileIsJava(AEF : TEditorForm = nil): Boolean;
 function FileIsForth(AEF : TEditorForm = nil): Boolean;
 function FileIsROPS(AEF : TEditorForm = nil): Boolean;
 
-function CurrentDataSpace : TDSTocEntries;
+function CurrentProgram : TProgram;
 
 implementation
 
@@ -362,47 +431,6 @@ begin
   Result := TDSTocEntry(inherited Insert(Index));
 end;
 
-procedure TDSTocEntries.LoadFromFile(const name: string);
-var
-  SL, values : TStringList;
-  tmp : string;
-  i : integer;
-  DSE : TDSTocEntry;
-begin
-  Clear;
-// load DSTOC entries from Symbol file
-  SL := TStringList.Create;
-  try
-    SL.LoadFromFile(name);
-    if (SL.Count > 2) and (Pos('#SOURCES', SL.Text) > 0) then
-    begin
-      i := 2; // skip the first two lines
-      tmp := SL[i];
-      // each line is Index->Identifier->Type->Flag->Data->Size->RefCount
-      values := TStringList.Create;
-      try
-        while Pos('#SOURCES', tmp) = 0 do
-        begin
-          values.Clear;
-          ExtractStrings([#9], [], PChar(tmp), values);
-          DSE := Add;
-          DSE.Name     := values[1];
-          DSE.Offset   := StrToIntDef(values[4], -1);
-          DSE.Size     := StrToIntDef(values[5], -1);
-          DSE.DataType := TDSType(StrToIntDef(values[2], 0));
-          // on to the next line
-          inc(i);
-          tmp := SL[i];
-        end;
-      finally
-        values.Free;
-      end;
-    end;
-  finally
-    SL.Free;
-  end;
-end;
-
 procedure TDSTocEntries.SetItem(Index: Integer; const Value: TDSTocEntry);
 begin
   inherited SetItem(Index, Value);
@@ -420,19 +448,318 @@ begin
 end;
 
 var
-  CDS : TDSTocEntries;
+  CP : TProgram;
 
-function CurrentDataSpace : TDSTocEntries;
+function CurrentProgram : TProgram;
 begin
-  if not Assigned(CDS) then
-    CDS := TDSTocEntries.Create;
-  Result := CDS;
+  if not Assigned(CP) then
+    CP := TProgram.Create;
+  Result := CP;
+end;
+
+{ TOffset }
+
+constructor TOffset.Create(ACollection: TCollection);
+begin
+  inherited;
+  fLineNo   := -1;
+  fPC       := -1;
+  fFilename := '';
+end;
+
+function TOffset.GetClumpName: string;
+begin
+  Result := TClumpOffsets(Collection).ClumpData.Name;
+end;
+
+function TOffset.GetClumpID: integer;
+begin
+  Result := TClumpOffsets(Collection).ClumpData.ClumpID;
+end;
+
+procedure TOffset.SetPC(const Value: integer);
+begin
+  if Value > fPC then
+    fPC := Value;
+end;
+
+{ TClumpOffsets }
+
+function TClumpOffsets.Add: TOffset;
+begin
+  Result := TOffset(inherited Add);
+end;
+
+constructor TClumpOffsets.Create;
+begin
+  inherited Create(TOffset);
+end;
+
+function TClumpOffsets.GetItem(Index: Integer): TOffset;
+begin
+  Result := TOffset(inherited GetItem(Index));
+end;
+
+function TClumpOffsets.IndexOfLine(const line: integer): integer;
+var
+  i : integer;
+begin
+  Result := -1;
+  for i := 0 to Count - 1 do
+  begin
+    if Items[i].LineNumber = line then
+    begin
+      Result := Items[i].Index;
+      break;
+    end;
+  end;
+end;
+
+function TClumpOffsets.IndexOfPC(const pc: word): integer;
+var
+  i : integer;
+begin
+  // find the first offset object with a PC > pc
+  Result := -1;
+  for i := 0 to Count - 1 do
+  begin
+    if Items[i].PC >= Integer(pc) then
+    begin
+      Result := Items[i].Index;
+      break;
+    end;
+  end;
+end;
+
+function TClumpOffsets.Insert(Index: Integer): TOffset;
+begin
+  Result := TOffset(inherited Insert(Index));
+end;
+
+procedure TClumpOffsets.SetItem(Index: Integer; const Value: TOffset);
+begin
+  inherited SetItem(Index, Value);
+end;
+
+{ TClumpData }
+
+procedure TClumpData.AddOffset(const lineNo, PC: integer; const fname: string);
+var
+  CO : TOffset;
+  i : integer;
+begin
+  i := Offsets.IndexOfLine(lineNo);
+  if i = -1 then
+  begin
+    CO := Offsets.Add;
+    CO.LineNumber := lineNo;
+  end
+  else
+    CO := Offsets.Items[i];
+  CO.PC := PC;
+  CO.Filename := fname;
+end;
+
+constructor TClumpData.Create(ACollection: TCollection);
+begin
+  inherited;
+  fOffsets := TClumpOffsets.Create(Self);
+  fName := '';
+  fOffset := -1;
+  fFilename := '';
+end;
+
+destructor TClumpData.Destroy;
+begin
+  FreeAndNil(fOffsets);
+  inherited;
+end;
+
+function TClumpData.GetClumpID: integer;
+begin
+  Result := Self.ID;
+end;
+
+{ TProgram }
+
+function TProgram.Add: TClumpData;
+begin
+  Result := TClumpData(inherited Add);
+end;
+
+constructor TProgram.Create;
+begin
+  inherited Create(TClumpData);
+  fDS := TDSTocEntries.Create;
+end;
+
+destructor TProgram.Destroy;
+begin
+  FreeAndNil(fDS);
+  inherited;
+end;
+
+function TProgram.GetItem(Index: Integer): TClumpData;
+begin
+  Result := TClumpData(inherited GetItem(Index));
+end;
+
+function TProgram.IndexOfName(const name: string): integer;
+var
+  i : integer;
+begin
+  Result := -1;
+  for i := 0 to Count - 1 do
+  begin
+    if Items[i].Name = name then
+    begin
+      Result := Items[i].Index;
+      break;
+    end;
+  end;
+end;
+
+function TProgram.Insert(Index: Integer): TClumpData;
+begin
+  Result := TClumpData(inherited Insert(Index));
+end;
+
+function ExtractCurrentFile(name : string) : string;
+var
+  i : integer;
+begin
+  i := Pos('''', name);
+  if i = 0 then
+    i := Pos('"', name);
+  Result := Copy(name, i+1, MaxInt);
+  System.Delete(Result, Length(Result), 1); // remove trailing quote
+end;
+
+procedure TProgram.LoadClumpData(SL: TStrings);
+var
+  values : TStringList;
+  i, tmpID, lineNo, PC : integer;
+  tmp, currentFile : string;
+  CD : TClumpData;
+begin
+  Clear; // clear the collection of clumps
+  i := SL.IndexOf('#CLUMPS');
+  if i <> -1 then
+  begin
+    inc(i, 2); // skip two lines
+    values := TStringList.Create;
+    try
+      while i < SL.Count do begin
+        tmp := SL[i];
+        values.Clear;
+        ExtractStrings([#9], [], PChar(tmp), values);
+        if values.Count = 4 then
+        begin
+          // only process valid lines
+          CD := Add;
+          CD.Name     := values[1];
+          CD.Offset   := StrToIntDef(values[2], -1);
+          CD.Filename := values[3];
+        end;
+        inc(i);
+      end;
+      // now process the #sources
+      i := SL.IndexOf('#SOURCES');
+      if i <> -1 then
+      begin
+        inc(i, 2); // skip two lines
+        tmp := SL[i];
+        CD := nil;
+        currentFile := '';
+        while tmp <> '#CLUMPS' do
+        begin
+          values.Clear;
+          ExtractStrings([#9], [], PChar(tmp), values);
+          if values.Count = 4 then
+          begin
+            tmpID  := StrToIntDef(values[0], -1);
+            lineNo := StrToIntDef(values[1], -1);
+            PC     := StrToIntDef(values[2], -1);
+            if Pos('#line', values[3]) > 0 then
+            begin
+              // update current file
+              currentFile := ExtractCurrentFile(values[3]);
+            end;
+            // find the clump data
+            if not Assigned(CD) or (CD.ID <> tmpID) then
+            begin
+              CD := Self.Items[tmpID];
+            end;
+            CD.AddOffset(lineNo, PC, currentFile);
+          end;
+          inc(i);
+          tmp := SL[i];
+        end;
+      end;
+    finally
+      values.Free;
+    end;
+  end;
+end;
+
+procedure TProgram.LoadDataspace(SL : TStrings);
+var
+  values : TStringList;
+  tmp : string;
+  i : integer;
+  DSE : TDSTocEntry;
+begin
+  fDS.Clear;
+  // load DSTOC entries from Symbol file
+  if (SL.Count > 2) and (Pos('#SOURCES', SL.Text) > 0) then
+  begin
+    i := 2; // skip the first two lines
+    tmp := SL[i];
+    // each line is Index->Identifier->Type->Flag->Data->Size->RefCount
+    values := TStringList.Create;
+    try
+      while Pos('#SOURCES', tmp) = 0 do
+      begin
+        values.Clear;
+        ExtractStrings([#9], [], PChar(tmp), values);
+        DSE := fDS.Add;
+        DSE.Name     := values[1];
+        DSE.Offset   := StrToIntDef(values[4], -1);
+        DSE.Size     := StrToIntDef(values[5], -1);
+        DSE.DataType := TDSType(StrToIntDef(values[2], 0));
+        // on to the next line
+        inc(i);
+        tmp := SL[i];
+      end;
+    finally
+      values.Free;
+    end;
+  end;
+end;
+
+procedure TProgram.LoadFromFile(const name: string);
+var
+  SL : TStringList;
+begin
+  SL := TStringList.Create;
+  try
+    SL.LoadFromFile(name);
+    LoadDataspace(SL);
+    LoadClumpData(SL);
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TProgram.SetItem(Index: Integer; const Value: TClumpData);
+begin
+  inherited SetItem(Index, Value);
 end;
 
 initialization
-  CDS := nil;
+  CP := nil;
 
 finalization
-  FreeAndNil(CDS);
+  FreeAndNil(CP);
 
 end.
