@@ -1055,6 +1055,7 @@ function NBCStrToFloat(const AValue: string): Double;
 function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
 function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
 function NBCFloatToStr(const AValue: Double): string;
+function StripQuotes(const str : string) : string;
 
 const
   TOK_SEMICOLON     = ';';
@@ -1274,6 +1275,13 @@ begin
   NBCFormatSettings(FS, '.');
   Result := Format(FmtStr, theArgs, FS);
 end;
+
+function StripQuotes(const str : string) : string;
+begin
+  Result := Copy(str, 2, Length(str)-2);
+end;
+
+{ TNBCExpParser }
 
 procedure TNBCExpParser.InitializeCalc;
 var

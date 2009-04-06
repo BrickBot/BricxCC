@@ -5369,11 +5369,6 @@ begin
   end;
 end;
 
-function StripQuotes(str : string) : string;
-begin
-  Result := Copy(str, 2, Length(str)-2);
-end;
-
 procedure TRXEProgram.HandleConstantExpressions(AL: TAsmLine);
 var
   expected : TAsmArgType;

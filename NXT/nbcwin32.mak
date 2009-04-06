@@ -1,5 +1,5 @@
 PROGRAMS = nbc.exe
-VER = 1.0.1.b35
+VER = 1.0.1.b36
 DOBJECTS=uNXTClasses.o uPreprocess.o Parser10.o P10Build.o uNXCComp.o uRPGComp.o uRIC.o uRICComp.o uNBCCommon.o uNXTConstants.o uNBCInterface.o nbc.dpr
 DEFAULT_INCLUDE_DIR=.
 
@@ -11,11 +11,11 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS) mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
 
-PFLAGS=-S2cdghi -dRELEASE -OG1 -gl -vewnhi -l -Fu../ -Fu. -Fu../bricktools
+PFLAGS=-S2cdghi -dRELEASE -OG1 -gl -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD
 
 # Win32
-PTOOLPREFIX=C:/lazarus/fpc/2.2.1/bin/i386-win32/
-PPC=$(PTOOLPREFIX)ppc386.exe
+PTOOLPREFIX=C:/lazarus/fpc/2.2.2/bin/i386-win32/
+PPC=$(PTOOLPREFIX)fpc
 
 # how to link executable
 nbc.exe: nbc.dpr nbc_preproc.inc

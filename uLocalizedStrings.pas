@@ -409,6 +409,7 @@ resourcestring
   sPolygonCountError       = 'polygon command must have at least three points';
   sStringNotBinary         = 'String is not a valid binary number: %s';
   sInvalidHexLength        = 'Invalid length of hex string: %d';
+  sUnableToFindImage       = 'Unable to find image file "%s"';
 
 // uPreprocess unit
 resourcestring
@@ -541,6 +542,7 @@ resourcestring
   UsagePort      = '   -S=<portname>: specify port name (COMn or usb), resource name, or alias';
   UsageBT        = '   -BT: use bluetooth';
   UsageDownload  = '   -d: download program';
+  UsageRunProg   = '   -r: run program';
   UsageBinary    = '   -b: treat input file as a binary file (don''t compile it)';
   UsageQuiet     = '   -q: quiet';
   UsageNoSystem  = '   -n: prevent the system file from being included';
