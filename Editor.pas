@@ -1754,7 +1754,7 @@ procedure ReadSymbolFile(const sFilename : string);
 begin
   if FileExists(sFilename) then
   begin
-    CurrentDataSpace.LoadFromFile(sFilename);
+    CurrentProgram.LoadFromFile(sFilename);
     DeleteFile(sFilename);
   end;
 end;

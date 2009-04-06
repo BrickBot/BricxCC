@@ -1016,6 +1016,8 @@ begin
         else
           binext := '.rxe';
         BrickComm.StartProgram(ChangeFileExt(ExtractFileName(AEF.Filename), binext));
+        fNXTVMState := kNXT_VMState_RunFree;        
+        actCompilePause.Caption := sBreakAll;
         // make sure the variable watch event handlers are hooked up
         BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
         BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
@@ -1890,8 +1892,8 @@ begin
   // NXT enhanced firmware support
   actCompilePause.Visible       := bBALSF and IsNXT and EnhancedFirmware;
   actCompileSingleStep.Visible  := bBALSF and IsNXT and EnhancedFirmware;
-  actCompilePause.Enabled       := bBALSF;
-  actCompileSingleStep.Enabled  := bBALSF;
+  actCompilePause.Enabled       := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
+  actCompileSingleStep.Enabled  := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
   // ROPS support
   actCompileStepOver.Visible    := bROPS;
   actCompileTraceInto.Visible   := bROPS;
@@ -2334,7 +2336,15 @@ begin
       ce.Stop;
   end
   else if IsNXT then
-    BrickComm.StopProgram
+  begin
+    if (fNXTVMState = kNXT_VMState_Pause) and EnhancedFirmware then
+    begin
+      BrickComm.SetVMState(kNXT_VMState_RunFree);
+    end;
+    BrickComm.StopProgram;
+    fNXTVMState := kNXT_VMState_Idle;
+    actCompilePause.Caption := sBreakAll;
+  end
   else
   begin
     BrickComm.StopAllTasks;
@@ -3378,9 +3388,9 @@ var
   DSE : TDSTocEntry;
 begin
   // read offset, size, and vartype from compiler symbol table output
-  if CurrentDataSpace.Count > ID then
+  if CurrentProgram.Dataspace.Count > ID then
   begin
-    DSE     := CurrentDataSpace[ID];
+    DSE     := CurrentProgram.Dataspace[ID];
     offset  := DSE.Offset;
     size    := DSE.Size;
     vartype := Ord(DSE.DataType);
@@ -3394,12 +3404,12 @@ var
   ID : integer;
 begin
   // read offset, size, and vartype from compiler symbol table output
-  if CurrentDataSpace.Count > 0 then
+  if CurrentProgram.Dataspace.Count > 0 then
   begin
-    ID := CurrentDataSpace.IndexOfName(name);
+    ID := CurrentProgram.Dataspace.IndexOfName(name);
     if ID <> -1 then
     begin
-      DSE     := CurrentDataSpace[ID];
+      DSE     := CurrentProgram.Dataspace[ID];
       offset  := DSE.Offset;
       size    := DSE.Size;
       vartype := Ord(DSE.DataType);
@@ -3408,8 +3418,26 @@ begin
 end;
 
 procedure TMainForm.UpdateEditorPosition;
+var
+  CD : TClumpData;
+  CO : TOffset;
+  AEF : TEditorForm;
+  i : integer;
 begin
-
+  if (fNXTClump < CurrentProgram.Count) then
+  begin
+    CD := CurrentProgram[fNXTClump];
+    AEF := ActiveEditorForm;
+    if Assigned(AEF) and (Pos(Lowercase(AEF.Filename), LowerCase(CD.Filename)) > 0) then
+    begin
+      i := CD.Offsets.IndexOfPC(fNXTProgramCounter);
+      if i <> -1 then
+      begin
+        CO := CD.Offsets[i];
+        AEF.TheEditor.GotoLineAndCenter(CO.LineNumber);
+      end;
+    end;
+  end;
 end;
 
 procedure TMainForm.CreatePascalScriptComponents;
