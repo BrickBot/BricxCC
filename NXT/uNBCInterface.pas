@@ -49,6 +49,7 @@ type
     fUseBluetooth: boolean;
     fBinaryInput: boolean;
     fDownload: boolean;
+    fRunProgram: boolean;
     fDefaultIncludeDir: string;
     fMoreIncludes: boolean;
     fIncludePaths: string;
@@ -118,6 +119,7 @@ type
     property UseBluetooth : boolean read fUseBluetooth write fUseBluetooth;
     property BinaryInput : boolean read fBinaryInput write fBinaryInput;
     property Download : boolean read fDownload write fDownload;
+    property RunProgram : boolean read fRunProgram write fRunProgram;
     property DefaultIncludeDir : string read fDefaultIncludeDir write fDefaultIncludeDir;
     property MoreIncludes : boolean read fMoreIncludes write fMoreIncludes;
     property IncludePaths : string read fIncludePaths write fIncludePaths;
@@ -150,6 +152,7 @@ begin
   fMoreIncludes := False;
   fBinaryInput := False;
   fDownload := False;
+  fRunProgram := False;
   fUsePort := False;
   fUseBluetooth := False;
   fBCCreated := False;
@@ -310,6 +313,7 @@ var
   RIC : TRICComp;
 {$IFDEF CAN_DOWNLOAD}
   theType : TNXTFileType;
+  tmpName : string;
 {$ENDIF}
   i : integer;
   incDirs : string;
@@ -325,7 +329,7 @@ begin
     NXTName := InputFilename;
 
 {$IFDEF CAN_DOWNLOAD}
-  if Download then
+  if Download or RunProgram then
   begin
     if UsePort then
     begin
@@ -340,7 +344,7 @@ begin
   sIn := TMemoryStream.Create;
   try
     sIn.LoadFromFile(InputFilename);
-    if BinaryInput and Download then
+    if BinaryInput and (Download or RunProgram) then
     begin
 {$IFDEF CAN_DOWNLOAD}
       // just download the already compiled binary file
@@ -350,10 +354,15 @@ begin
       if LowerCase(ExtractFileExt(InputFilename)) = '.rpg' then
         theType := nftOther;
       BrickComm.StopProgram;
-      if BrickComm.NXTDownloadStream(sIn, InputFilename, theType) then
-        DoBeep
-      else
-        Result := 2;
+      if Download then
+      begin
+        if BrickComm.NXTDownloadStream(sIn, InputFilename, theType) then
+          DoBeep
+        else
+          Result := 2;
+      end;
+      if RunProgram then
+        BrickComm.StartProgram(InputFilename);
 {$ENDIF}
     end
     else
@@ -420,6 +429,7 @@ begin
           // RIC compiler
           RIC := TRICComp.Create;
           try
+            RIC.IncludeDirs.AddStrings(tmpIncDirs);
             RIC.CurrentFile := GetCurrentFilename;
             RIC.EnhancedFirmware := EnhancedFirmware;
             RIC.MaxErrors := MaxErrors;
@@ -513,17 +523,20 @@ begin
                   begin
                     DoWriteSymbolTable(C);
 {$IFDEF CAN_DOWNLOAD}
+                    tmpName := ChangeFileExt(MakeValidNXTFilename(NXTName), '.rxe');
                     if Download then
                     begin
                       // download the compiled code to the brick
                       if not BrickComm.IsOpen then
                         BrickComm.Open;
                       BrickComm.StopProgram;
-                      if BrickComm.NXTDownloadStream(sOut, ChangeFileExt(NXTName, '.rxe'), nftProgram) then
+                      if BrickComm.NXTDownloadStream(sOut, tmpName, nftProgram) then
                         DoBeep
                       else
                         Result := 2;
                     end;
+                    if RunProgram then
+                      BrickComm.StartProgram(tmpName);
 {$ENDIF}
                     if WriteOutput then
                       sOut.SaveToFile(NXTName);
@@ -592,6 +605,7 @@ begin
   UseBluetooth             := ParamSwitch('-BT', False, Value);
   BinaryInput              := ParamSwitch('-b', False, Value);
   Download                 := ParamSwitch('-d', False, Value);
+  RunProgram               := ParamSwitch('-r', False, Value);
   MoreIncludes             := ParamSwitch('-I', False, Value);
   IncludePaths             := ParamValue('-I', False, Value);
   WarningsAreOff           := ParamSwitch('-w-', False, Value);
@@ -655,6 +669,8 @@ begin
         WriteCompilerMessages := False;
         // don't use a special name either
         UseSpecialName        := False;
+        // and do not run these either
+        RunProgram            := False;
         Execute;
       end;
     finally

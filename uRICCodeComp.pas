@@ -36,7 +36,7 @@ type
   end;
 
 const
-  RICScriptCodeCompDataSize = 12;
+  RICScriptCodeCompDataSize = 15;
   RICScriptCodeCompData: array[0..RICScriptCodeCompDataSize-1] of TRICCodeComp = (
     (
      Name: 'desc';
@@ -53,6 +53,10 @@ const
     (
      Name: 'varmap';
      Params: '(addr, func1, func2, func3, funcN)'
+    ),
+    (
+     Name: 'import';
+     Params: '(filename[, threshold, width, height])'
     ),
     (
      Name: 'pixel';
@@ -85,6 +89,14 @@ const
     (
      Name: 'f';
      Params: '(xval)=yval'
+    ),
+    (
+     Name: 'ellipse';
+     Params: '(options, x, y, xradius, yradius)'
+    ),
+    (
+     Name: 'polygon';
+     Params: '(options, (x1, y1), (x2, y2), ..., (xN, yN))'
     )
   );
 

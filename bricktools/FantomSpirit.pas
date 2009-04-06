@@ -974,6 +974,7 @@ function TFantomSpirit.StartProgram(const filename: string): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
+  tmp : string;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -983,7 +984,8 @@ begin
     fOffsetDS := MaxInt;
     fOffsetDVA := MaxInt;
     status := kStatusNoError;
-    cmd.MakeCmdWithFilename(kNXT_DirectCmd, kNXT_DCStartProgram, filename);
+    tmp := MakeValidNXTFilename(filename);
+    cmd.MakeCmdWithFilename(kNXT_DirectCmd, kNXT_DCStartProgram, tmp);
     iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
     Result := status >= kStatusNoError;
   finally

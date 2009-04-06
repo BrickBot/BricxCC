@@ -11,7 +11,7 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS) mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
 
-PFLAGS=-S2cdghi -OG1 -gl -vewnhi -l -Fu../ -Fu. -Fu/usr/lib/lazarus/lcl/units/i386-linux/ -dLCL
+PFLAGS=-S2cdghi -OG1 -gl -vewnhi -l -Fu../ -Fu. -dLCL
 
 # Win32
 #PTOOLPREFIX=C:/lazarus/pp/bin/i386-win32/

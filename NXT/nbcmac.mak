@@ -1,5 +1,5 @@
 PROGRAMS = nbc
-VER = 1.0.1.b35
+VER = 1.0.1.b36
 DOBJECTS=uNXTClasses.o uPreprocess.o Parser10.o P10Build.o uNXCComp.o uRPGComp.o uRIC.o uRICComp.o uNBCCommon.o uNXTConstants.o uNBCInterface.o nbc.dpr
 DEFAULT_INCLUDE_DIR=/usr/local/include/nbc
 
@@ -11,7 +11,7 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS) mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
 
-PFLAGS=-S2cdghi -OG1 -gl -vewnhi -l -Fu../ -Fu. -Fu/usr/local/share/lazarus/lcl/units/powerpc-darwin/ -dLCL
+PFLAGS=-S2cdghi -OG1 -gl -vewnhi -l -Fu../ -Fu. -dLCL
 
 # Win32
 #PTOOLPREFIX=C:/lazarus/pp/bin/i386-win32/

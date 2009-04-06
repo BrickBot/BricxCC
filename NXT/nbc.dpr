@@ -46,7 +46,7 @@ uses
   uNXCComp in 'uNXCComp.pas',
   Parser10 in 'Parser10.pas';
 
-{$IFDEF WIN32}
+{$IFNDEF FPC}
 {$R *.RES}
 {$ENDIF}
 
@@ -62,6 +62,7 @@ begin
   WriteLn(UsagePort);
   WriteLn(UsageBT);
   Writeln(UsageDownload);
+  Writeln(UsageRunProg);
   Writeln(UsageBinary);
   Writeln(UsageQuiet);
 {$ENDIF}
@@ -129,6 +130,11 @@ try
     Exit;
   end;
 
+{$IFDEF CAN_DOWNLOAD}
+  if ParamSwitch('/UserPath', False) then
+    UserDataLocalPath := IncludeTrailingPathDelimiter(ParamValue('/UserPath', False));
+{$ENDIF}
+
   Filename := getFilenameParam();
   if (Trim(Filename) = '') and not ParamSwitch('-api', False) then
   begin
@@ -170,6 +176,7 @@ try
       C.UseBluetooth             := ParamSwitch('-BT', False);
       C.BinaryInput              := ParamSwitch('-b', False);
       C.Download                 := ParamSwitch('-d', False);
+      C.RunProgram               := ParamSwitch('-r', False);
       C.MoreIncludes             := ParamSwitch('-I', False);
       C.IncludePaths             := ParamValue('-I', False);
       C.WarningsAreOff           := ParamSwitch('-w-', False);

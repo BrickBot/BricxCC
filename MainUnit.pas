@@ -600,6 +600,7 @@ type
     procedure CreateHelpToolbar;
     procedure CreateToolsToolbar;
     procedure CreateMiscSynEditComponents;
+    procedure UpdateEditorPosition;
     procedure HandleOnGetVarInfoByID(Sender : TObject; const ID : integer; var offset, size, vartype : integer);
     procedure HandleOnGetVarInfoByName(Sender : TObject; const name : string; var offset, size, vartype : integer);
   public
@@ -3351,6 +3352,8 @@ begin
       if BrickComm.SetVMState(kNXT_VMState_Pause) then
         actCompilePause.Caption := sContinue;
     end;
+    if BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter) then
+      UpdateEditorPosition;
   end;
 end;
 
@@ -3364,7 +3367,8 @@ begin
     fNXTVMState := kNXT_VMState_Idle;
     fNXTClump   := 0;
     fNXTProgramCounter := 0;
-    BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+    if BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter) then
+      UpdateEditorPosition;
   end;
 end;
 
@@ -3401,6 +3405,11 @@ begin
       vartype := Ord(DSE.DataType);
     end;
   end;
+end;
+
+procedure TMainForm.UpdateEditorPosition;
+begin
+
 end;
 
 procedure TMainForm.CreatePascalScriptComponents;

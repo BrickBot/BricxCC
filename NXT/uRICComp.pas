@@ -26,8 +26,6 @@ type
   TImgRect = IMG_RECT;
   TImgCanvas = TObject;
 
-  TOnCompilerMessage = procedure(const msg : string; var stop : boolean) of object;
-
   TRICOps = class(TObjectList)
   public
     constructor Create;
@@ -353,6 +351,7 @@ type
     fCurrentLine : string;
     fTempChar : Char;
     fParenDepth : integer;
+    fIncludeDirs: TStrings;
     function GetOpCount: Integer;
     procedure SyncObjectListToStream;
     procedure SyncStreamToObjectList;
@@ -382,6 +381,7 @@ type
     property EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
     property MaxErrors : word read fMaxErrors write fMaxErrors;
     property OnCompilerMessage : TOnCompilerMessage read fOnCompMSg write fOnCompMsg;
+    property IncludeDirs : TStrings read fIncludeDirs;
     class function RICToText(aStream : TStream; const aFilename : string = '') : string; overload;
     class function RICToText(const aFilename : string) : string; overload;
     class function RICToDataArray(const aFilename, aVarName : string; const aLangName : TLangName) : string;
@@ -391,7 +391,14 @@ implementation
 
 uses
   SysUtils, Math, uCommonUtils, uLocalizedStrings,
-  Graphics{$IFNDEF FPC}, JPEG, PNGImage, GIFImage{$ENDIF};
+  {$IFNDEF FPC}
+  Graphics, JPEG, PNGImage, GIFImage
+  {$ELSE}
+  FPImage, FPCanvas,
+  FPReadBMP, {FPReadGIF, }FPReadJpeg,
+  FPReadPCX, FPReadPNG, FPReadPNM,
+  FPReadTGA, {FPReadTiff, }FPReadXPM
+  {$ENDIF};
 
 type
   TRGBColor = record
@@ -450,6 +457,7 @@ begin
   end;
 end;
 
+{$IFNDEF FPC}
 procedure ImportImage(op : TRICSprite; const fname : string;
   threshold, width, height : integer);
 var
@@ -467,9 +475,8 @@ begin
       pic.LoadFromFile(fname);
       w := pic.Graphic.Width;
       h := pic.Graphic.Height;
-
-      img.Width                 := w;
-      img.Height                := h;
+      img.Width  := w;
+      img.Height := h;
       img.Canvas.Draw( 0,0, pic.Graphic );
     finally
       pic.Free;
@@ -501,6 +508,50 @@ begin
     img.Free;
   end;
 end;
+{$ELSE}
+procedure ImportImage(op : TRICSprite; const fname : string;
+  threshold, width, height : integer);
+var
+  img : TFPMemoryImage;
+  w, h, nw, nh, x, y : Integer;
+  c : TFPColor;
+  rgb : TRGBColor;
+  hsb : THSBColor;
+  row : string;
+begin
+  img := TFPMemoryImage.Create(0, 0);
+  try
+    img.LoadFromFile(fname);
+    w := img.Width;
+    h := img.Height;
+    // now generate the pixel bytes for the NXT sprite
+    nw := Min(width, w);
+    nh := Min(height, h);
+    op.Rows := nh;
+    x := nw div 8;
+    if (nw mod 8) <> 0 then
+      inc(x);
+    op.RowBytes := x;
+    for y := 0 to nh-1 do begin
+      row := '';
+      for x := 0 to nw-1 do begin
+        c := img.Colors[ x,y ];
+        rgb.red   := c.red;
+        rgb.green := c.green;
+        rgb.blue  := c.blue;
+        hsb := RGB2HSB( rgb );
+        if ( hsb.Brightness > threshold ) then
+          row := row + '0'
+        else
+          row := row + '1';
+      end;
+      op.AddBytes(row);
+    end;
+  finally
+    img.Free;
+  end;
+end;
+{$ENDIF}
 
 const
   MAXCMDS = 9;
@@ -1029,6 +1080,7 @@ end;
 constructor TRICComp.Create;
 begin
   inherited;
+  fIncludeDirs := TStringList.Create;
   fMessages   := TStringList.Create;
   fMS         := TMemoryStream.Create;
   fOperations := TRICOps.Create;
@@ -1041,6 +1093,7 @@ end;
 
 destructor TRICComp.Destroy;
 begin
+  FreeAndNil(fIncludeDirs);
   FreeAndNil(fMessages);
   FreeAndNil(fMS);
   FreeAndNil(fOperations);
@@ -1598,7 +1651,8 @@ var
   op : TRICSprite;
   sl : TStringList;
   i : integer;
-  fname : string;
+  bFileFound : boolean;
+  fname, usePath : string;
   thresh, width, height : integer;
 const
   DEF_SPRITE_IMPORT_THRESHOLD = 50;
@@ -1617,6 +1671,7 @@ begin
   op.DataAddr := ValueToWord;
   Next;
   MatchString(TOK_COMMA);
+  scan;
   if Token = TOK_IMPORT then begin
     // support "import" keyword
     thresh := DEF_SPRITE_IMPORT_THRESHOLD;
@@ -1646,8 +1701,27 @@ begin
       end;
     end;
     CloseParen;
+    CloseParen;
     // build sprite bytes using fname and thresh
-    ImportImage(op, fname, thresh, width, height);
+    // find sprite file
+    fName := StripQuotes(fName);
+    usePath := '';
+    bFileFound := FileExists(fname);
+    if not bFileFound then
+    begin
+      for i := 0 to IncludeDirs.Count - 1 do
+      begin
+        usePath := IncludeTrailingPathDelimiter(IncludeDirs[i]);
+        bFileFound := FileExists(usePath+fname);
+        if bFileFound then Break;
+      end;
+    end;
+    if bFileFound then
+    begin
+      ImportImage(op, usePath+fname, thresh, width, height);
+    end
+    else
+      AbortMsg(Format(sUnableToFindImage, [fname]));
   end
   else
   begin
@@ -2075,7 +2149,7 @@ end;
 procedure TRICComp.SyncStreamToObjectList;
 var
   i : integer;
-begin
+begin             
   fMS.Clear;
   for i := 0 to fOperations.Count - 1 do
     TRICOpBase(fOperations[i]).SaveToStream(fMS);
@@ -3286,5 +3360,15 @@ begin
     TRICOpBase(Items[i]).Draw(aPoint, Vars, Options, aCanvas);
 end;
 }
+
+(*
+{$IFNDEF FPC}
+initialization
+  TPicture.RegisterFileFormat('BMP', 'Bitmap', TBitmap);
+
+finalization
+  TPicture.UnregisterGraphicClass(TBitmap);
+{$ENDIF}
+*)
 
 end.

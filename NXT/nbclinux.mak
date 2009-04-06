@@ -1,5 +1,5 @@
 PROGRAMS = nbc
-VER = 1.0.1.b35
+VER = 1.0.1.b36
 DOBJECTS=uNXTClasses.o uPreprocess.o Parser10.o P10Build.o uNXCComp.o uRPGComp.o uRIC.o uRICComp.o uNBCCommon.o uNXTConstants.o uNBCInterface.o nbc.dpr
 DEFAULT_INCLUDE_DIR=/usr/local/include/nbc
 
@@ -11,9 +11,7 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS) mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
 
-PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu../ -Fu. -Fu../bricktools -Fu../png -Fu/usr/lib/lazarus/lcl/units/i386-linux/ -dCAN_DOWNLOAD -dLCL
-
-#/usr/bin/ppc386  -S2cgi -OG1 -gl -WG -va -l -Fu/usr/lib/lazarus/lcl/units/i386-linux/ -Fu/usr/lib/lazarus/lcl/units/i386-linux/gtk/ -Fu/usr/lib/lazarus/packager/units/i386-linux/ -Fu. -dLCL -dLCLgtk /tmp/testcompileroptions.pas
+PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD
 
 
 # Linux

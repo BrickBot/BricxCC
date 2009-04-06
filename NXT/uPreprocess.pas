@@ -817,12 +817,16 @@ begin
                     X := TMemoryStream.Create;
                     try
                       usePath := '';
-                      bFileFound := False;
-                      for i := 0 to IncludeDirs.Count - 1 do
+                      // first try to find the file without any include path
+                      bFileFound := FileExists(tmpName);
+                      if not bFileFound then
                       begin
-                        usePath := IncludeTrailingPathDelimiter(IncludeDirs[i]);
-                        bFileFound := FileExists(usePath+tmpName);
-                        if bFileFound then Break;
+                        for i := 0 to IncludeDirs.Count - 1 do
+                        begin
+                          usePath := IncludeTrailingPathDelimiter(IncludeDirs[i]);
+                          bFileFound := FileExists(usePath+tmpName);
+                          if bFileFound then Break;
+                        end;
                       end;
                       if bFileFound then
                       begin
