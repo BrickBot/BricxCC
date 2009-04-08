@@ -3434,7 +3434,7 @@ begin
       if i <> -1 then
       begin
         CO := CD.Offsets[i];
-        AEF.TheEditor.GotoLineAndCenter(CO.LineNumber);
+        AEF.TheEditor.GotoLineAndCenter(CO.LineNumber+1);
       end;
     end;
   end;
