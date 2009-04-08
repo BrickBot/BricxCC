@@ -3361,13 +3361,13 @@ begin
   Result := Trim(Result);
 end;
 
-function ValueAsCardinal(aValue : Extended) : Cardinal;
+function ValueAsCardinal(aValue : Extended; aDST : TDSType = dsVoid) : Cardinal;
 var
   iVal : Int64;
   sVal : Single;
 begin
   iVal := Trunc(aValue);
-  if iVal = aValue then
+  if (iVal = aValue) and (aDST <> dsFloat) then
     Result := Cardinal(iVal)
   else
   begin
@@ -3439,7 +3439,7 @@ begin
     begin
       sargs := StripArrayAndStructDelimiters(sargs);
       SL.CommaText := sargs;
-      if Self.DataType = dsCluster then
+      if DataType = dsCluster then
       begin
         // initialize cluster members
         if Self.ArrayMember then
@@ -3460,7 +3460,7 @@ begin
             begin
               Calc.Expression := SL[i];
               fVal := Calc.Value;
-              SubEntries[i].DefaultValue := ValueAsCardinal(fVal);
+              SubEntries[i].DefaultValue := ValueAsCardinal(fVal, SubEntries[i].DataType);
               Result := CalcDSType(dsUByte, fVal);
             end;
           end;
@@ -3479,7 +3479,7 @@ begin
           begin
             Calc.Expression := SL[i];
             fVal := Calc.Value;
-            AddValue(ValueAsCardinal(fVal));
+            AddValue(ValueAsCardinal(fVal, Self.SubEntries[0].DataType));
             Result := CalcDSType(Result, fVal);
           end;
         end;
@@ -3491,7 +3491,7 @@ begin
         // than AddValue
         Calc.Expression := SL[0];
         fVal := Calc.Value;
-        DefaultValue := ValueAsCardinal(fVal);
+        DefaultValue := ValueAsCardinal(fVal, DataType);
         Result := CalcDSType(dsUByte, fVal);
       end;
     end;
@@ -7937,7 +7937,7 @@ begin
     DE := DSpace.Add;
     DE.Identifier := Result;
     DE.DataType := datatype;
-    DE.DefaultValue := ValueAsCardinal(val);
+    DE.DefaultValue := ValueAsCardinal(val, datatype);
     if datatype = dsFloat then
     begin
       sVal := val;
