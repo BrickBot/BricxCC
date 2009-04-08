@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-03-24
- * Revision:: 45
+ * Date:: 2009-04-08
+ * Revision:: 46
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -103,6 +103,7 @@
 #define ClearScreen() asm { PointOutEx(200, 200, TRUE) }
 #define FlattenVar(_value) asm { flatten __STRRETVAL__, _value }
 #define UnflattenVar(_str, _value) asm { unflatten _value, __RETVAL__, _str, _value }
+#define ArrayBuild(_aout, ...) asm { arrbuild _aout, __VA_ARGS__ }
 
 
 // input fields

@@ -315,7 +315,6 @@ type
     procedure DoSetInputOutput(const idx : integer);
     procedure DoStop;
     procedure DoGoto;
-    procedure DoArrayBuild;
     procedure DoPrecedesFollows;
     procedure DoReturn;
     procedure DoStopMotors;
@@ -584,9 +583,8 @@ const
   API_RESETBLOCKTACHOCOUNT = 43;
   API_RESETROTATIONCOUNT = 44;
   API_RESETALLTACHOCOUNTS = 45;
-  API_ARRAYBUILD = 46;
 
-  APICount = 47;
+  APICount = 46;
   APIList : array[0..APICount-1] of string = (
     'break', 'continue', 'Wait',
     'OnFwd', 'OnRev', 'OnFwdReg', 'OnRevReg',
@@ -601,8 +599,7 @@ const
     'OnFwdSyncEx', 'OnRevSyncEx', 'CoastEx', 'OffEx',
     'RotateMotorPID', 'RotateMotorExPID',
     'ResetTachoCount', 'ResetBlockTachoCount',
-    'ResetRotationCount', 'ResetAllTachoCounts',
-    'ArrayBuild'
+    'ResetRotationCount', 'ResetAllTachoCounts'
   );
 
 const
@@ -4488,7 +4485,6 @@ begin
     API_SETOUTPUT : DoSetInputOutput(idx);
     API_STOP : DoStop;
     API_GOTO : DoGoto;
-    API_ARRAYBUILD : DoArrayBuild;
   else
     AbortMsg(sUnknownAPICommand);
   end;
@@ -8250,32 +8246,6 @@ begin
     codeStr := Format('arrinit %s, %s, %s', [Name, tmpVal, expr]);
     EmitLn(codeStr);
   end;
-end;
-
-procedure TNXCComp.DoArrayBuild;
-var
-  aout, src, asmstr : string;
-begin
-  // ArrayBuild(aout, src1, ..., srcN)
-  Next;
-  OpenParen;
-  // aout
-  aout := GetDecoratedValue;
-  Next;
-  MatchString(TOK_COMMA);
-  src := GetDecoratedValue;
-  Next;
-  asmstr := Format('arrbuild %s, %s', [aout, src]);
-  while (Token = TOK_COMMA) and not endofallsource do
-  begin
-    Next; // skip the comma
-    // field
-    src := GetDecoratedValue;
-    Next;
-    asmstr := asmstr + Format(', %s', [src]);
-  end;
-  CloseParen;
-  EmitLn(asmstr);
 end;
 
 procedure TNXCComp.LoadSystemFile(S : TStream);
