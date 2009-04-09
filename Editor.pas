@@ -39,6 +39,8 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure TheErrorsMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
+    procedure TheEditorProcessUserCommand(Sender: TObject;
+      var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
   private
     { Private declarations }
     fFileName : string;
@@ -53,6 +55,9 @@ type
     procedure FindDeclaration(const aIdent : string);
     procedure CreatePopupMenu;
     procedure CreateTheEditor;
+    function GetPosition: integer;
+    function GetSource: string;
+    procedure SetPosition(const Value: integer);
   protected
     function MDI : Boolean;
     procedure CreateParams(var Params: TCreateParams); override;
@@ -197,6 +202,8 @@ type
     procedure UpdatePositionOnStatusBar;
     property  Filename : string read fFilename write SetFilename;
     property  Highlighter : TSynCustomHighlighter read fHighlighter write fHighlighter;
+    property  Source : string read GetSource;
+    property  Position : integer read GetPosition write SetPosition;
   end;
 
 var
@@ -222,7 +229,8 @@ uses
   CodeUnit, ExecProgram, SearchRCX, brick_common, FakeSpirit, uCodeExplorer, uMacroForm,
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
   uMiscDefines, uSpirit, uNXTClasses, uNBCInterface, ParamUtils,
-  uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants;
+  uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants,
+  uEditorExperts;
 
 var
   localSearchFromCaret: boolean;
@@ -1072,6 +1080,7 @@ begin
   TheEditor.Gutter.ZeroStart       := ZeroStart;
   TheEditor.Gutter.UseFontStyle    := UseFontStyle;
   TheEditor.Keystrokes.Assign(PrefForm.Keystrokes);
+  AddEditorExpertCommands(TheEditor);
 end;
 
 procedure TEditorForm.TheEditorGutterClick(Sender: TObject; X, Y,
@@ -2221,23 +2230,52 @@ procedure TEditorForm.TheEditorProcessCommand(Sender: TObject;
   var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
 var
   word : string;
+  FoundPos: Integer;
+  Ident: string;
 begin
-  if Command = ecContextHelp then
-  begin
-    SetActiveHelpFile;
-    if TheEditor.SelAvail then
-      word := TheEditor.SelText
-    else
-      word := TheEditor.TextAtCursor;
-    if FileIsForth then
-    begin
-      if word = ';' then word := 'semicolon'
-      else if word = '\' then word := 'backslash'
-      else if word = '."' then word := 'dot-quote'
-      else if word = 'S"' then word := 's-quote';
+  case Command of
+    ecContextHelp : begin
+      SetActiveHelpFile;
+      if TheEditor.SelAvail then
+        word := TheEditor.SelText
+      else
+        word := TheEditor.TextAtCursor;
+      if FileIsForth then
+      begin
+        if word = ';' then word := 'semicolon'
+        else if word = '\' then word := 'backslash'
+        else if word = '."' then word := 'dot-quote'
+        else if word = 'S"' then word := 's-quote';
+      end;
+      HelpALink(word, FileIsNQC);
+      Command := ecNone;
     end;
-    HelpALink(word, FileIsNQC);
-    Command := ecNone;
+    K_USER_PREVIDENT, K_USER_NEXTIDENT : begin
+      if FindIdentAtPos(Source, Position, (Command = K_USER_PREVIDENT), FoundPos, Ident) then
+        Position := FoundPos
+      else
+        MessageBeep($FFFFFFFF);
+    end;
+  end;
+end;
+
+procedure TEditorForm.TheEditorProcessUserCommand(Sender: TObject;
+  var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
+var
+  FoundPos: Integer;
+  Ident: string;
+begin
+  case Command of
+    K_USER_PREVIDENT, K_USER_NEXTIDENT : begin
+      if FindIdentAtPos(Source, Position, (Command = K_USER_PREVIDENT), FoundPos, Ident) then
+        Position := FoundPos
+      else
+        MessageBeep($FFFFFFFF);
+    end;
+    K_USER_COMMENTBLOCK : begin
+    end;
+    K_USER_UNCOMMENTBLOCK : begin
+    end;
   end;
 end;
 
@@ -2893,6 +2931,8 @@ begin
   end;
 end;
 
+//    ssShift, ssAlt, ssCtrl,
+//    ssLeft, ssRight, ssMiddle, ssDouble
 procedure TEditorForm.CreateTheEditor;
 begin
   TheEditor := TBricxccSynEdit.Create(Self);
@@ -2922,12 +2962,6 @@ begin
     Gutter.Font.Height := -11;
     Gutter.Font.Name := 'Terminal';
     Gutter.Font.Style := [];
-{
-    with Keystrokes.Add do begin
-      Command := ecNone;
-      ShortCut := 16416;
-    end;
-}
     MaxUndo := 10;
     Options := [eoAutoIndent, eoDragDropEditing, eoScrollPastEol,
                 eoShowScrollHint, eoSmartTabDelete, eoSmartTabs,
@@ -2945,6 +2979,7 @@ begin
     OnGutterClick := TheEditorGutterClick;
     OnPlaceBookmark := TheEditorPlaceBookmark;
     OnProcessCommand := TheEditorProcessCommand;
+    OnProcessUserCommand := TheEditorProcessUserCommand;
     OnReplaceText := TheEditorReplaceText;
     OnSpecialLineColors := TheEditorSpecialLineColors;
     OnStatusChange := TheEditorStatusChange;
@@ -2973,5 +3008,20 @@ begin
   end;
 end;
 
+
+function TEditorForm.GetPosition: integer;
+begin
+  Result := TheEditor.RowColToCharIndex(TheEditor.CaretXY);
+end;
+
+function TEditorForm.GetSource: string;
+begin
+  Result := TheEditor.Text;
+end;
+
+procedure TEditorForm.SetPosition(const Value: integer);
+begin
+  TheEditor.CaretXY := TheEditor.CharIndexToRowCol(Value-1);
+end;
 
 end.
