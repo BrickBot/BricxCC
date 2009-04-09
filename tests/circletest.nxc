@@ -1,0 +1,27 @@
+task main()
+{
+  int j;
+  j=Random(10)+1;
+  NumOut(0, LCD_LINE1, j);
+  j=foo(2)+1;
+  NumOut(0, LCD_LINE2, j);
+  j=abs(-23)+1;
+  NumOut(0, LCD_LINE3, j);
+  for (int i=0; i < 50; i++) {
+    int x = Random(30)+50;
+    int y = Random(20)+32;
+    int r = Random(20);
+/*
+    int xr = Random(50);
+    int yr = Random(32);
+    int w = Random(40);
+    int h = Random(40);
+    PointOut(Random(100), Random(64));
+    RectOut(xr, yr, w, h, false);
+*/
+    CircleOut(x, y, r, false);
+    Wait(50);
+  }
+  CircleOut(20, 50, 20);
+  while(true);
+}

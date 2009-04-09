@@ -1,0 +1,49 @@
+
+string floattostring (float f)
+{string exp;
+ int e=0;
+  while (abs(f)>=10)
+ {e+=1;
+  f/=10;
+  }
+  while(abs(f)<1)
+  {e-=1;
+   f*=10;
+   }
+  exp=FormatNum("%10.4f e",f);
+  exp+=FormatNum("%02d",e);
+  return exp;
+}
+
+
+task main()
+{float a,c;
+  a=12345.6789;
+  c=1000000000000.0;       // Working as of 2009-04-09
+
+  TextOut(14,LCD_LINE2,floattostring(a));
+  TextOut(0,LCD_LINE2,"a=");
+  TextOut(14,LCD_LINE3,floattostring(c));
+  TextOut(0,LCD_LINE3,"c=");
+  a/=c;
+  TextOut(14,LCD_LINE4,floattostring(a));
+  TextOut(0,LCD_LINE4,"a/c=");
+
+
+  a=12345.6789;
+  c=1000000.0;             // now initialize c in two stages (works)
+  c*=1000000.0;
+  TextOut(14,LCD_LINE6,floattostring(a));
+  TextOut(0,LCD_LINE6,"a=");
+  TextOut(14,LCD_LINE7,floattostring(c));
+  TextOut(0,LCD_LINE7,"c=");
+  a/=c;
+  TextOut(14,LCD_LINE8,floattostring(a));
+  TextOut(0,LCD_LINE8,"a/c=");
+
+
+
+  Wait(20000);
+
+
+}
