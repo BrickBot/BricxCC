@@ -1,0 +1,10 @@
+task main()
+{
+   int v[];
+   int x = 2, y = 5, z = 6;
+   ArrayBuild(v,1,0,2,3); //OK
+   
+   ArrayBuild(v,1,0,2,-3); //OK
+   ArrayBuild(v,-1,0,2,3); //OK
+   ArrayBuild(v,x,-10,y,z); //OK
+}

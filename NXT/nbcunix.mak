@@ -14,9 +14,9 @@ realclean:: clean
 PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD
 
 
-# Linux
+# PTOOLPREFIX may differ on different platforms (e.g. /usr/local/bin/)
 PTOOLPREFIX=/usr/bin/
-PPC=$(PTOOLPREFIX)ppc386
+PPC=$(PTOOLPREFIX)fpc
 
 # how to link executable
 nbc: nbc.dpr nbc_preproc.inc

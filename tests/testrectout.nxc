@@ -1,0 +1,19 @@
+int i,j;
+task main()
+{for (i=0;i<DISPLAY_HEIGHT;i+=10)
+ {for (j=0;j<DISPLAY_WIDTH;j+=10)
+   {PointOut(j,i);
+   }
+ }
+
+ RectOut(10,10,40,40/*, DRAW_OPT_FILL_SHAPE*/);
+ RectOut(60,10,10,30/*, DRAW_OPT_FILL_SHAPE*/);
+ RectOut(80,15, 0, 0/*, DRAW_OPT_FILL_SHAPE*/); //  0 width, 0 height
+ RectOut(80,25,10, 0/*, DRAW_OPT_FILL_SHAPE*/); // 10 width, 0 height
+ RectOut(80,35, 1, 1/*, DRAW_OPT_FILL_SHAPE*/); //  1 width, 1 height
+ RectOut(80,45,10, 1/*, DRAW_OPT_FILL_SHAPE*/); // 10 width, 1 height
+ RectOut(80,55,10,-1/*, DRAW_OPT_FILL_SHAPE*/); // 10 width, -1 height
+
+ Wait(10000);
+
+}

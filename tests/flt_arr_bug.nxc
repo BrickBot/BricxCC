@@ -1,0 +1,57 @@
+// float array bug
+struct Matrix
+{
+    float elements[]; /**< The matrix elements */
+    int rows;        /**< Rows count of the matrix */
+    int cols;        /**< Columns count of the matrix */
+    int size;        /**< Size of the matrix = rows * cols */
+};
+
+float elementsA[] = {
+-3,  2, -5,
+-1,  0, -2,
+ 3, -4,  1
+};
+
+float MatrixGet(Matrix &matrix, int row, int col)
+{
+    int index = matrix.cols * row + col;
+    float result = matrix.elements[index];
+    return result;
+}
+
+void MatrixSet(Matrix &matrix, int row, int col, float value)
+{
+    matrix.elements[matrix.cols * row + col] = value;
+}
+
+void MatrixPrint (Matrix &matrix, string title, int pauseSecs)
+{
+    ClearScreen();
+    TextOut(0, LCD_LINE1, "----------------------");
+    TextOut(0, LCD_LINE1, title);
+    for (int i = 1; i <= matrix.rows; i++)
+        for (int j = 0; j < matrix.cols; j++)
+            TextOut( 30 * j, 63 - (8 * i), FormatNum(" %.2f", MatrixGet(matrix, i - 1, j)));
+    if (pauseSecs > 0)
+        Wait(SEC_1 * pauseSecs);
+}
+
+void MatrixInitElements(Matrix &matrix, int rows, int cols, float &elements[])
+{
+    matrix.rows = rows;
+    matrix.cols = cols;
+    matrix.size = rows * cols;
+    matrix.elements = elements;
+//    ArrayBuild(matrix.elements, elements);
+}
+
+task main ()
+{
+    Wait(4000);
+    Matrix A;
+    MatrixInitElements(A,3,3,elementsA);
+    MatrixPrint(A,"test",0);          //shows zero's and nan's instead of the values
+    TextOut( 0,LCD_LINE8, NumToStr(elementsA[0]));
+    Wait(3000);
+}
