@@ -1,0 +1,11 @@
+task main()
+{
+  int j;
+  j=Random(10)+1;
+  NumOut(0, LCD_LINE1, j);
+  j=abs(-23)+1;
+  NumOut(0, LCD_LINE2, j);
+  j=12-6+(45/2)-15+1;
+  NumOut(0, LCD_LINE3, j);
+  while(true);
+}
