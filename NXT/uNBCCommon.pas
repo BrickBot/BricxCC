@@ -1046,6 +1046,7 @@ const
   );
 *)
 
+function IsAlpha(c: char): boolean;
 function InlineName(const tname, name: string): string;
 function StripDecoration(const name : string) : string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
@@ -1166,6 +1167,11 @@ implementation
 
 uses
   SysUtils, uLocalizedStrings {$IFDEF FAST_MM}, FastStrings{$ENDIF};
+
+function IsAlpha(c: char): boolean;
+begin
+  Result := c in ['A'..'Z', 'a'..'z', '_'];
+end;
 
 const
   INLINE_DECORATION = '__%s_inline_%s';

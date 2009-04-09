@@ -329,7 +329,6 @@ type
     function  IsWhite(c: char): boolean;
     function  IsRelop(c: char): boolean;
     function  IsOrop(c: char): boolean;
-    function  IsAlpha(c: char): boolean;
     function  IsDigit(c: char): boolean;
     function  IsHex(c: char): boolean;
     function  IsAlNum(c: char): boolean;
@@ -864,14 +863,6 @@ begin
 end;
 
 
-
-{--------------------------------------------------------------}
-{ Recognize an Alpha Character }
-
-function TNXCComp.IsAlpha(c: char): boolean;
-begin
-  Result := c in ['A'..'Z', 'a'..'z', '_'];
-end;
 
 {--------------------------------------------------------------}
 { Recognize a Decimal Digit }
