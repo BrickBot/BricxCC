@@ -1,3 +1,5 @@
+inline int foo(int x) { return 53+x; }
+
 task main()
 {
   int j;
