@@ -1249,7 +1249,7 @@ end;
 
 function NBCFloatToStr(const AValue: Double): string;
 begin
-  Result := StripTrailingZeros(NBCFormat('%.5f', [AValue]));
+  Result := StripTrailingZeros(NBCFormat('%.10f', [AValue]));
 end;
 
 function NBCStrToFloat(const AValue: string): Double;

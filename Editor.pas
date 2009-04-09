@@ -222,7 +222,7 @@ uses
   CodeUnit, ExecProgram, SearchRCX, brick_common, FakeSpirit, uCodeExplorer, uMacroForm,
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
   uMiscDefines, uSpirit, uNXTClasses, uNBCInterface, ParamUtils,
-  uPSDisassembly, uLocalizedStrings, uNBCCommon;
+  uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants;
 
 var
   localSearchFromCaret: boolean;
@@ -2481,25 +2481,37 @@ procedure TEditorForm.TheEditorSpecialLineColors(Sender: TObject;
   Line: Integer; var Special: Boolean; var FG, BG: TColor);
 begin
   Special := False;
-  if not FileIsROPS(Self) then Exit;
-  if MainForm.ce.HasBreakPoint(Filename, Line) then
+  if FileIsROPS(Self) then
   begin
-    Special := True;
-    if Line = MainForm.FActiveLine then
+    if MainForm.ce.HasBreakPoint(Filename, Line) then
     begin
-      BG := clWhite;
-      FG := clRed;
-    end else
+      Special := True;
+      if Line = MainForm.FActiveLine then
+      begin
+        FG := clRed;
+        BG := clWhite;
+      end else
+      begin
+        FG := clWhite;
+        BG := clRed;
+      end;
+    end
+    else if Line = MainForm.FActiveLine then
     begin
+      Special := True;
       FG := clWhite;
-      BG := clRed;
+      BG := clBlue;
     end;
   end
-  else if Line = MainForm.FActiveLine then
+  else if Assigned(fNXTCurrentOffset) and FileIsNBCOrNXC(Self) then
   begin
-    Special := True;
-    FG := clWhite;
-    BG := clBlue;
+    Special := (Line = fNXTCurrentOffset.LineNumber+1) and
+               (fNXTVMState = kNXT_VMState_Pause);
+    if Special then
+    begin
+      FG := clWhite;
+      BG := clBlue;
+    end;
   end;
 end;
 

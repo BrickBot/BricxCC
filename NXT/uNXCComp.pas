@@ -1859,7 +1859,7 @@ var
   cval : int64;
   tmpSrc : string;
 begin
-  if Pos('.', n) > 0 then
+  if (Pos('.', n) > 0) or (StatementType = stFloat) then
   begin
     tmpSrc := 'mov %s, %s';
     StatementType := stFloat;
@@ -2525,29 +2525,42 @@ end;
 procedure TNXCComp.Expression;
 var
   prev : integer;
+  oldExpStr : string;
 begin
   fExpStrHasVars := False;
-  fExpStr := Value;
-  prev := NBCSource.Count;
-  if IncrementOrDecrement then
-  begin
-    // pre-increment or pre-decrement
-    DoPreIncOrDec(true);
-  end
-  else
-  begin
-    if IsAddOp(Token) then
-      ClearReg
+  // 2009-04-09 JCH:
+  // Store the old expression string and restore it at the end of this routine
+  // so that recursive optimizations do not destroy the previous level of
+  // the expression.  This fixes the bug caused by commenting out
+  // "and not (fExpStr[1] in ['+', '-'])" in the OptimizeExpression function
+  // below.  Without this, an expression like x = MyFunc(233)+10; was being
+  // optimized to x = 10;
+  oldExpStr := fExpStr;
+  try
+    fExpStr := Value;
+    prev := NBCSource.Count;
+    if IncrementOrDecrement then
+    begin
+      // pre-increment or pre-decrement
+      DoPreIncOrDec(true);
+    end
     else
-      Term;
-    while IsAddop(Token) do begin
-      PushPrim;
-      case Token of
-        '+': Add;
-        '-': Subtract;
+    begin
+      if IsAddOp(Token) then
+        ClearReg
+      else
+        Term;
+      while IsAddop(Token) do begin
+        PushPrim;
+        case Token of
+          '+': Add;
+          '-': Subtract;
+        end;
       end;
+      OptimizeExpression(prev);
     end;
-    OptimizeExpression(prev);
+  finally
+    fExpStr := oldExpStr;
   end;
 end;
 
@@ -2561,6 +2574,11 @@ begin
     // + and - as the first character of an expression
     // I haven't been able to detect any harm in removing this check but
     // it could be something very obscure that will come up again
+
+    // 2009-04-09 JCH: See my comment in the Expression function above.
+    // The commented-out code was preventing a bug that had far too many
+    // lines of code being removed if an expression ended in +nnn or -nnn.
+    
     if (fExpStr <> '') {and not (fExpStr[1] in ['+', '-'])} then
     begin
       fCalc.SilentExpression := fExpStr;

@@ -5557,6 +5557,8 @@ begin
       Result := dsSWord
     else if (val >= Low(Integer)) and (val <= High(Integer)) then
       Result := dsSLong
+    else if (val > High(Cardinal)) or (val < Low(Integer)) then
+      Result := dsFloat
     else
       Result := dsULong;
   end
@@ -7913,23 +7915,23 @@ function CreateConstantVar(DSpace : TDataspace; val : Extended;
 var
   datatype : TDSType;
   DE : TDataspaceEntry;
-  iVal : Int64;
+//  iVal : Int64;
   sVal : Single;
 begin
-  iVal := Trunc(val*10000); // scale by 4 decimal places
   if aTypeHint <> dsVoid then
     datatype := aTypeHint
   else
     datatype := GetArgDataType(val);
-  Result := GenerateTOCName(Byte(Ord(datatype)), Int64(abs(iVal)), '%1:d');
+//  iVal := Trunc(val*1000000); // scale by 6 decimal places
+//  Result := GenerateTOCName(Byte(Ord(datatype)), Int64(abs(iVal)), '%1:d');
+  Result := Replace(NBCFloatToStr(abs(val)), '.', 'P');
   if datatype = dsFloat then
     Result := 'f' + Result; // distinguish between float constants and integer constants
-  if iVal < 0 then
+  if val < 0 then
     Result := '__constValNeg' + Result
   else
     Result := '__constVal' + Result;
   // is this temporary already in the dataspace?
-
   DE := DSpace.FindEntryByFullName(Result);
   if not Assigned(DE) then
   begin
@@ -7937,7 +7939,7 @@ begin
     DE := DSpace.Add;
     DE.Identifier := Result;
     DE.DataType := datatype;
-    DE.DefaultValue := ValueAsCardinal(val, datatype);
+//    DE.DefaultValue := ValueAsCardinal(val, datatype);
     if datatype = dsFloat then
     begin
       sVal := val;
@@ -7950,9 +7952,9 @@ begin
     DE.IncRefCount;
 end;
 
-procedure ConvertToSetOrMov(DS : TDataspace; var AL : TAsmLine; iVal : Int64; var arg1 : string);
+procedure ConvertToSetOrMov(DS : TDataspace; var AL : TAsmLine; iVal : Double; var arg1 : string);
 begin
-  if (iVal < Low(SmallInt)) or (iVal > High(Word)) then
+  if (iVal < Low(SmallInt)) or (iVal > High(Word)) or (Trunc(iVal) <> iVal) then
   begin
     // we need to use mov
     AL.Command := OP_MOV;
@@ -7961,13 +7963,14 @@ begin
   else begin
     // no need to use mov - we can use set instead
     AL.Command := OP_SET;
-    arg1 := IntToStr(iVal);
+    arg1 := IntToStr(Trunc(iVal));
   end;
 end;
 
-function GetArgValue(EP : TNBCExpParser; arg1 : string; var val : Integer) : boolean;
+function GetArgValue(EP : TNBCExpParser; arg1 : string; var val : Double) : boolean;
 var
   bIsNeg : boolean;
+  bIsFloat : boolean;
 begin
   if Pos('__constVal', arg1) = 1 then
   begin
@@ -7978,7 +7981,14 @@ begin
       System.Delete(arg1, 1, 13)
     else
       System.Delete(arg1, 1, 10);
-    val := StrToIntDef(arg1, 0);
+    bIsFloat := (Pos('f', arg1) > 0) or (Pos('P', arg1) > 0);
+    if bIsFloat then
+    begin
+      arg1 := Replace(Replace(arg1, 'f', ''), 'P', '.');
+      val := NBCStrToFloatDef(arg1, 0);
+    end
+    else
+      val := StrToIntDef(arg1, 0);
     if bIsNeg then
       val := val * -1;
   end
@@ -7987,7 +7997,7 @@ begin
     EP.SilentExpression := arg1;
     Result := not EP.ParserError;
     if Result then
-      val := Integer(Trunc(EP.Value))
+      val := EP.Value
     else
       val := 0;
   end;
@@ -8008,11 +8018,11 @@ end;
 procedure TClump.Optimize(const level : Integer);
 var
   i, offset : integer;
-  iVal : Int64;
+  iVal : Double;
   AL, ALNext : TAsmLine;
   arg1, arg2, arg3, tmp : string;
   bDone, bArg1Numeric, bArg2Numeric : boolean;
-  iArg1Val, iArg2Val : integer;
+  Arg1Val, Arg2Val : Double;
   DE : TDataspaceEntry;
 
   function CheckReferenceCount : boolean;
@@ -8210,12 +8220,12 @@ begin
           // process argument 1
           // is it a constant variable (i.e., aname == _constVal...)
           arg1 := AL.Args[1].Value;
-          iArg1Val := 0;
-          bArg1Numeric := GetArgValue(CodeSpace.Calc, arg1, iArg1Val);
+          Arg1Val := 0;
+          bArg1Numeric := GetArgValue(CodeSpace.Calc, arg1, Arg1Val);
           // now process argument 2
           arg2 := AL.Args[2].Value;
-          iArg2Val := 0;
-          bArg2Numeric := GetArgValue(CodeSpace.Calc, arg2, iArg2Val);
+          Arg2Val := 0;
+          bArg2Numeric := GetArgValue(CodeSpace.Calc, arg2, Arg2Val);
           // ready to process
           if bArg1Numeric and bArg2Numeric then
           begin
@@ -8223,14 +8233,14 @@ begin
             AL.RemoveVariableReference(arg1, 1);
             AL.RemoveVariableReference(arg2, 2);
             case AL.Command of
-              OP_ADD : iVal := iArg1Val + iArg2Val;
-              OP_SUB : iVal := iArg1Val - iArg2Val;
-              OP_MUL : iVal := iArg1Val * iArg2Val;
-              OP_DIV : iVal := iArg1Val div iArg2Val;
-              OP_MOD : iVal := iArg1Val mod iArg2Val;
-              OP_AND : iVal := integer(boolean(iArg1Val) and boolean(iArg2Val));
-              OP_OR  : iVal := integer(boolean(iArg1Val) or boolean(iArg2Val));
-              OP_XOR : iVal := integer(boolean(iArg1Val) xor boolean(iArg2Val));
+              OP_ADD : iVal := Arg1Val + Arg2Val;
+              OP_SUB : iVal := Arg1Val - Arg2Val;
+              OP_MUL : iVal := Arg1Val * Arg2Val;
+              OP_DIV : iVal := Arg1Val / Arg2Val;
+//              OP_MOD : iVal := Arg1Val mod Arg2Val;
+//              OP_AND : iVal := integer(boolean(Arg1Val) and boolean(Arg2Val));
+//              OP_OR  : iVal := integer(boolean(Arg1Val) or boolean(Arg2Val));
+//              OP_XOR : iVal := integer(boolean(Arg1Val) xor boolean(Arg2Val));
             else
               iVal := 0;
             end;
@@ -8253,15 +8263,15 @@ begin
           // process argument 1
           // is it a constant variable (i.e., aname == _constVal...)
           arg1 := AL.Args[1].Value;
-          bArg1Numeric := GetArgValue(CodeSpace.Calc, arg1, iArg1Val);
+          bArg1Numeric := GetArgValue(CodeSpace.Calc, arg1, Arg1Val);
           // ready to process
           if bArg1Numeric then
           begin
             // the argument is numeric
             AL.RemoveVariableReference(arg1, 1);
             case AL.Command of
-              OP_NEG : iVal := iArg1Val * -1;
-              OP_NOT : iVal := integer(not boolean(iArg1Val));
+              OP_NEG : iVal := Arg1Val * -1;
+//              OP_NOT : iVal := integer(not boolean(Arg1Val));
             else
               iVal := 0;
             end;
