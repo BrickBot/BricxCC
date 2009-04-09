@@ -157,6 +157,10 @@ function FileIsROPS(AEF : TEditorForm = nil): Boolean;
 
 function CurrentProgram : TProgram;
 
+var
+  fNXTVMState : byte;
+  fNXTCurrentOffset : TOffset;
+
 implementation
 
 uses

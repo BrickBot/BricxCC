@@ -32,7 +32,7 @@ uses
   Preferences, uOfficeComp, SynHighlighterLua, SynHighlighterRuby,
   SynHighlighterNPG, SynHighlighterRS, uPSComponent_StdCtrls,
   uPSComponent_Controls, uPSComponent_Forms,
-  uPSComponent_Default, uPSComponent;
+  uPSComponent_Default, uPSComponent;            
 
 const
   WM_BRICXCC_CMDLINE = WM_USER + 150;
@@ -560,7 +560,6 @@ type
     newcount : integer;
     fMDI : Boolean;
     FResume : boolean;
-    fNXTVMState : byte;
     fNXTClump : byte;
     fNXTProgramCounter : word;
     procedure WMClose(var Message: TWMClose); message WM_CLOSE;
@@ -654,10 +653,10 @@ uses
   uSpirit, rcx_constants, brick_common, uLocalizedStrings,
   Transfer, Transdlg, uMacroForm, uWindowList,
   uMindScript, uCppCode, uForthConsole, uProjectManager, uMIDIConversion,
-  uSetLNPAddress, uNewWatch, uSetValues, uEEPROM, uMiscDefines,
+  uSetLNPAddress, uNewWatch, uSetValues, uEEPROM,
   uWav2RSO, uNXTExplorer, uGuiUtils, uNXTController, uNXTImage,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,
-  uPSI_brick_common, uPSI_uSpirit, uPSI_FakeSpirit,
+  uPSI_brick_common, uPSI_uSpirit, uPSI_FakeSpirit, uMiscDefines,
   uPSI_FantomSpirit, uPSRuntime, uPSDebugger;
 
 const
@@ -1015,8 +1014,9 @@ begin
           binext := '.rpg'
         else
           binext := '.rxe';
+        fNXTCurrentOffset := nil;
         BrickComm.StartProgram(ChangeFileExt(ExtractFileName(AEF.Filename), binext));
-        fNXTVMState := kNXT_VMState_RunFree;        
+        fNXTVMState := kNXT_VMState_RunFree;
         actCompilePause.Caption := sBreakAll;
         // make sure the variable watch event handlers are hooked up
         BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
@@ -3345,11 +3345,12 @@ end;
 
 procedure TMainForm.actCompilePauseExecute(Sender: TObject);
 begin
-  if not (IsNXT and EnhancedFirmware) then
-    Exit;
   fNXTVMState := kNXT_VMState_Idle;
   fNXTClump   := 0;
   fNXTProgramCounter := 0;
+  fNXTCurrentOffset := nil;
+  if not (IsNXT and EnhancedFirmware) then
+    Exit;
   if BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter) then
   begin
     if fNXTVMState in [kNXT_VMState_Pause, kNXT_VMState_Single] then
@@ -3369,6 +3370,7 @@ end;
 
 procedure TMainForm.actCompileSingleStepExecute(Sender: TObject);
 begin
+  fNXTCurrentOffset := nil;
   if not (IsNXT and EnhancedFirmware) then
     Exit;
   if BrickComm.SetVMState(kNXT_VMState_Single) then
@@ -3424,6 +3426,7 @@ var
   AEF : TEditorForm;
   i : integer;
 begin
+  fNXTCurrentOffset := nil;
   if (fNXTClump < CurrentProgram.Count) then
   begin
     CD := CurrentProgram[fNXTClump];
@@ -3434,6 +3437,7 @@ begin
       if i <> -1 then
       begin
         CO := CD.Offsets[i];
+        fNXTCurrentOffset := CO;
         AEF.TheEditor.GotoLineAndCenter(CO.LineNumber+1);
       end;
     end;
