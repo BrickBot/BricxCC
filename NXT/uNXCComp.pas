@@ -137,7 +137,7 @@ type
     procedure Expression;
     procedure DoPreIncOrDec(bPutOnStack : boolean);
     function  IncrementOrDecrement : boolean;
-    procedure OptimizeExpression(idx : integer);
+    function OptimizeExpression(const idx : integer) : string;
     procedure LessOrEqual;
     procedure NotEqual;
     procedure Subtract;
@@ -2524,8 +2524,8 @@ end;
 
 procedure TNXCComp.Expression;
 var
-  prev : integer;
-  oldExpStr : string;
+  prev, lenVal : integer;
+  oldExpStr, optExp : string;
 begin
   fExpStrHasVars := False;
   // 2009-04-09 JCH:
@@ -2537,6 +2537,11 @@ begin
   // optimized to x = 10;
   oldExpStr := fExpStr;
   try
+    // set the old expression to be everything except for the first token in
+    // the new expression (aka "Value").
+    lenVal := Length(Value);
+    Delete(oldExpStr, Length(oldExpStr)-lenVal+1, lenVal);
+    // now start our new expression with the current token
     fExpStr := Value;
     prev := NBCSource.Count;
     if IncrementOrDecrement then
@@ -2557,19 +2562,20 @@ begin
           '-': Subtract;
         end;
       end;
-      OptimizeExpression(prev);
+      optExp := OptimizeExpression(prev);
     end;
   finally
-    fExpStr := oldExpStr;
+    fExpStr := oldExpStr + optExp + Value;
   end;
 end;
 
-procedure TNXCComp.OptimizeExpression(idx: integer);
+function TNXCComp.OptimizeExpression(const idx: integer) : string;
 begin
+  System.Delete(fExpStr, Length(fExpStr), 1);
+  Result := fExpStr;
   if (OptimizeLevel >= 1) and (NBCSource.Count > (idx+1)) and
      not fExpStrHasVars then
   begin
-    System.Delete(fExpStr, Length(fExpStr), 1);
     // 2009-03-18 JCH: I do not recall why I added the check for
     // + and - as the first character of an expression
     // I haven't been able to detect any harm in removing this check but
@@ -2588,6 +2594,7 @@ begin
           fExpStr := NBCFloatToStr(fCalc.Value)
         else
           fExpStr := IntToStr(Trunc(fCalc.Value));
+        Result := fExpStr;
         // in theory, we can replace all the lines between idx and
         // NBCSource.Count with one line
         while NBCSource.Count > idx do
