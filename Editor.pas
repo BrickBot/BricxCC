@@ -2264,17 +2264,54 @@ procedure TEditorForm.TheEditorProcessUserCommand(Sender: TObject;
 var
   FoundPos: Integer;
   Ident: string;
+  Lines : TStrings;
 begin
   case Command of
     K_USER_PREVIDENT, K_USER_NEXTIDENT : begin
       if FindIdentAtPos(Source, Position, (Command = K_USER_PREVIDENT), FoundPos, Ident) then
         Position := FoundPos
       else
-        MessageBeep($FFFFFFFF);
+        Beep;
     end;
     K_USER_COMMENTBLOCK : begin
+      Lines := TStringList.Create;
+      try
+        Lines.Text := TheEditor.SelText;
+        if CommentLines(Lines) then
+          TheEditor.SelText := Lines.Text;
+      finally
+        Lines.Free;
+      end;
     end;
     K_USER_UNCOMMENTBLOCK : begin
+      Lines := TStringList.Create;
+      try
+        Lines.Text := TheEditor.SelText;
+        if UncommentLines(Lines) then
+          TheEditor.SelText := Lines.Text;
+      finally
+        Lines.Free;
+      end;
+    end;
+    K_USER_REVERSE : begin
+      Lines := TStringList.Create;
+      try
+        Lines.Text := TheEditor.SelText;
+        if ReverseStatements(Lines) then
+          TheEditor.SelText := Lines.Text;
+      finally
+        Lines.Free;
+      end;
+    end;
+    K_USER_ALIGN : begin
+      Lines := TStringList.Create;
+      try
+        Lines.Text := TheEditor.SelText;
+        if AlignSelectedLines(Lines) then
+          TheEditor.SelText := Lines.Text;
+      finally
+        Lines.Free;
+      end;
     end;
   end;
 end;
