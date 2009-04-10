@@ -8,14 +8,14 @@ object frmCommentConfig: TfrmCommentConfig
   Color = clBtnFace
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Tahoma'
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
   Scaled = False
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 13
   object GroupBox1: TGroupBox
     Left = 9
     Top = 5

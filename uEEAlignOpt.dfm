@@ -12,8 +12,8 @@ object fmAlign: TfmAlign
   Constraints.MinWidth = 135
   Font.Charset = ANSI_CHARSET
   Font.Color = clWindowText
-  Font.Height = -12
-  Font.Name = 'Tahoma'
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
   Position = poScreenCenter
@@ -22,12 +22,12 @@ object fmAlign: TfmAlign
     181
     268)
   PixelsPerInch = 96
-  TextHeight = 14
+  TextHeight = 13
   object lblToken: TLabel
     Left = 8
     Top = 7
-    Width = 84
-    Height = 14
+    Width = 71
+    Height = 13
     Caption = '&Align on token:'
     FocusControl = lstTokens
   end
@@ -59,7 +59,7 @@ object fmAlign: TfmAlign
     Width = 163
     Height = 181
     Anchors = [akLeft, akTop, akRight, akBottom]
-    ItemHeight = 14
+    ItemHeight = 13
     PopupMenu = pmuTokens
     TabOrder = 0
     OnDblClick = lstTokensDblClick
@@ -68,10 +68,10 @@ object fmAlign: TfmAlign
     Left = 8
     Top = 210
     Width = 164
-    Height = 22
+    Height = 21
     Style = csDropDownList
     Anchors = [akLeft, akRight, akBottom]
-    ItemHeight = 14
+    ItemHeight = 13
     ItemIndex = 0
     TabOrder = 1
     Text = 'Align at rightmost token'
