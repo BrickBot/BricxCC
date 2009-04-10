@@ -1047,6 +1047,8 @@ const
 *)
 
 function IsAlpha(c: char): boolean;
+function IsCharWhiteSpace(C: Char): Boolean;
+function StrContains(const SubStr, Str: string): Boolean;
 function InlineName(const tname, name: string): string;
 function StripDecoration(const name : string) : string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
@@ -1171,6 +1173,16 @@ uses
 function IsAlpha(c: char): boolean;
 begin
   Result := c in ['A'..'Z', 'a'..'z', '_'];
+end;
+
+function IsCharWhiteSpace(C: Char): Boolean;
+begin
+  Result := C in [#9, #10, #11, #12, #13, #32];
+end;
+
+function StrContains(const SubStr, Str: string): Boolean;
+begin
+  Result := Pos(SubStr, Str) > 0;
 end;
 
 const
