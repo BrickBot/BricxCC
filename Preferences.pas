@@ -354,6 +354,15 @@ type
     radRICDecompArray: TRadioButton;
     Label6: TLabel;
     edtRICDecompArrayFmt: TEdit;
+    shtExperts: TTabSheet;
+    btnCommentConfig: TButton;
+    lblBlockComment: TLabel;
+    lblAlignLines: TLabel;
+    btnAlignLinesConfig: TButton;
+    Button1: TButton;
+    Label7: TLabel;
+    Button2: TButton;
+    Label8: TLabel;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -404,6 +413,8 @@ type
     procedure cbxFGColorChange(Sender: TObject);
     procedure cbxBGColorChange(Sender: TObject);
     procedure radRICDecompScriptClick(Sender: TObject);
+    procedure btnCommentConfigClick(Sender: TObject);
+    procedure btnAlignLinesConfigClick(Sender: TObject);
   private
     { Private declarations }
     cc_keywords: TStringList;
@@ -811,7 +822,8 @@ uses
   uVersionInfo, uHighlighterProcs, uExtensionDlg, {ActiveX, ShlObj,}
   uSetValues, uEEPROM, uNewWatch, uForthConsole, Themes,
   uSpirit, brick_common, Transfer, uNXTExplorer, uNXTController,
-  uNXTExplorerSettings, uLocalizedStrings, uGuiUtils;
+  uNXTExplorerSettings, uLocalizedStrings, uGuiUtils, uEditorExperts,
+  uEECommentConfig, uEEAlignConfig;
 
 {$R *.DFM}
 
@@ -2611,6 +2623,12 @@ begin
     SelectionBackground := Reg_ReadColor(reg, 'SelectionBG', K_SEL_BG_COLOR_DEFAULT);
     StructureColor      := Reg_ReadColor(reg, 'StructureColor', K_STRUCT_COLOR_DEFAULT);
     ActiveLineColor     := Reg_ReadColor(reg, 'ActiveLineColor', K_ALINE_COLOR_DEFAULT);
+    CommentType         := TCommentType(Reg_ReadInteger(reg, 'CommentType', Ord(ctSlash)));
+    InsertRemoveSpace   := Reg_ReadBool(reg, 'InsertRemoveSpace', false);
+    AlignMinWhitespace  := Reg_ReadInteger(reg, 'AlignMinWhitespace', 0);
+    AlignMode           := TGXAlignMode(Reg_ReadInteger(reg, 'AlignMode', Ord(gamFirstToken)));
+    AlignToken          := Reg_ReadString(reg, 'AlignToken', '=');
+    AlignTokenList      := Reg_ReadString(reg, 'AlignTokenList', '==,=,//,{,/*,"""",:,+');
   finally
     reg.CloseKey;
   end;
@@ -2659,6 +2677,12 @@ begin
     reg.WriteBool('HighlightCurLine', HighlightCurLine);
     reg.WriteBool('KeepCaretX', KeepCaretX);
     reg.WriteBool('AutoMaxLeft', AutoMaxLeft);
+    reg.WriteInteger('CommentType', Ord(CommentType));
+    reg.WriteBool('InsertRemoveSpace', InsertRemoveSpace);
+    reg.WriteInteger('AlignMinWhitespace', AlignMinWhitespace);
+    reg.WriteInteger('AlignMode', Ord(AlignMode));
+    reg.WriteString('AlignToken', AlignToken);
+    reg.WriteString('AlignTokenList', AlignTokenList);
   finally
     reg.CloseKey;
   end;
@@ -5731,6 +5755,29 @@ end;
 procedure TPrefForm.radRICDecompScriptClick(Sender: TObject);
 begin
   edtRICDecompArrayFmt.Enabled := radRICDecompArray.Checked;
+end;
+
+procedure TPrefForm.btnCommentConfigClick(Sender: TObject);
+begin
+  CommentConfigure;
+end;
+
+procedure TPrefForm.btnAlignLinesConfigClick(Sender: TObject);
+var
+  Dialog : TfrmAlignOptions;
+begin
+  Dialog := TfrmAlignOptions.Create(nil);
+  try
+    Dialog.mmoTokens.Lines.CommaText := AlignTokenList;
+    Dialog.edtWhitespace.Value       := AlignMinWhitespace;
+    if Dialog.ShowModal = mrOK then
+    begin
+      AlignTokenList     := Dialog.mmoTokens.Lines.CommaText;
+      AlignMinWhitespace := Dialog.edtWhitespace.Value;
+    end;
+  finally
+    FreeAndNil(Dialog);
+  end;
 end;
 
 initialization

@@ -820,6 +820,76 @@ object PrefForm: TPrefForm
               TabOrder = 5
             end
           end
+          object shtExperts: TTabSheet
+            Caption = 'Experts'
+            ImageIndex = 2
+            object lblBlockComment: TLabel
+              Left = 8
+              Top = 16
+              Width = 251
+              Height = 13
+              Caption = 'Block comment/uncomment (Ctrl+Alt+Period/Comma)'
+            end
+            object lblAlignLines: TLabel
+              Left = 8
+              Top = 48
+              Width = 114
+              Height = 13
+              Caption = 'Align lines (Ctrl+Alt+End)'
+            end
+            object Label7: TLabel
+              Left = 8
+              Top = 80
+              Width = 205
+              Height = 13
+              Caption = 'Previous/Next identifier (Ctrl+Alt+Up/Down)'
+            end
+            object Label8: TLabel
+              Left = 8
+              Top = 112
+              Width = 170
+              Height = 13
+              Caption = 'Reverse statements (Ctrl+Alt+Home)'
+            end
+            object btnCommentConfig: TButton
+              Left = 337
+              Top = 10
+              Width = 89
+              Height = 25
+              Caption = 'Configure'
+              TabOrder = 0
+              OnClick = btnCommentConfigClick
+            end
+            object btnAlignLinesConfig: TButton
+              Left = 337
+              Top = 42
+              Width = 89
+              Height = 25
+              Caption = 'Configure'
+              TabOrder = 1
+              OnClick = btnAlignLinesConfigClick
+            end
+            object Button1: TButton
+              Left = 337
+              Top = 74
+              Width = 89
+              Height = 25
+              Caption = 'Configure'
+              Enabled = False
+              TabOrder = 2
+              OnClick = btnAlignLinesConfigClick
+            end
+            object Button2: TButton
+              Left = 337
+              Top = 106
+              Width = 89
+              Height = 25
+              Caption = 'Configure'
+              Enabled = False
+              TabOrder = 3
+              OnClick = btnAlignLinesConfigClick
+            end
+          end
         end
       end
       object shtCompiler: TTabSheet
