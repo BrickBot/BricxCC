@@ -9,6 +9,9 @@
  * License for the specific language governing rights and limitations
  * under the License.
  *
+ * Portions of this code are covered under the GExperts license
+ * http://www.gexperts.org/license.html
+ *
  * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
  * All Rights Reserved.
  *
