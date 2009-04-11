@@ -563,8 +563,9 @@ resourcestring
   UsageFirmVer   = '   -v=n: set the targeted firmware version (default == 105)';
   UsageHelp      = '   -help : display command line options';
 
-
-
+// uEditorExperts.pas
+resourcestring
+  SNoTokens = 'No tokens found to align on.';
 
 implementation
 

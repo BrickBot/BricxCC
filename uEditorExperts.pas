@@ -9,6 +9,9 @@
  * License for the specific language governing rights and limitations
  * under the License.
  *
+ * Portions of this code are covered under the GExperts license
+ * http://www.gexperts.org/license.html
+ *
  * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
  * All Rights Reserved.
  *
@@ -52,11 +55,8 @@ function AlignSelectedLines(Lines: TStrings): Boolean;
 implementation
 
 uses
-  uNBCCommon, Preferences, uEEAlignOpt, SysUtils, Menus, Math, Controls;
-
-//const
-//  DEFAULT_WHITESPACE = 0;
-//  DEFAULT_TOKENS: array[0..7] of string = ('==', '=', '//', '{', '/*', '"', ':', '+');
+  SysUtils, Menus, Math, Controls, uNBCCommon, Preferences, uEEAlignOpt,
+  uLocalizedStrings;
 
 const
   VK_OEM_PERIOD = $BE; // '.' any country
@@ -258,9 +258,6 @@ begin
     FreeAndNil(Dialog);
   end;
 end;
-
-resourcestring
-  SNoTokens = 'No tokens found to align on.';
 
 function AlignSelectedLines(Lines: TStrings): Boolean;
 var
