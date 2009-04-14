@@ -34,16 +34,16 @@ archivenbcunix:: clean
 
 archivenbcosx:: clean
 	cd nxt
-	make -fnbcmac.mak realclean
-	make -fnbcmac.mak
-	mkdir ppc
+	make -f./nbcmac.mak realclean
+	make -f./nbcmac.mak
+	mkdir ./ppc
 	mv ./nbc ./ppc/nbc
-	make -fnbcmac386.mak realclean
-	make -fnbcmac386.mak
-	mkdir intel
+	make -f./nbcmac386.mak realclean
+	make -f./nbcmac386.mak
+	mkdir ./intel
 	mv ./nbc ./intel/nbc
 	lipo -create ./ppc/nbc ./intel/nbc -output ./nbc
-	rmdir -rf ppc intel
+	rmdir -rf ./ppc ./intel
 	cd ..
 	tar -czf nbc-$(VER).osx.tgz $(BINDIST) $(OSXBINDIST)
 	mv nbc-$(VER).osx.tgz ../nbc/beta
