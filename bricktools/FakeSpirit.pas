@@ -225,7 +225,10 @@ type
     function GetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; override;
     function MessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; override;
+    function SetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
+    function GetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
     function SetVMState(const state : byte) : boolean; override;
+    function SetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
     function GetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
     // NXT system commands
     function NXTOpenRead(const filename : string; var handle : cardinal;
@@ -2695,6 +2698,50 @@ begin
   end;
 end;
 
+function TFakeSpirit.GetPropDebugging(var debugging : boolean; var pauseClump: byte;
+  var pausePC: Word): boolean;
+var
+  cmd : TBaseCmd;
+  len : integer;
+begin
+  Result := Open;
+  if not Result then Exit;
+  cmd := TBaseCmd.Create;
+  try
+    len := fLink.Send(cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetProperty, kNXT_Property_Debugging));
+    if len <> 4 then
+    begin
+      result := False; // indicate an error???
+      Exit;
+    end;
+    Result := True;
+    debugging  := Boolean(fLink.GetReplyByte(0));
+    pauseClump := fLink.GetReplyByte(1);
+    pausePC    := fLink.GetReplyWord(2);
+  finally
+    cmd.Free;
+    if fAutoClose then Close;
+  end;
+end;
+
+function TFakeSpirit.SetPropDebugging(const debugging : boolean; const pauseClump: byte;
+  const pausePC: Word): boolean;
+var
+  cmd : TBaseCmd;
+begin
+  Result := Open;
+  if not Result then Exit;
+  cmd := TBaseCmd.Create;
+  try
+    Result := fLink.Send(cmd.SetVal(kNXT_DirectCmdNoReply,
+      kNXT_DCSetProperty, kNXT_Property_Debugging, Ord(debugging),
+      pauseClump, Lo(pausePC), Hi(pausePC))) >= kRCX_OK;
+  finally
+    cmd.Free;
+    if fAutoClose then Close;
+  end;
+end;
+
 function TFakeSpirit.SetVMState(const state : byte) : boolean;
 var
   cmd : TBaseCmd;
@@ -2705,6 +2752,31 @@ begin
   try
     Result := fLink.Send(cmd.SetVal(kNXT_DirectCmdNoReply,
       kNXT_DCSetVMState, state)) >= kRCX_OK;
+  finally
+    cmd.Free;
+    if fAutoClose then Close;
+  end;
+end;
+
+function TFakeSpirit.SetVMStateEx(var state, clump: byte; var pc: word): boolean;
+var
+  cmd : TBaseCmd;
+  len : integer;
+begin
+  Result := Open;
+  if not Result then Exit;
+  cmd := TBaseCmd.Create;
+  try
+    len := fLink.Send(cmd.SetVal(kNXT_DirectCmd, kNXT_DCSetVMState, state));
+    if len <> 4 then
+    begin
+      result := False; // indicate an error???
+      Exit;
+    end;
+    Result := True;
+    state := fLink.GetReplyByte(0);
+    clump := fLink.GetReplyByte(1);
+    pc    := fLink.GetReplyWord(2);
   finally
     cmd.Free;
     if fAutoClose then Close;

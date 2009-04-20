@@ -721,8 +721,8 @@ var
   LCCExePath : string;
   NBCExePath : string;
   UseInternalNBC : Boolean;
-  EnhancedFirmware : Boolean;
   NXT2Firmware : Boolean;
+  EnhancedFirmware : Boolean;
   IgnoreSysFiles : Boolean;
   JavaCompilerPath : string;
   LeJOSRoot :  string;

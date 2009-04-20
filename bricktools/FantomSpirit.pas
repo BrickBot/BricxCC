@@ -24,8 +24,6 @@ uses
 type
   TFantomSpirit = class(TBrickComm)
   private
-    fOffsetDS : integer;
-    fOffsetDVA : integer;
     fResPort : string;
     fNXTHandle : Cardinal;
     fResourceNames : TStrings;
@@ -229,7 +227,10 @@ type
     function GetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; override;
     function MessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; override;
+    function SetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
+    function GetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
     function SetVMState(const state : byte) : boolean; override;
+    function SetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
     function GetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
     // NXT system commands
     function NXTOpenRead(const filename : string; var handle : cardinal;
@@ -2369,11 +2370,6 @@ begin
   Result := @dcResponse[0];
 end;
 
-function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
-begin
-  Result := Cardinal(b1) + (Cardinal(b2) shl 8) + (Cardinal(b3) shl 16) + (Cardinal(b4) shl 24);
-end;
-
 function TFantomSpirit.GetReplyByte(index: integer): Byte;
 const
   DCReplyOffset = 2;
@@ -3544,6 +3540,27 @@ begin
   end;
 end;
 
+function TFantomSpirit.SetVMStateEx(var state, clump: byte; var pc: word): boolean;
+var
+  cmd : TNINxtCmd;
+  status : integer;
+begin
+  Result := IsOpen;
+  if not Result then Exit;
+  cmd := TNINxtCmd.Create;
+  try
+    status := kStatusNoError;
+    cmd.SetVal(kNXT_DirectCmd, kNXT_DCSetVMState, state);
+    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
+    Result := status >= kStatusNoError;
+    state := GetReplyByte(0);
+    clump := GetReplyByte(1);
+    pc    := GetReplyWord(2);
+  finally
+    cmd.Free;
+  end;
+end;
+
 function TFantomSpirit.SetVMState(const state: byte): boolean;
 var
   cmd : TNINxtCmd;
@@ -3555,6 +3572,48 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCSetVMState, state);
+    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
+    Result := status >= kStatusNoError;
+  finally
+    cmd.Free;
+  end;
+end;
+
+function TFantomSpirit.GetPropDebugging(var debugging : boolean; var pauseClump: byte;
+  var pausePC: Word): boolean;
+var
+  cmd : TNINxtCmd;
+  status : integer;
+begin
+  Result := IsOpen;
+  if not Result then Exit;
+  cmd := TNINxtCmd.Create;
+  try
+    status := kStatusNoError;
+    cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetProperty, kNXT_Property_Debugging);
+    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
+    Result := status >= kStatusNoError;
+    debugging  := Boolean(GetReplyByte(0));
+    pauseClump := GetReplyByte(1);
+    pausePC    := GetReplyWord(2);
+  finally
+    cmd.Free;
+  end;
+end;
+
+function TFantomSpirit.SetPropDebugging(const debugging : boolean; const pauseClump: byte;
+  const pausePC: Word): boolean;
+var
+  cmd : TNINxtCmd;
+  status : integer;
+begin
+  Result := IsOpen;
+  if not Result then Exit;
+  cmd := TNINxtCmd.Create;
+  try
+    status := kStatusNoError;
+    cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCSetProperty, kNXT_Property_Debugging,
+      Ord(debugging), pauseClump, Lo(pausePC), Hi(pausePC));
     iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
     Result := status >= kStatusNoError;
   finally

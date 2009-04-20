@@ -274,18 +274,35 @@ const
   kNXT_DCReserved3             = $16;
   kNXT_DCReserved4             = $17;
   kNXT_DCReserved5             = $18;
-  kNXT_DatalogRead             = $19;
-  kNXT_DatalogSetTimes         = $1a;
-  kNXT_BTGetContactCount       = $1b;
-  kNXT_BTGetContactName        = $1c;
-  kNXT_BTGetConnectionCount    = $1d;
-  kNXT_BTGetConnectionName     = $1e;
-  kNXT_SetProperty             = $1f;
-  kNXT_GetProperty             = $20;
+  kNXT_DCDatalogRead           = $19;
+  kNXT_DCDatalogSetTimes       = $1a;
+  kNXT_DCBTGetContactCount     = $1b;
+  kNXT_DCBTGetContactName      = $1c;
+  kNXT_DCBTGetConnectionCount  = $1d;
+  kNXT_DCBTGetConnectionName   = $1e;
+  kNXT_DCSetProperty           = $1f;
+  kNXT_DCGetProperty           = $20;
   kNXT_DCSetVMState            = $21;
   kNXT_DCGetVMState            = $22;
   kNXT_DCSetBreakpoints        = $23;
   kNXT_DCGetBreakpoints        = $24;
+
+  kNXT_Property_BTOnOff        = $0;
+  kNXT_Property_SoundLevel     = $1;
+  kNXT_Property_SleepTimeout   = $2;
+  kNXT_Property_Undefined1     = $3;
+  kNXT_Property_Undefined2     = $4;
+  kNXT_Property_Undefined3     = $5;
+  kNXT_Property_Undefined4     = $6;
+  kNXT_Property_Undefined5     = $7;
+  kNXT_Property_Undefined6     = $8;
+  kNXT_Property_Undefined7     = $9;
+  kNXT_Property_Undefined8     = $a;
+  kNXT_Property_Undefined9     = $b;
+  kNXT_Property_Undefined10    = $c;
+  kNXT_Property_Undefined11    = $d;
+  kNXT_Property_Undefined12    = $e;
+  kNXT_Property_Debugging      = $f;
 
   // NXT system commands
   kNXT_SCOpenRead              = $80;

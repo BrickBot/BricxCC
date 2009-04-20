@@ -230,7 +230,7 @@ uses
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
   uMiscDefines, uSpirit, uNXTClasses, uNBCInterface, ParamUtils,
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants,
-  uEditorExperts;
+  uEditorExperts, uProgram;
 
 var
   localSearchFromCaret: boolean;
@@ -1760,11 +1760,15 @@ begin
 end;
 
 procedure ReadSymbolFile(const sFilename : string);
+var
+  symName : string;
 begin
-  if FileExists(sFilename) then
+  symName := ChangeFileExt(sFilename, '.sym');
+  if FileExists(symName) then
   begin
-    CurrentProgram.LoadFromFile(sFilename);
-    DeleteFile(sFilename);
+    CurrentProgram.IsNXC := FileIsNXC;
+    CurrentProgram.LoadFromFile(symName);
+    DeleteFile(symName);
   end;
 end;
 
@@ -1945,8 +1949,8 @@ begin
 
     Result := ReadAndShowErrorFile(EdFrm, tempDir, ext);
     
-    if FileIsNBCOrNXCOrNPGOrRICScript(EdFrm) then
-      ReadSymbolFile(ChangeFileExt(fName, '.sym'));
+    if FileIsNBCOrNXC(EdFrm) then
+      ReadSymbolFile(fName);
 
     if (not execError) and ShowCompilerStatus then
     begin
@@ -2580,7 +2584,7 @@ begin
   end
   else if Assigned(fNXTCurrentOffset) and FileIsNBCOrNXC(Self) then
   begin
-    Special := (Line = fNXTCurrentOffset.LineNumber+1) and
+    Special := (Line = fNXTCurrentOffset.LineNumber) and
                (fNXTVMState = kNXT_VMState_Pause);
     if Special then
     begin
