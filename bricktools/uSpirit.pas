@@ -121,6 +121,8 @@ type
   TBrickComm = class
   private
   protected
+    fOffsetDS : integer;
+    fOffsetDVA : integer;
     fActive : boolean;
     fAutoClose: boolean;
     fBrickType: byte;
@@ -344,7 +346,10 @@ type
     function GetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; virtual; abstract;
     function MessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; virtual; abstract;
+    function SetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; virtual; abstract;
+    function GetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; virtual; abstract;
     function SetVMState(const state : byte) : boolean; virtual; abstract;
+    function SetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
     function GetVMState(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
     // NXT system commands
     function NXTOpenRead(const filename : string; var handle : cardinal;
@@ -448,11 +453,17 @@ function GetInitFilename: string;
 function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
 function FantomAPIAvailable : boolean;
 procedure LoadNXTPorts(aStrings : TStrings);
+function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
 
 implementation
 
 uses
   SysUtils, {$IFNDEF FPC}FANTOM, SHFolder, Windows{$ELSE}FANTOMFPC{$ENDIF};
+
+function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
+begin
+  Result := Cardinal(b1) + (Cardinal(b2) shl 8) + (Cardinal(b3) shl 16) + (Cardinal(b4) shl 24);
+end;
 
 function FantomAPIAvailable : boolean;
 begin

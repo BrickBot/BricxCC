@@ -125,6 +125,9 @@ type
     actCompileTraceInto: TAction;
     actCompilePause: TAction;
     actCompileSingleStep: TAction;
+    actCompileStepOut: TAction;
+    actCompileTraceToLine: TAction;
+    actCompileRunToCursor: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -211,6 +214,9 @@ type
     procedure actCompileTraceIntoExecute(Sender: TObject);
     procedure actCompilePauseExecute(Sender: TObject);
     procedure actCompileSingleStepExecute(Sender: TObject);
+    procedure actCompileStepOutExecute(Sender: TObject);
+    procedure actCompileTraceToLineExecute(Sender: TObject);
+    procedure actCompileRunToCursorExecute(Sender: TObject);
   public
     // menu components
     mnuMain: TOfficeMainMenu;
@@ -296,6 +302,9 @@ type
     mniSingleStep: TOfficeMenuItem;
     mniStepOver: TOfficeMenuItem;
     mniTraceInto: TOfficeMenuItem;
+    mniRunToCursor: TOfficeMenuItem;
+    mniRunUntilReturn: TOfficeMenuItem;
+    mniTraceToLine: TOfficeMenuItem;
     mniCompSep: TOfficeMenuItem;
     mniTools: TOfficeMenuItem;
     mniDirectControl: TOfficeMenuItem;
@@ -560,8 +569,6 @@ type
     newcount : integer;
     fMDI : Boolean;
     FResume : boolean;
-    fNXTClump : byte;
-    fNXTProgramCounter : word;
     procedure WMClose(var Message: TWMClose); message WM_CLOSE;
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
     procedure CreateSpiritPlugins;
@@ -599,9 +606,9 @@ type
     procedure CreateHelpToolbar;
     procedure CreateToolsToolbar;
     procedure CreateMiscSynEditComponents;
-    procedure UpdateEditorPosition;
     procedure HandleOnGetVarInfoByID(Sender : TObject; const ID : integer; var offset, size, vartype : integer);
     procedure HandleOnGetVarInfoByName(Sender : TObject; const name : string; var offset, size, vartype : integer);
+    procedure UpdateEditorPosition;
   public
     { Public declarations }
     FActiveLine : integer;
@@ -657,7 +664,7 @@ uses
   uWav2RSO, uNXTExplorer, uGuiUtils, uNXTController, uNXTImage,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,
   uPSI_brick_common, uPSI_uSpirit, uPSI_FakeSpirit, uMiscDefines,
-  uPSI_FantomSpirit, uPSRuntime, uPSDebugger;
+  uPSI_FantomSpirit, uPSRuntime, uPSDebugger, uProgram;
 
 const
   K_NQC_GUIDE = 24;
@@ -1015,6 +1022,9 @@ begin
         else
           binext := '.rxe';
         fNXTCurrentOffset := nil;
+        if (binext = '.rxe') and not CurrentProgram.Loaded(AEF.Filename) then
+          DoCompileAction(ActiveEditorForm, False, False);
+
         BrickComm.StartProgram(ChangeFileExt(ExtractFileName(AEF.Filename), binext));
         fNXTVMState := kNXT_VMState_RunFree;
         actCompilePause.Caption := sBreakAll;
@@ -1889,16 +1899,23 @@ begin
   actCompileDownloadRun.Enabled := bAssigned and bBrickAlive and not bROPS;
   actCompileRun.Enabled         := bBALSF or bROPS;
   actCompileStop.Enabled        := bBALSF or bROPS;
+  // ROPS/Enhanced NXT firmware support
+  actCompileStepOver.Visible    := bROPS or (bBALSF and IsNXT and EnhancedFirmware);
+  actCompileStepOver.Enabled    := bROPS or (bBALSF and (fNXTVMState <> kNXT_VMState_Idle));
+  actCompileTraceInto.Visible   := bROPS or (bBALSF and IsNXT and EnhancedFirmware);
+  actCompileTraceInto.Enabled   := bROPS or (bBALSF and (fNXTVMState <> kNXT_VMState_Idle));
+
   // NXT enhanced firmware support
+//  actCompileSingleStep.Visible  := bBALSF and IsNXT and EnhancedFirmware;
+//  actCompileSingleStep.Enabled  := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
   actCompilePause.Visible       := bBALSF and IsNXT and EnhancedFirmware;
-  actCompileSingleStep.Visible  := bBALSF and IsNXT and EnhancedFirmware;
   actCompilePause.Enabled       := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
-  actCompileSingleStep.Enabled  := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
-  // ROPS support
-  actCompileStepOver.Visible    := bROPS;
-  actCompileTraceInto.Visible   := bROPS;
-  actCompileStepOver.Enabled    := bROPS;
-  actCompileTraceInto.Enabled   := bROPS;
+  actCompileStepOut.Visible     := bBALSF and IsNXT and EnhancedFirmware;
+  actCompileStepOut.Enabled     := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
+  actCompileRunToCursor.Visible := bBALSF and IsNXT and EnhancedFirmware;
+  actCompileRunToCursor.Enabled := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
+  actCompileTraceToLine.Visible := bBALSF and IsNXT and EnhancedFirmware;
+  actCompileTraceToLine.Enabled := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
 
   actToolsDirect.Checked        := DirectForm.Visible;
   actToolsDiag.Checked          := DiagForm.Visible;
@@ -2337,13 +2354,8 @@ begin
   end
   else if IsNXT then
   begin
-    if (fNXTVMState = kNXT_VMState_Pause) and EnhancedFirmware then
-    begin
-      BrickComm.SetVMState(kNXT_VMState_RunFree);
-    end;
-    BrickComm.StopProgram;
-    fNXTVMState := kNXT_VMState_Idle;
-    actCompilePause.Caption := sBreakAll;
+    if CurrentProgram.ProgramReset(EnhancedFirmware) then
+      actCompilePause.Caption := sBreakAll;
   end
   else
   begin
@@ -2369,6 +2381,14 @@ begin
         ce.Execute;
       end;
     end;
+  end
+  else if IsNXT and EnhancedFirmware then
+  begin
+    if CurrentProgram.StepOver then
+    begin
+      actCompilePause.Caption := sContinue;
+      UpdateEditorPosition;
+    end;
   end;
 end;
 
@@ -2387,6 +2407,67 @@ begin
       begin
         ce.StepInto;
         ce.Execute;
+      end;
+    end;
+  end
+  else if IsNXT and EnhancedFirmware then
+  begin
+    if CurrentProgram.TraceInto then
+    begin
+      actCompilePause.Caption := sContinue;
+      UpdateEditorPosition;
+    end;
+  end;
+end;
+
+procedure TMainForm.actCompileStepOutExecute(Sender: TObject);
+begin
+  if IsNXT and EnhancedFirmware then
+  begin
+    if CurrentProgram.RunUntilReturn then
+    begin
+      actCompilePause.Caption := sContinue;
+      UpdateEditorPosition;
+    end;
+  end;
+end;
+
+procedure TMainForm.actCompileTraceToLineExecute(Sender: TObject);
+var
+  nextLine : integer;
+  E : TEditorForm;
+begin
+  if IsNXT and EnhancedFirmware then
+  begin
+    E := ActiveEditorForm;
+    if Assigned(E) then
+    begin
+      // figure out the next source line using CurrentProgram???
+      nextLine := 10;
+      if CurrentProgram.TraceToNextSourceLine(nextLine) then
+      begin
+        actCompilePause.Caption := sContinue;
+        UpdateEditorPosition;
+      end;
+    end;
+  end;
+end;
+
+procedure TMainForm.actCompileRunToCursorExecute(Sender: TObject);
+var
+  cursorLine : integer;
+  E : TEditorForm;
+begin
+  if IsNXT and EnhancedFirmware then
+  begin
+    E := ActiveEditorForm;
+    if Assigned(E) then
+    begin
+      cursorLine := E.TheEditor.CaretY;
+      if CurrentProgram.RunToCursor(cursorLine) then
+      begin
+        actCompilePause.Caption := sContinue;
+        UpdateEditorPosition;
       end;
     end;
   end;
@@ -3344,43 +3425,64 @@ begin
 end;
 
 procedure TMainForm.actCompilePauseExecute(Sender: TObject);
+var
+  E : TEditorForm;
 begin
-  fNXTVMState := kNXT_VMState_Idle;
-  fNXTClump   := 0;
-  fNXTProgramCounter := 0;
-  fNXTCurrentOffset := nil;
-  if not (IsNXT and EnhancedFirmware) then
+  E := ActiveEditorForm;
+  if not Assigned(E) or
+     not (IsNXT and EnhancedFirmware) or
+     not CurrentProgram.Loaded(E.Filename) then
     Exit;
-  if BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter) then
+  if CurrentProgram.VMState in [kNXT_VMState_Pause, kNXT_VMState_Single] then
   begin
-    if fNXTVMState in [kNXT_VMState_Pause, kNXT_VMState_Single] then
+    if CurrentProgram.Run then
+      actCompilePause.Caption := sBreakAll;
+  end
+  else if fNXTVMState = kNXT_VMState_RunFree then
+  begin
+    if CurrentProgram.ProgramPause then
     begin
-      if BrickComm.SetVMState(kNXT_VMState_RunFree) then
-        actCompilePause.Caption := sBreakAll;
-    end
-    else if fNXTVMState = kNXT_VMState_RunFree then
-    begin
-      if BrickComm.SetVMState(kNXT_VMState_Pause) then
-        actCompilePause.Caption := sContinue;
-    end;
-    if BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter) then
+      actCompilePause.Caption := sContinue;
       UpdateEditorPosition;
+    end;
   end;
 end;
 
 procedure TMainForm.actCompileSingleStepExecute(Sender: TObject);
 begin
-  fNXTCurrentOffset := nil;
+(*
   if not (IsNXT and EnhancedFirmware) then
     Exit;
-  if BrickComm.SetVMState(kNXT_VMState_Single) then
+  if CurrentProgram.SingleStep(True) then
   begin
     actCompilePause.Caption := sContinue;
-    fNXTVMState := kNXT_VMState_Idle;
-    fNXTClump   := 0;
-    fNXTProgramCounter := 0;
-    if BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter) then
-      UpdateEditorPosition;
+    UpdateEditorPosition;
+  end;
+*)
+end;
+
+procedure TMainForm.UpdateEditorPosition;
+var
+  CD : TClumpData;
+  CO : TOffset;
+  AEF : TEditorForm;
+  i : integer;
+begin
+  fNXTCurrentOffset := nil;
+  if (fNXTClump < CurrentProgram.Count) then
+  begin
+    CD := CurrentProgram[fNXTClump];
+    AEF := ActiveEditorForm;
+    if Assigned(AEF) and (Pos(Lowercase(AEF.Filename), LowerCase(CD.Filename)) > 0) then
+    begin
+      i := CD.Offsets.IndexOfPC(fNXTProgramCounter);
+      if i <> -1 then
+      begin
+        CO := CD.Offsets[i];
+        fNXTCurrentOffset := CO;
+        AEF.TheEditor.GotoLineAndCenter(CO.LineNumber);
+      end;
+    end;
   end;
 end;
 
@@ -3415,31 +3517,6 @@ begin
       offset  := DSE.Offset;
       size    := DSE.Size;
       vartype := Ord(DSE.DataType);
-    end;
-  end;
-end;
-
-procedure TMainForm.UpdateEditorPosition;
-var
-  CD : TClumpData;
-  CO : TOffset;
-  AEF : TEditorForm;
-  i : integer;
-begin
-  fNXTCurrentOffset := nil;
-  if (fNXTClump < CurrentProgram.Count) then
-  begin
-    CD := CurrentProgram[fNXTClump];
-    AEF := ActiveEditorForm;
-    if Assigned(AEF) and (Pos(Lowercase(AEF.Filename), LowerCase(CD.Filename)) > 0) then
-    begin
-      i := CD.Offsets.IndexOfPC(fNXTProgramCounter);
-      if i <> -1 then
-      begin
-        CO := CD.Offsets[i];
-        fNXTCurrentOffset := CO;
-        AEF.TheEditor.GotoLineAndCenter(CO.LineNumber+1);
-      end;
     end;
   end;
 end;
@@ -3737,11 +3814,16 @@ begin
   mniSingleStep := TOfficeMenuItem.Create(mniCompile);
   mniStepOver := TOfficeMenuItem.Create(mniCompile);
   mniTraceInto := TOfficeMenuItem.Create(mniCompile);
+  mniRunToCursor:= TOfficeMenuItem.Create(mniCompile);
+  mniRunUntilReturn := TOfficeMenuItem.Create(mniCompile);
+  mniTraceToLine := TOfficeMenuItem.Create(mniCompile);
+
   mniCompSep := TOfficeMenuItem.Create(mniCompile);
   // add menu items to compile menu
   mniCompile.Add([mniCompileProgram, mniDownload, mniDownloadandRun,
                   mniProgramNumber, N15, mniRun, mniStop, mniPause,
-                  mniSingleStep, mniStepOver, mniTraceInto, mniCompSep]);
+                  mniSingleStep, mniStepOver, mniTraceInto, mniRunToCursor,
+                  mniRunUntilReturn, mniTraceToLine, mniCompSep]);
   mniProgramNumber.Add([mniProgram1, mniProgram2, mniProgram3, mniProgram4,
                         mniProgram5, mniProgram6, mniProgram7, mniProgram8]);
 
@@ -4180,7 +4262,7 @@ begin
     Name := 'mniViewToolWindows';
     Caption := sToolWindows;
     Hint := sToolWindows;
-    ShortCut := TextToShortCut('F11');
+    ShortCut := TextToShortCut('F9');
     OnClick := mniViewToolWindowsClick;
   end;
   with mniMacroManager do
@@ -4372,39 +4454,55 @@ begin
   begin
     Name := 'mniStop';
     Action := actCompileStop;
-    GroupIndex := 1;
+//    GroupIndex := 1;
   end;
   with mniPause do
   begin
     Name := 'mniPause';
     Action := actCompilePause;
-    GroupIndex := 1;
+//    GroupIndex := 1;
   end;
   with mniSingleStep do
   begin
     Name := 'mniSingleStep';
     Action := actCompileSingleStep;
-    GroupIndex := 1;
+//    GroupIndex := 1;
   end;
   with mniStepOver do
   begin
     Name := 'mniStepOver';
     Action := actCompileStepOver;
-    GroupIndex := 1;
-    ShortCut := 8311;
+//    GroupIndex := 1;
   end;
   with mniTraceInto do
   begin
     Name := 'mniTraceInto';
     Action := actCompileTraceInto;
-    GroupIndex := 1;
-    ShortCut := 8310;
+//    GroupIndex := 1;
+  end;
+  with mniRunUntilReturn do
+  begin
+    Name := 'mniRunUntilReturn';
+    Action := actCompileStepOut;
+//    GroupIndex := 1;
+  end;
+  with mniRunToCursor do
+  begin
+    Name := 'mniRunToCursor';
+    Action := actCompileRunToCursor;
+//    GroupIndex := 1;
+  end;
+  with mniTraceToLine do
+  begin
+    Name := 'mniTraceToLine';
+    Action := actCompileTraceToLine;
+//    GroupIndex := 1;
   end;
   with mniCompSep do
   begin
     Name := 'mniCompSep';
     Caption := '-';
-    GroupIndex := 1;
+//    GroupIndex := 1;
   end;
   with mniTools do
   begin

@@ -581,11 +581,15 @@ object MainForm: TMainForm
     object actCompileTraceInto: TAction
       Category = 'Compile'
       Caption = 'Trace Into'
+      Hint = 'Trace into'
+      ShortCut = 122
       OnExecute = actCompileTraceIntoExecute
     end
     object actCompileStepOver: TAction
       Category = 'Compile'
       Caption = 'Step Over'
+      Hint = 'Step over'
+      ShortCut = 8313
       OnExecute = actCompileStepOverExecute
     end
     object actCompilePause: TAction
@@ -598,9 +602,32 @@ object MainForm: TMainForm
     object actCompileSingleStep: TAction
       Category = 'Compile'
       Caption = 'Single Step'
+      Enabled = False
       Hint = 'Single step'
       ShortCut = 16502
+      Visible = False
       OnExecute = actCompileSingleStepExecute
+    end
+    object actCompileStepOut: TAction
+      Category = 'Compile'
+      Caption = 'Step Out'
+      Hint = 'Run until return'
+      ShortCut = 8314
+      OnExecute = actCompileStepOutExecute
+    end
+    object actCompileTraceToLine: TAction
+      Category = 'Compile'
+      Caption = 'Trace to Next Source Line'
+      Hint = 'Trace to next source line'
+      ShortCut = 8310
+      OnExecute = actCompileTraceToLineExecute
+    end
+    object actCompileRunToCursor: TAction
+      Category = 'Compile'
+      Caption = 'Run to Cursor'
+      Hint = 'Run to cursor'
+      ShortCut = 115
+      OnExecute = actCompileRunToCursorExecute
     end
   end
   object dlgInsertFile: TOpenDialog
