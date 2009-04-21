@@ -230,7 +230,7 @@ uses
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
   uMiscDefines, uSpirit, uNXTClasses, uNBCInterface, ParamUtils,
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants,
-  uEditorExperts, uProgram;
+  uEditorExperts, uProgram, uNXTExplorer;
 
 var
   localSearchFromCaret: boolean;
@@ -1415,7 +1415,9 @@ begin
   begin
     if not FileIsCPPOrPascalOrJava(E) then
     begin
-      commandstr := commandstr + ' -d -S' + OptionalEquals + LocalPort;
+      commandstr := commandstr + ' -d';
+      if not UseInternalNBC then // the internal compiler does not need the port
+        commandstr := commandstr + ' -S' + OptionalEquals + LocalPort;
       if FileIsNBCOrNXCOrNPGOrRICScript(E) then
       begin
         if BrickComm.UseBluetooth then
@@ -2393,17 +2395,39 @@ end;
 procedure TEditorForm.TheEditorDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  Accept := (Source = ConstructForm.treTemplates);
-  if Accept then
+  if Source = ConstructForm.treTemplates then
+  begin
+    Accept := True;
     TheEditor.CaretXY := TheEditor.PixelsToRowColumn(Point(X, Y));
+  end
+  else if Source = frmNXTExplorer.lstFiles then
+  begin
+    Accept := True;
+  end
+  else
+    Accept := False;
 end;
 
-procedure TEditorForm.TheEditorDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
+procedure TEditorForm.TheEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
+var
+  i : integer;
 begin
   if Source = ConstructForm.treTemplates then
   begin
     ConstructForm.DoTemplateInsert(X, Y);
+  end
+  else if Source = frmNXTExplorer.lstFiles then
+  begin
+    // drop file(s)
+    with frmNXTExplorer.lstFiles do
+    begin
+      for i := 0 to Items.Count - 1 do
+      begin
+        if Items[i].Selected then
+          if FileExists(Folders[i].PathName) then
+            MainForm.OpenFile(Folders[i].PathName);
+      end;
+    end;
   end;
 end;
 

@@ -128,6 +128,9 @@ type
     actCompileStepOut: TAction;
     actCompileTraceToLine: TAction;
     actCompileRunToCursor: TAction;
+    actHelpNXCGuidePDF: TAction;
+    actHelpNQCGuidePDF: TAction;
+    actHelpNBCGuidePDF: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -217,6 +220,19 @@ type
     procedure actCompileStepOutExecute(Sender: TObject);
     procedure actCompileTraceToLineExecute(Sender: TObject);
     procedure actCompileRunToCursorExecute(Sender: TObject);
+    procedure pagMainDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure pagMainDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure FormDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure FormDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure pnlPageControlDragOver(Sender, Source: TObject; X,
+      Y: Integer; State: TDragState; var Accept: Boolean);
+    procedure pnlPageControlDragDrop(Sender, Source: TObject; X,
+      Y: Integer);
+    procedure actHelpNXCGuidePDFExecute(Sender: TObject);
+    procedure actHelpNQCGuidePDFExecute(Sender: TObject);
+    procedure actHelpNBCGuidePDFExecute(Sender: TObject);
   public
     // menu components
     mnuMain: TOfficeMainMenu;
@@ -387,6 +403,9 @@ type
     mniHowTo: TOfficeMenuItem;
     N5: TOfficeMenuItem;
     mniWebpage: TOfficeMenuItem;
+    mniNXCGuidePDF : TOfficeMenuItem;
+    mniNQCGuidePDF : TOfficeMenuItem;
+    mniNBCGuidePDF : TOfficeMenuItem;
     N14: TOfficeMenuItem;
     mniAbout: TOfficeMenuItem;
     // popup menus
@@ -508,6 +527,9 @@ type
   protected
 //    procedure icInstanceCtrlMaxInstancesReached(Sender: TObject;
 //      const LastInstanceHandle: Cardinal);
+    procedure DragDropHelper(Sender, Source: TObject; X, Y: Integer);
+    procedure DragOverHelper(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
     procedure ceExecute(Sender: TPSScript);
     procedure ceCompile(Sender: TPSScript);
     procedure ceIdle(Sender: TObject);
@@ -3950,11 +3972,15 @@ begin
   mniHowTo := TOfficeMenuItem.Create(mniHelp);
   N5 := TOfficeMenuItem.Create(mniHelp);
   mniWebpage := TOfficeMenuItem.Create(mniHelp);
+  mniNXCGuidePDF := TOfficeMenuItem.Create(mniHelp);
+  mniNQCGuidePDF := TOfficeMenuItem.Create(mniHelp);
+  mniNBCGuidePDF := TOfficeMenuItem.Create(mniHelp);
   N14 := TOfficeMenuItem.Create(mniHelp);
   mniAbout := TOfficeMenuItem.Create(mniHelp);
   // add menu items to help menu
   mniHelp.Add([mniContents, mniIndex, mniNqcGuide, mniHowTo,
-               N5, mniWebpage, N14, mniAbout]);
+               N5, mniWebpage, mniNQCGuidePDF, mniNXCGuidePDF, mniNBCGuidePDF,
+               N14, mniAbout]);
 
   with mniFile do
   begin
@@ -5046,6 +5072,21 @@ begin
     Name := 'mniWebpage';
     Caption := sWebPage;
     OnClick := mniWebpageClick;
+  end;
+  with mniNXCGuidePDF do
+  begin
+    Name := 'mniNXCGuidePDF';
+    Action := actHelpNXCGuidePDF;
+  end;
+  with mniNQCGuidePDF do
+  begin
+    Name := 'mniNQCGuidePDF';
+    Action := actHelpNQCGuidePDF;
+  end;
+  with mniNBCGuidePDF do
+  begin
+    Name := 'mniNBCGuidePDF';
+    Action := actHelpNBCGuidePDF;
   end;
   with N14 do
   begin
@@ -6564,6 +6605,90 @@ begin
     TabWidth := 8;
     Color := clWhite;
   end;
+end;
+
+procedure TMainForm.pagMainDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  DragOverHelper(Sender, Source, X, Y, State, Accept);
+end;
+
+procedure TMainForm.pagMainDragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+begin
+  DragDropHelper(Sender, Source, X, Y);
+end;
+
+procedure TMainForm.FormDragOver(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  DragOverHelper(Sender, Source, X, Y, State, Accept);
+end;
+
+procedure TMainForm.FormDragDrop(Sender, Source: TObject; X, Y: Integer);
+begin
+  DragDropHelper(Sender, Source, X, Y);
+end;
+
+procedure TMainForm.pnlPageControlDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
+begin
+  DragOverHelper(Sender, Source, X, Y, State, Accept);
+end;
+
+procedure TMainForm.pnlPageControlDragDrop(Sender, Source: TObject; X,
+  Y: Integer);
+begin
+  DragDropHelper(Sender, Source, X, Y);
+end;
+
+procedure TMainForm.DragDropHelper(Sender, Source: TObject; X, Y: Integer);
+var
+  i : integer;
+begin
+  if Source = frmNXTExplorer.lstFiles then
+  begin
+    with frmNXTExplorer.lstFiles do
+    begin
+      for i := 0 to Items.Count - 1 do
+      begin
+        if Items[i].Selected then
+          if FileExists(Folders[i].PathName) then
+            MainForm.OpenFile(Folders[i].PathName);
+      end;
+    end;
+  end;
+end;
+
+procedure TMainForm.DragOverHelper(Sender, Source: TObject; X, Y: Integer;
+  State: TDragState; var Accept: Boolean);
+begin
+  if Source = frmNXTExplorer.lstFiles then
+  begin
+    Accept := True;
+  end
+  else
+    Accept := False;
+end;
+
+procedure TMainForm.actHelpNXCGuidePDFExecute(Sender: TObject);
+var
+  s : string;
+  res : Cardinal;
+begin
+  s := ProgramDir + 'Documentation\NXCGuide.pdf';
+  res := ShellExecute(Handle, 'open', PChar(s), '', PChar(ProgramDir), SW_NORMAL);
+  RaiseLastOSError;
+end;
+
+procedure TMainForm.actHelpNQCGuidePDFExecute(Sender: TObject);
+begin
+  ShellExecute(Handle, 'open', PChar(ProgramDir + 'Documentation\NQCGuide.pdf'), '', '', SW_NORMAL);
+end;
+
+procedure TMainForm.actHelpNBCGuidePDFExecute(Sender: TObject);
+begin
+  ShellExecute(Handle, 'open', PChar(ProgramDir + 'Documentation\NBCGuide.pdf'), '', '', SW_NORMAL);
 end;
 
 end.

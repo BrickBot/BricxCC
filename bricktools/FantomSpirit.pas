@@ -64,7 +64,7 @@ type
     function InternalNXTUploadFileToStream(handle : cardinal; const name : string;
       const totalSize, availSize : cardinal; aStream : TStream) : boolean;
   public
-    constructor Create(aType : byte = 0; const aPort : string = 'COM1'); override;
+    constructor Create(aType : byte = 0; const aPort : string = ''); override;
     destructor Destroy; override;
 
     function  Open : boolean; override;
@@ -753,6 +753,7 @@ begin
   if IsOpen then
   begin
     fResPort := ''; // clear this so that it gets looked up again when opening
+    fUseBT   := False;
     status := kStatusNoError;
     destroyNXT(fNXTHandle, status);
     fActive := False;
@@ -785,6 +786,36 @@ begin
       // if we are using bluetooth then we need to make sure we are paired
       // with the brick
       status := kStatusNoError;
+      // if we are using a brick resource string we think we have already paired
+      // with the PC so try without pairing.  If that fails then try again after
+      // pairing.
+      fNXTHandle := createNXT(PChar(pName), status, 0);
+      if status >= kStatusNoError then
+      begin
+        fActive := True;
+        Result := True;
+      end
+      else
+      begin
+        // if bluetooth then try again after pairing
+        if UseBluetooth then
+        begin
+          status := kStatusNoError;
+          pairBluetooth(PChar(pName), '1234', pairedResNamePC, status);
+          pName := pairedResNamePC;
+          if status >= kStatusNoError then
+          begin
+            status := kStatusNoError;
+            fNXTHandle := createNXT(PChar(pName), status, 0);
+            if status >= kStatusNoError then
+            begin
+              fActive := True;
+              Result := True;
+            end;
+          end;
+        end;
+      end;
+(*
       if UseBluetooth then // resource string starts with BTH == use bluetooth
       begin
 //        unpairBluetooth(PChar(pName), status);
@@ -801,6 +832,7 @@ begin
           Result := True;
         end;
       end;
+*)
     end
     else
     begin
