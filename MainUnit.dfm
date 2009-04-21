@@ -17,6 +17,8 @@ object MainForm: TMainForm
   OnClose = FormClose
   OnCreate = FormCreate
   OnDestroy = FormDestroy
+  OnDragDrop = FormDragDrop
+  OnDragOver = FormDragOver
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -74,6 +76,8 @@ object MainForm: TMainForm
     BevelOuter = bvNone
     TabOrder = 2
     Visible = False
+    OnDragDrop = pnlPageControlDragDrop
+    OnDragOver = pnlPageControlDragOver
     object pagMain: TPageControl
       Left = 0
       Top = 0
@@ -82,6 +86,8 @@ object MainForm: TMainForm
       Align = alClient
       TabOrder = 0
       OnChange = pagMainChange
+      OnDragDrop = pagMainDragDrop
+      OnDragOver = pagMainDragOver
     end
   end
   object pnlSep: TPanel
@@ -628,6 +634,27 @@ object MainForm: TMainForm
       Hint = 'Run to cursor'
       ShortCut = 115
       OnExecute = actCompileRunToCursorExecute
+    end
+    object actHelpNXCGuidePDF: TAction
+      Category = 'Help'
+      Caption = 'View NXC Guide'
+      Hint = 'View NXC Guide'
+      Visible = False
+      OnExecute = actHelpNXCGuidePDFExecute
+    end
+    object actHelpNQCGuidePDF: TAction
+      Category = 'Help'
+      Caption = 'View NQC Guide'
+      Hint = 'View NQC Guide'
+      Visible = False
+      OnExecute = actHelpNQCGuidePDFExecute
+    end
+    object actHelpNBCGuidePDF: TAction
+      Category = 'Help'
+      Caption = 'View NBC Guide'
+      Hint = 'View NBC Guide'
+      Visible = False
+      OnExecute = actHelpNBCGuidePDFExecute
     end
   end
   object dlgInsertFile: TOpenDialog

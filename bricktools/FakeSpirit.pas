@@ -62,7 +62,7 @@ type
     procedure HandleOpenStateChanged(Sender : TObject);
     function  VarHelper(aOp, aVar, aSrc : Byte; aNum : integer) : boolean;
   public
-    constructor Create(aType : byte = 0; const aPort : string = 'COM1'); override;
+    constructor Create(aType : byte = 0; const aPort : string = ''); override;
     destructor Destroy; override;
 
     function  Open : boolean; override;

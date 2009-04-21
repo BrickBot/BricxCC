@@ -183,7 +183,7 @@ type
     procedure DoGetVarInfoByID(const id : integer; var offset, size, vartype : integer);
     procedure DoGetVarInfoByName(const name : string; var offset, size, vartype : integer);
   public
-    constructor Create(aType : byte = 0; const aPort : string = 'COM1'); virtual;
+    constructor Create(aType : byte = 0; const aPort : string = ''); virtual;
     destructor Destroy; override;
 
     function  Open : boolean; virtual; abstract;

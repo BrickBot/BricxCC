@@ -331,12 +331,15 @@ begin
 {$IFDEF CAN_DOWNLOAD}
   if Download or RunProgram then
   begin
-    if UsePort then
+    if BrickComm.Port = '' then
     begin
-      BrickComm.Port := PortName;
-    end
-    else
-      BrickComm.Port := 'usb'; // if no port is specified then default to usb
+      if UsePort then
+      begin
+        BrickComm.Port := PortName;
+      end
+      else
+        BrickComm.Port := 'usb'; // if no port is specified then default to usb
+    end;
     BrickComm.UseBluetooth := UseBluetooth;
   end;
 {$ENDIF}

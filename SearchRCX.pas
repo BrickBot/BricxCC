@@ -150,17 +150,39 @@ end;
 {Searches for the COM port}
 function FindPort(const theport:string):boolean;
 var
+  SL : TStringList;
   i : integer;
 begin
   IRexists := false;
-  if (theport = '') or (thePort = 'Automatic') then // automatic (only works for COM1..COM8
+  if (theport = '') or (thePort = 'Automatic') then 
   begin
-    // try usb
-    BrickComm.Port := 'usb';
-    if BrickComm.TowerExists then
+    // first try brick resource strings from the nxt.dat file
+    SL := TStringList.Create;
+    try
+      LoadNXTPorts(SL);
+      for i := 0 to SL.Count - 1 do
+      begin
+        BrickComm.Port := SL[i];
+        if BrickComm.TowerExists then
+        begin
+          IRexists  := True;
+          LocalPort := BrickComm.Port;
+          break;
+        end;
+      end;
+    finally
+      SL.Free;
+    end;
+    // then try usb/com1..com8
+    if not IRexists then
     begin
-      IRexists:=true;
-      LocalPort := BrickComm.Port;
+      // try usb
+      BrickComm.Port := 'usb';
+      if BrickComm.TowerExists then
+      begin
+        IRexists  := True;
+        LocalPort := BrickComm.Port;
+      end;
     end;
     if not IRexists then
     begin
@@ -169,7 +191,7 @@ begin
         BrickComm.Port := 'COM'+IntToStr(i);
         if BrickComm.TowerExists then
         begin
-          IRexists:=true;
+          IRexists  := True;
           LocalPort := BrickComm.Port;
           break;
         end;
@@ -181,8 +203,8 @@ begin
     BrickComm.Port := theport;
     if BrickComm.TowerExists then
     begin
-      IRexists := true;
-      LocalPort := theport;
+      IRexists  := True;
+      LocalPort := BrickComm.Port;
     end;
   end;
   result := IRexists;
