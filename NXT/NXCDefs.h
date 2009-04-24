@@ -16,7 +16,7 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-04-08
+ * Date:: 2009-04-24
  * Revision:: 46
  *
  * Contains declarations for the NXC NXT API resources
@@ -26,6 +26,18 @@
 #define NXCDEFS_H
 
 #include "NBCCommon.h"
+
+#define and &&
+#define and_eq &=
+#define bitand &
+#define bitor |
+#define compl ~
+#define not !
+#define not_eq !=
+#define or ||
+#define or_eq |=
+#define xor ^
+#define xor_eq ^=
 
 #define u8 unsigned char
 #define s8 char
