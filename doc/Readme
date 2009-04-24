@@ -18,7 +18,7 @@ The NXC language supports global variables, local variables, tasks with no
 parameters, and functions with parameters and return values.  Currently supported 
 variable types are:
 
-int, short, long, byte, char, bool, unsigned short, unsigned long, unsigned int,
+int, short, long, byte, char, bool, unsigned short, unsigned long, unsigned int, float,
 mutex, string, and arrays of all these types except mutex. (int == short).
 
 Global variables may be initialized at the point of declaration using constants 
