@@ -1097,7 +1097,7 @@ procedure HandleVarDecl(DD : TDataDefs; NT : TMapList; bCaseSensitive : boolean;
 implementation
 
 uses
-  StrUtils, uNBCLexer, uCommonUtils, uVersionInfo, uLocalizedStrings,
+  StrUtils, Math, uNBCLexer, uCommonUtils, uVersionInfo, uLocalizedStrings,
   {$IFDEF FAST_MM}FastStrings, {$ENDIF}
   NBCCommonData, NXTDefsData;
 
@@ -6029,7 +6029,7 @@ var
   Arg : TAsmArgument;
   a1, a2, a3, a4, a5, c1, c2 : string;
   de1, de2, de3, de4, de5 : TDataspaceEntry;
-  tmpLine : integer;
+  tmpLine, shiftConst : integer;
 begin
   tmpLine := AL.LineNum;
   case op of
@@ -6209,7 +6209,9 @@ begin
           AL.LineLabel := Format('__abs_%d', [fAbsCount]);
           fCurrentClump.AddLabel(AL.LineLabel, AL);
           inc(fAbsCount);
-        end;
+        end
+        else
+          ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidStatement, true);
       end;
     end;
     OPS_SIGN, OPS_SIGN_2 : begin
@@ -6261,100 +6263,130 @@ begin
           de3.IncRefCount;
           fCurrentClump.AddLabel(AL.LineLabel, AL);
           inc(fSignCount);
-        end;
+        end
+        else
+          ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidStatement, true);
       end;
     end;
     OPS_SHL, OPS_SHR : begin
-      if not EnhancedFirmware then
+      if AL.Args.Count = 3 then
       begin
-        if AL.Args.Count = 3 then
+        a1 := AL.Args[0].Value;
+        a2 := AL.Args[1].Value;
+        a3 := AL.Args[2].Value;
+        // is this argument a constant???
+        if Pos('__constVal', a3) = 1 then
         begin
-          a3  := AL.Args[2].Value;
-          //
-          // what about shifting by a variable containing a negative value???
-          c1 := CreateConstantVar(DataSpace, 1, True);
-          c2 := CreateConstantVar(DataSpace, 2, True);
-          if not fClumpUsesShift then
-            DefineShiftArgs(fCurrentClump.Name);
-          fClumpUsesShift := True;
-          a1  := AL.Args[0].Value;
-          a2  := AL.Args[1].Value;
-          a3  := AL.Args[2].Value;
-          a4  := Format('__%s_shift_cnt', [fCurrentClump.Name]);
-          a5  := Format('__%s_shift_tmp', [fCurrentClump.Name]);
-          de1 := Dataspace.FindEntryByFullName(a1);
-          de4 := Dataspace.FindEntryByFullName(a4);
-          de5 := Dataspace.FindEntryByFullName(a5);
-          if assigned(de1) and assigned(de4) and assigned(de5) then
+          // if the argument is a constant then generate a single mul or div
+          // shLR a1, a2, a3
+          // first get the constant value
+          de3 := Dataspace.FindEntryByFullName(a3);
+          de3.DecRefCount; // this constant is used 1 less time than it used to be
+          shiftConst := Integer(de3.DefaultValue);
+          if shiftConst >= 0 then
           begin
-            // shLR a1, a2, a3
-            // mov __shift_cnt, a3
-            AL.Command := OP_MOV;
-            AL.Args.Clear;
-            AL.AddArgs(Format('%s, %s', [a4, a3]));
-            de4.IncRefCount;
-            // mov __shift_tmp, a2
-            AL := fCurrentClump.ClumpCode.Add;
-            AL.Command := OP_MOV;
-            AL.LineNum  := tmpLine;
-            AL.AddArgs(Format('%s, %s', [a5, a2]));
-            de5.IncRefCount;
-            // label: brtst LTEQ, __shiftdone_NN, __shift_cnt
-            AL := fCurrentClump.ClumpCode.Add;
-            AL.Command := OP_BRTST;
-            AL.LineNum  := tmpLine;
-            AL.AddArgs(Format('LTEQ, __shiftdone_%d, %s', [fShiftCount, a4]));
-            AL.LineLabel := Format('__shiftstart_%d', [fShiftCount]);
-            fCurrentClump.AddLabel(AL.LineLabel, AL);
-            de4.IncRefCount;
-            // mul/div __shift_tmp, __shift_tmp, 2
-            AL := fCurrentClump.ClumpCode.Add;
-            if op = OPS_SHR then
-              AL.Command := OP_DIV
+            if shiftConst = 0 then
+              AL.Command := OPS_INVALID
+            else if AL.Command = OPS_SHL then
+              AL.Command := OP_MUL
             else
-              AL.Command := OP_MUL;
-            AL.LineNum  := tmpLine;
-            AL.AddArgs(Format('%0:s, %0:s, %s', [a5, c2]));
-            de5.IncRefCount;
-            de5.IncRefCount;
-            // sub __shift_cnt, __shift_cnt, 1
-            AL := fCurrentClump.ClumpCode.Add;
-            AL.Command := OP_SUB;
-            AL.LineNum  := tmpLine;
-            AL.AddArgs(Format('%0:s, %0:s, %s', [a4, c1]));
-            de4.IncRefCount;
-            de4.IncRefCount;
-            // jmp __shiftstart_NNN
-            AL := fCurrentClump.ClumpCode.Add;
-            AL.Command := OP_JMP;
-            AL.LineNum  := tmpLine;
-            AL.AddArgs(Format('__shiftstart_%d', [fShiftCount]));
-            // label __shiftdone_NNN
-            AL := fCurrentClump.ClumpCode.Add;
-            AL.Command := OPS_INVALID;
-            AL.LineNum  := tmpLine;
-            AL.LineLabel := Format('__shiftdone_%d', [fShiftCount]);
-            fCurrentClump.AddLabel(AL.LineLabel, AL);
-            // mov a1, __shift_tmp
-            AL := fCurrentClump.ClumpCode.Add;
-            AL.Command := OP_MOV;
-            AL.LineNum  := tmpLine;
-            AL.AddArgs(Format('%s, %s', [a1, a5]));
-            de1.IncRefCount;
-            de5.IncRefCount;
-            inc(fShiftCount);
+              AL.Command := OP_DIV;
+            shiftConst := Trunc(Power(2,shiftConst));
+            c1 := CreateConstantVar(DataSpace, shiftConst, True);
+            AL.Args.Clear;
+            AL.AddArgs(Format('%s, %s, %s', [a1, a2, c1]));
           end
           else
-            ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidStatement, true);
+            ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sNoNegShifts, true);
+        end
+        else
+        begin
+          if not EnhancedFirmware then
+          begin
+            // what about shifting by a variable containing a negative value???
+            c1 := CreateConstantVar(DataSpace, 1, True);
+            c2 := CreateConstantVar(DataSpace, 2, True);
+            if not fClumpUsesShift then
+              DefineShiftArgs(fCurrentClump.Name);
+            fClumpUsesShift := True;
+            a4  := Format('__%s_shift_cnt', [fCurrentClump.Name]);
+            a5  := Format('__%s_shift_tmp', [fCurrentClump.Name]);
+            de1 := Dataspace.FindEntryByFullName(a1);
+            de4 := Dataspace.FindEntryByFullName(a4);
+            de5 := Dataspace.FindEntryByFullName(a5);
+            if assigned(de1) and assigned(de4) and assigned(de5) then
+            begin
+              // shLR a1, a2, a3
+              // mov __shift_cnt, a3
+              AL.Command := OP_MOV;
+              AL.Args.Clear;
+              AL.AddArgs(Format('%s, %s', [a4, a3]));
+              de4.IncRefCount;
+              // mov __shift_tmp, a2
+              AL := fCurrentClump.ClumpCode.Add;
+              AL.Command := OP_MOV;
+              AL.LineNum  := tmpLine;
+              AL.AddArgs(Format('%s, %s', [a5, a2]));
+              de5.IncRefCount;
+              // label: brtst LTEQ, __shiftdone_NN, __shift_cnt
+              AL := fCurrentClump.ClumpCode.Add;
+              AL.Command := OP_BRTST;
+              AL.LineNum  := tmpLine;
+              AL.AddArgs(Format('LTEQ, __shiftdone_%d, %s', [fShiftCount, a4]));
+              AL.LineLabel := Format('__shiftstart_%d', [fShiftCount]);
+              fCurrentClump.AddLabel(AL.LineLabel, AL);
+              de4.IncRefCount;
+              // mul/div __shift_tmp, __shift_tmp, 2
+              AL := fCurrentClump.ClumpCode.Add;
+              if op = OPS_SHR then
+                AL.Command := OP_DIV
+              else
+                AL.Command := OP_MUL;
+              AL.LineNum  := tmpLine;
+              AL.AddArgs(Format('%0:s, %0:s, %s', [a5, c2]));
+              de5.IncRefCount;
+              de5.IncRefCount;
+              // sub __shift_cnt, __shift_cnt, 1
+              AL := fCurrentClump.ClumpCode.Add;
+              AL.Command := OP_SUB;
+              AL.LineNum  := tmpLine;
+              AL.AddArgs(Format('%0:s, %0:s, %s', [a4, c1]));
+              de4.IncRefCount;
+              de4.IncRefCount;
+              // jmp __shiftstart_NNN
+              AL := fCurrentClump.ClumpCode.Add;
+              AL.Command := OP_JMP;
+              AL.LineNum  := tmpLine;
+              AL.AddArgs(Format('__shiftstart_%d', [fShiftCount]));
+              // label __shiftdone_NNN
+              AL := fCurrentClump.ClumpCode.Add;
+              AL.Command := OPS_INVALID;
+              AL.LineNum  := tmpLine;
+              AL.LineLabel := Format('__shiftdone_%d', [fShiftCount]);
+              fCurrentClump.AddLabel(AL.LineLabel, AL);
+              // mov a1, __shift_tmp
+              AL := fCurrentClump.ClumpCode.Add;
+              AL.Command := OP_MOV;
+              AL.LineNum  := tmpLine;
+              AL.AddArgs(Format('%s, %s', [a1, a5]));
+              de1.IncRefCount;
+              de5.IncRefCount;
+              inc(fShiftCount);
+            end
+            else
+              ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidStatement, true);
+          end
+          else
+          begin
+            if op = OPS_SHL then
+              AL.Command := OP_ASL
+            else
+              AL.Command := OP_ASR;
+          end;
         end;
       end
       else
-      begin
-        if op = OPS_SHL then
-          AL.Command := OP_ASL
-        else
-          AL.Command := OP_ASR;
-      end;
+        ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidStatement, true);
     end;
   end;
 end;
@@ -8178,7 +8210,8 @@ begin
                     Break;
                   end;
                 end;
-                OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD, OP_AND, OP_OR, OP_XOR : begin
+                OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD, OP_AND, OP_OR, OP_XOR,
+                OP_LSL, OP_LSR, OP_ASL, OP_ASR : begin
                   arg1 := AL.Args[0].Value;
                   arg2 := ALNext.Args[2].Value;
                   arg3 := ALNext.Args[1].Value;
