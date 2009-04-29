@@ -1,0 +1,44 @@
+task main()
+{
+  int x = 1024;
+  int y;
+  long tick = CurrentTick();
+  for (int i=0; i<1000; i++) {
+/*
+    NumOut(0, LCD_LINE1, asm {shl __RETVAL__, x, 1});
+    NumOut(0, LCD_LINE2, asm {shl __RETVAL__, x, 2});
+    NumOut(0, LCD_LINE3, asm {shl __RETVAL__, x, 3});
+    NumOut(0, LCD_LINE4, asm {shr __RETVAL__, x, 1});
+    NumOut(0, LCD_LINE5, asm {shr __RETVAL__, x, 2});
+    NumOut(0, LCD_LINE6, asm {shr __RETVAL__, x, 3});
+*/
+/*
+    NumOut(0, LCD_LINE1, x << 1);
+    NumOut(0, LCD_LINE2, x << 2);
+    NumOut(0, LCD_LINE3, x << 3);
+    NumOut(0, LCD_LINE4, x >> 1);
+    NumOut(0, LCD_LINE5, x >> 2);
+    NumOut(0, LCD_LINE6, x >> 3);
+*/
+/*
+    asm {
+      shl y, x, 5
+      shr y, x, 5
+      shl y, x, 5
+      shr y, x, 5
+      shl y, x, 5
+      shr y, x, 5
+    }
+*/
+    y = x << 5;
+    y = x >> 5;
+    y = x << 5;
+    y = x >> 5;
+    y = x << 5;
+    y = x >> 5;
+
+  }
+  NumOut(0, LCD_LINE7, CurrentTick()-tick);
+//  NumOut(0, LCD_LINE4, asm {shl __RETVAL__, x, -1});
+  while(true);
+}
