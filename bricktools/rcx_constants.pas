@@ -282,10 +282,11 @@ const
   kNXT_DCBTGetConnectionName   = $1e;
   kNXT_DCSetProperty           = $1f;
   kNXT_DCGetProperty           = $20;
-  kNXT_DCSetVMState            = $21;
-  kNXT_DCGetVMState            = $22;
-  kNXT_DCSetBreakpoints        = $23;
-  kNXT_DCGetBreakpoints        = $24;
+  kNXT_DCUpdateResetCount      = $21;
+  kNXT_DCSetVMState            = $22;
+  kNXT_DCGetVMState            = $23;
+  kNXT_DCSetBreakpoints        = $24;
+  kNXT_DCGetBreakpoints        = $25;
 
   kNXT_Property_BTOnOff        = $0;
   kNXT_Property_SoundLevel     = $1;
