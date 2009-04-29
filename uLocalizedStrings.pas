@@ -459,6 +459,7 @@ resourcestring
   sUnsafeDivision      = 'Dividing a signed number by an unsigned number is unsafe';
   sUnusedVar           = 'Unused variable: %s.  Enable optimization with -Z1 to remove.';
   sInvalidSetStatement = 'The set opcode cannot be used with float variables';
+  sMainUndefined       = 'The main thread is not explicitly named';
 
 // uNXCComp unit
 resourcestring
@@ -507,6 +508,7 @@ resourcestring
   sInvalidArrayIndex       = 'Invalid array index';
   sFloatNotSupported       = 'float types are not supported at the specified firmware version';
   sNoUnsignedFloat         = 'float types cannot be declared as unsigned';
+  sMainTaskNotFound        = 'No task named "main" exists';
 
 // uNBCCommon unit
 resourcestring

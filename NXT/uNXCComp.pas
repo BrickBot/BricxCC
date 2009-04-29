@@ -416,6 +416,7 @@ type
     function  RootOf(const name : string) : string;
     function  DataTypeOfDataspaceEntry(DE : TDataspaceEntry) : char;
     procedure LoadSystemFile(S : TStream);
+    procedure CheckForMain;
   protected
     fTmpAsmLines : TStrings;
     fBadProgram : boolean;
@@ -2192,6 +2193,7 @@ procedure TNXCComp.Trailer;
 var
   tmp : TStrings;
 begin
+  CheckForMain;
   // handle stack variables
   tmp := TStringList.Create;
   try
@@ -8613,6 +8615,21 @@ begin
   finally
     SL.Free;
   end;
+end;
+
+procedure TNXCComp.CheckForMain;
+var
+  i : integer;
+  V : TVariable;
+begin
+  for i := 0 to fGlobals.Count - 1 do
+  begin
+    V := fGlobals[i];
+    if (V.DataType = TOK_TASK) and (V.Name = 'main') then
+      Exit;
+  end;
+  // if we get here we know that main does not exist
+  AbortMsg(sMainTaskNotFound);
 end;
 
 end.

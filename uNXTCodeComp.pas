@@ -36,7 +36,7 @@ type
   end;
 
 const
-  NBCCodeCompDataSize = 509+91;
+  NBCCodeCompDataSize = 513+91;
   NBCCodeCompData: array[0..NBCCodeCompDataSize-1] of TNBCCodeComp = (
     (
      Name: 'Acos';
@@ -273,6 +273,10 @@ const
     (
      Name: 'GetCommModuleValue';
      Params: '(const byte offset, result)'
+    ),
+    (
+     Name: 'GetDisplayContrast';
+     Params: '(out byte contrast)'
     ),
     (
      Name: 'GetDisplayDisplay';
@@ -1039,6 +1043,10 @@ const
      Params: '(port, offset, value)'
     ),
     (
+     Name: 'ReadSensorHTEOPD';
+     Params: '(port, value)'
+    ),
+    (
      Name: 'ReceiveMessage';
      Params: '(queue, clear, msg, result)'
     ),
@@ -1375,6 +1383,10 @@ const
      Params: '(const byte offset, n)'
     ),
     (
+     Name: 'SetDisplayContrast';
+     Params: '(byte contrast)'
+    ),
+    (
      Name: 'SetDisplayDisplay';
      Params: '(n)'
     ),
@@ -1572,7 +1584,11 @@ const
     ),
     (
      Name: 'SetSensorHTGyro';
-     Params: '(port)'
+     Params: '(const byte port)'
+    ),
+    (
+     Name: 'SetSensorHTEOPD';
+     Params: '(const byte port, const bool bStandard)'
     ),
     (
      Name: 'SetSensorMode';

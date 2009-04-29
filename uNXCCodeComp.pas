@@ -36,7 +36,7 @@ type
   end;
 
 const
-  NXCCodeCompDataSize = 577+91;
+  NXCCodeCompDataSize = 581+91;
   NXCCodeCompData: array[0..NXCCodeCompDataSize-1] of TNXCCodeComp = (
     (
      Name: 'abs';
@@ -269,6 +269,10 @@ const
     (
      Name: 'DeleteFile';
      Params: '(string fname)'
+    ),
+    (
+     Name: 'DisplayContrast';
+     Params: '(void)'
     ),
     (
      Name: 'DisplayDisplay';
@@ -1323,6 +1327,10 @@ const
      Params: '(const byte port, byte offset)'
     ),
     (
+     Name: 'SensorHTEOPD';
+     Params: '(const byte port)'
+    ),
+    (
      Name: 'SetBatteryState';
      Params: '(byte state)'
     ),
@@ -1447,16 +1455,20 @@ const
      Params: '(const byte port, n)'
     ),
     (
+     Name: 'SetDisplayContrast';
+     Params: '(byte contrast)'
+    ),
+    (
      Name: 'SetDisplayDisplay';
      Params: '(n)'
     ),
     (
      Name: 'SetDisplayEraseMask';
-     Params: '(eraseMask)'
+     Params: '(unsigned long eraseMask)'
     ),
     (
      Name: 'SetDisplayFlags';
-     Params: '(flags)'
+     Params: '(byte flags)'
     ),
     (
      Name: 'SetDisplayNormal';
@@ -1472,7 +1484,7 @@ const
     ),
     (
      Name: 'SetDisplayUpdateMask';
-     Params: '(updMask)'
+     Params: '(unsigned long updMask)'
     ),
     (
      Name: 'SetHSFlags';
@@ -1620,6 +1632,10 @@ const
     ),
     (
      Name: 'SetSensorHTGyro';
+     Params: '(const byte port)'
+    ),
+    (
+     Name: 'SetSensorHTEOPD';
      Params: '(const byte port)'
     ),
     (

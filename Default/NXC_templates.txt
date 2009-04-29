@@ -14,9 +14,11 @@ char "name";\=
 byte "name";\=
 mutex "name";\=
 string "name";\=
+float "name";\=
 struct "name" {\>"members"\<};\=\=
 #define "macro"\=
 #include "file"\=
+#import "file"\=
 - Debugging
 #pragma debugbreak "msg"\=
 - If statements
@@ -287,7 +289,9 @@ SysDisplayExecuteFunction("args");\=
 SysCommExecuteFunction("args");\=
 SysLoaderExecuteFunction("args");\=
 - HiTechnic API functions
+SetSensorHTEOPD("port", "bStandard")\=
 SetSensorHTGyro("port")\=
+SensorHTEOPD("port")\=
 SensorHTGyro("port", "offset")\=
 SensorHTCompass("port")\=
 SensorHTColorNum("port")\=

@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXTDefs.h
- * Date:: 2009-03-24
- * Revision:: 44
+ * Date:: 2009-04-28
+ * Revision:: 46
  *
  * Contains declarations for the NBC NXT API resources
  *
@@ -2913,6 +2913,12 @@ dseg ends
   compchk EQ, sizeof(_n), 1 \
   GetDisplayModuleValue(DisplayOffsetTextLinesCenterFlags, _n)
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define GetDisplayContrast(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetDisplayModuleValue(DisplayOffsetContrast, _n)
+#endif
+
 dseg segment
   __displayModuleOffsetMutex mutex
   __displayModuleOffset word
@@ -3504,6 +3510,10 @@ dseg ends
 #define SetDisplayDisplay(_n) __setDisplayDisplay(_n)
 #define SetDisplayFlags(_n) __setDisplayFlags(_n)
 #define SetDisplayTextLinesCenterFlags(_n) __setDisplayTextLinesCenterFlags(_n)
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define SetDisplayContrast(_n) __setDisplayContrast(_n)
+#endif
 
 #define __setDisplayNormal(_x, _line, _cnt, _data) \
   compif EQ, isconst(_line+_x), TRUE \
@@ -4153,6 +4163,10 @@ dseg ends
 #define __setDisplayTextLinesCenterFlags(_n) \
   compchk EQ, sizeof(_n), 1 \
   SetDisplayModuleValue(DisplayOffsetTextLinesCenterFlags, _n)
+
+#define __setDisplayContrast(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  SetDisplayModuleValue(DisplayOffsetContrast, _n)
 
 #define __setBTDeviceClass(_p, _n) \
   compchk EQ, sizeof(_n), 4 \
@@ -5363,6 +5377,15 @@ dseg ends
 
 
 // HiTechnic API functions
+
+#define SetSensorHTEOPD(_p, _bStd) \
+  SetSensorType(_p, IN_TYPE_LIGHT_ACTIVE+_bStd) \
+  SetSensorMode(_p, IN_MODE_RAW) \
+  ResetSensor(_p)
+
+#define ReadSensorHTEOPD(_p, _val) \
+  getin _val, _p, RawValue \
+  sub _val, 1023, _val
 
 #define SetSensorHTGyro(_p) \
   SetSensorType(_p, IN_TYPE_LIGHT_INACTIVE) \

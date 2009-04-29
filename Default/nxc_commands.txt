@@ -59,6 +59,7 @@ CustomSensorPercentFullScale
 CustomSensorZeroOffset
 dec2bcd
 DeleteFile
+DisplayContrast
 DisplayDisplay
 DisplayEraseMask
 DisplayFlags
@@ -491,6 +492,7 @@ SensorDigiPinsOutputLevel
 SensorDigiPinsStatus
 SensorHTColorNum
 SensorHTCompass
+SensorHTEOPD
 SensorHTGyro
 SensorHTIRSeekerDir
 SensorInvalid
@@ -543,6 +545,7 @@ SetCommandFlags
 SetCustomSensorActiveStatus
 SetCustomSensorPercentFullScale
 SetCustomSensorZeroOffset
+SetDisplayContrast
 SetDisplayDisplay
 SetDisplayEraseMask
 SetDisplayFlags
@@ -583,6 +586,7 @@ SetSensorBoolean
 SetSensorDigiPinsDirection
 SetSensorDigiPinsOutputLevel
 SetSensorDigiPinsStatus
+SetSensorHTEOPD
 SetSensorHTGyro
 SetSensorLight
 SetSensorLowspeed

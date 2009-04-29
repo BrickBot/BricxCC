@@ -633,6 +633,7 @@ type
     procedure RegisterThreadForSpawning(aThreadName : string);
     procedure ProcessSpawnedThreads;
     procedure OutputUnusedItemWarnings;
+    procedure CheckMainThread;
     procedure HandleSpecialFunctionSizeOf(Arg : TAsmArgument; const left, right, name : string);
     procedure HandleSpecialFunctionIsConst(Arg : TAsmArgument; const left, right, name : string);
     procedure HandleSpecialFunctionValueOf(Arg : TAsmArgument; const left, right, name : string);
@@ -4259,6 +4260,7 @@ begin
       if fSkipCount > 0 then
         Dec(fSkipCount);
     end;
+    CheckMainThread;
     if not fBadProgram then
       fBadProgram := Codespace.Count = 0;
     if not fBadProgram then
@@ -6743,6 +6745,25 @@ begin
     for i := 0 to NXTInstructionsCount1x - 1 do begin
       fNXTInstructions[i] := NXTInstructions1x[i];
     end;
+  end;
+end;
+
+procedure TRXEProgram.CheckMainThread;
+var
+  i : integer;
+  X : TClump;
+begin
+  i := Codespace.IndexOf(Codespace.InitialClumpName);
+  if i = -1 then
+  begin
+    i := Codespace.IndexOf('t000');
+    if i > -1 then
+    begin
+      X := Codespace.Items[i];
+      X.Index := 0;
+    end
+    else
+      ReportProblem(LineCounter, GetCurrentFile(true), '', sMainUndefined, false);
   end;
 end;
 

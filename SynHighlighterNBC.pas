@@ -172,10 +172,10 @@ const
     'OnFwdEx, OnRevEx, CoastEx, OffEx, OnFwdRegEx, OnRevRegEx, OnFwdSyncEx, OnRevSyncEx,'+
     'ResetTachoCount, ResetBlockTachoCount, ResetRotationCount, ResetAllTachoCounts,'+
     'RotateMotor, RotateMotorEx, RotateMotorPID, RotateMotorExPID,'+
-    'SetSensorLowspeed, SetSensorHTGyro, ReadSensorHTTouchMultiplexer,'+
+    'SetSensorLowspeed, SetSensorHTEOPD, SetSensorHTGyro, ReadSensorHTTouchMultiplexer,'+
     'SetSensorType, SetSensorMode, ReadSensor, ClearSensor,'+
     'SetSensorTouch, SetSensorLight, SetSensorSound, SetSensorUltrasonic,'+
-    'ResetSensor, ReadSensorUS, ReadSensorHTGyro, PlayTone, PlayFile,'+
+    'ResetSensor, ReadSensorUS, ReadSensorHTEOPD, ReadSensorHTGyro, PlayTone, PlayFile,'+
     'Random, ResetSleepTimer, PlayToneEx, PlayFileEx, SignedRandom,'+
     'TextOut, NumOut, PointOut, LineOut, RectOut, CircleOut, GraphicOut, GraphicArrayOut,'+
     'FontTextOut, FontTextOutEx, FontNumOut, FontNumOutEx,'+
@@ -249,9 +249,9 @@ const
     'SetUSBOutputBufferOutPtr, SetUSBPollBuffer, SetUSBPollBufferInPtr,'+
     'SetUSBPollBufferOutPtr, SetBTDeviceCount, SetBTDeviceNameCount,'+
     'SetHSFlags, SetHSSpeed, SetHSState, SetUSBState,'+
-    'GetDisplayEraseMask, GetDisplayUpdateMask, GetDisplayDisplay, GetDisplayFlags,'+
+    'GetDisplayEraseMask, GetDisplayUpdateMask, GetDisplayContrast, GetDisplayDisplay, GetDisplayFlags,'+
     'GetDisplayTextLinesCenterFlags, GetDisplayNormal, GetDisplayPopup,'+
-    'SetDisplayEraseMask, SetDisplayUpdateMask, SetDisplayDisplay, SetDisplayFlags,'+
+    'SetDisplayEraseMask, SetDisplayUpdateMask, SetDisplayContrast, SetDisplayDisplay, SetDisplayFlags,'+
     'SetDisplayTextLinesCenterFlags, SetDisplayNormal, SetDisplayPopup, Wait,'+
     'Read, ReadLn, ReadBytes, Write, WriteLn, WriteString, WriteLnString,'+
     'WriteBytes, WriteBytesEx, ClearScreen, ReadI2CBytes,'+
@@ -464,7 +464,7 @@ const
     'DisplayOffsetPMenuText, DisplayOffsetPMenuIcons, DisplayOffsetPStepIcons,'+
     'DisplayOffsetDisplay, DisplayOffsetStatusIcons, DisplayOffsetStepIcons,'+
     'DisplayOffsetFlags, DisplayOffsetTextLinesCenterFlags,'+
-    'DisplayOffsetNormal, DisplayOffsetPopup,'+
+    'DisplayOffsetNormal, DisplayOffsetPopup, DisplayOffsetContrast,'+
     'CommOffsetPFunc, CommOffsetPFuncTwo, CommOffsetBtDeviceTableName,'+
     'CommOffsetBtDeviceTableClassOfDevice, CommOffsetBtDeviceTableBdAddr,'+
     'CommOffsetBtDeviceTableDeviceStatus,'+
@@ -527,6 +527,7 @@ const
     'DISPLAY_VERTICAL_LINE, DISPLAY_CHAR, DISPLAY_ON, DISPLAY_REFRESH,'+
     'DISPLAY_POPUP, DISPLAY_REFRESH_DISABLED, DISPLAY_BUSY, DISPLAY_HEIGHT,'+
     'DISPLAY_WIDTH, DISPLAY_MENUICONS_Y, DISPLAY_MENUICONS_X_OFFS,'+
+    'DISPLAY_CONTRAST_DEFAULT, DISPLAY_CONTRAST_MAX,'+
     'DISPLAY_MENUICONS_X_DIFF, TEXTLINE_1, TEXTLINE_2, TEXTLINE_3, TEXTLINE_4,'+
     'TEXTLINE_5, TEXTLINE_6, TEXTLINE_7, TEXTLINE_8, NUM_TEXTLINES,'+
     'MENUICON_LEFT, MENUICON_CENTER, MENUICON_RIGHT, NUM_MENUICONS,'+
