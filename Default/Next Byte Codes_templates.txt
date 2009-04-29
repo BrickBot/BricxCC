@@ -11,6 +11,7 @@ dseg segment\>"variables"\<dseg ends\=\=
 "name" slong "val"\=
 "name" mutex\=
 "name" byte[] "string value"\=
+"name" float "val"\=
 #define "macro"\=
 #include "file"\=
 - Debugging
@@ -320,7 +321,9 @@ getout "dest", "port", RegDValue\=
 getout "dest", "port", BlockTachoCount\=
 getout "dest", "port", RotationCount\=
 - HiTechnic API functions
+SetSensorHTEOPD("port", "bStandard")\=
 SetSensorHTGyro("port")\=
+ReadSensorHTEOPD("port", "value")\=
 ReadSensorHTGyro("port", "offset", "value")\=
 ReadSensorHTCompass("port", "value")\=
 ReadSensorHTColorNum("port", "value")\=

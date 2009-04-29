@@ -138,6 +138,8 @@ DatalogGetTimes
 DatalogWrite
 DISPLAY_BUSY
 DISPLAY_CHAR
+DISPLAY_CONTRAST_DEFAULT
+DISPLAY_CONTRAST_MAX
 DISPLAY_ERASE_ALL
 DISPLAY_HEIGHT
 DISPLAY_HORISONTAL_LINE
@@ -153,6 +155,7 @@ DISPLAY_WIDTH
 DisplayExecuteFunction
 DisplayModuleID
 DisplayModuleName
+DisplayOffsetContrast
 DisplayOffsetDisplay
 DisplayOffsetEraseMask
 DisplayOffsetFlags

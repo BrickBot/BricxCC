@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-04-24
- * Revision:: 46
+ * Date:: 2009-04-28
+ * Revision:: 48
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -269,6 +269,10 @@
 #define DisplayFlags() asm { GetDisplayFlags(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define DisplayTextLinesCenterFlags() asm { GetDisplayTextLinesCenterFlags(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define DisplayContrast() asm { GetDisplayContrast(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#endif
+
 #define BTDeviceClass(_p) asm { GetBTDeviceClass(_p, __TMPLONG__) __RETURN__ __TMPLONG__ }
 #define BTDeviceStatus(_p) asm { GetBTDeviceStatus(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define BTConnectionClass(_p) asm { GetBTConnectionClass(_p, __TMPLONG__) __RETURN__ __TMPLONG__ }
@@ -372,6 +376,10 @@
 #define SetDisplayDisplay(_n) asm { __setDisplayDisplay(_n) }
 #define SetDisplayFlags(_n) asm { __setDisplayFlags(_n) }
 #define SetDisplayTextLinesCenterFlags(_n) asm { __setDisplayTextLinesCenterFlags(_n) }
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define SetDisplayContrast(_n) asm { __setDisplayContrast(_n) }
+#endif
 
 #define SetDisplayNormal(_x, _line, _cnt, _data) asm { __setDisplayNormal(_x, _line, _cnt, _data) }
 #define SetDisplayPopup(_x, _line, _cnt, _data) asm { __setDisplayPopup(_x, _line, _cnt, _data) }
@@ -1344,6 +1352,16 @@ struct ListFilesType {
 
 
 // HiTechnic API functions
+
+#define SetSensorHTEOPD(_p, _bStd) \
+  SetSensorType(_p, (_bStd) ? IN_TYPE_LIGHT_INACTIVE : IN_TYPE_LIGHT_ACTIVE); \
+  SetSensorMode(_p, IN_MODE_RAW); \
+  ResetSensor(_p);
+
+#define SensorHTEOPD(_p) asm { \
+  getin __RETVAL__, _p, RawValue \
+  sub __RETVAL__, 1023, __RETVAL__ \
+}
 
 #define SetSensorHTGyro(_p) \
   SetSensorType(_p, IN_TYPE_LIGHT_INACTIVE); \

@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NBCCommon.h
- * Date:: 2009-03-24
- * Revision:: 32
+ * Date:: 2009-04-28
+ * Revision:: 33
  *
  * Contains declarations for the NBC & NXC NXT API resources
  *
@@ -1074,6 +1074,12 @@
 #define DISPLAY_REFRESH_DISABLED 0x40     // R  - Refresh disabled
 #define DISPLAY_BUSY             0x80     // R  - Refresh in progress
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+// Constants related to Contrast
+#define DISPLAY_CONTRAST_DEFAULT 0x5A
+#define DISPLAY_CONTRAST_MAX     0x7F
+#endif
+
 #define SCREEN_MODE_RESTORE 0x00
 #define SCREEN_MODE_CLEAR   0x01
 
@@ -1174,6 +1180,9 @@
 #define DisplayOffsetNormal(l,w)    (((l)*100)+(w)+119) // Raw display memory for normal screen
 #define DisplayOffsetPopup(l,w)     (((l)*100)+(w)+919) // Raw display memory for popup screen
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define DisplayOffsetContrast       1719
+#endif
 //==============================================================================
 // Comm module constants
 //==============================================================================
