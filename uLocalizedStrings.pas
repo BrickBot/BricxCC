@@ -460,6 +460,7 @@ resourcestring
   sUnusedVar           = 'Unused variable: %s.  Enable optimization with -Z1 to remove.';
   sInvalidSetStatement = 'The set opcode cannot be used with float variables';
   sMainUndefined       = 'The main thread is not explicitly named';
+  sNoNegShifts         = 'Negative shifts are not supported';
 
 // uNXCComp unit
 resourcestring
