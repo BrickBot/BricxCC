@@ -27,6 +27,7 @@
 
 #include "NBCCommon.h"
 
+/*
 #define and &&
 #define and_eq &=
 #define bitand &
@@ -38,6 +39,7 @@
 #define or_eq |=
 #define xor ^
 #define xor_eq ^=
+*/
 
 #define u8 unsigned char
 #define s8 char

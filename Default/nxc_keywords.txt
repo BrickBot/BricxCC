@@ -4,17 +4,12 @@ __TMPBYTE__
 __TMPLONG__
 __TMPWORD__
 abs
-and
-and_eq
 asm
-bitand
-bitor
 bool
 break
 byte
 case
 char
-compl
 const
 continue
 default
@@ -29,10 +24,6 @@ inline
 int
 long
 mutex
-not
-not_eq
-or
-or_eq
 priority
 repeat
 return
@@ -52,5 +43,3 @@ unsigned
 until
 void
 while
-xor
-xor_eq
