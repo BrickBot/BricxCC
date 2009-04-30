@@ -41,9 +41,10 @@ Version 1.0.1.b36
 - Fixed a preprocessor bug which broke nested #else statements
 - Added NXC API functions for enhanced firmware math opcodes (Atan, Ceil, Exp, Floor, Tan, Tanh, 
   Cosh, Sinh, Log, Log10, Atan2, Pow, Trunc, Frac, and MulDiv32)
-- Added NXC C++ aliases for standard operators: and, and_eq, bitand, bitor, compl, not, not_eq, 
-  or, or_eq, xor, and xor_eq
-
+- Added NBC/NXC API support for HiTechnic EOPD sensor
+- Added firmware and NBC/NXC API support for reading/setting the display Contrast 
+  (SetDisplayContrast(byte contrast); and byte DisplayContrast(void);)
+- Added compiler optimization for constant shifts
 
 
 Version 1.0.1.b35

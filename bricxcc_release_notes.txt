@@ -36,3 +36,5 @@ Version 3.3.7.20
   file and other user files are stored (e.g., bricxcc /UserPath=d:\)
 - Added pause/single step, NBC/NXC variable watching, show current line in editor as 
   you step through your code.
+- Added support for drag-and-drop from NXT Explorer PC list view to BricxCC main window
+  to open files.
