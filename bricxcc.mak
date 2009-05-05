@@ -13,7 +13,7 @@ MANPAGES = doc/nbc.1
 DISTFILES = $(NBC_SRC) $(NXT_SRC) $(CMN_SRC) $(SAMPLES) $(BT_SRC) $(FANTOM_SRC) $(RIC_SRC) $(EXTRA_DIST) $(DOCS)
 UNIXFILES = $(SAMPLES) $(DOCS) $(MANPAGES) $(NBC_SRC) $(NXT_SRC) $(FANTOM_SRC) $(CMN_SRC)
 BINDIST = nxt/nbc tests/struct.nxc $(DOCS)
-OSXBINDIST = nxt/nxtcom "nxt/__MACOSX/._NBC Compile And Download via USB.app" nxt/__MACOSX/._NBCCompile.app "nxt/__MACOSX/._NXT Download via USB.app" "nxt/NBC Compile And Download via USB.app" nxt/NBCCompile.app "nxt/NXT Download via USB.app" nxt/readme_nxtcom.txt
+OSXBINDIST = nxt/nxtcom_scripts.zip
 EXCLUDES = --exclude=*.exe --exclude=*.zip --exclude=*.o --exclude=*.~* --exclude=*.dll
 
 archivenbc:: clean
