@@ -125,7 +125,6 @@ type
     shtAPI: TTabSheet;
     btnAddAPI: TButton;
     btnDeleteAPI: TButton;
-    chkIncludeSrcInList: TCheckBox;
     grpAutoSave: TGroupBox;
     chkAutoSave: TCheckBox;
     chkSaveDesktop: TCheckBox;
@@ -363,6 +362,7 @@ type
     Label7: TLabel;
     Button2: TButton;
     Label8: TLabel;
+    chkIncludeSrcInList: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -2452,7 +2452,6 @@ begin
     AutoSaveFiles      := Reg_ReadBool(reg, 'AutoSaveFiles', False);
     AutoSaveDesktop    := Reg_ReadBool(reg, 'AutoSaveDesktop', False);
     SaveBinaryOutput   := Reg_ReadBool(reg, 'SaveBinaryOutput', False);
-    IncludeSrcInList   := Reg_ReadBool(reg, 'IncludeSrcInList', False);
     LockToolbars       := Reg_ReadBool(reg, 'LockToolbars', True);
     MaxEditWindows     := Reg_ReadBool(reg, 'MaxEditWindows', False);
     MultiFormatCopy    := Reg_ReadBool(reg, 'MultiFormatCopy', False);
@@ -2521,7 +2520,6 @@ begin
     reg.WriteBool('AutoSaveFiles', AutoSaveFiles);
     reg.WriteBool('AutoSaveDesktop', AutoSaveDesktop);
     reg.WriteBool('SaveBinaryOutput', SaveBinaryOutput);
-    reg.WriteBool('IncludeSrcInList', IncludeSrcInList);
     reg.WriteBool('LockToolbars', LockToolbars);
     reg.WriteBool('MaxEditWindows', MaxEditWindows);
     reg.WriteBool('MultiFormatCopy', MultiFormatCopy);
@@ -2728,6 +2726,7 @@ begin
     NQCExePath              := Reg_ReadString(reg, 'NQCExePath', '');
     LCCExePath              := Reg_ReadString(reg, 'LCCExePath', '');
     NBCExePath              := Reg_ReadString(reg, 'NBCExePath', '');
+    IncludeSrcInList        := Reg_ReadBool(reg, 'IncludeSrcInList', False);
     UseInternalNBC          := Reg_ReadBool(reg, 'UseInternalNBC', K_USEINTERNALNBC_DEFAULT);
     EnhancedFirmware        := Reg_ReadBool(reg, 'EnhancedFirmware', False);
     NXT2Firmware            := Reg_ReadBool(reg, 'NXT2Firmware', False);
@@ -2784,6 +2783,7 @@ begin
     reg.WriteString('NQCExePath', NQCExePath);
     reg.WriteString('LCCExePath', LCCExePath);
     reg.WriteString('NBCExePath', NBCExePath);
+    reg.WriteBool('IncludeSrcInList', IncludeSrcInList);
     reg.WriteBool('UseInternalNBC', UseInternalNBC);
     reg.WriteBool('EnhancedFirmware', EnhancedFirmware);
     reg.WriteBool('NXT2Firmware', NXT2Firmware);
@@ -3744,7 +3744,6 @@ begin
   AutoSaveFiles      := PrefForm.chkAutoSave.Checked;
   AutoSaveDesktop    := PrefForm.chkSaveDesktop.Checked;
   SaveBinaryOutput   := PrefForm.chkSaveBinaryOutput.Checked;
-  IncludeSrcInList   := PrefForm.chkIncludeSrcInList.Checked;
   LockToolbars       := PrefForm.chkLockToolbars.Checked;
   MaxEditWindows     := PrefForm.chkMaxEditWindows.Checked;
   MultiFormatCopy    := PrefForm.chkMultiFormatCopy.Checked;
@@ -3777,7 +3776,6 @@ begin
   PrefForm.chkAutoSave.Checked          := AutoSaveFiles;
   PrefForm.chkSaveDesktop.Checked       := AutoSaveDesktop;
   PrefForm.chkSaveBinaryOutput.Checked  := SaveBinaryOutput;
-  PrefForm.chkIncludeSrcInList.Checked  := IncludeSrcInList;
   PrefForm.chkLockToolbars.Checked      := LockToolbars;
   PrefForm.chkMaxEditWindows.Checked    := MaxEditWindows;
   PrefForm.chkMultiFormatCopy.Checked   := MultiFormatCopy;
@@ -3927,6 +3925,7 @@ begin
   NQCExePath              := PrefForm.edtNQCExePath.Text;
   LCCExePath              := PrefForm.edtLCCExePath.Text;
   NBCExePath              := PrefForm.edtNBCExePath.Text;
+  IncludeSrcInList        := PrefForm.chkIncludeSrcInList.Checked;
   UseInternalNBC          := PrefForm.chkUseIntNBCComp.Checked;
   EnhancedFirmware        := PrefForm.chkEnhancedFirmware.Checked;
   NXT2Firmware            := PrefForm.chkNXT2Firmare.Checked;
@@ -3973,6 +3972,7 @@ begin
   PrefForm.edtNQCExePath.Text             := NQCExePath;
   PrefForm.edtLCCExePath.Text             := LCCExePath;
   PrefForm.edtNBCExePath.Text             := NBCExePath;
+  PrefForm.chkIncludeSrcInList.Checked    := IncludeSrcInList;
   PrefForm.chkUseIntNBCComp.Checked       := UseInternalNBC;
   PrefForm.chkEnhancedFirmware.Checked    := EnhancedFirmware;
   PrefForm.chkNXT2Firmare.Checked         := NXT2Firmware;

@@ -109,6 +109,7 @@ uses
   brick_common in 'bricktools\brick_common.pas',
   uNXTConstants in 'NXT\uNXTConstants.pas',
   uNXTController in 'uNXTController.pas' {frmNXTController},
+  uCompStatus in 'uCompStatus.pas' {frmCompStatus},
   uHEXViewer in 'uHEXViewer.pas' {frmHexView},
   uNXTImage in 'uNXTImage.pas' {frmNXTImage};
 
@@ -176,6 +177,7 @@ begin
   Application.CreateForm(TfrmCodeExplorer, frmCodeExplorer);
   Application.CreateForm(TfrmMacroManager, frmMacroManager);
   Application.CreateForm(TfrmHEXView, frmHEXView);
+  Application.CreateForm(TfrmCompStatus, frmCompStatus);
 
   if ParamSwitch('/COM') then
     LocalPort := ParamValue('/COM');

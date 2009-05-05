@@ -461,6 +461,30 @@ resourcestring
   sInvalidSetStatement = 'The set opcode cannot be used with float variables';
   sMainUndefined       = 'The main thread is not explicitly named';
   sNoNegShifts         = 'Negative shifts are not supported';
+  sNBCFinalizeDepends  = 'Finalizing dependencies';
+  sNBCOptimizeLevel    = 'Optimizing at level %d';
+  sNBCBuildRefs        = 'Build codespace references';
+  sNBCOptMutexes       = 'Optimize mutexes';
+  sNBCCompactCode      = 'Compact the codespace';
+  sNBCRemoveLabels     = 'Remove unused labels';
+  sNBCRunCodeOpts      = 'Run codespace optimizations';
+  sNBCCompactAfterOpt  = 'Compact the codespace after optimizations';
+  sNBCCompactData      = 'Compact the dataspace';
+  sNBCSortDataspace    = 'Sort the dataspace';
+  sNBCGenerateRawDS    = 'Generate raw dataspace data';
+  sNBCFillCodeArrays   = 'Fill clump and codespace arrays';
+  sNBCUpdateHeader     = 'Update executable file header';
+  sNBCWriteHeader      = 'Write file header to executable';
+  sNBCWriteDataspace   = 'Write dataspace to executable';
+  sNBCWriteClumpData   = 'Write clump data to executable';
+  sNBCWriteCodespace   = 'Write code to executable';
+  sNBCWriteOptSource   = 'Write optimized source to compiler output';
+  sNBCFinished         = 'Finished';
+  sNBCCompFinished     = 'Finished compiling NBC source code';
+  sNBCLoadSystemFiles  = 'Loading NBC system files';
+  sNBCPreprocess       = 'Running NBC Preprocessor';
+  sNBCCompilingSource  = 'Compiling NBC source code';
+  sNBCOptClump         = 'Optimizing clump: %s';
 
 // uNXCComp unit
 resourcestring
@@ -510,6 +534,14 @@ resourcestring
   sFloatNotSupported       = 'float types are not supported at the specified firmware version';
   sNoUnsignedFloat         = 'float types cannot be declared as unsigned';
   sMainTaskNotFound        = 'No task named "main" exists';
+  sNXCGenerateTrailer      = 'NXC generate trailer';
+  sNXCProcessGlobals       = 'NXC process global declarations';
+  sNXCProcedure            = 'NXC process procedure block: %s';
+  sNXCCompBegin            = 'NXC compilation begins';
+  sNXCPreprocess           = 'Running NXC preprocessor';
+  sNXCInitProgram          = 'NXC init program';
+  sNXCParseProg            = 'NXC parse program code';
+  sNXCCodeGenComplete      = 'NXC code generation finished';  
 
 // uNBCCommon unit
 resourcestring

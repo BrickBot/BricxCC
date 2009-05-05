@@ -135,15 +135,16 @@ CompanyName=JoCar Consulting
 FileDescription=Programmable Brick IDE
 FileVersion=3.3.7.20
 InternalName=Bricx Command Center
-LegalCopyright=Copyright (c) 2008 John Hansen
+LegalCopyright=Copyright (c) 2009 John Hansen
 LegalTrademarks=
 OriginalFilename=bricxcc.exe
 ProductName=Bricx Command Center
 ProductVersion=3.3
-Comments=NQC (c) 1998-2008 David Baum, John Hansen
+Comments=NQC (c) 1998-2009 David Baum, John Hansen
 [HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=G:\nxt\BricxCC\source\NXT\
+Count=2
+Item0=D:\BricxCC\NXT\;D:\bricxcc\bricktools\
+Item1=G:\nxt\BricxCC\source\NXT\
 [HistoryLists\hlConditionals]
 Count=1
 Item0=FAST_MM, CAN_DOWNLOAD

@@ -2,6 +2,7 @@ task main()
 {
   int x = 1024;
   int y;
+  float f;
   long tick = CurrentTick();
   for (int i=0; i<1000; i++) {
 /*
@@ -30,12 +31,21 @@ task main()
       shr y, x, 5
     }
 */
+    x = 1024;
     y = x << 5;
     y = x >> 5;
     y = x << 5;
     y = x >> 5;
     y = x << 5;
     y = x >> 5;
+    
+    x = 48;
+    f = x / 13;
+    NumOut(0, LCD_LINE1, f);
+    y = 12;
+    x = 13;
+    f = 16.0 / x * 2.5 + y;
+    NumOut(0, LCD_LINE2, f);
 
   }
   NumOut(0, LCD_LINE7, CurrentTick()-tick);

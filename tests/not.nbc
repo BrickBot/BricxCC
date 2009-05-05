@@ -1,0 +1,12 @@
+dseg segment
+  f1 float 3.14
+  l1 long 2
+dseg ends
+
+thread main
+  NumOut(0, LCD_LINE1, f1)
+  wait 5000
+  not f1, f1
+  NumOut(0, LCD_LINE2, f1)
+  wait 5000
+endt

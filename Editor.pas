@@ -230,7 +230,7 @@ uses
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
   uMiscDefines, uSpirit, uNXTClasses, uNBCInterface, ParamUtils,
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants,
-  uEditorExperts, uProgram, uNXTExplorer;
+  uEditorExperts, uProgram, uNXTExplorer, uCompStatus;
 
 var
   localSearchFromCaret: boolean;
@@ -1781,6 +1781,8 @@ begin
   Result := 0;
   C := TNBCCompiler.Create;
   try
+    if Assigned(MainForm) then
+      C.OnCompilerStatusChange := MainForm.HandleOnCompilerStatusChange;
     try
       LoadParamDefinitions(C.ExtraDefines, cmdLine);
 {$IFDEF CAN_DOWNLOAD}
@@ -1964,7 +1966,7 @@ begin
         statusStr := sCompileDownloadErrors
       else
         statusStr := sCompileErrors;
-      ShowMessage(statusStr);
+      frmCompStatus.AddMessage(statusStr);
     end
     else if execError then
     begin
