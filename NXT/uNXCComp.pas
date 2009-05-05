@@ -37,8 +37,8 @@ type
     fMaxErrors: word;
     fFirmwareVersion: word;
     fStackVarNames : TStringList;
-    function FunctionParameterTypeName(const name: string;
-      idx: integer): string;
+    fOnCompilerStatusChange: TCompilerStatusChangeEvent;
+    function FunctionParameterTypeName(const name: string; idx: integer): string;
     function GlobalDataType(const n: string): char;
     function LocalDataType(const n: string): char;
     function LocalTypeName(const n: string): string;
@@ -55,6 +55,7 @@ type
     procedure pop;
     procedure push;
     procedure SetStatementType(const Value: TStatementType);
+    procedure DoCompilerStatusChange(const Status: string);
   protected
     fDD: TDataDefs;
     fCurrentStruct : TDataspaceEntry;
@@ -455,6 +456,7 @@ type
     property  MaxErrors : word read fMaxErrors write fMaxErrors;
     property  OnCompilerMessage : TOnCompilerMessage read fOnCompMSg write fOnCompMsg;
     property  ErrorCount : integer read fProgErrorCount;
+    property OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write fOnCompilerStatusChange;
   end;
 
 implementation
@@ -2193,6 +2195,7 @@ procedure TNXCComp.Trailer;
 var
   tmp : TStrings;
 begin
+  DoCompilerStatusChange(sNXCGenerateTrailer);
   CheckForMain;
   // handle stack variables
   tmp := TStringList.Create;
@@ -4974,6 +4977,7 @@ var
   dt : char;
   tname : string;
 begin
+  DoCompilerStatusChange(sNXCProcessGlobals);
   bUnsigned := False;
   bInline   := False;
   bSafeCall := False;
@@ -5497,6 +5501,7 @@ begin
     Scan;
     CheckIdent;
     Name := Value;
+    DoCompilerStatusChange(Format(sNXCProcedure, [Name]));
     if bIsSub and (Name = 'main') then
       AbortMsg(sMainMustBeTask);
     procexists := GlobalIdx(Name);
@@ -5750,6 +5755,7 @@ end;
 procedure TNXCComp.InternalParseStream;
 begin
   try
+    DoCompilerStatusChange(sNXCCompBegin);
     fFuncParams.Clear;
     fThreadNames.Clear;
     fConstStringMap.Clear;
@@ -5761,11 +5767,15 @@ begin
     fLastErrMsg     := '';
     fLHSDataType    := #0;
     fLHSName        := '';
+    DoCompilerStatusChange(sNXCPreprocess);
     PreProcess;
     fMS.Position := 0;
     fParenDepth  := 0;
+    DoCompilerStatusChange(sNXCInitProgram);
     Init;
+    DoCompilerStatusChange(sNXCParseProg);
     Prog;
+    DoCompilerStatusChange(sNXCCodeGenComplete);
   except
     on E : EAbort do
     begin
@@ -8630,6 +8640,12 @@ begin
   end;
   // if we get here we know that main does not exist
   AbortMsg(sMainTaskNotFound);
+end;
+
+procedure TNXCComp.DoCompilerStatusChange(const Status: string);
+begin
+  if Assigned(fOnCompilerStatusChange) then
+    fOnCompilerStatusChange(Self, Status);
 end;
 
 end.

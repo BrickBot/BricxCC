@@ -129,7 +129,7 @@ object PrefForm: TPrefForm
         end
         object CheckSaveBackup: TCheckBox
           Left = 8
-          Top = 16
+          Top = 18
           Width = 229
           Height = 17
           HelpContext = 11011
@@ -140,7 +140,7 @@ object PrefForm: TPrefForm
         end
         object CheckShowRecent: TCheckBox
           Left = 8
-          Top = 32
+          Top = 36
           Width = 229
           Height = 17
           HelpContext = 11012
@@ -151,7 +151,7 @@ object PrefForm: TPrefForm
         end
         object chkShowCompileStatus: TCheckBox
           Left = 8
-          Top = 48
+          Top = 55
           Width = 229
           Height = 17
           HelpContext = 11013
@@ -160,12 +160,12 @@ object PrefForm: TPrefForm
         end
         object chkFirmfast: TCheckBox
           Left = 8
-          Top = 161
+          Top = 166
           Width = 229
           Height = 17
           HelpContext = 11014
           Caption = '&Use fast mode when downloading firmware'
-          TabOrder = 10
+          TabOrder = 9
           OnClick = chkFirmfastClick
         end
         object grpLockedProgs: TGroupBox
@@ -174,7 +174,7 @@ object PrefForm: TPrefForm
           Width = 130
           Height = 168
           Caption = 'Locked Programs'
-          TabOrder = 18
+          TabOrder = 17
           object cbProg1: TCheckBox
             Left = 8
             Top = 17
@@ -248,22 +248,13 @@ object PrefForm: TPrefForm
             TabOrder = 7
           end
         end
-        object chkIncludeSrcInList: TCheckBox
-          Left = 8
-          Top = 64
-          Width = 229
-          Height = 17
-          HelpContext = 11024
-          Caption = '&Show source in code listing'
-          TabOrder = 4
-        end
         object grpAutoSave: TGroupBox
           Left = 306
           Top = 0
           Width = 130
           Height = 60
           Caption = 'Autosave Options'
-          TabOrder = 17
+          TabOrder = 16
           object chkAutoSave: TCheckBox
             Left = 8
             Top = 16
@@ -285,57 +276,57 @@ object PrefForm: TPrefForm
         end
         object chkSaveBinaryOutput: TCheckBox
           Left = 8
-          Top = 80
+          Top = 73
           Width = 229
           Height = 17
           HelpContext = 11028
           Caption = 'Save compiler ou&tput'
-          TabOrder = 5
+          TabOrder = 4
         end
         object chkLockToolbars: TCheckBox
           Left = 8
-          Top = 96
+          Top = 92
           Width = 193
           Height = 17
           HelpContext = 11031
           Caption = 'Lock toolbars in default &positions'
-          TabOrder = 6
+          TabOrder = 5
         end
         object chkMaxEditWindows: TCheckBox
           Left = 8
-          Top = 112
+          Top = 110
           Width = 193
           Height = 17
           HelpContext = 11032
           Caption = 'Max&imize editor windows'
-          TabOrder = 7
+          TabOrder = 6
         end
         object chkMultiFormatCopy: TCheckBox
           Left = 8
-          Top = 128
+          Top = 129
           Width = 193
           Height = 17
           HelpContext = 11033
           Caption = 'Multi-format clipboard c&opy'
-          TabOrder = 8
+          TabOrder = 7
         end
         object chkUseMDI: TCheckBox
           Left = 8
-          Top = 144
+          Top = 147
           Width = 193
           Height = 17
           HelpContext = 11034
           Caption = 'Use &MDI mode'
-          TabOrder = 9
+          TabOrder = 8
         end
         object chkQuietFirmware: TCheckBox
           Left = 8
-          Top = 178
+          Top = 184
           Width = 193
           Height = 17
           HelpContext = 11035
           Caption = '&Quiet firmware download'
-          TabOrder = 12
+          TabOrder = 11
         end
         object chkFirmComp: TCheckBox
           Left = 250
@@ -344,15 +335,15 @@ object PrefForm: TPrefForm
           Height = 17
           HelpContext = 11037
           Caption = '2 x'
-          TabOrder = 11
+          TabOrder = 10
         end
         object chkDroppedRecent: TCheckBox
           Left = 8
-          Top = 195
+          Top = 203
           Width = 241
           Height = 17
           Caption = 'Add dropped files to recent file list'
-          TabOrder = 13
+          TabOrder = 12
         end
         object edtMaxRecent: TSpinEdit
           Left = 98
@@ -363,7 +354,7 @@ object PrefForm: TPrefForm
           MaxLength = 2
           MaxValue = 10
           MinValue = 2
-          TabOrder = 14
+          TabOrder = 13
           Value = 2
         end
         object edtFirmwareChunkSize: TSpinEdit
@@ -376,7 +367,7 @@ object PrefForm: TPrefForm
           MaxLength = 4
           MaxValue = 4400
           MinValue = 4
-          TabOrder = 15
+          TabOrder = 14
           Value = 200
         end
         object edtWaitTime: TSpinEdit
@@ -389,7 +380,7 @@ object PrefForm: TPrefForm
           MaxLength = 3
           MaxValue = 900
           MinValue = 100
-          TabOrder = 16
+          TabOrder = 15
           Value = 100
         end
       end
@@ -1085,6 +1076,15 @@ object PrefForm: TPrefForm
               AutoSize = False
               TabOrder = 2
             end
+            object chkIncludeSrcInList: TCheckBox
+              Left = 76
+              Top = 120
+              Width = 229
+              Height = 17
+              HelpContext = 11024
+              Caption = '&Show source in code listing'
+              TabOrder = 4
+            end
           end
           object shtCompilerLCC: TTabSheet
             Caption = 'LCC'
@@ -1215,7 +1215,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11107
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNBCIncludePathExit
             end
@@ -1234,13 +1234,15 @@ object PrefForm: TPrefForm
               Height = 21
               Style = csDropDownList
               ItemHeight = 13
-              ItemIndex = 1
               TabOrder = 7
-              Text = '1'
               Items.Strings = (
                 '0'
                 '1'
-                '2')
+                '2'
+                '3'
+                '4'
+                '5'
+                '6')
             end
             object chkEnhancedFirmware: TCheckBox
               Left = 76

@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NBCCommon.h
- * Date:: 2009-04-28
- * Revision:: 33
+ * Date:: 2009-04-30
+ * Revision:: 34
  *
  * Contains declarations for the NBC & NXC NXT API resources
  *
@@ -1469,6 +1469,23 @@
 #define PF_PWM_REV2  14
 #define PF_PWM_REV1  15
 
+#define HTIR2_MODE_1200 0
+#define HTIR2_MODE_600  1
+
+#define HTIR2_ADDR_MODE  0x41
+#define HTIR2_ADDR_DCDIR 0x42
+#define HTIR2_ADDR_DC01  0x43
+#define HTIR2_ADDR_DC02  0x44
+#define HTIR2_ADDR_DC03  0x45
+#define HTIR2_ADDR_DC04  0x46
+#define HTIR2_ADDR_DC05  0x47
+#define HTIR2_ADDR_DCAVG 0x48
+#define HTIR2_ADDR_ACDIR 0x49
+#define HTIR2_ADDR_AC01  0x4A
+#define HTIR2_ADDR_AC02  0x4B
+#define HTIR2_ADDR_AC03  0x4C
+#define HTIR2_ADDR_AC04  0x4D
+#define HTIR2_ADDR_AC05  0x4E
 
 // HiTechnic IRLink RCX constants
 #define RCX_OUT_A   0x01

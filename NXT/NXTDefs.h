@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXTDefs.h
- * Date:: 2009-04-28
- * Revision:: 46
+ * Date:: 2009-04-30
+ * Revision:: 47
  *
  * Contains declarations for the NBC NXT API resources
  *
@@ -6773,6 +6773,114 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
+#define __ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  arrbuild __RLSReadBufVar, 0x10, 0x42 \
+  set __RLSBytesCountVar, 7 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  index _dir, __RLSReadBufVar, NA \
+  index _s1, __RLSReadBufVar, 1 \
+  index _s3, __RLSReadBufVar, 2 \
+  index _s5, __RLSReadBufVar, 3 \
+  index _s7, __RLSReadBufVar, 4 \
+  index _s9, __RLSReadBufVar, 5 \
+  index _avg, __RLSReadBufVar, 6 \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  arrbuild __RLSReadBuf##_port, 0x10, 0x42 \
+  set __RLSBytesCount##_port, 7 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  index _dir, __RLSReadBuf##_port, NA \
+  index _s1, __RLSReadBuf##_port, 1 \
+  index _s3, __RLSReadBuf##_port, 2 \
+  index _s5, __RLSReadBuf##_port, 3 \
+  index _s7, __RLSReadBuf##_port, 4 \
+  index _s9, __RLSReadBuf##_port, 5 \
+  index _avg, __RLSReadBuf##_port, 6 \
+  release __RLSBmutex##_port \
+  compend
+
+#define __ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  arrbuild __RLSReadBufVar, 0x10, 0x49 \
+  set __RLSBytesCountVar, 6 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  index _dir, __RLSReadBufVar, NA \
+  index _s1, __RLSReadBufVar, 1 \
+  index _s3, __RLSReadBufVar, 2 \
+  index _s5, __RLSReadBufVar, 3 \
+  index _s7, __RLSReadBufVar, 4 \
+  index _s9, __RLSReadBufVar, 5 \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  arrbuild __RLSReadBuf##_port, 0x10, 0x49 \
+  set __RLSBytesCount##_port, 6 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  index _dir, __RLSReadBuf##_port, NA \
+  index _s1, __RLSReadBuf##_port, 1 \
+  index _s3, __RLSReadBuf##_port, 2 \
+  index _s5, __RLSReadBuf##_port, 3 \
+  index _s7, __RLSReadBuf##_port, 4 \
+  index _s9, __RLSReadBuf##_port, 5 \
+  release __RLSBmutex##_port \
+  compend
+
+#define ReadSensorHTIRSeeker2Addr(_port, _addr, _value) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  arrbuild __RLSReadBufVar, 0x10, _addr \
+  set __RLSBytesCountVar, 1 \
+  call __ReadLSBytesVar \
+  index _value, __RLSReadBufVar, NA \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  arrbuild __RLSReadBuf##_port, 0x10, _addr \
+  set __RLSBytesCount##_port, 1 \
+  call __ReadLSBytes##_port \
+  index _value, __RLSReadBuf##_port, NA \
+  release __RLSBmutex##_port \
+  compend
+
+#define __SetHTIRSeeker2Mode(_port, _mode, _result) \
+  __MSWriteToRegister(_port, 0x10, 0x41, _mode, _result)
+
+
 #define ReadSensorHTColorNum(_port, _value) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
@@ -6830,6 +6938,9 @@ dseg ends
 #define ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result) __ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result)
 #define ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue, _result) __ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue, _result)
 #define ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) __ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result)
+#define ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result) __ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result)
+#define ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) __ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result)
+#define SetHTIRSeeker2Mode(_port, _mode, _result) __SetHTIRSeeker2Mode(_port, _mode, _result)
 
 
 // Mindsensors API functions
@@ -8129,5 +8240,34 @@ ends
 
 #define TemperatureResolution(_port, _cmd, _result) __TempSendCmd(_port, _cmd, _result)
 
+/*
+// R1/R0
+#define TEMP_RES_12BIT     0x60
+#define TEMP_RES_11BIT     0x40
+#define TEMP_RES_10BIT     0x20
+#define TEMP_RES_9BIT      0x00
+// SD (shutdown mode)
+#define TEMP_SD_CONTINUOUS 0x00
+#define TEMP_SD_SHUTDOWN   0x01
+// TM (thermostat mode)
+#define TEMP_TM_COMPARATOR 0x00
+#define TEMP_TM_INTERRUPT  0x02
+// OS (one shot)
+#define TEMP_OS_ONESHOT    0x80
+// F1/F0 (fault queue)
+#define TEMP_FQ_1          0x00
+#define TEMP_FQ_2          0x08
+#define TEMP_FQ_4          0x10
+#define TEMP_FQ_6          0x18
+// POL (polarity)
+#define TEMP_POL_LOW       0x00
+#define TEMP_POL_HIGH      0x04
+
+#define TEMP_I2C_ADDRESS   0x98
+#define TEMP_REG_TEMP      0x00
+#define TEMP_REG_CONFIG    0x01
+#define TEMP_REG_TLOW      0x02
+#define TEMP_REG_THIGH     0x03
+*/
 
 #endif // NXTDEFS__H

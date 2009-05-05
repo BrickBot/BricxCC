@@ -68,6 +68,7 @@ type
     fMaxErrors: word;
     fFirmwareVersion: word;
   protected
+    fOnCompilerStatusChange : TCompilerStatusChangeEvent;
     fDump : TStrings;
     fBCCreated : boolean;
     fUsePort: boolean;
@@ -92,6 +93,7 @@ type
     function Execute : integer;
     procedure Decompile;
     procedure DumpAPI(const idx : integer);
+    procedure HandleOnCompilerStatusChange(Sender : TObject; const StatusMsg : string);
     property CommandLine : string read fCommandLine write SetCommandLine;
     property InputFilename : string read fFilename write fFilename;
     property IgnoreSystemFile : boolean read fIgnoreSystemFile write fIgnoreSystemFile;
@@ -128,6 +130,7 @@ type
     property FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
     property SafeCalls : boolean read fSafeCalls write fSafeCalls;
     property OnWriteMessages : TWriteMessages read fOnWriteMessages write fOnWriteMessages;
+    property OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write fOnCompilerStatusChange;
 {$IFDEF CAN_DOWNLOAD}
     property BrickComm : TBrickComm read GetBrickComm write SetBrickComm;
 {$ENDIF}
@@ -488,6 +491,7 @@ begin
               NC.FirmwareVersion  := FirmwareVersion;
               NC.SafeCalls := SafeCalls;
               NC.MaxErrors := MaxErrors;
+              NC.OnCompilerStatusChange := HandleOnCompilerStatusChange;
               try
                 NC.Parse(sIn);
                 DoWriteIntermediateCode(NC);
@@ -516,6 +520,7 @@ begin
               C.FirmwareVersion  := FirmwareVersion;
               C.IgnoreSystemFile := IgnoreSystemFile;
               C.MaxErrors        := MaxErrors;
+              C.OnCompilerStatusChange := HandleOnCompilerStatusChange;
               try
                 C.IncludeDirs.AddStrings(tmpIncDirs);
                 C.CurrentFile := GetCurrentFilename;
@@ -597,7 +602,17 @@ begin
   UseSpecialName           := ParamSwitch('-N', False, Value);
   SpecialName              := ParamValue('-N', False, Value);
   OptimizationLevel        := 1;
-  if ParamSwitch('-Z', False, Value) or ParamSwitch('-Z2', False, Value) then
+  if ParamSwitch('-Z', False, Value) then
+    OptimizationLevel      := 2
+  else if ParamSwitch('-Z6', False, Value) then
+    OptimizationLevel      := 6
+  else if ParamSwitch('-Z5', False, Value) then
+    OptimizationLevel      := 5
+  else if ParamSwitch('-Z4', False, Value) then
+    OptimizationLevel      := 4
+  else if ParamSwitch('-Z3', False, Value) then
+    OptimizationLevel      := 3
+  else if ParamSwitch('-Z2', False, Value) then
     OptimizationLevel      := 2
   else if ParamSwitch('-Z1', False, Value) then
     OptimizationLevel      := 1
@@ -641,6 +656,13 @@ begin
     2 : WriteBytes(nxt_defs_data);
     3 : WriteBytes(nxc_defs_data);
   end;
+end;
+
+procedure TNBCCompiler.HandleOnCompilerStatusChange(Sender: TObject;
+  const StatusMsg: string);
+begin
+  if Assigned(fOnCompilerStatusChange) then
+    fOnCompilerStatusChange(Sender, StatusMsg);
 end;
 
 {$IFDEF CAN_DOWNLOAD}
@@ -688,7 +710,7 @@ initialization
   VerFileDescription  := '';
   VerFileVersion      := '1.0.1.36';
   VerInternalName     := 'NBC';
-  VerLegalCopyright   := 'Copyright (c) 2006, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2009, John Hansen';
   VerOriginalFileName := 'NBC';
   VerProductName      := 'Next Byte Codes Compiler';
   VerProductVersion   := '1.0.1.b36';

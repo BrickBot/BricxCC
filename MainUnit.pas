@@ -634,6 +634,7 @@ type
   public
     { Public declarations }
     FActiveLine : integer;
+    procedure HandleOnCompilerStatusChange(Sender: TObject; const StatusMsg: string);
     procedure DoHideErrors;
     procedure ExecuteTransferItem(TI: TTransferItem);
 //    function CloseQuery: Boolean; override;
@@ -686,7 +687,7 @@ uses
   uWav2RSO, uNXTExplorer, uGuiUtils, uNXTController, uNXTImage,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,
   uPSI_brick_common, uPSI_uSpirit, uPSI_FakeSpirit, uMiscDefines,
-  uPSI_FantomSpirit, uPSRuntime, uPSDebugger, uProgram;
+  uPSI_FantomSpirit, uPSRuntime, uPSDebugger, uProgram, uCompStatus;
 
 const
   K_NQC_GUIDE = 24;
@@ -1513,6 +1514,12 @@ begin
   end;
 end;
 
+procedure TMainForm.HandleOnCompilerStatusChange(Sender: TObject;
+  const StatusMsg: string);
+begin
+  frmCompStatus.AddMessage(StatusMsg);
+end;
+
 procedure TMainForm.mniCodeExplorerClick(Sender: TObject);
 begin
   ShowCodeExplorer;
@@ -2291,6 +2298,9 @@ begin
         SelectProgram(ProgramBox.ItemIndex);
       end;
     end;
+    if ShowCompilerStatus then
+      frmCompStatus.Show;
+    Application.ProcessMessages;
     Result := CompileIt(bDown, bRun);
   end;
 end;
