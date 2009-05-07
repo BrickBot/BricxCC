@@ -94,7 +94,7 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=..
+SearchPath=..;..\png
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;vcldb;soaprtl;VclSmp;inetdb;bdertl;vcldbx;adortl;teeui;teedb;tee;dss;vclactnband;vclshlctrls;O217_R70;O217BR70;TCSCompInt_70;SynEdit_D7;BricxCCSyn_D7;ComDrv32;cxLibraryVCLD7;dxThemeD7;cxEditorsVCLD7;cxDataD7;cxExtEditorsVCLD7;cxPageControlVCLD7;cxGridVCLD7;M103_r70;S201DR70;cxExportVCLD7;vcl7cr10;TCSComp_65
 Conditionals=
 DebugSourceDirs=
@@ -136,8 +136,9 @@ ProductVersion=1.0.1.b31
 Comments=
 [Excluded Packages]
 c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
-c:\winapps\borland\delphi7\Projects\Bpl\TntUnicodeVcl_D70.bpl=Tnt Unicode Controls
-c:\winapps\borland\delphi7\Projects\Bpl\VirtualTreesD7D.bpl=Virtual Treeview design time package
-C:\winapps\Borland\Delphi7\Projects\Bpl\O217_D70.bpl=Orpheus Components
-C:\winapps\Borland\Delphi7\Projects\Bpl\O217BD70.bpl=Orpheus Data-Aware Components
-c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_64.bpl=TCS Components 6.4
+[HistoryLists\hlUnitAliases]
+Count=1
+Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
+[HistoryLists\hlSearchPath]
+Count=1
+Item0=..;..\png
