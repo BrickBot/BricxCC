@@ -29,6 +29,7 @@ type
 
   TDSTocEntry = class(TCollectionItem)
   private
+    fStale : boolean;
     fName : string;
     fDataType : TDSType;
     fOffset : integer;
@@ -43,6 +44,7 @@ type
     property Size : integer read fSize write fSize;
     property Value : Variant read GetValue;
     property DSTOCEntries : TDSTocEntries read GetDSTOCEntries;
+    property Stale : boolean read fStale;
   end;
 
   TDSTocEntries = class(TCollection)
@@ -50,11 +52,14 @@ type
     fTheProgram : TProgram;
     function GetItem(Index: Integer): TDSTocEntry;
     procedure SetItem(Index: Integer; const Value: TDSTocEntry);
+    procedure RefreshFromOffset(const offset : integer);
   public
     constructor Create; virtual;
     function Add: TDSTocEntry;
     function Insert(Index: Integer): TDSTocEntry;
     function IndexOfName(const name : string) : integer;
+    procedure RefreshAll;
+    procedure RefreshByIndex(const index : integer);
     property Items[Index: Integer]: TDSTocEntry read GetItem write SetItem; default;
     property TheProgram : TProgram read fTheProgram;
   end;
@@ -224,6 +229,21 @@ begin
   Result := TDSTocEntry(inherited Insert(Index));
 end;
 
+procedure TDSTocEntries.RefreshAll;
+begin
+  // refresh all toc entries.  Mark them as not stale
+end;
+
+procedure TDSTocEntries.RefreshByIndex(const index: integer);
+begin
+
+end;
+
+procedure TDSTocEntries.RefreshFromOffset(const offset: integer);
+begin
+
+end;
+
 procedure TDSTocEntries.SetItem(Index: Integer; const Value: TDSTocEntry);
 begin
   inherited SetItem(Index, Value);
@@ -234,6 +254,7 @@ end;
 constructor TDSTocEntry.Create(ACollection: TCollection);
 begin
   inherited;
+  fStale    := True;
   fName     := '';
   fDataType := dsVoid;
   fOffset   := -1;

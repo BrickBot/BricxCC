@@ -36,35 +36,35 @@ type
   end;
 
 const
-  NXCCodeCompDataSize = 581+91;
+  NXCCodeCompDataSize = 581+99;
   NXCCodeCompData: array[0..NXCCodeCompDataSize-1] of TNXCCodeComp = (
     (
      Name: 'abs';
-     Params: '(long n)'
+     Params: '(var n)'
     ),
     (
      Name: 'Acos';
-     Params: '(X)'
+     Params: '(float x)'
     ),
     (
      Name: 'Acquire';
-     Params: '(mutex)'
+     Params: '(mutex m)'
     ),
     (
      Name: 'ArrayBuild';
-     Params: '(aout, src1, src2, srcN)'
+     Params: '(var aout[], var src1, var src2, var srcN)'
     ),
     (
      Name: 'ArrayInit';
-     Params: '(aout, val, unsigned int cnt)'
+     Params: '(var aout[], var val, unsigned int cnt)'
     ),
     (
      Name: 'ArraySubset';
-     Params: '(aout, asrc, unsigned int idx, unsigned int len)'
+     Params: '(var aout[], var asrc[], unsigned int idx, unsigned int len)'
     ),
     (
      Name: 'Asin';
-     Params: '(char X)'
+     Params: '(float x)'
     ),
     (
      Name: 'BatteryLevel';
@@ -200,15 +200,15 @@ const
     ),
     (
      Name: 'ByteArrayToStr';
-     Params: '(array)'
+     Params: '(var array[])'
     ),
     (
      Name: 'ByteArrayToStrEx';
-     Params: '(array, string str)'
+     Params: '(var array[], string str)'
     ),
     (
      Name: 'CircleOut';
-     Params: '(byte x, byte y, byte radius, bool cls=false)'
+     Params: '(byte x, byte y, byte radius, int options=0)'
     ),
     (
      Name: 'ClearScreen';
@@ -236,7 +236,7 @@ const
     ),
     (
      Name: 'Cos';
-     Params: '(int degrees)'
+     Params: '(float radians)'
     ),
     (
      Name: 'CreateFile';
@@ -316,7 +316,7 @@ const
     ),
     (
      Name: 'FlattenVar';
-     Params: '(variable)'
+     Params: '(var x)'
     ),
     (
      Name: 'Float';
@@ -328,11 +328,11 @@ const
     ),
     (
      Name: 'ForceOff';
-     Params: '(long num)'
+     Params: '(byte num)'
     ),
     (
      Name: 'FormatNum';
-     Params: '(string fmt, long num)'
+     Params: '(string fmt, var number)'
     ),
     (
      Name: 'FreeMemory';
@@ -484,51 +484,51 @@ const
     ),
     (
      Name: 'HTRCXBatteryLevel';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXPing';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXDeleteTasks';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXStopAllTasks';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXPBTurnOff';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXDeleteSubs';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXClearSound';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXClearMsgOp';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXLSCalibrateOp';
-     Params: '()'
+     Params: '(void'
     ),
     (
      Name: 'HTRCXMuteSound';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXUnmuteSound';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXClearAllEvents';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTRCXSetOutput';
@@ -720,15 +720,15 @@ const
     ),
     (
      Name: 'HTScoutCalibrateSensor';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTScoutMuteSound';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTScoutUnmuteSound';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'HTScoutSelectSounds';
@@ -924,7 +924,7 @@ const
     ),
     (
      Name: 'ArrayLen';
-     Params: '(array)'
+     Params: '(var array[])'
     ),
     (
      Name: 'NumOut';
@@ -932,7 +932,7 @@ const
     ),
     (
      Name: 'NumToStr';
-     Params: '(long num)'
+     Params: '(var num)'
     ),
     (
      Name: 'Off';
@@ -979,6 +979,22 @@ const
      Params: '(const byte ports, char power, char turnpct, const byte reset)'
     ),
     (
+     Name: 'OnFwdRegPID';
+     Params: '(const byte ports, char power, byte regmode, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnFwdRegExPID';
+     Params: '(const byte ports, char power, byte regmode, const byte reset, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnFwdSyncPID';
+     Params: '(const byte ports, char power, char turnpct, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnFwdSyncExPID';
+     Params: '(const byte ports, char power, char turnpct, const byte reset, byte p, byte i, byte d)'
+    ),
+    (
      Name: 'OnRev';
      Params: '(const byte ports, char power)'
     ),
@@ -1001,6 +1017,22 @@ const
     (
      Name: 'OnRevSyncEx';
      Params: '(const byte ports, char power, char turnpct, const byte reset)'
+    ),
+    (
+     Name: 'OnRevRegPID';
+     Params: '(const byte ports, char power, byte regmode, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnRevRegExPID';
+     Params: '(const byte ports, char power, byte regmode, const byte reset, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnRevSyncPID';
+     Params: '(const byte ports, char power, char turnpct, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnRevSyncExPID';
+     Params: '(const byte ports, char power, char turnpct, const byte reset, byte p, byte i, byte d)'
     ),
     (
      Name: 'OpenFileAppend';
@@ -1100,7 +1132,7 @@ const
     ),
     (
      Name: 'Release';
-     Params: '(mutex)'
+     Params: '(mutex m)'
     ),
     (
      Name: 'RemoteKeepAlive';
@@ -1224,7 +1256,7 @@ const
     ),
     (
      Name: 'RS485Init';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'RS485Uart';
@@ -1232,7 +1264,7 @@ const
     ),
     (
      Name: 'RS485Exit';
-     Params: '()'
+     Params: '(void)'
     ),
     (
      Name: 'SendRS485Bool';

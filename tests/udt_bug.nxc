@@ -1,0 +1,24 @@
+struct Vector
+{
+    int x;
+    int y;
+};
+
+struct VecCollection
+{
+  Vector Vector1;
+  Vector Vector2;
+  Vector Vector3;
+};
+
+task main()
+{
+    VecCollection MyVecCollection;
+    MyVecCollection.Vector1.x = 2;
+    MyVecCollection.Vector2.x = 3;
+    MyVecCollection.Vector3.x = 4;
+    NumOut(0, LCD_LINE1, MyVecCollection.Vector1.x);
+    NumOut(0, LCD_LINE2, MyVecCollection.Vector2.x);
+    NumOut(0, LCD_LINE3, MyVecCollection.Vector3.x);
+    Wait(10000);
+}

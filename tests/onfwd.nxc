@@ -1,0 +1,9 @@
+#define MyOnFwdEx(_ports, _pwr, _reset) \
+  SetOutput(_ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+_reset);
+
+task main() {
+  const int x = RESET_ALL;
+  SetOutput(OUT_BC, Power, 50, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+x);
+  MyOnFwdEx(OUT_BC, 50, x);
+//  OnFwdEx(OUT_BC,50,x);
+}
