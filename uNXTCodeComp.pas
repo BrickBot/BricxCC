@@ -36,7 +36,7 @@ type
   end;
 
 const
-  NBCCodeCompDataSize = 513+91;
+  NBCCodeCompDataSize = 513+99;
   NBCCodeCompData: array[0..NBCCodeCompDataSize-1] of TNBCCodeComp = (
     (
      Name: 'Acos';
@@ -943,6 +943,22 @@ const
      Params: '(ports, pwr, turnpct, reset)'
     ),
     (
+     Name: 'OnFwdRegPID';
+     Params: '(const byte ports, char power, byte regmode, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnFwdRegExPID';
+     Params: '(const byte ports, char power, byte regmode, const byte reset, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnFwdSyncPID';
+     Params: '(const byte ports, char power, char turnpct, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnFwdSyncExPID';
+     Params: '(const byte ports, char power, char turnpct, const byte reset, byte p, byte i, byte d)'
+    ),
+    (
      Name: 'OnRev';
      Params: '(ports, pwr)'
     ),
@@ -965,6 +981,22 @@ const
     (
      Name: 'OnRevSyncEx';
      Params: '(ports, pwr, turnpct, reset)'
+    ),
+    (
+     Name: 'OnRevRegPID';
+     Params: '(const byte ports, char power, byte regmode, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnRevRegExPID';
+     Params: '(const byte ports, char power, byte regmode, const byte reset, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnRevSyncPID';
+     Params: '(const byte ports, char power, char turnpct, byte p, byte i, byte d)'
+    ),
+    (
+     Name: 'OnRevSyncExPID';
+     Params: '(const byte ports, char power, char turnpct, const byte reset, byte p, byte i, byte d)'
     ),
     (
      Name: 'OpenFileAppend';

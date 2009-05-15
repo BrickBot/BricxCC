@@ -170,6 +170,8 @@ const
   NBCCommands: string =
     'OnFwd, OnRev, Coast, Float, Off, OnFwdReg, OnRevReg, OnFwdSync, OnRevSync,'+
     'OnFwdEx, OnRevEx, CoastEx, OffEx, OnFwdRegEx, OnRevRegEx, OnFwdSyncEx, OnRevSyncEx,'+
+    'OnFwdRegExPID, OnFwdRegPID, OnFwdSyncExPID, OnFwdSyncPID, OnRevRegExPID,'+
+    'OnRevRegPID, OnRevSyncExPID, OnRevSyncPID,'+
     'ResetTachoCount, ResetBlockTachoCount, ResetRotationCount, ResetAllTachoCounts,'+
     'RotateMotor, RotateMotorEx, RotateMotorPID, RotateMotorExPID,'+
     'SetSensorLowspeed, SetSensorHTEOPD, SetSensorHTGyro, ReadSensorHTTouchMultiplexer,'+

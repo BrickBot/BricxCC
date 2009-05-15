@@ -2407,7 +2407,7 @@ begin
       else
       begin
         p := Pos(DE.Identifier + '.', path);
-        if p > 0 then
+        if p = 1 then // 2009-05-12 JCH: was p > 0
         begin
           tmp := Copy(path, p+Length(DE.Identifier)+1, MaxInt);
           Result := DE.SubEntries.FindEntryByFullName(tmp);
@@ -7218,8 +7218,10 @@ begin
     if Result <> '' then
       Result := Result + ':';
     if Command <> OPS_INVALID then
+    begin
       Result := Result + #9;
-    Result := Result + CodeSpace.OpcodeToStr(Command) + ' ' + Args.AsString;
+      Result := Result + CodeSpace.OpcodeToStr(Command) + ' ' + Args.AsString;
+    end;
   end;
 end;
 

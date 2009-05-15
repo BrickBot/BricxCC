@@ -103,6 +103,8 @@ type
     fArrayIndexStack : TStringList;
     fStructDecls : TStringList;
     fUDTOnStack : string;
+    fLastExpressionOptimizedToConst : boolean;
+    fLastLoadedConst : string;
     procedure EmitNXCRequiredStructs;
     procedure ResetStatementType;
     procedure DecrementNestingLevel;
@@ -198,8 +200,8 @@ type
     function  RemoveArrayDimension(dt : char) : char;
     function  AddArrayDimension(dt : char) : char;
     procedure IncLineNumber;
-    procedure AddLocal(name: string; dt: char; const tname : string;
-      bConst : boolean; const lenexp : string);
+    function AddLocal(name: string; dt: char; const tname : string;
+      bConst : boolean; const lenexp : string) : integer;
     procedure AllocGlobal(const tname : string; dt: char; bInline, bSafeCall, bConst : boolean);
     procedure AllocLocal(const sub, tname: string; dt: char; bConst : boolean);
     function  GetInitialValue(dt : char) : string;
@@ -297,6 +299,10 @@ type
     procedure DoOnFwdRevEx;
     procedure DoOnFwdRevRegEx;
     procedure DoOnFwdRevSyncEx;
+    procedure DoOnFwdRevRegPID;
+    procedure DoOnFwdRevSyncPID;
+    procedure DoOnFwdRevRegExPID;
+    procedure DoOnFwdRevSyncExPID;
     procedure DoResetCounters;
     procedure DoRotateMotors(idx : integer);
     procedure DoSetSensorTypeMode(idx : integer);
@@ -585,8 +591,16 @@ const
   API_RESETBLOCKTACHOCOUNT = 43;
   API_RESETROTATIONCOUNT = 44;
   API_RESETALLTACHOCOUNTS = 45;
+  API_ONFWDREGPID = 46;
+  API_ONREVREGPID = 47;
+  API_ONFWDSYNCPID = 48;
+  API_ONREVSYNCPID = 49;
+  API_ONFWDREGEXPID = 50;
+  API_ONREVREGEXPID = 51;
+  API_ONFWDSYNCEXPID = 52;
+  API_ONREVSYNCEXPID = 53;
 
-  APICount = 46;
+  APICount = 54;
   APIList : array[0..APICount-1] of string = (
     'break', 'continue', 'Wait',
     'OnFwd', 'OnRev', 'OnFwdReg', 'OnRevReg',
@@ -601,7 +615,9 @@ const
     'OnFwdSyncEx', 'OnRevSyncEx', 'CoastEx', 'OffEx',
     'RotateMotorPID', 'RotateMotorExPID',
     'ResetTachoCount', 'ResetBlockTachoCount',
-    'ResetRotationCount', 'ResetAllTachoCounts'
+    'ResetRotationCount', 'ResetAllTachoCounts',
+    'OnFwdRegPID', 'OnRevRegPID', 'OnFwdRegExPID', 'OnRevRegExPID',
+    'OnFwdSyncPID', 'OnRevSyncPID', 'OnFwdSyncExPID', 'OnRevSyncExPID'
   );
 
 const
@@ -848,8 +864,44 @@ end;
 { Check to Make Sure the Current Token is a Number }
 
 procedure TNXCComp.CheckNumeric;
+var
+  vName : string;
+  idx : integer;
+  V : TVariable;
 begin
-  if not (Token in [TOK_NUM, TOK_HEX]) then Expected(sNumber);
+  if not (Token in [TOK_NUM, TOK_HEX]) then
+  begin
+    // what about a constant numeric variable?
+    if Token <> TOK_IDENTIFIER then
+      Expected(sNumber)
+    else
+    begin
+      // it is an identifier
+      vName := GetDecoratedValue;
+      // if it is a global constant then it can be evaluated using our
+      // expression evaluator
+      fCalc.SilentExpression := vName;
+      if fCalc.ParserError then
+      begin
+        // what about a constant local?
+        idx := LocalIdx(vName);
+        if idx <> -1 then
+        begin
+          V := fLocals[idx];
+          if V.IsConstant and (V.Value <> '') then
+            Value := V.Value
+          else
+            Expected(sNumber);
+        end
+        else
+          Expected(sNumber);
+      end
+      else
+      begin
+        Value := NBCFloatToStr(fCalc.Value);
+      end;
+    end;
+  end;
 end;
 
 procedure TNXCComp.CheckString;
@@ -1853,6 +1905,7 @@ var
   cval : int64;
   tmpSrc : string;
 begin
+  fLastLoadedConst := n;
   if (Pos('.', n) > 0) or (StatementType = stFloat) then
   begin
     tmpSrc := 'mov %s, %s';
@@ -2567,6 +2620,7 @@ end;
 
 function TNXCComp.OptimizeExpression(const idx: integer) : string;
 begin
+  fLastExpressionOptimizedToConst := False;
   System.Delete(fExpStr, Length(fExpStr), 1);
   Result := fExpStr;
   if (OptimizeLevel >= 1) and (NBCSource.Count > (idx+1)) and
@@ -2580,7 +2634,7 @@ begin
     // 2009-04-09 JCH: See my comment in the Expression function above.
     // The commented-out code was preventing a bug that had far too many
     // lines of code being removed if an expression ended in +nnn or -nnn.
-    
+
     if (fExpStr <> '') {and not (fExpStr[1] in ['+', '-'])} then
     begin
       fCalc.SilentExpression := fExpStr;
@@ -2597,6 +2651,7 @@ begin
           NBCSource.Delete(NBCSource.Count-1);
         LoadConst(fExpStr);
         fExpStr := '';
+        fLastExpressionOptimizedToConst := True;
       end;
     end;
   end;
@@ -4472,6 +4527,10 @@ begin
     API_ONREVREG : DoOnFwdRevReg;
     API_ONFWDREGEX,
     API_ONREVREGEX : DoOnFwdRevRegEx;
+    API_ONFWDREGPID,
+    API_ONREVREGPID : DoOnFwdRevRegPID;
+    API_ONFWDREGEXPID,
+    API_ONREVREGEXPID : DoOnFwdRevRegExPID;
     API_OFF,
     API_COAST,
     API_FLOAT    : DoStopMotors;
@@ -4481,6 +4540,10 @@ begin
     API_ONREVSYNC : DoOnFwdRevSync;
     API_ONFWDSYNCEX,
     API_ONREVSYNCEX : DoOnFwdRevSyncEx;
+    API_ONFWDSYNCPID,
+    API_ONREVSYNCPID : DoOnFwdRevSyncPID;
+    API_ONFWDSYNCEXPID,
+    API_ONREVSYNCEXPID : DoOnFwdRevSyncExPID;
     API_RESETTACHOCOUNT,
     API_RESETBLOCKTACHOCOUNT,
     API_RESETROTATIONCOUNT,
@@ -4622,7 +4685,8 @@ var
   savedval : string;
   ival, aval, lenexpr, varName : string;
   bIsArray, bDone, bOpen : boolean;
-  dimensions : integer;
+  idx, dimensions : integer;
+  V : TVariable;
 begin
   Next;
   if Token <> TOK_IDENTIFIER then
@@ -4660,7 +4724,7 @@ begin
   if bIsArray and bConst then
     AbortMsg(sConstLocArrNotSupported);
   varName := ApplyDecoration(sub, savedval, fNestingLevel);
-  AddLocal(varName, dt, tname, bConst, lenexpr);
+  idx := AddLocal(varName, dt, tname, bConst, lenexpr);
   if (Token = TOK_COMMA) or (Token = TOK_SEMICOLON) then
   begin
     if bConst then
@@ -4697,7 +4761,15 @@ begin
         end;
       end
       else
+      begin
         DoAssignValue(savedval, dt);
+        if fLastExpressionOptimizedToConst and (idx <> -1) then
+        begin
+          V := fLocals[idx];
+          if V.IsConstant then
+            V.Value := fLastLoadedConst;
+        end;
+      end;
     finally
       fLHSDataType := TOK_LONGDEF;
       fLHSName     := '';
@@ -4928,7 +5000,7 @@ begin
         if dt in NonAggregateTypes then
         begin
           if dt = TOK_FLOATDEF then
-            fCalc.SetVariable(savedval, StrToFloatDef(ival, 0))
+            fCalc.SetVariable(savedval, NBCStrToFloatDef(ival, 0))
           else
             fCalc.SetVariable(savedval, StrToInt64Def(ival, 0));
         end
@@ -5054,11 +5126,12 @@ begin
   fSafeCalling := bSafeCall;
 end;
 
-procedure TNXCComp.AddLocal(name : string; dt : char; const tname : string;
-  bConst : boolean; const lenexp : string);
+function TNXCComp.AddLocal(name : string; dt : char; const tname : string;
+  bConst : boolean; const lenexp : string) : integer;
 var
   l, IL : TVariable;
 begin
+  Result := -1;
   if IsParam(name) or IsLocal(name) then
     Duplicate(name)
   else
@@ -5068,13 +5141,14 @@ begin
     l.DataType   := dt;
     l.IsConstant := bConst;
     l.TypeName   := tname;
-    l.LenExpr    := lenexp;
+    l.LenExpr    := lenexp;                 
     l.Level      := fNestingLevel;
     if fInlining and Assigned(fCurrentInlineFunction) then
     begin
       IL := fCurrentInlineFunction.LocalVariables.Add;
       IL.Assign(l);
     end;
+    Result := l.Index;
   end;
 end;
 
@@ -5641,6 +5715,8 @@ end;
 
 procedure TNXCComp.Init;
 begin
+  fLastExpressionOptimizedToConst := False;
+  fLastLoadedConst := '';
   fCurrentLine := '';
   totallines := 1;
   linenumber := 1;
@@ -5897,8 +5973,8 @@ begin
   BoolExpression;
   MatchString(TOK_COMMA);
   // reset
-  arg3 := Value;
   CheckNumeric;
+  arg3 := Value;
   Next;
   CloseParen;
   EmitLn(Format('%s(%s, %s, %s)',[op, arg1, RegisterName, arg3]));
@@ -5952,8 +6028,8 @@ begin
   BoolExpression;
   MatchString(TOK_COMMA);
   // reset
-  arg4 := Value;
   CheckNumeric;
+  arg4 := Value;
   Next;
   CloseParen;
   EmitLn(Format('%s(%s, %s, %s, %s)',[op, arg1, svar, RegisterName, arg4]));
@@ -6008,11 +6084,207 @@ begin
   BoolExpression;
   MatchString(TOK_COMMA);
   // reset
-  arg4 := Value;
   CheckNumeric;
+  arg4 := Value;
   Next;
   CloseParen;
   EmitLn(Format('%s(%s, %s, %s, %s)',[op, ports, pwr, RegisterName, arg4]));
+  pop;
+end;
+
+procedure TNXCComp.DoOnFwdRevRegPID;
+var
+  op, arg1, svar, regvar, pvar, ivar : string;
+begin
+  //OnFwdReg(ports, pwr, regmode, p, i, d)
+  //OnRevReg(ports, pwr, regmode, p, i, d)
+  op := Value;
+  Next;
+  OpenParen;
+  // ports
+  arg1 := GetDecoratedValue;
+  Next;
+  MatchString(TOK_COMMA);
+  // pwr
+  BoolExpression;
+  push;
+  svar := tos;
+  EmitLn(Format('mov %s, %s',[svar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // regmode
+  BoolExpression;
+  push;
+  regvar := tos;
+  EmitLn(Format('mov %s, %s',[regvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // p
+  BoolExpression;
+  push;
+  pvar := tos;
+  EmitLn(Format('mov %s, %s',[pvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // i
+  BoolExpression;
+  push;
+  ivar := tos;
+  EmitLn(Format('mov %s, %s',[ivar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // d
+  BoolExpression;
+  CloseParen;
+  EmitLn(Format('%s(%s, %s, %s, %s, %s, %s)',[op, arg1, svar, regvar, pvar, ivar, RegisterName]));
+  pop;
+  pop;
+  pop;
+  pop;
+end;
+
+procedure TNXCComp.DoOnFwdRevRegExPID;
+var
+  op, arg1, svar, arg4, regvar, pvar, ivar : string;
+begin
+  //OnFwdRegExPID(ports, pwr, regmode, reset, p, i, d)
+  //OnRevRegExPID(ports, pwr, regmode, reset, p, i, d)
+  op := Value;
+  Next;
+  OpenParen;
+  // ports
+  arg1 := GetDecoratedValue;
+  Next;
+  MatchString(TOK_COMMA);
+  // pwr
+  BoolExpression;
+  push;
+  svar := tos;
+  EmitLn(Format('mov %s, %s',[svar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // regmode
+  BoolExpression;
+  push;
+  regvar := tos;
+  EmitLn(Format('mov %s, %s',[regvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // reset
+  CheckNumeric;
+  arg4 := Value;
+  MatchString(TOK_COMMA);
+  // p
+  BoolExpression;
+  push;
+  pvar := tos;
+  EmitLn(Format('mov %s, %s',[pvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // i
+  BoolExpression;
+  push;
+  ivar := tos;
+  EmitLn(Format('mov %s, %s',[ivar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // d
+  BoolExpression;
+  CloseParen;
+  EmitLn(Format('%s(%s, %s, %s, %s, %s, %s, %s)',[op, arg1, svar, regvar, arg4, pvar, ivar, RegisterName]));
+  pop;
+  pop;
+  pop;
+  pop;
+end;
+
+procedure TNXCComp.DoOnFwdRevSyncPID;
+var
+  op, ports, pwr, turnvar, pvar, ivar : string;
+begin
+  //OnFwdSyncPID(ports, pwr, turnpct, p, i, d)
+  //OnRevSyncPID(ports, pwr, turnpct, p, i, d)
+  op := Value;
+  Next;
+  OpenParen;
+  // ports
+  ports := GetDecoratedValue;
+  Next;
+  MatchString(TOK_COMMA);
+  // pwr
+  BoolExpression;
+  push;
+  pwr := tos;
+  EmitLn(Format('mov %s, %s',[pwr, RegisterName]));
+  MatchString(TOK_COMMA);
+  // turnpct
+  BoolExpression;
+  push;
+  turnvar := tos;
+  EmitLn(Format('mov %s, %s',[turnvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // p
+  BoolExpression;
+  push;
+  pvar := tos;
+  EmitLn(Format('mov %s, %s',[pvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // i
+  BoolExpression;
+  push;
+  ivar := tos;
+  EmitLn(Format('mov %s, %s',[ivar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // d
+  BoolExpression;
+  CloseParen;
+  EmitLn(Format('%s(%s, %s, %s, %s, %s, %s)',[op, ports, pwr, turnvar, pvar, ivar, RegisterName]));
+  pop;
+  pop;
+  pop;
+  pop;
+end;
+
+procedure TNXCComp.DoOnFwdRevSyncExPID;
+var
+  op, ports, pwr, arg4, turnvar, pvar, ivar : string;
+begin
+  //OnFwdSyncExPID(ports, pwr, turnpct, reset, p, i, d)
+  //OnRevSyncExPID(ports, pwr, turnpct, reset, p, i, d)
+  op := Value;
+  Next;
+  OpenParen;
+  // ports
+  ports := GetDecoratedValue;
+  Next;
+  MatchString(TOK_COMMA);
+  // pwr
+  BoolExpression;
+  push;
+  pwr := tos;
+  EmitLn(Format('mov %s, %s',[pwr, RegisterName]));
+  MatchString(TOK_COMMA);
+  // turnpct
+  BoolExpression;
+  push;
+  turnvar := tos;
+  EmitLn(Format('mov %s, %s',[turnvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // reset
+  CheckNumeric;
+  arg4 := Value;
+  MatchString(TOK_COMMA);
+  // p
+  BoolExpression;
+  push;
+  pvar := tos;
+  EmitLn(Format('mov %s, %s',[pvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // i
+  BoolExpression;
+  push;
+  ivar := tos;
+  EmitLn(Format('mov %s, %s',[ivar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // d
+  BoolExpression;
+  CloseParen;
+  EmitLn(Format('%s(%s, %s, %s, %s, %s, %s, %s)',[op, ports, pwr, turnvar, arg4, pvar, ivar, RegisterName]));
+  pop;
+  pop;
+  pop;
   pop;
 end;
 
@@ -6276,8 +6548,8 @@ begin
   Next;
   MatchString(TOK_COMMA);
   // field
-  field := Value;
   CheckNumeric;
+  field := Value;
   Next;
   MatchString(TOK_COMMA);
   // value
@@ -6312,8 +6584,8 @@ begin
       EmitLn(Format('mov %s, %s',[val, RegisterName]));
       Next;
       // field
-      field := Value;
       CheckNumeric;
+      field := Value;
       Next;
       MatchString(TOK_COMMA);
       // value
@@ -6435,8 +6707,8 @@ begin
   Next;
   MatchString(TOK_COMMA);
   // reset
-  arg2 := Value;
   CheckNumeric;
+  arg2 := Value;
   Next;
   CloseParen;
   EmitLn(Format('%s(%s, %s)', [op, arg1, arg2]));
@@ -6942,8 +7214,8 @@ begin
       Next;
       MatchString(TOK_COMMA);
       // field
-      arg := Value;
       CheckNumeric;
+      arg := Value;
       Next;
       CloseParen;
       case id of

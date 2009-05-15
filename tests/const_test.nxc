@@ -1,0 +1,10 @@
+const int MyVal = RESET_ALL;
+
+int MyFunc(int x) { return x; }
+
+task main()
+{
+  const int test = RESET_BLOCK_COUNT;
+  const int foo = MyFunc(RESET_BLOCKANDTACHO) + test;
+  OnFwdEx(OUT_A, 60, test);
+}
