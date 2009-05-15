@@ -536,22 +536,22 @@ dseg ends
   __resetMotorCounter##_p(RESET_ALL) \
   compend
 
-#define __onFwdExAll(_ports, _pwr, _reset) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+_reset
-#define __onFwdEx0(_pwr, _reset) __onFwdExAll(OUT_A, _pwr, _reset)
-#define __onFwdEx1(_pwr, _reset) __onFwdExAll(OUT_B, _pwr, _reset)
-#define __onFwdEx2(_pwr, _reset) __onFwdExAll(OUT_C, _pwr, _reset)
-#define __onFwdEx3(_pwr, _reset) __onFwdExAll(__OUT_AB, _pwr, _reset)
-#define __onFwdEx4(_pwr, _reset) __onFwdExAll(__OUT_AC, _pwr, _reset)
-#define __onFwdEx5(_pwr, _reset) __onFwdExAll(__OUT_BC, _pwr, _reset)
-#define __onFwdEx6(_pwr, _reset) __onFwdExAll(__OUT_ABC, _pwr, _reset)
+#define __onFwdExPIDAll(_ports, _pwr, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __onFwdExPID0(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_A, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID1(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_B, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID2(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_C, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID3(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_AB, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID4(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_AC, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID5(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_BC, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID6(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_ABC, _pwr, _reset, _p, _i, _d)
 
 #define OnFwdEx(_ports, _pwr, _reset) \
   compif EQ, isconst(_ports), FALSE \
-  __onFwdExAll(_ports, _pwr, _reset) \
+  __onFwdExPIDAll(_ports, _pwr, _reset, 40, 20, 100) \
   compelse \
   compchk LT, _ports, 0x07 \
   compchk GTEQ, _ports, 0x00 \
-  __onFwdEx##_ports(_pwr, _reset) \
+  __onFwdExPID##_ports(_pwr, _reset, 40, 20, 100) \
   compend
 
 #define OnRevEx(_ports, _pwr, _reset) \
@@ -603,22 +603,22 @@ dseg ends
 #define Off(_ports) OffEx(_ports, RESET_BLOCKANDTACHO)
 #define Float(_ports) Coast(_ports)
 
-#define __onFwdRegExAll(_ports, _pwr, _regmode, _reset) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, _regmode, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+_reset
-#define __onFwdRegEx0(_pwr, _regmode, _reset) __onFwdRegExAll(OUT_A, _pwr, _regmode, _reset)
-#define __onFwdRegEx1(_pwr, _regmode, _reset) __onFwdRegExAll(OUT_B, _pwr, _regmode, _reset)
-#define __onFwdRegEx2(_pwr, _regmode, _reset) __onFwdRegExAll(OUT_C, _pwr, _regmode, _reset)
-#define __onFwdRegEx3(_pwr, _regmode, _reset) __onFwdRegExAll(__OUT_AB, _pwr, _regmode, _reset)
-#define __onFwdRegEx4(_pwr, _regmode, _reset) __onFwdRegExAll(__OUT_AC, _pwr, _regmode, _reset)
-#define __onFwdRegEx5(_pwr, _regmode, _reset) __onFwdRegExAll(__OUT_BC, _pwr, _regmode, _reset)
-#define __onFwdRegEx6(_pwr, _regmode, _reset) __onFwdRegExAll(__OUT_ABC, _pwr, _regmode, _reset)
+#define __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, _regmode, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __onFwdRegExPID0(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_A, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID1(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_B, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID2(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_C, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID3(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_AB, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID4(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_AC, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID5(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_BC, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID6(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_ABC, _pwr, _regmode, _reset, _p, _i, _d)
 
 #define OnFwdRegEx(_ports, _pwr, _regmode, _reset) \
   compif EQ, isconst(_ports), FALSE \
-  __onFwdRegExAll(_ports, _pwr, _regmode, _reset) \
+  __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, 40, 20, 100) \
   compelse \
   compchk LT, _ports, 0x07 \
   compchk GTEQ, _ports, 0x00 \
-  __onFwdRegEx##_ports(_pwr, _regmode, _reset) \
+  __onFwdRegExPID##_ports(_pwr, _regmode, _reset, 40, 20, 100) \
   compend
 
 #define OnRevRegEx(_ports, _pwr, _regmode, _reset) \
@@ -627,25 +627,42 @@ dseg ends
   OnFwdRegEx(_ports, __OnRev_Tmp, _regmode, _reset) \
   release __OnRevMutex
 
-#define OnFwdReg(_ports, _pwr, _regmode) OnFwdRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
-#define OnRevReg(_ports, _pwr, _regmode) OnRevRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
-
-#define __onFwdSyncExAll(_ports, _pwr, _turnpct, _reset) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_SYNC, TurnRatio, _turnpct, RunState, OUT_RUNSTATE_RUNNING, TachoLimit, 0, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+_reset
-#define __onFwdSyncEx0(_pwr, _turnpct, _reset) __onFwdSyncExAll(OUT_A, _pwr, _turnpct, _reset)
-#define __onFwdSyncEx1(_pwr, _turnpct, _reset) __onFwdSyncExAll(OUT_B, _pwr, _turnpct, _reset)
-#define __onFwdSyncEx2(_pwr, _turnpct, _reset) __onFwdSyncExAll(OUT_C, _pwr, _turnpct, _reset)
-#define __onFwdSyncEx3(_pwr, _turnpct, _reset) __onFwdSyncExAll(__OUT_AB, _pwr, _turnpct, _reset)
-#define __onFwdSyncEx4(_pwr, _turnpct, _reset) __onFwdSyncExAll(__OUT_AC, _pwr, _turnpct, _reset)
-#define __onFwdSyncEx5(_pwr, _turnpct, _reset) __onFwdSyncExAll(__OUT_BC, _pwr, _turnpct, _reset)
-#define __onFwdSyncEx6(_pwr, _turnpct, _reset) __onFwdSyncExAll(__OUT_ABC, _pwr, _turnpct, _reset)
-
-#define OnFwdSyncEx(_ports, _pwr, _turnpct, _reset) \
+#define OnFwdRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) \
   compif EQ, isconst(_ports), FALSE \
-  __onFwdSyncExAll(_ports, _pwr, _turnpct, _reset) \
+  __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, _p, _i, _d) \
   compelse \
   compchk LT, _ports, 0x07 \
   compchk GTEQ, _ports, 0x00 \
-  __onFwdSyncEx##_ports(_pwr, _turnpct, _reset) \
+  __onFwdRegExPID##_ports(_pwr, _regmode, _reset, _p, _i, _d) \
+  compend
+
+#define OnRevRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) \
+  acquire __OnRevMutex \
+  neg __OnRev_Tmp, _pwr \
+  OnFwdRegExPID(_ports, __OnRev_Tmp, _regmode, _reset, _p, _i, _d) \
+  release __OnRevMutex
+
+#define OnFwdReg(_ports, _pwr, _regmode) OnFwdRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
+#define OnRevReg(_ports, _pwr, _regmode) OnRevRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
+#define OnFwdRegPID(_ports, _pwr, _regmode, _p, _i, _d) OnFwdRegExPID(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO, _p, _i, _d)
+#define OnRevRegPID(_ports, _pwr, _regmode, _p, _i, _d) OnRevRegExPID(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO, _p, _i, _d)
+
+#define __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_SYNC, TurnRatio, _turnpct, RunState, OUT_RUNSTATE_RUNNING, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __onFwdSyncExPID0(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_A, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID1(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_B, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID2(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_C, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID3(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_AB, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID4(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_AC, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID5(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_BC, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID6(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_ABC, _pwr, _turnpct, _reset, _p, _i, _d)
+
+#define OnFwdSyncEx(_ports, _pwr, _turnpct, _reset) \
+  compif EQ, isconst(_ports), FALSE \
+  __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, 40, 20, 100) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __onFwdSyncExPID##_ports(_pwr, _turnpct, _reset, 40, 20, 100) \
   compend
 
 #define OnRevSyncEx(_ports, _pwr, _turnpct, _reset) \
@@ -654,8 +671,25 @@ dseg ends
   OnFwdSyncEx(_ports, __OnRev_Tmp, _turnpct, _reset) \
   release __OnRevMutex
 
+#define OnFwdSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) \
+  compif EQ, isconst(_ports), FALSE \
+  __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, _p, _i, _d) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __onFwdSyncExPID##_ports(_pwr, _turnpct, _reset, _p, _i, _d) \
+  compend
+
+#define OnRevSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) \
+  acquire __OnRevMutex \
+  neg __OnRev_Tmp, _pwr \
+  OnFwdSyncExPID(_ports, __OnRev_Tmp, _turnpct, _reset, _p, _i, _d) \
+  release __OnRevMutex
+
 #define OnFwdSync(_ports, _pwr, _turnpct) OnFwdSyncEx(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO)
 #define OnRevSync(_ports, _pwr, _turnpct) OnRevSyncEx(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO)
+#define OnFwdSyncPID(_ports, _pwr, _turnpct, _p, _i, _d) OnFwdSyncExPID(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO, _p, _i, _d)
+#define OnRevSyncPID(_ports, _pwr, _turnpct, _p, _i, _d) OnRevSyncExPID(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO, _p, _i, _d)
 
 dseg segment
   __rotateMutex0 mutex
@@ -1024,23 +1058,17 @@ __rotate_doneRunning0:
   brtst EQ, __rotate_Reset0, __rotate_stop0 ; skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM0, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
-  set __rotate_theRM0, OUT_REGMODE_SPEED
-  set __rotate_theUF0, UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports0, OutputMode, __rotate_theOM0, RegMode, __rotate_theRM0, RunState, __rotate_theRS0, Power, 0, UpdateFlags, __rotate_theUF0
+  set __rotate_theUF0, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
+  setout __rotate_ports0, OutputMode, __rotate_theOM0, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS0, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF0
 // Verifies that motor doesn't rotate for 50ms, else loops
   getout __rotate_RotCount0, __rotate_firstPort0, RotationCount
 __rotate_Stabilize0:
   mov __rotate_OldRotCount0, __rotate_RotCount0
-  // wait loop
-  gettick __rotate_now0
-  add __rotate_then0, __rotate_now0, 50
-__rotate_Waiting0:
-  gettick __rotate_now0
-  brcmp LTEQ, __rotate_Waiting0, __rotate_now0, __rotate_then0 
+  wait 50
   // check rotation
   getout __rotate_RotCount0, __rotate_firstPort0, RotationCount
   brcmp NEQ, __rotate_Stabilize0, __rotate_OldRotCount0, __rotate_RotCount0
-  setout __rotate_ports0, RunState, OUT_RUNSTATE_IDLE, OutputMode, OUT_MODE_COAST, UpdateFlags, UF_UPDATE_MODE
+  setout __rotate_ports0, RegMode, __rotate_theRM0, RunState, OUT_RUNSTATE_IDLE, OutputMode, OUT_MODE_COAST+OUT_MODE_REGULATED, UpdateFlags, UF_UPDATE_MODE
 __rotate_Reset0:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done0, __rotate_theTurnPct0
