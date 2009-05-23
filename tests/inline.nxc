@@ -1,0 +1,40 @@
+//inline float sin(float x) { asm { sin __FLTRETVAL__, x } }
+
+inline int Testing(int a, int b) {
+  int x = a+b*4;
+  return x;
+}
+
+inline int FooBar(int x) {
+  int tmp = Testing(5, x);
+  tmp *= x;
+  return tmp;
+}
+
+inline long MyFunc(int a, int b, int c) {
+  long result = b * c;
+  result++;
+  return result / a + FooBar(b);
+}
+
+inline float TestSinDeg(float x) { return sin(x*RADIANS_PER_DEGREE); }
+
+task main()
+{
+
+  int y = Random(15);
+  int z = Random();
+  long x = MyFunc(1, y, z);
+
+  float deg = 45.0;
+  NumOut(0, LCD_LINE1, sin(deg*RADIANS_PER_DEGREE));
+  NumOut(0, LCD_LINE2, TestSinDeg(deg));
+
+  TextOut(0, LCD_LINE5, "1 = "); NumOut(40, LCD_LINE5, 1);
+  TextOut(0, LCD_LINE6, "y = "); NumOut(40, LCD_LINE6, y);
+  TextOut(0, LCD_LINE7, "z = "); NumOut(40, LCD_LINE7, z);
+  TextOut(0, LCD_LINE8, "x = "); NumOut(40, LCD_LINE8, x);
+
+  while(true);
+}
+

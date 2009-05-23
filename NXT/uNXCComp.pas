@@ -90,7 +90,9 @@ type
     fSwitchDepth : integer;
     fCalc : TNBCExpParser;
     fOptimizeLevel: integer;
-    fInlining : boolean;
+//    fInlining : boolean;
+    fInlineDepth : integer;
+    fInlineStack : TObjectList; // list of TStrings
     fSafeCalling : boolean;
     fNestingLevel : integer;
     fLHSDataType : char;
@@ -105,6 +107,10 @@ type
     fUDTOnStack : string;
     fLastExpressionOptimizedToConst : boolean;
     fLastLoadedConst : string;
+    function AmInlining : boolean;
+    procedure IncrementInlineDepth;
+    procedure DecrementInlineDepth;
+    procedure HandleSpecialNames;
     procedure EmitNXCRequiredStructs;
     procedure ResetStatementType;
     procedure DecrementNestingLevel;
@@ -1190,6 +1196,10 @@ end;
 function TNXCComp.IsLocal(n: string): boolean;
 begin
   Result := LocalIdx(RootOf(n)) <> -1{0};
+  if not Result then
+  begin
+    // is this a special internal variable name?
+  end;
 end;
 
 function TNXCComp.LocalIdx(n: string): integer;
@@ -1323,6 +1333,7 @@ begin
     Value := Value + Look;
     GetChar;
   until not IsAlNum(Look);
+  HandleSpecialNames;
   fExpStrHasVars := True;
 end;
 
@@ -2285,7 +2296,7 @@ procedure TNXCComp.Prolog(const name : string; bIsSub : boolean);
 begin
   if bIsSub then
   begin
-    if fInlining then
+    if AmInlining then
     begin
       fCurrentInlineFunction := fInlineFunctions.Add;
       fCurrentInlineFunction.Name := name;
@@ -2304,9 +2315,11 @@ procedure TNXCComp.Epilog(bIsSub : boolean);
 begin
   if bIsSub then
   begin
-    if fInlining then
+    if AmInlining then
     begin
-      fInlining := False;
+      DecrementInlineDepth;
+//      dec(fInlineDepth);
+//      fInlining := False;
     end
     else
     begin
@@ -2359,8 +2372,8 @@ begin
 end;
 
 procedure TNXCComp.Allocate(const Name, aVal, Val, tname: string; dt : char);
-var
-  oldInlining : boolean;
+//var
+//  oldInlining : boolean;
 begin
   if (dt in [TOK_FLOATDEF, TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4]) and
      (FirmwareVersion < MIN_FW_VER2X) then
@@ -2379,16 +2392,16 @@ begin
   // inline function code will be processed and any matching tokens
   // (i.e., the names of these variables) will be replaced with the
   // decorated version of the local variable or function parameter name
-  if fInlining then Exit;
+  if AmInlining then Exit;
   // variables are not output within inline functions
-  oldInlining := fInlining;
+//  oldInlining := fInlining;
   try
-    fInlining := False;
+//    fInlining := False;
     EmitLnNoTab('dseg segment');
     AllocateHelper(Name, aVal, Val, tname, dt);
     EmitLnNoTab('dseg ends');
   finally
-    fInlining := oldInlining;
+//    fInlining := oldInlining;
   end;
 end;
 
@@ -3101,7 +3114,15 @@ begin
         end;
       end
       else
-        LoadConst('1'); // an array or UDT expression is "true"
+      begin
+        // is the left hand side an array, udt or a scalar?
+        if IsArrayType(fLHSDataType) or IsUDT(fLHSDataType) then
+        begin
+          // do something clever
+        end
+        else
+          LoadConst('1'); // an array or UDT expression is "true"
+      end;
     end;
   end
   else
@@ -3287,7 +3308,7 @@ begin
     IsConstant     := bIsConst;
     IsReference    := bIsRef;
     ArrayDimension := aDim;
-    FuncIsInline   := fInlining;
+    FuncIsInline   := AmInlining;
   end;
 end;
 
@@ -3374,8 +3395,8 @@ begin
       // is procname an inline function?
       idx := fInlineFunctions.IndexOfName(procname);
       bFunctionIsInline := idx <> -1;
-      if fInlining and bFunctionIsInline then
-        AbortMsg(sRecursiveInlineError);
+//      if AmInlining and bFunctionIsInline then
+//        AbortMsg(sRecursiveInlineError);
       if bFunctionIsInline then
       begin
         inlineFunc := fInlineFunctions[idx];
@@ -4410,6 +4431,8 @@ begin
       until ((nestLevel < 0) and (Look = TOK_END)) or (Look = LF) or endofallsource;
       if Pos('__STRRETVAL__', asmStr) > 0 then
         dt := TOK_STRINGDEF
+      else if Pos('__FLTRETVAL__', asmStr) > 0 then
+        dt := TOK_FLOATDEF
       else
         dt := TOK_LONGDEF;
       asmStr := ReplaceTokens(Trim(asmStr));
@@ -5122,7 +5145,9 @@ begin
       CheckForTypedef(bUnsigned, bConst, bInline, bSafeCall);
     CheckBytesRead(oldBytesRead);
   end;
-  fInlining := bInLine;
+//  if bInLine then
+//    IncrementInlineDepth;
+//  fInlining := bInLine;
   fSafeCalling := bSafeCall;
 end;
 
@@ -5143,7 +5168,7 @@ begin
     l.TypeName   := tname;
     l.LenExpr    := lenexp;                 
     l.Level      := fNestingLevel;
-    if fInlining and Assigned(fCurrentInlineFunction) then
+    if AmInlining and Assigned(fCurrentInlineFunction) then
     begin
       IL := fCurrentInlineFunction.LocalVariables.Add;
       IL.Assign(l);
@@ -5558,7 +5583,8 @@ begin
     if Token = TOK_INLINE then
     begin
       Next;
-      fInlining := True;
+      IncrementInlineDepth;
+//      fInlining := True;
     end;
     if Token = TOK_SAFECALL then
     begin
@@ -5566,7 +5592,7 @@ begin
       fSafeCalling := True;
     end;
     bIsSub := Token = TOK_PROCEDURE;
-    if fInlining and not bIsSub then
+    if AmInlining and not bIsSub then
       AbortMsg(sInlineInvalid);
     if fSafeCalling and not bIsSub then
       AbortMsg(sSafeCallInvalid);
@@ -5642,7 +5668,8 @@ begin
       Scan;
     end;
     ClearParams;
-    fInlining := False;
+//    DecrementInlineDepth;
+//    fInlining := False;
     fSafeCalling := False;
     TopDecls;
   end;
@@ -5655,7 +5682,9 @@ var
   protoexists : boolean;
   pltype : integer;
 begin
-  fInlining := bInline;
+  if bInline then
+    IncrementInlineDepth;
+//  fInlining := bInline;
   if Name = 'main' then
     AbortMsg(sMainMustBeTask);
   procexists := GlobalIdx(Name);
@@ -5715,6 +5744,7 @@ end;
 
 procedure TNXCComp.Init;
 begin
+  fInlineDepth := 0;
   fLastExpressionOptimizedToConst := False;
   fLastLoadedConst := '';
   fCurrentLine := '';
@@ -5785,6 +5815,7 @@ begin
   fConstStringMap.Sorted := True;
   fArrayIndexStack := TStringList.Create;
   fStructDecls := TStringList.Create;
+  fInlineStack := TObjectList.Create(false);
   fCalc := TNBCExpParser.Create(nil);
   fCalc.PascalNumberformat := False;
   fCalc.CaseSensitive := True;
@@ -5824,6 +5855,7 @@ begin
 //  FreeAndNil(fParamNames);
   FreeAndNil(fSwitchFixups);
   FreeAndNil(fSwitchRegNames);
+  FreeAndNil(fInlineStack);
   FreeAndNil(fCalc);
   inherited;
 end;
@@ -8010,7 +8042,7 @@ end;
 
 function TNXCComp.GetNBCSrc: TStrings;
 begin
-  if fInlining and Assigned(fCurrentInlineFunction) then
+  if AmInlining and Assigned(fCurrentInlineFunction) then
     Result := fCurrentInlineFunction.Code
   else
     Result := fNBCSrc;
@@ -8608,25 +8640,48 @@ var
   i : integer;
   p : TFunctionParameter;
   v : TVariable;
+  varname, tname : string;
+  dt : char;
+  bConst : boolean;
 begin
   for i := 0 to FunctionParameterCount(func.Name) - 1 do
   begin
     p := GetFunctionParam(func.Name, i);
     if Assigned(p) then
     begin
-      // allocate this parameter
-      Allocate(InlineName(fCurrentThreadName, ApplyDecoration(p.ProcName, p.Name, 0)),
-               DataTypeToArrayDimensions(p.ParameterDataType), '',
-               p.ParamTypeName, p.ParameterDataType);
+      varname := InlineName(fCurrentThreadName, ApplyDecoration(p.ProcName, p.Name, 0));
+      tname   := p.ParamTypeName;
+      dt      := p.ParameterDataType;
+      bConst  := p.IsConstant;
+      if AmInlining then
+      begin
+        // call AddLocal instead
+        AddLocal(varname, dt, tname, bConst, '');
+      end
+      else
+      begin
+        // allocate this parameter
+        Allocate(varname, DataTypeToArrayDimensions(dt), '', tname, dt);
+      end;
     end;
   end;
   for i := 0 to func.LocalVariables.Count - 1 do
   begin
     v := func.LocalVariables[i];
-    // allocate this variable
-    Allocate(InlineName(fCurrentThreadName, v.Name),
-             DataTypeToArrayDimensions(v.DataType), '',
-             v.TypeName, v.DataType);
+    varname := InlineName(fCurrentThreadName, v.Name);
+    tname   := v.TypeName;
+    dt      := v.DataType;
+    bConst  := v.IsConstant;
+    if AmInlining then
+    begin
+      // call AddLocal instead
+      AddLocal(varname, dt, tname, bConst, '');
+    end
+    else
+    begin
+      // allocate this variable
+      Allocate(varname, DataTypeToArrayDimensions(dt), '', tname, dt);
+    end;
   end;
 end;
 
@@ -8918,6 +8973,46 @@ procedure TNXCComp.DoCompilerStatusChange(const Status: string);
 begin
   if Assigned(fOnCompilerStatusChange) then
     fOnCompilerStatusChange(Self, Status);
+end;
+
+function TNXCComp.AmInlining: boolean;
+begin
+//  Result := fInlineStack.Count > 0;
+  Result := fInlineDepth > 0;
+end;
+
+procedure TNXCComp.DecrementInlineDepth;
+begin
+  // remove the
+  dec(fInlineDepth);
+end;
+
+procedure TNXCComp.IncrementInlineDepth;
+begin
+  inc(fInlineDepth);
+//  fInlineStack.Add(TStringList.Create);
+end;
+
+procedure TNXCComp.HandleSpecialNames;
+begin
+  if Value = '__TMPBYTE__' then
+    Value := TempSignedByteName
+  else if Value = '__TMPWORD__' then
+    Value := TempSignedWordName
+  else if Value = '__TMPLONG__' then
+    Value := TempSignedLongName
+  else if Value = '__TMPULONG__' then
+    Value := TempUnsignedLongName
+  else if Value = '__TMPFLOAT__' then
+    Value := TempFloatName
+  else if Value = '__RETVAL__' then
+    Value := SignedRegisterName
+  else if Value = '__FLTRETVAL__' then
+    Value := FloatRegisterName
+  else if Value = '__STRRETVAL__' then
+    Value := StrRetValName
+  else if Value = '__GENRETVAL__' then
+    Value := RegisterName;
 end;
 
 end.

@@ -28,6 +28,7 @@ type
     btnClose: TButton;
     procedure FormShow(Sender: TObject);
     procedure btnCloseClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
   public
@@ -55,12 +56,17 @@ end;
 
 procedure TfrmCompStatus.AddMessage(const msg: string);
 begin
-  edtMemo.Lines.Add(TimeToStr(Now) + ' ' + msg);
+  edtMemo.Lines.Add(FormatDateTime({LongTimeFormat}'h:nn:ss.zzz ampm', Now) + ' ' + msg);
 end;
 
 procedure TfrmCompStatus.Clear;
 begin
   edtMemo.Lines.Clear;
+end;
+
+procedure TfrmCompStatus.FormCreate(Sender: TObject);
+begin
+// load format settings from OS
 end;
 
 end.

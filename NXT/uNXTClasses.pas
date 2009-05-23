@@ -430,7 +430,7 @@ type
     destructor Destroy; override;
     procedure Optimize(const level : Integer);
     procedure OptimizeMutexes;
-    procedure RemoveUnusedLabels(aTargets : TStrings);
+    procedure RemoveUnusedLabels;
     procedure AddClumpDependencies(const opcode, args : string);
     procedure AddDependant(const clumpName : string);
     procedure AddAncestor(const clumpName : string);
@@ -649,6 +649,7 @@ type
     procedure HandleSpecialFunctionSizeOf(Arg : TAsmArgument; const left, right, name : string);
     procedure HandleSpecialFunctionIsConst(Arg : TAsmArgument; const left, right, name : string);
     procedure HandleSpecialFunctionValueOf(Arg : TAsmArgument; const left, right, name : string);
+    procedure HandleSpecialFunctionTypeOf(Arg : TAsmArgument; const left, right, name : string);
     property  LineCounter : integer read fLineCounter write SetLineCounter;
   public
     constructor Create;
@@ -909,7 +910,7 @@ const
   );
 
   StandardOpcodeCount2x = 56;
-  EnhancedOpcodeCount2x = 27;
+  EnhancedOpcodeCount2x = 37;
   PseudoOpcodeCount2x   = 39;
   NXTInstructionsCount2x = StandardOpcodeCount2x+EnhancedOpcodeCount2x+PseudoOpcodeCount2x;
   NXTInstructions2x : array[0..NXTInstructionsCount2x-1] of NXTInstruction =
@@ -998,6 +999,16 @@ const
     ( Encoding: OPS_ATAN2_2      ; CCType: 0; Arity: 3; Name: 'atan2'; ),
     ( Encoding: OPS_POW_2        ; CCType: 0; Arity: 3; Name: 'pow'; ),
     ( Encoding: OPS_MULDIV_2     ; CCType: 0; Arity: 4; Name: 'muldiv'; ),
+    ( Encoding: OPS_ACOSD_2      ; CCType: 0; Arity: 2; Name: 'acosd'; ),
+    ( Encoding: OPS_ASIND_2      ; CCType: 0; Arity: 2; Name: 'asind'; ),
+    ( Encoding: OPS_ATAND_2      ; CCType: 0; Arity: 2; Name: 'atand'; ),
+    ( Encoding: OPS_TAND_2       ; CCType: 0; Arity: 2; Name: 'tand'; ),
+    ( Encoding: OPS_TANHD_2      ; CCType: 0; Arity: 2; Name: 'tanhd'; ),
+    ( Encoding: OPS_COSD_2       ; CCType: 0; Arity: 2; Name: 'cosd'; ),
+    ( Encoding: OPS_COSHD_2      ; CCType: 0; Arity: 2; Name: 'coshd'; ),
+    ( Encoding: OPS_SIND_2       ; CCType: 0; Arity: 2; Name: 'sind'; ),
+    ( Encoding: OPS_SINHD_2      ; CCType: 0; Arity: 2; Name: 'sinhd'; ),
+    ( Encoding: OPS_ATAN2D_2     ; CCType: 0; Arity: 3; Name: 'atan2d'; ),
 // pseudo-opcodes
     ( Encoding: OPS_THREAD       ; CCType: 0; Arity: 0; Name: 'thread'; ),
     ( Encoding: OPS_ENDT         ; CCType: 0; Arity: 0; Name: 'endt'; ),
@@ -1747,7 +1758,9 @@ begin
     OPS_WAITV_2, OPS_SIGN_2, OPS_FMTNUM_2, OPS_ACOS_2, OPS_ASIN_2,
     OPS_ATAN_2, OPS_CEIL_2, OPS_EXP_2, OPS_FLOOR_2, OPS_TAN_2, OPS_TANH_2,
     OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
-    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2 :
+    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2,
+    OPS_ACOSD_2, OPS_ASIND_2, OPS_ATAND_2, OPS_TAND_2, OPS_TANHD_2,
+    OPS_COSD_2, OPS_COSHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2 :
     begin
       Result := TOCNameFromArg(DS, argValue);
     end;
@@ -4437,7 +4450,7 @@ begin
     OP_ADD..OP_GETTICK : Result := altCode;
     OPS_WAITV..OPS_POW : Result := altCode; // pseudo opcodes
 //    OPS_SQRT_2..OPS_ABS_2 : Result := altCode; // standard 1.26+ opcodes (included in OPS_WAITV..OPS_POW due to overlap)
-    OPS_WAITI_2..OPS_MULDIV_2 : Result := altCode; // enhanced 1.26+ opcodes
+    OPS_WAITI_2..OPS_ATAN2D_2 : Result := altCode; // enhanced 1.26+ opcodes
     OPS_SEGMENT : Result := altBeginDS;
     OPS_ENDS :
       if state in [masStruct, masStructDSClump, masStructDSClumpSub] then
@@ -5120,7 +5133,9 @@ begin
     OPS_ACOS_2, OPS_ASIN_2, OPS_ATAN_2, OPS_CEIL_2,
     OPS_EXP_2, OPS_FLOOR_2, OPS_TAN_2, OPS_TANH_2,
     OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
-    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2 :
+    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2,
+    OPS_ACOSD_2, OPS_ASIND_2, OPS_ATAND_2, OPS_COSD_2, OPS_COSHD_2,
+    OPS_TAND_2, OPS_TANHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2 :
     begin
       if argIdx > 0 then
         Result := aatVariable
@@ -5694,7 +5709,15 @@ begin
                  (de2.DataType in [dsUByte, dsUWord, dsULong]) then
                 ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
                   sUnsafeDivision, false);
+            end
+            else
+            begin
+              if not Assigned(de) then
+                ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, Format(sInvalidVarArg, [AL.Args[1].Value]), true)
+              else
+                ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, Format(sInvalidVarArg, [AL.Args[2].Value]), true);
             end;
+
           end;
         end;
         OP_SET : begin
@@ -5704,8 +5727,13 @@ begin
               Format(sInvalidNumArgs, [NI.Arity, AL.Args.Count]), true);
           // the first argument must not be anything other than an integer datatype
           de := Dataspace.FindEntryByFullName(AL.Args[0].Value);
-          if de.DataType = dsFloat then
-            ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidSetStatement, true);
+          if Assigned(de) then
+          begin
+            if de.DataType = dsFloat then
+              ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidSetStatement, true);
+          end
+          else
+            ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, Format(sInvalidVarArg, [AL.Args[0].Value]), true);
           // second argument must be a constant within the range of UWORD
           // or SWORD
           arg := AL.Args[1].Value; // should be a number
@@ -6166,8 +6194,13 @@ begin
         AL.Command  := OP_SUB;
         AL.LineNum  := tmpLine;
         AL.AddArgs(Format('%0:s, %0:s, %s', [a1, c1]));
-        de1.IncRefCount;
-        de1.IncRefCount;
+        if Assigned(de1) then
+        begin
+          de1.IncRefCount;
+          de1.IncRefCount;
+        end
+        else
+          ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, Format(sInvalidVarArg, [AL.Args[0].Value]), true);
       end;
     end;
     OPS_START, OPS_START_2 : begin
@@ -6240,19 +6273,29 @@ begin
           AL.Command := OP_BRTST;
           AL.LineNum  := tmpLine;
           AL.AddArgs(Format('GTEQ, __abs_%d, %s', [fAbsCount, a2]));
-          de2.IncRefCount;
           AL := fCurrentClump.ClumpCode.Add;
           AL.Command := OP_NEG;
           AL.LineNum  := tmpLine;
           AL.AddArgs(Format('%s, %s', [a1, a2]));
-          de1.IncRefCount;
-          de2.IncRefCount;
           AL := fCurrentClump.ClumpCode.Add;
           AL.Command := OPS_INVALID; // OPS_MOV;
           AL.LineNum  := tmpLine;
           AL.LineLabel := Format('__abs_%d', [fAbsCount]);
           fCurrentClump.AddLabel(AL.LineLabel, AL);
           inc(fAbsCount);
+          if Assigned(de1) and Assigned(de2) then
+          begin
+            de1.IncRefCount;
+            de2.IncRefCount;
+            de2.IncRefCount;
+          end
+          else
+          begin
+            if not Assigned(de1) then
+              ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, Format(sInvalidVarArg, [a1]), true)
+            else
+              ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, Format(sInvalidVarArg, [a2]), true);
+          end;
         end
         else
           ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidStatement, true);
@@ -6293,7 +6336,6 @@ begin
           AL.Command := OP_BRTST;
           AL.LineNum  := tmpLine;
           AL.AddArgs(Format('LT, __sign_%d, %s', [fSignCount, a2]));
-          de2.IncRefCount;
           AL := fCurrentClump.ClumpCode.Add;
           AL.Command := OP_SET;
           AL.LineNum  := tmpLine;
@@ -6307,6 +6349,10 @@ begin
           de3.IncRefCount;
           fCurrentClump.AddLabel(AL.LineLabel, AL);
           inc(fSignCount);
+          if Assigned(de2) then
+            de2.IncRefCount
+          else
+            ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, Format(sInvalidVarArg, [a2]), true);
         end
         else
           ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidStatement, true);
@@ -6325,8 +6371,16 @@ begin
           // shLR a1, a2, a3
           // first get the constant value
           de3 := Dataspace.FindEntryByFullName(a3);
-          de3.DecRefCount; // this constant is used 1 less time than it used to be
-          shiftConst := Integer(de3.DefaultValue);
+          if Assigned(de3) then
+          begin
+            de3.DecRefCount; // this constant is used 1 less time than it used to be
+            shiftConst := Integer(de3.DefaultValue);
+          end
+          else
+          begin
+            ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, Format(sInvalidVarArg, [a3]), true);
+            shiftConst := 0;
+          end;
           if shiftConst >= 0 then
           begin
             if shiftConst = 0 then
@@ -6676,6 +6730,11 @@ begin
   fSpecialFunctions.Add(SF);
   SF.Func := 'valueof(';
   SF.Execute := HandleSpecialFunctionValueOf;
+  // typeof
+  SF := TSpecialFunction.Create;
+  fSpecialFunctions.Add(SF);
+  SF.Func := 'typeof(';
+  SF.Execute := HandleSpecialFunctionTypeOf;
 end;
 
 procedure TRXEProgram.HandleSpecialFunctionSizeOf(Arg: TAsmArgument;
@@ -6734,6 +6793,33 @@ begin
   else
   begin
     Arg.Value := left + NBCFloatToStr(Calc.Value) + right;
+  end;
+end;
+
+procedure TRXEProgram.HandleSpecialFunctionTypeOf(Arg: TAsmArgument;
+  const left, right, name: string);
+var
+  de1 : TDataspaceEntry;
+  dt : TDSType;
+begin
+  // is name a constant value?
+  Calc.SilentExpression := name;
+  if Calc.ParserError then
+  begin
+    de1 := Dataspace.FindEntryByFullName(name);
+    if Assigned(de1) then
+      Arg.Value := left + IntToStr(Ord(de1.DataType)) + right
+    else
+    begin
+      Arg.Value := left + '0' + right;
+      ReportProblem(LineCounter, GetCurrentFile(true), '',
+        Format(sInvalidVarArg, [name]), true);
+    end
+  end
+  else
+  begin
+    dt := GetArgDataType(Calc.Value);
+    Arg.Value := left + IntToStr(Ord(dt)) + right;
   end;
 end;
 
@@ -7307,7 +7393,7 @@ begin
      (op in [OP_INDEX, OP_ARRSIZE, OP_MOV, OP_SET,
              OP_STRINGTONUM, OP_GETIN, OP_GETOUT, OP_GETTICK]) or
      ((FirmwareVersion > MAX_FW_VER1X) and
-      (op in [OPS_SIGN_2, OPS_ACOS_2..OPS_MULDIV_2])) or
+      (op in [OPS_SIGN_2, OPS_ACOS_2..OPS_ATAN2D_2])) or
      ((FirmwareVersion <= MAX_FW_VER1x) and
       (op in [OPS_SIGN, OPS_ACOS..OPS_POW])) then
   begin
@@ -7752,37 +7838,11 @@ end;
 
 procedure TCodeSpace.RemoveUnusedLabels;
 var
-  i, j : integer;
-  C : TClump;
-  AL : TAsmLine;
-  SL : TStringList;
+  i : integer;
 begin
-  // first gather a list of jump targets in this clump
-  SL := TStringList.Create;
-  try
-    SL.Sorted := True;
-    SL.Duplicates := dupIgnore;
-    for i := 0 to Count - 1 do
-    begin
-      C := Items[i];
-      for j := 0 to C.ClumpCode.Count - 1 do begin
-        AL := C.ClumpCode.Items[j];
-        if AL.Command = OP_JMP then
-        begin
-          SL.Add(AL.Args[0].Value); // first argument is label
-        end
-        else if AL.Command in [OP_BRCMP, OP_BRTST] then
-        begin
-          SL.Add(AL.Args[1].Value); // second argument is label
-        end;
-      end;
-    end;
-    // now remove any labels that are not targets of a branch/jump
-    for i := 0 to Count - 1 do
-      Items[i].RemoveUnusedLabels(SL);
-  finally
-    SL.Free;
-  end;
+  // now remove any labels that are not targets of a branch/jump
+  for i := 0 to Count - 1 do
+    Items[i].RemoveUnusedLabels;
 end;
 
 procedure TCodeSpace.SaveToStrings(aStrings: TStrings);
@@ -8177,8 +8237,11 @@ begin
     // the type of the output variable determines whether we should truncate this value or not
     tmp := AL.Args[0].Value;
     DE := DS.FindEntryByFullName(tmp);
-    if DE.DataType <> dsFloat then
-      iVal := Trunc(iVal);
+    if Assigned(DE) then
+    begin
+      if DE.DataType <> dsFloat then
+        iVal := Trunc(iVal);
+    end;
     arg1 := CreateConstantVar(DS, iVal, True);
   end
   else begin
@@ -8393,21 +8456,24 @@ begin
                       if AL.Command = OP_SET then
                         tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
                       else
+                      begin
                         tmp := AL.Args[1].Value;
+                        DE := CodeSpace.Dataspace.FindEntryByFullName(tmp);
+                        if Assigned(DE) then
+                          DE.IncRefCount;
+                      end;
                       ALNext.Command := OP_MOV;
                       ALNext.Args[1].Value := tmp;
 {
                       ALNext.Command := AL.Command;
                       ALNext.Args[1].Value := AL.Args[1].Value;
 }
-                      DE := CodeSpace.Dataspace.FindEntryByFullName(tmp);
-                      if Assigned(DE) then
-                        DE.IncRefCount;
                       ALNext.RemoveVariableReference(arg2, 1);
                       if IsStackOrReg(arg1) then
                       begin
                         // remove second reference to _D0
-                        AL.RemoveVariableReference(arg1, 0);
+                        AL.RemoveVariableReferences;
+//                        AL.RemoveVariableReference(arg1, 0);
                         RemoveOrNOPLine(AL, ALNext, i);
                       end;
                       bDone := False;
@@ -8428,10 +8494,14 @@ begin
                       ALNext.Command := OPS_WAITI_2;
                     ALNext.Args[0].Value := AL.Args[1].Value;
                     ALNext.RemoveVariableReference(arg2, 0);
+                    DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);
+                    if Assigned(DE) then
+                      DE.IncRefCount;
                     if IsStackOrReg(arg1) then
                     begin
                       // remove second reference to _D0
-                      AL.RemoveVariableReference(arg1, 0);
+                      AL.RemoveVariableReferences;
+//                      AL.RemoveVariableReference(arg1, 0);
                       RemoveOrNOPLine(AL, ALNext, i);
                     end;
                     bDone := False;
@@ -8451,19 +8521,26 @@ begin
                     if AL.Command = OP_SET then
                       tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
                     else
+                    begin
+                      // increment the reference count of this variable
                       tmp := AL.Args[1].Value;
+                      DE := CodeSpace.Dataspace.FindEntryByFullName(tmp);
+                      if Assigned(DE) then
+                        DE.IncRefCount;
+                    end;
                     if (arg1 = arg2) then begin
                       ALNext.Args[2].Value := tmp;
                       ALNext.RemoveVariableReference(arg2, 2);
                     end
-                    else begin
+                    else begin  // arg1=arg3 (aka ALNext.Args[1].Value)
                       ALNext.Args[1].Value := tmp;
                       ALNext.RemoveVariableReference(arg3, 1);
                     end;
                     if IsStackOrReg(arg1) then
                     begin
                       // remove second reference to _D0
-                      AL.RemoveVariableReference(arg1, 0);
+                      AL.RemoveVariableReferences;
+//                      AL.RemoveVariableReference(arg1, 0);
                       RemoveOrNOPLine(AL, ALNext, i);
                     end;
                     bDone := False;
@@ -8479,6 +8556,9 @@ begin
                     // nop
                     // neg|not A, X
                     ALNext.Args[1].Value := AL.Args[1].Value;
+                    DE := CodeSpace.Dataspace.FindEntryByFullName(AL.Args[1].Value);
+                    if Assigned(DE) then
+                      DE.IncRefCount;
                     ALNext.RemoveVariableReference(arg2, 1);
                     if IsStackOrReg(arg1) then
                     begin
@@ -8581,6 +8661,40 @@ begin
             end;
           end;
         end;
+        OP_JMP, OP_BRCMP, OP_BRTST : begin
+          // if this line is a some kind of jump statement and the destination is the very next line that
+          // is not a no-op then it can be optimized.
+          if AL.Command = OP_JMP then
+          begin
+            arg1 := AL.Args[0].Value; // first argument is label
+          end
+          else // if AL.Command in [OP_BRCMP, OP_BRTST] then
+          begin
+            arg1 := AL.Args[1].Value; // second argument is label
+          end;
+          // find the next line (which may not be i+1) that is not (NOP or labeled)
+          offset := 1;
+          while (i < ClumpCode.Count - offset) do begin
+            tmpAL := ClumpCode.Items[i+offset];
+            if (tmpAL.Command <> OPS_INVALID) or (tmpAL.LineLabel <> '') then
+              Break;
+            inc(offset);
+          end;
+          // every line between Items[i] and Items[i+offset] are NOP lines without labels.
+          if i < (ClumpCode.Count - offset) then
+          begin
+            ALNext := ClumpCode.Items[i+offset];
+            // if the next line has a label == to arg1 then we can delete the current line
+            if ALNext.LineLabel = arg1 then
+            begin
+              AL.RemoveVariableReferences;
+              RemoveOrNOPLine(AL, ALNext, i);
+              RemoveUnusedLabels;
+              bDone := False;
+              Break;
+            end;
+          end;
+        end;
       else
         // nothing
       end;
@@ -8635,20 +8749,35 @@ begin
   Result := Codespace.fMultiThreadedClumps.IndexOf(Self.Name) <> -1;
 end;
 
-procedure TClump.RemoveUnusedLabels(aTargets : TStrings);
+procedure TClump.RemoveUnusedLabels;
 var
   i : integer;
   AL : TAsmLine;
+  SL : TStringList;
 begin
-(*
-    ( Encoding: OP_JMP           ; CCType: 0; Arity: 1; Name: 'jmp'; ),
-    ( Encoding: OP_BRCMP         ; CCType: 2; Arity: 3; Name: 'brcmp'; ),
-    ( Encoding: OP_BRTST         ; CCType: 1; Arity: 2; Name: 'brtst'; ),
-*)
-  for i := 0 to ClumpCode.Count - 1 do begin
-    AL := ClumpCode.Items[i];
-    if aTargets.IndexOf(AL.LineLabel) = -1 then
-      AL.LineLabel := '';
+  // first gather a list of jump targets in this clump
+  SL := TStringList.Create;
+  try
+    SL.Sorted := True;
+    SL.Duplicates := dupIgnore;
+    for i := 0 to ClumpCode.Count - 1 do begin
+      AL := ClumpCode.Items[i];
+      if AL.Command = OP_JMP then
+      begin
+        SL.Add(AL.Args[0].Value); // first argument is label
+      end
+      else if AL.Command in [OP_BRCMP, OP_BRTST] then
+      begin
+        SL.Add(AL.Args[1].Value); // second argument is label
+      end;
+    end;
+    for i := 0 to ClumpCode.Count - 1 do begin
+      AL := ClumpCode.Items[i];
+      if SL.IndexOf(AL.LineLabel) = -1 then
+        AL.LineLabel := '';
+    end;
+  finally
+    SL.Free;
   end;
 end;
 

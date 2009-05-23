@@ -4,9 +4,11 @@ task main()
 {
   byte matrix[][];
   byte data[] = {0, 1, 0, 1, 1, 0};
-  ArrayBuild(matrix, data, data, data);
+  byte data2[] = {3, 4, 5, 6, 7, 8};
+  ArrayBuild(matrix, data, data2, data);
   data = !matrix[1];
 //  data = !data;
+  data += matrix[1];
   Element_Out(0, 1);
   Element_Out(0, 2);
   Element_Out(0, 3);

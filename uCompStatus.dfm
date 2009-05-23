@@ -14,6 +14,7 @@ object frmCompStatus: TfrmCompStatus
   FormStyle = fsStayOnTop
   OldCreateOrder = False
   Position = poMainFormCenter
+  OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
     354

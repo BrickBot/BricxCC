@@ -140,34 +140,46 @@ const
   OP_ABS_2         = $37;
 
   // enhanced firmware opcodes (1.28)
-  OPS_WAITI_2        = $64;
-  OPS_WAITV_2        = $65;
-  OPS_SIGN_2         = $66;
-  OPS_STOPCLUMP_2    = $67;
-  OPS_START_2        = $68;
-  OPS_PRIORITY_2     = $69;
-  OPS_FMTNUM_2       = $6a;
-  OPS_ARROP_2        = $6b;
-  OPS_ACOS_2         = $6c;
-  OPS_ASIN_2         = $6d;
-  OPS_ATAN_2         = $6e;
-  OPS_CEIL_2         = $6f;
-  OPS_EXP_2          = $70;
-  OPS_FLOOR_2        = $71;
-  OPS_TAN_2          = $72;
-  OPS_TANH_2         = $73;
-  OPS_COS_2          = $74;
-  OPS_COSH_2         = $75;
-  OPS_LOG_2          = $76;
-  OPS_LOG10_2        = $77;
-  OPS_SIN_2          = $78;
-  OPS_SINH_2         = $79;
-  OPS_TRUNC_2        = $7a;
-  OPS_FRAC_2         = $7b;
-  OPS_ATAN2_2        = $7c;
-  OPS_POW_2          = $7d;
-  OPS_MULDIV_2       = $7e;
-  
+  OPS_WAITI_2      = $64;
+  OPS_WAITV_2      = $65;
+  OPS_SIGN_2       = $66;
+  OPS_STOPCLUMP_2  = $67;
+  OPS_START_2      = $68;
+  OPS_PRIORITY_2   = $69;
+  OPS_FMTNUM_2     = $6a;
+  OPS_ARROP_2      = $6b;
+  OPS_ACOS_2       = $6c;
+  OPS_ASIN_2       = $6d;
+  OPS_ATAN_2       = $6e;
+  OPS_CEIL_2       = $6f;
+  OPS_EXP_2        = $70;
+  OPS_FLOOR_2      = $71;
+  OPS_TAN_2        = $72;
+  OPS_TANH_2       = $73;
+  OPS_COS_2        = $74;
+  OPS_COSH_2       = $75;
+  OPS_LOG_2        = $76;
+  OPS_LOG10_2      = $77;
+  OPS_SIN_2        = $78;
+  OPS_SINH_2       = $79;
+  OPS_TRUNC_2      = $7a;
+  OPS_FRAC_2       = $7b;
+  OPS_ATAN2_2      = $7c;
+  OPS_POW_2        = $7d;
+  OPS_MULDIV_2     = $7e;
+
+  // transcendental opcodes that use degrees instead of radians
+  OPS_ACOSD_2      = $7f;
+  OPS_ASIND_2      = $80;
+  OPS_ATAND_2      = $81;
+  OPS_TAND_2       = $82;
+  OPS_TANHD_2      = $83;
+  OPS_COSD_2       = $84;
+  OPS_COSHD_2      = $85;
+  OPS_SIND_2       = $86;
+  OPS_SINHD_2      = $87;
+  OPS_ATAN2D_2     = $88;
+
   // pseudo opcodes
   OPS_THREAD       = $90;
   OPS_ENDT         = $91;

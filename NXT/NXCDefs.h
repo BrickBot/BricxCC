@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-05-01
- * Revision:: 49
+ * Date:: 2009-05-21
+ * Revision:: 51
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -81,14 +81,14 @@
 #define SENSOR_TYPE_COLOREXIT       IN_TYPE_COLOREXIT
 #endif
 
-#define SENSOR_MODE_RAW		IN_MODE_RAW
-#define SENSOR_MODE_BOOL	IN_MODE_BOOLEAN
-#define SENSOR_MODE_EDGE	IN_MODE_TRANSITIONCNT
-#define SENSOR_MODE_PULSE	IN_MODE_PERIODCOUNTER
-#define SENSOR_MODE_PERCENT	IN_MODE_PCTFULLSCALE
-#define SENSOR_MODE_CELSIUS	IN_MODE_CELSIUS
-#define SENSOR_MODE_FAHRENHEIT	IN_MODE_FAHRENHEIT
-#define SENSOR_MODE_ROTATION	IN_MODE_ANGLESTEP
+#define SENSOR_MODE_RAW         IN_MODE_RAW
+#define SENSOR_MODE_BOOL        IN_MODE_BOOLEAN
+#define SENSOR_MODE_EDGE        IN_MODE_TRANSITIONCNT
+#define SENSOR_MODE_PULSE       IN_MODE_PERIODCOUNTER
+#define SENSOR_MODE_PERCENT     IN_MODE_PCTFULLSCALE
+#define SENSOR_MODE_CELSIUS     IN_MODE_CELSIUS
+#define SENSOR_MODE_FAHRENHEIT  IN_MODE_FAHRENHEIT
+#define SENSOR_MODE_ROTATION    IN_MODE_ANGLESTEP
 
 #define _SENSOR_CFG(_type,_mode)	(((_type)<<8)+(_mode))
 #define SENSOR_TOUCH		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_BOOL)
@@ -597,6 +597,7 @@
 #define Sqrt(_X) asm { sqrt __FLTRETVAL__, _X }
 
 #ifdef __ENHANCED_FIRMWARE
+
 #define Sin(_X) asm { sin __FLTRETVAL__, _X }
 #define Cos(_X) asm { cos __FLTRETVAL__, _X }
 #define Asin(_X) asm { asin __FLTRETVAL__, _X }
@@ -616,6 +617,38 @@
 #define Trunc(_X) asm { trunc __RETVAL__, _X }
 #define Frac(_X) asm { frac __FLTRETVAL__, _X }
 #define MulDiv32(_A,_B,_C) asm { muldiv __RETVAL__, _A, _B, _C }
+#define SinD(_X) asm { sind __FLTRETVAL__, _X }
+#define CosD(_X) asm { cosd __FLTRETVAL__, _X }
+#define AsinD(_X) asm { asind __FLTRETVAL__, _X }
+#define AcosD(_X) asm { acosd __FLTRETVAL__, _X }
+#define AtanD(_X) asm { atand __FLTRETVAL__, _X }
+#define TanD(_X) asm { tand __FLTRETVAL__, _X }
+#define TanhD(_X) asm { tanhd __FLTRETVAL__, _X }
+#define CoshD(_X) asm { coshd __FLTRETVAL__, _X }
+#define SinhD(_X) asm { sinhd __FLTRETVAL__, _X }
+#define Atan2D(_X,_Y) asm { atan2d __FLTRETVAL__, _X, _Y }
+
+inline float sqrt(float x) { asm { sqrt __FLTRETVAL__, x } }
+inline float sin(float x) { asm { sin __FLTRETVAL__, x } }
+inline float cos(float x) { asm { cos __FLTRETVAL__, x } }
+inline float asin(float x) { asm { asin __FLTRETVAL__, x } }
+inline float acos(float x) { asm { acos __FLTRETVAL__, x } }
+inline float tan(float x) { asm { tan __FLTRETVAL__, x } }
+inline float atan(float x) { asm { atan __FLTRETVAL__, x } }
+inline float ceil(float x) { asm { ceil __FLTRETVAL__, x } }
+inline float exp(float x) { asm { exp __FLTRETVAL__, x } }
+inline float floor(float x) { asm { floor __FLTRETVAL__, x } }
+inline float sinh(float x) { asm { sinh __FLTRETVAL__, x } }
+inline float cosh(float x) { asm { cosh __FLTRETVAL__, x } }
+inline float tanh(float x) { asm { tanh __FLTRETVAL__, x } }
+inline float log(float x) { asm { log __FLTRETVAL__, x } }
+inline float log10(float x) { asm { log10 __FLTRETVAL__, x } }
+inline float atan2(float x, float y) { asm { atan2 __FLTRETVAL__, x, y } }
+inline float pow(float x, float y) { asm { pow __FLTRETVAL__, x, y } }
+inline long trunc(float x) { asm { trunc __RETVAL__, x } }
+inline float frac(float x) { asm { frac __FLTRETVAL__, x } }
+inline long muldiv32(long a, long b, long c) { asm { muldiv __RETVAL__, a, b, c } }
+
 #endif
 
 #else

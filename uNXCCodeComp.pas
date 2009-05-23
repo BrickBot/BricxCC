@@ -36,14 +36,14 @@ type
   end;
 
 const
-  NXCCodeCompDataSize = 581+99;
+  NXCCodeCompDataSize = 581+99+15;
   NXCCodeCompData: array[0..NXCCodeCompDataSize-1] of TNXCCodeComp = (
     (
      Name: 'abs';
-     Params: '(var n)'
+     Params: '(var value)'
     ),
     (
-     Name: 'Acos';
+     Name: 'acos';
      Params: '(float x)'
     ),
     (
@@ -63,7 +63,7 @@ const
      Params: '(var aout[], var asrc[], unsigned int idx, unsigned int len)'
     ),
     (
-     Name: 'Asin';
+     Name: 'asin';
      Params: '(float x)'
     ),
     (
@@ -235,7 +235,7 @@ const
      Params: '(void)'
     ),
     (
-     Name: 'Cos';
+     Name: 'cos';
      Params: '(float radians)'
     ),
     (
@@ -1784,11 +1784,11 @@ const
     ),
     (
      Name: 'sign';
-     Params: '(long value)'
+     Params: '(var value)'
     ),
     (
-     Name: 'Sin';
-     Params: '(int degrees)'
+     Name: 'sin';
+     Params: '(float radians)'
     ),
     (
      Name: 'SleepTimeout';
@@ -1827,8 +1827,8 @@ const
      Params: '(void)'
     ),
     (
-     Name: 'Sqrt';
-     Params: '(unsigned long X)'
+     Name: 'sqrt';
+     Params: '(float x)'
     ),
     (
      Name: 'Stop';
@@ -2757,6 +2757,66 @@ const
     (
      Name: 'MSScoutSetScoutMode';
      Params: '(mode)'
+    ),
+    (
+     Name: 'tan';
+     Params: '(float radians)'
+    ),
+    (
+     Name: 'atan';
+     Params: '(float value)'
+    ),
+    (
+     Name: 'ceil';
+     Params: '(float value)'
+    ),
+    (
+     Name: 'exp';
+     Params: '(float value)'
+    ),
+    (
+     Name: 'floor';
+     Params: '(float x)'
+    ),
+    (
+     Name: 'sinh';
+     Params: '(float x)'
+    ),
+    (
+     Name: 'cosh';
+     Params: '(float x)'
+    ),
+    (
+     Name: 'tanh';
+     Params: '(float x)'
+    ),
+    (
+     Name: 'log';
+     Params: '(float x)'
+    ),
+    (
+     Name: 'log10';
+     Params: '(float x)'
+    ),
+    (
+     Name: 'atan2';
+     Params: '(float x, float y)'
+    ),
+    (
+     Name: 'pow';
+     Params: '(float x, float y)'
+    ),
+    (
+     Name: 'trunc';
+     Params: '(float x)'
+    ),
+    (
+     Name: 'frac';
+     Params: '(float x)'
+    ),
+    (
+     Name: 'muldiv32';
+     Params: '(long a, long b, long c)'
     )
   );
 

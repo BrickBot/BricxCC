@@ -1,3 +1,4 @@
+inline int MyFunc(int x, int y) { return x*y; }
 
 task timerset()
 {int i=1;
@@ -5,6 +6,11 @@ while(true);
 }
 
 task main()
-{start timerset;
-while (true);
+{
+  start timerset;
+
+  int a = 12;//Random(12);
+  int w = MyFunc(23, a);
+  NumOut(0, LCD_LINE1, w);
+  while (true);
 }
