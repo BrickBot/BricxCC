@@ -1,0 +1,8 @@
+
+task main()
+{
+  float value = 45.0*PI/180.0;
+  float sinVal = sin(value);
+  NumOut(0, LCD_LINE1, sinVal);
+  while(true);
+}

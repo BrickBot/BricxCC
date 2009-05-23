@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXTDefs.h
- * Date:: 2009-04-30
- * Revision:: 47
+ * Date:: 2009-05-21
+ * Revision:: 50
  *
  * Contains declarations for the NBC NXT API resources
  *
@@ -547,11 +547,11 @@ dseg ends
 
 #define OnFwdEx(_ports, _pwr, _reset) \
   compif EQ, isconst(_ports), FALSE \
-  __onFwdExPIDAll(_ports, _pwr, _reset, 40, 20, 100) \
+  __onFwdExPIDAll(_ports, _pwr, _reset, PID_3, PID_1, PID_1) \
   compelse \
   compchk LT, _ports, 0x07 \
   compchk GTEQ, _ports, 0x00 \
-  __onFwdExPID##_ports(_pwr, _reset, 40, 20, 100) \
+  __onFwdExPID##_ports(_pwr, _reset, PID_3, PID_1, PID_1) \
   compend
 
 #define OnRevEx(_ports, _pwr, _reset) \
@@ -560,10 +560,25 @@ dseg ends
   OnFwdEx(_ports, __OnRev_Tmp, _reset) \
   release __OnRevMutex
 
+#define OnFwdExPID(_ports, _pwr, _reset, _p, _i, _d) \
+  compif EQ, isconst(_ports), FALSE \
+  __onFwdExPIDAll(_ports, _pwr, _reset, _p, _i, _d) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __onFwdExPID##_ports(_pwr, _reset, _p, _i, _d) \
+  compend
+
+#define OnRevExPID(_ports, _pwr, _reset, _p, _i, _d) \
+  acquire __OnRevMutex \
+  neg __OnRev_Tmp, _pwr \
+  OnFwdExPID(_ports, __OnRev_Tmp, _reset, _p, _i, _d) \
+  release __OnRevMutex
+
 #define OnFwd(_ports, _pwr) OnFwdEx(_ports, _pwr, RESET_BLOCKANDTACHO)
 #define OnRev(_ports, _pwr) OnRevEx(_ports, _pwr, RESET_BLOCKANDTACHO)
 
-#define __coastExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_IDLE, TurnRatio, 0, TachoLimit, 0, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+_reset
+#define __coastExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_IDLE, TurnRatio, 0, TachoLimit, 0, RegPValue, PID_3, RegIValue, PID_1, RegDValue, PID_1, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
 #define __coastEx0(_reset) __coastExAll(OUT_A, _reset)
 #define __coastEx1(_reset) __coastExAll(OUT_B, _reset)
 #define __coastEx2(_reset) __coastExAll(OUT_C, _reset)
@@ -581,7 +596,7 @@ dseg ends
   __coastEx##_ports(_reset) \
   compend
 
-#define __offExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+_reset
+#define __offExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, PID_3, RegIValue, PID_1, RegDValue, PID_1, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
 #define __offEx0(_reset) __offExAll(OUT_A, _reset)
 #define __offEx1(_reset) __offExAll(OUT_B, _reset)
 #define __offEx2(_reset) __offExAll(OUT_C, _reset)
@@ -614,11 +629,11 @@ dseg ends
 
 #define OnFwdRegEx(_ports, _pwr, _regmode, _reset) \
   compif EQ, isconst(_ports), FALSE \
-  __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, 40, 20, 100) \
+  __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, PID_3, PID_1, PID_1) \
   compelse \
   compchk LT, _ports, 0x07 \
   compchk GTEQ, _ports, 0x00 \
-  __onFwdRegExPID##_ports(_pwr, _regmode, _reset, 40, 20, 100) \
+  __onFwdRegExPID##_ports(_pwr, _regmode, _reset, PID_3, PID_1, PID_1) \
   compend
 
 #define OnRevRegEx(_ports, _pwr, _regmode, _reset) \
@@ -658,11 +673,11 @@ dseg ends
 
 #define OnFwdSyncEx(_ports, _pwr, _turnpct, _reset) \
   compif EQ, isconst(_ports), FALSE \
-  __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, 40, 20, 100) \
+  __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, PID_3, PID_1, PID_1) \
   compelse \
   compchk LT, _ports, 0x07 \
   compchk GTEQ, _ports, 0x00 \
-  __onFwdSyncExPID##_ports(_pwr, _turnpct, _reset, 40, 20, 100) \
+  __onFwdSyncExPID##_ports(_pwr, _turnpct, _reset, PID_3, PID_1, PID_1) \
   compend
 
 #define OnRevSyncEx(_ports, _pwr, _turnpct, _reset) \
@@ -1000,7 +1015,7 @@ dseg ends
    mov __rotate_theRVP6, _p \
    mov __rotate_theRVI6, _i \
    mov __rotate_theRVD6, _d \
-   call __RotateMotor6 \
+   call __RotateMotorVar \
    release __rotateMutex2 \
    release __rotateMutex1 \
    release __rotateMutex0
@@ -1014,16 +1029,16 @@ dseg ends
    __rotateMotorExPID##_ports(_pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
    compend
 
-// default PID values are 96, 32, 32
+// default PID values are 96, 32, 32 (PID_3, PID_1, PID_1)
 
 #define RotateMotorPID(_ports, _pwr, _angle, _p, _i, _d) \
    RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, _p, _i, _d)
 
 #define RotateMotorEx(_ports, _pwr, _angle, _turnpct, _bSync, _bStop) \
-   RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, 40, 20, 100)
+   RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, PID_1, PID_0, PID_3)
 
 #define RotateMotor(_ports, _pwr, _angle) \
-   RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, 40, 20, 100)
+   RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, PID_1, PID_0, PID_3)
 
 subroutine __RotateMotor0
   brtst EQ, __rotate_Done0, __rotate_angle0
@@ -1068,7 +1083,8 @@ __rotate_Stabilize0:
   // check rotation
   getout __rotate_RotCount0, __rotate_firstPort0, RotationCount
   brcmp NEQ, __rotate_Stabilize0, __rotate_OldRotCount0, __rotate_RotCount0
-  setout __rotate_ports0, RegMode, __rotate_theRM0, RunState, OUT_RUNSTATE_IDLE, OutputMode, OUT_MODE_COAST+OUT_MODE_REGULATED, UpdateFlags, UF_UPDATE_MODE
+  set __rotate_theOM0, OUT_MODE_COAST+OUT_MODE_REGULATED
+  setout __rotate_ports0, RegMode, __rotate_theRM0, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM0, UpdateFlags, UF_UPDATE_MODE
 __rotate_Reset0:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done0, __rotate_theTurnPct0
@@ -1110,23 +1126,18 @@ __rotate_doneRunning1:
   brtst EQ, __rotate_Reset1, __rotate_stop1 ; skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM1, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
-  set __rotate_theRM1, OUT_REGMODE_SPEED
-  set __rotate_theUF1, UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports1, OutputMode, __rotate_theOM1, RegMode, __rotate_theRM1, RunState, __rotate_theRS1, Power, 0, UpdateFlags, __rotate_theUF1
+  set __rotate_theUF1, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
+  setout __rotate_ports1, OutputMode, __rotate_theOM1, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS1, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF1
 // Verifies that motor doesn't rotate for 50ms, else loops
   getout __rotate_RotCount1, __rotate_firstPort1, RotationCount
 __rotate_Stabilize1:
   mov __rotate_OldRotCount1, __rotate_RotCount1
-  // wait loop
-  gettick __rotate_now1
-  add __rotate_then1, __rotate_now1, 50
-__rotate_Waiting1:
-  gettick __rotate_now1
-  brcmp LTEQ, __rotate_Waiting1, __rotate_now1, __rotate_then1 
+  wait 50
   // check rotation
   getout __rotate_RotCount1, __rotate_firstPort1, RotationCount
   brcmp NEQ, __rotate_Stabilize1, __rotate_OldRotCount1, __rotate_RotCount1
-  setout __rotate_ports1, RunState, OUT_RUNSTATE_IDLE, OutputMode, OUT_MODE_COAST, UpdateFlags, UF_UPDATE_MODE
+  set __rotate_theOM1, OUT_MODE_COAST+OUT_MODE_REGULATED
+  setout __rotate_ports1, RegMode, __rotate_theRM1, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM1, UpdateFlags, UF_UPDATE_MODE
 __rotate_Reset1:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done1, __rotate_theTurnPct1
@@ -1168,23 +1179,18 @@ __rotate_doneRunning2:
   brtst EQ, __rotate_Reset2, __rotate_stop2 ; skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM2, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
-  set __rotate_theRM2, OUT_REGMODE_SPEED
-  set __rotate_theUF2, UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports2, OutputMode, __rotate_theOM2, RegMode, __rotate_theRM2, RunState, __rotate_theRS2, Power, 0, UpdateFlags, __rotate_theUF2
+  set __rotate_theUF2, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
+  setout __rotate_ports2, OutputMode, __rotate_theOM2, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS2, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF2
 // Verifies that motor doesn't rotate for 50ms, else loops
   getout __rotate_RotCount2, __rotate_firstPort2, RotationCount
 __rotate_Stabilize2:
   mov __rotate_OldRotCount2, __rotate_RotCount2
-  // wait loop
-  gettick __rotate_now2
-  add __rotate_then2, __rotate_now2, 50
-__rotate_Waiting2:
-  gettick __rotate_now2
-  brcmp LTEQ, __rotate_Waiting2, __rotate_now2, __rotate_then2 
+  wait 50
   // check rotation
   getout __rotate_RotCount2, __rotate_firstPort2, RotationCount
   brcmp NEQ, __rotate_Stabilize2, __rotate_OldRotCount2, __rotate_RotCount2
-  setout __rotate_ports2, RunState, OUT_RUNSTATE_IDLE, OutputMode, OUT_MODE_COAST, UpdateFlags, UF_UPDATE_MODE
+  set __rotate_theOM2, OUT_MODE_COAST+OUT_MODE_REGULATED
+  setout __rotate_ports2, RegMode, __rotate_theRM2, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM2, UpdateFlags, UF_UPDATE_MODE
 __rotate_Reset2:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done2, __rotate_theTurnPct2
@@ -1226,23 +1232,18 @@ __rotate_doneRunning3:
   brtst EQ, __rotate_Reset3, __rotate_stop3 ; skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM3, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
-  set __rotate_theRM3, OUT_REGMODE_SPEED
-  set __rotate_theUF3, UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports3, OutputMode, __rotate_theOM3, RegMode, __rotate_theRM3, RunState, __rotate_theRS3, Power, 0, UpdateFlags, __rotate_theUF3
+  set __rotate_theUF3, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
+  setout __rotate_ports3, OutputMode, __rotate_theOM3, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS3, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF3
 // Verifies that motor doesn't rotate for 50ms, else loops
   getout __rotate_RotCount3, __rotate_firstPort3, RotationCount
 __rotate_Stabilize3:
   mov __rotate_OldRotCount3, __rotate_RotCount3
-  // wait loop
-  gettick __rotate_now3
-  add __rotate_then3, __rotate_now3, 50
-__rotate_Waiting3:
-  gettick __rotate_now3
-  brcmp LTEQ, __rotate_Waiting3, __rotate_now3, __rotate_then3 
+  wait 50
   // check rotation
   getout __rotate_RotCount3, __rotate_firstPort3, RotationCount
   brcmp NEQ, __rotate_Stabilize3, __rotate_OldRotCount3, __rotate_RotCount3
-  setout __rotate_ports3, RunState, OUT_RUNSTATE_IDLE, OutputMode, OUT_MODE_COAST, UpdateFlags, UF_UPDATE_MODE
+  set __rotate_theOM3, OUT_MODE_COAST+OUT_MODE_REGULATED
+  setout __rotate_ports3, RegMode, __rotate_theRM3, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM3, UpdateFlags, UF_UPDATE_MODE
 __rotate_Reset3:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done3, __rotate_theTurnPct3
@@ -1284,23 +1285,18 @@ __rotate_doneRunning4:
   brtst EQ, __rotate_Reset4, __rotate_stop4 ; skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM4, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
-  set __rotate_theRM4, OUT_REGMODE_SPEED
-  set __rotate_theUF4, UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports4, OutputMode, __rotate_theOM4, RegMode, __rotate_theRM4, RunState, __rotate_theRS4, Power, 0, UpdateFlags, __rotate_theUF4
+  set __rotate_theUF4, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
+  setout __rotate_ports4, OutputMode, __rotate_theOM4, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS4, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF4
 // Verifies that motor doesn't rotate for 50ms, else loops
   getout __rotate_RotCount4, __rotate_firstPort4, RotationCount
 __rotate_Stabilize4:
   mov __rotate_OldRotCount4, __rotate_RotCount4
-  // wait loop
-  gettick __rotate_now4
-  add __rotate_then4, __rotate_now4, 50
-__rotate_Waiting4:
-  gettick __rotate_now4
-  brcmp LTEQ, __rotate_Waiting4, __rotate_now4, __rotate_then4 
+  wait 50
   // check rotation
   getout __rotate_RotCount4, __rotate_firstPort4, RotationCount
   brcmp NEQ, __rotate_Stabilize4, __rotate_OldRotCount4, __rotate_RotCount4
-  setout __rotate_ports4, RunState, OUT_RUNSTATE_IDLE, OutputMode, OUT_MODE_COAST, UpdateFlags, UF_UPDATE_MODE
+  set __rotate_theOM4, OUT_MODE_COAST+OUT_MODE_REGULATED
+  setout __rotate_ports4, RegMode, __rotate_theRM4, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM4, UpdateFlags, UF_UPDATE_MODE
 __rotate_Reset4:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done4, __rotate_theTurnPct4
@@ -1342,23 +1338,18 @@ __rotate_doneRunning5:
   brtst EQ, __rotate_Reset5, __rotate_stop5 ; skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM5, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
-  set __rotate_theRM5, OUT_REGMODE_SPEED
-  set __rotate_theUF5, UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports5, OutputMode, __rotate_theOM5, RegMode, __rotate_theRM5, RunState, __rotate_theRS5, Power, 0, UpdateFlags, __rotate_theUF5
+  set __rotate_theUF5, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
+  setout __rotate_ports5, OutputMode, __rotate_theOM5, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS5, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF5
 // Verifies that motor doesn't rotate for 50ms, else loops
   getout __rotate_RotCount5, __rotate_firstPort5, RotationCount
 __rotate_Stabilize5:
   mov __rotate_OldRotCount5, __rotate_RotCount5
-  // wait loop
-  gettick __rotate_now5
-  add __rotate_then5, __rotate_now5, 50
-__rotate_Waiting5:
-  gettick __rotate_now5
-  brcmp LTEQ, __rotate_Waiting5, __rotate_now5, __rotate_then5 
+  wait 50
   // check rotation
   getout __rotate_RotCount5, __rotate_firstPort5, RotationCount
   brcmp NEQ, __rotate_Stabilize5, __rotate_OldRotCount5, __rotate_RotCount5
-  setout __rotate_ports5, RunState, OUT_RUNSTATE_IDLE, OutputMode, OUT_MODE_COAST, UpdateFlags, UF_UPDATE_MODE
+  set __rotate_theOM5, OUT_MODE_COAST+OUT_MODE_REGULATED
+  setout __rotate_ports5, RegMode, __rotate_theRM5, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM5, UpdateFlags, UF_UPDATE_MODE
 __rotate_Reset5:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done5, __rotate_theTurnPct5
@@ -1400,28 +1391,51 @@ __rotate_doneRunning6:
   brtst EQ, __rotate_Reset6, __rotate_stop6 ; skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM6, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
-  set __rotate_theRM6, OUT_REGMODE_SPEED
-  set __rotate_theUF6, UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports6, OutputMode, __rotate_theOM6, RegMode, __rotate_theRM6, RunState, __rotate_theRS6, Power, 0, UpdateFlags, __rotate_theUF6
-// Verifies that motor doesn't rotate for 60ms, else loops
+  set __rotate_theUF6, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
+  setout __rotate_ports6, OutputMode, __rotate_theOM6, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS6, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF6
+// Verifies that motor doesn't rotate for 50ms, else loops
   getout __rotate_RotCount6, __rotate_firstPort6, RotationCount
 __rotate_Stabilize6:
   mov __rotate_OldRotCount6, __rotate_RotCount6
-  // wait loop
-  gettick __rotate_now6
-  add __rotate_then6, __rotate_now6, 50
-__rotate_Waiting6:
-  gettick __rotate_now6
-  brcmp LTEQ, __rotate_Waiting6, __rotate_now6, __rotate_then6 
+  wait 50
   // check rotation
   getout __rotate_RotCount6, __rotate_firstPort6, RotationCount
   brcmp NEQ, __rotate_Stabilize6, __rotate_OldRotCount6, __rotate_RotCount6
-  setout __rotate_ports6, RunState, OUT_RUNSTATE_IDLE, OutputMode, OUT_MODE_COAST, UpdateFlags, UF_UPDATE_MODE
+  set __rotate_theOM6, OUT_MODE_COAST+OUT_MODE_REGULATED
+  setout __rotate_ports6, RegMode, __rotate_theRM6, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM6, UpdateFlags, UF_UPDATE_MODE
 __rotate_Reset6:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done6, __rotate_theTurnPct6
   setout __rotate_ports6, UpdateFlags, UF_UPDATE_RESET_BLOCK_COUNT
 __rotate_Done6:
+  return
+ends
+
+subroutine __RotateMotorVar
+/*
+  _ports should be an array but it might be an integer from 0..6
+  (OUT_A, OUT_B, OUT_C, OUT_AB, OUT_AC, OUT_BC, OUT_ABC)
+  This subroutine converts, if necessary, an array containing a single byte
+  > 2 into an array containing multiple bytes and then falls through to
+  the RotateMotor6 subroutine.  It uses __rotate_rs6 as a temporary variable
+*/
+  arrsize __rotate_rs6, __rotate_ports6 // what is the size of the array?
+  brcmp GT, __rmvCallSub, __rotate_rs6, 1 // fall through if size > 1
+  // only one element in the array.  What is its value?
+  index __rotate_rs6, __rotate_ports6, NA // grab the first element
+  brcmp LT, __rmvCallSub, __rotate_rs6, 3 // if it is less than 3 just call the subroutine
+  brcmp GT, __rmvExit, __rotate_rs6, 6 // if it is greater than 6 abort
+  // start with 3
+  mov __rotate_ports6, __OUT_AB
+  brcmp EQ, __rmvCallSub, __rotate_rs6, 3
+  mov __rotate_ports6, __OUT_AC
+  brcmp EQ, __rmvCallSub, __rotate_rs6, 4
+  mov __rotate_ports6, __OUT_BC
+  brcmp EQ, __rmvCallSub, __rotate_rs6, 5
+  mov __rotate_ports6, __OUT_ABC
+__rmvCallSub:
+  call __RotateMotor6
+__rmvExit:
   return
 ends
 
@@ -1948,7 +1962,7 @@ dseg ends
   mov __RLSReadPort, _port \
   mov __RLSReadBufVar, __RLSBbufLSWrite1 \
   set __RLSBytesCountVar, 1 \
-  call __ReadSensorLSBytesWait0 \
+  wait 15 \
   call __ReadLSBytesVar \
   index _value, __RLSReadBufVar, NA \
   release __RLSBmutex0 \
@@ -1961,63 +1975,11 @@ dseg ends
   acquire __RLSBmutex##_port \
   mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
   set __RLSBytesCount##_port, 1 \
-  call __ReadSensorLSBytesWait##_port \
+  wait 15 \
   call __ReadLSBytes##_port \
   index _value, __RLSReadBuf##_port, NA \
   release __RLSBmutex##_port \
   compend
-
-subroutine __ReadSensorLSBytesWait0
-  dseg segment
-    __RLSBNow0 dword
-    __RLSBThen0 dword
-  dseg ends
-  gettick __RLSBThen0
-  add __RLSBThen0, __RLSBThen0, 15
-__RLSBWaiting0:
-  gettick __RLSBNow0
-  brcmp LT, __RLSBWaiting0, __RLSBNow0, __RLSBThen0
-  return
-ends
-
-subroutine __ReadSensorLSBytesWait1
-  dseg segment
-    __RLSBNow1 dword
-    __RLSBThen1 dword
-  dseg ends
-  gettick __RLSBThen1
-  add __RLSBThen1, __RLSBThen1, 15
-__RLSBWaiting1:
-  gettick __RLSBNow1
-  brcmp LT, __RLSBWaiting1, __RLSBNow1, __RLSBThen1
-  return
-ends
-
-subroutine __ReadSensorLSBytesWait2
-  dseg segment
-    __RLSBNow2 dword
-    __RLSBThen2 dword
-  dseg ends
-  gettick __RLSBThen2
-  add __RLSBThen2, __RLSBThen2, 15
-__RLSBWaiting2:
-  gettick __RLSBNow2
-  brcmp LT, __RLSBWaiting2, __RLSBNow2, __RLSBThen2
-  return
-ends
-
-subroutine __ReadSensorLSBytesWait3
-  dseg segment
-    __RLSBNow3 dword
-    __RLSBThen3 dword
-  dseg ends
-  gettick __RLSBThen3
-  add __RLSBThen3, __RLSBThen3, 15
-__RLSBWaiting3:
-  gettick __RLSBNow3
-  brcmp LT, __RLSBWaiting3, __RLSBNow3, __RLSBThen3
-  return
-ends
 
 subroutine __ReadLSBytes0
   dseg segment
@@ -2040,7 +2002,7 @@ __RLSBDoCheckStatus0:
   brtst LT, __RLSBError0, __RLSBResult0 ; negative results are absolute errors
   brtst EQ, __RLSBReadyToRead0, __RLSBResult0
   ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  call __ReadSensorLSBytesWait0
+  wait 15
   jmp __RLSBDoCheckStatus0
 __RLSBReadyToRead0:
   ; Try reading now
@@ -2077,7 +2039,7 @@ __RLSBDoCheckStatus1:
   brtst LT, __RLSBError1, __RLSBResult1 ; negative results are absolute errors
   brtst EQ, __RLSBReadyToRead1, __RLSBResult1
   ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  call __ReadSensorLSBytesWait1
+  wait 15
   jmp __RLSBDoCheckStatus1
 __RLSBReadyToRead1:
   ; Try reading now
@@ -2114,7 +2076,7 @@ __RLSBDoCheckStatus2:
   brtst LT, __RLSBError2, __RLSBResult2 ; negative results are absolute errors
   brtst EQ, __RLSBReadyToRead2, __RLSBResult2
   ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  call __ReadSensorLSBytesWait2
+  wait 15
   jmp __RLSBDoCheckStatus2
 __RLSBReadyToRead2:
   ; Try reading now
@@ -2151,7 +2113,7 @@ __RLSBDoCheckStatus3:
   brtst LT, __RLSBError3, __RLSBResult3 ; negative results are absolute errors
   brtst EQ, __RLSBReadyToRead3, __RLSBResult3
   ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  call __ReadSensorLSBytesWait3
+  wait 15
   jmp __RLSBDoCheckStatus3
 __RLSBReadyToRead3:
   ; Try reading now
@@ -2188,7 +2150,7 @@ __RLSBDoCheckStatusVar:
   brtst LT, __RLSBErrorVar, __RLSBResultVar ; negative results are absolute errors
   brtst EQ, __RLSBReadyToReadVar, __RLSBResultVar
   ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  call __ReadSensorLSBytesWait0
+  wait 15
   jmp __RLSBDoCheckStatusVar
 __RLSBReadyToReadVar:
   ; Try reading now

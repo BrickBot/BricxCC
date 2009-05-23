@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NBCCommon.h
- * Date:: 2009-04-30
- * Revision:: 34
+ * Date:: 2009-05-22
+ * Revision:: 37
  *
  * Contains declarations for the NBC & NXC NXT API resources
  *
@@ -46,6 +46,26 @@
 #define DATA_ARG_ADDR_MASK 0x3FFF
 #define DATA_ARG_IMM_MASK 0x7FFF
 
+#define TC_VOID    0
+#define TC_UBYTE   1
+#define TC_SBYTE   2
+#define TC_UWORD   3
+#define TC_SWORD   4
+#define TC_ULONG   5
+#define TC_SLONG   6
+#define TC_ARRAY   7
+#define TC_CLUSTER 8
+#define TC_MUTEX   9
+#define TC_FLOAT   10
+
+#define PID_0 0
+#define PID_1 32
+#define PID_2 64
+#define PID_3 96
+#define PID_4 128
+#define PID_5 160
+#define PID_6 192
+#define PID_7 224
 
 //==============================================================================
 // Logical comparison operators
@@ -68,6 +88,13 @@
 #define OPARR_MIN    0x04
 #define OPARR_MAX    0x05
 #define OPARR_SORT   0x06
+
+#if __FIRMWARE_VERSION > 107
+#define PI 3.141593
+#define RADIANS_PER_DEGREE PI/180
+#define DEGREES_PER_RADIAN 180/PI
+#endif
+
 #endif
 
 
@@ -1828,5 +1855,20 @@
 #define RICPolygonPoints(_pPoint1, _pPoint2, ...) _pPoint1, _pPoint2, __VA_ARGS__
 #define RICOpEllipse(_CopyOptions, _Point, _Radius1, _Radius1) 12, 0, 9, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Radius1)&0xFF, (_Radius1)>>8, (_Radius2)&0xFF, (_Radius2)>>8
 
+#define CHAR_BIT   8
+#define SCHAR_MIN  -127
+#define SCHAR_MAX  127
+#define UCHAR_MAX  255
+#define CHAR_MIN   -127
+#define CHAR_MAX   127
+#define SHRT_MIN   -32767
+#define SHRT_MAX   32767
+#define USHRT_MAX  65535
+#define INT_MIN    -32767
+#define INT_MAX    32767
+#define UINT_MAX   65535
+#define LONG_MIN   -2147483647
+#define LONG_MAX   2147483647
+#define ULONG_MAX  4294967295
 
 #endif // NBCCOMMON_H
