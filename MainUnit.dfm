@@ -637,24 +637,39 @@ object MainForm: TMainForm
     end
     object actHelpNXCGuidePDF: TAction
       Category = 'Help'
-      Caption = 'View NXC Guide'
+      Caption = 'NXC'
       Hint = 'View NXC Guide'
-      Visible = False
       OnExecute = actHelpNXCGuidePDFExecute
     end
     object actHelpNQCGuidePDF: TAction
       Category = 'Help'
-      Caption = 'View NQC Guide'
+      Caption = 'NQC'
       Hint = 'View NQC Guide'
-      Visible = False
       OnExecute = actHelpNQCGuidePDFExecute
     end
     object actHelpNBCGuidePDF: TAction
       Category = 'Help'
-      Caption = 'View NBC Guide'
+      Caption = 'NBC'
       Hint = 'View NBC Guide'
-      Visible = False
       OnExecute = actHelpNBCGuidePDFExecute
+    end
+    object actHelpNXCTutorialPDF: TAction
+      Category = 'Help'
+      Caption = 'NXC'
+      Hint = 'View NXC Tutorial'
+      OnExecute = actHelpNXCTutorialPDFExecute
+    end
+    object actHelpNQCTutorialPDF: TAction
+      Category = 'Help'
+      Caption = 'NQC'
+      Hint = 'View NQC Tutorial'
+      OnExecute = actHelpNQCTutorialPDFExecute
+    end
+    object actHelpNBCTutorialPDF: TAction
+      Category = 'Help'
+      Caption = 'NBC'
+      Hint = 'View NBC Tutorial'
+      OnExecute = actHelpNBCTutorialPDFExecute
     end
   end
   object dlgInsertFile: TOpenDialog

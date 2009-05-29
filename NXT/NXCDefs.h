@@ -1703,6 +1703,13 @@ struct ListFilesType {
 #define MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) asm { __MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) }
 #define MSScoutSetScoutMode(_mode) asm { __MSScoutSetScoutMode(_mode) }
 
+inline void Wait(unsigned long ms) { asm { waitv ms } }
+inline void ResetTachoCount(const byte port) { asm { __resetTachoCount(port) } }
+inline void ResetBlockTachoCount(const byte port) { asm { __resetBlockTachoCount(port) } }
+inline void ResetRotationCount(const byte port) { asm { __resetRotationCount(port) } }
+inline void ResetAllTachoCounts(const byte port) { asm { __resetAllTachoCounts(port) } }
+
+
 // RIC Macro wrappers
 #define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8
 

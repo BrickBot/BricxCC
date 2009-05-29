@@ -363,6 +363,12 @@ type
     Button2: TButton;
     Label8: TLabel;
     chkIncludeSrcInList: TCheckBox;
+    pnlAPIRight: TPanel;
+    grpAPIHeaders: TGroupBox;
+    btnShowNQCDefs: TButton;
+    btnShowNBCCommon: TButton;
+    btnShowNXTDefs: TButton;
+    btnShowNXCDefs: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -415,6 +421,10 @@ type
     procedure radRICDecompScriptClick(Sender: TObject);
     procedure btnCommentConfigClick(Sender: TObject);
     procedure btnAlignLinesConfigClick(Sender: TObject);
+    procedure btnShowNQCDefsClick(Sender: TObject);
+    procedure btnShowNBCCommonClick(Sender: TObject);
+    procedure btnShowNXTDefsClick(Sender: TObject);
+    procedure btnShowNXCDefsClick(Sender: TObject);
   private
     { Private declarations }
     cc_keywords: TStringList;
@@ -823,7 +833,7 @@ uses
   uSetValues, uEEPROM, uNewWatch, uForthConsole, Themes,
   uSpirit, brick_common, Transfer, uNXTExplorer, uNXTController,
   uNXTExplorerSettings, uLocalizedStrings, uGuiUtils, uEditorExperts,
-  uEECommentConfig, uEEAlignConfig;
+  uEECommentConfig, uEEAlignConfig, uNBCInterface;
 
 {$R *.DFM}
 
@@ -917,7 +927,7 @@ const
   K_REDGE_COLOR_DEFAULT     = clSilver;
   K_STRUCT_COLOR_DEFAULT    = clNone;
   K_GUTTER_COLOR_DEFAULT    = clBtnFace;
-  K_USEINTERNALNBC_DEFAULT  = False;
+  K_USEINTERNALNBC_DEFAULT  = True;
 {$ENDIF}
 
 var
@@ -5777,6 +5787,65 @@ begin
     end;
   finally
     FreeAndNil(Dialog);
+  end;
+end;
+
+procedure TPrefForm.btnShowNQCDefsClick(Sender: TObject);
+begin
+  ShowMessage('Not yet implemented');
+end;
+
+procedure TPrefForm.btnShowNBCCommonClick(Sender: TObject);
+var
+  C : TCodeForm;
+begin
+  if UseInternalNBC then
+  begin
+    C := TCodeForm.Create(Application);
+    C.Width := 640;
+    C.CodeEdit.Highlighter := MainForm.SynCppSyn;
+    C.CodeEdit.Lines.Text := APIAsText(1);
+    C.Show;
+  end
+  else
+  begin
+    ShowMessage('Not yet implemented');
+  end;
+end;
+
+procedure TPrefForm.btnShowNXTDefsClick(Sender: TObject);
+var
+  C : TCodeForm;
+begin
+  if UseInternalNBC then
+  begin
+    C := TCodeForm.Create(Application);
+    C.Width := 640;
+    C.CodeEdit.Highlighter := MainForm.SynCppSyn;
+    C.CodeEdit.Lines.Text := APIAsText(2);
+    C.Show;
+  end
+  else
+  begin
+    ShowMessage('Not yet implemented');
+  end;
+end;
+
+procedure TPrefForm.btnShowNXCDefsClick(Sender: TObject);
+var
+  C : TCodeForm;
+begin
+  if UseInternalNBC then
+  begin
+    C := TCodeForm.Create(Application);
+    C.Width := 640;
+    C.CodeEdit.Highlighter := MainForm.SynCppSyn;
+    C.CodeEdit.Lines.Text := APIAsText(3);
+    C.Show;
+  end
+  else
+  begin
+    ShowMessage('Not yet implemented');
   end;
 end;
 

@@ -3244,7 +3244,13 @@ function TDataspace.FindEntryAndAddReference(const path: string): TDataspaceEntr
 begin
   Result := FindEntryByFullName(path);
   if Assigned(Result) then
-    Result.IncRefCount;
+  begin
+    // if this item has a parent then incref at the parent level
+    if Result.DSBase.Root <> nil then
+      Result.DSBase.Root.IncRefCount
+    else
+      Result.IncRefCount;
+  end;
 end;
 
 procedure TDataspace.RemoveReferenceIfPresent(const path: string);
@@ -3990,6 +3996,7 @@ var
   i : integer;
 begin
   inc(fRefCount);
+  // check sub entries if this entry is a cluster
   if DataType = dsCluster then
   begin
     for i := 0 to SubEntries.Count - 1 do
@@ -7390,12 +7397,12 @@ begin
   Result := False;
   op := Command;
   if (op in [OP_ADD..OP_ROTR]) or
-     (op in [OP_INDEX, OP_ARRSIZE, OP_MOV, OP_SET,
-             OP_STRINGTONUM, OP_GETIN, OP_GETOUT, OP_GETTICK]) or
+     (op in [OP_GETIN, OP_GETOUT, OP_GETTICK]) or
+     (op in [OP_INDEX..OP_BYTEARRTOSTR]) or
      ((FirmwareVersion > MAX_FW_VER1X) and
-      (op in [OPS_SIGN_2, OPS_ACOS_2..OPS_ATAN2D_2])) or
-     ((FirmwareVersion <= MAX_FW_VER1x) and
-      (op in [OPS_SIGN, OPS_ACOS..OPS_POW])) then
+      (op in [OP_SQRT_2, OP_ABS_2, OPS_SIGN_2, OPS_FMTNUM_2, OPS_ACOS_2..OPS_ATAN2D_2])) or
+     ((FirmwareVersion <= MAX_FW_VER1X) and
+      (op in [OPS_ABS, OPS_SIGN, OPS_FMTNUM, OPS_ACOS..OPS_POW])) then
   begin
     Result := True;
   end;
@@ -8314,19 +8321,27 @@ var
     cnt : integer;
   begin
     Result := True;
-    arg1 := AL.Args[0].Value;
+    arg1 := AL.Args[0].Value; // check the output (dest) argument
     cnt := CountArgUsage(AL, arg1);
     DE := CodeSpace.Dataspace.FindEntryByFullName(arg1);
-    if Assigned(DE) and (DE.RefCount <= cnt) then
+    if Assigned(DE) then
     begin
-      // setting a variable to a value and never referencing it again
-      // set|mov X, whatever
-      // nop (or delete line)
-      // remove the references
-      AL.RemoveVariableReferences;
-      RemoveOrNOPLine(AL, nil, i);
-      Result := False;
+      // simple case - refcount is less than this line's usage
+      if (DE.RefCount <= cnt) then
+      begin
+        // setting a variable to a value and never referencing it again
+        // set|mov X, whatever
+        // nop (or delete line)
+        // remove the references
+        AL.RemoveVariableReferences;
+        RemoveOrNOPLine(AL, nil, i);
+        Result := False;
+      end;
     end;
+  end;
+  function DoubleCheckReferenceCount : boolean;
+  begin
+    Result := True;
   end;
 begin
   bDone := False;
@@ -8344,6 +8359,12 @@ begin
       begin
         // first check reference count of output variable
         if not CheckReferenceCount then
+        begin
+          bDone := False;
+          Break;
+        end;
+        // double check reference count of output variable
+        if not DoubleCheckReferenceCount then
         begin
           bDone := False;
           Break;
@@ -8490,10 +8511,10 @@ begin
                     // waitv __D0 <-- replace these two lines with
                     // nop (if arg1 and arg2 are stack or register variables)
                     // waitv|wait whatever
-                    if AL.Command = OP_SET then
-                      ALNext.Command := OPS_WAITI_2;
                     ALNext.Args[0].Value := AL.Args[1].Value;
                     ALNext.RemoveVariableReference(arg2, 0);
+                    if AL.Command = OP_SET then
+                      ALNext.Command := OPS_WAITI_2;
                     DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);
                     if Assigned(DE) then
                       DE.IncRefCount;

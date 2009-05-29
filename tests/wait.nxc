@@ -1,0 +1,36 @@
+struct Ball {
+  int x;
+  int y;
+};
+
+inline void DoIt(Ball myBall)
+{
+  NumOut(0, LCD_LINE7, myBall.x);
+}
+
+inline int MyFunction(const int x, int y) {
+  OnFwd(x, y);
+  return x*y;
+}
+
+inline void FooBar(const unsigned char p) { ResetRotationCount(p); }
+inline void TestingFooBar(const byte p) { FooBar(p); }
+//void TestingFooBar2(const byte p) { NumOut(0, LCD_LINE1, p); }
+inline void TestingFooBar123(const byte p) { TestingFooBar(p); }
+
+task main()
+{
+  Ball balls[2];
+  balls[0].x = 12;
+  int x = 12;
+  NumOut(0, LCD_LINE1, MyFunction(OUT_AB+1, 10));
+  MyFunction(OUT_A, 75);
+  OnFwd(OUT_B, 75);
+  DoIt(balls[0]);
+  Wait(5000);
+  const byte foobar = OUT_AC;
+  ResetTachoCount(OUT_A);
+  ResetTachoCount(OUT_AB);
+  ResetBlockTachoCount(foobar);
+  TestingFooBar123(OUT_B);
+}
