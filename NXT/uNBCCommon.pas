@@ -1051,6 +1051,7 @@ function IsCharWhiteSpace(C: Char): Boolean;
 function StrContains(const SubStr, Str: string): Boolean;
 function InlineName(const tname, name: string): string;
 function StripDecoration(const name : string) : string;
+function PrettyNameStrip(const name : string) : string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
 function Replace(const str : string; const src, rep : string) : string;
 function StripTrailingZeros(const aNum : string) : string;
@@ -1213,6 +1214,21 @@ begin
       System.Delete(Result, 1, i+Length(DECOR_SEP)+2);
       Result := varName + Result;
     end;
+  end;
+end;
+
+function PrettyNameStrip(const name : string) : string;
+var
+  i : integer;
+begin
+  Result := name;
+  // a decorated name has this pattern:
+  // __threadnameDECOR_SEPvariablenameDECOR_SEPNNNetc
+  i := Pos(DECOR_SEP, Result);
+  if i > 0 then
+  begin
+    System.Delete(Result, 1, 2); // drop the underscores
+    Result := Replace(Result, DECOR_SEP, '.');
   end;
 end;
 

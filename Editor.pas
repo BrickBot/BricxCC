@@ -167,6 +167,7 @@ type
     procedure SaveFile;                // Saves the file
     procedure SaveFileAs(fname:string);// Saves the file as fname
     procedure InsertFile(fname:string);// Insert file at cursor
+    function  OpenFileOnPath(const fname : string) : boolean;
     {Editing}
     function  CanUndo: boolean;         // Whether you can undo something
     function  CanRedo: boolean;         // Whether you can redo something
@@ -2494,9 +2495,7 @@ end;
 
 procedure TEditorForm.OpenFileAtCursor;
 var
-  fName, pName : string;
-  fPaths : TStringList;
-  i : integer;
+  fName : string;
   bFound : boolean;
 begin
   fName := TheEditor.TextWithinDelimiters(['"', ' ']);
@@ -2504,32 +2503,7 @@ begin
     MainForm.OpenFile(fName)
   else
   begin
-    bFound := False;
-    fPaths := TStringList.Create;
-    try
-      fPaths.Sorted := True;
-      fPaths.Duplicates := dupIgnore;
-      fPaths.Add(ExtractFilePath(Application.ExeName));
-      fPaths.Add(GetCurrentDir);
-      fPaths.Add(ExtractFilePath(FileName));
-      if FileIsNQC then
-        AddPaths(NQCIncludePath, fPaths)
-      else if FileIsNBCOrNXC then
-        AddPaths(NBCIncludePath, fPaths)
-      else if FileIsMindScriptOrLASM then
-        AddPaths(LCCIncludePath, fPaths);
-      for i := 0 to fPaths.Count - 1 do begin
-        pName := IncludeTrailingPathDelimiter(fPaths[i]) + fName;
-        if FileExists(pName) then
-        begin
-          bFound := True;
-          MainForm.OpenFile(pName);
-          Exit;
-        end;
-      end;
-    finally
-      fPaths.Free;
-    end;
+    bFound := OpenFileOnPath(fName);
     if not bFound then
     begin
       MainForm.dlgOpen.FileName := fName;
@@ -3089,6 +3063,40 @@ end;
 procedure TEditorForm.SetPosition(const Value: integer);
 begin
   TheEditor.CaretXY := TheEditor.CharIndexToRowCol(Value-1);
+end;
+
+function TEditorForm.OpenFileOnPath(const fname: string): boolean;
+var
+  pName : string;
+  fPaths : TStringList;
+  i : integer;
+begin
+  Result := False;
+  fPaths := TStringList.Create;
+  try
+    fPaths.Sorted := True;
+    fPaths.Duplicates := dupIgnore;
+    fPaths.Add(ExtractFilePath(Application.ExeName));
+    fPaths.Add(GetCurrentDir);
+    fPaths.Add(ExtractFilePath(FileName));
+    if FileIsNQC then
+      AddPaths(NQCIncludePath, fPaths)
+    else if FileIsNBCOrNXC then
+      AddPaths(NBCIncludePath, fPaths)
+    else if FileIsMindScriptOrLASM then
+      AddPaths(LCCIncludePath, fPaths);
+    for i := 0 to fPaths.Count - 1 do begin
+      pName := IncludeTrailingPathDelimiter(fPaths[i]) + fName;
+      if FileExists(pName) then
+      begin
+        Result := True;
+        MainForm.OpenFile(pName);
+        Exit;
+      end;
+    end;
+  finally
+    fPaths.Free;
+  end;
 end;
 
 end.

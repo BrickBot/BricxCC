@@ -5797,6 +5797,8 @@ begin
       EmitMutexDeclaration(Name);
     AddEntry(Name, TOK_PROCEDURE, tname, '', False, bSafeCall);
     GS_ReturnType[NumGlobals] := dt;
+    if IsArrayType(dt) or IsUDT(dt) then
+      AddEntry(Format('__result_%s', [Name]), dt, tname, '');
   end;
   OpenParen;
   fCurrentThreadName := Name;
@@ -6761,10 +6763,12 @@ begin
     bFuncStyle := Token = TOK_OPENPAREN;
     if bFuncStyle then
       Next;
+    fLHSDataType := dt;
     fLHSName := Format('__result_%s',[fCurrentThreadName]);
     try
-      BoolExpression;
+      NumericFactor;
     finally
+      fLHSDataType := TOK_LONGDEF;
       fLHSName := '';
     end;
 {

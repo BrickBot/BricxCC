@@ -36,6 +36,7 @@ type
     fSize : integer;
     function GetValue: Variant;
     function GetDSTOCEntries: TDSTocEntries;
+    function GetPrettyName: string;
   public
     constructor Create(ACollection: TCollection); override;
     property Name : string read fName write fName;
@@ -45,6 +46,7 @@ type
     property Value : Variant read GetValue;
     property DSTOCEntries : TDSTocEntries read GetDSTOCEntries;
     property Stale : boolean read fStale;
+    property PrettyName : string read GetPrettyName;
   end;
 
   TDSTocEntries = class(TCollection)
@@ -169,7 +171,7 @@ var
 implementation
 
 uses
-  SysUtils, rcx_constants, uSpirit, brick_common;
+  SysUtils, rcx_constants, uSpirit, brick_common, uNBCCommon;
 
 var
   CP : TProgram;
@@ -264,6 +266,12 @@ end;
 function TDSTocEntry.GetDSTOCEntries: TDSTocEntries;
 begin
   Result := TDSTocEntries(Collection);
+end;
+
+function TDSTocEntry.GetPrettyName: string;
+begin
+  Result := PrettyNameStrip(Name);
+  // names can be decorated in various ways...
 end;
 
 function TDSTocEntry.GetValue: Variant;
@@ -391,7 +399,7 @@ function TClumpOffsets.IndexOfPC(const pc: word): integer;
 var
   i : integer;
 begin
-  // find the first offset object with a PC > pc
+  // find the first offset object with a PC > pc and same filename
   Result := -1;
   for i := 0 to Count - 1 do
   begin
