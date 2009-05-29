@@ -253,6 +253,8 @@ type
     function  FindEntryByFullName(const path : string) : TDataspaceEntry; override;
     function  FindEntryAndAddReference(const path : string) : TDataspaceEntry;
     procedure RemoveReferenceIfPresent(const path : string);
+    procedure AddReference(DE : TDataspaceEntry);
+    procedure RemoveReference(DE : TDataspaceEntry);
     function  DataspaceIndex(const ident : string) : Integer;
     property  Vectors[index : Integer] : DopeVector read GetVector;
     property  MMHead : Word read fMMHead write fMMHead;
@@ -3245,11 +3247,7 @@ begin
   Result := FindEntryByFullName(path);
   if Assigned(Result) then
   begin
-    // if this item has a parent then incref at the parent level
-    if Result.DSBase.Root <> nil then
-      Result.DSBase.Root.IncRefCount
-    else
-      Result.IncRefCount;
+    AddReference(Result);
   end;
 end;
 
@@ -3259,7 +3257,7 @@ var
 begin
   DE := FindEntryByFullName(path);
   if Assigned(DE) then
-    DE.DecRefCount;
+    RemoveReference(DE);
 end;
 
 procedure TDataspace.ProcessArray(DE: TDataspaceEntry; aDS: TDSData; var doffset : integer);
@@ -3375,6 +3373,23 @@ begin
 
 // 7. Finally, increment the dynamic default data offset pointer
   inc(doffset, cnt);
+end;
+
+procedure TDataspace.AddReference(DE: TDataspaceEntry);
+begin
+  // if this item has a parent then incref at the parent level
+  if DE.DSBase.Root <> nil then
+    DE.DSBase.Root.IncRefCount
+  else
+    DE.IncRefCount;
+end;
+
+procedure TDataspace.RemoveReference(DE: TDataspaceEntry);
+begin
+  if DE.DSBase.Root <> nil then
+    DE.DSBase.Root.DecRefCount
+  else
+    DE.DecRefCount;
 end;
 
 { TDataspaceEntry }
@@ -8327,7 +8342,7 @@ var
     if Assigned(DE) then
     begin
       // simple case - refcount is less than this line's usage
-      if (DE.RefCount <= cnt) then
+      if DE.RefCount <= cnt then
       begin
         // setting a variable to a value and never referencing it again
         // set|mov X, whatever
@@ -8338,10 +8353,6 @@ var
         Result := False;
       end;
     end;
-  end;
-  function DoubleCheckReferenceCount : boolean;
-  begin
-    Result := True;
   end;
 begin
   bDone := False;
@@ -8359,12 +8370,6 @@ begin
       begin
         // first check reference count of output variable
         if not CheckReferenceCount then
-        begin
-          bDone := False;
-          Break;
-        end;
-        // double check reference count of output variable
-        if not DoubleCheckReferenceCount then
         begin
           bDone := False;
           Break;

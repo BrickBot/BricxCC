@@ -18,6 +18,8 @@ inline void TestingFooBar(const byte p) { FooBar(p); }
 //void TestingFooBar2(const byte p) { NumOut(0, LCD_LINE1, p); }
 inline void TestingFooBar123(const byte p) { TestingFooBar(p); }
 
+const long ms = 3000;
+
 task main()
 {
   Wait(5000);
@@ -36,4 +38,5 @@ task main()
   ResetBlockTachoCount(foobar);
   TestingFooBar123(OUT_B);
   Wait(5000);
+  Wait(ms);
 }

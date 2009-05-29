@@ -174,6 +174,8 @@ object frmNewWatch: TfrmNewWatch
     Top = 64
     Width = 497
     Height = 73
+    ParentShowHint = False
+    ShowHint = True
     TabOrder = 7
   end
   object btnRemoveWatch: TButton
