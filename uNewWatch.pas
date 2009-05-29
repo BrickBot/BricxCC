@@ -78,6 +78,9 @@ type
     procedure InitSources;
     function GetSourceIndex: Integer;
     procedure UpdateControls;
+    procedure AddVariableHint(sht : TTabsheet; i : integer);
+    procedure PopulateVariables(cbo : TCombobox);
+    procedure cboNXTVarChange(Sender: TObject);
   public
     { Public declarations }
     procedure GraphDestroyed;
@@ -92,7 +95,8 @@ implementation
 
 uses
   SysUtils, Graphics, Dialogs, SearchRCX, Preferences, uMiscDefines,
-  brick_common, rcx_constants, uSources, uLocalizedStrings, uCommonUtils;
+  brick_common, rcx_constants, uSources, uLocalizedStrings, uCommonUtils,
+  uProgram, MainUnit, Editor;
 
 var
   busy : boolean = false;
@@ -288,6 +292,7 @@ var
   edtVal: TEdit;
   udVal: TUpDown;
   cboSrc: TComboBox;
+  cboNXTVar: TComboBox;
   num : string;
   scale_amount : double;
 begin
@@ -300,6 +305,7 @@ begin
   edtVal := TEdit.Create(Self);
   udVal := TUpDown.Create(Self);
   cboSrc := TComboBox.Create(Self);
+  cboNXTVar := TComboBox.Create(Self);
   with sht do
   begin
     Name        := 'sht' + num;
@@ -355,6 +361,8 @@ begin
     Text        := IntToStr(udValue.Position);
     OnKeyPress  := edtValueKeyPress;
     HelpContext := 3618;
+    ReadOnly := True;
+    Visible := not (IsNXT and (sht.Tag = 0));
   end;
   with udVal do
   begin
@@ -372,14 +380,23 @@ begin
     Thousands := False;
     Wrap      := False;
     HelpContext := 3619;
+    Visible := not (IsNXT and (sht.Tag = 0));
   end;
   with cboSrc do
   begin
     Name   := 'cboSource' + num;
     Parent := sht;
-    Left   := Trunc(260 * scale_amount);
+    if IsNXT and (sht.Tag = 0) then
+    begin
+      Left  := Trunc(340 * scale_amount);
+      Width := Trunc(140 * scale_amount);
+    end
+    else
+    begin
+      Left  := Trunc(260 * scale_amount);
+      Width := Trunc(160 * scale_amount);
+    end;
     Top    := Trunc(16 * scale_amount);
-    Width  := Trunc(160 * scale_amount);
     Height := Trunc(21 * scale_amount);
     Style  := csDropDownList;
     ItemHeight  := 13;
@@ -388,6 +405,27 @@ begin
     ItemIndex   := cboSource.ItemIndex;
     Enabled     := False;
     HelpContext := 3620;
+  end;
+  with cboNXTVar do
+  begin
+    Name   := 'cboNXTVar'+num;
+    Parent := sht;
+    Left   := Trunc(190 * scale_amount);
+    Top    := Trunc(16 * scale_amount);
+    Width  := Trunc(146 * scale_amount);
+    Height := Trunc(21 * scale_amount);
+    Style  := csDropDownList;
+    ItemHeight  := 13;
+    TabOrder := 3;
+    Visible  := IsNXT and (sht.Tag = 0);
+    OnChange := cboNXTVarChange;
+  end;
+  if IsNXT and (sht.Tag = 0) then
+  begin
+    AddVariableHint(sht, udValue.Position);
+    PopulateVariables(cboNXTVar);
+    if udValue.Position < cboNXTVar.Items.Count then
+      cboNXTVar.ItemIndex := udValue.Position;
   end;
   UpdateControls;
 end;
@@ -399,6 +437,8 @@ begin
 end;
 
 procedure TfrmNewWatch.AdjustRangeOfValueSlider(source: Integer);
+var
+  AEF : TEditorForm;
 begin
   udValue.Position := BrickWatchSources[LocalBrickType][source].VMin;
   // crud.  poll only accepts a byte value 0..255
@@ -406,6 +446,12 @@ begin
 //  udValue.Max := Min(BrickWatchSources[LocalBrickType][source].VMax, 255);
   udValue.Min := BrickWatchSources[LocalBrickType][source].VMin;
   udValue.Max := BrickWatchSources[LocalBrickType][source].VMax;
+  AEF := MainForm.ActiveEditorForm;
+  if (source = 0) and IsNXT and Assigned(AEF) and CurrentProgram.Loaded(AEF.Filename) then
+  begin
+    udValue.Min := 0;
+    udValue.Max := CurrentProgram.Dataspace.Count - 1;
+  end;
 end;
 
 procedure TfrmNewWatch.InitSources;
@@ -481,6 +527,46 @@ end;
 procedure TfrmNewWatch.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
+end;
+
+procedure TfrmNewWatch.AddVariableHint(sht: TTabsheet; i : integer);
+var
+  AEF : TEditorForm;
+  tmp : string;
+begin
+  AEF := MainForm.ActiveEditorForm;
+  if IsNXT and Assigned(AEF) and CurrentProgram.Loaded(AEF.Filename) then
+  begin
+    if CurrentProgram.Dataspace.Count > i then
+    begin
+      tmp := CurrentProgram.Dataspace[i].PrettyName;
+      sht.Hint := tmp;
+    end;
+  end;
+end;
+
+procedure TfrmNewWatch.PopulateVariables(cbo: TCombobox);
+var
+  AEF : TEditorForm;
+  i : integer;
+begin
+  AEF := MainForm.ActiveEditorForm;
+  if IsNXT and Assigned(AEF) and CurrentProgram.Loaded(AEF.Filename) then
+  begin
+    cbo.Items.Clear;
+    for i := 0 to CurrentProgram.Dataspace.Count - 1 do
+      cbo.Items.Add(CurrentProgram.Dataspace[i].PrettyName);
+  end;
+end;
+
+procedure TfrmNewWatch.cboNXTVarChange(Sender: TObject);
+var
+  C : TComboBox;
+begin
+  // change the edit value and ud position
+  C := TCombobox(Sender);
+  TUpDown(C.Parent.Controls[3]).Position := C.ItemIndex;
+  C.Parent.Hint := C.Text;
 end;
 
 end.

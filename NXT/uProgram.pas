@@ -140,7 +140,7 @@ type
     destructor Destroy; override;
     function  Add: TClumpData;
     function  Insert(Index: Integer): TClumpData;
-    procedure Clear;
+    procedure ClearAll;
     function  IndexOfName(const name : string) : integer;
     function  TraceInto : boolean;
     function  StepOver : boolean;
@@ -1020,9 +1020,9 @@ begin
             Lowercase(ChangeFileExt(ExtractFileName(aName),''));
 end;
 
-procedure TProgram.Clear;
+procedure TProgram.ClearAll;
 begin
-  inherited Clear;
+  Clear;
   Dataspace.Clear;
   fName := '';
 end;
