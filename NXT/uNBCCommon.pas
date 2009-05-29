@@ -1425,6 +1425,7 @@ var
   tmpSL : TStringList;
   tmpCode, oldname, newname, NameInline : string;
   i : integer;
+  fp : TFunctionParameter;
 begin
   inc(fEmitCount);
   // adjust labels
@@ -1436,9 +1437,14 @@ begin
     // do all the variable replacing that is needed
     for i := 0 to Parameters.Count - 1 do
     begin
-      oldname := ApplyDecoration(Parameters[i].ProcName, Parameters[i].Name, 0);
+      fp := Parameters[i];
+      oldname := ApplyDecoration(fp.ProcName, fp.Name, 0);
       newname := InlineName(CurrentCaller, oldname);
-      tmpCode := Replace(tmpCode, oldname, newname);
+      // is this parameter a constant?
+      if fp.IsConstant and not fp.IsReference then
+        tmpCode := Replace(tmpCode, oldname, fp.ConstantValue)
+      else
+        tmpCode := Replace(tmpCode, oldname, newname);
     end;
     for i := 0 to LocalVariables.Count - 1 do
     begin
@@ -1629,6 +1635,7 @@ begin
     fp.IsConstant     := IsConstant;
     fp.IsReference    := IsReference;
     fp.ArrayDimension := ArrayDimension;
+    fp.ConstantValue  := ConstantValue;
     fp.FuncIsInline   := FuncIsInline;
   end
   else

@@ -431,9 +431,9 @@ task main()
    }
    test_data[0].row = row;
    test_data[0].col = col;
-   data = test_data[0];
-   display_test_data(data);
-//   display_test_data(test_data[0]);
+//   data = test_data[0];
+//   display_test_data(data);
+   display_test_data(test_data[0]);
    // Search using while-loop
    row = 0;
    while (row < DISPLAY_HEIGHT)
@@ -445,9 +445,9 @@ task main()
    }
    test_data[1].row = row;
    test_data[1].col = col;
-   data = test_data[1];
-   display_test_data(data);
-//   display_test_data(test_data[1]);
+//   data = test_data[1];
+//   display_test_data(data);
+   display_test_data(test_data[1]);
    // Search using do-while-loop
    row = 0;
    do
@@ -459,8 +459,8 @@ task main()
    } while (row < DISPLAY_HEIGHT);
    test_data[2].row = row;
    test_data[2].col = col;
-   data = test_data[2];
-   display_test_data(data);
-//   display_test_data(test_data[2]);
+//   data = test_data[2];
+//   display_test_data(data);
+   display_test_data(test_data[2]);
    Wait(SEC_5);
 }

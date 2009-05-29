@@ -89,6 +89,8 @@ resourcestring
   sHowToUseHelp    = '&How to Use Help';
   sWebPage         = '&Web page';
   sNextWindow      = '&Next window';
+  sGuidePDFs       = 'Guide PDFs';
+  sTutorialPDFs    = 'Tutorial PDFs';
 
 // Editor unit
 resourcestring
@@ -541,7 +543,8 @@ resourcestring
   sNXCPreprocess           = 'Running NXC preprocessor';
   sNXCInitProgram          = 'NXC init program';
   sNXCParseProg            = 'NXC parse program code';
-  sNXCCodeGenComplete      = 'NXC code generation finished';  
+  sNXCCodeGenComplete      = 'NXC code generation finished';
+  sConstNotInline          = 'Only inline functions can correctly use non-reference constant parameters'; 
 
 // uNBCCommon unit
 resourcestring
@@ -569,7 +572,7 @@ resourcestring
   sTooFewArgs              = 'Too few arguments';
   sTooFewParams            = 'Too few parameters';
   sMaxParamCountExceeded   = 'Max param count exceeded';
-  sConstNotAllowed         = 'Constant not allowed';
+  sConstNotAllowed         = 'Constant not allowed on LHS of assignment';
 
 // nbc.dpr
 resourcestring

@@ -92,7 +92,7 @@ type
     destructor Destroy; override;
     function Execute : integer;
     procedure Decompile;
-    procedure DumpAPI(const idx : integer);
+    class procedure DumpAPI(const idx : integer);
     procedure HandleOnCompilerStatusChange(Sender : TObject; const StatusMsg : string);
     property CommandLine : string read fCommandLine write SetCommandLine;
     property InputFilename : string read fFilename write fFilename;
@@ -135,6 +135,8 @@ type
     property BrickComm : TBrickComm read GetBrickComm write SetBrickComm;
 {$ENDIF}
   end;
+
+function APIAsText(const idx : integer) : string;
 
 implementation
 
@@ -643,7 +645,7 @@ begin
     Write(Char(data[i]));
 end;
 
-procedure TNBCCompiler.DumpAPI(const idx : integer);
+class procedure TNBCCompiler.DumpAPI(const idx : integer);
 begin
   case idx of
     0 :
@@ -655,6 +657,30 @@ begin
     1 : WriteBytes(nbc_common_data);
     2 : WriteBytes(nxt_defs_data);
     3 : WriteBytes(nxc_defs_data);
+  end;
+end;
+
+function APIAsText(const idx: integer): string;
+var
+  X : TStringStream;
+  tmp : string;
+begin
+  X := TStringStream.Create(tmp);
+  try
+    case idx of
+      0 :
+        begin
+          X.Write(nbc_common_data, SizeOf(nbc_common_data));
+          X.Write(nxt_defs_data, SizeOf(nxt_defs_data));
+          X.Write(nxc_defs_data, SizeOf(nxc_defs_data));
+        end;
+      1 : X.Write(nbc_common_data, SizeOf(nbc_common_data));
+      2 : X.Write(nxt_defs_data, SizeOf(nxt_defs_data));
+      3 : X.Write(nxc_defs_data, SizeOf(nxc_defs_data));
+    end;
+    Result := Copy(X.DataString, 1, MaxInt);
+  finally
+    X.Free;
   end;
 end;
 

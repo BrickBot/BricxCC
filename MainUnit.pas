@@ -131,6 +131,9 @@ type
     actHelpNXCGuidePDF: TAction;
     actHelpNQCGuidePDF: TAction;
     actHelpNBCGuidePDF: TAction;
+    actHelpNXCTutorialPDF: TAction;
+    actHelpNQCTutorialPDF: TAction;
+    actHelpNBCTutorialPDF: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -233,6 +236,9 @@ type
     procedure actHelpNXCGuidePDFExecute(Sender: TObject);
     procedure actHelpNQCGuidePDFExecute(Sender: TObject);
     procedure actHelpNBCGuidePDFExecute(Sender: TObject);
+    procedure actHelpNXCTutorialPDFExecute(Sender: TObject);
+    procedure actHelpNQCTutorialPDFExecute(Sender: TObject);
+    procedure actHelpNBCTutorialPDFExecute(Sender: TObject);
   public
     // menu components
     mnuMain: TOfficeMainMenu;
@@ -406,6 +412,11 @@ type
     mniNXCGuidePDF : TOfficeMenuItem;
     mniNQCGuidePDF : TOfficeMenuItem;
     mniNBCGuidePDF : TOfficeMenuItem;
+    mniGuidePDFs : TOfficeMenuItem;
+    mniTutorialPDFs : TOfficeMenuItem;
+    mniNXCTutorialPDF : TOfficeMenuItem;
+    mniNQCTutorialPDF : TOfficeMenuItem;
+    mniNBCTutorialPDF : TOfficeMenuItem;
     N14: TOfficeMenuItem;
     mniAbout: TOfficeMenuItem;
     // popup menus
@@ -3982,15 +3993,21 @@ begin
   mniHowTo := TOfficeMenuItem.Create(mniHelp);
   N5 := TOfficeMenuItem.Create(mniHelp);
   mniWebpage := TOfficeMenuItem.Create(mniHelp);
-  mniNXCGuidePDF := TOfficeMenuItem.Create(mniHelp);
-  mniNQCGuidePDF := TOfficeMenuItem.Create(mniHelp);
-  mniNBCGuidePDF := TOfficeMenuItem.Create(mniHelp);
+  mniGuidePDFs := TOfficeMenuItem.Create(mniHelp);
+  mniNXCGuidePDF := TOfficeMenuItem.Create(mniGuidePDFs);
+  mniNQCGuidePDF := TOfficeMenuItem.Create(mniGuidePDFs);
+  mniNBCGuidePDF := TOfficeMenuItem.Create(mniGuidePDFs);
+  mniTutorialPDFs := TOfficeMenuItem.Create(mniHelp);
+  mniNXCTutorialPDF := TOfficeMenuItem.Create(mniTutorialPDFs);
+  mniNQCTutorialPDF := TOfficeMenuItem.Create(mniTutorialPDFs);
+  mniNBCTutorialPDF := TOfficeMenuItem.Create(mniTutorialPDFs);
   N14 := TOfficeMenuItem.Create(mniHelp);
   mniAbout := TOfficeMenuItem.Create(mniHelp);
   // add menu items to help menu
   mniHelp.Add([mniContents, mniIndex, mniNqcGuide, mniHowTo,
-               N5, mniWebpage, mniNQCGuidePDF, mniNXCGuidePDF, mniNBCGuidePDF,
-               N14, mniAbout]);
+               N5, mniWebpage, mniGuidePDFs, mniTutorialPDFs, N14, mniAbout]);
+  mniGuidePDFs.Add([mniNQCGuidePDF, mniNXCGuidePDF, mniNBCGuidePDF]);
+  mniTutorialPDFs.Add([mniNQCTutorialPDF, mniNXCTutorialPDF, mniNBCTutorialPDF]);
 
   with mniFile do
   begin
@@ -5083,6 +5100,11 @@ begin
     Caption := sWebPage;
     OnClick := mniWebpageClick;
   end;
+  with mniGuidePDFs do
+  begin
+    Name := 'mniGuidePDFs';
+    Caption := sGuidePDFs;
+  end;
   with mniNXCGuidePDF do
   begin
     Name := 'mniNXCGuidePDF';
@@ -5097,6 +5119,26 @@ begin
   begin
     Name := 'mniNBCGuidePDF';
     Action := actHelpNBCGuidePDF;
+  end;
+  with mniTutorialPDFs do
+  begin
+    Name := 'mniTutorialPDFs';
+    Caption := sTutorialPDFs;
+  end;
+  with mniNXCTutorialPDF do
+  begin
+    Name := 'mniNXCTutorialPDF';
+    Action := actHelpNXCTutorialPDF;
+  end;
+  with mniNQCTutorialPDF do
+  begin
+    Name := 'mniNQCTutorialPDF';
+    Action := actHelpNQCTutorialPDF;
+  end;
+  with mniNBCTutorialPDF do
+  begin
+    Name := 'mniNBCTutorialPDF';
+    Action := actHelpNBCTutorialPDF;
   end;
   with N14 do
   begin
@@ -6681,24 +6723,65 @@ begin
     Accept := False;
 end;
 
-procedure TMainForm.actHelpNXCGuidePDFExecute(Sender: TObject);
-var
-  s : string;
-  res : Cardinal;
+function StartDoc(const DocName : String) : Integer;
 begin
-  s := ProgramDir + 'Documentation\NXCGuide.pdf';
-  res := ShellExecute(Handle, 'open', PChar(s), '', PChar(ProgramDir), SW_NORMAL);
-  RaiseLastOSError;
+  Result := ShellExecute(GetDesktopWindow(), 'open', PChar(DocName), '', '', SW_SHOWNORMAL);
+end;
+
+procedure HandleResponse(const res : integer);
+var
+  msg : string;
+begin
+  if res <= 32 then
+  begin
+    case res of
+      SE_ERR_FNF : msg := 'File not found';
+      SE_ERR_PNF : msg := 'Path not found';
+      SE_ERR_ACCESSDENIED : msg := 'Access denied';
+      SE_ERR_OOM : msg := 'Out of memory';
+      SE_ERR_DLLNOTFOUND : msg := 'DLL not found';
+      SE_ERR_SHARE : msg := 'A sharing violation occurred';
+      SE_ERR_ASSOCINCOMPLETE : msg := 'Incomplete or invalid file association';
+      SE_ERR_DDETIMEOUT : msg := 'DDE time out';
+      SE_ERR_DDEFAIL : msg := 'DDE transaction failed';
+      SE_ERR_DDEBUSY : msg := 'DDE busy';
+      SE_ERR_NOASSOC : msg := 'No association for file extension';
+      ERROR_BAD_FORMAT : msg := 'Invalid EXE file or error in EXE image';
+    else
+      msg := 'Unknown error';
+    end;
+    ShowMessage(msg);
+  end;
+end;
+
+procedure TMainForm.actHelpNXCGuidePDFExecute(Sender: TObject);
+begin
+  HandleResponse(StartDoc(ProgramDir + 'Documentation\NXC_Guide.pdf'));
 end;
 
 procedure TMainForm.actHelpNQCGuidePDFExecute(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', PChar(ProgramDir + 'Documentation\NQCGuide.pdf'), '', '', SW_NORMAL);
+  HandleResponse(StartDoc(ProgramDir + 'Documentation\NQC_Guide.pdf'));
 end;
 
 procedure TMainForm.actHelpNBCGuidePDFExecute(Sender: TObject);
 begin
-  ShellExecute(Handle, 'open', PChar(ProgramDir + 'Documentation\NBCGuide.pdf'), '', '', SW_NORMAL);
+  HandleResponse(StartDoc(ProgramDir + 'Documentation\NBC_Guide.pdf'));
+end;
+
+procedure TMainForm.actHelpNXCTutorialPDFExecute(Sender: TObject);
+begin
+  HandleResponse(StartDoc(ProgramDir + 'Documentation\NXC_Tutorial.pdf'));
+end;
+
+procedure TMainForm.actHelpNQCTutorialPDFExecute(Sender: TObject);
+begin
+  HandleResponse(StartDoc(ProgramDir + 'Documentation\NQC_Tutorial.pdf'));
+end;
+
+procedure TMainForm.actHelpNBCTutorialPDFExecute(Sender: TObject);
+begin
+  HandleResponse(StartDoc(ProgramDir + 'Documentation\NBC_Tutorial.pdf'));
 end;
 
 end.

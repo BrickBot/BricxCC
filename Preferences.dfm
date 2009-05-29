@@ -86,7 +86,7 @@ object PrefForm: TPrefForm
       Top = 1
       Width = 450
       Height = 319
-      ActivePage = shtGeneral
+      ActivePage = shtColors
       Align = alClient
       TabOrder = 0
       OnChange = pagPrefsChange
@@ -1053,7 +1053,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11092
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNQCIncludePathExit
             end
@@ -1126,7 +1126,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11101
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtLCCIncludePathExit
             end
@@ -1705,18 +1705,19 @@ object PrefForm: TPrefForm
         Caption = 'API'
         ImageIndex = 7
         object pagAPILang: TPageControl
-          Left = 4
-          Top = 4
-          Width = 434
-          Height = 277
+          Left = 0
+          Top = 0
+          Width = 328
+          Height = 291
           ActivePage = shtNQCAPI
+          Align = alClient
           TabOrder = 2
           object shtNQCAPI: TTabSheet
             Caption = 'NQC'
             object pagNQCAPI: TPageControl
               Left = 6
               Top = 6
-              Width = 414
+              Width = 308
               Height = 237
               ActivePage = shtAPIKeywords
               TabOrder = 0
@@ -1803,7 +1804,7 @@ object PrefForm: TPrefForm
             object pagNXCAPI: TPageControl
               Left = 6
               Top = 6
-              Width = 414
+              Width = 308
               Height = 237
               ActivePage = shtNXCKeywords
               TabOrder = 0
@@ -1904,6 +1905,59 @@ object PrefForm: TPrefForm
           Caption = '&Delete'
           TabOrder = 1
           OnClick = btnDeleteAPIClick
+        end
+        object pnlAPIRight: TPanel
+          Left = 328
+          Top = 0
+          Width = 114
+          Height = 291
+          Align = alRight
+          BevelOuter = bvNone
+          TabOrder = 3
+          object grpAPIHeaders: TGroupBox
+            Left = 6
+            Top = 15
+            Width = 105
+            Height = 276
+            Caption = 'API Headers'
+            TabOrder = 0
+            object btnShowNQCDefs: TButton
+              Left = 7
+              Top = 24
+              Width = 91
+              Height = 25
+              Caption = 'NQCDefs.h'
+              TabOrder = 0
+              OnClick = btnShowNQCDefsClick
+            end
+            object btnShowNBCCommon: TButton
+              Left = 7
+              Top = 56
+              Width = 91
+              Height = 25
+              Caption = 'NBCCommon.h'
+              TabOrder = 1
+              OnClick = btnShowNBCCommonClick
+            end
+            object btnShowNXTDefs: TButton
+              Left = 7
+              Top = 88
+              Width = 91
+              Height = 25
+              Caption = 'NXTDefs.h'
+              TabOrder = 2
+              OnClick = btnShowNXTDefsClick
+            end
+            object btnShowNXCDefs: TButton
+              Left = 7
+              Top = 120
+              Width = 91
+              Height = 25
+              Caption = 'NXCDefs.h'
+              TabOrder = 3
+              OnClick = btnShowNXCDefsClick
+            end
+          end
         end
       end
       object shtStartup: TTabSheet
@@ -2154,7 +2208,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnChange = cboLangTempChange
         end
@@ -2384,7 +2438,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnChange = cboLanguagesChange
         end

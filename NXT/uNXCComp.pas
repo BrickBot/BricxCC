@@ -39,12 +39,14 @@ type
     fStackVarNames : TStringList;
     fOnCompilerStatusChange: TCompilerStatusChangeEvent;
     function FunctionParameterTypeName(const name: string; idx: integer): string;
-    function GlobalDataType(const n: string): char;
     function LocalDataType(const n: string): char;
     function LocalTypeName(const n: string): string;
+    function LocalConstantValue(const n: string): string;
+    function GlobalDataType(const n: string): char;
     function GlobalTypeName(const n: string): string;
     function ParamDataType(const n: string): char;
     function ParamTypeName(const n: string): string;
+    function ParamConstantValue(const n: string): string;
     procedure OptionalSemi;
     procedure CheckSemicolon;
     procedure OpenParen;
@@ -166,6 +168,7 @@ type
     function  TypesAreCompatible(lhs, rhs : char) : boolean;
     function  GetParamName(procname : string; idx : integer) : string;
     procedure DoCall(procname: string);
+    function  GetValueOf(const name : string) : string;
     procedure DoCallAPIFunc(procname: string);
     function  APIFuncNameToID(procname : string) : integer;
     function  IsAPIFunc(procname : string) : boolean;
@@ -280,6 +283,7 @@ type
     procedure ClearReg;
     procedure ArrayAssignment(const name : string; dt : char; bIndexed : boolean);
     procedure UDTAssignment(const name : string);
+    procedure GetAndStoreUDT(const name : string);
     procedure MathAssignment(const name : string);
     procedure StoreAdd(const name: string);
     procedure StoreDiv(const name: string);
@@ -294,7 +298,6 @@ type
     procedure StoreSub(const name: string);
     procedure StoreInc(const name: string; const val: integer = 1);
     procedure StoreDec(const name: string; const val: integer = 1);
-    procedure DoWait;
     procedure DoAPICommands(const lend, lstart : string);
     procedure DoResetScreen;
     procedure DoReadButton(idx : integer);
@@ -309,7 +312,7 @@ type
     procedure DoOnFwdRevSyncPID;
     procedure DoOnFwdRevRegExPID;
     procedure DoOnFwdRevSyncExPID;
-    procedure DoResetCounters;
+//    procedure DoResetCounters;
     procedure DoRotateMotors(idx : integer);
     procedure DoSetSensorTypeMode(idx : integer);
     procedure DoClearSetResetSensor;
@@ -336,8 +339,7 @@ type
     procedure DoSubString;
     procedure DoStrReplace;
     procedure DoStrToNum;
-    procedure ReportProblem(const lineNo: integer; const fName,
-      msg: string; err: boolean);
+    procedure ReportProblem(const lineNo: integer; const fName, msg: string; const err: boolean);
     procedure Scan;
     function  IsWhite(c: char): boolean;
     function  IsRelop(c: char): boolean;
@@ -349,6 +351,7 @@ type
     function  IsMulop(c: char): boolean;
     procedure GetString;
     procedure CheckNumeric;
+    function  ValueIsNumeric : boolean;
     procedure CheckString;
     procedure LoadAPIFunctions;
     procedure AddAPIFunction(const name : string; id : integer);
@@ -553,7 +556,6 @@ const                                     // 'xileweRWve'
 const
   API_BREAK    = 0;
   API_CONTINUE = 1;
-  API_WAIT     = 2;
   API_ONFWD    = 3;
   API_ONREV    = 4;
   API_ONFWDREG = 5;
@@ -593,10 +595,6 @@ const
   API_OFFEX       = 39;
   API_ROTATEMOTORPID = 40;
   API_ROTATEMOTOREXPID = 41;
-  API_RESETTACHOCOUNT = 42;
-  API_RESETBLOCKTACHOCOUNT = 43;
-  API_RESETROTATIONCOUNT = 44;
-  API_RESETALLTACHOCOUNTS = 45;
   API_ONFWDREGPID = 46;
   API_ONREVREGPID = 47;
   API_ONFWDSYNCPID = 48;
@@ -605,10 +603,15 @@ const
   API_ONREVREGEXPID = 51;
   API_ONFWDSYNCEXPID = 52;
   API_ONREVSYNCEXPID = 53;
+  API_WAIT                 =  2; // moved to header file as inline function
+  API_RESETTACHOCOUNT      = 42; // moved to header file as inline function
+  API_RESETBLOCKTACHOCOUNT = 43; // moved to header file as inline function
+  API_RESETROTATIONCOUNT   = 44; // moved to header file as inline function
+  API_RESETALLTACHOCOUNTS  = 45; // moved to header file as inline function
 
   APICount = 54;
   APIList : array[0..APICount-1] of string = (
-    'break', 'continue', 'Wait',
+    'break', 'continue', '__Wait__',
     'OnFwd', 'OnRev', 'OnFwdReg', 'OnRevReg',
     'OnFwdSync', 'OnRevSync', 'Coast', 'Off',
     'RotateMotor', 'RotateMotorEx',
@@ -620,8 +623,8 @@ const
     'OnFwdEx', 'OnRevEx', 'OnFwdRegEx', 'OnRevRegEx',
     'OnFwdSyncEx', 'OnRevSyncEx', 'CoastEx', 'OffEx',
     'RotateMotorPID', 'RotateMotorExPID',
-    'ResetTachoCount', 'ResetBlockTachoCount',
-    'ResetRotationCount', 'ResetAllTachoCounts',
+    '__ResetTachoCount__', '__ResetBlockTachoCount__',
+    '__ResetRotationCount__', '__ResetAllTachoCounts__',
     'OnFwdRegPID', 'OnRevRegPID', 'OnFwdRegExPID', 'OnRevRegExPID',
     'OnFwdSyncPID', 'OnRevSyncPID', 'OnFwdSyncExPID', 'OnRevSyncExPID'
   );
@@ -765,7 +768,7 @@ end;
 { Report Error and Halt }
 
 procedure TNXCComp.ReportProblem(const lineNo: integer; const fName,
-  msg: string; err : boolean);
+  msg: string; const err : boolean);
 var
   tmp, tmp1, tmp2, tmp3, tmp4 : string;
   stop : boolean;
@@ -869,18 +872,17 @@ end;
 {--------------------------------------------------------------}
 { Check to Make Sure the Current Token is a Number }
 
-procedure TNXCComp.CheckNumeric;
+function TNXCComp.ValueIsNumeric: boolean;
 var
   vName : string;
   idx : integer;
   V : TVariable;
 begin
+  Result := True;
   if not (Token in [TOK_NUM, TOK_HEX]) then
   begin
     // what about a constant numeric variable?
-    if Token <> TOK_IDENTIFIER then
-      Expected(sNumber)
-    else
+    if Token = TOK_IDENTIFIER then
     begin
       // it is an identifier
       vName := GetDecoratedValue;
@@ -897,17 +899,23 @@ begin
           if V.IsConstant and (V.Value <> '') then
             Value := V.Value
           else
-            Expected(sNumber);
+            Result := False;
         end
         else
-          Expected(sNumber);
+          Result := False;
       end
       else
-      begin
         Value := NBCFloatToStr(fCalc.Value);
-      end;
-    end;
+    end
+    else
+      Result := False;
   end;
+end;
+
+procedure TNXCComp.CheckNumeric;
+begin
+  if not ValueIsNumeric then
+    Expected(sNumber);
 end;
 
 procedure TNXCComp.CheckString;
@@ -1147,8 +1155,24 @@ end;
 { Look for Symbol in Parameter Table }
 
 function TNXCComp.IsParam(n: string): boolean;
+var
+  i : integer;
+  fp : TFunctionParameter;
 begin
   Result := ParamIdx(RootOf(n)) <> -1{0};
+  if not Result then
+  begin
+    // check in the fFuncParams also
+    for i := 0 to fFuncParams.Count - 1 do
+    begin
+      fp := fFuncParams[i];
+      if ApplyDecoration(fp.ProcName, fp.Name, 0) = RootOf(n) then
+      begin
+        Result := True;
+        Break;
+      end;
+    end;
+  end;
 end;
 
 function TNXCComp.ParamIdx(n: string): integer;
@@ -1168,6 +1192,19 @@ begin
   i := ParamIdx(RootOf(n));
   if i <> -1 then
     Result := fParams[i].IsConstant;
+end;
+
+function TNXCComp.ParamConstantValue(const n: string): string;
+var
+  i : integer;
+begin
+  Result := n;
+  i := ParamIdx(RootOf(n));
+  if i <> -1 then
+  begin
+    if fParams[i].IsConstant then
+      Result := fParams[i].Value;
+  end;
 end;
 
 function TNXCComp.ParamDataType(const n: string): char;
@@ -1229,6 +1266,19 @@ begin
   i := LocalIdx(RootOf(n));
   if i <> -1 then
     Result := fLocals[i].IsConstant;
+end;
+
+function TNXCComp.LocalConstantValue(const n: string): string;
+var
+  i : integer;
+begin
+  Result := n;
+  i := LocalIdx(RootOf(n));
+  if i <> -1 then
+  begin
+    if fLocals[i].IsConstant then
+      Result := fLocals[i].Value;
+  end;
 end;
 
 function TNXCComp.LocalDataType(const n: string): char;
@@ -3297,6 +3347,11 @@ end;
 procedure TNXCComp.AddFunctionParameter(pname, varname, tname: string; idx: integer;
   ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer);
 begin
+  // add a check here for a parameter that is const but not reference
+  // when we are not inlining
+  if bIsConst and not bIsRef and not AmInlining and (ptype in NonAggregateTypes) then
+    ReportProblem(linenumber, CurrentFile, sConstNotInline, false);
+//    AbortMsg(sConstNotInline);
   with fFuncParams.Add do
   begin
     ProcName       := pname;
@@ -3444,8 +3499,8 @@ begin
               parname := InlineName(fCurrentThreadName, parname);
             // reference types cannot take expressions
             // mutex, user defined types, and array types cannot take expressions
-            if fp.IsVarReference or fp.IsArray or
-               (fp.ParamType in [fptUDT, fptMutex]) then
+            if fp.IsVarReference or {fp.IsArray or}
+               (fp.ParamType in [{fptUDT, }fptMutex]) then
             begin
               CheckIdent;
               parvalue := GetDecoratedValue;
@@ -3463,44 +3518,98 @@ begin
               else
                 CheckTypeCompatibility(fp, pdt, parvalue);
             end
-      (*
-            else if fp.IsConstant and not fp.IsConstReference then
+// beginning of addition for handling expressions for UDT and array parameters
+            else if fp.IsArray or (fp.ParamType = fptUDT) then
+            begin
+              fLHSDataType := dt;
+              fLHSName     := parname;
+              try
+                if IsArrayType(dt) then
+                begin
+                  DoArrayAssignValue(parname, '', dt);
+                end
+                else if dt = TOK_USERDEFINEDTYPE then
+                begin
+                  GetAndStoreUDT(parname);
+                end;
+              finally
+                fLHSDataType := TOK_LONGDEF;
+                fLHSName     := '';
+              end;
+            end
+// end of addition for handling expressions for UDT and array parameters
+// beginning of previously commented out block
+            else if fp.IsConstant and not fp.IsReference then
             begin
               // must be a number (or constant expression) or a string literal
               if dt = TOK_STRINGDEF then
               begin
                 parvalue := Value;
                 CheckStringConst;
+                fp.ConstantValue := parvalue;
                 fInputs.AddObject(parvalue, fp);
+                if bFunctionIsInline then
+                begin
+                  i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
+                  if i <> -1 then
+                  begin
+                    inlineFunc.Parameters[i].Assign(fp);
+                  end;
+                end;
                 EmitLn(Format('mov %s, %s', [parname, parvalue]));
                 Next;
               end
               else if dt <> #0 then
               begin
                 // collect tokens to TOK_CLOSEPAREN or TOK_COMMA
-                parValue := Value;
+                parvalue := Value;
                 while not (Look in [TOK_CLOSEPAREN, TOK_COMMA]) or endofallsource do begin
                   Next;
-                  parValue := parValue + Value;
+                  parvalue := parvalue + Value;
                 end;
                 Next;
-                fCalc.SilentExpression := parValue;
+                fCalc.SilentExpression := GetValueOf(parvalue);
                 if not fCalc.ParserError then
                 begin
-                  parValue := IntToStr(Trunc(fCalc.Value));
-                  fp.ConstantValue := parValue;
+                  parvalue := NBCFloatToStr(fCalc.Value);
                   fCalc.SetVariable(parname, fCalc.Value);
+                  fp.ConstantValue := parvalue;
                   fInputs.AddObject(parvalue, fp);
+                  if bFunctionIsInline then
+                  begin
+                    i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
+                    if i <> -1 then
+                    begin
+                      inlineFunc.Parameters[i].Assign(fp);
+                    end;
+                  end;
                   EmitLn(Format('mov %s, %s', [parname, parvalue]));
                 end
                 else
                 begin
-                  fInputs.AddObject('', fp);
-                  Expected('constant or constant expression');
+                  if IsParamConst(parvalue) then
+                  begin
+                    fp.ConstantValue := ApplyDecoration(fCurrentThreadName, parvalue, 0);
+//                    fp.ConstantValue := parvalue;
+                    fInputs.AddObject(parvalue, fp);
+                    if bFunctionIsInline then
+                    begin
+                      i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
+                      if i <> -1 then
+                      begin
+                        inlineFunc.Parameters[i].Assign(fp);
+                      end;
+                    end;
+                  end
+                  else
+                  begin
+                    fInputs.AddObject('', fp);
+                    Expected('constant or constant expression');
+                  end;
                 end;
               end;
             end
-      *)
+// end of previously commented out block
             else
             begin
               fInputs.AddObject('', fp);
@@ -4510,18 +4619,6 @@ begin
   end;
 end;
 
-{--------------------------------------------------------------}
-{ Process a wait Statement }
-
-procedure TNXCComp.DoWait;
-begin
-  Next;
-  OpenParen;
-  BoolExpression;
-  CloseParen;
-  EmitLn(Format('waitv %s',[RegisterName]));
-end;
-
 function IndexOfAPICommand(const name : string) : integer;
 begin
   for Result := Low(APIList) to High(APIList) do
@@ -4541,7 +4638,7 @@ begin
     API_BREAK    : DoBreakContinue(idx, lend);
     API_CONTINUE : DoBreakContinue(idx, lstart);
     API_RETURN   : DoReturn;
-    API_WAIT     : DoWait;
+//    API_WAIT     : DoWait;
     API_ONFWD,
     API_ONREV    : DoOnFwdRev;
     API_ONFWDEX,
@@ -4567,10 +4664,12 @@ begin
     API_ONREVSYNCPID : DoOnFwdRevSyncPID;
     API_ONFWDSYNCEXPID,
     API_ONREVSYNCEXPID : DoOnFwdRevSyncExPID;
+{
     API_RESETTACHOCOUNT,
     API_RESETBLOCKTACHOCOUNT,
     API_RESETROTATIONCOUNT,
     API_RESETALLTACHOCOUNTS : DoResetCounters;
+}
     API_ROTATEMOTOR,
     API_ROTATEMOTOREX,
     API_ROTATEMOTORPID,
@@ -4776,12 +4875,7 @@ begin
       end
       else if dt = TOK_USERDEFINEDTYPE then
       begin
-        NotNumericFactor;
-        if fUDTOnStack <> '' then
-        begin
-          Store(savedval);
-          fUDTOnStack := '';
-        end;
+        GetAndStoreUDT(savedval);
       end
       else
       begin
@@ -5145,8 +5239,8 @@ begin
       CheckForTypedef(bUnsigned, bConst, bInline, bSafeCall);
     CheckBytesRead(oldBytesRead);
   end;
-//  if bInLine then
-//    IncrementInlineDepth;
+  if bInLine then
+    IncrementInlineDepth;
 //  fInlining := bInLine;
   fSafeCalling := bSafeCall;
 end;
@@ -6693,6 +6787,7 @@ begin
   EmitLn('return');
 end;
 
+{
 procedure TNXCComp.DoResetCounters;
 var
   op, arg1 : string;
@@ -6707,6 +6802,7 @@ begin
   CloseParen;
   EmitLn(op + TOK_OPENPAREN + arg1 + TOK_CLOSEPAREN);
 end;
+}
 
 procedure TNXCComp.DoStopMotors;
 var
@@ -8433,12 +8529,17 @@ begin
   else
   begin
     MatchString('=');
-    NotNumericFactor;
-    if fUDTOnStack <> '' then
-    begin
-      Store(name);
-      fUDTOnStack := '';
-    end;
+    GetAndStoreUDT(name);
+  end;
+end;
+
+procedure TNXCComp.GetAndStoreUDT(const name: string);
+begin
+  NotNumericFactor;
+  if fUDTOnStack <> '' then
+  begin
+    Store(name);
+    fUDTOnStack := '';
   end;
 end;
 
@@ -8447,25 +8548,42 @@ var
   i : integer;
   root_type, root_name : string;
   DE : TDataspaceEntry;
+  fp : TFunctionParameter;
 begin
   Result := '';
   case WhatIs(n) of
     stParam : begin
       i := ParamIdx(n);
-      if (i <> -1) and (ArrayBaseType(fParams[i].DataType) = TOK_USERDEFINEDTYPE) then
+      if i <> -1 then
       begin
-        root_name := RootOf(n);
-        if root_name <> n then
+        if ArrayBaseType(fParams[i].DataType) = TOK_USERDEFINEDTYPE then
         begin
-          root_type := fParams[i].TypeName;
-          System.Delete(n, 1, Length(root_name)+1);
-          n := root_type + '.' + n;
-          DE := DataDefinitions.FindEntryByFullName(n);
-          if Assigned(DE) then
-            Result := DE.TypeName;
-        end
-        else
-          Result := fParams[i].TypeName;
+          root_name := RootOf(n);
+          if root_name <> n then
+          begin
+            root_type := fParams[i].TypeName;
+            System.Delete(n, 1, Length(root_name)+1);
+            n := root_type + '.' + n;
+            DE := DataDefinitions.FindEntryByFullName(n);
+            if Assigned(DE) then
+              Result := DE.TypeName;
+          end
+          else
+            Result := fParams[i].TypeName;
+        end;
+      end
+      else
+      begin
+        // i = -1
+        for i := 0 to fFuncParams.Count - 1 do
+        begin
+          fp := fFuncParams[i];
+          if n = ApplyDecoration(fp.ProcName, fp.Name, 0) then
+          begin
+            Result := fp.ParamTypeName;
+            Break;
+          end;
+        end;
       end;
     end;
     stLocal : begin
@@ -8622,7 +8740,7 @@ procedure TNXCComp.InitializeGraphicOutVars;
 begin
   if IgnoreSystemFile then
     Exit; // do not intialization if we are not including the standard headers
-  if EnhancedFirmware then
+  if not EnhancedFirmware then
     EmitLn('arrinit __GraphicOutEmptyVars, 0, 256')
   else
     EmitLn('arrinit __GraphicOutEmptyVars, 0, 16');
@@ -9013,6 +9131,21 @@ begin
     Value := StrRetValName
   else if Value = '__GENRETVAL__' then
     Value := RegisterName;
+end;
+
+function TNXCComp.GetValueOf(const name: string): string;
+begin
+  Result := name;
+  if IsLocalConst(name) then
+  begin
+    Result := LocalConstantValue(name);
+  end
+{
+  else if IsParamConst(name) then
+  begin
+    Result := ParamConstantValue(name);
+  end;
+}
 end;
 
 end.

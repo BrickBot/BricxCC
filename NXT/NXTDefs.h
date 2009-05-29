@@ -500,7 +500,7 @@ dseg ends
 #define __resetMotorCounter5(_val) setout __OUT_BC, UpdateFlags, _val
 #define __resetMotorCounter6(_val) setout __OUT_ABC, UpdateFlags, _val
 
-#define ResetTachoCount(_p) \
+#define __resetTachoCount(_p) \
   compif EQ, isconst(_p), FALSE \
   setout _p, UpdateFlags, RESET_COUNT \
   compelse \
@@ -509,7 +509,7 @@ dseg ends
   __resetMotorCounter##_p(RESET_COUNT) \
   compend
 
-#define ResetBlockTachoCount(_p) \
+#define __resetBlockTachoCount(_p) \
   compif EQ, isconst(_p), FALSE \
   setout _p, UpdateFlags, RESET_BLOCK_COUNT \
   compelse \
@@ -518,7 +518,7 @@ dseg ends
   __resetMotorCounter##_p(RESET_BLOCK_COUNT) \
   compend
 
-#define ResetRotationCount(_p) \
+#define __resetRotationCount(_p) \
   compif EQ, isconst(_p), FALSE \
   setout _p, UpdateFlags, RESET_ROTATION_COUNT \
   compelse \
@@ -527,7 +527,7 @@ dseg ends
   __resetMotorCounter##_p(RESET_ROTATION_COUNT) \
   compend
 
-#define ResetAllTachoCounts(_p) \
+#define __resetAllTachoCounts(_p) \
   compif EQ, isconst(_p), FALSE \
   setout _p, UpdateFlags, RESET_ALL \
   compelse \
@@ -535,6 +535,11 @@ dseg ends
   compchk GTEQ, _p, 0x00 \
   __resetMotorCounter##_p(RESET_ALL) \
   compend
+
+#define ResetTachoCount(_p) __resetTachoCount(_p)
+#define ResetBlockTachoCount(_p) __resetBlockTachoCount(_p)
+#define ResetRotationCount(_p) __resetRotationCount(_p)
+#define ResetAllTachoCounts(_p) __resetAllTachoCounts(_p) 
 
 #define __onFwdExPIDAll(_ports, _pwr, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
 #define __onFwdExPID0(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_A, _pwr, _reset, _p, _i, _d)

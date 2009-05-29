@@ -17,7 +17,7 @@ int balls_touch(Ball ball1,Ball ball2)
        (ball2.centery-ball1.centery)*
        (ball2.centery-ball1.centery);
 
-   if (Sqrt(d) < ball2.radius + ball1.radius)
+   if (sqrt(d) < ball2.radius + ball1.radius)
       return true;
    else
       return false;
@@ -80,10 +80,7 @@ void createballs(Ball &balls[]);
 
        ok = true;
        for (j = 0; j < i; j++) {
-          Ball ballj, balli;
-          ballj = balls[j];
-          balli = balls[i];
-          if (balls_touch(ballj,balli))
+          if (balls_touch(balls[j],balls[i]))
             ok = false;
        }
 
@@ -94,7 +91,6 @@ void createballs(Ball &balls[]);
 
 void updateballs(Ball &balls[]);
 {
-    Ball ball1,ball2;
     int i,j;
 
     moveballs(balls);
@@ -102,8 +98,8 @@ void updateballs(Ball &balls[]);
     for (i = 0; i < NUMBALLS-1; i++)
       for (j = i+1; j < NUMBALLS; j++)
       {
-        ball1 = balls[i];
-        ball2 = balls[j];
+        Ball ball1 = balls[i];
+        Ball ball2 = balls[j];
 
         if (balls_touch(ball1,ball2))
         {
