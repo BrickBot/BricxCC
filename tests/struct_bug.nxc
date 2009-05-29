@@ -1,0 +1,22 @@
+struct point
+{
+	int x;
+	int y;
+};
+
+point NewPoint(int x, int y)
+{
+	point NewPt;
+	NewPt.x = x;
+	NewPt.y = y;
+	return NewPt;
+}
+
+task main()
+{
+	point pt = NewPoint(41,8);
+	NumOut(0,0,pt.x);
+	NumOut(50,0,pt.y);
+	while(1);
+}
+

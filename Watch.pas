@@ -264,7 +264,7 @@ implementation
 
 uses
   SysUtils, Dialogs, SearchRCX, Preferences, brick_common, rcx_constants, uSpirit,
-  uLocalizedStrings, uCommonUtils;
+  uLocalizedStrings, uCommonUtils, uProgram, MainUnit, Editor;
 
 function GetMotorData(numb : integer) : string;
 var
@@ -800,6 +800,8 @@ var
   i : integer;
   bVis : boolean;
   cb : TCheckBox;
+  AEF : TEditorForm;
+  tmp : string;
 begin
   grpVar.Visible   := True;
   grpMotor.Visible := not IsNXT;
@@ -813,6 +815,19 @@ begin
       if not cb.Visible then
         cb.Checked := False;
       fVarArray[i].Edit.Visible := bVis;
+    end;
+    AEF := MainForm.ActiveEditorForm;
+    if IsNXT and Assigned(AEF) and CurrentProgram.Loaded(AEF.Filename) then
+    begin
+      for i := Low(fVarArray) to High(fVarArray) do
+      begin
+        if CurrentProgram.Dataspace.Count > i then
+        begin
+          tmp := CurrentProgram.Dataspace[i].PrettyName;
+          fVarArray[i].CheckBox.Hint := tmp;
+          fVarArray[i].Edit.Hint     := tmp;
+        end;
+      end;
     end;
   end;
   CheckSensor4.Visible := IsNXT;

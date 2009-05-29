@@ -38,6 +38,8 @@ object WatchForm: TWatchForm
         Width = 264
         Height = 298
         HelpContext = 14006
+        ParentShowHint = False
+        ShowHint = True
         TabOrder = 0
         object VVar0: TEdit
           Left = 64
@@ -1260,7 +1262,7 @@ object WatchForm: TWatchForm
       object grpTacho: TGroupBox
         Left = 4
         Top = 2
-        Width = 173
+        Width = 229
         Height = 135
         HelpContext = 14099
         TabOrder = 0
@@ -1268,16 +1270,16 @@ object WatchForm: TWatchForm
         object CheckTCounterL: TCheckBox
           Left = 8
           Top = 16
-          Width = 78
+          Width = 127
           Height = 17
           HelpContext = 14100
-          Caption = 'T Counter L'
+          Caption = 'Tacho Counter Left'
           TabOrder = 0
         end
         object ValueTCounterL: TEdit
-          Left = 104
+          Left = 142
           Top = 16
-          Width = 60
+          Width = 80
           Height = 17
           HelpContext = 14101
           AutoSize = False
@@ -1293,16 +1295,16 @@ object WatchForm: TWatchForm
         object CheckTSpeedR: TCheckBox
           Left = 8
           Top = 82
-          Width = 73
+          Width = 127
           Height = 17
           HelpContext = 14102
-          Caption = 'T Speed R'
+          Caption = 'Tacho Speed Right'
           TabOrder = 6
         end
         object ValueTSpeedR: TEdit
-          Left = 104
+          Left = 142
           Top = 82
-          Width = 60
+          Width = 80
           Height = 17
           HelpContext = 14103
           AutoSize = False
@@ -1318,16 +1320,16 @@ object WatchForm: TWatchForm
         object CheckMCurrent: TCheckBox
           Left = 8
           Top = 105
-          Width = 65
+          Width = 127
           Height = 17
           HelpContext = 14104
-          Caption = 'M Current'
+          Caption = 'Motor Current'
           TabOrder = 8
         end
         object ValueMCurrent: TEdit
-          Left = 104
+          Left = 142
           Top = 104
-          Width = 60
+          Width = 80
           Height = 17
           HelpContext = 14105
           AutoSize = False
@@ -1341,9 +1343,9 @@ object WatchForm: TWatchForm
           TabOrder = 9
         end
         object ValueTCounterR: TEdit
-          Left = 104
+          Left = 142
           Top = 38
-          Width = 60
+          Width = 80
           Height = 17
           HelpContext = 14106
           AutoSize = False
@@ -1359,16 +1361,16 @@ object WatchForm: TWatchForm
         object CheckTCounterR: TCheckBox
           Left = 8
           Top = 38
-          Width = 80
+          Width = 127
           Height = 17
           HelpContext = 14107
-          Caption = 'T Counter R'
+          Caption = 'Tacho Counter Right'
           TabOrder = 2
         end
         object ValueTSpeedL: TEdit
-          Left = 104
+          Left = 142
           Top = 60
-          Width = 60
+          Width = 80
           Height = 17
           HelpContext = 14108
           AutoSize = False
@@ -1384,10 +1386,10 @@ object WatchForm: TWatchForm
         object CheckTSpeedL: TCheckBox
           Left = 8
           Top = 60
-          Width = 73
+          Width = 127
           Height = 17
           HelpContext = 14109
-          Caption = 'T Speed L'
+          Caption = 'Tacho Speed Left'
           TabOrder = 4
         end
       end
@@ -1397,13 +1399,13 @@ object WatchForm: TWatchForm
       object grpNXTMotors: TGroupBox
         Left = 4
         Top = 2
-        Width = 285
-        Height = 199
+        Width = 341
+        Height = 215
         HelpContext = 14081
         TabOrder = 0
         object chkPortA: TCheckBox
-          Left = 75
-          Top = 6
+          Left = 135
+          Top = 10
           Width = 34
           Height = 17
           HelpContext = 14082
@@ -1411,8 +1413,8 @@ object WatchForm: TWatchForm
           TabOrder = 0
         end
         object edtPAPower: TEdit
-          Left = 75
-          Top = 24
+          Left = 135
+          Top = 28
           Width = 61
           Height = 17
           HelpContext = 14083
@@ -1427,8 +1429,8 @@ object WatchForm: TWatchForm
           TabOrder = 1
         end
         object chkPortB: TCheckBox
-          Left = 137
-          Top = 6
+          Left = 203
+          Top = 10
           Width = 36
           Height = 17
           HelpContext = 14084
@@ -1436,8 +1438,8 @@ object WatchForm: TWatchForm
           TabOrder = 10
         end
         object edtPBPower: TEdit
-          Left = 137
-          Top = 24
+          Left = 203
+          Top = 28
           Width = 61
           Height = 17
           HelpContext = 14085
@@ -1452,8 +1454,8 @@ object WatchForm: TWatchForm
           TabOrder = 11
         end
         object chkPortC: TCheckBox
-          Left = 199
-          Top = 6
+          Left = 271
+          Top = 10
           Width = 34
           Height = 17
           HelpContext = 14086
@@ -1461,8 +1463,8 @@ object WatchForm: TWatchForm
           TabOrder = 20
         end
         object edtPCPower: TEdit
-          Left = 199
-          Top = 24
+          Left = 271
+          Top = 28
           Width = 61
           Height = 17
           HelpContext = 14087
@@ -1477,8 +1479,8 @@ object WatchForm: TWatchForm
           TabOrder = 21
         end
         object edtPAMode: TEdit
-          Left = 75
-          Top = 40
+          Left = 135
+          Top = 48
           Width = 61
           Height = 17
           HelpContext = 14083
@@ -1493,8 +1495,8 @@ object WatchForm: TWatchForm
           TabOrder = 2
         end
         object edtPBMode: TEdit
-          Left = 137
-          Top = 40
+          Left = 203
+          Top = 48
           Width = 61
           Height = 17
           HelpContext = 14085
@@ -1509,8 +1511,8 @@ object WatchForm: TWatchForm
           TabOrder = 12
         end
         object edtPCMode: TEdit
-          Left = 199
-          Top = 40
+          Left = 271
+          Top = 48
           Width = 61
           Height = 17
           HelpContext = 14087
@@ -1525,8 +1527,8 @@ object WatchForm: TWatchForm
           TabOrder = 22
         end
         object edtPARegMode: TEdit
-          Left = 75
-          Top = 56
+          Left = 135
+          Top = 68
           Width = 61
           Height = 17
           HelpContext = 14083
@@ -1541,8 +1543,8 @@ object WatchForm: TWatchForm
           TabOrder = 3
         end
         object edtPBRegMode: TEdit
-          Left = 137
-          Top = 56
+          Left = 203
+          Top = 68
           Width = 61
           Height = 17
           HelpContext = 14085
@@ -1557,8 +1559,8 @@ object WatchForm: TWatchForm
           TabOrder = 13
         end
         object edtPCRegMode: TEdit
-          Left = 199
-          Top = 56
+          Left = 271
+          Top = 68
           Width = 61
           Height = 17
           HelpContext = 14087
@@ -1573,8 +1575,8 @@ object WatchForm: TWatchForm
           TabOrder = 23
         end
         object edtPATurnRatio: TEdit
-          Left = 75
-          Top = 88
+          Left = 135
+          Top = 108
           Width = 61
           Height = 17
           HelpContext = 14083
@@ -1589,8 +1591,8 @@ object WatchForm: TWatchForm
           TabOrder = 5
         end
         object edtPBTurnRatio: TEdit
-          Left = 137
-          Top = 88
+          Left = 203
+          Top = 108
           Width = 61
           Height = 17
           HelpContext = 14085
@@ -1605,8 +1607,8 @@ object WatchForm: TWatchForm
           TabOrder = 15
         end
         object edtPCTurnRatio: TEdit
-          Left = 199
-          Top = 88
+          Left = 271
+          Top = 108
           Width = 61
           Height = 17
           HelpContext = 14087
@@ -1621,8 +1623,8 @@ object WatchForm: TWatchForm
           TabOrder = 25
         end
         object edtPARunState: TEdit
-          Left = 75
-          Top = 72
+          Left = 135
+          Top = 88
           Width = 61
           Height = 17
           HelpContext = 14083
@@ -1637,8 +1639,8 @@ object WatchForm: TWatchForm
           TabOrder = 4
         end
         object edtPBRunState: TEdit
-          Left = 137
-          Top = 72
+          Left = 203
+          Top = 88
           Width = 61
           Height = 17
           HelpContext = 14085
@@ -1653,8 +1655,8 @@ object WatchForm: TWatchForm
           TabOrder = 14
         end
         object edtPCRunState: TEdit
-          Left = 199
-          Top = 72
+          Left = 271
+          Top = 88
           Width = 61
           Height = 17
           HelpContext = 14087
@@ -1669,8 +1671,8 @@ object WatchForm: TWatchForm
           TabOrder = 24
         end
         object edtPATachoLimit: TEdit
-          Left = 75
-          Top = 104
+          Left = 135
+          Top = 128
           Width = 61
           Height = 17
           HelpContext = 14083
@@ -1685,8 +1687,8 @@ object WatchForm: TWatchForm
           TabOrder = 6
         end
         object edtPBTachoLimit: TEdit
-          Left = 137
-          Top = 104
+          Left = 203
+          Top = 128
           Width = 61
           Height = 17
           HelpContext = 14085
@@ -1701,8 +1703,8 @@ object WatchForm: TWatchForm
           TabOrder = 16
         end
         object edtPCTachoLimit: TEdit
-          Left = 199
-          Top = 104
+          Left = 271
+          Top = 128
           Width = 61
           Height = 17
           HelpContext = 14087
@@ -1717,8 +1719,8 @@ object WatchForm: TWatchForm
           TabOrder = 26
         end
         object edtPATachoCount: TEdit
-          Left = 75
-          Top = 120
+          Left = 135
+          Top = 148
           Width = 61
           Height = 17
           HelpContext = 14083
@@ -1733,8 +1735,8 @@ object WatchForm: TWatchForm
           TabOrder = 7
         end
         object edtPBTachoCount: TEdit
-          Left = 137
-          Top = 120
+          Left = 203
+          Top = 148
           Width = 61
           Height = 17
           HelpContext = 14085
@@ -1749,8 +1751,8 @@ object WatchForm: TWatchForm
           TabOrder = 17
         end
         object edtPCTachoCount: TEdit
-          Left = 199
-          Top = 120
+          Left = 271
+          Top = 148
           Width = 61
           Height = 17
           HelpContext = 14087
@@ -1765,8 +1767,8 @@ object WatchForm: TWatchForm
           TabOrder = 27
         end
         object edtPABlockTachoCount: TEdit
-          Left = 75
-          Top = 136
+          Left = 135
+          Top = 168
           Width = 61
           Height = 17
           HelpContext = 14083
@@ -1781,8 +1783,8 @@ object WatchForm: TWatchForm
           TabOrder = 8
         end
         object edtPBBlockTachoCount: TEdit
-          Left = 137
-          Top = 136
+          Left = 203
+          Top = 168
           Width = 61
           Height = 17
           HelpContext = 14085
@@ -1797,8 +1799,8 @@ object WatchForm: TWatchForm
           TabOrder = 18
         end
         object edtPCBlockTachoCount: TEdit
-          Left = 199
-          Top = 136
+          Left = 271
+          Top = 168
           Width = 61
           Height = 17
           HelpContext = 14087
@@ -1813,8 +1815,8 @@ object WatchForm: TWatchForm
           TabOrder = 28
         end
         object edtPARotationCount: TEdit
-          Left = 75
-          Top = 152
+          Left = 135
+          Top = 188
           Width = 61
           Height = 17
           HelpContext = 14083
@@ -1829,8 +1831,8 @@ object WatchForm: TWatchForm
           TabOrder = 9
         end
         object edtPBRotationCount: TEdit
-          Left = 137
-          Top = 152
+          Left = 203
+          Top = 188
           Width = 61
           Height = 17
           HelpContext = 14085
@@ -1845,8 +1847,8 @@ object WatchForm: TWatchForm
           TabOrder = 19
         end
         object edtPCRotationCount: TEdit
-          Left = 199
-          Top = 152
+          Left = 271
+          Top = 188
           Width = 61
           Height = 17
           HelpContext = 14087
@@ -1861,133 +1863,133 @@ object WatchForm: TWatchForm
           TabOrder = 29
         end
         object chkNXTPower: TCheckBox
-          Left = 4
-          Top = 26
-          Width = 71
+          Left = 6
+          Top = 30
+          Width = 117
           Height = 13
           Caption = 'Power'
           TabOrder = 30
         end
         object chkNXTMode: TCheckBox
-          Left = 4
-          Top = 42
-          Width = 71
+          Left = 6
+          Top = 50
+          Width = 117
           Height = 13
           Caption = 'Mode'
           TabOrder = 31
         end
         object chkNXTRegMode: TCheckBox
-          Left = 4
-          Top = 58
-          Width = 71
+          Left = 6
+          Top = 70
+          Width = 117
           Height = 13
-          Caption = 'Reg Mode'
+          Caption = 'Regulation Mode'
           TabOrder = 32
         end
         object chkNXTTurnRatio: TCheckBox
-          Left = 4
-          Top = 90
-          Width = 71
+          Left = 6
+          Top = 110
+          Width = 117
           Height = 13
           Caption = 'Turn Ratio'
           TabOrder = 34
         end
         object chkNXTRunState: TCheckBox
-          Left = 4
-          Top = 74
-          Width = 71
+          Left = 6
+          Top = 90
+          Width = 117
           Height = 13
           Caption = 'Run State'
           TabOrder = 33
         end
         object chkNXTTachoLimit: TCheckBox
-          Left = 3
-          Top = 106
-          Width = 71
+          Left = 6
+          Top = 130
+          Width = 117
           Height = 13
-          Caption = 'Tacho Lim'
+          Caption = 'Tacho Limit'
           TabOrder = 35
         end
         object chkNXTTachoCount: TCheckBox
-          Left = 3
-          Top = 122
-          Width = 71
+          Left = 6
+          Top = 150
+          Width = 117
           Height = 13
-          Caption = 'Tacho Cnt'
+          Caption = 'Tacho Count'
           TabOrder = 36
         end
         object chkNXTBlockTachoCount: TCheckBox
-          Left = 3
-          Top = 138
-          Width = 71
+          Left = 6
+          Top = 170
+          Width = 117
           Height = 13
-          Caption = 'Block TCnt'
+          Caption = 'Block Tacho Count'
           TabOrder = 37
         end
         object chkNXTRotationCount: TCheckBox
-          Left = 3
-          Top = 154
-          Width = 71
+          Left = 6
+          Top = 190
+          Width = 117
           Height = 13
-          Caption = 'Rotation'
+          Caption = 'Rotation Count'
           TabOrder = 38
         end
       end
       object grpI2C: TGroupBox
         Left = 4
-        Top = 237
-        Width = 285
-        Height = 124
+        Top = 229
+        Width = 341
+        Height = 140
         HelpContext = 14088
         TabOrder = 1
         object lblI2CPort: TLabel
           Left = 6
-          Top = 6
-          Width = 19
+          Top = 12
+          Width = 38
           Height = 13
-          Caption = 'Port'
+          Caption = 'I2C Port'
         end
         object lblI2CResponse: TLabel
-          Left = 172
-          Top = 6
+          Left = 222
+          Top = 12
           Width = 48
           Height = 13
           Caption = 'Response'
         end
         object lblI2CUltra: TLabel
-          Left = 53
-          Top = 6
+          Left = 80
+          Top = 12
           Width = 15
           Height = 13
           Caption = 'US'
         end
         object lblI2CBuffer: TLabel
-          Left = 72
-          Top = 6
+          Left = 104
+          Top = 12
           Width = 28
           Height = 13
           Caption = 'Buffer'
         end
         object lblI2CLen: TLabel
-          Left = 135
-          Top = 6
+          Left = 175
+          Top = 12
           Width = 33
           Height = 13
           Caption = 'Length'
         end
         object chkI2C1: TCheckBox
-          Left = 5
-          Top = 23
-          Width = 49
+          Left = 6
+          Top = 29
+          Width = 72
           Height = 17
           HelpContext = 14089
-          Caption = 'I2C 1'
+          Caption = 'Port 1'
           TabOrder = 0
         end
         object edtI2CVal1: TEdit
-          Left = 172
-          Top = 20
-          Width = 88
+          Left = 222
+          Top = 26
+          Width = 110
           Height = 22
           HelpContext = 14090
           AutoSize = False
@@ -2001,18 +2003,18 @@ object WatchForm: TWatchForm
           TabOrder = 4
         end
         object chkI2C2: TCheckBox
-          Left = 5
-          Top = 44
-          Width = 49
+          Left = 6
+          Top = 54
+          Width = 72
           Height = 17
           HelpContext = 14091
-          Caption = 'I2C 2'
+          Caption = 'Port 2'
           TabOrder = 5
         end
         object edtI2CVal2: TEdit
-          Left = 172
-          Top = 41
-          Width = 88
+          Left = 222
+          Top = 51
+          Width = 110
           Height = 22
           HelpContext = 14092
           AutoSize = False
@@ -2026,18 +2028,18 @@ object WatchForm: TWatchForm
           TabOrder = 9
         end
         object chkI2C3: TCheckBox
-          Left = 5
-          Top = 65
-          Width = 49
+          Left = 6
+          Top = 79
+          Width = 72
           Height = 17
           HelpContext = 14093
-          Caption = 'I2C 3'
+          Caption = 'Port 3'
           TabOrder = 10
         end
         object edtI2CVal3: TEdit
-          Left = 172
-          Top = 62
-          Width = 88
+          Left = 222
+          Top = 76
+          Width = 110
           Height = 22
           HelpContext = 14094
           AutoSize = False
@@ -2051,9 +2053,9 @@ object WatchForm: TWatchForm
           TabOrder = 14
         end
         object edtI2CVal4: TEdit
-          Left = 172
-          Top = 83
-          Width = 88
+          Left = 222
+          Top = 101
+          Width = 110
           Height = 22
           HelpContext = 14094
           AutoSize = False
@@ -2067,17 +2069,17 @@ object WatchForm: TWatchForm
           TabOrder = 19
         end
         object chkI2C4: TCheckBox
-          Left = 5
-          Top = 86
-          Width = 49
+          Left = 6
+          Top = 104
+          Width = 72
           Height = 17
           HelpContext = 14093
-          Caption = 'I2C 4'
+          Caption = 'Port 4'
           TabOrder = 15
         end
         object chkUltra1: TCheckBox
-          Left = 55
-          Top = 23
+          Left = 82
+          Top = 29
           Width = 17
           Height = 17
           HelpContext = 14089
@@ -2085,8 +2087,8 @@ object WatchForm: TWatchForm
           OnClick = chkUltra1Click
         end
         object chkUltra2: TCheckBox
-          Left = 55
-          Top = 44
+          Left = 82
+          Top = 54
           Width = 17
           Height = 17
           HelpContext = 14091
@@ -2094,8 +2096,8 @@ object WatchForm: TWatchForm
           OnClick = chkUltra2Click
         end
         object chkUltra3: TCheckBox
-          Left = 55
-          Top = 65
+          Left = 82
+          Top = 79
           Width = 17
           Height = 17
           HelpContext = 14093
@@ -2103,8 +2105,8 @@ object WatchForm: TWatchForm
           OnClick = chkUltra3Click
         end
         object chkUltra4: TCheckBox
-          Left = 55
-          Top = 86
+          Left = 82
+          Top = 104
           Width = 17
           Height = 17
           HelpContext = 14093
@@ -2112,8 +2114,8 @@ object WatchForm: TWatchForm
           OnClick = chkUltra4Click
         end
         object edtI2CBuf1: TEdit
-          Left = 72
-          Top = 20
+          Left = 104
+          Top = 26
           Width = 62
           Height = 23
           Font.Charset = DEFAULT_CHARSET
@@ -2125,8 +2127,8 @@ object WatchForm: TWatchForm
           TabOrder = 2
         end
         object edtI2CBuf2: TEdit
-          Left = 72
-          Top = 41
+          Left = 104
+          Top = 51
           Width = 62
           Height = 23
           Font.Charset = DEFAULT_CHARSET
@@ -2138,8 +2140,8 @@ object WatchForm: TWatchForm
           TabOrder = 7
         end
         object edtI2CBuf3: TEdit
-          Left = 72
-          Top = 62
+          Left = 104
+          Top = 76
           Width = 62
           Height = 23
           Font.Charset = DEFAULT_CHARSET
@@ -2151,8 +2153,8 @@ object WatchForm: TWatchForm
           TabOrder = 12
         end
         object edtI2CBuf4: TEdit
-          Left = 72
-          Top = 83
+          Left = 104
+          Top = 101
           Width = 62
           Height = 23
           Font.Charset = DEFAULT_CHARSET
@@ -2164,9 +2166,9 @@ object WatchForm: TWatchForm
           TabOrder = 17
         end
         object edtI2CLen1: TSpinEdit
-          Left = 135
-          Top = 20
-          Width = 36
+          Left = 175
+          Top = 26
+          Width = 42
           Height = 22
           MaxLength = 2
           MaxValue = 16
@@ -2175,9 +2177,9 @@ object WatchForm: TWatchForm
           Value = 0
         end
         object edtI2CLen2: TSpinEdit
-          Left = 135
-          Top = 41
-          Width = 36
+          Left = 175
+          Top = 51
+          Width = 42
           Height = 22
           MaxLength = 2
           MaxValue = 16
@@ -2186,9 +2188,9 @@ object WatchForm: TWatchForm
           Value = 0
         end
         object edtI2CLen4: TSpinEdit
-          Left = 135
-          Top = 83
-          Width = 36
+          Left = 175
+          Top = 101
+          Width = 42
           Height = 22
           MaxLength = 2
           MaxValue = 16
@@ -2197,9 +2199,9 @@ object WatchForm: TWatchForm
           Value = 0
         end
         object edtI2CLen3: TSpinEdit
-          Left = 135
-          Top = 62
-          Width = 36
+          Left = 175
+          Top = 76
+          Width = 42
           Height = 22
           MaxLength = 2
           MaxValue = 16

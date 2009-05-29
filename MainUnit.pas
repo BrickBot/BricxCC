@@ -3522,8 +3522,20 @@ begin
       if i <> -1 then
       begin
         CO := CD.Offsets[i];
-        fNXTCurrentOffset := CO;
-        AEF.TheEditor.GotoLineAndCenter(CO.LineNumber);
+        if LowerCase(ExtractFileName(CO.Filename)) = LowerCase(ExtractFilename(CD.Filename)) then
+        begin
+          fNXTCurrentOffset := CO;
+          AEF.TheEditor.GotoLineAndCenter(CO.LineNumber);
+        end
+        else
+        begin
+          // if the filenames are different then open the new file
+          if AEF.OpenFileOnPath(CO.Filename) then
+          begin
+            AEF := ActiveEditorForm;
+            AEF.TheEditor.GotoLineAndCenter(CO.LineNumber);
+          end;
+        end;
       end;
     end;
   end;

@@ -20,6 +20,7 @@ inline void TestingFooBar123(const byte p) { TestingFooBar(p); }
 
 task main()
 {
+  Wait(5000);
   Ball balls[2];
   balls[0].x = 12;
   int x = 12;
@@ -29,8 +30,10 @@ task main()
   DoIt(balls[0]);
   Wait(5000);
   const byte foobar = OUT_AC;
+
   ResetTachoCount(OUT_A);
   ResetTachoCount(OUT_AB);
   ResetBlockTachoCount(foobar);
   TestingFooBar123(OUT_B);
+  Wait(5000);
 }
