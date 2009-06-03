@@ -1,0 +1,13 @@
+task main()
+{
+  float b = 12.45;
+  long a = sqrt(b);
+  long x = sqrt(121.9);
+  const float y = x+PI;
+  NumOut(0, LCD_LINE2, sqrt(y));
+  x = sqrt(x);
+  NumOut(0, LCD_LINE1, x);
+  NumOut(0, LCD_LINE3, b);
+  NumOut(0, LCD_LINE4, a);
+  while(true);
+}

@@ -8,7 +8,24 @@ long data[];
 byte foo[][];
 string weird = "fred";
 
+//#define Testing OnRev(OUT_BC, 50)
+
 void George(byte b);
+/*
+void George(byte b)
+{
+  int g1 = 4, g2=-3;
+  byte b1[], b2=33;
+
+  b2 = g1+g2+b;
+//  b1 = OUT_BC;
+  OnFwd(OUT_BC, b2);
+  Wait(1000);
+//  byte b1[], b2=33;
+  Testing;
+  Wait(1000);
+}
+*/
 
 //void MyTestSub(int x, int y, short j);
 void MyTestSub(int x, int y, short j)
@@ -232,6 +249,8 @@ myLoop: LineOut(30, 50, 50, 30, false);
 
 byte d, e, f;
 
+// JCH: 2009-06-01 getting a Duplicate Identifier error now
+// I must have broken something in the FormalParameters function (maybe)
 void George(b)
 {
   int g1 = 4, g2=-3;
@@ -245,5 +264,4 @@ void George(b)
   Testing;
   Wait(1000);
 }
-
 

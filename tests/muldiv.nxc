@@ -1,5 +1,4 @@
 
-#define MulDiv32(_A,_B,_C) asm { muldiv __RETVAL__, _A, _B, _C }
 
 task main()
 {
@@ -7,7 +6,7 @@ task main()
   long myB = 2000000000;
   long myC = 2000000000;
   long res;
-  res = MulDiv32(myA,myB,myC);
+  res = muldiv32(myA,myB,myC);
   NumOut(0,LCD_LINE1,myA);
   NumOut(0,LCD_LINE2,myB);
   NumOut(0,LCD_LINE3,myC);

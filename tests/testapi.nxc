@@ -1,4 +1,3 @@
-#define MaxLong 2147483647
 
 task main()
 {
@@ -6,11 +5,11 @@ task main()
   NumOut(0, LCD_LINE1, blev);
   int blev2 = BatteryLevel();
   NumOut(0, LCD_LINE2, blev2);
-  blev = MaxLong+blev2;
+  blev = ULONG_MAX+blev2;
   NumOut(0, LCD_LINE3, blev);
-  NumOut(0, LCD_LINE4, MaxLong);
-  NumOut(0, LCD_LINE5, MaxLong+100);
-  long tmp = MaxLong+100;
+  NumOut(0, LCD_LINE4, ULONG_MAX);
+  NumOut(0, LCD_LINE5, ULONG_MAX+100);
+  long tmp = ULONG_MAX+100;
   NumOut(0, LCD_LINE6, tmp);
   NumOut(0, LCD_LINE7, FreeMemory());
   unsigned int tmpword = FreeMemory();
