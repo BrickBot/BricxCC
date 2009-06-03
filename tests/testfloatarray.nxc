@@ -15,6 +15,8 @@ task main()
 
 // TEST ONE - FLOAT INITIALIZED TO NEGATIVE ONE REQUIRES DECIMAL PLACE TO BE SPECIFIED
 
+// JCH 2009-06-01 Optimizer (level 2+) bug converting mov to set with float output type
+// JCH 2009-06-02 fixed
 f=-1; // (works now - firmware bug)
 TextOut(0,LCD_LINE3,"F=-1");
 NumOut(50,LCD_LINE3,f);

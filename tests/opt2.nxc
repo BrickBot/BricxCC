@@ -1,0 +1,19 @@
+task main()
+{
+  float f;
+  // JCH 2009-06-01 Optimizer (level 2+) bug converting mov to set with float output type
+  // JCH 2009-06-02 fixed
+  f=-1; // (works now - firmware bug)
+  TextOut(0,LCD_LINE3,"F=-1");
+  NumOut(50,LCD_LINE3,f);
+  f=-1.0;
+  TextOut(0,LCD_LINE5,"F=-1.0");
+  NumOut(50,LCD_LINE5,f);
+  Wait(5000);
+}
+
+
+
+
+
+

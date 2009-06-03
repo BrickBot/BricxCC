@@ -1,13 +1,11 @@
 AbortFlag
 acos
-Acos
 Acquire
 ArrayBuild
 ArrayInit
 ArrayLen
 ArraySubset
 asin
-Asin
 atan
 atan2
 BatteryLevel
@@ -53,9 +51,15 @@ ClearSensor
 CloseFile
 Coast
 CoastEx
+ColorADRaw
+ColorBoolean
+ColorCalibration
+ColorCalibrationState
+ColorCalLimits
+ColorSensorRaw
+ColorSensorValue
 CommandFlags
 cos
-Cos
 cosh
 CreateFile
 CreateFileLinear
@@ -423,6 +427,8 @@ ReadBytes
 ReadLn
 ReadNRLinkBytes
 ReadNRLinkBytesEx
+ReadSensorColorEx
+ReadSensorColorRaw
 ReadSensorHTAccel
 ReadSensorHTColor
 ReadSensorHTIRSeeker
@@ -605,6 +611,11 @@ SetOnBrickProgramPointer
 SetOutput
 SetSensor
 SetSensorBoolean
+SetSensorColorBlue
+SetSensorColorFull
+SetSensorColorGreen
+SetSensorColorNone
+SetSensorColorRed
 SetSensorDigiPinsDirection
 SetSensorDigiPinsOutputLevel
 SetSensorDigiPinsStatus
@@ -645,7 +656,6 @@ SetUSBState
 SetVMRunState
 SetVolume
 sin
-Sin
 sinh
 SleepTimeout
 SleepTimer
@@ -657,7 +667,6 @@ SoundSampleRate
 SoundState
 SoundVolume
 sqrt
-Sqrt
 Stop
 StopAllTasks
 StopSound

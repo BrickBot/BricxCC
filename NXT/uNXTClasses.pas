@@ -8327,7 +8327,7 @@ var
   iVal : Double;
   AL, ALNext, tmpAL : TAsmLine;
   arg1, arg2, arg3, tmp : string;
-  bDone, bArg1Numeric, bArg2Numeric : boolean;
+  bDone, bArg1Numeric, bArg2Numeric, bCanOptimize : boolean;
   Arg1Val, Arg2Val : Double;
   DE : TDataspaceEntry;
 
@@ -8399,20 +8399,33 @@ begin
                (ALNext.Command = OP_MOV) and
                (ALNext.Args[1].Value = arg1) then
             begin
-              AL.RemoveVariableReference(arg1, 0);
-              AL.Args[0].Value := ALNext.Args[0].Value; // switch output arg (no ref count changes)
-              ALNext.RemoveVariableReference(arg1, 1);
-              ALNext.Command := OPS_INVALID; // no-op next line
-              ALNext.Args.Clear;
-              bDone := False;
-              Break;
+              bCanOptimize := True;
+              if AL.Command = OP_SET then
+              begin
+                // need to also check the type of the next line's output arg
+                DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);
+                if Assigned(DE) then
+                  bCanOptimize := DE.DataType <> dsFloat
+                else
+                  bCanOptimize := False;
+              end;
+              if bCanOptimize then
+              begin
+                AL.RemoveVariableReference(arg1, 0);
+                AL.Args[0].Value := ALNext.Args[0].Value; // switch output arg (no ref count changes)
+                ALNext.RemoveVariableReference(arg1, 1);
+                ALNext.Command := OPS_INVALID; // no-op next line
+                ALNext.Args.Clear;
+                bDone := False;
+                Break;
+              end;
             end;
           end;
         end;
       end;
       case AL.Command of
         OP_SET, OP_MOV : begin
-          // this is a set or a mov line
+          // this is a set or mov line
           // first check reference count of output variable
           if not CheckReferenceCount then
           begin
@@ -8484,9 +8497,7 @@ begin
                       else
                       begin
                         tmp := AL.Args[1].Value;
-                        DE := CodeSpace.Dataspace.FindEntryByFullName(tmp);
-                        if Assigned(DE) then
-                          DE.IncRefCount;
+                        CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
                       end;
                       ALNext.Command := OP_MOV;
                       ALNext.Args[1].Value := tmp;
@@ -8520,9 +8531,7 @@ begin
                     ALNext.RemoveVariableReference(arg2, 0);
                     if AL.Command = OP_SET then
                       ALNext.Command := OPS_WAITI_2;
-                    DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);
-                    if Assigned(DE) then
-                      DE.IncRefCount;
+                    CodeSpace.Dataspace.FindEntryAndAddReference(ALNext.Args[0].Value);
                     if IsStackOrReg(arg1) then
                     begin
                       // remove second reference to _D0
@@ -8550,9 +8559,7 @@ begin
                     begin
                       // increment the reference count of this variable
                       tmp := AL.Args[1].Value;
-                      DE := CodeSpace.Dataspace.FindEntryByFullName(tmp);
-                      if Assigned(DE) then
-                        DE.IncRefCount;
+                      CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
                     end;
                     if (arg1 = arg2) then begin
                       ALNext.Args[2].Value := tmp;
@@ -8581,10 +8588,14 @@ begin
                     // neg|not A, __D0 <-- replace these two lines with
                     // nop
                     // neg|not A, X
-                    ALNext.Args[1].Value := AL.Args[1].Value;
-                    DE := CodeSpace.Dataspace.FindEntryByFullName(AL.Args[1].Value);
-                    if Assigned(DE) then
-                      DE.IncRefCount;
+                    if AL.Command = OP_SET then
+                      tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
+                    else
+                    begin
+                      tmp := AL.Args[1].Value;
+                      CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
+                    end;
+                    ALNext.Args[1].Value := tmp;
                     ALNext.RemoveVariableReference(arg2, 1);
                     if IsStackOrReg(arg1) then
                     begin

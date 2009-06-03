@@ -8,7 +8,8 @@ task main()
   ArrayBuild(matrix, data, data2, data);
   data = !matrix[1];
 //  data = !data;
-  data += matrix[1];
+  data += matrix[1]; // JCH 2009-06-01 This line generates bad code
+//	add __main_7qG2_data_7qG2_000, __ArrHelper__main_244_0, __D0main
   Element_Out(0, 1);
   Element_Out(0, 2);
   Element_Out(0, 3);

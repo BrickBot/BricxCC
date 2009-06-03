@@ -1,5 +1,4 @@
 // JCH working as of 2009-03-16
-#define PI 3.141592
 
 task main()
 {

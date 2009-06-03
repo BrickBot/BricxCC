@@ -312,7 +312,7 @@ type
     procedure DoOnFwdRevSyncPID;
     procedure DoOnFwdRevRegExPID;
     procedure DoOnFwdRevSyncExPID;
-//    procedure DoResetCounters;
+    procedure DoResetCounters;
     procedure DoRotateMotors(idx : integer);
     procedure DoSetSensorTypeMode(idx : integer);
     procedure DoClearSetResetSensor;
@@ -595,6 +595,10 @@ const
   API_OFFEX       = 39;
   API_ROTATEMOTORPID = 40;
   API_ROTATEMOTOREXPID = 41;
+  API_RESETTACHOCOUNT      = 42;
+  API_RESETBLOCKTACHOCOUNT = 43;
+  API_RESETROTATIONCOUNT   = 44;
+  API_RESETALLTACHOCOUNTS  = 45;
   API_ONFWDREGPID = 46;
   API_ONREVREGPID = 47;
   API_ONFWDSYNCPID = 48;
@@ -604,10 +608,6 @@ const
   API_ONFWDSYNCEXPID = 52;
   API_ONREVSYNCEXPID = 53;
   API_WAIT                 =  2; // moved to header file as inline function
-  API_RESETTACHOCOUNT      = 42; // moved to header file as inline function
-  API_RESETBLOCKTACHOCOUNT = 43; // moved to header file as inline function
-  API_RESETROTATIONCOUNT   = 44; // moved to header file as inline function
-  API_RESETALLTACHOCOUNTS  = 45; // moved to header file as inline function
 
   APICount = 54;
   APIList : array[0..APICount-1] of string = (
@@ -623,8 +623,8 @@ const
     'OnFwdEx', 'OnRevEx', 'OnFwdRegEx', 'OnRevRegEx',
     'OnFwdSyncEx', 'OnRevSyncEx', 'CoastEx', 'OffEx',
     'RotateMotorPID', 'RotateMotorExPID',
-    '__ResetTachoCount__', '__ResetBlockTachoCount__',
-    '__ResetRotationCount__', '__ResetAllTachoCounts__',
+    'ResetTachoCount', 'ResetBlockTachoCount',
+    'ResetRotationCount', 'ResetAllTachoCounts',
     'OnFwdRegPID', 'OnRevRegPID', 'OnFwdRegExPID', 'OnRevRegExPID',
     'OnFwdSyncPID', 'OnRevSyncPID', 'OnFwdSyncExPID', 'OnRevSyncExPID'
   );
@@ -3347,11 +3347,17 @@ end;
 procedure TNXCComp.AddFunctionParameter(pname, varname, tname: string; idx: integer;
   ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer);
 begin
+  // if this function is not an inline function then we will automagically
+  // convert any Const not Ref parameter into a Const Ref parameter
+  if bIsConst and not bIsRef and not AmInlining then
+    bIsRef := True; // convert to const ref type
+(*
   // add a check here for a parameter that is const but not reference
   // when we are not inlining
   if bIsConst and not bIsRef and not AmInlining and (ptype in NonAggregateTypes) then
     ReportProblem(linenumber, CurrentFile, sConstNotInline, false);
 //    AbortMsg(sConstNotInline);
+*)
   with fFuncParams.Add do
   begin
     ProcName       := pname;
@@ -3430,8 +3436,8 @@ end;
 procedure TNXCComp.DoCall(procname : string);
 var
   protocount, acount, idx, i : integer;
-  dt, rdt, pdt : char;
-  parname, parvalue, junk : string;
+  dt, rdt, pdt, oldLHSDT : char;
+  parname, parvalue, junk, oldLHSName : string;
   bError : boolean;
   fp : TFunctionParameter;
   fInputs : TStrings;
@@ -3478,6 +3484,9 @@ begin
           // first call in this thread to this inline function
           // output all parameters and local variables with decoration
           EmitInlineParametersAndLocals(inlineFunc);
+          // make sure the very first call to this inline function
+          // by this thread doesn't get optimized out
+          fExpStr := '__DO_NOT_OPTIMIZE!@#$%_';
         end;
         bSafeCall := GlobalUsesSafeCall(procname);
         // acquire the mutex
@@ -3497,33 +3506,36 @@ begin
             parname := GetParamName(procname, acount);
             if bFunctionIsInline then
               parname := InlineName(fCurrentThreadName, parname);
-            // reference types cannot take expressions
-            // mutex, user defined types, and array types cannot take expressions
-            if fp.IsVarReference or {fp.IsArray or}
-               (fp.ParamType in [{fptUDT, }fptMutex]) then
-            begin
-              CheckIdent;
-              parvalue := GetDecoratedValue;
-              pdt := DataType(parvalue);
-              if fp.IsArray then
+            // now process the current parameter
+            oldLHSDT := fLHSDataType;
+            oldLHSName := fLHSName;
+            fLHSDataType := dt;
+            fLHSName     := parname;
+            try
+              // reference types cannot take expressions
+              // mutex, user defined types, and array types cannot take expressions
+              if fp.IsVarReference or {fp.IsArray or}
+                 (fp.ParamType in [{fptUDT, }fptMutex]) then
               begin
-                if not IsArrayType(pdt) then
-                  Expected(sArrayDatatype);
-              end;
-              fInputs.AddObject(parvalue, fp);
-              EmitLn(Format('mov %s, %s', [parname, parvalue]));
-              junk := AdvanceToNextParam;
-              if junk <> '' then
-                AbortMsg(sExpNotSupported)
-              else
-                CheckTypeCompatibility(fp, pdt, parvalue);
-            end
-// beginning of addition for handling expressions for UDT and array parameters
-            else if fp.IsArray or (fp.ParamType = fptUDT) then
-            begin
-              fLHSDataType := dt;
-              fLHSName     := parname;
-              try
+                CheckIdent;
+                parvalue := GetDecoratedValue;
+                pdt := DataType(parvalue);
+                if fp.IsArray then
+                begin
+                  if not IsArrayType(pdt) then
+                    Expected(sArrayDatatype);
+                end;
+                fInputs.AddObject(parvalue, fp);
+                EmitLn(Format('mov %s, %s', [parname, parvalue]));
+                junk := AdvanceToNextParam;
+                if junk <> '' then
+                  AbortMsg(sExpNotSupported)
+                else
+                  CheckTypeCompatibility(fp, pdt, parvalue);
+              end
+  // beginning of addition for handling expressions for UDT and array parameters
+              else if fp.IsArray or (fp.ParamType = fptUDT) then
+              begin
                 if IsArrayType(dt) then
                 begin
                   DoArrayAssignValue(parname, '', dt);
@@ -3532,47 +3544,16 @@ begin
                 begin
                   GetAndStoreUDT(parname);
                 end;
-              finally
-                fLHSDataType := TOK_LONGDEF;
-                fLHSName     := '';
-              end;
-            end
-// end of addition for handling expressions for UDT and array parameters
-// beginning of previously commented out block
-            else if fp.IsConstant and not fp.IsReference then
-            begin
-              // must be a number (or constant expression) or a string literal
-              if dt = TOK_STRINGDEF then
-              begin
-                parvalue := Value;
-                CheckStringConst;
-                fp.ConstantValue := parvalue;
-                fInputs.AddObject(parvalue, fp);
-                if bFunctionIsInline then
-                begin
-                  i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
-                  if i <> -1 then
-                  begin
-                    inlineFunc.Parameters[i].Assign(fp);
-                  end;
-                end;
-                EmitLn(Format('mov %s, %s', [parname, parvalue]));
-                Next;
               end
-              else if dt <> #0 then
+  // end of addition for handling expressions for UDT and array parameters
+  // beginning of previously commented out block
+              else if fp.IsConstant and not fp.IsReference then
               begin
-                // collect tokens to TOK_CLOSEPAREN or TOK_COMMA
-                parvalue := Value;
-                while not (Look in [TOK_CLOSEPAREN, TOK_COMMA]) or endofallsource do begin
-                  Next;
-                  parvalue := parvalue + Value;
-                end;
-                Next;
-                fCalc.SilentExpression := GetValueOf(parvalue);
-                if not fCalc.ParserError then
+                // must be a number (or constant expression) or a string literal
+                if dt = TOK_STRINGDEF then
                 begin
-                  parvalue := NBCFloatToStr(fCalc.Value);
-                  fCalc.SetVariable(parname, fCalc.Value);
+                  parvalue := Value;
+                  CheckStringConst;
                   fp.ConstantValue := parvalue;
                   fInputs.AddObject(parvalue, fp);
                   if bFunctionIsInline then
@@ -3584,13 +3565,23 @@ begin
                     end;
                   end;
                   EmitLn(Format('mov %s, %s', [parname, parvalue]));
+                  Next;
                 end
-                else
+                else if dt <> #0 then
                 begin
-                  if IsParamConst(parvalue) then
+                  // collect tokens to TOK_CLOSEPAREN or TOK_COMMA
+                  parvalue := Value;
+                  while not (Look in [TOK_CLOSEPAREN, TOK_COMMA]) or endofallsource do begin
+                    Next;
+                    parvalue := parvalue + Value;
+                  end;
+                  Next;
+                  fCalc.SilentExpression := GetValueOf(parvalue);
+                  if not fCalc.ParserError then
                   begin
-                    fp.ConstantValue := ApplyDecoration(fCurrentThreadName, parvalue, 0);
-//                    fp.ConstantValue := parvalue;
+                    parvalue := NBCFloatToStr(fCalc.Value);
+                    fCalc.SetVariable(parname, fCalc.Value);
+                    fp.ConstantValue := parvalue;
                     fInputs.AddObject(parvalue, fp);
                     if bFunctionIsInline then
                     begin
@@ -3600,29 +3591,50 @@ begin
                         inlineFunc.Parameters[i].Assign(fp);
                       end;
                     end;
+                    EmitLn(Format('mov %s, %s', [parname, parvalue]));
                   end
                   else
                   begin
-                    fInputs.AddObject('', fp);
-                    Expected('constant or constant expression');
+                    if IsParamConst(parvalue) then
+                    begin
+                      fp.ConstantValue := ApplyDecoration(fCurrentThreadName, parvalue, 0);
+  //                    fp.ConstantValue := parvalue;
+                      fInputs.AddObject(parvalue, fp);
+                      if bFunctionIsInline then
+                      begin
+                        i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
+                        if i <> -1 then
+                        begin
+                          inlineFunc.Parameters[i].Assign(fp);
+                        end;
+                      end;
+                    end
+                    else
+                    begin
+                      fInputs.AddObject('', fp);
+                      Expected('constant or constant expression');
+                    end;
                   end;
                 end;
-              end;
-            end
-// end of previously commented out block
-            else
-            begin
-              fInputs.AddObject('', fp);
-              if dt = TOK_STRINGDEF then
-              begin
-                StringExpression(parname);
-                EmitLn(Format('mov %s, %s', [parname, StrBufName]));
               end
-              else if dt <> #0 then
+  // end of previously commented out block
+              else
               begin
-                BoolExpression;
-                EmitLn(Format('mov %s, %s', [parname, RegisterName]));
+                fInputs.AddObject('', fp);
+                if dt = TOK_STRINGDEF then
+                begin
+                  StringExpression(parname);
+                  EmitLn(Format('mov %s, %s', [parname, StrBufName]));
+                end
+                else if dt <> #0 then
+                begin
+                  BoolExpression;
+                  EmitLn(Format('mov %s, %s', [parname, RegisterName]));
+                end;
               end;
+            finally
+              fLHSDataType := oldLHSDT;
+              fLHSName     := oldLHSName;
             end;
           end;
           inc(acount);
@@ -4664,12 +4676,10 @@ begin
     API_ONREVSYNCPID : DoOnFwdRevSyncPID;
     API_ONFWDSYNCEXPID,
     API_ONREVSYNCEXPID : DoOnFwdRevSyncExPID;
-{
     API_RESETTACHOCOUNT,
     API_RESETBLOCKTACHOCOUNT,
     API_RESETROTATIONCOUNT,
     API_RESETALLTACHOCOUNTS : DoResetCounters;
-}
     API_ROTATEMOTOR,
     API_ROTATEMOTOREX,
     API_ROTATEMOTORPID,
@@ -6791,7 +6801,6 @@ begin
   EmitLn('return');
 end;
 
-{
 procedure TNXCComp.DoResetCounters;
 var
   op, arg1 : string;
@@ -6806,7 +6815,6 @@ begin
   CloseParen;
   EmitLn(op + TOK_OPENPAREN + arg1 + TOK_CLOSEPAREN);
 end;
-}
 
 procedure TNXCComp.DoStopMotors;
 var
@@ -8778,7 +8786,8 @@ begin
       if AmInlining then
       begin
         // call AddLocal instead
-        AddLocal(varname, dt, tname, bConst, '');
+        if not IsLocal(varname) then
+          AddLocal(varname, dt, tname, bConst, '');
       end
       else
       begin
@@ -8797,7 +8806,8 @@ begin
     if AmInlining then
     begin
       // call AddLocal instead
-      AddLocal(varname, dt, tname, bConst, '');
+      if not IsLocal(varname) then
+        AddLocal(varname, dt, tname, bConst, '');
     end
     else
     begin

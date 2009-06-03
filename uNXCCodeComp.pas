@@ -36,7 +36,7 @@ type
   end;
 
 const
-  NXCCodeCompDataSize = 581+99+15;
+  NXCCodeCompDataSize = 581+99+29;
   NXCCodeCompData: array[0..NXCCodeCompDataSize-1] of TNXCCodeComp = (
     (
      Name: 'abs';
@@ -2817,6 +2817,62 @@ const
     (
      Name: 'muldiv32';
      Params: '(long a, long b, long c)'
+    ),
+    (
+     Name: 'SetSensorColorFull';
+     Params: '(const byte & port)'
+    ),
+    (
+     Name: 'SetSensorColorRed';
+     Params: '(const byte & port)'
+    ),
+    (
+     Name: 'SetSensorColorGreen';
+     Params: '(const byte & port)'
+    ),
+    (
+     Name: 'SetSensorColorBlue';
+     Params: '(const byte & port)'
+    ),
+    (
+     Name: 'SetSensorColorNone';
+     Params: '(const byte & port)'
+    ),
+    (
+     Name: 'ReadSensorColorRaw';
+     Params: '(const byte & port, int & rawVals[])'
+    ),
+    (
+     Name: 'ReadSensorColorEx';
+     Params: '(const byte & port, int & colorval, unsigned int & raw[], unsigned int & norm[], unsigned int & scaled[])'
+    ),
+    (
+     Name: 'ColorCalibration';
+     Params: '(const byte port, const byte point, const byte color)'
+    ),
+    (
+     Name: 'ColorCalLimits';
+     Params: '(const byte port, const byte point)'
+    ),
+    (
+     Name: 'ColorADRaw';
+     Params: '(const byte port, const byte color)'
+    ),
+    (
+     Name: 'ColorSensorRaw';
+     Params: '(const byte port, const byte color)'
+    ),
+    (
+     Name: 'ColorSensorValue';
+     Params: '(const byte port, const byte color)'
+    ),
+    (
+     Name: 'ColorBoolean';
+     Params: '(const byte port, const byte color)'
+    ),
+    (
+     Name: 'ColorCalibrationState';
+     Params: '(const byte port)'
     )
   );
 

@@ -1,7 +1,14 @@
+__FLTRETVAL__
 __RETURN__
+__RETURNF__
+__RETURNS__
+__RETURNU__
 __RETVAL__
+__STRRETVAL__
 __TMPBYTE__
+__TMPFLOAT__
 __TMPLONG__
+__TMPULONG__
 __TMPWORD__
 abs
 asm
