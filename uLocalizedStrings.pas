@@ -412,6 +412,8 @@ resourcestring
   sStringNotBinary         = 'String is not a valid binary number: %s';
   sInvalidHexLength        = 'Invalid length of hex string: %d';
   sUnableToFindImage       = 'Unable to find image file "%s"';
+  sEllipseRequires127      = 'The ellipse command requires the enhanced NBC/NXC firmware, v1.27 or greater';
+  sPolygonRequires127      = 'The polygon command requires the enhanced NBC/NXC firmware, v1.27 or greater';
 
 // uPreprocess unit
 resourcestring

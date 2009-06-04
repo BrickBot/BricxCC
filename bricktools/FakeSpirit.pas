@@ -19,7 +19,7 @@ unit FakeSpirit;
 interface
 
 uses
-  Classes, SysUtils, rcx_link, rcx_constants, uSpirit;
+  Classes, SysUtils, rcx_link, rcx_constants, uSpirit, FantomDefs;
 
 type
   EMessageInvalid = class(Exception)
@@ -231,29 +231,29 @@ type
     function SetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
     function GetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
     // NXT system commands
-    function NXTOpenRead(const filename : string; var handle : cardinal;
+    function NXTOpenRead(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; override;
     function NXTOpenWrite(const filename : string; const size : cardinal;
-      var handle : cardinal) : boolean; override;
-    function NXTRead(var handle : cardinal; var count : word;
+      var handle : FantomHandle) : boolean; override;
+    function NXTRead(var handle : FantomHandle; var count : word;
       var buffer : NXTDataBuffer) : boolean; override;
-    function NXTWrite(var handle : cardinal; const buffer : NXTDataBuffer;
+    function NXTWrite(var handle : FantomHandle; const buffer : NXTDataBuffer;
       var count : word; const chkResponse : boolean = false) : boolean; override;
-    function NXTCloseFile(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
+    function NXTCloseFile(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; override;
     function NXTDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; override;
-    function NXTFindFirstFile(var filename : string; var IterHandle : cardinal; var filesize, availsize : cardinal) : boolean; override;
-    function NXTFindNextFile(var IterHandle : cardinal; var filename : string; var filesize, availsize : cardinal) : boolean; override;
-    function NXTFindClose(var IterHandle : cardinal) : boolean; override;
+    function NXTFindFirstFile(var filename : string; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : boolean; override;
+    function NXTFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; override;
+    function NXTFindClose(var IterHandle : FantomHandle) : boolean; override;
     function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; override;
     function NXTOpenWriteLinear(const filename : string; const size : cardinal;
-      var handle : cardinal) : boolean; override;
-    function NXTOpenReadLinear(const filename : string; var handle : cardinal;
+      var handle : FantomHandle) : boolean; override;
+    function NXTOpenReadLinear(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; override;
     function NXTOpenWriteData(const filename : string; const size : cardinal;
-      var handle : cardinal) : boolean; override;
+      var handle : FantomHandle) : boolean; override;
     function NXTOpenAppendData(const filename : string; var size : cardinal;
-      var handle : cardinal) : boolean; override;
-    function NXTCloseModuleHandle(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
+      var handle : FantomHandle) : boolean; override;
+    function NXTCloseModuleHandle(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; override;
     function NXTBootCommand(const chkResponse: boolean = false) : boolean; override;
     function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; override;
     function NXTGetDeviceInfo(var name : string; var BTAddress : string;
@@ -268,9 +268,9 @@ type
       var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; override;
     function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
       var count : Word; var buffer : NXTDataBuffer) : boolean; override;
-    function NXTFindFirstModule(var ModName : string; var handle : cardinal;
+    function NXTFindFirstModule(var ModName : string; var handle : FantomHandle;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
-    function NXTFindNextModule(var handle : cardinal; var ModName : string;
+    function NXTFindNextModule(var handle : FantomHandle; var ModName : string;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
     function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
     // wrapper functions
@@ -2808,7 +2808,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTOpenRead(const filename: string; var handle: cardinal;
+function TFakeSpirit.NXTOpenRead(const filename: string; var handle: FantomHandle;
   var size: cardinal): boolean;
 var
   cmd : TNxtCmd;
@@ -2835,7 +2835,7 @@ begin
 end;
 
 function TFakeSpirit.NXTOpenReadLinear(const filename: string;
-  var handle: cardinal; var size: cardinal): boolean;
+  var handle: FantomHandle; var size: cardinal): boolean;
 var
   cmd : TNxtCmd;
   len : integer;
@@ -2860,7 +2860,7 @@ begin
 end;
 
 function TFakeSpirit.NXTOpenAppendData(const filename: string;
-  var size: cardinal; var handle: cardinal): boolean;
+  var size: cardinal; var handle: FantomHandle): boolean;
 var
   cmd : TNxtCmd;
   len : integer;
@@ -2886,7 +2886,7 @@ begin
 end;
 
 function TFakeSpirit.NXTOpenWrite(const filename: string;
-  const size: cardinal; var handle: cardinal): boolean;
+  const size: cardinal; var handle: FantomHandle): boolean;
 var
   cmd : TNxtCmd;
   len : integer;
@@ -2911,7 +2911,7 @@ begin
 end;
 
 function TFakeSpirit.NXTOpenWriteData(const filename: string;
-  const size: cardinal; var handle: cardinal): boolean;
+  const size: cardinal; var handle: FantomHandle): boolean;
 var
   cmd : TNxtCmd;
   len : integer;
@@ -2936,7 +2936,7 @@ begin
 end;
 
 function TFakeSpirit.NXTOpenWriteLinear(const filename: string;
-  const size: cardinal; var handle: cardinal): boolean;
+  const size: cardinal; var handle: FantomHandle): boolean;
 var
   cmd : TNxtCmd;
   len : integer;
@@ -2960,7 +2960,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTRead(var handle: cardinal; var count: word;
+function TFakeSpirit.NXTRead(var handle: FantomHandle; var count: word;
   var buffer: NXTDataBuffer): boolean;
 var
   cmd : TBaseCmd;
@@ -2989,7 +2989,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTWrite(var handle: cardinal; const buffer: NXTDataBuffer;
+function TFakeSpirit.NXTWrite(var handle: FantomHandle; const buffer: NXTDataBuffer;
   var count: word; const chkResponse: boolean): boolean;
 var
   cmd : TNxtCmd;
@@ -3022,7 +3022,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTCloseFile(var handle: cardinal; const chkResponse: boolean): boolean;
+function TFakeSpirit.NXTCloseFile(var handle: FantomHandle; const chkResponse: boolean): boolean;
 var
   cmd : TBaseCmd;
   b : byte;
@@ -3090,7 +3090,7 @@ begin
 end;
 
 function TFakeSpirit.NXTFindFirstFile(var filename: string;
-  var IterHandle: cardinal; var filesize, availsize : cardinal): boolean;
+  var IterHandle: FantomHandle; var filesize, availsize : cardinal): boolean;
 var
   cmd : TNxtCmd;
   len, i : integer;
@@ -3121,7 +3121,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTFindNextFile(var IterHandle: cardinal; var filename: string;
+function TFakeSpirit.NXTFindNextFile(var IterHandle: FantomHandle; var filename: string;
   var filesize, availsize : cardinal): boolean;
 var
   cmd : TBaseCmd;
@@ -3179,7 +3179,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTCloseModuleHandle(var handle: cardinal; const chkResponse: boolean): boolean;
+function TFakeSpirit.NXTCloseModuleHandle(var handle: FantomHandle; const chkResponse: boolean): boolean;
 var
   cmd : TBaseCmd;
   b : byte;
@@ -3354,7 +3354,7 @@ end;
 
 function TFakeSpirit.NXTUploadFile(const filename: string; const dir : string): boolean;
 var
-  handle, h2 : cardinal;
+  handle, h2 : FantomHandle;
   size, asize, xferred : Cardinal;
   cnt : Word;
   i : integer;
@@ -3407,7 +3407,7 @@ end;
 function TFakeSpirit.NXTListFiles(const searchPattern: string;
   Files: TStrings): boolean;
 var
-  handle : cardinal;
+  handle : FantomHandle;
   size, asize : Cardinal;
   tmpfilename : string;
 begin
@@ -3425,7 +3425,7 @@ end;
 function TFakeSpirit.NXTListModules(const searchPattern: string;
   Modules: TStrings): boolean;
 var
-  handle : cardinal;
+  handle : FantomHandle;
   size, mID : Cardinal;
   iosize : Word;
   tmpname : string;
@@ -3472,7 +3472,7 @@ function TFakeSpirit.NXTDownloadStream(aStream: TStream; const dest : string;
 var
   size, xferred : Cardinal;
   cnt : Word;
-  handle : cardinal;
+  handle : FantomHandle;
   i : integer;
   buf : NXTDataBuffer;
   nxtFilename, delname : string;
@@ -3630,7 +3630,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTFindNextModule(var Handle: cardinal;
+function TFakeSpirit.NXTFindNextModule(var Handle: FantomHandle;
   var ModName: string; var ModID, ModSize: Cardinal;
   var IOMapSize: Word): boolean;
 var
@@ -3664,7 +3664,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTFindFirstModule(var ModName: string; var Handle: cardinal;
+function TFakeSpirit.NXTFindFirstModule(var ModName: string; var Handle: FantomHandle;
   var ModID, ModSize: Cardinal; var IOMapSize: Word): boolean;
 var
   cmd : TNxtCmd;
@@ -3743,7 +3743,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTFindClose(var IterHandle: cardinal): boolean;
+function TFakeSpirit.NXTFindClose(var IterHandle: FantomHandle): boolean;
 begin
   Result := True;
 end;

@@ -1128,6 +1128,11 @@ uses
   {$IFDEF FAST_MM}FastStrings, {$ENDIF}
   NBCCommonData, NXTDefsData;
 
+{$IFNDEF FPC}
+type
+  PtrUInt = ^Cardinal;
+{$ENDIF}
+
 const
   CLUMP_FMT = 't%3.3d';
   DWORD_LEN = 4;
@@ -1341,7 +1346,7 @@ begin
       dsMutex : Result := Format('%u', [aVal]);
       dsArray : Result := '';
       dsCluster : Result := '';
-      dsFloat : Result := NBCFloatToStr(Single(Pointer(aVal)));
+      dsFloat : Result := NBCFloatToStr(Single(PtrUInt(aVal)));
     else
       Result := '???';
     end;
@@ -3421,7 +3426,7 @@ begin
   else
   begin
     sVal := aValue;
-    Result := Cardinal(Pointer(sVal));
+    Result := Cardinal(PtrUInt(sVal));
   end;
 end;
 
@@ -8238,7 +8243,7 @@ begin
     if datatype = dsFloat then
     begin
       sVal := val;
-      DE.DefaultValue := Cardinal(Pointer(sVal))
+      DE.DefaultValue := Cardinal(PtrUInt(sVal))
     end
     else
       DE.DefaultValue := Cardinal(Trunc(val));

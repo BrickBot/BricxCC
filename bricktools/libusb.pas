@@ -284,6 +284,7 @@ type
   end;
 
 {$IFNDEF WIN32}
+{$linklib usb}
 { Variables  }
 
 var USBBusses : PUSBBus; cvar; external;

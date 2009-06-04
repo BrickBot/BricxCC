@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXTDefs.h
- * Date:: 2009-05-21
- * Revision:: 50
+ * Date:: 2009-06-03
+ * Revision:: 51
  *
  * Contains declarations for the NBC NXT API resources
  *

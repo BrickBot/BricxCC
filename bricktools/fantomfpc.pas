@@ -19,65 +19,65 @@ unit FANTOMFPC;
 interface
 
 uses
-  {$IFDEF WIN32}Windows,{$ENDIF}libusb, BaseUnix, termio, unix;
+  {$IFDEF WIN32}Windows,{$ENDIF}libusb, BaseUnix, termio, unix, FantomDefs;
 
 {$I FANTOM_CONST.INC}
 
-function createNXT(resString : PChar; var status : integer; checkFWversion : byte) : Cardinal;
-function createNXTIterator(searchBluetooth : byte; bluetoothSearchTimeout : Cardinal; var status : integer) : Cardinal;
-function iFile_getAvailableSize(fileHandle : Cardinal; var status : integer) : Cardinal;
-function iFile_getSize(fileHandle : Cardinal; var status : integer) : Cardinal;
-function iFileIterator_getFile(iterHandle : Cardinal; var status : integer) : Cardinal;
-function iFileIterator_getSize(fileIterHandle : Cardinal; var status : integer) : Cardinal;
-function iModule_getIOMapSize(moduleHandle : Cardinal; var status : integer) : Cardinal;
-function iModule_getModuleID(moduleHandle : Cardinal; var status : integer) : Cardinal;
-function iModule_getModuleSize(moduleHandle : Cardinal; var status : integer) : Cardinal;
-function iModule_readIOMap(moduleHandle : Cardinal; offset : Cardinal; numberBytesToRead : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal;
-function iModule_writeIOMap(moduleHandle : Cardinal; offset : Cardinal; numberBytesToWrite : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal;
-function iModuleIterator_getModule(modIterHandle : Cardinal; var status : integer) : Cardinal;
-function iNXT_createFile(nxtHandle : Cardinal; const filename : PChar; var status : integer) : Cardinal;
-function iNXT_createFileIterator(nxtHandle : Cardinal; filePattern : PChar; var status : integer) : Cardinal;
-function iNXT_createModule(nxtHandle : Cardinal; moduleName : PChar; moduleID : Cardinal; moduleSize : Cardinal; IOMapSize : Cardinal; var status : integer) : Cardinal;
-function iNXT_createModuleIterator(nxtHandle : Cardinal; moduleNamePattern : PChar; var status : integer) : Cardinal;
-function iNXT_pollAvailableLength(nxtHandle : Cardinal; bufferSelector : Cardinal; var status : integer) : Cardinal;
-function iNXT_readBufferData(nxtHandle : Cardinal; dataBuffer : PByte; bufferSelector : Cardinal; numberOfBytesToRead : Cardinal; var status : integer) : Cardinal;
-function iNXT_write(nxtHandle : Cardinal; writeBuffer : PByte; writeBufferSize : Cardinal; var status : integer) : Cardinal;
-function iNXTIterator_getNXT(nxtIterHandle : Cardinal; var status : integer) : Cardinal;
+function createNXT(resString : PChar; var status : integer; checkFWversion : byte) : FantomHandle;
+function createNXTIterator(searchBluetooth : byte; bluetoothSearchTimeout : Cardinal; var status : integer) : FantomHandle;
+function iFile_getAvailableSize(fileHandle : FantomHandle; var status : integer) : Cardinal;
+function iFile_getSize(fileHandle : FantomHandle; var status : integer) : Cardinal;
+function iFileIterator_getFile(iterHandle : FantomHandle; var status : integer) : FantomHandle;
+function iFileIterator_getSize(fileIterHandle : FantomHandle; var status : integer) : Cardinal;
+function iModule_getIOMapSize(moduleHandle : FantomHandle; var status : integer) : Cardinal;
+function iModule_getModuleID(moduleHandle : FantomHandle; var status : integer) : Cardinal;
+function iModule_getModuleSize(moduleHandle : FantomHandle; var status : integer) : Cardinal;
+function iModule_readIOMap(moduleHandle : FantomHandle; offset : Cardinal; numberBytesToRead : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal;
+function iModule_writeIOMap(moduleHandle : FantomHandle; offset : Cardinal; numberBytesToWrite : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal;
+function iModuleIterator_getModule(modIterHandle : FantomHandle; var status : integer) : FantomHandle;
+function iNXT_createFile(nxtHandle : FantomHandle; const filename : PChar; var status : integer) : FantomHandle;
+function iNXT_createFileIterator(nxtHandle : FantomHandle; filePattern : PChar; var status : integer) : FantomHandle;
+function iNXT_createModule(nxtHandle : FantomHandle; moduleName : PChar; moduleID : Cardinal; moduleSize : Cardinal; IOMapSize : Cardinal; var status : integer) : FantomHandle;
+function iNXT_createModuleIterator(nxtHandle : FantomHandle; moduleNamePattern : PChar; var status : integer) : FantomHandle;
+function iNXT_pollAvailableLength(nxtHandle : FantomHandle; bufferSelector : Cardinal; var status : integer) : Cardinal;
+function iNXT_readBufferData(nxtHandle : FantomHandle; dataBuffer : PByte; bufferSelector : Cardinal; numberOfBytesToRead : Cardinal; var status : integer) : Cardinal;
+function iNXT_write(nxtHandle : FantomHandle; writeBuffer : PByte; writeBufferSize : Cardinal; var status : integer) : Cardinal;
+function iNXTIterator_getNXT(nxtIterHandle : FantomHandle; var status : integer) : FantomHandle;
 
-procedure destroyNXT(nxtHandle : Cardinal; var status : integer);
-procedure destroyNXTIterator(nxtIteratorHandle : Cardinal; var status : integer);
-procedure iFile_close(fileHandle : Cardinal; var status : integer);
-procedure iFile_getName(fileHandle : Cardinal; filename : PChar; var status : integer);
-procedure iFile_openForDataAppend(fileHandle : Cardinal; var status : integer);
-procedure iFile_openForDataWrite(fileHandle : Cardinal; sizeInBytes : Cardinal; var status : integer);
-procedure iFile_openForLinearWrite(fileHandle : Cardinal; sizeInBytes : Cardinal; var status : integer);
-procedure iFile_openForRead(fileHandle : Cardinal; var status : integer);
-procedure iFile_openForWrite(fileHandle : Cardinal; fileSize : Cardinal; var status : integer);
-procedure iFile_read(fileHandle : Cardinal; fileDataBuffer : PByte; bufferSize : Cardinal; var status : integer);
-procedure iFile_remove(fileHandle : Cardinal; var status : integer);
-procedure iFile_write(fileHandle : Cardinal; writeBuffer : PByte; writeBufferLength : Cardinal; var status : integer);
-procedure iFileIterator_advance(iterHandle : Cardinal; var status : integer);
-procedure iFileIterator_getName(iterHandle : Cardinal; filename : PChar; var status : integer);
-procedure iModule_getName(moduleHandle : Cardinal; moduleName : PChar; var status : integer);
-procedure iModuleIterator_advance(modIterHandle : Cardinal; var status : integer);
-procedure iModuleIterator_getName(modIterHandle : Cardinal; moduleName : PChar; var status : integer);
-procedure iNXT_bluetoothFactoryReset(nxtHandle : Cardinal; var status : integer);
+procedure destroyNXT(nxtHandle : FantomHandle; var status : integer);
+procedure destroyNXTIterator(nxtIteratorHandle : FantomHandle; var status : integer);
+procedure iFile_close(fileHandle : FantomHandle; var status : integer);
+procedure iFile_getName(fileHandle : FantomHandle; filename : PChar; var status : integer);
+procedure iFile_openForDataAppend(fileHandle : FantomHandle; var status : integer);
+procedure iFile_openForDataWrite(fileHandle : FantomHandle; sizeInBytes : Cardinal; var status : integer);
+procedure iFile_openForLinearWrite(fileHandle : FantomHandle; sizeInBytes : Cardinal; var status : integer);
+procedure iFile_openForRead(fileHandle : FantomHandle; var status : integer);
+procedure iFile_openForWrite(fileHandle : FantomHandle; fileSize : Cardinal; var status : integer);
+procedure iFile_read(fileHandle : FantomHandle; fileDataBuffer : PByte; bufferSize : Cardinal; var status : integer);
+procedure iFile_remove(fileHandle : FantomHandle; var status : integer);
+procedure iFile_write(fileHandle : FantomHandle; writeBuffer : PByte; writeBufferLength : Cardinal; var status : integer);
+procedure iFileIterator_advance(iterHandle : FantomHandle; var status : integer);
+procedure iFileIterator_getName(iterHandle : FantomHandle; filename : PChar; var status : integer);
+procedure iModule_getName(moduleHandle : FantomHandle; moduleName : PChar; var status : integer);
+procedure iModuleIterator_advance(modIterHandle : FantomHandle; var status : integer);
+procedure iModuleIterator_getName(modIterHandle : FantomHandle; moduleName : PChar; var status : integer);
+procedure iNXT_bluetoothFactoryReset(nxtHandle : FantomHandle; var status : integer);
 procedure iNXT_bootIntoFirmwareDownloadMode(resourceName : PChar; var status : integer);
-procedure iNXT_destroyFile(nxtHandle : Cardinal; fileHandle : Cardinal; var status : integer);
-procedure iNXT_destroyFileIterator(nxtHandle : Cardinal; iterHandle : Cardinal; var status : integer);
-procedure iNXT_destroyModule(nxtHandle : Cardinal; moduleHandle : Cardinal; var status : integer);
-procedure iNXT_destroyModuleIterator(nxtHandle : Cardinal; modIterHandle : Cardinal; var status : integer);
-procedure iNXT_downloadFirmware(nxtHandle : Cardinal; firmwareBuffer : PByte; firmwareBufferSize : Cardinal; var status : integer);
-procedure iNXT_eraseUserFlash(nxtHandle : Cardinal; var status : integer);
+procedure iNXT_destroyFile(nxtHandle : FantomHandle; fileHandle : Cardinal; var status : integer);
+procedure iNXT_destroyFileIterator(nxtHandle : FantomHandle; iterHandle : FantomHandle; var status : integer);
+procedure iNXT_destroyModule(nxtHandle : FantomHandle; moduleHandle : FantomHandle; var status : integer);
+procedure iNXT_destroyModuleIterator(nxtHandle : FantomHandle; modIterHandle : FantomHandle; var status : integer);
+procedure iNXT_downloadFirmware(nxtHandle : FantomHandle; firmwareBuffer : PByte; firmwareBufferSize : Cardinal; var status : integer);
+procedure iNXT_eraseUserFlash(nxtHandle : FantomHandle; var status : integer);
 procedure iNXT_findDeviceInFirmwareDownloadMode(resString : PChar; var status : integer);
-procedure iNXT_getDeviceInfo(nxtHandle : Cardinal; name : PChar; address : PByte; signalStrength : PByte; var availableFlash : Cardinal; var status : integer);
-procedure iNXT_getFirmwareVersion(nxtHandle : Cardinal; var protocolVersionMajor, protocolVersionMinor, firmwareVersionMajor, firmwareVersionMinor : byte; var status : integer);
-procedure iNXT_getResourceString(nxtHandle : Cardinal; resString : PChar; var status : integer);
-procedure iNXT_read(nxtHandle : Cardinal; readBuffer : PByte; readBufferSize : Cardinal; var status : integer);
-procedure iNXT_sendDirectCommand(nxtHandle : Cardinal; requireResponse : byte; inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte; outputBufferSize : Cardinal; var status : integer);
-procedure iNXT_setName(nxtHandle : Cardinal; newName : PChar; var status : integer);
-procedure iNXTIterator_advance(NXTIterHandle : Cardinal; var status : integer);
-procedure iNXTIterator_getName(NXTIterHandle : Cardinal; resString : PChar; var status : integer);
+procedure iNXT_getDeviceInfo(nxtHandle : FantomHandle; name : PChar; address : PByte; signalStrength : PByte; var availableFlash : Cardinal; var status : integer);
+procedure iNXT_getFirmwareVersion(nxtHandle : FantomHandle; var protocolVersionMajor, protocolVersionMinor, firmwareVersionMajor, firmwareVersionMinor : byte; var status : integer);
+procedure iNXT_getResourceString(nxtHandle : FantomHandle; resString : PChar; var status : integer);
+procedure iNXT_read(nxtHandle : FantomHandle; readBuffer : PByte; readBufferSize : Cardinal; var status : integer);
+procedure iNXT_sendDirectCommand(nxtHandle : FantomHandle; requireResponse : byte; inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte; outputBufferSize : Cardinal; var status : integer);
+procedure iNXT_setName(nxtHandle : FantomHandle; newName : PChar; var status : integer);
+procedure iNXTIterator_advance(NXTIterHandle : FantomHandle; var status : integer);
+procedure iNXTIterator_getName(NXTIterHandle : FantomHandle; resString : PChar; var status : integer);
 procedure pairBluetooth(resourceName : PChar; passkey : PChar; pairedResourceName : PChar; var status : integer);
 procedure unpairBluetooth(resourceName : PChar; var status : integer);
 procedure FantomSDKClose;
@@ -669,28 +669,28 @@ begin
 end;
 
 function createNXT(resString : PChar; var status : integer;
-  checkFWversion : byte) : Cardinal;
+  checkFWversion : byte) : FantomHandle;
 var
   tmp : TNxt;
 begin
   Result := 0;
   if status < kStatusNoError then Exit;
   tmp := TNxt.createNXT(resString, status, Boolean(checkFWversion));
-  Result := Cardinal(tmp);
+  Result := FantomHandle(tmp);
 end;
 
 function createNXTIterator(searchBluetooth : byte; bluetoothSearchTimeout : Cardinal;
-  var status : integer) : Cardinal;
+  var status : integer) : FantomHandle;
 var
   tmp : TNxtIterator;
 begin
   Result := 0;
   if status < kStatusNoError then Exit;
   tmp := TNxt.createNXTIterator(Boolean(searchBluetooth), bluetoothSearchtimeout, status);
-  Result := Cardinal(tmp);
+  Result := FantomHandle(tmp);
 end;
 
-function iFile_getAvailableSize(fileHandle : Cardinal; var status : integer) : Cardinal;
+function iFile_getAvailableSize(fileHandle : FantomHandle; var status : integer) : Cardinal;
 var
   tmp : TNxtFile;
 begin
@@ -704,7 +704,7 @@ begin
   end;
 end;
 
-function iFile_getSize(fileHandle : Cardinal; var status : integer) : Cardinal;
+function iFile_getSize(fileHandle : FantomHandle; var status : integer) : Cardinal;
 var
   tmp : TNxtFile;
 begin
@@ -718,7 +718,7 @@ begin
   end;
 end;
 
-function iFileIterator_getFile(iterHandle : Cardinal; var status : integer) : Cardinal;
+function iFileIterator_getFile(iterHandle : FantomHandle; var status : integer) : FantomHandle;
 var
   tmp : TNxtFileIterator;
 begin
@@ -726,13 +726,13 @@ begin
   if status < kStatusNoError then Exit;
   try
     tmp := TNxtFileIterator(iterHandle);
-    Result := Cardinal(tmp.getFile(status));
+    Result := FantomHandle(tmp.getFile(status));
   except
     status := kStatusFWIllegalHandle;
   end;
 end;
 
-function iFileIterator_getSize(fileIterHandle : Cardinal; var status : integer) : Cardinal;
+function iFileIterator_getSize(fileIterHandle : FantomHandle; var status : integer) : Cardinal;
 var
   tmp : TNxtFileIterator;
 begin
@@ -746,7 +746,7 @@ begin
   end;
 end;
 
-function iModule_getIOMapSize(moduleHandle : Cardinal; var status : integer) : Cardinal;
+function iModule_getIOMapSize(moduleHandle : FantomHandle; var status : integer) : Cardinal;
 var
   tmp : TNxtIModule;
 begin
@@ -761,7 +761,7 @@ begin
   end;
 end;
 
-function iModule_getModuleID(moduleHandle : Cardinal; var status : integer) : Cardinal;
+function iModule_getModuleID(moduleHandle : FantomHandle; var status : integer) : Cardinal;
 var
   tmp : TNxtIModule;
 begin
@@ -776,7 +776,7 @@ begin
   end;
 end;
 
-function iModule_getModuleSize(moduleHandle : Cardinal; var status : integer) : Cardinal;
+function iModule_getModuleSize(moduleHandle : FantomHandle; var status : integer) : Cardinal;
 var
   tmp : TNxtIModule;
 begin
@@ -791,7 +791,7 @@ begin
   end;
 end;
 
-function iModule_readIOMap(moduleHandle : Cardinal; offset : Cardinal;
+function iModule_readIOMap(moduleHandle : FantomHandle; offset : Cardinal;
   numberBytesToRead : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal;
 var
   tmp : TNxtIModule;
@@ -806,7 +806,7 @@ begin
   end;
 end;
 
-function iModule_writeIOMap(moduleHandle : Cardinal; offset : Cardinal;
+function iModule_writeIOMap(moduleHandle : FantomHandle; offset : Cardinal;
   numberBytesToWrite : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal;
 var
   tmp : TNxtIModule;
@@ -821,8 +821,8 @@ begin
   end;
 end;
 
-function iModuleIterator_getModule(modIterHandle : Cardinal;
-  var status : integer) : Cardinal;
+function iModuleIterator_getModule(modIterHandle : FantomHandle;
+  var status : integer) : FantomHandle;
 var
   tmp : TNxtIModuleIterator;
 begin
@@ -830,14 +830,14 @@ begin
   if status < kStatusNoError then Exit;
   try
     tmp := TNxtIModuleIterator(modIterHandle);
-    Result := Cardinal(tmp.getModule(status));
+    Result := FantomHandle(tmp.getModule(status));
   except
     status := kStatusFWIllegalHandle;
   end;
 end;
 
-function iNXT_createFile(nxtHandle : Cardinal; const filename : PChar;
-  var status : integer) : Cardinal;
+function iNXT_createFile(nxtHandle : FantomHandle; const filename : PChar;
+  var status : integer) : FantomHandle;
 var
   tmp : TNxt;
 begin
@@ -845,14 +845,14 @@ begin
   if status < kStatusNoError then Exit;
   try
     tmp := TNxt(nxtHandle);
-    Result := Cardinal(tmp.createFile(filename, status));
+    Result := FantomHandle(tmp.createFile(filename, status));
   except
     status := kStatusFWIllegalHandle;
   end;
 end;
 
-function iNXT_createFileIterator(nxtHandle : Cardinal; filePattern : PChar;
-  var status : integer) : Cardinal;
+function iNXT_createFileIterator(nxtHandle : FantomHandle; filePattern : PChar;
+  var status : integer) : FantomHandle;
 var
   tmp : TNxt;
 begin
@@ -860,15 +860,15 @@ begin
   if status < kStatusNoError then Exit;
   try
     tmp := TNxt(nxtHandle);
-    Result := Cardinal(tmp.createFileIterator(filePattern, status));
+    Result := FantomHandle(tmp.createFileIterator(filePattern, status));
   except
     status := kStatusFWIllegalHandle;
   end;
 end;
 
-function iNXT_createModule(nxtHandle : Cardinal; moduleName : PChar;
+function iNXT_createModule(nxtHandle : FantomHandle; moduleName : PChar;
   moduleID : Cardinal; moduleSize : Cardinal; IOMapSize : Cardinal;
-  var status : integer) : Cardinal;
+  var status : integer) : FantomHandle;
 var
   tmp : TNxt;
 begin
@@ -876,14 +876,14 @@ begin
   if status < kStatusNoError then Exit;
   try
     tmp := TNxt(nxtHandle);
-    Result := Cardinal(tmp.createModule(moduleName, moduleID, moduleSize, IOMapSize, status));
+    Result := FantomHandle(tmp.createModule(moduleName, moduleID, moduleSize, IOMapSize, status));
   except
     status := kStatusFWIllegalHandle;
   end;
 end;
 
-function iNXT_createModuleIterator(nxtHandle : Cardinal;
-  moduleNamePattern : PChar; var status : integer) : Cardinal;
+function iNXT_createModuleIterator(nxtHandle : FantomHandle;
+  moduleNamePattern : PChar; var status : integer) : FantomHandle;
 var
   tmp : TNxt;
 begin
@@ -891,13 +891,13 @@ begin
   if status < kStatusNoError then Exit;
   try
     tmp := TNxt(nxtHandle);
-    Result := Cardinal(tmp.createModuleIterator(moduleNamePattern, status));
+    Result := FantomHandle(tmp.createModuleIterator(moduleNamePattern, status));
   except
     status := kStatusFWIllegalHandle;
   end;
 end;
 
-function iNXT_pollAvailableLength(nxtHandle : Cardinal;
+function iNXT_pollAvailableLength(nxtHandle : FantomHandle;
   bufferSelector : Cardinal; var status : integer) : Cardinal;
 var
   tmp : TNxt;
@@ -912,7 +912,7 @@ begin
   end;
 end;
 
-function iNXT_readBufferData(nxtHandle : Cardinal; dataBuffer : PByte;
+function iNXT_readBufferData(nxtHandle : FantomHandle; dataBuffer : PByte;
   bufferSelector : Cardinal; numberOfBytesToRead : Cardinal; var status : integer) : Cardinal;
 var
   tmp : TNxt;
@@ -927,7 +927,7 @@ begin
   end;
 end;
 
-function iNXT_write(nxtHandle : Cardinal; writeBuffer : PByte;
+function iNXT_write(nxtHandle : FantomHandle; writeBuffer : PByte;
   writeBufferSize : Cardinal; var status : integer) : Cardinal;
 var
   tmp : TNxt;
@@ -942,7 +942,7 @@ begin
   end;
 end;
 
-function iNXTIterator_getNXT(nxtIterHandle : Cardinal; var status : integer) : Cardinal;
+function iNXTIterator_getNXT(nxtIterHandle : FantomHandle; var status : integer) : FantomHandle;
 var
   tmp : TNxtIterator;
 begin
@@ -950,13 +950,13 @@ begin
   if status < kStatusNoError then Exit;
   try
     tmp := TNxtIterator(nxtIterHandle);
-    Result := Cardinal(tmp.getNXT(status));
+    Result := FantomHandle(tmp.getNXT(status));
   except
     status := kStatusFWIllegalHandle;
   end;
 end;
 
-procedure destroyNXT(nxtHandle : Cardinal; var status : integer);
+procedure destroyNXT(nxtHandle : FantomHandle; var status : integer);
 var
   tmp : TNxt;
 begin
@@ -970,7 +970,7 @@ begin
   end;
 end;
 
-procedure destroyNXTIterator(nxtIteratorHandle : Cardinal; var status : integer);
+procedure destroyNXTIterator(nxtIteratorHandle : FantomHandle; var status : integer);
 var
   tmp : TNxtIterator;
 begin
@@ -984,7 +984,7 @@ begin
   end;
 end;
 
-procedure iFile_close(fileHandle : Cardinal; var status : integer);
+procedure iFile_close(fileHandle : FantomHandle; var status : integer);
 var
   tmp : TNxtFile;
 begin
@@ -997,7 +997,7 @@ begin
   end;
 end;
 
-procedure iFile_getName(fileHandle : Cardinal; filename : PChar;
+procedure iFile_getName(fileHandle : FantomHandle; filename : PChar;
   var status : integer);
 var
   tmp : TNxtFile;
@@ -1014,7 +1014,7 @@ begin
   end;
 end;
 
-procedure iFile_openForDataAppend(fileHandle : Cardinal; var status : integer);
+procedure iFile_openForDataAppend(fileHandle : FantomHandle; var status : integer);
 var
   tmp : TNxtFile;
 begin
@@ -1027,7 +1027,7 @@ begin
   end;
 end;
 
-procedure iFile_openForDataWrite(fileHandle : Cardinal; sizeInBytes : Cardinal;
+procedure iFile_openForDataWrite(fileHandle : FantomHandle; sizeInBytes : Cardinal;
   var status : integer);
 var
   tmp : TNxtFile;
@@ -1041,7 +1041,7 @@ begin
   end;
 end;
 
-procedure iFile_openForLinearWrite(fileHandle : Cardinal; sizeInBytes : Cardinal;
+procedure iFile_openForLinearWrite(fileHandle : FantomHandle; sizeInBytes : Cardinal;
   var status : integer);
 var
   tmp : TNxtFile;
@@ -1055,7 +1055,7 @@ begin
   end;
 end;
 
-procedure iFile_openForRead(fileHandle : Cardinal; var status : integer);
+procedure iFile_openForRead(fileHandle : FantomHandle; var status : integer);
 var
   tmp : TNxtFile;
 begin
@@ -1068,7 +1068,7 @@ begin
   end;
 end;
 
-procedure iFile_openForWrite(fileHandle : Cardinal; fileSize : Cardinal;
+procedure iFile_openForWrite(fileHandle : FantomHandle; fileSize : Cardinal;
   var status : integer);
 var
   tmp : TNxtFile;
@@ -1082,7 +1082,7 @@ begin
   end;
 end;
 
-procedure iFile_read(fileHandle : Cardinal; fileDataBuffer : PByte;
+procedure iFile_read(fileHandle : FantomHandle; fileDataBuffer : PByte;
   bufferSize : Cardinal; var status : integer);
 var
   tmp : TNxtFile;
@@ -1096,7 +1096,7 @@ begin
   end;
 end;
 
-procedure iFile_remove(fileHandle : Cardinal; var status : integer);
+procedure iFile_remove(fileHandle : FantomHandle; var status : integer);
 var
   tmp : TNxtFile;
 begin
@@ -1109,7 +1109,7 @@ begin
   end;
 end;
 
-procedure iFile_write(fileHandle : Cardinal; writeBuffer : PByte;
+procedure iFile_write(fileHandle : FantomHandle; writeBuffer : PByte;
   writeBufferLength : Cardinal; var status : integer);
 var
   tmp : TNxtFile;
@@ -1123,7 +1123,7 @@ begin
   end;
 end;
 
-procedure iFileIterator_advance(iterHandle : Cardinal; var status : integer);
+procedure iFileIterator_advance(iterHandle : FantomHandle; var status : integer);
 var
   tmp : TNxtFileIterator;
 begin
@@ -1136,7 +1136,7 @@ begin
   end;
 end;
 
-procedure iFileIterator_getName(iterHandle : Cardinal; filename : PChar;
+procedure iFileIterator_getName(iterHandle : FantomHandle; filename : PChar;
   var status : integer);
 var
   tmp : TNxtFileIterator;
@@ -1153,7 +1153,7 @@ begin
   end;
 end;
 
-procedure iModule_getName(moduleHandle : Cardinal; moduleName : PChar;
+procedure iModule_getName(moduleHandle : FantomHandle; moduleName : PChar;
   var status : integer);
 var
   tmp : TNxtIModule;
@@ -1170,7 +1170,7 @@ begin
   end;
 end;
 
-procedure iModuleIterator_advance(modIterHandle : Cardinal; var status : integer);
+procedure iModuleIterator_advance(modIterHandle : FantomHandle; var status : integer);
 var
   tmp : TNxtIModuleIterator;
 begin
@@ -1183,7 +1183,7 @@ begin
   end;
 end;
 
-procedure iModuleIterator_getName(modIterHandle : Cardinal; moduleName : PChar;
+procedure iModuleIterator_getName(modIterHandle : FantomHandle; moduleName : PChar;
   var status : integer);
 var
   tmp : TNxtIModuleIterator;
@@ -1200,7 +1200,7 @@ begin
   end;
 end;
 
-procedure iNXT_bluetoothFactoryReset(nxtHandle : Cardinal; var status : integer);
+procedure iNXT_bluetoothFactoryReset(nxtHandle : FantomHandle; var status : integer);
 var
   tmp : TNxt;
 begin
@@ -1227,7 +1227,7 @@ begin
   end;
 end;
 
-procedure iNXT_destroyFile(nxtHandle : Cardinal; fileHandle : Cardinal;
+procedure iNXT_destroyFile(nxtHandle : FantomHandle; fileHandle : FantomHandle;
   var status : integer);
 var
   tmp : TNxt;
@@ -1244,7 +1244,7 @@ begin
   end;
 end;
 
-procedure iNXT_destroyFileIterator(nxtHandle : Cardinal; iterHandle : Cardinal;
+procedure iNXT_destroyFileIterator(nxtHandle : FantomHandle; iterHandle : FantomHandle;
   var status : integer);
 var
   tmp : TNxt;
@@ -1261,7 +1261,7 @@ begin
   end;
 end;
 
-procedure iNXT_destroyModule(nxtHandle : Cardinal; moduleHandle : Cardinal;
+procedure iNXT_destroyModule(nxtHandle : FantomHandle; moduleHandle : FantomHandle;
   var status : integer);
 var
   tmp : TNxt;
@@ -1278,8 +1278,8 @@ begin
   end;
 end;
 
-procedure iNXT_destroyModuleIterator(nxtHandle : Cardinal;
-  modIterHandle : Cardinal; var status : integer);
+procedure iNXT_destroyModuleIterator(nxtHandle : FantomHandle;
+  modIterHandle : FantomHandle; var status : integer);
 var
   tmp : TNxt;
   tmpModIter : TNxtIModuleIterator;
@@ -1295,7 +1295,7 @@ begin
   end;
 end;
 
-procedure iNXT_downloadFirmware(nxtHandle : Cardinal; firmwareBuffer : PByte;
+procedure iNXT_downloadFirmware(nxtHandle : FantomHandle; firmwareBuffer : PByte;
   firmwareBufferSize : Cardinal; var status : integer);
 var
   tmp : TNxt;
@@ -1309,7 +1309,7 @@ begin
   end;
 end;
 
-procedure iNXT_eraseUserFlash(nxtHandle : Cardinal; var status : integer);
+procedure iNXT_eraseUserFlash(nxtHandle : FantomHandle; var status : integer);
 var
   tmp : TNxt;
 begin
@@ -1337,7 +1337,7 @@ begin
   end;
 end;
 
-procedure iNXT_getDeviceInfo(nxtHandle : Cardinal; name : PChar; address : PByte;
+procedure iNXT_getDeviceInfo(nxtHandle : FantomHandle; name : PChar; address : PByte;
   signalStrength : PByte; var availableFlash : Cardinal; var status : integer);
 var
   tmp : TNxt;
@@ -1354,7 +1354,7 @@ begin
   end;
 end;
 
-procedure iNXT_getFirmwareVersion(nxtHandle : Cardinal; var protocolVersionMajor,
+procedure iNXT_getFirmwareVersion(nxtHandle : FantomHandle; var protocolVersionMajor,
   protocolVersionMinor, firmwareVersionMajor, firmwareVersionMinor : byte;
   var status : integer);
 var
@@ -1370,7 +1370,7 @@ begin
   end;
 end;
 
-procedure iNXT_getResourceString(nxtHandle : Cardinal; resString : PChar;
+procedure iNXT_getResourceString(nxtHandle : FantomHandle; resString : PChar;
   var status : integer);
 var
   tmp : TNxt;
@@ -1387,7 +1387,7 @@ begin
   end;
 end;
 
-procedure iNXT_read(nxtHandle : Cardinal; readBuffer : PByte;
+procedure iNXT_read(nxtHandle : FantomHandle; readBuffer : PByte;
   readBufferSize : Cardinal; var status : integer);
 var
   tmp : TNxt;
@@ -1401,7 +1401,7 @@ begin
   end;
 end;
 
-procedure iNXT_sendDirectCommand(nxtHandle : Cardinal; requireResponse : byte;
+procedure iNXT_sendDirectCommand(nxtHandle : FantomHandle; requireResponse : byte;
   inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
   outputBufferSize : Cardinal; var status : integer);
 var
@@ -1418,7 +1418,7 @@ begin
   end;
 end;
 
-procedure iNXT_setName(nxtHandle : Cardinal; newName : PChar; var status : integer);
+procedure iNXT_setName(nxtHandle : FantomHandle; newName : PChar; var status : integer);
 var
   tmp : TNxt;
 begin
@@ -1431,7 +1431,7 @@ begin
   end;
 end;
 
-procedure iNXTIterator_advance(NXTIterHandle : Cardinal; var status : integer);
+procedure iNXTIterator_advance(NXTIterHandle : FantomHandle; var status : integer);
 var
   tmp : TNxtIterator;
 begin
@@ -1444,7 +1444,7 @@ begin
   end;
 end;
 
-procedure iNXTIterator_getName(NXTIterHandle : Cardinal; resString : PChar;
+procedure iNXTIterator_getName(NXTIterHandle : FantomHandle; resString : PChar;
   var status : integer);
 var
   tmp : TNxtIterator;
@@ -2665,6 +2665,7 @@ function TNxtIModule.readIOMap(offsetInBytes, numberOfBytes: Cardinal;
 var
   cmd : TNxtCmd;
   buf : PByte;
+  ret : cardinal;
 begin
   Result := 0;
   if numberOfBytes > 64 then Exit;
@@ -2679,7 +2680,9 @@ begin
     begin
       GetMem(buf, 64);
       try
-        fNXT.read(buf, 64, status);
+        ret := fNXT.read(buf, 64, status);
+        if status = kStatusNoError then
+          Result := ret;
       finally
         FreeMem(buf);
       end;
@@ -2687,35 +2690,6 @@ begin
   finally
     cmd.Free;
   end;
-  
-(*
-var
-  cmd : TNxtCmd;
-  len, i : integer;
-begin
-  Result := Open;
-  if not Result then Exit;
-  cmd := TNxtCmd.Create;
-  try
-    len := fLink.Send(cmd.MakeCmdReadIOMap(kNXT_SystemCmd, kNXT_SCIOMapRead,
-      ModID, Offset, Count));
-    if len < 6 then
-    begin
-      Result := False;
-      Exit;
-    end;
-    ModID := fLink.GetReplyCardinal(0); // first 4 bytes
-    Count  := fLink.GetReplyWord(4); // bytes 5 & 6
-    for i := 0 to 63 do begin
-      if i >= Count then Break;
-      buffer.Data[i] := fLink.GetReplyByte(6+i);
-    end;
-    Result := len >= kRCX_OK;
-  finally
-    cmd.Free;
-    if fAutoClose then Close;
-  end;
-*)
 end;
 
 function TNxtIModule.writeIOMap(offsetInBytes, numberOfBytes: Cardinal;
