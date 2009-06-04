@@ -19,16 +19,16 @@ unit FantomSpirit;
 interface
 
 uses
-  Classes, SysUtils, rcx_cmd, uSpirit;
+  Classes, SysUtils, rcx_cmd, uSpirit, FantomDefs;
 
 type
   TFantomSpirit = class(TBrickComm)
   private
     fResPort : string;
-    fNXTHandle : Cardinal;
+    fNXTHandle : FantomHandle;
     fResourceNames : TStrings;
-//    fNXTFileHandle : Cardinal;
-//    fNXTFileIteratorHandle : Cardinal;
+//    fNXTFileHandle : FantomHandle;
+//    fNXTFileIteratorHandle : FantomHandle;
     dcResponse : array [0..63] of byte;
     function TransferFirmware(aStream: TStream): boolean;
   protected
@@ -61,7 +61,7 @@ type
     function  GetReplyWord(index: integer): Word;
     procedure SetResourcePort(const name : string);
     procedure LookupResourceName;
-    function InternalNXTUploadFileToStream(handle : cardinal; const name : string;
+    function InternalNXTUploadFileToStream(handle : FantomHandle; const name : string;
       const totalSize, availSize : cardinal; aStream : TStream) : boolean;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); override;
@@ -233,29 +233,29 @@ type
     function SetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
     function GetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
     // NXT system commands
-    function NXTOpenRead(const filename : string; var handle : cardinal;
+    function NXTOpenRead(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; override;
     function NXTOpenWrite(const filename : string; const size : cardinal;
-      var handle : cardinal) : boolean; override;
-    function NXTRead(var handle : cardinal; var count : word;
+      var handle : FantomHandle) : boolean; override;
+    function NXTRead(var handle : FantomHandle; var count : word;
       var buffer : NXTDataBuffer) : boolean; override;
-    function NXTWrite(var handle : cardinal; const buffer : NXTDataBuffer;
+    function NXTWrite(var handle : FantomHandle; const buffer : NXTDataBuffer;
       var count : word; const chkResponse : boolean = false) : boolean; override;
-    function NXTCloseFile(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
+    function NXTCloseFile(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; override;
     function NXTDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; override;
-    function NXTFindFirstFile(var filename : string; var IterHandle : cardinal; var filesize, availsize : cardinal) : boolean; override;
-    function NXTFindNextFile(var IterHandle : cardinal; var filename : string; var filesize, availsize : cardinal) : boolean; override;
-    function NXTFindClose(var IterHandle : cardinal) : boolean; override;
+    function NXTFindFirstFile(var filename : string; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : boolean; override;
+    function NXTFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; override;
+    function NXTFindClose(var IterHandle : FantomHandle) : boolean; override;
     function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; override;
     function NXTOpenWriteLinear(const filename : string; const size : cardinal;
-      var handle : cardinal) : boolean; override;
-    function NXTOpenReadLinear(const filename : string; var handle : cardinal;
+      var handle : FantomHandle) : boolean; override;
+    function NXTOpenReadLinear(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; override;
     function NXTOpenWriteData(const filename : string; const size : cardinal;
-      var handle : cardinal) : boolean; override;
+      var handle : FantomHandle) : boolean; override;
     function NXTOpenAppendData(const filename : string; var size : cardinal;
-      var handle : cardinal) : boolean; override;
-    function NXTCloseModuleHandle(var handle : cardinal; const chkResponse: boolean = false) : boolean; override;
+      var handle : FantomHandle) : boolean; override;
+    function NXTCloseModuleHandle(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; override;
     function NXTBootCommand(const chkResponse: boolean = false) : boolean; override;
     function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; override;
     function NXTGetDeviceInfo(var name : string; var BTAddress : string;
@@ -270,9 +270,9 @@ type
       var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; override;
     function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
       var count : Word; var buffer : NXTDataBuffer) : boolean; override;
-    function NXTFindFirstModule(var ModName : string; var Handle : cardinal;
+    function NXTFindFirstModule(var ModName : string; var Handle : FantomHandle;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
-    function NXTFindNextModule(var Handle : cardinal; var ModName : string;
+    function NXTFindNextModule(var Handle : FantomHandle; var ModName : string;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
     function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
 {
@@ -296,7 +296,7 @@ uses
   {$IFNDEF FPC}FANTOM{$ELSE}FANTOMFPC{$ENDIF};
 
 
-procedure iNXT_sendDirectCommandEnhanced(nxtHandle : Cardinal; requireResponse : byte;
+procedure iNXT_sendDirectCommandEnhanced(nxtHandle : FantomHandle; requireResponse : byte;
   inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
   outputBufferSize : Cardinal; var status : integer; bEnhanced : boolean = false);
 var
@@ -764,7 +764,7 @@ end;
 
 function TFantomSpirit.Open: boolean;
 var
-  nih : Cardinal;
+  nih : FantomHandle;
   status, status2 : integer;
   resNamePC : array[0..54] of Char;
   pairedResNamePC : array[0..54] of Char;
@@ -1473,7 +1473,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTOpenRead(const filename: string; var handle: cardinal;
+function TFantomSpirit.NXTOpenRead(const filename: string; var handle: FantomHandle;
   var size: cardinal): boolean;
 var
   status : integer;
@@ -1501,13 +1501,13 @@ begin
 end;
 
 function TFantomSpirit.NXTOpenReadLinear(const filename: string;
-  var handle: cardinal; var size: cardinal): boolean;
+  var handle: FantomHandle; var size: cardinal): boolean;
 begin
   Result := NXTOpenRead(filename, handle, size);
 end;
 
 function TFantomSpirit.NXTOpenAppendData(const filename: string;
-  var size: cardinal; var handle: cardinal): boolean;
+  var size: cardinal; var handle: FantomHandle): boolean;
 var
   status : integer;
 begin
@@ -1534,7 +1534,7 @@ begin
 end;
 
 function TFantomSpirit.NXTOpenWrite(const filename: string;
-  const size: cardinal; var handle: cardinal): boolean;
+  const size: cardinal; var handle: FantomHandle): boolean;
 var
   status : integer;
 begin
@@ -1556,7 +1556,7 @@ begin
 end;
 
 function TFantomSpirit.NXTOpenWriteData(const filename: string;
-  const size: cardinal; var handle: cardinal): boolean;
+  const size: cardinal; var handle: FantomHandle): boolean;
 var
   status : integer;
 begin
@@ -1578,7 +1578,7 @@ begin
 end;
 
 function TFantomSpirit.NXTOpenWriteLinear(const filename: string;
-  const size: cardinal; var handle: cardinal): boolean;
+  const size: cardinal; var handle: FantomHandle): boolean;
 var
   status : integer;
 begin
@@ -1599,7 +1599,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTRead(var handle: cardinal; var count: word;
+function TFantomSpirit.NXTRead(var handle: FantomHandle; var count: word;
   var buffer: NXTDataBuffer): boolean;
 var
   status : integer;
@@ -1611,7 +1611,7 @@ begin
   Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTWrite(var handle: cardinal; const buffer: NXTDataBuffer;
+function TFantomSpirit.NXTWrite(var handle: FantomHandle; const buffer: NXTDataBuffer;
   var count: word; const chkResponse: boolean): boolean;
 var
   status : integer;
@@ -1626,7 +1626,7 @@ begin
     Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTCloseFile(var handle: cardinal; const chkResponse: boolean): boolean;
+function TFantomSpirit.NXTCloseFile(var handle: FantomHandle; const chkResponse: boolean): boolean;
 var
   status : integer;
 begin
@@ -1647,7 +1647,7 @@ end;
 
 function TFantomSpirit.NXTDeleteFile(var filename: string; const chkResponse: boolean): boolean;
 var
-  handle : cardinal;
+  handle : FantomHandle;
   status : integer;
 begin
   Result := IsOpen;
@@ -1668,11 +1668,11 @@ begin
 end;
 
 function TFantomSpirit.NXTFindFirstFile(var filename: string;
-  var IterHandle: cardinal; var filesize, availsize : cardinal): boolean;
+  var IterHandle: FantomHandle; var filesize, availsize : cardinal): boolean;
 var
   status : integer;
   buf : array[0..19] of Char;
-  NXTFileHandle : cardinal;
+  NXTFileHandle : FantomHandle;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -1693,12 +1693,12 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTFindNextFile(var IterHandle: cardinal; var filename: string;
+function TFantomSpirit.NXTFindNextFile(var IterHandle: FantomHandle; var filename: string;
   var filesize, availsize : cardinal): boolean;
 var
   status : integer;
   Buf : array[0..19] of Char;
-  NXTFileHandle : cardinal;
+  NXTFileHandle : FantomHandle;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -1724,7 +1724,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTFindClose(var IterHandle: cardinal): boolean;
+function TFantomSpirit.NXTFindClose(var IterHandle: FantomHandle): boolean;
 var
   status : integer;
 begin
@@ -1748,7 +1748,7 @@ begin
   Result := status >= kStatusNoError;
 end;
 
-function TFantomSpirit.NXTCloseModuleHandle(var handle: cardinal; const chkResponse: boolean): boolean;
+function TFantomSpirit.NXTCloseModuleHandle(var handle: FantomHandle; const chkResponse: boolean): boolean;
 var
   status : integer;
 begin
@@ -1844,7 +1844,7 @@ end;
 type
   TFileInfoRec = class
   public
-    FileHandle : Cardinal;
+    FileHandle : FantomHandle;
     TotalSize : Cardinal;
     AvailableSize : Cardinal;
     Name : string;
@@ -1852,11 +1852,11 @@ type
 
 function TFantomSpirit.NXTUploadFile(const filename: string; const dir : string): boolean;
 var
-  handle : cardinal;
+  handle : FantomHandle;
   totalSize, availableSize : Cardinal;
   MS : TMemoryStream;
   tmpFilename : string;
-  NXTFileIteratorHandle : Cardinal;
+  NXTFileIteratorHandle : FantomHandle;
   status, i : integer;
   buf : array[0..20] of Char;
   FIR : TFileInfoRec;
@@ -1922,10 +1922,10 @@ end;
 function TFantomSpirit.NXTUploadFileToStream(const filename: string;
   aStream: TStream): boolean;
 var
-  handle : cardinal;
+  handle : FantomHandle;
   totalSize, availableSize : Cardinal;
   tmpFilename : string;
-  NXTFileIteratorHandle : Cardinal;
+  NXTFileIteratorHandle : FantomHandle;
   status : integer;
   buf : array[0..20] of Char;
 begin
@@ -1952,7 +1952,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.InternalNXTUploadFileToStream(handle: cardinal;
+function TFantomSpirit.InternalNXTUploadFileToStream(handle: FantomHandle;
   const name: string; const totalSize, availSize: cardinal;
   aStream: TStream): boolean;
 var
@@ -2017,7 +2017,7 @@ function TFantomSpirit.NXTListFiles(const searchPattern: string; Files: TStrings
 var
   size : Cardinal;
   tmpfilename : string;
-  NXTFileIteratorHandle : Cardinal;
+  NXTFileIteratorHandle : FantomHandle;
   buf : array[0..20] of Char;
   status : integer;
 begin
@@ -2042,7 +2042,8 @@ end;
 function TFantomSpirit.NXTListModules(const searchPattern: string;
   Modules: TStrings): boolean;
 var
-  size, mID, NXTModuleIteratorHandle, handle : Cardinal;
+  size, mID : Cardinal;
+  NXTModuleIteratorHandle, handle : FantomHandle;
   buf : array[0..20] of Char;
   status : integer;
   iosize : Word;
@@ -2202,7 +2203,7 @@ function TFantomSpirit.NXTDownloadStream(aStream: TStream; const dest : string;
   const filetype: TNXTFileType): boolean;
 var
   size : Cardinal;
-  handle : cardinal;
+  handle : FantomHandle;
   status : integer;
   buf : PByte;
   nxtFilename, delname : string;
@@ -2284,7 +2285,7 @@ function TFantomSpirit.NXTWriteIOMap(var ModID: Cardinal;
   chkResponse : Boolean): boolean;
 var
   status : integer;
-  mh : Cardinal;
+  mh : FantomHandle;
   modName : string;
 begin
   Result := IsOpen;
@@ -2309,7 +2310,7 @@ function TFantomSpirit.NXTReadIOMap(var ModID: Cardinal;
   const Offset: Word; var Count: Word; var buffer: NXTDataBuffer): boolean;
 var
   status : integer;
-  mh : Cardinal;
+  mh : FantomHandle;
   modName : string;
 begin
   Result := IsOpen;
@@ -2330,13 +2331,13 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTFindNextModule(var Handle: cardinal;
+function TFantomSpirit.NXTFindNextModule(var Handle: FantomHandle;
   var ModName: string; var ModID, ModSize: Cardinal;
   var IOMapSize: Word): boolean;
 var
   status : integer;
   Buf : array[0..19] of Char;
-  mh : cardinal;
+  mh : FantomHandle;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -2368,12 +2369,12 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTFindFirstModule(var ModName: string; var Handle: cardinal;
+function TFantomSpirit.NXTFindFirstModule(var ModName: string; var Handle: FantomHandle;
   var ModID, ModSize: Cardinal; var IOMapSize: Word): boolean;
 var
   status : integer;
   buf : array[0..19] of Char;
-  mh : cardinal;
+  mh : FantomHandle;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -2425,7 +2426,7 @@ end;
 
 function TFantomSpirit.NXTListBricks(Bricks: TStrings): boolean;
 var
-  nih : Cardinal;
+  nih : FantomHandle;
   status, status2 : integer;
   resNamePC : array[0..255] of Char;
   resName, alias, tmp : string;
@@ -3027,7 +3028,8 @@ end;
 function TFantomSpirit.PollEEPROM(block: Integer): TStrings;
 var
   i, j, start, finish, status : Integer;
-  mh, Offset, cnt : Cardinal;
+  mh : FantomHandle;
+  Offset, cnt : Cardinal;
   buf : PByte;
 const
   MAX_BLOCK  = $803;
@@ -3083,7 +3085,8 @@ end;
 function TFantomSpirit.PollMemory(address, size: Integer): TStrings;
 var
   status, cnt : integer;
-  mh, Offset : Cardinal;
+  mh : FantomHandle;
+  Offset : Cardinal;
   amt, i : Integer;
   buf : PByte;
 const

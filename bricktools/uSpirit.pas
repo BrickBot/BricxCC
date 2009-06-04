@@ -19,7 +19,7 @@ unit uSpirit;
 interface
 
 uses
-  rcx_constants, Classes;
+  rcx_constants, Classes, FantomDefs;
 
 const
   K_RCX   = 'RCX';
@@ -352,29 +352,29 @@ type
     function SetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
     function GetVMState(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
     // NXT system commands
-    function NXTOpenRead(const filename : string; var handle : cardinal;
+    function NXTOpenRead(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; virtual; abstract;
     function NXTOpenWrite(const filename : string; const size : cardinal;
-      var handle : cardinal) : boolean; virtual; abstract;
-    function NXTRead(var handle : cardinal; var count : word;
+      var handle : FantomHandle) : boolean; virtual; abstract;
+    function NXTRead(var handle : FantomHandle; var count : word;
       var buffer : NXTDataBuffer) : boolean; virtual; abstract;
-    function NXTWrite(var handle : cardinal; const buffer : NXTDataBuffer;
+    function NXTWrite(var handle : FantomHandle; const buffer : NXTDataBuffer;
       var count : word; const chkResponse : boolean = false) : boolean; virtual; abstract;
-    function NXTCloseFile(var handle : cardinal; const chkResponse: boolean = false) : boolean; virtual; abstract;
+    function NXTCloseFile(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; virtual; abstract;
     function NXTDeleteFile(var filename : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
-    function NXTFindFirstFile(var filename : string; var IterHandle : cardinal; var filesize, availsize : cardinal) : boolean; virtual; abstract;
-    function NXTFindNextFile(var IterHandle : cardinal; var filename : string; var filesize, availsize : cardinal) : boolean; virtual; abstract;
-    function NXTFindClose(var IterHandle : cardinal) : boolean; virtual; abstract;
+    function NXTFindFirstFile(var filename : string; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : boolean; virtual; abstract;
+    function NXTFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; virtual; abstract;
+    function NXTFindClose(var IterHandle : FantomHandle) : boolean; virtual; abstract;
     function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; virtual; abstract;
     function NXTOpenWriteLinear(const filename : string; const size : cardinal;
-      var handle : cardinal) : boolean; virtual; abstract;
-    function NXTOpenReadLinear(const filename : string; var handle : cardinal;
+      var handle : FantomHandle) : boolean; virtual; abstract;
+    function NXTOpenReadLinear(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; virtual; abstract;
     function NXTOpenWriteData(const filename : string; const size : cardinal;
-      var handle : cardinal) : boolean; virtual; abstract;
+      var handle : FantomHandle) : boolean; virtual; abstract;
     function NXTOpenAppendData(const filename : string; var size : cardinal;
-      var handle : cardinal) : boolean; virtual; abstract;
-    function NXTCloseModuleHandle(var handle : cardinal; const chkResponse: boolean = false) : boolean; virtual; abstract;
+      var handle : FantomHandle) : boolean; virtual; abstract;
+    function NXTCloseModuleHandle(var handle : FantomHandle; const chkResponse: boolean = false) : boolean; virtual; abstract;
     function NXTBootCommand(const chkResponse: boolean = false) : boolean; virtual; abstract;
     function NXTSetBrickName(const name : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
     function NXTGetBrickName : string;
@@ -390,9 +390,9 @@ type
       var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; virtual; abstract;
     function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
       var count : Word; var buffer : NXTDataBuffer) : boolean; virtual; abstract;
-    function NXTFindFirstModule(var ModName : string; var Handle : cardinal;
+    function NXTFindFirstModule(var ModName : string; var Handle : FantomHandle;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; virtual; abstract;
-    function NXTFindNextModule(var Handle : cardinal; var ModName : string;
+    function NXTFindNextModule(var Handle : FantomHandle; var ModName : string;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; virtual; abstract;
     function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
 {

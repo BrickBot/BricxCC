@@ -295,6 +295,7 @@ type
     fOnCompMSg: TOnCompilerMessage;
     fCalc : TExpParser;
     fMaxErrors: word;
+    fFirmwareVersion: word;
     procedure InternalParseStream;
     procedure ReportProblem(const lineNo: integer; const fName,
       msg: string; err: boolean);
@@ -345,6 +346,7 @@ type
     procedure OpenParen;
     procedure GetString;
     procedure CheckStringConst;
+    procedure CheckFirmwareVersion(const MinVer : word; const msg : string);
   protected
     fMS : TMemoryStream;
     fOperations : TRICOps;
@@ -379,6 +381,7 @@ type
     property CurrentFile : string read fCurFile write fCurFile;
     property Optimize : boolean read fOptimize write fOptimize;
     property EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
+    property FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
     property MaxErrors : word read fMaxErrors write fMaxErrors;
     property OnCompilerMessage : TOnCompilerMessage read fOnCompMSg write fOnCompMsg;
     property IncludeDirs : TStrings read fIncludeDirs;
@@ -1089,6 +1092,7 @@ begin
   fMaxErrors  := 0;
   fCalc := TExpParser.Create(nil);
   fCalc.CaseSensitive := True;
+  fFirmwareVersion  := 105; // 1.05 NXT 1.1 firmware 
 end;
 
 destructor TRICComp.Destroy;
@@ -1987,6 +1991,7 @@ var
   op : TRICEllipse;
   P : TImgPoint;
 begin
+  CheckFirmwareVersion(127, sEllipseRequires127);
   // add an ellipse opcode
   op := TRICEllipse.Create(RICOps);
   // parse and set its values
@@ -2021,6 +2026,7 @@ var
   op : TRICPolygon;
   PP : TPolyPoint;
 begin
+  CheckFirmwareVersion(127, sPolygonRequires127);
   // add a polygon opcode
   op := TRICPolygon.Create(RICOps);
   // parse and set its values
@@ -2238,6 +2244,12 @@ begin
   finally
     Free;
   end;
+end;
+
+procedure TRICComp.CheckFirmwareVersion(const MinVer : word; const msg : string);
+begin
+  if FirmwareVersion < MinVer then
+    AbortMsg(msg);
 end;
 
 { TRICDescription }

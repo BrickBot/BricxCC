@@ -18,64 +18,67 @@ unit FANTOM;
 
 interface
 
+uses
+  FantomDefs;
+
 {$I FANTOM_CONST.INC}
 
 var
-  createNXT : function(resString : PChar; var status : integer; checkFWversion : byte) : Cardinal; cdecl;
-  createNXTIterator : function(searchBluetooth : byte; bluetoothSearchTimeout : Cardinal; var status : integer) : Cardinal; cdecl;
-  iFile_getAvailableSize : function(fileHandle : Cardinal; var status : integer) : Cardinal; cdecl;
-  iFile_getSize : function(fileHandle : Cardinal; var status : integer) : Cardinal; cdecl;
-  iFileIterator_getFile : function(iterHandle : Cardinal; var status : integer) : Cardinal; cdecl;
-  iFileIterator_getSize : function(fileIterHandle : Cardinal; var status : integer) : Cardinal; cdecl;
-  iModule_getIOMapSize : function(moduleHandle : Cardinal; var status : integer) : Cardinal; cdecl;
-  iModule_getModuleID : function(moduleHandle : Cardinal; var status : integer) : Cardinal; cdecl;
-  iModule_getModuleSize : function(moduleHandle : Cardinal; var status : integer) : Cardinal; cdecl;
-  iModule_readIOMap : function(moduleHandle : Cardinal; offset : Cardinal; numberBytesToRead : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal; cdecl;
-  iModule_writeIOMap : function(moduleHandle : Cardinal; offset : Cardinal; numberBytesToWrite : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal; cdecl;
-  iModuleIterator_getModule : function(modIterHandle : Cardinal; var status : integer) : Cardinal; cdecl;
-  iNXT_createFile : function(nxtHandle : Cardinal; const filename : PChar; var status : integer) : Cardinal; cdecl;
-  iNXT_createFileIterator : function(nxtHandle : Cardinal; filePattern : PChar; var status : integer) : Cardinal; cdecl;
-  iNXT_createModule : function(nxtHandle : Cardinal; moduleName : PChar; moduleID : Cardinal; moduleSize : Cardinal; IOMapSize : Cardinal; var status : integer) : Cardinal; cdecl;
-  iNXT_createModuleIterator : function(nxtHandle : Cardinal; moduleNamePattern : PChar; var status : integer) : Cardinal; cdecl;
-  iNXT_pollAvailableLength : function(nxtHandle : Cardinal; bufferSelector : Cardinal; var status : integer) : Cardinal; cdecl;
-  iNXT_readBufferData : function(nxtHandle : Cardinal; dataBuffer : PByte; bufferSelector : Cardinal; numberOfBytesToRead : Cardinal; var status : integer) : Cardinal; cdecl;
-  iNXT_write : function(nxtHandle : Cardinal; writeBuffer : PByte; writeBufferSize : Cardinal; var status : integer) : Cardinal; cdecl;
-  iNXTIterator_getNXT : function(nxtIterHandle : Cardinal; var status : integer) : Cardinal; cdecl;
+  createNXT : function(resString : PChar; var status : integer; checkFWversion : byte) : FantomHandle; cdecl;
+  createNXTIterator : function(searchBluetooth : byte; bluetoothSearchTimeout : Cardinal; var status : integer) : FantomHandle; cdecl;
+  iFile_getAvailableSize : function(fileHandle : FantomHandle; var status : integer) : Cardinal; cdecl;
+  iFile_getSize : function(fileHandle : FantomHandle; var status : integer) : Cardinal; cdecl;
+  iFileIterator_getFile : function(iterHandle : FantomHandle; var status : integer) : FantomHandle; cdecl;
+  iFileIterator_getSize : function(fileIterHandle : FantomHandle; var status : integer) : Cardinal; cdecl;
+  iModule_getIOMapSize : function(moduleHandle : FantomHandle; var status : integer) : Cardinal; cdecl;
+  iModule_getModuleID : function(moduleHandle : FantomHandle; var status : integer) : Cardinal; cdecl;
+  iModule_getModuleSize : function(moduleHandle : FantomHandle; var status : integer) : Cardinal; cdecl;
+  iModule_readIOMap : function(moduleHandle : FantomHandle; offset : Cardinal; numberBytesToRead : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal; cdecl;
+  iModule_writeIOMap : function(moduleHandle : FantomHandle; offset : Cardinal; numberBytesToWrite : Cardinal; dataBuffer : PByte; var status : integer) : Cardinal; cdecl;
+  iModuleIterator_getModule : function(modIterHandle : FantomHandle; var status : integer) : FantomHandle; cdecl;
+  iNXT_createFile : function(nxtHandle : FantomHandle; const filename : PChar; var status : integer) : FantomHandle; cdecl;
+  iNXT_createFileIterator : function(nxtHandle : FantomHandle; filePattern : PChar; var status : integer) : FantomHandle; cdecl;
+  iNXT_createModule : function(nxtHandle : FantomHandle; moduleName : PChar; moduleID : Cardinal; moduleSize : Cardinal; IOMapSize : Cardinal; var status : integer) : FantomHandle; cdecl;
+  iNXT_createModuleIterator : function(nxtHandle : FantomHandle; moduleNamePattern : PChar; var status : integer) : FantomHandle; cdecl;
+  iNXT_pollAvailableLength : function(nxtHandle : FantomHandle; bufferSelector : Cardinal; var status : integer) : Cardinal; cdecl;
+  iNXT_readBufferData : function(nxtHandle : FantomHandle; dataBuffer : PByte; bufferSelector : Cardinal; numberOfBytesToRead : Cardinal; var status : integer) : Cardinal; cdecl;
+  iNXT_write : function(nxtHandle : FantomHandle; writeBuffer : PByte; writeBufferSize : Cardinal; var status : integer) : Cardinal; cdecl;
+  iNXTIterator_getNXT : function(nxtIterHandle : FantomHandle; var status : integer) : FantomHandle; cdecl;
 
-  destroyNXT : procedure(nxtHandle : Cardinal; var status : integer); cdecl;
-  destroyNXTIterator : procedure(nxtIteratorHandle : Cardinal; var status : integer); cdecl;
-  iFile_close : procedure(fileHandle : Cardinal; var status : integer); cdecl;
-  iFile_getName : procedure(fileHandle : Cardinal; filename : PChar; var status : integer); cdecl;
-  iFile_openForDataAppend : procedure(fileHandle : Cardinal; var status : integer); cdecl;
-  iFile_openForDataWrite : procedure(fileHandle : Cardinal; sizeInBytes : Cardinal; var status : integer); cdecl;
-  iFile_openForLinearWrite : procedure(fileHandle : Cardinal; sizeInBytes : Cardinal; var status : integer); cdecl;
-  iFile_openForRead : procedure(fileHandle : Cardinal; var status : integer); cdecl;
-  iFile_openForWrite : procedure(fileHandle : Cardinal; fileSize : Cardinal; var status : integer); cdecl;
-  iFile_read : procedure(fileHandle : Cardinal; fileDataBuffer : PByte; bufferSize : Cardinal; var status : integer); cdecl;
-  iFile_remove : procedure(fileHandle : Cardinal; var status : integer); cdecl;
+  destroyNXT : procedure(nxtHandle : FantomHandle; var status : integer); cdecl;
+  destroyNXTIterator : procedure(nxtIteratorHandle : FantomHandle; var status : integer); cdecl;
+  iFile_close : procedure(fileHandle : FantomHandle; var status : integer); cdecl;
+  iFile_getName : procedure(fileHandle : FantomHandle; filename : PChar; var status : integer); cdecl;
+  iFile_openForDataAppend : procedure(fileHandle : FantomHandle; var status : integer); cdecl;
+  iFile_openForDataWrite : procedure(fileHandle : FantomHandle; sizeInBytes : Cardinal; var status : integer); cdecl;
+  iFile_openForLinearWrite : procedure(fileHandle : FantomHandle; sizeInBytes : Cardinal; var status : integer); cdecl;
+  iFile_openForRead : procedure(fileHandle : FantomHandle; var status : integer); cdecl;
+  iFile_openForWrite : procedure(fileHandle : FantomHandle; fileSize : Cardinal; var status : integer); cdecl;
+  iFile_read : procedure(fileHandle : FantomHandle; fileDataBuffer : PByte; bufferSize : Cardinal; var status : integer); cdecl;
+  iFile_remove : procedure(fileHandle : FantomHandle; var status : integer); cdecl;
   iFile_write : procedure(fileHandle : Cardinal; writeBuffer : PByte; writeBufferLength : Cardinal; var status : integer); cdecl;
-  iFileIterator_advance : procedure(iterHandle : Cardinal; var status : integer); cdecl;
-  iFileIterator_getName : procedure(iterHandle : Cardinal; filename : PChar; var status : integer); cdecl;
-  iModule_getName : procedure(moduleHandle : Cardinal; moduleName : PChar; var status : integer); cdecl;// 20 bytes
-  iModuleIterator_advance : procedure(modIterHandle : Cardinal; var status : integer); cdecl;
-  iModuleIterator_getName : procedure(modIterHandle : Cardinal; moduleName : PChar; var status : integer); cdecl;// 256 bytes
-  iNXT_bluetoothFactoryReset : procedure(nxtHandle : Cardinal; var status : integer); cdecl;
+  iFileIterator_advance : procedure(iterHandle : FantomHandle; var status : integer); cdecl;
+  iFileIterator_getName : procedure(iterHandle : FantomHandle; filename : PChar; var status : integer); cdecl;
+  iModule_getName : procedure(moduleHandle : FantomHandle; moduleName : PChar; var status : integer); cdecl;// 20 bytes
+  iModuleIterator_advance : procedure(modIterHandle : FantomHandle; var status : integer); cdecl;
+  iModuleIterator_getName : procedure(modIterHandle : FantomHandle; moduleName : PChar; var status : integer); cdecl;// 256 bytes
+  iNXT_bluetoothFactoryReset : procedure(nxtHandle : FantomHandle; var status : integer); cdecl;
   iNXT_bootIntoFirmwareDownloadMode : procedure(resourceName : PChar; var status : integer); cdecl;
-  iNXT_destroyFile : procedure(nxtHandle : Cardinal; fileHandle : Cardinal; var status : integer); cdecl;
-  iNXT_destroyFileIterator : procedure(nxtHandle : Cardinal; iterHandle : Cardinal; var status : integer); cdecl;
-  iNXT_destroyModule : procedure(nxtHandle : Cardinal; moduleHandle : Cardinal; var status : integer); cdecl;
-  iNXT_destroyModuleIterator : procedure(nxtHandle : Cardinal; modIterHandle : Cardinal; var status : integer); cdecl;
-  iNXT_downloadFirmware : procedure(nxtHandle : Cardinal; firmwareBuffer : PByte; firmwareBufferSize : Cardinal; var status : integer); cdecl;
-  iNXT_eraseUserFlash : procedure(nxtHandle : Cardinal; var status : integer); cdecl;
+  iNXT_destroyFile : procedure(nxtHandle : FantomHandle; fileHandle : Cardinal; var status : integer); cdecl;
+  iNXT_destroyFileIterator : procedure(nxtHandle : FantomHandle; iterHandle : FantomHandle; var status : integer); cdecl;
+  iNXT_destroyModule : procedure(nxtHandle : FantomHandle; moduleHandle : FantomHandle; var status : integer); cdecl;
+  iNXT_destroyModuleIterator : procedure(nxtHandle : FantomHandle; modIterHandle : FantomHandle; var status : integer); cdecl;
+  iNXT_downloadFirmware : procedure(nxtHandle : FantomHandle; firmwareBuffer : PByte; firmwareBufferSize : Cardinal; var status : integer); cdecl;
+  iNXT_eraseUserFlash : procedure(nxtHandle : FantomHandle; var status : integer); cdecl;
   iNXT_findDeviceInFirmwareDownloadMode : procedure(resString : PChar; var status : integer); cdecl;
-  iNXT_getDeviceInfo : procedure(nxtHandle : Cardinal; name : PChar; address : PByte; signalStrength : PByte; var availableFlash : Cardinal; var status : integer); cdecl;
-  iNXT_getFirmwareVersion : procedure(nxtHandle : Cardinal; var protocolVersionMajor, protocolVersionMinor, firmwareVersionMajor, firmwareVersionMinor : byte; var status : integer); cdecl;
-  iNXT_getResourceString : procedure(nxtHandle : Cardinal; resString : PChar; var status : integer); cdecl;// 55 bytes
-  iNXT_read : procedure(nxtHandle : Cardinal; readBuffer : PByte; readBufferSize : Cardinal; var status : integer); cdecl;
-  iNXT_sendDirectCommand : procedure(nxtHandle : Cardinal; requireResponse : byte; inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte; outputBufferSize : Cardinal; var status : integer); cdecl;
-  iNXT_setName : procedure(nxtHandle : Cardinal; newName : PChar; var status : integer); cdecl;
-  iNXTIterator_advance : procedure(NXTIterHandle : Cardinal; var status : integer); cdecl;
-  iNXTIterator_getName : procedure(NXTIterHandle : Cardinal; resString : PChar; var status : integer); cdecl;// 256 bytes
+  iNXT_getDeviceInfo : procedure(nxtHandle : FantomHandle; name : PChar; address : PByte; signalStrength : PByte; var availableFlash : Cardinal; var status : integer); cdecl;
+  iNXT_getFirmwareVersion : procedure(nxtHandle : FantomHandle; var protocolVersionMajor, protocolVersionMinor, firmwareVersionMajor, firmwareVersionMinor : byte; var status : integer); cdecl;
+  iNXT_getResourceString : procedure(nxtHandle : FantomHandle; resString : PChar; var status : integer); cdecl;// 55 bytes
+  iNXT_read : procedure(nxtHandle : FantomHandle; readBuffer : PByte; readBufferSize : Cardinal; var status : integer); cdecl;
+  iNXT_sendDirectCommand : procedure(nxtHandle : FantomHandle; requireResponse : byte; inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte; outputBufferSize : Cardinal; var status : integer); cdecl;
+  iNXT_setName : procedure(nxtHandle : FantomHandle; newName : PChar; var status : integer); cdecl;
+  iNXTIterator_advance : procedure(NXTIterHandle : FantomHandle; var status : integer); cdecl;
+  iNXTIterator_getName : procedure(NXTIterHandle : FantomHandle; resString : PChar; var status : integer); cdecl;// 256 bytes
   pairBluetooth : procedure(resourceName : PChar; passkey : PChar; pairedResourceName : PChar; var status : integer); cdecl;// 256 bytes
   unpairBluetooth : procedure(resourceName : PChar; var status : integer); cdecl;
   FantomSDKClose : procedure; cdecl;

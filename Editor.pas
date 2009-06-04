@@ -1202,6 +1202,7 @@ begin
   case iErrCode of
     -1 : Result := 'Compile failure.';
     -2 : Result := 'Download to the NXT failed.';
+    -3 : Result := 'Firmware version on NXT does not match targetted firmware version';
   else
     Result := 'Unknown NBC error code (' + IntToStr(iErrCode) + ')';
   end;

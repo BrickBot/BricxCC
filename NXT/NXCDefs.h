@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-05-21
- * Revision:: 51
+ * Date:: 2009-06-03
+ * Revision:: 52
  *
  * Contains declarations for the NXC NXT API resources
  *
