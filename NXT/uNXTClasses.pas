@@ -8552,7 +8552,12 @@ begin
                     ALNext.Args[0].Value := AL.Args[1].Value;
                     ALNext.RemoveVariableReference(arg2, 0);
                     if AL.Command = OP_SET then
-                      ALNext.Command := OPS_WAITI_2;
+                    begin
+                      if CodeSpace.FirmwareVersion > MAX_FW_VER1X then
+                        ALNext.Command := OPS_WAITI_2
+                      else
+                        ALNext.Command := OP_WAIT;
+                    end;
                     CodeSpace.Dataspace.FindEntryAndAddReference(ALNext.Args[0].Value);
                     if IsStackOrReg(arg1) then
                     begin
