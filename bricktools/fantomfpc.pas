@@ -63,7 +63,7 @@ procedure iModuleIterator_advance(modIterHandle : FantomHandle; var status : int
 procedure iModuleIterator_getName(modIterHandle : FantomHandle; moduleName : PChar; var status : integer);
 procedure iNXT_bluetoothFactoryReset(nxtHandle : FantomHandle; var status : integer);
 procedure iNXT_bootIntoFirmwareDownloadMode(resourceName : PChar; var status : integer);
-procedure iNXT_destroyFile(nxtHandle : FantomHandle; fileHandle : Cardinal; var status : integer);
+procedure iNXT_destroyFile(nxtHandle : FantomHandle; fileHandle : FantomHandle; var status : integer);
 procedure iNXT_destroyFileIterator(nxtHandle : FantomHandle; iterHandle : FantomHandle; var status : integer);
 procedure iNXT_destroyModule(nxtHandle : FantomHandle; moduleHandle : FantomHandle; var status : integer);
 procedure iNXT_destroyModuleIterator(nxtHandle : FantomHandle; modIterHandle : FantomHandle; var status : integer);
@@ -226,7 +226,7 @@ begin
   if ReadTO(Handle, @header[0], 2, ms) <> 2 then
     Exit;
 
-  packetSize := header[0] + (header[1]*256);
+  packetSize := Integer(header[0]) + Integer(header[1]*256);
   if packetSize > Count then
     Exit;
 

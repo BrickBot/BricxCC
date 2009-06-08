@@ -1169,7 +1169,7 @@ var
 implementation
 
 uses
-  SysUtils, uLocalizedStrings {$IFDEF FAST_MM}, FastStrings{$ENDIF};
+  SysUtils {$IFDEF FAST_MM}, FastStrings{$ENDIF};
 
 function IsAlpha(c: char): boolean;
 begin
@@ -1290,6 +1290,7 @@ function NBCStrToFloat(const AValue: string): Double;
 var
   FS : TFormatSettings;
 begin
+  FS.DecimalSeparator := DecimalSeparator;
   NBCFormatSettings(FS, '.');
   Result := StrToFloat(AValue, FS);
 end;
@@ -1298,6 +1299,7 @@ function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
 var
   FS : TFormatSettings;
 begin
+  FS.DecimalSeparator := DecimalSeparator;
   NBCFormatSettings(FS, '.');
   Result := StrToFloatDef(AValue, aDef, FS);
 end;
@@ -1306,6 +1308,7 @@ function NBCFormat(const FmtStr: string; const theArgs: array of const) : string
 var
   FS : TFormatSettings;
 begin
+  FS.DecimalSeparator := DecimalSeparator;
   NBCFormatSettings(FS, '.');
   Result := Format(FmtStr, theArgs, FS);
 end;

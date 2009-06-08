@@ -14,7 +14,7 @@
  * All Rights Reserved.
  *
  *)
-unit TOWERAPI;
+unit towerapi;
 
 interface
 
