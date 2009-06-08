@@ -14,7 +14,7 @@
  * All Rights Reserved.
  *
  *)
-unit FANTOM;
+unit fantom;
 
 interface
 

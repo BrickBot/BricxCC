@@ -1128,11 +1128,6 @@ uses
   {$IFDEF FAST_MM}FastStrings, {$ENDIF}
   NBCCommonData, NXTDefsData;
 
-{$IFNDEF FPC}
-type
-  PtrUInt = ^Cardinal;
-{$ENDIF}
-
 const
   CLUMP_FMT = 't%3.3d';
   DWORD_LEN = 4;
@@ -1330,6 +1325,28 @@ begin
   end;
 end;
 
+{$ifdef FPC}
+function CardinalToSingle(const cVal : Cardinal) : Single;
+begin
+  Result := Single(cVal);
+end;
+
+function SingleToCardinal(const sVal : Single) : Cardinal;
+begin
+  Result := Cardinal(sVal);
+end;
+{$else}
+function CardinalToSingle(const cVal : Cardinal) : Single;
+begin
+  Result := Single(Pointer(cVal));
+end;
+
+function SingleToCardinal(const sVal : Single) : Cardinal;
+begin
+  Result := Cardinal(Pointer(sVal));
+end;
+{$endif}
+
 function ValToStr(const aType : TDSType; aVal : Cardinal) : string;
 begin
   if aVal = 0 then
@@ -1346,7 +1363,7 @@ begin
       dsMutex : Result := Format('%u', [aVal]);
       dsArray : Result := '';
       dsCluster : Result := '';
-      dsFloat : Result := NBCFloatToStr(Single(PtrUInt(aVal)));
+      dsFloat : Result := NBCFloatToStr(CardinalToSingle(aVal));
     else
       Result := '???';
     end;
@@ -3426,7 +3443,7 @@ begin
   else
   begin
     sVal := aValue;
-    Result := Cardinal(PtrUInt(sVal));
+    Result := SingleToCardinal(sVal);
   end;
 end;
 
@@ -8243,7 +8260,7 @@ begin
     if datatype = dsFloat then
     begin
       sVal := val;
-      DE.DefaultValue := Cardinal(PtrUInt(sVal))
+      DE.DefaultValue := SingleToCardinal(sVal);
     end
     else
       DE.DefaultValue := Cardinal(Trunc(val));
@@ -8941,7 +8958,7 @@ begin
       X := TOC[i];
       if X.DataDesc >= fDSStaticSize then
       begin
-        fDSStaticSize := X.DataDesc + BytesPerType[TDSType(X.TypeDesc)];
+        fDSStaticSize := LongInt(X.DataDesc) + LongInt(BytesPerType[TDSType(X.TypeDesc)]);
       end;
     end;
     fDSStaticSize := Integer(RoundToByteSize(Word(fDSStaticSize), DWORD_LEN));

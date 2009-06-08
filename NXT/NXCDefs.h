@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-06-03
- * Revision:: 52
+ * Date:: 2009-06-06
+ * Revision:: 53
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -595,6 +595,7 @@
 #if __FIRMWARE_VERSION > 107
 
 #define Sqrt(_X) asm { sqrt __FLTRETVAL__, _X }
+inline float sqrt(float x) { asm { sqrt __FLTRETVAL__, x } }
 
 #ifdef __ENHANCED_FIRMWARE
 
@@ -628,7 +629,6 @@
 #define SinhD(_X) asm { sinhd __FLTRETVAL__, _X }
 #define Atan2D(_X,_Y) asm { atan2d __FLTRETVAL__, _X, _Y }
 
-inline float sqrt(float x) { asm { sqrt __FLTRETVAL__, x } }
 inline float sin(float x) { asm { sin __FLTRETVAL__, x } }
 inline float cos(float x) { asm { cos __FLTRETVAL__, x } }
 inline float asin(float x) { asm { asin __FLTRETVAL__, x } }
@@ -648,6 +648,17 @@ inline float pow(float x, float y) { asm { pow __FLTRETVAL__, x, y } }
 inline long trunc(float x) { asm { trunc __RETVAL__, x } }
 inline float frac(float x) { asm { frac __FLTRETVAL__, x } }
 inline long muldiv32(long a, long b, long c) { asm { muldiv __RETVAL__, a, b, c } }
+// degree-based trig functions
+inline float sind(float x) { asm { sind __FLTRETVAL__, x } }
+inline float cosd(float x) { asm { cosd __FLTRETVAL__, x } }
+inline float asind(float x) { asm { asind __FLTRETVAL__, x } }
+inline float acosd(float x) { asm { acosd __FLTRETVAL__, x } }
+inline float tand(float x) { asm { tand __FLTRETVAL__, x } }
+inline float atand(float x) { asm { atand __FLTRETVAL__, x } }
+inline float sinhd(float x) { asm { sinhd __FLTRETVAL__, x } }
+inline float coshd(float x) { asm { coshd __FLTRETVAL__, x } }
+inline float tanhd(float x) { asm { tanhd __FLTRETVAL__, x } }
+inline float atan2d(float x, float y) { asm { atan2d __FLTRETVAL__, x, y } }
 
 #endif
 
@@ -672,10 +683,7 @@ inline long muldiv32(long a, long b, long c) { asm { muldiv __RETVAL__, a, b, c 
 
 #endif
 
-#define bcd2dec(_bcd) asm { \
-  compchk EQ, sizeof(_bcd), 1 \
-  __bcd2dec(_bcd, __RETVAL__) \
-}
+inline byte bcd2dec(byte bcd) { asm { __bcd2dec(bcd, __RETVAL__) } }
 
 // standard syscall structures
 
