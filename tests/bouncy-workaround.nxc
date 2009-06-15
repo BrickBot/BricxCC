@@ -52,7 +52,7 @@ void swapdirection(Ball &ball1, Ball &ball2)
    ball2.deltay = temp;
 }
 
-void drawballs(Ball balls[]);
+void drawballs(Ball balls[])
 {
    int i;
    Ball tempball;
@@ -65,7 +65,7 @@ void drawballs(Ball balls[]);
    }
 }
 
-void moveballs(Ball &balls[]);
+void moveballs(Ball &balls[])
 {
    int i;
    Ball tempball;

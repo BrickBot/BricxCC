@@ -575,6 +575,7 @@ resourcestring
   sTooFewParams            = 'Too few parameters';
   sMaxParamCountExceeded   = 'Max param count exceeded';
   sConstNotAllowed         = 'Constant not allowed on LHS of assignment';
+  sFuncParamDeclMismatch   = 'Function parameter declaration mismatch';
 
 // nbc.dpr
 resourcestring

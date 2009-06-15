@@ -385,6 +385,8 @@ type
     procedure EmitPoundLine;
     function  IsLocal(n: string): boolean;
     function  LocalIdx(n: string): integer;
+    function  IsOldParam(n: string): boolean;
+    function  IsFuncParam(n: string): boolean;
     function  IsParam(n: string): boolean;
     function  ParamIdx(n: string): integer;
     procedure AllocateHelper(const Name, aVal, Val, tname: string; dt: char);
@@ -1154,25 +1156,35 @@ end;
 {--------------------------------------------------------------}
 { Look for Symbol in Parameter Table }
 
-function TNXCComp.IsParam(n: string): boolean;
+function TNXCComp.IsOldParam(n: string): boolean;
+begin
+  Result := ParamIdx(RootOf(n)) <> -1{0};
+end;
+
+function TNXCComp.IsFuncParam(n: string): boolean;
 var
   i : integer;
   fp : TFunctionParameter;
 begin
-  Result := ParamIdx(RootOf(n)) <> -1{0};
-  if not Result then
+  Result := False;
+  // check in the fFuncParams
+  for i := 0 to fFuncParams.Count - 1 do
   begin
-    // check in the fFuncParams also
-    for i := 0 to fFuncParams.Count - 1 do
+    fp := fFuncParams[i];
+    if ApplyDecoration(fp.ProcName, fp.Name, 0) = RootOf(n) then
     begin
-      fp := fFuncParams[i];
-      if ApplyDecoration(fp.ProcName, fp.Name, 0) = RootOf(n) then
-      begin
-        Result := True;
-        Break;
-      end;
+      Result := True;
+      Break;
     end;
   end;
+end;
+
+
+function TNXCComp.IsParam(n: string): boolean;
+begin
+  Result := IsOldParam(n);
+  if not Result then
+    Result := IsFuncParam(n);
 end;
 
 function TNXCComp.ParamIdx(n: string): integer;
@@ -1684,7 +1696,7 @@ end;
 
 procedure TNXCComp.AddParam(N: string; T: char; const tname : string; bConst : boolean);
 begin
-  if IsParam(N) then Duplicate(N);
+  if IsOldParam(N) then Duplicate(N);
   with fParams.Add do
   begin
     Name       := N;
@@ -5342,6 +5354,10 @@ begin
   end;
 end;
 
+const
+  HASPROTO = 2;
+  HASNOPROTO = 3;
+
 function TNXCComp.FormalList(protoexists : boolean; procname : string) : integer;
 var
   protocount : integer;
@@ -5353,56 +5369,119 @@ var
   aval, tname : string;
   dimensions : integer;
   oldBytesRead : integer;
-const
-  HASPROTO = 2;
-  HASNOPROTO = 3;
-begin
-  dimensions := 0;
-  protocount := 0;
-  pcount := 0;
-  pltype := 0;
-  if protoexists then
-    protocount := FunctionParameterCount(procname);
-  bError := False;
-  while (Token <> TOK_CLOSEPAREN) and not endofallsource do
+
+  procedure CheckParam1;
   begin
-    oldBytesRead := fBytesRead;
-    if bError then
-      Break;
-    Scan;
+    AbortMsg(sBadPrototype);
+    bError := True;
+    if protocount >= MAXPARAMS then
+      AbortMsg(sMaxParamCountExceeded);
+    inc(protocount);
+  end;
+
+  procedure CheckParamHasProto;
+  begin
+    if not protoexists then
+    begin
+      Expected(sDataType);
+      bError := True;
+    end;
+    if pcount >= MAXPARAMS then
+    begin
+      AbortMsg(sMaxParamCountExceeded);
+      bError := True;
+    end;
+    if not bError then
+    begin
+      AddParam(ApplyDecoration(procname, varnam, 0),
+        FunctionParameterType(procname, pcount),
+        FunctionParameterTypeName(procname, pcount),
+        FunctionParameterIsConstant(procname, pcount));
+      inc(pcount);
+      if pcount > protocount then
+      begin
+        AbortMsg(sTooManyArgs);
+        bError := True;
+      end;
+    end;
+  end;
+
+  procedure CheckParamHasNoProto;
+  var
+    fpDT : char;
+    fpType : string;
+    fpIsConst : boolean;
+  begin
+    if pcount >= MAXPARAMS then
+    begin
+      AbortMsg(sMaxParamCountExceeded);
+      bError := True;
+    end;
+    if protoexists and not bError and (pcount >= protocount) then
+    begin
+      AbortMsg(sTooManyArgs);
+      bError := True;
+    end;
+    if protoexists and not bError then
+    begin
+      // compare known type to specified type
+      fpDT      := FunctionParameterType(procname, pcount);
+      fpType    := FunctionParameterTypeName(procname, pcount);
+      fpIsConst := FunctionParameterIsConstant(procname, pcount);
+      if (fpDT <> ptype) or (fpType <> tname) or (fpIsConst <> bIsConst) then
+      begin
+        AbortMsg(sFuncParamDeclMismatch);
+        bError := True;
+      end;
+    end;
+    if not bError then
+    begin
+      AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst);
+      if not protoexists then
+      begin
+        Allocate(ApplyDecoration(procname, varnam, 0), aval, '', tname, ptype);
+        AddFunctionParameter(procname, varnam, tname, pcount, ptype, bIsConst,
+          bIsRef, bIsArray, dimensions);
+        inc(protocount);
+      end;
+      inc(pcount);
+    end;
+  end;
+
+  procedure CheckPLType;
+  begin
+    case pltype of
+      1          : CheckParam1;
+      HASPROTO   : CheckParamHasProto;
+      HASNOPROTO : CheckParamHasNoProto;
+    end;
+  end;
+
+  procedure ProcessTypes(const bFirstParam : boolean);
+  begin
     bIsUnsigned := False;
     bIsArray    := False;
     bIsConst    := False;
     bIsRef      := False;
     ptype       := #0;
-    if Token = TOK_PROCEDURE then begin
-      Next;
-      Scan;
-      Continue;
-    end;
     if Token = TOK_CONST then begin
       bIsConst := True;
       Next;
       Scan;
-      pltype := 1;
+      if bFirstParam then pltype := 1;
     end;
     if Token = TOK_UNSIGNED then begin
       bIsUnsigned := True;
       Next;
       Scan;
-      pltype := 1;
+      if bFirstParam then pltype := 1;
     end;
     if Token in [TOK_CHARDEF, TOK_BYTEDEF, TOK_SHORTDEF, TOK_LONGDEF,
       TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF, TOK_USERDEFINEDTYPE, TOK_STRINGLIT] then
     begin
-      if protoexists then
-      begin
-        Expected(sParameterList);
-        bError := True;
-      end;
       ptype := Token;
       tname := Value;
-      pltype := 1;
+      if bFirstParam then pltype := 1;
       Next;
       Scan;
       if (Token <> '[') and (Token <> TOK_COMMA) and
@@ -5424,170 +5503,17 @@ begin
       Next;
       Scan;
     end;
-    if Token = TOK_IDENTIFIER then
-    begin
-      varnam := Value;
-      Next;
-      Scan;
-      if pltype = 1 then
-        pltype := HASNOPROTO
-      else
-        pltype := HASPROTO;
-    end;
+  end;
+  
+  procedure CheckParamTypeAndArrays;
+  begin
     if pltype = HASNOPROTO then
     begin
       ptype := GetVariableType(ptype, bIsUnsigned);
       if ptype = #0 then
-      begin
         bError := True;
-        Continue;
-      end;
-      aval := '';
-      dimensions := 0;
-      if (Token = '[') and (Look = ']') then begin
-        // declaring an array
-        while Token in ['[', ']'] do begin
-          aval := aval + Token;
-          Next;
-        end;
-        bIsArray := True;
-        dimensions := Length(aval) div 2;
-        ptype := ArrayOfType(ptype, dimensions);
-      end;
-    end;
-    case pltype of
-      1 : begin
-        AbortMsg(sBadPrototype);
-        bError := True;
-//        GS_ParamType[procpos, protocount] := ptype;
-        if protocount >= MAXPARAMS then
-          AbortMsg(sMaxParamCountExceeded);
-        inc(protocount);
-      end;
-      HASPROTO : begin
-        if not protoexists then
-        begin
-          Expected(sDataType);
-          bError := True;
-        end;
-        if pcount >= MAXPARAMS then
-        begin
-          AbortMsg(sMaxParamCountExceeded);
-          bError := True;
-        end;
-        if not bError then
-        begin
-          AddParam(ApplyDecoration(procname, varnam, 0),
-            FunctionParameterType(procname, pcount),
-            FunctionParameterTypeName(procname, pcount),
-            FunctionParameterIsConstant(procname, pcount));
-          inc(pcount);
-          if pcount > protocount then
-          begin
-            AbortMsg(sTooManyArgs);
-            bError := True;
-          end;
-        end;
-      end;
-      HASNOPROTO : begin
-        if protoexists then
-        begin
-          AbortMsg(sDataTypesAlreadyDefined);
-          bError := True;
-        end;
-//        GS_ParamType[procpos, protocount] := ptype;
-        if protocount >= MAXPARAMS then
-        begin
-          AbortMsg(sMaxParamCountExceeded);
-          bError := True;
-        end;
-        if not bError then
-        begin
-          AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst);
-          Allocate(ApplyDecoration(procname, varnam, 0), aval, '', tname, ptype);
-          AddFunctionParameter(procname, varnam, tname, pcount, ptype, bIsConst,
-            bIsRef, bIsArray, dimensions);
-          inc(protocount);
-          inc(pcount);
-        end;
-      end;
-    end;
-
-    while (Token = TOK_COMMA) and not endofallsource do begin
-      if bError then
-        Break;
-      Next;
-      Scan;
-      if (pltype = 1) or (pltype = HASNOPROTO) then
+      if not bError then
       begin
-        bIsUnsigned := False;
-        bIsArray    := False;
-        bIsConst    := False;
-        bIsRef      := False;
-        ptype       := #0;
-        if Token = TOK_CONST then begin
-          bIsConst := True;
-          Next;
-          Scan;
-        end;
-        if Token = TOK_UNSIGNED then begin
-          bIsUnsigned := True;
-          Next;
-          Scan;
-        end;
-        if Token in [TOK_CHARDEF, TOK_BYTEDEF, TOK_SHORTDEF, TOK_LONGDEF,
-                     TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF, TOK_USERDEFINEDTYPE] then
-        begin
-          if protoexists then
-          begin
-            Expected(sParameterList);
-            bError := True;
-          end;
-          ptype := Token;
-          tname := Value;
-          Next;
-          Scan;
-          if (Token <> '[') and (Token <> TOK_COMMA) and
-             (Token <> TOK_CLOSEPAREN) and (Token <> '&') and
-             (Token <> TOK_IDENTIFIER) then
-          begin
-            AbortMsg(sUnexpectedChar);
-            bError := True;
-          end;
-        end
-        else if bIsUnsigned then
-        begin
-          AbortMsg(sMissingDataType);
-          bError := True;
-        end;
-        if Token = '&' then
-        begin
-          bIsRef := True;
-          Next;
-          Scan;
-        end;
-      end;
-      if (pltype = HASPROTO) or (pltype = HASNOPROTO) then
-      begin
-        if Token = TOK_IDENTIFIER then begin
-          varnam := Value;
-          Next;
-          Scan;
-        end
-        else
-        begin
-          Expected(sVariableName);
-          bError := True;
-        end;
-      end;
-      if pltype = HASNOPROTO then
-      begin
-        ptype := GetVariableType(ptype, bIsUnsigned);
-        if ptype = #0 then
-        begin
-          bError := True;
-          Continue;
-        end;
         aval := '';
         dimensions := 0;
         if (Token = '[') and (Look = ']') then begin
@@ -5601,76 +5527,77 @@ begin
           ptype := ArrayOfType(ptype, dimensions);
         end;
       end;
-      case pltype of
-        1 : begin
-          AbortMsg(sBadPrototype);
+    end;
+  end;
+begin
+  dimensions := 0;
+  protocount := 0;
+  pcount := 0;
+  pltype := 0;
+  if protoexists then
+    protocount := FunctionParameterCount(procname);
+  bError := False;
+  while (Token <> TOK_CLOSEPAREN) and not endofallsource do
+  begin
+    oldBytesRead := fBytesRead;
+    if bError then
+      Break;
+    Scan;
+    // handle void all by itself
+    if Token = TOK_PROCEDURE then begin
+      Next;
+      Scan;
+      Continue;
+    end;
+    ProcessTypes(true);
+    if Token = TOK_IDENTIFIER then
+    begin
+      varnam := Value;
+      Next;
+      Scan;
+      if pltype = 1 then
+        pltype := HASNOPROTO
+      else
+        pltype := HASPROTO;
+    end;
+    CheckParamTypeAndArrays;
+    if bError then
+      Continue;
+    CheckPLType;
+
+    // process remaining parameters
+    while (Token = TOK_COMMA) and not endofallsource do begin
+      if bError then
+        Break;
+      Next;
+      Scan;
+      if (pltype = 1) or (pltype = HASNOPROTO) then
+        ProcessTypes(false);
+      if (pltype = HASPROTO) or (pltype = HASNOPROTO) then
+      begin
+        if Token = TOK_IDENTIFIER then begin
+          varnam := Value;
+          Next;
+          Scan;
+        end
+        else
+        begin
+          Expected(sVariableName);
           bError := True;
-//          GS_ParamType[procpos, protocount] := ptype;
-          if protocount >= MAXPARAMS then
-            AbortMsg(sMaxParamCountExceeded);
-          inc(protocount);
-        end;
-        HASPROTO : begin
-          if pcount >= MAXPARAMS then
-          begin
-            AbortMsg(sMaxParamCountExceeded);
-            bError := True;
-          end;
-          if not bError then
-          begin
-            AddParam(ApplyDecoration(procname, varnam, 0),
-              FunctionParameterType(procname, pcount),
-              FunctionParameterTypeName(procname, pcount),
-              FunctionParameterIsConstant(procname, pcount));
-            inc(pcount);
-            if pcount > protocount then
-            begin
-              AbortMsg(sTooManyArgs);
-              bError := True;
-            end;
-          end;
-        end;
-        HASNOPROTO : begin
-          if protocount >= MAXPARAMS then
-          begin
-            AbortMsg(sMaxParamCountExceeded);
-            bError := True;
-          end;
-          if not bError then
-          begin
-            AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst);
-            Allocate(ApplyDecoration(procname, varnam, 0), aval, '', tname, ptype);
-            AddFunctionParameter(procname, varnam, tname, pcount, ptype, bIsConst,
-              bIsRef, bIsArray, dimensions);
-            inc(protocount);
-            inc(pcount);
-          end;
         end;
       end;
+      CheckParamTypeAndArrays;
+      if bError then
+        Continue;
+      CheckPLType;
     end; // while Token = TOK_COMMA
     CheckBytesRead(oldBytesRead);
   end; // while Token <> TOK_CLOSEPAREN
-  if protoexists and (pcount <> protocount) then
+  if protoexists and (pcount < protocount) then
     AbortMsg(sTooFewArgs);
   if bError then
     while (Token <> TOK_CLOSEPAREN) and not endofallsource do
       Next; // eat tokens up to TOK_CLOSEPAREN
-(*
-  case pltype of
-    0 : begin
-      // nothing
-    end;
-    1 : begin
-      GS_ParamCount[procpos] := protocount;
-    end;
-    HASPROTO : begin
-      GS_ParamCount[procpos] := pcount;
-    end;
-    HASNOPROTO : begin
-      GS_ParamCount[procpos] := pcount;
-    end;
-  end;
-*)
   Result := pltype;
 end;
 
@@ -5739,7 +5666,13 @@ begin
     if Value = 'void' then
       Next;
     CloseParen;
-    OptionalSemi;
+    if Token = TOK_SEMICOLON then
+    begin
+      // this is a function declaration (a prototype) - not a function definition
+      pltype := 1;
+      Next;
+    end;
+//    OptionalSemi;
     Scan;
     ProcessDirectives; // just in case there are any between the ) and the {
     if Token = TOK_BEGIN then
@@ -5815,7 +5748,13 @@ begin
   fThreadNames.Add(Name);
   pltype := FormalList(protoexists, Name);
   CloseParen;
-  OptionalSemi;
+  if Token = TOK_SEMICOLON then
+  begin
+    // this is a function declaration (a prototype) - not a function definition
+    pltype := 1;
+    Next;
+  end;
+//  OptionalSemi;
   Scan;
   ProcessDirectives; // just in case there are any in between the ) and the {
   if Token = TOK_BEGIN then
