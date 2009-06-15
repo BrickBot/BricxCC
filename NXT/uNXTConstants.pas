@@ -23,6 +23,7 @@ type
     dsArray, dsCluster, dsMutex, dsFloat);
 
 const
+  MIN_FW_VER1X = 101; // 1.01
   MAX_FW_VER1X = 107; // 1.07
   MIN_FW_VER2X = 120; // 1.20
 
