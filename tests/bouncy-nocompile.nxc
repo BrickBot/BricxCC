@@ -8,6 +8,8 @@ struct Ball {
 
 #define NUMBALLS 10
 
+void swapdirection(Ball &ball1, Ball &ball2);
+
 int balls_touch(Ball ball1,Ball ball2)
 {
    int d;
@@ -23,20 +25,7 @@ int balls_touch(Ball ball1,Ball ball2)
       return false;
 }
 
-void swapdirection(Ball &ball1, Ball &ball2)
-{
-   int temp;
-
-   temp = ball1.deltax;
-   ball1.deltax = ball2.deltax;
-   ball2.deltax = temp;
-
-   temp = ball1.deltay;
-   ball1.deltay = ball2.deltay;
-   ball2.deltay = temp;
-}
-
-void drawballs(Ball balls[]);
+void drawballs(Ball balls[])
 {
    int i;
 
@@ -45,7 +34,7 @@ void drawballs(Ball balls[]);
        CircleOut(balls[i].centerx,balls[i].centery,balls[i].radius,false);
 }
 
-void moveballs(Ball &balls[]);
+void moveballs(Ball &balls[])
 {
    int i;
 
@@ -65,7 +54,7 @@ void moveballs(Ball &balls[]);
    }
 }
 
-void createballs(Ball &balls[]);
+void createballs(Ball &balls[])
 {
      int i,j;
      bool ok;
@@ -89,7 +78,7 @@ void createballs(Ball &balls[]);
      }
 }
 
-void updateballs(Ball &balls[]);
+void updateballs(Ball &balls[])
 {
     int i,j;
 
@@ -121,6 +110,20 @@ task main()
         drawballs(balls);
         updateballs(balls);
      }
+}
+
+//void swapdirection(ball1, ball2)
+void swapdirection(Ball &ball1, Ball &ball2)
+{
+   int temp;
+
+   temp = ball1.deltax;
+   ball1.deltax = ball2.deltax;
+   ball2.deltax = temp;
+
+   temp = ball1.deltay;
+   ball1.deltay = ball2.deltay;
+   ball2.deltay = temp;
 }
 
 
