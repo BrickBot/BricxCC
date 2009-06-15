@@ -369,6 +369,7 @@ type
     btnShowNBCCommon: TButton;
     btnShowNXTDefs: TButton;
     btnShowNXCDefs: TButton;
+    chkCCInsensitive: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -638,6 +639,7 @@ var
   RICDecompNameFormat : string;
 
   HideSelection : boolean;
+  CCInsensitive : boolean;
   ScrollPastEOL : boolean;
   HalfPageScroll : boolean;
   DragAndDropEditing : boolean;
@@ -2604,6 +2606,7 @@ begin
     RICDecompAsData     := Reg_ReadBool(reg, 'RICDecompAsData', false);
     RICDecompNameFormat := Reg_ReadString(reg, 'RICDecompNameFormat', '%s');
     HideSelection       := Reg_ReadBool(reg, 'HideSelection', false);
+    CCInsensitive       := Reg_ReadBool(reg, 'CCInsensitive', false);
     ScrollPastEOL       := Reg_ReadBool(reg, 'ScrollPastEOL', true);
     HalfPageScroll      := Reg_ReadBool(reg, 'HalfPageScroll', false);
     DragAndDropEditing  := Reg_ReadBool(reg, 'DragDropEdit', true);
@@ -2658,6 +2661,7 @@ begin
     reg.WriteBool('RICDecompAsData', RICDecompAsData);
     reg.WriteString('RICDecompNameFormat', RICDecompNameFormat);
     reg.WriteBool('HideSelection', HideSelection);
+    reg.WriteBool('CCInsensitive', CCInsensitive);
     reg.WriteBool('ScrollPastEOL', ScrollPastEOL);
     reg.WriteBool('HalfPageScroll', HalfPageScroll);
     reg.WriteBool('DragDropEdit', DragAndDropEditing);
@@ -3834,6 +3838,7 @@ begin
   RICDecompAsData     := PrefForm.radRICDecompArray.Checked;
   RICDecompNameFormat := PrefForm.edtRICDecompArrayFmt.Text;
   HideSelection       := PrefForm.cbHideSelection.Checked;
+  CCInsensitive       := PrefForm.chkCCInsensitive.Checked;
   ScrollPastEOL       := PrefForm.cbScrollPastEOL.Checked;
   HalfPageScroll      := PrefForm.cbHalfPageScroll.Checked;
   DragAndDropEditing  := PrefForm.chkDragDrop.Checked;
@@ -3873,6 +3878,7 @@ begin
   PrefForm.radRICDecompArray.Checked   := RICDecompAsData;
   PrefForm.edtRICDecompArrayFmt.Text   := RICDecompNameFormat;
   PrefForm.cbHideSelection.Checked     := HideSelection;
+  PrefForm.chkCCInsensitive.Checked    := CCInsensitive;
   PrefForm.cbScrollPastEOL.Checked     := ScrollPastEOL;
   PrefForm.cbHalfPageScroll.Checked    := HalfPageScroll;
   PrefForm.chkDragDrop.Checked         := DragAndDropEditing;

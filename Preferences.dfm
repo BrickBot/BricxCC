@@ -86,7 +86,7 @@ object PrefForm: TPrefForm
       Top = 1
       Width = 450
       Height = 319
-      ActivePage = shtColors
+      ActivePage = shtEditor
       Align = alClient
       TabOrder = 0
       OnChange = pagPrefsChange
@@ -880,6 +880,14 @@ object PrefForm: TPrefForm
               TabOrder = 3
               OnClick = btnAlignLinesConfigClick
             end
+            object chkCCInsensitive: TCheckBox
+              Left = 8
+              Top = 144
+              Width = 417
+              Height = 17
+              Caption = 'Code completion tool is always case-insensitive'
+              TabOrder = 4
+            end
           end
         end
       end
@@ -1053,7 +1061,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11092
               DropDownCount = 4
-              ItemHeight = 13
+              ItemHeight = 0
               TabOrder = 0
               OnExit = edtNQCIncludePathExit
             end
@@ -1126,7 +1134,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11101
               DropDownCount = 4
-              ItemHeight = 13
+              ItemHeight = 0
               TabOrder = 0
               OnExit = edtLCCIncludePathExit
             end
@@ -1215,7 +1223,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11107
               DropDownCount = 4
-              ItemHeight = 13
+              ItemHeight = 0
               TabOrder = 0
               OnExit = edtNBCIncludePathExit
             end
