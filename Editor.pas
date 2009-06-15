@@ -1799,7 +1799,7 @@ begin
       end
       else
       begin
-        C.Execute;
+        Result := C.Execute * -1;
         if C.WriteCompilerMessages then
           C.Messages.SaveToFile(C.CompilerMessagesFilename);
       end;
@@ -1983,7 +1983,9 @@ begin
       else
         outStr := outStr + GetGNUErrorString(NQC_Result);
       if outStr <> '' then
-        MessageDlg('Compile Failed' + #13#10 + outStr, mtError, [mbOK], 0);
+      begin
+        MessageDlg('Compile/Download Failed' + #13#10 + outStr, mtError, [mbOK], 0);
+      end;
     end;
   finally
     {Clean up}
