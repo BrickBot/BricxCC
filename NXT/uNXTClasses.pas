@@ -2283,7 +2283,7 @@ begin
   LoadRXEHeader(fHeader, aStream);
   FirmwareVersion := MAX_FW_VER1X;
   if fHeader.Head.Version > 5 then
-    FirmwareVersion := FirmwareVersion + 1;
+    FirmwareVersion := MIN_FW_VER2X;
   LoadRXEDataSpace(fHeader, fDSData, aStream);
   LoadRXEClumpRecords(fHeader, fClumpData, aStream);
   LoadRXECodeSpace(fHeader, fCode, aStream);

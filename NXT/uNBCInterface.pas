@@ -80,6 +80,7 @@ type
     procedure SetBrickComm(Value : TBrickComm);
     procedure DoBeep;
     procedure DownloadRequestedFiles;
+    function CheckFirmwareVersion : boolean;
 {$ENDIF}
     procedure DoWriteCompilerOutput(aStrings: TStrings);
     procedure DoWriteSymbolTable(C : TRXEProgram);
@@ -141,7 +142,7 @@ function APIAsText(const idx : integer) : string;
 implementation
 
 uses
-  SysUtils, Math, uVersionInfo, ParamUtils,
+  SysUtils, Math, uVersionInfo, ParamUtils, uNXTConstants,
   NBCCommonData, NXTDefsData, NXCDefsData;
 
 { TNBCCompiler }
@@ -440,6 +441,7 @@ begin
             RIC.IncludeDirs.AddStrings(tmpIncDirs);
             RIC.CurrentFile := GetCurrentFilename;
             RIC.EnhancedFirmware := EnhancedFirmware;
+            RIC.FirmwareVersion  := FirmwareVersion;
             RIC.MaxErrors := MaxErrors;
             try
               RIC.Parse(sIn);
@@ -454,11 +456,16 @@ begin
                     // download the compiled code to the brick
                     if not BrickComm.IsOpen then
                       BrickComm.Open;
-                    BrickComm.StopProgram;
-                    if BrickComm.NXTDownloadStream(sOut, ChangeFileExt(nxtName, '.ric'), nftGraphics) then
-                      DoBeep
+                    if CheckFirmwareVersion then
+                    begin
+                      BrickComm.StopProgram;
+                      if BrickComm.NXTDownloadStream(sOut, ChangeFileExt(nxtName, '.ric'), nftGraphics) then
+                        DoBeep
+                      else
+                        Result := 2;
+                    end
                     else
-                      Result := 2;
+                      Result := 3;
                   end;
 {$ENDIF}
                   if WriteOutput then
@@ -539,11 +546,16 @@ begin
                       // download the compiled code to the brick
                       if not BrickComm.IsOpen then
                         BrickComm.Open;
-                      BrickComm.StopProgram;
-                      if BrickComm.NXTDownloadStream(sOut, tmpName, nftProgram) then
-                        DoBeep
+                      if CheckFirmwareVersion then
+                      begin
+                        BrickComm.StopProgram;
+                        if BrickComm.NXTDownloadStream(sOut, tmpName, nftProgram) then
+                          DoBeep
+                        else
+                          Result := 2;
+                      end
                       else
-                        Result := 2;
+                        Result := 3;
                     end;
                     if RunProgram then
                       BrickComm.StartProgram(tmpName);
@@ -727,6 +739,40 @@ begin
     finally
       tmpSL.Free;
     end;
+  end;
+end;
+
+function TNBCCompiler.CheckFirmwareVersion: boolean;
+var
+  rom, ram : cardinal;
+begin
+  if BrickComm.Version(rom, ram) then
+  begin
+    // only need the "ram" value
+    rom := 0;
+    rom := rom + ((ram and $FF000000) shr 24) * 1000; // should always be zero
+    rom := rom + ((ram and $00FF0000) shr 16) * 100;  // normally = 1
+    rom := rom + ((ram and $0000FF00) shr 8) * 10;    // normally = 0 or 2
+    rom := rom +  (ram and $000000FF);                // 3, 4, 5, 6, 7, 8
+    // if we say we are targetting a 1.0x firmware then the actual
+    // firmware version needs to be a 1.0x firmware.  If we are targetting
+    // the 1.2x firmware thne the actual firmware version is a 1.2x firmware.
+    if FirmwareVersion <= MAX_FW_VER1X then
+    begin
+      // 1.0x
+      Result := rom <= MAX_FW_VER1X;
+    end
+    else
+    begin
+      // 1.2x
+      Result := rom >= MIN_FW_VER2X;
+    end;
+  end
+  else
+  begin
+    // if, for some reason, this function returns false then we will go ahead
+    // and assume that the correct version is installed
+    Result := True;
   end;
 end;
 {$ENDIF}
