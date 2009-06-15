@@ -36,18 +36,22 @@ type
     procedure mniCodeExpPropClick(Sender: TObject);
     procedure mniViewEditorClick(Sender: TObject);
     procedure mniCloseClick(Sender: TObject);
+    procedure FormDestroy(Sender: TObject);
   private
     popCodeExplorer: TOfficePopupMenu;
     mniViewEditor: TOfficeMenuItem;
     mniClose: TOfficeMenuItem;
     N1: TOfficeMenuItem;
     mniCodeExpProp: TOfficeMenuItem;
+    fOnFinishedProcessing: TNotifyEvent;
     function GetProcessing: Boolean;
     procedure SetProcessing(const Value: Boolean);
     procedure SetChangedSinceLastProcess(const Value: Boolean);
     procedure CreatePopupMenu;
+    function GetProcResults: TStrings;
   private
     { Private declarations }
+    fProcResults : TStrings;
     fChangedSinceLastProcess : Boolean;
     NodeArray : array[TProcType] of TTreeNode;
     fFileName: string;
@@ -69,6 +73,8 @@ type
     procedure ProcessFile(sName : string);
     property ChangedSinceLastProcess : Boolean
       read fChangedSinceLastProcess write SetChangedSinceLastProcess;
+    property ProcessedResults : TStrings read GetProcResults;
+    property OnFinishedProcessing : TNotifyEvent read fOnFinishedProcessing write fOnFinishedProcessing;
   end;
 
 var
@@ -89,6 +95,8 @@ var
   i : Integer;
   PT : TProcType;
 begin
+  if Assigned(fProcResults) then
+    fProcResults.Clear;
   if Assigned(treCodeExplorer) then
   begin
     treCodeExplorer.Items.BeginUpdate;
@@ -157,6 +165,7 @@ end;
 
 procedure TfrmCodeExplorer.FormCreate(Sender: TObject);
 begin
+  fProcResults := TStringList.Create;
   CreatePopupMenu;
   treCodeExplorer.PopupMenu := popCodeExplorer;
   DockOrientation := doVertical;
@@ -169,7 +178,6 @@ end;
 
 procedure TfrmCodeExplorer.HandleGetProcsDone(Sender: TObject);
 var
-  S : TStrings;
   i : Integer;
   p : string;
   fThread : TBricxCCProcLexer;
@@ -182,16 +190,11 @@ begin
     fThread.OnTerminate := nil;
     // build nodes in tree view
     try
-      S := TStringList.Create;
-      try
-        S.Text := fThread.Results;
-        for i := 0 to S.Count - 1 do
-        begin
-          p := S[i];
-          CreateNode(p);
-        end;
-      finally
-        S.Free;
+      fProcResults.Text := fThread.Results;
+      for i := 0 to fProcResults.Count - 1 do
+      begin
+        p := fProcResults[i];
+        CreateNode(p);
       end;
       for PT := Low(TProcType) to High(TProcType) do
       begin
@@ -216,6 +219,8 @@ begin
     finally
       Processing := False;
     end;
+    if Assigned(fOnFinishedProcessing) then
+      fOnFinishedProcessing(Self);
   end;
 end;
 
@@ -507,6 +512,16 @@ begin
     Caption := 'Properties';
     OnClick := mniCodeExpPropClick;
   end;
+end;
+
+function TfrmCodeExplorer.GetProcResults: TStrings;
+begin
+  Result := fProcResults;
+end;
+
+procedure TfrmCodeExplorer.FormDestroy(Sender: TObject);
+begin
+  FreeAndNil(fProcResults);
 end;
 
 end.

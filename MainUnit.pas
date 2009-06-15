@@ -596,12 +596,15 @@ type
     procedure SynMindScriptCompPropExecute(Kind: SynCompletionType;
       Sender: TObject; var CurrentInput: String; var x, y: Integer;
       var CanExecute: Boolean);
+    procedure HandleExplorerFinished(Sender: TObject);
   private
     { Private declarations }
     fOldActiveEditorForm : TEditorForm;
     newcount : integer;
     fMDI : Boolean;
     FResume : boolean;
+    fNQCAPIBase : TStringList;
+    fNXCAPIBase : TStringList;
     procedure WMClose(var Message: TWMClose); message WM_CLOSE;
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
     procedure CreateSpiritPlugins;
@@ -642,6 +645,10 @@ type
     procedure HandleOnGetVarInfoByID(Sender : TObject; const ID : integer; var offset, size, vartype : integer);
     procedure HandleOnGetVarInfoByName(Sender : TObject; const name : string; var offset, size, vartype : integer);
     procedure UpdateEditorPosition;
+    procedure LoadNQCCompProp;
+    procedure LoadNXCCompProp;
+    procedure DoLoadAPI(cp: TSynCompletionProposal; aStrings: TStrings);
+    procedure AddUserDefinedFunctions(aStrings : TStrings);
   public
     { Public declarations }
     FActiveLine : integer;
@@ -899,6 +906,8 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  fNQCAPIBase := TStringList.Create;
+  fNXCAPIBase := TStringList.Create;
   CreateMenus;
   CreateCompPropComponents;
   CreateMainFormHighlighters;
@@ -971,6 +980,7 @@ begin
     // form flashes briefly then closes.  Good enough for now
     Close;
   end;
+  frmCodeExplorer.OnFinishedProcessing := HandleExplorerFinished;
 {
   ShowCodeExplorer;
   if not CodeExplorerSettings.AutoShowExplorer then
@@ -1175,6 +1185,8 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(fNQCAPIBase);
+  FreeAndNil(fNXCAPIBase);
   if BrickComm.VerboseMode then
     Clipboard.AsText := BrickComm.LinkLog;
   BrickComm.OnOpenStateChanged := nil;
@@ -1244,32 +1256,33 @@ end;
 
 procedure TMainForm.UpdateSynComponents;
 var
-  tmpSL : TStringList;
   i : Integer;
   C : TComponent;
+  TmpOptions : TSynCompletionOptions;
 begin
   // load NQC syntax completion proposal component
-  tmpSL := TStringList.Create;
-  try
-    tmpSL.AddStrings(SynNQCSyn.Commands);
-    tmpSL.AddStrings(SynNQCSyn.Constants);
-    tmpSL.AddStrings(SynNQCSyn.Keywords);
-    tmpSL.Sort;
-    SynNQCCompProp.ItemList := tmpSL;
-  finally
-    tmpSL.Free;
-  end;
+  fNQCAPIBase.Clear;
+  fNQCAPIBase.AddStrings(SynNQCSyn.Commands);
+  fNQCAPIBase.AddStrings(SynNQCSyn.Constants);
+  fNQCAPIBase.AddStrings(SynNQCSyn.Keywords);
+  fNQCAPIBase.Sort;
+  LoadNQCCompProp;
   // load NXC syntax completion proposal component
-  tmpSL := TStringList.Create;
-  try
-    tmpSL.AddStrings(SynNXCSyn.Commands);
-    tmpSL.AddStrings(SynNXCSyn.Constants);
-    tmpSL.AddStrings(SynNXCSyn.Keywords);
-    tmpSL.Sort;
-    SynNXCCompProp.ItemList := tmpSL;
-  finally
-    tmpSL.Free;
-  end;
+  fNXCAPIBase.Clear;
+  fNXCAPIBase.AddStrings(SynNXCSyn.Commands);
+  fNXCAPIBase.AddStrings(SynNXCSyn.Constants);
+  fNXCAPIBase.AddStrings(SynNXCSyn.Keywords);
+  fNXCAPIBase.Sort;
+  SynNXCCompProp.ItemList := fNXCAPIBase;
+  // configure code completion options for NQC, NBC, NXC, and RICScript
+  if CCInsensitive then
+    TmpOptions := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion]
+  else
+    TmpOptions := [scoAnsiStrings, scoCaseSensitive, scoLimitToMatchedText, scoEndCharCompletion];
+  SynNQCCompProp.Options := TmpOptions;
+  SynNBCCompProp.Options := TmpOptions;
+  SynNXCCompProp.Options := TmpOptions;
+  SynRSCompProp.Options  := TmpOptions;
   SynAutoComp.AutoCompleteList.Assign(PrefForm.CodeTemplates);
   // also copy shortcut settings
   SynMacroRec.PlaybackShortCut := PlayMacroShortCut;
@@ -6382,7 +6395,7 @@ begin
   with SynNBCCompProp do
   begin
     Name := 'SynNBCCompProp';
-    Options := [scoAnsiStrings, scoCaseSensitive, scoLimitToMatchedText];
+    Options := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion];
     NbLinesInWindow := 6;
     Width := 262;
     EndOfTokenChr := '()[].';
@@ -6471,7 +6484,7 @@ begin
   with SynROPSCompProp do
   begin
     Name := 'SynROPSCompProp';
-    Options := [scoAnsiStrings, scoCaseSensitive, scoLimitToMatchedText];
+    Options := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion];
     NbLinesInWindow := 6;
     Width := 262;
     EndOfTokenChr := '()[].';
@@ -6516,7 +6529,7 @@ begin
   with SynNXCCompProp do
   begin
     Name := 'SynNXCCompProp';
-    Options := [scoAnsiStrings, scoCaseSensitive, scoLimitToMatchedText];
+    Options := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion];
     NbLinesInWindow := 6;
     Width := 262;
     EndOfTokenChr := '()[].';
@@ -6537,7 +6550,7 @@ begin
   with SynNPGCompProp do
   begin
     Name := 'SynNPGCompProp';
-    Options := [scoAnsiStrings, scoLimitToMatchedText];
+    Options := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion];
     NbLinesInWindow := 6;
     Width := 262;
     EndOfTokenChr := '()[].';
@@ -6558,7 +6571,7 @@ begin
   with SynRSCompProp do
   begin
     Name := 'SynRSCompProp';
-    Options := [scoAnsiStrings, scoLimitToMatchedText];
+    Options := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion];
     NbLinesInWindow := 6;
     Width := 262;
     EndOfTokenChr := '()[].';
@@ -6794,6 +6807,65 @@ end;
 procedure TMainForm.actHelpNBCTutorialPDFExecute(Sender: TObject);
 begin
   HandleResponse(StartDoc(ProgramDir + 'Documentation\NBC_Tutorial.pdf'));
+end;
+
+procedure TMainForm.HandleExplorerFinished(Sender: TObject);
+var
+  AEF : TEditorForm;
+begin
+  AEF := ActiveEditorForm;
+  if Assigned(AEF) then
+  begin
+    if FileIsNXC(AEF) then
+      LoadNXCCompProp
+    else if FileIsNQC(AEF) then
+      LoadNQCCompProp;
+  end;
+end;
+
+procedure TMainForm.DoLoadAPI(cp : TSynCompletionProposal; aStrings : TStrings);
+var
+  SL : TStrings;
+begin
+  SL := TStringList.Create;
+  try
+    TStringList(SL).Sorted := True;
+    TStringList(SL).Duplicates := dupIgnore;
+    SL.AddStrings(aStrings);
+    AddUserDefinedFunctions(SL);
+    cp.ItemList := SL;
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TMainForm.LoadNQCCompProp;
+begin
+  DoLoadAPI(SynNQCCompProp, fNQCAPIBase);
+end;
+
+procedure TMainForm.LoadNXCCompProp;
+begin
+  DoLoadAPI(SynNXCCompProp, fNXCAPIBase);
+end;
+
+procedure TMainForm.AddUserDefinedFunctions(aStrings: TStrings);
+var
+  i, idx : integer;
+  tmpStr : string;
+begin
+  if Assigned(frmCodeExplorer) then
+  begin
+    for i := 0 to frmCodeExplorer.ProcessedResults.Count - 1 do
+    begin
+      tmpStr := frmCodeExplorer.ProcessedResults[i];
+      idx := Pos('|', tmpStr);
+      Delete(tmpStr, 1, idx);
+      idx := Pos('|', tmpStr);
+      Delete(tmpStr, 1, idx);
+      aStrings.Add(tmpStr);
+    end;
+  end;
 end;
 
 end.
