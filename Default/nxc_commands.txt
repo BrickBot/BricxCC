@@ -68,7 +68,6 @@ CurrentTick
 CustomSensorActiveStatus
 CustomSensorPercentFullScale
 CustomSensorZeroOffset
-dec2bcd
 DeleteFile
 DisplayContrast
 DisplayDisplay
