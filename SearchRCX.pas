@@ -154,7 +154,9 @@ var
   i : integer;
 begin
   IRexists := false;
-  if (theport = '') or (thePort = 'Automatic') then 
+  if IsNXT and (UpperCase(thePort) = 'SEARCH') then
+    BrickComm.NXTUpdateResourceNames;
+  if (theport = '') or (thePort = 'Automatic') or (UpperCase(thePort) = 'SEARCH') then
   begin
     // first try brick resource strings from the nxt.dat file
     SL := TStringList.Create;
