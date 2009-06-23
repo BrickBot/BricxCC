@@ -47,7 +47,7 @@ type
     function ParamDataType(const n: string): char;
     function ParamTypeName(const n: string): string;
     function ParamConstantValue(const n: string): string;
-    procedure OptionalSemi;
+//    procedure OptionalSemi;
     procedure CheckSemicolon;
     procedure OpenParen;
     procedure CloseParen;
@@ -1593,11 +1593,13 @@ begin
 //    Next;
 end;
 
+{
 procedure TNXCComp.OptionalSemi;
 begin
   if Token = TOK_SEMICOLON then
     Next;
 end;
+}
 
 {--------------------------------------------------------------}
 { Output a String with Tab and CRLF }
@@ -5666,6 +5668,12 @@ begin
     if Value = 'void' then
       Next;
     CloseParen;
+    // allow for "stuff" after the close parenthesis and before either ; or {
+    Scan;
+    ProcessDirectives; // just in case there are any between the ) and the {
+    // now it has to either be a ; or a {
+    if not (Token in [TOK_SEMICOLON, TOK_BEGIN]) then
+      AbortMsg(sInvalidFuncDecl);
     if Token = TOK_SEMICOLON then
     begin
       // this is a function declaration (a prototype) - not a function definition
@@ -5673,8 +5681,6 @@ begin
       Next;
     end;
 //    OptionalSemi;
-    Scan;
-    ProcessDirectives; // just in case there are any between the ) and the {
     if Token = TOK_BEGIN then
     begin
       if pltype = 1 then
@@ -5748,6 +5754,12 @@ begin
   fThreadNames.Add(Name);
   pltype := FormalList(protoexists, Name);
   CloseParen;
+  // allow for "stuff" after the close parenthesis and before either ; or {
+  Scan;
+  ProcessDirectives; // just in case there are any in between the ) and the {
+  // now it has to either be a ; or a {
+  if not (Token in [TOK_SEMICOLON, TOK_BEGIN]) then
+    AbortMsg(sInvalidFuncDecl);
   if Token = TOK_SEMICOLON then
   begin
     // this is a function declaration (a prototype) - not a function definition
@@ -5755,8 +5767,6 @@ begin
     Next;
   end;
 //  OptionalSemi;
-  Scan;
-  ProcessDirectives; // just in case there are any in between the ) and the {
   if Token = TOK_BEGIN then
   begin
     if pltype = 1 then

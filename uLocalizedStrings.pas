@@ -546,7 +546,8 @@ resourcestring
   sNXCInitProgram          = 'NXC init program';
   sNXCParseProg            = 'NXC parse program code';
   sNXCCodeGenComplete      = 'NXC code generation finished';
-  sConstNotInline          = 'Only inline functions can correctly use non-reference constant parameters'; 
+  sConstNotInline          = 'Only inline functions can correctly use non-reference constant parameters';
+  sInvalidFuncDecl         = 'Declaration syntax error'; 
 
 // uNBCCommon unit
 resourcestring
