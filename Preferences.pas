@@ -3453,11 +3453,7 @@ var
   dVer : Double;
   bLoaded : boolean;
 begin
-  try
-    dVer := StrToFloat(fVersion);
-  except
-    dVer := K_MINVER;
-  end;
+  dVer := StrToFloatDef(fVersion, K_MINVER);
   R := TRegistry.Create;
   try
     bLoaded := False;

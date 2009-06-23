@@ -2216,7 +2216,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnChange = cboLangTempChange
         end
@@ -2446,7 +2446,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 13
+          ItemHeight = 0
           TabOrder = 0
           OnChange = cboLanguagesChange
         end
