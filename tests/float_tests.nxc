@@ -5,7 +5,7 @@ task main()
    float x, y, s;
    x = 3.141592;
    y = PI;
-   s = Sqrt(2.0);
+   s = sqrt(2.0);
    float A[2][2] = {{1.5, 3.5}, {5.6, 4.5}};
    TextOut(0,LCD_LINE1, FormatNum("pi: %.5f",x)); //x is printed correctly
    TextOut(0,LCD_LINE2, FormatNum("pi: %.5f",y)); //y is printed correctly

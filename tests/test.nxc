@@ -249,9 +249,7 @@ myLoop: LineOut(30, 50, 50, 30, false);
 
 byte d, e, f;
 
-// JCH: 2009-06-01 getting a Duplicate Identifier error now
-// I must have broken something in the FormalParameters function (maybe)
-void George(b)
+void George(byte b)
 {
   int g1 = 4, g2=-3;
   byte b1[], b2=33;
