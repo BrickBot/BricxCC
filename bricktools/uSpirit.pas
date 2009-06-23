@@ -407,6 +407,7 @@ type
     function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; virtual; abstract;
     function NXTListBricks(Bricks : TStrings) : boolean; virtual; abstract;
     procedure NXTInitializeResourceNames; virtual; abstract;
+    procedure NXTUpdateResourceNames; virtual; abstract;
     function NXTDefragmentFlash : Boolean; virtual;
 
     // properties

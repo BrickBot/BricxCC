@@ -287,6 +287,7 @@ type
     function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; override;
     function NXTListBricks(Bricks : TStrings) : boolean; override;
     procedure NXTInitializeResourceNames; override;
+    procedure NXTUpdateResourceNames; override;
   end;
 
 implementation
@@ -3445,6 +3446,7 @@ begin
     NXTListBricks(SL);
     name := GetInitFilename;
     ForceDirectories(ExtractFilePath(name));
+    SL.Sort;
     SL.SaveToFile(name);
   finally
     SL.Free;
@@ -3653,6 +3655,32 @@ begin
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
+  end;
+end;
+
+procedure TFantomSpirit.NXTUpdateResourceNames;
+var
+  SL, tmpSL : TStringList;
+  fname : string;
+begin
+  SL := TStringList.Create;
+  try
+    SL.Duplicates := dupIgnore;
+    tmpSL := TStringList.Create;
+    try
+      NXTListBricks(tmpSL);
+      fname := GetInitFilename;
+      if FileExists(fname) then
+        SL.LoadFromFile(fname);
+      SL.AddStrings(tmpSL);
+      ForceDirectories(ExtractFilePath(fname));
+      SL.Sort;
+      SL.SaveToFile(fname);
+    finally
+      tmpSL.Free;
+    end;
+  finally
+    SL.Free;
   end;
 end;
 
