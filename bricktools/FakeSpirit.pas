@@ -282,6 +282,7 @@ type
     function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; override;
     function NXTListBricks(Bricks : TStrings) : boolean; override;
     procedure NXTInitializeResourceNames; override;
+    procedure NXTUpdateResourceNames; override;
   end;
 
 function GetRCXErrorString(iErrCode : Integer) : string;
@@ -3746,6 +3747,11 @@ end;
 function TFakeSpirit.NXTFindClose(var IterHandle: FantomHandle): boolean;
 begin
   Result := True;
+end;
+
+procedure TFakeSpirit.NXTUpdateResourceNames;
+begin
+  // do nothing
 end;
 
 { EMessageInvalid }
