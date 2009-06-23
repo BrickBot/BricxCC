@@ -19,7 +19,7 @@ unit uNBCCommon;
 interface
 
 uses
-  Parser10, uNXTConstants, Classes;
+  Parser10, uNXTConstants, Classes, SysUtils;
 
 type
   TLangName = (lnNBC, lnNXC, lnNXCHeader, lnRICScript, lnUnknown);
@@ -1057,6 +1057,7 @@ function Replace(const str : string; const src, rep : string) : string;
 function StripTrailingZeros(const aNum : string) : string;
 function NBCStrToFloat(const AValue: string): Double;
 function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
+function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boolean;
 function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
 function NBCFloatToStr(const AValue: Double): string;
 function StripQuotes(const str : string) : string;
@@ -1168,8 +1169,10 @@ var
 
 implementation
 
+{$IFDEF FAST_MM}
 uses
-  SysUtils {$IFDEF FAST_MM}, FastStrings{$ENDIF};
+  FastStrings;
+{$ENDIF}
 
 function IsAlpha(c: char): boolean;
 begin
@@ -1302,6 +1305,16 @@ begin
   FS.DecimalSeparator := DecimalSeparator;
   NBCFormatSettings(FS, '.');
   Result := StrToFloatDef(AValue, aDef, FS);
+end;
+
+function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boolean;
+var
+  FS : TFormatSettings;
+  val : Extended;
+begin
+  FS.DecimalSeparator := DecimalSeparator;
+  NBCFormatSettings(FS, '.');
+  Result := TextToFloat(Buffer, val, fvExtended, FS);
 end;
 
 function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
