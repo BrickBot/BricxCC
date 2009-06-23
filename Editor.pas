@@ -1922,7 +1922,7 @@ begin
         end;
       end;
     end
-    else if (LocalBrickType = SU_NXT) and UseInternalNBC then
+    else if FileIsNBCOrNXCOrNPGOrRICScript and UseInternalNBC then
     begin
       NQC_Result := InternalNBCCompile(commandstr);
       execError  := NQC_Result < 0;
