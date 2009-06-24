@@ -3665,6 +3665,7 @@ var
 begin
   SL := TStringList.Create;
   try
+    SL.Sorted := True;
     SL.Duplicates := dupIgnore;
     tmpSL := TStringList.Create;
     try
@@ -3674,7 +3675,6 @@ begin
         SL.LoadFromFile(fname);
       SL.AddStrings(tmpSL);
       ForceDirectories(ExtractFilePath(fname));
-      SL.Sort;
       SL.SaveToFile(fname);
     finally
       tmpSL.Free;

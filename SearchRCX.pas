@@ -47,6 +47,7 @@ type
     procedure UpdateControls;
     function GetUseBT: boolean;
     procedure SetUseBT(const Value: boolean);
+    procedure DoCreateInitFile;
   public
     { Public declarations }
     function GetPort : string;
@@ -57,6 +58,8 @@ type
     procedure SetRCXType(aType : integer);
     procedure SetStandardFirmware(aVal : Boolean);
     procedure SetFirmwareType(ft : TFirmwareType);
+    procedure PopulatePortsList;
+    procedure DoUpdateInitFile;
     property UseBluetooth : boolean read GetUseBT write SetUseBT;
   end;
 
@@ -84,7 +87,7 @@ implementation
 
 uses
   SysUtils, Dialogs, Math, FakeSpirit, rcx_link, uSpirit, brick_common,
-  uGuiUtils, uLocalizedStrings;
+  uGuiUtils, uLocalizedStrings, uSearchNXT{$IFNDEF FPC}, Windows{$ENDIF};
 
 function IsNXT : boolean;
 begin
@@ -154,8 +157,6 @@ var
   i : integer;
 begin
   IRexists := false;
-  if IsNXT and (UpperCase(thePort) = 'SEARCH') then
-    BrickComm.NXTUpdateResourceNames;
   if (theport = '') or (thePort = 'Automatic') or (UpperCase(thePort) = 'SEARCH') then
   begin
     // first try brick resource strings from the nxt.dat file
@@ -255,8 +256,36 @@ begin
     end;
     LocalStandardFirmware := SearchRCXForm.GetStandardFirmware;
     LocalFirmwareType     := SearchRCXForm.GetFirmwareType;
+    if IsNXT and (UpperCase(LocalPort) = 'SEARCH') then
+      SearchRCXForm.DoUpdateInitFile;
     Result := FindIt(LocalBrickType, LocalPort);
+    if UpperCase(SearchRCXForm.GetPort) = 'SEARCH' then
+      SearchRCXForm.PopulatePortsList;
   end;
+end;
+
+type
+  TUpdaterProc = procedure of object;
+  TUpdaterThread = class(TThread)
+  protected
+    fProc : TUpdaterProc;
+    procedure Execute; override;
+  public
+    constructor Create(p : TUpdaterProc);
+  end;
+
+{ TUpdaterThread }
+
+constructor TUpdaterThread.Create(p: TUpdaterProc);
+begin
+  inherited Create(True);
+  FreeOnTerminate := True;
+  fProc := p;
+end;
+
+procedure TUpdaterThread.Execute;
+begin
+  fProc;
 end;
 
 { TSearchRCXForm }
@@ -355,16 +384,10 @@ begin
 end;
 
 procedure TSearchRCXForm.FormCreate(Sender: TObject);
-var
-  i : integer;
 begin
   if not FileExists(GetInitFilename) then
-    CreateInitFile;
-  LoadNXTPorts(cboPort.Items);
-  for i := 1 to 8 do
-  begin
-    cboPort.Items.Add('COM'+IntToStr(i));
-  end;
+    DoCreateInitFile;
+  PopulatePortsList;
   SizeComboboxDropdown(cboPort);
   cboPort.Text := 'usb';
 end;
@@ -378,6 +401,72 @@ end;
 procedure TSearchRCXForm.SetUseBT(const Value: boolean);
 begin
   chkUseBluetooth.Checked := Value;
+end;
+
+procedure TSearchRCXForm.PopulatePortsList;
+var
+  i : integer;
+begin
+  cboPort.Items.Clear;
+  cboPort.Items.Add('Automatic');
+  cboPort.Items.Add('Search');
+  cboPort.Items.Add('usb');
+  LoadNXTPorts(cboPort.Items);
+  for i := 1 to 8 do
+    cboPort.Items.Add('COM'+IntToStr(i));
+end;
+
+procedure TSearchRCXForm.DoCreateInitFile;
+var
+  F : TfrmSearchNXT;
+  T : TUpdaterThread;
+  h : THandle;
+  oldbt : integer;
+begin
+  oldbt := LocalBrickType;
+  try
+    // must set the brick type before the first call to BrickComm
+    // in order to get an NXT version rather than an RCX version
+    LocalBrickType := rtNXT;
+    F := TfrmSearchNXT.Create(nil);
+    try
+      F.Text := S_SEARCHING_NXT;
+      F.Show;
+      T :=  TUpdaterThread.Create(BrickComm.NXTInitializeResourceNames);
+      h := T.Handle;
+      T.Resume;
+      while WaitForSingleObject(h, 20) = WAIT_TIMEOUT do
+        Application.ProcessMessages;
+      F.Done;
+    finally
+      F.Free;
+    end;
+  finally
+    ReleaseBrickComm;
+    LocalBrickType := oldbt;
+  end;
+end;
+
+procedure TSearchRCXForm.DoUpdateInitFile;
+var
+  F : TfrmSearchNXT;
+  T : TUpdaterThread;
+  h : THandle;
+begin
+  F := TfrmSearchNXT.Create(nil);
+  try
+    F.Text := S_SEARCHING_NXT;
+    F.Show;
+    BrickComm.BrickType := rtNXT;
+    T :=  TUpdaterThread.Create(BrickComm.NXTUpdateResourceNames);
+    h := T.Handle;
+    T.Resume;
+    while WaitForSingleObject(h, 20) = WAIT_TIMEOUT do
+      Application.ProcessMessages;
+    F.Done;
+  finally
+    F.Free;
+  end;
 end;
 
 end.

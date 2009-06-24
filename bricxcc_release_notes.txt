@@ -44,3 +44,7 @@ Version 3.3.7.20
 - Added internal NBC compiler status update messages.
 - Launch Guide and Tutorial PDFs from BricxCC help menu.
 - Launch NBC API listing windows from Preferences dialog.
+- Fixed bug causing unsaved changes to be lost if you click Cancel when prompted to 
+  save changes.
+- Added visual indication of progress while initializing nxt.dat file
+- Add Search option to list of Ports on Find Brick dialog - only applies to NXT brick type

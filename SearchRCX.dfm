@@ -140,9 +140,6 @@ object SearchRCXForm: TSearchRCXForm
       HelpContext = 3011
       ItemHeight = 13
       TabOrder = 0
-      Items.Strings = (
-        'Automatic'
-        'usb')
     end
     object chkUseBluetooth: TCheckBox
       Left = 8
