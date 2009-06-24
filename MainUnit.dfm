@@ -15,6 +15,7 @@ object MainForm: TMainForm
   FormStyle = fsMDIForm
   OldCreateOrder = True
   OnClose = FormClose
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnDragDrop = FormDragDrop

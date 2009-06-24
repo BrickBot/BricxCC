@@ -239,6 +239,7 @@ type
     procedure actHelpNXCTutorialPDFExecute(Sender: TObject);
     procedure actHelpNQCTutorialPDFExecute(Sender: TObject);
     procedure actHelpNBCTutorialPDFExecute(Sender: TObject);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
   public
     // menu components
     mnuMain: TOfficeMainMenu;
@@ -608,8 +609,8 @@ type
     procedure WMClose(var Message: TWMClose); message WM_CLOSE;
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
     procedure CreateSpiritPlugins;
-    procedure CloseAllEditors;
-    procedure CloseEditor(E : TEditorForm; bAll : Boolean = False);
+    function  CloseAllEditors : boolean;
+    function  CloseEditor(E : TEditorForm; bAll : Boolean = False) : boolean;
     function  GetEditorFormCount: integer;
     function  GetEditorForm(index: integer): TEditorForm;
     function  DoCreateEditorForm : TEditorForm;
@@ -1239,19 +1240,24 @@ procedure TMainForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   // 9/13/2002 - JCH added code here to fix an Access Violation that would
   // occur if you closed the main window with an Editor window open.
-  CloseAllEditors;
+  // 2009-06-24 - JCH editor windows are now closed in FormCloseQuery
   SaveTemplateTree;
   SaveToolbars;
   MainWindowState := Integer(WindowState);
   WindowState := wsNormal;
 end;
 
-procedure TMainForm.CloseAllEditors;
+function TMainForm.CloseAllEditors : boolean;
 var
   i : Integer;
 begin
+  Result := True;
   for i := EditorFormCount - 1 downto 0 do
-    CloseEditor(EditorForms[i], True);
+  begin
+    Result := CloseEditor(EditorForms[i], True);
+    if not Result then
+      break;
+  end;
 end;
 
 procedure TMainForm.UpdateSynComponents;
@@ -3051,15 +3057,17 @@ begin
   ChangeActiveEditor;
 end;
 
-procedure TMainForm.CloseEditor(E: TEditorForm; bAll : boolean);
+function TMainForm.CloseEditor(E: TEditorForm; bAll : boolean) : boolean;
 var
   TS : TTabSheet;
 begin
+  Result := True;
   TS := nil;
   if E = nil then Exit;
   if Assigned(E.Parent) then
     TS := TTabSheet(E.Parent);
-  if E.CloseQuery then
+  Result := E.CloseQuery;
+  if Result then
   begin
     E.Close;
     if Assigned(TS) then
@@ -6866,6 +6874,11 @@ begin
       aStrings.Add(tmpStr);
     end;
   end;
+end;
+
+procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+begin
+  CanClose := CloseAllEditors;
 end;
 
 end.
