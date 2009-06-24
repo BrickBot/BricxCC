@@ -146,6 +146,7 @@ resourcestring
 // SearchRCX unit
 resourcestring
   S_CANNOT_FIND_RCX = 'Cannot find brick. Switch it on or move it closer and press OK.';
+  S_SEARCHING_NXT = 'Searching for NXTs';
 
 // Translate unit
 resourcestring
