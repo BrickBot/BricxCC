@@ -48,6 +48,7 @@ type
     function GetUseBT: boolean;
     procedure SetUseBT(const Value: boolean);
     procedure DoCreateInitFile;
+    procedure SearchAllPorts;
   public
     { Public declarations }
     function GetPort : string;
@@ -60,6 +61,7 @@ type
     procedure SetFirmwareType(ft : TFirmwareType);
     procedure PopulatePortsList;
     procedure DoUpdateInitFile;
+    procedure DoAutomaticPorts;
     property UseBluetooth : boolean read GetUseBT write SetUseBT;
   end;
 
@@ -152,54 +154,11 @@ end;
 
 {Searches for the COM port}
 function FindPort(const theport:string):boolean;
-var
-  SL : TStringList;
-  i : integer;
 begin
   IRexists := false;
   if (theport = '') or (thePort = 'Automatic') or (UpperCase(thePort) = 'SEARCH') then
   begin
-    // first try brick resource strings from the nxt.dat file
-    SL := TStringList.Create;
-    try
-      LoadNXTPorts(SL);
-      for i := 0 to SL.Count - 1 do
-      begin
-        BrickComm.Port := SL[i];
-        if BrickComm.TowerExists then
-        begin
-          IRexists  := True;
-          LocalPort := BrickComm.Port;
-          break;
-        end;
-      end;
-    finally
-      SL.Free;
-    end;
-    // then try usb/com1..com8
-    if not IRexists then
-    begin
-      // try usb
-      BrickComm.Port := 'usb';
-      if BrickComm.TowerExists then
-      begin
-        IRexists  := True;
-        LocalPort := BrickComm.Port;
-      end;
-    end;
-    if not IRexists then
-    begin
-      for i := 1 to 8 do
-      begin
-        BrickComm.Port := 'COM'+IntToStr(i);
-        if BrickComm.TowerExists then
-        begin
-          IRexists  := True;
-          LocalPort := BrickComm.Port;
-          break;
-        end;
-      end;
-    end;
+    SearchRCXForm.DoAutomaticPorts;
   end
   else
   begin
@@ -466,6 +425,82 @@ begin
     F.Done;
   finally
     F.Free;
+  end;
+end;
+
+procedure TSearchRCXForm.DoAutomaticPorts;
+var
+  F : TfrmSearchNXT;
+  T : TUpdaterThread;
+  h : THandle;
+begin
+  F := TfrmSearchNXT.Create(nil);
+  try
+    F.Text := S_SEARCHING_BRICK;
+    F.Show;
+    BrickComm.BrickType := rtNXT;
+    T :=  TUpdaterThread.Create(SearchAllPorts);
+    h := T.Handle;
+    T.Resume;
+    while WaitForSingleObject(h, 20) = WAIT_TIMEOUT do
+      Application.ProcessMessages;
+    F.Done;
+  finally
+    F.Free;
+  end;
+end;
+
+procedure TSearchRCXForm.SearchAllPorts;
+var
+  SL : TStringList;
+  i : integer;
+begin
+  if IsNXT then // don't try nxt.dat entries for a non-NXT brick type
+  begin
+    // first try brick resource strings from the nxt.dat file
+    SL := TStringList.Create;
+    try
+      LoadNXTPorts(SL);
+      for i := 0 to SL.Count - 1 do
+      begin
+        BrickComm.Port := SL[i];
+        if BrickComm.TowerExists then
+        begin
+          IRexists  := True;
+          LocalPort := BrickComm.Port;
+          break;
+        end;
+      end;
+    finally
+      SL.Free;
+    end;
+  end;
+  // then try usb/com1..com8
+  if not IRexists then
+  begin
+    // try usb
+    BrickComm.Port := 'usb';
+    if BrickComm.TowerExists then
+    begin
+      IRexists  := True;
+      LocalPort := BrickComm.Port;
+    end;
+  end;
+  if not IsNXT then // don't try COMn ports for an NXT brick type
+  begin
+    if not IRexists then
+    begin
+      for i := 1 to 8 do
+      begin
+        BrickComm.Port := 'COM'+IntToStr(i);
+        if BrickComm.TowerExists then
+        begin
+          IRexists  := True;
+          LocalPort := BrickComm.Port;
+          break;
+        end;
+      end;
+    end;
   end;
 end;
 
