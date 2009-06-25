@@ -3976,6 +3976,7 @@ end;
 procedure TNXCComp.MathAssignment(const name : string);
 var
   savedtoken : char;
+  oldType : char;
 begin
   // Look has to be '=', '+', or '-' or it's all messed up
   if Look = '=' then
@@ -3983,7 +3984,17 @@ begin
     savedtoken := Token;
     Next; // move to '='
     Next; // move to next token
-    BoolExpression;
+    // 2009-06-24 JCH - to make such things as += work with scalars on the RHS
+    // and arrays or UDTs on the left I wrapped the boolexpression in
+    // try/finally which sets/resets the LHS data type
+    // !!! THIS MIGHT BREAK SOMETHING !!!
+    oldType := fLHSDataType;
+    try
+      fLHSDataType := TOK_LONGDEF;
+      BoolExpression;
+    finally
+      fLHSDataType := oldType;
+    end;
     case savedtoken of
       '+' : StoreAdd(name);
       '-' : StoreSub(name);
@@ -7618,7 +7629,7 @@ begin
   //PolyOut(points,options=false)
   OpenParen;
   // arg1 = points
-  pts := Value;
+  pts := GetDecoratedValue;
   Next;
   bCls := Token = TOK_COMMA;
   if bCls then
