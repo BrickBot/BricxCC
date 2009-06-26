@@ -1477,9 +1477,13 @@ begin
   end
   else
   begin
+    bEscapeNext := False;
     Value := '''' + Look;
     repeat
-      bEscapeNext := Look = '\';
+      if not bEscapeNext then
+        bEscapeNext := Look = '\'
+      else
+        bEscapeNext := False;
       GetCharX;
       if not ((Look = LF) or ((Look = '"') and not bEscapeNext)) then
       begin
@@ -1487,12 +1491,6 @@ begin
           Value := Value + '\'''
         else
           Value := Value + Look;
-{
-        if Look = '''' then
-          Value := Value + '"'
-        else
-          Value := Value + Look;
-}
       end;
     until ((Look = '"') and not bEscapeNext) or (Look = LF) or endofallsource;
     Value := Value + '''';
@@ -9123,3 +9121,4 @@ begin
 end;
 
 end.
+
