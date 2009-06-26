@@ -3497,6 +3497,7 @@ begin
       begin
         x := Ord(sargs[i]);
         case x of
+          6 : AddValue(Ord('\'));
           7 : AddValue(Ord(''''));
           8 : AddValue(Ord('"'));
         else
@@ -4795,8 +4796,8 @@ begin
     // do nothing if line is blank or a comment
     if (line = '') or (Pos(';', line) = 1) or (Pos('//', line) = 1) then
       Exit;
-    // replace \' with #07, replace \" with #08
-    line := Replace(Replace(Replace(line, '\"', #08), '\''', #07), '"', '''');
+    // replace \' with #07, replace \" with #08, replace \\ with #06
+    line := Replace(Replace(Replace(Replace(line, '\\', #06), '\"', #08), '\''', #07), '"', '''');
     // replace " with '
     line := Replace(line, '"', '''');
     i := Pos('#line ', line);
