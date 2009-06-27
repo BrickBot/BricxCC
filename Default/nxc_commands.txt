@@ -1,13 +1,17 @@
 AbortFlag
 acos
+acosd
 Acquire
 ArrayBuild
 ArrayInit
 ArrayLen
 ArraySubset
 asin
+asind
 atan
 atan2
+atan2d
+atand
 BatteryLevel
 BatteryState
 bcd2dec
@@ -60,7 +64,9 @@ ColorSensorRaw
 ColorSensorValue
 CommandFlags
 cos
+cosd
 cosh
+coshd
 CreateFile
 CreateFileLinear
 CreateFileNonLinear
@@ -655,7 +661,9 @@ SetUSBState
 SetVMRunState
 SetVolume
 sin
+sind
 sinh
+sinhd
 SleepTimeout
 SleepTimer
 SoundDuration
@@ -727,7 +735,9 @@ SysSoundPlayFile
 SysSoundPlayTone
 SysSoundSetState
 tan
+tand
 tanh
+tanhd
 TextOut
 trunc
 UIButton
