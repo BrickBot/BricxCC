@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-06-06
- * Revision:: 53
+ * Date:: 2009-06-27
+ * Revision:: 54
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -1712,14 +1712,10 @@ struct ListFilesType {
 #define MSScoutSetScoutMode(_mode) asm { __MSScoutSetScoutMode(_mode) }
 
 inline void Wait(unsigned long ms) { asm { waitv ms } }
-/*
-inline void ResetTachoCount(const byte port) { asm { __resetTachoCount(port) } }
-inline void ResetBlockTachoCount(const byte port) { asm { __resetBlockTachoCount(port) } }
-inline void ResetRotationCount(const byte port) { asm { __resetRotationCount(port) } }
-inline void ResetAllTachoCounts(const byte port) { asm { __resetAllTachoCounts(port) } }
-*/
 
 // RIC Macro wrappers
 #define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8
+
+#define isNAN(_x) ((_x) != (_x))
 
 #endif // NXCDEFS_H

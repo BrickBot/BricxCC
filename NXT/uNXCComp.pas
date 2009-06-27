@@ -5709,8 +5709,10 @@ begin
       fNestingLevel := 0;
       DoLocals(Name);
       BlockStatements();
-      MatchString(TOK_END);
       Epilog(bIsSub);
+      // MatchString(TOK_END) must be after the epilog or process directives
+      // can be called while still inlining
+      MatchString(TOK_END);
       Scan;
     end
     else
@@ -5790,8 +5792,10 @@ begin
     fNestingLevel := 0;
     DoLocals(Name);
     BlockStatements();
-    MatchString(TOK_END);
     Epilog(True);
+    // MatchString(TOK_END) must be after the epilog or process directives
+    // can be called while still inlining
+    MatchString(TOK_END);
     Scan;
   end
   else
@@ -6192,8 +6196,8 @@ procedure TNXCComp.DoOnFwdRevRegPID;
 var
   op, arg1, svar, regvar, pvar, ivar : string;
 begin
-  //OnFwdReg(ports, pwr, regmode, p, i, d)
-  //OnRevReg(ports, pwr, regmode, p, i, d)
+  //OnFwdRegPID(ports, pwr, regmode, p, i, d)
+  //OnRevRegPID(ports, pwr, regmode, p, i, d)
   op := Value;
   Next;
   OpenParen;
@@ -6861,7 +6865,9 @@ begin
       SkipDirectiveLine;
       Next(False);
     end;
-    EmitLn(Trim(fDirLine));
+    EmitPoundLine;
+    EmitLnNoTab(Trim(fDirLine));
+//    EmitLn(Trim(fDirLine));
     if bScan then
       Scan;
   end;

@@ -10,7 +10,7 @@ http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
 Version 1.0.1.b36
 -----------------
-- Added support for \" and \' embedded in NXC and NBC strings.
+- Added support for \", \', and \\ embedded in NXC and NBC strings.
 - Added -ER=n maximum compiler error switch. Filtered out duplicate errors as well.
 - Added support for 2D scalar constant array initialization using nested brace pairs.
   e.g., int xyz[][] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
