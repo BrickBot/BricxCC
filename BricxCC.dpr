@@ -90,6 +90,9 @@ uses
   uParseCommon in 'uParseCommon.pas',
   uProjectManager in 'uProjectManager.pas' {frmProjectManager},
   uCppCode in 'uCppCode.pas',
+  uNXCCodeComp in 'uNXCCodeComp.pas',
+  uNXTCodeComp in 'uNXTCodeComp.pas',
+  uRICCodeComp in 'uRICCodeComp.pas',
   uPasCode in 'uPasCode.pas',
   uMidi2MS in 'uMidi2MS.pas',
   uMIDIConversion in 'uMIDIConversion.pas' {frmMIDIConversion},
@@ -127,6 +130,10 @@ begin
 
   {Find the program directory}
   ProgramDir := ExtractFilePath(Application.ExeName);
+
+  LoadNXCCodeCompFromFile(ProgramDir + 'Default\nxc_api.txt');
+  LoadNBCCodeCompFromFile(ProgramDir + 'Default\nbc_api.txt');
+  LoadRICScriptCodeCompFromFile(ProgramDir + 'Default\ricscript_api.txt');
 
   if ParamSwitch('/NoNewMenuItems') then
     AddMenuItemsToNewMenu := False;
