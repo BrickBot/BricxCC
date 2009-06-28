@@ -294,7 +294,7 @@ implementation
 
 uses
   rcx_constants, Contnrs, Math, uNXTConstants,
-  {$IFNDEF FPC}FANTOM{$ELSE}FANTOMFPC{$ENDIF};
+  {$IFNDEF FPC}FANTOM{$ELSE}{$IFDEF Darwin}fantomosx{$ELSE}FANTOMFPC{$ENDIF}{$ENDIF};
 
 
 procedure iNXT_sendDirectCommandEnhanced(nxtHandle : FantomHandle; requireResponse : byte;
