@@ -1,4 +1,5 @@
 AbortFlag
+abs
 acos
 acosd
 Acquire
@@ -305,7 +306,6 @@ MSRCXFloat
 MSRCXFwd
 MSRCXIncCounter
 MSRCXInvertOutput
-MSRCXLSCalibrateOp
 MSRCXMulVar
 MSRCXMuteSound
 MSRCXObvertOutput
@@ -660,6 +660,7 @@ SetUsbState
 SetUSBState
 SetVMRunState
 SetVolume
+sign
 sin
 sind
 sinh

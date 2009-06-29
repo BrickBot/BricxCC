@@ -5,12 +5,13 @@ __RETURNS__
 __RETURNU__
 __RETVAL__
 __STRRETVAL__
+__STRBUFFER__
+__STRTMPBUFFER__
 __TMPBYTE__
 __TMPFLOAT__
 __TMPLONG__
 __TMPULONG__
 __TMPWORD__
-abs
 asm
 bool
 break
@@ -36,7 +37,6 @@ repeat
 return
 safecall
 short
-sign
 start
 stop
 string
