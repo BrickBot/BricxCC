@@ -1,0 +1,13 @@
+task main()
+{
+    for (int i=0;i<4;i++)
+    {
+      CircleOut(15,64-i,4,DRAW_OPT_FILL_SHAPE+DRAW_OPT_CLEAR_WHOLE_SCREEN);
+      NumOut(0, LCD_LINE1, i);
+      Wait(2000);
+      CircleOut(15,64+i,4,DRAW_OPT_FILL_SHAPE+DRAW_OPT_CLEAR_WHOLE_SCREEN);
+      Wait(2000);
+    }
+    while(true);
+}
+

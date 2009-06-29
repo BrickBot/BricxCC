@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXTDefs.h
- * Date:: 2009-06-03
- * Revision:: 51
+ * Date:: 2009-06-29
+ * Revision:: 52
  *
  * Contains declarations for the NBC NXT API resources
  *
@@ -4750,9 +4750,9 @@ dseg ends
   mov __MRArgs.Remove, _clear \
   set _bval, 0 \
   syscall MessageRead, __MRArgs \
-  brtst NEQ, __RRB_Err__I__, __MRArgs.Result \
+  brtst NEQ, __RRB_Err##__I__, __MRArgs.Result \
   index _bval, __MRArgs.Message, NA \
-  __RRB_Err__I__: \
+  __RRB_Err##__I__: \
   __IncI__ \
   mov _result, __MRArgs.Result \
   release __MRMutex
@@ -4775,10 +4775,10 @@ dseg ends
   set __RRNTmpVal, 0 \
   set _bval, 0 \
   syscall MessageRead, __MRArgs \
-  brtst NEQ, __RRM_Err__I__, __MRArgs.Result \
+  brtst NEQ, __RRM_Err##__I__, __MRArgs.Result \
   index _bval, __MRArgs.Message, NA \
   unflatten __RRNTmpVal, __RRNErr, __MRArgs.Message, __RRNTmpVal \
-  __RRM_Err__I__: \
+  __RRM_Err##__I__: \
   __IncI__ \
   mov _val, __RRNTmpVal \
   mov _str, __MRArgs.Message \
