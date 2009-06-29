@@ -1761,6 +1761,7 @@ procedure LoadAPIValues(reg : TRegistry);
 var
   i:integer;
   SL : TStringList;
+  tmpStr : string;
 begin
   {first we populate our dynamic arrays from the highlighter if it exists}
   if Assigned(PrefForm) then
@@ -1778,24 +1779,19 @@ begin
   if not Reg_KeyExists(reg, 'Keywords') then
   begin
     // no registry key so load from file instead
-    SL := TStringList.Create;
-    try
-      if FileExists(ProgramDir+'Default\keywords.txt') then
-      begin
-        PrefForm.cc_keywords.LoadFromFile(ProgramDir+'Default\keywords.txt');
-      end;
+    if FileExists(ProgramDir+'Default\keywords.txt') then
+    begin
+      PrefForm.cc_keywords.LoadFromFile(ProgramDir+'Default\keywords.txt');
+    end;
 
-      if FileExists(ProgramDir+'Default\commands.txt') then
-      begin
-        PrefForm.cc_commands.LoadFromFile(ProgramDir+'Default\commands.txt');
-      end;
+    if FileExists(ProgramDir+'Default\commands.txt') then
+    begin
+      PrefForm.cc_commands.LoadFromFile(ProgramDir+'Default\commands.txt');
+    end;
 
-      if FileExists(ProgramDir+'Default\constants.txt') then
-      begin
-        PrefForm.cc_constants.LoadFromFile(ProgramDir+'Default\constants.txt');
-      end;
-    finally
-      SL.Free;
+    if FileExists(ProgramDir+'Default\constants.txt') then
+    begin
+      PrefForm.cc_constants.LoadFromFile(ProgramDir+'Default\constants.txt');
     end;
   end
   else
@@ -1873,21 +1869,26 @@ begin
   if not Reg_KeyExists(reg, 'NXC_Keywords') then
   begin
     // no registry key so load from file instead
+    if FileExists(ProgramDir+'Default\nxc_keywords.txt') then
+    begin
+      PrefForm.cc_nxc_keywords.LoadFromFile(ProgramDir+'Default\nxc_keywords.txt');
+    end;
+
+    if FileExists(ProgramDir+'Default\nxc_constants.txt') then
+    begin
+      PrefForm.cc_nxc_constants.LoadFromFile(ProgramDir+'Default\nxc_constants.txt');
+    end;
     SL := TStringList.Create;
     try
-      if FileExists(ProgramDir+'Default\nxc_keywords.txt') then
+      if FileExists(ProgramDir+'Default\nxc_api.txt') then
       begin
-        PrefForm.cc_nxc_keywords.LoadFromFile(ProgramDir+'Default\nxc_keywords.txt');
-      end;
-
-      if FileExists(ProgramDir+'Default\nxc_commands.txt') then
-      begin
-        PrefForm.cc_nxc_commands.LoadFromFile(ProgramDir+'Default\nxc_commands.txt');
-      end;
-
-      if FileExists(ProgramDir+'Default\nxc_constants.txt') then
-      begin
-        PrefForm.cc_nxc_constants.LoadFromFile(ProgramDir+'Default\nxc_constants.txt');
+        SL.LoadFromFile(ProgramDir+'Default\nxc_api.txt');
+        for i := 0 to SL.Count - 1 do
+        begin
+          tmpStr := SL[i];
+          SL[i] := Copy(tmpStr, 1, Pos('(', tmpStr)-1);
+        end;
+        PrefForm.cc_nxc_commands.Assign(SL);
       end;
     finally
       SL.Free;

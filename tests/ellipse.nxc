@@ -1,0 +1,100 @@
+void cCmdDrawFilledEllipse(int xc, int yc, int a, int b)
+{
+  int x = 0, y = b;
+  int rx = x, ry = y;
+  unsigned int width = 1;
+  unsigned int height = 1;
+  long a2 = a*a;
+  long b2 = b*b;
+  long crit1 = -(a2/4 + a%2 + b2);
+  long crit2 = -(b2/4 + b%2 + a2);
+  long crit3 = -(b2/4 + b%2);
+  long t = -a2*y;
+  long dxt = 2*b2*x, dyt = -2*a2*y;
+  long d2xt = 2*b2, d2yt = 2*a2;
+
+  if (b == 0) {
+    RectOut(xc-a, yc, 2*a, 0, DRAW_OPT_FILL_SHAPE);
+    return;
+  }
+  if (a == 0) {
+    RectOut(xc, yc-b, 0, 2*b, DRAW_OPT_FILL_SHAPE);
+    return;
+  }
+
+  while (y>=0 && x<=a)
+  {
+    if (t + b2*x <= crit1 || t + a2*y <= crit3)
+    {
+      if (height == 1)
+        ;
+      else if (ry*2+1 > (height-1)*2)
+      {
+        RectOut(xc-rx, yc-ry, width-1, height-1, DRAW_OPT_FILL_SHAPE);
+        RectOut(xc-rx, yc+ry, width-1, -(height-1), DRAW_OPT_FILL_SHAPE);
+        ry -= height-1;
+        height = 1;
+      }
+      else
+      {
+        RectOut(xc-rx, yc-ry, width-1, ry*2, DRAW_OPT_FILL_SHAPE);
+        ry -= ry;
+        height = 1;
+      }
+      rx++;
+      width += 2;
+      x++;
+      dxt += d2xt;
+      t += dxt;
+    }
+    else if (t - a2*y > crit2)
+    {
+      y--;
+      dyt += d2yt;
+      t += dyt;
+      height++;
+    }
+    else
+    {
+      if (ry*2+1 > height*2)
+      {
+        RectOut(xc-rx, yc-ry, width-1, height-1, DRAW_OPT_FILL_SHAPE);
+        RectOut(xc-rx, yc+ry, width-1, -(height-1), DRAW_OPT_FILL_SHAPE);
+      }
+      else
+      {
+        RectOut(xc-rx, yc-ry, width-1, ry*2, DRAW_OPT_FILL_SHAPE);
+      }
+      width += 2;
+      ry -= height;
+      height = 1;
+      rx++;
+      x++;
+      dxt += d2xt;
+      t += dxt;
+      y--;
+      dyt += d2yt;
+      t += dyt;
+    }
+  }
+  if (ry > height) {
+    RectOut(xc-rx, yc-ry, width-1, height-1, DRAW_OPT_FILL_SHAPE);
+    RectOut(xc-rx, yc+ry, width-1, -(height-1), DRAW_OPT_FILL_SHAPE);
+  }
+  else {
+    RectOut(xc-rx, yc-ry, width-1, ry*2, DRAW_OPT_FILL_SHAPE);
+  }
+}
+
+void cCmdDrawFilledCircle(int cx, int cy, int radius)
+{
+  cCmdDrawFilledEllipse(cx, cy, radius, radius);
+}
+
+task main()
+{
+  cCmdDrawFilledCircle(15, 65, 4);
+//  RectOut(11, 64, 8, 0, DRAW_OPT_FILL_SHAPE);
+  Wait(SEC_10);
+}
+

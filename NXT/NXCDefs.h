@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-06-27
- * Revision:: 54
+ * Date:: 2009-06-29
+ * Revision:: 55
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -476,7 +476,7 @@
 #define WriteBytes(_handle, _buf, _cnt) asm { __writeBytes(_handle, _buf, _cnt, __RETVAL__) }
 #define WriteBytesEx(_handle, _len, _buf) asm { __writeBytesEx(_handle, _len, _buf, __RETVAL__) }
 
-// stdio functions
+// stdio.h functions
 
 #define fclose(_handle) CloseFile(_handle)
 #define remove(_filename) DeleteFile(_filename)
@@ -504,11 +504,62 @@
   size_t fread(ptr, size, count, FILE*); // read blocks of data from file; returns number of blocks read
   int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
   size_t fwrite(ptr, size, count, FILE*); // write blocks of data to stream; returns number of blocks written
-  int getchar(void); // read character from stdin (returns which button was pressed) 
+  int getchar(void); // read character from stdin (returns which button was pressed)
   int printf(char* format, ...);
   int putchar(int character); // write character to stdout
   void rewind(FILE*); // same as seeking to start of file (and clears error indicator)
   int sprintf(char* str, char* format, ...); // write formatted data to string
+*/
+
+// string.h functions
+
+#define strlen(_str) StrLen(_str)
+#define strcat(_dest, _src) asm { \
+  strcat __STRRETVAL__, _dest, _src \
+  mov _dest, __STRRETVAL__ \
+}
+#define strncat(_dest, _src, _num) asm { \
+  strsubset __STRBUFFER__, _src, 0, _num \
+  strcat __STRRETVAL__, _dest, __STRBUFFER__ \
+  mov _dest, __STRRETVAL__ \
+}
+#define strcpy(_dest, _src) asm { \
+  mov _dest, _src \
+  mov __STRRETVAL__, _dest \
+}
+#define strncpy(_dest, _src, _num) asm { \
+  strsubset _dest, _src, 0, _num \
+  mov __STRRETVAL__, _dest \
+}
+
+#define strcmp(_str1, _str2) asm { \
+  set __RETVAL__, 0 \
+  brcmp EQ, __lblstrcmp_exit##__I__, _str1, _str2 \
+  set __RETVAL__, 1 \
+  brcmp GT, __lblstrcmp_exit##__I__, _str1, _str2 \
+  set __RETVAL__, -1 \
+__lblstrcmp_exit##__I__: \
+__IncI__ \
+}
+
+/*
+void * memcpy ( void * destination, const void * source, size_t num ); // Copy block of memory
+void * memmove ( void * destination, const void * source, size_t num ); // Move block of memory
+
+int memcmp ( const void * ptr1, const void * ptr2, size_t num ); // Compare two blocks of memory
+int strcmp ( const char * str1, const char * str2 ); // Compare two strings
+int strncmp ( const char * str1, const char * str2, size_t num ); // Compare characters of two strings
+
+void * memchr (void * ptr, int value, size_t num ); // Locate character in block of memory
+char * strchr (       char * str, int character ); // Locate first occurrence of character in string
+size_t strcspn ( const char * str1, const char * str2 ); // Get span until character in string
+char * strpbrk ( const char *, const char * ); // Locate character in string
+char * strrchr ( const char *, int ); // Locate last occurrence of character in string
+size_t strspn ( const char * str1, const char * str2 ); // Get span of character set in string
+char * strtok ( char * str, const char * delimiters ); // Split string into tokens
+char * strstr ( const char *, const char * ); // Locate substring
+
+void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (something like replace)
 
 */
 

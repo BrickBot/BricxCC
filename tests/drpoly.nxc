@@ -1,0 +1,17 @@
+LocationType myPoints[] = {16,16, 8,40, 32,52, 20,36, 52,36, 56,52, 64,32, 44,20, 24,20};
+
+task main()
+{
+  LocationType pts[];
+  while (true) {
+    pts = myPoints;
+    int x = Random(100)*sign(Random());
+    int y = Random(64)*sign(Random());
+    for(int i=0; i<ArrayLen(pts); i++) {
+      pts[i].X += x;
+      pts[i].Y += y;
+    }
+    PolyOut(pts, DRAW_OPT_CLEAR_WHOLE_SCREEN+DRAW_OPT_FILL_SHAPE);
+    Wait(500);
+  }
+}

@@ -4500,6 +4500,8 @@ begin
       StatementType := stFloat;
   end;
   Result := Replace(Result, '__STRRETVAL__', StrRetValName);
+  Result := Replace(Result, '__STRBUFFER__', StrBufName);
+  Result := Replace(Result, '__STRTMPBUFFER__', StrTmpBufName);
   Result := Replace(Result, '__GENRETVAL__', RegisterName);
   Result := Replace(Result, 'true', 'TRUE');
   Result := Replace(Result, 'false', 'FALSE');

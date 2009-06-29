@@ -1,0 +1,14 @@
+task main()
+{
+  string m = "hello2";
+  string n = "hello";
+
+  int x = strcmp(m, n);
+  if (x == 0)
+    TextOut(0, LCD_LINE1, "m == n");
+  else if (x < 0)
+    TextOut(0, LCD_LINE1, "m < n");
+  else
+    TextOut(0, LCD_LINE1, "m > n");
+  while(true);
+}
