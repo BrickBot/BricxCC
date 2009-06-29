@@ -11,7 +11,10 @@ clean::
 realclean:: clean
 	rm -rf $(PROGRAMS) mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas ./intel
 
-PFLAGS=-S2cdghi -OG1 -gl -vewnhi -l -Fu../ -Fu.
+universal:: ./intel/nbc ./ppc/nbc
+	lipo -create ./ppc/nbc ./intel/nbc -output ./nbc
+
+PFLAGS=-S2cdghi -OG1 -gl -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD -k-framework -kFantom
 
 # Mac OSX Intel
 PTOOLPREFIX=/usr/local/bin/
