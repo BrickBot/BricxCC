@@ -22,17 +22,22 @@ clean::
 	rm -f *.o *.ppu *.rst *.compiled nexttool_preproc.inc bricktools/*.o bricktools/*.ppu
 
 realclean:: clean
-	rm -f $(PROGRAMS) 
+	rm -rf $(PROGRAMS) ./ppc
 
-PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools
+universal:: ./intel/nexttool ./ppc/nexttool
+	lipo -create ./ppc/nexttool ./intel/nexttool -output ./nexttool
 
-# Linux
-PTOOLPREFIX=/usr/bin/
-PPC=$(PTOOLPREFIX)ppc386
+PFLAGS=-S2cdghi -OG1 -gl -vewnhi -dRELEASE -l -Fu. -Fubricktools -k-framework -kFantom
+
+#PTOOLPREFIX=/usr/local/bin/
+PPC=$(PTOOLPREFIX)ppcppc
 
 # how to link executable
 NeXTTool: NeXTTool.dpr nexttool_preproc.inc
 	$(PPC) $(PFLAGS) $< -o$@
+	strip $@
+	mkdir ppc
+	mv $@ ./ppc
 
 # how to compile pas source
 %.o: %.pas
