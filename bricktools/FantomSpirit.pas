@@ -294,7 +294,97 @@ implementation
 
 uses
   rcx_constants, Contnrs, Math, uNXTConstants,
-  {$IFNDEF FPC}FANTOM{$ELSE}{$IFDEF Darwin}fantomosx{$ELSE}FANTOMFPC{$ENDIF}{$ENDIF};
+  {$IFNDEF FPC}
+  FANTOM
+  {$ELSE}
+  {$IFDEF Darwin}fantomosx{$ELSE}FANTOMFPC{$ENDIF}
+  {$ENDIF};
+
+
+procedure iNXT_sendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
+  inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
+  outputBufferSize : Cardinal; var status : integer);
+var
+  BufOut, BufIn : PByte;
+  dstatus : integer;
+begin
+  if status < kStatusNoError then Exit;
+  BufOut := nil;
+  GetMem(BufOut, inputBufferSize+1);
+  try
+    BufOut^ := kNXT_SystemCmd;
+    if not Boolean(requireResponse) then
+      BufOut^ := BufOut^ or kNXT_NoResponseMask;
+    inc(BufOut);
+    Move(inputBufferPtr^, BufOut^, inputBufferSize);
+    dec(BufOut);
+    iNXT_write(nxtHandle, BufOut, inputBufferSize+1, status);
+    if Boolean(requireResponse) and (status >= kStatusNoError) then
+    begin
+      BufIn := nil;
+      GetMem(BufIn, outputBufferSize+1);
+      try
+        iNXT_read(nxtHandle, BufIn, outputBufferSize+1, status);
+        if Boolean(requireResponse) and (status >= kStatusNoError) then
+        begin
+          inc(BufIn);
+          Move(BufIn^, outputBufferPtr^, outputBufferSize);
+          dec(BufIn);
+        end;
+      finally
+        FreeMem(BufIn);
+      end;
+    end
+    else
+    begin
+      // no response required or error occurred on write
+      // drain our channel of any leftover data
+      BufIn := nil;
+      GetMem(BufIn, 1);
+      try
+        dstatus := kStatusNoError;
+        while dstatus = kStatusNoError do
+          iNXT_read(nxtHandle, BufIn, 1, dstatus);
+      finally
+        FreeMem(BufIn);
+      end;
+    end;
+  finally
+    FreeMem(BufOut);
+  end;
+end;
+
+var
+  scResponse : array [0..63] of byte;
+
+procedure iNXT_getDeviceInfoEx(nxtHandle : FantomHandle; name : PChar;
+  address : PByte; signalStrength : PByte; var availableFlash : Cardinal;
+  var status : integer);
+var
+  cmd : TNINxtCmd;
+  scBuffer : PByte;
+begin
+  FillChar(scResponse, 64, 0);
+  scBuffer := @scResponse[0];
+  cmd := TNINxtCmd.Create;
+  try
+    cmd.SetVal(kNXT_SystemCmd, kNXT_SCGetDeviceInfo);
+    iNXT_sendSystemCommand(nxtHandle, 1, cmd.BytePtr, cmd.Len, scBuffer, 32, status);
+    if status = kStatusNoError then
+    begin
+      inc(scBuffer, 2); // offset to start of name in the response
+      Move(scBuffer^, name^, 15);
+      inc(scBuffer, 15); // move to address
+      Move(scBuffer^, address^, 6);
+      inc(scBuffer, 7); // move to signal strength
+      Move(scBuffer^, signalStrength^, 4);
+      inc(scBuffer, 4);
+      Move(scBuffer^, availableFlash, 4);
+    end;
+  finally
+    cmd.Free;
+  end;
+end;
 
 
 procedure iNXT_sendDirectCommandEnhanced(nxtHandle : FantomHandle; requireResponse : byte;
@@ -1807,7 +1897,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iNXT_getDeviceInfo(fNXTHandle, buf, @addr[0], @BTSignal, memFree, status);
+  iNXT_getDeviceInfoEx(fNXTHandle, buf, @addr[0], @BTSignal, memFree, status);
   name := buf;
   BTAddress := Format('%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
     [addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]]);
