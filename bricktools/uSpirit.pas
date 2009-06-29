@@ -459,7 +459,12 @@ function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0)
 implementation
 
 uses
-  SysUtils, {$IFNDEF FPC}FANTOM, SHFolder, Windows{$ELSE}FANTOMFPC{$ENDIF};
+  SysUtils,
+  {$IFNDEF FPC}
+  FANTOM, SHFolder, Windows
+  {$ELSE}
+  {$IFDEF Darwin}fantomosx{$ELSE}FANTOMFPC{$ENDIF}
+  {$ENDIF};
 
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
 begin
