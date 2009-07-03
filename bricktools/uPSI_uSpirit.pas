@@ -59,6 +59,7 @@ implementation
 uses
    rcx_constants
   ,FantomSpirit 
+  ,FantomDefs 
   ,uSpirit
   ;
  
@@ -193,20 +194,26 @@ begin
     RegisterMethod('Function GetCurrentProgramName( var name : string) : boolean');
     RegisterMethod('Function GetButtonState( const idx : byte; const reset : boolean; var pressed : boolean; var count : byte) : boolean');
     RegisterMethod('Function MessageRead( const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean');
-    RegisterMethod('Function NXTOpenRead( const filename : string; var handle : cardinal; var size : cardinal) : boolean');
-    RegisterMethod('Function NXTOpenWrite( const filename : string; const size : cardinal; var handle : cardinal) : boolean');
-    RegisterMethod('Function NXTRead( var handle : cardinal; var count : word; var buffer : NXTDataBuffer) : boolean');
-    RegisterMethod('Function NXTWrite( var handle : cardinal; const buffer : NXTDataBuffer; var count : word; const chkResponse : boolean) : boolean');
-    RegisterMethod('Function NXTCloseFile( var handle : cardinal; const chkResponse : boolean) : boolean');
+    RegisterMethod('Function SetPropDebugging( const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean');
+    RegisterMethod('Function GetPropDebugging( var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean');
+    RegisterMethod('Function SetVMState( const state : byte) : boolean');
+    RegisterMethod('Function SetVMStateEx( var state : byte; var clump : byte; var pc : word) : boolean');
+    RegisterMethod('Function GetVMState( var state : byte; var clump : byte; var pc : word) : boolean');
+    RegisterMethod('Function NXTOpenRead( const filename : string; var handle : FantomHandle; var size : cardinal) : boolean');
+    RegisterMethod('Function NXTOpenWrite( const filename : string; const size : cardinal; var handle : FantomHandle) : boolean');
+    RegisterMethod('Function NXTRead( var handle : FantomHandle; var count : word; var buffer : NXTDataBuffer) : boolean');
+    RegisterMethod('Function NXTWrite( var handle : FantomHandle; const buffer : NXTDataBuffer; var count : word; const chkResponse : boolean) : boolean');
+    RegisterMethod('Function NXTCloseFile( var handle : FantomHandle; const chkResponse : boolean) : boolean');
     RegisterMethod('Function NXTDeleteFile( var filename : string; const chkResponse : boolean) : boolean');
-    RegisterMethod('Function NXTFindFirstFile( var filename : string; var handle : cardinal; var filesize : cardinal) : boolean');
-    RegisterMethod('Function NXTFindNextFile( var handle : cardinal; var filename : string; var filesize : cardinal) : boolean');
+    RegisterMethod('Function NXTFindFirstFile( var filename : string; var IterHandle : FantomHandle; var filesize, availsize : cardinal) : boolean');
+    RegisterMethod('Function NXTFindNextFile( var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean');
+    RegisterMethod('Function NXTFindClose( var IterHandle : FantomHandle) : boolean');
     RegisterMethod('Function NXTGetVersions( var protmin, protmaj, firmmin, firmmaj : byte) : boolean');
-    RegisterMethod('Function NXTOpenWriteLinear( const filename : string; const size : cardinal; var handle : cardinal) : boolean');
-    RegisterMethod('Function NXTOpenReadLinear( const filename : string; var handle : cardinal; var size : cardinal) : boolean');
-    RegisterMethod('Function NXTOpenWriteData( const filename : string; const size : cardinal; var handle : cardinal) : boolean');
-    RegisterMethod('Function NXTOpenAppendData( const filename : string; var size : cardinal; var handle : cardinal) : boolean');
-    RegisterMethod('Function NXTCloseModuleHandle( var handle : cardinal; const chkResponse : boolean) : boolean');
+    RegisterMethod('Function NXTOpenWriteLinear( const filename : string; const size : cardinal; var handle : FantomHandle) : boolean');
+    RegisterMethod('Function NXTOpenReadLinear( const filename : string; var handle : FantomHandle; var size : cardinal) : boolean');
+    RegisterMethod('Function NXTOpenWriteData( const filename : string; const size : cardinal; var handle : FantomHandle) : boolean');
+    RegisterMethod('Function NXTOpenAppendData( const filename : string; var size : cardinal; var handle : FantomHandle) : boolean');
+    RegisterMethod('Function NXTCloseModuleHandle( var handle : FantomHandle; const chkResponse : boolean) : boolean');
     RegisterMethod('Function NXTBootCommand( const chkResponse : boolean) : boolean');
     RegisterMethod('Function NXTSetBrickName( const name : string; const chkResponse : boolean) : boolean');
     RegisterMethod('Function NXTGetBrickName : string');
@@ -218,16 +225,18 @@ begin
     RegisterMethod('Function NXTPollCommand( const bufNum : byte; var count : byte; var buffer : NXTDataBuffer) : boolean');
     RegisterMethod('Function NXTWriteIOMap( var ModID : Cardinal; const Offset : Word; var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean) : boolean');
     RegisterMethod('Function NXTReadIOMap( var ModID : Cardinal; const Offset : Word; var count : Word; var buffer : NXTDataBuffer) : boolean');
-    RegisterMethod('Function NXTFindFirstModule( var ModName : string; var Handle : cardinal; var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean');
-    RegisterMethod('Function NXTFindNextModule( var Handle : cardinal; var ModName : string; var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean');
+    RegisterMethod('Function NXTFindFirstModule( var ModName : string; var Handle : FantomHandle; var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean');
+    RegisterMethod('Function NXTFindNextModule( var Handle : FantomHandle; var ModName : string; var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean');
     RegisterMethod('Function NXTRenameFile( const old, new : string; const chkResponse : boolean) : boolean');
     RegisterMethod('Function NXTDownloadFile( const filename : string; const filetype : TNXTFileType) : boolean');
     RegisterMethod('Function NXTDownloadStream( aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean');
     RegisterMethod('Function NXTUploadFile( const filename : string; const dir : string) : boolean');
+    RegisterMethod('Function NXTUploadFileToStream( const filename : string; aStream : TStream) : boolean');
     RegisterMethod('Function NXTListFiles( const searchPattern : string; Files : TStrings) : boolean');
     RegisterMethod('Function NXTListModules( const searchPattern : string; Modules : TStrings) : boolean');
     RegisterMethod('Function NXTListBricks( Bricks : TStrings) : boolean');
     RegisterMethod('Procedure NXTInitializeResourceNames');
+    RegisterMethod('Procedure NXTUpdateResourceNames');
     RegisterMethod('Function NXTDefragmentFlash : Boolean');
     RegisterProperty('EEPROM', 'Byte Byte', iptrw);
     RegisterProperty('EEPROMBlock', 'EEPROMBlock Integer', iptr);
@@ -259,6 +268,8 @@ begin
     RegisterProperty('OnDownloadDone', 'TNotifyEvent', iptrw);
     RegisterProperty('OnDownloadStatus', 'TDownloadStatusEvent', iptrw);
     RegisterProperty('OnOpenStateChanged', 'TNotifyEvent', iptrw);
+    RegisterProperty('OnGetVarInfoByID', 'TGetVarInfoByIDEvent', iptrw);
+    RegisterProperty('OnGetVarInfoByName', 'TGetVarInfoByNameEvent', iptrw);
   end;
 end;
 
@@ -270,22 +281,13 @@ begin
   CL.AddConstantN('K_SCOUT','String').SetString( 'Scout');
   CL.AddConstantN('K_RCX2','String').SetString( 'RCX2');
   CL.AddConstantN('K_SPY','String').SetString( 'Spybot');
-  CL.AddConstantN('K_SWAN','String').SetString( 'Swan');
   CL.AddConstantN('K_NXT','String').SetString( 'NXT');
   CL.AddConstantN('rtRCX','byte').SetUInt( 0);
   CL.AddConstantN('rtCybermaster','byte').SetUInt( 1);
   CL.AddConstantN('rtScout','byte').SetUInt( 2);
   CL.AddConstantN('rtRCX2','byte').SetUInt( 3);
   CL.AddConstantN('rtSpy','byte').SetUInt( 4);
-  CL.AddConstantN('rtSwan','byte').SetUInt( 5);
   CL.AddConstantN('rtNXT','byte').SetUInt( 6);
-  CL.AddConstantN('SU_RCX','byte').SetUInt( rtRCX);
-  CL.AddConstantN('SU_CYBERMASTER','byte').SetUInt( rtCybermaster);
-  CL.AddConstantN('SU_SCOUT','byte').SetUInt( rtScout);
-  CL.AddConstantN('SU_RCX2','byte').SetUInt( rtRCX2);
-  CL.AddConstantN('SU_SPYBOTIC','byte').SetUInt( rtSpy);
-  CL.AddConstantN('SU_SWAN','byte').SetUInt( rtSwan);
-  CL.AddConstantN('SU_NXT','byte').SetUInt( rtNXT);
   CL.AddConstantN('MAX_COMPORT','LongInt').SetInt( 8);
   CL.AddConstantN('MAX_USBPORT','LongInt').SetInt( MAX_COMPORT + 4);
   CL.AddConstantN('kRemoteKeysReleased','LongWord').SetUInt( $0000);
@@ -305,7 +307,12 @@ begin
   CL.AddConstantN('kRemoteSelProgram5','LongWord').SetUInt( $0020);
   CL.AddConstantN('kRemoteStopOutOff','LongWord').SetUInt( $0040);
   CL.AddConstantN('kRemotePlayASound','LongWord').SetUInt( $0080);
+  CL.AddTypeS('NXTLSBlock', 'record TXCount : byte; RXCount : byte; Data : array[0..15] of Byte; end;');
+  CL.AddTypeS('NXTMessage', 'record Inbox : byte; Size : byte; Data : array[0..58] of Byte; end;');
+  CL.AddTypeS('NXTDataBuffer', 'record Data : array[0..63] of Byte; end;');
   CL.AddTypeS('TDownloadStatusEvent', 'Procedure ( Sender : TObject; cur, total : Integer; var Abort : boolean)');
+  CL.AddTypeS('TGetVarInfoByIDEvent', 'Procedure ( Sender : TObject; const ID : integer; var offset, size, vartype : integer)');
+  CL.AddTypeS('TGetVarInfoByNameEvent', 'Procedure ( Sender : TObject; const name : string; var offset, size, vartype : integer)');
   CL.AddTypeS('TNXTFileType', '( nftProgram, nftGraphics, nftSound, nftData, nftOther, nftFirmware )');
   CL.AddTypeS('TTransmitLevel', '( tlNear, tlFar )');
   CL.AddTypeS('TLSSource', '( lsVariable, lsError, lsConstant )');
@@ -327,11 +334,29 @@ begin
   CL.AddDelphiFunction('Function NameToNXTFileType( name : string) : TNXTFileType');
   CL.AddDelphiFunction('Function MakeValidNXTFilename( const filename : string) : string');
   CL.AddDelphiFunction('Function GetInitFilename : string');
+  CL.AddDelphiFunction('Function GetJoystickButtonScript( const i : byte; bPress : boolean) : string');
   CL.AddDelphiFunction('Function FantomAPIAvailable : boolean');
   CL.AddDelphiFunction('Procedure LoadNXTPorts( aStrings : TStrings)');
+  CL.AddDelphiFunction('Function BytesToCardinal( b1 : byte; b2 : byte; b3 : byte; b4 : Byte) : Cardinal');
 end;
 
 (* === run-time registration functions === *)
+(*----------------------------------------------------------------------------*)
+procedure TBrickCommOnGetVarInfoByName_W(Self: TBrickComm; const T: TGetVarInfoByNameEvent);
+begin Self.OnGetVarInfoByName := T; end;
+
+(*----------------------------------------------------------------------------*)
+procedure TBrickCommOnGetVarInfoByName_R(Self: TBrickComm; var T: TGetVarInfoByNameEvent);
+begin T := Self.OnGetVarInfoByName; end;
+
+(*----------------------------------------------------------------------------*)
+procedure TBrickCommOnGetVarInfoByID_W(Self: TBrickComm; const T: TGetVarInfoByIDEvent);
+begin Self.OnGetVarInfoByID := T; end;
+
+(*----------------------------------------------------------------------------*)
+procedure TBrickCommOnGetVarInfoByID_R(Self: TBrickComm; var T: TGetVarInfoByIDEvent);
+begin T := Self.OnGetVarInfoByID; end;
+
 (*----------------------------------------------------------------------------*)
 procedure TBrickCommOnOpenStateChanged_W(Self: TBrickComm; const T: TNotifyEvent);
 begin Self.OnOpenStateChanged := T; end;
@@ -538,8 +563,10 @@ begin
  S.RegisterDelphiFunction(@NameToNXTFileType, 'NameToNXTFileType', cdRegister);
  S.RegisterDelphiFunction(@MakeValidNXTFilename, 'MakeValidNXTFilename', cdRegister);
  S.RegisterDelphiFunction(@GetInitFilename, 'GetInitFilename', cdRegister);
+ S.RegisterDelphiFunction(@GetJoystickButtonScript, 'GetJoystickButtonScript', cdRegister);
  S.RegisterDelphiFunction(@FantomAPIAvailable, 'FantomAPIAvailable', cdRegister);
  S.RegisterDelphiFunction(@LoadNXTPorts, 'LoadNXTPorts', cdRegister);
+ S.RegisterDelphiFunction(@BytesToCardinal, 'BytesToCardinal', cdRegister);
 end;
 
 (*----------------------------------------------------------------------------*)
@@ -548,7 +575,7 @@ begin
   with CL.Add(TBrickComm) do
   begin
     RegisterVirtualConstructor(@TBrickComm.Create, 'Create');
-    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.Open, 'OPEN');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.Open, 'Open');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.Close, 'Close');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.PlayTone, 'PlayTone');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.PlaySystemSound, 'PlaySystemSound');
@@ -664,6 +691,11 @@ begin
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.GetCurrentProgramName, 'GetCurrentProgramName');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.GetButtonState, 'GetButtonState');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.MessageRead, 'MessageRead');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.SetPropDebugging, 'SetPropDebugging');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.GetPropDebugging, 'GetPropDebugging');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.SetVMState, 'SetVMState');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.SetVMStateEx, 'SetVMStateEx');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.GetVMState, 'GetVMState');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTOpenRead, 'NXTOpenRead');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTOpenWrite, 'NXTOpenWrite');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTRead, 'NXTRead');
@@ -672,6 +704,7 @@ begin
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTDeleteFile, 'NXTDeleteFile');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTFindFirstFile, 'NXTFindFirstFile');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTFindNextFile, 'NXTFindNextFile');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTFindClose, 'NXTFindClose');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTGetVersions, 'NXTGetVersions');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTOpenWriteLinear, 'NXTOpenWriteLinear');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTOpenReadLinear, 'NXTOpenReadLinear');
@@ -695,10 +728,12 @@ begin
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTDownloadFile, 'NXTDownloadFile');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTDownloadStream, 'NXTDownloadStream');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTUploadFile, 'NXTUploadFile');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTUploadFileToStream, 'NXTUploadFileToStream');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTListFiles, 'NXTListFiles');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTListModules, 'NXTListModules');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTListBricks, 'NXTListBricks');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTInitializeResourceNames, 'NXTInitializeResourceNames');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTUpdateResourceNames, 'NXTUpdateResourceNames');
     RegisterVirtualMethod(@TBrickComm.NXTDefragmentFlash, 'NXTDefragmentFlash');
     RegisterPropertyHelper(@TBrickCommEEPROM_R,@TBrickCommEEPROM_W,'EEPROM');
     RegisterPropertyHelper(@TBrickCommEEPROMBlock_R,nil,'EEPROMBlock');
@@ -730,6 +765,8 @@ begin
     RegisterPropertyHelper(@TBrickCommOnDownloadDone_R,@TBrickCommOnDownloadDone_W,'OnDownloadDone');
     RegisterPropertyHelper(@TBrickCommOnDownloadStatus_R,@TBrickCommOnDownloadStatus_W,'OnDownloadStatus');
     RegisterPropertyHelper(@TBrickCommOnOpenStateChanged_R,@TBrickCommOnOpenStateChanged_W,'OnOpenStateChanged');
+    RegisterPropertyHelper(@TBrickCommOnGetVarInfoByID_R,@TBrickCommOnGetVarInfoByID_W,'OnGetVarInfoByID');
+    RegisterPropertyHelper(@TBrickCommOnGetVarInfoByName_R,@TBrickCommOnGetVarInfoByName_W,'OnGetVarInfoByName');
   end;
 end;
 

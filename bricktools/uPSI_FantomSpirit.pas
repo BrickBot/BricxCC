@@ -31,16 +31,16 @@ uses
   ,uPSRuntime
   ,uPSCompiler
   ;
- 
-type 
+
+type
 (*----------------------------------------------------------------------------*)
   TPSImport_FantomSpirit = class(TPSPlugin)
   protected
     procedure CompileImport1(CompExec: TPSScript); override;
     procedure ExecImport1(CompExec: TPSScript; const ri: TPSRuntimeClassImporter); override;
   end;
- 
- 
+
+
 { compile-time registration functions }
 procedure SIRegister_TFantomSpirit(CL: TPSPascalCompiler);
 procedure SIRegister_FantomSpirit(CL: TPSPascalCompiler);
@@ -53,14 +53,9 @@ procedure Register;
 
 implementation
 
-
 uses
-   rcx_cmd
-  ,uSpirit
-  ,FantomSpirit
-  ;
- 
- 
+  FantomSpirit;
+
 procedure Register;
 begin
   RegisterComponents('Pascal Script', [TPSImport_FantomSpirit]);

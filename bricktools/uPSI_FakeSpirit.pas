@@ -57,15 +57,8 @@ procedure Register;
 
 implementation
 
-
 uses
-   rcx_link
-  ,rcx_constants
-  ,Windows
-  ,uSpirit
-  ,FakeSpirit
-  ;
- 
+  FakeSpirit;
  
 procedure Register;
 begin
