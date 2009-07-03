@@ -127,7 +127,7 @@ const
 const
   RSCommands: string =
     'desc, sprite, varmap, import, copybits, line, rect, pixel, circle, ' +
-    'numbox, arg, maparg, f, ellipse, polygon';
+    'numbox, arg, maparg, f, ellipse, polygon, fontout';
 
 procedure LoadRSCodeComplete(aItems : TStrings);
 var

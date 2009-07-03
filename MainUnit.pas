@@ -704,7 +704,7 @@ uses
   uMindScript, uCppCode, uForthConsole, uProjectManager, uMIDIConversion,
   uSetLNPAddress, uNewWatch, uSetValues, uEEPROM,
   uWav2RSO, uNXTExplorer, uGuiUtils, uNXTController, uNXTImage,
-  uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,
+  uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,  
   uPSI_brick_common, uPSI_uSpirit, uPSI_FakeSpirit, uMiscDefines,
   uPSI_FantomSpirit, uPSRuntime, uPSDebugger, uProgram, uCompStatus;
 
@@ -946,6 +946,7 @@ begin
   PopulateMindscriptWordList('', SynMindScriptCompProp.ItemList);
   PopulateCppCompProp(SynCppCompProp);
   PopulatePasCompProp(SynPasCompProp);
+  PopulateROPSCompProp(SynROPSCompProp);
   LoadLASMCodeComplete(SynLASMCompProp.ItemList);
   LoadNBCCodeComplete(SynNBCCompProp.ItemList);
   LoadNPGCodeComplete(SynNPGCompProp.ItemList);
@@ -2155,6 +2156,8 @@ begin
             NameIdx := NBCCodeCompIndex(lookup)
           else if FileIsRICScript(AEF) then
             NameIdx := RICScriptCodeCompIndex(lookup)
+          else if FileIsROPS(AEF) then
+            NameIdx := ROPSCodeCompIndex(lookup)
           else if FileIsMindScript(AEF) then
             NameIdx := MSCodeCompIndex(lookup);
           FoundMatch := NameIdx > -1;
@@ -2200,6 +2203,10 @@ begin
       else if FileIsRICScript(AEF) then begin
         AddRICScriptCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
+      end
+      else if FileIsROPS(AEF) then begin
+        AddROPSCodeCompParams(SCP.ItemList, NameIdx);
+        SCP.ParamSepString := '; ';
       end
       else if FileIsMindScript(AEF) then begin
         AddMSCodeCompParams(SCP.ItemList, NameIdx);
@@ -2328,7 +2335,8 @@ begin
         SelectProgram(ProgramBox.ItemIndex);
       end;
     end;
-    if ShowCompilerStatus then
+    if ShowCompilerStatus and UseInternalNBC and
+       FileIsNBCOrNXCOrNPGOrRICScript(E) then
       frmCompStatus.Show;
     Application.ProcessMessages;
     Result := CompileIt(bDown, bRun);
@@ -3653,6 +3661,7 @@ begin
     OnLineInfo := ceLineInfo;
     OnBreakpoint := ceBreakpoint;
   end;
+//  ce.Comp.on
 end;
 
 procedure TMainForm.CreateMainFormHighlighters;
@@ -6492,10 +6501,10 @@ begin
   with SynROPSCompProp do
   begin
     Name := 'SynROPSCompProp';
-    Options := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion];
+    Options := [scoAnsiStrings, scoLimitToMatchedText, scoUseInsertList, scoUsePrettyText, scoEndCharCompletion];
     NbLinesInWindow := 6;
     Width := 262;
-    EndOfTokenChr := '()[].';
+    EndOfTokenChr := '()[]. ';
     TriggerChars := '.';
     Font.Charset := DEFAULT_CHARSET;
     Font.Color := clWindowText;
@@ -6507,6 +6516,9 @@ begin
     TitleFont.Height := -11;
     TitleFont.Name := 'Arial';
     TitleFont.Style := [fsBold];
+    with Columns.Add do begin
+      BiggestWord := 'procedure';
+    end;
     ParamSepString := ' ';
     ShortCut := 16416;
   end;

@@ -335,6 +335,7 @@ type
     procedure DoVarMap;
     procedure DoEllipse;
     procedure DoPolygon;
+    procedure DoFontOut;
     procedure CloseParen;
     procedure CheckNumeric;
     function ProcessArg: SmallInt;
@@ -557,7 +558,6 @@ end;
 {$ENDIF}
 
 const
-  MAXCMDS = 9;
   TAB = ^I;
   CR  = ^M;
   LF  = ^J;
@@ -583,12 +583,9 @@ const
   TOK_F               = 'f';
   TOK_ELLIPSE         = 'e';
   TOK_POLYGON         = 'P';
+  TOK_FONTOUT         = 'F';
   TOK_BLOCK_COMMENT   = #01;
   TOK_LINE_COMMENT    = #02;
-
-type
-  SymTab = array[1..MAXCMDS] of string;
-  TabPtr = ^SymTab;
 
 var
   Look: char = LF;              { Lookahead Character }
@@ -601,22 +598,28 @@ var
   totallines : integer = 0;
 
 const
-  NKW  = 15;
-  NKW1 = 16;
+  NKW  = 16;
+  NKW1 = 17;
 
 const
   KWlist: array[1..NKW] of string =
               ('desc', 'sprite', 'varmap', 'import',
                'copybits', 'line', 'rect', 'pixel',
-               'circle', 'numbox', 'maparg', 'arg', 'f', 'ellipse', 'polygon');
+               'circle', 'numbox', 'maparg', 'arg', 'f',
+               'ellipse', 'polygon', 'fontout');
 
-const                                     // 'xileweRWve'
+const
   KWcode: array[1..NKW1+1] of Char =
     (TOK_IDENTIFIER, TOK_DESC, TOK_SPRITE,
 		 TOK_VARMAP, TOK_IMPORT, TOK_COPYBITS, TOK_LINE,
      TOK_RECT, TOK_PIXEL, TOK_CIRCLE,
-     TOK_NUMBOX, TOK_MAPARG, TOK_ARG, TOK_F, TOK_ELLIPSE, TOK_POLYGON,
+     TOK_NUMBOX, TOK_MAPARG, TOK_ARG, TOK_F,
+     TOK_ELLIPSE, TOK_POLYGON, TOK_FONTOUT,
      #0);
+
+type
+  SymTab = array[1..NKW] of string;
+  TabPtr = ^SymTab;
 
 function PixelsToBytes(p : word) : word;
 begin
@@ -651,10 +654,15 @@ begin
   ReadSmallIntFromStream(aStream, R.Height, bLittleEndian);
 end;
 
-function RICOpCodeToStr(const Op : Word) : string;
+function RICOpCodeToStr(const Op : Word; const Options : Word = 0) : string;
 begin
   case Op of
-    IMG_DESCRIPTION_ID : Result := 'desc';
+    IMG_DESCRIPTION_ID : begin
+      if Options = $8001 then
+        Result := 'fontout'
+      else
+        Result := 'desc';
+    end;
     IMG_SPRITE_ID      : Result := 'sprite';
     IMG_VARMAP_ID      : Result := 'varmap';
     IMG_COPYBITS_ID    : Result := 'copybits';
@@ -838,8 +846,16 @@ begin
           begin
             // write out the Description opcode
             pD := @(pImage^.Desc);
-            theText.Add(Format('%s(%d, %d, %d);',
-              [RICOpCodeToStr(pD^.OpCode), pD^.Options, pD^.Width, pD^.Height]));
+            if pD^.Options = $8001 then
+            begin
+              theText.Add(Format('%s(%d, %d);',
+                [RICOpCodeToStr(pD^.OpCode, pD^.Options), pD^.Width, pD^.Height]));
+            end
+            else
+            begin
+              theText.Add(Format('%s(%d, %d, %d);',
+                [RICOpCodeToStr(pD^.OpCode), pD^.Options, pD^.Width, pD^.Height]));
+            end;
             // add to the operations list
             opDescr := TRICDescription.Create(ops);
             with opDescr do begin
@@ -2103,6 +2119,7 @@ begin
     TOK_NUMBOX:     DoNumBox;
     TOK_ELLIPSE:    DoEllipse;
     TOK_POLYGON:    DoPolygon;
+    TOK_FONTOUT:    DoFontOut;
     TOK_CLOSEPAREN : CloseParen;
     ';' : ;// do nothing
   end;
@@ -2250,6 +2267,27 @@ procedure TRICComp.CheckFirmwareVersion(const MinVer : word; const msg : string)
 begin
   if FirmwareVersion < MinVer then
     AbortMsg(msg);
+end;
+
+procedure TRICComp.DoFontOut;
+var
+  op : TRICDescription;
+begin
+  // add a description opcode
+  op := TRICDescription.Create(RICOps);
+  // parse and set its values
+  // fontout(width, height);
+  op.Options := $8001;
+  Next;
+  OpenParen;
+  CheckNumeric;
+  op.Width := ValueToWord;
+  Next;
+  MatchString(TOK_COMMA);
+  CheckNumeric;
+  op.Height := ValueToWord;
+  Next;
+  CloseParen;
 end;
 
 { TRICDescription }
