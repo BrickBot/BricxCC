@@ -1418,13 +1418,14 @@ begin
     if not FileIsCPPOrPascalOrJava(E) then
     begin
       commandstr := commandstr + ' -d';
-      if not UseInternalNBC then // the internal compiler does not need the port
+      // the internal NBC compiler does not need the port
+      if not (FileIsNBCOrNXCOrNPGOrRICScript(E) and UseInternalNBC) then
         commandstr := commandstr + ' -S' + OptionalEquals + LocalPort;
       if FileIsNBCOrNXCOrNPGOrRICScript(E) then
       begin
         if BrickComm.UseBluetooth then
           commandstr := commandstr + ' -BT';
-        commandstr := commandstr + ' -N="' + sFilename{ExtractFileName(sFilename)} + '"'; 
+        commandstr := commandstr + ' -N="' + sFilename{ExtractFileName(sFilename)} + '"';
       end;
     end
     else
