@@ -16,10 +16,17 @@
  *)
 unit uEEPROM;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, ComCtrls, StdCtrls, ExtCtrls, Dialogs, uSpin;
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
+  Classes, Controls, Forms, ComCtrls, StdCtrls, ExtCtrls, Dialogs, BricxccSpin;
 
 type
   TSpybotSpecies = (ssGigamesh, ssSnapTrax, ssShadowStrike, ssTechnoJaw);
@@ -101,7 +108,9 @@ type
     Label30: TLabel;
     Label31: TLabel;
     Label32: TLabel;
+{$IFNDEF FPC}
     dtpBirthdate: TDateTimePicker;
+{$ENDIF}
     btnHelp: TButton;
     shtCustom: TTabSheet;
     edtData: TMemo;
@@ -109,25 +118,25 @@ type
     btnBlockRead: TButton;
     btnBlockClear: TButton;
     lblBlockCnt: TLabel;
-    edtBlock: TSpinEdit;
-    edtBlockCount: TSpinEdit;
-    edtMCNormal: TSpinEdit;
-    edtMCSlow: TSpinEdit;
-    edtUserLevel: TSpinEdit;
-    edtDefaultPingRate: TSpinEdit;
-    edtRuns: TSpinEdit;
-    edtWins: TSpinEdit;
-    edtLosses: TSpinEdit;
-    edtPoints: TSpinEdit;
-    edtPlaySeconds: TSpinEdit;
-    edtTotalPlayTime: TSpinEdit;
-    edtMaxBots: TSpinEdit;
-    edtMissionID: TSpinEdit;
-    edtMissionPoints: TSpinEdit;
-    edtHighScore: TSpinEdit;
-    edtBotData: TSpinEdit;
-    edtStatus: TSpinEdit;
-    edtLongID: TSpinEdit;
+    edtMCNormal: TBricxccSpinEdit;
+    edtMCSlow: TBricxccSpinEdit;
+    edtUserLevel: TBricxccSpinEdit;
+    edtDefaultPingRate: TBricxccSpinEdit;
+    edtRuns: TBricxccSpinEdit;
+    edtWins: TBricxccSpinEdit;
+    edtLosses: TBricxccSpinEdit;
+    edtPoints: TBricxccSpinEdit;
+    edtPlaySeconds: TBricxccSpinEdit;
+    edtTotalPlayTime: TBricxccSpinEdit;
+    edtMaxBots: TBricxccSpinEdit;
+    edtMissionID: TBricxccSpinEdit;
+    edtMissionPoints: TBricxccSpinEdit;
+    edtHighScore: TBricxccSpinEdit;
+    edtBotData: TBricxccSpinEdit;
+    edtStatus: TBricxccSpinEdit;
+    edtLongID: TBricxccSpinEdit;
+    edtBlock: TBricxccSpinEdit;
+    edtBlockCount: TBricxccSpinEdit;
     procedure FormCreate(Sender: TObject);
     procedure btnWriteClick(Sender: TObject);
     procedure btnReadClick(Sender: TObject);
@@ -224,7 +233,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, Math, FakeSpirit, uSpirit, brick_common, uLocalizedStrings;
@@ -306,7 +317,7 @@ var
   R : TEdit;
   CB : TCheckBox;
   L : TLabel;
-  E : TSpinEdit;
+  E : TBricxCCSpinEdit;
   i : Integer;
 begin
   scale_amount := Screen.PixelsPerInch / 96;
@@ -338,7 +349,7 @@ begin
       Height  := Trunc(13 * scale_amount);
       Caption := Format('0x%2.2x', [eFirstToken + 2*i]);
     end;
-    E := TSpinEdit.Create(Self);
+    E := TBricxCCSpinEdit.Create(Self);
     with E do
     begin
       Name      := Format('edtToken_%2.2d', [i]);
@@ -593,9 +604,9 @@ end;
 
 function TfrmSpybotEEPROM.GetToken(index: Byte): Word;
 var
-  E : TSpinEdit;
+  E : TBricxCCSpinEdit;
 begin
-  E := TSpinEdit(grpTokens.FindChildControl(Format('edtToken_%2.2d', [index])));
+  E := TBricxCCSpinEdit(grpTokens.FindChildControl(Format('edtToken_%2.2d', [index])));
   if Assigned(E) then
     Result := E.Value
   else
@@ -604,9 +615,9 @@ end;
 
 procedure TfrmSpybotEEPROM.SetToken(index: Byte; const Value: Word);
 var
-  E : TSpinEdit;
+  E : TBricxCCSpinEdit;
 begin
-  E := TSpinEdit(grpTokens.FindChildControl(Format('edtToken_%2.2d', [index])));
+  E := TBricxCCSpinEdit(grpTokens.FindChildControl(Format('edtToken_%2.2d', [index])));
   if Assigned(E) then
     E.Value := Value;
 end;
@@ -811,12 +822,12 @@ end;
 
 procedure TfrmSpybotEEPROM.UpdateTokenRawData(Sender: TObject);
 var
-  E : TSpinEdit;
+  E : TBricxCCSpinEdit;
   i : Integer;
 begin
-  if Sender is TSpinEdit then
+  if Sender is TBricxCCSpinEdit then
   begin
-    E := TSpinEdit(Sender);
+    E := TBricxCCSpinEdit(Sender);
     i := E.Tag;
     RawData[eFirstToken+(i*2)+1] := E.Value and $FF; // lo byte
     RawData[eFirstToken+(i*2)+0] := E.Value shr 8;   // hi byte
@@ -913,12 +924,18 @@ end;
 
 function TfrmSpybotEEPROM.GetBirthDate: TDate;
 begin
+{$IFNDEF FPC}
   Result := dtpBirthdate.Date;
+{$ELSE}
+  Result := Now;
+{$ENDIF}
 end;
 
 procedure TfrmSpybotEEPROM.SetBirthDate(const Value: TDate);
 begin
+{$IFNDEF FPC}
   dtpBirthdate.Date := Value;
+{$ENDIF}
 end;
 
 procedure TfrmSpybotEEPROM.btnBlockReadClick(Sender: TObject);
@@ -953,5 +970,10 @@ procedure TfrmSpybotEEPROM.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uEEPROM.lrs}
+{$ENDIF}
 
 end.

@@ -1,0 +1,162 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TMessageForm','FORMDATA',[
+  'TPF0'#12'TMessageForm'#11'MessageForm'#4'Left'#3'9'#1#6'Height'#3#19#1#3'Top'
+  +#2'l'#5'Width'#3'('#1#11'HelpContext'#2#18#11'BorderIcons'#11#12'biSystemMen'
+  +'u'#6'biHelp'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#8'Messages'#12'Cl'
+  +'ientHeight'#3#19#1#11'ClientWidth'#3'('#1#11'Font.Height'#2#245#9'Font.Name'
+  +#6#13'MS Sans Serif'#6'OnShow'#7#8'FormShow'#10'LCLVersion'#6#6'0.9.25'#0#7
+  +'TButton'#7'btnHelp'#4'Left'#2'.'#6'Height'#2#25#3'Top'#3#246#0#5'Width'#2'4'
+  +#11'HelpContext'#3'_F'#7'Caption'#6#5'&Help'#7'OnClick'#7#12'btnHelpClick'#8
+  +'TabOrder'#2#0#0#0#9'TGroupBox'#14'grpSingleDigit'#4'Left'#2#8#6'Height'#3
+  +#180#0#3'Top'#2#5#5'Width'#3#129#0#7'Caption'#6#20'Single digit message'#12
+  +'ClientHeight'#3#159#0#11'ClientWidth'#2'}'#8'TabOrder'#2#1#0#7'TButton'#7'B'
+  +'utton2'#3'Tag'#2#2#4'Left'#2'0'#6'Height'#2'!'#3'Top'#2'P'#5'Width'#2'!'#11
+  +'HelpContext'#3'SF'#7'Caption'#6#1'2'#11'Font.Height'#2#240#9'Font.Name'#6#13
+  +'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button0Click'#8
+  +'TabOrder'#2#0#0#0#7'TButton'#7'Button0'#4'Left'#2#8#6'Height'#2'!'#3'Top'#2
+  +'x'#5'Width'#2'!'#11'HelpContext'#3'[F'#7'Caption'#6#1'0'#11'Font.Height'#2
+  +#240#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClic'
+  +'k'#7#12'Button0Click'#8'TabOrder'#2#1#0#0#7'TButton'#7'Button1'#3'Tag'#2#1#4
+  +'Left'#2#8#6'Height'#2'!'#3'Top'#2'P'#5'Width'#2'!'#11'HelpContext'#3'RF'#7
+  +'Caption'#6#1'1'#11'Font.Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'#10'F'
+  +'ont.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#2#0#0
+  +#7'TButton'#7'Button3'#3'Tag'#2#3#4'Left'#2'X'#6'Height'#2'!'#3'Top'#2'P'#5
+  +'Width'#2'!'#11'HelpContext'#3'TF'#7'Caption'#6#1'3'#11'Font.Height'#2#240#9
+  +'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12
+  +'Button0Click'#8'TabOrder'#2#3#0#0#7'TButton'#7'Button6'#3'Tag'#2#6#4'Left'#2
+  +'X'#6'Height'#2'!'#3'Top'#2'('#5'Width'#2'!'#11'HelpContext'#3'WF'#7'Caption'
+  +#6#1'6'#11'Font.Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'
+  +#11#6'fsBold'#0#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#4#0#0#7'TButton'
+  +#7'Button5'#3'Tag'#2#5#4'Left'#2'0'#6'Height'#2'!'#3'Top'#2'('#5'Width'#2'!'
+  +#11'HelpContext'#3'VF'#7'Caption'#6#1'5'#11'Font.Height'#2#240#9'Font.Name'#6
+  +#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button0Clic'
+  +'k'#8'TabOrder'#2#5#0#0#7'TButton'#7'Button4'#3'Tag'#2#4#4'Left'#2#8#6'Heigh'
+  +'t'#2'!'#3'Top'#2'('#5'Width'#2'!'#11'HelpContext'#3'UF'#7'Caption'#6#1'4'#11
+  +'Font.Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsB'
+  +'old'#0#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#6#0#0#7'TButton'#7'Butto'
+  +'n7'#3'Tag'#2#7#4'Left'#2#8#6'Height'#2'!'#5'Width'#2'!'#11'HelpContext'#3'X'
+  +'F'#7'Caption'#6#1'7'#11'Font.Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'
+  +#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#7
+  +#0#0#7'TButton'#7'Button8'#3'Tag'#2#8#4'Left'#2'0'#6'Height'#2'!'#5'Width'#2
+  +'!'#11'HelpContext'#3'YF'#7'Caption'#6#1'8'#11'Font.Height'#2#240#9'Font.Nam'
+  +'e'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button'
+  +'0Click'#8'TabOrder'#2#8#0#0#7'TButton'#7'Button9'#3'Tag'#2#9#4'Left'#2'X'#6
+  +'Height'#2'!'#5'Width'#2'!'#11'HelpContext'#3'ZF'#7'Caption'#6#1'9'#11'Font.'
+  +'Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0
+  +#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#9#0#0#0#9'TGroupBox'#13'grpMult'
+  +'iDigit'#4'Left'#2#8#6'Height'#2'1'#3'Top'#3#192#0#5'Width'#3#129#0#7'Captio'
+  +'n'#6#15'Numeric message'#12'ClientHeight'#2#28#11'ClientWidth'#2'}'#8'TabOr'
+  +'der'#2#2#0#7'TButton'#10'SendButton'#3'Tag'#2'd'#4'Left'#2'P'#6'Height'#2#25
+  +#5'Width'#2')'#11'HelpContext'#3']F'#7'Caption'#6#4'Send'#7'OnClick'#7#15'Se'
+  +'ndButtonClick'#8'TabOrder'#2#0#0#0#16'TBricxccSpinEdit'#13'edtMessageNum'#4
+  +'Left'#2#8#6'Height'#2#22#3'Top'#2#1#5'Width'#2'9'#11'HelpContext'#3'^F'#8'M'
+  +'axValue'#3#255#0#8'TabOrder'#2#1#0#0#0#9'TGroupBox'#9'GroupBox1'#4'Left'#3
+  +#144#0#6'Height'#3#236#0#3'Top'#2#5#5'Width'#3#145#0#7'Caption'#6#12'NXT Mes'
+  +'sages'#12'ClientHeight'#3#215#0#11'ClientWidth'#3#141#0#8'TabOrder'#2#3#0#6
+  +'TLabel'#10'lblMailbox'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#3#5'Width'#2'F'#7
+  +'Caption'#6#9'&Mailbox:'#12'FocusControl'#7#10'cboMailbox'#11'ParentColor'#8
+  +#0#0#6'TLabel'#7'lblMemo'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'e'#5'Width'#2
+  +'='#7'Caption'#6#6'M&emo:'#12'FocusControl'#7#10'mmoMessage'#11'ParentColor'
+  +#8#0#0#9'TComboBox'#10'cboMailbox'#4'Left'#2'8'#6'Height'#2#21#3'Top'#2#255#5
+  +'Width'#2'Q'#11'HelpContext'#3'`F'#16'AutoCompleteText'#11#22'cbactEndOfLine'
+  +'Complete'#20'cbactSearchAscending'#0#9'ItemIndex'#2#0#13'Items.Strings'#1#6
+  +#9'Mailbox 1'#6#9'Mailbox 2'#6#9'Mailbox 3'#6#9'Mailbox 4'#6#9'Mailbox 5'#6#9
+  +'Mailbox 6'#6#9'Mailbox 7'#6#9'Mailbox 8'#6#9'Mailbox 9'#6#10'Mailbox 10'#0#9
+  +'MaxLength'#4#255#255#0#0#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#0#4'Te'
+  +'xt'#6#9'Mailbox 1'#0#0#5'TMemo'#10'mmoMessage'#4'Left'#2#8#6'Height'#2'^'#3
+  ,'Top'#2'u'#5'Width'#2'Q'#11'HelpContext'#3'fF'#9'MaxLength'#2';'#10'ScrollBa'
+  +'rs'#7#10'ssVertical'#8'TabOrder'#2#6#0#0#7'TButton'#13'btnSendString'#3'Tag'
+  +#3#200#0#4'Left'#2'`'#6'Height'#2#25#3'Top'#2's'#5'Width'#2')'#11'HelpContex'
+  +'t'#3'gF'#7'Caption'#6#4'Send'#7'OnClick'#7#15'btnSendNXTClick'#8'TabOrder'#2
+  +#7#0#0#9'TCheckBox'#12'chkBoolValue'#4'Left'#2#8#6'Height'#2#24#3'Top'#2'0'#5
+  +'Width'#2'S'#11'HelpContext'#3'bF'#7'Caption'#6#7'Boolean'#8'TabOrder'#2#2#0
+  +#0#7'TButton'#11'btnSendBool'#3'Tag'#3','#1#4'Left'#2'`'#6'Height'#2#25#3'To'
+  +'p'#2','#5'Width'#2')'#11'HelpContext'#3'cF'#7'Caption'#6#4'Send'#7'OnClick'
+  +#7#15'btnSendNXTClick'#8'TabOrder'#2#3#0#0#16'TBricxccSpinEdit'#6'edtNum'#4
+  +'Left'#2#8#6'Height'#2#22#3'Top'#2'L'#5'Width'#2'Q'#11'HelpContext'#3'dF'#8
+  +'MaxValue'#2#0#8'TabOrder'#2#4#0#0#7'TButton'#10'btnSendNum'#3'Tag'#3#144#1#4
+  +'Left'#2'`'#6'Height'#2#25#3'Top'#2'K'#5'Width'#2')'#11'HelpContext'#3'eF'#7
+  +'Caption'#6#4'Send'#7'OnClick'#7#15'btnSendNXTClick'#8'TabOrder'#2#5#0#0#9'T'
+  +'CheckBox'#11'chkResponse'#4'Left'#2'8'#6'Height'#2#24#3'Top'#2#23#5'Width'#2
+  +'a'#11'HelpContext'#3'aF'#7'Caption'#6#8'Response'#8'TabOrder'#2#1#0#0#0#0#12
+  +'TMessageForm'#11'MessageForm'#4'Left'#3'9'#1#6'Height'#3#19#1#3'Top'#2'l'#5
+  +'Width'#3'('#1#11'HelpContext'#2#18#11'BorderIcons'#11#12'biSystemMenu'#6'bi'
+  +'Help'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#8'Messages'#12'ClientHei'
+  +'ght'#3#19#1#11'ClientWidth'#3'('#1#11'Font.Height'#2#245#9'Font.Name'#6#13
+  +'MS Sans Serif'#6'OnShow'#7#8'FormShow'#10'LCLVersion'#6#6'0.9.25'#0#7'TButt'
+  +'on'#7'btnHelp'#4'Left'#2'.'#6'Height'#2#25#3'Top'#3#246#0#5'Width'#2'4'#11
+  +'HelpContext'#3'_F'#7'Caption'#6#5'&Help'#7'OnClick'#7#12'btnHelpClick'#8'Ta'
+  +'bOrder'#2#0#0#0#9'TGroupBox'#14'grpSingleDigit'#4'Left'#2#8#6'Height'#3#180
+  +#0#3'Top'#2#5#5'Width'#3#129#0#7'Caption'#6#20'Single digit message'#12'Clie'
+  +'ntHeight'#3#159#0#11'ClientWidth'#2'}'#8'TabOrder'#2#1#0#7'TButton'#7'Butto'
+  +'n2'#3'Tag'#2#2#4'Left'#2'0'#6'Height'#2'!'#3'Top'#2'P'#5'Width'#2'!'#11'Hel'
+  +'pContext'#3'SF'#7'Caption'#6#1'2'#11'Font.Height'#2#240#9'Font.Name'#6#13'M'
+  +'S Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button0Click'#8
+  +'TabOrder'#2#0#0#0#7'TButton'#7'Button0'#4'Left'#2#8#6'Height'#2'!'#3'Top'#2
+  +'x'#5'Width'#2'!'#11'HelpContext'#3'[F'#7'Caption'#6#1'0'#11'Font.Height'#2
+  +#240#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClic'
+  +'k'#7#12'Button0Click'#8'TabOrder'#2#1#0#0#7'TButton'#7'Button1'#3'Tag'#2#1#4
+  +'Left'#2#8#6'Height'#2'!'#3'Top'#2'P'#5'Width'#2'!'#11'HelpContext'#3'RF'#7
+  +'Caption'#6#1'1'#11'Font.Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'#10'F'
+  +'ont.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#2#0#0
+  +#7'TButton'#7'Button3'#3'Tag'#2#3#4'Left'#2'X'#6'Height'#2'!'#3'Top'#2'P'#5
+  +'Width'#2'!'#11'HelpContext'#3'TF'#7'Caption'#6#1'3'#11'Font.Height'#2#240#9
+  +'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12
+  +'Button0Click'#8'TabOrder'#2#3#0#0#7'TButton'#7'Button6'#3'Tag'#2#6#4'Left'#2
+  +'X'#6'Height'#2'!'#3'Top'#2'('#5'Width'#2'!'#11'HelpContext'#3'WF'#7'Caption'
+  +#6#1'6'#11'Font.Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'
+  +#11#6'fsBold'#0#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#4#0#0#7'TButton'
+  +#7'Button5'#3'Tag'#2#5#4'Left'#2'0'#6'Height'#2'!'#3'Top'#2'('#5'Width'#2'!'
+  +#11'HelpContext'#3'VF'#7'Caption'#6#1'5'#11'Font.Height'#2#240#9'Font.Name'#6
+  +#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button0Clic'
+  +'k'#8'TabOrder'#2#5#0#0#7'TButton'#7'Button4'#3'Tag'#2#4#4'Left'#2#8#6'Heigh'
+  +'t'#2'!'#3'Top'#2'('#5'Width'#2'!'#11'HelpContext'#3'UF'#7'Caption'#6#1'4'#11
+  +'Font.Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsB'
+  +'old'#0#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#6#0#0#7'TButton'#7'Butto'
+  +'n7'#3'Tag'#2#7#4'Left'#2#8#6'Height'#2'!'#5'Width'#2'!'#11'HelpContext'#3'X'
+  +'F'#7'Caption'#6#1'7'#11'Font.Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'
+  +#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#7
+  +#0#0#7'TButton'#7'Button8'#3'Tag'#2#8#4'Left'#2'0'#6'Height'#2'!'#5'Width'#2
+  +'!'#11'HelpContext'#3'YF'#7'Caption'#6#1'8'#11'Font.Height'#2#240#9'Font.Nam'
+  +'e'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0#7'OnClick'#7#12'Button'
+  +'0Click'#8'TabOrder'#2#8#0#0#7'TButton'#7'Button9'#3'Tag'#2#9#4'Left'#2'X'#6
+  +'Height'#2'!'#5'Width'#2'!'#11'HelpContext'#3'ZF'#7'Caption'#6#1'9'#11'Font.'
+  +'Height'#2#240#9'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#6'fsBold'#0
+  +#7'OnClick'#7#12'Button0Click'#8'TabOrder'#2#9#0#0#0#9'TGroupBox'#13'grpMult'
+  +'iDigit'#4'Left'#2#8#6'Height'#2'1'#3'Top'#3#192#0#5'Width'#3#129#0#7'Captio'
+  +'n'#6#15'Numeric message'#12'ClientHeight'#2#28#11'ClientWidth'#2'}'#8'TabOr'
+  +'der'#2#2#0#7'TButton'#10'SendButton'#3'Tag'#2'd'#4'Left'#2'P'#6'Height'#2#25
+  +#5'Width'#2')'#11'HelpContext'#3']F'#7'Caption'#6#4'Send'#7'OnClick'#7#15'Se'
+  +'ndButtonClick'#8'TabOrder'#2#0#0#0#16'TBricxccSpinEdit'#13'edtMessageNum'#4
+  ,'Left'#2#8#6'Height'#2#22#3'Top'#2#1#5'Width'#2'9'#11'HelpContext'#3'^F'#8'M'
+  +'axValue'#3#255#0#8'TabOrder'#2#1#0#0#0#9'TGroupBox'#9'GroupBox1'#4'Left'#3
+  +#144#0#6'Height'#3#236#0#3'Top'#2#5#5'Width'#3#145#0#7'Caption'#6#12'NXT Mes'
+  +'sages'#12'ClientHeight'#3#215#0#11'ClientWidth'#3#141#0#8'TabOrder'#2#3#0#6
+  +'TLabel'#10'lblMailbox'#4'Left'#2#8#6'Height'#2#17#3'Top'#2#3#5'Width'#2'F'#7
+  +'Caption'#6#9'&Mailbox:'#12'FocusControl'#7#10'cboMailbox'#11'ParentColor'#8
+  +#0#0#6'TLabel'#7'lblMemo'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'e'#5'Width'#2
+  +'='#7'Caption'#6#6'M&emo:'#12'FocusControl'#7#10'mmoMessage'#11'ParentColor'
+  +#8#0#0#9'TComboBox'#10'cboMailbox'#4'Left'#2'8'#6'Height'#2#21#3'Top'#2#255#5
+  +'Width'#2'Q'#11'HelpContext'#3'`F'#16'AutoCompleteText'#11#22'cbactEndOfLine'
+  +'Complete'#20'cbactSearchAscending'#0#9'ItemIndex'#2#0#13'Items.Strings'#1#6
+  +#9'Mailbox 1'#6#9'Mailbox 2'#6#9'Mailbox 3'#6#9'Mailbox 4'#6#9'Mailbox 5'#6#9
+  +'Mailbox 6'#6#9'Mailbox 7'#6#9'Mailbox 8'#6#9'Mailbox 9'#6#10'Mailbox 10'#0#9
+  +'MaxLength'#4#255#255#0#0#5'Style'#7#14'csDropDownList'#8'TabOrder'#2#0#4'Te'
+  +'xt'#6#9'Mailbox 1'#0#0#5'TMemo'#10'mmoMessage'#4'Left'#2#8#6'Height'#2'^'#3
+  +'Top'#2'u'#5'Width'#2'Q'#11'HelpContext'#3'fF'#9'MaxLength'#2';'#10'ScrollBa'
+  +'rs'#7#10'ssVertical'#8'TabOrder'#2#6#0#0#7'TButton'#13'btnSendString'#3'Tag'
+  +#3#200#0#4'Left'#2'`'#6'Height'#2#25#3'Top'#2's'#5'Width'#2')'#11'HelpContex'
+  +'t'#3'gF'#7'Caption'#6#4'Send'#7'OnClick'#7#15'btnSendNXTClick'#8'TabOrder'#2
+  +#7#0#0#9'TCheckBox'#12'chkBoolValue'#4'Left'#2#8#6'Height'#2#24#3'Top'#2'0'#5
+  +'Width'#2'S'#11'HelpContext'#3'bF'#7'Caption'#6#7'Boolean'#8'TabOrder'#2#2#0
+  +#0#7'TButton'#11'btnSendBool'#3'Tag'#3','#1#4'Left'#2'`'#6'Height'#2#25#3'To'
+  +'p'#2','#5'Width'#2')'#11'HelpContext'#3'cF'#7'Caption'#6#4'Send'#7'OnClick'
+  +#7#15'btnSendNXTClick'#8'TabOrder'#2#3#0#0#16'TBricxccSpinEdit'#6'edtNum'#4
+  +'Left'#2#8#6'Height'#2#22#3'Top'#2'L'#5'Width'#2'Q'#11'HelpContext'#3'dF'#8
+  +'MaxValue'#2#0#8'TabOrder'#2#4#0#0#7'TButton'#10'btnSendNum'#3'Tag'#3#144#1#4
+  +'Left'#2'`'#6'Height'#2#25#3'Top'#2'K'#5'Width'#2')'#11'HelpContext'#3'eF'#7
+  +'Caption'#6#4'Send'#7'OnClick'#7#15'btnSendNXTClick'#8'TabOrder'#2#5#0#0#9'T'
+  +'CheckBox'#11'chkResponse'#4'Left'#2'8'#6'Height'#2#24#3'Top'#2#23#5'Width'#2
+  +'a'#11'HelpContext'#3'aF'#7'Caption'#6#8'Response'#8'TabOrder'#2#1#0#0#0#0
+]);

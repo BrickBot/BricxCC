@@ -16,9 +16,16 @@
  *)
 unit EditCodeTemplate;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, StdCtrls;
 
 type
@@ -54,7 +61,9 @@ implementation
 uses
   uLocalizedStrings;
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 { TfrmEditCodeTemplate }
 
@@ -107,5 +116,10 @@ procedure TfrmEditCodeTemplate.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i EditCodeTemplate.lrs}
+{$ENDIF}
 
 end.

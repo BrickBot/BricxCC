@@ -1,0 +1,159 @@
+object AboutBox: TAboutBox
+  Left = 236
+  Height = 223
+  Top = 193
+  Width = 424
+  BorderStyle = bsDialog
+  Caption = 'About BricxCC'
+  ClientHeight = 223
+  ClientWidth = 424
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  Position = poMainFormCenter
+  LCLVersion = '0.9.25'
+  object pnlMain: TPanel
+    Left = 9
+    Height = 185
+    Top = 8
+    Width = 407
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 185
+    ClientWidth = 407
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    TabOrder = 0
+    object ProgramIcon: TImage
+      Left = 8
+      Height = 32
+      Top = 8
+      Width = 32
+      OnClick = ProgramIconClick
+      Picture.Data = {
+        055449636F6EFE0200000000010001002020100000000000E802000016000000
+        2800000020000000400000000100040000000000800200000000000000000000
+        0000000000000000000000000000800000800000008080008000000080008000
+        80800000C0C0C000808080000000FF0000FF000000FFFF00FF000000FF00FF00
+        FFFF0000FFFFFF0000000000000000000000000000000000000000000BBBBBBB
+        BBBBBBBB00000000000000000BBBBBBBBBBBBBBB00000000000000000B000BB0
+        00BB000B00000000000000000B000BB000BB000B00000000000000000B000BB0
+        00BB000B00000000000000000BBBBBBBBBBBBBBB00000000000000000B99BBBB
+        BBBBBAAB00000000000000040BBBB8888888BBBB04000000000000040BBB8008
+        08008BBB040000000000044C0BBBB8888888BBBB0C4400000004444C0B00BBBB
+        BBBBB88B0C4444000044444C0BBBBBBBBBBBBBBB0C4444400444444C0B888BB8
+        88BB888B0C444444044444CC0B888BB888BB888B0CC4444404444CCC0B888BB8
+        88BB888B0CCC44440444CC000BBBBBBBBBBBBBBB000CC4440444C0000BBBB000
+        0000BBBB0000C4440444C00000000077777000000000C4440444C00000000777
+        777700000000C4440444C00000000799999700000000C4440444C00000000777
+        777700000000C4440444C00000007777777770000000C4440000000000000000
+        0000000000000000000000000779999777999977000000000000000007799997
+        77999977000000000000000007799F977799F977000000000000000000000000
+        0000000000000000000000000007777777777700000000000000000000077777
+        7777770000000000000000000000777777777000000000000000000000000000
+        0000000000000000FF00007FFF00007FFF00007FFF00007FFF00007FFF00007F
+        FF00007FFF00007FFE00003FFE00003FF800000FE0000003C000000180000000
+        800000008000000083000060870000708700007087F007F087F007F087F007F0
+        87E003F0878000F0CF0000798700007087000070938000E493C001E493C001E4
+        9FE003FC9FF007FC
+      }
+      Stretch = True
+    end
+    object ProductName: TLabel
+      Left = 126
+      Height = 13
+      Top = 8
+      Width = 177
+      AutoSize = False
+      Caption = 'Bricx Command Center'
+      Font.Height = -11
+      Font.Name = 'MS Sans Serif'
+      Font.Style = [fsBold]
+      ParentColor = False
+    end
+    object Version: TLabel
+      Left = 126
+      Height = 13
+      Top = 25
+      Width = 185
+      AutoSize = False
+      Caption = 'product version'
+      ParentColor = False
+    end
+    object lblOrigAuth: TLabel
+      Left = 8
+      Height = 13
+      Top = 66
+      Width = 115
+      AutoSize = False
+      Caption = 'Original Author:'
+      ParentColor = False
+    end
+    object Comments: TLabel
+      Left = 126
+      Height = 34
+      Top = 144
+      Width = 249
+      AutoSize = False
+      Caption = 'NQC written and copyright by Dave Baum'
+      ParentColor = False
+      ShowAccelChar = False
+      WordWrap = True
+    end
+    object lblAuthor: TLabel
+      Left = 126
+      Height = 17
+      Top = 66
+      Width = 253
+      Caption = 'Mark Overmars (markov@cs.uu.nl)'
+      ParentColor = False
+      ShowAccelChar = False
+    end
+    object lblBuild: TLabel
+      Left = 126
+      Height = 17
+      Top = 41
+      Width = 58
+      Caption = 'file date'
+      ParentColor = False
+    end
+    object lblMaint: TLabel
+      Left = 8
+      Height = 17
+      Top = 84
+      Width = 79
+      Caption = 'Maintainer:'
+      ParentColor = False
+    end
+    object lblMaintainer: TLabel
+      Left = 126
+      Height = 17
+      Top = 84
+      Width = 268
+      Caption = 'John Hansen (bricxcc@comcast.net)'
+      ParentColor = False
+      ShowAccelChar = False
+    end
+    object lblCopyright: TLabel
+      Left = 126
+      Height = 25
+      Top = 104
+      Width = 249
+      AutoSize = False
+      Caption = 'lblCopyright'
+      ParentColor = False
+      ShowAccelChar = False
+      WordWrap = True
+    end
+  end
+  object OKButton: TButton
+    Left = 175
+    Height = 25
+    Top = 196
+    Width = 75
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
+end

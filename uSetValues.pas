@@ -16,9 +16,16 @@
  *)
 unit uSetValues;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, ComCtrls, StdCtrls;
 
 type
@@ -60,7 +67,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, Preferences, uSources, brick_common, uMiscDefines;
@@ -176,5 +185,10 @@ procedure TfrmSetValues.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uSetValues.lrs}
+{$ENDIF}
 
 end.

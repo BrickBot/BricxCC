@@ -1,0 +1,51 @@
+object frmNXTName: TfrmNXTName
+  Left = 211
+  Height = 62
+  Top = 167
+  Width = 187
+  BorderStyle = bsDialog
+  Caption = 'Set NXT Name'
+  ClientHeight = 62
+  ClientWidth = 187
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Position = poOwnerFormCenter
+  LCLVersion = '0.9.25'
+  object lblNXTName: TLabel
+    Left = 8
+    Height = 17
+    Top = 10
+    Width = 98
+    Caption = 'NXT &Name:'
+    FocusControl = edtNXTName
+    ParentColor = False
+  end
+  object btnOK: TButton
+    Left = 16
+    Height = 25
+    Top = 33
+    Width = 75
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 1
+  end
+  object btnCancel: TButton
+    Left = 96
+    Height = 25
+    Top = 33
+    Width = 75
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object edtNXTName: TEdit
+    Left = 85
+    Height = 21
+    Top = 6
+    Width = 89
+    MaxLength = 8
+    TabOrder = 0
+  end
+end

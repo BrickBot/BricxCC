@@ -12,6 +12,7 @@ object ConfirmReplaceDialog: TConfirmReplaceDialog
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnDestroy = FormDestroy
   PixelsPerInch = 96
   TextHeight = 13

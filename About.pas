@@ -16,10 +16,20 @@
  *)
 unit About;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Graphics, Forms, Controls, StdCtrls, Buttons, ExtCtrls;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+{$ENDIF}
+  SysUtils, Classes, Graphics, Forms, Controls, StdCtrls,
+  Buttons, ExtCtrls;
 
 type
   TAboutBox = class(TForm)
@@ -47,9 +57,11 @@ type
 implementation
 
 uses
-  SysUtils, PuzzleUnit, uVersionInfo, uLocalizedStrings;
+  PuzzleUnit, uVersionInfo, uLocalizedStrings;
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 procedure TAboutBox.ProgramIconClick(Sender: TObject);
 begin
@@ -90,6 +102,9 @@ begin
   lblCopyright.Caption := V.LegalCopyright;
 end;
 
+{$IFDEF FPC}
+initialization
+  {$i About.lrs}
+{$ENDIF}
+
 end.
-
-

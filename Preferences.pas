@@ -16,20 +16,32 @@
  *)
 unit Preferences;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 {$I bricxcc.inc}
 
 interface
 
 uses
+{$IFNDEF FPC}
+  ColorGrd,
+  DirectoryEdit,
+{$ELSE}
+  LResources,
+  ColorBox,
+  EditBtn,
+{$ENDIF}
   Classes, Graphics, Controls, Forms, Dialogs,
-  Menus, StdCtrls, ComCtrls, ExtCtrls, Buttons, ColorGrd, Registry,
-  SynEditHighlighter, SynHighlighterNQC, SynEdit, SynEditKeyCmds,
+  Menus, StdCtrls, ComCtrls, ExtCtrls, Buttons, SynEditHighlighter,
+  SynHighlighterNQC, SynEdit, SynEditKeyCmds, Registry,
   SynHighlighterForth, SynHighlighterCpp, SynHighlighterJava,
   SynHighlighterCS, SynHighlighterMindScript, SynHighlighterLua,
   SynHighlighterLASM, SynHighlighterPas, uParseCommon, uNewHotKey,
-  uMiscDefines, SynHighlighterNBC, uOfficeComp,
+  uMiscDefines, SynHighlighterNBC, uOfficeComp, BricxccSpin,
   SynHighlighterRuby, SynHighlighterNPG, SynHighlighterRS,
-  SynHighlighterROPS, DirectoryEdit, uSpin;
+  SynHighlighterROPS;
 
 type
   TTransferItem = class
@@ -56,6 +68,8 @@ type
   end;
 
   TActiveHighlighterReason = (ahColors, ahTemplates);
+
+  { TPrefForm }
 
   TPrefForm = class(TForm)
     dlgFont: TFontDialog;
@@ -293,25 +307,6 @@ type
     cbxBGColor: TColorBox;
     Label5: TLabel;
     lblMaxErrors: TLabel;
-    edtMaxRecent: TSpinEdit;
-    edtFirmwareChunkSize: TSpinEdit;
-    edtWaitTime: TSpinEdit;
-    edtMaxLeftChar: TSpinEdit;
-    inpTabWidth: TSpinEdit;
-    inpMaxUndo: TSpinEdit;
-    inpExtraLineSpacing: TSpinEdit;
-    inpRightEdge: TSpinEdit;
-    edtCompilerTimeout: TSpinEdit;
-    edtMaxErrors: TSpinEdit;
-    edtConsoleReadFirstTimeout: TSpinEdit;
-    edtConsoleReadICTimeout: TSpinEdit;
-    edtConsoleWriteTimeout: TSpinEdit;
-    edtICDelay: TSpinEdit;
-    edtILDelay: TSpinEdit;
-    inpRightOffset: TSpinEdit;
-    inpLeftOffset: TSpinEdit;
-    inpDigitCount: TSpinEdit;
-    inpGutterWidth: TSpinEdit;
     edtNQCExePath2: TEdit;
     edtLCCExePath2: TEdit;
     edtNBCExePath2: TEdit;
@@ -370,6 +365,25 @@ type
     btnShowNXTDefs: TButton;
     btnShowNXCDefs: TButton;
     chkCCInsensitive: TCheckBox;
+    edtMaxLeftChar: TBricxccSpinEdit;
+    inpTabWidth: TBricxccSpinEdit;
+    inpMaxUndo: TBricxccSpinEdit;
+    inpExtraLineSpacing: TBricxccSpinEdit;
+    inpRightEdge: TBricxccSpinEdit;
+    edtMaxRecent: TBricxccSpinEdit;
+    edtFirmwareChunkSize: TBricxccSpinEdit;
+    edtWaitTime: TBricxccSpinEdit;
+    edtCompilerTimeout: TBricxccSpinEdit;
+    edtMaxErrors: TBricxccSpinEdit;
+    edtConsoleReadFirstTimeout: TBricxccSpinEdit;
+    edtConsoleReadICTimeout: TBricxccSpinEdit;
+    edtConsoleWriteTimeout: TBricxccSpinEdit;
+    edtICDelay: TBricxccSpinEdit;
+    edtILDelay: TBricxccSpinEdit;
+    inpRightOffset: TBricxccSpinEdit;
+    inpLeftOffset: TBricxccSpinEdit;
+    inpDigitCount: TBricxccSpinEdit;
+    inpGutterWidth: TBricxccSpinEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -798,15 +812,6 @@ function NQCPath : string;
 function LCCPath : string;
 function NBCPath : string;
 
-{$IFNDEF VER_D7_UP}
-type
-  EOSError = class(EWin32Error);
-
-function IncludeTrailingPathDelimiter(const S: string): string;
-function ExcludeTrailingPathDelimiter(const S: string): string;
-
-{$ENDIF}
-
 const
   K_PASCAL_PREFIX = '/usr/local/bin/h8300-hitachi-hms-';
   K_PASCAL_TAIL =
@@ -827,17 +832,26 @@ const
 
 implementation
 
+{$IFNDEF FPC}
+{$R *.dfm}
+{$ENDIF}
+
 uses
-  Windows, SysUtils, MainUnit, Diagnose, Controller, Watch, Piano, ConstructUnit,
+{$IFNDEF FPC}
+  Windows, 
+  SynEditKeyCmdsEditor,
+  uForthConsole,
+{$ENDIF}
+  SysUtils, MainUnit, Diagnose, Controller, Watch, Piano, ConstructUnit,
   JoystickUnit, DatalogUnit, MemoryUnit, CodeUnit, Editor,
-  MessageUnit, SynEditKeyCmdsEditor, IniFiles, CodeTemplates,
-  uVersionInfo, uHighlighterProcs, uExtensionDlg, {ActiveX, ShlObj,}
-  uSetValues, uEEPROM, uNewWatch, uForthConsole, Themes,
+  MessageUnit, IniFiles, CodeTemplates,
+  uVersionInfo, uHighlighterProcs, uExtensionDlg,
+  uSetValues, uEEPROM, uNewWatch, Themes,
   uSpirit, brick_common, Transfer, uNXTExplorer, uNXTController,
   uNXTExplorerSettings, uLocalizedStrings, uGuiUtils, uEditorExperts,
   uEECommentConfig, uEEAlignConfig, uNBCInterface;
 
-{$R *.DFM}
+
 
 var RecentFiles : array of string = nil;
 
@@ -853,6 +867,29 @@ var
   COMPort : string;           // default COM port (''=automatic)
   CompilerTimeout : Integer;
   UseMDIMode : Boolean;
+
+const
+{$IFDEF FPC}
+  K_EDITOR_FONTNAME_DEFAULT = 'Courier 10 Pitch';
+  K_EDITOR_COLOR_DEFAULT    = clWhite;
+  K_SEL_FG_COLOR_DEFAULT    = clWhite;
+  K_SEL_BG_COLOR_DEFAULT    = clNavy;
+  K_ALINE_COLOR_DEFAULT     = clWhite;
+  K_REDGE_COLOR_DEFAULT     = clSilver;
+  K_STRUCT_COLOR_DEFAULT    = clNone;
+  K_GUTTER_COLOR_DEFAULT    = clSilver;
+  K_USEINTERNALNBC_DEFAULT  = True;
+{$ELSE}
+  K_EDITOR_FONTNAME_DEFAULT = 'Courier New';
+  K_EDITOR_COLOR_DEFAULT    = clWindow;
+  K_SEL_FG_COLOR_DEFAULT    = clHighlightText;
+  K_SEL_BG_COLOR_DEFAULT    = clHighlight;
+  K_ALINE_COLOR_DEFAULT     = clWindow;
+  K_REDGE_COLOR_DEFAULT     = clSilver;
+  K_STRUCT_COLOR_DEFAULT    = clNone;
+  K_GUTTER_COLOR_DEFAULT    = clBtnFace;
+  K_USEINTERNALNBC_DEFAULT  = False;
+{$ENDIF}
 
 const
   K_PID           = 'BricxCC.1';
@@ -909,29 +946,6 @@ const
     #9'$(LEJOS) $* -o $@' + #13#10;
   K_MAX_OLD_PATHS = 4;
 
-const
-{$IFDEF FPC}
-  K_EDITOR_FONTNAME_DEFAULT = 'Courier 10 Pitch';
-  K_EDITOR_COLOR_DEFAULT    = clWhite;
-  K_SEL_FG_COLOR_DEFAULT    = clWhite;
-  K_SEL_BG_COLOR_DEFAULT    = clNavy;
-  K_ALINE_COLOR_DEFAULT     = clWhite;
-  K_REDGE_COLOR_DEFAULT     = clSilver;
-  K_STRUCT_COLOR_DEFAULT    = clNone;
-  K_GUTTER_COLOR_DEFAULT    = clSilver;
-  K_USEINTERNALNBC_DEFAULT  = True;
-{$ELSE}
-  K_EDITOR_FONTNAME_DEFAULT = 'Courier New';
-  K_EDITOR_COLOR_DEFAULT    = clWindow;
-  K_SEL_FG_COLOR_DEFAULT    = clHighlightText;
-  K_SEL_BG_COLOR_DEFAULT    = clHighlight;
-  K_ALINE_COLOR_DEFAULT     = clWindow;
-  K_REDGE_COLOR_DEFAULT     = clSilver;
-  K_STRUCT_COLOR_DEFAULT    = clNone;
-  K_GUTTER_COLOR_DEFAULT    = clBtnFace;
-  K_USEINTERNALNBC_DEFAULT  = True;
-{$ENDIF}
-
 var
   fMainKey : string = K_MAINKEY;
   fVersion : string = K_VERSION;
@@ -948,7 +962,7 @@ var
 begin
   if Form = nil then
     Exit;
-
+{$IFNDEF FPC}
   SystemParametersInfo(SPI_GETWORKAREA, 0, @Rect, 0);
 
   with Form do
@@ -956,6 +970,7 @@ begin
     SetBounds((Rect.Right - Rect.Left - Width) div 2,
       (Rect.Bottom - Rect.Top - Height) div 2, Width, Height);
   end;
+{$ENDIF}
 end;
 
 procedure EnsureFormVisible(const Form: TCustomForm);
@@ -966,6 +981,7 @@ begin
   Rect.Left := 0;
   Rect.Right := Screen.Width;
   Rect.Bottom := Screen.Height;
+{$IFNDEF FPC}
   SystemParametersInfo(SPI_GETWORKAREA, 0, @Rect, 0);
   if (Form.Left + Form.Width > Rect.Right) then
     Form.Left := Form.Left - ((Form.Left + Form.Width) - Rect.Right);
@@ -975,6 +991,7 @@ begin
     Form.Left := 0;
   if Form.Top < 0 then
     Form.Top := 0;
+{$ENDIF}
 end;
 
 function DefaultPath : string;
@@ -1166,6 +1183,7 @@ procedure SetToolbarDragging(bAuto : Boolean);
 const
   DM : array[Boolean] of TDragMode = (dmManual, dmAutomatic);
 begin
+{$IFNDEF FPC}
   with MainForm do begin
     cbrTop.AutoDrag    := bAuto;
     // set the toolbar dragmode also
@@ -1176,6 +1194,7 @@ begin
     ogpFile.DragMode    := DM[bAuto];
     ogpEdit.DragMode    := DM[bAuto];
   end;
+{$ENDIF}
 end;
 
 procedure RestoreToolbars;
@@ -1356,8 +1375,10 @@ begin
     theFile.WriteInteger(K_WINDOWSECTION, 'YEEPROMWindow', frmSpybotEEPROM.Top);
     theFile.WriteInteger(K_WINDOWSECTION, 'XNewWatchWindow', frmNewWatch.Left);
     theFile.WriteInteger(K_WINDOWSECTION, 'YNewWatchWindow', frmNewWatch.Top);
+{$IFNDEF FPC}
     theFile.WriteInteger(K_WINDOWSECTION, 'XForthConsoleWindow', frmForthConsole.Left);
     theFile.WriteInteger(K_WINDOWSECTION, 'YForthConsoleWindow', frmForthConsole.Top);
+{$ENDIF}
     theFile.WriteInteger(K_WINDOWSECTION, 'XNXTExplorerWindow', frmNXTExplorer.Left);
     theFile.WriteInteger(K_WINDOWSECTION, 'YNXTExplorerWindow', frmNXTExplorer.Top);
     theFile.WriteInteger(K_WINDOWSECTION, 'WNXTExplorerWindow', frmNXTExplorer.Width);
@@ -1411,8 +1432,10 @@ begin
     frmSpybotEEPROM.Top  := theFile.ReadInteger(K_WINDOWSECTION, 'YEEPROMWindow', frmSpybotEEPROM.Top);
     frmNewWatch.Left     := theFile.ReadInteger(K_WINDOWSECTION, 'XNewWatchWindow', frmNewWatch.Left);
     frmNewWatch.Top      := theFile.ReadInteger(K_WINDOWSECTION, 'YNewWatchWindow', frmNewWatch.Top);
+{$IFNDEF FPC}
     frmForthConsole.Left := theFile.ReadInteger(K_WINDOWSECTION, 'XForthConsoleWindow', frmForthConsole.Left);
     frmForthConsole.Top  := theFile.ReadInteger(K_WINDOWSECTION, 'YForthConsoleWindow', frmForthConsole.Top);
+{$ENDIF}
     frmNXTExplorer.Left  := theFile.ReadInteger(K_WINDOWSECTION, 'XNXTExplorerWindow', frmNXTExplorer.Left);
     frmNXTExplorer.Top   := theFile.ReadInteger(K_WINDOWSECTION, 'YNXTExplorerWindow', frmNXTExplorer.Top);
     frmNXTExplorer.Width := theFile.ReadInteger(K_WINDOWSECTION, 'WNXTExplorerWindow', frmNXTExplorer.Width);
@@ -1566,14 +1589,16 @@ procedure LoadMacroValues(reg : TRegistry);
 var
   i:integer;
   SL : TStringList;
+  tmpPath : string;
 begin
   if not Reg_KeyExists(reg, 'Macros') then
   begin
-    if FileExists(ProgramDir+'Default\macros.txt') then
+    tmpPath := ProgramDir+IncludeTrailingPathDelimiter('Default')+'macros.txt';
+    if FileExists(tmpPath) then
     begin
       SL := TStringList.Create;
       try
-        SL.LoadFromFile(ProgramDir+'Default\macros.txt');
+        SL.LoadFromFile(tmpPath);
         macronumb := SL.Count;
         for i := 0 to SL.Count - 1 do
         begin
@@ -1635,7 +1660,7 @@ var
 begin
   if not Reg_KeyExists(reg, 'Templates') then
   begin
-    fName := ProgramDir+'Default\'+LanguageIndexToName(aLang)+'_templates.txt';
+    fName := ProgramDir+IncludeTrailingPathDelimiter('Default')+LanguageIndexToName(aLang)+'_templates.txt';
     if FileExists(fName) then
     begin
       SL := TStringList.Create;
@@ -2151,8 +2176,10 @@ begin
     frmSpybotEEPROM.Top  := Reg_ReadInteger(reg, 'YEEPROMWindow', 170);
     frmNewWatch.Left     := Reg_ReadInteger(reg, 'XNewWatchWindow', 180);
     frmNewWatch.Top      := Reg_ReadInteger(reg, 'YNewWatchWindow', 180);
+{$IFNDEF FPC}
     frmForthConsole.Left := Reg_ReadInteger(reg, 'XForthConsoleWindow', 190);
     frmForthConsole.Top  := Reg_ReadInteger(reg, 'YForthConsoleWindow', 190);
+{$ENDIF}
     frmNXTExplorer.Left  := Reg_ReadInteger(reg, 'XNXTExplorerWindow', 190);
     frmNXTExplorer.Top   := Reg_ReadInteger(reg, 'YNXTExplorerWindow', 190);
     frmNXTExplorer.Width := Reg_ReadInteger(reg, 'WNXTExplorerWindow', 580);
@@ -2217,8 +2244,10 @@ begin
     reg.WriteInteger('YEEPROMWindow', frmSpybotEEPROM.Top);
     reg.WriteInteger('XNewWatchWindow', frmNewWatch.Left);
     reg.WriteInteger('YNewWatchWindow', frmNewWatch.Top);
+{$IFNDEF FPC}
     reg.WriteInteger('XForthConsoleWindow', frmForthConsole.Left);
     reg.WriteInteger('YForthConsoleWindow', frmForthConsole.Top);
+{$ENDIF}
     reg.WriteInteger('XNXTExplorerWindow', frmNXTExplorer.Left);
     reg.WriteInteger('YNXTExplorerWindow', frmNXTExplorer.Top);
     reg.WriteInteger('WNXTExplorerWindow', frmNXTExplorer.Width);
@@ -3029,13 +3058,15 @@ end;
 procedure LoadCodeTemplateValues(reg : TRegistry; S : TStrings);
 var
   tmpSL : TStringList;
+  tmpPath : string;
 begin
   tmpSL := TStringList.Create;
   try
     if not Reg_KeyExists(reg, 'CodeTemplates') then
     begin
-      if FileExists(ProgramDir + 'Default\code.dci') then
-        tmpSL.LoadFromFile(ProgramDir + 'Default\code.dci');
+      tmpPath := ProgramDir + IncludeTrailingPathDelimiter('Default') + 'code.dci';
+      if FileExists(tmpPath) then
+        tmpSL.LoadFromFile(tmpPath);
     end
     else
     begin
@@ -3676,6 +3707,7 @@ var
   V : TVersionInfo;
   S : string;
 begin
+{$IFNDEF FPC}
   R := TRegistry.Create;
   try
     V := GetVersionInfo(Application.ExeName);
@@ -3730,6 +3762,7 @@ begin
   finally
     R.Free;
   end;
+{$ENDIF}
 end;
 
 {********************************************
@@ -4549,6 +4582,11 @@ end;
 
 procedure TPrefForm.FormShow(Sender: TObject);
 begin
+  NewTemplatesList.Font.Name := FontName;
+  NewTemplatesList.Font.Size := FontSize;
+  SynEditColors.Font.Name := FontName;
+  SynEditColors.Font.Size := FontSize;
+
   fColorsChanged := False;
   pagPrefs.ActivePage    := shtGeneral;
   pagAPILang.ActivePage  := shtNQCAPI;
@@ -4988,6 +5026,9 @@ begin
 end;
 
 procedure TPrefForm.btnKeystrokesClick(Sender: TObject);
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   Dlg: TSynEditKeystrokesEditorForm;
 begin
@@ -5001,6 +5042,7 @@ begin
   finally
     Dlg.Free;
   end;
+{$ENDIF}
 end;
 
 procedure TPrefForm.SetKeystrokes(const Value: TSynEditKeyStrokes);
@@ -5483,19 +5525,6 @@ begin
   end;
 end;
 
-
-{$IFNDEF VER_D7_UP}
-function IncludeTrailingPathDelimiter(const S: string): string;
-begin
-  result := IncludeTrailingBackslash(S);
-end;
-
-function ExcludeTrailingPathDelimiter(const S: string): string;
-begin
-  result := ExcludeTrailingBackslash(S);
-end;
-{$ENDIF}
-
 function GetUseMDIMode : Boolean;
 var
   R : TRegistry;
@@ -5853,6 +5882,19 @@ begin
 end;
 
 initialization
+{$IFDEF FPC}
+  {$i Preferences.lrs}
+
+  VerCompanyName      := 'JoCar Consulting';
+  VerFileDescription  := '';
+  VerFileVersion      := '3.3.7.16';
+  VerInternalName     := 'BricxCC';
+  VerLegalCopyright   := 'Copyright (c) 2008, John Hansen';
+  VerOriginalFileName := 'BricxCC';
+  VerProductName      := 'BricxCC';
+  VerProductVersion   := '3.3';
+  VerComments         := '';
+{$ENDIF}
   fVersion := GetVersionInfo(Application.ExeName).ProductVersion;
 
 finalization

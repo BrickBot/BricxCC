@@ -16,10 +16,19 @@
  *)
 unit GotoLine;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
+
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, uSpin;
+  {$IFDEF FPC}
+  LCLType,
+  LResources,
+  {$ENDIF}
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, BricxccSpin;
 
 type
   TGotoForm = class(TForm)
@@ -27,7 +36,7 @@ type
     btnOK: TButton;
     btnCancel: TButton;
     btnHelp: TButton;
-    GotoLineField: TSpinEdit;
+    GotoLineField: TBricxccSpinEdit;
     procedure FormShow(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure GotoLineFieldKeyDown(Sender: TObject; var Key: Word;
@@ -49,10 +58,15 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
-  Windows, SysUtils, Dialogs, MainUnit, Editor, uLocalizedStrings, Preferences;
+{$IFNDEF FPC}
+  Windows, 
+{$ENDIF}
+  SysUtils, Dialogs, MainUnit, Editor, uLocalizedStrings, Preferences;
 
 procedure TGotoForm.FormShow(Sender: TObject);
 begin
@@ -130,5 +144,10 @@ begin
   else
     GotoLineField.MinValue := 1;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i GotoLine.lrs}
+{$ENDIF}
 
 end.

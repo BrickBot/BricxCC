@@ -105,7 +105,13 @@ procedure FindCppProcs(Timeout : Cardinal; CParser : TBCBTokenList; theLang : TE
 implementation
 
 uses
-  SysUtils, Classes, mwGenericLex, uCommonUtils;
+{$IFDEF FPC}
+  LCLIntf,
+{$ENDIF}
+  SysUtils,
+  Classes,
+  mwGenericLex,
+  uCommonUtils;
 
 const
   ImageIndexGear     = 0;

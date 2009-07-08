@@ -62,7 +62,16 @@ object frmRICLoader: TfrmRICLoader
         Height = 13
         Caption = 'Opt:'
       end
-      object edtDescrW: TSpinEdit
+      object btnAddDescr: TButton
+        Left = 256
+        Top = 2
+        Width = 57
+        Height = 25
+        Caption = 'Add'
+        TabOrder = 3
+        OnClick = btnAddDescrClick
+      end
+      object edtDescrW: TBricxccSpinEdit
         Left = 32
         Top = 8
         Width = 49
@@ -73,7 +82,7 @@ object frmRICLoader: TfrmRICLoader
         TabOrder = 0
         Value = 0
       end
-      object edtDescrH: TSpinEdit
+      object edtDescrH: TBricxccSpinEdit
         Left = 32
         Top = 32
         Width = 49
@@ -84,16 +93,7 @@ object frmRICLoader: TfrmRICLoader
         TabOrder = 1
         Value = 0
       end
-      object btnAddDescr: TButton
-        Left = 256
-        Top = 2
-        Width = 57
-        Height = 25
-        Caption = 'Add'
-        TabOrder = 3
-        OnClick = btnAddDescrClick
-      end
-      object edtDescrOpt: TSpinEdit
+      object edtDescrOpt: TBricxccSpinEdit
         Left = 32
         Top = 56
         Width = 49
@@ -135,28 +135,6 @@ object frmRICLoader: TfrmRICLoader
         Height = 13
         Caption = 'Val:'
       end
-      object edtPixelX: TSpinEdit
-        Left = 32
-        Top = 8
-        Width = 49
-        Height = 22
-        MaxLength = 3
-        MaxValue = 100
-        MinValue = 0
-        TabOrder = 0
-        Value = 0
-      end
-      object edtPixelY: TSpinEdit
-        Left = 32
-        Top = 32
-        Width = 49
-        Height = 22
-        MaxLength = 2
-        MaxValue = 64
-        MinValue = 0
-        TabOrder = 3
-        Value = 0
-      end
       object btnAddPixel: TButton
         Left = 256
         Top = 2
@@ -191,17 +169,6 @@ object frmRICLoader: TfrmRICLoader
         Checked = True
         State = cbChecked
         TabOrder = 10
-      end
-      object edtPixelVal: TSpinEdit
-        Left = 32
-        Top = 56
-        Width = 49
-        Height = 22
-        MaxLength = 2
-        MaxValue = 64
-        MinValue = 0
-        TabOrder = 6
-        Value = 0
       end
       object chkPixelVal: TCheckBox
         Left = 88
@@ -283,6 +250,39 @@ object frmRICLoader: TfrmRICLoader
           '9'
           '10')
       end
+      object edtPixelX: TBricxccSpinEdit
+        Left = 32
+        Top = 8
+        Width = 49
+        Height = 22
+        MaxLength = 3
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 0
+        Value = 0
+      end
+      object edtPixelY: TBricxccSpinEdit
+        Left = 32
+        Top = 32
+        Width = 49
+        Height = 22
+        MaxLength = 2
+        MaxValue = 64
+        MinValue = 0
+        TabOrder = 3
+        Value = 0
+      end
+      object edtPixelVal: TBricxccSpinEdit
+        Left = 32
+        Top = 56
+        Width = 49
+        Height = 22
+        MaxLength = 2
+        MaxValue = 64
+        MinValue = 0
+        TabOrder = 6
+        Value = 0
+      end
     end
     object shtLine: TTabSheet
       Caption = 'Line'
@@ -323,50 +323,6 @@ object frmRICLoader: TfrmRICLoader
         Caption = 'Add'
         TabOrder = 12
         OnClick = btnAddLineClick
-      end
-      object edtLineX1: TSpinEdit
-        Left = 32
-        Top = 8
-        Width = 49
-        Height = 22
-        MaxLength = 3
-        MaxValue = 100
-        MinValue = 0
-        TabOrder = 0
-        Value = 0
-      end
-      object edtLineY1: TSpinEdit
-        Left = 32
-        Top = 32
-        Width = 49
-        Height = 22
-        MaxLength = 2
-        MaxValue = 64
-        MinValue = 0
-        TabOrder = 3
-        Value = 0
-      end
-      object edtLineX2: TSpinEdit
-        Left = 32
-        Top = 56
-        Width = 49
-        Height = 22
-        MaxLength = 3
-        MaxValue = 100
-        MinValue = 0
-        TabOrder = 6
-        Value = 0
-      end
-      object edtLineY2: TSpinEdit
-        Left = 32
-        Top = 80
-        Width = 49
-        Height = 22
-        MaxLength = 2
-        MaxValue = 64
-        MinValue = 0
-        TabOrder = 9
-        Value = 0
       end
       object chkLineX1: TCheckBox
         Left = 88
@@ -496,6 +452,50 @@ object frmRICLoader: TfrmRICLoader
           '9'
           '10')
       end
+      object edtLineX1: TBricxccSpinEdit
+        Left = 32
+        Top = 8
+        Width = 49
+        Height = 22
+        MaxLength = 3
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 0
+        Value = 0
+      end
+      object edtLineY1: TBricxccSpinEdit
+        Left = 32
+        Top = 32
+        Width = 49
+        Height = 22
+        MaxLength = 2
+        MaxValue = 64
+        MinValue = 0
+        TabOrder = 3
+        Value = 0
+      end
+      object edtLineX2: TBricxccSpinEdit
+        Left = 32
+        Top = 56
+        Width = 49
+        Height = 22
+        MaxLength = 3
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 6
+        Value = 0
+      end
+      object edtLineY2: TBricxccSpinEdit
+        Left = 32
+        Top = 80
+        Width = 49
+        Height = 22
+        MaxLength = 2
+        MaxValue = 64
+        MinValue = 0
+        TabOrder = 9
+        Value = 0
+      end
     end
     object shtRect: TTabSheet
       Caption = 'Rect'
@@ -536,50 +536,6 @@ object frmRICLoader: TfrmRICLoader
         Caption = 'Add'
         TabOrder = 12
         OnClick = btnAddRectClick
-      end
-      object edtRectX: TSpinEdit
-        Left = 32
-        Top = 8
-        Width = 49
-        Height = 22
-        MaxLength = 3
-        MaxValue = 100
-        MinValue = 0
-        TabOrder = 0
-        Value = 0
-      end
-      object edtRectY: TSpinEdit
-        Left = 32
-        Top = 32
-        Width = 49
-        Height = 22
-        MaxLength = 2
-        MaxValue = 64
-        MinValue = 0
-        TabOrder = 3
-        Value = 0
-      end
-      object edtRectW: TSpinEdit
-        Left = 32
-        Top = 56
-        Width = 49
-        Height = 22
-        MaxLength = 3
-        MaxValue = 100
-        MinValue = 0
-        TabOrder = 6
-        Value = 0
-      end
-      object edtRectH: TSpinEdit
-        Left = 32
-        Top = 80
-        Width = 49
-        Height = 22
-        MaxLength = 2
-        MaxValue = 64
-        MinValue = 0
-        TabOrder = 9
-        Value = 0
       end
       object chkRectX: TCheckBox
         Left = 88
@@ -709,6 +665,50 @@ object frmRICLoader: TfrmRICLoader
           '9'
           '10')
       end
+      object edtRectX: TBricxccSpinEdit
+        Left = 32
+        Top = 8
+        Width = 49
+        Height = 22
+        MaxLength = 3
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 0
+        Value = 0
+      end
+      object edtRectY: TBricxccSpinEdit
+        Left = 32
+        Top = 32
+        Width = 49
+        Height = 22
+        MaxLength = 2
+        MaxValue = 64
+        MinValue = 0
+        TabOrder = 3
+        Value = 0
+      end
+      object edtRectW: TBricxccSpinEdit
+        Left = 32
+        Top = 56
+        Width = 49
+        Height = 22
+        MaxLength = 3
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 6
+        Value = 0
+      end
+      object edtRectH: TBricxccSpinEdit
+        Left = 32
+        Top = 80
+        Width = 49
+        Height = 22
+        MaxLength = 2
+        MaxValue = 64
+        MinValue = 0
+        TabOrder = 9
+        Value = 0
+      end
     end
     object shtCircle: TTabSheet
       Caption = 'Circle'
@@ -749,39 +749,6 @@ object frmRICLoader: TfrmRICLoader
         Caption = 'Add'
         TabOrder = 9
         OnClick = btnAddCircleClick
-      end
-      object edtCircleX: TSpinEdit
-        Left = 32
-        Top = 8
-        Width = 49
-        Height = 22
-        MaxLength = 3
-        MaxValue = 100
-        MinValue = 0
-        TabOrder = 0
-        Value = 0
-      end
-      object edtCircleY: TSpinEdit
-        Left = 32
-        Top = 32
-        Width = 49
-        Height = 22
-        MaxLength = 2
-        MaxValue = 64
-        MinValue = 0
-        TabOrder = 3
-        Value = 0
-      end
-      object edtCircleR: TSpinEdit
-        Left = 32
-        Top = 56
-        Width = 49
-        Height = 22
-        MaxLength = 3
-        MaxValue = 100
-        MinValue = 0
-        TabOrder = 6
-        Value = 0
       end
       object chkCircleX: TCheckBox
         Left = 88
@@ -879,6 +846,39 @@ object frmRICLoader: TfrmRICLoader
           '9'
           '10')
       end
+      object edtCircleX: TBricxccSpinEdit
+        Left = 32
+        Top = 8
+        Width = 49
+        Height = 22
+        MaxLength = 3
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 0
+        Value = 0
+      end
+      object edtCircleY: TBricxccSpinEdit
+        Left = 32
+        Top = 32
+        Width = 49
+        Height = 22
+        MaxLength = 2
+        MaxValue = 64
+        MinValue = 0
+        TabOrder = 3
+        Value = 0
+      end
+      object edtCircleR: TBricxccSpinEdit
+        Left = 32
+        Top = 56
+        Width = 49
+        Height = 22
+        MaxLength = 3
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 6
+        Value = 0
+      end
     end
     object shtNumBox: TTabSheet
       Caption = 'NumBox'
@@ -912,38 +912,6 @@ object frmRICLoader: TfrmRICLoader
         Caption = 'Add'
         TabOrder = 9
         OnClick = btnAddNumBoxClick
-      end
-      object edtNumBoxX: TSpinEdit
-        Left = 32
-        Top = 8
-        Width = 49
-        Height = 22
-        MaxLength = 3
-        MaxValue = 100
-        MinValue = 0
-        TabOrder = 0
-        Value = 0
-      end
-      object edtNumBoxY: TSpinEdit
-        Left = 32
-        Top = 32
-        Width = 49
-        Height = 22
-        MaxLength = 2
-        MaxValue = 64
-        MinValue = 0
-        TabOrder = 3
-        Value = 0
-      end
-      object edtNumBoxVal: TSpinEdit
-        Left = 32
-        Top = 56
-        Width = 49
-        Height = 22
-        MaxValue = 0
-        MinValue = 0
-        TabOrder = 6
-        Value = 0
       end
       object chkNumBoxVal: TCheckBox
         Left = 88
@@ -1041,6 +1009,38 @@ object frmRICLoader: TfrmRICLoader
           '9'
           '10')
       end
+      object edtNumBoxX: TBricxccSpinEdit
+        Left = 32
+        Top = 8
+        Width = 49
+        Height = 22
+        MaxLength = 3
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 0
+        Value = 0
+      end
+      object edtNumBoxY: TBricxccSpinEdit
+        Left = 32
+        Top = 32
+        Width = 49
+        Height = 22
+        MaxLength = 2
+        MaxValue = 64
+        MinValue = 0
+        TabOrder = 3
+        Value = 0
+      end
+      object edtNumBoxVal: TBricxccSpinEdit
+        Left = 32
+        Top = 56
+        Width = 49
+        Height = 22
+        MaxValue = 0
+        MinValue = 0
+        TabOrder = 6
+        Value = 0
+      end
     end
     object shtSprite: TTabSheet
       Caption = 'Sprite'
@@ -1061,7 +1061,7 @@ object frmRICLoader: TfrmRICLoader
         TabOrder = 1
         OnClick = btnAddSpriteClick
       end
-      object edtSpriteAddr: TSpinEdit
+      object edtSpriteAddr: TBricxccSpinEdit
         Left = 32
         Top = 8
         Width = 49
@@ -1139,50 +1139,6 @@ object frmRICLoader: TfrmRICLoader
           Width = 11
           Height = 13
           Caption = 'H:'
-        end
-        object edtCopyBitsSrcX: TSpinEdit
-          Left = 32
-          Top = 16
-          Width = 49
-          Height = 22
-          MaxLength = 3
-          MaxValue = 100
-          MinValue = 0
-          TabOrder = 0
-          Value = 0
-        end
-        object edtCopyBitsSrcY: TSpinEdit
-          Left = 32
-          Top = 40
-          Width = 49
-          Height = 22
-          MaxLength = 2
-          MaxValue = 64
-          MinValue = 0
-          TabOrder = 3
-          Value = 0
-        end
-        object edtCopyBitsSrcW: TSpinEdit
-          Left = 32
-          Top = 64
-          Width = 49
-          Height = 22
-          MaxLength = 3
-          MaxValue = 100
-          MinValue = 0
-          TabOrder = 6
-          Value = 0
-        end
-        object edtCopyBitsSrcH: TSpinEdit
-          Left = 32
-          Top = 88
-          Width = 49
-          Height = 22
-          MaxLength = 2
-          MaxValue = 64
-          MinValue = 0
-          TabOrder = 9
-          Value = 0
         end
         object chkCopyBitsSrcX: TCheckBox
           Left = 88
@@ -1312,17 +1268,50 @@ object frmRICLoader: TfrmRICLoader
             '9'
             '10')
         end
-      end
-      object edtCopyBitsAddr: TSpinEdit
-        Left = 32
-        Top = 8
-        Width = 49
-        Height = 22
-        MaxLength = 3
-        MaxValue = 100
-        MinValue = 0
-        TabOrder = 0
-        Value = 0
+        object edtCopyBitsSrcX: TBricxccSpinEdit
+          Left = 32
+          Top = 16
+          Width = 49
+          Height = 22
+          MaxLength = 3
+          MaxValue = 100
+          MinValue = 0
+          TabOrder = 0
+          Value = 0
+        end
+        object edtCopyBitsSrcY: TBricxccSpinEdit
+          Left = 32
+          Top = 40
+          Width = 49
+          Height = 22
+          MaxLength = 2
+          MaxValue = 64
+          MinValue = 0
+          TabOrder = 3
+          Value = 0
+        end
+        object edtCopyBitsSrcW: TBricxccSpinEdit
+          Left = 32
+          Top = 64
+          Width = 49
+          Height = 22
+          MaxLength = 3
+          MaxValue = 100
+          MinValue = 0
+          TabOrder = 6
+          Value = 0
+        end
+        object edtCopyBitsSrcH: TBricxccSpinEdit
+          Left = 32
+          Top = 88
+          Width = 49
+          Height = 22
+          MaxLength = 2
+          MaxValue = 64
+          MinValue = 0
+          TabOrder = 9
+          Value = 0
+        end
       end
       object chkCopyBitsAddr: TCheckBox
         Left = 88
@@ -1376,28 +1365,6 @@ object frmRICLoader: TfrmRICLoader
           Width = 10
           Height = 13
           Caption = 'Y:'
-        end
-        object edtCopyBitsDstX: TSpinEdit
-          Left = 32
-          Top = 16
-          Width = 49
-          Height = 22
-          MaxLength = 3
-          MaxValue = 100
-          MinValue = 0
-          TabOrder = 0
-          Value = 0
-        end
-        object edtCopyBitsDstY: TSpinEdit
-          Left = 32
-          Top = 40
-          Width = 49
-          Height = 22
-          MaxLength = 2
-          MaxValue = 64
-          MinValue = 0
-          TabOrder = 3
-          Value = 0
         end
         object chkCopyBitsDstX: TCheckBox
           Left = 88
@@ -1463,6 +1430,39 @@ object frmRICLoader: TfrmRICLoader
             '9'
             '10')
         end
+        object edtCopyBitsDstX: TBricxccSpinEdit
+          Left = 32
+          Top = 16
+          Width = 49
+          Height = 22
+          MaxLength = 3
+          MaxValue = 100
+          MinValue = 0
+          TabOrder = 0
+          Value = 0
+        end
+        object edtCopyBitsDstY: TBricxccSpinEdit
+          Left = 32
+          Top = 40
+          Width = 49
+          Height = 22
+          MaxLength = 2
+          MaxValue = 64
+          MinValue = 0
+          TabOrder = 3
+          Value = 0
+        end
+      end
+      object edtCopyBitsAddr: TBricxccSpinEdit
+        Left = 32
+        Top = 8
+        Width = 49
+        Height = 22
+        MaxLength = 3
+        MaxValue = 100
+        MinValue = 0
+        TabOrder = 0
+        Value = 0
       end
     end
   end

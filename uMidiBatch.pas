@@ -16,10 +16,17 @@
  *)
 unit uMidiBatch;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, Menus, ComCtrls, uSpin,
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
+  Classes, Controls, Forms, StdCtrls, Menus, ComCtrls, BricxccSpin,
   uOfficeComp, uMidi2MS;
 
 type
@@ -44,9 +51,9 @@ type
     lblPBS: TLabel;
     barTranspose: TTrackBar;
     chkUsePB: TCheckBox;
-    edtGap: TSpinEdit;
-    edtPBS: TSpinEdit;
-    edtTempo: TSpinEdit;
+    edtTempo: TBricxccSpinEdit;
+    edtGap: TBricxccSpinEdit;
+    edtPBS: TBricxccSpinEdit;
     procedure btnExecuteClick(Sender: TObject);
     procedure edtOutputDirChange(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -81,10 +88,12 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
 
 uses
-  uCommonUtils;
+  SysUtils, uCommonUtils;
 
 { TfrmMidiBatch }
 
@@ -306,5 +315,10 @@ begin
     OnClick := mniClearClick;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uMIDIBatch.lrs}
+{$ENDIF}
 
 end.

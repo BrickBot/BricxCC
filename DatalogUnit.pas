@@ -16,9 +16,17 @@
  *)
 unit DatalogUnit;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+  LCLType,
+{$ENDIF}
   Classes, Controls, Forms, Dialogs, StdCtrls;
 
 type
@@ -57,10 +65,12 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
-  SysUtils, brick_common, DataAnalysis, Preferences;
+  SysUtils, brick_common, {$IFNDEF FPC}DataAnalysis, {$ENDIF}Preferences;
 
 procedure TDatalogForm.UploadBtnClick(Sender: TObject);
 var
@@ -114,6 +124,9 @@ begin
 end;
 
 procedure TDatalogForm.LaunchAnalysis(bXY: boolean);
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   F : TfrmDataAnalysis;
 begin
@@ -123,6 +136,7 @@ begin
   F.RelativeTime := chkRelativeTime.Checked;
   F.Data         := DatalogMemo.Lines;
   F.Show;
+{$ENDIF}
 end;
 
 procedure TDatalogForm.btnAnalyzeXYClick(Sender: TObject);
@@ -144,5 +158,10 @@ procedure TDatalogForm.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i DatalogUnit.lrs}
+{$ENDIF}
 
 end.

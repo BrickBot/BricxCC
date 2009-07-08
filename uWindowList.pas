@@ -16,10 +16,20 @@
  *)
 unit uWindowList;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ExtCtrls;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+{$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls;
 
 type
   TfrmWindowList = class(TForm)
@@ -48,7 +58,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   MainUnit, Editor;
@@ -106,5 +118,10 @@ procedure TfrmWindowList.lstWindowsDblClick(Sender: TObject);
 begin
   GotoSelectedWindow;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uWindowList.lrs}
+{$ENDIF}
 
 end.

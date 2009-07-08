@@ -148,7 +148,7 @@ object frmWave2RSO: TfrmWave2RSO
       TabOrder = 5
       TabStop = True
     end
-    object edtRate: TSpinEdit
+    object edtRate: TBricxccSpinEdit
       Left = 8
       Top = 144
       Width = 57

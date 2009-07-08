@@ -1,0 +1,39 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfrmSetLNPAddress','FORMDATA',[
+  'TPF0'#17'TfrmSetLNPAddress'#16'frmSetLNPAddress'#4'Left'#3'~'#1#6'Height'#2
+  +'G'#3'Top'#3','#1#5'Width'#3#175#0#11'HelpContext'#4'@'#156#0#0#11'BorderIco'
+  +'ns'#11#12'biSystemMenu'#6'biHelp'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'
+  +#6#15'Set LNP Address'#12'ClientHeight'#2'G'#11'ClientWidth'#3#175#0#11'Font'
+  +'.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#8'Position'#7#16'poMainForm'
+  +'Center'#10'LCLVersion'#6#6'0.9.25'#0#6'TLabel'#6'Label1'#4'Left'#2#8#6'Heig'
+  +'ht'#2#17#3'Top'#2#13#5'Width'#2'K'#7'Caption'#6#9'&Address:'#12'FocusContro'
+  +'l'#7#10'edtAddress'#11'ParentColor'#8#0#0#7'TButton'#5'btnOK'#4'Left'#2#5#6
+  +'Height'#2#25#3'Top'#2'('#5'Width'#2'4'#11'HelpContext'#4'B'#156#0#0#7'Capti'
+  +'on'#6#2'OK'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#0#0#0#7'TButton'
+  +#9'btnCancel'#4'Left'#2'='#6'Height'#2#25#3'Top'#2'('#5'Width'#2'4'#11'HelpC'
+  +'ontext'#4'C'#156#0#0#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2
+  +#8'TabOrder'#2#1#0#0#7'TButton'#7'btnHelp'#4'Left'#2'v'#6'Height'#2#25#3'Top'
+  +#2'('#5'Width'#2'4'#11'HelpContext'#4'D'#156#0#0#7'Caption'#6#5'&Help'#7'OnC'
+  +'lick'#7#12'btnHelpClick'#8'TabOrder'#2#2#0#0#16'TBricxccSpinEdit'#10'edtAdd'
+  +'ress'#4'Left'#2'X'#6'Height'#2#22#3'Top'#2#8#5'Width'#2';'#11'HelpContext'#4
+  +'A'#156#0#0#8'MaxValue'#2#15#10'OnKeyPress'#7#18'edtAddressKeyPress'#8'TabOr'
+  +'der'#2#3#0#0#0#17'TfrmSetLNPAddress'#16'frmSetLNPAddress'#4'Left'#3'~'#1#6
+  +'Height'#2'G'#3'Top'#3','#1#5'Width'#3#175#0#11'HelpContext'#4'@'#156#0#0#11
+  +'BorderIcons'#11#12'biSystemMenu'#6'biHelp'#0#11'BorderStyle'#7#8'bsDialog'#7
+  +'Caption'#6#15'Set LNP Address'#12'ClientHeight'#2'G'#11'ClientWidth'#3#175#0
+  +#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#8'Position'#7#16'poM'
+  +'ainFormCenter'#10'LCLVersion'#6#6'0.9.25'#0#6'TLabel'#6'Label1'#4'Left'#2#8
+  +#6'Height'#2#17#3'Top'#2#13#5'Width'#2'K'#7'Caption'#6#9'&Address:'#12'Focus'
+  +'Control'#7#10'edtAddress'#11'ParentColor'#8#0#0#7'TButton'#5'btnOK'#4'Left'
+  +#2#5#6'Height'#2#25#3'Top'#2'('#5'Width'#2'4'#11'HelpContext'#4'B'#156#0#0#7
+  +'Caption'#6#2'OK'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#0#0#0#7'TBu'
+  +'tton'#9'btnCancel'#4'Left'#2'='#6'Height'#2#25#3'Top'#2'('#5'Width'#2'4'#11
+  +'HelpContext'#4'C'#156#0#0#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'
+  +#2#2#8'TabOrder'#2#1#0#0#7'TButton'#7'btnHelp'#4'Left'#2'v'#6'Height'#2#25#3
+  +'Top'#2'('#5'Width'#2'4'#11'HelpContext'#4'D'#156#0#0#7'Caption'#6#5'&Help'#7
+  +'OnClick'#7#12'btnHelpClick'#8'TabOrder'#2#2#0#0#16'TBricxccSpinEdit'#10'edt'
+  +'Address'#4'Left'#2'X'#6'Height'#2#22#3'Top'#2#8#5'Width'#2';'#11'HelpContex'
+  +'t'#4'A'#156#0#0#8'MaxValue'#2#15#10'OnKeyPress'#7#18'edtAddressKeyPress'#8
+  +'TabOrder'#2#3#0#0#0
+]);

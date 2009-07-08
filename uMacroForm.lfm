@@ -1,0 +1,206 @@
+object frmMacroManager: TfrmMacroManager
+  Left = 259
+  Height = 360
+  Top = 136
+  Width = 368
+  HelpContext = 3400
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Macro Library'
+  ClientHeight = 360
+  ClientWidth = 368
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object lblMacroName: TLabel
+    Left = 8
+    Height = 17
+    Top = 27
+    Width = 106
+    Caption = '&Macro name:'
+    FocusControl = edtName
+    ParentColor = False
+  end
+  object lblMacrosIn: TLabel
+    Left = 8
+    Height = 17
+    Top = 240
+    Width = 85
+    Caption = 'M&acros in:'
+    FocusControl = cboLibrary
+    ParentColor = False
+  end
+  object lblDescription: TLabel
+    Left = 8
+    Height = 17
+    Top = 284
+    Width = 96
+    Caption = 'Descr&iption:'
+    FocusControl = mmoDescription
+    ParentColor = False
+  end
+  object lblHotKey: TLabel
+    Left = 8
+    Height = 17
+    Top = 264
+    Width = 67
+    Caption = '&Hotkey:'
+    ParentColor = False
+  end
+  object edtName: TEdit
+    Left = 8
+    Height = 21
+    Top = 43
+    Width = 224
+    HelpContext = 3405
+    OnChange = edtNameChange
+    TabOrder = 0
+  end
+  object lstMacros: TListBox
+    Left = 8
+    Height = 161
+    Top = 67
+    Width = 224
+    HelpContext = 3406
+    ItemHeight = 13
+    OnClick = lstMacrosClick
+    OnDblClick = btnRunClick
+    TabOrder = 1
+    TopIndex = -1
+  end
+  object btnRun: TButton
+    Left = 245
+    Height = 24
+    Top = 13
+    Width = 113
+    HelpContext = 3407
+    Caption = '&Run'
+    Default = True
+    OnClick = btnRunClick
+    TabOrder = 6
+  end
+  object btnEdit: TButton
+    Left = 245
+    Height = 24
+    Top = 42
+    Width = 113
+    HelpContext = 3408
+    Caption = '&Edit'
+    OnClick = btnEditClick
+    TabOrder = 7
+  end
+  object btnCreate: TButton
+    Left = 245
+    Height = 24
+    Top = 72
+    Width = 113
+    HelpContext = 3409
+    Caption = '&Create'
+    OnClick = btnCreateClick
+    TabOrder = 8
+  end
+  object btnDelete: TButton
+    Left = 245
+    Height = 24
+    Top = 102
+    Width = 113
+    HelpContext = 3410
+    Caption = '&Delete'
+    OnClick = btnDeleteClick
+    TabOrder = 9
+  end
+  object btnCancel: TButton
+    Left = 245
+    Height = 24
+    Top = 174
+    Width = 113
+    HelpContext = 3411
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    OnClick = btnCancelClick
+    TabOrder = 11
+  end
+  object cboLibrary: TComboBox
+    Left = 64
+    Height = 21
+    Top = 236
+    Width = 270
+    HelpContext = 3412
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    MaxLength = 65535
+    OnClick = cboLibraryClick
+    OnExit = cboLibraryExit
+    TabOrder = 2
+  end
+  object btnBrowse: TButton
+    Left = 337
+    Height = 21
+    Top = 236
+    Width = 21
+    HelpContext = 3413
+    Caption = '...'
+    OnClick = btnBrowseClick
+    TabOrder = 3
+  end
+  object mmoDescription: TMemo
+    Left = 8
+    Height = 55
+    Top = 300
+    Width = 353
+    HelpContext = 3414
+    MaxLength = 200
+    OnChange = mmoDescriptionChange
+    TabOrder = 5
+  end
+  object btnOK: TButton
+    Left = 245
+    Height = 24
+    Top = 144
+    Width = 113
+    HelpContext = 3415
+    Caption = 'OK'
+    ModalResult = 1
+    OnClick = btnOKClick
+    TabOrder = 10
+  end
+  object chkSuspend: TCheckBox
+    Left = 8
+    Height = 26
+    Top = 8
+    Width = 209
+    HelpContext = 3416
+    Caption = '&Suspend macro recording'
+    OnClick = chkSuspendClick
+    TabOrder = 13
+  end
+  object btnHelp: TButton
+    Left = 245
+    Height = 24
+    Top = 204
+    Width = 113
+    HelpContext = 3417
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 12
+  end
+  object hkMacro: TBricxCCHotKey
+    Left = 64
+    Height = 21
+    Top = 261
+    Width = 121
+    HelpContext = 3418
+    OnExit = hkMacroExit
+    TabOrder = 4
+    Text = 'None'
+  end
+  object dlgOpen: TOpenDialog
+    Title = 'Browse for Macro Library'
+    Filter = 'Macro Library (*.mlb)|*.mlb|All Files (*.*)|*.*'
+    left = 256
+    top = 276
+  end
+end

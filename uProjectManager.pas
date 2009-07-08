@@ -16,9 +16,16 @@
  *)
 unit uProjectManager;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, Dialogs, Menus, StdCtrls, uOfficeComp;
 
 type
@@ -64,7 +71,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, MainUnit, Preferences, SynEditHighlighter, uLocalizedStrings;
@@ -232,5 +241,10 @@ begin
     OnClick := mniOpenClick;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uProjectManager.lrs}
+{$ENDIF}
 
 end.

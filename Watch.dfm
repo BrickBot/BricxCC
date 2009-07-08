@@ -27,7 +27,7 @@ object WatchForm: TWatchForm
     Top = 0
     Width = 444
     Height = 410
-    ActivePage = shtCommon
+    ActivePage = shtNXT
     Align = alClient
     TabOrder = 0
     object shtCommon: TTabSheet
@@ -2165,7 +2165,7 @@ object WatchForm: TWatchForm
           ParentFont = False
           TabOrder = 17
         end
-        object edtI2CLen1: TSpinEdit
+        object edtI2CLen1: TBricxccSpinEdit
           Left = 175
           Top = 26
           Width = 42
@@ -2176,7 +2176,7 @@ object WatchForm: TWatchForm
           TabOrder = 3
           Value = 0
         end
-        object edtI2CLen2: TSpinEdit
+        object edtI2CLen2: TBricxccSpinEdit
           Left = 175
           Top = 51
           Width = 42
@@ -2187,7 +2187,7 @@ object WatchForm: TWatchForm
           TabOrder = 8
           Value = 0
         end
-        object edtI2CLen4: TSpinEdit
+        object edtI2CLen4: TBricxccSpinEdit
           Left = 175
           Top = 101
           Width = 42
@@ -2198,7 +2198,7 @@ object WatchForm: TWatchForm
           TabOrder = 18
           Value = 0
         end
-        object edtI2CLen3: TSpinEdit
+        object edtI2CLen3: TBricxccSpinEdit
           Left = 175
           Top = 76
           Width = 42

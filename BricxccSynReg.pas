@@ -21,19 +21,18 @@ interface
 uses
   Classes,
   {$IFDEF FPC}
-   LResources,
+  LResources,
+  StdCtrls,
   {$ENDIF}
   uNewHotKey,
   uOfficeComp,
   uTreeSaver,
 {$IFNDEF FPC}
-  uInstanceControl,
   SynEditAutoComplete,
   DirectoryEdit,
 {$ENDIF}
   BricxccSynEdit,
   BricxccSpin,
-  uSpin,
   SynHighlighterNQC,
   SynHighlighterH8,
   SynHighlighterForth,
@@ -47,27 +46,43 @@ uses
   SynHighlighterRuby,
   SynHighlighterROPS,
   SynEditEx;
-
+  
+{$IFDEF FPC}
+type
+  TRichEdit = class(TMemo)
+  protected
+    fHideScrollbars : boolean;
+    fPlaintext : boolean;
+    fBevelWidth : integer;
+  published
+    property HideScrollbars : boolean read fHideScrollbars write fHideScrollbars;
+    property PlainText : boolean read fPlaintext write fPlaintext;
+    property BevelWidth : integer read fBevelWidth write fBevelWidth;
+    property BorderWidth;
+  end;
+{$ENDIF}
+  
 procedure Register;
 
 implementation
 
 procedure Register;
 begin
-  RegisterComponents('BricxCC', [TBricxCCHotKey, TBricxccSynEdit,
-    TSynEditEx, TBricxccSpinEdit
-    {$IFNDEF FPC}, TSpinEdit, TSynEditAutoComplete, TInstanceControl, TDirectoryEdit{$ENDIF}
-  ]);
+  RegisterComponents('BricxCC', [TBricxCCHotKey, TBricxccSynEdit, {$IFNDEF FPC}TSynEditAutoComplete,{$ENDIF}
+    TSynEditEx, TBricxccSpinEdit]);
   RegisterComponents('BricxCC', [
     TSynNQCSyn, TSynForthSyn, TSynH8Syn, TSynMindScriptSyn, TSynLASMSyn,
     TSynNBCSyn, TSynNPGSyn, TSynRSSyn, TSynCSSyn, TSynLuaSyn, TSynRubySyn,
     TSynROPSSyn]);
 
-  RegisterClasses([TOfficeMenuItem, TOfficeToolButton]);
+  RegisterNoIcon([TOfficeMenuItem, TOfficeToolButton]);
   
   RegisterComponents('BricxCC', [TOfficeControlBar, TOfficeToolBar,
     TOfficeGradientPanel, TOfficePopupMenu, TOfficeMainMenu,
-    TOfficeSpeedButton, TBricxCCTreeSave]);
+    TOfficeSpeedButton, TBricxCCTreeSave, TDirectoryEdit]);
+{$IFDEF FPC}
+  RegisterComponents('BricxCC', [TRichEdit]);
+{$ENDIF}
 
 end;
 

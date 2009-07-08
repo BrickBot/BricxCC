@@ -16,9 +16,16 @@
  *)
 unit uMacroEditor;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   SynEditHighlighter, SynEdit, BricxccSynEdit, SynHighlighterNQC,
   SynCompletionProposal, SynEditEx;
@@ -56,7 +63,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, Graphics, SynEditKeyCmds, uCommonUtils;
@@ -186,5 +195,10 @@ begin
     Editor := TheEditor;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uMacroEditor.lrs}
+{$ENDIF}
 
 end.

@@ -1,0 +1,38 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TTextReplaceDialog','FORMDATA',[
+  'TPF0'#241#18'TTextReplaceDialog'#17'TextReplaceDialog'#6'Height'#3#210#0#5'W'
+  +'idth'#3'M'#1#7'Caption'#6#12'Replace text'#12'ClientHeight'#3#210#0#11'Clie'
+  +'ntWidth'#3'M'#1#12'OnCloseQuery'#13#0#241#6'TLabel'#6'Label1'#0#0#242#2#1#6
+  +'TLabel'#6'Label2'#4'Left'#2#8#6'Height'#2#17#3'Top'#2')'#5'Width'#2'm'#7'Ca'
+  +'ption'#6#14'&Replace with:'#11'ParentColor'#8#0#0#243#2#2#9'TComboBox'#12'c'
+  +'bSearchText'#0#0#243#2#3#9'TGroupBox'#15'gbSearchOptions'#6'Height'#3#132#0
+  +#3'Top'#2'F'#12'ClientHeight'#2'o'#8'TabOrder'#2#2#0#241#9'TCheckBox'#21'cbS'
+  +'earchCaseSensitive'#3'Top'#2#255#0#0#241#9'TCheckBox'#18'cbSearchWholeWords'
+  +#3'Top'#2#21#0#0#241#9'TCheckBox'#18'cbSearchFromCursor'#3'Top'#2'+'#0#0#241
+  +#9'TCheckBox'#20'cbSearchSelectedOnly'#3'Top'#2'A'#0#0#241#9'TCheckBox'#19'c'
+  +'bRegularExpression'#3'Top'#2'V'#0#0#0#243#2#4#11'TRadioGroup'#17'rgSearchDi'
+  +'rection'#6'Height'#2'R'#3'Top'#2'F'#12'ClientHeight'#2'='#11'ClientWidth'#3
+  +#150#0#8'TabOrder'#2#3#0#0#243#2#5#7'TButton'#5'btnOK'#3'Top'#3#179#0#8'TabO'
+  +'rder'#2#4#0#0#243#2#6#7'TButton'#9'btnCancel'#3'Top'#3#179#0#8'TabOrder'#2#5
+  +#0#0#242#2#7#9'TComboBox'#13'cbReplaceText'#4'Left'#2'`'#6'Height'#2#21#3'To'
+  +'p'#2'%'#5'Width'#3#228#0#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'
+  +#20'cbactSearchAscending'#0#9'MaxLength'#4#255#255#0#0#8'TabOrder'#2#1#0#0#0
+  +#241#18'TTextReplaceDialog'#17'TextReplaceDialog'#6'Height'#3#210#0#5'Width'
+  +#3'M'#1#7'Caption'#6#12'Replace text'#12'ClientHeight'#3#210#0#11'ClientWidt'
+  +'h'#3'M'#1#12'OnCloseQuery'#13#0#241#6'TLabel'#6'Label1'#0#0#242#2#1#6'TLabe'
+  +'l'#6'Label2'#4'Left'#2#8#6'Height'#2#17#3'Top'#2')'#5'Width'#2'm'#7'Caption'
+  +#6#14'&Replace with:'#11'ParentColor'#8#0#0#243#2#2#9'TComboBox'#12'cbSearch'
+  +'Text'#0#0#243#2#3#9'TGroupBox'#15'gbSearchOptions'#6'Height'#3#132#0#3'Top'
+  +#2'F'#12'ClientHeight'#2'o'#8'TabOrder'#2#2#0#241#9'TCheckBox'#21'cbSearchCa'
+  +'seSensitive'#3'Top'#2#255#0#0#241#9'TCheckBox'#18'cbSearchWholeWords'#3'Top'
+  +#2#21#0#0#241#9'TCheckBox'#18'cbSearchFromCursor'#3'Top'#2'+'#0#0#241#9'TChe'
+  +'ckBox'#20'cbSearchSelectedOnly'#3'Top'#2'A'#0#0#241#9'TCheckBox'#19'cbRegul'
+  +'arExpression'#3'Top'#2'V'#0#0#0#243#2#4#11'TRadioGroup'#17'rgSearchDirectio'
+  +'n'#6'Height'#2'R'#3'Top'#2'F'#12'ClientHeight'#2'='#11'ClientWidth'#3#150#0
+  +#8'TabOrder'#2#3#0#0#243#2#5#7'TButton'#5'btnOK'#3'Top'#3#179#0#8'TabOrder'#2
+  +#4#0#0#243#2#6#7'TButton'#9'btnCancel'#3'Top'#3#179#0#8'TabOrder'#2#5#0#0#242
+  +#2#7#9'TComboBox'#13'cbReplaceText'#4'Left'#2'`'#6'Height'#2#21#3'Top'#2'%'#5
+  +'Width'#3#228#0#16'AutoCompleteText'#11#22'cbactEndOfLineComplete'#20'cbactS'
+  +'earchAscending'#0#9'MaxLength'#4#255#255#0#0#8'TabOrder'#2#1#0#0#0
+]);

@@ -1,0 +1,58 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfrmProjectManager','FORMDATA',[
+  'TPF0'#18'TfrmProjectManager'#17'frmProjectManager'#4'Left'#3#18#1#6'Height'#3
+  +#218#0#3'Top'#3#9#1#5'Width'#3#180#0#11'HelpContext'#4#136#144#0#0#11'Border'
+  +'Icons'#11#12'biSystemMenu'#6'biHelp'#0#7'Caption'#6#15'Project Manager'#12
+  +'ClientHeight'#3#218#0#11'ClientWidth'#3#180#0#21'Constraints.MinHeight'#3
+  +#190#0#20'Constraints.MinWidth'#3#180#0#11'Font.Height'#2#245#9'Font.Name'#6
+  +#13'MS Sans Serif'#7'OnClose'#7#9'FormClose'#8'OnCreate'#7#10'FormCreate'#6
+  +'OnShow'#7#8'FormShow'#10'LCLVersion'#6#6'0.9.25'#0#6'TLabel'#8'lblFiles'#4
+  +'Left'#2#4#6'Height'#2#17#3'Top'#2' '#5'Width'#2'1'#7'Caption'#6#7'&Files:'
+  +#12'FocusControl'#7#8'lstFiles'#11'ParentColor'#8#0#0#6'TLabel'#10'lblProjec'
+  +'t'#4'Left'#2#4#6'Height'#2#17#3'Top'#2#8#5'Width'#2'C'#7'Caption'#6#10'lblP'
+  +'roject'#11'ParentColor'#8#0#0#8'TListBox'#8'lstFiles'#4'Left'#2#4#6'Height'
+  +#2'h'#3'Top'#2'0'#5'Width'#3#165#0#11'HelpContext'#4#137#144#0#0#7'Anchors'
+  +#11#5'akTop'#6'akLeft'#7'akRight'#8'akBottom'#0#8'DragMode'#7#11'dmAutomatic'
+  +#10'ItemHeight'#2#13#11'MultiSelect'#9#7'OnClick'#7#13'lstFilesClick'#10'OnD'
+  +'blClick'#7#16'lstFilesDblClick'#10'OnDragDrop'#7#16'lstFilesDragDrop'#10'On'
+  +'DragOver'#7#16'lstFilesDragOver'#9'PopupMenu'#7#8'mnuPopup'#8'TabOrder'#2#0
+  +#8'TopIndex'#2#255#0#0#7'TButton'#7'btnHelp'#4'Left'#2'u'#6'Height'#2#25#3'T'
+  +'op'#3#156#0#5'Width'#2'4'#11'HelpContext'#4#138#144#0#0#7'Anchors'#11#7'akR'
+  +'ight'#8'akBottom'#0#7'Caption'#6#5'&Help'#7'OnClick'#7#12'btnHelpClick'#8'T'
+  +'abOrder'#2#1#0#0#16'TOfficePopupMenu'#8'mnuPopup'#4'left'#2'X'#3'top'#2#8#0
+  +#15'TOfficeMenuItem'#6'mniAdd'#7'Caption'#6#6'Add...'#8'ShortCut'#3'-@'#7'On'
+  +'Click'#7#11'mniAddClick'#0#0#15'TOfficeMenuItem'#9'mniRemove'#7'Caption'#6
+  +#19'Remove from Project'#8'ShortCut'#3'.@'#7'OnClick'#7#14'mniRemoveClick'#0
+  +#0#15'TOfficeMenuItem'#7'mniOpen'#7'Caption'#6#4'Open'#8'ShortCut'#3'O@'#7'O'
+  +'nClick'#7#12'mniOpenClick'#0#0#0#11'TOpenDialog'#7'dlgOpen'#7'Options'#11#14
+  +'ofHideReadOnly'#13'ofNoChangeDir'#18'ofAllowMultiSelect'#15'ofPathMustExist'
+  +#15'ofFileMustExist'#14'ofEnableSizing'#0#4'left'#2'x'#3'top'#2#8#0#0#0#18'T'
+  +'frmProjectManager'#17'frmProjectManager'#4'Left'#3#18#1#6'Height'#3#218#0#3
+  +'Top'#3#9#1#5'Width'#3#180#0#11'HelpContext'#4#136#144#0#0#11'BorderIcons'#11
+  +#12'biSystemMenu'#6'biHelp'#0#7'Caption'#6#15'Project Manager'#12'ClientHeig'
+  +'ht'#3#218#0#11'ClientWidth'#3#180#0#21'Constraints.MinHeight'#3#190#0#20'Co'
+  +'nstraints.MinWidth'#3#180#0#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans'
+  +' Serif'#7'OnClose'#7#9'FormClose'#8'OnCreate'#7#10'FormCreate'#6'OnShow'#7#8
+  +'FormShow'#10'LCLVersion'#6#6'0.9.25'#0#6'TLabel'#8'lblFiles'#4'Left'#2#4#6
+  +'Height'#2#17#3'Top'#2' '#5'Width'#2'1'#7'Caption'#6#7'&Files:'#12'FocusCont'
+  +'rol'#7#8'lstFiles'#11'ParentColor'#8#0#0#6'TLabel'#10'lblProject'#4'Left'#2
+  +#4#6'Height'#2#17#3'Top'#2#8#5'Width'#2'C'#7'Caption'#6#10'lblProject'#11'Pa'
+  +'rentColor'#8#0#0#8'TListBox'#8'lstFiles'#4'Left'#2#4#6'Height'#2'h'#3'Top'#2
+  +'0'#5'Width'#3#165#0#11'HelpContext'#4#137#144#0#0#7'Anchors'#11#5'akTop'#6
+  +'akLeft'#7'akRight'#8'akBottom'#0#8'DragMode'#7#11'dmAutomatic'#10'ItemHeigh'
+  +'t'#2#13#11'MultiSelect'#9#7'OnClick'#7#13'lstFilesClick'#10'OnDblClick'#7#16
+  +'lstFilesDblClick'#10'OnDragDrop'#7#16'lstFilesDragDrop'#10'OnDragOver'#7#16
+  +'lstFilesDragOver'#9'PopupMenu'#7#8'mnuPopup'#8'TabOrder'#2#0#8'TopIndex'#2
+  +#255#0#0#7'TButton'#7'btnHelp'#4'Left'#2'u'#6'Height'#2#25#3'Top'#3#156#0#5
+  +'Width'#2'4'#11'HelpContext'#4#138#144#0#0#7'Anchors'#11#7'akRight'#8'akBott'
+  +'om'#0#7'Caption'#6#5'&Help'#7'OnClick'#7#12'btnHelpClick'#8'TabOrder'#2#1#0
+  +#0#16'TOfficePopupMenu'#8'mnuPopup'#4'left'#2'X'#3'top'#2#8#0#15'TOfficeMenu'
+  +'Item'#6'mniAdd'#7'Caption'#6#6'Add...'#8'ShortCut'#3'-@'#7'OnClick'#7#11'mn'
+  +'iAddClick'#0#0#15'TOfficeMenuItem'#9'mniRemove'#7'Caption'#6#19'Remove from'
+  +' Project'#8'ShortCut'#3'.@'#7'OnClick'#7#14'mniRemoveClick'#0#0#15'TOfficeM'
+  +'enuItem'#7'mniOpen'#7'Caption'#6#4'Open'#8'ShortCut'#3'O@'#7'OnClick'#7#12
+  +'mniOpenClick'#0#0#0#11'TOpenDialog'#7'dlgOpen'#7'Options'#11#14'ofHideReadO'
+  +'nly'#13'ofNoChangeDir'#18'ofAllowMultiSelect'#15'ofPathMustExist'#15'ofFile'
+  +'MustExist'#14'ofEnableSizing'#0#4'left'#2'x'#3'top'#2#8#0#0#0
+]);

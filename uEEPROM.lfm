@@ -1,0 +1,1027 @@
+object frmSpybotEEPROM: TfrmSpybotEEPROM
+  Left = 192
+  Height = 435
+  Top = 138
+  Width = 450
+  HelpContext = 42000
+  ActiveControl = pagMain
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Spybot EEPROM'
+  ClientHeight = 435
+  ClientWidth = 450
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  LCLVersion = '0.9.25'
+  object pagMain: TPageControl
+    Height = 435
+    Width = 450
+    ActivePage = shtGameItems
+    Align = alClient
+    TabIndex = 0
+    TabOrder = 0
+    OnChange = pagMainChange
+    OnPageChanged = pagMainChange
+    object shtGameItems: TTabSheet
+      HelpContext = 42035
+      Caption = 'Game Items'
+      ClientHeight = 401
+      ClientWidth = 446
+      object pnlGameBottom: TPanel
+        Height = 32
+        Top = 369
+        Width = 446
+        Align = alBottom
+        BevelOuter = bvNone
+        ClientHeight = 32
+        ClientWidth = 446
+        TabOrder = 0
+        object btnRead: TButton
+          Left = 310
+          Height = 25
+          Top = 4
+          Width = 60
+          HelpContext = 42028
+          Caption = '&Read'
+          OnClick = btnReadClick
+          TabOrder = 3
+        end
+        object btnWrite: TButton
+          Left = 376
+          Height = 25
+          Top = 4
+          Width = 60
+          HelpContext = 42029
+          Caption = 'Writ&e'
+          OnClick = btnWriteClick
+          TabOrder = 4
+        end
+        object btnSave: TButton
+          Left = 6
+          Height = 25
+          Top = 4
+          Width = 60
+          HelpContext = 42026
+          Caption = 'Sa&ve'
+          OnClick = btnSaveClick
+          TabOrder = 0
+        end
+        object btnLoad: TButton
+          Left = 72
+          Height = 25
+          Top = 4
+          Width = 60
+          HelpContext = 42027
+          Caption = 'Lo&ad'
+          OnClick = btnLoadClick
+          TabOrder = 1
+        end
+        object btnHelp: TButton
+          Left = 191
+          Height = 25
+          Top = 4
+          Width = 60
+          HelpContext = 42039
+          Caption = '&Help'
+          OnClick = btnHelpClick
+          TabOrder = 2
+        end
+      end
+      object pnlGameItems: TPanel
+        Height = 369
+        Width = 446
+        Align = alClient
+        BevelOuter = bvLowered
+        ClientHeight = 369
+        ClientWidth = 446
+        TabOrder = 1
+        object pagGameItems: TPageControl
+          Left = 1
+          Height = 367
+          Top = 1
+          Width = 444
+          ActivePage = shtGame2
+          Align = alClient
+          TabIndex = 1
+          TabOrder = 0
+          object shtGame1: TTabSheet
+            HelpContext = 42037
+            Caption = 'Configuration data'
+            ClientHeight = 333
+            ClientWidth = 440
+            object lblSpecies: TLabel
+              Left = 6
+              Height = 17
+              Top = 88
+              Width = 73
+              Caption = '&Species:'
+              FocusControl = cboSpecies
+              ParentColor = False
+            end
+            object lblLongID: TLabel
+              Left = 6
+              Height = 17
+              Top = 112
+              Width = 73
+              Caption = '&Long ID:'
+              FocusControl = edtLongID
+              ParentColor = False
+            end
+            object lblUserLevel: TLabel
+              Left = 6
+              Height = 17
+              Top = 136
+              Width = 87
+              Caption = '&User level:'
+              FocusControl = edtUserLevel
+              ParentColor = False
+            end
+            object lblPingRate: TLabel
+              Left = 6
+              Height = 17
+              Top = 160
+              Width = 81
+              Caption = '&Ping rate:'
+              FocusControl = edtDefaultPingRate
+              ParentColor = False
+            end
+            object lblRuns: TLabel
+              Left = 6
+              Height = 17
+              Top = 184
+              Width = 54
+              Caption = '&Runs:'
+              FocusControl = edtRuns
+              ParentColor = False
+            end
+            object lblWins: TLabel
+              Left = 6
+              Height = 17
+              Top = 208
+              Width = 51
+              Caption = '&Wins:'
+              FocusControl = edtWins
+              ParentColor = False
+            end
+            object lblLosses: TLabel
+              Left = 6
+              Height = 17
+              Top = 232
+              Width = 67
+              Caption = 'L&osses:'
+              FocusControl = edtLosses
+              ParentColor = False
+            end
+            object lblPoints: TLabel
+              Left = 6
+              Height = 17
+              Top = 256
+              Width = 61
+              Caption = 'Po&ints:'
+              FocusControl = edtPoints
+              ParentColor = False
+            end
+            object lblPlaySeconds: TLabel
+              Left = 6
+              Height = 17
+              Top = 280
+              Width = 112
+              Caption = 'Play se&conds:'
+              FocusControl = edtPlaySeconds
+              ParentColor = False
+            end
+            object lblTotalPlayTime: TLabel
+              Left = 206
+              Height = 17
+              Top = 88
+              Width = 122
+              Caption = '&Total play time:'
+              FocusControl = edtTotalPlayTime
+              ParentColor = False
+            end
+            object lblMaxBots: TLabel
+              Left = 206
+              Height = 17
+              Top = 112
+              Width = 71
+              Caption = 'Max bots:'
+              FocusControl = edtMaxBots
+              ParentColor = False
+            end
+            object lblMissionID: TLabel
+              Left = 206
+              Height = 17
+              Top = 136
+              Width = 79
+              Caption = 'Mission ID:'
+              FocusControl = edtMissionID
+              ParentColor = False
+            end
+            object lblMissionPoints: TLabel
+              Left = 206
+              Height = 17
+              Top = 160
+              Width = 106
+              Caption = 'Mission points:'
+              FocusControl = edtMissionPoints
+              ParentColor = False
+            end
+            object lblHighScore: TLabel
+              Left = 206
+              Height = 17
+              Top = 184
+              Width = 82
+              Caption = 'High score:'
+              FocusControl = edtHighScore
+              ParentColor = False
+            end
+            object lblRobotName: TLabel
+              Left = 206
+              Height = 17
+              Top = 207
+              Width = 95
+              Caption = 'Robot name:'
+              FocusControl = edtRobotName
+              ParentColor = False
+            end
+            object lblBirthDate: TLabel
+              Left = 206
+              Height = 17
+              Top = 231
+              Width = 75
+              Caption = 'Birth date:'
+              ParentColor = False
+            end
+            object lblBotData: TLabel
+              Left = 206
+              Height = 17
+              Top = 256
+              Width = 67
+              Caption = 'Bot data:'
+              FocusControl = edtBotData
+              ParentColor = False
+            end
+            object lblStatus: TLabel
+              Left = 206
+              Height = 17
+              Top = 280
+              Width = 52
+              Caption = 'Status:'
+              FocusControl = edtStatus
+              ParentColor = False
+            end
+            object grpMotorControl: TGroupBox
+              Left = 2
+              Height = 73
+              Top = 1
+              Width = 427
+              Caption = '&Motor Control'
+              ClientHeight = 52
+              ClientWidth = 423
+              TabOrder = 0
+              object lblMCNormal: TLabel
+                Left = 6
+                Height = 17
+                Top = 16
+                Width = 57
+                Caption = 'Normal:'
+                FocusControl = edtMCNormal
+                ParentColor = False
+              end
+              object lblMCSlow: TLabel
+                Left = 98
+                Height = 17
+                Top = 16
+                Width = 40
+                Caption = 'Slow:'
+                FocusControl = edtMCSlow
+                ParentColor = False
+              end
+              object grpLeftDir: TGroupBox
+                Left = 187
+                Height = 45
+                Top = -1
+                Width = 114
+                HelpContext = 42003
+                Caption = 'Left Motor Direction'
+                ClientHeight = 24
+                ClientWidth = 110
+                TabOrder = 2
+                object radLeftFwd: TRadioButton
+                  Left = 8
+                  Height = 24
+                  Width = 55
+                  Caption = 'Fwd'
+                  Checked = True
+                  OnClick = UpdateRawData
+                  State = cbChecked
+                  TabOrder = 0
+                end
+                object radLeftRev: TRadioButton
+                  Left = 60
+                  Height = 24
+                  Width = 53
+                  Caption = 'Rev'
+                  OnClick = UpdateRawData
+                  TabOrder = 1
+                end
+              end
+              object grpRightDir: TGroupBox
+                Left = 304
+                Height = 45
+                Top = -1
+                Width = 114
+                HelpContext = 42004
+                Caption = 'Right Motor Direction'
+                ClientHeight = 24
+                ClientWidth = 110
+                TabOrder = 3
+                object radRightFwd: TRadioButton
+                  Left = 8
+                  Height = 24
+                  Width = 55
+                  Caption = 'Fwd'
+                  Checked = True
+                  OnClick = UpdateRawData
+                  State = cbChecked
+                  TabOrder = 0
+                end
+                object radRightRev: TRadioButton
+                  Left = 60
+                  Height = 24
+                  Width = 53
+                  Caption = 'Rev'
+                  OnClick = UpdateRawData
+                  TabOrder = 1
+                end
+              end
+              object edtMCNormal: TBricxccSpinEdit
+                Left = 49
+                Height = 22
+                Top = 11
+                Width = 42
+                HelpContext = 42001
+                MaxValue = 8
+                MinValue = 1
+                OnChange = UpdateRawData
+                TabOrder = 0
+                Value = 7
+              end
+              object edtMCSlow: TBricxccSpinEdit
+                Left = 133
+                Height = 22
+                Top = 11
+                Width = 42
+                HelpContext = 42002
+                MaxValue = 8
+                MinValue = 1
+                OnChange = UpdateRawData
+                TabOrder = 1
+                Value = 7
+              end
+            end
+            object cboSpecies: TComboBox
+              Tag = 1
+              Left = 82
+              Height = 21
+              Top = 84
+              Width = 113
+              HelpContext = 42005
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              Items.Strings = (
+                'Gigamesh'
+                'Snaptrax'
+                'Shadowstrike'
+                'Technojaw'
+              )
+              MaxLength = 65535
+              OnChange = UpdateRawData
+              Style = csDropDownList
+              TabOrder = 1
+            end
+            object edtRobotName: TEdit
+              Tag = 32
+              Left = 282
+              Height = 21
+              Top = 203
+              Width = 143
+              HelpContext = 42019
+              MaxLength = 32
+              OnChange = UpdateRawData
+              TabOrder = 15
+            end
+            object edtLongID: TBricxccSpinEdit
+              Tag = 2
+              Left = 82
+              Height = 22
+              Top = 107
+              Width = 113
+              HelpContext = 42006
+              MaxValue = -2147483648
+              OnChange = UpdateRawData
+              TabOrder = 2
+            end
+            object edtUserLevel: TBricxccSpinEdit
+              Tag = 6
+              Left = 82
+              Height = 22
+              Top = 131
+              Width = 46
+              HelpContext = 42007
+              MaxValue = 255
+              OnChange = UpdateRawData
+              TabOrder = 3
+            end
+            object edtDefaultPingRate: TBricxccSpinEdit
+              Tag = 7
+              Left = 82
+              Height = 22
+              Top = 155
+              Width = 46
+              HelpContext = 42008
+              MaxValue = 255
+              OnChange = UpdateRawData
+              TabOrder = 4
+            end
+            object edtRuns: TBricxccSpinEdit
+              Tag = 8
+              Left = 82
+              Height = 22
+              Top = 179
+              Width = 58
+              HelpContext = 42009
+              MaxValue = 65535
+              OnChange = UpdateRawData
+              TabOrder = 5
+            end
+            object edtWins: TBricxccSpinEdit
+              Tag = 10
+              Left = 82
+              Height = 22
+              Top = 203
+              Width = 58
+              HelpContext = 42010
+              MaxValue = 65535
+              OnChange = UpdateRawData
+              TabOrder = 6
+            end
+            object edtLosses: TBricxccSpinEdit
+              Tag = 12
+              Left = 82
+              Height = 22
+              Top = 227
+              Width = 58
+              HelpContext = 42011
+              MaxValue = 65535
+              OnChange = UpdateRawData
+              TabOrder = 7
+            end
+            object edtPoints: TBricxccSpinEdit
+              Tag = 14
+              Left = 82
+              Height = 22
+              Top = 251
+              Width = 58
+              HelpContext = 42012
+              MaxValue = 65535
+              OnChange = UpdateRawData
+              TabOrder = 8
+            end
+            object edtPlaySeconds: TBricxccSpinEdit
+              Tag = 16
+              Left = 82
+              Height = 22
+              Top = 275
+              Width = 58
+              HelpContext = 42013
+              MaxValue = 65535
+              OnChange = UpdateRawData
+              TabOrder = 9
+            end
+            object edtTotalPlayTime: TBricxccSpinEdit
+              Tag = 18
+              Left = 282
+              Height = 22
+              Top = 83
+              Width = 113
+              HelpContext = 42014
+              MaxValue = -2147483648
+              OnChange = UpdateRawData
+              TabOrder = 10
+            end
+            object edtMaxBots: TBricxccSpinEdit
+              Tag = 22
+              Left = 282
+              Height = 22
+              Top = 107
+              Width = 46
+              HelpContext = 42015
+              MaxValue = 255
+              OnChange = UpdateRawData
+              TabOrder = 11
+            end
+            object edtMissionID: TBricxccSpinEdit
+              Tag = 23
+              Left = 282
+              Height = 22
+              Top = 131
+              Width = 46
+              HelpContext = 42016
+              MaxValue = 255
+              OnChange = UpdateRawData
+              TabOrder = 12
+            end
+            object edtMissionPoints: TBricxccSpinEdit
+              Tag = 28
+              Left = 282
+              Height = 22
+              Top = 155
+              Width = 58
+              HelpContext = 42017
+              MaxValue = 65535
+              OnChange = UpdateRawData
+              TabOrder = 13
+            end
+            object edtHighScore: TBricxccSpinEdit
+              Tag = 30
+              Left = 282
+              Height = 22
+              Top = 179
+              Width = 58
+              HelpContext = 42018
+              MaxValue = 65535
+              OnChange = UpdateRawData
+              TabOrder = 14
+            end
+            object edtBotData: TBricxccSpinEdit
+              Tag = 70
+              Left = 282
+              Height = 22
+              Top = 251
+              Width = 46
+              HelpContext = 42021
+              MaxValue = 255
+              OnChange = UpdateRawData
+              TabOrder = 17
+            end
+            object edtStatus: TBricxccSpinEdit
+              Tag = 71
+              Left = 282
+              Height = 22
+              Top = 275
+              Width = 46
+              HelpContext = 42022
+              MaxValue = 255
+              OnChange = UpdateRawData
+              TabOrder = 16
+            end
+          end
+          object shtGame2: TTabSheet
+            HelpContext = 42038
+            Caption = 'Missions && Tokens'
+            ClientHeight = 333
+            ClientWidth = 440
+            ImageIndex = 1
+            object grpMissionsPlayed: TGroupBox
+              Left = 2
+              Height = 280
+              Top = 2
+              Width = 90
+              HelpContext = 42023
+              Caption = 'Missions played'
+              TabOrder = 0
+            end
+            object grpTokens: TGroupBox
+              Left = 95
+              Height = 280
+              Top = 2
+              Width = 333
+              HelpContext = 42024
+              Caption = 'Tokens'
+              TabOrder = 1
+            end
+          end
+        end
+      end
+    end
+    object shtRawData: TTabSheet
+      HelpContext = 42025
+      Caption = 'Raw Data'
+      ClientHeight = 401
+      ClientWidth = 446
+      ImageIndex = 1
+      object Label1: TLabel
+        Left = 24
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '0'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label2: TLabel
+        Left = 50
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '1'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label3: TLabel
+        Left = 77
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '2'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label4: TLabel
+        Left = 103
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '3'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label5: TLabel
+        Left = 181
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '6'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label6: TLabel
+        Left = 207
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '7'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label7: TLabel
+        Left = 129
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '4'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label8: TLabel
+        Left = 155
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '5'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label9: TLabel
+        Left = 233
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '8'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label10: TLabel
+        Left = 259
+        Height = 17
+        Top = 4
+        Width = 10
+        Caption = '9'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label11: TLabel
+        Left = 285
+        Height = 17
+        Top = 4
+        Width = 12
+        Caption = 'A'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label12: TLabel
+        Left = 311
+        Height = 17
+        Top = 4
+        Width = 12
+        Caption = 'B'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label13: TLabel
+        Left = 389
+        Height = 17
+        Top = 4
+        Width = 12
+        Caption = 'E'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label14: TLabel
+        Left = 415
+        Height = 17
+        Top = 4
+        Width = 11
+        Caption = 'F'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label15: TLabel
+        Left = 336
+        Height = 17
+        Top = 4
+        Width = 13
+        Caption = 'C'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label16: TLabel
+        Left = 362
+        Height = 17
+        Top = 4
+        Width = 13
+        Caption = 'D'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label17: TLabel
+        Left = 3
+        Height = 17
+        Top = 19
+        Width = 19
+        Caption = '00'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label18: TLabel
+        Left = 3
+        Height = 17
+        Top = 39
+        Width = 19
+        Caption = '10'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label19: TLabel
+        Left = 3
+        Height = 17
+        Top = 79
+        Width = 19
+        Caption = '30'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label20: TLabel
+        Left = 3
+        Height = 17
+        Top = 59
+        Width = 19
+        Caption = '20'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label21: TLabel
+        Left = 3
+        Height = 17
+        Top = 159
+        Width = 19
+        Caption = '70'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label22: TLabel
+        Left = 3
+        Height = 17
+        Top = 139
+        Width = 19
+        Caption = '60'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label23: TLabel
+        Left = 3
+        Height = 17
+        Top = 119
+        Width = 19
+        Caption = '50'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label24: TLabel
+        Left = 3
+        Height = 17
+        Top = 99
+        Width = 19
+        Caption = '40'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label25: TLabel
+        Left = 3
+        Height = 17
+        Top = 179
+        Width = 19
+        Caption = '80'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label26: TLabel
+        Left = 3
+        Height = 17
+        Top = 199
+        Width = 19
+        Caption = '90'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label27: TLabel
+        Left = 3
+        Height = 17
+        Top = 239
+        Width = 21
+        Caption = 'B0'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label28: TLabel
+        Left = 3
+        Height = 17
+        Top = 219
+        Width = 21
+        Caption = 'A0'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label29: TLabel
+        Left = 3
+        Height = 17
+        Top = 319
+        Width = 20
+        Caption = 'F0'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label30: TLabel
+        Left = 3
+        Height = 17
+        Top = 299
+        Width = 21
+        Caption = 'E0'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label31: TLabel
+        Left = 3
+        Height = 17
+        Top = 279
+        Width = 22
+        Caption = 'D0'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+      object Label32: TLabel
+        Left = 3
+        Height = 17
+        Top = 259
+        Width = 22
+        Caption = 'C0'
+        Font.Height = -9
+        Font.Name = 'Courier New'
+        ParentColor = False
+      end
+    end
+    object shtCustom: TTabSheet
+      HelpContext = 42036
+      Caption = 'Custom'
+      ClientHeight = 401
+      ClientWidth = 446
+      ImageIndex = 2
+      object lblBlockNum: TLabel
+        Left = 8
+        Height = 17
+        Top = 324
+        Width = 145
+        Caption = 'EEPROM &Block #:'
+        FocusControl = edtBlock
+        ParentColor = False
+      end
+      object lblBlockCnt: TLabel
+        Left = 166
+        Height = 17
+        Top = 324
+        Width = 104
+        Caption = 'Bloc&k Count:'
+        FocusControl = edtBlockCount
+        ParentColor = False
+      end
+      object edtData: TMemo
+        Left = 8
+        Height = 303
+        Top = 8
+        Width = 425
+        HelpContext = 42030
+        Font.Height = -11
+        Font.Name = 'Courier New'
+        ReadOnly = True
+        ScrollBars = ssBoth
+        TabOrder = 0
+      end
+      object btnBlockRead: TButton
+        Left = 310
+        Height = 25
+        Top = 318
+        Width = 60
+        HelpContext = 42033
+        Caption = '&Read'
+        OnClick = btnBlockReadClick
+        TabOrder = 3
+      end
+      object btnBlockClear: TButton
+        Left = 376
+        Height = 25
+        Top = 318
+        Width = 60
+        HelpContext = 42034
+        Caption = '&Clear'
+        OnClick = btnBlockClearClick
+        TabOrder = 4
+      end
+      object edtBlock: TBricxccSpinEdit
+        Left = 107
+        Height = 22
+        Top = 319
+        Width = 45
+        HelpContext = 42031
+        MaxValue = 255
+        TabOrder = 1
+      end
+      object edtBlockCount: TBricxccSpinEdit
+        Left = 238
+        Height = 22
+        Top = 319
+        Width = 45
+        HelpContext = 42032
+        MaxValue = 256
+        MinValue = 1
+        TabOrder = 2
+        Value = 1
+      end
+    end
+  end
+  object dlgOpen: TOpenDialog
+    Title = 'Open EEPROM Data'
+    DefaultExt = '.dat'
+    Filter = 'EEPROM Data (*.dat)|*.dat|All Files (*.*)|*.*'
+    left = 169
+    top = 339
+  end
+  object dlgSave: TSaveDialog
+    Title = 'Save EEPROM Data'
+    DefaultExt = '.dat'
+    Filter = 'EEPROM Data (*.dat)|*.dat|All Files (*.*)|*.*'
+    left = 169
+    top = 307
+  end
+end

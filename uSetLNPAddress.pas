@@ -16,10 +16,17 @@
  *)
 unit uSetLNPAddress;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, uSpin;
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
+  Classes, Graphics, Controls, Forms, StdCtrls, BricxccSpin;
 
 type
   TfrmSetLNPAddress = class(TForm)
@@ -27,7 +34,7 @@ type
     btnCancel: TButton;
     btnHelp: TButton;
     Label1: TLabel;
-    edtAddress: TSpinEdit;
+    edtAddress: TBricxccSpinEdit;
     procedure edtAddressKeyPress(Sender: TObject; var Key: Char);
     procedure btnHelpClick(Sender: TObject);
   private
@@ -39,7 +46,9 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, Dialogs, Editor, brick_common, ExecProgram, Preferences, MainUnit,
@@ -62,7 +71,11 @@ begin
     {Execute the command, and wait}
     BrickComm.Close;
     try
+{$IFNDEF FPC}
       TheResult := ExecuteAndWait(PChar(commandstr), SW_SHOWMINNOACTIVE, LocalCompilerTimeout, PChar(wd));
+{$ELSE}
+      TheResult := -1;
+{$ENDIF}
       if TheResult <> 0 then
         ShowMessage(sFailedToSetLNPAddr)
       else
@@ -103,5 +116,10 @@ procedure TfrmSetLNPAddress.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uSetLNPAddress.lrs}
+{$ENDIF}
 
 end.

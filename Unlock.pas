@@ -16,10 +16,22 @@
  *)
 unit Unlock;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Messages, Classes, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+  LMessages,
+  LCLIntf,
+{$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ExtCtrls, ComCtrls;
 
 const
   CM_DOWNLOADFIRMWARE = WM_USER + 234;
@@ -59,10 +71,11 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
-uses
-  Windows, MainUnit, FakeSpirit, Preferences, uSpirit, brick_common;
+uses MainUnit, FakeSpirit, Preferences, uSpirit, brick_common;
 
 procedure TUnlockForm.FormShow(Sender: TObject);
 begin
@@ -162,5 +175,10 @@ begin
   Application.ProcessMessages;
   PostMessage(Handle, CM_DownloadFirmware, 0, 0);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i Unlock.lrs}
+{$ENDIF}
 
 end.

@@ -1,0 +1,158 @@
+object frmSetValues: TfrmSetValues
+  Left = 218
+  Height = 215
+  Top = 219
+  Width = 264
+  HelpContext = 41000
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Set Values'
+  ClientHeight = 215
+  ClientWidth = 264
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object grpDest: TGroupBox
+    Left = 8
+    Height = 81
+    Top = 8
+    Width = 249
+    Caption = 'Set this source'
+    ClientHeight = 60
+    ClientWidth = 245
+    TabOrder = 0
+    object lblSource: TLabel
+      Left = 8
+      Height = 17
+      Top = 6
+      Width = 67
+      Caption = 'S&ource:'
+      ParentColor = False
+    end
+    object lblValue: TLabel
+      Left = 8
+      Height = 17
+      Top = 34
+      Width = 57
+      Caption = '&Value:'
+      ParentColor = False
+    end
+    object cboSource: TComboBox
+      Left = 56
+      Height = 20
+      Top = 3
+      Width = 161
+      HelpContext = 41001
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      MaxLength = 65535
+      OnChange = cboSourceChange
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object edtValue: TEdit
+      Left = 56
+      Height = 20
+      Top = 29
+      Width = 49
+      HelpContext = 41002
+      MaxLength = 5
+      OnExit = edtValueExit
+      OnKeyDown = nil
+      OnKeyPress = edtValueKeyPress
+      TabOrder = 1
+      Text = '0'
+    end
+    object udValue: TUpDown
+      Left = 105
+      Height = 20
+      Top = 29
+      Width = 15
+      HelpContext = 41003
+      Associate = edtValue
+      TabOrder = 2
+      Thousands = False
+    end
+  end
+  object grpOrigin: TGroupBox
+    Left = 8
+    Height = 81
+    Top = 96
+    Width = 249
+    Caption = 'to this value'
+    ClientHeight = 60
+    ClientWidth = 245
+    TabOrder = 1
+    object lblSource2: TLabel
+      Left = 8
+      Height = 17
+      Top = 7
+      Width = 67
+      Caption = 'So&urce:'
+      ParentColor = False
+    end
+    object lblValue2: TLabel
+      Left = 8
+      Height = 17
+      Top = 35
+      Width = 57
+      Caption = 'V&alue:'
+      ParentColor = False
+    end
+    object edtValue2: TEdit
+      Left = 56
+      Height = 21
+      Top = 30
+      Width = 49
+      HelpContext = 41005
+      MaxLength = 5
+      OnExit = edtValueExit
+      OnKeyDown = nil
+      OnKeyPress = edtValueKeyPress
+      TabOrder = 0
+      Text = '0'
+    end
+    object udValue2: TUpDown
+      Left = 105
+      Height = 21
+      Top = 30
+      Width = 15
+      HelpContext = 41006
+      Associate = edtValue2
+      TabOrder = 1
+      Thousands = False
+    end
+    object cboSource2: TComboBox
+      Left = 56
+      Height = 21
+      Top = 3
+      Width = 161
+      HelpContext = 41004
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      MaxLength = 65535
+      OnChange = cboSourceChange
+      Style = csDropDownList
+      TabOrder = 2
+    end
+  end
+  object btnSet: TButton
+    Left = 52
+    Height = 25
+    Top = 184
+    Width = 75
+    HelpContext = 41007
+    Caption = '&Set'
+    OnClick = btnSetClick
+    TabOrder = 2
+  end
+  object btnHelp: TButton
+    Left = 136
+    Height = 25
+    Top = 184
+    Width = 75
+    HelpContext = 41008
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 3
+  end
+end

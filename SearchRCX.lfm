@@ -1,0 +1,179 @@
+object SearchRCXForm: TSearchRCXForm
+  Left = 196
+  Height = 243
+  Top = 153
+  Width = 328
+  HelpContext = 3
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Find Brick'
+  ClientHeight = 243
+  ClientWidth = 328
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object Label1: TLabel
+    Left = 80
+    Height = 17
+    Top = 6
+    Width = 163
+    Caption = 'Searching for the brick'
+    Font.Height = -16
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    ParentColor = False
+  end
+  object OKBtn: TButton
+    Left = 63
+    Height = 25
+    Top = 208
+    Width = 81
+    HelpContext = 3002
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 0
+  end
+  object CancelBtn: TButton
+    Left = 151
+    Height = 25
+    Top = 208
+    Width = 81
+    HelpContext = 3003
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 1
+  end
+  object grpFirmware: TGroupBox
+    Left = 6
+    Height = 90
+    Top = 102
+    Width = 314
+    Caption = 'Firmware'
+    ClientHeight = 69
+    ClientWidth = 310
+    TabOrder = 4
+    object radStandard: TRadioButton
+      Left = 8
+      Height = 24
+      Width = 90
+      HelpContext = 3005
+      Caption = 'Standard'
+      Checked = True
+      OnClick = FirmwareClick
+      State = cbChecked
+      TabOrder = 0
+    end
+    object radBrickOS: TRadioButton
+      Left = 120
+      Height = 24
+      Top = -1
+      Width = 81
+      HelpContext = 3006
+      Caption = 'brickOS'
+      OnClick = FirmwareClick
+      TabOrder = 1
+    end
+    object radPBForth: TRadioButton
+      Left = 224
+      Height = 24
+      Top = -1
+      Width = 80
+      HelpContext = 3007
+      Caption = 'pbForth'
+      OnClick = FirmwareClick
+      TabOrder = 2
+    end
+    object radLejos: TRadioButton
+      Left = 8
+      Height = 24
+      Top = 31
+      Width = 68
+      HelpContext = 3008
+      Caption = 'leJOS'
+      OnClick = FirmwareClick
+      TabOrder = 3
+    end
+    object radOtherFirmware: TRadioButton
+      Left = 120
+      Height = 24
+      Top = 31
+      Width = 65
+      HelpContext = 3009
+      Caption = 'Other'
+      OnClick = FirmwareClick
+      TabOrder = 4
+    end
+  end
+  object btnHelp: TButton
+    Left = 239
+    Height = 25
+    Top = 208
+    Width = 81
+    HelpContext = 3033
+    Caption = 'Help'
+    OnClick = btnHelpClick
+    TabOrder = 5
+  end
+  object pnlPorts: TGroupBox
+    Left = 6
+    Height = 66
+    Top = 32
+    Width = 162
+    Caption = 'Port'
+    ClientHeight = 45
+    ClientWidth = 158
+    Color = clBtnFace
+    ParentColor = False
+    TabOrder = 2
+    object cboPort: TComboBox
+      Left = 8
+      Height = 21
+      Top = 5
+      Width = 139
+      HelpContext = 3011
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      Items.Strings = (
+        'Automatic'
+        'usb'
+      )
+      MaxLength = 65535
+      TabOrder = 0
+    end
+  end
+  object pnlFirmware: TGroupBox
+    Left = 176
+    Height = 66
+    Top = 32
+    Width = 144
+    Caption = 'Brick Type'
+    ClientHeight = 45
+    ClientWidth = 140
+    Color = clBtnFace
+    ParentColor = False
+    TabOrder = 3
+    object cboBrickType: TComboBox
+      Left = 8
+      Height = 21
+      Top = 5
+      Width = 122
+      HelpContext = 3012
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      Items.Strings = (
+        'RCX'
+        'CyberMaster'
+        'Scout'
+        'RCX2'
+        'Spybot'
+        'Swan'
+        'NXT'
+      )
+      MaxLength = 65535
+      Style = csDropDownList
+      TabOrder = 0
+    end
+  end
+end

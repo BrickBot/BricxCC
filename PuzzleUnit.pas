@@ -16,9 +16,16 @@
  *)
 unit PuzzleUnit;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls;
 
 type
@@ -40,7 +47,9 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 var bezig : boolean;            { Busy playing }
 
@@ -162,5 +171,10 @@ procedure TPuzzleForm.ShuffleBtnClick(Sender: TObject);
 begin
   ShowPuzzle;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i PuzzleUnit.lrs}
+{$ENDIF}
 
 end.

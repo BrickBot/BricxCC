@@ -16,6 +16,10 @@ unit mwBCBTokenList;
 
 {$R-}
 
+{$IFDEF FPC}
+{$MODE DELPHI}
+{$ENDIF}
+
 interface
 
 type
@@ -224,15 +228,15 @@ begin
       repeat
         SubLeft := Left;
         SubRight := Right;
-        Pivot := FLongIntList[(Left + Right) shr 1];
+        Pivot := FLongIntList^[(Left + Right) shr 1];
         repeat
-          while FLongIntList[SubLeft] < Pivot do Inc(SubLeft);
-          while FLongIntList[SubRight] > Pivot do Dec(SubRight);
+          while FLongIntList^[SubLeft] < Pivot do Inc(SubLeft);
+          while FLongIntList^[SubRight] > Pivot do Dec(SubRight);
           if SubLeft <= SubRight then
           begin
-            Temp := FLongIntList[SubLeft];
-            FLongIntList[SubLeft] := FLongIntList[SubRight];
-            FLongIntList[SubRight] := Temp;
+            Temp := FLongIntList^[SubLeft];
+            FLongIntList^[SubLeft] := FLongIntList^[SubRight];
+            FLongIntList^[SubRight] := Temp;
             Inc(SubLeft);
             Dec(SubRight);
           end;
@@ -251,7 +255,7 @@ end; { Sort }
 
 function TLongIntList.GetItems(Index: Integer): LongInt;
 begin
-  Result := FLongIntList[Index];
+  Result := FLongIntList^[Index];
 end; { GetItems }
 
 procedure TLongIntList.SetCapacity(NewCapacity: Integer);
@@ -272,14 +276,14 @@ end; { SetCount }
 
 procedure TLongIntList.SetItems(Index: Integer; Item: LongInt);
 begin
-  FLongIntList[Index] := Item;
+  FLongIntList^[Index] := Item;
 end; { SetItems }
 
 function TLongIntList.Add(Item: LongInt): Integer;
 begin
   Result := FCount;
   if Result + 1 >= FCapacity then SetCapacity(FCapacity + 1024);
-  FLongIntList[Result] := Item;
+  FLongIntList^[Result] := Item;
   Inc(FCount);
 end; { Add }
 
@@ -293,7 +297,7 @@ procedure TLongIntList.Delete(Index: Integer);
 begin
   Dec(FCount);
   if Index < FCount then
-    System.Move(FLongIntList[Index + 1], FLongIntList[Index],
+    System.Move(FLongIntList^[Index + 1], FLongIntList^[Index],
       (FCount - Index) * SizeOf(LongInt));
 end; { Delete }
 
@@ -301,9 +305,9 @@ procedure TLongIntList.Exchange(Index1, Index2: Integer);
 var
   Item: LongInt;
 begin
-  Item := FLongIntList[Index1];
-  FLongIntList[Index1] := FLongIntList[Index2];
-  FLongIntList[Index2] := Item;
+  Item := FLongIntList^[Index1];
+  FLongIntList^[Index1] := FLongIntList^[Index2];
+  FLongIntList^[Index2] := Item;
 end; { Exchange }
 
 function TLongIntList.First: LongInt;
@@ -314,7 +318,7 @@ end; { First }
 function TLongIntList.IndexOf(Item: LongInt): Integer;
 begin
   Result := 0;
-  while (Result < FCount) and (FLongIntList[Result] <> Item) do Inc(Result);
+  while (Result < FCount) and (FLongIntList^[Result] <> Item) do Inc(Result);
   if Result = FCount then Result := -1;
 end; { IndexOf }
 
@@ -322,9 +326,9 @@ procedure TLongIntList.Insert(Index: Integer; Item: LongInt);
 begin
   if FCount = FCapacity then SetCapacity(FCapacity + 1024);
   if Index < FCount then
-    System.Move(FLongIntList[Index], FLongIntList[Index + 1],
+    System.Move(FLongIntList^[Index], FLongIntList^[Index + 1],
       (FCount - Index) * SizeOf(LongInt));
-  FLongIntList[Index] := Item;
+  FLongIntList^[Index] := Item;
   Inc(FCount);
 end; { Insert }
 

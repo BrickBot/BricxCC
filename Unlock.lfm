@@ -1,0 +1,48 @@
+object UnlockForm: TUnlockForm
+  Left = 200
+  Height = 95
+  Top = 108
+  Width = 299
+  HelpContext = 23
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Firmware Download'
+  ClientHeight = 95
+  ClientWidth = 299
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnShow = FormShow
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object Label1: TLabel
+    Left = 18
+    Height = 17
+    Top = 8
+    Width = 262
+    Caption = 'Downloading Firmware, Please wait.'
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Font.Style = [fsBold]
+    ParentColor = False
+  end
+  object ProgressBar1: TProgressBar
+    Left = 49
+    Height = 17
+    Top = 40
+    Width = 201
+    Max = 175
+    Step = 1
+    TabOrder = 0
+  end
+  object btnCancel: TButton
+    Left = 113
+    Height = 25
+    Top = 64
+    Width = 75
+    Cancel = True
+    Caption = '&Cancel'
+    OnClick = btnCancelClick
+    TabOrder = 1
+  end
+end

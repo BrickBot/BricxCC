@@ -16,10 +16,17 @@
  *)
 unit uNXTController;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls, uSpin;
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
+  Classes, Graphics, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls, BricxccSpin;
 
 type
   TfrmNXTController = class(TForm)
@@ -47,8 +54,8 @@ type
     radBrake: TRadioButton;
     radCoast: TRadioButton;
     btnRun: TButton;
-    edtPower: TSpinEdit;
-    edtDuration: TSpinEdit;
+    edtPower: TBricxccSpinEdit;
+    edtDuration: TBricxccSpinEdit;
     procedure edtPowerChange(Sender: TObject);
     procedure tbPowerChange(Sender: TObject);
     procedure PortClick(Sender: TObject);
@@ -67,7 +74,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
 
 uses
   Dialogs;
@@ -152,5 +161,10 @@ begin
   radBrake.Enabled    := edtDuration.Enabled;
   radCoast.Enabled    := radBrake.Enabled;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uNXTController.lrs}
+{$ENDIF}
 
 end.

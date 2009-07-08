@@ -16,9 +16,16 @@
  *)
 unit SearchRCX;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, StdCtrls, ExtCtrls, uMiscDefines;
 
 type
@@ -85,7 +92,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, Dialogs, Math, FakeSpirit, rcx_link, uSpirit, brick_common,
@@ -503,5 +512,10 @@ begin
     end;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i SearchRCX.lrs}
+{$ENDIF}
 
 end.

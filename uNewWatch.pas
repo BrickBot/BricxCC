@@ -16,11 +16,19 @@
  *)
 unit uNewWatch;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls,
-  DataAnalysis;
+{$IFNDEF FPC}
+  DataAnalysis,
+{$ELSE}
+  LResources,
+{$ENDIF}
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls;
 
 type
   TVarControls = record
@@ -70,7 +78,9 @@ type
     procedure btnHelpClick(Sender: TObject);
   private
     { Private declarations }
+{$IFNDEF FPC}
     fGraph : TfrmDataAnalysis;
+{$ENDIF}
     fNewData : TStrings;
     fWatchCount : Integer;
     procedure UpdateGraph;
@@ -91,7 +101,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, Graphics, Dialogs, SearchRCX, Preferences, uMiscDefines,
@@ -203,7 +215,9 @@ end;
 procedure TfrmNewWatch.FormCreate(Sender: TObject);
 begin
   fNewData := TStringList.Create;
+{$IFNDEF FPC}
   fGraph := nil;
+{$ENDIF}
   fWatchCount := 0;
   TimeBox.ItemIndex := 3;
 end;
@@ -228,6 +242,7 @@ end;
 
 procedure TfrmNewWatch.btnGraphClick(Sender: TObject);
 begin
+{$IFNDEF FPC}
   if not btnGraph.Down then
   begin
     // close graph form and nil our pointer
@@ -247,6 +262,7 @@ begin
     fGraph.DataIsXY     := False;
     fGraph.Show;
   end;
+{$ENDIF}
 end;
 
 procedure TfrmNewWatch.FormDestroy(Sender: TObject);
@@ -256,20 +272,24 @@ end;
 
 procedure TfrmNewWatch.UpdateGraph;
 begin
+{$IFNDEF FPC}
   if Assigned(fGraph) then
   begin
     fGraph.AddNewData(fNewData);
   end;
+{$ENDIF}
 end;
 
 procedure TfrmNewWatch.GraphDestroyed;
 begin
+{$IFNDEF FPC}
   // called by data analysis form when it closes
   if Assigned(fGraph) then
   begin
     fGraph := nil;
     btnGraph.Down := False;
   end;
+{$ENDIF}
 end;
 
 procedure TfrmNewWatch.FormActivate(Sender: TObject);
@@ -338,7 +358,9 @@ begin
     Width  := Trunc(154 * scale_amount);
     Height := Trunc(21 * scale_amount);
     AutoSize     := False;
+{$IFNDEF FPC}
     Font.Charset := DEFAULT_CHARSET;
+{$ENDIF}
     Font.Color   := clWindowText;
     Font.Height  := -12;
     Font.Name    := 'Courier New';
@@ -568,5 +590,10 @@ begin
   TUpDown(C.Parent.Controls[3]).Position := C.ItemIndex;
   C.Parent.Hint := C.Text;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uNewWatch.lrs}
+{$ENDIF}
 
 end.

@@ -1,0 +1,88 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfrmCodeTemplates','FORMDATA',[
+  'TPF0'#17'TfrmCodeTemplates'#16'frmCodeTemplates'#4'Left'#3'#'#1#6'Height'#3
+  +'G'#1#3'Top'#3#206#0#5'Width'#3#152#1#11'HelpContext'#3'P'#20#11'BorderIcons'
+  +#11#12'biSystemMenu'#6'biHelp'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6
+  +#14'Code Templates'#12'ClientHeight'#3'G'#1#11'ClientWidth'#3#152#1#11'Font.'
+  +'Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#8'OnCreate'#7#10'FormCreate'
+  +#9'OnDestroy'#7#11'FormDestroy'#8'Position'#7#14'poScreenCenter'#10'LCLVersi'
+  +'on'#6#6'0.9.25'#0#9'TGroupBox'#12'grpTemplates'#4'Left'#2#4#6'Height'#3#28#1
+  +#3'Top'#2#4#5'Width'#3#143#1#7'Caption'#6#14'Code Templates'#12'ClientHeight'
+  +#3#7#1#11'ClientWidth'#3#139#1#8'TabOrder'#2#0#0#6'TLabel'#11'lblTemplate'#4
+  +'Left'#2#8#6'Height'#2#17#3'Top'#2#16#5'Width'#2'T'#7'Caption'#6#10'&Templat'
+  +'e:'#11'ParentColor'#8#0#0#6'TLabel'#7'lblCode'#4'Left'#2#8#6'Height'#2#17#3
+  +'Top'#2'c'#5'Width'#2'7'#7'Caption'#6#6'&Code:'#11'ParentColor'#8#0#0#11'TSt'
+  +'ringGrid'#12'grdTemplates'#4'Left'#2'X'#6'Height'#2'P'#3'Top'#2#16#5'Width'
+  +#3#233#0#11'HelpContext'#3'T'#20#8'ColCount'#2#2#16'DefaultRowHeight'#2#18#14
+  +'ExtendedSelect'#9#10'FixedColor'#7#9'clBtnFace'#9'FixedCols'#2#0#7'Options'
+  +#11#15'goFixedVertLine'#15'goFixedHorzLine'#19'goDrawFocusSelected'#0#8'RowC'
+  +'ount'#2#2#8'TabOrder'#2#0#12'OnSelectCell'#7#22'grdTemplatesSelectCell'#9'C'
+  +'olWidths'#1#2'9'#3#151#0#0#0#0#7'TButton'#6'btnAdd'#4'Left'#3'F'#1#6'Height'
+  +#2#24#3'Top'#2#17#5'Width'#2'@'#11'HelpContext'#3'U'#20#7'Caption'#6#7'&Add.'
+  +'..'#7'OnClick'#7#11'btnAddClick'#8'TabOrder'#2#2#0#0#7'TButton'#7'btnEdit'#4
+  +'Left'#3'F'#1#6'Height'#2#24#3'Top'#2','#5'Width'#2'@'#11'HelpContext'#3'V'
+  +#20#7'Caption'#6#8'&Edit...'#7'OnClick'#7#12'btnEditClick'#8'TabOrder'#2#3#0
+  +#0#7'TButton'#9'btnDelete'#4'Left'#3'F'#1#6'Height'#2#24#3'Top'#2'G'#5'Width'
+  +#2'@'#11'HelpContext'#3'W'#20#7'Caption'#6#7'&Delete'#7'OnClick'#7#14'btnDel'
+  +'eteClick'#8'TabOrder'#2#4#0#0#5'TMemo'#7'mmoCode'#4'Left'#2'X'#6'Height'#3
+  +#157#0#3'Top'#2'c'#5'Width'#3#233#0#11'HelpContext'#3'X'#20#8'OnChange'#7#13
+  +'mmoCodeChange'#10'ScrollBars'#7#6'ssBoth'#8'TabOrder'#2#1#0#0#7'TButton'#7
+  +'btnLoad'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#204#0#5'Width'#2'I'#11'HelpCon'
+  +'text'#3'Y'#20#7'Caption'#6#5'&Load'#7'OnClick'#7#12'btnLoadClick'#8'TabOrde'
+  +'r'#2#5#0#0#7'TButton'#7'btnSave'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#232#0#5
+  +'Width'#2'I'#11'HelpContext'#3'Z'#20#7'Caption'#6#5'&Save'#7'OnClick'#7#12'b'
+  +'tnSaveClick'#8'TabOrder'#2#6#0#0#0#7'TButton'#5'btnOK'#4'Left'#3#168#0#6'He'
+  +'ight'#2#25#3'Top'#3'('#1#5'Width'#2'K'#11'HelpContext'#3'['#20#7'Caption'#6
+  +#2'OK'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#1#0#0#7'TButton'#9'btn'
+  +'Cancel'#4'Left'#3#248#0#6'Height'#2#25#3'Top'#3'('#1#5'Width'#2'K'#11'HelpC'
+  +'ontext'#3'\'#20#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'Ta'
+  +'bOrder'#2#2#0#0#7'TButton'#7'btnHelp'#4'Left'#3'H'#1#6'Height'#2#25#3'Top'#3
+  +'('#1#5'Width'#2'K'#11'HelpContext'#3'_'#20#7'Caption'#6#5'&Help'#7'OnClick'
+  +#7#12'btnHelpClick'#8'TabOrder'#2#3#0#0#11'TOpenDialog'#7'dlgOpen'#10'Defaul'
+  +'tExt'#6#4'.dci'#6'Filter'#6#28'Code Templates (*.dci)|*.dci'#4'left'#3#245#0
+  +#3'top'#2#8#0#0#11'TSaveDialog'#7'dlgSave'#10'DefaultExt'#6#4'.dci'#6'Filter'
+  +#6#28'Code Templates (*.dci)|*.dci'#4'left'#3#21#1#3'top'#2#8#0#0#0#17'TfrmC'
+  +'odeTemplates'#16'frmCodeTemplates'#4'Left'#3'#'#1#6'Height'#3'G'#1#3'Top'#3
+  +#206#0#5'Width'#3#152#1#11'HelpContext'#3'P'#20#11'BorderIcons'#11#12'biSyst'
+  +'emMenu'#6'biHelp'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#14'Code Temp'
+  +'lates'#12'ClientHeight'#3'G'#1#11'ClientWidth'#3#152#1#11'Font.Height'#2#245
+  +#9'Font.Name'#6#13'MS Sans Serif'#8'OnCreate'#7#10'FormCreate'#9'OnDestroy'#7
+  +#11'FormDestroy'#8'Position'#7#14'poScreenCenter'#10'LCLVersion'#6#6'0.9.25'
+  +#0#9'TGroupBox'#12'grpTemplates'#4'Left'#2#4#6'Height'#3#28#1#3'Top'#2#4#5'W'
+  +'idth'#3#143#1#7'Caption'#6#14'Code Templates'#12'ClientHeight'#3#7#1#11'Cli'
+  +'entWidth'#3#139#1#8'TabOrder'#2#0#0#6'TLabel'#11'lblTemplate'#4'Left'#2#8#6
+  +'Height'#2#17#3'Top'#2#16#5'Width'#2'T'#7'Caption'#6#10'&Template:'#11'Paren'
+  +'tColor'#8#0#0#6'TLabel'#7'lblCode'#4'Left'#2#8#6'Height'#2#17#3'Top'#2'c'#5
+  +'Width'#2'7'#7'Caption'#6#6'&Code:'#11'ParentColor'#8#0#0#11'TStringGrid'#12
+  +'grdTemplates'#4'Left'#2'X'#6'Height'#2'P'#3'Top'#2#16#5'Width'#3#233#0#11'H'
+  +'elpContext'#3'T'#20#8'ColCount'#2#2#16'DefaultRowHeight'#2#18#14'ExtendedSe'
+  +'lect'#9#10'FixedColor'#7#9'clBtnFace'#9'FixedCols'#2#0#7'Options'#11#15'goF'
+  +'ixedVertLine'#15'goFixedHorzLine'#19'goDrawFocusSelected'#0#8'RowCount'#2#2
+  +#8'TabOrder'#2#0#12'OnSelectCell'#7#22'grdTemplatesSelectCell'#9'ColWidths'#1
+  +#2'9'#3#151#0#0#0#0#7'TButton'#6'btnAdd'#4'Left'#3'F'#1#6'Height'#2#24#3'Top'
+  +#2#17#5'Width'#2'@'#11'HelpContext'#3'U'#20#7'Caption'#6#7'&Add...'#7'OnClic'
+  +'k'#7#11'btnAddClick'#8'TabOrder'#2#2#0#0#7'TButton'#7'btnEdit'#4'Left'#3'F'
+  +#1#6'Height'#2#24#3'Top'#2','#5'Width'#2'@'#11'HelpContext'#3'V'#20#7'Captio'
+  +'n'#6#8'&Edit...'#7'OnClick'#7#12'btnEditClick'#8'TabOrder'#2#3#0#0#7'TButto'
+  ,'n'#9'btnDelete'#4'Left'#3'F'#1#6'Height'#2#24#3'Top'#2'G'#5'Width'#2'@'#11
+  +'HelpContext'#3'W'#20#7'Caption'#6#7'&Delete'#7'OnClick'#7#14'btnDeleteClick'
+  +#8'TabOrder'#2#4#0#0#5'TMemo'#7'mmoCode'#4'Left'#2'X'#6'Height'#3#157#0#3'To'
+  +'p'#2'c'#5'Width'#3#233#0#11'HelpContext'#3'X'#20#8'OnChange'#7#13'mmoCodeCh'
+  +'ange'#10'ScrollBars'#7#6'ssBoth'#8'TabOrder'#2#1#0#0#7'TButton'#7'btnLoad'#4
+  +'Left'#2#8#6'Height'#2#24#3'Top'#3#204#0#5'Width'#2'I'#11'HelpContext'#3'Y'
+  +#20#7'Caption'#6#5'&Load'#7'OnClick'#7#12'btnLoadClick'#8'TabOrder'#2#5#0#0#7
+  +'TButton'#7'btnSave'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#232#0#5'Width'#2'I'
+  +#11'HelpContext'#3'Z'#20#7'Caption'#6#5'&Save'#7'OnClick'#7#12'btnSaveClick'
+  +#8'TabOrder'#2#6#0#0#0#7'TButton'#5'btnOK'#4'Left'#3#168#0#6'Height'#2#25#3
+  +'Top'#3'('#1#5'Width'#2'K'#11'HelpContext'#3'['#20#7'Caption'#6#2'OK'#7'Defa'
+  +'ult'#9#11'ModalResult'#2#1#8'TabOrder'#2#1#0#0#7'TButton'#9'btnCancel'#4'Le'
+  +'ft'#3#248#0#6'Height'#2#25#3'Top'#3'('#1#5'Width'#2'K'#11'HelpContext'#3'\'
+  +#20#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#2#0
+  +#0#7'TButton'#7'btnHelp'#4'Left'#3'H'#1#6'Height'#2#25#3'Top'#3'('#1#5'Width'
+  +#2'K'#11'HelpContext'#3'_'#20#7'Caption'#6#5'&Help'#7'OnClick'#7#12'btnHelpC'
+  +'lick'#8'TabOrder'#2#3#0#0#11'TOpenDialog'#7'dlgOpen'#10'DefaultExt'#6#4'.dc'
+  +'i'#6'Filter'#6#28'Code Templates (*.dci)|*.dci'#4'left'#3#245#0#3'top'#2#8#0
+  +#0#11'TSaveDialog'#7'dlgSave'#10'DefaultExt'#6#4'.dci'#6'Filter'#6#28'Code T'
+  +'emplates (*.dci)|*.dci'#4'left'#3#21#1#3'top'#2#8#0#0#0
+]);

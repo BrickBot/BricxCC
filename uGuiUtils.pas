@@ -31,10 +31,15 @@ procedure SetWindowFocus(WC : TWinControl);
 implementation
 
 uses
-  Themes, Graphics, Classes, Windows, Messages, SysUtils, ComCtrls;
+  Themes, Graphics, Classes,
+{$IFNDEF FPC}
+  Windows,
+{$ENDIF}
+  Messages, SysUtils, ComCtrls;
 
 procedure ConfigBar(ogp : TOfficeGradientPanel);
 begin
+{$IFNDEF FPC}
   if ThemeServices.ThemesEnabled then
   begin
     ogp.GradientFrom := dxOffice11ToolbarsColor1;
@@ -47,9 +52,13 @@ begin
     ogp.GradientTo   := clBtnFace;
     ogp.BorderColor  := ogp.GradientTo;
   end;
+{$ENDIF}
 end;
 
 function CalcMaxWidthOfStrings( aList: TStrings; aFont: TFont ): integer;
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   max, n, i, extra: Integer;
   canvas: TCanvas;
@@ -77,15 +86,20 @@ begin
   finally
     canvas.free;
   end;
+{$ENDIF}
 end;
 
 procedure SizeComboboxDropdown( cb: TCustomCombobox );
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   max: Integer;
 begin
   max:= CalcMaxWidthOfStrings( cb.Items, TCombobox(cb).Font );
   if max > cb.Width Then
     cb.Perform( CB_SETDROPPEDWIDTH, max+6, 0 );
+{$ENDIF}
 end;
 
 procedure CloneDE(aDest: TDirectoryEdit; aSrc: TEdit);

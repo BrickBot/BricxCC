@@ -1,0 +1,75 @@
+object GotoForm: TGotoForm
+  Left = 200
+  Height = 88
+  Top = 100
+  Width = 273
+  HelpContext = 46000
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Go to Line Number'
+  ClientHeight = 88
+  ClientWidth = 273
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnShow = FormShow
+  Position = poMainFormCenter
+  LCLVersion = '0.9.25'
+  object pnlGoto: TPanel
+    Left = 8
+    Height = 41
+    Top = 8
+    Width = 256
+    Alignment = taLeftJustify
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    Caption = '  Enter Line Number:'
+    ClientHeight = 41
+    ClientWidth = 256
+    TabOrder = 0
+    object GotoLineField: TBricxccSpinEdit
+      Left = 168
+      Height = 22
+      Top = 9
+      Width = 72
+      HelpContext = 46003
+      MaxValue = 100000000
+      MinValue = 1
+      OnExit = GotoLineFieldExit
+      OnKeyDown = GotoLineFieldKeyDown
+      TabOrder = 0
+      Value = 1
+    end
+  end
+  object btnOK: TButton
+    Left = 96
+    Height = 25
+    Top = 56
+    Width = 52
+    HelpContext = 46001
+    Caption = 'OK'
+    Default = True
+    OnClick = btnOKClick
+    TabOrder = 1
+  end
+  object btnCancel: TButton
+    Left = 152
+    Height = 25
+    Top = 56
+    Width = 52
+    HelpContext = 46002
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 2
+  end
+  object btnHelp: TButton
+    Left = 208
+    Height = 25
+    Top = 56
+    Width = 52
+    HelpContext = 46004
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 3
+  end
+end

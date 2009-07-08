@@ -16,11 +16,22 @@
  *)
 unit Watch;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, DataAnalysis, uSpin,
-  ComCtrls;
+{$IFDEF FPC}
+  LResources,
+  LCLIntf,
+{$ENDIF}
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls,
+{$IFNDEF FPC}
+  DataAnalysis,
+{$ENDIF}
+  BricxccSpin;
 
 type
   TVarControls = record
@@ -218,10 +229,10 @@ type
     edtI2CBuf2: TEdit;
     edtI2CBuf3: TEdit;
     edtI2CBuf4: TEdit;
-    edtI2CLen1: TSpinEdit;
-    edtI2CLen2: TSpinEdit;
-    edtI2CLen4: TSpinEdit;
-    edtI2CLen3: TSpinEdit;
+    edtI2CLen1: TBricxccSpinEdit;
+    edtI2CLen2: TBricxccSpinEdit;
+    edtI2CLen4: TBricxccSpinEdit;
+    edtI2CLen3: TBricxccSpinEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnPollNowClick(Sender: TObject);
     procedure btnCheckAllClick(Sender: TObject);
@@ -243,12 +254,14 @@ type
     procedure chkUltra4Click(Sender: TObject);
   private
     { Private declarations }
+{$IFNDEF FPC}
     fGraph : TfrmDataAnalysis;
+{$ENDIF}
     fNewData : TStrings;
     fVarArray : array[0..31] of TVarControls;
     procedure UpdateGraph;
     procedure PopulateVarArray;
-    procedure ProcessI2C(port: byte; edtLen: TSpinEdit; edtBuf,
+    procedure ProcessI2C(port: byte; edtLen: TBricxCCSpinEdit; edtBuf,
       edtVal: TEdit);
   public
     { Public declarations }
@@ -260,7 +273,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, Dialogs, SearchRCX, Preferences, brick_common, rcx_constants, uSpirit,
@@ -313,7 +328,7 @@ begin
   LSBlock.RXCount := len;
 end;
 
-procedure TWatchForm.ProcessI2C(port : byte; edtLen : TSpinEdit;
+procedure TWatchForm.ProcessI2C(port : byte; edtLen : TBricxCCSpinEdit;
   edtBuf : TEdit; edtVal : TEdit);
 var
   tmpStr, tmpI2CStr : string;
@@ -913,7 +928,9 @@ end;
 procedure TWatchForm.FormCreate(Sender: TObject);
 begin
   fNewData := TStringList.Create;
+{$IFNDEF FPC}
   fGraph := nil;
+{$ENDIF}
   cboTimes.ItemIndex := 3;
   PopulateVarArray;
 end;
@@ -938,6 +955,7 @@ end;
 
 procedure TWatchForm.btnGraphClick(Sender: TObject);
 begin
+{$IFNDEF FPC}
   if not btnGraph.Down then
   begin
     // close graph form and nil our pointer
@@ -957,6 +975,7 @@ begin
     fGraph.DataIsXY    := False;
     fGraph.Show;
   end;
+{$ENDIF}
 end;
 
 procedure TWatchForm.FormDestroy(Sender: TObject);
@@ -966,20 +985,24 @@ end;
 
 procedure TWatchForm.UpdateGraph;
 begin
+{$IFNDEF FPC}
   if Assigned(fGraph) then
   begin
     fGraph.AddNewData(fNewData);
   end;
+{$ENDIF}
 end;
 
 procedure TWatchForm.GraphDestroyed;
 begin
+{$IFNDEF FPC}
   // called by data analysis form when it closes
   if Assigned(fGraph) then
   begin
     fGraph := nil;
     btnGraph.Down := False;
   end;
+{$ENDIF}
 end;
 
 procedure TWatchForm.FormActivate(Sender: TObject);
@@ -1063,5 +1086,10 @@ begin
   edtI2CLen4.Enabled := not chkUltra4.Checked;
   edtI2CLen4.Value := 1;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i Watch.lrs}
+{$ENDIF}
 
 end.

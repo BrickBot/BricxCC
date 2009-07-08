@@ -201,7 +201,6 @@ type
     newcount : integer;
     fMDI : Boolean;
     FResume : boolean;
-    procedure WMClose(var Message: TWMClose); message WM_CLOSE;
     procedure CreateSpiritPlugins;
     procedure CloseAllEditors;
     procedure CloseEditor(E : TEditorForm; bAll : Boolean = False);
@@ -530,11 +529,6 @@ procedure TMainForm.pnlCodeExplorerGetSiteInfo(Sender: TObject;
 begin
   CanDock := False;
 //  CanDock := (DockClient is TfrmCodeExplorer) or (DockClient is TConstructForm);
-end;
-
-procedure TMainForm.WMClose(var Message: TWMClose);
-begin
-
 end;
 
 procedure TMainForm.CreateSpiritPlugins;

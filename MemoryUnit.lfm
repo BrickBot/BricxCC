@@ -1,0 +1,60 @@
+object MemoryForm: TMemoryForm
+  Left = 124
+  Height = 384
+  Top = 84
+  Width = 482
+  HelpContext = 21
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Memory Map'
+  ClientHeight = 384
+  ClientWidth = 482
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object MemoryMemo: TMemo
+    Left = 8
+    Height = 337
+    Top = 8
+    Width = 466
+    HelpContext = 21001
+    Font.CharSet = ANSI_CHARSET
+    Font.Height = -12
+    Font.Name = 'Courier New'
+    ReadOnly = True
+    ScrollBars = ssBoth
+    TabOrder = 0
+  end
+  object RefreshBtn: TButton
+    Left = 8
+    Height = 25
+    Top = 352
+    Width = 83
+    HelpContext = 21002
+    Caption = '&Refresh'
+    Default = True
+    OnClick = RefreshBtnClick
+    TabOrder = 1
+  end
+  object chkUseHex: TCheckBox
+    Left = 104
+    Height = 24
+    Top = 356
+    Width = 169
+    HelpContext = 21003
+    Caption = 'Hexadecimal format'
+    OnClick = chkUseHexClick
+    TabOrder = 2
+  end
+  object btnHelp: TButton
+    Left = 424
+    Height = 25
+    Top = 352
+    Width = 52
+    HelpContext = 21004
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 3
+  end
+end

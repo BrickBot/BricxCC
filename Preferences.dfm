@@ -86,7 +86,7 @@ object PrefForm: TPrefForm
       Top = 1
       Width = 450
       Height = 319
-      ActivePage = shtEditor
+      ActivePage = shtGeneral
       Align = alClient
       TabOrder = 0
       OnChange = pagPrefsChange
@@ -345,7 +345,7 @@ object PrefForm: TPrefForm
           Caption = 'Add dropped files to recent file list'
           TabOrder = 12
         end
-        object edtMaxRecent: TSpinEdit
+        object edtMaxRecent: TBricxccSpinEdit
           Left = 98
           Top = 234
           Width = 50
@@ -357,7 +357,7 @@ object PrefForm: TPrefForm
           TabOrder = 13
           Value = 2
         end
-        object edtFirmwareChunkSize: TSpinEdit
+        object edtFirmwareChunkSize: TBricxccSpinEdit
           Left = 98
           Top = 259
           Width = 50
@@ -370,7 +370,7 @@ object PrefForm: TPrefForm
           TabOrder = 14
           Value = 200
         end
-        object edtWaitTime: TSpinEdit
+        object edtWaitTime: TBricxccSpinEdit
           Left = 250
           Top = 259
           Width = 50
@@ -657,7 +657,7 @@ object PrefForm: TPrefForm
               Caption = 'Autosize max left character'
               TabOrder = 26
             end
-            object edtMaxLeftChar: TSpinEdit
+            object edtMaxLeftChar: TBricxccSpinEdit
               Left = 114
               Top = 138
               Width = 60
@@ -669,7 +669,7 @@ object PrefForm: TPrefForm
               TabOrder = 6
               Value = 1024
             end
-            object inpTabWidth: TSpinEdit
+            object inpTabWidth: TBricxccSpinEdit
               Left = 114
               Top = 162
               Width = 60
@@ -680,7 +680,7 @@ object PrefForm: TPrefForm
               TabOrder = 7
               Value = 2
             end
-            object inpMaxUndo: TSpinEdit
+            object inpMaxUndo: TBricxccSpinEdit
               Left = 114
               Top = 186
               Width = 60
@@ -691,7 +691,7 @@ object PrefForm: TPrefForm
               TabOrder = 8
               Value = 10
             end
-            object inpExtraLineSpacing: TSpinEdit
+            object inpExtraLineSpacing: TBricxccSpinEdit
               Left = 114
               Top = 209
               Width = 60
@@ -703,7 +703,7 @@ object PrefForm: TPrefForm
               TabOrder = 9
               Value = 0
             end
-            object inpRightEdge: TSpinEdit
+            object inpRightEdge: TBricxccSpinEdit
               Left = 114
               Top = 233
               Width = 60
@@ -1007,7 +1007,7 @@ object PrefForm: TPrefForm
               TabOrder = 4
               OnClick = btnPostcompileClick
             end
-            object edtCompilerTimeout: TSpinEdit
+            object edtCompilerTimeout: TBricxccSpinEdit
               Left = 76
               Top = 3
               Width = 56
@@ -1268,17 +1268,6 @@ object PrefForm: TPrefForm
               Caption = 'Ignore system i&nclude files'
               TabOrder = 6
             end
-            object edtMaxErrors: TSpinEdit
-              Left = 354
-              Top = 112
-              Width = 50
-              Height = 22
-              MaxLength = 3
-              MaxValue = 999
-              MinValue = 0
-              TabOrder = 8
-              Value = 0
-            end
             object edtNBCExePath2: TEdit
               Left = 76
               Top = 53
@@ -1339,6 +1328,17 @@ object PrefForm: TPrefForm
                 TabOrder = 2
                 Text = '%s_data'
               end
+            end
+            object edtMaxErrors: TBricxccSpinEdit
+              Left = 354
+              Top = 112
+              Width = 50
+              Height = 22
+              MaxLength = 3
+              MaxValue = 999
+              MinValue = 0
+              TabOrder = 8
+              Value = 0
             end
           end
           object shtCompilerBrickOS: TTabSheet
@@ -1634,7 +1634,7 @@ object PrefForm: TPrefForm
                 Caption = '&Write timeout:'
                 FocusControl = edtConsoleWriteTimeout
               end
-              object edtConsoleReadFirstTimeout: TSpinEdit
+              object edtConsoleReadFirstTimeout: TBricxccSpinEdit
                 Left = 114
                 Top = 17
                 Width = 60
@@ -1646,7 +1646,7 @@ object PrefForm: TPrefForm
                 TabOrder = 0
                 Value = 10
               end
-              object edtConsoleReadICTimeout: TSpinEdit
+              object edtConsoleReadICTimeout: TBricxccSpinEdit
                 Left = 114
                 Top = 41
                 Width = 60
@@ -1658,7 +1658,7 @@ object PrefForm: TPrefForm
                 TabOrder = 1
                 Value = 0
               end
-              object edtConsoleWriteTimeout: TSpinEdit
+              object edtConsoleWriteTimeout: TBricxccSpinEdit
                 Left = 114
                 Top = 65
                 Width = 60
@@ -1682,7 +1682,7 @@ object PrefForm: TPrefForm
               State = cbChecked
               TabOrder = 7
             end
-            object edtICDelay: TSpinEdit
+            object edtICDelay: TBricxccSpinEdit
               Left = 126
               Top = 107
               Width = 60
@@ -1694,7 +1694,7 @@ object PrefForm: TPrefForm
               TabOrder = 8
               Value = 0
             end
-            object edtILDelay: TSpinEdit
+            object edtILDelay: TBricxccSpinEdit
               Left = 126
               Top = 133
               Width = 60
@@ -2609,7 +2609,7 @@ object PrefForm: TPrefForm
             ItemHeight = 16
             TabOrder = 11
           end
-          object inpRightOffset: TSpinEdit
+          object inpRightOffset: TBricxccSpinEdit
             Left = 80
             Top = 111
             Width = 60
@@ -2621,7 +2621,7 @@ object PrefForm: TPrefForm
             TabOrder = 3
             Value = 2
           end
-          object inpLeftOffset: TSpinEdit
+          object inpLeftOffset: TBricxccSpinEdit
             Left = 80
             Top = 87
             Width = 60
@@ -2632,7 +2632,7 @@ object PrefForm: TPrefForm
             TabOrder = 2
             Value = 16
           end
-          object inpDigitCount: TSpinEdit
+          object inpDigitCount: TBricxccSpinEdit
             Left = 80
             Top = 64
             Width = 60
@@ -2644,7 +2644,7 @@ object PrefForm: TPrefForm
             TabOrder = 1
             Value = 4
           end
-          object inpGutterWidth: TSpinEdit
+          object inpGutterWidth: TBricxccSpinEdit
             Left = 80
             Top = 40
             Width = 60

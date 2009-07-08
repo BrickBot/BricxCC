@@ -15,9 +15,16 @@
  *)
 unit dlgSearchText;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, StdCtrls, ExtCtrls;
 
 type
@@ -71,7 +78,9 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 { TTextSearchDialog }
 
@@ -187,6 +196,9 @@ begin
   end;
 end;
 
-end.
+{$IFDEF FPC}
+initialization
+  {$i dlgSearchText.lrs}
+{$ENDIF}
 
- 
+end.

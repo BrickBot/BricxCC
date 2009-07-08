@@ -42,6 +42,11 @@ type
   published
     property HotKey: TShortcut read GetHotKey write SetHotKey;
     property InvalidKeys: THKInvalidKeys read FInvalidKeys write SetInvalidKeys;
+{$ELSE}
+  protected
+    fHotKey : TShortcut;
+  published
+    property HotKey : TShortcut read fHotKey write fHotKey;
 {$ENDIF}
   end;
 

@@ -779,7 +779,7 @@ object frmRmdPlayer: TfrmRmdPlayer
       Height = 13
       Caption = 'Volume:'
     end
-    object edtVolume: TSpinEdit
+    object edtVolume: TBricxccSpinEdit
       Left = 284
       Top = 8
       Width = 45

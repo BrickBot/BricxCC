@@ -30,6 +30,10 @@ Known Issues:
 {$A+,B-,C-,D-,E-,I+,J-,O+,Q-,R-,S-,V-}
 unit mwGenericLex;
 
+{$IFDEF FPC}
+{$MODE DELPHI}
+{$ENDIF}
+
 interface
 
 uses

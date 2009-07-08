@@ -57,7 +57,7 @@ object frmSetLNPAddress: TfrmSetLNPAddress
     TabOrder = 2
     OnClick = btnHelpClick
   end
-  object edtAddress: TSpinEdit
+  object edtAddress: TBricxccSpinEdit
     Left = 108
     Top = 8
     Width = 59

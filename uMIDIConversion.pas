@@ -16,10 +16,17 @@
  *)
 unit uMIDIConversion;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, uSpin, uMidi2MS;
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
+  Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, BricxccSpin, uMidi2MS;
 
 type
   TMIDIDestination = (mdClipboard, mdFile);
@@ -50,10 +57,10 @@ type
     lblTrack: TLabel;
     radGenNXC: TRadioButton;
     radGenNXTMelody: TRadioButton;
-    edtGap: TSpinEdit;
-    edtTempo: TSpinEdit;
-    edtPBS: TSpinEdit;
-    edtTrack: TSpinEdit;
+    edtGap: TBricxccSpinEdit;
+    edtTempo: TBricxccSpinEdit;
+    edtPBS: TBricxccSpinEdit;
+    edtTrack: TBricxccSpinEdit;
     procedure edtGapKeyPress(Sender: TObject; var Key: Char);
     procedure barTransposeChange(Sender: TObject);
     procedure chkUsePBClick(Sender: TObject);
@@ -85,7 +92,9 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, Clipbrd;
@@ -244,5 +253,10 @@ begin
   if radToClip.Checked and not radToClip.Enabled then
     radToFile.Checked := True;  
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uMIDIConversion.lrs}
+{$ENDIF}
 
 end.

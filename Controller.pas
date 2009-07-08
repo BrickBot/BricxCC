@@ -16,10 +16,20 @@
  *)
 unit Controller;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, ComCtrls, StdCtrls, ExtCtrls, Buttons;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+{$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ComCtrls, StdCtrls, ExtCtrls, Buttons;
 
 type
   TDirectForm = class(TForm)
@@ -128,10 +138,12 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
-  SysUtils, Dialogs, SearchRCX, brick_common, rcx_constants, uSources, uMiscDefines,
+  SearchRCX, brick_common, rcx_constants, uSources, uMiscDefines,
   uLocalizedStrings;
 
 var
@@ -612,5 +624,10 @@ procedure TDirectForm.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i Controller.lrs}
+{$ENDIF}
 
 end.

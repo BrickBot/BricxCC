@@ -18,9 +18,19 @@
  *)
 unit GX_ProcedureList;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+  LMessages,
+  LCLIntf,
+  LCLType,
+{$ENDIF}
   Messages, Classes, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, ExtCtrls, Menus, ImgList, ActnList, ToolWin,
   mPasLex, uParseCommon;
@@ -142,10 +152,16 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
 
 uses
-  Windows, SysUtils, Clipbrd,
+{$IFNDEF FPC}
+  Windows,
+{$ENDIF}
+  SysUtils, 
+  Clipbrd,
   uMiscDefines,
   Preferences,
   mwBCBTokenList,
@@ -408,7 +424,11 @@ var
   end;
 
 begin
+{$IFDEF FPC}
+  lvProcs.BeginUpdate;
+{$ELSE}
   lvProcs.Items.BeginUpdate;
+{$ENDIF}
   try
     lvProcs.Items.Clear;
     if (Length(edtMethods.Text) = 0) and (cbxObjects.Text = SAllString) then
@@ -469,7 +489,11 @@ begin
     end;
     FocusAndSelectFirstItem;
   finally
+{$IFDEF FPC}
+    lvProcs.EndUpdate;
+{$ELSE}
     lvProcs.Items.EndUpdate;
+{$ENDIF}
   end;
   ResizeCols;
 end;
@@ -638,7 +662,9 @@ begin
            ((Key in [VK_INSERT]) and ((ssShift in Shift) or (ssCtrl in Shift))) or
            ((Key in [VK_HOME, VK_END]) and (ssShift in Shift))) then
   begin
+{$IFNDEF FPC}
     SendMessage(lvProcs.Handle, WM_KEYDOWN, Key, 0);
+{$ENDIF}
     Key := 0;
   end;
 end;
@@ -899,6 +925,11 @@ begin
   ProcedureInfo.ProcName := pname;
   AddProcedure(ProcedureInfo);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i GX_ProcedureList.lrs}
+{$ENDIF}
 
 end.
 

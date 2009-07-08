@@ -1,0 +1,222 @@
+object frmNewWatch: TfrmNewWatch
+  Left = 247
+  Height = 201
+  Top = 136
+  Width = 539
+  HelpContext = 14
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Configurable Watch'
+  ClientHeight = 201
+  ClientWidth = 539
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object btnPollRegular: TSpeedButton
+    Left = 104
+    Height = 25
+    Top = 148
+    Width = 89
+    HelpContext = 3610
+    AllowAllUp = True
+    Caption = 'Poll &Regular'
+    Color = clBtnFace
+    GroupIndex = 1
+    NumGlyphs = 0
+    OnClick = btnPollRegularClick
+  end
+  object btnGraph: TSpeedButton
+    Left = 408
+    Height = 25
+    Top = 148
+    Width = 89
+    HelpContext = 3614
+    AllowAllUp = True
+    Caption = '&Graph'
+    Color = clBtnFace
+    GroupIndex = 4
+    NumGlyphs = 0
+    OnClick = btnGraphClick
+  end
+  object lblSource: TLabel
+    Left = 8
+    Height = 17
+    Top = 9
+    Width = 67
+    Caption = 'S&ource:'
+    ParentColor = False
+  end
+  object lblValue: TLabel
+    Left = 8
+    Height = 17
+    Top = 37
+    Width = 57
+    Caption = '&Value:'
+    ParentColor = False
+  end
+  object btnPollNow: TButton
+    Left = 8
+    Height = 25
+    Top = 148
+    Width = 89
+    HelpContext = 3609
+    Caption = '&Poll Now'
+    OnClick = btnPollNowClick
+    TabOrder = 8
+  end
+  object btnCheckAll: TButton
+    Left = 304
+    Height = 24
+    Top = 31
+    Width = 62
+    HelpContext = 3606
+    Caption = '&All'
+    OnClick = btnCheckAllClick
+    TabOrder = 5
+  end
+  object btnCheckNone: TButton
+    Left = 372
+    Height = 24
+    Top = 31
+    Width = 62
+    HelpContext = 3607
+    Caption = '&None'
+    OnClick = btnCheckNoneClick
+    TabOrder = 6
+  end
+  object TimeBox: TComboBox
+    Left = 200
+    Height = 21
+    Top = 150
+    Width = 89
+    HelpContext = 3611
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    Items.Strings = (
+      '100 ms'
+      '200 ms'
+      '500 ms'
+      '1 second'
+      '2 seconds'
+      '5 seconds'
+      '10 seconds'
+    )
+    MaxLength = 65535
+    OnChange = TimeBoxChange
+    Style = csDropDownList
+    TabOrder = 9
+  end
+  object chkIfActive: TCheckBox
+    Left = 296
+    Height = 26
+    Top = 143
+    Width = 117
+    HelpContext = 3612
+    Caption = 'Only if ac&tive'
+    TabOrder = 10
+  end
+  object chkSyncSeries: TCheckBox
+    Left = 296
+    Height = 26
+    Top = 159
+    Width = 107
+    HelpContext = 3613
+    Caption = 'Sync s&eries'
+    TabOrder = 11
+  end
+  object cboSource: TComboBox
+    Left = 56
+    Height = 21
+    Top = 5
+    Width = 161
+    HelpContext = 3601
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    MaxLength = 65535
+    OnChange = cboSourceChange
+    Style = csDropDownList
+    TabOrder = 0
+  end
+  object edtValue: TEdit
+    Left = 56
+    Height = 21
+    Top = 32
+    Width = 49
+    HelpContext = 3602
+    MaxLength = 5
+    OnExit = edtValueExit
+    OnKeyDown = nil
+    OnKeyPress = edtValueKeyPress
+    TabOrder = 1
+    Text = '0'
+  end
+  object udValue: TUpDown
+    Left = 105
+    Height = 21
+    Top = 32
+    Width = 15
+    HelpContext = 3603
+    Associate = edtValue
+    TabOrder = 2
+    Thousands = False
+  end
+  object btnAddWatch: TButton
+    Left = 127
+    Height = 24
+    Top = 31
+    Width = 62
+    HelpContext = 3604
+    Caption = '&Watch'
+    Enabled = False
+    OnClick = btnAddWatchClick
+    TabOrder = 3
+  end
+  object pagMain: TPageControl
+    Left = 8
+    Height = 73
+    Top = 64
+    Width = 497
+    TabOrder = 7
+  end
+  object btnRemoveWatch: TButton
+    Left = 195
+    Height = 24
+    Top = 31
+    Width = 62
+    HelpContext = 3605
+    Caption = 'Re&move'
+    Enabled = False
+    OnClick = btnRemoveWatchClick
+    TabOrder = 4
+  end
+  object btnClear: TButton
+    Left = 440
+    Height = 24
+    Top = 31
+    Width = 62
+    HelpContext = 3608
+    Caption = '&Clear'
+    OnClick = btnClearClick
+    TabOrder = 12
+  end
+  object btnHelp: TButton
+    Left = 440
+    Height = 24
+    Top = 3
+    Width = 62
+    HelpContext = 3621
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 13
+  end
+  object Timer1: TTimer
+    Enabled = False
+    OnTimer = Timer1Timer
+    left = 424
+    top = 8
+  end
+end

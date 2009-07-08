@@ -520,7 +520,7 @@ object PianoForm: TPianoForm
     TabOrder = 10
     OnClick = btnHelpClick
   end
-  object edtNoteTime: TSpinEdit
+  object edtNoteTime: TBricxccSpinEdit
     Left = 64
     Top = 224
     Width = 57
@@ -532,7 +532,7 @@ object PianoForm: TPianoForm
     TabOrder = 8
     Value = 10
   end
-  object edtWaitTime: TSpinEdit
+  object edtWaitTime: TBricxccSpinEdit
     Left = 192
     Top = 224
     Width = 57

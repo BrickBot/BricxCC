@@ -1,0 +1,211 @@
+object frmExplorerOptions: TfrmExplorerOptions
+  Left = 192
+  Height = 240
+  Top = 123
+  Width = 379
+  HelpContext = 30001
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Explorer Options'
+  ClientHeight = 240
+  ClientWidth = 379
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object pnlBottom: TPanel
+    Height = 32
+    Top = 208
+    Width = 379
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 32
+    ClientWidth = 379
+    TabOrder = 0
+    object btnOK: TButton
+      Left = 136
+      Height = 25
+      Top = 3
+      Width = 75
+      HelpContext = 30002
+      Caption = 'OK'
+      Default = True
+      ModalResult = 1
+      TabOrder = 0
+    end
+    object btnCancel: TButton
+      Left = 217
+      Height = 25
+      Top = 3
+      Width = 75
+      HelpContext = 30003
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 1
+    end
+    object btnHelp: TButton
+      Left = 299
+      Height = 25
+      Top = 3
+      Width = 73
+      HelpContext = 30004
+      Caption = '&Help'
+      OnClick = btnHelpClick
+      TabOrder = 2
+    end
+  end
+  object pnlTop: TPanel
+    Height = 208
+    Width = 379
+    Align = alClient
+    BevelOuter = bvNone
+    BorderWidth = 6
+    ClientHeight = 208
+    ClientWidth = 379
+    TabOrder = 1
+    object pagOptions: TPageControl
+      Left = 6
+      Height = 196
+      Top = 6
+      Width = 367
+      ActivePage = shtExplorer
+      Align = alClient
+      TabIndex = 0
+      TabOrder = 0
+      object shtExplorer: TTabSheet
+        Caption = 'Explorer'
+        ClientHeight = 162
+        ClientWidth = 363
+        object lblCategories: TLabel
+          Left = 194
+          Height = 17
+          Top = 8
+          Width = 154
+          Caption = 'Explorer ca&tegories:'
+          ParentColor = False
+        end
+        object grpOptions: TGroupBox
+          Left = 8
+          Height = 66
+          Top = 8
+          Width = 176
+          Caption = 'Explorer options'
+          ClientHeight = 45
+          ClientWidth = 172
+          TabOrder = 0
+          object chkAutoExplorer: TCheckBox
+            Left = 8
+            Height = 26
+            Width = 227
+            HelpContext = 30005
+            Caption = '&Automatically show Explorer'
+            Checked = True
+            State = cbChecked
+            TabOrder = 0
+          end
+          object chkDeclarationSyntax: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 22
+            Width = 200
+            HelpContext = 30006
+            Caption = 'Show &declaration syntax'
+            Enabled = False
+            TabOrder = 1
+          end
+        end
+        object pnlCategories: TPanel
+          Left = 194
+          Height = 123
+          Top = 24
+          Width = 156
+          Caption = 'pnlCategories'
+          TabOrder = 1
+        end
+        object grpSorting: TGroupBox
+          Left = 8
+          Height = 69
+          Top = 77
+          Width = 176
+          Caption = 'Explorer sorting'
+          ClientHeight = 48
+          ClientWidth = 172
+          TabOrder = 2
+          object radAlphaSort: TRadioButton
+            Left = 8
+            Height = 26
+            Width = 111
+            HelpContext = 30007
+            Caption = 'Alpha&betical'
+            Checked = True
+            State = cbChecked
+            TabOrder = 0
+          end
+          object radSourceSort: TRadioButton
+            Left = 8
+            Height = 26
+            Top = 22
+            Width = 75
+            HelpContext = 30008
+            Caption = '&Source'
+            TabOrder = 1
+          end
+        end
+      end
+    end
+  end
+  object ilStateImages: TImageList
+    BkColor = clForeground
+    Height = 13
+    Width = 13
+    left = 320
+    top = 80
+    Bitmap = {
+      4C69020000000D0000000D000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000000000000000000000000000C6C6C6FF848484FF848484FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      000000000000C6C6C6FFFFFFFFFF000000FF0000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000848484FF0000
+      00FF000000FF0000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000C6C6C6FF848484FF848484FF000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000C6C6C6FFFFFFFFFF000000FF000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000848484FF000000FF0000
+      00FF000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000C6C6C6FF848484FF848484FF00000000000000000000
+      000000000000000000000000000000000000000000000000000000000000C6C6
+      C6FFFFFFFFFF000000FF00000000000000000000000000000000000000000000
+      000000000000000000000000000000000000848484FF000000FF000000FF0000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000C6C6C6FF848484FF8484
+      84FF000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000C6C6C6FFFFFFFFFF000000FF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000008484
+      84FF000000FF000000FF00000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000848484FF000000000000
+      000000000000C6C6C6FF848484FF848484FF0000000000000000000000000000
+      00000000000000000000848484FF848484FF848484FF848484FFC6C6C6FFFFFF
+      FFFF000000FF0000000000000000000000000000000000000000000000008484
+      84FF000000000000000000000000848484FF000000FF000000FF000000000000
+      000000000000000000000000000000000000848484FF00000000000000000000
+      0000C6C6C6FF848484FF848484FF000000000000000000000000000000000000
+      000000000000848484FF848484FF848484FF848484FFC6C6C6FFFFFFFFFF0000
+      00FF000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000848484FF000000FF000000FF00000000000000000000
+      0000000000000000000000000000000000000000000000000000000000000000
+      00000000000000000000000000000000000000000000
+    }
+  end
+end

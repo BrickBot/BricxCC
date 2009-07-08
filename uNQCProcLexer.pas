@@ -32,6 +32,9 @@ type
 implementation
 
 uses
+{$IFDEF FPC}
+  LCLIntf,
+{$ENDIF}
   SysUtils, mwGenericLex, uCommonUtils;
 
 { TNQCProcLexer }

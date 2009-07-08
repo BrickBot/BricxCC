@@ -16,10 +16,17 @@
  *)
 unit Piano;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, ExtCtrls, StdCtrls, Buttons, ComCtrls, uSpin,
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
+  Classes, Controls, Forms, ExtCtrls, StdCtrls, Buttons, ComCtrls, BricxccSpin,
   uMidi2MS;
 
 type
@@ -77,8 +84,8 @@ type
     radGenNBC: TRadioButton;
     radGenNXTMelody: TRadioButton;
     radGenNXC: TRadioButton;
-    edtNoteTime: TSpinEdit;
-    edtWaitTime: TSpinEdit;
+    edtNoteTime: TBricxccSpinEdit;
+    edtWaitTime: TBricxccSpinEdit;
     procedure Shape01MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure radWholeClick(Sender: TObject);
@@ -112,7 +119,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, SearchRCX, brick_common, MainUnit;
@@ -339,5 +348,10 @@ procedure TPianoForm.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i Piano.lrs}
+{$ENDIF}
 
 end.

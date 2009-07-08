@@ -1,0 +1,227 @@
+object frmTransEdit: TfrmTransEdit
+  Left = 208
+  Height = 310
+  Top = 164
+  Width = 426
+  HelpContext = 43000
+  ActiveControl = edTitle
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Tool Properties'
+  ClientHeight = 310
+  ClientWidth = 426
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  ParentFont = True
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object lblTitle: TLabel
+    Left = 8
+    Height = 17
+    Top = 12
+    Width = 46
+    Caption = '&Title:'
+    FocusControl = edTitle
+    ParentColor = False
+  end
+  object lblProgram: TLabel
+    Left = 8
+    Height = 17
+    Top = 40
+    Width = 78
+    Caption = '&Program:'
+    FocusControl = edProgram
+    ParentColor = False
+  end
+  object lblParameters: TLabel
+    Left = 8
+    Height = 17
+    Top = 96
+    Width = 100
+    Caption = 'P&arameters:'
+    FocusControl = edParameters
+    ParentColor = False
+  end
+  object lblMacros: TLabel
+    Left = 8
+    Height = 17
+    Top = 188
+    Width = 68
+    Caption = 'Ma&cros:'
+    FocusControl = MacroList
+    ParentColor = False
+  end
+  object lblWorkingDir: TLabel
+    Left = 8
+    Height = 17
+    Top = 68
+    Width = 96
+    Caption = '&Working dir:'
+    FocusControl = edWorkingDir
+    ParentColor = False
+  end
+  object lblExt: TLabel
+    Left = 248
+    Height = 17
+    Top = 124
+    Width = 87
+    Caption = 'E&xtension:'
+    FocusControl = edtExt
+    ParentColor = False
+  end
+  object edTitle: TEdit
+    Left = 84
+    Height = 21
+    Top = 8
+    Width = 257
+    HelpContext = 43001
+    MaxLength = 80
+    OnChange = edTitleChange
+    TabOrder = 0
+  end
+  object edProgram: TEdit
+    Left = 84
+    Height = 21
+    Top = 36
+    Width = 257
+    HelpContext = 43002
+    MaxLength = 255
+    OnChange = edTitleChange
+    TabOrder = 1
+  end
+  object edParameters: TEdit
+    Left = 84
+    Height = 21
+    Top = 92
+    Width = 257
+    HelpContext = 43004
+    MaxLength = 255
+    TabOrder = 3
+  end
+  object MacroButton: TBitBtn
+    Left = 8
+    Height = 25
+    Top = 148
+    Width = 72
+    HelpContext = 43005
+    Caption = '&Macros'
+    NumGlyphs = 0
+    OnClick = MacroButtonClick
+    TabOrder = 6
+  end
+  object MacroList: TListBox
+    Left = 8
+    Height = 97
+    Top = 204
+    Width = 333
+    HelpContext = 43006
+    ItemHeight = 13
+    OnClick = MacroListClick
+    OnDblClick = InsertButtonClick
+    TabOrder = 7
+    TopIndex = -1
+  end
+  object edWorkingDir: TEdit
+    Left = 84
+    Height = 21
+    Top = 64
+    Width = 257
+    HelpContext = 43003
+    TabOrder = 2
+  end
+  object OKButton: TButton
+    Left = 348
+    Height = 25
+    Top = 7
+    Width = 75
+    HelpContext = 43009
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    OnClick = OKButtonClick
+    TabOrder = 8
+  end
+  object CancelButton: TButton
+    Left = 348
+    Height = 25
+    Top = 39
+    Width = 75
+    HelpContext = 43010
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 9
+  end
+  object InsertButton: TButton
+    Left = 348
+    Height = 25
+    Top = 204
+    Width = 75
+    HelpContext = 43008
+    Caption = '&Insert'
+    OnClick = InsertButtonClick
+    TabOrder = 11
+  end
+  object BrowseButton: TButton
+    Left = 348
+    Height = 25
+    Top = 148
+    Width = 75
+    HelpContext = 43007
+    Caption = '&Browse...'
+    OnClick = BrowseButtonClick
+    TabOrder = 12
+  end
+  object btnHelp: TButton
+    Left = 348
+    Height = 25
+    Top = 71
+    Width = 75
+    HelpContext = 43011
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 10
+  end
+  object chkWait: TCheckBox
+    Left = 84
+    Height = 24
+    Top = 152
+    Width = 145
+    Caption = 'Wait for program'
+    TabOrder = 13
+  end
+  object chkClose: TCheckBox
+    Left = 204
+    Height = 24
+    Top = 152
+    Width = 185
+    Caption = 'Close and reopen port'
+    TabOrder = 14
+  end
+  object edtExt: TEdit
+    Left = 304
+    Height = 21
+    Top = 120
+    Width = 37
+    HelpContext = 43004
+    MaxLength = 255
+    TabOrder = 5
+  end
+  object chkRestrict: TCheckBox
+    Left = 84
+    Height = 24
+    Top = 122
+    Width = 209
+    Caption = 'Restrict by file extension?'
+    TabOrder = 4
+  end
+  object OpenDialog: TOpenDialog
+    HelpContext = 43012
+    Title = 'Select Transfer Item'
+    Filter = 'Programs (*.exe;*.com;*.pif)|*.exe;*.com;*.pif|Any file (*.*)|*.*'
+    Options = [ofHideReadOnly, ofNoChangeDir, ofShowHelp, ofFileMustExist, ofEnableSizing]
+    left = 376
+    top = 228
+  end
+end

@@ -277,7 +277,7 @@ object frmNXTController: TfrmNXTController
       ThumbLength = 10
       OnChange = tbPowerChange
     end
-    object edtPower: TSpinEdit
+    object edtPower: TBricxccSpinEdit
       Left = 114
       Top = 17
       Width = 41
@@ -312,7 +312,7 @@ object frmNXTController: TfrmNXTController
         'Rotations'
         'Seconds')
     end
-    object edtDuration: TSpinEdit
+    object edtDuration: TBricxccSpinEdit
       Left = 8
       Top = 16
       Width = 65

@@ -131,7 +131,7 @@ object frmMidiBatch: TfrmMidiBatch
     Height = 61
     Caption = 'Tempo'
     TabOrder = 7
-    object edtTempo: TSpinEdit
+    object edtTempo: TBricxccSpinEdit
       Left = 8
       Top = 23
       Width = 60
@@ -200,7 +200,7 @@ object frmMidiBatch: TfrmMidiBatch
       TabOrder = 2
       OnClick = chkUsePBClick
     end
-    object edtGap: TSpinEdit
+    object edtGap: TBricxccSpinEdit
       Left = 78
       Top = 17
       Width = 52
@@ -212,7 +212,7 @@ object frmMidiBatch: TfrmMidiBatch
       TabOrder = 0
       Value = 2
     end
-    object edtPBS: TSpinEdit
+    object edtPBS: TBricxccSpinEdit
       Left = 78
       Top = 94
       Width = 52

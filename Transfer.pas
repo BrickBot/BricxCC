@@ -16,9 +16,16 @@
  *)
 unit Transfer;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, StdCtrls, Buttons;
 
 type
@@ -61,7 +68,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, Dialogs, Transdlg, Preferences, uLocalizedStrings;
@@ -252,5 +261,10 @@ procedure TfrmTransferDlg.ItemListDragOver(Sender, Source: TObject; X,
 begin
   Accept := Source = ItemList;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i Transfer.lrs}
+{$ENDIF}
 
 end.
