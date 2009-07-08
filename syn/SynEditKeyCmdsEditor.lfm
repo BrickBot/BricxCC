@@ -1,0 +1,156 @@
+object SynEditKeystrokesEditorForm: TSynEditKeystrokesEditorForm
+  Left = 330
+  Height = 353
+  Top = 297
+  Width = 390
+  BorderIcons = [biSystemMenu, biMaximize]
+  Caption = 'Keystroke Editor'
+  ClientHeight = 353
+  ClientWidth = 390
+  Constraints.MinHeight = 225
+  Constraints.MinWidth = 300
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  Position = poScreenCenter
+  LCLVersion = '0.9.25'
+  object pnlBottom: TPanel
+    Left = 8
+    Height = 308
+    Top = 8
+    Width = 365
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    BevelInner = bvRaised
+    BevelOuter = bvLowered
+    ClientHeight = 308
+    ClientWidth = 365
+    TabOrder = 0
+    object lnlInfo: TLabel
+      Left = 5
+      Height = 13
+      Top = 271
+      Width = 229
+      Anchors = [akLeft, akBottom]
+      Caption = 'NOTE: To have multiple keystrokes do the same'
+      ParentColor = False
+    end
+    object lnlInfo2: TLabel
+      Left = 42
+      Height = 13
+      Top = 287
+      Width = 217
+      Anchors = [akLeft, akBottom]
+      Caption = 'command, assign the command multiple times.'
+      ParentColor = False
+    end
+    object pnlCommands: TPanel
+      Left = 16
+      Height = 244
+      Top = 16
+      Width = 246
+      Anchors = [akTop, akLeft, akRight, akBottom]
+      BevelInner = bvLowered
+      BorderWidth = 4
+      Caption = 'pnlCommands'
+      ClientHeight = 244
+      ClientWidth = 246
+      TabOrder = 0
+      object KeyCmdList: TListView
+        Left = 6
+        Height = 232
+        Top = 6
+        Width = 234
+        Align = alClient
+        Columns = <        
+          item
+            Caption = 'Command'
+            Width = 117
+          end        
+          item
+            Caption = 'Keystroke'
+            Width = 101
+          end>
+        ColumnClick = False
+        HideSelection = False
+        TabOrder = 0
+        ViewStyle = vsReport
+        OnClick = KeyCmdListClick
+        OnDblClick = btnEditClick
+      end
+    end
+    object btnAdd: TButton
+      Left = 276
+      Height = 25
+      Top = 20
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = '&Add'
+      OnClick = btnAddClick
+      TabOrder = 1
+    end
+    object btnEdit: TButton
+      Left = 276
+      Height = 25
+      Top = 52
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = '&Edit'
+      Enabled = False
+      OnClick = btnEditClick
+      TabOrder = 2
+    end
+    object btnDelete: TButton
+      Left = 276
+      Height = 25
+      Top = 84
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = '&Delete'
+      Enabled = False
+      OnClick = btnDeleteClick
+      TabOrder = 3
+    end
+    object btnClear: TButton
+      Left = 276
+      Height = 25
+      Top = 116
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = 'C&lear List'
+      OnClick = btnClearClick
+      TabOrder = 4
+    end
+    object btnReset: TButton
+      Left = 276
+      Height = 25
+      Top = 148
+      Width = 75
+      Anchors = [akTop, akRight]
+      Caption = '&Reset List'
+      OnClick = btnResetClick
+      TabOrder = 5
+    end
+    object btnOK: TButton
+      Left = 276
+      Height = 25
+      Top = 241
+      Width = 75
+      Anchors = [akRight, akBottom]
+      Caption = '&OK'
+      Default = True
+      OnClick = btnOKClick
+      TabOrder = 6
+    end
+    object btnCancel: TButton
+      Left = 276
+      Height = 25
+      Top = 273
+      Width = 75
+      Anchors = [akRight, akBottom]
+      Cancel = True
+      Caption = '&Cancel'
+      OnClick = btnCancelClick
+      TabOrder = 7
+    end
+  end
+end

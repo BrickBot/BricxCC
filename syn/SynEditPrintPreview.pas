@@ -27,7 +27,7 @@ replace them with the notice and other provisions required by the GPL.
 If you do not delete the provisions above, a recipient may use your version
 of this file under either the MPL or the GPL.
 
-$Id: SynEditPrintPreview.pas,v 1.1.1.1 2009/01/12 02:59:57 jhansen Exp $
+$Id: SynEditPrintPreview.pas,v 1.16 2003/01/17 17:56:57 etrusco Exp $
 
 You may retrieve the latest version of this file at the SynEdit home page,
 located at http://SynEdit.SourceForge.net
@@ -45,7 +45,7 @@ CONTENTS:
 
 unit SynEditPrintPreview;
 
-{$I SynEdit.inc}
+{$I SynExtra.inc}
 
 {$M+}
 interface
@@ -53,43 +53,26 @@ interface
 uses
   Classes,
   SysUtils,
-{$IFDEF SYN_CLX}
-  Qt,
-  QControls,
-  QGraphics,
-  QForms,
-  Types,
-{$ELSE}
+{$IFNDEF FPC}
   Windows,
+{$IFDEF SYN_COMPILER_7}
+  Themes,
+{$ENDIF}
+{$ELSE}
+  LMessages,
+  LCLType,
+  LCLIntf,
+{$ENDIF}
   Controls,
   Messages,
   Graphics,
   Forms,
-{$IFDEF SYN_COMPILER_7}
-  Themes,
-{$ENDIF}
-{$ENDIF}
   SynEditPrint;
 
 type
 //Event raised when page is changed in preview
   TPreviewPageEvent = procedure(Sender: TObject; PageNumber: Integer) of object;
   TSynPreviewScale = (pscWholePage, pscPageWidth, pscUserScaled);
-
-  {$IFNDEF SYN_COMPILER_4_UP}
-  TWMMouseWheel = record
-    Msg: Cardinal;
-    Keys: SmallInt;
-    WheelDelta: SmallInt;
-    case Integer of
-      0: (
-        XPos: Smallint;
-        YPos: Smallint);
-      1: (
-        Pos: TSmallPoint;
-        Result: Longint);
-  end;
-  {$ENDIF}
 
   TSynEditPrintPreview = class(TCustomControl)
   protected
@@ -107,27 +90,24 @@ type
     FShowScrollHint: Boolean;
     FOnPreviewPage: TPreviewPageEvent;
     FOnScaleChange: TNotifyEvent;                                               // JD 2002-01-9
-  {$IFNDEF SYN_CLX}
     FWheelAccumulator: Integer;
-  {$ENDIF}
     procedure SetBorderStyle(Value: TBorderStyle);
     procedure SetPageBG(Value: TColor);
     procedure SetSynEditPrint(Value: TSynEditPrint);
     procedure SetScaleMode(Value: TSynPreviewScale);
     procedure SetScalePercent(Value: Integer);
   private
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
     procedure WMEraseBkgnd(var Msg: TWMEraseBkgnd); message WM_ERASEBKGND;
     procedure WMHScroll(var Msg: TWMHScroll); message WM_HSCROLL;
     procedure WMSize(var Msg: TWMSize); message WM_SIZE;
     procedure WMVScroll(var Msg: TWMVScroll); message WM_VSCROLL;
-    procedure WMMouseWheel(var Message: TWMMouseWheel); message
-      {$IFDEF SYN_COMPILER_3_UP} WM_MOUSEWHEEL {$ELSE} $020A {$ENDIF};
+    procedure WMMouseWheel(var Message: TWMMouseWheel); message WM_MOUSEWHEEL;
   {$ENDIF}
     procedure PaintPaper;
     function GetPageCount: Integer;
   protected
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
     procedure CreateParams(var Params: TCreateParams); override;
   {$ENDIF}
     function GetPageHeightFromWidth(AWidth: Integer): Integer;
@@ -194,7 +174,7 @@ constructor TSynEditPrintPreview.Create(AOwner: TComponent);
 begin
   inherited;
 {$IFDEF SYN_COMPILER_7_UP}
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
   ControlStyle := ControlStyle + [csNeedsBorderPaint];
   {$ENDIF}
 {$ENDIF}
@@ -210,12 +190,10 @@ begin
   FPageNumber := 1;
   FShowScrollHint := True;
   Align := alClient;
-{$IFNDEF SYN_CLX}
   FWheelAccumulator := 0;
-{$ENDIF}
 end;
 
-{$IFNDEF SYN_CLX}
+{$IFNDEF SYN_LAZARUS}
 procedure TSynEditPrintPreview.CreateParams(var Params: TCreateParams);
 const
   BorderStyles: array[TBorderStyle] of DWord = (0, WS_BORDER);
@@ -254,13 +232,13 @@ end;
 
 function TSynEditPrintPreview.GetPageHeight100Percent: Integer;
 var
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
   DC: HDC;
   {$ENDIF}
   ScreenDPI: Integer;
 begin
   Result := 0;
-{$IFDEF SYN_CLX}
+{$IFDEF SYN_LAZARUS}
   ScreenDPI := Screen.Height;
 {$ELSE}
   DC := GetDC(0);
@@ -274,13 +252,13 @@ end;
 
 function TSynEditPrintPreview.GetPageWidth100Percent: Integer;
 var
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
   DC: HDC;
   {$ENDIF}
   ScreenDPI: Integer;
 begin
   Result := 0;
-{$IFDEF SYN_CLX}
+{$IFDEF SYN_LAZARUS}
   ScreenDPI := Screen.Height;
 {$ELSE}
   DC := GetDC(0);
@@ -303,7 +281,7 @@ end;
 procedure TSynEditPrintPreview.PaintPaper;
 var
   rcClip, rcPaper: TRect;
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
   rgnPaper: HRGN;
   {$ENDIF}
   i: Integer;
@@ -332,11 +310,11 @@ begin
         Top := FVirtualOffset.Y + FScrollPosition.Y;
       Right := Left + FPageSize.X;
       Bottom := Top + FPageSize.Y;
-    {$IFNDEF SYN_CLX}
+    {$IFNDEF SYN_LAZARUS}
       rgnPaper := CreateRectRgn(Left, Top, Right + 1, Bottom + 1);
     {$ENDIF}
     end;
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
     if (NULLREGION <> ExtSelectClipRgn(Handle, rgnPaper, RGN_DIFF)) then
       FillRect(rcClip);
   {$ENDIF}
@@ -348,13 +326,13 @@ begin
           Point(Right + i, Top + i)]);
     end;
       // paint paper background
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
     SelectClipRgn(Handle, rgnPaper);
   {$ENDIF}
     Brush.Color := FPageBG;
     with rcPaper do
       Rectangle(Left, Top, Right + 1, Bottom + 1);
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
     DeleteObject(rgnPaper);
   {$ENDIF}
   end;
@@ -371,13 +349,13 @@ begin
       // paint the contents, clipped to the area inside of the print margins
       // correct scaling for output:
 
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
     SetMapMode(Handle, MM_ANISOTROPIC);
   {$ENDIF}
       // compute the logical point (0, 0) in screen pixels
     with FSynEditPrint.PrinterInfo do
     begin
-    {$IFNDEF SYN_CLX}
+    {$IFNDEF SYN_LAZARUS}
       SetWindowExtEx(Handle, PhysicalWidth, PhysicalHeight, nil);
       SetViewPortExtEx(Handle, FPageSize.X, FPageSize.Y, nil);
     {$ENDIF}
@@ -388,7 +366,7 @@ begin
         Inc(ptOrgScreen.Y, FVirtualOffset.Y)
       else
         Inc(ptOrgScreen.Y, FVirtualOffset.Y + FScrollPosition.Y);
-    {$IFNDEF SYN_CLX}
+    {$IFNDEF SYN_LAZARUS}
       SetViewPortOrgEx(Handle, ptOrgScreen.X, ptOrgScreen.Y, nil);
           // clip the output to the print margins
       IntersectClipRect(Handle, 0, 0, PrintableWidth, PrintableHeight);
@@ -420,7 +398,7 @@ begin
       Invalidate
     else
     begin
-    {$IFNDEF SYN_CLX}
+    {$IFNDEF SYN_LAZARUS}
       ScrollWindow(Handle, n, 0, nil, nil);
     {$ENDIF}
       Update;
@@ -450,7 +428,7 @@ begin
       Invalidate
     else
     begin
-    {$IFNDEF SYN_CLX}
+    {$IFNDEF SYN_LAZARUS}
       ScrollWindow(Handle, 0, n, nil, nil);
     {$ENDIF}
       Update;
@@ -499,12 +477,12 @@ end;
 
 
 procedure TSynEditPrintPreview.UpdateScrollbars;
-{$IFNDEF SYN_CLX}
+{$IFNDEF SYN_LAZARUS}
 var
   si: TScrollInfo;
 {$ENDIF}
 begin
-{$IFNDEF SYN_CLX}
+{$IFNDEF SYN_LAZARUS}
   FillChar(si, SizeOf(TScrollInfo), 0);
   si.cbSize := SizeOf(TScrollInfo);
   si.fMask := SIF_ALL;
@@ -560,7 +538,7 @@ begin
   if (Value <> FBorderStyle) then
   begin
     FBorderStyle := Value;
-  {$IFNDEF SYN_CLX}
+  {$IFNDEF SYN_LAZARUS}
     RecreateWnd;
   {$ENDIF}
   end;
@@ -611,7 +589,7 @@ begin
     FOnScaleChange(Self);                                                       // JD 2002-01-9
 end;
 
-{$IFNDEF SYN_CLX}
+{$IFNDEF SYN_LAZARUS}
 procedure TSynEditPrintPreview.WMEraseBkgnd(var Msg: TWMEraseBkgnd);
 begin
   Msg.Result := 1;

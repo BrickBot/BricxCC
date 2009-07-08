@@ -6,7 +6,8 @@ uses
   Classes,
   LResources,
   SynEditPrint,
-  SynCompletionProposal,
+  SynEditPrintPreview,
+  syncompletionproposal,
   SynExportRTF;
 
 procedure Register;
@@ -15,7 +16,9 @@ implementation
 
 procedure Register;
 begin
-  RegisterComponents('SynEdit Extras', [TSynEditPrint, TSynCompletionProposal, TSynExporterRTF]);
+  RegisterComponents('SynEdit Extras',
+    [TSynEditPrint, TSynEditPrintPreview,
+     TSynCompletionProposal, TSynExporterRTF]);
 end;
 
 end.
