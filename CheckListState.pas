@@ -22,7 +22,13 @@ unit CheckListState;
 interface
 
 uses
-  Windows, Messages, SysUtils, Classes, Graphics, Controls,
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LCLType,
+  LMessages,
+{$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls,
   StdCtrls, ImgList;
 
 type
@@ -175,8 +181,7 @@ procedure Register;
 
 implementation
 
-uses
-  Consts, Math, Forms, RTLConsts, Themes;
+uses Consts, Math, Forms{$IFDEF VER_D6_UP},RTLConsts, Themes{$ENDIF};
 
 type
   TCheckStateListBoxDataWrapper = class

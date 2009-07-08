@@ -331,7 +331,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
                   OnClick = UpdateRawData
                 end
               end
-              object edtMCNormal: TSpinEdit
+              object edtMCNormal: TBricxccSpinEdit
                 Left = 49
                 Top = 20
                 Width = 42
@@ -344,7 +344,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
                 Value = 7
                 OnChange = UpdateRawData
               end
-              object edtMCSlow: TSpinEdit
+              object edtMCSlow: TBricxccSpinEdit
                 Left = 133
                 Top = 20
                 Width = 42
@@ -401,7 +401,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               TabOrder = 16
               OnChange = UpdateRawData
             end
-            object edtUserLevel: TSpinEdit
+            object edtUserLevel: TBricxccSpinEdit
               Tag = 6
               Left = 82
               Top = 113
@@ -415,7 +415,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtDefaultPingRate: TSpinEdit
+            object edtDefaultPingRate: TBricxccSpinEdit
               Tag = 7
               Left = 82
               Top = 137
@@ -429,7 +429,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtRuns: TSpinEdit
+            object edtRuns: TBricxccSpinEdit
               Tag = 8
               Left = 82
               Top = 161
@@ -443,7 +443,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtWins: TSpinEdit
+            object edtWins: TBricxccSpinEdit
               Tag = 10
               Left = 82
               Top = 185
@@ -457,7 +457,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtLosses: TSpinEdit
+            object edtLosses: TBricxccSpinEdit
               Tag = 12
               Left = 82
               Top = 209
@@ -471,7 +471,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtPoints: TSpinEdit
+            object edtPoints: TBricxccSpinEdit
               Tag = 14
               Left = 82
               Top = 233
@@ -485,7 +485,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtPlaySeconds: TSpinEdit
+            object edtPlaySeconds: TBricxccSpinEdit
               Tag = 16
               Left = 82
               Top = 257
@@ -499,7 +499,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtTotalPlayTime: TSpinEdit
+            object edtTotalPlayTime: TBricxccSpinEdit
               Tag = 18
               Left = 282
               Top = 65
@@ -513,7 +513,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtMaxBots: TSpinEdit
+            object edtMaxBots: TBricxccSpinEdit
               Tag = 22
               Left = 282
               Top = 89
@@ -527,7 +527,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtMissionID: TSpinEdit
+            object edtMissionID: TBricxccSpinEdit
               Tag = 23
               Left = 282
               Top = 113
@@ -541,7 +541,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtMissionPoints: TSpinEdit
+            object edtMissionPoints: TBricxccSpinEdit
               Tag = 28
               Left = 282
               Top = 137
@@ -555,7 +555,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtHighScore: TSpinEdit
+            object edtHighScore: TBricxccSpinEdit
               Tag = 30
               Left = 282
               Top = 161
@@ -569,7 +569,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtBotData: TSpinEdit
+            object edtBotData: TBricxccSpinEdit
               Tag = 70
               Left = 282
               Top = 233
@@ -583,7 +583,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtStatus: TSpinEdit
+            object edtStatus: TBricxccSpinEdit
               Tag = 71
               Left = 282
               Top = 257
@@ -597,7 +597,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
               Value = 0
               OnChange = UpdateRawData
             end
-            object edtLongID: TSpinEdit
+            object edtLongID: TBricxccSpinEdit
               Tag = 2
               Left = 82
               Top = 89
@@ -1115,7 +1115,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
         TabOrder = 4
         OnClick = btnBlockClearClick
       end
-      object edtBlock: TSpinEdit
+      object edtBlock: TBricxccSpinEdit
         Left = 107
         Top = 319
         Width = 45
@@ -1127,7 +1127,7 @@ object frmSpybotEEPROM: TfrmSpybotEEPROM
         TabOrder = 1
         Value = 0
       end
-      object edtBlockCount: TSpinEdit
+      object edtBlockCount: TBricxccSpinEdit
         Left = 238
         Top = 319
         Width = 45

@@ -33,6 +33,9 @@ type
 implementation
 
 uses
+{$IFDEF FPC}
+  LCLIntf,
+{$ENDIF}
   SysUtils;
 
 function ProcessProcLine(const aLine: string; var DispName : string): Boolean;

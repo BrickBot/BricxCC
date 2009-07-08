@@ -16,11 +16,20 @@
  *)
 unit uWav2RSO;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, Dialogs, Menus, 
-  Buttons, DirectoryEdit, uSpin;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+{$ENDIF}
+  Classes, Controls, Forms, StdCtrls, Dialogs, Menus, BricxccSpin,
+  DirectoryEdit, Buttons;
 
 type
   TfrmWave2RSO = class(TForm)
@@ -44,8 +53,8 @@ type
     btnHelp: TButton;
     lblRate: TLabel;
     chkUseCompression: TCheckBox;
-    edtRate: TSpinEdit;
     edtPath2: TEdit;
+    edtRate: TBricxccSpinEdit;
     procedure btnSelectClick(Sender: TObject);
     procedure btnConvertClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -74,10 +83,12 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
 
 uses
-  SysUtils, uSrcCommon, uWav2RsoCvt, uGuiUtils;
+  SysUtils, FileCtrl, uSrcCommon, uWav2RsoCvt, uGuiUtils;
 
 procedure TfrmWave2RSO.btnSelectClick(Sender: TObject);
 begin
@@ -186,5 +197,10 @@ begin
     SetHint := False;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uWav2RSO.lrs}
+{$ENDIF}
 
 end.

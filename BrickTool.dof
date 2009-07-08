@@ -94,7 +94,7 @@ OutputDir=..
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=bricktools;NXT
+SearchPath=bricktools;NXT;png
 Packages=Vcl50;Vclx50;VclSmp50;Vcldb50;vclado50;ibevnt50;Vclbde50;vcldbx50;Qrpt50;TeeUI50;TeeDB50;Tee50;Dss50;TeeQR50;VCLIB50;Vclmid50;vclie50;Inetdb50;Inet50;NMFast50;webmid50;dclocx50;dclaxserver50;O217_R50
 Conditionals=FAST_MM
 DebugSourceDirs=
@@ -135,7 +135,7 @@ ProductName=BrickTool
 ProductVersion=1.0
 Comments=
 [Excluded Packages]
-c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_64.bpl=TCS Components 6.4
+c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
 [HistoryLists\hlConditionals]
 Count=1
 Item0=FAST_MM
@@ -143,9 +143,10 @@ Item0=FAST_MM
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=2
-Item0=bricktools;NXT
-Item1=bricktools
+Count=3
+Item0=bricktools;NXT;png
+Item1=bricktools;NXT
+Item2=bricktools
 [HistoryLists\hlOutputDirectorry]
 Count=1
 Item0=..

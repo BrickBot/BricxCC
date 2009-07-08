@@ -48,6 +48,8 @@ object ConstructForm: TConstructForm
     OnDblClick = treTemplatesDblClick
     OnDeletion = treTemplatesDeletion
     OnMouseDown = treTemplatesMouseDown
+    OnMouseMove = treTemplatesMouseMove
+    OnMouseUp = treTemplatesMouseUp
     OnStartDrag = treTemplatesStartDrag
   end
 end

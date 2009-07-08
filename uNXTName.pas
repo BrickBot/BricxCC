@@ -16,9 +16,16 @@
  *)
 unit uNXTName;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, StdCtrls;
 
 type
@@ -35,6 +42,14 @@ type
 
 implementation
 
-{$R *.dfm}
+{$IFNDEF FPC}
+{$R *.DFM}
+{$ENDIF}
+
+
+{$IFDEF FPC}
+initialization
+  {$i uNXTName.lrs}
+{$ENDIF}
 
 end.

@@ -19,10 +19,21 @@ interface
 
 {$IFDEF FPC}
 uses
+  Classes,
   Spin;
   
 type
+
+  { TBricxccSpinEdit }
+
   TBricxccSpinEdit = class(TSpinEdit)
+  private
+    function GetSilentValue: integer;
+    procedure SetSilentValue(const AValue: integer);
+  public
+    property SilentValue: integer read GetSilentValue write SetSilentValue;
+  published
+    property MaxLength;
   end;
   
 {$ELSE}
@@ -680,6 +691,27 @@ begin
     if FState = bsDown then
       OffsetRect(R, 1, 1);
     DrawFocusRect(Canvas.Handle, R);
+  end;
+end;
+
+{$ELSE}
+{ TBricxccSpinEdit }
+
+function TBricxccSpinEdit.GetSilentValue: integer;
+begin
+  Result := Value;
+end;
+
+procedure TBricxccSpinEdit.SetSilentValue(const AValue: integer);
+var
+  OldChange : TNotifyEvent;
+begin
+  OldChange := Self.OnChange;
+  try
+    Self.OnChange := nil;
+    Value := AValue;
+  finally
+    Self.OnChange := OldChange;
   end;
 end;
 

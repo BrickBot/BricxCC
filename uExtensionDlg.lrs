@@ -1,0 +1,97 @@
+{ This is an automatically generated lazarus resource file }
+
+LazarusResources.Add('TfrmExtensionDlg','FORMDATA',[
+  'TPF0'#16'TfrmExtensionDlg'#15'frmExtensionDlg'#4'Left'#3#145#1#6'Height'#3'y'
+  +#1#3'Top'#3#245#0#5'Width'#3#247#0#11'HelpContext'#3#28#12#11'BorderIcons'#11
+  +#12'biSystemMenu'#6'biHelp'#0#11'BorderStyle'#7#8'bsDialog'#7'Caption'#6#15
+  +'File Extensions'#12'ClientHeight'#3'y'#1#11'ClientWidth'#3#247#0#11'Font.He'
+  +'ight'#2#245#9'Font.Name'#6#13'MS Sans Serif'#8'Position'#7#17'poOwnerFormCe'
+  +'nter'#10'LCLVersion'#6#6'0.9.25'#0#6'TLabel'#13'lblClaimThese'#4'Left'#2#8#6
+  +'Height'#2#17#3'Top'#2#5#5'Width'#3#223#0#7'Caption'#6#31'Claim the followin'
+  +'g extensions:'#11'ParentColor'#8#0#0#9'TCheckBox'#6'chkNQC'#4'Left'#2#8#6'H'
+  +'eight'#2#24#3'Top'#2#22#5'Width'#3#194#0#11'HelpContext'#3#30#12#7'Caption'
+  +#6#23'.nqc .nqh (Not Quite C)'#8'TabOrder'#2#0#0#0#9'TCheckBox'#7'chkRCX2'#4
+  +'Left'#2#8#6'Height'#2#24#3'Top'#2'('#5'Width'#3#150#0#11'HelpContext'#3#31
+  +#12#7'Caption'#6#18'.rcx2 (MindScript)'#8'TabOrder'#2#1#0#0#9'TCheckBox'#6'c'
+  +'hkLSC'#4'Left'#2#8#6'Height'#2#24#3'Top'#2';'#5'Width'#3#139#0#11'HelpConte'
+  +'xt'#3' '#12#7'Caption'#6#17'.lsc (MindScript)'#8'TabOrder'#2#2#0#0#9'TCheck'
+  +'Box'#6'chkASM'#4'Left'#2#8#6'Height'#2#24#3'Top'#2'M'#5'Width'#2'{'#11'Help'
+  +'Context'#3'!'#12#7'Caption'#6#12'.lasm (LASM)'#8'TabOrder'#2#3#0#0#7'TButto'
+  +'n'#5'btnOK'#4'Left'#2')'#6'Height'#2#25#3'Top'#3'H'#1#5'Width'#2'4'#11'Help'
+  +'Context'#3'"'#12#7'Caption'#6#2'OK'#7'Default'#9#11'ModalResult'#2#1#8'TabO'
+  +'rder'#2#14#0#0#7'TButton'#9'btnCancel'#4'Left'#2'a'#6'Height'#2#25#3'Top'#3
+  +'H'#1#5'Width'#2'4'#11'HelpContext'#3'#'#12#6'Cancel'#9#7'Caption'#6#6'Cance'
+  +'l'#11'ModalResult'#2#2#8'TabOrder'#2#15#0#0#9'TCheckBox'#6'chkCpp'#4'Left'#2
+  +#8#6'Height'#2#24#3'Top'#2'`'#5'Width'#3#169#0#11'HelpContext'#3'$'#12#7'Cap'
+  +'tion'#6#18'.cpp (BrickOS CPP)'#8'TabOrder'#2#4#0#0#9'TCheckBox'#6'chkPas'#4
+  +'Left'#2#8#6'Height'#2#24#3'Top'#3#133#0#5'Width'#3#183#0#11'HelpContext'#3
+  +'%'#12#7'Caption'#6#21'.pas (BrickOS Pascal)'#8'TabOrder'#2#6#0#0#9'TCheckBo'
+  +'x'#4'chkC'#4'Left'#2#8#6'Height'#2#24#3'Top'#2'r'#5'Width'#3#129#0#11'HelpC'
+  +'ontext'#3'&'#12#7'Caption'#6#14'.c (BrickOS C)'#8'TabOrder'#2#5#0#0#9'TChec'
+  +'kBox'#7'chkJava'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#151#0#5'Width'#3#158#0
+  +#11'HelpContext'#3''''#12#7'Caption'#6#18'.java (leJOS Java)'#8'TabOrder'#2#7
+  +#0#0#9'TCheckBox'#8'chkForth'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#170#0#5'Wi'
+  +'dth'#3#185#0#11'HelpContext'#3'('#12#7'Caption'#6#26'.4th .fr .f .fth (pbFo'
+  +'rth)'#8'TabOrder'#2#8#0#0#7'TButton'#7'btnHelp'#4'Left'#3#153#0#6'Height'#2
+  +#25#3'Top'#3'H'#1#5'Width'#2'4'#11'HelpContext'#3')'#12#7'Caption'#6#5'&Help'
+  +#8'TabOrder'#2#16#0#0#9'TCheckBox'#6'chkNBC'#4'Left'#2#8#6'Height'#2#24#3'To'
+  +'p'#3#188#0#5'Width'#3#195#0#11'HelpContext'#3'*'#12#7'Caption'#6#22'.nbc (N'
+  +'ext Byte Codes)'#8'TabOrder'#2#9#0#0#9'TCheckBox'#12'chkRICScript'#4'Left'#2
+  +#8#6'Height'#2#24#3'Top'#3#244#0#5'Width'#2''#11'HelpContext'#3'*'#12#7'Cap'
+  +'tion'#6#15'.rs (RICScript)'#8'TabOrder'#2#12#0#0#9'TCheckBox'#6'chkNXC'#4'L'
+  +'eft'#2#8#6'Height'#2#24#3'Top'#3#207#0#5'Width'#2'x'#11'HelpContext'#3'*'#12
+  +#7'Caption'#6#12'.nxc (NXT C)'#8'TabOrder'#2#10#0#0#9'TCheckBox'#6'chkNPG'#4
+  +'Left'#2#8#6'Height'#2#24#3'Top'#3#225#0#5'Width'#3#172#0#11'HelpContext'#3
+  +'*'#12#7'Caption'#6#18'.npg (NXT Program)'#8'TabOrder'#2#11#0#0#9'TCheckBox'
+  +#6'chkLua'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#7#1#5'Width'#2'w'#11'HelpCont'
+  +'ext'#3'*'#12#7'Caption'#6#15'.lua .lpr (Lua)'#8'TabOrder'#2#13#0#0#9'TCheck'
+  +'Box'#15'chkPascalScript'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#25#1#5'Width'#3
+  +#170#0#11'HelpContext'#3'*'#12#7'Caption'#6#21'.rops (Pascal Script)'#8'TabO'
+  +'rder'#2#17#0#0#0#16'TfrmExtensionDlg'#15'frmExtensionDlg'#4'Left'#3#145#1#6
+  +'Height'#3'y'#1#3'Top'#3#245#0#5'Width'#3#247#0#11'HelpContext'#3#28#12#11'B'
+  +'orderIcons'#11#12'biSystemMenu'#6'biHelp'#0#11'BorderStyle'#7#8'bsDialog'#7
+  +'Caption'#6#15'File Extensions'#12'ClientHeight'#3'y'#1#11'ClientWidth'#3#247
+  +#0#11'Font.Height'#2#245#9'Font.Name'#6#13'MS Sans Serif'#8'Position'#7#17'p'
+  +'oOwnerFormCenter'#10'LCLVersion'#6#6'0.9.25'#0#6'TLabel'#13'lblClaimThese'#4
+  +'Left'#2#8#6'Height'#2#17#3'Top'#2#5#5'Width'#3#223#0#7'Caption'#6#31'Claim '
+  +'the following extensions:'#11'ParentColor'#8#0#0#9'TCheckBox'#6'chkNQC'#4'L'
+  +'eft'#2#8#6'Height'#2#24#3'Top'#2#22#5'Width'#3#194#0#11'HelpContext'#3#30#12
+  +#7'Caption'#6#23'.nqc .nqh (Not Quite C)'#8'TabOrder'#2#0#0#0#9'TCheckBox'#7
+  +'chkRCX2'#4'Left'#2#8#6'Height'#2#24#3'Top'#2'('#5'Width'#3#150#0#11'HelpCon'
+  +'text'#3#31#12#7'Caption'#6#18'.rcx2 (MindScript)'#8'TabOrder'#2#1#0#0#9'TCh'
+  +'eckBox'#6'chkLSC'#4'Left'#2#8#6'Height'#2#24#3'Top'#2';'#5'Width'#3#139#0#11
+  +'HelpContext'#3' '#12#7'Caption'#6#17'.lsc (MindScript)'#8'TabOrder'#2#2#0#0
+  +#9'TCheckBox'#6'chkASM'#4'Left'#2#8#6'Height'#2#24#3'Top'#2'M'#5'Width'#2'{'
+  +#11'HelpContext'#3'!'#12#7'Caption'#6#12'.lasm (LASM)'#8'TabOrder'#2#3#0#0#7
+  +'TButton'#5'btnOK'#4'Left'#2')'#6'Height'#2#25#3'Top'#3'H'#1#5'Width'#2'4'#11
+  +'HelpContext'#3'"'#12#7'Caption'#6#2'OK'#7'Default'#9#11'ModalResult'#2#1#8
+  ,'TabOrder'#2#14#0#0#7'TButton'#9'btnCancel'#4'Left'#2'a'#6'Height'#2#25#3'To'
+  +'p'#3'H'#1#5'Width'#2'4'#11'HelpContext'#3'#'#12#6'Cancel'#9#7'Caption'#6#6
+  +'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#15#0#0#9'TCheckBox'#6'chkCpp'#4'L'
+  +'eft'#2#8#6'Height'#2#24#3'Top'#2'`'#5'Width'#3#169#0#11'HelpContext'#3'$'#12
+  +#7'Caption'#6#18'.cpp (BrickOS CPP)'#8'TabOrder'#2#4#0#0#9'TCheckBox'#6'chkP'
+  +'as'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#133#0#5'Width'#3#183#0#11'HelpConte'
+  +'xt'#3'%'#12#7'Caption'#6#21'.pas (BrickOS Pascal)'#8'TabOrder'#2#6#0#0#9'TC'
+  +'heckBox'#4'chkC'#4'Left'#2#8#6'Height'#2#24#3'Top'#2'r'#5'Width'#3#129#0#11
+  +'HelpContext'#3'&'#12#7'Caption'#6#14'.c (BrickOS C)'#8'TabOrder'#2#5#0#0#9
+  +'TCheckBox'#7'chkJava'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#151#0#5'Width'#3
+  +#158#0#11'HelpContext'#3''''#12#7'Caption'#6#18'.java (leJOS Java)'#8'TabOrd'
+  +'er'#2#7#0#0#9'TCheckBox'#8'chkForth'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#170
+  +#0#5'Width'#3#185#0#11'HelpContext'#3'('#12#7'Caption'#6#26'.4th .fr .f .fth'
+  +' (pbForth)'#8'TabOrder'#2#8#0#0#7'TButton'#7'btnHelp'#4'Left'#3#153#0#6'Hei'
+  +'ght'#2#25#3'Top'#3'H'#1#5'Width'#2'4'#11'HelpContext'#3')'#12#7'Caption'#6#5
+  +'&Help'#8'TabOrder'#2#16#0#0#9'TCheckBox'#6'chkNBC'#4'Left'#2#8#6'Height'#2
+  +#24#3'Top'#3#188#0#5'Width'#3#195#0#11'HelpContext'#3'*'#12#7'Caption'#6#22
+  +'.nbc (Next Byte Codes)'#8'TabOrder'#2#9#0#0#9'TCheckBox'#12'chkRICScript'#4
+  +'Left'#2#8#6'Height'#2#24#3'Top'#3#244#0#5'Width'#2''#11'HelpContext'#3'*'
+  +#12#7'Caption'#6#15'.rs (RICScript)'#8'TabOrder'#2#12#0#0#9'TCheckBox'#6'chk'
+  +'NXC'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#207#0#5'Width'#2'x'#11'HelpContext'
+  +#3'*'#12#7'Caption'#6#12'.nxc (NXT C)'#8'TabOrder'#2#10#0#0#9'TCheckBox'#6'c'
+  +'hkNPG'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#225#0#5'Width'#3#172#0#11'HelpCo'
+  +'ntext'#3'*'#12#7'Caption'#6#18'.npg (NXT Program)'#8'TabOrder'#2#11#0#0#9'T'
+  +'CheckBox'#6'chkLua'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#7#1#5'Width'#2'w'#11
+  +'HelpContext'#3'*'#12#7'Caption'#6#15'.lua .lpr (Lua)'#8'TabOrder'#2#13#0#0#9
+  +'TCheckBox'#15'chkPascalScript'#4'Left'#2#8#6'Height'#2#24#3'Top'#3#25#1#5'W'
+  +'idth'#3#170#0#11'HelpContext'#3'*'#12#7'Caption'#6#21'.rops (Pascal Script)'
+  +#8'TabOrder'#2#17#0#0#0
+]);

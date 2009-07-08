@@ -857,7 +857,10 @@ var
 begin
   fToIdent:=MayBe;
   HashKey:=KeyHash(MayBe);
-  if HashKey<192 then Result:=fIdentFuncTable[HashKey]else Result:=tkIdentifier;
+  if HashKey<192 then
+    Result:= fIdentFuncTable[HashKey]()
+  else
+    Result:=tkIdentifier;
 end;
 
 procedure TmwPasLex.MakeMethodTables;

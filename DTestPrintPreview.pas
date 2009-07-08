@@ -18,6 +18,9 @@ unit DTestPrintPreview;
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Graphics, Forms, Controls, StdCtrls,
   Buttons, ExtCtrls, ComCtrls, ToolWin, ActnList, ImgList, 
   SynEditPrintPreview, Menus, Printers, uOfficeComp;
@@ -83,7 +86,9 @@ implementation
 uses
   SysUtils, uLocalizedStrings;
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 procedure TTestPrintPreviewDlg.FormShow(Sender: TObject);
 begin
@@ -302,5 +307,9 @@ begin
   end;
 end;
 
-end.
+{$IFDEF FPC}
+initialization
+  {$i DTestPrintPreview.lrs}
+{$ENDIF}
 
+end.

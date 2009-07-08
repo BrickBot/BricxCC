@@ -1,0 +1,431 @@
+object DiagForm: TDiagForm
+  Left = 258
+  Height = 563
+  Top = 106
+  Width = 279
+  HelpContext = 13
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Diagnostics'
+  ClientHeight = 563
+  ClientWidth = 279
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object grpInfo: TGroupBox
+    Left = 8
+    Height = 165
+    Width = 264
+    Caption = ' Info '
+    ClientHeight = 144
+    ClientWidth = 260
+    TabOrder = 0
+    object lblAlive: TLabel
+      Left = 3
+      Height = 17
+      Width = 35
+      Alignment = taRightJustify
+      Caption = 'Alive'
+      ParentColor = False
+    end
+    object lblVersion: TLabel
+      Left = 3
+      Height = 17
+      Top = 24
+      Width = 55
+      Alignment = taRightJustify
+      Caption = 'Version'
+      ParentColor = False
+    end
+    object lblBattery: TLabel
+      Left = 3
+      Height = 17
+      Top = 48
+      Width = 53
+      Alignment = taRightJustify
+      Caption = 'Battery'
+      ParentColor = False
+    end
+    object lblPort: TLabel
+      Left = 3
+      Height = 17
+      Top = 72
+      Width = 31
+      Alignment = taRightJustify
+      Caption = 'Port'
+      ParentColor = False
+    end
+    object lblProgram: TLabel
+      Left = 3
+      Height = 17
+      Top = 96
+      Width = 63
+      Alignment = taRightJustify
+      Caption = 'Program'
+      ParentColor = False
+    end
+    object Alive: TPanel
+      Left = 86
+      Height = 17
+      Width = 161
+      BevelOuter = bvLowered
+      Caption = 'Brick is alive'
+      TabOrder = 0
+    end
+    object Version: TPanel
+      Left = 86
+      Height = 17
+      Top = 24
+      Width = 161
+      BevelOuter = bvLowered
+      Caption = '0'
+      TabOrder = 1
+    end
+    object RefreshBtn: TButton
+      Left = 144
+      Height = 24
+      Top = 116
+      Width = 104
+      HelpContext = 13008
+      Caption = '&Refresh'
+      OnClick = RefreshBtnClick
+      TabOrder = 2
+    end
+    object Port: TPanel
+      Left = 86
+      Height = 17
+      Top = 72
+      Width = 161
+      BevelOuter = bvLowered
+      Caption = '0'
+      TabOrder = 3
+    end
+    object ProgramNumb: TPanel
+      Left = 86
+      Height = 17
+      Top = 96
+      Width = 161
+      BevelOuter = bvLowered
+      Caption = '0'
+      TabOrder = 4
+    end
+    object BatStatus: TPanel
+      Left = 86
+      Height = 17
+      Top = 48
+      Width = 161
+      BevelOuter = bvLowered
+      Caption = '0'
+      TabOrder = 5
+    end
+  end
+  object IRGroup: TGroupBox
+    Left = 8
+    Height = 48
+    Top = 216
+    Width = 264
+    Caption = ' Infrared Power '
+    ClientHeight = 27
+    ClientWidth = 260
+    TabOrder = 2
+    object IRShort: TRadioButton
+      Left = 46
+      Height = 26
+      Width = 63
+      HelpContext = 13009
+      Caption = '&Short'
+      OnClick = IRShortClick
+      TabOrder = 0
+    end
+    object IRLong: TRadioButton
+      Left = 126
+      Height = 26
+      Width = 60
+      HelpContext = 13010
+      Caption = '&Long'
+      Checked = True
+      OnClick = IRLongClick
+      State = cbChecked
+      TabOrder = 1
+    end
+  end
+  object WatchGroup: TGroupBox
+    Left = 8
+    Height = 50
+    Top = 264
+    Width = 265
+    Caption = ' Watch '
+    ClientHeight = 29
+    ClientWidth = 261
+    TabOrder = 3
+    object lblTime: TLabel
+      Left = 3
+      Height = 17
+      Top = 4
+      Width = 37
+      Alignment = taRightJustify
+      Caption = 'Time'
+      ParentColor = False
+    end
+    object CurrentBtn: TButton
+      Left = 144
+      Height = 24
+      Width = 102
+      HelpContext = 13012
+      Caption = 'Set &Current'
+      OnClick = CurrentBtnClick
+      TabOrder = 0
+    end
+    object Watch: TPanel
+      Left = 56
+      Height = 17
+      Top = 4
+      Width = 65
+      BevelOuter = bvLowered
+      Caption = '0'
+      TabOrder = 1
+    end
+  end
+  object DisplayGroup: TGroupBox
+    Left = 8
+    Height = 112
+    Top = 416
+    Width = 265
+    Caption = ' Display '
+    ClientHeight = 91
+    ClientWidth = 261
+    TabOrder = 4
+    object lblPrecision: TLabel
+      Left = 113
+      Height = 17
+      Top = 9
+      Width = 81
+      Caption = '&Precision:'
+      FocusControl = cboPrecision
+      ParentColor = False
+    end
+    object lblSource: TLabel
+      Left = 6
+      Height = 17
+      Top = 36
+      Width = 67
+      Caption = 'S&ource:'
+      ParentColor = False
+    end
+    object lblValue: TLabel
+      Left = 6
+      Height = 17
+      Top = 66
+      Width = 57
+      Caption = '&Value:'
+      ParentColor = False
+    end
+    object DisplayType: TComboBox
+      Left = 6
+      Height = 21
+      Top = 5
+      Width = 97
+      HelpContext = 13002
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      MaxLength = 65535
+      OnChange = DisplayTypeChange
+      Style = csDropDownList
+      TabOrder = 0
+    end
+    object btnUpdateDisplay: TButton
+      Left = 142
+      Height = 24
+      Top = 60
+      Width = 72
+      HelpContext = 13003
+      Caption = '&Update'
+      OnClick = btnUpdateDisplayClick
+      TabOrder = 5
+    end
+    object cboPrecision: TComboBox
+      Left = 166
+      Height = 21
+      Top = 5
+      Width = 49
+      HelpContext = 13004
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      Items.Strings = (
+        '0'
+        '1'
+        '2'
+        '3'
+        '4'
+      )
+      MaxLength = 65535
+      Style = csDropDownList
+      TabOrder = 1
+    end
+    object cboSource: TComboBox
+      Left = 54
+      Height = 21
+      Top = 32
+      Width = 161
+      HelpContext = 13005
+      AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+      MaxLength = 65535
+      OnChange = cboSourceChange
+      Style = csDropDownList
+      TabOrder = 2
+    end
+    object udValue: TUpDown
+      Left = 103
+      Height = 21
+      Top = 61
+      Width = 16
+      HelpContext = 13006
+      Associate = edtValue
+      TabOrder = 4
+      Thousands = False
+    end
+    object edtValue: TEdit
+      Left = 54
+      Height = 21
+      Top = 61
+      Width = 49
+      HelpContext = 13007
+      MaxLength = 5
+      OnExit = edtValueExit
+      OnKeyDown = nil
+      OnKeyPress = edtValueKeyPress
+      TabOrder = 3
+      Text = '0'
+    end
+  end
+  object PowerGroup: TGroupBox
+    Left = 8
+    Height = 49
+    Top = 168
+    Width = 265
+    Caption = ' Power Down '
+    ClientHeight = 28
+    ClientWidth = 261
+    TabOrder = 1
+    object lblMinutes: TLabel
+      Left = 12
+      Height = 17
+      Top = 5
+      Width = 68
+      Alignment = taRightJustify
+      Caption = '&Minutes'
+      FocusControl = PowerDown
+      ParentColor = False
+    end
+    object PowerDown: TBricxccSpinEdit
+      Left = 102
+      Height = 22
+      Top = 1
+      Width = 57
+      HelpContext = 13011
+      MaxValue = 255
+      OnChange = PowerDownChange
+      TabOrder = 0
+      Value = 15
+    end
+  end
+  object btnHelp: TButton
+    Left = 112
+    Height = 25
+    Top = 535
+    Width = 52
+    HelpContext = 13001
+    Anchors = [akLeft, akBottom]
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 5
+  end
+  object grpNXTDiag: TGroupBox
+    Left = 8
+    Height = 144
+    Top = 312
+    Width = 264
+    Caption = 'NXT Info'
+    ClientHeight = 123
+    ClientWidth = 260
+    TabOrder = 6
+    object Label1: TLabel
+      Left = 3
+      Height = 17
+      Top = 2
+      Width = 45
+      Alignment = taRightJustify
+      Caption = 'Name'
+      ParentColor = False
+    end
+    object Label2: TLabel
+      Left = 3
+      Height = 17
+      Top = 26
+      Width = 61
+      Alignment = taRightJustify
+      Caption = 'BT Addr'
+      ParentColor = False
+    end
+    object Label3: TLabel
+      Left = 3
+      Height = 17
+      Top = 50
+      Width = 71
+      Alignment = taRightJustify
+      Caption = 'BT Signal'
+      ParentColor = False
+    end
+    object Label4: TLabel
+      Left = 3
+      Height = 17
+      Top = 74
+      Width = 76
+      Alignment = taRightJustify
+      Caption = 'Free mem'
+      ParentColor = False
+    end
+    object NXTName: TPanel
+      Left = 86
+      Height = 17
+      Top = 2
+      Width = 161
+      BevelOuter = bvLowered
+      TabOrder = 0
+    end
+    object BTAddress: TPanel
+      Left = 86
+      Height = 17
+      Top = 26
+      Width = 161
+      BevelOuter = bvLowered
+      TabOrder = 1
+    end
+    object BTSignal: TPanel
+      Left = 86
+      Height = 17
+      Top = 50
+      Width = 161
+      BevelOuter = bvLowered
+      TabOrder = 2
+    end
+    object FreeMemory: TPanel
+      Left = 86
+      Height = 17
+      Top = 74
+      Width = 161
+      BevelOuter = bvLowered
+      TabOrder = 3
+    end
+    object btnRefreshNXT: TButton
+      Left = 144
+      Height = 24
+      Top = 96
+      Width = 102
+      HelpContext = 13013
+      Caption = '&Refresh'
+      OnClick = btnRefreshNXTClick
+      TabOrder = 4
+    end
+  end
+end

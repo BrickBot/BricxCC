@@ -40,7 +40,6 @@ requires
 contains
   BricxccSynReg in 'BricxccSynReg.pas',
   SynHighlighterRuby in 'SynHighlighterRuby.pas',
-  uInstanceControl in 'uInstanceControl.pas',
   uNewHotKey in 'uNewHotKey.pas',
   uOfficeComp in 'uOfficeComp.pas',
   uTreeSaver in 'uTreeSaver.pas',
@@ -59,7 +58,6 @@ contains
   SynHighlighterH8 in 'SynHighlighterH8.pas',
   SynHighlighterRS in 'SynHighlighterRS.pas',
   SynHighlighterROPS in 'SynHighlighterROPS.pas',
-  DirectoryEdit in 'DirectoryEdit.pas',
-  uSpin in 'uSpin.pas';
+  DirectoryEdit in 'DirectoryEdit.pas';
 
 end.

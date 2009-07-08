@@ -20,7 +20,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, Buttons, ExtCtrls, uOfficeComp, uSpin;
+  Dialogs, StdCtrls, Buttons, ExtCtrls, uOfficeComp, BricxccSpin;
 
 type
   TfrmRmdPlayer = class(TForm)
@@ -36,7 +36,7 @@ type
     osbStop: TOfficeSpeedButton;
     Bevel1: TBevel;
     Label1: TLabel;
-    edtVolume: TSpinEdit;
+    edtVolume: TBricxccSpinEdit;
     procedure btnOpenClick(Sender: TObject);
     procedure btnPlayClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);

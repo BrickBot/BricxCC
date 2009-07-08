@@ -1,0 +1,320 @@
+object frmMIDIConversion: TfrmMIDIConversion
+  Left = 307
+  Height = 318
+  Top = 267
+  Width = 301
+  HelpContext = 3500
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'MIDI Conversion'
+  ClientHeight = 318
+  ClientWidth = 301
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  Position = poMainFormCenter
+  LCLVersion = '0.9.25'
+  object grpCode: TGroupBox
+    Left = 4
+    Height = 238
+    Top = 2
+    Width = 99
+    Caption = 'Language'
+    ClientHeight = 217
+    ClientWidth = 95
+    TabOrder = 0
+    object radGenNQC: TRadioButton
+      Left = 8
+      Height = 26
+      Top = -2
+      Width = 61
+      HelpContext = 3502
+      Caption = '&NQC'
+      Checked = True
+      OnClick = LanguageClick
+      State = cbChecked
+      TabOrder = 0
+    end
+    object radGenMS: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 18
+      Width = 99
+      HelpContext = 3503
+      Caption = '&MindScript'
+      OnClick = LanguageClick
+      TabOrder = 1
+    end
+    object radGenLASM: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 39
+      Width = 68
+      HelpContext = 3504
+      Caption = '&LASM'
+      OnClick = LanguageClick
+      TabOrder = 2
+    end
+    object radGenC: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 60
+      Width = 36
+      HelpContext = 3505
+      Caption = '&C'
+      OnClick = LanguageClick
+      TabOrder = 3
+    end
+    object radGenPascal: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 81
+      Width = 72
+      HelpContext = 3506
+      Caption = '&Pascal'
+      OnClick = LanguageClick
+      TabOrder = 4
+    end
+    object radGenForth: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 101
+      Width = 62
+      HelpContext = 3507
+      Caption = '&Forth'
+      OnClick = LanguageClick
+      TabOrder = 5
+    end
+    object radGenJava: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 122
+      Width = 58
+      HelpContext = 3508
+      Caption = '&Java'
+      OnClick = LanguageClick
+      TabOrder = 6
+    end
+    object radGenNBC: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 143
+      Width = 59
+      HelpContext = 3509
+      Caption = 'N&BC'
+      OnClick = LanguageClick
+      TabOrder = 7
+    end
+    object radGenNXC: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 164
+      Width = 59
+      HelpContext = 3510
+      Caption = 'N&XC'
+      OnClick = LanguageClick
+      TabOrder = 8
+    end
+    object radGenNXTMelody: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 185
+      Width = 113
+      HelpContext = 3511
+      Caption = 'NXT Melo&dy'
+      OnClick = LanguageClick
+      TabOrder = 9
+    end
+  end
+  object grpDestination: TGroupBox
+    Left = 4
+    Height = 65
+    Top = 248
+    Width = 99
+    Caption = 'Destination'
+    ClientHeight = 44
+    ClientWidth = 95
+    TabOrder = 2
+    object radToClip: TRadioButton
+      Left = 8
+      Height = 26
+      Width = 92
+      HelpContext = 3512
+      Caption = 'Clip&board'
+      Checked = True
+      State = cbChecked
+      TabOrder = 0
+    end
+    object radToFile: TRadioButton
+      Left = 8
+      Height = 26
+      Top = 19
+      Width = 49
+      HelpContext = 3513
+      Caption = 'F&ile'
+      TabOrder = 1
+    end
+  end
+  object grpParameters: TGroupBox
+    Left = 104
+    Height = 238
+    Top = 2
+    Width = 193
+    Caption = 'Parameters'
+    ClientHeight = 217
+    ClientWidth = 189
+    TabOrder = 1
+    object lblGap: TLabel
+      Left = 8
+      Height = 17
+      Top = 78
+      Width = 47
+      Caption = '&Gap:'
+      FocusControl = edtGap
+      ParentColor = False
+    end
+    object lblTempo: TLabel
+      Left = 8
+      Height = 17
+      Top = 49
+      Width = 67
+      Caption = '&Tempo:'
+      FocusControl = edtTempo
+      ParentColor = False
+    end
+    object lblTranspose: TLabel
+      Left = 8
+      Height = 17
+      Top = 106
+      Width = 92
+      Caption = 'T&ranspose:'
+      FocusControl = barTranspose
+      ParentColor = False
+    end
+    object lblPBS: TLabel
+      Left = 8
+      Height = 17
+      Top = 174
+      Width = 88
+      Caption = '&Sensitivity:'
+      FocusControl = edtPBS
+      ParentColor = False
+    end
+    object lblTrack: TLabel
+      Left = 8
+      Height = 17
+      Top = 20
+      Width = 99
+      Caption = 'Use trac&k #:'
+      FocusControl = edtTrack
+      ParentColor = False
+    end
+    object barTranspose: TTrackBar
+      Left = 72
+      Height = 25
+      Hint = '0'
+      Top = 106
+      Width = 113
+      HelpContext = 3519
+      Max = 2
+      Min = -2
+      OnChange = barTransposeChange
+      PageSize = 1
+      ScalePos = trTop
+      ParentShowHint = False
+      ShowHint = True
+      TabOrder = 3
+    end
+    object chkUsePB: TCheckBox
+      Left = 8
+      Height = 26
+      Top = 139
+      Width = 144
+      HelpContext = 3520
+      Caption = 'Track pitch &bend'
+      OnClick = chkUsePBClick
+      TabOrder = 4
+    end
+    object edtGap: TBricxccSpinEdit
+      Left = 78
+      Height = 22
+      Top = 73
+      Width = 52
+      HelpContext = 3517
+      MaxValue = 99
+      OnKeyPress = edtGapKeyPress
+      TabOrder = 2
+      Value = 2
+    end
+    object edtTempo: TBricxccSpinEdit
+      Left = 78
+      Height = 22
+      Top = 44
+      Width = 52
+      HelpContext = 3518
+      MaxValue = 999
+      OnKeyPress = edtGapKeyPress
+      TabOrder = 1
+      Value = 150
+    end
+    object edtPBS: TBricxccSpinEdit
+      Left = 78
+      Height = 22
+      Top = 169
+      Width = 52
+      HelpContext = 3521
+      Enabled = False
+      MaxValue = 99
+      OnKeyPress = edtGapKeyPress
+      TabOrder = 5
+      Value = 2
+    end
+    object edtTrack: TBricxccSpinEdit
+      Left = 78
+      Height = 22
+      Top = 15
+      Width = 52
+      HelpContext = 3516
+      MaxValue = 256
+      OnKeyPress = edtGapKeyPress
+      TabOrder = 0
+    end
+  end
+  object btnOK: TButton
+    Left = 120
+    Height = 25
+    Top = 272
+    Width = 52
+    HelpContext = 3522
+    Caption = 'OK'
+    Default = True
+    ModalResult = 1
+    TabOrder = 3
+  end
+  object btnCancel: TButton
+    Left = 178
+    Height = 25
+    Top = 272
+    Width = 52
+    HelpContext = 3523
+    Cancel = True
+    Caption = 'Cancel'
+    ModalResult = 2
+    TabOrder = 4
+  end
+  object btnHelp: TButton
+    Left = 236
+    Height = 25
+    Top = 272
+    Width = 52
+    HelpContext = 3524
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 5
+  end
+  object dlgOpenMIDI: TOpenDialog
+    Filter = 'MIDI Files (*.mid)|*.mid'
+    Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
+    left = 256
+    top = 176
+  end
+end

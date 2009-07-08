@@ -35,7 +35,7 @@ Known Issues:
 
 unit uHighlighterProcs;
 
-{$I SynEdit.inc}
+{$I BricxCCSynEdit.inc}
 
 interface
 

@@ -1,0 +1,1975 @@
+object WatchForm: TWatchForm
+  Left = 272
+  Height = 384
+  Top = 157
+  Width = 566
+  HelpContext = 14
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Watching the brick'
+  ClientHeight = 384
+  ClientWidth = 566
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnActivate = FormActivate
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDeactivate = FormDeactivate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object btnPollRegular: TSpeedButton
+    Left = 424
+    Height = 25
+    Top = 135
+    Width = 89
+    HelpContext = 14001
+    AllowAllUp = True
+    Caption = 'Poll &Regular'
+    Color = clBtnFace
+    GroupIndex = 1
+    NumGlyphs = 0
+    OnClick = btnPollRegularClick
+  end
+  object btnGraph: TSpeedButton
+    Left = 424
+    Height = 25
+    Top = 232
+    Width = 89
+    HelpContext = 14002
+    AllowAllUp = True
+    Caption = '&Graph'
+    Color = clBtnFace
+    GroupIndex = 4
+    NumGlyphs = 0
+    OnClick = btnGraphClick
+  end
+  object grpVar: TGroupBox
+    Left = 4
+    Height = 298
+    Top = 2
+    Width = 264
+    HelpContext = 14006
+    ClientHeight = 294
+    ClientWidth = 260
+    TabOrder = 0
+    object VVar0: TEdit
+      Left = 64
+      Height = 17
+      Top = 16
+      Width = 58
+      HelpContext = 14007
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 1
+    end
+    object CVar0: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 16
+      Width = 68
+      HelpContext = 14008
+      Caption = 'Var  0'
+      TabOrder = 0
+    end
+    object CVar1: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 32
+      Width = 68
+      HelpContext = 14009
+      Caption = 'Var  1'
+      TabOrder = 2
+    end
+    object VVar1: TEdit
+      Left = 64
+      Height = 17
+      Top = 32
+      Width = 58
+      HelpContext = 14010
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 3
+    end
+    object CVar2: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 48
+      Width = 68
+      HelpContext = 14011
+      Caption = 'Var  2'
+      TabOrder = 4
+    end
+    object VVar2: TEdit
+      Left = 64
+      Height = 17
+      Top = 48
+      Width = 58
+      HelpContext = 14012
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 5
+    end
+    object VVar3: TEdit
+      Left = 64
+      Height = 17
+      Top = 64
+      Width = 58
+      HelpContext = 14013
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 7
+    end
+    object CVar3: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 64
+      Width = 68
+      HelpContext = 14014
+      Caption = 'Var  3'
+      TabOrder = 6
+    end
+    object CVar4: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 80
+      Width = 68
+      HelpContext = 14015
+      Caption = 'Var  4'
+      TabOrder = 8
+    end
+    object VVar4: TEdit
+      Left = 64
+      Height = 17
+      Top = 80
+      Width = 58
+      HelpContext = 14016
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 9
+    end
+    object CVar5: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 96
+      Width = 68
+      HelpContext = 14017
+      Caption = 'Var  5'
+      TabOrder = 10
+    end
+    object VVar5: TEdit
+      Left = 64
+      Height = 17
+      Top = 96
+      Width = 58
+      HelpContext = 14018
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 11
+    end
+    object VVar6: TEdit
+      Left = 64
+      Height = 17
+      Top = 112
+      Width = 58
+      HelpContext = 14019
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 13
+    end
+    object CVar6: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 112
+      Width = 68
+      HelpContext = 14020
+      Caption = 'Var  6'
+      TabOrder = 12
+    end
+    object CVar7: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 128
+      Width = 68
+      HelpContext = 14021
+      Caption = 'Var  7'
+      TabOrder = 14
+    end
+    object VVar7: TEdit
+      Left = 64
+      Height = 17
+      Top = 128
+      Width = 58
+      HelpContext = 14022
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 15
+    end
+    object CVar8: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 16
+      Width = 68
+      HelpContext = 14023
+      Caption = 'Var  8'
+      TabOrder = 16
+    end
+    object VVar8: TEdit
+      Left = 200
+      Height = 17
+      Top = 16
+      Width = 58
+      HelpContext = 14024
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 17
+    end
+    object VVar9: TEdit
+      Left = 200
+      Height = 17
+      Top = 32
+      Width = 58
+      HelpContext = 14025
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 19
+    end
+    object CVar9: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 32
+      Width = 68
+      HelpContext = 14026
+      Caption = 'Var  9'
+      TabOrder = 18
+    end
+    object CVar10: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 48
+      Width = 72
+      HelpContext = 14027
+      Caption = 'Var 10'
+      TabOrder = 20
+    end
+    object VVar10: TEdit
+      Left = 200
+      Height = 17
+      Top = 48
+      Width = 58
+      HelpContext = 14028
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 21
+    end
+    object CVar11: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 64
+      Width = 72
+      HelpContext = 14029
+      Caption = 'Var 11'
+      TabOrder = 22
+    end
+    object VVar11: TEdit
+      Left = 200
+      Height = 17
+      Top = 64
+      Width = 58
+      HelpContext = 14030
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 23
+    end
+    object VVar12: TEdit
+      Left = 200
+      Height = 17
+      Top = 80
+      Width = 58
+      HelpContext = 14031
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 25
+    end
+    object CVar12: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 80
+      Width = 72
+      HelpContext = 14032
+      Caption = 'Var 12'
+      TabOrder = 24
+    end
+    object CVar13: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 96
+      Width = 72
+      HelpContext = 14033
+      Caption = 'Var 13'
+      TabOrder = 26
+    end
+    object VVar13: TEdit
+      Left = 200
+      Height = 17
+      Top = 96
+      Width = 58
+      HelpContext = 14034
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 27
+    end
+    object CVar14: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 112
+      Width = 72
+      HelpContext = 14035
+      Caption = 'Var 14'
+      TabOrder = 28
+    end
+    object VVar14: TEdit
+      Left = 200
+      Height = 17
+      Top = 112
+      Width = 58
+      HelpContext = 14036
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 29
+    end
+    object VVar15: TEdit
+      Left = 200
+      Height = 17
+      Top = 128
+      Width = 58
+      HelpContext = 14037
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 31
+    end
+    object CVar15: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 128
+      Width = 72
+      HelpContext = 14038
+      Caption = 'Var 15'
+      TabOrder = 30
+    end
+    object VVar16: TEdit
+      Left = 64
+      Height = 17
+      Top = 160
+      Width = 58
+      HelpContext = 14039
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 33
+    end
+    object CVar16: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 160
+      Width = 72
+      HelpContext = 14040
+      Caption = 'Var 16'
+      TabOrder = 32
+    end
+    object CVar17: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 176
+      Width = 72
+      HelpContext = 14041
+      Caption = 'Var 17'
+      TabOrder = 34
+    end
+    object VVar17: TEdit
+      Left = 64
+      Height = 17
+      Top = 176
+      Width = 58
+      HelpContext = 14042
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 35
+    end
+    object CVar18: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 192
+      Width = 72
+      HelpContext = 14043
+      Caption = 'Var 18'
+      TabOrder = 36
+    end
+    object VVar18: TEdit
+      Left = 64
+      Height = 17
+      Top = 192
+      Width = 58
+      HelpContext = 14044
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 37
+    end
+    object VVar19: TEdit
+      Left = 64
+      Height = 17
+      Top = 208
+      Width = 58
+      HelpContext = 14045
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 39
+    end
+    object CVar19: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 208
+      Width = 72
+      HelpContext = 14046
+      Caption = 'Var 19'
+      TabOrder = 38
+    end
+    object CVar20: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 224
+      Width = 72
+      HelpContext = 14047
+      Caption = 'Var 20'
+      TabOrder = 40
+    end
+    object VVar20: TEdit
+      Left = 64
+      Height = 17
+      Top = 224
+      Width = 58
+      HelpContext = 14048
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 41
+    end
+    object CVar21: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 240
+      Width = 72
+      HelpContext = 14049
+      Caption = 'Var 21'
+      TabOrder = 42
+    end
+    object VVar21: TEdit
+      Left = 64
+      Height = 17
+      Top = 240
+      Width = 58
+      HelpContext = 14050
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 43
+    end
+    object VVar22: TEdit
+      Left = 64
+      Height = 17
+      Top = 256
+      Width = 58
+      HelpContext = 14051
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 45
+    end
+    object CVar22: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 256
+      Width = 72
+      HelpContext = 14052
+      Caption = 'Var 22'
+      TabOrder = 44
+    end
+    object CVar23: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 272
+      Width = 72
+      HelpContext = 14053
+      Caption = 'Var 23'
+      TabOrder = 46
+    end
+    object VVar23: TEdit
+      Left = 64
+      Height = 17
+      Top = 272
+      Width = 58
+      HelpContext = 14054
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 47
+    end
+    object VVar24: TEdit
+      Left = 200
+      Height = 17
+      Top = 160
+      Width = 58
+      HelpContext = 14055
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 49
+    end
+    object CVar24: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 160
+      Width = 72
+      HelpContext = 14056
+      Caption = 'Var 24'
+      TabOrder = 48
+    end
+    object CVar25: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 176
+      Width = 72
+      HelpContext = 14057
+      Caption = 'Var 25'
+      TabOrder = 50
+    end
+    object VVar25: TEdit
+      Left = 200
+      Height = 17
+      Top = 176
+      Width = 58
+      HelpContext = 14058
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 51
+    end
+    object CVar26: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 192
+      Width = 72
+      HelpContext = 14059
+      Caption = 'Var 26'
+      TabOrder = 52
+    end
+    object VVar26: TEdit
+      Left = 200
+      Height = 17
+      Top = 192
+      Width = 58
+      HelpContext = 14060
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 53
+    end
+    object VVar27: TEdit
+      Left = 200
+      Height = 17
+      Top = 208
+      Width = 58
+      HelpContext = 14061
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 55
+    end
+    object CVar27: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 208
+      Width = 72
+      HelpContext = 14062
+      Caption = 'Var 27'
+      TabOrder = 54
+    end
+    object CVar28: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 224
+      Width = 72
+      HelpContext = 14063
+      Caption = 'Var 28'
+      TabOrder = 56
+    end
+    object VVar28: TEdit
+      Left = 200
+      Height = 17
+      Top = 224
+      Width = 58
+      HelpContext = 14064
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 57
+    end
+    object CVar29: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 240
+      Width = 72
+      HelpContext = 14065
+      Caption = 'Var 29'
+      TabOrder = 58
+    end
+    object VVar29: TEdit
+      Left = 200
+      Height = 17
+      Top = 240
+      Width = 58
+      HelpContext = 14066
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 59
+    end
+    object VVar30: TEdit
+      Left = 200
+      Height = 17
+      Top = 256
+      Width = 58
+      HelpContext = 14067
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 61
+    end
+    object CVar30: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 256
+      Width = 72
+      HelpContext = 14068
+      Caption = 'Var 30'
+      TabOrder = 60
+    end
+    object CVar31: TCheckBox
+      Left = 144
+      Height = 24
+      Top = 272
+      Width = 72
+      HelpContext = 14069
+      Caption = 'Var 31'
+      TabOrder = 62
+    end
+    object VVar31: TEdit
+      Left = 200
+      Height = 17
+      Top = 272
+      Width = 58
+      HelpContext = 14070
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 63
+    end
+  end
+  object grpMessage: TGroupBox
+    Left = 272
+    Height = 44
+    Top = 178
+    Width = 145
+    ClientHeight = 40
+    ClientWidth = 141
+    TabOrder = 4
+    object CheckMessage: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 16
+      Width = 89
+      HelpContext = 14004
+      Caption = 'Message'
+      TabOrder = 0
+    end
+    object ValueMessage: TEdit
+      Left = 80
+      Height = 17
+      Top = 16
+      Width = 58
+      HelpContext = 14005
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 1
+    end
+  end
+  object grpTimer: TGroupBox
+    Left = 272
+    Height = 90
+    Top = 84
+    Width = 145
+    HelpContext = 14071
+    ClientHeight = 86
+    ClientWidth = 141
+    TabOrder = 3
+    object CheckTimer0: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 16
+      Width = 79
+      HelpContext = 14072
+      Caption = 'Timer 0'
+      TabOrder = 0
+    end
+    object ValueTimer0: TEdit
+      Left = 80
+      Height = 17
+      Top = 16
+      Width = 58
+      HelpContext = 14073
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 1
+    end
+    object CheckTimer1: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 32
+      Width = 79
+      HelpContext = 14074
+      Caption = 'Timer 1'
+      TabOrder = 2
+    end
+    object ValueTImer1: TEdit
+      Left = 80
+      Height = 17
+      Top = 32
+      Width = 58
+      HelpContext = 14075
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 3
+    end
+    object CheckTimer2: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 48
+      Width = 79
+      HelpContext = 14076
+      Caption = 'Timer 2'
+      TabOrder = 4
+    end
+    object ValueTimer2: TEdit
+      Left = 80
+      Height = 17
+      Top = 48
+      Width = 58
+      HelpContext = 14077
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 5
+    end
+    object ValueTimer3: TEdit
+      Left = 80
+      Height = 17
+      Top = 64
+      Width = 58
+      HelpContext = 14078
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 7
+    end
+    object CheckTimer3: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 64
+      Width = 79
+      HelpContext = 14079
+      Caption = 'Timer 3'
+      TabOrder = 6
+    end
+  end
+  object btnPollNow: TButton
+    Left = 424
+    Height = 25
+    Top = 107
+    Width = 89
+    HelpContext = 14080
+    Caption = '&Poll Now'
+    OnClick = btnPollNowClick
+    TabOrder = 10
+  end
+  object grpMotor: TGroupBox
+    Left = 4
+    Height = 74
+    Top = 300
+    Width = 264
+    HelpContext = 14081
+    ClientHeight = 70
+    ClientWidth = 260
+    TabOrder = 1
+    object CheckMotorA: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 16
+      Width = 81
+      HelpContext = 14082
+      Caption = 'Motor A'
+      TabOrder = 0
+    end
+    object ValueMotorA: TEdit
+      Left = 80
+      Height = 17
+      Top = 16
+      Width = 154
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 1
+    end
+    object CheckMotorB: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 32
+      Width = 81
+      HelpContext = 14084
+      Caption = 'Motor B'
+      TabOrder = 2
+    end
+    object ValueMotorB: TEdit
+      Left = 80
+      Height = 17
+      Top = 32
+      Width = 154
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 3
+    end
+    object CheckMotorC: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 48
+      Width = 82
+      HelpContext = 14086
+      Caption = 'Motor C'
+      TabOrder = 4
+    end
+    object ValueMotorC: TEdit
+      Left = 80
+      Height = 17
+      Top = 48
+      Width = 154
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 5
+    end
+  end
+  object grpSensor: TGroupBox
+    Left = 272
+    Height = 90
+    Top = 2
+    Width = 145
+    HelpContext = 14088
+    ClientHeight = 86
+    ClientWidth = 141
+    TabOrder = 2
+    object CheckSensor1: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 16
+      Width = 89
+      HelpContext = 14089
+      Caption = 'Sensor 1'
+      TabOrder = 0
+    end
+    object ValueSensor1: TEdit
+      Left = 80
+      Height = 17
+      Top = 16
+      Width = 58
+      HelpContext = 14090
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 1
+    end
+    object CheckSensor2: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 32
+      Width = 89
+      HelpContext = 14091
+      Caption = 'Sensor 2'
+      TabOrder = 2
+    end
+    object ValueSensor2: TEdit
+      Left = 80
+      Height = 17
+      Top = 32
+      Width = 58
+      HelpContext = 14092
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 3
+    end
+    object CheckSensor3: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 48
+      Width = 89
+      HelpContext = 14093
+      Caption = 'Sensor 3'
+      TabOrder = 4
+    end
+    object ValueSensor3: TEdit
+      Left = 80
+      Height = 17
+      Top = 48
+      Width = 58
+      HelpContext = 14094
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 5
+    end
+    object ValueSensor4: TEdit
+      Left = 80
+      Height = 17
+      Top = 64
+      Width = 58
+      HelpContext = 14094
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 7
+    end
+    object CheckSensor4: TCheckBox
+      Left = 9
+      Height = 24
+      Top = 64
+      Width = 89
+      HelpContext = 14093
+      Caption = 'Sensor 4'
+      TabOrder = 6
+    end
+  end
+  object btnCheckAll: TButton
+    Left = 424
+    Height = 25
+    Top = 8
+    Width = 89
+    HelpContext = 14095
+    Caption = '&All'
+    OnClick = btnCheckAllClick
+    TabOrder = 7
+  end
+  object btnCheckNone: TButton
+    Left = 424
+    Height = 25
+    Top = 36
+    Width = 89
+    HelpContext = 14096
+    Caption = '&None'
+    OnClick = btnCheckNoneClick
+    TabOrder = 8
+  end
+  object cboTimes: TComboBox
+    Left = 424
+    Height = 21
+    Top = 163
+    Width = 89
+    HelpContext = 14097
+    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    Items.Strings = (
+      '100 ms'
+      '200 ms'
+      '500 ms'
+      '1 second'
+      '2 seconds'
+      '5 seconds'
+      '10 seconds'
+    )
+    MaxLength = 65535
+    OnChange = cboTimesChange
+    Style = csDropDownList
+    TabOrder = 11
+  end
+  object chkIfActive: TCheckBox
+    Left = 424
+    Height = 24
+    Top = 185
+    Width = 117
+    HelpContext = 14098
+    Caption = 'Only if active'
+    TabOrder = 12
+  end
+  object grpTacho: TGroupBox
+    Left = 272
+    Height = 108
+    Top = 226
+    Width = 145
+    HelpContext = 14099
+    ClientHeight = 104
+    ClientWidth = 141
+    TabOrder = 5
+    Visible = False
+    object CheckTCounterL: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 16
+      Width = 111
+      HelpContext = 14100
+      Caption = 'T Counter L'
+      TabOrder = 0
+    end
+    object ValueTCounterL: TEdit
+      Left = 88
+      Height = 17
+      Top = 16
+      Width = 50
+      HelpContext = 14101
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 1
+    end
+    object CheckTSpeedR: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 67
+      Width = 103
+      HelpContext = 14102
+      Caption = 'T Speed R'
+      TabOrder = 6
+    end
+    object ValueTSpeedR: TEdit
+      Left = 88
+      Height = 17
+      Top = 64
+      Width = 50
+      HelpContext = 14103
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 7
+    end
+    object CheckMCurrent: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 81
+      Width = 96
+      HelpContext = 14104
+      Caption = 'M Current'
+      TabOrder = 8
+    end
+    object ValueMCurrent: TEdit
+      Left = 88
+      Height = 17
+      Top = 80
+      Width = 50
+      HelpContext = 14105
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 9
+    end
+    object ValueTCounterR: TEdit
+      Left = 88
+      Height = 17
+      Top = 32
+      Width = 50
+      HelpContext = 14106
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 3
+    end
+    object CheckTCounterR: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 33
+      Width = 114
+      HelpContext = 14107
+      Caption = 'T Counter R'
+      TabOrder = 2
+    end
+    object ValueTSpeedL: TEdit
+      Left = 88
+      Height = 17
+      Top = 48
+      Width = 50
+      HelpContext = 14108
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 5
+    end
+    object CheckTSpeedL: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 50
+      Width = 100
+      HelpContext = 14109
+      Caption = 'T Speed L'
+      TabOrder = 4
+    end
+  end
+  object grpCounter: TGroupBox
+    Left = 272
+    Height = 74
+    Top = 300
+    Width = 145
+    HelpContext = 14110
+    ClientHeight = 70
+    ClientWidth = 141
+    TabOrder = 6
+    object CheckCounter0: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 16
+      Width = 96
+      HelpContext = 14111
+      Caption = 'Counter 0'
+      TabOrder = 0
+    end
+    object ValueCounter0: TEdit
+      Left = 80
+      Height = 17
+      Top = 16
+      Width = 58
+      HelpContext = 14112
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 1
+    end
+    object CheckCounter1: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 32
+      Width = 96
+      HelpContext = 14113
+      Caption = 'Counter 1'
+      TabOrder = 2
+    end
+    object ValueCounter1: TEdit
+      Left = 80
+      Height = 17
+      Top = 32
+      Width = 58
+      HelpContext = 14114
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 3
+    end
+    object CheckCounter2: TCheckBox
+      Left = 8
+      Height = 24
+      Top = 48
+      Width = 96
+      HelpContext = 14115
+      Caption = 'Counter 2'
+      TabOrder = 4
+    end
+    object ValueCounter2: TEdit
+      Left = 80
+      Height = 17
+      Top = 48
+      Width = 58
+      HelpContext = 14116
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 5
+    end
+  end
+  object chkSyncSeries: TCheckBox
+    Left = 424
+    Height = 24
+    Top = 213
+    Width = 107
+    HelpContext = 14117
+    Caption = 'Sync series'
+    TabOrder = 13
+  end
+  object btnClear: TButton
+    Left = 424
+    Height = 25
+    Top = 64
+    Width = 89
+    HelpContext = 14118
+    Caption = '&Clear'
+    OnClick = btnClearClick
+    TabOrder = 9
+  end
+  object btnHelp: TButton
+    Left = 424
+    Height = 25
+    Top = 270
+    Width = 89
+    HelpContext = 14119
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 14
+  end
+  object grpNXTMotors: TGroupBox
+    Left = 4
+    Height = 175
+    Top = 2
+    Width = 264
+    HelpContext = 14081
+    ClientHeight = 171
+    ClientWidth = 260
+    TabOrder = 15
+    object chkPortA: TCheckBox
+      Left = 75
+      Height = 24
+      Top = 6
+      Width = 35
+      HelpContext = 14082
+      Caption = 'A'
+      TabOrder = 0
+    end
+    object edtPAPower: TEdit
+      Left = 75
+      Height = 17
+      Top = 24
+      Width = 61
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 1
+    end
+    object chkPortB: TCheckBox
+      Left = 137
+      Height = 24
+      Top = 6
+      Width = 35
+      HelpContext = 14084
+      Caption = 'B'
+      TabOrder = 10
+    end
+    object edtPBPower: TEdit
+      Left = 137
+      Height = 17
+      Top = 24
+      Width = 61
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 11
+    end
+    object chkPortC: TCheckBox
+      Left = 199
+      Height = 24
+      Top = 6
+      Width = 36
+      HelpContext = 14086
+      Caption = 'C'
+      TabOrder = 20
+    end
+    object edtPCPower: TEdit
+      Left = 199
+      Height = 17
+      Top = 24
+      Width = 61
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 21
+    end
+    object edtPAMode: TEdit
+      Left = 75
+      Height = 17
+      Top = 40
+      Width = 61
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 2
+    end
+    object edtPBMode: TEdit
+      Left = 137
+      Height = 17
+      Top = 40
+      Width = 61
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 12
+    end
+    object edtPCMode: TEdit
+      Left = 199
+      Height = 17
+      Top = 40
+      Width = 61
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 22
+    end
+    object edtPARegMode: TEdit
+      Left = 75
+      Height = 17
+      Top = 56
+      Width = 61
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 3
+    end
+    object edtPBRegMode: TEdit
+      Left = 137
+      Height = 17
+      Top = 56
+      Width = 61
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 13
+    end
+    object edtPCRegMode: TEdit
+      Left = 199
+      Height = 17
+      Top = 56
+      Width = 61
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 23
+    end
+    object edtPATurnRatio: TEdit
+      Left = 75
+      Height = 17
+      Top = 88
+      Width = 61
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 5
+    end
+    object edtPBTurnRatio: TEdit
+      Left = 137
+      Height = 17
+      Top = 88
+      Width = 61
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 15
+    end
+    object edtPCTurnRatio: TEdit
+      Left = 199
+      Height = 17
+      Top = 88
+      Width = 61
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 25
+    end
+    object edtPARunState: TEdit
+      Left = 75
+      Height = 17
+      Top = 72
+      Width = 61
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 4
+    end
+    object edtPBRunState: TEdit
+      Left = 137
+      Height = 17
+      Top = 72
+      Width = 61
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 14
+    end
+    object edtPCRunState: TEdit
+      Left = 199
+      Height = 17
+      Top = 72
+      Width = 61
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 24
+    end
+    object edtPATachoLimit: TEdit
+      Left = 75
+      Height = 17
+      Top = 104
+      Width = 61
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 6
+    end
+    object edtPBTachoLimit: TEdit
+      Left = 137
+      Height = 17
+      Top = 104
+      Width = 61
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 16
+    end
+    object edtPCTachoLimit: TEdit
+      Left = 199
+      Height = 17
+      Top = 104
+      Width = 61
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 26
+    end
+    object edtPATachoCount: TEdit
+      Left = 75
+      Height = 17
+      Top = 120
+      Width = 61
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 7
+    end
+    object edtPBTachoCount: TEdit
+      Left = 137
+      Height = 17
+      Top = 120
+      Width = 61
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 17
+    end
+    object edtPCTachoCount: TEdit
+      Left = 199
+      Height = 17
+      Top = 120
+      Width = 61
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 27
+    end
+    object edtPABlockTachoCount: TEdit
+      Left = 75
+      Height = 17
+      Top = 136
+      Width = 61
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 8
+    end
+    object edtPBBlockTachoCount: TEdit
+      Left = 137
+      Height = 17
+      Top = 136
+      Width = 61
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 18
+    end
+    object edtPCBlockTachoCount: TEdit
+      Left = 199
+      Height = 17
+      Top = 136
+      Width = 61
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 28
+    end
+    object edtPARotationCount: TEdit
+      Left = 75
+      Height = 17
+      Top = 152
+      Width = 61
+      HelpContext = 14083
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 9
+    end
+    object edtPBRotationCount: TEdit
+      Left = 137
+      Height = 17
+      Top = 152
+      Width = 61
+      HelpContext = 14085
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 19
+    end
+    object edtPCRotationCount: TEdit
+      Left = 199
+      Height = 17
+      Top = 152
+      Width = 61
+      HelpContext = 14087
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 29
+    end
+    object chkNXTPower: TCheckBox
+      Left = 4
+      Height = 24
+      Top = 26
+      Width = 70
+      Caption = 'Power'
+      TabOrder = 30
+    end
+    object chkNXTMode: TCheckBox
+      Left = 4
+      Height = 24
+      Top = 42
+      Width = 64
+      Caption = 'Mode'
+      TabOrder = 31
+    end
+    object chkNXTRegMode: TCheckBox
+      Left = 4
+      Height = 24
+      Top = 58
+      Width = 99
+      Caption = 'Reg Mode'
+      TabOrder = 32
+    end
+    object chkNXTTurnRatio: TCheckBox
+      Left = 4
+      Height = 24
+      Top = 90
+      Width = 100
+      Caption = 'Turn Ratio'
+      TabOrder = 34
+    end
+    object chkNXTRunState: TCheckBox
+      Left = 4
+      Height = 24
+      Top = 74
+      Width = 98
+      Caption = 'Run State'
+      TabOrder = 33
+    end
+    object chkNXTTachoLimit: TCheckBox
+      Left = 3
+      Height = 24
+      Top = 106
+      Width = 100
+      Caption = 'Tacho Lim'
+      TabOrder = 35
+    end
+    object chkNXTTachoCount: TCheckBox
+      Left = 3
+      Height = 24
+      Top = 122
+      Width = 100
+      Caption = 'Tacho Cnt'
+      TabOrder = 36
+    end
+    object chkNXTBlockTachoCount: TCheckBox
+      Left = 3
+      Height = 24
+      Top = 138
+      Width = 104
+      Caption = 'Block TCnt'
+      TabOrder = 37
+    end
+    object chkNXTRotationCount: TCheckBox
+      Left = 3
+      Height = 24
+      Top = 154
+      Width = 85
+      Caption = 'Rotation'
+      TabOrder = 38
+    end
+  end
+  object grpI2C: TGroupBox
+    Left = 4
+    Height = 110
+    Top = 181
+    Width = 264
+    HelpContext = 14088
+    ClientHeight = 106
+    ClientWidth = 260
+    TabOrder = 16
+    object lblI2CPort: TLabel
+      Left = 6
+      Height = 17
+      Top = 6
+      Width = 31
+      Caption = 'Port'
+      ParentColor = False
+    end
+    object lblI2CResponse: TLabel
+      Left = 172
+      Height = 17
+      Top = 6
+      Width = 74
+      Caption = 'Response'
+      ParentColor = False
+    end
+    object lblI2CUltra: TLabel
+      Left = 53
+      Height = 17
+      Top = 6
+      Width = 24
+      Caption = 'US'
+      ParentColor = False
+    end
+    object lblI2CBuffer: TLabel
+      Left = 72
+      Height = 17
+      Top = 6
+      Width = 45
+      Caption = 'Buffer'
+      ParentColor = False
+    end
+    object lblI2CLen: TLabel
+      Left = 135
+      Height = 17
+      Top = 6
+      Width = 51
+      Caption = 'Length'
+      ParentColor = False
+    end
+    object chkI2C1: TCheckBox
+      Left = 5
+      Height = 24
+      Top = 23
+      Width = 63
+      HelpContext = 14089
+      Caption = 'I2C 1'
+      TabOrder = 0
+    end
+    object edtI2CVal1: TEdit
+      Left = 172
+      Height = 22
+      Top = 20
+      Width = 88
+      HelpContext = 14090
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 4
+    end
+    object chkI2C2: TCheckBox
+      Left = 5
+      Height = 24
+      Top = 44
+      Width = 63
+      HelpContext = 14091
+      Caption = 'I2C 2'
+      TabOrder = 5
+    end
+    object edtI2CVal2: TEdit
+      Left = 172
+      Height = 22
+      Top = 41
+      Width = 88
+      HelpContext = 14092
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 9
+    end
+    object chkI2C3: TCheckBox
+      Left = 5
+      Height = 24
+      Top = 65
+      Width = 63
+      HelpContext = 14093
+      Caption = 'I2C 3'
+      TabOrder = 10
+    end
+    object edtI2CVal3: TEdit
+      Left = 172
+      Height = 22
+      Top = 62
+      Width = 88
+      HelpContext = 14094
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 14
+    end
+    object edtI2CVal4: TEdit
+      Left = 172
+      Height = 22
+      Top = 83
+      Width = 88
+      HelpContext = 14094
+      Font.CharSet = ANSI_CHARSET
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      ReadOnly = True
+      TabOrder = 19
+    end
+    object chkI2C4: TCheckBox
+      Left = 5
+      Height = 24
+      Top = 86
+      Width = 63
+      HelpContext = 14093
+      Caption = 'I2C 4'
+      TabOrder = 15
+    end
+    object chkUltra1: TCheckBox
+      Left = 55
+      Height = 24
+      Top = 23
+      Width = 24
+      HelpContext = 14089
+      OnClick = chkUltra1Click
+      TabOrder = 1
+    end
+    object chkUltra2: TCheckBox
+      Left = 55
+      Height = 24
+      Top = 44
+      Width = 24
+      HelpContext = 14091
+      OnClick = chkUltra2Click
+      TabOrder = 6
+    end
+    object chkUltra3: TCheckBox
+      Left = 55
+      Height = 24
+      Top = 65
+      Width = 24
+      HelpContext = 14093
+      OnClick = chkUltra3Click
+      TabOrder = 11
+    end
+    object chkUltra4: TCheckBox
+      Left = 55
+      Height = 24
+      Top = 86
+      Width = 24
+      HelpContext = 14093
+      OnClick = chkUltra4Click
+      TabOrder = 16
+    end
+    object edtI2CBuf1: TEdit
+      Left = 72
+      Height = 23
+      Top = 20
+      Width = 62
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      TabOrder = 2
+    end
+    object edtI2CBuf2: TEdit
+      Left = 72
+      Height = 23
+      Top = 41
+      Width = 62
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      TabOrder = 7
+    end
+    object edtI2CBuf3: TEdit
+      Left = 72
+      Height = 23
+      Top = 62
+      Width = 62
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      TabOrder = 12
+    end
+    object edtI2CBuf4: TEdit
+      Left = 72
+      Height = 23
+      Top = 83
+      Width = 62
+      Font.Height = -12
+      Font.Name = 'Courier New'
+      TabOrder = 17
+    end
+    object edtI2CLen1: TBricxccSpinEdit
+      Left = 135
+      Height = 22
+      Top = 20
+      Width = 36
+      MaxValue = 16
+      TabOrder = 3
+    end
+    object edtI2CLen2: TBricxccSpinEdit
+      Left = 135
+      Height = 22
+      Top = 41
+      Width = 36
+      MaxValue = 16
+      TabOrder = 8
+    end
+    object edtI2CLen4: TBricxccSpinEdit
+      Left = 135
+      Height = 22
+      Top = 83
+      Width = 36
+      MaxValue = 16
+      TabOrder = 18
+    end
+    object edtI2CLen3: TBricxccSpinEdit
+      Left = 135
+      Height = 22
+      Top = 62
+      Width = 36
+      MaxValue = 16
+      TabOrder = 13
+    end
+  end
+  object Timer1: TTimer
+    Enabled = False
+    OnTimer = Timer1Timer
+    left = 424
+    top = 8
+  end
+end

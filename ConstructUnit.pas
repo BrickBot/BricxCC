@@ -16,16 +16,30 @@
  *)
 unit ConstructUnit;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Messages, Classes, Controls, Forms, ExtCtrls, StdCtrls,
-  ComCtrls, uOfficeComp, uTreeSaver;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+  LMessages,
+  LCLIntf,
+{$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  ExtCtrls, Buttons, Menus, StdCtrls, uOfficeComp, ComCtrls, uTreeSaver;
 
 const
   WM_DODOCK = WM_USER + 400;
 
 type
+
+  { TConstructForm }
+
   TConstructForm = class(TForm)
     ConstructPanel: TPanel;
     treTemplates: TTreeView;
@@ -35,6 +49,10 @@ type
     procedure FormShow(Sender: TObject);
     procedure treTemplatesDblClick(Sender: TObject);
     procedure treTemplatesMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure treTemplatesMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure treTemplatesMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure treTemplatesStartDrag(Sender: TObject;
       var DragObject: TDragObject);
@@ -55,7 +73,7 @@ type
     { Private declarations }
     fDockMe: boolean;
     fMouseNode : TTreeNode;
-    procedure WMDoDock(var Message: TWMPaint); message WM_DODOCK;
+    procedure WMDoDock(var Message: TMessage); message WM_DODOCK;
     procedure PopupHandler(Sender: TObject);
     procedure CreatePopupMenus;
     procedure CreateTreeSaver;
@@ -75,11 +93,12 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
-  SysUtils, Menus, Preferences, MainUnit, Editor, uLocalizedStrings,
-  uCommonUtils;
+  Preferences, MainUnit, Editor, uLocalizedStrings;
 
 const IMARGIN = 2;
       IHEIGHT = 16;
@@ -130,8 +149,10 @@ var
   newNode, CurNode : TTreeNode;
   i, cnt, ali : integer;
 begin
+{$IFNDEF FPC}
   treTemplates.Items.BeginUpdate;
   try
+{$ENDIF}
     treTemplates.Items.Clear;
     curNode := nil;
     cnt := 0;
@@ -163,9 +184,11 @@ begin
       end;
       inc(i);
     end;
+{$IFNDEF FPC}
   finally
     treTemplates.Items.EndUpdate;
   end;
+{$ENDIF}
 end;
 
 {Popup menu}
@@ -194,7 +217,10 @@ begin
       if str[1] = '-' then
         str := '-';
       mitem.Caption := str;
-      if vsep then mitem.Break:=mbBarBreak;
+{$IFNDEF FPC}
+      if vsep then
+        mitem.Break:=mbBarBreak;
+{$ENDIF}
       mitem.OnClick := PopUpHandler;
       if str[1] <> '-' then mitem.Tag := i else mitem.Tag := 0;
       ConstructMenu.Items.Add(mitem);
@@ -248,11 +274,11 @@ end;
 procedure TConstructForm.FormShow(Sender: TObject);
 begin
   if DockMe then
-    PostWindowMessage(Self.Handle, WM_DODOCK, 0, 0);
+    PostMessage(Self.Handle, WM_DODOCK, 0, 0);
   DockMe := False;
 end;
 
-procedure TConstructForm.WMDoDock(var Message: TWMPaint);
+procedure TConstructForm.WMDoDock(var Message: TMessage);
 begin
   ManualDock(MainForm.pnlCodeExplorer, nil, alBottom);
   // if we dock we need to restore the tree again
@@ -287,7 +313,11 @@ begin
   finally
     treTemplates.Items.EndUpdate;
   end;
+{$IFDEF FPC}
+  treTemplates.Selected := nil;
+{$ELSE}
   treTemplates.ClearSelection;
+{$ENDIF}
 end;
 
 procedure TConstructForm.mniDblClickInsertClick(Sender: TObject);
@@ -318,6 +348,18 @@ begin
 end;
 
 procedure TConstructForm.treTemplatesMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
+begin
+  fMouseNode := treTemplates.GetNodeAt(X, Y);
+end;
+
+procedure TConstructForm.treTemplatesMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  fMouseNode := treTemplates.GetNodeAt(X, Y);
+end;
+
+procedure TConstructForm.treTemplatesMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
   fMouseNode := treTemplates.GetNodeAt(X, Y);
@@ -409,5 +451,10 @@ begin
     TreeView := treTemplates;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i ConstructUnit.lrs}
+{$ENDIF}
 
 end.

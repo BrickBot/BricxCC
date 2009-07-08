@@ -16,10 +16,17 @@
  *)
 unit MessageUnit;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, ComCtrls, StdCtrls, ExtCtrls, uSpin;
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
+  Classes, Controls, Forms, ComCtrls, StdCtrls, ExtCtrls, BricxccSpin;
 
 type
   TMessageForm = class(TForm)
@@ -47,8 +54,8 @@ type
     btnSendBool: TButton;
     btnSendNum: TButton;
     chkResponse: TCheckBox;
-    edtMessageNum: TSpinEdit;
-    edtNum: TSpinEdit;
+    edtMessageNum: TBricxccSpinEdit;
+    edtNum: TBricxccSpinEdit;
     procedure Button0Click(Sender: TObject);
     procedure SendButtonClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
@@ -70,7 +77,9 @@ implementation
 uses
   SysUtils, Preferences, brick_common, uSpirit, uCommonUtils;
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 procedure TMessageForm.Button0Click(Sender: TObject);
 begin
@@ -149,5 +158,10 @@ procedure TMessageForm.btnSendNXTClick(Sender: TObject);
 begin
   BrickComm.MessageWrite(GetInBox, GetMessage(Sender));
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i MessageUnit.lrs}
+{$ENDIF}
 
 end.

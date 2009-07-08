@@ -1,0 +1,79 @@
+object ConstructForm: TConstructForm
+  Left = 237
+  Height = 261
+  Top = 136
+  Width = 186
+  HelpContext = 8
+  BorderIcons = []
+  BorderStyle = bsSizeToolWin
+  Caption = 'Templates'
+  ClientHeight = 261
+  ClientWidth = 186
+  Constraints.MinHeight = 40
+  Constraints.MinWidth = 40
+  DragKind = dkDock
+  DragMode = dmAutomatic
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnEndDock = FormEndDock
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object ConstructPanel: TPanel
+    Height = 261
+    Width = 186
+    Align = alClient
+    BevelOuter = bvNone
+    TabOrder = 0
+  end
+  object treTemplates: TTreeView
+    Height = 261
+    Width = 186
+    Align = alClient
+    DefaultItemHeight = 18
+    DragMode = dmAutomatic
+    HideSelection = False
+    Indent = 19
+    PopupMenu = popOptions
+    RightClickSelect = True
+    TabOrder = 1
+    OnClick = treTemplatesClick
+    OnDblClick = treTemplatesDblClick
+    OnDeletion = treTemplatesDeletion
+    OnMouseDown = treTemplatesMouseDown
+    OnMouseMove = treTemplatesMouseMove
+    OnMouseUp = treTemplatesMouseUp
+    OnStartDrag = treTemplatesStartDrag
+    Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
+  end
+  object ConstructMenu: TOfficePopupMenu
+    left = 8
+    top = 16
+  end
+  object popOptions: TOfficePopupMenu
+    OnPopup = popOptionsPopup
+    left = 56
+    top = 128
+    object mniExpandAll: TOfficeMenuItem
+      Caption = 'Expand All'
+      OnClick = mniExpandAllClick
+    end
+    object mniCollapseAll: TOfficeMenuItem
+      Caption = 'Collapse All'
+      OnClick = mniCollapseAllClick
+    end
+    object mniPopSep1: TOfficeMenuItem
+      Caption = '-'
+    end
+    object mniDblClickInsert: TOfficeMenuItem
+      Caption = 'Double Click to Insert'
+      OnClick = mniDblClickInsertClick
+    end
+  end
+  object tsvTemplates: TBricxCCTreeSave
+    TreeView = treTemplates
+    left = 72
+    top = 24
+  end
+end

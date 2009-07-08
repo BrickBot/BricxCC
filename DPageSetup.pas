@@ -18,7 +18,13 @@ unit DPageSetup;
 interface
 
 uses
-  Types, Classes, Graphics, Forms, Controls, StdCtrls,
+{$IFNDEF FPC}
+  Types,
+{$ELSE}
+  LResources,
+  BricxccSynReg,
+{$ENDIF}
+  Classes, Graphics, Forms, Controls, StdCtrls,
   Buttons, ExtCtrls, ComCtrls, ToolWin, ImgList, ActnList, Dialogs,
   SynEditPrintTypes, SynEditPrint, SynEditPrintMargins,
   SynEditPrintHeaderFooter;
@@ -164,7 +170,13 @@ type
 implementation
 
 uses
-  Windows, SysUtils, RichEdit, ShellAPI, Messages;
+  {$IFNDEF FPC}
+  Windows,
+  RichEdit, 
+  ShellAPI,
+  {$ENDIF}
+  SysUtils,
+  Messages;
 
 {$R *.DFM}
 
@@ -544,5 +556,10 @@ begin
   if not (Key in [#8, #16, '0'..'9','.']) then
     Key := #0;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i DPageSetup.lrs}
+{$ENDIF}
 
 end.

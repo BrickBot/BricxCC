@@ -16,6 +16,10 @@
  *)
 unit Translate;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses

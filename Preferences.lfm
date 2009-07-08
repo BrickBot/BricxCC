@@ -1,0 +1,3990 @@
+object PrefForm: TPrefForm
+  Left = 241
+  Height = 461
+  Top = 186
+  Width = 611
+  HelpContext = 11
+  ActiveControl = pagPrefs
+  BorderIcons = [biSystemMenu, biHelp]
+  BorderStyle = bsDialog
+  Caption = 'Preferences'
+  ClientHeight = 461
+  ClientWidth = 611
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
+  ShowHint = True
+  LCLVersion = '0.9.25'
+  object Panel3: TPanel
+    Height = 31
+    Top = 430
+    Width = 611
+    Align = alBottom
+    BevelOuter = bvNone
+    ClientHeight = 31
+    ClientWidth = 611
+    TabOrder = 0
+    object btnDefault: TButton
+      Left = 8
+      Height = 25
+      Top = 4
+      Width = 73
+      HelpContext = 11002
+      Caption = '&Default'
+      OnClick = btnDefaultClick
+      TabOrder = 0
+    end
+    object btnOK: TButton
+      Left = 368
+      Height = 25
+      Top = 4
+      Width = 75
+      HelpContext = 11003
+      Caption = 'OK'
+      ModalResult = 1
+      TabOrder = 1
+    end
+    object btnCancel: TButton
+      Left = 448
+      Height = 25
+      Top = 4
+      Width = 75
+      HelpContext = 11004
+      Cancel = True
+      Caption = 'Cancel'
+      ModalResult = 2
+      TabOrder = 2
+    end
+    object btnHelp: TButton
+      Left = 528
+      Height = 25
+      Top = 4
+      Width = 75
+      HelpContext = 11001
+      Caption = '&Help'
+      OnClick = btnHelpClick
+      TabOrder = 3
+    end
+  end
+  object Panel1: TPanel
+    Height = 430
+    Width = 611
+    Align = alClient
+    BevelInner = bvLowered
+    BevelOuter = bvNone
+    Caption = 'Panel1'
+    ClientHeight = 430
+    ClientWidth = 611
+    TabOrder = 1
+    object pagPrefs: TPageControl
+      Left = 1
+      Height = 428
+      Top = 1
+      Width = 609
+      ActivePage = shtGeneral
+      Align = alClient
+      TabIndex = 0
+      TabOrder = 0
+      OnChange = pagPrefsChange
+      OnPageChanged = pagPrefsChange
+      object shtGeneral: TTabSheet
+        Caption = 'General'
+        ClientHeight = 428
+        ClientWidth = 609
+        object lblMaxRecent: TLabel
+          Left = 8
+          Height = 17
+          Top = 297
+          Width = 129
+          Caption = 'Ma&x recent files:'
+          FocusControl = edtMaxRecent
+          ParentColor = False
+        end
+        object lblFirmChunk: TLabel
+          Left = 8
+          Height = 17
+          Top = 325
+          Width = 135
+          Caption = 'Firmware &Chunk:'
+          FocusControl = edtFirmwareChunkSize
+          ParentColor = False
+        end
+        object lblWaitTime: TLabel
+          Left = 210
+          Height = 17
+          Top = 325
+          Width = 78
+          Caption = 'Wait Time:'
+          FocusControl = edtWaitTime
+          ParentColor = False
+        end
+        object CheckSavePos: TCheckBox
+          Left = 8
+          Height = 26
+          Width = 275
+          HelpContext = 11010
+          Caption = 'Save and restore &window positions'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+        end
+        object CheckSaveBackup: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 21
+          Width = 169
+          HelpContext = 11011
+          Caption = 'Save &backup copies'
+          Checked = True
+          State = cbChecked
+          TabOrder = 1
+        end
+        object CheckShowRecent: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 42
+          Width = 292
+          HelpContext = 11012
+          Caption = 'Display &recently opened files in menu'
+          Checked = True
+          State = cbChecked
+          TabOrder = 2
+        end
+        object chkShowCompileStatus: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 63
+          Width = 250
+          HelpContext = 11013
+          Caption = 'Show compiler st&atus message'
+          TabOrder = 3
+        end
+        object chkFirmfast: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 214
+          Width = 337
+          HelpContext = 11014
+          Caption = '&Use fast mode when downloading firmware'
+          OnClick = chkFirmfastClick
+          TabOrder = 10
+        end
+        object grpLockedProgs: TGroupBox
+          Left = 421
+          Height = 237
+          Top = 105
+          Width = 170
+          Caption = 'Locked Programs'
+          ClientHeight = 216
+          ClientWidth = 166
+          TabOrder = 18
+          object cbProg1: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 2
+            Width = 100
+            HelpContext = 11016
+            Caption = 'Program &1'
+            TabOrder = 0
+          end
+          object cbProg2: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 28
+            Width = 100
+            HelpContext = 11017
+            Caption = 'Program &2'
+            TabOrder = 1
+          end
+          object cbProg3: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 54
+            Width = 100
+            HelpContext = 11018
+            Caption = 'Program &3'
+            TabOrder = 2
+          end
+          object cbProg4: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 80
+            Width = 100
+            HelpContext = 11019
+            Caption = 'Program &4'
+            TabOrder = 3
+          end
+          object cbProg5: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 106
+            Width = 100
+            HelpContext = 11020
+            Caption = 'Program &5'
+            TabOrder = 4
+          end
+          object cbProg6: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 132
+            Width = 100
+            HelpContext = 11021
+            Caption = 'Program &6'
+            TabOrder = 5
+          end
+          object cbProg7: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 158
+            Width = 100
+            HelpContext = 11022
+            Caption = 'Program &7'
+            TabOrder = 6
+          end
+          object cbProg8: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 184
+            Width = 100
+            HelpContext = 11023
+            Caption = 'Program &8'
+            TabOrder = 7
+          end
+        end
+        object chkIncludeSrcInList: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 84
+          Width = 220
+          HelpContext = 11024
+          Caption = '&Show source in code listing'
+          TabOrder = 4
+        end
+        object grpAutoSave: TGroupBox
+          Left = 421
+          Height = 80
+          Top = 7
+          Width = 170
+          Caption = 'Autosave Options'
+          ClientHeight = 59
+          ClientWidth = 166
+          TabOrder = 17
+          object chkAutoSave: TCheckBox
+            Left = 8
+            Height = 26
+            Top = -3
+            Width = 99
+            HelpContext = 11026
+            Caption = 'Editor &files'
+            TabOrder = 0
+          end
+          object chkSaveDesktop: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 21
+            Width = 140
+            HelpContext = 11027
+            Caption = 'Project Des&ktop'
+            TabOrder = 1
+          end
+        end
+        object chkSaveBinaryOutput: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 105
+          Width = 177
+          HelpContext = 11028
+          Caption = 'Save compiler ou&tput'
+          TabOrder = 5
+        end
+        object chkLockToolbars: TCheckBox
+          Left = 8
+          Height = 30
+          Top = 126
+          Width = 259
+          HelpContext = 11031
+          Caption = 'Lock toolbars in default &positions'
+          TabOrder = 6
+        end
+        object chkMaxEditWindows: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 151
+          Width = 203
+          HelpContext = 11032
+          Caption = 'Max&imize editor windows'
+          TabOrder = 7
+        end
+        object chkMultiFormatCopy: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 172
+          Width = 217
+          HelpContext = 11033
+          Caption = 'Multi-format clipboard c&opy'
+          TabOrder = 8
+        end
+        object chkUseMDI: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 193
+          Width = 133
+          HelpContext = 11034
+          Caption = 'Use &MDI mode'
+          TabOrder = 9
+        end
+        object chkQuietFirmware: TCheckBox
+          Left = 8
+          Height = 27
+          Top = 235
+          Width = 204
+          HelpContext = 11035
+          Caption = '&Quiet firmware download'
+          TabOrder = 12
+        end
+        object chkFirmComp: TCheckBox
+          Left = 365
+          Height = 24
+          Top = 214
+          Width = 46
+          HelpContext = 11037
+          Caption = '2 x'
+          TabOrder = 11
+        end
+        object edtMaxRecent: TBricxccSpinEdit
+          Left = 141
+          Height = 22
+          Top = 292
+          Width = 50
+          HelpContext = 11029
+          MaxValue = 10
+          MinValue = 2
+          TabOrder = 14
+          Value = 2
+          MaxLength = 2
+        end
+        object edtFirmwareChunkSize: TBricxccSpinEdit
+          Left = 141
+          Height = 22
+          Top = 320
+          Width = 50
+          HelpContext = 11036
+          Increment = 50
+          MaxValue = 4400
+          MinValue = 4
+          TabOrder = 15
+          Value = 200
+          MaxLength = 4
+        end
+        object edtWaitTime: TBricxccSpinEdit
+          Left = 295
+          Height = 22
+          Top = 320
+          Width = 50
+          HelpContext = 11255
+          Increment = 50
+          MaxValue = 900
+          MinValue = 100
+          TabOrder = 16
+          Value = 100
+          MaxLength = 3
+        end
+        object chkDroppedRecent: TCheckBox
+          Left = 8
+          Height = 24
+          Top = 257
+          Width = 268
+          Caption = 'Add dropped files to recent file list'
+          TabOrder = 13
+        end
+      end
+      object shtEditor: TTabSheet
+        Caption = 'Editor'
+        ClientHeight = 428
+        ClientWidth = 609
+        object pagEditor: TPageControl
+          Height = 428
+          Width = 609
+          ActivePage = shtEditorOptions
+          Align = alClient
+          TabIndex = 0
+          TabOrder = 0
+          object shtEditorOptions: TTabSheet
+            Caption = 'Options'
+            ClientHeight = 428
+            ClientWidth = 609
+            object lblScrollBars: TLabel
+              Left = 8
+              Height = 17
+              Top = 174
+              Width = 91
+              Caption = 'Scro&ll bars:'
+              FocusControl = cbxScrollBars
+              ParentColor = False
+            end
+            object Label3: TLabel
+              Left = 8
+              Height = 17
+              Top = 203
+              Width = 109
+              Caption = 'Max le&ft char:'
+              FocusControl = edtMaxLeftChar
+              ParentColor = False
+            end
+            object lblTabWidth: TLabel
+              Left = 8
+              Height = 17
+              Top = 232
+              Width = 87
+              Caption = '&Tab width:'
+              FocusControl = inpTabWidth
+              ParentColor = False
+            end
+            object lblMaxUndo: TLabel
+              Left = 8
+              Height = 17
+              Top = 261
+              Width = 87
+              Caption = 'Ma&x undo:'
+              FocusControl = inpMaxUndo
+              ParentColor = False
+            end
+            object lblExtraSpace: TLabel
+              Left = 8
+              Height = 17
+              Top = 290
+              Width = 143
+              Caption = 'Extra line spac&ing:'
+              FocusControl = inpExtraLineSpacing
+              ParentColor = False
+            end
+            object lblRightEdge: TLabel
+              Left = 8
+              Height = 17
+              Top = 319
+              Width = 95
+              Caption = '&Right edge:'
+              FocusControl = inpRightEdge
+              ParentColor = False
+            end
+            object btnFont: TButton
+              Left = 163
+              Height = 25
+              Top = 135
+              Width = 136
+              HelpContext = 11053
+              Caption = 'Editor Fo&nt ...'
+              OnClick = btnFontClick
+              TabOrder = 4
+            end
+            object cbxScrollBars: TComboBox
+              Left = 163
+              Height = 21
+              Top = 170
+              Width = 95
+              HelpContext = 11060
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              Items.Strings = (
+                'Both'
+                'Horizontal'
+                'None'
+                'Vertical'
+              )
+              MaxLength = 65535
+              Style = csDropDownList
+              TabOrder = 5
+            end
+            object chkGroupUndo: TCheckBox
+              Left = 355
+              Height = 26
+              Top = 188
+              Width = 161
+              HelpContext = 11072
+              Caption = '&With grouped undo'
+              TabOrder = 20
+            end
+            object chkEnhHomeKey: TCheckBox
+              Left = 355
+              Height = 29
+              Top = 165
+              Width = 173
+              HelpContext = 11071
+              Caption = 'Enhanced home ke&y'
+              TabOrder = 19
+            end
+            object chkKeepBlanks: TCheckBox
+              Left = 355
+              Height = 26
+              Top = 145
+              Width = 164
+              HelpContext = 11069
+              Caption = '&Keep trailing blanks'
+              TabOrder = 18
+            end
+            object chkSmartTab: TCheckBox
+              Left = 355
+              Height = 27
+              Top = 124
+              Width = 93
+              HelpContext = 11070
+              Caption = '&Quick tab'
+              TabOrder = 17
+            end
+            object chkDragDrop: TCheckBox
+              Left = 355
+              Height = 30
+              Top = 100
+              Width = 180
+              HelpContext = 11066
+              Caption = 'Dra&g and drop editing'
+              TabOrder = 16
+            end
+            object cbHalfPageScroll: TCheckBox
+              Left = 355
+              Height = 26
+              Top = 80
+              Width = 135
+              HelpContext = 11056
+              Caption = '&HalfPage Scroll'
+              TabOrder = 15
+            end
+            object cbScrollPastEOL: TCheckBox
+              Left = 355
+              Height = 26
+              Top = 60
+              Width = 139
+              HelpContext = 11055
+              Caption = 'Scroll Past &EOL'
+              TabOrder = 14
+            end
+            object cbHideSelection: TCheckBox
+              Left = 8
+              Height = 26
+              Top = 79
+              Width = 125
+              HelpContext = 11054
+              Caption = 'Hide &selection'
+              TabOrder = 3
+            end
+            object chkMoveRight: TCheckBox
+              Left = 355
+              Height = 26
+              Top = 40
+              Width = 206
+              HelpContext = 11068
+              Caption = 'Mo&ve cursor on right click'
+              TabOrder = 13
+            end
+            object chkAltSelMode: TCheckBox
+              Left = 355
+              Height = 26
+              Top = 20
+              Width = 203
+              HelpContext = 11067
+              Caption = 'Alt sets col&umn selection'
+              TabOrder = 12
+            end
+            object CheckMacrosOn: TCheckBox
+              Left = 8
+              Height = 26
+              Top = 54
+              Width = 324
+              HelpContext = 11052
+              Caption = 'Use <Ctrl><Alt> combinations for &macros'
+              Checked = True
+              State = cbChecked
+              TabOrder = 2
+            end
+            object CheckAutoIndentCode: TCheckBox
+              Left = 355
+              Height = 26
+              Width = 206
+              HelpContext = 11051
+              Caption = '&Automatically indent lines'
+              Checked = True
+              State = cbChecked
+              TabOrder = 11
+            end
+            object CheckShowTemplates: TCheckBox
+              Left = 8
+              Height = 30
+              Top = 25
+              Width = 276
+              HelpContext = 11050
+              Caption = 'Show &pop-up menu with templates'
+              Checked = True
+              State = cbChecked
+              TabOrder = 1
+            end
+            object CheckColorCoding: TCheckBox
+              Left = 8
+              Height = 26
+              Width = 195
+              HelpContext = 11049
+              Caption = '&Color code the program'
+              Checked = True
+              State = cbChecked
+              TabOrder = 0
+            end
+            object chkTabIndent: TCheckBox
+              Left = 355
+              Height = 24
+              Top = 208
+              Width = 154
+              HelpContext = 11072
+              Caption = 'Use Tab to indent'
+              TabOrder = 21
+            end
+            object chkShowSpecialChars: TCheckBox
+              Left = 355
+              Height = 24
+              Top = 226
+              Width = 199
+              HelpContext = 11072
+              Caption = 'Show special characters'
+              TabOrder = 22
+            end
+            object chkConvertTabs: TCheckBox
+              Left = 355
+              Height = 24
+              Top = 244
+              Width = 192
+              HelpContext = 11072
+              Caption = 'Convert tabs to spaces'
+              TabOrder = 23
+            end
+            object edtMaxLeftChar: TBricxccSpinEdit
+              Left = 163
+              Height = 22
+              Top = 198
+              Width = 60
+              HelpContext = 11065
+              MaxValue = 9999
+              TabOrder = 6
+              Value = 1024
+              MaxLength = 4
+            end
+            object inpTabWidth: TBricxccSpinEdit
+              Left = 163
+              Height = 22
+              Top = 227
+              Width = 60
+              HelpContext = 11065
+              MaxValue = 16
+              MinValue = 1
+              TabOrder = 7
+              Value = 2
+            end
+            object inpMaxUndo: TBricxccSpinEdit
+              Left = 163
+              Height = 22
+              Top = 256
+              Width = 60
+              HelpContext = 11064
+              MaxValue = 9999
+              TabOrder = 8
+              Value = 10
+            end
+            object inpExtraLineSpacing: TBricxccSpinEdit
+              Left = 163
+              Height = 22
+              Top = 285
+              Width = 60
+              HelpContext = 11057
+              MaxValue = 99
+              MinValue = -99
+              TabOrder = 9
+              MaxLength = 3
+            end
+            object inpRightEdge: TBricxccSpinEdit
+              Left = 163
+              Height = 22
+              Top = 314
+              Width = 60
+              HelpContext = 11058
+              MaxValue = 999
+              TabOrder = 10
+              Value = 80
+              MaxLength = 3
+            end
+            object chkHighlightCurLine: TCheckBox
+              Left = 355
+              Height = 24
+              Top = 262
+              Width = 170
+              HelpContext = 11072
+              Caption = 'Highlight current line'
+              TabOrder = 24
+            end
+            object chkKeepCaretX: TCheckBox
+              Left = 355
+              Height = 24
+              Top = 280
+              Width = 176
+              HelpContext = 11072
+              Caption = 'Keep caret x position'
+              TabOrder = 25
+            end
+            object chkAutoMaxLeft: TCheckBox
+              Left = 355
+              Height = 24
+              Top = 298
+              Width = 221
+              HelpContext = 11072
+              Caption = 'Autosize max left character'
+              TabOrder = 26
+            end
+          end
+          object shtEditorColors: TTabSheet
+            Caption = 'Colors'
+            ClientHeight = 428
+            ClientWidth = 609
+            ImageIndex = 1
+            object lblRightEdgeColor: TLabel
+              Left = 8
+              Height = 17
+              Top = 12
+              Width = 134
+              Caption = 'Right e&dge color:'
+              ParentColor = False
+            end
+            object lblSelFore: TLabel
+              Left = 8
+              Height = 17
+              Top = 45
+              Width = 165
+              Caption = 'Selection &foreground:'
+              ParentColor = False
+            end
+            object lblSelBack: TLabel
+              Left = 8
+              Height = 17
+              Top = 78
+              Width = 171
+              Caption = 'Selection &background:'
+              ParentColor = False
+            end
+            object lblEditorColor: TLabel
+              Left = 8
+              Height = 17
+              Top = 111
+              Width = 141
+              Caption = 'Background c&olor:'
+              ParentColor = False
+            end
+            object lblStructureColor: TLabel
+              Left = 8
+              Height = 17
+              Top = 144
+              Width = 150
+              Caption = '&Structure line color:'
+              ParentColor = False
+            end
+            object Label4: TLabel
+              Left = 8
+              Height = 17
+              Top = 177
+              Width = 128
+              Caption = '&Active line color:'
+              ParentColor = False
+            end
+            object cbxREColor: TColorBox
+              Left = 179
+              Height = 22
+              Top = 7
+              Width = 128
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              ItemHeight = 16
+              Items.Strings = (
+                'clBlack'
+                'clMaroon'
+                'clGreen'
+                'clOlive'
+                'clNavy'
+                'clPurple'
+                'clTeal'
+                'clGray'
+                'clSilver'
+                'clRed'
+                'clLime'
+                'clYellow'
+                'clBlue'
+                'clFuchsia'
+                'clAqua'
+                'clSilver'
+                'clGray'
+                'clWhite'
+                'clCream'
+                'clNone'
+                'clDefault'
+              )
+              MaxLength = 65535
+              TabOrder = 0
+            end
+            object cbxForeground: TColorBox
+              Left = 179
+              Height = 22
+              Top = 40
+              Width = 128
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              ItemHeight = 16
+              Items.Strings = (
+                'clBlack'
+                'clMaroon'
+                'clGreen'
+                'clOlive'
+                'clNavy'
+                'clPurple'
+                'clTeal'
+                'clGray'
+                'clSilver'
+                'clRed'
+                'clLime'
+                'clYellow'
+                'clBlue'
+                'clFuchsia'
+                'clAqua'
+                'clSilver'
+                'clGray'
+                'clWhite'
+                'clCream'
+                'clNone'
+                'clDefault'
+              )
+              MaxLength = 65535
+              TabOrder = 1
+            end
+            object cbxBackground: TColorBox
+              Left = 179
+              Height = 22
+              Top = 73
+              Width = 128
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              ItemHeight = 16
+              Items.Strings = (
+                'clBlack'
+                'clMaroon'
+                'clGreen'
+                'clOlive'
+                'clNavy'
+                'clPurple'
+                'clTeal'
+                'clGray'
+                'clSilver'
+                'clRed'
+                'clLime'
+                'clYellow'
+                'clBlue'
+                'clFuchsia'
+                'clAqua'
+                'clSilver'
+                'clGray'
+                'clWhite'
+                'clCream'
+                'clNone'
+                'clDefault'
+              )
+              MaxLength = 65535
+              TabOrder = 2
+            end
+            object cbxColor: TColorBox
+              Left = 179
+              Height = 22
+              Top = 106
+              Width = 128
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              ItemHeight = 16
+              Items.Strings = (
+                'clBlack'
+                'clMaroon'
+                'clGreen'
+                'clOlive'
+                'clNavy'
+                'clPurple'
+                'clTeal'
+                'clGray'
+                'clSilver'
+                'clRed'
+                'clLime'
+                'clYellow'
+                'clBlue'
+                'clFuchsia'
+                'clAqua'
+                'clSilver'
+                'clGray'
+                'clWhite'
+                'clCream'
+                'clNone'
+                'clDefault'
+              )
+              MaxLength = 65535
+              TabOrder = 3
+            end
+            object cbxStructureColor: TColorBox
+              Left = 179
+              Height = 22
+              Top = 139
+              Width = 128
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              ItemHeight = 16
+              Items.Strings = (
+                'clBlack'
+                'clMaroon'
+                'clGreen'
+                'clOlive'
+                'clNavy'
+                'clPurple'
+                'clTeal'
+                'clGray'
+                'clSilver'
+                'clRed'
+                'clLime'
+                'clYellow'
+                'clBlue'
+                'clFuchsia'
+                'clAqua'
+                'clSilver'
+                'clGray'
+                'clWhite'
+                'clCream'
+                'clNone'
+                'clDefault'
+              )
+              MaxLength = 65535
+              TabOrder = 4
+            end
+            object cbxActiveLineColor: TColorBox
+              Left = 179
+              Height = 22
+              Top = 172
+              Width = 128
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              ItemHeight = 16
+              Items.Strings = (
+                'clBlack'
+                'clMaroon'
+                'clGreen'
+                'clOlive'
+                'clNavy'
+                'clPurple'
+                'clTeal'
+                'clGray'
+                'clSilver'
+                'clRed'
+                'clLime'
+                'clYellow'
+                'clBlue'
+                'clFuchsia'
+                'clAqua'
+                'clSilver'
+                'clGray'
+                'clWhite'
+                'clCream'
+                'clNone'
+                'clDefault'
+              )
+              MaxLength = 65535
+              TabOrder = 5
+            end
+          end
+        end
+      end
+      object shtCompiler: TTabSheet
+        Caption = 'Compiler'
+        ClientHeight = 428
+        ClientWidth = 609
+        ImageIndex = 8
+        object pagCompiler: TPageControl
+          Left = 8
+          Height = 375
+          Top = 8
+          Width = 574
+          ActivePage = shtCompilerCommon
+          TabIndex = 0
+          TabOrder = 0
+          object shtCompilerCommon: TTabSheet
+            Caption = 'Common'
+            ClientHeight = 375
+            ClientWidth = 574
+            object lblCompilerTimeout: TLabel
+              Left = 6
+              Height = 17
+              Top = 8
+              Width = 75
+              Caption = '&Timeout:'
+              FocusControl = edtCompilerTimeout
+              ParentColor = False
+            end
+            object lblCompilerSwitches: TLabel
+              Left = 6
+              Height = 17
+              Top = 43
+              Width = 81
+              Caption = '&Switches:'
+              FocusControl = edtCompilerSwitches
+              ParentColor = False
+            end
+            object lblCommonSeconds: TLabel
+              Left = 163
+              Height = 17
+              Top = 8
+              Width = 73
+              Caption = '(seconds)'
+              ParentColor = False
+            end
+            object edtCompilerSwitches: TEdit
+              Left = 99
+              Height = 21
+              Top = 39
+              Width = 337
+              HelpContext = 11081
+              TabOrder = 1
+            end
+            object grpDefLanguage: TGroupBox
+              Left = 99
+              Height = 88
+              Top = 79
+              Width = 409
+              Caption = 'Preferred language for standard firmware'
+              ClientHeight = 67
+              ClientWidth = 405
+              TabOrder = 2
+              object radPrefNQC: TRadioButton
+                Left = 8
+                Height = 24
+                Width = 61
+                HelpContext = 11083
+                Caption = 'NQC'
+                Checked = True
+                State = cbChecked
+                TabOrder = 0
+              end
+              object radPrefMindScript: TRadioButton
+                Left = 8
+                Height = 24
+                Top = 29
+                Width = 99
+                HelpContext = 11084
+                Caption = 'MindScript'
+                TabOrder = 1
+              end
+              object radPrefLASM: TRadioButton
+                Left = 120
+                Height = 24
+                Width = 68
+                HelpContext = 11085
+                Caption = 'LASM'
+                TabOrder = 2
+              end
+              object radPrefNBC: TRadioButton
+                Left = 120
+                Height = 24
+                Top = 29
+                Width = 59
+                HelpContext = 11086
+                Caption = 'NBC'
+                TabOrder = 3
+              end
+              object radPrefNXC: TRadioButton
+                Left = 232
+                Height = 24
+                Width = 59
+                HelpContext = 11086
+                Caption = 'NXC'
+                TabOrder = 4
+              end
+            end
+            object edtCompilerTimeout: TBricxccSpinEdit
+              Left = 99
+              Height = 22
+              Top = 3
+              Width = 56
+              HelpContext = 11080
+              Increment = 10
+              MaxValue = 999
+              TabOrder = 0
+              MaxLength = 3
+            end
+            object btnPrecompile: TButton
+              Left = 99
+              Height = 25
+              Top = 183
+              Width = 184
+              Caption = 'Pre-compile Tools'
+              OnClick = btnPrecompileClick
+              TabOrder = 3
+            end
+            object btnPostcompile: TButton
+              Left = 99
+              Height = 25
+              Top = 223
+              Width = 184
+              Caption = 'Post-compile Tools'
+              OnClick = btnPostcompileClick
+              TabOrder = 4
+            end
+          end
+          object shtCompilerNQC: TTabSheet
+            Caption = 'NQC'
+            ClientHeight = 375
+            ClientWidth = 574
+            ImageIndex = 1
+            object lblNQCIncludePath: TLabel
+              Left = 6
+              Height = 17
+              Top = 7
+              Width = 104
+              Caption = '&Include path:'
+              ParentColor = False
+            end
+            object lblNQCSwitches: TLabel
+              Left = 6
+              Height = 17
+              Top = 43
+              Width = 81
+              Caption = '&Switches:'
+              FocusControl = edtNQCSwitches
+              ParentColor = False
+            end
+            object lblNQCPath: TLabel
+              Left = 6
+              Height = 17
+              Top = 79
+              Width = 86
+              Caption = 'EXE &path:'
+              ParentColor = False
+            end
+            object edtNQCSwitches: TEdit
+              Left = 115
+              Height = 21
+              Top = 39
+              Width = 337
+              HelpContext = 11091
+              TabOrder = 1
+            end
+            object edtNQCIncludePath: TComboBox
+              Left = 115
+              Height = 21
+              Top = 3
+              Width = 337
+              HelpContext = 11092
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              DropDownCount = 4
+              MaxLength = 65535
+              OnExit = edtNQCIncludePathExit
+              TabOrder = 0
+            end
+            object btnGetNQCVersion: TButton
+              Left = 115
+              Height = 25
+              Top = 111
+              Width = 95
+              HelpContext = 11094
+              Caption = '&Version'
+              OnClick = btnGetNQCVersionClick
+              TabOrder = 3
+            end
+            object edtNQCExePath: TDirectoryEdit
+              Left = 115
+              Height = 21
+              Top = 75
+              Width = 337
+              ButtonWidth = 1
+              ParentColor = False
+              TabOrder = 2
+            end
+          end
+          object shtCompilerLCC: TTabSheet
+            Caption = 'LCC'
+            ClientHeight = 375
+            ClientWidth = 574
+            ImageIndex = 2
+            object lblLCCIncludePath: TLabel
+              Left = 6
+              Height = 17
+              Top = 7
+              Width = 104
+              Caption = '&Include path:'
+              ParentColor = False
+            end
+            object lblLCCSwitches: TLabel
+              Left = 6
+              Height = 17
+              Top = 43
+              Width = 81
+              Caption = '&Switches:'
+              FocusControl = edtLCCSwitches
+              ParentColor = False
+            end
+            object lblLCCExePath: TLabel
+              Left = 6
+              Height = 17
+              Top = 79
+              Width = 86
+              Caption = 'EXE &path:'
+              ParentColor = False
+            end
+            object edtLCCSwitches: TEdit
+              Left = 115
+              Height = 21
+              Top = 39
+              Width = 337
+              HelpContext = 11100
+              TabOrder = 1
+            end
+            object edtLCCIncludePath: TComboBox
+              Left = 115
+              Height = 21
+              Top = 3
+              Width = 337
+              HelpContext = 11101
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              DropDownCount = 4
+              MaxLength = 65535
+              OnExit = edtLCCIncludePathExit
+              TabOrder = 0
+            end
+            object btnGetLCCVersion: TButton
+              Left = 115
+              Height = 25
+              Top = 111
+              Width = 95
+              HelpContext = 11103
+              Caption = '&Version'
+              OnClick = btnGetLCCVersionClick
+              TabOrder = 3
+            end
+            object edtLCCExePath: TDirectoryEdit
+              Left = 115
+              Height = 21
+              Top = 75
+              Width = 337
+              ButtonWidth = 1
+              ParentColor = False
+              TabOrder = 2
+            end
+          end
+          object shtNBC: TTabSheet
+            Hint = 'NBC/NXC/NPG/RICScript'
+            Caption = 'NBC/NXC'
+            ClientHeight = 375
+            ClientWidth = 574
+            ImageIndex = 6
+            object lblNBCIncludePath: TLabel
+              Left = 6
+              Height = 17
+              Top = 7
+              Width = 104
+              Caption = '&Include path:'
+              ParentColor = False
+            end
+            object lblNBCSwitches: TLabel
+              Left = 6
+              Height = 17
+              Top = 32
+              Width = 81
+              Caption = '&Switches:'
+              FocusControl = edtNBCSwitches
+              ParentColor = False
+            end
+            object lblNBCExePath: TLabel
+              Left = 6
+              Height = 17
+              Top = 57
+              Width = 86
+              Caption = 'EXE &path:'
+              ParentColor = False
+            end
+            object Label2: TLabel
+              Left = 259
+              Height = 17
+              Top = 119
+              Width = 143
+              Caption = 'Optimization &level:'
+              ParentColor = False
+            end
+            object btnGetNBCVersion: TButton
+              Left = 115
+              Height = 25
+              Top = 111
+              Width = 95
+              HelpContext = 11104
+              Caption = '&Version'
+              OnClick = btnGetNBCVersionClick
+              TabOrder = 3
+            end
+            object edtNBCSwitches: TEdit
+              Left = 115
+              Height = 21
+              Top = 39
+              Width = 337
+              HelpContext = 11106
+              TabOrder = 1
+            end
+            object edtNBCIncludePath: TComboBox
+              Left = 115
+              Height = 21
+              Top = 3
+              Width = 337
+              HelpContext = 11107
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              DropDownCount = 4
+              MaxLength = 65535
+              OnExit = edtNBCIncludePathExit
+              TabOrder = 0
+            end
+            object chkUseIntNBCComp: TCheckBox
+              Left = 115
+              Height = 26
+              Top = 151
+              Width = 175
+              Caption = 'Use internal &compiler'
+              TabOrder = 5
+            end
+            object cboOptLevel: TComboBox
+              Left = 409
+              Height = 21
+              Top = 115
+              Width = 50
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              ItemIndex = 1
+              Items.Strings = (
+                '0'
+                '1'
+                '2'
+              )
+              MaxLength = 65535
+              Style = csDropDownList
+              TabOrder = 4
+              Text = '1'
+            end
+            object chkEnhancedFirmware: TCheckBox
+              Left = 115
+              Height = 26
+              Top = 178
+              Width = 164
+              Caption = 'Enhanced &firmware'
+              TabOrder = 6
+            end
+            object chkIgnoreSysFiles: TCheckBox
+              Left = 115
+              Height = 26
+              Top = 205
+              Width = 214
+              Caption = 'Ignore system i&nclude files'
+              TabOrder = 7
+            end
+            object edtNBCExePath: TDirectoryEdit
+              Left = 115
+              Height = 21
+              Top = 75
+              Width = 337
+              ButtonWidth = 1
+              ParentColor = False
+              TabOrder = 2
+            end
+          end
+          object shtCompilerBrickOS: TTabSheet
+            Caption = 'C/C++/Pascal'
+            ClientHeight = 375
+            ClientWidth = 574
+            ImageIndex = 3
+            object lblOSRoot: TLabel
+              Left = 6
+              Height = 17
+              Top = 34
+              Width = 73
+              Caption = '&OS root:'
+              FocusControl = edtOSRoot
+              ParentColor = False
+            end
+            object lblCPPSwitches: TLabel
+              Left = 6
+              Height = 17
+              Top = 67
+              Width = 81
+              Caption = '&Switches:'
+              FocusControl = edtCPPSwitches
+              ParentColor = False
+            end
+            object lblBrickOSMakefileTemplate: TLabel
+              Left = 6
+              Height = 41
+              Top = 103
+              Width = 67
+              AutoSize = False
+              Caption = '&Makefile template:'
+              ParentColor = False
+              WordWrap = True
+            end
+            object lblCygwin: TLabel
+              Left = 6
+              Height = 17
+              Top = 7
+              Width = 69
+              Caption = '&Cygwin:'
+              ParentColor = False
+            end
+            object lblPascalCompilerPrefix: TLabel
+              Left = 6
+              Height = 17
+              Top = 283
+              Width = 108
+              Caption = '&Pascal prefix:'
+              FocusControl = edtPascalCompilerPrefix
+              ParentColor = False
+            end
+            object edtOSRoot: TEdit
+              Left = 115
+              Height = 21
+              Top = 31
+              Width = 337
+              HelpContext = 11111
+              TabOrder = 1
+            end
+            object edtCPPSwitches: TEdit
+              Left = 115
+              Height = 21
+              Top = 63
+              Width = 337
+              HelpContext = 11112
+              TabOrder = 2
+            end
+            object edtBrickOSMakefileTemplate: TMemo
+              Left = 115
+              Height = 140
+              Top = 103
+              Width = 337
+              HelpContext = 11113
+              Font.Pitch = fpFixed
+              ScrollBars = ssBoth
+              TabOrder = 3
+              WantTabs = True
+            end
+            object chkKeepBrickOSMakefile: TCheckBox
+              Left = 115
+              Height = 24
+              Top = 247
+              Width = 279
+              HelpContext = 11115
+              Caption = 'Keep the makefile after compilation'
+              TabOrder = 4
+            end
+            object edtPascalCompilerPrefix: TEdit
+              Left = 115
+              Height = 21
+              Top = 279
+              Width = 337
+              HelpContext = 11116
+              TabOrder = 5
+            end
+            object edtCygwin: TDirectoryEdit
+              Left = 115
+              Height = 21
+              Top = 3
+              Width = 337
+              ButtonWidth = 1
+              ParentColor = False
+              TabOrder = 0
+            end
+          end
+          object shtCompilerLeJOS: TTabSheet
+            Caption = 'Java'
+            ClientHeight = 375
+            ClientWidth = 574
+            ImageIndex = 4
+            object lblJavaSwitches: TLabel
+              Left = 6
+              Height = 17
+              Top = 67
+              Width = 81
+              Caption = '&Switches:'
+              FocusControl = edtJavaSwitches
+              ParentColor = False
+            end
+            object lblLeJOSMakefileTemplate: TLabel
+              Left = 6
+              Height = 41
+              Top = 103
+              Width = 67
+              AutoSize = False
+              Caption = '&Makefile template:'
+              ParentColor = False
+              WordWrap = True
+            end
+            object Label1: TLabel
+              Left = 6
+              Height = 17
+              Top = 7
+              Width = 84
+              Caption = '&JDK path:'
+              ParentColor = False
+            end
+            object lblLeJOSRoot: TLabel
+              Left = 6
+              Height = 17
+              Top = 35
+              Width = 73
+              Caption = '&OS root:'
+              ParentColor = False
+            end
+            object edtJavaSwitches: TEdit
+              Left = 115
+              Height = 21
+              Top = 63
+              Width = 337
+              HelpContext = 11124
+              TabOrder = 2
+            end
+            object edtLeJOSMakefileTemplate: TMemo
+              Left = 115
+              Height = 140
+              Top = 103
+              Width = 337
+              HelpContext = 11125
+              ScrollBars = ssBoth
+              TabOrder = 3
+              WantTabs = True
+            end
+            object chkKeepLeJOSMakefile: TCheckBox
+              Left = 115
+              Height = 24
+              Top = 247
+              Width = 279
+              HelpContext = 11126
+              Caption = 'Keep the makefile after compilation'
+              TabOrder = 4
+            end
+            object edtJavaPath: TDirectoryEdit
+              Left = 115
+              Height = 21
+              Top = 3
+              Width = 337
+              ButtonWidth = 1
+              ParentColor = False
+              TabOrder = 0
+            end
+            object edtLeJOSRoot: TDirectoryEdit
+              Left = 115
+              Height = 21
+              Top = 31
+              Width = 337
+              ButtonWidth = 1
+              ParentColor = False
+              TabOrder = 1
+            end
+          end
+          object shtForth: TTabSheet
+            Caption = 'Forth Console'
+            ClientHeight = 375
+            ClientWidth = 574
+            ImageIndex = 5
+            object lblInterCharacterDelay: TLabel
+              Left = 17
+              Height = 17
+              Top = 140
+              Width = 163
+              Caption = 'Inter-&character delay:'
+              FocusControl = edtICDelay
+              ParentColor = False
+            end
+            object lblInterLineDelay: TLabel
+              Left = 17
+              Height = 17
+              Top = 172
+              Width = 120
+              Caption = 'Inter-&line delay:'
+              FocusControl = edtILDelay
+              ParentColor = False
+            end
+            object chkShowAllOutput: TCheckBox
+              Left = 16
+              Height = 26
+              Top = 7
+              Width = 136
+              HelpContext = 11132
+              Caption = 'Show all &output'
+              TabOrder = 0
+            end
+            object chkStopOnAborted: TCheckBox
+              Left = 16
+              Height = 26
+              Top = 36
+              Width = 224
+              HelpContext = 11133
+              Caption = 'Stop download on any &error'
+              TabOrder = 1
+            end
+            object chkSkipBlankLines: TCheckBox
+              Left = 16
+              Height = 26
+              Top = 65
+              Width = 135
+              HelpContext = 11134
+              Caption = 'Skip &blank lines'
+              Checked = True
+              State = cbChecked
+              TabOrder = 2
+            end
+            object chkStripComments: TCheckBox
+              Left = 16
+              Height = 26
+              Top = 94
+              Width = 138
+              HelpContext = 11135
+              Caption = '&Strip comments'
+              TabOrder = 3
+            end
+            object chkConsoleSyntaxHL: TCheckBox
+              Left = 259
+              Height = 26
+              Top = 65
+              Width = 159
+              HelpContext = 11138
+              Caption = 'Syntax &highlighting'
+              Checked = True
+              State = cbChecked
+              TabOrder = 6
+            end
+            object chkOutputSeparate: TCheckBox
+              Left = 259
+              Height = 26
+              Top = 7
+              Width = 291
+              HelpContext = 11139
+              Caption = 'Download output in sep&arate window'
+              TabOrder = 4
+            end
+            object chkShowConsoleLineNumbers: TCheckBox
+              Left = 259
+              Height = 26
+              Top = 36
+              Width = 162
+              HelpContext = 11140
+              Caption = 'Show line &numbers'
+              TabOrder = 5
+            end
+            object grpUSB: TGroupBox
+              Left = 291
+              Height = 129
+              Top = 135
+              Width = 227
+              Caption = 'USB Tower Settings'
+              ClientHeight = 108
+              ClientWidth = 223
+              TabOrder = 10
+              object lblReadFirstTimeout: TLabel
+                Left = 12
+                Height = 17
+                Top = 9
+                Width = 145
+                Caption = 'Read &first timeout:'
+                FocusControl = edtConsoleReadFirstTimeout
+                ParentColor = False
+              end
+              object lblReadICTimeout: TLabel
+                Left = 12
+                Height = 17
+                Top = 46
+                Width = 130
+                Caption = 'Read &ic timeout:'
+                FocusControl = edtConsoleReadICTimeout
+                ParentColor = False
+              end
+              object lblWriteTimeout: TLabel
+                Left = 12
+                Height = 17
+                Top = 81
+                Width = 112
+                Caption = '&Write timeout:'
+                FocusControl = edtConsoleWriteTimeout
+                ParentColor = False
+              end
+              object edtConsoleReadFirstTimeout: TBricxccSpinEdit
+                Left = 153
+                Height = 22
+                Top = 4
+                Width = 60
+                HelpContext = 11145
+                MaxValue = 9999
+                TabOrder = 0
+                Value = 10
+                MaxLength = 4
+              end
+              object edtConsoleReadICTimeout: TBricxccSpinEdit
+                Left = 153
+                Height = 22
+                Top = 40
+                Width = 60
+                HelpContext = 11146
+                MaxValue = 9999
+                TabOrder = 1
+                MaxLength = 4
+              end
+              object edtConsoleWriteTimeout: TBricxccSpinEdit
+                Left = 153
+                Height = 22
+                Top = 76
+                Width = 60
+                HelpContext = 11147
+                MaxValue = 9999
+                TabOrder = 2
+                MaxLength = 4
+              end
+            end
+            object chkConsoleCompProp: TCheckBox
+              Left = 259
+              Height = 26
+              Top = 94
+              Width = 146
+              HelpContext = 11148
+              Caption = 'Code co&mpletion'
+              Checked = True
+              State = cbChecked
+              TabOrder = 7
+            end
+            object edtICDelay: TBricxccSpinEdit
+              Left = 180
+              Height = 22
+              Top = 135
+              Width = 60
+              HelpContext = 11136
+              MaxValue = 9999
+              TabOrder = 8
+              MaxLength = 4
+            end
+            object edtILDelay: TBricxccSpinEdit
+              Left = 180
+              Height = 22
+              Top = 167
+              Width = 60
+              HelpContext = 11137
+              MaxValue = 9999
+              TabOrder = 9
+              Value = 200
+              MaxLength = 4
+            end
+          end
+        end
+      end
+      object shtAPI: TTabSheet
+        Caption = 'NQC API'
+        ClientHeight = 428
+        ClientWidth = 609
+        ImageIndex = 7
+        object pagAPI: TPageControl
+          Left = 8
+          Height = 319
+          Top = 8
+          Width = 425
+          ActivePage = shtAPIKeywords
+          TabIndex = 0
+          TabOrder = 0
+          OnChange = pagAPIChange
+          OnPageChanged = pagAPIChange
+          object shtAPIKeywords: TTabSheet
+            Caption = 'Keywords'
+            ClientHeight = 319
+            ClientWidth = 425
+            object lstKeywords: TListBox
+              Left = 4
+              Height = 212
+              Top = 28
+              Width = 200
+              HelpContext = 11152
+              IntegralHeight = True
+              ItemHeight = 13
+              OnClick = lstAPIClick
+              TabOrder = 0
+              TopIndex = -1
+            end
+            object edtKeyword: TEdit
+              Left = 4
+              Height = 21
+              Top = 2
+              Width = 200
+              HelpContext = 11153
+              OnChange = edtAPIChange
+              TabOrder = 1
+            end
+          end
+          object shtAPICommands: TTabSheet
+            Caption = 'Commands'
+            ClientHeight = 319
+            ClientWidth = 425
+            ImageIndex = 1
+            object lstCommands: TListBox
+              Left = 4
+              Height = 212
+              Top = 28
+              Width = 200
+              HelpContext = 11155
+              IntegralHeight = True
+              ItemHeight = 13
+              OnClick = lstAPIClick
+              TabOrder = 0
+              TopIndex = -1
+            end
+            object edtCommand: TEdit
+              Left = 4
+              Height = 21
+              Top = 2
+              Width = 200
+              HelpContext = 11156
+              OnChange = edtAPIChange
+              TabOrder = 1
+            end
+          end
+          object shtAPIConstants: TTabSheet
+            Caption = 'Constants'
+            ClientHeight = 319
+            ClientWidth = 425
+            ImageIndex = 2
+            object lstConstants: TListBox
+              Left = 4
+              Height = 212
+              Top = 28
+              Width = 200
+              HelpContext = 11158
+              IntegralHeight = True
+              ItemHeight = 13
+              OnClick = lstAPIClick
+              TabOrder = 0
+              TopIndex = -1
+            end
+            object edtConstant: TEdit
+              Left = 4
+              Height = 21
+              Top = 2
+              Width = 200
+              HelpContext = 11159
+              OnChange = edtAPIChange
+              TabOrder = 1
+            end
+          end
+        end
+        object btnAddAPI: TButton
+          Left = 224
+          Height = 25
+          Top = 56
+          Width = 91
+          HelpContext = 11160
+          Caption = '&Add'
+          OnClick = btnAddAPIClick
+          TabOrder = 1
+        end
+        object btnDeleteAPI: TButton
+          Left = 224
+          Height = 25
+          Top = 88
+          Width = 91
+          HelpContext = 11161
+          Caption = '&Delete'
+          OnClick = btnDeleteAPIClick
+          TabOrder = 2
+        end
+      end
+      object shtStartup: TTabSheet
+        Caption = 'Start Up'
+        ClientHeight = 428
+        ClientWidth = 609
+        object CheckShowForm: TRadioButton
+          Left = 8
+          Height = 26
+          Top = 7
+          Width = 158
+          HelpContext = 11163
+          Caption = '&Show startup form'
+          Checked = True
+          OnClick = CheckConnectClick
+          State = cbChecked
+          TabOrder = 0
+        end
+        object CheckNoConnect: TRadioButton
+          Left = 8
+          Height = 26
+          Top = 35
+          Width = 209
+          HelpContext = 11164
+          Caption = '&Don''t connect to the brick'
+          OnClick = CheckConnectClick
+          TabOrder = 1
+        end
+        object CheckConnect: TRadioButton
+          Left = 8
+          Height = 26
+          Top = 63
+          Width = 261
+          HelpContext = 11165
+          Caption = '&Connect immediately to the brick'
+          OnClick = CheckConnectClick
+          TabOrder = 2
+        end
+        object grpDefValues: TGroupBox
+          Left = 8
+          Height = 176
+          Top = 95
+          Width = 550
+          Caption = 'Default Values'
+          ClientHeight = 155
+          ClientWidth = 546
+          TabOrder = 3
+          object grpBrickType: TGroupBox
+            Left = 176
+            Height = 66
+            Top = 5
+            Width = 156
+            Caption = 'Brick Type'
+            ClientHeight = 45
+            ClientWidth = 152
+            Color = clBtnFace
+            ParentColor = False
+            TabOrder = 0
+            object cboBrickType: TComboBox
+              Left = 8
+              Height = 21
+              Top = 10
+              Width = 136
+              HelpContext = 11040
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              Items.Strings = (
+                'RCX'
+                'CyberMaster'
+                'Scout'
+                'RCX2'
+                'Spybot'
+                'Swan'
+                'NXT'
+              )
+              MaxLength = 65535
+              Style = csDropDownList
+              TabOrder = 0
+            end
+          end
+          object grpPorts: TGroupBox
+            Left = 14
+            Height = 66
+            Top = 5
+            Width = 156
+            Caption = 'Port'
+            ClientHeight = 45
+            ClientWidth = 152
+            Color = clBtnFace
+            ParentColor = False
+            TabOrder = 1
+            object cboPort: TComboBox
+              Left = 8
+              Height = 21
+              Top = 10
+              Width = 136
+              HelpContext = 11041
+              AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+              Items.Strings = (
+                'Automatic'
+                'usb'
+              )
+              MaxLength = 65535
+              TabOrder = 0
+            end
+          end
+          object grpFirmware: TGroupBox
+            Left = 14
+            Height = 61
+            Top = 77
+            Width = 501
+            Caption = 'Firmware'
+            ClientHeight = 40
+            ClientWidth = 497
+            TabOrder = 2
+            object radStandard: TRadioButton
+              Left = 8
+              Height = 24
+              Top = 2
+              Width = 90
+              HelpContext = 11191
+              Caption = 'Standard'
+              Checked = True
+              State = cbChecked
+              TabOrder = 0
+            end
+            object radBrickOS: TRadioButton
+              Left = 115
+              Height = 24
+              Top = 2
+              Width = 81
+              HelpContext = 11192
+              Caption = 'brickOS'
+              TabOrder = 1
+            end
+            object radPBForth: TRadioButton
+              Left = 211
+              Height = 24
+              Top = 2
+              Width = 80
+              HelpContext = 11193
+              Caption = 'pbForth'
+              TabOrder = 2
+            end
+            object radLejos: TRadioButton
+              Left = 307
+              Height = 24
+              Top = 2
+              Width = 68
+              HelpContext = 11194
+              Caption = 'leJOS'
+              TabOrder = 3
+            end
+            object radOtherFirmware: TRadioButton
+              Left = 395
+              Height = 24
+              Top = 2
+              Width = 65
+              HelpContext = 11195
+              Caption = 'Other'
+              TabOrder = 4
+            end
+          end
+        end
+        object chkFBAlwaysPrompt: TCheckBox
+          Left = 8
+          Height = 26
+          Top = 279
+          Width = 230
+          HelpContext = 11196
+          Caption = 'Al&ways prompt on Find Brick'
+          TabOrder = 4
+        end
+      end
+      object shtTemplates: TTabSheet
+        Caption = 'Templates'
+        ClientHeight = 428
+        ClientWidth = 609
+        object lblLangTemp: TLabel
+          Left = 87
+          Height = 17
+          Top = 8
+          Width = 88
+          Caption = '&Language:'
+          FocusControl = cboLangTemp
+          ParentColor = False
+        end
+        object InsertBtn: TButton
+          Left = 8
+          Height = 25
+          Top = 311
+          Width = 81
+          HelpContext = 11199
+          Caption = 'Insert'
+          OnClick = InsertBtnClick
+          TabOrder = 2
+        end
+        object ChangeBtn: TButton
+          Left = 102
+          Height = 25
+          Top = 311
+          Width = 81
+          HelpContext = 11200
+          Caption = 'Change'
+          OnClick = ChangeBtnClick
+          TabOrder = 3
+        end
+        object DeleteBtn: TButton
+          Left = 196
+          Height = 25
+          Top = 311
+          Width = 81
+          HelpContext = 11201
+          Caption = 'Delete'
+          OnClick = DeleteBtnClick
+          TabOrder = 4
+        end
+        object UpBtn: TBitBtn
+          Left = 301
+          Height = 25
+          Top = 311
+          Width = 25
+          HelpContext = 11007
+          Glyph.Data = {
+            76010000424D7601000000000000760000002800000020000000100000000100
+            0400000000000001000000000000000000001000000010000000000000000000
+            800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF003C3333339333
+            337437FFF3337F3333F73CCC33339333344437773F337F33377733CCC3339337
+            4447337F73FF7F3F337F33CCCCC3934444433373F7737F773373333CCCCC9444
+            44733337F337773337F3333CCCCC9444443333373F337F3337333333CCCC9444
+            473333337F337F337F333333CCCC94444333333373F37F33733333333CCC9444
+            7333333337F37F37F33333333CCC944433333333373F7F373333333333CC9447
+            33333333337F7F7F3333333333CC94433333333333737F7333333333333C9473
+            33333333333737F333333333333C943333333333333737333333333333339733
+            3333333333337F33333333333333933333333333333373333333
+          }
+          NumGlyphs = 2
+          OnClick = UpBtnClick
+          TabOrder = 5
+        end
+        object DownBtn: TBitBtn
+          Left = 333
+          Height = 25
+          Top = 311
+          Width = 25
+          HelpContext = 11203
+          Glyph.Data = {
+            76010000424D7601000000000000760000002800000020000000100000000100
+            0400000000000001000000000000000000001000000010000000000000000000
+            800000800000008080008000000080008000808000007F7F7F00BFBFBF000000
+            FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333393333
+            333333333337F3333333333333397333333333333337FF333333333333C94333
+            3333333333737F333333333333C9473333333333337373F3333333333CC94433
+            3333333337F7F7F3333333333CC94473333333333737F73F33333333CCC94443
+            333333337F37F37F33333333CCC94447333333337337F373F333333CCCC94444
+            33333337F337F337F333333CCCC94444733333373337F3373F3333CCCCC94444
+            4333337F3337FF337F3333CCCCC94444473333733F7773FF73F33CCCCC393444
+            443337F37737F773F7F33CCC33393374447337F73337F33737FFCCC333393333
+            444377733337F333777FC3333339333337437333333733333373
+          }
+          NumGlyphs = 2
+          OnClick = DownBtnClick
+          TabOrder = 6
+        end
+        object NewTemplatesList: TSynEdit
+          Left = 8
+          Height = 268
+          Top = 35
+          Width = 533
+          HelpContext = 11005
+          Font.CharSet = ANSI_CHARSET
+          Font.Height = 14
+          Font.Name = '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1'
+          Font.Pitch = fpFixed
+          ParentColor = False
+          TabOrder = 1
+          OnDblClick = TemplatesListDblClick
+          BookMarkOptions.Xoffset = -18
+          Gutter.Visible = False
+          Gutter.CodeFoldingWidth = 14
+          Keystrokes = <>
+          OnChange = NewTemplatesListChange
+        end
+        object cboLangTemp: TComboBox
+          Left = 189
+          Height = 21
+          Top = 4
+          Width = 184
+          HelpContext = 11224
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          MaxLength = 65535
+          OnChange = cboLangTempChange
+          Style = csDropDownList
+          TabOrder = 0
+        end
+        object btnSaveTemplates: TButton
+          Left = 373
+          Height = 25
+          Top = 311
+          Width = 81
+          HelpContext = 11201
+          Caption = 'Save'
+          OnClick = btnSaveTemplatesClick
+          TabOrder = 7
+        end
+        object btnLoadTemplates: TButton
+          Left = 461
+          Height = 25
+          Top = 311
+          Width = 81
+          HelpContext = 11201
+          Caption = 'Load'
+          OnClick = btnLoadTemplatesClick
+          TabOrder = 8
+        end
+      end
+      object shtMacros: TTabSheet
+        Caption = 'Macros'
+        ClientHeight = 428
+        ClientWidth = 609
+        object MShift: TSpeedButton
+          Left = 8
+          Height = 25
+          Top = 303
+          Width = 109
+          HelpContext = 11205
+          AllowAllUp = True
+          Caption = '<Shift>'
+          Color = clBtnFace
+          GroupIndex = 1
+          NumGlyphs = 0
+          OnClick = MShiftClick
+        end
+        object ShiftMacrosList: TListBox
+          Left = 8
+          Height = 287
+          Top = 8
+          Width = 525
+          HelpContext = 11206
+          ItemHeight = 14
+          OnDblClick = ShiftMacrosListDblClick
+          ParentFont = True
+          TabOrder = 0
+          TopIndex = -1
+        end
+        object MacrosList: TListBox
+          Left = 8
+          Height = 287
+          Top = 8
+          Width = 525
+          HelpContext = 11207
+          ItemHeight = 14
+          OnDblClick = ShiftMacrosListDblClick
+          ParentFont = True
+          TabOrder = 1
+          TopIndex = -1
+        end
+        object MChange: TButton
+          Left = 305
+          Height = 25
+          Top = 303
+          Width = 109
+          HelpContext = 11208
+          Caption = 'Change'
+          OnClick = MChangeClick
+          TabOrder = 2
+        end
+        object MDelete: TButton
+          Left = 424
+          Height = 25
+          Top = 303
+          Width = 109
+          HelpContext = 11209
+          Caption = 'Delete'
+          OnClick = MDeleteClick
+          TabOrder = 3
+        end
+      end
+      object shtColors: TTabSheet
+        Caption = 'Color'
+        ClientHeight = 428
+        ClientWidth = 609
+        ImageIndex = 5
+        object lblElement: TLabel
+          Left = 8
+          Height = 17
+          Top = 33
+          Width = 76
+          Caption = '&Element:'
+          ParentColor = False
+        end
+        object lblColor: TLabel
+          Left = 191
+          Height = 17
+          Top = 33
+          Width = 142
+          Caption = 'Foreground &Color:'
+          ParentColor = False
+        end
+        object lblLanguages: TLabel
+          Left = 87
+          Height = 17
+          Top = 8
+          Width = 88
+          Caption = '&Language:'
+          FocusControl = cboLanguages
+          ParentColor = False
+        end
+        object Label5: TLabel
+          Left = 191
+          Height = 17
+          Top = 95
+          Width = 145
+          Caption = 'Background &Color:'
+          ParentColor = False
+        end
+        object lbElements: TListBox
+          Left = 8
+          Height = 166
+          Top = 49
+          Width = 177
+          HelpContext = 11008
+          ItemHeight = 13
+          OnClick = lbElementsClick
+          TabOrder = 1
+          TopIndex = -1
+        end
+        object grpTextAttributes: TGroupBox
+          Left = 405
+          Height = 103
+          Top = 33
+          Width = 152
+          Caption = 'Text attributes:'
+          ClientHeight = 82
+          ClientWidth = 148
+          TabOrder = 4
+          object chkBold: TCheckBox
+            Left = 8
+            Height = 26
+            Width = 56
+            HelpContext = 11217
+            Caption = '&Bold'
+            OnClick = chkBoldClick
+            TabOrder = 0
+          end
+          object chkItalic: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 25
+            Width = 56
+            HelpContext = 11218
+            Caption = '&Italic'
+            OnClick = chkItalicClick
+            TabOrder = 1
+          end
+          object chkUnderline: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 50
+            Width = 92
+            HelpContext = 11219
+            Caption = '&Underline'
+            OnClick = chkUnderlineClick
+            TabOrder = 2
+          end
+        end
+        object SynEditColors: TSynEdit
+          Left = 8
+          Height = 128
+          Top = 239
+          Width = 549
+          HelpContext = 11005
+          Font.CharSet = ANSI_CHARSET
+          Font.Height = 14
+          Font.Name = '-adobe-courier-medium-r-normal-*-*-140-*-*-*-*-iso10646-1'
+          Font.Pitch = fpFixed
+          ParentColor = False
+          TabOrder = 6
+          Gutter.CodeFoldingWidth = 14
+          Keystrokes = <>
+          ReadOnly = True
+        end
+        object grpFGBG: TGroupBox
+          Left = 405
+          Height = 88
+          Top = 143
+          Width = 152
+          Caption = 'Use defaults for:'
+          ClientHeight = 67
+          ClientWidth = 148
+          TabOrder = 5
+          object chkFG: TCheckBox
+            Left = 8
+            Height = 26
+            Top = 5
+            Width = 107
+            HelpContext = 11222
+            Caption = '&Foreground'
+            Checked = True
+            OnClick = chkFGClick
+            State = cbChecked
+            TabOrder = 0
+          end
+          object chkBG: TCheckBox
+            Left = 8
+            Height = 30
+            Top = 32
+            Width = 110
+            HelpContext = 11223
+            Caption = 'Back&ground'
+            Checked = True
+            OnClick = chkBGClick
+            State = cbChecked
+            TabOrder = 1
+          end
+        end
+        object cboLanguages: TComboBox
+          Left = 189
+          Height = 21
+          Top = 4
+          Width = 184
+          HelpContext = 11224
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          MaxLength = 65535
+          OnChange = cboLanguagesChange
+          Style = csDropDownList
+          TabOrder = 0
+        end
+        object cbxFGColor: TColorBox
+          Left = 191
+          Height = 22
+          Top = 48
+          Width = 182
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          ItemHeight = 16
+          Items.Strings = (
+            'clBlack'
+            'clMaroon'
+            'clGreen'
+            'clOlive'
+            'clNavy'
+            'clPurple'
+            'clTeal'
+            'clGray'
+            'clSilver'
+            'clRed'
+            'clLime'
+            'clYellow'
+            'clBlue'
+            'clFuchsia'
+            'clAqua'
+            'clSilver'
+            'clGray'
+            'clWhite'
+            'clCream'
+            'clNone'
+            'clDefault'
+          )
+          MaxLength = 65535
+          TabOrder = 2
+          OnChange = cbxFGColorChange
+        end
+        object cbxBGColor: TColorBox
+          Left = 189
+          Height = 22
+          Top = 110
+          Width = 184
+          AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+          ItemHeight = 16
+          Items.Strings = (
+            'clBlack'
+            'clMaroon'
+            'clGreen'
+            'clOlive'
+            'clNavy'
+            'clPurple'
+            'clTeal'
+            'clGray'
+            'clSilver'
+            'clRed'
+            'clLime'
+            'clYellow'
+            'clBlue'
+            'clFuchsia'
+            'clAqua'
+            'clSilver'
+            'clGray'
+            'clWhite'
+            'clCream'
+            'clNone'
+            'clDefault'
+          )
+          MaxLength = 65535
+          TabOrder = 3
+          OnChange = cbxBGColorChange
+        end
+      end
+      object shtOptions: TTabSheet
+        Caption = 'Options'
+        ClientHeight = 428
+        ClientWidth = 609
+        ImageIndex = 7
+        object grpGutter: TGroupBox
+          Left = 8
+          Height = 270
+          Top = 1
+          Width = 341
+          Caption = 'Gutter'
+          ClientHeight = 249
+          ClientWidth = 337
+          TabOrder = 0
+          object lblGutterRightOffset: TLabel
+            Left = 8
+            Height = 17
+            Top = 116
+            Width = 100
+            Caption = '&Right offset:'
+            FocusControl = inpRightOffset
+            ParentColor = False
+          end
+          object lblGutterLeftOffset: TLabel
+            Left = 8
+            Height = 17
+            Top = 89
+            Width = 90
+            Caption = 'L&eft offset:'
+            FocusControl = inpLeftOffset
+            ParentColor = False
+          end
+          object lblGutterDigCnt: TLabel
+            Left = 8
+            Height = 17
+            Top = 62
+            Width = 93
+            Caption = '&Digit count:'
+            FocusControl = inpDigitCount
+            ParentColor = False
+          end
+          object lblGutterWidth: TLabel
+            Left = 8
+            Height = 17
+            Top = 35
+            Width = 57
+            Caption = '&Width:'
+            FocusControl = inpGutterWidth
+            ParentColor = False
+          end
+          object lblGutterColor: TLabel
+            Left = 8
+            Height = 17
+            Top = 8
+            Width = 54
+            Caption = '&Color:'
+            ParentColor = False
+          end
+          object cbUseFontStyle: TCheckBox
+            Left = 171
+            Height = 26
+            Top = 191
+            Width = 124
+            HelpContext = 11232
+            Caption = '&Use font style'
+            TabOrder = 10
+          end
+          object cbGutterVisible: TCheckBox
+            Left = 171
+            Height = 26
+            Top = 164
+            Width = 70
+            HelpContext = 11233
+            Caption = '&Visible'
+            TabOrder = 9
+          end
+          object cbAutoSize: TCheckBox
+            Left = 171
+            Height = 26
+            Top = 137
+            Width = 91
+            HelpContext = 11234
+            Caption = 'Auto &size'
+            TabOrder = 8
+          end
+          object cbLineNumbers: TCheckBox
+            Left = 7
+            Height = 26
+            Top = 137
+            Width = 122
+            HelpContext = 11235
+            Caption = 'Line &numbers'
+            TabOrder = 4
+          end
+          object cbLeadingZeros: TCheckBox
+            Left = 7
+            Height = 26
+            Top = 164
+            Width = 125
+            HelpContext = 11236
+            Caption = '&Leading zeros'
+            TabOrder = 5
+          end
+          object cbZeroStart: TCheckBox
+            Left = 7
+            Height = 26
+            Top = 191
+            Width = 94
+            HelpContext = 11237
+            Caption = '&Zero start'
+            TabOrder = 6
+          end
+          object inpRightOffset: TBricxccSpinEdit
+            Left = 115
+            Height = 22
+            Top = 111
+            Width = 60
+            HelpContext = 11238
+            MaxValue = 99
+            MinValue = 1
+            TabOrder = 3
+            Value = 2
+            MaxLength = 2
+          end
+          object inpLeftOffset: TBricxccSpinEdit
+            Left = 115
+            Height = 22
+            Top = 84
+            Width = 60
+            HelpContext = 11239
+            TabOrder = 2
+            Value = 16
+          end
+          object inpDigitCount: TBricxccSpinEdit
+            Left = 115
+            Height = 22
+            Top = 57
+            Width = 60
+            HelpContext = 11240
+            MaxValue = 99
+            MinValue = 1
+            TabOrder = 1
+            Value = 4
+            MaxLength = 2
+          end
+          object inpGutterWidth: TBricxccSpinEdit
+            Left = 115
+            Height = 22
+            Top = 30
+            Width = 60
+            HelpContext = 11241
+            TabOrder = 0
+            Value = 2
+          end
+          object cbSelectOnClick: TCheckBox
+            Left = 7
+            Height = 26
+            Top = 218
+            Width = 156
+            HelpContext = 11232
+            Caption = 'Selec&t line on click'
+            TabOrder = 7
+            Visible = False
+          end
+          object cbxGutterColor: TColorBox
+            Left = 115
+            Height = 22
+            Top = 3
+            Width = 171
+            AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+            ItemHeight = 16
+            Items.Strings = (
+              'clBlack'
+              'clMaroon'
+              'clGreen'
+              'clOlive'
+              'clNavy'
+              'clPurple'
+              'clTeal'
+              'clGray'
+              'clSilver'
+              'clRed'
+              'clLime'
+              'clYellow'
+              'clBlue'
+              'clFuchsia'
+              'clAqua'
+              'clSilver'
+              'clGray'
+              'clWhite'
+              'clCream'
+              'clNone'
+              'clDefault'
+            )
+            MaxLength = 65535
+            TabOrder = 11
+          end
+        end
+        object btnKeystrokes: TButton
+          Left = 373
+          Height = 25
+          Top = 8
+          Width = 197
+          HelpContext = 11243
+          Caption = 'Edit &Keystrokes...'
+          OnClick = btnKeystrokesClick
+          TabOrder = 1
+        end
+        object btnEditCodeTemplates: TButton
+          Left = 373
+          Height = 25
+          Top = 40
+          Width = 198
+          HelpContext = 11244
+          Caption = 'Edit Code Te&mplates...'
+          OnClick = btnEditCodeTemplatesClick
+          TabOrder = 2
+        end
+        object btnClaimExt: TButton
+          Left = 373
+          Height = 25
+          Top = 72
+          Width = 198
+          HelpContext = 11245
+          Caption = 'Claim File E&xtensions'
+          OnClick = btnClaimExtClick
+          TabOrder = 3
+        end
+        object grpHotKeys: TGroupBox
+          Left = 373
+          Height = 239
+          Top = 104
+          Width = 197
+          Caption = 'Other Hot Keys'
+          ClientHeight = 218
+          ClientWidth = 193
+          TabOrder = 4
+          object lblCodeComp: TLabel
+            Left = 8
+            Height = 17
+            Top = 8
+            Width = 138
+            Caption = 'Code comple&tion:'
+            FocusControl = hkCodeComp
+            ParentColor = False
+          end
+          object lblParamComp: TLabel
+            Left = 8
+            Height = 17
+            Top = 60
+            Width = 175
+            Caption = '&Parameter completion:'
+            FocusControl = hkParamComp
+            ParentColor = False
+          end
+          object lblRecMacro: TLabel
+            Left = 8
+            Height = 17
+            Top = 116
+            Width = 118
+            Caption = 'Rec&ord macro:'
+            FocusControl = hkRecMacro
+            ParentColor = False
+          end
+          object lblPlayMacro: TLabel
+            Left = 8
+            Height = 17
+            Top = 170
+            Width = 131
+            Caption = 'Pla&yback macro:'
+            FocusControl = hkPlayMacro
+            ParentColor = False
+          end
+          object hkCodeComp: TBricxCCHotKey
+            Left = 8
+            Height = 21
+            Top = 24
+            Width = 138
+            HelpContext = 11251
+            TabOrder = 0
+            Text = 'None'
+          end
+          object hkParamComp: TBricxCCHotKey
+            Left = 8
+            Height = 21
+            Top = 78
+            Width = 138
+            HelpContext = 11252
+            TabOrder = 1
+            Text = 'None'
+          end
+          object hkRecMacro: TBricxCCHotKey
+            Left = 8
+            Height = 21
+            Top = 132
+            Width = 138
+            HelpContext = 11253
+            TabOrder = 2
+            Text = 'None'
+          end
+          object hkPlayMacro: TBricxCCHotKey
+            Left = 8
+            Height = 21
+            Top = 186
+            Width = 138
+            HelpContext = 11254
+            TabOrder = 3
+            Text = 'None'
+          end
+        end
+        object grpOther: TGroupBox
+          Left = 8
+          Height = 65
+          Top = 278
+          Width = 341
+          Caption = 'Other'
+          ClientHeight = 44
+          ClientWidth = 337
+          TabOrder = 5
+          object chkNewMenu: TCheckBox
+            Left = 7
+            Height = 24
+            Top = 6
+            Width = 309
+            Caption = 'Add file types to Explorer context menu'
+            Checked = True
+            State = cbChecked
+            TabOrder = 0
+          end
+        end
+      end
+    end
+  end
+  object dlgFont: TFontDialog
+    Font.Height = -11
+    Font.Name = 'MS Sans Serif'
+    Options = [fdAnsiOnly, fdFixedPitchOnly, fdForceFontExist, fdNoVectorFonts]
+    left = 312
+    top = 144
+  end
+  object SynNQCSyn: TSynNQCSyn
+    DefaultFilter = 'NQC files (*.nqc)|*.nqc'
+    Enabled = False
+    Comments = [csCStyle]
+    DetectPreprocessor = True
+    IdentifierChars = '!"#$%&''()*+,-./0123456789:;<=>?@ABCDEFGHIJKLMNOPQRSTUVWXYZ[\]^_`abcdefghijklmnopqrstuvwxyz{|}~‚ƒ¢¬ÂÃ'
+    KeyWords.Strings = (
+      'abs'
+      'acquire'
+      'ANIMATION'
+      'asm'
+      'break'
+      'case'
+      'catch'
+      'const'
+      'continue'
+      'default'
+      'do'
+      'else'
+      '__event_src'
+      'false'
+      'for'
+      'if'
+      'inline'
+      'int'
+      'monitor'
+      '__NQC__'
+      'repeat'
+      '__res'
+      'return'
+      '__sensor'
+      'sign'
+      'start'
+      'stop'
+      'sub'
+      'switch'
+      'task'
+      'true'
+      '__type'
+      'until'
+      'void'
+      'while'
+    )
+    Commands.Strings = (
+      'ActiveEvents'
+      'AddToDatalog'
+      'AGC'
+      'BatteryLevel'
+      'CalibrateEvent'
+      'CalibrateSensor'
+      'ClearAllEvents'
+      'ClearCounter'
+      'ClearEvent'
+      'ClearMessage'
+      'ClearRelationTable'
+      'ClearSensor'
+      'ClearSound'
+      'ClearTachoCounter'
+      'ClearTimer'
+      'ClickCounter'
+      'ClickTime'
+      'Counter'
+      'CreateDatalog'
+      'CurrentEvents'
+      'DecCounter'
+      'Drive'
+      'Event'
+      'EventFeedback'
+      'EventState'
+      'ExternalMotorRunning'
+      'FastTimer'
+      'FirmwareVersion'
+      'Float'
+      'Fwd'
+      'GlobalOutputStatus'
+      'Hysteresis'
+      'IncCounter'
+      'LED'
+      'LowerLimit'
+      'Message'
+      'MuteSound'
+      'Off'
+      'On'
+      'OnFor'
+      'OnFwd'
+      'OnRev'
+      'OnWait'
+      'OnWaitDifferent'
+      'OutputStatus'
+      'PlaySound'
+      'PlayTone'
+      'Program'
+      'Random'
+      'Rev'
+      'ScoutRules'
+      'SelectDisplay'
+      'SelectProgram'
+      'SelectSounds'
+      'SendMessage'
+      'SendSerial'
+      'SendVLL'
+      'SensorMode'
+      'SensorType'
+      'SensorValue'
+      'SensorValueBool'
+      'SensorValueRaw'
+      'SerialData'
+      'SetAnimation'
+      'SetClickCounter'
+      'SetClickTime'
+      'SetCounterLimit'
+      'SetDirection'
+      'SetEvent'
+      'SetEventFeedback'
+      'SetGlobalDirection'
+      'SetGlobalOutput'
+      'SetHysteresis'
+      'SetLED'
+      'SetLight'
+      'SetLowerLimit'
+      'SetMaxPower'
+      'SetOutput'
+      'SetPower'
+      'SetPriority'
+      'SetRandomSeed'
+      'SetScoutMode'
+      'SetScoutRules'
+      'SetSensor'
+      'SetSensorClickTime'
+      'SetSensorHysteresis'
+      'SetSensorLowerLimit'
+      'SetSensorMode'
+      'SetSensorType'
+      'SetSensorUpperLimit'
+      'SetSerialComm'
+      'SetSerialData'
+      'SetSerialPacket'
+      'SetSleepTime'
+      'SetTimer'
+      'SetTimerLimit'
+      'SetTxPower'
+      'SetUpperLimit'
+      'SetUserDisplay'
+      'SetWatch'
+      'SleepNow'
+      'StopAllTasks'
+      'TachoCount'
+      'TachoSpeed'
+      'Timer'
+      'Toggle'
+      'UnmuteSound'
+      'UploadDatalog'
+      'UpperLimit'
+      'VLL'
+      'Wait'
+      'Watch'
+    )
+    Constants.Strings = (
+      'ACQUIRE_LED'
+      'ACQUIRE_OUT_A'
+      'ACQUIRE_OUT_B'
+      'ACQUIRE_OUT_C'
+      'ACQUIRE_SOUND'
+      'ACQUIRE_USER_1'
+      'ACQUIRE_USER_2'
+      'ACQUIRE_USER_3'
+      'ACQUIRE_USER_4'
+      'ANIMATION_ALARM'
+      'ANIMATION_FLASH'
+      'ANIMATION_GREEN_TO_RED'
+      'ANIMATION_POINT_FORWARD'
+      'ANIMATION_RED_TO_GREEN'
+      'ANIMATION_SCAN'
+      'ANIMATION_SPARKLE'
+      'ANIMATION_THINKING'
+      'DIRSPEED'
+      'DISPLAY_OUT_A'
+      'DISPLAY_OUT_B'
+      'DISPLAY_OUT_C'
+      'DISPLAY_SENSOR_1'
+      'DISPLAY_SENSOR_2'
+      'DISPLAY_SENSOR_3'
+      'DISPLAY_USER'
+      'DISPLAY_WATCH'
+      'EVENT_1_PRESSED'
+      'EVENT_1_RELEASED'
+      'EVENT_2_PRESSED'
+      'EVENT_2_RELEASED'
+      'EVENT_COUNTER_0'
+      'EVENT_COUNTER_1'
+      'EVENT_LIGHT_CLICK'
+      'EVENT_LIGHT_DOUBLECLICK'
+      'EVENT_LIGHT_HIGH'
+      'EVENT_LIGHT_LOW'
+      'EVENT_LIGHT_NORMAL'
+      'EVENT_MESSAGE'
+      'EVENT_TIMER_0'
+      'EVENT_TIMER_1'
+      'EVENT_TIMER_2'
+      'EVENT_TYPE_CLICK'
+      'EVENT_TYPE_DOUBLECLICK'
+      'EVENT_TYPE_EDGE'
+      'EVENT_TYPE_ENTRY_CHANGED'
+      'EVENT_TYPE_ENTRY_FOUND'
+      'EVENT_TYPE_FASTCHANGE'
+      'EVENT_TYPE_HIGH'
+      'EVENT_TYPE_LOW'
+      'EVENT_TYPE_MESSAGE'
+      'EVENT_TYPE_MSG_DISCARD'
+      'EVENT_TYPE_MSG_RECEIVED'
+      'EVENT_TYPE_NORMAL'
+      'EVENT_TYPE_PRESSED'
+      'EVENT_TYPE_PULSE'
+      'EVENT_TYPE_RELEASED'
+      'EVENT_TYPE_VLL_MSG_RECEIVED'
+      'LED_MODE_BLINK'
+      'LED_MODE_DURATION'
+      'LED_MODE_GREEN_SCALE'
+      'LED_MODE_GREEN_SCALE_BLINK'
+      'LED_MODE_ON'
+      'LED_MODE_RED_SCALE'
+      'LED_MODE_RED_SCALE_BLINK'
+      'LED_MODE_SCALE'
+      'LED_MODE_SCALE_BLINK'
+      'LED_MODE_SCALE_DURATION'
+      'LED_MODE_VLL'
+      'LED_MODE_VLL_BLINK'
+      'LED_MODE_VLL_DURATION'
+      'LED_MODE_YELLOW'
+      'LED_MODE_YELLOW_BLINK'
+      'LED_MODE_YELLOW_DURATION'
+      'OUT_A'
+      'OUT_B'
+      'OUT_C'
+      'OUT_FLOAT'
+      'OUT_FULL'
+      'OUT_FWD'
+      'OUT_HALF'
+      'OUT_L'
+      'OUT_LOW'
+      'OUT_OFF'
+      'OUT_ON'
+      'OUT_R'
+      'OUT_REV'
+      'OUT_TOGGLE'
+      'OUT_X'
+      'SENSOR_1'
+      'SENSOR_2'
+      'SENSOR_3'
+      'SENSOR_CELSIUS'
+      'SENSOR_EDGE'
+      'SENSOR_FAHRENHEIT'
+      'SENSOR_L'
+      'SENSOR_LIGHT'
+      'SENSOR_M'
+      'SENSOR_MODE_BOOL'
+      'SENSOR_MODE_CELSIUS'
+      'SENSOR_MODE_EDGE'
+      'SENSOR_MODE_FAHRENHEIT'
+      'SENSOR_MODE_PERCENT'
+      'SENSOR_MODE_PULSE'
+      'SENSOR_MODE_RAW'
+      'SENSOR_MODE_ROTATION'
+      'SENSOR_PULSE'
+      'SENSOR_R'
+      'SENSOR_ROTATION'
+      'SENSOR_TOUCH'
+      'SENSOR_TYPE_LIGHT'
+      'SENSOR_TYPE_NONE'
+      'SENSOR_TYPE_ROTATION'
+      'SENSOR_TYPE_TEMPERATURE'
+      'SENSOR_TYPE_TOUCH'
+      'SERIAL_COMM_4800'
+      'SERIAL_COMM_76KHZ'
+      'SERIAL_COMM_DEFAULT'
+      'SERIAL_COMM_DUTY25'
+      'SERIAL_PACKET_CHECKSUM'
+      'SERIAL_PACKET_DEFAULT'
+      'SERIAL_PACKET_NEGATED'
+      'SERIAL_PACKET_PREAMBLE'
+      'SERIAL_PACKET_RCX'
+      'SOUND_CLICK'
+      'SOUND_DOUBLE_BEEP'
+      'SOUND_DOWN'
+      'SOUND_FAST_UP'
+      'SOUND_LOW_BEEP'
+      'SOUND_UP'
+      'TX_POWER_HI'
+      'TX_POWER_LO'
+    )
+    LanguageName = 'NQC'
+    SampleSourceStrings.Strings = (
+      '/* syntax highlighting */'
+      '// This is a Comment'
+      '// #define is a Preprocessor'
+      '#define NUM_LOOPS 4'
+      'task main() // task is a Keyword'
+      '{ // {},+(); are all Symbols'
+      '  // NUM_LOOPS is an Identifier'
+      '  repeat(NUM_LOOPS)'
+      '  {'
+      '    // SetPower is a Command'
+      '    // "power_level" is a Field'
+      '    SetPower(OUT_A+OUT_B,"power_level");'
+      '    // OUT_A is a Constant'
+      '    OnFwd(OUT_A+OUT_B);'
+      '    // 400 is a Number'
+      '    Wait(400);'
+      '  }'
+      '}'
+    )
+    left = 376
+    top = 96
+  end
+  object SynForthSyn: TSynForthSyn
+    Enabled = False
+    left = 488
+    top = 120
+  end
+  object SynJavaSyn: TSynJavaSyn
+    DefaultFilter = 'Java Files (*.java)|*.java'
+    Enabled = False
+    left = 440
+    top = 304
+  end
+  object SynCppSyn: TSynCppSyn
+    DefaultFilter = 'C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp'
+    Enabled = False
+    left = 312
+    top = 184
+  end
+  object SynCSSyn: TSynCSSyn
+    DefaultFilter = 'C# Files (*.cs)|*.cs'
+    Enabled = False
+    left = 376
+    top = 56
+  end
+  object SynMindScriptSyn: TSynMindScriptSyn
+    Enabled = False
+    left = 381
+    top = 177
+  end
+  object SynLASMSyn: TSynLASMSyn
+    DefaultFilter = 'LASM Assembler Files (*.asm)|*.asm'
+    Enabled = False
+    left = 496
+    top = 224
+  end
+  object SynPasSyn: TSynPasSyn
+    Enabled = False
+    left = 197
+    top = 81
+  end
+  object SynNBCSyn: TSynNBCSyn
+    DefaultFilter = 'NXT Byte Code Files (*.nbc)|*.nbc'
+    Enabled = False
+    left = 229
+    top = 57
+  end
+  object SynLuaSyn: TSynLuaSyn
+    Enabled = False
+    left = 448
+    top = 144
+  end
+  object SynRubySyn: TSynRubySyn
+    Enabled = False
+    left = 197
+    top = 145
+  end
+  object SynNXCSyn: TSynNQCSyn
+    DefaultFilter = 'NXC Files (*.nxc)|*.nxc'
+    Enabled = False
+    Comments = [csCStyle]
+    DetectPreprocessor = True
+    IdentifierChars = '#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz'
+    KeyWords.Strings = (
+      'abs'
+      'asm'
+      'bool'
+      'break'
+      'byte'
+      'case'
+      'char'
+      'const'
+      'continue'
+      'default'
+      'do'
+      'else'
+      'false'
+      'for'
+      'goto'
+      'if'
+      'inline'
+      'int'
+      'long'
+      'mutex'
+      'priority'
+      'repeat'
+      'return'
+      '__RETURN__'
+      '__RETVAL__'
+      'safecall'
+      'short'
+      'sign'
+      'start'
+      'stop'
+      'string'
+      'struct'
+      'sub'
+      'switch'
+      'task'
+      '__TMPBYTE__'
+      '__TMPLONG__'
+      '__TMPWORD__'
+      'true'
+      'typedef'
+      'unsigned'
+      'until'
+      'void'
+      'while'
+    )
+    Commands.Strings = (
+      'Acos'
+      'Acquire'
+      'ArrayBuild'
+      'ArrayInit'
+      'ArrayLen'
+      'ArraySubset'
+      'Asin'
+      'BatteryLevel'
+      'BatteryState'
+      'bcd2dec'
+      'BluetoothState'
+      'BluetoothStatus'
+      'BluetoothWrite'
+      'BrickDataBluecoreVersion'
+      'BrickDataBtHardwareStatus'
+      'BrickDataBtStateStatus'
+      'BrickDataName'
+      'BrickDataTimeoutValue'
+      'BTConnectionClass'
+      'BTConnectionHandleNum'
+      'BTConnectionLinkQuality'
+      'BTConnectionName'
+      'BTConnectionPinCode'
+      'BTConnectionStreamStatus'
+      'BTDeviceClass'
+      'BTDeviceCount'
+      'BTDeviceName'
+      'BTDeviceNameCount'
+      'BTDeviceStatus'
+      'BTInputBufferInPtr'
+      'BTInputBufferOutPtr'
+      'BTOutputBufferInPtr'
+      'BTOutputBufferOutPtr'
+      'ButtonCount'
+      'ButtonLongPressCount'
+      'ButtonLongReleaseCount'
+      'ButtonPressCount'
+      'ButtonPressed'
+      'ButtonReleaseCount'
+      'ButtonShortReleaseCount'
+      'ButtonState'
+      'ByteArrayToStr'
+      'ByteArrayToStrEx'
+      'CircleOut'
+      'ClearScreen'
+      'ClearSensor'
+      'CloseFile'
+      'Coast'
+      'CoastEx'
+      'CommandFlags'
+      'Cos'
+      'CreateFile'
+      'CreateFileLinear'
+      'CreateFileNonLinear'
+      'CurrentTick'
+      'CustomSensorActiveStatus'
+      'CustomSensorPercentFullScale'
+      'CustomSensorZeroOffset'
+      'dec2bcd'
+      'DeleteFile'
+      'DisplayDisplay'
+      'DisplayEraseMask'
+      'DisplayFlags'
+      'DisplayTextLinesCenterFlags'
+      'DisplayUpdateMask'
+      'DISTNxDistance'
+      'DISTNxEnergize'
+      'DISTNxGP2D12'
+      'DISTNxGP2D120'
+      'DISTNxGP2YA02'
+      'DISTNxGP2YA21'
+      'DISTNxMaxDistance'
+      'DISTNxMinDistance'
+      'DISTNxModuleType'
+      'DISTNxNumPoints'
+      'DISTNxVoltage'
+      'ExitTo'
+      'FindFirstFile'
+      'FindNextFile'
+      'FirstTick'
+      'Flatten'
+      'FlattenVar'
+      'Float'
+      'Follows'
+      'ForceOff'
+      'FormatNum'
+      'FreeMemory'
+      'GetBrickDataAddress'
+      'GetBTConnectionAddress'
+      'GetBTDeviceAddress'
+      'GetBTInputBuffer'
+      'GetBTOutputBuffer'
+      'GetDisplayNormal'
+      'GetDisplayPopup'
+      'GetHSInputBuffer'
+      'GetHSOutputBuffer'
+      'GetInput'
+      'GetLSInputBuffer'
+      'GetLSOutputBuffer'
+      'GetOutput'
+      'GetUSBInputBuffer'
+      'GetUSBOutputBuffer'
+      'GetUSBPollBuffer'
+      'GraphicOut'
+      'GraphicOutEx'
+      'HSFlags'
+      'HSInputBufferInPtr'
+      'HSInputBufferOutPtr'
+      'HSOutputBufferInPtr'
+      'HSOutputBufferOutPtr'
+      'HSSpeed'
+      'HSState'
+      'HTIRTrain'
+      'HTPFComboDirect'
+      'HTPFComboPWM'
+      'HTPFRawOutput'
+      'HTPFRepeat'
+      'HTPFSingleOutputCST'
+      'HTPFSingleOutputPWM'
+      'HTPFSinglePin'
+      'HTPFTrain'
+      'HTRCXAddToDatalog'
+      'HTRCXBatteryLevel'
+      'HTRCXClearAllEvents'
+      'HTRCXClearCounter'
+      'HTRCXClearMsg'
+      'HTRCXClearSensor'
+      'HTRCXClearSound'
+      'HTRCXClearTimer'
+      'HTRCXCreateDatalog'
+      'HTRCXDecCounter'
+      'HTRCXDeleteSub'
+      'HTRCXDeleteSubs'
+      'HTRCXDeleteTask'
+      'HTRCXDeleteTasks'
+      'HTRCXDisableOutput'
+      'HTRCXEnableOutput'
+      'HTRCXEvent'
+      'HTRCXFloat'
+      'HTRCXFwd'
+      'HTRCXIncCounter'
+      'HTRCXInvertOutput'
+      'HTRCXLSCalibrateOp'
+      'HTRCXMuteSound'
+      'HTRCXObvertOutput'
+      'HTRCXOff'
+      'HTRCXOn'
+      'HTRCXOnFor'
+      'HTRCXOnFwd'
+      'HTRCXOnRev'
+      'HTRCXOrVar'
+      'HTRCXPBTurnOff'
+      'HTRCXPing'
+      'HTRCXPlaySound'
+      'HTRCXPlayTone'
+      'HTRCXPlayToneVar'
+      'HTRCXPoll'
+      'HTRCXPollMemory'
+      'HTRCXRemote'
+      'HTRCXRev'
+      'HTRCXSelectDisplay'
+      'HTRCXSelectProgram'
+      'HTRCXSendSerial'
+      'HTRCXSetDirection'
+      'HTRCXSetEvent'
+      'HTRCXSetGlobalDirection'
+      'HTRCXSetGlobalOutput'
+      'HTRCXSetIRLinkPort'
+      'HTRCXSetMaxPower'
+      'HTRCXSetMessage'
+      'HTRCXSetOutput'
+      'HTRCXSetPower'
+      'HTRCXSetPriority'
+      'HTRCXSetSensorMode'
+      'HTRCXSetSensorType'
+      'HTRCXSetSleepTime'
+      'HTRCXSetTxPower'
+      'HTRCXSetWatch'
+      'HTRCXStartTask'
+      'HTRCXStopAllTasks'
+      'HTRCXStopTask'
+      'HTRCXToggle'
+      'HTRCXUnmuteSound'
+      'HTScoutCalibrateSensor'
+      'HTScoutMuteSound'
+      'HTScoutSelectSounds'
+      'HTScoutSendVLL'
+      'HTScoutSetEventFeedback'
+      'HTScoutSetLight'
+      'HTScoutSetScoutMode'
+      'HTScoutSetSensorClickTime'
+      'HTScoutSetSensorHysteresis'
+      'HTScoutSetSensorLowerLimit'
+      'HTScoutSetSensorUpperLimit'
+      'HTScoutUnmuteSound'
+      'I2CBytes'
+      'I2CBytesReady'
+      'I2CCheckStatus'
+      'I2CRead'
+      'I2CStatus'
+      'I2CWrite'
+      'IOMA'
+      'LineOut'
+      'LowspeedBytesReady'
+      'LowspeedCheckStatus'
+      'LowspeedRead'
+      'LowspeedStatus'
+      'LowspeedWrite'
+      'LSChannelState'
+      'LSErrorType'
+      'LSInputBufferBytesToRx'
+      'LSInputBufferInPtr'
+      'LSInputBufferOutPtr'
+      'LSMode'
+      'LSOutputBufferBytesToRx'
+      'LSOutputBufferInPtr'
+      'LSOutputBufferOutPtr'
+      'LSSpeed'
+      'LSState'
+      'MotorActualSpeed'
+      'MotorBlockTachoCount'
+      'MotorMode'
+      'MotorOverload'
+      'MotorPower'
+      'MotorPwnFreq'
+      'MotorRegDValue'
+      'MotorRegIValue'
+      'MotorRegPValue'
+      'MotorRegulation'
+      'MotorRotationCount'
+      'MotorRunState'
+      'MotorTachoCount'
+      'MotorTachoLimit'
+      'MotorTurnRatio'
+      'MSIRTrain'
+      'MSIRTrainEx'
+      'MSPFComboDirect'
+      'MSPFComboDirectEx'
+      'MSPFComboPWM'
+      'MSPFComboPWMEx'
+      'MSPFRawOutput'
+      'MSPFRawOutputEx'
+      'MSPFRepeat'
+      'MSPFRepeatEx'
+      'MSPFSingleOutputCST'
+      'MSPFSingleOutputCSTEx'
+      'MSPFSingleOutputPWM'
+      'MSPFSingleOutputPWMEx'
+      'MSPFSinglePin'
+      'MSPFSinglePinEx'
+      'MSPFTrain'
+      'MSPFTrainEx'
+      'MSRCXAbsVar'
+      'MSRCXAddToDatalog'
+      'MSRCXAndVar'
+      'MSRCXBatteryLevel'
+      'MSRCXBoot'
+      'MSRCXCalibrateEvent'
+      'MSRCXClearAllEvents'
+      'MSRCXClearCounter'
+      'MSRCXClearMsg'
+      'MSRCXClearSensor'
+      'MSRCXClearSound'
+      'MSRCXClearTimer'
+      'MSRCXCreateDatalog'
+      'MSRCXDecCounter'
+      'MSRCXDeleteSub'
+      'MSRCXDeleteSubs'
+      'MSRCXDeleteTask'
+      'MSRCXDeleteTasks'
+      'MSRCXDisableOutput'
+      'MSRCXDivVar'
+      'MSRCXEnableOutput'
+      'MSRCXEvent'
+      'MSRCXFloat'
+      'MSRCXFwd'
+      'MSRCXIncCounter'
+      'MSRCXInvertOutput'
+      'MSRCXLSCalibrateOp'
+      'MSRCXMulVar'
+      'MSRCXMuteSound'
+      'MSRCXObvertOutput'
+      'MSRCXOff'
+      'MSRCXOn'
+      'MSRCXOnFor'
+      'MSRCXOnFwd'
+      'MSRCXOnRev'
+      'MSRCXOrVar'
+      'MSRCXPBTurnOff'
+      'MSRCXPing'
+      'MSRCXPlaySound'
+      'MSRCXPlayTone'
+      'MSRCXPlayToneVar'
+      'MSRCXPoll'
+      'MSRCXPollMemory'
+      'MSRCXRemote'
+      'MSRCXReset'
+      'MSRCXRev'
+      'MSRCXSelectDisplay'
+      'MSRCXSelectProgram'
+      'MSRCXSendSerial'
+      'MSRCXSet'
+      'MSRCXSetDirection'
+      'MSRCXSetEvent'
+      'MSRCXSetGlobalDirection'
+      'MSRCXSetGlobalOutput'
+      'MSRCXSetMaxPower'
+      'MSRCXSetMessage'
+      'MSRCXSetNRLinkEx'
+      'MSRCXSetNRLinkPort'
+      'MSRCXSetOutput'
+      'MSRCXSetPower'
+      'MSRCXSetPriority'
+      'MSRCXSetSensorMode'
+      'MSRCXSetSensorType'
+      'MSRCXSetSleepTime'
+      'MSRCXSetTxPower'
+      'MSRCXSetUserDisplay'
+      'MSRCXSetVar'
+      'MSRCXSetWatch'
+      'MSRCXSgnVar'
+      'MSRCXStartTask'
+      'MSRCXStopAllTasks'
+      'MSRCXStopTask'
+      'MSRCXSubVar'
+      'MSRCXSumVar'
+      'MSRCXToggle'
+      'MSRCXUnlock'
+      'MSRCXUnmuteSound'
+      'MSReadValue'
+      'MSReadValueEx'
+      'MSScoutCalibrateSensor'
+      'MSScoutMuteSound'
+      'MSScoutSelectSounds'
+      'MSScoutSendVLL'
+      'MSScoutSetCounterLimit'
+      'MSScoutSetEventFeedback'
+      'MSScoutSetLight'
+      'MSScoutSetScoutMode'
+      'MSScoutSetScoutRules'
+      'MSScoutSetSensorClickTime'
+      'MSScoutSetSensorHysteresis'
+      'MSScoutSetSensorLowerLimit'
+      'MSScoutSetSensorUpperLimit'
+      'MSScoutSetTimerLimit'
+      'MSScoutUnmuteSound'
+      'MSSendCommand'
+      'MSSendCommandEx'
+      'NRLink2400'
+      'NRLink4800'
+      'NRLinkFlush'
+      'NRLinkIRLong'
+      'NRLinkIRShort'
+      'NRLinkSetPF'
+      'NRLinkSetRCX'
+      'NRLinkSetTrain'
+      'NRLinkStatus'
+      'NRLinkStatusEx'
+      'NRLinkTxRaw'
+      'NumOut'
+      'NumToStr'
+      'Off'
+      'OffEx'
+      'OnBrickProgramPointer'
+      'OnFwd'
+      'OnFwdEx'
+      'OnFwdReg'
+      'OnFwdRegEx'
+      'OnFwdSync'
+      'OnFwdSyncEx'
+      'OnRev'
+      'OnRevEx'
+      'OnRevReg'
+      'OnRevRegEx'
+      'OnRevSync'
+      'OnRevSyncEx'
+      'OpenFileAppend'
+      'OpenFileRead'
+      'OpenFileReadLinear'
+      'PlayFile'
+      'PlayFileEx'
+      'PlayTone'
+      'PlayToneEx'
+      'PointOut'
+      'PowerDown'
+      'Precedes'
+      'PSPNxEnergize'
+      'Random'
+      'Read'
+      'ReadButtonEx'
+      'ReadBytes'
+      'ReadLn'
+      'ReadNRLinkBytes'
+      'ReadNRLinkBytesEx'
+      'ReadSensorHTAccel'
+      'ReadSensorHTColor'
+      'ReadSensorHTIRSeeker'
+      'ReadSensorHTNormalizedColor'
+      'ReadSensorHTRawColor'
+      'ReadSensorMSAccel'
+      'ReadSensorMSAccelEx'
+      'ReadSensorMSPlayStation'
+      'ReadSensorMSPlayStationEx'
+      'ReadSensorMSRTClock'
+      'ReadSensorMSTilt'
+      'ReadSensorMSTiltEx'
+      'RebootInFirmwareMode'
+      'ReceiveMessage'
+      'ReceiveRemoteBool'
+      'ReceiveRemoteMessageEx'
+      'ReceiveRemoteNumber'
+      'ReceiveRemoteString'
+      'RechargeableBattery'
+      'RectOut'
+      'Release'
+      'RemoteKeepAlive'
+      'RemoteMessageRead'
+      'RemoteMessageWrite'
+      'RemotePlaySoundFile'
+      'RemotePlayTone'
+      'RemoteResetMotorPosition'
+      'RemoteResetScaledValue'
+      'RemoteSetInputMode'
+      'RemoteSetOutputState'
+      'RemoteStartProgram'
+      'RemoteStopProgram'
+      'RemoteStopSound'
+      'RenameFile'
+      'ResetAllTachoCounts'
+      'ResetBlockTachoCount'
+      'ResetRotationCount'
+      'ResetScreen'
+      'ResetSensor'
+      'ResetSleepTimer'
+      'ResetTachoCount'
+      'ResizeFile'
+      'ResolveHandle'
+      'RotateMotor'
+      'RotateMotorEx'
+      'RotateMotorExPID'
+      'RotateMotorPID'
+      'RS485Control'
+      'RS485DataAvailable'
+      'RS485Exit'
+      'RS485Init'
+      'RS485Read'
+      'RS485SendingData'
+      'RS485Status'
+      'RS485Uart'
+      'RS485Write'
+      'RunNRLinkMacro'
+      'RunNRLinkMacroEx'
+      'SendMessage'
+      'SendRemoteBool'
+      'SendRemoteNumber'
+      'SendRemoteString'
+      'SendResponseBool'
+      'SendResponseNumber'
+      'SendResponseString'
+      'SendRS485Bool'
+      'SendRS485Number'
+      'SendRS485String'
+      'Sensor'
+      'SensorBoolean'
+      'SensorDigiPinsDirection'
+      'SensorDigiPinsOutputLevel'
+      'SensorDigiPinsStatus'
+      'SensorHTColorNum'
+      'SensorHTCompass'
+      'SensorHTGyro'
+      'SensorHTIRSeekerDir'
+      'SensorInvalid'
+      'SensorMode'
+      'SensorMSCompass'
+      'SensorMSCompassEx'
+      'SensorMSDROD'
+      'SensorMSPressure'
+      'SensorMSPressureRaw'
+      'SensorNormalized'
+      'SensorRaw'
+      'SensorScaled'
+      'SensorType'
+      'SensorUS'
+      'SetBatteryState'
+      'SetBluetoothState'
+      'SetBrickDataAddress'
+      'SetBrickDataBluecoreVersion'
+      'SetBrickDataBtHardwareStatus'
+      'SetBrickDataBtStateStatus'
+      'SetBrickDataName'
+      'SetBrickDataTimeoutValue'
+      'SetBTConnectionAddress'
+      'SetBTConnectionClass'
+      'SetBTConnectionHandleNum'
+      'SetBTConnectionLinkQuality'
+      'SetBTConnectionName'
+      'SetBTConnectionPinCode'
+      'SetBTConnectionStreamStatus'
+      'SetBTDeviceAddress'
+      'SetBTDeviceClass'
+      'SetBTDeviceCount'
+      'SetBTDeviceName'
+      'SetBTDeviceNameCount'
+      'SetBTDeviceStatus'
+      'SetBTInputBuffer'
+      'SetBTInputBufferInPtr'
+      'SetBTInputBufferOutPtr'
+      'SetBTOutputBuffer'
+      'SetBTOutputBufferInPtr'
+      'SetBTOutputBufferOutPtr'
+      'SetButtonLongPressCount'
+      'SetButtonLongReleaseCount'
+      'SetButtonPressCount'
+      'SetButtonReleaseCount'
+      'SetButtonShortReleaseCount'
+      'SetButtonState'
+      'SetCommandFlags'
+      'SetCustomSensorActiveStatus'
+      'SetCustomSensorPercentFullScale'
+      'SetCustomSensorZeroOffset'
+      'SetDisplayDisplay'
+      'SetDisplayEraseMask'
+      'SetDisplayFlags'
+      'SetDisplayNormal'
+      'SetDisplayPopup'
+      'SetDisplayTextLinesCenterFlags'
+      'SetDisplayUpdateMask'
+      'SetHSFlags'
+      'SetHSInputBuffer'
+      'SetHSInputBufferInPtr'
+      'SetHSInputBufferOutPtr'
+      'SetHSOutputBuffer'
+      'SetHSOutputBufferInPtr'
+      'SetHSOutputBufferOutPtr'
+      'SetHSSpeed'
+      'SetHSState'
+      'SetInput'
+      'SetIOMA'
+      'SetLSChannelState'
+      'SetLSErrorType'
+      'SetLSInputBuffer'
+      'SetLSInputBufferBytesToRx'
+      'SetLSInputBufferInPtr'
+      'SetLSInputBufferOutPtr'
+      'SetLSMode'
+      'SetLSOutputBuffer'
+      'SetLSOutputBufferBytesToRx'
+      'SetLSOutputBufferInPtr'
+      'SetLSOutputBufferOutPtr'
+      'SetLSSpeed'
+      'SetLSState'
+      'SetMotorPwnFreq'
+      'SetOnBrickProgramPointer'
+      'SetOutput'
+      'SetSensor'
+      'SetSensorBoolean'
+      'SetSensorDigiPinsDirection'
+      'SetSensorDigiPinsOutputLevel'
+      'SetSensorDigiPinsStatus'
+      'SetSensorHTGyro'
+      'SetSensorLight'
+      'SetSensorLowspeed'
+      'SetSensorMode'
+      'SetSensorMSDRODActive'
+      'SetSensorMSDRODInactive'
+      'SetSensorMSPressure'
+      'SetSensorSound'
+      'SetSensorTouch'
+      'SetSensorType'
+      'SetSleepTimeout'
+      'SetSleepTimer'
+      'SetSoundDuration'
+      'SetSoundFlags'
+      'SetSoundFrequency'
+      'SetSoundMode'
+      'SetSoundModuleState'
+      'SetSoundSampleRate'
+      'SetSoundState'
+      'SetSoundVolume'
+      'SetUIButton'
+      'SetUIState'
+      'SetUSBInputBuffer'
+      'SetUSBInputBufferInPtr'
+      'SetUSBInputBufferOutPtr'
+      'SetUSBOutputBuffer'
+      'SetUSBOutputBufferInPtr'
+      'SetUSBOutputBufferOutPtr'
+      'SetUSBPollBuffer'
+      'SetUSBPollBufferInPtr'
+      'SetUSBPollBufferOutPtr'
+      'SetUsbState'
+      'SetUSBState'
+      'SetVMRunState'
+      'SetVolume'
+      'Sin'
+      'SleepTimeout'
+      'SleepTimer'
+      'SoundDuration'
+      'SoundFlags'
+      'SoundFrequency'
+      'SoundMode'
+      'SoundSampleRate'
+      'SoundState'
+      'SoundVolume'
+      'Sqrt'
+      'Stop'
+      'StopAllTasks'
+      'StopSound'
+      'StrCat'
+      'StrIndex'
+      'StrLen'
+      'StrReplace'
+      'StrToByteArray'
+      'StrToNum'
+      'SubStr'
+      'SysCall'
+      'SysCommBTCheckStatus'
+      'SysCommBTWrite'
+      'SysCommExecuteFunction'
+      'SysCommHSCheckStatus'
+      'SysCommHSControl'
+      'SysCommHSRead'
+      'SysCommHSWrite'
+      'SysCommLSCheckStatus'
+      'SysCommLSRead'
+      'SysCommLSWrite'
+      'SysDisplayExecuteFunction'
+      'SysDrawCircle'
+      'SysDrawGraphic'
+      'SysDrawLine'
+      'SysDrawPoint'
+      'SysDrawRect'
+      'SysDrawText'
+      'SysFileClose'
+      'SysFileDelete'
+      'SysFileFindFirst'
+      'SysFileFindNext'
+      'SysFileOpenAppend'
+      'SysFileOpenRead'
+      'SysFileOpenReadLinear'
+      'SysFileOpenWrite'
+      'SysFileOpenWriteLinear'
+      'SysFileOpenWriteNonLinear'
+      'SysFileRead'
+      'SysFileRename'
+      'SysFileResolveHandle'
+      'SysFileWrite'
+      'SysGetStartTick'
+      'SysIOMapRead'
+      'SysIOMapReadByID'
+      'SysIOMapWrite'
+      'SysIOMapWriteByID'
+      'SysKeepAlive'
+      'SysLoaderExecuteFunction'
+      'SysMessageRead'
+      'SysMessageWrite'
+      'SysRandomNumber'
+      'SysReadButton'
+      'SysSetScreenMode'
+      'SysSoundGetState'
+      'SysSoundPlayFile'
+      'SysSoundPlayTone'
+      'SysSoundSetState'
+      'TextOut'
+      'UIButton'
+      'UIState'
+      'UnflattenVar'
+      'USBInputBufferInPtr'
+      'USBInputBufferOutPtr'
+      'USBOutputBufferInPtr'
+      'USBOutputBufferOutPtr'
+      'USBPollBufferInPtr'
+      'USBPollBufferOutPtr'
+      'UsbState'
+      'USBState'
+      'VMRunState'
+      'Volume'
+      'Wait'
+      'Write'
+      'WriteBytes'
+      'WriteBytesEx'
+      'WriteLn'
+      'WriteLnString'
+      'WriteNRLinkBytes'
+      'WriteNRLinkBytesEx'
+      'WriteString'
+    )
+    Constants.Strings = (
+      'empty'
+    )
+    LanguageName = 'NXC'
+    SampleSourceStrings.Strings = (
+      '/* syntax highlighting */'
+      '#include "NXCDefs.h"'
+      '// This is a Comment'
+      '// #define is a Preprocessor'
+      '#define NUM_LOOPS 4'
+      'task main() // task is a Keyword'
+      '{ // {},+(); are all Symbols'
+      '  // NUM_LOOPS is an Identifier'
+      '  repeat(NUM_LOOPS)'
+      '  {'
+      '    // TextOut is a Command'
+      '    // "power_level" is a Field (aka String)'
+      '    TextOut(0, 0, true, "power_level");'
+      '    // OUT_AB is a Constant'
+      '    OnFwd(OUT_AB, 75);'
+      '    // 4000 is a Number'
+      '    Wait(4000);'
+      '  }'
+      '}'
+    )
+    left = 320
+    top = 304
+  end
+  object dlgLoadTemplates: TOpenDialog
+    Filter = 'Template files (*.txt)|*.txt|All files (*.*)|*.*'
+    left = 312
+    top = 104
+  end
+  object dlgSaveTemplates: TSaveDialog
+    DefaultExt = '.txt'
+    Filter = 'Template files (*.txt)|*.txt|All files (*.*)|*.*'
+    left = 312
+    top = 217
+  end
+  object SynNPGSyn: TSynNPGSyn
+    DefaultFilter = 'NPG Files (*.npg)|*.npg'
+    Enabled = False
+    left = 344
+    top = 57
+  end
+  object SynRSSyn: TSynRSSyn
+    DefaultFilter = 'RICScript Files (*.rs)|*.rs'
+    Enabled = False
+    left = 400
+    top = 304
+  end
+  object SynROPSSyn: TSynROPSSyn
+    Enabled = False
+    left = 360
+    top = 304
+  end
+end

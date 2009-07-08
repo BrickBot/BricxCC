@@ -16,11 +16,19 @@
  *)
 unit uPortPrompt;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+{$ENDIF}
+  SysUtils, Classes, Controls, Forms, StdCtrls;
 
 type
   TfrmPortPrompt = class(TForm)
@@ -46,7 +54,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
 
 uses
   brick_common, uSpirit, uGuiUtils;
@@ -82,5 +92,10 @@ begin
   SizeComboboxDropdown(cboPort);
   cboPort.Text := 'usb';
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uPortPrompt.lrs}
+{$ENDIF}
 
 end.

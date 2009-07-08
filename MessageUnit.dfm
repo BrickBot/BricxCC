@@ -222,7 +222,7 @@ object MessageForm: TMessageForm
       TabOrder = 0
       OnClick = SendButtonClick
     end
-    object edtMessageNum: TSpinEdit
+    object edtMessageNum: TBricxccSpinEdit
       Left = 8
       Top = 17
       Width = 57
@@ -342,7 +342,7 @@ object MessageForm: TMessageForm
       Caption = 'Response'
       TabOrder = 1
     end
-    object edtNum: TSpinEdit
+    object edtNum: TBricxccSpinEdit
       Left = 8
       Top = 92
       Width = 81

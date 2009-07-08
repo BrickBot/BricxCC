@@ -16,9 +16,16 @@
  *)
 unit uCodeExplorer;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, ComCtrls, ExtCtrls, ImgList, Menus,
   uBricxCCProcLexer, uParseCommon, uOfficeComp;
 
@@ -82,7 +89,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, MainUnit, Editor, uExplorerOptions, uNQCProcLexer,
@@ -97,21 +106,24 @@ var
 begin
   if Assigned(fProcResults) then
     fProcResults.Clear;
-  if Assigned(treCodeExplorer) then
-  begin
-    treCodeExplorer.Items.BeginUpdate;
-    try
-      fTopNodeIdx := GetNodeIndex(treCodeExplorer.TopItem);
-      fSelNodeIdx := GetNodeIndex(treCodeExplorer.Selected);
-      for PT := Low(TProcType) to High(TProcType) do
-      begin
-        if Assigned(NodeArray[PT]) then
-          for i := NodeArray[PT].Count - 1 downto 0 do
-            NodeArray[PT].Item[i].Delete;
-      end;
-    finally
-      treCodeExplorer.Items.EndUpdate;
+  if csDestroying in ComponentState then Exit;
+  if not Assigned(treCodeExplorer) then Exit;
+  treCodeExplorer.Items.BeginUpdate;
+  try
+    fTopNodeIdx := GetNodeIndex(treCodeExplorer.TopItem);
+    fSelNodeIdx := GetNodeIndex(treCodeExplorer.Selected);
+    for PT := Low(TProcType) to High(TProcType) do
+    begin
+      if Assigned(NodeArray[PT]) then
+        for i := NodeArray[PT].Count - 1 downto 0 do
+{$IFDEF FPC}
+          NodeArray[PT].Items[i].Delete;
+{$ELSE}
+          NodeArray[PT].Item[i].Delete;
+{$ENDIF}
     end;
+  finally
+    treCodeExplorer.Items.EndUpdate;
   end;
 end;
 
@@ -523,5 +535,10 @@ procedure TfrmCodeExplorer.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fProcResults);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uCodeExplorer.lrs}
+{$ENDIF}
 
 end.

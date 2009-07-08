@@ -16,9 +16,17 @@
  *)
 unit JoystickUnit;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+  LCLType,
+{$ENDIF}
   Classes, Controls, Forms, ExtCtrls, StdCtrls, ComCtrls, Buttons;
 
 type
@@ -87,11 +95,16 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
-  Windows, SysUtils, Dialogs, MMSystem, Preferences, brick_common,
-  SearchRCX, MainUnit, uSpirit, uLocalizedStrings;
+{$IFNDEF FPC}
+  Windows, 
+  MMSystem,
+{$ENDIF}
+  SysUtils, Dialogs, Preferences, brick_common, SearchRCX, MainUnit, uSpirit, uLocalizedStrings;
 
 var oldldir:integer =100;                   // previous left motor direction
     oldrdir:integer =100;                   // previous right motor direction
@@ -264,6 +277,9 @@ var
 
 procedure TJoystickForm.JoyTimerTimer(Sender: TObject);
 { The timer callback that does the actual work}
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   joyinfo : TJoyInfoEx;
   buttons : array [1..32] of boolean;
@@ -307,6 +323,7 @@ begin
       DoJoyButton(byte(i), buttons[i]);
     end;
   end;
+{$ENDIF}
 end;
 
 procedure TJoystickForm.DirBtnMouseDown(Sender: TObject;
@@ -460,5 +477,10 @@ begin
   if SpeedBar.Position <> speed then
     SpeedBar.Position := speed;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i JoystickUnit.lrs}
+{$ENDIF}
 
 end.

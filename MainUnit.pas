@@ -17,11 +17,24 @@
 {$B-}
 unit MainUnit;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Windows, Messages, Classes, Controls, Forms, Dialogs,
-  StdCtrls, Menus, ComCtrls, OleCtrls, ToolWin, Buttons, ExtCtrls,
+{$IFNDEF FPC}
+  Windows,
+  OleCtrls,
+{$ELSE}
+  LResources,
+  LMessages,
+  LCLType,
+  LCLIntf,
+{$ENDIF}
+  Messages, Classes, Controls, Forms, Dialogs,
+  StdCtrls, Menus, ComCtrls, ToolWin, Buttons, ExtCtrls,
   Editor, SynEditHighlighter, SynHighlighterNQC, SynEditPrint,
   SynEditAutoComplete, SynCompletionProposal, SynEditPlugins,
   SynMacroRecorder, ImgList, ActnList, SynHighlighterForth,
@@ -32,12 +45,21 @@ uses
   Preferences, uOfficeComp, SynHighlighterLua, SynHighlighterRuby,
   SynHighlighterNPG, SynHighlighterRS, uPSComponent_StdCtrls,
   uPSComponent_Controls, uPSComponent_Forms,
-  uPSComponent_Default, uPSComponent;            
+  uPSComponent_Default, uPSComponent;
 
+{$IFNDEF FPC}
 const
   WM_BRICXCC_CMDLINE = WM_USER + 150;
+{$ENDIF}
 
 type
+
+{$IFDEF FPC}
+  tagMSG = TMessage;
+{$ENDIF}
+
+  { TMainForm }
+
   TMainForm = class(TForm)
     dlgOpen: TOpenDialog;
     dlgSave: TSaveDialog;
@@ -212,7 +234,6 @@ type
     procedure pagMainChange(Sender: TObject);
     procedure actToolsNXTExplorerExecute(Sender: TObject);
     procedure actToolsWav2RsoExecute(Sender: TObject);
-    procedure HandleOnMessage(var Msg: tagMSG; var Handled: Boolean);
     function  HandleOnHelp(Command: Word; Data: Longint; var CallHelp: Boolean): Boolean;
     procedure actToolsSyncMotorsExecute(Sender: TObject);
     procedure actToolsNXTScreenExecute(Sender: TObject);
@@ -606,8 +627,11 @@ type
     FResume : boolean;
     fNQCAPIBase : TStringList;
     fNXCAPIBase : TStringList;
+{$IFNDEF FPC}
     procedure WMClose(var Message: TWMClose); message WM_CLOSE;
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
+    procedure HandleOnMessage(var Msg: tagMSG; var Handled: Boolean);
+{$ENDIF}
     procedure CreateSpiritPlugins;
     function  CloseAllEditors : boolean;
     function  CloseEditor(E : TEditorForm; bAll : Boolean = False) : boolean;
@@ -690,23 +714,32 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
-  SysUtils, Graphics, Themes, ClipBrd, ShellApi, Math,
-  GotoLine, SearchRCX, Piano, About, Controller, Diagnose, Unlock, Watch,
-  ExecProgram, ConstructUnit, CodeUnit, MessageUnit,
+  SysUtils, Graphics,
+  ClipBrd, GotoLine, SearchRCX, Piano,
+  About, Controller, Diagnose, Unlock, Watch,
+  ExecProgram, ConstructUnit, uSpirit,
   JoystickUnit, DatalogUnit, MemoryUnit, RemoteUnit,
-  SynEdit, SynEditTypes, SynEditPrintTypes, DPageSetup, DTestPrintPreview,
-  BricxccSynEdit, uHighlighterProcs, ParamUtils, uCodeExplorer,
-  uSpirit, rcx_constants, brick_common, uLocalizedStrings,
+  CodeUnit, MessageUnit, SynEdit,
+{$IFNDEF FPC}
+  ShellApi, uForthConsole, DPageSetup, uPSI_FakeSpirit,
+{$ENDIF}
+  DTestPrintPreview,
+  ParamUtils, uCodeExplorer,
   Transfer, Transdlg, uMacroForm, uWindowList,
-  uMindScript, uCppCode, uForthConsole, uProjectManager, uMIDIConversion,
-  uSetLNPAddress, uNewWatch, uSetValues, uEEPROM,
-  uWav2RSO, uNXTExplorer, uGuiUtils, uNXTController, uNXTImage,
-  uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,  
-  uPSI_brick_common, uPSI_uSpirit, uPSI_FakeSpirit, uMiscDefines,
-  uPSI_FantomSpirit, uPSRuntime, uPSDebugger, uProgram, uCompStatus;
+  uHighlighterProcs, uMindScript, uCppCode,
+  BricxccSynEdit, SynEditTypes, uProjectManager, uMIDIConversion,
+  uSetLNPAddress, uNewWatch, uSetValues, uEEPROM, uMiscDefines,
+  Themes, brick_common, uWav2RSO, uNXTExplorer, uGuiUtils,
+  uNXTController, uNXTImage, Math, uPSI_brick_common, uPSI_uSpirit,
+  uPSI_FantomSpirit, uPSRuntime, uPSDebugger,
+  SynEditPrintTypes, rcx_constants, uLocalizedStrings,
+  uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,
+  uProgram, uCompStatus;
 
 const
   K_NQC_GUIDE = 24;
@@ -862,36 +895,48 @@ end;
 
 procedure TMainForm.mniTileHorizontalClick(Sender: TObject);
 begin
+{$IFNDEF FPC}
   TileMode := tbHorizontal;
   Tile;
+{$ENDIF}
 end;
 
 procedure TMainForm.mniTileVerticalClick(Sender: TObject);
 begin
+{$IFNDEF FPC}
   TileMode := tbVertical;
   Tile;
+{$ENDIF}
 end;
 
 procedure TMainForm.mniCascadeClick(Sender: TObject);
 begin
+{$IFNDEF FPC}
  Cascade;
+{$ENDIF}
 end;
 
 procedure TMainForm.mniArrangeClick(Sender: TObject);
 begin
+{$IFNDEF FPC}
   ArrangeIcons;
+{$ENDIF}
 end;
 
 procedure TMainForm.mniHowToClick(Sender: TObject);
 begin
+{$IFNDEF FPC}
   Application.HelpCommand(HELP_HELPONHELP, 0);
+{$ENDIF}
 end;
 
 procedure TMainForm.mniWebpageClick(Sender: TObject);
 const
   K_WEBPAGE = 'http://bricxcc.sourceforge.net/';
 begin
+{$IFNDEF FPC}
   ShellExecute(Handle, 'open', K_WEBPAGE, '', '', SW_NORMAL);
+{$ENDIF}
 end;
 
 procedure TMainForm.ProgramBoxChange(Sender: TObject);
@@ -916,12 +961,15 @@ begin
   CreateToolbars;
   CreateMiscSynEditComponents;
   Application.OnHelp := HandleOnHelp;
+{$IFNDEF FPC}
   Application.OnMessage := HandleOnMessage;
+{$ENDIF}
   CreateSpiritPlugins;
   SetColorScheme;
   fOldActiveEditorForm := nil;
   pnlCodeExplorer.DockOrientation := doVertical;
   AppIsClosing := False;
+{$IFNDEF FPC}
   if GetUseMDIMode then
     FormStyle := fsMDIForm
   else
@@ -929,12 +977,16 @@ begin
   fMDI := FormStyle = fsMDIForm;
   pnlPageControl.Align := alClient;
   pnlPageControl.Visible := not MDI;
+  {Let Windows know we accept dropped files}
+  DragAcceptFiles(Handle,true);
+{$ELSE}
+  pnlPageControl.Align := alClient;
+  pnlPageControl.Visible := True;
+{$ENDIF}
   newcount := 0;
   ProgramBox.ItemIndex := 0;
   mniAddress0.Checked  := True; // default to LNP address 0
   mniPort0.Checked     := True; // default to LNP port 0
-  {Let Windows know we accept dropped files}
-  DragAcceptFiles(Handle,true);
   // set help file
   Application.HelpFile := ProgramDir + 'Help\BricxCC.HLP';
   HelpFile := Application.HelpFile;
@@ -1008,6 +1060,7 @@ begin
 end;
 
 {Reacting on dropping a file on the form}
+{$IFNDEF FPC}
 procedure TMainForm.WMDROPFILES(var Message: TWMDROPFILES);
 var
   buffer:array[0..255] of char;
@@ -1030,6 +1083,7 @@ begin
   end;
   DragFinish(Message.Drop);
 end;
+{$ENDIF}
 
 procedure TMainForm.SelectProgram(idx : integer);
 begin
@@ -1166,7 +1220,11 @@ var
 begin
   mniShowTemplates.Checked := ConstructForm.Visible;
   mniStatusbar.Checked := barStatus.Visible;
+{$IFNDEF FPC}
   mniPBForthConsole.Checked := frmForthConsole.Visible;
+{$ELSE}
+  mniPBForthConsole.Visible := False;
+{$ENDIF}
   if CodeForm.Visible then
     mniShowCodeListing.Caption := sHideCodeError
   else
@@ -1216,12 +1274,14 @@ end;
 
 procedure TMainForm.DoPrint(EdFrm: TEditorForm);
 begin
+{$IFNDEF FPC}
   if dlgPrint.Execute then
   begin
     SynEditPrint.SynEdit := EdFrm.TheEditor;
     SynEditPrint.Title   := EdFrm.Caption;
     SynEditPrint.Print;
   end;
+{$ENDIF}
 end;
 
 procedure TMainForm.DoPrintPreview(EdFrm: TEditorForm);
@@ -1352,11 +1412,13 @@ var
   F : TForm;
 begin
   Result := nil;
+{$IFNDEF FPC}
   if MDI then begin
     if Assigned(ActiveMDIChild) then
       Result := TEditorForm(ActiveMDIChild);
   end
   else begin
+{$ENDIF}
     for i := 0 to Screen.FormCount - 1 do
     begin
       F := Screen.Forms[i];
@@ -1369,22 +1431,28 @@ begin
         end;
       end;
     end;
+{$IFNDEF FPC}
   end;
+{$ENDIF}
 end;
 
 function TMainForm.GetEditorFormCount: integer;
 var
   i : Integer;
 begin
+{$IFNDEF FPC}
   if MDI then
     Result := MDIChildCount
   else
   begin
+{$ENDIF}
     Result := 0;
     for i := 0 to Screen.FormCount - 1 do
       if Screen.Forms[i] is TEditorForm then
         Inc(Result);
+{$IFNDEF FPC}
   end;
+{$ENDIF}
 end;
 
 function TMainForm.GetEditorForm(index: integer): TEditorForm;
@@ -1393,10 +1461,12 @@ var
   F : TForm;
 begin
   Result := nil;
+{$IFNDEF FPC}
   if MDI then
     Result := TEditorForm(MDIChildren[index])
   else
   begin
+{$ENDIF}
     for i := 0 to Screen.FormCount - 1 do
     begin
       F := Screen.Forms[i];
@@ -1410,7 +1480,9 @@ begin
         Dec(index);
       end;
     end;
+{$IFNDEF FPC}
   end;
+{$ENDIF}
 end;
 
 function TMainForm.DoCreateEditorForm: TEditorForm;
@@ -1420,6 +1492,7 @@ var
   TS : TTabSheet;
 begin
   Result := TEditorForm.Create(Self);
+{$IFNDEF FPC}
   if MDI then
   begin
     if not (Result.IsMaximized) then
@@ -1450,6 +1523,7 @@ begin
   end
   else
   begin
+{$ENDIF}
     // parent form to new tabsheet...
     TS := TTabSheet.Create(Self);
     TS.Parent := pagMain;
@@ -1457,7 +1531,9 @@ begin
     Result.Parent := TS;
     Result.Align := alClient;
     pagMain.ActivePage := TS;
+{$IFNDEF FPC}
   end;
+{$ENDIF}
   Result.Visible := True;
 end;
 
@@ -1696,10 +1772,12 @@ begin
     begin
       if TI.Close then BrickComm.Close;
       try
+{$IFNDEF FPC}
         if TI.Wait then
           ExecuteAndWait(PChar('"' + TI.Path + '" ' + paramStr), SW_SHOWNORMAL, LocalCompilerTimeout, PChar(TI.WorkingDir))
         else
           ExecuteAndContinue(PChar(TI.Path), PChar('"' + TI.Path + '" ' + paramStr), PChar(TI.WorkingDir), SW_SHOWNORMAL);
+{$ENDIF}
       finally
         if TI.Close then BrickComm.Open;
       end;
@@ -2022,11 +2100,13 @@ begin
 //  mniLNPPort.Enabled             := mniBrickOS.Visible and bBrickAlive;
 end;
 
+{$IFNDEF FPC}
 procedure TMainForm.WMClose(var Message: TWMClose);
 begin
   AppIsClosing := True;
   inherited;
 end;
+{$ENDIF}
 
 procedure TMainForm.mniWindowListClick(Sender: TObject);
 begin
@@ -2045,7 +2125,9 @@ end;
 
 procedure TMainForm.mniPBForthConsoleClick(Sender: TObject);
 begin
+{$IFNDEF FPC}
   frmForthConsole.Show;
+{$ENDIF}
 end;
 
 function TMainForm.SwitchToFile(fname: string; lineNo : integer): Boolean;
@@ -2394,8 +2476,10 @@ begin
   E := ActiveEditorForm;
   if FileIsForth(E) then
   begin
+{$IFNDEF FPC}
     if Assigned(E) then
       frmForthConsole.DownloadScript(E.TheEditor.Lines);
+{$ENDIF}
   end
   else
     DoCompileAction(E, True, False);
@@ -2667,8 +2751,10 @@ begin
     // update dragmode on toolbars
     SetToolbarDragging(not LockToolbars);
 
+{$IFNDEF FPC}
     // update forth console settings
     frmForthConsole.UpdateSettings;
+{$ENDIF}
 
     // set filter index
     SetFilterIndexFromLanguage;
@@ -2726,6 +2812,7 @@ end;
 
 procedure TMainForm.actFilePageSetupExecute(Sender: TObject);
 begin
+{$IFNDEF FPC}
   with TPageSetupDlg.Create(nil) do
   try
     SetValues(SynEditPrint);
@@ -2734,11 +2821,14 @@ begin
   finally
     Free;
   end;
+{$ENDIF}
 end;
 
 procedure TMainForm.actFilePrinterSetupExecute(Sender: TObject);
 begin
+{$IFNDEF FPC}
   dlgPrinterSetup.Execute;
+{$ENDIF}
 end;
 
 procedure TMainForm.actFilePrintPreviewExecute(Sender: TObject);
@@ -2975,10 +3065,12 @@ end;
 
 procedure TMainForm.actHelpHelpExecute(Sender: TObject);
 begin
+{$IFNDEF FPC}
   if FileIsMindScriptOrLASM then
     Application.HelpCommand(HELP_KEY, Integer(PChar('Contents')))
   else
     Application.HelpCommand(HELP_TAB, -3);
+{$ENDIF}
 end;
 
 procedure TMainForm.IndexClick(Sender: TObject);
@@ -2995,7 +3087,9 @@ begin
       str := PChar(GetWordAtRowCol(CaretXY));
     end;
   end;
+{$IFNDEF FPC}
   Application.HelpCommand(HELP_KEY, Integer(str));
+{$ENDIF}
 end;
 
 procedure TMainForm.mniNqcGuideClick(Sender: TObject);
@@ -3095,21 +3189,27 @@ begin
   pagMainChange(nil);
 end;
 
+{$IFNDEF FPC}
 type
   TCrackControlBar = class(TControlBar);
+{$ENDIF}
 
 procedure TMainForm.BarMouseMove(Sender: TObject; Shift: TShiftState; X,
   Y: Integer);
 begin
+{$IFNDEF FPC}
   if LockToolbars then
     TCrackControlBar(Sender).MouseCapture := False;
+{$ENDIF}
 end;
 
 procedure TMainForm.BarMouseDown(Sender: TObject; Button: TMouseButton;
   Shift: TShiftState; X, Y: Integer);
 begin
+{$IFNDEF FPC}
   if LockToolbars then
     TCrackControlBar(Sender).MouseCapture := False;
+{$ENDIF}
 end;
 
 procedure TMainForm.SetFilterIndexFromLanguage;
@@ -3137,6 +3237,9 @@ end;
 
 function TMainForm.HandleOnHelp(Command: Word; Data: Integer;
   var CallHelp: Boolean): Boolean;
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   i : integer;
   F : TForm;
@@ -3174,6 +3277,7 @@ begin
   end;
   Result := WinHelp(Handle, HelpFile, Command, Data);
   CallHelp := False;
+{$ENDIF}
 end;
 
 {
@@ -3197,6 +3301,7 @@ end;
 
 procedure TMainForm.SetColorScheme;
 begin
+{$IFNDEF FPC}
   if ThemeServices.ThemesEnabled then
     Self.Color := dxOffice11DockColor2
   else
@@ -3207,6 +3312,7 @@ begin
   ConfigBar(ogpCompile);
   ConfigBar(ogpEdit);
   ConfigBar(ogpTools);
+{$ENDIF}
 end;
 
 procedure TMainForm.ShowTemplates(bSave : boolean);
@@ -3318,6 +3424,7 @@ begin
 end;
 *)
 
+{$IFNDEF FPC}
 procedure TMainForm.HandleOnMessage(var Msg: tagMSG; var Handled: Boolean);
 var
   str: Pchar;
@@ -3338,6 +3445,7 @@ begin
     end;
   end;
 end;
+{$ENDIF}
 
 procedure TMainForm.ConfigureTransferMenuItemVisibility(aList : TList; aMenuItem : TOfficeMenuItem; const aPrefix : string);
 var
@@ -3391,8 +3499,10 @@ begin
   TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
   Plugin := TPSImport_brick_common.Create(Self);
   TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
+{$IFNDEF FPC}
   Plugin := TPSImport_FakeSpirit.Create(Self);
   TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
+{$ENDIF}
   Plugin := TPSImport_FantomSpirit.Create(Self);
   TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
 end;
@@ -6892,6 +7002,11 @@ procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   CanClose := CloseAllEditors;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i MainUnit.lrs}
+{$ENDIF}
 
 end.
 

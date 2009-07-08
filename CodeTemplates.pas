@@ -16,10 +16,22 @@
  *)
 unit CodeTemplates;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
+{$I bricxcc.inc}
+
 interface
 
 uses
-  Classes, Controls, Forms, Dialogs, GX_IDECodeTemplates, StdCtrls, Grids;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+{$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  GX_IDECodeTemplates, StdCtrls, Grids, Math;
 
 type
   TfrmCodeTemplates = class(TForm)
@@ -69,10 +81,12 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
-  EditCodeTemplate, Math;
+  EditCodeTemplate;
 
 procedure TfrmCodeTemplates.FormCreate(Sender: TObject);
 begin
@@ -248,5 +262,10 @@ procedure TfrmCodeTemplates.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i CodeTemplates.lrs}
+{$ENDIF}
 
 end.

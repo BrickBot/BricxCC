@@ -16,9 +16,16 @@
  *)
 unit Transdlg;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Graphics, Forms, Dialogs, StdCtrls, Buttons;
 
 type
@@ -95,7 +102,9 @@ implementation
 uses
   SysUtils, uLocalizedStrings, uCommonUtils;
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 const
   SMALL_SIZE = 160+28;
@@ -213,6 +222,11 @@ procedure TfrmTransEdit.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i Transdlg.lrs}
+{$ENDIF}
 
 end.
 

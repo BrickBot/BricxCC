@@ -16,9 +16,16 @@
  *)
 unit uMacroForm;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, Dialogs, StdCtrls, ComCtrls, uNewHotKey, uMacroLib;
 
 type
@@ -97,7 +104,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, uMacroEditor, uLocalizedStrings, uGuiUtils;
@@ -433,5 +442,10 @@ begin
   CloneHotKey(hkMacro, hkMacro2);
   hkMacro.OnExit := hkMacroExit;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uMacroForm.lrs}
+{$ENDIF}
 
 end.

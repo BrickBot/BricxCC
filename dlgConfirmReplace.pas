@@ -15,10 +15,21 @@
  *)
 unit dlgConfirmReplace;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Graphics, Controls, Forms, StdCtrls, ExtCtrls, Types;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+  LCLType,
+  LCLIntf,
+{$ENDIF}
+  Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls;
 
 type
   TConfirmReplaceDialog = class(TForm)
@@ -28,6 +39,7 @@ type
     btnCancel: TButton;
     btnReplaceAll: TButton;
     Image1: TImage;
+    procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
   public
     procedure PrepareShow(AEditorRect: TRect; X, Y1, Y2: integer;
@@ -42,9 +54,18 @@ implementation
 uses
   SysUtils, uLocalizedStrings, uCommonUtils;
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 { TConfirmReplaceDialog }
+
+procedure TConfirmReplaceDialog.FormCreate(Sender: TObject);
+begin
+{$IFNDEF FPC}
+  Image1.Picture.Icon.Handle := LoadIcon(0, IDI_QUESTION);
+{$ENDIF}
+end;
 
 procedure TConfirmReplaceDialog.FormDestroy(Sender: TObject);
 begin
@@ -73,5 +94,9 @@ begin
   SetBounds(X, Y2, Width, Height);
 end;
 
-end.
+{$IFDEF FPC}
+initialization
+  {$i dlgConfirmReplace.lrs}
+{$ENDIF}
 
+end.

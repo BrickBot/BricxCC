@@ -1,10 +1,10 @@
 object MainForm: TMainForm
-  Left = 638
+  Left = 401
   Height = 575
-  Top = 155
+  Top = 139
   Width = 751
   Caption = 'MainForm'
-  ClientHeight = 555
+  ClientHeight = 545
   ClientWidth = 751
   Menu = mnuMain
   OnClose = FormClose
@@ -277,8 +277,8 @@ object MainForm: TMainForm
     end
   end
   object barStatus: TStatusBar
-    Height = 23
-    Top = 532
+    Height = 24
+    Top = 521
     Width = 751
     Panels = <    
       item
@@ -302,7 +302,7 @@ object MainForm: TMainForm
     SimplePanel = False
   end
   object pnlCodeExplorer: TPanel
-    Height = 483
+    Height = 472
     Top = 49
     Width = 146
     Align = alLeft
@@ -314,7 +314,7 @@ object MainForm: TMainForm
   end
   object splCodeExplorer: TSplitter
     Left = 146
-    Height = 483
+    Height = 472
     Top = 49
     Width = 5
     ResizeStyle = rsPattern

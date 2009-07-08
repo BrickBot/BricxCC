@@ -66,7 +66,7 @@ var
 // misc variables
   pattern : string;
   pmin, pmaj, fmin, fmaj, bytesReady : byte;
-  btaddr : array[0..5] of Byte;
+  btaddr : string;
   btsig : Cardinal;
   memFree : Cardinal;
   pressed : boolean;
@@ -488,23 +488,22 @@ begin
     end;
     if ParamSwitch('-deviceinfo') and IsNXT then
     begin
-      if BrickComm.NXTGetDeviceInfo(pattern, @btaddr[0], btsig, memFree) then
+      if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
       begin
         Writeln(Format('Brick name = %s', [pattern]));
-        Writeln(Format('Bluetooth Address = %2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
-          [btaddr[0], btaddr[1], btaddr[2], btaddr[3], btaddr[4], btaddr[5]]));
+        Writeln(Format('Bluetooth Address = %s', [btaddr]));
         Writeln(Format('Bluetooth signal strength = %d', [btsig]));
         Writeln(Format('Free memory = %d', [memFree]));
       end;
     end;
     if ParamSwitch('-getname') and IsNXT then
     begin
-      if BrickComm.NXTGetDeviceInfo(pattern, @btaddr[0], btsig, memFree) then
+      if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
         Writeln(pattern);
     end;
     if ParamSwitch('-freemem') and IsNXT then
     begin
-      if BrickComm.NXTGetDeviceInfo(pattern, @btaddr[0], btsig, memFree) then
+      if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
         OutputValue(memFree);
     end;
     if ParamSwitch('-lsstatus') and IsNXT then

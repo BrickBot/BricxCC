@@ -17,9 +17,20 @@
 {$B-}
 unit Editor;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+  LMessages,
+  LCLType,
+  LCLIntf,
+  LCLProc,
+{$ENDIF}
   Messages, Classes, Graphics, Controls, Forms,
   StdCtrls, ComCtrls, Menus, ImgList, SynEdit, ExtCtrls, BricxccSynEdit,
   SynEditHighlighter, SynEditRegexSearch, SynEditMiscClasses, SynEditSearch,
@@ -221,10 +232,16 @@ procedure DoSearchReplaceText(aEditor : TSynEdit; AReplace, ABackwards: boolean)
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
+
 
 uses
-  Windows, SysUtils, Dialogs,
+{$IFNDEF FPC}
+  Windows, 
+{$ENDIF}
+  SysUtils, Dialogs,
   MainUnit, Preferences, GotoLine, ConstructUnit, dlgSearchText,
   dlgReplaceText, dlgConfirmReplace, DTestPrintPreview, Translate, ClipBrd,
   CodeUnit, ExecProgram, SearchRCX, brick_common, FakeSpirit, uCodeExplorer, uMacroForm,
@@ -253,6 +270,7 @@ const
      'IE( AL('#96'%0:s'#39', 4), '#96'AL('#96'%0:s'#39', 1)'#39', '#96'IE( KL('#96'%0:s'#39', 4), '#96'KL('#96'%0:s'#39', 1)'#39', '#96'JK("", '#96'%0:s'#39')'#39' )'#39' )'
    );
 begin
+{$IFNDEF FPC}
   if FileIsMindScriptOrLASM then
     Result := Application.HelpCommand(HELP_KEY, Integer(PChar(keyword)))
   else
@@ -260,6 +278,7 @@ begin
     StrLFmt(MacroStr, SizeOf(MacroStr) - 1, MACRO_ARRAY[bNQC], [keyword]);
     Result := Application.HelpCommand(HELP_COMMAND, Longint(@MacroStr));
   end;
+{$ENDIF}
 end;
 
 {File Handling routines}
@@ -627,7 +646,11 @@ begin
   altdown   := (ssAlt in Shift);
   shiftdown := (ssShift in Shift);
   {Handle <Ctr><Alt> Combinations as macro's}
+{$IFNDEF FPC}
   ch:=Char(MapVirtualKey(Key,2));
+{$ELSE}
+  ch := #0;
+{$ENDIF}
   if MacrosOn and ctrldown and altdown and
      (((ch>='A') and (ch<='Z')) or ((ch>='0') and (ch<='9'))) then
   begin
@@ -771,13 +794,17 @@ begin
     Include(Options, ssoSelectedOnly);
   if gbSearchWholeWords then
     Include(Options, ssoWholeWord);
+{$IFNDEF FPC}
   if gbSearchRegex then
     aEditor.SearchEngine := MainForm.SynEditRegexSearch
   else
     aEditor.SearchEngine := MainForm.SynEditSearch;
+{$ENDIF}
   if aEditor.SearchReplace(gsSearchText, gsReplaceText, Options) = 0 then
   begin
+{$IFNDEF FPC}
     MessageBeep(MB_ICONASTERISK);
+{$ENDIF}
     if ssoBackwards in Options then
       aEditor.BlockEnd := aEditor.BlockBegin
     else
@@ -980,10 +1007,16 @@ begin
       Options := Options + [eoAutoIndent]
     else
       Options := Options - [eoAutoIndent];
+{$IFNDEF FPC}
     if AutoMaxLeft then
       Options := Options + [eoAutoSizeMaxLeftChar]
     else
       Options := Options - [eoAutoSizeMaxLeftChar];
+    if HighlightCurLine then
+      Options := Options + [eoHighlightCurrentLine]
+    else
+      Options := Options - [eoHighlightCurrentLine];
+{$ENDIF}
     // disable scroll arrows
     if DragAndDropEditing then
       Options := Options + [eoDragDropEditing]
@@ -1042,10 +1075,6 @@ begin
       Options := Options + [eoTrimTrailingSpaces]
     else
       Options := Options - [eoTrimTrailingSpaces];
-    if HighlightCurLine then
-      Options := Options + [eoHighlightCurrentLine]
-    else
-      Options := Options - [eoHighlightCurrentLine];
   end;
   TheEditor.HideSelection    := HideSelection;
   TheEditor.TabWidth         := TabWidth;
@@ -1054,7 +1083,9 @@ begin
   TheEditor.ExtraLineSpacing := ExtraLineSpacing;
   TheEditor.RightEdge        := RightEdgePosition;
   TheEditor.RightEdgeColor   := RightEdgeColor;
+{$IFNDEF FPC}
   TheEditor.ActiveLineColor  := ActiveLineColor;
+{$ENDIF}
   case ScrollBars of
     0 : TheEditor.ScrollBars := ssBoth;
     1 : TheEditor.ScrollBars := ssHorizontal;
@@ -1189,11 +1220,31 @@ end;
 
 procedure TEditorForm.FormDestroy(Sender: TObject);
 begin
+{$IFDEF FPC}
+  if Assigned(MainForm) then
+  begin
+    MainForm.SynAutoComp.RemoveEditor(TheEditor);
+    MainForm.SynMacroRec.RemoveEditor(TheEditor);
+    MainForm.SynNQCCompProp.RemoveEditor(TheEditor);
+    MainForm.SynMindScriptCompProp.RemoveEditor(TheEditor);
+    MainForm.SynLASMCompProp.RemoveEditor(TheEditor);
+    MainForm.SynNBCCompProp.RemoveEditor(TheEditor);
+    MainForm.SynNXCCompProp.RemoveEditor(TheEditor);
+    MainForm.SynNPGCompProp.RemoveEditor(TheEditor);
+    MainForm.SynRSCompProp.RemoveEditor(TheEditor);
+    MainForm.SynForthCompProp.RemoveEditor(TheEditor);
+    MainForm.SynCppCompProp.RemoveEditor(TheEditor);
+    MainForm.SynPasCompProp.RemoveEditor(TheEditor);
+    MainForm.SynROPSCompProp.RemoveEditor(TheEditor);
+//    MainForm.SynJavaCompProp.RemoveEditor(TheEditor);
+    MainForm.scpParams.RemoveEditor(TheEditor);
+  end;
+{$ENDIF}
   if Assigned(frmCodeExplorer) then
   begin
     frmCodeExplorer.ClearTree;
   end;
-  if Assigned(frmMacroManager) then
+  if Assigned(frmMacroManager) and Assigned(frmMacroManager.MacroLibrary) then
     frmMacroManager.MacroLibrary.ActiveEditor := nil;
 end;
 
@@ -1249,8 +1300,12 @@ var
   i: integer;
 begin
   SetLength(Result, MAX_PATH);
+{$IFNDEF FPC}
   i := GetTempPath(Length(Result), PChar(Result));
   SetLength(Result, i);
+{$ELSE}
+  Result := '~';
+{$ENDIF}
   IncludeTrailingPathDelimiter(Result);
 end;
 
@@ -1975,9 +2030,12 @@ begin
     begin
       if outStr <> '' then
         outStr := outStr + #13#10;
+{$IFNDEF FPC}
       if FileIsNQC(EdFrm) then
         outStr := outStr + GetRCXErrorString(NQC_Result)
-      else if FileIsMindScriptOrLASM(EdFrm) then
+      else
+{$ENDIF}
+      if FileIsMindScriptOrLASM(EdFrm) then
         outStr := outStr + GetLASMErrorString(NQC_Result)
       else if FileIsNBCOrNXCOrNPGOrRICScript(EdFrm) or FileIsROPS(EdFrm) then
         outStr := outStr + GetNBCErrorString(NQC_Result)
@@ -2001,6 +2059,7 @@ begin
   end;
 end;
 
+{$IFNDEF FPC}
 procedure TEditorForm.CreateParams(var Params: TCreateParams);
 begin
   Visible := False;
@@ -2022,22 +2081,6 @@ begin
     Result := MainForm.MDI
   else
     Result := False;
-end;
-
-{
-procedure TEditorForm.InsertOptionInfo;
-begin
-  TheEditor.Lines.Insert(0,
-    Format('// Port:%s, RCXType:%s, Slot:Program %d',
-      [BrickComm.NicePortName, BrickComm.RCXTypeName, CurrentProgramSlot+1]));
-  TheEditor.CaretY := TheEditor.CaretY + 1;
-  TheEditor.Modified := True;
-end;
-}
-
-procedure TEditorForm.TheEditorChange(Sender: TObject);
-begin
-  frmCodeExplorer.ChangedSinceLastProcess := True;
 end;
 
 procedure TEditorForm.WMMDIActivate(var Message: TWMMDIActivate);
@@ -2063,6 +2106,24 @@ begin
       frmCodeExplorer.RefreshEntireTree;
     end;
   end;
+end;
+
+{$ENDIF}
+
+{
+procedure TEditorForm.InsertOptionInfo;
+begin
+  TheEditor.Lines.Insert(0,
+    Format('// Port:%s, RCXType:%s, Slot:Program %d',
+      [BrickComm.NicePortName, BrickComm.RCXTypeName, CurrentProgramSlot+1]));
+  TheEditor.CaretY := TheEditor.CaretY + 1;
+  TheEditor.Modified := True;
+end;
+}
+
+procedure TEditorForm.TheEditorChange(Sender: TObject);
+begin
+  frmCodeExplorer.ChangedSinceLastProcess := True;
 end;
 
 procedure TEditorForm.SetFilename(const Value: string);
@@ -2247,6 +2308,7 @@ var
   Ident: string;
 begin
   case Command of
+{$IFNDEF FPC}
     ecContextHelp : begin
       SetActiveHelpFile;
       if TheEditor.SelAvail then
@@ -2263,6 +2325,7 @@ begin
       HelpALink(word, FileIsNQC);
       Command := ecNone;
     end;
+{$ENDIF}
     K_USER_PREVIDENT, K_USER_NEXTIDENT : begin
       if FindIdentAtPos(Source, Position, (Command = K_USER_PREVIDENT), FoundPos, Ident) then
         Position := FoundPos
@@ -2465,8 +2528,10 @@ end;
 procedure TEditorForm.TheEditorMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
+{$IFNDEF FPC}
   if (ssCtrl in Shift) and (Button = mbLeft) then
     FindDeclaration(TheEditor.WordAtMouse);
+{$ENDIF}
 end;
 
 procedure TEditorForm.FindDeclaration(const aIdent : string);
@@ -2541,8 +2606,10 @@ var
   Cmd : TSynEditorCommand;
   Ch : Char;
 begin
+{$IFNDEF FPC}
   Cmd := ecContextHelp;
   TheEditorProcessCommand(Sender, Cmd, Ch, nil);
+{$ENDIF}
 end;
 
 procedure TEditorForm.ToggleBookmark(Sender: TObject);
@@ -3102,5 +3169,10 @@ begin
     fPaths.Free;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i Editor.lrs}
+{$ENDIF}
 
 end.

@@ -16,13 +16,26 @@
  *)
 unit uExplorerOptions;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, Dialogs, StdCtrls, CheckListState, ComCtrls,
-  ImgList, ExtCtrls, uParseCommon;
+{$IFNDEF FPC}
+  CheckListState,
+{$ELSE}
+  LResources,
+  CheckLst,
+{$ENDIF}
+  Classes, Controls, Forms, StdCtrls, ComCtrls, ImgList, ExtCtrls,
+  uParseCommon;
 
 type
+{$IFDEF FPC}
+  TCheckStateListBox = class(TCheckListBox);
+{$ENDIF}
   TfrmExplorerOptions = class(TForm)
     ilStateImages: TImageList;
     pnlBottom: TPanel;
@@ -44,9 +57,11 @@ type
     procedure btnHelpClick(Sender: TObject);
   private
     { Private declarations }
+{$IFNDEF FPC}
     procedure lstExpOptionsClickState(Sender: TObject);
     procedure lstExpOptionsGetCheckHint(Sender: TObject; State: TCheckBoxState; var Hint: String);
     procedure lstExpOptionsGetStateHint(Sender: TObject; State: Integer; var Hint: String);
+{$ENDIF}
     procedure lstExpOptionsDragDrop(Sender, Source: TObject; X,
       Y: Integer);
     procedure lstExpOptionsDragOver(Sender, Source: TObject; X, Y: Integer;
@@ -69,7 +84,9 @@ implementation
 uses
   Graphics, uLocalizedStrings;
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 procedure TfrmExplorerOptions.FormCreate(Sender: TObject);
 begin
@@ -82,35 +99,22 @@ begin
     Align := alClient;
     DragMode := dmAutomatic;
     ShowHint := True;
-    OnClickState := lstExpOptionsClickState;
-    OnGetCheckHint := lstExpOptionsGetCheckHint;
-    OnGetStateHint := lstExpOptionsGetStateHint;
     OnDragDrop := lstExpOptionsDragDrop;
     OnDragOver := lstExpOptionsDragOver;
     Color := clActiveBorder;
+    HelpContext := 30009;
+{$IFNDEF FPC}
     StateImages := ilStateImages;
     ShowState := True;
-    HelpContext := 30009;
+    OnClickState := lstExpOptionsClickState;
+    OnGetCheckHint := lstExpOptionsGetCheckHint;
+    OnGetStateHint := lstExpOptionsGetStateHint;
+{$ENDIF}
   end;
   LoadCategories;
   lblCategories.FocusControl := lstExpOptions;
   chkAutoExplorer.Checked := True;
   radAlphaSort.Checked := True;
-end;
-
-procedure TfrmExplorerOptions.lstExpOptionsClickState(Sender: TObject);
-var
-  s, i : Integer;
-begin
-  i := lstExpOptions.ItemIndex;
-  if i <> -1 then
-  begin
-    s := lstExpOptions.State[i];
-    if s = 0 then
-      lstExpOptions.State[i] := 1
-    else
-      lstExpOptions.State[i] := 0;
-  end;
 end;
 
 procedure TfrmExplorerOptions.lstExpOptionsDragOver(Sender, Source: TObject; X, Y: Integer;
@@ -150,7 +154,9 @@ begin
     if i <> -1 then
     begin
       lstExpOptions.Checked[i] := CEP.Visible[PT];
+{$IFNDEF FPC}
       lstExpOptions.State[i]   := stateVals[CEP.Expand[PT]];
+{$ENDIF}
     end;
   end;
 end;
@@ -170,13 +176,14 @@ begin
     for i := 0 to Items.Count - 1 do
     begin
       Checked[i] := True;
+{$IFNDEF FPC}
       State[i] := 0;
+{$ENDIF}
     end;
   end;
 end;
 
-procedure TfrmExplorerOptions.UpdateDefaults(
-  var CEP: TCodeExplorerProperties);
+procedure TfrmExplorerOptions.UpdateDefaults(var CEP: TCodeExplorerProperties);
 var
   i : integer;
   PT : TProcType;
@@ -191,7 +198,11 @@ begin
     if i <> -1 then
     begin
       CEP.Visible[PT] := lstExpOptions.Checked[i];
+{$IFNDEF FPC}
       CEP.Expand[PT]  := lstExpOptions.State[i] = 1;
+{$ELSE}
+      CEP.Expand[PT]  := False;
+{$ENDIF}
     end;
   end;
 end;
@@ -228,6 +239,22 @@ begin
   end;
 end;
 
+{$IFNDEF FPC}
+procedure TfrmExplorerOptions.lstExpOptionsClickState(Sender: TObject);
+var
+  s, i : Integer;
+begin
+  i := lstExpOptions.ItemIndex;
+  if i <> -1 then
+  begin
+    s := lstExpOptions.State[i];
+    if s = 0 then
+      lstExpOptions.State[i] := 1
+    else
+      lstExpOptions.State[i] := 0;
+  end;
+end;
+
 procedure TfrmExplorerOptions.lstExpOptionsGetCheckHint(Sender: TObject;
   State: TCheckBoxState; var Hint: String);
 begin
@@ -245,10 +272,16 @@ begin
     1 : Hint := sExpanded;
   end;
 end;
+{$ENDIF}
 
 procedure TfrmExplorerOptions.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uExplorerOptions.lrs}
+{$ENDIF}
 
 end.

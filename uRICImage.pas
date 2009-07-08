@@ -19,7 +19,10 @@ unit uRICImage;
 interface
 
 uses
-  Windows, Classes, Graphics, uRICComp;
+{$IFNDEF FPC}
+  Windows,
+{$ENDIF}
+  Classes, Graphics, uRICComp;
 
 type
   TRICObject = class(TGraphic)
@@ -44,10 +47,12 @@ type
     destructor Destroy; override;
     procedure LoadFromStream(Stream: TStream); override;
     procedure SaveToStream(Stream: TStream); override;
+{$IFNDEF FPC}
     procedure LoadFromClipboardFormat(AFormat: Word; AData: THandle;
       APalette: HPalette); override;
     procedure SaveToClipboardFormat(var AFormat: Word; var AData: THandle;
       var APalette: HPalette); override;
+{$ENDIF}
     procedure Assign(Source: TPersistent); override;
     procedure AssignTo(Dest: TPersistent); override;
     procedure LoadFromResourceName(Instance: THandle; const ResName: String);
@@ -151,6 +156,7 @@ begin
   Result := 0;
 end;
 
+{$IFNDEF FPC}
 procedure TRICObject.LoadFromClipboardFormat(AFormat: Word; AData: THandle;
   APalette: HPalette);
 var
@@ -194,6 +200,8 @@ begin
   end else
    raise Exception.Create(SUnknownClipboardFormat);
 end;
+{$ENDIF}
+
 
 procedure TRICObject.LoadFromResourceName(Instance: THandle; const ResName: String);
 var
@@ -213,6 +221,7 @@ begin
 
 end;
 
+{$IFNDEF FPC}
 procedure TRICObject.SaveToClipboardFormat(var AFormat: Word;
   var AData: THandle; var APalette: HPalette);
 var
@@ -254,6 +263,7 @@ begin
     Stream.Free;
   end;
 end;
+{$ENDIF}
 
 procedure TRICObject.SaveToStream(Stream: TStream);
 begin

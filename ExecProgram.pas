@@ -24,7 +24,11 @@ unit ExecProgram;
 
 interface
 
-uses Windows, Messages, ShellApi, SysUtils;
+uses
+{$IFNDEF FPC}
+  Windows, ShellApi,
+{$ENDIF}
+  Messages, SysUtils;
 
 function ExecuteAndContinue(Path, Params, WorkDir: Pchar; Visibility: word ): boolean;
 
@@ -43,6 +47,9 @@ uses
   Forms, uLocalizedStrings;
 
 function ExecuteAndContinue(Path, Params, WorkDir: Pchar; Visibility: word ): boolean;
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   pi: TProcessInformation;
   si: TStartupInfo;
@@ -59,9 +66,13 @@ begin
   result := CreateProcess(Path, Params, nil, nil, False, NORMAL_PRIORITY_CLASS, nil, WorkDir, si, pi);
   CloseHandle( pi.hProcess );
   CloseHandle( pi.hThread );
+{$ENDIF}
 end;
 
 function ExecuteAndWait( Path: PChar; Visibility: Word; aTimeoutMS : Integer; WD : PChar; pEnv : Pointer): Longint;
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   bStat: BOOL;
   pi: TProcessInformation;
@@ -154,6 +165,7 @@ begin
     CloseHandle( pi.hProcess );
     CloseHandle( pi.hThread );
   end;
+{$ENDIF}
 end;
 
 (*

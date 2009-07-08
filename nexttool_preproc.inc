@@ -1,3 +1,3 @@
 // nexttool_preproc.inc
 const
-  COMPILATION_TIMESTAMP = 'Wed Apr 2 21:05:52 CDT 2008';
+  COMPILATION_TIMESTAMP = 'Sat Jan 17 05:43:04 CST 2009';

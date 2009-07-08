@@ -305,7 +305,7 @@ object DiagForm: TDiagForm
       Caption = '&Minutes'
       FocusControl = PowerDown
     end
-    object PowerDown: TSpinEdit
+    object PowerDown: TBricxccSpinEdit
       Left = 64
       Top = 16
       Width = 57
@@ -376,6 +376,7 @@ object DiagForm: TDiagForm
       Height = 17
       BevelOuter = bvLowered
       TabOrder = 0
+      OnDblClick = NXTNameDblClick
     end
     object BTAddress: TPanel
       Left = 56

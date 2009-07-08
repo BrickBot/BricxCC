@@ -16,9 +16,16 @@
  *)
 unit uExtensionDlg;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, StdCtrls;
 
 type
@@ -95,7 +102,9 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 { TfrmExtensionDlg }
 
@@ -248,5 +257,10 @@ procedure TfrmExtensionDlg.SetRS(const Value: Boolean);
 begin
   chkRICScript.Checked := Value;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uExtensionDlg.lrs}
+{$ENDIF}
 
 end.

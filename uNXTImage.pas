@@ -16,13 +16,27 @@
  *)
 unit uNXTImage;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Windows, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, Menus,
-  uOfficeComp, ExtDlgs, ActnList, StdCtrls, AviWriter;
+{$IFNDEF FPC}
+  Windows,
+  AviWriter,
+{$ELSE}
+  LResources,
+  LCLType,
+{$ENDIF}
+  Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, Menus, 
+  uOfficeComp, ExtDlgs, ActnList, StdCtrls;
 
 type
+
+  { TfrmNXTImage }
+
   TfrmNXTImage = class(TForm)
     imgNXT: TImage;
     shpEnter: TShape;
@@ -49,6 +63,10 @@ type
     act1min: TAction;
     actCaptureAVI: TAction;
     dlgSaveAVI: TSaveDialog;
+    procedure shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure shpRightMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
     procedure tmrRefreshTimer(Sender: TObject);
     procedure mniExitClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -129,8 +147,10 @@ type
     { Private declarations }
     fBytes : array[0..799] of byte;
     fBusy : boolean;
+{$IFNDEF FPC}
     fLeftRegion : HRGN;
     fRightRegion : HRGN;
+{$ENDIF}
     LeftPoints : array[0..2] of TPoint;
     RightPoints : array[0..2] of TPoint;
     fDisplayNormal : boolean;
@@ -138,7 +158,9 @@ type
     fGC : TGraphicClass;
     fClickStream : TMemoryStream;
     fCurrentName : string;
+{$IFNDEF FPC}
     fAviWriter : TAviWriter;
+{$ENDIF}
     procedure RefreshImage;
     procedure RetrieveScreenBytes;
     procedure DrawImage;
@@ -164,7 +186,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
 
 uses
   SysUtils, Themes, Math, Clipbrd, JPEG, MMSystem, uGuiUtils, uSpirit,
@@ -175,6 +199,20 @@ procedure TfrmNXTImage.tmrRefreshTimer(Sender: TObject);
 begin
   if not fBusy and Visible and (WindowState <> wsMinimized) then
     RefreshImage;
+end;
+
+procedure TfrmNXTImage.shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(1);
+end;
+
+procedure TfrmNXTImage.shpRightMouseDown(Sender: TObject; Button: TMouseButton;
+  Shift: TShiftState; X, Y: Integer);
+begin
+  if Button = mbLeft then
+    ExecuteButton(3);
 end;
 
 procedure TfrmNXTImage.RefreshImage;
@@ -211,12 +249,14 @@ begin
       end;
     end;
     imgScreen.Canvas.StretchDraw(Rect(0, 0, imgScreen.Width, imgScreen.Height), bmp);
+{$IFNDEF FPC}
     if actCaptureAVI.Checked then
     begin
       aviBmp := TBitmap.Create;
       aviBmp.Assign(imgScreen.Picture.Bitmap);
       fAviWriter.Bitmaps.Add(aviBmp);
     end;
+{$ENDIF}
   finally
     bmp.Free;
   end;
@@ -267,13 +307,17 @@ procedure TfrmNXTImage.FormCreate(Sender: TObject);
 begin
   CreatePopupMenu;
   imgNXT.PopupMenu := pmuMain;
+{$IFNDEF FPC}  
   fAviWriter := TAviWriter.Create(Self);
+{$ENDIF}
   fCurrentName := '';
   fDisplayNormal := True;
   imgNXT.Picture.Bitmap.FreeImage;
   Self.DoubleBuffered := True;
+{$IFNDEF FPC}
   fLeftRegion := 0;
   fRightRegion := 0;
+{$ENDIF}
   ScaleForm(6);    // 2.5x
   dlgSavePic.Filter :=
     'All (*.ric;*.png;*.jpg;*.jpeg;*.gif;*.bmp)|*.ric;*.png;*.jpg;*.jpeg;*.gif;*.bmp|' +
@@ -322,10 +366,12 @@ procedure TfrmNXTImage.imgNXTMouseDown(Sender: TObject;
 begin
   if Button = mbLeft then
   begin
+{$IFNDEF FPC}
     if PtInRegion(fLeftRegion, X, Y) then
       ExecuteButton(1)
     else if PtInRegion(fRightRegion, X, Y) then
       ExecuteButton(3);
+{$ENDIF}
   end;
 end;
 
@@ -428,12 +474,15 @@ begin
   RightPoints[0] := Point(Trunc(RX1*factor), Trunc(Y1*factor));
   RightPoints[1] := Point(Trunc(RX2*factor), Trunc(Y2*factor));
   RightPoints[2] := Point(Trunc(RX2*factor), Trunc(Y3*factor));
+{$IFNDEF FPC}
   fLeftRegion  := CreatePolygonRgn(LeftPoints, 3, WINDING);
   fRightRegion := CreatePolygonRgn(RightPoints, 3, WINDING);
+{$ENDIF}
 end;
 
 procedure TfrmNXTImage.FreeRegions;
 begin
+{$IFNDEF FPC}
   if fLeftRegion <> 0 then
   begin
     DeleteObject(fLeftRegion);
@@ -444,6 +493,7 @@ begin
     DeleteObject(fRightRegion);
     fRightRegion := 0;
   end;
+{$ENDIF}
 end;
 
 procedure TfrmNXTImage.mniAboutClick(Sender: TObject);
@@ -478,6 +528,9 @@ begin
 end;
 
 procedure TfrmNXTImage.actCopyExecute(Sender: TObject);
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   fmt : Word;
   data : THandle;
@@ -485,6 +538,7 @@ var
 begin
   imgScreen.Picture.Bitmap.SaveToClipboardFormat(fmt, data, palette);
   Clipboard.SetAsHandle(fmt, data);
+{$ENDIF}
 end;
 
 procedure TfrmNXTImage.actPollNowExecute(Sender: TObject);
@@ -535,16 +589,19 @@ procedure TfrmNXTImage.DoClick;
 var
   buf : PChar;
 begin
+{$IFNDEF FPC}
   if mniPlayClicks.Checked then
   begin
     GetMem(buf, fClickStream.Size);
     try
-      MoveMemory(buf, fClickStream.Memory, fClickStream.Size);
+      Move(fClickStream.Memory^, buf^, fClickStream.Size);
+//      MoveMemory(buf, fClickStream.Memory, fClickStream.Size);
       PlaySound(buf, Application.Handle, SND_MEMORY);
     finally
       FreeMem(buf);
     end;
   end;
+{$ENDIF}
 end;
 
 procedure TfrmNXTImage.dlgSavePicTypeChange(Sender: TObject);
@@ -575,9 +632,12 @@ begin
 end;
 
 procedure TfrmNXTImage.CheckForCustomClick;
+{$IFNDEF FPC}
 var
   RS : TResourceStream;
+{$ENDIF}
 begin
+{$IFNDEF FPC}
   if FileExists('click.wav') then
   begin
     fClickStream.LoadFromFile('click.wav');
@@ -591,6 +651,7 @@ begin
       RS.Free;
     end;
   end;
+{$ENDIF}
 end;
 
 procedure TfrmNXTImage.mniPlayClicksClick(Sender: TObject);
@@ -662,17 +723,21 @@ begin
         actCaptureAVI.Checked := False;
         Exit;
       end;
+{$IFNDEF FPC}
       fAviWriter.Bitmaps.Clear;
       fAviWriter.FileName  := dlgSaveAVI.FileName;
       fAviWriter.FrameTime := tmrRefresh.Interval;
       fAviWriter.Height    := imgScreen.Height;
       fAviWriter.Width     := imgScreen.Width;
       fAviWriter.Stretch   := True;
+{$ENDIF}
     end
     else
     begin
       // finished recording
+{$IFNDEF FPC}
       fAviWriter.Write;
+{$ENDIF}
     end;
   finally
     actPolling.Checked := actCaptureAVI.Checked;
@@ -1053,5 +1118,10 @@ begin
     OnClick := mniExitClick;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uNXTImage.lrs}
+{$ENDIF}
 
 end.

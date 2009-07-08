@@ -16,10 +16,20 @@
  *)
 unit CodeUnit;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, Forms, StdCtrls, ComCtrls, SynEdit, Menus, uOfficeComp;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+{$ENDIF}
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ComCtrls, SynEdit, Menus, uOfficeComp;
 
 type
   TCodeForm = class(TForm)
@@ -53,10 +63,12 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
-  Graphics, Editor, uLocalizedStrings, uCommonUtils;
+  Editor, uLocalizedStrings;
 
 procedure TCodeForm.lmiEditCopyClick(Sender: TObject);
 begin
@@ -197,5 +209,10 @@ begin
     ReadOnly := True;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i CodeUnit.lrs}
+{$ENDIF}
 
 end.

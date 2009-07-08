@@ -19,9 +19,17 @@ unit BricxccSynEdit;
 interface
 
 uses
-  SynEditEx, SynEditTypes, Windows;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  Types,
+{$ENDIF}
+  SynEditEx, SynEditTypes;
 
 type
+
+  { TBricxccSynEdit }
+
   TBricxccSynEdit = class(TSynEditEx)
   private
   protected
@@ -36,6 +44,7 @@ type
     function TextAtCursor : string;
     function TextWithinDelimiters(DelimChars : TSynIdentChars) : string;
     procedure ToggleBookMark(BookMark: Integer);
+    procedure SetCaretAndSel(const ptCaret, ptBefore, ptAfter: TPoint);
   end;
 
 implementation
@@ -306,6 +315,17 @@ begin
     ClearBookMark(BookMark)
   else
     SetBookMark(BookMark, CaretX, CaretY);
+end;
+
+procedure TBricxccSynEdit.SetCaretAndSel(const ptCaret, ptBefore, ptAfter: TPoint);
+begin
+{$IFDEF FPC}
+  CaretXY := ptCaret;
+  BlockBegin := ptBefore;
+  BlockEnd := ptAfter;
+{$ELSE}
+  SetCaretAndSelection(ptCaret, ptBefore, ptAfter);
+{$ENDIF}
 end;
 
 end.

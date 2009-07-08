@@ -1,0 +1,89 @@
+object frmProjectManager: TfrmProjectManager
+  Left = 274
+  Height = 218
+  Top = 265
+  Width = 180
+  HelpContext = 37000
+  BorderIcons = [biSystemMenu, biHelp]
+  Caption = 'Project Manager'
+  ClientHeight = 218
+  ClientWidth = 180
+  Constraints.MinHeight = 190
+  Constraints.MinWidth = 180
+  Font.Height = -11
+  Font.Name = 'MS Sans Serif'
+  OnClose = FormClose
+  OnCreate = FormCreate
+  OnShow = FormShow
+  LCLVersion = '0.9.25'
+  object lblFiles: TLabel
+    Left = 4
+    Height = 17
+    Top = 32
+    Width = 49
+    Caption = '&Files:'
+    FocusControl = lstFiles
+    ParentColor = False
+  end
+  object lblProject: TLabel
+    Left = 4
+    Height = 17
+    Top = 8
+    Width = 67
+    Caption = 'lblProject'
+    ParentColor = False
+  end
+  object lstFiles: TListBox
+    Left = 4
+    Height = 104
+    Top = 48
+    Width = 165
+    HelpContext = 37001
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    DragMode = dmAutomatic
+    ItemHeight = 13
+    MultiSelect = True
+    OnClick = lstFilesClick
+    OnDblClick = lstFilesDblClick
+    OnDragDrop = lstFilesDragDrop
+    OnDragOver = lstFilesDragOver
+    PopupMenu = mnuPopup
+    TabOrder = 0
+    TopIndex = -1
+  end
+  object btnHelp: TButton
+    Left = 117
+    Height = 25
+    Top = 156
+    Width = 52
+    HelpContext = 37002
+    Anchors = [akRight, akBottom]
+    Caption = '&Help'
+    OnClick = btnHelpClick
+    TabOrder = 1
+  end
+  object mnuPopup: TOfficePopupMenu
+    left = 88
+    top = 8
+    object mniAdd: TOfficeMenuItem
+      Caption = 'Add...'
+      ShortCut = 16429
+      OnClick = mniAddClick
+    end
+    object mniRemove: TOfficeMenuItem
+      Caption = 'Remove from Project'
+      ShortCut = 16430
+      OnClick = mniRemoveClick
+    end
+    object mniOpen: TOfficeMenuItem
+      Caption = 'Open'
+      ShortCut = 16463
+      OnClick = mniOpenClick
+    end
+  end
+  object dlgOpen: TOpenDialog
+    Options = [ofHideReadOnly, ofNoChangeDir, ofAllowMultiSelect, ofPathMustExist, ofFileMustExist, ofEnableSizing]
+    left = 120
+    top = 8
+  end
+end

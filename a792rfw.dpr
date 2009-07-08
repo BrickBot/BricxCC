@@ -41,7 +41,6 @@ const
   SIZEOFFLASH = 262144;
 
 begin
-  { TODO -oUser -cConsole Main : Insert code here }
   if ParamCount = 0 then
   begin
     PrintUsageError;

@@ -228,7 +228,7 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 4
       OnClick = chkUsePBClick
     end
-    object edtGap: TSpinEdit
+    object edtGap: TBricxccSpinEdit
       Left = 78
       Top = 73
       Width = 52
@@ -241,7 +241,7 @@ object frmMIDIConversion: TfrmMIDIConversion
       Value = 2
       OnKeyPress = edtGapKeyPress
     end
-    object edtTempo: TSpinEdit
+    object edtTempo: TBricxccSpinEdit
       Left = 78
       Top = 44
       Width = 52
@@ -254,7 +254,7 @@ object frmMIDIConversion: TfrmMIDIConversion
       Value = 150
       OnKeyPress = edtGapKeyPress
     end
-    object edtPBS: TSpinEdit
+    object edtPBS: TBricxccSpinEdit
       Left = 78
       Top = 169
       Width = 52
@@ -268,7 +268,7 @@ object frmMIDIConversion: TfrmMIDIConversion
       Value = 2
       OnKeyPress = edtGapKeyPress
     end
-    object edtTrack: TSpinEdit
+    object edtTrack: TBricxccSpinEdit
       Left = 78
       Top = 15
       Width = 52

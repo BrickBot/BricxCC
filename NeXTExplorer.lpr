@@ -2,9 +2,12 @@ program NeXTExplorer;
 
 {$MODE Delphi}
 
-{$R 'ToolbarBackground.res' 'ToolbarBackground.rc'}
-
 uses
+  {$IFDEF FPC}
+  cthreads,
+  LDockTree,
+  Interfaces, // this includes the LCL widgetset
+  {$ENDIF}
   Forms,
   {XPMan,}
   Dialogs,
@@ -12,8 +15,6 @@ uses
   uSpirit in 'bricktools/uSpirit.pas',
   uNXTExplorer in 'uNXTExplorer.pas' {frmNXTExplorer},
   uPortPrompt in 'uPortPrompt.pas' {frmPortPrompt};
-
-{$R *.res}
 
 begin
   LocalBrickType := rtNXT;

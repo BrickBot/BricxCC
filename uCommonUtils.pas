@@ -87,6 +87,8 @@ implementation
 uses
 {$IFNDEF FPC}
   Windows,
+{$ELSE}
+  LCLIntf,
 {$ENDIF}
   SysUtils;
 
@@ -253,7 +255,7 @@ end;
 function GetTick : Cardinal;
 begin
 {$IFDEF FPC}
-  Result := 0;
+  Result := GetTickCount;
 {$ELSE}
   Result := GetTickCount;
 {$ENDIF}
@@ -262,7 +264,7 @@ end;
 function GetWindowTitleBarHeight : integer;
 begin
 {$IFDEF FPC}
-  Result := 0;
+  Result := 16
 {$ELSE}
   Result := GetSystemMetrics(SM_CYCAPTION);
 {$ENDIF}

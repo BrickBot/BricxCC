@@ -15,10 +15,17 @@
  *)
 unit dlgReplaceText;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes, Controls, dlgSearchText, StdCtrls, ExtCtrls;
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
+  Classes, Controls, Forms, dlgSearchText, StdCtrls, ExtCtrls;
 
 type
   TTextReplaceDialog = class(TTextSearchDialog)
@@ -38,7 +45,9 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 { TTextReplaceDialog }
 
@@ -92,6 +101,9 @@ begin
   end;
 end;
 
-end.
+{$IFDEF FPC}
+initialization
+  {$i dlgReplaceText.lrs}
+{$ENDIF}
 
- 
+end.

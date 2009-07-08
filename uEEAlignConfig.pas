@@ -21,7 +21,7 @@ unit uEEAlignConfig;
 interface
 
 uses
-  Classes, Controls, StdCtrls, Forms, uSpin;
+  Classes, Controls, StdCtrls, Forms, BricxccSpin;
 
 type
   TfrmAlignOptions = class(TForm)
@@ -31,7 +31,7 @@ type
     gbxOptions: TGroupBox;
     lblWhitespace: TLabel;
     mmoTokens: TMemo;
-    edtWhitespace: TSpinEdit;
+    edtWhitespace: TBricxccSpinEdit;
   end;
 
 implementation

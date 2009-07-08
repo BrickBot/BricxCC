@@ -16,11 +16,20 @@
  *)
 unit Diagnose;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources,
+{$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, Menus, uOfficeComp, uSpin;
+  StdCtrls, ComCtrls, ExtCtrls, Menus, uOfficeComp, BricxccSpin;
 
 type
   TDiagForm = class(TForm)
@@ -66,7 +75,7 @@ type
     Label4: TLabel;
     FreeMemory: TPanel;
     btnRefreshNXT: TButton;
-    PowerDown: TSpinEdit;
+    PowerDown: TBricxccSpinEdit;
     procedure FormShow(Sender: TObject);
     procedure RefreshBtnClick(Sender: TObject);
     procedure IRShortClick(Sender: TObject);
@@ -81,6 +90,7 @@ type
     procedure edtValueKeyPress(Sender: TObject; var Key: Char);
     procedure btnHelpClick(Sender: TObject);
     procedure btnRefreshNXTClick(Sender: TObject);
+    procedure NXTNameDblClick(Sender: TObject);
   private
     { Private declarations }
     procedure InitForm;
@@ -98,11 +108,13 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   Preferences, SearchRCX, rcx_constants, uSources, uMiscDefines,
-  uSpirit, brick_common, uCommonUtils, uLocalizedStrings;
+  uSpirit, brick_common, uCommonUtils, uNXTName, uLocalizedStrings;
 
 var
   V_FUDGE, V_HEIGHT, V_DISPLAY_HEIGHT, V_DISPLAY_DELTA, V_HELP : Integer;
@@ -267,16 +279,16 @@ begin
   end
   else if IsScout then
   begin
-    Height := WatchGroup.Top + GetWindowTitleBarHeight + V_FUDGE + V_HELP;
+    Height := WatchGroup.Top + GetWindowTitleBarHeight() + V_FUDGE + V_HELP;
   end
   else if IsNXT then
   begin
     Height := grpNXTDiag.Top + grpNXTDiag.Height + 7 +
-              GetWindowTitleBarHeight + V_FUDGE + V_HELP;
+              GetWindowTitleBarHeight() + V_FUDGE + V_HELP;
   end
   else
   begin
-    Height := IRGroup.Top + GetWindowTitleBarHeight + V_FUDGE + V_HELP;
+    Height := IRGroup.Top + GetWindowTitleBarHeight() + V_FUDGE + V_HELP;
   end;
 end;
 
@@ -401,5 +413,27 @@ begin
     FreeMemory.Caption := IntToStr(memFree);
   end;
 end;
+
+procedure TDiagForm.NXTNameDblClick(Sender: TObject);
+var
+  F : TfrmNXTName;
+begin
+  F := TfrmNXTName.Create(self);
+  try
+    F.edtNXTName.Text := NXTName.Caption;
+    if F.ShowModal = mrOK then
+    begin
+      BrickComm.NXTSetBrickName(F.edtNXTName.Text, True);
+      NXTName.Caption := F.edtNXTName.Text;
+    end;
+  finally
+    F.Free;
+  end;
+end;
+
+{$IFDEF FPC}
+initialization
+  {$i Diagnose.lrs}
+{$ENDIF}
 
 end.

@@ -16,9 +16,16 @@
  *)
 unit MemoryUnit;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Forms, StdCtrls;
 
 type
@@ -50,7 +57,9 @@ implementation
 uses
   SysUtils, Dialogs, SearchRCX, brick_common, uLocalizedStrings;
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 const
   K_SPY_TOP = $8FFF;
@@ -252,5 +261,10 @@ procedure TMemoryForm.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i MemoryUnit.lrs}
+{$ENDIF}
 
 end.

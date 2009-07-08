@@ -79,7 +79,7 @@ object frmAlignOptions: TfrmAlignOptions
       Caption = 'Minimum leading spaces'
       FocusControl = edtWhitespace
     end
-    object edtWhitespace: TSpinEdit
+    object edtWhitespace: TBricxccSpinEdit
       Left = 152
       Top = 18
       Width = 63

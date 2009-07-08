@@ -16,9 +16,16 @@
  *)
 unit RemoteUnit;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, Graphics, Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls;
 
 type
@@ -88,7 +95,9 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.DFM}
+{$ENDIF}
 
 uses
   SysUtils, uSpirit, brick_common, Preferences, rcx_constants, uRemoteProgMap;
@@ -277,5 +286,10 @@ begin
     end;
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i RemoteUnit.lrs}
+{$ENDIF}
 
 end.
