@@ -207,7 +207,10 @@ interface
 
 
 uses
- Windows {$IFDEF UseDelphi}, Classes, Graphics, SysUtils{$ENDIF},
+{$IFNDEF FPC}
+ Windows,
+{$ENDIF}
+{$IFDEF UseDelphi} Classes, Graphics, SysUtils,{$ENDIF}
  zlibpas, pnglang;
 
 const

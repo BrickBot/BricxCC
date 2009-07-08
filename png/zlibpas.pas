@@ -36,13 +36,13 @@ type
   end;
 
 function inflateInit_(var strm: TZStreamRec; version: PChar;
-  recsize: Integer): Integer; forward;
-function inflate(var strm: TZStreamRec; flush: Integer): Integer; forward;
-function inflateEnd(var strm: TZStreamRec): Integer; forward;
+  recsize: Integer): Integer;
+function inflate(var strm: TZStreamRec; flush: Integer): Integer;
+function inflateEnd(var strm: TZStreamRec): Integer;
 function deflateInit_(var strm: TZStreamRec; level: Integer; version: PChar;
-  recsize: Integer): Integer; forward;
-function deflate(var strm: TZStreamRec; flush: Integer): Integer; forward;
-function deflateEnd(var strm: TZStreamRec): Integer; forward;
+  recsize: Integer): Integer;
+function deflate(var strm: TZStreamRec; flush: Integer): Integer;
+function deflateEnd(var strm: TZStreamRec): Integer;
 
 const
   zlib_version = '1.2.3';
