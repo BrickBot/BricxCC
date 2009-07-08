@@ -27,7 +27,7 @@ replace them with the notice and other provisions required by the GPL.
 If you do not delete the provisions above, a recipient may use your version
 of this file under either the MPL or the GPL.
 
-$Id: SynCompletionProposal.pas,v 1.1.1.1 2009/01/12 02:59:56 jhansen Exp $
+$Id: SynCompletionProposal.pas,v 1.46 2003/02/07 14:28:05 plpolak Exp $
 
 You may retrieve the latest version of this file at the SynEdit home page,
 located at http://SynEdit.SourceForge.net
@@ -35,7 +35,7 @@ located at http://SynEdit.SourceForge.net
 Known Issues:
 -------------------------------------------------------------------------------}
 
-unit SynCompletionProposal;
+unit syncompletionproposal;
 
 {$I SynExtra.inc}
 
@@ -272,7 +272,6 @@ type
     FOnChangePosition: TCompletionChange;
     FItemList       : TStrings;
     FInsertList     : TStrings;
-    FAssignedList   : TStrings;
     FPosition       : Integer;
     FLinesInWindow  : Integer;
     FTitleFontHeight: Integer;
@@ -374,6 +373,7 @@ type
     function GetSepString: string;
     procedure SetSepString(const Value: string);
   protected
+    function  GetForm : TSynBaseCompletionProposalForm;
     procedure DoConfigureCompletionForm; virtual;
     procedure SetOptions(const Value: TSynCompletionOptions); virtual;
     procedure EditorCancelMode(Sender: TObject); virtual;                       //GBN 13/11/2001
@@ -402,7 +402,7 @@ type
     property CurrentString: string read GetCurrentString write SetCurrentString;
     property DotOffset : Integer read FDotOffset write FDotOffset;
     property DisplayType : SynCompletionType read GetDisplayKind write SetDisplayKind;
-    property Form: TSynBaseCompletionProposalForm read FForm write FForm;
+    property Form: TSynBaseCompletionProposalForm read GetForm write FForm;
     property PreviousToken: string read FPreviousToken;
     property Position: Integer read GetPosition write SetPosition;
   published
@@ -2004,6 +2004,8 @@ procedure TSynBaseCompletionProposalForm.AdjustMetrics;
 begin
   if DisplayType = ctCode then
   begin
+    if not Assigned(FScrollbar) then
+      Exit;
     if FTitle <> '' then
       FHeightBuffer := FTitleFontHeight + 4 {Margin}
     else
@@ -2403,7 +2405,10 @@ end;
 
 function TSynBaseCompletionProposal.GetCurrentString: string;
 begin
-  Result := FCurrentString;
+  if Assigned(fForm) then
+    Result := fForm.CurrentString
+  else
+    Result := FCurrentString;
 end;
 
 function TSynBaseCompletionProposal.GetItemList: TStrings;
@@ -2443,7 +2448,10 @@ end;
 
 function TSynBaseCompletionProposal.GetPosition: Integer;
 begin
-  Result := FPosition;
+  if Assigned(fForm) then
+    Result := fForm.Position
+  else
+    Result := FPosition;
 end;
 
 procedure TSynBaseCompletionProposal.SetCurrentString(const Value: string);
@@ -2760,7 +2768,7 @@ end;
 
 procedure TSynBaseCompletionProposal.ResetAssignedList;
 begin
-  if Assigned(fForm) then
+  if Assigned(fForm) and (fForm.AssignedList <> nil) then
     fForm.AssignedList.Assign(ItemList);
 end;
 
@@ -2811,10 +2819,14 @@ begin
     Form.OnMeasureItem     := OnMeasureItem;
     Form.OnValidate        := OnValidate;
     Form.OnCancel          := OnCancel;
-{
-    property CurrentEditor  : TComponent read fCurrentEditor write fCurrentEditor;
-}
   end;
+end;
+
+function TSynBaseCompletionProposal.GetForm : TSynBaseCompletionProposalForm;
+begin
+  if not Assigned(fForm) then
+    fForm := TSynBaseCompletionProposalForm.Create(Self);
+  Result := FForm;
 end;
 
 { ----------------  TSynCompletionProposal -------------- }
@@ -2971,13 +2983,13 @@ procedure TSynCompletionProposal.Notification(AComponent: TComponent;
 begin
   if (Operation = opRemove) then
   begin
-    if (AComponent is TCustomSynEdit) then
+    if (AComponent is TCustomSynEdit) and Assigned(FForm) then
     begin
-      if AComponent = Form.CurrentEditor then
+      if AComponent = FForm.CurrentEditor then
       begin
-        if Form.Visible then
+        if FForm.Visible then
           CancelCompletion;
-        Form.CurrentEditor := nil;
+        FForm.CurrentEditor := nil;
       end;
       RemoveEditor(AComponent as TCustomSynEdit);
     end;
@@ -3020,8 +3032,7 @@ begin
   begin
     if not ReadOnly and (Shift = ShortCutShift) and (Key = ShortCutKey) then
     begin
-      if Assigned(fForm) then
-        Form.CurrentEditor := Sender as TCustomSynEdit;
+      Form.CurrentEditor := Sender as TCustomSynEdit;
       DoExecute(Sender as TCustomSynEdit);
       Key := 0;
     end;
@@ -3374,7 +3385,8 @@ procedure TSynCompletionProposal.HookedEditorCommand(Sender: TObject;
   var AChar: {$IFDEF SYN_LAZARUS}TUTF8Char{$ELSE}Char{$ENDIF}; Data, HandlerData: Pointer);
 begin
   inherited;
-
+  if not Assigned(fForm) then
+    Exit;
   if AfterProcessing and Form.Visible then
   begin
     case DisplayType of
@@ -3419,8 +3431,8 @@ begin
         end;
       end;
     end;
-  end else
-  if (not Form.Visible) and Assigned(FTimer) then
+  end
+  else if not fForm.Visible and Assigned(FTimer) then
   begin
     if (Command = ecChar) then
       if (Pos(AChar, TriggerChars) = 0) then
