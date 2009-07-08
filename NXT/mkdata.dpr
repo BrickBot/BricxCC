@@ -21,6 +21,7 @@ program mkdata;
 uses
   Classes,
   SysUtils,
+  uLocalizedStrings in '..\uLocalizedStrings.pas',
   uCmdLineUtils in '..\uCmdLineUtils.pas',
   ParamUtils in '..\ParamUtils.pas',
   uVersionInfo in '..\uVersionInfo.pas';
