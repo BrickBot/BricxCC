@@ -18,8 +18,15 @@ unit towerapi;
 
 interface
 
+{$IFNDEF FPC}
 uses
   Windows;
+{$ELSE}
+type
+  Bool = Boolean;
+const
+  MAX_PATH = 255;
+{$ENDIF}
 
 const
   FILE_DEVICE_UNKNOWN           = $00000022;
@@ -577,6 +584,7 @@ const
   LTFIND_CONNECTED = $01; {// finds only connected devices (working and not working)}
   LTFIND_WORKING = $02; {// finds only working and connected devices}
 
+{$IFNDEF FPC}
 var
   LEGOTowerFindFirst: function(dwfindfilter: LongInt): HTOWERINFO; stdcall;
   LEGOTowerFindNext: function(htower: HTOWERINFO): Boolean; stdcall;
@@ -593,9 +601,11 @@ var
 
 var
   LegoTowerApiLoaded: Boolean = False;
-
+{$ENDIF}
+  
 implementation
 
+{$IFNDEF FPC}
 var
   SaveExit: pointer;
   DLLHandle: THandle;
@@ -840,6 +850,8 @@ begin
 {$ENDIF}
 end {LoadDLL};
 
-begin
+initialization
   LoadDLL;
+  
+{$ENDIF}
 end.

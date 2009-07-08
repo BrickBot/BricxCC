@@ -31,7 +31,7 @@ procedure CreateInitFile;
 implementation
 
 uses
-  SysUtils, FakeSpirit, FantomSpirit, FANTOM;
+  SysUtils, FakeSpirit, FantomSpirit;
 
 var
   BC : TBrickComm;
