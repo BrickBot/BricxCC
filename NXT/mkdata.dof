@@ -135,7 +135,7 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 [Excluded Packages]
-c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_64.bpl=TCS Components 6.4
+c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
 [HistoryLists\hlDebugSourcePath]
 Count=2
 Item0=E:\nxt\BricxCC\source\bricktools\;E:\nxt\BricxCC\source\
@@ -150,9 +150,9 @@ Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
 Count=3
-Item0=..;..\bricktools
-Item1=..;..\bricktool
-Item2=..
+Item0=..
+Item1=..;..\bricktools
+Item2=..;..\bricktool
 [HistoryLists\hlBPLOutput]
 Count=1
 Item0=..
