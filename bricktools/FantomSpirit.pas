@@ -293,7 +293,7 @@ type
 implementation
 
 uses
-  rcx_constants, Contnrs, Math, uNXTConstants,
+  rcx_constants, Contnrs, Math, uNXTConstants, uCommonUtils,
   {$IFNDEF FPC}
   FANTOM
   {$ELSE}
@@ -363,6 +363,7 @@ procedure iNXT_getDeviceInfoEx(nxtHandle : FantomHandle; name : PChar;
 var
   cmd : TNINxtCmd;
   scBuffer : PByte;
+  b1, b2, b3, b4 : Byte;
 begin
   FillChar(scResponse, 64, 0);
   scBuffer := @scResponse[0];
@@ -379,7 +380,11 @@ begin
       inc(scBuffer, 7); // move to signal strength
       Move(scBuffer^, signalStrength^, 4);
       inc(scBuffer, 4);
-      Move(scBuffer^, availableFlash, 4);
+      b1 := scBuffer^; inc(scBuffer);
+      b2 := scBuffer^; inc(scBuffer);
+      b3 := scBuffer^; inc(scBuffer);
+      b4 := scBuffer^; inc(scBuffer);
+      availableFlash := BytesToCardinal(b1, b2, b3, b4);
     end;
   finally
     cmd.Free;
