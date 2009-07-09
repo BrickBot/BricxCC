@@ -462,7 +462,7 @@ type
     SynForthSyn: TSynForthSyn;
     SynJavaSyn: TSynJavaSyn;
     SynNQCSyn: TSynNQCSyn;
-    SynNXCSyn: TSynNQCSyn;
+    SynNXCSyn: TSynNXCSyn;
     SynRSSyn: TSynRSSyn;
     SynROPSSyn: TSynROPSSyn;
     SynLASMSyn: TSynLASMSyn;
@@ -5652,7 +5652,7 @@ begin
   SynForthSyn      := TSynForthSyn.Create(Self);
   SynJavaSyn       := TSynJavaSyn.Create(Self);
   SynNQCSyn        := TSynNQCSyn.Create(Self);
-  SynNXCSyn        := TSynNQCSyn.Create(Self);
+  SynNXCSyn        := TSynNXCSyn.Create(Self);
   SynRSSyn         := TSynRSSyn.Create(Self);
   SynROPSSyn       := TSynROPSSyn.Create(Self);
   SynLASMSyn       := TSynLASMSyn.Create(Self);
@@ -5694,7 +5694,6 @@ begin
     KeyWords.Clear;
     Commands.Clear;
     Constants.Clear;
-    LanguageName := 'NQC';
     if FileExists(ProgramDir + 'Default\nqc_samplesource.txt') then
       SampleSourceStrings.LoadFromFile(ProgramDir + 'Default\nqc_samplesource.txt');
   end;
@@ -5710,7 +5709,6 @@ begin
     Constants.Clear;
     if FileExists(ProgramDir + 'Default\nxc_samplesource.txt') then
       SampleSourceStrings.LoadFromFile(ProgramDir + 'Default\nxc_samplesource.txt');
-    LanguageName := 'NXC';
   end;
   with SynRSSyn do
   begin

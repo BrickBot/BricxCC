@@ -456,7 +456,7 @@ type
     N17: TOfficeMenuItem;
     mniNextWindow: TOfficeMenuItem;
     // synedit highlighters
-    SynNXCSyn: TSynNQCSyn;
+    SynNXCSyn: TSynNXCSyn;
     SynNPGSyn: TSynNPGSyn;
     SynRubySyn: TSynRubySyn;
     SynNBCSyn: TSynNBCSyn;
@@ -3370,14 +3370,10 @@ begin
   if Assigned(AEF) then
   begin
     SCH := AEF.TheEditor.Highlighter;
-    if Assigned(SCH) then
-      Result := SCH.LanguageName
-    else
-    begin
+    if not Assigned(SCH) then
       SCH := GetHighlighterForFile(AEF.Filename);
-      if Assigned(SCH) then
-        Result := SCH.LanguageName;
-    end;
+    if Assigned(SCH) then
+      Result := SCH.LanguageName;
   end;
 end;
 
@@ -3776,7 +3772,7 @@ end;
 
 procedure TMainForm.CreateMainFormHighlighters;
 begin
-  SynNXCSyn := TSynNQCSyn.Create(Self);
+  SynNXCSyn := TSynNXCSyn.Create(Self);
   SynNPGSyn := TSynNPGSyn.Create(Self);
   SynRubySyn := TSynRubySyn.Create(Self);
   SynNBCSyn := TSynNBCSyn.Create(Self);
@@ -3802,7 +3798,6 @@ begin
     Commands.Clear;
     Constants.Clear;
     SampleSourceStrings.Clear;
-    LanguageName := 'NXC';
   end;
   with SynNPGSyn do
   begin
@@ -3839,7 +3834,6 @@ begin
     Commands.Clear;
     Constants.Clear;
     SampleSourceStrings.Clear;
-    LanguageName := 'NQC';
   end;
   with SynPasSyn do
   begin

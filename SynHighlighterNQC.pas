@@ -97,15 +97,12 @@ type
     function GetSourceStrings: TStrings;
     procedure SetSourceStrings(const Value: TStrings);
   protected
-    fLangName : string;
     fSampleSourceStrings : TStrings;
     function GetIdentChars: TSynIdentChars; override;
     function GetSampleSource : String; override;
     procedure LoadDefaultKeywords; virtual;
     procedure LoadDefaultCommands; virtual;
     procedure LoadDefaultConstants; virtual;
-    function GetLangName: string; override;
-    procedure SetLanguageName(const Value: string); override;
   public
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
     function GetLanguageName: string; override;
@@ -119,7 +116,7 @@ type
     function GetTokenID: TtkTokenKind;
     function GetToken: String; override;
     {$IFDEF SYN_LAZARUS}
-    procedure GetTokenEx(var TokenStart: PChar; var TokenLength: integer); override;
+    procedure GetTokenEx(out TokenStart: PChar; out TokenLength: integer); override;
     {$ENDIF}
     function GetTokenAttribute: TSynHighlighterAttributes; override;
     function GetTokenKind: integer; override;
@@ -163,8 +160,14 @@ type
       write fSymbolAttri;
     property FieldDelim: TStringDelim read GetStringDelim write SetStringDelim
       default sdDoubleQuote;
-    property LanguageName;
     property SampleSourceStrings : TStrings read GetSourceStrings write SetSourceStrings;
+  end;
+
+  TSynNXCSyn = class(TSynNQCSyn)
+  public
+    constructor Create(AOwner: TComponent); override;
+{$IFNDEF SYN_CPPB_1} class {$ENDIF}
+    function GetLanguageName: string; override;
   end;
 
 const
@@ -204,6 +207,8 @@ const
   SYNS_AttrField    = 'Field';
   SYNS_FilterNQC    = 'NQC Files (*.nqc,*.nqh)|*.nqc;*.nqh';
   SYNS_LangNQC      = 'NQC';
+  SYNS_FilterNXC    = 'NXC Files (*.nxc)|*.nxc';
+  SYNS_LangNXC      = 'NXC';
 
 const
   K_MAX_COMMANDS = 240+92;
@@ -610,7 +615,6 @@ begin
   fIdentChars := ['_', '0'..'9', 'a'..'z', 'A'..'Z'];
   MakeMethodTables;
   fRange := rsUnknown;
-  fLangName := SYNS_LangNQC;
   fDefaultFilter := SYNS_FilterNQC;
   fDetectPreprocessor := true;
 
@@ -963,8 +967,8 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynNQCSyn.GetTokenEx(var TokenStart: PChar;
-  var TokenLength: integer);
+procedure TSynNQCSyn.GetTokenEx(out TokenStart: PChar;
+  out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
   TokenStart:=FLine + fTokenPos;
@@ -1037,16 +1041,6 @@ end;
 function TSynNQCSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangNQC;
-end;
-
-function TSynNQCSyn.GetLangName: string;
-begin
-  Result := fLangName;
-end;
-
-procedure TSynNQCSyn.SetLanguageName(const Value: string);
-begin
-  fLangName := Value;
 end;
 
 function TSynNQCSyn.LoadFromRegistry(RootKey: HKEY; Key: string): boolean;
@@ -1332,10 +1326,44 @@ begin
   fSampleSourceStrings.Assign(Value);
 end;
 
+{ TSynNXCSyn }
+
+constructor TSynNXCSyn.Create(AOwner: TComponent);
+begin
+  inherited;
+  fDefaultFilter := SYNS_FilterNXC;
+  fSampleSourceStrings.Text :=
+    '/* syntax highlighting */'#13#10 +
+    '// This is a Comment'#13#10 +
+    '// #define is a Preprocessor'#13#10 +
+    '#define NUM_LOOPS 4'#13#10 +
+    'task main() // task is a Keyword'#13#10 +
+    '{ // {},+(); are all Symbols'#13#10 +
+    '  // NUM_LOOPS is an Identifier'#13#10 +
+    '  repeat(NUM_LOOPS)'#13#10 +
+    '  {'#13#10 +
+    '    // TextOut is a Command'#13#10 +
+    '    // "power_level" is a Field (aka String)'#13#10 +
+    '    TextOut(0, 0, true, "power_level");'#13#10 +
+    '    // OUT_AB is a Constant'#13#10 +
+    '    OnFwd(OUT_AB, 75);'#13#10 +
+    '    // 4000 is a Number'#13#10 +
+    '    Wait(4000);'#13#10 +
+    '  }'#13#10 +
+    '}';
+end;
+
+{$IFNDEF SYN_CPPB_1}class {$ENDIF}
+function TSynNXCSyn.GetLanguageName: string;
+begin
+  Result := SYNS_LangNXC;
+end;
+
 initialization
   MakeIdentTable;
 {$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynNQCSyn);
+  RegisterPlaceableHighlighter(TSynNXCSyn);
 {$ENDIF}
 end.
 

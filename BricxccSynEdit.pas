@@ -33,6 +33,10 @@ type
   TBricxccSynEdit = class(TSynEditEx)
   private
   protected
+{$IFDEF FPC}
+    function GetWordAtCursor : string;
+    procedure PrepareIdentChars(var aIdentChars, aWhiteChars: TSynIdentChars);
+{$ENDIF}
   public
     function DelimitedEnd(DelimChars: TSynIdentChars): TPoint;
     function DelimitedStart(DelimChars: TSynIdentChars): TPoint;
@@ -45,6 +49,14 @@ type
     function TextWithinDelimiters(DelimChars : TSynIdentChars) : string;
     procedure ToggleBookMark(BookMark: Integer);
     procedure SetCaretAndSel(const ptCaret, ptBefore, ptAfter: TPoint);
+{$IFDEF FPC}
+    procedure EnsureCursorPosVisibleEx(ForceToMiddle: Boolean);
+    function WordStart: TPoint; virtual;
+    function WordStartEx(XY: TPoint): TPoint; virtual;
+    function WordEnd: TPoint; virtual;
+    function WordEndEx(XY: TPoint): TPoint; virtual;
+    property WordAtCursor: string read GetWordAtCursor;
+{$ENDIF}
   end;
 
 implementation
@@ -229,7 +241,7 @@ begin
     p2 := BlockEnd;
     c  := CaretXY;
     try
-      SetWordBlock(CaretXY);
+      SetSelWord;
       Result := SelText;
     finally
       BlockBegin := p1;
@@ -327,5 +339,98 @@ begin
   SetCaretAndSelection(ptCaret, ptBefore, ptAfter);
 {$ENDIF}
 end;
+
+{$IFDEF FPC}
+procedure TBricxccSynEdit.EnsureCursorPosVisibleEx(ForceToMiddle: Boolean);
+begin
+  EnsureCursorPosVisible;
+  // scroll to middle???
+end;
+
+function TBricxccSynEdit.GetWordAtCursor: string;
+var
+  bBegin: TPoint;
+  bEnd: TPoint;
+begin
+  bBegin     := BlockBegin;
+  bEnd       := BlockEnd;
+  BlockBegin := WordStart;
+  BlockEnd   := WordEnd;
+  Result     := SelText;
+  BlockBegin := bBegin;
+  BlockEnd   := bEnd;
+end;
+
+function TBricxccSynEdit.WordStart: TPoint;
+begin
+  Result := WordStartEx(CaretXY);
+end;
+
+function TBricxccSynEdit.WordEnd: TPoint;begin
+  Result := WordEndEx(CaretXY);
+end;
+
+function TBricxccSynEdit.WordStartEx(XY: TPoint): TPoint;var
+  CX, CY: integer;
+  Line: string;
+  aIdentChars, aWhiteChars: TSynIdentChars;
+begin
+  CX := XY.X;
+  CY := XY.Y;
+  // valid line?
+  if (CY >= 1) and (CY <= Lines.Count) then begin
+    Line := Lines[CY - 1];
+    CX := Min(CX, Length(Line) + 1);
+
+    PrepareIdentChars(aIdentChars, aWhiteChars);
+
+    if CX > 1 then begin  // only find previous char, if not already on start of line
+      // if previous char isn't a "whitespace" search for the last IdentChar
+      if not (Line[CX - 1] in aWhiteChars) then
+        CX := StrRScanForCharInSet(Line, CX - 1, aWhiteChars) + 1;
+    end;
+  end;
+  Result := Point(CX, CY);
+end;
+
+function TBricxccSynEdit.WordEndEx(XY: TPoint): TPoint;var
+  CX, CY: integer;
+  Line: string;
+  aIdentChars, aWhiteChars: TSynIdentChars;
+begin
+  CX := XY.X;
+  CY := XY.Y;
+  // valid line?
+  if (CY >= 1) and (CY <= Lines.Count) then
+  begin
+    Line := Lines[CY - 1];
+
+    PrepareIdentChars(aIdentChars, aWhiteChars);
+
+    CX := StrScanForCharInSet(Line, CX, aWhiteChars);
+    // if no "whitespace" is found just position at the end of the line
+    if CX = 0 then
+      CX := Length(Line) + 1;
+  end;
+  Result := Point(CX,CY);
+end;
+
+procedure TBricxccSynEdit.PrepareIdentChars(var aIdentChars, aWhiteChars: TSynIdentChars);
+var
+  aWordBreakChars: TSynIdentChars;
+begin
+  if Assigned(Highlighter) then
+  begin
+    aIdentChars := Highlighter.IdentChars;
+    aWordBreakChars := Highlighter.WordBreakChars;
+  end else begin
+    aIdentChars := TSynValidStringChars;
+    aWordBreakChars := TSynWordBreakChars;
+  end;
+  aIdentChars := aIdentChars - aWordBreakChars;
+  aWhiteChars := [#1..#255] - aIdentChars;
+end;
+
+{$ENDIF}
 
 end.

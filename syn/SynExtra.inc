@@ -58,7 +58,7 @@
 (******************************************************************************)
 
 {$IFDEF FPC}
-  {$MODE OBJFPC}
+  {$MODE DELPHI}
 {$ENDIF}
 
 {$DEFINE SYNEDIT_INCLUDE}

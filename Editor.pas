@@ -30,6 +30,7 @@ uses
   LCLType,
   LCLIntf,
   LCLProc,
+  SynEditMarks,
 {$ENDIF}
   Messages, Classes, Graphics, Controls, Forms,
   StdCtrls, ComCtrls, Menus, ImgList, SynEdit, ExtCtrls, BricxccSynEdit,
