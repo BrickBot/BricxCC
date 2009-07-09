@@ -21,8 +21,10 @@ program BricxCC;
 {$R 'VistaManifest.res' 'VistaManifest.rc'}
 
 uses
+{$IFNDEF FPC}
   FastMM4,
   FastMove,
+{$ENDIF}
   Forms,
   SysUtils,
   Dialogs,
@@ -116,10 +118,12 @@ uses
   uHEXViewer in 'uHEXViewer.pas' {frmHexView},
   uNXTImage in 'uNXTImage.pas' {frmNXTImage};
 
+{$IFNDEF FPC}
 {.$R *.TLB}
 
 {$R *.RES}
 {$R 'macro_img.res'}
+{$ENDIF}
 
 const
   K_RCXINFO = '(RCX = 0, Cybermaster = 1, Scout = 2, RCX2 = 3, Spybot = 4, Swan = 5, and NXT = 6)';

@@ -278,6 +278,218 @@ end;
 const
   TSynTabChar = #9;
 
+{$IFDEF FPC}
+// Converting tabs to spaces: To use the function several times it's better
+// to use a function pointer that is set to the fastest conversion function.
+type
+  TConvertTabsProc = function(const Line: AnsiString; TabWidth: integer): AnsiString;
+
+type
+  TConvertTabsProcEx = function(const Line: AnsiString; TabWidth: integer;
+    var HasTabs: boolean): AnsiString;
+
+function GetHasTabs(pLine: PChar; var CharsBefore: integer): boolean;
+begin
+  CharsBefore := 0;
+  if Assigned(pLine) then begin
+    while (pLine^ <> #0) do begin
+      if (pLine^ = #9) then break;
+      Inc(CharsBefore);
+      Inc(pLine);
+    end;
+    Result := (pLine^ = #9);
+  end else
+    Result := FALSE;
+end;
+
+{begin}                                                                         //mh 2000-10-19
+function ConvertTabs1Ex(const Line: AnsiString; TabWidth: integer;
+  var HasTabs: boolean): AnsiString;
+var
+  pDest: PChar;
+  nBeforeTab: integer;
+begin
+  Result := Line;  // increment reference count only
+  if GetHasTabs(pointer(Line), nBeforeTab) then begin
+    HasTabs := TRUE;                                                            //mh 2000-11-08
+    pDest := @Result[nBeforeTab + 1]; // this will make a copy of Line
+    // We have at least one tab in the string, and the tab width is 1.
+    // pDest points to the first tab char. We overwrite all tabs with spaces.
+    repeat
+      if (pDest^ = #9) then pDest^ := ' ';
+      Inc(pDest);
+    until (pDest^ = #0);
+  end else
+    HasTabs := FALSE;
+end;
+
+function ConvertTabs1(const Line: AnsiString; TabWidth: integer): AnsiString;
+var
+  HasTabs: boolean;
+begin
+  Result := ConvertTabs1Ex(Line, TabWidth, HasTabs);
+end;
+
+function ConvertTabs2nEx(const Line: AnsiString; TabWidth: integer;
+  var HasTabs: boolean): AnsiString;
+var
+  i, DestLen, TabCount, TabMask: integer;
+  pSrc, pDest: PChar;
+begin
+  Result := Line;  // increment reference count only
+  if GetHasTabs(pointer(Line), DestLen) then begin
+    HasTabs := TRUE;                                                            //mh 2000-11-08
+    pSrc := @Line[1 + DestLen];
+    // We have at least one tab in the string, and the tab width equals 2^n.
+    // pSrc points to the first tab char in Line. We get the number of tabs
+    // and the length of the expanded string now.
+    TabCount := 0;
+    TabMask := (TabWidth - 1) xor $7FFFFFFF;
+    repeat
+      if (pSrc^ = #9) then begin
+        DestLen := (DestLen + TabWidth) and TabMask;
+        Inc(TabCount);
+      end else
+        Inc(DestLen);
+      Inc(pSrc);
+    until (pSrc^ = #0);
+    // Set the length of the expanded string.
+    SetLength(Result, DestLen);
+    DestLen := 0;
+    pSrc := PChar(Line);
+    pDest := PChar(Result);
+    // We use another TabMask here to get the difference to 2^n.
+    TabMask := TabWidth - 1;
+    repeat
+      if (pSrc^ = #9) then begin
+        i := TabWidth - (DestLen and TabMask);
+        Inc(DestLen, i);
+        repeat
+          pDest^ := #9;
+          Inc(pDest);
+          Dec(i);
+        until (i = 0);
+        Dec(TabCount);
+        if (TabCount = 0) then begin
+          repeat
+            Inc(pSrc);
+            pDest^ := pSrc^;
+            Inc(pDest);
+          until (pSrc^ = #0);
+          exit;
+        end;
+      end else begin
+        pDest^ := pSrc^;
+        Inc(pDest);
+        Inc(DestLen);
+      end;
+      Inc(pSrc);
+    until (pSrc^ = #0);
+  end else
+    HasTabs := FALSE;
+end;
+
+function ConvertTabs2n(const Line: AnsiString; TabWidth: integer): AnsiString;
+var
+  HasTabs: boolean;
+begin
+  Result := ConvertTabs2nEx(Line, TabWidth, HasTabs);
+end;
+
+function ConvertTabsEx(const Line: AnsiString; TabWidth: integer;
+  var HasTabs: boolean): AnsiString;
+var
+  i, DestLen, TabCount: integer;
+  pSrc, pDest: PChar;
+begin
+  Result := Line;  // increment reference count only
+  if GetHasTabs(pointer(Line), DestLen) then begin
+    HasTabs := TRUE;                                                            //mh 2000-11-08
+    pSrc := @Line[1 + DestLen];
+    // We have at least one tab in the string, and the tab width is greater
+    // than 1. pSrc points to the first tab char in Line. We get the number
+    // of tabs and the length of the expanded string now.
+    TabCount := 0;
+    repeat
+      if (pSrc^ = #9) then begin
+        DestLen := DestLen + TabWidth - DestLen mod TabWidth;
+        Inc(TabCount);
+      end else
+        Inc(DestLen);
+      Inc(pSrc);
+    until (pSrc^ = #0);
+    // Set the length of the expanded string.
+    SetLength(Result, DestLen);
+    DestLen := 0;
+    pSrc := PChar(Line);
+    pDest := PChar(Result);
+    repeat
+      if (pSrc^ = #9) then begin
+        i := TabWidth - (DestLen mod TabWidth);
+        Inc(DestLen, i);
+        repeat
+          pDest^ := #9;
+          Inc(pDest);
+          Dec(i);
+        until (i = 0);
+        Dec(TabCount);
+        if (TabCount = 0) then begin
+          repeat
+            Inc(pSrc);
+            pDest^ := pSrc^;
+            Inc(pDest);
+          until (pSrc^ = #0);
+          exit;
+        end;
+      end else begin
+        pDest^ := pSrc^;
+        Inc(pDest);
+        Inc(DestLen);
+      end;
+      Inc(pSrc);
+    until (pSrc^ = #0);
+  end else
+    HasTabs := FALSE;
+end;
+
+function ConvertTabs(const Line: AnsiString; TabWidth: integer): AnsiString;
+var
+  HasTabs: boolean;
+begin
+  Result := ConvertTabsEx(Line, TabWidth, HasTabs);
+end;
+
+function IsPowerOfTwo(TabWidth: integer): boolean;
+var
+  nW: integer;
+begin
+  nW := 2;
+  repeat
+    if (nW >= TabWidth) then break;
+    Inc(nW, nW);
+  until (nW >= $10000);  // we don't want 64 kByte spaces...
+  Result := (nW = TabWidth);
+end;
+
+function GetBestConvertTabsProc(TabWidth: integer): TConvertTabsProc;
+begin
+  if (TabWidth < 2) then Result := TConvertTabsProc(@ConvertTabs1)
+    else if IsPowerOfTwo(TabWidth) then
+      Result := TConvertTabsProc(@ConvertTabs2n)
+    else
+      Result := TConvertTabsProc(@ConvertTabs);
+end;
+
+function GetBestConvertTabsProcEx(TabWidth: integer): TConvertTabsProcEx;
+begin
+  if (TabWidth < 2) then Result := TConvertTabsProcEx(@ConvertTabs1Ex)
+    else if IsPowerOfTwo(TabWidth) then
+      Result := TConvertTabsProcEx(@ConvertTabs2nEx)
+    else
+      Result := TConvertTabsProcEx(@ConvertTabsEx);
+end;
+{$ENDIF}
+
 procedure TSynEditPrint.SetLines(const Value: TStrings);
 var
   i,j: integer;

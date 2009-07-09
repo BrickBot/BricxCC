@@ -19,9 +19,9 @@ unit uOfficeComp;
 interface
 
 uses
-  {$IFNDEF FPC}Windows, ActnList, Messages, {$ENDIF}
+  {$IFNDEF FPC}Windows, ActnList, Messages, StdCtrls, {$ENDIF}
   SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ComCtrls, ExtCtrls, StdCtrls, Buttons, Menus;
+  ComCtrls, ExtCtrls, Buttons, Menus;
 
 type
 {$IFDEF FPC}
@@ -286,7 +286,6 @@ type
     property Caption;
     property Color;
     property Constraints;
-    property Ctl3D;
     property UseDockManager default True;
     property DockSite;
     property DragCursor;
@@ -295,10 +294,11 @@ type
     property Enabled;
     property Font;
 {$IFNDEF FPC}
+    property Ctl3D;
+    property ParentCtl3D;
     property Locked;
 {$ENDIF}
     property ParentBiDiMode;
-    property ParentCtl3D;
     property ParentFont;
     property ParentShowHint;
     property PopupMenu;

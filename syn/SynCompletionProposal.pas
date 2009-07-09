@@ -1185,7 +1185,9 @@ begin
   FMatchText := False;
   BorderStyle := bsNone;
   FScrollbar.Kind := sbVertical;
+{$IFNDEF FPC}
   FScrollbar.ParentCtl3D := False;
+{$ENDIF}
   FScrollbar.Parent := Self;
   Visible := False;
 
@@ -1218,17 +1220,17 @@ begin
   FTitleFontHeight := Canvas.TextHeight(TextHeightString);
   FHeightBuffer := 0;
 
-  FScrollbar.OnChange := {$IFDEF SYN_LAZARUS}@{$ENDIF}ScrollbarOnChange;
-  FScrollbar.OnScroll := {$IFDEF SYN_LAZARUS}@{$ENDIF}ScrollbarOnScroll;
-  FScrollbar.OnEnter := {$IFDEF SYN_LAZARUS}@{$ENDIF}ScrollbarOnEnter;
+  FScrollbar.OnChange := ScrollbarOnChange;
+  FScrollbar.OnScroll := ScrollbarOnScroll;
+  FScrollbar.OnEnter := ScrollbarOnEnter;
 
-  FTitleFont.OnChange := {$IFDEF SYN_LAZARUS}@{$ENDIF}TitleFontChange;
-  FFont.OnChange := {$IFDEF SYN_LAZARUS}@{$ENDIF}FontChange;
+  FTitleFont.OnChange := TitleFontChange;
+  FFont.OnChange := FontChange;
 
-  OnDblClick := {$IFDEF SYN_LAZARUS}@{$ENDIF}DoDoubleClick;
-  OnShow := {$IFDEF SYN_LAZARUS}@{$ENDIF}DoFormShow;
-  OnHide := {$IFDEF SYN_LAZARUS}@{$ENDIF}DoFormHide;
-  (FItemList as TStringList).OnChange := {$IFDEF SYN_LAZARUS}@{$ENDIF}StringListChange;  // Really necessary? It seems to work
+  OnDblClick := DoDoubleClick;
+  OnShow := DoFormShow;
+  OnHide := DoFormHide;
+  (FItemList as TStringList).OnChange := StringListChange;  // Really necessary? It seems to work
                                                                                          // fine without it
 end;
 
@@ -3012,8 +3014,8 @@ begin
   fShortCut := Menus.ShortCut(Ord(' '), [ssCtrl]);
   Options := DefaultProposalOptions;
   fCurEditor := -1;
-  fKeyDownProc.OnKeyDown := {$IFDEF SYN_LAZARUS}@{$ENDIF}EditorKeyDown;
-  fKeyPressProc.OnKeyPress := {$IFDEF SYN_LAZARUS}@{$ENDIF}EditorKeyPress;
+  fKeyDownProc.OnKeyDown := EditorKeyDown;
+  fKeyPressProc.OnKeyPress := EditorKeyPress;
 end;
 
 procedure TSynCompletionProposal.SetShortCut(Value: TShortCut);
@@ -3179,7 +3181,7 @@ begin
       FTimer := TTimer.Create(Self);
       FTimer.Enabled := False;
       FTimer.Interval := FTimerInterval;
-      FTimer.OnTimer := {$IFDEF SYN_LAZARUS}@{$ENDIF}TimerExecute;
+      FTimer.OnTimer := TimerExecute;
     end;
   end else begin
     if Assigned(FTimer) then
@@ -3230,11 +3232,11 @@ begin
       AddKeyPressHandler(fKeyPressProc);
     end;
     AEditor.FreeNotification(Self);
-//    AEditor.OnCancelMode := {$IFDEF SYN_LAZARUS}@{$ENDIF}EditorCancelMode;
+//    AEditor.OnCancelMode := EditorCancelMode;
 //  GBN 02/20/2002 Removed csLoading from line below, hook never established if component setup is done
 //  at design time
     if ComponentState * [csDesigning] = [] then
-      AEditor.RegisterCommandHandler({$IFDEF SYN_LAZARUS}@{$ENDIF}HookedEditorCommand,Self);
+      AEditor.RegisterCommandHandler(HookedEditorCommand,Self);
   end;
   fCurEditor := i;
 end;
@@ -3269,7 +3271,7 @@ begin
     AEditor.RemoveKeyPressHandler(fKeyPressProc);
 //    AEditor.OnCancelMode := nil;
     if ComponentState * [csDesigning, csLoading] = [] then
-      AEditor.UnregisterCommandHandler({$IFDEF SYN_LAZARUS}@{$ENDIF}HookedEditorCommand);
+      AEditor.UnregisterCommandHandler(HookedEditorCommand);
     if fCurEditor = i then
       fCurEditor := -1
     else if fCurEditor > i then
@@ -3360,10 +3362,10 @@ begin
   inherited;
   if Assigned(fForm) then
   begin
-    fForm.OnKeyPress := {$IFDEF SYN_LAZARUS}@{$ENDIF}HandleOnKeyPress;
-    fForm.OnValidate := {$IFDEF SYN_LAZARUS}@{$ENDIF}HandleOnValidate;
-    fForm.OnCancel := {$IFDEF SYN_LAZARUS}@{$ENDIF}HandleOnCancel;
-    fForm.OnDblClick := {$IFDEF SYN_LAZARUS}@{$ENDIF}HandleDblClick;
+    fForm.OnKeyPress := HandleOnKeyPress;
+    fForm.OnValidate := HandleOnValidate;
+    fForm.OnCancel := HandleOnCancel;
+    fForm.OnDblClick := HandleDblClick;
   end;
 end;
 
