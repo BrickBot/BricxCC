@@ -39,7 +39,7 @@ procedure FindLASMProcs(Timeout : Cardinal; MLexer : TLASMLexer; Proc : TLASMPro
 implementation
 
 uses
-  SysUtils, mwGenericLex, uCommonUtils;
+  SysUtils, mwGenericLex, uGuiUtils;
 
 procedure FindLASMProcs(Timeout : Cardinal; MLexer : TLASMLexer; Proc : TLASMProcessProc);
 var

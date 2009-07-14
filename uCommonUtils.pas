@@ -77,8 +77,6 @@ function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0)
 procedure GetFileList(const Directory : string; const Pattern : string; List : TStringlist);
 procedure GetSubDirectories(const Directory : string; List : TStringlist);
 procedure OSSleep(const ms : Cardinal);
-function GetTick : Cardinal;
-function GetWindowTitleBarHeight : integer;
 procedure PostWindowMessage(aHwnd : HWND; aMsg : Cardinal; wParam, lParam : Integer);
 function MulDiv(const x, num, den : integer) : integer;
 
@@ -87,8 +85,6 @@ implementation
 uses
 {$IFNDEF FPC}
   Windows,
-{$ELSE}
-  LCLIntf,
 {$ENDIF}
   SysUtils;
 
@@ -249,24 +245,6 @@ begin
 // not sure what to do here yet
 {$ELSE}
   Windows.Sleep(ms);
-{$ENDIF}
-end;
-
-function GetTick : Cardinal;
-begin
-{$IFDEF FPC}
-  Result := GetTickCount;
-{$ELSE}
-  Result := GetTickCount;
-{$ENDIF}
-end;
-
-function GetWindowTitleBarHeight : integer;
-begin
-{$IFDEF FPC}
-  Result := 16
-{$ELSE}
-  Result := GetSystemMetrics(SM_CYCAPTION);
 {$ENDIF}
 end;
 

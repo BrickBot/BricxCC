@@ -17,10 +17,14 @@
 program wav2rso;
 
 uses
+{$IFNDEF FPC}
   FastMM4,
   FastMove,
-  Forms,
   XPMan,
+{$ELSE}
+  Interfaces,
+{$ENDIF}
+  Forms,
   uWav2RSO in 'uWav2RSO.pas' {frmWave2RSO},
   uSrcZoh in 'samplerate\uSrcZoh.pas',
   uSrcLinear in 'samplerate\uSrcLinear.pas',
@@ -30,7 +34,9 @@ uses
   uCommonUtils in 'uCommonUtils.pas',
   uWav2RsoCvt in 'uWav2RsoCvt.pas';
 
+{$IFNDEF FPC}
 {$R *.res}
+{$ENDIF}
 
 begin
   Application.Initialize;

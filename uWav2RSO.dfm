@@ -28,8 +28,8 @@ object frmWave2RSO: TfrmWave2RSO
   end
   object btnConvert: TButton
     Left = 8
-    Top = 67
-    Width = 81
+    Top = 39
+    Width = 89
     Height = 25
     Hint = 'Convert selected files'
     Caption = 'Convert'
@@ -48,8 +48,8 @@ object frmWave2RSO: TfrmWave2RSO
   end
   object btnSelect: TButton
     Left = 8
-    Top = 36
-    Width = 81
+    Top = 8
+    Width = 89
     Height = 25
     Hint = 
       'Select the files you wish to convert (either .wav -> .rso or .rs' +
@@ -69,22 +69,22 @@ object frmWave2RSO: TfrmWave2RSO
   end
   object grpResample: TGroupBox
     Left = 8
-    Top = 95
-    Width = 81
-    Height = 178
+    Top = 72
+    Width = 89
+    Height = 209
     Caption = 'Resample'
     TabOrder = 3
     object lblRate: TLabel
       Left = 8
-      Top = 128
+      Top = 156
       Width = 26
       Height = 13
       Caption = 'Rate:'
     end
     object radSinc1: TRadioButton
       Left = 8
-      Top = 16
-      Width = 68
+      Top = 26
+      Width = 74
       Height = 17
       Hint = 
         'Band limited sinc interpolation, best quality, 97dB Signal to No' +
@@ -95,8 +95,8 @@ object frmWave2RSO: TfrmWave2RSO
     object radSinc2: TRadioButton
       Tag = 1
       Left = 8
-      Top = 33
-      Width = 68
+      Top = 46
+      Width = 74
       Height = 17
       Hint = 
         'Band limited sinc interpolation, medium quality, 97dB Signal to ' +
@@ -107,8 +107,8 @@ object frmWave2RSO: TfrmWave2RSO
     object radSinc3: TRadioButton
       Tag = 2
       Left = 8
-      Top = 50
-      Width = 68
+      Top = 67
+      Width = 74
       Height = 17
       Hint = 
         'Band limited sinc interpolation, fastest, 97dB Signal to Noise R' +
@@ -119,8 +119,8 @@ object frmWave2RSO: TfrmWave2RSO
     object radZoh: TRadioButton
       Tag = 3
       Left = 8
-      Top = 67
-      Width = 57
+      Top = 88
+      Width = 74
       Height = 17
       Hint = 'Zero order hold interpolator, very fast, poor quality.'
       Caption = 'ZOH'
@@ -129,8 +129,8 @@ object frmWave2RSO: TfrmWave2RSO
     object radLinear: TRadioButton
       Tag = 4
       Left = 8
-      Top = 84
-      Width = 57
+      Top = 109
+      Width = 74
       Height = 17
       Hint = 'Linear interpolator, very fast, poor quality.'
       Caption = 'Linear'
@@ -139,8 +139,8 @@ object frmWave2RSO: TfrmWave2RSO
     object radNone: TRadioButton
       Tag = 4
       Left = 8
-      Top = 102
-      Width = 57
+      Top = 130
+      Width = 74
       Height = 17
       Hint = 'No resampling'
       Caption = 'None'
@@ -148,23 +148,31 @@ object frmWave2RSO: TfrmWave2RSO
       TabOrder = 5
       TabStop = True
     end
-    object edtRate: TBricxccSpinEdit
+    object cboRate: TComboBox
       Left = 8
-      Top = 144
-      Width = 57
-      Height = 22
-      Hint = 'The output sample rate'
-      MaxLength = 5
-      MaxValue = 16000
-      MinValue = 2000
+      Top = 176
+      Width = 65
+      Height = 21
+      Hint = 'The desired sample rate (Hz)'
+      Style = csDropDownList
+      ItemHeight = 13
+      ItemIndex = 3
       TabOrder = 6
-      Value = 8000
+      Text = '8000'
+      Items.Strings = (
+        '16000'
+        '12000'
+        '11025'
+        '8000'
+        '6000'
+        '4000'
+        '2000')
     end
   end
   object btnOK: TButton
     Left = 8
-    Top = 358
-    Width = 81
+    Top = 350
+    Width = 89
     Height = 25
     HelpContext = 3522
     Caption = 'OK'
@@ -175,8 +183,8 @@ object frmWave2RSO: TfrmWave2RSO
   end
   object btnCancel: TButton
     Left = 8
-    Top = 386
-    Width = 81
+    Top = 381
+    Width = 89
     Height = 25
     HelpContext = 3523
     Cancel = True
@@ -189,7 +197,7 @@ object frmWave2RSO: TfrmWave2RSO
   object btnHelp: TButton
     Left = 8
     Top = 412
-    Width = 81
+    Width = 89
     Height = 25
     HelpContext = 3524
     Anchors = [akRight, akBottom]
@@ -200,8 +208,8 @@ object frmWave2RSO: TfrmWave2RSO
   end
   object chkUseCompression: TCheckBox
     Left = 8
-    Top = 280
-    Width = 81
+    Top = 292
+    Width = 91
     Height = 17
     Hint = 'Compress the .rso output'
     Caption = 'Compressed'

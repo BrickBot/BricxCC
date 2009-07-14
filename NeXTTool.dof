@@ -128,7 +128,7 @@ CompanyName=JoCar Consulting
 FileDescription=
 FileVersion=1.0.10.1
 InternalName=NeXT Tool
-LegalCopyright=Copyright (c) 2006 John Hansen
+LegalCopyright=Copyright (c) 2006-2009 John Hansen
 LegalTrademarks=
 OriginalFilename=
 ProductName=NeXTTool
@@ -136,11 +136,6 @@ ProductVersion=1.0
 Comments=
 [Excluded Packages]
 c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
-c:\winapps\borland\delphi7\Projects\Bpl\TntUnicodeVcl_D70.bpl=Tnt Unicode Controls
-c:\winapps\borland\delphi7\Projects\Bpl\VirtualTreesD7D.bpl=Virtual Treeview design time package
-C:\winapps\Borland\Delphi7\Projects\Bpl\O217_D70.bpl=Orpheus Components
-C:\winapps\Borland\Delphi7\Projects\Bpl\O217BD70.bpl=Orpheus Data-Aware Components
-c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_64.bpl=TCS Components 6.4
 [HistoryLists\hlConditionals]
 Count=1
 Item0=FAST_MM

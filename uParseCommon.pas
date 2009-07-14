@@ -111,7 +111,7 @@ uses
   SysUtils,
   Classes,
   mwGenericLex,
-  uCommonUtils;
+  uGuiUtils;
 
 const
   ImageIndexGear     = 0;

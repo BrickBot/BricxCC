@@ -42,7 +42,7 @@ procedure FindMindscriptProcs(Timeout : Cardinal; MLexer : TMindScriptLexer;
 implementation
 
 uses
-  SysUtils, mwGenericLex, uCommonUtils;
+  SysUtils, mwGenericLex, uGuiUtils;
 
 procedure FindMindscriptProcs(Timeout : Cardinal; MLexer : TMindScriptLexer; Proc : TMindscriptProcessProc);
 var

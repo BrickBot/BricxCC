@@ -31,7 +31,11 @@ procedure CreateInitFile;
 implementation
 
 uses
-  SysUtils, FakeSpirit, FantomSpirit;
+  SysUtils,
+{$IFNDEF NXT_ONLY}
+  FakeSpirit,
+{$ENDIF}
+  FantomSpirit;
 
 var
   BC : TBrickComm;
@@ -43,7 +47,11 @@ begin
     if LocalBrickType = SU_NXT then
       BC := TFantomSpirit.Create()
     else
+{$IFNDEF NXT_ONLY}
       BC := TFakeSpirit.Create();
+{$ELSE}
+      BC := TFantomSpirit.Create();
+{$ENDIF}
   end;
   Result := BC;
 end;

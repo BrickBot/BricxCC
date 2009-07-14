@@ -1,60 +1,62 @@
 object frmPortPrompt: TfrmPortPrompt
   Left = 418
-  Height = 87
   Top = 323
-  Width = 242
   BorderStyle = bsDialog
   Caption = 'Select Port'
   ClientHeight = 87
-  ClientWidth = 242
+  ClientWidth = 172
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = False
   OnClose = FormClose
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  PixelsPerInch = 96
   object lblPort: TLabel
     Left = 8
-    Height = 17
     Top = 12
-    Width = 35
+    Width = 22
+    Height = 13
     Caption = 'Port:'
-    ParentColor = False
   end
   object chkUseBluetooth: TCheckBox
-    Left = 65
-    Height = 24
+    Left = 40
     Top = 32
-    Width = 125
+    Width = 97
+    Height = 17
     Caption = 'Use bluetooth'
     TabOrder = 1
+    Visible = False
   end
   object btnOK: TButton
-    Left = 53
-    Height = 25
+    Left = 24
     Top = 56
     Width = 65
+    Height = 25
     Caption = 'OK'
     Default = True
     ModalResult = 1
     TabOrder = 2
   end
   object btnCancel: TButton
-    Left = 125
-    Height = 25
+    Left = 96
     Top = 56
     Width = 65
+    Height = 25
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
     TabOrder = 3
   end
   object cboPort: TComboBox
-    Left = 64
-    Height = 21
+    Left = 40
     Top = 8
     Width = 121
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
-    MaxLength = 65535
+    Height = 21
+    ItemHeight = 13
     TabOrder = 0
     Text = 'usb'
   end

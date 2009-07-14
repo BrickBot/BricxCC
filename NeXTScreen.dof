@@ -96,7 +96,7 @@ PackageDLLOutputDir=
 PackageDCPOutputDir=
 SearchPath=bricktools;nxt;samplerate;png
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;vcldb;soaprtl;VclSmp;inetdb;bdertl;vcldbx;adortl;teeui;teedb;tee;dss;vclactnband;vclshlctrls;O217_R70;O217BR70;SynEdit_D7;ComDrv32;cxLibraryVCLD7;dxThemeD7;cxEditorsVCLD7;cxDataD7;cxExtEditorsVCLD7;cxPageControlVCLD7;cxGridVCLD7;M103_r70;S201DR70;BricxCCSyn_D7;cxExportVCLD7;vcl7cr10;TCSComp_65
-Conditionals=
+Conditionals=NXT_ONLY
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
@@ -134,9 +134,12 @@ OriginalFilename=NeXTScreen.exe
 ProductName=NeXT Screen
 ProductVersion=1.0.5.0
 Comments=
+[Excluded Packages]
+c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
 [HistoryLists\hlConditionals]
-Count=1
-Item0=FAST_MM
+Count=2
+Item0=NXT_ONLY
+Item1=FAST_MM
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;

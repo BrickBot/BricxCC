@@ -100,7 +100,7 @@ const
 implementation
 
 uses
-  SysUtils, uLocalizedStrings, uCommonUtils;
+  SysUtils, uLocalizedStrings, uGuiUtils;
 
 {$IFNDEF FPC}
 {$R *.DFM}

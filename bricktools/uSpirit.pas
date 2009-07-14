@@ -463,7 +463,9 @@ uses
   {$IFNDEF FPC}
   FANTOM, SHFolder, Windows
   {$ELSE}
-  {$IFDEF Darwin}fantomosx{$ELSE}FANTOMFPC{$ENDIF}
+  {$IFDEF Darwin}fantomosx{$ENDIF}
+  {$IFDEF Unix}fantomfpc{$ENDIF}
+  {$IFDEF Windows}FANTOM{$ENDIF}
   {$ENDIF};
 
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
