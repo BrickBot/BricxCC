@@ -201,12 +201,12 @@ begin
 {$IFDEF FPC}
   VerCompanyName      := 'JoCar Consulting';
   VerFileDescription  := '';
-  VerFileVersion      := '1.0.1.0';
+  VerFileVersion      := '1.0.2.0';
   VerInternalName     := 'nexttool';
-  VerLegalCopyright   := 'Copyright (c) 2006, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2009, John Hansen';
   VerOriginalFileName := 'nexttool';
   VerProductName      := 'nexttool';
-  VerProductVersion   := '1.0.1.0';
+  VerProductVersion   := '1.0';
   VerComments         := '';
 {$ENDIF}
 

@@ -114,7 +114,7 @@ implementation
 
 uses
   Preferences, SearchRCX, rcx_constants, uSources, uMiscDefines,
-  uSpirit, brick_common, uCommonUtils, uNXTName, uLocalizedStrings;
+  uSpirit, brick_common, uGuiUtils, uCommonUtils, uNXTName, uLocalizedStrings;
 
 var
   V_FUDGE, V_HEIGHT, V_DISPLAY_HEIGHT, V_DISPLAY_DELTA, V_HELP : Integer;

@@ -1,56 +1,63 @@
 LazarusResources.Add('TfrmWave2RSO','FORMDATA',[
   'TPF0'#12'TfrmWave2RSO'#11'frmWave2RSO'#4'Left'#3#190#0#3'Top'#3#185#0#11'Bor'
   +'derStyle'#7#8'bsDialog'#7'Caption'#6#15'Wav 2 RSO 2 Wav'#12'ClientHeight'#3
-  +#147#1#11'ClientWidth'#3#194#1#5'Color'#7#9'clBtnFace'#12'Font.Charset'#7#15
+  +#190#1#11'ClientWidth'#3#194#1#5'Color'#7#9'clBtnFace'#12'Font.Charset'#7#15
   +'DEFAULT_CHARSET'#10'Font.Color'#7#12'clWindowText'#11'Font.Height'#2#245#9
   +'Font.Name'#6#13'MS Sans Serif'#10'Font.Style'#11#0#14'OldCreateOrder'#8#8'S'
-  +'howHint'#9#8'OnCreate'#7#10'FormCreate'#10'DesignSize'#1#3#194#1#3#147#1#0
-  +#13'PixelsPerInch'#2'`'#10'TextHeight'#2#13#0#6'TLabel'#11'lblMessages'#4'Le'
-  +'ft'#2'('#3'Top'#3#20#1#5'Width'#2'3'#6'Height'#2#13#7'Caption'#6#9'Messages'
-  +':'#0#0#7'TButton'#10'btnConvert'#4'Left'#2#8#3'Top'#2'C'#5'Width'#2'Q'#6'He'
-  +'ight'#2#25#4'Hint'#6#14'Convert to RSO'#7'Caption'#6#7'Convert'#8'TabOrder'
-  +#2#4#7'OnClick'#7#15'btnConvertClick'#0#0#5'TMemo'#11'mmoMessages'#4'Left'#2
-  +'h'#3'Top'#3#16#1#5'Width'#3'Q'#1#6'Height'#2'y'#4'Hint'#6#8'Messages'#8'Rea'
-  +'dOnly'#9#10'ScrollBars'#7#6'ssBoth'#8'TabOrder'#2#6#0#0#7'TButton'#9'btnSel'
-  +'ect'#4'Left'#2#8#3'Top'#2'$'#5'Width'#2'Q'#6'Height'#2#25#4'Hint'#6'6Select'
-  +' the WAV files you wish to convert to RSO format'#7'Caption'#6#15'Select Fi'
-  +'les...'#8'TabOrder'#2#2#7'OnClick'#7#14'btnSelectClick'#0#0#7'TButton'#12'b'
-  +'tnOutputDir'#4'Left'#2#8#3'Top'#2#7#5'Width'#2'Q'#6'Height'#2#25#4'Hint'#6
-  +'7Choose a directory where you want the RSO files written'#7'Caption'#6#12'D'
-  +'irectory...'#8'TabOrder'#2#0#7'OnClick'#7#17'btnOutputDirClick'#0#0#5'TEdit'
-  +#7'edtPath'#4'Left'#2'h'#3'Top'#2#9#5'Width'#3'Q'#1#6'Height'#2#21#6'Cursor'
-  +#7#4'crNo'#4'Hint'#6#30'The specified output directory'#8'ReadOnly'#9#8'TabO'
-  +'rder'#2#1#0#0#8'TListBox'#11'lstWavFiles'#4'Left'#2'h'#3'Top'#2'"'#5'Width'
-  +#3'Q'#1#6'Height'#3#233#0#4'Hint'#6#25'WAV files to be converted'#10'ItemHei'
-  +'ght'#2#13#8'TabOrder'#2#3#0#0#9'TGroupBox'#11'grpResample'#4'Left'#2#8#3'To'
-  +'p'#2'_'#5'Width'#2'Q'#6'Height'#3#178#0#7'Caption'#6#8'Resample'#8'TabOrder'
-  +#2#5#0#6'TLabel'#7'lblRate'#4'Left'#2#8#3'Top'#3#128#0#5'Width'#2#26#6'Heigh'
-  +'t'#2#13#7'Caption'#6#5'Rate:'#0#0#12'TRadioButton'#8'radSinc1'#4'Left'#2#8#3
-  +'Top'#2#16#5'Width'#2'9'#6'Height'#2#17#7'Caption'#6#6'Sinc 1'#8'TabOrder'#2
-  +#0#0#0#12'TRadioButton'#8'radSinc2'#3'Tag'#2#1#4'Left'#2#8#3'Top'#2'!'#5'Wid'
-  +'th'#2'9'#6'Height'#2#17#7'Caption'#6#6'Sinc 2'#8'TabOrder'#2#1#0#0#12'TRadi'
-  +'oButton'#8'radSinc3'#3'Tag'#2#2#4'Left'#2#8#3'Top'#2'2'#5'Width'#2'9'#6'Hei'
-  +'ght'#2#17#7'Caption'#6#6'Sinc 3'#8'TabOrder'#2#2#0#0#12'TRadioButton'#6'rad'
-  +'Zoh'#3'Tag'#2#3#4'Left'#2#8#3'Top'#2'C'#5'Width'#2'9'#6'Height'#2#17#7'Capt'
-  +'ion'#6#3'ZOH'#8'TabOrder'#2#3#0#0#12'TRadioButton'#9'radLinear'#3'Tag'#2#4#4
-  +'Left'#2#8#3'Top'#2'T'#5'Width'#2'9'#6'Height'#2#17#7'Caption'#6#6'Linear'#8
+  +'howHint'#9#8'OnCreate'#7#10'FormCreate'#13'PixelsPerInch'#2'`'#0#6'TLabel'
+  +#11'lblMessages'#4'Left'#2'('#3'Top'#3'A'#1#5'Width'#2'3'#6'Height'#2#13#7'C'
+  +'aption'#6#9'Messages:'#0#0#7'TButton'#10'btnConvert'#4'Left'#2#8#3'Top'#2
+  +''''#5'Width'#2'Y'#6'Height'#2#25#4'Hint'#6#22'Convert selected files'#7'Cap'
+  +'tion'#6#7'Convert'#8'TabOrder'#2#2#7'OnClick'#7#15'btnConvertClick'#0#0#5'T'
+  +'Memo'#11'mmoMessages'#4'Left'#2'h'#3'Top'#3'='#1#5'Width'#3'Q'#1#6'Height'#2
+  +'y'#4'Hint'#6#8'Messages'#8'ReadOnly'#9#10'ScrollBars'#7#6'ssBoth'#8'TabOrde'
+  +'r'#2#4#0#0#7'TButton'#9'btnSelect'#4'Left'#2#8#3'Top'#2#8#5'Width'#2'Y'#6'H'
+  +'eight'#2#25#4'Hint'#6'JSelect the files you wish to convert (either .wav ->'
+  +' .rso or .rso -> .wav)'#7'Caption'#6#15'Select Files...'#8'TabOrder'#2#0#7
+  +'OnClick'#7#14'btnSelectClick'#0#0#8'TListBox'#11'lstWavFiles'#4'Left'#2'h'#3
+  +'Top'#2'"'#5'Width'#3'Q'#1#6'Height'#3#15#1#4'Hint'#6#25'WAV files to be con'
+  +'verted'#10'ItemHeight'#2#13#8'TabOrder'#2#1#0#0#9'TGroupBox'#11'grpResample'
+  +#4'Left'#2#8#3'Top'#2'H'#5'Width'#2'Y'#6'Height'#3#209#0#7'Caption'#6#8'Resa'
+  +'mple'#8'TabOrder'#2#3#0#6'TLabel'#7'lblRate'#4'Left'#2#8#3'Top'#3#156#0#5'W'
+  +'idth'#2#26#6'Height'#2#13#7'Caption'#6#5'Rate:'#0#0#12'TRadioButton'#8'radS'
+  +'inc1'#4'Left'#2#8#3'Top'#2#26#5'Width'#2'J'#6'Height'#2#17#4'Hint'#6'XBand '
+  +'limited sinc interpolation, best quality, 97dB Signal to Noise Ratio, 96% B'
+  +'andwidth'#7'Caption'#6#8'Sinc 96%'#8'TabOrder'#2#0#0#0#12'TRadioButton'#8'r'
+  +'adSinc2'#3'Tag'#2#1#4'Left'#2#8#3'Top'#2'.'#5'Width'#2'J'#6'Height'#2#17#4
+  +'Hint'#6'ZBand limited sinc interpolation, medium quality, 97dB Signal to No'
+  +'ise Ratio, 90% Bandwidth'#7'Caption'#6#8'Sinc 90%'#8'TabOrder'#2#1#0#0#12'T'
+  +'RadioButton'#8'radSinc3'#3'Tag'#2#2#4'Left'#2#8#3'Top'#2'C'#5'Width'#2'J'#6
+  +'Height'#2#17#4'Hint'#6'SBand limited sinc interpolation, fastest, 97dB Sign'
+  +'al to Noise Ratio, 80% Bandwidth'#7'Caption'#6#8'Sinc 80%'#8'TabOrder'#2#2#0
+  +#0#12'TRadioButton'#6'radZoh'#3'Tag'#2#3#4'Left'#2#8#3'Top'#2'X'#5'Width'#2
+  +'J'#6'Height'#2#17#4'Hint'#6'6Zero order hold interpolator, very fast, poor '
+  +'quality.'#7'Caption'#6#3'ZOH'#8'TabOrder'#2#3#0#0#12'TRadioButton'#9'radLin'
+  +'ear'#3'Tag'#2#4#4'Left'#2#8#3'Top'#2'm'#5'Width'#2'J'#6'Height'#2#17#4'Hint'
+  +#6'-Linear interpolator, very fast, poor quality.'#7'Caption'#6#6'Linear'#8
   +'TabOrder'#2#4#0#0#12'TRadioButton'#7'radNone'#3'Tag'#2#4#4'Left'#2#8#3'Top'
-  +#2'f'#5'Width'#2'9'#6'Height'#2#17#7'Caption'#6#4'None'#7'Checked'#9#8'TabOr'
-  +'der'#2#5#7'TabStop'#9#0#0#16'TBricxccSpinEdit'#7'edtRate'#4'Left'#2#8#3'Top'
-  +#3#144#0#5'Width'#2'9'#6'Height'#2#22#9'MaxLength'#2#5#8'MaxValue'#3#128'>'#8
-  +'MinValue'#3#208#7#8'TabOrder'#2#6#5'Value'#3'@'#31#0#0#0#7'TButton'#5'btnOK'
-  +#4'Left'#2#8#3'Top'#3'9'#1#5'Width'#2'Q'#6'Height'#2#25#11'HelpContext'#3#194
-  +#13#7'Caption'#6#2'OK'#7'Default'#9#11'ModalResult'#2#1#8'TabOrder'#2#7#7'On'
-  +'Click'#7#10'btnOKClick'#0#0#7'TButton'#9'btnCancel'#4'Left'#2#8#3'Top'#3'U'
-  +#1#5'Width'#2'Q'#6'Height'#2#25#11'HelpContext'#3#195#13#6'Cancel'#9#7'Capti'
-  +'on'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#8#7'OnClick'#7#14'btnCanc'
-  +'elClick'#0#0#7'TButton'#7'btnHelp'#4'Left'#2#8#3'Top'#3'q'#1#5'Width'#2'Q'#6
-  +'Height'#2#25#11'HelpContext'#3#196#13#7'Anchors'#11#7'akRight'#8'akBottom'#0
-  +#7'Caption'#6#5'&Help'#8'TabOrder'#2#9#7'OnClick'#7#12'btnHelpClick'#0#0#11
-  +'TOpenDialog'#7'dlgOpen'#6'Filter'#6'CWAV files (*.wav)|*.wav|RSO files (*.r'
-  +'so)|*.rso|All files (*.*)|*.*'#7'Options'#11#14'ofHideReadOnly'#18'ofAllowM'
-  +'ultiSelect'#14'ofEnableSizing'#17'ofDontAddToRecent'#0#4'Left'#3#216#0#3'To'
-  +'p'#2#8#0#0#10'TPopupMenu'#8'pumFiles'#4'Left'#3#232#0#3'Top'#3#152#0#0#9'TM'
-  +'enuItem'#8'mniClear'#7'Caption'#6#5'Clear'#7'OnClick'#7#13'mniClearClick'#0
-  +#0#0#0
+  +#3#130#0#5'Width'#2'J'#6'Height'#2#17#4'Hint'#6#13'No resampling'#7'Caption'
+  +#6#4'None'#7'Checked'#9#8'TabOrder'#2#5#7'TabStop'#9#0#0#9'TComboBox'#7'cboR'
+  +'ate'#4'Left'#2#8#3'Top'#3#176#0#5'Width'#2'A'#6'Height'#2#21#4'Hint'#6#28'T'
+  +'he desired sample rate (Hz)'#5'Style'#7#14'csDropDownList'#10'ItemHeight'#2
+  +#13#9'ItemIndex'#2#3#8'TabOrder'#2#6#4'Text'#6#4'8000'#13'Items.Strings'#1#6
+  +#5'16000'#6#5'12000'#6#5'11025'#6#4'8000'#6#4'6000'#6#4'4000'#6#4'2000'#0#0#0
+  +#0#7'TButton'#5'btnOK'#4'Left'#2#8#3'Top'#3'^'#1#5'Width'#2'Y'#6'Height'#2#25
+  +#11'HelpContext'#3#194#13#7'Caption'#6#2'OK'#7'Default'#9#11'ModalResult'#2#1
+  +#8'TabOrder'#2#5#7'OnClick'#7#10'btnOKClick'#0#0#7'TButton'#9'btnCancel'#4'L'
+  +'eft'#2#8#3'Top'#3'}'#1#5'Width'#2'Y'#6'Height'#2#25#11'HelpContext'#3#195#13
+  +#6'Cancel'#9#7'Caption'#6#6'Cancel'#11'ModalResult'#2#2#8'TabOrder'#2#6#7'Vi'
+  +'sible'#8#7'OnClick'#7#14'btnCancelClick'#0#0#7'TButton'#7'btnHelp'#4'Left'#2
+  +#8#3'Top'#3#156#1#5'Width'#2'Y'#6'Height'#2#25#11'HelpContext'#3#196#13#7'An'
+  +'chors'#11#7'akRight'#8'akBottom'#0#7'Caption'#6#5'&Help'#8'TabOrder'#2#7#7
+  +'Visible'#8#7'OnClick'#7#12'btnHelpClick'#0#0#9'TCheckBox'#17'chkUseCompress'
+  +'ion'#4'Left'#2#8#3'Top'#3'$'#1#5'Width'#2'['#6'Height'#2#17#4'Hint'#6#24'Co'
+  +'mpress the .rso output'#7'Caption'#6#10'Compressed'#8'TabOrder'#2#8#0#0#5'T'
+  +'Edit'#8'edtPath2'#4'Left'#2'h'#3'Top'#2#8#5'Width'#3'Q'#1#6'Height'#2#21#6
+  +'Cursor'#7#4'crNo'#4'Hint'#6#30'The specified output directory'#8'AutoSize'#8
+  +#8'ReadOnly'#9#8'TabOrder'#2#9#8'OnChange'#7#12'OnPathChange'#0#0#11'TOpenDi'
+  +'alog'#7'dlgOpen'#6'Filter'#6'CWAV files (*.wav)|*.wav|RSO files (*.rso)|*.r'
+  +'so|All files (*.*)|*.*'#7'Options'#11#14'ofHideReadOnly'#18'ofAllowMultiSel'
+  +'ect'#14'ofEnableSizing'#17'ofDontAddToRecent'#0#4'Left'#3#216#0#3'Top'#2#8#0
+  +#0#10'TPopupMenu'#8'pumFiles'#4'Left'#3#232#0#3'Top'#3#152#0#0#9'TMenuItem'#8
+  +'mniClear'#7'Caption'#6#5'Clear'#7'OnClick'#7#13'mniClearClick'#0#0#0#0
 ]);

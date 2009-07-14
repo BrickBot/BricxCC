@@ -30,6 +30,7 @@ object frmPortPrompt: TfrmPortPrompt
     Height = 17
     Caption = 'Use bluetooth'
     TabOrder = 1
+    Visible = False
   end
   object btnOK: TButton
     Left = 24

@@ -16,19 +16,28 @@
  *)
 program NeXTScreen;
 
+{$IFNDEF FPC}
 {$R 'ToolbarBackground.res' 'ToolbarBackground.rc'}
 {$R 'NXTSound.res' 'NXTSound.rc'}
+{$ENDIF}
 
 uses
-  Forms,
+{$IFNDEF FPC}
   XPMan,
+{$ELSE}
+  Interfaces,
+{$ENDIF}
+  Forms,
   Dialogs,
   brick_common in 'bricktools\brick_common.pas',
   uSpirit in 'bricktools\uSpirit.pas',
+  uLocalizedStrings in 'uLocalizedStrings.pas',
   uPortPrompt in 'uPortPrompt.pas' {frmPortPrompt},
   uNXTImage in 'uNXTImage.pas' {frmNXTImage};
 
+{$IFNDEF FPC}
 {$R *.res}
+{$ENDIF}
 
 begin
   LocalBrickType := rtNXT;
@@ -41,7 +50,7 @@ begin
   try
     ShowModal;
     BrickComm.Port := Port;
-    BrickComm.UseBluetooth := UseBT;
+//    BrickComm.UseBluetooth := UseBT;
   finally
     Free;
   end;
@@ -51,5 +60,5 @@ begin
     Application.Run;
   end
   else
-    ShowMessage('Unable to connect to the selected NXT brick.');
+    ShowMessage(sUnableToConnect);
 end.

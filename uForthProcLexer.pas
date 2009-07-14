@@ -42,7 +42,7 @@ procedure FindForthProcs(Timeout : Cardinal; FLexer : TForthLexer;
 implementation
 
 uses
-  SysUtils, mwGenericLex, uCommonUtils;
+  SysUtils, mwGenericLex, uGuiUtils;
 
 { TForthProcLexer }
 

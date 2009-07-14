@@ -34,7 +34,7 @@ procedure FindNBCProcs(Timeout : Cardinal; MLexer : TNBCSimpleLexer; Proc : TNBC
 implementation
 
 uses
-  SysUtils, uCommonUtils;
+  SysUtils, uGuiUtils;
 
 procedure FindNBCProcs(Timeout : Cardinal; MLexer : TNBCSimpleLexer; Proc : TNBCProcessProc);
 var

@@ -25,11 +25,13 @@ interface
 uses
 {$IFNDEF FPC}
   Windows,
+  DirectoryEdit,
 {$ELSE}
   LResources,
+  EditBtn,
 {$ENDIF}
   Classes, Controls, Forms, StdCtrls, Dialogs, Menus, BricxccSpin,
-  DirectoryEdit, Buttons;
+  Buttons;
 
 type
   TfrmWave2RSO = class(TForm)
@@ -54,7 +56,7 @@ type
     lblRate: TLabel;
     chkUseCompression: TCheckBox;
     edtPath2: TEdit;
-    edtRate: TBricxccSpinEdit;
+    cboRate: TComboBox;
     procedure btnSelectClick(Sender: TObject);
     procedure btnConvertClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
@@ -90,6 +92,11 @@ implementation
 uses
   SysUtils, FileCtrl, uSrcCommon, uWav2RsoCvt, uGuiUtils;
 
+const
+  SAMPLE_RATES : array[0..6] of Integer = (
+    16000, 12000, 11025, 8000, 6000, 4000, 2000
+  );
+
 procedure TfrmWave2RSO.btnSelectClick(Sender: TObject);
 begin
   if dlgOpen.Execute then
@@ -118,6 +125,7 @@ end;
 procedure TfrmWave2RSO.FormCreate(Sender: TObject);
 begin
   CreateDirectoryEdit;
+  AdjustGroupBox(grpResample);
   edtPath.Text := ExcludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
   dlgOpen.InitialDir := edtPath.Text;
 end;
@@ -153,7 +161,7 @@ begin
   if radNone.Checked then
     Result := RSO_DEFAULT_RATE
   else
-    Result := edtRate.Value;
+    Result := SAMPLE_RATES[cboRate.ItemIndex];
 end;
 
 procedure TfrmWave2RSO.btnOKClick(Sender: TObject);
@@ -180,22 +188,6 @@ procedure TfrmWave2RSO.CreateDirectoryEdit;
 begin
   edtPath := TDirectoryEdit.Create(Self);
   CloneDE(edtPath, edtPath2);
-  with edtPath do
-  begin
-    Name := 'edtPath';
-    Parent := Self;
-    Left := 104;
-    Top := 8;
-    Width := 337;
-    Height := 21;
-    Cursor := crNo;
-    Hint := 'The specified output directory';
-    AutoSize := False;
-    ReadOnly := True;
-    TabOrder := 9;
-    OnChange := OnPathChange;
-    SetHint := False;
-  end;
 end;
 
 {$IFDEF FPC}

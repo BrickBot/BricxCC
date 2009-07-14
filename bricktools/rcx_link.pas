@@ -194,6 +194,9 @@ function PortIsUSB(const aPort : string) : Boolean;
 implementation
 
 uses
+{$IFNDEF FPC}
+  Windows,
+{$ENDIF}
   SysUtils, rcx_constants, scout_def, TOWERAPI, Math, uCommonUtils;
 
 const
@@ -1971,8 +1974,9 @@ var
   tmpStr : string;
 begin
   aIR.Clear;
-  T1 := GetTick;
-  while (GetTick - T1) < Cardinal(aSeconds * 1000) do
+{$IFNDEF FPC}
+  T1 := GetTickCount;
+  while (GetTickCount - T1) < Cardinal(aSeconds * 1000) do
   begin
     bread := NQCSerial.Read(@(buffer[0]), 100, -1);
     if bread > 0 then
@@ -1983,6 +1987,7 @@ begin
       aIR.Add(tmpStr);
     end;
   end;
+{$ENDIF}
   Result := kRCX_OK;
 end;
 

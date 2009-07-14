@@ -30,7 +30,7 @@ uses
   LResources,
   LCLType,
 {$ENDIF}
-  Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, Menus, 
+  Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, Menus,
   uOfficeComp, ExtDlgs, ActnList, StdCtrls;
 
 type
@@ -63,6 +63,12 @@ type
     act1min: TAction;
     actCaptureAVI: TAction;
     dlgSaveAVI: TSaveDialog;
+    shpRight2: TShape;
+    shpRight1: TShape;
+    shpRight3: TShape;
+    shpLeft1: TShape;
+    shpLeft2: TShape;
+    shpLeft3: TShape;
     procedure shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure shpRightMouseDown(Sender: TObject; Button: TMouseButton;
@@ -73,8 +79,6 @@ type
     procedure shpEnterMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure shpExitMouseDown(Sender: TObject; Button: TMouseButton;
-      Shift: TShiftState; X, Y: Integer);
-    procedure imgNXTMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure RescaleClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -147,10 +151,6 @@ type
     { Private declarations }
     fBytes : array[0..799] of byte;
     fBusy : boolean;
-{$IFNDEF FPC}
-    fLeftRegion : HRGN;
-    fRightRegion : HRGN;
-{$ENDIF}
     LeftPoints : array[0..2] of TPoint;
     RightPoints : array[0..2] of TPoint;
     fDisplayNormal : boolean;
@@ -167,8 +167,6 @@ type
     function GetPixelColor(b : byte; bit : integer) : TColor;
     procedure ExecuteButton(const btn : integer);
     procedure ScaleForm(const i : integer);
-    procedure FreeRegions;
-    procedure CreateRegions(const factor : double);
     procedure ResizeImage;
     procedure DoClick;
     function GraphicClassFromExt(const ext: string): TGraphicClass;
@@ -191,8 +189,12 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Themes, Math, Clipbrd, JPEG, MMSystem, uGuiUtils, uSpirit,
-  brick_common, uNXTConstants, rcx_constants, pngimage, GIFImage, uRICImage,
+  SysUtils, Themes, Clipbrd,
+  {$IFNDEF FPC}
+  JPEG, MMSystem, pngimage, GIFImage, uRICImage,
+  {$ENDIF}
+  uGuiUtils, uSpirit,
+  brick_common, uNXTConstants, rcx_constants,
   uNXTName, uLocalizedStrings;
 
 procedure TfrmNXTImage.tmrRefreshTimer(Sender: TObject);
@@ -306,18 +308,16 @@ end;
 procedure TfrmNXTImage.FormCreate(Sender: TObject);
 begin
   CreatePopupMenu;
-  imgNXT.PopupMenu := pmuMain;
-{$IFNDEF FPC}  
+  imgNXT.PopupMenu    := pmuMain;
+  imgScreen.PopupMenu := pmuMain;
+  lblInfo.PopupMenu   := pmuMain;
+{$IFNDEF FPC}
   fAviWriter := TAviWriter.Create(Self);
 {$ENDIF}
   fCurrentName := '';
   fDisplayNormal := True;
   imgNXT.Picture.Bitmap.FreeImage;
   Self.DoubleBuffered := True;
-{$IFNDEF FPC}
-  fLeftRegion := 0;
-  fRightRegion := 0;
-{$ENDIF}
   ScaleForm(6);    // 2.5x
   dlgSavePic.Filter :=
     'All (*.ric;*.png;*.jpg;*.jpeg;*.gif;*.bmp)|*.ric;*.png;*.jpg;*.jpeg;*.gif;*.bmp|' +
@@ -361,20 +361,6 @@ begin
     ExecuteButton(4);
 end;
 
-procedure TfrmNXTImage.imgNXTMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-  if Button = mbLeft then
-  begin
-{$IFNDEF FPC}
-    if PtInRegion(fLeftRegion, X, Y) then
-      ExecuteButton(1)
-    else if PtInRegion(fRightRegion, X, Y) then
-      ExecuteButton(3);
-{$ENDIF}
-  end;
-end;
-
 procedure TfrmNXTImage.RescaleClick(Sender: TObject);
 begin
   TOfficeMenuItem(Sender).Checked := True;
@@ -382,20 +368,45 @@ begin
 end;
 
 const
-  NxtWidth    = 429;
-  NxtHeight   = 662;
-  ScrnLeft    = 89;
-  ScrnTop     = 129;
-  ScrnWidth   = 250;
-  ScrnHeight  = 160;
-  EnterLeft   = 182;
-  EnterTop    = 363;
-  EnterWidth  = 62;
-  EnterHeight = 62;
-  ExitLeft    = 182;
-  ExitTop     = 451;
-  ExitWidth   = 62;
-  ExitHeight  = 38;
+  NxtWidth     = 429.0;
+  NxtHeight    = 662.0;
+  AspectRatio  = NxtHeight/NxtWidth;
+  ScrnLeft     = 89;
+  ScrnTop      = 129;
+  ScrnWidth    = 250;
+  ScrnHeight   = 160;
+  EnterLeft    = 182;
+  EnterTop     = 363;
+  EnterWidth   = 62;
+  EnterHeight  = 62;
+  ExitLeft     = 182;
+  ExitTop      = 451;
+  ExitWidth    = 62;
+  ExitHeight   = 38;
+  Left1Left    = 124;
+  Left1Top     = 364;
+  Left1Width   = 32;
+  Left1Height  = 17;
+  Left2Left    = 102;
+  Left2Top     = 380;
+  Left2Width   = 54;
+  Left2Height  = 27;
+  Left3Left    = 124;
+  Left3Top     = 406;
+  Left3Width   = 32;
+  Left3Height  = 17;
+  Right1Left   = 269;
+  Right1Top    = 364;
+  Right1Width  = 32;
+  Right1Height = 17;
+  Right2Left   = 269;
+  Right2Top    = 380;
+  Right2Width  = 54;
+  Right2Height = 27;
+  Right3Left   = 269;
+  Right3Top    = 406;
+  Right3Width  = 32;
+  Right3Height = 17;
 
 procedure TfrmNXTImage.ScaleForm(const i: integer);
 var
@@ -420,9 +431,10 @@ begin
   end;
   // every control gets its top, left, width, and height multiplied by factor
   imgNXT.Width     := Trunc(NxtWidth * factor);
-  imgNXT.Height    := Trunc(NxtHeight * factor);
-  ClientWidth      := imgNXT.Width;
-  ClientHeight     := imgNXT.Height;
+  imgNXT.Height    := Trunc(imgNXT.Width * AspectRatio);
+//  imgNXT.Height    := Trunc(NxtHeight * factor);
+  ClientWidth      := imgNXT.Width + 1;
+  ClientHeight     := imgNXT.Height + 1;
   imgScreen.Left   := Trunc(ScrnLeft * factor);
   imgScreen.Top    := Trunc(ScrnTop * factor);
   imgScreen.Width  := Trunc(ScrnWidth * factor);
@@ -436,8 +448,30 @@ begin
   shpExit.Top      := Trunc(ExitTop * factor);
   shpExit.Width    := Trunc(ExitWidth * factor);
   shpExit.Height   := Trunc(ExitHeight * factor);
-  FreeRegions;
-  CreateRegions(factor);
+  shpLeft1.Left     := Trunc(Left1Left * factor);
+  shpLeft1.Top      := Trunc(Left1Top * factor);
+  shpLeft1.Width    := Trunc(Left1Width * factor);
+  shpLeft1.Height   := Trunc(Left1Height * factor);
+  shpLeft2.Left     := Trunc(Left2Left * factor);
+  shpLeft2.Top      := Trunc(Left2Top * factor);
+  shpLeft2.Width    := Trunc(Left2Width * factor);
+  shpLeft2.Height   := Trunc(Left2Height * factor);
+  shpLeft3.Left     := Trunc(Left3Left * factor);
+  shpLeft3.Top      := Trunc(Left3Top * factor);
+  shpLeft3.Width    := Trunc(Left3Width * factor);
+  shpLeft3.Height   := Trunc(Left3Height * factor);
+  shpRight1.Left    := Trunc(Right1Left * factor);
+  shpRight1.Top     := Trunc(Right1Top * factor);
+  shpRight1.Width   := Trunc(Right1Width * factor);
+  shpRight1.Height  := Trunc(Right1Height * factor);
+  shpRight2.Left    := Trunc(Right2Left * factor);
+  shpRight2.Top     := Trunc(Right2Top * factor);
+  shpRight2.Width   := Trunc(Right2Width * factor);
+  shpRight2.Height  := Trunc(Right2Height * factor);
+  shpRight3.Left    := Trunc(Right3Left * factor);
+  shpRight3.Top     := Trunc(Right3Top * factor);
+  shpRight3.Width   := Trunc(Right3Width * factor);
+  shpRight3.Height  := Trunc(Right3Height * factor);
 end;
 
 procedure TfrmNXTImage.ResizeImage;
@@ -454,51 +488,11 @@ end;
 procedure TfrmNXTImage.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fClickStream);
-  FreeRegions;
-end;
-
-const
-  LX1 = 100;
-  LX2 = 154;
-  RX1 = 324;
-  RX2 = 274;
-  Y1 = 392;
-  Y2 = 360;
-  Y3 = 426;
-
-procedure TfrmNXTImage.CreateRegions(const factor: double);
-begin
-  LeftPoints[0] := Point(Trunc(LX1*factor), Trunc(Y1*factor));
-  LeftPoints[1] := Point(Trunc(LX2*factor), Trunc(Y2*factor));
-  LeftPoints[2] := Point(Trunc(LX2*factor), Trunc(Y3*factor));
-  RightPoints[0] := Point(Trunc(RX1*factor), Trunc(Y1*factor));
-  RightPoints[1] := Point(Trunc(RX2*factor), Trunc(Y2*factor));
-  RightPoints[2] := Point(Trunc(RX2*factor), Trunc(Y3*factor));
-{$IFNDEF FPC}
-  fLeftRegion  := CreatePolygonRgn(LeftPoints, 3, WINDING);
-  fRightRegion := CreatePolygonRgn(RightPoints, 3, WINDING);
-{$ENDIF}
-end;
-
-procedure TfrmNXTImage.FreeRegions;
-begin
-{$IFNDEF FPC}
-  if fLeftRegion <> 0 then
-  begin
-    DeleteObject(fLeftRegion);
-    fLeftRegion := 0;
-  end;
-  if fRightRegion <> 0 then
-  begin
-    DeleteObject(fRightRegion);
-    fRightRegion := 0;
-  end;
-{$ENDIF}
 end;
 
 procedure TfrmNXTImage.mniAboutClick(Sender: TObject);
 begin
-  ShowMessage('NeXT Screen'#13#10'Copyright 2007, John C. Hansen');
+  ShowMessage('NeXT Screen'#13#10'Copyright 2007-2009, John C. Hansen');
 end;
 
 procedure TfrmNXTImage.actSaveExecute(Sender: TObject);
@@ -606,6 +600,7 @@ end;
 
 procedure TfrmNXTImage.dlgSavePicTypeChange(Sender: TObject);
 begin
+{$IFNDEF FPC}
   case dlgSavePic.FilterIndex of
     2    : fGC := TRICObject;
     3    : fGC := TPNGObject;
@@ -615,10 +610,12 @@ begin
   else
     fGC := TBitmap;
   end;
+{$ENDIF}
 end;
 
 function TfrmNXTImage.GraphicClassFromExt(const ext: string): TGraphicClass;
 begin
+{$IFNDEF FPC}
   if (ext = '.jpg') or (ext = '.jpeg') then
     Result := TJPEGImage
   else if (ext = '.gif') then
@@ -628,6 +625,7 @@ begin
   else if (ext = '.png') then
     Result := TPNGObject
   else
+{$ENDIF}
     Result := TBitmap;
 end;
 
@@ -795,16 +793,6 @@ begin
   mniPlayClicks := TOfficeMenuItem.Create(pmuMain);
   mniSep6 := TOfficeMenuItem.Create(pmuMain);
   mniExit := TOfficeMenuItem.Create(pmuMain);
-  pmuMain.Items.Add([mniAbout, mniUtils, mniSep1, mniSave, mniCopy, mniSep2,
-                     mniPollNow, mniPoll, mniRefreshRate, mniCaptureAVI,
-                     mniSep3, mniScale, mniSep4, mniDisplay, mniSep5,
-                     mniPlayClicks, mniSep6, mniExit]);
-  mniUtils.Add([mniSetNXTName, mniBootSAMBA, mniBTReset]);
-  mniRefreshRate.Add([mni50ms, mni100ms, mni200ms, mni500ms, mni1sec, mni2sec,
-                      mni5sec, mni10sec, mni20sec, mni1min]);
-  mniScale.Add([mni10x, mni12x, mni15x, mni18x, mni20x, mni22x, mni25x, mni28x,
-                mni30x, mni32x, mni35x, mni38x, mni40x]);
-  mniDisplay.Add([mniDisplayNormal, mniDisplayPopup]);
   with mniAbout do
   begin
     Name := 'mniAbout';
@@ -969,6 +957,7 @@ begin
   begin
     Name := 'mni10x';
     Caption := '1x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -977,6 +966,7 @@ begin
     Name := 'mni12x';
     Tag := 1;
     Caption := '1.25x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -985,6 +975,7 @@ begin
     Name := 'mni15x';
     Tag := 2;
     Caption := '1.5x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -993,6 +984,7 @@ begin
     Name := 'mni18x';
     Tag := 3;
     Caption := '1.75x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1001,6 +993,7 @@ begin
     Name := 'mni20x';
     Tag := 4;
     Caption := '2x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1009,6 +1002,7 @@ begin
     Name := 'mni22x';
     Tag := 5;
     Caption := '2.25x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1018,6 +1012,7 @@ begin
     Tag := 6;
     Caption := '2.5x';
     Checked := True;
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1026,6 +1021,7 @@ begin
     Name := 'mni28x';
     Tag := 7;
     Caption := '2.75x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1034,6 +1030,7 @@ begin
     Name := 'mni30x';
     Tag := 8;
     Caption := '3x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1042,6 +1039,7 @@ begin
     Name := 'mni32x';
     Tag := 9;
     Caption := '3.25x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1050,6 +1048,7 @@ begin
     Name := 'mni35x';
     Tag := 10;
     Caption := '3.5x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1058,6 +1057,7 @@ begin
     Name := 'mni38x';
     Tag := 11;
     Caption := '3.75x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1066,6 +1066,7 @@ begin
     Name := 'mni40x';
     Tag := 12;
     Caption := '4x';
+    GroupIndex := 3;
     RadioItem := True;
     OnClick := RescaleClick;
   end;
@@ -1084,6 +1085,7 @@ begin
     Name := 'mniDisplayNormal';
     Caption := sNormal;
     Checked := True;
+    GroupIndex := 4;
     RadioItem := True;
     OnClick := mniDisplayPopupClick;
   end;
@@ -1091,6 +1093,7 @@ begin
   begin
     Name := 'mniDisplayPopup';
     Caption := sPopup;
+    GroupIndex := 4;
     RadioItem := True;
     OnClick := mniDisplayPopupClick;
   end;
@@ -1117,6 +1120,16 @@ begin
     Caption := sExit;
     OnClick := mniExitClick;
   end;
+  AddMenuItems(pmuMain.Items, [mniAbout, mniUtils, mniSep1, mniSave, mniCopy, mniSep2,
+                     mniPollNow, mniPoll, mniRefreshRate, mniCaptureAVI,
+                     mniSep3, mniScale, mniSep4, mniDisplay, mniSep5,
+                     mniPlayClicks, mniSep6, mniExit]);
+  AddMenuItems(mniUtils,[mniSetNXTName, mniBootSAMBA, mniBTReset]);
+  AddMenuItems(mniRefreshRate, [mni50ms, mni100ms, mni200ms, mni500ms, mni1sec, mni2sec,
+                      mni5sec, mni10sec, mni20sec, mni1min]);
+  AddMenuItems(mniScale, [mni10x, mni12x, mni15x, mni18x, mni20x, mni22x, mni25x, mni28x,
+                mni30x, mni32x, mni35x, mni38x, mni40x]);
+  AddMenuItems(mniDisplay, [mniDisplayNormal, mniDisplayPopup]);
 end;
 
 {$IFDEF FPC}

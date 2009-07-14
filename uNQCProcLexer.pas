@@ -35,7 +35,7 @@ uses
 {$IFDEF FPC}
   LCLIntf,
 {$ENDIF}
-  SysUtils, mwGenericLex, uCommonUtils;
+  SysUtils, mwGenericLex, uGuiUtils;
 
 { TNQCProcLexer }
 

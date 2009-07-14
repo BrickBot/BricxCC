@@ -26674,7 +26674,6 @@ object frmNXTImage: TfrmNXTImage
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00}
     Stretch = True
-    OnMouseDown = imgNXTMouseDown
   end
   object shpEnter: TShape
     Left = 182
@@ -26732,6 +26731,60 @@ object frmNXTImage: TfrmNXTImage
     Font.Style = []
     ParentFont = False
     Visible = False
+  end
+  object shpRight2: TShape
+    Left = 269
+    Top = 380
+    Width = 54
+    Height = 27
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpRightMouseDown
+  end
+  object shpRight1: TShape
+    Left = 269
+    Top = 364
+    Width = 32
+    Height = 17
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpRightMouseDown
+  end
+  object shpRight3: TShape
+    Left = 269
+    Top = 406
+    Width = 32
+    Height = 17
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpRightMouseDown
+  end
+  object shpLeft1: TShape
+    Left = 124
+    Top = 364
+    Width = 32
+    Height = 17
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpLeftMouseDown
+  end
+  object shpLeft2: TShape
+    Left = 102
+    Top = 380
+    Width = 54
+    Height = 27
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpLeftMouseDown
+  end
+  object shpLeft3: TShape
+    Left = 124
+    Top = 406
+    Width = 32
+    Height = 17
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpLeftMouseDown
   end
   object tmrRefresh: TTimer
     Enabled = False

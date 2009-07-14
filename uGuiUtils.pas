@@ -19,14 +19,24 @@ unit uGuiUtils;
 interface
 
 uses
-  Controls, StdCtrls, DirectoryEdit, uNewHotKey, uOfficeComp, SynEdit;
+  Controls, StdCtrls, Menus,
+{$IFNDEF FPC}
+  DirectoryEdit, 
+{$ELSE}
+  EditBtn,
+{$ENDIF}
+  uNewHotKey, uOfficeComp, SynEdit;
 
+procedure AdjustGroupBox(gb : TGroupBox);
 procedure ConfigBar(ogp : TOfficeGradientPanel);
 procedure SizeComboboxDropdown( cb: TCustomCombobox );
 procedure CloneDE(aDest : TDirectoryEdit; aSrc : TEdit);
 procedure CloneSynEdit(aDest : TSynEdit; aSrc : TMemo);
 procedure CloneHotKey(aDest : TBricxCCHotKey; aSrc : TEdit);
 procedure SetWindowFocus(WC : TWinControl);
+function GetTick : Cardinal;
+function GetWindowTitleBarHeight : integer;
+procedure AddMenuItems(m : TMenuItem; a : array of TMenuItem);
 
 implementation
 
@@ -34,8 +44,30 @@ uses
   Themes, Graphics, Classes,
 {$IFNDEF FPC}
   Windows,
+{$ELSE}
+  LCLIntf,
 {$ENDIF}
   Messages, SysUtils, ComCtrls;
+
+procedure AdjustGroupBox(gb : TGroupBox);
+{$IFNDEF FPC}
+begin
+{$ELSE}
+var
+  C : TControl;
+  i : integer;
+begin
+  // move children up (recursively)
+  for i := 0 to gb.ControlCount - 1 do
+  begin
+    C := gb.Controls[i];
+    if C is TGroupBox then
+      AdjustGroupBox(TGroupBox(C))
+    else
+      C.Top := C.Top - 16;
+  end;
+{$ENDIF}
+end;
 
 procedure ConfigBar(ogp : TOfficeGradientPanel);
 begin
@@ -112,7 +144,15 @@ begin
   aDest.Height      := aSrc.Height;
   aDest.AutoSize    := aSrc.AutoSize;
   aDest.TabOrder    := aSrc.TabOrder;
+  aDest.Hint        := aSrc.Hint;
+  aDest.OnChange    := aSrc.OnChange;
+{$IFNDEF FPC}
+  aDest.Cursor      := aSrc.Cursor;
+  aDest.ReadOnly    := aSrc.ReadOnly;
   aDest.SetHint     := False;
+{$ELSE}
+  aDest.Width       := aDest.Width - aDest.Height;
+{$ENDIF}
   aDest.HelpContext := aSrc.HelpContext;
   FreeAndNil(aSrc);
 end;
@@ -136,7 +176,9 @@ begin
   aDest.ParentFont  := aSrc.ParentFont;
   aDest.ReadOnly    := aSrc.ReadOnly;
   aDest.Font.Assign(aSrc.Font);
+{$IFNDEF FPC}
   aDest.ScrollHintFormat := shfTopToBottom;
+{$ENDIF}
   FreeAndNil(aSrc);
 end;
 
@@ -152,16 +194,49 @@ begin
   aDest.TabOrder    := aSrc.TabOrder;
   aDest.Text        := aSrc.Text;
   aDest.HotKey      := 0;
+{$IFNDEF FPC}
   aDest.InvalidKeys := [hcNone, hcShift];
+{$ENDIF}
   FreeAndNil(aSrc);
 end;
 
 procedure SetWindowFocus(WC : TWinControl);
 begin
 {$IFDEF FPC}
-  Result := 0;
+  // not sure what to do here
 {$ELSE}
   Windows.SetFocus(WC.Handle);
+{$ENDIF}
+end;
+
+function GetTick : Cardinal;
+begin
+{$IFDEF FPC}
+  Result := GetTickCount;
+{$ELSE}
+  Result := GetTickCount;
+{$ENDIF}
+end;
+
+function GetWindowTitleBarHeight : integer;
+begin
+{$IFDEF FPC}
+  Result := 16;
+{$ELSE}
+  Result := GetSystemMetrics(SM_CYCAPTION);
+{$ENDIF}
+end;
+
+procedure AddMenuItems(m : TMenuItem; a : array of TMenuItem);
+{$IFDEF FPC}
+var
+  i : integer;
+begin
+  for i := Low(a) to High(a) do
+    m.Add(a[i]);
+{$ELSE}
+begin
+  m.Add(a);
 {$ENDIF}
 end;
 

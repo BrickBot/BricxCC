@@ -1,24 +1,28 @@
 object frmNXTImage: TfrmNXTImage
-  Left = 219
-  Height = 662
-  Top = 47
-  Width = 429
+  Left = 212
+  Top = 38
   BorderIcons = [biSystemMenu, biMinimize]
   BorderStyle = bsSingle
   Caption = 'NeXT Screen'
   ClientHeight = 662
   ClientWidth = 429
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
+  Font.Style = []
   KeyPreview = True
+  OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = HandleKeyDown
-  LCLVersion = '0.9.25'
+  PixelsPerInch = 96
   object imgNXT: TImage
-    Height = 662
+    Left = 0
+    Top = 0
     Width = 429
-    OnMouseDown = imgNXTMouseDown
+    Height = 662
     Picture.Data = {
       07544269746D6170E6020D00424DE6020D00000000003600000028000000AD01
       0000960200000100180000000000B0020D000000000000000000000000000000
@@ -26667,464 +26671,266 @@ object frmNXTImage: TfrmNXTImage
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
       FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00
-    }
-    PopupMenu = pmuMain
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF00}
+    Proportional = True
     Stretch = True
   end
   object shpEnter: TShape
     Left = 182
-    Height = 62
     Top = 363
     Width = 62
+    Height = 62
     Brush.Style = bsClear
     Pen.Style = psClear
-    OnMouseDown = shpEnterMouseDown
     Shape = stRoundRect
+    OnMouseDown = shpEnterMouseDown
   end
   object shpExit: TShape
     Left = 182
-    Height = 38
     Top = 451
     Width = 62
+    Height = 38
     Brush.Style = bsClear
     Pen.Style = psClear
-    OnMouseDown = shpExitMouseDown
     Shape = stRoundRect
+    OnMouseDown = shpExitMouseDown
   end
   object imgScreen: TImage
     Left = 89
-    Height = 160
     Top = 129
     Width = 250
-    PopupMenu = pmuMain
+    Height = 160
   end
   object lblInfo: TLabel
-    Height = 17
+    Left = 0
+    Top = 0
     Width = 429
+    Height = 18
     Align = alTop
     Alignment = taCenter
     Caption = 'Right click for options'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -16
     Font.Name = 'MS Shell Dlg2'
-    ParentColor = False
-    PopupMenu = pmuMain
+    Font.Style = []
+    ParentFont = False
   end
   object lblNXTOff: TLabel
-    Height = 17
-    Top = 645
+    Left = 0
+    Top = 646
     Width = 429
+    Height = 16
     Align = alBottom
     Alignment = taCenter
     Caption = 'The NXT is not responding.'
+    Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -13
     Font.Name = 'MS Sans Serif'
-    ParentColor = False
+    Font.Style = []
+    ParentFont = False
     Visible = False
   end
-  object shpLeft: TShape
-    Left = 96
-    Height = 62
-    Top = 360
-    Width = 72
-    Brush.Style = bsClear
-    Pen.Style = psClear
-    OnMouseDown = shpLeftMouseDown
-    Shape = stCircle
-  end
-  object shpRight: TShape
-    Left = 260
-    Height = 65
-    Top = 361
-    Width = 64
+  object shpRight2: TShape
+    Left = 269
+    Top = 380
+    Width = 54
+    Height = 27
     Brush.Style = bsClear
     Pen.Style = psClear
     OnMouseDown = shpRightMouseDown
-    Shape = stCircle
+  end
+  object shpRight1: TShape
+    Left = 269
+    Top = 364
+    Width = 32
+    Height = 17
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpRightMouseDown
+  end
+  object shpRight3: TShape
+    Left = 269
+    Top = 406
+    Width = 32
+    Height = 17
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpRightMouseDown
+  end
+  object shpLeft1: TShape
+    Left = 124
+    Top = 364
+    Width = 32
+    Height = 17
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpLeftMouseDown
+  end
+  object shpLeft2: TShape
+    Left = 102
+    Top = 380
+    Width = 54
+    Height = 27
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpLeftMouseDown
+  end
+  object shpLeft3: TShape
+    Left = 124
+    Top = 406
+    Width = 32
+    Height = 17
+    Brush.Style = bsClear
+    Pen.Style = psClear
+    OnMouseDown = shpLeftMouseDown
   end
   object tmrRefresh: TTimer
     Enabled = False
     OnTimer = tmrRefreshTimer
-    left = 48
-    top = 80
-  end
-  object pmuMain: TOfficePopupMenu
-    left = 32
-    top = 306
-    object mniAbout: TOfficeMenuItem
-      Caption = '&About...'
-      OnClick = mniAboutClick
-    end
-    object mniUtils: TOfficeMenuItem
-      Caption = 'Utilities'
-      OnClick = mniUtilsClick
-      object mniSetNXTName: TOfficeMenuItem
-        Caption = 'Set NXT Name...'
-        OnClick = mniSetNXTNameClick
-      end
-      object mniBootSAMBA: TOfficeMenuItem
-        Caption = 'Boot NXT into SAMBA mode...'
-        OnClick = mniBootSAMBAClick
-      end
-      object mniBTReset: TOfficeMenuItem
-        Caption = 'Reset Bluetooth to factory defaults...'
-        OnClick = mniBTResetClick
-      end
-    end
-    object mniSep1: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniSave: TOfficeMenuItem
-      Action = actSave
-      OnClick = actSaveExecute
-    end
-    object mniCopy: TOfficeMenuItem
-      Action = actCopy
-      OnClick = actCopyExecute
-    end
-    object mniSep2: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniPollNow: TOfficeMenuItem
-      Action = actPollNow
-      OnClick = actPollNowExecute
-    end
-    object mniPoll: TOfficeMenuItem
-      Action = actPolling
-      OnClick = actPollingExecute
-    end
-    object mniRefreshRate: TOfficeMenuItem
-      Caption = '&Refresh Rate'
-      object mni50ms: TOfficeMenuItem
-        Tag = 50
-        Action = act50ms
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-      object mni100ms: TOfficeMenuItem
-        Tag = 100
-        Action = act100ms
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-      object mni200ms: TOfficeMenuItem
-        Tag = 200
-        Action = act200ms
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-      object mni500ms: TOfficeMenuItem
-        Tag = 500
-        Action = act500ms
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-      object mni1sec: TOfficeMenuItem
-        Tag = 1000
-        Action = act1sec
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-      object mni2sec: TOfficeMenuItem
-        Tag = 20
-        Action = act2sec
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-      object mni5sec: TOfficeMenuItem
-        Tag = 30
-        Action = act5sec
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-      object mni10sec: TOfficeMenuItem
-        Tag = 10000
-        Action = act10sec
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-      object mni20sec: TOfficeMenuItem
-        Tag = 10
-        Action = act20sec
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-      object mni1min: TOfficeMenuItem
-        Tag = 40
-        Action = act1min
-        GroupIndex = 2
-        RadioItem = True
-        OnClick = actRefreshExecute
-      end
-    end
-    object mniSep3: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniScale: TOfficeMenuItem
-      Caption = 'Sca&le'
-      object mni10x: TOfficeMenuItem
-        Caption = '1x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni12x: TOfficeMenuItem
-        Tag = 1
-        Caption = '1.25x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni15x: TOfficeMenuItem
-        Tag = 2
-        Caption = '1.5x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni18x: TOfficeMenuItem
-        Tag = 3
-        Caption = '1.75x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni20x: TOfficeMenuItem
-        Tag = 4
-        Caption = '2x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni22x: TOfficeMenuItem
-        Tag = 5
-        Caption = '2.25x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni25x: TOfficeMenuItem
-        Tag = 6
-        Caption = '2.5x'
-        Checked = True
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni28x: TOfficeMenuItem
-        Tag = 7
-        Caption = '2.75x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni30x: TOfficeMenuItem
-        Tag = 8
-        Caption = '3x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni32x: TOfficeMenuItem
-        Tag = 9
-        Caption = '3.25x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni35x: TOfficeMenuItem
-        Tag = 10
-        Caption = '3.5x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni38x: TOfficeMenuItem
-        Tag = 11
-        Caption = '3.75x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-      object mni40x: TOfficeMenuItem
-        Tag = 12
-        Caption = '4x'
-        RadioItem = True
-        OnClick = RescaleClick
-      end
-    end
-    object mniSep4: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniDisplay: TOfficeMenuItem
-      Caption = '&Display'
-      object mniDisplayNormal: TOfficeMenuItem
-        Caption = '&Normal'
-        Checked = True
-        RadioItem = True
-        OnClick = mniDisplayPopupClick
-      end
-      object mniDisplayPopup: TOfficeMenuItem
-        Caption = '&Popup'
-        RadioItem = True
-        OnClick = mniDisplayPopupClick
-      end
-    end
-    object mniSep5: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniPlayClicks: TOfficeMenuItem
-      Caption = 'Play Clicks'
-      Checked = True
-      OnClick = mniPlayClicksClick
-    end
-    object mniSep6: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniExit: TOfficeMenuItem
-      Caption = 'E&xit'
-      OnClick = mniExitClick
-    end
+    Left = 48
+    Top = 80
   end
   object dlgSavePic: TSavePictureDialog
-    Title = 'Save file as'
     OnTypeChange = dlgSavePicTypeChange
-    left = 80
-    top = 88
+    Left = 80
+    Top = 88
   end
   object ActionList1: TActionList
-    left = 40
-    top = 352
+    Left = 40
+    Top = 352
     object act50ms: TAction
       Tag = 50
       Category = 'Refresh'
       Caption = '50 ms'
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '50 ms'
-      OnExecute = actRefreshExecute
       ShortCut = 16433
+      OnExecute = actRefreshExecute
     end
     object act100ms: TAction
       Tag = 100
       Category = 'Refresh'
       Caption = '100 ms'
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '100 ms'
-      OnExecute = actRefreshExecute
       ShortCut = 16434
+      OnExecute = actRefreshExecute
     end
     object act200ms: TAction
       Tag = 200
       Category = 'Refresh'
       Caption = '200 ms'
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '200 ms'
-      OnExecute = actRefreshExecute
       ShortCut = 16435
+      OnExecute = actRefreshExecute
     end
     object act500ms: TAction
       Tag = 500
       Category = 'Refresh'
       Caption = '500 ms'
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '500 ms'
-      OnExecute = actRefreshExecute
       ShortCut = 16436
+      OnExecute = actRefreshExecute
     end
     object act1sec: TAction
       Tag = 1000
       Category = 'Refresh'
       Caption = '1 sec'
       Checked = True
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '1 sec'
-      OnExecute = actRefreshExecute
       ShortCut = 16437
+      OnExecute = actRefreshExecute
     end
     object act2sec: TAction
       Tag = 2000
       Category = 'Refresh'
       Caption = '2 sec'
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '2 sec'
-      OnExecute = actRefreshExecute
       ShortCut = 16438
+      OnExecute = actRefreshExecute
     end
     object act5sec: TAction
       Tag = 5000
       Category = 'Refresh'
       Caption = '5 sec'
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '5 sec'
-      OnExecute = actRefreshExecute
       ShortCut = 16439
+      OnExecute = actRefreshExecute
     end
     object actSave: TAction
       Category = 'Main'
       Caption = '&Save...'
-      DisableIfNoHandler = True
-      OnExecute = actSaveExecute
       ShortCut = 16467
+      OnExecute = actSaveExecute
     end
     object actCopy: TAction
       Category = 'Main'
       Caption = '&Copy'
-      DisableIfNoHandler = True
       Hint = 'Copy to clipboard'
-      OnExecute = actCopyExecute
       ShortCut = 16451
+      OnExecute = actCopyExecute
     end
     object act10sec: TAction
       Tag = 10000
       Category = 'Refresh'
       Caption = '10 sec'
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '10 sec'
-      OnExecute = actRefreshExecute
       ShortCut = 16440
+      OnExecute = actRefreshExecute
     end
     object actPollNow: TAction
       Category = 'Main'
       Caption = 'Poll &Now'
-      DisableIfNoHandler = True
       Hint = 'Poll now'
-      OnExecute = actPollNowExecute
       ShortCut = 16462
+      OnExecute = actPollNowExecute
     end
     object actPolling: TAction
       Category = 'Main'
       Caption = '&Polling'
-      DisableIfNoHandler = True
       GroupIndex = 1
-      OnExecute = actPollingExecute
       ShortCut = 16464
+      OnExecute = actPollingExecute
     end
     object act20sec: TAction
       Tag = 20000
       Category = 'Refresh'
       Caption = '20 sec'
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '20 sec'
-      OnExecute = actRefreshExecute
       ShortCut = 16441
+      OnExecute = actRefreshExecute
     end
     object act1min: TAction
       Tag = 60000
       Category = 'Refresh'
       Caption = '1 min'
-      DisableIfNoHandler = True
       GroupIndex = 2
       Hint = '1 min'
-      OnExecute = actRefreshExecute
       ShortCut = 16432
+      OnExecute = actRefreshExecute
     end
+    object actCaptureAVI: TAction
+      Category = 'Main'
+      Caption = 'Capture AVI'
+      ShortCut = 16449
+      OnExecute = actCaptureAVIExecute
+    end
+  end
+  object dlgSaveAVI: TSaveDialog
+    DefaultExt = 'avi'
+    FileName = 'nxt.avi'
+    Filter = 'AVI Files (*.avi)|*.avi|All Files (*.*)|*.*'
+    Title = 'Save AVI video'
+    Left = 72
+    Top = 456
   end
 end

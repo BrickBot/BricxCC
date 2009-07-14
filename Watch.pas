@@ -279,7 +279,7 @@ implementation
 
 uses
   SysUtils, Dialogs, SearchRCX, Preferences, brick_common, rcx_constants, uSpirit,
-  uLocalizedStrings, uCommonUtils, uProgram, MainUnit, Editor;
+  uLocalizedStrings, uGuiUtils, uCommonUtils, uProgram, MainUnit, Editor;
 
 function GetMotorData(numb : integer) : string;
 var

@@ -611,6 +611,10 @@ resourcestring
 resourcestring
   SNoTokens = 'No tokens found to align on.';
 
+// nextscreen.dpr
+resourcestring
+  sUnableToConnect = 'Unable to connect to the selected NXT brick.';
+
 implementation
 
 end.

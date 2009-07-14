@@ -76,7 +76,11 @@ var
 implementation
 
 uses
-  SysUtils, uRIC, Consts;
+  SysUtils,
+{$IFNDEF FPC}
+  Consts,
+{$ENDIF}
+  uRIC;
 
 { TRICObject }
 

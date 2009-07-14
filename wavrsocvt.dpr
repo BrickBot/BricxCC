@@ -97,7 +97,7 @@ begin
   VerFileDescription  := '';
   VerFileVersion      := '1.1.3.2';
   VerInternalName     := 'wavrsocvt';
-  VerLegalCopyright   := 'Copyright (c) 2006, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2009, John Hansen';
   VerOriginalFileName := 'wavrsocvt';
   VerProductName      := 'WAV/RSO Converter';
   VerProductVersion   := '1.1';

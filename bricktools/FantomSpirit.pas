@@ -297,7 +297,9 @@ uses
   {$IFNDEF FPC}
   FANTOM
   {$ELSE}
-  {$IFDEF Darwin}fantomosx{$ELSE}FANTOMFPC{$ENDIF}
+  {$IFDEF Darwin}fantomosx{$ENDIF}
+  {$IFDEF Unix}fantomfpc{$ENDIF}
+  {$IFDEF Windows}FANTOM{$ENDIF}
   {$ENDIF};
 
 
