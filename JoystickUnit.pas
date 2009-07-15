@@ -81,9 +81,12 @@ type
     procedure DirBtnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure btnHelpClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
+{$IFNDEF NXT_ONLY}
     function GetTaskOffset : integer;
+{$ENDIF}
     procedure DoJoyButton(const i : byte; bPress : boolean);
     procedure SetSpeed(const val : word);
   public
@@ -101,10 +104,13 @@ implementation
 
 uses
 {$IFNDEF FPC}
-  Windows, 
+  Windows,
   MMSystem,
 {$ENDIF}
-  SysUtils, Dialogs, Preferences, brick_common, SearchRCX, MainUnit, uSpirit, uLocalizedStrings;
+{$IFNDEF NXT_ONLY}
+  MainUnit, Dialogs,
+{$ENDIF}
+  SysUtils, brick_common, uLocalizedStrings, uJoyGlobals, uGlobals, uGuiUtils;
 
 var oldldir:integer =100;                   // previous left motor direction
     oldrdir:integer =100;                   // previous right motor direction
@@ -129,6 +135,9 @@ var oldldir:integer =100;                   // previous left motor direction
                (-1, 0, 1,-1, 0, 1,-1, 0, 1);
 
 procedure ExecuteScript(const i: byte; bPress : boolean);
+{$IFDEF NXT_ONLY}
+begin
+{$ELSE}
 var
   fname : string;
 begin
@@ -141,6 +150,7 @@ begin
     else
       ShowMessage(MainForm.ce.CompilerMessages[0].MessageToString);
   end;
+{$ENDIF}
 end;
 
 function GetMotorList(m1 : integer; m2 : integer = -1) : Byte;
@@ -350,7 +360,6 @@ end;
 
 procedure TJoystickForm.LeftRightBtnClick(Sender: TObject);
 begin
-  LeftRightBtn.Checked := true;
   grpLeftMotor.Caption := sLeftMotor;
   grpRightMotor.Caption := sRightMotor;
   LeftRight := true;
@@ -358,7 +367,6 @@ end;
 
 procedure TJoystickForm.DriveSteerBtnClick(Sender: TObject);
 begin
-  DriveSteerBtn.Checked := true;
   grpLeftMotor.Caption := sDriveMotor;
   grpRightMotor.Caption := sSteerMotor;
   LeftRight := false;
@@ -400,9 +408,9 @@ begin
   {Form becomes visible}
   {Fill in values}
   if LeftRight then
-    LeftRightBtnClick(Self)
+    LeftRightBtn.Checked := True
   else
-    DriveSteerBtnClick(Self);
+    DriveSteerBtn.Checked := True;
   LMotorA.Checked := (LeftMotor = 0);
   LMotorB.Checked := (LeftMotor = 1);
   LMotorC.Checked := (LeftMotor = 2);
@@ -443,12 +451,14 @@ begin
     MoveRCX(5);
 end;
 
+{$IFNDEF NXT_ONLY}
 function TJoystickForm.GetTaskOffset: integer;
 begin
   Result := 0;
   if IsSpybotic then
     Result := 8;
 end;
+{$ENDIF}
 
 procedure TJoystickForm.btnHelpClick(Sender: TObject);
 begin
@@ -457,6 +467,7 @@ end;
 
 procedure TJoystickForm.DoJoyButton(const i: byte; bPress : boolean);
 begin
+{$IFNDEF NXT_ONLY}
   if IsNxt then begin
     ExecuteScript(i, bPress);
   end
@@ -466,6 +477,7 @@ begin
     else
       ExecuteScript(i, bPress);
   end;
+{$ENDIF}
 end;
 
 procedure TJoystickForm.SetSpeed(const val: word);
@@ -476,6 +488,15 @@ begin
   speed := val div 9362;
   if SpeedBar.Position <> speed then
     SpeedBar.Position := speed;
+end;
+
+procedure TJoystickForm.FormCreate(Sender: TObject);
+begin
+  AdjustGroupBox(grpDriveMode);
+  AdjustGroupBox(grpLeftMotor);
+  AdjustGroupBox(grpMovement);
+  AdjustGroupBox(grpRightMotor);
+  AdjustGroupBox(grpSpeed);
 end;
 
 {$IFDEF FPC}

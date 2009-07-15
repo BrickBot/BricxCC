@@ -55,7 +55,7 @@ var
 implementation
 
 uses
-  SysUtils, Dialogs, SearchRCX, brick_common, uLocalizedStrings;
+  SysUtils, Dialogs, brick_common, uLocalizedStrings, uGlobals;
 
 {$IFNDEF FPC}
 {$R *.DFM}
@@ -70,7 +70,7 @@ procedure TMemoryForm.RefreshBtnClick(Sender: TObject);
 var
   c : TCursor;
 begin
-  if not CheckAlive then Exit;
+  if not BrickComm.BrickAlive then Exit;
   MemoryMemo.Lines.Clear;
   Application.ProcessMessages;
   c := Screen.Cursor;

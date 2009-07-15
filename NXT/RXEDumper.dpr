@@ -16,18 +16,26 @@
  *)
 program RXEDumper;
 
+{$IFNDEF FPC}
 {$R 'RXEDumpImages.res' 'RXEDumpImages.rc'}
+{$ENDIF}
 
 uses
+{$IFNDEF FPC}
+  XPMan,
   FastMM4,
   FastMove,
+{$ELSE}
+  Interfaces,
+{$ENDIF}
   Forms,
-  XPMan,
   uRxeDump in 'uRxeDump.pas' {frmNXTDumper},
   uAbout in 'uAbout.pas' {frmAboutRXE},
   uNXTClasses in 'uNXTClasses.pas';
 
+{$IFNDEF FPC}
 {$R *.res}
+{$ENDIF}
 
 begin
   Application.Initialize;

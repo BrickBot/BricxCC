@@ -16,6 +16,7 @@ object JoystickForm: TJoystickForm
   KeyPreview = True
   OldCreateOrder = True
   OnClose = FormClose
+  OnCreate = FormCreate
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   OnShow = FormShow

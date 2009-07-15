@@ -25,7 +25,7 @@ uses
   FastMove in '..\FastMove.pas',
 {$ENDIF}
 {$IFDEF CAN_DOWNLOAD}
-  uSpirit in '..\bricktools\uSpirit.pas',
+  uGlobals in '..\uGlobals.pas',
   FantomSpirit in '..\bricktools\FantomSpirit.pas',
 {$ENDIF}
   Classes,

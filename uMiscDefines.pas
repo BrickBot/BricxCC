@@ -19,10 +19,9 @@ unit uMiscDefines;
 interface
 
 uses
-  Classes, uParseCommon, Editor, uNXTConstants, uSpirit;
+  Classes, uParseCommon, Editor, uNXTConstants;
 
 type
-  TProgramNames = array[0..5] of string;
   TFirmwareType = (ftStandard, ftBrickOS, ftPBForth, ftLeJOS, ftOther);
 
 const

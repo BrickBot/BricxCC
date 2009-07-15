@@ -238,7 +238,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Math, FakeSpirit, uSpirit, brick_common, uLocalizedStrings;
+  SysUtils, Math, uSpirit, brick_common, uLocalizedStrings;
 
 const
   eMotorControl    = $00; //1 byte

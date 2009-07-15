@@ -26,8 +26,8 @@ uses
 {$IFDEF FPC}
   LResources,
 {$ENDIF}
-  Classes, Controls, Forms, ExtCtrls, StdCtrls, Buttons, ComCtrls, BricxccSpin,
-  uMidi2MS, Dialogs;
+  Classes, Controls, Forms, Dialogs, ExtCtrls, StdCtrls, Buttons, ComCtrls,
+  BricxccSpin, uMidi2MS;
 
 type
   TPianoForm = class(TForm)

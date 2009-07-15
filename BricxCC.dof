@@ -142,9 +142,8 @@ ProductName=Bricx Command Center
 ProductVersion=3.3
 Comments=NQC (c) 1998-2009 David Baum, John Hansen
 [HistoryLists\hlDebugSourcePath]
-Count=2
-Item0=D:\BricxCC\NXT\;D:\bricxcc\bricktools\
-Item1=G:\nxt\BricxCC\source\NXT\
+Count=1
+Item0=G:\nxt\BricxCC\source\NXT\
 [HistoryLists\hlConditionals]
 Count=1
 Item0=FAST_MM, CAN_DOWNLOAD

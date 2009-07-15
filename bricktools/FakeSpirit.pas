@@ -290,7 +290,7 @@ function GetRCXErrorString(iErrCode : Integer) : string;
 implementation
 
 uses
-  RcxLog, srecord, rcx_cmd, NQCSerialWin, Math, uCommonUtils;
+  RcxLog, srecord, rcx_cmd, NQCSerialWin, Math, uCommonUtils, uGlobals;
 
 function GetRCXErrorString(iErrCode : Integer) : string;
 begin

@@ -44,7 +44,7 @@ type
     Button9: TButton;
     grpMultiDigit: TGroupBox;
     SendButton: TButton;
-    GroupBox1: TGroupBox;
+    grpNXTMsg: TGroupBox;
     cboMailbox: TComboBox;
     lblMailbox: TLabel;
     mmoMessage: TMemo;
@@ -61,6 +61,7 @@ type
     procedure btnHelpClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnSendNXTClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     function GetInBox : byte;
@@ -75,7 +76,7 @@ var
 implementation
 
 uses
-  SysUtils, Preferences, brick_common, uSpirit, uCommonUtils;
+  SysUtils, brick_common, uGlobals, uCommonUtils, uGuiUtils;
 
 {$IFNDEF FPC}
 {$R *.DFM}
@@ -157,6 +158,13 @@ end;
 procedure TMessageForm.btnSendNXTClick(Sender: TObject);
 begin
   BrickComm.MessageWrite(GetInBox, GetMessage(Sender));
+end;
+
+procedure TMessageForm.FormCreate(Sender: TObject);
+begin
+  AdjustGroupBox(grpNXTMsg);
+  AdjustGroupBox(grpMultiDigit);
+  AdjustGroupBox(grpSingleDigit);
 end;
 
 {$IFDEF FPC}

@@ -245,11 +245,11 @@ uses
   SysUtils, Dialogs,
   MainUnit, Preferences, GotoLine, ConstructUnit, dlgSearchText,
   dlgReplaceText, dlgConfirmReplace, DTestPrintPreview, Translate, ClipBrd,
-  CodeUnit, ExecProgram, SearchRCX, brick_common, FakeSpirit, uCodeExplorer, uMacroForm,
+  CodeUnit, ExecProgram, brick_common, FakeSpirit, uCodeExplorer, uMacroForm,
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
-  uMiscDefines, uSpirit, uNXTClasses, uNBCInterface, ParamUtils,
+  uMiscDefines, uNXTClasses, uNBCInterface, ParamUtils,
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants,
-  uEditorExperts, uProgram, uNXTExplorer, uCompStatus;
+  uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals;
 
 var
   localSearchFromCaret: boolean;

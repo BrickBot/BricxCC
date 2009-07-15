@@ -106,9 +106,9 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Graphics, Dialogs, SearchRCX, Preferences, uMiscDefines,
+  SysUtils, Graphics, Dialogs, Preferences, uMiscDefines,
   brick_common, rcx_constants, uSources, uLocalizedStrings, uCommonUtils,
-  uProgram, MainUnit, Editor;
+  uProgram, MainUnit, Editor, uGlobals;
 
 var
   busy : boolean = false;

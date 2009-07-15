@@ -722,7 +722,7 @@ uses
   SysUtils, Graphics,
   ClipBrd, GotoLine, SearchRCX, Piano,
   About, Controller, Diagnose, Unlock, Watch,
-  ExecProgram, ConstructUnit, uSpirit,
+  ExecProgram, ConstructUnit,
   JoystickUnit, DatalogUnit, MemoryUnit, RemoteUnit,
   CodeUnit, MessageUnit, SynEdit,
 {$IFNDEF FPC}
@@ -739,7 +739,7 @@ uses
   uPSI_FantomSpirit, uPSRuntime, uPSDebugger,
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,
-  uProgram, uCompStatus;
+  uProgram, uCompStatus, uGlobals;
 
 const
   K_NQC_GUIDE = 24;

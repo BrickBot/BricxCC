@@ -113,8 +113,8 @@ implementation
 {$ENDIF}
 
 uses
-  Preferences, SearchRCX, rcx_constants, uSources, uMiscDefines,
-  uSpirit, brick_common, uGuiUtils, uCommonUtils, uNXTName, uLocalizedStrings;
+  rcx_constants, uSources, uGlobals, uSpirit, brick_common, uGuiUtils,
+  uCommonUtils, uNXTName, uLocalizedStrings;
 
 var
   V_FUDGE, V_HEIGHT, V_DISPLAY_HEIGHT, V_DISPLAY_DELTA, V_HELP : Integer;
@@ -374,6 +374,12 @@ procedure TDiagForm.FormCreate(Sender: TObject);
 var
   scale_amount : double;
 begin
+  AdjustGroupBox(DisplayGroup);
+  AdjustGroupBox(grpInfo);
+  AdjustGroupBox(grpNXTDiag);
+  AdjustGroupBox(IRGroup);
+  AdjustGroupBox(PowerGroup);
+  AdjustGroupBox(WatchGroup);
   scale_amount     := Screen.PixelsPerInch / 96;
   V_HEIGHT         := Trunc(K_HEIGHT * scale_amount);
   V_DISPLAY_HEIGHT := Trunc(K_DISPLAY_HEIGHT * scale_amount);

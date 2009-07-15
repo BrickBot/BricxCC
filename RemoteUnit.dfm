@@ -14,6 +14,7 @@ object RemoteForm: TRemoteForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnCreate = FormCreate
   OnHide = FormHide
   OnShow = FormShow
   PixelsPerInch = 96

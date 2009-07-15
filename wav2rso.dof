@@ -128,12 +128,14 @@ CompanyName=JoCar Consulting
 FileDescription=wav 2 rso 2 wav converter
 FileVersion=1.1.3.2
 InternalName=wav2rso.exe
-LegalCopyright=Copyright 2006, John Hansen
+LegalCopyright=Copyright 2006-2009, John Hansen
 LegalTrademarks=
 OriginalFilename=
 ProductName=wav2rso
 ProductVersion=1.1
 Comments=
+[Excluded Packages]
+c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;

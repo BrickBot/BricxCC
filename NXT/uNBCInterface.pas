@@ -143,7 +143,7 @@ implementation
 
 uses
   SysUtils, Math, uVersionInfo, ParamUtils, uNXTConstants,
-  NBCCommonData, NXTDefsData, NXCDefsData;
+  NBCCommonData, NXTDefsData, NXCDefsData, uGlobals;
 
 { TNBCCompiler }
 

@@ -28,7 +28,7 @@ uses
 {$ELSE}
   LResources,
 {$ENDIF}
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   ComCtrls, StdCtrls, ExtCtrls, Buttons;
 
 type
@@ -143,8 +143,7 @@ implementation
 {$ENDIF}
 
 uses
-  SearchRCX, brick_common, rcx_constants, uSources, uMiscDefines,
-  uLocalizedStrings;
+  brick_common, rcx_constants, uSources, uLocalizedStrings, uGlobals, uGuiUtils;
 
 var
   V_HEIGHT, V_MOTORS_TOP, V_VARS_TOP, V_TASKS_TOP, V_FUDGE,
@@ -610,6 +609,10 @@ procedure TDirectForm.FormCreate(Sender: TObject);
 var
   scale_amount : double;
 begin
+  AdjustGroupBox(grpMotors);
+  AdjustGroupBox(grpTasks);
+  AdjustGroupBox(grpVariables);
+  AdjustGroupBox(SensorGroup);
   scale_amount := Screen.PixelsPerInch / 96;
   V_HEIGHT     := Trunc(K_HEIGHT * scale_amount);
   V_MOTORS_TOP := Trunc(K_MOTORS_TOP * scale_amount);

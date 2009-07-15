@@ -21,9 +21,6 @@ interface
 uses
   uSpirit;
 
-var
-  LocalBrickType : integer;      // Brick type to use for this instance
-
 function BrickComm : TBrickComm;
 procedure ReleaseBrickComm;
 procedure CreateInitFile;
@@ -35,7 +32,7 @@ uses
 {$IFNDEF NXT_ONLY}
   FakeSpirit,
 {$ENDIF}
-  FantomSpirit;
+  FantomSpirit, uGlobals;
 
 var
   BC : TBrickComm;

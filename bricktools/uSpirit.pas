@@ -22,55 +22,8 @@ uses
   rcx_constants, Classes, FantomDefs;
 
 const
-  K_RCX   = 'RCX';
-  K_CYBER = 'CyberMaster';
-  K_SCOUT = 'Scout';
-  K_RCX2  = 'RCX2';
-  K_SPY   = 'Spybot';
-  K_SWAN  = 'Swan';
-  K_NXT   = 'NXT';
-
-const
-  rtRCX         = 0;
-  rtCybermaster = 1;
-  rtScout       = 2;
-  rtRCX2        = 3;
-  rtSpy         = 4;
-  rtSwan        = 5;
-  rtNXT         = 6;
-
-const
-  SU_RCX         = rtRCX;
-  SU_CYBERMASTER = rtCybermaster;
-  SU_SCOUT       = rtScout;
-  SU_RCX2        = rtRCX2;
-  SU_SPYBOTIC    = rtSpy;
-  SU_SWAN        = rtSwan;
-  SU_NXT         = rtNXT;
-
-const
   MAX_COMPORT   = 8;
   MAX_USBPORT   = MAX_COMPORT+4;
-
-const
-  // remote commands
-  kRemoteKeysReleased = $0000;
-  kRemotePBMessage1   = $0100;
-  kRemotePBMessage2   = $0200;
-  kRemotePBMessage3   = $0400;
-  kRemoteOutAForward  = $0800;
-  kRemoteOutBForward  = $1000;
-  kRemoteOutCForward  = $2000;
-  kRemoteOutABackward = $4000;
-  kRemoteOutBBackward = $8000;
-  kRemoteOutCBackward = $0001;
-  kRemoteSelProgram1  = $0002;
-  kRemoteSelProgram2  = $0004;
-  kRemoteSelProgram3  = $0008;
-  kRemoteSelProgram4  = $0010;
-  kRemoteSelProgram5  = $0020;
-  kRemoteStopOutOff   = $0040;
-  kRemotePlayASound   = $0080;
 
 type
 //  TBrickType = rtRCX..rtNXT;
@@ -445,13 +398,9 @@ type
     property  OnGetVarInfoByName : TGetVarInfoByNameEvent read fOnGetVarInfoByName write fOnGetVarInfoByName;
   end;
 
-var
-  UserDataLocalPath : string;
-
 function NameToNXTFileType(name : string) : TNXTFileType;
 function MakeValidNXTFilename(const filename : string) : string;
 function GetInitFilename: string;
-function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
 function FantomAPIAvailable : boolean;
 procedure LoadNXTPorts(aStrings : TStrings);
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
@@ -459,9 +408,9 @@ function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0)
 implementation
 
 uses
-  SysUtils,
+  SysUtils, uGlobals,
   {$IFNDEF FPC}
-  FANTOM, SHFolder, Windows
+  FANTOM
   {$ELSE}
   {$IFDEF Darwin}fantomosx{$ENDIF}
   {$IFDEF Unix}fantomfpc{$ENDIF}
@@ -791,38 +740,9 @@ begin
   NXTGetDeviceInfo(Result, tmpAddr, btsig, memfree);
 end;
 
-{$IFNDEF FPC}
-function GetSpecialFolderPath(folder : integer) : string;
-const
-  SHGFP_TYPE_CURRENT = 0;
-var
-  path: array [0..MAX_PATH] of char;
-begin
-  if SUCCEEDED(SHGetFolderPath(0,folder,0,SHGFP_TYPE_CURRENT,@path[0])) then
-    Result := path
-  else
-    Result := '';
-end;
-{$ENDIF}
-
 function GetInitFilename: string;
 begin
   Result := UserDataLocalPath+'nxt.dat';
 end;
-
-function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
-const
-  name_postfix : array[boolean] of string = ('r', 'p');
-begin
-  Result := UserDataLocalPath+Format('joybtn%2.2d%s.rops', [i, name_postfix[bPress]]);
-end;
-
-initialization
-
-{$ifndef FPC}
-  UserDataLocalPath := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\';
-{$else}
-  UserDataLocalPath := ExtractFilePath(ParamStr(0));
-{$endif}
 
 end.

@@ -29,7 +29,9 @@ uses
 {$ENDIF}
   Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls,
 {$IFNDEF FPC}
+{$IFNDEF NXT_ONLY}
   DataAnalysis,
+{$ENDIF}
 {$ENDIF}
   BricxccSpin;
 
@@ -255,7 +257,9 @@ type
   private
     { Private declarations }
 {$IFNDEF FPC}
+{$IFNDEF NXT_ONLY}
     fGraph : TfrmDataAnalysis;
+{$ENDIF}
 {$ENDIF}
     fNewData : TStrings;
     fVarArray : array[0..31] of TVarControls;
@@ -278,8 +282,12 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Dialogs, SearchRCX, Preferences, brick_common, rcx_constants, uSpirit,
-  uLocalizedStrings, uGuiUtils, uCommonUtils, uProgram, MainUnit, Editor;
+{$IFNDEF NXT_ONLY}
+  MainUnit, Editor, Preferences,
+{$ENDIF}
+  SysUtils, Dialogs, brick_common, rcx_constants, uSpirit,
+  uLocalizedStrings, uGuiUtils, uCommonUtils, uProgram,
+  uGlobals;
 
 function GetMotorData(numb : integer) : string;
 var
@@ -815,8 +823,10 @@ var
   i : integer;
   bVis : boolean;
   cb : TCheckBox;
+{$IFNDEF NXT_ONLY}
   AEF : TEditorForm;
   tmp : string;
+{$ENDIF}
 begin
   grpVar.Visible   := True;
   grpMotor.Visible := not IsNXT;
@@ -831,6 +841,7 @@ begin
         cb.Checked := False;
       fVarArray[i].Edit.Visible := bVis;
     end;
+{$IFNDEF NXT_ONLY}
     AEF := MainForm.ActiveEditorForm;
     if IsNXT and Assigned(AEF) and CurrentProgram.Loaded(AEF.Filename) then
     begin
@@ -844,6 +855,7 @@ begin
         end;
       end;
     end;
+{$ENDIF}
   end;
   CheckSensor4.Visible := IsNXT;
   ValueSensor4.Visible := IsNXT;
@@ -927,9 +939,20 @@ end;
 
 procedure TWatchForm.FormCreate(Sender: TObject);
 begin
+  AdjustGroupBox(grpVar);
+  AdjustGroupBox(grpMotor);
+  AdjustGroupBox(grpSensor);
+  AdjustGroupBox(grpTimer);
+  AdjustGroupBox(grpCounter);
+  AdjustGroupBox(grpMessage);
+  AdjustGroupBox(grpTacho);
+  AdjustGroupBox(grpNXTMotors);
+  AdjustGroupBox(grpI2C);
   fNewData := TStringList.Create;
 {$IFNDEF FPC}
+{$IFNDEF NXT_ONLY}
   fGraph := nil;
+{$ENDIF}
 {$ENDIF}
   cboTimes.ItemIndex := 3;
   PopulateVarArray;
@@ -956,6 +979,7 @@ end;
 procedure TWatchForm.btnGraphClick(Sender: TObject);
 begin
 {$IFNDEF FPC}
+{$IFNDEF NXT_ONLY}
   if not btnGraph.Down then
   begin
     // close graph form and nil our pointer
@@ -976,6 +1000,7 @@ begin
     fGraph.Show;
   end;
 {$ENDIF}
+{$ENDIF}
 end;
 
 procedure TWatchForm.FormDestroy(Sender: TObject);
@@ -986,22 +1011,26 @@ end;
 procedure TWatchForm.UpdateGraph;
 begin
 {$IFNDEF FPC}
+{$IFNDEF NXT_ONLY}
   if Assigned(fGraph) then
   begin
     fGraph.AddNewData(fNewData);
   end;
+{$ENDIF}
 {$ENDIF}
 end;
 
 procedure TWatchForm.GraphDestroyed;
 begin
 {$IFNDEF FPC}
+{$IFNDEF NXT_ONLY}
   // called by data analysis form when it closes
   if Assigned(fGraph) then
   begin
     fGraph := nil;
     btnGraph.Down := False;
   end;
+{$ENDIF}
 {$ENDIF}
 end;
 

@@ -59,6 +59,10 @@ type
     procedure FormCreate(Sender: TObject);
     procedure edtDirChange(Sender: TObject);
     procedure chkUsePBClick(Sender: TObject);
+    procedure mniAddClick(Sender: TObject);
+    procedure mniClearClick(Sender: TObject);
+    procedure mniDeleteClick(Sender: TObject);
+    procedure lstDirsClick(Sender: TObject);
   private
     pumDirs: TOfficePopupMenu;
     mniAdd: TOfficeMenuItem;
@@ -66,9 +70,6 @@ type
     mniSep1: TOfficeMenuItem;
     mniClear: TOfficeMenuItem;
     procedure pumDirsPopup(Sender: TObject);
-    procedure mniClearClick(Sender: TObject);
-    procedure mniDeleteClick(Sender: TObject);
-    procedure mniAddClick(Sender: TObject);
     procedure CreatePopupMenu;
     function GetOutputDir: string;
     procedure HandleConversionError(const trk: integer;
@@ -93,7 +94,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, uCommonUtils;
+  SysUtils, uCommonUtils, uGuiUtils;
 
 { TfrmMidiBatch }
 
@@ -259,6 +260,9 @@ end;
 
 procedure TfrmMidiBatch.FormCreate(Sender: TObject);
 begin
+  AdjustGroupBox(grpParameters);
+  AdjustGroupBox(grpTempo);
+  AdjustGroupBox(grpTracks);
   CreatePopupMenu;
   lstDirs.PopupMenu := pumDirs;
   UpdateButtonState;
@@ -277,6 +281,11 @@ end;
 procedure TfrmMidiBatch.chkUsePBClick(Sender: TObject);
 begin
   edtPBS.Enabled := chkUsePB.Checked;
+end;
+
+procedure TfrmMidiBatch.lstDirsClick(Sender: TObject);
+begin
+  UpdateButtonState;
 end;
 
 procedure TfrmMidiBatch.CreatePopupMenu;
