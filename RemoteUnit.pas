@@ -83,6 +83,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ProgramMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     function GetPower(const mtr : byte) : byte;
@@ -100,7 +101,8 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, uSpirit, brick_common, Preferences, rcx_constants, uRemoteProgMap;
+  SysUtils, uGlobals, brick_common, rcx_constants, uRemoteProgMap,
+  uGuiUtils, uRemoteGlobals;
 
 procedure TRemoteForm.tmrMainTimer(Sender: TObject);
 var
@@ -278,13 +280,20 @@ begin
       F.Selected := TButton(Sender).Tag;
       if F.ShowModal = mrOK then
       begin
-        for i := low(RemotePrograms) to high(RemotePrograms) do
+        for i := Low(RemotePrograms) to High(RemotePrograms) do
           RemotePrograms[i] := F.ProgramName[i];
       end;
     finally
       F.Free;
     end;
   end;
+end;
+
+procedure TRemoteForm.FormCreate(Sender: TObject);
+begin
+  AdjustGroupBox(grpMotorA);
+  AdjustGroupBox(grpMotorB);
+  AdjustGroupBox(grpMotorC);
 end;
 
 {$IFDEF FPC}

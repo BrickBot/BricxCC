@@ -552,19 +552,6 @@ var
   ProcedureListSettings : TProcedureListProperties;
   AddMenuItemsToNewMenu : boolean = True;
 
-{Remote settings}
-var
-  RemotePrograms : TProgramNames;
-
-{Joystick settings}
-var LeftRight:boolean;              // Whether in left-right mode
-    LeftMotor:integer;              // the left motor
-    RightMotor:integer;             // the right motor
-    LeftReversed:boolean;           // whether left must be reversed
-    RightReversed:boolean;          // whether right must be reversed
-    MotorSpeed:integer;             // speed of the motors
-    RCXTasks:boolean;               // use tasks or scripts
-
 {Macros}
 const
   MAXMACRO = 200;
@@ -769,7 +756,6 @@ var
 
 
 function  PreferredLanguageName : string;
-procedure DeleteMainKey;
 procedure SaveDesktopMiscToFile(aFilename : string);
 procedure LoadDesktopMiscFromFile(aFilename : string);
 procedure SaveWindowValuesToFile(aFilename : string);
@@ -849,7 +835,8 @@ uses
   uSetValues, uEEPROM, uNewWatch, Themes,
   uSpirit, brick_common, Transfer, uNXTExplorer, uNXTController,
   uNXTExplorerSettings, uLocalizedStrings, uGuiUtils, uEditorExperts,
-  uEECommentConfig, uEEAlignConfig, uNBCInterface;
+  uEECommentConfig, uEEAlignConfig, uNBCInterface, uJoyGlobals,
+  uRemoteGlobals, uRegUtils, uGlobals;
 
 
 
@@ -893,8 +880,6 @@ const
 
 const
   K_PID           = 'BricxCC.1';
-  K_MAINKEY       = '\Software\BricxCC';
-  K_VERSION       = '3.3';
   K_OLDMAINKEY    = '\Software\RcxCC';
   K_OLDVERSION    = 'version 3.2';
   K_WINDOWSECTION = 'BricxCC_Windows';
@@ -945,11 +930,6 @@ const
     '%.bin: %.class $(DOBJECTS)' + #13#10 +
     #9'$(LEJOS) $* -o $@' + #13#10;
   K_MAX_OLD_PATHS = 4;
-
-var
-  fMainKey : string = K_MAINKEY;
-  fVersion : string = K_VERSION;
-  fVerDbl : Double;
 
 function ExePath : string;
 begin
@@ -1445,129 +1425,6 @@ begin
   finally
     theFile.Free;
   end;
-end;
-
-{**************************************************
-  Registry stuff
- **************************************************}
-
-procedure DeleteMainKey;
-var
-  tmpReg : TRegistry;
-begin
-  tmpReg := TRegistry.Create;
-  try
-    tmpReg.DeleteKey(fMainKey + '\' + fVersion);
-  finally
-    tmpReg.Free;
-  end;
-end;
-
-procedure Reg_OpenKey(r : TRegistry; name:string);
-begin
-  {Opens the registry key}
-  r.OpenKey(fMainKey+'\'+fVersion+'\'+name,true);
-end;
-
-procedure Reg_DeleteKey(r : TRegistry; name:string);
-begin
-  {Deletes the registry key}
-  r.DeleteKey(fMainKey+'\'+fVersion+'\'+name);
-end;
-
-function Reg_KeyExists(r : TRegistry; name:string):boolean;
-begin
-  Result := r.KeyExists(fMainKey+'\'+fVersion+'\'+name);
-end;
-
-{-- Booleans --}
-
-function Reg_ReadBool(r: TRegistry; name:string; def:boolean):boolean;
-begin
-  {Read a boolean value from the registry. Returns the
-   default when it does not exist.}
-  if r.ValueExists(name) then
-    Result := r.ReadBool(name)
-  else
-    Result := def;
-end;
-
-{-- Integers --}
-
-function Reg_ReadInteger(r: TRegistry; name:string; def:integer):integer;
-begin
-  {Read a integer value from the registry. Returns the
-   default when it does not exist.}
-  if r.ValueExists(name) then
-    Result := r.ReadInteger(name)
-  else
-    Result := def;
-end;
-
-{-- Strings --}
-
-function Reg_ReadString(r: TRegistry; name:string; def:string):string;
-begin
-  {Read a string value from the registry. Returns the
-   default when it does not exist.}
-  if r.ValueExists(name) then
-    Result := r.ReadString(name)
-  else
-    Result := def;
-end;
-
-{-- Styles --}
-
-procedure Reg_WriteStyle(r : TRegistry; name:string; val:TFontStyles);
-var
-  tt : integer;
-begin
-{Writes a style value to the registry}
-  tt := 0;
-  if fsBold in val then tt := tt+1;
-  if fsItalic in val then tt := tt+2;
-  r.WriteInteger(name,tt);
-end;
-
-function Reg_ReadStyle(r : TRegistry; name:string; def:TFontStyles):TFontStyles;
-var
-  tt : integer;
-begin
-  {Read a style value from the registry. Returns the default when it does not exist.}
-  if r.ValueExists(name) then
-  begin
-    tt := r.ReadInteger(name);
-    Result := [];
-    if (tt and 1) > 0 then Result := Result + [fsBold];
-    if (tt and 2) > 0 then Result := Result + [fsItalic];
-  end
-  else
-    Result := def;
-end;
-
-{-- Colors --}
-
-procedure Reg_WriteColor(r : TRegistry; name:string; val:TColor);
-begin
-  {Writes a color value to the registry}
-  r.WriteInteger(name,integer(val));
-end;
-
-function Reg_ReadColor(r : TRegistry; name:string; def:TColor) : TColor;
-begin
-//  Read a color value from the registry. Returns the default when it does not exist.
-  if r.ValueExists(name) then
-  begin
-    Result := TColor(r.ReadInteger(name));
-{$IFDEF VER_D7_UP}
-    // handle D7/D5 differences
-    //  clSystemColor = $FF000000 in D7, $80000000 in D5
-    if (Result and not $80000000) in [0..COLOR_ENDCOLORS] then
-      Result := (Result and not $80000000) or TColor(clSystemColor);
-{$ENDIF}
-  end
-  else
-    Result := def;
 end;
 
 {**************************************************
@@ -2269,83 +2126,6 @@ begin
   {Resets the windows values to default}
   Reg_DeleteKey(reg, 'Windows');
   LoadWindowsValues(reg);
-end;
-
-procedure LoadJoystickValues(reg : TRegistry);
-begin
-  {Loads the joystick values from the registry}
-  Reg_OpenKey(reg, 'Joystick');
-  try
-    LeftRight     := Reg_ReadBool(reg, 'LeftRight', true);
-    LeftMotor     := Reg_ReadInteger(reg, 'LeftMotor', 0);
-    RightMotor    := Reg_ReadInteger(reg, 'RightMotor', 2);
-    LeftReversed  := Reg_ReadBool(reg, 'LeftReversed', false);
-    RightReversed := Reg_ReadBool(reg, 'RightReversed', false);
-    MotorSpeed    := Reg_ReadInteger(reg, 'MotorSpeed', 4);
-    RCXTasks      := Reg_ReadBool(reg, 'RCXTasks', true);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveJoystickValues(reg : TRegistry);
-{Saves the joystick values to the registry}
-begin
-  Reg_DeleteKey(reg, 'Joystick');
-  Reg_OpenKey(reg, 'Joystick');
-  try
-    reg.WriteBool('LeftRight',LeftRight);
-    reg.WriteInteger('LeftMotor',LeftMotor);
-    reg.WriteInteger('RightMotor',RightMotor);
-    reg.WriteBool('LeftReversed',LeftReversed);
-    reg.WriteBool('RightReversed',RightReversed);
-    reg.WriteInteger('MotorSpeed',MotorSpeed);
-    reg.WriteBool('RCXTasks', RCXTasks);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetJoystickValues(reg : TRegistry);
-begin
-  {Resets the joystick values to default}
-  Reg_DeleteKey(reg, 'Joystick');
-  LoadJoystickValues(reg);
-end;
-
-procedure LoadRemoteValues(reg : TRegistry);
-var
-  i : integer;
-begin
-  Reg_OpenKey(reg, 'Remote');
-  try
-    for i := Low(RemotePrograms) to High(RemotePrograms)-1 do
-      RemotePrograms[i] := Reg_ReadString(reg, 'Program'+IntToStr(i), Format('remote%d.rxe', [i]));
-    i := High(RemotePrograms);
-    RemotePrograms[i] := Reg_ReadString(reg, 'Program'+IntToStr(i), 'default');
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveRemoteValues(reg : TRegistry);
-var
-  i : integer;
-begin
-  Reg_DeleteKey(reg, 'Remote');
-  Reg_OpenKey(reg, 'Remote');
-  try
-    for i := Low(RemotePrograms) to High(RemotePrograms) do
-      reg.WriteString('Program'+IntToStr(i),RemotePrograms[i]);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetRemoteValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'Remote');
-  LoadRemoteValues(reg);
 end;
 
 procedure LoadColorValues(reg : TRegistry);

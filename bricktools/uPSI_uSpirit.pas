@@ -563,7 +563,6 @@ begin
  S.RegisterDelphiFunction(@NameToNXTFileType, 'NameToNXTFileType', cdRegister);
  S.RegisterDelphiFunction(@MakeValidNXTFilename, 'MakeValidNXTFilename', cdRegister);
  S.RegisterDelphiFunction(@GetInitFilename, 'GetInitFilename', cdRegister);
- S.RegisterDelphiFunction(@GetJoystickButtonScript, 'GetJoystickButtonScript', cdRegister);
  S.RegisterDelphiFunction(@FantomAPIAvailable, 'FantomAPIAvailable', cdRegister);
  S.RegisterDelphiFunction(@LoadNXTPorts, 'LoadNXTPorts', cdRegister);
  S.RegisterDelphiFunction(@BytesToCardinal, 'BytesToCardinal', cdRegister);

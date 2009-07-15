@@ -17,11 +17,55 @@
 program nxtjoy;
 
 uses
-  Forms;
+{$IFNDEF FPC}
+  XPMan,
+{$ELSE}
+  Interfaces,
+{$ENDIF}
+  Forms,
+  Dialogs,
+  Registry,
+  brick_common in 'bricktools\brick_common.pas',
+  uSpirit in 'bricktools\uSpirit.pas',
+  uLocalizedStrings in 'uLocalizedStrings.pas',
+  uJoyGlobals in 'uJoyGlobals.pas',
+  uGlobals in 'uGlobals.pas',
+  uPortPrompt in 'uPortPrompt.pas' {frmPortPrompt},
+  JoystickUnit in 'JoystickUnit.pas' {JoystickForm};
 
+{$IFNDEF FPC}
 {$R *.res}
+{$ENDIF}
+
+var
+  reg : TRegistry;
 
 begin
-  Application.Initialize;
-  Application.Run;
+  reg := TRegistry.Create;
+  try
+    LoadJoystickValues(reg);
+    LocalBrickType := rtNXT;
+    BrickComm.BrickType := rtNXT;
+    Application.Initialize;
+    Application.Title := 'NeXT Joystick';
+    Application.CreateForm(TJoystickForm, JoystickForm);
+    // prompt for port.
+    with TfrmPortPrompt.Create(nil) do
+    try
+      ShowModal;
+      BrickComm.Port := Port;
+    finally
+      Free;
+    end;
+    if BrickComm.Open then
+    begin
+      BrickComm.Ping;
+      Application.Run;
+    end
+    else
+      ShowMessage(sUnableToConnect);
+    SaveJoystickValues(reg);
+  finally
+    reg.Free;
+  end;
 end.

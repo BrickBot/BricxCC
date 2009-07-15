@@ -14,6 +14,7 @@ object MessageForm: TMessageForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
+  OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
@@ -235,7 +236,7 @@ object MessageForm: TMessageForm
       Value = 0
     end
   end
-  object GroupBox1: TGroupBox
+  object grpNXTMsg: TGroupBox
     Left = 144
     Top = 5
     Width = 145

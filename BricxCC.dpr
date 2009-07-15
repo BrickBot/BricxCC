@@ -104,6 +104,8 @@ uses
   uForthProcLexer in 'uForthProcLexer.pas',
   uForthConsole in 'uForthConsole.pas' {frmForthConsole},
   uSources in 'uSources.pas',
+  uRegUtils in 'uRegUtils.pas',
+  uGlobals in 'uGlobals.pas',
   uSetValues in 'uSetValues.pas' {frmSetValues},
   uEEPROM in 'uEEPROM.pas' {frmSpybotEEPROM},
   uWav2RSO in 'uWav2RSO.pas' {frmWave2RSO},

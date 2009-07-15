@@ -94,7 +94,7 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=bricktools;NXT;samplerate
+SearchPath=bricktools;NXT
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;VclSmp;dbexpress;dbxcds;inetdb;bdertl;vcldbx;webdsnap;websnap;adortl;ibxpress;teeui;teedb;tee;dss;visualclx;visualdbclx;vclactnband;vclshlctrls;dclOfficeXP;SynEdit_D7;BricxCCSyn_D7;ComDrv32;dxGDIPlusD7;cxLibraryVCLD7;cxEditorsVCLD7;dxThemeD7;cxDataD7;cxExtEditorsVCLD7;cxPageControlVCLD7;cxGridVCLD7;dxmdsD7;dxNavBarD7
 Conditionals=NXT_ONLY
 DebugSourceDirs=
@@ -148,8 +148,8 @@ Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
 Count=5
-Item0=bricktools;NXT;samplerate
-Item1=bricktools;NXT
+Item0=bricktools;NXT
+Item1=bricktools;NXT;samplerate
 Item2=bricktools
 Item3=bricktools;NXT;samplerate;png
 Item4=bricktools;NXT;samplerate;png;syn

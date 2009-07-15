@@ -94,7 +94,7 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=
+SearchPath=$(DELPHI)\Lib\Debug
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;vcldb;soaprtl;VclSmp;inetdb;bdertl;vcldbx;adortl;teeui;teedb;tee;dss;vclactnband;vclshlctrls;O217_R70;O217BR70;SynEdit_D7;ComDrv32;cxLibraryVCLD7;dxThemeD7;cxEditorsVCLD7;cxDataD7;cxExtEditorsVCLD7;cxPageControlVCLD7;cxGridVCLD7;M103_r70;S201DR70;cxExportVCLD7;TCSComp_65;vcl7cr10;BricxCCSyn_D7
 Conditionals=
 DebugSourceDirs=
@@ -135,8 +135,7 @@ ProductName=
 ProductVersion=1.0.0.0
 Comments=
 [Excluded Packages]
-C:\winapps\Borland\Delphi7\Projects\Bpl\TCSCompInt_70.bpl=TCS Internal Components
-c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_64.bpl=TCS Components 6.4
+c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
 [HistoryLists\hlConditionals]
 Count=1
 Item0=CTW
@@ -144,7 +143,8 @@ Item0=CTW
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=3
-Item0=.\BrickTools;.\NXT
-Item1=.\BrickTools
-Item2=$(DELPHI)\Source
+Count=4
+Item0=$(DELPHI)\Lib\Debug
+Item1=.\BrickTools;.\NXT
+Item2=.\BrickTools
+Item3=$(DELPHI)\Source

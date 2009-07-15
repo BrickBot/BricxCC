@@ -78,12 +78,6 @@ var
 function SearchForRCX(atstartup, bAlwaysPrompt :boolean) : Boolean;
 
 function CheckAlive : boolean; //Checks whether the RCX is still alive
-function IsNXT : boolean;
-function IsSwan : boolean;
-function IsRCX2 : boolean;
-function IsRCX : boolean;
-function IsScout : boolean;
-function IsSpybotic : boolean;
 function UseUSB : Boolean;
 
 var
@@ -98,37 +92,8 @@ implementation
 
 uses
   SysUtils, Dialogs, Math, FakeSpirit, rcx_link, uSpirit, brick_common,
-  uGuiUtils, uLocalizedStrings, uSearchNXT{$IFNDEF FPC}, Windows{$ENDIF};
-
-function IsNXT : boolean;
-begin
-  result := (LocalBrickType = SU_NXT);
-end;
-
-function IsSwan : boolean;
-begin
-  result := (LocalBrickType = SU_SWAN);
-end;
-
-function IsRCX2 : boolean;
-begin
-  result := (LocalBrickType = SU_RCX2) or (LocalBrickType = SU_SWAN);
-end;
-
-function IsRCX : boolean;
-begin
-  result := (LocalBrickType = SU_RCX) or (LocalBrickType = SU_RCX2) or (LocalBrickType = SU_SWAN);
-end;
-
-function IsScout : boolean;
-begin
-  result := (LocalBrickType = SU_SCOUT);
-end;
-
-function IsSpybotic : boolean;
-begin
-  result := (LocalBrickType = SU_SPYBOTIC);
-end;
+  uGuiUtils, uLocalizedStrings, uSearchNXT, uGlobals
+  {$IFNDEF FPC}, Windows{$ENDIF};
 
 function UseUSB : Boolean;
 begin

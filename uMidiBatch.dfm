@@ -36,6 +36,7 @@ object frmMidiBatch: TfrmMidiBatch
     Height = 98
     ItemHeight = 13
     TabOrder = 2
+    OnClick = lstDirsClick
   end
   object btnExecute: TButton
     Left = 264

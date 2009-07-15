@@ -23,7 +23,7 @@ uses
   XPMan,
   Dialogs,
   brick_common in 'bricktools\brick_common.pas',
-  uSpirit in 'bricktools\uSpirit.pas',
+  uGlobals in 'uGlobals.pas',
   uNXTExplorer in 'uNXTExplorer.pas' {frmNXTExplorer},
   uPortPrompt in 'uPortPrompt.pas' {frmPortPrompt},
   uHexViewer in 'uHEXViewer.pas' {frmHexView};

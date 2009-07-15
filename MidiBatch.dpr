@@ -17,11 +17,17 @@
 program MidiBatch;
 
 uses
-  Forms,
+{$IFNDEF FPC}
   XPMan,
+{$ELSE}
+  Interfaces,
+{$ENDIF}
+  Forms,
   uMidiBatch in 'uMidiBatch.pas' {frmMidiBatch};
 
+{$IFNDEF FPC}
 {$R *.res}
+{$ENDIF}
 
 begin
   Application.Initialize;

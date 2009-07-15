@@ -30,7 +30,7 @@ uses
   LMessages,
   LCLIntf,
 {$ENDIF}
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, 
   StdCtrls, ExtCtrls, ComCtrls;
 
 const
@@ -75,7 +75,8 @@ implementation
 {$R *.DFM}
 {$ENDIF}
 
-uses MainUnit, FakeSpirit, Preferences, uSpirit, brick_common;
+uses
+  uSpirit, brick_common;
 
 procedure TUnlockForm.FormShow(Sender: TObject);
 begin

@@ -30,7 +30,7 @@ uses
   Forms,
   Dialogs,
   brick_common in 'bricktools\brick_common.pas',
-  uSpirit in 'bricktools\uSpirit.pas',
+  uGlobals in 'uGlobals.pas',
   uLocalizedStrings in 'uLocalizedStrings.pas',
   uPortPrompt in 'uPortPrompt.pas' {frmPortPrompt},
   uNXTImage in 'uNXTImage.pas' {frmNXTImage};

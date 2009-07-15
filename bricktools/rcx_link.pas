@@ -197,7 +197,7 @@ uses
 {$IFNDEF FPC}
   Windows,
 {$ENDIF}
-  SysUtils, rcx_constants, scout_def, TOWERAPI, Math, uCommonUtils;
+  SysUtils, rcx_constants, scout_def, TOWERAPI, Math, uCommonUtils, uGlobals;
 
 const
   cmSync : array[1..2] of Byte = (1, $FF);

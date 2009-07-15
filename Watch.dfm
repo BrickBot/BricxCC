@@ -27,7 +27,7 @@ object WatchForm: TWatchForm
     Top = 0
     Width = 444
     Height = 410
-    ActivePage = shtNXT
+    ActivePage = shtCommon
     Align = alClient
     TabOrder = 0
     object shtCommon: TTabSheet
