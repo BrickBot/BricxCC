@@ -1,359 +1,382 @@
 object PianoForm: TPianoForm
   Left = 328
-  Height = 452
   Top = 228
-  Width = 354
   HelpContext = 15
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Brick Piano'
-  ClientHeight = 452
-  ClientWidth = 354
+  ClientHeight = 345
+  ClientWidth = 353
+  Color = clBtnFace
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
   Font.Height = -5
   Font.Name = 'MS Sans Serif'
+  Font.Style = []
+  OldCreateOrder = True
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '0.9.25'
+  PixelsPerInch = 96
   object lblNoteTime: TLabel
     Left = 8
-    Height = 17
-    Top = 272
-    Width = 87
+    Top = 229
+    Width = 48
+    Height = 13
     Caption = '&Note time:'
     FocusControl = edtNoteTime
-    ParentColor = False
   end
   object Label1: TLabel
-    Left = 112
-    Height = 17
-    Top = 272
-    Width = 84
+    Left = 136
+    Top = 229
+    Width = 47
+    Height = 13
     Caption = '&Wait time:'
     FocusControl = edtWaitTime
-    ParentColor = False
   end
   object Label2: TLabel
     Left = 8
-    Height = 17
     Top = 112
-    Width = 92
+    Width = 53
+    Height = 13
     Caption = '&Transpose:'
     FocusControl = barTranspose
-    ParentColor = False
   end
   object pnlKeyboard: TPanel
     Left = 8
-    Height = 96
     Top = 9
     Width = 337
+    Height = 96
     BevelOuter = bvNone
     BorderWidth = 1
     BorderStyle = bsSingle
-    ClientHeight = 96
-    ClientWidth = 337
     TabOrder = 0
     object Shape01: TShape
       Tag = 7
       Left = 96
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape03: TShape
       Tag = 9
       Left = 120
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape02: TShape
       Tag = 8
       Left = 112
-      Height = 61
+      Top = 0
       Width = 17
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
     object Shape05: TShape
       Tag = 11
       Left = 144
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape06: TShape
       Tag = 12
       Left = 168
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape04: TShape
       Tag = 10
       Left = 136
-      Height = 61
+      Top = 0
       Width = 17
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
     object Shape08: TShape
       Tag = 14
       Left = 192
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape10: TShape
       Tag = 16
       Left = 216
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape12: TShape
       Tag = 18
       Left = 240
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape07: TShape
       Tag = 13
       Left = 184
-      Height = 61
+      Top = 0
       Width = 17
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
     object Shape09: TShape
       Tag = 15
       Left = 208
-      Height = 61
+      Top = 0
       Width = 16
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
     object Shape11: TShape
       Tag = 17
       Left = 232
-      Height = 61
+      Top = 0
       Width = 17
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
     object Shape13: TShape
       Tag = 19
       Left = 264
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape15: TShape
       Tag = 21
       Left = 288
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape17: TShape
       Tag = 23
       Left = 312
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape14: TShape
       Tag = 20
       Left = 280
-      Height = 61
+      Top = 0
       Width = 17
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
     object Shape16: TShape
       Tag = 22
       Left = 304
-      Height = 61
+      Top = 0
       Width = 17
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
     object Shape007: TShape
       Tag = 6
       Left = 72
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape005: TShape
       Tag = 4
       Left = 48
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape003: TShape
       Tag = 2
       Left = 24
-      Height = 97
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape001: TShape
-      Height = 97
+      Left = 0
+      Top = 0
       Width = 25
+      Height = 97
       OnMouseDown = Shape01MouseDown
     end
     object Shape006: TShape
       Tag = 5
       Left = 64
-      Height = 61
+      Top = 0
       Width = 17
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
     object Shape004: TShape
       Tag = 3
       Left = 40
-      Height = 61
+      Top = 0
       Width = 17
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
     object Shape002: TShape
       Tag = 1
       Left = 16
-      Height = 61
+      Top = 0
       Width = 17
+      Height = 61
       Brush.Color = clBlack
       OnMouseDown = Shape01MouseDown
     end
   end
   object grpLength: TGroupBox
-    Left = 48
-    Height = 94
-    Top = 160
-    Width = 128
+    Left = 56
+    Top = 146
+    Width = 113
+    Height = 65
     Caption = ' Length '
-    ClientHeight = 73
-    ClientWidth = 124
     TabOrder = 3
     object radWhole: TRadioButton
       Tag = 16
       Left = 8
-      Height = 26
-      Top = -3
-      Width = 47
+      Top = 16
+      Width = 41
+      Height = 17
       HelpContext = 15030
       Caption = '1/&1'
-      OnClick = radWholeClick
       TabOrder = 0
+      OnClick = radWholeClick
     end
     object radHalf: TRadioButton
       Tag = 8
       Left = 8
-      Height = 26
-      Top = 21
-      Width = 47
+      Top = 32
+      Width = 41
+      Height = 17
       HelpContext = 15031
       Caption = '1/&2'
-      OnClick = radWholeClick
       TabOrder = 1
+      OnClick = radWholeClick
     end
     object radQuarter: TRadioButton
       Tag = 4
-      Left = 62
-      Height = 26
-      Top = -3
-      Width = 47
+      Left = 56
+      Top = 8
+      Width = 41
+      Height = 17
       HelpContext = 15032
       Caption = '1/&4'
       Checked = True
-      OnClick = radWholeClick
-      State = cbChecked
       TabOrder = 2
+      TabStop = True
+      OnClick = radWholeClick
     end
     object radEighth: TRadioButton
       Tag = 2
-      Left = 62
-      Height = 26
-      Top = 21
-      Width = 47
+      Left = 56
+      Top = 24
+      Width = 41
+      Height = 17
       HelpContext = 15033
       Caption = '1/&8'
-      OnClick = radWholeClick
       TabOrder = 3
+      OnClick = radWholeClick
     end
     object radSixteenth: TRadioButton
       Tag = 1
-      Left = 62
-      Height = 26
-      Top = 45
-      Width = 56
+      Left = 56
+      Top = 40
+      Width = 41
+      Height = 17
       HelpContext = 15034
       Caption = '1/1&6'
-      OnClick = radWholeClick
       TabOrder = 4
+      OnClick = radWholeClick
     end
   end
   object btnPlay: TButton
     Left = 184
-    Height = 25
-    Top = 208
+    Top = 186
     Width = 73
+    Height = 25
     HelpContext = 15035
     Caption = '&Play'
-    OnClick = btnPlayClick
     TabOrder = 6
+    OnClick = btnPlayClick
   end
   object btnSave: TButton
     Left = 272
-    Height = 25
-    Top = 208
+    Top = 186
     Width = 73
+    Height = 25
     HelpContext = 15036
     Caption = '&Save'
-    OnClick = btnSaveClick
     TabOrder = 7
+    OnClick = btnSaveClick
   end
   object TempMemo: TMemo
     Left = 176
-    Height = 17
+    Top = 0
     Width = 97
-    Lines.Strings = (
-      'TempMemo'
-    )
-    TabOrder = 12
+    Height = 17
     TabStop = False
+    Lines.Strings = (
+      'TempMemo')
+    TabOrder = 12
     Visible = False
   end
   object btnCopy: TButton
     Left = 272
-    Height = 25
-    Top = 174
+    Top = 152
     Width = 73
+    Height = 25
     HelpContext = 15038
     Caption = '&Copy'
-    OnClick = btnCopyClick
     TabOrder = 5
+    OnClick = btnCopyClick
   end
   object btnClear: TButton
     Left = 184
-    Height = 25
-    Top = 174
+    Top = 152
     Width = 75
+    Height = 25
     HelpContext = 15039
     Caption = 'C&lear'
-    OnClick = btnClearClick
     TabOrder = 4
+    OnClick = btnClearClick
   end
   object btnRest: TBitBtn
     Left = 8
-    Height = 57
-    Top = 175
+    Top = 153
     Width = 33
+    Height = 57
     HelpContext = 15040
     Caption = '&rest'
+    TabOrder = 2
+    OnMouseDown = Shape01MouseDown
     Glyph.Data = {
       96010000424D9601000000000000760000002800000018000000180000000100
       0400000000002001000000000000000000001000000010000000000000000000
@@ -367,126 +390,119 @@ object PianoForm: TPianoForm
       FFFFFFFFFFFFFF70007FFFFFFFFFFFFFFFFFFFF80007FFFFFFFFFFFFFFFFFFFF
       008FFFFFFFFFFFFFFFFFFFFF007FFFFFFFFFFFFFFFFFFFF707FFFFFFFFFFFFFF
       FFFFFFF88FFFFFFFFFFFFFFFFFFFFF78FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
-    }
+      FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF}
     Layout = blGlyphTop
-    NumGlyphs = 0
-    OnMouseDown = Shape01MouseDown
-    TabOrder = 2
   end
   object barTranspose: TTrackBar
     Left = 8
-    Height = 16
-    Hint = '2'
     Top = 127
     Width = 337
+    Height = 16
+    Hint = '2'
     HelpContext = 15041
     Max = 6
-    OnChange = barTransposeChange
+    ParentShowHint = False
     PageSize = 1
     Position = 2
-    ScalePos = trTop
-    ParentShowHint = False
     ShowHint = True
     TabOrder = 1
+    OnChange = barTransposeChange
   end
   object grpCode: TGroupBox
     Left = 8
-    Height = 126
-    Top = 320
+    Top = 250
     Width = 337
+    Height = 87
     Caption = 'Language'
-    ClientHeight = 105
-    ClientWidth = 333
     TabOrder = 11
     object radGenNQC: TRadioButton
       Left = 8
-      Height = 26
-      Top = 3
-      Width = 61
+      Top = 16
+      Width = 86
+      Height = 17
       HelpContext = 15045
       Caption = '&NQC'
       Checked = True
-      State = cbChecked
       TabOrder = 0
+      TabStop = True
     end
     object radGenMS: TRadioButton
       Left = 8
-      Height = 26
-      Top = 27
-      Width = 99
+      Top = 32
+      Width = 86
+      Height = 17
       HelpContext = 15046
       Caption = '&MindScript'
       TabOrder = 1
     end
     object radGenLASM: TRadioButton
       Left = 8
-      Height = 26
-      Top = 51
-      Width = 68
+      Top = 48
+      Width = 86
+      Height = 17
       HelpContext = 15047
       Caption = '&LASM'
       TabOrder = 2
     end
     object radGenC: TRadioButton
       Left = 8
-      Height = 26
-      Top = 75
-      Width = 36
+      Top = 64
+      Width = 86
+      Height = 17
       HelpContext = 15048
       Caption = '&C'
       TabOrder = 3
     end
     object radGenPascal: TRadioButton
       Left = 115
-      Height = 26
-      Top = 3
-      Width = 72
+      Top = 16
+      Width = 86
+      Height = 17
       HelpContext = 15049
       Caption = '&Pascal'
       TabOrder = 4
     end
     object radGenForth: TRadioButton
       Left = 115
-      Height = 26
-      Top = 27
-      Width = 62
+      Top = 32
+      Width = 86
+      Height = 17
       HelpContext = 15050
       Caption = '&Forth'
       TabOrder = 5
     end
     object radGenJava: TRadioButton
       Left = 115
-      Height = 26
-      Top = 51
-      Width = 58
+      Top = 48
+      Width = 86
+      Height = 17
       HelpContext = 15051
       Caption = '&Java'
       TabOrder = 6
     end
     object radGenNBC: TRadioButton
       Left = 115
-      Height = 26
-      Top = 75
-      Width = 59
+      Top = 64
+      Width = 86
+      Height = 17
       HelpContext = 15052
       Caption = 'N&BC'
       TabOrder = 7
     end
     object radGenNXTMelody: TRadioButton
-      Left = 214
-      Height = 26
-      Top = 27
-      Width = 113
+      Left = 226
+      Top = 32
+      Width = 86
+      Height = 17
       HelpContext = 15054
       Caption = 'NXT Melo&dy'
       TabOrder = 9
     end
     object radGenNXC: TRadioButton
-      Left = 214
-      Height = 26
-      Top = 3
-      Width = 59
+      Left = 226
+      Top = 16
+      Width = 86
+      Height = 17
       HelpContext = 15053
       Caption = 'N&XC'
       TabOrder = 8
@@ -494,34 +510,40 @@ object PianoForm: TPianoForm
   end
   object btnHelp: TButton
     Left = 272
-    Height = 25
-    Top = 240
+    Top = 223
     Width = 73
+    Height = 25
     HelpContext = 15055
     Caption = '&Help'
-    OnClick = btnHelpClick
     TabOrder = 10
+    OnClick = btnHelpClick
   end
   object edtNoteTime: TBricxccSpinEdit
-    Left = 8
-    Height = 22
-    Top = 288
+    Left = 64
+    Top = 224
     Width = 57
+    Height = 22
     HelpContext = 15042
+    MaxLength = 2
     MaxValue = 99
     MinValue = 1
     TabOrder = 8
     Value = 10
   end
   object edtWaitTime: TBricxccSpinEdit
-    Left = 112
-    Height = 22
-    Top = 288
+    Left = 192
+    Top = 224
     Width = 57
+    Height = 22
     HelpContext = 15043
+    MaxLength = 2
     MaxValue = 99
     MinValue = 1
     TabOrder = 9
     Value = 12
+  end
+  object dlgSave: TSaveDialog
+    Left = 184
+    Top = 282
   end
 end

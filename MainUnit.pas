@@ -991,7 +991,7 @@ begin
   Application.HelpFile := ProgramDir + 'Help\BricxCC.HLP';
   HelpFile := Application.HelpFile;
   // initialize the highlighter data
-  GetHighlighters(Self, Highlighters, False);
+  GetSortedHighlighters(Self, Highlighters, False);
   dlgOpen.Filter := GetHighlightersFilter(Highlighters) + SFilterAllFiles;
   dlgSave.Filter := dlgOpen.Filter;
   SynForthCompProp.EndOfTokenChr := '';

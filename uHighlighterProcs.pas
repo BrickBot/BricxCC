@@ -42,18 +42,20 @@ interface
 uses
   Classes, SynEditHighlighter;
 
-procedure GetHighlighters(AOwner: TComponent; AHighlighters: TStringList;
+procedure GetHighlighters(AOwner: TComponent; AHighlighters: TStrings;
   AppendToList: boolean);
-function GetHighlightersFilter(AHighlighters: TStringList): string;
-function GetHighlighterFromFileExt(AHighlighters: TStringList;
+procedure GetSortedHighlighters(AOwner: TComponent; AHighlighters: TStringList;
+  AppendToList: boolean);
+function GetHighlightersFilter(AHighlighters: TStrings): string;
+function GetHighlighterFromFileExt(AHighlighters: TStrings;
   Extension: string): TSynCustomHighlighter;
 
 implementation
 
 uses
   SysUtils;
-  
-procedure GetHighlighters(AOwner: TComponent; AHighlighters: TStringList;
+
+procedure GetHighlighters(AOwner: TComponent; AHighlighters: TStrings;
   AppendToList: boolean);
 var
   i: integer;
@@ -70,11 +72,19 @@ begin
       if AHighlighters.IndexOf(Highlighter.LanguageName) = -1 then
         AHighlighters.AddObject(Highlighter.LanguageName, Highlighter);
     end;
+  end;
+end;
+
+procedure GetSortedHighlighters(AOwner: TComponent; AHighlighters: TStringList;
+  AppendToList: boolean);
+begin
+  if Assigned(AOwner) and Assigned(AHighlighters) then begin
+    GetHighlighters(AOwner, AHighlighters, AppendToList);
     AHighlighters.Sort;
   end;
 end;
 
-function GetHighlightersFilter(AHighlighters: TStringList): string;
+function GetHighlightersFilter(AHighlighters: TStrings): string;
 var
   i: integer;
   Highlighter: TSynCustomHighlighter;
@@ -93,7 +103,7 @@ begin
     end;
 end;
 
-function GetHighlighterFromFileExt(AHighlighters: TStringList;
+function GetHighlighterFromFileExt(AHighlighters: TStrings;
   Extension: string): TSynCustomHighlighter;
 var
   ExtLen: integer;

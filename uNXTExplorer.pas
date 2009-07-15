@@ -41,12 +41,6 @@ type
   TfrmNXTExplorer = class(TForm)
     pnlLeft: TPanel;
     pnlRight: TPanel;
-{$IFNDEF FPC}
-    treShell: TShellTreeView;
-    lstFiles: TShellListView;
-    cboMask: TFilterComboBox;
-    Splitter2: TSplitter;
-{$ENDIF}
     NXTFiles: TListView;
     Splitter1: TSplitter;
     Actions: TActionList;
@@ -74,21 +68,11 @@ type
     actEditSelectAll: TAction;
     actFileDefrag: TAction;
     actFileView: TAction;
-{$IFDEF FPC}
-    DirectoryEdit1: TDirectoryEdit;
-    FileListBox1: TFileListBox;
-    bvlFile2: TBevel;
-    procedure DirectoryEdit1AcceptDirectory(Sender: TObject; var Value: String);
-    procedure FileListBox1DragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure FileListBox1DragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
-{$ENDIF}
     procedure FormCreate(Sender: TObject);
     procedure actViewToolbarExecute(Sender: TObject);
     procedure actViewStyleExecute(Sender: TObject);
     procedure actPCViewStyleExecute(Sender: TObject);
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
-    procedure cboMaskChange(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure actFileRefreshExecute(Sender: TObject);
     procedure actFileDeleteExecute(Sender: TObject);
@@ -96,16 +80,11 @@ type
     procedure actFileDownloadExecute(Sender: TObject);
     procedure actFileExecuteExecute(Sender: TObject);
     procedure actFileStopExecute(Sender: TObject);
-    procedure RefreshShellListView(Sender: TObject);
     procedure NXTFilesDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure NXTFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure lstFilesDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
-    procedure lstFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure actFilePlayExecute(Sender: TObject);
     procedure actFileMuteExecute(Sender: TObject);
-    procedure lstFilesDblClick(Sender: TObject);
     procedure actFileEraseAllExecute(Sender: TObject);
     procedure NXTFilesEditing(Sender: TObject; Item: TListItem;
       var AllowEdit: Boolean);
@@ -113,13 +92,9 @@ type
       var S: String);
     procedure actEditSelectAllExecute(Sender: TObject);
     procedure actFileDefragExecute(Sender: TObject);
-{$IFNDEF FPC}
-    procedure lstFilesAddFolder(Sender: TObject; AFolder: TShellFolder;
-      var CanAdd: Boolean);
-{$ENDIF}
     procedure FormDestroy(Sender: TObject);
-    procedure treShellChange(Sender: TObject; Node: TTreeNode);
     procedure actFileViewExecute(Sender: TObject);
+    procedure RefreshShellListView(Sender: TObject);
   private
     mnuMain: TOfficeMainMenu;
     File1: TOfficeMenuItem;
@@ -204,10 +179,34 @@ type
     procedure CreateToolbar;
     procedure CreateMainMenu;
     procedure CreatePopupMenu;
+    procedure CreateShellControls;
 //    procedure pmuPCPopup(Sender: TObject);
     procedure pmuNXTPopup(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
+  public
+{$IFDEF FPC}
+    DirectoryEdit1: TDirectoryEdit;
+    FileListBox1: TFileListBox;
+    bvlFile2: TBevel;
+    procedure DirectoryEdit1AcceptDirectory(Sender: TObject; var Value: String);
+    procedure FileListBox1DragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure FileListBox1DragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+{$ELSE}
+    cboMask: TFilterComboBox;
+    treShell: TShellTreeView;
+    Splitter2: TSplitter;
+    lstFiles: TShellListView;
+    procedure cboMaskChange(Sender: TObject);
+    procedure lstFilesAddFolder(Sender: TObject; AFolder: TShellFolder;
+      var CanAdd: Boolean);
+    procedure lstFilesDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure lstFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure lstFilesDblClick(Sender: TObject);
+    procedure treShellChange(Sender: TObject; Node: TTreeNode);
+{$ENDIF}
   private
     { Private declarations }
     fActiveLV : TCustomListView;
@@ -313,6 +312,7 @@ end;
 
 procedure TfrmNXTExplorer.FormCreate(Sender: TObject);
 begin
+  CreateShellControls;
   CreateMainMenu;
   CreatePopupMenu;
   Self.Menu := mnuMain;
@@ -1623,6 +1623,87 @@ begin
     ParentShowHint := False;
     ShowHint := True;
   end;
+end;
+
+procedure TfrmNXTExplorer.CreateShellControls;
+begin
+{$IFNDEF FPC}
+  cboMask := TFilterComboBox.Create(Self);
+  with cboMask do
+  begin
+    Name := 'cboMask';
+    Parent := pnlTopLeft;
+    Left := 0;
+    Top := 2;
+    Width := 229;
+    Height := 21;
+    Anchors := [akLeft, akTop, akRight];
+    TabOrder := 0;
+    OnChange := cboMaskChange;
+  end;
+  treShell := TShellTreeView.Create(Self);
+  Splitter2 := TSplitter.Create(Self);
+  lstFiles := TShellListView.Create(Self);
+  treShell.Parent  := pnlRight;
+  Splitter2.Parent := pnlRight;
+  lstFiles.Parent  := pnlRight;
+  with treShell do
+  begin
+    Name := 'treShell';
+    Parent := pnlRight;
+    Left := 2;
+    Top := 2;
+    Width := 332;
+    Height := 120;
+    Root := 'rfDesktop';
+    ShellListView := lstFiles;
+    UseShellImages := True;
+    Align := alTop;
+    AutoRefresh := False;
+    HideSelection := False;
+    Indent := 19;
+    ParentColor := False;
+    RightClickSelect := True;
+    ShowRoot := False;
+    TabOrder := 0;
+    OnChange := treShellChange;
+  end;
+  with Splitter2 do
+  begin
+    Name := 'Splitter2';
+    Parent := pnlRight;
+    Left := 2;
+    Top := 122;
+    Width := 332;
+    Cursor := crVSplit;
+    Align := alTop;
+    Height := 3;
+    OnMoved := RefreshShellListView;
+  end;
+  with lstFiles do
+  begin
+    Name := 'lstFiles';
+    Left := 2;
+    Top := 125;
+    Width := 332;
+    Height := 319;
+    Root := 'rfDesktop';
+    ShellTreeView := treShell;
+    Sorted := True;
+    Align := alClient;
+    DragMode := dmAutomatic;
+    ReadOnly := False;
+    HideSelection := False;
+    IconOptions.AutoArrange := True;
+    MultiSelect := True;
+    OnAddFolder := lstFilesAddFolder;
+    OnDblClick := lstFilesDblClick;
+    OnDragDrop := lstFilesDragDrop;
+    OnDragOver := lstFilesDragOver;
+    TabOrder := 1;
+    DoubleBuffered := True;
+  end;
+{$ENDIF}
 end;
 
 {$IFDEF FPC}

@@ -615,6 +615,19 @@ resourcestring
 resourcestring
   sUnableToConnect = 'Unable to connect to the selected NXT brick.';
 
+// piano.pas
+resourcestring
+  sPianoFilter = 'NQC Files (*.nqc,*.nqh)|*.nqc;*.nqh|' +
+                 'MindScript files (*.rcx2;*.lsc)|*.rcx2;*.lsc|' +
+                 'LASM Files (*.lasm)|*.lasm|' +
+                 'C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp|' +
+                 'Pascal Files (*.pas,*.dpr,*.dpk,*.inc)|*.pas;*.dpr;*.dpk;*.inc|' +
+                 'Forth Files (*.4th, *.f, *.fr, *.fth)|*.4th;*.f;*.fr;*.fth|' +
+                 'Java Files (*.java)|*.java|' +
+                 'Next Byte Code Files (*.nbc)|*.nbc|' +
+                 'NXC Files (*.nxc)|*.nxc|' +
+                 'NXT Melody Files (*.rmd)|*.rmd|';
+
 implementation
 
 end.

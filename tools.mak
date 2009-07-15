@@ -1,6 +1,8 @@
 PROGRAMS = NeXTTool
 VER = 1.0.2.0
 DEFAULT_INCLUDE_DIR=.
+FPC_TARGET=i386-win32
+WIDGETSET=win32
 
 bricxcc:: bricxcc.dpr bricxcc.exe
 	touch $@
@@ -23,6 +25,9 @@ wavrsocvt:: wavrsocvt.dpr wavrsocvt.exe
 midibatch:: midibatch.dpr midibatch.exe
 	touch $@
 
+nxtpiano:: Piano.lrs uPortPrompt.lrs nxtpiano.dpr nxtpiano.exe
+	touch $@
+
 clean::
 	rm -f *.o *.ppu *.rst *.compiled *_preproc.inc bricktools/*.o bricktools/*.ppu nxt/*.o nxt/*.ppu samplerate/*.o samplerate/*.ppu syn/*.o syn/*.ppu
 
@@ -31,11 +36,11 @@ realclean:: clean
 
 PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools
 
-LFLAGS=-S2cdghi -dRELEASE -vewnhi -WG -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -FuC:/lazarus/components/synedit/ -FuC:/lazarus/lcl/units/i386-win32/ -FuC:/lazarus/lcl/units/i386-win32/win32/ -FuC:/lazarus/packager/units/i386-win32/ -dLCL -dLCLgtk2 -dNXT_ONLY
+LFLAGS=-S2cdghi -dRELEASE -vewnhi -WG -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -FuC:/lazarus/components/synedit/units/$(FPC_TARGET)/ -FuC:/lazarus/lcl/units/$(FPC_TARGET)/ -FuC:/lazarus/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -FuC:/lazarus/packager/units/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY
 
 # Win32
 LAZRESPREFIX=C:/lazarus/tools/
-PTOOLPREFIX=C:/lazarus/fpc/2.2.5/bin/i386-win32/
+PTOOLPREFIX=C:/lazarus/fpc/2.2.5/bin/$(FPC_TARGET)/
 PPC=$(PTOOLPREFIX)fpc
 
 wavrsocvt.exe: wavrsocvt.dpr wavrsocvt_preproc.inc
