@@ -27,7 +27,7 @@ uses
   LResources,
 {$ENDIF}
   Classes, Controls, Forms, ExtCtrls, StdCtrls, Buttons, ComCtrls, BricxccSpin,
-  uMidi2MS;
+  uMidi2MS, Dialogs;
 
 type
   TPianoForm = class(TForm)
@@ -86,6 +86,7 @@ type
     radGenNXC: TRadioButton;
     edtNoteTime: TBricxccSpinEdit;
     edtWaitTime: TBricxccSpinEdit;
+    dlgSave: TSaveDialog;
     procedure Shape01MouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure radWholeClick(Sender: TObject);
@@ -101,6 +102,8 @@ type
     function GetNoteTime: Integer;
     function GetWaitTime: Integer;
     function GetConvType: TMIDIConversionType;
+    function GetFileExtension: string;
+    function GetFilterIndex: integer;
   private
     { Private declarations }
     function GetFrequency(Sender : TObject) : Integer;
@@ -110,6 +113,7 @@ type
     property WaitTime : Integer read GetWaitTime;
     property NoteTime : Integer read GetNoteTime;
     property ConversionType : TMIDIConversionType read GetConvType;
+    property FileExtension : string read GetFileExtension;
   public
     { Public declarations }
   end;
@@ -124,7 +128,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, SearchRCX, brick_common, MainUnit;
+  SysUtils, brick_common, uLocalizedStrings, uGuiUtils;
 
 const
   NOTE_TIME = 10;
@@ -244,7 +248,8 @@ procedure TPianoForm.btnSaveClick(Sender: TObject);
 var
   MS : TMemoryStream;
 begin
-  if MainForm.dlgSave.Execute then
+  dlgSave.FilterIndex := GetFilterIndex;
+  if dlgSave.Execute then
   begin
     FillTemp(true);
     if ConversionType = mctNXTMelody then
@@ -252,13 +257,13 @@ begin
       MS := TMemoryStream.Create;
       try
         TempMemo.Lines.SaveToStream(MS);
-        SaveStreamToMelodyFile(MS, MainForm.dlgSave.FileName);
+        SaveStreamToMelodyFile(MS, ChangeFileExt(dlgSave.FileName, FileExtension));
       finally
         MS.Free;
       end;
     end
     else
-      TempMemo.Lines.SaveToFile(MainForm.dlgSave.FileName);
+      TempMemo.Lines.SaveToFile(ChangeFileExt(dlgSave.FileName, FileExtension));
   end;
 end;
 
@@ -272,6 +277,9 @@ end;
 
 procedure TPianoForm.FormCreate(Sender: TObject);
 begin
+  AdjustGroupBox(grpLength);
+  AdjustGroupBox(grpCode);
+  dlgSave.Filter := sPianoFilter + SFilterAllFiles;
   SetLength(noteIndex, MAX_NOTE);
   SetLength(notes, MAX_NOTE);
   SetLength(duration, MAX_NOTE);
@@ -347,6 +355,29 @@ end;
 procedure TPianoForm.btnHelpClick(Sender: TObject);
 begin
   Application.HelpContext(HelpContext);
+end;
+
+function TPianoForm.GetFileExtension: string;
+begin
+  Result := ExtractFileExt(dlgSave.FileName);
+  case ConversionType of
+    mctNQC        : Result := '.nqc';
+    mctMindScript : Result := '.lsc';
+    mctLASM       : Result := '.lasm';
+    mctC          : Result := '.c';
+    mctPascal     : Result := '.pas';
+    mctForth      : Result := '.4th';
+    mctNBC        : Result := '.nbc';
+    mctNXC        : Result := '.nxc';
+    mctNXTMelody  : Result := '.rmd';
+  else
+    Result := '.java';
+  end;
+end;
+
+function TPianoForm.GetFilterIndex : integer;
+begin
+  Result := Ord(ConversionType) + 1;
 end;
 
 {$IFDEF FPC}

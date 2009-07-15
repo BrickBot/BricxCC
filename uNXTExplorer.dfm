@@ -1,6 +1,6 @@
 object frmNXTExplorer: TfrmNXTExplorer
-  Left = 223
-  Top = 201
+  Left = 225
+  Top = 388
   Width = 580
   Height = 480
   BorderIcons = [biSystemMenu, biMinimize, biMaximize, biHelp]
@@ -74,18 +74,6 @@ object frmNXTExplorer: TfrmNXTExplorer
       BorderWidth = 2
       ParentColor = True
       TabOrder = 1
-      DesignSize = (
-        229
-        25)
-      object cboMask: TFilterComboBox
-        Left = 0
-        Top = 2
-        Width = 229
-        Height = 21
-        Anchors = [akLeft, akTop, akRight]
-        TabOrder = 0
-        OnChange = cboMaskChange
-      end
     end
   end
   object pnlRight: TPanel
@@ -98,55 +86,6 @@ object frmNXTExplorer: TfrmNXTExplorer
     BorderWidth = 2
     ParentColor = True
     TabOrder = 1
-    object Splitter2: TSplitter
-      Left = 2
-      Top = 122
-      Width = 332
-      Height = 3
-      Cursor = crVSplit
-      Align = alTop
-      OnMoved = RefreshShellListView
-    end
-    object treShell: TShellTreeView
-      Left = 2
-      Top = 2
-      Width = 332
-      Height = 120
-      ObjectTypes = [otFolders]
-      Root = 'rfDesktop'
-      ShellListView = lstFiles
-      UseShellImages = True
-      Align = alTop
-      AutoRefresh = False
-      HideSelection = False
-      Indent = 19
-      ParentColor = False
-      RightClickSelect = True
-      ShowRoot = False
-      TabOrder = 0
-      OnChange = treShellChange
-    end
-    object lstFiles: TShellListView
-      Left = 2
-      Top = 125
-      Width = 332
-      Height = 319
-      ObjectTypes = [otFolders, otNonFolders]
-      Root = 'rfDesktop'
-      ShellTreeView = treShell
-      Sorted = True
-      OnAddFolder = lstFilesAddFolder
-      Align = alClient
-      OnDblClick = lstFilesDblClick
-      DragMode = dmAutomatic
-      ReadOnly = False
-      HideSelection = False
-      IconOptions.AutoArrange = True
-      MultiSelect = True
-      OnDragDrop = lstFilesDragDrop
-      OnDragOver = lstFilesDragOver
-      TabOrder = 1
-    end
   end
   object Actions: TActionList
     OnUpdate = ActionsUpdate

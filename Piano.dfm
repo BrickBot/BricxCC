@@ -544,4 +544,8 @@ object PianoForm: TPianoForm
     TabOrder = 9
     Value = 12
   end
+  object dlgSave: TSaveDialog
+    Left = 184
+    Top = 282
+  end
 end

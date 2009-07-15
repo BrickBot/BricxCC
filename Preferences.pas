@@ -4652,7 +4652,7 @@ begin
   // create local highlighters list
   fLocalHighlighters := TStringList.Create;
   // populate local highlighters list
-  GetHighlighters(Self, LocalHighlighters, False);
+  GetSortedHighlighters(Self, LocalHighlighters, False);
   cboLanguages.Items.Assign(LocalHighlighters);
   cboLanguages.ItemIndex := LocalHighlighters.IndexOf('NQC');
   cboLangTemp.Items.Assign(LocalHighlighters);
