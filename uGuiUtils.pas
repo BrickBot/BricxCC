@@ -49,10 +49,20 @@ uses
 {$ENDIF}
   Messages, SysUtils, ComCtrls;
 
-procedure AdjustGroupBox(gb : TGroupBox);
-{$IFNDEF FPC}
-begin
+
+const
+{$IFDEF FPC}
+{$IFDEF Darwin}
+  GB_VOFFSET = 0;
+{$ENDIF}
+{$IFNDEF Darwin}
+  GB_VOFFSET = 16;
+{$ENDIF}
 {$ELSE}
+  GB_VOFFSET = 0;
+{$ENDIF}
+
+procedure AdjustGroupBox(gb : TGroupBox);
 var
   C : TControl;
   i : integer;
@@ -64,9 +74,8 @@ begin
     if C is TGroupBox then
       AdjustGroupBox(TGroupBox(C))
     else
-      C.Top := C.Top - 16;
+      C.Top := C.Top - GB_VOFFSET;
   end;
-{$ENDIF}
 end;
 
 procedure ConfigBar(ogp : TOfficeGradientPanel);

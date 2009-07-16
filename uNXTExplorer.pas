@@ -25,16 +25,21 @@ interface
 uses
 {$IFNDEF FPC}
   Windows,
-  ShellCtrls,
 {$ELSE}
   LResources,
   EditBtn,
 {$ENDIF}
-  Messages, Classes, Controls, Forms,
+  Messages, Classes, Controls, Forms, ShellCtrls,
   ComCtrls, FileCtrl, StdCtrls, Buttons, ExtCtrls, uOfficeComp,
   ActnList, Menus, ImgList;
 
 type
+  TShellTreeViewEx = class(TShellTreeView)
+{$IFNDEF FPC}
+  public
+    property ReadOnly;
+{$ENDIF}
+  end;
 
   { TfrmNXTExplorer }
 
@@ -185,6 +190,7 @@ type
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
   public
+(*
 {$IFDEF FPC}
     DirectoryEdit1: TDirectoryEdit;
     FileListBox1: TFileListBox;
@@ -194,19 +200,22 @@ type
     procedure FileListBox1DragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
 {$ELSE}
+*)
     cboMask: TFilterComboBox;
-    treShell: TShellTreeView;
+    treShell: TShellTreeViewEx;
     Splitter2: TSplitter;
     lstFiles: TShellListView;
     procedure cboMaskChange(Sender: TObject);
+{$IFNDEF FPC}
     procedure lstFilesAddFolder(Sender: TObject; AFolder: TShellFolder;
       var CanAdd: Boolean);
+{$ENDIF}
     procedure lstFilesDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure lstFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure lstFilesDblClick(Sender: TObject);
     procedure treShellChange(Sender: TObject; Node: TTreeNode);
-{$ENDIF}
+{.$ENDIF}
   private
     { Private declarations }
     fActiveLV : TCustomListView;
@@ -280,9 +289,9 @@ var
   LI : TListItem;
   curMask : string;
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   NXTFiles.Items.BeginUpdate;
-{$ENDIF}
+{.$ENDIF}
   try
     NXTFiles.Items.Clear;
     SL := TStringList.Create;
@@ -304,9 +313,9 @@ begin
       SL.Free;
     end;
   finally
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
     NXTFiles.Items.EndUpdate;
-{$ENDIF}
+{.$ENDIF}
   end;
 end;
 
@@ -321,23 +330,28 @@ begin
   {Let Windows know we accept dropped files}
 {$IFNDEF FPC}
   DragAcceptFiles(Handle,true);
+{$ENDIF}
+{.$IFNDEF FPC}
 //  lstFiles.ObjectTypes := [otNonFolders];
-  TTreeView(treShell).ReadOnly := True;
-  TListView(lstFiles).ReadOnly := True;
+  treShell.ReadOnly := True;
+  lstFiles.ReadOnly := True;
   cboMask.OnChange := nil;
   try
     cboMask.Filter := K_FILTER;
   finally
     cboMask.OnChange := cboMaskChange;
   end;
+(*
 {$ELSE}
   ComboBox1.Items.Text := K_FILTER;
 {$ENDIF}
+*)
   fMasks := TStringList.Create;
   PopulateMaskList;
   SetColorScheme;
 end;
 
+(*
 {$IFDEF FPC}
 procedure TfrmNXTExplorer.DirectoryEdit1AcceptDirectory(Sender: TObject;
   var Value: String);
@@ -359,6 +373,7 @@ begin
   Accept := Source = NXTFiles;
 end;
 {$ENDIF}
+*)
 
 procedure TfrmNXTExplorer.actViewToolbarExecute(Sender: TObject);
 begin
@@ -381,7 +396,7 @@ end;
 
 procedure TfrmNXTExplorer.actPCViewStyleExecute(Sender: TObject);
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   if Sender is TComponent then
   begin
     case TComponent(Sender).Tag of
@@ -392,7 +407,7 @@ begin
     end;
   end;
   PCFilesViewStyle := lstFiles.ViewStyle;
-{$ENDIF}
+{.$ENDIF}
 end;
 
 {
@@ -425,23 +440,25 @@ begin
   actFileDelete.Enabled   := sc > 0;
   actFilePlay.Enabled     := (sc = 1) and SelectedFileIsSound;
   actFileMute.Enabled     := True;
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   actPCViewStyleLargeIcon.Checked  := lstFiles.ViewStyle = vsIcon;
   actPCViewStyleSmallIcon.Checked  := lstFiles.ViewStyle = vsSmallIcon;
   actPCViewStyleList.Checked       := lstFiles.ViewStyle = vsList;
   actPCViewStyleDetails.Checked    := lstFiles.ViewStyle = vsReport;
   // pc-side
   actFileDownload.Enabled := (lstFiles.SelCount > 0);
-{$ENDIF}
+{.$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.cboMaskChange(Sender: TObject);
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   NXTExplorerMaskIndex := cboMask.ItemIndex;
+(*
 {$ELSE}
   NXTExplorerMaskIndex := ComboBox1.ItemIndex;
 {$ENDIF}
+*)
   PopulateMaskList;
   RefreshNXTFiles;
   RefreshLocalFileList;
@@ -456,10 +473,13 @@ begin
   finally
     treShell.OnChange := treShellChange;
   end;
+{$ENDIF}
+(*
 {$ELSE}
   DirectoryEdit1.Directory := '/';
 //  FileListBox1.Directory := '/';
 {$ENDIF}
+*)
   ConfigureForm;
   RefreshNXTFiles;
 end;
@@ -529,7 +549,7 @@ var
   i : integer;
   fname : string;
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   for i := 0 to lstFiles.Items.Count - 1 do
   begin
     if lstFiles.Items[i].Selected then
@@ -539,6 +559,7 @@ begin
         break;
     end;
   end;
+(*
 {$ELSE}
   for i := 0 to FileListBox1.Items.Count - 1 do
   begin
@@ -550,6 +571,7 @@ begin
     end;
   end;
 {$ENDIF}
+*)
   RefreshNXTFiles;
 end;
 
@@ -572,20 +594,22 @@ end;
 
 procedure TfrmNXTExplorer.RefreshShellListView(Sender: TObject);
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   if lstFiles.ViewStyle <> vsReport then
     lstFiles.Refresh;
-{$ENDIF}
+{.$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.NXTFilesDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   Accept := Source = lstFiles;
+(*
 {$ELSE}
   Accept := Source = FileListBox1;
 {$ENDIF}
+*)
 end;
 
 procedure TfrmNXTExplorer.NXTFilesDragDrop(Sender, Source: TObject; X,
@@ -631,15 +655,15 @@ end;
 
 procedure TfrmNXTExplorer.lstFilesDblClick(Sender: TObject);
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   if treShell.Selected <> nil then
     treShell.Selected.MakeVisible;
-{$ENDIF}
+{.$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.About1Click(Sender: TObject);
 begin
-  ShowMessage('NeXT Explorer'#13#10'Copyright 2006, John C. Hansen');
+  ShowMessage('NeXT Explorer'#13#10'Copyright 2006-2009, John C. Hansen');
 end;
 
 procedure TfrmNXTExplorer.actFileEraseAllExecute(Sender: TObject);
@@ -675,9 +699,9 @@ end;
 
 procedure TfrmNXTExplorer.actEditSelectAllExecute(Sender: TObject);
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   NXTFiles.SelectAll;
-{$ENDIF}
+{.$ENDIF}
 end;
 
 const
@@ -742,11 +766,11 @@ var
   p : integer;
 begin
   fMasks.Clear;
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   tmpMask := cboMask.Mask;
-{$ELSE}
-  tmpMask := 'All files (*.*)|*.*';
-{$ENDIF}
+//{$ELSE}
+//  tmpMask := 'All files (*.*)|*.*';
+//{$ENDIF}
   repeat
     p := Pos(';', tmpMask);
     if p > 0 then
@@ -766,21 +790,25 @@ end;
 procedure TfrmNXTExplorer.ConfigureForm;
 begin
   NXTFiles.ViewStyle := NXTFilesViewStyle;
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   lstFiles.ViewStyle := PCFilesViewStyle;
   cboMask.ItemIndex  := NXTExplorerMaskIndex;
   if DirectoryExists(NXTExplorerPath) then
   begin
     try
+{$IFNDEF FPC}
       treShell.Path    := NXTExplorerPath;
+{$ENDIF}
     except
       // eat any exceptions which might occur here.
     end;
   end;
+(*
 {$ELSE}
   DirectoryEdit1.Directory := NXTExplorerPath;
   FileListBox1.Directory := NXTExplorerPath;
 {$ENDIF}
+*)
   cboMaskChange(nil);
 end;
 
@@ -817,9 +845,9 @@ end;
 
 function TfrmNXTExplorer.InNXTView(p: TPoint): boolean;
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   p := NXTFiles.ParentToClient(p, Self);
-{$ENDIF}
+{.$ENDIF}
   if ((p.X >= 0) and (p.X <= NXTFiles.Width)) and
      ((p.Y >= 0) and (p.Y <= NXTFiles.Height)) then
     Result := True
@@ -850,23 +878,30 @@ end;
 
 function TfrmNXTExplorer.GetLocalFilePath: string;
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   Result := treShell.Path;
+(*
 {$ELSE}
   Result := IncludeTrailingPathDelimiter(DirectoryEdit1.Directory);
 {$ENDIF}
+*)
 end;
 
 procedure TfrmNXTExplorer.RefreshLocalFileList;
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   lstFiles.Refresh;
+(*
 {$ELSE}
   FileListBox1.UpdateFileList;
 {$ENDIF}
+*)
 end;
 
 procedure TfrmNXTExplorer.actFileViewExecute(Sender: TObject);
+{$IFDEF FPC}
+begin
+{$ELSE}
 var
   MS : TMemoryStream;
   fname : string;
@@ -879,6 +914,7 @@ begin
   finally
     MS.Free;
   end;
+{$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.CreateMainMenu;
@@ -919,14 +955,16 @@ begin
   ShowToolbar1 := TOfficeMenuItem.Create(View1);
   Help1 := TOfficeMenuItem.Create(mnuMain);
   About1 := TOfficeMenuItem.Create(Help1);
-  mnuMain.Items.Add([File1, Edit2, View1, Help1]);
-  File1.Add([Refresh1, Delete1, EraseAll1, mniDefrag, N6, Upload1, Download1,
-             View2, N7, Execute1, Stop1, N3, Play1, Mute1, N2, Exit1]);
-  Edit2.Add([mniSelectAll]);
-  View1.Add([NXTViewStyle2, PCViewStyle1, N5, ShowToolbar1]);
-  Help1.Add([About1]);
-  NXTViewStyle2.Add([LargeIcons2, SmallIcons2, List2, Details2]);
-  PCViewStyle1.Add([LargeIcons3, SmallIcons3, List3, Details3]);
+  AddMenuItems(mnuMain.Items, [File1, Edit2, View1, Help1]);
+  AddMenuItems(File1,
+               [Refresh1, Delete1, EraseAll1, mniDefrag, N6, Upload1, Download1,
+               {$IFNDEF FPC}View2, {$ENDIF}
+               N7, Execute1, Stop1, N3, Play1, Mute1, N2, Exit1]);
+  AddMenuItems(Edit2, [mniSelectAll]);
+  AddMenuItems(View1, [NXTViewStyle2, PCViewStyle1, N5, ShowToolbar1]);
+  AddMenuItems(Help1, [About1]);
+  AddMenuItems(NXTViewStyle2, [LargeIcons2, SmallIcons2, List2, Details2]);
+  AddMenuItems(PCViewStyle1, [LargeIcons3, SmallIcons3, List3, Details3]);
   with File1 do
   begin
     Name := 'File1';
@@ -1151,12 +1189,14 @@ begin
   Details1 := TOfficeMenuItem.Create(NXTViewStyle1);
   mniSep4 := TOfficeMenuItem.Create(pmuNXT);
   mniShowToolbar := TOfficeMenuItem.Create(pmuNXT);
-  pmuNXT.Items.Add([mniRefresh, mniDelete, mniPopEraseAll, mniPopDefrag,
-                    mniSep6, mniUpload, mniDownload, mniView, mniSep5,
-                    mniExecute, mniFileStop, N1, mniPlay, mniMute, mniSep3,
-                    mniViewStyle, NXTViewStyle1, mniSep4, mniShowToolbar]);
-  mniViewStyle.Add([mitLargeIcons, mitSmallIcons, mitList, mitDetails]);
-  NXTViewStyle1.Add([LargeIcons1, SmallIcons1, List1, Details1]);
+  AddMenuItems(pmuNXT.Items,
+               [mniRefresh, mniDelete, mniPopEraseAll, mniPopDefrag,
+                mniSep6, mniUpload, mniDownload,
+                {$IFNDEF FPC}mniView, {$ENDIF}mniSep5,
+                mniExecute, mniFileStop, N1, mniPlay, mniMute, mniSep3,
+                mniViewStyle, NXTViewStyle1, mniSep4, mniShowToolbar]);
+  AddMenuItems(mniViewStyle, [mitLargeIcons, mitSmallIcons, mitList, mitDetails]);
+  AddMenuItems(NXTViewStyle1, [LargeIcons1, SmallIcons1, List1, Details1]);
   with pmuNXT do
   begin
     Name := 'pmuNXT';
@@ -1627,7 +1667,7 @@ end;
 
 procedure TfrmNXTExplorer.CreateShellControls;
 begin
-{$IFNDEF FPC}
+{.$IFNDEF FPC}
   cboMask := TFilterComboBox.Create(Self);
   with cboMask do
   begin
@@ -1641,7 +1681,7 @@ begin
     TabOrder := 0;
     OnChange := cboMaskChange;
   end;
-  treShell := TShellTreeView.Create(Self);
+  treShell := TShellTreeViewEx.Create(Self);
   Splitter2 := TSplitter.Create(Self);
   lstFiles := TShellListView.Create(Self);
   treShell.Parent  := pnlRight;
@@ -1703,7 +1743,7 @@ begin
     TabOrder := 1;
     DoubleBuffered := True;
   end;
-{$ENDIF}
+{.$ENDIF}
 end;
 
 {$IFDEF FPC}
