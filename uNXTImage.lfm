@@ -13,7 +13,6 @@ object frmNXTImage: TfrmNXTImage
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   KeyPreview = True
-  OldCreateOrder = False
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = HandleKeyDown

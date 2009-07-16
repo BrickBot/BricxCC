@@ -172,11 +172,11 @@ begin
   aDest.Cursor      := aSrc.Cursor;
   aDest.OnDblClick  := aSrc.OnDblClick;
   aDest.OnChange    := aSrc.OnChange;
-  aDest.ParentColor := aSrc.ParentColor;
   aDest.ParentFont  := aSrc.ParentFont;
   aDest.ReadOnly    := aSrc.ReadOnly;
   aDest.Font.Assign(aSrc.Font);
 {$IFNDEF FPC}
+  aDest.ParentColor := aSrc.ParentColor;
   aDest.ScrollHintFormat := shfTopToBottom;
 {$ENDIF}
   FreeAndNil(aSrc);

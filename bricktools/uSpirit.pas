@@ -413,8 +413,10 @@ uses
   FANTOM
   {$ELSE}
   {$IFDEF Darwin}fantomosx{$ENDIF}
+  {$IFNDEF Darwin}
   {$IFDEF Unix}fantomfpc{$ENDIF}
   {$IFDEF Windows}FANTOM{$ENDIF}
+  {$ENDIF}
   {$ENDIF};
 
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
