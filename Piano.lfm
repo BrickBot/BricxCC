@@ -13,7 +13,6 @@ object PianoForm: TPianoForm
   Font.Height = -5
   Font.Name = 'MS Sans Serif'
   Font.Style = []
-  OldCreateOrder = True
   OnCreate = FormCreate
   OnShow = FormShow
   PixelsPerInch = 96

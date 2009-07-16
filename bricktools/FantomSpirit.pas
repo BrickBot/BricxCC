@@ -298,8 +298,10 @@ uses
   FANTOM
   {$ELSE}
   {$IFDEF Darwin}fantomosx{$ENDIF}
+  {$IFNDEF Darwin}
   {$IFDEF Unix}fantomfpc{$ENDIF}
   {$IFDEF Windows}FANTOM{$ENDIF}
+  {$ENDIF}
   {$ENDIF};
 
 
