@@ -10,7 +10,7 @@ object PianoForm: TPianoForm
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
-  Font.Height = -5
+  Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
@@ -257,13 +257,13 @@ object PianoForm: TPianoForm
     Left = 56
     Top = 146
     Width = 113
-    Height = 65
+    Height = 71
     Caption = ' Length '
     TabOrder = 3
     object radWhole: TRadioButton
       Tag = 16
       Left = 8
-      Top = 16
+      Top = 19
       Width = 41
       Height = 17
       HelpContext = 15030
@@ -274,7 +274,7 @@ object PianoForm: TPianoForm
     object radHalf: TRadioButton
       Tag = 8
       Left = 8
-      Top = 32
+      Top = 37
       Width = 41
       Height = 17
       HelpContext = 15031
@@ -285,7 +285,7 @@ object PianoForm: TPianoForm
     object radQuarter: TRadioButton
       Tag = 4
       Left = 56
-      Top = 8
+      Top = 11
       Width = 41
       Height = 17
       HelpContext = 15032
@@ -298,7 +298,7 @@ object PianoForm: TPianoForm
     object radEighth: TRadioButton
       Tag = 2
       Left = 56
-      Top = 24
+      Top = 30
       Width = 41
       Height = 17
       HelpContext = 15033
@@ -309,7 +309,7 @@ object PianoForm: TPianoForm
     object radSixteenth: TRadioButton
       Tag = 1
       Left = 56
-      Top = 40
+      Top = 49
       Width = 41
       Height = 17
       HelpContext = 15034
@@ -412,9 +412,9 @@ object PianoForm: TPianoForm
   end
   object grpCode: TGroupBox
     Left = 8
-    Top = 250
+    Top = 249
     Width = 337
-    Height = 87
+    Height = 93
     Caption = 'Language'
     TabOrder = 11
     object radGenNQC: TRadioButton
@@ -430,7 +430,7 @@ object PianoForm: TPianoForm
     end
     object radGenMS: TRadioButton
       Left = 8
-      Top = 32
+      Top = 34
       Width = 86
       Height = 17
       HelpContext = 15046
@@ -439,7 +439,7 @@ object PianoForm: TPianoForm
     end
     object radGenLASM: TRadioButton
       Left = 8
-      Top = 48
+      Top = 52
       Width = 86
       Height = 17
       HelpContext = 15047
@@ -448,7 +448,7 @@ object PianoForm: TPianoForm
     end
     object radGenC: TRadioButton
       Left = 8
-      Top = 64
+      Top = 71
       Width = 86
       Height = 17
       HelpContext = 15048
@@ -466,7 +466,7 @@ object PianoForm: TPianoForm
     end
     object radGenForth: TRadioButton
       Left = 115
-      Top = 32
+      Top = 34
       Width = 86
       Height = 17
       HelpContext = 15050
@@ -475,7 +475,7 @@ object PianoForm: TPianoForm
     end
     object radGenJava: TRadioButton
       Left = 115
-      Top = 48
+      Top = 52
       Width = 86
       Height = 17
       HelpContext = 15051
@@ -484,7 +484,7 @@ object PianoForm: TPianoForm
     end
     object radGenNBC: TRadioButton
       Left = 115
-      Top = 64
+      Top = 71
       Width = 86
       Height = 17
       HelpContext = 15052
@@ -493,7 +493,7 @@ object PianoForm: TPianoForm
     end
     object radGenNXTMelody: TRadioButton
       Left = 226
-      Top = 32
+      Top = 34
       Width = 86
       Height = 17
       HelpContext = 15054

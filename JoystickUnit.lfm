@@ -9,14 +9,16 @@ object JoystickForm: TJoystickForm
   Caption = 'Joystick'
   ClientHeight = 456
   ClientWidth = 121
+  Font.Charset = DEFAULT_CHARSET
+  Font.Color = clWindowText
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
+  Font.Style = []
   KeyPreview = True
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   OnShow = FormShow
-  LCLVersion = '0.9.25'
   object grpLeftMotor: TGroupBox
     Left = 8
     Height = 68

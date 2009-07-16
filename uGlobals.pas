@@ -150,7 +150,7 @@ initialization
 {$IFNDEF FPC}
   UserDataLocalPath := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\';
 {$ELSE}
-  UserDataLocalPath := ExtractFilePath(ParamStr(0));
+  UserDataLocalPath := IncludeTrailingPathDelimiter('~');
 {$ENDIF}
 
 end.

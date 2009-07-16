@@ -1,24 +1,20 @@
-PROGRAMS = NeXTTool
-VER = 1.0.2.0
-DEFAULT_INCLUDE_DIR=.
 FPC_TARGET=i386-win32
 WIDGETSET=win32
-# Win32
-LAZRESPREFIX=C:/lazarus/tools/
-PTOOLPREFIX=C:/lazarus/fpc/2.2.5/bin/$(FPC_TARGET)/
-PPC=$(PTOOLPREFIX)fpc
-
-PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools
-LFLAGS=-S2cdghi -dRELEASE -vewnhi -WG -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -FuC:/lazarus/components/synedit/units/$(FPC_TARGET)/ -FuC:/lazarus/lcl/units/$(FPC_TARGET)/ -FuC:/lazarus/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -FuC:/lazarus/packager/units/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY
+ARCH=386
+LAZRESPREFIX=c:/lazarus/tools/
+PTOOLPREFIX= c:/lazarus/fpc/2.2.5/bin/$(FPC_TARGET)/
+DEFAULT_INCLUDE_DIR=.
+PPC=$(PTOOLPREFIX)ppc$(ARCH)
+#EXTRAFLAGS=-k-framework -kFantom
+ROOT=c:
+PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools $(EXTRAFLAGS)
+LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fu$(ROOT)/lazarus/components/synedit/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(ROOT)/lazarus/packager/units/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY $(EXTRAFLAGS)
 
 clean::
 	rm -f *.o *.ppu *.rst *.compiled *_preproc.inc bricktools/*.o bricktools/*.ppu nxt/*.o nxt/*.ppu samplerate/*.o samplerate/*.ppu syn/*.o syn/*.ppu
 
 realclean:: clean
 	rm -f $(PROGRAMS) 
-
-nexttool:: nexttool.dpr nexttool.exe
-	touch $@
 
 wavrsocvt:: wavrsocvt.dpr wavrsocvt.exe
 	touch $@
@@ -60,9 +56,6 @@ bricxcc:: bricxcc.dpr bricxcc.exe
 	touch $@
 
 wavrsocvt.exe: wavrsocvt.dpr wavrsocvt_preproc.inc
-	$(PPC) $(PFLAGS) $< -o$@
-
-nexttool.exe: nexttool.dpr nexttool_preproc.inc
 	$(PPC) $(PFLAGS) $< -o$@
 
 # how to link executable

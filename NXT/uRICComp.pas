@@ -396,7 +396,7 @@ implementation
 uses
   SysUtils, Math, uCommonUtils, uLocalizedStrings,
   {$IFNDEF FPC}
-  Graphics, JPEG, PNGImage, GIFImage
+  Graphics, JPEG, pngimage, GIFImage
   {$ELSE}
   FPImage, FPCanvas,
   FPReadBMP, {FPReadGIF, }FPReadJpeg,

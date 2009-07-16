@@ -26792,11 +26792,6 @@ object frmNXTImage: TfrmNXTImage
     Left = 48
     Top = 80
   end
-  object dlgSavePic: TSavePictureDialog
-    OnTypeChange = dlgSavePicTypeChange
-    Left = 80
-    Top = 88
-  end
   object ActionList1: TActionList
     Left = 40
     Top = 352
@@ -26932,5 +26927,10 @@ object frmNXTImage: TfrmNXTImage
     Title = 'Save AVI video'
     Left = 72
     Top = 456
+  end
+  object dlgSavePic: TSaveDialog
+    OnTypeChange = dlgSavePicTypeChange
+    Left = 80
+    Top = 88
   end
 end

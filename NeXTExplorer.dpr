@@ -16,11 +16,17 @@
  *)
 program NeXTExplorer;
 
+{$IFNDEF FPC}
 {$R 'ToolbarBackground.res' 'ToolbarBackground.rc'}
+{$ENDIF}
 
 uses
-  Forms,
+{$IFNDEF FPC}
   XPMan,
+{$ELSE}
+  Interfaces,
+{$ENDIF}
+  Forms,
   Dialogs,
   brick_common in 'bricktools\brick_common.pas',
   uGlobals in 'uGlobals.pas',
@@ -28,7 +34,9 @@ uses
   uPortPrompt in 'uPortPrompt.pas' {frmPortPrompt},
   uHexViewer in 'uHEXViewer.pas' {frmHexView};
 
+{$IFNDEF FPC}
 {$R *.res}
+{$ENDIF}
 
 begin
   LocalBrickType := rtNXT;

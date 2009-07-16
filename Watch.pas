@@ -954,6 +954,10 @@ begin
   fGraph := nil;
 {$ENDIF}
 {$ENDIF}
+{$IFDEF FPC}
+  chkSyncSeries.Visible := False;
+  btnGraph.Visible := False;
+{$ENDIF}
   cboTimes.ItemIndex := 3;
   PopulateVarArray;
 end;

@@ -43,7 +43,6 @@ type
     shpExit: TShape;
     imgScreen: TImage;
     tmrRefresh: TTimer;
-    dlgSavePic: TSavePictureDialog;
     ActionList1: TActionList;
     actSave: TAction;
     actCopy: TAction;
@@ -69,6 +68,7 @@ type
     shpLeft1: TShape;
     shpLeft2: TShape;
     shpLeft3: TShape;
+    dlgSavePic: TSaveDialog;
     procedure shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure shpRightMouseDown(Sender: TObject; Button: TMouseButton;
@@ -151,8 +151,6 @@ type
     { Private declarations }
     fBytes : array[0..799] of byte;
     fBusy : boolean;
-    LeftPoints : array[0..2] of TPoint;
-    RightPoints : array[0..2] of TPoint;
     fDisplayNormal : boolean;
     fGoodRead : boolean;
     fGC : TGraphicClass;
@@ -196,6 +194,11 @@ uses
   uGuiUtils, uSpirit,
   brick_common, uNXTConstants, rcx_constants,
   uNXTName, uLocalizedStrings;
+
+{$IFNDEF FPC}
+type
+  TPortableNetworkGraphic = TPNGObject;
+{$ENDIF}
 
 procedure TfrmNXTImage.tmrRefreshTimer(Sender: TObject);
 begin
@@ -319,15 +322,25 @@ begin
   imgNXT.Picture.Bitmap.FreeImage;
   Self.DoubleBuffered := True;
   ScaleForm(6);    // 2.5x
+{$IFNDEF FPC}
   dlgSavePic.Filter :=
-    'All (*.ric;*.png;*.jpg;*.jpeg;*.gif;*.bmp)|*.ric;*.png;*.jpg;*.jpeg;*.gif;*.bmp|' +
-    'NXT Icon File (*.ric)|*.ric|' +
+    'All (*.png;*.jpg;*.jpeg;*.gif;*.bmp)|*.png;*.jpg;*.jpeg;*.gif;*.bmp|' +
     'Portable Network Graphics (*.png)|*.png|' +
     'JPEG Image File (*.jpg)|*.jpg|' +
     'JPEG Image File (*.jpeg)|*.jpeg|' +
     'GIF Image File (*.gif)|*.gif|' +
     'Bitmaps (*.bmp)|*.bmp';
-  dlgSavePic.FilterIndex := 7;
+  dlgSavePic.FilterIndex := 6;
+{$ELSE}
+  dlgSavePic.Filter :=
+    'All (*.png;*.jpg;*.jpeg;*.xpm;*.bmp)|*.png;*.jpg;*.jpeg;*.xpm;*.bmp|' +
+    'Portable Network Graphics (*.png)|*.png|' +
+    'JPEG Image File (*.jpg)|*.jpg|' +
+    'JPEG Image File (*.jpeg)|*.jpeg|' +
+    'Pixmap File (*.xpm)|*.xpm|' +
+    'Bitmaps (*.bmp)|*.bmp';
+  dlgSavePic.FilterIndex := 6;
+{$ENDIF}
   fClickStream := TMemoryStream.Create;
   CheckForCustomClick;
 end;
@@ -600,32 +613,34 @@ end;
 
 procedure TfrmNXTImage.dlgSavePicTypeChange(Sender: TObject);
 begin
-{$IFNDEF FPC}
   case dlgSavePic.FilterIndex of
-    2    : fGC := TRICObject;
-    3    : fGC := TPNGObject;
-    4, 5 : fGC := TJPEGImage;
-    6    : fGC := TGIFImage;
-    7    : fGC := TBitmap;
+    2    : fGC := TPortableNetworkGraphic;
+    3, 4 : fGC := TJPEGImage;
+{$IFNDEF FPC}
+    5    : fGC := TGIFImage;
+{$ELSE}
+    5    : fGC := TPixmap;
+{$ENDIF}
+    6    : fGC := TBitmap;
   else
     fGC := TBitmap;
   end;
-{$ENDIF}
 end;
 
 function TfrmNXTImage.GraphicClassFromExt(const ext: string): TGraphicClass;
 begin
 {$IFNDEF FPC}
-  if (ext = '.jpg') or (ext = '.jpeg') then
-    Result := TJPEGImage
-  else if (ext = '.gif') then
+  if (ext = '.gif') then
     Result := TGIFImage
-  else if (ext = '.ric') then
-    Result := TRICObject
-  else if (ext = '.png') then
-    Result := TPNGObject
-  else
+{$ELSE}
+  if (ext = '.xpm') then
+    Result := TPixmap
 {$ENDIF}
+  else if (ext = '.jpg') or (ext = '.jpeg') then
+    Result := TJPEGImage
+  else if (ext = '.png') then
+    Result := TPortableNetworkGraphic
+  else
     Result := TBitmap;
 end;
 
@@ -1120,10 +1135,11 @@ begin
     Caption := sExit;
     OnClick := mniExitClick;
   end;
-  AddMenuItems(pmuMain.Items, [mniAbout, mniUtils, mniSep1, mniSave, mniCopy, mniSep2,
-                     mniPollNow, mniPoll, mniRefreshRate, mniCaptureAVI,
-                     mniSep3, mniScale, mniSep4, mniDisplay, mniSep5,
-                     mniPlayClicks, mniSep6, mniExit]);
+  AddMenuItems(pmuMain.Items,
+               [mniAbout, mniUtils, mniSep1, mniSave, {$IFNDEF FPC}mniCopy, {$ENDIF}
+                mniSep2, mniPollNow, mniPoll, mniRefreshRate, {$IFNDEF FPC}mniCaptureAVI, {$ENDIF}
+                mniSep3, mniScale, mniSep4, mniDisplay,
+                mniSep5, mniPlayClicks, mniSep6, mniExit]);
   AddMenuItems(mniUtils,[mniSetNXTName, mniBootSAMBA, mniBTReset]);
   AddMenuItems(mniRefreshRate, [mni50ms, mni100ms, mni200ms, mni500ms, mni1sec, mni2sec,
                       mni5sec, mni10sec, mni20sec, mni1min]);
