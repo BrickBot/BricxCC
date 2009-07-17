@@ -12,7 +12,6 @@ object MemoryForm: TMemoryForm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnShow = FormShow
-  LCLVersion = '0.9.25'
   object MemoryMemo: TMemo
     Left = 8
     Height = 337

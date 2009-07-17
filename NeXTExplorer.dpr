@@ -30,9 +30,11 @@ uses
   Dialogs,
   brick_common in 'bricktools\brick_common.pas',
   uGlobals in 'uGlobals.pas',
-  uNXTExplorer in 'uNXTExplorer.pas' {frmNXTExplorer},
   uPortPrompt in 'uPortPrompt.pas' {frmPortPrompt},
-  uHexViewer in 'uHEXViewer.pas' {frmHexView};
+{$IFNDEF FPC}
+  uHexViewer in 'uHEXViewer.pas' {frmHexView},
+{$ENDIF}
+  uNXTExplorer in 'uNXTExplorer.pas' {frmNXTExplorer};
 
 {$IFNDEF FPC}
 {$R *.res}
@@ -56,7 +58,9 @@ begin
   begin
     BrickComm.Ping;
     Application.CreateForm(TfrmNXTExplorer, frmNXTExplorer);
+{$IFNDEF FPC}
     Application.CreateForm(TfrmHexView, frmHexView);
+{$ENDIF}
     Application.Run;
   end
   else

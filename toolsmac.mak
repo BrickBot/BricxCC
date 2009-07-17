@@ -10,85 +10,95 @@ ROOT=/usr/local/share
 PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools $(EXTRAFLAGS)
 LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fu$(ROOT)/lazarus/components/synedit/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(ROOT)/lazarus/packager/units/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY $(EXTRAFLAGS)
 
+FORMS=uToolPalette.lrs uPortPrompt.lrs Controller.lrs Diagnose.lrs JoystickUnit.lrs \
+ MessageUnit.lrs Piano.lrs RemoteUnit.lrs uNXTExplorer.lrs uNXTImage.lrs Watch.lrs uMIDIConversion.lrs \
+ uWav2RSO.lrs MemoryUnit.lrs
+
 clean::
 	rm -f *.o *.ppu *.rst *.compiled *_preproc.inc bricktools/*.o bricktools/*.ppu nxt/*.o nxt/*.ppu samplerate/*.o samplerate/*.ppu syn/*.o syn/*.ppu
 
 realclean:: clean
 	rm -f $(PROGRAMS)
 
-midibatch:: %.dpr %_preproc.inc uMidiBatch.lrs
+midibatch:: midibatch.dpr midibatch_preproc.inc uMidiBatch.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-nextexplorer:: %.dpr %_preproc.inc uNXTExplorer.lrs
+nextexplorer:: nextexplorer.dpr nextexplorer_preproc.inc uNXTExplorer.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-nextscreen:: %.dpr %_preproc.inc uNXTImage.lrs uNXTName.lrs uPortPrompt.lrs
+nextscreen:: nextscreen.dpr nextscreen_preproc.inc uNXTImage.lrs uNXTName.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-nxtdiagnose:: %.dpr %_preproc.inc Diagnose.lrs uNXTName.lrs uPortPrompt.lrs
+nxtdiagnose:: nxtdiagnose.dpr nxtdiagnose_preproc.inc Diagnose.lrs uNXTName.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-nxtdirect:: %.dpr %_preproc.inc Controller.lrs uPortPrompt.lrs
+nxtdirect:: nxtdirect.dpr nxtdirect_preproc.inc Controller.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-nxtjoy:: %.dpr %_preproc.inc JoystickUnit.lrs uPortPrompt.lrs
+nxtjoy:: nxtjoy.dpr nxtjoy_preproc.inc JoystickUnit.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-nxtmessage:: %.dpr %_preproc.inc MessageUnit.lrs uPortPrompt.lrs
+nxtmessage:: nxtmessage.dpr nxtmessage_preproc.inc MessageUnit.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-nxtpiano:: %.dpr %_preproc.inc Piano.lrs uPortPrompt.lrs
+nxtpiano:: nxtpiano.dpr nxtpiano_preproc.inc Piano.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-nxtremote:: %.dpr %_preproc.inc RemoteUnit.lrs uRemoteProgMap.lrs uPortPrompt.lrs
+nxtremote:: nxtremote.dpr nxtremote_preproc.inc RemoteUnit.lrs uRemoteProgMap.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-nxtwatch:: %.dpr %_preproc.inc Watch.lrs uPortPrompt.lrs
+nxtwatch:: nxtwatch.dpr nxtwatch_preproc.inc Watch.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-wav2rso:: %.dpr %_preproc.inc uWav2RSO.lrs
+wav2rso:: wav2rso.dpr wav2rso_preproc.inc uWav2RSO.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-bricxcc:: %.dpr %_preproc.inc
+nxttools:: nxttools.dpr nxttools_preproc.inc $(FORMS)
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
 	mv $@ ./$(ARCH)
 
-wavrsocvt: %.dpr %_preproc.inc
+bricxcc:: bricxcc.dpr bricxcc_preproc.inc
+	$(PPC) $(LFLAGS) $< -o$@
+	strip $@
+	mkdir $(ARCH)
+	mv $@ ./$(ARCH)
+
+wavrsocvt: wavrsocvt.dpr wavrsocvt_preproc.inc
 	$(PPC) $(PFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)

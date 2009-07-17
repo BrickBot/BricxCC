@@ -404,7 +404,11 @@ var
   dxOffice11DockColor2: COLORREF;
   dxOffice11DownedSelectedColor: COLORREF;
 {$ENDIF}
-  
+
+{$IFDEF FPC}
+procedure Register;
+{$ENDIF}
+
 implementation
 
 {$IFNDEF FPC}
@@ -2984,7 +2988,12 @@ begin
   end;
 end;
 
-{$IFNDEF FPC}
+{$IFDEF FPC}
+procedure Register;
+begin
+  RegisterComponents('Misc',[TOfficeControlBar]);
+end;
+{$ELSE}
 
 { TOfficeToolButton }
 
@@ -3012,8 +3021,12 @@ end;
 constructor TOfficeControlBar.Create(AOwner: TComponent);
 begin
   inherited;
+  AutoDock := False;
   BevelInner := bvNone;
   BevelOuter := bvNone;
+  RowSnap := False;
+  DockSite := False;
+  BevelKind := bkNone;
 
   DoubleBuffered := True;       // to eliminate flicker when resized
 

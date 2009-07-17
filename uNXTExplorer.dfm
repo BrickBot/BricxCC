@@ -53,14 +53,11 @@ object frmNXTExplorer: TfrmNXTExplorer
           MinWidth = 50
         end>
       DragMode = dmAutomatic
-      IconOptions.AutoArrange = True
       LargeImages = ilLarge
       MultiSelect = True
       SmallImages = ilSmall
       SortType = stText
       TabOrder = 0
-      OnEdited = NXTFilesEdited
-      OnEditing = NXTFilesEditing
       OnDragDrop = NXTFilesDragDrop
       OnDragOver = NXTFilesDragOver
     end
