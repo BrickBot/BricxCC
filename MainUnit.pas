@@ -5384,22 +5384,12 @@ begin
     Width := 584;
     Height := 54;
     Align := alTop;
-    AutoDock := False;
-    BevelInner := bvNone;
-    BevelOuter := bvNone;
-    BevelKind := bkNone;
     Color := clBtnFace;
-    DockSite := False;
-    ParentBackground := False;
-    ParentColor := False;
     PopupMenu := mnuToolbars;
-    RowSnap := False;
     TabOrder := 1;
     OnDockOver := cbrTopDockOver;
     OnMouseDown := BarMouseDown;
     OnMouseMove := BarMouseMove;
-    GradientFrom := clBtnFace;
-    GradientTo := clBtnFace;
     BorderColor := clBlack;
   end;
   // now create the toolbars

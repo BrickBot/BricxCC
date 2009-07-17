@@ -41,6 +41,11 @@ type
 {$ENDIF}
   end;
 
+  TShellListViewEx = class(TShellListView)
+  public
+    function GetPathFromIndex(const idx : integer) : string;
+  end;
+
   { TfrmNXTExplorer }
 
   TfrmNXTExplorer = class(TForm)
@@ -173,11 +178,11 @@ type
     bvlFile2: TBevel;
     osbExecute: TOfficeSpeedButton;
     obsStop: TOfficeSpeedButton;
-    Bevel1: TBevel;
+    bvlStop2: TBevel;
     osbPlay: TOfficeSpeedButton;
-    Bevel2: TBevel;
+    bvlPlay2: TBevel;
     osbMute: TOfficeSpeedButton;
-    Bevel3: TBevel;
+    bvlMute2: TBevel;
     osbEraseAll: TOfficeSpeedButton;
     osbDefrag: TOfficeSpeedButton;
     osbView: TOfficeSpeedButton;
@@ -204,7 +209,7 @@ type
     cboMask: TFilterComboBox;
     treShell: TShellTreeViewEx;
     Splitter2: TSplitter;
-    lstFiles: TShellListView;
+    lstFiles: TShellListViewEx;
     procedure cboMaskChange(Sender: TObject);
 {$IFNDEF FPC}
     procedure lstFilesAddFolder(Sender: TObject; AFolder: TShellFolder;
@@ -222,6 +227,7 @@ type
     fMasks : TStringList;
 {$IFNDEF FPC}
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
+    function InNXTView(p : TPoint) : boolean;
 {$ENDIF}
     procedure ConfigureForm;
     procedure PopulateMaskList;
@@ -230,7 +236,6 @@ type
     function SelectedFileIsExecutable : boolean;
     function SelectedFileIsSound : boolean;
     function IsInMask(const ext: string): boolean;
-    function InNXTView(p : TPoint) : boolean;
     function DoDownloadFile(const aFile : string) : boolean;
     function GetLocalFilePath : string;
     procedure RefreshLocalFileList;
@@ -329,6 +334,9 @@ begin
   CreateToolbar;
   {Let Windows know we accept dropped files}
 {$IFNDEF FPC}
+  NXTFiles.OnEdited := NXTFilesEdited;
+  NXTFiles.OnEditing := NXTFilesEditing;
+  NXTFiles.IconOptions.AutoArrange := True;
   DragAcceptFiles(Handle,true);
 {$ENDIF}
 {.$IFNDEF FPC}
@@ -554,7 +562,7 @@ begin
   begin
     if lstFiles.Items[i].Selected then
     begin
-      fname := lstFiles.Folders[i].PathName;
+      fname := lstFiles.GetPathFromIndex(i);
       if not DoDownloadFile(fname) then
         break;
     end;
@@ -698,10 +706,11 @@ begin
 end;
 
 procedure TfrmNXTExplorer.actEditSelectAllExecute(Sender: TObject);
+var
+  I: Integer;
 begin
-{.$IFNDEF FPC}
-  NXTFiles.SelectAll;
-{.$ENDIF}
+  for I := 0 to NXTFiles.Items.Count - 1 do
+    NXTFiles.Items[I].Selected := True;
 end;
 
 const
@@ -841,19 +850,17 @@ begin
     RefreshNXTFiles;
   end;
 end;
-{$ENDIF}
 
 function TfrmNXTExplorer.InNXTView(p: TPoint): boolean;
 begin
-{.$IFNDEF FPC}
   p := NXTFiles.ParentToClient(p, Self);
-{.$ENDIF}
   if ((p.X >= 0) and (p.X <= NXTFiles.Width)) and
      ((p.Y >= 0) and (p.Y <= NXTFiles.Height)) then
     Result := True
   else
     Result := False;
 end;
+{$ENDIF}
 
 function TfrmNXTExplorer.DoDownloadFile(const aFile: string) : boolean;
 var
@@ -878,13 +885,11 @@ end;
 
 function TfrmNXTExplorer.GetLocalFilePath: string;
 begin
-{.$IFNDEF FPC}
+{$IFNDEF FPC}
   Result := treShell.Path;
-(*
 {$ELSE}
-  Result := IncludeTrailingPathDelimiter(DirectoryEdit1.Directory);
+  Result := IncludeTrailingPathDelimiter(lstFiles.Root);
 {$ENDIF}
-*)
 end;
 
 procedure TfrmNXTExplorer.RefreshLocalFileList;
@@ -1371,11 +1376,11 @@ begin
   bvlFile2 := TBevel.Create(ogpNXTExplorer);
   osbExecute := TOfficeSpeedButton.Create(ogpNXTExplorer);
   obsStop := TOfficeSpeedButton.Create(ogpNXTExplorer);
-  Bevel1 := TBevel.Create(ogpNXTExplorer);
+  bvlStop2 := TBevel.Create(ogpNXTExplorer);
   osbPlay := TOfficeSpeedButton.Create(ogpNXTExplorer);
-  Bevel2 := TBevel.Create(ogpNXTExplorer);
+  bvlPlay2 := TBevel.Create(ogpNXTExplorer);
   osbMute := TOfficeSpeedButton.Create(ogpNXTExplorer);
-  Bevel3 := TBevel.Create(ogpNXTExplorer);
+  bvlMute2 := TBevel.Create(ogpNXTExplorer);
   osbEraseAll := TOfficeSpeedButton.Create(ogpNXTExplorer);
   osbDefrag := TOfficeSpeedButton.Create(ogpNXTExplorer);
   osbView := TOfficeSpeedButton.Create(ogpNXTExplorer);
@@ -1388,19 +1393,9 @@ begin
     Width := 572;
     Height := 26;
     Align := alTop;
-    AutoDock := False;
     AutoSize := True;
-    BevelInner := bvNone;
-    BevelOuter := bvNone;
-    BevelKind := bkNone;
     Color := clBtnFace;
-    DockSite := False;
-    ParentBackground := False;
-    ParentColor := False;
-    RowSnap := False;
     TabOrder := 0;
-    GradientFrom := clBtnFace;
-    GradientTo := clBtnFace;
     BorderColor := clBlack;
   end;
   with ogpNXTExplorer do
@@ -1430,8 +1425,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileUpload;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := Upload1;
     ResourceName := 'IMG_UPLOAD';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1448,8 +1446,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileDelete;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := Delete1;
     ResourceName := 'IMG_DELETE';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1466,8 +1467,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileRefresh;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := Refresh1;
     ResourceName := 'IMG_REFRESH';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1484,8 +1488,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileDownload;
-    MenuItem := mniDownload;
+{$IFDEF FPC}
+{$ELSE}
+    MenuItem := Download1;
     ResourceName := 'IMG_OPEN';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1502,7 +1509,7 @@ begin
     Width := 8;
     Height := 22;
     Align := alLeft;
-    Shape := bsSpacer;
+    Shape := bsLeftLine;
   end;
   with osbExecute do
   begin
@@ -1513,8 +1520,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileExecute;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := Execute1;
     ResourceName := 'IMG_RUN';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1531,8 +1541,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileStop;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := Stop1;
     ResourceName := 'IMG_STOP';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1540,16 +1553,16 @@ begin
     ParentShowHint := False;
     ShowHint := True;
   end;
-  with Bevel1 do
+  with bvlStop2 do
   begin
-    Name := 'Bevel1';
+    Name := 'bvlStop2';
     Parent := ogpNXTExplorer;
     Left := 223;
     Top := 0;
     Width := 8;
     Height := 22;
     Align := alLeft;
-    Shape := bsSpacer;
+    Shape := bsLeftLine;
   end;
   with osbPlay do
   begin
@@ -1560,8 +1573,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFilePlay;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := Play1;
     ResourceName := 'IMG_PLAY';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1569,16 +1585,16 @@ begin
     ParentShowHint := False;
     ShowHint := True;
   end;
-  with Bevel2 do
+  with bvlPlay2 do
   begin
-    Name := 'Bevel2';
+    Name := 'bvlPlay2';
     Parent := ogpNXTExplorer;
     Left := 92;
     Top := 0;
     Width := 8;
     Height := 22;
     Align := alLeft;
-    Shape := bsSpacer;
+    Shape := bsLeftLine;
   end;
   with osbMute do
   begin
@@ -1589,8 +1605,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileMute;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := Mute1;
     ResourceName := 'IMG_MUTE';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1598,16 +1617,16 @@ begin
     ParentShowHint := False;
     ShowHint := True;
   end;
-  with Bevel3 do
+  with bvlMute2 do
   begin
-    Name := 'Bevel3';
+    Name := 'bvlMute2';
     Parent := ogpNXTExplorer;
     Left := 277;
     Top := 0;
     Width := 8;
     Height := 22;
     Align := alLeft;
-    Shape := bsSpacer;
+    Shape := bsLeftLine;
   end;
   with osbEraseAll do
   begin
@@ -1618,8 +1637,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileEraseAll;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := EraseAll1;
     ResourceName := 'IMG_CLEARMEM';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1636,8 +1658,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileDefrag;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := mniDefrag;
     ResourceName := 'IMG_DEFRAG';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1654,8 +1679,11 @@ begin
     Width := 23;
     Height := 22;
     Action := actFileView;
+{$IFDEF FPC}
+{$ELSE}
     MenuItem := View2;
     ResourceName := 'IMG_NEWWATCH';
+{$ENDIF}
     Align := alLeft;
     Flat := True;
     ShowCaption := False;
@@ -1683,7 +1711,7 @@ begin
   end;
   treShell := TShellTreeViewEx.Create(Self);
   Splitter2 := TSplitter.Create(Self);
-  lstFiles := TShellListView.Create(Self);
+  lstFiles := TShellListViewEx.Create(Self);
   treShell.Parent  := pnlRight;
   Splitter2.Parent := pnlRight;
   lstFiles.Parent  := pnlRight;
@@ -1695,11 +1723,11 @@ begin
     Top := 2;
     Width := 332;
     Height := 120;
-    Root := 'rfDesktop';
+//    Root := 'rfDesktop';
     ShellListView := lstFiles;
-    UseShellImages := True;
+//    UseShellImages := True;
     Align := alTop;
-    AutoRefresh := False;
+//    AutoRefresh := False;
     HideSelection := False;
     Indent := 19;
     ParentColor := False;
@@ -1727,16 +1755,18 @@ begin
     Top := 125;
     Width := 332;
     Height := 319;
-    Root := 'rfDesktop';
+//    Root := 'rfDesktop';
     ShellTreeView := treShell;
-    Sorted := True;
+//    Sorted := True;
     Align := alClient;
     DragMode := dmAutomatic;
     ReadOnly := False;
     HideSelection := False;
-    IconOptions.AutoArrange := True;
     MultiSelect := True;
+{$IFNDEF FPC}
+    IconOptions.AutoArrange := True;
     OnAddFolder := lstFilesAddFolder;
+{$ENDIF}
     OnDblClick := lstFilesDblClick;
     OnDragDrop := lstFilesDragDrop;
     OnDragOver := lstFilesDragOver;
@@ -1744,6 +1774,17 @@ begin
     DoubleBuffered := True;
   end;
 {.$ENDIF}
+end;
+
+{ TShellListViewEx }
+
+function TShellListViewEx.GetPathFromIndex(const idx: integer): string;
+begin
+{$IFDEF FPC}
+  Result := GetPathFromItem(Items[idx]);
+{$ELSE}
+  Result := Folders[idx].PathName;
+{$ENDIF}
 end;
 
 {$IFDEF FPC}
