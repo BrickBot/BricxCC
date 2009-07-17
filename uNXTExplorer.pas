@@ -190,22 +190,9 @@ type
     procedure CreateMainMenu;
     procedure CreatePopupMenu;
     procedure CreateShellControls;
-//    procedure pmuPCPopup(Sender: TObject);
-    procedure pmuNXTPopup(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
   public
-(*
-{$IFDEF FPC}
-    DirectoryEdit1: TDirectoryEdit;
-    FileListBox1: TFileListBox;
-    bvlFile2: TBevel;
-    procedure DirectoryEdit1AcceptDirectory(Sender: TObject; var Value: String);
-    procedure FileListBox1DragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure FileListBox1DragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
-{$ELSE}
-*)
     cboMask: TFilterComboBox;
     treShell: TShellTreeViewEx;
     Splitter2: TSplitter;
@@ -220,10 +207,8 @@ type
     procedure lstFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure lstFilesDblClick(Sender: TObject);
     procedure treShellChange(Sender: TObject; Node: TTreeNode);
-{.$ENDIF}
   private
     { Private declarations }
-    fActiveLV : TCustomListView;
     fMasks : TStringList;
 {$IFNDEF FPC}
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
@@ -256,7 +241,9 @@ uses
   SysUtils, Graphics, Dialogs, Themes, 
 {$IFNDEF FPC}
   ShellAPI, 
-  uHEXViewer, 
+  uHEXViewer,
+{$ELSE}
+  FileUtil,
 {$ENDIF}
   brick_common, uGuiUtils,
   uSpirit, uNXTExplorerSettings, uLocalizedStrings;
@@ -294,9 +281,7 @@ var
   LI : TListItem;
   curMask : string;
 begin
-{.$IFNDEF FPC}
   NXTFiles.Items.BeginUpdate;
-{.$ENDIF}
   try
     NXTFiles.Items.Clear;
     SL := TStringList.Create;
@@ -318,9 +303,7 @@ begin
       SL.Free;
     end;
   finally
-{.$IFNDEF FPC}
     NXTFiles.Items.EndUpdate;
-{.$ENDIF}
   end;
 end;
 
@@ -339,7 +322,6 @@ begin
   NXTFiles.IconOptions.AutoArrange := True;
   DragAcceptFiles(Handle,true);
 {$ENDIF}
-{.$IFNDEF FPC}
 //  lstFiles.ObjectTypes := [otNonFolders];
   treShell.ReadOnly := True;
   lstFiles.ReadOnly := True;
@@ -349,39 +331,10 @@ begin
   finally
     cboMask.OnChange := cboMaskChange;
   end;
-(*
-{$ELSE}
-  ComboBox1.Items.Text := K_FILTER;
-{$ENDIF}
-*)
   fMasks := TStringList.Create;
   PopulateMaskList;
   SetColorScheme;
 end;
-
-(*
-{$IFDEF FPC}
-procedure TfrmNXTExplorer.DirectoryEdit1AcceptDirectory(Sender: TObject;
-  var Value: String);
-begin
-  FileListBox1.Directory := Value;
-  NXTExplorerPath := Value;
-end;
-
-procedure TfrmNXTExplorer.FileListBox1DragDrop(Sender, Source: TObject; X,
-  Y: Integer);
-begin
-  // upload files to PC from NXT
-  actFileUploadExecute(Sender);
-end;
-
-procedure TfrmNXTExplorer.FileListBox1DragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
-begin
-  Accept := Source = NXTFiles;
-end;
-{$ENDIF}
-*)
 
 procedure TfrmNXTExplorer.actViewToolbarExecute(Sender: TObject);
 begin
@@ -404,7 +357,6 @@ end;
 
 procedure TfrmNXTExplorer.actPCViewStyleExecute(Sender: TObject);
 begin
-{.$IFNDEF FPC}
   if Sender is TComponent then
   begin
     case TComponent(Sender).Tag of
@@ -415,19 +367,6 @@ begin
     end;
   end;
   PCFilesViewStyle := lstFiles.ViewStyle;
-{.$ENDIF}
-end;
-
-{
-procedure TfrmNXTExplorer.pmuPCPopup(Sender: TObject);
-begin
-  fActiveLV := lstFiles;
-end;
-}
-
-procedure TfrmNXTExplorer.pmuNXTPopup(Sender: TObject);
-begin
-  fActiveLV := NXTFiles;
 end;
 
 procedure TfrmNXTExplorer.ActionsUpdate(Action: TBasicAction;
@@ -448,25 +387,17 @@ begin
   actFileDelete.Enabled   := sc > 0;
   actFilePlay.Enabled     := (sc = 1) and SelectedFileIsSound;
   actFileMute.Enabled     := True;
-{.$IFNDEF FPC}
   actPCViewStyleLargeIcon.Checked  := lstFiles.ViewStyle = vsIcon;
   actPCViewStyleSmallIcon.Checked  := lstFiles.ViewStyle = vsSmallIcon;
   actPCViewStyleList.Checked       := lstFiles.ViewStyle = vsList;
   actPCViewStyleDetails.Checked    := lstFiles.ViewStyle = vsReport;
   // pc-side
   actFileDownload.Enabled := (lstFiles.SelCount > 0);
-{.$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.cboMaskChange(Sender: TObject);
 begin
-{.$IFNDEF FPC}
   NXTExplorerMaskIndex := cboMask.ItemIndex;
-(*
-{$ELSE}
-  NXTExplorerMaskIndex := ComboBox1.ItemIndex;
-{$ENDIF}
-*)
   PopulateMaskList;
   RefreshNXTFiles;
   RefreshLocalFileList;
@@ -482,14 +413,9 @@ begin
     treShell.OnChange := treShellChange;
   end;
 {$ENDIF}
-(*
-{$ELSE}
-  DirectoryEdit1.Directory := '/';
-//  FileListBox1.Directory := '/';
-{$ENDIF}
-*)
   ConfigureForm;
   RefreshNXTFiles;
+  RefreshLocalFileList;
 end;
 
 procedure TfrmNXTExplorer.actFileRefreshExecute(Sender: TObject);
@@ -532,7 +458,7 @@ end;
 function SizeOfFile(const filename : string) : Int64;
 {$IFDEF FPC}
 begin
-  Result := 0;
+  Result := FileSize(filename);
 {$ELSE}
 var
   Handle: THandle;
@@ -823,9 +749,7 @@ end;
 
 procedure TfrmNXTExplorer.treShellChange(Sender: TObject; Node: TTreeNode);
 begin
-{$IFNDEF FPC}
-  NXTExplorerPath := treShell.Path;
-{$ENDIF}
+  NXTExplorerPath := GetLocalFilePath;
 end;
 
 {$IFNDEF FPC}
@@ -885,22 +809,34 @@ end;
 
 function TfrmNXTExplorer.GetLocalFilePath: string;
 begin
+  Result := IncludeTrailingPathDelimiter(lstFiles.Root);
+(*
 {$IFNDEF FPC}
   Result := treShell.Path;
 {$ELSE}
   Result := IncludeTrailingPathDelimiter(lstFiles.Root);
 {$ENDIF}
+*)
+end;
+
+function GetImageIndex(const filename : string) : integer;
+begin
+  Result := 0;
 end;
 
 procedure TfrmNXTExplorer.RefreshLocalFileList;
+var
+  i : integer;
+  LI : TListItem;
 begin
-{.$IFNDEF FPC}
   lstFiles.Refresh;
-(*
-{$ELSE}
-  FileListBox1.UpdateFileList;
+{$IFDEF FPC}
+  for i := 0 to lstFiles.Items.Count - 1 do
+  begin
+    LI := lstFiles.Items[i];
+    LI.ImageIndex := GetImageIndex(LI.Caption);
+  end;
 {$ENDIF}
-*)
 end;
 
 procedure TfrmNXTExplorer.actFileViewExecute(Sender: TObject);
@@ -1206,7 +1142,6 @@ begin
   begin
     Name := 'pmuNXT';
     Images := ilSmall;
-    OnPopup := pmuNXTPopup;
   end;
   with mniRefresh do
   begin
@@ -1695,7 +1630,6 @@ end;
 
 procedure TfrmNXTExplorer.CreateShellControls;
 begin
-{.$IFNDEF FPC}
   cboMask := TFilterComboBox.Create(Self);
   with cboMask do
   begin
@@ -1723,11 +1657,8 @@ begin
     Top := 2;
     Width := 332;
     Height := 120;
-//    Root := 'rfDesktop';
     ShellListView := lstFiles;
-//    UseShellImages := True;
     Align := alTop;
-//    AutoRefresh := False;
     HideSelection := False;
     Indent := 19;
     ParentColor := False;
@@ -1755,9 +1686,7 @@ begin
     Top := 125;
     Width := 332;
     Height := 319;
-//    Root := 'rfDesktop';
     ShellTreeView := treShell;
-//    Sorted := True;
     Align := alClient;
     DragMode := dmAutomatic;
     ReadOnly := False;
@@ -1766,6 +1695,9 @@ begin
 {$IFNDEF FPC}
     IconOptions.AutoArrange := True;
     OnAddFolder := lstFilesAddFolder;
+{$LSE}
+    LargeImages := ilLarge;
+    SmallImages := ilSmall;
 {$ENDIF}
     OnDblClick := lstFilesDblClick;
     OnDragDrop := lstFilesDragDrop;
@@ -1773,7 +1705,6 @@ begin
     TabOrder := 1;
     DoubleBuffered := True;
   end;
-{.$ENDIF}
 end;
 
 { TShellListViewEx }
