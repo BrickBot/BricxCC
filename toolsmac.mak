@@ -1,14 +1,14 @@
 #LAZRESPREFIX=/usr/local/bin/
 #PTOOLPREFIX=/usr/local/bin/
 DEFAULT_INCLUDE_DIR=.
-FPC_TARGET=powerpc-darwin
+FPC_TARGET=i386-darwin
 WIDGETSET=carbon
 ARCH=386
 PPC=$(PTOOLPREFIX)ppc$(ARCH)
 EXTRAFLAGS=-k-framework -kFantom
 ROOT=/usr/local/share
 PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools $(EXTRAFLAGS)
-LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fu$(ROOT)/lazarus/components/synedit/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(ROOT)/lazarus/packager/units/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY $(EXTRAFLAGS)
+LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fu/usr/local/lib/lcl/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/components/synedit/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(ROOT)/lazarus/packager/units/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY $(EXTRAFLAGS)
 
 FORMS=uToolPalette.lrs uPortPrompt.lrs Controller.lrs Diagnose.lrs JoystickUnit.lrs \
  MessageUnit.lrs Piano.lrs RemoteUnit.lrs uNXTExplorer.lrs uNXTImage.lrs Watch.lrs uMIDIConversion.lrs \
