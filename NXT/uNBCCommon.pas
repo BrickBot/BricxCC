@@ -140,6 +140,7 @@ type
     procedure SetCode(const Value: TStrings);
     procedure SetParams(const Value: TFunctionParameters);
     function GetEndLabel: string;
+    function FixupLabels(const tmpCode : string) : string;
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
@@ -1061,6 +1062,8 @@ function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boole
 function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
 function NBCFloatToStr(const AValue: Double): string;
 function StripQuotes(const str : string) : string;
+function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
+  Strings: TStrings): Integer;
 
 const
   TOK_SEMICOLON     = ';';
@@ -1331,6 +1334,65 @@ begin
   Result := Copy(str, 2, Length(str)-2);
 end;
 
+{$IFDEF FPC}
+function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
+  Strings: TStrings): Integer;
+var
+  Head, Tail: PChar;
+  EOS, InQuote: Boolean;
+  QuoteChar: Char;
+  Item: string;
+begin
+  Item := '';
+  Result := 0;
+  if (Content = nil) or (Content^=#0) or (Strings = nil) then Exit;
+  Tail := Content;
+  InQuote := False;
+  QuoteChar := #0;
+  Strings.BeginUpdate;
+  try
+    repeat
+      while Tail^ in WhiteSpace + [#13, #10] do inc(Tail);
+      Head := Tail;
+      while True do
+      begin
+        while (InQuote and not (Tail^ in [QuoteChar, #0])) or
+          not (Tail^ in Separators + [#0, #13, #10, '''', '"']) do
+            inc(Tail);
+        if Tail^ in ['''', '"'] then
+        begin
+          if (QuoteChar <> #0) and (QuoteChar = Tail^) then
+            QuoteChar := #0
+          else if QuoteChar = #0 then
+            QuoteChar := Tail^;
+          InQuote := QuoteChar <> #0;
+          inc(Tail);
+        end else Break;
+      end;
+      EOS := Tail^ = #0;
+      if (Head <> Tail) and (Head^ <> #0) then
+      begin
+        if Strings <> nil then
+        begin
+          SetString(Item, Head, Tail - Head);
+          Strings.Add(Item);
+        end;
+        Inc(Result);
+      end;
+      inc(Tail);
+    until EOS;
+  finally
+    Strings.EndUpdate;
+  end;
+end;
+{$ELSE}
+function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
+  Strings: TStrings): Integer;
+begin
+  Result := ExtractStrings(Separators, WhiteSpace, Content, Strings);
+end;
+{$ENDIF}
+
 { TNBCExpParser }
 
 procedure TNBCExpParser.InitializeCalc;
@@ -1463,8 +1525,7 @@ begin
   // adjust labels
   tmpSL := TStringList.Create;
   try
-    tmpCode := fCode.Text;
-    tmpCode := Replace(tmpCode, LABEL_PREFIX, Format('__%3.3d%s', [fEmitCount, LABEL_PREFIX]));
+    tmpCode := FixupLabels(fCode.Text);
     tmpCode := Replace(tmpCode, 'return', Format('jmp %s', [EndLabel]));
     // do all the variable replacing that is needed
     for i := 0 to Parameters.Count - 1 do
@@ -1515,7 +1576,8 @@ begin
       newname := Format('__float_stack_%3.3d%s', [i, NameInline]);
       tmpCode := Replace(tmpCode, oldName, newName);
     end;
-    tmpCode := tmpCode + #13#10 + EndLabel + ':';
+    if Pos(EndLabel, tmpCode) > 0 then
+      tmpCode := tmpCode + #13#10 + EndLabel + ':';
     tmpSL.Text := tmpCode;
     aStrings.AddStrings(tmpSL);
   finally
@@ -1523,9 +1585,43 @@ begin
   end;
 end;
 
+function TInlineFunction.FixupLabels(const tmpCode: string): string;
+{
+var
+  tmp, values : TStringList;
+  i, j : integer;
+  line : string;
+}
+begin
+  // NXC-generated labels are fixed-up here
+  Result := Replace(tmpCode, LABEL_PREFIX, Format('__%3.3d%s', [fEmitCount, LABEL_PREFIX]));
+  // also need to fix any other user-defined labels in the code so that
+  // emitting this code more than once will not cause duplicate label
+  // problems
+{
+  tmp := TStringList.Create;
+  try
+    tmp.Text := Result;
+    for i := 0 to tmp.Count - 1 do
+    begin
+      line := tmp[i];
+      // does this line contain a label?
+      values := TStringList.Create;
+      try
+        j := JCHExtractStrings([' ', #9], [], PChar(line), values);
+      finally
+        values.Free;
+      end;
+    end;
+  finally
+    tmp.Free;
+  end;
+}
+end;
+
 function TInlineFunction.GetEndLabel: string;
 begin
-  Result := Format('__%s_inline_%s_%3.3d_end_lbl', [CurrentCaller, Name, fEmitCount]);
+  Result := Format(LABEL_PREFIX+'%s_inline_%s_%3.3d_end_lbl', [CurrentCaller, Name, fEmitCount]);
 end;
 
 procedure TInlineFunction.SetCode(const Value: TStrings);

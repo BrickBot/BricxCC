@@ -1695,7 +1695,7 @@ begin
 {$IFNDEF FPC}
     IconOptions.AutoArrange := True;
     OnAddFolder := lstFilesAddFolder;
-{$LSE}
+{$ELSE}
     LargeImages := ilLarge;
     SmallImages := ilSmall;
 {$ENDIF}
