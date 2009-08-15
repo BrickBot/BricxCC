@@ -4427,65 +4427,6 @@ begin
     Result := Replace(line, ',', ' ');
 end;
 
-{$IFDEF FPC}
-function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
-  Strings: TStrings): Integer;
-var
-  Head, Tail: PChar;
-  EOS, InQuote: Boolean;
-  QuoteChar: Char;
-  Item: string;
-begin
-  Item := '';
-  Result := 0;
-  if (Content = nil) or (Content^=#0) or (Strings = nil) then Exit;
-  Tail := Content;
-  InQuote := False;
-  QuoteChar := #0;
-  Strings.BeginUpdate;
-  try
-    repeat
-      while Tail^ in WhiteSpace + [#13, #10] do inc(Tail);
-      Head := Tail;
-      while True do
-      begin
-        while (InQuote and not (Tail^ in [QuoteChar, #0])) or
-          not (Tail^ in Separators + [#0, #13, #10, '''', '"']) do
-            inc(Tail);
-        if Tail^ in ['''', '"'] then
-        begin
-          if (QuoteChar <> #0) and (QuoteChar = Tail^) then
-            QuoteChar := #0
-          else if QuoteChar = #0 then
-            QuoteChar := Tail^;
-          InQuote := QuoteChar <> #0;
-          inc(Tail);
-        end else Break;
-      end;
-      EOS := Tail^ = #0;
-      if (Head <> Tail) and (Head^ <> #0) then
-      begin
-        if Strings <> nil then
-        begin
-          SetString(Item, Head, Tail - Head);
-          Strings.Add(Item);
-        end;
-        Inc(Result);
-      end;
-      inc(Tail);
-    until EOS;
-  finally
-    Strings.EndUpdate;
-  end;
-end;
-{$ELSE}
-function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
-  Strings: TStrings): Integer;
-begin
-  Result := ExtractStrings(Separators, WhiteSpace, Content, Strings);
-end;
-{$ENDIF}
-
 function TRXEProgram.DetermineLineType(const state : TMainAsmState; namedTypes: TMapList;
   op : string; bUseCase : boolean) : TAsmLineType;
 begin
