@@ -809,14 +809,11 @@ end;
 
 function TfrmNXTExplorer.GetLocalFilePath: string;
 begin
-  Result := IncludeTrailingPathDelimiter(lstFiles.Root);
-(*
 {$IFNDEF FPC}
   Result := treShell.Path;
 {$ELSE}
   Result := IncludeTrailingPathDelimiter(lstFiles.Root);
 {$ENDIF}
-*)
 end;
 
 function GetImageIndex(const filename : string) : integer;
