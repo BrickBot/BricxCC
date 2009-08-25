@@ -347,7 +347,7 @@ begin
     if ParamSwitch('-keepalive') then
     begin
       if BrickComm.KeepAlive(cvalue) then
-        OutputValue(cvalue);
+        OutputValue(cvalue div 60000);
     end;
     if ParamSwitch('-resetoutputposition') then
       BrickComm.ResetOutputPosition(Byte(ParamIntValue('-resetoutputposition', 0)), ParamSwitch('/Relative'));
