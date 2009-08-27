@@ -45,7 +45,7 @@ uses
   MessageUnit in 'MessageUnit.pas' {MessageForm},
   Piano in 'Piano.pas' {PianoForm},
   RemoteUnit in 'RemoteUnit.pas' {RemoteForm},
-  uNXTExplorer in 'uNXTExplorer.pas' {frmNXTExplorer},
+//  uNXTExplorer in 'uNXTExplorer.pas' {frmNXTExplorer},
   uNXTImage in 'uNXTImage.pas' {frmNXTImage},
   Watch in 'Watch.pas' {WatchForm},
   uMIDIConversion in 'uMIDIConversion.pas' {frmMIDIConversion},
@@ -75,7 +75,7 @@ begin
     Application.CreateForm(TMessageForm, MessageForm);
     Application.CreateForm(TPianoForm, PianoForm);
     Application.CreateForm(TRemoteForm, RemoteForm);
-    Application.CreateForm(TfrmNXTExplorer, frmNXTExplorer);
+//    Application.CreateForm(TfrmNXTExplorer, frmNXTExplorer);
     Application.CreateForm(TfrmNXTImage, frmNXTImage);
     Application.CreateForm(TWatchForm, WatchForm);
     Application.CreateForm(TfrmWave2RSO, frmWave2RSO);

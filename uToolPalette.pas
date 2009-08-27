@@ -113,7 +113,7 @@ implementation
 {$ENDIF}
 
 uses
-  uMIDIConversion, uWav2RSO, Watch, uNXTImage, uNXTExplorer,
+  uMIDIConversion, uWav2RSO, Watch, uNXTImage, {uNXTExplorer,}
   Piano, MessageUnit, JoystickUnit, Diagnose, Controller, brick_common,
   uSpirit, MemoryUnit, uPortPrompt, uLocalizedStrings, RemoteUnit,
   Unlock;
@@ -199,7 +199,7 @@ end;
 
 procedure TfrmNXTTools.actExplorerExecute(Sender: TObject);
 begin
-  frmNXTExplorer.Show;
+//  frmNXTExplorer.Show;
 end;
 
 procedure TfrmNXTTools.actMIDIConvertExecute(Sender: TObject);
@@ -231,7 +231,7 @@ begin
     MemoryForm.Close;
     MessageForm.Close;
     RemoteForm.Close;
-    frmNXTExplorer.Close;
+//    frmNXTExplorer.Close;
     frmNXTImage.Close;
     DownloadFirmware;
   end;
