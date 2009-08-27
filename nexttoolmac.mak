@@ -23,7 +23,7 @@ ARCH=386
 PPC=$(PTOOLPREFIX)ppc$(ARCH)
 
 # how to link executable
-NeXTTool: %.dpr %_preproc.inc
+NeXTTool: nexttool.dpr nexttool_preproc.inc
 	$(PPC) $(PFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)
