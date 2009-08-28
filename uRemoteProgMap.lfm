@@ -11,6 +11,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   Font.Style = []
+  OnCreate = FormCreate
   PixelsPerInch = 96
   object lblP1: TLabel
     Left = 8
@@ -85,7 +86,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
     Top = 8
     Width = 177
     Height = 21
-    ItemHeight = 13
+    ItemHeight = 0
     TabOrder = 0
   end
   object edtP2: TComboBox
@@ -93,7 +94,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
     Top = 32
     Width = 177
     Height = 21
-    ItemHeight = 13
+    ItemHeight = 0
     TabOrder = 1
   end
   object edtP3: TComboBox
@@ -101,7 +102,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
     Top = 56
     Width = 177
     Height = 21
-    ItemHeight = 13
+    ItemHeight = 0
     TabOrder = 2
   end
   object edtP4: TComboBox
@@ -109,7 +110,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
     Top = 80
     Width = 177
     Height = 21
-    ItemHeight = 13
+    ItemHeight = 0
     TabOrder = 3
   end
   object edtP5: TComboBox
@@ -117,7 +118,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
     Top = 104
     Width = 177
     Height = 21
-    ItemHeight = 13
+    ItemHeight = 0
     TabOrder = 4
   end
   object edtTone: TComboBox
@@ -125,7 +126,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
     Top = 128
     Width = 177
     Height = 21
-    ItemHeight = 13
+    ItemHeight = 0
     TabOrder = 7
   end
 end

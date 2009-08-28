@@ -53,13 +53,16 @@ uses
 const
 {$IFDEF FPC}
 {$IFDEF Darwin}
-  GB_VOFFSET = 0;
+  GB_VOFFSET = 14;
+  GB_HOFFSET = 2;
 {$ENDIF}
 {$IFNDEF Darwin}
   GB_VOFFSET = 16;
+  GB_HOFFSET = 0;
 {$ENDIF}
 {$ELSE}
   GB_VOFFSET = 0;
+  GB_HOFFSET = 0;
 {$ENDIF}
 
 procedure AdjustGroupBox(gb : TGroupBox);
@@ -67,6 +70,7 @@ var
   C : TControl;
   i : integer;
 begin
+{$IFDEF FPC}
   // move children up (recursively)
   for i := 0 to gb.ControlCount - 1 do
   begin
@@ -74,8 +78,12 @@ begin
     if C is TGroupBox then
       AdjustGroupBox(TGroupBox(C))
     else
-      C.Top := C.Top - GB_VOFFSET;
+    begin
+      C.Top  := C.Top - GB_VOFFSET;
+      C.Left := C.Left - GB_HOFFSET;
+    end;
   end;
+{$ENDIF}  
 end;
 
 procedure ConfigBar(ogp : TOfficeGradientPanel);

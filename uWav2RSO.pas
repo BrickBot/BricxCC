@@ -126,7 +126,11 @@ procedure TfrmWave2RSO.FormCreate(Sender: TObject);
 begin
   CreateDirectoryEdit;
   AdjustGroupBox(grpResample);
+{$IFDEF FPC}
+  edtPath.Text := ExpandFilename('~/Documents/');
+{$ELSE}  
   edtPath.Text := ExcludeTrailingPathDelimiter(ExtractFilePath(Application.ExeName));
+{$ENDIF}
   dlgOpen.InitialDir := edtPath.Text;
 end;
 
