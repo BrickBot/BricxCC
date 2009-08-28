@@ -150,6 +150,17 @@ var
   V_SENS_H, V_SENS_DELTA : Integer;
 
 const
+{$IFDEF FPC}
+{$IFDEF Darwin}
+  K_FUDGE      = -40;
+  K_HEIGHT     = 530+80; //498;
+  K_MOTORS_TOP = 146+40; //118;
+  K_VARS_TOP   = 262+40; //234;
+  K_TASKS_TOP  = 338+40; //310;
+  K_SENS_DELTA = 32;
+  K_SENS_H     = 140+40;
+{$ENDIF}
+{$IFNDEF Darwin}
   K_FUDGE      = 4;
   K_HEIGHT     = 530; //498;
   K_MOTORS_TOP = 146; //118;
@@ -157,6 +168,16 @@ const
   K_TASKS_TOP  = 338; //310;
   K_SENS_DELTA = 32;
   K_SENS_H     = 140;
+{$ENDIF}
+{$ELSE}
+  K_FUDGE      = 4;
+  K_HEIGHT     = 530; //498;
+  K_MOTORS_TOP = 146; //118;
+  K_VARS_TOP   = 262; //234;
+  K_TASKS_TOP  = 338; //310;
+  K_SENS_DELTA = 32;
+  K_SENS_H     = 140;
+{$ENDIF}
 
 {Dealing with the Sensors}
 
