@@ -1,6 +1,8 @@
 object MessageForm: TMessageForm
   Left = 313
+  Height = 275
   Top = 108
+  Width = 296
   HelpContext = 18
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
@@ -8,14 +10,8 @@ object MessageForm: TMessageForm
   ClientHeight = 275
   ClientWidth = 296
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
-  OnCreate = FormCreate
   OnShow = FormShow
-  PixelsPerInch = 96
   object btnHelp: TButton
     Left = 46
     Top = 246
@@ -35,8 +31,8 @@ object MessageForm: TMessageForm
     TabOrder = 1
     object Button2: TButton
       Tag = 2
-      Left = 48
-      Top = 96
+      Left = 45
+      Top = 82
       Width = 33
       Height = 33
       HelpContext = 18003
@@ -51,8 +47,8 @@ object MessageForm: TMessageForm
       OnClick = Button0Click
     end
     object Button0: TButton
-      Left = 8
-      Top = 136
+      Left = 5
+      Top = 122
       Width = 33
       Height = 33
       HelpContext = 18011
@@ -68,8 +64,8 @@ object MessageForm: TMessageForm
     end
     object Button1: TButton
       Tag = 1
-      Left = 8
-      Top = 96
+      Left = 5
+      Top = 82
       Width = 33
       Height = 33
       HelpContext = 18002
@@ -85,8 +81,8 @@ object MessageForm: TMessageForm
     end
     object Button3: TButton
       Tag = 3
-      Left = 88
-      Top = 96
+      Left = 85
+      Top = 82
       Width = 33
       Height = 33
       HelpContext = 18004
@@ -102,8 +98,8 @@ object MessageForm: TMessageForm
     end
     object Button6: TButton
       Tag = 6
-      Left = 88
-      Top = 56
+      Left = 85
+      Top = 42
       Width = 33
       Height = 33
       HelpContext = 18007
@@ -119,8 +115,8 @@ object MessageForm: TMessageForm
     end
     object Button5: TButton
       Tag = 5
-      Left = 48
-      Top = 56
+      Left = 45
+      Top = 42
       Width = 33
       Height = 33
       HelpContext = 18006
@@ -136,8 +132,8 @@ object MessageForm: TMessageForm
     end
     object Button4: TButton
       Tag = 4
-      Left = 8
-      Top = 56
+      Left = 5
+      Top = 42
       Width = 33
       Height = 33
       HelpContext = 18005
@@ -153,8 +149,8 @@ object MessageForm: TMessageForm
     end
     object Button7: TButton
       Tag = 7
-      Left = 8
-      Top = 16
+      Left = 5
+      Top = 2
       Width = 33
       Height = 33
       HelpContext = 18008
@@ -170,8 +166,8 @@ object MessageForm: TMessageForm
     end
     object Button8: TButton
       Tag = 8
-      Left = 48
-      Top = 16
+      Left = 45
+      Top = 2
       Width = 33
       Height = 33
       HelpContext = 18009
@@ -187,8 +183,8 @@ object MessageForm: TMessageForm
     end
     object Button9: TButton
       Tag = 9
-      Left = 88
-      Top = 16
+      Left = 85
+      Top = 2
       Width = 33
       Height = 33
       HelpContext = 18010
@@ -212,8 +208,8 @@ object MessageForm: TMessageForm
     TabOrder = 2
     object SendButton: TButton
       Tag = 100
-      Left = 80
-      Top = 16
+      Left = 78
+      Top = 2
       Width = 41
       Height = 25
       HelpContext = 18013
@@ -223,9 +219,9 @@ object MessageForm: TMessageForm
     end
     object edtMessageNum: TBricxccSpinEdit
       Left = 8
-      Top = 17
+      Top = 5
       Width = 57
-      Height = 22
+      Height = 16
       HelpContext = 18014
       MaxLength = 3
       MaxValue = 255
@@ -242,24 +238,24 @@ object MessageForm: TMessageForm
     Caption = 'NXT Messages'
     TabOrder = 3
     object lblMailbox: TLabel
-      Left = 8
-      Top = 19
+      Left = 4
+      Top = 5
       Width = 39
       Height = 13
       Caption = '&Mailbox:'
       FocusControl = cboMailbox
     end
     object lblMemo: TLabel
-      Left = 8
-      Top = 117
+      Left = 5
+      Top = 103
       Width = 32
       Height = 13
       Caption = 'M&emo:'
       FocusControl = mmoMessage
     end
     object cboMailbox: TComboBox
-      Left = 56
-      Top = 15
+      Left = 54
+      Top = 1
       Width = 81
       Height = 21
       HelpContext = 18016
@@ -281,10 +277,10 @@ object MessageForm: TMessageForm
         'Mailbox 10')
     end
     object mmoMessage: TMemo
-      Left = 8
-      Top = 133
+      Left = 5
+      Top = 119
       Width = 81
-      Height = 94
+      Height = 90
       HelpContext = 18022
       MaxLength = 59
       ScrollBars = ssVertical
@@ -292,8 +288,8 @@ object MessageForm: TMessageForm
     end
     object btnSendString: TButton
       Tag = 200
-      Left = 96
-      Top = 131
+      Left = 94
+      Top = 119
       Width = 41
       Height = 25
       HelpContext = 18023
@@ -302,8 +298,8 @@ object MessageForm: TMessageForm
       OnClick = btnSendNXTClick
     end
     object chkBoolValue: TCheckBox
-      Left = 8
-      Top = 64
+      Left = 5
+      Top = 50
       Width = 81
       Height = 17
       HelpContext = 18018
@@ -312,8 +308,8 @@ object MessageForm: TMessageForm
     end
     object btnSendBool: TButton
       Tag = 300
-      Left = 96
-      Top = 60
+      Left = 94
+      Top = 46
       Width = 41
       Height = 25
       HelpContext = 18019
@@ -323,8 +319,8 @@ object MessageForm: TMessageForm
     end
     object btnSendNum: TButton
       Tag = 400
-      Left = 96
-      Top = 91
+      Left = 94
+      Top = 77
       Width = 41
       Height = 25
       HelpContext = 18021
@@ -333,8 +329,8 @@ object MessageForm: TMessageForm
       OnClick = btnSendNXTClick
     end
     object chkResponse: TCheckBox
-      Left = 56
-      Top = 39
+      Left = 54
+      Top = 25
       Width = 81
       Height = 17
       HelpContext = 18017
@@ -342,10 +338,10 @@ object MessageForm: TMessageForm
       TabOrder = 1
     end
     object edtNum: TBricxccSpinEdit
-      Left = 8
-      Top = 92
+      Left = 5
+      Top = 80
       Width = 81
-      Height = 22
+      Height = 16
       HelpContext = 18020
       MaxValue = 0
       MinValue = 0

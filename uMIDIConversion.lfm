@@ -10,7 +10,6 @@ object frmMIDIConversion: TfrmMIDIConversion
   ClientHeight = 318
   ClientWidth = 301
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
   Position = poMainFormCenter
   LCLVersion = '0.9.25'
   object grpCode: TGroupBox
@@ -23,9 +22,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     ClientWidth = 95
     TabOrder = 0
     object radGenNQC: TRadioButton
-      Left = 8
-      Height = 26
-      Top = -2
+      Left = 4
+      Height = 15
+      Top = 2
       Width = 61
       HelpContext = 3502
       Caption = '&NQC'
@@ -35,9 +34,9 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 0
     end
     object radGenMS: TRadioButton
-      Left = 8
-      Height = 26
-      Top = 18
+      Left = 4
+      Height = 15
+      Top = 22
       Width = 99
       HelpContext = 3503
       Caption = '&MindScript'
@@ -45,9 +44,9 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 1
     end
     object radGenLASM: TRadioButton
-      Left = 8
-      Height = 26
-      Top = 39
+      Left = 4
+      Height = 15
+      Top = 42
       Width = 68
       HelpContext = 3504
       Caption = '&LASM'
@@ -55,9 +54,9 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 2
     end
     object radGenC: TRadioButton
-      Left = 8
-      Height = 26
-      Top = 60
+      Left = 4
+      Height = 15
+      Top = 62
       Width = 36
       HelpContext = 3505
       Caption = '&C'
@@ -65,9 +64,9 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 3
     end
     object radGenPascal: TRadioButton
-      Left = 8
-      Height = 26
-      Top = 81
+      Left = 4
+      Height = 15
+      Top = 82
       Width = 72
       HelpContext = 3506
       Caption = '&Pascal'
@@ -75,9 +74,9 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 4
     end
     object radGenForth: TRadioButton
-      Left = 8
-      Height = 26
-      Top = 101
+      Left = 4
+      Height = 15
+      Top = 102
       Width = 62
       HelpContext = 3507
       Caption = '&Forth'
@@ -85,8 +84,8 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 5
     end
     object radGenJava: TRadioButton
-      Left = 8
-      Height = 26
+      Left = 4
+      Height = 15
       Top = 122
       Width = 58
       HelpContext = 3508
@@ -95,9 +94,9 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 6
     end
     object radGenNBC: TRadioButton
-      Left = 8
-      Height = 26
-      Top = 143
+      Left = 4
+      Height = 15
+      Top = 142
       Width = 59
       HelpContext = 3509
       Caption = 'N&BC'
@@ -105,9 +104,9 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 7
     end
     object radGenNXC: TRadioButton
-      Left = 8
-      Height = 26
-      Top = 164
+      Left = 4
+      Height = 15
+      Top = 162
       Width = 59
       HelpContext = 3510
       Caption = 'N&XC'
@@ -115,9 +114,9 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 8
     end
     object radGenNXTMelody: TRadioButton
-      Left = 8
-      Height = 26
-      Top = 185
+      Left = 4
+      Height = 15
+      Top = 182
       Width = 113
       HelpContext = 3511
       Caption = 'NXT Melo&dy'
@@ -135,8 +134,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     ClientWidth = 95
     TabOrder = 2
     object radToClip: TRadioButton
-      Left = 8
-      Height = 26
+      Left = 4
+      Height = 15
+      Top = 2
       Width = 92
       HelpContext = 3512
       Caption = 'Clip&board'
@@ -145,9 +145,9 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 0
     end
     object radToFile: TRadioButton
-      Left = 8
-      Height = 26
-      Top = 19
+      Left = 4
+      Height = 15
+      Top = 22
       Width = 49
       HelpContext = 3513
       Caption = 'F&ile'
@@ -164,7 +164,7 @@ object frmMIDIConversion: TfrmMIDIConversion
     ClientWidth = 189
     TabOrder = 1
     object lblGap: TLabel
-      Left = 8
+      Left = 4
       Height = 17
       Top = 78
       Width = 47
@@ -173,7 +173,7 @@ object frmMIDIConversion: TfrmMIDIConversion
       ParentColor = False
     end
     object lblTempo: TLabel
-      Left = 8
+      Left = 4
       Height = 17
       Top = 49
       Width = 67
@@ -182,7 +182,7 @@ object frmMIDIConversion: TfrmMIDIConversion
       ParentColor = False
     end
     object lblTranspose: TLabel
-      Left = 8
+      Left = 4
       Height = 17
       Top = 106
       Width = 92
@@ -191,7 +191,7 @@ object frmMIDIConversion: TfrmMIDIConversion
       ParentColor = False
     end
     object lblPBS: TLabel
-      Left = 8
+      Left = 4
       Height = 17
       Top = 174
       Width = 88
@@ -200,7 +200,7 @@ object frmMIDIConversion: TfrmMIDIConversion
       ParentColor = False
     end
     object lblTrack: TLabel
-      Left = 8
+      Left = 4
       Height = 17
       Top = 20
       Width = 99
@@ -225,7 +225,7 @@ object frmMIDIConversion: TfrmMIDIConversion
       TabOrder = 3
     end
     object chkUsePB: TCheckBox
-      Left = 8
+      Left = 4
       Height = 26
       Top = 139
       Width = 144
@@ -236,8 +236,8 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object edtGap: TBricxccSpinEdit
       Left = 78
-      Height = 22
-      Top = 73
+      Height = 16
+      Top = 76
       Width = 52
       HelpContext = 3517
       MaxValue = 99
@@ -247,8 +247,8 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object edtTempo: TBricxccSpinEdit
       Left = 78
-      Height = 22
-      Top = 44
+      Height = 16
+      Top = 47
       Width = 52
       HelpContext = 3518
       MaxValue = 999
@@ -258,8 +258,8 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object edtPBS: TBricxccSpinEdit
       Left = 78
-      Height = 22
-      Top = 169
+      Height = 16
+      Top = 172
       Width = 52
       HelpContext = 3521
       Enabled = False
@@ -270,8 +270,8 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object edtTrack: TBricxccSpinEdit
       Left = 78
-      Height = 22
-      Top = 15
+      Height = 16
+      Top = 18
       Width = 52
       HelpContext = 3516
       MaxValue = 256

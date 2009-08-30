@@ -1,18 +1,14 @@
 object frmRemoteProgMap: TfrmRemoteProgMap
   Left = 192
+  Height = 196
   Top = 130
+  Width = 236
   BorderStyle = bsDialog
   Caption = 'NXT Remote Map'
   ClientHeight = 196
   ClientWidth = 236
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
   OnCreate = FormCreate
-  PixelsPerInch = 96
+  LCLVersion = '0.9.27'
   object lblP1: TLabel
     Left = 8
     Top = 12

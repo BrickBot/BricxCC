@@ -1,21 +1,17 @@
 object PianoForm: TPianoForm
   Left = 328
   Top = 228
+  Height = 345
+  Width = 353
   HelpContext = 15
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Brick Piano'
   ClientHeight = 345
   ClientWidth = 353
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
-  Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
   OnCreate = FormCreate
   OnShow = FormShow
-  PixelsPerInch = 96
+  LCLVersion = '0.9.27'
   object lblNoteTime: TLabel
     Left = 8
     Top = 229
@@ -23,6 +19,9 @@ object PianoForm: TPianoForm
     Height = 13
     Caption = '&Note time:'
     FocusControl = edtNoteTime
+    Font.Height = -10
+    ParentColor = False
+    ParentFont = False
   end
   object Label1: TLabel
     Left = 136
@@ -31,6 +30,9 @@ object PianoForm: TPianoForm
     Height = 13
     Caption = '&Wait time:'
     FocusControl = edtWaitTime
+    Font.Height = -10
+    ParentColor = False
+    ParentFont = False
   end
   object Label2: TLabel
     Left = 8
@@ -39,6 +41,9 @@ object PianoForm: TPianoForm
     Height = 13
     Caption = '&Transpose:'
     FocusControl = barTranspose
+    Font.Height = -10
+    ParentColor = False
+    ParentFont = False
   end
   object pnlKeyboard: TPanel
     Left = 8
@@ -255,63 +260,72 @@ object PianoForm: TPianoForm
     Left = 56
     Top = 146
     Width = 113
-    Height = 71
+    Height = 72
     Caption = ' Length '
     TabOrder = 3
     object radWhole: TRadioButton
       Tag = 16
-      Left = 8
-      Top = 19
+      Left = 6
+      Top = 5
       Width = 41
-      Height = 17
+      Height = 15
       HelpContext = 15030
       Caption = '1/&1'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 0
       OnClick = radWholeClick
     end
     object radHalf: TRadioButton
-      Tag = 8
-      Left = 8
-      Top = 37
+      Tag = 6
+      Left = 6
+      Top = 23
       Width = 41
-      Height = 17
+      Height = 15
       HelpContext = 15031
       Caption = '1/&2'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 1
       OnClick = radWholeClick
     end
     object radQuarter: TRadioButton
       Tag = 4
-      Left = 56
-      Top = 11
+      Left = 52
+      Top = 0
       Width = 41
-      Height = 17
+      Height = 15
       HelpContext = 15032
       Caption = '1/&4'
       Checked = True
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 2
-      TabStop = True
       OnClick = radWholeClick
     end
     object radEighth: TRadioButton
       Tag = 2
-      Left = 56
-      Top = 30
+      Left = 52
+      Top = 18
       Width = 41
-      Height = 17
+      Height = 15
       HelpContext = 15033
       Caption = '1/&8'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 3
       OnClick = radWholeClick
     end
     object radSixteenth: TRadioButton
       Tag = 1
-      Left = 56
-      Top = 49
-      Width = 41
-      Height = 17
+      Left = 52
+      Top = 36
+      Width = 48
+      Height = 15
       HelpContext = 15034
       Caption = '1/1&6'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 4
       OnClick = radWholeClick
     end
@@ -415,96 +429,116 @@ object PianoForm: TPianoForm
     Caption = 'Language'
     TabOrder = 11
     object radGenNQC: TRadioButton
-      Left = 8
-      Top = 16
+      Left = 6
+      Top = 2
       Width = 86
-      Height = 17
+      Height = 15
       HelpContext = 15045
       Caption = '&NQC'
       Checked = True
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 0
       TabStop = True
     end
     object radGenMS: TRadioButton
-      Left = 8
-      Top = 34
+      Left = 6
+      Top = 20
       Width = 86
-      Height = 17
+      Height = 15
       HelpContext = 15046
       Caption = '&MindScript'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 1
     end
     object radGenLASM: TRadioButton
-      Left = 8
-      Top = 52
+      Left = 6
+      Top = 38
       Width = 86
-      Height = 17
+      Height = 15
       HelpContext = 15047
       Caption = '&LASM'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 2
     end
     object radGenC: TRadioButton
-      Left = 8
-      Top = 71
+      Left = 6
+      Top = 56
       Width = 86
-      Height = 17
+      Height = 15
       HelpContext = 15048
       Caption = '&C'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 3
     end
     object radGenPascal: TRadioButton
-      Left = 115
-      Top = 16
+      Left = 112
+      Top = 2
       Width = 86
-      Height = 17
+      Height = 15
       HelpContext = 15049
       Caption = '&Pascal'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 4
     end
     object radGenForth: TRadioButton
-      Left = 115
-      Top = 34
+      Left = 112
+      Top = 20
       Width = 86
-      Height = 17
+      Height = 15
       HelpContext = 15050
       Caption = '&Forth'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 5
     end
     object radGenJava: TRadioButton
-      Left = 115
-      Top = 52
+      Left = 112
+      Top = 38
       Width = 86
-      Height = 17
+      Height = 15
       HelpContext = 15051
       Caption = '&Java'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 6
     end
     object radGenNBC: TRadioButton
-      Left = 115
-      Top = 71
+      Left = 112
+      Top = 56
       Width = 86
-      Height = 17
+      Height = 15
       HelpContext = 15052
       Caption = 'N&BC'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 7
     end
-    object radGenNXTMelody: TRadioButton
-      Left = 226
-      Top = 34
-      Width = 86
-      Height = 17
-      HelpContext = 15054
-      Caption = 'NXT Melo&dy'
-      TabOrder = 9
-    end
     object radGenNXC: TRadioButton
-      Left = 226
-      Top = 16
+      Left = 224
+      Top = 2
       Width = 86
-      Height = 17
+      Height = 15
       HelpContext = 15053
       Caption = 'N&XC'
+      Font.Height = -10
+      ParentFont = False
       TabOrder = 8
+    end
+    object radGenNXTMelody: TRadioButton
+      Left = 224
+      Top = 20
+      Width = 86
+      Height = 15
+      HelpContext = 15054
+      Caption = 'NXT Melo&dy'
+      Font.Height = -10
+      ParentFont = False
+      TabOrder = 9
     end
   end
   object btnHelp: TButton
@@ -518,10 +552,10 @@ object PianoForm: TPianoForm
     OnClick = btnHelpClick
   end
   object edtNoteTime: TBricxccSpinEdit
-    Left = 64
-    Top = 224
+    Left = 66
+    Top = 226
     Width = 57
-    Height = 22
+    Height = 16
     HelpContext = 15042
     MaxLength = 2
     MaxValue = 99
@@ -530,10 +564,10 @@ object PianoForm: TPianoForm
     Value = 10
   end
   object edtWaitTime: TBricxccSpinEdit
-    Left = 192
-    Top = 224
+    Left = 194
+    Top = 226
     Width = 57
-    Height = 22
+    Height = 16
     HelpContext = 15043
     MaxLength = 2
     MaxValue = 99

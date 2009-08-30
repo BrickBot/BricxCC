@@ -277,8 +277,6 @@ end;
 
 procedure TPianoForm.FormCreate(Sender: TObject);
 begin
-  AdjustGroupBox(grpLength);
-  AdjustGroupBox(grpCode);
   dlgSave.Filter := sPianoFilter + SFilterAllFiles;
   SetLength(noteIndex, MAX_NOTE);
   SetLength(notes, MAX_NOTE);

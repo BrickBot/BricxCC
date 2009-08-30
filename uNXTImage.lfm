@@ -7,11 +7,7 @@ object frmNXTImage: TfrmNXTImage
   ClientHeight = 662
   ClientWidth = 429
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
   KeyPreview = True
   OnCreate = FormCreate
   OnDestroy = FormDestroy
@@ -26706,12 +26702,9 @@ object frmNXTImage: TfrmNXTImage
     Height = 18
     Align = alTop
     Alignment = taCenter
-    Caption = 'Right click for options'
-    Font.Charset = DEFAULT_CHARSET
+    Caption = 'Ctrl click for options'
     Font.Color = clRed
     Font.Height = -16
-    Font.Name = 'MS Shell Dlg2'
-    Font.Style = []
     ParentFont = False
   end
   object lblNXTOff: TLabel
@@ -26722,11 +26715,8 @@ object frmNXTImage: TfrmNXTImage
     Align = alBottom
     Alignment = taCenter
     Caption = 'The NXT is not responding.'
-    Font.Charset = DEFAULT_CHARSET
     Font.Color = clRed
     Font.Height = -13
-    Font.Name = 'MS Sans Serif'
-    Font.Style = []
     ParentFont = False
     Visible = False
   end

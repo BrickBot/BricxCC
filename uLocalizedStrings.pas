@@ -250,6 +250,11 @@ resourcestring
   sLowspeed    = 'Lowspeed';
   sLowspeed9v  = 'Lowspeed 9V';
   sHighspeed   = 'Highspeed';
+  sColorFull   = 'Color Full';
+  sColorRed    = 'Color Red';
+  sColorGreen  = 'Color Green';
+  sColorBlue   = 'Color Blue';
+  sColorNone   = 'Color None';
   sScoutSourceError = 'Scout only supports variable and constant sources';
   sNonSpybotSrcError = 'Only Spybots support sources past Indirect';
 

@@ -939,15 +939,6 @@ end;
 
 procedure TWatchForm.FormCreate(Sender: TObject);
 begin
-  AdjustGroupBox(grpVar);
-  AdjustGroupBox(grpMotor);
-  AdjustGroupBox(grpSensor);
-  AdjustGroupBox(grpTimer);
-  AdjustGroupBox(grpCounter);
-  AdjustGroupBox(grpMessage);
-  AdjustGroupBox(grpTacho);
-  AdjustGroupBox(grpNXTMotors);
-  AdjustGroupBox(grpI2C);
   fNewData := TStringList.Create;
 {$IFNDEF FPC}
 {$IFNDEF NXT_ONLY}

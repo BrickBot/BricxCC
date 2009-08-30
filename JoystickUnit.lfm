@@ -9,16 +9,13 @@ object JoystickForm: TJoystickForm
   Caption = 'Joystick'
   ClientHeight = 456
   ClientWidth = 121
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
   KeyPreview = True
   OnClose = FormClose
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   OnShow = FormShow
+  LCLVersion = '0.9.27'
   object grpLeftMotor: TGroupBox
     Left = 8
     Height = 68
@@ -26,14 +23,14 @@ object JoystickForm: TJoystickForm
     Width = 105
     HelpContext = 47005
     Caption = 'Left Motor'
-    ClientHeight = 47
-    ClientWidth = 101
+    ClientHeight = 46
+    ClientWidth = 97
     TabOrder = 0
     object LMotorA: TRadioButton
-      Left = 8
-      Height = 24
-      Top = -2
-      Width = 35
+      Left = 2
+      Height = 18
+      Top = 2
+      Width = 28
       Caption = 'A'
       Checked = True
       OnClick = LMotorClick
@@ -42,29 +39,31 @@ object JoystickForm: TJoystickForm
     end
     object LMotorB: TRadioButton
       Tag = 1
-      Left = 40
-      Height = 24
-      Top = -2
-      Width = 35
+      Left = 34
+      Height = 18
+      Top = 2
+      Width = 27
       Caption = 'B'
       OnClick = LMotorClick
       TabOrder = 1
+      TabStop = False
     end
     object LMotorC: TRadioButton
       Tag = 2
-      Left = 72
-      Height = 24
-      Top = -2
-      Width = 36
+      Left = 66
+      Height = 18
+      Top = 2
+      Width = 28
       Caption = 'C'
       OnClick = LMotorClick
       TabOrder = 2
+      TabStop = False
     end
     object LReversed: TCheckBox
-      Left = 8
-      Height = 24
-      Top = 22
-      Width = 93
+      Left = 2
+      Height = 18
+      Top = 26
+      Width = 69
       Caption = 'Reversed'
       OnClick = LReversedClick
       TabOrder = 3
@@ -77,31 +76,36 @@ object JoystickForm: TJoystickForm
     Width = 105
     HelpContext = 47006
     Caption = 'Right Motor'
-    ClientHeight = 47
-    ClientWidth = 101
+    ClientHeight = 46
+    ClientWidth = 97
     TabOrder = 1
     object RMotorA: TRadioButton
-      Left = 8
-      Height = 24
-      Width = 35
+      Left = 2
+      Height = 18
+      Top = 4
+      Width = 28
       Caption = 'A'
       OnClick = RMotorClick
       TabOrder = 0
+      TabStop = False
     end
     object RMotorB: TRadioButton
       Tag = 1
-      Left = 40
-      Height = 24
-      Width = 35
+      Left = 34
+      Height = 18
+      Top = 4
+      Width = 27
       Caption = 'B'
       OnClick = RMotorClick
       TabOrder = 1
+      TabStop = False
     end
     object RmotorC: TRadioButton
       Tag = 2
-      Left = 72
-      Height = 24
-      Width = 36
+      Left = 66
+      Height = 18
+      Top = 4
+      Width = 28
       Caption = 'C'
       Checked = True
       OnClick = RMotorClick
@@ -109,10 +113,10 @@ object JoystickForm: TJoystickForm
       TabOrder = 2
     end
     object RReversed: TCheckBox
-      Left = 8
-      Height = 24
-      Top = 24
-      Width = 93
+      Left = 2
+      Height = 18
+      Top = 28
+      Width = 69
       Caption = 'Reversed'
       OnClick = RReversedClick
       TabOrder = 3
@@ -125,17 +129,17 @@ object JoystickForm: TJoystickForm
     Width = 104
     HelpContext = 47007
     Caption = 'Speed'
-    ClientHeight = 40
-    ClientWidth = 100
+    ClientHeight = 39
+    ClientWidth = 96
     TabOrder = 2
     object SpeedBar: TTrackBar
-      Left = 8
+      Left = 3
       Height = 33
+      Top = 5
       Width = 89
       Max = 7
       OnChange = SpeedBarChange
       Position = 4
-      ScalePos = trTop
       TabOrder = 0
     end
   end
@@ -146,14 +150,14 @@ object JoystickForm: TJoystickForm
     Width = 105
     HelpContext = 47004
     Caption = 'Drive Mode'
-    ClientHeight = 47
-    ClientWidth = 101
+    ClientHeight = 46
+    ClientWidth = 97
     TabOrder = 3
     object LeftRightBtn: TRadioButton
-      Left = 8
-      Height = 24
-      Top = -1
-      Width = 95
+      Left = 2
+      Height = 18
+      Top = 3
+      Width = 75
       Caption = 'Left-Right'
       Checked = True
       OnClick = LeftRightBtnClick
@@ -161,13 +165,14 @@ object JoystickForm: TJoystickForm
       TabOrder = 0
     end
     object DriveSteerBtn: TRadioButton
-      Left = 8
-      Height = 24
-      Top = 23
-      Width = 105
+      Left = 2
+      Height = 18
+      Top = 27
+      Width = 81
       Caption = 'Drive-Steer'
       OnClick = DriveSteerBtnClick
       TabOrder = 1
+      TabStop = False
     end
   end
   object grpMovement: TGroupBox
@@ -177,14 +182,14 @@ object JoystickForm: TJoystickForm
     Width = 105
     HelpContext = 47001
     Caption = 'Movement'
-    ClientHeight = 116
-    ClientWidth = 101
+    ClientHeight = 115
+    ClientWidth = 97
     TabOrder = 4
     object DirBtn7: TSpeedButton
       Tag = 7
-      Left = 16
+      Left = 12
       Height = 25
-      Top = 2
+      Top = 5
       Width = 25
       Color = clBtnFace
       Glyph.Data = {
@@ -209,9 +214,9 @@ object JoystickForm: TJoystickForm
     end
     object DirBtn8: TSpeedButton
       Tag = 8
-      Left = 40
+      Left = 36
       Height = 25
-      Top = 2
+      Top = 5
       Width = 25
       Color = clBtnFace
       Glyph.Data = {
@@ -236,9 +241,9 @@ object JoystickForm: TJoystickForm
     end
     object DirBtn9: TSpeedButton
       Tag = 9
-      Left = 64
+      Left = 60
       Height = 25
-      Top = 2
+      Top = 5
       Width = 25
       Color = clBtnFace
       Glyph.Data = {
@@ -263,9 +268,9 @@ object JoystickForm: TJoystickForm
     end
     object DirBtn4: TSpeedButton
       Tag = 4
-      Left = 16
+      Left = 12
       Height = 25
-      Top = 26
+      Top = 29
       Width = 25
       Color = clBtnFace
       Glyph.Data = {
@@ -290,9 +295,9 @@ object JoystickForm: TJoystickForm
     end
     object DirBtn5: TSpeedButton
       Tag = 5
-      Left = 40
+      Left = 36
       Height = 25
-      Top = 26
+      Top = 29
       Width = 25
       Color = clBtnFace
       Down = True
@@ -318,9 +323,9 @@ object JoystickForm: TJoystickForm
     end
     object DirBtn6: TSpeedButton
       Tag = 6
-      Left = 64
+      Left = 60
       Height = 25
-      Top = 26
+      Top = 29
       Width = 25
       Color = clBtnFace
       Glyph.Data = {
@@ -345,9 +350,9 @@ object JoystickForm: TJoystickForm
     end
     object DirBtn1: TSpeedButton
       Tag = 1
-      Left = 16
+      Left = 12
       Height = 25
-      Top = 50
+      Top = 53
       Width = 25
       Color = clBtnFace
       Glyph.Data = {
@@ -372,9 +377,9 @@ object JoystickForm: TJoystickForm
     end
     object DirBtn2: TSpeedButton
       Tag = 2
-      Left = 40
+      Left = 36
       Height = 25
-      Top = 50
+      Top = 53
       Width = 25
       Color = clBtnFace
       Glyph.Data = {
@@ -399,9 +404,9 @@ object JoystickForm: TJoystickForm
     end
     object DirBtn3: TSpeedButton
       Tag = 3
-      Left = 64
+      Left = 60
       Height = 25
-      Top = 50
+      Top = 53
       Width = 25
       Color = clBtnFace
       Glyph.Data = {
@@ -426,9 +431,9 @@ object JoystickForm: TJoystickForm
     end
     object Task1Btn: TBitBtn
       Tag = 1
-      Left = 24
+      Left = 20
       Height = 25
-      Top = 82
+      Top = 85
       Width = 25
       HelpContext = 47002
       Caption = 'T1'
@@ -438,9 +443,9 @@ object JoystickForm: TJoystickForm
     end
     object Task2Btn: TBitBtn
       Tag = 2
-      Left = 56
+      Left = 52
       Height = 25
-      Top = 82
+      Top = 85
       Width = 25
       HelpContext = 47003
       Caption = 'T2'

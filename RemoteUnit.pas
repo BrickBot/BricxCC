@@ -83,7 +83,6 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure ProgramMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
-    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     function GetPower(const mtr : byte) : byte;
@@ -287,13 +286,6 @@ begin
       F.Free;
     end;
   end;
-end;
-
-procedure TRemoteForm.FormCreate(Sender: TObject);
-begin
-  AdjustGroupBox(grpMotorA);
-  AdjustGroupBox(grpMotorB);
-  AdjustGroupBox(grpMotorC);
 end;
 
 {$IFDEF FPC}

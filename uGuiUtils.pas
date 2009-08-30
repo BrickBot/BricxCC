@@ -155,7 +155,6 @@ procedure CloneDE(aDest: TDirectoryEdit; aSrc: TEdit);
 begin
   aDest.Name        := Copy(aSrc.Name, 1, Length(aSrc.Name)-1);
   aDest.Parent      := aSrc.Parent;
-  aDest.Left        := aSrc.Left;
   aDest.Top         := aSrc.Top;
   aDest.Width       := aSrc.Width;
   aDest.Height      := aSrc.Height;
@@ -164,11 +163,13 @@ begin
   aDest.Hint        := aSrc.Hint;
   aDest.OnChange    := aSrc.OnChange;
 {$IFNDEF FPC}
+  aDest.Left        := aSrc.Left;
   aDest.Cursor      := aSrc.Cursor;
   aDest.ReadOnly    := aSrc.ReadOnly;
   aDest.SetHint     := False;
 {$ELSE}
-  aDest.Width       := aDest.Width - aDest.Height;
+  aDest.Left        := aSrc.Left + 4;
+  aDest.Width       := aDest.Width - 28;
 {$ENDIF}
   aDest.HelpContext := aSrc.HelpContext;
   FreeAndNil(aSrc);
