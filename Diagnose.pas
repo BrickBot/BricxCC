@@ -374,12 +374,6 @@ procedure TDiagForm.FormCreate(Sender: TObject);
 var
   scale_amount : double;
 begin
-  AdjustGroupBox(DisplayGroup);
-  AdjustGroupBox(grpInfo);
-  AdjustGroupBox(grpNXTDiag);
-  AdjustGroupBox(IRGroup);
-  AdjustGroupBox(PowerGroup);
-  AdjustGroupBox(WatchGroup);
   scale_amount     := Screen.PixelsPerInch / 96;
   V_HEIGHT         := Trunc(K_HEIGHT * scale_amount);
   V_DISPLAY_HEIGHT := Trunc(K_DISPLAY_HEIGHT * scale_amount);

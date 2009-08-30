@@ -446,8 +446,8 @@ begin
   imgNXT.Width     := Trunc(NxtWidth * factor);
   imgNXT.Height    := Trunc(imgNXT.Width * AspectRatio);
 //  imgNXT.Height    := Trunc(NxtHeight * factor);
-  ClientWidth      := imgNXT.Width + 1;
-  ClientHeight     := imgNXT.Height + 1;
+  Width      := imgNXT.Width + 2;
+  Height     := imgNXT.Height + 2;
   imgScreen.Left   := Trunc(ScrnLeft * factor);
   imgScreen.Top    := Trunc(ScrnTop * factor);
   imgScreen.Width  := Trunc(ScrnWidth * factor);

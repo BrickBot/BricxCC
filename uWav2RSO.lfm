@@ -1,19 +1,16 @@
 object frmWave2RSO: TfrmWave2RSO
   Left = 190
+  Height = 446
   Top = 185
+  Width = 450
   BorderStyle = bsDialog
   Caption = 'Wav 2 RSO 2 Wav'
   ClientHeight = 446
   ClientWidth = 450
   Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
   ShowHint = True
   OnCreate = FormCreate
-  PixelsPerInch = 96
   object lblMessages: TLabel
     Left = 40
     Top = 321
@@ -70,17 +67,17 @@ object frmWave2RSO: TfrmWave2RSO
     Caption = 'Resample'
     TabOrder = 3
     object lblRate: TLabel
-      Left = 8
-      Top = 156
+      Left = 4
+      Top = 142
       Width = 26
       Height = 13
       Caption = 'Rate:'
     end
     object radSinc1: TRadioButton
-      Left = 8
-      Top = 26
+      Left = 4
+      Top = 12
       Width = 74
-      Height = 17
+      Height = 15
       Hint = 
         'Band limited sinc interpolation, best quality, 97dB Signal to No' +
         'ise Ratio, 96% Bandwidth'
@@ -89,10 +86,10 @@ object frmWave2RSO: TfrmWave2RSO
     end
     object radSinc2: TRadioButton
       Tag = 1
-      Left = 8
-      Top = 46
+      Left = 4
+      Top = 32
       Width = 74
-      Height = 17
+      Height = 15
       Hint = 
         'Band limited sinc interpolation, medium quality, 97dB Signal to ' +
         'Noise Ratio, 90% Bandwidth'
@@ -101,10 +98,10 @@ object frmWave2RSO: TfrmWave2RSO
     end
     object radSinc3: TRadioButton
       Tag = 2
-      Left = 8
-      Top = 67
+      Left = 4
+      Top = 52
       Width = 74
-      Height = 17
+      Height = 15
       Hint = 
         'Band limited sinc interpolation, fastest, 97dB Signal to Noise R' +
         'atio, 80% Bandwidth'
@@ -113,30 +110,30 @@ object frmWave2RSO: TfrmWave2RSO
     end
     object radZoh: TRadioButton
       Tag = 3
-      Left = 8
-      Top = 88
+      Left = 4
+      Top = 72
       Width = 74
-      Height = 17
+      Height = 15
       Hint = 'Zero order hold interpolator, very fast, poor quality.'
       Caption = 'ZOH'
       TabOrder = 3
     end
     object radLinear: TRadioButton
       Tag = 4
-      Left = 8
-      Top = 109
+      Left = 4
+      Top = 92
       Width = 74
-      Height = 17
+      Height = 15
       Hint = 'Linear interpolator, very fast, poor quality.'
       Caption = 'Linear'
       TabOrder = 4
     end
     object radNone: TRadioButton
       Tag = 4
-      Left = 8
-      Top = 130
+      Left = 4
+      Top = 112
       Width = 74
-      Height = 17
+      Height = 15
       Hint = 'No resampling'
       Caption = 'None'
       Checked = True
@@ -144,9 +141,9 @@ object frmWave2RSO: TfrmWave2RSO
       TabStop = True
     end
     object cboRate: TComboBox
-      Left = 8
-      Top = 176
-      Width = 65
+      Left = 4
+      Top = 162
+      Width = 67
       Height = 21
       Hint = 'The desired sample rate (Hz)'
       Style = csDropDownList
@@ -213,8 +210,8 @@ object frmWave2RSO: TfrmWave2RSO
   object edtPath2: TEdit
     Left = 104
     Top = 8
-    Width = 337
-    Height = 21
+    Width = 334
+    Height = 20
     Cursor = crNo
     Hint = 'The specified output directory'
     AutoSize = False

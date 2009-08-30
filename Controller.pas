@@ -507,6 +507,11 @@ begin
       tmpSL.Append(sLowspeed);
       tmpSL.Append(sLowspeed9v);
       tmpSL.Append(sHighspeed);
+      tmpSL.Append(sColorFull);
+      tmpSL.Append(sColorRed);
+      tmpSL.Append(sColorGreen);
+      tmpSL.Append(sColorBlue);
+      tmpSL.Append(sColorNone);
       SensorType0.Items.Assign(tmpSL);
       SensorType1.Items.Assign(tmpSL);
       SensorType2.Items.Assign(tmpSL);
@@ -630,10 +635,6 @@ procedure TDirectForm.FormCreate(Sender: TObject);
 var
   scale_amount : double;
 begin
-  AdjustGroupBox(grpMotors);
-  AdjustGroupBox(grpTasks);
-  AdjustGroupBox(grpVariables);
-  AdjustGroupBox(SensorGroup);
   scale_amount := Screen.PixelsPerInch / 96;
   V_HEIGHT     := Trunc(K_HEIGHT * scale_amount);
   V_MOTORS_TOP := Trunc(K_MOTORS_TOP * scale_amount);

@@ -61,7 +61,6 @@ type
     procedure btnHelpClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
     procedure btnSendNXTClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     function GetInBox : byte;
@@ -158,13 +157,6 @@ end;
 procedure TMessageForm.btnSendNXTClick(Sender: TObject);
 begin
   BrickComm.MessageWrite(GetInBox, GetMessage(Sender));
-end;
-
-procedure TMessageForm.FormCreate(Sender: TObject);
-begin
-  AdjustGroupBox(grpNXTMsg);
-  AdjustGroupBox(grpMultiDigit);
-  AdjustGroupBox(grpSingleDigit);
 end;
 
 {$IFDEF FPC}

@@ -1,77 +1,70 @@
 object DirectForm: TDirectForm
   Left = 197
+  Height = 496
   Top = 99
+  Width = 247
   HelpContext = 12
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Direct Controller'
   ClientHeight = 496
   ClientWidth = 247
-  Color = clBtnFace
-  Font.Charset = DEFAULT_CHARSET
-  Font.Color = clWindowText
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
-  Font.Style = []
   KeyPreview = True
   OnCreate = FormCreate
   OnKeyPress = FormKeyPress
   OnShow = FormShow
-  PixelsPerInch = 96
+  LCLVersion = '0.9.27'
   object grpMotors: TGroupBox
     Left = 8
+    Height = 112
     Top = 146
     Width = 233
-    Height = 112
     HelpContext = 12001
     Caption = ' Motors '
+    ClientHeight = 90
+    ClientWidth = 225
     TabOrder = 1
     object Label1: TLabel
       Left = 8
-      Top = 18
+      Height = 22
+      Top = 3
       Width = 13
-      Height = 20
       Caption = 'A'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object Label2: TLabel
       Left = 8
-      Top = 50
-      Width = 13
-      Height = 20
+      Height = 22
+      Top = 35
+      Width = 11
       Caption = 'B'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object Label3: TLabel
       Left = 8
-      Top = 82
-      Width = 13
-      Height = 20
+      Height = 22
+      Top = 67
+      Width = 11
       Caption = 'C'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object FwdABtn: TSpeedButton
       Left = 24
-      Top = 16
-      Width = 25
       Height = 25
       Hint = 'Forwards'
-      GroupIndex = 1
+      Top = 1
+      Width = 25
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -85,19 +78,21 @@ object DirectForm: TDirectForm
         803338F33388883338F330F330AA0333803338F33388833338F330F330A03333
         803338F33388333338F330F330033333803338F33383333338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 1
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = FwdABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object RevABtn: TSpeedButton
       Left = 49
-      Top = 16
-      Width = 25
       Height = 25
       Hint = 'Backwards'
-      GroupIndex = 1
+      Top = 1
+      Width = 25
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -111,19 +106,21 @@ object DirectForm: TDirectForm
         803338F3338888F338F330F3330AA033803338F3333888F338F330F33330A033
         803338F3333388F338F330F333330033803338F33333383338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 1
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = RevABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object OffABtn: TSpeedButton
       Left = 74
-      Top = 16
-      Width = 25
       Height = 25
       Hint = 'Off'
-      GroupIndex = 1
+      Top = 1
+      Width = 25
+      Color = clBtnFace
       Down = True
       Flat = True
       Glyph.Data = {
@@ -138,19 +135,21 @@ object DirectForm: TDirectForm
         803338F3388888F338F330F309999903803338F3388888F338F330F309999903
         803338F33888883338F330F300000003803338F33333333338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 1
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = OffABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object FloatABtn: TSpeedButton
       Left = 99
-      Top = 16
-      Width = 25
       Height = 25
       Hint = 'Float'
-      GroupIndex = 1
+      Top = 1
+      Width = 25
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -164,20 +163,22 @@ object DirectForm: TDirectForm
         803338F3388888F338F330F30BBBBB03803338F3388888F338F330F30BBBBB03
         803338F33888883338F330F300000003803338F33333333338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 1
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = FloatABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object FwdBBtn: TSpeedButton
       Tag = 1
       Left = 24
-      Top = 48
-      Width = 25
       Height = 25
       Hint = 'Forwards'
-      GroupIndex = 2
+      Top = 33
+      Width = 25
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -191,20 +192,22 @@ object DirectForm: TDirectForm
         803338F33388883338F330F330AA0333803338F33388833338F330F330A03333
         803338F33388333338F330F330033333803338F33383333338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 2
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = FwdABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object RevBBtn: TSpeedButton
       Tag = 1
       Left = 49
-      Top = 48
-      Width = 25
       Height = 25
       Hint = 'Backwards'
-      GroupIndex = 2
+      Top = 33
+      Width = 25
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -218,20 +221,22 @@ object DirectForm: TDirectForm
         803338F3338888F338F330F3330AA033803338F3333888F338F330F33330A033
         803338F3333388F338F330F333330033803338F33333383338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 2
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = RevABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object OffBBtn: TSpeedButton
       Tag = 1
       Left = 74
-      Top = 48
-      Width = 25
       Height = 25
       Hint = 'Off'
-      GroupIndex = 2
+      Top = 33
+      Width = 25
+      Color = clBtnFace
       Down = True
       Flat = True
       Glyph.Data = {
@@ -246,20 +251,22 @@ object DirectForm: TDirectForm
         803338F3388888F338F330F309999903803338F3388888F338F330F309999903
         803338F33888883338F330F300000003803338F33333333338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 2
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = OffABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object FloatBBtn: TSpeedButton
       Tag = 1
       Left = 99
-      Top = 48
-      Width = 25
       Height = 25
       Hint = 'Float'
-      GroupIndex = 2
+      Top = 33
+      Width = 25
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -273,20 +280,22 @@ object DirectForm: TDirectForm
         803338F3388888F338F330F30BBBBB03803338F3388888F338F330F30BBBBB03
         803338F33888883338F330F300000003803338F33333333338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 2
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = FloatABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object FwdCBtn: TSpeedButton
       Tag = 2
       Left = 24
-      Top = 80
-      Width = 25
       Height = 25
       Hint = 'Forwards'
-      GroupIndex = 3
+      Top = 65
+      Width = 25
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -300,20 +309,22 @@ object DirectForm: TDirectForm
         803338F33388883338F330F330AA0333803338F33388833338F330F330A03333
         803338F33388333338F330F330033333803338F33383333338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 3
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = FwdABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object RevCBtn: TSpeedButton
       Tag = 2
       Left = 49
-      Top = 80
-      Width = 25
       Height = 25
       Hint = 'Backwards'
-      GroupIndex = 3
+      Top = 65
+      Width = 25
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -327,20 +338,22 @@ object DirectForm: TDirectForm
         803338F3338888F338F330F3330AA033803338F3333888F338F330F33330A033
         803338F3333388F338F330F333330033803338F33333383338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 3
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = RevABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object OffCBtn: TSpeedButton
       Tag = 2
       Left = 74
-      Top = 80
-      Width = 25
       Height = 25
       Hint = 'Off'
-      GroupIndex = 3
+      Top = 65
+      Width = 25
+      Color = clBtnFace
       Down = True
       Flat = True
       Glyph.Data = {
@@ -355,20 +368,22 @@ object DirectForm: TDirectForm
         803338F3388888F338F330F309999903803338F3388888F338F330F309999903
         803338F33888883338F330F300000003803338F33333333338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 3
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = OffABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object FloatCBtn: TSpeedButton
       Tag = 2
-      Left = 99
-      Top = 80
-      Width = 25
+      Left = 100
       Height = 25
       Hint = 'Float'
-      GroupIndex = 3
+      Top = 65
+      Width = 25
+      Color = clBtnFace
       Flat = True
       Glyph.Data = {
         76010000424D7601000000000000760000002800000020000000100000000100
@@ -382,227 +397,207 @@ object DirectForm: TDirectForm
         803338F3388888F338F330F30BBBBB03803338F3388888F338F330F30BBBBB03
         803338F33888883338F330F300000003803338F33333333338F330F333333333
         803338F33333333338F330FFFFFFFFFFF03338FFFFFFFFFFF8F3300000000000
-        0033388888888888883333333333333333333333333333333333}
+        0033388888888888883333333333333333333333333333333333
+      }
+      GroupIndex = 3
       NumGlyphs = 2
-      ParentShowHint = False
-      ShowHint = True
       OnClick = FloatABtnClick
+      ShowHint = True
+      ParentShowHint = False
     end
     object SpeedA: TTrackBar
       Left = 128
-      Top = 12
-      Width = 97
       Height = 28
+      Top = 2
+      Width = 93
       HelpContext = 12017
       Max = 7
+      OnChange = SpeedChange
       PageSize = 1
       Position = 4
       TabOrder = 0
-      OnChange = SpeedChange
     end
     object SpeedB: TTrackBar
       Tag = 1
       Left = 128
-      Top = 44
-      Width = 97
       Height = 28
+      Top = 34
+      Width = 93
       HelpContext = 12018
       Max = 7
+      OnChange = SpeedChange
       PageSize = 1
       Position = 4
       TabOrder = 1
-      OnChange = SpeedChange
     end
     object SpeedC: TTrackBar
       Tag = 2
       Left = 128
-      Top = 76
-      Width = 97
       Height = 28
+      Top = 66
+      Width = 93
       HelpContext = 12019
       Max = 7
+      OnChange = SpeedChange
       PageSize = 1
       Position = 4
       TabOrder = 2
-      OnChange = SpeedChange
     end
   end
   object grpTasks: TGroupBox
     Left = 8
+    Height = 122
     Top = 338
     Width = 233
-    Height = 122
     HelpContext = 12020
     Caption = ' Tasks '
-    Ctl3D = True
-    ParentCtl3D = False
+    ClientHeight = 100
+    ClientWidth = 225
     TabOrder = 3
     object TL0: TLabel
       Left = 6
+      Height = 20
       Top = 18
       Width = 11
-      Height = 20
       Caption = '0'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object TL1: TLabel
       Left = 6
+      Height = 20
       Top = 42
       Width = 11
-      Height = 20
       Caption = '1'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object TL2: TLabel
       Tag = 2
       Left = 6
+      Height = 20
       Top = 66
       Width = 11
-      Height = 20
       Caption = '2'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object TL3: TLabel
       Tag = 2
       Left = 6
+      Height = 20
       Top = 90
       Width = 11
-      Height = 20
       Caption = '3'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object TL4: TLabel
       Tag = 4
       Left = 83
+      Height = 20
       Top = 18
       Width = 11
-      Height = 20
       Caption = '4'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object TL5: TLabel
       Tag = 5
       Left = 83
+      Height = 20
       Top = 42
       Width = 11
-      Height = 20
       Caption = '5'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object TL6: TLabel
       Tag = 6
       Left = 83
+      Height = 20
       Top = 66
       Width = 11
-      Height = 20
       Caption = '6'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object TL7: TLabel
       Tag = 7
       Left = 83
+      Height = 20
       Top = 90
       Width = 11
-      Height = 20
       Caption = '7'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object TL8: TLabel
       Tag = 8
       Left = 158
+      Height = 20
       Top = 18
       Width = 11
-      Height = 20
       Caption = '8'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object TL9: TLabel
       Tag = 9
       Left = 158
+      Height = 20
       Top = 42
       Width = 11
-      Height = 20
       Caption = '9'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object StartAllBtn: TButton
       Left = 170
+      Height = 22
       Top = 68
       Width = 57
-      Height = 22
       HelpContext = 12051
       Caption = 'Start All'
-      TabOrder = 20
       OnClick = StartAllBtnClick
+      TabOrder = 20
     end
     object StopAllBtn: TButton
       Left = 170
+      Height = 22
       Top = 92
       Width = 57
-      Height = 22
       HelpContext = 12052
       Caption = 'Stop All'
-      TabOrder = 21
       OnClick = StopAllBtnClick
+      TabOrder = 21
     end
     object RunTask0: TBitBtn
       Left = 27
+      Height = 18
       Top = 19
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 0
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -610,16 +605,17 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 0
     end
     object StopTask0: TBitBtn
       Left = 51
+      Height = 18
       Top = 19
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 1
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -658,17 +654,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 1
     end
     object StopTask1: TBitBtn
       Tag = 1
       Left = 51
+      Height = 18
       Top = 43
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 3
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -707,17 +704,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 3
     end
     object RunTask1: TBitBtn
       Tag = 1
       Left = 27
+      Height = 18
       Top = 43
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 2
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -725,17 +723,18 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 2
     end
     object StopTask2: TBitBtn
       Tag = 2
       Left = 51
+      Height = 18
       Top = 67
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 5
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -774,17 +773,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 5
     end
     object RunTask2: TBitBtn
       Tag = 2
       Left = 27
+      Height = 18
       Top = 67
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 4
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -792,17 +792,18 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 4
     end
     object StopTask3: TBitBtn
       Tag = 3
       Left = 51
+      Height = 18
       Top = 91
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 7
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -841,17 +842,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 7
     end
     object RunTask3: TBitBtn
       Tag = 3
       Left = 27
+      Height = 18
       Top = 91
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 6
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -859,17 +861,18 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 6
     end
     object StopTask4: TBitBtn
       Tag = 4
       Left = 128
+      Height = 18
       Top = 19
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 9
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -908,17 +911,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 9
     end
     object RunTask4: TBitBtn
       Tag = 4
       Left = 104
+      Height = 18
       Top = 19
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 8
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -926,17 +930,18 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 8
     end
     object StopTask5: TBitBtn
       Tag = 5
       Left = 128
+      Height = 18
       Top = 43
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 11
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -975,17 +980,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 11
     end
     object RunTask5: TBitBtn
       Tag = 5
       Left = 104
+      Height = 18
       Top = 43
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 10
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -993,17 +999,18 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 10
     end
     object StopTask6: TBitBtn
       Tag = 6
       Left = 128
+      Height = 18
       Top = 67
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 13
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -1042,17 +1049,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 13
     end
     object RunTask6: TBitBtn
       Tag = 6
       Left = 104
+      Height = 18
       Top = 67
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 12
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -1060,17 +1068,18 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 12
     end
     object StopTask7: TBitBtn
       Tag = 7
       Left = 128
+      Height = 18
       Top = 91
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 15
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -1109,17 +1118,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 15
     end
     object RunTask7: TBitBtn
       Tag = 7
       Left = 104
+      Height = 18
       Top = 91
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 14
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -1127,17 +1137,18 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 14
     end
     object StopTask8: TBitBtn
       Tag = 8
       Left = 203
+      Height = 18
       Top = 19
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 17
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -1176,17 +1187,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 17
     end
     object RunTask8: TBitBtn
       Tag = 8
       Left = 179
+      Height = 18
       Top = 19
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 16
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -1194,17 +1206,18 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 16
     end
     object StopTask9: TBitBtn
       Tag = 9
       Left = 203
+      Height = 18
       Top = 43
       Width = 18
-      Height = 18
       HelpContext = 12022
-      TabOrder = 19
-      OnClick = StopTask0Click
       Glyph.Data = {
         A2040000424DA204000000000000360400002800000009000000090000000100
         0800000000006C00000000000000000000000001000000000000000000000000
@@ -1243,17 +1256,18 @@ object DirectForm: TDirectForm
         0303030000000300000000000000030000000300F9F9F9F9F900030000000300
         F9F9F9F9F900030000000300F9F9F9F9F900030000000300F9F9F9F9F9000300
         00000300F9F9F9F9F90003000000030000000000000003000000030303030303
-        030303000000}
+        030303000000
+      }
+      OnClick = StopTask0Click
+      TabOrder = 19
     end
     object RunTask9: TBitBtn
       Tag = 9
       Left = 179
+      Height = 18
       Top = 43
       Width = 18
-      Height = 18
       HelpContext = 12021
-      TabOrder = 18
-      OnClick = RunTask0Click
       Glyph.Data = {
         BE000000424DBE00000000000000760000002800000009000000090000000100
         0400000000004800000000000000000000001000000000000000000000000000
@@ -1261,120 +1275,115 @@ object DirectForm: TDirectForm
         FF0000FF000000FFFF00FF000000FF00FF00FFFF0000FFFFFF00333333333000
         00003300333330000000330A033330000000330AA03330000000330AAA033000
         0000330AA03330000000330A0333300000003300333330000000333333333000
-        0000}
+        0000
+      }
+      OnClick = RunTask0Click
+      TabOrder = 18
     end
   end
   object SensorGroup: TGroupBox
     Left = 8
+    Height = 140
     Top = 2
     Width = 233
-    Height = 140
     HelpContext = 12053
     Caption = ' Sensors '
+    ClientHeight = 118
+    ClientWidth = 225
     TabOrder = 0
     object Label14: TLabel
-      Left = 8
-      Top = 16
-      Width = 11
-      Height = 20
+      Left = 4
+      Height = 22
+      Top = 2
+      Width = 12
       Caption = '1'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object Label15: TLabel
-      Left = 8
-      Top = 48
-      Width = 11
-      Height = 20
+      Left = 4
+      Height = 22
+      Top = 31
+      Width = 12
       Caption = '2'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object lblSensor2: TLabel
-      Left = 8
-      Top = 80
-      Width = 11
-      Height = 20
+      Left = 4
+      Height = 22
+      Top = 60
+      Width = 12
       Caption = '3'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object lblSensor3: TLabel
-      Left = 8
-      Top = 112
-      Width = 11
-      Height = 20
+      Left = 4
+      Height = 22
+      Top = 90
+      Width = 12
       Caption = '4'
-      Font.Charset = DEFAULT_CHARSET
-      Font.Color = clWindowText
       Font.Height = -16
-      Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      ParentColor = False
       ParentFont = False
     end
     object SensorType0: TComboBox
-      Left = 32
-      Top = 16
+      Left = 28
+      Height = 20
+      Top = 2
       Width = 89
-      Height = 21
       HelpContext = 12057
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 0
+      ItemHeight = 0
       OnChange = SensorTypeChange
+      Style = csDropDownList
+      TabOrder = 0
     end
     object SensorMode0: TComboBox
-      Left = 136
-      Top = 16
+      Left = 132
+      Height = 20
+      Top = 2
       Width = 89
-      Height = 21
       HelpContext = 12058
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 1
+      ItemHeight = 0
       OnChange = SensorModeChange
+      Style = csDropDownList
+      TabOrder = 1
     end
     object SensorType1: TComboBox
       Tag = 1
-      Left = 32
-      Top = 48
+      Left = 28
+      Height = 20
+      Top = 31
       Width = 89
-      Height = 21
       HelpContext = 12059
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 2
-      OnChange = SensorTypeChange
+      ItemHeight = 0
       Items.Strings = (
         'None'
         'Switch'
         'Temperature'
         'Light'
-        'Angle')
+        'Angle'
+      )
+      OnChange = SensorTypeChange
+      Style = csDropDownList
+      TabOrder = 2
     end
     object SensorMode1: TComboBox
       Tag = 1
-      Left = 136
-      Top = 48
+      Left = 132
+      Height = 20
+      Top = 31
       Width = 89
-      Height = 21
       HelpContext = 12060
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 3
-      OnChange = SensorModeChange
+      ItemHeight = 0
       Items.Strings = (
         'Raw'
         'Boolean'
@@ -1383,37 +1392,39 @@ object DirectForm: TDirectForm
         'Percent'
         'Celsius'
         'Fahrenheit'
-        'Angle')
+        'Angle'
+      )
+      OnChange = SensorModeChange
+      Style = csDropDownList
+      TabOrder = 3
     end
     object SensorType2: TComboBox
       Tag = 2
-      Left = 32
-      Top = 80
+      Left = 28
+      Height = 20
+      Top = 60
       Width = 89
-      Height = 21
       HelpContext = 12061
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 4
-      OnChange = SensorTypeChange
+      ItemHeight = 0
       Items.Strings = (
         'None'
         'Switch'
         'Temperature'
         'Light'
-        'Angle')
+        'Angle'
+      )
+      OnChange = SensorTypeChange
+      Style = csDropDownList
+      TabOrder = 4
     end
     object SensorMode2: TComboBox
       Tag = 2
-      Left = 136
-      Top = 80
+      Left = 132
+      Height = 20
+      Top = 60
       Width = 89
-      Height = 21
       HelpContext = 12062
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 5
-      OnChange = SensorModeChange
+      ItemHeight = 0
       Items.Strings = (
         'Raw'
         'Boolean'
@@ -1422,37 +1433,39 @@ object DirectForm: TDirectForm
         'Percent'
         'Celsius'
         'Fahrenheit'
-        'Angle')
+        'Angle'
+      )
+      OnChange = SensorModeChange
+      Style = csDropDownList
+      TabOrder = 5
     end
     object SensorType3: TComboBox
       Tag = 3
-      Left = 32
-      Top = 112
+      Left = 28
+      Height = 20
+      Top = 90
       Width = 89
-      Height = 21
       HelpContext = 12061
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 6
-      OnChange = SensorTypeChange
+      ItemHeight = 0
       Items.Strings = (
         'None'
         'Switch'
         'Temperature'
         'Light'
-        'Angle')
+        'Angle'
+      )
+      OnChange = SensorTypeChange
+      Style = csDropDownList
+      TabOrder = 6
     end
     object SensorMode3: TComboBox
       Tag = 3
-      Left = 136
-      Top = 112
+      Left = 132
+      Height = 20
+      Top = 90
       Width = 89
-      Height = 21
       HelpContext = 12062
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 7
-      OnChange = SensorModeChange
+      ItemHeight = 0
       Items.Strings = (
         'Raw'
         'Boolean'
@@ -1461,50 +1474,56 @@ object DirectForm: TDirectForm
         'Percent'
         'Celsius'
         'Fahrenheit'
-        'Angle')
+        'Angle'
+      )
+      OnChange = SensorModeChange
+      Style = csDropDownList
+      TabOrder = 7
     end
   end
   object grpVariables: TGroupBox
     Left = 8
+    Height = 72
     Top = 262
     Width = 233
-    Height = 72
     HelpContext = 12063
     Caption = 'Global variables '
+    ClientHeight = 50
+    ClientWidth = 225
     TabOrder = 2
     object Label4: TLabel
       Left = 74
+      Height = 16
       Top = 20
-      Width = 19
-      Height = 13
+      Width = 21
       Caption = 'Src:'
+      ParentColor = False
     end
     object Label5: TLabel
       Left = 118
+      Height = 16
       Top = 47
-      Width = 30
-      Height = 13
+      Width = 34
       Caption = 'Value:'
+      ParentColor = False
     end
     object VariableBox: TComboBox
       Left = 8
+      Height = 20
       Top = 16
       Width = 63
-      Height = 21
       HelpContext = 12066
+      ItemHeight = 0
       Style = csDropDownList
-      ItemHeight = 13
       TabOrder = 0
     end
     object OperatorBox: TComboBox
       Left = 8
+      Height = 20
       Top = 43
       Width = 43
-      Height = 21
       HelpContext = 12067
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 2
+      ItemHeight = 0
       Items.Strings = (
         ' ='
         '+='
@@ -1514,63 +1533,68 @@ object DirectForm: TDirectForm
         '&='
         '|='
         '||='
-        '+-=')
+        '+-='
+      )
+      Style = csDropDownList
+      TabOrder = 2
     end
     object ValueEdit: TEdit
       Left = 155
+      Height = 13
       Top = 43
       Width = 55
-      Height = 21
       HelpContext = 12068
       MaxLength = 6
+      OnExit = ValueEditExit
+      OnKeyDown = nil
+      OnKeyPress = ValueEditKeyPress
       TabOrder = 4
       Text = '0'
-      OnExit = ValueEditExit
-      OnKeyPress = ValueEditKeyPress
     end
     object ValueUpDown: TUpDown
       Left = 210
+      Height = 13
       Top = 43
       Width = 15
-      Height = 21
       HelpContext = 12069
       Associate = ValueEdit
       Min = -32768
       Max = 32767
+      Position = 0
       TabOrder = 5
       Thousands = False
       Wrap = True
     end
     object SetBtn: TButton
       Left = 62
+      Height = 21
       Top = 43
       Width = 51
-      Height = 21
       HelpContext = 12070
       Caption = 'Set'
-      TabOrder = 3
       OnClick = SetBtnClick
+      TabOrder = 3
     end
     object cboSource: TComboBox
       Left = 99
+      Height = 20
       Top = 16
       Width = 126
-      Height = 21
       HelpContext = 12071
+      ItemHeight = 0
       Style = csDropDownList
-      ItemHeight = 13
       TabOrder = 1
     end
   end
   object btnHelp: TButton
     Left = 98
+    Height = 25
     Top = 467
     Width = 52
-    Height = 25
     HelpContext = 12002
     Anchors = [akLeft, akBottom]
     Caption = '&Help'
-    TabOrder = 4
     OnClick = btnHelpClick
+    TabOrder = 4
   end
 end

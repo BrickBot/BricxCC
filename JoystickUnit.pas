@@ -81,7 +81,6 @@ type
     procedure DirBtnMouseUp(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure btnHelpClick(Sender: TObject);
-    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
 {$IFNDEF NXT_ONLY}
@@ -184,6 +183,8 @@ begin
   {Show direction}
   sp := TSpeedButton(JoystickForm.FindComponent('DirBtn'+IntToStr(dir)));
   if not Assigned(sp) then Exit;
+
+  sp.Down := True;
 
   {Convert dir to directions for the motors}
   if LeftRight then
@@ -488,15 +489,6 @@ begin
   speed := val div 9362;
   if SpeedBar.Position <> speed then
     SpeedBar.Position := speed;
-end;
-
-procedure TJoystickForm.FormCreate(Sender: TObject);
-begin
-  AdjustGroupBox(grpDriveMode);
-  AdjustGroupBox(grpLeftMotor);
-  AdjustGroupBox(grpMovement);
-  AdjustGroupBox(grpRightMotor);
-  AdjustGroupBox(grpSpeed);
 end;
 
 {$IFDEF FPC}
