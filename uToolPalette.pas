@@ -28,9 +28,12 @@ uses
   LCLIntf,
 {$ENDIF}
   Classes, Graphics, Controls, Forms, ComCtrls, ToolWin, ActnList, ImgList,
-  Dialogs;
+  Dialogs, Menus;
 
 type
+
+  { TfrmNXTTools }
+
   TfrmNXTTools = class(TForm)
     StatusBar1: TStatusBar;
     ToolBar1: TToolBar;
@@ -76,6 +79,34 @@ type
     actCode: TAction;
     actClear: TAction;
     dlgOpenFirmware: TOpenDialog;
+    MainMenu1: TMainMenu;
+    ools1: TMenuItem;
+    Help1: TMenuItem;
+    About1: TMenuItem;
+    File1: TMenuItem;
+    Exit1: TMenuItem;
+    Directcontrol1: TMenuItem;
+    Diagnostics1: TMenuItem;
+    Watchingthebrick1: TMenuItem;
+    Brickpiano1: TMenuItem;
+    Brickjoystick1: TMenuItem;
+    Remote1: TMenuItem;
+    NXTExplorer1: TMenuItem;
+    NXTScreen1: TMenuItem;
+    N1: TMenuItem;
+    Sendmessages1: TMenuItem;
+    Memorymap1: TMenuItem;
+    Clearmemory1: TMenuItem;
+    MIDIConversion1: TMenuItem;
+    SoundConversion1: TMenuItem;
+    N2: TMenuItem;
+    Findbrick1: TMenuItem;
+    urnbrickoff1: TMenuItem;
+    Closecommunication1: TMenuItem;
+    N3: TMenuItem;
+    Downloadfirmware1: TMenuItem;
+    N4: TMenuItem;
+    Codeeditor1: TMenuItem;
     procedure actControlExecute(Sender: TObject);
     procedure actDiagnoseExecute(Sender: TObject);
     procedure actWatchExecute(Sender: TObject);
@@ -96,9 +127,12 @@ type
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure actPianoExecute(Sender: TObject);
     procedure actScreenExecute(Sender: TObject);
+    procedure About1Click(Sender: TObject);
+    procedure Exit1Click(Sender: TObject);
   private
     { Private declarations }
     procedure DownloadFirmware;
+    procedure HandleOnHint(Sender: TObject);
   public
     { Public declarations }
   end;
@@ -120,7 +154,7 @@ uses
 
 procedure TfrmNXTTools.FormCreate(Sender: TObject);
 begin
-//
+  Application.OnHint := HandleOnHint;
 end;
 
 procedure TfrmNXTTools.actControlExecute(Sender: TObject);
@@ -286,6 +320,21 @@ begin
   begin
     MessageDlg(sFirmDwnldFailed, mtError,[mbOK],0);
   end;
+end;
+
+procedure TfrmNXTTools.About1Click(Sender: TObject);
+begin
+  ShowMessage('NXT Tools, Copyright 2009, John Hansen');
+end;
+
+procedure TfrmNXTTools.Exit1Click(Sender: TObject);
+begin
+  Close;
+end;
+
+procedure TfrmNXTTools.HandleOnHint(Sender: TObject);
+begin
+  StatusBar1.SimpleText := Application.Hint;
 end;
 
 {$IFDEF FPC}
