@@ -1094,6 +1094,8 @@ begin
   Start := Value;
   TheEnd := FOrigin;
   fLineCount := 0;
+  FId := piUnknown;
+  FExId := piUnknown;
 end;
 
 procedure TmwGenLex.SetRunPos(const Value: Integer);

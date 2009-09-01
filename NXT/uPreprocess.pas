@@ -337,7 +337,10 @@ var
       charTok := Replace(charTok, '''', '');
       if Length(charTok) > 1 then
         raise EPreprocessorException.Create(sInvalidCharConstant, lineNo);
-      Result := Result + IntToStr(Ord(charTok[1]));
+      if Length(charTok) = 1 then
+        Result := Result + IntToStr(Ord(charTok[1]));
+      // if the length is not > 1 or = 1 then it must be = 0,
+      // in which case there is no need to add anything to the result
     end
     else
       Result := Result + Lex.Token;
