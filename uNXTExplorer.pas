@@ -75,19 +75,10 @@ type
     actEditSelectAll: TAction;
     actFileDefrag: TAction;
     actFileView: TAction;
-{$IFDEF FPC}
-    ilToolbar: TImageList;
-    ToolBar1: TToolBar;
-    ToolButton1: TToolButton;
-    ToolButton10: TToolButton;
-    ToolButton2: TToolButton;
-    ToolButton3: TToolButton;
-    ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
-    ToolButton6: TToolButton;
-    ToolButton7: TToolButton;
-    ToolButton8: TToolButton;
-    ToolButton9: TToolButton;
+{$IFNDEF FPC}
+    pnlTopLeft: TPanel;
+    pnlRight: TPanel;
+    Splitter1: TSplitter;
 {$ENDIF}
     procedure FormCreate(Sender: TObject);
     procedure actViewToolbarExecute(Sender: TObject);
@@ -119,6 +110,20 @@ type
     procedure RefreshShellListView(Sender: TObject);
 {$ENDIF}
   private
+{$IFDEF FPC}
+    ilToolbar: TImageList;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton10: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
+{$ENDIF}
     mnuMain: TOfficeMainMenu;
     File1: TOfficeMenuItem;
     Refresh1: TOfficeMenuItem;
@@ -326,8 +331,6 @@ end;
 
 procedure TfrmNXTExplorer.FormCreate(Sender: TObject);
 begin
-  fMasks := TStringList.Create;
-  PopulateMaskList;
 {$IFNDEF FPC}
   CreateShellControls;
 {$ELSE}
@@ -336,6 +339,8 @@ begin
   dlgOpen.Options := [ofAllowMultiSelect, ofEnableSizing, ofViewDetail];
   dlgDirectory := TSelectDirectoryDialog.Create(Self);
 {$ENDIF}
+  fMasks := TStringList.Create;
+  PopulateMaskList;
   CreateMainMenu;
   CreatePopupMenu;
   Self.Menu := mnuMain;
@@ -491,6 +496,12 @@ procedure TfrmNXTExplorer.actFileUploadExecute(Sender: TObject);
 var
   i : integer;
 begin
+{$IFNDEF FPC}
+  for i := 0 to NXTFiles.Items.Count - 1 do
+    if NXTFiles.Items[i].Selected then
+      BrickComm.NXTUploadFile(NXTFiles.Items[i].Caption, GetLocalFilePath);
+  RefreshLocalFileList;
+{$ELSE}
   dlgDirectory.InitialDir := fLastLocalPath;
   if dlgDirectory.Execute then
   begin
@@ -499,8 +510,6 @@ begin
       if NXTFiles.Items[i].Selected then
         BrickComm.NXTUploadFile(NXTFiles.Items[i].Caption, GetLocalFilePath);
   end;
-{$IFNDEF FPC}
-  RefreshLocalFileList;
 {$ENDIF}
 end;
 
