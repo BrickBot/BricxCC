@@ -31,28 +31,26 @@ uses
 {$ENDIF}
   Messages, Classes, Controls, Forms, ShellCtrls,
   ComCtrls, FileCtrl, StdCtrls, Buttons, ExtCtrls, uOfficeComp,
-  ActnList, Menus, ImgList;
+  ActnList, Menus, Dialogs, ImgList;
 
 type
-  TShellTreeViewEx = class(TShellTreeView)
 {$IFNDEF FPC}
+  TShellTreeViewEx = class(TShellTreeView)
   public
     property ReadOnly;
-{$ENDIF}
   end;
 
   TShellListViewEx = class(TShellListView)
   public
     function GetPathFromIndex(const idx : integer) : string;
   end;
+{$ENDIF}
 
   { TfrmNXTExplorer }
 
   TfrmNXTExplorer = class(TForm)
     pnlLeft: TPanel;
-    pnlRight: TPanel;
     NXTFiles: TListView;
-    Splitter1: TSplitter;
     Actions: TActionList;
     actViewToolbar: TAction;
     actNXTViewStyleLargeIcon: TAction;
@@ -63,7 +61,6 @@ type
     actFileDelete: TAction;
     actFileUpload: TAction;
     actFileDownload: TAction;
-    pnlTopLeft: TPanel;
     actPCViewStyleLargeIcon: TAction;
     actPCViewStyleSmallIcon: TAction;
     actPCViewStyleList: TAction;
@@ -78,10 +75,23 @@ type
     actEditSelectAll: TAction;
     actFileDefrag: TAction;
     actFileView: TAction;
+{$IFDEF FPC}
+    ilToolbar: TImageList;
+    ToolBar1: TToolBar;
+    ToolButton1: TToolButton;
+    ToolButton10: TToolButton;
+    ToolButton2: TToolButton;
+    ToolButton3: TToolButton;
+    ToolButton4: TToolButton;
+    ToolButton5: TToolButton;
+    ToolButton6: TToolButton;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
+{$ENDIF}
     procedure FormCreate(Sender: TObject);
     procedure actViewToolbarExecute(Sender: TObject);
     procedure actViewStyleExecute(Sender: TObject);
-    procedure actPCViewStyleExecute(Sender: TObject);
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure FormShow(Sender: TObject);
     procedure actFileRefreshExecute(Sender: TObject);
@@ -90,9 +100,6 @@ type
     procedure actFileDownloadExecute(Sender: TObject);
     procedure actFileExecuteExecute(Sender: TObject);
     procedure actFileStopExecute(Sender: TObject);
-    procedure NXTFilesDragOver(Sender, Source: TObject; X, Y: Integer;
-      State: TDragState; var Accept: Boolean);
-    procedure NXTFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure actFilePlayExecute(Sender: TObject);
     procedure actFileMuteExecute(Sender: TObject);
     procedure actFileEraseAllExecute(Sender: TObject);
@@ -104,7 +111,13 @@ type
     procedure actFileDefragExecute(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure actFileViewExecute(Sender: TObject);
+    procedure actPCViewStyleExecute(Sender: TObject);
+{$IFNDEF FPC}
+    procedure NXTFilesDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure NXTFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure RefreshShellListView(Sender: TObject);
+{$ENDIF}
   private
     mnuMain: TOfficeMainMenu;
     File1: TOfficeMenuItem;
@@ -189,33 +202,38 @@ type
     procedure CreateToolbar;
     procedure CreateMainMenu;
     procedure CreatePopupMenu;
-    procedure CreateShellControls;
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
+{$IFNDEF FPC}
   public
     cboMask: TFilterComboBox;
     treShell: TShellTreeViewEx;
     Splitter2: TSplitter;
     lstFiles: TShellListViewEx;
-    procedure cboMaskChange(Sender: TObject);
-{$IFNDEF FPC}
     procedure lstFilesAddFolder(Sender: TObject; AFolder: TShellFolder;
       var CanAdd: Boolean);
-{$ENDIF}
     procedure lstFilesDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
     procedure lstFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
-    procedure lstFilesDblClick(Sender: TObject);
     procedure treShellChange(Sender: TObject; Node: TTreeNode);
+    procedure lstFilesDblClick(Sender: TObject);
+{$ELSE}
+    dlgDirectory : TSelectDirectoryDialog;
+    dlgOpen : TOpenDialog;
+{$ENDIF}
   private
     { Private declarations }
     fMasks : TStringList;
+    fLastLocalPath : string;
+    procedure PopulateMaskList;
+    procedure cboMaskChange(Sender: TObject);
 {$IFNDEF FPC}
+    procedure CreateShellControls;
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
     function InNXTView(p : TPoint) : boolean;
+    procedure RefreshLocalFileList;
 {$ENDIF}
     procedure ConfigureForm;
-    procedure PopulateMaskList;
     procedure RefreshNXTFiles;
     procedure SetColorScheme;
     function SelectedFileIsExecutable : boolean;
@@ -223,7 +241,6 @@ type
     function IsInMask(const ext: string): boolean;
     function DoDownloadFile(const aFile : string) : boolean;
     function GetLocalFilePath : string;
-    procedure RefreshLocalFileList;
   public
     { Public declarations }
   end;
@@ -238,7 +255,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Graphics, Dialogs, Themes, 
+  SysUtils, Graphics, Themes,
 {$IFNDEF FPC}
   ShellAPI, 
   uHEXViewer,
@@ -309,7 +326,16 @@ end;
 
 procedure TfrmNXTExplorer.FormCreate(Sender: TObject);
 begin
+  fMasks := TStringList.Create;
+  PopulateMaskList;
+{$IFNDEF FPC}
   CreateShellControls;
+{$ELSE}
+  dlgOpen := TOpenDialog.Create(Self);
+  dlgOpen.Filter := K_FILTER;
+  dlgOpen.Options := [ofAllowMultiSelect, ofEnableSizing, ofViewDetail];
+  dlgDirectory := TSelectDirectoryDialog.Create(Self);
+{$ENDIF}
   CreateMainMenu;
   CreatePopupMenu;
   Self.Menu := mnuMain;
@@ -321,7 +347,6 @@ begin
   NXTFiles.OnEditing := NXTFilesEditing;
   NXTFiles.IconOptions.AutoArrange := True;
   DragAcceptFiles(Handle,true);
-{$ENDIF}
 //  lstFiles.ObjectTypes := [otNonFolders];
   treShell.ReadOnly := True;
   lstFiles.ReadOnly := True;
@@ -331,14 +356,19 @@ begin
   finally
     cboMask.OnChange := cboMaskChange;
   end;
-  fMasks := TStringList.Create;
-  PopulateMaskList;
+{$ELSE}
+  pnlLeft.Align := alClient;
+{$ENDIF}
   SetColorScheme;
 end;
 
 procedure TfrmNXTExplorer.actViewToolbarExecute(Sender: TObject);
 begin
+{$IFNDEF FPC}
   cbrExplorerTop.Visible := not cbrExplorerTop.Visible;
+{$ELSE}
+  ToolBar1.Visible := not ToolBar1.Visible;
+{$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.actViewStyleExecute(Sender: TObject);
@@ -357,6 +387,7 @@ end;
 
 procedure TfrmNXTExplorer.actPCViewStyleExecute(Sender: TObject);
 begin
+{$IFNDEF FPC}
   if Sender is TComponent then
   begin
     case TComponent(Sender).Tag of
@@ -367,6 +398,7 @@ begin
     end;
   end;
   PCFilesViewStyle := lstFiles.ViewStyle;
+{$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.ActionsUpdate(Action: TBasicAction;
@@ -387,20 +419,28 @@ begin
   actFileDelete.Enabled   := sc > 0;
   actFilePlay.Enabled     := (sc = 1) and SelectedFileIsSound;
   actFileMute.Enabled     := True;
+{$IFNDEF FPC}
   actPCViewStyleLargeIcon.Checked  := lstFiles.ViewStyle = vsIcon;
   actPCViewStyleSmallIcon.Checked  := lstFiles.ViewStyle = vsSmallIcon;
   actPCViewStyleList.Checked       := lstFiles.ViewStyle = vsList;
   actPCViewStyleDetails.Checked    := lstFiles.ViewStyle = vsReport;
   // pc-side
   actFileDownload.Enabled := (lstFiles.SelCount > 0);
+{$ELSE}
+  actFileDownload.Enabled := True;
+{$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.cboMaskChange(Sender: TObject);
 begin
+{$IFNDEF FPC}
   NXTExplorerMaskIndex := cboMask.ItemIndex;
+  RefreshLocalFileList;
+{$ELSE}
+  NXTExplorerMaskIndex := 0;
+{$ENDIF}
   PopulateMaskList;
   RefreshNXTFiles;
-  RefreshLocalFileList;
 end;
 
 procedure TfrmNXTExplorer.FormShow(Sender: TObject);
@@ -415,7 +455,9 @@ begin
 {$ENDIF}
   ConfigureForm;
   RefreshNXTFiles;
+{$IFNDEF FPC}
   RefreshLocalFileList;
+{$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.actFileRefreshExecute(Sender: TObject);
@@ -449,10 +491,17 @@ procedure TfrmNXTExplorer.actFileUploadExecute(Sender: TObject);
 var
   i : integer;
 begin
-  for i := 0 to NXTFiles.Items.Count - 1 do
-    if NXTFiles.Items[i].Selected then
-      BrickComm.NXTUploadFile(NXTFiles.Items[i].Caption, GetLocalFilePath);
+  dlgDirectory.InitialDir := fLastLocalPath;
+  if dlgDirectory.Execute then
+  begin
+    fLastLocalPath := IncludeTrailingPathDelimiter(dlgDirectory.Filename);
+    for i := 0 to NXTFiles.Items.Count - 1 do
+      if NXTFiles.Items[i].Selected then
+        BrickComm.NXTUploadFile(NXTFiles.Items[i].Caption, GetLocalFilePath);
+  end;
+{$IFNDEF FPC}
   RefreshLocalFileList;
+{$ENDIF}
 end;
 
 function SizeOfFile(const filename : string) : Int64;
@@ -483,7 +532,7 @@ var
   i : integer;
   fname : string;
 begin
-{.$IFNDEF FPC}
+{$IFNDEF FPC}
   for i := 0 to lstFiles.Items.Count - 1 do
   begin
     if lstFiles.Items[i].Selected then
@@ -493,19 +542,18 @@ begin
         break;
     end;
   end;
-(*
 {$ELSE}
-  for i := 0 to FileListBox1.Items.Count - 1 do
+  // use open dialog to select PC files to download to NXT
+  if dlgOpen.Execute then
   begin
-    if FileListBox1.Selected[i] then
+    for i := 0 to dlgOpen.Files.Count - 1 do
     begin
-      fname := GetLocalFilePath() + FileListBox1.Items[i];
+      fname := dlgOpen.Files[i];
       if not DoDownloadFile(fname) then
         break;
     end;
   end;
 {$ENDIF}
-*)
   RefreshNXTFiles;
 end;
 
@@ -526,24 +574,19 @@ begin
   BrickComm.StopProgram;
 end;
 
+{$IFNDEF FPC}
 procedure TfrmNXTExplorer.RefreshShellListView(Sender: TObject);
 begin
-{.$IFNDEF FPC}
   if lstFiles.ViewStyle <> vsReport then
     lstFiles.Refresh;
-{.$ENDIF}
 end;
+{$ENDIF}
 
+{$IFNDEF FPC}
 procedure TfrmNXTExplorer.NXTFilesDragOver(Sender, Source: TObject; X,
   Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-{.$IFNDEF FPC}
   Accept := Source = lstFiles;
-(*
-{$ELSE}
-  Accept := Source = FileListBox1;
-{$ENDIF}
-*)
 end;
 
 procedure TfrmNXTExplorer.NXTFilesDragDrop(Sender, Source: TObject; X,
@@ -565,6 +608,7 @@ begin
   // upload files to PC from NXT
   actFileUploadExecute(Sender);
 end;
+{$ENDIF}
 
 procedure TfrmNXTExplorer.actFilePlayExecute(Sender: TObject);
 begin
@@ -587,13 +631,13 @@ begin
   Close;
 end;
 
+{$IFNDEF FPC}
 procedure TfrmNXTExplorer.lstFilesDblClick(Sender: TObject);
 begin
-{.$IFNDEF FPC}
   if treShell.Selected <> nil then
     treShell.Selected.MakeVisible;
-{.$ENDIF}
 end;
+{$ENDIF}
 
 procedure TfrmNXTExplorer.About1Click(Sender: TObject);
 begin
@@ -701,11 +745,11 @@ var
   p : integer;
 begin
   fMasks.Clear;
-{.$IFNDEF FPC}
+{$IFNDEF FPC}
   tmpMask := cboMask.Mask;
-//{$ELSE}
-//  tmpMask := 'All files (*.*)|*.*';
-//{$ENDIF}
+{$ELSE}
+  tmpMask := 'All files (*.*)|*.*';
+{$ENDIF}
   repeat
     p := Pos(';', tmpMask);
     if p > 0 then
@@ -725,34 +769,27 @@ end;
 procedure TfrmNXTExplorer.ConfigureForm;
 begin
   NXTFiles.ViewStyle := NXTFilesViewStyle;
-{.$IFNDEF FPC}
+{$IFNDEF FPC}
   lstFiles.ViewStyle := PCFilesViewStyle;
   cboMask.ItemIndex  := NXTExplorerMaskIndex;
   if DirectoryExists(NXTExplorerPath) then
   begin
     try
-{$IFNDEF FPC}
       treShell.Path    := NXTExplorerPath;
-{$ENDIF}
     except
       // eat any exceptions which might occur here.
     end;
   end;
-(*
-{$ELSE}
-  DirectoryEdit1.Directory := NXTExplorerPath;
-  FileListBox1.Directory := NXTExplorerPath;
 {$ENDIF}
-*)
   cboMaskChange(nil);
 end;
 
+{$IFNDEF FPC}
 procedure TfrmNXTExplorer.treShellChange(Sender: TObject; Node: TTreeNode);
 begin
   NXTExplorerPath := GetLocalFilePath;
 end;
 
-{$IFNDEF FPC}
 procedure TfrmNXTExplorer.WMDROPFILES(var Message: TWMDROPFILES);
 var
   buffer : array[0..255] of char;
@@ -812,7 +849,7 @@ begin
 {$IFNDEF FPC}
   Result := treShell.Path;
 {$ELSE}
-  Result := IncludeTrailingPathDelimiter(lstFiles.Root);
+  Result := IncludeTrailingPathDelimiter(fLastLocalPath);
 {$ENDIF}
 end;
 
@@ -821,20 +858,15 @@ begin
   Result := 0;
 end;
 
+{$IFNDEF FPC}
 procedure TfrmNXTExplorer.RefreshLocalFileList;
 var
   i : integer;
   LI : TListItem;
 begin
   lstFiles.Refresh;
-{$IFDEF FPC}
-  for i := 0 to lstFiles.Items.Count - 1 do
-  begin
-    LI := lstFiles.Items[i];
-    LI.ImageIndex := GetImageIndex(LI.Caption);
-  end;
-{$ENDIF}
 end;
+{$ENDIF}
 
 procedure TfrmNXTExplorer.actFileViewExecute(Sender: TObject);
 {$IFDEF FPC}
@@ -899,10 +931,12 @@ begin
                {$IFNDEF FPC}View2, {$ENDIF}
                N7, Execute1, Stop1, N3, Play1, Mute1, N2, Exit1]);
   AddMenuItems(Edit2, [mniSelectAll]);
-  AddMenuItems(View1, [NXTViewStyle2, PCViewStyle1, N5, ShowToolbar1]);
+  AddMenuItems(View1, [NXTViewStyle2, {$IFNDEF FPC}PCViewStyle1, {$ENDIF}N5, ShowToolbar1]);
   AddMenuItems(Help1, [About1]);
   AddMenuItems(NXTViewStyle2, [LargeIcons2, SmallIcons2, List2, Details2]);
+{$IFNDEF FPC}
   AddMenuItems(PCViewStyle1, [LargeIcons3, SmallIcons3, List3, Details3]);
+{$ENDIF}
   with File1 do
   begin
     Name := 'File1';
@@ -1132,13 +1166,19 @@ begin
                 mniSep6, mniUpload, mniDownload,
                 {$IFNDEF FPC}mniView, {$ENDIF}mniSep5,
                 mniExecute, mniFileStop, N1, mniPlay, mniMute, mniSep3,
-                mniViewStyle, NXTViewStyle1, mniSep4, mniShowToolbar]);
+                mniViewStyle, {$IFNDEF FPC}NXTViewStyle1, {$ENDIF}mniSep4, mniShowToolbar]);
   AddMenuItems(mniViewStyle, [mitLargeIcons, mitSmallIcons, mitList, mitDetails]);
+{$IFNDEF FPC}
   AddMenuItems(NXTViewStyle1, [LargeIcons1, SmallIcons1, List1, Details1]);
+{$ENDIF}
   with pmuNXT do
   begin
     Name := 'pmuNXT';
+{$IFDEF FPC}
+    Images := ilToolbar;
+{$ELSE}
     Images := ilSmall;
+{$ENDIF}
   end;
   with mniRefresh do
   begin
@@ -1299,6 +1339,7 @@ end;
 
 procedure TfrmNXTExplorer.CreateToolbar;
 begin
+{$IFNDEF FPC}
   cbrExplorerTop := TOfficeControlBar.Create(Self);
   ogpNXTExplorer := TOfficeGradientPanel.Create(cbrExplorerTop);
   osbUpload := TOfficeSpeedButton.Create(ogpNXTExplorer);
@@ -1348,19 +1389,19 @@ begin
     ShowHint := True;
     TabOrder := 0;
   end;
-  with osbUpload do
+  with osbRefresh do
   begin
-    Name := 'osbUpload';
+    Name := 'osbRefresh';
     Parent := ogpNXTExplorer;
-    Left := 100;
+    Left := 0;
     Top := 0;
     Width := 23;
     Height := 22;
-    Action := actFileUpload;
+    Action := actFileRefresh;
 {$IFDEF FPC}
 {$ELSE}
-    MenuItem := Upload1;
-    ResourceName := 'IMG_UPLOAD';
+    MenuItem := Refresh1;
+    ResourceName := 'IMG_REFRESH';
 {$ENDIF}
     Align := alLeft;
     Flat := True;
@@ -1390,19 +1431,72 @@ begin
     ParentShowHint := False;
     ShowHint := True;
   end;
-  with osbRefresh do
+  with osbEraseAll do
   begin
-    Name := 'osbRefresh';
+    Name := 'osbEraseAll';
     Parent := ogpNXTExplorer;
-    Left := 0;
+    Left := 46;
     Top := 0;
     Width := 23;
     Height := 22;
-    Action := actFileRefresh;
+    Action := actFileEraseAll;
 {$IFDEF FPC}
 {$ELSE}
-    MenuItem := Refresh1;
-    ResourceName := 'IMG_REFRESH';
+    MenuItem := EraseAll1;
+    ResourceName := 'IMG_CLEARMEM';
+{$ENDIF}
+    Align := alLeft;
+    Flat := True;
+    ShowCaption := False;
+    NumGlyphs := 4;
+    ParentShowHint := False;
+    ShowHint := True;
+  end;
+  with osbDefrag do
+  begin
+    Name := 'osbDefrag';
+    Parent := ogpNXTExplorer;
+    Left := 69;
+    Top := 0;
+    Width := 23;
+    Height := 22;
+    Action := actFileDefrag;
+{$IFDEF FPC}
+{$ELSE}
+    MenuItem := mniDefrag;
+    ResourceName := 'IMG_DEFRAG';
+{$ENDIF}
+    Align := alLeft;
+    Flat := True;
+    ShowCaption := False;
+    NumGlyphs := 4;
+    ParentShowHint := False;
+    ShowHint := True;
+  end;
+  with bvlPlay2 do
+  begin
+    Name := 'bvlPlay2';
+    Parent := ogpNXTExplorer;
+    Left := 92;
+    Top := 0;
+    Width := 8;
+    Height := 22;
+    Align := alLeft;
+    Shape := bsLeftLine;
+  end;
+  with osbUpload do
+  begin
+    Name := 'osbUpload';
+    Parent := ogpNXTExplorer;
+    Left := 100;
+    Top := 0;
+    Width := 23;
+    Height := 22;
+    Action := actFileUpload;
+{$IFDEF FPC}
+{$ELSE}
+    MenuItem := Upload1;
+    ResourceName := 'IMG_UPLOAD';
 {$ENDIF}
     Align := alLeft;
     Flat := True;
@@ -1517,17 +1611,6 @@ begin
     ParentShowHint := False;
     ShowHint := True;
   end;
-  with bvlPlay2 do
-  begin
-    Name := 'bvlPlay2';
-    Parent := ogpNXTExplorer;
-    Left := 92;
-    Top := 0;
-    Width := 8;
-    Height := 22;
-    Align := alLeft;
-    Shape := bsLeftLine;
-  end;
   with osbMute do
   begin
     Name := 'osbMute';
@@ -1560,48 +1643,6 @@ begin
     Align := alLeft;
     Shape := bsLeftLine;
   end;
-  with osbEraseAll do
-  begin
-    Name := 'osbEraseAll';
-    Parent := ogpNXTExplorer;
-    Left := 46;
-    Top := 0;
-    Width := 23;
-    Height := 22;
-    Action := actFileEraseAll;
-{$IFDEF FPC}
-{$ELSE}
-    MenuItem := EraseAll1;
-    ResourceName := 'IMG_CLEARMEM';
-{$ENDIF}
-    Align := alLeft;
-    Flat := True;
-    ShowCaption := False;
-    NumGlyphs := 4;
-    ParentShowHint := False;
-    ShowHint := True;
-  end;
-  with osbDefrag do
-  begin
-    Name := 'osbDefrag';
-    Parent := ogpNXTExplorer;
-    Left := 69;
-    Top := 0;
-    Width := 23;
-    Height := 22;
-    Action := actFileDefrag;
-{$IFDEF FPC}
-{$ELSE}
-    MenuItem := mniDefrag;
-    ResourceName := 'IMG_DEFRAG';
-{$ENDIF}
-    Align := alLeft;
-    Flat := True;
-    ShowCaption := False;
-    NumGlyphs := 4;
-    ParentShowHint := False;
-    ShowHint := True;
-  end;
   with osbView do
   begin
     Name := 'osbView';
@@ -1623,8 +1664,10 @@ begin
     ParentShowHint := False;
     ShowHint := True;
   end;
+{$ENDIF}
 end;
 
+{$IFNDEF FPC}
 procedure TfrmNXTExplorer.CreateShellControls;
 begin
   cboMask := TFilterComboBox.Create(Self);
@@ -1689,16 +1732,11 @@ begin
     ReadOnly := False;
     HideSelection := False;
     MultiSelect := True;
-{$IFNDEF FPC}
     IconOptions.AutoArrange := True;
     OnAddFolder := lstFilesAddFolder;
-{$ELSE}
-    LargeImages := ilLarge;
-    SmallImages := ilSmall;
-{$ENDIF}
-    OnDblClick := lstFilesDblClick;
     OnDragDrop := lstFilesDragDrop;
     OnDragOver := lstFilesDragOver;
+    OnDblClick := lstFilesDblClick;
     TabOrder := 1;
     DoubleBuffered := True;
   end;
@@ -1708,12 +1746,9 @@ end;
 
 function TShellListViewEx.GetPathFromIndex(const idx: integer): string;
 begin
-{$IFDEF FPC}
-  Result := GetPathFromItem(Items[idx]);
-{$ELSE}
   Result := Folders[idx].PathName;
-{$ENDIF}
 end;
+{$ENDIF}
 
 {$IFDEF FPC}
 initialization
