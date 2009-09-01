@@ -1,12 +1,12 @@
 object frmNXTTools: TfrmNXTTools
-  Left = 254
-  Height = 255
-  Top = 115
-  Width = 576
+  Left = 284
+  Height = 251
+  Top = 160
+  Width = 579
   BorderStyle = bsDialog
   Caption = 'NeXT Tools'
-  ClientHeight = 235
-  ClientWidth = 576
+  ClientHeight = 251
+  ClientWidth = 579
   Font.Height = -11
   Menu = MainMenu1
   OnCreate = FormCreate
@@ -14,144 +14,156 @@ object frmNXTTools: TfrmNXTTools
   LCLVersion = '0.9.27'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 23
-    Top = 212
-    Width = 576
+    Height = 20
+    Top = 231
+    Width = 579
     Panels = <>
   end
   object ToolBar1: TToolBar
     Left = 0
-    Height = 208
+    Height = 72
     Top = 0
-    Width = 576
+    Width = 579
     AutoSize = True
-    ButtonHeight = 64
-    ButtonWidth = 64
+    ButtonHeight = 70
+    ButtonWidth = 70
     Caption = 'NeXT Tools'
     Images = imgList
     ParentShowHint = False
     ShowHint = True
     TabOrder = 1
+    Wrapable = False
     object ToolButton1: TToolButton
       Left = 1
       Top = 2
       Action = actControl
     end
     object ToolButton2: TToolButton
-      Left = 65
+      Left = 71
       Top = 2
       Action = actDiagnose
     end
     object ToolButton3: TToolButton
-      Left = 129
+      Left = 141
       Top = 2
       Action = actWatch
     end
     object ToolButton4: TToolButton
-      Left = 193
+      Left = 211
       Top = 2
       Action = actPiano
     end
     object ToolButton5: TToolButton
-      Left = 257
+      Left = 281
       Top = 2
       Action = actJoystick
     end
     object ToolButton6: TToolButton
-      Left = 321
+      Left = 351
       Top = 2
       Action = actRemote
     end
     object ToolButton19: TToolButton
-      Left = 385
+      Left = 421
       Top = 2
       Action = actExplorer
     end
     object ToolButton20: TToolButton
-      Left = 449
+      Left = 491
       Top = 2
       Action = actScreen
     end
-    object ToolButton18: TToolButton
-      Left = 513
-      Top = 2
-      Width = 8
-      Caption = 'ToolButton18'
-      ImageIndex = 17
-      Style = tbsSeparator
-    end
-    object ToolButton7: TToolButton
+  end
+  object ToolBar2: TToolBar
+    Left = 0
+    Height = 72
+    Top = 72
+    Width = 579
+    AutoSize = True
+    ButtonHeight = 70
+    ButtonWidth = 70
+    Caption = 'ToolBar2'
+    Images = imgList
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 2
+    object ToolButton14: TToolButton
       Left = 1
-      Top = 66
+      Top = 2
       Action = actMessage
     end
-    object ToolButton8: TToolButton
-      Left = 65
-      Top = 66
+    object ToolButton15: TToolButton
+      Left = 71
+      Top = 2
       Action = actMemory
     end
-    object ToolButton21: TToolButton
-      Left = 129
-      Top = 66
+    object ToolButton24: TToolButton
+      Left = 141
+      Top = 2
       Action = actClear
     end
-    object ToolButton16: TToolButton
-      Left = 193
-      Top = 66
+    object ToolButton25: TToolButton
+      Left = 211
+      Top = 2
       Action = actMIDIConvert
     end
-    object ToolButton17: TToolButton
-      Left = 257
-      Top = 66
+    object ToolButton26: TToolButton
+      Left = 281
+      Top = 2
       Action = actRSOConvert
     end
-    object ToolButton22: TToolButton
-      Left = 321
-      Top = 66
-      Width = 8
-      Caption = 'ToolButton22'
-      ImageIndex = 17
-      Style = tbsSeparator
-    end
-    object ToolButton9: TToolButton
-      Left = 329
-      Top = 66
+  end
+  object ToolBar3: TToolBar
+    Left = 0
+    Height = 72
+    Top = 144
+    Width = 579
+    AutoSize = True
+    ButtonHeight = 70
+    ButtonWidth = 70
+    Caption = 'ToolBar3'
+    Images = imgList
+    ParentShowHint = False
+    ShowHint = True
+    TabOrder = 3
+    object ToolButton27: TToolButton
+      Left = 1
+      Top = 2
       Action = actFindBrick
     end
-    object ToolButton10: TToolButton
-      Left = 393
-      Top = 66
+    object ToolButton28: TToolButton
+      Left = 71
+      Top = 2
       Action = actTurnOff
     end
-    object ToolButton11: TToolButton
-      Left = 457
-      Top = 66
+    object ToolButton29: TToolButton
+      Left = 141
+      Top = 2
       Action = actCloseComm
     end
-    object ToolButton23: TToolButton
-      Left = 521
-      Top = 66
+    object ToolButton30: TToolButton
+      Left = 211
+      Top = 2
       Width = 8
-      Caption = 'ToolButton23'
-      ImageIndex = 15
+      Caption = 'ToolButton30'
       Style = tbsSeparator
     end
-    object ToolButton12: TToolButton
-      Left = 1
-      Top = 130
+    object ToolButton31: TToolButton
+      Left = 219
+      Top = 2
       Action = actFirmware
     end
-    object ToolButton13: TToolButton
-      Left = 65
-      Top = 130
+    object ToolButton32: TToolButton
+      Left = 289
+      Top = 2
       Action = actCode
     end
   end
   object imgList: TImageList
     Height = 64
     Width = 64
-    left = 312
-    top = 8
+    left = 520
+    top = 104
     Bitmap = {
       4C69120000004000000040000000646464006464640064646400646464006464
       6400646464006464640064646400646464006464640064646400646464006464
@@ -9375,8 +9387,8 @@ object frmNXTTools: TfrmNXTTools
   object alMain: TActionList
     Images = imgList
     OnUpdate = alMainUpdate
-    left = 384
-    top = 8
+    left = 472
+    top = 104
     object actControl: TAction
       Caption = 'Direct control'
       Hint = 'Direct control'
@@ -9492,12 +9504,12 @@ object frmNXTTools: TfrmNXTTools
     FileName = 'LEGO MINDSTORMS NXT Firmware V1.28.rfw'
     Filter = 'Lego NXT Firmware (*.rfw)|*.rfw|Alternate NXT Firmware files (*.a79)|*.a79|All files (*.*)|*.*'
     Options = [ofHideReadOnly, ofPathMustExist, ofFileMustExist, ofEnableSizing]
-    left = 184
-    top = 8
+    left = 432
+    top = 160
   end
   object MainMenu1: TMainMenu
-    left = 488
-    top = 24
+    left = 416
+    top = 104
     object File1: TMenuItem
       Caption = 'File'
       object Codeeditor1: TMenuItem

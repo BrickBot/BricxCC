@@ -37,27 +37,27 @@ type
   TfrmNXTTools = class(TForm)
     StatusBar1: TStatusBar;
     ToolBar1: TToolBar;
+    ToolBar2: TToolBar;
+    ToolBar3: TToolBar;
     ToolButton1: TToolButton;
+    ToolButton14: TToolButton;
+    ToolButton15: TToolButton;
     ToolButton2: TToolButton;
+    ToolButton24: TToolButton;
+    ToolButton25: TToolButton;
+    ToolButton26: TToolButton;
+    ToolButton27: TToolButton;
+    ToolButton28: TToolButton;
+    ToolButton29: TToolButton;
     ToolButton3: TToolButton;
+    ToolButton30: TToolButton;
+    ToolButton31: TToolButton;
+    ToolButton32: TToolButton;
     ToolButton4: TToolButton;
     ToolButton5: TToolButton;
     ToolButton6: TToolButton;
-    ToolButton7: TToolButton;
-    ToolButton8: TToolButton;
-    ToolButton9: TToolButton;
-    ToolButton10: TToolButton;
-    ToolButton11: TToolButton;
-    ToolButton12: TToolButton;
-    ToolButton13: TToolButton;
-    ToolButton16: TToolButton;
-    ToolButton17: TToolButton;
-    ToolButton18: TToolButton;
     ToolButton19: TToolButton;
     ToolButton20: TToolButton;
-    ToolButton21: TToolButton;
-    ToolButton22: TToolButton;
-    ToolButton23: TToolButton;
     imgList: TImageList;
     alMain: TActionList;
     actControl: TAction;
@@ -324,7 +324,7 @@ end;
 
 procedure TfrmNXTTools.About1Click(Sender: TObject);
 begin
-  ShowMessage('NXT Tools, Copyright 2009, John Hansen');
+  ShowMessage('NeXT Tools' + #13#10 + 'Copyright 2009, John Hansen');
 end;
 
 procedure TfrmNXTTools.Exit1Click(Sender: TObject);
