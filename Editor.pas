@@ -241,9 +241,10 @@ implementation
 uses
 {$IFNDEF FPC}
   Windows, 
+  MainUnit,
 {$ENDIF}
   SysUtils, Dialogs,
-  MainUnit, Preferences, GotoLine, ConstructUnit, dlgSearchText,
+  Preferences, GotoLine, ConstructUnit, dlgSearchText,
   dlgReplaceText, dlgConfirmReplace, DTestPrintPreview, Translate, ClipBrd,
   CodeUnit, ExecProgram, brick_common, FakeSpirit, uCodeExplorer, uMacroForm,
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
