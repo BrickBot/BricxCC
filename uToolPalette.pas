@@ -50,14 +50,10 @@ type
     ToolButton28: TToolButton;
     ToolButton29: TToolButton;
     ToolButton3: TToolButton;
-    ToolButton30: TToolButton;
-    ToolButton31: TToolButton;
     ToolButton32: TToolButton;
     ToolButton4: TToolButton;
     ToolButton5: TToolButton;
     ToolButton6: TToolButton;
-    ToolButton19: TToolButton;
-    ToolButton20: TToolButton;
     imgList: TImageList;
     alMain: TActionList;
     actControl: TAction;
@@ -81,12 +77,12 @@ type
     dlgOpenFirmware: TOpenDialog;
     MainMenu1: TMainMenu;
     ools1: TMenuItem;
-    Help1: TMenuItem;
-    About1: TMenuItem;
     File1: TMenuItem;
-    Exit1: TMenuItem;
     Directcontrol1: TMenuItem;
     Diagnostics1: TMenuItem;
+    ToolButton7: TToolButton;
+    ToolButton8: TToolButton;
+    ToolButton9: TToolButton;
     Watchingthebrick1: TMenuItem;
     Brickpiano1: TMenuItem;
     Brickjoystick1: TMenuItem;
@@ -103,9 +99,7 @@ type
     Findbrick1: TMenuItem;
     urnbrickoff1: TMenuItem;
     Closecommunication1: TMenuItem;
-    N3: TMenuItem;
     Downloadfirmware1: TMenuItem;
-    N4: TMenuItem;
     Codeeditor1: TMenuItem;
     procedure actControlExecute(Sender: TObject);
     procedure actDiagnoseExecute(Sender: TObject);
@@ -301,9 +295,9 @@ begin
   actCloseComm.Enabled := bOpen;
   actExplorer.Enabled  := bOpen;
   actScreen.Enabled    := bOpen;
-  actFirmware.Enabled  := bOpen;
   actClear.Enabled     := bOpen;
   // no connection required
+  actFirmware.Enabled    := True;
   actMIDIConvert.Enabled := True;
   actRSOConvert.Enabled  := True;
   actCode.Enabled        := False;

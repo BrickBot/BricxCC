@@ -92,12 +92,10 @@ begin
       Free;
     end;
     if BrickComm.Open then
-    begin
-      BrickComm.Ping;
-      Application.Run;
-    end
+      BrickComm.Ping
     else
       ShowMessage(sUnableToConnect);
+    Application.Run;
     SaveRemoteValues(reg);
     SaveJoystickValues(reg);
   finally
