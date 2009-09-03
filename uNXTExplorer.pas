@@ -934,16 +934,16 @@ begin
   ShowToolbar1 := TOfficeMenuItem.Create(View1);
   Help1 := TOfficeMenuItem.Create(mnuMain);
   About1 := TOfficeMenuItem.Create(Help1);
-  AddMenuItems(mnuMain.Items, [File1, Edit2, View1, Help1]);
+  AddMenuItems(mnuMain.Items, [File1, Edit2, View1{$IFNDEF FPC}, Help1{$ENDIF}]);
   AddMenuItems(File1,
                [Refresh1, Delete1, EraseAll1, mniDefrag, N6, Upload1, Download1,
                {$IFNDEF FPC}View2, {$ENDIF}
-               N7, Execute1, Stop1, N3, Play1, Mute1, N2, Exit1]);
+               N7, Execute1, Stop1, N3, Play1, Mute1{$IFNDEF FPC}, N2, Exit1{$ENDIF}]);
   AddMenuItems(Edit2, [mniSelectAll]);
   AddMenuItems(View1, [NXTViewStyle2, {$IFNDEF FPC}PCViewStyle1, {$ENDIF}N5, ShowToolbar1]);
-  AddMenuItems(Help1, [About1]);
   AddMenuItems(NXTViewStyle2, [LargeIcons2, SmallIcons2, List2, Details2]);
 {$IFNDEF FPC}
+  AddMenuItems(Help1, [About1]);
   AddMenuItems(PCViewStyle1, [LargeIcons3, SmallIcons3, List3, Details3]);
 {$ENDIF}
   with File1 do
