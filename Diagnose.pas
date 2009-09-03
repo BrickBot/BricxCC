@@ -255,6 +255,8 @@ begin
   MakeDisplayOptionsVisible(False);
   AdjustFormSize;
   RefreshBtnClick(Self);
+  if IsNXT then
+    btnRefreshNXTClick(Self);
   if IsRCX or IsScout then
   begin
     if IRShort.Checked then
