@@ -54,6 +54,7 @@ Version 1.0.1.b36
 - Support for Array and UDT expressions in parameter passing.
 - Inline functions can now call other inline functions
 - const type arguments to inline functions can now be treated as a compile-time constant.
+- fixed a bug in the preprocessor for char type #defines (e.g., #define test 'c')
 
 
 Version 1.0.1.b35
