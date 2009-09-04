@@ -79,7 +79,7 @@ type
     pnlTopLeft: TPanel;
     pnlRight: TPanel;
     Splitter1: TSplitter;
-{$ENDIF}
+{$ENDIF}    
     procedure FormCreate(Sender: TObject);
     procedure actViewToolbarExecute(Sender: TObject);
     procedure actViewStyleExecute(Sender: TObject);
@@ -108,9 +108,8 @@ type
       State: TDragState; var Accept: Boolean);
     procedure NXTFilesDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure RefreshShellListView(Sender: TObject);
-{$ENDIF}
-  private
-{$IFDEF FPC}
+{$ELSE}
+  published
     ilToolbar: TImageList;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
@@ -124,6 +123,7 @@ type
     ToolButton8: TToolButton;
     ToolButton9: TToolButton;
 {$ENDIF}
+  private
     mnuMain: TOfficeMainMenu;
     File1: TOfficeMenuItem;
     Refresh1: TOfficeMenuItem;

@@ -28,6 +28,7 @@ uses
 {$ENDIF}
   Forms,
   Dialogs,
+  Controls,
   Registry,
 {$IFNDEF FPC}
   uHexViewer in 'uHexViewer.pas' {frmHexView},
@@ -86,15 +87,17 @@ begin
   // prompt for port.
     with TfrmPortPrompt.Create(nil) do
     try
-      ShowModal;
-      BrickComm.Port := Port;
+      if ShowModal = mrOK then
+      begin
+        BrickComm.Port := Port;
+        if BrickComm.Open then
+          BrickComm.Ping
+        else
+          ShowMessage(sUnableToConnect);
+      end;  
     finally
       Free;
     end;
-    if BrickComm.Open then
-      BrickComm.Ping
-    else
-      ShowMessage(sUnableToConnect);
     Application.Run;
     SaveRemoteValues(reg);
     SaveJoystickValues(reg);
