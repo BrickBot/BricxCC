@@ -506,7 +506,10 @@ begin
                 DoWriteIntermediateCode(NC);
                 sIn.Clear;
                 NC.NBCSource.SaveToStream(sIn);
-                OptimizationLevel := Max(OptimizationLevel, 1);
+                // this used to pass at least 1 as the optimization level
+                // but if a user says no optimizations then the compiler
+                // really should respect that and do no optimizations whatsoever
+                OptimizationLevel := Max(OptimizationLevel, 0);
                 sIn.Position := 0;
               finally
                 DoWriteMessages(NC.CompilerMessages);

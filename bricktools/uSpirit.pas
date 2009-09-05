@@ -511,9 +511,9 @@ end;
 destructor TBrickComm.Destroy;
 begin
   Close;
-  fDatalog.Free;
-  fMemMap.Free;
-  fMemData.Free;
+  FreeAndNil(fDatalog);
+  FreeAndNil(fMemMap);
+  FreeAndNil(fMemData);
   inherited Destroy;
 end;
 
