@@ -55,6 +55,7 @@ Version 1.0.1.b36
 - Inline functions can now call other inline functions
 - const type arguments to inline functions can now be treated as a compile-time constant.
 - fixed a bug in the preprocessor for char type #defines (e.g., #define test 'c')
+- fixed a optimizer bug that was removing safecall mutexes that should not be removed
 
 
 Version 1.0.1.b35

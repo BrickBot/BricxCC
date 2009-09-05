@@ -1770,6 +1770,7 @@ struct ListFilesType {
 #define MSScoutSetScoutMode(_mode) asm { __MSScoutSetScoutMode(_mode) }
 
 inline void Wait(unsigned long ms) { asm { waitv ms } }
+inline void Yield() { asm { wait 1 } }
 
 // RIC Macro wrappers
 #define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8

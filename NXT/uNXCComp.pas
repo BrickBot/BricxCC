@@ -3503,7 +3503,10 @@ begin
         bSafeCall := GlobalUsesSafeCall(procname);
         // acquire the mutex
         if not bFunctionIsInline and (SafeCalls or bSafeCall) then
+        begin
+          EmitLnNoTab('#pragma safecalling');
           EmitLn(Format('acquire __%s_mutex', [procname]));
+        end;
         rdt := FunctionReturnType(procname);
         while not bError and (Token <> TOK_CLOSEPAREN) do begin
           if acount >= protocount then

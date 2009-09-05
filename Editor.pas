@@ -1426,8 +1426,7 @@ begin
   if FileIsNBCOrNXCOrNPGOrRICScript(E) then
   begin
     commandstr := commandstr + ' -Y="' + ChangeFileExt(sFilename, '.sym') + '"';
-    if NBCOptLevel > 0 then
-      commandstr := commandstr + Format(' -Z%d', [NBCOptLevel]);
+    commandstr := commandstr + Format(' -Z%d', [NBCOptLevel]);
     if NBCMaxErrors > 0 then
       commandstr := commandstr + Format(' -ER=%d', [NBCMaxErrors]);
     if EnhancedFirmware then

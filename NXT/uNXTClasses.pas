@@ -4159,6 +4159,17 @@ begin
       // unused variables from the dataspace
       DoCompilerStatusChange(sNBCCompactData);
       Dataspace.Compact;
+    end
+    else
+    begin
+      // level zero (no optimizations)
+      DoCompilerStatusChange(sNBCRemoveLabels);
+      // also get rid of extra labels
+      Codespace.RemoveUnusedLabels;
+      // after optimizing and compacting the codespace we remove
+      // unused variables from the dataspace
+      DoCompilerStatusChange(sNBCCompactData);
+      Dataspace.Compact;
     end;
     if not WarningsOff then
       OutputUnusedItemWarnings;
@@ -4797,6 +4808,8 @@ begin
         AL := fCurrentClump.ClumpCode.Add;
         AL.AsString := line;
         AL.LineNum  := LineCounter;
+        if Pos('safecalling', line) > 0 then
+          CodeSpace.Multithread(fCurrentClump.Name);
       end;
       // is this a special #pragma macro line?
       if Pos('macro', line) = 9 then
