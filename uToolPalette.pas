@@ -35,6 +35,7 @@ type
   { TfrmNXTTools }
 
   TfrmNXTTools = class(TForm)
+    mniEditPorts: TMenuItem;
     StatusBar1: TStatusBar;
     ToolBar1: TToolBar;
     ToolBar2: TToolBar;
@@ -123,6 +124,7 @@ type
     procedure actScreenExecute(Sender: TObject);
     procedure About1Click(Sender: TObject);
     procedure Exit1Click(Sender: TObject);
+    procedure mniEditPortsClick(Sender: TObject);
   private
     { Private declarations }
     procedure DownloadFirmware;
@@ -144,7 +146,7 @@ uses
   uMIDIConversion, uWav2RSO, Watch, uNXTImage, uNXTExplorer,
   Piano, MessageUnit, JoystickUnit, Diagnose, Controller, brick_common,
   uSpirit, MemoryUnit, uPortPrompt, uLocalizedStrings, RemoteUnit,
-  Unlock;
+  Unlock, uportsedit;
 
 procedure TfrmNXTTools.FormCreate(Sender: TObject);
 begin
@@ -324,6 +326,18 @@ end;
 procedure TfrmNXTTools.Exit1Click(Sender: TObject);
 begin
   Close;
+end;
+
+procedure TfrmNXTTools.mniEditPortsClick(Sender: TObject);
+var
+  F : TfrmPortsEdit;
+begin
+  F := TfrmPortsEdit.Create(nil);
+  try
+    F.ShowModal;
+  finally
+    F.Free;
+  end;
 end;
 
 procedure TfrmNXTTools.HandleOnHint(Sender: TObject);
