@@ -385,6 +385,7 @@ object DiagForm: TDiagForm
       Height = 17
       BevelOuter = bvLowered
       TabOrder = 1
+      OnDblClick = BTAddressDblClick
     end
     object BTSignal: TPanel
       Left = 56

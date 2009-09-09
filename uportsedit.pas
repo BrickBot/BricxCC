@@ -1,17 +1,37 @@
+(*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Initial Developer of this code is John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * All Rights Reserved.
+ *
+ *)
 unit uportsedit;
 
-{$mode objfpc}{$H+}
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
 
 interface
 
 uses
-  Classes, SysUtils, FileUtil, LResources, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, ActnList, StdActns;
+{$IFNDEF FPC}
+  Windows,
+{$ELSE}
+  LResources, FileUtil,
+{$ENDIF}
+  Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
+  ComCtrls, StdCtrls, ActnList, StdActns, ImgList, ToolWin;
 
 type
-
-  { TfrmPortsEdit }
-
   TfrmPortsEdit = class(TForm)
     Save1: TAction;
     AddNXT1: TAction;
@@ -29,51 +49,74 @@ type
     ToolButton2: TToolButton;
     ToolButton3: TToolButton;
     ToolButton4: TToolButton;
-    ToolButton5: TToolButton;
-    ToolButton6: TToolButton;
     ToolButton7: TToolButton;
     ToolButton8: TToolButton;
+    ToolButton5: TToolButton;
+    StatusBar1: TStatusBar;
+    lstDisabled: TImageList;
     procedure AddNXT1Execute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure Save1Execute(Sender: TObject);
+    procedure mmoPortsChange(Sender: TObject);
+    procedure ActionList1Update(Action: TBasicAction;
+      var Handled: Boolean);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+  private
+    fChanges: boolean;
+    procedure SetChanges(const Value: boolean);
   private
     { private declarations }
+    property Changes : boolean read fChanges write SetChanges;
   public
     { public declarations }
-  end; 
+  end;
 
 implementation
 
-uses
-  brick_common, uSpirit;
+{$IFNDEF FPC}
+{$R *.dfm}
+{$ENDIF}
 
-function GetBrickResourceString(const bBluetooth : boolean) : string;
+uses
+  brick_common, uSpirit, uLocalizedStrings;
+
+const
+  STATUS : array[boolean] of string = ('', S_Modified);
+
+procedure GetBrickResourceStrings(aStrings : TStrings);
 var
   name, addr : string;
   btsig, memfree : cardinal;
 begin
   if BrickComm.NXTGetDeviceInfo(name, addr, btsig, memfree) then
   begin
-    if bBluetooth then
-    begin
-      Result := Format('BTH::%s=BTH::%s::%s::1', [name, name, addr]);
-    end
-    else
-    begin
-      addr := StringReplace(addr, ':', '', [rfReplaceAll]);
-      Result := Format('%s=USB0::0X0694::0X0002::%s::RAW', [addr, addr]);
-    end;
+    aStrings.Add(Format('BTH::%s=BTH::%s::%s::1', [name, name, addr]));
+    addr := StringReplace(addr, ':', '', [rfReplaceAll]);
+    aStrings.Add(Format('%s=USB0::0X0694::0X0002::%s::RAW', [addr, addr]));
   end;
 end;
 
 { TfrmPortsEdit }
 
 procedure TfrmPortsEdit.AddNXT1Execute(Sender: TObject);
+var
+  SL : TStringList;
+  oldContent : string;
 begin
   if BrickComm.Open then
   begin
-    mmoPorts.Lines.Add(GetBrickResourceString(False));
-    mmoPorts.Lines.Add(GetBrickResourceString(True));
+    oldContent := mmoPorts.Lines.Text;
+    SL := TStringList.Create;
+    try
+      SL.Sorted := True;
+      SL.Duplicates := dupIgnore;
+      SL.AddStrings(mmoPorts.Lines);
+      GetBrickResourceStrings(SL);
+      mmoPorts.Lines.Assign(SL);
+    finally
+      SL.Free;
+    end;
+    Changes := oldContent <> mmoPorts.Lines.Text;
   end;
 end;
 
@@ -83,14 +126,60 @@ begin
   begin
     mmoPorts.Lines.LoadFromFile(GetInitFilename);
   end;
+  Changes := False;
 end;
 
 procedure TfrmPortsEdit.Save1Execute(Sender: TObject);
+var
+  SL : TStringList;
 begin
-  mmoPorts.Lines.SaveToFile(GetInitFilename);
+  SL := TStringList.Create;
+  try
+    SL.Sorted := True;
+    SL.Duplicates := dupIgnore;
+    SL.AddStrings(mmoPorts.Lines);
+    Sl.SaveToFile(GetInitFilename);
+    mmoPorts.Lines.Assign(SL);
+  finally
+    SL.Free;
+  end;
+  Changes := False;
 end;
 
+procedure TfrmPortsEdit.mmoPortsChange(Sender: TObject);
+begin
+  Changes := True;
+end;
+
+procedure TfrmPortsEdit.SetChanges(const Value: boolean);
+begin
+  fChanges := Value;
+  StatusBar1.SimpleText := STATUS[Changes];
+end;
+
+procedure TfrmPortsEdit.ActionList1Update(Action: TBasicAction;
+  var Handled: Boolean);
+begin
+  Save1.Enabled := Changes;
+end;
+
+procedure TfrmPortsEdit.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+var
+  res : integer;
+begin
+  CanClose := True;
+  if Changes then
+  begin
+    res := MessageDlg(sSaveNXTDATChanges, mtConfirmation, [mbYes, mbNo, mbCancel], 0);
+    if res = mrYes then
+      Save1.Execute;
+    CanClose := res <> mrCancel;
+  end;
+end;
+
+{$IFDEF FPC}
 initialization
   {$I uportsedit.lrs}
+{$ENDIF}
 
 end.
