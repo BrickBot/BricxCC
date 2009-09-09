@@ -633,6 +633,10 @@ resourcestring
                  'NXC Files (*.nxc)|*.nxc|' +
                  'NXT Melody Files (*.rmd)|*.rmd|';
 
+// uportsedit.pas
+resourcestring
+  sSaveNXTDatChanges = 'Save changes to nxt.dat file?';
+  
 implementation
 
 end.
