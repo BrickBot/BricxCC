@@ -21,11 +21,10 @@ const
   EventSeparator = '--------------------------------';
   {Class name messages}
   UnknownClassNameMsg = 'Unknown';
-  {Stack trace Message}
-  CurrentStackTraceMsg = #13#10#13#10'The current stack trace leading to this error (return addresses): ';
   {Memory dump message}
   MemoryDumpMsg = #13#10#13#10'Current memory dump of 256 bytes starting at pointer address ';
   {Block Error Messages}
+  BlockScanLogHeader = 'Allocated block logged by LogAllocatedBlocksToFile. The size is: ';
   ErrorMsgHeader = 'FastMM has detected an error during a ';
   GetMemMsg = 'GetMem';
   FreeMemMsg = 'FreeMem';
@@ -35,25 +34,18 @@ const
   BlockHeaderCorruptedMsg = 'The block header has been corrupted. ';
   BlockFooterCorruptedMsg = 'The block footer has been corrupted. ';
   FreeModifiedErrorMsg = 'FastMM detected that a block has been modified after being freed. ';
+  FreeModifiedDetailMsg = #13#10#13#10'Modified byte offsets (and lengths): ';
   DoubleFreeErrorMsg = 'An attempt has been made to free/reallocate an unallocated block.';
+  WrongMMFreeErrorMsg = 'An attempt has been made to free/reallocate a block that was allocated through a different FastMM instance. Check your memory manager sharing settings.';
   PreviousBlockSizeMsg = #13#10#13#10'The previous block size was: ';
   CurrentBlockSizeMsg = #13#10#13#10'The block size is: ';
-  StackTraceAtPrevAllocMsg = #13#10#13#10'Stack trace of when this block was previously allocated (return addresses):';
-  StackTraceAtAllocMsg = #13#10#13#10'Stack trace of when this block was allocated (return addresses):';
   PreviousObjectClassMsg = #13#10#13#10'The block was previously used for an object of class: ';
   CurrentObjectClassMsg = #13#10#13#10'The block is currently used for an object of class: ';
-  StackTraceAtFreeMsg = #13#10#13#10'Stack trace of when the block was previously freed (return addresses):';
+  PreviousAllocationGroupMsg = #13#10#13#10'The allocation group was: ';
+  PreviousAllocationNumberMsg = #13#10#13#10'The allocation number was: ';
+  CurrentAllocationGroupMsg = #13#10#13#10'The allocation group is: ';
+  CurrentAllocationNumberMsg = #13#10#13#10'The allocation number is: ';
   BlockErrorMsgTitle = 'Memory Error Detected';
-  {Virtual Method Called On Freed Object Errors}
-  StandardVirtualMethodNames: array[1 + vmtParent div 4 .. -1] of PChar = (
-    'SafeCallException',
-    'AfterConstruction',
-    'BeforeDestruction',
-    'Dispatch',
-    'DefaultHandler',
-    'NewInstance',
-    'FreeInstance',
-    'Destroy');
   VirtualMethodErrorHeader = 'FastMM has detected an attempt to call a virtual method on a freed object. An access violation will now be raised in order to abort the current operation.';
   InterfaceErrorHeader = 'FastMM has detected an attempt to use an interface of a freed object. An access violation will now be raised in order to abort the current operation.';
   BlockHeaderCorruptedNoHistoryMsg = ' Unfortunately the block header has been corrupted so no history is available.';
@@ -61,8 +53,15 @@ const
   VirtualMethodName = #13#10#13#10'Virtual method: ';
   VirtualMethodOffset = 'Offset +';
   VirtualMethodAddress = #13#10#13#10'Virtual method address: ';
-  StackTraceAtObjectAllocMsg = #13#10#13#10'Stack trace of when the object was allocated (return addresses):';
-  StackTraceAtObjectFreeMsg = #13#10#13#10'Stack trace of when the object was subsequently freed (return addresses):';
+  {Stack trace messages}
+  CurrentThreadIDMsg = #13#10#13#10'The current thread ID is 0x';
+  CurrentStackTraceMsg = ', and the stack trace (return addresses) leading to this error is:';
+  ThreadIDPrevAllocMsg = #13#10#13#10'This block was previously allocated by thread 0x';
+  ThreadIDAtAllocMsg = #13#10#13#10'This block was allocated by thread 0x';
+  ThreadIDAtFreeMsg = #13#10#13#10'The block was previously freed by thread 0x';
+  ThreadIDAtObjectAllocMsg = #13#10#13#10'The object was allocated by thread 0x';
+  ThreadIDAtObjectFreeMsg = #13#10#13#10'The object was subsequently freed by thread 0x';
+  StackTraceMsg = ', and the stack trace (return addresses) at the time was:';
   {Installation Messages}
   AlreadyInstalledMsg = 'FastMM4 is already installed.';
   AlreadyInstalledTitle = 'Already installed.';
@@ -94,7 +93,8 @@ const
 {$endif}
     + ': ';
   BytesMessage = ' bytes: ';
-  StringBlockMessage = 'String';
+  AnsiStringBlockMessage = 'AnsiString';
+  UnicodeStringBlockMessage = 'UnicodeString';
   LeakMessageFooter = #13#10
 {$ifndef HideMemoryLeakHintMessage}
     + #13#10'Note: '
@@ -125,7 +125,7 @@ const
   InvalidGetMemMsg = 'FastMM has detected a GetMem call after FastMM was uninstalled.';
   InvalidFreeMemMsg = 'FastMM has detected a FreeMem call after FastMM was uninstalled.';
   InvalidReallocMemMsg = 'FastMM has detected a ReallocMem call after FastMM was uninstalled.';
-  InvalidAllocMemMsg = 'FastMM has detected a ReallocMem call after FastMM was uninstalled.';
+  InvalidAllocMemMsg = 'FastMM has detected an AllocMem call after FastMM was uninstalled.';
 {$endif}
 
 implementation
