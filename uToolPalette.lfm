@@ -9505,6 +9505,10 @@ object frmNXTTools: TfrmNXTTools
     top = 192
     object File1: TMenuItem
       Caption = 'File'
+      object mniEditPorts: TMenuItem
+        Caption = 'Edit Ports'
+        OnClick = mniEditPortsClick
+      end
       object Codeeditor1: TMenuItem
         Action = actCode
         OnClick = actCodeExecute

@@ -38,6 +38,7 @@ uses
   uJoyGlobals in 'uJoyGlobals.pas',
   uRemoteGlobals in 'uRemoteGlobals.pas',
   uLocalizedStrings in 'uLocalizedStrings.pas',
+  uportsedit in 'uportsedit.pas' {frmPortsEdit},
   uPortPrompt in 'uPortPrompt.pas' {frmPortPrompt},
   uToolPalette in 'uToolPalette.pas' {frmNXTTools},
   Controller in 'Controller.pas' {DirectForm},
