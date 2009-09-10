@@ -225,11 +225,11 @@ type
 {$ELSE}
     dlgDirectory : TSelectDirectoryDialog;
     dlgOpen : TOpenDialog;
+    fLastLocalPath : string;
 {$ENDIF}
   private
     { Private declarations }
     fMasks : TStringList;
-    fLastLocalPath : string;
     procedure PopulateMaskList;
     procedure cboMaskChange(Sender: TObject);
 {$IFNDEF FPC}
@@ -381,13 +381,13 @@ begin
   if Sender is TComponent then
   begin
     case TComponent(Sender).Tag of
-      1: NXTFiles.ViewStyle := vsIcon;
-      2: NXTFiles.ViewStyle := vsSmallIcon;
-      3: NXTFiles.ViewStyle := vsList;
-    else NXTFiles.ViewStyle := vsReport;
+      1: NXTFilesViewStyle := vsIcon;
+      2: NXTFilesViewStyle := vsSmallIcon;
+      3: NXTFilesViewStyle := vsList;
+    else NXTFilesViewStyle := vsReport;
     end;
   end;
-  NXTFilesViewStyle := NXTFiles.ViewStyle;
+  NXTFiles.ViewStyle := {$IFDEF FPC}vsReport{$ELSE}NXTFilesViewStyle{$ENDIF};
 end;
 
 procedure TfrmNXTExplorer.actPCViewStyleExecute(Sender: TObject);
@@ -457,6 +457,8 @@ begin
   finally
     treShell.OnChange := treShellChange;
   end;
+{$ELSE}
+  NXTFiles.ViewStyle := vsReport;
 {$ENDIF}
   ConfigureForm;
   RefreshNXTFiles;
@@ -700,9 +702,11 @@ var
   c : Cardinal;
   bl : integer;
 begin
-  if (MessageDlg(sConfirmDefrag, mtConfirmation, [mbYes, mbNo], 0) = mrYes) then
+  if MessageDlg(sConfirmDefrag, mtConfirmation, [mbYes, mbNo], 0) = mrYes then
   begin
+{$IFNDEF FPC}
     Screen.Cursor := crHourGlass;
+{$ENDIF}
     try
       // check battery level and do not proceed if it is low
       bl := BrickComm.BatteryLevel;
@@ -721,7 +725,9 @@ begin
       else
         MessageDlg(sLowBattery, mtError, [mbOK], 0);
     finally
+{$IFNDEF FPC}
       Screen.Cursor := crDefault;
+{$ENDIF}
     end;
   end;
 end;
@@ -777,14 +783,14 @@ end;
 
 procedure TfrmNXTExplorer.ConfigureForm;
 begin
-  NXTFiles.ViewStyle := NXTFilesViewStyle;
+  NXTFiles.ViewStyle := {$IFDEF FPC}vsReport{$ELSE}NXTFilesViewStyle{$ENDIF};
 {$IFNDEF FPC}
   lstFiles.ViewStyle := PCFilesViewStyle;
   cboMask.ItemIndex  := NXTExplorerMaskIndex;
   if DirectoryExists(NXTExplorerPath) then
   begin
     try
-      treShell.Path    := NXTExplorerPath;
+      treShell.Path := NXTExplorerPath;
     except
       // eat any exceptions which might occur here.
     end;
@@ -869,9 +875,6 @@ end;
 
 {$IFNDEF FPC}
 procedure TfrmNXTExplorer.RefreshLocalFileList;
-var
-  i : integer;
-  LI : TListItem;
 begin
   lstFiles.Refresh;
 end;

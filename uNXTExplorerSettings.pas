@@ -22,8 +22,8 @@ uses
   ComCtrls;
 
 var
-  NXTFilesViewStyle : TViewStyle = vsIcon;
-  PCFilesViewStyle : TViewStyle = vsIcon;
+  NXTFilesViewStyle : TViewStyle = vsReport;
+  PCFilesViewStyle : TViewStyle = vsReport;
   NXTExplorerMaskIndex : integer = 0;
   NXTExplorerPath : string = 'c:\';
 
