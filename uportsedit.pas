@@ -32,6 +32,9 @@ uses
   ComCtrls, StdCtrls, ActnList, StdActns, ImgList, ToolWin;
 
 type
+
+  { TfrmPortsEdit }
+
   TfrmPortsEdit = class(TForm)
     Save1: TAction;
     AddNXT1: TAction;
@@ -56,6 +59,7 @@ type
     lstDisabled: TImageList;
     procedure AddNXT1Execute(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
     procedure Save1Execute(Sender: TObject);
     procedure mmoPortsChange(Sender: TObject);
     procedure ActionList1Update(Action: TBasicAction;
@@ -126,6 +130,11 @@ begin
   begin
     mmoPorts.Lines.LoadFromFile(GetInitFilename);
   end;
+  Changes := False;
+end;
+
+procedure TfrmPortsEdit.FormShow(Sender: TObject);
+begin
   Changes := False;
 end;
 

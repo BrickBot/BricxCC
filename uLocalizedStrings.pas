@@ -348,7 +348,12 @@ resourcestring
 // uNXTExplorer unit
 resourcestring
   sConfirmDel     = 'Delete all the selected files?';
-  sConfirmDefrag  = 'Defragment the NXT filesystem?';
+  sConfirmDefrag  = 'Defragment the NXT filesystem.'#13#10#13#10 +
+    'This operation attempts to a) upload all files from the NXT'#13#10 +
+    'to your computer, b) erase the NXT flash memory, and c) download'#13#10 +
+    'all the files back to the NXT. It is possible that the defragment'#13#10 +
+    'operation may not complete successfully and files may be lost.'#13#10 +
+    'Do you want to go ahead with the defragmentation operation?';
   sConfirmErase   = 'Erase all files on the NXT?';
   sLowBattery     = 'Battery level is too low to complete this operation';
   sDefragError    = 'Defragmentation failed!';

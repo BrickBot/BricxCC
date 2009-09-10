@@ -3,10 +3,13 @@ object frmPortsEdit: TfrmPortsEdit
   Height = 299
   Top = 258
   Width = 423
+  BorderStyle = bsDialog
   Caption = 'Ports Editor'
   ClientHeight = 299
   ClientWidth = 423
+  OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
+  OnShow = FormShow
   LCLVersion = '0.9.27'
   object barMain: TToolBar
     Left = 0
@@ -20,56 +23,67 @@ object frmPortsEdit: TfrmPortsEdit
     ParentShowHint = False
     ShowHint = True
     TabOrder = 0
-    object ToolButton1: TToolButton
-      Left = 1
-      Top = 2
-      Action = EditCut1
-    end
-    object ToolButton2: TToolButton
-      Left = 41
-      Top = 2
-      Action = EditCopy1
-    end
-    object ToolButton3: TToolButton
-      Left = 81
-      Top = 2
-      Action = EditPaste1
-    end
-    object ToolButton4: TToolButton
-      Left = 121
-      Top = 2
-      Action = EditDelete1
-    end
-    object ToolButton5: TToolButton
-      Left = 161
-      Top = 2
-      Action = EditSelectAll1
-    end
-    object ToolButton6: TToolButton
-      Left = 201
-      Top = 2
-      Action = EditUndo1
-    end
     object ToolButton7: TToolButton
-      Left = 241
+      Left = 1
       Top = 2
       Action = AddNXT1
     end
     object ToolButton8: TToolButton
-      Left = 281
+      Left = 41
       Top = 2
       Action = Save1
+    end
+    object ToolButton5: TToolButton
+      Left = 81
+      Top = 2
+      Width = 8
+      Caption = 'ToolButton5'
+      ImageIndex = 4
+      Style = tbsSeparator
+      Visible = False
+    end
+    object ToolButton1: TToolButton
+      Left = 89
+      Top = 2
+      Action = EditCut1
+      Visible = False
+    end
+    object ToolButton2: TToolButton
+      Left = 129
+      Top = 2
+      Action = EditCopy1
+      Visible = False
+    end
+    object ToolButton3: TToolButton
+      Left = 169
+      Top = 2
+      Action = EditPaste1
+      Visible = False
+    end
+    object ToolButton4: TToolButton
+      Left = 209
+      Top = 2
+      Action = EditDelete1
+      Visible = False
     end
   end
   object mmoPorts: TMemo
     Left = 0
-    Height = 257
+    Height = 237
     Top = 42
     Width = 423
     Align = alClient
-    ScrollBars = ssAutoBoth
+    OnChange = mmoPortsChange
+    ScrollBars = ssBoth
     TabOrder = 1
     WordWrap = False
+  end
+  object StatusBar1: TStatusBar
+    Left = 0
+    Height = 20
+    Top = 279
+    Width = 423
+    Panels = <>
   end
   object lstImages: TImageList
     Height = 32
@@ -1108,6 +1122,7 @@ object frmPortsEdit: TfrmPortsEdit
     Images = lstImages
     left = 376
     top = 8
+    OnUpdate = ActionList1Update
     object EditCut1: TEditCut
       Category = 'Edit'
       Caption = 'Cu&t'
