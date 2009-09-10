@@ -131,6 +131,9 @@ type
     procedure HandleOnHint(Sender: TObject);
   public
     { Public declarations }
+{$IFDEF LCLCarbon}
+    mnuApple: TMenuItem;
+{$ENDIF}
   end;
 
 var
@@ -151,6 +154,11 @@ uses
 procedure TfrmNXTTools.FormCreate(Sender: TObject);
 begin
   Application.OnHint := HandleOnHint;
+{$IFDEF LCLCarbon}
+//  CreateMainMenuItem(mnuApple,'AppleApplication','ï£¿');
+//  CreateMenuItem(mnuApple, itmHelpAboutLazarus,'itmHelpAboutLazarus',
+//                 lisAboutLazarus, 'menu_information');
+{$ENDIF}
 end;
 
 procedure TfrmNXTTools.actControlExecute(Sender: TObject);
