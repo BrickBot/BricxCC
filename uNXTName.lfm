@@ -38,7 +38,7 @@ object frmNXTName: TfrmNXTName
   end
   object edtNXTName: TEdit
     Left = 85
-    Top = 6
+    Top = 10
     Width = 89
     Height = 13
     Font.Height = -12

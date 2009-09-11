@@ -302,7 +302,7 @@ object frmNXTTools: TfrmNXTTools
         OnClick = Exit1Click
       end
     end
-    object ools1: TMenuItem
+    object Tools1: TMenuItem
       Caption = 'Tools'
       object Directcontrol1: TMenuItem
         Action = actControl
@@ -363,13 +363,6 @@ object frmNXTTools: TfrmNXTTools
       end
       object Downloadfirmware1: TMenuItem
         Action = actFirmware
-      end
-    end
-    object Help1: TMenuItem
-      Caption = 'Help'
-      object About1: TMenuItem
-        Caption = '&About NeXT Tools...'
-        OnClick = About1Click
       end
     end
   end
