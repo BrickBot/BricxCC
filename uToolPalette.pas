@@ -77,7 +77,7 @@ type
     actClear: TAction;
     dlgOpenFirmware: TOpenDialog;
     MainMenu1: TMainMenu;
-    ools1: TMenuItem;
+    Tools1: TMenuItem;
     File1: TMenuItem;
     Directcontrol1: TMenuItem;
     Diagnostics1: TMenuItem;
@@ -133,6 +133,7 @@ type
     { Public declarations }
 {$IFDEF LCLCarbon}
     mnuApple: TMenuItem;
+    mniAbout: TMenuItem;
 {$ENDIF}
   end;
 
@@ -149,15 +150,28 @@ uses
   uMIDIConversion, uWav2RSO, Watch, uNXTImage, uNXTExplorer,
   Piano, MessageUnit, JoystickUnit, Diagnose, Controller, brick_common,
   uSpirit, MemoryUnit, uPortPrompt, uLocalizedStrings, RemoteUnit,
-  Unlock, uportsedit;
+  Unlock, uportsedit, uGuiUtils;
 
 procedure TfrmNXTTools.FormCreate(Sender: TObject);
 begin
   Application.OnHint := HandleOnHint;
 {$IFDEF LCLCarbon}
-//  CreateMainMenuItem(mnuApple,'AppleApplication','ï£¿');
-//  CreateMenuItem(mnuApple, itmHelpAboutLazarus,'itmHelpAboutLazarus',
-//                 lisAboutLazarus, 'menu_information');
+//  MainMenu1.Items.Clear;
+  mnuApple := TMenuItem.Create(MainMenu1);
+  mniAbout := TMenuItem.Create(mnuApple);
+  MainMenu1.Items.Insert(0, mnuApple);
+  mnuApple.Add(mniAbout);
+  with mnuApple do
+  begin
+    Name := 'mnuApple';
+    Caption := '';
+  end;
+  with mniAbout do
+  begin
+    Name := 'mnuAbout';
+    Caption := 'About NeXT Tools';
+    OnClick := About1Click;
+  end;
 {$ENDIF}
 end;
 

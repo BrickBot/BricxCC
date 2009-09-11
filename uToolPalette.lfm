@@ -9514,7 +9514,7 @@ object frmNXTTools: TfrmNXTTools
         OnClick = actCodeExecute
       end
     end
-    object ools1: TMenuItem
+    object Tools1: TMenuItem
       Caption = 'Tools'
       object Directcontrol1: TMenuItem
         Action = actControl
