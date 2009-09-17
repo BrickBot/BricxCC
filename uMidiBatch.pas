@@ -260,9 +260,6 @@ end;
 
 procedure TfrmMidiBatch.FormCreate(Sender: TObject);
 begin
-  AdjustGroupBox(grpParameters);
-  AdjustGroupBox(grpTempo);
-  AdjustGroupBox(grpTracks);
   CreatePopupMenu;
   lstDirs.PopupMenu := pumDirs;
   UpdateButtonState;

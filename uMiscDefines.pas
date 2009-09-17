@@ -19,7 +19,8 @@ unit uMiscDefines;
 interface
 
 uses
-  Classes, uParseCommon, Editor, uNXTConstants;
+  Classes, Forms, uParseCommon, SynEditHighlighter, uNXTConstants,
+  BricxCCSynEdit;
 
 type
   TFirmwareType = (ftStandard, ftBrickOS, ftPBForth, ftLeJOS, ftOther);
@@ -36,275 +37,287 @@ var
   LocalUseBluetooth : Boolean;
   LocalFirmwareType : TFirmwareType;
 
-function Min(const v1, v2: Integer): Integer;
-function Max(const v1, v2: Integer): Integer;
-function ExploredLanguageType : TExploredLanguage;
+function GetActiveEditor : TBricxCCSynEdit;
+function GetActiveEditorHighlighter : TSynCustomHighlighter;
+function GetActiveEditorFilename : string;
+function GetUsingMDI : boolean;
+
 function FileCanBeCompiled: Boolean;
 function FileCanBeProcessed: Boolean;
-function FileIsCPPOrPascalOrJava(AEF : TEditorForm = nil): Boolean;
-function FileIsMindScriptOrLASM(AEF : TEditorForm = nil): Boolean;
-function FileIsNBCOrNXCOrNPGOrRICScript(AEF : TEditorForm = nil): Boolean;
-function FileIsNBCOrNXC(AEF : TEditorForm = nil): Boolean;
-function FileIsPascal(AEF : TEditorForm = nil): Boolean;
-function FileIsCPP(AEF : TEditorForm = nil): Boolean;
-function FileIsLASM(AEF : TEditorForm = nil): Boolean;
-function FileIsNBC(AEF : TEditorForm = nil): Boolean;
-function FileIsNXC(AEF : TEditorForm = nil): Boolean;
-function FileIsNPG(AEF : TEditorForm = nil): Boolean;
-function FileIsRICScript(AEF : TEditorForm = nil): Boolean;
-function FileIsMindScript(AEF : TEditorForm = nil): Boolean;
-function FileIsNQC(AEF : TEditorForm = nil): Boolean;
-function FileIsJava(AEF : TEditorForm = nil): Boolean;
-function FileIsForth(AEF : TEditorForm = nil): Boolean;
-function FileIsROPS(AEF : TEditorForm = nil): Boolean;
+function FileIsCPPOrPascalOrJava(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsMindScriptOrLASM(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsNBCOrNXCOrNPGOrRICScript(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsNBCOrNXC(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsPascal(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsCPP(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsLASM(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsNBC(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsNXC(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsNPG(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsRICScript(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsMindScript(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsNQC(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsJava(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsForth(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsROPS(AEH : TSynCustomHighlighter = nil): Boolean;
 
 implementation
 
 uses
-  MainUnit, SysUtils;
+{$IFNDEF FPC}
+  MainUnit, Editor,
+  SynHighlighterPas, SynHighlighterCpp, SynHighlighterLASM,
+  SynHighlighterForth, SynHighlighterJava, SynHighlighterMindScript,
+{$ENDIF}
+  SysUtils,
+  SynHighlighterNBC, SynHighlighterNQC, SynHighlighterNPG, SynHighlighterRS,
+  SynHighlighterROPS;
 
-function Min(const v1, v2: Integer): Integer;
-begin
-  if v1 < v2 then
-    Result := v1
-  else
-    Result := v2;
-end;
-
-function Max(const v1, v2: Integer): Integer;
-begin
-  if v1 > v2 then
-    Result := v1
-  else
-    Result := v2;
-end;
-
-function ExploredLanguageType : TExploredLanguage;
+{$IFNDEF FPC}
+function GetActiveEditor : TBricxCCSynEdit;
 var
   AEF : TEditorForm;
 begin
-  result := elNQC;
-  AEF := nil;
+  Result := nil;
   if Assigned(MainForm) then
+  begin
     AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  if FileIsCPP(AEF) then
-    result := elCpp
-  else if FileIsPascal(AEF) then
-    result := elPas
-  else if FileIsROPS(AEF) then
-    result := elPas
-  else if FileIsJava(AEF) then
-    result := elJava
-  else if FileIsForth(AEF) then
-    result := elForth
-  else if FileIsLASM(AEF) then
-    result := elLASM
-  else if FileIsNBC(AEF) then
-    result := elNBC
-  else if FileIsNXC(AEF) then
-    result := elNXC
-  else if FileIsMindScript(AEF) then
-    result := elMindScript;
+    if Assigned(AEF) then
+      Result := AEF.TheEditor;
+  end;
 end;
+
+function GetActiveEditorHighlighter : TSynCustomHighlighter;
+var
+  AEF : TEditorForm;
+begin
+  Result := nil;
+  if Assigned(MainForm) then
+  begin
+    AEF := MainForm.ActiveEditorForm;
+    if Assigned(AEF) then
+      Result := AEF.Highlighter;
+  end;
+end;
+
+function GetActiveEditorFilename : string;
+var
+  AEF : TEditorForm;
+begin
+  Result := '';
+  if Assigned(MainForm) then
+  begin
+    AEF := MainForm.ActiveEditorForm;
+    if Assigned(AEF) then
+      Result := AEF.Filename;
+  end;
+end;
+
+function GetUsingMDI : boolean;
+begin
+  Result := MainForm.MDI;
+end;
+
+{$ELSE}
+function GetActiveEditor : TBricxCCSynEdit;
+begin
+  Result := nil;
+end;
+
+function GetActiveEditorHighlighter : TSynCustomHighlighter;
+begin
+  Result := nil;
+end;
+
+function GetActiveEditorFilename : string;
+begin
+  Result := '';
+end;
+
+function GetUsingMDI : boolean;
+begin
+  Result := False;
+end;
+
+{$ENDIF}
 
 function FileCanBeCompiled: Boolean;
 var
-  AEF : TEditorForm;
+  AEH : TSynCustomHighlighter;
 begin
-  Result := False;
-  AEF := nil;
-  if Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := FileIsNQC(AEF) or
-            FileIsMindScript(AEF) or
-            FileIsLASM(AEF) or
-            FileIsNBC(AEF) or
-            FileIsNXC(AEF) or
-            FileIsNPG(AEF) or
-            FileIsRICScript(AEF) or
-            FileIsCPP(AEF) or
-            FileIsPascal(AEF) or
-            FileIsROPS(AEF) or
-            FileIsJava(AEF);
+  AEH := GetActiveEditorHighlighter;
+  Result := FileIsNQC(AEH) or
+            FileIsMindScript(AEH) or
+            FileIsLASM(AEH) or
+            FileIsNBC(AEH) or
+            FileIsNXC(AEH) or
+            FileIsNPG(AEH) or
+            FileIsRICScript(AEH) or
+            FileIsCPP(AEH) or
+            FileIsPascal(AEH) or
+            FileIsROPS(AEH) or
+            FileIsJava(AEH);
 end;
 
 function FileCanBeProcessed: Boolean;
 var
-  AEF : TEditorForm;
+  AEH : TSynCustomHighlighter;
 begin
-  Result := False;
-  AEF := nil;
-  if Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := FileIsNQC(AEF) or
-            FileIsMindScript(AEF) or
-            FileIsNBC(AEF) or
-            FileIsNXC(AEF) or
-            FileIsLASM(AEF) or
-            FileIsCPP(AEF) or
-            FileIsJava(AEF) or
-            FileIsForth(AEF) or
-            FileIsROPS(AEF) or
-            FileIsPascal(AEF);
+  AEH := GetActiveEditorHighlighter;
+  Result := FileIsNQC(AEH) or
+            FileIsMindScript(AEH) or
+            FileIsNBC(AEH) or
+            FileIsNXC(AEH) or
+            FileIsLASM(AEH) or
+            FileIsCPP(AEH) or
+            FileIsJava(AEH) or
+            FileIsForth(AEH) or
+            FileIsROPS(AEH) or
+            FileIsPascal(AEH);
 end;
 
-function FileIsCPPOrPascalOrJava(AEF : TEditorForm): Boolean;
+function FileIsCPPOrPascalOrJava(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := FileIsCPP(AEF) or FileIsPascal(AEF) or FileIsJava(AEF);
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := FileIsCPP(AEH) or FileIsPascal(AEH) or FileIsJava(AEH);
 end;
 
-function FileIsMindScriptOrLASM(AEF : TEditorForm): Boolean;
+function FileIsMindScriptOrLASM(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := FileIsMindScript(AEF) or FileIsLASM(AEF);
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := FileIsMindScript(AEH) or FileIsLASM(AEH);
 end;
 
-function FileIsNBCOrNXCOrNPGOrRICScript(AEF : TEditorForm): Boolean;
+function FileIsNBCOrNXCOrNPGOrRICScript(AEH : TSynCustomHighlighter): Boolean;
 begin
-  Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := FileIsNBC(AEF) or FileIsNXC(AEF) or FileIsNPG(AEF) or FileIsRICScript(AEF);
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  Result := FileIsNBC(AEH) or FileIsNXC(AEH) or FileIsNPG(AEH) or FileIsRICScript(AEH);
 end;
 
-function FileIsNBCOrNXC(AEF : TEditorForm): Boolean;
+function FileIsNBCOrNXC(AEH : TSynCustomHighlighter): Boolean;
 begin
-  Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := FileIsNBC(AEF) or FileIsNXC(AEF);
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  Result := FileIsNBC(AEH) or FileIsNXC(AEH);
 end;
 
-function FileIsPascal(AEF : TEditorForm): Boolean;
+function FileIsPascal(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := AEF.Highlighter = MainForm.SynPasSyn;
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := AEH is TSynPasSyn;
 end;
 
-function FileIsCPP(AEF : TEditorForm): Boolean;
+function FileIsCPP(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := AEF.Highlighter = MainForm.SynCppSyn;
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := AEH is TSynCppSyn;
 end;
 
-function FileIsLASM(AEF : TEditorForm): Boolean;
+function FileIsLASM(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := AEF.Highlighter = MainForm.SynLASMSyn;
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := AEH is TSynLASMSyn;
 end;
 
-function FileIsNBC(AEF : TEditorForm): Boolean;
+function FileIsNBC(AEH : TSynCustomHighlighter): Boolean;
 begin
-  Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  if AEF.Highlighter <> nil then
-    Result := AEF.Highlighter = MainForm.SynNBCSyn
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if AEH <> nil then
+    Result := AEH is TSynNBCSyn
   else
-    Result := LowerCase(ExtractFileExt(AEF.Filename)) = '.nbc';
+    Result := LowerCase(ExtractFileExt(GetActiveEditorFilename)) = '.nbc';
 end;
 
-function FileIsNXC(AEF : TEditorForm = nil): Boolean;
+function FileIsNXC(AEH : TSynCustomHighlighter = nil): Boolean;
 begin
-  Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  if AEF.Highlighter <> nil then
-    Result := AEF.Highlighter = MainForm.SynNXCSyn
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if AEH <> nil then
+    Result := AEH is TSynNXCSyn
   else
-    Result := LowerCase(ExtractFileExt(AEF.Filename)) = '.nxc';
+    Result := LowerCase(ExtractFileExt(GetActiveEditorFilename)) = '.nxc';
 end;
 
-function FileIsNPG(AEF : TEditorForm = nil): Boolean;
+function FileIsNPG(AEH : TSynCustomHighlighter = nil): Boolean;
 begin
-  Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  if AEF.Highlighter <> nil then
-    Result := AEF.Highlighter = MainForm.SynNPGSyn
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if AEH <> nil then
+    Result := AEH is TSynNPGSyn
   else
-    Result := LowerCase(ExtractFileExt(AEF.Filename)) = '.npg';
+    Result := LowerCase(ExtractFileExt(GetActiveEditorFilename)) = '.npg';
 end;
 
-function FileIsRICScript(AEF : TEditorForm = nil): Boolean;
+function FileIsRICScript(AEH : TSynCustomHighlighter = nil): Boolean;
 begin
-  Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  if AEF.Highlighter <> nil then
-    Result := AEF.Highlighter = MainForm.SynRSSyn
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if AEH <> nil then
+    Result := AEH is TSynRSSyn
   else
-    Result := LowerCase(ExtractFileExt(AEF.Filename)) = '.rs';
+    Result := LowerCase(ExtractFileExt(GetActiveEditorFilename)) = '.rs';
 end;
 
-function FileIsMindScript(AEF : TEditorForm): Boolean;
+function FileIsMindScript(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := AEF.Highlighter = MainForm.SynMindScriptSyn;
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := AEH is TSynMindScriptSyn;
 end;
 
-function FileIsNQC(AEF : TEditorForm): Boolean;
+function FileIsNQC(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := AEF.Highlighter = MainForm.SynNQCSyn;
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := AEH is TSynNQCSyn;
 end;
 
-function FileIsJava(AEF : TEditorForm): Boolean;
+function FileIsJava(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := AEF.Highlighter = MainForm.SynJavaSyn;
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := AEH is TSynJavaSyn;
 end;
 
-function FileIsForth(AEF : TEditorForm): Boolean;
+function FileIsForth(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := AEF.Highlighter = MainForm.SynForthSyn;
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := AEH is TSynForthSyn;
 end;
 
-function FileIsROPS(AEF : TEditorForm): Boolean;
+function FileIsROPS(AEH : TSynCustomHighlighter): Boolean;
 begin
   Result := False;
-  if not Assigned(AEF) and Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  if not Assigned(AEF) then Exit;
-  Result := AEF.Highlighter = MainForm.SynROPSSyn;
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if not Assigned(AEH) then Exit;
+  Result := AEH is TSynROPSSyn;
 end;
 
 end.

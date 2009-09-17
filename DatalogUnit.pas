@@ -70,7 +70,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, brick_common, {$IFNDEF FPC}DataAnalysis, {$ENDIF}Preferences;
+  SysUtils, brick_common{$IFNDEF FPC}, DataAnalysis{$ENDIF};
 
 procedure TDatalogForm.UploadBtnClick(Sender: TObject);
 var

@@ -44,29 +44,6 @@ uses
   SynHighlighterROPS;
 
 type
-  TTransferItem = class
-  private
-  protected
-    FWorkingDir: string;
-    FTitle: string;
-    FParams: string;
-    FPath: string;
-    fWait: boolean;
-    fClose: boolean;
-    fExtension: string;
-    fRestrict : boolean;
-  public
-    procedure Assign(TI : TTransferItem);
-    property Title : string read FTitle write FTitle;
-    property Path : string read FPath write FPath;
-    property WorkingDir : string read FWorkingDir write FWorkingDir;
-    property Params : string read FParams write FParams;
-    property Wait : boolean read fWait write fWait;
-    property Close : boolean read fClose write fClose;
-    property Extension : string read fExtension write fExtension;
-    property Restrict : boolean read fRestrict write fRestrict;
-  end;
-
   TActiveHighlighterReason = (ahColors, ahTemplates);
 
   { TPrefForm }
@@ -547,38 +524,7 @@ type
 
 var
   PrefForm: TPrefForm;
-  ProgramDir : string;
-  CodeExplorerSettings : TCodeExplorerProperties;
-  ProcedureListSettings : TProcedureListProperties;
   AddMenuItemsToNewMenu : boolean = True;
-
-{Macros}
-const
-  MAXMACRO = 200;
-var
-  macros:array[1..MAXMACRO] of string;
-  macronumb:integer;
-  MacrosChanged:boolean;
-
-{Templates}
-const
-  NUM_LANGS = 15;
-  LANG_CS = 0;
-  LANG_CPP = 1;
-  LANG_PAS = 2;
-
-type
-  TemplateArray = array[0..NUM_LANGS-1] of array of string;
-  TemplateCount = array[0..NUM_LANGS-1] of integer;
-
-var
-  templates : TemplateArray;
-  templatenumb : TemplateCount;
-  ShowTemplateForm:boolean;
-  ShowTemplatePopup:boolean;
-  TemplatesChanged:boolean;
-  TemplatesUseDblClick : Boolean;
-  TemplateLanguageName : string = 'NQC';
 
 {Recent Files}
 procedure ShowRecentFiles(parent : TOfficeMenuItem; handler : TNotifyEvent);
@@ -595,9 +541,7 @@ const
 
 var
   MainWindowState : integer; // main form window state (normal, minimized, maximized)
-  LocalCompilerTimeout : integer;
   RunningAsCOMServer : Boolean = False;
-  CompilerDebug : boolean;
   FBAlwaysPrompt : Boolean;
   StandardFirmwareDefault : Boolean;
   UseBluetoothDefault : Boolean;
@@ -617,73 +561,9 @@ var
   Prog7Locked : boolean;
   Prog8Locked : boolean;
   LockedProgArray : array[0..7] of Boolean;
-  CurrentProgramSlot : Integer = 0;
-  ParseTimeout : Integer;
   PingTimeout : Word = K_DEFAULT_PING_TIMEOUT;
   TowerExistsSleep : Word = K_DEFAULT_TOWER_EXISTS_SLEEP;
-  WatchPoints : Byte = 10;
   MaxRecent : Byte = 4;
-  CurrentLNPAddress : Integer = 0;
-  CurrentLNPPort : Integer = 0;
-
-{Editor}
-var
-  ColorsChanged : boolean;   // Whether color scheme was changed
-  ColorCoding:boolean;       // Whether to use color coding
-  ColorCodingChanged:boolean;// Whether ColorCoding was changed
-  FontName:string;           // Name of the font
-  FontSize:integer;          // Size of the font
-  FontChanged:boolean;       // Whether the font changed
-  AutoIndentCode:boolean;    // Whether to automatically indent code
-  MacrosOn:boolean;          // Whether macros can be used
-  RICDecompAsData:boolean;
-  RICDecompNameFormat : string;
-
-  HideSelection : boolean;
-  CCInsensitive : boolean;
-  ScrollPastEOL : boolean;
-  HalfPageScroll : boolean;
-  DragAndDropEditing : boolean;
-  AltSetsSelMode : Boolean;
-  MoveCursorRight : Boolean;
-  KeepBlanks : Boolean;
-  UseSmartTabs : Boolean;
-  EnhanceHomeKey : Boolean;
-  GroupUndo : Boolean;
-  TabWidth : integer;
-  MaxUndo : integer;
-  MaxLeftChar : integer;
-  ExtraLineSpacing : integer;
-  RightEdgePosition : integer;
-  RightEdgeColor : TColor;
-  ScrollBars : integer;
-  EditorColor : TColor;
-  SelectionForeground : TColor;
-  SelectionBackground : TColor;
-  StructureColor : TColor;
-  ActiveLineColor : TColor;
-  AppIsClosing : Boolean;
-  TabIndent : Boolean;
-  ConvertTabs : Boolean;
-  ShowSpecialChars : Boolean;
-  HighlightCurLine : Boolean;
-  KeepCaretX : Boolean;
-  AutoMaxLeft : Boolean;
-
-{ Gutter }
-var
-  GutterColor : TColor;
-  GutterWidth : integer;
-  DigitCount : integer;
-  LeftOffset : integer;
-  RightOffset : integer;
-  ShowLineNumbers : boolean;
-  ShowLeadingZeros : boolean;
-  ZeroStart : boolean;
-  AutoSizeGutter : boolean;
-  GutterVisible : boolean;
-  UseFontStyle : boolean;
-  SelectOnClick : boolean;
 
 { Other Shortcuts }
 var
@@ -697,62 +577,9 @@ var
   SaveWindowPos:boolean;     // Whether to save window positions
   ShowRecent:boolean;        // Whether to show recent files
   ShowRecentChanged:boolean; // Whether ShowRecent was changed
-  SaveBackup:boolean;        // Whether to save backups of existing files
   ShowStatusbar:boolean;     // Whether to show the statusbar
-  ShowCompilerStatus : boolean;
-  AutoSaveFiles : Boolean;
-  AutoSaveDesktop : Boolean;
-  SaveBinaryOutput : Boolean;
-  IncludeSrcInList : Boolean;
-  PreferredLanguage : Integer;
-  CompilerSwitches : string;
-  NQCSwitches : string;
-  LCCSwitches : string;
-  NBCSwitches : string;
-  CPPSwitches : string;
-  JavaSwitches : string;
-  NBCOptLevel : byte;
-  NBCMaxErrors : word;
   DefaultMacroLibrary : string;
-  NQCIncludePath : string;
-  OldNQCIncPaths : string;
-  LCCIncludePath : string;
-  OldLCCIncPaths : string;
-  NBCIncludePath : string;
-  OldNBCIncPaths : string;
   LockToolbars : Boolean;
-  MaxEditWindows : Boolean;
-  MultiFormatCopy : Boolean;
-  CygwinDir :  string;
-  BrickOSRoot :  string;
-  BrickOSMakefileTemplate : string;
-  PascalCompilerPrefix : string;
-  KeepBrickOSMakefile : Boolean;
-  LeJOSMakefileTemplate : string;
-  KeepLeJOSMakefile : Boolean;
-  NQCExePath : string;
-  LCCExePath : string;
-  NBCExePath : string;
-  UseInternalNBC : Boolean;
-  NXT2Firmware : Boolean;
-  EnhancedFirmware : Boolean;
-  IgnoreSysFiles : Boolean;
-  JavaCompilerPath : string;
-  LeJOSRoot :  string;
-  // forth console settings
-  ShowAllConsoleOutput : Boolean;
-  StopScriptDLOnErrors : Boolean;
-  StripScriptComments : Boolean;
-  SkipBlankScriptLines : Boolean;
-  SyntaxHighlightConsole : Boolean;
-  ConsoleOutputSeparate : Boolean;
-  ShowConsoleLineNumbers : Boolean;
-  ConsoleCodeCompletion : Boolean;
-  ConsoleICDelay : Word;
-  ConsoleILDelay : Word;
-  ConsoleUSBFirstTimeout : Word;
-  ConsoleUSBICTimeout : Word;
-  ConsoleUSBWriteTimeout : Word;
 
 
 function  PreferredLanguageName : string;
@@ -765,56 +592,9 @@ procedure RegisterApp;
 procedure SetToolbarDragging(bAuto : Boolean);
 procedure RestoreToolbars;
 procedure SaveToolbars;
-procedure SaveTemplateTree;
-procedure RestoreTemplateTree;
-function GetHighlighterForFile(AFileName: string): TSynCustomHighlighter;
-
-var
-  gbSearchBackwards: boolean;
-  gbSearchCaseSensitive: boolean;
-  gbSearchFromCaret: boolean;
-  gbSearchSelectionOnly: boolean;
-  gbSearchTextAtCaret: boolean = true;
-  gbSearchWholeWords: boolean;
-  gbSearchRegex: boolean;
-
-  gsSearchText: string;
-  gsSearchTextHistory: string;
-  gsReplaceText: string;
-  gsReplaceTextHistory: string;
 
 procedure UpdateTransferList(aSrcList, aDestList : TList);
-function CompXferList : Tlist;
-function TransferList : Tlist;
-function PrecompileSteps : Tlist;
-function PostcompileSteps : Tlist;
-function Highlighters : TStringList;
-procedure CenterForm(const Form: TCustomForm);
-procedure EnsureFormVisible(const Form: TCustomForm);
 function GetUseMDIMode : Boolean;
-
-function DefaultPath : string;
-function NQCPath : string;
-function LCCPath : string;
-function NBCPath : string;
-
-const
-  K_PASCAL_PREFIX = '/usr/local/bin/h8300-hitachi-hms-';
-  K_PASCAL_TAIL =
-    'LIBS=-loogpc -lgpc -lc -lmint -lfloat -lc++' + #13#10 +
-    'PFLAGS=$(CFLAGS) --extended-syntax --unit-path=$(BRICKOS_ROOT)/lib/p --automake' + #13#10 +
-    #13#10 +
-    'PTOOLPREFIX=' + K_PASCAL_PREFIX + #13#10 +
-    'GPC=$(PTOOLPREFIX)gpc' + #13#10 +
-    #13#10 +
-    '# how to compile pas source' + #13#10 +
-    '%.o: %.pas' + #13#10 +
-    #9'$(GPC) $(PFLAGS) -c $< -o $@' + #13#10 +
-    #13#10 +
-    '# how to generate an assembly listing of pascal source' + #13#10 +
-    '%.s: %.pas' + #13#10 +
-    #9'$(GPC) $(PFLAGS) -c $< -S' + #13#10;
-
 
 implementation
 
@@ -836,7 +616,7 @@ uses
   uSpirit, brick_common, Transfer, uNXTExplorer, uNXTController,
   uNXTExplorerSettings, uLocalizedStrings, uGuiUtils, uEditorExperts,
   uEECommentConfig, uEEAlignConfig, uNBCInterface, uJoyGlobals,
-  uRemoteGlobals, uRegUtils, uGlobals;
+  uRemoteGlobals, uRegUtils, uGlobals, uBasicPrefs;
 
 
 
@@ -844,11 +624,6 @@ var RecentFiles : array of string = nil;
 
 
 var
-  fHighlighters : TStringList;
-  fCompXferList : TList;
-  fTransferList : TList;
-  fPrecompileSteps : TList;
-  fPostcompileSteps : TList;
   StartupAction : Integer;     // Action to take at startup
   BrickType : Integer;           // RCX (0), Cybermaster (1), Scout (2), or RCX2 (3)
   COMPort : string;           // default COM port (''=automatic)
@@ -934,120 +709,6 @@ const
 function ExePath : string;
 begin
   Result := ExtractFilePath(Application.ExeName);
-end;
-
-procedure CenterForm(const Form: TCustomForm);
-var
-  Rect: TRect;
-begin
-  if Form = nil then
-    Exit;
-{$IFNDEF FPC}
-  SystemParametersInfo(SPI_GETWORKAREA, 0, @Rect, 0);
-
-  with Form do
-  begin
-    SetBounds((Rect.Right - Rect.Left - Width) div 2,
-      (Rect.Bottom - Rect.Top - Height) div 2, Width, Height);
-  end;
-{$ENDIF}
-end;
-
-procedure EnsureFormVisible(const Form: TCustomForm);
-var
-  Rect: TRect;
-begin
-  Rect.Top := 0;
-  Rect.Left := 0;
-  Rect.Right := Screen.Width;
-  Rect.Bottom := Screen.Height;
-{$IFNDEF FPC}
-  SystemParametersInfo(SPI_GETWORKAREA, 0, @Rect, 0);
-  if (Form.Left + Form.Width > Rect.Right) then
-    Form.Left := Form.Left - ((Form.Left + Form.Width) - Rect.Right);
-  if (Form.Top + Form.Height > Rect.Bottom) then
-    Form.Top := Form.Top - ((Form.Top + Form.Height) - Rect.Bottom);
-  if Form.Left < 0 then
-    Form.Left := 0;
-  if Form.Top < 0 then
-    Form.Top := 0;
-{$ENDIF}
-end;
-
-function DefaultPath : string;
-begin
-  case PreferredLanguage of
-    1 : Result := LCCPath;
-    2 : Result := LCCPath;
-    3 : Result := NBCPath;
-    4 : Result := NBCPath;
-  else
-    Result := NQCPath;
-  end;
-end;
-
-function NQCPath : string;
-begin
-  if Trim(NQCExePath) <> '' then
-    Result := IncludeTrailingPathDelimiter(NQCExePath);
-  Result := Result + 'nqc.exe';
-end;
-
-function LCCPath : string;
-begin
-  if Trim(LCCExePath) <> '' then
-    Result := IncludeTrailingPathDelimiter(LCCExePath);
-  Result := Result + 'lcc32.exe';
-end;
-
-function NBCPath : string;
-begin
-  if Trim(NBCExePath) <> '' then
-    Result := IncludeTrailingPathDelimiter(NBCExePath);
-  Result := Result + 'nbc.exe';
-end;
-
-function Highlighters : TStringList;
-begin
-  if not Assigned(fHighlighters) then
-    fHighlighters := TStringList.Create;
-  Result := fHighlighters;
-end;
-
-function GetHighlighterForFile(AFileName: string): TSynCustomHighlighter;
-begin
-  if AFileName <> '' then
-    Result := GetHighlighterFromFileExt(fHighlighters, ExtractFileExt(AFileName))
-  else
-    Result := nil;
-end;
-
-function CompXferList : Tlist;
-begin
-  if not Assigned(fCompXferList) then
-    fCompXferList := TList.Create;
-  result := fCompXferList;
-end;
-
-function TransferList : Tlist;
-begin
-  if not Assigned(fTransferList) then
-    fTransferList := TList.Create;
-  result := fTransferList;
-end;
-
-function PrecompileSteps : Tlist;
-begin
-  if not Assigned(fPrecompileSteps) then
-    fPrecompileSteps := TList.Create;
-  result := fPrecompileSteps;
-end;
-
-function PostcompileSteps : Tlist;
-begin
-  if not Assigned(fPostcompileSteps) then
-    fPostcompileSteps := TList.Create;
-  result := fPostcompileSteps;
 end;
 
 function BoolToStr(aVal : boolean) : string;
@@ -1225,46 +886,6 @@ begin
     end;
   finally
     R.Free;
-  end;
-end;
-
-procedure RestoreTemplateTree;
-var
-  R : TRegistry;
-begin
-  if Assigned(ConstructForm) then
-  begin
-    R := TRegistry.Create;
-    try
-      R.RootKey := HKEY_CURRENT_USER;
-      if R.OpenKey(fMainKey+'\'+fVersion+'\TemplateTree', false) then
-      begin
-        ConstructForm.tsvTemplates.RestoreFromRegistry(R);
-      end;
-    finally
-      R.Free;
-    end;
-  end;
-end;
-
-procedure SaveTemplateTree;
-var
-  R : TRegistry;
-  keyName : string;
-begin
-  if Assigned(ConstructForm) then
-  begin
-    R := TRegistry.Create;
-    try
-      R.RootKey := HKEY_CURRENT_USER;
-      keyName := fMainKey+'\'+fVersion+'\TemplateTree';
-      if R.OpenKey(keyName, true) then
-      begin
-        ConstructForm.tsvTemplates.SaveToRegistry(R);
-      end;
-    finally
-      R.Free;
-    end;
   end;
 end;
 
@@ -4105,20 +3726,6 @@ begin
   PrefForm.MShift.Down := false;
 end;
 
-{ TTransferItem }
-
-procedure TTransferItem.Assign(TI: TTransferItem);
-begin
-  Title      := TI.Title;
-  Path       := TI.Path;
-  WorkingDir := TI.WorkingDir;
-  Params     := TI.Params;
-  Wait       := TI.Wait;
-  Close      := TI.Close;
-  Restrict   := TI.Restrict;
-  Extension  := TI.Extension;
-end;
-
 function PreferredLanguageName : string;
 begin
   case LocalFirmwareType of
@@ -5036,20 +4643,6 @@ begin
   end;
 end;
 
-procedure CleanupTransferList(aList : TList);
-var
-  i : integer;
-begin
-  if Assigned(aList) then
-  begin
-    for i := 0 to aList.Count - 1 do
-    begin
-      TObject(aList[i]).Free;
-    end;
-    FreeAndNil(aList);
-  end;
-end;
-
 procedure TPrefForm.ShowItemInEditor(i: Integer);
 var
   y : Integer;
@@ -5676,10 +5269,5 @@ initialization
   fVersion := GetVersionInfo(Application.ExeName).ProductVersion;
 
 finalization
-  CleanupTransferList(fCompXferList);
-  CleanupTransferList(fTransferList);
-  CleanupTransferList(fPrecompileSteps);
-  CleanupTransferList(fPostcompileSteps);
-  FreeAndNil(fHighlighters);
   RecentFiles := nil;
 end.

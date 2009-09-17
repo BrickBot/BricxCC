@@ -72,7 +72,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Preferences, uSources, brick_common, uMiscDefines, uGlobals;
+  SysUtils, Math, uBasicPrefs, uSources, brick_common, uGlobals;
 
 procedure TfrmSetValues.cboSourceChange(Sender: TObject);
 begin

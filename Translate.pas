@@ -30,7 +30,7 @@ procedure TranslateIt(TheEditor: TSynEdit);
 implementation
 
 uses
-  SysUtils, Dialogs, Controls, Editor, Preferences, uLocalizedStrings;
+  SysUtils, Dialogs, Controls, Editor, uLocalizedStrings;
 
 const MAXWORD = 48;
 

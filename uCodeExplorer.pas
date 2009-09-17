@@ -27,7 +27,8 @@ uses
   LResources,
 {$ENDIF}
   Classes, Controls, Forms, ComCtrls, ExtCtrls, ImgList, Menus,
-  uBricxCCProcLexer, uParseCommon, uOfficeComp;
+  uBricxCCProcLexer, uParseCommon, uOfficeComp, SynEditHighlighter,
+  BricxCCSynEdit;
 
 type
   TfrmCodeExplorer = class(TForm)
@@ -51,11 +52,17 @@ type
     N1: TOfficeMenuItem;
     mniCodeExpProp: TOfficeMenuItem;
     fOnFinishedProcessing: TNotifyEvent;
+    fSource: string;
+    fEditor: TBricxccSynEdit;
     function GetProcessing: Boolean;
     procedure SetProcessing(const Value: Boolean);
     procedure SetChangedSinceLastProcess(const Value: Boolean);
     procedure CreatePopupMenu;
     function GetProcResults: TStrings;
+    function GetActiveHighlighter: TSynCustomHighlighter;
+    procedure SetSource(const Value: string);
+    function GetActiveEditor: TBricxccSynEdit;
+    function ExploredLanguageType: TExploredLanguage;
   private
     { Private declarations }
     fProcResults : TStrings;
@@ -77,11 +84,15 @@ type
     { Public declarations }
     procedure RefreshEntireTree;
     procedure ClearTree;
-    procedure ProcessFile(sName : string);
+    procedure ProcessFile(const sName : string; const aSource : string);
     property ChangedSinceLastProcess : Boolean
       read fChangedSinceLastProcess write SetChangedSinceLastProcess;
     property ProcessedResults : TStrings read GetProcResults;
     property OnFinishedProcessing : TNotifyEvent read fOnFinishedProcessing write fOnFinishedProcessing;
+    property ActiveHighlighter : TSynCustomHighlighter read GetActiveHighlighter;
+    property CurrentFilename : string read fFileName write fFileName;
+    property CurrentSource : string read fSource write SetSource;
+    property ActiveEditor : TBricxccSynEdit read GetActiveEditor write fEditor;
   end;
 
 var
@@ -94,10 +105,16 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, MainUnit, Editor, uExplorerOptions, uNQCProcLexer,
-  uNXCProcLexer, uMindScriptProcLexer, uCppProcLexer, uPasProcLexer,
-  uForthProcLexer, uNBCProcLexer, uLASMProcLexer, uMiscDefines,
-  uLocalizedStrings, uGuiUtils, Preferences, SynEditHighlighter;
+  SysUtils, uExplorerOptions, uNXCProcLexer, uNBCProcLexer,
+  uLocalizedStrings, uGuiUtils, uBasicPrefs, uMiscDefines,
+{$IFNDEF NXT_ONLY}
+  uNQCProcLexer, uMindScriptProcLexer, uCppProcLexer,
+  uPasProcLexer, uForthProcLexer, uLASMProcLexer, 
+  SynHighlighterForth, SynHighlighterJava, SynHighlighterCpp,
+  SynHighlighterMindScript, SynHighlighterLASM, SynHighlighterPas,
+  SynHighlighterROPS,
+{$ENDIF}
+  SynHighlighterNQC, SynHighlighterNBC;
 
 procedure TfrmCodeExplorer.ClearTree;
 var
@@ -169,9 +186,13 @@ begin
     cnt := 1
   else
     cnt := 0;
-  CountOK := MainForm.pnlCodeExplorer.VisibleDockClientCount > cnt;
-  MainForm.splCodeExplorer.Visible := CountOK;
-  MainForm.pnlCodeExplorer.Visible := CountOK;
+  if Assigned(dockPanel) then
+  begin
+    CountOK := dockPanel.VisibleDockClientCount > cnt;
+    if Assigned(panelSplitter) then
+      panelSplitter.Visible := CountOK;
+    dockPanel.Visible := CountOK;
+  end;
   tmrCodeExplorer.Enabled := False;
 end;
 
@@ -182,8 +203,11 @@ begin
   treCodeExplorer.PopupMenu := popCodeExplorer;
   DockOrientation := doVertical;
   fProcessing := False;
+  fFileName := '';
+  fSource   := '';
   Caption := sExploring;
-  ManualDock(MainForm.pnlCodeExplorer, nil, alTop);
+  if Assigned(dockPanel) then
+    ManualDock(dockPanel, nil, alTop);
 //  treCodeExplorer.DoubleBuffered := True;
   RefreshEntireTree;
 end;
@@ -236,9 +260,10 @@ begin
   end;
 end;
 
-procedure TfrmCodeExplorer.ProcessFile(sName : string);
+procedure TfrmCodeExplorer.ProcessFile(const sName : string; const aSource : string);
 begin
   fFileName := sName;
+  fSource   := aSource;
   ReprocessFile;
 end;
 
@@ -250,7 +275,7 @@ end;
 procedure TfrmCodeExplorer.tmrCodeExplorerTimer(Sender: TObject);
 begin
   if ChangedSinceLastProcess then
-    ProcessFile(fFileName);
+    ProcessFile(fFileName, fSource);
 end;
 
 procedure TfrmCodeExplorer.FormShow(Sender: TObject);
@@ -260,17 +285,14 @@ end;
 
 procedure TfrmCodeExplorer.FocusEditor;
 var
-  AEF : TEditorForm;
+  E : TBricxCCSynEdit;
 begin
-  if Assigned(MainForm) then
+  E := ActiveEditor;
+  if Assigned(E) then
   begin
-    AEF := MainForm.ActiveEditorForm;
-    if Assigned(AEF) then
-    begin
-      SetWindowFocus(AEF);
-      if not MainForm.MDI then
-        AEF.TheEditor.SetFocus;
-    end;
+    SetWindowFocus(E.Parent);
+    if not GetUsingMDI then
+      E.SetFocus;
   end;
 end;
 
@@ -284,22 +306,16 @@ procedure TfrmCodeExplorer.GotoCode;
 var
   i : Integer;
   N : TTreeNode;
-  AEF : TEditorForm;
+  E : TBricxCCSynEdit;
 begin
   N := treCodeExplorer.Selected;
-  if Assigned(N) and Assigned(N.Data) and Assigned(MainForm) then
+  E := ActiveEditor;
+  if Assigned(N) and Assigned(N.Data) and Assigned(E) then
   begin
-    AEF := MainForm.ActiveEditorForm;
-    if Assigned(AEF) then
-    begin
-      i := Integer(N.Data);
-      with AEF.TheEditor do
-      begin
-        CaretXY := Point(1, i);
-        EnsureCursorPosVisibleEx(True);
-      end;
-      FocusEditor;
-    end;
+    i := Integer(N.Data);
+    E.CaretXY := Point(1, i);
+    E.EnsureCursorPosVisibleEx(True);
+    FocusEditor;
   end;
 end;
 
@@ -370,27 +386,18 @@ end;
 procedure TfrmCodeExplorer.ReprocessFile;
 var
   fGetProcs : TBricxCCProcLexer;
-  AEF : TEditorForm;
 begin
-  if not Assigned(MainForm) then Exit;
   if Processing then Exit;
   Caption := sExploring + ' ' + fFileName;
   Processing := True;
   ClearTree;
-  AEF := MainForm.ActiveEditorForm;
-  if Assigned(AEF) then
+  if fSource <> '' then
   begin
-    if (AEF.TheEditor.Lines.Count = 0) or not FileCanBeProcessed then
-    begin
-      Processing := False;
-      Exit;
-    end;
-
     try
       fGetProcs := CreateProcLexer;
       fGetProcs.FreeOnTerminate := True;
       fGetProcs.OnTerminate := HandleGetProcsDone;
-      fGetProcs.TextToParse := AEF.TheEditor.Lines.Text;
+      fGetProcs.TextToParse := fSource;
       fGetProcs.Timeout     := ParseTimeout; // default is 2 seconds
       fGetProcs.Resume;
     except
@@ -440,50 +447,97 @@ begin
     Result := aNode.AbsoluteIndex;
 end;
 
+function TfrmCodeExplorer.GetActiveEditor: TBricxccSynEdit;
+begin
+  Result := uMiscDefines.GetActiveEditor;
+end;
+
+function TfrmCodeExplorer.GetActiveHighlighter : TSynCustomHighlighter;
+var
+  E : TBricxccSynEdit;
+begin
+  E := ActiveEditor;
+  if Assigned(E) then
+    Result := E.Highlighter
+  else
+    Result := nil;
+end;
+
 function TfrmCodeExplorer.CreateProcLexer: TBricxCCProcLexer;
 var
   H : TSynCustomHighlighter;
-  AEF : TEditorForm;
 begin
-  if not Assigned(MainForm) then
-    raise Exception.Create(sUnableToParseFile);
-  AEF := MainForm.ActiveEditorForm;
-  if Assigned(AEF) then
+  H := GetActiveHighlighter;
+  if Assigned(H) then
   begin
-    H := AEF.Highlighter;
-    if H = MainForm.SynNQCSyn then
-      Result := TNQCProcLexer.Create(True)
-    else if H = MainForm.SynMindScriptSyn then
-      Result := TMindScriptProcLexer.Create(True)
-    else if H = MainForm.SynCppSyn then
-      Result := TCppProcLexer.Create(True)
-    else if H = MainForm.SynPasSyn then
-      Result := TPasProcLexer.Create(True)
-    else if H = MainForm.SynROPSSyn then
-      Result := TPasProcLexer.Create(True)
-    else if H = MainForm.SynJavaSyn then
-      Result := TJavaProcLexer.Create(True)
-    else if H = MainForm.SynForthSyn then
-      Result := TForthProcLexer.Create(True)
-    else if H = MainForm.SynNBCSyn then
+    if H is TSynNBCSyn then
       Result := TNBCProcLexer.Create(True)
-    else if H = MainForm.SynNXCSyn then
+    else if H is TSynNXCSyn then
       Result := TNXCProcLexer.Create(True)
-    else if H = MainForm.SynLASMSyn then
+{$IFNDEF NXT_ONLY}
+    else if H is TSynNQCSyn then
+      Result := TNQCProcLexer.Create(True)
+    else if H is TSynMindScriptSyn then
+      Result := TMindScriptProcLexer.Create(True)
+    else if H is TSynCppSyn then
+      Result := TCppProcLexer.Create(True)
+    else if H is TSynPasSyn then
+      Result := TPasProcLexer.Create(True)
+    else if H is TSynROPSSyn then
+      Result := TPasProcLexer.Create(True)
+    else if H is TSynJavaSyn then
+      Result := TJavaProcLexer.Create(True)
+    else if H is TSynForthSyn then
+      Result := TForthProcLexer.Create(True)
+    else if H is TSynLASMSyn then
       Result := TLASMProcLexer.Create(True)
+{$ENDIF}
     else
-      raise Exception.Create(sUnableToParseFile);
+      Result := TUnknownProcLexer.Create(True);
   end
   else
-    raise Exception.Create(sUnableToParseFile);
+    Result := TUnknownProcLexer.Create(True);
+end;
+
+function TfrmCodeExplorer.ExploredLanguageType : TExploredLanguage;
+var
+  H : TSynCustomHighlighter;
+begin
+  H := GetActiveHighlighter;
+  if Assigned(H) then
+  begin
+    if H is TSynNBCSyn then
+      Result := elNBC
+    else if H is TSynNXCSyn then
+      Result := elNXC
+{$IFNDEF NXT_ONLY}
+    else if H is TSynNQCSyn then
+      Result := elNQC
+    else if H is TSynMindScriptSyn then
+      Result := elMindScript
+    else if H is TSynCppSyn then
+      Result := elCpp
+    else if H is TSynPasSyn then
+      Result := elPas
+    else if H is TSynROPSSyn then
+      Result := elPas
+    else if H is TSynJavaSyn then
+      Result := elJava
+    else if H is TSynForthSyn then
+      Result := elForth
+    else if H is TSynLASMSyn then
+      Result := elLASM
+{$ENDIF}
+    else
+      Result := elUnknown;
+  end
+  else
+    Result := elUnknown;
 end;
 
 procedure TfrmCodeExplorer.SetChangedSinceLastProcess(const Value: Boolean);
 begin
-  if Value then
-    fChangedSinceLastProcess := FileCanBeProcessed
-  else
-    fChangedSinceLastProcess := False;
+  fChangedSinceLastProcess := Value;
 end;
 
 procedure TfrmCodeExplorer.mniCloseClick(Sender: TObject);
@@ -534,6 +588,15 @@ end;
 procedure TfrmCodeExplorer.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fProcResults);
+end;
+
+procedure TfrmCodeExplorer.SetSource(const Value: string);
+begin
+  if fSource <> Value then
+  begin
+    fSource := Value;
+    ChangedSinceLastProcess := True;
+  end;
 end;
 
 {$IFDEF FPC}

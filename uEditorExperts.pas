@@ -55,8 +55,8 @@ function AlignSelectedLines(Lines: TStrings): Boolean;
 implementation
 
 uses
-  SysUtils, Menus, Math, Controls, uNBCCommon, Preferences, uEEAlignOpt,
-  uLocalizedStrings;
+  SysUtils, Menus, Math, Controls, uNBCCommon, uEEAlignOpt,
+  uLocalizedStrings, uBasicPrefs;
 
 const
   VK_OEM_PERIOD = $BE; // '.' any country

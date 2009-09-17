@@ -31,12 +31,14 @@ uses
   LCLIntf,
 {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  ExtCtrls, Buttons, Menus, StdCtrls, uOfficeComp, ComCtrls, uTreeSaver;
+  ExtCtrls, Buttons, Menus, StdCtrls, ComCtrls,
+  uOfficeComp, uTreeSaver;
 
 const
   WM_DODOCK = WM_USER + 400;
 
 type
+  TOnAddConstructEvent = procedure(Sender : TObject; const aTemplate : string; const aX : integer = -1; const aY : integer = -1) of object;
 
   { TConstructForm }
 
@@ -65,10 +67,13 @@ type
     mniCollapseAll: TOfficeMenuItem;
     mniPopSep1: TOfficeMenuItem;
     mniDblClickInsert: TOfficeMenuItem;
+    fActiveLanguageIndex: integer;
+    fOnAddConstruct: TOnAddConstructEvent;
     procedure mniExpandAllClick(Sender: TObject);
     procedure mniCollapseAllClick(Sender: TObject);
     procedure mniDblClickInsertClick(Sender: TObject);
     procedure popOptionsPopup(Sender: TObject);
+    function GetActiveLanguageIndex: integer;
   private
     { Private declarations }
     fDockMe: boolean;
@@ -77,6 +82,8 @@ type
     procedure PopupHandler(Sender: TObject);
     procedure CreatePopupMenus;
     procedure CreateTreeSaver;
+    function GetTemplate(const aLang, aIndex : integer) : string;
+    procedure DoAddConstruct(const aTemplate : string; const aX : integer = -1; const aY : integer = -1);
   public
     { Public declarations }
     ConstructMenu: TOfficePopupMenu;
@@ -85,7 +92,11 @@ type
     procedure CreateConstructPopup;
     procedure Rebuild(bSave : boolean = true);
     procedure DoTemplateInsert(x : integer = -1; y : integer = -1);
+    procedure RestoreTemplateTree;
+    procedure SaveTemplateTree;
     property  DockMe : boolean read fDockMe write fDockMe;
+    property  ActiveLanguageIndex : integer read GetActiveLanguageIndex write fActiveLanguageIndex;
+    property  OnAddConstruct : TOnAddConstructEvent read fOnAddConstruct write fOnAddConstruct;
   end;
 
 var
@@ -98,7 +109,7 @@ implementation
 {$ENDIF}
 
 uses
-  Preferences, MainUnit, Editor, uLocalizedStrings;
+  Registry, uLocalizedStrings, uBasicPrefs, uRegUtils;
 
 const IMARGIN = 2;
       IHEIGHT = 16;
@@ -157,8 +168,7 @@ begin
     curNode := nil;
     cnt := 0;
     i := 1;
-    if not Assigned(MainForm) then Exit;
-    ali := MainForm.ActiveLanguageIndex;
+    ali := ActiveLanguageIndex;
     while i <= templatenumb[ali] do
     begin
       str:=MakeMenuString(templates[ali][i-1]);
@@ -205,9 +215,9 @@ begin
 //    ConstructMenu.Items.Delete(i);
 
   vsep:=false;
-  for i:=1 to templatenumb[MainForm.ActiveLanguageIndex] do
+  for i:=1 to templatenumb[ActiveLanguageIndex] do
   begin
-    str:=MakeMenuString(templates[MainForm.ActiveLanguageIndex][i-1]);
+    str:=MakeMenuString(templates[ActiveLanguageIndex][i-1]);
     if str = '' then Continue;
     if str[1] = '|' then
     begin
@@ -230,13 +240,9 @@ begin
 end;
 
 procedure TConstructForm.PopupHandler(Sender: TObject);
-var
-  AEF : TEditorForm;
 begin
   if TOfficeMenuItem(Sender).Tag = 0 then Exit;
-  AEF := MainForm.ActiveEditorForm;
-  if AEF = nil then Exit;
-  AEF.AddConstruct(MainForm.ActiveLanguageIndex, TOfficeMenuItem(Sender).Tag);
+  DoAddConstruct(GetTemplate(ActiveLanguageIndex, TOfficeMenuItem(Sender).Tag));
 end;
 
 procedure TConstructForm.treTemplatesClick(Sender: TObject);
@@ -247,6 +253,7 @@ end;
 
 procedure TConstructForm.FormCreate(Sender: TObject);
 begin
+  fActiveLanguageIndex := 0;
   CreateTreeSaver;
   CreatePopupMenus;
   treTemplates.PopupMenu := popOptions;
@@ -266,9 +273,13 @@ begin
     cnt := 1
   else
     cnt := 0;
-  CountOK := MainForm.pnlCodeExplorer.VisibleDockClientCount > cnt;
-  MainForm.splCodeExplorer.Visible := CountOK;
-  MainForm.pnlCodeExplorer.Visible := CountOK;
+  if Assigned(dockPanel) then
+  begin
+    CountOK := dockPanel.VisibleDockClientCount > cnt;
+    if Assigned(panelSplitter) then
+      panelSplitter.Visible := CountOK;
+    dockPanel.Visible := CountOK;
+  end;
 end;
 
 procedure TConstructForm.FormShow(Sender: TObject);
@@ -280,7 +291,8 @@ end;
 
 procedure TConstructForm.WMDoDock(var Message: TMessage);
 begin
-  ManualDock(MainForm.pnlCodeExplorer, nil, alBottom);
+  if Assigned(dockPanel) then
+    ManualDock(dockPanel, nil, alBottom);
   // if we dock we need to restore the tree again
   RestoreTemplateTree;
 end;
@@ -326,14 +338,10 @@ begin
 end;
 
 procedure TConstructForm.DoTemplateInsert(x : integer; y : integer);
-var
-  AEF : TEditorForm;
 begin
-  AEF := MainForm.ActiveEditorForm;
-  if AEF = nil then Exit;
   if Assigned(fMouseNode) and Assigned(treTemplates.Selected) and
      (fMouseNode = treTemplates.Selected) and not fMouseNode.HasChildren then
-    AEF.AddConstruct(MainForm.ActiveLanguageIndex, Integer(fMouseNode.Data), x, y);
+    DoAddConstruct(GetTemplate(ActiveLanguageIndex, Integer(fMouseNode.Data)), x, y);
 end;
 
 procedure TConstructForm.treTemplatesDblClick(Sender: TObject);
@@ -449,6 +457,56 @@ begin
   begin
     Name := 'tsvTemplates';
     TreeView := treTemplates;
+  end;
+end;
+
+function TConstructForm.GetActiveLanguageIndex: integer;
+begin
+  Result := fActiveLanguageIndex;
+end;
+
+function TConstructForm.GetTemplate(const aLang, aIndex: integer): string;
+begin
+  Result := templates[aLang][aIndex-1];
+end;
+
+procedure TConstructForm.DoAddConstruct(const aTemplate: string; const aX, aY : integer);
+begin
+  if Assigned(fOnAddConstruct) then
+    fOnAddConstruct(Self, aTemplate, aX, aY);
+end;
+
+procedure TConstructForm.RestoreTemplateTree;
+var
+  R : TRegistry;
+begin
+  R := TRegistry.Create;
+  try
+    R.RootKey := HKEY_CURRENT_USER;
+    if R.OpenKey(fMainKey+'\'+fVersion+'\TemplateTree', false) then
+    begin
+      tsvTemplates.RestoreFromRegistry(R);
+    end;
+  finally
+    R.Free;
+  end;
+end;
+
+procedure TConstructForm.SaveTemplateTree;
+var
+  R : TRegistry;
+  keyName : string;
+begin
+  R := TRegistry.Create;
+  try
+    R.RootKey := HKEY_CURRENT_USER;
+    keyName := fMainKey+'\'+fVersion+'\TemplateTree';
+    if R.OpenKey(keyName, true) then
+    begin
+      tsvTemplates.SaveToRegistry(R);
+    end;
+  finally
+    R.Free;
   end;
 end;
 

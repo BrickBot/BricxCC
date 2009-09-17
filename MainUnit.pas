@@ -33,18 +33,19 @@ uses
   LCLType,
   LCLIntf,
 {$ENDIF}
-  Messages, Classes, Controls, Forms, Dialogs,
+  Messages, Classes, Controls, Forms, Dialogs, ImgList, ActnList,
   StdCtrls, Menus, ComCtrls, ToolWin, Buttons, ExtCtrls,
-  Editor, SynEditHighlighter, SynHighlighterNQC, SynEditPrint,
+  Preferences, uOfficeComp, uMiscDefines, Editor, uBasicPrefs,
+  SynEditHighlighter, SynEditPrint, SynMacroRecorder,
   SynEditAutoComplete, SynCompletionProposal, SynEditPlugins,
-  SynMacroRecorder, ImgList, ActnList, SynHighlighterForth,
-  SynHighlighterJava, SynHighlighterCpp, SynHighlighterNBC,
-  SynHighlighterCS, SynHighlighterMindScript, SynHighlighterLASM,
-  SynHighlighterPas, SynEditRegexSearch, SynEditMiscClasses, SynEditSearch,
-  SynExportRTF, SynEditExport, SynExportHTML, SynHighlighterROPS,
-  Preferences, uOfficeComp, SynHighlighterLua, SynHighlighterRuby,
-  SynHighlighterNPG, SynHighlighterRS, uPSComponent_StdCtrls,
-  uPSComponent_Controls, uPSComponent_Forms,
+  SynEditRegexSearch, SynEditMiscClasses, SynEditSearch,
+  SynExportRTF, SynEditExport, SynExportHTML,
+  SynHighlighterNQC, SynHighlighterForth, SynHighlighterJava,
+  SynHighlighterCpp, SynHighlighterNBC, SynHighlighterCS,
+  SynHighlighterMindScript, SynHighlighterLASM, SynHighlighterPas,
+  SynHighlighterROPS, SynHighlighterLua, SynHighlighterRuby,
+  SynHighlighterNPG, SynHighlighterRS,
+  uPSComponent_StdCtrls, uPSComponent_Controls, uPSComponent_Forms,
   uPSComponent_Default, uPSComponent;
 
 {$IFNDEF FPC}
@@ -619,6 +620,7 @@ type
       Sender: TObject; var CurrentInput: String; var x, y: Integer;
       var CanExecute: Boolean);
     procedure HandleExplorerFinished(Sender: TObject);
+    procedure HandleOnAddConstruct(Sender : TObject; const aTemplate : string; const aX : integer = -1; const aY : integer = -1);
   private
     { Private declarations }
     fOldActiveEditorForm : TEditorForm;
@@ -647,7 +649,7 @@ type
     function  IsStandardFirmware(aFile : string) : Boolean;
     function  SwitchToFile(fname: string; lineNo : integer = -1): Boolean;
     procedure ConfigureOtherFirmwareOptions;
-    function DoCompileAction(E : TEditorForm; bDown, bRun : Boolean) : boolean;
+    function DoCompileAction(bDown, bRun : Boolean) : boolean;
     procedure DoToolbarExecute(act: TCustomAction; bar: TOfficeGradientPanel);
     procedure SetFilterIndexFromLanguage;
     procedure SetColorScheme;
@@ -678,6 +680,7 @@ type
     { Public declarations }
     FActiveLine : integer;
     procedure HandleOnCompilerStatusChange(Sender: TObject; const StatusMsg: string);
+    procedure DoDisplayErrors(aShow : boolean);
     procedure DoHideErrors;
     procedure ExecuteTransferItem(TI: TTransferItem);
 //    function CloseQuery: Boolean; override;
@@ -733,13 +736,13 @@ uses
   Transfer, Transdlg, uMacroForm, uWindowList,
   uHighlighterProcs, uMindScript, uCppCode,
   BricxccSynEdit, SynEditTypes, uProjectManager, uMIDIConversion,
-  uSetLNPAddress, uNewWatch, uSetValues, uEEPROM, uMiscDefines,
+  uSetLNPAddress, uNewWatch, uSetValues, uEEPROM,
   Themes, brick_common, uWav2RSO, uNXTExplorer, uGuiUtils,
   uNXTController, uNXTImage, Math, uPSI_brick_common, uPSI_uSpirit,
   uPSI_FantomSpirit, uPSRuntime, uPSDebugger,
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,
-  uProgram, uCompStatus, uGlobals;
+  uProgram, uCompStatus, uGlobals, uEditorUtils;
 
 const
   K_NQC_GUIDE = 24;
@@ -1003,6 +1006,13 @@ begin
   LoadNBCCodeComplete(SynNBCCompProp.ItemList);
   LoadNPGCodeComplete(SynNPGCompProp.ItemList);
   LoadRSCodeComplete(SynRSCompProp.ItemList);
+  // hook up transfer item execution proc
+  DoExecuteTransferItem := Self.ExecuteTransferItem;
+  // hook up the ROPS compiler
+  theROPSCompiler := Self.ce;
+  // hook up the search engines
+  seRegex  := Self.SynEditRegexSearch;
+  seNormal := Self.SynEditSearch;
 end;
 
 procedure TMainForm.FormShow(Sender: TObject);
@@ -1042,6 +1052,9 @@ begin
 }
   if CodeExplorerSettings.AutoShowExplorer then
     ShowCodeExplorer;
+  // hook up the template form event handler
+  if Assigned(ConstructForm) then
+    ConstructForm.OnAddConstruct := HandleOnAddConstruct;
   {Add the Templates}
   if ShowTemplateForm then
     ShowTemplates(False);
@@ -1093,13 +1106,15 @@ end;
 
 procedure TMainForm.StartTask(idx : integer);
 var
-  AEF : TEditorForm;
+  H : TSynCustomHighlighter;
+  Fname : string;
   binext : string;
 begin
   if LocalStandardFirmware then
   begin
-    AEF := ActiveEditorForm;
-    if Assigned(AEF) and FileIsROPS(AEF) then
+    H := GetActiveEditorHighlighter;
+    Fname := GetActiveEditorFilename;
+    if Assigned(H) and FileIsROPS(H) then
     begin
       if ce.Running then
       begin
@@ -1107,7 +1122,7 @@ begin
       end
       else
       begin
-        if DoCompileAction(AEF, False, False) then
+        if DoCompileAction(False, False) then
           ce.Execute;
       end;
     end
@@ -1115,17 +1130,17 @@ begin
       BrickComm.StartTask(8)
     else if IsNXT then
     begin
-      if Assigned(AEF) and not FileIsRICScript(AEF) then
+      if Assigned(H) and not FileIsRICScript(H) then
       begin
-        if FileIsNPG(AEF) then
+        if FileIsNPG(H) then
           binext := '.rpg'
         else
           binext := '.rxe';
         fNXTCurrentOffset := nil;
-        if (binext = '.rxe') and not CurrentProgram.Loaded(AEF.Filename) then
-          DoCompileAction(ActiveEditorForm, False, False);
+        if (binext = '.rxe') and not CurrentProgram.Loaded(Fname) then
+          DoCompileAction(False, False);
 
-        BrickComm.StartProgram(ChangeFileExt(ExtractFileName(AEF.Filename), binext));
+        BrickComm.StartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
         fNXTVMState := kNXT_VMState_RunFree;
         actCompilePause.Caption := sBreakAll;
         // make sure the variable watch event handlers are hooked up
@@ -1233,7 +1248,7 @@ begin
 
   F := ActiveEditorForm;
   mniHideErrors.Enabled := (F <> nil) and F.TheErrors.Visible;
-  mniProjectManager.Enabled := FileIsCPPOrPascalOrJava(F);
+  mniProjectManager.Enabled := FileIsCPPOrPascalOrJava;
 end;
 
 procedure TMainForm.mniStatusbarClick(Sender: TObject);
@@ -1302,7 +1317,8 @@ begin
   // 9/13/2002 - JCH added code here to fix an Access Violation that would
   // occur if you closed the main window with an Editor window open.
   // 2009-06-24 - JCH editor windows are now closed in FormCloseQuery
-  SaveTemplateTree;
+  if Assigned(ConstructForm) then
+    ConstructForm.SaveTemplateTree;
   SaveToolbars;
   MainWindowState := Integer(WindowState);
   WindowState := wsNormal;
@@ -1627,6 +1643,20 @@ begin
   frmCompStatus.AddMessage(StatusMsg);
 end;
 
+procedure TMainForm.DoDisplayErrors(aShow : boolean);
+var
+  AEF : TEditorForm;
+begin
+  if aShow then
+  begin
+    AEF := ActiveEditorForm;
+    if Assigned(AEF) then
+      AEF.ShowTheErrors;
+  end
+  else
+    Self.DoHideErrors;
+end;
+
 procedure TMainForm.mniCodeExplorerClick(Sender: TObject);
 begin
   ShowCodeExplorer;
@@ -1914,6 +1944,7 @@ begin
       else
         F.TheEditor.PopupMenu := F.pmnuEditor;
     end;
+    ConstructForm.ActiveLanguageIndex := ActiveLanguageIndex;
     ConstructForm.Rebuild;
     // always close the project manager if it was open
     if frmProjectManager.Visible then
@@ -2003,7 +2034,7 @@ begin
   bAssigned   := Assigned(E);
   bBrickAlive := BrickComm.IsOpen;
   bBALSF      := bBrickAlive and LocalStandardFirmware;
-  bROPS       := FileIsROPS(E);
+  bROPS       := FileIsROPS;
 
   actFileSave.Enabled           := bAssigned and E.TheEditor.Modified;
   actFileSaveAs.Enabled         := bAssigned;
@@ -2033,7 +2064,7 @@ begin
   actSearchProcList.Enabled     := bAssigned;
 
   actCompileCompile.Enabled     := bAssigned and FileCanBeCompiled;
-  actCompileDownload.Enabled    := bAssigned and ((bBrickAlive or FileIsForth(E)) and not bROPS);
+  actCompileDownload.Enabled    := bAssigned and ((bBrickAlive or FileIsForth) and not bROPS);
   actCompileDownloadRun.Enabled := bAssigned and bBrickAlive and not bROPS;
   actCompileRun.Enabled         := bBALSF or bROPS;
   actCompileStop.Enabled        := bBALSF or bROPS;
@@ -2155,7 +2186,7 @@ var
   F : TEditorForm;
 begin
   F := ActiveEditorForm;
-  if not FileIsCPPOrPascalOrJava(F) then Exit;
+  if not FileIsCPPOrPascalOrJava then Exit;
   if Assigned(F) then
     frmProjectManager.ShowProjectManager(F.Filename);
 end;
@@ -2168,9 +2199,9 @@ var
   FoundMatch : Boolean;
   p, BB, BE : TPoint;
   SCP : TSynCompletionProposal;
-  AEF : TEditorForm;
+  AEH : TSynCustomHighlighter;
 begin
-  AEF := ActiveEditorForm;
+  AEH := GetActiveEditorHighlighter;
   NameIdx := -1;
   SCP := TSynCompletionProposal(Sender);
   with TBricxccSynEdit(SCP.Editor) do
@@ -2222,25 +2253,25 @@ begin
           while (TmpX > 0) and (locLine[TmpX] in TSynValidStringChars) do
             dec(TmpX);
           inc(TmpX);
-          if FileIsMindScriptOrLASM(AEF) or FileIsPascal(AEF) then
+          if FileIsMindScriptOrLASM(AEH) or FileIsPascal(AEH) then
             lookup := Uppercase(Copy(locLine, TmpX, SavePos - TmpX + 1))
           else
             lookup := Copy(locLine, TmpX, SavePos - TmpX + 1);
-          if FileIsCPP(AEF) then
+          if FileIsCPP(AEH) then
             NameIdx := CppCodeCompIndex(lookup)
-          else if FileIsPascal(AEF) then
+          else if FileIsPascal(AEH) then
             NameIdx := PasCodeCompIndex(lookup)
-          else if FileIsNQC(AEF) then
+          else if FileIsNQC(AEH) then
             NameIdx := NQCCodeCompIndex(lookup)
-          else if FileIsNXC(AEF) then
+          else if FileIsNXC(AEH) then
             NameIdx := NXCCodeCompIndex(lookup)
-          else if FileIsNBC(AEF) then
+          else if FileIsNBC(AEH) then
             NameIdx := NBCCodeCompIndex(lookup)
-          else if FileIsRICScript(AEF) then
+          else if FileIsRICScript(AEH) then
             NameIdx := RICScriptCodeCompIndex(lookup)
-          else if FileIsROPS(AEF) then
+          else if FileIsROPS(AEH) then
             NameIdx := ROPSCodeCompIndex(lookup)
-          else if FileIsMindScript(AEF) then
+          else if FileIsMindScript(AEH) then
             NameIdx := MSCodeCompIndex(lookup);
           FoundMatch := NameIdx > -1;
           if not(FoundMatch) then
@@ -2262,35 +2293,35 @@ begin
     begin
       SCP.ItemList.Clear;
       // add params
-      if FileIsCPP(AEF) then begin
+      if FileIsCPP(AEH) then begin
         AddCppCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
       end
-      else if FileIsPascal(AEF) then begin
+      else if FileIsPascal(AEH) then begin
         AddPasCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := '; ';
       end
-      else if FileIsNQC(AEF) then begin
+      else if FileIsNQC(AEH) then begin
         AddNQCCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
       end
-      else if FileIsNXC(AEF) then begin
+      else if FileIsNXC(AEH) then begin
         AddNXCCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
       end
-      else if FileIsNBC(AEF) then begin
+      else if FileIsNBC(AEH) then begin
         AddNBCCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
       end
-      else if FileIsRICScript(AEF) then begin
+      else if FileIsRICScript(AEH) then begin
         AddRICScriptCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
       end
-      else if FileIsROPS(AEF) then begin
+      else if FileIsROPS(AEH) then begin
         AddROPSCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := '; ';
       end
-      else if FileIsMindScript(AEF) then begin
+      else if FileIsMindScript(AEH) then begin
         AddMSCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
       end;
@@ -2401,9 +2432,13 @@ begin
   end;
 end;
 
-function TMainForm.DoCompileAction(E : TEditorForm; bDown, bRun: Boolean) : Boolean;
+function TMainForm.DoCompileAction(bDown, bRun: Boolean) : Boolean;
+var
+  SaveCursor : TCursor;
+  E : TEditorForm;
 begin
   Result := False;
+  E := ActiveEditorForm;
   if Assigned(E) then begin
     if bDown then begin
       if not CheckAlive then Exit;
@@ -2418,10 +2453,26 @@ begin
       end;
     end;
     if ShowCompilerStatus and UseInternalNBC and
-       FileIsNBCOrNXCOrNPGOrRICScript(E) then
+       FileIsNBCOrNXCOrNPGOrRICScript then
       frmCompStatus.Show;
     Application.ProcessMessages;
-    Result := CompileIt(bDown, bRun);
+
+    {Save cursor}
+    SaveCursor := Screen.Cursor;
+    Screen.Cursor := crHourglass;
+    try
+      // check for auto save
+      if AutoSaveFiles then
+        SaveModifiedFiles;
+      if AutoSaveDesktop then
+        SaveDesktop(E.Filename);
+
+      Result := CompileIt(DoDisplayErrors, E.TheEditor.Lines, E.TheErrors,
+        E.Filename, E.Caption, bDown, bRun, HandleOnCompilerStatusChange,
+        HandleOpenStateChanged);
+    finally
+      Screen.Cursor := SaveCursor;
+    end;
   end;
 end;
 
@@ -2465,7 +2516,7 @@ end;
 
 procedure TMainForm.actCompileCompileExecute(Sender: TObject);
 begin
-  DoCompileAction(ActiveEditorForm, False, False);
+  DoCompileAction(False, False);
 end;
 
 procedure TMainForm.actCompileDownloadExecute(Sender: TObject);
@@ -2474,7 +2525,7 @@ var
 begin
   // download using forth console
   E := ActiveEditorForm;
-  if FileIsForth(E) then
+  if FileIsForth then
   begin
 {$IFNDEF FPC}
     if Assigned(E) then
@@ -2482,12 +2533,12 @@ begin
 {$ENDIF}
   end
   else
-    DoCompileAction(E, True, False);
+    DoCompileAction(True, False);
 end;
 
 procedure TMainForm.actCompileDownloadRunExecute(Sender: TObject);
 begin
-  if DoCompileAction(ActiveEditorForm, True, True) then
+  if DoCompileAction(True, True) then
     StartTask(0);
 end;
 
@@ -2523,13 +2574,13 @@ var
   E : TEditorForm;
 begin
   E := ActiveEditorForm;
-  if Assigned(E) and FileIsROPS(E) then
+  if Assigned(E) and FileIsROPS then
   begin
     if ce.Exec.Status = isRunning then
       ce.StepOver
     else
     begin
-      if DoCompileAction(E, False, False) then
+      if DoCompileAction(False, False) then
       begin
         ce.StepInto;
         ce.Execute;
@@ -2551,13 +2602,13 @@ var
   E : TEditorForm;
 begin
   E := ActiveEditorForm;
-  if Assigned(E) and FileIsROPS(E) then
+  if Assigned(E) and FileIsROPS then
   begin
     if ce.Exec.Status = isRunning then
       ce.StepInto
     else
     begin
-      if DoCompileAction(E, False, False) then
+      if DoCompileAction(False, False) then
       begin
         ce.StepInto;
         ce.Execute;
@@ -2742,6 +2793,7 @@ begin
     if TemplatesChanged or (ShowTemplatePopup <> oldShowTempPopup) then
     begin
       // if the templates have changed save state, rebuild tree, restore state
+      ConstructForm.ActiveLanguageIndex := ActiveLanguageIndex;
       ConstructForm.Rebuild;
     end;
 
@@ -3153,7 +3205,8 @@ begin
   if Assigned(F) then
     if Assigned(frmCodeExplorer) then
     begin
-      frmCodeExplorer.ProcessFile(F.FileName);
+      frmCodeExplorer.ActiveEditor := F.TheEditor;
+      frmCodeExplorer.ProcessFile(F.FileName, F.TheEditor.Lines.Text);
       frmCodeExplorer.RefreshEntireTree;
     end;
   ChangeActiveEditor;
@@ -3319,6 +3372,7 @@ procedure TMainForm.ShowTemplates(bSave : boolean);
 var
   bVisible : boolean;
 begin
+  ConstructForm.ActiveLanguageIndex := ActiveLanguageIndex;
   ConstructForm.Rebuild(bSave);
   ConstructForm.Show;
   ConstructForm.FormShow(Self);
@@ -6924,17 +6978,11 @@ begin
 end;
 
 procedure TMainForm.HandleExplorerFinished(Sender: TObject);
-var
-  AEF : TEditorForm;
 begin
-  AEF := ActiveEditorForm;
-  if Assigned(AEF) then
-  begin
-    if FileIsNXC(AEF) then
-      LoadNXCCompProp
-    else if FileIsNQC(AEF) then
-      LoadNQCCompProp;
-  end;
+  if FileIsNXC then
+    LoadNXCCompProp
+  else if FileIsNQC then
+    LoadNQCCompProp;
 end;
 
 procedure TMainForm.DoLoadAPI(cp : TSynCompletionProposal; aStrings : TStrings);
@@ -6985,6 +7033,15 @@ end;
 procedure TMainForm.FormCloseQuery(Sender: TObject; var CanClose: Boolean);
 begin
   CanClose := CloseAllEditors;
+end;
+
+procedure TMainForm.HandleOnAddConstruct(Sender : TObject; const aTemplate : string; const aX : integer = -1; const aY : integer = -1);
+var
+  AEF : TEditorForm;
+begin
+  AEF := ActiveEditorForm;
+  if Assigned(AEF) then
+    AEF.AddConstructString(aTemplate, aX, aY);
 end;
 
 {$IFDEF FPC}

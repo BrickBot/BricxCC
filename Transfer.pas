@@ -73,7 +73,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Dialogs, Transdlg, Preferences, uLocalizedStrings;
+  SysUtils, Dialogs, Transdlg, uLocalizedStrings, uBasicPrefs;
 
 procedure TfrmTransferDlg.FormCreate(Sender: TObject);
 begin

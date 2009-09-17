@@ -61,7 +61,7 @@ type
 
 implementation
 
-uses ComServ, Forms, MainUnit, Editor, Preferences, uMiscDefines, brick_common;
+uses ComServ, Forms, MainUnit, Editor, uBasicPrefs, uMiscDefines, brick_common;
 
 procedure TBricxCCApp.EventSinkChanged(const EventSink: IUnknown);
 begin

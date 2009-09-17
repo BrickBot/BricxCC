@@ -66,7 +66,9 @@ uses
 {$IFNDEF FPC}
   Windows, 
 {$ENDIF}
-  SysUtils, Dialogs, MainUnit, Editor, uLocalizedStrings, Preferences;
+  SysUtils, Dialogs,
+  uBasicPrefs,
+  uLocalizedStrings;
 
 procedure TGotoForm.FormShow(Sender: TObject);
 begin

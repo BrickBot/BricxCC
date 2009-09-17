@@ -43,6 +43,26 @@ type
     property Language : TExploredLanguage read GetLanguage;
   end;
 
+  TUnknownProcLexer = class(TBricxCCProcLexer)
+  protected
+    procedure Execute; override;
+    function GetLanguage: TExploredLanguage; override;
+  end;
+
+
+
 implementation
+
+{ TUnknownProcLexer }
+
+procedure TUnknownProcLexer.Execute;
+begin
+  Results := '';
+end;
+
+function TUnknownProcLexer.GetLanguage: TExploredLanguage;
+begin
+  Result := elUnknown;
+end;
 
 end.

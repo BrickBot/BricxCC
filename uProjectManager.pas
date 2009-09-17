@@ -76,7 +76,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, MainUnit, Preferences, SynEditHighlighter, uLocalizedStrings;
+  SysUtils, MainUnit, uBasicPrefs, SynEditHighlighter, uLocalizedStrings;
 
 procedure TfrmProjectManager.mniAddClick(Sender: TObject);
 var

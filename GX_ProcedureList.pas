@@ -160,17 +160,18 @@ uses
 {$IFNDEF FPC}
   Windows,
 {$ENDIF}
-  SysUtils, 
+  SysUtils,
   Clipbrd,
-  uMiscDefines,
-  Preferences,
+  Math,
   mwBCBTokenList,
   uMindScriptProcLexer,
   uLASMProcLexer,
   uNBCLexer,
   uNBCProcLexer,
   uForthProcLexer,
-  uLocalizedStrings;
+  uLocalizedStrings,
+  uGuiUtils,
+  uBasicPrefs;
 
 const
   K_TIMEOUT = 10000;
