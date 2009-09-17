@@ -285,28 +285,10 @@ type
     procedure NXTUpdateResourceNames; override;
   end;
 
-function GetRCXErrorString(iErrCode : Integer) : string;
-
 implementation
 
 uses
   RcxLog, srecord, rcx_cmd, NQCSerialWin, Math, uCommonUtils, uGlobals;
-
-function GetRCXErrorString(iErrCode : Integer) : string;
-begin
-  case iErrCode of
-    kRCX_OpenSerialError : Result := 'serial port could not be opened and/or configured';
-    kRCX_IREchoError     : Result := 'no echo received from IR tower';
-    kRCX_ReplyError      : Result := 'no (or invalid) reply from RCX';
-    kRCX_RequestError    : Result := 'attempt to send too much data';
-    kRCX_FileError       : Result := 'could not open/read/write file';
-    kRCX_FormatError     : Result := 'unknown file format';
-    kRCX_AbortError      : Result := 'canceled by RCX_Link::DownloadProgress()';
-    kRCX_MemFullError    : Result := 'not enough room in RCX program memory';
-  else
-    Result := '';
-  end;
-end;
 
 { TFakeSpirit }
 

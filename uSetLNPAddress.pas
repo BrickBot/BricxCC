@@ -51,8 +51,8 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Dialogs, Editor, brick_common, ExecProgram, Preferences, MainUnit,
-  uLocalizedStrings, uCommonUtils;
+  SysUtils, Dialogs, brick_common, ExecProgram, MainUnit,
+  uLocalizedStrings, uCommonUtils, uEditorUtils, uBasicPrefs;
 
 const
   M_NAME = 'SetLNP.mak';
@@ -72,7 +72,7 @@ begin
     BrickComm.Close;
     try
 {$IFNDEF FPC}
-      TheResult := ExecuteAndWait(PChar(commandstr), SW_SHOWMINNOACTIVE, LocalCompilerTimeout, PChar(wd));
+      TheResult := DoExecuteCommand(commandstr, LocalCompilerTimeout, wd);
 {$ELSE}
       TheResult := -1;
 {$ENDIF}

@@ -68,7 +68,7 @@ implementation
 {$ENDIF}
 
 uses
-  Editor, uLocalizedStrings;
+  uLocalizedStrings, uGuiUtils, uEditorUtils;
 
 procedure TCodeForm.lmiEditCopyClick(Sender: TObject);
 begin

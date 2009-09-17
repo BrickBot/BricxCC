@@ -106,9 +106,9 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Graphics, Dialogs, Preferences, uMiscDefines,
+  SysUtils, Graphics, Dialogs, uBasicPrefs, uMiscDefines,
   brick_common, rcx_constants, uSources, uLocalizedStrings, uCommonUtils,
-  uProgram, MainUnit, Editor, uGlobals;
+  uProgram, uGlobals;
 
 var
   busy : boolean = false;
@@ -459,8 +459,6 @@ begin
 end;
 
 procedure TfrmNewWatch.AdjustRangeOfValueSlider(source: Integer);
-var
-  AEF : TEditorForm;
 begin
   udValue.Position := BrickWatchSources[LocalBrickType][source].VMin;
   // crud.  poll only accepts a byte value 0..255
@@ -468,8 +466,7 @@ begin
 //  udValue.Max := Min(BrickWatchSources[LocalBrickType][source].VMax, 255);
   udValue.Min := BrickWatchSources[LocalBrickType][source].VMin;
   udValue.Max := BrickWatchSources[LocalBrickType][source].VMax;
-  AEF := MainForm.ActiveEditorForm;
-  if (source = 0) and IsNXT and Assigned(AEF) and CurrentProgram.Loaded(AEF.Filename) then
+  if (source = 0) and IsNXT and CurrentProgram.Loaded(GetActiveEditorFilename) then
   begin
     udValue.Min := 0;
     udValue.Max := CurrentProgram.Dataspace.Count - 1;
@@ -553,11 +550,9 @@ end;
 
 procedure TfrmNewWatch.AddVariableHint(sht: TTabsheet; i : integer);
 var
-  AEF : TEditorForm;
   tmp : string;
 begin
-  AEF := MainForm.ActiveEditorForm;
-  if IsNXT and Assigned(AEF) and CurrentProgram.Loaded(AEF.Filename) then
+  if IsNXT and CurrentProgram.Loaded(GetActiveEditorFilename) then
   begin
     if CurrentProgram.Dataspace.Count > i then
     begin
@@ -569,11 +564,9 @@ end;
 
 procedure TfrmNewWatch.PopulateVariables(cbo: TCombobox);
 var
-  AEF : TEditorForm;
   i : integer;
 begin
-  AEF := MainForm.ActiveEditorForm;
-  if IsNXT and Assigned(AEF) and CurrentProgram.Loaded(AEF.Filename) then
+  if IsNXT and CurrentProgram.Loaded(GetActiveEditorFilename) then
   begin
     cbo.Items.Clear;
     for i := 0 to CurrentProgram.Dataspace.Count - 1 do

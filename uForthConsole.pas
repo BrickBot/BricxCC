@@ -87,7 +87,7 @@ var
 implementation
 
 uses
-  SysUtils, Themes, CPDrv, MainUnit, Preferences, rcx_link, brick_common,  
+  SysUtils, Themes, CPDrv, MainUnit, uBasicPrefs, rcx_link, brick_common,  
   uGuiUtils, uCommonUtils;
 
 {$R *.DFM}
@@ -225,7 +225,7 @@ procedure TfrmForthConsole.UpdateSettings;
 var
   bWasConnected : Boolean;
 begin
-  // read settings from preferences
+  // read settings 
   with TheTerminal do
   begin
     bWasConnected := Connected;

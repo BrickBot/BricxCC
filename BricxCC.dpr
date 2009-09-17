@@ -106,6 +106,7 @@ uses
   uSources in 'uSources.pas',
   uRegUtils in 'uRegUtils.pas',
   uGlobals in 'uGlobals.pas',
+  uBasicPrefs in 'uBasicPrefs.pas',
   uSetValues in 'uSetValues.pas' {frmSetValues},
   uEEPROM in 'uEEPROM.pas' {frmSpybotEEPROM},
   uWav2RSO in 'uWav2RSO.pas' {frmWave2RSO},
@@ -187,6 +188,9 @@ begin
     Application.ShowMainForm := False;
   end;
   Application.CreateForm(TPrefForm, PrefForm);
+  // set the dock panel
+  uBasicPrefs.dockPanel     := MainForm.pnlCodeExplorer;
+  uBasicPrefs.panelSplitter := MainForm.splCodeExplorer;
   Application.CreateForm(TfrmCodeExplorer, frmCodeExplorer);
   Application.CreateForm(TfrmMacroManager, frmMacroManager);
   Application.CreateForm(TfrmHEXView, frmHEXView);

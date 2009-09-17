@@ -282,12 +282,9 @@ implementation
 {$ENDIF}
 
 uses
-{$IFNDEF NXT_ONLY}
-  MainUnit, Editor, Preferences,
-{$ENDIF}
   SysUtils, Dialogs, brick_common, rcx_constants, uSpirit,
-  uLocalizedStrings, uGuiUtils, uCommonUtils, uProgram,
-  uGlobals;
+  uLocalizedStrings, uGuiUtils, uCommonUtils, uProgram, uBasicPrefs,
+  uGlobals, uMiscDefines;
 
 function GetMotorData(numb : integer) : string;
 var
@@ -823,10 +820,7 @@ var
   i : integer;
   bVis : boolean;
   cb : TCheckBox;
-{$IFNDEF NXT_ONLY}
-  AEF : TEditorForm;
   tmp : string;
-{$ENDIF}
 begin
   grpVar.Visible   := True;
   grpMotor.Visible := not IsNXT;
@@ -841,9 +835,7 @@ begin
         cb.Checked := False;
       fVarArray[i].Edit.Visible := bVis;
     end;
-{$IFNDEF NXT_ONLY}
-    AEF := MainForm.ActiveEditorForm;
-    if IsNXT and Assigned(AEF) and CurrentProgram.Loaded(AEF.Filename) then
+    if IsNXT and CurrentProgram.Loaded(GetActiveEditorFilename) then
     begin
       for i := Low(fVarArray) to High(fVarArray) do
       begin
@@ -855,7 +847,6 @@ begin
         end;
       end;
     end;
-{$ENDIF}
   end;
   CheckSensor4.Visible := IsNXT;
   ValueSensor4.Visible := IsNXT;

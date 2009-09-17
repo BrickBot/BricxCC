@@ -48,7 +48,6 @@ procedure SIRegister_EMessageInvalid(CL: TPSPascalCompiler);
 procedure SIRegister_FakeSpirit(CL: TPSPascalCompiler);
 
 { run-time registration functions }
-procedure RIRegister_FakeSpirit_Routines(S: TPSExec);
 procedure RIRegister_TFakeSpirit(CL: TPSRuntimeClassImporter);
 procedure RIRegister_EMessageInvalid(CL: TPSRuntimeClassImporter);
 procedure RIRegister_FakeSpirit(CL: TPSRuntimeClassImporter);
@@ -95,12 +94,6 @@ end;
 
 (* === run-time registration functions === *)
 (*----------------------------------------------------------------------------*)
-procedure RIRegister_FakeSpirit_Routines(S: TPSExec);
-begin
- S.RegisterDelphiFunction(@GetRCXErrorString, 'GetRCXErrorString', cdRegister);
-end;
-
-(*----------------------------------------------------------------------------*)
 procedure RIRegister_TFakeSpirit(CL: TPSRuntimeClassImporter);
 begin
   with CL.Add(TFakeSpirit) do
@@ -136,7 +129,6 @@ end;
 procedure TPSImport_FakeSpirit.ExecImport1(CompExec: TPSScript; const ri: TPSRuntimeClassImporter);
 begin
   RIRegister_FakeSpirit(ri);
-  RIRegister_FakeSpirit_Routines(CompExec.Exec); // comment it if no routines
 end;
 (*----------------------------------------------------------------------------*)
  

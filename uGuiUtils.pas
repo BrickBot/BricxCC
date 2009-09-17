@@ -19,7 +19,7 @@ unit uGuiUtils;
 interface
 
 uses
-  Controls, StdCtrls, Menus,
+  Controls, StdCtrls, Menus, Forms,
 {$IFNDEF FPC}
   DirectoryEdit, 
 {$ELSE}
@@ -27,7 +27,7 @@ uses
 {$ENDIF}
   uNewHotKey, uOfficeComp, SynEdit;
 
-procedure AdjustGroupBox(gb : TGroupBox);
+//procedure AdjustGroupBox(gb : TGroupBox);
 procedure ConfigBar(ogp : TOfficeGradientPanel);
 procedure SizeComboboxDropdown( cb: TCustomCombobox );
 procedure CloneDE(aDest : TDirectoryEdit; aSrc : TEdit);
@@ -37,6 +37,8 @@ procedure SetWindowFocus(WC : TWinControl);
 function GetTick : Cardinal;
 function GetWindowTitleBarHeight : integer;
 procedure AddMenuItems(m : TMenuItem; a : array of TMenuItem);
+procedure CenterForm(const Form: TCustomForm);
+procedure EnsureFormVisible(const Form: TCustomForm);
 
 implementation
 
@@ -65,6 +67,7 @@ const
   GB_HOFFSET = 0;
 {$ENDIF}
 
+(*
 procedure AdjustGroupBox(gb : TGroupBox);
 var
   C : TControl;
@@ -83,8 +86,9 @@ begin
       C.Left := C.Left - GB_HOFFSET;
     end;
   end;
-{$ENDIF}  
+{$ENDIF}
 end;
+*)
 
 procedure ConfigBar(ogp : TOfficeGradientPanel);
 begin
@@ -255,6 +259,44 @@ begin
 {$ELSE}
 begin
   m.Add(a);
+{$ENDIF}
+end;
+
+procedure CenterForm(const Form: TCustomForm);
+var
+  Rect: TRect;
+begin
+  if Form = nil then
+    Exit;
+{$IFNDEF FPC}
+  SystemParametersInfo(SPI_GETWORKAREA, 0, @Rect, 0);
+
+  with Form do
+  begin
+    SetBounds((Rect.Right - Rect.Left - Width) div 2,
+      (Rect.Bottom - Rect.Top - Height) div 2, Width, Height);
+  end;
+{$ENDIF}
+end;
+
+procedure EnsureFormVisible(const Form: TCustomForm);
+var
+  Rect: TRect;
+begin
+  Rect.Top := 0;
+  Rect.Left := 0;
+  Rect.Right := Screen.Width;
+  Rect.Bottom := Screen.Height;
+{$IFNDEF FPC}
+  SystemParametersInfo(SPI_GETWORKAREA, 0, @Rect, 0);
+  if (Form.Left + Form.Width > Rect.Right) then
+    Form.Left := Form.Left - ((Form.Left + Form.Width) - Rect.Right);
+  if (Form.Top + Form.Height > Rect.Bottom) then
+    Form.Top := Form.Top - ((Form.Top + Form.Height) - Rect.Bottom);
+  if Form.Left < 0 then
+    Form.Left := 0;
+  if Form.Top < 0 then
+    Form.Top := 0;
 {$ENDIF}
 end;
 

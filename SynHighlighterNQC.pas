@@ -41,7 +41,7 @@ type
   TProcTableProc = procedure of object;
 
 type
-  TSynNQCSyn = class(TSynCustomHighlighter)
+  TSynBaseNCSyn = class(TSynCustomHighlighter)
   private
     fRange: TRangeState;
     fLine: PChar;
@@ -104,9 +104,6 @@ type
     procedure LoadDefaultCommands; virtual;
     procedure LoadDefaultConstants; virtual;
   public
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-    function GetLanguageName: string; override;
-  public
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     function GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
@@ -163,7 +160,14 @@ type
     property SampleSourceStrings : TStrings read GetSourceStrings write SetSourceStrings;
   end;
 
-  TSynNXCSyn = class(TSynNQCSyn)
+  TSynNXCSyn = class(TSynBaseNCSyn)
+  public
+    constructor Create(AOwner: TComponent); override;
+{$IFNDEF SYN_CPPB_1} class {$ENDIF}
+    function GetLanguageName: string; override;
+  end;
+
+  TSynNQCSyn = class(TSynBaseNCSyn)
   public
     constructor Create(AOwner: TComponent); override;
 {$IFNDEF SYN_CPPB_1} class {$ENDIF}
@@ -526,7 +530,7 @@ begin
   end;
 end;
 
-procedure TSynNQCSyn.MakeMethodTables;
+procedure TSynBaseNCSyn.MakeMethodTables;
 var
   I: Char;
 begin
@@ -549,7 +553,7 @@ begin
   fProcTable[fFieldDelimCh] := {$IFDEF FPC}@{$ENDIF}FieldProc;
 end;
 
-constructor TSynNQCSyn.Create(AOwner: TComponent);
+constructor TSynBaseNCSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
   fKeyWords := TCSStringList.Create;
@@ -615,32 +619,12 @@ begin
   fIdentChars := ['_', '0'..'9', 'a'..'z', 'A'..'Z'];
   MakeMethodTables;
   fRange := rsUnknown;
-  fDefaultFilter := SYNS_FilterNQC;
   fDetectPreprocessor := true;
 
   fSampleSourceStrings := TStringList.Create;
-  fSampleSourceStrings.Text :=
-    '/* syntax highlighting */'#13#10 +
-    '// This is a Comment'#13#10 +
-    '// #define is a Preprocessor'#13#10 +
-    '#define NUM_LOOPS 4'#13#10 +
-    'task main() // task is a Keyword'#13#10 +
-    '{ // {},+(); are all Symbols'#13#10 +
-    '  // NUM_LOOPS is an Identifier'#13#10 +
-    '  repeat(NUM_LOOPS)'#13#10 +
-    '  {'#13#10 +
-    '    // SetPower is a Command'#13#10 +
-    '    // "power_level" is a Field'#13#10 +
-    '    SetPower(OUT_A+OUT_B,"power_level");'#13#10 +
-    '    // OUT_A is a Constant'#13#10 +
-    '    OnFwd(OUT_A+OUT_B);'#13#10 +
-    '    // 400 is a Number'#13#10 +
-    '    Wait(400);'#13#10 +
-    '  }'#13#10 +
-    '}';
 end; { Create }
 
-destructor TSynNQCSyn.Destroy;
+destructor TSynBaseNCSyn.Destroy;
 begin
   fKeyWords.Free;
   fCommands.Free;
@@ -649,7 +633,7 @@ begin
   inherited Destroy;
 end; { Destroy }
 
-procedure TSynNQCSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer);
+procedure TSynBaseNCSyn.SetLine({$IFDEF FPC}const {$ENDIF}NewValue: String; LineNumber:Integer);
 begin
   fLine := PChar(NewValue);
   Run := 0;
@@ -657,7 +641,7 @@ begin
   Next;
 end; { SetLine }
 
-procedure TSynNQCSyn.CStyleProc;
+procedure TSynBaseNCSyn.CStyleProc;
 begin
   case fLine[Run] of
      #0: NullProc;
@@ -676,7 +660,7 @@ begin
   end;
 end;
 
-procedure TSynNQCSyn.AsciiCharProc;
+procedure TSynBaseNCSyn.AsciiCharProc;
 begin
   if fDetectPreprocessor then begin
     if Trim(fLine)[1] <> '#' then // '#' is not first non-whitespace char on the line, treat it as an invalid char
@@ -711,26 +695,26 @@ begin
   end;
 end;
 
-procedure TSynNQCSyn.BraceOpenProc;
+procedure TSynBaseNCSyn.BraceOpenProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
 end;
 
-procedure TSynNQCSyn.PointCommaProc;
+procedure TSynBaseNCSyn.PointCommaProc;
 begin
   inc(Run);
   fTokenID := tkSymbol;
 end;
 
-procedure TSynNQCSyn.CRProc;
+procedure TSynBaseNCSyn.CRProc;
 begin
   fTokenID := tkSpace;
   Inc(Run);
   if fLine[Run] = #10 then Inc(Run);
 end;
 
-procedure TSynNQCSyn.IdentProc;
+procedure TSynBaseNCSyn.IdentProc;
 begin
   while Identifiers[fLine[Run]] do inc(Run);
   if IsKeyWord(GetToken) then fTokenId := tkKey
@@ -739,25 +723,25 @@ begin
   else fTokenId := tkIdentifier;
 end;
 
-procedure TSynNQCSyn.IntegerProc;
+procedure TSynBaseNCSyn.IntegerProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
   while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
 end;
 
-procedure TSynNQCSyn.LFProc;
+procedure TSynBaseNCSyn.LFProc;
 begin
   fTokenID := tkSpace;
   inc(Run);
 end;
 
-procedure TSynNQCSyn.NullProc;
+procedure TSynBaseNCSyn.NullProc;
 begin
   fTokenID := tkNull;
 end;
 
-procedure TSynNQCSyn.NumberProc;
+procedure TSynBaseNCSyn.NumberProc;
 begin
   inc(Run);
   fTokenID := tkNumber;
@@ -775,13 +759,13 @@ begin
   end;
 end;
 
-procedure TSynNQCSyn.RoundOpenProc;
+procedure TSynBaseNCSyn.RoundOpenProc;
 begin
   inc(Run);
   fTokenId := tkSymbol;
 end;
 
-procedure TSynNQCSyn.SlashProc;
+procedure TSynBaseNCSyn.SlashProc;
 begin
   case FLine[Run + 1] of
     '/':
@@ -823,14 +807,14 @@ begin
   end;
 end;
 
-procedure TSynNQCSyn.SpaceProc;
+procedure TSynBaseNCSyn.SpaceProc;
 begin
   inc(Run);
   fTokenID := tkSpace;
   while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
-procedure TSynNQCSyn.FieldProc;
+procedure TSynBaseNCSyn.FieldProc;
 var
   ch : Char;
 begin
@@ -864,7 +848,7 @@ begin
 *)
 end;
 
-procedure TSynNQCSyn.FieldEndProc;
+procedure TSynBaseNCSyn.FieldEndProc;
 begin
   fTokenID := tkField;
 
@@ -912,13 +896,13 @@ begin
     inc(Run);
 end;
 
-procedure TSynNQCSyn.UnknownProc;
+procedure TSynBaseNCSyn.UnknownProc;
 begin
   inc(Run);
   fTokenID := tkUnKnown;
 end;
 
-procedure TSynNQCSyn.Next;
+procedure TSynBaseNCSyn.Next;
 begin
   fTokenPos := Run;
   case fRange of
@@ -931,7 +915,7 @@ begin
   end;
 end;
 
-function TSynNQCSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
+function TSynBaseNCSyn.GetDefaultAttribute(Index: integer): TSynHighlighterAttributes;
 begin
   case Index of
     SYN_ATTR_COMMENT: Result := fCommentAttri;
@@ -948,17 +932,17 @@ begin
   end;
 end;
 
-function TSynNQCSyn.GetEol: Boolean;
+function TSynBaseNCSyn.GetEol: Boolean;
 begin
   Result := fTokenId = tkNull;
 end;
 
-function TSynNQCSyn.GetRange: Pointer;
+function TSynBaseNCSyn.GetRange: Pointer;
 begin
   Result := Pointer(fRange);
 end;
 
-function TSynNQCSyn.GetToken: String;
+function TSynBaseNCSyn.GetToken: String;
 var
   Len: LongInt;
 begin
@@ -967,7 +951,7 @@ begin
 end;
 
 {$IFDEF SYN_LAZARUS}
-procedure TSynNQCSyn.GetTokenEx(out TokenStart: PChar;
+procedure TSynBaseNCSyn.GetTokenEx(out TokenStart: PChar;
   out TokenLength: integer);
 begin
   TokenLength:=Run-fTokenPos;
@@ -975,12 +959,12 @@ begin
 end;
 {$ENDIF}
 
-function TSynNQCSyn.GetTokenID: TtkTokenKind;
+function TSynBaseNCSyn.GetTokenID: TtkTokenKind;
 begin
   Result := fTokenId;
 end;
 
-function TSynNQCSyn.GetTokenAttribute: TSynHighlighterAttributes;
+function TSynBaseNCSyn.GetTokenAttribute: TSynHighlighterAttributes;
 begin
   case fTokenID of
     tkComment     : Result := fCommentAttri;
@@ -999,51 +983,45 @@ begin
   end;
 end;
 
-function TSynNQCSyn.GetTokenKind: integer;
+function TSynBaseNCSyn.GetTokenKind: integer;
 begin
   Result := Ord(fTokenId);
 end;
 
-function TSynNQCSyn.GetTokenPos: Integer;
+function TSynBaseNCSyn.GetTokenPos: Integer;
 begin
   Result := fTokenPos;
 end;
 
-procedure TSynNQCSyn.ReSetRange;
+procedure TSynBaseNCSyn.ReSetRange;
 begin
   fRange := rsUnknown;
 end;
 
-procedure TSynNQCSyn.SetRange(Value: Pointer);
+procedure TSynBaseNCSyn.SetRange(Value: Pointer);
 begin
   fRange := TRangeState(Value);
 end;
 
-procedure TSynNQCSyn.SetKeyWords(const Value: TStrings);
+procedure TSynBaseNCSyn.SetKeyWords(const Value: TStrings);
 begin
   fKeyWords.Assign(Value);
   DefHighLightChange(nil);
 end;
 
-procedure TSynNQCSyn.SetCommands(const Value: TStrings);
+procedure TSynBaseNCSyn.SetCommands(const Value: TStrings);
 begin
   fCommands.Assign(Value);
   DefHighLightChange(nil);
 end;
 
-procedure TSynNQCSyn.SetConstants(const Value: TStrings);
+procedure TSynBaseNCSyn.SetConstants(const Value: TStrings);
 begin
   fConstants.Assign(Value);
   DefHighLightChange(nil);
 end;
 
-{$IFNDEF SYN_CPPB_1} class {$ENDIF}
-function TSynNQCSyn.GetLanguageName: string;
-begin
-  Result := SYNS_LangNQC;
-end;
-
-function TSynNQCSyn.LoadFromRegistry(RootKey: HKEY; Key: string): boolean;
+function TSynBaseNCSyn.LoadFromRegistry(RootKey: HKEY; Key: string): boolean;
 var
   r: TBetterRegistry;
 begin
@@ -1060,7 +1038,7 @@ begin
   finally r.Free; end;
 end;
 
-function TSynNQCSyn.SaveToRegistry(RootKey: HKEY; Key: string): boolean;
+function TSynBaseNCSyn.SaveToRegistry(RootKey: HKEY; Key: string): boolean;
 var
   r: TBetterRegistry;
 begin
@@ -1078,7 +1056,7 @@ begin
   finally r.Free; end;
 end;
 
-function TSynNQCSyn.GetIdentifierChars: string;
+function TSynBaseNCSyn.GetIdentifierChars: string;
 var
   ch: char;
   s: shortstring;
@@ -1089,7 +1067,7 @@ begin
   Result := s;
 end;
 
-procedure TSynNQCSyn.SetIdentifierChars(const Value: string);
+procedure TSynBaseNCSyn.SetIdentifierChars(const Value: string);
 var
   i: integer;
 begin
@@ -1099,12 +1077,12 @@ begin
   end; //for
 end;
 
-function TSynNQCSyn.GetIdentChars: TSynIdentChars;
+function TSynBaseNCSyn.GetIdentChars: TSynIdentChars;
 begin
   Result := fIdentChars;
 end;
 
-procedure TSynNQCSyn.SetDetectPreprocessor(Value: boolean);
+procedure TSynBaseNCSyn.SetDetectPreprocessor(Value: boolean);
 begin
   if Value <> fDetectPreprocessor then begin
     fDetectPreprocessor := Value;
@@ -1112,28 +1090,28 @@ begin
   end;
 end;
 
-function TSynNQCSyn.IsKeyword(const AKeyword: string): boolean;
+function TSynBaseNCSyn.IsKeyword(const AKeyword: string): boolean;
 var
   i : integer;
 begin
   Result := TCSStringList(fKeywords).Find(AKeyword, i);
 end;
 
-function TSynNQCSyn.IsCommand(const AToken: string): boolean;
+function TSynBaseNCSyn.IsCommand(const AToken: string): boolean;
 var
   i : integer;
 begin
   Result := TCSStringList(fCommands).Find(AToken, i);
 end;
 
-function TSynNQCSyn.IsConstant(const AToken: string): boolean;
+function TSynBaseNCSyn.IsConstant(const AToken: string): boolean;
 var
   i : integer;
 begin
   Result := TCSStringList(fConstants).Find(AToken, i);
 end;
 
-function TSynNQCSyn.GetStringDelim: TStringDelim;
+function TSynBaseNCSyn.GetStringDelim: TStringDelim;
 begin
   if fFieldDelimCh = '''' then
     Result := sdSingleQuote
@@ -1141,13 +1119,13 @@ begin
     Result := sdDoubleQuote;
 end;
 
-procedure TSynNQCSyn.SetComments(Value: CommentStyles);
+procedure TSynBaseNCSyn.SetComments(Value: CommentStyles);
 begin
   fComments := Value;
   DefHighLightChange(nil);
 end;
 
-procedure TSynNQCSyn.SetStringDelim(const Value: TStringDelim);
+procedure TSynBaseNCSyn.SetStringDelim(const Value: TStringDelim);
 var
   newCh: char;
 begin
@@ -1239,12 +1217,12 @@ begin
   end;
 end;
 
-function TSynNQCSyn.GetSampleSource: String;
+function TSynBaseNCSyn.GetSampleSource: String;
 begin
   Result := fSampleSourceStrings.Text;
 end;
 
-procedure TSynNQCSyn.LoadDefaultCommands;
+procedure TSynBaseNCSyn.LoadDefaultCommands;
 var
   i : Integer;
 begin
@@ -1252,7 +1230,7 @@ begin
     fCommands.Add(K_DEF_COMMANDS[i]);
 end;
 
-procedure TSynNQCSyn.LoadDefaultConstants;
+procedure TSynBaseNCSyn.LoadDefaultConstants;
 var
   i : Integer;
 begin
@@ -1260,7 +1238,7 @@ begin
     fConstants.Add(K_DEF_CONSTANTS[i]);
 end;
 
-procedure TSynNQCSyn.LoadDefaultKeywords;
+procedure TSynBaseNCSyn.LoadDefaultKeywords;
 var
   i : Integer;
 begin
@@ -1268,7 +1246,7 @@ begin
     fKeyWords.Add(K_DEF_KEYWORDS[i]);
 end;
 
-procedure TSynNQCSyn.DirectiveEndProc;
+procedure TSynBaseNCSyn.DirectiveEndProc;
 begin
   fTokenID := tkPreprocessor;
   case FLine[Run] of
@@ -1316,12 +1294,12 @@ begin
   until fLine[Run] in [#0, #10, #13];
 end;
 
-function TSynNQCSyn.GetSourceStrings: TStrings;
+function TSynBaseNCSyn.GetSourceStrings: TStrings;
 begin
   Result := fSampleSourceStrings;
 end;
 
-procedure TSynNQCSyn.SetSourceStrings(const Value: TStrings);
+procedure TSynBaseNCSyn.SetSourceStrings(const Value: TStrings);
 begin
   fSampleSourceStrings.Assign(Value);
 end;
@@ -1357,6 +1335,39 @@ end;
 function TSynNXCSyn.GetLanguageName: string;
 begin
   Result := SYNS_LangNXC;
+end;
+
+{ TSynNQCSyn }
+
+constructor TSynNQCSyn.Create(AOwner: TComponent);
+begin
+  inherited;
+  fDefaultFilter := SYNS_FilterNQC;
+  fSampleSourceStrings.Text :=
+    '/* syntax highlighting */'#13#10 +
+    '// This is a Comment'#13#10 +
+    '// #define is a Preprocessor'#13#10 +
+    '#define NUM_LOOPS 4'#13#10 +
+    'task main() // task is a Keyword'#13#10 +
+    '{ // {},+(); are all Symbols'#13#10 +
+    '  // NUM_LOOPS is an Identifier'#13#10 +
+    '  repeat(NUM_LOOPS)'#13#10 +
+    '  {'#13#10 +
+    '    // SetPower is a Command'#13#10 +
+    '    // "power_level" is a Field'#13#10 +
+    '    SetPower(OUT_A+OUT_B,"power_level");'#13#10 +
+    '    // OUT_A is a Constant'#13#10 +
+    '    OnFwd(OUT_A+OUT_B);'#13#10 +
+    '    // 400 is a Number'#13#10 +
+    '    Wait(400);'#13#10 +
+    '  }'#13#10 +
+    '}';
+end;
+
+{$IFNDEF SYN_CPPB_1}class {$ENDIF}
+function TSynNQCSyn.GetLanguageName: string;
+begin
+  Result := SYNS_LangNQC;
 end;
 
 initialization
