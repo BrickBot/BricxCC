@@ -38,13 +38,10 @@ function ExecuteAndWait( Path: Pchar; Visibility: word; aTimeoutMS : Integer;
   var outStr : string; var errStr : string; bUsePipes : Boolean = false): LongInt;
 }
 
-var
-  GlobalAbort : boolean;
-
 implementation
 
 uses
-  Forms, uLocalizedStrings;
+  Forms, uLocalizedStrings, uGlobals;
 
 function ExecuteAndContinue(Path, Params, WorkDir: Pchar; Visibility: word ): boolean;
 {$IFDEF FPC}

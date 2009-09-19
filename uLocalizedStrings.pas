@@ -95,7 +95,7 @@ resourcestring
 // Editor unit
 resourcestring
   S_Overwrite      = 'Overwrite';
-  S_Insert         = 'Insert';
+  S_Insert         = 'Insert';                 
   S_ReadOnly       = 'ReadOnly';
   S_FileChanged    = 'File %s has been modified. Save changes?';
   S_Modified       = 'Modified';

@@ -33,7 +33,6 @@ const
 var
   LocalPort : string;    // Name of the port to use for this instance
   LocalStartupAction : integer; // action to take at startup for this instance
-  LocalStandardFirmware : Boolean;
   LocalUseBluetooth : Boolean;
   LocalFirmwareType : TFirmwareType;
 
@@ -41,6 +40,12 @@ function GetActiveEditor : TBricxCCSynEdit;
 function GetActiveEditorHighlighter : TSynCustomHighlighter;
 function GetActiveEditorFilename : string;
 function GetUsingMDI : boolean;
+procedure DoBeep(const aBeep : Cardinal);
+
+{$IFDEF NXT_ONLY}
+procedure SetActiveEditor(aEditor : TBricxCCSynEdit);
+procedure SetActiveEditorFilename(const aName : string);
+{$ENDIF}
 
 function FileCanBeCompiled: Boolean;
 function FileCanBeProcessed: Boolean;
@@ -61,19 +66,26 @@ function FileIsJava(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsForth(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsROPS(AEH : TSynCustomHighlighter = nil): Boolean;
 
+function CheckAlive : boolean;
+
 implementation
 
 uses
-{$IFNDEF FPC}
-  MainUnit, Editor,
+  SysUtils, Controls, Dialogs,
+{$IFNDEF NXT_ONLY}
+  Windows, MainUnit, Editor,
+{$ENDIF}
   SynHighlighterPas, SynHighlighterCpp, SynHighlighterLASM,
   SynHighlighterForth, SynHighlighterJava, SynHighlighterMindScript,
-{$ENDIF}
-  SysUtils,
   SynHighlighterNBC, SynHighlighterNQC, SynHighlighterNPG, SynHighlighterRS,
-  SynHighlighterROPS;
+  SynHighlighterROPS, brick_common, uGlobals, uLocalizedStrings;
 
-{$IFNDEF FPC}
+{$IFNDEF NXT_ONLY}
+procedure DoBeep(const aBeep : Cardinal);
+begin
+  MessageBeep(aBeep);
+end;
+
 function GetActiveEditor : TBricxCCSynEdit;
 var
   AEF : TEditorForm;
@@ -119,24 +131,46 @@ begin
 end;
 
 {$ELSE}
+
+var
+  fActiveEditor : TBricxCCSynEdit = nil;
+  fActiveEditorFilename : string = '';
+
+procedure SetActiveEditor(aEditor : TBricxCCSynEdit);
+begin
+  fActiveEditor := aEditor;
+end;
+
+procedure SetActiveEditorFilename(const aName : string);
+begin
+  fActiveEditorFilename := aName;
+end;
+
 function GetActiveEditor : TBricxCCSynEdit;
 begin
-  Result := nil;
+  Result := fActiveEditor;
 end;
 
 function GetActiveEditorHighlighter : TSynCustomHighlighter;
 begin
   Result := nil;
+  if Assigned(fActiveEditor) then
+    Result := fActiveEditor.Highlighter;
 end;
 
 function GetActiveEditorFilename : string;
 begin
-  Result := '';
+  Result := fActiveEditorFilename;
 end;
 
 function GetUsingMDI : boolean;
 begin
   Result := False;
+end;
+
+procedure DoBeep(const aBeep : Cardinal);
+begin
+//  MessageBeep(aBeep);
 end;
 
 {$ENDIF}
@@ -318,6 +352,32 @@ begin
     AEH := GetActiveEditorHighlighter;
   if not Assigned(AEH) then Exit;
   Result := AEH is TSynROPSSyn;
+end;
+
+{Checks whether the brick is (still) alive}
+function CheckAlive : boolean;
+begin
+  Result := False;
+  // always start with a closed BrickComm
+  if not BrickComm.UseBluetooth then
+    BrickComm.Close;
+  while True do
+  begin
+    if not LocalStandardFirmware then begin
+      // leave BrickComm open
+      BrickComm.Open;
+      Break;
+    end
+    else begin
+      if BrickComm.BrickAlive then
+        Break
+      else if MessageDlg(S_CANNOT_FIND_RCX, mtWarning, [mbOK, mbCancel], 0) = mrCancel then
+        Exit;
+    end;
+    if not BrickComm.UseBluetooth then
+      BrickComm.Close;
+  end;
+  Result := True;
 end;
 
 end.

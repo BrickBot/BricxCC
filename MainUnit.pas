@@ -623,8 +623,9 @@ type
     procedure HandleOnAddConstruct(Sender : TObject; const aTemplate : string; const aX : integer = -1; const aY : integer = -1);
   private
     { Private declarations }
-    fOldActiveEditorForm : TEditorForm;
     newcount : integer;
+    FActiveLine : integer;
+    fOldActiveEditorForm : TEditorForm;
     fMDI : Boolean;
     FResume : boolean;
     fNQCAPIBase : TStringList;
@@ -678,7 +679,6 @@ type
     procedure AddUserDefinedFunctions(aStrings : TStrings);
   public
     { Public declarations }
-    FActiveLine : integer;
     procedure HandleOnCompilerStatusChange(Sender: TObject; const StatusMsg: string);
     procedure DoDisplayErrors(aShow : boolean);
     procedure DoHideErrors;
@@ -710,6 +710,7 @@ type
     property EditorFormCount : integer read GetEditorFormCount;
     property EditorForms[index : integer] : TEditorForm read GetEditorForm;
     property MDI : Boolean read fMDI write fMDI;
+    property ActiveLine : integer read fActiveLine;
   end;
 
 var
@@ -3695,7 +3696,7 @@ end;
 
 procedure TMainForm.UpdateEditorPosition;
 var
-  CD : TClumpData;
+  CD : TProgClumpData;
   CO : TOffset;
   AEF : TEditorForm;
   i : integer;

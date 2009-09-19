@@ -71,11 +71,7 @@ begin
     {Execute the command, and wait}
     BrickComm.Close;
     try
-{$IFNDEF FPC}
-      TheResult := DoExecuteCommand(commandstr, LocalCompilerTimeout, wd);
-{$ELSE}
-      TheResult := -1;
-{$ENDIF}
+      TheResult := DoExecuteCommand(commandstr, '', LocalCompilerTimeout, wd, True);
       if TheResult <> 0 then
         ShowMessage(sFailedToSetLNPAddr)
       else

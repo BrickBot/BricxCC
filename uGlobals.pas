@@ -44,6 +44,11 @@ const
   kRemoteStopOutOff   = $0040;
   kRemotePlayASound   = $0080;
 
+{$IFDEF FPC}
+const
+  MB_ICONASTERISK = $00000040;
+{$ENDIF}
+
 const
   K_RCX   = 'RCX';
   K_CYBER = 'CyberMaster';
@@ -76,6 +81,10 @@ var
 
 var
   LocalBrickType : integer;
+  LocalStandardFirmware : Boolean;
+
+var
+  GlobalAbort : boolean;
 
 function IsNXT : boolean;
 function IsSwan : boolean;

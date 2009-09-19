@@ -419,12 +419,6 @@ type
     procedure btnShowNXCDefsClick(Sender: TObject);
   private
     { Private declarations }
-    cc_keywords: TStringList;
-    cc_commands: TStringList;
-    cc_constants: TStringList;
-    cc_nxc_keywords: TStringList;
-    cc_nxc_commands: TStringList;
-    cc_nxc_constants: TStringList;
     fColorsChanged : boolean;
     fKeystrokes : TSynEditKeyStrokes;
     fCodeTemplates: TStrings;
@@ -501,7 +495,20 @@ type
     procedure CreateHotKeyEdits;
     procedure CreateSynEditComponents;
     procedure CreateDirectoryEdits;
-    function CreateSortedStringList : TStringList;
+    procedure DisplayAPIValues;
+    procedure GetAPIValues;
+    procedure DisplayCompilerValues;
+    procedure DisplayEditorValues;
+    procedure DisplayGeneralValues;
+    procedure DisplayMacroValues;
+    procedure DisplayStartupValues;
+    procedure DisplayTemplateValues(const aLang : integer);
+    procedure GetCompilerValues;
+    procedure GetEditorValues;
+    procedure GetGeneralValues;
+    procedure GetMacroValues;
+    procedure GetStartupValues;
+    procedure GetTemplateValues(const aLang : integer);
   public
     { Public declarations }
     hkCodeComp: TBricxCCHotKey;
@@ -516,7 +523,7 @@ type
     edtLeJOSRoot: TDirectoryEdit;
     NewTemplatesList: TSynEdit;
     SynEditColors: TSynEdit;
-    property ColorsChanged : boolean read fColorsChanged;
+//    property ColorsChanged : boolean read fColorsChanged;
     property Keystrokes : TSynEditKeyStrokes read fKeystrokes write SetKeystrokes;
     property CodeTemplates : TStrings read fCodeTemplates write SetCodeTemplates;
     property PreferredLanguage : Integer read GetPrefLang write SetPrefLang;
@@ -525,11 +532,6 @@ type
 var
   PrefForm: TPrefForm;
   AddMenuItemsToNewMenu : boolean = True;
-
-{Recent Files}
-procedure ShowRecentFiles(parent : TOfficeMenuItem; handler : TNotifyEvent);
-function GetRecentFileName(i : Byte) : string;
-procedure AddRecentFile(str:string);
 
 procedure FillLockedProgramArray;
 
@@ -549,7 +551,6 @@ var
   FirmwareFast : boolean;
   FirmwareComp : boolean;
   QuietFirmware : Boolean;
-  DroppedRecent : Boolean;
   FirmwareChunkSize : Integer;
   DownloadWaitTime : Integer;
   Prog1Locked : boolean;
@@ -563,31 +564,18 @@ var
   LockedProgArray : array[0..7] of Boolean;
   PingTimeout : Word = K_DEFAULT_PING_TIMEOUT;
   TowerExistsSleep : Word = K_DEFAULT_TOWER_EXISTS_SLEEP;
-  MaxRecent : Byte = 4;
-
-{ Other Shortcuts }
-var
-  CodeCompShortCut : TShortCut;
-  ParamCompShortCut : TShortCut;
-  RecMacroShortCut : TShortCut;
-  PlayMacroShortCut : TShortCut;
 
 {General}
 var
   SaveWindowPos:boolean;     // Whether to save window positions
-  ShowRecent:boolean;        // Whether to show recent files
-  ShowRecentChanged:boolean; // Whether ShowRecent was changed
-  ShowStatusbar:boolean;     // Whether to show the statusbar
-  DefaultMacroLibrary : string;
   LockToolbars : Boolean;
 
 
-function  PreferredLanguageName : string;
 procedure SaveDesktopMiscToFile(aFilename : string);
 procedure LoadDesktopMiscFromFile(aFilename : string);
 procedure SaveWindowValuesToFile(aFilename : string);
 procedure LoadWindowValuesFromFile(aFilename : string);
-procedure UpgradeRegistry;
+procedure UpgradeRegistry(aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
 procedure RegisterApp;
 procedure SetToolbarDragging(bAuto : Boolean);
 procedure RestoreToolbars;
@@ -604,7 +592,7 @@ implementation
 
 uses
 {$IFNDEF FPC}
-  Windows, 
+  Windows,
   SynEditKeyCmdsEditor,
   uForthConsole,
 {$ENDIF}
@@ -619,39 +607,16 @@ uses
   uRemoteGlobals, uRegUtils, uGlobals, uBasicPrefs;
 
 
-
-var RecentFiles : array of string = nil;
-
+var
+  cc_keywords: TStringList;
+  cc_commands: TStringList;
+  cc_constants: TStringList;
 
 var
   StartupAction : Integer;     // Action to take at startup
   BrickType : Integer;           // RCX (0), Cybermaster (1), Scout (2), or RCX2 (3)
   COMPort : string;           // default COM port (''=automatic)
-  CompilerTimeout : Integer;
   UseMDIMode : Boolean;
-
-const
-{$IFDEF FPC}
-  K_EDITOR_FONTNAME_DEFAULT = 'Courier 10 Pitch';
-  K_EDITOR_COLOR_DEFAULT    = clWhite;
-  K_SEL_FG_COLOR_DEFAULT    = clWhite;
-  K_SEL_BG_COLOR_DEFAULT    = clNavy;
-  K_ALINE_COLOR_DEFAULT     = clWhite;
-  K_REDGE_COLOR_DEFAULT     = clSilver;
-  K_STRUCT_COLOR_DEFAULT    = clNone;
-  K_GUTTER_COLOR_DEFAULT    = clSilver;
-  K_USEINTERNALNBC_DEFAULT  = True;
-{$ELSE}
-  K_EDITOR_FONTNAME_DEFAULT = 'Courier New';
-  K_EDITOR_COLOR_DEFAULT    = clWindow;
-  K_SEL_FG_COLOR_DEFAULT    = clHighlightText;
-  K_SEL_BG_COLOR_DEFAULT    = clHighlight;
-  K_ALINE_COLOR_DEFAULT     = clWindow;
-  K_REDGE_COLOR_DEFAULT     = clSilver;
-  K_STRUCT_COLOR_DEFAULT    = clNone;
-  K_GUTTER_COLOR_DEFAULT    = clBtnFace;
-  K_USEINTERNALNBC_DEFAULT  = False;
-{$ENDIF}
 
 const
   K_PID           = 'BricxCC.1';
@@ -659,7 +624,6 @@ const
   K_OLDVERSION    = 'version 3.2';
   K_WINDOWSECTION = 'BricxCC_Windows';
   K_MISCSECTION   = 'BricxCC_Misc';
-  K_DEF_MACRO_LIB = 'bricxcc.mlb';
   K_CYGWIN_DIR    = 'c:\cygwin';
   K_BRICKOS_ROOT  = '/brickos';
   K_BRICKOS_MAKE_TEMPLATE =
@@ -705,26 +669,6 @@ const
     '%.bin: %.class $(DOBJECTS)' + #13#10 +
     #9'$(LEJOS) $* -o $@' + #13#10;
   K_MAX_OLD_PATHS = 4;
-
-function ExePath : string;
-begin
-  Result := ExtractFilePath(Application.ExeName);
-end;
-
-function BoolToStr(aVal : boolean) : string;
-begin
-  Result := 'F';
-  if aVal then
-    Result := 'T';
-end;
-
-function StrToBool(aStr : string) : boolean;
-var
-  U : string;
-begin
-  U := UpperCase(aStr);
-  result := (U = 'T') or (U = 'TRUE');
-end;
 
 procedure SavePositions(R : TRegistry; aComp : TComponent);
 var
@@ -911,7 +855,7 @@ begin
     theFile.WriteInteger(K_MISCSECTION, 'BrickType', LocalBrickType);
     theFile.WriteInteger(K_MISCSECTION, 'SlotNum', CurrentProgramSlot);
     theFile.WriteInteger(K_MISCSECTION, 'Firmware', Ord(LocalFirmwareType));
-    theFile.WriteBool(K_MISCSECTION, 'UseBluetooth', LocalUseBluetooth); 
+    theFile.WriteBool(K_MISCSECTION, 'UseBluetooth', LocalUseBluetooth);
     theFile.UpdateFile;
   finally
     theFile.Free;
@@ -1052,14 +996,6 @@ end;
   Reading and writing the registry
  **************************************************}
 
-function MyIntToStr(val:integer):string;
-begin
-//  Result := Format('%3.3d', [val]);
-  Result := IntToStr(val div 100) +
-            IntToStr((val mod 100) div 10) +
-            IntToStr(val mod 10);
-end;
-
 {Macros}
 
 {Loads the macro values from the registry}
@@ -1091,9 +1027,9 @@ begin
   begin
     Reg_OpenKey(reg, 'Macros');
     i:=1;
-    while reg.ValueExists('Macro'+MyIntToStr(i)) do
+    while reg.ValueExists('Macro'+BricxCCIntToStr(i)) do
     begin
-      macros[i] := Reg_ReadString(reg, 'Macro'+MyIntToStr(i),'');
+      macros[i] := Reg_ReadString(reg, 'Macro'+BricxCCIntToStr(i),'');
       i := i+1;
     end;
     macronumb := i-1;
@@ -1108,7 +1044,7 @@ begin
   Reg_DeleteKey(reg, 'Macros');
   Reg_OpenKey(reg, 'Macros');
   for i:=1 to macronumb do
-    reg.WriteString('Macro'+MyIntToStr(i),macros[i]);
+    reg.WriteString('Macro'+BricxCCIntToStr(i),macros[i]);
   reg.CloseKey;
 end;
 
@@ -1119,204 +1055,50 @@ begin
   LoadMacroValues(reg);
 end;
 
-{Templates}
-
-function LanguageIndexToName(const aLang : integer) : string;
-begin
-  if (aLang >= 0) and (aLang < Highlighters.Count) then
-    Result := Highlighters[aLang]
-  else
-    Result := MyIntToStr(aLang);
-end;
-
-{Loads the template values from the registry}
-procedure LoadTemplateValues(const aLang : integer; reg : TRegistry);
-var
-  i, idx : integer;
-  tmpStr, valName, fName : String;
-  SL : TStringList;
-begin
-  if not Reg_KeyExists(reg, 'Templates') then
-  begin
-    fName := ProgramDir+IncludeTrailingPathDelimiter('Default')+LanguageIndexToName(aLang)+'_templates.txt';
-    if FileExists(fName) then
-    begin
-      SL := TStringList.Create;
-      try
-        SL.LoadFromFile(fName);
-        templatenumb[aLang] := SL.Count;
-        SetLength(templates[aLang], templatenumb[aLang]);
-        idx := 0;
-        for i := 0 to SL.Count - 1 do
-        begin
-          inc(idx);
-          tmpStr := SL[i];
-          if (idx = 1) and
-             (tmpStr <> '') and not (tmpStr[1] in ['-', '|']) then
-          begin
-            // first line should be a '-' or '|' line.  If it isn't then add one
-            templates[aLang][idx-1] := '-';
-            inc(idx);
-          end;
-          templates[aLang][idx-1] := tmpStr;
-        end;
-      finally
-        SL.Free;
-      end;
-    end;
-//    if Assigned(ConstructForm) then
-//      ConstructForm.CreateConstructPanel;
-  end
-  else
-  begin
-    Reg_OpenKey(reg, 'Templates');
-
-    templatenumb[aLang] := 0;
-    SL := TStringList.Create;
-    try
-      reg.GetValueNames(SL);
-      for i := 0 to SL.Count - 1 do
-      begin
-        if Pos(MyIntToStr(aLang)+'_Template', SL[i]) = 1 then
-          inc(templatenumb[aLang]);
-      end;
-    finally
-      SL.Free;
-    end;
-    SetLength(templates[aLang], templatenumb[aLang]);
-    i := 1;
-    idx := 1;
-    valName := MyIntToStr(aLang)+'_Template'+MyIntToStr(idx);
-    while reg.ValueExists(valName) do
-    begin
-      tmpStr := Reg_ReadString(reg, valName, '');
-      if (i = 1) and
-         (tmpStr <> '') and not (tmpStr[1] in ['-', '|']) then
-      begin
-        // first line should be a '-' or '|' line.  If it isn't then add one
-        templates[aLang][i-1] := '-';
-        inc(i);
-      end;
-      templates[aLang][i-1] := tmpStr;
-      inc(idx);
-      inc(i);
-      valName := MyIntToStr(aLang)+'_Template'+MyIntToStr(idx);
-    end;
-    templatenumb[aLang] := i-1;
-    reg.CloseKey;
-  end;
-end;
-
-{Saves the template values to the registry}
-procedure SaveTemplateValues(const aLang : integer; reg : TRegistry);
-var
-  i : integer;
-begin
-  // only delete the key on the very first language
-  if aLang = 0 then
-    Reg_DeleteKey(reg, 'Templates');
-  Reg_OpenKey(reg, 'Templates');
-  for i:=1 to templatenumb[aLang] do
-    reg.WriteString(MyIntToStr(aLang)+'_Template'+MyIntToStr(i),templates[aLang][i-1]);
-  reg.CloseKey;
-end;
-
-{Resets the template values to default}
-procedure ResetTemplateValues(reg : TRegistry);
-var
-  i : integer;
-begin
-  Reg_DeleteKey(reg, 'Templates');
-  for i := 0 to NUM_LANGS - 1 do
-    LoadTemplateValues(i, reg);
-end;
-
-procedure PutValuesInSyntaxHighlighter;
-begin
-  if not Assigned(PrefForm) then Exit;
-  // NQC API
-  // keywords
-  PrefForm.SynNQCSyn.KeyWords.Assign(PrefForm.cc_keywords);
-  // commands
-  PrefForm.SynNQCSyn.Commands.Assign(PrefForm.cc_commands);
-  // constants
-  PrefForm.SynNQCSyn.Constants.Assign(PrefForm.cc_constants);
-  // now copy to main form
-  MainForm.SynNQCSyn.KeyWords.Assign(PrefForm.SynNQCSyn.KeyWords);
-  MainForm.SynNQCSyn.Commands.Assign(PrefForm.SynNQCSyn.Commands);
-  MainForm.SynNQCSyn.Constants.Assign(PrefForm.SynNQCSyn.Constants);
-  // NXC API
-  // nxc keywords
-  PrefForm.SynNXCSyn.KeyWords.Assign(PrefForm.cc_nxc_keywords);
-  // commands
-  PrefForm.SynNXCSyn.Commands.Assign(PrefForm.cc_nxc_commands);
-  // constants
-  PrefForm.SynNXCSyn.Constants.Assign(PrefForm.cc_nxc_constants);
-  // now copy to main form
-  MainForm.SynNXCSyn.KeyWords.Assign(PrefForm.SynNXCSyn.KeyWords);
-  MainForm.SynNXCSyn.Commands.Assign(PrefForm.SynNXCSyn.Commands);
-  MainForm.SynNXCSyn.Constants.Assign(PrefForm.SynNXCSyn.Constants);
-end;
-
 {Keywords for Colorcoding}
 
-procedure LoadAPIValues(reg : TRegistry);
+procedure LoadNQCAPIValues(reg : TRegistry; aPrefHL, aMainHL : TSynBaseNCSyn);
 var
   i:integer;
-  SL : TStringList;
-  tmpStr : string;
 begin
   {first we populate our dynamic arrays from the highlighter if it exists}
-  if Assigned(PrefForm) then
+  if Assigned(aPrefHL) then
   begin
-    // nqc
-    PrefForm.cc_keywords.Assign(PrefForm.SynNQCSyn.KeyWords);
-    PrefForm.cc_commands.Assign(PrefForm.SynNQCSyn.Commands);
-    PrefForm.cc_constants.Assign(PrefForm.SynNQCSyn.Constants);
-    // nxc
-    PrefForm.cc_nxc_keywords.Assign(PrefForm.SynNXCSyn.KeyWords);
-    PrefForm.cc_nxc_commands.Assign(PrefForm.SynNXCSyn.Commands);
-    PrefForm.cc_nxc_constants.Assign(PrefForm.SynNXCSyn.Constants);
+    cc_keywords.Assign(aPrefHL.KeyWords);
+    cc_commands.Assign(aPrefHL.Commands);
+    cc_constants.Assign(aPrefHL.Constants);
   end;
   {Loads the keyword values from the registry}
   if not Reg_KeyExists(reg, 'Keywords') then
   begin
     // no registry key so load from file instead
     if FileExists(ProgramDir+'Default\keywords.txt') then
-    begin
-      PrefForm.cc_keywords.LoadFromFile(ProgramDir+'Default\keywords.txt');
-    end;
-
+      cc_keywords.LoadFromFile(ProgramDir+'Default\keywords.txt');
     if FileExists(ProgramDir+'Default\commands.txt') then
-    begin
-      PrefForm.cc_commands.LoadFromFile(ProgramDir+'Default\commands.txt');
-    end;
-
+      cc_commands.LoadFromFile(ProgramDir+'Default\commands.txt');
     if FileExists(ProgramDir+'Default\constants.txt') then
-    begin
-      PrefForm.cc_constants.LoadFromFile(ProgramDir+'Default\constants.txt');
-    end;
+      cc_constants.LoadFromFile(ProgramDir+'Default\constants.txt');
   end
   else
   begin
     Reg_OpenKey(reg, 'Keywords');
     try
       i:=1;
-      if reg.ValueExists('Keyword'+MyIntToStr(i)) then
+      if reg.ValueExists('Keyword'+BricxCCIntToStr(i)) then
       begin
         // old style
-        PrefForm.cc_keywords.Clear;
-        while reg.ValueExists('Keyword'+MyIntToStr(i)) do
+        cc_keywords.Clear;
+        while reg.ValueExists('Keyword'+BricxCCIntToStr(i)) do
         begin
-          PrefForm.cc_keywords.Add(Reg_ReadString(reg, 'Keyword'+MyIntToStr(i),''));
-          reg.DeleteValue('Keyword'+MyIntToStr(i));
+          cc_keywords.Add(Reg_ReadString(reg, 'Keyword'+BricxCCIntToStr(i),''));
+          reg.DeleteValue('Keyword'+BricxCCIntToStr(i));
           i := i+1;
         end;
       end
       else
       begin
         // new style
-        PrefForm.cc_keywords.Text := Reg_ReadString(reg, 'Keywords', '');
+        cc_keywords.Text := Reg_ReadString(reg, 'Keywords', '');
       end;
     finally
       reg.CloseKey;
@@ -1325,21 +1107,21 @@ begin
     Reg_OpenKey(reg, 'Commands');
     try
       i:=1;
-      if reg.ValueExists('Command'+MyIntToStr(i)) then
+      if reg.ValueExists('Command'+BricxCCIntToStr(i)) then
       begin
         // old style
-        PrefForm.cc_commands.Clear;
-        while reg.ValueExists('Command'+MyIntToStr(i)) do
+        cc_commands.Clear;
+        while reg.ValueExists('Command'+BricxCCIntToStr(i)) do
         begin
-          PrefForm.cc_commands.Add(Reg_ReadString(reg, 'Command'+MyIntToStr(i),''));
-          reg.DeleteValue('Command'+MyIntToStr(i));
+          cc_commands.Add(Reg_ReadString(reg, 'Command'+BricxCCIntToStr(i),''));
+          reg.DeleteValue('Command'+BricxCCIntToStr(i));
           i := i+1;
         end;
       end
       else
       begin
         // new style
-        PrefForm.cc_commands.Text := Reg_ReadString(reg, 'Commands', '');
+        cc_commands.Text := Reg_ReadString(reg, 'Commands', '');
       end;
     finally
       reg.CloseKey;
@@ -1348,89 +1130,37 @@ begin
     Reg_OpenKey(reg, 'Constants');
     try
       i:=1;
-      if reg.ValueExists('Constant'+MyIntToStr(i)) then
+      if reg.ValueExists('Constant'+BricxCCIntToStr(i)) then
       begin
         // old style
-        PrefForm.cc_constants.Clear;
-        while reg.ValueExists('Constant'+MyIntToStr(i)) do
+        cc_constants.Clear;
+        while reg.ValueExists('Constant'+BricxCCIntToStr(i)) do
         begin
-          PrefForm.cc_constants.Add(Reg_ReadString(reg, 'Constant'+MyIntToStr(i),''));
-          reg.DeleteValue('Constant'+MyIntToStr(i));
+          cc_constants.Add(Reg_ReadString(reg, 'Constant'+BricxCCIntToStr(i),''));
+          reg.DeleteValue('Constant'+BricxCCIntToStr(i));
           i := i+1;
         end;
       end
       else
       begin
         // new style
-        PrefForm.cc_constants.Text := Reg_ReadString(reg, 'Constants', '');
+        cc_constants.Text := Reg_ReadString(reg, 'Constants', '');
       end;
     finally
       reg.CloseKey;
     end;
   end;
-  {Loads the NXC keyword values from the registry}
-  if not Reg_KeyExists(reg, 'NXC_Keywords') then
-  begin
-    // no registry key so load from file instead
-    if FileExists(ProgramDir+'Default\nxc_keywords.txt') then
-    begin
-      PrefForm.cc_nxc_keywords.LoadFromFile(ProgramDir+'Default\nxc_keywords.txt');
-    end;
-
-    if FileExists(ProgramDir+'Default\nxc_constants.txt') then
-    begin
-      PrefForm.cc_nxc_constants.LoadFromFile(ProgramDir+'Default\nxc_constants.txt');
-    end;
-    SL := TStringList.Create;
-    try
-      if FileExists(ProgramDir+'Default\nxc_api.txt') then
-      begin
-        SL.LoadFromFile(ProgramDir+'Default\nxc_api.txt');
-        for i := 0 to SL.Count - 1 do
-        begin
-          tmpStr := SL[i];
-          SL[i] := Copy(tmpStr, 1, Pos('(', tmpStr)-1);
-        end;
-        PrefForm.cc_nxc_commands.Assign(SL);
-      end;
-    finally
-      SL.Free;
-    end;
-  end
-  else
-  begin
-    Reg_OpenKey(reg, 'NXC_Keywords');
-    try
-      PrefForm.cc_nxc_keywords.Text := Reg_ReadString(reg, 'Keywords', '');
-    finally
-      reg.CloseKey;
-    end;
-
-    Reg_OpenKey(reg, 'NXC_Commands');
-    try
-      PrefForm.cc_nxc_commands.Text := Reg_ReadString(reg, 'Commands', '');
-    finally
-      reg.CloseKey;
-    end;
-
-    Reg_OpenKey(reg, 'NXC_Constants');
-    try
-      PrefForm.cc_nxc_constants.Text := Reg_ReadString(reg, 'Constants', '');
-    finally
-      reg.CloseKey;
-    end;
-  end;
-  PutValuesInSyntaxHighlighter;
+  PutAPIValuesInSyntaxHighlighter(cc_keywords, cc_commands, cc_constants, aPrefHL, aMainHL);
 end;
 
-procedure SaveAPIValues(reg : TRegistry);
+procedure SaveNQCAPIValues(reg : TRegistry);
 begin
   {Saves the keyword values to the registry}
   // NQC
   Reg_DeleteKey(reg, 'Keywords');
   Reg_OpenKey(reg, 'Keywords');
   try
-    reg.WriteString('Keywords',PrefForm.cc_keywords.Text);
+    reg.WriteString('Keywords',cc_keywords.Text);
   finally
     reg.CloseKey;
   end;
@@ -1438,7 +1168,7 @@ begin
   Reg_DeleteKey(reg, 'Commands');
   Reg_OpenKey(reg, 'Commands');
   try
-    reg.WriteString('Commands',PrefForm.cc_commands.Text);
+    reg.WriteString('Commands',cc_commands.Text);
   finally
     reg.CloseKey;
   end;
@@ -1446,169 +1176,19 @@ begin
   Reg_DeleteKey(reg, 'Constants');
   Reg_OpenKey(reg, 'Constants');
   try
-    reg.WriteString('Constants',PrefForm.cc_constants.Text);
-  finally
-    reg.CloseKey;
-  end;
-  // NXC
-  Reg_DeleteKey(reg, 'NXC_Keywords');
-  Reg_OpenKey(reg, 'NXC_Keywords');
-  try
-    reg.WriteString('Keywords', PrefForm.cc_nxc_keywords.Text);
-  finally
-    reg.CloseKey;
-  end;
-
-  Reg_DeleteKey(reg, 'NXC_Commands');
-  Reg_OpenKey(reg, 'NXC_Commands');
-  try
-    reg.WriteString('Commands', PrefForm.cc_nxc_commands.Text);
-  finally
-    reg.CloseKey;
-  end;
-
-  Reg_DeleteKey(reg, 'NXC_Constants');
-  Reg_OpenKey(reg, 'NXC_Constants');
-  try
-    reg.WriteString('Constants', PrefForm.cc_nxc_constants.Text);
+    reg.WriteString('Constants',cc_constants.Text);
   finally
     reg.CloseKey;
   end;
 end;
 
-procedure ResetAPIValues(reg : TRegistry);
+procedure ResetNQCAPIValues(reg : TRegistry; aPrefHL, aMainHL : TSynBaseNCSyn);
 begin
 {Resets the keyword values to default}
   Reg_DeleteKey(reg, 'Keywords');
   Reg_DeleteKey(reg, 'Commands');
   Reg_DeleteKey(reg, 'Constants');
-  Reg_DeleteKey(reg, 'NXC_Keywords');
-  Reg_DeleteKey(reg, 'NXC_Commands');
-  Reg_DeleteKey(reg, 'NXC_Constants');
-  LoadAPIValues(reg);
-end;
-
-{ The Recent Files Information}
-
-function GetRecentFileName(i : Byte) : string;
-begin
-  Result := RecentFiles[i];
-end;
-
-procedure ShowRecentFiles(parent : TOfficeMenuItem; handler : TNotifyEvent);
-var
-  i, j, sepIdx : Integer;
-  MI : TOfficeMenuItem;
-  sep : TOfficeMenuItem;
-begin
-  for i := parent.Count - 1 downto 0 do
-  begin
-    MI := TOfficeMenuItem(parent.Items[i]);
-    if Pos('Recent', MI.Name) = 1 then
-      MI.Free;
-  end;
-
-  if not ShowRecent then Exit;
-
-  sepIdx := -1;
-  for i := parent.Count - 1 downto 0 do
-  begin
-    MI := TOfficeMenuItem(parent.Items[i]);
-    if MI.Name = 'mniSepFiles' then
-      sepIdx := i;
-  end;
-  // if we didn't find the separator then bail out
-  if sepIdx = -1 then Exit;
-
-  sep := TOfficeMenuItem(parent.Items[sepIdx]);
-  sep.Visible := False;
-
-  j := sepIdx + 1;
-  for i := Low(RecentFiles) to High(RecentFiles) do
-  begin
-    if RecentFiles[i] <> '' then
-    begin
-      sep.Visible := True;
-      // create new
-      MI := TOfficeMenuItem.Create(parent);
-      try
-        MI.Name    := 'Recent' + IntToStr(i);
-        MI.OnClick := handler;
-        MI.Tag     := i;
-        MI.Caption := '&' + IntToStr(i+1) + ' ' + RecentFiles[i];
-        parent.Insert(j, MI);
-      except
-        MI.Free;
-        raise;
-      end;
-      inc(j);
-    end;
-  end;
-end;
-
-procedure AddRecentFile(str:string);
-var
-  i, j : integer;
-begin
-  j := High(RecentFiles);
-  for i := Low(RecentFiles) to High(RecentFiles) do
-  begin
-    if RecentFiles[i] = str then
-    begin
-      j := i;
-      Break;
-    end;
-  end;
-  // move all the items above j down one and leave the
-  // items below it where they are
-  for i := j downto Low(RecentFiles) + 1 do
-    RecentFiles[i] := RecentFiles[i-1];
-  RecentFiles[Low(RecentFiles)] := str;
-end;
-
-procedure LoadRecentValues(reg : TRegistry);
-var
-  i : integer;
-begin
-  {Loads the recent files values from the registry}
-  Reg_OpenKey(reg, 'Recent Files');
-  try
-    for i := Low(RecentFiles) to High(RecentFiles) do
-      RecentFiles[i] := Reg_ReadString(reg, 'RecentFiles'+MyIntToStr(i+1),'');
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveRecentValues(reg : TRegistry);
-var
-  i : integer;
-begin
-  {Saves the recent files values in the registry}
-  Reg_DeleteKey(reg, 'Recent Files');
-  Reg_OpenKey(reg, 'Recent Files');
-  try
-    for i := Low(RecentFiles) to High(RecentFiles) do
-      reg.WriteString('RecentFiles'+MyIntToStr(i+1),RecentFiles[i]);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetRecentValues(reg : TRegistry);
-begin
-  {Resets the recent values to default}
-  Reg_DeleteKey(reg, 'Recent Files');
-  LoadRecentValues(reg);
-end;
-
-procedure SetMaxRecent(val : Byte);
-begin
-  if (val <> MaxRecent) or (RecentFiles = nil) then
-  begin
-    MaxRecent := val;
-    SetLength(RecentFiles, MaxRecent);
-  end;
+  LoadNQCAPIValues(reg, aPrefHL, aMainHL);
 end;
 
 procedure LoadWindowsValues(reg : TRegistry);
@@ -1882,35 +1462,22 @@ begin
   LoadStartupValues(reg);
 end;
 
-procedure LoadGeneralValues(reg : TRegistry);
+procedure LoadExtraGeneralValues(reg : TRegistry);
 begin
   {Loads the general values from the registry}
   Reg_OpenKey(reg, 'General');
   try
-    ShowRecent         := Reg_ReadBool(reg, 'ShowRecent',True);
-    SaveBackup         := Reg_ReadBool(reg, 'SaveBackup',True);
     SaveWindowPos      := Reg_ReadBool(reg, 'SaveWindowPos',True);
-    ShowStatusbar      := Reg_ReadBool(reg, 'ShowStatusbar',True);
-    ShowCompilerStatus := Reg_ReadBool(reg, 'ShowCompilerStatus', False);
-    AutoSaveFiles      := Reg_ReadBool(reg, 'AutoSaveFiles', False);
     AutoSaveDesktop    := Reg_ReadBool(reg, 'AutoSaveDesktop', False);
-    SaveBinaryOutput   := Reg_ReadBool(reg, 'SaveBinaryOutput', False);
     LockToolbars       := Reg_ReadBool(reg, 'LockToolbars', True);
     MaxEditWindows     := Reg_ReadBool(reg, 'MaxEditWindows', False);
     MultiFormatCopy    := Reg_ReadBool(reg, 'MultiFormatCopy', False);
     UseMDIMode         := Reg_ReadBool(reg, 'UseMDIMode', True);
     QuietFirmware      := Reg_ReadBool(reg, 'QuietFirmware', False);
-    DroppedRecent      := Reg_ReadBool(reg, 'DroppedRecent', False);
     FirmwareFast       := Reg_ReadBool(reg, 'FirmwareFast', False);
     FirmwareComp       := Reg_ReadBool(reg, 'FirmwareComp', False);
     FirmwareChunkSize  := Reg_ReadInteger(reg, 'FirmwareChunkSize', 200);
     DownloadWaitTime   := Reg_ReadInteger(reg, 'DownloadWaitTime', 100);
-    TemplatesUseDblClick := Reg_ReadBool(reg, 'TemplatesUseDoubleClick', False);
-    // NXT Explorer settings
-    NXTFilesViewStyle  := TViewStyle(Reg_ReadInteger(reg, 'NXTFilesViewStyle', Ord(vsIcon)));
-    PCFilesViewStyle   := TViewStyle(Reg_ReadInteger(reg, 'PCFilesViewStyle', Ord(vsIcon)));
-    NXTExplorerMaskIndex := Reg_ReadInteger(reg, 'NXTExplorerMaskIndex', 0);
-    NXTExplorerPath      := Reg_ReadString(reg, 'NXTExplorerPath', 'c:\');
 
     Prog1Locked        := Reg_ReadBool(reg, 'Prog1Locked', False);
     Prog2Locked        := Reg_ReadBool(reg, 'Prog2Locked', False);
@@ -1921,64 +1488,30 @@ begin
     Prog7Locked        := Reg_ReadBool(reg, 'Prog7Locked', False);
     Prog8Locked        := Reg_ReadBool(reg, 'Prog8Locked', False);
 
-    DefaultMacroLibrary := Reg_ReadString(reg, 'DefaultMacroLibrary', ExePath + K_DEF_MACRO_LIB);
-    ParseTimeout        := Reg_ReadInteger(reg, 'ParseTimeout', 2000);
     PingTimeout         := Reg_ReadInteger(reg, 'PingTimeout', PingTimeout);
     TowerExistsSleep    := Reg_ReadInteger(reg, 'TowerExistsSleep', TowerExistsSleep);
-
-    SetMaxRecent(Reg_ReadInteger(reg, 'MaxRecent', MaxRecent));
-
-    WatchPoints         := Reg_ReadInteger(reg, 'WatchPoints', WatchPoints);
-
-    gbSearchBackwards     := Reg_ReadBool(reg, 'SearchBackwards', false);
-    gbSearchCaseSensitive := Reg_ReadBool(reg, 'SearchCaseSensitive', false);
-    gbSearchFromCaret     := Reg_ReadBool(reg, 'SearchFromCaret', false);
-    gbSearchSelectionOnly := Reg_ReadBool(reg, 'SearchSelectionOnly', false);
-    gbSearchTextAtCaret   := Reg_ReadBool(reg, 'SearchTextAtCaret', true);
-    gbSearchWholeWords    := Reg_ReadBool(reg, 'SearchWholeWords', false);
-    gbSearchRegex         := Reg_ReadBool(reg, 'SearchRegex', false);
-
-    gsSearchText          := Reg_ReadString(reg, 'SearchText', '');
-    gsSearchTextHistory   := Reg_ReadString(reg, 'SearchTextHistory', '');
-    gsReplaceText         := Reg_ReadString(reg, 'ReplaceText', '');
-    gsReplaceTextHistory  := Reg_ReadString(reg, 'ReplaceTextHistory', '');
-
   finally
     reg.CloseKey;
   end;
   FillLockedProgramArray;
 end;
 
-procedure SaveGeneralValues(reg : TRegistry);
+procedure SaveExtraGeneralValues(reg : TRegistry);
 begin
   {Saves the general values to the registry}
   Reg_DeleteKey(reg, 'General');
   Reg_OpenKey(reg, 'General');
   try
-    reg.WriteBool('ShowRecent', ShowRecent);
-    reg.WriteBool('SaveBackup', SaveBackup);
     reg.WriteBool('SaveWindowPos', SaveWindowPos);
-    reg.WriteBool('ShowStatusbar', ShowStatusbar);
-    reg.WriteBool('ShowCompilerStatus', ShowCompilerStatus);
-    reg.WriteBool('AutoSaveFiles', AutoSaveFiles);
     reg.WriteBool('AutoSaveDesktop', AutoSaveDesktop);
-    reg.WriteBool('SaveBinaryOutput', SaveBinaryOutput);
     reg.WriteBool('LockToolbars', LockToolbars);
     reg.WriteBool('MaxEditWindows', MaxEditWindows);
-    reg.WriteBool('MultiFormatCopy', MultiFormatCopy);
     reg.WriteBool('UseMDIMode', UseMDIMode);
     reg.WriteBool('QuietFirmware', QuietFirmware);
-    reg.WriteBool('DroppedRecent', DroppedRecent);
     reg.WriteBool('FirmwareFast', FirmwareFast);
     reg.WriteBool('FirmwareComp', FirmwareComp);
     reg.WriteInteger('FirmwareChunkSize', FirmwareChunkSize);
     reg.WriteInteger('DownloadWaitTime', DownloadWaitTime);
-    reg.WriteBool('TemplatesUseDoubleClick', TemplatesUseDblClick);
-    // NXT Explorer settings
-    reg.WriteInteger('NXTFilesViewStyle', Ord(NXTFilesViewStyle));
-    reg.WriteInteger('PCFilesViewStyle', Ord(PCFilesViewStyle));
-    reg.WriteInteger('NXTExplorerMaskIndex', NXTExplorerMaskIndex);
-    reg.WriteString('NXTExplorerPath', NXTExplorerPath);
 
     reg.WriteBool('Prog1Locked', Prog1Locked);
     reg.WriteBool('Prog2Locked', Prog2Locked);
@@ -1989,27 +1522,8 @@ begin
     reg.WriteBool('Prog7Locked', Prog7Locked);
     reg.WriteBool('Prog8Locked', Prog8Locked);
 
-    reg.WriteString('DefaultMacroLibrary', DefaultMacroLibrary);
-    reg.WriteInteger('ParseTimeout', ParseTimeout);
     reg.WriteInteger('PingTimeout', PingTimeout);
     reg.WriteInteger('TowerExistsSleep', TowerExistsSleep);
-
-    reg.WriteInteger('MaxRecent', MaxRecent);
-    reg.WriteInteger('WatchPoints', WatchPoints);
-
-    reg.WriteBool('SearchBackwards', gbSearchBackwards);
-    reg.WriteBool('SearchCaseSensitive', gbSearchCaseSensitive);
-    reg.WriteBool('SearchFromCaret', gbSearchFromCaret);
-    reg.WriteBool('SearchSelectionOnly', gbSearchSelectionOnly);
-    reg.WriteBool('SearchTextAtCaret', gbSearchTextAtCaret);
-    reg.WriteBool('SearchWholeWords', gbSearchWholeWords);
-    reg.WriteBool('SearchRegex', gbSearchRegex);
-
-    reg.WriteString('SearchText', gsSearchText);
-    reg.WriteString('SearchTextHistory', gsSearchTextHistory);
-    reg.WriteString('ReplaceText', gsReplaceText);
-    reg.WriteString('ReplaceTextHistory', gsReplaceTextHistory);
-
   finally
     reg.CloseKey;
   end;
@@ -2019,148 +1533,24 @@ procedure ResetGeneralValues(reg : TRegistry);
 begin
   {Resets the general values to default}
   Reg_DeleteKey(reg, 'General');
-  LoadGeneralValues(reg);
-end;
-
-procedure LoadEditorValues(reg : TRegistry);
-begin
-  {Loads the editor values from the registry}
-  Reg_OpenKey(reg, 'Editor');
-  try
-    ColorCoding         := Reg_ReadBool(reg, 'ColorCoding', true);
-    ShowTemplateForm    := Reg_ReadBool(reg, 'ShowTemplateForm', true);
-    ShowTemplatePopup   := Reg_ReadBool(reg, 'ShowTemplatePopup', false);
-    FontName            := Reg_ReadString(reg, 'FontName', K_EDITOR_FONTNAME_DEFAULT);
-    FontSize            := Reg_ReadInteger(reg, 'FontSize', 9);
-    AutoIndentCode      := Reg_ReadBool(reg, 'AutoIndentCode', true);
-    MacrosOn            := Reg_ReadBool(reg, 'MacrosOn', false);
-    RICDecompAsData     := Reg_ReadBool(reg, 'RICDecompAsData', false);
-    RICDecompNameFormat := Reg_ReadString(reg, 'RICDecompNameFormat', '%s');
-    HideSelection       := Reg_ReadBool(reg, 'HideSelection', false);
-    CCInsensitive       := Reg_ReadBool(reg, 'CCInsensitive', false);
-    ScrollPastEOL       := Reg_ReadBool(reg, 'ScrollPastEOL', true);
-    HalfPageScroll      := Reg_ReadBool(reg, 'HalfPageScroll', false);
-    DragAndDropEditing  := Reg_ReadBool(reg, 'DragDropEdit', true);
-    TabWidth            := Reg_ReadInteger(reg, 'TabWidth', 2);
-    MaxUndo             := Reg_ReadInteger(reg, 'MaxUndo', 10);
-    MaxLeftChar         := Reg_ReadInteger(reg, 'MaxLeftChar', 8192);
-    ExtraLineSpacing    := Reg_ReadInteger(reg, 'ExtraLineSpacing', 0);
-    RightEdgePosition   := Reg_ReadInteger(reg, 'RightEdgePosition', 80);
-    ScrollBars          := Reg_ReadInteger(reg, 'ScrollBars', 0);
-    AltSetsSelMode      := Reg_ReadBool(reg, 'AltSetsSelMode', false);
-    MoveCursorRight     := Reg_ReadBool(reg, 'MoveCursorRight', false);
-    KeepBlanks          := Reg_ReadBool(reg, 'KeepBlanks', false);
-    UseSmartTabs        := Reg_ReadBool(reg, 'UseSmartTabs', true);
-    EnhanceHomeKey      := Reg_ReadBool(reg, 'EnhanceHomeKey', false);
-    GroupUndo           := Reg_ReadBool(reg, 'GroupUndo', false);
-    TabIndent           := Reg_ReadBool(reg, 'TabIndent', false);
-    ConvertTabs         := Reg_ReadBool(reg, 'ConvertTabs', true);
-    ShowSpecialChars    := Reg_ReadBool(reg, 'ShowSpecialChars', false);
-    HighlightCurLine    := Reg_ReadBool(reg, 'HighlightCurLine', false);
-    KeepCaretX          := Reg_ReadBool(reg, 'KeepCaretX', false);
-    AutoMaxLeft         := Reg_ReadBool(reg, 'AutoMaxLeft', false);
-    RightEdgeColor      := Reg_ReadColor(reg, 'RightEdgeColor', K_REDGE_COLOR_DEFAULT);
-    EditorColor         := Reg_ReadColor(reg, 'EditorColor', K_EDITOR_COLOR_DEFAULT);
-    SelectionForeground := Reg_ReadColor(reg, 'SelectionFG', K_SEL_FG_COLOR_DEFAULT);
-    SelectionBackground := Reg_ReadColor(reg, 'SelectionBG', K_SEL_BG_COLOR_DEFAULT);
-    StructureColor      := Reg_ReadColor(reg, 'StructureColor', K_STRUCT_COLOR_DEFAULT);
-    ActiveLineColor     := Reg_ReadColor(reg, 'ActiveLineColor', K_ALINE_COLOR_DEFAULT);
-    CommentType         := TCommentType(Reg_ReadInteger(reg, 'CommentType', Ord(ctSlash)));
-    InsertRemoveSpace   := Reg_ReadBool(reg, 'InsertRemoveSpace', false);
-    AlignMinWhitespace  := Reg_ReadInteger(reg, 'AlignMinWhitespace', 0);
-    AlignMode           := TGXAlignMode(Reg_ReadInteger(reg, 'AlignMode', Ord(gamFirstToken)));
-    AlignToken          := Reg_ReadString(reg, 'AlignToken', '=');
-    AlignTokenList      := Reg_ReadString(reg, 'AlignTokenList', '==,=,//,{,/*,"""",:,+');
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveEditorValues(reg : TRegistry);
-begin
-  {Saves the editor values to the registry}
-  Reg_DeleteKey(reg, 'Editor');
-  Reg_OpenKey(reg, 'Editor');
-  try
-    reg.WriteBool('ColorCoding', ColorCoding);
-    reg.WriteBool('ShowTemplateForm', ShowTemplateForm);
-    reg.WriteBool('ShowTemplatePopup', ShowTemplatePopup);
-    reg.WriteString('FontName', FontName);
-    reg.WriteInteger('FontSize', FontSize);
-    reg.WriteBool('AutoIndentCode', AutoIndentCode);
-    reg.WriteBool('MacrosOn', MacrosOn);
-    reg.WriteBool('RICDecompAsData', RICDecompAsData);
-    reg.WriteString('RICDecompNameFormat', RICDecompNameFormat);
-    reg.WriteBool('HideSelection', HideSelection);
-    reg.WriteBool('CCInsensitive', CCInsensitive);
-    reg.WriteBool('ScrollPastEOL', ScrollPastEOL);
-    reg.WriteBool('HalfPageScroll', HalfPageScroll);
-    reg.WriteBool('DragDropEdit', DragAndDropEditing);
-    reg.WriteInteger('TabWidth', TabWidth);
-    reg.WriteInteger('MaxUndo', MaxUndo);
-    reg.WriteInteger('MaxLeftChar', MaxLeftChar);
-    reg.WriteInteger('ExtraLineSpacing', ExtraLineSpacing);
-    reg.WriteInteger('RightEdgePosition', RightEdgePosition);
-    Reg_WriteColor(reg, 'RightEdgeColor', RightEdgeColor);
-    reg.WriteInteger('ScrollBars', ScrollBars);
-    Reg_WriteColor(reg, 'EditorColor', EditorColor);
-    Reg_WriteColor(reg, 'SelectionFG', SelectionForeground);
-    Reg_WriteColor(reg, 'SelectionBG', SelectionBackground);
-    Reg_WriteColor(reg, 'StructureColor', StructureColor);
-    Reg_WriteColor(reg, 'ActiveLineColor', ActiveLineColor);
-    reg.WriteBool('AltSetsSelMode', AltSetsSelMode);
-    reg.WriteBool('MoveCursorRight', MoveCursorRight);
-    reg.WriteBool('KeepBlanks', KeepBlanks);
-    reg.WriteBool('UseSmartTabs', UseSmartTabs);
-    reg.WriteBool('EnhanceHomeKey', EnhanceHomeKey);
-    reg.WriteBool('GroupUndo', GroupUndo);
-    reg.WriteBool('TabIndent', TabIndent);
-    reg.WriteBool('ConvertTabs', ConvertTabs);
-    reg.WriteBool('ShowSpecialChars', ShowSpecialChars);
-    reg.WriteBool('HighlightCurLine', HighlightCurLine);
-    reg.WriteBool('KeepCaretX', KeepCaretX);
-    reg.WriteBool('AutoMaxLeft', AutoMaxLeft);
-    reg.WriteInteger('CommentType', Ord(CommentType));
-    reg.WriteBool('InsertRemoveSpace', InsertRemoveSpace);
-    reg.WriteInteger('AlignMinWhitespace', AlignMinWhitespace);
-    reg.WriteInteger('AlignMode', Ord(AlignMode));
-    reg.WriteString('AlignToken', AlignToken);
-    reg.WriteString('AlignTokenList', AlignTokenList);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetEditorValues(reg : TRegistry);
-{Resets the editor values to default}
-begin
-  Reg_DeleteKey(reg, 'Editor');
-  LoadEditorValues(reg);
+  LoadBasicGeneralValues(reg);
+  LoadExtraGeneralValues(reg);
 end;
 
 {compiler values}
-procedure LoadCompilerValues(reg : TRegistry);
+procedure LoadExtraCompilerValues(reg : TRegistry);
 begin
   {Loads the compiler values from the registry}
   Reg_OpenKey(reg, 'Compiler');
   try
-    CompilerTimeout         := Reg_ReadInteger(reg, 'CompilerTimeout', 60000);
-    LocalCompilerTimeout    := CompilerTimeout;
-    CompilerSwitches        := Reg_ReadString(reg, 'CompilerSwitches', '');
-    PreferredLanguage       := Reg_ReadInteger(reg, 'PreferredLanguage', 0);
     NQCSwitches             := Reg_ReadString(reg, 'NQCSwitches', '');
     LCCSwitches             := Reg_ReadString(reg, 'LCCSwitches', '');
-    NBCSwitches             := Reg_ReadString(reg, 'NBCSwitches', '');
     CPPSwitches             := Reg_ReadString(reg, 'CPPSwitches', '');
     JavaSwitches            := Reg_ReadString(reg, 'JavaSwitches', '');
-    NBCOptLevel             := Reg_ReadInteger(reg, 'NBCOptLevel', 1);
-    NBCMaxErrors            := Reg_ReadInteger(reg, 'NBCMaxErrors', 0);
     NQCIncludePath          := Reg_ReadString(reg, 'NQCIncludePath', '');
     LCCIncludePath          := Reg_ReadString(reg, 'LCCIncludePath', '');
-    NBCIncludePath          := Reg_ReadString(reg, 'NBCIncludePath', '');
     OldNQCIncPaths          := Reg_ReadString(reg, 'OldNQCIncPaths', '');
     OldLCCIncPaths          := Reg_ReadString(reg, 'OldLCCIncPaths', '');
-    OldNBCIncPaths          := Reg_ReadString(reg, 'OldNBCIncPaths', '');
     CygwinDir               := Reg_ReadString(reg, 'CygwinDir', K_CYGWIN_DIR);
     BrickOSRoot             := Reg_ReadString(reg, 'BrickOSRoot', K_BRICKOS_ROOT);
     BrickOSMakefileTemplate := Reg_ReadString(reg, 'BrickOSMakefileTemplate', K_BRICKOS_MAKE_TEMPLATE);
@@ -2170,12 +1560,7 @@ begin
     KeepLeJOSMakefile       := Reg_ReadBool(reg, 'KeepLeJOSMakefile', False);
     NQCExePath              := Reg_ReadString(reg, 'NQCExePath', '');
     LCCExePath              := Reg_ReadString(reg, 'LCCExePath', '');
-    NBCExePath              := Reg_ReadString(reg, 'NBCExePath', '');
     IncludeSrcInList        := Reg_ReadBool(reg, 'IncludeSrcInList', False);
-    UseInternalNBC          := Reg_ReadBool(reg, 'UseInternalNBC', K_USEINTERNALNBC_DEFAULT);
-    EnhancedFirmware        := Reg_ReadBool(reg, 'EnhancedFirmware', False);
-    NXT2Firmware            := Reg_ReadBool(reg, 'NXT2Firmware', False);
-    IgnoreSysFiles          := Reg_ReadBool(reg, 'IgnoreSysFiles', False);
     LeJOSRoot               := Reg_ReadString(reg, 'LeJOSRoot', K_LEJOS_ROOT);
     JavaCompilerPath        := Reg_ReadString(reg, 'JavaCompilerPath', '');
     // forth console settings
@@ -2197,27 +1582,19 @@ begin
   end;
 end;
 
-procedure SaveCompilerValues(reg : TRegistry);
+procedure SaveExtraCompilerValues(reg : TRegistry);
 begin
   {Saves the compiler values to the registry}
   Reg_DeleteKey(reg, 'Compiler');
   Reg_OpenKey(reg, 'Compiler');
   try
-    reg.WriteInteger('CompilerTimeout', CompilerTimeout);
-    reg.WriteString('CompilerSwitches', CompilerSwitches);
-    reg.WriteInteger('PreferredLanguage', PreferredLanguage);
     reg.WriteString('NQCSwitches', NQCSwitches);
     reg.WriteString('LCCSwitches', LCCSwitches);
-    reg.WriteString('NBCSwitches', NBCSwitches);
     reg.WriteString('JavaSwitches', JavaSwitches);
-    reg.WriteInteger('NBCOptLevel', NBCOptLevel);
-    reg.WriteInteger('NBCMaxErrors', NBCMaxErrors);
     reg.WriteString('NQCIncludePath', NQCIncludePath);
     reg.WriteString('LCCIncludePath', LCCIncludePath);
-    reg.WriteString('NBCIncludePath', NBCIncludePath);
     reg.WriteString('OldNQCIncPaths', OldNQCIncPaths);
     reg.WriteString('OldLCCIncPaths', OldLCCIncPaths);
-    reg.WriteString('OldNBCIncPaths', OldNBCIncPaths);
     reg.WriteString('CygwinDir', CygwinDir);
     reg.WriteString('BrickOSRoot', BrickOSRoot);
     reg.WriteString('BrickOSMakefileTemplate', BrickOSMakefileTemplate);
@@ -2227,12 +1604,7 @@ begin
     reg.WriteBool('KeepLeJOSMakefile', KeepLeJOSMakefile);
     reg.WriteString('NQCExePath', NQCExePath);
     reg.WriteString('LCCExePath', LCCExePath);
-    reg.WriteString('NBCExePath', NBCExePath);
     reg.WriteBool('IncludeSrcInList', IncludeSrcInList);
-    reg.WriteBool('UseInternalNBC', UseInternalNBC);
-    reg.WriteBool('EnhancedFirmware', EnhancedFirmware);
-    reg.WriteBool('NXT2Firmware', NXT2Firmware);
-    reg.WriteBool('IgnoreSysFiles', IgnoreSysFiles);
     reg.WriteString('LeJOSRoot', LeJOSRoot);
     reg.WriteString('JavaCompilerPath', JavaCompilerPath);
     reg.WriteBool('ShowAllConsoleOutput', ShowAllConsoleOutput);
@@ -2257,57 +1629,8 @@ procedure ResetCompilerValues(reg : TRegistry);
 begin
 {Resets the compiler values to default}
   Reg_DeleteKey(reg, 'Compiler');
-  LoadCompilerValues(reg);
-end;
-
-{ gutter }
-procedure LoadGutterValues(reg : TRegistry);
-begin
-  Reg_OpenKey(reg, 'Gutter');
-  try
-    GutterColor      := Reg_ReadColor(reg, 'GutterColor', K_GUTTER_COLOR_DEFAULT);
-    GutterWidth      := Reg_ReadInteger(reg, 'GutterWidth', 30);
-    DigitCount       := Reg_ReadInteger(reg, 'DigitCount', 4);
-    LeftOffset       := Reg_ReadInteger(reg, 'LeftOffset', 16);
-    RightOffset      := Reg_ReadInteger(reg, 'RightOffset', 2);
-    ShowLineNumbers  := Reg_ReadBool(reg, 'ShowLineNumbers', false);
-    ShowLeadingZeros := Reg_ReadBool(reg, 'ShowLeadingZeros', false);
-    ZeroStart        := Reg_ReadBool(reg, 'ZeroStart', false);
-    AutoSizeGutter   := Reg_ReadBool(reg, 'AutoSizeGutter', false);
-    GutterVisible    := Reg_ReadBool(reg, 'GutterVisible', true);
-    UseFontStyle     := Reg_ReadBool(reg, 'UseFontStyle', false);
-    SelectOnClick    := Reg_ReadBool(reg, 'SelectOnClick', false);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveGutterValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'Gutter');
-  Reg_OpenKey(reg, 'Gutter');
-  try
-    Reg_WriteColor(reg, 'GutterColor', GutterColor);
-    reg.WriteInteger('GutterWidth', GutterWidth);
-    reg.WriteInteger('DigitCount', DigitCount);
-    reg.WriteInteger('LeftOffset', LeftOffset);
-    reg.WriteInteger('RightOffset', RightOffset);
-    reg.WriteBool('ShowLineNumbers', ShowLineNumbers);
-    reg.WriteBool('ShowLeadingZeros', ShowLeadingZeros);
-    reg.WriteBool('ZeroStart', ZeroStart);
-    reg.WriteBool('AutoSizeGutter', AutoSizeGutter);
-    reg.WriteBool('GutterVisible', GutterVisible);
-    reg.WriteBool('UseFontStyle', UseFontStyle);
-    reg.WriteBool('SelectOnClick', SelectOnClick);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetGutterValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'Gutter');
-  LoadGutterValues(reg);
+  LoadBasicCompilerValues(reg);
+  LoadExtraCompilerValues(reg);
 end;
 
 procedure LoadOtherOptionValues(reg : TRegistry);
@@ -2335,54 +1658,6 @@ procedure ResetOtherOptionValues(reg : TRegistry);
 begin
   Reg_DeleteKey(reg, 'OtherOption');
   LoadOtherOptionValues(reg);
-end;
-
-{ Other shortcuts }
-procedure LoadShortcutValues(reg : TRegistry);
-begin
-  Reg_OpenKey(reg, 'Shortcuts');
-  try
-    CodeCompShortCut  := Reg_ReadInteger(reg, 'CodeCompShortCut', ShortCut(Word(' '), [ssCtrl]));
-    ParamCompShortCut := Reg_ReadInteger(reg, 'ParamCompShortCut', ShortCut(Word(' '), [ssShift, ssCtrl]));
-    RecMacroShortCut  := Reg_ReadInteger(reg, 'RecMacroShortCut', ShortCut(Word('R'), [ssShift, ssCtrl]));
-    PlayMacroShortCut := Reg_ReadInteger(reg, 'PlayMacroShortCut', ShortCut(Word('P'), [ssShift, ssCtrl]));
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveShortcutValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'Shortcuts');
-  Reg_OpenKey(reg, 'Shortcuts');
-  try
-    reg.WriteInteger('CodeCompShortCut', CodeCompShortCut);
-    reg.WriteInteger('ParamCompShortCut', ParamCompShortCut);
-    reg.WriteInteger('RecMacroShortCut', RecMacroShortCut);
-    reg.WriteInteger('PlayMacroShortCut', PlayMacroShortCut);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetShortcutValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'Shortcuts');
-  LoadShortcutValues(reg);
-end;
-
-procedure RememberShortcutValues;
-begin
-end;
-
-procedure GetShortcutValues;
-begin
-  PrefForm.UpdateGlobalShortcutValues;
-end;
-
-procedure DisplayShortcutValues;
-begin
-  PrefForm.DisplayShortcutValues;
 end;
 
 { keystrokes }
@@ -2456,51 +1731,6 @@ end;
 
 { code templates }
 
-procedure LoadCodeTemplateValues(reg : TRegistry; S : TStrings);
-var
-  tmpSL : TStringList;
-  tmpPath : string;
-begin
-  tmpSL := TStringList.Create;
-  try
-    if not Reg_KeyExists(reg, 'CodeTemplates') then
-    begin
-      tmpPath := ProgramDir + IncludeTrailingPathDelimiter('Default') + 'code.dci';
-      if FileExists(tmpPath) then
-        tmpSL.LoadFromFile(tmpPath);
-    end
-    else
-    begin
-      Reg_OpenKey(reg, 'CodeTemplates');
-      try
-        tmpSL.Text := Reg_ReadString(reg, 'Data', '');
-      finally
-        reg.CloseKey;
-      end;
-    end;
-    S.Assign(tmpSL);
-  finally
-    tmpSL.Free;
-  end;
-end;
-
-procedure SaveCodeTemplateValues(reg : TRegistry; S : TStrings);
-begin
-  Reg_DeleteKey(reg, 'CodeTemplates');
-  Reg_OpenKey(reg, 'CodeTemplates');
-  try
-    reg.WriteString('Data',S.Text);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetCodeTemplateValues(reg : TRegistry; S : TStrings);
-begin
-  Reg_DeleteKey(reg, 'CodeTemplates');
-  LoadCodeTemplateValues(reg, S);
-end;
-
 procedure LoadPageSetupValues(reg : TRegistry);
 var
   tmpStream : TMemoryStream;
@@ -2560,36 +1790,6 @@ begin
   LoadPageSetupValues(reg);
 end;
 
-procedure LoadWatchValues(reg : TRegistry);
-begin
-  if not Assigned(WatchForm) then Exit;
-  Reg_OpenKey(reg, 'WatchValues');
-  try
-    WatchForm.chkIfActive.Checked := Reg_ReadBool(reg, 'OnlyIfActive', False);
-    WatchForm.chkSyncSeries.Checked := Reg_ReadBool(reg, 'SyncSeries', True);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveWatchValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'WatchValues');
-  Reg_OpenKey(reg, 'WatchValues');
-  try
-    reg.WriteBool('OnlyIfActive', WatchForm.chkIfActive.Checked);
-    reg.WriteBool('SyncSeries', WatchForm.chkSyncSeries.Checked);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetWatchValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'WatchValues');
-  LoadWatchValues(reg);
-end;
-
 procedure LoadDatalogValues(reg : TRegistry);
 begin
   if not Assigned(DatalogForm) then Exit;
@@ -2618,264 +1818,58 @@ begin
   LoadDatalogValues(reg);
 end;
 
-{ Transfer }
-procedure LoadTransferValues(const aKey : string; aList : TList; reg : TRegistry);
-var
-  i, cnt : integer;
-  T : TTransferItem;
-begin
-  Reg_OpenKey(reg, aKey);
-  try
-    // load transfer items from registry
-    cnt := Reg_ReadInteger(reg, 'Count', 0);
-    for i := 0 to cnt - 1 do
-    begin
-      T := TTransferItem.Create;
-      try
-        aList.Add(T);
-        T.Title := Reg_ReadString(reg, 'Title' + IntToStr(i), '');
-        T.Path := Reg_ReadString(reg, 'Path' + IntToStr(i), '');
-        T.WorkingDir := Reg_ReadString(reg, 'WorkingDir' + IntToStr(i), '');
-        T.Params := Reg_ReadString(reg, 'Params' + IntToStr(i), '');
-        T.Wait   := Reg_ReadBool(reg, 'Wait' + IntToStr(i), false);
-        T.Close  := Reg_ReadBool(reg, 'Close' + IntToStr(i), false);
-        T.Restrict := Reg_ReadBool(reg, 'Restrict' + IntToStr(i), false);
-        T.Extension := Reg_ReadString(reg, 'Extension' + IntToStr(i), '');
-      except
-        T.Free;
-      end;
-    end;
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveTransferValues(const aKey : string; aList : TList; reg : TRegistry);
-var
-  i : integer;
-  T : TTransferItem;
-begin
-  Reg_DeleteKey(reg, aKey);
-  Reg_OpenKey(reg, aKey);
-  try
-    // save transfer items to registry
-    reg.WriteInteger('Count', aList.Count);
-    for i := 0 to aList.Count - 1 do
-    begin
-      T := TTransferItem(aList[i]);
-      reg.WriteString('Title' + IntToStr(i), T.Title);
-      reg.WriteString('Path' + IntToStr(i), T.Path);
-      reg.WriteString('WorkingDir' + IntToStr(i), T.WorkingDir);
-      reg.WriteString('Params' + IntToStr(i), T.Params);
-      reg.WriteBool('Wait' + IntToStr(i), T.Wait);
-      reg.WriteBool('Close' + IntToStr(i), T.Close);
-      reg.WriteBool('Restrict' + IntToStr(i), T.Restrict);
-      reg.WriteString('Extension' + IntToStr(i), T.Extension);
-    end;
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetTransferValues(const aKey : string; aList : TList; reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, aKey);
-  LoadTransferValues(aKey, aList, reg);
-end;
-
-{ Code Explorer }
-procedure LoadExplorerValues(reg : TRegistry);
-var
-  PT : TProcType;
-begin
-  Reg_OpenKey(reg, 'Code Explorer');
-  try
-    // load code explorer settings from registry
-    CodeExplorerSettings.CategorySort := Reg_ReadString(reg, 'CategorySort', '');
-    CodeExplorerSettings.AutoShowExplorer := Reg_ReadBool(reg, 'Show Mod Exp', True);
-    CodeExplorerSettings.DeclarationSyntax := Reg_ReadBool(reg, 'DeclarationSyntax', False);
-    CodeExplorerSettings.UseAlphaSort := Reg_ReadBool(reg, 'UseAlphaSort', True);
-    for PT := Low(TProcType) to High(TProcType) do
-    begin
-      CodeExplorerSettings.Visible[PT] := Reg_ReadBool(reg, PROC_TYPES[PT]+'Visible', True);
-      CodeExplorerSettings.Expand[PT]  := Reg_ReadBool(reg, PROC_TYPES[PT]+'Expand', False);
-    end;
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveExplorerValues(reg : TRegistry);
-var
-  PT : TProcType;
-begin
-  Reg_DeleteKey(reg, 'Code Explorer');
-  Reg_OpenKey(reg, 'Code Explorer');
-  try
-    reg.WriteString('CategorySort', CodeExplorerSettings.CategorySort);
-    reg.WriteBool('Show Mod Exp', CodeExplorerSettings.AutoShowExplorer);
-    reg.WriteBool('DeclarationSyntax', CodeExplorerSettings.DeclarationSyntax);
-    reg.WriteBool('UseAlphaSort', CodeExplorerSettings.UseAlphaSort);
-    for PT := Low(TProcType) to High(TProcType) do
-    begin
-      reg.WriteBool(PROC_TYPES[PT]+'Visible', CodeExplorerSettings.Visible[PT]);
-      reg.WriteBool(PROC_TYPES[PT]+'Expand', CodeExplorerSettings.Expand[PT]);
-    end;
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetExplorerValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'Code Explorer');
-  LoadExplorerValues(reg);
-end;
-
-{ Procedure List }
-procedure LoadProcListValues(reg : TRegistry);
-begin
-  Reg_OpenKey(reg, 'Procedure List');
-  try
-    // load procedure list settings from registry
-    ProcedureListSettings.SearchAll  := Reg_ReadBool(reg, 'SearchAll', false);
-    ProcedureListSettings.Left       := Reg_ReadInteger(reg, 'Left', -1);
-    ProcedureListSettings.Top        := Reg_ReadInteger(reg, 'Top', -1);
-    ProcedureListSettings.Width      := Reg_ReadInteger(reg, 'Width', -1);
-    ProcedureListSettings.Height     := Reg_ReadInteger(reg, 'Height', -1);
-    ProcedureListSettings.SortColumn := Reg_ReadInteger(reg, 'SortColumn', -1);
-    ProcedureListSettings.FontName   := Reg_ReadString(reg, 'FontName', '');
-    ProcedureListSettings.FontSize   := Reg_ReadInteger(reg, 'FontSize', -1);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure SaveProcListValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'Procedure List');
-  Reg_OpenKey(reg, 'Procedure List');
-  try
-    reg.WriteBool('SearchAll', ProcedureListSettings.SearchAll);
-    if ProcedureListSettings.Left <> -1 then
-      reg.WriteInteger('Left', ProcedureListSettings.Left);
-    if ProcedureListSettings.Top <> -1 then
-      reg.WriteInteger('Top', ProcedureListSettings.Top);
-    if ProcedureListSettings.Width <> -1 then
-      reg.WriteInteger('Width', ProcedureListSettings.Width);
-    if ProcedureListSettings.Height <> -1 then
-      reg.WriteInteger('Height', ProcedureListSettings.Height);
-    if ProcedureListSettings.FontName <> '' then
-      reg.WriteString('FontName', ProcedureListSettings.FontName);
-    if ProcedureListSettings.FontSize <> -1 then
-      reg.WriteInteger('FontSize', ProcedureListSettings.FontSize);
-  finally
-    reg.CloseKey;
-  end;
-end;
-
-procedure ResetProcListValues(reg : TRegistry);
-begin
-  Reg_DeleteKey(reg, 'Procedure List');
-  LoadProcListValues(reg);
-end;
-
 { all }
-procedure LoadAllValues(reg : TRegistry; k : TSynEditKeyStrokes; S : TStrings);
-var
-  i : integer;
+procedure LoadAllValues(reg : TRegistry; k : TSynEditKeyStrokes; S : TStrings;
+  aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
 begin
-  LoadGeneralValues(reg);
-  LoadEditorValues(reg);
-  LoadCompilerValues(reg);
+  LoadBasicValues(reg, S, aPrefHLNXC, aMainHLNXC);
+  LoadExtraGeneralValues(reg);
+  LoadExtraCompilerValues(reg);
+  LoadNQCAPIValues(reg, aPrefHLNQC, aMainHLNQC);
   LoadStartupValues(reg);
   LoadColorValues(reg);
-  LoadJoystickValues(reg);
-  LoadRemoteValues(reg);
-  LoadRecentValues(reg);
-  LoadWindowsValues(reg);
-  LoadAPIValues(reg);
-  for i := 0 to NUM_LANGS - 1 do
-    LoadTemplateValues(i, reg);
-  LoadMacroValues(reg);
-  LoadGutterValues(reg);
   LoadOtherOptionValues(reg);
-  LoadShortcutValues(reg);
+  LoadWindowsValues(reg);
+  LoadMacroValues(reg);
   LoadKeystrokeValues(reg, k);
   LoadPageSetupValues(reg);
-  LoadCodeTemplateValues(reg, S);
-  LoadWatchValues(reg);
   LoadDatalogValues(reg);
-  LoadTransferValues('CompXfer', CompXferList, reg);
-  LoadTransferValues('Transfer', TransferList, reg);
-  LoadTransferValues('PrecompileSteps', PrecompileSteps, reg);
-  LoadTransferValues('PostcompileSteps', PostcompileSteps, reg);
-  LoadExplorerValues(reg);
-  LoadProcListValues(reg);
 end;
 
 procedure SaveAllValues(reg : TRegistry; k : TSynEditKeyStrokes; S : TStrings);
-var
-  i : integer;
 begin
-  SaveGeneralValues(reg);
-  SaveEditorValues(reg);
-  SaveCompilerValues(reg);
+  SaveBasicValues(reg, S);
+  SaveExtraGeneralValues(reg);
+  SaveExtraCompilerValues(reg);
+  SaveNQCAPIValues(reg);
   SaveStartupValues(reg);
   SaveColorValues(reg);
-  SaveJoystickValues(reg);
-  SaveRemoteValues(reg);
-  SaveRecentValues(reg);
-  SaveWindowsValues(reg);
-  SaveAPIValues(reg);
-  for i := 0 to NUM_LANGS - 1 do
-    SaveTemplateValues(i, reg);
-  SaveMacroValues(reg);
-  SaveGutterValues(reg);
   SaveOtherOptionValues(reg);
-  SaveShortcutValues(reg);
+  SaveWindowsValues(reg);
+  SaveMacroValues(reg);
   SaveKeystrokeValues(reg, k);
   SavePageSetupValues(reg);
-  SaveCodeTemplateValues(reg, S);
-  SaveWatchValues(reg);
   SaveDatalogValues(reg);
-  SaveTransferValues('Transfer', TransferList, reg);
-  SaveTransferValues('PrecompileSteps', PrecompileSteps, reg);
-  SaveTransferValues('PostcompileSteps', PostcompileSteps, reg);
-  SaveExplorerValues(reg);
-  SaveProcListValues(reg);
 end;
 
-procedure ResetAllValues(reg : TRegistry; S : TStrings);
+procedure ResetAllValues(reg : TRegistry; S : TStrings; aPrefHL, aMainHL : TSynBaseNCSyn);
 begin
   ResetGeneralValues(reg);
-  ResetEditorValues(reg);
   ResetCompilerValues(reg);
+  ResetBasicValues(reg, S, aPrefHL, aMainHL);
+  ResetNQCAPIValues(reg, aPrefHL, aMainHL);
   ResetStartupValues(reg);
   ResetColorValues(reg);
-  ResetJoystickValues(reg);
-  ResetRemoteValues(reg);
-  ResetRecentValues(reg);
-  ResetWindowsValues(reg);
-  ResetAPIValues(reg);
-  ResetTemplateValues(reg);
-  ResetMacroValues(reg);
-  ResetGutterValues(reg);
   ResetOtherOptionValues(reg);
+  ResetWindowsValues(reg);
+  ResetMacroValues(reg);
   ResetKeystrokeValues(reg);
   ResetPageSetupValues(reg);
-  ResetCodeTemplateValues(reg, S);
-  ResetWatchValues(reg);
   ResetDatalogValues(reg);
-  ResetTransferValues('Transfer', TransferList, reg);
-  ResetTransferValues('PrecompileSteps', PrecompileSteps, reg);
-  ResetTransferValues('PostcompileSteps', PostcompileSteps, reg);
-  ResetExplorerValues(reg);
-  ResetProcListValues(reg);
 end;
 
 
-procedure UpgradeRegistry;
+procedure UpgradeRegistry(aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
 const
   K_MINVER = 3.2;
 var
@@ -2906,14 +1900,14 @@ begin
                 fMainKey := K_MAINKEY;
                 fVersion := 'version ' + sVer;
                 // load values from old version
-                LoadAllValues(R, K, S);
+                LoadAllValues(R, K, S, aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC);
                 bLoaded := True;
               end
               else if R.OpenKey(K_MAINKEY+'\'+sVer, false) then begin
                 fMainKey := K_MAINKEY;
                 fVersion := sVer;
                 // load values from old version
-                LoadAllValues(R, K, S);
+                LoadAllValues(R, K, S, aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC);
                 bLoaded := True;
               end;
               dVer := dVer - 0.1;
@@ -2922,7 +1916,7 @@ begin
               fMainKey := K_OLDMAINKEY;
               fVersion := K_OLDVERSION;
               // load values from old version
-              LoadAllValues(R, K, S);
+              LoadAllValues(R, K, S, aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC);
               bLoaded := True;
             end;
           finally
@@ -3170,380 +2164,10 @@ end;
  Handling the preferences form
  ********************************************}
 
-var OldShowRecent:boolean;   // For saving the old version
-
-procedure RememberGeneralValues;
-begin
-{Remember current settings such that we know whether changed}
-  OldShowRecent := ShowRecent;
-end;
-
-procedure GetGeneralValues;
-begin
-{Gets the values from the form}
-  ShowRecent         := PrefForm.CheckShowRecent.Checked;
-  ShowRecentChanged  := (ShowRecent <> OldShowRecent);
-  SaveWindowPos      := PrefForm.CheckSavePos.Checked;
-  SaveBackup         := PrefForm.CheckSaveBackup.Checked;
-  ShowCompilerStatus := PrefForm.chkShowCompileStatus.Checked;
-  AutoSaveFiles      := PrefForm.chkAutoSave.Checked;
-  AutoSaveDesktop    := PrefForm.chkSaveDesktop.Checked;
-  SaveBinaryOutput   := PrefForm.chkSaveBinaryOutput.Checked;
-  LockToolbars       := PrefForm.chkLockToolbars.Checked;
-  MaxEditWindows     := PrefForm.chkMaxEditWindows.Checked;
-  MultiFormatCopy    := PrefForm.chkMultiFormatCopy.Checked;
-  UseMDIMode         := PrefForm.chkUseMDI.Checked;
-  QuietFirmware      := PrefForm.chkQuietFirmware.Checked;
-  DroppedRecent      := PrefForm.chkDroppedRecent.Checked;
-  FirmwareFast       := PrefForm.chkFirmfast.Checked;
-  FirmwareComp       := PrefForm.chkFirmComp.Checked;
-  FirmwareChunkSize  := PrefForm.edtFirmwareChunkSize.Value;
-  DownloadWaitTime   := PrefForm.edtWaitTime.Value;
-  Prog1Locked        := PrefForm.cbProg1.Checked;
-  Prog2Locked        := PrefForm.cbProg2.Checked;
-  Prog3Locked        := PrefForm.cbProg3.Checked;
-  Prog4Locked        := PrefForm.cbProg4.Checked;
-  Prog5Locked        := PrefForm.cbProg5.Checked;
-  Prog6Locked        := PrefForm.cbProg6.Checked;
-  Prog7Locked        := PrefForm.cbProg7.Checked;
-  Prog8Locked        := PrefForm.cbProg8.Checked;
-
-  SetMaxRecent(PrefForm.edtMaxRecent.Value);
-end;
-
-procedure DisplayGeneralValues;
-begin
-{Displays the values in the form}
-  PrefForm.CheckShowRecent.Checked      := ShowRecent;
-  PrefForm.CheckSavePos.Checked         := SaveWindowPos;
-  PrefForm.CheckSaveBackup.Checked      := SaveBackup;
-  PrefForm.chkShowCompileStatus.Checked := ShowCompilerStatus;
-  PrefForm.chkAutoSave.Checked          := AutoSaveFiles;
-  PrefForm.chkSaveDesktop.Checked       := AutoSaveDesktop;
-  PrefForm.chkSaveBinaryOutput.Checked  := SaveBinaryOutput;
-  PrefForm.chkLockToolbars.Checked      := LockToolbars;
-  PrefForm.chkMaxEditWindows.Checked    := MaxEditWindows;
-  PrefForm.chkMultiFormatCopy.Checked   := MultiFormatCopy;
-  PrefForm.chkUseMDI.Checked            := UseMDIMode;
-  PrefForm.chkQuietFirmware.Checked     := QuietFirmware;
-  PrefForm.chkDroppedRecent.Checked     := DroppedRecent;
-  PrefForm.chkFirmfast.Checked          := FirmwareFast;
-  PrefForm.chkFirmComp.Checked          := FirmwareComp;
-  PrefForm.edtFirmwareChunkSize.Value   := FirmwareChunkSize;
-  PrefForm.edtWaitTime.Value            := DownloadWaitTime;
-  PrefForm.edtMaxRecent.Value           := MaxRecent;
-  PrefForm.cbProg1.Checked              := Prog1Locked;
-  PrefForm.cbProg2.Checked              := Prog2Locked;
-  PrefForm.cbProg3.Checked              := Prog3Locked;
-  PrefForm.cbProg4.Checked              := Prog4Locked;
-  PrefForm.cbProg5.Checked              := Prog5Locked;
-  PrefForm.cbProg6.Checked              := Prog6Locked;
-  PrefForm.cbProg7.Checked              := Prog7Locked;
-  PrefForm.cbProg8.Checked              := Prog8Locked;
-end;
-
-{The Editor Information}
-
-var OldColorCoding:boolean;  // For saving the old version
-    OldFontName:string;
-    OldFontSize:integer;
-
-procedure RememberEditorValues;
-begin
-{Remember current settings such that we know whether changed}
-  OldColorCoding := ColorCoding;
-  OldFontName := FontName;
-  OldFontSize := FontSize;
-end;
-
-procedure GetEditorValues;
-begin
-  {Gets the values from the form}
-  ColorsChanged       := PrefForm.ColorsChanged;
-  ColorCoding         := PrefForm.CheckColorCoding.Checked;
-  ColorCodingChanged  := (ColorCoding <> OldColorCoding);
-  ShowTemplatePopup   := PrefForm.CheckShowTemplates.Checked;
-  FontChanged         := (FontName <> OldFontName) or (FontSize <> OldFontSize);
-  AutoIndentCode      := PrefForm.CheckAutoIndentCode.Checked;
-  MacrosOn            := PrefForm.CheckMacrosOn.Checked;
-  RICDecompAsData     := PrefForm.radRICDecompArray.Checked;
-  RICDecompNameFormat := PrefForm.edtRICDecompArrayFmt.Text;
-  HideSelection       := PrefForm.cbHideSelection.Checked;
-  CCInsensitive       := PrefForm.chkCCInsensitive.Checked;
-  ScrollPastEOL       := PrefForm.cbScrollPastEOL.Checked;
-  HalfPageScroll      := PrefForm.cbHalfPageScroll.Checked;
-  DragAndDropEditing  := PrefForm.chkDragDrop.Checked;
-  TabWidth            := PrefForm.inpTabWidth.Value;
-  MaxUndo             := PrefForm.inpMaxUndo.Value;
-  MaxLeftChar         := PrefForm.edtMaxLeftChar.Value;
-  ExtraLineSpacing    := PrefForm.inpExtraLineSpacing.Value;
-  ScrollBars          := PrefForm.cbxScrollBars.ItemIndex;
-  RightEdgePosition   := PrefForm.inpRightEdge.Value;
-  RightEdgeColor      := PrefForm.cbxREColor.Selected;
-  EditorColor         := PrefForm.cbxColor.Selected;
-  SelectionForeground := PrefForm.cbxForeground.Selected;
-  SelectionBackground := PrefForm.cbxBackground.Selected;
-  StructureColor      := PrefForm.cbxStructureColor.Selected;
-  ActiveLineColor     := PrefForm.cbxActiveLineColor.Selected;
-  AltSetsSelMode      := PrefForm.chkAltSelMode.Checked;
-  MoveCursorRight     := PrefForm.chkMoveRight.Checked;
-  KeepBlanks          := PrefForm.chkKeepBlanks.Checked;
-  UseSmartTabs        := PrefForm.chkSmartTab.Checked;
-  EnhanceHomeKey      := PrefForm.chkEnhHomeKey.Checked;
-  GroupUndo           := PrefForm.chkGroupUndo.Checked;
-  TabIndent           := PrefForm.chkTabIndent.Checked;
-  ConvertTabs         := PrefForm.chkConvertTabs.Checked;
-  ShowSpecialChars    := PrefForm.chkShowSpecialChars.Checked;
-  HighlightCurLine    := PrefForm.chkHighlightCurLine.Checked;
-  KeepCaretX          := PrefForm.chkKeepCaretX.Checked;
-  AutoMaxLeft         := PrefForm.chkAutoMaxLeft.Checked;
-end;
-
-procedure DisplayEditorValues;
-begin
-  {Displays the values in the form}
-  PrefForm.CheckColorCoding.Checked    := ColorCoding;
-  PrefForm.CheckShowTemplates.Checked  := ShowTemplatePopup;
-  PrefForm.CheckAutoIndentCode.Checked := AutoIndentCode;
-  PrefForm.CheckMacrosOn.Checked       := MacrosOn;
-  PrefForm.radRICDecompArray.Checked   := RICDecompAsData;
-  PrefForm.edtRICDecompArrayFmt.Text   := RICDecompNameFormat;
-  PrefForm.cbHideSelection.Checked     := HideSelection;
-  PrefForm.chkCCInsensitive.Checked    := CCInsensitive;
-  PrefForm.cbScrollPastEOL.Checked     := ScrollPastEOL;
-  PrefForm.cbHalfPageScroll.Checked    := HalfPageScroll;
-  PrefForm.chkDragDrop.Checked         := DragAndDropEditing;
-  PrefForm.inpTabWidth.Value           := TabWidth;
-  PrefForm.inpMaxUndo.Value            := MaxUndo;
-  PrefForm.edtMaxLeftChar.Value        := MaxLeftChar;
-  PrefForm.inpExtraLineSpacing.Value   := ExtraLineSpacing;
-  PrefForm.cbxScrollBars.ItemIndex     := ScrollBars;
-  PrefForm.inpRightEdge.Value          := RightEdgePosition;
-  PrefForm.cbxREColor.Selected         := RightEdgeColor;
-  PrefForm.cbxColor.Selected           := EditorColor;
-  PrefForm.cbxForeground.Selected      := SelectionForeground;
-  PrefForm.cbxBackground.Selected      := SelectionBackground;
-  PrefForm.cbxStructureColor.Selected  := StructureColor;
-  PrefForm.cbxActiveLineColor.Selected := ActiveLineColor;
-  PrefForm.chkAltSelMode.Checked       := AltSetsSelMode;
-  PrefForm.chkMoveRight.Checked        := MoveCursorRight;
-  PrefForm.chkKeepBlanks.Checked       := KeepBlanks;
-  PrefForm.chkSmartTab.Checked         := UseSmartTabs;
-  PrefForm.chkEnhHomeKey.Checked       := EnhanceHomeKey;
-  PrefForm.chkGroupUndo.Checked        := GroupUndo;
-  PrefForm.chkTabIndent.Checked        := TabIndent;
-  PrefForm.chkConvertTabs.Checked      := ConvertTabs;
-  PrefForm.chkShowSpecialChars.Checked := ShowSpecialChars;
-  PrefForm.chkHighlightCurLine.Checked := HighlightCurLine;
-  PrefForm.chkKeepCaretX.Checked       := KeepCaretX;
-  PrefForm.chkAutoMaxLeft.Checked      := AutoMaxLeft;
-end;
-
-procedure RememberCompilerValues;
-begin
-end;
-
-procedure GetCompilerValues;
-begin
-  CompilerTimeout         := PrefForm.edtCompilerTimeout.Value * K_MSTOSEC;
-  LocalCompilerTimeout    := CompilerTimeout;
-  CompilerSwitches        := PrefForm.edtCompilerSwitches.Text;
-  PreferredLanguage       := PrefForm.PreferredLanguage;
-  NQCSwitches             := PrefForm.edtNQCSwitches.Text;
-  LCCSwitches             := PrefForm.edtLCCSwitches.Text;
-  NBCSwitches             := PrefForm.edtNBCSwitches.Text;
-  CPPSwitches             := PrefForm.edtCPPSwitches.Text;
-  JavaSwitches            := PrefForm.edtJavaSwitches.Text;
-  NBCOptLevel             := PrefForm.cboOptLevel.ItemIndex;
-  NBCMaxErrors            := PrefForm.edtMaxErrors.Value;
-  NQCIncludePath          := PrefForm.edtNQCIncludePath.Text;
-  OldNQCIncPaths          := PrefForm.edtNQCIncludePath.Items.CommaText;
-  LCCIncludePath          := PrefForm.edtLCCIncludePath.Text;
-  OldLCCIncPaths          := PrefForm.edtLCCIncludePath.Items.CommaText;
-  NBCIncludePath          := PrefForm.edtNBCIncludePath.Text;
-  OldNBCIncPaths          := PrefForm.edtNBCIncludePath.Items.CommaText;
-  CygwinDir               := PrefForm.edtCygwin.Text;
-  BrickOSRoot             := PrefForm.edtOSRoot.Text;
-  BrickOSMakefileTemplate := PrefForm.edtBrickOSMakefileTemplate.Lines.Text;
-  PascalCompilerPrefix    := PrefForm.edtPascalCompilerPrefix.Text;
-  KeepBrickOSMakefile     := PrefForm.chkKeepBrickOSMakefile.Checked;
-  LeJOSMakefileTemplate   := PrefForm.edtLeJOSMakefileTemplate.Lines.Text;
-  KeepLeJOSMakefile       := PrefForm.chkKeepLeJOSMakefile.Checked;
-  NQCExePath              := PrefForm.edtNQCExePath.Text;
-  LCCExePath              := PrefForm.edtLCCExePath.Text;
-  NBCExePath              := PrefForm.edtNBCExePath.Text;
-  IncludeSrcInList        := PrefForm.chkIncludeSrcInList.Checked;
-  UseInternalNBC          := PrefForm.chkUseIntNBCComp.Checked;
-  EnhancedFirmware        := PrefForm.chkEnhancedFirmware.Checked;
-  NXT2Firmware            := PrefForm.chkNXT2Firmare.Checked;
-  IgnoreSysFiles          := PrefForm.chkIgnoreSysFiles.Checked;
-  LeJOSRoot               := PrefForm.edtLeJOSRoot.Text;
-  JavaCompilerPath        := PrefForm.edtJavaPath.Text;
-  ShowAllConsoleOutput    := PrefForm.chkShowAllOutput.Checked;
-  StopScriptDLOnErrors    := PrefForm.chkStopOnAborted.Checked;
-  StripScriptComments     := PrefForm.chkStripComments.Checked;
-  SkipBlankScriptLines    := PrefForm.chkSkipBlankLines.Checked;
-  SyntaxHighlightConsole  := PrefForm.chkConsoleSyntaxHL.Checked;
-  ConsoleOutputSeparate   := PrefForm.chkOutputSeparate.Checked;
-  ShowConsoleLineNumbers  := PrefForm.chkShowConsoleLineNumbers.Checked;
-  ConsoleCodeCompletion   := PrefForm.chkConsoleCompProp.Checked;
-  ConsoleICDelay          := PrefForm.edtICDelay.Value;
-  ConsoleILDelay          := PrefForm.edtILDelay.Value;
-  ConsoleUSBFirstTimeout  := PrefForm.edtConsoleReadFirstTimeout.Value;
-  ConsoleUSBICTimeout     := PrefForm.edtConsoleReadICTimeout.Value;
-  ConsoleUSBWriteTimeout  := PrefForm.edtConsoleWriteTimeout.Value;
-end;
-
-procedure DisplayCompilerValues;
-begin
-  PrefForm.edtCompilerTimeout.Value       := CompilerTimeout div K_MSTOSEC;
-  PrefForm.edtCompilerSwitches.Text       := CompilerSwitches;
-  PrefForm.PreferredLanguage              := PreferredLanguage;
-  PrefForm.edtNQCSwitches.Text            := NQCSwitches;
-  PrefForm.edtLCCSwitches.Text            := LCCSwitches;
-  PrefForm.edtNBCSwitches.Text            := NBCSwitches;
-  PrefForm.edtCPPSwitches.Text            := CPPSwitches;
-  PrefForm.cboOptLevel.ItemIndex          := NBCOptLevel;
-  PrefForm.edtMaxErrors.Value             := NBCMaxErrors;
-  PrefForm.edtJavaSwitches.Text           := JavaSwitches;
-  PrefForm.edtNQCIncludePath.Text         := NQCIncludePath;
-  PrefForm.edtLCCIncludePath.Text         := LCCIncludePath;
-  PrefForm.edtNBCIncludePath.Text         := NBCIncludePath;
-  PrefForm.edtCygwin.Text                 := CygwinDir;
-  PrefForm.edtOSRoot.Text                 := BrickOSRoot;
-  PrefForm.edtBrickOSMakefileTemplate.Lines.Text := BrickOSMakefileTemplate;
-  PrefForm.edtPascalCompilerPrefix.Text   := PascalCompilerPrefix;
-  PrefForm.chkKeepBrickOSMakefile.Checked := KeepBrickOSMakefile;
-  PrefForm.edtLeJOSMakefileTemplate.Lines.Text := LeJOSMakefileTemplate;
-  PrefForm.chkKeepLeJOSMakefile.Checked   := KeepLeJOSMakefile;
-  PrefForm.edtNQCExePath.Text             := NQCExePath;
-  PrefForm.edtLCCExePath.Text             := LCCExePath;
-  PrefForm.edtNBCExePath.Text             := NBCExePath;
-  PrefForm.chkIncludeSrcInList.Checked    := IncludeSrcInList;
-  PrefForm.chkUseIntNBCComp.Checked       := UseInternalNBC;
-  PrefForm.chkEnhancedFirmware.Checked    := EnhancedFirmware;
-  PrefForm.chkNXT2Firmare.Checked         := NXT2Firmware;
-  PrefForm.chkIgnoreSysFiles.Checked      := IgnoreSysFiles;
-  PrefForm.edtLeJOSRoot.Text              := LeJOSRoot;
-  PrefForm.edtJavaPath.Text               := JavaCompilerPath;
-  // forth console settings
-  PrefForm.chkShowAllOutput.Checked          := ShowAllConsoleOutput;
-  PrefForm.chkStopOnAborted.Checked          := StopScriptDLOnErrors;
-  PrefForm.chkStripComments.Checked          := StripScriptComments;
-  PrefForm.chkSkipBlankLines.Checked         := SkipBlankScriptLines;
-  PrefForm.chkConsoleSyntaxHL.Checked        := SyntaxHighlightConsole;
-  PrefForm.chkOutputSeparate.Checked         := ConsoleOutputSeparate;
-  PrefForm.chkShowConsoleLineNumbers.Checked := ShowConsoleLineNumbers;
-  PrefForm.chkConsoleCompProp.Checked        := ConsoleCodeCompletion;
-  PrefForm.edtICDelay.Value                  := ConsoleICDelay;
-  PrefForm.edtILDelay.Value                  := ConsoleILDelay;
-  PrefForm.edtConsoleReadFirstTimeout.Value  := ConsoleUSBFirstTimeout;
-  PrefForm.edtConsoleReadICTimeout.Value     := ConsoleUSBICTimeout;
-  PrefForm.edtConsoleWriteTimeout.Value      := ConsoleUSBWriteTimeout;
-
-  PrefForm.edtNQCIncludePath.Items.CommaText := OldNQCIncPaths;
-  PrefForm.edtLCCIncludePath.Items.CommaText := OldLCCIncPaths;
-end;
-
-{ The API information }
-
-procedure DisplayAPIValues;
-begin
-  if not Assigned(PrefForm) then Exit;
-  // NQC API
-  PrefForm.edtKeyword.Text := '';
-  PrefForm.edtCommand.Text := '';
-  PrefForm.edtConstant.Text := '';
-  PrefForm.lstKeywords.Items.Clear;
-  PrefForm.lstCommands.Items.Clear;
-  PrefForm.lstConstants.Items.Clear;
-
-  PrefForm.lstKeywords.Items.Assign(PrefForm.cc_keywords);
-  PrefForm.lstCommands.Items.Assign(PrefForm.cc_commands);
-  PrefForm.lstConstants.Items.Assign(PrefForm.cc_constants);
-
-  // NXC API
-  PrefForm.edtNXCKeyword.Text := '';
-  PrefForm.edtNXCCommand.Text := '';
-  PrefForm.edtNXCConstant.Text := '';
-  PrefForm.lstNXCKeywords.Items.Clear;
-  PrefForm.lstNXCCommands.Items.Clear;
-  PrefForm.lstNXCConstants.Items.Clear;
-
-  PrefForm.lstNXCKeywords.Items.Assign(PrefForm.cc_nxc_keywords);
-  PrefForm.lstNXCCommands.Items.Assign(PrefForm.cc_nxc_commands);
-  PrefForm.lstNXCConstants.Items.Assign(PrefForm.cc_nxc_constants);
-end;
-
-procedure RememberAPIValues;
-begin
-end;
-
-procedure GetAPIValues;
-begin
-  if not Assigned(PrefForm) then Exit;
-  // NQC API
-  PrefForm.cc_keywords.Assign(PrefForm.lstKeywords.Items);
-  PrefForm.cc_commands.Assign(PrefForm.lstCommands.Items);
-  PrefForm.cc_constants.Assign(PrefForm.lstConstants.Items);
-  // NXC API
-  PrefForm.cc_nxc_keywords.Assign(PrefForm.lstNXCKeywords.Items);
-  PrefForm.cc_nxc_commands.Assign(PrefForm.lstNXCCommands.Items);
-  PrefForm.cc_nxc_constants.Assign(PrefForm.lstNXCConstants.Items);
-  PutValuesInSyntaxHighlighter;
-end;
-
-{The Gutter Information}
-
-procedure RememberGutterValues;
-begin
-end;
-
-procedure GetGutterValues;
-begin
-  PrefForm.UpdateGlobalGutterValues;
-end;
-
-procedure DisplayGutterValues;
-begin
-  PrefForm.DisplayGutterValues;
-end;
-
-{Other Options Information}
-
-procedure RememberOtherOptionValues;
-begin
-end;
-
-procedure GetOtherOptionValues;
-begin
-  PrefForm.UpdateGlobalOtherOptionValues;
-end;
-
-procedure DisplayOtherOptionValues;
-begin
-  PrefForm.DisplayOtherOptionValues;
-end;
-
 {The keystroke Information}
 
 procedure RememberKeystrokeValues;
 begin
-end;
-
-procedure GetKeystrokeValues;
-begin
-  PrefForm.UpdateGlobalKeystrokeValues;
-end;
-
-procedure DisplayKeystrokeValues;
-begin
-  PrefForm.DisplayKeystrokeValues;
-end;
-
-procedure DisplayCodeTemplateValues;
-begin
-  PrefForm.DisplayCodeTemplateValues;
 end;
 
 { The Startup Information}
@@ -3552,25 +2176,6 @@ procedure RememberStartupValues;
 begin
   {Remember current settings such that we know whether changed}
   {Nothing to be done yet}
-end;
-
-procedure GetStartupValues;
-begin
-  {Gets the values from the form}
-  if PrefForm.CheckShowForm.Checked then StartupAction := SU_SHOWFORM;
-  if PrefForm.CheckConnect.Checked then StartupAction := SU_CONNECT;
-  if PrefForm.CheckNoConnect.Checked then StartupAction := SU_NOCONNECT;
-
-  BrickType := PrefForm.cboBrickType.ItemIndex;
-  if BrickType = -1 then
-    BrickType := SU_RCX;
-
-  COMPort := PrefForm.cboPort.Text;
-
-  StandardFirmwareDefault := PrefForm.radStandard.Checked;
-  UseBluetoothDefault     := False;
-  FirmwareTypeDefault     := PrefForm.GetFirmwareTypeDefault;
-  FBAlwaysPrompt          := PrefForm.chkFBAlwaysPrompt.Checked;
 end;
 
 procedure GroupEnable(aCtrl : TWinControl; bEnable : boolean);
@@ -3588,162 +2193,12 @@ begin
   aCtrl.Enabled := bEnable;
 end;
 
-procedure DisplayStartupValues;
-begin
-  {Display the values in the form}
-  PrefForm.CheckShowForm.Checked  := (StartupAction = SU_SHOWFORM);
-  PrefForm.CheckConnect.Checked   := (StartupAction = SU_CONNECT);
-  PrefForm.CheckNoConnect.Checked := (StartupAction = SU_NOCONNECT);
-
-  PrefForm.cboBrickType.ItemIndex := BrickType;
-
-  PrefForm.cboPort.ItemIndex := PrefForm.cboPort.Items.IndexOf(COMPort);
-  if PrefForm.cboPort.ItemIndex = -1 then
-    PrefForm.cboPort.Text := COMPort;
-
-//  PrefForm.chkUseBluetooth.Checked := UseBluetoothDefault;
-  PrefForm.radStandard.Checked     := StandardFirmwareDefault;
-  PrefForm.SetFirmwareType(FirmwareTypeDefault);
-  PrefForm.chkFBAlwaysPrompt.Checked := FBAlwaysPrompt;
-end;
-
-{The Templates Information}
-
-procedure RememberTemplateValues;
-begin
-  {Remember current settings such that we know whether changed}
-  TemplatesChanged := false;
-end;
-
-procedure GetTemplateValues(const aLang : integer);
-var
-  i : integer;
-begin
-  {Gets the values from the form}
-  with PrefForm.NewTemplatesList do
-  begin
-    templatenumb[aLang] := Lines.Count;
-    SetLength(templates[aLang], templatenumb[aLang]);
-    for i:=0 to Lines.Count-1 do
-      templates[aLang][i] := Lines[i];
-  end;
-end;
-
-procedure DisplayTemplateValues(const aLang : integer);
-var
-  i : integer;
-begin
-  {Displays the values in the form}
-  with PrefForm.NewTemplatesList do
-  begin
-    Lines.Clear;
-    for i:= 1 to templatenumb[aLang] do
-      Lines.Add(templates[aLang][i-1]);
-    CaretY := 1;
-    EnsureCursorPosVisible;
-  end;
-  with PrefForm do
-  begin
-    cboLangTemp.OnChange := nil;
-    try
-      cboLangTemp.ItemIndex := aLang;
-    finally
-      cboLangTemp.OnChange := cboLangTempChange;
-    end;
-  end;
-end;
-
 {The Macros Information}
 
 procedure RememberMacroValues;
 begin
 {Remember current settings such that we know whether changed}
   // Nothing to be done
-end;
-
-procedure GetMacroValues;
-var
-  i : integer;
-  str : string;
-begin
-  {Gets the values from the form}
-  MacrosChanged := false;
-  macronumb:=0;
-  for i:=0 to PrefForm.MacrosList.Items.Count-1 do
-  begin
-    str:='<Ctrl><Alt>';
-    str:=str+ PrefForm.MacrosList.Items[i][1]+':';
-    str:=str+Copy(PrefForm.MacrosList.Items[i],4,1000);
-    if (Length(str)>13) then
-    begin
-      macronumb:=macronumb+1;
-      if (str <> macros[macronumb]) then MacrosChanged := true;
-      macros[macronumb] := str;
-    end
-  end;
-  for i:=0 to PrefForm.ShiftMacrosList.Items.Count-1 do
-  begin
-    str:='<Ctrl><Alt><Shift>';
-    str:=str+ PrefForm.ShiftMacrosList.Items[i][1]+':';
-    str:=str+Copy(PrefForm.ShiftMacrosList.Items[i],4,1000);
-    if (Length(str)>20) then
-    begin
-      macronumb:=macronumb+1;
-      if (str <> macros[macronumb]) then MacrosChanged := true;
-      macros[macronumb] := str;
-    end
-  end;
-end;
-
-procedure DisplayMacroValues;
-var
-  i, numb : integer;
-begin
-  {Displays the values in the form}
-  PrefForm.MacrosList.Items.Clear;
-  PrefForm.ShiftMacrosList.Items.Clear;
-  for i:=1 to 26 do PrefForm.MacrosList.Items.Add(Chr(Ord('A')+i-1)+': ');
-  for i:=1 to 10 do PrefForm.MacrosList.Items.Add(Chr(Ord('0')+i-1)+': ');
-  for i:=1 to 26 do PrefForm.ShiftMacrosList.Items.Add(Chr(Ord('A')+i-1)+': ');
-  for i:=1 to 10 do PrefForm.ShiftMacrosList.Items.Add(Chr(Ord('0')+i-1)+': ');
-  for i:= 1 to macronumb do
-  begin
-    if Pos('<Shift>',macros[i]) = 12 then
-    begin
-      numb:=Ord(macros[i][19])-Ord('A');
-      if (numb<0) or (numb>25) then numb:=Ord(macros[i][19])-Ord('0')+26;
-      PrefForm.ShiftMacrosList.Items[numb] := macros[i][19]+': '+ Copy(macros[i],21,1000);
-    end else begin
-      numb:=Ord(macros[i][12])-Ord('A');
-      if (numb<0) or (numb>25) then numb:=Ord(macros[i][12])-Ord('0')+26;
-      PrefForm.MacrosList.Items[numb] := macros[i][12]+': '+ Copy(macros[i],14,1000);
-    end;
-  end;
-  PrefForm.MacrosList.ItemIndex:=0;
-  PrefForm.ShiftMacrosList.ItemIndex:=0;
-  PrefForm.MacrosList.Visible:=true;
-  PrefForm.ShiftMacrosList.Visible:=false;
-  PrefForm.MShift.Down := false;
-end;
-
-function PreferredLanguageName : string;
-begin
-  case LocalFirmwareType of
-    ftStandard :
-      begin
-        case PreferredLanguage of
-          1 : Result := 'MindScript';
-          2 : Result := 'LEGO Assembler';
-          3 : Result := 'Next Byte Codes';
-          4 : Result := 'NXC';
-        else
-          Result := 'NQC';
-        end;
-      end;
-    ftBrickOS : Result := 'C++';
-    ftPBForth : Result := 'Forth';
-    ftLeJOS   : Result := 'Java';
-  end;
 end;
 
 { TPrefForm }
@@ -3772,7 +2227,8 @@ begin
   end
   else if pagPrefs.ActivePage = shtAPI then
   begin
-    ResetAPIValues(fReg);
+    ResetNQCAPIValues(fReg, SynNQCSyn, MainForm.SynNQCSyn);
+    ResetNXCAPIValues(fReg, SynNXCSyn, MainForm.SynNXCSyn);
     DisplayAPIValues;
   end
   else if pagPrefs.ActivePage = shtStartup then
@@ -3956,10 +2412,10 @@ begin
       GetTemplateValues(ActiveLanguageIndex(ahTemplates));
     GetMacroValues;
     UpdateGlobalColorsAndStyles;
-    GetGutterValues;
-    GetOtherOptionValues;
-    GetShortcutValues;
-    GetKeystrokeValues;
+    UpdateGlobalGutterValues;
+    UpdateGlobalOtherOptionValues;
+    UpdateGlobalShortcutValues;
+    UpdateGlobalKeystrokeValues;
     GetAPIValues;
   end;
 // when we close the form we should focus the first control on the general page
@@ -4013,12 +2469,6 @@ procedure TPrefForm.FormCreate(Sender: TObject);
 var
   i : integer;
 begin
-  cc_keywords := CreateSortedStringList;
-  cc_commands := CreateSortedStringList;
-  cc_constants := CreateSortedStringList;
-  cc_nxc_keywords := CreateSortedStringList;
-  cc_nxc_commands := CreateSortedStringList;
-  cc_nxc_constants := CreateSortedStringList;
   CreateDirectoryEdits;
   CreateSynEditComponents;
   CreateHotKeyEdits;
@@ -4051,7 +2501,8 @@ begin
   SynEditColors.Highlighter := GetActiveHighlighter(ahColors);
   NewTemplatesList.Highlighter := GetActiveHighlighter(ahTemplates);
   {Load the settings}
-  LoadAllValues(fReg, Keystrokes, CodeTemplates);
+  LoadAllValues(fReg, Keystrokes, CodeTemplates, SynNXCSyn, MainForm.SynNXCSyn,
+    SynNQCSyn, MainForm.SynNQCSyn);
   MainForm.UpdateSynComponents;
 end;
 
@@ -4063,12 +2514,6 @@ begin
   FreeAndNil(fKeystrokes);
   FreeAndNil(fCodeTemplates);
   FreeAndNil(fLocalHighlighters);
-  FreeAndNil(cc_keywords);
-  FreeAndNil(cc_commands);
-  FreeAndNil(cc_constants);
-  FreeAndNil(cc_nxc_keywords);
-  FreeAndNil(cc_nxc_commands);
-  FreeAndNil(cc_nxc_constants);
 end;
 
 procedure TPrefForm.DisplayColorValues;
@@ -5158,13 +3603,6 @@ begin
   NewTemplatesList.Gutter.Visible := False;
 end;
 
-function TPrefForm.CreateSortedStringList: TStringList;
-begin
-  Result := TStringList.Create;
-  Result.Sorted := True;
-  Result.Duplicates := dupIgnore;
-end;
-
 procedure TPrefForm.radRICDecompScriptClick(Sender: TObject);
 begin
   edtRICDecompArrayFmt.Enabled := radRICDecompArray.Checked;
@@ -5252,6 +3690,436 @@ begin
   end;
 end;
 
+procedure TPrefForm.DisplayAPIValues;
+begin
+  // NQC API
+  edtKeyword.Text := '';
+  edtCommand.Text := '';
+  edtConstant.Text := '';
+  lstKeywords.Items.Clear;
+  lstCommands.Items.Clear;
+  lstConstants.Items.Clear;
+
+  lstKeywords.Items.Assign(cc_keywords);
+  lstCommands.Items.Assign(cc_commands);
+  lstConstants.Items.Assign(cc_constants);
+
+  // NXC API
+  edtNXCKeyword.Text := '';
+  edtNXCCommand.Text := '';
+  edtNXCConstant.Text := '';
+  lstNXCKeywords.Items.Clear;
+  lstNXCCommands.Items.Clear;
+  lstNXCConstants.Items.Clear;
+
+  lstNXCKeywords.Items.Assign(cc_nxc_keywords);
+  lstNXCCommands.Items.Assign(cc_nxc_commands);
+  lstNXCConstants.Items.Assign(cc_nxc_constants);
+end;
+
+procedure TPrefForm.GetAPIValues;
+begin
+  // NQC API
+  cc_keywords.Assign(lstKeywords.Items);
+  cc_commands.Assign(lstCommands.Items);
+  cc_constants.Assign(lstConstants.Items);
+  // NXC API
+  cc_nxc_keywords.Assign(lstNXCKeywords.Items);
+  cc_nxc_commands.Assign(lstNXCCommands.Items);
+  cc_nxc_constants.Assign(lstNXCConstants.Items);
+  PutAPIValuesInSyntaxHighlighter(cc_keywords, cc_commands, cc_constants,
+    SynNQCSyn, MainForm.SynNQCSyn);
+  PutAPIValuesInSyntaxHighlighter(cc_nxc_keywords, cc_nxc_commands, cc_nxc_constants,
+    SynNXCSyn, MainForm.SynNXCSyn);
+end;
+
+procedure TPrefForm.DisplayCompilerValues;
+begin
+  edtCompilerTimeout.Value       := CompilerTimeout div K_MSTOSEC;
+  edtCompilerSwitches.Text       := CompilerSwitches;
+  PreferredLanguage              := PreferredLanguage;
+  edtNQCSwitches.Text            := NQCSwitches;
+  edtLCCSwitches.Text            := LCCSwitches;
+  edtNBCSwitches.Text            := NBCSwitches;
+  edtCPPSwitches.Text            := CPPSwitches;
+  cboOptLevel.ItemIndex          := NBCOptLevel;
+  edtMaxErrors.Value             := NBCMaxErrors;
+  edtJavaSwitches.Text           := JavaSwitches;
+  edtNQCIncludePath.Text         := NQCIncludePath;
+  edtLCCIncludePath.Text         := LCCIncludePath;
+  edtNBCIncludePath.Text         := NBCIncludePath;
+  edtCygwin.Text                 := CygwinDir;
+  edtOSRoot.Text                 := BrickOSRoot;
+  edtBrickOSMakefileTemplate.Lines.Text := BrickOSMakefileTemplate;
+  edtPascalCompilerPrefix.Text   := PascalCompilerPrefix;
+  chkKeepBrickOSMakefile.Checked := KeepBrickOSMakefile;
+  edtLeJOSMakefileTemplate.Lines.Text := LeJOSMakefileTemplate;
+  chkKeepLeJOSMakefile.Checked   := KeepLeJOSMakefile;
+  edtNQCExePath.Text             := NQCExePath;
+  edtLCCExePath.Text             := LCCExePath;
+  edtNBCExePath.Text             := NBCExePath;
+  chkIncludeSrcInList.Checked    := IncludeSrcInList;
+  chkUseIntNBCComp.Checked       := UseInternalNBC;
+  chkEnhancedFirmware.Checked    := EnhancedFirmware;
+  chkNXT2Firmare.Checked         := NXT2Firmware;
+  chkIgnoreSysFiles.Checked      := IgnoreSysFiles;
+  edtLeJOSRoot.Text              := LeJOSRoot;
+  edtJavaPath.Text               := JavaCompilerPath;
+  // forth console settings
+  chkShowAllOutput.Checked          := ShowAllConsoleOutput;
+  chkStopOnAborted.Checked          := StopScriptDLOnErrors;
+  chkStripComments.Checked          := StripScriptComments;
+  chkSkipBlankLines.Checked         := SkipBlankScriptLines;
+  chkConsoleSyntaxHL.Checked        := SyntaxHighlightConsole;
+  chkOutputSeparate.Checked         := ConsoleOutputSeparate;
+  chkShowConsoleLineNumbers.Checked := ShowConsoleLineNumbers;
+  chkConsoleCompProp.Checked        := ConsoleCodeCompletion;
+  edtICDelay.Value                  := ConsoleICDelay;
+  edtILDelay.Value                  := ConsoleILDelay;
+  edtConsoleReadFirstTimeout.Value  := ConsoleUSBFirstTimeout;
+  edtConsoleReadICTimeout.Value     := ConsoleUSBICTimeout;
+  edtConsoleWriteTimeout.Value      := ConsoleUSBWriteTimeout;
+
+  edtNQCIncludePath.Items.CommaText := OldNQCIncPaths;
+  edtLCCIncludePath.Items.CommaText := OldLCCIncPaths;
+end;
+
+procedure TPrefForm.DisplayEditorValues;
+begin
+  {Displays the values in the form}
+  CheckColorCoding.Checked    := ColorCoding;
+  CheckShowTemplates.Checked  := ShowTemplatePopup;
+  CheckAutoIndentCode.Checked := AutoIndentCode;
+  CheckMacrosOn.Checked       := MacrosOn;
+  radRICDecompArray.Checked   := RICDecompAsData;
+  edtRICDecompArrayFmt.Text   := RICDecompNameFormat;
+  cbHideSelection.Checked     := HideSelection;
+  chkCCInsensitive.Checked    := CCInsensitive;
+  cbScrollPastEOL.Checked     := ScrollPastEOL;
+  cbHalfPageScroll.Checked    := HalfPageScroll;
+  chkDragDrop.Checked         := DragAndDropEditing;
+  inpTabWidth.Value           := TabWidth;
+  inpMaxUndo.Value            := MaxUndo;
+  edtMaxLeftChar.Value        := MaxLeftChar;
+  inpExtraLineSpacing.Value   := ExtraLineSpacing;
+  cbxScrollBars.ItemIndex     := ScrollBars;
+  inpRightEdge.Value          := RightEdgePosition;
+  cbxREColor.Selected         := RightEdgeColor;
+  cbxColor.Selected           := EditorColor;
+  cbxForeground.Selected      := SelectionForeground;
+  cbxBackground.Selected      := SelectionBackground;
+  cbxStructureColor.Selected  := StructureColor;
+  cbxActiveLineColor.Selected := ActiveLineColor;
+  chkAltSelMode.Checked       := AltSetsSelMode;
+  chkMoveRight.Checked        := MoveCursorRight;
+  chkKeepBlanks.Checked       := KeepBlanks;
+  chkSmartTab.Checked         := UseSmartTabs;
+  chkEnhHomeKey.Checked       := EnhanceHomeKey;
+  chkGroupUndo.Checked        := GroupUndo;
+  chkTabIndent.Checked        := TabIndent;
+  chkConvertTabs.Checked      := ConvertTabs;
+  chkShowSpecialChars.Checked := ShowSpecialChars;
+  chkHighlightCurLine.Checked := HighlightCurLine;
+  chkKeepCaretX.Checked       := KeepCaretX;
+  chkAutoMaxLeft.Checked      := AutoMaxLeft;
+end;
+
+procedure TPrefForm.DisplayGeneralValues;
+begin
+{Displays the values in the form}
+  CheckShowRecent.Checked      := ShowRecent;
+  CheckSavePos.Checked         := SaveWindowPos;
+  CheckSaveBackup.Checked      := SaveBackup;
+  chkShowCompileStatus.Checked := ShowCompilerStatus;
+  chkAutoSave.Checked          := AutoSaveFiles;
+  chkSaveDesktop.Checked       := AutoSaveDesktop;
+  chkSaveBinaryOutput.Checked  := SaveBinaryOutput;
+  chkLockToolbars.Checked      := LockToolbars;
+  chkMaxEditWindows.Checked    := MaxEditWindows;
+  chkMultiFormatCopy.Checked   := MultiFormatCopy;
+  chkUseMDI.Checked            := UseMDIMode;
+  chkQuietFirmware.Checked     := QuietFirmware;
+  chkDroppedRecent.Checked     := DroppedRecent;
+  chkFirmfast.Checked          := FirmwareFast;
+  chkFirmComp.Checked          := FirmwareComp;
+  edtFirmwareChunkSize.Value   := FirmwareChunkSize;
+  edtWaitTime.Value            := DownloadWaitTime;
+  edtMaxRecent.Value           := MaxRecent;
+  cbProg1.Checked              := Prog1Locked;
+  cbProg2.Checked              := Prog2Locked;
+  cbProg3.Checked              := Prog3Locked;
+  cbProg4.Checked              := Prog4Locked;
+  cbProg5.Checked              := Prog5Locked;
+  cbProg6.Checked              := Prog6Locked;
+  cbProg7.Checked              := Prog7Locked;
+  cbProg8.Checked              := Prog8Locked;
+end;
+
+procedure TPrefForm.DisplayMacroValues;
+var
+  i, numb : integer;
+begin
+  {Displays the values in the form}
+  MacrosList.Items.Clear;
+  ShiftMacrosList.Items.Clear;
+  for i:=1 to 26 do MacrosList.Items.Add(Chr(Ord('A')+i-1)+': ');
+  for i:=1 to 10 do MacrosList.Items.Add(Chr(Ord('0')+i-1)+': ');
+  for i:=1 to 26 do ShiftMacrosList.Items.Add(Chr(Ord('A')+i-1)+': ');
+  for i:=1 to 10 do ShiftMacrosList.Items.Add(Chr(Ord('0')+i-1)+': ');
+  for i:= 1 to macronumb do
+  begin
+    if Pos('<Shift>',macros[i]) = 12 then
+    begin
+      numb:=Ord(macros[i][19])-Ord('A');
+      if (numb<0) or (numb>25) then numb:=Ord(macros[i][19])-Ord('0')+26;
+      ShiftMacrosList.Items[numb] := macros[i][19]+': '+ Copy(macros[i],21,1000);
+    end else begin
+      numb:=Ord(macros[i][12])-Ord('A');
+      if (numb<0) or (numb>25) then numb:=Ord(macros[i][12])-Ord('0')+26;
+      MacrosList.Items[numb] := macros[i][12]+': '+ Copy(macros[i],14,1000);
+    end;
+  end;
+  MacrosList.ItemIndex:=0;
+  ShiftMacrosList.ItemIndex:=0;
+  MacrosList.Visible:=true;
+  ShiftMacrosList.Visible:=false;
+  MShift.Down := false;
+end;
+
+procedure TPrefForm.DisplayStartupValues;
+begin
+  {Display the values in the form}
+  CheckShowForm.Checked  := (StartupAction = SU_SHOWFORM);
+  CheckConnect.Checked   := (StartupAction = SU_CONNECT);
+  CheckNoConnect.Checked := (StartupAction = SU_NOCONNECT);
+
+  cboBrickType.ItemIndex := BrickType;
+
+  cboPort.ItemIndex := cboPort.Items.IndexOf(COMPort);
+  if cboPort.ItemIndex = -1 then
+    cboPort.Text := COMPort;
+
+//  chkUseBluetooth.Checked := UseBluetoothDefault;
+  radStandard.Checked     := StandardFirmwareDefault;
+  SetFirmwareType(FirmwareTypeDefault);
+  chkFBAlwaysPrompt.Checked := FBAlwaysPrompt;
+end;
+
+procedure TPrefForm.DisplayTemplateValues(const aLang : integer);
+var
+  i : integer;
+begin
+  {Displays the values in the form}
+  with NewTemplatesList do
+  begin
+    Lines.Clear;
+    for i:= 1 to templatenumb[aLang] do
+      Lines.Add(templates[aLang][i-1]);
+    CaretY := 1;
+    EnsureCursorPosVisible;
+  end;
+  cboLangTemp.OnChange := nil;
+  try
+    cboLangTemp.ItemIndex := aLang;
+  finally
+    cboLangTemp.OnChange := cboLangTempChange;
+  end;
+end;
+
+procedure TPrefForm.GetCompilerValues;
+begin
+  CompilerTimeout         := edtCompilerTimeout.Value * K_MSTOSEC;
+  LocalCompilerTimeout    := CompilerTimeout;
+  CompilerSwitches        := edtCompilerSwitches.Text;
+  PreferredLanguage       := PreferredLanguage;
+  NQCSwitches             := edtNQCSwitches.Text;
+  LCCSwitches             := edtLCCSwitches.Text;
+  NBCSwitches             := edtNBCSwitches.Text;
+  CPPSwitches             := edtCPPSwitches.Text;
+  JavaSwitches            := edtJavaSwitches.Text;
+  NBCOptLevel             := cboOptLevel.ItemIndex;
+  NBCMaxErrors            := edtMaxErrors.Value;
+  NQCIncludePath          := edtNQCIncludePath.Text;
+  OldNQCIncPaths          := edtNQCIncludePath.Items.CommaText;
+  LCCIncludePath          := edtLCCIncludePath.Text;
+  OldLCCIncPaths          := edtLCCIncludePath.Items.CommaText;
+  NBCIncludePath          := edtNBCIncludePath.Text;
+  OldNBCIncPaths          := edtNBCIncludePath.Items.CommaText;
+  CygwinDir               := edtCygwin.Text;
+  BrickOSRoot             := edtOSRoot.Text;
+  BrickOSMakefileTemplate := edtBrickOSMakefileTemplate.Lines.Text;
+  PascalCompilerPrefix    := edtPascalCompilerPrefix.Text;
+  KeepBrickOSMakefile     := chkKeepBrickOSMakefile.Checked;
+  LeJOSMakefileTemplate   := edtLeJOSMakefileTemplate.Lines.Text;
+  KeepLeJOSMakefile       := chkKeepLeJOSMakefile.Checked;
+  NQCExePath              := edtNQCExePath.Text;
+  LCCExePath              := edtLCCExePath.Text;
+  NBCExePath              := edtNBCExePath.Text;
+  IncludeSrcInList        := chkIncludeSrcInList.Checked;
+  UseInternalNBC          := chkUseIntNBCComp.Checked;
+  EnhancedFirmware        := chkEnhancedFirmware.Checked;
+  NXT2Firmware            := chkNXT2Firmare.Checked;
+  IgnoreSysFiles          := chkIgnoreSysFiles.Checked;
+  LeJOSRoot               := edtLeJOSRoot.Text;
+  JavaCompilerPath        := edtJavaPath.Text;
+  ShowAllConsoleOutput    := chkShowAllOutput.Checked;
+  StopScriptDLOnErrors    := chkStopOnAborted.Checked;
+  StripScriptComments     := chkStripComments.Checked;
+  SkipBlankScriptLines    := chkSkipBlankLines.Checked;
+  SyntaxHighlightConsole  := chkConsoleSyntaxHL.Checked;
+  ConsoleOutputSeparate   := chkOutputSeparate.Checked;
+  ShowConsoleLineNumbers  := chkShowConsoleLineNumbers.Checked;
+  ConsoleCodeCompletion   := chkConsoleCompProp.Checked;
+  ConsoleICDelay          := edtICDelay.Value;
+  ConsoleILDelay          := edtILDelay.Value;
+  ConsoleUSBFirstTimeout  := edtConsoleReadFirstTimeout.Value;
+  ConsoleUSBICTimeout     := edtConsoleReadICTimeout.Value;
+  ConsoleUSBWriteTimeout  := edtConsoleWriteTimeout.Value;
+end;
+
+procedure TPrefForm.GetEditorValues;
+begin
+  {Gets the values from the form}
+  ColorsChanged       := fColorsChanged;
+  ColorCoding         := CheckColorCoding.Checked;
+  ShowTemplatePopup   := CheckShowTemplates.Checked;
+  AutoIndentCode      := CheckAutoIndentCode.Checked;
+  MacrosOn            := CheckMacrosOn.Checked;
+  RICDecompAsData     := radRICDecompArray.Checked;
+  RICDecompNameFormat := edtRICDecompArrayFmt.Text;
+  HideSelection       := cbHideSelection.Checked;
+  CCInsensitive       := chkCCInsensitive.Checked;
+  ScrollPastEOL       := cbScrollPastEOL.Checked;
+  HalfPageScroll      := cbHalfPageScroll.Checked;
+  DragAndDropEditing  := chkDragDrop.Checked;
+  TabWidth            := inpTabWidth.Value;
+  MaxUndo             := inpMaxUndo.Value;
+  MaxLeftChar         := edtMaxLeftChar.Value;
+  ExtraLineSpacing    := inpExtraLineSpacing.Value;
+  ScrollBars          := cbxScrollBars.ItemIndex;
+  RightEdgePosition   := inpRightEdge.Value;
+  RightEdgeColor      := cbxREColor.Selected;
+  EditorColor         := cbxColor.Selected;
+  SelectionForeground := cbxForeground.Selected;
+  SelectionBackground := cbxBackground.Selected;
+  StructureColor      := cbxStructureColor.Selected;
+  ActiveLineColor     := cbxActiveLineColor.Selected;
+  AltSetsSelMode      := chkAltSelMode.Checked;
+  MoveCursorRight     := chkMoveRight.Checked;
+  KeepBlanks          := chkKeepBlanks.Checked;
+  UseSmartTabs        := chkSmartTab.Checked;
+  EnhanceHomeKey      := chkEnhHomeKey.Checked;
+  GroupUndo           := chkGroupUndo.Checked;
+  TabIndent           := chkTabIndent.Checked;
+  ConvertTabs         := chkConvertTabs.Checked;
+  ShowSpecialChars    := chkShowSpecialChars.Checked;
+  HighlightCurLine    := chkHighlightCurLine.Checked;
+  KeepCaretX          := chkKeepCaretX.Checked;
+  AutoMaxLeft         := chkAutoMaxLeft.Checked;
+end;
+
+procedure TPrefForm.GetGeneralValues;
+begin
+{Gets the values from the form}
+  ShowRecent         := CheckShowRecent.Checked;
+  SaveWindowPos      := CheckSavePos.Checked;
+  SaveBackup         := CheckSaveBackup.Checked;
+  ShowCompilerStatus := chkShowCompileStatus.Checked;
+  AutoSaveFiles      := chkAutoSave.Checked;
+  AutoSaveDesktop    := chkSaveDesktop.Checked;
+  SaveBinaryOutput   := chkSaveBinaryOutput.Checked;
+  LockToolbars       := chkLockToolbars.Checked;
+  MaxEditWindows     := chkMaxEditWindows.Checked;
+  MultiFormatCopy    := chkMultiFormatCopy.Checked;
+  UseMDIMode         := chkUseMDI.Checked;
+  QuietFirmware      := chkQuietFirmware.Checked;
+  DroppedRecent      := chkDroppedRecent.Checked;
+  FirmwareFast       := chkFirmfast.Checked;
+  FirmwareComp       := chkFirmComp.Checked;
+  FirmwareChunkSize  := edtFirmwareChunkSize.Value;
+  DownloadWaitTime   := edtWaitTime.Value;
+  Prog1Locked        := cbProg1.Checked;
+  Prog2Locked        := cbProg2.Checked;
+  Prog3Locked        := cbProg3.Checked;
+  Prog4Locked        := cbProg4.Checked;
+  Prog5Locked        := cbProg5.Checked;
+  Prog6Locked        := cbProg6.Checked;
+  Prog7Locked        := cbProg7.Checked;
+  Prog8Locked        := cbProg8.Checked;
+
+  SetMaxRecent(edtMaxRecent.Value);
+end;
+
+procedure TPrefForm.GetMacroValues;
+var
+  i : integer;
+  str : string;
+begin
+  {Gets the values from the form}
+  MacrosChanged := false;
+  macronumb:=0;
+  for i:=0 to MacrosList.Items.Count-1 do
+  begin
+    str:='<Ctrl><Alt>';
+    str:=str+ MacrosList.Items[i][1]+':';
+    str:=str+Copy(MacrosList.Items[i],4,1000);
+    if (Length(str)>13) then
+    begin
+      macronumb:=macronumb+1;
+      if (str <> macros[macronumb]) then MacrosChanged := true;
+      macros[macronumb] := str;
+    end
+  end;
+  for i:=0 to ShiftMacrosList.Items.Count-1 do
+  begin
+    str:='<Ctrl><Alt><Shift>';
+    str:=str+ ShiftMacrosList.Items[i][1]+':';
+    str:=str+Copy(ShiftMacrosList.Items[i],4,1000);
+    if (Length(str)>20) then
+    begin
+      macronumb:=macronumb+1;
+      if (str <> macros[macronumb]) then MacrosChanged := true;
+      macros[macronumb] := str;
+    end
+  end;
+end;
+
+procedure TPrefForm.GetStartupValues;
+begin
+  {Gets the values from the form}
+  if CheckShowForm.Checked then StartupAction := SU_SHOWFORM;
+  if CheckConnect.Checked then StartupAction := SU_CONNECT;
+  if CheckNoConnect.Checked then StartupAction := SU_NOCONNECT;
+
+  BrickType := cboBrickType.ItemIndex;
+  if BrickType = -1 then
+    BrickType := SU_RCX;
+
+  COMPort := cboPort.Text;
+
+  StandardFirmwareDefault := radStandard.Checked;
+  UseBluetoothDefault     := False;
+  FirmwareTypeDefault     := GetFirmwareTypeDefault;
+  FBAlwaysPrompt          := chkFBAlwaysPrompt.Checked;
+end;
+
+procedure TPrefForm.GetTemplateValues(const aLang : integer);
+var
+  i : integer;
+begin
+  {Gets the values from the form}
+  with NewTemplatesList do
+  begin
+    templatenumb[aLang] := Lines.Count;
+    SetLength(templates[aLang], templatenumb[aLang]);
+    for i:=0 to Lines.Count-1 do
+      templates[aLang][i] := Lines[i];
+  end;
+end;
+
+
+
+
 initialization
 {$IFDEF FPC}
   {$i Preferences.lrs}
@@ -5268,6 +4136,13 @@ initialization
 {$ENDIF}
   fVersion := GetVersionInfo(Application.ExeName).ProductVersion;
 
+  cc_keywords := CreateSortedStringList;
+  cc_commands := CreateSortedStringList;
+  cc_constants := CreateSortedStringList;
+
 finalization
-  RecentFiles := nil;
+  FreeAndNil(cc_keywords);
+  FreeAndNil(cc_commands);
+  FreeAndNil(cc_constants);
+
 end.

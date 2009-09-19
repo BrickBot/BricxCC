@@ -180,7 +180,7 @@ begin
   Application.CreateForm(TfrmNXTController, frmNXTController);
   Application.CreateForm(TfrmNXTImage, frmNXTImage);
   if not ParamSwitch('/RESET') then
-    UpgradeRegistry; // must be done before creating preferences form
+    UpgradeRegistry(nil, nil, nil, nil); // must be done before creating preferences form
   if ParamSwitch('-EMBEDDING') or ParamSwitch('-AUTOMATION') then
   begin
     RunningAsCOMServer := True;
