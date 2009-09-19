@@ -22,7 +22,7 @@ uses
   Classes, uNXTConstants;
 
 type
-  TClumpData = class;
+  TProgClumpData = class;
   TClumpOffsets = class;
   TDSTocEntries = class;
   TProgram = class;
@@ -89,20 +89,20 @@ type
 
   TClumpOffsets = class(TCollection)
   private
-    fClumpData : TClumpData;
+    fClumpData : TProgClumpData;
     function GetItem(Index: Integer): TOffset;
     procedure SetItem(Index: Integer; const Value: TOffset);
   public
-    constructor Create(aOwner : TClumpData); virtual;
+    constructor Create(aOwner : TProgClumpData); virtual;
     function Add: TOffset;
     function Insert(Index: Integer): TOffset;
     function IndexOfLine(const line : integer) : integer;
     function IndexOfPC(const pc: word): integer;
     property Items[Index: Integer]: TOffset read GetItem write SetItem; default;
-    property ClumpData : TClumpData read fClumpData;
+    property ClumpData : TProgClumpData read fClumpData;
   end;
 
-  TClumpData = class(TCollectionItem)
+  TProgClumpData = class(TCollectionItem)
   private
     fName : string;
     fOffset : integer;
@@ -131,15 +131,15 @@ type
     fDS: TDSTocEntries;
     fOffsetDS : integer;
     fOffsetDVA : integer;
-    function  GetItem(Index: Integer): TClumpData;
-    procedure SetItem(Index: Integer; const Value: TClumpData);
+    function  GetItem(Index: Integer): TProgClumpData;
+    procedure SetItem(Index: Integer; const Value: TProgClumpData);
     procedure LoadDataspace(SL : TStrings);
     procedure LoadClumpData(SL : TStrings);
   public
     constructor Create; virtual;
     destructor Destroy; override;
-    function  Add: TClumpData;
-    function  Insert(Index: Integer): TClumpData;
+    function  Add: TProgClumpData;
+    function  Insert(Index: Integer): TProgClumpData;
     procedure ClearAll;
     function  IndexOfName(const name : string) : integer;
     function  TraceInto : boolean;
@@ -155,7 +155,7 @@ type
     procedure LoadFromFile(const name : string);
     procedure UpdateOffsets;
     function  Loaded(const aName : string) : boolean;
-    property  Items[Index: Integer]: TClumpData read GetItem write SetItem; default;
+    property  Items[Index: Integer]: TProgClumpData read GetItem write SetItem; default;
     property  Dataspace : TDSTocEntries read fDS;
     property  IsNXC : boolean read fIsNXC write fIsNXC;
   end;
@@ -421,9 +421,9 @@ begin
   inherited SetItem(Index, Value);
 end;
 
-{ TClumpData }
+{ TProgClumpData }
 
-procedure TClumpData.AddOffset(const lineNo, PC: integer; const src, fname: string);
+procedure TProgClumpData.AddOffset(const lineNo, PC: integer; const src, fname: string);
 var
   CO : TOffset;
   i : integer;
@@ -441,7 +441,7 @@ begin
   CO.Source := src;
 end;
 
-constructor TClumpData.Create(ACollection: TCollection);
+constructor TProgClumpData.Create(ACollection: TCollection);
 begin
   inherited;
   fOffsets := TClumpOffsets.Create(Self);
@@ -451,33 +451,33 @@ begin
   fFilename := '';
 end;
 
-destructor TClumpData.Destroy;
+destructor TProgClumpData.Destroy;
 begin
   FreeAndNil(fOffsets);
   FreeAndNil(fFullOffsets);
   inherited;
 end;
 
-function TClumpData.GetClumpID: integer;
+function TProgClumpData.GetClumpID: integer;
 begin
   Result := Self.ID;
 end;
 
-function TClumpData.GetTheProgram: TProgram;
+function TProgClumpData.GetTheProgram: TProgram;
 begin
   Result := TProgram(Collection);
 end;
 
 { TProgram }
 
-function TProgram.Add: TClumpData;
+function TProgram.Add: TProgClumpData;
 begin
-  Result := TClumpData(inherited Add);
+  Result := TProgClumpData(inherited Add);
 end;
 
 constructor TProgram.Create;
 begin
-  inherited Create(TClumpData);
+  inherited Create(TProgClumpData);
   fDS := TDSTocEntries.Create;
   fDS.fTheProgram := Self;
   fIsNXC := False;
@@ -492,9 +492,9 @@ begin
   inherited;
 end;
 
-function TProgram.GetItem(Index: Integer): TClumpData;
+function TProgram.GetItem(Index: Integer): TProgClumpData;
 begin
-  Result := TClumpData(inherited GetItem(Index));
+  Result := TProgClumpData(inherited GetItem(Index));
 end;
 
 function TProgram.IndexOfName(const name: string): integer;
@@ -512,9 +512,9 @@ begin
   end;
 end;
 
-function TProgram.Insert(Index: Integer): TClumpData;
+function TProgram.Insert(Index: Integer): TProgClumpData;
 begin
-  Result := TClumpData(inherited Insert(Index));
+  Result := TProgClumpData(inherited Insert(Index));
 end;
 
 procedure TProgram.LoadClumpData(SL: TStrings);
@@ -522,7 +522,7 @@ var
   values : TStringList;
   i, tmpID, lineNo, PC : integer;
   tmp, currentFile : string;
-  CD : TClumpData;
+  CD : TProgClumpData;
   CO : TOffset;
 begin
   Clear; // clear the collection of clumps
@@ -668,7 +668,7 @@ begin
   end;
 end;
 
-procedure TProgram.SetItem(Index: Integer; const Value: TClumpData);
+procedure TProgram.SetItem(Index: Integer; const Value: TProgClumpData);
 begin
   inherited SetItem(Index, Value);
 end;
@@ -676,7 +676,7 @@ end;
 function TProgram.TraceInto: boolean;
 var
   i, curLine, newLine : integer;
-  CD : TClumpData;
+  CD : TProgClumpData;
   CO : TOffset;
   bc : TBrickComm;
 begin
@@ -719,7 +719,7 @@ end;
 function TProgram.StepOver: boolean;
 var
   i, curLine, newLine : integer;
-  CD : TClumpData;
+  CD : TProgClumpData;
   CO : TOffset;
   bc : TBrickComm;
   oldClump : Byte;
@@ -756,7 +756,7 @@ end;
 function TProgram.StepOver: boolean;
 var
   i, curLine, newLine : integer;
-  CD : TClumpData;
+  CD : TProgClumpData;
   CO : TOffset;
   bc : TBrickComm;
   oldClump : Byte;
@@ -808,7 +808,7 @@ end;
 function TProgram.SingleStep(const bInto : boolean) : boolean;
 var
   i, curLine, newLine : integer;
-  CD : TClumpData;
+  CD : TProgClumpData;
   CO : TOffset;
   bc : TBrickComm;
   oldClump : Byte;
@@ -939,7 +939,7 @@ end;
 function TProgram.RunToCursor(const aLine : integer) : boolean;
 var
   i, curLine : integer;
-  CD : TClumpData;
+  CD : TProgClumpData;
   CO : TOffset;
   bc : TBrickComm;
 begin

@@ -77,7 +77,6 @@ var
 
 function SearchForRCX(atstartup, bAlwaysPrompt :boolean) : Boolean;
 
-function CheckAlive : boolean; //Checks whether the RCX is still alive
 function UseUSB : Boolean;
 
 var
@@ -98,32 +97,6 @@ uses
 function UseUSB : Boolean;
 begin
   Result := PortIsUSB(LocalPort);
-end;
-
-{Checks whether the RCX is (still) alive}
-function CheckAlive : boolean;
-begin
-  Result := False;
-  // always start with a closed BrickComm
-  if not BrickComm.UseBluetooth then
-    BrickComm.Close;
-  while True do
-  begin
-    if not LocalStandardFirmware then begin
-      // leave BrickComm open
-      BrickComm.Open;
-      Break;
-    end
-    else begin
-      if BrickComm.BrickAlive then
-        Break
-      else if MessageDlg(S_CANNOT_FIND_RCX, mtWarning, [mbOK, mbCancel], 0) = mrCancel then
-        Exit;
-    end;
-    if not BrickComm.UseBluetooth then
-      BrickComm.Close;
-  end;
-  Result := True;
 end;
 
 {Searches for the COM port}

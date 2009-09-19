@@ -34,24 +34,21 @@ uses
 {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms,
   Dialogs, ExtCtrls, ComCtrls, ToolWin,
+  StdCtrls, ImgList, ActnList, Menus,
   uCodeExplorer, GX_ProcedureList, GotoLine, ConstructUnit, CodeUnit,
-{
-
-
-  GX_IDECodeTemplates, EditCodeTemplate, CodeTemplates,
+  GX_IDECodeTemplates, EditCodeTemplate, CodeTemplates, uBasicPrefs,
   uMacroLib, uMacroForm, uMacroEditor,
-}
-//  uPSComponent_StdCtrls, uPSComponent_Controls, uPSComponent_Forms,
-//  uPSComponent_Default, uPSComponent,
+  uPSComponent_StdCtrls, uPSComponent_Controls, uPSComponent_Forms,
+  uPSComponent_Default, uPSComponent,
   SynEdit, SynEditEx, BricxccSynEdit, SynMacroRecorder, SynEditHighlighter,
   SynHighlighterNQC, SynHighlighterNBC, SynHighlighterNPG, SynHighlighterRS,
+  SynHighlighterROPS,
   SynEditAutoComplete, SynCompletionProposal, SynEditPlugins, SynEditTypes,
   SynEditRegexSearch, SynEditMiscClasses, SynEditSearch, {SynEditPrintTypes,}
   SynExportRTF, SynEditExport, SynExportHTML, SynEditKeyCmds;
 
 type
   TfrmCodeEdit = class(TForm)
-    BricxccSynEdit1: TBricxccSynEdit;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
@@ -63,19 +60,371 @@ type
     splCodeExplorer: TSplitter;
     pnlCodeExplorer: TPanel;
     barStatus: TStatusBar;
+    pnlRight: TPanel;
+    splErrors: TSplitter;
+    TheErrors: TListBox;
+    ilBookmarkImages: TImageList;
+    dlgOpen: TOpenDialog;
+    dlgSave: TSaveDialog;
+    alMain: TActionList;
+    actFileNew: TAction;
+    actFileOpen: TAction;
+    actFileSave: TAction;
+    actFileSaveAs: TAction;
+    actFilePageSetup: TAction;
+    actFilePrinterSetup: TAction;
+    actFilePrintPreview: TAction;
+    actFilePrint: TAction;
+    actEditUndo: TAction;
+    actEditRedo: TAction;
+    actEditCut: TAction;
+    actEditCopy: TAction;
+    actEditPaste: TAction;
+    actEditDelete: TAction;
+    actEditSelectAll: TAction;
+    actEditNextField: TAction;
+    actEditPreferences: TAction;
+    actSearchFind: TAction;
+    actSearchFindNext: TAction;
+    actSearchFindPrev: TAction;
+    actSearchReplace: TAction;
+    actSearchGotoLine: TAction;
+    actSearchProcList: TAction;
+    actCompileCompile: TAction;
+    actCompileDownload: TAction;
+    actCompileDownloadRun: TAction;
+    actCompileRun: TAction;
+    actCompileStop: TAction;
+    actHelpHelp: TAction;
+    actHelpInfo: TAction;
+    actEditCopyHTML: TAction;
+    actEditCopyRTF: TAction;
+    actCompileTraceInto: TAction;
+    actCompileStepOver: TAction;
+    actCompilePause: TAction;
+    actCompileSingleStep: TAction;
+    actCompileStepOut: TAction;
+    actCompileTraceToLine: TAction;
+    actCompileRunToCursor: TAction;
+    actHelpNXCGuidePDF: TAction;
+    actHelpNQCGuidePDF: TAction;
+    actHelpNBCGuidePDF: TAction;
+    actHelpNXCTutorialPDF: TAction;
+    actHelpNQCTutorialPDF: TAction;
+    actHelpNBCTutorialPDF: TAction;
+    mnuMain: TMainMenu;
+    mniFile: TMenuItem;
+    pmnuEditor: TPopupMenu;
+    mniEdit: TMenuItem;
+    mniSearch: TMenuItem;
+    mniView: TMenuItem;
+    mniCompile: TMenuItem;
+    mniCompileProgram: TMenuItem;
+    mniDownload: TMenuItem;
+    mniDownloadandRun: TMenuItem;
+    N15: TMenuItem;
+    mniRun: TMenuItem;
+    mniStop: TMenuItem;
+    mniPause: TMenuItem;
+    mniRunToCursor: TMenuItem;
+    mniRunUntilReturn: TMenuItem;
+    mniSingleStep: TMenuItem;
+    mniStepOver: TMenuItem;
+    mniTraceInto: TMenuItem;
+    mniTraceToLine: TMenuItem;
+    mniCompSep: TMenuItem;
+    mniCodeExplorer: TMenuItem;
+    mniStatusbar: TMenuItem;
+    mniShowTemplates: TMenuItem;
+    mniShowCodeListing: TMenuItem;
+    mniHideErrors: TMenuItem;
+    mniMacroManager: TMenuItem;
+    mniFindDeclaration: TMenuItem;
+    N5: TMenuItem;
+    mniOpenFileAtCursor: TMenuItem;
+    mniTopicSearch: TMenuItem;
+    N3: TMenuItem;
+    lmiEditUndo: TMenuItem;
+    lmiEditRedo: TMenuItem;
+    N2: TMenuItem;
+    lmiEditCut: TMenuItem;
+    lmiEditCopy: TMenuItem;
+    lmiEditPaste: TMenuItem;
+    lmiEditDelete: TMenuItem;
+    N1: TMenuItem;
+    lmiEditSelectAll: TMenuItem;
+    lmiCopySpecial: TMenuItem;
+    N4: TMenuItem;
+    mniToggleBookmarks: TMenuItem;
+    mniGotoBookmarks: TMenuItem;
+    N6: TMenuItem;
+    mniViewExplorer: TMenuItem;
+    mniToggleBreakpoint: TMenuItem;
+    mniTBookmark0: TMenuItem;
+    mniTBookmark1: TMenuItem;
+    mniTBookmark2: TMenuItem;
+    mniTBookmark3: TMenuItem;
+    mniTBookmark4: TMenuItem;
+    mniTBookmark5: TMenuItem;
+    mniTBookmark6: TMenuItem;
+    mniTBookmark7: TMenuItem;
+    mniTBookmark8: TMenuItem;
+    mniTBookmark9: TMenuItem;
+    mniGBookmark0: TMenuItem;
+    mniGBookmark1: TMenuItem;
+    mniGBookmark2: TMenuItem;
+    mniGBookmark3: TMenuItem;
+    mniGBookmark4: TMenuItem;
+    mniGBookmark5: TMenuItem;
+    mniGBookmark6: TMenuItem;
+    mniGBookmark7: TMenuItem;
+    mniGBookmark8: TMenuItem;
+    mniGBookmark9: TMenuItem;
+    lmiCopyHTML: TMenuItem;
+    lmiCopyRTF: TMenuItem;
+    New1: TMenuItem;
+    Open1: TMenuItem;
+    Save1: TMenuItem;
+    SaveAs1: TMenuItem;
+    N11: TMenuItem;
+    PageSetup1: TMenuItem;
+    PrinterSetup1: TMenuItem;
+    PrintPreview1: TMenuItem;
+    Print1: TMenuItem;
+    mniSepFiles: TMenuItem;
+    Undo1: TMenuItem;
+    Redo1: TMenuItem;
+    N12: TMenuItem;
+    Cut1: TMenuItem;
+    Copy1: TMenuItem;
+    Paste1: TMenuItem;
+    Delete1: TMenuItem;
+    N26: TMenuItem;
+    SelectAll1: TMenuItem;
+    mniCopySpecial: TMenuItem;
+    N8: TMenuItem;
+    NextField1: TMenuItem;
+    N16: TMenuItem;
+    Preferences1: TMenuItem;
+    HTML1: TMenuItem;
+    RTF1: TMenuItem;
+    Find1: TMenuItem;
+    FindNext1: TMenuItem;
+    FindPrevious1: TMenuItem;
+    Replace1: TMenuItem;
+    N13: TMenuItem;
+    GotoLineNumber1: TMenuItem;
+    ProcedureList1: TMenuItem;
+    procedure actCompileCompileExecute(Sender: TObject);
+    procedure actCompileDownloadExecute(Sender: TObject);
+    procedure actCompileDownloadRunExecute(Sender: TObject);
+    procedure actCompileRunExecute(Sender: TObject);
+    procedure actCompileRunToCursorExecute(Sender: TObject);
+    procedure actCompileStepOutExecute(Sender: TObject);
+    procedure actCompileStepOverExecute(Sender: TObject);
+    procedure actCompileStopExecute(Sender: TObject);
+    procedure actCompileTraceIntoExecute(Sender: TObject);
+    procedure actCompileTraceToLineExecute(Sender: TObject);
+    procedure actEditCopyExecute(Sender: TObject);
+    procedure actEditCopyHTMLExecute(Sender: TObject);
+    procedure actEditCopyRTFExecute(Sender: TObject);
+    procedure actEditCutExecute(Sender: TObject);
+    procedure actEditDeleteExecute(Sender: TObject);
+    procedure actEditNextFieldExecute(Sender: TObject);
+    procedure actEditPasteExecute(Sender: TObject);
+//    procedure actEditPreferencesExecute(Sender: TObject);
+    procedure actEditRedoExecute(Sender: TObject);
+    procedure actEditSelectAllExecute(Sender: TObject);
+    procedure actEditUndoExecute(Sender: TObject);
+    procedure actFileNewExecute(Sender: TObject);
+    procedure actFileOpenExecute(Sender: TObject);
+    procedure actFileSaveAsExecute(Sender: TObject);
+    procedure actFileSaveExecute(Sender: TObject);
+    procedure actSearchFindExecute(Sender: TObject);
+    procedure actSearchFindNextExecute(Sender: TObject);
+    procedure actSearchFindPrevExecute(Sender: TObject);
+    procedure actSearchGotoLineExecute(Sender: TObject);
+    procedure actSearchProcListExecute(Sender: TObject);
+    procedure actSearchReplaceExecute(Sender: TObject);
+    procedure actCompilePauseExecute(Sender: TObject);
+    procedure actCompileSingleStepExecute(Sender: TObject);
+    procedure actHelpNBCGuidePDFExecute(Sender: TObject);
+    procedure actHelpNBCTutorialPDFExecute(Sender: TObject);
+    procedure actHelpNXCGuidePDFExecute(Sender: TObject);
+    procedure actHelpNXCTutorialPDFExecute(Sender: TObject);
+    procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
+    procedure mniCodeExplorerClick(Sender: TObject);
+    procedure mniCompileClick(Sender: TObject);
+    procedure mniFileClick(Sender: TObject);
+    procedure mniFindDeclarationClick(Sender: TObject);
+    procedure mniHideErrorsClick(Sender: TObject);
+    procedure mniMacroManagerClick(Sender: TObject);
+    procedure mniOpenFileAtCursorClick(Sender: TObject);
+    procedure mniShowCodeListingClick(Sender: TObject);
+    procedure mniShowTemplatesClick(Sender: TObject);
+    procedure mniStatusbarClick(Sender: TObject);
+    procedure mniToggleBreakpointClick(Sender: TObject);
+    procedure mniViewClick(Sender: TObject);
+    procedure mniViewExplorerClick(Sender: TObject);
+    procedure mnTopicSearchClick(Sender: TObject);
+    procedure pmnuEditorPopup(Sender: TObject);
+    procedure RecentFileClick(Sender: TObject);
+    procedure TheErrorsMouseMove(Sender: TObject; Shift: TShiftState; X,
+      Y: Integer);
+    procedure ToggleBookmark(Sender: TObject);
+    procedure GotoBookmark(Sender: TObject);
+    procedure pnlCodeExplorerDockOver(Sender: TObject;
+      Source: TDragDockObject; X, Y: Integer; State: TDragState;
+      var Accept: Boolean);
+    procedure pnlCodeExplorerGetSiteInfo(Sender: TObject;
+      DockClient: TControl; var InfluenceRect: TRect; MousePos: TPoint;
+      var CanDock: Boolean);
+    procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure FormActivate(Sender: TObject);
+    procedure FormClose(Sender: TObject; var Action: TCloseAction);
+    procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure FormDestroy(Sender: TObject);
+    procedure FormDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure FormDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure mniEditClick(Sender: TObject);
+    procedure mniSearchClick(Sender: TObject);
   private
     { Private declarations }
-(*
+    IsNew:boolean;
+    fFilename: string;
+    fHighlighter: TSynCustomHighlighter;
+    FResume : boolean;
+    fNXCAPIBase : TStringList;
+    newcount : integer;
+    FActiveLine : integer;
+    procedure CreateTheEditor;
+    procedure CreateCompPropComponents;
+    procedure CreateMainFormHighlighters;
+    procedure CreateMiscSynEditComponents;
+    procedure FindDeclaration(const aIdent: string);
+    procedure OpenFileAtCursor;
+    procedure OpenFile(fname:string; lineNo : integer = -1);
+    function OpenFileOnPath(const fname: string): boolean;
+    procedure NewFile(fname: string);
+    procedure SetActiveHelpFile;
+    function GetPosition: integer;
+    function GetSource: string;
+    procedure SetFilename(const Value: string);
+    procedure SetPosition(const Value: integer);
+    procedure UpdateModeOnStatusBar;
+    procedure UpdateModifiedOnStatusBar;
+    procedure UpdatePositionOnStatusBar;
+    function DoCompileAction(bDown, bRun: Boolean): Boolean;
+    procedure StartTask(idx: integer);
+    procedure UpdateEditorPosition;
+    function CanCut: Boolean;
+    function CanPaste: Boolean;
+    function CanUndo: Boolean;
+    procedure CopySel;
+    procedure CutSel;
+    procedure DeleteSel;
+    procedure GotoLine;
+    procedure NextField;
+    procedure Paste;
+    procedure Redo;
+    procedure SelectAll;
+    function Selected: Boolean;
+    procedure Undo;
+    procedure DoSave;
+    procedure DoSaveAs;
+    function CanFind: boolean;
+    function CanFindNext: boolean;
+    function CanRedo: boolean;
+    function CanReplace: boolean;
+    procedure ExecFind;
+    procedure ExecFindNext;
+    procedure ExecFindPrev;
+    procedure ExecReplace;
+    procedure UpdateStatusBar;
+    procedure DoCopyHTML(Sender: TObject);
+    procedure DoCopyRTF(Sender: TObject);
+    procedure ProcedureList;
+    procedure SetCaption(const fname: string);
+    procedure SetSyntaxHighlighter;
+    procedure HookCompProp;
+    procedure SelectLine(lineNo: integer);
+    procedure SaveModifiedFiles;
+    procedure DoDisplayErrors(aShow: boolean);
+    procedure HandleOnCompilerStatusChange(Sender: TObject;
+      const StatusMsg: string);
+    procedure HandleOpenStateChanged(Sender: TObject);
+    procedure HandleOnGetVarInfoByID(Sender: TObject; const ID: integer;
+      var offset, size, vartype: integer);
+    procedure HandleOnGetVarInfoByName(Sender: TObject; const name: string;
+      var offset, size, vartype: integer);
+    procedure ShowNXTTools;
+    procedure SaveFile;
+    procedure SaveFileAs(fname: string);
+    procedure ShowTheErrors;
+    procedure DoHideErrors;
+    procedure TheErrorsClick(Sender: TObject);
+    procedure SynMacroRecStateChange(Sender: TObject);
+    procedure scpParamsExecute(Kind: SynCompletionType; Sender: TObject;
+      var CurrentInput: String; var x, y: Integer;
+      var CanExecute: Boolean);
+    procedure CreatePascalScriptComponents;
+    procedure ceAfterExecute(Sender: TPSScript);
+    procedure ceBreakpoint(Sender: TObject; const FileName: String;
+      Position, Row, Col: Cardinal);
+    procedure ceCompile(Sender: TPSScript);
+    procedure ceExecute(Sender: TPSScript);
+    procedure ceIdle(Sender: TObject);
+    procedure ceLineInfo(Sender: TObject; const FileName: String; Position,
+      Row, Col: Cardinal);
+    function ceNeedFile(Sender: TObject; const OrginFileName: String;
+      var FileName, Output: String): Boolean;
+    procedure CreateSpiritPlugins;
+    function HandleOnHelp(Command: Word; Data: Integer;
+      var CallHelp: Boolean): Boolean;
+    procedure SetValuesFromPreferences;
+    procedure HandleExplorerFinished(Sender: TObject);
+    procedure HandleOnAddConstruct(Sender : TObject; const aTemplate : string; const aX : integer = -1; const aY : integer = -1);
+    procedure ShowCodeExplorer;
+    procedure ShowTemplates(bSave: boolean = true);
+    procedure UpdateCompilerMenu;
+    procedure ConfigureOtherFirmwareOptions;
+    procedure AddConstructString(constr: string; x, y: integer);
+    function ActiveLanguageIndex: integer;
+    function ActiveLanguageName: string;
+    procedure HandleCompXferClick(Sender: TObject);
+    procedure SetFilterIndexFromLanguage;
+    procedure ExecuteTransferItem(TI: TTransferItem);
+    function ProcessParams(aParams: string): string;
+    procedure ChangeActiveEditor;
+    procedure UpdateSynComponents;
+    procedure AddErrorMessage(const errMsg: string);
+    function CanFindDeclaration: Boolean;
+    procedure ConfigureTransferMenuItemVisibility(aList: TList;
+      aMenuItem: TMenuItem; const aPrefix: string);
+    procedure DoPrintPreview;
+    procedure DragDropHelper(Sender, Source: TObject; X, Y: Integer);
+    procedure DragOverHelper(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    function IsMaximized: Boolean;
+  private
+    procedure LoadNXCCompProp;
+    procedure DoLoadAPI(cp: TSynCompletionProposal; aStrings: TStrings);
+    procedure AddUserDefinedFunctions(aStrings : TStrings);
+  private
     // synedit highlighters
     SynNXCSyn: TSynNXCSyn;
     SynNPGSyn: TSynNPGSyn;
     SynNBCSyn: TSynNBCSyn;
     SynRSSyn: TSynRSSyn;
+    SynROPSSyn: TSynROPSSyn;
     // completion proposal components
     SynNBCCompProp: TSynCompletionProposal;
     SynNXCCompProp: TSynCompletionProposal;
     SynNPGCompProp: TSynCompletionProposal;
     SynRSCompProp: TSynCompletionProposal;
+    SynROPSCompProp: TSynCompletionProposal;
     scpParams: TSynCompletionProposal;
     // misc synedit components
     SynMacroRec: TSynMacroRecorder;
@@ -84,13 +433,52 @@ type
     SynEditRegexSearch: TSynEditRegexSearch;
     expRTF: TSynExporterRTF;
     expHTML: TSynExporterHTML;
-    SynEditPrint: TSynEditPrint;
-    procedure LoadNXCCompProp;
-    procedure DoLoadAPI(cp: TSynCompletionProposal; aStrings: TStrings);
-    procedure AddUserDefinedFunctions(aStrings : TStrings);
-*)
+//    SynEditPrint: TSynEditPrint;
+    // pascal script components
+    PSImport_Controls: TPSImport_Controls;
+    PSImport_StdCtrls: TPSImport_StdCtrls;
+    PSImport_Forms: TPSImport_Forms;
+    PSImport_DateUtils: TPSImport_DateUtils;
+    PSImport_Classes: TPSImport_Classes;
+    ce: TPSScriptDebugger;
+    procedure TheEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
+    procedure TheEditorDragOver(Sender, Source: TObject; X, Y: Integer;
+      State: TDragState; var Accept: Boolean);
+    procedure TheEditorKeyDown(Sender: TObject; var Key: Word;
+      Shift: TShiftState);
+    procedure TheEditorKeyPress(Sender: TObject; var Key: Char);
+    procedure TheEditorMouseDown(Sender: TObject; Button: TMouseButton;
+      Shift: TShiftState; X, Y: Integer);
+    procedure TheEditorChange(Sender: TObject);
+    procedure TheEditorClearBookmark(Sender: TObject;
+      var Mark: TSynEditMark);
+    procedure TheEditorGutterClick(Sender: TObject; X, Y, Line: Integer;
+      mark: TSynEditMark);
+    procedure TheEditorPlaceBookmark(Sender: TObject;
+      var Mark: TSynEditMark);
+    procedure TheEditorProcessCommand(Sender: TObject;
+      var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
+    procedure TheEditorProcessUserCommand(Sender: TObject;
+      var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
+    procedure TheEditorReplaceText(Sender: TObject; const ASearch,
+      AReplace: String; Line, Column: Integer;
+      var Action: TSynReplaceAction);
+    procedure TheEditorStatusChange(Sender: TObject;
+      Changes: TSynStatusChanges);
+    procedure TheEditorSpecialLineColors(Sender: TObject; Line: Integer;
+      var Special: Boolean; var FG, BG: TColor);
+    procedure TheEditorMouseOverToken(Sender: TObject; const Token: String;
+      TokenType: Integer; Attri: TSynHighlighterAttributes;
+      var Highlight: Boolean);
   public
     { Public declarations }
+    TheEditor: TBricxccSynEdit;
+  public
+    { Public declarations }
+    property  Filename : string read fFilename write SetFilename;
+    property  Highlighter : TSynCustomHighlighter read fHighlighter write fHighlighter;
+    property  Source : string read GetSource;
+    property  Position : integer read GetPosition write SetPosition;
   end;
 
 var
@@ -102,30 +490,74 @@ implementation
 {$R *.DFM}
 {$ENDIF}
 
-{
 uses
-  uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uProgram, uCompStatus, uRICComp,
+  Clipbrd,
+  uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uProgram, uCompStatus,
+  uRICComp, uCppCode, Transdlg,
   uNXTClasses, uNBCInterface, uNBCCommon, uEditorExperts, ParamUtils,
-//  uPSI_brick_common, uPSI_uSpirit, uPSI_FantomSpirit, uPSRuntime,
-//  uPSDisassembly, uPSDebugger,
-  uGlobals, uBasicPrefs, uHighlighterProcs, brick_common, FantomSpirit,
+  uPSI_brick_common, uPSI_uSpirit, uPSI_FantomSpirit, uPSRuntime,
+  uPSDisassembly, uPSDebugger, 
+  uGlobals, uHighlighterProcs, brick_common, FantomSpirit,
   dlgSearchText, dlgReplaceText, dlgConfirmReplace, DTestPrintPreview,
+  uEditorUtils, uMiscDefines, rcx_constants, uLocalizedStrings,
+  uParseCommon, uNXTExplorer
   ;
-}
 
 
-(*
-
-var
-  localSearchFromCaret: boolean;
-
-function GetLineNumber(const aY : integer) : integer;
+procedure TfrmCodeEdit.CreateTheEditor;
 begin
-  Result := aY;
-  if ZeroStart and ShowLineNumbers then
-    dec(Result);
+  TheEditor := TBricxccSynEdit.Create(Self);
+  with TheEditor do
+  begin
+    Name := 'TheEditor';
+    Parent := Self;
+    Left := 0;
+    Top := 0;
+    Width := 464;
+    Height := 285;
+    Cursor := crIBeam;
+    Align := alClient;
+    Font.Charset := DEFAULT_CHARSET;
+    Font.Color := clWindowText;
+    Font.Height := -13;
+    Font.Name := 'Courier New';
+    Font.Pitch := fpFixed;
+    Font.Style := [];
+    ParentColor := False;
+    ParentFont := False;
+    PopupMenu := ConstructForm.ConstructMenu;
+    TabOrder := 1;
+    BookMarkOptions.BookmarkImages := ilBookmarkImages;
+    Gutter.Font.Charset := DEFAULT_CHARSET;
+    Gutter.Font.Color := clWindowText;
+    Gutter.Font.Height := -11;
+    Gutter.Font.Name := 'Terminal';
+    Gutter.Font.Style := [];
+    MaxUndo := 10;
+    Options := [eoAutoIndent, eoDragDropEditing, eoScrollPastEol,
+                eoShowScrollHint, eoSmartTabDelete, eoSmartTabs,
+                eoTabsToSpaces, eoTrimTrailingSpaces];
+    ScrollHintFormat := shfTopToBottom;
+    TabWidth := 2;
+    WantTabs := True;
+    OnDragDrop := TheEditorDragDrop;
+    OnDragOver := TheEditorDragOver;
+    OnKeyDown := TheEditorKeyDown;
+    OnKeyPress := TheEditorKeyPress;
+    OnMouseDown := TheEditorMouseDown;
+    OnChange := TheEditorChange;
+    OnClearBookmark := TheEditorClearBookmark;
+    OnGutterClick := TheEditorGutterClick;
+    OnPlaceBookmark := TheEditorPlaceBookmark;
+    OnProcessCommand := TheEditorProcessCommand;
+    OnProcessUserCommand := TheEditorProcessUserCommand;
+    OnReplaceText := TheEditorReplaceText;
+    OnSpecialLineColors := TheEditorSpecialLineColors;
+    OnStatusChange := TheEditorStatusChange;
+    OnMouseOverToken := TheEditorMouseOverToken;
+    StructureLineColor := clNone;
+  end;
 end;
-
 
 procedure TfrmCodeEdit.CreateMiscSynEditComponents;
 begin
@@ -135,7 +567,7 @@ begin
   SynEditRegexSearch := TSynEditRegexSearch.Create(Self);
   expRTF := TSynExporterRTF.Create(Self);
   expHTML := TSynExporterHTML.Create(Self);
-  SynEditPrint := TSynEditPrint.Create(Self);
+//  SynEditPrint := TSynEditPrint.Create(Self);
   with SynMacroRec do
   begin
     Name := 'SynMacroRec';
@@ -184,6 +616,7 @@ begin
     Title := 'Untitled';
     UseBackground := False;
   end;
+(*
   with SynEditPrint do
   begin
     Name := 'SynEditPrint';
@@ -218,6 +651,7 @@ begin
     TabWidth := 8;
     Color := clWhite;
   end;
+*)
 end;
 
 procedure TfrmCodeEdit.CreateCompPropComponents;
@@ -397,1065 +831,366 @@ begin
   end;
 end;
 
-procedure TfrmCodeEdit.DoLoadAPI(cp : TSynCompletionProposal; aStrings : TStrings);
-var
-  SL : TStrings;
+procedure TfrmCodeEdit.CreatePascalScriptComponents;
 begin
-  SL := TStringList.Create;
-  try
-    TStringList(SL).Sorted := True;
-    TStringList(SL).Duplicates := dupIgnore;
-    SL.AddStrings(aStrings);
-    AddUserDefinedFunctions(SL);
-    cp.ItemList := SL;
-  finally
-    SL.Free;
+  PSImport_Controls := TPSImport_Controls.Create(Self);
+  PSImport_StdCtrls := TPSImport_StdCtrls.Create(Self);
+  PSImport_Forms := TPSImport_Forms.Create(Self);
+  PSImport_DateUtils := TPSImport_DateUtils.Create(Self);
+  PSImport_Classes := TPSImport_Classes.Create(Self);
+  ce := TPSScriptDebugger.Create(Self);
+  with PSImport_Controls do
+  begin
+    Name := 'PSImport_Controls';
+    EnableStreams := True;
+    EnableGraphics := True;
+    EnableControls := True;
+  end;
+  with PSImport_StdCtrls do
+  begin
+    Name := 'PSImport_StdCtrls';
+    EnableExtCtrls := True;
+    EnableButtons := True;
+  end;
+  with PSImport_Forms do
+  begin
+    Name := 'PSImport_Forms';
+    EnableForms := True;
+    EnableMenus := True;
+  end;
+  with PSImport_DateUtils do
+  begin
+    Name := 'PSImport_DateUtils';
+  end;
+  with PSImport_Classes do
+  begin
+    Name := 'PSImport_Classes';
+    EnableStreams := True;
+    EnableClasses := True;
+  end;
+  with ce do
+  begin
+    Name := 'ce';
+    CompilerOptions := [];
+    TPSPluginItem(Plugins.Add).Plugin := PSImport_DateUtils;
+    TPSPluginItem(Plugins.Add).Plugin := PSImport_Classes;
+    TPSPluginItem(Plugins.Add).Plugin := PSImport_Controls;
+    TPSPluginItem(Plugins.Add).Plugin := PSImport_StdCtrls;
+    TPSPluginItem(Plugins.Add).Plugin := PSImport_Forms;
+    MainFileName := 'Unnamed';
+    UsePreProcessor := True;
+    OnCompile := ceCompile;
+    OnExecute := ceExecute;
+    OnAfterExecute := ceAfterExecute;
+    OnNeedFile := ceNeedFile;
+    OnIdle := ceIdle;
+    OnLineInfo := ceLineInfo;
+    OnBreakpoint := ceBreakpoint;
   end;
 end;
 
-procedure TfrmCodeEdit.LoadNXCCompProp;
+procedure TfrmCodeEdit.CreateSpiritPlugins;
+var
+  Plugin : TPSPlugin;
 begin
-  DoLoadAPI(SynNXCCompProp, fNXCAPIBase);
+  Plugin := TPSImport_uSpirit.Create(Self);
+  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
+  Plugin := TPSImport_brick_common.Create(Self);
+  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
+{$IFNDEF NXT_ONLY}
+  Plugin := TPSImport_FakeSpirit.Create(Self);
+  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
+{$ENDIF}
+  Plugin := TPSImport_FantomSpirit.Create(Self);
+  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
 end;
 
-procedure TfrmCodeEdit.AddUserDefinedFunctions(aStrings: TStrings);
-var
-  i, idx : integer;
-  tmpStr : string;
+procedure TfrmCodeEdit.FindDeclaration(const aIdent : string);
 begin
-  if Assigned(frmCodeExplorer) then
+  // try to find where aIdent is declared.  Check in this file first,
+  // searching backward from the current location.  If found, make sure
+  // it is not just another usage of the identifier rather than the
+  // actual declaration of the identifier.  If NOT found in this
+  // file then check any include files, starting at the end of the file
+  // in each case.  Recurse through include files
+  ShowMessage(aIdent);
+end;
+
+procedure TfrmCodeEdit.OpenFileAtCursor;
+var
+  fName : string;
+  bFound : boolean;
+begin
+  fName := TheEditor.TextWithinDelimiters(['"', ' ']);
+  if FileExists(fName) then
+    OpenFile(fName)
+  else
   begin
-    for i := 0 to frmCodeExplorer.ProcessedResults.Count - 1 do
+    bFound := OpenFileOnPath(fName);
+    if not bFound then
     begin
-      tmpStr := frmCodeExplorer.ProcessedResults[i];
-      idx := Pos('|', tmpStr);
-      Delete(tmpStr, 1, idx);
-      idx := Pos('|', tmpStr);
-      Delete(tmpStr, 1, idx);
-      aStrings.Add(tmpStr);
+      dlgOpen.FileName := fName;
+      actFileOpenExecute(nil);
     end;
   end;
 end;
 
-procedure TfrmCodeEdit.UpdateSynComponents;
-var
-  i : Integer;
-  C : TComponent;
-  TmpOptions : TSynCompletionOptions;
+procedure TfrmCodeEdit.TheEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
 begin
-  // load NXC syntax completion proposal component
-  fNXCAPIBase.Clear;
-  fNXCAPIBase.AddStrings(SynNXCSyn.Commands);
-  fNXCAPIBase.AddStrings(SynNXCSyn.Constants);
-  fNXCAPIBase.AddStrings(SynNXCSyn.Keywords);
-  fNXCAPIBase.Sort;
-  SynNXCCompProp.ItemList := fNXCAPIBase;
-  // configure code completion options for NQC, NBC, NXC, and RICScript
-  if CCInsensitive then
-    TmpOptions := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion]
-  else
-    TmpOptions := [scoAnsiStrings, scoCaseSensitive, scoLimitToMatchedText, scoEndCharCompletion];
-  SynNBCCompProp.Options := TmpOptions;
-  SynNXCCompProp.Options := TmpOptions;
-  SynRSCompProp.Options  := TmpOptions;
-  SynAutoComp.AutoCompleteList.Assign(PrefForm.CodeTemplates);
-  // also copy shortcut settings
-  SynMacroRec.PlaybackShortCut := PlayMacroShortCut;
-  SynMacroRec.RecordShortCut   := RecMacroShortCut;
-  scpParams.ShortCut           := ParamCompShortCut;
-  for i := 0 to ComponentCount - 1 do begin
-    C := Components[i];
-    if C = scpParams then Continue;
-    if C is TSynCompletionProposal then begin
-      TSynCompletionProposal(C).ShortCut := CodeCompShortCut;
-    end;
-  end;
-  // also set font pref for exporters
-  expHTML.Font.Name := FontName;
-  expHTML.Font.Size := FontSize;
-  expRTF.Font.Name  := FontName;
-  expRTF.Font.Size  := FontSize;
+  if Source = ConstructForm.treTemplates then
+    ConstructForm.DoTemplateInsert(X, Y);
 end;
 
-procedure TfrmCodeEdit.SynMacroRecStateChange(Sender: TObject);
+procedure TfrmCodeEdit.TheEditorDragOver(Sender, Source: TObject; X,
+  Y: Integer; State: TDragState; var Accept: Boolean);
 begin
-  case SynMacroRec.State of
-    msRecording :
-      barStatus.Panels[1].Text := sRecording;
-  else
-    barStatus.Panels[1].Text := '';
-  end;
-end;
-
-procedure TfrmCodeEdit.mniFileClick(Sender: TObject);
-begin
-  {Show the recent files}
-  ShowRecentFiles(Sender as TOfficeMenuItem, RecentFileClick);
-end;
-
-procedure TfrmCodeEdit.RecentFileClick(Sender: TObject);
-begin
-  OpenFile(GetRecentFileName(TOfficeMenuItem(Sender).Tag));
-end;
-
-procedure TfrmCodeEdit.mniShowTemplatesClick(Sender: TObject);
-begin
-  mniShowTemplates.Checked := not mniShowTemplates.Checked;
-  ShowTemplateForm := mniShowTemplates.Checked;
-  if ShowTemplateForm then
-    ShowTemplates
-  else
-    ConstructForm.Close;
-//  ConstructForm.Visible := ShowTemplateForm;
-end;
-
-procedure TfrmCodeEdit.mniShowCodeListingClick(Sender: TObject);
-begin
-  CodeForm.Visible := not CodeForm.Visible;
-end;
-
-procedure TfrmCodeEdit.DoHideErrors;
-var
-  F : TEditorForm;
-begin
-  F := ActiveEditorForm;
-  if F <> nil then
+  if Source = ConstructForm.treTemplates then
   begin
-    barStatus.Panels[1].Text := '';
-    F.TheErrors.Items.Clear;
-    F.TheErrors.Visible := False;
-    F.splErrors.Visible := False;
-  end;
-end;
-
-procedure TfrmCodeEdit.mniHideErrorsClick(Sender: TObject);
-begin
-  DoHideErrors;
-end;
-
-procedure TfrmCodeEdit.FormCreate(Sender: TObject);
-begin
-  fNQCAPIBase := TStringList.Create;
-  fNXCAPIBase := TStringList.Create;
-  CreateMenus;
-  CreateCompPropComponents;
-  CreateMainFormHighlighters;
-  CreatePascalScriptComponents;
-  CreateToolbars;
-  CreateMiscSynEditComponents;
-  Application.OnHelp := HandleOnHelp;
-{$IFNDEF FPC}
-  Application.OnMessage := HandleOnMessage;
-{$ENDIF}
-  CreateSpiritPlugins;
-  SetColorScheme;
-  fOldActiveEditorForm := nil;
-  pnlCodeExplorer.DockOrientation := doVertical;
-  AppIsClosing := False;
-{$IFNDEF FPC}
-  if GetUseMDIMode then
-    FormStyle := fsMDIForm
+    Accept := True;
+    TheEditor.CaretXY := TheEditor.PixelsToRowColumn(Point(X, Y));
+  end
   else
-    FormStyle := fsNormal;
-  fMDI := FormStyle = fsMDIForm;
-  pnlPageControl.Align := alClient;
-  pnlPageControl.Visible := not MDI;
-  {Let Windows know we accept dropped files}
-  DragAcceptFiles(Handle,true);
-{$ELSE}
-  pnlPageControl.Align := alClient;
-  pnlPageControl.Visible := True;
-{$ENDIF}
-  newcount := 0;
-  ProgramBox.ItemIndex := 0;
-  mniAddress0.Checked  := True; // default to LNP address 0
-  mniPort0.Checked     := True; // default to LNP port 0
-  // set help file
-  Application.HelpFile := ProgramDir + 'Help\BricxCC.HLP';
-  HelpFile := Application.HelpFile;
-  // initialize the highlighter data
-  GetSortedHighlighters(Self, Highlighters, False);
-  dlgOpen.Filter := GetHighlightersFilter(Highlighters) + SFilterAllFiles;
-  dlgSave.Filter := dlgOpen.Filter;
-  SynForthCompProp.EndOfTokenChr := '';
-  PopulateMindscriptWordList('', SynMindScriptCompProp.ItemList);
-  PopulateCppCompProp(SynCppCompProp);
-  PopulatePasCompProp(SynPasCompProp);
-  PopulateROPSCompProp(SynROPSCompProp);
-  LoadLASMCodeComplete(SynLASMCompProp.ItemList);
-  LoadNBCCodeComplete(SynNBCCompProp.ItemList);
-  LoadNPGCodeComplete(SynNPGCompProp.ItemList);
-  LoadRSCodeComplete(SynRSCompProp.ItemList);
+    Accept := False;
 end;
 
-procedure TfrmCodeEdit.FormShow(Sender: TObject);
-var
-  i : Integer;
-  aParam : string;
-  F : TEditorForm;
+procedure TfrmCodeEdit.TheEditorKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
-  {Find the RCX}
-  if not (TogglingFormStyle or RunningAsCOMServer) then
-    FindRCX(true);
-  {Show statusbar}
-  barStatus.Visible  := ShowStatusbar;
-  {Open argument file, if any }
-  for i := 1 to ParamCount do
-  begin
-    aParam := ParamStr(i);
-    if (Pos('/', aParam) = 1) or (Pos('-', aParam) = 1) then
-      continue; // a switch - not a file
-    F := DoCreateEditorForm;
-    if Assigned(F) then
-      F.OpenFile(ParamStr(i));
-  end;
-  // process shell New and Print switches
-  if ParamSwitch('/New') then
-    actFileNewExecute(Self);
-  if ParamSwitch('/Print') then begin
-    actFilePrintExecute(Self);
-    // form flashes briefly then closes.  Good enough for now
-    Close;
-  end;
-  frmCodeExplorer.OnFinishedProcessing := HandleExplorerFinished;
-{
-  ShowCodeExplorer;
-  if not CodeExplorerSettings.AutoShowExplorer then
-    frmCodeExplorer.Close;
-}
-  if CodeExplorerSettings.AutoShowExplorer then
-    ShowCodeExplorer;
-  // hook up the template form event handler
-  if Assigned(ConstructForm) then
-    ConstructForm.OnAddConstruct := HandleOnAddConstruct;
-  {Add the Templates}
-  if ShowTemplateForm then
-    ShowTemplates(False);
-  // process the toolbars
-  RestoreToolbars;
-  WindowState := TWindowState(MainWindowState);
-  TogglingFormStyle := False;
-  UpdateCompilerMenu;
-  UpdateToolsMenu;
-  // hook macro manager
-  frmMacroManager.MacroLibrary.MacroRecorder := SynMacroRec;
-  if not (TogglingFormStyle or RunningAsCOMServer) and
-     FileExists(DefaultMacroLibrary) then
-    frmMacroManager.CurrentLibraryPath := DefaultMacroLibrary;
-  ConfigureOtherFirmwareOptions;
+  if (ssCtrl in Shift) and (Key = $0D) then
+    OpenFileAtCursor;
 end;
 
-{Reacting on dropping a file on the form}
-{$IFNDEF FPC}
-procedure TfrmCodeEdit.WMDROPFILES(var Message: TWMDROPFILES);
-var
-  buffer:array[0..255] of char;
-  F : TEditorForm;
-  cnt, i : Integer;
+procedure TfrmCodeEdit.TheEditorKeyPress(Sender: TObject; var Key: Char);
 begin
-  cnt := DragQueryFile(Message.Drop, $FFFFFFFF, @buffer, sizeof(buffer));
-  for i := 0 to cnt - 1 do
-  begin
-    DragQueryFile(Message.Drop,i,@buffer,sizeof(buffer));
-    F := DoCreateEditorForm;
-    if Assigned(F) then
-    begin
-      F.OpenFile(buffer);
-      if DroppedRecent then
-        AddRecentFile(buffer);
-    end;
-    if not MDI then
-      pagMainChange(nil);
-  end;
-  DragFinish(Message.Drop);
+  if Key = Chr(27) then
+    GlobalAbort := True;
 end;
-{$ENDIF}
 
-procedure TfrmCodeEdit.StartTask(idx : integer);
-var
-  AEF : TEditorForm;
-  binext : string;
+procedure TfrmCodeEdit.TheEditorMouseDown(Sender: TObject;
+  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if LocalStandardFirmware then
-  begin
-    AEF := ActiveEditorForm;
-    if Assigned(AEF) and FileIsROPS(AEF) then
-    begin
-      if ce.Running then
-      begin
-        FResume := True;
-      end
+  if (ssCtrl in Shift) and (Button = mbLeft) then
+    FindDeclaration(TheEditor.WordAtMouse);
+end;
+
+procedure TfrmCodeEdit.TheEditorChange(Sender: TObject);
+begin
+  frmCodeExplorer.CurrentSource := TheEditor.Lines.Text;
+end;
+
+procedure TfrmCodeEdit.TheEditorGutterClick(Sender: TObject; X, Y,
+  Line: Integer; mark: TSynEditMark);
+begin
+  if mark <> nil then
+    TheEditor.ClearBookMark(mark.BookmarkNumber);
+end;
+
+procedure TfrmCodeEdit.TheEditorPlaceBookmark(Sender: TObject;
+  var Mark: TSynEditMark);
+begin
+//
+end;
+
+procedure TfrmCodeEdit.TheEditorClearBookmark(Sender: TObject;
+  var Mark: TSynEditMark);
+begin
+//
+end;
+
+procedure TfrmCodeEdit.TheEditorProcessCommand(Sender: TObject;
+  var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
+var
+  word : string;
+  FoundPos: Integer;
+  Ident: string;
+begin
+  case Command of
+    ecContextHelp : begin
+      SetActiveHelpFile;
+      if TheEditor.SelAvail then
+        word := TheEditor.SelText
       else
+        word := TheEditor.TextAtCursor;
+      if FileIsForth then
       begin
-        if DoCompileAction(AEF, False, False) then
-          ce.Execute;
+        if word = ';' then word := 'semicolon'
+        else if word = '\' then word := 'backslash'
+        else if word = '."' then word := 'dot-quote'
+        else if word = 'S"' then word := 's-quote';
       end;
-    end
-    else if IsSpybotic then
-      BrickComm.StartTask(8)
-    else if IsNXT then
-    begin
-      if Assigned(AEF) and not FileIsRICScript(AEF) then
-      begin
-        if FileIsNPG(AEF) then
-          binext := '.rpg'
-        else
-          binext := '.rxe';
-        fNXTCurrentOffset := nil;
-        if (binext = '.rxe') and not CurrentProgram.Loaded(AEF.Filename) then
-          DoCompileAction(ActiveEditorForm, False, False);
-
-        BrickComm.StartProgram(ChangeFileExt(ExtractFileName(AEF.Filename), binext));
-        fNXTVMState := kNXT_VMState_RunFree;
-        actCompilePause.Caption := sBreakAll;
-        // make sure the variable watch event handlers are hooked up
-        BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
-        BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
-      end
+//      HelpALink(word, FileIsNQC);
+      Command := ecNone;
+    end;
+    K_USER_PREVIDENT, K_USER_NEXTIDENT : begin
+      if FindIdentAtPos(Source, Position, (Command = K_USER_PREVIDENT), FoundPos, Ident) then
+        Position := FoundPos
       else
-        ShowNXTTools;
-    end
-    else
-      BrickComm.StartTask(idx);
-  end;
-end;
-
-procedure TfrmCodeEdit.mniViewClick(Sender: TObject);
-var
-  F : TEditorForm;
-begin
-  mniShowTemplates.Checked := ConstructForm.Visible;
-  mniStatusbar.Checked := barStatus.Visible;
-{$IFNDEF FPC}
-  mniPBForthConsole.Checked := frmForthConsole.Visible;
-{$ELSE}
-  mniPBForthConsole.Visible := False;
-{$ENDIF}
-  if CodeForm.Visible then
-    mniShowCodeListing.Caption := sHideCodeError
-  else
-    mniShowCodeListing.Caption := sShowCodeError;
-  mniCodeExplorer.Checked := frmCodeExplorer.Visible;
-
-  F := ActiveEditorForm;
-  mniHideErrors.Enabled := (F <> nil) and F.TheErrors.Visible;
-  mniProjectManager.Enabled := FileIsCPPOrPascalOrJava(F);
-end;
-
-procedure TfrmCodeEdit.mniStatusbarClick(Sender: TObject);
-begin
-  mniStatusbar.Checked := not mniStatusbar.Checked;
-  ShowStatusbar := mniStatusbar.Checked;
-  barStatus.Visible := ShowStatusbar;
-end;
-
-procedure TfrmCodeEdit.FormDestroy(Sender: TObject);
-begin
-  FreeAndNil(fNQCAPIBase);
-  FreeAndNil(fNXCAPIBase);
-  if BrickComm.VerboseMode then
-    Clipboard.AsText := BrickComm.LinkLog;
-  BrickComm.OnOpenStateChanged := nil;
-  MainForm := nil;
-end;
-
-procedure TfrmCodeEdit.DoSaveAs(EdFrm: TEditorForm);
-begin
-  dlgSave.FileName := EdFrm.FileName;
-  if dlgSave.Execute then
-  begin
-    EdFrm.SaveFileAs(dlgSave.FileName);
-    AddRecentFile(dlgSave.FileName);
-  end;
-end;
-
-procedure TfrmCodeEdit.DoSave(EdFrm: TEditorForm);
-begin
-  if not Assigned(EdFrm) then Exit;
-  if EdFrm.IsNew then
-    DoSaveAs(EdFrm)
-  else
-    EdFrm.SaveFile;
-end;
-
-procedure TfrmCodeEdit.DoPrintPreview(EdFrm: TEditorForm);
-begin
-  SynEditPrint.SynEdit := EdFrm.TheEditor;
-  SynEditPrint.Title   := EdFrm.Caption;
-  with TTestPrintPreviewDlg.Create(nil) do
-  try
-    SynEditPrintPreview.SynEditPrint := SynEditPrint;
-    ShowModal;
-  finally
-    Free;
-  end;
-end;
-
-procedure TfrmCodeEdit.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  // 9/13/2002 - JCH added code here to fix an Access Violation that would
-  // occur if you closed the main window with an Editor window open.
-  // 2009-06-24 - JCH editor windows are now closed in FormCloseQuery
-  if Assigned(ConstructForm) then
-    ConstructForm.SaveTemplateTree;
-  SaveToolbars;
-  MainWindowState := Integer(WindowState);
-  WindowState := wsNormal;
-end;
-
-procedure TfrmCodeEdit.UpdateStatusBar;
-begin
-  if BrickComm.Port <> '' then
-    barStatus.Panels[2].Text := BrickComm.NicePortName
-  else
-    barStatus.Panels[2].Text := sNoPort;
-
-  barStatus.Panels[3].Text := BrickComm.BrickTypeName;
-end;
-
-procedure TfrmCodeEdit.HandleOnCompilerStatusChange(Sender: TObject;
-  const StatusMsg: string);
-begin
-  frmCompStatus.AddMessage(StatusMsg);
-end;
-
-procedure TfrmCodeEdit.mniCodeExplorerClick(Sender: TObject);
-begin
-  ShowCodeExplorer;
-end;
-
-procedure TfrmCodeEdit.ShowCodeExplorer;
-begin
-  frmCodeExplorer.Show;
-  pnlCodeExplorer.Visible := True;
-  splCodeExplorer.Visible := True;
-  frmCodeExplorer.FormShow(Self);
-end;
-
-procedure TfrmCodeEdit.pnlCodeExplorerDockOver(Sender: TObject;
-  Source: TDragDockObject; X, Y: Integer; State: TDragState;
-  var Accept: Boolean);
-begin
-  Accept := (Source.Control is TfrmCodeExplorer) or
-            (Source.Control is TConstructForm);
-end;
-
-procedure TfrmCodeEdit.pnlCodeExplorerGetSiteInfo(Sender: TObject;
-  DockClient: TControl; var InfluenceRect: TRect; MousePos: TPoint;
-  var CanDock: Boolean);
-begin
-  CanDock := (DockClient is TfrmCodeExplorer) or (DockClient is TConstructForm);
-end;
-
-const
-  K_COMP_TRANSFER_PREFIX = 'mniCompilerXfer';
-  
-procedure TfrmCodeEdit.UpdateCompilerMenu;
-var
-  i : integer;
-  MI : TOfficeMenuItem;
-  TI : TTransferItem;
-begin
-  // remove all compile menu transfer menu items first
-  for i := mniCompile.Count - 1 downto 0 do
-  begin
-    MI := TOfficeMenuItem(mniCompile.Items[i]);
-    if Pos(K_COMP_TRANSFER_PREFIX, MI.Name) = 1 then
-    begin
-      MI.Free;
-    end;
-  end;
-  mniCompSep.Visible := CompXferList.Count > 0;
-  // now add new ones
-  for i := 0 to CompXferList.Count - 1 do
-  begin
-    TI := TTransferItem(CompXferList[i]);
-    MI := TOfficeMenuItem.Create(mniCompile);
-    MI.Name := K_COMP_TRANSFER_PREFIX + IntToStr(i);
-    MI.OnClick := HandleCompXferClick;
-    MI.Caption := TI.Title;
-    MI.Tag := i;
-    mniCompile.Add(MI);
-  end;
-end;
-
-const
-  K_TRANSFER_PREFIX = 'mniTransfer';
-
-procedure TfrmCodeEdit.UpdateToolsMenu;
-var
-  i : integer;
-  MI : TOfficeMenuItem;
-  TI : TTransferItem;
-begin
-  // remove all transfer menu items first
-  for i := mniTools.Count - 1 downto 0 do
-  begin
-    MI := TOfficeMenuItem(mniTools.Items[i]);
-    if Pos(K_TRANSFER_PREFIX, MI.Name) = 1 then
-    begin
-      MI.Free;
-    end;
-  end;
-  // now add new ones
-  for i := 0 to TransferList.Count - 1 do
-  begin
-    TI := TTransferItem(TransferList[i]);
-    MI := TOfficeMenuItem.Create(mniTools);
-    MI.Name := K_TRANSFER_PREFIX + IntToStr(i);
-    MI.OnClick := HandleTransferClick;
-    MI.Caption := TI.Title;
-    MI.Tag := i;
-    mniTools.Add(MI);
-  end;
-end;
-
-procedure TfrmCodeEdit.HandleCompXferClick(Sender: TObject);
-var
-  i : integer;
-  TI : TTransferItem;
-begin
-  if Sender is TOfficeMenuItem then
-  begin
-    i := TOfficeMenuItem(Sender).Tag;
-    if (i >= 0) and (i < CompXferList.Count) then
-    begin
-      TI := CompXferList[i];
-      ExecuteTransferItem(TI);
+        DoBeep($FFFFFFFF);
     end;
   end;
 end;
 
-procedure TfrmCodeEdit.HandleTransferClick(Sender: TObject);
+procedure TfrmCodeEdit.TheEditorProcessUserCommand(Sender: TObject;
+  var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
 var
-  i : integer;
-  TI : TTransferItem;
+  FoundPos: Integer;
+  Ident: string;
+  Lines : TStrings;
 begin
-  if Sender is TOfficeMenuItem then
-  begin
-    i := TOfficeMenuItem(Sender).Tag;
-    if (i >= 0) and (i < TransferList.Count) then
-    begin
-      TI := TransferList[i];
-      ExecuteTransferItem(TI);
+  case Command of
+    K_USER_PREVIDENT, K_USER_NEXTIDENT : begin
+      if FindIdentAtPos(Source, Position, (Command = K_USER_PREVIDENT), FoundPos, Ident) then
+        Position := FoundPos
+      else
+        Beep;
     end;
-  end;
-end;
-
-procedure TfrmCodeEdit.ExecuteTransferItem(TI : TTransferItem);
-var
-  paramStr : string;
-  BadParam : Boolean;
-  F : TEditorForm;
-begin
-  F := ActiveEditorForm;
-  if not TI.Restrict or
-    (Assigned(F) and
-     (LowerCase(TI.Extension) = LowerCase(ExtractFileExt(F.Filename)))) then
-  begin
-    try
-      BadParam := False;
-      paramStr := ProcessParams(TI.Params);
-    except
-      // silently eat the exception
-      BadParam := True;
-    end;
-    if not BadParam then
-    begin
-      if TI.Close then BrickComm.Close;
+    K_USER_COMMENTBLOCK : begin
+      Lines := TStringList.Create;
       try
-{$IFNDEF FPC}
-        if TI.Wait then
-          ExecuteAndWait(PChar('"' + TI.Path + '" ' + paramStr), SW_SHOWNORMAL, LocalCompilerTimeout, PChar(TI.WorkingDir))
-        else
-          ExecuteAndContinue(PChar(TI.Path), PChar('"' + TI.Path + '" ' + paramStr), PChar(TI.WorkingDir), SW_SHOWNORMAL);
-{$ENDIF}
+        Lines.Text := TheEditor.SelText;
+        if CommentLines(Lines) then
+          TheEditor.SelText := Lines.Text;
       finally
-        if TI.Close then BrickComm.Open;
+        Lines.Free;
+      end;
+    end;
+    K_USER_UNCOMMENTBLOCK : begin
+      Lines := TStringList.Create;
+      try
+        Lines.Text := TheEditor.SelText;
+        if UncommentLines(Lines) then
+          TheEditor.SelText := Lines.Text;
+      finally
+        Lines.Free;
+      end;
+    end;
+    K_USER_REVERSE : begin
+      Lines := TStringList.Create;
+      try
+        Lines.Text := TheEditor.SelText;
+        if ReverseStatements(Lines) then
+          TheEditor.SelText := Lines.Text;
+      finally
+        Lines.Free;
+      end;
+    end;
+    K_USER_ALIGN : begin
+      Lines := TStringList.Create;
+      try
+        Lines.Text := TheEditor.SelText;
+        if AlignSelectedLines(Lines) then
+          TheEditor.SelText := Lines.Text;
+      finally
+        Lines.Free;
       end;
     end;
   end;
 end;
 
-function TfrmCodeEdit.ProcessParams(aParams : string) : string;
+procedure TfrmCodeEdit.TheEditorReplaceText(Sender: TObject; const ASearch,
+  AReplace: String; Line, Column: Integer; var Action: TSynReplaceAction);
 var
-  sTmp, sArg : string;
-  F : TEditorForm;
-  cPos, oPos, dPos : Integer;
-  bFoundMacro : Boolean;
+  APos: TPoint;
+  EditRect: TRect;
 begin
-  F := ActiveEditorForm;
-  Result := aParams;
-  if Pos(TransferMacros[M_SAVEALL], Result) > 0 then // $SAVEALL
-  begin
-    Result := StringReplace(Result, TransferMacros[M_SAVEALL], '', [rfReplaceAll]);
-    // save all modified editors
-    SaveModifiedFiles;
+  if ASearch = AReplace then
+    Action := raSkip
+  else begin
+    APos := Point(Column, Line);
+    APos := TheEditor.ClientToScreen(TheEditor.RowColumnToPixels(APos));
+    EditRect := ClientRect;
+    EditRect.TopLeft := ClientToScreen(EditRect.TopLeft);
+    EditRect.BottomRight := ClientToScreen(EditRect.BottomRight);
+
+    if ConfirmReplaceDialog = nil then
+      ConfirmReplaceDialog := TConfirmReplaceDialog.Create(Application);
+    ConfirmReplaceDialog.PrepareShow(EditRect, APos.X, APos.Y,
+      APos.Y + TheEditor.LineHeight, ASearch);
+    case ConfirmReplaceDialog.ShowModal of
+      mrYes: Action := raReplace;
+      mrYesToAll: Action := raReplaceAll;
+      mrNo: Action := raSkip;
+      else Action := raCancel;
+    end;
   end;
-  if Pos(TransferMacros[M_SAVE], Result) > 0 then // $SAVE
-  begin
-    Result := StringReplace(Result, TransferMacros[M_SAVE], '', [rfReplaceAll]);
-    // save current editor
-    if F.TheEditor.Modified or F.IsNew then
-      DoSave(F);
+end;
+
+procedure TfrmCodeEdit.TheEditorStatusChange(Sender: TObject;
+  Changes: TSynStatusChanges);
+begin
+  // Note: scAll for new file loaded
+  // caret position has changed
+  if Changes * [scAll, scCaretX, scCaretY] <> [] then begin
+    UpdatePositionOnStatusBar;
   end;
-  if Pos(TransferMacros[M_COL], Result) > 0 then // $COL
-  begin
-    sTmp := '';
-    if Assigned(F) then
-      sTmp := IntToStr(F.TheEditor.CaretX);
-    Result := StringReplace(Result, TransferMacros[M_COL], sTmp, [rfReplaceAll]);
+  // InsertMode property has changed
+  if Changes * [scAll, scInsertMode, scReadOnly] <> [] then begin
+    UpdateModeOnStatusBar;
   end;
-  if Pos(TransferMacros[M_ROW], Result) > 0 then // $ROW
+  // Modified property has changed
+  if Changes * [scAll, scModified] <> [] then
+    UpdateModifiedOnStatusBar;
+end;
+
+procedure TfrmCodeEdit.TheEditorSpecialLineColors(Sender: TObject;
+  Line: Integer; var Special: Boolean; var FG, BG: TColor);
+begin
+  Special := False;
+  if FileIsROPS then
   begin
-    sTmp := '';
-    if Assigned(F) then
-      sTmp := IntToStr(F.TheEditor.CaretY);
-    Result := StringReplace(Result, TransferMacros[M_ROW], sTmp, [rfReplaceAll]);
-  end;
-  if Pos(TransferMacros[M_CURTOKEN], Result) > 0 then // $CURTOKEN
-  begin
-    sTmp := '';
-    if Assigned(F) then
-      sTmp := F.TheEditor.WordAtCursor;
-    Result := StringReplace(Result, TransferMacros[M_CURTOKEN], sTmp, [rfReplaceAll]);
-  end;
-  if Pos(TransferMacros[M_EDNAME], Result) > 0 then // $EDNAME
-  begin
-    sTmp := '';
-    if Assigned(F) then
-      sTmp := F.FileName;
-    Result := StringReplace(Result, TransferMacros[M_EDNAME], sTmp, [rfReplaceAll]);
-  end;
-  if Pos(TransferMacros[M_PORT], Result) > 0 then // $PORT
-  begin
-//    sTmp := LocalPort;
-    sTmp := BrickComm.FullPortName;
-    Result := StringReplace(Result, TransferMacros[M_PORT], sTmp, [rfReplaceAll]);
-  end;
-  if Pos(TransferMacros[M_TARGET], Result) > 0 then // $TARGET
-  begin
-    sTmp := GetTarget;
-    Result := StringReplace(Result, TransferMacros[M_TARGET], sTmp, [rfReplaceAll]);
-  end;
-  // process macros that take arguments
-  repeat
-    bFoundMacro := False;
-    cPos := Pos(')', Result);
-    if cPos > 0 then
+    if theROPSCompiler.HasBreakPoint(Filename, Line) then
     begin
-      sTmp := Copy(Result, 1, cPos-1);
-      oPos := LastDelimiter('(', sTmp);
-      if oPos > 0 then
+      Special := True;
+      if Line = FActiveLine then
       begin
-        sTmp := Copy(sTmp, 1, oPos-1);
-        dPos := LastDelimiter('$', sTmp);
-        if dPos > 0 then
-        begin
-          // check for Macro
-          sTmp := Copy(sTmp, dPos, oPos-dPos) + '()';
-          sArg := Copy(Result, oPos+1, cPos-oPos-1); // argument
-          if sTmp = TransferMacros[M_PATH] then // $PATH()
-          begin
-            bFoundMacro := True;
-            sTmp := ExtractFilePath(sArg);
-          end
-          else if sTmp = TransferMacros[M_NAME] then // $NAME()
-          begin
-            bFoundMacro := True;
-            sTmp := ExtractFileName(sArg);
-          end
-          else if sTmp = TransferMacros[M_NAMEONLY] then // $NAMEONLY()
-          begin
-            bFoundMacro := True;
-            sTmp := ChangeFileExt(ExtractFileName(sArg), '');
-          end
-          else if sTmp = TransferMacros[M_EXT] then // $EXT()
-          begin
-            bFoundMacro := True;
-            sTmp := ExtractFileExt(sArg);
-          end
-          else if sTmp = TransferMacros[M_PROMPT] then // $PROMPT()
-          begin
-            bFoundMacro := True;
-            sTmp := sArg;
-            if not InputQuery(sEnterData, sEnterRunParams, sTmp) then
-              Abort;
-          end;
-          if bFoundMacro then
-            Result := Copy(Result, 1, dPos-1) + sTmp + Copy(Result, cPos+1, Length(Result));
-        end;
+        FG := clRed;
+        BG := clWhite;
+      end else
+      begin
+        FG := clWhite;
+        BG := clRed;
       end;
-    end;
-  until not bFoundMacro;
-end;
-
-procedure TfrmCodeEdit.mniMacroManagerClick(Sender: TObject);
-begin
-  frmMacroManager.ShowModal;
-end;
-
-procedure TfrmCodeEdit.alMainUpdate(Action: TBasicAction; var Handled: Boolean);
-var
-  E : TEditorForm;
-  bAssigned, bBrickAlive, bBALSF, bROPS : Boolean;
-  procedure UpdateBars(act : TCustomAction; bar : TControl);
-  begin
-    if bar.Floating then
-      act.Checked := bar.HostDockSite.Visible
-    else
-      act.Checked := bar.Visible;
-  end;
-begin
-  UpdateBars(actFileToolbar, ogpFile);
-  UpdateBars(actCompileToolbar, ogpCompile);
-  UpdateBars(actSearchToolbar, ogpSearch);
-  UpdateBars(actHelpToolbar, ogpHelp);
-  UpdateBars(actEditToolbar, ogpEdit);
-  UpdateBars(actToolsToolbar, ogpTools);
-
-  // update all other actions here as well
-  E           := ActiveEditorForm;
-  bAssigned   := Assigned(E);
-  bBrickAlive := BrickComm.IsOpen;
-  bBALSF      := bBrickAlive and LocalStandardFirmware;
-  bROPS       := FileIsROPS(E);
-
-  actFileSave.Enabled           := bAssigned and E.TheEditor.Modified;
-  actFileSaveAs.Enabled         := bAssigned;
-  actFileSaveAll.Enabled        := bAssigned;
-  actFileClose.Enabled          := bAssigned;
-  actFileCloseAll.Enabled       := bAssigned;
-  actFileInsertFile.Enabled     := bAssigned and not E.TheEditor.ReadOnly;
-  actFilePrintPreview.Enabled   := bAssigned;
-  actFilePrint.Enabled          := bAssigned;
-
-  actEditUndo.Enabled           := bAssigned and E.CanUndo;
-  actEditRedo.Enabled           := bAssigned and E.CanRedo;
-  actEditCut.Enabled            := bAssigned and E.CanCut;
-  actEditCopy.Enabled           := bAssigned and E.Selected;
-  actEditPaste.Enabled          := bAssigned and E.CanPaste;
-  actEditDelete.Enabled         := actEditCut.Enabled;
-  actEditSelectAll.Enabled      := bAssigned;
-  actEditNextField.Enabled      := bAssigned;
-  actEditCopyHTML.Enabled       := bAssigned;
-  actEditCopyRTF.Enabled        := bAssigned;
-
-  actSearchFind.Enabled         := bAssigned and E.CanFind;
-  actSearchFindNext.Enabled     := bAssigned and E.CanFindNext;
-  actSearchFindPrev.Enabled     := bAssigned and E.CanFindNext;
-  actSearchReplace.Enabled      := bAssigned and E.CanReplace;
-  actSearchGotoLine.Enabled     := bAssigned;
-  actSearchProcList.Enabled     := bAssigned;
-
-  actCompileCompile.Enabled     := bAssigned and FileCanBeCompiled;
-  actCompileDownload.Enabled    := bAssigned and ((bBrickAlive or FileIsForth(E)) and not bROPS);
-  actCompileDownloadRun.Enabled := bAssigned and bBrickAlive and not bROPS;
-  actCompileRun.Enabled         := bBALSF or bROPS;
-  actCompileStop.Enabled        := bBALSF or bROPS;
-  // ROPS/Enhanced NXT firmware support
-  actCompileStepOver.Visible    := bROPS or (bBALSF and IsNXT and EnhancedFirmware);
-  actCompileStepOver.Enabled    := bROPS or (bBALSF and (fNXTVMState <> kNXT_VMState_Idle));
-  actCompileTraceInto.Visible   := bROPS or (bBALSF and IsNXT and EnhancedFirmware);
-  actCompileTraceInto.Enabled   := bROPS or (bBALSF and (fNXTVMState <> kNXT_VMState_Idle));
-
-  // NXT enhanced firmware support
-//  actCompileSingleStep.Visible  := bBALSF and IsNXT and EnhancedFirmware;
-//  actCompileSingleStep.Enabled  := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
-  actCompilePause.Visible       := bBALSF and IsNXT and EnhancedFirmware;
-  actCompilePause.Enabled       := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
-  actCompileStepOut.Visible     := bBALSF and IsNXT and EnhancedFirmware;
-  actCompileStepOut.Enabled     := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
-  actCompileRunToCursor.Visible := bBALSF and IsNXT and EnhancedFirmware;
-  actCompileRunToCursor.Enabled := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
-  actCompileTraceToLine.Visible := bBALSF and IsNXT and EnhancedFirmware;
-  actCompileTraceToLine.Enabled := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
-
-  actToolsDirect.Checked        := DirectForm.Visible;
-  actToolsDiag.Checked          := DiagForm.Visible;
-  actToolsWatch.Checked         := WatchForm.Visible;
-  actToolsPiano.Checked         := PianoForm.Visible;
-  actToolsJoystick.Checked      := JoystickForm.Visible;
-  actToolsRemote.Checked        := RemoteForm.Visible;
-  actToolsSendMsg.Checked       := MessageForm.Visible;
-  actToolsDatalog.Checked       := DatalogForm.Visible;
-  actToolsMemory.Checked        := MemoryForm.Visible;
-  actToolsNewWatch.Checked      := frmNewWatch.Visible;
-  actToolsSetValues.Checked     := frmSetValues.Visible;
-  actToolsSpybotEEPROM.Checked  := frmSpybotEEPROM.Visible;
-  actToolsNXTExplorer.Checked   := frmNXTExplorer.Visible;
-  actToolsSyncMotors.Checked    := frmNXTController.Visible;
-
-  actToolsDirect.Enabled         := bBALSF;
-  actToolsDiag.Enabled           := bBALSF;
-  actToolsWatch.Enabled          := bBALSF;
-  actToolsPiano.Enabled          := bBALSF;
-  actToolsJoystick.Enabled       := bBALSF;
-  actToolsRemote.Enabled         := bBALSF and (IsRCX or IsScout or IsNXT);
-  actToolsSendMsg.Enabled        := bBALSF and (IsRCX or IsScout or IsNXT);
-  actToolsDatalog.Enabled        := bBALSF and IsRCX;
-  actToolsMemory.Enabled         := bBALSF;
-  actToolsClearMem.Enabled       := bBALSF and not IsSpybotic;
-  actToolsNewWatch.Enabled       := bBALSF and (IsRCX2 or IsSpybotic or IsNXT);
-  actToolsSetValues.Enabled      := bBALSF and (IsRCX2 or IsSpybotic);
-  actToolsSpybotEEPROM.Enabled   := bBALSF and IsSpybotic;
-  actToolsNXTExplorer.Enabled    := bBALSF and IsNXT;
-  actToolsNXTScreen.Enabled      := bBALSF and IsNXT;
-  actToolsSyncMotors.Enabled     := bBALSF and IsNXT;
-  actToolsFindBrick.Enabled      := not bBrickAlive;
-  actToolsTurnBrickOff.Enabled   := bBALSF;
-  actToolsCloseComm.Enabled      := bBrickAlive;
-  actToolsFirmware.Enabled       := {bBrickAlive and }(IsRCX or IsNXT);
-  actToolsUnlockFirm.Enabled     := bBALSF and IsRCX;
-
-  mniProgramNumber.Enabled       := bBrickAlive and IsRCX;
-  ProgramBox.Enabled             := bBrickAlive and IsRCX;
-  mniBrickOS.Visible             := LocalFirmwareType = ftBrickOS;
-  mniSetLNPAddress.Enabled       := mniBrickOS.Visible and bBrickAlive;
-//  mniDownloadAddress.Enabled     := mniBrickOS.Visible and bBrickAlive;
-//  mniLNPPort.Enabled             := mniBrickOS.Visible and bBrickAlive;
-end;
-
-procedure TfrmCodeEdit.scpParamsExecute(Kind: SynCompletionType; Sender: TObject;
-  var CurrentInput: String; var x, y: Integer; var CanExecute: Boolean);
-var
-  locLine, lookup: String;
-  TmpX, savepos, StartX, ParenCounter, NameIdx, TmpLocation : Integer;
-  FoundMatch : Boolean;
-  p, BB, BE : TPoint;
-  SCP : TSynCompletionProposal;
-  AEF : TEditorForm;
-begin
-  AEF := ActiveEditorForm;
-  NameIdx := -1;
-  SCP := TSynCompletionProposal(Sender);
-  with TBricxccSynEdit(SCP.Editor) do
-  begin
-    // get text all the way back to semi-colon from current location
-    p := FindString(';', True, True);
-    BB := BlockBegin;
-    BE := BlockEnd;
-    try
-      BlockBegin := p;
-      BlockEnd   := CaretXY;
-      locline := SelText;
-    finally
-      BlockBegin := BB;
-      BlockEnd := BE;
-    end;
-
-    //go back from the cursor and find the first open paren
-    TmpX := Length(locLine);
-    FoundMatch := False;
-    TmpLocation := 0;
-    while (TmpX > 0) and not(FoundMatch) do
-    begin
-      if locLine[TmpX] = ',' then
-      begin
-        inc(TmpLocation);
-        dec(TmpX);
-      end else if locLine[TmpX] = ')' then
-      begin
-        //We found a close, go till it's opening paren
-        ParenCounter := 1;
-        dec(TmpX);
-        while (TmpX > 0) and (ParenCounter > 0) do
-        begin
-          if locLine[TmpX] = ')' then inc(ParenCounter)
-          else if locLine[TmpX] = '(' then dec(ParenCounter);
-          dec(TmpX);
-        end;
-        if TmpX > 0 then dec(TmpX);  //eat the open paren
-      end else if locLine[TmpX] = '(' then
-      begin
-        //we have a valid open paren, lets see what the word before it is
-        StartX := TmpX;
-        while (TmpX > 0) and not(locLine[TmpX] in TSynValidStringChars) do
-          Dec(TmpX);
-        if TmpX > 0 then
-        begin
-          SavePos := TmpX;
-          while (TmpX > 0) and (locLine[TmpX] in TSynValidStringChars) do
-            dec(TmpX);
-          inc(TmpX);
-          if FileIsMindScriptOrLASM(AEF) or FileIsPascal(AEF) then
-            lookup := Uppercase(Copy(locLine, TmpX, SavePos - TmpX + 1))
-          else
-            lookup := Copy(locLine, TmpX, SavePos - TmpX + 1);
-          if FileIsCPP(AEF) then
-            NameIdx := CppCodeCompIndex(lookup)
-          else if FileIsPascal(AEF) then
-            NameIdx := PasCodeCompIndex(lookup)
-          else if FileIsNQC(AEF) then
-            NameIdx := NQCCodeCompIndex(lookup)
-          else if FileIsNXC(AEF) then
-            NameIdx := NXCCodeCompIndex(lookup)
-          else if FileIsNBC(AEF) then
-            NameIdx := NBCCodeCompIndex(lookup)
-          else if FileIsRICScript(AEF) then
-            NameIdx := RICScriptCodeCompIndex(lookup)
-          else if FileIsROPS(AEF) then
-            NameIdx := ROPSCodeCompIndex(lookup)
-          else if FileIsMindScript(AEF) then
-            NameIdx := MSCodeCompIndex(lookup);
-          FoundMatch := NameIdx > -1;
-          if not(FoundMatch) then
-          begin
-            TmpX := StartX;
-            dec(TmpX);
-          end;
-        end;
-      end else dec(TmpX)
-    end;
-  end;
-
-  CanExecute := FoundMatch;
-
-  if CanExecute then
-  begin
-    SCP.Form.CurrentIndex := TmpLocation;
-    if lookup <> SCP.CurrentString then
-    begin
-      SCP.ItemList.Clear;
-      // add params
-      if FileIsCPP(AEF) then begin
-        AddCppCodeCompParams(SCP.ItemList, NameIdx);
-        SCP.ParamSepString := ', ';
-      end
-      else if FileIsPascal(AEF) then begin
-        AddPasCodeCompParams(SCP.ItemList, NameIdx);
-        SCP.ParamSepString := '; ';
-      end
-      else if FileIsNQC(AEF) then begin
-        AddNQCCodeCompParams(SCP.ItemList, NameIdx);
-        SCP.ParamSepString := ', ';
-      end
-      else if FileIsNXC(AEF) then begin
-        AddNXCCodeCompParams(SCP.ItemList, NameIdx);
-        SCP.ParamSepString := ', ';
-      end
-      else if FileIsNBC(AEF) then begin
-        AddNBCCodeCompParams(SCP.ItemList, NameIdx);
-        SCP.ParamSepString := ', ';
-      end
-      else if FileIsRICScript(AEF) then begin
-        AddRICScriptCodeCompParams(SCP.ItemList, NameIdx);
-        SCP.ParamSepString := ', ';
-      end
-      else if FileIsROPS(AEF) then begin
-        AddROPSCodeCompParams(SCP.ItemList, NameIdx);
-        SCP.ParamSepString := '; ';
-      end
-      else if FileIsMindScript(AEF) then begin
-        AddMSCodeCompParams(SCP.ItemList, NameIdx);
-        SCP.ParamSepString := ', ';
-      end;
-    end;
-  end
-  else
-    SCP.ItemList.Clear;
-end;
-
-procedure TfrmCodeEdit.ConfigureOtherFirmwareOptions;
-var
-  i : Integer;
-  bBrickOS : Boolean;
-begin
-  bBrickOS := LocalFirmwareType = ftBrickOS;
-  if LocalStandardFirmware then begin
-    with ProgramBox.Items do begin
-      i := IndexOf(sProgram + ' 6');
-      if i <> -1 then Delete(i);
-      i := IndexOf(sProgram + ' 7');
-      if i <> -1 then Delete(i);
-      i := IndexOf(sProgram + ' 8');
-      if i <> -1 then Delete(i);
-    end;
-  end
-  else if bBrickOS then begin
-    // brickOS has 8 program slots
-    with ProgramBox.Items do begin
-      if IndexOf(sProgram + ' 6') = -1 then Add(sProgram + ' 6');
-      if IndexOf(sProgram + ' 7') = -1 then Add(sProgram + ' 7');
-      if IndexOf(sProgram + ' 8') = -1 then Add(sProgram + ' 8');
-    end;
-  end;
-  mniProgram6.Visible := bBrickOS;
-  mniProgram7.Visible := bBrickOS;
-  mniProgram8.Visible := bBrickOS;
-  mniPBForthConsole.Visible := False;
-  mniPBForthConsole.Enabled := False;
-  dlgOpenFirmware.FilterIndex := 2;
-  if bBrickOS then
-  begin
-    dlgOpenFirmware.FileName := 'brickOS.srec';
-    dlgOpen.FilterIndex      := Highlighters.IndexOf('C++')+1;
-    dlgSave.FilterIndex      := dlgOpen.FilterIndex;
-  end
-  else if LocalFirmwareType = ftPBForth then
-  begin
-    mniPBForthConsole.Visible := True;
-    mniPBForthConsole.Enabled := True;
-    dlgOpenFirmware.FileName  := 'pbForth.srec';
-    dlgOpen.FilterIndex       := Highlighters.IndexOf('Forth')+1;
-    dlgSave.FilterIndex       := dlgOpen.FilterIndex;
-  end
-  else if LocalFirmwareType = ftLeJOS then
-  begin
-    dlgOpenFirmware.FileName := 'lejos.srec';
-    dlgOpen.FilterIndex      := Highlighters.IndexOf('Java')+1;
-    dlgSave.FilterIndex      := dlgOpen.FilterIndex;
-  end
-  else
-  begin
-    if LocalBrickType = SU_NXT then
-    begin
-      dlgOpenFirmware.FileName    := '';
-      dlgOpenFirmware.FilterIndex := 3;
     end
-    else
+    else if Line = FActiveLine then
     begin
-      dlgOpenFirmware.FileName    := 'firm0328.lgo';
-      dlgOpenFirmware.FilterIndex := 1;
+      Special := True;
+      FG := clWhite;
+      BG := clBlue;
     end;
-    SetFilterIndexFromLanguage;
+  end
+  else if Assigned(fNXTCurrentOffset) and FileIsNBCOrNXC then
+  begin
+    Special := (Line = fNXTCurrentOffset.LineNumber) and
+               (fNXTVMState = kNXT_VMState_Pause);
+    if Special then
+    begin
+      FG := clWhite;
+      BG := clBlue;
+    end;
   end;
 end;
 
-function TfrmCodeEdit.DoCompileAction(E : TEditorForm; bDown, bRun: Boolean) : Boolean;
+procedure TfrmCodeEdit.TheEditorMouseOverToken(Sender: TObject;
+  const Token: String; TokenType: Integer;
+  Attri: TSynHighlighterAttributes; var Highlight: Boolean);
 begin
-  Result := False;
-  if Assigned(E) then begin
-    if bDown then begin
-      if not CheckAlive then Exit;
-      if IsRCX then
-      begin
-        if LockedProgArray[ProgramBox.ItemIndex] then
-        begin
-          MessageDlg(sProgramLocked, mtError, [mbOK], 0);
-          Exit;
-        end;
-        SelectProgram(ProgramBox.ItemIndex);
-      end;
-    end;
-    if ShowCompilerStatus and UseInternalNBC and
-       FileIsNBCOrNXCOrNPGOrRICScript(E) then
-      frmCompStatus.Show;
-    Application.ProcessMessages;
-    Result := CompileIt(bDown, bRun);
+{
+  if not ((Pos(#9, Token) = 0) and (Pos(#32, Token) = 0)) then Exit;
+  if TheEditor.Highlighter = nil then Exit;
+  with TheEditor.Highlighter do begin
+    Highlight := (Attri <> CommentAttribute) and
+                 (Attri <> KeywordAttribute) and
+                 (Attri <> StringAttribute) and
+                 (Attri <> SymbolAttribute) and
+                 (Attri <> WhitespaceAttribute);
   end;
+}
 end;
 
 procedure TfrmCodeEdit.actFileNewExecute(Sender: TObject);
-var
-  F : TEditorForm;
 begin
   newcount := newcount + 1;
-  F := DoCreateEditorForm;
-  if Assigned(F) then
-    F.NewFile(sUntitled + IntToStr(newcount));
-  if not MDI then
-    pagMainChange(nil);
+  NewFile(sUntitled + IntToStr(newcount));
 end;
 
 procedure TfrmCodeEdit.actFileOpenExecute(Sender: TObject);
@@ -1471,46 +1206,30 @@ end;
 
 procedure TfrmCodeEdit.actCompileCompileExecute(Sender: TObject);
 begin
-  DoCompileAction(ActiveEditorForm, False, False);
+  DoCompileAction(False, False);
 end;
 
 procedure TfrmCodeEdit.actCompileDownloadExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  // download using forth console
-  E := ActiveEditorForm;
-  if FileIsForth(E) then
-  begin
-{$IFNDEF FPC}
-    if Assigned(E) then
-      frmForthConsole.DownloadScript(E.TheEditor.Lines);
-{$ENDIF}
-  end
-  else
-    DoCompileAction(E, True, False);
+  DoCompileAction(True, False);
 end;
 
 procedure TfrmCodeEdit.actCompileDownloadRunExecute(Sender: TObject);
 begin
-  if DoCompileAction(ActiveEditorForm, True, True) then
+  if DoCompileAction(True, True) then
     StartTask(0);
 end;
 
 procedure TfrmCodeEdit.actCompileRunExecute(Sender: TObject);
 begin
-  if IsRCX then
-  begin
-    SelectProgram(ProgramBox.ItemIndex);
-  end;
   StartTask(0);
 end;
 
 procedure TfrmCodeEdit.actCompileStopExecute(Sender: TObject);
 begin
   if FileIsROPS then begin
-    if ce.Exec.Status = isRunning then
-      ce.Stop;
+    if theROPSCompiler.Exec.Status = isRunning then
+      theROPSCompiler.Stop;
   end
   else if IsNXT then
   begin
@@ -1525,20 +1244,17 @@ begin
 end;
 
 procedure TfrmCodeEdit.actCompileStepOverExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) and FileIsROPS(E) then
+  if FileIsROPS then
   begin
-    if ce.Exec.Status = isRunning then
-      ce.StepOver
+    if theROPSCompiler.Exec.Status = isRunning then
+      theROPSCompiler.StepOver
     else
     begin
-      if DoCompileAction(E, False, False) then
+      if DoCompileAction(False, False) then
       begin
-        ce.StepInto;
-        ce.Execute;
+        theROPSCompiler.StepInto;
+        theROPSCompiler.Execute;
       end;
     end;
   end
@@ -1553,20 +1269,17 @@ begin
 end;
 
 procedure TfrmCodeEdit.actCompileTraceIntoExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) and FileIsROPS(E) then
+  if FileIsROPS then
   begin
-    if ce.Exec.Status = isRunning then
-      ce.StepInto
+    if theROPSCompiler.Exec.Status = isRunning then
+      theROPSCompiler.StepInto
     else
     begin
-      if DoCompileAction(E, False, False) then
+      if DoCompileAction(False, False) then
       begin
-        ce.StepInto;
-        ce.Execute;
+        theROPSCompiler.StepInto;
+        theROPSCompiler.Execute;
       end;
     end;
   end
@@ -1595,20 +1308,15 @@ end;
 procedure TfrmCodeEdit.actCompileTraceToLineExecute(Sender: TObject);
 var
   nextLine : integer;
-  E : TEditorForm;
 begin
   if IsNXT and EnhancedFirmware then
   begin
-    E := ActiveEditorForm;
-    if Assigned(E) then
+    // figure out the next source line using CurrentProgram???
+    nextLine := 10;
+    if CurrentProgram.TraceToNextSourceLine(nextLine) then
     begin
-      // figure out the next source line using CurrentProgram???
-      nextLine := 10;
-      if CurrentProgram.TraceToNextSourceLine(nextLine) then
-      begin
-        actCompilePause.Caption := sContinue;
-        UpdateEditorPosition;
-      end;
+      actCompilePause.Caption := sContinue;
+      UpdateEditorPosition;
     end;
   end;
 end;
@@ -1616,95 +1324,59 @@ end;
 procedure TfrmCodeEdit.actCompileRunToCursorExecute(Sender: TObject);
 var
   cursorLine : integer;
-  E : TEditorForm;
 begin
   if IsNXT and EnhancedFirmware then
   begin
-    E := ActiveEditorForm;
-    if Assigned(E) then
+    cursorLine := TheEditor.CaretY;
+    if CurrentProgram.RunToCursor(cursorLine) then
     begin
-      cursorLine := E.TheEditor.CaretY;
-      if CurrentProgram.RunToCursor(cursorLine) then
-      begin
-        actCompilePause.Caption := sContinue;
-        UpdateEditorPosition;
-      end;
+      actCompilePause.Caption := sContinue;
+      UpdateEditorPosition;
     end;
   end;
 end;
 
 procedure TfrmCodeEdit.actEditUndoExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.Undo;
+  Undo;
 end;
 
 procedure TfrmCodeEdit.actEditRedoExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.Redo;
+  Redo;
 end;
 
 procedure TfrmCodeEdit.actEditCutExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.CutSel;
+  CutSel;
 end;
 
 procedure TfrmCodeEdit.actEditCopyExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.CopySel;
+  CopySel;
 end;
 
 procedure TfrmCodeEdit.actEditPasteExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.Paste;
+  Paste;
 end;
 
 procedure TfrmCodeEdit.actEditDeleteExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.DeleteSel;
+  DeleteSel;
 end;
 
 procedure TfrmCodeEdit.actEditSelectAllExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.SelectAll;
+  SelectAll;
 end;
 
 procedure TfrmCodeEdit.actEditNextFieldExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.NextField;
+  NextField;
 end;
 
+(*
 procedure TfrmCodeEdit.actEditPreferencesExecute(Sender: TObject);
 var
   i : integer;
@@ -1767,186 +1439,256 @@ begin
     SetFilterIndexFromLanguage;
   end;
 end;
+*)
 
 procedure TfrmCodeEdit.actFileSaveExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    DoSave(E);
+  DoSave;
 end;
 
 procedure TfrmCodeEdit.actFileSaveAsExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    DoSaveAs(E);
-end;
-
-procedure TfrmCodeEdit.actFileCloseExecute(Sender: TObject);
-var
-  E : TEditorForm;
-begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    CloseEditor(E);
-end;
-
-procedure TfrmCodeEdit.actFileExitExecute(Sender: TObject);
-begin
-  Close;
+  DoSaveAs;
 end;
 
 procedure TfrmCodeEdit.actSearchFindExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.ExecFind;
+  ExecFind;
 end;
 
 procedure TfrmCodeEdit.actSearchFindNextExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.ExecFindNext;
+  ExecFindNext;
 end;
 
 procedure TfrmCodeEdit.actSearchFindPrevExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.ExecFindPrev;
+  ExecFindPrev;
 end;
 
 procedure TfrmCodeEdit.actSearchReplaceExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.ExecReplace;
+  ExecReplace;
 end;
 
 procedure TfrmCodeEdit.actSearchGotoLineExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.GotoLine;
+  GotoLine;
 end;
 
 procedure TfrmCodeEdit.actSearchProcListExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.ProcedureList;
+  ProcedureList;
 end;
 
 procedure TfrmCodeEdit.actEditCopyHTMLExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.DoCopyHTML(Sender);
+  DoCopyHTML(Sender);
 end;
 
 procedure TfrmCodeEdit.actEditCopyRTFExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if Assigned(E) then
-    E.DoCopyRTF(Sender);
+  DoCopyRTF(Sender);
 end;
 
-procedure TfrmCodeEdit.SetFilterIndexFromLanguage;
+procedure TfrmCodeEdit.mniFileClick(Sender: TObject);
 begin
-  if LocalFirmwareType = ftStandard then
+  {Show the recent files}
+  ShowRecentFiles(Sender as TMenuItem, RecentFileClick);
+end;
+
+procedure TfrmCodeEdit.RecentFileClick(Sender: TObject);
+begin
+  OpenFile(GetRecentFileName(TMenuItem(Sender).Tag));
+end;
+
+procedure TfrmCodeEdit.mniShowTemplatesClick(Sender: TObject);
+begin
+  mniShowTemplates.Checked := not mniShowTemplates.Checked;
+  ShowTemplateForm := mniShowTemplates.Checked;
+  if ShowTemplateForm then
+    ShowTemplates
+  else
+    ConstructForm.Close;
+end;
+
+procedure TfrmCodeEdit.mniShowCodeListingClick(Sender: TObject);
+begin
+  CodeForm.Visible := not CodeForm.Visible;
+end;
+
+procedure TfrmCodeEdit.mniHideErrorsClick(Sender: TObject);
+begin
+  DoHideErrors;
+end;
+
+(*
+{Reacting on dropping a file on the form}
+{$IFNDEF FPC}
+procedure TfrmCodeEdit.WMDROPFILES(var Message: TWMDROPFILES);
+var
+  buffer:array[0..255] of char;
+  F : TEditorForm;
+  cnt, i : Integer;
+begin
+  cnt := DragQueryFile(Message.Drop, $FFFFFFFF, @buffer, sizeof(buffer));
+  for i := 0 to cnt - 1 do
   begin
-    if PreferredLanguage = 0 then
+    DragQueryFile(Message.Drop,i,@buffer,sizeof(buffer));
+    F := DoCreateEditorForm;
+    if Assigned(F) then
     begin
-      if LocalBrickType = SU_NXT then
-        dlgOpen.FilterIndex := Highlighters.IndexOf('NXC')+1
-      else
-        dlgOpen.FilterIndex := Highlighters.IndexOf('NQC')+1;
-    end
-    else if PreferredLanguage = 1 then
-      dlgOpen.FilterIndex   := Highlighters.IndexOf('MindScript')+1
-    else if PreferredLanguage = 2 then
-      dlgOpen.FilterIndex   := Highlighters.IndexOf('LEGO Assembler')+1
-    else if PreferredLanguage = 3 then
-      dlgOpen.FilterIndex   := Highlighters.IndexOf('Next Byte Codes')+1
-    else
-      dlgOpen.FilterIndex   := Highlighters.IndexOf('NXC')+1;
-    dlgSave.FilterIndex     := dlgOpen.FilterIndex;
+      F.OpenFile(buffer);
+      if DroppedRecent then
+        AddRecentFile(buffer);
+    end;
+    if not MDI then
+      pagMainChange(nil);
   end;
+  DragFinish(Message.Drop);
+end;
+{$ENDIF}
+*)
+
+procedure TfrmCodeEdit.mniViewClick(Sender: TObject);
+begin
+  mniShowTemplates.Checked := ConstructForm.Visible;
+  mniStatusbar.Checked     := barStatus.Visible;
+  if CodeForm.Visible then
+    mniShowCodeListing.Caption := sHideCodeError
+  else
+    mniShowCodeListing.Caption := sShowCodeError;
+  mniCodeExplorer.Checked  := frmCodeExplorer.Visible;
+  mniHideErrors.Enabled    := TheErrors.Visible;
 end;
 
-procedure TfrmCodeEdit.ShowTemplates(bSave : boolean);
-var
-  bVisible : boolean;
+procedure TfrmCodeEdit.mniStatusbarClick(Sender: TObject);
 begin
-  ConstructForm.ActiveLanguageIndex := ActiveLanguageIndex;
-  ConstructForm.Rebuild(bSave);
-  ConstructForm.Show;
-  ConstructForm.FormShow(Self);
-  bVisible := pnlCodeExplorer.VisibleDockClientCount > 0;
-  pnlCodeExplorer.Visible := bVisible;
-  splCodeExplorer.Visible := bVisible;
+  mniStatusbar.Checked := not mniStatusbar.Checked;
+  ShowStatusbar := mniStatusbar.Checked;
+  barStatus.Visible := ShowStatusbar;
 end;
 
-function TfrmCodeEdit.ActiveLanguageName : string;
-var
-  AEF : TEditorForm;
-  SCH : TSynCustomHighlighter;
+procedure TfrmCodeEdit.DoPrintPreview;
 begin
-  Result := PreferredLanguageName;
-  AEF := ActiveEditorForm;
-  if Assigned(AEF) then
-  begin
-    SCH := AEF.TheEditor.Highlighter;
-    if not Assigned(SCH) then
-      SCH := GetHighlighterForFile(AEF.Filename);
-    if Assigned(SCH) then
-      Result := SCH.LanguageName;
+{
+  SynEditPrint.SynEdit := TheEditor;
+  SynEditPrint.Title   := Caption;
+  with TTestPrintPreviewDlg.Create(nil) do
+  try
+    SynEditPrintPreview.SynEditPrint := SynEditPrint;
+    ShowModal;
+  finally
+    Free;
   end;
+}
 end;
 
-function TfrmCodeEdit.ActiveLanguageIndex: integer;
+procedure TfrmCodeEdit.UpdateStatusBar;
 begin
-  Result := Highlighters.IndexOf(ActiveLanguageName);
+  if BrickComm.Port <> '' then
+    barStatus.Panels[2].Text := BrickComm.NicePortName
+  else
+    barStatus.Panels[2].Text := sNoPort;
+
+  barStatus.Panels[3].Text := BrickComm.BrickTypeName;
 end;
 
-procedure TfrmCodeEdit.ConfigureTransferMenuItemVisibility(aList : TList; aMenuItem : TOfficeMenuItem; const aPrefix : string);
+procedure TfrmCodeEdit.mniCodeExplorerClick(Sender: TObject);
+begin
+  ShowCodeExplorer;
+end;
+
+procedure TfrmCodeEdit.pnlCodeExplorerDockOver(Sender: TObject;
+  Source: TDragDockObject; X, Y: Integer; State: TDragState;
+  var Accept: Boolean);
+begin
+  Accept := (Source.Control is TfrmCodeExplorer) or
+            (Source.Control is TConstructForm);
+end;
+
+procedure TfrmCodeEdit.pnlCodeExplorerGetSiteInfo(Sender: TObject;
+  DockClient: TControl; var InfluenceRect: TRect; MousePos: TPoint;
+  var CanDock: Boolean);
+begin
+  CanDock := (DockClient is TfrmCodeExplorer) or (DockClient is TConstructForm);
+end;
+
+procedure TfrmCodeEdit.mniMacroManagerClick(Sender: TObject);
+begin
+  frmMacroManager.ShowModal;
+end;
+
+procedure TfrmCodeEdit.alMainUpdate(Action: TBasicAction; var Handled: Boolean);
+var
+  bAssigned, bBrickAlive, bBALSF, bROPS : Boolean;
+begin
+  // update all other actions here as well
+  bAssigned   := True;
+  bBrickAlive := BrickComm.IsOpen;
+  bBALSF      := bBrickAlive and LocalStandardFirmware;
+  bROPS       := FileIsROPS;
+
+  actFileSave.Enabled           := bAssigned and TheEditor.Modified;
+  actFileSaveAs.Enabled         := bAssigned;
+  actFilePrintPreview.Enabled   := bAssigned;
+  actFilePrint.Enabled          := bAssigned;
+
+  actEditUndo.Enabled           := bAssigned and CanUndo;
+  actEditRedo.Enabled           := bAssigned and CanRedo;
+  actEditCut.Enabled            := bAssigned and CanCut;
+  actEditCopy.Enabled           := bAssigned and Selected;
+  actEditPaste.Enabled          := bAssigned and CanPaste;
+  actEditDelete.Enabled         := actEditCut.Enabled;
+  actEditSelectAll.Enabled      := bAssigned;
+  actEditNextField.Enabled      := bAssigned;
+  actEditCopyHTML.Enabled       := bAssigned;
+  actEditCopyRTF.Enabled        := bAssigned;
+
+  actSearchFind.Enabled         := bAssigned and CanFind;
+  actSearchFindNext.Enabled     := bAssigned and CanFindNext;
+  actSearchFindPrev.Enabled     := bAssigned and CanFindNext;
+  actSearchReplace.Enabled      := bAssigned and CanReplace;
+  actSearchGotoLine.Enabled     := bAssigned;
+  actSearchProcList.Enabled     := bAssigned;
+
+  actCompileCompile.Enabled     := bAssigned and FileCanBeCompiled;
+  actCompileDownload.Enabled    := bAssigned and bBrickAlive and not bROPS;
+  actCompileDownloadRun.Enabled := bAssigned and bBrickAlive and not bROPS;
+  actCompileRun.Enabled         := bBALSF or bROPS;
+  actCompileStop.Enabled        := bBALSF or bROPS;
+  // ROPS/Enhanced NXT firmware support
+  actCompileStepOver.Visible    := bROPS or (bBALSF and IsNXT and EnhancedFirmware);
+  actCompileStepOver.Enabled    := bROPS or (bBALSF and (fNXTVMState <> kNXT_VMState_Idle));
+  actCompileTraceInto.Visible   := bROPS or (bBALSF and IsNXT and EnhancedFirmware);
+  actCompileTraceInto.Enabled   := bROPS or (bBALSF and (fNXTVMState <> kNXT_VMState_Idle));
+
+  // NXT enhanced firmware support
+//  actCompileSingleStep.Visible  := bBALSF and IsNXT and EnhancedFirmware;
+//  actCompileSingleStep.Enabled  := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
+  actCompilePause.Visible       := bBALSF and IsNXT and EnhancedFirmware;
+  actCompilePause.Enabled       := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
+  actCompileStepOut.Visible     := bBALSF and IsNXT and EnhancedFirmware;
+  actCompileStepOut.Enabled     := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
+  actCompileRunToCursor.Visible := bBALSF and IsNXT and EnhancedFirmware;
+  actCompileRunToCursor.Enabled := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
+  actCompileTraceToLine.Visible := bBALSF and IsNXT and EnhancedFirmware;
+  actCompileTraceToLine.Enabled := bBALSF and (fNXTVMState <> kNXT_VMState_Idle);
+end;
+
+procedure TfrmCodeEdit.ConfigureTransferMenuItemVisibility(aList : TList;
+  aMenuItem : TMenuItem; const aPrefix : string);
 var
   i : integer;
   TI : TTransferItem;
-  MI : TOfficeMenuItem;
-  AEF : TEditorForm;
+  MI : TMenuItem;
   ext : string;
 begin
-  AEF := ActiveEditorForm;
-  if Assigned(AEF) then
-    ext := LowerCase(ExtractFileExt(AEF.Filename))
-  else
-    ext := '.@$%';
+  ext := LowerCase(ExtractFileExt(Filename));
   for i := 0 to aList.Count - 1 do
   begin
     TI := TTransferItem(aList[i]);
-    MI := TOfficeMenuItem(aMenuItem.FindComponent(aPrefix + IntToStr(i)));
+    MI := TMenuItem(aMenuItem.FindComponent(aPrefix + IntToStr(i)));
     if Assigned(MI) then
     begin
       MI.Visible := (not TI.Restrict) or
@@ -1955,139 +1697,10 @@ begin
   end;
 end;
 
-procedure TfrmCodeEdit.mniCompileClick(Sender: TObject);
-begin
-  ConfigureTransferMenuItemVisibility(CompXferList, mniCompile, K_COMP_TRANSFER_PREFIX);
-end;
-
-procedure TfrmCodeEdit.mniToolsClick(Sender: TObject);
-begin
-  ConfigureTransferMenuItemVisibility(TransferList, mniTools, K_TRANSFER_PREFIX);
-end;
-
-procedure TfrmCodeEdit.CreateSpiritPlugins;
-var
-  Plugin : TPSPlugin;
-begin
-  Plugin := TPSImport_uSpirit.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-  Plugin := TPSImport_brick_common.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-{$IFNDEF FPC}
-  Plugin := TPSImport_FakeSpirit.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-{$ENDIF}
-  Plugin := TPSImport_FantomSpirit.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-end;
-
-procedure TfrmCodeEdit.ceExecute(Sender: TPSScript);
-begin
-  ce.SetVarToInstance('SELF', Self);
-  ce.SetVarToInstance('APPLICATION', Application);
-end;
-
-procedure TfrmCodeEdit.ceCompile(Sender: TPSScript);
-begin
-  //  Sender.AddMethod(Self, @TEditor.Writeln, 'procedure Writeln(s: string)');
-  //  Sender.AddMethod(Self, @TEditor.Readln, 'procedure readln(var s: string)');
-    Sender.AddRegisteredVariable('Self', 'TForm');
-    Sender.AddRegisteredVariable('Application', 'TApplication');
-end;
-
-procedure TfrmCodeEdit.ceIdle(Sender: TObject);
-var
-  E : TEditorForm;
-begin
-  Application.HandleMessage;
-  if FResume then
-  begin
-    FResume := False;
-    ce.Resume;
-    FActiveLine := 0;
-    E := ActiveEditorForm;
-    if Assigned(E) then
-      E.TheEditor.Refresh;
-  end;
-end;
-
-procedure TfrmCodeEdit.ceAfterExecute(Sender: TPSScript);
-begin
-  FActiveLine := 0;
-end;
-
-procedure TfrmCodeEdit.ceBreakpoint(Sender: TObject; const FileName: String;
-  Position, Row, Col: Cardinal);
-var
-  E : TEditorForm;
-begin
-  E := ActiveEditorForm;
-  if not Assigned(E) then Exit;
-  FActiveLine := Row;
-  if (FActiveLine < E.TheEditor.TopLine + 2) or
-     (FActiveLine > E.TheEditor.TopLine + E.TheEditor.LinesInWindow - 2) then
-  begin
-    E.TheEditor.TopLine := FActiveLine - (E.TheEditor.LinesInWindow div 2);
-  end;
-  E.TheEditor.CaretY := FActiveLine;
-  E.TheEditor.CaretX := 1;
-  E.TheEditor.Refresh;
-end;
-
-procedure TfrmCodeEdit.ceLineInfo(Sender: TObject; const FileName: String;
-  Position, Row, Col: Cardinal);
-var
-  E : TEditorForm;
-begin
-  E := ActiveEditorForm;
-  if not Assigned(E) then Exit;
-  if ce.Exec.DebugMode <> dmRun then
-  begin
-    FActiveLine := Row;
-    if (FActiveLine < E.TheEditor.TopLine + 2) or
-       (FActiveLine > E.TheEditor.TopLine + E.TheEditor.LinesInWindow - 2) then
-    begin
-      E.TheEditor.TopLine := FActiveLine - (E.TheEditor.LinesInWindow div 2);
-    end;
-    E.TheEditor.CaretY := FActiveLine;
-    E.TheEditor.CaretX := 1;
-    E.TheEditor.Refresh;
-  end;
-end;
-
-function TfrmCodeEdit.ceNeedFile(Sender: TObject; const OrginFileName: String;
-  var FileName, Output: String): Boolean;
-var
-  Path: string;
-  F: TFileStream;
-  E : TEditorForm;
-begin
-  Result := False;
-  E := ActiveEditorForm;
-  if not Assigned(E) then Exit;
-  if E.Filename <> '' then
-    Path := ExtractFilePath(E.Filename)
-  else
-    Path := ExtractFilePath(ParamStr(0));
-  Path := Path + FileName;
-  F := TFileStream.Create(Path, fmOpenRead or fmShareDenyWrite);
-  try
-    SetLength(Output, F.Size);
-    F.Read(Output[1], Length(Output));
-  finally
-    F.Free;
-  end;
-  Result := True;
-end;
-
 procedure TfrmCodeEdit.actCompilePauseExecute(Sender: TObject);
-var
-  E : TEditorForm;
 begin
-  E := ActiveEditorForm;
-  if not Assigned(E) or
-     not (IsNXT and EnhancedFirmware) or
-     not CurrentProgram.Loaded(E.Filename) then
+  if not (IsNXT and EnhancedFirmware) or
+     not CurrentProgram.Loaded(Filename) then
     Exit;
   if CurrentProgram.VMState in [kNXT_VMState_Pause, kNXT_VMState_Single] then
   begin
@@ -2117,149 +1730,6 @@ begin
 }
 end;
 
-procedure TfrmCodeEdit.UpdateEditorPosition;
-var
-  CD : TClumpData;
-  CO : TOffset;
-  AEF : TEditorForm;
-  i : integer;
-begin
-  fNXTCurrentOffset := nil;
-  if (fNXTClump < CurrentProgram.Count) then
-  begin
-    CD := CurrentProgram[fNXTClump];
-    AEF := ActiveEditorForm;
-    if Assigned(AEF) and (Pos(Lowercase(AEF.Filename), LowerCase(CD.Filename)) > 0) then
-    begin
-      i := CD.Offsets.IndexOfPC(fNXTProgramCounter);
-      if i <> -1 then
-      begin
-        CO := CD.Offsets[i];
-        if LowerCase(ExtractFileName(CO.Filename)) = LowerCase(ExtractFilename(CD.Filename)) then
-        begin
-          fNXTCurrentOffset := CO;
-          AEF.TheEditor.GotoLineAndCenter(CO.LineNumber);
-        end
-        else
-        begin
-          // if the filenames are different then open the new file
-          if AEF.OpenFileOnPath(CO.Filename) then
-          begin
-            AEF := ActiveEditorForm;
-            AEF.TheEditor.GotoLineAndCenter(CO.LineNumber);
-          end;
-        end;
-      end;
-    end;
-  end;
-end;
-
-procedure TfrmCodeEdit.HandleOnGetVarInfoByID(Sender: TObject;
-  const ID: integer; var offset, size, vartype: integer);
-var
-  DSE : TDSTocEntry;
-begin
-  // read offset, size, and vartype from compiler symbol table output
-  if CurrentProgram.Dataspace.Count > ID then
-  begin
-    DSE     := CurrentProgram.Dataspace[ID];
-    offset  := DSE.Offset;
-    size    := DSE.Size;
-    vartype := Ord(DSE.DataType);
-  end;
-end;
-
-procedure TfrmCodeEdit.HandleOnGetVarInfoByName(Sender: TObject;
-  const name: string; var offset, size, vartype: integer);
-var
-  DSE : TDSTocEntry;
-  ID : integer;
-begin
-  // read offset, size, and vartype from compiler symbol table output
-  if CurrentProgram.Dataspace.Count > 0 then
-  begin
-    ID := CurrentProgram.Dataspace.IndexOfName(name);
-    if ID <> -1 then
-    begin
-      DSE     := CurrentProgram.Dataspace[ID];
-      offset  := DSE.Offset;
-      size    := DSE.Size;
-      vartype := Ord(DSE.DataType);
-    end;
-  end;
-end;
-
-procedure TfrmCodeEdit.CreatePascalScriptComponents;
-begin
-  PSImport_Controls := TPSImport_Controls.Create(Self);
-  PSImport_StdCtrls := TPSImport_StdCtrls.Create(Self);
-  PSImport_Forms := TPSImport_Forms.Create(Self);
-  PSImport_DateUtils := TPSImport_DateUtils.Create(Self);
-  PSImport_Classes := TPSImport_Classes.Create(Self);
-  ce := TPSScriptDebugger.Create(Self);
-  with PSImport_Controls do
-  begin
-    Name := 'PSImport_Controls';
-    EnableStreams := True;
-    EnableGraphics := True;
-    EnableControls := True;
-  end;
-  with PSImport_StdCtrls do
-  begin
-    Name := 'PSImport_StdCtrls';
-    EnableExtCtrls := True;
-    EnableButtons := True;
-  end;
-  with PSImport_Forms do
-  begin
-    Name := 'PSImport_Forms';
-    EnableForms := True;
-    EnableMenus := True;
-  end;
-  with PSImport_DateUtils do
-  begin
-    Name := 'PSImport_DateUtils';
-  end;
-  with PSImport_Classes do
-  begin
-    Name := 'PSImport_Classes';
-    EnableStreams := True;
-    EnableClasses := True;
-  end;
-  with ce do
-  begin
-    Name := 'ce';
-    CompilerOptions := [];
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_DateUtils;
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_Classes;
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_Controls;
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_StdCtrls;
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_Forms;
-    MainFileName := 'Unnamed';
-    UsePreProcessor := True;
-    OnCompile := ceCompile;
-    OnExecute := ceExecute;
-    OnAfterExecute := ceAfterExecute;
-    OnNeedFile := ceNeedFile;
-    OnIdle := ceIdle;
-    OnLineInfo := ceLineInfo;
-    OnBreakpoint := ceBreakpoint;
-  end;
-//  ce.Comp.on
-end;
-
-procedure TfrmCodeEdit.pagMainDragOver(Sender, Source: TObject; X, Y: Integer;
-  State: TDragState; var Accept: Boolean);
-begin
-  DragOverHelper(Sender, Source, X, Y, State, Accept);
-end;
-
-procedure TfrmCodeEdit.pagMainDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
-begin
-  DragDropHelper(Sender, Source, X, Y);
-end;
-
 procedure TfrmCodeEdit.FormDragOver(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
@@ -2271,22 +1741,11 @@ begin
   DragDropHelper(Sender, Source, X, Y);
 end;
 
-procedure TfrmCodeEdit.pnlPageControlDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
-begin
-  DragOverHelper(Sender, Source, X, Y, State, Accept);
-end;
-
-procedure TfrmCodeEdit.pnlPageControlDragDrop(Sender, Source: TObject; X,
-  Y: Integer);
-begin
-  DragDropHelper(Sender, Source, X, Y);
-end;
-
 procedure TfrmCodeEdit.DragDropHelper(Sender, Source: TObject; X, Y: Integer);
-var
-  i : integer;
+//var
+//  i : integer;
 begin
+(*
   if Source = frmNXTExplorer.lstFiles then
   begin
     with frmNXTExplorer.lstFiles do
@@ -2299,6 +1758,7 @@ begin
       end;
     end;
   end;
+*)
 end;
 
 procedure TfrmCodeEdit.DragOverHelper(Sender, Source: TObject; X, Y: Integer;
@@ -2314,7 +1774,8 @@ end;
 
 function StartDoc(const DocName : String) : Integer;
 begin
-  Result := ShellExecute(GetDesktopWindow(), 'open', PChar(DocName), '', '', SW_SHOWNORMAL);
+  Result := 40;
+//  Result := ShellExecute(GetDesktopWindow(), 'open', PChar(DocName), '', '', SW_SHOWNORMAL);
 end;
 
 procedure HandleResponse(const res : integer);
@@ -2323,6 +1784,7 @@ var
 begin
   if res <= 32 then
   begin
+{
     case res of
       SE_ERR_FNF : msg := 'File not found';
       SE_ERR_PNF : msg := 'Path not found';
@@ -2339,6 +1801,8 @@ begin
     else
       msg := 'Unknown error';
     end;
+}
+    msg := 'Unknown error';
     ShowMessage(msg);
   end;
 end;
@@ -2346,11 +1810,6 @@ end;
 procedure TfrmCodeEdit.actHelpNXCGuidePDFExecute(Sender: TObject);
 begin
   HandleResponse(StartDoc(ProgramDir + 'Documentation\NXC_Guide.pdf'));
-end;
-
-procedure TfrmCodeEdit.actHelpNQCGuidePDFExecute(Sender: TObject);
-begin
-  HandleResponse(StartDoc(ProgramDir + 'Documentation\NQC_Guide.pdf'));
 end;
 
 procedure TfrmCodeEdit.actHelpNBCGuidePDFExecute(Sender: TObject);
@@ -2363,50 +1822,147 @@ begin
   HandleResponse(StartDoc(ProgramDir + 'Documentation\NXC_Tutorial.pdf'));
 end;
 
-procedure TfrmCodeEdit.actHelpNQCTutorialPDFExecute(Sender: TObject);
-begin
-  HandleResponse(StartDoc(ProgramDir + 'Documentation\NQC_Tutorial.pdf'));
-end;
-
 procedure TfrmCodeEdit.actHelpNBCTutorialPDFExecute(Sender: TObject);
 begin
   HandleResponse(StartDoc(ProgramDir + 'Documentation\NBC_Tutorial.pdf'));
 end;
 
-procedure TfrmCodeEdit.HandleExplorerFinished(Sender: TObject);
+{Event Handlers}
+
+procedure TfrmCodeEdit.pmnuEditorPopup(Sender: TObject);
 var
-  AEF : TEditorForm;
+  i, j : integer;
+  M : TMenuItem;
 begin
-  AEF := ActiveEditorForm;
-  if Assigned(AEF) then
+  mniFindDeclaration.Visible := CanFindDeclaration;
+  mniOpenFileAtCursor.Enabled := True;
+  lmiEditUndo.Enabled      := CanUndo;
+  lmiEditRedo.Enabled      := CanRedo;
+  lmiEditCut.Enabled       := CanCut;
+  lmiEditCopy.Enabled      := Selected;
+  lmiEditPaste.Enabled     := CanPaste;
+  lmiEditDelete.Enabled    := lmiEditCut.Enabled;
+  lmiEditSelectAll.Enabled := True;
+  lmiCopySpecial.Enabled   := True;
+  lmiCopyHTML.Enabled      := True;
+  lmiCopyRTF.Enabled       := True;
+  mniToggleBreakpoint.Enabled := FileIsROPS;
+  if Assigned(TheEditor.Marks) then
   begin
-    if FileIsNXC(AEF) then
-      LoadNXCCompProp
-    else if FileIsNQC(AEF) then
-      LoadNQCCompProp;
+    for i := 0 to mniToggleBookmarks.Count - 1 do
+    begin
+      M := mniToggleBookmarks.Items[i];
+      M.Checked := False;
+      for j := 0 to TheEditor.Marks.Count - 1 do
+      begin
+        if TheEditor.Marks[j].BookmarkNumber = M.Tag then
+        begin
+          M.Checked := True;
+          Break;
+        end;
+      end;
+    end;
+    for i := 0 to mniGotoBookmarks.Count - 1 do
+    begin
+      M := mniGotoBookmarks.Items[i];
+      M.Checked := False;
+      for j := 0 to TheEditor.Marks.Count - 1 do
+      begin
+        if TheEditor.Marks[j].BookmarkNumber = M.Tag then
+        begin
+          M.Checked := True;
+          Break;
+        end;
+      end;
+    end;
   end;
 end;
 
-procedure TfrmCodeEdit.HandleOnAddConstruct(Sender : TObject; const aTemplate : string; const aX : integer = -1; const aY : integer = -1);
-var
-  AEF : TEditorForm;
+function TfrmCodeEdit.IsMaximized: Boolean;
 begin
-  AEF := ActiveEditorForm;
-  if Assigned(AEF) then
-    AEF.AddConstructString(aTemplate, aX, aY);
+  Result := (WindowState = wsMaximized) or ((Left < 0) and (Top < 0));
 end;
 
-procedure TfrmCodeEdit.NewFile(fname:string);
+procedure TfrmCodeEdit.AddErrorMessage(const errMsg: string);
 begin
-  IsNew    := True;
-  Filename := fname;
-  SetCaption(ExtractFileName(fname));
-  TheEditor.Modified := False;
-  MainForm.actFileSave.Enabled := False;
-  SetSyntaxHighlighter;
-  UpdateStatusBar;
-  HookCompProp;
-  frmCodeExplorer.RefreshEntireTree;
+  if TheErrors.Items.IndexOf(errMsg) = -1 then
+    TheErrors.Items.Append(errMsg);
+end;
+
+procedure TfrmCodeEdit.mniOpenFileAtCursorClick(Sender: TObject);
+begin
+  OpenFileAtCursor;
+end;
+
+procedure TfrmCodeEdit.mniViewExplorerClick(Sender: TObject);
+begin
+  ShowCodeExplorer;
+end;
+
+procedure TfrmCodeEdit.mniFindDeclarationClick(Sender: TObject);
+begin
+//
+end;
+
+procedure TfrmCodeEdit.mnTopicSearchClick(Sender: TObject);
+{$IFNDEF NXT_ONLY}
+var
+  Cmd : TSynEditorCommand;
+  Ch : Char;
+{$ENDIF}
+begin
+{$IFNDEF NXT_ONLY}
+  Cmd := ecContextHelp;
+  TheEditorProcessCommand(Sender, Cmd, Ch, nil);
+{$ENDIF}
+end;
+
+procedure TfrmCodeEdit.ToggleBookmark(Sender: TObject);
+begin
+  TheEditor.ToggleBookmark(TMenuItem(Sender).Tag);
+end;
+
+procedure TfrmCodeEdit.GotoBookmark(Sender: TObject);
+begin
+  TheEditor.GotoBookMark(TMenuItem(Sender).Tag);
+end;
+
+function TfrmCodeEdit.CanFindDeclaration: Boolean;
+begin
+  Result := False;
+end;
+
+procedure TfrmCodeEdit.mniToggleBreakpointClick(Sender: TObject);
+var
+  Line: Longint;
+begin
+  if not FileIsROPS then Exit;
+  Line := TheEditor.CaretY;
+  if ce.HasBreakPoint(Filename, Line) then
+    ce.ClearBreakPoint(Filename, Line)
+  else
+    ce.SetBreakPoint(Filename, Line);
+  TheEditor.Refresh;
+end;
+
+procedure TfrmCodeEdit.TheErrorsMouseMove(Sender: TObject;
+  Shift: TShiftState; X, Y: Integer);
+var
+  i : integer;
+  tmpStr : string;
+  P : TPoint;
+begin
+  P := Point(X, Y);
+  i := TheErrors.ItemAtPos(P, True);
+  if i <> -1 then
+  begin
+    tmpStr := TheErrors.Items[i];
+    if tmpStr <> TheErrors.Hint then
+    begin
+      TheErrors.Hint := TheErrors.Items[i];
+      Application.ActivateHint(P);
+    end;
+  end;
 end;
 
 procedure TfrmCodeEdit.OpenFile(fname:string; lineNo : integer);
@@ -2423,18 +1979,13 @@ begin
       Filename := ChangeFileExt(fname, '.nbc');
       SetCaption(ExtractFileName(Filename));
       Application.ProcessMessages;
-      Screen.Cursor := crHourGlass;
+      D := TRXEDumper.Create;
       try
-        D := TRXEDumper.Create;
-        try
-          D.LoadFromFile(fname);
-          D.DumpRXE(TheEditor.Lines);
-          TheEditor.Modified := True;
-        finally
-          D.Free;
-        end;
+        D.LoadFromFile(fname);
+        D.DumpRXE(TheEditor.Lines);
+        TheEditor.Modified := True;
       finally
-        Screen.Cursor := crDefault;
+        D.Free;
       end;
       fname := Filename;
     end
@@ -2447,16 +1998,11 @@ begin
         Filename := ChangeFileExt(fname, '.rs');
       SetCaption(ExtractFileName(Filename));
       Application.ProcessMessages;
-      Screen.Cursor := crHourGlass;
-      try
-        if RICDecompAsData then
-          TheEditor.Lines.Text := TRICComp.RICToDataArray(fname, RICDecompNameFormat, lnNXCHeader)
-        else
-          TheEditor.Lines.Text := TRICComp.RICToText(fname);
-        TheEditor.Modified := True;
-      finally
-        Screen.Cursor := crDefault;
-      end;
+      if RICDecompAsData then
+        TheEditor.Lines.Text := TRICComp.RICToDataArray(fname, RICDecompNameFormat, lnNXCHeader)
+      else
+        TheEditor.Lines.Text := TRICComp.RICToText(fname);
+      TheEditor.Modified := True;
       fname := Filename;
     end
     else
@@ -2467,57 +2013,245 @@ begin
       TheEditor.Lines.LoadFromFile(fname);
       TheEditor.ReadOnly := FileIsReadOnly(fname);
       TheEditor.Modified := False;
-      MainForm.actFileSave.Enabled := False;
+      actFileSave.Enabled := False;
     end;
-    MainForm.LoadDesktop(fname);
     SetSyntaxHighlighter;
     UpdateStatusBar;
     HookCompProp;
+    SetActiveEditorFilename(fname);
     frmCodeExplorer.ProcessFile(fname, TheEditor.Lines.Text);
     frmCodeExplorer.RefreshEntireTree;
-    if FileIsROPS(Self) then
-      MainForm.ce.Script.Assign(TheEditor.Lines);
+    if FileIsROPS then
+      theROPSCompiler.Script.Assign(TheEditor.Lines);
     SelectLine(lineNo);
+    AddRecentFile(fname);
   end;
 end;
 
-procedure TfrmCodeEdit.SaveFile;
-begin
-  SaveFileAs(Filename);
-end;
-
-procedure TfrmCodeEdit.SaveFileAs(fname:string);
+function TfrmCodeEdit.OpenFileOnPath(const fname: string): boolean;
 var
-  backfname : string;
+  pName : string;
+  fPaths : TStringList;
+  i : integer;
 begin
-  Filename := fname;
-  IsNew    := false;
-  SetCaption(ExtractFileName(fname));
-  if SaveBackup and FileExists(fname) then
-  begin
-    backfname := ChangeFileExt(fname,'.bak');
-    DeleteFile(backfname);
-    RenameFile(fname,backfname);
-  end;
-  TheEditor.Lines.SaveToFile(fname);
-  TheEditor.Modified := False;
-  MainForm.actFileSave.Enabled := False;
-  if AutoSaveDesktop then
-    MainForm.SaveDesktop(Filename);
-  SetSyntaxHighlighter;
-  HookCompProp;
-end;
-
-procedure TfrmCodeEdit.InsertFile(fname:string);
-var
-  tmpSL : TStringlist;
-begin
-  tmpSL := TStringList.Create;
+  Result := False;
+  fPaths := TStringList.Create;
   try
-    tmpSL.LoadFromFile(fname);
-    TheEditor.SelText := tmpSL.Text;
+    fPaths.Sorted := True;
+    fPaths.Duplicates := dupIgnore;
+    fPaths.Add(ExtractFilePath(Application.ExeName));
+    fPaths.Add(GetCurrentDir);
+    fPaths.Add(ExtractFilePath(FileName));
+    if FileIsNQC then
+      AddPaths(NQCIncludePath, fPaths)
+    else if FileIsNBCOrNXC then
+      AddPaths(NBCIncludePath, fPaths)
+    else if FileIsMindScriptOrLASM then
+      AddPaths(LCCIncludePath, fPaths);
+    for i := 0 to fPaths.Count - 1 do begin
+      pName := IncludeTrailingPathDelimiter(fPaths[i]) + fName;
+      if FileExists(pName) then
+      begin
+        Result := True;
+        OpenFile(pName);
+        Exit;
+      end;
+    end;
   finally
-    tmpSL.Free;
+    fPaths.Free;
+  end;
+end;
+
+procedure TfrmCodeEdit.NewFile(fname:string);
+begin
+  IsNew    := True;
+  Filename := fname;
+  SetCaption(ExtractFileName(fname));
+  TheEditor.Modified := False;
+  actFileSave.Enabled := False;
+  SetSyntaxHighlighter;
+  UpdateStatusBar;
+  HookCompProp;
+  frmCodeExplorer.RefreshEntireTree;
+end;
+
+procedure TfrmCodeEdit.SetActiveHelpFile;
+var
+  AEF : TSynCustomHighlighter;
+begin
+  AEF := GetActiveEditorHighlighter;
+  Self.HelpFile := Application.HelpFile;
+  if FileIsNBC(AEF) then
+  begin
+    Self.HelpFile := ProgramDir + 'Help\nbc.hlp';
+  end
+  else if FileIsNXC(AEF) then
+  begin
+    Self.HelpFile := ProgramDir + 'Help\nxc.hlp';
+  end
+  else if FileIsNPG(AEF) then
+  begin
+    Self.HelpFile := ProgramDir + 'Help\npg.hlp';
+  end
+  else if FileIsRICScript(AEF) then
+  begin
+    Self.HelpFile := ProgramDir + 'Help\ricscript.hlp';
+  end;
+end;
+
+procedure TfrmCodeEdit.SetFilename(const Value: string);
+begin
+  fFilename := Value;
+//  AddRecentFile(Value);
+end;
+
+function TfrmCodeEdit.GetPosition: integer;
+begin
+  Result := TheEditor.RowColToCharIndex(TheEditor.CaretXY);
+end;
+
+function TfrmCodeEdit.GetSource: string;
+begin
+  Result := TheEditor.Text;
+end;
+
+procedure TfrmCodeEdit.SetPosition(const Value: integer);
+begin
+  TheEditor.CaretXY := TheEditor.CharIndexToRowCol(Value-1);
+end;
+
+procedure TfrmCodeEdit.UpdatePositionOnStatusBar;
+var
+  p: TPoint;
+begin
+  p := TheEditor.CaretXY;
+  barStatus.Panels[0].Text := Format('%6d:%3d', [GetLineNumber(p.Y), p.X]);
+end;
+
+procedure TfrmCodeEdit.UpdateModeOnStatusBar;
+const
+  InsertModeStrs: array[boolean] of string = (S_Overwrite, S_Insert);
+begin
+  if TheEditor.ReadOnly then
+    barStatus.Panels[4].Text := S_ReadOnly
+  else
+    barStatus.Panels[4].Text := InsertModeStrs[TheEditor.InsertMode];
+end;
+
+procedure TfrmCodeEdit.UpdateModifiedOnStatusBar;
+const
+  ModifiedStrs: array[boolean] of string = ('', S_Modified);
+begin
+  barStatus.Panels[5].Text := ModifiedStrs[TheEditor.Modified];
+end;
+
+function TfrmCodeEdit.DoCompileAction(bDown, bRun: Boolean) : Boolean;
+//var
+//  SaveCursor : TCursor;
+begin
+  if ShowCompilerStatus and UseInternalNBC and
+     FileIsNBCOrNXCOrNPGOrRICScript then
+    frmCompStatus.Show;
+  Application.ProcessMessages;
+
+  {Save cursor}
+//  SaveCursor := Screen.Cursor;
+//  Screen.Cursor := crHourglass;
+  try
+    // check for auto save
+    if AutoSaveFiles then
+      SaveModifiedFiles;
+
+    Result := CompileIt(DoDisplayErrors, TheEditor.Lines, TheErrors,
+      Filename, Caption, bDown, bRun, HandleOnCompilerStatusChange,
+      HandleOpenStateChanged);
+  finally
+//    Screen.Cursor := SaveCursor;
+  end;
+end;
+
+procedure TfrmCodeEdit.StartTask(idx : integer);
+var
+  H : TSynCustomHighlighter;
+  Fname : string;
+  binext : string;
+begin
+  if LocalStandardFirmware then
+  begin
+    H := GetActiveEditorHighlighter;
+    Fname := GetActiveEditorFilename;
+    if Assigned(H) and FileIsROPS(H) then
+    begin
+      if theROPSCompiler.Running then
+      begin
+        FResume := True;
+      end
+      else
+      begin
+        if DoCompileAction(False, False) then
+          theROPSCompiler.Execute;
+      end;
+    end
+    else if IsSpybotic then
+      BrickComm.StartTask(8)
+    else if IsNXT then
+    begin
+      if Assigned(H) and not FileIsRICScript(H) then
+      begin
+        if FileIsNPG(H) then
+          binext := '.rpg'
+        else
+          binext := '.rxe';
+        fNXTCurrentOffset := nil;
+        if (binext = '.rxe') and not CurrentProgram.Loaded(Fname) then
+          DoCompileAction(False, False);
+
+        BrickComm.StartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
+        fNXTVMState := kNXT_VMState_RunFree;
+        actCompilePause.Caption := sBreakAll;
+        // make sure the variable watch event handlers are hooked up
+        BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
+        BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
+      end
+      else
+        ShowNXTTools;
+    end
+    else
+      BrickComm.StartTask(idx);
+  end;
+end;
+
+procedure TfrmCodeEdit.UpdateEditorPosition;
+var
+  CD : TProgClumpData;
+  CO : TOffset;
+  i : integer;
+begin
+  fNXTCurrentOffset := nil;
+  if (fNXTClump < CurrentProgram.Count) then
+  begin
+    CD := CurrentProgram[fNXTClump];
+    if (Pos(Lowercase(Filename), LowerCase(CD.Filename)) > 0) then
+    begin
+      i := CD.Offsets.IndexOfPC(fNXTProgramCounter);
+      if i <> -1 then
+      begin
+        CO := CD.Offsets[i];
+        if LowerCase(ExtractFileName(CO.Filename)) = LowerCase(ExtractFilename(CD.Filename)) then
+        begin
+          fNXTCurrentOffset := CO;
+          TheEditor.GotoLineAndCenter(CO.LineNumber);
+        end
+        else
+        begin
+          // if the filenames are different then open the new file
+          if OpenFileOnPath(CO.Filename) then
+          begin
+            TheEditor.GotoLineAndCenter(CO.LineNumber);
+          end;
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -2567,13 +2301,13 @@ begin
       // put on the clipboard as plain text
       Clipboard.AsText := TheEditor.SelText;
       // put on the clipboard as HTML
-      MainForm.expHTML.ExportAsText := False;
-      MainForm.expHTML.ExportRange(TheEditor.Lines, TheEditor.BlockBegin, TheEditor.BlockEnd);
-      MainForm.expHTML.CopyToClipboard;
+      expHTML.ExportAsText := False;
+      expHTML.ExportRange(TheEditor.Lines, TheEditor.BlockBegin, TheEditor.BlockEnd);
+      expHTML.CopyToClipboard;
       // put on the clipboard as RTF
-      MainForm.expRTF.ExportAsText := False;
-      MainForm.expRTF.ExportRange(TheEditor.Lines, TheEditor.BlockBegin, TheEditor.BlockEnd);
-      MainForm.expRTF.CopyToClipboard;
+      expRTF.ExportAsText := False;
+      expRTF.ExportRange(TheEditor.Lines, TheEditor.BlockBegin, TheEditor.BlockEnd);
+      expRTF.CopyToClipboard;
     finally
       Clipboard.Close;
     end;
@@ -2625,63 +2359,389 @@ begin
   TheEditor.SelectDelimited;
 end;
 
-procedure TfrmCodeEdit.AddConstructString(constr:string; x, y : integer);
-var
-  str:string;
-  i,j,tt,curposy,curposx:integer;
-  escaped,fieldexists:boolean;
-  p : TPoint;
+procedure TfrmCodeEdit.DoSaveAs;
 begin
-  if TheEditor.ReadOnly then Exit;
-  if (x <> -1) and (y <> -1) then
+  dlgSave.FileName := FileName;
+  if dlgSave.Execute then
   begin
-    // drag and drop
-    p := TheEditor.PixelsToRowColumn(Point(X, Y));
-//    p.X := 0;
-    TheEditor.SetCaretAndSelection(p, p, p);
-  end;
-  if TheEditor.SelAvail then
-    tt := TheEditor.BlockBegin.x - 1
-  else
-    tt := TheEditor.CaretXY.x - 1; // make it a zero-based column number
-  fieldexists:=false;
-  escaped:=false;
-  str:='';
-  for i:=1 to Length(constr) do
-  begin
-    if escaped then
-    begin
-      if constr[i] = '\' then str := str + '\';
-      if constr[i] = '<' then tt := tt - TheEditor.TabWidth;
-      if constr[i] = '>' then tt := tt + TheEditor.TabWidth;
-      if constr[i] in ['=','<','>'] then
-      begin
-        str := str + #13#10;
-        for j:= 1 to tt do str := str + ' ';
-      end;
-      escaped := false;
-    end else begin
-      if constr[i] = '"' then fieldexists := true;
-      if constr[i] = '\' then
-        escaped := true
-      else
-        str:=str+constr[i];
-    end;
-  end;
-  MainForm.SetFocus;
-  TheEditor.SetFocus;
-  curposy := TheEditor.CaretXY.Y;
-  curposx := tt;
-  TheEditor.SelText := str;
-  if fieldexists then
-  begin
-    TheEditor.CaretXY := Point(curposx, curposy);
-//    TheEditor.CaretXY := Point(TheEditor.CaretXY.X, curposy);
-    NextField;
+    SaveFileAs(dlgSave.FileName);
+    AddRecentFile(dlgSave.FileName);
   end;
 end;
 
-{Event Handlers}
+procedure TfrmCodeEdit.DoSave;
+begin
+  if IsNew then
+    DoSaveAs
+  else
+    SaveFile;
+end;
+
+procedure TfrmCodeEdit.ExecFind;
+begin
+  ShowSearchReplaceDialog(TheEditor, FALSE);
+end;
+
+procedure TfrmCodeEdit.ExecFindNext;
+begin
+  DoSearchReplaceText(TheEditor, FALSE, FALSE);
+End;
+
+procedure TfrmCodeEdit.ExecFindPrev;
+begin
+  DoSearchReplaceText(TheEditor, FALSE, TRUE);
+end;
+
+procedure TfrmCodeEdit.ExecReplace;
+begin
+  ShowSearchReplaceDialog(TheEditor, TRUE);
+end;
+
+function TfrmCodeEdit.CanRedo: boolean;
+begin
+  Result := TheEditor.CanRedo;
+end;
+
+function TfrmCodeEdit.CanFind: boolean;
+begin
+  Result := TheEditor.Lines.Count > 0;
+end;
+
+function TfrmCodeEdit.CanFindNext: boolean;
+begin
+  Result := CanFind and (gsSearchText <> '');
+end;
+
+function TfrmCodeEdit.CanReplace: boolean;
+begin
+  Result := CanFind and not TheEditor.ReadOnly;
+end;
+
+procedure TfrmCodeEdit.ProcedureList;
+var
+  line : Integer;
+  SL : TExploredLanguage;
+  AEF : TSynCustomHighlighter;
+begin
+  AEF := GetActiveEditorHighlighter;
+  SL := elNQC;
+  if FileIsCPP(AEF) then
+    SL := elCpp
+  else if FileIsPascal(AEF) then
+    SL := elPas
+  else if FileIsROPS(AEF) then
+    SL := elPas
+  else if FileIsJava(AEF) then
+    SL := elJava
+  else if FileIsMindScript(AEF) then
+    SL := elMindScript
+  else if FileIsLASM(AEF) then
+    SL := elLASM
+  else if FileIsNBC(AEF) then
+    SL := elNBC
+  else if FileIsNXC(AEF) then
+    SL := elNXC
+  else if FileIsForth(AEF) then
+    SL := elForth;
+  line := TfmProcedureList.ShowForm(SL, TheEditor.Lines);
+  if line <> -1 then
+  begin
+    TheEditor.GotoLineNumber(line);
+    if TheEditor.CanFocus then
+      TheEditor.SetFocus;
+  end;
+end;
+
+procedure TfrmCodeEdit.DoCopyHTML(Sender: TObject);
+var
+  bb, be : TPoint;
+begin
+  if Selected then
+  begin
+    bb := TheEditor.BlockBegin;
+    be := TheEditor.BlockEnd;
+  end
+  else
+  begin
+    bb := Point(1, 1);
+    be := Point(MaxInt, MaxInt);
+  end;
+  Clipboard.Open;
+  try
+    // put on the clipboard as HTML in text format
+    expHTML.ExportAsText := True;
+    expHTML.ExportRange(TheEditor.Lines, bb, be);
+    expHTML.CopyToClipboard;
+    // put on the clipboard as HTML
+    expHTML.ExportAsText := False;
+    expHTML.ExportRange(TheEditor.Lines, bb, be);
+    expHTML.CopyToClipboard;
+  finally
+    Clipboard.Close;
+  end;
+end;
+
+procedure TfrmCodeEdit.DoCopyRTF(Sender: TObject);
+var
+  bb, be : TPoint;
+begin
+  if Selected then
+  begin
+    bb := TheEditor.BlockBegin;
+    be := TheEditor.BlockEnd;
+  end
+  else
+  begin
+    bb := Point(1, 1);
+    be := Point(MaxInt, MaxInt);
+  end;
+  Clipboard.Open;
+  try
+    // put on the clipboard as RTF in text format
+    expRTF.ExportAsText := True;
+    expRTF.ExportRange(TheEditor.Lines, bb, be);
+    expRTF.CopyToClipboard;
+    // put on the clipboard as RTF
+    expRTF.ExportAsText := False;
+    expRTF.ExportRange(TheEditor.Lines, bb, be);
+    expRTF.CopyToClipboard;
+  finally
+    Clipboard.Close;
+  end;
+end;
+
+procedure TfrmCodeEdit.SetCaption(const fname : string);
+begin
+  Caption  := fname;
+end;
+
+procedure TfrmCodeEdit.SetSyntaxHighlighter;
+begin
+  if IsNew then
+  begin
+    if PreferredLanguage = 0 then
+      Self.Highlighter := SynNXCSyn
+    else if PreferredLanguage = 1 then
+      Self.Highlighter := SynNBCSyn;
+  end
+  else
+    Self.Highlighter := GetHighlighterForFile(Filename);
+  if ColorCoding then
+  begin
+    TheEditor.Highlighter := Self.Highlighter;
+  end
+  else
+    TheEditor.Highlighter := nil;
+  expHTML.Highlighter := Self.Highlighter;
+  expRTF.Highlighter  := Self.Highlighter;
+  SetActiveHelpFile;
+end;
+
+procedure TfrmCodeEdit.HookCompProp;
+var
+  HL : TSynCustomHighlighter;
+begin
+  SynNBCCompProp.RemoveEditor(TheEditor);
+  SynNXCCompProp.RemoveEditor(TheEditor);
+  SynNPGCompProp.RemoveEditor(TheEditor);
+  SynRSCompProp.RemoveEditor(TheEditor);
+  SynROPSCompProp.RemoveEditor(TheEditor);
+  scpParams.RemoveEditor(TheEditor);
+
+  HL := Self.Highlighter;
+  if HL = SynNBCSyn then begin
+    SynNBCCompProp.AddEditor(TheEditor);
+    scpParams.AddEditor(TheEditor);
+  end
+  else if HL = SynNXCSyn then begin
+    SynNXCCompProp.AddEditor(TheEditor);
+    scpParams.AddEditor(TheEditor);
+  end
+  else if HL = SynNPGSyn then
+    SynNPGCompProp.AddEditor(TheEditor)
+  else if HL = SynRSSyn then begin
+    SynRSCompProp.AddEditor(TheEditor);
+    scpParams.AddEditor(TheEditor);
+  end
+  else if HL = SynROPSSyn then begin
+    SynROPSCompProp.AddEditor(TheEditor);
+    scpParams.AddEditor(TheEditor);
+  end;
+end;
+
+
+
+
+procedure TfrmCodeEdit.DoLoadAPI(cp : TSynCompletionProposal; aStrings : TStrings);
+var
+  SL : TStrings;
+begin
+  SL := TStringList.Create;
+  try
+    TStringList(SL).Sorted := True;
+    TStringList(SL).Duplicates := dupIgnore;
+    SL.AddStrings(aStrings);
+    AddUserDefinedFunctions(SL);
+    cp.ItemList := SL;
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TfrmCodeEdit.LoadNXCCompProp;
+begin
+  DoLoadAPI(SynNXCCompProp, fNXCAPIBase);
+end;
+
+procedure TfrmCodeEdit.AddUserDefinedFunctions(aStrings: TStrings);
+var
+  i, idx : integer;
+  tmpStr : string;
+begin
+  if Assigned(frmCodeExplorer) then
+  begin
+    for i := 0 to frmCodeExplorer.ProcessedResults.Count - 1 do
+    begin
+      tmpStr := frmCodeExplorer.ProcessedResults[i];
+      idx := Pos('|', tmpStr);
+      Delete(tmpStr, 1, idx);
+      idx := Pos('|', tmpStr);
+      Delete(tmpStr, 1, idx);
+      aStrings.Add(tmpStr);
+    end;
+  end;
+end;
+
+procedure TfrmCodeEdit.SelectLine(lineNo: integer);
+begin
+  if lineNo > -1 then
+  begin
+    TheEditor.BlockBegin := Point(1, lineNo);
+    TheEditor.BlockEnd   := Point(Length(TheEditor.Lines[lineNo-1])+1, lineNo);
+    TheEditor.CaretXY    := TheEditor.BlockBegin;
+  end;
+end;
+
+procedure TfrmCodeEdit.SaveModifiedFiles;
+begin
+  if TheEditor.Modified then
+  begin
+    if IsNew then
+      DoSaveAs
+    else
+      SaveFile;
+  end;
+end;
+
+procedure TfrmCodeEdit.DoDisplayErrors(aShow : boolean);
+begin
+  if aShow then
+    ShowTheErrors
+  else
+    DoHideErrors;
+end;
+
+procedure TfrmCodeEdit.HandleOnCompilerStatusChange(Sender: TObject;
+  const StatusMsg: string);
+begin
+  frmCompStatus.AddMessage(StatusMsg);
+end;
+
+procedure TfrmCodeEdit.HandleOpenStateChanged(Sender: TObject);
+begin
+  UpdateStatusBar;
+end;
+
+procedure TfrmCodeEdit.HandleOnGetVarInfoByID(Sender: TObject;
+  const ID: integer; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
+begin
+  // read offset, size, and vartype from compiler symbol table output
+  if CurrentProgram.Dataspace.Count > ID then
+  begin
+    DSE     := CurrentProgram.Dataspace[ID];
+    offset  := DSE.Offset;
+    size    := DSE.Size;
+    vartype := Ord(DSE.DataType);
+  end;
+end;
+
+procedure TfrmCodeEdit.HandleOnGetVarInfoByName(Sender: TObject;
+  const name: string; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
+  ID : integer;
+begin
+  // read offset, size, and vartype from compiler symbol table output
+  if CurrentProgram.Dataspace.Count > 0 then
+  begin
+    ID := CurrentProgram.Dataspace.IndexOfName(name);
+    if ID <> -1 then
+    begin
+      DSE     := CurrentProgram.Dataspace[ID];
+      offset  := DSE.Offset;
+      size    := DSE.Size;
+      vartype := Ord(DSE.DataType);
+    end;
+  end;
+end;
+
+procedure TfrmCodeEdit.ShowNXTTools;
+begin
+  frmNXTExplorer.Show;
+end;
+
+procedure TfrmCodeEdit.SaveFile;
+begin
+  SaveFileAs(Filename);
+end;
+
+procedure TfrmCodeEdit.SaveFileAs(fname:string);
+var
+  backfname : string;
+begin
+  Filename := fname;
+  IsNew    := false;
+  SetCaption(ExtractFileName(fname));
+  if SaveBackup and FileExists(fname) then
+  begin
+    backfname := ChangeFileExt(fname,'.bak');
+    DeleteFile(backfname);
+    RenameFile(fname,backfname);
+  end;
+  TheEditor.Lines.SaveToFile(fname);
+  TheEditor.Modified := False;
+  actFileSave.Enabled := False;
+  SetSyntaxHighlighter;
+  HookCompProp;
+end;
+
+procedure TfrmCodeEdit.ShowTheErrors;
+begin
+  if TheErrors.Items.Count > 0 then
+  begin
+    barStatus.Panels[1].Text := sErrors;
+    TheErrors.Visible := True;
+    splErrors.Visible := True;
+    TheErrors.ItemIndex:=0;
+    TheErrorsClick(TheErrors);
+  end
+  else
+  begin
+    barStatus.Panels[1].Text := '';
+    TheErrors.Visible := False;
+    splErrors.Visible := False;
+  end;
+end;
+
+procedure TfrmCodeEdit.DoHideErrors;
+begin
+  barStatus.Panels[1].Text := '';
+  TheErrors.Items.Clear;
+  TheErrors.Visible := False;
+  splErrors.Visible := False;
+end;
 
 procedure TfrmCodeEdit.TheErrorsClick(Sender: TObject);
 var
@@ -2702,7 +2762,7 @@ begin
      Val(tmp,lnumb,c);
      break;
     end;
-    if FileIsNBCOrNXCOrNPGOrRICScript(Self) then
+    if FileIsNBCOrNXCOrNPGOrRICScript then
       break;
   end;
   bThisFile := True;
@@ -2727,373 +2787,279 @@ begin
     end
     else
     begin
-      MainForm.OpenFile(str, lnumb);
+      OpenFile(str, lnumb);
     end;
   end;
   if bThisFile then
     TheEditor.SetFocus;
 end;
 
-procedure TfrmCodeEdit.TheEditorKeyPress(Sender: TObject; var Key: Char);
+procedure TfrmCodeEdit.SynMacroRecStateChange(Sender: TObject);
 begin
-  {Ignore <Ctr><Alt> combinations when a macro was added}
-  if Key = Chr(27) then
-    GlobalAbort := True;
+  case SynMacroRec.State of
+    msRecording :
+      barStatus.Panels[1].Text := sRecording;
+  else
+    barStatus.Panels[1].Text := '';
+  end;
 end;
 
-procedure TfrmCodeEdit.TheEditorKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
+procedure TfrmCodeEdit.scpParamsExecute(Kind: SynCompletionType; Sender: TObject;
+  var CurrentInput: String; var x, y: Integer; var CanExecute: Boolean);
 var
-  ctrldown,altdown,shiftdown : boolean;
-  ch : char;
-  i : integer;
-  str,constr : string;
+  locLine, lookup: String;
+  TmpX, savepos, StartX, ParenCounter, NameIdx, TmpLocation : Integer;
+  FoundMatch : Boolean;
+  p, BB, BE : TPoint;
+  SCP : TSynCompletionProposal;
+  AEF : TSynCustomHighlighter;
 begin
-  ctrldown  := (ssCtrl in Shift);
-  altdown   := (ssAlt in Shift);
-  shiftdown := (ssShift in Shift);
-  {Handle <Ctr><Alt> Combinations as macro's}
-{$IFNDEF FPC}
-  ch:=Char(MapVirtualKey(Key,2));
-{$ELSE}
-  ch := #0;
-{$ENDIF}
-  if MacrosOn and ctrldown and altdown and
-     (((ch>='A') and (ch<='Z')) or ((ch>='0') and (ch<='9'))) then
+  AEF := GetActiveEditorHighlighter;
+  NameIdx := -1;
+  SCP := TSynCompletionProposal(Sender);
+  with TBricxccSynEdit(SCP.Editor) do
   begin
-    str:='';
-    if ctrldown then str:=str+'<Ctrl>';
-    if altdown then str:=str+'<Alt>';
-    if shiftdown then str:=str+'<Shift>';
-    str:=str+ch;
-    for i:=1 to macronumb do
+    // get text all the way back to semi-colon from current location
+    p := FindString(';', True, True);
+    BB := BlockBegin;
+    BE := BlockEnd;
+    try
+      BlockBegin := p;
+      BlockEnd   := CaretXY;
+      locline := SelText;
+    finally
+      BlockBegin := BB;
+      BlockEnd := BE;
+    end;
+
+    //go back from the cursor and find the first open paren
+    TmpX := Length(locLine);
+    FoundMatch := False;
+    TmpLocation := 0;
+    while (TmpX > 0) and not(FoundMatch) do
     begin
-      if Pos(str,Macros[i]) = 1 then
+      if locLine[TmpX] = ',' then
       begin
-        constr:=Copy(Macros[i],Length(str)+2,1000);
-        AddConstructString(constr);
-        Key:=0;
-        break;
+        inc(TmpLocation);
+        dec(TmpX);
+      end else if locLine[TmpX] = ')' then
+      begin
+        //We found a close, go till it's opening paren
+        ParenCounter := 1;
+        dec(TmpX);
+        while (TmpX > 0) and (ParenCounter > 0) do
+        begin
+          if locLine[TmpX] = ')' then inc(ParenCounter)
+          else if locLine[TmpX] = '(' then dec(ParenCounter);
+          dec(TmpX);
+        end;
+        if TmpX > 0 then dec(TmpX);  //eat the open paren
+      end else if locLine[TmpX] = '(' then
+      begin
+        //we have a valid open paren, lets see what the word before it is
+        StartX := TmpX;
+        while (TmpX > 0) and not(locLine[TmpX] in TSynValidStringChars) do
+          Dec(TmpX);
+        if TmpX > 0 then
+        begin
+          SavePos := TmpX;
+          while (TmpX > 0) and (locLine[TmpX] in TSynValidStringChars) do
+            dec(TmpX);
+          inc(TmpX);
+          lookup := Copy(locLine, TmpX, SavePos - TmpX + 1);
+          if FileIsNXC(AEF) then
+            NameIdx := NXCCodeCompIndex(lookup)
+          else if FileIsNBC(AEF) then
+            NameIdx := NBCCodeCompIndex(lookup)
+          else if FileIsRICScript(AEF) then
+            NameIdx := RICScriptCodeCompIndex(lookup)
+          else if FileIsROPS(AEF) then
+            NameIdx := ROPSCodeCompIndex(lookup);
+          FoundMatch := NameIdx > -1;
+          if not(FoundMatch) then
+          begin
+            TmpX := StartX;
+            dec(TmpX);
+          end;
+        end;
+      end else dec(TmpX)
+    end;
+  end;
+
+  CanExecute := FoundMatch;
+
+  if CanExecute then
+  begin
+    SCP.Form.CurrentIndex := TmpLocation;
+    if lookup <> SCP.CurrentString then
+    begin
+      SCP.ItemList.Clear;
+      // add params
+      if FileIsNXC(AEF) then begin
+        AddNXCCodeCompParams(SCP.ItemList, NameIdx);
+        SCP.ParamSepString := ', ';
+      end
+      else if FileIsNBC(AEF) then begin
+        AddNBCCodeCompParams(SCP.ItemList, NameIdx);
+        SCP.ParamSepString := ', ';
+      end
+      else if FileIsRICScript(AEF) then begin
+        AddRICScriptCodeCompParams(SCP.ItemList, NameIdx);
+        SCP.ParamSepString := ', ';
+      end
+      else if FileIsROPS(AEF) then begin
+        AddROPSCodeCompParams(SCP.ItemList, NameIdx);
+        SCP.ParamSepString := '; ';
       end;
     end;
   end
-  else if ctrldown and (Key = $0D) then begin
-    OpenFileAtCursor;
-  end;
-end;
-
-
-procedure TfrmCodeEdit.FormActivate(Sender: TObject);
-begin
-  UpdateStatusBar;
-  if TheErrors.Visible then
-    MainForm.barStatus.Panels[1].Text := sErrors
   else
-    MainForm.barStatus.Panels[1].Text := '';
-  MainForm.ChangeActiveEditor;
+    SCP.ItemList.Clear;
 end;
 
-procedure TfrmCodeEdit.FormCloseQuery(Sender: TObject;
-  var CanClose: Boolean);
+procedure TfrmCodeEdit.FormCreate(Sender: TObject);
 begin
-  // 9/13/2001 JCH added id_No case to fix problems when closing main form
-  // while files are modified.  Added check for assigned(MainForm) to protect
-  // against access violations
-  if TheEditor.Modified then
-  begin
-    BringToFront;
-    case MessageDlg(Format(S_FileChanged, [Caption]),
-            mtConfirmation, [mbYes, mbNo, mbCancel], 0) of
-      id_Yes: if Assigned(MainForm) then MainForm.DoSave(Self);
-      id_No: TheEditor.Modified := False;
-      id_Cancel: CanClose:=false;
-    end;
-  end;
-  if AppIsClosing and not CanClose then
-    AppIsClosing := False;
-end;
-
-procedure TfrmCodeEdit.FormClose(Sender: TObject; var Action: TCloseAction);
-begin
-  if Assigned(MainForm) then
-  begin
-    MainForm.barStatus.Panels[0].Text := '';
-    MainForm.barStatus.Panels[4].Text := '';
-    MainForm.barStatus.Panels[5].Text := '';
-  end;
-  Action := caFree;
+  fNXCAPIBase := TStringList.Create;
+  CreateCompPropComponents;
+  CreateMainFormHighlighters;
+  CreatePascalScriptComponents;
+  CreateMiscSynEditComponents;
+  Application.OnHelp := HandleOnHelp;
+  CreateSpiritPlugins;
+  pnlCodeExplorer.DockOrientation := doVertical;
+  AppIsClosing := False;
+  newcount := 0;
+  // set help file
+  Application.HelpFile := ProgramDir + 'Help\BricxCC.HLP';
+  HelpFile := Application.HelpFile;
+  // initialize the highlighter data
+  GetSortedHighlighters(Self, Highlighters, False);
+  dlgOpen.Filter := GetHighlightersFilter(Highlighters) + SFilterAllFiles;
+  dlgSave.Filter := dlgOpen.Filter;
+  PopulateROPSCompProp(SynROPSCompProp);
+  LoadNBCCodeComplete(SynNBCCompProp.ItemList);
+  LoadNPGCodeComplete(SynNPGCompProp.ItemList);
+  LoadRSCodeComplete(SynRSCompProp.ItemList);
+  CreateTheEditor;
+  SetValuesFromPreferences;
+  SetSyntaxHighlighter;
+  SynAutoComp.AddEditor(TheEditor);
+  SynMacroRec.AddEditor(TheEditor);
+  // set the active (only) editor
+  SetActiveEditor(TheEditor);
 end;
 
 procedure TfrmCodeEdit.FormShow(Sender: TObject);
 begin
+  {Show statusbar}
+  barStatus.Visible  := ShowStatusbar;
+  frmCodeExplorer.OnFinishedProcessing := HandleExplorerFinished;
+  if CodeExplorerSettings.AutoShowExplorer then
+    ShowCodeExplorer;
+  // hook up the template form event handler
+  if Assigned(ConstructForm) then
+    ConstructForm.OnAddConstruct := HandleOnAddConstruct;
+  {Add the Templates}
+  if ShowTemplateForm then
+    ShowTemplates(False);
+  UpdateCompilerMenu;
+  // hook macro manager
+  frmMacroManager.MacroLibrary.MacroRecorder := SynMacroRec;
+  if FileExists(DefaultMacroLibrary) then
+    frmMacroManager.CurrentLibraryPath := DefaultMacroLibrary;
+  ConfigureOtherFirmwareOptions;
   PopupMenu := ConstructForm.ConstructMenu;
   TheEditor.Font.Name := FontName;
   TheEditor.Font.Size := FontSize;
 end;
 
-procedure TfrmCodeEdit.FormCreate(Sender: TObject);
+procedure TfrmCodeEdit.ceExecute(Sender: TPSScript);
 begin
-  CreatePopupMenu;
-  CreateTheEditor;
-  SetValuesFromPreferences;
-  SetSyntaxHighlighter;
-  MainForm.SynAutoComp.AddEditor(TheEditor);
-  MainForm.SynMacroRec.AddEditor(TheEditor);
+  ce.SetVarToInstance('SELF', Self);
+  ce.SetVarToInstance('APPLICATION', Application);
 end;
 
-procedure TfrmCodeEdit.SetSyntaxHighlighter;
+procedure TfrmCodeEdit.ceCompile(Sender: TPSScript);
 begin
-  if IsNew then
+  //  Sender.AddMethod(Self, @TEditor.Writeln, 'procedure Writeln(s: string)');
+  //  Sender.AddMethod(Self, @TEditor.Readln, 'procedure readln(var s: string)');
+    Sender.AddRegisteredVariable('Self', 'TForm');
+    Sender.AddRegisteredVariable('Application', 'TApplication');
+end;
+
+procedure TfrmCodeEdit.ceIdle(Sender: TObject);
+begin
+  Application.HandleMessage;
+  if FResume then
   begin
-    if LocalFirmwareType = ftStandard then
+    FResume := False;
+    ce.Resume;
+    FActiveLine := 0;
+    TheEditor.Refresh;
+  end;
+end;
+
+procedure TfrmCodeEdit.ceAfterExecute(Sender: TPSScript);
+begin
+  FActiveLine := 0;
+end;
+
+procedure TfrmCodeEdit.ceBreakpoint(Sender: TObject; const FileName: String;
+  Position, Row, Col: Cardinal);
+begin
+  FActiveLine := Row;
+  if (FActiveLine < TheEditor.TopLine + 2) or
+     (FActiveLine > TheEditor.TopLine + TheEditor.LinesInWindow - 2) then
+  begin
+    TheEditor.TopLine := FActiveLine - (TheEditor.LinesInWindow div 2);
+  end;
+  TheEditor.CaretY := FActiveLine;
+  TheEditor.CaretX := 1;
+  TheEditor.Refresh;
+end;
+
+procedure TfrmCodeEdit.ceLineInfo(Sender: TObject; const FileName: String;
+  Position, Row, Col: Cardinal);
+begin
+  if ce.Exec.DebugMode <> dmRun then
+  begin
+    FActiveLine := Row;
+    if (FActiveLine < TheEditor.TopLine + 2) or
+       (FActiveLine > TheEditor.TopLine + TheEditor.LinesInWindow - 2) then
     begin
-      if PreferredLanguage = 0 then
-      begin
-        if LocalBrickType = SU_NXT then
-          Self.Highlighter := MainForm.SynNXCSyn
-        else
-          Self.Highlighter := MainForm.SynNQCSyn;
-      end
-      else if PreferredLanguage = 1 then
-        Self.Highlighter := MainForm.SynMindScriptSyn
-      else if PreferredLanguage = 2 then
-        Self.Highlighter := MainForm.SynLASMSyn
-      else if PreferredLanguage = 3 then
-        Self.Highlighter := MainForm.SynNBCSyn
-      else
-        Self.Highlighter := MainForm.SynNXCSyn;
-    end
-    else if LocalFirmwareType = ftBrickOS then
-      Self.Highlighter := MainForm.SynCppSyn
-    else if LocalFirmwareType = ftPBForth then
-      Self.Highlighter := MainForm.SynForthSyn
-    else if LocalFirmwareType = ftLeJOS then
-      Self.Highlighter := MainForm.SynJavaSyn;
-  end
-  else
-    Self.Highlighter := GetHighlighterForFile(Filename);
-  if ColorCoding then
-  begin
-    TheEditor.Highlighter := Self.Highlighter;
-  end
-  else
-    TheEditor.Highlighter := nil;
-  MainForm.expHTML.Highlighter := Self.Highlighter;
-  MainForm.expRTF.Highlighter  := Self.Highlighter;
-  SetActiveHelpFile;
-end;
-
-procedure DoSearchReplaceText(aEditor : TSynEdit; AReplace, ABackwards: boolean);
-var
-  Options: TSynSearchOptions;
-begin
-  if AReplace then
-    Options := [ssoPrompt, ssoReplace, ssoReplaceAll]
-  else
-    Options := [];
-  if ABackwards then
-    Include(Options, ssoBackwards);
-  if gbSearchCaseSensitive then
-    Include(Options, ssoMatchCase);
-  if not localSearchFromCaret then
-    Include(Options, ssoEntireScope);
-  if gbSearchSelectionOnly then
-    Include(Options, ssoSelectedOnly);
-  if gbSearchWholeWords then
-    Include(Options, ssoWholeWord);
-{$IFNDEF FPC}
-  if gbSearchRegex then
-    aEditor.SearchEngine := MainForm.SynEditRegexSearch
-  else
-    aEditor.SearchEngine := MainForm.SynEditSearch;
-{$ENDIF}
-  if aEditor.SearchReplace(gsSearchText, gsReplaceText, Options) = 0 then
-  begin
-{$IFNDEF FPC}
-    MessageBeep(MB_ICONASTERISK);
-{$ENDIF}
-    if ssoBackwards in Options then
-      aEditor.BlockEnd := aEditor.BlockBegin
-    else
-      aEditor.BlockBegin := aEditor.BlockEnd;
-    aEditor.CaretXY := aEditor.BlockBegin;
+      TheEditor.TopLine := FActiveLine - (TheEditor.LinesInWindow div 2);
+    end;
+    TheEditor.CaretY := FActiveLine;
+    TheEditor.CaretX := 1;
+    TheEditor.Refresh;
   end;
-
-  if ConfirmReplaceDialog <> nil then
-    ConfirmReplaceDialog.Free;
 end;
 
-procedure ShowSearchReplaceDialog(aEditor : TSynEdit; AReplace: boolean);
+function TfrmCodeEdit.ceNeedFile(Sender: TObject; const OrginFileName: String;
+  var FileName, Output: String): Boolean;
 var
-  dlg: TTextSearchDialog;
+  Path: string;
+  F: TFileStream;
 begin
-  if AReplace then
-    dlg := TTextReplaceDialog.Create(nil)
+  Result := False;
+  if Filename <> '' then
+    Path := ExtractFilePath(Filename)
   else
-    dlg := TTextSearchDialog.Create(nil);
-  with dlg do
+    Path := ExtractFilePath(ParamStr(0));
+  Path := Path + FileName;
+  F := TFileStream.Create(Path, fmOpenRead or fmShareDenyWrite);
   try
-    // assign search options
-    SearchBackwards := gbSearchBackwards;
-    SearchCaseSensitive := gbSearchCaseSensitive;
-    SearchFromCursor := gbSearchFromCaret;
-    SearchInSelectionOnly := gbSearchSelectionOnly;
-    // start with last search text
-    SearchText := gsSearchText;
-    if gbSearchTextAtCaret then begin
-      // if something is selected search for that text
-      if aEditor.SelAvail and (aEditor.BlockBegin.Y = aEditor.BlockEnd.Y)
-      then
-        SearchText := aEditor.SelText
-      else
-        SearchText := aEditor.GetWordAtRowCol(aEditor.CaretXY);
-    end;
-    SearchTextHistory := gsSearchTextHistory;
-    if AReplace then with dlg as TTextReplaceDialog do begin
-      ReplaceText := gsReplaceText;
-      ReplaceTextHistory := gsReplaceTextHistory;
-    end;
-    SearchWholeWords := gbSearchWholeWords;
-    SearchRegularExpression := gbSearchRegex;
-    if ShowModal = mrOK then begin
-      gbSearchBackwards := SearchBackwards;
-      gbSearchCaseSensitive := SearchCaseSensitive;
-      gbSearchFromCaret := SearchFromCursor;
-      gbSearchSelectionOnly := SearchInSelectionOnly;
-      gbSearchWholeWords := SearchWholeWords;
-      gbSearchRegex := SearchRegularExpression;
-      gsSearchText := SearchText;
-      gsSearchTextHistory := SearchTextHistory;
-      if AReplace then with dlg as TTextReplaceDialog do begin
-        gsReplaceText := ReplaceText;
-        gsReplaceTextHistory := ReplaceTextHistory;
-      end;
-      localSearchFromCaret := gbSearchFromCaret;
-      if gsSearchText <> '' then begin
-        DoSearchReplaceText(aEditor, AReplace, gbSearchBackwards);
-        localSearchFromCaret := True;
-      end;
-    end;
+    SetLength(Output, F.Size);
+    F.Read(Output[1], Length(Output));
   finally
-    dlg.Free;
+    F.Free;
   end;
+  Result := True;
 end;
 
-procedure TfrmCodeEdit.ExecFind;
+function TfrmCodeEdit.HandleOnHelp(Command: Word; Data: Integer;
+  var CallHelp: Boolean): Boolean;
 begin
-  ShowSearchReplaceDialog(TheEditor, FALSE);
-end;
-
-procedure TfrmCodeEdit.ExecFindNext;
-begin
-  DoSearchReplaceText(TheEditor, FALSE, FALSE);
-End;
-
-procedure TfrmCodeEdit.ExecFindPrev;
-begin
-  DoSearchReplaceText(TheEditor, FALSE, TRUE);
-end;
-
-procedure TfrmCodeEdit.ExecReplace;
-begin
-  ShowSearchReplaceDialog(TheEditor, TRUE);
-end;
-
-procedure TfrmCodeEdit.TheEditorReplaceText(Sender: TObject; const ASearch,
-  AReplace: String; Line, Column: Integer; var Action: TSynReplaceAction);
-var
-  APos: TPoint;
-  EditRect: TRect;
-begin
-  if ASearch = AReplace then
-    Action := raSkip
-  else begin
-    APos := Point(Column, Line);
-    APos := TheEditor.ClientToScreen(TheEditor.RowColumnToPixels(APos));
-    EditRect := ClientRect;
-    EditRect.TopLeft := ClientToScreen(EditRect.TopLeft);
-    EditRect.BottomRight := ClientToScreen(EditRect.BottomRight);
-
-    if ConfirmReplaceDialog = nil then
-      ConfirmReplaceDialog := TConfirmReplaceDialog.Create(Application);
-    ConfirmReplaceDialog.PrepareShow(EditRect, APos.X, APos.Y,
-      APos.Y + TheEditor.LineHeight, ASearch);
-    case ConfirmReplaceDialog.ShowModal of
-      mrYes: Action := raReplace;
-      mrYesToAll: Action := raReplaceAll;
-      mrNo: Action := raSkip;
-      else Action := raCancel;
-    end;
-  end;
-end;
-
-procedure TfrmCodeEdit.TheEditorStatusChange(Sender: TObject;
-  Changes: TSynStatusChanges);
-begin
-  // Note: scAll for new file loaded
-  // caret position has changed
-  if Changes * [scAll, scCaretX, scCaretY] <> [] then begin
-    UpdatePositionOnStatusBar;
-  end;
-  // InsertMode property has changed
-  if Changes * [scAll, scInsertMode, scReadOnly] <> [] then begin
-    UpdateModeOnStatusBar;
-  end;
-  // Modified property has changed
-  if Changes * [scAll, scModified] <> [] then
-    UpdateModifiedOnStatusBar;
-end;
-
-procedure TfrmCodeEdit.UpdateStatusBar;
-begin
-  UpdatePositionOnStatusBar;
-  UpdateModeOnStatusBar;
-  UpdateModifiedOnStatusBar;
-end;
-
-procedure TfrmCodeEdit.UpdatePositionOnStatusBar;
-var
-  p: TPoint;
-begin
-  p := TheEditor.CaretXY;
-  MainForm.barStatus.Panels[0].Text := Format('%6d:%3d', [GetLineNumber(p.Y), p.X]);
-end;
-
-procedure TfrmCodeEdit.UpdateModeOnStatusBar;
-const
-  InsertModeStrs: array[boolean] of string = (S_Overwrite, S_Insert);
-begin
-  if TheEditor.ReadOnly then
-    MainForm.barStatus.Panels[4].Text := S_ReadOnly
-  else
-    MainForm.barStatus.Panels[4].Text := InsertModeStrs[TheEditor.InsertMode];
-end;
-
-procedure TfrmCodeEdit.UpdateModifiedOnStatusBar;
-const
-  ModifiedStrs: array[boolean] of string = ('', S_Modified);
-begin
-  MainForm.barStatus.Panels[5].Text := ModifiedStrs[TheEditor.Modified];
-end;
-
-function TfrmCodeEdit.CanRedo: boolean;
-begin
-  Result := TheEditor.CanRedo;
-end;
-
-function TfrmCodeEdit.CanFind: boolean;
-begin
-  Result := TheEditor.Lines.Count > 0;
-end;
-
-function TfrmCodeEdit.CanFindNext: boolean;
-begin
-  Result := CanFind and (gsSearchText <> '');
-end;
-
-function TfrmCodeEdit.CanReplace: boolean;
-begin
-  Result := CanFind and not TheEditor.ReadOnly;
 end;
 
 procedure TfrmCodeEdit.SetValuesFromPreferences;
@@ -3200,7 +3166,7 @@ begin
   else
     TheEditor.ScrollBars := ssVertical;
   end;
-  TheEditor.Color            := EditorColor;
+  TheEditor.Color                    := EditorColor;
   TheEditor.SelectedColor.Foreground := SelectionForeground;
   TheEditor.SelectedColor.Background := SelectionBackground;
   TheEditor.StructureLineColor       := StructureColor;
@@ -3218,1664 +3184,433 @@ begin
   TheEditor.Gutter.ShowLineNumbers := ShowLineNumbers;
   TheEditor.Gutter.ZeroStart       := ZeroStart;
   TheEditor.Gutter.UseFontStyle    := UseFontStyle;
-  TheEditor.Keystrokes.Assign(PrefForm.Keystrokes);
+//  TheEditor.Keystrokes.Assign(PrefForm.Keystrokes);
   AddEditorExpertCommands(TheEditor);
 end;
 
-procedure TfrmCodeEdit.TheEditorGutterClick(Sender: TObject; X, Y,
-  Line: Integer; mark: TSynEditMark);
+procedure TfrmCodeEdit.HandleExplorerFinished(Sender: TObject);
 begin
-  if mark <> nil then
-    TheEditor.ClearBookMark(mark.BookmarkNumber);
+  if FileIsNXC then
+    LoadNXCCompProp;
 end;
 
-procedure TfrmCodeEdit.TheEditorPlaceBookmark(Sender: TObject;
-  var Mark: TSynEditMark);
+procedure TfrmCodeEdit.HandleOnAddConstruct(Sender : TObject;
+  const aTemplate : string; const aX, aY : integer);
 begin
-//
+  AddConstructString(aTemplate, aX, aY);
 end;
 
-procedure TfrmCodeEdit.TheEditorClearBookmark(Sender: TObject;
-  var Mark: TSynEditMark);
+procedure TfrmCodeEdit.ShowCodeExplorer;
 begin
-//
+  frmCodeExplorer.Show;
+  pnlCodeExplorer.Visible := True;
+  splCodeExplorer.Visible := True;
+  frmCodeExplorer.FormShow(Self);
 end;
 
-procedure TfrmCodeEdit.pmnuEditorPopup(Sender: TObject);
+procedure TfrmCodeEdit.ShowTemplates(bSave : boolean);
 var
-  i, j : integer;
-  M : TMenuItem;
+  bVisible : boolean;
 begin
-  mniFindDeclaration.Visible := CanFindDeclaration;
-  mniOpenFileAtCursor.Enabled := True;
-  lmiEditUndo.Enabled      := CanUndo;
-  lmiEditRedo.Enabled      := CanRedo;
-  lmiEditCut.Enabled       := CanCut;
-  lmiEditCopy.Enabled      := Selected;
-  lmiEditPaste.Enabled     := CanPaste;
-  lmiEditDelete.Enabled    := lmiEditCut.Enabled;
-  lmiEditSelectAll.Enabled := True;
-  lmiCopySpecial.Enabled   := True;
-  lmiCopyHTML.Enabled      := True;
-  lmiCopyRTF.Enabled       := True;
-  mniToggleBreakpoint.Enabled := FileIsROPS(Self);
-  if Assigned(TheEditor.Marks) then
+  ConstructForm.ActiveLanguageIndex := ActiveLanguageIndex;
+  ConstructForm.Rebuild(bSave);
+  ConstructForm.Show;
+  ConstructForm.FormShow(Self);
+  bVisible := pnlCodeExplorer.VisibleDockClientCount > 0;
+  pnlCodeExplorer.Visible := bVisible;
+  splCodeExplorer.Visible := bVisible;
+end;
+
+const
+  K_COMP_TRANSFER_PREFIX = 'mniCompilerXfer';
+
+procedure TfrmCodeEdit.mniCompileClick(Sender: TObject);
+begin
+  ConfigureTransferMenuItemVisibility(CompXferList, mniCompile, K_COMP_TRANSFER_PREFIX);
+end;
+
+procedure TfrmCodeEdit.UpdateCompilerMenu;
+var
+  i : integer;
+  MI : TMenuItem;
+  TI : TTransferItem;
+begin
+  // remove all compile menu transfer menu items first
+  for i := mniCompile.Count - 1 downto 0 do
   begin
-    for i := 0 to mniToggleBookmarks.Count - 1 do
+    MI := TMenuItem(mniCompile.Items[i]);
+    if Pos(K_COMP_TRANSFER_PREFIX, MI.Name) = 1 then
     begin
-      M := mniToggleBookmarks.Items[i];
-      M.Checked := False;
-      for j := 0 to TheEditor.Marks.Count - 1 do
-      begin
-        if TheEditor.Marks[j].BookmarkNumber = M.Tag then
-        begin
-          M.Checked := True;
-          Break;
-        end;
-      end;
+      MI.Free;
     end;
-    for i := 0 to mniGotoBookmarks.Count - 1 do
+  end;
+  mniCompSep.Visible := CompXferList.Count > 0;
+  // now add new ones
+  for i := 0 to CompXferList.Count - 1 do
+  begin
+    TI := TTransferItem(CompXferList[i]);
+    MI := TMenuItem.Create(mniCompile);
+    MI.Name := K_COMP_TRANSFER_PREFIX + IntToStr(i);
+    MI.OnClick := HandleCompXferClick;
+    MI.Caption := TI.Title;
+    MI.Tag := i;
+    mniCompile.Add(MI);
+  end;
+end;
+
+procedure TfrmCodeEdit.ConfigureOtherFirmwareOptions;
+begin
+  SetFilterIndexFromLanguage;
+end;
+
+procedure TfrmCodeEdit.AddConstructString(constr:string; x, y : integer);
+var
+  str:string;
+  i,j,tt,curposy,curposx:integer;
+  escaped,fieldexists:boolean;
+  p : TPoint;
+begin
+  if TheEditor.ReadOnly then Exit;
+  if (x <> -1) and (y <> -1) then
+  begin
+    // drag and drop
+    p := TheEditor.PixelsToRowColumn(Point(X, Y));
+//    p.X := 0;
+    TheEditor.SetCaretAndSelection(p, p, p);
+  end;
+  if TheEditor.SelAvail then
+    tt := TheEditor.BlockBegin.x - 1
+  else
+    tt := TheEditor.CaretXY.x - 1; // make it a zero-based column number
+  fieldexists:=false;
+  escaped:=false;
+  str:='';
+  for i:=1 to Length(constr) do
+  begin
+    if escaped then
     begin
-      M := mniGotoBookmarks.Items[i];
-      M.Checked := False;
-      for j := 0 to TheEditor.Marks.Count - 1 do
+      if constr[i] = '\' then str := str + '\';
+      if constr[i] = '<' then tt := tt - TheEditor.TabWidth;
+      if constr[i] = '>' then tt := tt + TheEditor.TabWidth;
+      if constr[i] in ['=','<','>'] then
       begin
-        if TheEditor.Marks[j].BookmarkNumber = M.Tag then
-        begin
-          M.Checked := True;
-          Break;
-        end;
+        str := str + #13#10;
+        for j:= 1 to tt do str := str + ' ';
+      end;
+      escaped := false;
+    end else begin
+      if constr[i] = '"' then fieldexists := true;
+      if constr[i] = '\' then
+        escaped := true
+      else
+        str:=str+constr[i];
+    end;
+  end;
+//  MainForm.SetFocus;
+  TheEditor.SetFocus;
+  curposy := TheEditor.CaretXY.Y;
+  curposx := tt;
+  TheEditor.SelText := str;
+  if fieldexists then
+  begin
+    TheEditor.CaretXY := Point(curposx, curposy);
+//    TheEditor.CaretXY := Point(TheEditor.CaretXY.X, curposy);
+    NextField;
+  end;
+end;
+
+function TfrmCodeEdit.ActiveLanguageName : string;
+var
+  SCH : TSynCustomHighlighter;
+begin
+  Result := PreferredLanguageName;
+  SCH := TheEditor.Highlighter;
+  if not Assigned(SCH) then
+    SCH := GetHighlighterForFile(Filename);
+  if Assigned(SCH) then
+    Result := SCH.LanguageName;
+end;
+
+function TfrmCodeEdit.ActiveLanguageIndex: integer;
+begin
+  Result := Highlighters.IndexOf(ActiveLanguageName);
+end;
+
+procedure TfrmCodeEdit.HandleCompXferClick(Sender: TObject);
+var
+  i : integer;
+  TI : TTransferItem;
+begin
+  if Sender is TMenuItem then
+  begin
+    i := TMenuItem(Sender).Tag;
+    if (i >= 0) and (i < CompXferList.Count) then
+    begin
+      TI := CompXferList[i];
+      ExecuteTransferItem(TI);
+    end;
+  end;
+end;
+
+procedure TfrmCodeEdit.SetFilterIndexFromLanguage;
+begin
+  if LocalFirmwareType = ftStandard then
+  begin
+    if PreferredLanguage = 0 then
+      dlgOpen.FilterIndex := Highlighters.IndexOf('NXC')+1
+    else if PreferredLanguage = 1 then
+      dlgOpen.FilterIndex := Highlighters.IndexOf('Next Byte Codes')+1;
+    dlgSave.FilterIndex   := dlgOpen.FilterIndex;
+  end;
+end;
+
+procedure TfrmCodeEdit.ExecuteTransferItem(TI : TTransferItem);
+var
+  paramStr : string;
+  BadParam : Boolean;
+begin
+  if not TI.Restrict or
+    (LowerCase(TI.Extension) = LowerCase(ExtractFileExt(Filename))) then
+  begin
+    try
+      BadParam := False;
+      paramStr := ProcessParams(TI.Params);
+    except
+      // silently eat the exception
+      BadParam := True;
+    end;
+    if not BadParam then
+    begin
+      if TI.Close then BrickComm.Close;
+      try
+        DoExecuteCommand(TI.Path, paramStr, LocalCompilerTimeout, TI.WorkingDir, TI.Wait);
+      finally
+        if TI.Close then BrickComm.Open;
       end;
     end;
   end;
 end;
 
-procedure TfrmCodeEdit.lmiEditUndoClick(Sender: TObject);
+function TfrmCodeEdit.ProcessParams(aParams : string) : string;
+var
+  sTmp, sArg : string;
+  cPos, oPos, dPos : Integer;
+  bFoundMacro : Boolean;
 begin
-  Undo;
+  Result := aParams;
+  if Pos(TransferMacros[M_SAVEALL], Result) > 0 then // $SAVEALL
+  begin
+    Result := StringReplace(Result, TransferMacros[M_SAVEALL], '', [rfReplaceAll]);
+    // save all modified editors
+    SaveModifiedFiles;
+  end;
+  if Pos(TransferMacros[M_SAVE], Result) > 0 then // $SAVE
+  begin
+    Result := StringReplace(Result, TransferMacros[M_SAVE], '', [rfReplaceAll]);
+    // save current editor
+    if TheEditor.Modified or IsNew then
+      DoSave;
+  end;
+  if Pos(TransferMacros[M_COL], Result) > 0 then // $COL
+  begin
+    sTmp := IntToStr(TheEditor.CaretX);
+    Result := StringReplace(Result, TransferMacros[M_COL], sTmp, [rfReplaceAll]);
+  end;
+  if Pos(TransferMacros[M_ROW], Result) > 0 then // $ROW
+  begin
+    sTmp := IntToStr(TheEditor.CaretY);
+    Result := StringReplace(Result, TransferMacros[M_ROW], sTmp, [rfReplaceAll]);
+  end;
+  if Pos(TransferMacros[M_CURTOKEN], Result) > 0 then // $CURTOKEN
+  begin
+    sTmp := TheEditor.WordAtCursor;
+    Result := StringReplace(Result, TransferMacros[M_CURTOKEN], sTmp, [rfReplaceAll]);
+  end;
+  if Pos(TransferMacros[M_EDNAME], Result) > 0 then // $EDNAME
+  begin
+    sTmp := FileName;
+    Result := StringReplace(Result, TransferMacros[M_EDNAME], sTmp, [rfReplaceAll]);
+  end;
+  if Pos(TransferMacros[M_PORT], Result) > 0 then // $PORT
+  begin
+//    sTmp := LocalPort;
+    sTmp := BrickComm.FullPortName;
+    Result := StringReplace(Result, TransferMacros[M_PORT], sTmp, [rfReplaceAll]);
+  end;
+  if Pos(TransferMacros[M_TARGET], Result) > 0 then // $TARGET
+  begin
+    sTmp := GetTarget;
+    Result := StringReplace(Result, TransferMacros[M_TARGET], sTmp, [rfReplaceAll]);
+  end;
+  // process macros that take arguments
+  repeat
+    bFoundMacro := False;
+    cPos := Pos(')', Result);
+    if cPos > 0 then
+    begin
+      sTmp := Copy(Result, 1, cPos-1);
+      oPos := LastDelimiter('(', sTmp);
+      if oPos > 0 then
+      begin
+        sTmp := Copy(sTmp, 1, oPos-1);
+        dPos := LastDelimiter('$', sTmp);
+        if dPos > 0 then
+        begin
+          // check for Macro
+          sTmp := Copy(sTmp, dPos, oPos-dPos) + '()';
+          sArg := Copy(Result, oPos+1, cPos-oPos-1); // argument
+          if sTmp = TransferMacros[M_PATH] then // $PATH()
+          begin
+            bFoundMacro := True;
+            sTmp := ExtractFilePath(sArg);
+          end
+          else if sTmp = TransferMacros[M_NAME] then // $NAME()
+          begin
+            bFoundMacro := True;
+            sTmp := ExtractFileName(sArg);
+          end
+          else if sTmp = TransferMacros[M_NAMEONLY] then // $NAMEONLY()
+          begin
+            bFoundMacro := True;
+            sTmp := ChangeFileExt(ExtractFileName(sArg), '');
+          end
+          else if sTmp = TransferMacros[M_EXT] then // $EXT()
+          begin
+            bFoundMacro := True;
+            sTmp := ExtractFileExt(sArg);
+          end
+          else if sTmp = TransferMacros[M_PROMPT] then // $PROMPT()
+          begin
+            bFoundMacro := True;
+            sTmp := sArg;
+            if not InputQuery(sEnterData, sEnterRunParams, sTmp) then
+              Abort;
+          end;
+          if bFoundMacro then
+            Result := Copy(Result, 1, dPos-1) + sTmp + Copy(Result, cPos+1, Length(Result));
+        end;
+      end;
+    end;
+  until not bFoundMacro;
 end;
 
-procedure TfrmCodeEdit.lmiEditRedoClick(Sender: TObject);
+procedure TfrmCodeEdit.FormActivate(Sender: TObject);
 begin
-  Redo;
+  UpdateStatusBar;
+  if TheErrors.Visible then
+    barStatus.Panels[1].Text := sErrors
+  else
+    barStatus.Panels[1].Text := '';
+  ChangeActiveEditor;
 end;
 
-procedure TfrmCodeEdit.lmiEditCutClick(Sender: TObject);
+procedure TfrmCodeEdit.FormCloseQuery(Sender: TObject;
+  var CanClose: Boolean);
 begin
-  CutSel;
+  if TheEditor.Modified then
+  begin
+    BringToFront;
+    case MessageDlg(Format(S_FileChanged, [Caption]),
+            mtConfirmation, [mbYes, mbNo, mbCancel], 0) of
+      id_Yes: DoSave;
+      id_No: TheEditor.Modified := False;
+      id_Cancel: CanClose := False;
+    end;
+  end;
+  if AppIsClosing and not CanClose then
+    AppIsClosing := False;
 end;
 
-procedure TfrmCodeEdit.lmiEditCopyClick(Sender: TObject);
+procedure TfrmCodeEdit.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
-  CopySel;
-end;
-
-procedure TfrmCodeEdit.lmiEditPasteClick(Sender: TObject);
-begin
-  Paste;
-end;
-
-procedure TfrmCodeEdit.lmiEditDeleteClick(Sender: TObject);
-begin
-  DeleteSel;
-end;
-
-procedure TfrmCodeEdit.lmiEditSelectAllClick(Sender: TObject);
-begin
-  SelectAll;
+  if Assigned(ConstructForm) then
+    ConstructForm.SaveTemplateTree;
+  Action := caFree;
 end;
 
 procedure TfrmCodeEdit.FormDestroy(Sender: TObject);
 begin
-{$IFDEF FPC}
-  if Assigned(MainForm) then
-  begin
-    MainForm.SynAutoComp.RemoveEditor(TheEditor);
-    MainForm.SynMacroRec.RemoveEditor(TheEditor);
-    MainForm.SynNQCCompProp.RemoveEditor(TheEditor);
-    MainForm.SynMindScriptCompProp.RemoveEditor(TheEditor);
-    MainForm.SynLASMCompProp.RemoveEditor(TheEditor);
-    MainForm.SynNBCCompProp.RemoveEditor(TheEditor);
-    MainForm.SynNXCCompProp.RemoveEditor(TheEditor);
-    MainForm.SynNPGCompProp.RemoveEditor(TheEditor);
-    MainForm.SynRSCompProp.RemoveEditor(TheEditor);
-    MainForm.SynForthCompProp.RemoveEditor(TheEditor);
-    MainForm.SynCppCompProp.RemoveEditor(TheEditor);
-    MainForm.SynPasCompProp.RemoveEditor(TheEditor);
-    MainForm.SynROPSCompProp.RemoveEditor(TheEditor);
-//    MainForm.SynJavaCompProp.RemoveEditor(TheEditor);
-    MainForm.scpParams.RemoveEditor(TheEditor);
-  end;
-{$ENDIF}
+  SynAutoComp.RemoveEditor(TheEditor);
+  SynMacroRec.RemoveEditor(TheEditor);
+  SynNBCCompProp.RemoveEditor(TheEditor);
+  SynNXCCompProp.RemoveEditor(TheEditor);
+  SynNPGCompProp.RemoveEditor(TheEditor);
+  SynRSCompProp.RemoveEditor(TheEditor);
+  SynROPSCompProp.RemoveEditor(TheEditor);
+  scpParams.RemoveEditor(TheEditor);
   if Assigned(frmCodeExplorer) then
   begin
     frmCodeExplorer.ClearTree;
   end;
   if Assigned(frmMacroManager) and Assigned(frmMacroManager.MacroLibrary) then
     frmMacroManager.MacroLibrary.ActiveEditor := nil;
+  FreeAndNil(fNXCAPIBase);
+  if BrickComm.VerboseMode then
+    Clipboard.AsText := BrickComm.LinkLog;
+  BrickComm.OnOpenStateChanged := nil;
 end;
 
-function GetNBCErrorString(iErrCode : Integer) : string;
+procedure TfrmCodeEdit.ChangeActiveEditor;
 begin
-  case iErrCode of
-    -1 : Result := 'Compile failure.';
-    -2 : Result := 'Download to the NXT failed.';
-    -3 : Result := 'Firmware version on NXT does not match targetted firmware version';
+  frmMacroManager.MacroLibrary.ActiveEditor := TheEditor;
+  // hook up the correct popup menu
+  if ShowTemplatePopup then
+    TheEditor.PopupMenu := ConstructForm.ConstructMenu
   else
-    Result := 'Unknown NBC error code (' + IntToStr(iErrCode) + ')';
-  end;
+    TheEditor.PopupMenu := pmnuEditor;
+  ConstructForm.ActiveLanguageIndex := ActiveLanguageIndex;
+  ConstructForm.Rebuild;
 end;
 
-function GetLASMErrorString(iErrCode : Integer) : string;
-begin
-  case iErrCode of
-    -2 : Result := 'vpbcom.dll not registered or unable to load its DLLs';
-    -3 : Result := 'serial port could not be opened and/or configured';
-    -4 : Result := 'tower not connected';
-    -5 : Result := 'tower not alive';
-    -6 : Result := 'no (or invalid) PBrick response';
-    -7 : Result := 'no firmware in PBrick';
-    -8 : Result := 'battery level too low';
-    -9 : Result := 'wrong brick type';
-    -11 : Result := 'PBrick comms failed';
-    -12 : Result := 'compiler was too busy';
-    -13 : Result := 'no driver found';
-    -14 : Result := 'failed to unlock PBrick';
-  else
-    Result := 'Unknown LCC32 error code (' + IntToStr(iErrCode) + ')';
-  end;
-end;
-
-function GetGNUErrorString(iErrCode : Integer) : string;
-begin
-  case iErrCode of
-    -2 : Result := 'Errors found during compilation';
-  else
-    Result := 'Unknown GNU error code (' + IntToStr(iErrCode) + ')';
-  end;
-end;
-
-function OptionalEquals : string;
-begin
-  Result := '';
-  if not FileIsNQC then
-    Result := '=';
-end;
-
-function TempPath: string;
+procedure TfrmCodeEdit.UpdateSynComponents;
 var
-  i: integer;
-begin
-  SetLength(Result, MAX_PATH);
-{$IFNDEF FPC}
-  i := GetTempPath(Length(Result), PChar(Result));
-  SetLength(Result, i);
-{$ELSE}
-  Result := '~';
-{$ENDIF}
-  IncludeTrailingPathDelimiter(Result);
-end;
-
-function GetIncludeDirectives(aPath : string) : string;
-var
-  p : Integer;
-  s : string;
-  OE : string;
-begin
-  Result := '';
-  OE := OptionalEquals;
-  if FileIsNQC then
-  begin
-    p := Pos(';', aPath);
-    while p > 0 do
-    begin
-      s := Copy(aPath, 1, p - 1);
-      Delete(aPath, 1, p);
-      Result := Result + ' -I' + OE + '"' + s + '"';
-      p := Pos(';', aPath);
-    end;
-  end;
-  Result := Result + ' -I' + OE + '"' + aPath + '"';
-end;
-
-function GetTarget : string;
-begin
-  case LocalBrickType of
-    SU_CYBERMASTER : Result := 'CM';
-    SU_SCOUT       : Result := 'Scout';
-    SU_RCX2        : Result := 'RCX2';
-    SU_SPYBOTIC    : Result := 'Spy';
-    SU_SWAN        : Result := 'Swan';
-    SU_NXT         : Result := 'NXT';
-  else
-                     Result := 'RCX';
-  end;
-end;
-
-function GetCompilerSwitches : string;
-begin
-  Result := CompilerSwitches;
-  if FileIsNQC then
-    Result := Result + ' ' + NQCSwitches
-  else if FileIsMindScriptOrLASM then
-    Result := Result + ' ' + LCCSwitches
-  else if FileIsNBCOrNXCOrNPGOrRICScript then
-    Result := Result + ' ' + NBCSwitches
-  else if FileIsJava then
-    Result := Result + ' ' + JavaSwitches
-  else if FileIsCPP or FileIsPascal then
-    Result := Result + ' ' + CPPSwitches;
-end;
-
-function ProcessMakeCommand(const sFilename, sTempDir, commandstr : string) : string;
-var
-  cmdFile : string;
-begin
-  // switch to unix-style slash for log file path
-  Result := commandstr;
-  if sTempDir <> '' then
-    Result := Result + ' >& "' +
-      StringReplace(sTempdir, '\', '/', [rfReplaceAll]) + 'temp.log"';
-  cmdFile := ChangeFileExt(sFilename, '.cmd');
-  if FileExists(cmdFile) then
-    DeleteFile(cmdFile);
-  with TFileStream.Create(cmdFile, fmCreate) do
-  try
-    Write(PChar(Result)^, Length(Result));
-  finally
-    Free;
-  end;
-  Result := {IncludeTrailingPathDelimiter(CygwinDir) + 'bin\' + }'bash "' + cmdFile + '"';
-end;
-
-function GetProperExtension(aFile : string) : string;
-begin
-  result := ExtractFileExt(aFile);
-  if result = '' then
-  begin
-    case PreferredLanguage of
-      1 : Result := '.lsc';
-      2 : Result := '.asm';
-      3 : Result := '.nbc';
-      4 : Result := '.nxc';
-    else
-      if LocalBrickType = SU_NXT then
-        Result := '.nxc'
-      else
-        Result := '.nqc';
-    end;
-  end;
-end;
-
-function GetCompilerCommandLine(bDownload : Boolean; sTempdir, sIncludePath, sFilename : string) : string;
-var
-  ext, extbin, commandstr, extraSwitches, OE : string;
-  E : TfrmCodeEdit;
-begin
-  E := MainForm.ActiveEditorForm;
-  OE := OptionalEquals;
-  ext := GetProperExtension(sFilename);
-  {Create the command}
-  // default compiler is NQC.
-  if FileIsMindScriptOrLASM(E) then
-    commandstr := LCCPath
-  else if FileIsNBCOrNXCOrNPGOrRICScript(E) then
-    commandstr := NBCPath
-  else if FileIsCPPOrPascalOrJava(E) then
-    commandstr := '/bin/make'
-  else if FileIsNQC(E) then
-    commandstr := NQCPath
-  else
-    commandstr := DefaultPath;
-
-  if FileIsNBCOrNXCOrNPGOrRICScript(E) then
-  begin
-    commandstr := commandstr + ' -Y="' + ChangeFileExt(sFilename, '.sym') + '"';
-    commandstr := commandstr + Format(' -Z%d', [NBCOptLevel]);
-    if NBCMaxErrors > 0 then
-      commandstr := commandstr + Format(' -ER=%d', [NBCMaxErrors]);
-    if EnhancedFirmware then
-      commandstr := commandstr + ' -EF';
-    if NXT2Firmware then
-      commandstr := commandstr + ' -v=120';
-    if IgnoreSysFiles then
-      commandstr := commandstr + ' -n';
-    sIncludePath := sIncludePath + ';' + ExtractFilePath(sFilename);
-  end;
-
-  if FileIsNQC(E) and IncludeSrcInList then
-    commandstr := commandstr + ' -s';
-
-  if not FileIsCPPOrPascalOrJava(E) then
-  begin
-    commandstr := commandstr + ' -E' + OE + '"' + sTempdir + 'temp.log"';
-    commandstr := commandstr + ' -L' + OE + '"' + sTempdir + 'temp.lst"';
-  end;
-
-  if not FileIsCPPOrPascalOrJava(E) then
-    commandstr := commandstr + GetIncludeDirectives(sIncludePath);
-
-  extraSwitches := Trim(GetCompilerSwitches);
-  if extraSwitches <> '' then
-    commandstr := commandstr + ' ' + extraSwitches + ' ';
-
-  if not FileIsCPPOrPascalOrJava(E) then
-    commandstr := commandstr + ' -T' + OE + GetTarget;
-
-  if (FileIsNQC(E) or FileIsNBCOrNXCOrNPGOrRICScript(E)) and SaveBinaryOutput then
-  begin
-    extbin := '.rcx';
-    if FileIsNBC or FileIsNXC then
-      extbin := '.rxe'
-    else if FileIsNPG then
-      extbin := '.rpg'
-    else if FileIsRICScript then
-      extbin := '.ric';
-    commandstr := commandstr + ' -O' + OE + '"' + ChangeFileExt(sFilename, extbin) + '"';
-  end;
-
-  if bDownload then
-  begin
-    if not FileIsCPPOrPascalOrJava(E) then
-    begin
-      commandstr := commandstr + ' -d';
-      // the internal NBC compiler does not need the port
-      if not (FileIsNBCOrNXCOrNPGOrRICScript(E) and UseInternalNBC) then
-        commandstr := commandstr + ' -S' + OptionalEquals + LocalPort;
-      if FileIsNBCOrNXCOrNPGOrRICScript(E) then
-      begin
-        if BrickComm.UseBluetooth then
-          commandstr := commandstr + ' -BT';
-        commandstr := commandstr + ' -N="' + sFilename{ExtractFileName(sFilename)} + '"';
-      end;
-    end
-    else
-      commandstr := commandstr + ' download ';
-  end;
-
-  if not FileIsCPPOrPascalOrJava(E) then
-    commandstr := commandstr + ' "' + sTempdir + 'temp' + ext + '"'
-  else
-    commandstr := commandstr + ' -f"' + ChangeFileExt(sFilename, '.mak') + '" -s';
-
-  if FileIsCPPOrPascalOrJava(E) then
-    commandstr := ProcessMakeCommand(sFilename, sTempdir, commandstr);
-
-  result := commandstr;
-end;
-
-function GetIncludePath(sSaveDir : string) : string;
-var
-  E : TfrmCodeEdit;
-begin
-  Result := '';
-  E := MainForm.ActiveEditorForm;
-  if FileIsNQC(E) then
-  begin
-    if NQCIncludePath <> '' then
-      Result := NQCIncludePath + ';' + sSaveDir
-    else
-      Result := sSaveDir;
-  end
-  else if FileIsMindScriptOrLASM(E) then
-  begin
-    if LCCIncludePath <> '' then
-      Result := IncludeTrailingPathDelimiter(LCCIncludePath)
-    else
-      Result := IncludeTrailingPathDelimiter(sSaveDir);
-  end
-  else if FileIsNBCOrNXCOrNPGOrRICScript(E) then
-  begin
-    if NBCIncludePath <> '' then
-      Result := NBCIncludePath + ';' + sSaveDir
-    else
-      Result := sSaveDir
-  end;
-end;
-
-function GetProjectFiles(aPath : string; ext : string) : string;
-var
-  p : string;
   i : Integer;
+  C : TComponent;
+  TmpOptions : TSynCompletionOptions;
 begin
-  Result := '';
-  p := ChangeFileExt(aPath, '.prj');
-  if FileExists(p) then begin
-    with TStringList.Create do
-    try
-      LoadFromFile(p);
-      for i := 0 to Count - 1 do begin
-        Result := Result + ChangeFileExt(Strings[i], ext) + ' ';
-      end;
-    finally
-      Free;
-    end;
-  end;
-end;
-
-procedure GenerateMakefile(aPath : string; run : Boolean; node : Integer);
-var
-  SL : TStringList;
-  mfStr, tower, prog, exec, addr, port, set_addr : string;
-  E : TfrmCodeEdit;
-begin
-  E := MainForm.ActiveEditorForm;
-  SL := TStringList.Create;
-  try
-    tower := '--tty=';
-    tower := tower + LocalPort;
-    prog := '--program=' + IntToStr(CurrentProgramSlot+1);
-    addr := '--rcxaddr=' + IntToStr(CurrentLNPAddress);
-    port := '--srcport=' + IntToStr(CurrentLNPPort);
-    set_addr := '--node=' + IntToStr(node);
-    if run then
-      exec := '--execute'
-    else
-      exec := '';
-    if not FileIsJava(E) then
-    begin
-      // process BrickOSMakefileTemplate
-      mfStr := StringReplace(BrickOSMakefileTemplate, '%os_root%', BrickOSRoot, [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%project%', ChangeFileExt(ExtractFileName(aPath), ''), [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%project_files%', GetProjectFiles(aPath, '.o'), [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%prog%', prog, [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%tty%', tower, [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%exec%', exec, [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%addr%', addr, [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%port%', port, [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%set_addr%', set_addr, [rfReplaceAll]);
-
-      // if file is pascal then add the pascal tail to the end
-      if FileIsPascal(E) then
-        mfStr := mfStr + K_PASCAL_TAIL;
-    end
-    else
-    begin
-      // process LeJOSMakefileTemplate
-      mfStr := StringReplace(LeJOSMakefileTemplate, '%project%', ChangeFileExt(ExtractFileName(aPath), ''), [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%project_files%', GetProjectFiles(aPath, '.class'), [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%tty%', tower, [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%jdk_dir%', JavaCompilerPath, [rfReplaceAll]);
-      mfStr := StringReplace(mfStr, '%os_root%', LeJOSRoot, [rfReplaceAll]);
-    end;
-    SL.Text := mfStr;
-    SL.SaveToFile(ChangeFileExt(aPath, '.mak'));
-  finally
-    SL.Free;
-  end;
-end;
-
-function ReadAndShowErrorFile(EdFrm : TfrmCodeEdit; const tempDir, ext : string) : boolean;
-var
-  tmpSL : TStrings;
-  i, j, p, lineNo : integer;
-  tmpstr, errMsg, fName, tmpName, testStr : string;
-  bErrorsOrWarnings : boolean;
-begin
-  Result := True;
-  if not (Assigned(MainForm) and Assigned(EdFrm)) then Exit;
-  fName := EdFrm.Filename;
-  {Read the error file and show it}
-  tmpSL := TStringList.Create;
-  try
-    bErrorsOrWarnings := False;
-    if FileExists(tempDir + 'temp.log') then
-    begin
-      tmpSL.LoadFromFile(tempDir + 'temp.log');
-      if (tmpSL.Count > 0) then
-      begin
-        bErrorsOrWarnings := True;
-        {Show the error listing}
-        if FileExists(tempDir + 'temp.log') then
-        begin
-          CodeForm.CodeEdit.Lines.LoadFromFile(tempDir + 'temp.log');
-          CodeForm.Caption := sFullErrors + ' ' + EdFrm.Caption;
-        end;
-        {Show the short errors}
-        EdFrm.TheErrors.Items.Clear;
-        for i := 0 to tmpSL.Count - 1 do
-        begin
-          if FileIsROPS then begin
-            if Pos('[Error]', tmpSL[i]) <> 0 then
-            begin
-              tmpStr := tmpSL[i];
-              System.Delete(tmpStr, 1, 8);
-              p := Pos('(', tmpStr);
-              if p <> 0 then begin
-                errMsg := Copy(tmpStr, 1, p-1);
-                if Pos(fname, errMsg) <> 0 then
-                begin
-                  System.Delete(tmpStr, 1, p);
-                  errMsg := Copy(tmpStr, 1, Pos(':', tmpStr)-1);
-                  lineNo := StrToIntDef(errMsg, -1);
-                  if lineNo <> -1 then
-                  begin
-                    lineNo := GetLineNumber(lineNo);
-                    errMsg := 'line ' + IntToStr(lineNo) + ': ';
-                    p := Pos('):', tmpStr);
-                    if p <> 0 then begin
-                      System.Delete(tmpStr, 1, p+1);
-                      errMsg := errMsg + Trim(tmpStr);
-                      EdFrm.AddErrorMessage(errMsg);
-                      Result := False; // errors exist
-                    end;
-                  end;
-                end;
-              end;
-            end;
-          end
-          else if FileIsCPPOrPascalOrJava then begin
-            // pascal, cpp, and java
-            if Pos('warning:', tmpSL[i]) = 0 then
-            begin
-              // not a warning.
-              p := Pos(':', tmpSL[i]);
-              tmpstr := Copy(tmpSL[i], 1, p-1);
-              if (Pos(tmpstr, fName) <> 0) or
-                 (Pos(ChangeFileExt(ExtractFileName(fName), '.o'), tmpstr) <> 0) then
-              begin
-                tmpstr := Copy(tmpSL[i], p+1, Length(tmpSL[i]));
-                j := i;
-                while (j < tmpSL.Count-1) do begin
-                  p := Pos(':', tmpSL[j+1]);
-                  if Pos(Copy(tmpSL[j+1], 1, p-1), ChangeFileExt(fName, '.o')) = 0 then
-                  begin
-                    // linker error
-                    Break;
-                  end
-                  else if Pos(Copy(tmpSL[j+1], 1, p-1), fName) = 0 then
-                  begin
-                    // the line following the current line is not a new error message
-                    // but, rather, a continuation of this error message
-                    // unless - that is - it starts with the word "make"
-                    if Pos('make', LowerCase(tmpSL[j+1])) <> 1 then
-                      tmpstr := tmpstr + ' ' + tmpSL[j+1];
-                  end
-                  else begin
-                    // the next line is a new error message so break
-                    Break;
-                  end;
-                  Inc(j);
-                end;
-                // tmpstr should be ###: error message
-                // if it doesn't start with a number then ignore the line
-                errMsg := Copy(tmpstr, 1, Pos(':', tmpstr)-1);
-                Delete(tmpstr, 1, Length(errMsg));
-                lineNo := StrToIntDef(errMsg, -1);
-                if lineNo <> -1 then
-                begin
-                  lineNo := GetLineNumber(lineNo);
-                  errMsg := 'line ' + IntToStr(lineNo) + tmpstr;
-                  EdFrm.AddErrorMessage(errMsg);
-                  Result := False;
-                end
-                else begin
-                  // is this a linker error?
-                  p := Pos(':', tmpstr);
-                  if (Pos(Copy(tmpstr, 1, p-1), fName) <> 0) then
-                  begin
-                    errMsg := 'linker error:' + Copy(tmpstr, p+1, Length(tmpstr));
-                    EdFrm.AddErrorMessage(errMsg);
-                    Result := False;
-                  end;
-                end;
-              end;
-            end;
-          end
-          else begin
-            // NQC, LASM, MindScript, NBC, & NXC
-            if (Pos('# Error:',tmpSL[i])>0) or
-               (Pos('# Warning:',tmpSL[i])>0) then
-            begin
-              tmpstr := Copy(tmpSL[i], 2, MaxInt);
-              // show error with line number of following line matches either temp.ext
-              // or the filename of the active editor form
-              errMsg := tmpstr;
-              if i < (tmpSL.Count - 1) then
-              begin
-                testStr := tmpSL[i+1];
-                // modified approach to error/warning output (2009-03-14 JCH)
-                tmpName := '';
-                // pattern is File "filaname" ; line NNNN
-                p := Pos('File "', testStr);
-                if p > 0 then
-                begin
-                  Delete(testStr, 1, p+5);
-                  p := Pos('"', testStr);
-                  if p > 0 then
-                  begin
-                    tmpName := Copy(testStr, 1, p-1);
-                    Delete(testStr, 1, p);
-                  end;
-                end;
-                p := Pos('temp'+ext, tmpName);
-                if p > 0 then
-                begin
-                  // replace temporary filename with actual filename
-                  tmpName := fName;
-                end;
-                p := Pos('; line ', testStr);
-{
-                tmpName := 'temp' + ext;
-                p := Pos(tmpName+'" ; line', testStr);
-                if p = 0 then
-                begin
-                  p := Pos(fName+'" ; line', testStr);
-                  if p > 0 then
-                    tmpName := fName;
-                end;
-}
-                if p > 0 then
-                begin
-                  // get the line number
-                  p := p + 7;
-//                  p := p + Length(tmpName) + 4 + 5;
-                  errMsg := Copy(testStr, p, MaxInt);
-                  lineNo := StrToIntDef(errMsg, -1);
-                  if lineNo <> -1 then
-                  begin
-                    lineNo := GetLineNumber(lineNo);
-                    if AnsiUppercase(tmpName) = AnsiUppercase(fName) then
-                      errMsg := 'line ' + IntToStr(lineNo) + ':' + tmpstr
-                    else
-                      errMsg := 'line ' + IntToStr(lineNo) + ', file "' + tmpName + '":' + tmpstr;
-//                    errMsg := 'line ' + IntToStr(lineNo) + ':' + tmpstr;
-                  end;
-                end;
-              end;
-              Result := Result and (Pos(': Error:', errMsg) = 0);
-              EdFrm.AddErrorMessage(errMsg);
-            end;
-          end;
-        end;
-        {show the errors}
-        Result := Result or (EdFrm.TheErrors.Items.Count = 0);
-        EdFrm.ShowTheErrors;
-      end;
-    end;
-    {Show the code listing}
-    if not bErrorsOrWarnings then
-    begin
-      if FileExists(tempDir + 'temp.lst') then
-      begin
-        tmpSL.LoadFromFile(tempDir + 'temp.lst');
-        CodeForm.CodeEdit.Lines.BeginUpdate;
-        try
-          CodeForm.CodeEdit.Lines.Clear;
-          for i := 0 to tmpSL.Count - 1 do
-          begin
-            tmpstr := tmpSL[i];
-            if (tmpstr <> '') and (Pos('#line', tmpstr) <> 1) then
-              CodeForm.CodeEdit.Lines.Add(tmpstr);
-          end;
-  //        CodeForm.CodeEdit.Lines.LoadFromFile(tempDir + 'temp.lst')
-        finally
-          CodeForm.CodeEdit.Lines.EndUpdate;
-        end;
-      end
-      else
-        CodeForm.CodeEdit.Lines.Clear;
-      CodeForm.Caption := sCodeListing + ' ' + EdFrm.Caption;
-      {Hide the short errors}
-      MainForm.DoHideErrors;
-      Result := true;
-    end;
-  finally
-    tmpSL.Free;
-  end;
-end;
-
-procedure ReadSymbolFile(const sFilename : string);
-var
-  symName : string;
-begin
-  symName := ChangeFileExt(sFilename, '.sym');
-  if FileExists(symName) then
-  begin
-    CurrentProgram.IsNXC := FileIsNXC;
-    CurrentProgram.LoadFromFile(symName);
-    DeleteFile(symName);
-  end;
-end;
-
-function InternalNBCCompile(const cmdLine : string) : integer;
-var
-  C : TNBCCompiler;
-begin
-  Result := 0;
-  C := TNBCCompiler.Create;
-  try
-    if Assigned(MainForm) then
-      C.OnCompilerStatusChange := MainForm.HandleOnCompilerStatusChange;
-    try
-      LoadParamDefinitions(C.ExtraDefines, cmdLine);
-{$IFDEF CAN_DOWNLOAD}
-      C.BrickComm         := BrickComm;
-{$ENDIF}
-      C.InputFilename     := getFilenameParam(cmdLine);
-      C.DefaultIncludeDir := '.';
-      C.CommandLine       := cmdLine;
-      if ParamSwitch('-x', False, cmdLine) then
-      begin
-        C.Decompile;
-      end
-      else
-      begin
-        Result := C.Execute * -1;
-        if C.WriteCompilerMessages then
-          C.Messages.SaveToFile(C.CompilerMessagesFilename);
-      end;
-    except
-      Result := -1;
-    end;
-  finally
-    C.Free;
-  end;
-end;
-
-function CompileIt(download : Boolean; run : Boolean): boolean;
-var
-  SaveCursor : TCursor;
-  ext, SaveDir, tempDir, commandstr : string;
-  wd, statusStr, outStr : string;
-  i : Integer;
-  NQC_Result : Longint;
-  execError : Boolean;
-  EdFrm : TfrmCodeEdit;
-  fName, fCaption : string;
-  SL : TStringList;
-begin
-  outStr := '';
-  Result := False;
-  if not Assigned(MainForm) then Exit;
-
-  EdFrm := MainForm.ActiveEditorForm;
-  if not Assigned(EdFrm) then Exit;
-
-  // first off we should hide any previous errors
-  MainForm.barStatus.Panels[1].Text := '';
-  EdFrm.TheErrors.Visible := False;
-  EdFrm.splErrors.Visible := False;
-
-  // now proceed with compilation
-  fName    := EdFrm.Filename;
-  fCaption := EdFrm.Caption;
-
-// switch to modal form to prevent doing other things in
-// the GUI while downloading/compiling
-  tempDir := TempPath;
-  {Save cursor}
-  SaveCursor := Screen.Cursor;
-  Screen.Cursor := crHourglass;
-  {Save current directory}
-  SaveDir:= GetCurrentDir;
-  if not FileIsCPPOrPascalOrJava(EdFrm) then
-    SetCurrentDir(ProgramDir)
+  // load NXC syntax completion proposal component
+  fNXCAPIBase.Clear;
+  fNXCAPIBase.AddStrings(SynNXCSyn.Commands);
+  fNXCAPIBase.AddStrings(SynNXCSyn.Constants);
+  fNXCAPIBase.AddStrings(SynNXCSyn.Keywords);
+  fNXCAPIBase.Sort;
+  SynNXCCompProp.ItemList := fNXCAPIBase;
+  // configure code completion options for NQC, NBC, NXC, and RICScript
+  if CCInsensitive then
+    TmpOptions := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion]
   else
-    SetCurrentDir(ExtractFilePath(fName));
-  try
-    // check for auto save
-    if AutoSaveFiles then
-      MainForm.SaveModifiedFiles;
-    if AutoSaveDesktop then
-      MainForm.SaveDesktop(fName);
-
-    if FileIsCPPOrPascalOrJava(EdFrm) then
-    begin
-      // generate the Makefile
-      GenerateMakefile(fName, run);
-    end
-    else if not FileIsROPS(EdFrm) then
-    begin
-      // Save the file
-      ext := GetProperExtension(fName);
-      EdFrm.TheEditor.Lines.SaveToFile(tempDir + 'temp' + ext);
-    end;
-
-    // execute Precompile Tools
-    for i := 0 to PrecompileSteps.Count - 1 do
-    begin
-      MainForm.ExecuteTransferItem(PrecompileSteps[i]);
-    end;
-
-    commandstr := GetCompilerCommandLine(download, tempDir, GetIncludePath(SaveDir), fName);
-
-    wd := ExcludeTrailingPathDelimiter(ExtractFilePath(fName));
-    if wd = '' then
-      wd := ProgramDir;
-
-    if CompilerDebug then
-      ShowMessage('DEBUG: launching compiler with commandline = ' + commandstr);
-
-    if FileIsROPS(EdFrm) then
-    begin
-      MainForm.ce.Script.Assign(EdFrm.TheEditor.Lines);
-      MainForm.ce.MainFileName := fName;
-      if not MainForm.ce.Compile then
-      begin
-        execError := True;
-        NQC_Result := -1;
-        SL := TStringList.Create;
-        try
-          for i := 0 to MainForm.ce.CompilerMessageCount - 1 do
-            SL.Add(MainForm.ce.CompilerMessages[i].MessageToString);
-          SL.SaveToFile(tempDir + 'temp.log');
-        finally
-          SL.Free;
-        end;
-      end
-      else
-      begin
-        execError := False;
-        NQC_Result := 0;
-        SL := TStringList.Create;
-        try
-          MainForm.ce.GetCompiled(commandstr);
-          if SaveBinaryOutput then
-          begin
-            SL.Text := commandstr;
-            SL.SaveToFile(ChangeFileExt(fName, '.psb'));
-          end;
-          IFPS3DataToText(commandstr, commandstr);
-          SL.Text := commandstr;
-          SL.SaveToFile(tempDir + 'temp.lst');
-        finally
-          SL.Free;
-        end;
-      end;
-    end
-    else if FileIsNBCOrNXCOrNPGOrRICScript and UseInternalNBC then
-    begin
-      NQC_Result := InternalNBCCompile(commandstr);
-      execError  := NQC_Result < 0;
-    end
-    else
-    begin
-      {Execute the command, and wait}
-      if download then begin
-        BrickComm.Ping;
-        BrickComm.Close;
-      end;
-      try
-        NQC_Result := ExecuteAndWait(PChar(commandstr), SW_SHOWMINNOACTIVE, LocalCompilerTimeout, PChar(wd));
-        if not FileIsNQC(EdFrm) then
-          NQC_Result := NQC_Result * -1;
-        execError := NQC_Result < 0;
-      finally
-        if download then
-          BrickComm.Open;
-        // make sure the toolbar refreshes no matter what
-        MainForm.HandleOpenStateChanged(nil);
-      end;
-    end;
-
-    // execute post compile steps
-    for i := 0 to PostcompileSteps.Count - 1 do
-    begin
-      MainForm.ExecuteTransferItem(PostcompileSteps[i]);
-    end;
-
-    Result := ReadAndShowErrorFile(EdFrm, tempDir, ext);
-    
-    if FileIsNBCOrNXC(EdFrm) then
-      ReadSymbolFile(fName);
-
-    if (not execError) and ShowCompilerStatus then
-    begin
-      if Result and download then
-        statusStr := sCompileDownloadSuccess
-      else if Result then
-        statusStr := sCompileSuccess
-      else if download then
-        statusStr := sCompileDownloadErrors
-      else
-        statusStr := sCompileErrors;
-      frmCompStatus.AddMessage(statusStr);
-    end
-    else if execError then
-    begin
-      if outStr <> '' then
-        outStr := outStr + #13#10;
-{$IFNDEF FPC}
-      if FileIsNQC(EdFrm) then
-        outStr := outStr + GetRCXErrorString(NQC_Result)
-      else
-{$ENDIF}
-      if FileIsMindScriptOrLASM(EdFrm) then
-        outStr := outStr + GetLASMErrorString(NQC_Result)
-      else if FileIsNBCOrNXCOrNPGOrRICScript(EdFrm) or FileIsROPS(EdFrm) then
-        outStr := outStr + GetNBCErrorString(NQC_Result)
-      else
-        outStr := outStr + GetGNUErrorString(NQC_Result);
-      if outStr <> '' then
-      begin
-        MessageDlg('Compile/Download Failed' + #13#10 + outStr, mtError, [mbOK], 0);
-      end;
-    end;
-  finally
-    {Clean up}
-    if not KeepBrickOSMakefile then
-      DeleteFile(ChangeFileExt(fName, '.mak'));
-    DeleteFile(ChangeFileExt(fName, '.cmd'));
-    DeleteFile(tempDir + 'temp.log');
-    DeleteFile(tempDir + 'temp.lst');
-    DeleteFile(tempDir + 'temp' + ext);
-    Screen.Cursor := SaveCursor;
-    SetCurrentDir(SaveDir);
-  end;
-end;
-
-{
-procedure TfrmCodeEdit.InsertOptionInfo;
-begin
-  TheEditor.Lines.Insert(0,
-    Format('// Port:%s, RCXType:%s, Slot:Program %d',
-      [BrickComm.NicePortName, BrickComm.RCXTypeName, CurrentProgramSlot+1]));
-  TheEditor.CaretY := TheEditor.CaretY + 1;
-  TheEditor.Modified := True;
-end;
-}
-
-procedure TfrmCodeEdit.TheEditorChange(Sender: TObject);
-begin
-  frmCodeExplorer.CurrentSource := TheEditor.Lines.Text;
-end;
-
-procedure TfrmCodeEdit.SetFilename(const Value: string);
-begin
-  fFilename := Value;
-//  AddRecentFile(Value);
-end;
-
-procedure TfrmCodeEdit.HookCompProp;
-var
-  HL : TSynCustomHighlighter;
-begin
-  MainForm.SynNQCCompProp.RemoveEditor(TheEditor);
-  MainForm.SynMindScriptCompProp.RemoveEditor(TheEditor);
-  MainForm.SynLASMCompProp.RemoveEditor(TheEditor);
-  MainForm.SynNBCCompProp.RemoveEditor(TheEditor);
-  MainForm.SynNXCCompProp.RemoveEditor(TheEditor);
-  MainForm.SynNPGCompProp.RemoveEditor(TheEditor);
-  MainForm.SynRSCompProp.RemoveEditor(TheEditor);
-  MainForm.SynForthCompProp.RemoveEditor(TheEditor);
-  MainForm.SynCppCompProp.RemoveEditor(TheEditor);
-  MainForm.SynPasCompProp.RemoveEditor(TheEditor);
-  MainForm.SynROPSCompProp.RemoveEditor(TheEditor);
-//  MainForm.SynJavaCompProp.RemoveEditor(TheEditor);
-  MainForm.scpParams.RemoveEditor(TheEditor);
-
-  HL := Self.Highlighter;
-//  HL := GetHighlighterForFile(Filename);
-  if (HL = MainForm.SynNQCSyn) or (HL = nil) then begin
-    MainForm.SynNQCCompProp.AddEditor(TheEditor);
-    MainForm.scpParams.AddEditor(TheEditor);
-  end
-  else if HL = MainForm.SynMindScriptSyn then
-    MainForm.SynMindScriptCompProp.AddEditor(TheEditor)
-  else if HL = MainForm.SynLASMSyn then
-    MainForm.SynLASMCompProp.AddEditor(TheEditor)
-  else if HL = MainForm.SynNBCSyn then begin
-    MainForm.SynNBCCompProp.AddEditor(TheEditor);
-    MainForm.scpParams.AddEditor(TheEditor);
-  end
-  else if HL = MainForm.SynNXCSyn then begin
-    MainForm.SynNXCCompProp.AddEditor(TheEditor);
-    MainForm.scpParams.AddEditor(TheEditor);
-  end
-  else if HL = MainForm.SynNPGSyn then
-    MainForm.SynNPGCompProp.AddEditor(TheEditor)
-  else if HL = MainForm.SynRSSyn then begin
-    MainForm.SynRSCompProp.AddEditor(TheEditor);
-    MainForm.scpParams.AddEditor(TheEditor);
-  end
-  else if HL = MainForm.SynCppSyn then begin
-    MainForm.SynCppCompProp.AddEditor(TheEditor);
-    MainForm.scpParams.AddEditor(TheEditor);
-  end
-  else if HL = MainForm.SynPasSyn then begin
-    MainForm.SynPasCompProp.AddEditor(TheEditor);
-    MainForm.scpParams.AddEditor(TheEditor);
-  end
-  else if HL = MainForm.SynROPSSyn then begin
-    MainForm.SynROPSCompProp.AddEditor(TheEditor);
-    MainForm.scpParams.AddEditor(TheEditor);
-  end
-{
-  else if HL = MainForm.SynJavaSyn then begin
-    MainForm.SynJavaCompProp.AddEditor(TheEditor);
-    MainForm.scpParams.AddEditor(TheEditor);
-  end
-}
-  else if HL = MainForm.SynForthSyn then
-    MainForm.SynForthCompProp.AddEditor(TheEditor);
-end;
-
-procedure TfrmCodeEdit.ProcedureList;
-var
-  line : Integer;
-  SL : TExploredLanguage;
-  AEF : TfrmCodeEdit;
-begin
-  AEF := nil;
-  if Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  SL := elNQC;
-  if FileIsCPP(AEF) then
-    SL := elCpp
-  else if FileIsPascal(AEF) then
-    SL := elPas
-  else if FileIsROPS(AEF) then
-    SL := elPas
-  else if FileIsJava(AEF) then
-    SL := elJava
-  else if FileIsMindScript(AEF) then
-    SL := elMindScript
-  else if FileIsLASM(AEF) then
-    SL := elLASM
-  else if FileIsNBC(AEF) then
-    SL := elNBC
-  else if FileIsNXC(AEF) then
-    SL := elNXC
-  else if FileIsForth(AEF) then
-    SL := elForth;
-  line := TfmProcedureList.ShowForm(SL, TheEditor.Lines);
-  if line <> -1 then
-  begin
-    TheEditor.GotoLineNumber(line);
-    if TheEditor.CanFocus then
-      TheEditor.SetFocus;
-  end;
-end;
-
-procedure TfrmCodeEdit.TheEditorMouseOverToken(Sender: TObject;
-  const Token: String; TokenType: Integer;
-  Attri: TSynHighlighterAttributes; var Highlight: Boolean);
-begin
-{
-  if not ((Pos(#9, Token) = 0) and (Pos(#32, Token) = 0)) then Exit;
-  if TheEditor.Highlighter = nil then Exit;
-  with TheEditor.Highlighter do begin
-    Highlight := (Attri <> CommentAttribute) and
-                 (Attri <> KeywordAttribute) and
-                 (Attri <> StringAttribute) and
-                 (Attri <> SymbolAttribute) and
-                 (Attri <> WhitespaceAttribute);
-  end;
-}
-end;
-
-procedure TfrmCodeEdit.SetActiveHelpFile;
-var
-  AEF : TfrmCodeEdit;
-begin
-  AEF := nil;
-  if Assigned(MainForm) then
-    AEF := MainForm.ActiveEditorForm;
-  Self.HelpFile := Application.HelpFile;
-  if FileIsMindScriptOrLASM(AEF) then
-  begin
-    Self.HelpFile := GetSDKRootPath + 'vpb.hlp';
-  end
-  else if FileIsNQC(AEF) then
-  begin
-    Self.HelpFile := ProgramDir + 'Help\nqc.hlp';
-  end
-  else if FileIsJava(AEF) then
-  begin
-    Self.HelpFile := ProgramDir + 'Help\LeJOS.hlp';
-  end
-  else if FileIsForth(AEF) then
-  begin
-    Self.HelpFile := ProgramDir + 'Help\pbForth.hlp';
-  end
-  else if FileIsNBC(AEF) then
-  begin
-    Self.HelpFile := ProgramDir + 'Help\nbc.hlp';
-  end
-  else if FileIsNXC(AEF) then
-  begin
-    Self.HelpFile := ProgramDir + 'Help\nxc.hlp';
-  end
-  else if FileIsNPG(AEF) then
-  begin
-    Self.HelpFile := ProgramDir + 'Help\npg.hlp';
-  end
-  else if FileIsRICScript(AEF) then
-  begin
-    Self.HelpFile := ProgramDir + 'Help\ricscript.hlp';
-  end
-  else if FileIsCPP(AEF) then
-  begin
-    Self.HelpFile := ProgramDir + 'Help\brickOS.hlp';
-  end
-  else if FileIsPascal(AEF) then
-  begin
-    Self.HelpFile := ProgramDir + 'Help\brickOSPas.hlp';
-  end;
-end;
-
-procedure TfrmCodeEdit.TheEditorProcessCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
-var
-  word : string;
-  FoundPos: Integer;
-  Ident: string;
-begin
-  case Command of
-{$IFNDEF FPC}
-    ecContextHelp : begin
-      SetActiveHelpFile;
-      if TheEditor.SelAvail then
-        word := TheEditor.SelText
-      else
-        word := TheEditor.TextAtCursor;
-      if FileIsForth then
-      begin
-        if word = ';' then word := 'semicolon'
-        else if word = '\' then word := 'backslash'
-        else if word = '."' then word := 'dot-quote'
-        else if word = 'S"' then word := 's-quote';
-      end;
-      HelpALink(word, FileIsNQC);
-      Command := ecNone;
-    end;
-{$ENDIF}
-    K_USER_PREVIDENT, K_USER_NEXTIDENT : begin
-      if FindIdentAtPos(Source, Position, (Command = K_USER_PREVIDENT), FoundPos, Ident) then
-        Position := FoundPos
-      else
-        MessageBeep($FFFFFFFF);
+    TmpOptions := [scoAnsiStrings, scoCaseSensitive, scoLimitToMatchedText, scoEndCharCompletion];
+  SynNBCCompProp.Options := TmpOptions;
+  SynNXCCompProp.Options := TmpOptions;
+  SynRSCompProp.Options  := TmpOptions;
+//  SynAutoComp.AutoCompleteList.Assign(PrefForm.CodeTemplates);
+  // also copy shortcut settings
+  SynMacroRec.PlaybackShortCut := PlayMacroShortCut;
+  SynMacroRec.RecordShortCut   := RecMacroShortCut;
+  scpParams.ShortCut           := ParamCompShortCut;
+  for i := 0 to ComponentCount - 1 do begin
+    C := Components[i];
+    if C = scpParams then Continue;
+    if C is TSynCompletionProposal then begin
+      TSynCompletionProposal(C).ShortCut := CodeCompShortCut;
     end;
   end;
+  // also set font pref for exporters
+  expHTML.Font.Name := FontName;
+  expHTML.Font.Size := FontSize;
+  expRTF.Font.Name  := FontName;
+  expRTF.Font.Size  := FontSize;
 end;
 
-procedure TfrmCodeEdit.TheEditorProcessUserCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
-var
-  FoundPos: Integer;
-  Ident: string;
-  Lines : TStrings;
-begin
-  case Command of
-    K_USER_PREVIDENT, K_USER_NEXTIDENT : begin
-      if FindIdentAtPos(Source, Position, (Command = K_USER_PREVIDENT), FoundPos, Ident) then
-        Position := FoundPos
-      else
-        Beep;
-    end;
-    K_USER_COMMENTBLOCK : begin
-      Lines := TStringList.Create;
-      try
-        Lines.Text := TheEditor.SelText;
-        if CommentLines(Lines) then
-          TheEditor.SelText := Lines.Text;
-      finally
-        Lines.Free;
-      end;
-    end;
-    K_USER_UNCOMMENTBLOCK : begin
-      Lines := TStringList.Create;
-      try
-        Lines.Text := TheEditor.SelText;
-        if UncommentLines(Lines) then
-          TheEditor.SelText := Lines.Text;
-      finally
-        Lines.Free;
-      end;
-    end;
-    K_USER_REVERSE : begin
-      Lines := TStringList.Create;
-      try
-        Lines.Text := TheEditor.SelText;
-        if ReverseStatements(Lines) then
-          TheEditor.SelText := Lines.Text;
-      finally
-        Lines.Free;
-      end;
-    end;
-    K_USER_ALIGN : begin
-      Lines := TStringList.Create;
-      try
-        Lines.Text := TheEditor.SelText;
-        if AlignSelectedLines(Lines) then
-          TheEditor.SelText := Lines.Text;
-      finally
-        Lines.Free;
-      end;
-    end;
-  end;
-end;
-
-procedure TfrmCodeEdit.DoCopyHTML(Sender: TObject);
-var
-  bb, be : TPoint;
-begin
-  if Selected then
-  begin
-    bb := TheEditor.BlockBegin;
-    be := TheEditor.BlockEnd;
-  end
-  else
-  begin
-    bb := Point(1, 1);
-    be := Point(MaxInt, MaxInt);
-  end;
-  Clipboard.Open;
-  try
-    // put on the clipboard as HTML in text format
-    MainForm.expHTML.ExportAsText := True;
-    MainForm.expHTML.ExportRange(TheEditor.Lines, bb, be);
-    MainForm.expHTML.CopyToClipboard;
-    // put on the clipboard as HTML
-    MainForm.expHTML.ExportAsText := False;
-    MainForm.expHTML.ExportRange(TheEditor.Lines, bb, be);
-    MainForm.expHTML.CopyToClipboard;
-  finally
-    Clipboard.Close;
-  end;
-end;
-
-procedure TfrmCodeEdit.DoCopyRTF(Sender: TObject);
-var
-  bb, be : TPoint;
-begin
-  if Selected then
-  begin
-    bb := TheEditor.BlockBegin;
-    be := TheEditor.BlockEnd;
-  end
-  else
-  begin
-    bb := Point(1, 1);
-    be := Point(MaxInt, MaxInt);
-  end;
-  Clipboard.Open;
-  try
-    // put on the clipboard as RTF in text format
-    MainForm.expRTF.ExportAsText := True;
-    MainForm.expRTF.ExportRange(TheEditor.Lines, bb, be);
-    MainForm.expRTF.CopyToClipboard;
-    // put on the clipboard as RTF
-    MainForm.expRTF.ExportAsText := False;
-    MainForm.expRTF.ExportRange(TheEditor.Lines, bb, be);
-    MainForm.expRTF.CopyToClipboard;
-  finally
-    Clipboard.Close;
-  end;
-end;
-
-procedure TfrmCodeEdit.SetCaption(const fname : string);
-begin
-  Caption  := fname;
-  if Assigned(Parent) then
-    TTabSheet(Parent).Caption := fname;
-end;
-
-function TfrmCodeEdit.IsMaximized: Boolean;
-begin
-  Result := (WindowState = wsMaximized) or ((Left < 0) and (Top < 0));
-end;
-
-procedure TfrmCodeEdit.TheEditorDragOver(Sender, Source: TObject; X,
-  Y: Integer; State: TDragState; var Accept: Boolean);
-begin
-  if Source = ConstructForm.treTemplates then
-  begin
-    Accept := True;
-    TheEditor.CaretXY := TheEditor.PixelsToRowColumn(Point(X, Y));
-  end
-  else if Source = frmNXTExplorer.lstFiles then
-  begin
-    Accept := True;
-  end
-  else
-    Accept := False;
-end;
-
-procedure TfrmCodeEdit.TheEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
-var
-  i : integer;
-begin
-  if Source = ConstructForm.treTemplates then
-  begin
-    ConstructForm.DoTemplateInsert(X, Y);
-  end
-  else if Source = frmNXTExplorer.lstFiles then
-  begin
-    // drop file(s)
-    with frmNXTExplorer.lstFiles do
-    begin
-      for i := 0 to Items.Count - 1 do
-      begin
-        if Items[i].Selected then
-          if FileExists(Folders[i].PathName) then
-            MainForm.OpenFile(Folders[i].PathName);
-      end;
-    end;
-  end;
-end;
-
-procedure TfrmCodeEdit.AddErrorMessage(const errMsg: string);
-begin
-  if TheErrors.Items.IndexOf(errMsg) = -1 then
-    TheErrors.Items.Append(errMsg);
-end;
-
-procedure TfrmCodeEdit.ShowTheErrors;
-begin
-  if TheErrors.Items.Count > 0 then
-  begin
-    MainForm.barStatus.Panels[1].Text := sErrors;
-    TheErrors.Visible := True;
-    splErrors.Visible := True;
-    TheErrors.ItemIndex:=0;
-    TheErrorsClick(TheErrors);
-  end
-  else
-  begin
-    MainForm.barStatus.Panels[1].Text := '';
-    TheErrors.Visible := False;
-    splErrors.Visible := False;
-  end;
-end;
-
-procedure TfrmCodeEdit.TheEditorMouseDown(Sender: TObject;
-  Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
-begin
-{$IFNDEF FPC}
-  if (ssCtrl in Shift) and (Button = mbLeft) then
-    FindDeclaration(TheEditor.WordAtMouse);
-{$ENDIF}
-end;
-
-procedure TfrmCodeEdit.FindDeclaration(const aIdent : string);
-begin
-  // try to find where aIdent is declared.  Check in this file first,
-  // searching backward from the current location.  If found, make sure
-  // it is not just another usage of the identifier rather than the
-  // actual declaration of the identifier.  If NOT found in this
-  // file then check any include files, starting at the end of the file
-  // in each case.  Recurse through include files
-  ShowMessage(aIdent);
-end;
-
-procedure AddPaths(aPath : string; aPaths : TStrings);
-var
-  p : Integer;
-  s : string;
-begin
-  p := Pos(';', aPath);
-  while p > 0 do
-  begin
-    s := Copy(aPath, 1, p - 1);
-    Delete(aPath, 1, p);
-    aPaths.Add(s);
-    p := Pos(';', aPath);
-  end;
-  if aPath <> '' then
-    aPaths.Add(aPath);
-end;
-
-procedure TfrmCodeEdit.OpenFileAtCursor;
-var
-  fName : string;
-  bFound : boolean;
-begin
-  fName := TheEditor.TextWithinDelimiters(['"', ' ']);
-  if FileExists(fName) then
-    MainForm.OpenFile(fName)
-  else
-  begin
-    bFound := OpenFileOnPath(fName);
-    if not bFound then
-    begin
-      MainForm.dlgOpen.FileName := fName;
-      MainForm.actFileOpenExecute(nil);
-    end;
-  end;
-end;
-
-procedure TfrmCodeEdit.mniOpenFileAtCursorClick(Sender: TObject);
-begin
-  OpenFileAtCursor;
-end;
-
-procedure TfrmCodeEdit.mniClosePageClick(Sender: TObject);
-begin
-  MainForm.actFileCloseExecute(Sender);
-end;
-
-procedure TfrmCodeEdit.mniViewExplorerClick(Sender: TObject);
-begin
-  MainForm.ShowCodeExplorer;
-end;
-
-procedure TfrmCodeEdit.mniFindDeclarationClick(Sender: TObject);
+procedure TfrmCodeEdit.mniEditClick(Sender: TObject);
 begin
 //
 end;
 
-procedure TfrmCodeEdit.mnTopicSearchClick(Sender: TObject);
-var
-  Cmd : TSynEditorCommand;
-  Ch : Char;
+procedure TfrmCodeEdit.mniSearchClick(Sender: TObject);
 begin
-{$IFNDEF FPC}
-  Cmd := ecContextHelp;
-  TheEditorProcessCommand(Sender, Cmd, Ch, nil);
-{$ENDIF}
+//
 end;
-
-procedure TfrmCodeEdit.ToggleBookmark(Sender: TObject);
-begin
-  TheEditor.ToggleBookmark(TOfficeMenuItem(Sender).Tag);
-end;
-
-procedure TfrmCodeEdit.GotoBookmark(Sender: TObject);
-begin
-  TheEditor.GotoBookMark(TOfficeMenuItem(Sender).Tag);
-end;
-
-function TfrmCodeEdit.CanFindDeclaration: Boolean;
-begin
-  Result := False;
-end;
-
-procedure TfrmCodeEdit.TheEditorSpecialLineColors(Sender: TObject;
-  Line: Integer; var Special: Boolean; var FG, BG: TColor);
-begin
-  Special := False;
-  if FileIsROPS(Self) then
-  begin
-    if MainForm.ce.HasBreakPoint(Filename, Line) then
-    begin
-      Special := True;
-      if Line = MainForm.FActiveLine then
-      begin
-        FG := clRed;
-        BG := clWhite;
-      end else
-      begin
-        FG := clWhite;
-        BG := clRed;
-      end;
-    end
-    else if Line = MainForm.FActiveLine then
-    begin
-      Special := True;
-      FG := clWhite;
-      BG := clBlue;
-    end;
-  end
-  else if Assigned(fNXTCurrentOffset) and FileIsNBCOrNXC(Self) then
-  begin
-    Special := (Line = fNXTCurrentOffset.LineNumber) and
-               (fNXTVMState = kNXT_VMState_Pause);
-    if Special then
-    begin
-      FG := clWhite;
-      BG := clBlue;
-    end;
-  end;
-end;
-
-procedure TfrmCodeEdit.mniToggleBreakpointClick(Sender: TObject);
-var
-  Line: Longint;
-begin
-  if not FileIsROPS(Self) then Exit;
-  Line := TheEditor.CaretY;
-  if MainForm.ce.HasBreakPoint(Filename, Line) then
-    MainForm.ce.ClearBreakPoint(Filename, Line)
-  else
-    MainForm.ce.SetBreakPoint(Filename, Line);
-  TheEditor.Refresh;
-end;
-
-procedure TfrmCodeEdit.SelectLine(lineNo: integer);
-begin
-  if lineNo > -1 then
-  begin
-    TheEditor.BlockBegin := Point(1, lineNo);
-    TheEditor.BlockEnd   := Point(Length(TheEditor.Lines[lineNo-1])+1, lineNo);
-    TheEditor.CaretXY    := TheEditor.BlockBegin;
-  end;
-end;
-
-procedure TfrmCodeEdit.CreatePopupMenu;
-begin
-end;
-
-//    ssShift, ssAlt, ssCtrl,
-//    ssLeft, ssRight, ssMiddle, ssDouble
-procedure TfrmCodeEdit.CreateTheEditor;
-begin
-  TheEditor := TBricxccSynEdit.Create(Self);
-  with TheEditor do
-  begin
-    Name := 'TheEditor';
-    Parent := Self;
-    Left := 0;
-    Top := 0;
-    Width := 464;
-    Height := 285;
-    Cursor := crIBeam;
-    Align := alClient;
-    Font.Charset := DEFAULT_CHARSET;
-    Font.Color := clWindowText;
-    Font.Height := -13;
-    Font.Name := 'Courier New';
-    Font.Pitch := fpFixed;
-    Font.Style := [];
-    ParentColor := False;
-    ParentFont := False;
-    PopupMenu := ConstructForm.ConstructMenu;
-    TabOrder := 1;
-    BookMarkOptions.BookmarkImages := ilBookmarkImages;
-    Gutter.Font.Charset := DEFAULT_CHARSET;
-    Gutter.Font.Color := clWindowText;
-    Gutter.Font.Height := -11;
-    Gutter.Font.Name := 'Terminal';
-    Gutter.Font.Style := [];
-    MaxUndo := 10;
-    Options := [eoAutoIndent, eoDragDropEditing, eoScrollPastEol,
-                eoShowScrollHint, eoSmartTabDelete, eoSmartTabs,
-                eoTabsToSpaces, eoTrimTrailingSpaces];
-    ScrollHintFormat := shfTopToBottom;
-    TabWidth := 2;
-    WantTabs := True;
-    OnDragDrop := TheEditorDragDrop;
-    OnDragOver := TheEditorDragOver;
-    OnKeyDown := TheEditorKeyDown;
-    OnKeyPress := TheEditorKeyPress;
-    OnMouseDown := TheEditorMouseDown;
-    OnChange := TheEditorChange;
-    OnClearBookmark := TheEditorClearBookmark;
-    OnGutterClick := TheEditorGutterClick;
-    OnPlaceBookmark := TheEditorPlaceBookmark;
-    OnProcessCommand := TheEditorProcessCommand;
-    OnProcessUserCommand := TheEditorProcessUserCommand;
-    OnReplaceText := TheEditorReplaceText;
-    OnSpecialLineColors := TheEditorSpecialLineColors;
-    OnStatusChange := TheEditorStatusChange;
-    StructureLineColor := clNone;
-    OnMouseOverToken := TheEditorMouseOverToken;
-  end;
-end;
-
-procedure TfrmCodeEdit.TheErrorsMouseMove(Sender: TObject;
-  Shift: TShiftState; X, Y: Integer);
-var
-  i : integer;
-  tmpStr : string;
-  P : TPoint;
-begin
-  P := Point(X, Y);
-  i := TheErrors.ItemAtPos(P, True);
-  if i <> -1 then
-  begin
-    tmpStr := TheErrors.Items[i];
-    if tmpStr <> TheErrors.Hint then
-    begin
-      TheErrors.Hint := TheErrors.Items[i];
-      Application.ActivateHint(P);
-    end;
-  end;
-end;
-
-
-function TfrmCodeEdit.GetPosition: integer;
-begin
-  Result := TheEditor.RowColToCharIndex(TheEditor.CaretXY);
-end;
-
-function TfrmCodeEdit.GetSource: string;
-begin
-  Result := TheEditor.Text;
-end;
-
-procedure TfrmCodeEdit.SetPosition(const Value: integer);
-begin
-  TheEditor.CaretXY := TheEditor.CharIndexToRowCol(Value-1);
-end;
-
-function TfrmCodeEdit.OpenFileOnPath(const fname: string): boolean;
-var
-  pName : string;
-  fPaths : TStringList;
-  i : integer;
-begin
-  Result := False;
-  fPaths := TStringList.Create;
-  try
-    fPaths.Sorted := True;
-    fPaths.Duplicates := dupIgnore;
-    fPaths.Add(ExtractFilePath(Application.ExeName));
-    fPaths.Add(GetCurrentDir);
-    fPaths.Add(ExtractFilePath(FileName));
-    if FileIsNQC then
-      AddPaths(NQCIncludePath, fPaths)
-    else if FileIsNBCOrNXC then
-      AddPaths(NBCIncludePath, fPaths)
-    else if FileIsMindScriptOrLASM then
-      AddPaths(LCCIncludePath, fPaths);
-    for i := 0 to fPaths.Count - 1 do begin
-      pName := IncludeTrailingPathDelimiter(fPaths[i]) + fName;
-      if FileExists(pName) then
-      begin
-        Result := True;
-        MainForm.OpenFile(pName);
-        Exit;
-      end;
-    end;
-  finally
-    fPaths.Free;
-  end;
-end;
-
-
-*)
 
 {$IFDEF FPC}
 initialization

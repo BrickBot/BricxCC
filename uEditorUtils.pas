@@ -30,7 +30,8 @@ function GetLineNumber(const aY : integer) : integer;
 procedure GenerateMakefile(aPath : string; run : Boolean; node : Integer = -1);
 function ProcessMakeCommand(const sFilename, sTempDir, commandstr : string) : string;
 function GetTarget : string;
-function DoExecuteCommand(const aCmd : string; aTimeOut : integer; const aDir : string) : integer;
+function DoExecuteCommand(const aCmd : string; const aParams : string;
+  aTimeOut : integer; const aDir : string; const bWait : boolean) : integer;
 
 procedure ShowSearchReplaceDialog(aEditor : TSynEdit; AReplace: boolean);
 procedure DoSearchReplaceText(aEditor : TSynEdit; AReplace, ABackwards: boolean);
@@ -111,9 +112,7 @@ begin
 {$ENDIF}
   if aEditor.SearchReplace(gsSearchText, gsReplaceText, Options) = 0 then
   begin
-{$IFNDEF FPC}
-    MessageBeep(MB_ICONASTERISK);
-{$ENDIF}
+    DoBeep(MB_ICONASTERISK);
     if ssoBackwards in Options then
       aEditor.BlockEnd := aEditor.BlockBegin
     else
@@ -804,10 +803,14 @@ begin
   end;
 end;
 
-function DoExecuteCommand(const aCmd : string; aTimeOut : integer; const aDir : string) : integer;
+function DoExecuteCommand(const aCmd : string; const aParams : string;
+  aTimeOut : integer; const aDir : string; const bWait : boolean) : integer;
 begin
 {$IFNDEF FPC}
-  Result := ExecuteAndWait(PChar(aCmd), SW_SHOWMINNOACTIVE, aTimeOut, PChar(aDir));
+  if bWait then
+    Result := ExecuteAndWait(PChar(aCmd), SW_SHOWMINNOACTIVE, aTimeOut, PChar(aDir))
+  else
+    Result := Ord(ExecuteAndContinue(PChar(aCmd), PChar('"' + aCmd + '" ' + aParams), PChar(aDir), SW_SHOWNORMAL));
 {$ENDIF}
 end;
 
@@ -918,7 +921,7 @@ begin
         BrickComm.Close;
       end;
       try
-        NQC_Result := DoExecuteCommand(commandstr, LocalCompilerTimeout, wd);
+        NQC_Result := DoExecuteCommand(commandstr, '', LocalCompilerTimeout, wd, True);
         if not FileIsNQC(H) then
           NQC_Result := NQC_Result * -1;
         execError := NQC_Result < 0;

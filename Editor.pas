@@ -1695,7 +1695,7 @@ begin
     if MainForm.ce.HasBreakPoint(Filename, Line) then
     begin
       Special := True;
-      if Line = MainForm.FActiveLine then
+      if Line = MainForm.ActiveLine then
       begin
         FG := clRed;
         BG := clWhite;
@@ -1705,7 +1705,7 @@ begin
         BG := clRed;
       end;
     end
-    else if Line = MainForm.FActiveLine then
+    else if Line = MainForm.ActiveLine then
     begin
       Special := True;
       FG := clWhite;
