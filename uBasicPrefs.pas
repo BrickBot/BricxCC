@@ -33,7 +33,7 @@ type
 
 { Other Shortcuts }
 var
-  TheMenuItemType : TMenuItemType;
+  TheMenuItemType : TMenuItemType = TMenuItem;
   CodeCompShortCut : TShortCut;
   ParamCompShortCut : TShortCut;
   RecMacroShortCut : TShortCut;
