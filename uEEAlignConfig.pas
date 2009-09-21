@@ -18,9 +18,16 @@
  *)
 unit uEEAlignConfig;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, StdCtrls, Forms, BricxccSpin;
 
 type
@@ -36,6 +43,13 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
+
+{$IFDEF FPC}
+initialization
+  {$i uEEAlignConfig.lrs}
+{$ENDIF}
 
 end.

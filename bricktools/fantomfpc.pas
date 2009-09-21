@@ -2025,7 +2025,7 @@ begin
       // close any open port
       if fSerialHandle <> 0 then begin
         BluetoothClose(fSerialHandle);
-        fDevHandle := 0;
+        fDevHandle := nil;
       end;
       i := 0;
       while (i < MAX_SERIAL_IDX) and not bDone do
@@ -2912,7 +2912,7 @@ begin
     // close any open port
     if fSerialHandle <> 0 then begin
       BluetoothClose(fSerialHandle);
-      fDevHandle := 0;
+      fDevHandle := nil;
     end;
     while (fCurSerialIdx < MAX_SERIAL_IDX) and not bDone do
     begin
