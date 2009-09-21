@@ -1,19 +1,19 @@
 VER = 1.0.1.b36
-NBC_SRC = nxt/nbc.dpr nxt/nbc.cfg nxt/nbc.dof nxt/nbc.res nxt/nbc.lpi nxt/mkdata.dpr nxt/mkdata.cfg nxt/mkdata.dof nxt/NBCCommon.h nxt/NXTDefs.h nxt/NXCDefs.h
-NXT_SRC = nxt/uNXTClasses.pas nxt/uNXTConstants.pas nxt/uPreprocess.pas nxt/Parser10.pas nxt/P10Build.pas nxt/uRIC.pas nxt/uNXCComp.pas nxt/uRPGComp.pas nxt/uRICComp.pas nxt/uNBCCommon.pas nxt/uNBCInterface.pas
+NBC_SRC = NXT/nbc.dpr NXT/nbc.cfg NXT/nbc.dof NXT/nbc.res NXT/nbc.lpi NXT/mkdata.dpr NXT/mkdata.cfg NXT/mkdata.dof NXT/NBCCommon.h NXT/NXTDefs.h NXT/NXCDefs.h
+NXT_SRC = NXT/uNXTClasses.pas NXT/uNXTConstants.pas NXT/uPreprocess.pas NXT/Parser10.pas NXT/P10Build.pas NXT/uRIC.pas NXT/uNXCComp.pas NXT/uRPGComp.pas NXT/uRICComp.pas NXT/uNBCCommon.pas NXT/uNBCInterface.pas
 CMN_SRC = uLocalizedStrings.pas uCmdLineUtils.pas uCommonUtils.pas uGenLexer.pas uNBCLexer.pas uNXCLexer.pas uVersionInfo.pas mwGenericLex.pas ParamUtils.pas
 CMN_SRC2 = FastMM4.pas FastMM4Messages.pas FastMM4Options.inc FastMove.pas FastStrings.pas
 FANTOM_SRC = bricktools/FANTOM.pas bricktools/FANTOM_CONST.INC bricktools/FANTOMFPC.PAS bricktools/libusb.pas
 BT_SRC = bricktools/FantomSpirit.pas bricktools/rcx_cmd.pas bricktools/rcx_constants.pas bricktools/uSpirit.pas
 RIC_SRC = png/*.pas png/obj/*.obj GIFImage.pas
-EXTRA_DIST = nxt/nbcunix.mak nxt/nbcdelphi.mak nxt/nbcwin32.mak nxt/nbcwincearm.mak bricxcc.mak
+EXTRA_DIST = NXT/nbcunix.mak NXT/nbcdelphi.mak NXT/nbcwin32.mak NXT/nbcwincearm.mak bricxcc.mak
 SAMPLES = tests/struct.nxc tests/bools.nbc tests/test.nxc tests/test.npg
 DOCS = doc/Readme doc/Changelog
 MANPAGES = doc/nbc.1
 DISTFILES = $(NBC_SRC) $(NXT_SRC) $(CMN_SRC) $(SAMPLES) $(BT_SRC) $(FANTOM_SRC) $(RIC_SRC) $(EXTRA_DIST) $(DOCS)
 UNIXFILES = $(SAMPLES) $(DOCS) $(MANPAGES) $(NBC_SRC) $(NXT_SRC) $(FANTOM_SRC) $(CMN_SRC)
-BINDIST = nxt/nbc tests/struct.nxc $(DOCS)
-OSXBINDIST = nxt/nxtcom_scripts.zip
+BINDIST = NXT/nbc tests/struct.nxc $(DOCS)
+OSXBINDIST = NXT/nxtcom_scripts.zip
 EXCLUDES = --exclude=*.exe --exclude=*.zip --exclude=*.o --exclude=*.~* --exclude=*.dll
 
 archivenbc:: clean
@@ -26,10 +26,10 @@ archivenbcbin:: clean
 
 archivenbcunix:: clean
 	mv unix.mak Makefile
-	mv nxt/nbcunix.mak nxt/Makefile
-	tar -czf nbc-$(VER).unix-src.tgz $(UNIXFILES) Makefile nxt/Makefile
+	mv NXT/nbcunix.mak NXT/Makefile
+	tar -czf nbc-$(VER).unix-src.tgz $(UNIXFILES) Makefile NXT/Makefile
 	mv Makefile unix.mak
-	mv nxt/Makefile nxt/nbcunix.mak
+	mv NXT/Makefile NXT/nbcunix.mak
 	mv nbc-$(VER).unix-src.tgz ../nbc/beta
 
 archivenbcosx:: clean
@@ -37,7 +37,7 @@ archivenbcosx:: clean
 	mv nbc-$(VER).osx.tgz ../nbc/beta
 
 archiveall:: clean
-	tar -czf bricxcc.src.tgz *.* img/*.* nxt/*.* samplerate/*.* bricktools/*.* png/*.* png/obj/*.* $(EXCLUDES)
+	tar -czf bricxcc.src.tgz *.* img/*.* NXT/*.* samplerate/*.* bricktools/*.* png/*.* png/obj/*.* $(EXCLUDES)
 
 clean::
 	rm -rf *.dcu *.o *.ppu *.rst *.compiled *.bak *.~* *.ddp nbc_preproc.inc
