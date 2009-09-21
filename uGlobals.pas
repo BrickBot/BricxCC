@@ -20,8 +20,6 @@ unit uGlobals;
 {$MODE Delphi}
 {$ENDIF}
 
-{$I bricxcc.inc}
-
 interface
 
 const
