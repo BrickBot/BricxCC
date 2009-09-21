@@ -28,8 +28,8 @@ type
   private
     fStandardDefs: boolean;
     fExtraDefs: boolean;
-    procedure SetStandardDefs(const Value: boolean);
-    procedure SetExtraDefs(const Value: boolean);
+    procedure SetStandardDefs(const aValue: boolean);
+    procedure SetExtraDefs(const aValue: boolean);
   public
     procedure InitializeCalc;
     property StandardDefines : boolean read fStandardDefs write SetStandardDefs;
@@ -1473,20 +1473,20 @@ begin
   end;
 end;
 
-procedure TNBCExpParser.SetExtraDefs(const Value: boolean);
+procedure TNBCExpParser.SetExtraDefs(const aValue: boolean);
 begin
-  if fExtraDefs <> Value then
+  if fExtraDefs <> aValue then
   begin
-    fExtraDefs := Value;
+    fExtraDefs := aValue;
     InitializeCalc;
   end;
 end;
 
-procedure TNBCExpParser.SetStandardDefs(const Value: boolean);
+procedure TNBCExpParser.SetStandardDefs(const aValue: boolean);
 begin
-  if fStandardDefs <> Value then
+  if fStandardDefs <> aValue then
   begin
-    fStandardDefs := Value;
+    fStandardDefs := aValue;
     InitializeCalc;
   end;
 end;

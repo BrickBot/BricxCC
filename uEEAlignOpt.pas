@@ -18,9 +18,16 @@
  *)
 unit uEEAlignOpt;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, Controls, StdCtrls, Forms, Menus;
 
 type
@@ -38,7 +45,9 @@ type
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
 
 uses
   SysUtils, uEEAlignConfig, uEditorExperts;
@@ -72,6 +81,11 @@ begin
     FreeAndNil(Dialog);
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uEEAlignOpt.lrs}
+{$ENDIF}
 
 end.
 

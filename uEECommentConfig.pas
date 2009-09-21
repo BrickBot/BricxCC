@@ -18,9 +18,16 @@
  *)
 unit uEECommentConfig;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
   Classes, StdCtrls, Controls, Forms;
 
 type
@@ -37,7 +44,9 @@ procedure CommentConfigure;
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
 
 uses
   SysUtils, uEditorExperts;
@@ -66,6 +75,11 @@ begin
     FreeAndNil(Dlg);
   end;
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uEECommentConfig.lrs}
+{$ENDIF}
 
 end.
 

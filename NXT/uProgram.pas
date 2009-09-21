@@ -370,9 +370,10 @@ begin
   Result := TOffset(inherited Add);
 end;
 
-constructor TClumpOffsets.Create;
+constructor TClumpOffsets.Create(aOwner : TProgClumpData);
 begin
   inherited Create(TOffset);
+  fClumpData := aOwner;
 end;
 
 function TClumpOffsets.GetItem(Index: Integer): TOffset;
@@ -887,24 +888,24 @@ var
   res : boolean;
   modID : Cardinal;
   buffer : NXTDataBuffer;
-  count : Word;
+  acount : Word;
 begin
   fOffsetDS := $FFFF;
   fOffsetDVA := $FFFF;
   // IOMapRead CommandOffsetOffsetDS
   modID := kNXT_ModuleCmd;
-  count := 2;
+  acount := 2;
   buffer.Data[0] := 0;
   buffer.Data[1] := 0;
-  res := BrickComm.NXTReadIOMap(modID, CommandOffsetOffsetDS, count, buffer);
+  res := BrickComm.NXTReadIOMap(modID, CommandOffsetOffsetDS, acount, buffer);
   if res then
     fOffsetDS := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
   // IOMapRead CommandOffsetOffsetDVA
   modID := kNXT_ModuleCmd;
-  count := 2;
+  acount := 2;
   buffer.Data[0] := 0;
   buffer.Data[1] := 0;
-  res := BrickComm.NXTReadIOMap(modID, CommandOffsetOffsetDVA, count, buffer);
+  res := BrickComm.NXTReadIOMap(modID, CommandOffsetOffsetDVA, acount, buffer);
   if res then
     fOffsetDVA := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
 end;
