@@ -499,7 +499,7 @@ begin
     if not ParamSwitch('/nofree') then
       BrickComm.Free;
   finally
-    if ParamSwitch('/debug');
+    if ParamSwitch('/debug') then
       WriteLn('Exiting NeXTTool');
   end;
 end.
