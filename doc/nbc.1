@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH NBC 1 "March  3, 2009"
+.TH NBC 1 "September  21, 2009"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -28,8 +28,17 @@ command.
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics,
 .\" respectively.
-\fBnbc\fP is a program that compiles NXC files to NBC files, which can
-then be uploaded on an LEGO Mindstorms NXT for execution.
+\fBnbc\fP is a program that compiles Not eXactly C (NXC) files 
+or NeXT Byte Code (NBC) files into programs that can run on the standard
+LEGO MINDSTORMS NXT firmware or the enhanced NBC/NXC firmware. The nbc 
+compiler can either save the compiler output to a file or upload
+it to a LEGO Mindstorms NXT for execution.  The compiler can also
+compile NXT Picture files (.ric) using the text-based RICScript 
+language.  Since nbc can compile different programming languages it
+uses the file extension to determine the type of code it is compiling.
+NXC programs should use the .nxc file extension, NBC programs should 
+use the .nbc file extension, and RICScript programs should use the .rs 
+file extension.
 .SH OPTIONS
 .TP
 .B \-S=<portname>
@@ -59,6 +68,9 @@ decompile program
 .B \-Z[1|2]
 turn on compiler optimizations
 .TP
+.B \-ER=n
+set maximum errors before aborting (0 == no limit)
+.TP
 .B \-O=<filename>
 specify output file
 .TP
@@ -78,7 +90,7 @@ generate code listing to <filename>
 generate symbol table to <filename>
 .TP
 .B \-w[-|+]
-warnings off or on [default is off]
+warnings off or on [default is on]
 .TP
 .B \-EF
 enhanced firmware
@@ -88,6 +100,9 @@ NXC will wrap all function calls in Acquire/Release
 .TP
 .B \-api
 dump the API to stdout
+.TP
+.B \-v=n
+set the targeted firmware version (default == 105, aka 1.05)
 .TP
 .B \-help
 display command line options
