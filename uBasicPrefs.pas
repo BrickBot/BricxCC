@@ -7,6 +7,7 @@ uses
   uParseCommon, SynHighlighterNQC;
 
 type
+  TMenuItemType = class of TMenuItem;
   TTransferItem = class
   private
   protected
@@ -32,6 +33,7 @@ type
 
 { Other Shortcuts }
 var
+  TheMenuItemType : TMenuItemType;
   CodeCompShortCut : TShortCut;
   ParamCompShortCut : TShortCut;
   RecMacroShortCut : TShortCut;
@@ -485,7 +487,7 @@ begin
     begin
       sep.Visible := True;
       // create new
-      MI := TMenuItem.Create(parent);
+      MI := TheMenuItemType.Create(parent);
       try
         MI.Name    := 'Recent' + IntToStr(i);
         MI.OnClick := handler;

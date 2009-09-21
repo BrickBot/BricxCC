@@ -63,6 +63,7 @@ uses
   EditCodeTemplate in 'EditCodeTemplate.pas' {frmEditCodeTemplate},
   CodeTemplates in 'CodeTemplates.pas' {frmCodeTemplates},
   uVersionInfo in 'uVersionInfo.pas',
+  uOfficeComp in 'uOfficeComp.pas',
   srecord in 'bricktools\srecord.pas',
   NQCStream in 'bricktools\NQCStream.pas',
   rcx_cmd in 'bricktools\rcx_cmd.pas',
@@ -132,6 +133,7 @@ const
   K_RCXINFO = '(RCX = 0, Cybermaster = 1, Scout = 2, RCX2 = 3, Spybot = 4, Swan = 5, and NXT = 6)';
 
 begin
+  TheMenuItemType := TOfficeMenuItem;
   Application.Initialize;
   Application.Title := 'Bricx Command Center';
 
