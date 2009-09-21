@@ -14,7 +14,7 @@ realclean:: clean
 PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD
 
 
-# PTOOLPREFIX may differ on different platforms (e.g. /usr/local/bin/)
+# PTOOLPREFIX may differ on different platforms (e.g. /usr/local/bin/)
 PTOOLPREFIX=/usr/bin/
 PPC=$(PTOOLPREFIX)fpc
 
