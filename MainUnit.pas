@@ -157,6 +157,8 @@ type
     actHelpNXCTutorialPDF: TAction;
     actHelpNQCTutorialPDF: TAction;
     actHelpNBCTutorialPDF: TAction;
+    actSearchGrepSearch: TAction;
+    actSearchGrepResults: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -262,6 +264,8 @@ type
     procedure actHelpNQCTutorialPDFExecute(Sender: TObject);
     procedure actHelpNBCTutorialPDFExecute(Sender: TObject);
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
+    procedure actSearchGrepSearchExecute(Sender: TObject);
+    procedure actSearchGrepResultsExecute(Sender: TObject);
   public
     // menu components
     mnuMain: TOfficeMainMenu;
@@ -308,6 +312,9 @@ type
     N13: TOfficeMenuItem;
     mniGotoLineNumber: TOfficeMenuItem;
     mniProcedureList: TOfficeMenuItem;
+    N13a : TOfficeMenuItem;
+    mniGrepSearch : TOfficeMenuItem;
+    mniGrepResults : TOfficeMenuItem;
     mniView: TOfficeMenuItem;
     mniProjectManager: TOfficeMenuItem;
     mniCodeExplorer: TOfficeMenuItem;
@@ -2063,6 +2070,8 @@ begin
   actSearchReplace.Enabled      := bAssigned and E.CanReplace;
   actSearchGotoLine.Enabled     := bAssigned;
   actSearchProcList.Enabled     := bAssigned;
+  actSearchGrepSearch.Enabled   := true;
+  actSearchGrepResults.Enabled  := true;
 
   actCompileCompile.Enabled     := bAssigned and FileCanBeCompiled;
   actCompileDownload.Enabled    := bAssigned and ((bBrickAlive or FileIsForth) and not bROPS);
@@ -3999,9 +4008,13 @@ begin
   N13 := TOfficeMenuItem.Create(Self);
   mniGotoLineNumber := TOfficeMenuItem.Create(Self);
   mniProcedureList := TOfficeMenuItem.Create(Self);
+  N13a := TOfficeMenuItem.Create(Self);
+  mniGrepSearch := TOfficeMenuItem.Create(Self);
+  mniGrepResults := TOfficeMenuItem.Create(Self);
   // add menu items to search menu
   mniSearch.Add([mniFind, mniFindNext, mniFindPrevious, mniReplace,
-                 N13, mniGotoLineNumber, mniProcedureList]);
+                 N13, mniGotoLineNumber, mniProcedureList,
+                 N13a, mniGrepSearch, mniGrepResults]);
 
   // create view menu
   mniView := TOfficeMenuItem.Create(Self);
@@ -4455,6 +4468,21 @@ begin
     Name := 'mniProcedureList';
     Action := actSearchProcList;
     HelpContext := 22000;
+  end;
+  with N13a do
+  begin
+    Name := 'N13a';
+    Caption := '-';
+  end;
+  with mniGrepSearch do
+  begin
+    Name := 'mniGrepSearch';
+    Action := actSearchGrepSearch;
+  end;
+  with mniGrepResults do
+  begin
+    Name := 'mniGrepResults';
+    Action := actSearchGrepResults;
   end;
   with mniView do
   begin
@@ -7043,6 +7071,16 @@ begin
   AEF := ActiveEditorForm;
   if Assigned(AEF) then
     AEF.AddConstructString(aTemplate, aX, aY);
+end;
+
+procedure TMainForm.actSearchGrepSearchExecute(Sender: TObject);
+begin
+//
+end;
+
+procedure TMainForm.actSearchGrepResultsExecute(Sender: TObject);
+begin
+//
 end;
 
 {$IFDEF FPC}

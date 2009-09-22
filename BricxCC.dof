@@ -94,7 +94,7 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=bricktools;NXT;samplerate;png
+SearchPath=bricktools;NXT;samplerate;png;grep
 Packages=Vcl50;Vclx50;VclSmp50;Vcldb50;vclado50;ibevnt50;Vclbde50;vcldbx50;Qrpt50;TeeUI50;TeeDB50;Tee50;Dss50;TeeQR50;VCLIB50;Vclmid50;vclie50;Inetdb50;Inet50;NMFast50;webmid50;dclocx50;dclaxserver50;O217_R50;O217BR50;TCSComp_50
 Conditionals=FAST_MM, CAN_DOWNLOAD
 DebugSourceDirs=D:\BricxCC\NXT\;D:\bricxcc\bricktools\
@@ -141,9 +141,12 @@ OriginalFilename=bricxcc.exe
 ProductName=Bricx Command Center
 ProductVersion=3.3
 Comments=NQC (c) 1998-2009 David Baum, John Hansen
+[Excluded Packages]
+c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
 [HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=G:\nxt\BricxCC\source\NXT\
+Count=2
+Item0=D:\BricxCC\NXT\;D:\bricxcc\bricktools\
+Item1=G:\nxt\BricxCC\source\NXT\
 [HistoryLists\hlConditionals]
 Count=1
 Item0=FAST_MM, CAN_DOWNLOAD
@@ -151,6 +154,7 @@ Item0=FAST_MM, CAN_DOWNLOAD
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=2
-Item0=bricktools;NXT;samplerate;png
-Item1=bricktools;NXT;samplerate;png;syn
+Count=3
+Item0=bricktools;NXT;samplerate;png;grep
+Item1=bricktools;NXT;samplerate;png
+Item2=bricktools;NXT;samplerate;png;syn

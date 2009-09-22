@@ -672,6 +672,20 @@ object MainForm: TMainForm
       Hint = 'View NBC Tutorial'
       OnExecute = actHelpNBCTutorialPDFExecute
     end
+    object actSearchGrepSearch: TAction
+      Category = 'Search'
+      Caption = 'Grep search...'
+      Hint = 'Grep search'
+      ShortCut = 41043
+      OnExecute = actSearchGrepSearchExecute
+    end
+    object actSearchGrepResults: TAction
+      Category = 'Search'
+      Caption = 'Grep results'
+      Hint = 'Grep results'
+      ShortCut = 49234
+      OnExecute = actSearchGrepResultsExecute
+    end
   end
   object dlgInsertFile: TOpenDialog
     DefaultExt = 'nqc'
