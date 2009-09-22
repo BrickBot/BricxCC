@@ -283,7 +283,7 @@ implementation
 
 uses
   SysUtils, Dialogs, brick_common, rcx_constants, uSpirit,
-  uLocalizedStrings, uGuiUtils, uCommonUtils, uProgram, uBasicPrefs,
+  uLocalizedStrings, uGuiUtils, uProgram, uBasicPrefs,
   uGlobals, uMiscDefines;
 
 function GetMotorData(numb : integer) : string;

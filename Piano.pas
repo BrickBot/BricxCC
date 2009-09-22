@@ -128,7 +128,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, brick_common, uLocalizedStrings, uGuiUtils;
+  SysUtils, brick_common, uLocalizedStrings;
 
 const
   NOTE_TIME = 10;

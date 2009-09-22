@@ -1465,7 +1465,7 @@ end;
 procedure LoadExtraGeneralValues(reg : TRegistry);
 begin
   {Loads the general values from the registry}
-  Reg_OpenKey(reg, 'General');
+  Reg_OpenKey(reg, 'ExtraGeneral');
   try
     SaveWindowPos      := Reg_ReadBool(reg, 'SaveWindowPos',True);
     AutoSaveDesktop    := Reg_ReadBool(reg, 'AutoSaveDesktop', False);
@@ -1499,8 +1499,8 @@ end;
 procedure SaveExtraGeneralValues(reg : TRegistry);
 begin
   {Saves the general values to the registry}
-  Reg_DeleteKey(reg, 'General');
-  Reg_OpenKey(reg, 'General');
+  Reg_DeleteKey(reg, 'ExtraGeneral');
+  Reg_OpenKey(reg, 'ExtraGeneral');
   try
     reg.WriteBool('SaveWindowPos', SaveWindowPos);
     reg.WriteBool('AutoSaveDesktop', AutoSaveDesktop);
@@ -1533,6 +1533,7 @@ procedure ResetGeneralValues(reg : TRegistry);
 begin
   {Resets the general values to default}
   Reg_DeleteKey(reg, 'General');
+  Reg_DeleteKey(reg, 'ExtraGeneral');
   LoadBasicGeneralValues(reg);
   LoadExtraGeneralValues(reg);
 end;
@@ -1541,7 +1542,7 @@ end;
 procedure LoadExtraCompilerValues(reg : TRegistry);
 begin
   {Loads the compiler values from the registry}
-  Reg_OpenKey(reg, 'Compiler');
+  Reg_OpenKey(reg, 'ExtraCompiler');
   try
     NQCSwitches             := Reg_ReadString(reg, 'NQCSwitches', '');
     LCCSwitches             := Reg_ReadString(reg, 'LCCSwitches', '');
@@ -1585,8 +1586,8 @@ end;
 procedure SaveExtraCompilerValues(reg : TRegistry);
 begin
   {Saves the compiler values to the registry}
-  Reg_DeleteKey(reg, 'Compiler');
-  Reg_OpenKey(reg, 'Compiler');
+  Reg_DeleteKey(reg, 'ExtraCompiler');
+  Reg_OpenKey(reg, 'ExtraCompiler');
   try
     reg.WriteString('NQCSwitches', NQCSwitches);
     reg.WriteString('LCCSwitches', LCCSwitches);
@@ -1629,6 +1630,7 @@ procedure ResetCompilerValues(reg : TRegistry);
 begin
 {Resets the compiler values to default}
   Reg_DeleteKey(reg, 'Compiler');
+  Reg_DeleteKey(reg, 'ExtraCompiler');
   LoadBasicCompilerValues(reg);
   LoadExtraCompilerValues(reg);
 end;
@@ -3349,7 +3351,7 @@ var
 begin
   R := TRegistry.Create;
   try
-    Reg_OpenKey(R, 'General');
+    Reg_OpenKey(R, 'ExtraGeneral');
     try
       Result := Reg_ReadBool(R, 'UseMDIMode', True);
     finally

@@ -26,8 +26,11 @@ uses
 {$IFDEF FPC}
   LResources,
   LCLIntf,
+{$ELSE}
+  ToolWin,
+  ImgList,
 {$ENDIF}
-  Classes, Graphics, Controls, Forms, ComCtrls, ToolWin, ActnList, ImgList,
+  Classes, Graphics, Controls, Forms, ComCtrls, ActnList,
   Dialogs, Menus;
 
 type
@@ -149,8 +152,8 @@ implementation
 uses
   uMIDIConversion, uWav2RSO, Watch, uNXTImage, uNXTExplorer,
   Piano, MessageUnit, JoystickUnit, Diagnose, Controller, brick_common,
-  uSpirit, MemoryUnit, uPortPrompt, uLocalizedStrings, RemoteUnit,
-  Unlock, uportsedit, uGuiUtils;
+  MemoryUnit, uPortPrompt, uLocalizedStrings, RemoteUnit,
+  Unlock, uportsedit;
 
 procedure TfrmNXTTools.FormCreate(Sender: TObject);
 begin

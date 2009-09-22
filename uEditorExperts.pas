@@ -43,7 +43,7 @@ const
   K_USER_REVERSE        = ecUserFirst + 5;
   K_USER_ALIGN          = ecUserFirst + 6;
 
-procedure AddEditorExpertCommands(aEditor : TCustomSynEdit);
+procedure AddEditorExpertCommands(aEditor : TSynEdit);
 function FindIdentAtPos(const Source: string; CurPos: Integer; Prev: Boolean;
   var Pos: Integer; var Ident: string): Boolean;
 function ReverseStatements(Lines: TStrings): Boolean;
@@ -68,7 +68,7 @@ const
   VK_END        = 35;
   VK_HOME       = 36;
 
-procedure AddEditorExpertCommands(aEditor : TCustomSynEdit);
+procedure AddEditorExpertCommands(aEditor : TSynEdit);
 var
   KS : TSynEditKeystroke;
 begin
@@ -345,6 +345,9 @@ var
   SpaceAfter: string;
   LeadingSpace: string;
 begin
+  LeadingSpace := '';
+  SpaceBefore := '';
+  SpaceAfter := '';
   AssignOp := '=';
   Result := False;
   if S = '' then

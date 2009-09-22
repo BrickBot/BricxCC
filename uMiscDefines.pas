@@ -19,7 +19,7 @@ unit uMiscDefines;
 interface
 
 uses
-  Classes, Forms, uParseCommon, SynEditHighlighter, uNXTConstants,
+  Classes, Forms, uParseCommon, SynEditHighlighter, 
   BricxCCSynEdit;
 
 type

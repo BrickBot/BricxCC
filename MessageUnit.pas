@@ -75,7 +75,7 @@ var
 implementation
 
 uses
-  SysUtils, brick_common, uGlobals, uCommonUtils, uGuiUtils;
+  SysUtils, brick_common, uGlobals, uCommonUtils;
 
 {$IFNDEF FPC}
 {$R *.DFM}

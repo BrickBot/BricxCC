@@ -52,7 +52,7 @@ uses
   Watch in 'Watch.pas' {WatchForm},
   uMIDIConversion in 'uMIDIConversion.pas' {frmMIDIConversion},
   uWav2RSO in 'uWav2RSO.pas' {frmWave2RSO},
-  MemoryUnit in 'MemoryUnit.pas' {MemoryForm};
+  MemoryUnit in 'MemoryUnit.pas';
 
 {$IFNDEF FPC}
 {$R *.res}
