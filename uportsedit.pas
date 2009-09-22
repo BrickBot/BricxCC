@@ -25,11 +25,12 @@ interface
 uses
 {$IFNDEF FPC}
   Windows,
+  ImgList, ToolWin,
 {$ELSE}
   LResources, FileUtil,
 {$ENDIF}
   Classes, SysUtils, Forms, Controls, Graphics, Dialogs,
-  ComCtrls, StdCtrls, ActnList, StdActns, ImgList, ToolWin;
+  ComCtrls, StdCtrls, ActnList, StdActns;
 
 type
 

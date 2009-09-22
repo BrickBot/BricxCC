@@ -109,7 +109,7 @@ uses
 {$IFNDEF NXT_ONLY}
   MainUnit, Dialogs,
 {$ENDIF}
-  SysUtils, brick_common, uLocalizedStrings, uJoyGlobals, uGlobals, uGuiUtils;
+  SysUtils, brick_common, uLocalizedStrings, uJoyGlobals, uGlobals;
 
 var oldldir:integer =100;                   // previous left motor direction
     oldrdir:integer =100;                   // previous right motor direction

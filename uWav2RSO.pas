@@ -30,7 +30,7 @@ uses
   LResources,
   EditBtn,
 {$ENDIF}
-  Classes, Controls, Forms, StdCtrls, Dialogs, Menus, BricxccSpin,
+  Classes, Controls, Forms, StdCtrls, Dialogs, Menus, 
   Buttons;
 
 type
@@ -90,7 +90,7 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, FileCtrl, uSrcCommon, uWav2RsoCvt, uGuiUtils;
+  SysUtils, uSrcCommon, uWav2RsoCvt, uGuiUtils;
 
 const
   SAMPLE_RATES : array[0..6] of Integer = (

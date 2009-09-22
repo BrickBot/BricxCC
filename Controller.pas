@@ -143,7 +143,7 @@ implementation
 {$ENDIF}
 
 uses
-  brick_common, rcx_constants, uSources, uLocalizedStrings, uGlobals, uGuiUtils;
+  brick_common, rcx_constants, uSources, uLocalizedStrings, uGlobals;
 
 var
   V_HEIGHT, V_MOTORS_TOP, V_VARS_TOP, V_TASKS_TOP, V_FUDGE,

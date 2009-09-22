@@ -31,7 +31,7 @@ procedure ConvertRSO2Wave(filename, outdir : string; msgs : TStrings);
 implementation
 
 uses
-  SysUtils, Math, uCommonUtils, uSrc, uSrcCommon, uLocalizedStrings;
+  SysUtils, uCommonUtils, uSrc, uSrcCommon, uLocalizedStrings;
 
 type
   RIFFHeader = record

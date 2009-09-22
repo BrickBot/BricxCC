@@ -28,8 +28,8 @@ uses
 {$ELSE}
   LResources,
 {$ENDIF}
-  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
-  StdCtrls, ComCtrls, ExtCtrls, Menus, uOfficeComp, BricxccSpin;
+  SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
+  StdCtrls, ComCtrls, ExtCtrls, Menus, BricxccSpin;
 
 type
   TDiagForm = class(TForm)

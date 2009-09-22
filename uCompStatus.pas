@@ -16,11 +16,17 @@
  *)
 unit uCompStatus;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls;
+{$IFDEF FPC}
+  LResources,
+{$ENDIF}
+  Classes, Controls, Forms, StdCtrls;
 
 type
   TfrmCompStatus = class(TForm)
@@ -42,7 +48,12 @@ var
 
 implementation
 
+{$IFNDEF FPC}
 {$R *.dfm}
+{$ENDIF}
+
+uses
+  SysUtils;
 
 procedure TfrmCompStatus.FormShow(Sender: TObject);
 begin
@@ -68,5 +79,10 @@ procedure TfrmCompStatus.FormCreate(Sender: TObject);
 begin
 // load format settings from OS
 end;
+
+{$IFDEF FPC}
+initialization
+  {$i uCompStatus.lrs}
+{$ENDIF}
 
 end.

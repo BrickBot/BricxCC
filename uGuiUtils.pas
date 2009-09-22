@@ -21,7 +21,7 @@ interface
 uses
   Controls, StdCtrls, Menus, Forms,
 {$IFNDEF FPC}
-  DirectoryEdit, 
+  DirectoryEdit, Messages, 
 {$ELSE}
   EditBtn,
 {$ENDIF}
@@ -49,7 +49,7 @@ uses
 {$ELSE}
   LCLIntf,
 {$ENDIF}
-  Messages, SysUtils, ComCtrls;
+  SysUtils, ComCtrls;
 
 
 const
@@ -111,6 +111,7 @@ end;
 function CalcMaxWidthOfStrings( aList: TStrings; aFont: TFont ): integer;
 {$IFDEF FPC}
 begin
+  Result := 40;
 {$ELSE}
 var
   max, n, i, extra: Integer;

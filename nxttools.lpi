@@ -30,27 +30,27 @@
         <MinVersion Major="1" Valid="True"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="4">
+    <Units Count="22">
       <Unit0>
         <Filename Value="nxttools.dpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="nxttools"/>
-        <CursorPos X="7" Y="43"/>
-        <TopLine Value="33"/>
+        <CursorPos X="33" Y="55"/>
+        <TopLine Value="19"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="80"/>
+        <UsageCount Value="82"/>
         <Loaded Value="True"/>
         <SyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value="uportsedit.pas"/>
-        <IsPartOfProject Value="True"/>
         <ComponentName Value="frmPortsEdit"/>
+        <IsPartOfProject Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uportsedit"/>
-        <CursorPos X="69" Y="57"/>
-        <TopLine Value="57"/>
-        <UsageCount Value="22"/>
+        <CursorPos X="30" Y="27"/>
+        <TopLine Value="14"/>
+        <UsageCount Value="24"/>
         <SyntaxHighlighter Value="Delphi"/>
       </Unit1>
       <Unit2>
@@ -67,11 +67,174 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uToolPalette"/>
-        <CursorPos X="17" Y="337"/>
-        <TopLine Value="309"/>
+        <CursorPos X="3" Y="155"/>
+        <TopLine Value="138"/>
         <UsageCount Value="10"/>
         <SyntaxHighlighter Value="Delphi"/>
       </Unit3>
+      <Unit4>
+        <Filename Value="bricktools\NQCSerialWin.pas"/>
+        <UnitName Value="NQCSerialWin"/>
+        <CursorPos X="25" Y="274"/>
+        <TopLine Value="256"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit4>
+      <Unit5>
+        <Filename Value="uGuiUtils.pas"/>
+        <UnitName Value="uGuiUtils"/>
+        <CursorPos X="3" Y="52"/>
+        <TopLine Value="238"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit5>
+      <Unit6>
+        <Filename Value="uPortPrompt.pas"/>
+        <ComponentName Value="frmPortPrompt"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uPortPrompt"/>
+        <CursorPos X="4" Y="98"/>
+        <TopLine Value="65"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit6>
+      <Unit7>
+        <Filename Value="uWav2RSO.pas"/>
+        <ComponentName Value="frmWave2RSO"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="uWav2RSO"/>
+        <CursorPos X="20" Y="168"/>
+        <TopLine Value="165"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit7>
+      <Unit8>
+        <Filename Value="uEditorExperts.pas"/>
+        <UnitName Value="uEditorExperts"/>
+        <CursorPos X="20" Y="350"/>
+        <TopLine Value="334"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit8>
+      <Unit9>
+        <Filename Value="C:\lazarus\components\synedit\synedit.pp"/>
+        <UnitName Value="SynEdit"/>
+        <CursorPos X="1" Y="917"/>
+        <TopLine Value="902"/>
+        <UsageCount Value="10"/>
+      </Unit9>
+      <Unit10>
+        <Filename Value="JoystickUnit.pas"/>
+        <ComponentName Value="JoystickForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="JoystickUnit"/>
+        <CursorPos X="36" Y="269"/>
+        <TopLine Value="267"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit10>
+      <Unit11>
+        <Filename Value="C:\lazarus\lcl\imglist.pp"/>
+        <UnitName Value="ImgList"/>
+        <CursorPos X="20" Y="3"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+      </Unit11>
+      <Unit12>
+        <Filename Value="Unlock.pas"/>
+        <ComponentName Value="UnlockForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Unlock"/>
+        <CursorPos X="1" Y="30"/>
+        <TopLine Value="12"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit12>
+      <Unit13>
+        <Filename Value="RemoteUnit.pas"/>
+        <ComponentName Value="RemoteForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="RemoteUnit"/>
+        <CursorPos X="38" Y="6"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit13>
+      <Unit14>
+        <Filename Value="Controller.pas"/>
+        <ComponentName Value="DirectForm"/>
+        <HasResources Value="True"/>
+        <ResourceBaseClass Value="Form"/>
+        <UnitName Value="Controller"/>
+        <CursorPos X="32" Y="17"/>
+        <TopLine Value="11"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit14>
+      <Unit15>
+        <Filename Value="Diagnose.pas"/>
+        <HasResources Value="True"/>
+        <UnitName Value="Diagnose"/>
+        <CursorPos X="30" Y="4"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit15>
+      <Unit16>
+        <Filename Value="uSources.pas"/>
+        <UnitName Value="uSources"/>
+        <CursorPos X="43" Y="347"/>
+        <TopLine Value="340"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit16>
+      <Unit17>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <UnitName Value="FantomSpirit"/>
+        <CursorPos X="41" Y="3766"/>
+        <TopLine Value="3750"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit17>
+      <Unit18>
+        <Filename Value="samplerate\uSrcSinc.pas"/>
+        <UnitName Value="uSrcSinc"/>
+        <CursorPos X="3" Y="387"/>
+        <TopLine Value="369"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit18>
+      <Unit19>
+        <Filename Value="uWav2RsoCvt.pas"/>
+        <UnitName Value="uWav2RsoCvt"/>
+        <CursorPos X="71" Y="25"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit19>
+      <Unit20>
+        <Filename Value="Watch.pas"/>
+        <HasResources Value="True"/>
+        <UnitName Value="Watch"/>
+        <CursorPos X="1" Y="1"/>
+        <TopLine Value="19"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit20>
+      <Unit21>
+        <Filename Value="Piano.pas"/>
+        <HasResources Value="True"/>
+        <UnitName Value="Piano"/>
+        <CursorPos X="31" Y="13"/>
+        <TopLine Value="1"/>
+        <UsageCount Value="10"/>
+        <SyntaxHighlighter Value="Delphi"/>
+      </Unit21>
     </Units>
     <JumpHistory Count="0" HistoryIndex="-1"/>
   </ProjectOptions>
@@ -79,7 +242,7 @@
     <Version Value="8"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <OtherUnitFiles Value="bricktools\"/>
+      <OtherUnitFiles Value="bricktools\;NXT\;samplerate\;$(LazarusDir)\components\synedit\units\$(TargetCPU)-$(TargetOS)\"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
@@ -96,6 +259,7 @@
       </Debugging>
     </Linking>
     <Other>
+      <CustomOptions Value="-dNXT_ONLY -dCAN_DOWNLOAD"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>

@@ -101,7 +101,7 @@ implementation
 
 uses
   SysUtils, uGlobals, brick_common, rcx_constants, uRemoteProgMap,
-  uGuiUtils, uRemoteGlobals;
+  uRemoteGlobals;
 
 procedure TRemoteForm.tmrMainTimer(Sender: TObject);
 var
