@@ -10,7 +10,7 @@ http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
 Version 1.0.1.b36
 -----------------
-- Added support for \" and \' embedded in NXC and NBC strings.
+- Added support for \", \', and \\ embedded in NXC and NBC strings.
 - Added -ER=n maximum compiler error switch. Filtered out duplicate errors as well.
 - Added support for 2D scalar constant array initialization using nested brace pairs.
   e.g., int xyz[][] = {{1, 2, 3}, {4, 5, 6}, {7, 8, 9}};
@@ -39,10 +39,25 @@ Version 1.0.1.b36
 - Added API support for setting baud rate and mode of Hi Speed port with enhanced firmware.
 - Added API support for LEGO Color sensor
 - Fixed a preprocessor bug which broke nested #else statements
-- Added NXC API functions for enhanced firmware math opcodes (Atan, Ceil, Exp, Floor, Tan, Tanh, 
-  Cosh, Sinh, Log, Log10, Atan2, Pow, Trunc, Frac, and MulDiv32)
-- Added NXC C++ aliases for standard operators: and, and_eq, bitand, bitor, compl, not, not_eq, 
-  or, or_eq, xor, and xor_eq
+- Added NXC API functions for enhanced firmware math opcodes (atan, ceil, exp, floor, tan, tanh, 
+  cosh, sinh, log, log10, atan2, pow, trunc, frac, muldiv32, cos, acos, sin, and asin)
+- Added NBC/NXC API support for HiTechnic EOPD sensor
+- Added firmware and NBC/NXC API support for reading/setting the display Contrast 
+  (SetDisplayContrast(byte contrast); and byte DisplayContrast(void);)
+- Added compiler optimization for constant shifts
+- Improved function prototype support
+- Added NXC API functions for enhanced firmware math opcodes (atand, tand, tanhd, 
+  acosd, cosd, coshd, asind, sind, sinhd, atan2d)
+- Added firmware version check when downloading compiled .rxe to NXT.
+- Level 2 optimization bug fixes
+- Cross platform fixes/64-bit support
+- Support for Array and UDT expressions in parameter passing.
+- Inline functions can now call other inline functions
+- const type arguments to inline functions can now be treated as a compile-time constant.
+- fixed a bug in the preprocessor for char type #defines (e.g., #define test 'c')
+- fixed a optimizer bug that was removing safecall mutexes that should not be removed
+- Added API support for HiTechnic IRSeeker 2 and Color 2 sensors
+- Added API functions to read I2C Version, VendorId, and DeviceId values
 
 
 
