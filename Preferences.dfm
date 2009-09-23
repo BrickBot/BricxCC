@@ -86,7 +86,7 @@ object PrefForm: TPrefForm
       Top = 1
       Width = 450
       Height = 319
-      ActivePage = shtGeneral
+      ActivePage = shtEditor
       Align = alClient
       TabOrder = 0
       OnChange = pagPrefsChange
@@ -391,7 +391,7 @@ object PrefForm: TPrefForm
           Top = 0
           Width = 442
           Height = 291
-          ActivePage = shtEditorOptions
+          ActivePage = shtExperts
           Align = alClient
           TabOrder = 0
           object shtEditorOptions: TTabSheet
@@ -828,19 +828,26 @@ object PrefForm: TPrefForm
               Height = 13
               Caption = 'Align lines (Ctrl+Alt+End)'
             end
-            object Label7: TLabel
+            object lblPrevNext: TLabel
               Left = 8
               Top = 80
               Width = 205
               Height = 13
               Caption = 'Previous/Next identifier (Ctrl+Alt+Up/Down)'
             end
-            object Label8: TLabel
+            object lblReverse: TLabel
               Left = 8
               Top = 112
               Width = 170
               Height = 13
               Caption = 'Reverse statements (Ctrl+Alt+Home)'
+            end
+            object lblGrepSearch: TLabel
+              Left = 8
+              Top = 144
+              Width = 119
+              Height = 13
+              Caption = 'Grep search (Shift+Alt+S)'
             end
             object btnCommentConfig: TButton
               Left = 337
@@ -860,7 +867,7 @@ object PrefForm: TPrefForm
               TabOrder = 1
               OnClick = btnAlignLinesConfigClick
             end
-            object Button1: TButton
+            object btnPrevNextConfig: TButton
               Left = 337
               Top = 74
               Width = 89
@@ -868,9 +875,8 @@ object PrefForm: TPrefForm
               Caption = 'Configure'
               Enabled = False
               TabOrder = 2
-              OnClick = btnAlignLinesConfigClick
             end
-            object Button2: TButton
+            object btnReverseConfig: TButton
               Left = 337
               Top = 106
               Width = 89
@@ -878,15 +884,23 @@ object PrefForm: TPrefForm
               Caption = 'Configure'
               Enabled = False
               TabOrder = 3
-              OnClick = btnAlignLinesConfigClick
             end
             object chkCCInsensitive: TCheckBox
               Left = 8
-              Top = 144
+              Top = 184
               Width = 417
               Height = 17
               Caption = 'Code completion tool is always case-insensitive'
+              TabOrder = 5
+            end
+            object btnGrepSearchConfig: TButton
+              Left = 337
+              Top = 138
+              Width = 89
+              Height = 25
+              Caption = 'Configure'
               TabOrder = 4
+              OnClick = btnGrepSearchConfigClick
             end
           end
         end
@@ -1061,7 +1075,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11092
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNQCIncludePathExit
             end
@@ -1134,7 +1148,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11101
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtLCCIncludePathExit
             end
@@ -1223,7 +1237,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11107
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNBCIncludePathExit
             end
@@ -2216,7 +2230,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnChange = cboLangTempChange
         end
@@ -2446,7 +2460,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnChange = cboLanguagesChange
         end

@@ -140,7 +140,8 @@ type
   protected
     procedure DoHitMatch(LineNo: Integer; const Line: string;
       SPos, EPos: Integer); virtual;
-//    procedure GrepCurrentSourceEditor;
+    procedure GrepCurrentSourceEditor;
+    procedure GrepOpenFiles;
     procedure GrepDirectory(Dir, Mask: string);
     procedure GrepDirectories(const Dir, Mask: string);
     procedure GrepResults;
@@ -156,7 +157,7 @@ type
 implementation
 
 uses
-  SysUtils, Forms, Dialogs, Controls;
+  SysUtils, Forms, Dialogs, Controls, uGrepCommonUtils;
 
 const
   AllFilesWildCard = '*.*';
@@ -388,6 +389,24 @@ begin
   end;
 end;
 
+procedure TGrepSearchRunner.GrepCurrentSourceEditor;
+resourcestring
+  SNoFileOpen = 'No file is currently open';
+var
+  CurrentFile: string;
+begin
+  CurrentFile := GxOtaGetFileNameOfCurrentModule;
+
+  Assert(FFileResult = nil, 'FFileResult leak');
+  FFileResult := nil;
+
+  FSearchRoot := ExtractFilePath(CurrentFile);
+  if NotEmpty(CurrentFile) then
+    ExecuteSearchOnFile(CurrentFile)
+  else
+    raise Exception.Create(SNoFileOpen);
+end;
+
 procedure TGrepSearchRunner.GrepResults;
 var
   i: Integer;
@@ -398,6 +417,26 @@ begin
     begin
       ExecuteSearchOnFile(FFilesInResults[i]);
     end;
+  end;
+end;
+
+procedure TGrepSearchRunner.GrepOpenFiles;
+var
+  i: Integer;
+  SL : TStringList;
+begin
+  SL := TStringList.Create;
+  try
+    SL.CommaText := GxOtaGetOpenFilenames;
+    for i := 0 to SL.Count - 1 do
+    begin
+      if FileExists(SL[i]) then
+      begin
+        ExecuteSearchOnFile(SL[i]);
+      end;
+    end;
+  finally
+    FreeAndNil(SL);
   end;
 end;
 
@@ -425,11 +464,9 @@ begin
       FDupeFileList.Sorted := True;
       case FGrepSettings.GrepAction of
         gaCurrentOnlyGrep:
-          ;
-//          GrepCurrentSourceEditor;
+          GrepCurrentSourceEditor;
         gaOpenFilesGrep:
-          ;
-//          GrepProject(GxOtaGetCurrentProject);
+          GrepOpenFiles;
         gaDirGrep:
           begin
             if Length(Trim(FGrepSettings.Mask)) = 0 then

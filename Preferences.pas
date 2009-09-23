@@ -330,10 +330,10 @@ type
     lblBlockComment: TLabel;
     lblAlignLines: TLabel;
     btnAlignLinesConfig: TButton;
-    Button1: TButton;
-    Label7: TLabel;
-    Button2: TButton;
-    Label8: TLabel;
+    btnPrevNextConfig: TButton;
+    lblPrevNext: TLabel;
+    btnReverseConfig: TButton;
+    lblReverse: TLabel;
     chkIncludeSrcInList: TCheckBox;
     pnlAPIRight: TPanel;
     grpAPIHeaders: TGroupBox;
@@ -361,6 +361,8 @@ type
     inpLeftOffset: TBricxccSpinEdit;
     inpDigitCount: TBricxccSpinEdit;
     inpGutterWidth: TBricxccSpinEdit;
+    lblGrepSearch: TLabel;
+    btnGrepSearchConfig: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -417,6 +419,7 @@ type
     procedure btnShowNBCCommonClick(Sender: TObject);
     procedure btnShowNXTDefsClick(Sender: TObject);
     procedure btnShowNXCDefsClick(Sender: TObject);
+    procedure btnGrepSearchConfigClick(Sender: TObject);
   private
     { Private declarations }
     fColorsChanged : boolean;
@@ -4119,8 +4122,10 @@ begin
   end;
 end;
 
-
-
+procedure TPrefForm.btnGrepSearchConfigClick(Sender: TObject);
+begin
+  MainForm.GrepDlgExpert.Configure;
+end;
 
 initialization
 {$IFDEF FPC}
@@ -4128,9 +4133,9 @@ initialization
 
   VerCompanyName      := 'JoCar Consulting';
   VerFileDescription  := '';
-  VerFileVersion      := '3.3.7.16';
+  VerFileVersion      := '3.3.7.20';
   VerInternalName     := 'BricxCC';
-  VerLegalCopyright   := 'Copyright (c) 2008, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2009, John Hansen';
   VerOriginalFileName := 'BricxCC';
   VerProductName      := 'BricxCC';
   VerProductVersion   := '3.3';

@@ -335,6 +335,10 @@ const
     'OpenFileReadLinear, RS485Control, RS485Exit, RS485Init, RS485Read,'+
     'RS485Status, RS485Uart, RS485Write, SendRS485Bool, SendRS485Number,'+
     'SendRS485String,' +
+    'SetHTColor2Mode, HTSendCommand, ReadSensorHTColor2Active,' +
+    'ReadSensorHTNormalizedColor2Active, ReadSensorHTRawColor2,' +
+    'ReadI2CDeviceInfoEx, ReadI2CDeviceInfo, ReadI2CVersionEx, ReadI2CVersion,' +
+    'ReadI2CVendorIdEx, ReadI2CVendorId, ReadI2CDeviceIdEx, ReadI2CDeviceId,' +
     'RICImgPoint, RICImgRect, RICOpDescription, RICOpCopyBits, RICOpPixel, RICOpLine,'+
     'RICOpRect, RICOpCircle, RICOpNumBox, RICOpSprite, RICSpriteData, RICOpVarMap,'+
     'RICMapElement, RICMapFunction, RICArg, RICMapArg';
@@ -650,7 +654,12 @@ const
     'DRAW_OPT_FONT_DIRECTIONS, DRAW_OPT_FONT_WRAP, DRAW_OPT_FONT_DIR_L2RB,' +
     'DRAW_OPT_FONT_DIR_L2RT, DRAW_OPT_FONT_DIR_R2LB, DRAW_OPT_FONT_DIR_R2LT,' +
     'DRAW_OPT_FONT_DIR_B2TL, DRAW_OPT_FONT_DIR_B2TR, DRAW_OPT_FONT_DIR_T2BL,' +
-    'DRAW_OPT_FONT_DIR_T2BR, DrawFont, DrawPolygon, DrawEllipse';
+    'DRAW_OPT_FONT_DIR_T2BR, DrawFont, DrawPolygon, DrawEllipse,' +
+    'HT_REG_VERSION, HT_REG_VENDOR_ID, HT_REG_DEVICE_ID, HT_REG_CMD,' +
+    'HT_CMD_COLOR2_ACTIVE, HT_CMD_COLOR2_PASSIVE, HT_CMD_COLOR2_RAW,' +
+    'HT_CMD_COLOR2_50HZ, HT_CMD_COLOR2_60HZ, HT_CMD_COLOR2_BLCAL,' +
+    'HT_CMD_COLOR2_WBCAL, HT_CMD_COLOR2_FAR, HT_CMD_COLOR2_LED_HI,' +
+    'HT_CMD_COLOR2_LED_LOW, HT_CMD_COLOR2_NEAR';
 
   NXCConstants: string =
     'S1, S2, S3, S4, SENSOR_1, SENSOR_2, SENSOR_3, SENSOR_4,'+

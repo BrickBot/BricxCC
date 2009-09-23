@@ -1746,6 +1746,24 @@
 #define RCX_MessageOp        0xf7
 
 
+// HiTechnic constants
+#define HT_REG_VERSION     0x00
+#define HT_REG_VENDOR_ID   0x08
+#define HT_REG_DEVICE_ID   0x10
+#define HT_REG_CMD         0x41
+
+#define HT_CMD_COLOR2_ACTIVE  0x00
+#define HT_CMD_COLOR2_PASSIVE 0x01
+#define HT_CMD_COLOR2_RAW     0x03
+#define HT_CMD_COLOR2_50HZ    0x35
+#define HT_CMD_COLOR2_60HZ    0x36
+#define HT_CMD_COLOR2_BLCAL   0x42
+#define HT_CMD_COLOR2_WBCAL   0x43
+#define HT_CMD_COLOR2_FAR     0x46
+#define HT_CMD_COLOR2_LED_HI  0x48
+#define HT_CMD_COLOR2_LED_LOW 0x4C
+#define HT_CMD_COLOR2_NEAR    0x4E
+
 // MindSensors constants
 #define MS_REG_VERSION     0x00
 #define MS_REG_VENDOR_ID   0x08

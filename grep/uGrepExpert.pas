@@ -21,10 +21,9 @@ unit uGrepExpert;
 interface
 
 uses
-  Classes, Graphics, Registry;
+  Classes, Graphics, uGrepCommonUtils;
 
 type
-  TGExpertsSettings = class(TRegistry);
   TGrepExpert = class(TObject)
   private
     FGrepMiddle: Boolean;
@@ -100,13 +99,13 @@ type
 var
   GrepStandAlone: TGrepExpert = nil;
 
-procedure ShowGrep; 
+procedure ShowGrep;
 
 implementation
 
 uses
   SysUtils, Menus, Controls, ComCtrls,
-  uGrepResults, uGrepResultsOptions, uGrepCommonUtils;
+  uGrepResults, uGrepResultsOptions, uGuiUtils, uRegUtils;
 
 { TGrepExpert }
 
@@ -128,6 +127,7 @@ begin
   fmGrepResults := TfmGrepResults.Create(nil);
 //  SetFormIcon(fmGrepResults);
   fmGrepResults.GrepExpert := Self;
+  LoadSettings;
 end;
 
 destructor TGrepExpert.Destroy;
@@ -202,7 +202,6 @@ procedure TGrepExpert.InternalSaveSettings(Settings: TGExpertsSettings);
 begin
 //  inherited InternalSaveSettings(Settings);
   // do not localize any of the following lines
-{
   Settings.WriteBool(ConfigurationKey, 'CaseSensitive', GrepCaseSensitive);
   Settings.WriteBool(ConfigurationKey, 'Code', GrepCode);
   Settings.WriteBool(ConfigurationKey, 'Strings', GrepStrings);
@@ -211,7 +210,6 @@ begin
   Settings.WriteBool(ConfigurationKey, 'Implementation', GrepImplementation);
   Settings.WriteBool(ConfigurationKey, 'Initialization', GrepInitialization);
   Settings.WriteBool(ConfigurationKey, 'Finalization', GrepFinalization);
-  Settings.WriteBool(ConfigurationKey, 'Forms', GrepForms);
   Settings.WriteInteger(ConfigurationKey, 'Search', GrepSearch);
   Settings.WriteBool(ConfigurationKey, 'SubDirectories', GrepSub);
   Settings.WriteBool(ConfigurationKey, 'ExpandAll', GrepExpandAll);
@@ -219,8 +217,8 @@ begin
   Settings.WriteBool(ConfigurationKey, 'Middle', GrepMiddle);
   Settings.WriteBool(ConfigurationKey, 'RegEx', GrepRegEx);
   Settings.WriteBool(ConfigurationKey, 'UseCurrentIdent', GrepUseCurrentIdent);
-  Settings.SaveFont(AddSlash(ConfigurationKey) + 'ListFont', ListFont);
-  Settings.SaveFont(AddSlash(ConfigurationKey) + 'ContextFont', ContextFont);
+  Settings.SaveFont(IncludeTrailingPathDelimiter(ConfigurationKey) + 'ListFont', ListFont);
+  Settings.SaveFont(IncludeTrailingPathDelimiter(ConfigurationKey) + 'ContextFont', ContextFont);
   Settings.WriteInteger(ConfigurationKey, 'NumContextLines', NumContextLines);
   Settings.WriteInteger(ConfigurationKey, 'ContextMatchColor', ContextMatchColor);
 
@@ -228,48 +226,12 @@ begin
   RegWriteStrings(Settings, SearchList, ConfigurationKey + PathDelim + 'SearchList', 'GrepSearch');
   RegWriteStrings(Settings, ReplaceList, ConfigurationKey + PathDelim + 'ReplaceList', 'GrepReplace');
   RegWriteStrings(Settings, MaskList, ConfigurationKey + PathDelim + 'MaskList', 'GrepMask');
-}
 end;
 
 procedure TGrepExpert.InternalLoadSettings(Settings: TGExpertsSettings);
-
-  // Build a guess for the RTL path from a passed in VCL path.
-  function RtlPath(const VisualPath: string): string;
-  const
-    cCLX = 'clx';
-    cVCL = 'vcl';
-    cRTL = 'rtl';
-  var
-    SubPos: Integer;
-  begin
-    Result := '';
-
-    SubPos := AnsiCaseInsensitivePos(cVCL, VisualPath);
-    if SubPos > 0 then
-    begin
-      Result := VisualPath;
-      Delete(Result, SubPos, Length(cVCL));
-      Insert(cRTL, Result, SubPos);
-    end;
-
-    if Result <> '' then
-      Exit;
-
-    SubPos := AnsiCaseInsensitivePos(cCLX, VisualPath);
-    if SubPos > 0 then
-    begin
-      Result := VisualPath;
-      Delete(Result, SubPos, Length(cCLX));
-      Insert(cRTL, Result, SubPos);
-    end;
-  end;
-
-var
-  TempPath: string;
 begin
 //  inherited InternalLoadSettings(Settings);
   // Do not localize any of the following lines
-{
   FGrepCaseSensitive := Settings.ReadBool(ConfigurationKey, 'CaseSensitive', False);
   FGrepCode := Settings.ReadBool(ConfigurationKey, 'Code', True);
   FGrepStrings := Settings.ReadBool(ConfigurationKey, 'Strings', True);
@@ -278,7 +240,6 @@ begin
   FGrepImplementation := Settings.ReadBool(ConfigurationKey, 'Implementation', True);
   FGrepInitialization := Settings.ReadBool(ConfigurationKey, 'Initialization', True);
   FGrepFinalization := Settings.ReadBool(ConfigurationKey, 'Finalization', True);
-  FGrepForms := Settings.ReadBool(ConfigurationKey, 'Forms', False);
   FGrepSearch := Settings.ReadInteger(ConfigurationKey, 'Search', 0);
   FGrepSub := Settings.ReadBool(ConfigurationKey, 'SubDirectories', True);
   FGrepExpandAll := Settings.ReadBool(ConfigurationKey, 'ExpandAll', False);
@@ -287,8 +248,8 @@ begin
   FGrepRegEx := Settings.ReadBool(ConfigurationKey, 'RegEx', False);
   FGrepUseCurrentIdent := Settings.ReadBool(ConfigurationKey, 'UseCurrentIdent', False);
 
-  Settings.LoadFont(AddSlash(ConfigurationKey) + 'ListFont', ListFont);
-  Settings.LoadFont(AddSlash(ConfigurationKey) + 'ContextFont', ContextFont);
+  Settings.LoadFont(IncludeTrailingPathDelimiter(ConfigurationKey) + 'ListFont', ListFont);
+  Settings.LoadFont(IncludeTrailingPathDelimiter(ConfigurationKey) + 'ContextFont', ContextFont);
   FNumContextLines :=  Settings.ReadInteger(ConfigurationKey, 'NumContextLines', FNumContextLines);
   FContextMatchColor :=  Settings.ReadInteger(ConfigurationKey, 'ContextMatchColor', FContextMatchColor);
 
@@ -298,23 +259,11 @@ begin
   RegReadStrings(Settings, MaskList, ConfigurationKey + PathDelim + 'MaskList', 'GrepMask');
   if MaskList.Count = 0 then
   begin
-    MaskList.Add('*.pas;*.dpr;*.inc');
+    MaskList.Add('*.nxc;*.h');
+    MaskList.Add('*.nbc;*.h');
+    MaskList.Add('*.nqc;*.nqh;*.h');
     MaskList.Add('*.txt;*.html;*.htm;.rc;*.xml;*.todo;*.me');
-    if IsStandAlone or GxOtaHaveCPPSupport then
-      MaskList.Add('*.cpp;*.hpp;*.h;*.pas;*.dpr');
-    if IsStandAlone or GxOtaHaveCSharpSupport then
-      MaskList.Add('*.cs');
   end;
-  if DirList.Count = 0 then
-  begin
-    TempPath := RemoveSlash(ConfigInfo.VCLPath);
-    if NotEmpty(TempPath) and DirectoryExists(TempPath) then
-      DirList.Add(TempPath);
-    TempPath := RtlPath(ConfigInfo.VCLPath);
-    if NotEmpty(TempPath) and DirectoryExists(TempPath) then
-      DirList.Add(RemoveSlash(TempPath));
-  end;
-}
 end;
 
 procedure TGrepExpert.SetSearchList(New: TStrings);
@@ -341,7 +290,6 @@ procedure TGrepExpert.SetActive(New: Boolean);
 begin
   if New <> Active then
   begin
-//    inherited SetActive(New);
     if New then
     begin
       if fmGrepResults = nil then
@@ -358,31 +306,40 @@ begin
   Result := 'Grep';
 end;
 
-procedure ShowGrep;
+procedure TGrepExpert.LoadSettings;
+var
+  Settings: TGExpertsSettings;
 begin
-//  InitSharedResources;
+  Settings := TGExpertsSettings.Create;
   try
-    GrepStandAlone := TGrepExpert.Create;
-    try
-      GrepStandAlone.LoadSettings;
-      GrepStandAlone.ShowModal;
-      GrepStandAlone.SaveSettings;
-    finally
-      FreeAndNil(GrepStandAlone);
-    end;
+    InternalLoadSettings(Settings);
   finally
-//    FreeSharedResources;
+    FreeAndNil(Settings);
   end;
 end;
 
-procedure TGrepExpert.LoadSettings;
+procedure TGrepExpert.SaveSettings;
+var
+  Settings: TGExpertsSettings;
 begin
-
+  Settings := TGExpertsSettings.Create;
+  try
+    InternalSaveSettings(Settings);
+  finally
+    FreeAndNil(Settings);
+  end;
 end;
 
-procedure TGrepExpert.SaveSettings;
+procedure ShowGrep;
 begin
-
+  GrepStandAlone := TGrepExpert.Create;
+  try
+    GrepStandAlone.LoadSettings;
+    GrepStandAlone.ShowModal;
+    GrepStandAlone.SaveSettings;
+  finally
+    FreeAndNil(GrepStandAlone);
+  end;
 end;
 
 end.
