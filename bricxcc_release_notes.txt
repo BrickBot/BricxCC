@@ -37,7 +37,6 @@ Version 3.3.7.20
 - Added pause/single step, NBC/NXC variable watching.
 - Added support for drag-and-drop from NXT Explorer PC list view to BricxCC main window
   to open files.
-- Search mode in Find Brick dialog.
 - Code completion can be made case sensitive or not for NQC, NBC, and NXC.
 - User-defined functions are added to code completion list
 - Fixes for NBC compiler error reporting.
@@ -48,3 +47,7 @@ Version 3.3.7.20
   save changes.
 - Added visual indication of progress while initializing nxt.dat file
 - Add Search option to list of Ports on Find Brick dialog - only applies to NXT brick type
+- Added grep search feature from GExperts (Shift+Alt+S and Ctrl+Alt+R)
+- Added editor experts: block comment/uncomment (Ctrl+Alt+Period/Comma), 
+  align lines (Ctrl+Alt+End), previous/next identifier (Ctrl+Alt+Up/Down), and 
+  Reverse statements (Ctrl+Alt+Home)
