@@ -23,7 +23,7 @@ interface
 uses
   Windows, Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls, uGrepBackend, uGrepExpert, ComCtrls,
-  Menus, ActnList, ToolWin;
+  Menus, ActnList, ToolWin, ImgList;
 
 type
   TfmGrepResults = class(TForm)
@@ -37,14 +37,9 @@ type
     mitList: TMenuItem;
     mitListContract: TMenuItem;
     mitListExpand: TMenuItem;
-    mitHelp: TMenuItem;
-    mitHelpHelp: TMenuItem;
-    mitHelpAbout: TMenuItem;
     mitFileAbort: TMenuItem;
     mitListGotoSelected: TMenuItem;
     mitFileRefresh: TMenuItem;
-    mitViewStayOnTop: TMenuItem;
-    mitHelpSep1: TMenuItem;
     Actions: TActionList;
     actFileSearch: TAction;
     actFileRefresh: TAction;
@@ -55,10 +50,6 @@ type
     actListGotoSelected: TAction;
     actListContract: TAction;
     actListExpand: TAction;
-    actHelpHelp: TAction;
-    actHelpContents: TAction;
-    actHelpAbout: TAction;
-    mitHelpContents: TMenuItem;
     ToolBar: TToolBar;
     tbnSearch: TToolButton;
     tbnRefresh: TToolButton;
@@ -72,9 +63,6 @@ type
     tbnExpand: TToolButton;
     tbnSep1: TToolButton;
     tbnSep5: TToolButton;
-    tbnStayOnTop: TToolButton;
-    tbnSep6: TToolButton;
-    tbnHelp: TToolButton;
     mitListSep1: TMenuItem;
     mitFileSep1: TMenuItem;
     reContext: TRichEdit;
@@ -88,7 +76,6 @@ type
     mitFileCopy: TMenuItem;
     mitFileSep3: TMenuItem;
     mitView: TMenuItem;
-    mitViewSep2: TMenuItem;
     actViewToolBar: TAction;
     mitViewToolBar: TMenuItem;
     mitViewOptions: TMenuItem;
@@ -97,12 +84,13 @@ type
     actReplaceSelected: TAction;
     tbnReplaceAll: TToolButton;
     tbnReplaceSelected: TToolButton;
-    tbnSep7: TToolButton;
     mitReplace: TMenuItem;
     mitReplaceReplaceAll: TMenuItem;
     mitReplaceSelected: TMenuItem;
     mitListSep2: TMenuItem;
     pnlMain: TPanel;
+    Images: TImageList;
+    DisabledImages: TImageList;
     procedure FormResize(Sender: TObject);
     procedure lbResultsMouseUp(Sender: TObject; Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
     procedure lbResultsKeyPress(Sender: TObject; var Key: Char);
@@ -114,15 +102,11 @@ type
     procedure actFilePrintExecute(Sender: TObject);
     procedure actFileCopyExecute(Sender: TObject);
     procedure actFileSaveExecute(Sender: TObject);
-    procedure actViewStayOnTopExecute(Sender: TObject);
     procedure actFileExitExecute(Sender: TObject);
-    procedure actHelpHelpExecute(Sender: TObject);
-    procedure actHelpAboutExecute(Sender: TObject);
     procedure actListGotoSelectedExecute(Sender: TObject);
     procedure actListContractExecute(Sender: TObject);
     procedure actListExpandExecute(Sender: TObject);
     procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
-    procedure actHelpContentsExecute(Sender: TObject);
     procedure lbResultsClick(Sender: TObject);
     procedure actShowMatchContextExecute(Sender: TObject);
     procedure actViewToolBarExecute(Sender: TObject);
@@ -134,12 +118,10 @@ type
   private
     FSearchInProgress: Boolean;
     FReplaceInProgress: Boolean;
-    FDragPoint: TPoint;
     FGrepSettings: TGrepSettings;
     FSearcher: TGrepSearchRunner;
     FShowContext: Boolean;
     FDoSearchReplace: Boolean;
-    procedure SetStayOnTop(Value: Boolean);
     procedure RefreshContextLines;
     procedure SetShowContext(Value: Boolean);
     procedure HighlightMemo(FileMatches: TFileResult; StartLine, MatchLineNo: Integer);
@@ -160,7 +142,6 @@ type
     procedure SetMatchString(const MatchStr: string);
     function DoingSearchOrReplace: Boolean;
     procedure ExpandOrContractList(Expand: Boolean);
-    function GetStayOnTop: Boolean;
   protected
     procedure CreateParams(var Params: TCreateParams); override;
     procedure AssignSettingsToForm;
@@ -170,7 +151,6 @@ type
     constructor Create(AOwner: TComponent); override;
     destructor Destroy; override;
     procedure Execute(DoRefresh: Boolean);
-    property StayOnTop: Boolean read GetStayOnTop write SetStayOnTop;
     property ShowContext: Boolean read FShowContext write SetShowContext;
     property DoSearchReplace: Boolean read FDoSearchReplace write FDoSearchReplace;
   end;
@@ -184,7 +164,8 @@ implementation
 
 uses
   SysUtils, Messages, Math,
-  uGrepPrinting, uGrepSearch, uReplace, uGrepReplace, uGrepCommonUtils;
+  uGrepPrinting, uGrepSearch, uReplace, uGrepReplace, uGrepCommonUtils,
+  uGuiUtils;
 
 resourcestring
   SGrepReplaceStats = 'Replaced %d occurrence(s) in %.2f seconds';
@@ -330,7 +311,6 @@ procedure TfmGrepResults.SaveSettings;
 var
   Settings: TGExpertsSettings;
 begin
-{
   // Do not localize any of the below strings.
   Settings := TGExpertsSettings.Create;
   try
@@ -338,21 +318,18 @@ begin
     Settings.WriteInteger(ConfigurationKey, 'Top', Top);
     Settings.WriteInteger(ConfigurationKey, 'Width', Width);
     Settings.WriteInteger(ConfigurationKey, 'Height', Height);
-    Settings.WriteBool(ConfigurationKey, 'OnTop', StayOnTop);
     Settings.WriteInteger(ConfigurationKey, 'ResultsHeight', lbResults.Height);
     Settings.WriteBool(ConfigurationKey, 'ShowToolBar', ToolBar.Visible);
     Settings.WriteBool(ConfigurationKey, 'ShowContext', ShowContext);
   finally
     FreeAndNil(Settings);
   end;
-}
 end;
 
 procedure TfmGrepResults.LoadSettings;
 var
   Settings: TGExpertsSettings;
 begin
-{
   // Do not localize any of the below strings.
   Settings := TGExpertsSettings.Create;
   try
@@ -360,14 +337,12 @@ begin
     Top := Settings.ReadInteger(ConfigurationKey, 'Top', Top);
     Width := Settings.ReadInteger(ConfigurationKey, 'Width', Width);
     Height := Settings.ReadInteger(ConfigurationKey, 'Height', Height);
-    StayOnTop := Settings.ReadBool(ConfigurationKey, 'OnTop', True);
     lbResults.Height := Settings.ReadInteger(ConfigurationKey, 'ResultsHeight', lbResults.Height);
     ShowContext := Settings.ReadBool(ConfigurationKey, 'ShowContext', True);
     ToolBar.Visible := Settings.ReadBool(ConfigurationKey, 'ShowToolBar', ToolBar.Visible);
   finally
     FreeAndNil(Settings);
   end;
-}
 end;
 
 procedure TfmGrepResults.lbResultsClick(Sender: TObject);
@@ -724,10 +699,6 @@ begin
     PaintLineMatch;
 end;
 
-procedure TfmGrepResults.SetStayOnTop(Value: Boolean);
-begin
-end;
-
 procedure TfmGrepResults.actFileSearchExecute(Sender: TObject);
 begin
   Execute(False);
@@ -762,24 +733,9 @@ begin
   PrintGrepResults(Self, lbResults.Items, grFile);
 end;
 
-procedure TfmGrepResults.actViewStayOnTopExecute(Sender: TObject);
-begin
-  StayOnTop := not StayOnTop;
-end;
-
 procedure TfmGrepResults.actFileExitExecute(Sender: TObject);
 begin
-  Hide;
-end;
-
-procedure TfmGrepResults.actHelpHelpExecute(Sender: TObject);
-begin
-//  GxContextHelp(Self, 3);
-end;
-
-procedure TfmGrepResults.actHelpAboutExecute(Sender: TObject);
-begin
-//  ShowGXAboutForm;
+  Close;
 end;
 
 procedure TfmGrepResults.actListGotoSelectedExecute(Sender: TObject);
@@ -859,11 +815,6 @@ begin
   ExpandOrContractList(False);
 end;
 
-function TfmGrepResults.GetStayOnTop: Boolean;
-begin
-  Result := (FormStyle = fsStayOnTop);
-end;
-
 procedure TfmGrepResults.GotoHighlightedListEntry;
 var
   CurrentLine: TLineResult;
@@ -929,7 +880,6 @@ begin
   actListContract.Enabled := not Processing and HaveItems;
   actListExpand.Enabled := not Processing and HaveItems;
   actFileAbort.Enabled := Processing;
-  actViewStayOnTop.Checked := StayOnTop;
   actViewShowContext.Checked := ShowContext;
   actViewToolBar.Checked := ToolBar.Visible;
   actReplaceSelected.Enabled := not Processing and HaveItems;
@@ -938,27 +888,11 @@ begin
 end;
 
 function TfmGrepResults.ShowModalForm(Dlg: TCustomForm): TModalResult;
-var
-  SavedOnTop: Boolean;
 begin
   Result := mrCancel;
-  SavedOnTop := StayOnTop;
-  try
-    // The search dialog can get hidden behind the results if we don't do this
-    StayOnTop := False;
-
-    if Dlg.ShowModal <> mrOk then
-      Exit;
-
-    Result := mrOk;
-  finally
-    StayOnTop := SavedOnTop;
-  end;
-end;
-
-procedure TfmGrepResults.actHelpContentsExecute(Sender: TObject);
-begin
-//  GxContextHelpContents(Self);
+  if Dlg.ShowModal <> mrOk then
+    Exit;
+  Result := mrOk;
 end;
 
 procedure TfmGrepResults.Abort;

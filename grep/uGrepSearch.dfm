@@ -229,6 +229,5 @@ object fmGrepSearch: TfmGrepSearch
     Anchors = [akRight, akBottom]
     Caption = '&Help'
     TabOrder = 6
-    OnClick = btnHelpClick
   end
 end

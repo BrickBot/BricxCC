@@ -6610,6 +6610,7 @@ ends
 dseg segment
   __RSHTColorRawBuf byte[] 0x02, 0x46
   __RSHTColorNormBuf byte[] 0x02, 0x4C
+  __RSHTColor2NormBuf byte[] 0x02, 0x47
 dseg ends
 
 #define __ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result) \
@@ -6727,6 +6728,134 @@ dseg ends
   index _Red, __RLSReadBuf##_port, 1 \
   index _Green, __RLSReadBuf##_port, 2 \
   index _Blue, __RLSReadBuf##_port, 3 \
+  release __RLSBmutex##_port \
+  compend
+
+#define __ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RLSBbufLSWrite1 \
+  set __RLSBytesCountVar, 5 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  index _ColorNum, __RLSReadBufVar, NA \
+  index _Red, __RLSReadBufVar, 1 \
+  index _Green, __RLSReadBufVar, 2 \
+  index _Blue, __RLSReadBufVar, 3 \
+  index _White, __RLSReadBufVar, 4 \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
+  set __RLSBytesCount##_port, 5 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  index _ColorNum, __RLSReadBuf##_port, NA \
+  index _Red, __RLSReadBuf##_port, 1 \
+  index _Green, __RLSReadBuf##_port, 2 \
+  index _Blue, __RLSReadBuf##_port, 3 \
+  index _White, __RLSReadBuf##_port, 4 \
+  release __RLSBmutex##_port \
+  compend
+
+#define __ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RSHTColor2NormBuf \
+  set __RLSBytesCountVar, 4 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  index _ColorIdx, __RLSReadBufVar, NA \
+  index _Red, __RLSReadBufVar, 1 \
+  index _Green, __RLSReadBufVar, 2 \
+  index _Blue, __RLSReadBufVar, 3 \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RSHTColor2NormBuf \
+  set __RLSBytesCount##_port, 5 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  index _ColorIdx, __RLSReadBuf##_port, NA \
+  index _Red, __RLSReadBuf##_port, 1 \
+  index _Green, __RLSReadBuf##_port, 2 \
+  index _Blue, __RLSReadBuf##_port, 3 \
+  release __RLSBmutex##_port \
+  compend
+
+#define __ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RLSBbufLSWrite1 \
+  set __RLSBytesCountVar, 8 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  index _Red, __RLSReadBufVar, NA \
+  index __RLSBytesCountVar, __RLSReadBufVar, 1 \
+  mul _Red, _Red, 256 \
+  add _Red, _Red, __RLSBytesCountVar \
+  index _Green, __RLSReadBufVar, 2 \
+  index __RLSBytesCountVar, __RLSReadBufVar, 3 \
+  mul _Green, _Green, 256 \
+  add _Green, _Green, __RLSBytesCountVar \
+  index _Blue, __RLSReadBufVar, 4 \
+  index __RLSBytesCountVar, __RLSReadBufVar, 5 \
+  mul _Blue, _Blue, 256 \
+  add _Blue, _Blue, __RLSBytesCountVar \
+  index _White, __RLSReadBufVar, 6 \
+  index __RLSBytesCountVar, __RLSReadBufVar, 7 \
+  mul _White, _White, 256 \
+  add _White, _White, __RLSBytesCountVar \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
+  set __RLSBytesCount##_port, 8 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  index _Red, __RLSReadBuf##_port, NA \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 1 \
+  mul _Red, _Red, 256 \
+  add _Red, _Red, __RLSBytesCount##_port \
+  index _Green, __RLSReadBuf##_port, 2 \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 3 \
+  mul _Green, _Green, 256 \
+  add _Green, _Green, __RLSBytesCount##_port \
+  index _Blue, __RLSReadBuf##_port, 4 \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 5 \
+  mul _Blue, _Blue, 256 \
+  add _Blue, _Blue, __RLSBytesCount##_port \
+  index _White, __RLSReadBuf##_port, 6 \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 7 \
+  mul _White, _White, 256 \
+  add _White, _White, __RLSBytesCount##_port \
   release __RLSBmutex##_port \
   compend
 
@@ -6873,8 +7002,12 @@ dseg ends
   compend
 
 #define __SetHTIRSeeker2Mode(_port, _mode, _result) \
-  __MSWriteToRegister(_port, 0x10, 0x41, _mode, _result)
+  __MSWriteToRegister(_port, 0x10, HT_REG_CMD, _mode, _result)
 
+#define __HTSendCmd(_port, _cmd, _result) \
+  __MSWriteToRegister(_port, 0x02, HT_REG_CMD, _cmd, _result)
+
+#define __SetHTColor2Mode(_port, _mode, _result) __HTSendCmd(_port, _mode, _result)
 
 #define ReadSensorHTColorNum(_port, _value) \
   compif EQ, isconst(_port), FALSE \
@@ -6902,6 +7035,7 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
+
 #define ReadSensorHTIRSeekerDir(_port, _value) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
@@ -6928,6 +7062,41 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
+#define ReadI2CDeviceInfoEx(_port, _addr, _info, _strVal) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  arrbuild __RLSReadBufVar, _addr, _info \
+  set __RLSBytesCountVar, 8 \
+  call __ReadLSBytesVar \
+  mov _strVal, __RLSReadBufVar \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  arrbuild __RLSReadBuf##_port, _addr, _info \
+  set __RLSBytesCount##_port, 8 \
+  call __ReadLSBytes##_port \
+  mov _strVal, __RLSReadBuf##_port \
+  release __RLSBmutex##_port \
+  compend
+
+#define ReadI2CDeviceInfo(_port, _info, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, _info, _strVal)
+#define ReadI2CVersionEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, HT_REG_VERSION, _strVal)
+#define ReadI2CVersion(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_VERSION, _strVal)
+#define ReadI2CVendorIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, HT_REG_VENDOR_ID, _strVal)
+#define ReadI2CVendorId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_VENDOR_ID, _strVal)
+#define ReadI2CDeviceIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, HT_REG_DEVICE_ID, _strVal)
+#define ReadI2CDeviceId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_DEVICE_ID, _strVal)
+
+
 #define ReadSensorHTAccel(_port, _x, _y, _z, _result) __ReadSensorHTAccel(_port, _x, _y, _z, _result)
 #define ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue, _result) __ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue, _result)
 #define ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result) __ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result)
@@ -6936,6 +7105,14 @@ dseg ends
 #define ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result) __ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result)
 #define ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) __ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result)
 #define SetHTIRSeeker2Mode(_port, _mode, _result) __SetHTIRSeeker2Mode(_port, _mode, _result)
+
+#define SetHTColor2Mode(_port, _mode, _result) __SetHTColor2Mode(_port, _mode, _result)
+#define HTSendCommand(_port, _cmd, _result) __HTSendCmd(_port, _cmd, _result)
+#define ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result) __ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result)
+#define ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result) __ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result)
+#define ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result) __ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result)
+
+
 
 
 // Mindsensors API functions

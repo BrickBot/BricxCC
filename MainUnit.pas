@@ -46,7 +46,7 @@ uses
   SynHighlighterROPS, SynHighlighterLua, SynHighlighterRuby,
   SynHighlighterNPG, SynHighlighterRS,
   uPSComponent_StdCtrls, uPSComponent_Controls, uPSComponent_Forms,
-  uPSComponent_Default, uPSComponent;
+  uPSComponent_Default, uPSComponent, uGrepExpert, uGrepSearch;
 
 {$IFNDEF FPC}
 const
@@ -630,6 +630,8 @@ type
     procedure HandleOnAddConstruct(Sender : TObject; const aTemplate : string; const aX : integer = -1; const aY : integer = -1);
   private
     { Private declarations }
+    fGE : TGrepExpert;
+    fGDE : TGrepDlgExpert;
     newcount : integer;
     FActiveLine : integer;
     fOldActiveEditorForm : TEditorForm;
@@ -718,6 +720,7 @@ type
     property EditorForms[index : integer] : TEditorForm read GetEditorForm;
     property MDI : Boolean read fMDI write fMDI;
     property ActiveLine : integer read fActiveLine;
+    property GrepDlgExpert : TGrepDlgExpert read fGDE;
   end;
 
 var
@@ -963,6 +966,8 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  fGE := TGrepExpert.Create;
+  fGDE := TGrepDlgExpert.Create;
   fNQCAPIBase := TStringList.Create;
   fNXCAPIBase := TStringList.Create;
   CreateMenus;
@@ -1268,6 +1273,8 @@ end;
 
 procedure TMainForm.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(fGE);
+  FreeAndNil(fGDE);
   FreeAndNil(fNQCAPIBase);
   FreeAndNil(fNXCAPIBase);
   if BrickComm.VerboseMode then
@@ -7075,12 +7082,12 @@ end;
 
 procedure TMainForm.actSearchGrepSearchExecute(Sender: TObject);
 begin
-//
+  fGDE.Click(Sender);
 end;
 
 procedure TMainForm.actSearchGrepResultsExecute(Sender: TObject);
 begin
-//
+  fGE.Click(Sender);
 end;
 
 {$IFDEF FPC}

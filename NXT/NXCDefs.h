@@ -1576,6 +1576,20 @@ struct ListFilesType {
 #define ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9) asm { __ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, __RETVAL__) }
 #define SetHTIRSeeker2Mode(_port, _mode) asm { __SetHTIRSeeker2Mode(_port, _mode, __RETVAL__) }
 
+#define SetHTColor2Mode(_port, _mode) asm { __SetHTColor2Mode(_port, _mode, __RETVAL__) }
+#define HTSendCommand(_port, _cmd) asm { __HTSendCmd(_port, _cmd, __RETVAL__) }
+#define ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White) asm { __ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, __RETVAL__) }
+#define ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue) asm { __ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, __RETVAL__) }
+#define ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White) asm { __ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, __RETVAL__) }
+
+#define I2CDeviceInfoEx(_port, _addr, _info) asm { ReadI2CDeviceInfoEx(_port, _addr, _info, __STRRETVAL__) }
+#define I2CDeviceInfo(_port, _info) asm { ReadI2CDeviceInfoEx(_port, 0x02, _info, __STRRETVAL__) }
+#define I2CVersionEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, HT_REG_VERSION, __STRRETVAL__) }
+#define I2CVersion(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_VERSION, __STRRETVAL__) }
+#define I2CVendorIdEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, HT_REG_VENDOR_ID, __STRRETVAL__) }
+#define I2CVendorId(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_VENDOR_ID, __STRRETVAL__) }
+#define I2CDeviceIdEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, HT_REG_DEVICE_ID, __STRRETVAL__) }
+#define I2CDeviceId(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_DEVICE_ID, __STRRETVAL__) }
 
 
 // Mindsensors API functions

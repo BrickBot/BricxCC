@@ -49,7 +49,6 @@ type
     rbResults: TRadioButton;
     procedure btnBrowseClick(Sender: TObject);
     procedure rbDirectoriesClick(Sender: TObject);
-    procedure btnHelpClick(Sender: TObject);
     procedure cbDirectoryDropDown(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -117,11 +116,6 @@ begin
   EnableDirectoryControls(rbDirectories.Checked);
 end;
 
-procedure TfmGrepSearch.btnHelpClick(Sender: TObject);
-begin
-//  GxContextHelp(Self, 1);
-end;
-
 procedure TfmGrepSearch.cbDirectoryDropDown(Sender: TObject);
 var
   i: Integer;
@@ -151,8 +145,6 @@ end;
 constructor TGrepDlgExpert.Create;
 begin
   inherited Create;
-
-//  ShortCut := Menus.ShortCut(Word('S'), [ssAlt, ssShift]);
 end;
 
 function TGrepDlgExpert.GetActionCaption: string;
@@ -257,7 +249,7 @@ begin
   AddMRUString(cbMasks.Text, FGrepExpert.MaskList, False);
 
   FGrepExpert.GrepCaseSensitive := cbCaseSensitive.Checked;
-  //FGrepExpert.IncludeComments := not cbNoComments.Checked;
+  FGrepExpert.GrepComments := not cbNoComments.Checked;
   FGrepExpert.GrepSub := cbInclude.Checked;
   FGrepExpert.GrepWholeWord := cbWholeWord.Checked;
   FGrepExpert.GrepRegEx := cbRegEx.Checked;
@@ -321,7 +313,7 @@ begin
   rbResults.Enabled := fmGrepResults.lbResults.Count > 0;
 
   cbCaseSensitive.Checked := FGrepExpert.GrepCaseSensitive;
-  //cbNoComments.Checked := not FGrepExpert.GrepIncludeComments;
+  cbNoComments.Checked := not FGrepExpert.GrepComments;
   cbInclude.Checked := FGrepExpert.GrepSub;
   cbWholeWord.Checked := FGrepExpert.GrepWholeWord;
   cbRegEx.Checked := FGrepExpert.GrepRegEx;
@@ -348,6 +340,7 @@ begin
 
   SetDefaultSearchPattern;
   rbCurrentOnly.Enabled := Trim(GxOtaGetFileNameOfCurrentModule) <> '';
+  rbOpenFiles.Enabled := Trim(GxOtaGetOpenFilenames) <> '';
   EnableDirectoryControls(rbDirectories.Checked);
 end;
 
