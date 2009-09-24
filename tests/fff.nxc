@@ -1,0 +1,31 @@
+string fileList[];
+string tmp[];
+
+task main()
+{
+    string type = "*.*";
+    unsigned int result;
+    byte fileHandle;
+
+    int i=0;
+    result = FindFirstFile(type, fileHandle);
+    while (result == LDR_SUCCESS)
+    {
+        CloseFile(fileHandle);
+        ArrayBuild(tmp, fileList, "");
+        fileList = tmp;
+        fileList[i++] = type;
+        result = FindNextFile(type, fileHandle);
+    }
+
+    int len = ArrayLen(fileList);
+    NumOut(0, 0, len);
+    Wait(1000);
+//    ClearScreen();
+    for(int i = 0; (i<len && i<8); i++)
+    {
+        TextOut(0, i*8,fileList[i]);
+    }
+    Wait(4000);
+}
+

@@ -216,7 +216,8 @@ type
     function  GetInitialValue(dt : char) : string;
     procedure DoLocals(const sub: string);
     procedure AddFunctionParameter(pname, varname, tname : string; idx : integer;
-      ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer);
+      ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer;
+      bHasDefault : boolean; defValue : string);
     function  FormalList(protoexists: boolean; procname: string): integer;
     procedure ProcedureBlock;
     procedure InitializeGlobalArrays;
@@ -235,7 +236,8 @@ type
     procedure CheckDup(N: string);
     procedure CheckTable(const N: string);
     procedure CheckGlobal(const N: string);
-    procedure AddParam(N: string; T: char; const tname : string; bConst : boolean);
+    procedure AddParam(N: string; T: char; const tname : string;
+      bConst : boolean; bHasDefault : boolean; const defValue : string);
     function  DataType(const n: string): char;
     procedure LoadVar(const Name: string);
     procedure CheckNotProc(const Name : string);
@@ -407,6 +409,7 @@ type
     function  GetNBCSrc: TStrings;
     function  FunctionReturnType(const name: string): char;
     function  FunctionParameterCount(const name: string): integer;
+    function  FunctionRequiredParameterCount(const name: string): integer;
     function  FunctionParameterType(const name : string; idx : integer) : char;
     procedure ClearLocals;
     procedure ClearParams;
@@ -419,6 +422,10 @@ type
     procedure CheckStringConst;
     function  AdvanceToNextParam : string;
     function  FunctionParameterIsConstant(const name: string;
+      idx: integer): boolean;
+    function FunctionParameterDefaultValue(const name: string;
+      idx: integer): string;
+    function FunctionParameterHasDefault(const name: string;
       idx: integer): boolean;
     function  IsParamConst(n: string): boolean;
     function  IsLocalConst(n: string): boolean;
@@ -1694,7 +1701,8 @@ end;
 {--------------------------------------------------------------}
 { Add a Parameter to Table }
 
-procedure TNXCComp.AddParam(N: string; T: char; const tname : string; bConst : boolean);
+procedure TNXCComp.AddParam(N: string; T: char; const tname : string;
+  bConst : boolean; bHasDefault : boolean; const defValue : string);
 begin
   if IsOldParam(N) then Duplicate(N);
   with fParams.Add do
@@ -3357,7 +3365,8 @@ begin
 end;
 
 procedure TNXCComp.AddFunctionParameter(pname, varname, tname: string; idx: integer;
-  ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer);
+  ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer;
+  bHasDefault : boolean; defValue : string);
 begin
   // if this function is not an inline function then we will automagically
   // convert any Const not Ref parameter into a Const Ref parameter
@@ -3382,12 +3391,19 @@ begin
     IsReference    := bIsRef;
     ArrayDimension := aDim;
     FuncIsInline   := AmInlining;
+    HasDefault     := bHasDefault;
+    DefaultValue   := defValue;
   end;
 end;
 
 function TNXCComp.FunctionParameterCount(const name : string) : integer;
 begin
   Result := fFuncParams.ParamCount(name);
+end;
+
+function TNXCComp.FunctionRequiredParameterCount(const name : string) : integer;
+begin
+  Result := fFuncParams.RequiredParamCount(name);
 end;
 
 function TNXCComp.FunctionParameterType(const name: string;
@@ -3423,6 +3439,28 @@ begin
     Result := fFuncParams[i].IsConstant;
 end;
 
+function TNXCComp.FunctionParameterHasDefault(const name: string;
+  idx: integer): boolean;
+var
+  i : integer;
+begin
+  Result := False;
+  i := fFuncParams.IndexOf(name, idx);
+  if i <> -1 then
+    Result := fFuncParams[i].HasDefault;
+end;
+
+function TNXCComp.FunctionParameterDefaultValue(const name: string;
+  idx: integer): string;
+var
+  i : integer;
+begin
+  Result := '';
+  i := fFuncParams.IndexOf(name, idx);
+  if i <> -1 then
+    Result := fFuncParams[i].DefaultValue;
+end;
+
 function TNXCComp.GetFunctionParam(const procname : string; idx : integer) : TFunctionParameter;
 var
   i : integer;
@@ -3447,7 +3485,7 @@ end;
 
 procedure TNXCComp.DoCall(procname : string);
 var
-  protocount, acount, idx, i : integer;
+  protocount, protoreqcount, acount, idx, i : integer;
   dt, rdt, pdt, oldLHSDT : char;
   parname, parvalue, junk, oldLHSName : string;
   bError : boolean;
@@ -3483,6 +3521,7 @@ begin
       try
         acount := 0;
         protocount := FunctionParameterCount(procname);
+        protoreqcount := FunctionRequiredParameterCount(procname);
         Next;
         bError := Value <> TOK_OPENPAREN;
         if not bError then
@@ -3659,8 +3698,22 @@ begin
             Scan;
           end;
         end;
-        if protocount > acount then
+        if protoreqcount > acount then
           AbortMsg(sTooFewParams);
+        while acount < protocount do
+        begin
+          // use default values for all the arguments not provided
+          fp := GetFunctionParam(procname, acount);
+          if Assigned(fp) then
+          begin
+            parname := GetParamName(procname, acount);
+            if bFunctionIsInline then
+              parname := InlineName(fCurrentThreadName, parname);
+            parvalue := FunctionParameterDefaultValue(procname, acount);
+            EmitLn(Format('mov %s, %s', [parname, parvalue]));
+          end;
+          inc(acount);
+        end;
         if Value = TOK_CLOSEPAREN then
         begin
           CloseParen;
@@ -5382,7 +5435,8 @@ var
   ptype : char;
   varnam : string;
   bIsUnsigned, bIsArray, bIsConst, bIsRef, bError : boolean;
-  aval, tname : string;
+  bHasDefault, bRequireDefaults : boolean;
+  aval, tname, defValue : string;
   dimensions : integer;
   oldBytesRead : integer;
 
@@ -5412,7 +5466,9 @@ var
       AddParam(ApplyDecoration(procname, varnam, 0),
         FunctionParameterType(procname, pcount),
         FunctionParameterTypeName(procname, pcount),
-        FunctionParameterIsConstant(procname, pcount));
+        FunctionParameterIsConstant(procname, pcount),
+        FunctionParameterHasDefault(procname, pcount),
+        FunctionParameterDefaultValue(procname, pcount));
       inc(pcount);
       if pcount > protocount then
       begin
@@ -5452,12 +5508,12 @@ var
     end;
     if not bError then
     begin
-      AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst);
+      AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst, bHasDefault, defValue);
       if not protoexists then
       begin
         Allocate(ApplyDecoration(procname, varnam, 0), aval, '', tname, ptype);
         AddFunctionParameter(procname, varnam, tname, pcount, ptype, bIsConst,
-          bIsRef, bIsArray, dimensions);
+          bIsRef, bIsArray, dimensions, bHasDefault, defValue);
         inc(protocount);
       end;
       inc(pcount);
@@ -5545,7 +5601,29 @@ var
       end;
     end;
   end;
+
+  procedure CheckForDefaultArgumentValue;
+  begin
+    bHasDefault := False;
+    defValue    := '';
+    // check for optional equal sign
+    if Token = '=' then
+    begin
+      bHasDefault := True;
+      Next;
+      defValue := Value;
+      Next;
+    end;
+    if bRequireDefaults and not bHasDefault then
+    begin
+      AbortMsg(sDefaultParamError);
+      bError := True;
+    end;
+    if bHasDefault then
+      bRequireDefaults := True;
+  end;
 begin
+  bRequireDefaults := False;
   dimensions := 0;
   protocount := 0;
   pcount := 0;
@@ -5577,6 +5655,8 @@ begin
         pltype := HASPROTO;
     end;
     CheckParamTypeAndArrays;
+    // check for optional = and default value
+    CheckForDefaultArgumentValue;
     if bError then
       Continue;
     CheckPLType;
@@ -5603,6 +5683,8 @@ begin
         end;
       end;
       CheckParamTypeAndArrays;
+      // check for optional = and default value
+      CheckForDefaultArgumentValue;
       if bError then
         Continue;
       CheckPLType;

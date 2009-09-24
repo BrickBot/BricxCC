@@ -1,0 +1,23 @@
+int myFunc(int x, int y = 10, int z = 14)
+{
+  return x + y + z;
+}
+
+string myMsg(int x = 5, string msg = "testing")
+{
+  string val = NumToStr(x);
+  val = val + " ";
+  return val + msg;
+}
+
+task main()
+{
+  int x = 10;
+  int y = 15;
+  int z = 20;
+  NumOut(0, LCD_LINE1, myFunc(x));
+  TextOut(0, LCD_LINE2, myMsg(myFunc(x)));
+  TextOut(0, LCD_LINE3, myMsg(myFunc(x, y), "foobar"));
+  TextOut(0, LCD_LINE4, myMsg());
+  Wait(10000);
+}

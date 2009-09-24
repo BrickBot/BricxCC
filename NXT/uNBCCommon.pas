@@ -54,6 +54,8 @@ type
     fConstValue : string;
     fPTName: string;
     fFuncIsInline: boolean;
+    fHasDefault: boolean;
+    fDefaultValue: string;
     function GetParamDataType: char;
     function GetIsConstReference: boolean;
     function GetIsVarReference: boolean;
@@ -77,6 +79,8 @@ type
     property IsConstReference : boolean read GetIsConstReference;
     property ConstantValue : string read GetConstValue write SetConstValue;
     property FuncIsInline : boolean read fFuncIsInline write fFuncIsInline;
+    property HasDefault : boolean read fHasDefault write fHasDefault;
+    property DefaultValue : string read fDefaultValue write fDefaultValue;
   end;
 
   TFunctionParameters = class(TCollection)
@@ -90,6 +94,7 @@ type
     property  Items[Index: Integer]: TFunctionParameter read GetItem write SetItem; default;
     function  IndexOf(const procname : string; const idx : integer) : integer; overload;
     function  ParamCount(const name : string) : integer;
+    function  RequiredParamCount(const name : string) : integer;
   end;
 
   TVariable = class(TCollectionItem)
@@ -102,6 +107,8 @@ type
     fLenExpr: string;
     fUseSafeCall: boolean;
     fLevel: integer;
+    fHasDef: boolean;
+    fDefValue: string;
   protected
     procedure AssignTo(Dest: TPersistent); override;
   public
@@ -114,6 +121,8 @@ type
     property TypeName : string read fTypeName write fTypeName;
     property LenExpr : string read fLenExpr write fLenExpr;
     property Level : integer read fLevel write fLevel;
+    property HasDefault : boolean read fHasDef write fHasDef;
+    property DefaultValue : string read fDefValue write fDefValue;
   end;
 
   TVariableList = class(TCollection)
@@ -1740,6 +1749,19 @@ begin
   end;
 end;
 
+function TFunctionParameters.RequiredParamCount(const name: string): integer;
+var
+  i : integer;
+  fp : TFunctionParameter;
+begin
+  Result := 0;
+  for i := 0 to Count - 1 do begin
+    fp := Items[i];
+    if (fp.ProcName = name) and not fp.HasDefault then
+      inc(Result);
+  end;
+end;
+
 procedure TFunctionParameters.SetItem(Index: Integer; const Value: TFunctionParameter);
 begin
   inherited SetItem(Index, Value);
@@ -1765,6 +1787,8 @@ begin
     fp.ArrayDimension := ArrayDimension;
     fp.ConstantValue  := ConstantValue;
     fp.FuncIsInline   := FuncIsInline;
+    fp.HasDefault     := HasDefault;
+    fp.DefaultValue   := DefaultValue;
   end
   else
     inherited;
@@ -1782,6 +1806,8 @@ begin
   fDim          := 0;
   fParamType    := fptUBYTE;
   fFuncIsInline := False;
+  fHasDefault   := False;
+  fDefaultValue := '';
 end;
 
 function TFunctionParameter.GetConstValue: string;
@@ -1876,12 +1902,14 @@ begin
   if Dest is TVariable then
   begin
     V := TVariable(Dest);
-    V.Name       := Name;
-    V.DataType   := DataType;
-    V.IsConstant := IsConstant;
-    V.TypeName   := TypeName;
-    V.LenExpr    := LenExpr;
-    V.Level      := Level;
+    V.Name         := Name;
+    V.DataType     := DataType;
+    V.IsConstant   := IsConstant;
+    V.TypeName     := TypeName;
+    V.LenExpr      := LenExpr;
+    V.Level        := Level;
+    V.HasDefault   := HasDefault;
+    V.DefaultValue := DefaultValue;
   end
   else
     inherited;
@@ -1896,6 +1924,8 @@ begin
   fDataType := TOK_BYTEDEF;
   fIsConst  := False;
   fLevel    := 0;
+  fHasDef   := False;
+  fDefValue := '';
 end;
 
 { TVariableList }
