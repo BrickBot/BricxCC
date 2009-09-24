@@ -1,5 +1,5 @@
 VER = 1.0.1.b36
-NBC_SRC = NXT/nbc.dpr NXT/nbc.cfg NXT/nbc.dof NXT/nbc.res NXT/nbc.lpi NXT/mkdata.dpr NXT/mkdata.cfg NXT/mkdata.dof NXT/NBCCommon.h NXT/NXTDefs.h NXT/NXCDefs.h
+NBC_SRC = NXT/nbc.dpr NXT/nbc.cfg NXT/nbc.dof NXT/nbc.res NXT/mkdata.dpr NXT/mkdata.cfg NXT/mkdata.dof NXT/NBCCommon.h NXT/NXTDefs.h NXT/NXCDefs.h
 NXT_SRC = NXT/uNXTClasses.pas NXT/uNXTConstants.pas NXT/uPreprocess.pas NXT/Parser10.pas NXT/P10Build.pas NXT/uRIC.pas NXT/uNXCComp.pas NXT/uRPGComp.pas NXT/uRICComp.pas NXT/uNBCCommon.pas NXT/uNBCInterface.pas
 CMN_SRC = uLocalizedStrings.pas uCmdLineUtils.pas uCommonUtils.pas uGenLexer.pas uNBCLexer.pas uNXCLexer.pas uVersionInfo.pas mwGenericLex.pas ParamUtils.pas uGlobals.pas
 CMN_SRC2 = FastMM4.pas FastMM4Messages.pas FastMM4Options.inc FastMove.pas FastStrings.pas
