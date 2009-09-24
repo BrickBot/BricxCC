@@ -1,0 +1,5 @@
+task main()
+{
+  TextOut(0, LCD_LINE1, "test\\\"xyz\'ama\\" );
+  while(true);
+}

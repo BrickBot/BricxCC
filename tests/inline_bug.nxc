@@ -1,0 +1,14 @@
+inline int multiply(int x, int y) {
+  return x*y;
+}
+
+inline int double(int x) { return multiply(x, 2); }
+
+task main()
+{
+  int x=23;
+  NumOut(0, LCD_LINE1, multiply(x, 2));
+  NumOut(0, LCD_LINE1, double(x));
+  NumOut(0, LCD_LINE1, double(x+12));
+  while(true);
+}

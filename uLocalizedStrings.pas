@@ -559,7 +559,8 @@ resourcestring
   sNXCParseProg            = 'NXC parse program code';
   sNXCCodeGenComplete      = 'NXC code generation finished';
   sConstNotInline          = 'Only inline functions can correctly use non-reference constant parameters';
-  sInvalidFuncDecl         = 'Declaration syntax error'; 
+  sInvalidFuncDecl         = 'Declaration syntax error';
+  sDefaultParamError       = 'Invalid parameter syntax with default values'; 
 
 // uNBCCommon unit
 resourcestring
