@@ -26859,11 +26859,10 @@ object frmNXTImage: TfrmNXTImage
       ShortCut = 16439
       OnExecute = actRefreshExecute
     end
-    object actSave: TAction
+    object actSaveAs: TAction
       Category = 'Main'
-      Caption = '&Save...'
-      ShortCut = 16467
-      OnExecute = actSaveExecute
+      Caption = '&Save as...'
+      OnExecute = actSaveAsExecute
     end
     object actCopy: TAction
       Category = 'Main'
@@ -26918,6 +26917,12 @@ object frmNXTImage: TfrmNXTImage
       Caption = 'Capture AVI'
       ShortCut = 16449
       OnExecute = actCaptureAVIExecute
+    end
+    object actSave: TAction
+      Category = 'Main'
+      Caption = 'Save'
+      ShortCut = 16467
+      OnExecute = actSaveExecute
     end
   end
   object dlgSaveAVI: TSaveDialog
