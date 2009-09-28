@@ -44,7 +44,7 @@ type
     imgScreen: TImage;
     tmrRefresh: TTimer;
     ActionList1: TActionList;
-    actSave: TAction;
+    actSaveAs: TAction;
     actCopy: TAction;
     actPollNow: TAction;
     actPolling: TAction;
@@ -69,6 +69,7 @@ type
     shpLeft2: TShape;
     shpLeft3: TShape;
     dlgSavePic: TSaveDialog;
+    actSave: TAction;
     procedure shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure shpRightMouseDown(Sender: TObject; Button: TMouseButton;
@@ -83,7 +84,7 @@ type
     procedure RescaleClick(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
     procedure mniAboutClick(Sender: TObject);
-    procedure actSaveExecute(Sender: TObject);
+    procedure actSaveAsExecute(Sender: TObject);
     procedure actCopyExecute(Sender: TObject);
     procedure actPollNowExecute(Sender: TObject);
     procedure actPollingExecute(Sender: TObject);
@@ -98,6 +99,7 @@ type
     procedure mniBTResetClick(Sender: TObject);
     procedure mniUtilsClick(Sender: TObject);
     procedure actCaptureAVIExecute(Sender: TObject);
+    procedure actSaveExecute(Sender: TObject);
   private
     pmuMain: TOfficePopupMenu;
     mniAbout: TOfficeMenuItem;
@@ -107,6 +109,7 @@ type
     mniBTReset: TOfficeMenuItem;
     mniSep1: TOfficeMenuItem;
     mniSave: TOfficeMenuItem;
+    mniSaveAs: TOfficeMenuItem;
     mniCopy: TOfficeMenuItem;
     mniSep2: TOfficeMenuItem;
     mniPollNow: TOfficeMenuItem;
@@ -156,6 +159,7 @@ type
     fGC : TGraphicClass;
     fClickStream : TMemoryStream;
     fCurrentName : string;
+    fImageIndex : integer;
 {$IFNDEF FPC}
     fAviWriter : TAviWriter;
 {$ENDIF}
@@ -193,7 +197,7 @@ uses
   {$ENDIF}
   uGuiUtils, uSpirit,
   brick_common, uNXTConstants, rcx_constants,
-  uNXTName, uLocalizedStrings;
+  uNXTName, uLocalizedStrings, uNXTImageGlobals;
 
 {$IFNDEF FPC}
 type
@@ -271,7 +275,7 @@ function TfrmNXTImage.GetPixelColor(b: byte; bit: integer): TColor;
 var
   val : byte;
 begin
-  Result := clWhite;
+  Result := LCDBackgroundColor;
   val := 1 shl bit;
   if (b and val) = val then
     Result := clBlack;
@@ -310,6 +314,7 @@ end;
 
 procedure TfrmNXTImage.FormCreate(Sender: TObject);
 begin
+  fImageIndex := 0;
   CreatePopupMenu;
   imgNXT.PopupMenu    := pmuMain;
   imgScreen.PopupMenu := pmuMain;
@@ -341,6 +346,7 @@ begin
     'Bitmaps (*.bmp)|*.bmp';
   dlgSavePic.FilterIndex := 6;
 {$ENDIF}
+  dlgSavePic.InitialDir := DefaultNXTImageDirectory;
   fClickStream := TMemoryStream.Create;
   CheckForCustomClick;
 end;
@@ -509,6 +515,27 @@ begin
 end;
 
 procedure TfrmNXTImage.actSaveExecute(Sender: TObject);
+var
+  G : TGraphic;
+  ext : string;
+begin
+  fBusy := True;
+  try
+    fGC := GraphicClassFromExt(DefaultNXTImageFileExt);
+    G := fGC.Create;
+    try
+      G.Assign(imgScreen.Picture.Graphic);
+      G.SaveToFile(DefaultNXTImageDirectory + Format(BaseNXTImageFilenameFormat, [fImageIndex]) + DefaultNXTImageFileExt);
+    finally
+      G.Free;
+    end;
+  finally
+    inc(fImageIndex);
+    fBusy := False;
+  end;
+end;
+
+procedure TfrmNXTImage.actSaveAsExecute(Sender: TObject);
 var
   G : TGraphic;
   ext : string;
@@ -769,6 +796,7 @@ begin
   mniBTReset := TOfficeMenuItem.Create(mniUtils);
   mniSep1 := TOfficeMenuItem.Create(pmuMain);
   mniSave := TOfficeMenuItem.Create(pmuMain);
+  mniSaveAs := TOfficeMenuItem.Create(pmuMain);
   mniCopy := TOfficeMenuItem.Create(pmuMain);
   mniSep2 := TOfficeMenuItem.Create(pmuMain);
   mniPollNow := TOfficeMenuItem.Create(pmuMain);
@@ -847,6 +875,11 @@ begin
   begin
     Name := 'mniSave';
     Action := actSave;
+  end;
+  with mniSaveAs do
+  begin
+    Name := 'mniSaveAs';
+    Action := actSaveAs;
   end;
   with mniCopy do
   begin
@@ -1136,7 +1169,7 @@ begin
     OnClick := mniExitClick;
   end;
   AddMenuItems(pmuMain.Items,
-               [mniAbout, mniUtils, mniSep1, mniSave, {$IFNDEF FPC}mniCopy, {$ENDIF}
+               [mniAbout, mniUtils, mniSep1, mniSave, mniSaveAs, {$IFNDEF FPC}mniCopy, {$ENDIF}
                 mniSep2, mniPollNow, mniPoll, mniRefreshRate, {$IFNDEF FPC}mniCaptureAVI, {$ENDIF}
                 mniSep3, mniScale, mniSep4, mniDisplay,
                 mniSep5, mniPlayClicks, mniSep6, mniExit]);

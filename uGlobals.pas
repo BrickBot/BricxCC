@@ -92,6 +92,10 @@ function IsScout : boolean;
 function IsSpybotic : boolean;
 function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
 
+{$IFNDEF FPC}
+function GetSpecialFolderPath(folder : integer) : string;
+{$ENDIF}
+
 implementation
 
 uses
