@@ -11,8 +11,9 @@ PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools $(EXTRAFLAGS)
 LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fu$(ROOT)/lazarus/components/synedit/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/ -Fu$(ROOT)/lazarus/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(ROOT)/lazarus/packager/units/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY $(EXTRAFLAGS)
 
 FORMS=uToolPalette.lrs uPortPrompt.lrs Controller.lrs Diagnose.lrs JoystickUnit.lrs \
- MessageUnit.lrs Piano.lrs RemoteUnit.lrs uNXTExplorer.lrs uNXTImage.lrs Watch.lrs uMIDIConversion.lrs \
- uWav2RSO.lrs MemoryUnit.lrs uRemoteProgMap.lrs uNXTName.lrs Unlock.lrs
+ MessageUnit.lrs Piano.lrs RemoteUnit.lrs uNXTImage.lrs Watch.lrs uMIDIConversion.lrs \
+ uWav2RSO.lrs MemoryUnit.lrs uRemoteProgMap.lrs uNXTName.lrs Unlock.lrs uNXTExplorer.lrs \
+ uportsedit.lrs uNXTImagePrefs.lrs
 
 clean::
 	rm -f *.o *.ppu *.rst *.compiled *_preproc.inc bricktools/*.o bricktools/*.ppu nxt/*.o nxt/*.ppu samplerate/*.o samplerate/*.ppu syn/*.o syn/*.ppu
