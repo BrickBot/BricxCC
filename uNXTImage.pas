@@ -25,13 +25,12 @@ interface
 uses
 {$IFNDEF FPC}
   Windows,
-  AviWriter,
 {$ELSE}
   LResources,
   LCLType,
 {$ENDIF}
   Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls, Menus,
-  uOfficeComp, ExtDlgs, ActnList, StdCtrls;
+  ExtDlgs, ActnList, StdCtrls, uOfficeComp, uNXTImageMovie;
 
 type
 
@@ -70,6 +69,7 @@ type
     shpLeft3: TShape;
     dlgSavePic: TSaveDialog;
     actSave: TAction;
+    actPrefs: TAction;
     procedure shpLeftMouseDown(Sender: TObject; Button: TMouseButton;
       Shift: TShiftState; X, Y: Integer);
     procedure shpRightMouseDown(Sender: TObject; Button: TMouseButton;
@@ -100,6 +100,7 @@ type
     procedure mniUtilsClick(Sender: TObject);
     procedure actCaptureAVIExecute(Sender: TObject);
     procedure actSaveExecute(Sender: TObject);
+    procedure actPrefsExecute(Sender: TObject);
   private
     pmuMain: TOfficePopupMenu;
     mniAbout: TOfficeMenuItem;
@@ -126,6 +127,7 @@ type
     mni20sec: TOfficeMenuItem;
     mni1min: TOfficeMenuItem;
     mniCaptureAVI: TOfficeMenuItem;
+    mniPreferences: TOfficeMenuItem;
     mniSep3: TOfficeMenuItem;
     mniScale: TOfficeMenuItem;
     mni10x: TOfficeMenuItem;
@@ -159,10 +161,7 @@ type
     fGC : TGraphicClass;
     fClickStream : TMemoryStream;
     fCurrentName : string;
-    fImageIndex : integer;
-{$IFNDEF FPC}
-    fAviWriter : TAviWriter;
-{$ENDIF}
+    fMovieWriter : TNXTImageMovie;
     procedure RefreshImage;
     procedure RetrieveScreenBytes;
     procedure DrawImage;
@@ -176,6 +175,7 @@ type
     function GetCurrentName: string;
     procedure SetCurrentName(const Value: string);
   protected
+    function GetAutomaticFilename : string;
     property CurrentName : string read GetCurrentName write SetCurrentName;
   public
     { Public declarations }
@@ -197,7 +197,7 @@ uses
   {$ENDIF}
   uGuiUtils, uSpirit,
   brick_common, uNXTConstants, rcx_constants,
-  uNXTName, uLocalizedStrings, uNXTImageGlobals;
+  uNXTName, uLocalizedStrings, uNXTImageGlobals, uNXTImagePrefs;
 
 {$IFNDEF FPC}
 type
@@ -240,7 +240,7 @@ procedure TfrmNXTImage.DrawImage;
 var
   b : byte;
   i, x, line : integer;
-  bmp, aviBmp : TBitmap;
+  bmp : TBitmap;
 begin
   bmp := TBitmap.Create;
   try
@@ -258,14 +258,10 @@ begin
       end;
     end;
     imgScreen.Canvas.StretchDraw(Rect(0, 0, imgScreen.Width, imgScreen.Height), bmp);
-{$IFNDEF FPC}
     if actCaptureAVI.Checked then
     begin
-      aviBmp := TBitmap.Create;
-      aviBmp.Assign(imgScreen.Picture.Bitmap);
-      fAviWriter.Bitmaps.Add(aviBmp);
+      fMovieWriter.AddPicture(imgScreen.Picture);
     end;
-{$ENDIF}
   finally
     bmp.Free;
   end;
@@ -314,14 +310,11 @@ end;
 
 procedure TfrmNXTImage.FormCreate(Sender: TObject);
 begin
-  fImageIndex := 0;
   CreatePopupMenu;
   imgNXT.PopupMenu    := pmuMain;
   imgScreen.PopupMenu := pmuMain;
   lblInfo.PopupMenu   := pmuMain;
-{$IFNDEF FPC}
-  fAviWriter := TAviWriter.Create(Self);
-{$ENDIF}
+  fMovieWriter := TNXTImageMovie.Create(Self);
   fCurrentName := '';
   fDisplayNormal := True;
   imgNXT.Picture.Bitmap.FreeImage;
@@ -517,7 +510,6 @@ end;
 procedure TfrmNXTImage.actSaveExecute(Sender: TObject);
 var
   G : TGraphic;
-  ext : string;
 begin
   fBusy := True;
   try
@@ -525,12 +517,15 @@ begin
     G := fGC.Create;
     try
       G.Assign(imgScreen.Picture.Graphic);
-      G.SaveToFile(DefaultNXTImageDirectory + Format(BaseNXTImageFilenameFormat, [fImageIndex]) + DefaultNXTImageFileExt);
+      G.SaveToFile(DefaultNXTImageDirectory + GetAutomaticFilename);
+//      if G is TPortableNetworkGraphic then
+//        TPortableNetworkGraphic(G).TransparentColor := LCDBackgroundColor;
+//      TJPegImage(G).Transparent := True;
     finally
       G.Free;
     end;
   finally
-    inc(fImageIndex);
+    inc(NXTImageIndex);
     fBusy := False;
   end;
 end;
@@ -763,21 +758,17 @@ begin
         actCaptureAVI.Checked := False;
         Exit;
       end;
-{$IFNDEF FPC}
-      fAviWriter.Bitmaps.Clear;
-      fAviWriter.FileName  := dlgSaveAVI.FileName;
-      fAviWriter.FrameTime := tmrRefresh.Interval;
-      fAviWriter.Height    := imgScreen.Height;
-      fAviWriter.Width     := imgScreen.Width;
-      fAviWriter.Stretch   := True;
-{$ENDIF}
+      fMovieWriter.Clear;
+      fMovieWriter.FileName  := dlgSaveAVI.FileName;
+      fMovieWriter.FrameTime := tmrRefresh.Interval;
+      fMovieWriter.Height    := imgScreen.Height;
+      fMovieWriter.Width     := imgScreen.Width;
+      fMovieWriter.Stretch   := True;
     end
     else
     begin
       // finished recording
-{$IFNDEF FPC}
-      fAviWriter.Write;
-{$ENDIF}
+      fMovieWriter.Write;
     end;
   finally
     actPolling.Checked := actCaptureAVI.Checked;
@@ -813,6 +804,7 @@ begin
   mni20sec := TOfficeMenuItem.Create(mniRefreshRate);
   mni1min := TOfficeMenuItem.Create(mniRefreshRate);
   mniCaptureAVI := TOfficeMenuItem.Create(pmuMain);
+  mniPreferences := TOfficeMenuItem.Create(pmuMain);
   mniSep3 := TOfficeMenuItem.Create(pmuMain);
   mniScale := TOfficeMenuItem.Create(pmuMain);
   mni10x := TOfficeMenuItem.Create(mniScale);
@@ -990,6 +982,11 @@ begin
   begin
     Name := 'mniCaptureAVI';
     Action := actCaptureAVI;
+  end;
+  with mniPreferences do
+  begin
+    Name := 'mniPreferences';
+    Action := actPrefs;
   end;
   with mniSep3 do
   begin
@@ -1169,7 +1166,8 @@ begin
     OnClick := mniExitClick;
   end;
   AddMenuItems(pmuMain.Items,
-               [mniAbout, mniUtils, mniSep1, mniSave, mniSaveAs, {$IFNDEF FPC}mniCopy, {$ENDIF}
+               [mniAbout, mniUtils, mniPreferences,
+                mniSep1, mniSave, mniSaveAs, {$IFNDEF FPC}mniCopy, {$ENDIF}
                 mniSep2, mniPollNow, mniPoll, mniRefreshRate, {$IFNDEF FPC}mniCaptureAVI, {$ENDIF}
                 mniSep3, mniScale, mniSep4, mniDisplay,
                 mniSep5, mniPlayClicks, mniSep6, mniExit]);
@@ -1179,6 +1177,41 @@ begin
   AddMenuItems(mniScale, [mni10x, mni12x, mni15x, mni18x, mni20x, mni22x, mni25x, mni28x,
                 mni30x, mni32x, mni35x, mni38x, mni40x]);
   AddMenuItems(mniDisplay, [mniDisplayNormal, mniDisplayPopup]);
+end;
+
+function TfrmNXTImage.GetAutomaticFilename : string;
+begin
+  if NXTImageUseIndex then
+    Result := Format(BaseNXTImageFilenameFormat + '%2.2d', [NXTImageIndex])
+  else
+    Result := BaseNXTImageFilenameFormat + FormatDateTime('yyyy-mm-dd''T''hh-mm-ss-zzz', Now);
+  Result := Result + DefaultNXTImageFileExt;
+end;
+
+procedure TfrmNXTImage.actPrefsExecute(Sender: TObject);
+var
+  F : TfrmNXTImagePrefs;
+begin
+  F := TfrmNXTImagePrefs.Create(nil);
+  try
+    F.BackgroundColor := LCDBackgroundColor;
+    F.BaseFilename    := BaseNXTImageFilenameFormat;
+    F.ImageDirectory  := DefaultNXTImageDirectory;
+    F.ImageExt        := DefaultNXTImageFileExt;
+    F.UseIndex        := NXTImageUseIndex;
+    F.CurrentIndex    := NXTImageIndex;
+    if F.ShowModal = mrOK then
+    begin
+      LCDBackgroundColor         := F.BackgroundColor;
+      BaseNXTImageFilenameFormat := F.BaseFilename;
+      DefaultNXTImageDirectory   := F.ImageDirectory;
+      DefaultNXTImageFileExt     := F.ImageExt;
+      NXTImageUseIndex           := F.UseIndex;
+      NXTImageIndex              := F.CurrentIndex;
+    end;
+  finally
+    F.Free;
+  end;
 end;
 
 {$IFDEF FPC}
