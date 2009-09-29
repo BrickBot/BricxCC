@@ -50,6 +50,7 @@ lazres Unlock.lrs Unlock.lfm
 lazres uNXTController.lrs uNXTController.lfm
 lazres uNXTExplorer.lrs uNXTExplorer.lfm
 lazres uNXTImage.lrs uNXTImage.lfm
+lazres uNXTImagePrefs.lrs uNXTImagePrefs.lfm
 lazres uNXTName.lrs uNXTName.lfm
 lazres uPortPrompt.lrs uPortPrompt.lfm
 lazres uportsedit.lrs uportsedit.lfm
