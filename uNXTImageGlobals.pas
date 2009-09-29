@@ -28,8 +28,10 @@ uses
 var
   LCDBackgroundColor : TColor = clMoneyGreen;
   DefaultNXTImageFileExt : string = '.png';
-  BaseNXTImageFilenameFormat : string = 'nxtimage_%2.2d';
+  BaseNXTImageFilenameFormat : string = 'nxtimage_';
   DefaultNXTImageDirectory : string;
+  NXTImageIndex : integer = 0;
+  NXTImageUseIndex : boolean = True;
 
 procedure LoadNXTImageValues(reg : TRegistry);
 procedure SaveNXTImageValues(reg : TRegistry);
@@ -52,6 +54,8 @@ begin
     DefaultNXTImageFileExt := Reg_ReadString(reg, 'DefaultNXTImageFileExt', DefaultNXTImageFileExt);
     BaseNXTImageFilenameFormat := Reg_ReadString(reg, 'BaseNXTImageFilenameFormat', BaseNXTImageFilenameFormat);
     DefaultNXTImageDirectory := Reg_ReadString(reg, 'DefaultNXTImageDirectory', DefaultNXTImageDirectory);
+    NXTImageIndex := Reg_ReadInteger(reg, 'NXTImageIndex', NXTImageIndex);
+    NXTImageUseIndex := Reg_ReadBool(reg, 'NXTImageUseIndex', NXTImageUseIndex);
   finally
     reg.CloseKey;
   end;
@@ -66,6 +70,8 @@ begin
     reg.WriteString('DefaultNXTImageFileExt', DefaultNXTImageFileExt);
     reg.WriteString('BaseNXTImageFilenameFormat', BaseNXTImageFilenameFormat);
     reg.WriteString('DefaultNXTImageDirectory', DefaultNXTImageDirectory);
+    reg.WriteInteger('NXTImageIndex', NXTImageIndex);
+    reg.WriteBool('NXTImageUseIndex', NXTImageUseIndex);
   finally
     reg.CloseKey;
   end;

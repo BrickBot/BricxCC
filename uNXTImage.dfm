@@ -26924,6 +26924,11 @@ object frmNXTImage: TfrmNXTImage
       ShortCut = 16467
       OnExecute = actSaveExecute
     end
+    object actPrefs: TAction
+      Category = 'Main'
+      Caption = 'Preferences...'
+      OnExecute = actPrefsExecute
+    end
   end
   object dlgSaveAVI: TSaveDialog
     DefaultExt = 'avi'
