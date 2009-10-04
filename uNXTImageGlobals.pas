@@ -88,7 +88,7 @@ initialization
 {$IFNDEF FPC}
   DefaultNXTImageDirectory := IncludeTrailingPathDelimiter(GetSpecialFolderPath(CSIDL_MYPICTURES));
 {$ELSE}
-  DefaultNXTImageDirectory := IncludeTrailingPathDelimiter(ExpandFilename('~')) + 'Documents\';
+  DefaultNXTImageDirectory := IncludeTrailingPathDelimiter(ExpandFilename('~')) + 'Documents/';
 {$ENDIF}
 
 end.

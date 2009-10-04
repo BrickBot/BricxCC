@@ -27,6 +27,7 @@ uses
   Windows,
 {$ELSE}
   LResources,
+  LMessages,
   LCLIntf,
 {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, 

@@ -23,11 +23,14 @@ unit uNXTImagePrefs;
 interface
 
 uses
-{$IFDEF FPC}
+{$IFNDEF FPC}
+  DirectoryEdit,  
+{$ELSE}
   LResources,
+  EditBtn,
+  ColorBox,
 {$ENDIF}
-  Classes, Controls, Graphics, Forms, StdCtrls, BricxccSpin, ExtCtrls,
-  DirectoryEdit;
+  Classes, Controls, Graphics, Forms, StdCtrls, BricxccSpin, ExtCtrls;
 
 type
   TfrmNXTImagePrefs = class(TForm)
