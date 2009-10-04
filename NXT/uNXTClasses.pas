@@ -103,6 +103,7 @@ type
 
   TDataspaceEntry = class(TCollectionItem)
   private
+    fThreadNames : TStrings;
     fDataType: TDSType;
     fIdentifier: string;
     fDefValue: Cardinal;
@@ -144,6 +145,8 @@ type
     function  ElementSize : Word;
     procedure IncRefCount;
     procedure DecRefCount;
+    procedure AddThread(const aThreadName : string);
+    function  ThreadCount : integer;
     property DSBase : TDSBase read GetDSBase;
     property DSID : integer read fDSID write fDSID;
     property Identifier : string read fIdentifier write SetIdentifier;
@@ -3644,6 +3647,9 @@ end;
 constructor TDataspaceEntry.Create(ACollection: TCollection);
 begin
   inherited;
+  fThreadNames := TStringList.Create;
+  TStringList(fThreadNames).Sorted := True;
+  TStringList(fThreadNames).Duplicates := dupIgnore;
   fSubEntries := TDSBase.Create;
   fSubEntries.Parent := Self;
   fArrayValues := TObjectList.Create;
@@ -3653,6 +3659,7 @@ end;
 
 destructor TDataspaceEntry.Destroy;
 begin
+  FreeAndNil(fThreadNames);
   FreeAndNil(fArrayValues);
   FreeAndNil(fSubEntries);
   inherited;
@@ -4068,6 +4075,16 @@ end;
 function TDataspaceEntry.GetIsArray: boolean;
 begin
   Result := DataType = dsArray;
+end;
+
+procedure TDataspaceEntry.AddThread(const aThreadName: string);
+begin
+  fThreadNames.Add(aThreadName);
+end;
+
+function TDataspaceEntry.ThreadCount: integer;
+begin
+  Result := fThreadNames.Count;
 end;
 
 { TRXEProgram }
@@ -5824,7 +5841,14 @@ begin
           end;
           aatMutex : begin
             de := Dataspace.FindEntryAndAddReference(arg);
-            if (de = nil) or (de.DataType <> dsMutex) then
+            // we want to keep a list of all the threads that reference a
+            // mutex in order to help us correctly optimize them later on.
+            if Assigned(de) and (de.DataType = dsMutex) then
+            begin
+              de.AddThread(fClumpName);
+            end
+            else
+//            if (de = nil) or (de.DataType <> dsMutex) then
               ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
                 Format(sInvalidMutexArg, [arg]), true);
           end;
@@ -6207,23 +6231,20 @@ begin
         ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, sInvalidStatement, true)
       else
       begin
+        a1 := AL.Args[0].Value; // base thread name
         if not EnhancedFirmware then
         begin
           // replace start with subcall and automatic return address variable.
           AL.Command := OP_SUBCALL;
-          a1 := AL.Args[0].Value; // base thread name
           AL.Args[0].Value := Format('__%s_Spawner', [a1]);
           Arg := AL.Args.Add;
           Arg.Value := Format('%s_return', [AL.Args[0].Value]);
           DefineVar(Arg.Value, SubroutineReturnAddressType);
           RegisterThreadForSpawning(a1);
-        end
-        else
-        begin
-          // need to mark clumps as multi-threaded
-          CodeSpace.Multithread(fCurrentClump.Name);
-          CodeSpace.Multithread(AL.Args[0].Value);
         end;
+        // need to mark clumps as multi-threaded
+        CodeSpace.Multithread(fCurrentClump.Name);
+        CodeSpace.Multithread(a1);
       end;
     end;
     OPS_STOPCLUMP, OPS_PRIORITY, OPS_FMTNUM,
@@ -8725,6 +8746,7 @@ procedure TClump.OptimizeMutexes;
 var
   i : integer;
   AL : TAsmLine;
+  de : TDataspaceEntry;
 
   function AllCallersHaveZeroAncestors : boolean;
   var
@@ -8751,9 +8773,15 @@ begin
       AL := ClumpCode.Items[i];
       if AL.Command in [OP_ACQUIRE, OP_RELEASE] then
       begin
-        AL.RemoveVariableReferences;
-        AL.Command := OPS_INVALID; // no-op
-        AL.Args.Clear;
+        de := self.CodeSpace.Dataspace.FindEntryByName(Al.Args[0].Value);
+        if Assigned(de) and
+           (de.DataType = dsMutex) and
+           (de.ThreadCount <= 1) then
+        begin
+          AL.RemoveVariableReferences;
+          AL.Command := OPS_INVALID; // no-op
+          AL.Args.Clear;
+        end;
       end;
     end;
 end;
