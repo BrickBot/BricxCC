@@ -15,7 +15,7 @@ typedef struct //defines user defined type LineType
 #define MaxPoints 8
 #define MaxLines 12
 
-task main();
+task main()
 {
   PointType points[MaxPoints]; //points at start
   LineTypes Lne[MaxLines]; //line data

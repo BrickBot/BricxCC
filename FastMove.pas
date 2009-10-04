@@ -45,6 +45,11 @@ Version  Change
 2.30     PrefetchLimit initialization moved outside of ReplaceMove
 *)
 
+{.$DEFINE DEBUG} { by default make it lean and efficient }
+{$IFNDEF DEBUG}
+  {$D-} {$L-} {$Q-} {$R-} {$S-}
+{$ENDIF}
+
 interface
 
 {Procedures only interfaced for testing and validation purposes}
