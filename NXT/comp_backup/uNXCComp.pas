@@ -1,13 +1,32 @@
+(*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Initial Developer of this code is John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * All Rights Reserved.
+ *
+ *)
 unit uNXCComp;
 
 interface
 
 uses
-  Classes, uNBCCommon, uGenLexer, uNXTClasses, uPreprocess;
+  Classes, uNBCCommon, uGenLexer, uNXTClasses, uPreprocess, Contnrs;
 
 type
   TNXCComp = class
   private
+    fStackDepth : integer;
+    fStatementType : TStatementType;
+    fInlineFunctionStack : TObjectStack;
     fLastErrLine : integer;
     fLastErrMsg : string;
     endofallsource : boolean;
@@ -16,21 +35,29 @@ type
     fParenDepth : integer;
     fSafeCalls: boolean;
     fMaxErrors: word;
-    function FunctionParameterTypeName(const name: string;
-      idx: integer): string;
-    function GlobalDataType(const n: string): char;
+    fFirmwareVersion: word;
+    fStackVarNames : TStringList;
+    fOnCompilerStatusChange: TCompilerStatusChangeEvent;
+    function FunctionParameterTypeName(const name: string; idx: integer): string;
     function LocalDataType(const n: string): char;
     function LocalTypeName(const n: string): string;
+    function LocalConstantValue(const n: string): string;
+    function GlobalDataType(const n: string): char;
     function GlobalTypeName(const n: string): string;
     function ParamDataType(const n: string): char;
     function ParamTypeName(const n: string): string;
-    procedure OptionalSemi;
+    function ParamConstantValue(const n: string): string;
+//    procedure OptionalSemi;
     procedure CheckSemicolon;
     procedure OpenParen;
     procedure CloseParen;
     procedure InitializeGraphicOutVars;
     procedure LocalEmitLn(SL: TStrings; const line: string);
     procedure LocalEmitLnNoTab(SL: TStrings; const line: string);
+    procedure pop;
+    procedure push;
+    procedure SetStatementType(const Value: TStatementType);
+    procedure DoCompilerStatusChange(const Status: string);
   protected
     fDD: TDataDefs;
     fCurrentStruct : TDataspaceEntry;
@@ -61,10 +88,13 @@ type
     fCurrentThreadName : string;
     fBytesRead : integer;
     fSwitchFixups : TStrings;
+    fSwitchRegNames : TStrings;
     fSwitchDepth : integer;
     fCalc : TNBCExpParser;
     fOptimizeLevel: integer;
-    fInlining : boolean;
+//    fInlining : boolean;
+    fInlineDepth : integer;
+    fInlineStack : TObjectList; // list of TStrings
     fSafeCalling : boolean;
     fNestingLevel : integer;
     fLHSDataType : char;
@@ -76,7 +106,15 @@ type
     fConstStringMap : TStringList;
     fArrayIndexStack : TStringList;
     fStructDecls : TStringList;
-    fUDTOnStack : string;
+    fVarOnStack : string;
+    fLastExpressionOptimizedToConst : boolean;
+    fLastLoadedConst : string;
+    function AmInlining : boolean;
+    procedure IncrementInlineDepth;
+    procedure DecrementInlineDepth;
+    procedure HandleSpecialNames;
+    procedure EmitNXCRequiredStructs;
+    procedure ResetStatementType;
     procedure DecrementNestingLevel;
     procedure GetCharX;
     procedure GetChar;
@@ -86,12 +124,13 @@ type
     procedure SkipLine;
     procedure SkipDirectiveLine;
     procedure SkipWhite;
+    procedure GetDirective;
     procedure GetName;
     procedure GetNum;
     procedure GetHexNum;
     procedure GetCharLit;
     procedure GetOp;
-    procedure Next;
+    procedure Next(bProcessDirectives : boolean = True);
     procedure MatchString(x: string);
     procedure Semi;
     procedure NotNumericFactor;
@@ -109,7 +148,7 @@ type
     procedure Expression;
     procedure DoPreIncOrDec(bPutOnStack : boolean);
     function  IncrementOrDecrement : boolean;
-    procedure OptimizeExpression(idx : integer);
+    function OptimizeExpression(const idx : integer) : string;
     procedure LessOrEqual;
     procedure NotEqual;
     procedure Subtract;
@@ -129,13 +168,13 @@ type
     function  TypesAreCompatible(lhs, rhs : char) : boolean;
     function  GetParamName(procname : string; idx : integer) : string;
     procedure DoCall(procname: string);
+    function  GetValueOf(const name : string) : string;
     procedure DoCallAPIFunc(procname: string);
     function  APIFuncNameToID(procname : string) : integer;
     function  IsAPIFunc(procname : string) : boolean;
     procedure DoAssignValue(const aName : string; dt : char);
     procedure DoLocalArrayInit(const aName, ival : string; dt : char);
     procedure DoArrayAssignValue(const aName, idx : string; dt : char);
-//    procedure DoArrayIndex(rhsBaseDT : char; aLHSName, aName : string);
     procedure DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string);
     procedure Assignment;
     procedure CheckNotConstant(const aName : string);
@@ -155,29 +194,30 @@ type
     procedure DoSwitchDefault;
     function  SwitchFixupIndex : integer;
     function  SwitchIsString : Boolean;
+    function  SwitchRegisterName : string;
     procedure ClearSwitchFixups;
-    function  SwitchFixupsCount : integer;
     procedure FixupSwitch(idx : integer; lbl : string);
     procedure DoLabel;
     procedure DoStart;
     procedure DoStopTask;
     procedure DoSetPriority;
     procedure Statement(const lend, lstart : string);
-    procedure ProcessDirectives;
+    procedure ProcessDirectives(bScan : boolean = True);
     procedure HandlePoundLine;
     function  ArrayOfType(dt : char; dimensions : integer) : char;
     function  GetVariableType(vt: char; bUnsigned: boolean): char;
     function  RemoveArrayDimension(dt : char) : char;
     function  AddArrayDimension(dt : char) : char;
     procedure IncLineNumber;
-    procedure AddLocal(name: string; dt: char; const tname : string;
-      bConst : boolean; const lenexp : string);
+    function AddLocal(name: string; dt: char; const tname : string;
+      bConst : boolean; const lenexp : string) : integer;
     procedure AllocGlobal(const tname : string; dt: char; bInline, bSafeCall, bConst : boolean);
     procedure AllocLocal(const sub, tname: string; dt: char; bConst : boolean);
     function  GetInitialValue(dt : char) : string;
     procedure DoLocals(const sub: string);
     procedure AddFunctionParameter(pname, varname, tname : string; idx : integer;
-      ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer);
+      ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer;
+      bHasDefault : boolean; defValue : string);
     function  FormalList(protoexists: boolean; procname: string): integer;
     procedure ProcedureBlock;
     procedure InitializeGlobalArrays;
@@ -196,7 +236,8 @@ type
     procedure CheckDup(N: string);
     procedure CheckTable(const N: string);
     procedure CheckGlobal(const N: string);
-    procedure AddParam(N: string; T: char; const tname : string; bConst : boolean);
+    procedure AddParam(N: string; T: char; const tname : string;
+      bConst : boolean; bHasDefault : boolean; const defValue : string);
     function  DataType(const n: string): char;
     procedure LoadVar(const Name: string);
     procedure CheckNotProc(const Name : string);
@@ -244,6 +285,7 @@ type
     procedure ClearReg;
     procedure ArrayAssignment(const name : string; dt : char; bIndexed : boolean);
     procedure UDTAssignment(const name : string);
+    procedure GetAndStoreUDT(const name : string);
     procedure MathAssignment(const name : string);
     procedure StoreAdd(const name: string);
     procedure StoreDiv(const name: string);
@@ -258,7 +300,6 @@ type
     procedure StoreSub(const name: string);
     procedure StoreInc(const name: string; const val: integer = 1);
     procedure StoreDec(const name: string; const val: integer = 1);
-    procedure DoWait;
     procedure DoAPICommands(const lend, lstart : string);
     procedure DoResetScreen;
     procedure DoReadButton(idx : integer);
@@ -269,12 +310,19 @@ type
     procedure DoOnFwdRevEx;
     procedure DoOnFwdRevRegEx;
     procedure DoOnFwdRevSyncEx;
+    procedure DoOnFwdRevRegPID;
+    procedure DoOnFwdRevSyncPID;
+    procedure DoOnFwdRevRegExPID;
+    procedure DoOnFwdRevSyncExPID;
     procedure DoResetCounters;
     procedure DoRotateMotors(idx : integer);
     procedure DoSetSensorTypeMode(idx : integer);
     procedure DoClearSetResetSensor;
     procedure DoTextNumOut(idx : integer);
+    procedure DoFontTextNumOut(idx : integer);
     procedure DoDrawPoint;
+    procedure DoDrawPoly;
+    procedure DoDrawEllipse;
     procedure DoDrawLineRect(idx : integer);
     procedure DoDrawCircle;
     procedure DoDrawGraphic(idx : integer);
@@ -285,7 +333,6 @@ type
     procedure DoSetInputOutput(const idx : integer);
     procedure DoStop;
     procedure DoGoto;
-    procedure DoArrayBuild;
     procedure DoPrecedesFollows;
     procedure DoReturn;
     procedure DoStopMotors;
@@ -294,13 +341,11 @@ type
     procedure DoSubString;
     procedure DoStrReplace;
     procedure DoStrToNum;
-    procedure ReportProblem(const lineNo: integer; const fName,
-      msg: string; err: boolean);
+    procedure ReportProblem(const lineNo: integer; const fName, msg: string; const err: boolean);
     procedure Scan;
     function  IsWhite(c: char): boolean;
     function  IsRelop(c: char): boolean;
     function  IsOrop(c: char): boolean;
-    function  IsAlpha(c: char): boolean;
     function  IsDigit(c: char): boolean;
     function  IsHex(c: char): boolean;
     function  IsAlNum(c: char): boolean;
@@ -308,6 +353,7 @@ type
     function  IsMulop(c: char): boolean;
     procedure GetString;
     procedure CheckNumeric;
+    function  ValueIsNumeric : boolean;
     procedure CheckString;
     procedure LoadAPIFunctions;
     procedure AddAPIFunction(const name : string; id : integer);
@@ -315,11 +361,15 @@ type
     procedure StringExpression(const Name : string; bAdd : boolean = False);
     procedure StringConcatAssignment(const Name : string);
     procedure StringFunction(const Name : string);
-    function  TempWordName: string;
-    function  TempByteName: string;
-    function  TempLongName : string;
+    function  TempSignedByteName: string;
+    function  TempSignedWordName: string;
+    function  TempSignedLongName : string;
+    function  TempUnsignedLongName : string;
+    function  TempFloatName : string;
     function  RegisterName(name : string = '') : string;
+    function  SignedRegisterName(name : string = '') : string;
     function  UnsignedRegisterName(name : string = '') : string;
+    function  FloatRegisterName(name : string = '') : string;
     function  ZeroFlag : string;
     function  tos: string;
     function  StrTmpBufName(name : string = '') : string;
@@ -337,6 +387,8 @@ type
     procedure EmitPoundLine;
     function  IsLocal(n: string): boolean;
     function  LocalIdx(n: string): integer;
+    function  IsOldParam(n: string): boolean;
+    function  IsFuncParam(n: string): boolean;
     function  IsParam(n: string): boolean;
     function  ParamIdx(n: string): integer;
     procedure AllocateHelper(const Name, aVal, Val, tname: string; dt: char);
@@ -357,6 +409,7 @@ type
     function  GetNBCSrc: TStrings;
     function  FunctionReturnType(const name: string): char;
     function  FunctionParameterCount(const name: string): integer;
+    function  FunctionRequiredParameterCount(const name: string): integer;
     function  FunctionParameterType(const name : string; idx : integer) : char;
     procedure ClearLocals;
     procedure ClearParams;
@@ -369,6 +422,10 @@ type
     procedure CheckStringConst;
     function  AdvanceToNextParam : string;
     function  FunctionParameterIsConstant(const name: string;
+      idx: integer): boolean;
+    function FunctionParameterDefaultValue(const name: string;
+      idx: integer): string;
+    function FunctionParameterHasDefault(const name: string;
       idx: integer): boolean;
     function  IsParamConst(n: string): boolean;
     function  IsLocalConst(n: string): boolean;
@@ -384,6 +441,7 @@ type
     function  RootOf(const name : string) : string;
     function  DataTypeOfDataspaceEntry(DE : TDataspaceEntry) : char;
     procedure LoadSystemFile(S : TStream);
+    procedure CheckForMain;
   protected
     fTmpAsmLines : TStrings;
     fBadProgram : boolean;
@@ -392,6 +450,7 @@ type
     procedure InternalParseStream;
     procedure Clear;
     property  SwitchFixups : TStrings read fSwitchFixups;
+    property  SwitchRegisterNames : TStrings read fSwitchRegNames;
   protected
     procedure TopDecls; virtual;
     procedure Header; virtual;
@@ -400,6 +459,7 @@ type
     function  GetPreProcLexerClass : TGenLexerClass; virtual;
     // dataspace definitions property
     property  DataDefinitions : TDataDefs read fDD;
+    property  StatementType : TStatementType read fStatementType write SetStatementType;
   public
     constructor Create;
     destructor Destroy; override;
@@ -414,17 +474,20 @@ type
     property  OptimizeLevel : integer read fOptimizeLevel write fOptimizeLevel;
     property  WarningsOff : boolean read fWarningsOff write fWarningsOff;
     property  EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
+    property  FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
     property  IgnoreSystemFile : boolean read fIgnoreSystemFile write fIgnoreSystemFile;
     property  SafeCalls : boolean read fSafeCalls write fSafeCalls;
     property  MaxErrors : word read fMaxErrors write fMaxErrors;
     property  OnCompilerMessage : TOnCompilerMessage read fOnCompMSg write fOnCompMsg;
+    property  ErrorCount : integer read fProgErrorCount;
+    property OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write fOnCompilerStatusChange;
   end;
 
 implementation
 
 uses
   SysUtils, Math, uNXCLexer, uNBCLexer, mwGenericLex, uLocalizedStrings,
-  NBCCommonData, NXCDefsData;
+  NBCCommonData, NXCDefsData, uNXTConstants;
 
 {--------------------------------------------------------------}
 { Constant Declarations }
@@ -502,7 +565,6 @@ const                                     // 'xileweRWve'
 const
   API_BREAK    = 0;
   API_CONTINUE = 1;
-  API_WAIT     = 2;
   API_ONFWD    = 3;
   API_ONREV    = 4;
   API_ONFWDREG = 5;
@@ -542,15 +604,23 @@ const
   API_OFFEX       = 39;
   API_ROTATEMOTORPID = 40;
   API_ROTATEMOTOREXPID = 41;
-  API_RESETTACHOCOUNT = 42;
+  API_RESETTACHOCOUNT      = 42;
   API_RESETBLOCKTACHOCOUNT = 43;
-  API_RESETROTATIONCOUNT = 44;
-  API_RESETALLTACHOCOUNTS = 45;
-  API_ARRAYBUILD = 46;
+  API_RESETROTATIONCOUNT   = 44;
+  API_RESETALLTACHOCOUNTS  = 45;
+  API_ONFWDREGPID = 46;
+  API_ONREVREGPID = 47;
+  API_ONFWDSYNCPID = 48;
+  API_ONREVSYNCPID = 49;
+  API_ONFWDREGEXPID = 50;
+  API_ONREVREGEXPID = 51;
+  API_ONFWDSYNCEXPID = 52;
+  API_ONREVSYNCEXPID = 53;
+  API_WAIT                 =  2; // moved to header file as inline function
 
-  APICount = 47;
+  APICount = 54;
   APIList : array[0..APICount-1] of string = (
-    'break', 'continue', 'Wait',
+    'break', 'continue', '__Wait__',
     'OnFwd', 'OnRev', 'OnFwdReg', 'OnRevReg',
     'OnFwdSync', 'OnRevSync', 'Coast', 'Off',
     'RotateMotor', 'RotateMotorEx',
@@ -564,21 +634,24 @@ const
     'RotateMotorPID', 'RotateMotorExPID',
     'ResetTachoCount', 'ResetBlockTachoCount',
     'ResetRotationCount', 'ResetAllTachoCounts',
-    'ArrayBuild'
+    'OnFwdRegPID', 'OnRevRegPID', 'OnFwdRegExPID', 'OnRevRegExPID',
+    'OnFwdSyncPID', 'OnRevSyncPID', 'OnFwdSyncExPID', 'OnRevSyncExPID'
   );
 
 const
-  IntegralTypes = [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF,
-                   TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
+  NonAggregateTypes = [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF,
+                       TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF, TOK_FLOATDEF];
+  IntegerTypes = [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF,
+                  TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
 const
-  UnsignedIntegralTypes = [TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
-
-var
-  sd : integer;
+  UnsignedIntegerTypes = [TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF];
+  SignedIntegerTypes = [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF];
+  SignedTypes = SignedIntegerTypes + [TOK_FLOATDEF];
 
 function GetArrayDimension(dt : char) : integer;
 begin
   case dt of
+    TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4         : Result := Ord(dt) - Ord(TOK_ARRAYFLOAT) + 1;
     TOK_ARRAYSTRING..TOK_ARRAYSTRING4       : Result := Ord(dt) - Ord(TOK_ARRAYSTRING) + 1;
     TOK_ARRAYUDT..TOK_ARRAYUDT4             : Result := Ord(dt) - Ord(TOK_ARRAYUDT) + 1;
     TOK_ARRAYCHARDEF..TOK_ARRAYCHARDEF4     : Result := Ord(dt) - Ord(TOK_ARRAYCHARDEF) + 1;
@@ -594,7 +667,7 @@ end;
 
 function IsArrayType(dt: char): boolean;
 begin
-  Result := (dt >= TOK_ARRAYSTRING) and (dt <= TOK_ARRAYULONGDEF4);
+  Result := (dt >= TOK_ARRAYFLOAT) and (dt <= TOK_ARRAYULONGDEF4);
 end;
 
 function IsUDT(dt: char): boolean;
@@ -605,6 +678,7 @@ end;
 function ArrayBaseType(dt: char): char;
 begin
   case dt of
+    TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4         : Result := TOK_FLOATDEF;
     TOK_ARRAYSTRING..TOK_ARRAYSTRING4       : Result := TOK_STRINGDEF;
     TOK_ARRAYUDT..TOK_ARRAYUDT4             : Result := TOK_USERDEFINEDTYPE;
     TOK_ARRAYCHARDEF..TOK_ARRAYCHARDEF4     : Result := TOK_CHARDEF;
@@ -628,15 +702,25 @@ begin
     Result := Result + '[]';
 end;
 
-procedure pop;
+procedure TNXCComp.pop;
 begin
-  dec(sd);
+  dec(fStackDepth);
+  fStackVarNames.Delete(fStackVarNames.Count - 1);
 end;
 
-procedure push;
+procedure TNXCComp.push;
+var
+  tosName : string;
 begin
-  inc(sd);
-  maxsd := Max(maxsd, sd);
+  inc(fStackDepth);
+  MaxStackDepth := Max(MaxStackDepth, fStackDepth);
+  if fStatementType = stFloat then
+    tosName := Format('__float_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
+  else if fStatementType = stUnsigned then
+    tosName := Format('__unsigned_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
+  else
+    tosName := Format('__signed_stack_%3.3d%s', [fStackDepth, fCurrentThreadName]);
+  fStackVarNames.Add(tosName);
 end;
 
 procedure TNXCComp.GetCharX;
@@ -693,11 +777,14 @@ end;
 { Report Error and Halt }
 
 procedure TNXCComp.ReportProblem(const lineNo: integer; const fName,
-  msg: string; err : boolean);
+  msg: string; const err : boolean);
 var
   tmp, tmp1, tmp2, tmp3, tmp4 : string;
   stop : boolean;
 begin
+  // exit without doing anything if this is not an error and warnings are off
+  if WarningsOff and not err then
+    Exit;
   if (lineNo <> fLastErrLine) or (msg <> fLastErrMsg) then
   begin
     fLastErrLine := lineNo;
@@ -726,7 +813,6 @@ begin
     if err then
       inc(fProgErrorCount);
     stop := (MaxErrors > 0) and (fProgErrorCount >= MaxErrors);
-  //  stop := false;
     if assigned(fOnCompMsg) then
       fOnCompMsg(tmp, stop);
     if stop then
@@ -795,9 +881,50 @@ end;
 {--------------------------------------------------------------}
 { Check to Make Sure the Current Token is a Number }
 
+function TNXCComp.ValueIsNumeric: boolean;
+var
+  vName : string;
+  idx : integer;
+  V : TVariable;
+begin
+  Result := True;
+  if not (Token in [TOK_NUM, TOK_HEX]) then
+  begin
+    // what about a constant numeric variable?
+    if Token = TOK_IDENTIFIER then
+    begin
+      // it is an identifier
+      vName := GetDecoratedValue;
+      // if it is a global constant then it can be evaluated using our
+      // expression evaluator
+      fCalc.SilentExpression := vName;
+      if fCalc.ParserError then
+      begin
+        // what about a constant local?
+        idx := LocalIdx(vName);
+        if idx <> -1 then
+        begin
+          V := fLocals[idx];
+          if V.IsConstant and (V.Value <> '') then
+            Value := V.Value
+          else
+            Result := False;
+        end
+        else
+          Result := False;
+      end
+      else
+        Value := NBCFloatToStr(fCalc.Value);
+    end
+    else
+      Result := False;
+  end;
+end;
+
 procedure TNXCComp.CheckNumeric;
 begin
-  if not (Token in [TOK_NUM, TOK_HEX]) then Expected(sNumber);
+  if not ValueIsNumeric then
+    Expected(sNumber);
 end;
 
 procedure TNXCComp.CheckString;
@@ -814,14 +941,6 @@ begin
 end;
 
 
-
-{--------------------------------------------------------------}
-{ Recognize an Alpha Character }
-
-function TNXCComp.IsAlpha(c: char): boolean;
-begin
-  Result := c in ['A'..'Z', 'a'..'z', '_'];
-end;
 
 {--------------------------------------------------------------}
 { Recognize a Decimal Digit }
@@ -915,7 +1034,7 @@ end;
 
 procedure TNXCComp.SkipDirectiveLine;
 begin
-  fDirLine := '#' + Value + ' ';
+  fDirLine := Value + ' ';
   repeat
     GetCharX;
     fDirLine := fDirLine + Look;
@@ -1019,7 +1138,10 @@ var
 begin
   // a variable is considered to be already decorated if it
   // starts with "__" followed by a task name followed by DECOR_SEP
-  // OR it starts with "__stack_"  OR it starts with %%CALLER%%_
+  // OR it starts with "__signed_stack_"
+  // OR it starts with "__unsigned_stack_"
+  // OR it starts with "__float_stack_"
+  // OR it starts with %%CALLER%%_
   Result := False;
   i := Pos('__', n);
   if i = 1 then
@@ -1031,8 +1153,12 @@ begin
     if i > 1 then
     begin
       tmp := Copy(n, 1, i-1);
+      i := Pos('_inline_', tmp);
+      if i > 0 then
+        System.Delete(tmp, i, MaxInt);
       i := fThreadNames.IndexOf(tmp);
-      Result := (i <> -1) or (tmp = 'stack');
+      Result := (i <> -1) or (tmp = 'signed_stack') or
+                (tmp = 'unsigned_stack') or (tmp = 'float_stack');
     end;
   end;
 end;
@@ -1040,9 +1166,35 @@ end;
 {--------------------------------------------------------------}
 { Look for Symbol in Parameter Table }
 
-function TNXCComp.IsParam(n: string): boolean;
+function TNXCComp.IsOldParam(n: string): boolean;
 begin
   Result := ParamIdx(RootOf(n)) <> -1{0};
+end;
+
+function TNXCComp.IsFuncParam(n: string): boolean;
+var
+  i : integer;
+  fp : TFunctionParameter;
+begin
+  Result := False;
+  // check in the fFuncParams
+  for i := 0 to fFuncParams.Count - 1 do
+  begin
+    fp := fFuncParams[i];
+    if ApplyDecoration(fp.ProcName, fp.Name, 0) = RootOf(n) then
+    begin
+      Result := True;
+      Break;
+    end;
+  end;
+end;
+
+
+function TNXCComp.IsParam(n: string): boolean;
+begin
+  Result := IsOldParam(n);
+  if not Result then
+    Result := IsFuncParam(n);
 end;
 
 function TNXCComp.ParamIdx(n: string): integer;
@@ -1062,6 +1214,19 @@ begin
   i := ParamIdx(RootOf(n));
   if i <> -1 then
     Result := fParams[i].IsConstant;
+end;
+
+function TNXCComp.ParamConstantValue(const n: string): string;
+var
+  i : integer;
+begin
+  Result := n;
+  i := ParamIdx(RootOf(n));
+  if i <> -1 then
+  begin
+    if fParams[i].IsConstant then
+      Result := fParams[i].Value;
+  end;
 end;
 
 function TNXCComp.ParamDataType(const n: string): char;
@@ -1090,6 +1255,10 @@ end;
 function TNXCComp.IsLocal(n: string): boolean;
 begin
   Result := LocalIdx(RootOf(n)) <> -1{0};
+  if not Result then
+  begin
+    // is this a special internal variable name?
+  end;
 end;
 
 function TNXCComp.LocalIdx(n: string): integer;
@@ -1119,6 +1288,19 @@ begin
   i := LocalIdx(RootOf(n));
   if i <> -1 then
     Result := fLocals[i].IsConstant;
+end;
+
+function TNXCComp.LocalConstantValue(const n: string): string;
+var
+  i : integer;
+begin
+  Result := n;
+  i := LocalIdx(RootOf(n));
+  if i <> -1 then
+  begin
+    if fLocals[i].IsConstant then
+      Result := fLocals[i].Value;
+  end;
 end;
 
 function TNXCComp.LocalDataType(const n: string): char;
@@ -1196,6 +1378,21 @@ end;
 
 
 {--------------------------------------------------------------}
+{ Get an preprocessor directive }
+
+procedure TNXCComp.GetDirective;
+begin
+  SkipWhite;
+  if Look <> '#' then Expected(sDirective);
+  Token := TOK_DIRECTIVE;
+  Value := '';
+  repeat
+    Value := Value + Look;
+    GetChar;
+  until not IsAlpha(Look);
+end;
+
+{--------------------------------------------------------------}
 { Get an Identifier }
 
 procedure TNXCComp.GetName;
@@ -1208,6 +1405,7 @@ begin
     Value := Value + Look;
     GetChar;
   until not IsAlNum(Look);
+  HandleSpecialNames;
   fExpStrHasVars := True;
 end;
 
@@ -1231,11 +1429,11 @@ begin
   begin
     Token := TOK_NUM;
     Value := savedLook;
-    if not IsDigit(Look) then Exit;
+    if not (IsDigit(Look) or (Look = '.')) then Exit;
     repeat
       Value := Value + Look;
       GetChar;
-    until not IsDigit(Look);
+    until not (IsDigit(Look) or (Look = '.'));
   end;
 end;
 
@@ -1289,9 +1487,13 @@ begin
   end
   else
   begin
+    bEscapeNext := False;
     Value := '''' + Look;
     repeat
-      bEscapeNext := Look = '\';
+      if not bEscapeNext then
+        bEscapeNext := Look = '\'
+      else
+        bEscapeNext := False;
       GetCharX;
       if not ((Look = LF) or ((Look = '"') and not bEscapeNext)) then
       begin
@@ -1299,12 +1501,6 @@ begin
           Value := Value + '\'''
         else
           Value := Value + Look;
-{
-        if Look = '''' then
-          Value := Value + '"'
-        else
-          Value := Value + Look;
-}
       end;
     until ((Look = '"') and not bEscapeNext) or (Look = LF) or endofallsource;
     Value := Value + '''';
@@ -1329,16 +1525,21 @@ end;
 {--------------------------------------------------------------}
 { Get the Next Input Token }
 
-procedure TNXCComp.Next;
+procedure TNXCComp.Next(bProcessDirectives : boolean);
 begin
   SkipWhite;
   if Look = '''' then GetCharLit
   else if Look = '"' then GetString
+  else if Look = '#' then GetDirective
   else if IsAlpha(Look) then GetName
   else if IsDigit(Look) then GetNum
   else if Look = '$' then GetHexNum
   else GetOp;
-  fExpStr := fExpStr + Value;
+  if bProcessDirectives then
+  begin
+    ProcessDirectives(False);
+    fExpStr := fExpStr + Value;
+  end;
 end;
 
 function IsAPICommand(const name : string) : boolean;
@@ -1400,23 +1601,26 @@ begin
 //    Next;
 end;
 
+{
 procedure TNXCComp.OptionalSemi;
 begin
   if Token = TOK_SEMICOLON then
     Next;
 end;
+}
 
 {--------------------------------------------------------------}
 { Output a String with Tab and CRLF }
 
 procedure TNXCComp.EmitLn(s: string);
 begin
+  EmitPoundLine;
   NBCSource.Add(#9+s);
 end;
 
 procedure TNXCComp.EmitPoundLine;
 begin
-  NBCSource.Add('#line ' + IntToStr(linenumber) + ' "' + CurrentFile + '"');
+  NBCSource.Add('#line ' + IntToStr(linenumber-1) + ' "' + CurrentFile + '"');
 end;
 
 
@@ -1500,9 +1704,10 @@ end;
 {--------------------------------------------------------------}
 { Add a Parameter to Table }
 
-procedure TNXCComp.AddParam(N: string; T: char; const tname : string; bConst : boolean);
+procedure TNXCComp.AddParam(N: string; T: char; const tname : string;
+  bConst : boolean; bHasDefault : boolean; const defValue : string);
 begin
-  if IsParam(N) then Duplicate(N);
+  if IsOldParam(N) then Duplicate(N);
   with fParams.Add do
   begin
     Name       := N;
@@ -1571,8 +1776,12 @@ begin
       // handle some special cases (register variables)
       if (Pos('__strretval', n) = 1) or (Pos('__strtmpbuf', n) = 1) or (Pos('__strbuf', n) = 1) then
         Result := TOK_STRINGDEF
-      else if (Pos('__D0', n) = 1) or (Pos('__stack_', n) = 1) or (Pos('__tmpslong', n) = 1) then
+      else if (Pos('__D0', n) = 1) or (Pos('__signed_stack_', n) = 1) or (Pos('__tmpslong', n) = 1) then
         Result := TOK_LONGDEF
+      else if (Pos('__DU0', n) = 1) or (Pos('__unsigned_stack_', n) = 1) or (Pos('__tmplong', n) = 1) then
+        Result := TOK_ULONGDEF
+      else if (Pos('__DF0', n) = 1) or (Pos('__float_stack_', n) = 1) or (Pos('__tmpfloat', n) = 1) then
+        Result := TOK_FLOATDEF
       else if (Pos('__zf', n) = 1) then
         Result := TOK_BYTEDEF
       else if (Pos('__tmpsbyte', n) = 1) then
@@ -1622,6 +1831,9 @@ begin
       TOK_STRINGDEF : begin
         Result := Char(Ord(TOK_ARRAYSTRING)+dimensions);
       end;
+      TOK_FLOATDEF : begin
+        Result := Char(Ord(TOK_ARRAYFLOAT)+dimensions);
+      end;
     else
       Result := dt;
     end;
@@ -1657,6 +1869,13 @@ end;
 
 procedure TNXCComp.StoreDiv(const name : string);
 begin
+  // check for unsafe division (signed by unsigned)
+  if (DataType(name) in SignedTypes) and (StatementType = stUnsigned) then
+  begin
+    // cast the unsigned type to a signed type
+    EmitLn(Format('mov %s, %s', [SignedRegisterName, UnsignedRegisterName]));
+    StatementType := stSigned;
+  end;
   EmitLn(Format('div %0:s, %0:s, %s', [GetDecoratedIdent(name), RegisterName]));
 end;
 
@@ -1721,9 +1940,16 @@ end;
 { Clear the Primary Register }
 
 procedure TNXCComp.ClearReg;
+var
+  fmtStr : string;
 begin
   fCCSet := False;
-  EmitLn(Format('set %s, 0', [RegisterName]));
+  // 2009-03-18 JCH: It is never safe to use "set" with a float variable
+  if StatementType = stFloat then
+    fmtStr := 'mov %s, 0'
+  else
+    fmtStr := 'set %s, 0';
+  EmitLn(Format(fmtStr, [RegisterName]));
 end;
 
 {---------------------------------------------------------------}
@@ -1763,12 +1989,25 @@ var
   cval : int64;
   tmpSrc : string;
 begin
-  cval := StrToIntDef(n, 0);
-  if (cval > High(smallint)) or
-     ((cval < 0) and (not EnhancedFirmware or (cval < Low(smallint)))) then
-    tmpSrc := 'mov %s, %s'
+  fLastLoadedConst := n;
+  if (Pos('.', n) > 0) or (StatementType = stFloat) then
+  begin
+    tmpSrc := 'mov %s, %s';
+    StatementType := stFloat;
+  end
   else
-    tmpSrc := 'set %s, %s';
+  begin
+    cval := StrToInt64Def(n, 0);
+    if cval <= MaxInt then
+      StatementType := stSigned
+    else
+      StatementType := stUnsigned;
+    if (cval > High(smallint)) or
+       ((cval < 0) and (not EnhancedFirmware or (cval < Low(smallint)))) then
+      tmpSrc := 'mov %s, %s'
+    else
+      tmpSrc := 'set %s, %s';
+  end;
   fCCSet := False;
   EmitLn(Format(tmpSrc, [RegisterName, n]));
 end;
@@ -1789,8 +2028,17 @@ end;
 { Load a Variable to Primary Register }
 
 procedure TNXCComp.LoadVar(const Name: string);
+var
+  dt : Char;
 begin
   CheckNotProc(Name);
+  dt := DataType(Name);
+  if dt = TOK_FLOATDEF then
+    StatementType := stFloat
+  else if not (dt in UnsignedIntegerTypes) then
+    StatementType := stSigned
+  else
+    StatementType := stUnsigned;
   fCCSet := False;
   EmitLn(Format('mov %s, %s', [RegisterName, GetDecoratedIdent(Name)]));
 end;
@@ -1801,7 +2049,7 @@ end;
 procedure TNXCComp.PushPrim;
 begin
   push;
-  EmitLn(Format('mov %s, %s', [tos, RegisterName]));
+  EmitLn(Format('mov %1:s, %0:s', [RegisterName, tos]));
 end;
 
 {---------------------------------------------------------------}
@@ -1810,7 +2058,7 @@ end;
 procedure TNXCComp.PopAdd;
 begin
   fCCSet := False;
-  EmitLn(Format('add %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('add %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1820,7 +2068,7 @@ end;
 procedure TNXCComp.PopSub;
 begin
   fCCSet := False;
-  EmitLn(Format('sub %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('sub %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1830,7 +2078,7 @@ end;
 procedure TNXCComp.PopMul;
 begin
   fCCSet := False;
-  EmitLn(Format('mul %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('mul %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1838,9 +2086,20 @@ end;
 { Divide Top of Stack by Primary }
 
 procedure TNXCComp.PopDiv;
+var
+  p0, p1, p2 : string;
 begin
+  p0 := RegisterName;
+  p1 := tos;
+  p2 := RegisterName;
+  if (DataType(p1) in SignedTypes) and (DataType(p0) in UnsignedIntegerTypes) then
+  begin
+    // cast the unsigned type to a signed type
+    EmitLn(Format('mov %s, %s', [SignedRegisterName, UnsignedRegisterName]));
+    p0 := SignedRegisterName;
+  end;
   fCCSet := False;
-  EmitLn(Format('div %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('div %2:s, %1:s, %0:s', [p0, p1, p2]));
   pop;
 end;
 
@@ -1850,7 +2109,7 @@ end;
 procedure TNXCComp.PopMod;
 begin
   fCCSet := False;
-  EmitLn(Format('mod %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('mod %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1860,7 +2119,7 @@ end;
 procedure TNXCComp.PopAnd;
 begin
   fCCSet := False;
-  EmitLn(Format('and %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('and %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1870,7 +2129,7 @@ end;
 procedure TNXCComp.PopOr;
 begin
   fCCSet := False;
-  EmitLn(Format('or %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('or %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1880,7 +2139,7 @@ end;
 procedure TNXCComp.PopXor;
 begin
   fCCSet := False;
-  EmitLn(Format('xor %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('xor %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1891,7 +2150,7 @@ end;
 procedure TNXCComp.PopLeftShift;
 begin
   fCCSet := False;
-  EmitLn(Format('shl %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('shl %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1901,7 +2160,7 @@ end;
 procedure TNXCComp.PopRightShift;
 begin
   fCCSet := False;
-  EmitLn(Format('shr %0:s, %1:s, %0:s', [RegisterName, tos]));
+  EmitLn(Format('shr %2:s, %1:s, %0:s', [RegisterName, tos, RegisterName]));
   pop;
 end;
 
@@ -1933,7 +2192,13 @@ begin
               ((Token = TOK_IDENTIFIER) and
                (DataType(Value) = TOK_STRINGDEF));
     if not Result then
-      Result := FunctionReturnType(Value) = TOK_STRINGDEF;
+      Result := FunctionReturnType(Value) = TOK_STRINGDEF
+    else
+    begin
+      // if we are indexing into the string then it is not really a string type
+      if Look = '[' then
+        Result := False;
+    end;
   end;
 end;
 
@@ -2013,15 +2278,7 @@ end;
 procedure TNXCComp.Store(const Name: string);
 begin
   CheckNotProc(Name);
-(*
-  if fLHSDataType in UnsignedIntegralTypes then
-  begin
-    EmitLn(Format('mov %s, %s',[UnsignedRegisterName, RegisterName]));
-    EmitLn(Format('mov %s, %s',[GetDecoratedIdent(Name), UnsignedRegisterName]));
-  end
-  else
-*)
-    EmitLn(Format('mov %s, %s',[GetDecoratedIdent(Name), RegisterName]));
+  EmitLn(Format('mov %s, %s',[GetDecoratedIdent(Name), RegisterName]));
 end;
 
 procedure TNXCComp.StoreString(const Name : string);
@@ -2075,20 +2332,21 @@ procedure TNXCComp.Trailer;
 var
   tmp : TStrings;
 begin
+  DoCompilerStatusChange(sNXCGenerateTrailer);
+  CheckForMain;
   // handle stack variables
   tmp := TStringList.Create;
   try
     tmp.AddStrings(NBCSource);
     NBCSource.Clear;
-    if IgnoreSystemFile then
-      EmitLnNoTab('#include "NXTDefs.h"');
     // emit struct decls
     NBCSource.AddStrings(fStructDecls);
     EmitLnNoTab('dseg segment');
     // structures
-    EmitLn('__SSMArgs TSetScreenMode');
-    EmitLn('__SPTArgs TSoundPlayTone');
-    EmitLn('__SPFArgs TSoundPlayFile');
+    EmitNXCRequiredStructs;
+    EmitLn('__SSMArgs TNXCSetScreenMode');
+    EmitLn('__SPTArgs TNXCSoundPlayTone');
+    EmitLn('__SPFArgs TNXCSoundPlayFile');
     // mutexes
     EmitLn('__SSMArgsMutex mutex');
     EmitLn('__SPTArgsMutex mutex');
@@ -2111,7 +2369,7 @@ procedure TNXCComp.Prolog(const name : string; bIsSub : boolean);
 begin
   if bIsSub then
   begin
-    if fInlining then
+    if AmInlining then
     begin
       fCurrentInlineFunction := fInlineFunctions.Add;
       fCurrentInlineFunction.Name := name;
@@ -2130,9 +2388,11 @@ procedure TNXCComp.Epilog(bIsSub : boolean);
 begin
   if bIsSub then
   begin
-    if fInlining then
+    if AmInlining then
     begin
-      fInlining := False;
+      DecrementInlineDepth;
+//      dec(fInlineDepth);
+//      fInlining := False;
     end
     else
     begin
@@ -2170,7 +2430,9 @@ begin
     TOK_ARRAYULONGDEF..TOK_ARRAYULONGDEF4  :
       EmitLn(Format('%s dword%s %s', [Name, aVal, Val]));
     TOK_MUTEXDEF  : EmitLn(Format('%s mutex', [Name]));
-    TOK_FLOATDEF  : EmitLn(Format('%s float', [Name]));
+    TOK_FLOATDEF,
+    TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4  :
+      EmitLn(Format('%s float%s %s', [Name, aVal, Val]));
     TOK_STRINGDEF : EmitLn(Format('%s byte[] %s', [Name, Val]));
     TOK_ARRAYSTRING..TOK_ARRAYSTRING4  :
       EmitLn(Format('%s byte[]%s %s', [Name, aVal, Val]));
@@ -2183,9 +2445,12 @@ begin
 end;
 
 procedure TNXCComp.Allocate(const Name, aVal, Val, tname: string; dt : char);
-var
-  oldInlining : boolean;
+//var
+//  oldInlining : boolean;
 begin
+  if (dt in [TOK_FLOATDEF, TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4]) and
+     (FirmwareVersion < MIN_FW_VER2X) then
+    AbortMsg(sFloatNotSupported);
   // 2007-07-05 JCH:
   // changed this function to perform no code generation of variable
   // declarations whatsoever if the current function is marked
@@ -2200,16 +2465,16 @@ begin
   // inline function code will be processed and any matching tokens
   // (i.e., the names of these variables) will be replaced with the
   // decorated version of the local variable or function parameter name
-  if fInlining then Exit;
+  if AmInlining then Exit;
   // variables are not output within inline functions
-  oldInlining := fInlining;
+//  oldInlining := fInlining;
   try
-    fInlining := False;
+//    fInlining := False;
     EmitLnNoTab('dseg segment');
     AllocateHelper(Name, aVal, Val, tname, dt);
     EmitLnNoTab('dseg ends');
   finally
-    fInlining := oldInlining;
+//    fInlining := oldInlining;
   end;
 end;
 
@@ -2292,20 +2557,35 @@ begin
             if not TypesAreCompatible(fLHSDataType, rdt) then
               AbortMsg(sDatatypesNotCompatible)
             else
+            begin
+//              fVarOnStack := GetDecoratedIdent(savedvalue);
               EmitLn(Format('mov %s, %s', [GetDecoratedIdent(fLHSName), GetDecoratedIdent(savedvalue)]));
+            end;
           end
           else if fLHSDataType = TOK_USERDEFINEDTYPE then
           begin
             if GetUDTType(fLHSName) <> GetUDTType(savedvalue) then
               AbortMsg(sUDTNotEqual)
             else
-              EmitLn(Format('mov %s, %s', [GetDecoratedIdent(fLHSName), GetDecoratedIdent(savedvalue)]));
+            begin
+              fVarOnStack := GetDecoratedIdent(savedvalue);
+//              EmitLn(Format('mov %s, %s', [GetDecoratedIdent(fLHSName), GetDecoratedIdent(savedvalue)]));
+            end;
           end
           else
             LoadVar(savedvalue);
         end;
         TOK_NUM, TOK_HEX : begin
           LoadConst(savedvalue);
+        end;
+        '-' : begin
+          if Token = TOK_NUM then
+          begin
+            LoadConst(savedvalue+value);
+            Next;
+          end
+          else
+            Expected(sMathFactor);
         end;
       else
         Expected(sMathFactor);
@@ -2385,51 +2665,85 @@ end;
 
 procedure TNXCComp.Expression;
 var
-  prev : integer;
+  prev, lenVal : integer;
+  oldExpStr, optExp : string;
 begin
   fExpStrHasVars := False;
-  fExpStr := Value;
-  prev := NBCSource.Count;
-  if IncrementOrDecrement then
-  begin
-    // pre-increment or pre-decrement
-    DoPreIncOrDec(true);
-  end
-  else
-  begin
-    if IsAddOp(Token) then
-      ClearReg
+  // 2009-04-09 JCH:
+  // Store the old expression string and restore it at the end of this routine
+  // so that recursive optimizations do not destroy the previous level of
+  // the expression.  This fixes the bug caused by commenting out
+  // "and not (fExpStr[1] in ['+', '-'])" in the OptimizeExpression function
+  // below.  Without this, an expression like x = MyFunc(233)+10; was being
+  // optimized to x = 10;
+  oldExpStr := fExpStr;
+  try
+    // set the old expression to be everything except for the first token in
+    // the new expression (aka "Value").
+    lenVal := Length(Value);
+    Delete(oldExpStr, Length(oldExpStr)-lenVal+1, lenVal);
+    // now start our new expression with the current token
+    fExpStr := Value;
+    prev := NBCSource.Count;
+    if IncrementOrDecrement then
+    begin
+      // pre-increment or pre-decrement
+      DoPreIncOrDec(true);
+    end
     else
-      Term;
-    while IsAddop(Token) do begin
-      PushPrim;
-      case Token of
-        '+': Add;
-        '-': Subtract;
+    begin
+      if IsAddOp(Token) then
+        ClearReg
+      else
+        Term;
+      while IsAddop(Token) do begin
+        PushPrim;
+        case Token of
+          '+': Add;
+          '-': Subtract;
+        end;
       end;
+      optExp := OptimizeExpression(prev);
     end;
-    OptimizeExpression(prev);
+  finally
+    fExpStr := oldExpStr + optExp + Value;
   end;
 end;
 
-procedure TNXCComp.OptimizeExpression(idx: integer);
+function TNXCComp.OptimizeExpression(const idx: integer) : string;
 begin
+  fLastExpressionOptimizedToConst := False;
+  System.Delete(fExpStr, Length(fExpStr), 1);
+  Result := fExpStr;
   if (OptimizeLevel >= 1) and (NBCSource.Count > (idx+1)) and
      not fExpStrHasVars then
   begin
-    System.Delete(fExpStr, Length(fExpStr), 1);
-    if (fExpStr <> '') and not (fExpStr[1] in ['+', '-'])then
+    // 2009-03-18 JCH: I do not recall why I added the check for
+    // + and - as the first character of an expression
+    // I haven't been able to detect any harm in removing this check but
+    // it could be something very obscure that will come up again
+
+    // 2009-04-09 JCH: See my comment in the Expression function above.
+    // The commented-out code was preventing a bug that had far too many
+    // lines of code being removed if an expression ended in +nnn or -nnn.
+
+    if (fExpStr <> '') {and not (fExpStr[1] in ['+', '-'])} then
     begin
       fCalc.SilentExpression := fExpStr;
       if not fCalc.ParserError then
       begin
-        fExpStr := IntToStr(Trunc(fCalc.Value));
+        if StatementType = stFloat then
+          fExpStr := NBCFloatToStr(fCalc.Value)
+        else
+          fExpStr := IntToStr(Trunc(fCalc.Value));
+        Result := fExpStr;
         // in theory, we can replace all the lines between idx and
         // NBCSource.Count with one line
         while NBCSource.Count > idx do
           NBCSource.Delete(NBCSource.Count-1);
         LoadConst(fExpStr);
         fExpStr := '';
+        fLastExpressionOptimizedToConst := True;
       end;
     end;
   end;
@@ -2513,19 +2827,9 @@ begin
   else if Look = '[' then
   begin
     val := Value;
-//    if not (DataType(val) in [TOK_ARRAYSTRING..TOK_ARRAYSTRING4]) then
-//      Expected(sArrayOfString);
     Next;
     fArrayIndexStack.Clear;
-//    DoArrayIndex(DataType(StrRetValName), StrRetValName, val);
-//    DoArrayIndex(ArrayBaseType(DataType(val)), StrRetValName, val);
     DoNewArrayIndex(DataType(val), val, StrRetValName);
-(*
-    Next;
-    BoolExpression;
-    MatchString(']');
-    EmitLn(Format('index %s, %s, %s', [StrRetValName, GetDecoratedIdent(val), RegisterName]));
-*)
     if bAdd then
       asmStr := Format('strcat %s, %s, %s', [StrBufName, GetDecoratedIdent(Name), StrRetValName])
     else
@@ -2889,7 +3193,15 @@ begin
         end;
       end
       else
-        LoadConst('1'); // an array or UDT expression is "true"
+      begin
+        // is the left hand side an array, udt or a scalar?
+        if IsArrayType(fLHSDataType) or IsUDT(fLHSDataType) then
+        begin
+          // do something clever
+        end
+        else
+          LoadConst('1'); // an array or UDT expression is "true"
+      end;
     end;
   end
   else
@@ -2980,6 +3292,7 @@ begin
     BoolExpression;
     PostLabel(L2);
   end;
+//  ResetStatementType;
 end;
 
 procedure TNXCComp.BoolSubExpression;
@@ -3053,16 +3366,28 @@ begin
     TOK_ARRAYULONGDEF..TOK_ARRAYULONGDEF4, TOK_ULONGDEF : Result := fptULONG;
     TOK_ARRAYUDT..TOK_ARRAYUDT4, TOK_USERDEFINEDTYPE : Result := fptUDT;
     TOK_ARRAYSTRING..TOK_ARRAYSTRING4, TOK_STRINGDEF : Result := fptString;
+    TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4, TOK_FLOATDEF : Result := fptFloat;
     TOK_MUTEXDEF : Result := fptMutex;
-    TOK_FLOATDEF : Result := fptFloat;
   else
     Result := fptUBYTE;
   end;
 end;
 
 procedure TNXCComp.AddFunctionParameter(pname, varname, tname: string; idx: integer;
-  ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer);
+  ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer;
+  bHasDefault : boolean; defValue : string);
 begin
+  // if this function is not an inline function then we will automagically
+  // convert any Const not Ref parameter into a Const Ref parameter
+  if bIsConst and not bIsRef and not AmInlining then
+    bIsRef := True; // convert to const ref type
+(*
+  // add a check here for a parameter that is const but not reference
+  // when we are not inlining
+  if bIsConst and not bIsRef and not AmInlining and (ptype in NonAggregateTypes) then
+    ReportProblem(linenumber, CurrentFile, sConstNotInline, false);
+//    AbortMsg(sConstNotInline);
+*)
   with fFuncParams.Add do
   begin
     ProcName       := pname;
@@ -3074,13 +3399,20 @@ begin
     IsConstant     := bIsConst;
     IsReference    := bIsRef;
     ArrayDimension := aDim;
-    FuncIsInline   := fInlining;
+    FuncIsInline   := AmInlining;
+    HasDefault     := bHasDefault;
+    DefaultValue   := defValue;
   end;
 end;
 
 function TNXCComp.FunctionParameterCount(const name : string) : integer;
 begin
   Result := fFuncParams.ParamCount(name);
+end;
+
+function TNXCComp.FunctionRequiredParameterCount(const name : string) : integer;
+begin
+  Result := fFuncParams.RequiredParamCount(name);
 end;
 
 function TNXCComp.FunctionParameterType(const name: string;
@@ -3116,6 +3448,28 @@ begin
     Result := fFuncParams[i].IsConstant;
 end;
 
+function TNXCComp.FunctionParameterHasDefault(const name: string;
+  idx: integer): boolean;
+var
+  i : integer;
+begin
+  Result := False;
+  i := fFuncParams.IndexOf(name, idx);
+  if i <> -1 then
+    Result := fFuncParams[i].HasDefault;
+end;
+
+function TNXCComp.FunctionParameterDefaultValue(const name: string;
+  idx: integer): string;
+var
+  i : integer;
+begin
+  Result := '';
+  i := fFuncParams.IndexOf(name, idx);
+  if i <> -1 then
+    Result := fFuncParams[i].DefaultValue;
+end;
+
 function TNXCComp.GetFunctionParam(const procname : string; idx : integer) : TFunctionParameter;
 var
   i : integer;
@@ -3140,16 +3494,16 @@ end;
 
 procedure TNXCComp.DoCall(procname : string);
 var
-  protocount, acount, idx, i : integer;
-  dt, rdt, pdt : char;
-  parname, parvalue, junk : string;
+  protocount, protoreqcount, acount, idx, i : integer;
+  dt, rdt, pdt, oldLHSDT : char;
+  parname, parvalue, junk, oldLHSName : string;
   bError : boolean;
   fp : TFunctionParameter;
   fInputs : TStrings;
   bFunctionIsInline, bSafeCall : boolean;
   inlineFunc : TInlineFunction;
 begin
-  fUDTOnStack := ''; // by default there is no UDT/Array on the return stack
+  fVarOnStack := ''; // by default there is no UDT/Array on the return stack
   if fFunctionNameCallStack.IndexOf(procname) = -1 then
   begin
     fFunctionNameCallStack.Add(procname);
@@ -3161,8 +3515,8 @@ begin
       // is procname an inline function?
       idx := fInlineFunctions.IndexOfName(procname);
       bFunctionIsInline := idx <> -1;
-      if fInlining and bFunctionIsInline then
-        AbortMsg(sRecursiveInlineError);
+//      if AmInlining and bFunctionIsInline then
+//        AbortMsg(sRecursiveInlineError);
       if bFunctionIsInline then
       begin
         inlineFunc := fInlineFunctions[idx];
@@ -3176,6 +3530,7 @@ begin
       try
         acount := 0;
         protocount := FunctionParameterCount(procname);
+        protoreqcount := FunctionRequiredParameterCount(procname);
         Next;
         bError := Value <> TOK_OPENPAREN;
         if not bError then
@@ -3189,11 +3544,17 @@ begin
           // first call in this thread to this inline function
           // output all parameters and local variables with decoration
           EmitInlineParametersAndLocals(inlineFunc);
+          // make sure the very first call to this inline function
+          // by this thread doesn't get optimized out
+          fExpStr := '__DO_NOT_OPTIMIZE!@#$%_';
         end;
         bSafeCall := GlobalUsesSafeCall(procname);
         // acquire the mutex
         if not bFunctionIsInline and (SafeCalls or bSafeCall) then
+        begin
+          EmitLnNoTab('#pragma safecalling');
           EmitLn(Format('acquire __%s_mutex', [procname]));
+        end;
         rdt := FunctionReturnType(procname);
         while not bError and (Token <> TOK_CLOSEPAREN) do begin
           if acount >= protocount then
@@ -3208,78 +3569,135 @@ begin
             parname := GetParamName(procname, acount);
             if bFunctionIsInline then
               parname := InlineName(fCurrentThreadName, parname);
-            // reference types cannot take expressions
-            // mutex, user defined types, and array types cannot take expressions
-            if fp.IsVarReference or fp.IsArray or
-               (fp.ParamType in [fptUDT, fptMutex]) then
-            begin
-              CheckIdent;
-              parvalue := GetDecoratedValue;
-              pdt := DataType(parvalue);
-              if fp.IsArray then
+            // now process the current parameter
+            oldLHSDT := fLHSDataType;
+            oldLHSName := fLHSName;
+            fLHSDataType := dt;
+            fLHSName     := parname;
+            try
+              // reference types cannot take expressions
+              // mutex, user defined types, and array types cannot take expressions
+              if fp.IsVarReference or {fp.IsArray or}
+                 (fp.ParamType in [{fptUDT, }fptMutex]) then
               begin
-                if not IsArrayType(pdt) then
-                  Expected(sArrayDatatype);
-              end;
-              fInputs.AddObject(parvalue, fp);
-              EmitLn(Format('mov %s, %s', [parname, parvalue]));
-              junk := AdvanceToNextParam;
-              if junk <> '' then
-                AbortMsg(sExpNotSupported)
-              else
-                CheckTypeCompatibility(fp, pdt, parvalue);
-            end
-      (*
-            else if fp.IsConstant and not fp.IsConstReference then
-            begin
-              // must be a number (or constant expression) or a string literal
-              if dt = TOK_STRINGDEF then
-              begin
-                parvalue := Value;
-                CheckStringConst;
+                CheckIdent;
+                parvalue := GetDecoratedValue;
+                pdt := DataType(parvalue);
+                if fp.IsArray then
+                begin
+                  if not IsArrayType(pdt) then
+                    Expected(sArrayDatatype);
+                end;
                 fInputs.AddObject(parvalue, fp);
                 EmitLn(Format('mov %s, %s', [parname, parvalue]));
-                Next;
-              end
-              else if dt <> #0 then
-              begin
-                // collect tokens to TOK_CLOSEPAREN or TOK_COMMA
-                parValue := Value;
-                while not (Look in [TOK_CLOSEPAREN, TOK_COMMA]) or endofallsource do begin
-                  Next;
-                  parValue := parValue + Value;
-                end;
-                Next;
-                fCalc.SilentExpression := parValue;
-                if not fCalc.ParserError then
-                begin
-                  parValue := IntToStr(Trunc(fCalc.Value));
-                  fp.ConstantValue := parValue;
-                  fCalc.SetVariable(parname, fCalc.Value);
-                  fInputs.AddObject(parvalue, fp);
-                  EmitLn(Format('mov %s, %s', [parname, parvalue]));
-                end
+                junk := AdvanceToNextParam;
+                if junk <> '' then
+                  AbortMsg(sExpNotSupported)
                 else
+                  CheckTypeCompatibility(fp, pdt, parvalue);
+              end
+  // beginning of addition for handling expressions for UDT and array parameters
+              else if fp.IsArray or (fp.ParamType = fptUDT) then
+              begin
+                if IsArrayType(dt) then
                 begin
-                  fInputs.AddObject('', fp);
-                  Expected('constant or constant expression');
+                  DoArrayAssignValue(parname, '', dt);
+                end
+                else if dt = TOK_USERDEFINEDTYPE then
+                begin
+                  GetAndStoreUDT(parname);
+                end;
+              end
+  // end of addition for handling expressions for UDT and array parameters
+  // beginning of previously commented out block
+              else if fp.IsConstant and not fp.IsReference then
+              begin
+                // must be a number (or constant expression) or a string literal
+                if dt = TOK_STRINGDEF then
+                begin
+                  parvalue := Value;
+                  CheckStringConst;
+                  fp.ConstantValue := parvalue;
+                  fInputs.AddObject(parvalue, fp);
+                  if bFunctionIsInline then
+                  begin
+                    i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
+                    if i <> -1 then
+                    begin
+                      inlineFunc.Parameters[i].Assign(fp);
+                    end;
+                  end;
+                  EmitLn(Format('mov %s, %s', [parname, parvalue]));
+                  Next;
+                end
+                else if dt <> #0 then
+                begin
+                  // collect tokens to TOK_CLOSEPAREN or TOK_COMMA
+                  parvalue := Value;
+                  while not (Look in [TOK_CLOSEPAREN, TOK_COMMA]) or endofallsource do begin
+                    Next;
+                    parvalue := parvalue + Value;
+                  end;
+                  Next;
+                  fCalc.SilentExpression := GetValueOf(parvalue);
+                  if not fCalc.ParserError then
+                  begin
+                    parvalue := NBCFloatToStr(fCalc.Value);
+                    fCalc.SetVariable(parname, fCalc.Value);
+                    fp.ConstantValue := parvalue;
+                    fInputs.AddObject(parvalue, fp);
+                    if bFunctionIsInline then
+                    begin
+                      i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
+                      if i <> -1 then
+                      begin
+                        inlineFunc.Parameters[i].Assign(fp);
+                      end;
+                    end;
+                    EmitLn(Format('mov %s, %s', [parname, parvalue]));
+                  end
+                  else
+                  begin
+                    if IsParamConst(parvalue) then
+                    begin
+                      fp.ConstantValue := ApplyDecoration(fCurrentThreadName, parvalue, 0);
+  //                    fp.ConstantValue := parvalue;
+                      fInputs.AddObject(parvalue, fp);
+                      if bFunctionIsInline then
+                      begin
+                        i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
+                        if i <> -1 then
+                        begin
+                          inlineFunc.Parameters[i].Assign(fp);
+                        end;
+                      end;
+                    end
+                    else
+                    begin
+                      fInputs.AddObject('', fp);
+                      Expected('constant or constant expression');
+                    end;
+                  end;
+                end;
+              end
+  // end of previously commented out block
+              else
+              begin
+                fInputs.AddObject('', fp);
+                if dt = TOK_STRINGDEF then
+                begin
+                  StringExpression(parname);
+                  EmitLn(Format('mov %s, %s', [parname, StrBufName]));
+                end
+                else if dt <> #0 then
+                begin
+                  BoolExpression;
+                  EmitLn(Format('mov %s, %s', [parname, RegisterName]));
                 end;
               end;
-            end
-      *)
-            else
-            begin
-              fInputs.AddObject('', fp);
-              if dt = TOK_STRINGDEF then
-              begin
-                StringExpression(parname);
-                EmitLn(Format('mov %s, %s', [parname, StrBufName]));
-              end
-              else if dt <> #0 then
-              begin
-                BoolExpression;
-                EmitLn(Format('mov %s, %s', [parname, RegisterName]));
-              end;
+            finally
+              fLHSDataType := oldLHSDT;
+              fLHSName     := oldLHSName;
             end;
           end;
           inc(acount);
@@ -3289,8 +3707,22 @@ begin
             Scan;
           end;
         end;
-        if protocount > acount then
+        if protoreqcount > acount then
           AbortMsg(sTooFewParams);
+        while acount < protocount do
+        begin
+          // use default values for all the arguments not provided
+          fp := GetFunctionParam(procname, acount);
+          if Assigned(fp) then
+          begin
+            parname := GetParamName(procname, acount);
+            if bFunctionIsInline then
+              parname := InlineName(fCurrentThreadName, parname);
+            parvalue := FunctionParameterDefaultValue(procname, acount);
+            EmitLn(Format('mov %s, %s', [parname, parvalue]));
+          end;
+          inc(acount);
+        end;
         if Value = TOK_CLOSEPAREN then
         begin
           CloseParen;
@@ -3320,11 +3752,17 @@ begin
           else if IsUDT(rdt) or IsArrayType(rdt) then
           begin
             // tell the compiler that a UDT/Array is on stack
-            fUDTOnStack := Format('__result_%s', [procname]);
+            fVarOnStack := Format('__result_%s', [procname]);
           end
-          else if rdt in IntegralTypes then
+          else if rdt in NonAggregateTypes then
           begin
             // copy value from subroutine to register
+            if rdt = TOK_FLOATDEF then
+              StatementType := stFloat
+            else if not (rdt in UnsignedIntegerTypes) then
+              StatementType := stSigned
+            else
+              StatementType := stUnsigned;
             if bFunctionIsInline then
               EmitLn(Format('mov %s, %s', [RegisterName, RegisterName(InlineName(fCurrentThreadName, procname))]))
             else
@@ -3364,6 +3802,7 @@ begin
   if IsArrayType(dt) then
   begin
     case dt of
+      TOK_ARRAYFLOAT     : Result := TOK_FLOATDEF;
       TOK_ARRAYSTRING    : Result := TOK_STRINGDEF;
       TOK_ARRAYUDT       : Result := TOK_USERDEFINEDTYPE;
       TOK_ARRAYCHARDEF   : Result := TOK_CHARDEF;
@@ -3383,6 +3822,7 @@ end;
 function TNXCComp.AddArrayDimension(dt: char): char;
 begin
   case dt of
+    TOK_FLOATDEF        : Result := TOK_ARRAYFLOAT;
     TOK_STRINGDEF       : Result := TOK_ARRAYSTRING;
     TOK_USERDEFINEDTYPE : Result := TOK_ARRAYUDT;
     TOK_CHARDEF         : Result := TOK_ARRAYCHARDEF;
@@ -3472,34 +3912,6 @@ begin
       Value := tmpUDTName;
       // recurse to the Assignment procedure
       Assignment;
-(*
-      while Token = '.' do
-      begin
-        // append the "."
-        tmpUDTName := tmpUDTName + Value;
-        Next;
-        // next value
-        tmpUDTName := tmpUDTName + Value;
-        Next;
-      end;
-      dt := DataType(tmpUDTName);
-      fLHSDataType := dt;
-      fLHSName     := tmpUDTName;
-      try
-        if IsUDT(dt) then
-          UDTAssignment(tmpUDTName)
-        else
-        begin
-          MatchString('=');
-          //
-          DoAssignValue(tmpUDTName, dt);
-        end;
-      finally
-        fLHSDataType := TOK_LONGDEF;
-        fLHSName     := '';
-      end;
-      // pass its name into the call to UDTAssignment
-*)
       // store temporary thread-safe variable back into previous array
       StoreArray(name, tmp, aval);
     finally
@@ -3508,9 +3920,15 @@ begin
   end
   else if Token in ['+', '-', '/', '*', '%', '&', '|', '^', '>', '<'] then
   begin
-    if dt in IntegralTypes then
+    if (dt in NonAggregateTypes) and bIndexed then
     begin
       // get the indexed value
+      if dt = TOK_FLOATDEF then
+        StatementType := stFloat
+      else if not (dt in UnsignedIntegerTypes) then
+        StatementType := stSigned
+      else
+        StatementType := stUnsigned;
       push;
       aval := tos;
       EmitLn(Format('index %s, %s, %s',[aval, GetDecoratedIdent(name), tmp]));
@@ -3519,7 +3937,9 @@ begin
       pop;
     end
     else
-      AbortMsg(sInvalidArrayExpr);
+    begin
+      MathAssignment(name);
+    end;
   end
   else
   begin
@@ -3558,14 +3978,31 @@ begin
   begin
     CheckIdent;
     CheckDataType(dt);
-    StoreArray(aName, idx, GetDecoratedValue);
-    Next;
+// JCH - new code as of 2009-09-26
+    NotNumericFactor;
+    if fVarOnStack <> '' then
+    begin
+      StoreArray(aName, idx, fVarOnStack);
+      fVarOnStack := '';
+    end;
+// JCH - end of new code 2009-09-26
+// old code
+//    StoreArray(aName, idx, GetDecoratedValue);
+//    Next;
   end
   else if IsArrayType(dt) then
   begin
     // lhs is an array.  That means we can only have a factor on the rhs.
     if idx = '' then
-      NotNumericFactor
+    begin
+      if Token = '!' then begin
+        Next;
+        NumericFactor;
+        EmitLn(Format('not %0:s, %0:s', [GetDecoratedIdent(aName)]));
+      end
+      else
+        NumericFactor;
+    end
     else
     begin
       if Look = '[' then
@@ -3599,21 +4036,6 @@ begin
         StoreArray(aName, idx, GetDecoratedValue);
         Next;
       end;
-(*
-      // if we have an indexed array on the LHS and it is still an array
-      // then we need to do a replace with just the rhs
-      CheckIdent;
-      CheckDataType(dt);
-      // no indexing of the rhs is allowed
-      if Look = '[' then
-      begin
-        AbortMsg(sInvalidArrayExpr);
-        SkipLine;
-      end
-      else
-        StoreArray(aName, idx, GetDecoratedValue);
-      Next;
-*)
     end;
   end
   else
@@ -3626,6 +4048,7 @@ end;
 procedure TNXCComp.MathAssignment(const name : string);
 var
   savedtoken : char;
+  oldType : char;
 begin
   // Look has to be '=', '+', or '-' or it's all messed up
   if Look = '=' then
@@ -3633,7 +4056,17 @@ begin
     savedtoken := Token;
     Next; // move to '='
     Next; // move to next token
-    BoolExpression;
+    // 2009-06-24 JCH - to make such things as += work with scalars on the RHS
+    // and arrays or UDTs on the left I wrapped the boolexpression in
+    // try/finally which sets/resets the LHS data type
+    // !!! THIS MIGHT BREAK SOMETHING !!!
+    oldType := fLHSDataType;
+    try
+      fLHSDataType := TOK_LONGDEF;
+      BoolExpression;
+    finally
+      fLHSDataType := oldType;
+    end;
     case savedtoken of
       '+' : StoreAdd(name);
       '-' : StoreSub(name);
@@ -3966,6 +4399,7 @@ begin
   try
     ClearSwitchFixups;
     SwitchFixups.Add(Format('%d_Type=%s', [fSwitchDepth, IntToStr(Ord(bSwitchIsString))]));
+    SwitchRegisterNames.Add(Format('%d=%s', [fSwitchDepth, RegisterName]));
     Block(L2);
     PostLabel(L2);
     FixupSwitch(idx, L2);
@@ -4012,7 +4446,7 @@ begin
     if SwitchIsString then
       stackval := StrBufName
     else
-      stackval := RegisterName;
+      stackval := SwitchRegisterName;
     SwitchFixups.Add(Format('%d=brcmp EQ, %s, %s, %s', [fSwitchDepth, L1, caseval, stackval]));
     fSemiColonRequired := False;
   end
@@ -4048,6 +4482,11 @@ begin
        (SwitchFixups.Names[i] = Format('%d_Type', [fSwitchDepth])) then
       SwitchFixups.Delete(i);
   end;
+  for i := SwitchRegisterNames.Count - 1 downto 0 do
+  begin
+    if SwitchRegisterNames.Names[i] = IntToStr(fSwitchDepth) then
+      SwitchRegisterNames.Delete(i);
+  end;
 end;
 
 function TNXCComp.SwitchIsString: Boolean;
@@ -4065,15 +4504,18 @@ begin
   end;
 end;
 
-function TNXCComp.SwitchFixupsCount : integer;
+function TNXCComp.SwitchRegisterName: string;
 var
   i : integer;
 begin
-  Result := 0;
-  for i := 0 to SwitchFixups.Count - 1 do
+  Result := RegisterName;
+  for i := 0 to SwitchRegisterNames.Count - 1 do
   begin
-    if SwitchFixups.Names[i] = IntToStr(fSwitchDepth) then
-      inc(Result);
+    if SwitchRegisterNames.Names[i] = IntToStr(fSwitchDepth) then
+    begin
+      Result := SwitchRegisterNames.ValueFromIndex[i];
+      break;
+    end;
   end;
 end;
 
@@ -4105,12 +4547,36 @@ function TNXCComp.ReplaceTokens(const line: string) : string;
 begin
   Result := line; // line is already trimmed
   if Length(Result) = 0 then Exit;
-  Result := Replace(Result, '__RETURN__', Format(#13#10'mov %s,', [RegisterName]));
-  Result := Replace(Result, '__TMPBYTE__', TempByteName);
-  Result := Replace(Result, '__TMPWORD__', TempWordName);
-  Result := Replace(Result, '__TMPLONG__', TempLongName);
-  Result := Replace(Result, '__RETVAL__', RegisterName);
+  Result := Replace(Result, '__RETURN__', Format(#13#10'mov %s,', [SignedRegisterName]));
+  Result := Replace(Result, '__RETURNS__', Format(#13#10'mov %s,', [SignedRegisterName]));
+  if Pos('__RETURNU__', Result) > 0 then
+  begin
+    Result := Replace(Result, '__RETURNU__', Format(#13#10'mov %s,', [UnsignedRegisterName]));
+    if StatementType <> stUnsigned then
+      StatementType := stUnsigned;
+  end;
+  if Pos('__RETURNF__', Result) > 0 then
+  begin
+    Result := Replace(Result, '__RETURNF__', Format(#13#10'mov %s,', [FloatRegisterName]));
+    if StatementType <> stFloat then
+      StatementType := stFloat;
+  end;
+  Result := Replace(Result, '__TMPBYTE__', TempSignedByteName);
+  Result := Replace(Result, '__TMPWORD__', TempSignedWordName);
+  Result := Replace(Result, '__TMPLONG__', TempSignedLongName);
+  Result := Replace(Result, '__TMPULONG__', TempUnsignedLongName);
+  Result := Replace(Result, '__TMPFLOAT__', TempFloatName);
+  Result := Replace(Result, '__RETVAL__', SignedRegisterName);
+  if Pos('__FLTRETVAL__', Result) > 0 then
+  begin
+    Result := Replace(Result, '__FLTRETVAL__', FloatRegisterName);
+    if StatementType <> stFloat then
+      StatementType := stFloat;
+  end;
   Result := Replace(Result, '__STRRETVAL__', StrRetValName);
+  Result := Replace(Result, '__STRBUFFER__', StrBufName);
+  Result := Replace(Result, '__STRTMPBUFFER__', StrTmpBufName);
+  Result := Replace(Result, '__GENRETVAL__', RegisterName);
   Result := Replace(Result, 'true', 'TRUE');
   Result := Replace(Result, 'false', 'FALSE');
   Result := Replace(Result, 'asminclude', '#include');
@@ -4164,6 +4630,7 @@ end;
 procedure TNXCComp.DoAsm(var dt : char);
 var
   asmStr : string;
+  nestLevel : integer;
 begin
 // gather everything within asm block and output it
   EmitPoundLine;
@@ -4172,13 +4639,20 @@ begin
   begin
     asmStr := Value + Look;
     repeat
+      nestLevel := 0;
       repeat
         GetCharX;
-        if Look <> TOK_END then
+        if Look = TOK_BEGIN then
+          inc(nestLevel);
+        if (Look <> TOK_END) or (nestLevel > 0) then
           asmStr := asmStr + Look;
-      until (Look = LF) or (Look = TOK_END) or endofallsource;
+        if Look = TOK_END then
+          dec(nestLevel);
+      until ((nestLevel < 0) and (Look = TOK_END)) or (Look = LF) or endofallsource;
       if Pos('__STRRETVAL__', asmStr) > 0 then
         dt := TOK_STRINGDEF
+      else if Pos('__FLTRETVAL__', asmStr) > 0 then
+        dt := TOK_FLOATDEF
       else
         dt := TOK_LONGDEF;
       asmStr := ReplaceTokens(Trim(asmStr));
@@ -4191,12 +4665,6 @@ begin
     fSemiColonRequired := False;
   end;
   Next;
-(*
-  // if the current token happens to be a semi-colon then
-  // eat it since it is not required
-  OptionalSemi;
-  Scan;
-*)
 end;
 
 {--------------------------------------------------------------}
@@ -4262,18 +4730,6 @@ begin
   end;
 end;
 
-{--------------------------------------------------------------}
-{ Process a wait Statement }
-
-procedure TNXCComp.DoWait;
-begin
-  Next;
-  OpenParen;
-  BoolExpression;
-  CloseParen;
-  EmitLn(Format('waitv %s',[RegisterName]));
-end;
-
 function IndexOfAPICommand(const name : string) : integer;
 begin
   for Result := Low(APIList) to High(APIList) do
@@ -4293,7 +4749,7 @@ begin
     API_BREAK    : DoBreakContinue(idx, lend);
     API_CONTINUE : DoBreakContinue(idx, lstart);
     API_RETURN   : DoReturn;
-    API_WAIT     : DoWait;
+//    API_WAIT     : DoWait;
     API_ONFWD,
     API_ONREV    : DoOnFwdRev;
     API_ONFWDEX,
@@ -4302,6 +4758,10 @@ begin
     API_ONREVREG : DoOnFwdRevReg;
     API_ONFWDREGEX,
     API_ONREVREGEX : DoOnFwdRevRegEx;
+    API_ONFWDREGPID,
+    API_ONREVREGPID : DoOnFwdRevRegPID;
+    API_ONFWDREGEXPID,
+    API_ONREVREGEXPID : DoOnFwdRevRegExPID;
     API_OFF,
     API_COAST,
     API_FLOAT    : DoStopMotors;
@@ -4311,6 +4771,10 @@ begin
     API_ONREVSYNC : DoOnFwdRevSync;
     API_ONFWDSYNCEX,
     API_ONREVSYNCEX : DoOnFwdRevSyncEx;
+    API_ONFWDSYNCPID,
+    API_ONREVSYNCPID : DoOnFwdRevSyncPID;
+    API_ONFWDSYNCEXPID,
+    API_ONREVSYNCEXPID : DoOnFwdRevSyncExPID;
     API_RESETTACHOCOUNT,
     API_RESETBLOCKTACHOCOUNT,
     API_RESETROTATIONCOUNT,
@@ -4336,7 +4800,6 @@ begin
     API_SETOUTPUT : DoSetInputOutput(idx);
     API_STOP : DoStop;
     API_GOTO : DoGoto;
-    API_ARRAYBUILD : DoArrayBuild;
   else
     AbortMsg(sUnknownAPICommand);
   end;
@@ -4349,6 +4812,7 @@ procedure TNXCComp.Statement(const lend, lstart : string);
 var
   dt : Char;
 begin
+  ResetStatementType;
   fSemiColonRequired := True;
   if Token = TOK_BEGIN then
     Block(lend, lstart)
@@ -4452,7 +4916,8 @@ var
   savedval : string;
   ival, aval, lenexpr, varName : string;
   bIsArray, bDone, bOpen : boolean;
-  dimensions : integer;
+  idx, dimensions : integer;
+  V : TVariable;
 begin
   Next;
   if Token <> TOK_IDENTIFIER then
@@ -4490,7 +4955,7 @@ begin
   if bIsArray and bConst then
     AbortMsg(sConstLocArrNotSupported);
   varName := ApplyDecoration(sub, savedval, fNestingLevel);
-  AddLocal(varName, dt, tname, bConst, lenexpr);
+  idx := AddLocal(varName, dt, tname, bConst, lenexpr);
   if (Token = TOK_COMMA) or (Token = TOK_SEMICOLON) then
   begin
     if bConst then
@@ -4519,15 +4984,18 @@ begin
       end
       else if dt = TOK_USERDEFINEDTYPE then
       begin
-        NotNumericFactor;
-        if fUDTOnStack <> '' then
-        begin
-          Store(savedval);
-          fUDTOnStack := '';
-        end;
+        GetAndStoreUDT(savedval);
       end
       else
+      begin
         DoAssignValue(savedval, dt);
+        if fLastExpressionOptimizedToConst and (idx <> -1) then
+        begin
+          V := fLocals[idx];
+          if V.IsConstant then
+            V.Value := fLastLoadedConst;
+        end;
+      end;
     finally
       fLHSDataType := TOK_LONGDEF;
       fLHSName     := '';
@@ -4555,7 +5023,14 @@ var
       begin
         fCalc.SilentExpression := tmpExpr;
         if not fCalc.ParserError then
-          tmpExpr := IntToStr(Trunc(fCalc.Value))
+        begin
+          if ArrayBaseType(dt) = TOK_FLOATDEF then
+          begin
+            tmpExpr := NBCFloatToStr(fCalc.Value);
+          end
+          else
+            tmpExpr := IntToStr(Trunc(fCalc.Value))
+        end
         else
           AbortMsg(sInvalidConstExpr);
         Result := Result + tmpExpr + Value;
@@ -4631,7 +5106,7 @@ begin
       Next;
     end;
     Result := Trim(Result);
-    if dt in IntegralTypes then
+    if dt in NonAggregateTypes then
     begin
       // evaluate so that constants and expressions are handled properly
       if Result = 'false' then
@@ -4642,7 +5117,12 @@ begin
       begin
         fCalc.SilentExpression := Result;
         if not fCalc.ParserError then
-          Result := IntToStr(Trunc(fCalc.Value))
+        begin
+          if dt = TOK_FLOATDEF then
+            Result := NBCFloatToStr(fCalc.Value)
+          else
+            Result := IntToStr(Trunc(fCalc.Value));
+        end
         else
           AbortMsg(sInvalidConstExpr);
       end;
@@ -4743,9 +5223,12 @@ begin
       // is an integer type
       if bConst then
       begin
-        if dt in IntegralTypes then
+        if dt in NonAggregateTypes then
         begin
-          fCalc.SetVariable(savedval, StrToIntDef(ival, 0));
+          if dt = TOK_FLOATDEF then
+            fCalc.SetVariable(savedval, NBCStrToFloatDef(ival, 0))
+          else
+            fCalc.SetVariable(savedval, StrToInt64Def(ival, 0));
         end
         else if dt = TOK_STRINGDEF then
         begin
@@ -4775,6 +5258,8 @@ begin
       TOK_SHORTDEF : Result := TOK_USHORTDEF;
       TOK_CHARDEF : Result := TOK_BYTEDEF;
     else
+      if vt = TOK_FLOATDEF then
+        AbortMsg(sNoUnsignedFloat);
       Result := vt;
     end;
 end;
@@ -4790,6 +5275,7 @@ var
   dt : char;
   tname : string;
 begin
+  DoCompilerStatusChange(sNXCProcessGlobals);
   bUnsigned := False;
   bInline   := False;
   bSafeCall := False;
@@ -4862,15 +5348,18 @@ begin
       CheckForTypedef(bUnsigned, bConst, bInline, bSafeCall);
     CheckBytesRead(oldBytesRead);
   end;
-  fInlining := bInLine;
+  if bInLine then
+    IncrementInlineDepth;
+//  fInlining := bInLine;
   fSafeCalling := bSafeCall;
 end;
 
-procedure TNXCComp.AddLocal(name : string; dt : char; const tname : string;
-  bConst : boolean; const lenexp : string);
+function TNXCComp.AddLocal(name : string; dt : char; const tname : string;
+  bConst : boolean; const lenexp : string) : integer;
 var
   l, IL : TVariable;
 begin
+  Result := -1;
   if IsParam(name) or IsLocal(name) then
     Duplicate(name)
   else
@@ -4880,13 +5369,14 @@ begin
     l.DataType   := dt;
     l.IsConstant := bConst;
     l.TypeName   := tname;
-    l.LenExpr    := lenexp;
+    l.LenExpr    := lenexp;                 
     l.Level      := fNestingLevel;
-    if fInlining and Assigned(fCurrentInlineFunction) then
+    if AmInlining and Assigned(fCurrentInlineFunction) then
     begin
       IL := fCurrentInlineFunction.LocalVariables.Add;
       IL.Assign(l);
     end;
+    Result := l.Index;
   end;
 end;
 
@@ -4951,6 +5441,10 @@ begin
   end;
 end;
 
+const
+  HASPROTO = 2;
+  HASNOPROTO = 3;
+
 function TNXCComp.FormalList(protoexists : boolean; procname : string) : integer;
 var
   protocount : integer;
@@ -4959,59 +5453,125 @@ var
   ptype : char;
   varnam : string;
   bIsUnsigned, bIsArray, bIsConst, bIsRef, bError : boolean;
-  aval, tname : string;
+  bHasDefault, bRequireDefaults : boolean;
+  aval, tname, defValue : string;
   dimensions : integer;
   oldBytesRead : integer;
-const
-  HASPROTO = 2;
-  HASNOPROTO = 3;
-begin
-  dimensions := 0;
-  protocount := 0;
-  pcount := 0;
-  pltype := 0;
-  if protoexists then
-    protocount := FunctionParameterCount(procname);
-  bError := False;
-  while (Token <> TOK_CLOSEPAREN) and not endofallsource do
+
+  procedure CheckParam1;
   begin
-    oldBytesRead := fBytesRead;
-    if bError then
-      Break;
-    Scan;
+    AbortMsg(sBadPrototype);
+    bError := True;
+    if protocount >= MAXPARAMS then
+      AbortMsg(sMaxParamCountExceeded);
+    inc(protocount);
+  end;
+
+  procedure CheckParamHasProto;
+  begin
+    if not protoexists then
+    begin
+      Expected(sDataType);
+      bError := True;
+    end;
+    if pcount >= MAXPARAMS then
+    begin
+      AbortMsg(sMaxParamCountExceeded);
+      bError := True;
+    end;
+    if not bError then
+    begin
+      AddParam(ApplyDecoration(procname, varnam, 0),
+        FunctionParameterType(procname, pcount),
+        FunctionParameterTypeName(procname, pcount),
+        FunctionParameterIsConstant(procname, pcount),
+        FunctionParameterHasDefault(procname, pcount),
+        FunctionParameterDefaultValue(procname, pcount));
+      inc(pcount);
+      if pcount > protocount then
+      begin
+        AbortMsg(sTooManyArgs);
+        bError := True;
+      end;
+    end;
+  end;
+
+  procedure CheckParamHasNoProto;
+  var
+    fpDT : char;
+    fpType : string;
+    fpIsConst : boolean;
+  begin
+    if pcount >= MAXPARAMS then
+    begin
+      AbortMsg(sMaxParamCountExceeded);
+      bError := True;
+    end;
+    if protoexists and not bError and (pcount >= protocount) then
+    begin
+      AbortMsg(sTooManyArgs);
+      bError := True;
+    end;
+    if protoexists and not bError then
+    begin
+      // compare known type to specified type
+      fpDT      := FunctionParameterType(procname, pcount);
+      fpType    := FunctionParameterTypeName(procname, pcount);
+      fpIsConst := FunctionParameterIsConstant(procname, pcount);
+      if (fpDT <> ptype) or (fpType <> tname) or (fpIsConst <> bIsConst) then
+      begin
+        AbortMsg(sFuncParamDeclMismatch);
+        bError := True;
+      end;
+    end;
+    if not bError then
+    begin
+      AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst, bHasDefault, defValue);
+      if not protoexists then
+      begin
+        Allocate(ApplyDecoration(procname, varnam, 0), aval, '', tname, ptype);
+        AddFunctionParameter(procname, varnam, tname, pcount, ptype, bIsConst,
+          bIsRef, bIsArray, dimensions, bHasDefault, defValue);
+        inc(protocount);
+      end;
+      inc(pcount);
+    end;
+  end;
+
+  procedure CheckPLType;
+  begin
+    case pltype of
+      1          : CheckParam1;
+      HASPROTO   : CheckParamHasProto;
+      HASNOPROTO : CheckParamHasNoProto;
+    end;
+  end;
+
+  procedure ProcessTypes(const bFirstParam : boolean);
+  begin
     bIsUnsigned := False;
     bIsArray    := False;
     bIsConst    := False;
     bIsRef      := False;
     ptype       := #0;
-    if Token = TOK_PROCEDURE then begin
-      Next;
-      Scan;
-      Continue;
-    end;
     if Token = TOK_CONST then begin
       bIsConst := True;
       Next;
       Scan;
-      pltype := 1;
+      if bFirstParam then pltype := 1;
     end;
     if Token = TOK_UNSIGNED then begin
       bIsUnsigned := True;
       Next;
       Scan;
-      pltype := 1;
+      if bFirstParam then pltype := 1;
     end;
     if Token in [TOK_CHARDEF, TOK_BYTEDEF, TOK_SHORTDEF, TOK_LONGDEF,
       TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF, TOK_USERDEFINEDTYPE, TOK_STRINGLIT] then
     begin
-      if protoexists then
-      begin
-        Expected(sParameterList);
-        bError := True;
-      end;
       ptype := Token;
       tname := Value;
-      pltype := 1;
+      if bFirstParam then pltype := 1;
       Next;
       Scan;
       if (Token <> '[') and (Token <> TOK_COMMA) and
@@ -5033,170 +5593,17 @@ begin
       Next;
       Scan;
     end;
-    if Token = TOK_IDENTIFIER then
-    begin
-      varnam := Value;
-      Next;
-      Scan;
-      if pltype = 1 then
-        pltype := HASNOPROTO
-      else
-        pltype := HASPROTO;
-    end;
+  end;
+  
+  procedure CheckParamTypeAndArrays;
+  begin
     if pltype = HASNOPROTO then
     begin
       ptype := GetVariableType(ptype, bIsUnsigned);
       if ptype = #0 then
-      begin
         bError := True;
-        Continue;
-      end;
-      aval := '';
-      dimensions := 0;
-      if (Token = '[') and (Look = ']') then begin
-        // declaring an array
-        while Token in ['[', ']'] do begin
-          aval := aval + Token;
-          Next;
-        end;
-        bIsArray := True;
-        dimensions := Length(aval) div 2;
-        ptype := ArrayOfType(ptype, dimensions);
-      end;
-    end;
-    case pltype of
-      1 : begin
-        AbortMsg(sBadPrototype);
-        bError := True;
-//        GS_ParamType[procpos, protocount] := ptype;
-        if protocount >= MAXPARAMS then
-          AbortMsg(sMaxParamCountExceeded);
-        inc(protocount);
-      end;
-      HASPROTO : begin
-        if not protoexists then
-        begin
-          Expected(sDataType);
-          bError := True;
-        end;
-        if pcount >= MAXPARAMS then
-        begin
-          AbortMsg(sMaxParamCountExceeded);
-          bError := True;
-        end;
-        if not bError then
-        begin
-          AddParam(ApplyDecoration(procname, varnam, 0),
-            FunctionParameterType(procname, pcount),
-            FunctionParameterTypeName(procname, pcount),
-            FunctionParameterIsConstant(procname, pcount));
-          inc(pcount);
-          if pcount > protocount then
-          begin
-            AbortMsg(sTooManyArgs);
-            bError := True;
-          end;
-        end;
-      end;
-      HASNOPROTO : begin
-        if protoexists then
-        begin
-          AbortMsg(sDataTypesAlreadyDefined);
-          bError := True;
-        end;
-//        GS_ParamType[procpos, protocount] := ptype;
-        if protocount >= MAXPARAMS then
-        begin
-          AbortMsg(sMaxParamCountExceeded);
-          bError := True;
-        end;
-        if not bError then
-        begin
-          AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst);
-          Allocate(ApplyDecoration(procname, varnam, 0), aval, '', tname, ptype);
-          AddFunctionParameter(procname, varnam, tname, pcount, ptype, bIsConst,
-            bIsRef, bIsArray, dimensions);
-          inc(protocount);
-          inc(pcount);
-        end;
-      end;
-    end;
-
-    while (Token = TOK_COMMA) and not endofallsource do begin
-      if bError then
-        Break;
-      Next;
-      Scan;
-      if (pltype = 1) or (pltype = HASNOPROTO) then
+      if not bError then
       begin
-        bIsUnsigned := False;
-        bIsArray    := False;
-        bIsConst    := False;
-        bIsRef      := False;
-        ptype       := #0;
-        if Token = TOK_CONST then begin
-          bIsConst := True;
-          Next;
-          Scan;
-        end;
-        if Token = TOK_UNSIGNED then begin
-          bIsUnsigned := True;
-          Next;
-          Scan;
-        end;
-        if Token in [TOK_CHARDEF, TOK_BYTEDEF, TOK_SHORTDEF, TOK_LONGDEF,
-                     TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF, TOK_USERDEFINEDTYPE] then
-        begin
-          if protoexists then
-          begin
-            Expected(sParameterList);
-            bError := True;
-          end;
-          ptype := Token;
-          tname := Value;
-          Next;
-          Scan;
-          if (Token <> '[') and (Token <> TOK_COMMA) and
-             (Token <> TOK_CLOSEPAREN) and (Token <> '&') and
-             (Token <> TOK_IDENTIFIER) then
-          begin
-            AbortMsg(sUnexpectedChar);
-            bError := True;
-          end;
-        end
-        else if bIsUnsigned then
-        begin
-          AbortMsg(sMissingDataType);
-          bError := True;
-        end;
-        if Token = '&' then
-        begin
-          bIsRef := True;
-          Next;
-          Scan;
-        end;
-      end;
-      if (pltype = HASPROTO) or (pltype = HASNOPROTO) then
-      begin
-        if Token = TOK_IDENTIFIER then begin
-          varnam := Value;
-          Next;
-          Scan;
-        end
-        else
-        begin
-          Expected(sVariableName);
-          bError := True;
-        end;
-      end;
-      if pltype = HASNOPROTO then
-      begin
-        ptype := GetVariableType(ptype, bIsUnsigned);
-        if ptype = #0 then
-        begin
-          bError := True;
-          Continue;
-        end;
         aval := '';
         dimensions := 0;
         if (Token = '[') and (Look = ']') then begin
@@ -5210,76 +5617,103 @@ begin
           ptype := ArrayOfType(ptype, dimensions);
         end;
       end;
-      case pltype of
-        1 : begin
-          AbortMsg(sBadPrototype);
+    end;
+  end;
+
+  procedure CheckForDefaultArgumentValue;
+  begin
+    bHasDefault := False;
+    defValue    := '';
+    // check for optional equal sign
+    if Token = '=' then
+    begin
+      bHasDefault := True;
+      Next;
+      defValue := Value;
+      Next;
+    end;
+    if bRequireDefaults and not bHasDefault then
+    begin
+      AbortMsg(sDefaultParamError);
+      bError := True;
+    end;
+    if bHasDefault then
+      bRequireDefaults := True;
+  end;
+begin
+  bRequireDefaults := False;
+  dimensions := 0;
+  protocount := 0;
+  pcount := 0;
+  pltype := 0;
+  if protoexists then
+    protocount := FunctionParameterCount(procname);
+  bError := False;
+  while (Token <> TOK_CLOSEPAREN) and not endofallsource do
+  begin
+    oldBytesRead := fBytesRead;
+    if bError then
+      Break;
+    Scan;
+    // handle void all by itself
+    if Token = TOK_PROCEDURE then begin
+      Next;
+      Scan;
+      Continue;
+    end;
+    ProcessTypes(true);
+    if Token = TOK_IDENTIFIER then
+    begin
+      varnam := Value;
+      Next;
+      Scan;
+      if pltype = 1 then
+        pltype := HASNOPROTO
+      else
+        pltype := HASPROTO;
+    end;
+    CheckParamTypeAndArrays;
+    // check for optional = and default value
+    CheckForDefaultArgumentValue;
+    if bError then
+      Continue;
+    CheckPLType;
+
+    // process remaining parameters
+    while (Token = TOK_COMMA) and not endofallsource do begin
+      if bError then
+        Break;
+      Next;
+      Scan;
+      if (pltype = 1) or (pltype = HASNOPROTO) then
+        ProcessTypes(false);
+      if (pltype = HASPROTO) or (pltype = HASNOPROTO) then
+      begin
+        if Token = TOK_IDENTIFIER then begin
+          varnam := Value;
+          Next;
+          Scan;
+        end
+        else
+        begin
+          Expected(sVariableName);
           bError := True;
-//          GS_ParamType[procpos, protocount] := ptype;
-          if protocount >= MAXPARAMS then
-            AbortMsg(sMaxParamCountExceeded);
-          inc(protocount);
-        end;
-        HASPROTO : begin
-          if pcount >= MAXPARAMS then
-          begin
-            AbortMsg(sMaxParamCountExceeded);
-            bError := True;
-          end;
-          if not bError then
-          begin
-            AddParam(ApplyDecoration(procname, varnam, 0),
-              FunctionParameterType(procname, pcount),
-              FunctionParameterTypeName(procname, pcount),
-              FunctionParameterIsConstant(procname, pcount));
-            inc(pcount);
-            if pcount > protocount then
-            begin
-              AbortMsg(sTooManyArgs);
-              bError := True;
-            end;
-          end;
-        end;
-        HASNOPROTO : begin
-          if protocount >= MAXPARAMS then
-          begin
-            AbortMsg(sMaxParamCountExceeded);
-            bError := True;
-          end;
-          if not bError then
-          begin
-            AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst);
-            Allocate(ApplyDecoration(procname, varnam, 0), aval, '', tname, ptype);
-            AddFunctionParameter(procname, varnam, tname, pcount, ptype, bIsConst,
-              bIsRef, bIsArray, dimensions);
-            inc(protocount);
-            inc(pcount);
-          end;
         end;
       end;
+      CheckParamTypeAndArrays;
+      // check for optional = and default value
+      CheckForDefaultArgumentValue;
+      if bError then
+        Continue;
+      CheckPLType;
     end; // while Token = TOK_COMMA
     CheckBytesRead(oldBytesRead);
   end; // while Token <> TOK_CLOSEPAREN
-  if protoexists and (pcount <> protocount) then
+  if protoexists and (pcount < protocount) then
     AbortMsg(sTooFewArgs);
   if bError then
     while (Token <> TOK_CLOSEPAREN) and not endofallsource do
       Next; // eat tokens up to TOK_CLOSEPAREN
-(*
-  case pltype of
-    0 : begin
-      // nothing
-    end;
-    1 : begin
-      GS_ParamCount[procpos] := protocount;
-    end;
-    HASPROTO : begin
-      GS_ParamCount[procpos] := pcount;
-    end;
-    HASNOPROTO : begin
-      GS_ParamCount[procpos] := pcount;
-    end;
-  end;
-*)
   Result := pltype;
 end;
 
@@ -5296,7 +5730,8 @@ begin
     if Token = TOK_INLINE then
     begin
       Next;
-      fInlining := True;
+      IncrementInlineDepth;
+//      fInlining := True;
     end;
     if Token = TOK_SAFECALL then
     begin
@@ -5304,7 +5739,7 @@ begin
       fSafeCalling := True;
     end;
     bIsSub := Token = TOK_PROCEDURE;
-    if fInlining and not bIsSub then
+    if AmInlining and not bIsSub then
       AbortMsg(sInlineInvalid);
     if fSafeCalling and not bIsSub then
       AbortMsg(sSafeCallInvalid);
@@ -5313,6 +5748,7 @@ begin
     Scan;
     CheckIdent;
     Name := Value;
+    DoCompilerStatusChange(Format(sNXCProcedure, [Name]));
     if bIsSub and (Name = 'main') then
       AbortMsg(sMainMustBeTask);
     procexists := GlobalIdx(Name);
@@ -5346,8 +5782,19 @@ begin
     if Value = 'void' then
       Next;
     CloseParen;
-    OptionalSemi;
+    // allow for "stuff" after the close parenthesis and before either ; or {
     Scan;
+    ProcessDirectives; // just in case there are any between the ) and the {
+    // now it has to either be a ; or a {
+    if not (Token in [TOK_SEMICOLON, TOK_BEGIN]) then
+      AbortMsg(sInvalidFuncDecl);
+    if Token = TOK_SEMICOLON then
+    begin
+      // this is a function declaration (a prototype) - not a function definition
+      pltype := 1;
+      Next;
+    end;
+//    OptionalSemi;
     if Token = TOK_BEGIN then
     begin
       if pltype = 1 then
@@ -5367,8 +5814,10 @@ begin
       fNestingLevel := 0;
       DoLocals(Name);
       BlockStatements();
-      MatchString(TOK_END);
       Epilog(bIsSub);
+      // MatchString(TOK_END) must be after the epilog or process directives
+      // can be called while still inlining
+      MatchString(TOK_END);
       Scan;
     end
     else
@@ -5378,7 +5827,8 @@ begin
       Scan;
     end;
     ClearParams;
-    fInlining := False;
+//    DecrementInlineDepth;
+//    fInlining := False;
     fSafeCalling := False;
     TopDecls;
   end;
@@ -5391,7 +5841,9 @@ var
   protoexists : boolean;
   pltype : integer;
 begin
-  fInlining := bInline;
+  if bInline then
+    IncrementInlineDepth;
+//  fInlining := bInline;
   if Name = 'main' then
     AbortMsg(sMainMustBeTask);
   procexists := GlobalIdx(Name);
@@ -5410,14 +5862,27 @@ begin
       EmitMutexDeclaration(Name);
     AddEntry(Name, TOK_PROCEDURE, tname, '', False, bSafeCall);
     GS_ReturnType[NumGlobals] := dt;
+    if IsArrayType(dt) or IsUDT(dt) then
+      AddEntry(Format('__result_%s', [Name]), dt, tname, '');
   end;
   OpenParen;
   fCurrentThreadName := Name;
   fThreadNames.Add(Name);
   pltype := FormalList(protoexists, Name);
   CloseParen;
-  OptionalSemi;
+  // allow for "stuff" after the close parenthesis and before either ; or {
   Scan;
+  ProcessDirectives; // just in case there are any in between the ) and the {
+  // now it has to either be a ; or a {
+  if not (Token in [TOK_SEMICOLON, TOK_BEGIN]) then
+    AbortMsg(sInvalidFuncDecl);
+  if Token = TOK_SEMICOLON then
+  begin
+    // this is a function declaration (a prototype) - not a function definition
+    pltype := 1;
+    Next;
+  end;
+//  OptionalSemi;
   if Token = TOK_BEGIN then
   begin
     if pltype = 1 then
@@ -5432,8 +5897,10 @@ begin
     fNestingLevel := 0;
     DoLocals(Name);
     BlockStatements();
-    MatchString(TOK_END);
     Epilog(True);
+    // MatchString(TOK_END) must be after the epilog or process directives
+    // can be called while still inlining
+    MatchString(TOK_END);
     Scan;
   end
   else
@@ -5450,12 +5917,15 @@ end;
 
 procedure TNXCComp.Init;
 begin
+  fInlineDepth := 0;
+  fLastExpressionOptimizedToConst := False;
+  fLastLoadedConst := '';
   fCurrentLine := '';
   totallines := 1;
   linenumber := 1;
   ClearParams;
-  sd := 0;
-  maxsd := 0;
+  fStackDepth   := 0;
+  MaxStackDepth := 0;
   GetChar;
   Next;
 end;
@@ -5481,6 +5951,7 @@ begin
   NumGlobals := 0;
   endofallsource := False;
   fEnhancedFirmware := False;
+  fFirmwareVersion  := 105; // 1.05 NXT 1.1 firmware 
   fIgnoreSystemFile := False;
   fWarningsOff      := False;
   fDD := TDataDefs.Create;
@@ -5493,9 +5964,11 @@ begin
   fParams := TVariableList.Create;
   fGlobals := TVariableList.Create;
   fFuncParams := TFunctionParameters.Create;
+  fInlineFunctionStack := TObjectStack.Create;
   fInlineFunctions := TInlineFunctions.Create;
   fArrayHelpers := TArrayHelperVars.Create;
   fTmpAsmLines := TStringList.Create;
+  fStackVarNames := TStringList.Create;
   fNBCSrc := TStringList.Create;
   fMS := TMemoryStream.Create;
   fMessages := TStringList.Create;
@@ -5508,12 +5981,14 @@ begin
   TStringList(fThreadNames).Sorted := True;
   TStringList(fThreadNames).Duplicates := dupIgnore;
   fSwitchFixups := TStringList.Create;
+  fSwitchRegNames := TStringList.Create;
   fSwitchDepth := 0;
   fFunctionNameCallStack := TStringList.Create;
   fConstStringMap := TStringList.Create;
   fConstStringMap.Sorted := True;
   fArrayIndexStack := TStringList.Create;
   fStructDecls := TStringList.Create;
+  fInlineStack := TObjectList.Create(false);
   fCalc := TNBCExpParser.Create(nil);
   fCalc.PascalNumberformat := False;
   fCalc.CaseSensitive := True;
@@ -5534,9 +6009,11 @@ begin
   FreeAndNil(fParams);
   FreeAndNil(fGlobals);
   FreeAndNil(fFuncParams);
+  FreeAndNil(fInlineFunctionStack);
   FreeAndNil(fInlineFunctions);
   FreeAndNil(fArrayHelpers);
   FreeAndNil(fTmpAsmLines);
+  FreeAndNil(fStackVarNames);
   FreeAndNil(fNBCSrc);
   FreeAndNil(fMS);
   FreeAndNil(fMessages);
@@ -5550,6 +6027,8 @@ begin
   FreeAndNil(fThreadNames);
 //  FreeAndNil(fParamNames);
   FreeAndNil(fSwitchFixups);
+  FreeAndNil(fSwitchRegNames);
+  FreeAndNil(fInlineStack);
   FreeAndNil(fCalc);
   inherited;
 end;
@@ -5557,6 +6036,7 @@ end;
 procedure TNXCComp.InternalParseStream;
 begin
   try
+    DoCompilerStatusChange(sNXCCompBegin);
     fFuncParams.Clear;
     fThreadNames.Clear;
     fConstStringMap.Clear;
@@ -5568,11 +6048,15 @@ begin
     fLastErrMsg     := '';
     fLHSDataType    := #0;
     fLHSName        := '';
+    DoCompilerStatusChange(sNXCPreprocess);
     PreProcess;
     fMS.Position := 0;
     fParenDepth  := 0;
+    DoCompilerStatusChange(sNXCInitProgram);
     Init;
+    DoCompilerStatusChange(sNXCParseProg);
     Prog;
+    DoCompilerStatusChange(sNXCCodeGenComplete);
   except
     on E : EAbort do
     begin
@@ -5694,8 +6178,8 @@ begin
   BoolExpression;
   MatchString(TOK_COMMA);
   // reset
-  arg3 := Value;
   CheckNumeric;
+  arg3 := Value;
   Next;
   CloseParen;
   EmitLn(Format('%s(%s, %s, %s)',[op, arg1, RegisterName, arg3]));
@@ -5749,8 +6233,8 @@ begin
   BoolExpression;
   MatchString(TOK_COMMA);
   // reset
-  arg4 := Value;
   CheckNumeric;
+  arg4 := Value;
   Next;
   CloseParen;
   EmitLn(Format('%s(%s, %s, %s, %s)',[op, arg1, svar, RegisterName, arg4]));
@@ -5805,11 +6289,207 @@ begin
   BoolExpression;
   MatchString(TOK_COMMA);
   // reset
-  arg4 := Value;
   CheckNumeric;
+  arg4 := Value;
   Next;
   CloseParen;
   EmitLn(Format('%s(%s, %s, %s, %s)',[op, ports, pwr, RegisterName, arg4]));
+  pop;
+end;
+
+procedure TNXCComp.DoOnFwdRevRegPID;
+var
+  op, arg1, svar, regvar, pvar, ivar : string;
+begin
+  //OnFwdRegPID(ports, pwr, regmode, p, i, d)
+  //OnRevRegPID(ports, pwr, regmode, p, i, d)
+  op := Value;
+  Next;
+  OpenParen;
+  // ports
+  arg1 := GetDecoratedValue;
+  Next;
+  MatchString(TOK_COMMA);
+  // pwr
+  BoolExpression;
+  push;
+  svar := tos;
+  EmitLn(Format('mov %s, %s',[svar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // regmode
+  BoolExpression;
+  push;
+  regvar := tos;
+  EmitLn(Format('mov %s, %s',[regvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // p
+  BoolExpression;
+  push;
+  pvar := tos;
+  EmitLn(Format('mov %s, %s',[pvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // i
+  BoolExpression;
+  push;
+  ivar := tos;
+  EmitLn(Format('mov %s, %s',[ivar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // d
+  BoolExpression;
+  CloseParen;
+  EmitLn(Format('%s(%s, %s, %s, %s, %s, %s)',[op, arg1, svar, regvar, pvar, ivar, RegisterName]));
+  pop;
+  pop;
+  pop;
+  pop;
+end;
+
+procedure TNXCComp.DoOnFwdRevRegExPID;
+var
+  op, arg1, svar, arg4, regvar, pvar, ivar : string;
+begin
+  //OnFwdRegExPID(ports, pwr, regmode, reset, p, i, d)
+  //OnRevRegExPID(ports, pwr, regmode, reset, p, i, d)
+  op := Value;
+  Next;
+  OpenParen;
+  // ports
+  arg1 := GetDecoratedValue;
+  Next;
+  MatchString(TOK_COMMA);
+  // pwr
+  BoolExpression;
+  push;
+  svar := tos;
+  EmitLn(Format('mov %s, %s',[svar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // regmode
+  BoolExpression;
+  push;
+  regvar := tos;
+  EmitLn(Format('mov %s, %s',[regvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // reset
+  CheckNumeric;
+  arg4 := Value;
+  MatchString(TOK_COMMA);
+  // p
+  BoolExpression;
+  push;
+  pvar := tos;
+  EmitLn(Format('mov %s, %s',[pvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // i
+  BoolExpression;
+  push;
+  ivar := tos;
+  EmitLn(Format('mov %s, %s',[ivar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // d
+  BoolExpression;
+  CloseParen;
+  EmitLn(Format('%s(%s, %s, %s, %s, %s, %s, %s)',[op, arg1, svar, regvar, arg4, pvar, ivar, RegisterName]));
+  pop;
+  pop;
+  pop;
+  pop;
+end;
+
+procedure TNXCComp.DoOnFwdRevSyncPID;
+var
+  op, ports, pwr, turnvar, pvar, ivar : string;
+begin
+  //OnFwdSyncPID(ports, pwr, turnpct, p, i, d)
+  //OnRevSyncPID(ports, pwr, turnpct, p, i, d)
+  op := Value;
+  Next;
+  OpenParen;
+  // ports
+  ports := GetDecoratedValue;
+  Next;
+  MatchString(TOK_COMMA);
+  // pwr
+  BoolExpression;
+  push;
+  pwr := tos;
+  EmitLn(Format('mov %s, %s',[pwr, RegisterName]));
+  MatchString(TOK_COMMA);
+  // turnpct
+  BoolExpression;
+  push;
+  turnvar := tos;
+  EmitLn(Format('mov %s, %s',[turnvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // p
+  BoolExpression;
+  push;
+  pvar := tos;
+  EmitLn(Format('mov %s, %s',[pvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // i
+  BoolExpression;
+  push;
+  ivar := tos;
+  EmitLn(Format('mov %s, %s',[ivar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // d
+  BoolExpression;
+  CloseParen;
+  EmitLn(Format('%s(%s, %s, %s, %s, %s, %s)',[op, ports, pwr, turnvar, pvar, ivar, RegisterName]));
+  pop;
+  pop;
+  pop;
+  pop;
+end;
+
+procedure TNXCComp.DoOnFwdRevSyncExPID;
+var
+  op, ports, pwr, arg4, turnvar, pvar, ivar : string;
+begin
+  //OnFwdSyncExPID(ports, pwr, turnpct, reset, p, i, d)
+  //OnRevSyncExPID(ports, pwr, turnpct, reset, p, i, d)
+  op := Value;
+  Next;
+  OpenParen;
+  // ports
+  ports := GetDecoratedValue;
+  Next;
+  MatchString(TOK_COMMA);
+  // pwr
+  BoolExpression;
+  push;
+  pwr := tos;
+  EmitLn(Format('mov %s, %s',[pwr, RegisterName]));
+  MatchString(TOK_COMMA);
+  // turnpct
+  BoolExpression;
+  push;
+  turnvar := tos;
+  EmitLn(Format('mov %s, %s',[turnvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // reset
+  CheckNumeric;
+  arg4 := Value;
+  MatchString(TOK_COMMA);
+  // p
+  BoolExpression;
+  push;
+  pvar := tos;
+  EmitLn(Format('mov %s, %s',[pvar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // i
+  BoolExpression;
+  push;
+  ivar := tos;
+  EmitLn(Format('mov %s, %s',[ivar, RegisterName]));
+  MatchString(TOK_COMMA);
+  // d
+  BoolExpression;
+  CloseParen;
+  EmitLn(Format('%s(%s, %s, %s, %s, %s, %s, %s)',[op, ports, pwr, turnvar, arg4, pvar, ivar, RegisterName]));
+  pop;
+  pop;
+  pop;
   pop;
 end;
 
@@ -6073,8 +6753,8 @@ begin
   Next;
   MatchString(TOK_COMMA);
   // field
-  field := Value;
   CheckNumeric;
+  field := Value;
   Next;
   MatchString(TOK_COMMA);
   // value
@@ -6109,8 +6789,8 @@ begin
       EmitLn(Format('mov %s, %s',[val, RegisterName]));
       Next;
       // field
-      field := Value;
       CheckNumeric;
+      field := Value;
       Next;
       MatchString(TOK_COMMA);
       // value
@@ -6160,10 +6840,19 @@ begin
     bFuncStyle := Token = TOK_OPENPAREN;
     if bFuncStyle then
       Next;
+    fLHSDataType := dt;
     fLHSName := Format('__result_%s',[fCurrentThreadName]);
     try
-      BoolExpression;
+      NumericFactor;
+// JCH new code as of 2009-09-26
+      if fVarOnStack <> '' then
+      begin
+        Store(fLHSName);
+        fVarOnStack := '';
+      end;
+// JCH end of new code
     finally
+      fLHSDataType := TOK_LONGDEF;
       fLHSName := '';
     end;
 {
@@ -6177,7 +6866,11 @@ begin
       Next;
   end
   else if dt <> #0 then
+  begin
     BoolExpression;
+    if (dt in UnsignedIntegerTypes) and (StatementType <> stUnsigned) then
+      EmitLn(Format('mov %s, %s', [UnsignedRegisterName, RegisterName]));
+  end;
 //  Semi;
   EmitLn('return');
 end;
@@ -6228,8 +6921,8 @@ begin
   Next;
   MatchString(TOK_COMMA);
   // reset
-  arg2 := Value;
   CheckNumeric;
+  arg2 := Value;
   Next;
   CloseParen;
   EmitLn(Format('%s(%s, %s)', [op, arg1, arg2]));
@@ -6238,12 +6931,16 @@ end;
 procedure TNXCComp.PreProcess;
 var
   P : TLangPreprocessor;
+  i, idx : integer;
+  tmpFile, tmpMsg : string;
 begin
-  P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)));
+  P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)), lnNXC);
   try
-    P.Defines := Self.Defines;
+    P.AddPoundLineToMultiLineMacros := True;
+    P.Defines.AddDefines(Defines);
     if EnhancedFirmware then
-      P.Defines.Add('__ENHANCED_FIRMWARE');
+      P.Defines.Define('__ENHANCED_FIRMWARE');
+    P.Defines.AddEntry('__FIRMWARE_VERSION', IntToStr(FirmwareVersion));
     P.AddIncludeDirs(IncludeDirs);
     if not IgnoreSystemFile then
     begin
@@ -6251,30 +6948,40 @@ begin
       P.SkipIncludeFile('NXCDefs.h');
     end;
     P.Preprocess(CurrentFile, fMS);
+    for i := 0 to P.Warnings.Count - 1 do
+    begin
+      tmpMsg := P.Warnings.ValueFromIndex[i];
+      idx := Pos('|', tmpMsg);
+      tmpFile := Copy(tmpMsg, 1, idx-1);
+      Delete(tmpMsg, 1, idx);
+      ReportProblem(StrToIntDef(P.Warnings.Names[i], 0), tmpFile, tmpMsg, false);
+    end;
   finally
     P.Free;
   end;
 end;
 
-procedure TNXCComp.ProcessDirectives;
+procedure TNXCComp.ProcessDirectives(bScan : boolean);
 begin
   while Token = TOK_DIRECTIVE do
   begin
-    Next;
     // look for #line statements
-    if (Token = TOK_IDENTIFIER) and (LowerCase(Value) = 'line') then
+    if LowerCase(Value) = '#line' then
     begin
       SkipDirectiveLine;
       HandlePoundLine;
-      Next;
+      Next(False);
     end
     else
     begin
       SkipDirectiveLine;
-      Next;
+      Next(False);
     end;
-    EmitLn(Trim(fDirLine));
-    Scan;
+    EmitPoundLine;
+    EmitLnNoTab(Trim(fDirLine));
+//    EmitLn(Trim(fDirLine));
+    if bScan then
+      Scan;
   end;
 end;
 
@@ -6336,36 +7043,69 @@ end;
 
 function TNXCComp.tos : string;
 begin
-  Result := Format('__stack_%3.3d%s', [sd, fCurrentThreadName]);
+  Result := fStackVarNames[fStackVarNames.Count - 1];
+  // set statement type based on type on top of stack
+  if Pos('__float_stack_', Result) <> 0 then
+    StatementType := stFloat
+  else if (Pos('__signed_stack_', Result) <> 0) and (StatementType <> stFloat) then
+    StatementType := stSigned;
+{
+  if fStatementType = stFloat then
+    Result := Format('__float_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
+  else if fStatementType = stUnsigned then
+    Result := Format('__unsigned_stack_%3.3d%s', [fStackDepth, fCurrentThreadName])
+  else
+    Result := Format('__signed_stack_%3.3d%s', [fStackDepth, fCurrentThreadName]);
+}
 end;
 
-function TNXCComp.TempByteName: string;
+function TNXCComp.TempSignedByteName: string;
 begin
   Result := Format('__tmpsbyte%s', [fCurrentThreadName]);
 end;
 
-function TNXCComp.TempWordName: string;
+function TNXCComp.TempSignedWordName: string;
 begin
   Result := Format('__tmpsword%s', [fCurrentThreadName]);
 end;
 
-function TNXCComp.TempLongName: string;
+function TNXCComp.TempSignedLongName: string;
 begin
   Result := Format('__tmpslong%s', [fCurrentThreadName]);
 end;
 
+function TNXCComp.TempUnsignedLongName: string;
+begin
+  Result := Format('__tmplong%s', [fCurrentThreadName]);
+end;
+
+function TNXCComp.TempFloatName: string;
+begin
+  Result := Format('__tmpfloat%s', [fCurrentThreadName]);
+end;
+
 function TNXCComp.RegisterName(name : string): string;
 begin
-  if fUDTOnStack <> '' then
+  if fVarOnStack <> '' then
   begin
-    Result := fUDTOnStack;
+    Result := fVarOnStack;
   end
   else
   begin
-    if name = '' then
-      name := fCurrentThreadName;
-    Result := Format('__D0%s',[name]);
+    if fStatementType = stFloat then
+      Result := FloatRegisterName(name)
+    else if fStatementType = stUnsigned then
+      Result := UnsignedRegisterName(name)
+    else
+    Result := SignedRegisterName(name);
   end;
+end;
+
+function TNXCComp.SignedRegisterName(name: string): string;
+begin
+  if name = '' then
+    name := fCurrentThreadName;
+  Result := Format('__D0%s',[name]);
 end;
 
 function TNXCComp.UnsignedRegisterName(name: string): string;
@@ -6373,6 +7113,13 @@ begin
   if name = '' then
     name := fCurrentThreadName;
   Result := Format('__DU0%s',[name]);
+end;
+
+function TNXCComp.FloatRegisterName(name: string): string;
+begin
+  if name = '' then
+    name := fCurrentThreadName;
+  Result := Format('__DF0%s',[name]);
 end;
 
 function TNXCComp.ZeroFlag: string;
@@ -6403,7 +7150,7 @@ end;
 
 procedure TNXCComp.EmitRegisters;
 var
-  j, k, idx : integer;
+  j, k, idx, LastRegIdx : integer;
   f : TInlineFunction;
   H : TArrayHelperVar;
   dt : Char;
@@ -6413,6 +7160,9 @@ var
     Result := REGVARS_ARRAY[idx] + ' ' + REGVARTYPES_ARRAY[idx];
   end;
 begin
+  LastRegIdx := High(REGVARS_ARRAY);
+  if FirmwareVersion < MIN_FW_VER2X then
+    dec(LastRegIdx, 2);
   for j := 0 to fArrayHelpers.Count - 1 do
   begin
     H  := fArrayHelpers[j];
@@ -6426,7 +7176,7 @@ begin
     name := fThreadNames[j];
     if fInlineFunctions.IndexOfName(name) = -1 then
     begin
-      for idx := Low(REGVARS_ARRAY) to High(REGVARS_ARRAY) do
+      for idx := Low(REGVARS_ARRAY) to LastRegIdx do
         EmitLn(Format(EmitFmt(idx), [name]));
       dt := FunctionReturnType(name);
       if IsUDT(dt) or IsArrayType(dt) then
@@ -6442,7 +7192,7 @@ begin
     for k := 0 to f.Callers.Count - 1 do
     begin
       name := InlineName(f.Callers[k], f.Name);
-      for idx := Low(REGVARS_ARRAY) to High(REGVARS_ARRAY) do
+      for idx := Low(REGVARS_ARRAY) to LastRegIdx do
         EmitLn(Format(EmitFmt(idx), [name]));
       dt := FunctionReturnType(f.Name);
       if IsUDT(dt) or IsArrayType(dt) then
@@ -6464,9 +7214,20 @@ begin
   begin
     name := fThreadNames[j];
     if fInlineFunctions.IndexOfName(name) = -1 then
-      for i := 1 to maxsd do begin
-        EmitLn(Format('__stack_%3.3d%s slong', [i, name]));
+    begin
+      for i := 1 to MaxStackDepth do begin
+        EmitLn(Format('__signed_stack_%3.3d%s slong', [i, name]));
       end;
+      for i := 1 to MaxStackDepth do begin
+        EmitLn(Format('__unsigned_stack_%3.3d%s long', [i, name]));
+      end;
+      if FirmwareVersion >= MIN_FW_VER2X then
+      begin
+        for i := 1 to MaxStackDepth do begin
+          EmitLn(Format('__float_stack_%3.3d%s float', [i, name]));
+        end;
+      end;
+    end;
   end;
   for j := 0 to fInlineFunctions.Count - 1 do
   begin
@@ -6474,8 +7235,17 @@ begin
     for k := 0 to f.Callers.Count - 1 do
     begin
       name := InlineName(f.Callers[k], f.Name);
-      for i := 1 to maxsd do begin
-        EmitLn(Format('__stack_%3.3d%s slong', [i, name]));
+      for i := 1 to MaxStackDepth do begin
+        EmitLn(Format('__signed_stack_%3.3d%s slong', [i, name]));
+      end;
+      for i := 1 to MaxStackDepth do begin
+        EmitLn(Format('__unsigned_stack_%3.3d%s long', [i, name]));
+      end;
+      if FirmwareVersion >= MIN_FW_VER2X then
+      begin
+        for i := 1 to MaxStackDepth do begin
+          EmitLn(Format('__float_stack_%3.3d%s float', [i, name]));
+        end;
       end;
     end;
   end;
@@ -6603,6 +7373,12 @@ const
   APIF_STRLEN           = 32;
   APIF_STRINDEX         = 33;
   APIF_ASM              = 34;
+  APIF_DRAWGRAPHICAR    = 35;
+  APIF_DRAWGRAPHICAREX  = 36;
+  APIF_DRAWPOLY         = 37;
+  APIF_DRAWELLIPSE      = 38;
+  APIF_FONTTEXTOUT      = 39;
+  APIF_FONTNUMOUT       = 40;
 
 procedure TNXCComp.DoCallAPIFunc(procname: string);
 var
@@ -6611,6 +7387,7 @@ var
   dt : char;
 begin
   fCCSet := False;
+  ResetStatementType;
   id := APIFuncNameToID(procname);
   case id of
     APIF_ASM : begin
@@ -6653,8 +7430,8 @@ begin
       Next;
       MatchString(TOK_COMMA);
       // field
-      arg := Value;
       CheckNumeric;
+      arg := Value;
       Next;
       CloseParen;
       case id of
@@ -6672,10 +7449,15 @@ begin
     APIF_DRAWLINE, APIF_DRAWRECT : DoDrawLineRect(id);
     APIF_DRAWCIRCLE : DoDrawCircle;
     APIF_DRAWGRAPHIC,
-    APIF_DRAWGRAPHICEX : DoDrawGraphic(id);
+    APIF_DRAWGRAPHICEX,
+    APIF_DRAWGRAPHICAR,
+    APIF_DRAWGRAPHICAREX : DoDrawGraphic(id);
     APIF_STRTONUM : DoStrToNum;
     APIF_STRLEN : DoStrLen;
     APIF_STRINDEX : DoStrIndex;
+    APIF_DRAWPOLY : DoDrawPoly;
+    APIF_DRAWELLIPSE : DoDrawEllipse;
+    APIF_FONTTEXTOUT, APIF_FONTNUMOUT : DoFontTextNumOut(id);
   end;
 end;
 
@@ -6742,8 +7524,8 @@ var
   x, y, txt, val : string;
   bCls : boolean;
 begin
-  //TextOut(x,y,txt,cls=false)
-  //NumOut(x,y,num,cls=false)
+  //TextOut(x,y,txt,options=false)
+  //NumOut(x,y,num,options=false)
   OpenParen;
   // arg1 = x
   BoolExpression;
@@ -6785,6 +7567,7 @@ begin
       EmitLn(Format('numtostr __TextOutArgs.Text, %s',[RegisterName]));
     end;
     EmitLn('syscall DrawText, __TextOutArgs');
+    ResetStatementType;
     EmitLn(Format('mov %s, __TextOutArgs.Result',[RegisterName]));
     EmitLn('release __TextOutMutex');
     if bCls then
@@ -6811,8 +7594,99 @@ begin
       EmitLn('set __TextOutArgs.Options, 0');
     EmitLn('mov __TextOutArgs.Text, ' + txt);
     EmitLn('syscall DrawText, __TextOutArgs');
+    ResetStatementType;
     EmitLn(Format('mov %s, __TextOutArgs.Result',[RegisterName]));
     EmitLn('release __TextOutMutex');
+  end;
+  pop;
+  pop;
+end;
+
+procedure TNXCComp.DoFontTextNumOut(idx: integer);
+var
+  x, y, fntname, txt, val : string;
+  bCls : boolean;
+begin
+  //FontTextOut(x,y,file,txt,options=false)
+  //FontNumOut(x,y,file,num,options=false)
+  OpenParen;
+  // arg1 = x
+  BoolExpression;
+  push;
+  x := tos;
+  EmitLn(Format('mov %s, %s', [x, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg2 = y
+  BoolExpression;
+  push;
+  y := tos;
+  EmitLn(Format('mov %s, %s', [y, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg3 = file
+  CheckString;
+  fntname := Value;
+  Next;
+  MatchString(TOK_COMMA);
+  if idx = APIF_FONTNUMOUT then
+  begin
+    BoolExpression;
+    bCls := Token = TOK_COMMA;
+    if bCls then
+    begin
+      push;
+      val := tos;
+      EmitLn(Format('mov %s, %s', [val, RegisterName]));
+      MatchString(TOK_COMMA);
+      // arg4 = cls
+      BoolExpression;
+    end;
+    CloseParen;
+    EmitLn('acquire __FontOutMutex');
+    EmitLn('mov __FontOutArgs.Location.X, ' + x);
+    EmitLn('mov __FontOutArgs.Location.Y, ' + y);
+    EmitLn('mov __FontOutArgs.Filename, ' + fntname);
+    if bCls then
+    begin
+      EmitLn('mov __FontOutArgs.Options, ' + RegisterName);
+      EmitLn(Format('numtostr __FontOutArgs.Text, %s',[val]));
+    end
+    else
+    begin
+      EmitLn('set __FontOutArgs.Options, 0');
+      EmitLn(Format('numtostr __FontOutArgs.Text, %s',[RegisterName]));
+    end;
+    EmitLn('syscall DrawFont, __FontOutArgs');
+    ResetStatementType;
+    EmitLn(Format('mov %s, __FontOutArgs.Result',[RegisterName]));
+    EmitLn('release __FontOutMutex');
+    if bCls then
+      pop;
+  end
+  else
+  begin
+    StringExpression('');
+    txt := StrBufName;
+    bCls := Token = TOK_COMMA;
+    if bCls then
+    begin
+      MatchString(TOK_COMMA);
+      // arg4 = cls
+      BoolExpression;
+    end;
+    CloseParen;
+    EmitLn('acquire __FontOutMutex');
+    EmitLn('mov __FontOutArgs.Location.X, ' + x);
+    EmitLn('mov __FontOutArgs.Location.Y, ' + y);
+    EmitLn('mov __FontOutArgs.Filename, ' + fntname);
+    if bCls then
+      EmitLn('mov __FontOutArgs.Options, ' + RegisterName)
+    else
+      EmitLn('set __FontOutArgs.Options, 0');
+    EmitLn('mov __FontOutArgs.Text, ' + txt);
+    EmitLn('syscall DrawFont, __FontOutArgs');
+    ResetStatementType;
+    EmitLn(Format('mov %s, __FontOutArgs.Result',[RegisterName]));
+    EmitLn('release __FontOutMutex');
   end;
   pop;
   pop;
@@ -6823,7 +7697,7 @@ var
   x, y : string;
   bCls : boolean;
 begin
-  //DrawPoint(x,y,cls=false)
+  //PointOut(x,y,cls=false)
   OpenParen;
   // arg1 = x
   BoolExpression;
@@ -6855,6 +7729,7 @@ begin
     EmitLn('set __PointOutArgs.Options, 0');
   end;
   EmitLn('syscall DrawPoint, __PointOutArgs');
+  ResetStatementType;
   EmitLn(Format('mov %s, __PointOutArgs.Result',[RegisterName]));
   EmitLn('release __PointOutMutex');
   pop;
@@ -6862,13 +7737,45 @@ begin
     pop;
 end;
 
+procedure TNXCComp.DoDrawPoly;
+var
+  pts : string;
+  bCls : boolean;
+begin
+  //PolyOut(points,options=false)
+  OpenParen;
+  // arg1 = points
+  pts := GetDecoratedValue;
+  Next;
+  bCls := Token = TOK_COMMA;
+  if bCls then
+  begin
+    MatchString(TOK_COMMA);
+    // arg2 = cls
+    BoolExpression;
+  end;
+  CloseParen;
+  EmitLn('acquire __PolyOutMutex');
+  EmitLn('mov __PolyOutArgs.Points, ' + pts);
+  if bCls then begin
+    EmitLn('mov __PolyOutArgs.Options, ' + RegisterName);
+  end
+  else begin
+    EmitLn('set __PolyOutArgs.Options, 0');
+  end;
+  EmitLn('syscall DrawPolygon, __PolyOutArgs');
+  ResetStatementType;
+  EmitLn(Format('mov %s, __PolyOutArgs.Result',[RegisterName]));
+  EmitLn('release __PolyOutMutex');
+end;
+
 procedure TNXCComp.DoDrawLineRect(idx : integer);
 var
   x, y, x2, y2 : string;
   bCls : boolean;
 begin
-  //DrawLine(x1,y1,x2,y2,cls=false)
-  //DrawRect(x1,y1,width,height,cls=false)
+  //LineOut(x1,y1,x2,y2,cls=false)
+  //RectOut(x1,y1,width,height,cls=false)
   OpenParen;
   // arg1 = x
   BoolExpression;
@@ -6916,6 +7823,7 @@ begin
       EmitLn('set __RectOutArgs.Options, 0');
     end;
     EmitLn('syscall DrawRect, __RectOutArgs');
+    ResetStatementType;
     EmitLn(Format('mov %s, __RectOutArgs.Result',[RegisterName]));
     EmitLn('release __RectOutMutex');
   end
@@ -6934,6 +7842,7 @@ begin
       EmitLn('set __LineOutArgs.Options, 0');
     end;
     EmitLn('syscall DrawLine, __LineOutArgs');
+    ResetStatementType;
     EmitLn(Format('mov %s, __LineOutArgs.Result',[RegisterName]));
     EmitLn('release __LineOutMutex');
   end;
@@ -6988,8 +7897,70 @@ begin
     EmitLn('set __CircleOutArgs.Options, 0');
   end;
   EmitLn('syscall DrawCircle, __CircleOutArgs');
+  ResetStatementType;
   EmitLn(Format('mov %s, __CircleOutArgs.Result',[RegisterName]));
   EmitLn('release __CircleOutMutex');
+  pop;
+  pop;
+  if bCls then
+    pop;
+end;
+
+procedure TNXCComp.DoDrawEllipse;
+var
+  x, y, radiusX, radiusY : string;
+  bCls : boolean;
+begin
+  //EllipseOut(x,y,radiusX,radiusY,cls=false)
+  OpenParen;
+  // arg1 = x
+  BoolExpression;
+  push;
+  x := tos;
+  EmitLn(Format('mov %s, %s', [x, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg2 = y
+  BoolExpression;
+  push;
+  y := tos;
+  EmitLn(Format('mov %s, %s', [y, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg3 = radiusX
+  BoolExpression;
+  push;
+  radiusX := tos;
+  EmitLn(Format('mov %s, %s', [radiusX, RegisterName]));
+  MatchString(TOK_COMMA);
+  // arg4 = radiusY
+  BoolExpression;
+  bCls := Token = TOK_COMMA;
+  if bCls then
+  begin
+    push;
+    radiusY := tos;
+    EmitLn(Format('mov %s, %s', [radiusY, RegisterName]));
+    MatchString(TOK_COMMA);
+    // arg5 = cls
+    BoolExpression;
+  end;
+  CloseParen;
+  EmitLn('acquire __EllipseOutMutex');
+  EmitLn('mov __EllipseOutArgs.Center.X, ' + x);
+  EmitLn('mov __EllipseOutArgs.Center.Y, ' + y);
+  EmitLn('mov __EllipseOutArgs.SizeX, ' + radiusX);
+  if bCls then begin
+    EmitLn('mov __EllipseOutArgs.SizeY, ' + radiusY);
+    EmitLn('mov __EllipseOutArgs.Options, ' + RegisterName);
+  end
+  else begin
+    EmitLn('mov __EllipseOutArgs.SizeY, ' + RegisterName);
+    EmitLn('set __EllipseOutArgs.Options, 0');
+  end;
+  EmitLn('syscall DrawEllipse, __EllipseOutArgs');
+  ResetStatementType;
+  EmitLn(Format('mov %s, __EllipseOutArgs.Result',[RegisterName]));
+  EmitLn('release __EllipseOutMutex');
+  pop;
   pop;
   pop;
   if bCls then
@@ -7003,6 +7974,8 @@ var
 begin
   //GraphicOut(x,y,fname,cls=false)
   //GraphicOutEx(x,y,fname,vars,cls=false)
+  //GraphicArrayOut(x,y,data,cls=false)
+  //GraphicArrayOutEx(x,y,data,vars,cls=false)
   OpenParen;
   // arg1 = x
   BoolExpression;
@@ -7013,11 +7986,17 @@ begin
   // arg2 = y
   BoolExpression;
   MatchString(TOK_COMMA);
-  // arg3 = fname
+  // arg3 = fname|data
   fname := GetDecoratedValue;
-  CheckString;
+  if idx in [APIF_DRAWGRAPHIC, APIF_DRAWGRAPHICEX] then
+    CheckString
+  else
+  begin
+    if DataType(Value) <> TOK_ARRAYBYTEDEF then
+      Expected(sByteArrayType);
+  end;
   Next;
-  if idx = APIF_DRAWGRAPHICEX then
+  if idx in [APIF_DRAWGRAPHICEX, APIF_DRAWGRAPHICAREX] then
   begin
     MatchString(TOK_COMMA);
     // arg4 = vars
@@ -7036,22 +8015,46 @@ begin
   end;
   CloseParen;
   EmitLn('acquire __GraphicOutMutex');
-  EmitLn('mov __GraphicOutArgs.Location.X, ' + x);
-  if bCls then begin
-    EmitLn('mov __GraphicOutArgs.Location.Y, ' + y);
-    EmitLn('mov __GraphicOutArgs.Options, ' + RegisterName);
+  if idx in [APIF_DRAWGRAPHIC, APIF_DRAWGRAPHICEX] then
+  begin
+    EmitLn('mov __GraphicOutArgs.Location.X, ' + x);
+    if bCls then begin
+      EmitLn('mov __GraphicOutArgs.Location.Y, ' + y);
+      EmitLn('mov __GraphicOutArgs.Options, ' + RegisterName);
+    end
+    else begin
+      EmitLn('mov __GraphicOutArgs.Location.Y, ' + RegisterName);
+      EmitLn('set __GraphicOutArgs.Options, 0');
+    end;
+    EmitLn('mov __GraphicOutArgs.Filename, ' + fname);
+    if idx = APIF_DRAWGRAPHICEX then
+      EmitLn('mov __GraphicOutArgs.Variables, ' + vars)
+    else
+      EmitLn('mov __GraphicOutArgs.Variables, __GraphicOutEmptyVars');
+    EmitLn('syscall DrawGraphic, __GraphicOutArgs');
+    ResetStatementType;
+    EmitLn(Format('mov %s, __GraphicOutArgs.Result',[RegisterName]));
   end
-  else begin
-    EmitLn('mov __GraphicOutArgs.Location.Y, ' + RegisterName);
-    EmitLn('set __GraphicOutArgs.Options, 0');
-  end;
-  EmitLn('mov __GraphicOutArgs.Filename, ' + fname);
-  if idx = APIF_DRAWGRAPHICEX then
-    EmitLn('mov __GraphicOutArgs.Variables, ' + vars)
   else
-    EmitLn('mov __GraphicOutArgs.Variables, __GraphicOutEmptyVars');
-  EmitLn('syscall DrawGraphic, __GraphicOutArgs');
-  EmitLn(Format('mov %s, __GraphicOutArgs.Result',[RegisterName]));
+  begin
+    EmitLn('mov __GraphicArrayOutArgs.Location.X, ' + x);
+    if bCls then begin
+      EmitLn('mov __GraphicArrayOutArgs.Location.Y, ' + y);
+      EmitLn('mov __GraphicArrayOutArgs.Options, ' + RegisterName);
+    end
+    else begin
+      EmitLn('mov __GraphicArrayOutArgs.Location.Y, ' + RegisterName);
+      EmitLn('set __GraphicArrayOutArgs.Options, 0');
+    end;
+    EmitLn('mov __GraphicArrayOutArgs.Data, ' + fname);
+    if idx = APIF_DRAWGRAPHICAREX then
+      EmitLn('mov __GraphicArrayOutArgs.Variables, ' + vars)
+    else
+      EmitLn('mov __GraphicArrayOutArgs.Variables, __GraphicOutEmptyVars');
+    EmitLn('syscall DrawGraphicArray, __GraphicArrayOutArgs');
+    ResetStatementType;
+    EmitLn(Format('mov %s, __GraphicArrayOutArgs.Result',[RegisterName]));
+  end;
   EmitLn('release __GraphicOutMutex');
   pop;
   if bCls then
@@ -7091,6 +8094,7 @@ begin
   EmitLn('mov __SPTArgs.Volume, ' + vol);
   EmitLn(Format('mov __SPTArgs.Loop, %s',[RegisterName]));
   EmitLn('syscall SoundPlayTone, __SPTArgs');
+  ResetStatementType;
   EmitLn(Format('mov %s, __SPTArgs.Result',[RegisterName]));
   EmitLn('release __SPTArgsMutex');
   pop;
@@ -7123,6 +8127,7 @@ begin
   EmitLn('mov __SPFArgs.Volume, ' + vol);
   EmitLn(Format('mov __SPFArgs.Loop, %s', [RegisterName]));
   EmitLn('syscall SoundPlayFile, __SPFArgs');
+  ResetStatementType;
   EmitLn(Format('mov %s, __SPFArgs.Result', [RegisterName]));
   EmitLn('release __SPFArgsMutex');
   pop;
@@ -7165,6 +8170,7 @@ begin
   EmitLn('mov __RBtnArgs.Index, ' + btn);
   EmitLn(Format('mov __RBtnArgs.Reset, %s', [RegisterName]));
   EmitLn('syscall ReadButton, __RBtnArgs');
+  ResetStatementType;
   if idx = APIF_BUTTONCOUNT then
     EmitLn(Format('mov %s, __RBtnArgs.Count',[RegisterName]))
   else if idx = APIF_BUTTONPRESSED then
@@ -7210,11 +8216,17 @@ begin
   AddAPIStringFunction('Flatten', APISF_FLATTEN);
   AddAPIStringFunction('StrReplace', APISF_STRREPLACE);
   AddAPIStringFunction('FormatNum', APISF_FORMATNUM);
+  AddAPIFunction('GraphicArrayOut', APIF_DRAWGRAPHICAR);
+  AddAPIFunction('GraphicArrayOutEx', APIF_DRAWGRAPHICAREX);
+  AddAPIFunction('PolyOut', APIF_DRAWPOLY);
+  AddAPIFunction('EllipseOut', APIF_DRAWELLIPSE);
+  AddAPIFunction('FontTextOut', APIF_FONTTEXTOUT);
+  AddAPIFunction('FontNumOut', APIF_FONTNUMOUT);
 end;
 
 function TNXCComp.GetNBCSrc: TStrings;
 begin
-  if fInlining and Assigned(fCurrentInlineFunction) then
+  if AmInlining and Assigned(fCurrentInlineFunction) then
     Result := fCurrentInlineFunction.Code
   else
     Result := fNBCSrc;
@@ -7245,8 +8257,8 @@ begin
   begin
     expectedBase := ArrayBaseType(fp.ParameterDataType);
     providedBase := ArrayBaseType(dt);
-    if (expectedBase in IntegralTypes) and not (providedBase in IntegralTypes) then
-      Expected(sIntegerType)
+    if (expectedBase in NonAggregateTypes) and not (providedBase in NonAggregateTypes) then
+      Expected(sNumericType)
     else if (expectedBase = TOK_STRINGDEF) and (providedBase <> TOK_STRINGDEF) then
       Expected(sStringVarType)
     else if expectedBase = TOK_USERDEFINEDTYPE then
@@ -7287,9 +8299,9 @@ begin
   Next;
   Next;
   CheckIdent;
-  // identifier must be an integral type
-  if not (DataType(Value) in IntegralTypes) then
-    Expected(sIntegerType);
+  // identifier must be an integer type
+  if not (DataType(Value) in NonAggregateTypes) then
+    Expected(sNumericType);
   if bInc then
     StoreInc(Value, 1)
   else
@@ -7605,12 +8617,17 @@ begin
   else
   begin
     MatchString('=');
-    NotNumericFactor;
-    if fUDTOnStack <> '' then
-    begin
-      Store(name);
-      fUDTOnStack := '';
-    end;
+    GetAndStoreUDT(name);
+  end;
+end;
+
+procedure TNXCComp.GetAndStoreUDT(const name: string);
+begin
+  NotNumericFactor;
+  if fVarOnStack <> '' then
+  begin
+    Store(name);
+    fVarOnStack := '';
   end;
 end;
 
@@ -7619,25 +8636,42 @@ var
   i : integer;
   root_type, root_name : string;
   DE : TDataspaceEntry;
+  fp : TFunctionParameter;
 begin
   Result := '';
   case WhatIs(n) of
     stParam : begin
       i := ParamIdx(n);
-      if (i <> -1) and (ArrayBaseType(fParams[i].DataType) = TOK_USERDEFINEDTYPE) then
+      if i <> -1 then
       begin
-        root_name := RootOf(n);
-        if root_name <> n then
+        if ArrayBaseType(fParams[i].DataType) = TOK_USERDEFINEDTYPE then
         begin
-          root_type := fParams[i].TypeName;
-          System.Delete(n, 1, Length(root_name)+1);
-          n := root_type + '.' + n;
-          DE := DataDefinitions.FindEntryByFullName(n);
-          if Assigned(DE) then
-            Result := DE.TypeName;
-        end
-        else
-          Result := fParams[i].TypeName;
+          root_name := RootOf(n);
+          if root_name <> n then
+          begin
+            root_type := fParams[i].TypeName;
+            System.Delete(n, 1, Length(root_name)+1);
+            n := root_type + '.' + n;
+            DE := DataDefinitions.FindEntryByFullName(n);
+            if Assigned(DE) then
+              Result := DE.TypeName;
+          end
+          else
+            Result := fParams[i].TypeName;
+        end;
+      end
+      else
+      begin
+        // i = -1
+        for i := 0 to fFuncParams.Count - 1 do
+        begin
+          fp := fFuncParams[i];
+          if n = ApplyDecoration(fp.ProcName, fp.Name, 0) then
+          begin
+            Result := fp.ParamTypeName;
+            Break;
+          end;
+        end;
       end;
     end;
     stLocal : begin
@@ -7719,7 +8753,7 @@ begin
   dim := GetArrayDimension(dt);
   if dim = 1 then
   begin
-    if ArrayBaseType(dt) in IntegralTypes then
+    if ArrayBaseType(dt) in NonAggregateTypes then
       tmpVal := '0'
     else
     begin
@@ -7750,32 +8784,6 @@ begin
     codeStr := Format('arrinit %s, %s, %s', [Name, tmpVal, expr]);
     EmitLn(codeStr);
   end;
-end;
-
-procedure TNXCComp.DoArrayBuild;
-var
-  aout, src, asmstr : string;
-begin
-  // ArrayBuild(aout, src1, ..., srcN)
-  Next;
-  OpenParen;
-  // aout
-  aout := GetDecoratedValue;
-  Next;
-  MatchString(TOK_COMMA);
-  src := GetDecoratedValue;
-  Next;
-  asmstr := Format('arrbuild %s, %s', [aout, src]);
-  while (Token = TOK_COMMA) and not endofallsource do
-  begin
-    Next; // skip the comma
-    // field
-    src := GetDecoratedValue;
-    Next;
-    asmstr := asmstr + Format(', %s', [src]);
-  end;
-  CloseParen;
-  EmitLn(asmstr);
 end;
 
 procedure TNXCComp.LoadSystemFile(S : TStream);
@@ -7818,7 +8826,9 @@ end;
 
 procedure TNXCComp.InitializeGraphicOutVars;
 begin
-  if EnhancedFirmware then
+  if IgnoreSystemFile then
+    Exit; // do not intialization if we are not including the standard headers
+  if not EnhancedFirmware then
     EmitLn('arrinit __GraphicOutEmptyVars, 0, 256')
   else
     EmitLn('arrinit __GraphicOutEmptyVars, 0, 16');
@@ -7836,25 +8846,50 @@ var
   i : integer;
   p : TFunctionParameter;
   v : TVariable;
+  varname, tname : string;
+  dt : char;
+  bConst : boolean;
 begin
   for i := 0 to FunctionParameterCount(func.Name) - 1 do
   begin
     p := GetFunctionParam(func.Name, i);
     if Assigned(p) then
     begin
-      // allocate this parameter
-      Allocate(InlineName(fCurrentThreadName, ApplyDecoration(p.ProcName, p.Name, 0)),
-               DataTypeToArrayDimensions(p.ParameterDataType), '',
-               p.ParamTypeName, p.ParameterDataType);
+      varname := InlineName(fCurrentThreadName, ApplyDecoration(p.ProcName, p.Name, 0));
+      tname   := p.ParamTypeName;
+      dt      := p.ParameterDataType;
+      bConst  := p.IsConstant;
+      if AmInlining then
+      begin
+        // call AddLocal instead
+        if not IsLocal(varname) then
+          AddLocal(varname, dt, tname, bConst, '');
+      end
+      else
+      begin
+        // allocate this parameter
+        Allocate(varname, DataTypeToArrayDimensions(dt), '', tname, dt);
+      end;
     end;
   end;
   for i := 0 to func.LocalVariables.Count - 1 do
   begin
     v := func.LocalVariables[i];
-    // allocate this variable
-    Allocate(InlineName(fCurrentThreadName, v.Name),
-             DataTypeToArrayDimensions(v.DataType), '',
-             v.TypeName, v.DataType);
+    varname := InlineName(fCurrentThreadName, v.Name);
+    tname   := v.TypeName;
+    dt      := v.DataType;
+    bConst  := v.IsConstant;
+    if AmInlining then
+    begin
+      // call AddLocal instead
+      if not IsLocal(varname) then
+        AddLocal(varname, dt, tname, bConst, '');
+    end
+    else
+    begin
+      // allocate this variable
+      Allocate(varname, DataTypeToArrayDimensions(dt), '', tname, dt);
+    end;
   end;
 end;
 
@@ -7886,14 +8921,14 @@ begin
       begin
         // also base type compatible
         lBase := ArrayBaseType(lhs);
-        rBase := ArrayBaseType(lhs);
-        Result := ((lBase in IntegralTypes) and (rBase in IntegralTypes)) or (lBase = rBase);
+        rBase := ArrayBaseType(rhs);
+        Result := ((lBase in NonAggregateTypes) and (rBase in NonAggregateTypes)) or (lBase = rBase);
       end;
     end
     else
     begin
       // neither is an array
-      Result := (lhs in IntegralTypes) and (lhs in IntegralTypes);
+      Result := (lhs in NonAggregateTypes) and (rhs in NonAggregateTypes);
     end;
   end;
 end;
@@ -7974,128 +9009,25 @@ begin
   asmstr := Format('arrbuild %s', [aName]);
   tmp := StripBraces(ival);
   asmstr := asmstr + ', ' + tmp;
-(*
-  tmp := Replace(ival, '{', '');
-  tmp := Replace(tmp, '}', '');
-  while Length(tmp) > 0 do
-  begin
-    i := Pos(',', tmp);
-    if i = 0 then
-      i := MaxInt;
-    src := Trim(Copy(tmp, 1, i-1));
-    System.Delete(tmp, 1, i);
-    if src = '' then
-      src := '0';
-    asmstr := asmstr + Format(', %s', [src]);
-  end;
-*)
   EmitLn(asmstr);
 end;
-
-(*
-procedure TNXCComp.DoArrayIndex(rhsBaseDT : char; aLHSName, aName : string);
-var
-  oldType, tmpDT : char;
-  tmp, udType, aval, idxName, tmpUDTName : string;
-  AHV : TArrayHelperVar;
-begin
-  AHV := nil;
-  Next;
-  oldType := fLHSDataType;
-  try
-    fLHSDataType := TOK_LONGDEF;
-    BoolExpression;
-  finally
-    fLHSDataType := oldType;
-  end;
-  MatchString(']');
-  push;
-  tmp := tos;
-  EmitLn(Format('mov %s, %s', [tmp, RegisterName]));
-  fArrayIndexStack.Add(tmp);
-  if Token = '[' then
-  begin
-    tmpDT := AddArrayDimension(rhsBaseDT);
-//    if ArrayBaseType(tmpDT) <> ArrayBaseType(rhsBaseDT) then
-//      AbortMsg(sInvalidArrayIndex);
-    udType := '';
-    if IsUDT(ArrayBaseType(tmpDT)) then
-      udType := GetUDTType(aName);
-    // get a temporary thread-safe variable of the right type
-    AHV := fArrayHelpers.GetHelper(fCurrentThreadName, udType, tmpDT);
-    aval := AHV.Name;
-    if fGlobals.IndexOfName(aval) = -1 then
-      AddEntry(aval, tmpDT, udType, '');
-    DoArrayIndex(tmpDT, aval, aName);
-    // now replace original rhs name with temporary name
-    aName := aval;
-  end
-  else if Token = '.' then
-  begin
-    tmpDT := RemoveArrayDimension(DataType(aName));
-    udType := '';
-    if IsUDT(ArrayBaseType(tmpDT)) then
-      udType := GetUDTType(aName);
-    // get a temporary thread-safe variable of the right type
-    AHV := fArrayHelpers.GetHelper(fCurrentThreadName, udType, tmpDT);
-    aval := AHV.Name;
-    if fGlobals.IndexOfName(aval) = -1 then
-      AddEntry(aval, tmpDT, udType, '');
-  end;
-  fCCSet := False;
-  idxName := fArrayIndexStack[0];
-  fArrayIndexStack.Delete(0);
-{
-  if aLHSName = '' then
-    aLHSName := RegisterName;
-  if aLHSName = '' then
-    lhsDT := TOK_LONGDEF
-  else
-    lhsDT := DataType(aLHSName);
-  rhsDT := RemoveArrayDimension(DataType(aName));
-  if not TypesAreCompatible(lhsDT, rhsDT) then
-    AbortMsg(sInvalidArrayExpr);
-}
-  if Token = '.' then
-  begin
-    EmitLn(Format('index %s, %s, %s',[GetDecoratedIdent(aval), GetDecoratedIdent(aName), idxName]));
-    // process dots
-    tmpUDTName := aval;
-    // add the "."
-    tmpUDTName := tmpUDTName + Value;
-    Next;
-    // add rest of struct member name
-    tmpUDTName := tmpUDTName + Value;
-    Next; // move to next token
-  end
-  else if IsArrayType(rhsBaseDT) or IsUDT(rhsBaseDT) or ({lhsDT}rhsBaseDT = TOK_STRINGDEF) then
-  begin
-    EmitLn(Format('index %s, %s, %s',[GetDecoratedIdent(aLHSName), GetDecoratedIdent(aName), idxName]));
-  end
-  else
-  begin
-    EmitLn(Format('index %s, %s, %s',[RegisterName, GetDecoratedIdent(aName), idxName]));
-  end;
-  if Assigned(AHV) then
-    fArrayHelpers.ReleaseHelper(AHV);
-  pop;
-end;
-*)
 
 procedure TNXCComp.DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string);
 var
   AHV : TArrayHelperVar;
-  tmp, udType, aval, tmpUDTName : string;
+  tmp, udType, aval, tmpUDTName, oldExpStr : string;
   tmpDT : char;
 begin
   // grab the index as an expression and put it on the stack
   Next;
   tmpDT := fLHSDataType;
+  oldExpStr := fExpStr;
   try
     fLHSDataType := TOK_LONGDEF;
     BoolExpression;
   finally
     fLHSDataType := tmpDT;
+    fExpStr      := oldExpStr;
   end;
   if Value <> ']' then
     Expected(''']''');
@@ -8159,15 +9091,24 @@ begin
       end;
       Token := TOK_IDENTIFIER;
       tmpDT := DataType(Value);
-      if aLHSName <> '' then
+      if (tmpDT in NonAggregateTypes) and (aLHSName = '') then
       begin
+        LoadVar(Value);
+        Next; // move to the next token
+      end
+      else if aLHSName <> '' then
+      begin
+{
         if tmpDT = TOK_STRINGDEF then
           EmitLn(Format('strcat %s, %s', [aLHSName, GetDecoratedValue]))
-        else if tmpDT in IntegralTypes then
+        else if tmpDT in NonAggregateTypes then
           LoadVar(Value)
         else
           EmitLn(Format('mov %s, %s', [GetDecoratedIdent(aLHSName), GetDecoratedValue]));
         Next; // move to the next token
+}
+        // recurse to the NumericRelation procedure
+        NumericRelation;
       end
       else
       begin
@@ -8181,4 +9122,124 @@ begin
   pop;
 end;
 
+procedure TNXCComp.SetStatementType(const Value: TStatementType);
+begin
+  fStatementType := Value;
+  if (Value = stFloat) and (FirmwareVersion < MIN_FW_VER2X) then
+    AbortMsg(sFloatNotSupported);
+end;
+
+procedure TNXCComp.ResetStatementType;
+begin
+  StatementType := stSigned;
+end;
+
+procedure TNXCComp.EmitNXCRequiredStructs;
+var
+  SL : TStringList;
+begin
+  SL := TStringList.Create;
+  try
+    SL.Text :=
+      'TNXCSoundPlayFile struct'#13#10 +
+      ' Result sbyte'#13#10 +
+      ' Filename byte[]'#13#10 +
+      ' Loop byte'#13#10 +
+      ' Volume byte'#13#10 +
+      'TNXCSoundPlayFile ends'#13#10 +
+      'TNXCSoundPlayTone struct'#13#10 +
+      ' Result sbyte'#13#10 +
+      ' Frequency	word'#13#10 +
+      ' Duration word'#13#10 +
+      ' Loop byte'#13#10 +
+      ' Volume byte'#13#10 +
+      'TNXCSoundPlayTone ends'#13#10 +
+      'TNXCSetScreenMode struct'#13#10 +
+      ' Result sbyte'#13#10 +
+      ' ScreenMode dword'#13#10 +
+      'TNXCSetScreenMode ends';
+    NBCSource.AddStrings(SL);
+    NBCSource.Add('');
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TNXCComp.CheckForMain;
+var
+  i : integer;
+  V : TVariable;
+begin
+  for i := 0 to fGlobals.Count - 1 do
+  begin
+    V := fGlobals[i];
+    if (V.DataType = TOK_TASK) and (V.Name = 'main') then
+      Exit;
+  end;
+  // if we get here we know that main does not exist
+  AbortMsg(sMainTaskNotFound);
+end;
+
+procedure TNXCComp.DoCompilerStatusChange(const Status: string);
+begin
+  if Assigned(fOnCompilerStatusChange) then
+    fOnCompilerStatusChange(Self, Status);
+end;
+
+function TNXCComp.AmInlining: boolean;
+begin
+//  Result := fInlineStack.Count > 0;
+  Result := fInlineDepth > 0;
+end;
+
+procedure TNXCComp.DecrementInlineDepth;
+begin
+  // remove the
+  dec(fInlineDepth);
+end;
+
+procedure TNXCComp.IncrementInlineDepth;
+begin
+  inc(fInlineDepth);
+//  fInlineStack.Add(TStringList.Create);
+end;
+
+procedure TNXCComp.HandleSpecialNames;
+begin
+  if Value = '__TMPBYTE__' then
+    Value := TempSignedByteName
+  else if Value = '__TMPWORD__' then
+    Value := TempSignedWordName
+  else if Value = '__TMPLONG__' then
+    Value := TempSignedLongName
+  else if Value = '__TMPULONG__' then
+    Value := TempUnsignedLongName
+  else if Value = '__TMPFLOAT__' then
+    Value := TempFloatName
+  else if Value = '__RETVAL__' then
+    Value := SignedRegisterName
+  else if Value = '__FLTRETVAL__' then
+    Value := FloatRegisterName
+  else if Value = '__STRRETVAL__' then
+    Value := StrRetValName
+  else if Value = '__GENRETVAL__' then
+    Value := RegisterName;
+end;
+
+function TNXCComp.GetValueOf(const name: string): string;
+begin
+  Result := name;
+  if IsLocalConst(name) then
+  begin
+    Result := LocalConstantValue(name);
+  end
+{
+  else if IsParamConst(name) then
+  begin
+    Result := ParamConstantValue(name);
+  end;
+}
+end;
+
 end.
+
