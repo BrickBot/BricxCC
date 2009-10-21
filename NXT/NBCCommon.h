@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NBCCommon.h
- * Date:: 2009-06-29
- * Revision:: 39
+ * Date:: 2009-10-11
+ * Revision:: 40
  *
  * Contains declarations for the NBC & NXC NXT API resources
  *
@@ -1417,6 +1417,23 @@
 #define CommOffsetUsbState         1894
 #define CommOffsetHsMode           1895
 
+//Ultrasonic sensor constants
+#define US_CMD_OFF           0x00
+#define US_CMD_SINGLESHOT    0x01
+#define US_CMD_CONTINUOUS    0x02
+#define US_CMD_EVENTCAPTURE  0x03
+#define US_CMD_WARMRESET     0x04
+
+#define US_REG_CM_INTERVAL   0x40
+#define US_REG_ACTUAL_ZERO   0x50
+#define US_REG_SCALE_FACTOR  0x51
+#define US_REG_SCALE_DIVISOR 0x52
+
+#define US_REG_FACTORY_ACTUAL_ZERO   0x11
+#define US_REG_FACTORY_SCALE_FACTOR  0x12
+#define US_REG_FACTORY_SCALE_DIVISOR 0x13
+#define US_REG_MEASUREMENT_UNITS     0x14
+
 // HiTechnic Device Constants
 
 // HiTechnic IRLink Power Function constants
@@ -1745,12 +1762,21 @@
 #define RCX_SetPriorityOp    0xd7
 #define RCX_MessageOp        0xf7
 
+// HiTechnic IRReceiver constants
+#define HT_CH1_A 0
+#define HT_CH1_B 1
+#define HT_CH2_A 2
+#define HT_CH2_B 3
+#define HT_CH3_A 4
+#define HT_CH3_B 5
+#define HT_CH4_A 6
+#define HT_CH4_B 7
 
 // HiTechnic constants
-#define HT_REG_VERSION     0x00
-#define HT_REG_VENDOR_ID   0x08
-#define HT_REG_DEVICE_ID   0x10
-#define HT_REG_CMD         0x41
+#define I2C_REG_VERSION   0x00
+#define I2C_REG_VENDOR_ID 0x08
+#define I2C_REG_DEVICE_ID 0x10
+#define I2C_REG_CMD       0x41
 
 #define HT_CMD_COLOR2_ACTIVE  0x00
 #define HT_CMD_COLOR2_PASSIVE 0x01
@@ -1765,11 +1791,6 @@
 #define HT_CMD_COLOR2_NEAR    0x4E
 
 // MindSensors constants
-#define MS_REG_VERSION     0x00
-#define MS_REG_VENDOR_ID   0x08
-#define MS_REG_DEVICE_ID   0x10
-#define MS_REG_CMD         0x41
-
 #define MS_CMD_ENERGIZED   0x45
 #define MS_CMD_DEENERGIZED 0x44
 #define MS_CMD_ADPA_ON     0x4E

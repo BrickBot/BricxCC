@@ -5,7 +5,7 @@
             <Type>AbortFlagType</Type>
             <Arguments/>
             <Documentation>
-                Return the current abort flag setting.
+Return the current abort flag setting.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -23,7 +23,8 @@ AbortFlagType currentFlag = AbortFlag();
                 </Argument>
             </Arguments>
             <Documentation>
-                Return the absolute value of the argument. Can take any scalar type as the input argument. The return type matches the input type.
+Return the absolute value of the argument. Can take any scalar type as the
+input argument. The return type matches the input type.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -41,7 +42,7 @@ float val = abs(x);
                 </Argument>
             </Arguments>
             <Documentation>
-                Return the inverse cosine of the specified value. The result is radians.
+Return the inverse cosine of the specified value. The result is radians.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -59,7 +60,7 @@ float val = acos(x);
                 </Argument>
             </Arguments>
             <Documentation>
-                Return the inverse cosine of the specified value. The result is degrees.
+Return the inverse cosine of the specified value. The result is degrees.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -77,7 +78,8 @@ float val = acosd(x);
                 </Argument>
             </Arguments>
             <Documentation>
-                Acquire the specified mutex variable. If the mutex is already acquired then wait until the mutex is released.
+Acquire the specified mutex variable. If the mutex is already acquired then
+wait until the mutex is released.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -99,7 +101,7 @@ Acquire(motorMutex);
                 </Argument>
             </Arguments>
             <Documentation>
-                Build a new array from the specified source(s). The output (first) argument must not be one of the input sources.
+Build a new array from the specified source(s). The output (first) argument must not be one of the input sources.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -125,7 +127,7 @@ ArrayBuild(myArray, src1, src2);
                 </Argument>
             </Arguments>
             <Documentation>
-                Initialize the array to have count elements equal to value.
+Initialize the array to have count elements equal to value.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -143,7 +145,7 @@ ArrayInit(myArray, 0, 10);
                 </Argument>
             </Arguments>
             <Documentation>
-                Return the length of the specified array.
+Return the length of the specified array.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -173,7 +175,8 @@ unsigned int len = ArrayLen(myArray);
                 </Argument>
             </Arguments>
             <Documentation>
-                Copy a subset of asrc starting at idx and containing len elements into the output array.
+Copy a subset of asrc starting at idx and containing len elements into the
+output array.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -191,7 +194,7 @@ ArraySubset(myArray, srcArray, 2, 5;
                 </Argument>
             </Arguments>
             <Documentation>
-                Return the inverse sine of the specified value. The result is radians.
+Return the inverse sine of the specified value. The result is radians.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -209,7 +212,7 @@ float val = asin(x);
                 </Argument>
             </Arguments>
             <Documentation>
-                Return the inverse sine of the specified value. The result is degrees.
+Return the inverse sine of the specified value. The result is degrees.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -227,7 +230,7 @@ float val = asind(x);
                 </Argument>
             </Arguments>
             <Documentation>
-                Return the inverse tangent of the specified value. The result is radians.
+Return the inverse tangent of the specified value. The result is radians.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -245,7 +248,7 @@ float val = atan(x);
                 </Argument>
             </Arguments>
             <Documentation>
-                Return the inverse tangent of the specified value. The result is degrees.
+Return the inverse tangent of the specified value. The result is degrees.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -267,8 +270,9 @@ float val = atand(x);
                 </Argument>
             </Arguments>
             <Documentation>
-              Return the principal value of the arc tangent of y/x, expressed in radians.
-              To compute the value, the function uses the sign of both arguments to determine the quadrant.
+Return the principal value of the arc tangent of y/x, expressed in radians.
+To compute the value, the function uses the sign of both arguments to determine
+the quadrant.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -290,8 +294,9 @@ float val = atan2(y, x);
                 </Argument>
             </Arguments>
             <Documentation>
-              Return the principal value of the arc tangent of y/x, expressed in degrees.
-              To compute the value, the function uses the sign of both arguments to determine the quadrant.
+Return the principal value of the arc tangent of y/x, expressed in degrees.
+To compute the value, the function uses the sign of both arguments to determine
+the quadrant.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -304,7 +309,7 @@ float val = atan2d(y, x);
     <Type>unsigned int</Type>
     <Arguments/>
     <Documentation>
-      Return the battery level in millivolts.
+Return the battery level in millivolts.
     </Documentation>
     <CodeSample>
 <![CDATA[
@@ -317,7 +322,7 @@ unsigned int x = BatteryLevel();
     <Type>byte</Type>
     <Arguments/>
     <Documentation>
-      Return battery state information (0..4).
+Return battery state information (0..4).
     </Documentation>
     <CodeSample>
 <![CDATA[
@@ -335,7 +340,8 @@ byte x = BatteryState();
       </Argument>
     </Arguments>
     <Documentation>
-      Convert a byte value in binary coded decimal (BCD) format into its equivalent decimal value.
+Convert a byte value in binary coded decimal (BCD) format into its equivalent
+decimal value.
     </Documentation>
     <CodeSample>
 <![CDATA[
@@ -348,9 +354,9 @@ byte dec = bcd2dec(bcdValue);
         <Type>byte</Type>
         <Arguments/>
         <Documentation>
-            Return a bitmask containing the Bluetooth state. Values that can be set in the mask are
-            UI_BT_CONNECT_REQUEST, UI_BT_ERROR_ATTENTION, UI_BT_PIN_REQUEST, UI_BT_STATE_CONNECTED,
-            UI_BT_STATE_OFF, and UI_BT_STATE_VISIBLE.
+Return a bitmask containing the Bluetooth state. Values that can be set in the
+mask are UI_BT_CONNECT_REQUEST, UI_BT_ERROR_ATTENTION, UI_BT_PIN_REQUEST,
+UI_BT_STATE_CONNECTED, UI_BT_STATE_OFF, and UI_BT_STATE_VISIBLE.
         </Documentation>
         <CodeSample>
 <![CDATA[
@@ -368,9 +374,9 @@ byte bState = BluetoothState();
             </Argument>
         </Arguments>
         <Documentation>
-            Returns the status of the specified Bluetooth connection. Avoid calling
-            BluetoothWrite or any other API function that writes data over a Bluetooth
-            connection while BluetoothStatus returns STAT_COMM_PENDING.
+Returns the status of the specified Bluetooth connection. Avoid calling
+BluetoothWrite or any other API function that writes data over a Bluetooth
+connection while BluetoothStatus returns STAT_COMM_PENDING.
         </Documentation>
         <CodeSample>
 <![CDATA[
@@ -392,7 +398,7 @@ byte status = BluetoothStatus(1);
             </Argument>
         </Arguments>
         <Documentation>
-            Write the data in the buffer to the device on the specified Bluetooth connection.
+Write the data in the buffer to the device on the specified Bluetooth connection.
         </Documentation>
         <CodeSample>
 <![CDATA[
@@ -405,7 +411,7 @@ char res = BluetoothWrite(1, myData);
         <Type>unsigned int</Type>
         <Arguments/>
         <Documentation>
-            Return the bluecore version of the NXT.
+Return the bluecore version of the NXT.
         </Documentation>
         <CodeSample>
 <![CDATA[
@@ -418,7 +424,7 @@ unsigned int ver = BrickDataBluecoreVersion();
         <Type>byte</Type>
         <Arguments/>
         <Documentation>
-            Return the Bluetooth hardware status of the NXT.
+Return the Bluetooth hardware status of the NXT.
         </Documentation>
         <CodeSample>
 <![CDATA[
@@ -431,7 +437,7 @@ byte hws = BrickDataBtHardwareStatus();
         <Type>byte</Type>
         <Arguments/>
         <Documentation>
-            Return the Bluetooth state status of the NXT.
+Return the Bluetooth state status of the NXT.
         </Documentation>
         <CodeSample>
 <![CDATA[
@@ -444,7 +450,7 @@ byte bss = BrickDataBtStateStatus();
         <Type>string</Type>
         <Arguments/>
         <Documentation>
-            Return the name of the NXT.
+Return the name of the NXT.
         </Documentation>
         <CodeSample>
 <![CDATA[
@@ -457,7 +463,7 @@ string name = BrickDataName();
         <Type>byte</Type>
         <Arguments/>
         <Documentation>
-            Return the timeout value of the NXT.
+Return the timeout value of the NXT.
         </Documentation>
         <CodeSample>
 <![CDATA[
@@ -475,7 +481,8 @@ byte tv = BrickDataTimeoutValue();
         </Argument>
         </Arguments>
         <Documentation>
-            Return the class of the device at the specified index within the Bluetooth connection table.
+Return the class of the device at the specified index within the Bluetooth
+connection table.
         </Documentation>
         <CodeSample>
 <![CDATA[
@@ -483,98 +490,114 @@ unsigned long cod = BTConnectionClass(1);
 ]]>
         </CodeSample>
     </Function>
-<Function>
-<Name>BTConnectionHandleNum</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte conn</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+    <Function>
+        <Name>BTConnectionHandleNum</Name>
+        <Type>void</Type>
+        <Arguments>
+            <Argument>
+                <Name>conn</Name>
+                <Type>const byte</Type>
+            </Argument>
+        </Arguments>
+        <Documentation>
+This method returns the handle number of the device at the specified index
+within the Bluetooth connection table.
+        </Documentation>
+        <CodeSample>
 <![CDATA[
+byte handlenum = BTConnectionHandleNum(1);
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>BTConnectionLinkQuality</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte conn</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        </CodeSample>
+    </Function>
+    <Function>
+        <Name>BTConnectionLinkQuality</Name>
+        <Type>void</Type>
+        <Arguments>
+            <Argument>
+                <Name>conn</Name>
+                <Type>const byte</Type>
+            </Argument>
+        </Arguments>
+        <Documentation>
+This method returns the link quality of the device at the specified index
+within the Bluetooth connection table. Currently the NXT firmware always
+reports a link quality of zero.
+        </Documentation>
+        <CodeSample>
 <![CDATA[
+byte linkquality = BTConnectionLinkQuality(1);
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>BTConnectionName</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte conn</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        </CodeSample>
+    </Function>
+    <Function>
+        <Name>BTConnectionName</Name>
+        <Type>void</Type>
+        <Arguments>
+            <Argument>
+                <Name>conn</Name>
+                <Type>const byte</Type>
+            </Argument>
+        </Arguments>
+        <Documentation>
+This method returns the name of the device at the specified index in the
+Bluetooth connection table.
+        </Documentation>
+        <CodeSample>
 <![CDATA[
+string name = BTConnectionName(0);
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>BTConnectionPinCode</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte conn</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        </CodeSample>
+    </Function>
+    <Function>
+        <Name>BTConnectionPinCode</Name>
+        <Type>void</Type>
+        <Arguments>
+            <Argument>
+                <Name>conn</Name>
+                <Type>const byte</Type>
+            </Argument>
+        </Arguments>
+        <Documentation>
+This method returns the pin code of the device at the specified index in the
+Bluetooth connection table.
+        </Documentation>
+        <CodeSample>
 <![CDATA[
+string pincode = BTConnectionPinCode(0);
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>BTConnectionStreamStatus</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte conn</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        </CodeSample>
+    </Function>
+    <Function>
+        <Name>BTConnectionStreamStatus</Name>
+        <Type>void</Type>
+        <Arguments>
+            <Argument>
+                <Name>conn</Name>
+                <Type>const byte</Type>
+            </Argument>
+        </Arguments>
+        <Documentation>
+This method returns the stream status of the device at the specified index
+within the Bluetooth connection table.
+        </Documentation>
+        <CodeSample>
 <![CDATA[
+byte streamstatus = BTConnectionStreamStatus(1);
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>BTDeviceClass</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte devidx</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        </CodeSample>
+    </Function>
+    <Function>
+        <Name>BTDeviceClass</Name>
+        <Type>void</Type>
+        <Arguments>
+        <Argument>
+        <Name>const byte devidx</Name>
+        <Type>void</Type>
+        </Argument>
+        </Arguments>
+        <Documentation>
+        </Documentation>
+        <CodeSample>
 <![CDATA[
 ]]>
 </CodeSample>
@@ -6100,11 +6123,11 @@ unsigned long cod = BTConnectionClass(1);
 </CodeSample>
 </Function>
 <Function>
-<Name>MSSendCommand</Name>
+<Name>I2CSendCommand</Name>
 <Type>void</Type>
 <Arguments>
 <Argument>
-<Name>const byte port, cmd</Name>
+<Name>byte port, byte cmd</Name>
 <Type>void</Type>
 </Argument>
 </Arguments>
@@ -6116,11 +6139,11 @@ unsigned long cod = BTConnectionClass(1);
 </CodeSample>
 </Function>
 <Function>
-<Name>MSSendCommandEx</Name>
+<Name>I2CSendCommandEx</Name>
 <Type>void</Type>
 <Arguments>
 <Argument>
-<Name>const byte port, const byte addr, cmd</Name>
+<Name>byte port, byte addr, byte cmd</Name>
 <Type>void</Type>
 </Argument>
 </Arguments>
@@ -6356,36 +6379,57 @@ unsigned long cod = BTConnectionClass(1);
 </CodeSample>
 </Function>
 <Function>
-<Name>Off</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte ports</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+	<Name>Off</Name>
+	<Type>void</Type>
+	<Arguments>
+		<Argument>
+			<Name>ports</Name>
+			<Type>const byte</Type>
+		</Argument>
+	</Arguments>
+	<Documentation>
+Turn the specified outputs off (with braking). Outputs can be a constant
+(OUT_A, OUT_B, OUT_C, OUT_AB, OUT_AC, OUT_BC, or OUT_ABC) or a variable
+containing the desired output ports. When using a variable to pass in
+multiple motor ports, use a byte array containing the desired motor port
+constants.
+	</Documentation>
+	<CodeSample>
 <![CDATA[
+Off(OUT_A); // turn off output A
+byte myMotors[] = {OUT_A, OUT_B};
+Off(OUT_AB); // turn off outputs A and B
+Off(myMotors); // turn off outputs A and B
 ]]>
-</CodeSample>
+	</CodeSample>
 </Function>
 <Function>
-<Name>OffEx</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte ports, const byte reset</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
-<![CDATA[
-]]>
-</CodeSample>
+    <Name>OffEx</Name>
+    <Type>void</Type>
+    <Arguments>
+        <Argument>
+            <Name>ports</Name>
+            <Type>const byte</Type>
+        </Argument>
+        <Argument>
+            <Name>reset</Name>
+            <Type>const byte</Type>
+        </Argument>
+    </Arguments>
+    <Documentation>
+Turn the specified outputs off (with braking). Outputs can be a constant
+(OUT_A, OUT_B, OUT_C, OUT_AB, OUT_AC, OUT_BC, or OUT_ABC) or a variable
+containing the desired output ports. When using a variable to pass in
+multiple motor ports, use a byte array containing the desired motor port
+constants. The reset parameter controls whether any of the three position counters
+are reset. It must be a constant (RESET_NONE, RESET_COUNT, RESET_BLOCK_COUNT,
+RESET_ROTATION_COUNT, RESET_BLOCKANDTACHO, or RESET_ALL).
+    </Documentation>
+    <CodeSample>
+    <![CDATA[
+OffEx(OUT_A, RESET_ALL); // turn off output A
+    ]]>
+    </CodeSample>
 </Function>
 <Function>
 <Name>OnBrickProgramPointer</Name>
@@ -7045,97 +7089,206 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorColorEx</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
-<Name>const byte &amp; port, int &amp; colorval, unsigned int &amp; raw[], unsigned int &amp; norm[], unsigned int &amp; scaled[]</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>colorval</Name>
+<Type>int &amp;</Type>
+</Argument>
+<Argument>
+<Name>raw</Name>
+<Type PostFix="[]">unsigned int &amp;</Type>
+</Argument>
+<Argument>
+<Name>norm</Name>
+<Type PostFix="[]">unsigned int &amp;</Type>
+</Argument>
+<Argument>
+<Name>scaled</Name>
+<Type PostFix="[]">int &amp;</Type>
 </Argument>
 </Arguments>
 <Documentation>
 </Documentation>
 <CodeSample>
 <![CDATA[
+bool result = ReadSensorColorEx(S1, cval, rawVals, normVals, scaledVals);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>ReadSensorColorRaw</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
-<Name>const byte &amp; port, int &amp; rawVals[]</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>raw</Name>
+<Type PostFix="[]">unsigned int &amp;</Type>
 </Argument>
 </Arguments>
 <Documentation>
 </Documentation>
 <CodeSample>
 <![CDATA[
+bool result = ReadSensorColorRaw(S1, rawVals);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>ReadSensorHTAccel</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
-<Name>const byte port, int &amp; x, int &amp; y, int &amp; z</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>x</Name>
+<Type>int &amp;</Type>
+</Argument>
+<Argument>
+<Name>y</Name>
+<Type>int &amp;</Type>
+</Argument>
+<Argument>
+<Name>z</Name>
+<Type>int &amp;</Type>
 </Argument>
 </Arguments>
 <Documentation>
 </Documentation>
 <CodeSample>
 <![CDATA[
+bool result = ReadSensorHTAccel(S1, x, y, z);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>ReadSensorHTColor</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
-<Name>const byte port, byte &amp; ColorNum, byte &amp; Red, byte &amp; Green, byte &amp; Blue</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>ColorNum</Name>
+<Type>byte &amp;</Type>
+</Argument>
+<Argument>
+<Name>Red</Name>
+<Type>byte &amp;</Type>
+</Argument>
+<Argument>
+<Name>Green</Name>
+<Type>byte &amp;</Type>
+</Argument>
+<Argument>
+<Name>Blue</Name>
+<Type>byte &amp;</Type>
 </Argument>
 </Arguments>
 <Documentation>
 </Documentation>
 <CodeSample>
 <![CDATA[
+bool result = ReadSensorHTColor(S1, cnum, r, g, b);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>ReadSensorHTColor2Active</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
-<Name>const byte port, byte &amp; ColorNum, byte &amp; Red, byte &amp; Green, byte &amp; Blue, byte &amp; White</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>ColorNum</Name>
+<Type>byte &amp;</Type>
+</Argument>
+<Argument>
+<Name>Red</Name>
+<Type>byte &amp;</Type>
+</Argument>
+<Argument>
+<Name>Green</Name>
+<Type>byte &amp;</Type>
+</Argument>
+<Argument>
+<Name>Blue</Name>
+<Type>byte &amp;</Type>
+</Argument>
+<Argument>
+<Name>White</Name>
+<Type>byte &amp;</Type>
 </Argument>
 </Arguments>
 <Documentation>
 </Documentation>
 <CodeSample>
 <![CDATA[
+bool result = ReadSensorHTColor2Active(S1, cnum, r, g, b, w);
 ]]>
 </CodeSample>
 </Function>
 <Function>
-<Name>ReadSensorHTIRSeeker</Name>
-<Type>void</Type>
+<Name>ReadSensorHTIRReceiver</Name>
+<Type>bool</Type>
 <Arguments>
 <Argument>
-<Name>const byte port, byte &amp; dir, byte &amp; s1, byte &amp; s3, byte &amp; s5, byte &amp; s7, byte &amp; s9</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>pfdata</Name>
+<Type PostFix="[]">char &amp;</Type>
 </Argument>
 </Arguments>
 <Documentation>
 </Documentation>
 <CodeSample>
 <![CDATA[
+char pfData[];
+if (ReadSensorHTIRReceiver(S1, pfData)) {
+  OnFwd(OUT_A, pfData[HT_CH1_A]);
+}
+]]>
+</CodeSample>
+</Function>
+<Function>
+<Name>ReadSensorHTIRReceiverEx</Name>
+<Type>bool</Type>
+<Arguments>
+<Argument>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>offset</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>pfchar</Name>
+<Type>char &amp;</Type>
+</Argument>
+</Arguments>
+<Documentation>
+</Documentation>
+<CodeSample>
+<![CDATA[
+char pfchar;
+if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
+  OnFwd(OUT_A, pfchar);
+}
 ]]>
 </CodeSample>
 </Function>
@@ -7221,7 +7374,7 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorHTRawColor</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
 <Name>const byte port, unsigned int &amp; Red, unsigned int &amp; Green, unsigned int &amp; Blue</Name>
@@ -7237,7 +7390,7 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorHTRawColor2</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
 <Name>const byte port, unsigned int &amp; Red, unsigned int &amp; Green, unsigned int &amp; Blue, unsigned int &amp; White</Name>
@@ -7269,7 +7422,7 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorMSAccel</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
 <Name>const byte port, int &amp; x, int &amp; y, int &amp; z</Name>
@@ -7285,7 +7438,7 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorMSAccelEx</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
 <Name>const byte port, const byte addr, int &amp; x, int &amp; y, int &amp; z</Name>
@@ -7301,7 +7454,7 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorMSPlayStation</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
 <Name>const byte port, byte &amp; b1, byte &amp; b2, byte &amp; xleft, byte &amp; yleft, byte &amp; xright, byte &amp; yright</Name>
@@ -7317,7 +7470,7 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorMSPlayStationEx</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
 <Name>const byte port, const byte addr, byte &amp; b1, byte &amp; b2, byte &amp; xleft, byte &amp; yleft, byte &amp; xright, byte &amp; yright</Name>
@@ -7333,7 +7486,7 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorMSRTClock</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
 <Name>const byte port, byte &amp; sec, byte &amp; min, byte &amp; hrs, byte &amp; dow, byte &amp; date, byte &amp; month, byte &amp; year</Name>
@@ -7349,7 +7502,7 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorMSTilt</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
 <Name>const byte port, byte &amp; x, byte &amp; y, byte &amp; z</Name>
@@ -7365,7 +7518,7 @@ unsigned long cod = BTConnectionClass(1);
 </Function>
 <Function>
 <Name>ReadSensorMSTiltEx</Name>
-<Type>void</Type>
+<Type>bool</Type>
 <Arguments>
 <Argument>
 <Name>const byte port, const byte addr, byte &amp; x, byte &amp; y, byte &amp; z</Name>
@@ -11496,7 +11649,7 @@ unsigned long cod = BTConnectionClass(1);
 <Type>void</Type>
 <Arguments>
 <Argument>
-<Name>ColorSensorReadTypev &amp; args</Name>
+<Name>ColorSensorReadType &amp; args</Name>
 <Type>void</Type>
 </Argument>
 </Arguments>
@@ -11504,6 +11657,13 @@ unsigned long cod = BTConnectionClass(1);
 </Documentation>
 <CodeSample>
 <![CDATA[
+ColorSensorReadType args;
+args.Port = S1;
+SysColorSensorRead(args);
+if (args.Result = NO_ERR) {
+  // use color sensor values (ColorValue,
+  // RawArray, NormalizedArray, or ScaledArray);
+}
 ]]>
 </CodeSample>
 </Function>
@@ -12841,97 +13001,206 @@ Wait(Random(SEC_1)); // wait random time up to 1 second
 </Function>
 <Function>
 <Name>WriteLn</Name>
-<Type>void</Type>
+<Type>char</Type>
 <Arguments>
 <Argument>
-<Name>byte handle, variant n</Name>
-<Type>void</Type>
+<Name>handle</Name>
+<Type>byte</Type>
+</Argument>
+<Argument>
+<Name>n</Name>
+<Type>variant</Type>
 </Argument>
 </Arguments>
 <Documentation>
 </Documentation>
 <CodeSample>
 <![CDATA[
+char result = WriteLn(handle, myValue);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>WriteLnString</Name>
-<Type>void</Type>
+<Type>char</Type>
 <Arguments>
 <Argument>
-<Name>byte handle, string str, unsigned int &amp; cnt</Name>
-<Type>void</Type>
+<Name>handle</Name>
+<Type>byte</Type>
+</Argument>
+<Argument>
+<Name>str</Name>
+<Type>string</Type>
+</Argument>
+<Argument>
+<Name>cnt</Name>
+<Type>unsigned int &amp;</Type>
 </Argument>
 </Arguments>
 <Documentation>
 </Documentation>
 <CodeSample>
-<![CDATA[
+char result = WriteLnString(handle, myMessage, cnt);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>WriteNRLinkBytes</Name>
-<Type>void</Type>
+<Type>char</Type>
 <Arguments>
 <Argument>
-<Name>const byte port, const byte bytes[]</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>data</Name>
+<Type PostFix="[]">const byte</Type>
 </Argument>
 </Arguments>
 <Documentation>
+Write bytes to the Mindsensors NRLink device (at address 0x02).
 </Documentation>
 <CodeSample>
 <![CDATA[
+char result = WriteNRLinkBytes(S1, data);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>WriteNRLinkBytesEx</Name>
-<Type>void</Type>
+<Type>char</Type>
 <Arguments>
 <Argument>
-<Name>const byte port, const byte addr, const byte bytes[]</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>addr</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>data</Name>
+<Type PostFix="[]">const byte</Type>
 </Argument>
 </Arguments>
 <Documentation>
+Write bytes to the Mindsensors NRLink device.
 </Documentation>
 <CodeSample>
 <![CDATA[
+char result = WriteNRLinkBytesEx(S1, 0x02, data);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>WriteString</Name>
-<Type>void</Type>
+<Type>char</Type>
 <Arguments>
 <Argument>
-<Name>byte handle, string str, unsigned int &amp; cnt</Name>
-<Type>void</Type>
+<Name>handle</Name>
+<Type>byte</Type>
+</Argument>
+<Argument>
+<Name>str</Name>
+<Type>string</Type>
+</Argument>
+<Argument>
+<Name>cnt</Name>
+<Type>unsigned int &amp;</Type>
 </Argument>
 </Arguments>
 <Documentation>
 </Documentation>
 <CodeSample>
 <![CDATA[
+char result = WriteString(handle, myMessage, cnt);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>Yield</Name>
 <Type>void</Type>
-<Arguments>
-<Argument>
-<Name>void</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
+<Arguments/>
 <Documentation>
+Yield to another thread.
 </Documentation>
 <CodeSample>
 <![CDATA[
+Yield();
+]]>
+</CodeSample>
+</Function>
+<Function>
+<Name>ReadSensorUSEx</Name>
+<Type>bool</Type>
+<Arguments>
+<Argument>
+<Name>port</Name>
+<Type>byte</Type>
+</Argument>
+<Argument>
+<Name>values</Name>
+<Type PostFix="[]">byte &amp;</Type>
+</Argument>
+</Arguments>
+<Documentation>
+Read all 8 ultrasonic distance readings in a single function call.
+</Documentation>
+<CodeSample>
+<![CDATA[
+bool result = ReadUSSensorEx(S1, valueArray);
+]]>
+</CodeSample>
+</Function>
+<Function>
+<Name>ReadI2CRegister</Name>
+<Type>char</Type>
+<Arguments>
+<Argument>
+<Name>port</Name>
+<Type>byte</Type>
+</Argument>
+<Argument>
+<Name>reg</Name>
+<Type>byte</Type>
+</Argument>
+<Argument>
+<Name>out</Name>
+<Type>byte &amp;</Type>
+</Argument>
+</Arguments>
+<Documentation>
+Read a single byte I2C register value.
+</Documentation>
+<CodeSample>
+<![CDATA[
+ReadI2CRegister(S1, US_REG_CM_INTERVAL, cmval);
+]]>
+</CodeSample>
+</Function>
+<Function>
+<Name>WriteI2CRegister</Name>
+<Type>char</Type>
+<Arguments>
+<Argument>
+<Name>port</Name>
+<Type>byte</Type>
+</Argument>
+<Argument>
+<Name>reg</Name>
+<Type>byte</Type>
+</Argument>
+<Argument>
+<Name>value</Name>
+<Type>byte</Type>
+</Argument>
+</Arguments>
+<Documentation>
+Write a single byte value to an I2C register.
+</Documentation>
+<CodeSample>
+<![CDATA[
+WriteI2CRegister(S1, US_REG_CM_INTERVAL, 0x2);
 ]]>
 </CodeSample>
 </Function>

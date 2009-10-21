@@ -1402,8 +1402,8 @@ begin
     Value := Value + Look;
     GetChar;
   until not IsAlNum(Look);
-  HandleSpecialNames;
   fExpStrHasVars := True;
+  HandleSpecialNames;
 end;
 
 
@@ -1733,6 +1733,8 @@ begin
   if (n = '') then
     Result := TOK_LONGDEF
   else if (n = 'true') or (n = 'false') then
+    Result := TOK_BYTEDEF
+  else if (n = '1') or (n = '0') then
     Result := TOK_BYTEDEF
   else
   begin
@@ -2792,6 +2794,7 @@ var
   asmStr, val : string;
   dt : char;
 begin
+  SkipWhite;
   fCCSet := False;
   if Look = TOK_OPENPAREN then
   begin
@@ -3203,6 +3206,11 @@ end;
 
 procedure TNXCComp.StoreZeroFlag;
 begin
+  // 2009-10-13 JCH
+  // we can't afford to store the zero flag sometimes to the signed register
+  // and other times to the unsigned register or, worse, to the float register
+  // so we always reset the statement type before we store the flag.
+  ResetStatementType;
   EmitLn(Format('mov %s, %s', [RegisterName, ZeroFlag]));
 end;
 
@@ -9195,7 +9203,17 @@ begin
   else if Value = '__STRRETVAL__' then
     Value := StrRetValName
   else if Value = '__GENRETVAL__' then
-    Value := RegisterName;
+    Value := RegisterName
+  else if Value = 'false' then
+  begin
+    Value := '0';
+    Token := TOK_NUM;
+  end
+  else if Value = 'true' then
+  begin
+    Value := '1';
+    Token := TOK_NUM;
+  end;
 end;
 
 function TNXCComp.GetValueOf(const name: string): string;

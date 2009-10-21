@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-06-29
- * Revision:: 55
+ * Date:: 2009-10-11
+ * Revision:: 56
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -130,7 +130,6 @@
 // input fields
 #define Sensor(_p) asm { ReadSensor(_p, __RETVAL__) }
 #define SensorValue(_p) Sensor(_p)
-#define SensorUS(_p) asm { ReadSensorUS(_p, __RETVAL__) }
 #define SensorType(_p) GetInput(_p, Type)
 #define SensorMode(_p) GetInput(_p, InputMode)
 #define SensorRaw(_p) GetInput(_p, RawValue)
@@ -139,6 +138,13 @@
 #define SensorInvalid(_p) GetInput(_p, InvalidData)
 #define SensorValueBool(_p) SensorBoolean(_p)
 #define SensorValueRaw(_p) SensorRaw(_p)
+
+// ultrasonic sensor
+#define SensorUS(_p) asm { ReadSensorUS(_p, __RETVAL__) }
+#define ReadSensorUSEx(_port, _values) asm { __ReadSensorUSEx(_port, _values, __RETVAL__) }
+
+#define ReadI2CRegister(_port, _reg, _out) asm { __MSReadValue(_port, 0x02, _reg, 1, _out, __RETVAL__) }
+#define WriteI2CRegister(_port, _reg, _val) asm { __MSWriteToRegister(_port, 0x02, _reg, _val, __RETVAL__) }
 
 
 // output fields
@@ -1577,19 +1583,20 @@ struct ListFilesType {
 #define SetHTIRSeeker2Mode(_port, _mode) asm { __SetHTIRSeeker2Mode(_port, _mode, __RETVAL__) }
 
 #define SetHTColor2Mode(_port, _mode) asm { __SetHTColor2Mode(_port, _mode, __RETVAL__) }
-#define HTSendCommand(_port, _cmd) asm { __HTSendCmd(_port, _cmd, __RETVAL__) }
 #define ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White) asm { __ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, __RETVAL__) }
 #define ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue) asm { __ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, __RETVAL__) }
 #define ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White) asm { __ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, __RETVAL__) }
+#define ReadSensorHTIRReceiver(_port, _pfdata) asm { __ReadSensorHTIRReceiver(_port, _pfdata, __RETVAL__) } 
+#define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar) asm { __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, __RETVAL__) } 
 
 #define I2CDeviceInfoEx(_port, _addr, _info) asm { ReadI2CDeviceInfoEx(_port, _addr, _info, __STRRETVAL__) }
 #define I2CDeviceInfo(_port, _info) asm { ReadI2CDeviceInfoEx(_port, 0x02, _info, __STRRETVAL__) }
-#define I2CVersionEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, HT_REG_VERSION, __STRRETVAL__) }
-#define I2CVersion(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_VERSION, __STRRETVAL__) }
-#define I2CVendorIdEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, HT_REG_VENDOR_ID, __STRRETVAL__) }
-#define I2CVendorId(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_VENDOR_ID, __STRRETVAL__) }
-#define I2CDeviceIdEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, HT_REG_DEVICE_ID, __STRRETVAL__) }
-#define I2CDeviceId(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_DEVICE_ID, __STRRETVAL__) }
+#define I2CVersionEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VERSION, __STRRETVAL__) }
+#define I2CVersion(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VERSION, __STRRETVAL__) }
+#define I2CVendorIdEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VENDOR_ID, __STRRETVAL__) }
+#define I2CVendorId(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VENDOR_ID, __STRRETVAL__) }
+#define I2CDeviceIdEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_DEVICE_ID, __STRRETVAL__) }
+#define I2CDeviceId(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_DEVICE_ID, __STRRETVAL__) }
 
 
 // Mindsensors API functions
@@ -1615,16 +1622,16 @@ struct ListFilesType {
 #define ReadSensorMSAccel(_port, _x, _y, _z) asm { __ReadSensorMSAccelEx(_port, 0x02, _x, _y, _z, __RETVAL__) }
 #define ReadSensorMSAccelEx(_port, _addr, _x, _y, _z) asm { __ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, __RETVAL__) }
 
-#define MSSendCommandEx(_port, _addr, _cmd) asm { __MSSendCmd(_port, _addr, _cmd, __RETVAL__) }
-#define MSSendCommand(_port, _cmd) asm { __MSSendCmd(_port, 0x02, _cmd, __RETVAL__) }
+#define I2CSendCommandEx(_port, _addr, _cmd) asm { __I2CSendCmd(_port, _addr, _cmd, __RETVAL__) }
+#define I2CSendCommand(_port, _cmd) asm { __I2CSendCmd(_port, 0x02, _cmd, __RETVAL__) }
 #define MSReadValueEx(_port, _addr, _reg, _bytes) asm { __MSReadValue(_port, _addr, _reg, _bytes, __RETVAL__, __TMPBYTE__) }
 #define MSReadValue(_port, _reg, _bytes) asm { __MSReadValue(_port, 0x02, _reg, _bytes, __RETVAL__, __TMPBYTE__) }
 
-#define DISTNxGP2D12(_port) asm { __MSSendCmd(_port, 0x02, DIST_CMD_GP2D12, __RETVAL__) }
-#define DISTNxGP2D120(_port) asm { __MSSendCmd(_port, 0x02, DIST_CMD_GP2D120, __RETVAL__) }
-#define DISTNxGP2YA21(_port) asm { __MSSendCmd(_port, 0x02, DIST_CMD_GP2YA21, __RETVAL__) }
-#define DISTNxGP2YA02(_port) asm { __MSSendCmd(_port, 0x02, DIST_CMD_GP2YA02, __RETVAL__) }
-#define DISTNxEnergize(_port) asm { __MSSendCmd(_port, 0x02, MS_CMD_ENERGIZED, __RETVAL__) }
+#define DISTNxGP2D12(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, __RETVAL__) }
+#define DISTNxGP2D120(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, __RETVAL__) }
+#define DISTNxGP2YA21(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, __RETVAL__) }
+#define DISTNxGP2YA02(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, __RETVAL__) }
+#define DISTNxEnergize(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, __RETVAL__) }
 #define DISTNxDistance(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_DIST, 2, __RETVAL__, __TMPBYTE__) }
 #define DISTNxVoltage(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_VOLT, 2, __RETVAL__, __TMPBYTE__) }
 #define DISTNxModuleType(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_MODULE_TYPE, 1, __RETVAL__, __TMPBYTE__) }
@@ -1644,20 +1651,20 @@ struct ListFilesType {
 
 #define SensorMSDROD(_p) asm { getin __RETVAL__, _p, NormalizedValue }
 
-#define PSPNxEnergize(_port) asm { __MSSendCmd(_port, 0x02, MS_CMD_ENERGIZED, __RETVAL__) }
+#define PSPNxEnergize(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, __RETVAL__) }
 
 #define ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright) asm { __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, __RETVAL__) }
 #define ReadSensorMSPlayStation(_port, _b1, _b2, _xleft, _yleft, _xright, _yright) ReadSensorMSPlayStationEx(_port, 0x02, _b1, _b2, _xleft, _yleft, _xright, _yright)
 
-#define NRLink2400(_port) asm { __MSSendCmd(_port, 0x02, NRLINK_CMD_2400, __RETVAL__) }
-#define NRLink4800(_port) asm { __MSSendCmd(_port, 0x02, NRLINK_CMD_4800, __RETVAL__) }
-#define NRLinkFlush(_port) asm { __MSSendCmd(_port, 0x02, NRLINK_CMD_FLUSH, __RETVAL__) }
-#define NRLinkIRLong(_port) asm { __MSSendCmd(_port, 0x02, NRLINK_CMD_IR_LONG, __RETVAL__) }
-#define NRLinkIRShort(_port) asm { __MSSendCmd(_port, 0x02, NRLINK_CMD_IR_SHORT, __RETVAL__) }
-#define NRLinkTxRaw(_port) asm { __MSSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, __RETVAL__) }
-#define NRLinkSetRCX(_port) asm { __MSSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, __RETVAL__) }
-#define NRLinkSetTrain(_port) asm { __MSSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, __RETVAL__) }
-#define NRLinkSetPF(_port) asm { __MSSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, __RETVAL__) }
+#define NRLink2400(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_2400, __RETVAL__) }
+#define NRLink4800(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_4800, __RETVAL__) }
+#define NRLinkFlush(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_FLUSH, __RETVAL__) }
+#define NRLinkIRLong(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_LONG, __RETVAL__) }
+#define NRLinkIRShort(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_SHORT, __RETVAL__) }
+#define NRLinkTxRaw(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, __RETVAL__) }
+#define NRLinkSetRCX(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, __RETVAL__) }
+#define NRLinkSetTrain(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, __RETVAL__) }
+#define NRLinkSetPF(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, __RETVAL__) }
 
 #define RunNRLinkMacroEx(_port, _addr, _macro) __RunNRLinkMacroEx(_port, _addr, _macro, __RETVAL__)
 #define RunNRLinkMacro(_port, _macro) __RunNRLinkMacroEx(_port, 0x02, _macro, __RETVAL__)

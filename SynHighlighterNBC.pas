@@ -180,6 +180,7 @@ const
     'SetSensorLowspeed, SetSensorHTEOPD, SetSensorHTGyro, ReadSensorHTTouchMultiplexer,'+
     'SetSensorType, SetSensorMode, ReadSensor, ClearSensor,'+
     'SetSensorTouch, SetSensorLight, SetSensorSound, SetSensorUltrasonic,'+
+    'ReadSensorUSEx, ReadI2CRegister, WriteI2CRegister,'+
     'ResetSensor, ReadSensorUS, ReadSensorHTEOPD, ReadSensorHTGyro, PlayTone, PlayFile,'+
     'Random, ResetSleepTimer, PlayToneEx, PlayFileEx, SignedRandom,'+
     'TextOut, NumOut, PointOut, LineOut, RectOut, CircleOut, GraphicOut, GraphicArrayOut,'+
@@ -270,7 +271,8 @@ const
     'ReadSensorHTAccel, ReadSensorHTColor, ReadSensorHTRawColor,'+
     'ReadSensorHTNormalizedColor, ReadSensorHTIRSeeker, ReadSensorHTCompass,'+
     'ReadSensorHTColorNum, ReadSensorHTIRSeekerDir,'+
-    'MSSendCommandEx, MSSendCommand, MSReadValueEx, MSReadValue,'+
+    'ReadSensorHTIRSeeker2DC, ReadSensorHTIRSeeker2AC, SetHTIRSeeker2Mode,'+
+    'MSReadValueEx, MSReadValue,'+
     'DISTNxGP2D12, DISTNxGP2D120, DISTNxGP2YA21, DISTNxGP2YA02, DISTNxEnergize,'+
     'SetSensorMSDRODActive, SetSensorMSDRODInactive, ReadSensorMSDROD,'+
     'ReadDISTNxDistance, ReadDISTNxVoltage, ReadDISTNxModuleType,'+
@@ -335,7 +337,8 @@ const
     'OpenFileReadLinear, RS485Control, RS485Exit, RS485Init, RS485Read,'+
     'RS485Status, RS485Uart, RS485Write, SendRS485Bool, SendRS485Number,'+
     'SendRS485String,' +
-    'SetHTColor2Mode, HTSendCommand, ReadSensorHTColor2Active,' +
+    'I2CSendCommand, I2CSendCommandEx, ReadSensorHTIRReceiverEx,' +
+    'SetHTColor2Mode, ReadSensorHTColor2Active, ReadSensorHTIRReceiver,' +
     'ReadSensorHTNormalizedColor2Active, ReadSensorHTRawColor2,' +
     'ReadI2CDeviceInfoEx, ReadI2CDeviceInfo, ReadI2CVersionEx, ReadI2CVersion,' +
     'ReadI2CVendorIdEx, ReadI2CVendorId, ReadI2CDeviceIdEx, ReadI2CDeviceId,' +
@@ -433,10 +436,15 @@ const
     'LDR_CMD_DELETEUSERFLASH, LDR_CMD_RENAMEFILE, LDR_CMD_CROPDATAFILE,'+
     'DIST_CMD_GP2D12, DIST_CMD_GP2D120, DIST_CMD_GP2YA21, DIST_CMD_GP2YA02,'+
     'DIST_CMD_CUSTOM, DIST_CMD_ENERGIZED, DIST_CMD_DEENERGIZED, DIST_CMD_ADPA_ON,'+
-    'DIST_CMD_ADPA_OFF, DIST_REG_VERSION, DIST_REG_VENDORID, DIST_REG_DEVICEID,'+
-    'DIST_REG_CMD, DIST_REG_DIST, DIST_REG_VOLT, DIST_REG_MODULE_TYPE,'+
+    'DIST_CMD_ADPA_OFF,'+
+    'DIST_REG_DIST, DIST_REG_VOLT, DIST_REG_MODULE_TYPE,'+
     'DIST_REG_NUM_POINTS, DIST_REG_DIST_MIN, DIST_REG_DIST_MAX,'+
     'DIST_REG_VOLT1, DIST_REG_DIST1,'+
+    'US_CMD_OFF, US_CMD_SINGLESHOT, US_CMD_CONTINUOUS, US_CMD_EVENTCAPTURE,'+
+    'US_CMD_WARMRESET, US_REG_CM_INTERVAL, US_REG_ACTUAL_ZERO,'+
+    'US_REG_SCALE_FACTOR, US_REG_SCALE_DIVISOR, US_REG_FACTORY_ACTUAL_ZERO,'+
+    'US_REG_FACTORY_SCALE_FACTOR, US_REG_FACTORY_SCALE_DIVISOR,'+
+    'US_REG_MEASUREMENT_UNITS,'+
     'SoundOffsetFreq, SoundOffsetDuration, SoundOffsetSampleRate,'+
     'SoundOffsetSoundFilename, SoundOffsetFlags, SoundOffsetState,'+
     'SoundOffsetMode, SoundOffsetVolume, ButtonOffsetPressedCnt,'+
@@ -655,11 +663,12 @@ const
     'DRAW_OPT_FONT_DIR_L2RT, DRAW_OPT_FONT_DIR_R2LB, DRAW_OPT_FONT_DIR_R2LT,' +
     'DRAW_OPT_FONT_DIR_B2TL, DRAW_OPT_FONT_DIR_B2TR, DRAW_OPT_FONT_DIR_T2BL,' +
     'DRAW_OPT_FONT_DIR_T2BR, DrawFont, DrawPolygon, DrawEllipse,' +
-    'HT_REG_VERSION, HT_REG_VENDOR_ID, HT_REG_DEVICE_ID, HT_REG_CMD,' +
+    'I2C_REG_VERSION, I2C_REG_VENDOR_ID, I2C_REG_DEVICE_ID, I2C_REG_CMD,' +
     'HT_CMD_COLOR2_ACTIVE, HT_CMD_COLOR2_PASSIVE, HT_CMD_COLOR2_RAW,' +
     'HT_CMD_COLOR2_50HZ, HT_CMD_COLOR2_60HZ, HT_CMD_COLOR2_BLCAL,' +
     'HT_CMD_COLOR2_WBCAL, HT_CMD_COLOR2_FAR, HT_CMD_COLOR2_LED_HI,' +
-    'HT_CMD_COLOR2_LED_LOW, HT_CMD_COLOR2_NEAR';
+    'HT_CMD_COLOR2_LED_LOW, HT_CMD_COLOR2_NEAR,' +
+    'HT_CH1_A, HT_CH1_B, HT_CH2_A, HT_CH2_B, HT_CH3_A, HT_CH3_B, HT_CH4_A, HT_CH4_B';
 
   NXCConstants: string =
     'S1, S2, S3, S4, SENSOR_1, SENSOR_2, SENSOR_3, SENSOR_4,'+

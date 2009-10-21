@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXTDefs.h
- * Date:: 2009-06-29
- * Revision:: 52
+ * Date:: 2009-10-11
+ * Revision:: 53
  *
  * Contains declarations for the NBC NXT API resources
  *
@@ -1901,7 +1901,7 @@ dseg ends
   mov __ColorSensorReadArgs.Port,_port \
   syscall ColorSensorRead,__ColorSensorReadArgs \
   mov _rawVals, __ColorSensorReadArgs.RawArray \
-  mov _result, __ColorSensorReadArgs.Result \
+  tst EQ, _result, __ColorSensorReadArgs.Result \
   release __ColorSensorReadMutex
 
 #define __ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result) \
@@ -1912,7 +1912,7 @@ dseg ends
   mov _rawVals, __ColorSensorReadArgs.RawArray \
   mov _normVals, __ColorSensorReadArgs.NormalizedArray \
   mov _scaledVals, __ColorSensorReadArgs.ScaledArray \
-  mov _result, __ColorSensorReadArgs.Result \
+  tst EQ, _result, __ColorSensorReadArgs.Result \
   release __ColorSensorReadMutex
 
 #define ReadSensorColorRaw(_port, _rawVals, _result) __ReadSensorColorRaw(_port, _rawVals, _result)
@@ -1958,7 +1958,7 @@ dseg segment
   __RLSBbufLSWrite1 byte[] 0x02, 0x42
 dseg ends
 
-#define ReadSensorUS(_port,_value) \
+#define ReadSensorUS(_port, _value) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -1985,6 +1985,41 @@ dseg ends
   index _value, __RLSReadBuf##_port, NA \
   release __RLSBmutex##_port \
   compend
+
+#define __ReadSensorUSEx(_port, _values, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RLSBbufLSWrite1 \
+  set __RLSBytesCountVar, 8 \
+  wait 15 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  mov _values, __RLSReadBufVar \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
+  set __RLSBytesCount##_port, 8 \
+  wait 15 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  mov _values, __RLSReadBuf##_port \
+  release __RLSBmutex##_port \
+  compend
+
+#define ReadSensorUSEx(_port, _values, _result) __ReadSensorUSEx(_port, _values, _result)
+
+#define ReadI2CRegister(_port, _reg, _out, _result) __MSReadValue(_port, 0x02, _reg, 1, _out, _result)
+#define WriteI2CRegister(_port, _reg, _val, _result) __MSWriteToRegister(_port, 0x02, _reg, _val, _result)
 
 subroutine __ReadLSBytes0
   dseg segment
@@ -7001,13 +7036,67 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
-#define __SetHTIRSeeker2Mode(_port, _mode, _result) \
-  __MSWriteToRegister(_port, 0x10, HT_REG_CMD, _mode, _result)
+#define __SetHTIRSeeker2Mode(_port, _mode, _result) __I2CSendCmd(_port, 0x10, _mode, _result)
 
-#define __HTSendCmd(_port, _cmd, _result) \
-  __MSWriteToRegister(_port, 0x02, HT_REG_CMD, _cmd, _result)
+#define __ReadSensorHTIRReceiver(_port, _pfdata, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RLSBbufLSWrite1 \
+  set __RLSBytesCountVar, 8 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  mov _pfdata, __RLSReadBufVar \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
+  set __RLSBytesCount##_port, 8 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  mov _pfdata, __RLSReadBuf##_port \
+  release __RLSBmutex##_port \
+  compend
 
-#define __SetHTColor2Mode(_port, _mode, _result) __HTSendCmd(_port, _mode, _result)
+#define __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  add __RLSBytesCountVar, 0x42, _reg \
+  arrbuild __RLSReadBufVar, 0x02, __RLSBytesCountVar \
+  set __RLSBytesCountVar, 1 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  index _pfchar, __RLSReadBufVar, NA \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  add __RLSBytesCount##_port, 0x42, _reg \
+  arrbuild __RLSReadBuf##_port, 0x02, __RLSBytesCount##_port \
+  set __RLSBytesCount##_port, 1 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  index _pfchar, __RLSReadBuf##_port, NA \
+  release __RLSBmutex##_port \
+  compend
+
+#define __SetHTColor2Mode(_port, _mode, _result) __I2CSendCmd(_port, 0x02, _mode, _result)
 
 #define ReadSensorHTColorNum(_port, _value) \
   compif EQ, isconst(_port), FALSE \
@@ -7089,12 +7178,12 @@ dseg ends
   compend
 
 #define ReadI2CDeviceInfo(_port, _info, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, _info, _strVal)
-#define ReadI2CVersionEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, HT_REG_VERSION, _strVal)
-#define ReadI2CVersion(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_VERSION, _strVal)
-#define ReadI2CVendorIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, HT_REG_VENDOR_ID, _strVal)
-#define ReadI2CVendorId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_VENDOR_ID, _strVal)
-#define ReadI2CDeviceIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, HT_REG_DEVICE_ID, _strVal)
-#define ReadI2CDeviceId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, HT_REG_DEVICE_ID, _strVal)
+#define ReadI2CVersionEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VERSION, _strVal)
+#define ReadI2CVersion(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VERSION, _strVal)
+#define ReadI2CVendorIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VENDOR_ID, _strVal)
+#define ReadI2CVendorId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VENDOR_ID, _strVal)
+#define ReadI2CDeviceIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_DEVICE_ID, _strVal)
+#define ReadI2CDeviceId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_DEVICE_ID, _strVal)
 
 
 #define ReadSensorHTAccel(_port, _x, _y, _z, _result) __ReadSensorHTAccel(_port, _x, _y, _z, _result)
@@ -7107,10 +7196,11 @@ dseg ends
 #define SetHTIRSeeker2Mode(_port, _mode, _result) __SetHTIRSeeker2Mode(_port, _mode, _result)
 
 #define SetHTColor2Mode(_port, _mode, _result) __SetHTColor2Mode(_port, _mode, _result)
-#define HTSendCommand(_port, _cmd, _result) __HTSendCmd(_port, _cmd, _result)
 #define ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result) __ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result)
 #define ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result) __ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result)
 #define ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result) __ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result)
+#define ReadSensorHTIRReceiver(_port, _pfdata, _result) __ReadSensorHTIRReceiver(_port, _pfdata, _result)
+#define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result) __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result) 
 
 
 
@@ -7339,8 +7429,8 @@ dseg ends
   mov _result, __WDSC_LSStatus \
   release __WDSCmutex
 
-#define __MSSendCmd(_port, _addr, _cmd, _result) \
-  __MSWriteToRegister(_port, _addr, MS_REG_CMD, _cmd, _result)
+#define __I2CSendCmd(_port, _addr, _cmd, _result) \
+  __MSWriteToRegister(_port, _addr, I2C_REG_CMD, _cmd, _result)
 
 #define __MSReadValue(_port, _addr, _reg, _bytes, _out, _result) \
   acquire __DNRVmutex \
@@ -7354,16 +7444,16 @@ dseg ends
   release __DNRVmutex
 
 
-#define MSSendCommandEx(_port, _addr, _cmd, _result) __MSSendCmd(_port, _addr, _cmd, _result)
-#define MSSendCommand(_port, _cmd, _result) __MSSendCmd(_port, 0x02, _cmd, _result)
+#define I2CSendCommandEx(_port, _addr, _cmd, _result) __I2CSendCmd(_port, _addr, _cmd, _result)
+#define I2CSendCommand(_port, _cmd, _result) __I2CSendCmd(_port, 0x02, _cmd, _result)
 #define MSReadValueEx(_port, _addr, _reg, _bytes, _out, _result) __MSReadValue(_port, _addr, _reg, _bytes, _out, _result)
 #define MSReadValue(_port, _reg, _bytes, _out, _result) __MSReadValue(_port, 0x02, _reg, _bytes, _out, _result)
 
-#define DISTNxGP2D12(_port, _result) __MSSendCmd(_port, 0x02, DIST_CMD_GP2D12, _result)
-#define DISTNxGP2D120(_port, _result) __MSSendCmd(_port, 0x02, DIST_CMD_GP2D120, _result)
-#define DISTNxGP2YA21(_port, _result) __MSSendCmd(_port, 0x02, DIST_CMD_GP2YA21, _result)
-#define DISTNxGP2YA02(_port, _result) __MSSendCmd(_port, 0x02, DIST_CMD_GP2YA02, _result)
-#define DISTNxEnergize(_port, _result) __MSSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
+#define DISTNxGP2D12(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, _result)
+#define DISTNxGP2D120(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, _result)
+#define DISTNxGP2YA21(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, _result)
+#define DISTNxGP2YA02(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, _result)
+#define DISTNxEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
 #define ReadDISTNxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST, 2, _out, _result)
 #define ReadDISTNxVoltage(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_VOLT, 2, _out, _result)
 #define ReadDISTNxModuleType(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_MODULE_TYPE, 1, _out, _result)
@@ -7431,7 +7521,7 @@ ends
 #define ReadSensorMSDROD(_p, _value) \
   getin _value, _p, NormalizedValue
 
-#define PSPNxEnergize(_port, _result) __MSSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
+#define PSPNxEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
 
 #define __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
   compif EQ, isconst(_port), FALSE \
@@ -7477,15 +7567,15 @@ ends
 #define ReadSensorMSPlayStation(_port, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
   __ReadSensorMSPlayStationEx(_port, 0x02, _b1, _b2, _xleft, _yleft, _xright, _yright, _result)
 
-#define NRLink2400(_port, _result) __MSSendCmd(_port, 0x02, NRLINK_CMD_2400, _result)
-#define NRLink4800(_port, _result) __MSSendCmd(_port, 0x02, NRLINK_CMD_4800, _result)
-#define NRLinkFlush(_port, _result) __MSSendCmd(_port, 0x02, NRLINK_CMD_FLUSH, _result)
-#define NRLinkIRLong(_port, _result) __MSSendCmd(_port, 0x02, NRLINK_CMD_IR_LONG, _result)
-#define NRLinkIRShort(_port, _result) __MSSendCmd(_port, 0x02, NRLINK_CMD_IR_SHORT, _result)
-#define NRLinkTxRaw(_port, _result) __MSSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, _result)
-#define NRLinkSetRCX(_port, _result) __MSSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, _result)
-#define NRLinkSetTrain(_port, _result) __MSSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, _result)
-#define NRLinkSetPF(_port, _result) __MSSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, _result)
+#define NRLink2400(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_2400, _result)
+#define NRLink4800(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_4800, _result)
+#define NRLinkFlush(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_FLUSH, _result)
+#define NRLinkIRLong(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_LONG, _result)
+#define NRLinkIRShort(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_SHORT, _result)
+#define NRLinkTxRaw(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, _result)
+#define NRLinkSetRCX(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, _result)
+#define NRLinkSetTrain(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, _result)
+#define NRLinkSetPF(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, _result)
 
 #define __RunNRLinkMacroEx(_port, _addr, _macro, _result) \
   acquire __WDSCmutex \
@@ -7506,7 +7596,7 @@ ends
   acquire __RLSBmutex2 \
   acquire __RLSBmutex3 \
   mov __RLSReadPort, _port \
-  arrbuild __RLSReadBufVar, _addr, MS_REG_CMD \
+  arrbuild __RLSReadBufVar, _addr, I2C_REG_CMD \
   set __RLSBytesCountVar, 1 \
   call __ReadLSBytesVar \
   tst EQ, _result, __RLSBResultVar \
@@ -7519,7 +7609,7 @@ ends
   compchk LT, _port, 0x04 \
   compchk GTEQ, _port, 0x00 \
   acquire __RLSBmutex##_port \
-  arrbuild __RLSReadBuf##_port, _addr, MS_REG_CMD \
+  arrbuild __RLSReadBuf##_port, _addr, I2C_REG_CMD \
   set __RLSBytesCount##_port, 1 \
   call __ReadLSBytes##_port \
   tst EQ, _result, __RLSBResult##_port \
@@ -7530,7 +7620,7 @@ ends
 #define ReadNRLinkStatus(_port, _value, _result) ReadNRLinkStatusEx(_port, 0x02, _value, _result)
 
 #define __WriteNRLinkBytes(_port, _addr, _bytes, _result) \
-  __MSSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result) \
+  __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result) \
   __MSWriteToRegister(_port, _addr, NRLINK_REG_DATA, _bytes, _result) \
   arrsize __WDSC_ByteCount, _bytes \
   __MSWriteToRegister(_port, _addr, NRLINK_REG_BYTES, __WDSC_ByteCount, _result)
@@ -7572,8 +7662,8 @@ ends
   mov _bytes, __RLSReadBuf##_port \
   release __RLSBmutex##_port \
   compend \
-  __MSSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result) \
-  release __DNRVmutex 
+  __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result) \
+  release __DNRVmutex
 
 #define ReadNRLinkBytesEx(_port, _addr, _bytes, _result) __ReadNRLinkBytes(_port, _addr, _bytes, _result)
 #define ReadNRLinkBytes(_port, _bytes, _result) __ReadNRLinkBytes(_port, 0x02, _bytes, _result)
