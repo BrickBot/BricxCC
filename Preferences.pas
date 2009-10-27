@@ -529,7 +529,7 @@ type
 //    property ColorsChanged : boolean read fColorsChanged;
     property Keystrokes : TSynEditKeyStrokes read fKeystrokes write SetKeystrokes;
     property CodeTemplates : TStrings read fCodeTemplates write SetCodeTemplates;
-    property PreferredLanguage : Integer read GetPrefLang write SetPrefLang;
+    property GUIPreferredLanguage : Integer read GetPrefLang write SetPrefLang;
   end;
 
 var
@@ -3742,7 +3742,7 @@ procedure TPrefForm.DisplayCompilerValues;
 begin
   edtCompilerTimeout.Value       := CompilerTimeout div K_MSTOSEC;
   edtCompilerSwitches.Text       := CompilerSwitches;
-  PreferredLanguage              := PreferredLanguage;
+  GUIPreferredLanguage           := PreferredLanguage;
   edtNQCSwitches.Text            := NQCSwitches;
   edtLCCSwitches.Text            := LCCSwitches;
   edtNBCSwitches.Text            := NBCSwitches;
@@ -3936,7 +3936,7 @@ begin
   CompilerTimeout         := edtCompilerTimeout.Value * K_MSTOSEC;
   LocalCompilerTimeout    := CompilerTimeout;
   CompilerSwitches        := edtCompilerSwitches.Text;
-  PreferredLanguage       := PreferredLanguage;
+  PreferredLanguage       := GUIPreferredLanguage;
   NQCSwitches             := edtNQCSwitches.Text;
   LCCSwitches             := edtLCCSwitches.Text;
   NBCSwitches             := edtNBCSwitches.Text;
