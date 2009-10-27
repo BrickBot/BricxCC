@@ -3632,10 +3632,11 @@ var
 begin
   if Dest is TDataspaceEntry then
   begin
-    TDataspaceEntry(Dest).Identifier := Self.Identifier;
-    TDataspaceEntry(Dest).DataType   := Self.DataType;
+    TDataspaceEntry(Dest).Identifier   := Self.Identifier;
+    TDataspaceEntry(Dest).DataType     := Self.DataType;
     TDataspaceEntry(Dest).DefaultValue := Self.DefaultValue;
-    TDataspaceEntry(Dest).SubEntries := Self.SubEntries;
+    TDataspaceEntry(Dest).ArrayMember  := Self.ArrayMember;
+    TDataspaceEntry(Dest).SubEntries   := Self.SubEntries;
     TDataspaceEntry(Dest).fArrayValues.Clear;
     for i := 0 to Self.ValueCount - 1 do
       TDataspaceEntry(Dest).AddValue(Self.Values[i]);
