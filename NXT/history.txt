@@ -59,6 +59,7 @@ Version 1.0.1.b36
 - Added API support for HiTechnic IRSeeker 2 and Color 2 sensors
 - Added API functions to read I2C Version, VendorId, and DeviceId values
 - Added support for optional parameters using a not exactly C syntax (delphi-like)
+- fixed bug in structs containing arrays with more than one dimension.
 
 
 Version 1.0.1.b35
