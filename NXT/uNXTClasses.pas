@@ -1100,7 +1100,7 @@ function ShortOpEncoded(const b : byte) : boolean;
 function CompareCodeToStr(const cc : byte) : string;
 function ShortOpToLongOp(const op : byte) : TOpCode;
 function GenericIDToStr(genIDs : array of IDRec; const ID : integer) : string;
-function SysCallMethodIDToStr(const ID : integer) : string;
+function SysCallMethodIDToStr(const fver : word; const ID : integer) : string;
 function InputFieldIDToStr(const ID : integer) : string;
 function OutputFieldIDToStr(const ID : integer) : string;
 
@@ -1506,9 +1506,12 @@ begin
   end;
 end;
 
-function SysCallMethodIDToStr(const ID : integer) : string;
+function SysCallMethodIDToStr(const fver : word; const ID : integer) : string;
 begin
-  Result := GenericIDToStr(SysCallMethodIDs, ID);
+  if fver > MAX_FW_VER1X then
+    Result := GenericIDToStr(SysCallMethodIDs2x, ID)
+  else
+    Result := GenericIDToStr(SysCallMethodIDs1x, ID);
 end;
 
 function InputFieldIDToStr(const ID : integer) : string;
@@ -1741,7 +1744,7 @@ begin
     end;
     OP_SYSCALL : begin
       if argIdx = 0 then
-        Result := SysCallMethodIDToStr(argValue)
+        Result := SysCallMethodIDToStr(FirmwareVersion, argValue)
       else
         Result := TOCNameFromArg(DS, argValue);
     end;
@@ -2210,7 +2213,7 @@ begin
   fTmpDataspace := TDataspace.Create;
   fHeader.Head.DSCount := 0;
   fOnlyDumpCode := False;
-  FirmwareVersion := 105; // 1.05 NXT 1.1 firmware
+  FirmwareVersion := 0; 
 end;
 
 destructor TRXEDumper.Destroy;
@@ -2284,9 +2287,15 @@ procedure TRXEDumper.LoadFromStream(aStream: TStream);
 begin
   aStream.Position := 0;
   LoadRXEHeader(fHeader, aStream);
-  FirmwareVersion := MAX_FW_VER1X;
-  if fHeader.Head.Version > 5 then
-    FirmwareVersion := MIN_FW_VER2X;
+  if FirmwareVersion = 0 then
+  begin
+    // only set the firmware version based on the file contents if
+    // it has not been explicitly set to a non-zero value externally
+    if fHeader.Head.Version > 5 then
+      FirmwareVersion := MIN_FW_VER2X
+    else
+      FirmwareVersion := MAX_FW_VER1X;
+  end;
   LoadRXEDataSpace(fHeader, fDSData, aStream);
   LoadRXEClumpRecords(fHeader, fClumpData, aStream);
   LoadRXECodeSpace(fHeader, fCode, aStream);
@@ -2525,7 +2534,7 @@ begin
   inherited SetItem(Index, Value);
 end;
 
-function getBytesPerType(dt : TDSType) : integer;
+function GetBytesPerType(dt : TDSType) : integer;
 begin
   if dt = dsCluster then
     Result := -10
@@ -2535,26 +2544,80 @@ begin
     Result := BytesPerType[dt];
 end;
 
+function IsScalarType(dt : TDSType) : boolean;
+begin
+  Result := not (dt in [dsArray, dsCluster]);
+end;
+
 function DSBaseCompareSizes(List: TDSBase; Index1, Index2: Integer): Integer;
 var
   de1, de2 : TDataspaceEntry;
   b1, b2 : Integer;
+//  dt1, dt2 : TDSType;
+//  bScalar1, bScalar2 : boolean;
 begin
 {
-  a value less than 0 if the item identified by Index1 comes before the item identified by Index2
-	0 if the two strings are equivalent
-	a value greater than 0 if the item with Index1 comes after the item identified by Index2.
+  -1 if the item identified by Index1 comes before the item identified by Index2
+	0 if the two are equivalent
+	1 if the item with Index1 comes after the item identified by Index2.
 }
   de1 := List.Items[Index1];
   de2 := List.Items[Index2];
-  b1  := GetBytesPerType(de1.DataType);
-  b2  := GetBytesPerType(de2.DataType);
-  if b1 > b2 then
+  b1 := GetBytesPerType(de1.DataType);
+  b2 := GetBytesPerType(de2.DataType);
+  if b1 > b2 then  // larger sizes of scalar types come first
     Result := -1
   else if b1 = b2 then
     Result := 0
   else
     Result := 1;
+(*
+{
+  We want to sort the dataspace so that
+  1. all scalar types come before aggregate types.
+  2. scalar types are ordered by size with 4 byte types before 2 byte types
+     before 1 byte types
+  3. All structs come before arrays
+  4. arrays are last
+
+  TDSType = (dsVoid, dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong,
+    dsArray, dsCluster, dsMutex, dsFloat);
+}
+  dt1 := de1.DataType;
+  dt2 := de2.DataType;
+  bScalar1 := IsScalarType(dt1);
+  bScalar2 := IsScalarType(dt2);
+  if bScalar1 and bScalar2 then
+  begin
+    b1 := GetBytesPerType(dt1);
+    b2 := GetBytesPerType(dt2);
+    if b1 > b2 then  // larger sizes of scalar types come first
+      Result := -1
+    else if b1 = b2 then
+      Result := 0
+    else
+      Result := 1;
+  end
+  else if bScalar1 then
+  begin
+    // 1 is scalar but 2 is not
+    Result := -1;
+  end
+  else if bScalar2 then
+  begin
+    // 2 is scalar but 1 is not
+    Result := 1;
+  end
+  else begin
+    // neither one is scalar
+    if dt1 < dt2 then
+      Result := 1
+    else if dt1 = dt2 then
+      Result := 0
+    else
+      Result := -1;
+  end;
+*)
 end;
 
 procedure TDSBase.Sort;
@@ -3052,7 +3115,7 @@ begin
   begin
     offset := 0;
     elemsize := 10; // the size of each dope vector
-    count := 1; // start at zero
+    count := 1; // start at 1
     backptr := $FFFF; // invalid pointer
   end;
 

@@ -28,12 +28,16 @@ type
   private
     fStandardDefs: boolean;
     fExtraDefs: boolean;
+    fFirmwareVersion: word;
     procedure SetStandardDefs(const aValue: boolean);
     procedure SetExtraDefs(const aValue: boolean);
+    procedure SetFirmwareVersion(const Value: word);
   public
+    constructor Create(AOwner: TComponent); override;
     procedure InitializeCalc;
     property StandardDefines : boolean read fStandardDefs write SetStandardDefs;
     property ExtraDefines : boolean read fExtraDefs write SetExtraDefs;
+    property FirmwareVersion : word read fFirmwareVersion write SetFirmwareVersion;
   end;
 
   TStatementType = (stUnsigned, stSigned, stFloat);
@@ -314,7 +318,7 @@ const
   );
 
 const
-  InTypeCount = 13;
+  InTypeCount = 18;
   InTypeRecords : array[0..InTypeCount-1] of IDRec =
   (
     ( ID: IN_TYPE_NO_SENSOR;      Name: 'IN_TYPE_NO_SENSOR'; ),
@@ -329,7 +333,12 @@ const
     ( ID: IN_TYPE_CUSTOM;         Name: 'IN_TYPE_CUSTOM'; ),
     ( ID: IN_TYPE_LOWSPEED;       Name: 'IN_TYPE_LOWSPEED'; ),
     ( ID: IN_TYPE_LOWSPEED_9V;    Name: 'IN_TYPE_LOWSPEED_9V'; ),
-    ( ID: IN_TYPE_HISPEED;        Name: 'IN_TYPE_HISPEED'; )
+    ( ID: IN_TYPE_HISPEED;        Name: 'IN_TYPE_HISPEED'; ),
+    ( ID: IN_TYPE_COLORFULL;      Name: 'IN_TYPE_COLORFULL'; ),
+    ( ID: IN_TYPE_COLORRED;       Name: 'IN_TYPE_COLORRED'; ),
+    ( ID: IN_TYPE_COLORGREEN;     Name: 'IN_TYPE_COLORGREEN'; ),
+    ( ID: IN_TYPE_COLORBLUE;      Name: 'IN_TYPE_COLORBLUE'; ),
+    ( ID: IN_TYPE_COLORNONE;      Name: 'IN_TYPE_COLORNONE'; )
   );
 
 const
@@ -462,8 +471,8 @@ const
 
 
 const
-  SysCallMethodIDsCount = 48;
-  SysCallMethodIDs : array[0..SysCallMethodIDsCount-1] of IDRec =
+  SysCallMethodIDsCount1x = 48;
+  SysCallMethodIDs1x : array[0..SysCallMethodIDsCount1x-1] of IDRec =
   (
     ( ID: 0; Name: 'FileOpenRead'; ),
     ( ID: 1; Name: 'FileOpenWrite'; ),
@@ -513,6 +522,112 @@ const
     ( ID: 45; Name: 'CommHSCheckStatus'; ),
     ( ID: 46; Name: 'CommHSWrite'; ),
     ( ID: 47; Name: 'CommHSRead'; )
+  );
+
+const
+  SysCallMethodIDsCount2x = 100;
+  SysCallMethodIDs2x : array[0..SysCallMethodIDsCount2x-1] of IDRec =
+  (
+    ( ID: 0; Name: 'FileOpenRead'; ),
+    ( ID: 1; Name: 'FileOpenWrite'; ),
+    ( ID: 2; Name: 'FileOpenAppend'; ),
+    ( ID: 3; Name: 'FileRead'; ),
+    ( ID: 4; Name: 'FileWrite'; ),
+    ( ID: 5; Name: 'FileClose'; ),
+    ( ID: 6; Name: 'FileResolveHandle'; ),
+    ( ID: 7; Name: 'FileRename'; ),
+    ( ID: 8; Name: 'FileDelete'; ),
+    ( ID: 9; Name: 'SoundPlayFile'; ),
+    ( ID: 10; Name: 'SoundPlayTone'; ),
+    ( ID: 11; Name: 'SoundGetState'; ),
+    ( ID: 12; Name: 'SoundSetState'; ),
+    ( ID: 13; Name: 'DrawText'; ),
+    ( ID: 14; Name: 'DrawPoint'; ),
+    ( ID: 15; Name: 'DrawLine'; ),
+    ( ID: 16; Name: 'DrawCircle'; ),
+    ( ID: 17; Name: 'DrawRect'; ),
+    ( ID: 18; Name: 'DrawGraphic'; ),
+    ( ID: 19; Name: 'SetScreenMode'; ),
+    ( ID: 20; Name: 'ReadButton'; ),
+    ( ID: 21; Name: 'CommLSWrite'; ),
+    ( ID: 22; Name: 'CommLSRead'; ),
+    ( ID: 23; Name: 'CommLSCheckStatus'; ),
+    ( ID: 24; Name: 'RandomNumber'; ),
+    ( ID: 25; Name: 'GetStartTick'; ),
+    ( ID: 26; Name: 'MessageWrite'; ),
+    ( ID: 27; Name: 'MessageRead'; ),
+    ( ID: 28; Name: 'CommBTCheckStatus'; ),
+    ( ID: 29; Name: 'CommBTWrite'; ),
+    ( ID: 30; Name: 'CommBTRead'; ),
+    ( ID: 31; Name: 'KeepAlive'; ),
+    ( ID: 32; Name: 'IOMapRead'; ),
+    ( ID: 33; Name: 'IOMapWrite'; ),
+    ( ID: 34; Name: 'ColorSensorRead'; ),
+    ( ID: 35; Name: 'CommBTOnOff'; ),
+    ( ID: 36; Name: 'CommBTConnection'; ),
+    ( ID: 37; Name: 'CommHSWrite'; ),
+    ( ID: 38; Name: 'CommHSRead'; ),
+    ( ID: 39; Name: 'CommHSCheckStatus'; ),
+    ( ID: 40; Name: 'ReadSemData'; ),
+    ( ID: 41; Name: 'WriteSemData'; ),
+    ( ID: 42; Name: 'ComputeCalibValue'; ),
+    ( ID: 43; Name: 'UpdateCalibCacheInfo'; ),
+    ( ID: 44; Name: 'DatalogWrite'; ),
+    ( ID: 45; Name: 'DatalogGetTimes'; ),
+    ( ID: 46; Name: 'SetSleepTimeoutVal'; ),
+    ( ID: 47; Name: 'ListFiles'; ),
+    ( ID: 48; Name: 'syscall48'; ),
+    ( ID: 49; Name: 'syscall49'; ),
+    ( ID: 50; Name: 'syscall50'; ),
+    ( ID: 51; Name: 'syscall51'; ),
+    ( ID: 52; Name: 'syscall52'; ),
+    ( ID: 53; Name: 'syscall53'; ),
+    ( ID: 54; Name: 'syscall54'; ),
+    ( ID: 55; Name: 'syscall55'; ),
+    ( ID: 56; Name: 'syscall56'; ),
+    ( ID: 57; Name: 'syscall57'; ),
+    ( ID: 58; Name: 'syscall58'; ),
+    ( ID: 59; Name: 'syscall59'; ),
+    ( ID: 60; Name: 'syscall60'; ),
+    ( ID: 61; Name: 'syscall61'; ),
+    ( ID: 62; Name: 'syscall62'; ),
+    ( ID: 63; Name: 'syscall63'; ),
+    ( ID: 64; Name: 'syscall64'; ),
+    ( ID: 65; Name: 'syscall65'; ),
+    ( ID: 66; Name: 'syscall66'; ),
+    ( ID: 67; Name: 'syscall67'; ),
+    ( ID: 68; Name: 'syscall68'; ),
+    ( ID: 69; Name: 'syscall69'; ),
+    ( ID: 70; Name: 'syscall70'; ),
+    ( ID: 71; Name: 'syscall71'; ),
+    ( ID: 72; Name: 'syscall72'; ),
+    ( ID: 73; Name: 'syscall73'; ),
+    ( ID: 74; Name: 'syscall74'; ),
+    ( ID: 75; Name: 'syscall75'; ),
+    ( ID: 76; Name: 'syscall76'; ),
+    ( ID: 77; Name: 'syscall77'; ),
+    ( ID: 78; Name: 'IOMapReadByID'; ),
+    ( ID: 79; Name: 'IOMapWriteByID'; ),
+    ( ID: 80; Name: 'DisplayExecuteFunction'; ),
+    ( ID: 81; Name: 'CommExecuteFunction'; ),
+    ( ID: 82; Name: 'LoaderExecuteFunction'; ),
+    ( ID: 83; Name: 'FileFindFirst'; ),
+    ( ID: 84; Name: 'FileFindNext'; ),
+    ( ID: 85; Name: 'FileOpenWriteLinear'; ),
+    ( ID: 86; Name: 'FileOpenWriteNonLinear'; ),
+    ( ID: 87; Name: 'FileOpenReadLinear'; ),
+    ( ID: 88; Name: 'CommHSControl'; ),
+    ( ID: 89; Name: 'CommLSWriteEx'; ),
+    ( ID: 90; Name: 'FileSeek'; ),
+    ( ID: 91; Name: 'FileResize'; ),
+    ( ID: 92; Name: 'DrawGraphicArray'; ),
+    ( ID: 93; Name: 'DrawPolygon'; ),
+    ( ID: 94; Name: 'DrawEllipse'; ),
+    ( ID: 95; Name: 'DrawFont'; ),
+    ( ID: 96; Name: 'syscall96'; ),
+    ( ID: 97; Name: 'syscall97'; ),
+    ( ID: 98; Name: 'syscall98'; ),
+    ( ID: 99; Name: 'syscall99'; )
   );
 
 const
@@ -1404,6 +1519,12 @@ end;
 
 { TNBCExpParser }
 
+constructor TNBCExpParser.Create(AOwner: TComponent);
+begin
+  inherited;
+  fFirmwareVersion := MAX_FW_VER1X;
+end;
+
 procedure TNBCExpParser.InitializeCalc;
 var
   i : integer;
@@ -1423,9 +1544,18 @@ begin
     // add input field IDs
     for i := Low(InputFieldIDs) to High(InputFieldIDs) do
       SetVariable(InputFieldIDs[i].Name, InputFieldIDs[i].ID);
-    // add syscall method IDs
-    for i := Low(SysCallMethodIDs) to High(SysCallMethodIDs) do
-      SetVariable(SysCallMethodIDs[i].Name, SysCallMethodIDs[i].ID);
+    if FirmwareVersion > MAX_FW_VER1X then
+    begin
+      // add syscall method IDs
+      for i := Low(SysCallMethodIDs2x) to High(SysCallMethodIDs2x) do
+        SetVariable(SysCallMethodIDs2x[i].Name, SysCallMethodIDs2x[i].ID);
+    end
+    else
+    begin
+      // add syscall method IDs
+      for i := Low(SysCallMethodIDs1x) to High(SysCallMethodIDs1x) do
+        SetVariable(SysCallMethodIDs1x[i].Name, SysCallMethodIDs1x[i].ID);
+    end;
     // add IOMap field IDs
     for i := Low(IOMapFieldIDs) to High(IOMapFieldIDs) do
       SetVariable(IOMapFieldIDs[i].Name, IOMapFieldIDs[i].ID);
@@ -1489,6 +1619,11 @@ begin
     fExtraDefs := aValue;
     InitializeCalc;
   end;
+end;
+
+procedure TNBCExpParser.SetFirmwareVersion(const Value: word);
+begin
+  fFirmwareVersion := Value;
 end;
 
 procedure TNBCExpParser.SetStandardDefs(const aValue: boolean);

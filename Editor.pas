@@ -241,7 +241,7 @@ uses
   dlgReplaceText, dlgConfirmReplace, DTestPrintPreview, Translate,
   CodeUnit, ExecProgram, brick_common, FakeSpirit, uCodeExplorer, uMacroForm,
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
-  uMiscDefines, uNXTClasses, uNBCInterface, ParamUtils,
+  uMiscDefines, uNXTClasses, uNBCInterface, ParamUtils, uNXTConstants,
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants, uEditorUtils,
   uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals, uBasicPrefs;
 
@@ -299,6 +299,8 @@ begin
       try
         D := TRXEDumper.Create;
         try
+          if NXT2Firmware then
+            D.FirmwareVersion := MIN_FW_VER2X;
           D.LoadFromFile(fname);
           D.DumpRXE(TheEditor.Lines);
           TheEditor.Modified := True;
