@@ -1,47 +1,15 @@
 inline int min(int x, int y) { return (x < y) ? x : y; }
 
-struct myStruct {
-  char Foo1;
-  int Foo2;
-  int Foo3;
-  int Foo4;
-  int Foo5;
-  int Foo6;
-  int Foo7;
-  string Bar;
-  string Messages[];
-};
-
-int mydata[2][2];
-
 task main()
 {
-  myStruct test;
-  if (test.Foo1) {
-    mydata = !mydata;
-  }
-
   ListFilesType lfargs;
-//  TextOut(0, LCD_LINE1, "declared structure");
-//  Wait(5000);
-//  ArrayBuild(lfargs.Pattern, "*.rxe");
   lfargs.Pattern = "*.rxe";
-//  TextOut(0, LCD_LINE1, "set pattern");
-//  Wait(5000);
   SysListFiles(lfargs);
-//  TextOut(0, LCD_LINE1, "called ListFiles");
-//  Wait(5000);
   if (lfargs.Result == NO_ERR) {
-//  if (true) {
-    TextOut(0, LCD_LINE1, "Result == NO_ERR");
-//    Wait(5000);
     int cnt = ArrayLen(lfargs.FileList);
-//    int cnt = 5;
     NumOut(0, LCD_LINE1, cnt);
-//    Wait(5000);
     for (int i = 0; i < min(cnt, 7); i++) {
       TextOut(0, LCD_LINE2-(i*8), lfargs.FileList[i]);
-//      TextOut(0, LCD_LINE1-(i*8), "foobar");
     }
   }
 
