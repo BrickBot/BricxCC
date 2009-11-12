@@ -97,7 +97,12 @@
 #define SENSOR_CELSIUS		_SENSOR_CFG(SENSOR_TYPE_TEMPERATURE, SENSOR_MODE_CELSIUS)
 #define SENSOR_FAHRENHEIT	_SENSOR_CFG(SENSOR_TYPE_TEMPERATURE, SENSOR_MODE_FAHRENHEIT)
 #define	SENSOR_PULSE		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_PULSE)
-#define SENSOR_EDGE		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_EDGE)
+#define SENSOR_EDGE         _SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_EDGE)
+#define SENSOR_NXTLIGHT		_SENSOR_CFG(SENSOR_TYPE_LIGHT_ACTIVE, SENSOR_MODE_PERCENT)
+#define SENSOR_SOUND		_SENSOR_CFG(SENSOR_TYPE_SOUND_DB, SENSOR_MODE_PERCENT)
+#define SENSOR_LOWSPEED_9V  _SENSOR_CFG(SENSOR_TYPE_LOWSPEED_9V, SENSOR_MODE_RAW)
+#define SENSOR_LOWSPEED     _SENSOR_CFG(SENSOR_TYPE_LOWSPEED, SENSOR_MODE_RAW)
+
 #if __FIRMWARE_VERSION > 107
 #define SENSOR_COLORFULL	_SENSOR_CFG(SENSOR_TYPE_COLORFULL, SENSOR_MODE_RAW)
 #define SENSOR_COLORRED		_SENSOR_CFG(SENSOR_TYPE_COLORRED, SENSOR_MODE_RAW)
@@ -106,7 +111,7 @@
 #define SENSOR_COLORNONE	_SENSOR_CFG(SENSOR_TYPE_COLORNONE, SENSOR_MODE_RAW)
 #endif
 
-#define SetSensor(_sensor, _tm) { SetSensorType(_sensor, _tm>>8); SetSensorMode(_sensor, _tm&0xff); }
+#define SetSensor(_sensor, _tm) { SetSensorType(_sensor, _tm>>8); SetSensorMode(_sensor, _tm&0xff); ResetSensor(_sensor); }
 
 #if __FIRMWARE_VERSION > 107
 #define SetSensorColorFull(_port) asm { __SetSensorColorFull(_port) }
@@ -527,9 +532,11 @@
 // string.h functions
 
 #define strlen(_str) StrLen(_str)
-#define strcat(_dest, _src) asm { \
-  strcat __STRRETVAL__, _dest, _src \
-  mov _dest, __STRRETVAL__ \
+inline string strcat(string & dest, const string src) {
+  asm {
+    strcat __STRRETVAL__, dest, src \
+    mov dest, __STRRETVAL__ \
+  }
 }
 #define strncat(_dest, _src, _num) asm { \
   strsubset __STRBUFFER__, _src, 0, _num \

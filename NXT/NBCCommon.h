@@ -564,8 +564,8 @@
 //Fatal errors
 //0xFF Bad arguments
 //0xFE Illegal bytecode instruction
-//0xFE Illegal bytecode instruction
 //0xFD Mal-formed file contents
+//0xFC Version mismatch between firmware and compiler
 //0xFB Insufficient memory available
 //0xFA Someone passed us a bad pointer!
 #define ERR_ARG      -1
@@ -574,6 +574,28 @@
 #define ERR_VER      -4
 #define ERR_MEM      -5
 #define ERR_BAD_PTR  -6
+
+//0xF9 (FileClumpCount == 0 || FileClumpCount >= NOT_A_CLUMP)
+//0xF8 VarsCmd.CodespaceCount == 0
+//0xF7 CurrOffset != (DataSize - VarsCmd.CodespaceCount * 2)
+//0xF6 VarsCmd.PoolSize > POOL_MAX_SIZE
+//0xF5 LOADER_ERR(LStatus) != SUCCESS || pData == NULL || DataSize == 0
+//0xF4 ((UBYTE*)(VarsCmd.pCodespace) < pData) (c_cmd.c 1893)
+//0xF3 VarsCmd.RunQ.Head == NOT_A_CLUMP
+//0xF2 (DefaultsOffset != FileOffsets.DynamicDefaults) || (DefaultsOffset + FileOffsets.DynamicDefaultsSize != FileOffsets.DSDefaultsSize)
+//0xF1 (UBYTE *)VarsCmd.MemMgr.pDopeVectorArray != VarsCmd.pDataspace + DV_ARRAY[0].Offset
+#define ERR_CLUMP_COUNT     -7
+#define ERR_NO_CODE         -8
+#define ERR_INSANE_OFFSET   -9
+#define ERR_BAD_POOL_SIZE   -10
+#define ERR_LOADER_ERR      -11
+#define ERR_SPOTCHECK_FAIL  -12
+#define ERR_NO_ACTIVE_CLUMP -13
+#define ERR_DEFAULT_OFFSETS -14
+#define ERR_MEMMGR_FAIL     -15
+
+//0xF0 or greater
+#define ERR_NON_FATAL -16
 
 //General errors
 //0xF0 Bad input or output port specified
