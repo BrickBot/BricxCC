@@ -424,6 +424,11 @@ const
   IN_TYPE_LOWSPEED       = $A;
   IN_TYPE_LOWSPEED_9V    = $B;
   IN_TYPE_HISPEED        = $C;
+  IN_TYPE_COLORFULL      = $D;
+  IN_TYPE_COLORRED       = $E;
+  IN_TYPE_COLORGREEN     = $F;
+  IN_TYPE_COLORBLUE      = $10;
+  IN_TYPE_COLORNONE      = $11;
 
 // flags passed into the Mode field of the RCXInput
 const
