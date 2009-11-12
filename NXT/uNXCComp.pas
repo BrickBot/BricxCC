@@ -8504,33 +8504,39 @@ end;
 procedure TNXCComp.CheckForTypedef(var bUnsigned, bConst, bInline, bSafeCall : boolean);
 var
   i : integer;
+  tmpName : string;
 begin
-  Value := TranslateTypeName(Value);
-  i := Pos('unsigned', Value);
-  if i > 0 then
+  tmpName := TranslateTypeName(Value);
+  if Value <> tmpName then
   begin
-    System.Delete(Value, i, 9);
-    bUnsigned := True;
+    Value := tmpName;
+    // only need to check if Value
+    i := Pos('unsigned ', Value);
+    if i > 0 then
+    begin
+      System.Delete(Value, i, 9);
+      bUnsigned := True;
+    end;
+    i := Pos('const ', Value);
+    if i > 0 then
+    begin
+      System.Delete(Value, i, 6);
+      bConst := True;
+    end;
+    i := Pos('inline ', Value);
+    if i > 0 then
+    begin
+      System.Delete(Value, i, 7);
+      bInline := True;
+    end;
+    i := Pos('safecall ', Value);
+    if i > 0 then
+    begin
+      System.Delete(Value, i, 9);
+      bSafeCall := True;
+    end;
+    Value := Trim(Value);
   end;
-  i := Pos('const', Value);
-  if i > 0 then
-  begin
-    System.Delete(Value, i, 6);
-    bConst := True;
-  end;
-  i := Pos('inline', Value);
-  if i > 0 then
-  begin
-    System.Delete(Value, i, 7);
-    bInline := True;
-  end;
-  i := Pos('safecall', Value);
-  if i > 0 then
-  begin
-    System.Delete(Value, i, 9);
-    bSafeCall := True;
-  end;
-  Value := Trim(Value);
   Scan;
 end;
 
