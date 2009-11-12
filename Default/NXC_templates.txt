@@ -91,6 +91,12 @@ SetSensorTouch("port");\=
 SetSensorLight("port");\=
 SetSensorSound("port");\=
 SetSensorLowspeed("port");\=
+SetSensorUltrasonic("port");\=
+SetSensorColorFull("port");\=
+SetSensorColorRed("port");\=
+SetSensorColorGreen("port");\=
+SetSensorColorBlue("port");\=
+SetSensorColorNone("port");\=
 SetSensor("port", SENSOR_TOUCH);\=
 SetSensor("port", SENSOR_LIGHT);\=
 SetSensor("port", SENSOR_ROTATION);\=
@@ -98,30 +104,40 @@ SetSensor("port", SENSOR_CELSIUS);\=
 SetSensor("port", SENSOR_FAHRENHEIT);\=
 SetSensor("port", SENSOR_PULSE);\=
 SetSensor("port", SENSOR_EDGE);\=
+SetSensor("port", SENSOR_COLORFULL);\=
+SetSensor("port", SENSOR_COLORRED);\=
+SetSensor("port", SENSOR_COLORGREEN);\=
+SetSensor("port", SENSOR_COLORBLUE);\=
+SetSensor("port", SENSOR_COLORNONE);\=
 | Sensor types
 SetSensorType("port", "type");\=
-SetSensorType("port", IN_TYPE_SWITCH);\=
-SetSensorType("port", IN_TYPE_REFLECTION);\=
-SetSensorType("port", IN_TYPE_TEMPERATURE);\=
-SetSensorType("port", IN_TYPE_ANGLE);\=
-SetSensorType("port", IN_TYPE_LIGHT_ACTIVE);\=
-SetSensorType("port", IN_TYPE_LIGHT_INACTIVE);\=
-SetSensorType("port", IN_TYPE_SOUND_DB);\=
-SetSensorType("port", IN_TYPE_SOUND_DBA);\=
-SetSensorType("port", IN_TYPE_LOWSPEED);\=
-SetSensorType("port", IN_TYPE_LOWSPEED_9V);\=
-SetSensorType("port", IN_TYPE_HISPEED);\=
-SetSensorType("port", IN_TYPE_CUSTOM);\=
+SetSensorType("port", SENSOR_TYPE_TOUCH);\=
+SetSensorType("port", SENSOR_TYPE_TEMPERATURE);\=
+SetSensorType("port", SENSOR_TYPE_LIGHT);\=
+SetSensorType("port", SENSOR_TYPE_ROTATION);\=
+SetSensorType("port", SENSOR_TYPE_LIGHT_ACTIVE);\=
+SetSensorType("port", SENSOR_TYPE_LIGHT_INACTIVE);\=
+SetSensorType("port", SENSOR_TYPE_SOUND_DB);\=
+SetSensorType("port", SENSOR_TYPE_SOUND_DBA);\=
+SetSensorType("port", SENSOR_TYPE_LOWSPEED);\=
+SetSensorType("port", SENSOR_TYPE_LOWSPEED_9V);\=
+SetSensorType("port", SENSOR_TYPE_HISPEED);\=
+SetSensorType("port", SENSOR_TYPE_CUSTOM);\=
+SetSensorType("port", SENSOR_TYPE_COLORFULL);\=
+SetSensorType("port", SENSOR_TYPE_COLORRED);\=
+SetSensorType("port", SENSOR_TYPE_COLORGREEN);\=
+SetSensorType("port", SENSOR_TYPE_COLORBLUE);\=
+SetSensorType("port", SENSOR_TYPE_COLORNONE);\=
 - Sensor modes
 SetSensorMode("port", "mode");\=
-SetSensorMode("port", IN_MODE_RAW + "slope");\=
-SetSensorMode("port", IN_MODE_BOOLEAN);\=
-SetSensorMode("port", IN_MODE_TRANSITIONCNT);\=
-SetSensorMode("port", IN_MODE_PERIODCOUNTER);\=
-SetSensorMode("port", IN_MODE_PCTFULLSCALE);\=
-SetSensorMode("port", IN_MODE_CELSIUS);\=
-SetSensorMode("port", IN_MODE_FAHRENHEIT);\=
-SetSensorMode("port", IN_MODE_ANGLESTEP);\=
+SetSensorMode("port", SENSOR_MODE_RAW + "slope");\=
+SetSensorMode("port", SENSOR_MODE_BOOL);\=
+SetSensorMode("port", SENSOR_MODE_EDGE);\=
+SetSensorMode("port", SENSOR_MODE_PULSE);\=
+SetSensorMode("port", SENSOR_MODE_PERCENT);\=
+SetSensorMode("port", SENSOR_MODE_CELSIUS);\=
+SetSensorMode("port", SENSOR_MODE_FAHRENHEIT);\=
+SetSensorMode("port", SENSOR_MODE_ROTATION);\=
 - Sensor misc
 ClearSensor("port");\=
 ResetSensor("port");\=
@@ -133,18 +149,28 @@ SensorRaw("port")
 SensorNormalized("port")
 SensorScaled("port") 
 SensorInvalid("port")
+ReadSensorColorRaw("port", "rawValues");\=
+ReadSensorColorEx("port", "colorVal", "raw", "norm", "scaled");\=
+ReadSensorUSEx("port", "values");\=
 - Digital Sensors
-LowspeedStatus("port", "bready")\=
-I2CStatus("port", "bready")\=
-LowspeedCheckStatus("port")\=
-I2CCheckStatus("port")\=
-LowspeedBytesReady("port")\=
-I2CBytesReady("port")\=
-LowspeedWrite("port", "retlen", "buffer")\=
-I2CWrite("port", "retlen", "buffer")\=
-LowspeedRead("port", "buflen", "buffer")\=
-I2CRead("port", "buflen", "buffer")\=
-I2CBytes("port", "inbuf", "count", "outbuf")\=
+I2CStatus("port", "bready");\=
+I2CCheckStatus("port");\=
+I2CBytesReady("port");\=
+I2CWrite("port", "retlen", "buffer");\=
+I2CRead("port", "buflen", "buffer");\=
+I2CBytes("port", "inbuf", "count", "outbuf");\=
+I2CDeviceId("port");\=
+I2CDeviceIdEx("port", "addr");\=
+I2CDeviceInfo("port", "info");\=
+I2CDeviceInfoEx("port", "addr", "info");\=
+I2CSendCommand("port", "cmd");\=
+I2CSendCommandEx("port", "addr", "cmd");\=
+I2CVendorId("port");\=
+I2CVendorIdEx("port", "addr");\=
+I2CVersion("port");\=
+I2CVersionEx("port", "addr");\=
+ReadI2CRegister("port", "reg", "out")\=
+WriteI2CRegister("port", "reg", "value")\=
 - Multitasking
 Precedes("task list");\=
 Follows("task list");\=
@@ -164,31 +190,60 @@ StopSound();\=
 | Drawing
 ClearScreen();\=
 ResetScreen();\=
-TextOut("x", "y", "txt");\=
-TextOut("x", "y", "txt", "cls");\=
-NumOut("x", "y", "val");\=
-NumOut("x", "y", "val", "cls");\=
-PointOut("x", "y");\=
-PointOut("x", "y", "cls");\=
-LineOut("x1", "y1", "x2", "y2");\=
-LineOut("x1", "y1", "x2", "y2", "cls");\=
-RectOut("x", "y", "width", "height");\=
-RectOut("x", "y", "width", "height", "cls");\=
-CircleOut("x", "y", "radius");\=
-CircleOut("x", "y", "radius", "cls");\=
-GraphicOut("x", "y", "filename");\=
-GraphicOut("x", "y", "filename", "cls");\=
-GraphicOutEx("x", "y", "filename", "vars");\=
-GraphicOutEx("x", "y", "filename", "vars", "cls");\=
+TextOut("x", "y", "txt", "options");\=
+NumOut("x", "y", "val", "options");\=
+PointOut("x", "y", "options");\=
+LineOut("x1", "y1", "x2", "y2", "options");\=
+RectOut("x", "y", "width", "height", "options");\=
+CircleOut("x", "y", "radius", "options");\=
+GraphicOut("x", "y", "filename", "options");\=
+GraphicOutEx("x", "y", "filename", "vars", "options");\=
+GraphicArrayOut("x", "y", "data", "options");\=
+GraphicArrayOutEx("x", "y", "data", "vars", "options");\=
+EllipseOut("x", "y", "radius1", "radius1", "options");\=
+FontNumOut("x", "y", "filename", "val", "options");\=
+FontTextOut("x", "y", "filename", "txt", "options");\=
+PolyOut("points", "options");\=
 - Buttons
 ButtonPressed("btn")
 ButtonCount("btn")
 ReadButtonEx("btn", "pressedvar", "countvar");\=
-- Misc stuff
+- Math
 abs("expression")
 sign("expression")
 Random("expression")
 Random()
+sqrt("x")
+sin("x")
+cos("x")
+asin("x")
+acos("x")
+tan("x")
+atan("x")
+ceil("x")
+exp("x")
+floor("x")
+sinh("x")
+cosh("x")
+tanh("x")
+log("x")
+log10("x")
+atan2("x", "y")
+pow("x", "y")
+trunc("x")
+frac("x")
+muldiv32("a", "b", "c")
+sind("x")
+cosd("x")
+asind("x")
+acosd("x")
+tand("x")
+atand("x")
+sinhd("x")
+coshd("x")
+tanhd("x")
+atan2d("x", "y")
+- Misc stuff
 ResetSleepTimer();\=
 PowerDown();\=
 RebootInFirmwareMode();\=
@@ -196,11 +251,14 @@ BatteryLevel()
 FreeMemory()
 - Strings
 NumToStr("val")
+FormatNum("fmt", "val")
+strcat("dest", "src")
 StrCat("str1", "str2", "strN")
 SubStr("str", "idx", "len")
 Flatten("val")
 StrReplace("str", "idx", "strnew")
 StrToNum("str")
+strlen("str")
 StrLen("str")
 StrIndex("str", "idx")
 - File IO

@@ -23,8 +23,8 @@ AbortFlagType currentFlag = AbortFlag();
                 </Argument>
             </Arguments>
             <Documentation>
-Return the absolute value of the argument. Can take any scalar type as the
-input argument. The return type matches the input type.
+Return the absolute value of the argument. This function can take any scalar
+type as the input argument. The return type matches the input type.
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -68,7 +68,7 @@ float val = acosd(x);
 ]]>
             </CodeSample>
         </Function>
-        <Function Version="100">
+        <Function>
             <Name>Acquire</Name>
             <Type>void</Type>
             <Arguments>
@@ -78,16 +78,22 @@ float val = acosd(x);
                 </Argument>
             </Arguments>
             <Documentation>
-Acquire the specified mutex variable. If the mutex is already acquired then
-wait until the mutex is released.
+Acquire the specified mutex variable. If another task already has acquired the
+mutex then the current task will be suspended until the mutex is released by
+the other task. This function is used to ensure that the current task has
+exclusive access to a shared resource, such as the display or a motor. After
+the current task has finished using the shared resource the program should call
+Release to allow other tasks to acquire the mutex.
             </Documentation>
             <CodeSample>
 <![CDATA[
-Acquire(motorMutex);
+Acquire(motorMutex); // make sure we have exclusive access
+// use the motors
+Release(motorMutex);
 ]]>
             </CodeSample>
         </Function>
-        <Function Version="100">
+        <Function>
             <Name>ArrayBuild</Name>
             <Type>void</Type>
             <Arguments>
@@ -588,36 +594,37 @@ byte streamstatus = BTConnectionStreamStatus(1);
     </Function>
     <Function>
         <Name>BTDeviceClass</Name>
-        <Type>void</Type>
+        <Type>unsigned long</Type>
         <Arguments>
         <Argument>
-        <Name>const byte devidx</Name>
-        <Type>void</Type>
+            <Name>devidx</Name>
+            <Type>const byte/Type>
         </Argument>
         </Arguments>
         <Documentation>
+This method returns the class of the device at the specified index within the
+Bluetooth device table.
         </Documentation>
         <CodeSample>
 <![CDATA[
+unsigned long class = BTDeviceClass(1);
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>BTDeviceCount</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>void</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        </CodeSample>
+    </Function>
+    <Function>
+        <Name>BTDeviceCount</Name>
+        <Type>byte</Type>
+        <Arguments />
+        <Documentation>
+This method returns the number of devices defined within the Bluetooth device
+table.
+        </Documentation>
+        <CodeSample>
 <![CDATA[
+byte x = BTDeviceCount();
 ]]>
-</CodeSample>
-</Function>
+        </CodeSample>
+    </Function>
 <Function>
 <Name>BTDeviceName</Name>
 <Type>void</Type>
@@ -1242,22 +1249,20 @@ byte streamstatus = BTConnectionStreamStatus(1);
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>CurrentTick</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>void</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>CurrentTick</Name>
+            <Type>unsigned long</Type>
+            <Arguments />
+            <Documentation>
+Return an unsigned 32-bit value, which is the current system timing value
+(called a "tick") in milliseconds.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+unsigned long x = CurrentTick();
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>CustomSensorActiveStatus</Name>
 <Type>void</Type>
@@ -1610,22 +1615,24 @@ byte streamstatus = BTConnectionStreamStatus(1);
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>ExitTo</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>task taskname</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>ExitTo</Name>
+            <Type>void</Type>
+            <Arguments>
+                <Argument>
+                    <Name>name</Name>
+                    <Type>task</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Immediately exit the current task and start executing the specified task.            
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+ExitTo(nextTask);
 ]]>
-</CodeSample>
-</Function>
+        </CodeSample>
+    </Function>
 <Function>
 <Name>exp</Name>
 <Type>void</Type>
@@ -1706,22 +1713,20 @@ byte streamstatus = BTConnectionStreamStatus(1);
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>FirstTick</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>void</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>FirstTick</Name>
+            <Type>unsigned long</Type>
+            <Arguments />
+            <Documentation>
+Return an unsigned 32-bit value, which is the system timing value (called a
+"tick") in milliseconds at the time that the program began running.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+unsigned long x = FirstTick();
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>Flatten</Name>
 <Type>void</Type>
@@ -1786,22 +1791,28 @@ byte streamstatus = BTConnectionStreamStatus(1);
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>Follows</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>task task1, task task2, task taskn</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>Follows</Name>
+            <Type>void</Type>
+            <Arguments>
+                <Argument maxOccurs="unbounded">
+                    <Name>name</Name>
+                    <Type>task</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Schedule this task to follow the specified tasks so that it will execute once
+any of the specified tasks has completed executing. This function should be
+called once within a task - preferably at the start of the task definition. If
+multiple tasks declare that they follow the same task then they will all execute
+simultaneously unless other dependencies prevent them from doing so.            
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+Follows(main);
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>FontNumOut</Name>
 <Type>void</Type>
@@ -6943,22 +6954,27 @@ OffEx(OUT_A, RESET_ALL); // turn off output A
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>Precedes</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>task task1, task task2, task taskn</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>Precedes</Name>
+            <Type>void</Type>
+            <Arguments>
+                <Argument maxOccurs="unbounded">
+                    <Name>name</Name>
+                    <Type>task</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Schedule the specified tasks for execution once the current task has completed
+executing. The tasks will all execute simultaneously unless other dependencies
+prevent them from doing so. This function should be called once within a task -
+preferably at the start of the task definition.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+Precedes(moving, drawing, playing); 
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>PSPNxEnergize</Name>
 <Type>void</Type>
@@ -6975,22 +6991,38 @@ OffEx(OUT_A, RESET_ALL); // turn off output A
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>Random</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>unsigned int max=0</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+    <Function>
+        <Name>Random</Name>
+        <Type>unsigned int</Type>
+        <Arguments>
+            <Argument>
+                <Name>max</Name>
+                <Type>unsigned int</Type>
+            </Argument>
+        </Arguments>
+        <Documentation>
+Return an unsigned 16-bit random number between 0 and max (exclusive). The
+argument can be a constant or a variable.
+        </Documentation>
+        <CodeSample>
 <![CDATA[
+unsigned int x = Random(10); // return a value of 0..9
 ]]>
-</CodeSample>
-</Function>
+        </CodeSample>
+    </Function>
+    <Function>
+        <Name>Random</Name>
+        <Type>int</Type>
+        <Arguments />
+        <Documentation>
+Return a signed 16-bit random number.
+        </Documentation>
+        <CodeSample>
+<![CDATA[
+int x = Random();
+]]>
+        </CodeSample>
+    </Function>
 <Function>
 <Name>Read</Name>
 <Type>void</Type>
@@ -7660,22 +7692,29 @@ if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>Release</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>mutex m</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>Release</Name>
+            <Type>void</Type>
+            <Arguments>
+                <Argument>
+                    <Name>m</Name>
+                    <Type>mutex</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Release the specified mutex variable. Use this to relinquish a mutex so that it
+can be acquired by another task. Release should always be called after a
+matching call to Acquire and as soon as possible after a shared resource is no
+longer needed.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+Acquire(motorMutex); // make sure we have exclusive access
+// use the motors
+Release(motorMutex); // release mutex for other tasks
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>RemoteKeepAlive</Name>
 <Type>void</Type>
@@ -7996,22 +8035,21 @@ if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>ResetSleepTimer</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>void</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>ResetSleepTimer</Name>
+            <Type>void</Type>
+            <Arguments />
+            <Documentation>
+Reset the system sleep timer back to the SleepTime value. Executing this
+function periodically can keep the NXT from shutting down while a program is
+running.            
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+ResetSleepTimer();
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>ResetTachoCount</Name>
 <Type>void</Type>
@@ -10716,38 +10754,42 @@ if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>SetSleepTimeout</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte n</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>SetSleepTimeout</Name>
+            <Type>void</Type>
+            <Arguments>
+                <Argument>
+                    <Name>minutes</Name>
+                    <Type>byte</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Set the NXT sleep timeout value to the specified number of minutes.            
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+SetSleepTimeout(8);
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>SetSleepTimer</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const byte n</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+            </CodeSample>
+        </Function>
+        <Function>
+            <Name>SetSleepTimer</Name>
+            <Type>void</Type>
+            <Arguments>
+                <Argument>
+                    <Name>minutes</Name>
+                    <Type>byte</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Set the system sleep timer to the specified number of minutes.            
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+SetSleepTimer(3);
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>SetSoundDuration</Name>
 <Type>void</Type>
@@ -11100,22 +11142,25 @@ if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>sign</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>variant value</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+    <Function>
+        <Name>sign</Name>
+        <Type>char</Type>
+        <Arguments>
+            <Argument>
+                <Name>value</Name>
+                <Type>variant</Type>
+            </Argument>
+        </Arguments>
+        <Documentation>
+Return -1, 0, or 1 indicating the sign of the input argument. This function
+can take any scalar type as the input argument.
+        </Documentation>
+        <CodeSample>
 <![CDATA[
+char val = sign(x); // return -1, 0, or 1
 ]]>
-</CodeSample>
-</Function>
+        </CodeSample>
+    </Function>
 <Function>
 <Name>sin</Name>
 <Type>void</Type>
@@ -11180,38 +11225,47 @@ if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>SleepTimeout</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>void</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>SleepNow</Name>
+            <Type>void</Type>
+            <Arguments />
+            <Documentation>
+Turn off the NXT immediately.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+SleepNow();
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>SleepTimer</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>void</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+            </CodeSample>
+        </Function>
+        <Function>
+            <Name>SleepTimeout</Name>
+            <Type>byte</Type>
+            <Arguments />
+            <Documentation>
+Return the number of minutes that the NXT will remain on before it
+automatically shuts down.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+byte x = SleepTimeout();
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
+        <Function>
+            <Name>SleepTimer</Name>
+            <Type>byte</Type>
+            <Arguments />
+            <Documentation>
+Return the number of minutes left in the countdown to zero from the original
+SleepTimeout value. When the SleepTimer value reaches zero the NXT will shutdown.
+            </Documentation>
+            <CodeSample>
+<![CDATA[
+byte x = SleepTimer();
+]]>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>SoundDuration</Name>
 <Type>void</Type>
@@ -11340,54 +11394,58 @@ if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>StartTask</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>task t</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>StartTask</Name>
+            <Type>void</Type>
+            <Arguments>
+                <Argument>
+                    <Name>name</Name>
+                    <Type>task</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Start the specified task.            
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+StartTask(sound); // start the sound task
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>Stop</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>bool bvalue</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+            </CodeSample>
+        </Function>
+        <Function>
+            <Name>Stop</Name>
+            <Type>void</Type>
+            <Arguments>
+                <Argument>
+                    <Name>bvalue</Name>
+                    <Type>bool</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Stop the running program if bvalue is true. This will halt the program
+completely, so any code following this command will be ignored.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+Stop(x == 24); // stop the program if x==24
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>StopAllTasks</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>void</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+            </CodeSample>
+        </Function>
+        <Function>
+            <Name>StopAllTasks</Name>
+            <Type>void</Type>
+            <Arguments />
+            </Arguments>
+            <Documentation>
+Stop all currently running tasks. This will halt the program completely, so
+any code following this command will be ignored.            
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+StopAllTasks(); // stop the program
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>StopSound</Name>
 <Type>void</Type>
@@ -11404,22 +11462,24 @@ if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>StopTask</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>task t</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function Enhanced="true">
+            <Name>StopTask</Name>
+            <Type>void</Type>
+            <Arguments>
+                <Argument>
+                    <Name>name</Name>
+                    <Type>task</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Stop the specified task. This requires the enhanced NBC/NXC firmware.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+StopTask(sound); // stop the sound task
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>strcat</Name>
 <Type>void</Type>
@@ -11500,38 +11560,44 @@ if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>strlen</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>const string &amp; str</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>strlen</Name>
+            <Type>unsigned int</Type>
+            <Arguments>
+                <Argument>
+                    <Name>val</Name>
+                    <Type>string</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Return the length of the specified string. The length of a string does not
+include the null terminator at the end of the string.            
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+x = strlen(msg); // return the length of msg
 ]]>
-</CodeSample>
-</Function>
-<Function>
-<Name>StrLen</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>string str</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+            </CodeSample>
+        </Function>
+        <Function>
+            <Name>StrLen</Name>
+            <Type>unsigned int</Type>
+            <Arguments>
+                <Argument>
+                    <Name>val</Name>
+                    <Type>string</Type>
+                </Argument>
+            </Arguments>
+            <Documentation>
+Return the length of the specified string. The length of a string does not
+include the null terminator at the end of the string.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+x = StrLen(msg); // return the length of msg
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>strncat</Name>
 <Type>void</Type>
@@ -11596,22 +11662,25 @@ if (ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar)) {
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>StrToNum</Name>
-<Type>void</Type>
-<Arguments>
-<Argument>
-<Name>string str</Name>
-<Type>void</Type>
-</Argument>
-</Arguments>
-<Documentation>
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>StrToNum</Name>
+            <Type>variant</Type>
+            <Arguments>
+            <Argument>
+            <Name>val</Name>
+            <Type>string</Type>
+            </Argument>
+            </Arguments>
+            <Documentation>
+Return the numeric value specified by the string passed to the function. If the
+content of the string is not a numeric value then this function returns zero.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
+x = StrToNum(strVal);
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
 <Name>SubStr</Name>
 <Type>void</Type>
@@ -12941,8 +13010,7 @@ if (args.Result = NO_ERR) {
                 </Argument>
             </Arguments>
             <Documentation>
-                Make a task sleep for specified amount of time (in 1000ths of a second).
-                The time argument may be an expression or a constant.
+Make a task sleep for specified amount of time (in 1000ths of a second).
             </Documentation>
             <CodeSample>
 <![CDATA[
@@ -13117,92 +13185,92 @@ char result = WriteString(handle, myMessage, cnt);
 ]]>
 </CodeSample>
 </Function>
-<Function>
-<Name>Yield</Name>
-<Type>void</Type>
-<Arguments/>
-<Documentation>
-Yield to another thread.
-</Documentation>
-<CodeSample>
+        <Function>
+            <Name>Yield</Name>
+            <Type>void</Type>
+            <Arguments/>
+            <Documentation>
+Make a task yield to another concurrently running task.
+            </Documentation>
+            <CodeSample>
 <![CDATA[
 Yield();
 ]]>
-</CodeSample>
-</Function>
+            </CodeSample>
+        </Function>
 <Function>
-<Name>ReadSensorUSEx</Name>
-<Type>bool</Type>
-<Arguments>
-<Argument>
-<Name>port</Name>
-<Type>byte</Type>
-</Argument>
-<Argument>
-<Name>values</Name>
-<Type PostFix="[]">byte &amp;</Type>
-</Argument>
-</Arguments>
-<Documentation>
+    <Name>ReadSensorUSEx</Name>
+    <Type>bool</Type>
+    <Arguments>
+        <Argument>
+            <Name>port</Name>
+            <Type>byte</Type>
+        </Argument>
+        <Argument>
+            <Name>values</Name>
+            <Type PostFix="[]">byte &amp;</Type>
+        </Argument>
+    </Arguments>
+    <Documentation>
 Read all 8 ultrasonic distance readings in a single function call.
-</Documentation>
-<CodeSample>
+    </Documentation>
+    <CodeSample>
 <![CDATA[
 bool result = ReadUSSensorEx(S1, valueArray);
 ]]>
-</CodeSample>
+    </CodeSample>
 </Function>
 <Function>
-<Name>ReadI2CRegister</Name>
-<Type>char</Type>
-<Arguments>
-<Argument>
-<Name>port</Name>
-<Type>byte</Type>
-</Argument>
-<Argument>
-<Name>reg</Name>
-<Type>byte</Type>
-</Argument>
-<Argument>
-<Name>out</Name>
-<Type>byte &amp;</Type>
-</Argument>
-</Arguments>
-<Documentation>
+    <Name>ReadI2CRegister</Name>
+    <Type>char</Type>
+    <Arguments>
+        <Argument>
+            <Name>port</Name>
+            <Type>byte</Type>
+        </Argument>
+        <Argument>
+            <Name>reg</Name>
+            <Type>byte</Type>
+        </Argument>
+        <Argument>
+            <Name>out</Name>
+            <Type>byte &amp;</Type>
+        </Argument>
+    </Arguments>
+    <Documentation>
 Read a single byte I2C register value.
-</Documentation>
-<CodeSample>
+    </Documentation>
+    <CodeSample>
 <![CDATA[
 ReadI2CRegister(S1, US_REG_CM_INTERVAL, cmval);
 ]]>
-</CodeSample>
+    </CodeSample>
 </Function>
 <Function>
-<Name>WriteI2CRegister</Name>
-<Type>char</Type>
-<Arguments>
-<Argument>
-<Name>port</Name>
-<Type>byte</Type>
-</Argument>
-<Argument>
-<Name>reg</Name>
-<Type>byte</Type>
-</Argument>
-<Argument>
-<Name>value</Name>
-<Type>byte</Type>
-</Argument>
-</Arguments>
-<Documentation>
+    <Name>WriteI2CRegister</Name>
+    <Type>char</Type>
+    <Arguments>
+        <Argument>
+            <Name>port</Name>
+            <Type>byte</Type>
+        </Argument>
+        <Argument>
+            <Name>reg</Name>
+            <Type>byte</Type>
+        </Argument>
+        <Argument>
+            <Name>value</Name>
+            <Type>byte</Type>
+        </Argument>
+    </Arguments>
+    <Documentation>
 Write a single byte value to an I2C register.
-</Documentation>
-<CodeSample>
+    </Documentation>
+    <CodeSample>
 <![CDATA[
 WriteI2CRegister(S1, US_REG_CM_INTERVAL, 0x2);
 ]]>
-</CodeSample>
+    </CodeSample>
 </Function>
     </Functions>
     <Keywords>
