@@ -284,7 +284,7 @@ implementation
 uses
   SysUtils, Dialogs, brick_common, rcx_constants, uSpirit,
   uLocalizedStrings, uGuiUtils, uProgram, uBasicPrefs,
-  uGlobals, uMiscDefines;
+  uGlobals, uMiscDefines, uCommonUtils, Variants;
 
 function GetMotorData(numb : integer) : string;
 var
@@ -372,9 +372,10 @@ end;
 
 procedure TWatchForm.btnPollNowClick(Sender: TObject);
 var
-  i : integer;
-  val : integer;
-  tmpStr : string;
+  i, ival : integer;
+  val : variant;
+  fval : Single;
+  tmpStr, tmpStr2 : string;
   power: integer;
   mode, regmode: byte;
   turnratio: integer;
@@ -395,9 +396,18 @@ begin
       if fVarArray[i].CheckBox.Checked then
       begin
         val := BrickComm.GetVariableValue(i);
-        tmpStr := Format('Var %d: %d', [i, val]);
+        if VarType(val) in [varSingle, varDouble] then begin
+          fVal := val;
+          tmpStr2 := StripTrailingZeros(Format('%.4f', [fval]));
+          tmpStr  := Format('Var %d: ', [i]) + tmpStr2;
+        end
+        else begin
+          ival := val;
+          tmpStr  := Format('Var %d: %d', [i, ival]);
+          tmpStr2 := Format('%6d',[ival]);
+        end;
         fNewData.Add(tmpStr);
-        fVarArray[i].Edit.Text := Format('%6d',[val]);
+        fVarArray[i].Edit.Text := tmpStr2;
       end;
     end;
     if CheckSensor1.Checked then

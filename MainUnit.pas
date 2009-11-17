@@ -3843,21 +3843,21 @@ end;
 
 procedure TMainForm.CreateMainFormHighlighters;
 begin
-  SynNXCSyn := TSynNXCSyn.Create(Self);
-  SynNPGSyn := TSynNPGSyn.Create(Self);
-  SynRubySyn := TSynRubySyn.Create(Self);
-  SynNBCSyn := TSynNBCSyn.Create(Self);
-  SynJavaSyn := TSynJavaSyn.Create(Self);
-  SynLASMSyn := TSynLASMSyn.Create(Self);
-  SynNQCSyn := TSynNQCSyn.Create(Self);
-  SynPasSyn := TSynPasSyn.Create(Self);
+  SynCppSyn        := TSynCppSyn.Create(Self);
   SynMindScriptSyn := TSynMindScriptSyn.Create(Self);
-  SynCSSyn := TSynCSSyn.Create(Self);
-  SynLuaSyn := TSynLuaSyn.Create(Self);
-  SynRSSyn := TSynRSSyn.Create(Self);
-  SynCppSyn := TSynCppSyn.Create(Self);
-  SynForthSyn := TSynForthSyn.Create(Self);
-  SynROPSSyn := TSynROPSSyn.Create(Self);
+  SynNPGSyn        := TSynNPGSyn.Create(Self);
+  SynForthSyn      := TSynForthSyn.Create(Self);
+  SynJavaSyn       := TSynJavaSyn.Create(Self);
+  SynNQCSyn        := TSynNQCSyn.Create(Self);
+  SynNXCSyn        := TSynNXCSyn.Create(Self);
+  SynRSSyn         := TSynRSSyn.Create(Self);
+  SynROPSSyn       := TSynROPSSyn.Create(Self);
+  SynLASMSyn       := TSynLASMSyn.Create(Self);
+  SynLuaSyn        := TSynLuaSyn.Create(Self);
+  SynRubySyn       := TSynRubySyn.Create(Self);
+  SynPasSyn        := TSynPasSyn.Create(Self);
+  SynNBCSyn        := TSynNBCSyn.Create(Self);
+  SynCSSyn         := TSynCSSyn.Create(Self);
   with SynNXCSyn do
   begin
     Name := 'SynNXCSyn';

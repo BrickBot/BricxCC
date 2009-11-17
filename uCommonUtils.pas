@@ -79,6 +79,9 @@ procedure GetSubDirectories(const Directory : string; List : TStringlist);
 procedure OSSleep(const ms : Cardinal);
 procedure PostWindowMessage(aHwnd : HWND; aMsg : Cardinal; wParam, lParam : Integer);
 function MulDiv(const x, num, den : integer) : integer;
+function CardinalToSingle(const cVal : Cardinal) : Single;
+function SingleToCardinal(const sVal : Single) : Cardinal;
+function StripTrailingZeros(const aNum : string) : string;
 
 implementation
 
@@ -277,6 +280,37 @@ begin
     Result := (Result shl 8) + b[i];
 end;
 }
+
+{$ifdef FPC}
+function CardinalToSingle(const cVal : Cardinal) : Single;
+begin
+  Result := Single(cVal);
+end;
+
+function SingleToCardinal(const sVal : Single) : Cardinal;
+begin
+  Result := Cardinal(sVal);
+end;
+{$else}
+function CardinalToSingle(const cVal : Cardinal) : Single;
+begin
+  Result := Single(Pointer(cVal));
+end;
+
+function SingleToCardinal(const sVal : Single) : Cardinal;
+begin
+  Result := Cardinal(Pointer(sVal));
+end;
+{$endif}
+
+function StripTrailingZeros(const aNum : string) : string;
+begin
+  Result := aNum;
+  while Result[Length(Result)] = '0' do
+    System.Delete(Result, Length(Result), 1);
+  if Result[Length(Result)] in ['.', ','] then
+    System.Delete(Result, Length(Result), 1);
+end;
 
 procedure GetFileList(const Directory : string; const Pattern : string; List : TStringlist);
 var

@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-10-11
- * Revision:: 56
+ * Date:: 2009-11-16
+ * Revision:: 57
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -505,7 +505,6 @@
  }
 #define getc(_handle) fgetc(_handle)
 
-
 /*
   char* fgets(char* str, int num, FILE*); read num bytes from file into str.  Appends null.  Newline stops reading
 #define fgets(_output, _num, _handle) ReadLnString(_handle, _output) // not quite right
@@ -583,6 +582,21 @@ void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (s
 
 */
 
+// ctype.h functions
+
+inline int isupper(int c) { return ((c >= 'A') && (c <= 'Z')); }
+inline int islower(int c) { return ((c >= 'a') && (c <= 'z')); }
+inline int isalpha(int c) { return isupper(c) || islower(c); }
+inline int isdigit(int c) { return ((c >= '0') && (c <= '9')); }
+inline int isalnum(int c) { return isalpha(c) || isdigit(c); }
+inline int isspace(int c) { return (c == 0x20) || ((c >= 0x09) && (c <= 0x0d)); }
+inline int iscntrl(int c) { return (c <= 0x1f) || (c == 0x7f); }
+inline int isprint(int c) { return !iscntrl(c); }
+inline int isgraph(int c) { return (c != 0x20) && isprint(c); }
+inline int ispunct(int c) { return isgraph(c) && !isalnum(c); }
+inline int isxdigit(int c) {  return isdigit(c) || ((c >= 'A') && (c <= 'F')) || ((c >= 'a') && (c <= 'f')); }
+inline int toupper(int c) { if (islower(c)) c -= 32; return c; }
+inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
 
 #define SendMessage(_queue, _msg) asm { __sendMessage(_queue, _msg, __RETVAL__) }
 #define ReceiveMessage(_queue, _clear, _msg) asm { __receiveMessage(_queue, _clear, _msg, __RETVAL__) }
@@ -753,6 +767,8 @@ inline float atan2d(float x, float y) { asm { atan2d __FLTRETVAL__, x, y } }
 #define Acos(_X) asm { __ACOS(_X,__RETVAL__) }
 
 #endif
+
+#define isNAN(_x) ((_x) != (_x))
 
 inline byte bcd2dec(byte bcd) { asm { __bcd2dec(bcd, __RETVAL__) } }
 
@@ -1155,7 +1171,7 @@ struct DatalogGetTimesType {
 // SetSleepTimeout
 struct SetSleepTimeoutType {
  char Result;
- unsigned long TheSleepTimeout;
+ unsigned long TheSleepTimeoutMS;
 };
 
 // CommBTOnOff
@@ -1172,26 +1188,34 @@ struct CommBTConnectionType {
  byte ConnectionSlot;
 };
 
-//cCmdWrapReadSemData
-//ArgV[0]: return data, U8
-//ArgV[1]: which (0=used, 1=request), U8
+// ReadSemData
+struct ReadSemDataType {
+  byte SemData;
+  bool Request;
+};
 
-//cCmdWrapWriteSemData
-//ArgV[0]: return data, U8
-//ArgV[1]: which (0=used, 1=request), U8
-//ArgV[2]: newValue, U8
-//ArgV[3]: action (0= OR, 1= AND), U8
+// WriteSemData
+struct WriteSemDataType {
+  byte SemData;
+  bool Request;
+  byte NewVal;
+  bool ClearBits;
+};
 
-//cCmdWrapUpdateCalibCacheInfo
-//ArgV[0]: return data, U8
-//ArgV[1]: nm, UBYTE array CStr
-//ArgV[2]: min, U16
-//ArgV[3]: max , U16
+// UpdateCalibCacheInfo
+struct UpdateCalibCacheInfoType {
+  byte Result;
+  string Name;
+  unsigned int MinVal;
+  unsigned int MaxVal;
+};
 
-//cCmdWrapComputeCalibValue
-//ArgV[0]: return data, U8
-//ArgV[1]: nm, UBYTE array CStr
-//ArgV[2]: raw, U16 ref in out
+// ComputeCalibValue
+struct ComputeCalibValueType {
+  byte Result;
+  string Name;
+  unsigned int RawVal;
+};
 
 // ListFiles
 struct ListFilesType {
@@ -1456,6 +1480,22 @@ struct ListFilesType {
 #define SysCommBTConnection(_args) asm { \
   compchktype _args, CommBTConnectionType \
   syscall CommBTConnection, _args \
+}
+#define SysReadSemData(_args) asm { \
+  compchktype _args, ReadSemDataType \
+  syscall ReadSemData, _args \
+}
+#define SysWriteSemData(_args) asm { \
+  compchktype _args, WriteSemDataType \
+  syscall WriteSemData, _args \
+}
+#define SysUpdateCalibCacheInfo(_args) asm { \
+  compchktype _args, UpdateCalibCacheInfoType \
+  syscall UpdateCalibCacheInfo, _args \
+}
+#define SysComputeCalibValue(_args) asm { \
+  compchktype _args, ComputeCalibValueType \
+  syscall ComputeCalibValue, _args \
 }
 #define SysListFiles(_args) asm { \
   compchktype _args, ListFilesType \
@@ -1802,7 +1842,5 @@ inline void Yield() { asm { wait 1 } }
 
 // RIC Macro wrappers
 #define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8
-
-#define isNAN(_x) ((_x) != (_x))
 
 #endif // NXCDEFS_H

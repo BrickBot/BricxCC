@@ -108,18 +108,25 @@ implementation
 uses
   SysUtils, Graphics, Dialogs, uBasicPrefs, uMiscDefines,
   brick_common, rcx_constants, uSources, uLocalizedStrings, uCommonUtils,
-  uProgram, uGlobals;
+  uProgram, uGlobals, Variants;
 
 var
   busy : boolean = false;
 
 procedure TfrmNewWatch.btnPollNowClick(Sender: TObject);
 var
-  i : integer;
-  val : integer;
-  tmpStr : string;
+  i, ival : integer;
+  val : variant;
+  fval : Single;
+  tmpStr, tmpStr2 : string;
   temp: TComponent;
   idx, src, num : Integer;
+  procedure FormatIntegerValue;
+  begin
+    ival := val;
+    tmpStr  := Format(BrickWatchSources[LocalBrickType][idx].Name + '_%3.3d: %d', [num, ival]);
+    tmpStr2 := Format('%6d', [ival]);
+  end;
 begin
   if busy then exit;     // Avoid polling while polling
   busy := true;
@@ -140,9 +147,19 @@ begin
         src := idx;
         num := TUpDown(TCheckBox(temp).Parent.Controls[3]).Position;
         val := BrickComm.Poll(src, num);
-        tmpStr := Format(BrickWatchSources[LocalBrickType][idx].Name + '_%3.3d: %d', [num, val]);
+        if IsNXT and (idx = 0) then begin
+          if VarType(val) in [varSingle, varDouble] then begin
+            fVal := val;
+            tmpStr2 := StripTrailingZeros(Format('%.4f', [fval]));
+            tmpStr  := TComboBox(TCheckBox(temp).Parent.Controls[5]).Items[num] + ': ' + tmpStr2;
+          end
+          else
+            FormatIntegerValue;
+        end
+        else
+          FormatIntegerValue;
         fNewData.Add(tmpStr);
-        TEdit(TCheckBox(temp).Parent.Controls[1]).Text := Format('%6d', [val]);
+        TEdit(TCheckBox(temp).Parent.Controls[1]).Text := tmpStr2;
       end;
     end;
 {

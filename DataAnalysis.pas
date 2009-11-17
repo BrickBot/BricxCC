@@ -305,7 +305,7 @@ end;
 function TfrmDataAnalysis.FindValue(valStr : string) : integer;
 begin
   Delete(valStr, 1, Pos(':', valStr));
-  Result := StrToIntDef(valStr, 0);
+  Result := StrToIntDef(Trim(valStr), 0);
 end;
 
 function TfrmDataAnalysis.GetXValue(s : TChartSeries) : integer;
