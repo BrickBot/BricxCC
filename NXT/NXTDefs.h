@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXTDefs.h
- * Date:: 2009-10-11
- * Revision:: 53
+ * Date:: 2009-11-16
+ * Revision:: 54
  *
  * Contains declarations for the NBC NXT API resources
  *
@@ -430,7 +430,7 @@ TDatalogGetTimes	ends
 // SetSleepTimeout
 TSetSleepTimeout	struct
  Result		sbyte
- TheSleepTimeout	dword
+ TheSleepTimeoutMS	dword
 TSetSleepTimeout	ends
 
 // CommBTOnOff
@@ -447,26 +447,34 @@ TCommBTConnection	struct
  ConnectionSlot	byte
 TCommBTConnection	ends
 
-//cCmdWrapReadSemData
-//ArgV[0]: return data, U8
-//ArgV[1]: which (0=used, 1=request), U8
+// ReadSemData
+TReadSemData struct
+ SemData byte
+ Request byte
+TReadSemData ends
 
-//cCmdWrapWriteSemData
-//ArgV[0]: return data, U8
-//ArgV[1]: which (0=used, 1=request), U8
-//ArgV[2]: newValue, U8
-//ArgV[3]: action (0= OR, 1= AND), U8
+// WriteSemData
+TWriteSemData struct
+ SemData byte
+ Request byte
+ NewVal byte
+ ClearBits byte
+TWriteSemData ends
 
-//cCmdWrapUpdateCalibCacheInfo
-//ArgV[0]: return data, U8
-//ArgV[1]: nm, UBYTE array CStr
-//ArgV[2]: min, U16
-//ArgV[3]: max , U16
+// UpdateCalibCacheInfo
+TUpdateCalibCacheInfo struct
+ Result byte
+ Name byte[]
+ MinVal word
+ MaxVal word
+TUpdateCalibCacheInfo ends
 
-//cCmdWrapComputeCalibValue
-//ArgV[0]: return data, U8
-//ArgV[1]: nm, UBYTE array CStr
-//ArgV[2]: raw, U16 ref in out
+// ComputeCalibValue
+TComputeCalibValue struct
+ Result byte
+ Name byte[]
+ RawVal word
+TComputeCalibValue ends
 
 // ListFiles
 TListFiles	struct

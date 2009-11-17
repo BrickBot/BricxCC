@@ -1179,7 +1179,6 @@ function StripDecoration(const name : string) : string;
 function PrettyNameStrip(const name : string) : string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
 function Replace(const str : string; const src, rep : string) : string;
-function StripTrailingZeros(const aNum : string) : string;
 function NBCStrToFloat(const AValue: string): Double;
 function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
 function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boolean;
@@ -1296,10 +1295,13 @@ var
 
 implementation
 
-{$IFDEF FAST_MM}
+
 uses
-  FastStrings;
+{$IFDEF FAST_MM}
+  FastStrings,
 {$ENDIF}
+  uCommonUtils;
+
 
 function IsAlpha(c: char): boolean;
 begin
@@ -1390,15 +1392,6 @@ begin
 {$ELSE}
   Result := StringReplace(str, src, rep, [rfReplaceAll]);
 {$ENDIF}
-end;
-
-function StripTrailingZeros(const aNum : string) : string;
-begin
-  Result := aNum;
-  while Result[Length(Result)] = '0' do
-    System.Delete(Result, Length(Result), 1);
-  if Result[Length(Result)] in ['.', ','] then
-    System.Delete(Result, Length(Result), 1);
 end;
 
 procedure NBCFormatSettings(var aFS : TFormatSettings; const aDS : Char);

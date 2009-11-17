@@ -1123,7 +1123,6 @@ procedure InstantiateCluster(DD : TDataDefs; DE: TDataspaceEntry; const clustern
 procedure HandleVarDecl(DD : TDataDefs; NT : TMapList; bCaseSensitive : boolean;
   DSE : TDataspaceEntry; albl, aopcode : string; sttFunc : TSTTFuncType);
 
-
 implementation
 
 uses
@@ -1164,6 +1163,17 @@ type
     property Func : string read fFunc write fFunc;
     property Execute : TSpecialFunctionExecute read fExecute write fExecute;
   end;
+
+function RoundToByteSize(addr : Word; size : byte) : Word;
+var
+  x : Word;
+begin
+  x := Word(addr mod size);
+  if x <> 0 then
+    Result := Word(addr + size - x)
+  else
+    Result := addr;
+end;
 
 function QuotedString(const sargs : string) : boolean;
 var
@@ -1327,28 +1337,6 @@ begin
     Result := dsVoid;
   end;
 end;
-
-{$ifdef FPC}
-function CardinalToSingle(const cVal : Cardinal) : Single;
-begin
-  Result := Single(cVal);
-end;
-
-function SingleToCardinal(const sVal : Single) : Cardinal;
-begin
-  Result := Cardinal(sVal);
-end;
-{$else}
-function CardinalToSingle(const cVal : Cardinal) : Single;
-begin
-  Result := Single(Pointer(cVal));
-end;
-
-function SingleToCardinal(const sVal : Single) : Cardinal;
-begin
-  Result := Cardinal(Pointer(sVal));
-end;
-{$endif}
 
 function ValToStr(const aType : TDSType; aVal : Cardinal) : string;
 begin
@@ -1987,13 +1975,51 @@ begin
   end;
 end;
 
-procedure LoadRXEDataSpace(H : TRXEHeader; DS : TDSData; aStream: TStream);
+procedure LoadDVA(dvCount : integer; DS : TDSData; aStream: TStream);
+var
+  i : integer;
+begin
+  // now read the Dope Vectors (10 bytes each)
+  i := 0;
+  SetLength(DS.DopeVecs, dvCount);
+//  SetLength(DS.DopeVecs, (H.Head.DynDSDefaultsSize - (H.Head.DVArrayOffset-H.Head.DSStaticSize)) div 10);
+  while i < Length(DS.DopeVecs) do
+  begin
+    with DS.DopeVecs[i] do
+    begin
+      ReadWordFromStream(aStream, offset);
+      ReadWordFromStream(aStream, elemsize);
+      ReadWordFromStream(aStream, count);
+      ReadWordFromStream(aStream, backptr);
+      ReadWordFromStream(aStream, link);
+    end;
+    inc(i);
+  end;
+end;
+
+procedure LoadDynamicDefaultData(dsCount : integer; DS : TDSData; aStream: TStream);
 var
   i : integer;
   B : Byte;
 begin
+  i := 0;
+  SetLength(DS.DynamicDefaults, dsCount);
+  while i < dsCount do
+  begin
+    aStream.Read(B, SizeOf(Byte));
+    DS.DynamicDefaults[i] := B;
+    inc(i);
+  end;
+end;
+
+procedure LoadRXEDataSpace(H : TRXEHeader; DS : TDSData; aStream: TStream);
+var
+  i, dvCount, offset, dsLen : integer;
+  B : Byte;
+begin
   if H.Head.Version <> 0 then
   begin
+    dvCount := 1; // always have 1 Dope Vector in the DVA
     // dataspace contains DSCount 4 byte structures (the TOC)
     // followed by the static and dynamic defaults
     aStream.Seek(SizeOf(RXEHeader), soFromBeginning);
@@ -2001,13 +2027,17 @@ begin
     SetLength(DS.TOCNames, H.Head.DSCount);
     for i := 0 to H.Head.DSCount - 1 do
     begin
-      aStream.Read(DS.TOC[i].TypeDesc, 1);
+      aStream.Read(B, 1);
+      DS.TOC[i].TypeDesc := B;
       aStream.Read(DS.TOC[i].Flags, 1);
       ReadWordFromStream(aStream, DS.TOC[i].DataDesc);
       DS.TOCNames[i] := GenerateTOCName(DS.TOC[i].TypeDesc, i);
+      if B = TC_ARRAY then
+        inc(dvCount);
     end;
     // static bytes are next
-    aStream.Seek(SizeOf(RXEHeader)+(SizeOfDSTocEntry*H.Head.DSCount), soFromBeginning);
+    offset := SizeOf(RXEHeader)+(SizeOfDSTocEntry*H.Head.DSCount);
+    aStream.Seek(offset, soFromBeginning);
     i := 0;
     B := 0;
     SetLength(DS.StaticDefaults, H.Head.DynDSDefaultsOffset);
@@ -2018,29 +2048,31 @@ begin
       inc(i);
     end;
     // now we can read the dynamic default data
-    aStream.Seek(SizeOf(RXEHeader)+(SizeOfDSTocEntry*H.Head.DSCount)+H.Head.DynDSDefaultsOffset, soFromBeginning);
-    i := 0;
-    SetLength(DS.DynamicDefaults, H.Head.DVArrayOffset-H.Head.DSStaticSize);
-    while i < (H.Head.DVArrayOffset-H.Head.DSStaticSize) do
+//    aStream.Seek(offset+H.Head.DynDSDefaultsOffset, soFromBeginning); // this should not be necessary
+    // how many bytes of array default data are there to read?
+    dsLen := H.Head.DynDSDefaultsSize-(dvCount*SizeOf(DopeVector));
+    // figure out whether the Dope Vector Array comes before or after the
+    // dynamic defaults that aren't part of the Dope Vector Array
+    if H.Head.DVArrayOffset = H.Head.DSStaticSize then
     begin
-      aStream.Read(B, SizeOf(Byte));
-      DS.DynamicDefaults[i] := B;
-      inc(i);
-    end;
-    // now read the Dope Vectors (10 bytes each)
-    i := 0;
-    SetLength(DS.DopeVecs, (H.Head.DynDSDefaultsSize - (H.Head.DVArrayOffset-H.Head.DSStaticSize)) div 10);
-    while i < Length(DS.DopeVecs) do
-    begin
-      with DS.DopeVecs[i] do
+      // DVA comes first
+      LoadDVA(dvCount, DS, aStream);
+      // we just read dvCount*10 bytes.  If the DVA comes first then we need
+      // to read 0 or 2 padding bytes depending on whether dvCount is even or odd
+      // so that the actual array data is guaranteed to start on an address that
+      // is a multiple of 4.
+      if (dvCount mod 2) = 1 then
       begin
-        ReadWordFromStream(aStream, offset);
-        ReadWordFromStream(aStream, elemsize);
-        ReadWordFromStream(aStream, count);
-        ReadWordFromStream(aStream, backptr);
-        ReadWordFromStream(aStream, link);
+        aStream.Read(B, 1);
+        aStream.Read(B, 1);
+        dec(dsLen, 2);
       end;
-      inc(i);
+      LoadDynamicDefaultData(dsLen, DS, aStream);
+    end
+    else
+    begin
+      LoadDynamicDefaultData(dsLen, DS, aStream);
+      LoadDVA(dvCount, DS, aStream);
     end;
     // set the dataspace memory manager indexes from the header
     DS.Head := H.Head.MemMgrHead;
@@ -2757,17 +2789,6 @@ begin
   FreeAndNil(fDSIndexMap);
   FreeAndNil(fDSList);
   inherited;
-end;
-
-function RoundToBytesize(addr : Word; size : byte) : Word;
-var
-  x : Word;
-begin
-  x := Word(addr mod size);
-  if x <> 0 then
-    Result := Word(addr + size - x)
-  else
-    Result := addr;
 end;
 
 function TDataspace.FinalizeDataspace(DS : TDSBase; addr : Word) : Word;

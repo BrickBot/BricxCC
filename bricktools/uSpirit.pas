@@ -176,7 +176,7 @@ type
 	  function Version(var rom : Cardinal; var ram : Cardinal) : boolean; virtual; abstract;
     function TransmitPower(aLevel : TTransmitLevel) : boolean; virtual; abstract;
 
-    function Poll(aSrc, aNum : integer) : integer; virtual; abstract;
+    function Poll(aSrc, aNum : integer) : variant; virtual; abstract;
     function StartTask(aTask : integer) : boolean; virtual; abstract;
     function StopTask(aTask : integer) : boolean; virtual; abstract;
     function StopAllTasks : boolean; virtual; abstract;
@@ -188,7 +188,7 @@ type
     function ClearMemory : boolean; virtual; abstract;
 
     function GetOutputStatus(aOut : integer) : integer; virtual; abstract;
-    function GetVariableValue(aVar: integer): integer; virtual; abstract;
+    function GetVariableValue(aVar: integer): variant; virtual; abstract;
     function GetInputValue(aIn: integer): integer; virtual; abstract;
     function GetMessageValue(aNum : integer) : integer; virtual; abstract;
     function GetTimerValue(aNum : integer) : integer; virtual; abstract;

@@ -102,7 +102,7 @@ type
     function Version(var rom : Cardinal; var ram : Cardinal) : boolean; override;
     function TransmitPower(aLevel : TTransmitLevel) : boolean; override;
 
-    function Poll(aSrc, aNum : integer) : integer; override;
+    function Poll(aSrc, aNum : integer) : variant; override;
     function StartTask(aTask : integer) : boolean; override;
     function StopTask(aTask : integer) : boolean; override;
     function StopAllTasks : boolean; override;
@@ -114,7 +114,7 @@ type
     function ClearMemory : boolean; override;
 
     function GetOutputStatus(aOut : integer) : integer; override;
-    function GetVariableValue(aVar: integer): integer; override;
+    function GetVariableValue(aVar: integer): variant; override;
     function GetInputValue(aIn: integer): integer; override;
     function GetMessageValue(aNum : integer) : integer; override;
     function GetTimerValue(aNum : integer) : integer; override;
@@ -521,7 +521,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.Poll(aSrc, aNum: integer): integer;
+function TFakeSpirit.Poll(aSrc, aNum: integer): variant;
 var
   bOpen : boolean;
 begin
@@ -1324,7 +1324,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.GetVariableValue(aVar : integer) : integer;
+function TFakeSpirit.GetVariableValue(aVar : integer) : variant;
 var
   bOpen : boolean;
 begin

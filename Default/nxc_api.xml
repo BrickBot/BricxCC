@@ -13272,6 +13272,58 @@ WriteI2CRegister(S1, US_REG_CM_INTERVAL, 0x2);
 ]]>
     </CodeSample>
 </Function>
+<!--
+int isspace ( int c );
+Checks if parameter c is a white-space character.
+For the purpose of this function, standard white-space characters are:
+' ' (0x20) space (SPC) '\t' (0x09) horizontal tab (TAB) '\n' (0x0a) newline (LF)
+'\v' (0x0b) vertical tab (VT) '\f' (0x0c) feed (FF) '\r' (0x0d) carriage return (CR)
+
+int isalnum ( int c );
+Checks if parameter c is either a decimal digit or an uppercase or lowercase letter.
+
+int isdigit ( int c );
+Checks if parameter c is a decimal digit character.
+Decimal digits are any of: 0 1 2 3 4 5 6 7 8 9
+
+int isalpha ( int c );
+Checks if parameter c is either an uppercase or a lowercase alphabetic letter.
+
+int isupper ( int c );
+Checks if parameter c is an uppercase alphabetic letter.
+In the default C locale, an uppercase letter is any of: A B C D E F G H I J K L M N O P Q R S T U V W X Y Z
+
+int islower ( int c );
+Checks if parameter c is a lowercase alphabetic letter.
+In the default C locale, a lowercase letter is any of: a b c d e f g h i j k l m n o p q r s t u v w x y z.
+
+int iscntrl ( int c );
+Checks if parameter c is a control character.
+For the standard ASCII character set, control characters are those between ASCII codes 0x00 (NUL) and 0x1f (US), plus 0x7f (DEL).
+The opposite of iscntrl is isprint, which is true for all characters that are not control characters.
+
+int isprint ( int c );
+Checks if parameter c is a printable character. A printable character is any character that is not a control character.
+For the standard ASCII character set, control characters are those between ASCII codes 0x00 (NUL) and 0x1f (US), plus 0x7f (DEL). Therefore, printable characters are all but these.
+isgraph returns true for the same cases as isprint except for the whitespace characters (like ' '), which return true when checked with isprint but false when checked with isgraph.
+
+int isgraph ( int c );
+Check if character has graphical representation
+Checks if parameter c is a character with graphical representation. The characters with graphical representation are all those characters than can be printed (as determined by isprint) except for whitespace characters (like ' '), which are not considered isgraph characters.
+
+int ispunct ( int c );
+Checks if parameter c is a punctuation character. For the purpose of this function, a punctuation character is any graphic character (as in isgraph) that is not alphanumeric (as in isalnum).
+
+int isxdigit ( int c );
+Checks if parameter c is a hexdecimal digit character.
+Hexadecimal digits are any of: 0 1 2 3 4 5 6 7 8 9 a b c d e f A B C D E F
+
+int tolower ( int c );
+Converts parameter c to its lowercase equivalent if c is an uppercase letter and has a lowercase equivalent. If no such conversion is possible, the value returned is c unchanged.
+
+int toupper ( int c );
+Converts parameter c to its uppercase equivalent if c is a lowercase letter and has an uppercase equivalent. If no such conversion is possible, the value returned is c unchanged.
+-->
     </Functions>
     <Keywords>
 <!--

@@ -104,7 +104,7 @@ type
 	  function Version(var rom : Cardinal; var ram : Cardinal) : boolean; override;
     function TransmitPower(aLevel : TTransmitLevel) : boolean; override;
 
-    function Poll(aSrc, aNum : integer) : integer; override;
+    function Poll(aSrc, aNum : integer) : variant; override;
     function StartTask(aTask : integer) : boolean; override;
     function StopTask(aTask : integer) : boolean; override;
     function StopAllTasks : boolean; override;
@@ -116,7 +116,7 @@ type
     function ClearMemory : boolean; override;
 
     function GetOutputStatus(aOut : integer) : integer; override;
-    function GetVariableValue(aVar: integer): integer; override;
+    function GetVariableValue(aVar: integer): variant; override;
     function GetInputValue(aIn: integer): integer; override;
     function GetMessageValue(aNum : integer) : integer; override;
     function GetTimerValue(aNum : integer) : integer; override;
@@ -2891,7 +2891,7 @@ begin
   Result := Poll(kRCX_TimerType, aNum);
 end;
 
-function TFantomSpirit.GetVariableValue(aVar: integer): integer;
+function TFantomSpirit.GetVariableValue(aVar: integer): variant;
 begin
   Result := Poll(kRCX_VariableType, aVar);
 end;
@@ -2949,7 +2949,7 @@ begin
   if aSnd = 0 then Exit;
 end;
 
-function TFantomSpirit.Poll(aSrc, aNum: integer): integer;
+function TFantomSpirit.Poll(aSrc, aNum: integer): variant;
 var
   valid, calibrated, res : boolean;
   stype, smode : byte;
@@ -3022,13 +3022,15 @@ begin
                   Result := Integer(BytesToCardinal(buffer.Data[0],
                     buffer.Data[1], buffer.Data[2], buffer.Data[3]));
               else
-                Result := 0; // floats are a problem...
+                Result := CardinalToSingle(BytesToCardinal(buffer.Data[0],
+                    buffer.Data[1], buffer.Data[2], buffer.Data[3]));
               end;
             end;
           end
           else if dst = dsArray then
           begin
             // read first value from array?????
+            Result := 0;
           end;
         end;
       end;
