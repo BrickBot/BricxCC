@@ -550,6 +550,7 @@ type
     fMaxErrors: word;
     fFirmwareVersion: word;
     fOnCompilerStatusChange: TCompilerStatusChangeEvent;
+    fMaxPreProcDepth: word;
     procedure SetCaseSensitive(const Value: boolean);
     procedure SetStandardDefines(const Value: boolean);
     procedure SetExtraDefines(const Value: boolean);
@@ -627,6 +628,7 @@ type
     function  GetNXTInstruction(const idx : integer) : NXTInstruction;
     procedure ReportProblem(const lineNo : integer; const fName, line, msg : string; err : boolean);
     procedure ProcessASMLine(aStrings : TStrings; idx : integer);
+    function  ReplaceSpecialStringCharacters(const line : string) : string;
     procedure HandleConstantExpressions(AL : TAsmLine);
     procedure ProcessSpecialFunctions(AL : TAsmLine);
     procedure HandlePseudoOpcodes(AL : TAsmLine; op : TOpCode{; const args : string});
@@ -703,6 +705,7 @@ type
     property  FirmwareVersion : word read fFirmwareVersion write SetFirmwareVersion;
     property  IgnoreSystemFile : boolean read fIgnoreSystemFile write fIgnoreSystemFile;
     property  MaxErrors : word read fMaxErrors write fMaxErrors;
+    property  MaxPreprocessorDepth : word read fMaxPreProcDepth write fMaxPreProcDepth;
     property  OnCompilerMessage : TOnNBCCompilerMessage read fOnCompMSg write fOnCompMsg;
     property OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write fOnCompilerStatusChange;
   end;
@@ -3584,6 +3587,9 @@ begin
       begin
         x := Ord(sargs[i]);
         case x of
+          3 : AddValue(9);  // tab
+          4 : AddValue(10); // lf
+          5 : AddValue(13); // cr
           6 : AddValue(Ord('\'));
           7 : AddValue(Ord(''''));
           8 : AddValue(Ord('"'));
@@ -3813,7 +3819,8 @@ begin
       for i := 0 to ValueCount - 2 do // skip the 0 at the end
       begin
         // check that all values are in the alphanumeric ASCII range
-        if (Values[i] < 32) or (Values[i] > 126) then
+        if not (Values[i] in [9, 10, 13, 32..126]) then
+//        if (Values[i] < 32) or (Values[i] > 126) then
         begin
           bIsString := False;
           break;
@@ -3827,7 +3834,10 @@ begin
       begin
         x := Chr(Values[i]);
         case x of
-          '"', '''' : Result := Result + '\' + x;
+          '"', '''', '\' : Result := Result + '\' + x;
+          #9 : Result := Result + '\t';
+          #10 : Result := Result + '\n';
+          #13 : Result := Result + '\r';
         else
           Result := Result + x;
         end;
@@ -4177,6 +4187,7 @@ end;
 constructor TRXEProgram.Create;
 begin
   inherited;
+  fMaxPreprocDepth  := 10;
   fMaxErrors        := 0;
   fIgnoreSystemFile := False;
   fEnhancedFirmware := False;
@@ -4438,7 +4449,7 @@ begin
     fShiftCount       := 0;
     fMainStateLast    := masCodeSegment; // used only when we enter a block comment
     fMainStateCurrent := masCodeSegment; // default state
-    P := TLangPreprocessor.Create(TNBCLexer, ExtractFilePath(ParamStr(0)), lnNBC);
+    P := TLangPreprocessor.Create(TNBCLexer, ExtractFilePath(ParamStr(0)), lnNBC, MaxPreprocessorDepth);
     try
       P.Defines.AddDefines(Defines);
       if EnhancedFirmware then
@@ -4517,7 +4528,7 @@ end;
 
 function CommasToSpaces(const line : string) : string;
 var
-  i : integer;
+  i, len : integer;
   bInString : boolean;
   ch : Char;
 begin
@@ -4527,10 +4538,14 @@ begin
     // if there is a string on this line then process a character at a time
     bInString := False;
     Result := '';
-    for i := 1 to Length(line) do begin
+    len := Length(line);
+    for i := 1 to len do begin
       ch := line[i];
       if (ch = ',') and not bInString then
         ch := ' '
+//      else if (not bInString and (ch = '''')) or
+//              (bInString and (ch = '''') and
+//               ((i = len) or (line[i+1] <> ''''))) then
       else if ch = '''' then
         bInString := not bInString;
       Result := Result + ch;
@@ -4850,10 +4865,7 @@ begin
     // do nothing if line is blank or a comment
     if (line = '') or (Pos(';', line) = 1) or (Pos('//', line) = 1) then
       Exit;
-    // replace \' with #07, replace \" with #08, replace \\ with #06
-    line := Replace(Replace(Replace(Replace(line, '\\', #06), '\"', #08), '\''', #07), '"', '''');
-    // replace " with '
-    line := Replace(line, '"', '''');
+    line := ReplaceSpecialStringCharacters(line);
     i := Pos('#line ', line);
     if i = 1 then
     begin
@@ -7046,6 +7058,26 @@ procedure TRXEProgram.DoCompilerStatusChange(const Status: string);
 begin
   if Assigned(fOnCompilerStatusChange) then
     fOnCompilerStatusChange(Self, Status);
+end;
+
+function TRXEProgram.ReplaceSpecialStringCharacters(const line: string): string;
+begin
+  Result := line;
+  if Pos('#', line) = 1 then Exit;
+  // replace \\ with #06
+  Result := Replace(Result, '\\', #06);
+  // replace \" with #08
+  Result := Replace(Result, '\"', #08);
+  // replace \' with #07
+  Result := Replace(Result, '\''', #07);
+  // replace \t with #03
+  Result := Replace(Result, '\t', #03);
+  // replace \n with #04
+  Result := Replace(Result, '\n', #04);
+  // replace \r with #05
+  Result := Replace(Result, '\r', #05);
+  // replace " with '
+  Result := Replace(Result, '"', '''');
 end;
 
 { TAsmLine }
