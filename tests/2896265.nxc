@@ -1,0 +1,23 @@
+struct Struct_algo
+{
+        int last_area;
+        int multl;
+        int constl;
+        int diffl;
+        int multr;
+        int constr;
+        int diffr;
+};
+Struct_algo algo;
+
+typedef unsigned const int fooish;
+
+fooish testing = 12;
+
+task main()
+{
+  string message = "12345";
+  algo.multl = message[1];
+  algo.constr = message[2];
+  algo.constr = testing;
+}

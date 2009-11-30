@@ -94,6 +94,8 @@ void cCmdDrawFilledCircle(int cx, int cy, int radius)
 task main()
 {
   cCmdDrawFilledCircle(15, 65, 4);
+  cCmdDrawFilledCircle(35, 35, 20);
+  cCmdDrawFilledCircle(85, 15, 10);
 //  RectOut(11, 64, 8, 0, DRAW_OPT_FILL_SHAPE);
   Wait(SEC_10);
 }

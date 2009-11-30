@@ -1,0 +1,33 @@
+//enum [tag] {enum-list} [declarator];   // for definition of enumerated type
+// values start from 0 and increment upward by 1
+enum { ONE, TWO, THREE };
+// optional equal sign with constant expression for the value
+enum { SMALL=10, MEDIUM=100, LARGE=1000 };
+// names without equal sign increment by one from last name's value
+enum { FRED=1, WILMA, BARNEY, BETTY };
+// optional named type (like a typedef)
+enum TheSeasons { SPRING, SUMMER, FALL, WINTER };
+// optional variable at end
+enum Days {
+   saturday,            // saturday = 0 by default
+   sunday = 0x0,          // sunday = 0 as well
+   monday,              // monday = 1
+   tuesday,             // tuesday = 2
+   wednesday,           // etc.
+   thursday,
+   friday
+} today;                // Variable today has type Days
+
+Days tomorrow;
+
+task main()
+{
+  TheSeasons test = FALL;
+  today = monday;
+  NumOut(0, LCD_LINE1, THREE);
+  NumOut(0, LCD_LINE1, MEDIUM);
+  NumOut(0, LCD_LINE1, FRED);
+  NumOut(0, LCD_LINE1, SPRING);
+  NumOut(0, LCD_LINE1, friday);
+}
+

@@ -1,0 +1,50 @@
+mutex mut;
+mutex mut2;
+
+void bar()
+{
+  Acquire(mut2);
+  TextOut(0, LCD_LINE2, "Thread 2 acquired mutex2");
+  Wait(2000);
+  TextOut(0, LCD_LINE2, "Thread 2 release mutex2");
+  Wait(2000);
+  Release(mut2);
+}
+
+task threadOne(){
+  while(1)
+  {
+    Acquire(mut);
+    TextOut(0, LCD_LINE1, "Thread 1 acquired mutex");
+    Wait(1000);
+    TextOut(0, LCD_LINE1, "Thread 1 release mutex");
+    Wait(1000);
+    Release(mut);
+  }
+}
+
+void foo()
+{
+  Acquire(mut);
+  TextOut(0, LCD_LINE1, "Thread 2 acquired mutex");
+  Wait(2000);
+  TextOut(0, LCD_LINE1, "Thread 2 release mutex");
+  Wait(2000);
+  Release(mut);
+}
+
+task threadTwo(){
+  while(1)
+  {
+    foo();
+    bar();
+  }
+}
+
+task main(){
+  Precedes(threadOne, threadTwo);
+//  start threadOne;
+//  start threadTwo;
+}
+
+

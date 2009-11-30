@@ -1,0 +1,11 @@
+task main(){
+
+string lf = "\n" ; // Line Feed
+string cr = "\r" ; // Carriage Return
+string ENDL = StrCat(lf, cr);
+
+StrCat("hola" , ENDL); // Correct
+StrCat("hola" , "'" ); // Correct
+StrCat("hola" , "'" , ENDL); // Failed
+}
+

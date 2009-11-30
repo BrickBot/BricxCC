@@ -1,0 +1,25 @@
+int rval;
+
+struct Person {
+  int age;
+  byte height;
+};
+
+task main()
+{
+  Person p;
+  while (true) {
+    float f;
+    for (int i=0; i < 10000; i++) {
+      rval = Random();
+      p.age = Random(60);
+      p.height = 60 + Random(24);
+      f = sqrt(p.height);
+      NumOut(0, LCD_LINE1, rval, true);
+      NumOut(0, LCD_LINE2, p.age);
+      NumOut(0, LCD_LINE3, p.height);
+      NumOut(0, LCD_LINE4, f);
+      Wait(1000);
+    }
+  }
+}

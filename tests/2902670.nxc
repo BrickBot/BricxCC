@@ -1,0 +1,28 @@
+int blah1 () {
+  byte baz[1];
+  baz[0] = 99;
+  return baz[0];
+}
+
+float blah2() {
+  byte baz[1];
+  baz[0] = 99;
+  return baz[0];
+}
+
+byte blah3() {
+  int baz[1];
+  baz[0] = 99;
+  return baz[0];
+}
+
+task main () {
+  int foo1 = 0;
+  foo1 = blah1();
+  // Displays 0
+  NumOut(0, LCD_LINE1, foo1);
+  NumOut(0, LCD_LINE2, blah2());
+  NumOut(0, LCD_LINE3, blah3());
+  while(true);
+}
+
