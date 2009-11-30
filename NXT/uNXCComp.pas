@@ -38,6 +38,7 @@ type
     fFirmwareVersion: word;
     fStackVarNames : TStringList;
     fOnCompilerStatusChange: TCompilerStatusChangeEvent;
+    fMaxPreProcDepth: word;
     function FunctionParameterTypeName(const name: string; idx: integer): string;
     function LocalDataType(const n: string): char;
     function LocalTypeName(const n: string): string;
@@ -58,6 +59,9 @@ type
     procedure push;
     procedure SetStatementType(const Value: TStatementType);
     procedure DoCompilerStatusChange(const Status: string);
+    procedure DoCommonFuncProcDecl(var bProtoExists: boolean;
+      var Name: string; const tname: string; const tok, dt: char; bInline,
+      bSafeCall: boolean);
   protected
     fDD: TDataDefs;
     fCurrentStruct : TDataspaceEntry;
@@ -218,10 +222,10 @@ type
     procedure AddFunctionParameter(pname, varname, tname : string; idx : integer;
       ptype : char; bIsConst, bIsRef, bIsArray : boolean; aDim : integer;
       bHasDefault : boolean; defValue : string);
-    function  FormalList(protoexists: boolean; procname: string): integer;
+    function  FormalList(protoexists: boolean; var procname: string): integer;
     procedure ProcedureBlock;
     procedure InitializeGlobalArrays;
-    procedure FunctionBlock(const Name, tname : string; dt : char; bInline, bSafeCall : boolean);
+    procedure FunctionBlock(Name, tname : string; dt : char; bInline, bSafeCall : boolean);
 //    procedure Error(s: string);
     procedure AbortMsg(s: string);
     procedure Expected(s: string);
@@ -341,6 +345,7 @@ type
     procedure DoSubString;
     procedure DoStrReplace;
     procedure DoStrToNum;
+    procedure MoveToCorrectRegister(dt : char);
     procedure ReportProblem(const lineNo: integer; const fName, msg: string; const err: boolean);
     procedure Scan;
     function  IsWhite(c: char): boolean;
@@ -366,6 +371,7 @@ type
     function  TempSignedLongName : string;
     function  TempUnsignedLongName : string;
     function  TempFloatName : string;
+    function  RegisterNameByStatementType(st : TStatementType; name : string = '') : string;
     function  RegisterName(name : string = '') : string;
     function  SignedRegisterName(name : string = '') : string;
     function  UnsignedRegisterName(name : string = '') : string;
@@ -434,6 +440,7 @@ type
     function  GetUDTType(n : string) : string;
     procedure AddTypeNameAlias(const lbl, args : string);
     function  TranslateTypeName(const name : string) : string;
+    procedure ProcessEnum(bGlobal : boolean);
     procedure ProcessTypedef;
     procedure ProcessStruct(bTypeDef : boolean = False);
     procedure CheckForTypedef(var bUnsigned, bConst, bInline, bSafeCall : boolean);
@@ -478,6 +485,7 @@ type
     property  IgnoreSystemFile : boolean read fIgnoreSystemFile write fIgnoreSystemFile;
     property  SafeCalls : boolean read fSafeCalls write fSafeCalls;
     property  MaxErrors : word read fMaxErrors write fMaxErrors;
+    property  MaxPreprocessorDepth : word read fMaxPreProcDepth write fMaxPreProcDepth;
     property  OnCompilerMessage : TOnCompilerMessage read fOnCompMSg write fOnCompMsg;
     property  ErrorCount : integer read fProgErrorCount;
     property OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write fOnCompilerStatusChange;
@@ -501,7 +509,7 @@ var
   LCount : integer = 0;
 
 const
-  MAXGLOBALS = 1000;
+  MAXGLOBALS = 10000;
   MAXPARAMS  = 32;
 
 {--------------------------------------------------------------}
@@ -536,8 +544,8 @@ var
 { Definition of Keywords and Token Types }
 
 const
-  NKW  = 32; //18;
-  NKW1 = 33; //19;
+  NKW  = 33; //18;
+  NKW1 = 34; //19;
 
 const
   KWlist: array[1..NKW] of string =
@@ -548,7 +556,7 @@ const
                'start', 'stop', 'priority',
                'unsigned', 'long', 'short', 'int',
                'char', 'bool', 'byte', 'mutex', 'float', 'string',
-               'end');
+               'enum', 'end');
 
 const                                     // 'xileweRWve'
   KWcode: array[1..NKW1+1] of Char =
@@ -559,7 +567,7 @@ const                                     // 'xileweRWve'
      TOK_START, TOK_STOP, TOK_PRIORITY,
      TOK_UNSIGNED, TOK_LONGDEF, TOK_SHORTDEF, TOK_SHORTDEF,
      TOK_CHARDEF, TOK_BYTEDEF, TOK_BYTEDEF, TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF,
-     TOK_END,
+     TOK_ENUM, TOK_END,
      #0);
 
 const
@@ -1485,7 +1493,11 @@ begin
   else
   begin
     bEscapeNext := False;
-    Value := '''' + Look;
+    Value := '''';
+    if (Look = '''') then
+      Value := Value + '\'''
+    else
+      Value := Value + Look;
     repeat
       if not bEscapeNext then
         bEscapeNext := Look = '\'
@@ -3701,9 +3713,26 @@ begin
           end;
           inc(acount);
           Scan;
-          if Token = TOK_COMMA then begin
-            Next;
+          if acount < protoreqcount then
+          begin
+            MatchString(TOK_COMMA);
             Scan;
+          end
+          else begin
+            // we are now supposed to either have a comma or a close paren
+            // depending on the value of acount compared to protocount
+            if (acount < protocount) and not (Token in [TOK_COMMA, TOK_CLOSEPAREN]) then
+            begin
+              MatchString(TOK_COMMA);
+              Scan;
+            end
+            else
+            begin
+              if Token = TOK_COMMA then begin
+                Next;
+                Scan;
+              end;
+            end;
           end;
         end;
         if protoreqcount > acount then
@@ -4563,6 +4592,12 @@ begin
     if StatementType <> stFloat then
       StatementType := stFloat;
   end;
+  if Pos('__URETVAL__', Result) > 0 then
+  begin
+    Result := Replace(Result, '__URETVAL__', UnsignedRegisterName);
+    if StatementType <> stUnsigned then
+      StatementType := stUnsigned;
+  end;
   Result := Replace(Result, '__STRRETVAL__', StrRetValName);
   Result := Replace(Result, '__STRBUFFER__', StrBufName);
   Result := Replace(Result, '__STRTMPBUFFER__', StrTmpBufName);
@@ -5310,6 +5345,9 @@ begin
       TOK_TYPEDEF : begin
         ProcessTypedef;
       end;
+      TOK_ENUM: begin
+        ProcessEnum(true);
+      end;
       TOK_STRUCT : begin
         ProcessStruct(False);
       end;
@@ -5383,7 +5421,7 @@ begin
   if Token = TOK_IDENTIFIER then
     CheckForTypedef(bIsUnsigned, bIsConst, bDummy, bDummy);
   while (Token in [TOK_DIRECTIVE, TOK_UNSIGNED, TOK_CONST,
-    TOK_TYPEDEF, TOK_STRUCT,
+    TOK_TYPEDEF, TOK_STRUCT, TOK_ENUM,
     TOK_USERDEFINEDTYPE,
     TOK_LONGDEF, TOK_SHORTDEF, TOK_CHARDEF,
     TOK_BYTEDEF, TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF]) and not endofallsource do
@@ -5405,6 +5443,9 @@ begin
       end;
       TOK_TYPEDEF : begin
         ProcessTypedef;
+      end;
+      TOK_ENUM : begin
+        ProcessEnum(False);
       end;
       TOK_STRUCT : begin
         ProcessStruct(False);
@@ -5435,7 +5476,7 @@ const
   HASPROTO = 2;
   HASNOPROTO = 3;
 
-function TNXCComp.FormalList(protoexists : boolean; procname : string) : integer;
+function TNXCComp.FormalList(protoexists : boolean; var procname : string) : integer;
 var
   protocount : integer;
   pltype : integer;
@@ -5710,9 +5751,7 @@ end;
 procedure TNXCComp.ProcedureBlock;
 var
   Name : string;
-  procexists : integer;
   protoexists, bIsSub : boolean;
-  pltype : integer;
   savedToken : char;
 begin
   while Token in [TOK_INLINE, TOK_SAFECALL, TOK_PROCEDURE, TOK_TASK] do
@@ -5741,8 +5780,12 @@ begin
     DoCompilerStatusChange(Format(sNXCProcedure, [Name]));
     if bIsSub and (Name = 'main') then
       AbortMsg(sMainMustBeTask);
-    procexists := GlobalIdx(Name);
     protoexists := False;
+    Next;
+
+    DoCommonFuncProcDecl(protoexists, Name, '', savedToken, #0, AmInlining, fSafeCalling);
+(*
+    procexists := GlobalIdx(Name);
     if procexists <> 0 then begin
       if not (GS_Type[procexists] in [TOK_PROCEDURE, TOK_TASK]) then
         Duplicate(Name);
@@ -5760,10 +5803,8 @@ begin
       AddEntry(Name, savedToken, '', '', False, fSafeCalling);
       GS_ReturnType[NumGlobals] := #0;
     end;
-    Next;
+
     OpenParen;
-    fCurrentThreadName := Name;
-    fThreadNames.Add(Name);
     if bIsSub then
       pltype := FormalList(protoexists, Name)
     else
@@ -5772,6 +5813,10 @@ begin
     if Value = 'void' then
       Next;
     CloseParen;
+
+    fCurrentThreadName := Name;
+    fThreadNames.Add(Name);
+
     // allow for "stuff" after the close parenthesis and before either ; or {
     Scan;
     ProcessDirectives; // just in case there are any between the ) and the {
@@ -5784,7 +5829,6 @@ begin
       pltype := 1;
       Next;
     end;
-//    OptionalSemi;
     if Token = TOK_BEGIN then
     begin
       if pltype = 1 then
@@ -5793,6 +5837,11 @@ begin
         GS_Size[procexists] := 1
       else
         GS_Size[NumGlobals] := 1;
+    end;
+//    OptionalSemi;
+*)
+    if Token = TOK_BEGIN then
+    begin
       Prolog(Name, bIsSub);
       MatchString(TOK_BEGIN);
       if Name = 'main' then
@@ -5824,20 +5873,94 @@ begin
   end;
 end;
 
-procedure TNXCComp.FunctionBlock(const Name, tname : string; dt: char;
-  bInline, bSafeCall : boolean);
+procedure TNXCComp.DoCommonFuncProcDecl(var bProtoExists : boolean;
+  var Name : string; const tname : string;
+  const tok, dt: char;  bInline, bSafeCall : boolean);
 var
   procexists : integer;
-  protoexists : boolean;
   pltype : integer;
+  bIsSub : boolean;
+begin
+  bIsSub := tok = TOK_PROCEDURE;
+
+// TODO: move this code after the processing of the formal list of parameters
+// so that we can decorate the function name before checking for duplicates
+
+  procexists := GlobalIdx(Name);
+  if procexists <> 0 then begin
+    if not (GS_Type[procexists] in [TOK_PROCEDURE, TOK_TASK]) then
+      Duplicate(Name);
+    if GS_Size[procexists] = 0 then
+      bProtoExists := True
+    else
+      Duplicate(Name);
+  end
+  else begin
+    // define a mutex for this function if safecall
+    if bIsSub and (SafeCalls or bSafeCall) then
+      EmitMutexDeclaration(Name);
+    AddEntry(Name, tok, tname, '', False, bSafeCall);
+    GS_ReturnType[NumGlobals] := dt;
+    if (dt <> #0) and (IsArrayType(dt) or IsUDT(dt)) then
+      AddEntry(Format('__result_%s', [Name]), dt, tname, '');
+  end;
+
+  OpenParen;
+  if bIsSub then
+    pltype := FormalList(bProtoExists, Name)
+  else begin
+    pltype := 0;
+    // allow for the possibility that tasks have (void) args
+    if Value = 'void' then
+      Next;
+  end;
+  CloseParen;
+
+  fCurrentThreadName := Name;
+  fThreadNames.Add(Name);
+
+  // allow for "stuff" after the close parenthesis and before either ; or {
+  Scan;
+  ProcessDirectives; // just in case there are any in between the ) and the {
+  // now it has to either be a ; or a {
+  if not (Token in [TOK_SEMICOLON, TOK_BEGIN]) then
+    AbortMsg(sInvalidFuncDecl);
+  if Token = TOK_SEMICOLON then
+  begin
+    // this is a function declaration (a prototype) - not a function definition
+    pltype := 1;
+    Next;
+  end;
+  if Token = TOK_BEGIN then
+  begin
+    if pltype = 1 then
+      AbortMsg(sNotValidForPrototype);
+    if bProtoExists then
+      GS_Size[procexists] := 1
+    else
+      GS_Size[NumGlobals] := 1;
+  end;
+//  OptionalSemi;
+end;
+
+procedure TNXCComp.FunctionBlock(Name, tname : string; dt: char;
+  bInline, bSafeCall : boolean);
+var
+  protoexists : boolean;
 begin
   if bInline then
     IncrementInlineDepth;
 //  fInlining := bInline;
   if Name = 'main' then
     AbortMsg(sMainMustBeTask);
-  procexists := GlobalIdx(Name);
   protoexists := False;
+  DoCommonFuncProcDecl(protoexists, Name, tname, TOK_PROCEDURE, dt, bInline, bSafeCall);
+(*
+  OpenParen;
+  pltype := FormalList(protoexists, Name);
+  CloseParen;
+
+  procexists := GlobalIdx(Name);
   if procexists <> 0 then begin
     if not (GS_Type[procexists] in [TOK_PROCEDURE, TOK_TASK]) then
       Duplicate(Name);
@@ -5855,11 +5978,10 @@ begin
     if IsArrayType(dt) or IsUDT(dt) then
       AddEntry(Format('__result_%s', [Name]), dt, tname, '');
   end;
-  OpenParen;
+
   fCurrentThreadName := Name;
   fThreadNames.Add(Name);
-  pltype := FormalList(protoexists, Name);
-  CloseParen;
+
   // allow for "stuff" after the close parenthesis and before either ; or {
   Scan;
   ProcessDirectives; // just in case there are any in between the ) and the {
@@ -5872,7 +5994,6 @@ begin
     pltype := 1;
     Next;
   end;
-//  OptionalSemi;
   if Token = TOK_BEGIN then
   begin
     if pltype = 1 then
@@ -5881,6 +6002,11 @@ begin
       GS_Size[procexists] := 1
     else
       GS_Size[NumGlobals] := 1;
+  end;
+//  OptionalSemi;
+*)
+  if Token = TOK_BEGIN then
+  begin
     Prolog(Name, True);
     MatchString(TOK_BEGIN);
     ClearLocals;
@@ -5937,6 +6063,7 @@ end;
 constructor TNXCComp.Create;
 begin
   inherited Create;
+  fMaxPreprocDepth := 10;
   fMaxErrors := 0;
   NumGlobals := 0;
   endofallsource := False;
@@ -6803,7 +6930,7 @@ end;
 
 procedure TNXCComp.DoReturn;
 var
-  dt : char;
+  rdt : char;
   idx : integer;
   bFuncStyle : boolean;
 begin
@@ -6811,10 +6938,10 @@ begin
   idx := GlobalIdx(fCurrentThreadName);
   if GS_Type[idx] <> TOK_PROCEDURE then
     AbortMsg(sReturnInvalid);
-  dt := FunctionReturnType(fCurrentThreadName);
+  rdt := FunctionReturnType(fCurrentThreadName);
   Next;
   // leave return value on "stack"
-  if dt = TOK_STRINGDEF then
+  if rdt = TOK_STRINGDEF then
   begin
     bFuncStyle := Token = TOK_OPENPAREN;
     if bFuncStyle then
@@ -6823,14 +6950,14 @@ begin
     if bFuncStyle then
       Next;
   end
-  else if IsUDT(dt) or IsArrayType(dt) then
+  else if IsUDT(rdt) or IsArrayType(rdt) then
   begin
     // currently this code only supports returning a variable for UDTs or Arrays
     // TODO : add support for an array or UDT expression
     bFuncStyle := Token = TOK_OPENPAREN;
     if bFuncStyle then
       Next;
-    fLHSDataType := dt;
+    fLHSDataType := rdt;
     fLHSName := Format('__result_%s',[fCurrentThreadName]);
     try
       NumericFactor;
@@ -6848,11 +6975,10 @@ begin
     if bFuncStyle then
       Next;
   end
-  else if dt <> #0 then
+  else if rdt <> #0 then
   begin
     BoolExpression;
-    if (dt in UnsignedIntegerTypes) and (StatementType <> stUnsigned) then
-      EmitLn(Format('mov %s, %s', [UnsignedRegisterName, RegisterName])); 
+    MoveToCorrectRegister(rdt);
   end;
 //  Semi;
   EmitLn('return');
@@ -6917,7 +7043,7 @@ var
   i, idx : integer;
   tmpFile, tmpMsg : string;
 begin
-  P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)), lnNXC);
+  P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)), lnNXC, MaxPreprocessorDepth);
   try
     P.AddPoundLineToMultiLineMacros := True;
     P.Defines.AddDefines(Defines);
@@ -7065,6 +7191,23 @@ end;
 function TNXCComp.TempFloatName: string;
 begin
   Result := Format('__tmpfloat%s', [fCurrentThreadName]);
+end;
+
+function TNXCComp.RegisterNameByStatementType(st : TStatementType; name : string = '') : string;
+begin
+  if fUDTOnStack <> '' then
+  begin
+    Result := fUDTOnStack;
+  end
+  else
+  begin
+    if st = stFloat then
+      Result := FloatRegisterName(name)
+    else if st = stUnsigned then
+      Result := UnsignedRegisterName(name)
+    else
+    Result := SignedRegisterName(name);
+  end;
 end;
 
 function TNXCComp.RegisterName(name : string): string;
@@ -8333,6 +8476,96 @@ begin
   end;
 end;
 
+procedure TNXCComp.ProcessEnum(bGlobal : boolean);
+var
+  bNewType : boolean;
+  sTypeName, varName, eName : string;
+  iEnumVal : integer;
+  dt : Char;
+begin
+  // enums in NXC are unsigned bytes by default
+  dt        := TOK_BYTEDEF;
+  iEnumVal  := 0;
+  bNewType  := False;
+  sTypeName := '';
+  // enum [tag] { enumerators } [declarator];
+  // eat until semi-colon
+  Next;
+  Scan; // skip past the "enum" keyword
+  // optional type name
+  if Token = TOK_IDENTIFIER then
+  begin
+    bNewType := True;
+    sTypeName := Value;
+    Next;
+    Scan;
+  end;
+  MatchString(TOK_BEGIN);
+  Scan;
+  // process enumerators
+  while Token <> TOK_END do begin
+    // name [= val] ,
+    CheckIdent;
+    eName := Value;
+    Next;
+    if Token = '=' then begin
+      Next; // skip past the equal sign to the value
+      CheckNumeric;
+      iEnumVal := StrToIntDef(Value, 0);
+      Next; // skip past the value to comma or }
+    end;
+    dt := ValueToDataType(iEnumVal);
+    if bGlobal then
+    begin
+      AddEntry(eName, dt, sTypeName, '', True);
+      Allocate(eName, '', IntToStr(iEnumVal), sTypeName, dt);
+    end
+    else
+    begin
+      eName := ApplyDecoration(fCurrentThreadName, eName, fNestingLevel);
+      AddLocal(eName, dt, sTypeName, True, '');
+      // no need to allocate if we've already emitted this name&type
+      if fEmittedLocals.IndexOf(eName+sTypeName) = -1 then
+        Allocate(eName, '', IntToStr(iEnumVal), sTypeName, dt);
+    end;
+    inc(iEnumVal);
+    if Token <> TOK_END then
+    begin
+      Next;
+      Scan;
+    end;
+  end;
+  // should be at TOK_END
+  MatchString(TOK_END);
+  if bNewType then
+    AddTypeNameAlias(sTypeName, DataTypeToTypeName(dt));
+  // optional type name
+  if Token = TOK_IDENTIFIER then
+  begin
+    // declare a variable of this type (only valid if bNewType is true
+    if not bNewType then
+      AbortMsg(sInvalidEnumDecl);
+    varName := Value;
+    if bGlobal then
+    begin
+      AddEntry(varName, dt, sTypeName, '', False);
+      Allocate(varName, '', '', sTypeName, dt);
+    end
+    else
+    begin
+      varName := ApplyDecoration(fCurrentThreadName, varName, fNestingLevel);
+      AddLocal(varName, dt, sTypeName, False, '');
+      // no need to allocate if we've already emitted this name&type
+      if fEmittedLocals.IndexOf(varName+sTypeName) = -1 then
+        Allocate(varName, '', '', sTypeName, dt);
+    end;
+    Next;
+    Scan; // move past identifier
+  end;
+  Semi; // required semicolon
+  Scan;
+end;
+
 procedure TNXCComp.ProcessTypedef;
 var
   basetype, newtype : string;
@@ -9235,6 +9468,27 @@ begin
     Result := ParamConstantValue(name);
   end;
 }
+end;
+
+procedure TNXCComp.MoveToCorrectRegister(dt: char);
+var
+  cReg : string;
+  rst : TStatementType;
+begin
+  if dt in UnsignedIntegerTypes then begin
+    creg := UnsignedRegisterName;
+    rst  := stUnsigned;
+  end
+  else if dt = TOK_FLOATDEF then begin
+    creg := FloatRegisterName;
+    rst  := stFloat;
+  end
+  else begin
+    creg := SignedRegisterName;
+    rst  := stSigned;
+  end;
+  if rst <> StatementType then
+    EmitLn(Format('mov %s, %s', [creg, RegisterName]));
 end;
 
 end.

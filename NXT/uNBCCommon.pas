@@ -1187,6 +1187,8 @@ function NBCFloatToStr(const AValue: Double): string;
 function StripQuotes(const str : string) : string;
 function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
   Strings: TStrings): Integer;
+function ValueToDataType(const value : integer) : char;
+function DataTypeToTypeName(const dt : char) : string;
 
 const
   TOK_SEMICOLON     = ';';
@@ -1204,6 +1206,7 @@ const
   TOK_CASE          = 'c';
   TOK_WHILE		      = 'w';
   TOK_FOR			      = 'f';
+  TOK_ENUM          = 'm';
   TOK_END			      = '}';
   TOK_APISTRFUNC    = 'E';
   TOK_APIFUNC       = 'F';
@@ -1509,6 +1512,42 @@ begin
   Result := ExtractStrings(Separators, WhiteSpace, Content, Strings);
 end;
 {$ENDIF}
+
+function ValueToDataType(const value : integer) : char;
+begin
+  if value < 0 then begin
+    Result := TOK_CHARDEF;
+    if value < Low(Shortint) then
+    begin
+      Result := TOK_SHORTDEF;
+      if value < Low(Smallint) then
+        Result := TOK_LONGDEF;
+    end;
+  end
+  else begin
+    Result := TOK_BYTEDEF;
+    if value > High(Byte) then
+    begin
+      Result := TOK_USHORTDEF;
+      if value > High(Word) then
+        Result := TOK_ULONGDEF;
+    end;
+  end;
+end;
+
+function DataTypeToTypeName(const dt : char) : string;
+begin
+  case dt of
+    TOK_CHARDEF		: Result := 'char';
+    TOK_SHORTDEF 	: Result := 'int';
+    TOK_LONGDEF   : Result := 'long';
+    TOK_BYTEDEF   : Result := 'byte';
+    TOK_USHORTDEF : Result := 'unsigned int';
+    TOK_ULONGDEF  : Result := 'unsigned long';
+  else
+    Result := 'unexpected type';
+  end;
+end;
 
 { TNBCExpParser }
 
