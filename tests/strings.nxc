@@ -1,5 +1,25 @@
 task main()
 {
-  TextOut(0, LCD_LINE1, "test\\\"xyz\'ama\\" );
+  string msg;
+  NumOut(0, LCD_LINE1, strlen("foobar"));
+  TextOut(0, LCD_LINE1, strcpy(msg, "foobar"));
+  TextOut(0, LCD_LINE1, strncpy(msg, "foobar", 3));
+  TextOut(0, LCD_LINE1, strcat(msg, " testing"));
+  TextOut(0, LCD_LINE1, strncat(msg, " testing", 3));
+  TextOut(0, LCD_LINE1, "test\\\"xyz\'ama\\\tx\ny\rz" );
+  if (strcmp(msg, "foobar") < 0) {
+    msg = "test";
+  }
+  if (strncmp(msg, "foobar", 3) < 0) {
+    msg = "test";
+  }
+  byte handle;
+  memcpy(msg, "foobar", 3); // actually ignores numeric input
+  printf("%d", 45);
+  sprintf(msg, "%f", 3.145);
+  fprintf(handle, "%d", 123);
+  TextOut(0, LCD_LINE1, msg);
+  memmove(msg, "foobar", 3); // actually ignores numeric input
+  TextOut(0, LCD_LINE1, msg);
   while(true);
 }

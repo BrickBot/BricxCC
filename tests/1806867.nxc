@@ -1,9 +1,13 @@
-void FooBar(string x, int y) {
+void FooBar(string x, int y, int z = 2, int p = 13) {
   // do stuff
 }
 
 
 task main()
 {
-  FooBar("test" 12);  // should not compile
+//  FooBar("test");  // should not compile (',' expected)
+//  FooBar("test" 12);  // should not compile  (',' expected)
+  FooBar("test", 12);  // should compile
+//  FooBar("test", 12 13);  // should not compile (',' expected)
+  FooBar("test", 12, 20, 40 50);  // should not compile (too many arguments)
 }

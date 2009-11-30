@@ -1,0 +1,10 @@
+task main()
+{
+  float f;
+  f = sqrt(-1);
+  NumOut(0, LCD_LINE1, f);
+  NumOut(0, LCD_LINE2, isNAN(f));
+  f = log(0);
+  NumOut(0, LCD_LINE3, f);
+  Wait(10000);
+}

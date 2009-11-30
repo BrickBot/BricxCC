@@ -1,0 +1,113 @@
+// working as of 2009-01-29 JCH (with exceptions as noted below)
+struct foobar {
+  int a;
+  int b;
+};
+
+struct location {
+  int x;
+  int y;
+  string foo; // nested strings cause file error! if stored in 2-d array
+  foobar test; // nested structs cause file error! if stored in 2-d array
+  int buf[]; // nested arrays cause file error! if stored in 2-d array
+};
+
+task main() {
+// initializing a 2-d+ array of structs causes File Error! abort
+// if the struct contains nested arrays or structs
+// !!! THIS IS EITHER A COMPILER BUG OR A FIRMWARE BUG !!!
+//  location array2[5][2];
+  location array[5];
+  location tmp;
+//  ArrayInit(array, tmp, 2);
+//  ArrayInit(array2, tmparray, 5);
+  foobar flakey;
+  int values[] = {1, 2, 3, 4};
+  flakey.a = 12;
+  flakey.b = 14;
+/*
+  // scalar members
+  array2[0][1].x = 2;    // valid code
+  array2[0][1].x++;      // valid code
+  array2[0][1].x += 14;  // valid code
+
+  // string members
+  array2[0][1].foo = "test";  // valid code
+  array2[0][1].foo += "_123"; // valid code
+
+  // nested structs
+  array2[0][1].test.a = 2;    // valid code
+  array2[0][1].test += 2;     // valid code
+  array2[0][1].test = flakey; // valid code
+
+  // array members
+  array2[0][1].buf = values;  // valid code
+  array2[0][1].buf[0] = 123;  // valid code
+
+  tmp = array2[0][1];
+  NumOut(0, LCD_LINE1, tmp.buf[0]);   // 123       (OKAY)
+  NumOut(0, LCD_LINE2, tmp.test.a);   // 12        (OKAY)
+  NumOut(0, LCD_LINE3, tmp.x);        // 17        (OKAY)
+  TextOut(0, LCD_LINE4, tmp.foo);     // test_123  (OKAY)
+
+  NumOut(0, LCD_LINE5, array2[0][1].buf[0]);  // 123       (OKAY)
+  NumOut(0, LCD_LINE6, array2[0][1].test.a);  // 12        (OKAY)
+  NumOut(0, LCD_LINE7, array2[0][1].x);       // 17        (OKAY)
+//  TextOut(0, LCD_LINE8, array[0].foo);    // test_123  (OKAY)
+
+  array2[0][1].test += 30;  // valid code
+  NumOut(50, LCD_LINE6, array2[0][1].test.a);    // 42 (OKAY)
+  array2[0][1].test.a += array2[0][1].test.b * array2[0][1].test.b; // valid code
+  NumOut(50, LCD_LINE7, array2[0][1].test.a);    // 1978  (OKAY)
+  array2[0][1].foo += "testing";  // valid code
+  TextOut(0, LCD_LINE8, array2[0][1].foo);    // test_123testing  (OKAY)
+
+  Wait(SEC_5);
+*/
+  // scalar members
+  array[0].x = 2;    // valid code
+  array[0].x++;      // valid code
+  array[0].x += 14;  // valid code
+
+  // string members
+  array[0].foo = "test";  // valid code
+  array[0].foo += "_123"; // valid code
+
+  // nested structs
+  array[0].test.a = 2;    // valid code
+  array[0].test.b = 2;    // valid code
+  array[0].test += 2;     // valid code
+  array[0].test = flakey; // valid code
+
+  // array members
+  array[0].buf = values;  // valid code
+  array[0].buf[0] = 123;  // valid code
+
+  tmp = array[0];
+  NumOut(0, LCD_LINE1, tmp.buf[0]);   // 123       (OKAY)
+  NumOut(0, LCD_LINE2, tmp.test.a);   // 12        (OKAY)
+  NumOut(0, LCD_LINE3, tmp.x);        // 17        (OKAY)
+  TextOut(0, LCD_LINE4, tmp.foo);     // test_123  (OKAY)
+
+  NumOut(0, LCD_LINE5, array[0].buf[0]);  // 123       (OKAY)
+  NumOut(0, LCD_LINE6, array[0].test.a);  // 12        (OKAY)
+  NumOut(0, LCD_LINE7, array[0].x);       // 17        (OKAY)
+//  TextOut(0, LCD_LINE8, array[0].foo);    // test_123  (OKAY)
+
+  array[0].test += 30;  // valid code
+  NumOut(50, LCD_LINE6, array[0].test.a);    // 42 (OKAY)
+  array[0].test.a += array[0].test.b * array[0].test.b; // valid code
+  NumOut(50, LCD_LINE7, array[0].test.a);    // 1978  (OKAY)
+  array[0].foo += "testing";  // valid code
+  TextOut(0, LCD_LINE8, array[0].foo);    // test_123testing  (OKAY)
+
+/*
+  array[0].y = array[0].x;
+  tmp = array[0];
+  tmp.x = 2;
+  array[0] = tmp;
+  NumOut(0, LCD_LINE1, array[0].x);
+*/
+  Wait(10000);
+}
+

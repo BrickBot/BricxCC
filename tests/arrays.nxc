@@ -1,0 +1,14 @@
+string msg = "testi";
+int data[] = {1, 2, 3, 4, 5};
+long ldata[] = {0xa0, 0xa1, 0xa2, 0xa3, 0xa4};
+
+task main()
+{
+  msg[0] = data[2];
+  data[0] = msg[0];
+  ldata[0] = data[1];
+  msg[0] = ldata[1];
+  Wait(5000);
+  
+}
+

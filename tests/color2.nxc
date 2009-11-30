@@ -1,0 +1,20 @@
+task main()
+{
+//  ColorSensorReadType csrArgs;
+//  csrArgs.Port = S1;
+  SetSensorColorNone(S1);
+  while(true) {
+/*
+    SysColorSensorRead(csrArgs);
+    if (csrArgs.Result == NO_ERR) {
+      for (int i=0; i < INPUT_NO_OF_COLORS; i++) {
+        NumOut(0, LCD_LINE1-8*i, csrArgs.RawArray[i]);
+        NumOut(40, LCD_LINE1-8*i, csrArgs.ScaledArray[i]);
+      }
+    }
+*/
+    NumOut(0, LCD_LINE6, SensorScaled(S1));
+    NumOut(0, LCD_LINE7, SensorRaw(S1));
+    NumOut(0, LCD_LINE8, SensorNormalized(S1));
+  }
+}

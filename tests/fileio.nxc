@@ -1,0 +1,63 @@
+#download "ftest.txt"
+
+task main()
+{
+  string fname = "ftest.txt";
+  byte handle = fopen(fname, "r" );
+  if (handle != EOF) {
+    for (int i=0; i < 8; i++) {
+      char ch = fgetc(handle);
+      NumOut(0, LCD_LINE1-i*8, ch);
+    }
+    fseek(handle, 0, SEEK_CUR);
+    for (int i=0; i < 8; i++) {
+      char ch = fgetc(handle);
+      NumOut(0, LCD_LINE1-i*8, ch);
+    }
+  }
+}
+
+/*
+inline int fclose(byte handle) { return CloseFile(handle); }
+inline int remove(string filename) { return DeleteFile(filename); }
+inline int rename(string old, string new) { return RenameFile(old, new); }
+inline char fgetc(byte handle) {
+#define getc(_handle) fgetc(_handle)
+inline string fgets(string & str, int num, byte handle) {
+inline int feof(byte handle) { return 0; }
+byte fopen(string filename, const string mode) {
+inline int fflush(byte handle) { return 0; }
+inline long ftell(byte handle) { return -1; }
+inline char fputc(char ch, byte handle) {
+#define putc(_ch, _handle) fputc(_ch, _handle)
+//  int fputs(char* str, FILE*); // write string to file (not including null); return EOF if error or non-negative value if success
+//  int printf(char* format, ...);
+//  int fprintf(FILE*, char* format, ...); // write to file
+//  int sprintf(char* str, char* format, ...); // write formatted data to string
+//  int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
+//  void rewind(FILE*); // same as seeking to start of file (and clears error indicator)
+*/
+
+/*
+  size_t fread(ptr, size, count, FILE*); // read blocks of data from file; returns number of blocks read
+  size_t fwrite(ptr, size, count, FILE*); // write blocks of data to stream; returns number of blocks written
+  int getchar(void); // read character from stdin (returns which button was pressed)
+  int putchar(int character); // write character to stdout
+*/
+
+// ctype.h functions
+/*
+inline int isupper(int c) { return ((c >= 'A') && (c <= 'Z')); }
+inline int islower(int c) { return ((c >= 'a') && (c <= 'z')); }
+inline int isalpha(int c) { return isupper(c) || islower(c); }
+inline int isdigit(int c) { return ((c >= '0') && (c <= '9')); }
+inline int isalnum(int c) { return isalpha(c) || isdigit(c); }
+inline int isspace(int c) { return (c == 0x20) || ((c >= 0x09) && (c <= 0x0d)); }
+inline int iscntrl(int c) { return (c <= 0x1f) || (c == 0x7f); }
+inline int isprint(int c) { return !iscntrl(c); }
+inline int isgraph(int c) { return (c != 0x20) && isprint(c); }
+inline int ispunct(int c) { return isgraph(c) && !isalnum(c); }
+inline int isxdigit(int c) {  return isdigit(c) || ((c >= 'A') && (c <= 'F')) || ((c >= 'a') && (c <= 'f')); }
+inline int toupper(int c) { if (islower(c)) c -= 32; return c; }
+inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
+*/

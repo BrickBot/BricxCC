@@ -1,0 +1,29 @@
+inline void dbString(const string & msg) {
+  TextOut(0, LCD_LINE1, msg);
+}
+
+task main()
+{
+string text;
+
+int a = -1;
+unsigned int b = -1;
+
+long c = -1;
+unsigned long d = -1;
+
+text = NumToStr( a );
+dbString( text ); // -1
+
+text = NumToStr( b );
+dbString( text ); // 65535
+
+text = NumToStr( c );
+dbString( text ); // -1
+
+text = NumToStr( d );
+dbString( text ); // -1 (unsigned long)
+
+//dbKey();
+}
+
