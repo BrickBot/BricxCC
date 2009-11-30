@@ -94,7 +94,7 @@ type
     function  PromptForSeries : TChartSeries;
     procedure ProcessValue(valStr: string; bTrimSeries : Boolean = false);
     function CreateSeries: TChartSeries;
-    function FindValue(valStr: string): integer;
+    function FindValue(valStr: string): Single;
     function FindType(valStr: string): string;
     function GetXValue(s : TChartSeries): integer;
     function MaxXValue: double;
@@ -236,8 +236,8 @@ begin
       // should be only one series and X, Y pairs of data
       // so output (x, y)
       tmpStr := tmpStr + '(' +
-        IntToStr(FindValue(valStr)) + ', ' +
-        IntToStr(FindValue(fData[j+1])) + ')'#13#10;
+        FloatToStr(FindValue(valStr)) + ', ' +
+        FloatToStr(FindValue(fData[j+1])) + ')'#13#10;
       Inc(j, 2);
     end;
   end
@@ -256,7 +256,7 @@ begin
       if i = -1 then Continue;
       n := Length(dataArray[i]);
       SetLength(dataArray[i], n + 1);
-      dataArray[i][n] := IntToStr(FindValue(valStr));
+      dataArray[i][n] := FloatToStr(FindValue(valStr));
     end;
     for j := 0 to Length(dataArray[0]) - 1 do
     begin
@@ -302,10 +302,10 @@ begin
   Result := Copy(valStr, 1, Pos(':', valStr)-1);
 end;
 
-function TfrmDataAnalysis.FindValue(valStr : string) : integer;
+function TfrmDataAnalysis.FindValue(valStr : string) : Single;
 begin
   Delete(valStr, 1, Pos(':', valStr));
-  Result := StrToIntDef(Trim(valStr), 0);
+  Result := StrToFloatDef(Trim(valStr), 0.0);
 end;
 
 function TfrmDataAnalysis.GetXValue(s : TChartSeries) : integer;
@@ -361,7 +361,8 @@ end;
 
 procedure TfrmDataAnalysis.ProcessValue(valStr : string; bTrimSeries : boolean);
 var
-  j, val, xVal : integer;
+  j, xVal : integer;
+  val : Single;
   sType : string;
   s, sTmp : TChartSeries;
 begin
