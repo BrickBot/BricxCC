@@ -100,9 +100,9 @@ type
     function ImportRIC(const fname, varname : string) : string;
     function ImportFile(const fname : string; varname : string) : string;
   public
-    class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings; aLN : TLangName) : string;
-    class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string; aLN : TLangName) : string;
-    constructor Create(GLType : TGenLexerClass; const defIncDir : string; aLN : TLangName);
+    class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings; aLN : TLangName; MaxDepth : word) : string;
+    class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string; aLN : TLangName; MaxDepth : word) : string;
+    constructor Create(GLType : TGenLexerClass; const defIncDir : string; aLN : TLangName; MaxDepth : word);
     destructor Destroy; override;
     procedure SkipIncludeFile(const fname : string);
     function Preprocess(const fname: string; aStrings: TStrings) : string; overload;
@@ -152,11 +152,11 @@ end;
 { TLangPreprocessor }
 
 class function TLangPreprocessor.PreprocessStrings(GLType : TGenLexerClass;
-  const fname : string; aStrings : TStrings; aLN : TLangName) : string;
+  const fname : string; aStrings : TStrings; aLN : TLangName; MaxDepth : word) : string;
 var
   P : TLangPreprocessor;
 begin
-  P := TLangPreprocessor.Create(GLType, ExtractFilePath(fname), aLN);
+  P := TLangPreprocessor.Create(GLType, ExtractFilePath(fname), aLN, MaxDepth);
   try
     Result := P.Preprocess(fname, aStrings);
   finally
@@ -165,14 +165,14 @@ begin
 end;
 
 class function TLangPreprocessor.PreprocessFile(GLType : TGenLexerClass;
-  const fin, fout : string; aLN : TLangName) : string;
+  const fin, fout : string; aLN : TLangName; MaxDepth : word) : string;
 var
   SL : TStringList;
 begin
   SL := TStringList.Create;
   try
     SL.LoadFromFile(fin);
-    Result := TLangPreprocessor.PreprocessStrings(GLType, fin, SL, aLN);
+    Result := TLangPreprocessor.PreprocessStrings(GLType, fin, SL, aLN, MaxDepth);
     SL.SaveToFile(fout);
   finally
     SL.Free;
@@ -1088,7 +1088,7 @@ begin
   end;
 end;
 
-constructor TLangPreprocessor.Create(GLType : TGenLexerClass; const defIncDir : string; aLN : TLangName);
+constructor TLangPreprocessor.Create(GLType : TGenLexerClass; const defIncDir : string; aLN : TLangName; MaxDepth : word);
 begin
   inherited Create;
   fLangName := aLN;
@@ -1111,7 +1111,7 @@ begin
   fCalc.StandardDefines := True;
   fCalc.ExtraDefines := True;
   fLexers := TObjectList.Create;
-  InitializeLexers(10);
+  InitializeLexers(MaxDepth);
 //  fCalc.OnParserError := HandleCalcParserError;
 //  fVarI := 0;
 //  fVarJ := 0;

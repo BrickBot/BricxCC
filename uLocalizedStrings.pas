@@ -560,7 +560,9 @@ resourcestring
   sNXCCodeGenComplete      = 'NXC code generation finished';
   sConstNotInline          = 'Only inline functions can correctly use non-reference constant parameters';
   sInvalidFuncDecl         = 'Declaration syntax error';
-  sDefaultParamError       = 'Invalid parameter syntax with default values'; 
+  sDefaultParamError       = 'Invalid parameter syntax with default values';
+  sInvalidFunctionCall     = 'Invalid function call';
+  sInvalidEnumDecl         = 'Invalid enum declaration';
 
 // uNBCCommon unit
 resourcestring
@@ -605,6 +607,7 @@ resourcestring
   UsageDecompile = '   -x: decompile program';
   UsageOptimize  = '   -Z[1|2]: turn on compiler optimizations';
   UsageMaxErrors = '   -ER=n: set maximum errors before aborting (0 == no limit)';
+  UsageMaxDepth  = '   -PD=n: set max preprocessor recursion depth (10 == default)';
   UsageOutput    = '   -O=<outfile> : specify output file';
   UsageErrors    = '   -E=<filename> : write compiler errors to <filename>';
   UsageIncludes  = '   -I=<path>: search <path> for include files';
