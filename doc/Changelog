@@ -59,10 +59,12 @@ Version 1.0.1.b36
 - Added API support for HiTechnic IRSeeker 2 and Color 2 sensors
 - Added API functions to read I2C Version, VendorId, and DeviceId values
 - Added support for optional parameters using a not exactly C syntax (delphi-like)
+- fixed bug in structs containing arrays with more than one dimension.
 - fixed defects 2902670 & 2896265.
   http://sourceforge.net/tracker/?func=detail&aid=2902670&group_id=68600&atid=521776
   http://sourceforge.net/tracker/?func=detail&aid=2896265&group_id=68600&atid=521776
-
+- Added support for enum keyword
+- Added command-line parameter to specify preprocessor recursion max depth (default is 10)
 
 Version 1.0.1.b35
 -----------------
