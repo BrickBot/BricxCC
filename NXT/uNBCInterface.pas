@@ -67,6 +67,7 @@ type
     fSafeCalls: boolean;
     fMaxErrors: word;
     fFirmwareVersion: word;
+    fMaxPreProcDepth: word;
   protected
     fOnCompilerStatusChange : TCompilerStatusChangeEvent;
     fDump : TStrings;
@@ -100,6 +101,7 @@ type
     property IgnoreSystemFile : boolean read fIgnoreSystemFile write fIgnoreSystemFile;
     property Quiet : boolean read fQuiet write fQuiet;
     property MaxErrors : word read fMaxErrors write fMaxErrors;
+    property MaxPreprocessorDepth : word read fMaxPreProcDepth write fMaxPreProcDepth;
     property WriteCompilerOutput : boolean read fWriteCompilerOutput write fWriteCompilerOutput;
     property CompilerOutputFilename : string read fCompilerOutputFilename write fCompilerOutputFilename;
     property WriteSymbolTable : boolean read fWriteSymbolTable write fWriteSymbolTable;
@@ -150,6 +152,7 @@ uses
 constructor TNBCCompiler.Create;
 begin
   inherited;
+  fMaxPreprocDepth := 10;
   fMaxErrors := 0;
   fIgnoreSystemFile := False;
   fEnhancedFirmware := False;
@@ -500,6 +503,7 @@ begin
               NC.FirmwareVersion  := FirmwareVersion;
               NC.SafeCalls := SafeCalls;
               NC.MaxErrors := MaxErrors;
+              NC.MaxPreprocessorDepth := MaxPreprocessorDepth;
               NC.OnCompilerStatusChange := HandleOnCompilerStatusChange;
               try
                 NC.Parse(sIn);
@@ -532,6 +536,7 @@ begin
               C.FirmwareVersion  := FirmwareVersion;
               C.IgnoreSystemFile := IgnoreSystemFile;
               C.MaxErrors        := MaxErrors;
+              C.MaxPreprocessorDepth := MaxPreprocessorDepth;
               C.OnCompilerStatusChange := HandleOnCompilerStatusChange;
               try
                 C.IncludeDirs.AddStrings(tmpIncDirs);
@@ -607,6 +612,7 @@ begin
   fCommandLine := Value;
   // set properties given command line switches
   MaxErrors                := ParamIntValue('-ER', 0, False, Value);
+  MaxPreprocessorDepth     := ParamIntValue('-PD', 10, False, Value);
   Quiet                    := ParamSwitch('-q', False, Value);
   WriteCompilerOutput      := ParamSwitch('-L', False, Value);
   CompilerOutputFilename   := ParamValue('-L', False, Value);
