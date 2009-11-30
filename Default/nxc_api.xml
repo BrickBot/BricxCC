@@ -1,6 +1,6 @@
 <API>
     <Functions>
-        <Function Enhanced="true" Version="100">
+        <Function Enhanced="true">
             <Name>AbortFlag</Name>
             <Type>AbortFlagType</Type>
             <Arguments/>
@@ -481,10 +481,10 @@ byte tv = BrickDataTimeoutValue();
         <Name>BTConnectionClass</Name>
         <Type>unsigned long</Type>
         <Arguments>
-        <Argument>
-        <Name>conn</Name>
-        <Type>const byte</Type>
-        </Argument>
+            <Argument>
+                <Name>conn</Name>
+                <Type>const byte</Type>
+            </Argument>
         </Arguments>
         <Documentation>
 Return the class of the device at the specified index within the Bluetooth
@@ -596,10 +596,10 @@ byte streamstatus = BTConnectionStreamStatus(1);
         <Name>BTDeviceClass</Name>
         <Type>unsigned long</Type>
         <Arguments>
-        <Argument>
-            <Name>devidx</Name>
-            <Type>const byte/Type>
-        </Argument>
+            <Argument>
+                <Name>devidx</Name>
+                <Type>const byte</Type>
+            </Argument>
         </Arguments>
         <Documentation>
 This method returns the class of the device at the specified index within the
@@ -1667,17 +1667,19 @@ ExitTo(nextTask);
 </Function>
 <Function>
 <Name>fgetc</Name>
-<Type>void</Type>
+<Type>char</Type>
 <Arguments>
 <Argument>
-<Name>byte handle</Name>
-<Type>void</Type>
+<Name>handle</Name>
+<Type>byte</Type>
 </Argument>
 </Arguments>
 <Documentation>
+Returns EOF if failure, otherwise the character read from stream.
 </Documentation>
 <CodeSample>
 <![CDATA[
+char ch = fgetc(handle);
 ]]>
 </CodeSample>
 </Function>
@@ -1991,17 +1993,19 @@ Follows(main);
 </Function>
 <Function>
 <Name>getc</Name>
-<Type>void</Type>
+<Type>char</Type>
 <Arguments>
 <Argument>
-<Name>byte handle</Name>
-<Type>void</Type>
+<Name>handle</Name>
+<Type>byte</Type>
 </Argument>
 </Arguments>
 <Documentation>
+Returns EOF if failure, otherwise the character read from stream.
 </Documentation>
 <CodeSample>
 <![CDATA[
+char ch = fgetc(handle);
 ]]>
 </CodeSample>
 </Function>
@@ -8916,49 +8920,59 @@ ResetSleepTimer();
 </Function>
 <Function>
 <Name>SensorHTCompass</Name>
-<Type>void</Type>
+<Type>int</Type>
 <Arguments>
 <Argument>
-<Name>const byte port</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
 </Argument>
 </Arguments>
 <Documentation>
+Read the HiTechnic compass sensor value.
 </Documentation>
 <CodeSample>
 <![CDATA[
+int val = SensorHTCompass(S1);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>SensorHTEOPD</Name>
-<Type>void</Type>
+<Type>int</Type>
 <Arguments>
 <Argument>
-<Name>const byte port</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
 </Argument>
 </Arguments>
 <Documentation>
+Read the HiTechnic EOPD sensor value.
 </Documentation>
 <CodeSample>
 <![CDATA[
+int val = SensorHTEOPD(S1);
 ]]>
 </CodeSample>
 </Function>
 <Function>
 <Name>SensorHTGyro</Name>
-<Type>void</Type>
+<Type>int</Type>
 <Arguments>
 <Argument>
-<Name>const byte port, byte offset</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>offset</Name>
+<Type>int</Type>
 </Argument>
 </Arguments>
 <Documentation>
+Read the HiTechnic Gyro sensor value.
 </Documentation>
 <CodeSample>
 <![CDATA[
+int val = SensorHTGyro(S1, lastOffset);
 ]]>
 </CodeSample>
 </Function>
@@ -10583,14 +10597,20 @@ ResetSleepTimer();
 <Type>void</Type>
 <Arguments>
 <Argument>
-<Name>const byte port</Name>
-<Type>void</Type>
+<Name>port</Name>
+<Type>const byte</Type>
+</Argument>
+<Argument>
+<Name>bStandard</Name>
+<Type>const bool</Type>
 </Argument>
 </Arguments>
 <Documentation>
+Configure the sensor port for the HiTechnic EOPD sensor in standard or long range mode.
 </Documentation>
 <CodeSample>
 <![CDATA[
+SetSensorHTEOPD(S1, true);
 ]]>
 </CodeSample>
 </Function>
@@ -11434,8 +11454,7 @@ Stop(x == 24); // stop the program if x==24
         <Function>
             <Name>StopAllTasks</Name>
             <Type>void</Type>
-            <Arguments />
-            </Arguments>
+            <Arguments/>
             <Documentation>
 Stop all currently running tasks. This will halt the program completely, so
 any code following this command will be ignored.            
@@ -12381,8 +12400,8 @@ if (args.Result = NO_ERR) {
 <Type>void</Type>
 <Arguments>
 <Argument>
-<Name>FileSeekType &amp; args</Name>
-<Type>void</Type>
+<Name>args</Name>
+<Type>FileSeekType &amp;</Type>
 </Argument>
 </Arguments>
 <Documentation>
@@ -13108,6 +13127,7 @@ char result = WriteLn(handle, myValue);
 <Documentation>
 </Documentation>
 <CodeSample>
+<![CDATA[
 char result = WriteLnString(handle, myMessage, cnt);
 ]]>
 </CodeSample>
@@ -13273,6 +13293,41 @@ WriteI2CRegister(S1, US_REG_CM_INTERVAL, 0x2);
     </CodeSample>
 </Function>
 <!--
+//  char* fgets(char* str, int num, FILE*); read num bytes from file into str.  Appends null.  Newline stops reading
+fgets(string & str, int num, byte handle)
+//  int feof(FILE*);   // non-zero if EOF, 0 otherwise
+feof(byte handle)
+//  FILE* fopen(char* filename, char* mode); // open file
+fopen(string filename, const string mode)
+//  int fflush(FILE*); // EOF if failure, 0 otherwise
+fflush(byte handle)
+//  long int ftell(FILE*); // -1 if failure, otherwise the file position
+ftell(byte handle)
+//  int fputc(int ch, FILE*); // write character to file. Returns character written or EOF if error occurs
+fputc(char ch, byte handle)
+//  int putc(int ch, FILE*); // ditto
+putc(char ch, byte handle)
+//  int fputs(char* str, FILE*); // write string to file (not including null); return EOF if error or non-negative value if success
+fputs(string str, byte handle)
+//  int printf(char* format, ...);
+printf(const string & format, variant value)
+//  int fprintf(FILE*, char* format, ...); // write to file
+fprintf(byte handle, const string & format, variant value)
+//  int sprintf(char* str, char* format, ...); // write formatted data to string
+sprintf(string & str, const string & format, variant value)
+//  int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
+fseek(byte handle, long offset, int origin)
+//  void rewind(FILE*); // same as seeking to start of file (and clears error indicator)
+rewind(byte handle)
+//void * memcpy ( void * destination, const void * source, size_t num ); // Copy block of memory
+memcpy(variant & dest, variant src, unsigned int num)
+//void * memmove ( void * destination, const void * source, size_t num ); // Move block of memory
+memmove(variant & dest, variant src, unsigned int num)
+//int memcmp ( const void * ptr1, const void * ptr2, size_t num ); // Compare two blocks of memory
+memcmp(variant dest, variant src, unsigned int num)
+//int strncmp ( const char * str1, const char * str2, size_t num ); // Compare characters of two strings
+strncmp(const string & str1, const string & str2, unsigned int num)
+
 int isspace ( int c );
 Checks if parameter c is a white-space character.
 For the purpose of this function, standard white-space characters are:
@@ -13352,6 +13407,7 @@ continue
 default
 do
 else
+enum
 false
 float
 for

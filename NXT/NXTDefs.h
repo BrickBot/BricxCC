@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXTDefs.h
- * Date:: 2009-11-16
- * Revision:: 54
+ * Date:: 2009-11-30
+ * Revision:: 55
  *
  * Contains declarations for the NBC NXT API resources
  *
@@ -4623,6 +4623,8 @@ dseg segment
   __RLSOutput byte[]
   __RLSReturn word
   __RLSReturnAddress byte
+  __RLSMaxBytes word
+  __RLSByteCount word
 dseg ends
 
 #define __readBytes(_handle, _len, _buf, _result) \
@@ -4655,16 +4657,20 @@ dseg ends
   mov _result, __FReadArgs.Result \
   release __FReadMutex
   
-#define __readLnString(_handle, _output, _result) \
+#define __readLnStringEx(_handle, _output, _max, _result) \
   acquire __FReadMutex \
   mov __FReadArgs.FileHandle, _handle \
+  mov __RLSMaxBytes, _max \
   subcall __readStringLine, __RLSReturnAddress \
   mov _result, __RLSReturn \
   mov _output, __RLSOutput \
   release __FReadMutex \
 
+#define __readLnString(_handle, _output, _result) __readLnStringEx(_handle, _output, 0xFFFF, _result)
+
 subroutine __readStringLine
   arrinit __RLSOutput, 0, 1
+  set __RLSByteCount, 0
   __RLSStringLoop:
   set __FReadArgs.Length, 1
   mov __RLSBuffer, __RLSOutput
@@ -4675,6 +4681,8 @@ subroutine __readStringLine
   brcmp EQ, __RLSStringDone, __FReadTmpByte, 0x0A
   brcmp EQ, __RLSStringSkip, __FReadTmpByte, 0x0D
   strcat __RLSOutput, __RLSBuffer, __FReadArgs.Buffer
+  add __RLSByteCount, __RLSByteCount, 1
+  brcmp GTEQ, __RLSStringDone, __RLSByteCount, __RLSMaxBytes
   __RLSStringSkip:
   jmp __RLSStringLoop
   __RLSStringDone:
@@ -4750,7 +4758,6 @@ dseg ends
   syscall FileWrite, __FWriteArgs \
   mov _result, __FWriteArgs.Result \
   release __FWriteMutex
-
 
 dseg segment
   __MWMutex mutex

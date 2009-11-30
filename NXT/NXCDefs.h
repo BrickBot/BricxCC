@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-11-16
- * Revision:: 57
+ * Date:: 2009-11-30
+ * Revision:: 59
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -458,7 +458,7 @@
 #define SetUSBPollBufferInPtr(_n) asm { __setUSBPollBufferInPtr(_n) }
 #define SetUSBPollBufferOutPtr(_n) asm { __setUSBPollBufferOutPtr(_n) }
 #define SetBTDeviceCount(_n) asm { __setBTDeviceCount(_n) }
-#define SetBTDeviceNameCount(_n) asm { __setBTDeviceNameCount(_n) } 
+#define SetBTDeviceNameCount(_n) asm { __setBTDeviceNameCount(_n) }
 #define SetHSFlags(_n) asm { __setHSFlags(_n) }
 #define SetHSSpeed(_n) asm { __setHSSpeed(_n) }
 #define SetHSState(_n) asm { __setHSState(_n) }
@@ -493,110 +493,6 @@
 #define WriteLnString(_handle, _str, _cnt) asm { __writeLnString(_handle, _str, _cnt, __RETVAL__) }
 #define WriteBytes(_handle, _buf, _cnt) asm { __writeBytes(_handle, _buf, _cnt, __RETVAL__) }
 #define WriteBytesEx(_handle, _len, _buf) asm { __writeBytesEx(_handle, _len, _buf, __RETVAL__) }
-
-// stdio.h functions
-
-#define fclose(_handle) CloseFile(_handle)
-#define remove(_filename) DeleteFile(_filename)
-#define rename(_old, _new) RenameFile(_old, _new)
-#define fgetc(_handle) asm { \
-  __readValue(_handle, __FReadTmpByte, __RETVAL__) \
-  mov __RETVAL__, __FReadTmpByte \
- }
-#define getc(_handle) fgetc(_handle)
-
-/*
-  char* fgets(char* str, int num, FILE*); read num bytes from file into str.  Appends null.  Newline stops reading
-#define fgets(_output, _num, _handle) ReadLnString(_handle, _output) // not quite right
-  int fgetc(FILE*); // EOF if failure, otherwise the character read from stream
-
-  int feof(FILE*);   // non-zero if EOF, 0 otherwise
-  int fflush(FILE*); // EOF if failure, 0 otherwise
-  long int ftell(FILE*); // -1 if failure, otherwise the file position
-  FILE* fopen(char* filename, char* mode); // open file
-  int fprintf(FILE*, char* format, ...); // write to file
-  int fputc(int ch, FILE*); // write chracter to file. Returns character written or EOF if error occurs
-  int putc(int ch, FILE*); // ditto
-  int fputs(char* str, FILE*); // write string to file (not including null); return EOF if error or non-negative value if success
-  size_t fread(ptr, size, count, FILE*); // read blocks of data from file; returns number of blocks read
-  int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
-  size_t fwrite(ptr, size, count, FILE*); // write blocks of data to stream; returns number of blocks written
-  int getchar(void); // read character from stdin (returns which button was pressed)
-  int printf(char* format, ...);
-  int putchar(int character); // write character to stdout
-  void rewind(FILE*); // same as seeking to start of file (and clears error indicator)
-  int sprintf(char* str, char* format, ...); // write formatted data to string
-*/
-
-// string.h functions
-
-#define strlen(_str) StrLen(_str)
-inline string strcat(string & dest, const string src) {
-  asm {
-    strcat __STRRETVAL__, dest, src \
-    mov dest, __STRRETVAL__ \
-  }
-}
-#define strncat(_dest, _src, _num) asm { \
-  strsubset __STRBUFFER__, _src, 0, _num \
-  strcat __STRRETVAL__, _dest, __STRBUFFER__ \
-  mov _dest, __STRRETVAL__ \
-}
-#define strcpy(_dest, _src) asm { \
-  mov _dest, _src \
-  mov __STRRETVAL__, _dest \
-}
-#define strncpy(_dest, _src, _num) asm { \
-  strsubset _dest, _src, 0, _num \
-  mov __STRRETVAL__, _dest \
-}
-
-#define strcmp(_str1, _str2) asm { \
-  set __RETVAL__, 0 \
-  brcmp EQ, __lblstrcmp_exit##__I__, _str1, _str2 \
-  set __RETVAL__, 1 \
-  brcmp GT, __lblstrcmp_exit##__I__, _str1, _str2 \
-  set __RETVAL__, -1 \
-__lblstrcmp_exit##__I__: \
-__IncI__ \
-}
-
-/*
-void * memcpy ( void * destination, const void * source, size_t num ); // Copy block of memory
-void * memmove ( void * destination, const void * source, size_t num ); // Move block of memory
-
-int memcmp ( const void * ptr1, const void * ptr2, size_t num ); // Compare two blocks of memory
-int strcmp ( const char * str1, const char * str2 ); // Compare two strings
-int strncmp ( const char * str1, const char * str2, size_t num ); // Compare characters of two strings
-
-void * memchr (void * ptr, int value, size_t num ); // Locate character in block of memory
-char * strchr (       char * str, int character ); // Locate first occurrence of character in string
-size_t strcspn ( const char * str1, const char * str2 ); // Get span until character in string
-char * strpbrk ( const char *, const char * ); // Locate character in string
-char * strrchr ( const char *, int ); // Locate last occurrence of character in string
-size_t strspn ( const char * str1, const char * str2 ); // Get span of character set in string
-char * strtok ( char * str, const char * delimiters ); // Split string into tokens
-char * strstr ( const char *, const char * ); // Locate substring
-
-void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (something like replace)
-
-*/
-
-// ctype.h functions
-
-inline int isupper(int c) { return ((c >= 'A') && (c <= 'Z')); }
-inline int islower(int c) { return ((c >= 'a') && (c <= 'z')); }
-inline int isalpha(int c) { return isupper(c) || islower(c); }
-inline int isdigit(int c) { return ((c >= '0') && (c <= '9')); }
-inline int isalnum(int c) { return isalpha(c) || isdigit(c); }
-inline int isspace(int c) { return (c == 0x20) || ((c >= 0x09) && (c <= 0x0d)); }
-inline int iscntrl(int c) { return (c <= 0x1f) || (c == 0x7f); }
-inline int isprint(int c) { return !iscntrl(c); }
-inline int isgraph(int c) { return (c != 0x20) && isprint(c); }
-inline int ispunct(int c) { return isgraph(c) && !isalnum(c); }
-inline int isxdigit(int c) {  return isdigit(c) || ((c >= 'A') && (c <= 'F')) || ((c >= 'a') && (c <= 'f')); }
-inline int toupper(int c) { if (islower(c)) c -= 32; return c; }
-inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
 
 #define SendMessage(_queue, _msg) asm { __sendMessage(_queue, _msg, __RETVAL__) }
 #define ReceiveMessage(_queue, _clear, _msg) asm { __receiveMessage(_queue, _clear, _msg, __RETVAL__) }
@@ -1522,10 +1418,12 @@ struct ListFilesType {
   SetSensorMode(_p, IN_MODE_RAW); \
   ResetSensor(_p);
 
-#define SensorHTGyro(_p, _offset) asm { \
-  getin __RETVAL__, _p, RawValue \
-  sub __RETVAL__, __RETVAL__, 600 \
-  sub __RETVAL__, __RETVAL__, _offset \
+inline int SensorHTGyro(const byte port, const int offset = 0) {
+  asm {
+    getin __RETVAL__, port, RawValue
+    sub __RETVAL__, __RETVAL__, 600
+    sub __RETVAL__, __RETVAL__, offset
+  }
 }
 
 #define HTPowerFunctionCommand(_port, _channel, _outa, _outb) asm { __HTPFComboDirect(_port, _channel, _outa, _outb, __RETVAL__) }
@@ -1842,5 +1740,212 @@ inline void Yield() { asm { wait 1 } }
 
 // RIC Macro wrappers
 #define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8
+
+// stdio.h functions
+
+inline int fclose(byte handle) { return CloseFile(handle); }
+inline int remove(string filename) { return DeleteFile(filename); }
+inline int rename(string old, string new) { return RenameFile(old, new); }
+
+//  int fgetc(FILE*); // EOF if failure, otherwise the character read from stream
+inline char fgetc(byte handle) {
+  asm {
+    __readValue(handle, __FReadTmpByte, __RETVAL__)
+    mov __RETVAL__, __FReadTmpByte
+  }
+}
+#define getc(_handle) fgetc(_handle)
+
+//  char* fgets(char* str, int num, FILE*); read num bytes from file into str.  Appends null.  Newline stops reading
+//#define fgets(_output, _num, _handle) ReadLnString(_handle, _output) // not quite right
+inline string fgets(string & str, int num, byte handle) {
+  asm { __readLnStringEx(handle, str, num, __RETVAL__) };
+  return str;
+}
+
+//  int feof(FILE*);   // non-zero if EOF, 0 otherwise
+inline int feof(byte handle) { return 0; }
+
+//  FILE* fopen(char* filename, char* mode); // open file
+byte fopen(string filename, const string mode) {
+  byte handle;
+  int fsize;
+  if (mode == "r") {
+    if (OpenFileRead(filename, fsize, handle) == LDR_SUCCESS)
+      return handle;
+    else
+      return EOF;
+  }
+  else if (mode == "w") {
+    fsize = 1024;
+    if (CreateFile(filename, fsize, handle) == LDR_SUCCESS)
+      return handle;
+    else
+      return EOF;
+  }
+  else if (mode == "a") {
+    if (OpenFileAppend(filename, fsize, handle) == LDR_SUCCESS)
+      return handle;
+    else
+      return EOF;
+  }
+  else
+    return EOF;
+}
+
+//  int fflush(FILE*); // EOF if failure, 0 otherwise
+inline int fflush(byte handle) { return 0; }
+//  long int ftell(FILE*); // -1 if failure, otherwise the file position
+inline long ftell(byte handle) { return -1; }
+//  int fputc(int ch, FILE*); // write character to file. Returns character written or EOF if error occurs
+inline char fputc(char ch, byte handle) {
+  if (Write(handle, ch) == LDR_SUCCESS)
+    return ch;
+  else
+    return EOF;
+}
+//  int putc(int ch, FILE*); // ditto
+#define putc(_ch, _handle) fputc(_ch, _handle)
+//  int fputs(char* str, FILE*); // write string to file (not including null); return EOF if error or non-negative value if success
+inline int fputs(string str, byte handle) {
+  int cnt;
+  if (WriteString(handle, str, cnt) == LDR_SUCCESS)
+    return cnt;
+  else
+    return EOF;
+}
+#ifdef __ENHANCED_FIRMWARE
+//  void printf(char* format, ...);
+#define printf(_format, _value) { \
+  string msg = FormatNum(_format, _value); \
+  TextOut(0, LCD_LINE1, msg); \
+}
+//  void fprintf(FILE*, char* format, ...); // write to file
+#define fprintf(_handle, _format, _value) { \
+  fputs(FormatNum(_format, _value), _handle); \
+}
+//  void sprintf(char* str, char* format, ...); // write formatted data to string
+#define sprintf(_str, _format, _value) { \
+  _str = FormatNum(_format, _value); \
+}
+
+#if __FIRMWARE_VERSION > 107
+#define SEEK_SET LDR_CMD_SEEKFROMSTART
+#define SEEK_CUR LDR_CMD_SEEKFROMCURRENT
+#define SEEK_END LDR_CMD_SEEKFROMEND
+//  int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
+inline int fseek(byte handle, long offset, int origin) {
+  FileSeekType fst;
+  fst.FileHandle = handle;
+  fst.Origin = origin;
+  fst.Length = offset;
+  SysFileSeek(fst);
+  return fst.Result;
+}
+//  void rewind(FILE*); // same as seeking to start of file (and clears error indicator)
+inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
+#endif
+#endif
+
+/*
+  size_t fread(ptr, size, count, FILE*); // read blocks of data from file; returns number of blocks read
+  size_t fwrite(ptr, size, count, FILE*); // write blocks of data to stream; returns number of blocks written
+  int getchar(void); // read character from stdin (returns which button was pressed)
+  int putchar(int character); // write character to stdout
+*/
+
+// string.h functions
+
+inline int strlen(const string & str) { asm { strlen __RETVAL__, str } }
+inline string strcat(string & dest, const string & src) {
+  asm {
+    strcat __STRBUFFER__, dest, src
+    mov dest, __STRBUFFER__
+  }
+}
+inline string strncat(string & dest, const string & src, const unsigned int num) {
+  asm {
+    strsubset __STRRETVAL__, src, 0, num
+    strcat __STRBUFFER__, dest, __STRRETVAL__
+    mov dest, __STRBUFFER__
+  }
+}
+inline string strcpy(string & dest, const string & src) {
+  asm {
+    mov __STRBUFFER__, src
+    mov dest, __STRBUFFER__
+  }
+}
+inline string strncpy(string & dest, const string & src, unsigned int num) {
+  asm {
+    strsubset dest, src, 0, num
+    mov __STRBUFFER__, dest
+  }
+}
+inline int strcmp(const string & str1, const string & str2) {
+  int result = -1;
+  if (str1 == str2)
+    result = 0;
+  else if (str1 > str2)
+    result = 1;
+  return result;
+}
+
+//void * memcpy ( void * destination, const void * source, size_t num ); // Copy block of memory
+//void * memmove ( void * destination, const void * source, size_t num ); // Move block of memory
+#define memcpy(_dest, _src, _num) asm { mov _dest, _src }
+#define memmove(_dest, _src, _num) asm { mov _dest, _src }
+
+//int memcmp ( const void * ptr1, const void * ptr2, size_t num ); // Compare two blocks of memory
+#define memcmp(_ptr1, _ptr2, _num) { \
+  asm { mov __RETVAL__, -1 }; \
+  if ((_ptr1) == (_ptr2)) { \
+    asm { mov __RETVAL__, 0 }; \
+  } else if ((_ptr1) > (_ptr2)) { \
+    asm { mov __RETVAL__, 1 }; \
+  } \
+}
+
+//int strncmp ( const char * str1, const char * str2, size_t num ); // Compare characters of two strings
+inline int strncmp(const string & str1, const string & str2, unsigned int num) {
+  string sub1, sub2;
+  strncpy(sub1, str1, num);
+  strncpy(sub2, str2, num);
+  int result = -1;
+  if (sub1 == sub2)
+    result = 0;
+  else if (sub1 > sub2)
+    result = 1;
+  return result;
+}
+/*
+void * memchr (void * ptr, int value, size_t num ); // Locate character in block of memory
+char * strchr (       char * str, int character ); // Locate first occurrence of character in string
+size_t strcspn ( const char * str1, const char * str2 ); // Get span until character in string
+char * strpbrk ( const char *, const char * ); // Locate character in string
+char * strrchr ( const char *, int ); // Locate last occurrence of character in string
+size_t strspn ( const char * str1, const char * str2 ); // Get span of character set in string
+char * strtok ( char * str, const char * delimiters ); // Split string into tokens
+char * strstr ( const char *, const char * ); // Locate substring
+
+void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (something like replace)
+
+*/
+
+// ctype.h functions
+
+inline int isupper(int c) { return ((c >= 'A') && (c <= 'Z')); }
+inline int islower(int c) { return ((c >= 'a') && (c <= 'z')); }
+inline int isalpha(int c) { return isupper(c) || islower(c); }
+inline int isdigit(int c) { return ((c >= '0') && (c <= '9')); }
+inline int isalnum(int c) { return isalpha(c) || isdigit(c); }
+inline int isspace(int c) { return (c == 0x20) || ((c >= 0x09) && (c <= 0x0d)); }
+inline int iscntrl(int c) { return (c <= 0x1f) || (c == 0x7f); }
+inline int isprint(int c) { return !iscntrl(c); }
+inline int isgraph(int c) { return (c != 0x20) && isprint(c); }
+inline int ispunct(int c) { return isgraph(c) && !isalnum(c); }
+inline int isxdigit(int c) {  return isdigit(c) || ((c >= 'A') && (c <= 'F')) || ((c >= 'a') && (c <= 'f')); }
+inline int toupper(int c) { if (islower(c)) c -= 32; return c; }
+inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
 
 #endif // NXCDEFS_H

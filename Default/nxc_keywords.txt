@@ -23,6 +23,7 @@ continue
 default
 do
 else
+enum
 false
 float
 for

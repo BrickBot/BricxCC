@@ -679,6 +679,8 @@
 #define LoaderOffsetPFunc         0
 #define LoaderOffsetFreeUserFlash 4
 
+#define EOF -1
+
 // error codes
 #define LDR_SUCCESS             0x0000
 #define LDR_INPROGRESS          0x0001
