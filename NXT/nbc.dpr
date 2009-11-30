@@ -72,6 +72,7 @@ begin
   Writeln(UsageDecompile);
   Writeln(UsageOptimize);
   Writeln(UsageMaxErrors);
+  Writeln(UsageMaxDepth);
   Writeln(UsageOutput);
   Writeln(UsageErrors);
   Writeln(UsageIncludes);
@@ -153,6 +154,7 @@ try
       C.IgnoreSystemFile         := ParamSwitch('-n', False);
       C.Quiet                    := ParamSwitch('-q', False);
       C.MaxErrors                := ParamIntValue('-ER', 0, False);
+      C.MaxPreprocessorDepth     := ParamIntValue('-PD', 10, False);
       C.FirmwareVersion          := ParamIntValue('-v', 105, False);
       C.WriteCompilerOutput      := ParamSwitch('-L', False);
       C.CompilerOutputFilename   := ParamValue('-L', False);
