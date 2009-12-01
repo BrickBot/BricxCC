@@ -4,48 +4,43 @@ task main()
 {
   string fname = "ftest.txt";
   byte handle = fopen(fname, "r" );
-  if (handle != EOF) {
+  NumOut(80, LCD_LINE1, handle);
+  if (handle) {
     for (int i=0; i < 8; i++) {
       char ch = fgetc(handle);
+      switch(ch) {
+        case '1' :
+          ch = 1;
+          break;
+        default:
+          ch -= 48;
+      }
       NumOut(0, LCD_LINE1-i*8, ch);
     }
-    fseek(handle, 0, SEEK_CUR);
+//    fseek(handle, 0, SEEK_SET);
+    rewind(handle);
     for (int i=0; i < 8; i++) {
-      char ch = fgetc(handle);
-      NumOut(0, LCD_LINE1-i*8, ch);
+      NumOut(40, LCD_LINE1-i*8, getc(handle));
     }
   }
+  fclose(handle);
+  remove(fname);
+  Wait(SEC_10);
 }
 
 /*
-inline int fclose(byte handle) { return CloseFile(handle); }
-inline int remove(string filename) { return DeleteFile(filename); }
 inline int rename(string old, string new) { return RenameFile(old, new); }
-inline char fgetc(byte handle) {
-#define getc(_handle) fgetc(_handle)
 inline string fgets(string & str, int num, byte handle) {
 inline int feof(byte handle) { return 0; }
-byte fopen(string filename, const string mode) {
 inline int fflush(byte handle) { return 0; }
 inline long ftell(byte handle) { return -1; }
-inline char fputc(char ch, byte handle) {
+inline char fputc(char ch, byte handle)
 #define putc(_ch, _handle) fputc(_ch, _handle)
-//  int fputs(char* str, FILE*); // write string to file (not including null); return EOF if error or non-negative value if success
-//  int printf(char* format, ...);
-//  int fprintf(FILE*, char* format, ...); // write to file
-//  int sprintf(char* str, char* format, ...); // write formatted data to string
-//  int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
-//  void rewind(FILE*); // same as seeking to start of file (and clears error indicator)
+inline int fputs(string str, byte handle)
+void printf(const string & format, variant value)
+void fprintf(byte handle, const string & format, variant value)
+void sprintf(string & str, const string & format, variant value)
 */
-
-/*
-  size_t fread(ptr, size, count, FILE*); // read blocks of data from file; returns number of blocks read
-  size_t fwrite(ptr, size, count, FILE*); // write blocks of data to stream; returns number of blocks written
-  int getchar(void); // read character from stdin (returns which button was pressed)
-  int putchar(int character); // write character to stdout
-*/
-
-// ctype.h functions
 /*
 inline int isupper(int c) { return ((c >= 'A') && (c <= 'Z')); }
 inline int islower(int c) { return ((c >= 'a') && (c <= 'z')); }
