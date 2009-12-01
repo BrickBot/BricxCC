@@ -4439,14 +4439,6 @@ begin
   // convert true|false to TRUE|FALSE
   if (Result = 'true') or (Result = 'false') then
     Result := UpperCase(Result);
-  // convert 'x' (character constant) into ordinal value
-  if (Length(Result) = 3) and
-     IsDelimiter('''', Result, 1) and
-     IsDelimiter('''', Result, 3) then
-  begin
-    Result := Copy(Result, 2, 1);
-    Result := IntToStr(Ord(Result[1]));
-  end;
 end;
 
 procedure TNXCComp.DoSwitchCase;

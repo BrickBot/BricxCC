@@ -1749,9 +1749,10 @@ inline int rename(string old, string new) { return RenameFile(old, new); }
 
 //  int fgetc(FILE*); // EOF if failure, otherwise the character read from stream
 inline char fgetc(byte handle) {
+  char ch;
   asm {
-    __readValue(handle, __FReadTmpByte, __RETVAL__)
-    mov __RETVAL__, __FReadTmpByte
+    __readValue(handle, ch, __RETVAL__)
+    mov __RETVAL__, ch
   }
 }
 #define getc(_handle) fgetc(_handle)
@@ -1770,27 +1771,21 @@ inline int feof(byte handle) { return 0; }
 byte fopen(string filename, const string mode) {
   byte handle;
   int fsize;
-  if (mode == "r") {
-    if (OpenFileRead(filename, fsize, handle) == LDR_SUCCESS)
-      return handle;
-    else
-      return EOF;
+  switch(mode) {
+    case "r" :
+      OpenFileRead(filename, fsize, handle);
+      break;
+    case "w" :
+      fsize = 1024;
+      CreateFile(filename, fsize, handle);
+      break;
+    case "a" :
+      OpenFileAppend(filename, fsize, handle);
+      break;
+    default:
+      handle = NULL;
   }
-  else if (mode == "w") {
-    fsize = 1024;
-    if (CreateFile(filename, fsize, handle) == LDR_SUCCESS)
-      return handle;
-    else
-      return EOF;
-  }
-  else if (mode == "a") {
-    if (OpenFileAppend(filename, fsize, handle) == LDR_SUCCESS)
-      return handle;
-    else
-      return EOF;
-  }
-  else
-    return EOF;
+  return handle;
 }
 
 //  int fflush(FILE*); // EOF if failure, 0 otherwise
@@ -1830,9 +1825,9 @@ inline int fputs(string str, byte handle) {
 }
 
 #if __FIRMWARE_VERSION > 107
-#define SEEK_SET LDR_CMD_SEEKFROMSTART
-#define SEEK_CUR LDR_CMD_SEEKFROMCURRENT
-#define SEEK_END LDR_CMD_SEEKFROMEND
+#define SEEK_SET 0
+#define SEEK_CUR 1
+#define SEEK_END 2
 //  int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
 inline int fseek(byte handle, long offset, int origin) {
   FileSeekType fst;

@@ -680,6 +680,7 @@
 #define LoaderOffsetFreeUserFlash 4
 
 #define EOF -1
+#define NULL 0
 
 // error codes
 #define LDR_SUCCESS             0x0000
