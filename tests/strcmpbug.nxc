@@ -1,0 +1,22 @@
+bool StrCmp(string a, string b)
+{
+   bool equal = false;
+   byte strlen1 = StrLen(a);
+   byte strlen2 = StrLen(b);
+   byte minlen = strlen1;
+   if (strlen2<minlen) minlen = strlen2;
+   for (int i = 0; i<minlen; i++)
+   {
+      if (SubStr(a,i,i+1) == SubStr(b,i,i+1)) equal = true;
+   }
+   return equal;
+}
+
+task main()
+{
+  if (StrCmp("test", "testing")) {
+    TextOut(0, LCD_LINE1, "equal");
+  }
+}
+
+

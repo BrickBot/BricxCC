@@ -6087,6 +6087,7 @@ begin
   fAPIStrFunctions := TStringList.Create;
   TStringList(fAPIStrFunctions).Sorted := True;
   fThreadNames := TStringList.Create;
+  TStringList(fThreadNames).CaseSensitive := True;
   TStringList(fThreadNames).Sorted := True;
   TStringList(fThreadNames).Duplicates := dupIgnore;
   fSwitchFixups := TStringList.Create;
