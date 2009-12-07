@@ -243,6 +243,7 @@ type
     procedure AddParam(N: string; T: char; const tname : string;
       bConst : boolean; bHasDefault : boolean; const defValue : string);
     function  DataType(const n: string): char;
+    function  DataTypeName(const n: string): string;
     procedure LoadVar(const Name: string);
     procedure CheckNotProc(const Name : string);
     procedure Store(const Name: string);
@@ -708,6 +709,35 @@ begin
   d := GetArrayDimension(dt);
   for i := 0 to d - 1 do
     Result := Result + '[]';
+end;
+
+function NXCStrToType(const stype : string; bUseCase : Boolean = false) : TDSType;
+var
+  tmptype : string;
+begin
+  tmptype := stype;
+  if not bUseCase then
+    tmptype := LowerCase(tmptype);
+  if (tmptype = 'unsigned char') or (tmptype = 'byte') or (tmptype = 'bool') then
+    Result := dsUByte
+  else if tmptype = 'char' then
+    Result := dsSByte
+  else if (tmptype = 'unsigned int') or (tmptype = 'unsigned short') then
+    Result := dsUWord
+  else if (tmptype = 'int') or (tmptype = 'short') then
+    Result := dsSWord
+  else if tmptype = 'unsigned long' then
+    Result := dsULong
+  else if tmptype = 'long' then
+    Result := dsSLong
+  else if tmptype = 'mutex' then
+    Result := dsMutex
+  else if tmptype = 'float' then
+    Result := dsFloat
+  else if tmptype = 'void' then
+    Result := dsVoid
+  else
+    Result := dsCluster;
 end;
 
 procedure TNXCComp.pop;
@@ -1804,6 +1834,22 @@ begin
         Result := #0;
         Undefined(StripDecoration(n));
       end;
+    end;
+  end;
+end;
+
+function TNXCComp.DataTypeName(const n : string) : string;
+begin
+  Result := '';
+  case WhatIs(n) of
+    stParam : begin
+      Result := ParamTypeName(n);
+    end;
+    stLocal : begin
+      Result := LocalTypeName(n);
+    end;
+    stGlobal : begin
+      Result := GlobalTypeName(n);
     end;
   end;
 end;
@@ -5389,7 +5435,7 @@ begin
     l.DataType   := dt;
     l.IsConstant := bConst;
     l.TypeName   := tname;
-    l.LenExpr    := lenexp;                 
+    l.LenExpr    := lenexp;
     l.Level      := fNestingLevel;
     if AmInlining and Assigned(fCurrentInlineFunction) then
     begin
@@ -5571,6 +5617,8 @@ var
   end;
 
   procedure ProcessTypes(const bFirstParam : boolean);
+  var
+    bInline, bSafeCall : boolean;
   begin
     bIsUnsigned := False;
     bIsArray    := False;
@@ -5583,6 +5631,30 @@ var
       Scan;
       if bFirstParam then pltype := 1;
     end;
+// new code starts here
+    tname := Value;
+    if Token = TOK_UNSIGNED then
+    begin
+      bIsUnsigned := True;
+      Next;
+      Scan;
+      if bFirstParam then pltype := 1;
+      tname := tname + ' ' + Value;
+    end;
+    Value := tname;
+    CheckForTypedef(bIsUnsigned, bIsConst, bInline, bSafeCall);
+    ptype := Token;
+    if bFirstParam then pltype := 1;
+    Next;
+    Scan;
+    if (Token <> '[') and (Token <> TOK_COMMA) and
+       (Token <> TOK_CLOSEPAREN) and (Token <> '&') and
+       (Token <> TOK_IDENTIFIER) then
+    begin
+      AbortMsg(sUnexpectedChar);
+      bError := True;
+    end;
+(*
     if Token = TOK_UNSIGNED then begin
       bIsUnsigned := True;
       Next;
@@ -5610,6 +5682,7 @@ var
       AbortMsg(sMissingDataType);
       bError := True;
     end;
+*)
     if Token = '&' then
     begin
       bIsRef := True;
@@ -5617,7 +5690,7 @@ var
       Scan;
     end;
   end;
-  
+
   procedure CheckParamTypeAndArrays;
   begin
     if pltype = HASNOPROTO then
@@ -8376,8 +8449,17 @@ begin
   begin
     expectedBase := ArrayBaseType(fp.ParameterDataType);
     providedBase := ArrayBaseType(dt);
-    if (expectedBase in NonAggregateTypes) and not (providedBase in NonAggregateTypes) then
-      Expected(sNumericType)
+    if (expectedBase in NonAggregateTypes) then
+    begin
+      if not (providedBase in NonAggregateTypes) then
+        Expected(sNumericType)
+      else begin
+        // if parameter type name is a named type then type names must match
+        if (fNamedTypes.IndexOf(fp.ParamTypeName) <> -1) and
+           (fp.ParamTypeName <> DataTypeName(name)) then
+          AbortMsg(sUDTNotEqual);
+      end;
+    end
     else if (expectedBase = TOK_STRINGDEF) and (providedBase <> TOK_STRINGDEF) then
       Expected(sStringVarType)
     else if expectedBase = TOK_USERDEFINEDTYPE then
@@ -8594,35 +8676,6 @@ begin
     Semi;
     Scan;
   end;
-end;
-
-function NXCStrToType(const stype : string; bUseCase : Boolean = false) : TDSType;
-var
-  tmptype : string;
-begin
-  tmptype := stype;
-  if not bUseCase then
-    tmptype := LowerCase(tmptype);
-  if (tmptype = 'unsigned char') or (tmptype = 'byte') or (tmptype = 'bool') then
-    Result := dsUByte
-  else if tmptype = 'char' then
-    Result := dsSByte
-  else if (tmptype = 'unsigned int') or (tmptype = 'unsigned short') then
-    Result := dsUWord
-  else if (tmptype = 'int') or (tmptype = 'short') then
-    Result := dsSWord
-  else if tmptype = 'unsigned long' then
-    Result := dsULong
-  else if tmptype = 'long' then
-    Result := dsSLong
-  else if tmptype = 'mutex' then
-    Result := dsMutex
-  else if tmptype = 'float' then
-    Result := dsFloat
-  else if tmptype = 'void' then
-    Result := dsVoid
-  else
-    Result := dsCluster;
 end;
 
 procedure TNXCComp.LocalEmitLnNoTab(SL : TStrings; const line : string);
