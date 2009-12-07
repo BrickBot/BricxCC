@@ -8642,6 +8642,23 @@ var
   dt : TDSType;
   SL : TStringList;
   i : integer;
+  procedure AddMemberToCurrentStructure;
+  begin
+    // add a member to the current structure definition
+    if mtype = 'string' then
+    begin
+      mtype := 'byte';
+      aval := '[]' + aval;
+    end;
+    dt := NXCStrToType(mtype, True);
+    if dt = dsCluster then
+      LocalEmitLn(SL, Format('%s %s%s', [mname, mtype, aval]))
+    else
+      LocalEmitLn(SL, Format('%s %s%s', [mname, TypeToStr(dt), aval]));
+    DE := fCurrentStruct.SubEntries.Add;
+    HandleVarDecl(DataDefinitions, fNamedTypes, True, DE, mname, mtype+aval, @NXCStrToType);
+    aval := '';
+  end;
 begin
   // struct name {...};
   // or
@@ -8681,27 +8698,23 @@ begin
       mname := Value;
       Next;
       aval := '';
-      if (Token = '[') and (Look = ']') then begin
-        // declaring an array
-        while Token in ['[', ']'] do begin
-          aval := aval + Token;
+      while Token <> TOK_SEMICOLON do begin
+        if (Token = '[') and (Look = ']') then begin
+          // declaring an array
+          while Token in ['[', ']'] do begin
+            aval := aval + Token;
+            Next;
+          end;
+        end;
+        if Token = ',' then begin
+          AddMemberToCurrentStructure;
+          Next;
+          mname := Value;
           Next;
         end;
       end;
       Semi;
-      // add a member to the current structure definition
-      if mtype = 'string' then
-      begin
-        mtype := 'byte';
-        aval := '[]' + aval;
-      end;
-      dt := NXCStrToType(mtype, True);
-      if dt = dsCluster then
-        LocalEmitLn(SL, Format('%s %s%s', [mname, mtype, aval]))
-      else
-        LocalEmitLn(SL, Format('%s %s%s', [mname, TypeToStr(dt), aval]));
-      DE := fCurrentStruct.SubEntries.Add;
-      HandleVarDecl(DataDefinitions, fNamedTypes, True, DE, mname, mtype+aval, @NXCStrToType);
+      AddMemberToCurrentStructure;
     end;
     Next; // skip past the '}' (aka TOK_END)
     if bTypeDef then
