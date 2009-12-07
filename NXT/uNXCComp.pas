@@ -8748,6 +8748,7 @@ begin
   tmpName := TranslateTypeName(Value);
   if Value <> tmpName then
   begin
+    Token := TOK_IDENTIFIER;
     Value := tmpName;
     // only need to check if Value
     i := Pos('unsigned ', Value);
