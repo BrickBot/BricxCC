@@ -1,0 +1,9 @@
+// fixed as of 2009-12-28 JCH
+string name[] = { "one", "two", "three" };
+
+task main()
+{
+  if (name[0] == "one") { // <- used to result in compiler error here
+    TextOut(0, LCD_LINE1, name[0]);
+  }
+}
