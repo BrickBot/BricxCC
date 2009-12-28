@@ -68,6 +68,8 @@ Version 1.0.1.b36
 - Fixed defect 2908377.
   http://sourceforge.net/tracker/?func=detail&aid=2908377&group_id=68600&atid=521776
 - Added support for struct member declaration using comma-separated variable names.
+- Fixed defect 2922394.
+
 
 Version 1.0.1.b35
 -----------------

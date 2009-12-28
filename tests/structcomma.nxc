@@ -1,0 +1,21 @@
+struct Person {
+  int age;
+  bool isMale;
+};
+
+struct Test {
+  bool A, B;
+  int X[], Y[][];
+  Person foo, bar;
+};
+
+task main()
+{
+  Test tmp;
+  tmp.A = 12;
+  tmp.B = 14;
+  int x = tmp.A;
+  if (x == 12) {
+    int y = x;
+  }
+}

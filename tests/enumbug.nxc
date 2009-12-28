@@ -1,0 +1,36 @@
+/*!< Sensor and SMUX port combinations */
+enum tMUXSensor {
+  msensor_S1_1 = 0,
+  msensor_S1_2 = 1,
+  msensor_S1_3 = 2,
+  msensor_S1_4 = 3,
+};
+
+typedef unsigned int uint;
+
+struct Person {
+  int age;
+  string name;
+};
+
+Person me;
+
+
+uint x;
+
+void foo(tMUXSensor muxsensor) {
+  int i = 12;
+  if (muxsensor == 12) {
+    i++;
+  }
+//  TextOut(0, LCD_LINE1, "foo called");
+}
+
+
+task main () {
+  foo(12);
+  foo(msensor_S1_4);
+  while(true);
+}
+
+
