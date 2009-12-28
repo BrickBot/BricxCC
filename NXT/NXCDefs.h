@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NXCDefs.h
- * Date:: 2009-11-30
- * Revision:: 59
+ * Date:: 2009-12-12
+ * Revision:: 60
  *
  * Contains declarations for the NXC NXT API resources
  *
@@ -649,6 +649,10 @@ inline float atan2d(float x, float y) { asm { atan2d __FLTRETVAL__, x, y } }
 
 // X is any integer; Y is the sqrt value (0->max); if X<0, Y is the sqrt value of absolute X
 #define Sqrt(_X) asm { __SQRT(_X,__RETVAL__) }
+
+#endif
+
+#if (__FIRMWARE_VERSION <= 107) || !defined(__ENHANCED_FIRMWARE)
 
 // X is any integer in degrees; Y is 100* the sin value (-100->100)
 #define Sin(_X) asm { __SIN(_X,__RETVAL__) }
