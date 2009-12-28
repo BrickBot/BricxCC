@@ -47,7 +47,7 @@ type
     function GlobalTypeName(const n: string): string;
     function ParamDataType(const n: string): char;
     function ParamTypeName(const n: string): string;
-    function ParamConstantValue(const n: string): string;
+//    function ParamConstantValue(const n: string): string;
 //    procedure OptionalSemi;
     procedure CheckSemicolon;
     procedure OpenParen;
@@ -163,7 +163,7 @@ type
     procedure NEqual;
     procedure Relation;
     procedure StoreZeroFlag;
-    function  ValueIsStringType : boolean;
+    function  ValueIsStringType(var dt : char) : boolean;
     function  ValueIsArrayType : boolean;
     function  ValueIsUserDefinedType : boolean;
     procedure RightShift;
@@ -1251,6 +1251,7 @@ begin
     Result := fParams[i].IsConstant;
 end;
 
+{
 function TNXCComp.ParamConstantValue(const n: string): string;
 var
   i : integer;
@@ -1263,6 +1264,7 @@ begin
       Result := fParams[i].Value;
   end;
 end;
+}
 
 function TNXCComp.ParamDataType(const n: string): char;
 var
@@ -2240,16 +2242,27 @@ begin
     Result := GS_ReturnType[i];
 end;
 
-function TNXCComp.ValueIsStringType: boolean;
+function TNXCComp.ValueIsStringType(var dt : char): boolean;
 begin
+  if Token = TOK_IDENTIFIER then
+    dt := DataType(Value)
+  else
+    dt := #0;
   Result := IsAPIStrFunc(Value);
   if not Result then
   begin
     Result := (Token = TOK_STRINGLIT) or
               ((Token = TOK_IDENTIFIER) and
-               (DataType(Value) = TOK_STRINGDEF));
-    if not Result then
-      Result := FunctionReturnType(Value) = TOK_STRINGDEF
+               (dt = TOK_STRINGDEF));
+    if not Result then begin
+      Result := FunctionReturnType(Value) = TOK_STRINGDEF;
+      if not Result then begin
+        // what about a string array?
+        Result := (Token = TOK_IDENTIFIER) and
+                  (dt in [TOK_ARRAYSTRING..TOK_ARRAYSTRING4]) and
+                  (Look = '[');
+      end;
+    end
     else
     begin
       // if we are indexing into the string then it is not really a string type
@@ -3194,11 +3207,11 @@ end;
 procedure TNXCComp.Relation;
 var
   lhs : string;
-//  dt : char;
+  dt : char;
 begin
-  if ValueIsStringType then
+  if ValueIsStringType(dt) then
   begin
-    if Look <> '[' then
+    if (Look <> '[') or (dt in [TOK_ARRAYSTRING..TOK_ARRAYSTRING4]) then
     begin
       StringExpression('');
       if IsRelop(Token) then begin
@@ -4449,10 +4462,11 @@ var
   L2 : string;
   idx : integer;
   bSwitchIsString : boolean;
+  dt : char;
 begin
   Next;
   OpenParen;
-  bSwitchIsString := ValueIsStringType;
+  bSwitchIsString := ValueIsStringType(dt);
   if bSwitchIsString then
     StringExpression('')
   else
