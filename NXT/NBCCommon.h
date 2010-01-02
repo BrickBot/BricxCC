@@ -16,8 +16,8 @@
  * ----------------------------------------------------------------------------
  *
  * Workfile:: NBCCommon.h
- * Date:: 2009-10-11
- * Revision:: 40
+ * Date:: 2009-12-29
+ * Revision:: 41
  *
  * Contains declarations for the NBC & NXC NXT API resources
  *
@@ -122,6 +122,11 @@
 #define OUT_MODE_REGULATED 0x04
 #define OUT_MODE_REGMETHOD 0xF0
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define OUT_OPTION_HOLDATLIMIT     0x10
+#define OUT_OPTION_RAMPDOWNTOLIMIT 0x20
+#endif
+
 // may be more ???
 
 #define OUT_RUNSTATE_IDLE     0x00
@@ -191,7 +196,9 @@
 #define RegDValue       12
 #define BlockTachoCount 13
 #define RotationCount   14
-
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define OutputOptions   15
+#endif
 //==============================================================================
 // Input field constants
 // Command use: getin, setin
@@ -1003,6 +1010,9 @@
 #define OutputOffsetRegMode(p)           (((p)*32)+26) // RW - Tells which regulation mode should be used (1 byte) ubyte
 #define OutputOffsetOverloaded(p)        (((p)*32)+27) // R  - True if the motor has been overloaded within speed control regulation (1 byte) ubyte
 #define OutputOffsetSyncTurnParameter(p) (((p)*32)+28) // RW - Holds the turning parameter need within MoveBlock (1 byte) sbyte
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define OutputOffsetOptions(p)           (((p)*32)+29)
+#endif
 #define OutputOffsetPwnFreq              96
 
 

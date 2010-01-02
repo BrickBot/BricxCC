@@ -6,4 +6,5 @@ task main()
   if (name[0] == "one") { // <- used to result in compiler error here
     TextOut(0, LCD_LINE1, name[0]);
   }
+  Wait(5000);
 }

@@ -210,6 +210,7 @@ type
     procedure HandlePoundLine;
     function  ArrayOfType(dt : char; dimensions : integer) : char;
     function  GetVariableType(vt: char; bUnsigned: boolean): char;
+    procedure CheckForValidDataType(dt : char);
     function  RemoveArrayDimension(dt : char) : char;
     function  AddArrayDimension(dt : char) : char;
     procedure IncLineNumber;
@@ -236,11 +237,11 @@ type
     procedure CheckTypeCompatibility(fp : TFunctionParameter; dt : char; const name : string);
     procedure Duplicate(n: string);
 //    function SizeOfType(dt: char): integer;
-    procedure AddEntry(N: string; T: char; const tname, lenexp : string; bConst : boolean = False; bSafeCall : boolean = False);
+    procedure AddEntry(N: string; dt: char; const tname, lenexp : string; bConst : boolean = False; bSafeCall : boolean = False);
     procedure CheckDup(N: string);
     procedure CheckTable(const N: string);
     procedure CheckGlobal(const N: string);
-    procedure AddParam(N: string; T: char; const tname : string;
+    procedure AddParam(N: string; dt: char; const tname : string;
       bConst : boolean; bHasDefault : boolean; const defValue : string);
     function  DataType(const n: string): char;
     function  DataTypeName(const n: string): string;
@@ -1393,19 +1394,20 @@ end;
 {--------------------------------------------------------------}
 { Add a New Entry to Symbol Table }
 
-procedure TNXCComp.AddEntry(N: string; T: char; const tname, lenexp : string;
+procedure TNXCComp.AddEntry(N: string; dt: char; const tname, lenexp : string;
   bConst, bSafeCall : boolean);
 begin
+  CheckForValidDataType(dt);
   CheckDup(N);
   if NumGlobals = MAXGLOBALS then AbortMsg(sSymbolTableFull);
   Inc(NumGlobals);
   GS_Name[NumGlobals] := N;
-  GS_Type[NumGlobals] := T;
+  GS_Type[NumGlobals] := dt;
 
   with fGlobals.Add do
   begin
     Name        := N;
-    DataType    := T;
+    DataType    := dt;
     IsConstant  := bConst;
     UseSafeCall := bSafeCall;
     TypeName    := tname;
@@ -1745,14 +1747,15 @@ end;
 {--------------------------------------------------------------}
 { Add a Parameter to Table }
 
-procedure TNXCComp.AddParam(N: string; T: char; const tname : string;
+procedure TNXCComp.AddParam(N: string; dt: char; const tname : string;
   bConst : boolean; bHasDefault : boolean; const defValue : string);
 begin
+  CheckForValidDataType(dt);
   if IsOldParam(N) then Duplicate(N);
   with fParams.Add do
   begin
     Name       := N;
-    DataType   := T;
+    DataType   := dt;
     IsConstant := bConst;
     TypeName   := tname;
   end;
@@ -2510,7 +2513,7 @@ begin
     TOK_ARRAYUDT..TOK_ARRAYUDT4 :
       EmitLn(Format('%s %s%s %s', [Name, tname, aVal, Val]));
   else
-    EmitLn(Format('%s sword %s', [Name, Val]));
+    AbortMsg(sUnknownDatatype);
   end;
 end;
 
@@ -4061,7 +4064,7 @@ begin
     StringExpression(aName);
     StoreArray(aName, idx, StrBufName);
   end
-  else if dt = TOK_USERDEFINEDTYPE then
+  else if IsUDT(DataType(Value)) {dt = TOK_USERDEFINEDTYPE} then
   begin
     CheckIdent;
     CheckDataType(dt);
@@ -5439,6 +5442,7 @@ function TNXCComp.AddLocal(name : string; dt : char; const tname : string;
 var
   l, IL : TVariable;
 begin
+  CheckForValidDataType(dt);
   Result := -1;
   if IsParam(name) or IsLocal(name) then
     Duplicate(name)
@@ -5712,6 +5716,7 @@ var
       ptype := GetVariableType(ptype, bIsUnsigned);
       if ptype = #0 then
         bError := True;
+      CheckForValidDataType(ptype);
       if not bError then
       begin
         aval := '';
@@ -7278,6 +7283,7 @@ begin
   if fUDTOnStack <> '' then
   begin
     Result := fUDTOnStack;
+    fUDTOnStack := ''; // once it has been used it is removed from the stack
   end
   else
   begin
@@ -7295,6 +7301,7 @@ begin
   if fUDTOnStack <> '' then
   begin
     Result := fUDTOnStack;
+    fUDTOnStack := ''; // once it has been used it is removed from the stack
   end
   else
   begin
@@ -8744,6 +8751,11 @@ begin
       fCurrentStruct.TypeName   := sname;
       Next; // skip past the type name
     end;
+    if Token = TOK_IDENTIFIER then begin
+      // invalid at this location
+      Expected(TOK_BEGIN);
+      Next;
+    end;
     MatchString(TOK_BEGIN);
     while (Token <> TOK_END) and not endofallsource do
     begin
@@ -8777,6 +8789,11 @@ begin
           AddMemberToCurrentStructure;
           Next;
           mname := Value;
+          Next;
+        end;
+        if not (Token in [TOK_SEMICOLON, '[', ',']) then
+        begin
+          AbortMsg(sUnexpectedChar);
           Next;
         end;
       end;
@@ -9399,8 +9416,10 @@ begin
           EmitLn(Format('strcat %s, %s', [aLHSName, GetDecoratedValue]))
         else if tmpDT in NonAggregateTypes then
           LoadVar(Value)
+        else if not IsArrayType(DataType(aLHSName)) then
+          EmitLn(Format('mov %s, %s', [GetDecoratedIdent(aLHSName), GetDecoratedValue]))
         else
-          EmitLn(Format('mov %s, %s', [GetDecoratedIdent(aLHSName), GetDecoratedValue]));
+          fUDTOnStack := Value;
         Next; // move to the next token
       end
       else
@@ -9563,6 +9582,16 @@ begin
   end;
   if rst <> StatementType then
     EmitLn(Format('mov %s, %s', [creg, RegisterName]));
+end;
+
+procedure TNXCComp.CheckForValidDataType(dt: char);
+begin
+  // valid data types
+  if not (dt in [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF, TOK_BYTEDEF, TOK_USHORTDEF,
+                 TOK_ULONGDEF, TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF,
+                 TOK_USERDEFINEDTYPE..TOK_ARRAYULONGDEF4,
+                 TOK_PROCEDURE, TOK_TASK]) then
+    AbortMsg(sUnknownDatatype);
 end;
 
 end.

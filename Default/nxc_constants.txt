@@ -768,6 +768,7 @@ OutputOffsetSpeed
 OutputOffsetSyncTurnParameter
 OutputOffsetTachoCount
 OutputOffsetTachoLimit
+OutputOptions
 Overload
 PC_OVERRIDE
 PF_CHANNEL_1
