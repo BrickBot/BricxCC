@@ -563,6 +563,7 @@ resourcestring
   sDefaultParamError       = 'Invalid parameter syntax with default values';
   sInvalidFunctionCall     = 'Invalid function call';
   sInvalidEnumDecl         = 'Invalid enum declaration';
+  sUnknownDatatype         = 'Unknown datatype';
 
 // uNBCCommon unit
 resourcestring

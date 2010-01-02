@@ -365,7 +365,7 @@ const
     'IN_MODE_RAW,IN_MODE_BOOLEAN,IN_MODE_TRANSITIONCNT,IN_MODE_PERIODCOUNTER,'+
     'IN_MODE_PCTFULLSCALE,IN_MODE_CELSIUS,IN_MODE_FAHRENHEIT,'+
     'IN_MODE_ANGLESTEP,IN_MODE_SLOPEMASK,IN_MODE_MODEMASK,'+
-    'UpdateFlags,OutputMode,Power,ActualSpeed,TachoCount,TachoLimit,RunState,'+
+    'UpdateFlags,OutputMode,Power,ActualSpeed,TachoCount,TachoLimit,RunState,OutputOptions,'+
     'TurnRatio,RegMode,Overload,RegPValue,RegIValue,RegDValue,BlockTachoCount,RotationCount,'+
     'Type,InputMode,RawValue,NormalizedValue,ScaledValue,InvalidData,'+
     'InputIOType0,InputIOInputMode0,InputIORawValue0,InputIONormalizedValue0,'+

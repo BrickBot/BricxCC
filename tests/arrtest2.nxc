@@ -29,12 +29,13 @@ task main()
   color tmpColor;
   color tmp2;
   tmpColor = newColor(40, 40, 40);
-  myColors[0] = newColor(10, 10, 10);
+  myColors[0] = newColor(10, 10, 10); // works as of 2009-12-29
   tmp2 = tmpColor;
   myColors[1] = tmpColor;
-  myColors[0] = newColor(80, 40, 0);
-  myColors[1].g = 20;
-  myColors[1] = myColors[0];
+  myColors[0] = newColor(80, 40, 0); // works as of 2009-12-29
+  myColors[1].g = 20; // works as of 2009-12-29
+  myColors[1] = myColors[0]; // works as of 2009-12-29
+  myColors[1].g = myColors[0].b; // works
   myColors = tmpColors;
 }
 
