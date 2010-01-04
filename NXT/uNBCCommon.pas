@@ -1175,6 +1175,7 @@ function IsAlpha(c: char): boolean;
 function IsCharWhiteSpace(C: Char): Boolean;
 function StrContains(const SubStr, Str: string): Boolean;
 function InlineName(const tname, name: string): string;
+function StripInline(const name: string): string;
 function StripDecoration(const name : string) : string;
 function PrettyNameStrip(const name : string) : string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
@@ -1303,6 +1304,7 @@ uses
 {$IFDEF FAST_MM}
   FastStrings,
 {$ENDIF}
+  strutils,
   uCommonUtils;
 
 
@@ -1322,7 +1324,9 @@ begin
 end;
 
 const
-  INLINE_DECORATION = '__%s_inline_%s';
+  INLINE_DECOR_SEP = '_inline_'{ + DECOR_SEP};
+//  INLINE_DECORATION = '__%s_inline_%s';
+  INLINE_DECORATION = '%1:s' + INLINE_DECOR_SEP + '%0:s';
 
 function InlineName(const tname, name: string): string;
 begin
@@ -1330,12 +1334,29 @@ begin
 //  Result := name;
 end;
 
+function RPos(Substr: string ; S: string ): Integer;
+begin
+  Result := Pos(ReverseString(Substr), ReverseString(S));
+  if Result <> 0 then
+    Result := Length(S) - (Result - 1) - (Length(Substr) - 1);
+end;
+
+function StripInline(const name: string): string;
+var
+  i : integer;
+begin
+  Result := name;
+  i := RPos(INLINE_DECOR_SEP, Result);
+  if i > 0 then
+    Result := Copy(Result, 1, i-1);
+end;
+
 function StripDecoration(const name : string) : string;
 var
   i : integer;
   varName : string;
 begin
-  Result := name;
+  Result := StripInline(name);
   // a decorated name has this pattern:
   // __threadnameDECOR_SEPvariablenameDECOR_SEPNNNetc
   i := Pos(DECOR_SEP, Result);
