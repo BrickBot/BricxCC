@@ -456,7 +456,12 @@ begin
               while not (((Lex.Id = piSymbol) and
                           (((nestLevel <= 0) and (Lex.Token = ')'))))) do
               begin
-                prevToken := prevToken + Lex.Token;
+                // 2010-01-03 JCH - changed code to replace line endings with space.
+                if (Lex.Token = #13#10) or (Lex.Token = #10#13) or
+                   (Lex.Token = #10) or (Lex.Token = #13) then
+                  prevToken := prevToken + ' '
+                else
+                  prevToken := prevToken + Lex.Token;
                 if Lex.Token = '(' then
                   inc(nestLevel)
                 else if Lex.Token = ')' then
