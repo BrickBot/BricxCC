@@ -1211,17 +1211,32 @@ function TNXCComp.IsFuncParam(n: string): boolean;
 var
   i : integer;
   fp : TFunctionParameter;
+  decvar : string;
 begin
   Result := False;
   // check in the fFuncParams
   for i := 0 to fFuncParams.Count - 1 do
   begin
     fp := fFuncParams[i];
-    if ApplyDecoration(fp.ProcName, fp.Name, 0) = RootOf(n) then
+    decvar := ApplyDecoration(fp.ProcName, fp.Name, 0);
+{
+    if fp.FuncIsInline then
     begin
-      Result := True;
-      Break;
-    end;
+      if decvar = StripInline(RootOf(n)) then
+      begin
+        Result := True;
+        Break;
+      end;
+    end
+    else
+    begin
+}
+      if decvar = RootOf(n) then
+      begin
+        Result := True;
+        Break;
+      end;
+//    end;
   end;
 end;
 
@@ -4064,7 +4079,7 @@ begin
     StringExpression(aName);
     StoreArray(aName, idx, StrBufName);
   end
-  else if IsUDT(DataType(Value)) {dt = TOK_USERDEFINEDTYPE} then
+  else if (Token = TOK_IDENTIFIER) and IsUDT(DataType(Value)) {dt = TOK_USERDEFINEDTYPE} then
   begin
     CheckIdent;
     CheckDataType(dt);
@@ -5441,9 +5456,17 @@ function TNXCComp.AddLocal(name : string; dt : char; const tname : string;
   bConst : boolean; const lenexp : string) : integer;
 var
   l, IL : TVariable;
+  bAmInlining : boolean;
+//  bIsParam, bIsLocal : boolean;
 begin
   CheckForValidDataType(dt);
   Result := -1;
+  bAmInlining := AmInlining;
+//  bIsLocal    := IsLocal(name);
+//  bIsParam    := IsParam(name);
+//  // if we are inlining then only check IsLocal
+//  if (bAmInlining and bIsLocal) or
+//     ((not bAmInlining) and (bIsLocal or bIsParam)) then
   if IsParam(name) or IsLocal(name) then
     Duplicate(name)
   else
@@ -5455,7 +5478,7 @@ begin
     l.TypeName   := tname;
     l.LenExpr    := lenexp;
     l.Level      := fNestingLevel;
-    if AmInlining and Assigned(fCurrentInlineFunction) then
+    if bAmInlining and Assigned(fCurrentInlineFunction) then
     begin
       IL := fCurrentInlineFunction.LocalVariables.Add;
       IL.Assign(l);
@@ -9590,7 +9613,7 @@ begin
   if not (dt in [TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF, TOK_BYTEDEF, TOK_USHORTDEF,
                  TOK_ULONGDEF, TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF,
                  TOK_USERDEFINEDTYPE..TOK_ARRAYULONGDEF4,
-                 TOK_PROCEDURE, TOK_TASK]) then
+                 TOK_PROCEDURE, TOK_TASK, TOK_LABEL]) then
     AbortMsg(sUnknownDatatype);
 end;
 
