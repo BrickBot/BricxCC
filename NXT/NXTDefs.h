@@ -1,4 +1,10 @@
-/*
+/** \file NXTDefs.h
+ * \brief Constants, macros, and API functions for use in NBC
+ *
+ * NXTDefs.h contains declarations for the NBC NXT API resources
+ *
+ * License:
+ *
  * The contents of this file are subject to the Mozilla Public License
  * Version 1.1 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -10,22 +16,31 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
- * Workfile:: NXTDefs.h
- * Date:: 2009-11-30
- * Revision:: 55
- *
- * Contains declarations for the NBC NXT API resources
- *
+ * \author John Hansen (bricxcc_at_comcast.net)
+ * \date 2010-01-05
+ * \version 56
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H 1
 
 #include "NBCCommon.h"
+
+/**
+ * Logical comparison operators.
+ * Logical comparison operators for use in brtst, tst, tstset, brcmp,
+ * cmp, and cmpset.
+ */
+#define LT   0x00 /*!< Less than operator */
+#define GT   0x01 /*!< Greater than operator */
+#define LTEQ 0x02 /*!< Less than or equal to operator */
+#define GTEQ 0x03 /*!< Greater than or equal to operator */
+#define EQ   0x04 /*!< Equal to operator */
+#define NEQ  0x05 /*!< Not equal to operator */
 
 // define structures for various system calls
 
@@ -1461,27 +1476,31 @@ dseg ends
 #define ReadSensor(_port,_value) getin _value, _port, ScaledValue
 #define ClearSensor(_port) setin 0, _port, ScaledValue
 
-#define SetSensorTouch(_port) \
-  SetSensorType(_port,IN_TYPE_SWITCH) \
-  SetSensorMode(_port,IN_MODE_BOOLEAN) \
+#define __SetSensorTouch(_port) \
+  SetSensorType(_port, IN_TYPE_SWITCH) \
+  SetSensorMode(_port, IN_MODE_BOOLEAN) \
   ResetSensor(_port)
 
-#define SetSensorLight(_port) \
+#define __SetSensorLight(_port) \
   SetSensorType(_port,IN_TYPE_LIGHT_ACTIVE) \
   SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
   ResetSensor(_port)
 
-#define SetSensorSound(_port) \
+#define __SetSensorSound(_port) \
   SetSensorType(_port,IN_TYPE_SOUND_DB) \
   SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
   ResetSensor(_port)
 
-#define SetSensorLowspeed(_port) \
+#define __SetSensorLowspeed(_port) \
   SetSensorType(_port,IN_TYPE_LOWSPEED_9V) \
   SetSensorMode(_port,IN_MODE_RAW) \
   ResetSensor(_port)
 
-#define SetSensorUltrasonic(_port) SetSensorLowspeed(_port)
+#define SetSensorTouch(_port) __SetSensorTouch(_port)
+#define SetSensorLight(_port) __SetSensorLight(_port)
+#define SetSensorSound(_port) __SetSensorSound(_port)
+#define SetSensorLowspeed(_port) __SetSensorLowspeed(_port)
+#define SetSensorUltrasonic(_port) __SetSensorLowspeed(_port)
 
 #if __FIRMWARE_VERSION > 107
 
@@ -1524,7 +1543,7 @@ dseg segment
   __ResetSensorTmp byte
 dseg ends
 
-subroutine __ResetSensor
+subroutine __ResetSensorSubroutine
   setin TRUE, __ResetSensorPort, InvalidData
 __SensorStillInvalid:
   getin	__ResetSensorTmp, __ResetSensorPort, InvalidData
@@ -1532,11 +1551,13 @@ __SensorStillInvalid:
   return
 ends
 
-#define ResetSensor(_port) \
+#define __ResetSensor(_port) \
   acquire __ResetSensorMutex \
   mov __ResetSensorPort, _port \
-  call __ResetSensor \
+  call __ResetSensorSubroutine \
   release __ResetSensorMutex
+
+#define ResetSensor(_port) __ResetSensor(_port)
 
 dseg segment
 // port 0

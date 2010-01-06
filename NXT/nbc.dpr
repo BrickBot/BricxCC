@@ -60,7 +60,6 @@ begin
 //  WriteLn('   -T=<target>: target must be NXT (optional)');
 {$IFDEF CAN_DOWNLOAD}
   WriteLn(UsagePort);
-  WriteLn(UsageBT);
   Writeln(UsageDownload);
   Writeln(UsageRunProg);
   Writeln(UsageBinary);

@@ -1,4 +1,10 @@
-/*
+/** \file NXCDefs.h
+ * \brief Constants, macros, and API functions for NXC
+ *
+ * NXCDefs.h contains declarations for the NXC NXT API resources
+ *
+ * License:
+ *
  * The contents of this file are subject to the Mozilla Public License
  * Version 1.1 (the "License"); you may not use this file except in
  * compliance with the License. You may obtain a copy of the License at
@@ -10,127 +16,245 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
- * Workfile:: NXCDefs.h
- * Date:: 2009-12-12
- * Revision:: 60
- *
- * Contains declarations for the NXC NXT API resources
- *
+ * \author John Hansen (bricxcc_at_comcast.net)
+ * \date 2010-01-05
+ * \version 61
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
 
 #include "NBCCommon.h"
 
-/*
-#define and &&
-#define and_eq &=
-#define bitand &
-#define bitor |
-#define compl ~
-#define not !
-#define not_eq !=
-#define or ||
-#define or_eq |=
-#define xor ^
-#define xor_eq ^=
-*/
 
-#define u8 unsigned char
-#define s8 char
-#define u16 unsigned int
-#define s16 int
-#define u32 unsigned long
-#define s32 long
+/**
+ * Type aliases.
+ * Short type aliases indicating signed/unsigned and bit count for each type.
+ */
+#define u8 unsigned char  /*!< Unsigned 8 bit type */
+#define s8 char           /*!< Signed 8 bit type */
+#define u16 unsigned int  /*!< Unsigned 16 bit type */
+#define s16 int           /*!< Signed 16 bit type */
+#define u32 unsigned long /*!< Unsigned 32 bit type */
+#define s32 long          /*!< Signed 32 bit type */
 
-#define S1 0
-#define S2 1
-#define S3 2
-#define S4 3
+/**
+ * Input port constants.
+ * Input port constants are used when calling NXC sensor control API functions.
+ */
+#define S1 0 /*!< Input port 1 */
+#define S2 1 /*!< Input port 2 */
+#define S3 2 /*!< Input port 3 */
+#define S4 3 /*!< Input port 4 */
 
-#define SENSOR_1 Sensor(S1)
-#define SENSOR_2 Sensor(S2)
-#define SENSOR_3 Sensor(S3)
-#define SENSOR_4 Sensor(S4)
-
-#define SENSOR_TYPE_NONE            IN_TYPE_NO_SENSOR
-#define SENSOR_TYPE_TOUCH           IN_TYPE_SWITCH
-#define SENSOR_TYPE_TEMPERATURE     IN_TYPE_TEMPERATURE
-#define SENSOR_TYPE_LIGHT           IN_TYPE_REFLECTION
-#define SENSOR_TYPE_ROTATION        IN_TYPE_ANGLE
-#define SENSOR_TYPE_LIGHT_ACTIVE    IN_TYPE_LIGHT_ACTIVE
-#define SENSOR_TYPE_LIGHT_INACTIVE  IN_TYPE_LIGHT_INACTIVE
-#define SENSOR_TYPE_SOUND_DB        IN_TYPE_SOUND_DB
-#define SENSOR_TYPE_SOUND_DBA       IN_TYPE_SOUND_DBA
-#define SENSOR_TYPE_CUSTOM          IN_TYPE_CUSTOM
-#define SENSOR_TYPE_LOWSPEED        IN_TYPE_LOWSPEED
-#define SENSOR_TYPE_LOWSPEED_9V     IN_TYPE_LOWSPEED_9V
-#define SENSOR_TYPE_HIGHSPEED       IN_TYPE_HISPEED
-
+/**
+ * Sensor type constants.
+ * Use sensor type constants to configure an input port for a specific type
+ * of sensor.
+ * \sa SetSensorType()
+ */
+#define SENSOR_TYPE_NONE            IN_TYPE_NO_SENSOR      /*!< No sensor configured */
+#define SENSOR_TYPE_TOUCH           IN_TYPE_SWITCH         /*!< NXT or RCX touch sensor */
+#define SENSOR_TYPE_TEMPERATURE     IN_TYPE_TEMPERATURE    /*!< RCX temperature sensor */
+#define SENSOR_TYPE_LIGHT           IN_TYPE_REFLECTION     /*!< RCX light sensor */
+#define SENSOR_TYPE_ROTATION        IN_TYPE_ANGLE          /*!< RCX rotation sensor */
+#define SENSOR_TYPE_LIGHT_ACTIVE    IN_TYPE_LIGHT_ACTIVE   /*!< NXT light sensor with light */
+#define SENSOR_TYPE_LIGHT_INACTIVE  IN_TYPE_LIGHT_INACTIVE /*!< NXT light sensor without light */
+#define SENSOR_TYPE_SOUND_DB        IN_TYPE_SOUND_DB       /*!< NXT sound sensor with dB scaling */
+#define SENSOR_TYPE_SOUND_DBA       IN_TYPE_SOUND_DBA      /*!< NXT sound sensor with dBA scaling */
+#define SENSOR_TYPE_CUSTOM          IN_TYPE_CUSTOM         /*!< NXT custom sensor */
+#define SENSOR_TYPE_LOWSPEED        IN_TYPE_LOWSPEED       /*!< NXT I2C digital sensor */
+#define SENSOR_TYPE_LOWSPEED_9V     IN_TYPE_LOWSPEED_9V    /*!< NXT I2C digital sensor with 9V power */
+#define SENSOR_TYPE_HIGHSPEED       IN_TYPE_HISPEED        /*!< NXT Hi-speed port (only S4) */
 #if __FIRMWARE_VERSION > 107
-#define SENSOR_TYPE_COLORFULL       IN_TYPE_COLORFULL
-#define SENSOR_TYPE_COLORRED        IN_TYPE_COLORRED
-#define SENSOR_TYPE_COLORGREEN      IN_TYPE_COLORGREEN
-#define SENSOR_TYPE_COLORBLUE       IN_TYPE_COLORBLUE
-#define SENSOR_TYPE_COLORNONE       IN_TYPE_COLORNONE
-#define SENSOR_TYPE_COLOREXIT       IN_TYPE_COLOREXIT
+#define SENSOR_TYPE_COLORFULL       IN_TYPE_COLORFULL      /*!< NXT 2.0 color sensor in full color mode */
+#define SENSOR_TYPE_COLORRED        IN_TYPE_COLORRED       /*!< NXT 2.0 color sensor with red light */
+#define SENSOR_TYPE_COLORGREEN      IN_TYPE_COLORGREEN     /*!< NXT 2.0 color sensor with green light */
+#define SENSOR_TYPE_COLORBLUE       IN_TYPE_COLORBLUE      /*!< NXT 2.0 color sensor with blue light */
+#define SENSOR_TYPE_COLORNONE       IN_TYPE_COLORNONE      /*!< NXT 2.0 color sensor with no light */
 #endif
 
-#define SENSOR_MODE_RAW         IN_MODE_RAW
-#define SENSOR_MODE_BOOL        IN_MODE_BOOLEAN
-#define SENSOR_MODE_EDGE        IN_MODE_TRANSITIONCNT
-#define SENSOR_MODE_PULSE       IN_MODE_PERIODCOUNTER
-#define SENSOR_MODE_PERCENT     IN_MODE_PCTFULLSCALE
-#define SENSOR_MODE_CELSIUS     IN_MODE_CELSIUS
-#define SENSOR_MODE_FAHRENHEIT  IN_MODE_FAHRENHEIT
-#define SENSOR_MODE_ROTATION    IN_MODE_ANGLESTEP
+/**
+ * Sensor mode constants.
+ * Use sensor mode constants to configure an input port for the desired
+ * sensor mode.
+ * \sa SetSensorMode()
+ */
+#define SENSOR_MODE_RAW         IN_MODE_RAW           /*!< Raw value from 0 to 1023 */
+#define SENSOR_MODE_BOOL        IN_MODE_BOOLEAN       /*!< Boolean value (0 or 1) */
+#define SENSOR_MODE_EDGE        IN_MODE_TRANSITIONCNT /*!< Counts the number of boolean transitions */
+#define SENSOR_MODE_PULSE       IN_MODE_PERIODCOUNTER /*!< Counts the number of boolean periods */
+#define SENSOR_MODE_PERCENT     IN_MODE_PCTFULLSCALE  /*!< Scaled value from 0 to 100 */
+#define SENSOR_MODE_CELSIUS     IN_MODE_CELSIUS       /*!< RCX temperature sensor value in degrees celcius */
+#define SENSOR_MODE_FAHRENHEIT  IN_MODE_FAHRENHEIT    /*!< RCX temperature sensor value in degrees fahrenheit */
+#define SENSOR_MODE_ROTATION    IN_MODE_ANGLESTEP     /*!< RCX rotation sensor (16 ticks per revolution) */
 
-#define _SENSOR_CFG(_type,_mode)	(((_type)<<8)+(_mode))
-#define SENSOR_TOUCH		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_BOOL)
-#define SENSOR_LIGHT		_SENSOR_CFG(SENSOR_TYPE_LIGHT, SENSOR_MODE_PERCENT)
-#define SENSOR_ROTATION		_SENSOR_CFG(SENSOR_TYPE_ROTATION, SENSOR_MODE_ROTATION)
-#define SENSOR_CELSIUS		_SENSOR_CFG(SENSOR_TYPE_TEMPERATURE, SENSOR_MODE_CELSIUS)
-#define SENSOR_FAHRENHEIT	_SENSOR_CFG(SENSOR_TYPE_TEMPERATURE, SENSOR_MODE_FAHRENHEIT)
-#define	SENSOR_PULSE		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_PULSE)
-#define SENSOR_EDGE         _SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_EDGE)
-#define SENSOR_NXTLIGHT		_SENSOR_CFG(SENSOR_TYPE_LIGHT_ACTIVE, SENSOR_MODE_PERCENT)
-#define SENSOR_SOUND		_SENSOR_CFG(SENSOR_TYPE_SOUND_DB, SENSOR_MODE_PERCENT)
-#define SENSOR_LOWSPEED_9V  _SENSOR_CFG(SENSOR_TYPE_LOWSPEED_9V, SENSOR_MODE_RAW)
-#define SENSOR_LOWSPEED     _SENSOR_CFG(SENSOR_TYPE_LOWSPEED, SENSOR_MODE_RAW)
-
+/**
+ * Combined sensor type and mode constants.
+ * Use the combined sensor type and mode constants to configure both
+ * the sensor mode and type in a single function call.
+ * \sa SetSensor()
+ */
+#define _SENSOR_CFG(_type,_mode)	(((_type)<<8)+(_mode))                               /*!< Macro for defining SetSensor combined type and mode constants */
+#define SENSOR_TOUCH		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_BOOL)             /*!< Touch sensor in boolean mode */
+#define SENSOR_LIGHT		_SENSOR_CFG(SENSOR_TYPE_LIGHT, SENSOR_MODE_PERCENT)          /*!< Light sensor in percent mode */
+#define SENSOR_ROTATION		_SENSOR_CFG(SENSOR_TYPE_ROTATION, SENSOR_MODE_ROTATION)      /*!< RCX rotation sensor in rotation mode */
+#define SENSOR_CELSIUS		_SENSOR_CFG(SENSOR_TYPE_TEMPERATURE, SENSOR_MODE_CELSIUS)    /*!< RCX temperature sensor in celcius mode */
+#define SENSOR_FAHRENHEIT	_SENSOR_CFG(SENSOR_TYPE_TEMPERATURE, SENSOR_MODE_FAHRENHEIT) /*!< RCX temperature sensor in fahrenheit mode */
+#define	SENSOR_PULSE		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_PULSE)            /*!< Touch sensor in pulse mode */
+#define SENSOR_EDGE         _SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_EDGE)             /*!< Touch sensor in edge mode */
+#define SENSOR_NXTLIGHT		_SENSOR_CFG(SENSOR_TYPE_LIGHT_ACTIVE, SENSOR_MODE_PERCENT)   /*!< NXT light sensor in active mode */
+#define SENSOR_SOUND		_SENSOR_CFG(SENSOR_TYPE_SOUND_DB, SENSOR_MODE_PERCENT)       /*!< NXT sound sensor (dB) in percent mode */
+#define SENSOR_LOWSPEED_9V  _SENSOR_CFG(SENSOR_TYPE_LOWSPEED_9V, SENSOR_MODE_RAW)        /*!< NXT I2C sensor with 9V power in raw mode */
+#define SENSOR_LOWSPEED     _SENSOR_CFG(SENSOR_TYPE_LOWSPEED, SENSOR_MODE_RAW)           /*!< NXT I2C sensor without 9V power in raw mode */
 #if __FIRMWARE_VERSION > 107
-#define SENSOR_COLORFULL	_SENSOR_CFG(SENSOR_TYPE_COLORFULL, SENSOR_MODE_RAW)
-#define SENSOR_COLORRED		_SENSOR_CFG(SENSOR_TYPE_COLORRED, SENSOR_MODE_RAW)
-#define SENSOR_COLORGREEN	_SENSOR_CFG(SENSOR_TYPE_COLORGREEN, SENSOR_MODE_RAW)
-#define SENSOR_COLORBLUE	_SENSOR_CFG(SENSOR_TYPE_COLORBLUE, SENSOR_MODE_RAW)
-#define SENSOR_COLORNONE	_SENSOR_CFG(SENSOR_TYPE_COLORNONE, SENSOR_MODE_RAW)
+#define SENSOR_COLORFULL	_SENSOR_CFG(SENSOR_TYPE_COLORFULL, SENSOR_MODE_RAW)          /*!< NXT 2.0 color sensor (full) in raw mode */
+#define SENSOR_COLORRED		_SENSOR_CFG(SENSOR_TYPE_COLORRED, SENSOR_MODE_RAW)           /*!< NXT 2.0 color sensor (red) in raw mode */
+#define SENSOR_COLORGREEN	_SENSOR_CFG(SENSOR_TYPE_COLORGREEN, SENSOR_MODE_RAW)         /*!< NXT 2.0 color sensor (green) in raw mode */
+#define SENSOR_COLORBLUE	_SENSOR_CFG(SENSOR_TYPE_COLORBLUE, SENSOR_MODE_RAW)          /*!< NXT 2.0 color sensor (blue) in raw mode */
+#define SENSOR_COLORNONE	_SENSOR_CFG(SENSOR_TYPE_COLORNONE, SENSOR_MODE_RAW)          /*!< NXT 2.0 color sensor (none) in raw mode */
 #endif
 
-#define SetSensor(_sensor, _tm) { SetSensorType(_sensor, _tm>>8); SetSensorMode(_sensor, _tm&0xff); ResetSensor(_sensor); }
+/**
+ * Set sensor type.
+ * Set a sensor's type, which must be one of the predefined sensor type
+ * constants.
+ * \sa SetSensorMode(), SetSensor()
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param type The desired sensor type.
+ */
+inline void SetSensorType(byte port, byte type) { asm { setin type, port, Type } }
+
+/**
+ * Set sensor mode.
+ * Set a sensor's mode, which should be one of the predefined sensor mode
+ * constants. A slope parameter for boolean conversion, if desired, may be
+ * added to the mode.
+ * \sa SetSensorType(), SetSensor()
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param type The desired sensor mode.
+ */
+inline void SetSensorMode(byte port, byte mode) { asm { setin mode, port, InputMode } }
+
+/**
+ * Clear a sensor value.
+ * Clear the value of a sensor - only affects sensors that are configured
+ * to measure a cumulative quantity such as rotation or a pulse count.
+ * \param port The port to clear. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void ClearSensor(byte port) { asm { setin 0, port, ScaledValue } }
+
+/**
+ * Reset the sensor port.
+ * Sets the invalid data flag on the specified port and waits for it to
+ * become valid again.
+ * \param port The port to reset. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void ResetSensor(byte port) { asm { __ResetSensor(port) } }
+
+/**
+ * Set sensor configuration.
+ * Set the type and mode of the given sensor to the specified configuration,
+ * which must be a special constant containing both type and mode information.
+ * \sa SetSensorType(), SetSensorMode(), and ResetSensor()
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param config The configuration constant containing both the type and mode.
+ */
+inline void SetSensor(byte port, const byte config) {
+  SetSensorType(port, config>>8);
+  SetSensorMode(port, config&0xff);
+  ResetSensor(port);
+}
+
+/**
+ * Configure a touch sensor.
+ * Configure the sensor on the specified port as a touch sensor.
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void SetSensorTouch(byte port) { asm { __SetSensorTouch(port) } }
+
+/**
+ * Configure a light sensor.
+ * Configure the sensor on the specified port as a light sensor (active).
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void SetSensorLight(byte port) { asm { __SetSensorLight(port) } }
+
+/**
+ * Configure a sound sensor.
+ * Configure the sensor on the specified port as a sound sensor (dB scaling).
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void SetSensorSound(byte port) { asm { __SetSensorSound(port) } }
+
+/**
+ * Configure an I2C sensor.
+ * Configure the sensor on the specified port as an I2C digital sensor
+ * (9V powered).
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void SetSensorLowspeed(byte port) { asm { __SetSensorLowspeed(port) } }
 
 #if __FIRMWARE_VERSION > 107
-#define SetSensorColorFull(_port) asm { __SetSensorColorFull(_port) }
-#define SetSensorColorRed(_port) asm { __SetSensorColorRed(_port) }
-#define SetSensorColorGreen(_port) asm { __SetSensorColorGreen(_port) }
-#define SetSensorColorBlue(_port) asm { __SetSensorColorBlue(_port) }
-#define SetSensorColorNone(_port) asm { __SetSensorColorNone(_port) }
 
-#define ReadSensorColorRaw(_port, _rawVals) asm { __ReadSensorColorRaw(_port, _rawVals, __RETVAL__) }
-#define ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled) asm { __ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, __RETVAL__) }
+/**
+ * Configure an NXT 2.0 full color sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in full color mode.
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void SetSensorColorFull(byte port) { asm { __SetSensorColorFull(port) } }
+
+/**
+ * Configure an NXT 2.0 red light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in red light mode.
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void SetSensorColorRed(byte port) { asm { __SetSensorColorRed(port) } }
+
+/**
+ * Configure an NXT 2.0 green light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in green light mode.
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void SetSensorColorGreen(byte port) { asm { __SetSensorColorGreen(port) } }
+
+/**
+ * Configure an NXT 2.0 blue light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in blue light mode.
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void SetSensorColorBlue(byte port) { asm { __SetSensorColorBlue(port) } }
+
+/**
+ * Configure an NXT 2.0 no light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in no light mode.
+ * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ */
+inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
+
 #endif
 
-#define PlayTone(_f, _d) PlayToneEx(_f, _d, 4, 0)
-#define PlayFile(_f) PlayFileEx(_f, 4, 0)
-#define ClearScreen() asm { PointOutEx(200, 200, TRUE) }
-#define FlattenVar(_value) asm { flatten __STRRETVAL__, _value }
-#define UnflattenVar(_str, _value) asm { unflatten _value, __RETVAL__, _str, _value }
-#define ArrayBuild(_aout, ...) asm { arrbuild _aout, __VA_ARGS__ }
+// SetInput(port, field, value)
+// SetOutput(ports, field, value [, field, value, ...])
 
+/**
+ * Basic analog sensor value names.
+ * Read analog sensor values using these names.  Returns the current scaled value
+ * of the sensor on the specified port.
+ */
+#define SENSOR_1 Sensor(S1) /*!< Read the value of the analog sensor on port S1 */
+#define SENSOR_2 Sensor(S2) /*!< Read the value of the analog sensor on port S2 */
+#define SENSOR_3 Sensor(S3) /*!< Read the value of the analog sensor on port S3 */
+#define SENSOR_4 Sensor(S4) /*!< Read the value of the analog sensor on port S4 */
 
 // input fields
 #define Sensor(_p) asm { ReadSensor(_p, __RETVAL__) }
@@ -148,9 +272,10 @@
 #define SensorUS(_p) asm { ReadSensorUS(_p, __RETVAL__) }
 #define ReadSensorUSEx(_port, _values) asm { __ReadSensorUSEx(_port, _values, __RETVAL__) }
 
-#define ReadI2CRegister(_port, _reg, _out) asm { __MSReadValue(_port, 0x02, _reg, 1, _out, __RETVAL__) }
-#define WriteI2CRegister(_port, _reg, _val) asm { __MSWriteToRegister(_port, 0x02, _reg, _val, __RETVAL__) }
-
+#if __FIRMWARE_VERSION > 107
+#define ReadSensorColorRaw(_port, _rawVals) asm { __ReadSensorColorRaw(_port, _rawVals, __RETVAL__) }
+#define ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled) asm { __ReadSensorColorEx(_port, _colorval, _raw, _norm, _scaled, __RETVAL__) }
+#endif
 
 // output fields
 #define MotorMode(_p) GetOutput(_p, OutputMode)
@@ -168,7 +293,94 @@
 #define MotorBlockTachoCount(_p) GetOutput(_p, BlockTachoCount)
 #define MotorRotationCount(_p) GetOutput(_p, RotationCount)
 
+//RotateMotor(ports, pwr, angle)
+//RotateMotorEx(ports, pwr, angle, turnpct, bSync, bStop)
+//RotateMotorPID(ports, pwr, angle, p, i, d)
+//RotateMotorExPID(ports, pwr, angle, turnpct, bSync, bStop, p, i, d)
+//OnFwdSyncExPID(ports, pwr, turnpct, reset, p, i, d)
+//OnRevSyncExPID(ports, pwr, turnpct, reset, p, i, d)
+//OnFwdSyncPID(ports, pwr, turnpct, p, i, d)
+//OnRevSyncPID(ports, pwr, turnpct, p, i, d)
+//OnFwdRegExPID(ports, pwr, regmode, reset, p, i, d)
+//OnRevRegExPID(ports, pwr, regmode, reset, p, i, d)
+//OnFwdRegPID(ports, pwr, regmode, p, i, d)
+//OnRevRegPID(ports, pwr, regmode, p, i, d)
+//OnFwdSyncEx(ports, pwr, turnpct, reset)
+//OnRevSyncEx(ports, pwr, turnpct, reset)
+//OnFwdSync(ports, pwr, turnpct)
+//OnRevSync(ports, pwr, turnpct)
+//OnFwdRegEx(ports, pwr, regmode, reset)
+//OnRevRegEx(ports, pwr, regmode, reset)
+//OnFwdReg(ports, pwr, regmode)
+//OnRevReg(ports, pwr, regmode)
+//OnFwdEx(ports, pwr, reset)
+//OnRevEx(ports, pwr, reset)
+//OnFwd(ports, pwr)
+//OnRev(ports, pwr)
+// Off(ports)
+// Coast(ports)
+// Float(ports)
+// OffEx(ports, reset)
+// CoastEx(ports, reset)
+// ResetTachoCount(ports)
+// ResetBlockTachoCount(ports)
+// ResetRotationCount(ports)
+// ResetAllTachoCounts(ports)
+/*
+  AddAPIFunction('abs', APIF_ABS);
+  AddAPIFunction('sign', APIF_SIGN);
+  AddAPIFunction('Random', APIF_RANDOM);
+  AddAPIFunction('GetInput', APIF_GETINPUT);
+  AddAPIFunction('GetOutput', APIF_GETOUTPUT);
+  AddAPIFunction('ResetScreen', APIF_RESETSCREEN);
+  AddAPIFunction('TextOut', APIF_TEXTOUT);
+  AddAPIFunction('NumOut', APIF_NUMOUT);
+  AddAPIFunction('PlayToneEx', APIF_PLAYTONEEX);
+  AddAPIFunction('PlayFileEx', APIF_PLAYFILEEX);
+  AddAPIFunction('ButtonPressed', APIF_BUTTONPRESSED);
+  AddAPIFunction('ButtonCount', APIF_BUTTONCOUNT);
+  AddAPIFunction('ReadButtonEx', APIF_READBUTTONEX);
+  AddAPIFunction('PointOut', APIF_DRAWPOINT);
+  AddAPIFunction('LineOut', APIF_DRAWLINE);
+  AddAPIFunction('CircleOut', APIF_DRAWCIRCLE);
+  AddAPIFunction('RectOut', APIF_DRAWRECT);
+  AddAPIFunction('GraphicOut', APIF_DRAWGRAPHIC);
+  AddAPIFunction('GraphicOutEx', APIF_DRAWGRAPHICEX);
+  AddAPIFunction('StrToNum', APIF_STRTONUM);
+  AddAPIFunction('StrLen', APIF_STRLEN);
+  AddAPIFunction('StrIndex', APIF_STRINDEX);
+  AddAPIStringFunction('NumToStr', APISF_NUMTOSTR);
+  AddAPIStringFunction('StrCat', APISF_STRCAT);
+  AddAPIStringFunction('SubStr', APISF_SUBSTR);
+  AddAPIStringFunction('Flatten', APISF_FLATTEN);
+  AddAPIStringFunction('StrReplace', APISF_STRREPLACE);
+  AddAPIStringFunction('FormatNum', APISF_FORMATNUM);
+  AddAPIFunction('GraphicArrayOut', APIF_DRAWGRAPHICAR);
+  AddAPIFunction('GraphicArrayOutEx', APIF_DRAWGRAPHICAREX);
+  AddAPIFunction('PolyOut', APIF_DRAWPOLY);
+  AddAPIFunction('EllipseOut', APIF_DRAWELLIPSE);
+  AddAPIFunction('FontTextOut', APIF_FONTTEXTOUT);
+  AddAPIFunction('FontNumOut', APIF_FONTNUMOUT);
+*/
+
 #define until(_c) while(!(_c))
+
+#define PlayTone(_f, _d) PlayToneEx(_f, _d, 4, 0)
+#define PlayFile(_f) PlayFileEx(_f, 4, 0)
+#define ClearScreen() asm { PointOutEx(200, 200, TRUE) }
+#define FlattenVar(_value) asm { flatten __STRRETVAL__, _value }
+#define UnflattenVar(_str, _value) asm { unflatten _value, __RETVAL__, _str, _value }
+#define ArrayBuild(_aout, ...) asm { arrbuild _aout, __VA_ARGS__ }
+
+#define ReadI2CRegister(_port, _reg, _out) asm { __MSReadValue(_port, 0x02, _reg, 1, _out, __RETVAL__) }
+#define WriteI2CRegister(_port, _reg, _val) asm { __MSWriteToRegister(_port, 0x02, _reg, _val, __RETVAL__) }
+
+// Stop(stop?);
+// ExitTo(task);
+// Precedes(x, y, z, ...);
+// Follows(x, y, z);
+// Acquire(mutex);
+// Release(mutex);
 
 #define StopAllTasks() Stop(true)
 #define StartTask(_t) start _t
@@ -1405,10 +1617,17 @@ struct ListFilesType {
 #endif
 
 
-// HiTechnic API functions
+/** HiTechnic API functions.
+ *
+ */
 
 #define SetSensorHTEOPD(_p, _bStd) \
   SetSensorType(_p, (_bStd) ? IN_TYPE_LIGHT_INACTIVE : IN_TYPE_LIGHT_ACTIVE); \
+  SetSensorMode(_p, IN_MODE_RAW); \
+  ResetSensor(_p);
+
+#define SetSensorHTGyro(_p) \
+  SetSensorType(_p, IN_TYPE_LIGHT_INACTIVE); \
   SetSensorMode(_p, IN_MODE_RAW); \
   ResetSensor(_p);
 
@@ -1416,11 +1635,6 @@ struct ListFilesType {
   getin __RETVAL__, _p, RawValue \
   sub __RETVAL__, 1023, __RETVAL__ \
 }
-
-#define SetSensorHTGyro(_p) \
-  SetSensorType(_p, IN_TYPE_LIGHT_INACTIVE); \
-  SetSensorMode(_p, IN_MODE_RAW); \
-  ResetSensor(_p);
 
 inline int SensorHTGyro(const byte port, const int offset = 0) {
   asm {
@@ -1555,6 +1769,16 @@ inline int SensorHTGyro(const byte port, const int offset = 0) {
   SetSensorMode(_p, IN_MODE_RAW) \
   ResetSensor(_p)
 	
+#define SetSensorMSDRODActive(_p) \
+  SetSensorType(_p, IN_TYPE_LIGHT_ACTIVE) \
+  SetSensorMode(_p, IN_MODE_PCTFULLSCALE) \
+  ResetSensor(_p)
+
+#define SetSensorMSDRODInactive(_p) \
+  SetSensorType(_p, IN_TYPE_LIGHT_INACTIVE) \
+  SetSensorMode(_p, IN_MODE_PCTFULLSCALE) \
+  ResetSensor(_p)
+
 #define SensorMSPressure(_p) asm { \
   getin __RETVAL__, _p, RawValue \
   sub __RETVAL__, 1024, __RETVAL__ \
@@ -1587,16 +1811,6 @@ inline int SensorHTGyro(const byte port, const int offset = 0) {
 #define DISTNxNumPoints(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_NUM_POINTS, 1, __RETVAL__, __TMPBYTE__) }
 #define DISTNxMinDistance(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_DIST_MIN, 2, __RETVAL__, __TMPBYTE__) }
 #define DISTNxMaxDistance(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_DIST_MAX, 2, __RETVAL__, __TMPBYTE__) }
-
-#define SetSensorMSDRODActive(_p) \
-  SetSensorType(_p, IN_TYPE_LIGHT_ACTIVE) \
-  SetSensorMode(_p, IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_p)
-
-#define SetSensorMSDRODInactive(_p) \
-  SetSensorType(_p, IN_TYPE_LIGHT_INACTIVE) \
-  SetSensorMode(_p, IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_p)
 
 #define SensorMSDROD(_p) asm { getin __RETVAL__, _p, NormalizedValue }
 
@@ -1792,11 +2006,14 @@ byte fopen(string filename, const string mode) {
   return handle;
 }
 
-//  int fflush(FILE*); // EOF if failure, 0 otherwise
+//  int fflush(FILE*);
+// EOF if failure, 0 otherwise
 inline int fflush(byte handle) { return 0; }
-//  long int ftell(FILE*); // -1 if failure, otherwise the file position
+//  long int ftell(FILE*);
+// -1 if failure, otherwise the file position
 inline long ftell(byte handle) { return -1; }
-//  int fputc(int ch, FILE*); // write character to file. Returns character written or EOF if error occurs
+//  int fputc(int ch, FILE*);
+// write character to file. Returns character written or EOF if error occurs
 inline char fputc(char ch, byte handle) {
   if (Write(handle, ch) == LDR_SUCCESS)
     return ch;
@@ -1805,7 +2022,8 @@ inline char fputc(char ch, byte handle) {
 }
 //  int putc(int ch, FILE*); // ditto
 #define putc(_ch, _handle) fputc(_ch, _handle)
-//  int fputs(char* str, FILE*); // write string to file (not including null); return EOF if error or non-negative value if success
+//  int fputs(char* str, FILE*);
+// write string to file (not including null); return EOF if error or non-negative value if success
 inline int fputs(string str, byte handle) {
   int cnt;
   if (WriteString(handle, str, cnt) == LDR_SUCCESS)

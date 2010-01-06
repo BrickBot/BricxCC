@@ -96,7 +96,7 @@
 #define Consts_SInvalidBitmap 65229
 #define Consts_SInvalidIcon 65230
 #define Consts_SInvalidMetafile 65231
-#define uLocalizedStrings_UsageBT 65232
+#define uLocalizedStrings_UsagePort 65232
 #define uLocalizedStrings_UsageDownload 65233
 #define uLocalizedStrings_UsageRunProg 65234
 #define uLocalizedStrings_UsageBinary 65235
@@ -112,70 +112,70 @@
 #define uLocalizedStrings_UsageIncludes 65245
 #define uLocalizedStrings_UsageNBCOutput 65246
 #define uLocalizedStrings_UsageListing 65247
-#define uLocalizedStrings_sStringVarType 65248
-#define uLocalizedStrings_sStructType 65249
-#define uLocalizedStrings_sMutexType 65250
-#define uLocalizedStrings_sNumericType 65251
-#define uLocalizedStrings_sMathFactor 65252
-#define uLocalizedStrings_sArrayDatatype 65253
-#define uLocalizedStrings_sUndefinedIdentifier 65254
-#define uLocalizedStrings_sDuplicateIdentifier 65255
-#define uLocalizedStrings_sTooManyArgs 65256
-#define uLocalizedStrings_sTooFewArgs 65257
-#define uLocalizedStrings_sTooFewParams 65258
-#define uLocalizedStrings_sMaxParamCountExceeded 65259
-#define uLocalizedStrings_sConstNotAllowed 65260
-#define uLocalizedStrings_sFuncParamDeclMismatch 65261
-#define uLocalizedStrings_UsageSyntax 65262
-#define uLocalizedStrings_UsagePort 65263
-#define uLocalizedStrings_sNXCPreprocess 65264
-#define uLocalizedStrings_sNXCInitProgram 65265
-#define uLocalizedStrings_sNXCParseProg 65266
-#define uLocalizedStrings_sNXCCodeGenComplete 65267
-#define uLocalizedStrings_sInvalidFuncDecl 65268
-#define uLocalizedStrings_sDefaultParamError 65269
-#define uLocalizedStrings_sExpectedString 65270
-#define uLocalizedStrings_sDataType 65271
-#define uLocalizedStrings_sIdentifier 65272
-#define uLocalizedStrings_sDirective 65273
-#define uLocalizedStrings_sNumber 65274
-#define uLocalizedStrings_sHexNumber 65275
-#define uLocalizedStrings_sCharLiteral 65276
-#define uLocalizedStrings_sStringLiteral 65277
-#define uLocalizedStrings_sStringType 65278
-#define uLocalizedStrings_sByteArrayType 65279
-#define uLocalizedStrings_sRecursiveNotAllowed 65280
-#define uLocalizedStrings_sExpNotSupported 65281
-#define uLocalizedStrings_sEnhancedFirmwareReqd 65282
-#define uLocalizedStrings_sSymbolTableFull 65283
-#define uLocalizedStrings_sInvalidArrayDim 65284
-#define uLocalizedStrings_sAssignTaskError 65285
-#define uLocalizedStrings_sArgMustBeTask 65286
-#define uLocalizedStrings_sInvalidReturnType 65287
-#define uLocalizedStrings_sInvalidStringAssign 65288
-#define uLocalizedStrings_sFloatNotSupported 65289
-#define uLocalizedStrings_sNoUnsignedFloat 65290
-#define uLocalizedStrings_sMainTaskNotFound 65291
-#define uLocalizedStrings_sNXCGenerateTrailer 65292
-#define uLocalizedStrings_sNXCProcessGlobals 65293
-#define uLocalizedStrings_sNXCProcedure 65294
-#define uLocalizedStrings_sNXCCompBegin 65295
+#define uLocalizedStrings_sByteArrayType 65248
+#define uLocalizedStrings_sStringVarType 65249
+#define uLocalizedStrings_sStructType 65250
+#define uLocalizedStrings_sMutexType 65251
+#define uLocalizedStrings_sNumericType 65252
+#define uLocalizedStrings_sMathFactor 65253
+#define uLocalizedStrings_sArrayDatatype 65254
+#define uLocalizedStrings_sUndefinedIdentifier 65255
+#define uLocalizedStrings_sDuplicateIdentifier 65256
+#define uLocalizedStrings_sTooManyArgs 65257
+#define uLocalizedStrings_sTooFewArgs 65258
+#define uLocalizedStrings_sTooFewParams 65259
+#define uLocalizedStrings_sMaxParamCountExceeded 65260
+#define uLocalizedStrings_sConstNotAllowed 65261
+#define uLocalizedStrings_sFuncParamDeclMismatch 65262
+#define uLocalizedStrings_UsageSyntax 65263
+#define uLocalizedStrings_sNXCInitProgram 65264
+#define uLocalizedStrings_sNXCParseProg 65265
+#define uLocalizedStrings_sNXCCodeGenComplete 65266
+#define uLocalizedStrings_sInvalidFuncDecl 65267
+#define uLocalizedStrings_sDefaultParamError 65268
+#define uLocalizedStrings_sInvalidEnumDecl 65269
+#define uLocalizedStrings_sUnknownDatatype 65270
+#define uLocalizedStrings_sExpectedString 65271
+#define uLocalizedStrings_sDataType 65272
+#define uLocalizedStrings_sIdentifier 65273
+#define uLocalizedStrings_sDirective 65274
+#define uLocalizedStrings_sNumber 65275
+#define uLocalizedStrings_sHexNumber 65276
+#define uLocalizedStrings_sCharLiteral 65277
+#define uLocalizedStrings_sStringLiteral 65278
+#define uLocalizedStrings_sStringType 65279
+#define uLocalizedStrings_sExpNotSupported 65280
+#define uLocalizedStrings_sEnhancedFirmwareReqd 65281
+#define uLocalizedStrings_sSymbolTableFull 65282
+#define uLocalizedStrings_sInvalidArrayDim 65283
+#define uLocalizedStrings_sAssignTaskError 65284
+#define uLocalizedStrings_sArgMustBeTask 65285
+#define uLocalizedStrings_sInvalidReturnType 65286
+#define uLocalizedStrings_sInvalidStringAssign 65287
+#define uLocalizedStrings_sFloatNotSupported 65288
+#define uLocalizedStrings_sNoUnsignedFloat 65289
+#define uLocalizedStrings_sMainTaskNotFound 65290
+#define uLocalizedStrings_sNXCGenerateTrailer 65291
+#define uLocalizedStrings_sNXCProcessGlobals 65292
+#define uLocalizedStrings_sNXCProcedure 65293
+#define uLocalizedStrings_sNXCCompBegin 65294
+#define uLocalizedStrings_sNXCPreprocess 65295
 #define uLocalizedStrings_sReturnInvalid 65296
 #define uLocalizedStrings_sInvalidBreakContinue 65297
 #define uLocalizedStrings_sProtoAlreadyDefined 65298
 #define uLocalizedStrings_sNotValidForPrototype 65299
-#define uLocalizedStrings_sMissingDataType 65300
-#define uLocalizedStrings_sUnexpectedChar 65301
-#define uLocalizedStrings_sValidProgBlock 65302
-#define uLocalizedStrings_sConstInitialization 65303
-#define uLocalizedStrings_sInitNotAllowed 65304
-#define uLocalizedStrings_sInvalidStringInit 65305
-#define uLocalizedStrings_sConstLocArrNotSupported 65306
-#define uLocalizedStrings_sUnknownAPICommand 65307
-#define uLocalizedStrings_sDefaultInvalid 65308
-#define uLocalizedStrings_sCaseInvalid 65309
-#define uLocalizedStrings_sInvalidUseOfTaskName 65310
-#define uLocalizedStrings_sNestedCallsError 65311
+#define uLocalizedStrings_sUnexpectedChar 65300
+#define uLocalizedStrings_sValidProgBlock 65301
+#define uLocalizedStrings_sConstInitialization 65302
+#define uLocalizedStrings_sInitNotAllowed 65303
+#define uLocalizedStrings_sInvalidStringInit 65304
+#define uLocalizedStrings_sConstLocArrNotSupported 65305
+#define uLocalizedStrings_sUnknownAPICommand 65306
+#define uLocalizedStrings_sDefaultInvalid 65307
+#define uLocalizedStrings_sCaseInvalid 65308
+#define uLocalizedStrings_sInvalidUseOfTaskName 65309
+#define uLocalizedStrings_sNestedCallsError 65310
+#define uLocalizedStrings_sRecursiveNotAllowed 65311
 #define uLocalizedStrings_sNBCPreprocess 65312
 #define uLocalizedStrings_sNBCCompilingSource 65313
 #define uLocalizedStrings_sNBCOptClump 65314
@@ -479,7 +479,7 @@ BEGIN
 	uLocalizedStrings_UsageEnhanced,	"   -EF : enhanced firmware"
 	uLocalizedStrings_UsageSafecall,	"   -safecall: NXC will wrap all function calls in Acquire/Release"
 	uLocalizedStrings_UsageAPI,	"   -api: dump the API to stdout"
-	uLocalizedStrings_UsageFirmVer,	"   -v=n: set the targeted firmware version (default == 105)"
+	uLocalizedStrings_UsageFirmVer,	"   -v=n: set the targeted firmware version (default == 105, NXT 2.0 == 128)"
 	uLocalizedStrings_UsageHelp,	"   -help : display command line options"
 	P10Build_msgErrBlanks,	"Expression has blanks"
 	P10Build_msgMissingBrackets,	"Missing brackets in expression"
@@ -490,7 +490,7 @@ BEGIN
 	Consts_SInvalidBitmap,	"Bitmap image is not valid"
 	Consts_SInvalidIcon,	"Icon image is not valid"
 	Consts_SInvalidMetafile,	"Metafile is not valid"
-	uLocalizedStrings_UsageBT,	"   -BT: use bluetooth"
+	uLocalizedStrings_UsagePort,	"   -S=<portname>: specify port name (usb), brick resource name, or alias"
 	uLocalizedStrings_UsageDownload,	"   -d: download program"
 	uLocalizedStrings_UsageRunProg,	"   -r: run program"
 	uLocalizedStrings_UsageBinary,	"   -b: treat input file as a binary file (don't compile it)"
@@ -506,6 +506,7 @@ BEGIN
 	uLocalizedStrings_UsageIncludes,	"   -I=<path>: search <path> for include files"
 	uLocalizedStrings_UsageNBCOutput,	"   -nbc=<filename> : save NXC intermediate NBC code to <filename>"
 	uLocalizedStrings_UsageListing,	"   -L=<filename> : generate code listing to <filename>"
+	uLocalizedStrings_sByteArrayType,	"byte array type"
 	uLocalizedStrings_sStringVarType,	"string type"
 	uLocalizedStrings_sStructType,	"struct type"
 	uLocalizedStrings_sMutexType,	"mutex type"
@@ -521,13 +522,13 @@ BEGIN
 	uLocalizedStrings_sConstNotAllowed,	"Constant not allowed on LHS of assignment"
 	uLocalizedStrings_sFuncParamDeclMismatch,	"Function parameter declaration mismatch"
 	uLocalizedStrings_UsageSyntax,	"Syntax: %s [options] filename [options]"
-	uLocalizedStrings_UsagePort,	"   -S=<portname>: specify port name (COMn or usb), resource name, or alias"
-	uLocalizedStrings_sNXCPreprocess,	"Running NXC preprocessor"
 	uLocalizedStrings_sNXCInitProgram,	"NXC init program"
 	uLocalizedStrings_sNXCParseProg,	"NXC parse program code"
 	uLocalizedStrings_sNXCCodeGenComplete,	"NXC code generation finished"
 	uLocalizedStrings_sInvalidFuncDecl,	"Declaration syntax error"
 	uLocalizedStrings_sDefaultParamError,	"Invalid parameter syntax with default values"
+	uLocalizedStrings_sInvalidEnumDecl,	"Invalid enum declaration"
+	uLocalizedStrings_sUnknownDatatype,	"Unknown datatype"
 	uLocalizedStrings_sExpectedString,	"%s expected"
 	uLocalizedStrings_sDataType,	"Data type"
 	uLocalizedStrings_sIdentifier,	"Identifier"
@@ -537,8 +538,6 @@ BEGIN
 	uLocalizedStrings_sCharLiteral,	"Character literal"
 	uLocalizedStrings_sStringLiteral,	"String literal"
 	uLocalizedStrings_sStringType,	"string constant or variable of type string"
-	uLocalizedStrings_sByteArrayType,	"byte array type"
-	uLocalizedStrings_sRecursiveNotAllowed,	"Recursive function calls are not supported"
 	uLocalizedStrings_sExpNotSupported,	"Expressions are not supported for struct, array, or reference parameters"
 	uLocalizedStrings_sEnhancedFirmwareReqd,	"Enhanced firmware is required for this operation"
 	uLocalizedStrings_sSymbolTableFull,	"Symbol Table Full"
@@ -554,11 +553,11 @@ BEGIN
 	uLocalizedStrings_sNXCProcessGlobals,	"NXC process global declarations"
 	uLocalizedStrings_sNXCProcedure,	"NXC process procedure block: %s"
 	uLocalizedStrings_sNXCCompBegin,	"NXC compilation begins"
+	uLocalizedStrings_sNXCPreprocess,	"Running NXC preprocessor"
 	uLocalizedStrings_sReturnInvalid,	"return is invalid outside a subroutine"
 	uLocalizedStrings_sInvalidBreakContinue,	"%s is invalid outside of a loop"
 	uLocalizedStrings_sProtoAlreadyDefined,	"Prototype already defined - \"begin\""
 	uLocalizedStrings_sNotValidForPrototype,	"Not valid for a prototype"
-	uLocalizedStrings_sMissingDataType,	"Missing Data Type"
 	uLocalizedStrings_sUnexpectedChar,	"Unexpected character encountered"
 	uLocalizedStrings_sValidProgBlock,	"Valid Program Block Statement"
 	uLocalizedStrings_sConstInitialization,	"constant initialization"
@@ -570,6 +569,7 @@ BEGIN
 	uLocalizedStrings_sCaseInvalid,	"case is invalid outside a switch statement"
 	uLocalizedStrings_sInvalidUseOfTaskName,	"Invalid use of task name"
 	uLocalizedStrings_sNestedCallsError,	"Nested calls to the same function are not supported."
+	uLocalizedStrings_sRecursiveNotAllowed,	"Recursive function calls are not supported"
 	uLocalizedStrings_sNBCPreprocess,	"Running NBC Preprocessor"
 	uLocalizedStrings_sNBCCompilingSource,	"Compiling NBC source code"
 	uLocalizedStrings_sNBCOptClump,	"Optimizing clump: %s"
