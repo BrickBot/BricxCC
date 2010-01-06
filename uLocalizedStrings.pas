@@ -597,8 +597,7 @@ resourcestring
 // nbc.dpr
 resourcestring
   UsageSyntax    = 'Syntax: %s [options] filename [options]';
-  UsagePort      = '   -S=<portname>: specify port name (COMn or usb), resource name, or alias';
-  UsageBT        = '   -BT: use bluetooth';
+  UsagePort      = '   -S=<portname>: specify port name (usb), brick resource name, or alias';
   UsageDownload  = '   -d: download program';
   UsageRunProg   = '   -r: run program';
   UsageBinary    = '   -b: treat input file as a binary file (don''t compile it)';
@@ -619,7 +618,7 @@ resourcestring
   UsageEnhanced  = '   -EF : enhanced firmware';
   UsageSafecall  = '   -safecall: NXC will wrap all function calls in Acquire/Release';
   UsageAPI       = '   -api: dump the API to stdout';
-  UsageFirmVer   = '   -v=n: set the targeted firmware version (default == 105)';
+  UsageFirmVer   = '   -v=n: set the targeted firmware version (default == 105, NXT 2.0 == 128)';
   UsageHelp      = '   -help : display command line options';
 
 // uEditorExperts.pas

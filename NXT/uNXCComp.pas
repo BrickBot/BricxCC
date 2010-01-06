@@ -322,8 +322,8 @@ type
     procedure DoOnFwdRevSyncExPID;
     procedure DoResetCounters;
     procedure DoRotateMotors(idx : integer);
-    procedure DoSetSensorTypeMode(idx : integer);
-    procedure DoClearSetResetSensor;
+//    procedure DoSetSensorTypeMode(idx : integer);
+//    procedure DoClearSetResetSensor;
     procedure DoTextNumOut(idx : integer);
     procedure DoFontTextNumOut(idx : integer);
     procedure DoDrawPoint;
@@ -585,14 +585,6 @@ const
   API_OFF       = 10;
   API_ROTATEMOTOR = 11;
   API_ROTATEMOTOREX = 12;
-  API_SETSENSORTYPE = 13;
-  API_SETSENSORMODE = 14;
-  API_CLEARSENSOR = 15;
-  API_SETSENSORTOUCH = 16;
-  API_SETSENSORLIGHT = 17;
-  API_SETSENSORSOUND = 18;
-  API_SETSENSORLOWSPEED = 19;
-  API_RESETSENSOR = 20;
   API_RETURN = 21;
   API_ACQUIRE = 22;
   API_RELEASE = 23;
@@ -626,7 +618,16 @@ const
   API_ONREVREGEXPID = 51;
   API_ONFWDSYNCEXPID = 52;
   API_ONREVSYNCEXPID = 53;
-  API_WAIT                 =  2; // moved to header file as inline function
+  // moved to header file as inline functions
+  API_WAIT =  2;
+  API_SETSENSORTYPE = 13;
+  API_SETSENSORMODE = 14;
+  API_CLEARSENSOR = 15;
+  API_SETSENSORTOUCH = 16;
+  API_SETSENSORLIGHT = 17;
+  API_SETSENSORSOUND = 18;
+  API_SETSENSORLOWSPEED = 19;
+  API_RESETSENSOR = 20;
 
   APICount = 54;
   APIList : array[0..APICount-1] of string = (
@@ -634,9 +635,9 @@ const
     'OnFwd', 'OnRev', 'OnFwdReg', 'OnRevReg',
     'OnFwdSync', 'OnRevSync', 'Coast', 'Off',
     'RotateMotor', 'RotateMotorEx',
-    'SetSensorType', 'SetSensorMode', 'ClearSensor',
-    'SetSensorTouch', 'SetSensorLight', 'SetSensorSound', 'SetSensorLowspeed',
-    'ResetSensor',
+    '__SetSensorType__', '__SetSensorMode__', '__ClearSensor__',
+    '__SetSensorTouch__', '__SetSensorLight__', '__SetSensorSound__', '__SetSensorLowspeed__',
+    '__ResetSensor__',
     'return', 'Acquire', 'Release', 'Precedes', 'Follows',
     'ExitTo', 'SetInput', 'SetOutput', 'Stop', 'goto', 'Float',
     'OnFwdEx', 'OnRevEx', 'OnFwdRegEx', 'OnRevRegEx',
@@ -4844,7 +4845,6 @@ begin
     API_BREAK    : DoBreakContinue(idx, lend);
     API_CONTINUE : DoBreakContinue(idx, lstart);
     API_RETURN   : DoReturn;
-//    API_WAIT     : DoWait;
     API_ONFWD,
     API_ONREV    : DoOnFwdRev;
     API_ONFWDEX,
@@ -4878,6 +4878,7 @@ begin
     API_ROTATEMOTOREX,
     API_ROTATEMOTORPID,
     API_ROTATEMOTOREXPID : DoRotateMotors(idx);
+{
     API_SETSENSORTYPE,
     API_SETSENSORMODE : DoSetSensorTypeMode(idx);
     API_CLEARSENSOR,
@@ -4886,6 +4887,7 @@ begin
     API_SETSENSORSOUND,
     API_SETSENSORLOWSPEED,
     API_RESETSENSOR : DoClearSetResetSensor;
+}
     API_PRECEDES,
     API_FOLLOWS : DoPrecedesFollows;
     API_ACQUIRE,
@@ -6373,6 +6375,7 @@ var
   op, arg1 : string;
 begin
   //OnFwd(ports, pwr)
+  //OnRev(ports, pwr)
   op := Value;
   Next;
   OpenParen;
@@ -6415,6 +6418,7 @@ var
   op, arg1, svar : string;
 begin
   //OnFwdReg(ports, pwr, regmode)
+  //OnRevReg(ports, pwr, regmode)
   op := Value;
   Next;
   OpenParen;
@@ -6471,6 +6475,7 @@ var
   op, ports, pwr : string;
 begin
   //OnFwdSync(ports, pwr, turnpct)
+  //OnRevSync(ports, pwr, turnpct)
   op := Value;
   Next;
   OpenParen;
@@ -6834,6 +6839,7 @@ begin
   pop;
 end;
 
+(*
 procedure TNXCComp.DoClearSetResetSensor;
 var
   op, port : string;
@@ -6874,6 +6880,7 @@ begin
   else
     EmitLn(Format('setin %s, %s, InputMode',[RegisterName, port]));
 end;
+*)
 
 procedure TNXCComp.DoAcquireRelease;
 var
@@ -7096,7 +7103,10 @@ procedure TNXCComp.DoResetCounters;
 var
   op, arg1 : string;
 begin
-  // ResetTachoCount(ports)  (etc...)
+  // ResetTachoCount(ports)
+  // ResetBlockTachoCount(ports)
+  // ResetRotationCount(ports)
+  // ResetAllTachoCounts(ports)
   op := Value;
   Next;
   OpenParen;

@@ -789,12 +789,12 @@ end;
 initialization
   VerCompanyName      := 'JoCar Consulting';
   VerFileDescription  := '';
-  VerFileVersion      := '1.0.1.36';
+  VerFileVersion      := '1.2.1.r1';
   VerInternalName     := 'NBC';
-  VerLegalCopyright   := 'Copyright (c) 2006-2009, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2010, John Hansen';
   VerOriginalFileName := 'NBC';
   VerProductName      := 'Next Byte Codes Compiler';
-  VerProductVersion   := '1.0.1.b36';
+  VerProductVersion   := '1.2';
   VerComments         := '';
 
 end.
