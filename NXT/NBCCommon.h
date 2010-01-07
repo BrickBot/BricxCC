@@ -33,6 +33,7 @@
  * Output port constants.
  * Output port constants are used when calling motor control API functions.
  */
+
 #define OUT_A   0x00 /*!< Output port A */
 #define OUT_B   0x01 /*!< Output port B */
 #define OUT_C   0x02 /*!< Output port C */
@@ -45,6 +46,7 @@
  * Input port constants.
  * Input port constants are used when calling sensor control API functions.
  */
+
 #define IN_1 0x00 /*!< Input port 1 */
 #define IN_2 0x01 /*!< Input port 2 */
 #define IN_3 0x02 /*!< Input port 3 */
@@ -63,6 +65,7 @@
  * \sa OnFwdRegExPID(), OnRevRegExPID(), OnFwdRegPID(), OnRevRegPID(),
  * \sa OnFwdSyncExPID(), OnRevSyncExPID(), OnFwdSyncPID(), OnRevSyncPID()
  */
+
 #define PID_0   0 /*!< PID zero */
 #define PID_1  32 /*!< PID one */
 #define PID_2  64 /*!< PID two */
@@ -96,6 +99,7 @@
  * Update flag constants can be combined with bitwise OR.
  * \sa SetOutput()
  */
+
 #define UF_UPDATE_MODE                 0x01 /*!< Update the motor mode */
 #define UF_UPDATE_SPEED                0x02 /*!< Update the motor speed */
 #define UF_UPDATE_TACHO_LIMIT          0x04 /*!< Update the motor tachometer limit */
@@ -111,6 +115,7 @@
  * should be reset. Reset constants can be combined with bitwise OR.
  * \sa OnFwdEx(), OnRevEx(), etc...
  */
+
 #define RESET_NONE           0x00 /*!< No counters will be reset */
 #define RESET_COUNT          0x08 /*!< Reset the internal tachometer counter */
 #define RESET_BLOCK_COUNT    0x20 /*!< Reset the NXT-G block tachometer counter */
@@ -125,6 +130,7 @@
  * can be combined with bitwise OR.
  * \sa SetOutput()
  */
+
 #define OUT_MODE_COAST     0x00 /*!< Set motor mode to coast */
 #define OUT_MODE_MOTORON   0x01 /*!< Set motor mode to motoron */
 #define OUT_MODE_BRAKE     0x02 /*!< Set motor mode to brake */
@@ -138,6 +144,7 @@
  * can be combined with bitwise OR.
  * \sa SetOutput()
  */
+
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define OUT_OPTION_HOLDATLIMIT     0x10 /*!< */
 #define OUT_OPTION_RAMPDOWNTOLIMIT 0x20 /*!< */
@@ -149,6 +156,7 @@
  * specified motor(s): idle, rampup, running, rampdown, or hold.
  * \sa SetOutput()
  */
+
 #define OUT_RUNSTATE_IDLE     0x00 /*!< Set motor run state to idle */
 #define OUT_RUNSTATE_RAMPUP   0x10 /*!< Set motor run state to rampup */
 #define OUT_RUNSTATE_RUNNING  0x20 /*!< Set motor run state to running */
@@ -161,6 +169,7 @@
  * specified motor(s): none, speed regulation, or multi-motor synchronization.
  * \sa SetOutput()
  */
+
 #define OUT_REGMODE_IDLE  0 /*!< Set motor regulation mode to idle */
 #define OUT_REGMODE_SPEED 1 /*!< Set motor regulation mode to speed */
 #define OUT_REGMODE_SYNC  2 /*!< Set motor regulation mode to sync */
@@ -171,6 +180,7 @@
  * of sensor.
  * \sa SetSensorType()
  */
+
 #define IN_TYPE_NO_SENSOR      0x00 /*!< No sensor configured */
 #define IN_TYPE_SWITCH         0x01 /*!< NXT or RCX touch sensor */
 #define IN_TYPE_TEMPERATURE    0x02 /*!< RCX temperature sensor */
@@ -199,6 +209,7 @@
  * sensor mode.
  * \sa SetSensorMode()
  */
+
 #define IN_MODE_RAW           0x00 /*!< Raw value from 0 to 1023 */
 #define IN_MODE_BOOLEAN       0x20 /*!< Boolean value (0 or 1) */
 #define IN_MODE_TRANSITIONCNT 0x40 /*!< Counts the number of boolean transitions */
@@ -211,9 +222,11 @@
 #define IN_MODE_MODEMASK      0xE0 /*!< Mask for the mode without any slope value */
 
 
-/** Output field constants
+/**
+ * Output field constants.
  * Command use: getout, setout
  */
+
 #define UpdateFlags     0  /*!< Update flags field. Contains a combination of the update flag constants.  Read/write. */
 #define OutputMode      1  /*!< Mode field. Contains a combination of the output mode constants. Read/write. */
 #define Power           2  /*!< Power field. Contains the desired power level (-100 to 100). Read/write. */
@@ -233,9 +246,11 @@
 #define OutputOptions   15 /*!< Options field. Contains a combination of the output options constants. Read/write. */
 #endif
 
-/** Input field constants
+/**
+ * Input field constants.
  * Command use: getin, setin
  */
+
 #define Type            0 /*!< Type field. Contains one of the sensor type constants. Read/write. */
 #define InputMode       1 /*!< Input mode field. Contains one of the sensor mode constants. Read/write. */
 #define RawValue        2 /*!< Raw value field. Contains the current raw analog sensor value. Read only. */
@@ -350,9 +365,11 @@
 
 #endif
 
-/** System Call function constants
+/**
+ * System Call function constants.
  * Command use: syscall
  */
+
 #define FileOpenRead       0 /*!< */
 #define FileOpenWrite      1 /*!< */
 #define FileOpenAppend     2 /*!< */
@@ -454,9 +471,11 @@
 #define LCD_LINE2 48 /*!< */
 #define LCD_LINE1 56 /*!< */
 
-/** Time constants
+/**
+ * Time constants.
  * Command use: wait
  */
+
 #define MS_1        1 /*!< 1 millisecond */
 #define MS_2        2 /*!< 2 milliseconds */
 #define MS_3        3 /*!< 3 milliseconds */
@@ -503,9 +522,11 @@
 #define SEC_30  30000 /*!< 30 seconds */
 #define MIN_1   60000 /*!< 1 minute */
 
-/** Tone constants
+/**
+ * Tone constants.
  * Command use:  SoundPlayTone
  */
+
 #define TONE_A3               220 /*!< */
 #define TONE_AS3              233 /*!< */
 #define TONE_B3               247 /*!< */
@@ -558,9 +579,11 @@
 #define TONE_AS7              3729 /*!< */
 #define TONE_B7               3951 /*!< */
 
-/** Mailbox constants.
+/**
+ * Mailbox constants.
  * Mailbox number constants should be used to avoid confusing NXT-G users.
  */
+
 #define MAILBOX1  0 /*!< Mailbox number 1 */
 #define MAILBOX2  1 /*!< Mailbox number 2 */
 #define MAILBOX3  2 /*!< Mailbox number 3 */
@@ -572,9 +595,11 @@
 #define MAILBOX9  8 /*!< Mailbox number 9 */
 #define MAILBOX10 9 /*!< Mailbox number 10 */
 
-/** Command module constants
+/**
+ * Command module constants.
  * Constants that are part of the NXT firmware's command module.
  */
+
 #define CommandModuleName "Command.mod" /*!< The command module name */
 #define CommandModuleID   0x00010001 /*!< The command module ID */
 
@@ -582,9 +607,11 @@
 #define STAT_MSG_EMPTY_MAILBOX 64 /*!< Specified mailbox contains no new messages */
 #define STAT_COMM_PENDING 32      /*!< Pending setup operation in progress */
 
-/** VM state constants
+/**
+ * VM state constants.
  * Detailed description.
  */
+
 #define TIMES_UP      6
 #define ROTATE_QUEUE  5
 #define STOP_REQ      4
@@ -594,9 +621,11 @@
 
 #define NO_ERR        0 /*!< Successful execution of the specified command */
 
-/** Fatal errors
+/**
+ * Fatal errors.
  * Detailed description.
  */
+
 #define ERR_ARG             -1 /*!< 0xFF Bad arguments */
 #define ERR_INSTR           -2 /*!< 0xFE Illegal bytecode instruction */
 #define ERR_FILE            -3 /*!< 0xFD Malformed file contents */
@@ -615,18 +644,22 @@
 
 #define ERR_NON_FATAL -16 /*!< Fatal errors are greater than this value */
 
-/** General errors
+/**
+ * General errors.
  * Detailed description.
  */
+
 #define ERR_INVALID_PORT   -16 /*!< 0xF0 Bad input or output port specified */
 #define ERR_INVALID_FIELD  -17 /*!< 0xEF Attempted to access invalid field of a structure */
 #define ERR_INVALID_QUEUE  -18 /*!< 0xEE Illegal queue ID specified */
 #define ERR_INVALID_SIZE   -19 /*!< 0xED Illegal size specified */
 #define ERR_NO_PROG        -20 /*!< 0xEC No active program */
 
-/** Communications specific errors
+/**
+ * Communications specific errors.
  * Detailed description.
  */
+
 #define ERR_COMM_CHAN_NOT_READY -32 /*!< 0xE0 Specified channel/connection not configured or busy */
 #define ERR_COMM_CHAN_INVALID   -33 /*!< 0xDF Specified channel/connection is not valid */
 #define ERR_COMM_BUFFER_FULL    -34 /*!< 0xDE No room in comm buffer */

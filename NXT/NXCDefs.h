@@ -35,6 +35,8 @@
  * Type aliases.
  * Short type aliases indicating signed/unsigned and bit count for each type.
  */
+
+
 #define u8 unsigned char  /*!< Unsigned 8 bit type */
 #define s8 char           /*!< Signed 8 bit type */
 #define u16 unsigned int  /*!< Unsigned 16 bit type */
@@ -46,6 +48,8 @@
  * Input port constants.
  * Input port constants are used when calling NXC sensor control API functions.
  */
+
+
 #define S1 0 /*!< Input port 1 */
 #define S2 1 /*!< Input port 2 */
 #define S3 2 /*!< Input port 3 */
@@ -57,6 +61,8 @@
  * of sensor.
  * \sa SetSensorType()
  */
+
+
 #define SENSOR_TYPE_NONE            IN_TYPE_NO_SENSOR      /*!< No sensor configured */
 #define SENSOR_TYPE_TOUCH           IN_TYPE_SWITCH         /*!< NXT or RCX touch sensor */
 #define SENSOR_TYPE_TEMPERATURE     IN_TYPE_TEMPERATURE    /*!< RCX temperature sensor */
@@ -84,6 +90,8 @@
  * sensor mode.
  * \sa SetSensorMode()
  */
+
+ 
 #define SENSOR_MODE_RAW         IN_MODE_RAW           /*!< Raw value from 0 to 1023 */
 #define SENSOR_MODE_BOOL        IN_MODE_BOOLEAN       /*!< Boolean value (0 or 1) */
 #define SENSOR_MODE_EDGE        IN_MODE_TRANSITIONCNT /*!< Counts the number of boolean transitions */
@@ -99,6 +107,8 @@
  * the sensor mode and type in a single function call.
  * \sa SetSensor()
  */
+
+ 
 #define _SENSOR_CFG(_type,_mode)	(((_type)<<8)+(_mode))                               /*!< Macro for defining SetSensor combined type and mode constants */
 #define SENSOR_TOUCH		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_BOOL)             /*!< Touch sensor in boolean mode */
 #define SENSOR_LIGHT		_SENSOR_CFG(SENSOR_TYPE_LIGHT, SENSOR_MODE_PERCENT)          /*!< Light sensor in percent mode */
@@ -251,6 +261,7 @@ inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
  * Read analog sensor values using these names.  Returns the current scaled value
  * of the sensor on the specified port.
  */
+
 #define SENSOR_1 Sensor(S1) /*!< Read the value of the analog sensor on port S1 */
 #define SENSOR_2 Sensor(S2) /*!< Read the value of the analog sensor on port S2 */
 #define SENSOR_3 Sensor(S3) /*!< Read the value of the analog sensor on port S3 */
@@ -787,71 +798,681 @@ inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
 
 #if __FIRMWARE_VERSION > 107
 
+/**
+ * Compute square root.
+ * Computes the square root of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa sqrt()
+ * \param _X Floating point value.
+ * \return Square root of _X.
+ */
 #define Sqrt(_X) asm { sqrt __FLTRETVAL__, _X }
+
+/**
+ * Compute square root.
+ * Computes the square root of x.
+ *
+ * \param x Floating point value.
+ * \return Square root of x.
+ */
 inline float sqrt(float x) { asm { sqrt __FLTRETVAL__, x } }
 
 #ifdef __ENHANCED_FIRMWARE
 
+/**
+ * Compute sine.
+ * Computes the sine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa sin()
+ * \param _X Floating point value.
+ * \return Sine of _X.
+ */
 #define Sin(_X) asm { sin __FLTRETVAL__, _X }
-#define Cos(_X) asm { cos __FLTRETVAL__, _X }
-#define Asin(_X) asm { asin __FLTRETVAL__, _X }
-#define Acos(_X) asm { acos __FLTRETVAL__, _X }
-#define Atan(_X) asm { atan __FLTRETVAL__, _X }
-#define Ceil(_X) asm { ceil __FLTRETVAL__, _X }
-#define Exp(_X) asm { exp __FLTRETVAL__, _X }
-#define Floor(_X) asm { floor __FLTRETVAL__, _X }
-#define Tan(_X) asm { tan __FLTRETVAL__, _X }
-#define Tanh(_X) asm { tanh __FLTRETVAL__, _X }
-#define Cosh(_X) asm { cosh __FLTRETVAL__, _X }
-#define Sinh(_X) asm { sinh __FLTRETVAL__, _X }
-#define Log(_X) asm { log __FLTRETVAL__, _X }
-#define Log10(_X) asm { log10 __FLTRETVAL__, _X }
-#define Atan2(_X,_Y) asm { atan2 __FLTRETVAL__, _X, _Y }
-#define Pow(_X,_Y) asm { pow __FLTRETVAL__, _X, _Y }
-#define Trunc(_X) asm { trunc __RETVAL__, _X }
-#define Frac(_X) asm { frac __FLTRETVAL__, _X }
-#define MulDiv32(_A,_B,_C) asm { muldiv __RETVAL__, _A, _B, _C }
-#define SinD(_X) asm { sind __FLTRETVAL__, _X }
-#define CosD(_X) asm { cosd __FLTRETVAL__, _X }
-#define AsinD(_X) asm { asind __FLTRETVAL__, _X }
-#define AcosD(_X) asm { acosd __FLTRETVAL__, _X }
-#define AtanD(_X) asm { atand __FLTRETVAL__, _X }
-#define TanD(_X) asm { tand __FLTRETVAL__, _X }
-#define TanhD(_X) asm { tanhd __FLTRETVAL__, _X }
-#define CoshD(_X) asm { coshd __FLTRETVAL__, _X }
-#define SinhD(_X) asm { sinhd __FLTRETVAL__, _X }
-#define Atan2D(_X,_Y) asm { atan2d __FLTRETVAL__, _X, _Y }
 
-inline float sin(float x) { asm { sin __FLTRETVAL__, x } }
+/**
+ * Compute cosine.
+ * Computes the cosine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa cos()
+ * \param _X Floating point value.
+ * \return Cosine of _X.
+ */
+#define Cos(_X) asm { cos __FLTRETVAL__, _X }
+
+/**
+ * Compute arc sine.
+ * Computes the arc sine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa asin()
+ * \param _X Floating point value.
+ * \return Arc sine of _X.
+ */
+#define Asin(_X) asm { asin __FLTRETVAL__, _X }
+
+/**
+ * Compute arc cosine.
+ * Computes the arc cosine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa acos()
+ * \param _X Floating point value.
+ * \return Arc cosine of _X.
+ */
+#define Acos(_X) asm { acos __FLTRETVAL__, _X }
+
+/**
+ * Compute arc tangent.
+ * Computes the arc tangent of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa atan()
+ * \param _X Floating point value.
+ * \return Arc tangent of _X.
+ */
+#define Atan(_X) asm { atan __FLTRETVAL__, _X }
+
+/**
+ * Round up value.
+ * Computes the smallest integral value that is not less than _X.
+ * Only constants or variables allowed (no expressions).
+ *
+ * \deprecated
+ * \sa ceil()
+ * \param _X Floating point value.
+ * \return The smallest integral value not less than _X.
+ */
+#define Ceil(_X) asm { ceil __FLTRETVAL__, _X }
+
+/**
+ * Compute exponential function .
+ * Computes the base-e exponential function of _X, which is the e number
+ * raised to the power _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa exp()
+ * \param _X Floating point value.
+ * \return Exponential value of _X.
+ */
+#define Exp(_X) asm { exp __FLTRETVAL__, _X }
+
+/**
+ * Round down value.
+ * Computes the largest integral value that is not greater than _X.
+ * Only constants or variables allowed (no expressions).
+ *
+ * \deprecated
+ * \sa floor()
+ * \param _X Floating point value.
+ * \return The largest integral value not greater than _X.
+ */
+#define Floor(_X) asm { floor __FLTRETVAL__, _X }
+
+/**
+ * Compute tangent.
+ * Computes the tangent of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa tan()
+ * \param _X Floating point value.
+ * \return Tangent of _X.
+ */
+#define Tan(_X) asm { tan __FLTRETVAL__, _X }
+
+/**
+ * Compute hyperbolic tangent.
+ * Computes the hyperbolic tangent of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa tanh()
+ * \param _X Floating point value.
+ * \return Hyperbolic tangent of _X.
+ */
+#define Tanh(_X) asm { tanh __FLTRETVAL__, _X }
+
+/**
+ * Compute hyperbolic cosine.
+ * Computes the hyperbolic cosine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa cosh()
+ * \param _X Floating point value.
+ * \return Hyperbolic cosine of _X.
+ */
+#define Cosh(_X) asm { cosh __FLTRETVAL__, _X }
+
+/**
+ * Compute hyperbolic sine.
+ * Computes the hyperbolic sine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa sinh()
+ * \param _X Floating point value.
+ * \return Hyperbolic sine of _X.
+ */
+#define Sinh(_X) asm { sinh __FLTRETVAL__, _X }
+
+/**
+ * Compute natural logarithm.
+ * Computes the natural logarithm of _X. The natural logarithm is the base-e
+ * logarithm, the inverse of the natural exponential function (exp). For
+ * base-10 logarithms, a specific function Log10() exists.
+ * Only constants or variables allowed (no expressions).
+ *
+ * \deprecated
+ * \sa log()
+ * \param _X Floating point value.
+ * \return Natural logarithm of _X.
+ */
+#define Log(_X) asm { log __FLTRETVAL__, _X }
+
+/**
+ * Compute common logarithm.
+ * Computes the common logarithm of _X. The common logarithm is the base-10
+ * logarithm. For base-e logarithms, a specific function Log() exists.
+ * Only constants or variables allowed (no expressions).
+ *
+ * \deprecated
+ * \sa log10()
+ * \param _X Floating point value.
+ * \return Common logarithm of _X.
+ */
+#define Log10(_X) asm { log10 __FLTRETVAL__, _X }
+
+/**
+ * Compute arc tangent with 2 parameters.
+ * Computes the principal value of the arc tangent of _Y/_X, expressed in
+ * radians. To compute the value, the function uses the sign of both arguments
+ * to determine the quadrant.
+ * Only constants or variables allowed (no expressions).
+ *
+ * \deprecated
+ * \sa atan2()
+ * \param _Y Floating point value representing a y coordinate.
+ * \param _X Floating point value representing an x coordinate.
+ * \return Arc tangent of _Y/_X, in the interval [-pi,+pi] radians.
+ */
+#define Atan2(_Y,_X) asm { atan2 __FLTRETVAL__, _Y, _X }
+
+/**
+ * Raise to power.
+ * Computes _Base raised to the power _Exponent.
+ * Only constants or variables allowed (no expressions).
+ *
+ * \deprecated
+ * \sa pow()
+ * \param _Base Floating point value.
+ * \param _Exponent Floating point value.
+ * \return The result of raising _Base to the power _Exponent.
+ */
+#define Pow(_Base,_Exponent) asm { pow __FLTRETVAL__, _Base, _Exponent }
+
+/**
+ * Compute integral part.
+ * Computes the integral part of _X.
+ * Only constants or variables allowed (no expressions).
+ *
+ * \deprecated
+ * \sa trunc()
+ * \param _X Floating point value.
+ * \return Integral part of _X.
+ */
+#define Trunc(_X) asm { trunc __RETVAL__, _X }
+
+/**
+ * Compute fractional part.
+ * Computes the fractional part of _X.
+ * Only constants or variables allowed (no expressions).
+ *
+ * \deprecated
+ * \sa frac()
+ * \param _X Floating point value.
+ * \return Fractional part of _X.
+ */
+#define Frac(_X) asm { frac __FLTRETVAL__, _X }
+
+/**
+ * Multiply and divide.
+ * Multiplies two 32-bit values and then divides the 64-bit result by a third
+ * 32-bit value.
+ * Only constants or variables allowed (no expressions).
+ *
+ * \deprecated
+ * \sa muldiv32()
+ * \param _A 32-bit long value.
+ * \param _B 32-bit long value.
+ * \param _C 32-bit long value.
+ * \return The result of multiplying _A times _B and dividing by _C.
+ */
+#define MulDiv32(_A,_B,_C) asm { muldiv __RETVAL__, _A, _B, _C }
+
+/**
+ * Compute sine (degrees).
+ * Computes the sine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa sind()
+ * \param _X Floating point value.
+ * \return Sine of _X.
+ */
+#define SinD(_X) asm { sind __FLTRETVAL__, _X }
+
+/**
+ * Compute cosine (degrees).
+ * Computes the cosine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa cosd()
+ * \param _X Floating point value.
+ * \return Cosine of _X.
+ */
+#define CosD(_X) asm { cosd __FLTRETVAL__, _X }
+
+/**
+ * Compute arch sine (degrees).
+ * Computes the arc sine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa asind()
+ * \param _X Floating point value.
+ * \return Arc sine of _X.
+ */
+#define AsinD(_X) asm { asind __FLTRETVAL__, _X }
+
+/**
+ * Compute arc cosine (degrees).
+ * Computes the arc cosine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa acosd()
+ * \param _X Floating point value.
+ * \return Arc cosine of _X.
+ */
+#define AcosD(_X) asm { acosd __FLTRETVAL__, _X }
+
+/**
+ * Compute arc tangent (degrees).
+ * Computes the arc tangent of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa atand()
+ * \param _X Floating point value.
+ * \return Arc tangent of _X.
+ */
+#define AtanD(_X) asm { atand __FLTRETVAL__, _X }
+
+/**
+ * Compute tangent (degrees).
+ * Computes the sine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa tand()
+ * \param _X Floating point value.
+ * \return Tangent of _X.
+ */
+#define TanD(_X) asm { tand __FLTRETVAL__, _X }
+
+/**
+ * Compute hyperbolic tangent (degrees).
+ * Computes the hyperbolic tangent of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa tanhd()
+ * \param _X Floating point value.
+ * \return Hyperbolic tangent of _X.
+ */
+#define TanhD(_X) asm { tanhd __FLTRETVAL__, _X }
+
+/**
+ * Compute hyperbolic cosine (degrees).
+ * Computes the hyperbolic cosine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa coshd()
+ * \param _X Floating point value.
+ * \return Hyperbolic cosine of _X.
+ */
+#define CoshD(_X) asm { coshd __FLTRETVAL__, _X }
+
+/**
+ * Compute hyperbolic sine (degrees).
+ * Computes the hyperbolic sine of _X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa sinhd()
+ * \param _X Floating point value.
+ * \return Hyperbolic sine of _X.
+ */
+#define SinhD(_X) asm { sinhd __FLTRETVAL__, _X }
+
+/**
+ * Compute arc tangent with two parameters (degrees).
+ * Computes the arc tangent of _Y/_X. Only constants or variables allowed
+ * (no expressions).
+ *
+ * \deprecated
+ * \sa atan2d()
+ * \param _Y Floating point value.
+ * \param _X Floating point value.
+ * \return Arc tangent of _Y/_X.
+ */
+#define Atan2D(_Y,_X) asm { atan2d __FLTRETVAL__, _Y, _X }
+
+/**
+ * Compute cosine.
+ * Computes the cosine of an angle of x radians.
+ *
+ * \param x Floating point value representing an angle expressed in radians.
+ * \return Cosine of x.
+ */
 inline float cos(float x) { asm { cos __FLTRETVAL__, x } }
-inline float asin(float x) { asm { asin __FLTRETVAL__, x } }
-inline float acos(float x) { asm { acos __FLTRETVAL__, x } }
+
+/**
+ * Compute sine.
+ * Computes the sine of an angle of x radians.
+ *
+ * \param x Floating point value representing an angle expressed in radians.
+ * \return Sine of x.
+ */
+inline float sin(float x) { asm { sin __FLTRETVAL__, x } }
+
+/**
+ * Compute tangent.
+ * Computes the tangent of an angle of x radians.
+ *
+ * \param x Floating point value representing an angle expressed in radians.
+ * \return Tangent of x.
+ */
 inline float tan(float x) { asm { tan __FLTRETVAL__, x } }
+
+/**
+ * Compute arc cosine.
+ * Computes the principal value of the arc cosine of x, expressed in radians.
+ * In trigonometrics, arc cosine is the inverse operation of cosine.
+ *
+ * \param x Floating point value in the interval [-1,+1].
+ * \return Arc cosine of x, in the interval [0,pi] radians.
+ */
+inline float acos(float x) { asm { acos __FLTRETVAL__, x } }
+
+/**
+ * Compute arc sine.
+ * Computes the principal value of the arc sine of x, expressed in radians.
+ * In trigonometrics, arc sine is the inverse operation of sine.
+ *
+ * \param x Floating point value in the interval [-1,+1].
+ * \return Arc sine of x, in the interval [-pi/2,+pi/2] radians.
+ */
+inline float asin(float x) { asm { asin __FLTRETVAL__, x } }
+
+/**
+ * Compute arc tangent.
+ * Computes the principal value of the arc tangent of x, expressed in radians.
+ * In trigonometrics, arc tangent is the inverse operation of tangent. Notice
+ * that because of the sign ambiguity, a function cannot determine with
+ * certainty in which quadrant the angle falls only by its tangent value.
+ * You can use atan2() if you need to determine the quadrant.
+ *
+ * \sa atan2()
+ * \param x Floating point value.
+ * \return Arc tangent of x, in the interval [-pi/2,+pi/2] radians.
+ */
 inline float atan(float x) { asm { atan __FLTRETVAL__, x } }
-inline float ceil(float x) { asm { ceil __FLTRETVAL__, x } }
-inline float exp(float x) { asm { exp __FLTRETVAL__, x } }
-inline float floor(float x) { asm { floor __FLTRETVAL__, x } }
-inline float sinh(float x) { asm { sinh __FLTRETVAL__, x } }
+
+/**
+ * Compute arc tangent with 2 parameters.
+ * Computes the principal value of the arc tangent of y/x, expressed in
+ * radians. To compute the value, the function uses the sign of both arguments
+ * to determine the quadrant.
+ *
+ * \sa atan()
+ * \param y Floating point value representing a y coordinate.
+ * \param x Floating point value representing an x coordinate.
+ * \return Arc tangent of y/x, in the interval [-pi,+pi] radians.
+ */
+inline float atan2(float y, float x) { asm { atan2 __FLTRETVAL__, y, x } }
+
+/**
+ * Compute hyperbolic cosine.
+ * Computes the hyperbolic cosine of x, expressed in radians.
+ *
+ * \param x Floating point value.
+ * \return Hyperbolic cosine of x.
+ */
 inline float cosh(float x) { asm { cosh __FLTRETVAL__, x } }
+
+/**
+ * Compute hyperbolic sine.
+ * Computes the hyperbolic sine of x, expressed in radians.
+ *
+ * \param x Floating point value.
+ * \return Hyperbolic sine of x.
+ */
+inline float sinh(float x) { asm { sinh __FLTRETVAL__, x } }
+
+/**
+ * Compute hyperbolic tangent.
+ * Computes the hyperbolic tangent of x, expressed in radians.
+ *
+ * \param x Floating point value.
+ * \return Hyperbolic tangent of x.
+ */
 inline float tanh(float x) { asm { tanh __FLTRETVAL__, x } }
+
+/**
+ * Compute exponential function.
+ * Computes the base-e exponential function of x, which is the e number
+ * raised to the power x.
+ *
+ * \param x Floating point value.
+ * \return Exponential value of x.
+ */
+inline float exp(float x) { asm { exp __FLTRETVAL__, x } }
+
+/**
+ * Compute natural logarithm.
+ * Computes the natural logarithm of x. The natural logarithm is the base-e
+ * logarithm, the inverse of the natural exponential function (exp). For
+ * base-10 logarithms, a specific function log10() exists.
+ *
+ * \sa log10(), exp()
+ * \param x Floating point value.
+ * \return Natural logarithm of x.
+ */
 inline float log(float x) { asm { log __FLTRETVAL__, x } }
+
+/**
+ * Compute common logarithm.
+ * Computes the common logarithm of x. The common logarithm is the base-10
+ * logarithm. For base-e logarithms, a specific function log() exists.
+ *
+ * \sa log(), exp()
+ * \param x Floating point value.
+ * \return Common logarithm of x.
+ */
 inline float log10(float x) { asm { log10 __FLTRETVAL__, x } }
-inline float atan2(float x, float y) { asm { atan2 __FLTRETVAL__, x, y } }
-inline float pow(float x, float y) { asm { pow __FLTRETVAL__, x, y } }
+
+/**
+ * Compute integral part.
+ * Computes the integral part of x.
+ *
+ * \param x Floating point value.
+ * \return Integral part of x.
+ */
 inline long trunc(float x) { asm { trunc __RETVAL__, x } }
+
+/**
+ * Compute fractional part.
+ * Computes the fractional part of x.
+ *
+ * \param x Floating point value.
+ * \return Fractional part of x.
+ */
 inline float frac(float x) { asm { frac __FLTRETVAL__, x } }
+
+/**
+ * Raise to power.
+ * Computes base raised to the power exponent.
+ *
+ * \param base Floating point value.
+ * \param exponent Floating point value.
+ * \return The result of raising base to the power exponent.
+ */
+inline float pow(float base, float exponent) { asm { pow __FLTRETVAL__, base, exponent } }
+
+/**
+ * Round up value.
+ * Computes the smallest integral value that is not less than x.
+ *
+ * \param x Floating point value.
+ * \return The smallest integral value not less than x.
+ */
+inline float ceil(float x) { asm { ceil __FLTRETVAL__, x } }
+
+/**
+ * Round down value.
+ * Computes the largest integral value that is not greater than x.
+ *
+ * \param x Floating point value.
+ * \return The largest integral value not greater than x.
+ */
+inline float floor(float x) { asm { floor __FLTRETVAL__, x } }
+
+/**
+ * Multiply and divide.
+ * Multiplies two 32-bit values and then divides the 64-bit result by a third
+ * 32-bit value.
+ *
+ * \param a 32-bit long value.
+ * \param b 32-bit long value.
+ * \param c 32-bit long value.
+ * \return The result of multiplying a times b and dividing by c.
+ */
 inline long muldiv32(long a, long b, long c) { asm { muldiv __RETVAL__, a, b, c } }
+
 // degree-based trig functions
-inline float sind(float x) { asm { sind __FLTRETVAL__, x } }
+
+/**
+ * Compute cosine (degrees).
+ * Computes the cosine of an angle of x degrees.
+ *
+ * \param x Floating point value representing an angle expressed in degrees.
+ * \return Cosine of x.
+ */
 inline float cosd(float x) { asm { cosd __FLTRETVAL__, x } }
-inline float asind(float x) { asm { asind __FLTRETVAL__, x } }
-inline float acosd(float x) { asm { acosd __FLTRETVAL__, x } }
+
+/**
+ * Compute sine (degrees).
+ * Computes the sine of an angle of x degrees.
+ *
+ * \param x Floating point value representing an angle expressed in degrees.
+ * \return Sine of x.
+ */
+inline float sind(float x) { asm { sind __FLTRETVAL__, x } }
+
+/**
+ * Compute tangent (degrees).
+ * Computes the tangent of an angle of x degrees.
+ *
+ * \param x Floating point value representing an angle expressed in degrees.
+ * \return Tangent of x.
+ */
 inline float tand(float x) { asm { tand __FLTRETVAL__, x } }
+
+/**
+ * Compute arc cosine (degrees).
+ * Computes the principal value of the arc cosine of x, expressed in degrees.
+ * In trigonometrics, arc cosine is the inverse operation of cosine.
+ *
+ * \param x Floating point value in the interval [-1,+1].
+ * \return Arc cosine of x, in the interval [0,180] degrees.
+ */
+inline float acosd(float x) { asm { acosd __FLTRETVAL__, x } }
+
+/**
+ * Compute arc sine (degrees).
+ * Computes the principal value of the arc sine of x, expressed in degrees.
+ * In trigonometrics, arc sine is the inverse operation of sine.
+ *
+ * \param x Floating point value in the interval [-1,+1].
+ * \return Arc sine of x, in the interval [-90,+90] degrees.
+ */
+inline float asind(float x) { asm { asind __FLTRETVAL__, x } }
+
+/**
+ * Compute arc tangent (degrees).
+ * Computes the principal value of the arc tangent of x, expressed in degrees.
+ * In trigonometrics, arc tangent is the inverse operation of tangent. Notice
+ * that because of the sign ambiguity, a function cannot determine with
+ * certainty in which quadrant the angle falls only by its tangent value.
+ * You can use atan2d if you need to determine the quadrant.
+ *
+ * \param x Floating point value.
+ * \return Arc tangent of x, in the interval [-90,+90] degrees.
+ */
 inline float atand(float x) { asm { atand __FLTRETVAL__, x } }
-inline float sinhd(float x) { asm { sinhd __FLTRETVAL__, x } }
+
+/**
+ * Compute arc tangent with 2 parameters (degrees).
+ * Computes the principal value of the arc tangent of y/x, expressed in
+ * degrees. To compute the value, the function uses the sign of both arguments
+ * to determine the quadrant.
+ *
+ * \param y Floating point value representing a y coordinate.
+ * \param x Floating point value representing an x coordinate.
+ * \return Arc tangent of y/x, in the interval [-90,+90] degrees.
+ */
+inline float atan2d(float y, float x) { asm { atan2d __FLTRETVAL__, y, x } }
+
+/**
+ * Compute hyperbolic cosine (degrees).
+ * Computes the hyperbolic cosine of x, expressed in degrees.
+ *
+ * \param x Floating point value.
+ * \return Hyperbolic cosine of x.
+ */
 inline float coshd(float x) { asm { coshd __FLTRETVAL__, x } }
+
+/**
+ * Compute hyperbolic sine (degrees).
+ * Computes the hyperbolic sine of x, expressed in degrees.
+ *
+ * \param x Floating point value.
+ * \return Hyperbolic sine of x.
+ */
+inline float sinhd(float x) { asm { sinhd __FLTRETVAL__, x } }
+
+/**
+ * Compute hyperbolic tangent (degrees).
+ * Computes the hyperbolic tangent of x, expressed in degrees.
+ *
+ * \param x Floating point value.
+ * \return Hyperbolic tangent of x.
+ */
 inline float tanhd(float x) { asm { tanhd __FLTRETVAL__, x } }
-inline float atan2d(float x, float y) { asm { atan2d __FLTRETVAL__, x, y } }
 
 #endif
 
@@ -1617,9 +2238,11 @@ struct ListFilesType {
 #endif
 
 
-/** HiTechnic API functions.
- *
+/**
+ * HiTechnic API functions.
+ * Detailed description.
  */
+ 
 
 #define SetSensorHTEOPD(_p, _bStd) \
   SetSensorType(_p, (_bStd) ? IN_TYPE_LIGHT_INACTIVE : IN_TYPE_LIGHT_ACTIVE); \
@@ -1953,19 +2576,66 @@ inline int SensorHTGyro(const byte port, const int offset = 0) {
 #define MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) asm { __MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) }
 #define MSScoutSetScoutMode(_mode) asm { __MSScoutSetScoutMode(_mode) }
 
+/**
+ * Wait some milliseconds.
+ * Make a task sleep for specified amount of time (in 1000ths of a second).
+ *
+ * \param ms The number of milliseconds to sleep.
+ */
 inline void Wait(unsigned long ms) { asm { waitv ms } }
+
+/**
+ * Yield to another task.
+ * Make a task yield to another concurrently running task.
+ */
 inline void Yield() { asm { wait 1 } }
 
 // RIC Macro wrappers
 #define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8
 
-// stdio.h functions
+// cstdio functions.
 
+/**
+ * Close file.
+ * Close the file associated with the specified file handle. The loader
+ * result code is returned as the value of the function call.
+ *
+ * \param handle The handle of the file to be closed.
+ * \return The loader result code.
+ */
 inline int fclose(byte handle) { return CloseFile(handle); }
+
+/**
+ * Remove file.
+ * Delete the specified file. The loader result code is returned as the value
+ * of the function call.
+ *
+ * \param filename The name of the file to be deleted.
+ * \return The loader result code.
+ */
 inline int remove(string filename) { return DeleteFile(filename); }
+
+/**
+ * Rename file.
+ * Rename a file from the old filename to the new filename. The loader
+ * result code is returned as the value of the function call.
+ *
+ * \param old The name of the file to be renamed.
+ * \param new The new name for the file.
+ * \return The loader result code.
+ */
 inline int rename(string old, string new) { return RenameFile(old, new); }
 
-//  int fgetc(FILE*); // EOF if failure, otherwise the character read from stream
+/**
+ * Get character from file.
+ * Returns the character currently pointed to by the internal file position
+ * indicator of the file specified by the handle. The internal file position
+ * indicator is then advanced by one character to point to the next character.
+ * The functions fgetc and getc are equivalent.
+ *
+ * \param handle The handle of the file from which the character is read.
+ * \return The character read from the file.
+ */
 inline char fgetc(byte handle) {
   char ch;
   asm {
@@ -1973,19 +2643,62 @@ inline char fgetc(byte handle) {
     mov __RETVAL__, ch
   }
 }
+
+/**
+ * Get character from file.
+ * Returns the character currently pointed to by the internal file position
+ * indicator of the file specified by the handle. The internal file position
+ * indicator is then advanced by one character to point to the next character.
+ * The functions fgetc and getc are equivalent.
+ *
+ * \param _handle The handle of the file from which the character is read.
+ * \return The character read from the file.
+ */
 #define getc(_handle) fgetc(_handle)
 
-//  char* fgets(char* str, int num, FILE*); read num bytes from file into str.  Appends null.  Newline stops reading
-//#define fgets(_output, _num, _handle) ReadLnString(_handle, _output) // not quite right
+/**
+ * Get string from file.
+ * Reads characters from a file and stores them as a string into str until
+ * (num-1) characters have been read or either a newline or a the End-of-File
+ * is reached, whichever comes first. A newline character makes fgets stop
+ * reading, but it is considered a valid character and therefore it is
+ * included in the string copied to str. A null character is automatically
+ * appended in str after the characters read to signal the end of the string.
+ * Returns the string parameter.
+ *
+ * \param str The string where the characters are stored.
+ * \param num The maximum number of characters to be read.
+ * \param handle The handle of the file from which the characters are read.
+ * \return The string read from the file.
+ */
 inline string fgets(string & str, int num, byte handle) {
   asm { __readLnStringEx(handle, str, num, __RETVAL__) };
   return str;
 }
 
-//  int feof(FILE*);   // non-zero if EOF, 0 otherwise
+/**
+ * Check End-of-file indicator.
+ * Checks whether the End-of-File indicator associated with the handle is
+ * set, returning a value different from zero if it is. 
+ *
+ * \param handle The handle of the file to check.
+ * \return Currently always returns 0.
+ */
 inline int feof(byte handle) { return 0; }
 
-//  FILE* fopen(char* filename, char* mode); // open file
+/**
+ * Open file.
+ * Opens the file whose name is specified in the parameter filename and
+ * associates it with a file handle that can be identified in future
+ * operations by the handle that is returned. The operations that are allowed
+ * on the stream and how these are performed are defined by the mode parameter.
+ *
+ * \param filename The name of the file to be opened.
+ * \param mode The file access mode. Valid values are "r" - opens an existing
+ * file for reading, "w" - creates a new file and opens it for writing, and
+ * "a" - opens an existing file for appending to the end of the file.
+ * \return The handle to the opened file.
+ */
 byte fopen(string filename, const string mode) {
   byte handle;
   int fsize;
@@ -2006,24 +2719,69 @@ byte fopen(string filename, const string mode) {
   return handle;
 }
 
-//  int fflush(FILE*);
-// EOF if failure, 0 otherwise
+/**
+ * Flush file.
+ * Writes any buffered data to the file. A zero value indicates success. 
+ *
+ * \param handle The handle of the file to be flushed.
+ * \return Currently always returns 0.
+ */
 inline int fflush(byte handle) { return 0; }
-//  long int ftell(FILE*);
-// -1 if failure, otherwise the file position
+
+/**
+ * Get current position in file.
+ * Returns the current value of the file position indicator of the specified
+ * handle.
+ *
+ * \param handle The handle of the file.
+ * \return Currently always returns -1.
+ */
 inline long ftell(byte handle) { return -1; }
-//  int fputc(int ch, FILE*);
-// write character to file. Returns character written or EOF if error occurs
+
+/**
+ * Write character to file.
+ * Writes a character to the file and advances the position indicator.
+ * The character is written at the current position of the file as indicated
+ * by the internal position indicator, which is then advanced one character.
+ * If there are no errors, the same character that has been written is
+ * returned. If an error occurs, EOF is returned.
+ *
+ * \param ch The character to be written.
+ * \param handle The handle of the file where the character is to be written.
+ * \return The character written to the file.
+ */
 inline char fputc(char ch, byte handle) {
   if (Write(handle, ch) == LDR_SUCCESS)
     return ch;
   else
     return EOF;
 }
-//  int putc(int ch, FILE*); // ditto
+
+/**
+ * Write character to file.
+ * Writes a character to the file and advances the position indicator.
+ * The character is written at the current position of the file as indicated
+ * by the internal position indicator, which is then advanced one character.
+ * If there are no errors, the same character that has been written is
+ * returned. If an error occurs, EOF is returned.
+ *
+ * \param _ch The character to be written.
+ * \param _handle The handle of the file where the character is to be written.
+ * \return The character written to the file.
+ */
 #define putc(_ch, _handle) fputc(_ch, _handle)
-//  int fputs(char* str, FILE*);
-// write string to file (not including null); return EOF if error or non-negative value if success
+
+/**
+ * Write string to file.
+ * Writes the string to the file specified by the handle. The null terminating
+ * character at the end of the string is not written to the file. If there are
+ * no errors, a non-negative value is returned. If an error occurs, EOF is
+ * returned.
+ *
+ * \param str The string of characters to be written.
+ * \param handle The handle of the file where the string is to be written.
+ * \return The number of characters written to the file.
+ */
 inline int fputs(string str, byte handle) {
   int cnt;
   if (WriteString(handle, str, cnt) == LDR_SUCCESS)
@@ -2032,25 +2790,75 @@ inline int fputs(string str, byte handle) {
     return EOF;
 }
 #ifdef __ENHANCED_FIRMWARE
-//  void printf(char* format, ...);
+
+/** 
+ * Print formatted data to stdout.
+ * Writes to the LCD at 0, LCD_LINE1 a sequence of data formatted as the
+ * format argument specifies. After the format parameter, the function
+ * expects one value argument.
+ *
+ * \param format A string specifying the desired format.
+ * \param value A value to be formatted for writing to the LCD.
+ * \return The number of characters written to the screen.
+ */
 #define printf(_format, _value) { \
   string msg = FormatNum(_format, _value); \
   TextOut(0, LCD_LINE1, msg); \
+  asm { strlen __RETVAL__, msg } \
 }
-//  void fprintf(FILE*, char* format, ...); // write to file
+
+/**
+ * Write formatted data to file.
+ * Writes a sequence of data formatted as the format argument specifies to a
+ * file. After the format parameter, the function expects one value
+ * argument.
+ *
+ * \param handle The handle of the file to write to.
+ * \param format A string specifying the desired format.
+ * \param value A value to be formatted for writing to the file.
+ * \return The number of characters written to the file.
+ */
 #define fprintf(_handle, _format, _value) { \
-  fputs(FormatNum(_format, _value), _handle); \
+  int cnt = fputs(FormatNum(_format, _value), _handle); \
+  asm { mov __RETVAL__, cnt } \
 }
-//  void sprintf(char* str, char* format, ...); // write formatted data to string
+
+/**
+ * Write formatted data to string.
+ * Writes a sequence of data formatted as the format argument specifies to a
+ * string. After the format parameter, the function expects one value
+ * argument.
+ *
+ * \param str The string to write to.
+ * \param format A string specifying the desired format.
+ * \param value A value to be formatted for writing to the string.
+ * \return The number of characters written to the string.
+ */
 #define sprintf(_str, _format, _value) { \
   _str = FormatNum(_format, _value); \
+  asm { strlen __RETVAL__, _str } \
 }
 
 #if __FIRMWARE_VERSION > 107
-#define SEEK_SET 0
-#define SEEK_CUR 1
-#define SEEK_END 2
-//  int fseek(FILE*, offset, origin); // zero if success, non-zero if failure
+
+// fseek origin constants.
+
+#define SEEK_SET 0 /*!< Seek from the beginning of the file */
+#define SEEK_CUR 1 /*!< Seek from the current file position */
+#define SEEK_END 2 /*!< Seek from the end of the file */
+
+/**
+ * Reposition file position indicator.
+ * Sets the position indicator associated with the file to a new position
+ * defined by adding offset to a reference position specified by origin.
+ *
+ * \param handle The handle of the file.
+ * \param offset The number of bytes to offset from origin.
+ * \param origin Position from where offset is added. It is specified by one
+ * of the following constants: SEEK_SET - beginning of file, SEEK_CUR - current
+ * position of the file pointer, or SEEK_END - end of file.
+ * \return A value of zero if successful or non-zero otherwise.
+ */
 inline int fseek(byte handle, long offset, int origin) {
   FileSeekType fst;
   fst.FileHandle = handle;
@@ -2059,7 +2867,14 @@ inline int fseek(byte handle, long offset, int origin) {
   SysFileSeek(fst);
   return fst.Result;
 }
-//  void rewind(FILE*); // same as seeking to start of file (and clears error indicator)
+
+/**
+ * Set position indicator to the beginning.
+ * Sets the position indicator associated with stream to the beginning of
+ * the file.
+ *
+ * \param handle The handle of the file.
+ */
 inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
 #endif
 #endif
@@ -2071,34 +2886,102 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
   int putchar(int character); // write character to stdout
 */
 
-// string.h functions
+// cstring functions
 
+/**
+ * Get string length.
+ * Return the length of the specified string. The length of a string does
+ * not include the null terminator at the end of the string.
+ *
+ * \param str A string.
+ * \return The length of the string.
+ */
 inline int strlen(const string & str) { asm { strlen __RETVAL__, str } }
+
+/**
+ * Concatenate strings.
+ * Appends a copy of the source string to the destination string. The
+ * terminating null character in destination is overwritten by the first
+ * character of source, and a new null-character is appended at the end of
+ * the new string formed by the concatenation of both in destination. The
+ * destination string is returned.
+ *
+ * \param dest The destination string.
+ * \param src The string to be appended.
+ * \return The destination string.
+ */
 inline string strcat(string & dest, const string & src) {
   asm {
     strcat __STRBUFFER__, dest, src
     mov dest, __STRBUFFER__
   }
 }
-inline string strncat(string & dest, const string & src, const unsigned int num) {
+
+/**
+ * Append characters from string.
+ * Appends the first num characters of source to destination, plus a
+ * terminating null-character. If the length of the string in source is less
+ * than num, only the content up to the terminating null-character is copied.
+ * The destination string is returned.
+ *
+ * \param dest The destination string.
+ * \param src The string to be appended.
+ * \param num The maximum number of characters to be appended.
+ * \return The destination string.
+ */
+inline string strncat(string & dest, const string & src, unsigned int num) {
   asm {
     strsubset __STRRETVAL__, src, 0, num
     strcat __STRBUFFER__, dest, __STRRETVAL__
     mov dest, __STRBUFFER__
   }
 }
+
+/**
+ * Copy string.
+ * Copies the string pointed by source into the array pointed by destination,
+ * including the terminating null character. The destination string is returned.
+ *
+ * \param dest The destination string.
+ * \param src The string to be appended.
+ * \return The destination string.
+ */
 inline string strcpy(string & dest, const string & src) {
   asm {
     mov __STRBUFFER__, src
     mov dest, __STRBUFFER__
   }
 }
+
+/**
+ * Copy characters from string.
+ * Copies the first num characters of source to destination. The destination
+ * string is returned.
+ *
+ * \param dest The destination string.
+ * \param src The string to be appended.
+ * \param num The maximum number of characters to be appended.
+ * \return The destination string.
+ */
 inline string strncpy(string & dest, const string & src, unsigned int num) {
   asm {
     strsubset dest, src, 0, num
     mov __STRBUFFER__, dest
   }
 }
+
+/**
+ * Compare two strings.
+ * Compares the string str1 to the string str2.
+ *
+ * \param src1 A string to be compared.
+ * \param src2 A string to be compared.
+ * \return Returns an integral value indicating the relationship between the
+ * strings. A zero value indicates that both strings are equal. A value
+ * greater than zero indicates that the first character that does not match
+ * has a greater value in str1 than in str2. A value less than zero indicates
+ * the opposite.
+ */
 inline int strcmp(const string & str1, const string & str2) {
   int result = -1;
   if (str1 == str2)
@@ -2108,12 +2991,38 @@ inline int strcmp(const string & str1, const string & str2) {
   return result;
 }
 
-//void * memcpy ( void * destination, const void * source, size_t num ); // Copy block of memory
-//void * memmove ( void * destination, const void * source, size_t num ); // Move block of memory
+/**
+ * Copy memory.
+ * Copies memory contents from the source to the destination. The num
+ * argument is ignored.
+ *
+ * \param dest The destination variable.
+ * \param src The source variable.
+ * \param num The number of bytes to copy (ignored).
+ */
 #define memcpy(_dest, _src, _num) asm { mov _dest, _src }
+
+/**
+ * Move memory.
+ * Moves memory contents from the source to the destination. The num
+ * argument is ignored.
+ *
+ * \param _dest The destination variable.
+ * \param _src The source variable.
+ * \param _num The number of bytes to copy (ignored).
+ */
 #define memmove(_dest, _src, _num) asm { mov _dest, _src }
 
-//int memcmp ( const void * ptr1, const void * ptr2, size_t num ); // Compare two blocks of memory
+/**
+ * Compare two blocks of memory.
+ * Compares the variant _ptr1 to the variant _ptr2. Returns an integral value
+ * indicating the relationship between the variables. The num argument is
+ * ignored.
+ *
+ * \param _ptr1 A variable to be compared.
+ * \param _ptr2 A variable to be compared.
+ * \param _num The number of bytes to compare (ignored).
+ */
 #define memcmp(_ptr1, _ptr2, _num) { \
   asm { mov __RETVAL__, -1 }; \
   if ((_ptr1) == (_ptr2)) { \
@@ -2123,7 +3032,19 @@ inline int strcmp(const string & str1, const string & str2) {
   } \
 }
 
-//int strncmp ( const char * str1, const char * str2, size_t num ); // Compare characters of two strings
+/**
+ * Compare characters of two strings.
+ * Compares up to num characters of the string str1 to those of the string str2.
+ *
+ * \param str1 A string to be compared.
+ * \param str2 A string to be compared.
+ * \param num The maximum number of characters to be compared.
+ * \return Returns an integral value indicating the relationship between the
+ * strings. A zero value indicates that the characters compared in both
+ * strings are all equal. A value greater than zero indicates that the first
+ * character that does not match has a greater value in str1 than in str2. A
+ * value less than zero indicates the opposite.
+ */
 inline int strncmp(const string & str1, const string & str2, unsigned int num) {
   string sub1, sub2;
   strncpy(sub1, str1, num);
@@ -2149,20 +3070,143 @@ void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (s
 
 */
 
-// ctype.h functions
+// cctype functions
 
+/**
+ * Check if character is uppercase letter.
+ * Checks if parameter c is an uppercase alphabetic letter.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is an uppercase alphabetic
+ * letter, otherwise it returns 0 (false).
+ */
 inline int isupper(int c) { return ((c >= 'A') && (c <= 'Z')); }
+
+/**
+ * Check if character is lowercase letter.
+ * Checks if parameter c is an lowercase alphabetic letter.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is an lowercase alphabetic
+ * letter, otherwise it returns 0 (false).
+ */
 inline int islower(int c) { return ((c >= 'a') && (c <= 'z')); }
+
+/**
+ * Check if character is alphabetic.
+ * Checks if parameter c is either an uppercase or lowercase letter.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is an alphabetic letter,
+ * otherwise it returns 0 (false).
+ */
 inline int isalpha(int c) { return isupper(c) || islower(c); }
+
+/**
+ * Check if character is decimal digit.
+ * Checks if parameter c is a decimal digit character.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is a decimal digit, otherwise
+ * it returns 0 (false).
+ */
 inline int isdigit(int c) { return ((c >= '0') && (c <= '9')); }
+
+/**
+ * Check if character is alphanumeric.
+ * Checks if parameter c is either a decimal digit or an uppercase or
+ * lowercase letter. The result is true if either isalpha or isdigit would
+ * also return true.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is either a digit or a
+ * letter, otherwise it returns 0 (false).
+ */
 inline int isalnum(int c) { return isalpha(c) || isdigit(c); }
+
+/**
+ * Check if character is a white-space.
+ * Checks if parameter c is a white-space character.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is a white-space character,
+ * otherwise it returns 0 (false).
+ */
 inline int isspace(int c) { return (c == 0x20) || ((c >= 0x09) && (c <= 0x0d)); }
+
+/**
+ * Check if character is a control character.
+ * Checks if parameter c is a control character.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is a control character,
+ * otherwise it returns 0 (false).
+ */
 inline int iscntrl(int c) { return (c <= 0x1f) || (c == 0x7f); }
+
+/**
+ * Check if character is printable.
+ * Checks if parameter c is a printable character (i.e., not a control
+ * character).
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is a printable character,
+ * otherwise it returns 0 (false).
+ */
 inline int isprint(int c) { return !iscntrl(c); }
+
+/**
+ * Check if character has graphical representation.
+ * Checks if parameter c is a character with a graphical representation.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c has a graphical representation,
+ * otherwise it returns 0 (false).
+ */
 inline int isgraph(int c) { return (c != 0x20) && isprint(c); }
+
+/**
+ * Check if character is a punctuation.
+ * Checks if parameter c is a punctuation character.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is a punctuation character,
+ * otherwise it returns 0 (false).
+ */
 inline int ispunct(int c) { return isgraph(c) && !isalnum(c); }
+
+/**
+ * Check if character is hexadecimal digit.
+ * Checks if parameter c is a hexadecimal digit character.
+ *
+ * \param c Character to be checked.
+ * \return Returns a non-zero value (true) if c is a hexadecimal digit
+ * character, otherwise it returns 0 (false).
+ */
 inline int isxdigit(int c) {  return isdigit(c) || ((c >= 'A') && (c <= 'F')) || ((c >= 'a') && (c <= 'f')); }
+
+/**
+ * Convert lowercase letter to uppercase.
+ * Converts parameter c to its uppercase equivalent if c is a lowercase
+ * letter and has an uppercase equivalent. If no such conversion is possible,
+ * the value returned is c unchanged.
+ *
+ * \param c Lowercase letter character to be converted.
+ * \return The uppercase equivalent to c, if such value exists, or c
+ * (unchanged) otherwise..
+ */
 inline int toupper(int c) { if (islower(c)) c -= 32; return c; }
+
+/**
+ * Convert uppercase letter to lowercase.
+ * Converts parameter c to its lowercase equivalent if c is an uppercase
+ * letter and has a lowercase equivalent. If no such conversion is possible,
+ * the value returned is c unchanged.
+ *
+ * \param c Uppercase letter character to be converted.
+ * \return The lowercase equivalent to c, if such value exists, or c
+ * (unchanged) otherwise..
+ */
 inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
 
 #endif // NXCDEFS_H
