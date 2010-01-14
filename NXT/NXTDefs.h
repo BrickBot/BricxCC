@@ -450,13 +450,21 @@ TSetSleepTimeout	ends
 
 // CommBTOnOff
 TCommBTOnOff	struct
+#ifdef __ENHANCED_FIRMWARE
+ Result		word
+#else
  Result		sbyte
+#endif
  PowerState	byte
 TCommBTOnOff	ends
 
 // CommBTConnection
 TCommBTConnection	struct
+#ifdef __ENHANCED_FIRMWARE
+ Result		word
+#else
  Result		sbyte
+#endif
  Action		byte
  Name		byte[]
  ConnectionSlot	byte

@@ -122,7 +122,7 @@ AutoIncBuild=1
 MajorVer=3
 MinorVer=3
 Release=8
-Build=4
+Build=5
 Debug=0
 PreRelease=0
 Special=0
@@ -133,7 +133,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=JoCar Consulting
 FileDescription=Programmable Brick IDE
-FileVersion=3.3.8.4
+FileVersion=3.3.8.5
 InternalName=Bricx Command Center
 LegalCopyright=Copyright (c) 2010 John Hansen
 LegalTrademarks=

@@ -22,18 +22,17 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-01-05
+ * \date 2010-01-13
  * \version 42
  */
 
 #ifndef NBCCOMMON_H
 #define NBCCOMMON_H
 
-/**
- * Output port constants.
+/** @defgroup OutputPortConstants Output port constants.
  * Output port constants are used when calling motor control API functions.
+ * @{
  */
-
 #define OUT_A   0x00 /*!< Output port A */
 #define OUT_B   0x01 /*!< Output port B */
 #define OUT_C   0x02 /*!< Output port C */
@@ -41,31 +40,31 @@
 #define OUT_AC  0x04 /*!< Output ports A and C */
 #define OUT_BC  0x05 /*!< Output ports B and C */
 #define OUT_ABC 0x06 /*!< Output ports A, B, and C */
+/** @} */  // end of OutputPortConstants group
 
-/**
- * Input port constants.
+/** @defgroup InputPortConstants Input port constants.
  * Input port constants are used when calling sensor control API functions.
+ * @{
  */
-
 #define IN_1 0x00 /*!< Input port 1 */
 #define IN_2 0x01 /*!< Input port 2 */
 #define IN_3 0x02 /*!< Input port 3 */
 #define IN_4 0x03 /*!< Input port 4 */
+/** @} */  // end of InputPortConstants group
 
 #define TRUE  1 /*!< A true value */
 #define FALSE 0 /*!< A false value */
 
 #define NA 0xFFFF /*!< The specified argument does not apply (aka unwired) */
 
-/**
- * PID constants.
+/** @defgroup PIDConstants PID constants.
  * PID constants are for adjusting the Proportional, Integral, and Derivative
  * motor controller parameters.
  * \sa RotateMotorExPID(), RotateMotorPID(), OnFwdExPID(), OnRevExPID(),
  * \sa OnFwdRegExPID(), OnRevRegExPID(), OnFwdRegPID(), OnRevRegPID(),
  * \sa OnFwdSyncExPID(), OnRevSyncExPID(), OnFwdSyncPID(), OnRevSyncPID()
+ * @{
  */
-
 #define PID_0   0 /*!< PID zero */
 #define PID_1  32 /*!< PID one */
 #define PID_2  64 /*!< PID two */
@@ -74,6 +73,7 @@
 #define PID_5 160 /*!< PID five */
 #define PID_6 192 /*!< PID six */
 #define PID_7 224 /*!< PID seven */
+/** @} */  // end of PIDConstants group
 
 #ifdef __ENHANCED_FIRMWARE
 // array operation definitions
@@ -84,6 +84,7 @@
 #define OPARR_MIN    0x04 /*!< */
 #define OPARR_MAX    0x05 /*!< */
 #define OPARR_SORT   0x06 /*!< */
+#endif
 
 #if __FIRMWARE_VERSION > 107
 #define PI 3.141593               /*!< A constant for PI */
@@ -91,15 +92,12 @@
 #define DEGREES_PER_RADIAN 180/PI /*!< Converting from radians to degrees */
 #endif
 
-#endif
-
-/**
- * Output port update flag constants.
+/** @defgroup OutUFConstants Output port update flag constants.
  * Use these constants to specify which motor values need to be updated.
  * Update flag constants can be combined with bitwise OR.
  * \sa SetOutput()
+ * @{
  */
-
 #define UF_UPDATE_MODE                 0x01 /*!< Update the motor mode */
 #define UF_UPDATE_SPEED                0x02 /*!< Update the motor speed */
 #define UF_UPDATE_TACHO_LIMIT          0x04 /*!< Update the motor tachometer limit */
@@ -108,79 +106,79 @@
 #define UF_UPDATE_RESET_BLOCK_COUNT    0x20 /*!< Reset the NXT-G block tachometer counter */
 #define UF_UPDATE_RESET_ROTATION_COUNT 0x40 /*!< Reset the rotation counter */
 #define UF_PENDING_UPDATES             0x80 /*!< Are there any pending motor updates? */
+/** @} */  // end of OutUFConstants group
 
-/**
- * Tachometer counter reset flags.
+/** @defgroup TachoResetConstants Tachometer counter reset flags.
  * Use these constants to specify which of the three tachometer counters
  * should be reset. Reset constants can be combined with bitwise OR.
  * \sa OnFwdEx(), OnRevEx(), etc...
+ * @{
  */
-
 #define RESET_NONE           0x00 /*!< No counters will be reset */
 #define RESET_COUNT          0x08 /*!< Reset the internal tachometer counter */
 #define RESET_BLOCK_COUNT    0x20 /*!< Reset the NXT-G block tachometer counter */
 #define RESET_ROTATION_COUNT 0x40 /*!< Reset the rotation counter */
 #define RESET_BLOCKANDTACHO  0x28 /*!< Reset both the internal counter and the NXT-G block counter */
 #define RESET_ALL            0x68 /*!< Reset all three tachometer counters */
+/** @} */  // end of TachoResetConstants group
 
-/**
- * Output port mode constants.
+/** @defgroup OutModeConstants Output port mode constants.
  * Use these constants to configure the desired mode for the
  * specified motor(s): coast, motoron, brake, or regulated. Mode constants
  * can be combined with bitwise OR.
  * \sa SetOutput()
+ * @{
  */
-
 #define OUT_MODE_COAST     0x00 /*!< Set motor mode to coast */
 #define OUT_MODE_MOTORON   0x01 /*!< Set motor mode to motoron */
 #define OUT_MODE_BRAKE     0x02 /*!< Set motor mode to brake */
 #define OUT_MODE_REGULATED 0x04 /*!< Set motor mode to regulated */
 #define OUT_MODE_REGMETHOD 0xF0 /*!< Mask for unimplemented regulation mode */
+/** @} */  // end of OutModeConstants group
 
-/**
- * Output port option constants.
+/** @defgroup OutOptionConstants Output port option constants.
  * Use these constants to configure the desired options for the
  * specified motor(s): hold at limit and ramp down to limit. Option constants
  * can be combined with bitwise OR.
  * \sa SetOutput()
+ * @{
  */
-
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define OUT_OPTION_HOLDATLIMIT     0x10 /*!< */
 #define OUT_OPTION_RAMPDOWNTOLIMIT 0x20 /*!< */
 #endif
+/** @} */  // end of OutOptionConstants group
 
-/**
- * Output port run state constants.
+/** @defgroup OutRunStateConstants Output port run state constants.
  * Use these constants to configure the desired run state for the
  * specified motor(s): idle, rampup, running, rampdown, or hold.
  * \sa SetOutput()
+ * @{
  */
-
 #define OUT_RUNSTATE_IDLE     0x00 /*!< Set motor run state to idle */
 #define OUT_RUNSTATE_RAMPUP   0x10 /*!< Set motor run state to rampup */
 #define OUT_RUNSTATE_RUNNING  0x20 /*!< Set motor run state to running */
 #define OUT_RUNSTATE_RAMPDOWN 0x40 /*!< Set motor run state to rampdown */
 #define OUT_RUNSTATE_HOLD     0x60 /*!< Set motor run state to hold */
+/** @} */  // end of OutRunStateConstants group
 
-/**
- * Output port regulation mode constants.
+/** @defgroup OutRegModeConstants Output port regulation mode constants.
  * Use these constants to configure the desired regulation mode for the
  * specified motor(s): none, speed regulation, or multi-motor synchronization.
  * \sa SetOutput()
+ * @{
  */
-
 #define OUT_REGMODE_IDLE  0 /*!< Set motor regulation mode to idle */
 #define OUT_REGMODE_SPEED 1 /*!< Set motor regulation mode to speed */
 #define OUT_REGMODE_SYNC  2 /*!< Set motor regulation mode to sync */
+/** @} */  // end of OutRegModeConstants group
 
-/**
- * NBC sensor type constants.
+/** @defgroup NBCSensorTypeConstants NBC sensor type constants.
  * Use sensor type constants to configure an input port for a specific type
  * of sensor.
  * \sa SetSensorType()
+ * @{
  */
-
 #define IN_TYPE_NO_SENSOR      0x00 /*!< No sensor configured */
 #define IN_TYPE_SWITCH         0x01 /*!< NXT or RCX touch sensor */
 #define IN_TYPE_TEMPERATURE    0x02 /*!< RCX temperature sensor */
@@ -202,14 +200,14 @@
 #define IN_TYPE_COLORNONE      0x11 /*!< NXT 2.0 color sensor with no light */
 #define IN_TYPE_COLOREXIT      0x12
 #endif
+/** @} */  // end of NBCSensorTypeConstants group
 
-/**
- * NBC sensor mode constants.
+/** @defgroup NBCSensorModeConstants NBC sensor mode constants.
  * Use sensor mode constants to configure an input port for the desired
  * sensor mode.
  * \sa SetSensorMode()
+ * @{
  */
-
 #define IN_MODE_RAW           0x00 /*!< Raw value from 0 to 1023 */
 #define IN_MODE_BOOLEAN       0x20 /*!< Boolean value (0 or 1) */
 #define IN_MODE_TRANSITIONCNT 0x40 /*!< Counts the number of boolean transitions */
@@ -220,13 +218,13 @@
 #define IN_MODE_ANGLESTEP     0xE0 /*!< RCX rotation sensor (16 ticks per revolution) */
 #define IN_MODE_SLOPEMASK     0x1F /*!< Mask for slope parameter added to mode */
 #define IN_MODE_MODEMASK      0xE0 /*!< Mask for the mode without any slope value */
+/** @} */  // end of NBCSensorModeConstants group
 
 
-/**
- * Output field constants.
- * Command use: getout, setout
+/** @defgroup OutputFieldConstants Output field constants.
+ * Constants for use with SetOutput() and GetOutput().
+ * @{
  */
-
 #define UpdateFlags     0  /*!< Update flags field. Contains a combination of the update flag constants.  Read/write. */
 #define OutputMode      1  /*!< Mode field. Contains a combination of the output mode constants. Read/write. */
 #define Power           2  /*!< Power field. Contains the desired power level (-100 to 100). Read/write. */
@@ -245,23 +243,25 @@
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define OutputOptions   15 /*!< Options field. Contains a combination of the output options constants. Read/write. */
 #endif
+/** @} */  // end of OutputFieldConstants group
 
-/**
- * Input field constants.
- * Command use: getin, setin
+/** @defgroup InputFieldConstants Input field constants.
+ * Constants for use with SetInput() and GetInput().
+ * @{
  */
-
 #define Type            0 /*!< Type field. Contains one of the sensor type constants. Read/write. */
 #define InputMode       1 /*!< Input mode field. Contains one of the sensor mode constants. Read/write. */
 #define RawValue        2 /*!< Raw value field. Contains the current raw analog sensor value. Read only. */
 #define NormalizedValue 3 /*!< Normalized value field. Contains the current normalized analog sensor value. Read only. */
 #define ScaledValue     4 /*!< Scaled value field. Contains the current scaled analog sensor value. Read/write. */
 #define InvalidData     5 /*!< Invalid data field. Contains a boolean value indicating whether the sensor data is valid or not. Read/write. */
+/** @} */  // end of InputFieldConstants group
 
+/** @defgroup IOMapAddressConstants Direct IOMap data addresses.
+ * Constants for use in direct IOMap addressing (1.0x only).
+ * @{
+ */
 #if __FIRMWARE_VERSION <= 107
-//==============================================================================
-// Direct IOMap data addresses
-//==============================================================================
 
 #define IO_BASE    0xC000
 #define MOD_INPUT  0x0000
@@ -364,12 +364,12 @@
 #define OutputIORotationCount2   0xc22c
 
 #endif
+/** @} */  // end of IOMapAddressConstants group
 
-/**
- * System Call function constants.
- * Command use: syscall
+/** @defgroup SysCallConstants System Call function constants.
+ * Constants for use in the SysCall() function.
+ * @{
  */
-
 #define FileOpenRead       0 /*!< */
 #define FileOpenWrite      1 /*!< */
 #define FileOpenAppend     2 /*!< */
@@ -460,8 +460,12 @@
 #define DrawFont               95 /*!< */
 #endif
 #endif
+/** @} */  // end of SysCallConstants group
 
-// line numbers for use with DrawText system function
+/** @defgroup LineConstants Line number constants.
+ * Line numbers for use with DrawText system function.
+ * @{
+ */
 #define LCD_LINE8  0 /*!< */
 #define LCD_LINE7  8 /*!< */
 #define LCD_LINE6 16 /*!< */
@@ -470,12 +474,12 @@
 #define LCD_LINE3 40 /*!< */
 #define LCD_LINE2 48 /*!< */
 #define LCD_LINE1 56 /*!< */
+/** @} */  // end of LineConstants group
 
-/**
- * Time constants.
- * Command use: wait
+/** @defgroup TimeConstants Time constants.
+ * Command use:  Wait()
+ * @{
  */
-
 #define MS_1        1 /*!< 1 millisecond */
 #define MS_2        2 /*!< 2 milliseconds */
 #define MS_3        3 /*!< 3 milliseconds */
@@ -521,12 +525,12 @@
 #define SEC_20  20000 /*!< 20 seconds */
 #define SEC_30  30000 /*!< 30 seconds */
 #define MIN_1   60000 /*!< 1 minute */
+/** @} */  // end of TimeConstants group
 
-/**
- * Tone constants.
- * Command use:  SoundPlayTone
+/** @defgroup ToneConstants Tone constants.
+ * Command use:  SoundPlayTone()
+ * @{
  */
-
 #define TONE_A3               220 /*!< */
 #define TONE_AS3              233 /*!< */
 #define TONE_B3               247 /*!< */
@@ -578,12 +582,12 @@
 #define TONE_A7               3520 /*!< */
 #define TONE_AS7              3729 /*!< */
 #define TONE_B7               3951 /*!< */
+/** @} */  // end of ToneConstants group
 
-/**
- * Mailbox constants.
+/** @defgroup MailboxConstants Mailbox constants.
  * Mailbox number constants should be used to avoid confusing NXT-G users.
+ * @{
  */
-
 #define MAILBOX1  0 /*!< Mailbox number 1 */
 #define MAILBOX2  1 /*!< Mailbox number 2 */
 #define MAILBOX3  2 /*!< Mailbox number 3 */
@@ -594,12 +598,16 @@
 #define MAILBOX8  7 /*!< Mailbox number 8 */
 #define MAILBOX9  8 /*!< Mailbox number 9 */
 #define MAILBOX10 9 /*!< Mailbox number 10 */
+/** @} */  // end of MailboxConstants group
 
-/**
- * Command module constants.
- * Constants that are part of the NXT firmware's command module.
+
+/** @addtogroup CommandModule
+ * @{
  */
-
+/** @defgroup CommandModuleConstants Command module constants.
+ * Constants that are part of the NXT firmware's Command module.
+ * @{
+ */
 #define CommandModuleName "Command.mod" /*!< The command module name */
 #define CommandModuleID   0x00010001 /*!< The command module ID */
 
@@ -607,25 +615,24 @@
 #define STAT_MSG_EMPTY_MAILBOX 64 /*!< Specified mailbox contains no new messages */
 #define STAT_COMM_PENDING 32      /*!< Pending setup operation in progress */
 
-/**
- * VM state constants.
- * Detailed description.
+/** @defgroup CommandVMState VM state constants.
+ * Constants defining possible VM states.
+ * @{
  */
-
 #define TIMES_UP      6
 #define ROTATE_QUEUE  5
 #define STOP_REQ      4
 #define BREAKOUT_REQ  3
 #define CLUMP_SUSPEND 2
 #define CLUMP_DONE    1
+/** @} */  // end of CommandVMState group
 
 #define NO_ERR        0 /*!< Successful execution of the specified command */
 
-/**
- * Fatal errors.
- * Detailed description.
+/** @defgroup CommandFatalErrors Fatal errors.
+ * Constants defining various fatal error conditions.
+ * @{
  */
-
 #define ERR_ARG             -1 /*!< 0xFF Bad arguments */
 #define ERR_INSTR           -2 /*!< 0xFE Illegal bytecode instruction */
 #define ERR_FILE            -3 /*!< 0xFD Malformed file contents */
@@ -643,38 +650,42 @@
 #define ERR_MEMMGR_FAIL     -15 /*!< 0xF1 (UBYTE *)VarsCmd.MemMgr.pDopeVectorArray != VarsCmd.pDataspace + DV_ARRAY[0].Offset */
 
 #define ERR_NON_FATAL -16 /*!< Fatal errors are greater than this value */
+/** @} */  // end of CommandFatalErrors group
 
-/**
- * General errors.
- * Detailed description.
+/** @defgroup CommandGenErrors General errors.
+ * Constants defining general error conditions.
+ * @{
  */
-
 #define ERR_INVALID_PORT   -16 /*!< 0xF0 Bad input or output port specified */
 #define ERR_INVALID_FIELD  -17 /*!< 0xEF Attempted to access invalid field of a structure */
 #define ERR_INVALID_QUEUE  -18 /*!< 0xEE Illegal queue ID specified */
 #define ERR_INVALID_SIZE   -19 /*!< 0xED Illegal size specified */
 #define ERR_NO_PROG        -20 /*!< 0xEC No active program */
+/** @} */  // end of CommandGenErrors group
 
-/**
- * Communications specific errors.
- * Detailed description.
+/** @defgroup CommandCommErrors Communications specific errors.
+ * Constants defining communication error conditions.
+ * @{
  */
-
 #define ERR_COMM_CHAN_NOT_READY -32 /*!< 0xE0 Specified channel/connection not configured or busy */
 #define ERR_COMM_CHAN_INVALID   -33 /*!< 0xDF Specified channel/connection is not valid */
 #define ERR_COMM_BUFFER_FULL    -34 /*!< 0xDE No room in comm buffer */
 #define ERR_COMM_BUS_ERR        -35 /*!< 0xDD Something went wrong on the communications bus */
+/** @} */  // end of CommandCommErrors group
 
-/** Remote control (direct commands) errors
+/** @defgroup CommandRCErrors Remote control (direct commands) errors.
  * Detailed description.
+ * @{
  */
 #define ERR_RC_ILLEGAL_VAL -64 /*!< 0xC0 Data contains out-of-range values */
 #define ERR_RC_BAD_PACKET  -65 /*!< 0xBF Clearly insane packet */
 #define ERR_RC_UNKNOWN_CMD -66 /*!< 0xBE Unknown command opcode */
 #define ERR_RC_FAILED      -67 /*!< 0xBD Request failed (i.e. specified file not found) */
+/** @} */  // end of CommandRCErrors group
 
-/** Program status constants
+/** @defgroup CommandProgStatus Program status constants.
  * Detailed description.
+ * @{
  */
 #define PROG_IDLE     0 /*!< Program state is idle */
 #define PROG_OK       1 /*!< Program state is okay */
@@ -682,9 +693,11 @@
 #define PROG_ERROR    3 /*!< A program error has occurred */
 #define PROG_ABORT    4 /*!< Program has been aborted */
 #define PROG_RESET    5 /*!< Program has been reset */
+/** @} */  // end of CommandProgStatus group
 
-/** Command module IOMAP offsets
+/** @defgroup CommandIOMAP Command module IOMAP offsets.
  * Constant offsets into the Command module IOMAP structure.
+ * @{
  */
 #define CommandOffsetFormatString   0 /*!< Offset to the format string */
 #define CommandOffsetPRCHandler     16 /*!< Offset to the RC Handler function pointer */
@@ -701,44 +714,66 @@
 #define CommandOffsetSyncTime       32820 /*!< Offset to the VM sync time */
 #define CommandOffsetSyncTick       32824 /*!< Offset to the VM sync tick */
 #endif
+/** @} */  // end of CommandIOMAP group
+
+/** @} */  // end of CommandModuleConstants group
+/** @} */  // end of CommandModule group
 
 
-/** IOCtrl module constants
+/** @addtogroup IOCtrlModule
+ * @{
+ */
+/** @defgroup IOCtrlModuleConstants IOCtrl module constants.
  * Constants that are part of the NXT firmware's IOCtrl module.
+ * @{
  */
 #define IOCtrlModuleName "IOCtrl.mod" /*!< The IOCtrl module name */
 #define IOCtrlModuleID   0x00060001 /*!< The IOCtrl module ID */
 
-/** PowerOn constants
+/** @defgroup IOCtrlPO PowerOn constants.
  * Use these constants to power down the NXT or boot it into SAMBA
  * (aka firmware download) mode.
+ * @{
  */
 #define IOCTRL_POWERDOWN  0x5A00 /*!< Power down the NXT */
 #define IOCTRL_BOOT       0xA55A /*!< Reboot the NXT into SAMBA mode */
+/** @} */  // end of IOCtrlPO group
 
-/** IOCtrl module IOMAP offsets
+/** @defgroup IOCtrlIOMAP IOCtrl module IOMAP offsets.
  * Constant offsets into the IOCtrl module IOMAP structure.
+ * @{
  */
 #define IOCtrlOffsetPowerOn 0 /*!< Offset to power on field */
+/** @} */  // end of IOCtrlIOMAP group
+
+/** @} */  // end of IOCtrlModuleConstants group
+/** @} */  // end of IOCtrlModule group
 
 
-/** Loader module constants
+/** @addtogroup LoaderModule
+ * @{
+ */
+/** @defgroup LoaderModuleConstants Loader module constants.
  * Constants that are part of the NXT firmware's Loader module.
+ * @{
  */
 #define LoaderModuleName "Loader.mod" /*!< The Loader module name */
 #define LoaderModuleID   0x00090001 /*!< The Loader module ID */
 
-/** Loader module IOMAP offsets
+/** @defgroup LoaderIOMAP Loader module IOMAP offsets.
  * Constant offsets into the Loader module IOMAP structure.
+ * @{
  */
 #define LoaderOffsetPFunc         0 /*!< Offset to the Loader module function pointer */
 #define LoaderOffsetFreeUserFlash 4 /*!< Offset to the amount of free user flash */
+/** @} */  // end of LoaderIOMAP group
 
 #define EOF -1 /*!< A constant representing end of file */
 #define NULL 0 /*!< A constant representing NULL */
 
-/** Loader module error codes
- * Error codes returned by functions in the Loader module (file access)
+/** @defgroup LoaderErrors Loader module error codes.
+ * Error codes returned by functions in the Loader module (file access).
+ * @{
  */
 #define LDR_SUCCESS             0x0000 /*!< */
 #define LDR_INPROGRESS          0x0001 /*!< */
@@ -774,9 +809,11 @@
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define LDR_INVALIDSEEK         0x9C00 /*!< Invalid file seek operation */
 #endif
+/** @} */  // end of LoaderErrors group
 
-/** Loader module functions
- * Functions provided by the Loader module.
+/** @defgroup LoaderFunctionConstants Loader module function constants.
+ * Constants defining the functions provided by the Loader module.
+ * @{
  */
 #define LDR_CMD_OPENREAD        0x80 /*!< Open a file for reading */
 #define LDR_CMD_OPENWRITE       0x81 /*!< Open a file for writing */
@@ -814,9 +851,18 @@
 #define LDR_CMD_SEEKFROMCURRENT 0xD2 /*!< Seek from the current position */
 #define LDR_CMD_SEEKFROMEND     0xD3 /*!< Seek from the end of the file */
 #endif
+/** @} */  // end of LoaderFunctionConstants group
 
-/** Sound module constants
+/** @} */  // end of LoaderModuleConstants group
+/** @} */  // end of LoaderModule group
+
+
+/** @addtogroup SoundModule
+ * @{
+ */
+/** @defgroup SoundModuleConstants Sound module constants.
  * Constants that are part of the NXT firmware's Sound module.
+ * @{
  */
 #define SoundModuleName "Sound.mod" /*!< The Sound module name */
 #define SoundModuleID   0x00080001 /*!< The Sound module ID */
@@ -853,11 +899,17 @@
 #define SAMPLERATE_MIN      2000      // Min sample rate [sps]
 #define SAMPLERATE_DEFAULT  8000      // Default sample rate [sps]
 #define SAMPLERATE_MAX      16000     // Max sample rate [sps]
+/** @} */  // end of SoundModuleConstants group
+/** @} */  // end of SoundModule group
 
 
-//==============================================================================
-// Button module constants
-//==============================================================================
+/** @addtogroup ButtonModule
+ * @{
+ */
+/** @defgroup ButtonModuleConstants Button module constants.
+ * Constants that are part of the NXT firmware's Button module.
+ * @{
+ */
 #define ButtonModuleName "Button.mod" /*!< */
 #define ButtonModuleID   0x00040001 /*!< */
 
@@ -889,11 +941,17 @@
 #define ButtonOffsetLongRelCnt(b)   (((b)*8)+3) /*!< */
 #define ButtonOffsetRelCnt(b)       (((b)*8)+4) /*!< */
 #define ButtonOffsetState(b)        ((b)+32) /*!< */
+/** @} */  // end of ButtonModuleConstants group
+/** @} */  // end of ButtonModule group
 
 
-//==============================================================================
-// UI module constants
-//==============================================================================
+/** @addtogroup UiModule
+ * @{
+ */
+/** @defgroup UiModuleConstants Ui module constants.
+ * Constants that are part of the NXT firmware's Ui module.
+ * @{
+ */
 #define UIModuleName "Ui.mod" /*!< */
 #define UIModuleID   0x000C0001 /*!< */
 
@@ -961,10 +1019,17 @@
 #define UIOffsetForceOff        39 // W  - Force off             (> 0 = off) (1 byte)
 #define UIOffsetAbortFlag       40 // RW - Long Abort            (true == use long press to abort) (1 byte)
 
+/** @} */  // end of UiModuleConstants group
+/** @} */  // end of UiModule group
 
-//==============================================================================
-// Input module constants
-//==============================================================================
+
+/** @addtogroup InputModule
+ * @{
+ */
+/** @defgroup InputModuleConstants Input module constants.
+ * Constants that are part of the NXT firmware's Input module.
+ * @{
+ */
 #define InputModuleName "Input.mod" /*!< */
 #define InputModuleID   0x00030001 /*!< */
 
@@ -1035,10 +1100,17 @@
 #define InputOffsetColorSensorBoolean(p, nc)   (80+((p)*84)+76+((nc)*2)) /*!< */
 #define InputOffsetColorCalibrationState(p)    (80+((p)*84)+80) /*!< */
 #endif
+/** @} */  // end of InputModuleConstants group
+/** @} */  // end of InputModule group
 
-//==============================================================================
-// Output module constants
-//==============================================================================
+
+/** @addtogroup OutputModule
+ * @{
+ */
+/** @defgroup OutputModuleConstants Output module constants.
+ * Constants that are part of the NXT firmware's Output module.
+ * @{
+ */
 #define OutputModuleName "Output.mod"
 #define OutputModuleID   0x00020001
 
@@ -1063,11 +1135,17 @@
 #define OutputOffsetOptions(p)           (((p)*32)+29) /*!< */
 #endif
 #define OutputOffsetPwnFreq              96 /*!< */
+/** @} */  // end of OutputModuleConstants group
+/** @} */  // end of OutputModule group
 
 
-//==============================================================================
-// Low Speed module constants
-//==============================================================================
+/** @addtogroup LowSpeedModule
+ * @{
+ */
+/** @defgroup LowSpeedModuleConstants LowSpeed module constants.
+ * Constants that are part of the NXT firmware's LowSpeed module.
+ * @{
+ */
 #define LowSpeedModuleName "Low Speed.mod" /*!< */
 #define LowSpeedModuleID   0x000B0001 /*!< */
 
@@ -1132,10 +1210,70 @@
 
 #endif
 
+// generic I2C device constants
+#define I2C_REG_VERSION   0x00 /*!< */
+#define I2C_REG_VENDOR_ID 0x08 /*!< */
+#define I2C_REG_DEVICE_ID 0x10 /*!< */
+#define I2C_REG_CMD       0x41 /*!< */
 
-//==============================================================================
-// Display module constants
-//==============================================================================
+//Ultrasonic sensor constants
+#define US_CMD_OFF           0x00 /*!< */
+#define US_CMD_SINGLESHOT    0x01 /*!< */
+#define US_CMD_CONTINUOUS    0x02 /*!< */
+#define US_CMD_EVENTCAPTURE  0x03 /*!< */
+#define US_CMD_WARMRESET     0x04 /*!< */
+
+#define US_REG_CM_INTERVAL   0x40 /*!< */
+#define US_REG_ACTUAL_ZERO   0x50 /*!< */
+#define US_REG_SCALE_FACTOR  0x51 /*!< */
+#define US_REG_SCALE_DIVISOR 0x52 /*!< */
+
+#define US_REG_FACTORY_ACTUAL_ZERO   0x11 /*!< */
+#define US_REG_FACTORY_SCALE_FACTOR  0x12 /*!< */
+#define US_REG_FACTORY_SCALE_DIVISOR 0x13 /*!< */
+#define US_REG_MEASUREMENT_UNITS     0x14 /*!< */
+
+
+// LEGO temperature configuration constants (OR together as needed)
+// R1/R0
+#define TEMP_RES_12BIT     0x60 /*!< */
+#define TEMP_RES_11BIT     0x40 /*!< */
+#define TEMP_RES_10BIT     0x20 /*!< */
+#define TEMP_RES_9BIT      0x00 /*!< */
+// SD (shutdown mode)
+#define TEMP_SD_CONTINUOUS 0x00 /*!< */
+#define TEMP_SD_SHUTDOWN   0x01 /*!< */
+// TM (thermostat mode)
+#define TEMP_TM_COMPARATOR 0x00 /*!< */
+#define TEMP_TM_INTERRUPT  0x02 /*!< */
+// OS (one shot)
+#define TEMP_OS_ONESHOT    0x80 /*!< */
+// F1/F0 (fault queue)
+#define TEMP_FQ_1          0x00 /*!< */
+#define TEMP_FQ_2          0x08 /*!< */
+#define TEMP_FQ_4          0x10 /*!< */
+#define TEMP_FQ_6          0x18 /*!< */
+// POL (polarity)
+#define TEMP_POL_LOW       0x00 /*!< */
+#define TEMP_POL_HIGH      0x04 /*!< */
+
+#define TEMP_I2C_ADDRESS   0x98 /*!< */
+#define TEMP_REG_TEMP      0x00 /*!< */
+#define TEMP_REG_CONFIG    0x01 /*!< */
+#define TEMP_REG_TLOW      0x02 /*!< */
+#define TEMP_REG_THIGH     0x03 /*!< */
+
+/** @} */  // end of LowSpeedModuleConstants group
+/** @} */  // end of LowSpeedModule group
+
+
+/** @addtogroup DisplayModule
+ * @{
+ */
+/** @defgroup DisplayModuleConstants Display module constants.
+ * Constants that are part of the NXT firmware's Display module.
+ * @{
+ */
 #define DisplayModuleName "Display.mod" /*!< */
 #define DisplayModuleID   0x000A0001 /*!< */
 
@@ -1294,328 +1432,229 @@
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define DisplayOffsetContrast       1719 /*!< */
 #endif
-//==============================================================================
-// Comm module constants
-//==============================================================================
-#define CommModuleName "Comm.mod" /*!< */
-#define CommModuleID   0x00050001 /*!< */
+/** @} */  // end of DisplayModuleConstants group
+/** @} */  // end of DisplayModule group
 
-#define SIZE_OF_USBBUF                64 /*!< */
-#define USB_PROTOCOL_OVERHEAD         2   // Command type byte + Command /*!< */
-#define SIZE_OF_USBDATA               62 /*!< */
-#define SIZE_OF_HSBUF                 128 /*!< */
-#define SIZE_OF_BTBUF                 128 /*!< */
 
-#define BT_CMD_BYTE                   1 /*!< */
-#define SIZE_OF_BT_DEVICE_TABLE       30 /*!< */
-#define SIZE_OF_BT_CONNECT_TABLE      4 // Index 0 is alway incomming connections /*!< */
-#define SIZE_OF_BT_NAME               16 /*!< */
-#define SIZE_OF_BRICK_NAME            8 /*!< */
-#define SIZE_OF_CLASS_OF_DEVICE       4 /*!< */
-#define SIZE_OF_BT_PINCODE            16 /*!< */
-#define SIZE_OF_BDADDR                7 /*!< */
-#define MAX_BT_MSG_SIZE               60000 /*!< */
+/** @addtogroup CommModule
+ * @{
+ */
+/** @defgroup CommModuleConstants Comm module constants.
+ * Constants that are part of the NXT firmware's Comm module.
+ * @{
+ */
+#define CommModuleName "Comm.mod" /*!< The Comm module name */
+#define CommModuleID   0x00050001 /*!< The Comm module ID */
 
-#define BT_DEFAULT_INQUIRY_MAX        0   // Unlimited no
-#define BT_DEFAULT_INQUIRY_TIMEOUT_LO 15  // 15 x 1,28 Sec = 19,2 Sec
+#define SIZE_OF_USBBUF                64 /*!< Size of USB Buffer in bytes */
+#define USB_PROTOCOL_OVERHEAD         2  /*!< Size of USB Overhead in bytes -- Command type byte + Command*/
+#define SIZE_OF_USBDATA               62 /*!< Size of USB Buffer available for data */
+#define SIZE_OF_HSBUF                 128 /*!< Size of High Speed Port 4 buffer */
+#define SIZE_OF_BTBUF                 128 /*!< Size of Bluetooth buffer*/
 
-// Constants referring to BtState
-#define BT_ARM_OFF              0 /*!< */
-#define BT_ARM_CMD_MODE         1 /*!< */
-#define BT_ARM_DATA_MODE        2 /*!< */
+#define BT_CMD_BYTE                   1 /*!< Size of Bluetooth command*/
+#define SIZE_OF_BT_DEVICE_TABLE       30 /*!< Size of Bluetooth device table */
+#define SIZE_OF_BT_CONNECT_TABLE      4 /*!< Size of Bluetooth connection table -- Index 0 is always incoming connection */
+#define SIZE_OF_BT_NAME               16 /*!< Size of Bluetooth name */
+#define SIZE_OF_BRICK_NAME            8 /*!< Size of NXT Brick name */
+#define SIZE_OF_CLASS_OF_DEVICE       4 /*!< Size of class of device */
+#define SIZE_OF_BT_PINCODE            16 /*!< Size of Bluetooth PIN */
+#define SIZE_OF_BDADDR                7 /*!< Size of Bluetooth Address*/
+#define MAX_BT_MSG_SIZE               60000 /*!< Max Bluetooth Message Size */
 
-//Constant referring to BtStateStatus
-#define BT_BRICK_VISIBILITY     0x01 /*!< */
-#define BT_BRICK_PORT_OPEN      0x02 /*!< */
-#define BT_CONNECTION_0_ENABLE  0x10 /*!< */
-#define BT_CONNECTION_1_ENABLE  0x20 /*!< */
-#define BT_CONNECTION_2_ENABLE  0x40 /*!< */
-#define BT_CONNECTION_3_ENABLE  0x80 /*!< */
+#define BT_DEFAULT_INQUIRY_MAX        0   /*!< Bluetooth default inquiry Max (0 == unlimited)*/
+#define BT_DEFAULT_INQUIRY_TIMEOUT_LO 15  /*!< Bluetooth inquiry timeout (15*1.28 sec = 19.2 sec) */
 
-//Constant referring to BtHwStatus
-#define BT_ENABLE               0x00 /*!< */
-#define BT_DISABLE              0x01 /*!< */
+#define BT_ARM_OFF              0 /*!< BtState constant bluetooth off */
+#define BT_ARM_CMD_MODE         1 /*!< BtState constant bluetooth command mode */
+#define BT_ARM_DATA_MODE        2 /*!< BtState constant bluetooth data mode */
 
-// Constants referring to HsFlags
-#define HS_UPDATE 1 /*!< */
+#define BT_BRICK_VISIBILITY     0x01 /*!< BtStateStatus brick visibility bit */
+#define BT_BRICK_PORT_OPEN      0x02 /*!< BtStateStatus port open bit */
+#define BT_CONNECTION_0_ENABLE  0x10 /*!< BtStateStatus connection 0 enable/disable bit */
+#define BT_CONNECTION_1_ENABLE  0x20 /*!< BtStateStatus connection 1 enable/disable bit */
+#define BT_CONNECTION_2_ENABLE  0x40 /*!< BtStateStatus connection 2 enable/disable bit */
+#define BT_CONNECTION_3_ENABLE  0x80 /*!< BtStateStatus connection 3 enable/disable bit */
 
-// Constants referring to HsState
-#define HS_INITIALISE    1 /*!< */
-#define HS_INIT_RECEIVER 2 /*!< */
-#define HS_SEND_DATA     3 /*!< */
-#define HS_DISABLE       4 /*!< */
-#define HS_ENABLE        5 /*!< */
+#define BT_ENABLE               0x00 /*!< BtHwStatus bluetooth enable */
+#define BT_DISABLE              0x01 /*!< BtHwStatus bluetooth disable */
+
+#define HS_UPDATE 1 /*!< HsFlags high speed update required */
+
+#define HS_INITIALISE    1 /*!< HsState initialize */
+#define HS_INIT_RECEIVER 2 /*!< HsState initialize receiver */
+#define HS_SEND_DATA     3 /*!< HsState send data */
+#define HS_DISABLE       4 /*!< HsState disable */
+#define HS_ENABLE        5 /*!< HsState enable */
 
 #ifdef __ENHANCED_FIRMWARE
 
-#define HS_CTRL_INIT 0 /*!< */
-#define HS_CTRL_UART 1 /*!< */
-#define HS_CTRL_EXIT 2 /*!< */
+#define HS_CTRL_INIT 0 /*!< CommHSControl enable high speed port */
+#define HS_CTRL_UART 1 /*!< CommHSControl setup high speed port */
+#define HS_CTRL_EXIT 2 /*!< CommHSControl disable high speed port */
 
 #if __FIRMWARE_VERSION > 107
 
-#define HS_BAUD_1200     0 /*!< */
-#define HS_BAUD_2400     1 /*!< */
-#define HS_BAUD_3600     2 /*!< */
-#define HS_BAUD_4800     3 /*!< */
-#define HS_BAUD_7200     4 /*!< */
-#define HS_BAUD_9600     5 /*!< */
-#define HS_BAUD_14400    6 /*!< */
-#define HS_BAUD_19200    7 /*!< */
-#define HS_BAUD_28800    8 /*!< */
-#define HS_BAUD_38400    9 /*!< */
-#define HS_BAUD_57600   10 /*!< */
-#define HS_BAUD_76800   11 /*!< */
-#define HS_BAUD_115200  12 /*!< */
-#define HS_BAUD_230400  13 /*!< */
-#define HS_BAUD_460800  14 /*!< */
-#define HS_BAUD_921600  15 /*!< */
+#define HS_BAUD_1200     0 /*!< HsMode 1200 Baud */
+#define HS_BAUD_2400     1 /*!< HsMode 2400 Baud */
+#define HS_BAUD_3600     2 /*!< HsMode 3600 Baud */
+#define HS_BAUD_4800     3 /*!< HsMode 4800 Baud */
+#define HS_BAUD_7200     4 /*!< HsMode 7200 Baud */
+#define HS_BAUD_9600     5 /*!< HsMode 9600 Baud */
+#define HS_BAUD_14400    6 /*!< HsMode 14400 Baud */
+#define HS_BAUD_19200    7 /*!< HsMode 19200 Baud */
+#define HS_BAUD_28800    8 /*!< HsMode 28800 Baud */
+#define HS_BAUD_38400    9 /*!< HsMode 38400 Baud */
+#define HS_BAUD_57600   10 /*!< HsMode 57600 Baud */
+#define HS_BAUD_76800   11 /*!< HsMode 76800 Baud */
+#define HS_BAUD_115200  12 /*!< HsMode 115200 Baud */
+#define HS_BAUD_230400  13 /*!< HsMode 230400 Baud */
+#define HS_BAUD_460800  14 /*!< HsMode 460800 Baud */
+#define HS_BAUD_921600  15 /*!< HsMode 921600 Baud */
 
 // constants referring to HsMode (number of bits)
-#define HS_MODE_5_DATA 0x0000 /*!< */
-#define HS_MODE_6_DATA 0x0040 /*!< */
-#define HS_MODE_7_DATA 0x0080 /*!< */
-#define HS_MODE_8_DATA 0x00C0 /*!< */
+#define HS_MODE_5_DATA 0x0000 /*!< HsMode 5 data bits */
+#define HS_MODE_6_DATA 0x0040 /*!< HsMode 6 data bits */
+#define HS_MODE_7_DATA 0x0080 /*!< HsMode 7 data bits */
+#define HS_MODE_8_DATA 0x00C0 /*!< HsMode 8 data bits */
 
 // constants referring to HsMode (number of stop bits)
-#define HS_MODE_10_STOP 0x0000 /*!< */
-#define HS_MODE_15_STOP 0x1000 /*!< */
-#define HS_MODE_20_STOP 0x2000 /*!< */
+#define HS_MODE_10_STOP 0x0000 /*!< HsMode 1 stop bit */
+#define HS_MODE_15_STOP 0x1000 /*!< HsMode 1.5 stop bits */
+#define HS_MODE_20_STOP 0x2000 /*!< HsMode 2 stop bits */
 
 // constants referring to HsMode (parity)
-#define HS_MODE_E_PARITY 0x0000 /*!< */
-#define HS_MODE_O_PARITY 0x0200 /*!< */
-#define HS_MODE_S_PARITY 0x0400 /*!< */
-#define HS_MODE_M_PARITY 0x0600 /*!< */
-#define HS_MODE_N_PARITY 0x0800 /*!< */
+#define HS_MODE_E_PARITY 0x0000 /*!< HsMode Even parity */
+#define HS_MODE_O_PARITY 0x0200 /*!< HsMode Odd parity */
+#define HS_MODE_S_PARITY 0x0400 /*!< HsMode Space parity */
+#define HS_MODE_M_PARITY 0x0600 /*!< HsMode Mark parity */
+#define HS_MODE_N_PARITY 0x0800 /*!< HsMode No parity */
 
 // constants referring to HsMode (D|P|S)
-#define HS_MODE_8N1 (HS_MODE_8_DATA|HS_MODE_N_PARITY|HS_MODE_10_STOP) /*!< */
-#define HS_MODE_7E1 (HS_MODE_7_DATA|HS_MODE_E_PARITY|HS_MODE_10_STOP) /*!< */
+#define HS_MODE_8N1 (HS_MODE_8_DATA|HS_MODE_N_PARITY|HS_MODE_10_STOP) /*!< HsMode 8 data bits, no parity, 1 stop bit */
+#define HS_MODE_7E1 (HS_MODE_7_DATA|HS_MODE_E_PARITY|HS_MODE_10_STOP) /*!< HsMode 7 data bits, even parity, 1 stop bit */
 
 #endif
 
 #endif
 
 //Constants refering to DeviceStatus within DeviceTable
-#define BT_DEVICE_EMPTY   0x00 /*!< */
-#define BT_DEVICE_UNKNOWN 0x01 /*!< */
-#define BT_DEVICE_KNOWN   0x02 /*!< */
-#define BT_DEVICE_NAME    0x40 /*!< */
-#define BT_DEVICE_AWAY    0x80 /*!< */
+#define BT_DEVICE_EMPTY   0x00 /*!< Bluetooth device table empty */
+#define BT_DEVICE_UNKNOWN 0x01 /*!< Bluetooth device unknown */
+#define BT_DEVICE_KNOWN   0x02 /*!< Bluetooth device known */
+#define BT_DEVICE_NAME    0x40 /*!< Bluetooth device name */
+#define BT_DEVICE_AWAY    0x80 /*!< Bluetooth device away */
 
 /* Interface between command other modules */
-#define INTF_SENDFILE      0 /*!< */
-#define INTF_SEARCH        1 /*!< */
-#define INTF_STOPSEARCH    2 /*!< */
-#define INTF_CONNECT       3 /*!< */
-#define INTF_DISCONNECT    4 /*!< */
-#define INTF_DISCONNECTALL 5 /*!< */
-#define INTF_REMOVEDEVICE  6 /*!< */
-#define INTF_VISIBILITY    7 /*!< */
-#define INTF_SETCMDMODE    8 /*!< */
-#define INTF_OPENSTREAM    9 /*!< */
-#define INTF_SENDDATA      10 /*!< */
-#define INTF_FACTORYRESET  11 /*!< */
-#define INTF_BTON          12 /*!< */
-#define INTF_BTOFF         13 /*!< */
-#define INTF_SETBTNAME     14 /*!< */
-#define INTF_EXTREAD       15 /*!< */
-#define INTF_PINREQ        16 /*!< */
-#define INTF_CONNECTREQ    17 /*!< */
+#define INTF_SENDFILE      0 /*!< ActiveUpdate send file */
+#define INTF_SEARCH        1 /*!< ActiveUpdate search for connections */
+#define INTF_STOPSEARCH    2 /*!< ActiveUpdate stop connection search */
+#define INTF_CONNECT       3 /*!< ActiveUpdate connect */
+#define INTF_DISCONNECT    4 /*!< ActiveUpdate disconnect */
+#define INTF_DISCONNECTALL 5 /*!< ActiveUpdate disconnect all */
+#define INTF_REMOVEDEVICE  6 /*!< ActiveUpdate remove device */
+#define INTF_VISIBILITY    7 /*!< ActiveUpdate set visibility */
+#define INTF_SETCMDMODE    8 /*!< ActiveUpdate set command mode */
+#define INTF_OPENSTREAM    9 /*!< ActiveUpdate open stream */
+#define INTF_SENDDATA      10 /*!< ActiveUpdate send data */
+#define INTF_FACTORYRESET  11 /*!< ActiveUpdate factory reset */
+#define INTF_BTON          12 /*!< ActiveUpdate turn on bluetooth */
+#define INTF_BTOFF         13 /*!< ActiveUpdate turn off bluetooth */
+#define INTF_SETBTNAME     14 /*!< ActiveUpdate set bluetooth name */
+#define INTF_EXTREAD       15 /*!< ActiveUpdate external read */
+#define INTF_PINREQ        16 /*!< ActiveUpdate pin request */
+#define INTF_CONNECTREQ    17 /*!< ActiveUpdate connect request */
 
 #if __FIRMWARE_VERSION > 107
 #define INTF_CONNECTBYNAME 18 /*!< */
 #endif
 
-#define LR_SUCCESS        0x50 /*!< */
-#define LR_COULD_NOT_SAVE 0x51 /*!< */
-#define LR_STORE_IS_FULL  0x52 /*!< */
-#define LR_ENTRY_REMOVED  0x53 /*!< */
-#define LR_UNKNOWN_ADDR   0x54 /*!< */
+#define LR_SUCCESS        0x50 /*!< Bluetooth list result success */
+#define LR_COULD_NOT_SAVE 0x51 /*!< Bluetooth list result could not save */
+#define LR_STORE_IS_FULL  0x52 /*!< Bluetooth list result store is full */
+#define LR_ENTRY_REMOVED  0x53 /*!< Bluetooth list result entry removed */
+#define LR_UNKNOWN_ADDR   0x54 /*!< Bluetooth list result unknown address */
 
-#define USB_CMD_READY     0x01 /*!< */
-#define BT_CMD_READY      0x02 /*!< */
-#define HS_CMD_READY      0x04 /*!< */
+#define USB_CMD_READY     0x01 /*!< A constant representing usb direct command */
+#define BT_CMD_READY      0x02 /*!< A constant representing bluetooth direct command */
+#define HS_CMD_READY      0x04 /*!< A constant representing high speed direct command */
 
-// offsets
-#define CommOffsetPFunc    0 /*!< */
-#define CommOffsetPFuncTwo 4 /*!< */
+
+/** Comm module IOMAP offsets.
+ * Constant offsets into the Comm module IOMAP structure.
+ */
+#define CommOffsetPFunc    0 /*!< Offset to the Comm module first function pointer */
+#define CommOffsetPFuncTwo 4 /*!< Offset to the Comm module second function pointer */
 // BtDeviceTable[30] (930 bytes)
-#define CommOffsetBtDeviceTableName(p)           (((p)*31)+8) /*!< */
-#define CommOffsetBtDeviceTableClassOfDevice(p)  (((p)*31)+24) /*!< */
-#define CommOffsetBtDeviceTableBdAddr(p)         (((p)*31)+28) /*!< */
-#define CommOffsetBtDeviceTableDeviceStatus(p)   (((p)*31)+35) /*!< */
+#define CommOffsetBtDeviceTableName(p)           (((p)*31)+8) /*!< Offset to BT device table name */
+#define CommOffsetBtDeviceTableClassOfDevice(p)  (((p)*31)+24) /*!< Offset to Bluetooth device table device class */
+#define CommOffsetBtDeviceTableBdAddr(p)         (((p)*31)+28) /*!< Offset to Bluetooth device table address */
+#define CommOffsetBtDeviceTableDeviceStatus(p)   (((p)*31)+35) /*!< Offset to Bluetooth device table status */
 //  BDCONNECTTABLE BtConnectTable[4]; (188 bytes)
-#define CommOffsetBtConnectTableName(p)          (((p)*47)+938) /*!< */
-#define CommOffsetBtConnectTableClassOfDevice(p) (((p)*47)+954) /*!< */
-#define CommOffsetBtConnectTablePinCode(p)       (((p)*47)+958) /*!< */
-#define CommOffsetBtConnectTableBdAddr(p)        (((p)*47)+974) /*!< */
-#define CommOffsetBtConnectTableHandleNr(p)      (((p)*47)+981) /*!< */
-#define CommOffsetBtConnectTableStreamStatus(p)  (((p)*47)+982) /*!< */
-#define CommOffsetBtConnectTableLinkQuality(p)   (((p)*47)+983) /*!< */
+#define CommOffsetBtConnectTableName(p)          (((p)*47)+938) /*!< Offset to Bluetooth connect table name */
+#define CommOffsetBtConnectTableClassOfDevice(p) (((p)*47)+954) /*!< Offset to Bluetooth connect table device class */
+#define CommOffsetBtConnectTablePinCode(p)       (((p)*47)+958) /*!< Offset to Bluetooth connect table pin code */
+#define CommOffsetBtConnectTableBdAddr(p)        (((p)*47)+974) /*!< Offset to Bluetooth connect table address */
+#define CommOffsetBtConnectTableHandleNr(p)      (((p)*47)+981) /*!< Offset to Bluetooth connect table handle */
+#define CommOffsetBtConnectTableStreamStatus(p)  (((p)*47)+982) /*!< Offset to Bluetooth connect table stream status */
+#define CommOffsetBtConnectTableLinkQuality(p)   (((p)*47)+983) /*!< Offset to Bluetooth connect table link quality */
 //General brick data
 //  BRICKDATA      BrickData; (31 bytes)
-#define CommOffsetBrickDataName            1126 /*!< */
-#define CommOffsetBrickDataBluecoreVersion 1142 /*!< */
-#define CommOffsetBrickDataBdAddr          1144 /*!< */
-#define CommOffsetBrickDataBtStateStatus   1151 /*!< */
-#define CommOffsetBrickDataBtHwStatus      1152 /*!< */
-#define CommOffsetBrickDataTimeOutValue    1153 /*!< */
+
+#define CommOffsetBrickDataName            1126 /*!< Offset to brick name */
+#define CommOffsetBrickDataBluecoreVersion 1142 /*!< Offset to Bluecore version */
+#define CommOffsetBrickDataBdAddr          1144 /*!< Offset to Bluetooth address */
+#define CommOffsetBrickDataBtStateStatus   1151 /*!< Offset to BtStateStatus */
+#define CommOffsetBrickDataBtHwStatus      1152 /*!< Offset to BtHwStatus */
+#define CommOffsetBrickDataTimeOutValue    1153 /*!< Offset to data timeout value */
 //  BTBUF          BtInBuf; (132 bytes)
-#define CommOffsetBtInBufBuf       1157 /*!< */
-#define CommOffsetBtInBufInPtr     1285 /*!< */
-#define CommOffsetBtInBufOutPtr    1286 /*!< */
+#define CommOffsetBtInBufBuf       1157 /*!< Offset to Bluetooth input buffer data */
+#define CommOffsetBtInBufInPtr     1285 /*!< Offset to Bluetooth input buffer front pointer */
+#define CommOffsetBtInBufOutPtr    1286 /*!< Offset to Bluetooth output buffer back pointer */
 //  BTBUF          BtOutBuf; (132 bytes)
-#define CommOffsetBtOutBufBuf      1289 /*!< */
-#define CommOffsetBtOutBufInPtr    1417 /*!< */
-#define CommOffsetBtOutBufOutPtr   1418 /*!< */
+#define CommOffsetBtOutBufBuf      1289 /*!< Offset to Bluetooth output buffer offset data */
+#define CommOffsetBtOutBufInPtr    1417 /*!< Offset to Bluetooth output buffer front pointer */
+#define CommOffsetBtOutBufOutPtr   1418 /*!< Offset to Bluetooth output buffer back pointer */
 // HI Speed related entries
 //  HSBUF          HsInBuf; (132 bytes)
-#define CommOffsetHsInBufBuf       1421 /*!< */
-#define CommOffsetHsInBufInPtr     1549 /*!< */
-#define CommOffsetHsInBufOutPtr    1550 /*!< */
+#define CommOffsetHsInBufBuf       1421 /*!< Offset to High Speed input buffer data */
+#define CommOffsetHsInBufInPtr     1549 /*!< Offset to High Speed input buffer front pointer */
+#define CommOffsetHsInBufOutPtr    1550 /*!< Offset to High Speed input buffer back pointer */
 //  HSBUF          HsOutBuf; (132 bytes)
-#define CommOffsetHsOutBufBuf      1553 /*!< */
-#define CommOffsetHsOutBufInPtr    1681 /*!< */
-#define CommOffsetHsOutBufOutPtr   1682 /*!< */
+#define CommOffsetHsOutBufBuf      1553 /*!< Offset to High Speed output buffer data */
+#define CommOffsetHsOutBufInPtr    1681 /*!< Offset to High Speed output buffer front pointer */
+#define CommOffsetHsOutBufOutPtr   1682 /*!< Offset to High Speed output buffer back pointer */
 // USB related entries
 //  USBBUF         UsbInBuf; (68 bytes)
-#define CommOffsetUsbInBufBuf        1685 /*!< */
-#define CommOffsetUsbInBufInPtr      1749 /*!< */
-#define CommOffsetUsbInBufOutPtr     1750 /*!< */
+#define CommOffsetUsbInBufBuf        1685 /*!< Offset to Usb input buffer data */
+#define CommOffsetUsbInBufInPtr      1749 /*!< Offset to Usb input buffer front pointer */
+#define CommOffsetUsbInBufOutPtr     1750 /*!< Offset to Usb input buffer back pointer */
 //  USBBUF         UsbOutBuf;
-#define CommOffsetUsbOutBufBuf       1753 /*!< */
-#define CommOffsetUsbOutBufInPtr     1817 /*!< */
-#define CommOffsetUsbOutBufOutPtr    1818 /*!< */
+#define CommOffsetUsbOutBufBuf       1753 /*!< Offset to Usb output buffer data */
+#define CommOffsetUsbOutBufInPtr     1817 /*!< Offset to Usb output buffer front pointer */
+#define CommOffsetUsbOutBufOutPtr    1818 /*!< Offset to Usb output buffer back pointer */
 //  USBBUF         UsbPollBuf;
-#define CommOffsetUsbPollBufBuf      1821 /*!< */
-#define CommOffsetUsbPollBufInPtr    1885 /*!< */
-#define CommOffsetUsbPollBufOutPtr   1886 /*!< */
+#define CommOffsetUsbPollBufBuf      1821 /*!< Offset to Usb Poll buffer data */
+#define CommOffsetUsbPollBufInPtr    1885 /*!< Offset to Usb Poll buffer front pointer */
+#define CommOffsetUsbPollBufOutPtr   1886 /*!< Offset to Usb Poll buffer back pointer */
 
-#define CommOffsetBtDeviceCnt      1889 /*!< */
-#define CommOffsetBtDeviceNameCnt  1890 /*!< */
-#define CommOffsetHsFlags          1891 /*!< */
-#define CommOffsetHsSpeed          1892 /*!< */
-#define CommOffsetHsState          1893 /*!< */
-#define CommOffsetUsbState         1894 /*!< */
-#define CommOffsetHsMode           1895 /*!< */
+#define CommOffsetBtDeviceCnt      1889 /*!< Offset to Bluetooth device count */
+#define CommOffsetBtDeviceNameCnt  1890 /*!< Offset to Bluetooth device name count */
+#define CommOffsetHsFlags          1891 /*!< Offset to High Speed flags */
+#define CommOffsetHsSpeed          1892 /*!< Offset to High Speed speed */
+#define CommOffsetHsState          1893 /*!< Offset to High Spped state */
+#define CommOffsetUsbState         1894 /*!< Offset to Usb State */
+#define CommOffsetHsMode           1895 /*!< Offset to High Speed mode */
+/** @} */  // end of DisplayModuleConstants group
+/** @} */  // end of DisplayModule group
 
-//Ultrasonic sensor constants
-#define US_CMD_OFF           0x00 /*!< */
-#define US_CMD_SINGLESHOT    0x01 /*!< */
-#define US_CMD_CONTINUOUS    0x02 /*!< */
-#define US_CMD_EVENTCAPTURE  0x03 /*!< */
-#define US_CMD_WARMRESET     0x04 /*!< */
 
-#define US_REG_CM_INTERVAL   0x40 /*!< */
-#define US_REG_ACTUAL_ZERO   0x50 /*!< */
-#define US_REG_SCALE_FACTOR  0x51 /*!< */
-#define US_REG_SCALE_DIVISOR 0x52 /*!< */
-
-#define US_REG_FACTORY_ACTUAL_ZERO   0x11 /*!< */
-#define US_REG_FACTORY_SCALE_FACTOR  0x12 /*!< */
-#define US_REG_FACTORY_SCALE_DIVISOR 0x13 /*!< */
-#define US_REG_MEASUREMENT_UNITS     0x14 /*!< */
-
-// HiTechnic Device Constants
-
-// HiTechnic IRLink Power Function constants
-#define PF_CMD_STOP  0 /*!< */
-#define PF_CMD_FWD   1 /*!< */
-#define PF_CMD_REV   2 /*!< */
-#define PF_CMD_BRAKE 3 /*!< */
-
-#define PF_CHANNEL_1 0 /*!< */
-#define PF_CHANNEL_2 1 /*!< */
-#define PF_CHANNEL_3 2 /*!< */
-#define PF_CHANNEL_4 3 /*!< */
-
-#define HTPF_CMD_STOP  0 /*!< */
-#define HTPF_CMD_FWD   1 /*!< */
-#define HTPF_CMD_REV   2 /*!< */
-#define HTPF_CMD_BRAKE 3 /*!< */
-
-#define HTPF_CHANNEL_1 0 /*!< */
-#define HTPF_CHANNEL_2 1 /*!< */
-#define HTPF_CHANNEL_3 2 /*!< */
-#define HTPF_CHANNEL_4 3 /*!< */
-
-#define PF_MODE_TRAIN             0 /*!< */
-#define PF_MODE_COMBO_DIRECT      1 /*!< */
-#define PF_MODE_SINGLE_PIN_CONT   2 /*!< */
-#define PF_MODE_SINGLE_PIN_TIME   3 /*!< */
-#define PF_MODE_COMBO_PWM         4 /*!< */
-#define PF_MODE_SINGLE_OUTPUT_PWM 4 /*!< */
-#define PF_MODE_SINGLE_OUTPUT_CST 6 /*!< */
-
-#define TRAIN_FUNC_STOP         0 /*!< */
-#define TRAIN_FUNC_INCR_SPEED   1 /*!< */
-#define TRAIN_FUNC_DECR_SPEED   2 /*!< */
-#define TRAIN_FUNC_TOGGLE_LIGHT 4 /*!< */
-
-#define TRAIN_CHANNEL_1   0 /*!< */
-#define TRAIN_CHANNEL_2   1 /*!< */
-#define TRAIN_CHANNEL_3   2 /*!< */
-#define TRAIN_CHANNEL_ALL 3 /*!< */
-
-#define PF_OUT_A 0 /*!< */
-#define PF_OUT_B 1 /*!< */
-
-#define PF_PIN_C1 0 /*!< */
-#define PF_PIN_C2 1 /*!< */
-
-#define PF_FUNC_NOCHANGE 0 /*!< */
-#define PF_FUNC_CLEAR    1 /*!< */
-#define PF_FUNC_SET      2 /*!< */
-#define PF_FUNC_TOGGLE   3 /*!< */
-
-#define PF_CST_CLEAR1_CLEAR2 0 /*!< */
-#define PF_CST_SET1_CLEAR2   1 /*!< */
-#define PF_CST_CLEAR1_SET2   2 /*!< */
-#define PF_CST_SET1_SET2     3 /*!< */
-#define PF_CST_INCREMENT_PWM 4 /*!< */
-#define PF_CST_DECREMENT_PWM 5 /*!< */
-#define PF_CST_FULL_FWD      6 /*!< */
-#define PF_CST_FULL_REV      7 /*!< */
-#define PF_CST_TOGGLE_DIR    8 /*!< */
-
-#define PF_PWM_FLOAT 0 /*!< */
-#define PF_PWM_FWD1  1 /*!< */
-#define PF_PWM_FWD2  2 /*!< */
-#define PF_PWM_FWD3  3 /*!< */
-#define PF_PWM_FWD4  4 /*!< */
-#define PF_PWM_FWD5  5 /*!< */
-#define PF_PWM_FWD6  6 /*!< */
-#define PF_PWM_FWD7  7 /*!< */
-#define PF_PWM_BRAKE 8 /*!< */
-#define PF_PWM_REV7  9 /*!< */
-#define PF_PWM_REV6  10 /*!< */
-#define PF_PWM_REV5  11 /*!< */
-#define PF_PWM_REV4  12 /*!< */
-#define PF_PWM_REV3  13 /*!< */
-#define PF_PWM_REV2  14 /*!< */
-#define PF_PWM_REV1  15 /*!< */
-
-#define HTIR2_MODE_1200 0 /*!< */
-#define HTIR2_MODE_600  1 /*!< */
-
-#define HTIR2_ADDR_MODE  0x41 /*!< */
-#define HTIR2_ADDR_DCDIR 0x42 /*!< */
-#define HTIR2_ADDR_DC01  0x43 /*!< */
-#define HTIR2_ADDR_DC02  0x44 /*!< */
-#define HTIR2_ADDR_DC03  0x45 /*!< */
-#define HTIR2_ADDR_DC04  0x46 /*!< */
-#define HTIR2_ADDR_DC05  0x47 /*!< */
-#define HTIR2_ADDR_DCAVG 0x48 /*!< */
-#define HTIR2_ADDR_ACDIR 0x49 /*!< */
-#define HTIR2_ADDR_AC01  0x4A /*!< */
-#define HTIR2_ADDR_AC02  0x4B /*!< */
-#define HTIR2_ADDR_AC03  0x4C /*!< */
-#define HTIR2_ADDR_AC04  0x4D /*!< */
-#define HTIR2_ADDR_AC05  0x4E /*!< */
-
-// HiTechnic IRLink RCX constants
+/** @defgroup RCXAPIConstants RCX constants.
+ * Constants that are for use with devices that communicate with the RCX or
+ * Scout programmable bricks via IR such as the HiTechnic IRLink or the
+ * MindSensors nRLink.
+ * @{
+ */
 #define RCX_OUT_A   0x01 /*!< */
 #define RCX_OUT_B   0x02 /*!< */
 #define RCX_OUT_C   0x04 /*!< */
@@ -1729,7 +1768,6 @@
 #define SCOUT_FXR_ALARM             2 /*!< */
 #define SCOUT_FXR_RANDOM            3 /*!< */
 #define SCOUT_FXR_SCIENCE           4 /*!< */
-
 
 #define RCX_VariableSrc             0 /*!< */
 #define RCX_TimerSrc                1 /*!< */
@@ -1845,8 +1883,124 @@
 #define RCX_ClearCounterOp   0xb7 /*!< */
 #define RCX_SetPriorityOp    0xd7 /*!< */
 #define RCX_MessageOp        0xf7 /*!< */
+/** @} */  // end of RCXConstants group
 
-// HiTechnic IRReceiver constants
+
+/** @addtogroup HiTechnicAPI
+ * @{
+ */
+/** @defgroup HiTechnicConstants HiTechnic device constants.
+ * Constants that are for use with HiTechnic devices.
+ * @{
+ */
+/** @defgroup HTIRLinkPFConstants HiTechnic Power Function/IR Train constants.
+ * Constants that are for use with the HiTechnic IRLink in Power Function or IR Train mode.
+ * @{
+ */
+#define PF_CMD_STOP  0 /*!< */
+#define PF_CMD_FWD   1 /*!< */
+#define PF_CMD_REV   2 /*!< */
+#define PF_CMD_BRAKE 3 /*!< */
+
+#define PF_CHANNEL_1 0 /*!< */
+#define PF_CHANNEL_2 1 /*!< */
+#define PF_CHANNEL_3 2 /*!< */
+#define PF_CHANNEL_4 3 /*!< */
+
+#define HTPF_CMD_STOP  0 /*!< */
+#define HTPF_CMD_FWD   1 /*!< */
+#define HTPF_CMD_REV   2 /*!< */
+#define HTPF_CMD_BRAKE 3 /*!< */
+
+#define HTPF_CHANNEL_1 0 /*!< */
+#define HTPF_CHANNEL_2 1 /*!< */
+#define HTPF_CHANNEL_3 2 /*!< */
+#define HTPF_CHANNEL_4 3 /*!< */
+
+#define PF_MODE_TRAIN             0 /*!< */
+#define PF_MODE_COMBO_DIRECT      1 /*!< */
+#define PF_MODE_SINGLE_PIN_CONT   2 /*!< */
+#define PF_MODE_SINGLE_PIN_TIME   3 /*!< */
+#define PF_MODE_COMBO_PWM         4 /*!< */
+#define PF_MODE_SINGLE_OUTPUT_PWM 4 /*!< */
+#define PF_MODE_SINGLE_OUTPUT_CST 6 /*!< */
+
+#define TRAIN_FUNC_STOP         0 /*!< */
+#define TRAIN_FUNC_INCR_SPEED   1 /*!< */
+#define TRAIN_FUNC_DECR_SPEED   2 /*!< */
+#define TRAIN_FUNC_TOGGLE_LIGHT 4 /*!< */
+
+#define TRAIN_CHANNEL_1   0 /*!< */
+#define TRAIN_CHANNEL_2   1 /*!< */
+#define TRAIN_CHANNEL_3   2 /*!< */
+#define TRAIN_CHANNEL_ALL 3 /*!< */
+
+#define PF_OUT_A 0 /*!< */
+#define PF_OUT_B 1 /*!< */
+
+#define PF_PIN_C1 0 /*!< */
+#define PF_PIN_C2 1 /*!< */
+
+#define PF_FUNC_NOCHANGE 0 /*!< */
+#define PF_FUNC_CLEAR    1 /*!< */
+#define PF_FUNC_SET      2 /*!< */
+#define PF_FUNC_TOGGLE   3 /*!< */
+
+#define PF_CST_CLEAR1_CLEAR2 0 /*!< */
+#define PF_CST_SET1_CLEAR2   1 /*!< */
+#define PF_CST_CLEAR1_SET2   2 /*!< */
+#define PF_CST_SET1_SET2     3 /*!< */
+#define PF_CST_INCREMENT_PWM 4 /*!< */
+#define PF_CST_DECREMENT_PWM 5 /*!< */
+#define PF_CST_FULL_FWD      6 /*!< */
+#define PF_CST_FULL_REV      7 /*!< */
+#define PF_CST_TOGGLE_DIR    8 /*!< */
+
+#define PF_PWM_FLOAT 0 /*!< */
+#define PF_PWM_FWD1  1 /*!< */
+#define PF_PWM_FWD2  2 /*!< */
+#define PF_PWM_FWD3  3 /*!< */
+#define PF_PWM_FWD4  4 /*!< */
+#define PF_PWM_FWD5  5 /*!< */
+#define PF_PWM_FWD6  6 /*!< */
+#define PF_PWM_FWD7  7 /*!< */
+#define PF_PWM_BRAKE 8 /*!< */
+#define PF_PWM_REV7  9 /*!< */
+#define PF_PWM_REV6  10 /*!< */
+#define PF_PWM_REV5  11 /*!< */
+#define PF_PWM_REV4  12 /*!< */
+#define PF_PWM_REV3  13 /*!< */
+#define PF_PWM_REV2  14 /*!< */
+#define PF_PWM_REV1  15 /*!< */
+/** @} */  // end of HTIRLinkPFConstants group
+
+/** @defgroup HTIRSeeker2Constants HiTechnic IRSeeker2 constants.
+ * Constants that are for use with the HiTechnic IRSeeker2 device.
+ * @{
+ */
+#define HTIR2_MODE_1200 0 /*!< */
+#define HTIR2_MODE_600  1 /*!< */
+
+#define HTIR2_ADDR_MODE  0x41 /*!< */
+#define HTIR2_ADDR_DCDIR 0x42 /*!< */
+#define HTIR2_ADDR_DC01  0x43 /*!< */
+#define HTIR2_ADDR_DC02  0x44 /*!< */
+#define HTIR2_ADDR_DC03  0x45 /*!< */
+#define HTIR2_ADDR_DC04  0x46 /*!< */
+#define HTIR2_ADDR_DC05  0x47 /*!< */
+#define HTIR2_ADDR_DCAVG 0x48 /*!< */
+#define HTIR2_ADDR_ACDIR 0x49 /*!< */
+#define HTIR2_ADDR_AC01  0x4A /*!< */
+#define HTIR2_ADDR_AC02  0x4B /*!< */
+#define HTIR2_ADDR_AC03  0x4C /*!< */
+#define HTIR2_ADDR_AC04  0x4D /*!< */
+#define HTIR2_ADDR_AC05  0x4E /*!< */
+/** @} */  // end of HTIRSeeker2Constants group
+
+/** @defgroup HTIRReceiverConstants HiTechnic IRReceiver constants.
+ * Constants that are for use with the HiTechnic IRReceiver device.
+ * @{
+ */
 #define HT_CH1_A 0 /*!< */
 #define HT_CH1_B 1 /*!< */
 #define HT_CH2_A 2 /*!< */
@@ -1855,13 +2009,12 @@
 #define HT_CH3_B 5 /*!< */
 #define HT_CH4_A 6 /*!< */
 #define HT_CH4_B 7 /*!< */
+/** @} */  // end of HTIRSeeker2Constants group
 
-// HiTechnic constants
-#define I2C_REG_VERSION   0x00 /*!< */
-#define I2C_REG_VENDOR_ID 0x08 /*!< */
-#define I2C_REG_DEVICE_ID 0x10 /*!< */
-#define I2C_REG_CMD       0x41 /*!< */
-
+/** @defgroup HTColor2Constants HiTechnic Color2 constants.
+ * Constants that are for use with the HiTechnic Color2 device.
+ * @{
+ */
 #define HT_CMD_COLOR2_ACTIVE  0x00 /*!< */
 #define HT_CMD_COLOR2_PASSIVE 0x01 /*!< */
 #define HT_CMD_COLOR2_RAW     0x03 /*!< */
@@ -1873,13 +2026,29 @@
 #define HT_CMD_COLOR2_LED_HI  0x48 /*!< */
 #define HT_CMD_COLOR2_LED_LOW 0x4C /*!< */
 #define HT_CMD_COLOR2_NEAR    0x4E /*!< */
+/** @} */  // end of HTColor2Constants group
 
+/** @} */  // end of HiTechnicConstants group
+/** @} */  // end of HiTechnicAPI group
+
+
+/** @addtogroup MindSensorsAPI
+ * @{
+ */
+/** @defgroup MindSensorsConstants MindSensors device constants.
+ * Constants that are for use with MindSensors devices.
+ * @{
+ */
 // MindSensors constants
 #define MS_CMD_ENERGIZED   0x45 /*!< */
 #define MS_CMD_DEENERGIZED 0x44 /*!< */
 #define MS_CMD_ADPA_ON     0x4E /*!< */
 #define MS_CMD_ADPA_OFF    0x4F /*!< */
 
+/** @defgroup MSDistNX MindSensors DIST-Nx constants.
+ * Constants that are for use with the MindSensors DIST-Nx device.
+ * @{
+ */
 // DIST-Nx Commands
 #define DIST_CMD_GP2D12      0x31 /*!< */
 #define DIST_CMD_GP2D120     0x32 /*!< */
@@ -1896,7 +2065,12 @@
 #define DIST_REG_DIST_MAX      0x54 /*!< */
 #define DIST_REG_VOLT1         0x56 /*!< */
 #define DIST_REG_DIST1         0x58 /*!< */
+/** @} */  // end of MSDistNX group
 
+/** @defgroup MSPSPNX MindSensors PSP-Nx constants.
+ * Constants that are for use with the MindSensors PSP-Nx device.
+ * @{
+ */
 // PSP-Nx commands
 #define PSP_CMD_DIGITAL 0x41 /*!< */
 #define PSP_CMD_ANALOG  0x73 /*!< */
@@ -1908,7 +2082,12 @@
 #define PSP_REG_YLEFT  0x45 /*!< */
 #define PSP_REG_XRIGHT 0x46 /*!< */
 #define PSP_REG_YRIGHT 0x47 /*!< */
+/** @} */  // end of MSPSPNX group
 
+/** @defgroup MSNRLink MindSensors nRLink constants.
+ * Constants that are for use with the MindSensors nRLink device.
+ * @{
+ */
 // NRLink commands
 #define NRLINK_CMD_2400      0x44 /*!< */
 #define NRLINK_CMD_FLUSH     0x46 /*!< */
@@ -1925,39 +2104,17 @@
 #define NRLINK_REG_BYTES  0x40 /*!< */
 #define NRLINK_REG_DATA   0x42 /*!< */
 #define NRLINK_REG_EEPROM 0x50 /*!< */
+/** @} */  // end of MSNRLink group
+
+/** @} */  // end of MindSensorsConstants group
+/** @} */  // end of MindSensorsAPI group
 
 
-// LEGO temperature configuration constants (OR together as needed)
-// R1/R0
-#define TEMP_RES_12BIT     0x60 /*!< */
-#define TEMP_RES_11BIT     0x40 /*!< */
-#define TEMP_RES_10BIT     0x20 /*!< */
-#define TEMP_RES_9BIT      0x00 /*!< */
-// SD (shutdown mode)
-#define TEMP_SD_CONTINUOUS 0x00 /*!< */
-#define TEMP_SD_SHUTDOWN   0x01 /*!< */
-// TM (thermostat mode)
-#define TEMP_TM_COMPARATOR 0x00 /*!< */
-#define TEMP_TM_INTERRUPT  0x02 /*!< */
-// OS (one shot)
-#define TEMP_OS_ONESHOT    0x80 /*!< */
-// F1/F0 (fault queue)
-#define TEMP_FQ_1          0x00 /*!< */
-#define TEMP_FQ_2          0x08 /*!< */
-#define TEMP_FQ_4          0x10 /*!< */
-#define TEMP_FQ_6          0x18 /*!< */
-// POL (polarity)
-#define TEMP_POL_LOW       0x00 /*!< */
-#define TEMP_POL_HIGH      0x04 /*!< */
-
-#define TEMP_I2C_ADDRESS   0x98 /*!< */
-#define TEMP_REG_TEMP      0x00 /*!< */
-#define TEMP_REG_CONFIG    0x01 /*!< */
-#define TEMP_REG_TLOW      0x02 /*!< */
-#define TEMP_REG_THIGH     0x03 /*!< */
-
-
-// RIC Macro wrappers
+//==============================================================================
+/** @addtogroup RICMacros
+ * @{
+ */
+//==============================================================================
 #define RICImgPoint(_X, _Y) (_X)&0xFF, (_X)>>8, (_Y)&0xFF, (_Y)>>8 /*!< */
 #define RICImgRect(_Pt, _W, _H) _Pt, (_W)&0xFF, (_W)>>8, (_H)&0xFF, (_H)>>8 /*!< */
 #define RICOpDescription(_Options, _Width, _Height) 8, 0, 0, 0, (_Options)&0xFF, (_Options)>>8, (_Width)&0xFF, (_Width)>>8, (_Height)&0xFF, (_Height)>>8 /*!< */
@@ -1977,7 +2134,12 @@
 #define RICOpPolygon(_CopyOptions, _Count, _ThePoints)  ((_Count*4)+6)&0xFF, ((_Count*4)+6)>>8, 10, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, (_Count)&0xFF, (_Count)>>8, _ThePoints /*!< */
 #define RICPolygonPoints(_pPoint1, _pPoint2, ...) _pPoint1, _pPoint2, __VA_ARGS__ /*!< */
 #define RICOpEllipse(_CopyOptions, _Point, _Radius1, _Radius1) 12, 0, 9, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Radius1)&0xFF, (_Radius1)>>8, (_Radius2)&0xFF, (_Radius2)>>8 /*!< */
+/** @} */  // end of RICMacros group
 
+/** @defgroup NXTLimits Data type limits.
+ * Constants that define various data type limits.
+ * @{
+ */
 #define CHAR_BIT   8 /*!< */
 #define SCHAR_MIN  -127 /*!< */
 #define SCHAR_MAX  127 /*!< */
@@ -1993,5 +2155,6 @@
 #define LONG_MIN   -2147483647 /*!< */
 #define LONG_MAX   2147483647 /*!< */
 #define ULONG_MAX  4294967295 /*!< */
+/** @} */  // end of NXTLimits group
 
 #endif // NBCCOMMON_H
