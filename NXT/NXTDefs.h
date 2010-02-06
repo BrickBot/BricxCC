@@ -1,5 +1,5 @@
-/** \file NXTDefs.h
- * \brief Constants, macros, and API functions for use in NBC
+/* NXTDefs.h
+ * Constants, macros, and API functions for use in NBC
  *
  * NXTDefs.h contains declarations for the NBC NXT API resources
  *
@@ -21,26 +21,25 @@
  *
  * ----------------------------------------------------------------------------
  *
- * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-01-05
- * \version 56
+ * author John Hansen (bricxcc_at_comcast.net)
+ * date 2010-01-16
+ * version 57
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H 1
 
 #include "NBCCommon.h"
 
-/**
- * Logical comparison operators.
+/*
  * Logical comparison operators for use in brtst, tst, tstset, brcmp,
  * cmp, and cmpset.
  */
-#define LT   0x00 /*!< Less than operator */
-#define GT   0x01 /*!< Greater than operator */
-#define LTEQ 0x02 /*!< Less than or equal to operator */
-#define GTEQ 0x03 /*!< Greater than or equal to operator */
-#define EQ   0x04 /*!< Equal to operator */
-#define NEQ  0x05 /*!< Not equal to operator */
+#define LT   0x00
+#define GT   0x01
+#define LTEQ 0x02
+#define GTEQ 0x03
+#define EQ   0x04
+#define NEQ  0x05 
 
 // define structures for various system calls
 
@@ -2960,6 +2959,12 @@ dseg ends
   compchk EQ, sizeof(_n), 1 \
   GetLowSpeedModuleValue(LowSpeedOffsetSpeed, _n)
 
+#ifdef __ENHANCED_FIRMWARE
+#define GetLSNoRestartOnRead(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetLowSpeedModuleValue(LowSpeedOffsetNoRestartOnRead, _n)
+#endif
+
 #define GetDisplayEraseMask(_n) \
   compchk EQ, sizeof(_n), 4 \
   GetDisplayModuleValue(DisplayOffsetEraseMask, _n)
@@ -3541,6 +3546,9 @@ dseg ends
 #define SetLSErrorType(_p, _n) __setLSErrorType(_p, _n)
 #define SetLSState(_n) __setLSState(_n)
 #define SetLSSpeed(_n) __setLSSpeed(_n)
+#ifdef __ENHANCED_FIRMWARE
+#define SetLSNoRestartOnRead(_n) __setLSNoRestartOnRead(_n)
+#endif
 
 
 #ifdef __ENHANCED_FIRMWARE
@@ -4210,6 +4218,12 @@ dseg ends
 #define __setLSSpeed(_n) \
   compchk EQ, sizeof(_n), 1 \
   SetLowSpeedModuleValue(LowSpeedOffsetSpeed, _n)
+
+#ifdef __ENHANCED_FIRMWARE
+#define __setLSNoRestartOnRead(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  SetLowSpeedModuleValue(LowSpeedOffsetNoRestartOnRead, _n)
+#endif
 
 #define __setDisplayEraseMask(_n) \
   compchk EQ, sizeof(_n), 4 \
