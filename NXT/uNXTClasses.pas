@@ -7101,18 +7101,34 @@ begin
       while sargs <> '' do
       begin
         // is the start of the next argument a delimiter?
-        if IsDelimiter('{', sargs, 1) then
+        if IsDelimiter('{"''', sargs, 1) then
         begin
-          tmp := '{';
-          System.Delete(sargs, 1, 1); // remove the delimiter
-          i := Pos('}', sargs);
-          if i = 0 then
+          tmp := Copy(sargs, 1, 1);//'{';
+          if tmp = '{' then
           begin
-            tmp := tmp + Copy(sargs, 1, MaxInt) + '}';
+            System.Delete(sargs, 1, 1); // remove the delimiter
+            i := Pos('}', sargs);
+            if i = 0 then
+            begin
+              tmp := tmp + Copy(sargs, 1, MaxInt) + '}';
+            end
+            else
+              tmp := tmp + Copy(sargs, 1, i);
+            System.Delete(sargs, 1, i);
           end
           else
-            tmp := tmp + Copy(sargs, 1, i);
-          System.Delete(sargs, 1, i);
+          begin
+            // the argument string starts with " or '
+            // let's just try adding the rest using CommaText. UGLY KLUDGE!!!!
+            SL.CommaText := sargs;
+            for i := 0 to SL.Count - 1 do
+            begin
+              Arg := Args.Add;
+              Arg.Value := Trim(SL[i]);
+            end;
+            sargs := '';
+            break;
+          end;
         end
         else
         begin
