@@ -94,6 +94,11 @@ uses
   uGuiUtils, uLocalizedStrings, uSearchNXT, uGlobals
   {$IFNDEF FPC}, Windows{$ENDIF};
 
+const
+  AUTOPORTS_TIMEOUT  = 30000; // 15 seconds
+  CREATEINIT_TIMEOUT = 30000; // 30 seconds
+  UPDATEINIT_TIMEOUT = 30000; // 30 seconds
+
 function UseUSB : Boolean;
 begin
   Result := PortIsUSB(LocalPort);
@@ -328,6 +333,7 @@ var
   T : TUpdaterThread;
   h : THandle;
   oldbt : integer;
+  tick : Cardinal;
 begin
   oldbt := LocalBrickType;
   try
@@ -341,8 +347,17 @@ begin
       T :=  TUpdaterThread.Create(BrickComm.NXTInitializeResourceNames);
       h := T.Handle;
       T.Resume;
+      tick := GetTickCount;
       while WaitForSingleObject(h, 20) = WAIT_TIMEOUT do
+      begin
         Application.ProcessMessages;
+        if (GetTickCount - tick) > CREATEINIT_TIMEOUT then
+        begin
+          if Assigned(T) then
+            T.Terminate;
+          break;
+        end;
+      end;
       F.Done;
     finally
       F.Free;
@@ -358,6 +373,7 @@ var
   F : TfrmSearchNXT;
   T : TUpdaterThread;
   h : THandle;
+  tick : Cardinal;
 begin
   F := TfrmSearchNXT.Create(nil);
   try
@@ -367,8 +383,17 @@ begin
     T :=  TUpdaterThread.Create(BrickComm.NXTUpdateResourceNames);
     h := T.Handle;
     T.Resume;
+    tick := GetTickCount;
     while WaitForSingleObject(h, 20) = WAIT_TIMEOUT do
+    begin
       Application.ProcessMessages;
+      if (GetTickCount - tick) > UPDATEINIT_TIMEOUT then
+      begin
+        if Assigned(T) then
+          T.Terminate;
+        break;
+      end;
+    end;
     F.Done;
   finally
     F.Free;
@@ -380,17 +405,26 @@ var
   F : TfrmSearchNXT;
   T : TUpdaterThread;
   h : THandle;
+  tick : Cardinal;
 begin
   F := TfrmSearchNXT.Create(nil);
   try
     F.Text := S_SEARCHING_BRICK;
     F.Show;
     BrickComm.BrickType := rtNXT;
-    T :=  TUpdaterThread.Create(SearchAllPorts);
+    T :=  TUpdaterThread.Create(Self.SearchAllPorts);
     h := T.Handle;
     T.Resume;
-    while WaitForSingleObject(h, 20) = WAIT_TIMEOUT do
+    tick := GetTickCount;
+    while WaitForSingleObject(h, 20) = WAIT_TIMEOUT do begin
       Application.ProcessMessages;
+      if (GetTickCount - tick) > AUTOPORTS_TIMEOUT then
+      begin
+        if Assigned(T) then
+          T.Terminate;
+        break;
+      end;
+    end;
     F.Done;
   finally
     F.Free;
