@@ -412,31 +412,31 @@ begin
     end;
     if CheckSensor1.Checked then
     begin
-      val := BrickComm.GetInputValue(0);
-      tmpStr := Format('Sensor %d: %d', [1, val]);
+      ival := BrickComm.GetInputValue(0);
+      tmpStr := Format('Sensor %d: %d', [1, ival]);
       fNewData.Add(tmpStr);
-      ValueSensor1.Text := Format('%6d',[val]);
+      ValueSensor1.Text := Format('%6d',[ival]);
     end;
     if CheckSensor2.Checked then
     begin
-      val := BrickComm.GetInputValue(1);
-      tmpStr := Format('Sensor %d: %d', [2, val]);
+      ival := BrickComm.GetInputValue(1);
+      tmpStr := Format('Sensor %d: %d', [2, ival]);
       fNewData.Add(tmpStr);
-      ValueSensor2.Text := Format('%6d',[val]);
+      ValueSensor2.Text := Format('%6d',[ival]);
     end;
     if CheckSensor3.Checked then
     begin
-      val := BrickComm.GetInputValue(2);
-      tmpStr := Format('Sensor %d: %d', [3, val]);
+      ival := BrickComm.GetInputValue(2);
+      tmpStr := Format('Sensor %d: %d', [3, ival]);
       fNewData.Add(tmpStr);
-      ValueSensor3.Text := Format('%6d',[val]);
+      ValueSensor3.Text := Format('%6d',[ival]);
     end;
     if IsNXT and CheckSensor4.Checked then
     begin
-      val := BrickComm.GetInputValue(3);
-      tmpStr := Format('Sensor %d: %d', [4, val]);
+      ival := BrickComm.GetInputValue(3);
+      tmpStr := Format('Sensor %d: %d', [4, ival]);
       fNewData.Add(tmpStr);
-      ValueSensor4.Text := Format('%6d',[val]);
+      ValueSensor4.Text := Format('%6d',[ival]);
     end;
 
     if CheckMotorA.Checked then
@@ -448,65 +448,65 @@ begin
 
     if CheckTimer0.Checked then
     begin
-      val := BrickComm.GetTimerValue(0);
-      tmpStr := Format('Timer %d: %d', [0, val]);
+      ival := BrickComm.GetTimerValue(0);
+      tmpStr := Format('Timer %d: %d', [0, ival]);
       fNewData.Add(tmpStr);
-      ValueTimer0.Text := Format('%6d',[val]);
+      ValueTimer0.Text := Format('%6d',[ival]);
     end;
     if CheckTimer1.Checked then
     begin
-      val := BrickComm.GetTimerValue(1);
-      tmpStr := Format('Timer %d: %d', [1, val]);
+      ival := BrickComm.GetTimerValue(1);
+      tmpStr := Format('Timer %d: %d', [1, ival]);
       fNewData.Add(tmpStr);
-      ValueTimer1.Text := Format('%6d',[val]);
+      ValueTimer1.Text := Format('%6d',[ival]);
     end;
     if CheckTimer2.Checked then
     begin
-      val := BrickComm.GetTimerValue(2);
-      tmpStr := Format('Timer %d: %d', [2, val]);
+      ival := BrickComm.GetTimerValue(2);
+      tmpStr := Format('Timer %d: %d', [2, ival]);
       fNewData.Add(tmpStr);
-      ValueTimer2.Text := Format('%6d',[val]);
+      ValueTimer2.Text := Format('%6d',[ival]);
     end;
     // timer 3 is only Cybermaster, Spybotic, RCX, & RCX2
     if CheckTimer3.Checked then
     begin
-      val := BrickComm.GetTimerValue(3);
-      tmpStr := Format('Timer %d: %d', [3, val]);
+      ival := BrickComm.GetTimerValue(3);
+      tmpStr := Format('Timer %d: %d', [3, ival]);
       fNewData.Add(tmpStr);
-      ValueTimer3.Text := Format('%6d',[val]);
+      ValueTimer3.Text := Format('%6d',[ival]);
     end;
 
     // counters only apply to RCX2 & Scout
     if CheckCounter0.Checked then
     begin
-      val := BrickComm.GetCounterValue(0);
-      tmpStr := Format('Counter %d: %d', [0, val]);
+      ival := BrickComm.GetCounterValue(0);
+      tmpStr := Format('Counter %d: %d', [0, ival]);
       fNewData.Add(tmpStr);
-      ValueCounter0.Text := Format('%6d',[val]);
+      ValueCounter0.Text := Format('%6d',[ival]);
     end;
     if CheckCounter1.Checked then
     begin
-      val := BrickComm.GetCounterValue(1);
-      tmpStr := Format('Counter %d: %d', [1, val]);
+      ival := BrickComm.GetCounterValue(1);
+      tmpStr := Format('Counter %d: %d', [1, ival]);
       fNewData.Add(tmpStr);
-      ValueCounter1.Text := Format('%6d',[val]);
+      ValueCounter1.Text := Format('%6d',[ival]);
     end;
     // counter 2 is only RCX2/Spybot
     if CheckCounter2.Checked then
     begin
-      val := BrickComm.GetCounterValue(2);
-      tmpStr := Format('Counter %d: %d', [2, val]);
+      ival := BrickComm.GetCounterValue(2);
+      tmpStr := Format('Counter %d: %d', [2, ival]);
       fNewData.Add(tmpStr);
-      ValueCounter2.Text := Format('%6d',[val]);
+      ValueCounter2.Text := Format('%6d',[ival]);
     end;
 
     // this is RCX & Scout only
     if CheckMessage.Checked then
     begin
-      val := BrickComm.GetMessageValue(0);
-      tmpStr := Format('Message : %d', [val]);
+      ival := BrickComm.GetMessageValue(0);
+      tmpStr := Format('Message : %d', [ival]);
       fNewData.Add(tmpStr);
-      ValueMessage.Text := Format('%6d',[val]);
+      ValueMessage.Text := Format('%6d',[ival]);
     end;
 
     // these only apply to NXT
@@ -708,38 +708,38 @@ begin
     // these only apply to Cybermaster
     if CheckTCounterL.Checked then
     begin
-      val := BrickComm.Poll(kRCX_TachCounterType,0);
-      tmpStr := Format('Tacho Counter Left: %d', [val]);
+      ival := BrickComm.Poll(kRCX_TachCounterType,0);
+      tmpStr := Format('Tacho Counter Left: %d', [ival]);
       fNewData.Add(tmpStr);
-      ValueTCounterL.Text := Format('%6d', [val]);
+      ValueTCounterL.Text := Format('%6d', [ival]);
     end;
     if CheckTCounterR.Checked then
     begin
-      val := BrickComm.Poll(kRCX_TachCounterType,1);
-      tmpStr := Format('Tacho Counter Right: %d', [val]);
+      ival := BrickComm.Poll(kRCX_TachCounterType,1);
+      tmpStr := Format('Tacho Counter Right: %d', [ival]);
       fNewData.Add(tmpStr);
-      ValueTCounterR.Text := Format('%6d', [val]);
+      ValueTCounterR.Text := Format('%6d', [ival]);
     end;
     if CheckTSpeedL.Checked then
     begin
-      val  := BrickComm.Poll(kRCX_TachSpeedType,0);
-      tmpStr := Format('Tacho Speed Left: %d', [val]);
+      ival  := BrickComm.Poll(kRCX_TachSpeedType,0);
+      tmpStr := Format('Tacho Speed Left: %d', [ival]);
       fNewData.Add(tmpStr);
-      ValueTSpeedL.Text := Format('%6d', [val]);
+      ValueTSpeedL.Text := Format('%6d', [ival]);
     end;
     if CheckTSpeedR.Checked then
     begin
-      val  := BrickComm.Poll(kRCX_TachSpeedType,1);
-      tmpStr := Format('Tacho Speed Right: %d', [val]);
+      ival  := BrickComm.Poll(kRCX_TachSpeedType,1);
+      tmpStr := Format('Tacho Speed Right: %d', [ival]);
       fNewData.Add(tmpStr);
-      ValueTSpeedR.Text := Format('%6d', [val]);
+      ValueTSpeedR.Text := Format('%6d', [ival]);
     end;
     if CheckMCurrent.Checked then
     begin
-      val := BrickComm.Poll(kRCX_OutputCurrentType,2);
-      tmpStr := Format('Motor Current: %d', [val]);
+      ival := BrickComm.Poll(kRCX_OutputCurrentType,2);
+      tmpStr := Format('Motor Current: %d', [ival]);
       fNewData.Add(tmpStr);
-      ValueMCurrent.Text := Format('%6d',[val]);
+      ValueMCurrent.Text := Format('%6d',[ival]);
     end;
     // end of Cybermaster-only watch elements
     UpdateGraph;
