@@ -22,65 +22,73 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-01-13
- * \version 62
+ * \date 2010-02-05
+ * \version 63
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
 
-/** @defgroup InputModule Input module.
+/** @defgroup InputModule Input module
  * Constants and functions related to the Input module.
  */
 
-/** @defgroup OutputModule Output module.
+/** @defgroup InputModuleConstants Input module constants
+ * Constants that are part of the NXT firmware's Input module.
+ */
+
+/** @defgroup OutputModule Output module
  * Constants and functions related to the Output module.
  */
 
-/** @defgroup CommandModule Command module.
+/** @defgroup OutputModuleConstants Output module constants
+ * Constants that are part of the NXT firmware's Output module.
+ */
+
+/** @defgroup CommandModule Command module
  * Constants and functions related to the Command module.
  */
 
-/** @defgroup CommModule Comm module.
+/** @defgroup CommModule Comm module
  * Constants and functions related to the Comm module.
  */
 
-/** @defgroup ButtonModule Button module.
+/** @defgroup ButtonModule Button module
  * Constants and functions related to the Button module.
  */
 
-/** @defgroup IOCtrlModule IOCtrl module.
+/** @defgroup IOCtrlModule IOCtrl module
  * Constants and functions related to the IOCtrl module.
  */
 
-/** @defgroup LoaderModule Loader module.
+/** @defgroup LoaderModule Loader module
  * Constants and functions related to the Loader module.
  */
 
-/** @defgroup SoundModule Sound module.
+/** @defgroup SoundModule Sound module
  * Constants and functions related to the Sound module.
  */
 
-/** @defgroup UiModule Ui module.
+/** @defgroup UiModule Ui module
  * Constants and functions related to the Ui module.
  */
 
-/** @defgroup LowSpeedModule Low Speed module.
+/** @defgroup LowSpeedModule Low Speed module
  * Constants and functions related to the Low Speed module.
  */
 
-/** @defgroup DisplayModule Display module.
+/** @defgroup DisplayModule Display module
  * Constants and functions related to the Display module.
  */
 
-/** @defgroup HiTechnicAPI HiTechnic API Functions.
+/** @defgroup HiTechnicAPI HiTechnic API Functions
  * Functions for accessing and modifying HiTechnic devices.
  */
 
-/** @defgroup MindSensorsAPI MindSensors API Functions.
+/** @defgroup MindSensorsAPI MindSensors API Functions
  * Functions for accessing and modifying MindSensors devices.
  */
 
-/** @defgroup RICMacros RIC Macro Wrappers.
+/** @defgroup RICMacros RIC Macro Wrappers
  * Macro wrappers for use in defining RIC byte arrays.
  */
 
@@ -108,7 +116,10 @@
 /** @addtogroup InputModule
  * @{
  */
-/** @defgroup InPorts Input port constants.
+/** @addtogroup InputModuleConstants
+ * @{
+ */
+/** @defgroup InPorts Input port constants
  * Input port constants are used when calling NXC sensor control API functions.
  * @{
  */
@@ -118,7 +129,7 @@
 #define S4 3 /*!< Input port 4 */
 /** @} */ // end of InPorts group
 
-/** @defgroup SensorTypes Sensor type constants.
+/** @defgroup SensorTypes Sensor type constants
  *  Use sensor type constants to configure an input port for a specific type
  *  of sensor.
  *  \sa SetSensorType()
@@ -146,7 +157,7 @@
 #endif
 /** @} */ // end of SensorTypes group
 
-/** @defgroup SensorModes Sensor mode constants.
+/** @defgroup SensorModes Sensor mode constants
  * Use sensor mode constants to configure an input port for the desired
  * sensor mode.
  * \sa SetSensorMode()
@@ -162,7 +173,7 @@
 #define SENSOR_MODE_ROTATION    IN_MODE_ANGLESTEP     /*!< RCX rotation sensor (16 ticks per revolution) */
 /** @} */ // end of SensorModes group
 
-/** @defgroup SensorTypeModes Combined sensor type and mode constants.
+/** @defgroup SensorTypeModes Combined sensor type and mode constants
  * Use the combined sensor type and mode constants to configure both
  * the sensor mode and type in a single function call.
  * \sa SetSensor()
@@ -188,8 +199,9 @@
 #define SENSOR_COLORNONE	_SENSOR_CFG(SENSOR_TYPE_COLORNONE, SENSOR_MODE_RAW)          /*!< NXT 2.0 color sensor (none) in raw mode */
 #endif
 /** @} */ // end of SensorModes group
+/** @} */ // end of InputModuleConstants group
 
-/** @defgroup InputModuleTypes Input module types.
+/** @defgroup InputModuleTypes Input module types
  * Types used by various input module functions.
  * @{
  */
@@ -206,12 +218,13 @@ struct ColorSensorReadType {
 };
 #endif
 /** @} */ // end of InputModuleTypes group
-/** @defgroup InputModuleFunctions Input module functions.
+
+/** @defgroup InputModuleFunctions Input module functions
  * Functions for accessing and modifying input module features.
  * @{
  */
 
-/** @defgroup BasicSensorValues Basic analog sensor value names.
+/** @defgroup BasicSensorValues Basic analog sensor value names
  * Read analog sensor values using these names.  Returns the current scaled value
  * of the sensor on the specified port.
  * @{
@@ -348,6 +361,7 @@ inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
 
 //  AddAPIFunction('GetInput', APIF_GETINPUT);
 // SetInput(port, field, value)
+
 // input fields
 #define Sensor(_p) asm { ReadSensor(_p, __RETVAL__) }
 #define SensorValue(_p) Sensor(_p)
@@ -408,7 +422,7 @@ inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
 /** @addtogroup OutputModule
  * @{
  */
-/** @defgroup OutputModuleFunctions Output module functions.
+/** @defgroup OutputModuleFunctions Output module functions
  * Functions for accessing and modifying output module features.
  * @{
  */
@@ -481,26 +495,47 @@ inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
 /** @addtogroup DisplayModule
  * @{
  */
-/** @defgroup DisplayModuleTypes Display module types.
+/** @defgroup DisplayModuleTypes Display module types
  * Types used by various display module functions.
  * @{
  */
+/**
+ * LocationType structure.
+ * This structure is by other system call structures to specify an X, Y
+ * LCD screen coordinate.
+ * \sa DrawTextType, DrawPointType, DrawLineType, DrawCircleType, DrawRectType,
+ * DrawGraphicType, DrawGraphicArrayType, DrawPolygonType, DrawEllipseType,
+ * DrawFontType
+ */
 struct LocationType {
-  int X;
-  int Y;
+  int X;  /*!< The X coordinate. Valid range is from 0 to 99 inclusive.  */
+  int Y;  /*!< The Y coordinate. Valid range is from 0 to 63 inclusive. For text drawing this value must be a multiple of 8. */
 };
 
+/**
+ * SizeType structure.
+ * This structure is by the \ref DrawRectType to specify a width and
+ * height for a rectangle.
+ * \sa DrawRectType
+ */
 struct SizeType {
-  int Width;
-  int Height;
+  int Width;  /*!< The rectangle width. */
+  int Height; /*!< The rectangle height. */
 };
 
-// DrawText
+/**
+ * DrawTextType structure.
+ * This structure is used when calling the \ref SysDrawText system call function.
+ * It lets you specify the text to draw, the LCD line and horizontal position using the
+ * \ref LocationType structure member, as well as drawing options defined
+ * in the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawText()
+ */
 struct DrawTextType {
-  char Result;
-  LocationType Location;
-  string Text;
-  unsigned long Options;
+  char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
+  LocationType Location;   /*!< The location in X, LCD line number coordinates. */
+  string Text;             /*!< The text to draw on the LCD. */
+  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
 // DrawPoint
@@ -596,28 +631,683 @@ struct DrawFontType {
 #endif
 /** @} */ // end of DisplayModuleTypes group
 
-/** @defgroup DisplayModuleFunctions Display module functions.
+/** @defgroup DisplayModuleFunctions Display module functions
  * Functions for accessing and modifying display module features.
  * @{
  */
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * Clear LCD screen.
+ * This function lets you clear the NXT LCD to a blank screen.
+ */
+inline void ClearScreen();
+/** \example ex_dispcls.nxc
+ * How to use the \ref ClearScreen function.
+ */
+
+/**
+ * Reset LCD screen.
+ * This function lets you restore the standard NXT running program screen.
+ */
+inline void ResetScreen();
+/** \example ex_disprest.nxc
+ * How to use the \ref ResetScreen function.
+ */
+
+/**
+ * Draw a circle.
+ * This function lets you draw a circle on the screen with its center at the
+ * specified x and y location, using the specified radius. Optionally specify
+ * drawing options. If this argument is not specified it defaults to DRAW_OPT_NORMAL.
+ * Valid display option constants are listed in the \ref DisplayDrawOptionConstants group.
+ *
+ * \param x The x value for the center of the circle.
+ * \param y The y value for the center of the circle.
+ * \param radius The radius of the circle.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char CircleOut(int x, int y, byte radius, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispcout.nxc
+ * How to use the \ref CircleOut function.
+ */
+
+/**
+ * Draw an ellipse.
+ * This function lets you draw an ellipse on the screen with its center at the
+ * specified x and y location, using the specified radii. Optionally specify
+ * drawing options. If this argument is not specified it defaults to DRAW_OPT_NORMAL.
+ * Valid display option constants are listed in the \ref DisplayDrawOptionConstants group.
+ *
+ * \param x The x value for the center of the ellipse.
+ * \param y The y value for the center of the ellipse.
+ * \param radius1 The x axis radius.
+ * \param radius2 The y axis radius.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char EllipseOut(int x, int y, byte radius1, byte radius2, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispeout.nxc
+ * How to use the \ref EllipseOut function.
+ */
+
+/**
+ * Draw a line.
+ * This function lets you draw a line on the screen from x1, y1 to x2, y2.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ *
+ * \param x1 The x value for the start of the line.
+ * \param y1 The y value for the start of the line.
+ * \param x2 The x value for the end of the line.
+ * \param y2 The y value for the end of the line.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char LineOut(int x1, int y1, int x2, int y2, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_displout.nxc
+ * How to use the \ref LineOut function.
+ */
+
+/**
+ * Draw a point.
+ * This function lets you draw a point on the screen at x, y.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ *
+ * \param x The x value for the point.
+ * \param y The y value for the point.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char PointOut(int x, int y, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_disppout.nxc
+ * How to use the \ref PointOut function.
+ */
+
+/**
+ * Draw a polygon.
+ * This function lets you draw a polygon on the screen using an array of points.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ *
+ * \param points An array of LocationType points that define the polygon.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char PolyOut(LocationType points[], unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispplout.nxc
+ * How to use the \ref PolyOut function.
+ */
+
+/**
+ * Draw a rectangle.
+ * This function lets you draw a rectangle on the screen at x, y with the
+ * specified width and height.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ *
+ * \param x The x value for the top left corner of the rectangle.
+ * \param y The y value for the top left corner of the rectangle.
+ * \param width The width of the rectangle.
+ * \param height The height of the rectangle.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char RectOut(int x, int y, int width, int height, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_disppout.nxc
+ * How to use the \ref LineOut function.
+ */
+
+
+/**
+ * Draw text.
+ * Draw a text value on the screen at the specified x and y location. The y
+ * value must be a multiple of 8.  Valid line number constants are listed in
+ * the \ref LineConstants group.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ *
+ * \param x The x value for the start of the text output.
+ * \param y The text line number for the text output.
+ * \param str The text to output to the LCD screen.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char TextOut(int x, int y, string str, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_disptout.nxc
+ * How to use the \ref TextOut function.
+ */
+
+/**
+ * Draw a number.
+ * Draw a numeric value on the screen at the specified x and y location. The y
+ * value must be a multiple of 8.  Valid line number constants are listed in
+ * the \ref LineConstants group.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ *
+ * \param x The x value for the start of the text output.
+ * \param y The text line number for the text output.
+ * \param value The value to output to the LCD screen. Any numeric type is supported.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char NumOut(int x, int y, variant number, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispnout.nxc
+ * How to use the \ref NumOut function.
+ */
+
+/**
+ * Draw text with font.
+ * Draw a text value on the screen at the specified x and y location using
+ * a custom RIC font. The y value must be a multiple of 8.  Valid line number
+ * constants are listed in the \ref LineConstants group.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ *
+ * \param x The x value for the start of the text output.
+ * \param y The text line number for the text output.
+ * \param filename The filename of the RIC font.
+ * \param str The text to output to the LCD screen.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char FontTextOut(int x, int y, string filename, string str, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispftout.nxc
+ * How to use the \ref FontTextOut function.
+ */
+
+/**
+ * Draw a number with font.
+ * Draw a numeric value on the screen at the specified x and y location using
+ * a custom RIC font. The y value must be a multiple of 8.  Valid line number
+ * constants are listed in the \ref LineConstants group.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ *
+ * \param x The x value for the start of the text output.
+ * \param y The text line number for the text output.
+ * \param filename The filename of the RIC font.
+ * \param value The value to output to the LCD screen. Any numeric type is supported.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char FontNumOut(int x, int y, string filename, variant number, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispfnout.nxc
+ * How to use the \ref FontNumOut function.
+ */
+
+/**
+ * Draw a graphic image.
+ * Draw a graphic image file on the screen at the specified x and y location.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
+ * nothing will be drawn and no errors will be reported.
+ *
+ * \param x The x value for the position of the graphic image.
+ * \param y The y value for the position of the graphic image.
+ * \param filename The filename of the RIC graphic image.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char GraphicOut(int x, int y, string filename, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispgout.nxc
+ * How to use the \ref GraphicOut function.
+ */
+
+/**
+ * Draw a graphic image from byte array.
+ * Draw a graphic image byte array on the screen at the specified x and y location.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
+ * nothing will be drawn and no errors will be reported.
+ *
+ * \param x The x value for the position of the graphic image.
+ * \param y The y value for the position of the graphic image.
+ * \param data The byte array of the RIC graphic image.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char GraphicArrayOut(int x, int y, byte data[], unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispgaout.nxc
+ * How to use the \ref GraphicArrayOut function.
+ */
+
+/**
+ * Draw a graphic image with parameters.
+ * Draw a graphic image file on the screen at the specified x and y location using
+ * an array of parameters.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
+ * nothing will be drawn and no errors will be reported.
+ *
+ * \param x The x value for the position of the graphic image.
+ * \param y The y value for the position of the graphic image.
+ * \param filename The filename of the RIC graphic image.
+ * \param vars The byte array of parameters.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char GraphicOutEx(int x, int y, string filename, byte vars[], unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispgoutex.nxc
+ * How to use the \ref GraphicOutEx function.
+ */
+
+/**
+ * Draw a graphic image from byte array with parameters.
+ * Draw a graphic image byte array on the screen at the specified x and y location
+ * using an array of parameters.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
+ * nothing will be drawn and no errors will be reported.
+ *
+ * \param x The x value for the position of the graphic image.
+ * \param y The y value for the position of the graphic image.
+ * \param data The byte array of the RIC graphic image.
+ * \param vars The byte array of parameters.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char GraphicArrayOutEx(int x, int y, byte data[], byte vars[], unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_dispgaoutex.nxc
+ * How to use the \ref GraphicArrayOutEx function.
+ */
+
+/**
+ * Read pixel data from the normal display buffer.
+ * Read "cnt" bytes from the normal display memory into the data array. Start
+ * reading from the specified x, line coordinate. Each byte of data read from
+ * screen memory is a vertical strip of 8 bits at the desired location. Each
+ * bit represents a single pixel on the LCD screen. Use TEXTLINE_1 through
+ * TEXTLINE_8 for the "line" parameter.
+ *
+ * \param x The desired x position from which to read pixel data.
+ * \param line The desired line from which to read pixel data.
+ * \param cnt The number of bytes of pixel data to read.
+ * \param data The array of bytes into which pixel data is read.
+ */
+inline void GetDisplayNormal(const byte x, const byte line, unsigned int cnt, byte & data[]);
+/** \example ex_getsetdisp.nxc
+ * How to read and write pixel data using the \ref GetDisplayNormal, \ref GetDisplayPopup,
+ * \ref SetDisplayNormal,  and \ref SetDisplayPopup functions.
+ */
+
+/**
+ * Write pixel data to the normal display buffer.
+ * Write "cnt" bytes to the normal display memory from the data array. Start
+ * writing at the specified x, line coordinate. Each byte of data is a
+ * vertical strip of 8 bits at the desired location. Each
+ * bit represents a single pixel on the LCD screen. Use TEXTLINE_1 through
+ * TEXTLINE_8 for the "line" parameter.
+ *
+ * \param x The desired x position where you wish to write pixel data.
+ * \param line The desired line where you wish to write pixel data.
+ * \param cnt The number of bytes of pixel data to write.
+ * \param data The array of bytes from which pixel data is read.
+ */
+inline void SetDisplayNormal(const byte x, const byte line, unsigned int cnt, byte data[]);
+/** \example ex_getsetdisp.nxc
+ * How to read and write pixel data using the \ref GetDisplayNormal, \ref GetDisplayPopup,
+ * \ref SetDisplayNormal,  and \ref SetDisplayPopup functions.
+ */
+
+/**
+ * Read pixel data from the popup display buffer.
+ * Read "cnt" bytes from the popup display memory into the data array. Start
+ * reading from the specified x, line coordinate. Each byte of data read from
+ * screen memory is a vertical strip of 8 bits at the desired location. Each
+ * bit represents a single pixel on the LCD screen. Use TEXTLINE_1 through
+ * TEXTLINE_8 for the "line" parameter.
+ *
+ * \param x The desired x position from which to read pixel data.
+ * \param line The desired line from which to read pixel data.
+ * \param cnt The number of bytes of pixel data to read.
+ * \param data The array of bytes into which pixel data is read.
+ */
+inline void GetDisplayPopup(const byte x, const byte line, unsigned int cnt, byte & data[]);
+/** \example ex_getsetdisp.nxc
+ * How to read and write pixel data using the \ref GetDisplayNormal, \ref GetDisplayPopup,
+ * \ref SetDisplayNormal,  and \ref SetDisplayPopup functions.
+ */
+
+/**
+ * Write pixel data to the popup display buffer.
+ * Write "cnt" bytes to the popup display memory from the data array. Start
+ * writing at the specified x, line coordinate. Each byte of data is a
+ * vertical strip of 8 bits at the desired location. Each
+ * bit represents a single pixel on the LCD screen. Use TEXTLINE_1 through
+ * TEXTLINE_8 for the "line" parameter.
+ *
+ * \param x The desired x position where you wish to write pixel data.
+ * \param line The desired line where you wish to write pixel data.
+ * \param cnt The number of bytes of pixel data to write.
+ * \param data The array of bytes from which pixel data is read.
+ */
+inline void SetDisplayPopup(const byte x, const byte line, unsigned int cnt, byte data[]);
+/** \example ex_getsetdisp.nxc
+ * How to read and write pixel data using the \ref GetDisplayNormal, \ref GetDisplayPopup,
+ * \ref SetDisplayNormal,  and \ref SetDisplayPopup functions.
+ */
+
+/**
+ * Read the display erase mask value.
+ * This function lets you read the current display erase mask value.
+ * \return The current display erase mask value.
+ */
+inline unsigned long DisplayEraseMask();
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Read the display update mask value.
+ * This function lets you read the current display update mask value.
+ * \return The current display update mask.
+ */
+inline unsigned long DisplayUpdateMask();
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Read the display memory address.
+ * This function lets you read the current display memory address.
+ * \return The current display memory address.
+ */
+inline unsigned long DisplayDisplay();
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Read the display flags.
+ * This function lets you read the current display flags.
+ * Valid flag values are listed in the \ref DisplayFlagsGroup group.
+ * \return The current display flags.
+ */
+inline byte DisplayFlags();
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Read the display text lines center flags.
+ * This function lets you read the current display text lines center flags.
+ * \return The current display text lines center flags.
+ */
+inline byte DisplayTextLinesCenterFlags();
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Set the display memory address.
+ * This function lets you set the current display memory address.
+ * \param n The new display memory address.
+ */
+inline void SetDisplayDisplay(unsigned long n);
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Set the display erase mask.
+ * This function lets you set the current display erase mask.
+ * \param n The new display erase mask.
+ */
+inline void SetDisplayEraseMask(unsigned long eraseMask);
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Set the display flags.
+ * This function lets you set the current display flags.
+ * Valid flag values are listed in the \ref DisplayFlagsGroup group.
+ * \param n The new display flags.
+ */
+inline void SetDisplayFlags(byte flags);
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Set the display text lines center flags.
+ * This function lets you set the current display text lines center flags.
+ * \param n The new display text lines center flags.
+ */
+inline void SetDisplayTextLinesCenterFlags(byte ctrFlags);
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Set the display update mask.
+ * This function lets you set the current display update mask.
+ * \param n The new display update mask.
+ */
+inline void SetDisplayUpdateMask(unsigned long updMask);
+/** \example ex_dispmisc.nxc
+ * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ */
+
+/**
+ * Draw text.
+ * This function lets you draw text on the NXT LCD given the parameters you pass
+ * in via the \ref DrawTextType structure.
+ *
+ * \param args The DrawTextType structure containing the drawing parameters.
+ */
+inline void SysDrawText(DrawTextType & args);
+/** \example ex_drawtext.nxc
+ * How to use the \ref SysDrawText function along with the \ref DrawTextType structure.
+ */
+
+/**
+ * Draw a point.
+ * This function lets you draw a point on the NXT LCD given the parameters you pass
+ * in via the \ref DrawPointType structure.
+ *
+ * \param args The DrawPointType structure containing the drawing parameters.
+ */
+inline void SysDrawPoint(DrawPointType & args);
+/** \example ex_drawpoint.nxc
+ * How to use the \ref SysDrawPoint function along with the \ref DrawPointType structure.
+ */
+
+/**
+ * Draw a line.
+ * This function lets you draw a line on the NXT LCD given the parameters you pass
+ * in via the \ref DrawLineType structure.
+ *
+ * \param args The DrawLineType structure containing the drawing parameters.
+ */
+inline void SysDrawLine(DrawLineType & args);
+/** \example ex_drawline.nxc
+ * How to use the \ref SysDrawLine function along with the \ref DrawLineType structure.
+ */
+
+/**
+ * Draw a circle.
+ * This function lets you draw a circle on the NXT LCD given the parameters you pass
+ * in via the \ref DrawCircleType structure.
+ *
+ * \param args The DrawCircleType structure containing the drawing parameters.
+ */
+inline void SysDrawCircle(DrawCircleType & args);
+/** \example ex_drawcircle.nxc
+ * How to use the \ref SysDrawCircle function along with the \ref DrawCircleType structure.
+ */
+
+/**
+ * Draw a rectangle.
+ * This function lets you draw a rectangle on the NXT LCD given the parameters you pass
+ * in via the \ref DrawRectType structure.
+ *
+ * \param args The DrawRectType structure containing the drawing parameters.
+ */
+inline void SysDrawRect(DrawRectType & args);
+/** \example ex_drawrect.nxc
+ * How to use the \ref SysDrawRect function along with the \ref DrawRectType structure.
+ */
+
+/**
+ * Draw a graphic image.
+ * This function lets you draw a graphic image on the NXT LCD given the parameters you pass
+ * in via the \ref DrawGraphicType structure.
+ *
+ * \param args The DrawGraphicType structure containing the drawing parameters.
+ */
+inline void SysDrawGraphic(DrawGraphicType & args);
+/** \example ex_drawgraphic.nxc
+ * How to use the \ref SysDrawGraphic function along with the \ref DrawGraphicType structure.
+ */
+
+/**
+ * Set the screen mode.
+ * This function lets you set the NXT LCD screen mode given the parameters you pass
+ * in via the \ref DrawTextType structure.
+ *
+ * \param args The SetScreenModeType structure containing the screen mode parameters.
+ */
+inline void SysSetScreenMode(SetScreenModeType & args);
+/** \example ex_setscrmode.nxc
+ * How to use the \ref SysSetScreenMode function along with the \ref SetScreenModeType structure.
+ */
+
+#ifdef __ENHANCED_FIRMWARE
+
+/**
+ * Execute a display module function.
+ * This function lets you execute a low-level display module function with the parameters you pass
+ * in via the \ref DisplayExecuteFunctionType structure.
+ *
+ * \param args The DisplayExecuteFunctionType structure containing the drawing parameters.
+ */
+inline void SysDisplayExecuteFunction(DisplayExecuteFunctionType & args);
+/** \example ex_dispfunc.nxc
+ * How to use the \ref SysDisplayExecuteFunction function along with the \ref DisplayExecuteFunctionType structure.
+ */
+
+
+#if __FIRMWARE_VERSION > 107
+
+/**
+ * Read the display contrast setting.
+ * This function lets you read the current display contrast setting.
+ * \return The current display contrast (byte).
+ */
+inline byte DisplayContrast();
+/** \example ex_contrast.nxc
+ * How to use the \ref DisplayContrast and \ref SetDisplayContrast functions.
+ */
+
+/**
+ * Set the display contrast.
+ * This function lets you set the display contrast setting.
+ * \param contrast The desired display contrast.
+ */
+inline void SetDisplayContrast(const byte contrast);
+/** \example ex_contrast.nxc
+ * How to use the \ref DisplayContrast and \ref SetDisplayContrast functions.
+ */
+
+/**
+ * Draw a graphic image from a byte array.
+ * This function lets you draw a graphic image on the NXT LCD given the parameters you pass
+ * in via the \ref DrawGraphicArrayType structure.
+ *
+ * \param args The DrawGraphicArrayType structure containing the drawing parameters.
+ */
+inline void SysDrawGraphicArray(DrawGraphicArrayType & args);
+/** \example ex_drawgarray.nxc
+ * How to use the \ref SysDrawGraphicArray function along with the \ref DrawGraphicArrayType structure.
+ */
+
+/**
+ * Draw a polygon.
+ * This function lets you draw a polygon on the NXT LCD given the parameters you pass
+ * in via the \ref DrawPolygonType structure.
+ *
+ * \param args The DrawPolygonType structure containing the drawing parameters.
+ */
+inline void SysDrawPolygon(DrawPolygonType & args);
+/** \example ex_drawpoly.nxc
+ * How to use the \ref SysDrawPolygon function along with the \ref DrawPolygonType structure.
+ */
+
+/**
+ * Draw an ellipse.
+ * This function lets you draw an ellipse on the NXT LCD given the parameters you pass
+ * in via the \ref DrawEllipseType structure.
+ *
+ * \param args The DrawEllipseType structure containing the drawing parameters.
+ */
+inline void SysDrawEllipse(DrawEllipseType & args);
+/** \example ex_drawellipse.nxc
+ * How to use the \ref SysDrawEllipse function along with the \ref DrawEllipseType structure.
+ */
+
+/**
+ * Draw text using a custom font.
+ * This function lets you draw text on the NXT LCD using a custom font with parameters you pass
+ * in via the \ref DrawFontType structure.
+ *
+ * \param args The DrawFontType structure containing the drawing parameters.
+ */
+inline void SysDrawFont(DrawFontType & args);
+/** \example ex_drawfont.nxc
+ * How to use the \ref SysDrawFont function along with the \ref DrawFontType structure.
+ */
+
+#else
+
 #define ClearScreen() asm { PointOutEx(200, 200, TRUE) }
-/*
-  AddAPIFunction('ResetScreen', APIF_RESETSCREEN);
-  AddAPIFunction('TextOut', APIF_TEXTOUT);
-  AddAPIFunction('NumOut', APIF_NUMOUT);
-  AddAPIFunction('PointOut', APIF_DRAWPOINT);
-  AddAPIFunction('LineOut', APIF_DRAWLINE);
-  AddAPIFunction('CircleOut', APIF_DRAWCIRCLE);
-  AddAPIFunction('RectOut', APIF_DRAWRECT);
-  AddAPIFunction('GraphicOut', APIF_DRAWGRAPHIC);
-  AddAPIFunction('GraphicOutEx', APIF_DRAWGRAPHICEX);
-  AddAPIFunction('GraphicArrayOut', APIF_DRAWGRAPHICAR);
-  AddAPIFunction('GraphicArrayOutEx', APIF_DRAWGRAPHICAREX);
-  AddAPIFunction('PolyOut', APIF_DRAWPOLY);
-  AddAPIFunction('EllipseOut', APIF_DRAWELLIPSE);
-  AddAPIFunction('FontTextOut', APIF_FONTTEXTOUT);
-  AddAPIFunction('FontNumOut', APIF_FONTNUMOUT);
-*/
+
 #define GetDisplayNormal(_x, _line, _cnt, _data) asm { __getDisplayNormal(_x, _line, _cnt, _data) }
 #define GetDisplayPopup(_x, _line, _cnt, _data) asm { __getDisplayPopup(_x, _line, _cnt, _data) }
 
@@ -695,6 +1385,7 @@ struct DrawFontType {
 }
 #endif
 #endif
+#endif
 
 /** @} */ // end of DisplayModuleFunctions group
 /** @} */ // end of DisplayModule group
@@ -708,7 +1399,7 @@ struct DrawFontType {
 /** @addtogroup SoundModule
  * @{
  */
-/** @defgroup SoundModuleTypes Sound module types.
+/** @defgroup SoundModuleTypes Sound module types
  * Types used by various sound module functions.
  * @{
  */
@@ -743,7 +1434,7 @@ struct SoundSetStateType {
 };
 /** @} */ // end of SoundModuleTypes group
 
-/** @defgroup SoundModuleFunctions Sound module functions.
+/** @defgroup SoundModuleFunctions Sound module functions
  * Functions for accessing and modifying sound module features.
  * @{
  */
@@ -801,7 +1492,7 @@ struct SoundSetStateType {
 /** @addtogroup LowSpeedModule
  * @{
  */
-/** @defgroup LowSpeedModuleTypes LowSpeed module types.
+/** @defgroup LowSpeedModuleTypes LowSpeed module types
  * Types used by various low speed module functions.
  * @{
  */
@@ -840,7 +1531,7 @@ struct CommLSWriteExType {
 #endif
 
 /** @} */ // end of LowSpeedModuleTypes group
-/** @defgroup LowSpeedModuleFunctions LowSpeed module functions.
+/** @defgroup LowSpeedModuleFunctions LowSpeed module functions
  * Functions for accessing and modifying low speed module features.
  * @{
  */
@@ -891,6 +1582,9 @@ struct CommLSWriteExType {
 #define LSErrorType(_p) asm { GetLSErrorType(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define LSState() asm { GetLSState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define LSSpeed() asm { GetLSSpeed(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#ifdef __ENHANCED_FIRMWARE
+#define LSNoRestartOnRead(_n) asm { GetLSNoRestartOnRead(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#endif
 
 #define SetLSInputBuffer(_p, _offset, _cnt, _data) asm { __setLSInputBuffer(_p, _offset, _cnt, _data) }
 
@@ -908,6 +1602,9 @@ struct CommLSWriteExType {
 #define SetLSErrorType(_p, _n) asm { __setLSErrorType(_p, _n) }
 #define SetLSState(_n) asm { __setLSState(_n) }
 #define SetLSSpeed(_n) asm { __setLSSpeed(_n) }
+#ifdef __ENHANCED_FIRMWARE
+#define SetLSNoRestartOnRead(_n) asm { __setLSNoRestartOnRead(_n) }
+#endif
 
 #define SysCommLSWrite(_args) asm { \
   compchktype _args, CommLSWriteType \
@@ -940,12 +1637,12 @@ struct CommLSWriteExType {
 /** @addtogroup IOCtrlModule
  * @{
  */
-/** @defgroup IOCtrlModuleTypes IOCtrl module types.
+/** @defgroup IOCtrlModuleTypes IOCtrl module types
  * Types used by various IOCtrl module functions.
  * @{
  */
 /** @} */ // end of IOCtrlModuleTypes group
-/** @defgroup IOCtrlModuleFunctions IOCtrl module functions.
+/** @defgroup IOCtrlModuleFunctions IOCtrl module functions
  * Functions for accessing and modifying IOCtrl module features.
  * @{
  */
@@ -964,7 +1661,7 @@ struct CommLSWriteExType {
 /** @addtogroup CommandModule
  * @{
  */
-/** @defgroup CommandModuleTypes Command module types.
+/** @defgroup CommandModuleTypes Command module types
  * Types used by various Command module functions.
  * @{
  */
@@ -1059,7 +1756,7 @@ struct ComputeCalibValueType {
 
 #endif
 /** @} */ // end of CommandModuleTypes group
-/** @defgroup CommandModuleFunctions Command module functions.
+/** @defgroup CommandModuleFunctions Command module functions
  * Functions for accessing and modifying Command module features.
  * @{
  */
@@ -1137,24 +1834,44 @@ struct ComputeCalibValueType {
 /**
  * Wait some milliseconds.
  * Make a task sleep for specified amount of time (in 1000ths of a second).
- *
+ * 
  * \param ms The number of milliseconds to sleep.
  */
 inline void Wait(unsigned long ms) { asm { waitv ms } }
+/** \example ex_wait.nxc
+ * How to use the \ref Wait function.
+ */
 
 /**
  * Yield to another task.
  * Make a task yield to another concurrently running task.
  */
 inline void Yield() { asm { wait 1 } }
+/** \example ex_yield.nxc
+ * How to use the \ref Yield function.
+ */
 
-
+#ifdef __DOXYGEN_DOCS
 // Stop(stop?);
 // ExitTo(task);
 // Precedes(x, y, z, ...);
 // Follows(x, y, z);
 // Acquire(mutex);
 // Release(mutex);
+inline void StopAllTasks();
+
+#define StartTask(_t) start _t
+#define StopTask(_t) stop _t
+
+#define IOMA(_n) asm { mov __RETVAL__, _n }
+#define SetIOMA(_n, _val) asm { mov _n, _val }
+
+#define ArrayBuild(_aout, ...) asm { arrbuild _aout, __VA_ARGS__ }
+#define ArrayLen(_asrc) asm { arrsize __RETVAL__, _asrc }
+#define ArrayInit(_aout, _val, _cnt) asm { arrinit _aout, _val, _cnt }
+#define ArraySubset(_aout, _asrc, _idx, _len) asm { arrsubset _aout, _asrc, _idx, _len }
+
+#else
 
 #define StopAllTasks() Stop(true)
 #define StartTask(_t) start _t
@@ -1168,6 +1885,7 @@ inline void Yield() { asm { wait 1 } }
 #define ArrayInit(_aout, _val, _cnt) asm { arrinit _aout, _val, _cnt }
 #define ArraySubset(_aout, _asrc, _idx, _len) asm { arrsubset _aout, _asrc, _idx, _len }
 
+#endif
 /** @} */ // end of CommandModuleFunctions group
 /** @} */ // end of CommandModule group
 
@@ -1180,7 +1898,7 @@ inline void Yield() { asm { wait 1 } }
 /** @addtogroup CommModule
  * @{
  */
-/** @defgroup CommModuleTypes Comm module types.
+/** @defgroup CommModuleTypes Comm module types
  * Types used by various Comm module functions.
  * @{
  */
@@ -1272,7 +1990,7 @@ struct CommBTConnectionType {
 #endif
 
 /** @} */ // end of CommModuleTypes group
-/** @defgroup CommModuleFunctions Comm module functions.
+/** @defgroup CommModuleFunctions Comm module functions
  * Functions for accessing and modifying Comm module features.
  * @{
  */
@@ -1510,7 +2228,7 @@ struct CommBTConnectionType {
 /** @addtogroup ButtonModule
  * @{
  */
-/** @defgroup ButtonModuleTypes Button module types.
+/** @defgroup ButtonModuleTypes Button module types
  * Types used by various Button module functions.
  * @{
  */
@@ -1523,7 +2241,7 @@ struct ReadButtonType {
   bool Reset; // reset count after reading?
 };
 /** @} */ // end of ButtonModuleTypes group
-/** @defgroup ButtonModuleFunctions Button module functions.
+/** @defgroup ButtonModuleFunctions Button module functions
  * Functions for accessing and modifying Button module features.
  * @{
  */
@@ -1563,7 +2281,7 @@ struct ReadButtonType {
 /** @addtogroup UiModule
  * @{
  */
-/** @defgroup UiModuleTypes Ui module types.
+/** @defgroup UiModuleTypes Ui module types
  * Types used by various Ui module functions.
  * @{
  */
@@ -1577,7 +2295,7 @@ struct SetSleepTimeoutType {
 #endif
 
 /** @} */ // end of UiModuleTypes group
-/** @defgroup UiModuleFunctions Ui module functions.
+/** @defgroup UiModuleFunctions Ui module functions
  * Functions for accessing and modifying Ui module features.
  * @{
  */
@@ -1639,7 +2357,7 @@ struct SetSleepTimeoutType {
 /** @addtogroup LoaderModule
  * @{
  */
-/** @defgroup LoaderModuleTypes Loader module types.
+/** @defgroup LoaderModuleTypes Loader module types
  * Types used by various Loader module functions.
  * @{
  */
@@ -1731,7 +2449,7 @@ struct ListFilesType {
 };
 #endif
 /** @} */ // end of LoaderModuleTypes group
-/** @defgroup LoaderModuleFunctions Loader module functions.
+/** @defgroup LoaderModuleFunctions Loader module functions
  * Functions for accessing and modifying Loader module features.
  * @{
  */
@@ -2200,7 +2918,7 @@ inline int SensorHTGyro(const byte port, const int offset = 0) {
 ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @defgroup cmathAPI cmath API Functions.
+/** @defgroup cmathAPI cmath API Functions
  * Standard C cmath API functions.
  * @{
  */
@@ -2906,7 +3624,7 @@ struct RandomNumberType {
 ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @defgroup cstdioAPI cstdio API Functions.
+/** @defgroup cstdioAPI cstdio API Functions
  * Standard C cstdio API functions.
  * @{
  */
@@ -3156,7 +3874,7 @@ inline int fputs(string str, byte handle) {
 
 #if __FIRMWARE_VERSION > 107
 
-/** @defgroup fseekConstants fseek origin constants.
+/** @defgroup fseekConstants fseek origin constants
  * Constants for use in calls to fseek.
  * @{
  */
@@ -3211,7 +3929,7 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
 ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @defgroup cstringAPI cstring API Functions.
+/** @defgroup cstringAPI cstring API Functions
  * Standard C cstring API functions.
  * @{
  */
@@ -3422,7 +4140,7 @@ void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (s
 ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @defgroup ctypeAPI ctype API Functions.
+/** @defgroup ctypeAPI ctype API Functions
  * Standard C ctype API functions.
  * @{
  */
