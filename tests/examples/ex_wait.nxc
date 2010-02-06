@@ -1,0 +1,5 @@
+task main()
+{
+  Wait(SEC_5); // wait 5 seconds
+  Wait(Random(SEC_1)); // wait random time up to 1 second
+}

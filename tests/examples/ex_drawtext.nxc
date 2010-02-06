@@ -1,0 +1,10 @@
+task main()
+{
+  DrawTextType dtArgs;
+  dtArgs.Location.X = 0;
+  dtArgs.Location.Y = LCD_LINE1;
+  dtArgs.Text = "Please Work";
+  dtArgs.Options = DRAW_OPT_CLEAR_WHOLE_SCREEN; // clear before drawing
+  SysDrawText(dtArgs);
+  Wait(SEC_5);
+}
