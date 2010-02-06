@@ -1,0 +1,19 @@
+task play() {
+  while (true) {
+    PlayTone(TONE_A4, MS_500);
+    Wait(SEC_1);
+  }
+}
+
+task drive()
+{
+  while (true) {
+    OnFwd(OUT_A, 50);
+    Yield();
+  }
+}
+
+task main()
+{
+  Precedes(drive, play);
+}
