@@ -1,0 +1,15 @@
+task main()
+{
+#ifdef __ENHANCED_FIRMWARE
+  SetLongAbort(true);
+#endif
+  while(true)
+  {
+#ifdef __ENHANCED_FIRMWARE
+    NumOut(0, LCD_LINE1, ButtonPressed(BTNEXIT, false));
+#endif
+    NumOut(0, LCD_LINE2, ButtonPressed(BTNRIGHT, false));
+    NumOut(0, LCD_LINE3, ButtonPressed(BTNLEFT, false));
+    NumOut(0, LCD_LINE4, ButtonPressed(BTNCENTER, false));
+  }
+}

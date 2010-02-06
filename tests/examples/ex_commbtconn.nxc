@@ -1,0 +1,27 @@
+#define CONNECTION 1
+task main()
+{
+  CommBTConnectionType args;
+  args.Name = "NXT2"; // whatever the slave NXT's name is
+  args.ConnectionSlot = CONNECTION; // this is the desired connection slot (the above code uses 1)
+  args.Action = TRUE; // could use some #define with a non-zero value to connect.  0 == disconnect
+  if(!BluetoothStatus(CONNECTION)==NO_ERR)
+  {
+    SysCommBTConnection(args); // try to connect.
+    for (int i = 0; i < 2000; i++) {
+      NumOut(0, LCD_LINE3, args.Result);
+      Wait(1);
+    }
+//    Wait(5000); // let the connection get created
+    if (args.Result == LDR_SUCCESS)
+    {
+      // we are connected
+      TextOut(0, LCD_LINE1, "success");
+    }
+    else {
+      TextOut(0, LCD_LINE1, "failure");
+      NumOut(0, LCD_LINE2, args.Result);
+    }
+  }
+  Wait(SEC_10);
+}
