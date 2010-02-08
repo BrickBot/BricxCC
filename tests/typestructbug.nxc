@@ -1,0 +1,24 @@
+typedef struct tagCOLOR
+{
+byte Useless;
+byte R;
+byte G;
+byte B;
+} COLOR;
+
+typedef struct tagXY
+{
+int X;
+int Y;
+} XY;
+
+typedef struct tagBasicObjectProperties
+{
+COLOR color;
+XY xy;
+} BOP;
+
+task main()
+{
+
+}

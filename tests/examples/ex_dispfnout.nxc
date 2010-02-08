@@ -1,0 +1,7 @@
+#download "PropTiny.ric"
+
+task main()
+{
+  FontNumOut(0, 40, "PropTiny.RIC", PI);
+  while( 1 ) ;
+}

@@ -1,0 +1,24 @@
+task main()
+{
+  unsigned long addr = DisplayDisplay();
+  NumOut(0, LCD_LINE1, DisplayEraseMask());
+  NumOut(0, LCD_LINE2, DisplayUpdateMask());
+  NumOut(0, LCD_LINE3, addr);
+  NumOut(0, LCD_LINE4, DisplayFlags());
+  NumOut(0, LCD_LINE5, DisplayTextLinesCenterFlags());
+  Wait(SEC_4);
+  // setting the display address function can be ... dangerous
+  SetDisplayDisplay(addr);
+  // fiddling with the display flags is also dangerous
+  unsigned long flags = DisplayFlags();
+  flags |= DISPLAY_POPUP;
+  SetDisplayFlags(flags);
+  Wait(SEC_2);
+  flags = flags & !DISPLAY_POPUP;
+  SetDisplayFlags(flags);
+  Wait(SEC_1);
+  SetDisplayEraseMask(DisplayEraseMask());
+  SetDisplayUpdateMask(DisplayUpdateMask());
+  SetDisplayTextLinesCenterFlags(DisplayTextLinesCenterFlags());
+  Wait(SEC_2);
+}

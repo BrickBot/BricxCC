@@ -1,0 +1,6 @@
+task main()
+{
+  repeat (10)
+    EllipseOut(50, 32, 20+Random(15), 20+Random(10), DRAW_OPT_FILL_SHAPE|DRAW_OPT_LOGICAL_XOR);
+  while(true);
+}

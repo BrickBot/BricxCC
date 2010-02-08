@@ -1,0 +1,213 @@
+// Draw the Chessboard
+byte Chess1_data[] = {
+RICOpDescription(0, 104, 20),
+RICOpSprite(1, 14, 13,
+  RICSpriteData(0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE,
+    0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xBE, 0xBE,
+    0xEE, 0xFE, 0xFE, 0xFE, 0x82, 0xBA, 0x86, 0xC6,
+    0x86, 0x86, 0xC2, 0xBE, 0xBA, 0xC6, 0xEE, 0xFE,
+    0xD6, 0xEE, 0xB6, 0xBA, 0xBA, 0xBA, 0xBA, 0xBA,
+    0x86, 0xB6, 0xEE, 0xC6, 0xFE, 0xEE, 0xEE, 0x8E,
+    0x86, 0xAA, 0x86, 0xBE, 0xC2, 0xBA, 0x8E, 0xEE,
+    0xEE, 0xFE, 0xD6, 0xEE, 0xB6, 0xBA, 0xB6, 0xB6,
+    0xBE, 0xFA, 0x86, 0xB6, 0xF6, 0xFE, 0xFE, 0xFE,
+    0xEE, 0xBA, 0x86, 0xCA, 0xBA, 0xFE, 0xFE, 0xFE,
+    0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE, 0xFE,
+    0xFE, 0xFE, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x40, 0x40, 0x10, 0x00, 0x00, 0x00, 0x7C,
+    0x44, 0x78, 0x38, 0x78, 0x78, 0x3C, 0x40, 0x44,
+    0x38, 0x10, 0x00, 0x28, 0x10, 0x48, 0x44, 0x44,
+    0x44, 0x44, 0x44, 0x78, 0x48, 0x10, 0x38, 0x00,
+    0x10, 0x10, 0x70, 0x78, 0x54, 0x78, 0x40, 0x3C,
+    0x44, 0x70, 0x10, 0x10, 0x00, 0x28, 0x10, 0x48,
+    0x44, 0x48, 0x48, 0x40, 0x04, 0x78, 0x48, 0x08,
+    0x00, 0x00, 0x00, 0x10, 0x44, 0x78, 0x34, 0x44,
+    0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00, 0x00,
+    0x00, 0x00, 0x00, 0x00, 0x00)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(0), 7), 7, 7), RICImgPoint(0, 0)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(1), 0), 7, 7), RICImgPoint(7, 0)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(2), 7), 7, 7), RICImgPoint(14, 0)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(3), 0), 7, 7), RICImgPoint(21, 0)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(4), 7), 7, 7), RICImgPoint(28, 0)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(5), 0), 7, 7), RICImgPoint(35, 0)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(6), 7), 7, 7), RICImgPoint(42, 0)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(7), 0), 7, 7), RICImgPoint(49, 0)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(8), 0), 7, 7), RICImgPoint(0, 7)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(9), 7), 7, 7), RICImgPoint(7, 7)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(10), 0), 7, 7), RICImgPoint(14, 7)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(11), 7), 7, 7), RICImgPoint(21, 7)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(12), 0), 7, 7), RICImgPoint(28, 7)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(13), 7), 7, 7), RICImgPoint(35, 7)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(14), 0), 7, 7), RICImgPoint(42, 7)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(15), 7), 7, 7), RICImgPoint(49, 7)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(16), 7), 7, 7), RICImgPoint(0, 14)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(17), 0), 7, 7), RICImgPoint(7, 14)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(18), 7), 7, 7), RICImgPoint(14, 14)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(19), 0), 7, 7), RICImgPoint(21, 14)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(20), 7), 7, 7), RICImgPoint(28, 14)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(21), 0), 7, 7), RICImgPoint(35, 14)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(22), 7), 7, 7), RICImgPoint(42, 14)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(23), 0), 7, 7), RICImgPoint(49, 14)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(24), 0), 7, 7), RICImgPoint(0, 21)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(25), 7), 7, 7), RICImgPoint(7, 21)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(26), 0), 7, 7), RICImgPoint(14, 21)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(27), 7), 7, 7), RICImgPoint(21, 21)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(28), 0), 7, 7), RICImgPoint(28, 21)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(29), 7), 7, 7), RICImgPoint(35, 21)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(30), 0), 7, 7), RICImgPoint(42, 21)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(31), 7), 7, 7), RICImgPoint(49, 21)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(32), 7), 7, 7), RICImgPoint(0, 28)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(33), 0), 7, 7), RICImgPoint(7, 28)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(34), 7), 7, 7), RICImgPoint(14, 28)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(35), 0), 7, 7), RICImgPoint(21, 28)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(36), 7), 7, 7), RICImgPoint(28, 28)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(37), 0), 7, 7), RICImgPoint(35, 28)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(38), 7), 7, 7), RICImgPoint(42, 28)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(39), 0), 7, 7), RICImgPoint(49, 28)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(40), 0), 7, 7), RICImgPoint(0, 35)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(41), 7), 7, 7), RICImgPoint(7, 35)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(42), 0), 7, 7), RICImgPoint(14, 35)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(43), 7), 7, 7), RICImgPoint(21, 35)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(44), 0), 7, 7), RICImgPoint(28, 35)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(45), 7), 7, 7), RICImgPoint(35, 35)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(46), 0), 7, 7), RICImgPoint(42, 35)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(47), 7), 7, 7), RICImgPoint(49, 35)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(48), 7), 7, 7), RICImgPoint(0, 42)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(49), 0), 7, 7), RICImgPoint(7, 42)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(50), 7), 7, 7), RICImgPoint(14, 42)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(51), 0), 7, 7), RICImgPoint(21, 42)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(52), 7), 7, 7), RICImgPoint(28, 42)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(53), 0), 7, 7), RICImgPoint(35, 42)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(54), 7), 7, 7), RICImgPoint(42, 42)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(55), 0), 7, 7), RICImgPoint(49, 42)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(56), 0), 7, 7), RICImgPoint(0, 49)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(57), 7), 7, 7), RICImgPoint(7, 49)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(58), 0), 7, 7), RICImgPoint(14, 49)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(59), 7), 7, 7), RICImgPoint(21, 49)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(60), 0), 7, 7), RICImgPoint(28, 49)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(61), 7), 7, 7), RICImgPoint(35, 49)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(62), 0), 7, 7), RICImgPoint(42, 49)),
+RICOpCopyBits(0, 1, RICImgRect(RICImgPoint(RICArg(63), 7), 7, 7), RICImgPoint(49, 49))
+};
+
+#define A 0
+#define B 1
+#define C 2
+#define D 3
+#define E 4
+#define F 5
+#define G 6
+#define H 8
+
+#define P(_file, _rank) (((_rank)-1)*8)+(_file)
+
+#define A1 P(A, 1)
+#define A2 P(A, 2)
+#define A3 P(A, 3)
+#define A4 P(A, 4)
+#define A5 P(A, 5)
+#define A6 P(A, 6)
+#define A7 P(A, 7)
+#define A8 P(A, 8)
+
+#define B1 P(B, 1)
+#define B2 P(B, 2)
+#define B3 P(B, 3)
+#define B4 P(B, 4)
+#define B5 P(B, 5)
+#define B6 P(B, 6)
+#define B7 P(B, 7)
+#define B8 P(B, 8)
+
+#define C1 P(C, 1)
+#define C2 P(C, 2)
+#define C3 P(C, 3)
+#define C4 P(C, 4)
+#define C5 P(C, 5)
+#define C6 P(C, 6)
+#define C7 P(C, 7)
+#define C8 P(C, 8)
+
+#define D1 P(D, 1)
+#define D2 P(D, 2)
+#define D3 P(D, 3)
+#define D4 P(D, 4)
+#define D5 P(D, 5)
+#define D6 P(D, 6)
+#define D7 P(D, 7)
+#define D8 P(D, 8)
+
+#define E1 P(E, 1)
+#define E2 P(E, 2)
+#define E3 P(E, 3)
+#define E4 P(E, 4)
+#define E5 P(E, 5)
+#define E6 P(E, 6)
+#define E7 P(E, 7)
+#define E8 P(E, 8)
+
+#define F1 P(F, 1)
+#define F2 P(F, 2)
+#define F3 P(F, 3)
+#define F4 P(F, 4)
+#define F5 P(F, 5)
+#define F6 P(F, 6)
+#define F7 P(F, 7)
+#define F8 P(F, 8)
+
+#define G1 P(G, 1)
+#define G2 P(G, 2)
+#define G3 P(G, 3)
+#define G4 P(G, 4)
+#define G5 P(G, 5)
+#define G6 P(G, 6)
+#define G7 P(G, 7)
+#define G8 P(G, 8)
+
+#define H1 P(H, 1)
+#define H2 P(H, 2)
+#define H3 P(H, 3)
+#define H4 P(H, 4)
+#define H5 P(H, 5)
+#define H6 P(H, 6)
+#define H7 P(H, 7)
+#define H8 P(H, 8)
+
+int b[] =
+{
+  64, 72, 80, 88, 96, 80, 72, 64, // 1
+  56, 56, 56, 56, 56, 56, 56, 56, // 2
+  48, 48, 48, 48, 48, 48, 48, 48, // 3
+  48, 48, 48, 48, 48, 48, 48, 48, // 4
+  48, 48, 48, 48, 48, 48, 48, 48, // 5
+  48, 48, 48, 48, 48, 48, 48, 48, // 6
+  40, 40, 40, 40, 40, 40, 40, 40, // 7
+  32, 24, 16,  8,  0, 16, 24, 32  // 8
+};
+// A   B   C   D   E   F   G   H
+
+#define Vacant 48
+
+#define Move(_from, _to) \
+  b[_to] = b[_from]; \
+  b[_from] = Vacant; \
+  GraphicArrayOutEx( 8,8,Chess1_data , b, true); \
+  Wait(2000);
+
+task main()
+{
+  // setup board
+  GraphicArrayOutEx( 8,8,Chess1_data, b, true);
+  Wait(2000);
+
+  Move(A2, A3); // white pawn from A2 to A3
+  Move(B7, B5); // black pawn from B7 to B5
+  Move(A3, A4); // white pawn from A3 to A4
+  Move(B5, B4); // black pawn from B5 to B4
+  Move(A4, A5); // white pawn from A4 to A5
+  Move(B4, B3); // black pawn from B4 to B3
+  Move(A5, A6); // white pawn from A5 to A6
+  while( true );
+}
+

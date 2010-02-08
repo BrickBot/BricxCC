@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-02-01
- * \version 43
+ * \date 2010-02-06
+ * \version 44
  */
 
 #ifndef NBCCOMMON_H

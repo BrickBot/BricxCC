@@ -1,0 +1,31 @@
+#download "2c.ric"
+
+byte tmpData2[] = {
+  0x0A, 0x00, 0x07, 0x00, 0x00, 0x00, 0x14, 0x00, 0x14,
+  0x00, 0x0A, 0x00, 0x0A, 0x00, 0x07, 0x00, 0x00, 0x00,
+  0x1E, 0x00, 0x1E, 0x00, 0x0A, 0x00};
+
+DrawGraphicArrayType dgaArgs;
+
+task main()
+{
+  long tick;
+  TextOut(0, LCD_LINE1, "testing");
+  tick = CurrentTick();
+  GraphicOut(10, 10, "2c.ric");
+  tick = CurrentTick()-tick;
+  NumOut(0, LCD_LINE8, tick);
+  Wait(SEC_5);
+  ClearScreen();
+  Wait(MS_500);
+  TextOut(0, LCD_LINE1, "testing");
+  tick = CurrentTick();
+  dgaArgs.Location.X = 10;
+  dgaArgs.Location.Y = 10;
+  dgaArgs.Options = 0;
+  dgaArgs.Data = tmpData2;
+  SysCall(DrawGraphicArray, dgaArgs);
+  tick = CurrentTick()-tick;
+  NumOut(0, LCD_LINE8, tick);
+  Wait(SEC_5);
+}

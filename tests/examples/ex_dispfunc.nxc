@@ -1,0 +1,11 @@
+task main()
+{
+  DisplayExecuteFunctionType defArgs;
+  defArgs.Cmd = DISPLAY_HORIZONTAL_LINE;
+  defArgs.On  = DRAW_OPT_NORMAL;
+  defArgs.X1 = 20;
+  defArgs.Y1 = 20;
+  defArgs.X2 = 40;
+  SysDisplayExecuteFunction(defArgs);
+  Wait(SEC_15);
+}

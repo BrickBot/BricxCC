@@ -206,15 +206,22 @@
  * @{
  */
 #if __FIRMWARE_VERSION > 107
-// ColorSensorRead
+/**
+ * ColorSensorReadType structure.
+ * This structure is used when calling the \ref SysColorSensorRead system call function.
+ * Choose the sensor port (S1, S2, S3, or S4) and after calling the function
+ * read the sensor values from the ColorValue field or the raw, normalized, or
+ * scaled value arrays.
+ * \sa SysColorSensorRead()
+ */
 struct ColorSensorReadType {
- char Result;
- byte Port;
- int ColorValue;
- unsigned int RawArray[];
- unsigned int NormalizedArray[];
- int ScaledArray[];
- bool Invalid;
+ char Result;                    /*!< The function call result. \ref NO_ERR means it succeeded. */
+ byte Port;                      /*!< The sensor port. See the constants in the \ref InPorts group. */
+ int ColorValue;                 /*!< The color value returned by the sensor. See the \ref InputColorValueConstants group. */
+ unsigned int RawArray[];        /*!< Raw color values returned by the sensor. See the \ref InputColorIdxConstants group. */
+ unsigned int NormalizedArray[]; /*!< Normalized color values returned by the sensor. See the \ref InputColorIdxConstants group. */
+ int ScaledArray[];              /*!< Scaled color values returned by the sensor. See the \ref InputColorIdxConstants group. */
+ bool Invalid;                   /*!< Are the sensor values valid? */
 };
 #endif
 /** @} */ // end of InputModuleTypes group
@@ -635,6 +642,7 @@ struct DrawFontType {
  * Functions for accessing and modifying display module features.
  * @{
  */
+
 #ifdef __DOXYGEN_DOCS
 
 /**
@@ -1022,12 +1030,6 @@ inline unsigned long DisplayEraseMask();
  * \return The current display update mask.
  */
 inline unsigned long DisplayUpdateMask();
-/** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
- * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
- * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
- * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
- */
 
 /**
  * Read the display memory address.
@@ -1035,12 +1037,6 @@ inline unsigned long DisplayUpdateMask();
  * \return The current display memory address.
  */
 inline unsigned long DisplayDisplay();
-/** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
- * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
- * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
- * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
- */
 
 /**
  * Read the display flags.
@@ -1049,12 +1045,6 @@ inline unsigned long DisplayDisplay();
  * \return The current display flags.
  */
 inline byte DisplayFlags();
-/** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
- * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
- * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
- * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
- */
 
 /**
  * Read the display text lines center flags.
@@ -1062,78 +1052,6 @@ inline byte DisplayFlags();
  * \return The current display text lines center flags.
  */
 inline byte DisplayTextLinesCenterFlags();
-/** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
- * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
- * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
- * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
- */
-
-/**
- * Set the display memory address.
- * This function lets you set the current display memory address.
- * \param n The new display memory address.
- */
-inline void SetDisplayDisplay(unsigned long n);
-/** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
- * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
- * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
- * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
- */
-
-/**
- * Set the display erase mask.
- * This function lets you set the current display erase mask.
- * \param n The new display erase mask.
- */
-inline void SetDisplayEraseMask(unsigned long eraseMask);
-/** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
- * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
- * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
- * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
- */
-
-/**
- * Set the display flags.
- * This function lets you set the current display flags.
- * Valid flag values are listed in the \ref DisplayFlagsGroup group.
- * \param n The new display flags.
- */
-inline void SetDisplayFlags(byte flags);
-/** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
- * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
- * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
- * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
- */
-
-/**
- * Set the display text lines center flags.
- * This function lets you set the current display text lines center flags.
- * \param n The new display text lines center flags.
- */
-inline void SetDisplayTextLinesCenterFlags(byte ctrFlags);
-/** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
- * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
- * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
- * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
- */
-
-/**
- * Set the display update mask.
- * This function lets you set the current display update mask.
- * \param n The new display update mask.
- */
-inline void SetDisplayUpdateMask(unsigned long updMask);
-/** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
- * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
- * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
- * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
- */
 
 /**
  * Draw text.
@@ -1303,6 +1221,8 @@ inline void SysDrawFont(DrawFontType & args);
 /** \example ex_drawfont.nxc
  * How to use the \ref SysDrawFont function along with the \ref DrawFontType structure.
  */
+#endif
+#endif
 
 #else
 
@@ -1317,11 +1237,41 @@ inline void SysDrawFont(DrawFontType & args);
 #define DisplayFlags() asm { GetDisplayFlags(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define DisplayTextLinesCenterFlags() asm { GetDisplayTextLinesCenterFlags(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 
-#define SetDisplayEraseMask(_n) asm { __setDisplayEraseMask(_n) }
-#define SetDisplayUpdateMask(_n) asm { __setDisplayUpdateMask(_n) }
-#define SetDisplayDisplay(_n) asm { __setDisplayDisplay(_n) }
-#define SetDisplayFlags(_n) asm { __setDisplayFlags(_n) }
-#define SetDisplayTextLinesCenterFlags(_n) asm { __setDisplayTextLinesCenterFlags(_n) }
+/**
+ * Set the display memory address.
+ * This function lets you set the current display memory address.
+ * \param addr The new display memory address.
+ */
+inline void SetDisplayDisplay(unsigned long addr) { asm { __setDisplayDisplay(addr) } }
+
+/**
+ * Set the display erase mask.
+ * This function lets you set the current display erase mask.
+ * \param eraseMask The new display erase mask.
+ */
+inline void SetDisplayEraseMask(unsigned long eraseMask) { asm { __setDisplayEraseMask(eraseMask) } }
+
+/**
+ * Set the display flags.
+ * This function lets you set the current display flags.
+ * Valid flag values are listed in the \ref DisplayFlagsGroup group.
+ * \param flags The new display flags.
+ */
+inline void SetDisplayFlags(byte flags) { asm { __setDisplayFlags(flags) } }
+
+/**
+ * Set the display text lines center flags.
+ * This function lets you set the current display text lines center flags.
+ * \param ctrFlags The new display text lines center flags.
+ */
+inline void SetDisplayTextLinesCenterFlags(byte ctrFlags) { asm { __setDisplayTextLinesCenterFlags(ctrFlags) } }
+
+/**
+ * Set the display update mask.
+ * This function lets you set the current display update mask.
+ * \param updateMask The new display update mask.
+ */
+inline void SetDisplayUpdateMask(unsigned long updateMask) { asm { __setDisplayUpdateMask(updateMask) } }
 
 #define SetDisplayNormal(_x, _line, _cnt, _data) asm { __setDisplayNormal(_x, _line, _cnt, _data) }
 #define SetDisplayPopup(_x, _line, _cnt, _data) asm { __setDisplayPopup(_x, _line, _cnt, _data) }

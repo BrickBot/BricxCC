@@ -1,0 +1,18 @@
+task main()
+{
+  for (byte contrast = 0; contrast < DISPLAY_CONTRAST_MAX; contrast++)
+  {
+    SetDisplayContrast(contrast);
+    NumOut(0, LCD_LINE1, DisplayContrast());
+    Wait(100);
+  }
+  for (byte contrast = DISPLAY_CONTRAST_MAX; contrast > 0; contrast--)
+  {
+    SetDisplayContrast(contrast);
+    NumOut(0, LCD_LINE1, DisplayContrast());
+    Wait(100);
+  }
+  SetDisplayContrast(DISPLAY_CONTRAST_DEFAULT);
+  NumOut(0, LCD_LINE1, DisplayContrast());
+  while(true);
+}
