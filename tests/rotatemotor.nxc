@@ -1,0 +1,12 @@
+#define port OUT_A
+task main()
+{
+  ResetAllTachoCounts(port);
+  Wait(1);
+  NumOut(0, LCD_LINE1, MotorRotationCount(port));
+  RotateMotor(port, 100, 1000);
+  NumOut(0, LCD_LINE2, MotorRotationCount(port));
+  RotateMotor(port, 100, 1000);
+  NumOut(0, LCD_LINE3, MotorRotationCount(port));
+  Wait(1000);
+}

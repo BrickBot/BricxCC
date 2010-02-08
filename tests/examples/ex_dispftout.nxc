@@ -1,0 +1,21 @@
+#download "PropTiny.ric"
+
+task main()
+{
+  DrawFontType dfArgs;
+  dfArgs.Location.X = 10;
+  dfArgs.Location.Y = 59;
+  dfArgs.Filename = "PropTiny.ric" ;
+  dfArgs.Text = "Hello" ;
+  dfArgs.Options = DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RT;
+  SysDrawFont(dfArgs);
+  FontTextOut( 35,59, "PropTiny.RIC", "World", DRAW_OPT_INVERT|DRAW_OPT_FONT_DIR_T2BL );
+  FontTextOut( 10,20, "PropTiny.RIC", "Now is the winter of our discontent made glorious summer by this son of York.  And all the clouds that lowered upon our house in the deep bosom of the ocean buried.", DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RB|DRAW_OPT_FONT_WRAP );
+  FontTextOut( 50,56,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RB );
+  FontTextOut( 50,48,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_INVERT|DRAW_OPT_FONT_DIR_L2RB );
+  FontTextOut( 50,40,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_LOGICAL_OR|DRAW_OPT_FONT_DIR_L2RB );
+  FontTextOut( 50,32,"PropTiny.RIC", "WiWiWiWiWiWi", DRAW_OPT_INVERT|DRAW_OPT_LOGICAL_AND|DRAW_OPT_FONT_DIR_L2RB );
+  Wait(SEC_5);
+  ClearScreen();
+  Wait(SEC_4);
+}

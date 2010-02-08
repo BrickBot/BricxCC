@@ -1,0 +1,11 @@
+//typedef unsigned int HELLOWORLD;
+
+void test(HELLOWORLD in)
+{
+
+}
+
+task main()
+{
+   test(0);
+}

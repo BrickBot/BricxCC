@@ -1,0 +1,11 @@
+inline void foobar(int x) {
+//  int x;
+  NumOut(x, LCD_LINE1, x);
+}
+
+task main()
+{
+  byte handle;
+  foobar(4);
+  rewind(handle);
+}

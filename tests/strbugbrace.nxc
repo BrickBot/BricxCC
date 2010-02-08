@@ -1,0 +1,4 @@
+task main() {
+  string tmp="[{@,#,$]}";
+  TextOut(0, LCD_LINE1, tmp);
+}
