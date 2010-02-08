@@ -12,7 +12,7 @@ realclean:: clean
 	rm -f $(PROGRAMS) mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
 
 # Delphi
-TOOLPREFIX=C:/winapps/Borland/Delphi7/Bin/
+TOOLPREFIX=C:/win32apps/Borland/Delphi7/Bin/
 DELPHI=$(TOOLPREFIX)dcc32.exe
 
 # how to link executable
