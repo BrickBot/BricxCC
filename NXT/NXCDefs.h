@@ -646,15 +646,6 @@ struct DrawFontType {
 #ifdef __DOXYGEN_DOCS
 
 /**
- * Clear LCD screen.
- * This function lets you clear the NXT LCD to a blank screen.
- */
-inline void ClearScreen();
-/** \example ex_dispcls.nxc
- * How to use the \ref ClearScreen function.
- */
-
-/**
  * Reset LCD screen.
  * This function lets you restore the standard NXT running program screen.
  */
@@ -968,10 +959,6 @@ inline void GetDisplayNormal(const byte x, const byte line, unsigned int cnt, by
  * \param data The array of bytes from which pixel data is read.
  */
 inline void SetDisplayNormal(const byte x, const byte line, unsigned int cnt, byte data[]);
-/** \example ex_getsetdisp.nxc
- * How to read and write pixel data using the \ref GetDisplayNormal, \ref GetDisplayPopup,
- * \ref SetDisplayNormal,  and \ref SetDisplayPopup functions.
- */
 
 /**
  * Read pixel data from the popup display buffer.
@@ -987,10 +974,6 @@ inline void SetDisplayNormal(const byte x, const byte line, unsigned int cnt, by
  * \param data The array of bytes into which pixel data is read.
  */
 inline void GetDisplayPopup(const byte x, const byte line, unsigned int cnt, byte & data[]);
-/** \example ex_getsetdisp.nxc
- * How to read and write pixel data using the \ref GetDisplayNormal, \ref GetDisplayPopup,
- * \ref SetDisplayNormal,  and \ref SetDisplayPopup functions.
- */
 
 /**
  * Write pixel data to the popup display buffer.
@@ -1006,10 +989,6 @@ inline void GetDisplayPopup(const byte x, const byte line, unsigned int cnt, byt
  * \param data The array of bytes from which pixel data is read.
  */
 inline void SetDisplayPopup(const byte x, const byte line, unsigned int cnt, byte data[]);
-/** \example ex_getsetdisp.nxc
- * How to read and write pixel data using the \ref GetDisplayNormal, \ref GetDisplayPopup,
- * \ref SetDisplayNormal,  and \ref SetDisplayPopup functions.
- */
 
 /**
  * Read the display erase mask value.
@@ -1165,16 +1144,6 @@ inline byte DisplayContrast();
  */
 
 /**
- * Set the display contrast.
- * This function lets you set the display contrast setting.
- * \param contrast The desired display contrast.
- */
-inline void SetDisplayContrast(const byte contrast);
-/** \example ex_contrast.nxc
- * How to use the \ref DisplayContrast and \ref SetDisplayContrast functions.
- */
-
-/**
  * Draw a graphic image from a byte array.
  * This function lets you draw a graphic image on the NXT LCD given the parameters you pass
  * in via the \ref DrawGraphicArrayType structure.
@@ -1226,8 +1195,6 @@ inline void SysDrawFont(DrawFontType & args);
 
 #else
 
-#define ClearScreen() asm { PointOutEx(200, 200, TRUE) }
-
 #define GetDisplayNormal(_x, _line, _cnt, _data) asm { __getDisplayNormal(_x, _line, _cnt, _data) }
 #define GetDisplayPopup(_x, _line, _cnt, _data) asm { __getDisplayPopup(_x, _line, _cnt, _data) }
 
@@ -1236,42 +1203,6 @@ inline void SysDrawFont(DrawFontType & args);
 #define DisplayDisplay() asm { GetDisplayDisplay(__TMPLONG__) __RETURN__ __TMPLONG__ }
 #define DisplayFlags() asm { GetDisplayFlags(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define DisplayTextLinesCenterFlags() asm { GetDisplayTextLinesCenterFlags(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-
-/**
- * Set the display memory address.
- * This function lets you set the current display memory address.
- * \param addr The new display memory address.
- */
-inline void SetDisplayDisplay(unsigned long addr) { asm { __setDisplayDisplay(addr) } }
-
-/**
- * Set the display erase mask.
- * This function lets you set the current display erase mask.
- * \param eraseMask The new display erase mask.
- */
-inline void SetDisplayEraseMask(unsigned long eraseMask) { asm { __setDisplayEraseMask(eraseMask) } }
-
-/**
- * Set the display flags.
- * This function lets you set the current display flags.
- * Valid flag values are listed in the \ref DisplayFlagsGroup group.
- * \param flags The new display flags.
- */
-inline void SetDisplayFlags(byte flags) { asm { __setDisplayFlags(flags) } }
-
-/**
- * Set the display text lines center flags.
- * This function lets you set the current display text lines center flags.
- * \param ctrFlags The new display text lines center flags.
- */
-inline void SetDisplayTextLinesCenterFlags(byte ctrFlags) { asm { __setDisplayTextLinesCenterFlags(ctrFlags) } }
-
-/**
- * Set the display update mask.
- * This function lets you set the current display update mask.
- * \param updateMask The new display update mask.
- */
-inline void SetDisplayUpdateMask(unsigned long updateMask) { asm { __setDisplayUpdateMask(updateMask) } }
 
 #define SetDisplayNormal(_x, _line, _cnt, _data) asm { __setDisplayNormal(_x, _line, _cnt, _data) }
 #define SetDisplayPopup(_x, _line, _cnt, _data) asm { __setDisplayPopup(_x, _line, _cnt, _data) }
@@ -1315,7 +1246,6 @@ inline void SetDisplayUpdateMask(unsigned long updateMask) { asm { __setDisplayU
 #if __FIRMWARE_VERSION > 107
 
 #define DisplayContrast() asm { GetDisplayContrast(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define SetDisplayContrast(_n) asm { __setDisplayContrast(_n) }
 
 #define SysDrawGraphicArray(_args) asm { \
   compchktype _args, DrawGraphicArrayType \
@@ -1335,6 +1265,60 @@ inline void SetDisplayUpdateMask(unsigned long updateMask) { asm { __setDisplayU
 }
 #endif
 #endif
+#endif
+
+/**
+ * Clear LCD screen.
+ * This function lets you clear the NXT LCD to a blank screen.
+ */
+inline void ClearScreen() { asm { PointOutEx(200, 200, TRUE) } }
+/** \example ex_dispcls.nxc
+ * How to use the \ref ClearScreen function.
+ */
+
+/**
+ * Set the display memory address.
+ * This function lets you set the current display memory address.
+ * \param addr The new display memory address.
+ */
+inline void SetDisplayDisplay(unsigned long addr) { asm { __setDisplayDisplay(addr) } }
+
+/**
+ * Set the display erase mask.
+ * This function lets you set the current display erase mask.
+ * \param eraseMask The new display erase mask.
+ */
+inline void SetDisplayEraseMask(unsigned long eraseMask) { asm { __setDisplayEraseMask(eraseMask) } }
+
+/**
+ * Set the display flags.
+ * This function lets you set the current display flags.
+ * Valid flag values are listed in the \ref DisplayFlagsGroup group.
+ * \param flags The new display flags.
+ */
+inline void SetDisplayFlags(byte flags) { asm { __setDisplayFlags(flags) } }
+
+/**
+ * Set the display text lines center flags.
+ * This function lets you set the current display text lines center flags.
+ * \param ctrFlags The new display text lines center flags.
+ */
+inline void SetDisplayTextLinesCenterFlags(byte ctrFlags) { asm { __setDisplayTextLinesCenterFlags(ctrFlags) } }
+
+/**
+ * Set the display update mask.
+ * This function lets you set the current display update mask.
+ * \param updateMask The new display update mask.
+ */
+inline void SetDisplayUpdateMask(unsigned long updateMask) { asm { __setDisplayUpdateMask(updateMask) } }
+
+#if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
+/**
+ * Set the display contrast.
+ * This function lets you set the display contrast setting.
+ * \param contrast The desired display contrast.
+ */
+inline void SetDisplayContrast(byte contrast) { asm { __setDisplayContrast(contrast) } }
 #endif
 
 /** @} */ // end of DisplayModuleFunctions group
