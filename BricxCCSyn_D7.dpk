@@ -58,6 +58,7 @@ contains
   SynHighlighterH8 in 'SynHighlighterH8.pas',
   SynHighlighterRS in 'SynHighlighterRS.pas',
   SynHighlighterROPS in 'SynHighlighterROPS.pas',
-  DirectoryEdit in 'DirectoryEdit.pas';
+  DirectoryEdit in 'DirectoryEdit.pas',
+  uCommonUtils in 'uCommonUtils.pas';
 
 end.
