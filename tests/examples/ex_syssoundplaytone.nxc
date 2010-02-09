@@ -1,0 +1,9 @@
+task main()
+{
+  SoundPlayToneType sptArgs;
+  sptArgs.Frequency = 440;
+  sptArgs.Duration = 1000; // 1 second
+  sptArgs.Loop = false;
+  sptArgs.SoundLevel = 3;
+  SysSoundPlayTone(sptArgs);
+}

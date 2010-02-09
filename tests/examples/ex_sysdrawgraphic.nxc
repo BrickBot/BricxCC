@@ -1,0 +1,12 @@
+task main()
+{
+  DrawGraphicType dgArgs;
+  dgArgs.Location.X = 20;
+  dgArgs.Location.Y = 20;
+  dgArgs.Filename = "image.ric";
+  ArrayInit(dgArgs.Variables, 0, 10); // 10 zeros
+  dgArgs.Variables[0] = 12;
+  dgArgs.Variables[1] = 14; // etc...
+  dgArgs.Options = 0x00; // do not clear before drawing
+  SysDrawGraphic(dgArgs);
+}

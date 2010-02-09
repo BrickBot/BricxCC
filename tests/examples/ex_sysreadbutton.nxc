@@ -1,0 +1,7 @@
+task main()
+{
+  ReadButtonType rbArgs;
+  rbArgs.Index = BTNRIGHT;
+  SysReadButton(rbArgs);
+  if (rbArgs.Pressed) {/* do something */}
+}

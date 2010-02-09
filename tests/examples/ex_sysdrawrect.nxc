@@ -1,0 +1,10 @@
+task main()
+{
+  DrawRectType drArgs;
+  drArgs.Location.X = 20;
+  drArgs.Location.Y = 20;
+  drArgs.Size.Width = 20;
+  drArgs.Size.Height = 10;
+  drArgs.Options = 0x00; // do not clear before drawing
+  SysDrawRect(drArgs);
+}

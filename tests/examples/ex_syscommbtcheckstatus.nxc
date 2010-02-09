@@ -1,0 +1,7 @@
+task main()
+{
+  CommBTCheckStatusType args;
+  args.Connection = 1;
+  SysCommBTCheckStatus(args);
+  if (args.Result == LDR_SUCCESS) { /* do something */ }
+}

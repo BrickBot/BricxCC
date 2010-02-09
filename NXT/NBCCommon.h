@@ -343,6 +343,41 @@
 /** @} */  // end of MailboxConstants group
 
 
+/** @defgroup ModuleNameConstants NXT firmware module names
+ * Constant string names for all the NXT firmware modules.
+ * @{
+ */
+#define CommandModuleName  "Command.mod"   /*!< The command module name */
+#define IOCtrlModuleName   "IOCtrl.mod"    /*!< The IOCtrl module name */
+#define LoaderModuleName   "Loader.mod"    /*!< The Loader module name */
+#define SoundModuleName    "Sound.mod"     /*!< The sound module name */
+#define ButtonModuleName   "Button.mod"    /*!< The button module name */
+#define UIModuleName       "Ui.mod"        /*!< The Ui module name */
+#define InputModuleName    "Input.mod"     /*!< The input module name. */
+#define OutputModuleName   "Output.mod"    /*!< The output module name */
+#define LowSpeedModuleName "Low Speed.mod" /*!< The low speed module name */
+#define DisplayModuleName  "Display.mod"   /*!< The display module name */
+#define CommModuleName     "Comm.mod"      /*!< The Comm module name */
+/** @} */  // end of ModuleNameConstants group
+
+/** @defgroup ModuleIDConstants NXT firmware module IDs
+ * Constant numeric IDs for all the NXT firmware modules.
+ * @{
+ */
+#define CommandModuleID  0x00010001 /*!< The command module ID */
+#define IOCtrlModuleID   0x00060001 /*!< The IOCtrl module ID */
+#define LoaderModuleID   0x00090001 /*!< The Loader module ID */
+#define SoundModuleID    0x00080001 /*!< The sound module ID */
+#define ButtonModuleID   0x00040001 /*!< The button module ID */
+#define UIModuleID       0x000C0001 /*!< The Ui module ID */
+#define InputModuleID    0x00030001 /*!< The input module ID */
+#define OutputModuleID   0x00020001 /*!< The output module ID */
+#define LowSpeedModuleID 0x000B0001 /*!< The low speed module ID */
+#define DisplayModuleID  0x000A0001 /*!< The display module ID */
+#define CommModuleID     0x00050001 /*!< The Comm module ID */
+/** @} */  // end of ModuleIDConstants group
+
+
 /** @addtogroup CommandModule
  * @{
  */
@@ -350,9 +385,6 @@
  * Constants that are part of the NXT firmware's Command module.
  * @{
  */
-#define CommandModuleName "Command.mod" /*!< The command module name */
-#define CommandModuleID   0x00010001 /*!< The command module ID */
-
 //Status/error codes for the VM internal code and bytecodes
 #define STAT_MSG_EMPTY_MAILBOX 64 /*!< Specified mailbox contains no new messages */
 #define STAT_COMM_PENDING 32      /*!< Pending setup operation in progress */
@@ -470,9 +502,6 @@
  * Constants that are part of the NXT firmware's IOCtrl module.
  * @{
  */
-#define IOCtrlModuleName "IOCtrl.mod" /*!< The IOCtrl module name */
-#define IOCtrlModuleID   0x00060001 /*!< The IOCtrl module ID */
-
 /** @defgroup IOCtrlPO PowerOn constants
  * Use these constants to power down the NXT or boot it into SAMBA
  * (aka firmware download) mode.
@@ -500,9 +529,6 @@
  * Constants that are part of the NXT firmware's Loader module.
  * @{
  */
-#define LoaderModuleName "Loader.mod" /*!< The Loader module name */
-#define LoaderModuleID   0x00090001 /*!< The Loader module ID */
-
 /** @defgroup LoaderIOMAP Loader module IOMAP offsets
  * Constant offsets into the Loader module IOMAP structure.
  * @{
@@ -607,9 +633,6 @@
  * Constants that are part of the NXT firmware's Sound module.
  * @{
  */
-#define SoundModuleName "Sound.mod" /*!< The sound module name */
-#define SoundModuleID   0x00080001 /*!< The sound module ID */
-
 /** @defgroup SoundFlagsConstants SoundFlags constants
  * Constants for use with the SoundFlags() function.
  * \sa SoundFlags()
@@ -736,9 +759,6 @@
  * Constants that are part of the NXT firmware's Button module.
  * @{
  */
-#define ButtonModuleName "Button.mod" /*!< The button module name */
-#define ButtonModuleID   0x00040001 /*!< The button module ID */
-
 /** @defgroup ButtonNameConstants Button name constants
  * Constants to specify which button to use with button module functions.
  * \sa ButtonPressed(), ButtonState(), ButtonCount(), ReadButtonEx(),
@@ -794,9 +814,6 @@
  * Constants that are part of the NXT firmware's Ui module.
  * @{
  */
-#define UIModuleName "Ui.mod" /*!< The Ui module name */
-#define UIModuleID   0x000C0001 /*!< The Ui module ID */
-
 /** @defgroup UiFlagsConstants CommandFlags constants
  * Constants for use with the CommandFlags() function.
  * \sa CommandFlags()
@@ -967,9 +984,6 @@
 #define InvalidData     5 /*!< Invalid data field. Contains a boolean value indicating whether the sensor data is valid or not. Read/write. */
 /** @} */  // end of InputFieldConstants group
 
-
-#define InputModuleName "Input.mod" /*!< The input module name. */
-#define InputModuleID   0x00030001 /*!< The input module ID */
 
 // Constants related to Digital I/O
 #define INPUT_DIGI0 1 /*!< Digital pin 0 */
@@ -1211,9 +1225,6 @@
 #endif
 /** @} */  // end of OutputFieldConstants group
 
-#define OutputModuleName "Output.mod" /*!< The output module name */
-#define OutputModuleID   0x00020001  /*!< The output module ID */
-
 /** @defgroup OutputIOMAP Output module IOMAP offsets
  * Constant offsets into the Output module IOMAP structure.
  * @{
@@ -1250,9 +1261,6 @@
  * Constants that are part of the NXT firmware's LowSpeed module.
  * @{
  */
-#define LowSpeedModuleName "Low Speed.mod" /*!< The low speed module name */
-#define LowSpeedModuleID   0x000B0001 /*!< The low speed module ID */
-
 /** @defgroup LowSpeedStateConstants LSState constants
  * Constants for the low speed module LSState function. These values are
  * combined together using a bitwise OR operation.
@@ -1419,9 +1427,6 @@
  * Constants that are part of the NXT firmware's Display module.
  * @{
  */
-#define DisplayModuleName "Display.mod" /*!< The display module name */
-#define DisplayModuleID   0x000A0001 /*!< The display module ID */
-
 /** @defgroup DisplayExecuteFunctionConstants DisplayExecuteFunction constants
  * Constants that are for use with the DisplayExecuteFunction system call.
  * @{
@@ -1616,9 +1621,6 @@
  * Constants that are part of the NXT firmware's Comm module.
  * @{
  */
-#define CommModuleName "Comm.mod" /*!< The Comm module name */
-#define CommModuleID   0x00050001 /*!< The Comm module ID */
-
 /** @defgroup CommMiscConstants Miscellaneous Comm module constants
  * Miscellaneous constants related to the Comm module.
  * @{
@@ -1831,68 +1833,67 @@
  * Constant offsets into the Comm module IOMAP structure.
  * @{
  */
-#define CommOffsetPFunc    0 /*!< Offset to the Comm module first function pointer */
-#define CommOffsetPFuncTwo 4 /*!< Offset to the Comm module second function pointer */
+#define CommOffsetPFunc    0 /*!< Offset to the Comm module first function pointer (4 bytes) */
+#define CommOffsetPFuncTwo 4 /*!< Offset to the Comm module second function pointer (4 bytes) */
 // BtDeviceTable[30] (930 bytes)
-#define CommOffsetBtDeviceTableName(p)           (((p)*31)+8) /*!< Offset to BT device table name */
-#define CommOffsetBtDeviceTableClassOfDevice(p)  (((p)*31)+24) /*!< Offset to Bluetooth device table device class */
-#define CommOffsetBtDeviceTableBdAddr(p)         (((p)*31)+28) /*!< Offset to Bluetooth device table address */
-#define CommOffsetBtDeviceTableDeviceStatus(p)   (((p)*31)+35) /*!< Offset to Bluetooth device table status */
+#define CommOffsetBtDeviceTableName(p)           (((p)*31)+8) /*!< Offset to BT device table name (16 bytes) */
+#define CommOffsetBtDeviceTableClassOfDevice(p)  (((p)*31)+24) /*!< Offset to Bluetooth device table device class (4 bytes) */
+#define CommOffsetBtDeviceTableBdAddr(p)         (((p)*31)+28) /*!< Offset to Bluetooth device table address (7 bytes) */
+#define CommOffsetBtDeviceTableDeviceStatus(p)   (((p)*31)+35) /*!< Offset to Bluetooth device table status (1 byte) */
 //  BDCONNECTTABLE BtConnectTable[4]; (188 bytes)
-#define CommOffsetBtConnectTableName(p)          (((p)*47)+938) /*!< Offset to Bluetooth connect table name */
-#define CommOffsetBtConnectTableClassOfDevice(p) (((p)*47)+954) /*!< Offset to Bluetooth connect table device class */
-#define CommOffsetBtConnectTablePinCode(p)       (((p)*47)+958) /*!< Offset to Bluetooth connect table pin code */
-#define CommOffsetBtConnectTableBdAddr(p)        (((p)*47)+974) /*!< Offset to Bluetooth connect table address */
-#define CommOffsetBtConnectTableHandleNr(p)      (((p)*47)+981) /*!< Offset to Bluetooth connect table handle */
-#define CommOffsetBtConnectTableStreamStatus(p)  (((p)*47)+982) /*!< Offset to Bluetooth connect table stream status */
-#define CommOffsetBtConnectTableLinkQuality(p)   (((p)*47)+983) /*!< Offset to Bluetooth connect table link quality */
+#define CommOffsetBtConnectTableName(p)          (((p)*47)+938) /*!< Offset to Bluetooth connect table name (16 bytes) */
+#define CommOffsetBtConnectTableClassOfDevice(p) (((p)*47)+954) /*!< Offset to Bluetooth connect table device class (4 bytes) */
+#define CommOffsetBtConnectTablePinCode(p)       (((p)*47)+958) /*!< Offset to Bluetooth connect table pin code (16 bytes) */
+#define CommOffsetBtConnectTableBdAddr(p)        (((p)*47)+974) /*!< Offset to Bluetooth connect table address (7 bytes) */
+#define CommOffsetBtConnectTableHandleNr(p)      (((p)*47)+981) /*!< Offset to Bluetooth connect table handle (1 byte) */
+#define CommOffsetBtConnectTableStreamStatus(p)  (((p)*47)+982) /*!< Offset to Bluetooth connect table stream status (1 byte) */
+#define CommOffsetBtConnectTableLinkQuality(p)   (((p)*47)+983) /*!< Offset to Bluetooth connect table link quality (1 byte) */
 //General brick data
 //  BRICKDATA      BrickData; (31 bytes)
-
-#define CommOffsetBrickDataName            1126 /*!< Offset to brick name */
-#define CommOffsetBrickDataBluecoreVersion 1142 /*!< Offset to Bluecore version */
-#define CommOffsetBrickDataBdAddr          1144 /*!< Offset to Bluetooth address */
-#define CommOffsetBrickDataBtStateStatus   1151 /*!< Offset to BtStateStatus */
-#define CommOffsetBrickDataBtHwStatus      1152 /*!< Offset to BtHwStatus */
-#define CommOffsetBrickDataTimeOutValue    1153 /*!< Offset to data timeout value */
+#define CommOffsetBrickDataName            1126 /*!< Offset to brick name (16 bytes) */
+#define CommOffsetBrickDataBluecoreVersion 1142 /*!< Offset to Bluecore version (2 bytes) */
+#define CommOffsetBrickDataBdAddr          1144 /*!< Offset to Bluetooth address (7 bytes) */
+#define CommOffsetBrickDataBtStateStatus   1151 /*!< Offset to BtStateStatus (1 byte) */
+#define CommOffsetBrickDataBtHwStatus      1152 /*!< Offset to BtHwStatus (1 byte) */
+#define CommOffsetBrickDataTimeOutValue    1153 /*!< Offset to data timeout value (1 byte) */
 //  BTBUF          BtInBuf; (132 bytes)
-#define CommOffsetBtInBufBuf       1157 /*!< Offset to Bluetooth input buffer data */
-#define CommOffsetBtInBufInPtr     1285 /*!< Offset to Bluetooth input buffer front pointer */
-#define CommOffsetBtInBufOutPtr    1286 /*!< Offset to Bluetooth output buffer back pointer */
+#define CommOffsetBtInBufBuf       1157 /*!< Offset to Bluetooth input buffer data (128 bytes) */
+#define CommOffsetBtInBufInPtr     1285 /*!< Offset to Bluetooth input buffer front pointer (1 byte) */
+#define CommOffsetBtInBufOutPtr    1286 /*!< Offset to Bluetooth output buffer back pointer (1 byte) */
 //  BTBUF          BtOutBuf; (132 bytes)
-#define CommOffsetBtOutBufBuf      1289 /*!< Offset to Bluetooth output buffer offset data */
-#define CommOffsetBtOutBufInPtr    1417 /*!< Offset to Bluetooth output buffer front pointer */
-#define CommOffsetBtOutBufOutPtr   1418 /*!< Offset to Bluetooth output buffer back pointer */
+#define CommOffsetBtOutBufBuf      1289 /*!< Offset to Bluetooth output buffer offset data (128 bytes) */
+#define CommOffsetBtOutBufInPtr    1417 /*!< Offset to Bluetooth output buffer front pointer (1 byte) */
+#define CommOffsetBtOutBufOutPtr   1418 /*!< Offset to Bluetooth output buffer back pointer (1 byte) */
 // HI Speed related entries
 //  HSBUF          HsInBuf; (132 bytes)
-#define CommOffsetHsInBufBuf       1421 /*!< Offset to High Speed input buffer data */
-#define CommOffsetHsInBufInPtr     1549 /*!< Offset to High Speed input buffer front pointer */
-#define CommOffsetHsInBufOutPtr    1550 /*!< Offset to High Speed input buffer back pointer */
+#define CommOffsetHsInBufBuf       1421 /*!< Offset to High Speed input buffer data (128 bytes) */
+#define CommOffsetHsInBufInPtr     1549 /*!< Offset to High Speed input buffer front pointer (1 byte) */
+#define CommOffsetHsInBufOutPtr    1550 /*!< Offset to High Speed input buffer back pointer (1 byte) */
 //  HSBUF          HsOutBuf; (132 bytes)
-#define CommOffsetHsOutBufBuf      1553 /*!< Offset to High Speed output buffer data */
-#define CommOffsetHsOutBufInPtr    1681 /*!< Offset to High Speed output buffer front pointer */
-#define CommOffsetHsOutBufOutPtr   1682 /*!< Offset to High Speed output buffer back pointer */
+#define CommOffsetHsOutBufBuf      1553 /*!< Offset to High Speed output buffer data (128 bytes) */
+#define CommOffsetHsOutBufInPtr    1681 /*!< Offset to High Speed output buffer front pointer (1 byte) */
+#define CommOffsetHsOutBufOutPtr   1682 /*!< Offset to High Speed output buffer back pointer (1 byte) */
 // USB related entries
 //  USBBUF         UsbInBuf; (68 bytes)
-#define CommOffsetUsbInBufBuf        1685 /*!< Offset to Usb input buffer data */
-#define CommOffsetUsbInBufInPtr      1749 /*!< Offset to Usb input buffer front pointer */
-#define CommOffsetUsbInBufOutPtr     1750 /*!< Offset to Usb input buffer back pointer */
+#define CommOffsetUsbInBufBuf        1685 /*!< Offset to Usb input buffer data (64 bytes) */
+#define CommOffsetUsbInBufInPtr      1749 /*!< Offset to Usb input buffer front pointer (1 byte) */
+#define CommOffsetUsbInBufOutPtr     1750 /*!< Offset to Usb input buffer back pointer (1 byte) */
 //  USBBUF         UsbOutBuf;
-#define CommOffsetUsbOutBufBuf       1753 /*!< Offset to Usb output buffer data */
-#define CommOffsetUsbOutBufInPtr     1817 /*!< Offset to Usb output buffer front pointer */
-#define CommOffsetUsbOutBufOutPtr    1818 /*!< Offset to Usb output buffer back pointer */
+#define CommOffsetUsbOutBufBuf       1753 /*!< Offset to Usb output buffer data (64 bytes) */
+#define CommOffsetUsbOutBufInPtr     1817 /*!< Offset to Usb output buffer front pointer (1 byte) */
+#define CommOffsetUsbOutBufOutPtr    1818 /*!< Offset to Usb output buffer back pointer (1 byte) */
 //  USBBUF         UsbPollBuf;
-#define CommOffsetUsbPollBufBuf      1821 /*!< Offset to Usb Poll buffer data */
-#define CommOffsetUsbPollBufInPtr    1885 /*!< Offset to Usb Poll buffer front pointer */
-#define CommOffsetUsbPollBufOutPtr   1886 /*!< Offset to Usb Poll buffer back pointer */
+#define CommOffsetUsbPollBufBuf      1821 /*!< Offset to Usb Poll buffer data (64 bytes) */
+#define CommOffsetUsbPollBufInPtr    1885 /*!< Offset to Usb Poll buffer front pointer (1 byte) */
+#define CommOffsetUsbPollBufOutPtr   1886 /*!< Offset to Usb Poll buffer back pointer (1 byte) */
 
-#define CommOffsetBtDeviceCnt      1889 /*!< Offset to Bluetooth device count */
-#define CommOffsetBtDeviceNameCnt  1890 /*!< Offset to Bluetooth device name count */
-#define CommOffsetHsFlags          1891 /*!< Offset to High Speed flags */
-#define CommOffsetHsSpeed          1892 /*!< Offset to High Speed speed */
-#define CommOffsetHsState          1893 /*!< Offset to High Spped state */
-#define CommOffsetUsbState         1894 /*!< Offset to Usb State */
-#define CommOffsetHsMode           1895 /*!< Offset to High Speed mode */
+#define CommOffsetBtDeviceCnt      1889 /*!< Offset to Bluetooth device count (1 byte) */
+#define CommOffsetBtDeviceNameCnt  1890 /*!< Offset to Bluetooth device name count (1 byte) */
+#define CommOffsetHsFlags          1891 /*!< Offset to High Speed flags (1 byte) */
+#define CommOffsetHsSpeed          1892 /*!< Offset to High Speed speed (1 byte) */
+#define CommOffsetHsState          1893 /*!< Offset to High Spped state (1 byte) */
+#define CommOffsetUsbState         1894 /*!< Offset to Usb State (1 byte) */
+#define CommOffsetHsMode           1895 /*!< Offset to High Speed mode (2 bytes) */
 /** @} */  // end of CommIOMAP group
 /** @} */  // end of CommModuleConstants group
 /** @} */  // end of CommModule group

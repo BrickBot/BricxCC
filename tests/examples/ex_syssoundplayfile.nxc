@@ -1,0 +1,8 @@
+task main()
+{
+  SoundPlayFileType spfArgs;
+  spfArgs.Filename = "hello.rso";
+  spfArgs.Loop = false;
+  spfArgs.SoundLevel = 3;
+  SysSoundPlayFile(spfArgs);
+}

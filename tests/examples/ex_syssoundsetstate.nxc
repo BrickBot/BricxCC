@@ -1,0 +1,6 @@
+task main()
+{
+  SoundSetStateType sssArgs;
+  sssArgs.State = SOUND_STATE_STOP;
+  SysSoundSetState(sssArgs);
+}

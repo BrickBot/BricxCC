@@ -3824,6 +3824,7 @@ dseg ends
 #define SetHSSpeed(_n) __setHSSpeed(_n)
 #define SetHSState(_n) __setHSState(_n)
 #define SetUSBState(_n) __setUSBState(_n)
+#define SetHSMode(_n) __setHSMode(_n)
 
 #define __setSoundFrequency(_n) \
   compchk EQ, sizeof(_n), 2 \
@@ -4428,6 +4429,10 @@ dseg ends
 #define __setUSBState(_n) \
   compchk EQ, sizeof(_n), 1 \
   SetCommModuleValue(CommOffsetUsbState, _n)
+
+#define __setHSMode(_n) \
+  compchk EQ, sizeof(_n), 2 \
+  SetCommModuleValue(CommOffsetHsMode, _n)
 
 dseg segment
   __FOMutex mutex

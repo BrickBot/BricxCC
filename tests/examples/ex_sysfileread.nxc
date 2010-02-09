@@ -1,0 +1,12 @@
+task main()
+{
+  FileReadWriteType frArgs;
+  frArgs.FileHandle = foArgs.FileHandle;
+  frArgs.Length = 12; // number of bytes to read
+  SysFileRead(frArgs);
+  if (frArgs.Result == NO_ERR) {
+    TextOut(0, LCD_LINE1, frArgs.Buffer);
+    // show how many bytes were actually read
+    NumOut(0, LCD_LINE2, frArgs.Length);
+  }
+}

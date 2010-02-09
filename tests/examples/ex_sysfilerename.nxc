@@ -1,0 +1,8 @@
+task main()
+{
+  FileRenameType frArgs;
+  frArgs.OldFilename = "myfile.txt";
+  frArgs.NewFilename = "myfile2.txt";
+  SysFileRename(frArgs);
+  if (frArgs.Result == LDR_SUCCESS) { /* do something */ }
+}

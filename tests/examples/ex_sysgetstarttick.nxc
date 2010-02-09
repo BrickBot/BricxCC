@@ -1,0 +1,6 @@
+task main()
+{
+  GetStartTickType gstArgs;
+  SysGetStartTick(gstArgs);
+  unsigned long myStart = gstArgs.Result;
+}

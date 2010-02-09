@@ -1,0 +1,7 @@
+task main()
+{
+  CommBTWriteType args;
+  args.Connection = 1;
+  args.Buffer = myData;
+  SysCommBTWrite(args);
+}

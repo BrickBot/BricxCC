@@ -1,0 +1,6 @@
+task main()
+{
+  SetScreenModeType ssmArgs;
+  ssmArgs.ScreenMode = 0x00; // restore default NXT screen
+  SysSetScreenMode(ssmArgs);
+}

@@ -1,0 +1,6 @@
+task main()
+{
+  CommExecuteFunctionType args;
+  args.Cmd = INTF_BTOFF;
+  SysCommExecuteFunction(args);
+}
