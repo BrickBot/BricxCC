@@ -1,0 +1,6 @@
+task main()
+{
+  FileDeleteType fdArgs;
+  fdArgs.Filename = "myfile.txt";
+  SysFileDelete(fdArgs); // delete the file
+}

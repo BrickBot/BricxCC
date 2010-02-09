@@ -1,0 +1,9 @@
+task main()
+{
+  CommLSWriteType args;
+  args.Port = S1;
+  args.Buffer = myBuf;
+  args.ReturnLen = 8;
+  SysCommLSWrite(args);
+  // check Result for error status
+}

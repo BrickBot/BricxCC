@@ -1,0 +1,8 @@
+task main()
+{
+  IOMapWriteByIDType args;
+  args.ModuleID = SoundModuleID;
+  args.Offset = SoundOffsetSampleRate;
+  args.Buffer = theData;
+  SysIOMapWriteByID(args);
+}

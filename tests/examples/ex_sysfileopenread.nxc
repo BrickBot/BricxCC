@@ -1,0 +1,9 @@
+task main()
+{
+  FileOpenType foArgs;
+  foArgs.Filename = "myfile.txt";
+  SysFileOpenRead(foArgs); // open the file for reading
+  if (foArgs.Result == NO_ERR) {
+    // read data from the file using FileHandle
+  }
+}

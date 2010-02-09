@@ -1,0 +1,6 @@
+task main()
+{
+  FileCloseType fcArgs;
+  fcArgs.FileHandle = foArgs.FileHandle;
+  SysFileClose(fcArgs);
+}

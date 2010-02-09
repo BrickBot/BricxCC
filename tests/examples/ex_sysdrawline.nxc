@@ -1,0 +1,10 @@
+task main()
+{
+  DrawLineType dlArgs;
+  dlArgs.StartLoc.X = 20;
+  dlArgs.StartLoc.Y = 20;
+  dlArgs.EndLoc.X = 60;
+  dlArgs.EndLoc.Y = 60;
+  dlArgs.Options = 0x01; // clear before drawing
+  SysDrawLine(dlArgs);
+}

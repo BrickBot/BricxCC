@@ -1,0 +1,6 @@
+task main()
+{
+  DisplayExecuteFunctionType args;
+  args.Cmd = DISPLAY_ERASE_ALL;
+  SysDisplayExecuteFunction(args);
+}

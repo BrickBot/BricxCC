@@ -1,0 +1,5 @@
+task main()
+{
+  KeepAliveType kaArgs;
+  SysKeepAlive(kaArgs); // reset sleep timer
+}

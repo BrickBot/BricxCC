@@ -1,0 +1,10 @@
+task main()
+{
+  MessageReadType args;
+  args.QueueID = MAILBOX1; // 0
+  args.Remove = true;
+  SysMessageRead(args);
+  if (args.Result == NO_ERR) {
+    TextOut(0, LCD_LINE1, args.Message);
+  }
+}

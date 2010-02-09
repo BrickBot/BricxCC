@@ -1,0 +1,8 @@
+task main()
+{
+  CommLSCheckStatusType args;
+  args.Port = S1;
+  SysCommLSCheckStatus(args);
+  // is the status (Result) IDLE?
+  if (args.Result == LOWSPEED_IDLE) { /* proceed */ }
+}

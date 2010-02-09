@@ -1,0 +1,9 @@
+task main()
+{
+  DrawCircleType dcArgs;
+  dcArgs.Center.X = 20;
+  dcArgs.Center.Y = 20;
+  dcArgs.Size = 10; // radius
+  dcArgs.Options = 0x01; // clear before drawing
+  SysDrawCircle(dcArgs);
+}

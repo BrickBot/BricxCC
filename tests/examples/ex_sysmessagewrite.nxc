@@ -1,0 +1,8 @@
+task main()
+{
+  MessageWriteType args;
+  args.QueueID = MAILBOX1; // 0
+  args.Message = "testing";
+  SysMessageWrite(args);
+  // check Result for error status
+}

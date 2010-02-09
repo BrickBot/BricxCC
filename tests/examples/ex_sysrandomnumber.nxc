@@ -1,0 +1,6 @@
+task main()
+{
+  RandomNumberType rnArgs;
+  SysRandomNumber(rnArgs);
+  int myRandomValue = rnArgs.Result;
+}

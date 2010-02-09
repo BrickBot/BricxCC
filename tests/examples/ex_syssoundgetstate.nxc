@@ -1,0 +1,6 @@
+task main()
+{
+  SoundGetStateType sgsArgs;
+  SysSoundGetState(sgsArgs);
+  if (sgsArgs.State == SOUND_STATE_IDLE) {/* do stuff */}
+}

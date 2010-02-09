@@ -1,0 +1,10 @@
+task main()
+{
+  FileOpenType foArgs;
+  foArgs.Filename = "myfile.txt";
+  foArgs.Length = 256; // create with capacity for 256 bytes
+  SysFileOpenWrite(foArgs); // create the file
+  if (foArgs.Result == NO_ERR) {
+    // write to the file using FileHandle
+  }
+}

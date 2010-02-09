@@ -1,0 +1,9 @@
+task main()
+{
+  IOMapReadByIDType args;
+  args.ModuleID = CommandModuleID;
+  args.Offset = CommandOffsetTick;
+  args.Count = 4; // this value happens to be 4 bytes long
+  SysIOMapReadByID(args);
+  if (args.Result == NO_ERR) { /* do something with data */ }
+}

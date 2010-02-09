@@ -1,0 +1,6 @@
+task main()
+{
+  LoaderExecuteFunctionType args;
+  args.Cmd = 0xA0; // delete user flash
+  SysLoaderExecuteFunction(args);
+}

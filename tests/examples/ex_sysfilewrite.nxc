@@ -1,0 +1,11 @@
+task main()
+{
+  FileReadWriteType fwArgs;
+  fwArgs.FileHandle = foArgs.FileHandle;
+  fwArgs.Buffer = "data to write";
+  SysFileWrite(fwArgs);
+  if (fwArgs.Result == NO_ERR) {
+    // display number of bytes written
+      NumOut(0, LCD_LINE1, fwArgs.Length);
+  }
+}

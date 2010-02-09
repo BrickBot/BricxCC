@@ -1430,37 +1430,57 @@ struct SoundSetStateType {
  * Types used by various low speed module functions.
  * @{
  */
-// CommLSWrite
+/**
+ * CommLSWriteType structure.
+ * This structure is used when calling the \ref SysCommLSWrite system call
+ * function.
+ * \sa SysCommLSWrite()
+ */
 struct CommLSWriteType {
-  char Result;
-  byte Port;
-  byte Buffer[];
-  byte ReturnLen;
+  char Result;      /*!< The function call result. \todo ?. */
+  byte Port;        /*!< The port to which the I2C device is connected. */
+  byte Buffer[];    /*!< The buffer written to the I2C device. */
+  byte ReturnLen;   /*!< The number of bytes that you want to read from the I2C device. */
 };
 
-// CommLSRead
+/**
+ * CommLSReadType structure.
+ * This structure is used when calling the \ref SysCommLSRead system call
+ * function.
+ * \sa SysCommLSRead()
+ */
 struct CommLSReadType {
-  char Result;
-  byte Port;
-  byte Buffer[];
-  byte BufferLen;
+  char Result;      /*!< The function call result. \todo ?. */
+  byte Port;        /*!< The port to which the I2C device is connected. */
+  byte Buffer[];    /*!< The buffer used to store the bytes read from the I2C device. */
+  byte BufferLen;   /*!< The size of the output buffer on input.  This field is not updated during the function call. */
 };
 
-// CommLSCheckStatus
+/**
+ * CommLSCheckStatusType structure.
+ * This structure is used when calling the \ref SysCommLSCheckStatus system
+ * call function.
+ * \sa SysCommLSCheckStatus()
+ */
 struct CommLSCheckStatusType {
-  char Result;
-  byte Port;
-  byte BytesReady;
+  char Result;       /*!< Returns the I2C status of the specified port. */
+  byte Port;         /*!< The port to which the I2C device is connected. */
+  byte BytesReady;   /*!< The number of bytes ready to read from the specified port. */
 };
 
 #ifdef __ENHANCED_FIRMWARE
-// CommLSWriteEx
+/**
+ * CommLSWriteExType structure.
+ * This structure is used when calling the \ref SysCommLSWriteEx system call
+ * function.
+ * \sa SysCommLSWriteEx()
+ */
 struct CommLSWriteExType {
- char Result;
- byte Port;
- byte Buffer[];
- byte ReturnLen;
- byte NoRestartOnRead;
+  char Result;          /*!< The function call result. \todo ?. */
+  byte Port;            /*!< The port to which the I2C device is connected. */
+  byte Buffer[];        /*!< The buffer written to the I2C device. */
+  byte ReturnLen;       /*!< The number of bytes that you want to read from the I2C device. */
+  byte NoRestartOnRead; /*!< Should a restart occur before reading from the device? */
 };
 #endif
 
@@ -1469,6 +1489,139 @@ struct CommLSWriteExType {
  * Functions for accessing and modifying low speed module features.
  * @{
  */
+
+#ifdef __DOXYGEN_DOCS
+
+inline byte SensorUS(const byte port);
+inline char ReadSensorUSEx(const byte port, byte & values[]);
+
+inline char ReadI2CRegister(byte port, byte reg, byte & out);
+inline char WriteI2CRegister(byte port, byte reg, byte val);
+
+inline long LowspeedStatus(const byte port, byte & bready);
+inline long LowspeedCheckStatus(const byte port);
+inline byte LowspeedBytesReady(const byte port);
+inline long LowspeedWrite(const byte port, byte retlen, byte buffer[]);
+inline long LowspeedRead(const byte port, byte buflen, byte & buffer[]);
+
+inline long I2CStatus(const byte port, byte & bready);
+inline long I2CCheckStatus(const byte port);
+inline byte I2CBytesReady(const byte port);
+inline long I2CWrite(const byte port, byte retlen, byte buffer[])
+inline long I2CRead(const byte port, byte buflen, byte & buffer[])
+
+inline long I2CBytes(const byte port, byte inbuf[], byte & count, byte & outbuf[]);
+
+inline string I2CDeviceInfo(byte port, byte info);
+inline string I2CDeviceInfoEx(byte port, byte addr, byte info);
+inline string I2CVersion(byte port);
+inline string I2CVersionEx(byte port, byte addr);
+inline string I2CVendorId(byte port);
+inline string I2CVendorIdEx(byte port, byte addr);
+inline string I2CDeviceId(byte port);
+inline string I2CDeviceIdEx(byte port, byte addr);
+
+inline long I2CSendCommand(byte port, byte cmd);
+inline long I2CSendCommandEx(byte port, byte addr, byte cmd);
+
+inline void GetLSInputBuffer(const byte port, const byte offset, byte cnt, byte & data[]);
+inline void GetLSOutputBuffer(const byte port, const byte offset, byte cnt, byte & data[]);
+
+inline byte LSInputBufferInPtr(const byte port);
+inline byte LSInputBufferOutPtr(const byte port);
+inline byte LSInputBufferBytesToRx(const byte port);
+inline byte LSOutputBufferInPtr(const byte port);
+inline byte LSOutputBufferOutPtr(const byte port);
+inline byte LSOutputBufferBytesToRx(const byte port);
+inline byte LSMode(const byte port);
+inline byte LSChannelState(const byte port);
+inline byte LSErrorType(const byte port);
+inline byte LSState();
+inline byte LSSpeed();
+#ifdef __ENHANCED_FIRMWARE
+inline byte LSNoRestartOnRead();
+#endif
+
+inline void SetLSInputBuffer(const byte port, const byte offset, byte cnt, byte data[]);
+inline void SetLSInputBufferInPtr(const byte port, byte n);
+inline void SetLSInputBufferOutPtr(const byte port, byte n);
+inline void SetLSInputBufferBytesToRx(const byte port, byte n);
+
+inline void SetLSOutputBuffer(const byte port, const byte offset, byte cnt, byte data[]);
+inline void SetLSOutputBufferInPtr(const byte port, byte n);
+inline void SetLSOutputBufferOutPtr(const byte port, n);
+inline void SetLSOutputBufferBytesToRx(const byte port, byte n);
+
+inline void SetLSMode(const byte port, const byte mode);
+inline void SetLSChannelState(const byte port, const byte chState);
+inline void SetLSErrorType(const byte port, const byte errType);
+inline void SetLSState(const byte lsState);
+inline void SetLSSpeed(const byte lsSpeed);
+#ifdef __ENHANCED_FIRMWARE
+inline void SetLSNoRestartOnRead(const byte lsNoRestart);
+#endif
+
+/**
+ * Write to a Lowspeed sensor.
+ * This function lets you write to an I2C (Lowspeed) sensor using the values
+ * specified via the \ref CommLSWriteType structure.
+ *
+ * \param args The CommLSWriteType structure containing the needed parameters.
+ */
+inline void SysCommLSWrite(CommLSWriteType & args);
+/** \example ex_syscommlswrite.nxc
+ * This is an example of how to use the SysCommLSWrite function along with the
+ * CommLSWriteType structure.
+ */
+
+/**
+ * Read from a Lowspeed sensor.
+ * This function lets you read from an I2C (Lowspeed) sensor using the values
+ * specified via the \ref CommLSReadType structure.
+ *
+ * \param args The CommLSReadType structure containing the needed parameters.
+ */
+inline void SysCommLSRead(CommLSReadType & args);
+/** \example ex_syscommlsread.nxc
+ * This is an example of how to use the SysCommLSRead function along with the
+ * CommLSReadType structure.
+ */
+
+/**
+ * Check Lowspeed sensor status.
+ * This function lets you check the status of an I2C (Lowspeed) sensor
+ * transaction using the values specified via the \ref CommLSCheckStatusType
+ * structure.
+ *
+ * \param args The CommLSCheckStatusType structure containing the needed
+ * parameters.
+ */
+inline void SysCommLSCheckStatus(CommLSCheckStatusType & args);
+/** \example ex_syscommlscheckstatus.nxc
+ * This is an example of how to use the SysCommLSCheckStatus function along
+ * with the CommLSCheckStatusType structure.
+ */
+
+#ifdef __ENHANCED_FIRMWARE
+/**
+ * Write to a Lowspeed sensor (extra).
+ * This function lets you write to an I2C (Lowspeed) sensor using the values
+ * specified via the \ref CommLSWriteExType structure. This is the same as the
+ * SysCommLSWrite function except that you also can specify whether or not the
+ * Lowspeed module should issue a restart command to the I2C device before
+ * beginning to read data from the device.
+ *
+ * \param args The CommLSWriteExType structure containing the desired parameters.
+ */
+inline void SysCommLSWriteEx(CommLSWriteExType & args);
+/** \example ex_syscommlswriteex.nxc
+ * This is an example of how to use the SysCommLSWriteEx function along with the
+ * CommLSWriteExType structure.
+ */
+#endif
+
+#else
+
 // ultrasonic sensor
 #define SensorUS(_p) asm { ReadSensorUS(_p, __RETVAL__) }
 #define ReadSensorUSEx(_port, _values) asm { __ReadSensorUSEx(_port, _values, __RETVAL__) }
@@ -1559,6 +1712,8 @@ struct CommLSWriteExType {
 }
 #endif
 
+#endif
+
 /** @} */ // end of LowSpeedModuleFunctions group
 /** @} */ // end of LowSpeedModule group
 
@@ -1580,9 +1735,34 @@ struct CommLSWriteExType {
  * Functions for accessing and modifying IOCtrl module features.
  * @{
  */
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * Power down the NXT.
+ * This function powers down the NXT.
+ * The running program will terminate as a result of this action.
+ */
+inline void PowerDown();
+
+/**
+ * Put the brick to sleep immediately.
+ * This function lets you immediately put the NXT to sleep.
+ * The running program will terminate as a result of this action.
+ */
+inline void SleepNow();
+
+/**
+ * Reboot the NXT in firmware download mode.
+ * This function lets you reboot the NXT into SAMBA or firmware download mode.
+ * The running program will terminate as a result of this action.
+ */
+inline void RebootInFirmwareMode();
+
+#else
 #define PowerDown() asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN) }
 #define SleepNow() PowerDown()
 #define RebootInFirmwareMode() asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_BOOT) }
+#endif
 /** @} */ // end of IOCtrlModuleFunctions group
 /** @} */ // end of IOCtrlModule group
 
@@ -1599,93 +1779,155 @@ struct CommLSWriteExType {
  * Types used by various Command module functions.
  * @{
  */
-// GetStartTick
+
+/**
+ * GetStartTickType structure.
+ * This structure is used when calling the \ref SysGetStartTick system call
+ * function.
+ * \sa SysGetStartTick()
+ */
 struct GetStartTickType {
-  unsigned long Result;
+  unsigned long Result;   /*!< The returned tick value. */
 };
 
-// KeepAlive
+/**
+ * KeepAliveType structure.
+ * This structure is used when calling the \ref SysKeepAlive system call
+ * function.
+ * \sa SysKeepAlive()
+ */
 struct KeepAliveType {
-  unsigned long Result;
-};
-// IOMapRead
-struct IOMapReadType {
-  char Result;
-  string ModuleName;
-  unsigned int Offset;
-  unsigned int Count;
-  byte Buffer[];
+  unsigned long Result;   /*!< The function call result. \todo ?. */
 };
 
-// IOMapWrite
+/**
+ * IOMapReadType structure.
+ * This structure is used when calling the \ref SysIOMapRead system call
+ * function.
+ * \sa SysIOMapRead()
+ */
+struct IOMapReadType {
+  char Result;           /*!< The function call result. \ref NO_ERR means it succeeded. */
+  string ModuleName;     /*!< The name of the module to read from. See the \ref ModuleNameConstants group. */
+  unsigned int Offset;   /*!< The offset in the module IOMap where to start reading. */
+  unsigned int Count;    /*!< The number of bytes to read. */
+  byte Buffer[];         /*!< The buffer used to store read bytes. */
+};
+
+/**
+ * IOMapWriteType structure.
+ * This structure is used when calling the \ref SysIOMapWrite system call
+ * function.
+ * \sa SysIOMapWrite()
+ */
 struct IOMapWriteType {
-  char Result;
-  string ModuleName;
-  unsigned int Offset;
-  byte Buffer[];
+  char Result;           /*!< The function call result. \ref NO_ERR means it succeeded. */
+  string ModuleName;     /*!< The name of the module to write to. See the \ref ModuleNameConstants group. */
+  unsigned int Offset;   /*!< The offset in the module IOMap where to start writing. */
+  byte Buffer[];         /*!< The buffer containing bytes to write. */
 };
 
 #ifdef __ENHANCED_FIRMWARE
-// IOMapReadByID
+/**
+ * IOMapReadByIDType structure.
+ * This structure is used when calling the \ref SysIOMapReadByID system call
+ * function.
+ * \sa SysIOMapReadByID()
+ */
 struct IOMapReadByIDType {
-  char Result;
-  unsigned long ModuleID;
-  unsigned int Offset;
-  unsigned int Count;
-  byte Buffer[];
+  char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
+  unsigned long ModuleID; /*!< The identifier of the module to read from. See the \ref ModuleIDConstants group. */
+  unsigned int Offset;    /*!< The offset in the module IOMap where to start reading. */
+  unsigned int Count;     /*!< The number of bytes to read. */
+  byte Buffer[];          /*!< The buffer used to store read bytes. */
 };
 
-// IOMapWriteByID
+/**
+ * IOMapWriteByIDType structure.
+ * This structure is used when calling the \ref SysIOMapWriteByID system call
+ * function.
+ * \sa SysIOMapWriteByID()
+ */
 struct IOMapWriteByIDType {
-  char Result;
-  unsigned long ModuleID;
-  unsigned int Offset;
-  byte Buffer[];
+  char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
+  unsigned long ModuleID; /*!< The identifier of the module to write to. See the \ref ModuleIDConstants group. */
+  unsigned int Offset;    /*!< The offset in the module IOMap where to start writing. */
+  byte Buffer[];          /*!< The buffer containing bytes to write. */
 };
 
 #endif
 
 #if __FIRMWARE_VERSION > 107
 
-// DatalogWrite
+/**
+ * DatalogWriteType structure.
+ * This structure is used when calling the \ref SysDatalogWrite system call
+ * function.
+ * \sa SysDatalogWrite()
+ */
 struct DatalogWriteType {
- char Result;
- byte Message[];
+ char Result;     /*!< The function call result. \ref NO_ERR means it succeeded. */
+ byte Message[];  /*!< A buffer containing data to write to the datalog. */
 };
 
-// DatalogGetTimes
+/**
+ * DatalogGetTimesType structure.
+ * This structure is used when calling the \ref SysDatalogGetTimes system call
+ * function.
+ * \sa SysDatalogGetTimes()
+ */
 struct DatalogGetTimesType {
- unsigned long SyncTime;
- unsigned long SyncTick;
+ unsigned long SyncTime;  /*!< The datalog synchronized time. \todo what is this. */
+ unsigned long SyncTick;  /*!< The datalog synchronized tick. \todo what is this. */
 };
 
-// ReadSemData
+/**
+ * ReadSemDataType structure.
+ * This structure is used when calling the \ref SysReadSemData system call
+ * function.
+ * \sa SysReadSemData()
+ */
 struct ReadSemDataType {
-  byte SemData;
-  bool Request;
+  byte SemData;  /*!< The semaphore data returned by the function call. */
+  bool Request;  /*!< Which semaphore am I reading from, usage or request? */
 };
 
-// WriteSemData
+/**
+ * WriteSemDataType structure.
+ * This structure is used when calling the \ref SysWriteSemData system call
+ * function.
+ * \sa SysWriteSemData()
+ */
 struct WriteSemDataType {
-  byte SemData;
-  bool Request;
-  byte NewVal;
-  bool ClearBits;
+  byte SemData;   /*!< The modified semaphore data returned by the function call. */
+  bool Request;   /*!< Which semaphore am I writing to, usage or request? */
+  byte NewVal;    /*!< The new semaphore data. */
+  bool ClearBits; /*!< Should I clear existing bits? */
 };
 
-// UpdateCalibCacheInfo
+/**
+ * UpdateCalibCacheInfoType structure.
+ * This structure is used when calling the \ref SysUpdateCalibCacheInfo system call
+ * function.
+ * \sa SysUpdateCalibCacheInfo()
+ */
 struct UpdateCalibCacheInfoType {
-  byte Result;
-  string Name;
-  unsigned int MinVal;
-  unsigned int MaxVal;
+  byte Result;          /*!< The function call result. \todo ?. */
+  string Name;          /*!< The name of the sensor calibration cache. \todo ?. */
+  unsigned int MinVal;  /*!< The minimum calibrated value. */
+  unsigned int MaxVal;  /*!< The maximum calibrated value. */
 };
 
-// ComputeCalibValue
+/**
+ * ComputeCalibValueType structure.
+ * This structure is used when calling the \ref SysComputeCalibValue system call
+ * function.
+ * \sa SysComputeCalibValue()
+ */
 struct ComputeCalibValueType {
-  byte Result;
-  string Name;
-  unsigned int RawVal;
+  byte Result;          /*!< The function call result. \todo ?. */
+  string Name;          /*!< The name of the sensor calibration cache. \todo ?. */
+  unsigned int RawVal;  /*!< The raw value. \todo ?. */
 };
 
 #endif
@@ -1694,6 +1936,224 @@ struct ComputeCalibValueType {
  * Functions for accessing and modifying Command module features.
  * @{
  */
+
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * Read the current system tick.
+ * This function lets you obtain the tick value at the time your program began
+ * executing via the \ref GetStartTickType structure.
+ *
+ * \return The current system tick count.
+ */
+inline unsigned long CurrentTick();
+/** \example ex_cmdmmisc.nxc
+ * This is an example of how to use the CurrentTick, FirstTick, and
+ * ResetSleepTimer functions.
+ */
+
+/**
+ * Get the first tick.
+ * This function lets you obtain the tick value at the time your program began.
+ *
+ * \return The tick count at the start of program execution.
+ */
+inline unsigned long FirstTick();
+
+/**
+ * Reset the sleep timer.
+ * This function lets you reset the sleep timer.
+ *
+ * \return The result of resetting the sleep timer.
+ */
+inline long ResetSleepTimer();
+
+//inline void SpawnProgram(string fname); // not ready to be documented
+
+/**
+ * Call any system function.
+ * This generic macro can be used to call any system function. No type
+ * checking is performed so you need to make sure you use the correct
+ * structure type given the selected system function ID. This is, however, the
+ * fastest possible way to call a system function in NXC.
+ *
+ * Valid function ID constants are defined in the \ref SysCallConstants group.
+ *
+ * \param funcID The function ID constant corresponding to the function to be
+ * called.
+ * \param args The structure containing the needed parameters.
+ */
+inline void SysCall(byte funcID, variant & args);
+/** \example ex_syscall.nxc
+ * This is an example of how to use the SysCall function.
+ */
+
+/**
+ * Get start tick.
+ * This function lets you obtain the tick value at the time your program began
+ * executing via the \ref GetStartTickType structure.
+ *
+ * \param args The GetStartTickType structure receiving results.
+ */
+inline void SysGetStartTick(GetStartTickType & args);
+/** \example ex_sysgetstarttick.nxc
+ * This is an example of how to use the SysGetStartTick function along with
+ * the GetStartTickType structure.
+ */
+
+/**
+ * Keep alive.
+ * This function lets you reset the sleep timer via the \ref KeepAliveType
+ * structure.
+ *
+ * \param args The KeepAliveType structure receiving results.
+ */
+inline void SysKeepAlive(KeepAliveType & args);
+/** \example ex_syskeepalive.nxc
+ * This is an example of how to use the SysKeepAlive function along with the
+ * KeepAliveType structure.
+ */
+
+/**
+ * Read from IOMap by name.
+ * This function lets you read data from a firmware module's IOMap using the
+ * values specified via the \ref IOMapReadType structure.
+ *
+ * \param args The IOMapReadType structure containing the needed parameters.
+ */
+inline void SysIOMapRead(IOMapReadType & args);
+/** \example ex_sysiomapread.nxc
+ * This is an example of how to use the SysIOMapRead function along with the
+ * IOMapReadType structure.
+ */
+
+/**
+ * Write to IOMap by name.
+ * This function lets you write data to a firmware module's IOMap using the
+ * values specified via the \ref IOMapWriteType structure.
+ *
+ * \param args The IOMapWriteType structure containing the needed parameters.
+ */
+inline void SysIOMapWrite(IOMapWriteType & args);
+/** \example ex_sysiomapwrite.nxc
+ * This is an example of how to use the SysIOMapWrite function along with the
+ * IOMapWriteType structure.
+ */
+
+#ifdef __ENHANCED_FIRMWARE
+/**
+ * Read from IOMap by identifier.
+ * This function lets you read data from a firmware module's IOMap using the
+ * values specified via the \ref IOMapReadByIDType structure. This function
+ * can be as much as three times faster than using SysIOMapRead since it does
+ * not have to do a string lookup using the ModuleName.
+ *
+ * \param args The IOMapReadByIDType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void SysIOMapReadByID(IOMapReadByIDType & args);
+/** \example ex_sysiomapreadbyid.nxc
+ * This is an example of how to use the SysIOMapReadByID function along with
+ * the IOMapReadByIDType structure.
+ */
+
+/**
+ * Write to IOMap by identifier.
+ * This function lets you write data to a firmware module's IOMap using the
+ * values specified via the \ref IOMapWriteByIDType structure. This function
+ * can be as much as three times faster than using SysIOMapWrite since it does
+ * not have to do a string lookup using the ModuleName.
+ *
+ * \param args The IOMapWriteByIDType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void SysIOMapWriteByID(IOMapWriteByIDType & args);
+/** \example ex_sysiomapwritebyid.nxc
+ * This is an example of how to use the SysIOMapWriteByID function along with
+ * the IOMapWriteByIDType structure.
+ */
+
+#endif
+#if __FIRMWARE_VERSION > 107
+/**
+ * Write to the datalog.
+ * This function lets you write to the datalog using the
+ * values specified via the \ref DatalogWriteType structure.
+ *
+ * \todo figure out what this function is intended for
+ * \param args The DatalogWriteType structure containing the needed parameters.
+ */
+inline void SysDatalogWrite(DatalogWriteType & args);
+/** \example ex_datalog.nxc
+ * This is an example of how to use the SysDatalogWrite and SysDatalogGetTimes
+ * functions along with the DatalogWriteType and DatalogGetTimesType structures.
+ */
+
+/**
+ * Get datalog times.
+ * This function lets you get datalog times using the
+ * values specified via the \ref DatalogGetTimesType structure.
+ *
+ * \todo figure out what this function is intended for
+ * \param args The DatalogGetTimesType structure containing the needed parameters.
+ */
+inline void SysDatalogGetTimes(DatalogGetTimesType & args);
+
+/**
+ * Read semaphore data.
+ * This function lets you read global motor semaphore data using the
+ * values specified via the \ref ReadSemDataType structure.
+ *
+ * \param args The ReadSemDataType structure containing the needed parameters.
+ */
+inline void SysReadSemData(ReadSemDataType & args);
+/** \example ex_SemData.nxc
+ * This is an example of how to use the SysWriteSemData and SysReadSemData
+ * functions along with the WriteSemDataType and ReadSemDataType structures.
+ */
+
+/**
+ * Write semaphore data.
+ * This function lets you write global motor semaphore data using the
+ * values specified via the \ref WriteSemDataType structure.
+ *
+ * \param args The WriteSemDataType structure containing the needed parameters.
+ */
+inline void SysWriteSemData(WriteSemDataType & args);
+
+/**
+ * Update calibration cache information.
+ * This function lets you update calibration cache information using the
+ * values specified via the \ref UpdateCalibCacheInfoType structure.
+ *
+ * \todo figure out what this function is intended for
+ * \param args The UpdateCalibCacheInfoType structure containing the needed parameters.
+ */
+inline void SysUpdateCalibCacheInfo(UpdateCalibCacheInfoType & args);
+/** \example ex_SysCalib.nxc
+ * This is an example of how to use the SysUpdateCalibCacheInfo and
+ * SysComputeCalibValue functions along with the UpdateCalibCacheInfoType and
+ * ComputeCalibValueType structures.
+ */
+
+/**
+ * Compute calibration values.
+ * This function lets you compute calibration values using the
+ * values specified via the \ref ComputeCalibValueType structure.
+ *
+ * \todo figure out what this function is intended for
+ * \param args The ComputeCalibValueType structure containing the needed parameters.
+ */
+inline void SysComputeCalibValue(ComputeCalibValueType & args);
+
+#endif
+
+#else
+
 #define CurrentTick() asm { gettick __RETVAL__ }
 #define FirstTick() asm { GetFirstTick(__RETVAL__) }
 #define ResetSleepTimer() asm { acquire __KeepAliveMutex \
@@ -1762,13 +2222,14 @@ struct ComputeCalibValueType {
 }
 #endif
 
+#endif
 
 #define until(_c) while(!(_c))
 
 /**
  * Wait some milliseconds.
  * Make a task sleep for specified amount of time (in 1000ths of a second).
- * 
+ *
  * \param ms The number of milliseconds to sleep.
  */
 inline void Wait(unsigned long ms) { asm { waitv ms } }
@@ -1836,44 +2297,117 @@ inline void StopAllTasks();
  * Types used by various Comm module functions.
  * @{
  */
-// MessageWrite
+/**
+ * MessageWriteType structure.
+ * This structure is used when calling the \ref SysMessageWrite system call
+ * function.
+ * \sa SysMessageWrite()
+ */
 struct MessageWriteType {
-  char Result;
-  byte QueueID;
-  string Message;
+  char Result;      /*!< The function call result. \ref NO_ERR means it succeeded. */
+  byte QueueID;     /*!< The queue identifier. See the \ref MailboxConstants group. */
+  string Message;   /*!< The message to write. */
 };
 
-// MessageRead
+/**
+ * MessageReadType structure.
+ * This structure is used when calling the \ref SysMessageRead system call
+ * function.
+ * \sa SysMessageRead()
+ */
 struct MessageReadType {
-  char Result;
-  byte QueueID;
-  bool Remove;
-  string Message;
+  char Result;       /*!< The function call result. \ref NO_ERR means it succeeded. */
+  byte QueueID;     /*!< The queue identifier. See the \ref MailboxConstants group. */
+  bool Remove;      /*!< If true, remove the read message from the queue. */
+  string Message;   /*!< The contents of the mailbox/queue. */
 };
 
-// CommBTCheckStatus
+/**
+ * CommBTCheckStatusType structure.
+ * This structure is used when calling the \ref SysCommBTCheckStatus system
+ * call function.
+ * \sa SysCommBTCheckStatus()
+ */
 struct CommBTCheckStatusType {
-  char Result;
-  byte Connection;
+  char Result;       /*!< The function call result. Possible values include
+                       ERR_INVALID_PORT, STAT_COMM_PENDING,
+                       ERR_COMM_CHAN_NOT_READY, and LDR_SUCCESS (0). */
+  byte Connection;   /*!< The connection to check. */
 };
 
-// CommBTWrite
+/**
+ * CommBTWriteType structure.
+ * This structure is used when calling the \ref SysCommBTWrite system call
+ * function.
+ * \sa SysCommBTWrite()
+ */
 struct CommBTWriteType {
-  char Result;
-  byte Connection;
-  byte Buffer[];
+  char Result;       /*!< The function call result. \todo ?. */
+  byte Connection;   /*!< The connection to use. */
+  byte Buffer[];     /*!< The data to write to the connection. */
 };
 
 #ifdef __ENHANCED_FIRMWARE
-// CommExecuteFunction
+/**
+ * CommExecuteFunctionType structure.
+ * This structure is used when calling the \ref SysCommExecuteFunction system
+ * call function.
+ *
+ * The fields usage depends on the requested command and are documented in the
+ * table below. If a field member is shown as 'x' it is ignored by the
+ * specified command.
+ *
+ * <table>
+ * <tr><td>Cmd</td>
+ *     <td>Meaning</td><td>(Param1,Param2,Param3,Name)</td></tr>
+ * <tr><td>INTF_SENDFILE</td>
+ *     <td>Send a file over a Bluetooth connection</td><td>(Connection,x,x,Filename)</td></tr>
+ * <tr><td>INTF_SEARCH</td>
+ *     <td>Search for Bluetooth devices</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_STOPSEARCH</td>
+ *     <td>Stop searching for Bluetooth devices</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_CONNECT</td>
+ *     <td>Connect to a Bluetooth device</td><td>(DeviceIndex,Connection,x,x)</td></tr>
+ * <tr><td>INTF_DISCONNECT</td>
+ *     <td>Disconnect a Bluetooth device</td><td>(Connection,x,x,x)</td></tr>
+ * <tr><td>INTF_DISCONNECTALL</td>
+ *     <td>Disconnect all Bluetooth devices</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_REMOVEDEVICE</td>
+ *     <td>Remove device from My Contacts</td><td>(DeviceIndex,x,x,x)</td></tr>
+ * <tr><td>INTF_VISIBILITY</td>
+ *     <td>Set Bluetooth visibility</td><td>(true/false,x,x,x)</td></tr>
+ * <tr><td>INTF_SETCMDMODE</td>
+ *     <td>Set command mode</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_OPENSTREAM</td>
+ *     <td>Open a stream</td><td>(x,Connection,x,x)</td></tr>
+ * <tr><td>INTF_SENDDATA</td>
+ *     <td>Send data</td><td>(Length, Connection, WaitForIt, Buffer)</td></tr>
+ * <tr><td>INTF_FACTORYRESET</td>
+ *     <td>Bluetooth factory reset</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_BTON</td>
+ *     <td>Turn Bluetooth on</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_BTOFF</td>
+ *     <td>Turn Bluetooth off</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_SETBTNAME</td>
+ *     <td>Set Bluetooth name</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_EXTREAD</td>
+ *     <td>Handle external? read</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_PINREQ</td>
+ *     <td>Handle Blueooth PIN request</td><td>(x,x,x,x)</td></tr>
+ * <tr><td>INTF_CONNECTREQ</td>
+ *     <td>Handle Bluetooth connect request</td><td>(x,x,x,x)</td></tr>
+ * </table>
+ *
+ * \sa SysCommExecuteFunction()
+ */
 struct CommExecuteFunctionType {
-  unsigned int Result;
-  byte Cmd;
-  byte Param1;
-  byte Param2;
-  byte Param3;
-  string Name;
-  unsigned int RetVal;
+  unsigned int Result;   /*!< The function call result. \todo ?. */
+  byte Cmd;              /*!< The command to execute. */
+  byte Param1;           /*!< The first parameter, see table. */
+  byte Param2;           /*!< The second parameter, see table. */
+  byte Param3;           /*!< The third parameter, see table. */
+  string Name;           /*!< The name parameter, see table. */
+  unsigned int RetVal;   /*!< \todo ?. */
 };
 
 // CommHSControl
@@ -1928,6 +2462,283 @@ struct CommBTConnectionType {
  * Functions for accessing and modifying Comm module features.
  * @{
  */
+
+#ifdef __DOXYGEN_DOCS
+
+inline char SendMessage(byte queue, string msg);
+inline char ReceiveMessage(byte queue, bool clear, string & msg);
+
+inline char BluetoothStatus(const byte conn);
+inline char BluetoothWrite(const byte conn, byte buffer[]);
+
+#define SendRemoteBool(_conn, _queue, _bval) asm { __sendRemoteBool(_conn, _queue, _bval, __RETVAL__) }
+#define SendRemoteNumber(_conn, _queue, _val) asm { __sendRemoteNumber(_conn, _queue, _val, __RETVAL__) }
+#define SendRemoteString(_conn, _queue, _str) asm { __sendRemoteString(_conn, _queue, _str, __RETVAL__) }
+
+#define SendResponseBool(_queue, _bval) asm { __sendResponseBool(_queue, _bval, __RETVAL__) }
+#define SendResponseNumber(_queue, _val) asm { __sendResponseNumber(_queue, _val, __RETVAL__) }
+#define SendResponseString(_queue, _msg) asm { __sendResponseString(_queue, _msg, __RETVAL__) }
+
+#define ReceiveRemoteBool(_queue, _clear, _bval) asm { __receiveRemoteBool(_queue, _clear, _bval, __RETVAL__) }
+#define ReceiveRemoteNumber(_queue, _clear, _val) asm { __receiveRemoteNumber(_queue, _clear, _val, __RETVAL__) }
+#define ReceiveRemoteString(_queue, _clear, _str) asm { __receiveMessage(_queue, _clear, _str, __RETVAL__) }
+#define ReceiveRemoteMessageEx(_queue, _clear, _str, _val, _bval) asm { __receiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, __RETVAL__) }
+
+#define RemoteMessageRead(_conn, _queue) asm { __remoteMessageRead(_conn, _queue, __RETVAL__) }
+#define RemoteMessageWrite(_conn, _queue, _msg) asm { __sendRemoteString(_conn, _queue, _msg, __RETVAL__) }
+#define RemoteStartProgram(_conn, _filename) asm { __remoteStartProgram(_conn, _filename, __RETVAL__) }
+#define RemoteStopProgram(_conn) asm { __bluetoothWrite(_conn, __DCStopProgramPacket, __RETVAL__) }
+#define RemotePlaySoundFile(_conn, _filename, _bloop) asm { __remotePlaySoundFile(_conn, _filename, _bloop, __RETVAL__) }
+#define RemotePlayTone(_conn, _frequency, _duration) asm { __remotePlayTone(_conn, _frequency, _duration, __RETVAL__) }
+#define RemoteStopSound(_conn) asm { __bluetoothWrite(_conn, __DCStopSoundPacket, __RETVAL__) }
+#define RemoteKeepAlive(_conn) asm { __bluetoothWrite(_conn, __DCKeepAlivePacket, __RETVAL__) }
+#define RemoteResetScaledValue(_conn, _port) asm { __remoteResetScaledValue(_conn, _port, __RETVAL__) }
+#define RemoteResetMotorPosition(_conn, _port, _brelative) asm { __remoteResetMotorPosition(_conn, _port, _brelative, __RETVAL__) }
+#define RemoteSetInputMode(_conn, _port, _type, _mode) asm { __remoteSetInputMode(_conn, _port, _type, _mode, __RETVAL__) }
+#define RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit) \
+  asm { __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, __RETVAL__) }
+
+#ifdef __ENHANCED_FIRMWARE
+
+#define RS485Status(_sendingData, _dataAvail) asm { __RS485Status(_sendingData, _dataAvail) }
+#define RS485SendingData() asm { __RS485Status(__RETVAL__, __TMPBYTE__) }
+#define RS485DataAvailable() asm { __RS485Status(__TMPBYTE__, __RETVAL__) }
+#define RS485Write(_buffer) asm { __RS485Write(_buffer, __RETVAL__) }
+#define RS485Read(_buffer) asm { __RS485Read(_buffer, __RETVAL__) }
+
+#if __FIRMWARE_VERSION > 107
+
+#define RS485Control(_cmd, _baud, _mode) asm { __RS485Control(_cmd, _baud, _mode, __RETVAL__) }
+#define RS485Uart(_baud, _mode) asm { __RS485Control(HS_CTRL_UART, _baud, _mode, __RETVAL__) }
+#define RS485Init() asm { __RS485Control(HS_CTRL_INIT, 0, 0, __RETVAL__) }
+#define RS485Exit() asm { __RS485Control(HS_CTRL_EXIT, 0, 0, __RETVAL__) }
+
+#else
+
+#define RS485Control(_cmd, _baud) asm { __RS485Control(_cmd, _baud, __RETVAL__) }
+#define RS485Uart(_baud) asm { __RS485Control(HS_CTRL_UART, _baud, __RETVAL__) }
+#define RS485Init() asm { __RS485Control(HS_CTRL_INIT, 0, __RETVAL__) }
+#define RS485Exit() asm { __RS485Control(HS_CTRL_EXIT, 0, __RETVAL__) }
+
+#endif
+
+#define SendRS485Bool(_bval) asm { __sendRS485Bool(_bval, __RETVAL__) }
+#define SendRS485Number(_val) asm { __sendRS485Number(_val, __RETVAL__) }
+#define SendRS485String(_str) asm { __sendRS485String(_str, __RETVAL__) }
+
+#endif
+
+inline void GetBTInputBuffer(const byte offset, byte cnt, byte & data[]);
+inline void GetBTOutputBuffer(const byte offset, byte cnt, byte & data[]);
+inline void GetHSInputBuffer(const byte offset, byte cnt, byte & data[]);
+inline void GetHSOutputBuffer(const byte offset, byte cnt, byte & data[]);
+inline void GetUSBInputBuffer(const byte offset, byte cnt, byte & data[]);
+inline void GetUSBOutputBuffer(const byte offset, byte cnt, byte & data[]);
+inline void GetUSBPollBuffer(const byte offset, byte cnt, byte & data[]);
+
+inline string BTDeviceName(const byte devidx);
+inline string BTConnectionName(const byte conn);
+inline string BTConnectionPinCode(const byte conn);
+inline string BrickDataName();
+
+inline void GetBTDeviceAddress(const byte devidx, byte & data[]);
+inline void GetBTConnectionAddress(const byte conn, byte & data[]);
+inline void GetBrickDataAddress(byte & data[]);
+
+inline long BTDeviceClass(const byte devidx);
+inline byte BTDeviceStatus(const byte devidx);
+inline long BTConnectionClass(const byte conn);
+inline byte BTConnectionHandleNum(const byte conn);
+inline byte BTConnectionStreamStatus(const byte conn);
+inline byte BTConnectionLinkQuality(const byte conn);
+inline int BrickDataBluecoreVersion();
+inline byte BrickDataBtStateStatus();
+inline byte BrickDataBtHardwareStatus();
+inline byte BrickDataTimeoutValue();
+inline byte BTInputBufferInPtr();
+inline byte BTInputBufferOutPtr();
+inline byte BTOutputBufferInPtr();
+inline byte BTOutputBufferOutPtr();
+
+inline byte HSInputBufferInPtr();
+inline byte HSInputBufferOutPtr();
+inline byte HSOutputBufferInPtr();
+inline byte HSOutputBufferOutPtr();
+
+inline byte USBInputBufferInPtr();
+inline byte USBInputBufferOutPtr();
+inline byte USBOutputBufferInPtr();
+inline byte USBOutputBufferOutPtr();
+inline byte USBPollBufferInPtr();
+inline byte USBPollBufferOutPtr();
+
+inline byte BTDeviceCount();
+inline byte BTDeviceNameCount();
+
+inline byte HSFlags();
+inline byte HSSpeed();
+inline byte HSState();
+inline int HSMode();
+inline byte USBState();
+
+inline void SetBTDeviceName(const byte devidx, string str);
+inline void SetBTDeviceAddress(const byte devidx, const byte addr[]);
+inline void SetBTConnectionName(const byte conn, string str);
+inline void SetBTConnectionPinCode(const byte conn, const byte code[]);
+inline void SetBTConnectionAddress(const byte conn, const byte addr[]);
+
+inline void SetBrickDataName(string str);
+inline void SetBrickDataAddress(const byte p, byte addr[]);
+
+inline void SetBTDeviceClass(const byte devidx, unsigned long class);
+inline void SetBTDeviceStatus(const byte devidx, const byte status);
+inline void SetBTConnectionClass(const byte conn, unsigned long class);
+inline void SetBTConnectionHandleNum(const byte conn, const byte handleNum);
+inline void SetBTConnectionStreamStatus(const byte conn, const byte status);
+inline void SetBTConnectionLinkQuality(const byte conn, const byte quality);
+
+inline void SetBrickDataBluecoreVersion(int version);
+inline void SetBrickDataBtStateStatus(byte status);
+inline void SetBrickDataBtHardwareStatus(byte status);
+inline void SetBrickDataTimeoutValue(const byte timeout);
+
+inline void SetBTInputBuffer(const byte offset, byte cnt, byte data[]);
+inline void SetBTInputBufferInPtr(byte n);
+inline void SetBTInputBufferOutPtr(byte n);
+
+inline void SetBTOutputBuffer(const byte offset, cnt, byte data[]);
+inline void SetBTOutputBufferInPtr(byte n);
+inline void SetBTOutputBufferOutPtr(byte n);
+
+inline void SetHSInputBuffer(const byte offset, byte cnt, byte data[]);
+inline void SetHSInputBufferInPtr(byte n);
+inline void SetHSInputBufferOutPtr(byte n);
+
+inline void SetHSOutputBuffer(const byte offset, byte cnt, byte data[]);
+inline void SetHSOutputBufferInPtr(byte n);
+inline void SetHSOutputBufferOutPtr(byte n);
+
+inline void SetUSBInputBuffer(const byte offset, byte cnt, byte data[]);
+inline void SetUSBInputBufferInPtr(byte n);
+inline void SetUSBInputBufferOutPtr(byte n);
+
+inline void SetUSBOutputBuffer(const byte offset, byte cnt, byte data[]);
+inline void SetUSBOutputBufferInPtr(byte n);
+inline void SetUSBOutputBufferOutPtr(byte n);
+
+inline void SetUSBPollBuffer(const byte offset, byte cnt, byte data[]);
+inline void SetUSBPollBufferInPtr(byte n);
+inline void SetUSBPollBufferOutPtr(byte n);
+
+inline void SetBTDeviceCount(byte count);
+inline void SetBTDeviceNameCount(byte count);
+
+inline void SetHSFlags(const byte hsFlags);
+inline void SetHSSpeed(const byte hsSpeed);
+inline void SetHSState(const byte hsState);
+inline void SetHSMode(const unsigned int hsMode);
+
+inline void SetUSBState(byte usbState);
+
+/**
+ * Write message.
+ * This function lets you write a message to a queue (aka mailbox) using the
+ * values specified via the \ref MessageWriteType structure.
+ *
+ * \param args The MessageWriteType structure containing the needed parameters.
+ */
+void SysMessageWrite(MessageWriteType & args);
+/** \example ex_sysmessagewrite.nxc
+ * This is an example of how to use the SysMessageWrite function along with
+ * the MessageWriteType structure.
+ */
+
+/**
+ * Read message.
+ * This function lets you read a message from a queue (aka mailbox) using the
+ * values specified via the \ref MessageReadType structure.
+ *
+ * \param args The MessageReadType structure containing the needed parameters.
+ */
+void SysMessageRead(MessageReadType & args);
+/** \example ex_sysmessageread.nxc
+ * This is an example of how to use the SysMessageRead function along with the
+ * MessageReadType structure.
+ */
+
+/**
+ * Write data to a Bluetooth connection.
+ * This function lets you write to a Bluetooth connection using the values
+ * specified via the \ref CommBTWriteType structure.
+ *
+ * \param args The CommBTWriteType structure containing the needed parameters.
+ */
+void SysCommBTWrite(CommBTWriteType & args);
+/** \example ex_syscommbtwrite.nxc
+ * This is an example of how to use the SysCommBTWrite function along with the
+ * CommBTWriteType structure.
+ */
+
+/**
+ * Check Bluetooth connection status.
+ * This function lets you check the status of a Bluetooth connection using the
+ * values specified via the \ref CommBTCheckStatusType structure.
+ *
+ * \param args The CommBTCheckStatusType structure containing the needed
+ * parameters.
+ */
+void SysCommBTCheckStatus(CommBTCheckStatusType & args);
+/** \example ex_syscommbtcheckstatus.nxc
+ * This is an example of how to use the SysCommBTCheckStatus function along
+ * with the CommBTCheckStatusType structure.
+ */
+
+#ifdef __ENHANCED_FIRMWARE
+/**
+ * Execute any Comm module command.
+ * This function lets you directly execute the Comm module's primary function
+ * using the values specified via the \ref CommExecuteFunctionType structure.
+ *
+ * \param args The CommExecuteFunctionType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void SysCommExecuteFunction(CommExecuteFunctionType & args);
+/** \example ex_syscommexecutefunction.nxc
+ * This is an example of how to use the SysCommExecuteFunction function along
+ * with the CommExecuteFunctionType structure.
+ */
+
+#define SysCommHSControl(_args) asm { \
+  compchktype _args, CommHSControlType \
+  syscall CommHSControl, _args \
+}
+#define SysCommHSCheckStatus(_args) asm { \
+  compchktype _args, CommHSCheckStatusType \
+  syscall CommHSCheckStatus, _args \
+}
+#define SysCommHSRead(_args) asm { \
+  compchktype _args, CommHSReadWriteType \
+  syscall CommHSRead, _args \
+}
+#define SysCommHSWrite(_args) asm { \
+  compchktype _args, CommHSReadWriteType \
+  syscall CommHSWrite, _args \
+}
+#endif
+#if __FIRMWARE_VERSION > 107
+#define SysCommBTOnOff(_args) asm { \
+  compchktype _args, CommBTOnOffType \
+  syscall CommBTOnOff, _args \
+}
+#define SysCommBTConnection(_args) asm { \
+  compchktype _args, CommBTConnectionType \
+  syscall CommBTConnection, _args \
+}
+#endif
+
+#else
 
 #define SendMessage(_queue, _msg) asm { __sendMessage(_queue, _msg, __RETVAL__) }
 #define ReceiveMessage(_queue, _clear, _msg) asm { __receiveMessage(_queue, _clear, _msg, __RETVAL__) }
@@ -2101,6 +2912,7 @@ struct CommBTConnectionType {
 #define SetHSSpeed(_n) asm { __setHSSpeed(_n) }
 #define SetHSState(_n) asm { __setHSState(_n) }
 #define SetUSBState(_n) asm { __setUSBState(_n) }
+#define SetHSMode(_n) asm { __setHSMode(_n) }
 
 #define SysMessageWrite(_args) asm { \
   compchktype _args, MessageWriteType \
@@ -2149,6 +2961,8 @@ struct CommBTConnectionType {
   compchktype _args, CommBTConnectionType \
   syscall CommBTConnection, _args \
 }
+#endif
+
 #endif
 /** @} */ // end of CommModuleFunctions group
 /** @} */ // end of CommModule group
@@ -2233,6 +3047,56 @@ struct SetSleepTimeoutType {
  * Functions for accessing and modifying Ui module features.
  * @{
  */
+
+#ifdef __DOXYGEN_DOCS
+
+#define UIState() asm { GetUIState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define UIButton() asm { GetUIButton(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define VMRunState() asm { GetVMRunState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define BatteryState() asm { GetBatteryState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+inline byte BluetoothState();
+#define UsbState() asm { GetUsbState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define SleepTimeout() asm { GetSleepTimeout(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define SleepTime() SleepTimeout()
+#define SleepTimer() asm { GetSleepTimer(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define RechargeableBattery() asm { GetRechargeableBattery(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define Volume() asm { GetVolume(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define OnBrickProgramPointer() asm { GetOnBrickProgramPointer(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define AbortFlag() asm { GetAbortFlag(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define LongAbort() AbortFlag()
+#define BatteryLevel() asm { GetBatteryLevel(__TMPWORD__) __RETURN__ __TMPWORD__ }
+
+#define SetCommandFlags(_n) asm { __setCommandFlags(_n) }
+#define SetUIState(_n) asm { __setUIState(_n) }
+#define SetUIButton(_n) asm { __setUIButton(_n) }
+#define SetVMRunState(_n) asm { __setVMRunState(_n) }
+#define SetBatteryState(_n) asm { __setBatteryState(_n) }
+#define SetBluetoothState(_n) asm { __setBluetoothState(_n) }
+#define SetUsbState(_n) asm { __setUsbState(_n) }
+#define SetSleepTimeout(_n) asm { __setSleepTimeout(_n) }
+#define SetSleepTime(_n) SetSleepTimeout(_n)
+#define SetSleepTimer(_n) asm { __setSleepTimer(_n) }
+#define SetVolume(_n) asm { __setVolume(_n) }
+#define SetOnBrickProgramPointer(_n) asm { __setOnBrickProgramPointer(_n) }
+#define ForceOff(_n) asm { __forceOff(_n) }
+#define SetAbortFlag(_n) asm { __setAbortFlag(_n) }
+#define SetLongAbort(_n) do { \
+  if (_n) { \
+    asm { __setAbortFlag(BTNSTATE_LONG_PRESSED_EV) } \
+  } else { \
+    asm { __setAbortFlag(BTNSTATE_PRESSED_EV) } \
+  } \
+} while(false)
+
+#if __FIRMWARE_VERSION > 107
+#define SysSetSleepTimeout(_args) asm { \
+  compchktype _args, SetSleepTimeoutType \
+  syscall SetSleepTimeoutVal, _args \
+}
+#endif
+
+#else
+
 #define CommandFlags() asm { GetCommandFlags(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define UIState() asm { GetUIState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define UIButton() asm { GetUIButton(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
@@ -2279,6 +3143,7 @@ struct SetSleepTimeoutType {
 }
 #endif
 
+#endif
 /** @} */ // end of UiModuleFunctions group
 /** @} */ // end of UiModule group
 

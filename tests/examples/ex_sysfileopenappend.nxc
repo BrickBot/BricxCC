@@ -1,0 +1,10 @@
+task main()
+{
+  FileOpenType foArgs;
+  foArgs.Filename = "myfile.txt";
+  SysFileOpenAppend(foArgs); // open the file
+  if (foArgs.Result == NO_ERR) {
+    // write to the file using FileHandle
+    // up to the remaining available length in Length
+  }
+}

@@ -1,0 +1,15 @@
+task main()
+{
+  FileResolveHandleType frhArgs;
+  frhArgs.Filename = "myfile.txt";
+  SysFileResolveHandle(frhArgs);
+  if (frhArgs.Result == LDR_SUCCESS) {
+    // use the FileHandle as needed
+    if (frhArgs.WriteHandle) {
+      // file is open for writing
+    }
+    else {
+      // file is open for reading
+    }
+  }
+}

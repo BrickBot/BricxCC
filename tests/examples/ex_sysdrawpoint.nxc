@@ -1,0 +1,8 @@
+task main()
+{
+  DrawPointType dpArgs;
+  dpArgs.Location.X = 20;
+  dpArgs.Location.Y = 20;
+  dpArgs.Options = 0x04; // clear this pixel
+  SysDrawPoint(dpArgs);
+}
