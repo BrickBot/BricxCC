@@ -638,9 +638,9 @@
  * \sa SoundFlags()
  * @{
  */
-#define SOUND_FLAGS_IDLE    0x00 /*!< R  - Idle */
+#define SOUND_FLAGS_IDLE    0x00 /*!< R  - Sound is idle */
 #define SOUND_FLAGS_UPDATE  0x01 /*!< W  - Make changes take effect */
-#define SOUND_FLAGS_RUNNING 0x02 /*!< R  - Processing tone or file */
+#define SOUND_FLAGS_RUNNING 0x02 /*!< R  - Currently processing a tone or file */
 /** @} */  // end of SoundFlagsConstants group
 
 /** @defgroup SoundStateConstants SoundState constants
@@ -649,8 +649,8 @@
  * @{
  */
 #define SOUND_STATE_IDLE 0x00 /*!< R  - Idle, ready for start sound (SOUND_UPDATE) */
-#define SOUND_STATE_FILE 0x02 /*!< R  - Processing file of sound/melody data */
-#define SOUND_STATE_TONE 0x03 /*!< R  - Processing play tone request */
+#define SOUND_STATE_FILE 0x02 /*!< R  - Processing a file of sound/melody data */
+#define SOUND_STATE_TONE 0x03 /*!< R  - Processing a play tone request */
 #define SOUND_STATE_STOP 0x04 /*!< W  - Stop sound immediately and close hardware */
 /** @} */  // end of SoundStateConstants group
 
@@ -660,9 +660,9 @@
  * @{
  */
 #define SOUND_MODE_ONCE 0x00 /*!< W  - Only play file once */
-#define SOUND_MODE_LOOP 0x01 /*!< W  - Play file until writing "SOUND_STOP" into "State" or new "update" */
-#define SOUND_MODE_TONE 0x02 /*!< W  - Play tone specified in Freq for Duration ms */
-/** @} */  // end of SoundMisc group
+#define SOUND_MODE_LOOP 0x01 /*!< W  - Play file until writing SOUND_STATE_STOP into SoundState */
+#define SOUND_MODE_TONE 0x02 /*!< W  - Play tone specified in Frequency for Duration ms */
+/** @} */  // end of SoundModeConstants group
 
 /** @defgroup SoundIOMAP Sound module IOMAP offsets
  * Constant offsets into the Sound module IOMAP structure.
