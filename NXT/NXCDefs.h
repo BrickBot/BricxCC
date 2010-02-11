@@ -545,62 +545,135 @@ struct DrawTextType {
   unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
-// DrawPoint
+/**
+ * DrawPointType structure.
+ * This structure is used when calling the \ref SysDrawPoint system call
+ * function.
+ * \sa SysDrawPoint()
+ */
 struct DrawPointType {
-  char Result;
-  LocationType Location;
-  unsigned long Options;
+  char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
+  LocationType Location;   /*!< The point location on screen. */
+  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
-// DrawLine
+/**
+ * DrawLineType structure.
+ * This structure is used when calling the \ref SysDrawLine system call
+ * function.
+ * \sa SysDrawLine()
+ */
 struct DrawLineType {
-  char Result;
-  LocationType StartLoc;
-  LocationType EndLoc;
-  unsigned long Options;
+  char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
+  LocationType StartLoc;   /*!< The location of the starting point. */
+  LocationType EndLoc;     /*!< The location of the ending point. */
+  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
-// DrawCircle
+/**
+ * DrawCircleType structure.
+ * This structure is used when calling the \ref SysDrawCircle system call
+ * function.
+ * \sa SysDrawCircle()
+ */
 struct DrawCircleType {
-  char Result;
-  LocationType Center;
-  byte Size;
-  unsigned long Options;
+  char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
+  LocationType Center;     /*!< The location of the circle center. */
+  byte Size;               /*!< The circle radius. */
+  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
-// DrawRect
+/**
+ * DrawRectType structure.
+ * This structure is used when calling the \ref SysDrawRect system call
+ * function.
+ * \sa SysDrawRect()
+ */
 struct DrawRectType {
-  char Result;
-  LocationType Location;
-  SizeType Size;
-  unsigned long Options;
+  char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
+  LocationType Location;   /*!< The top left corner location. */
+  SizeType Size;           /*!< The width and height of the rectangle. */
+  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
-// DrawGraphic
+/**
+ * DrawGraphicType structure.
+ * This structure is used when calling the \ref SysDrawGraphic system call
+ * function.
+ * \sa SysDrawGraphic()
+ */
 struct DrawGraphicType {
-  char Result;
-  LocationType Location;
-  string Filename;
-  long Variables[];
-  unsigned long Options;
+  char Result;             /*!< The function call result. \todo ?. */
+  LocationType Location;   /*!< The location on screen. */
+  string Filename;         /*!< The RIC file name. */
+  int Variables[];         /*!< The variables passed as RIC arguments. \todo add padding? */
+  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
-// SetScreenMode
+/**
+ * SetScreenModeType structure.
+ * This structure is used when calling the \ref SysSetScreenMode system call
+ * function.
+ * \sa SysSetScreenMode()
+ */
 struct SetScreenModeType {
-  char Result;
-  unsigned long ScreenMode;
+  char Result;                /*!< The function call result. \todo ?. */
+  unsigned long ScreenMode;   /*!< The requested screen mode.
+
+                                The standard NXT firmware only supports
+                                setting the ScreenMode to \ref SCREEN_MODE_RESTORE.
+
+                                If you install the NBC/NXC enhanced standard
+                                NXT firmware this system function also
+                                supports setting the ScreenMode to
+                                \ref SCREEN_MODE_CLEAR.
+
+                                \todo add ref */
 };
+
 #ifdef __ENHANCED_FIRMWARE
-// DisplayExecuteFunction
+/**
+ * DisplayExecuteFunctionType structure.
+ * This structure is used when calling the \ref SysDisplayExecuteFunction
+ * system call function.
+ *
+ * The fields usage depends on the requested command and are documented in the
+ * table below. If a field member is shown as 'x' it is ignored by the
+ * specified display command.
+ *
+ * <table>
+ * <tr><td>Cmd</td>
+ *     <td>Meaning</td><td>Expected parameters</td></tr>
+ * <tr><td>DISPLAY_ERASE_ALL</td>
+ *     <td>erase entire screen</td><td>()</td></tr>
+ * <tr><td>DISPLAY_PIXEL</td>
+ *     <td>set pixel (on/off)</td><td>(true/false,X1,Y1,x,x)</td></tr>
+ * <tr><td>DISPLAY_HORIZONTAL_LINE</td>
+ *     <td>draw horizontal line</td><td>(true/false,X1,Y1,X2,x)</td></tr>
+ * <tr><td>DISPLAY_VERTICAL_LINE</td>
+ *     <td>draw vertical line</td><td>(true/false,X1,Y1,x,Y2)</td></tr>
+ * <tr><td>DISPLAY_CHAR</td>
+ *     <td>draw char (actual font)</td><td>(true/false,X1,Y1,Char,x)</td></tr>
+ * <tr><td>DISPLAY_ERASE_LINE</td>
+ *     <td>erase a single line</td><td>(x,LINE,x,x,x)</td></tr>
+ * <tr><td>DISPLAY_FILL_REGION</td>
+ *     <td>fill screen region</td><td>(true/false,X1,Y1,X2,Y2)</td></tr>
+ * <tr><td>DISPLAY_FILLED_FRAME</td>
+ *     <td>draw a frame (on / off)</td><td>(true/false,X1,Y1,X2,Y2)</td></tr>
+ * </table>
+ *
+ * \sa SysDisplayExecuteFunction()
+ */
 struct DisplayExecuteFunctionType {
-  byte Status;
-  byte Cmd;
-  byte On;
-  byte X1;
-  byte Y1;
-  byte X2;
-  byte Y2;
+  byte Status;   /*!< The function call result. \todo ?. */
+  byte Cmd;      /*!< The command to execute. */
+  bool On;       /*!< The On parameter, see table. */
+  byte X1;       /*!< The X1 parameter, see table. */
+  byte Y1;       /*!< The Y1 parameter, see table. */
+  byte X2;       /*!< The X2 parameter, see table. */
+  byte Y2;       /*!< The Y2 parameter, see table. */
 };
+
 #if __FIRMWARE_VERSION > 107
 // DrawGraphicArray
 struct DrawGraphicArrayType {
@@ -1034,38 +1107,41 @@ inline byte DisplayTextLinesCenterFlags();
 
 /**
  * Draw text.
- * This function lets you draw text on the NXT LCD given the parameters you pass
- * in via the \ref DrawTextType structure.
+ * This function lets you draw text on the NXT LCD given the parameters you
+ * pass in via the \ref DrawTextType structure.
  *
  * \param args The DrawTextType structure containing the drawing parameters.
  */
 inline void SysDrawText(DrawTextType & args);
-/** \example ex_drawtext.nxc
- * How to use the \ref SysDrawText function along with the \ref DrawTextType structure.
+/** \example ex_sysdrawtext.nxc
+ * This is an example of how to use the SysDrawText function along with the
+ * DrawTextType structure.
  */
 
 /**
  * Draw a point.
- * This function lets you draw a point on the NXT LCD given the parameters you pass
- * in via the \ref DrawPointType structure.
+ * This function lets you draw a pixel on the NXT LCD given the parameters you
+ * pass in via the \ref DrawPointType structure.
  *
  * \param args The DrawPointType structure containing the drawing parameters.
  */
 inline void SysDrawPoint(DrawPointType & args);
-/** \example ex_drawpoint.nxc
- * How to use the \ref SysDrawPoint function along with the \ref DrawPointType structure.
+/** \example ex_sysdrawpoint.nxc
+ * This is an example of how to use the SysDrawPoint function along with the
+ * DrawPointType structure.
  */
 
 /**
  * Draw a line.
- * This function lets you draw a line on the NXT LCD given the parameters you pass
- * in via the \ref DrawLineType structure.
+ * This function lets you draw a line on the NXT LCD given the parameters you
+ * pass in via the \ref DrawLineType structure.
  *
  * \param args The DrawLineType structure containing the drawing parameters.
  */
 inline void SysDrawLine(DrawLineType & args);
-/** \example ex_drawline.nxc
- * How to use the \ref SysDrawLine function along with the \ref DrawLineType structure.
+/** \example ex_sysdrawline.nxc
+ * This is an example of how to use the SysDrawLine function along with the
+ * DrawLineType structure.
  */
 
 /**
@@ -1076,58 +1152,63 @@ inline void SysDrawLine(DrawLineType & args);
  * \param args The DrawCircleType structure containing the drawing parameters.
  */
 inline void SysDrawCircle(DrawCircleType & args);
-/** \example ex_drawcircle.nxc
+/** \example ex_sysdrawcircle.nxc
  * How to use the \ref SysDrawCircle function along with the \ref DrawCircleType structure.
  */
 
 /**
  * Draw a rectangle.
- * This function lets you draw a rectangle on the NXT LCD given the parameters you pass
- * in via the \ref DrawRectType structure.
+ * This function lets you draw a rectangle on the NXT LCD given the parameters
+ * you pass in via the \ref DrawRectType structure.
  *
  * \param args The DrawRectType structure containing the drawing parameters.
  */
 inline void SysDrawRect(DrawRectType & args);
-/** \example ex_drawrect.nxc
- * How to use the \ref SysDrawRect function along with the \ref DrawRectType structure.
+/** \example ex_sysdrawrect.nxc
+ * This is an example of how to use the SysDrawRect function along with the
+ * DrawRectType structure.
  */
 
 /**
- * Draw a graphic image.
- * This function lets you draw a graphic image on the NXT LCD given the parameters you pass
- * in via the \ref DrawGraphicType structure.
+ * Draw a graphic (RIC file).
+ * This function lets you draw a graphic image (RIC file) on the NXT LCD given
+ * the parameters you pass in via the \ref DrawGraphicType structure.
  *
  * \param args The DrawGraphicType structure containing the drawing parameters.
  */
 inline void SysDrawGraphic(DrawGraphicType & args);
-/** \example ex_drawgraphic.nxc
- * How to use the \ref SysDrawGraphic function along with the \ref DrawGraphicType structure.
+/** \example ex_sysdrawgraphic.nxc
+ * This is an example of how to use the \ref SysDrawGraphic function along with the
+ * \ref DrawGraphicType structure.
  */
 
 /**
  * Set the screen mode.
- * This function lets you set the NXT LCD screen mode given the parameters you pass
- * in via the \ref DrawTextType structure.
+ * This function lets you set the screen mode of the NXT LCD given the
+ * parameters you pass in via the \ref DrawTextType structure.
  *
  * \param args The SetScreenModeType structure containing the screen mode parameters.
  */
 inline void SysSetScreenMode(SetScreenModeType & args);
-/** \example ex_setscrmode.nxc
- * How to use the \ref SysSetScreenMode function along with the \ref SetScreenModeType structure.
+/** \example ex_syssetscreenmode.nxc
+ * This is an example of how to use the \ref SysSetScreenMode function along with
+ * the \ref SetScreenModeType structure.
  */
 
 #ifdef __ENHANCED_FIRMWARE
 
 /**
- * Execute a display module function.
- * This function lets you execute a low-level display module function with the parameters you pass
- * in via the \ref DisplayExecuteFunctionType structure.
+ * Execute any Display module command.
+ * This function lets you directly execute the Display module's primary
+ * drawing function using the values specified via the \ref
+ * DisplayExecuteFunctionType structure.
  *
  * \param args The DisplayExecuteFunctionType structure containing the drawing parameters.
  */
 inline void SysDisplayExecuteFunction(DisplayExecuteFunctionType & args);
-/** \example ex_dispfunc.nxc
- * How to use the \ref SysDisplayExecuteFunction function along with the \ref DisplayExecuteFunctionType structure.
+/** \example ex_sysdisplayexecutefunction.nxc
+ * This is an example of how to use the \ref SysDisplayExecuteFunction function
+ * along with the \ref DisplayExecuteFunctionType structure.
  */
 
 
@@ -1337,45 +1418,320 @@ inline void SetDisplayContrast(byte contrast) { asm { __setDisplayContrast(contr
  * Types used by various sound module functions.
  * @{
  */
-// SoundPlayFile
+/**
+ * SoundPlayFileType structure.
+ * This structure is used when calling the \ref SysSoundPlayFile system call
+ * function.
+ * \sa SysSoundPlayFile()
+ */
 struct SoundPlayFileType {
-  char Result;
-  string Filename;
-  bool Loop;
-  byte SoundLevel;
+  char Result;       /*!< The function call result. \todo ?. */
+  string Filename;   /*!< The name of the file to play. */
+  bool Loop;         /*!< If true, loops at end of file. */
+  byte SoundLevel;   /*!< The sound level. Valid values range from 0 to 4. */
 };
 
-// SoundPlayTone
+/**
+ * SoundPlayToneType structure.
+ * This structure is used when calling the \ref SysSoundPlayTone system call
+ * function.
+ * \sa SysSoundPlayTone()
+ */
 struct SoundPlayToneType {
-  char Result;
-  unsigned int Frequency;
-  unsigned int Duration;
-  bool Loop;
-  byte SoundLevel;
+  char Result;              /*!< The function call result. \todo ?. */
+  unsigned int Frequency;   /*!< The tone frequency. See the \ref ToneConstants group. */
+  unsigned int Duration;    /*!< The tone duration in milliseconds. See the \ref TimeConstants group. */
+  bool Loop;                /*!< If true, loops forever. */
+  byte SoundLevel;          /*!< The sound level. Valid values range from 0 to 4. */
 };
 
-// SoundGetState
+/**
+ * SoundGetStateType structure.
+ * This structure is used when calling the \ref SysSoundGetState system call
+ * function.
+ * \sa SysSoundGetState()
+ */
 struct SoundGetStateType {
-  byte State;
-  byte Flags;
+  byte State;   /*!< The returned sound state. See the \ref SoundStateConstants group. */
+  byte Flags;   /*!< The returned sound flags. See the \ref SoundFlagsConstants group. */
 };
 
-// SoundSetState
+/**
+ * SoundSetStateType structure.
+ * This structure is used when calling the \ref SysSoundSetState system call
+ * function.
+ * \sa SysSoundSetState()
+ */
 struct SoundSetStateType {
-  byte Result;
-  byte State;
-  byte Flags;
+  byte Result;   /*!< The function call result. \todo ?. */
+  byte State;    /*!< The new sound state. See the \ref SoundStateConstants group. */
+  byte Flags;    /*!< The new sound flags. See the \ref SoundFlagsConstants group. */
 };
+
 /** @} */ // end of SoundModuleTypes group
 
 /** @defgroup SoundModuleFunctions Sound module functions
  * Functions for accessing and modifying sound module features.
  * @{
  */
-/*
-  AddAPIFunction('PlayToneEx', APIF_PLAYTONEEX);
-  AddAPIFunction('PlayFileEx', APIF_PLAYFILEEX);
-*/
+
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * Play a file.
+ * Play the specified file. The filename may be any valid string expression.
+ * The sound file can either be an RSO file containing PCM or compressed ADPCM
+ * samples or it can be an NXT melody (RMD) file containing frequency and
+ * duration values.
+ *
+ * \param filename The name of the sound or melody file to play.
+ */
+inline char PlayFile(string filename);
+
+/**
+ * Play a file with extra options.
+ * Play the specified file. The filename may be any valid string expression.
+ * Volume should be a number from 0 (silent) to 4 (loudest). Play the file
+ * repeatedly if loop is true.
+ * The sound file can either be an RSO file containing PCM or compressed ADPCM
+ * samples or it can be an NXT melody (RMD) file containing frequency and
+ * duration values.
+ *
+ * \param filename The name of the sound or melody file to play.
+ * \param volume The desired tone volume.
+ * \param loop A boolean flag indicating whether to play the file repeatedly.
+ */
+inline char PlayFileEx(string filename, byte volume, bool loop);
+
+/**
+ * Play a tone.
+ * Play a single tone of the specified frequency and duration. The frequency is
+ * in Hz (see the \ref ToneConstants group). The duration is in 1000ths of a
+ * second (see the \ref TimeConstants group). The tone is played at the loudest
+ * sound level supported by the firmware and it is not looped.
+ *
+ * \param frequency The desired tone frequency, in Hz.
+ * \param duration The desired tone duration, in ms.
+ */
+inline char PlayTone(unsigned int frequency, unsigned int duration);
+
+/**
+ * Play a tone with extra options.
+ * Play a single tone of the specified frequency, duration, and volume. The
+ * frequency is in Hz (see the \ref ToneConstants group). The duration is in
+ * 1000ths of a second (see the \ref TimeConstants group). Volume should be a
+ * number from 0 (silent) to 4 (loudest). Play the tone repeatedly if loop is
+ * true.
+ *
+ * \param frequency The desired tone frequency, in Hz.
+ * \param duration The desired tone duration, in ms.
+ * \param volume The desired tone volume.
+ * \param loop A boolean flag indicating whether to play the tone repeatedly.
+ */
+inline char PlayToneEx(unsigned int frequency, unsigned int duration, byte volume, bool loop);
+
+/**
+ * Get sound module state.
+ * Return the current sound module state. See the \ref SoundStateConstants group.
+ *
+ * \sa SetSoundModuleState(), SysSoundSetState(), SysSoundGetState()
+ * \return The current sound module state.
+ */
+inline byte SoundState();
+
+/**
+ * Get sound module flags.
+ * Return the current sound module flags. See the \ref SoundFlagsConstants group.
+ *
+ * \sa SetSoundFlags(), SysSoundSetState(), SysSoundGetState()
+ * \return The current sound module flags.
+ */
+inline byte SoundFlags();
+
+/**
+ * Stop sound.
+ * Stop playing of the current tone or file.
+ *
+ * \return The result \todo ?.
+ */
+inline byte StopSound();
+
+/**
+ * Get frequency.
+ * Return the current sound frequency.
+ *
+ * \sa SetSoundFrequency()
+ * \return The current sound frequency.
+ */
+inline unsigned int SoundFrequency();
+
+/**
+ * Get duration.
+ * Return the current sound duration.
+ *
+ * \sa SetSoundDuration()
+ * \return The current sound duration.
+ */
+inline unsigned int SoundDuration();
+
+/**
+ * Get sample rate.
+ * Return the current sound sample rate.
+ *
+ * \sa SetSoundSampleRate()
+ * \return The current sound sample rate.
+ */
+inline unsigned int SoundSampleRate();
+
+/**
+ * Get sound mode.
+ * Return the current sound mode.  See the \ref SoundModeConstants group.
+ *
+ * \sa SetSoundMode()
+ * \return The current sound mode.
+ */
+inline byte SoundMode();
+
+/**
+ * Get volume.
+ * Return the current sound volume.
+ *
+ * \sa SetSoundVolume()
+ * \return The current sound volume.
+ */
+inline byte SoundVolume();
+
+/**
+ * Set duration.
+ * Set the sound duration.
+ *
+ * \sa SoundDuration()
+ * \param duration The new sound duration
+ */
+inline void SetSoundDuration(unsigned int duration);
+
+/**
+ * Set sound module flags.
+ * Set the sound module flags. See the \ref SoundFlagsConstants group.
+ *
+ * \sa SetSoundFlags(), SysSoundSetState(), SysSoundGetState()
+ * \param flags The new sound module flags
+ */
+inline void SetSoundFlags(byte flags);
+
+/**
+ * Set frequency.
+ * Set the sound frequency.
+ *
+ * \sa SoundFrequency()
+ * \param frequency The new frequency
+ */
+inline void SetSoundFrequency(unsigned int frequency);
+
+/**
+ * Set sound mode.
+ * Set the sound mode.  See the \ref SoundModeConstants group.
+ *
+ * \sa SoundMode()
+ * \param mode The new sound mode
+ */
+inline void SetSoundMode(byte mode);
+
+/**
+ * Set sound module state.
+ * Set the sound module state. See the \ref SoundStateConstants group.
+ *
+ * \sa SoundState(), SysSoundSetState(), SysSoundGetState()
+ * \param state The new sound state
+ */
+inline void SetSoundModuleState(byte state);
+
+/**
+ * Set sample rate.
+ * Set the sound sample rate.
+ *
+ * \sa SoundSampleRate()
+ * \param sampleRate The new sample rate
+ */
+inline void SetSoundSampleRate(unsigned int sampleRate);
+
+/**
+ * Set volume.
+ * Set the sound volume.
+ *
+ * \sa SoundVolume()
+ * \param volume The new volume
+ */
+inline void SetSoundVolume(byte volume);
+
+/** \example ex_soundmisc.nxc
+ * This is an example of how to use the PlayFile, PlayFileEx, PlayTone,
+ * PlayToneEx, SoundState, SoundFlags, StopSound, SoundFrequency,
+ * SoundDuration, SoundSampleRate, SoundMode, SoundVolume, SetSoundDuration,
+ * SetSoundFlags, SetSoundFrequency, SetSoundMode, SetSoundModuleState,
+ * SetSoundSampleRate, and SetSoundVolume.
+ */
+
+/**
+ * Play sound file.
+ * This function lets you play a sound file given the parameters you pass in
+ * via the \ref SoundPlayFileType structure. The sound file can either be an
+ * RSO file containing PCM or compressed ADPCM samples or it can be an NXT
+ * melody (RMD) file containing frequency and duration values.
+ *
+ * \param args The SoundPlayFileType structure containing the needed
+ * parameters.
+ */
+inline void SysSoundPlayFile(SoundPlayFileType & args);
+/** \example ex_syssoundplayfile.nxc
+ * This is an example of how to use the SysSoundPlayFile function along with
+ * the SoundPlayFileType structure.
+ */
+
+/**
+ * Play tone.
+ * This function lets you play a tone given the parameters you pass in via the
+ * \ref SoundPlayToneType structure.
+ *
+ * \param args The SoundPlayToneType structure containing the needed
+ * parameters.
+ */
+inline void SysSoundPlayTone(SoundPlayToneType & args);
+/** \example ex_syssoundplaytone.nxc
+ * This is an example of how to use the SysSoundPlayTone function along with
+ * the SoundPlayToneType structure.
+ */
+
+/**
+ * Get sound state.
+ * This function lets you retrieve information about the sound module state
+ * via the \ref SoundGetStateType structure.
+ *
+ * \param args The SoundGetStateType structure containing the needed
+ * parameters.
+ */
+inline void SysSoundGetState(SoundGetStateType & args);
+/** \example ex_syssoundgetstate.nxc
+ * This is an example of how to use the \ref SysSoundGetState function along with
+ * the \ref SoundGetStateType structure.
+ */
+
+/**
+ * Set sound state.
+ * This function lets you set sound module state settings via the \ref
+ * SoundSetStateType structure.
+ *
+ * \param args The SoundSetStateType structure containing the needed
+ * parameters.
+ */
+inline void SysSoundSetState(SoundSetStateType & args);
+/** \example ex_syssoundsetstate.nxc
+ * This is an example of how to use the \ref SysSoundSetState function along with
+ * the \ref SoundSetStateType structure.
+ */
+
+#else
+
 #define PlayTone(_f, _d) PlayToneEx(_f, _d, 4, 0)
 #define PlayFile(_f) PlayFileEx(_f, 4, 0)
 
@@ -1413,6 +1769,8 @@ struct SoundSetStateType {
   compchktype _args, SoundSetStateType \
   syscall SoundSetState, _args \
 }
+
+#endif
 
 /** @} */ // end of SoundModuleFunctions group
 /** @} */ // end of SoundModule group
@@ -2980,24 +3338,67 @@ inline void SysCommExecuteFunction(CommExecuteFunctionType & args);
  * Types used by various Button module functions.
  * @{
  */
-// ReadButton
+/**
+ * ReadButtonType structure.
+ * This structure is used when calling the \ref SysReadButton system call
+ * function.
+ * \sa SysReadButton()
+ */
 struct ReadButtonType {
-  char Result;
-  byte Index;
-  bool Pressed;
-  byte Count;
-  bool Reset; // reset count after reading?
+  char Result;   /*!< The function call result. \todo ?. */
+  byte Index;    /*!< The requested button index. See the \ref ButtonNameConstants group. */
+  bool Pressed;  /*!< The returned button state. */
+  byte Count;    /*!< The returned button pressed count. */
+  bool Reset;    /*!< If true, the count is reset after reading. */
 };
 /** @} */ // end of ButtonModuleTypes group
 /** @defgroup ButtonModuleFunctions Button module functions
  * Functions for accessing and modifying Button module features.
  * @{
  */
-/*
-  AddAPIFunction('ButtonPressed', APIF_BUTTONPRESSED);
-  AddAPIFunction('ButtonCount', APIF_BUTTONCOUNT);
-  AddAPIFunction('ReadButtonEx', APIF_READBUTTONEX);
-*/
+
+#ifdef __DOXYGEN_DOCS
+
+inline bool ButtonPressed(const byte btn, bool resetCount);
+inline byte ButtonCount(const byte btn, bool resetCount);
+inline char ReadButtonEx(const byte btn, bool reset, bool & pressed, unsigned int count);
+inline byte ButtonPressCount(const byte btn);
+inline byte ButtonLongPressCount(const byte btn);
+inline byte ButtonShortReleaseCount(const byte btn);
+inline byte ButtonLongReleaseCount(const byte btn);
+inline byte ButtonReleaseCount(const byte btn);
+inline byte ButtonState(const byte btn);
+
+inline void SetButtonLongPressCount(const byte btn, const byte n);
+inline void SetButtonLongReleaseCount(const byte btn, const byte n);
+inline void SetButtonPressCount(const byte btn, const byte n);
+inline void SetButtonReleaseCount(const byte btn, const byte n);
+inline void SetButtonShortReleaseCount(const byte btn, const byte n);
+inline void SetButtonState(const byte btn, const byte state);
+
+/** \example ex_buttonmisc.nxc
+ * This is an example of how to use the ButtonPressed, ButtonCount,
+ * ReadButtonEx, ButtonPressCount, ButtonLongPressCount, ButtonShortReleaseCount,
+ * ButtonLongReleaseCount, ButtonReleaseCount, ButtonState,
+ * SetButtonLongPressCount, SetButtonLongReleaseCount, SetButtonPressCount,
+ * SetButtonReleaseCount, SetButtonShortReleaseCount, and SetButtonState.
+ */
+
+/**
+ * Read button.
+ * This function lets you read button state information via the \ref
+ * ReadButtonType structure.
+ *
+ * \param args The ReadButtonType structure containing the needed parameters.
+ */
+inline void SysReadButton(ReadButtonType & args);
+/** \example ex_sysreadbutton.nxc
+ * This is an example of how to use the SysReadButton function along with the
+ * ReadButtonType structure.
+ */
+
+#else
+
 #define ButtonPressCount(_b) asm { GetButtonPressCount(_b, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define ButtonLongPressCount(_b) asm { GetButtonLongPressCount(_b, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define ButtonShortReleaseCount(_b) asm { GetButtonShortReleaseCount(_b, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
@@ -3016,7 +3417,7 @@ struct ReadButtonType {
   compchktype _args, ReadButtonType \
   syscall ReadButton, _args \
 }
-
+#endif
 /** @} */ // end of ButtonModuleFunctions group
 /** @} */ // end of ButtonModule group
 
@@ -3050,49 +3451,40 @@ struct SetSleepTimeoutType {
 
 #ifdef __DOXYGEN_DOCS
 
-#define UIState() asm { GetUIState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define UIButton() asm { GetUIButton(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define VMRunState() asm { GetVMRunState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define BatteryState() asm { GetBatteryState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+inline byte UIState();
+inline byte UIButton();
+inline byte VMRunState();
+inline byte BatteryState();
 inline byte BluetoothState();
-#define UsbState() asm { GetUsbState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define SleepTimeout() asm { GetSleepTimeout(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define SleepTime() SleepTimeout()
-#define SleepTimer() asm { GetSleepTimer(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define RechargeableBattery() asm { GetRechargeableBattery(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define Volume() asm { GetVolume(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define OnBrickProgramPointer() asm { GetOnBrickProgramPointer(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define AbortFlag() asm { GetAbortFlag(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define LongAbort() AbortFlag()
-#define BatteryLevel() asm { GetBatteryLevel(__TMPWORD__) __RETURN__ __TMPWORD__ }
+inline byte UsbState();
+inline byte SleepTimeout();
+inline byte SleepTime(); // SleepTimeout()
+inline byte SleepTimer();
+inline byte RechargeableBattery();
+inline byte Volume();
+inline byte OnBrickProgramPointer();
+inline byte AbortFlag();
+inline byte LongAbort(); // AbortFlag()
+inline unsigned int BatteryLevel();
 
-#define SetCommandFlags(_n) asm { __setCommandFlags(_n) }
-#define SetUIState(_n) asm { __setUIState(_n) }
-#define SetUIButton(_n) asm { __setUIButton(_n) }
-#define SetVMRunState(_n) asm { __setVMRunState(_n) }
-#define SetBatteryState(_n) asm { __setBatteryState(_n) }
-#define SetBluetoothState(_n) asm { __setBluetoothState(_n) }
-#define SetUsbState(_n) asm { __setUsbState(_n) }
-#define SetSleepTimeout(_n) asm { __setSleepTimeout(_n) }
-#define SetSleepTime(_n) SetSleepTimeout(_n)
-#define SetSleepTimer(_n) asm { __setSleepTimer(_n) }
-#define SetVolume(_n) asm { __setVolume(_n) }
-#define SetOnBrickProgramPointer(_n) asm { __setOnBrickProgramPointer(_n) }
-#define ForceOff(_n) asm { __forceOff(_n) }
-#define SetAbortFlag(_n) asm { __setAbortFlag(_n) }
-#define SetLongAbort(_n) do { \
-  if (_n) { \
-    asm { __setAbortFlag(BTNSTATE_LONG_PRESSED_EV) } \
-  } else { \
-    asm { __setAbortFlag(BTNSTATE_PRESSED_EV) } \
-  } \
-} while(false)
+inline void SetCommandFlags(const byte cmdFlags);
+inline void SetUIButton(byte btn);
+inline void SetUIState(byte state);
+inline void SetVMRunState(const byte vmRunState);
+inline void SetBatteryState(byte state);
+inline void SetBluetoothState(byte state);
+inline void SetUsbState(byte usbState);
+inline void SetSleepTimeout(const byte n);
+inline void SetSleepTime(const byte n); // SetSleepTimeout(n)
+inline void SetSleepTimer(const byte n);
+inline void SetVolume(byte volume);
+inline void SetOnBrickProgramPointer(byte obpStep);
+inline void ForceOff(byte num);
+inline void SetAbortFlag(byte abortFlag);
+inline void SetLongAbort(bool longAbort);
 
 #if __FIRMWARE_VERSION > 107
-#define SysSetSleepTimeout(_args) asm { \
-  compchktype _args, SetSleepTimeoutType \
-  syscall SetSleepTimeoutVal, _args \
-}
+inline void SysSetSleepTimeout(SetSleepTimeoutType & args);
 #endif
 
 #else
@@ -3204,13 +3596,63 @@ struct FileDeleteType {
 };
 
 #ifdef __ENHANCED_FIRMWARE
-// LoaderExecuteFunction
+/**
+ * LoaderExecuteFunctionType structure.
+ * This structure is used when calling the \ref SysLoaderExecuteFunction
+ * system call function.
+ *
+ * The fields usage depends on the requested command and are documented in the
+ * table below.
+ *
+ * <table>
+ * <tr><td>Cmd</td>
+ *     <td>Meaning</td><td>Expected Parameters</td></tr>
+ * <tr><td>LDR_CMD_OPENREAD</td>
+ *     <td>Open a file for reading</td><td>(Filename, Length)</td></tr>
+ * <tr><td>LDR_CMD_OPENWRITE</td>
+ *     <td>Create a file</td><td>(Filename, Length)</td></tr>
+ * <tr><td>LDR_CMD_READ</td>
+ *     <td>Read from a file</td><td>(Filename, Buffer, Length)</td></tr>
+ * <tr><td>LDR_CMD_WRITE</td>
+ *     <td>Write to a file</td><td>(Filename, Buffer, Length)</td></tr>
+ * <tr><td>LDR_CMD_CLOSE</td>
+ *     <td>Close a file</td><td>(Filename)</td></tr>
+ * <tr><td>LDR_CMD_DELETE</td>
+ *     <td>Delete a file</td><td>(Filename)</td></tr>
+ * <tr><td>LDR_CMD_FINDFIRST</td>
+ *     <td>Start iterating files</td><td>(Filename, Buffer, Length)</td></tr>
+ * <tr><td>LDR_CMD_FINDNEXT</td>
+ *     <td>Continue iterating files</td><td>(Filename, Buffer, Length)</td></tr>
+ * <tr><td>LDR_CMD_OPENWRITELINEAR</td>
+ *     <td>Create a linear file</td><td>(Filename, Length)</td></tr>
+ * <tr><td>LDR_CMD_OPENREADLINEAR</td>
+ *     <td>Read a linear file</td><td>(Filename, Buffer, Length)</td></tr>
+ * <tr><td>LDR_CMD_OPENAPPENDDATA</td>
+ *     <td>Open a file for writing</td><td>(Filename, Length)</td></tr>
+ * <tr><td>LDR_CMD_FINDFIRSTMODULE</td>
+ *     <td>Start iterating modules</td><td>(Filename, Buffer)</td></tr>
+ * <tr><td>LDR_CMD_FINDNEXTMODULE</td>
+ *     <td>Continue iterating modules</td><td>(Buffer)</td></tr>
+ * <tr><td>LDR_CMD_CLOSEMODHANDLE</td>
+ *     <td>Close module handle</td><td>()</td></tr>
+ * <tr><td>LDR_CMD_IOMAPREAD</td>
+ *     <td>Read IOMap data</td><td>(Filename, Buffer, Length)</td></tr>
+ * <tr><td>LDR_CMD_IOMAPWRITE</td>
+ *     <td>Write IOMap data</td><td>(Filename, Buffer, Length)</td></tr>
+ * <tr><td>LDR_CMD_DELETEUSERFLASH</td>
+ *     <td>Delete all files</td><td>()</td></tr>
+ * <tr><td>LDR_CMD_RENAMEFILE</td>
+ *     <td>Rename file</td><td>(Filename, Buffer, Length)</td></tr>
+ * </table>
+ *
+ * \sa SysLoaderExecuteFunction()
+ */
 struct LoaderExecuteFunctionType {
-  unsigned int Result;
-  byte Cmd;
-  string Filename;
-  byte Buffer[];
-  unsigned long Length;
+  unsigned int Result;    /*!< The function call result. \todo ?. */
+  byte Cmd;               /*!< The command to execute. */
+  string Filename;        /*!< The Filename parameter, see table. */
+  byte Buffer[];          /*!< The Buffer parameter, see table. */
+  unsigned long Length;   /*!< The Length parameter, see table. */
 };
 
 // FileFindFirst, FileFindNext
@@ -3252,6 +3694,110 @@ struct ListFilesType {
  * Functions for accessing and modifying Loader module features.
  * @{
  */
+#ifdef __DOXYGEN_DOCS
+
+#define FreeMemory() asm { GetFreeMemory(__RETVAL__) }
+
+#define CreateFile(_fname, _fsize, _handle) asm { __createFile(_fname, _fsize, _handle, __RETVAL__) }
+#define OpenFileAppend(_fname, _fsize, _handle) asm { __openFileAppend(_fname, _fsize, _handle, __RETVAL__) }
+#define OpenFileRead(_fname, _fsize, _handle) asm { __openFileRead(_fname, _fsize, _handle, __RETVAL__) }
+#define CloseFile(_handle) asm { __closeFile(_handle, __RETVAL__) }
+#define ResolveHandle(_fname, _handle, _writeable) asm { __resolveHandle(_fname, _handle, _writeable, __RETVAL__) }
+#define RenameFile(_oldname, _newname) asm { __renameFile(_oldname, _newname, __RETVAL__) }
+#define DeleteFile(_fname) asm { __deleteFile(_fname, __RETVAL__) }
+#define ResizeFile(_fname, _newsize) asm { __fileResize(_fname, _newsize, __RETVAL__) }
+
+#ifdef __ENHANCED_FIRMWARE
+#define CreateFileLinear(_fname, _fsize, _handle) asm { __createFileLinear(_fname, _fsize, _handle, __RETVAL__) }
+#define CreateFileNonLinear(_fname, _fsize, _handle) asm { __createFileNonLinear(_fname, _fsize, _handle, __RETVAL__) }
+#define OpenFileReadLinear(_fname, _fsize, _handle) asm { __openFileReadLinear(_fname, _fsize, _handle, __RETVAL__) }
+#define FindFirstFile(_fname, _handle) asm { __findFirstFile(_fname, _handle, __RETVAL__) }
+#define FindNextFile(_fname, _handle) asm { __findNextFile(_fname, _handle, __RETVAL__) }
+#endif
+
+#define Read(_handle, _n) asm { __readValue(_handle, _n, __RETVAL__) }
+#define ReadLn(_handle, _n) asm { __readLnValue(_handle, _n, __RETVAL__) }
+#define ReadBytes(_handle, _len, _buf) asm { __readBytes(_handle, _len, _buf, __RETVAL__) }
+#define ReadLnString(_handle, _output) asm { __readLnString(_handle, _output, __RETVAL__) }
+
+#define Write(_handle, _n) asm { __writeValue(_handle, _n, __RETVAL__) }
+#define WriteLn(_handle, _n) asm { __writeLnValue(_handle, _n, __RETVAL__) }
+#define WriteString(_handle, _str, _cnt) asm { __writeString(_handle, _str, _cnt, __RETVAL__) }
+#define WriteLnString(_handle, _str, _cnt) asm { __writeLnString(_handle, _str, _cnt, __RETVAL__) }
+#define WriteBytes(_handle, _buf, _cnt) asm { __writeBytes(_handle, _buf, _cnt, __RETVAL__) }
+#define WriteBytesEx(_handle, _len, _buf) asm { __writeBytesEx(_handle, _len, _buf, __RETVAL__) }
+
+#define SysFileOpenRead(_args) asm { \
+  compchktype _args, FileOpenType \
+  syscall FileOpenRead, _args \
+}
+#define SysFileOpenWrite(_args) asm { \
+  compchktype _args, FileOpenType \
+  syscall FileOpenWrite, _args \
+}
+#define SysFileOpenAppend(_args) asm { \
+  compchktype _args, FileOpenType \
+  syscall FileOpenAppend, _args \
+}
+#define SysFileRead(_args) asm { \
+  compchktype _args, FileReadWriteType \
+  syscall FileRead, _args \
+}
+#define SysFileWrite(_args) asm { \
+  compchktype _args, FileReadWriteType \
+  syscall FileWrite, _args \
+}
+#define SysFileClose(_args) asm { \
+  compchktype _args, FileCloseType \
+  syscall FileClose, _args \
+}
+#define SysFileResolveHandle(_args) asm { \
+  compchktype _args, FileResolveHandleType \
+  syscall FileResolveHandle, _args \
+}
+#define SysFileRename(_args) asm { \
+  compchktype _args, FileRenameType \
+  syscall FileRename, _args \
+}
+#define SysFileDelete(_args) asm { \
+  compchktype _args, FileDeleteType \
+  syscall FileDelete, _args \
+}
+
+#ifdef __ENHANCED_FIRMWARE
+/**
+ * Execute any Loader module command.
+ * This function lets you directly execute the Loader module's primary
+ * function using the values specified via the \ref LoaderExecuteFunctionType
+ * structure.
+ *
+ * \param args The LoaderExecuteFunctionType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires the extended firmware.
+ */
+inline void SysLoaderExecuteFunction(LoaderExecuteFunctionType & args);
+/** \example ex_sysloaderexecutefunction.nxc
+ * This is an example of how to use the SysLoaderExecuteFunction function
+ * along with the LoaderExecuteFunctionType structure.
+ */
+
+inline void SysFileFindFirst(FileFindType & args);
+inline void SysFileFindNext(FileFindType & args);
+inline void SysFileOpenWriteLinear(FileOpenType & args);
+inline void SysFileOpenWriteNonLinear(FileOpenType & args);
+inline void SysFileOpenReadLinear(FileOpenType & args);
+#if __FIRMWARE_VERSION > 107
+inline void SysFileSeek(FileSeekType & args);
+inline void SysFileResize(FileResizeType & args);
+#endif
+#endif
+#if __FIRMWARE_VERSION > 107
+inline void SysListFiles(ListFilesType & args);
+#endif
+
+#else
+
 #define FreeMemory() asm { GetFreeMemory(__RETVAL__) }
 
 #define CreateFile(_fname, _fsize, _handle) asm { __createFile(_fname, _fsize, _handle, __RETVAL__) }
@@ -3361,6 +3907,8 @@ struct ListFilesType {
   compchktype _args, ListFilesType \
   syscall ListFiles, _args \
 }
+#endif
+
 #endif
 
 /** @} */ // end of LoaderModuleFunctions group
@@ -4396,25 +4944,84 @@ inline float tanhd(float x) { asm { tanhd __FLTRETVAL__, x } }
 
 #endif
 
-#define isNAN(_x) ((_x) != (_x))
-
 inline byte bcd2dec(byte bcd) { asm { __bcd2dec(bcd, __RETVAL__) } }
 
-/*
-  AddAPIFunction('abs', APIF_ABS);
-  AddAPIFunction('sign', APIF_SIGN);
-  AddAPIFunction('Random', APIF_RANDOM);
-*/
-
-// RandomNumber
+/**
+ * RandomNumberType structure.
+ * This structure is used when calling the \ref SysRandomNumber system call
+ * function.
+ * \sa SysRandomNumber()
+ */
 struct RandomNumberType {
-  int Result;
+  int Result; /*!< The random number. */
 };
+
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * Is the value NaN.
+ * Returns true if the floating point value is NaN (not a number).
+ *
+ * \param value A floating point variable.
+ * \return Whether the value is NaN.
+ */
+inline bool isNAN(float value);
+
+/**
+ * Absolute value.
+ * Return the absolute value of the value argument. Any scalar type can
+ * be passed into this function.
+ *
+ * \param num The numeric value for which to calculate its absolute value.
+ * \return The absolute value of the parameter.
+ */
+inline variant abs(variant num);
+
+/**
+ * Sign value.
+ * Return the sign of the value argument (-1, 0, or 1). Any scalar type can
+ * be passed into this function.
+ *
+ * \param num The numeric value for which to calculate its sign value.
+ * \return -1 if the parameter is negative, 0 if the parameter is zero, or 1 if
+ * the parameter is positive.
+ */
+inline char sign(variant num);
+
+/**
+ * Generate random number.
+ * Return a signed or unsigned 16-bit random number. If the optional argument n
+ * is not provided the function will return a signed value.  Otherwise the
+ * returned value will range between 0 and n (exclusive).
+ *
+ * \param n The maximum unsigned value desired (optional).
+ * \return A random number
+ */
+inline int Random(unsigned int n = 0);
+
+/**
+ * Draw a random number.
+ * This function lets you obtain a random number via the \ref RandomNumberType
+ * structure.
+ *
+ * \param args The RandomNumberType structure receiving results.
+ */
+inline void SysRandomNumber(RandomNumberType & args);
+/** \example ex_sysrandomnumber.nxc
+ * This is an example of how to use the SysRandomNumber function along with
+ * the RandomNumberType structure.
+ */
+
+#else
+
+#define isNAN(_x) ((_x) != (_x))
 
 #define SysRandomNumber(_args) asm { \
   compchktype _args, RandomNumberType \
   syscall RandomNumber, _args \
 }
+
+#endif
 /** @} */ // end of cmathAPI group
 
 
@@ -4623,7 +5230,9 @@ inline int fputs(string str, byte handle) {
 }
 #ifdef __ENHANCED_FIRMWARE
 
-/** 
+#ifdef __DOXYGEN_DOCS
+
+/**
  * Print formatted data to stdout.
  * Writes to the LCD at 0, LCD_LINE1 a sequence of data formatted as the
  * format argument specifies. After the format parameter, the function
@@ -4631,13 +5240,10 @@ inline int fputs(string str, byte handle) {
  *
  * \param _format A string specifying the desired format.
  * \param _value A value to be formatted for writing to the LCD.
- * \return The number of characters written to the screen.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
  */
-#define printf(_format, _value) { \
-  string msg = FormatNum(_format, _value); \
-  TextOut(0, LCD_LINE1, msg); \
-  asm { strlen __RETVAL__, msg } \
-}
+inline void printf(string format, variant value);
 
 /**
  * Write formatted data to file.
@@ -4645,15 +5251,13 @@ inline int fputs(string str, byte handle) {
  * file. After the format parameter, the function expects one value
  * argument.
  *
- * \param _handle The handle of the file to write to.
- * \param _format A string specifying the desired format.
- * \param _value A value to be formatted for writing to the file.
- * \return The number of characters written to the file.
+ * \param handle The handle of the file to write to.
+ * \param format A string specifying the desired format.
+ * \param value A value to be formatted for writing to the file.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
  */
-#define fprintf(_handle, _format, _value) { \
-  int cnt = fputs(FormatNum(_format, _value), _handle); \
-  asm { mov __RETVAL__, cnt } \
-}
+inline void fprintf(byte handle, string format, variant value);
 
 /**
  * Write formatted data to string.
@@ -4664,12 +5268,25 @@ inline int fputs(string str, byte handle) {
  * \param _str The string to write to.
  * \param _format A string specifying the desired format.
  * \param _value A value to be formatted for writing to the string.
- * \return The number of characters written to the string.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
  */
+inline void sprintf(string & str, string format, variant value);
+
+#else
+
+#define printf(_format, _value) { \
+  string msg = FormatNum(_format, _value); \
+  TextOut(0, LCD_LINE1, msg); \
+}
+#define fprintf(_handle, _format, _value) { \
+  int cnt = fputs(FormatNum(_format, _value), _handle); \
+}
 #define sprintf(_str, _format, _value) { \
   _str = FormatNum(_format, _value); \
-  asm { strlen __RETVAL__, _str } \
 }
+
+#endif
 
 #if __FIRMWARE_VERSION > 107
 
@@ -4732,22 +5349,35 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
  * Standard C cstring API functions.
  * @{
  */
+
+#ifdef __DOXYGEN_DOCS
+
+inline variant StrToNum(string str);
+inline unsigned int StrLen(string str);
+inline byte StrIndex(string str, unsigned int idx);
+inline string NumToStr(variant num);
+inline string StrCat(string str1, string str2, string str3, string strN);
+inline string SubStr(string str, unsigned int idx, unsigned int len);
+inline string Flatten(variant num);
+inline string StrReplace(string str, unsigned int idx, string strnew);
+inline string FormatNum(string fmt, variant number);
+
+inline string FlattenVar(variant x);
+inline int UnflattenVar(string str, variant & variable);
+inline string ByteArrayToStr(byte data[]);
+inline void ByteArrayToStrEx(byte data[], string & str);
+inline void StrToByteArray(string str, byte & data[]);
+
+#else
+
 #define FlattenVar(_value) asm { flatten __STRRETVAL__, _value }
 #define UnflattenVar(_str, _value) asm { unflatten _value, __RETVAL__, _str, _value }
 #define ByteArrayToStr(_asrc) asm { arrtostr __STRRETVAL__, _asrc }
 #define ByteArrayToStrEx(_asrc, _sout) asm { arrtostr _sout, _asrc }
 #define StrToByteArray(_ssrc, _aout) asm { strtoarr _aout, _ssrc }
-/*
-  AddAPIFunction('StrToNum', APIF_STRTONUM);
-  AddAPIFunction('StrLen', APIF_STRLEN);
-  AddAPIFunction('StrIndex', APIF_STRINDEX);
-  AddAPIStringFunction('NumToStr', APISF_NUMTOSTR);
-  AddAPIStringFunction('StrCat', APISF_STRCAT);
-  AddAPIStringFunction('SubStr', APISF_SUBSTR);
-  AddAPIStringFunction('Flatten', APISF_FLATTEN);
-  AddAPIStringFunction('StrReplace', APISF_STRREPLACE);
-  AddAPIStringFunction('FormatNum', APISF_FORMATNUM);
-*/
+
+#endif
+
 // cstring functions
 
 /**
@@ -4854,47 +5484,6 @@ inline int strcmp(const string & str1, const string & str2) {
 }
 
 /**
- * Copy memory.
- * Copies memory contents from the source to the destination. The num
- * argument is ignored.
- *
- * \param _dest The destination variable.
- * \param _src The source variable.
- * \param _num The number of bytes to copy (ignored).
- */
-#define memcpy(_dest, _src, _num) asm { mov _dest, _src }
-
-/**
- * Move memory.
- * Moves memory contents from the source to the destination. The num
- * argument is ignored.
- *
- * \param _dest The destination variable.
- * \param _src The source variable.
- * \param _num The number of bytes to copy (ignored).
- */
-#define memmove(_dest, _src, _num) asm { mov _dest, _src }
-
-/**
- * Compare two blocks of memory.
- * Compares the variant _ptr1 to the variant _ptr2. Returns an integral value
- * indicating the relationship between the variables. The num argument is
- * ignored.
- *
- * \param _ptr1 A variable to be compared.
- * \param _ptr2 A variable to be compared.
- * \param _num The number of bytes to compare (ignored).
- */
-#define memcmp(_ptr1, _ptr2, _num) { \
-  asm { mov __RETVAL__, -1 }; \
-  if ((_ptr1) == (_ptr2)) { \
-    asm { mov __RETVAL__, 0 }; \
-  } else if ((_ptr1) > (_ptr2)) { \
-    asm { mov __RETVAL__, 1 }; \
-  } \
-}
-
-/**
  * Compare characters of two strings.
  * Compares up to num characters of the string str1 to those of the string str2.
  *
@@ -4918,6 +5507,60 @@ inline int strncmp(const string & str1, const string & str2, unsigned int num) {
     result = 1;
   return result;
 }
+
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * Copy memory.
+ * Copies memory contents from the source to the destination. The num
+ * argument is ignored.
+ *
+ * \param dest The destination variable.
+ * \param src The source variable.
+ * \param num The number of bytes to copy (ignored).
+ */
+inline void memcpy(variant dest, variant src, byte num);
+
+/**
+ * Move memory.
+ * Moves memory contents from the source to the destination. The num
+ * argument is ignored.
+ *
+ * \param dest The destination variable.
+ * \param src The source variable.
+ * \param num The number of bytes to copy (ignored).
+ */
+inline void memmove(variant dest, variant src, byte num);
+
+/**
+ * Compare two blocks of memory.
+ * Compares the variant ptr1 to the variant ptr2. Returns an integral value
+ * indicating the relationship between the variables. The num argument is
+ * ignored.
+ *
+ * \todo re-implement this function so that it actually works.
+ *
+ * \param ptr1 A variable to be compared.
+ * \param ptr2 A variable to be compared.
+ * \param num The number of bytes to compare (ignored).
+ */
+inline char memcmp(variant ptr1, variant ptr2, byte num);
+
+#else
+
+#define memcpy(_dest, _src, _num) asm { mov _dest, _src }
+#define memmove(_dest, _src, _num) asm { mov _dest, _src }
+#define memcmp(_ptr1, _ptr2, _num) { \
+  asm { mov __RETVAL__, -1 }; \
+  if ((_ptr1) == (_ptr2)) { \
+    asm { mov __RETVAL__, 0 }; \
+  } else if ((_ptr1) > (_ptr2)) { \
+    asm { mov __RETVAL__, 1 }; \
+  } \
+}
+
+#endif
+
 /*
 void * memchr (void * ptr, int value, size_t num ); // Locate character in block of memory
 char * strchr (       char * str, int character ); // Locate first occurrence of character in string
