@@ -5017,6 +5017,13 @@ var
   V : TVariable;
 begin
   Next;
+  Scan;
+  // it is possible that the user has declared a variable using the "long int" or "short int" syntax.
+  // we want to support that syntax.
+  if Token = TOK_SHORTDEF then begin
+    if dt in [TOK_LONGDEF, TOK_ULONGDEF, TOK_SHORTDEF, TOK_USHORTDEF] then
+      Next;
+  end;
   if Token <> TOK_IDENTIFIER then
     Expected(sVariableName);
   savedval := Value;
@@ -5235,6 +5242,15 @@ var
 begin
   Next;
   Scan;
+  // it is possible that the user has declared a variable using the "long int" or "short int" syntax.
+  // we want to support that syntax.
+  if Token = TOK_SHORTDEF then begin
+    if dt in [TOK_LONGDEF, TOK_ULONGDEF, TOK_SHORTDEF, TOK_USHORTDEF] then
+    begin
+      Next;
+      Scan;
+    end;
+  end;
   if Token <> TOK_IDENTIFIER then Expected(sVariableName);
   // optional initial value
   savedval := Value;
