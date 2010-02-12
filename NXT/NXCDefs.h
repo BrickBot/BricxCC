@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-02-05
- * \version 63
+ * \date 2010-02-11
+ * \version 64
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -4968,16 +4968,6 @@ struct RandomNumberType {
 inline bool isNAN(float value);
 
 /**
- * Absolute value.
- * Return the absolute value of the value argument. Any scalar type can
- * be passed into this function.
- *
- * \param num The numeric value for which to calculate its absolute value.
- * \return The absolute value of the parameter.
- */
-inline variant abs(variant num);
-
-/**
  * Sign value.
  * Return the sign of the value argument (-1, 0, or 1). Any scalar type can
  * be passed into this function.
@@ -5308,7 +5298,7 @@ inline void sprintf(string & str, string format, variant value);
  * \param offset The number of bytes to offset from origin.
  * \param origin Position from where offset is added. It is specified by one
  * of the following constants: SEEK_SET - beginning of file, SEEK_CUR - current
- * position of the file pointer, or SEEK_END - end of file.
+ * position of the file pointer, or SEEK_END - end of file. \ref fseekConstants
  * \return A value of zero if successful or non-zero otherwise.
  */
 inline int fseek(byte handle, long offset, int origin) {
@@ -5337,7 +5327,166 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
   int getchar(void); // read character from stdin (returns which button was pressed)
   int putchar(int character); // write character to stdout
 */
+
+/** \example ex_cstdio.nxc
+ * How to use the cstdio API functions: \ref fopen, \ref fprintf, \ref fputc,
+ * \ref fputs, \ref fseek, \ref ftell, \ref fclose, \ref feof, \ref fflush,
+ * \ref fgetc, \ref fgets, \ref getc, \ref putc, \ref rewind,
+ * \ref printf, \ref sprintf, \ref rename, and \ref remove.
+ */
+
+
 /** @} */ // end of cstdioAPI group
+
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// cstdlib API //////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @defgroup cstdlibAPI cstdlib API Functions
+ * Standard C cstdlib API functions.
+ * @{
+ */
+
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * Abort current process.
+ * Aborts the process with an abnormal program termination.
+ * The function never returns to its caller.
+ */
+inline void abort();
+
+/**
+ * Absolute value.
+ * Return the absolute value of the value argument. Any scalar type can
+ * be passed into this function.
+ *
+ * \param num The numeric value.
+ * \return The absolute value of num.
+ */
+inline variant abs(variant num);
+
+/**
+ * Generate random number.
+ * Returns a pseudo-random integral number in the range 0 to \ref RAND_MAX.
+ *
+ * \return An integer value between 0 and RAND_MAX.
+ */
+inline unsigned int rand();
+
+#else
+
+#define abort() Stop(true)
+#define rand() Random(RAND_MAX)
+
+/*
+double strtod ( const char * str, char ** endptr );
+long int strtol ( const char * str, char ** endptr, int base );
+unsigned long int strtoul ( const char * str, char ** endptr, int base );
+
+*/
+
+#endif
+
+/**
+ * Convert string to float.
+ * Parses the string str interpreting its content as a floating point number
+ * and returns its value as a float.
+ *
+ * The function first discards as many whitespace characters as necessary until
+ * the first non-whitespace character is found. Then, starting from this
+ * character, takes as many characters as possible that are valid following a
+ * syntax resembling that of floating point literals, and interprets them as a
+ * numerical value. The rest of the string after the last valid character is
+ * ignored and has no effect on the behavior of this function.
+ *
+ * A valid floating point number for atof is formed by a succession of:
+ * - An optional plus or minus sign
+ * - A sequence of digits, optionally containing a decimal-point character
+ * - An optional exponent part, which itself consists on an 'e' or 'E'
+ * character followed by an optional sign and a sequence of digits.
+ *
+ * If the first sequence of non-whitespace characters in str does not form a
+ * valid floating-point number as just defined, or if no such sequence exists
+ * because either str is empty or contains only whitespace characters, no
+ * conversion is performed.
+ *
+ * \param str String beginning with the representation of a floating-point number.
+ * \return On success, the function returns the converted floating point number
+ * as a float value. If no valid conversion could be performed a zero value
+ * (0.0) is returned.
+ */
+inline float atof(const string str) { return StrToNum(str); }
+
+/**
+ * Convert string to integer.
+ * Parses the string str interpreting its content as an integral number,
+ * which is returned as an int value.
+ *
+ * The function first discards as many whitespace characters as necessary
+ * until the first non-whitespace character is found. Then, starting from
+ * this character, takes an optional initial plus or minus sign followed by as
+ * many numerical digits as possible, and interprets them as a numerical value.
+ *
+ * The string can contain additional characters after those that form the
+ * integral number, which are ignored and have no effect on the behavior of
+ * this function.
+ *
+ * If the first sequence of non-whitespace characters in str does not form a
+ * valid integral number, or if no such sequence exists
+ * because either str is empty or contains only whitespace characters, no
+ * conversion is performed.
+ *
+ * \param str String beginning with the representation of an integral number.
+ * \return On success, the function returns the converted integral number
+ * as an int value. If no valid conversion could be performed a zero value
+ * is returned.
+ */
+inline int atoi(const string str) { return StrToNum(str); }
+
+/**
+ * Convert string to long integer.
+ * Parses the string str interpreting its content as an integral number,
+ * which is returned as a long int value.
+ *
+ * The function first discards as many whitespace characters as necessary
+ * until the first non-whitespace character is found. Then, starting from
+ * this character, takes an optional initial plus or minus sign followed by as
+ * many numerical digits as possible, and interprets them as a numerical value.
+ *
+ * The string can contain additional characters after those that form the
+ * integral number, which are ignored and have no effect on the behavior of
+ * this function.
+ *
+ * If the first sequence of non-whitespace characters in str does not form a
+ * valid integral number, or if no such sequence exists
+ * because either str is empty or contains only whitespace characters, no
+ * conversion is performed.
+ *
+ * \param str String beginning with the representation of an integral number.
+ * \return On success, the function returns the converted integral number
+ * as a long int value. If no valid conversion could be performed a zero value
+ * is returned.
+ */
+inline long atol(const string str) { return StrToNum(str); }
+
+/**
+ * Absolute value.
+ * Return the absolute value of parameter n.
+ *
+ * \param n Integral value.
+ * \return The absolute value of n.
+ */
+inline long labs(long n) { return abs(n); }
+
+/** \example ex_cstdlib.nxc
+ * How to use the cstdlib API functions: \ref abs, \ref labs, \ref atof,
+ * \ref atoi, \ref atol, \ref abort, and \ref rand.
+ */
+
+/** @} */ // end of cstdlibAPI group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -5352,20 +5501,165 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
 
 #ifdef __DOXYGEN_DOCS
 
+/**
+ * Convert string to number.
+ * Return the numeric value specified by the string passed to the function.
+ * If the content of the string is not a numeric value then this function
+ * returns zero.
+ *
+ * \param str String beginning with the representation of a number.
+ * \param str A string.
+ * \return A number.
+ */
 inline variant StrToNum(string str);
-inline unsigned int StrLen(string str);
-inline byte StrIndex(string str, unsigned int idx);
-inline string NumToStr(variant num);
-inline string StrCat(string str1, string str2, string str3, string strN);
-inline string SubStr(string str, unsigned int idx, unsigned int len);
-inline string Flatten(variant num);
-inline string StrReplace(string str, unsigned int idx, string strnew);
-inline string FormatNum(string fmt, variant number);
 
+/**
+ * Get string length.
+ * Return the length of the specified string. The length of a string does
+ * not include the null terminator at the end of the string.
+ *
+ * \param str A string.
+ * \return The length of the string.
+ */
+inline unsigned int StrLen(string str);
+
+/**
+ * Extract a character from a string.
+ * Return the numeric value of the character in the specified string at the
+ * specified index.
+ *
+ * \param str A string.
+ * \param idx The index of the character to retrieve.
+ * \return The numeric value of the character at the specified index.
+ */
+inline byte StrIndex(string str, unsigned int idx);
+
+/**
+ * Convert number to string.
+ * Return the string representation of the specified numeric value.
+ *
+ * \param num A number.
+ * \return The string representation of the parameter num.
+ */
+inline string NumToStr(variant num);
+
+/**
+ * Concatenate strings.
+ * Return a string which is the result of concatenating all of the
+ * string arguments together. Each argument must be either a constant string
+ * or a string variable.  No expressions are allowed.  This function accepts
+ * any number of parameters.
+ *
+ * \param str1 The first string.
+ * \param str2 The second string.
+ * \param strN The Nth string.
+ * \return The concatenated string.
+ */
+inline string StrCat(string str1, string str2, string strN);
+
+/**
+ * Extract a portion of a string.
+ * Return a sub-string from the specified input string starting at idx and
+ * including the specified number of characters.
+ *
+ * \param str A string.
+ * \param idx The starting point of the sub-string.
+ * \param len The length of the sub-string.
+ * \return The sub-string extracted from parameter str.
+ */
+inline string SubStr(string str, unsigned int idx, unsigned int len);
+
+/**
+ * Flatten a number to a string.
+ * Return a string containing the byte representation of the specified value.
+ *
+ * \param num A number.
+ * \return A string containing the byte representation of the parameter num.
+ */
+inline string Flatten(variant num);
+
+/**
+ * Replace a portion of a string.
+ * Return a string with the part of the string replaced (starting at the
+ * specified index) with the contents of the new string value provided in
+ * the third argument.
+ *
+ * \param str A string.
+ * \param idx The starting point for the replace operation.
+ * \param strnew The replacement string.
+ * \return The modified string.
+ */
+inline string StrReplace(string str, unsigned int idx, string strnew);
+
+/**
+ * Format a number.
+ * Return the formatted string using the format and value. Use a standard
+ * numeric sprintf format specifier within the format string.
+ *
+ * \param fmt The string format containing a sprintf numeric format specifier.
+ * \param num A number.
+ * \return A string containing the formatted numeric value.
+ */
+inline string FormatNum(string fmt, variant num);
+
+/**
+ * Flatten any data to a string.
+ * Return a string containing the byte representation of the specified value.
+ *
+ * \sa UnflattenVar
+ * \param x Any NXC datatype.
+ * \return A string containing the byte representation of the parameter x.
+ */
 inline string FlattenVar(variant x);
-inline int UnflattenVar(string str, variant & variable);
+
+/**
+ * Unflatten a string into a data type.
+ * Convert a string containing the byte representation of the specified
+ * variable back into the original variable type.
+ *
+ * \sa FlattenVar, Flatten
+ * \param str A string containing flattened data.
+ * \param x A variable reference where the unflattened data is stored.
+ * \return A boolean value indicating whether the operation succeeded or not.
+ */
+inline int UnflattenVar(string str, variant & x);
+
+/**
+ * Convert a byte array to a string.
+ * Convert the specified array to a string by appending a null terminator to
+ * the end of the array elements. The array must be a one-dimensional array
+ * of byte.
+ *
+ * \sa StrToByteArray, ByteArrayToStrEx
+ * \param data A byte array.
+ * \return A string containing data and a null terminator byte.
+ */
 inline string ByteArrayToStr(byte data[]);
+
+/**
+ * Convert a byte array to a string.
+ * Convert the specified array to a string by appending a null terminator to
+ * the end of the array elements. The array must be a one-dimensional array
+ * of byte.
+ *
+ * \sa StrToByteArray, ByteArrayToStr
+ * \param data A byte array.
+ * \param str A string variable reference which, on output, will contain
+ * data and a null terminator byte.
+ */
 inline void ByteArrayToStrEx(byte data[], string & str);
+
+/**
+ * Convert a string to a byte array.
+ * Convert the specified string to an array of byte by removing the null
+ * terminator at the end of the string. The output array variable must be a
+ * one-dimensional array of byte.
+ *
+ * \sa ByteArrayToStr, ByteArrayToStrEx
+ * \param str A string
+ * \param data A byte array reference which, on output, will contain str
+ * without its null terminator.
+ */
 inline void StrToByteArray(string str, byte & data[]);
 
 #else
@@ -5572,8 +5866,21 @@ char * strtok ( char * str, const char * delimiters ); // Split string into toke
 char * strstr ( const char *, const char * ); // Locate substring
 
 void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (something like replace)
-
 */
+
+/** \example ex_string.nxc
+ * How to use the string API functions: \ref StrToNum, \ref StrLen,
+ * \ref StrIndex, \ref NumToStr, \ref StrCat, \ref SubStr, \ref Flatten,
+ * \ref StrReplace, \ref FormatNum, \ref FlattenVar, \ref UnflattenVar,
+ * \ref ByteArrayToStr, \ref ByteArrayToStrEx, and \ref StrToByteArray.
+ */
+
+/** \example ex_cstring.nxc
+ * How to use the cstring API functions: \ref strcat, \ref strcmp, \ref strcpy,
+ * \ref strlen, \ref strncat, \ref strncmp, \ref strncpy, \ref memcpy,
+ * \ref memmove, and \ref memcmp.
+ */
+
 /** @} */ // end of cstringAPI group
 
 
@@ -5722,6 +6029,13 @@ inline int toupper(int c) { if (islower(c)) c -= 32; return c; }
  * (unchanged) otherwise..
  */
 inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
+
+/** \example ex_ctype.nxc
+ * How to use the ctype API functions: \ref isupper, \ref islower, \ref isalpha,
+ * \ref isdigit, \ref isalnum, \ref isspace, \ref iscntrl, \ref isprint,
+ * \ref isgraph, \ref ispunct, \ref isxdigit, \ref toupper, and \ref tolower.
+ */
+
 
 /** @} */ // end of ctypeAPI group
 

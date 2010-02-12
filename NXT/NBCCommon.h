@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-02-06
- * \version 44
+ * \date 2010-02-11
+ * \version 45
  */
 
 #ifndef NBCCOMMON_H
@@ -2477,6 +2477,7 @@
 #define LONG_MIN   -2147483647 /*!< The minimum value of the long type */
 #define LONG_MAX   2147483647 /*!< The maximum value of the long type */
 #define ULONG_MAX  4294967295 /*!< The maximum value of the unsigned long type */
+#define RAND_MAX   65535 /*!< The maximum unsigned int random number returned by \ref rand */
 /** @} */  // end of NXTLimits group
 
 #endif // NBCCOMMON_H
