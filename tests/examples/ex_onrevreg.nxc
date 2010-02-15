@@ -1,0 +1,1 @@
+OnRevReg(OUT_A, 75, OUT_REGMODE_SPEED); // regulate speed

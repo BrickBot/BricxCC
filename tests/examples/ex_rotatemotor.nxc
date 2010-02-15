@@ -1,0 +1,2 @@
+RotateMotor(OUT_A, 75, 45); // forward 45 degrees
+RotateMotor(OUT_A, -75, 45); // reverse 45 degrees

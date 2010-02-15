@@ -1,0 +1,24 @@
+task main()
+{
+/*
+fclose(byte handle)
+feof(byte handle)
+fflush(byte handle)
+fgetc(byte handle)
+fgets(string & str, int num, byte handle)
+fopen(string filename, const string mode)
+fprintf(byte handle, const string & format, variant value)
+fputc(char ch, byte handle)
+fputs(string str, byte handle)
+fseek(byte handle, long offset, int origin)
+ftell(byte handle)
+getc(byte handle)
+putc(char ch, byte handle)
+remove(string fname)
+rename(string oldname, string newname)
+rewind(byte handle)
+
+
+
+*/
+}

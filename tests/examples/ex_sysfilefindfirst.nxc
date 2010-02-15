@@ -1,0 +1,7 @@
+task main()
+{
+  FileFindType args;
+  args.Filename = "*.*";
+  SysFileFindFirst(args);
+  TextOut(0, LCD_LINE1, args.Filename);
+}

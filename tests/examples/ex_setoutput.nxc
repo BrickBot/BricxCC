@@ -1,0 +1,1 @@
+SetOutput(OUT_AB, TachoLimit, 720); // set tacho limit

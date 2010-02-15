@@ -1,0 +1,21 @@
+task main()
+{
+  string tmp = "a1B2.G% ";
+  TextOut(0, LCD_LINE1, tmp);
+  NumOut(0, LCD_LINE2, isalnum(tmp[0])); // 1
+  NumOut(0, LCD_LINE3, isalpha(tmp[1])); // 0
+  NumOut(0, LCD_LINE4, iscntrl(tmp[2])); // 0
+  NumOut(0, LCD_LINE5, isdigit(tmp[3])); // 1
+  NumOut(0, LCD_LINE6, isgraph(tmp[4])); // 1
+  NumOut(0, LCD_LINE7, islower(tmp[5])); // 0
+  NumOut(0, LCD_LINE8, isprint(tmp[6])); // 1
+
+  NumOut(40, LCD_LINE2, ispunct(tmp[0])); // 0
+  NumOut(40, LCD_LINE3, isspace(tmp[1])); // 0
+  NumOut(40, LCD_LINE4, isupper(tmp[2])); // 1
+  NumOut(40, LCD_LINE5, isxdigit(tmp[3])); // 1
+  NumOut(40, LCD_LINE6, tolower(tmp[4])); // 46
+  NumOut(40, LCD_LINE7, toupper(tmp[5])); // 71
+
+  Wait(SEC_5);
+}
