@@ -1,0 +1,20 @@
+task main()
+{
+/*
+inline variant StrToNum(string str);
+inline unsigned int StrLen(string str);
+inline byte StrIndex(string str, unsigned int idx);
+inline string NumToStr(variant num);
+inline string StrCat(string str1, string str2, string str3, string strN);
+inline string SubStr(string str, unsigned int idx, unsigned int len);
+inline string Flatten(variant num);
+inline string StrReplace(string str, unsigned int idx, string strnew);
+inline string FormatNum(string fmt, variant number);
+
+inline string FlattenVar(variant x);
+inline int UnflattenVar(string str, variant & variable);
+inline string ByteArrayToStr(byte data[]);
+inline void ByteArrayToStrEx(byte data[], string & str);
+inline void StrToByteArray(string str, byte & data[]);
+*/
+}

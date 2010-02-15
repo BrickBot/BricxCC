@@ -542,7 +542,8 @@ struct DrawTextType {
   char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
   LocationType Location;   /*!< The location in X, LCD line number coordinates. */
   string Text;             /*!< The text to draw on the LCD. */
-  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
+  unsigned long Options;   /*!< The options to use when writing to the LCD.
+                             \ref DisplayDrawOptionConstants */
 };
 
 /**
@@ -554,7 +555,8 @@ struct DrawTextType {
 struct DrawPointType {
   char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
   LocationType Location;   /*!< The point location on screen. */
-  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
+  unsigned long Options;   /*!< The options to use when writing to the LCD.
+                             \ref DisplayDrawOptionConstants */
 };
 
 /**
@@ -567,7 +569,8 @@ struct DrawLineType {
   char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
   LocationType StartLoc;   /*!< The location of the starting point. */
   LocationType EndLoc;     /*!< The location of the ending point. */
-  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
+  unsigned long Options;   /*!< The options to use when writing to the LCD.
+                             \ref DisplayDrawOptionConstants */
 };
 
 /**
@@ -580,7 +583,8 @@ struct DrawCircleType {
   char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
   LocationType Center;     /*!< The location of the circle center. */
   byte Size;               /*!< The circle radius. */
-  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
+  unsigned long Options;   /*!< The options to use when writing to the LCD.
+                             \ref DisplayDrawOptionConstants */
 };
 
 /**
@@ -593,7 +597,8 @@ struct DrawRectType {
   char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
   LocationType Location;   /*!< The top left corner location. */
   SizeType Size;           /*!< The width and height of the rectangle. */
-  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
+  unsigned long Options;   /*!< The options to use when writing to the LCD.
+                             \ref DisplayDrawOptionConstants */
 };
 
 /**
@@ -603,11 +608,13 @@ struct DrawRectType {
  * \sa SysDrawGraphic()
  */
 struct DrawGraphicType {
-  char Result;             /*!< The function call result. \todo ?. */
+  char Result;             /*!< The function call result. Possible values include
+                             \ref LoaderErrors, \ref ERR_FILE, and \ref NO_ERR. */
   LocationType Location;   /*!< The location on screen. */
   string Filename;         /*!< The RIC file name. */
-  int Variables[];         /*!< The variables passed as RIC arguments. \todo add padding? */
-  unsigned long Options;   /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
+  int Variables[];         /*!< The variables passed as RIC arguments. */
+  unsigned long Options;   /*!< The options to use when writing to the LCD.
+                             \ref DisplayDrawOptionConstants */
 };
 
 /**
@@ -617,7 +624,7 @@ struct DrawGraphicType {
  * \sa SysSetScreenMode()
  */
 struct SetScreenModeType {
-  char Result;                /*!< The function call result. \todo ?. */
+  char Result;                /*!< The function call result, always \ref NO_ERR. */
   unsigned long ScreenMode;   /*!< The requested screen mode.
 
                                 The standard NXT firmware only supports
@@ -626,9 +633,7 @@ struct SetScreenModeType {
                                 If you install the NBC/NXC enhanced standard
                                 NXT firmware this system function also
                                 supports setting the ScreenMode to
-                                \ref SCREEN_MODE_CLEAR.
-
-                                \todo add ref */
+                                \ref SCREEN_MODE_CLEAR. */
 };
 
 #ifdef __ENHANCED_FIRMWARE
@@ -665,7 +670,7 @@ struct SetScreenModeType {
  * \sa SysDisplayExecuteFunction()
  */
 struct DisplayExecuteFunctionType {
-  byte Status;   /*!< The function call result. \todo ?. */
+  byte Status;   /*!< The function call result, always \ref NO_ERR. */
   byte Cmd;      /*!< The command to execute. */
   bool On;       /*!< The On parameter, see table. */
   byte X1;       /*!< The X1 parameter, see table. */
@@ -675,13 +680,18 @@ struct DisplayExecuteFunctionType {
 };
 
 #if __FIRMWARE_VERSION > 107
-// DrawGraphicArray
+/**
+ * DrawGraphicArrayType structure.
+ * This structure is used when calling the \ref SysDrawGraphicArray system call
+ * function.
+ * \sa SysDrawGraphicArray()
+ */
 struct DrawGraphicArrayType {
- char Result;
- LocationType Location;
- byte Data[];
- long Variables[];
- unsigned long Options;
+ char Result;            /*!< The function call result. \todo ?. */
+ LocationType Location;  /*!< The location on screen. */
+ byte Data[];            /*!< A byte array containing the RIC opcodes. \ref RICMacros */
+ long Variables[];       /*!< The variables passed as RIC arguments. */
+ unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
 struct DrawPolygonType {
@@ -1114,8 +1124,8 @@ inline byte DisplayTextLinesCenterFlags();
  */
 inline void SysDrawText(DrawTextType & args);
 /** \example ex_sysdrawtext.nxc
- * This is an example of how to use the SysDrawText function along with the
- * DrawTextType structure.
+ * This is an example of how to use the \ref SysDrawText function along with the
+ * \ref DrawTextType structure.
  */
 
 /**
@@ -1127,8 +1137,8 @@ inline void SysDrawText(DrawTextType & args);
  */
 inline void SysDrawPoint(DrawPointType & args);
 /** \example ex_sysdrawpoint.nxc
- * This is an example of how to use the SysDrawPoint function along with the
- * DrawPointType structure.
+ * This is an example of how to use the \ref SysDrawPoint function along with the
+ * \ref DrawPointType structure.
  */
 
 /**
@@ -1140,8 +1150,8 @@ inline void SysDrawPoint(DrawPointType & args);
  */
 inline void SysDrawLine(DrawLineType & args);
 /** \example ex_sysdrawline.nxc
- * This is an example of how to use the SysDrawLine function along with the
- * DrawLineType structure.
+ * This is an example of how to use the \ref SysDrawLine function along with the
+ * \ref DrawLineType structure.
  */
 
 /**
@@ -1165,8 +1175,8 @@ inline void SysDrawCircle(DrawCircleType & args);
  */
 inline void SysDrawRect(DrawRectType & args);
 /** \example ex_sysdrawrect.nxc
- * This is an example of how to use the SysDrawRect function along with the
- * DrawRectType structure.
+ * This is an example of how to use the \ref SysDrawRect function along with the
+ * \ref DrawRectType structure.
  */
 
 /**
@@ -1425,7 +1435,7 @@ inline void SetDisplayContrast(byte contrast) { asm { __setDisplayContrast(contr
  * \sa SysSoundPlayFile()
  */
 struct SoundPlayFileType {
-  char Result;       /*!< The function call result. \todo ?. */
+  char Result;       /*!< The function call result, always \ref NO_ERR. */
   string Filename;   /*!< The name of the file to play. */
   bool Loop;         /*!< If true, loops at end of file. */
   byte SoundLevel;   /*!< The sound level. Valid values range from 0 to 4. */
@@ -1438,7 +1448,7 @@ struct SoundPlayFileType {
  * \sa SysSoundPlayTone()
  */
 struct SoundPlayToneType {
-  char Result;              /*!< The function call result. \todo ?. */
+  char Result;              /*!< The function call result, always \ref NO_ERR. */
   unsigned int Frequency;   /*!< The tone frequency. See the \ref ToneConstants group. */
   unsigned int Duration;    /*!< The tone duration in milliseconds. See the \ref TimeConstants group. */
   bool Loop;                /*!< If true, loops forever. */
@@ -1463,7 +1473,7 @@ struct SoundGetStateType {
  * \sa SysSoundSetState()
  */
 struct SoundSetStateType {
-  byte Result;   /*!< The function call result. \todo ?. */
+  byte Result;   /*!< The function call result, same as State. */
   byte State;    /*!< The new sound state. See the \ref SoundStateConstants group. */
   byte Flags;    /*!< The new sound flags. See the \ref SoundFlagsConstants group. */
 };
@@ -1665,11 +1675,11 @@ inline void SetSoundSampleRate(unsigned int sampleRate);
 inline void SetSoundVolume(byte volume);
 
 /** \example ex_soundmisc.nxc
- * This is an example of how to use the PlayFile, PlayFileEx, PlayTone,
- * PlayToneEx, SoundState, SoundFlags, StopSound, SoundFrequency,
- * SoundDuration, SoundSampleRate, SoundMode, SoundVolume, SetSoundDuration,
- * SetSoundFlags, SetSoundFrequency, SetSoundMode, SetSoundModuleState,
- * SetSoundSampleRate, and SetSoundVolume.
+ * This is an example of how to use the \ref PlayFile, \ref PlayFileEx, \ref PlayTone,
+ * \ref PlayToneEx, \ref SoundState, \ref SoundFlags, \ref StopSound, \ref SoundFrequency,
+ * \ref SoundDuration, \ref SoundSampleRate, \ref SoundMode, \ref SoundVolume, \ref SetSoundDuration,
+ * \ref SetSoundFlags, \ref SetSoundFrequency, \ref SetSoundMode, \ref SetSoundModuleState,
+ * \ref SetSoundSampleRate, and \ref SetSoundVolume.
  */
 
 /**
@@ -1684,8 +1694,8 @@ inline void SetSoundVolume(byte volume);
  */
 inline void SysSoundPlayFile(SoundPlayFileType & args);
 /** \example ex_syssoundplayfile.nxc
- * This is an example of how to use the SysSoundPlayFile function along with
- * the SoundPlayFileType structure.
+ * This is an example of how to use the \ref SysSoundPlayFile function along with
+ * the \ref SoundPlayFileType structure.
  */
 
 /**
@@ -1698,8 +1708,8 @@ inline void SysSoundPlayFile(SoundPlayFileType & args);
  */
 inline void SysSoundPlayTone(SoundPlayToneType & args);
 /** \example ex_syssoundplaytone.nxc
- * This is an example of how to use the SysSoundPlayTone function along with
- * the SoundPlayToneType structure.
+ * This is an example of how to use the \ref SysSoundPlayTone function along with
+ * the \ref SoundPlayToneType structure.
  */
 
 /**
@@ -1795,10 +1805,13 @@ inline void SysSoundSetState(SoundSetStateType & args);
  * \sa SysCommLSWrite()
  */
 struct CommLSWriteType {
-  char Result;      /*!< The function call result. \todo ?. */
+  char Result;      /*!< The function call result. Possible values include
+                      \ref ERR_COMM_CHAN_INVALID, \ref ERR_COMM_CHAN_NOT_READY,
+                      \ref ERR_INVALID_SIZE, and \ref NO_ERR. */
   byte Port;        /*!< The port to which the I2C device is connected. */
-  byte Buffer[];    /*!< The buffer written to the I2C device. */
-  byte ReturnLen;   /*!< The number of bytes that you want to read from the I2C device. */
+  byte Buffer[];    /*!< The buffer containing data to be written to the I2C device. */
+  byte ReturnLen;   /*!< The number of bytes that you want to read from the I2C device
+                      after writing the data.  If no read is planned set this to zero. */
 };
 
 /**
@@ -1808,7 +1821,10 @@ struct CommLSWriteType {
  * \sa SysCommLSRead()
  */
 struct CommLSReadType {
-  char Result;      /*!< The function call result. \todo ?. */
+  char Result;      /*!< The function call result. Possible values include
+                      \ref ERR_COMM_BUS_ERR, \ref ERR_COMM_CHAN_INVALID,
+                      \ref ERR_COMM_CHAN_NOT_READY, \ref ERR_INVALID_SIZE,
+                      \ref STAT_COMM_PENDING, and \ref NO_ERR. */
   byte Port;        /*!< The port to which the I2C device is connected. */
   byte Buffer[];    /*!< The buffer used to store the bytes read from the I2C device. */
   byte BufferLen;   /*!< The size of the output buffer on input.  This field is not updated during the function call. */
@@ -1821,7 +1837,10 @@ struct CommLSReadType {
  * \sa SysCommLSCheckStatus()
  */
 struct CommLSCheckStatusType {
-  char Result;       /*!< Returns the I2C status of the specified port. */
+  char Result;       /*!< The function call result. Possible values include
+                       \ref ERR_COMM_BUS_ERR, \ref ERR_COMM_CHAN_INVALID,
+                       \ref ERR_COMM_CHAN_NOT_READY, \ref STAT_COMM_PENDING,
+                       and \ref NO_ERR. */
   byte Port;         /*!< The port to which the I2C device is connected. */
   byte BytesReady;   /*!< The number of bytes ready to read from the specified port. */
 };
@@ -1928,8 +1947,8 @@ inline void SetLSNoRestartOnRead(const byte lsNoRestart);
  */
 inline void SysCommLSWrite(CommLSWriteType & args);
 /** \example ex_syscommlswrite.nxc
- * This is an example of how to use the SysCommLSWrite function along with the
- * CommLSWriteType structure.
+ * This is an example of how to use the \ref SysCommLSWrite function along with the
+ * \ref CommLSWriteType structure.
  */
 
 /**
@@ -1941,8 +1960,8 @@ inline void SysCommLSWrite(CommLSWriteType & args);
  */
 inline void SysCommLSRead(CommLSReadType & args);
 /** \example ex_syscommlsread.nxc
- * This is an example of how to use the SysCommLSRead function along with the
- * CommLSReadType structure.
+ * This is an example of how to use the \ref SysCommLSRead function along with the
+ * \ref CommLSReadType structure.
  */
 
 /**
@@ -1956,8 +1975,8 @@ inline void SysCommLSRead(CommLSReadType & args);
  */
 inline void SysCommLSCheckStatus(CommLSCheckStatusType & args);
 /** \example ex_syscommlscheckstatus.nxc
- * This is an example of how to use the SysCommLSCheckStatus function along
- * with the CommLSCheckStatusType structure.
+ * This is an example of how to use the \ref SysCommLSCheckStatus function along
+ * with the \ref CommLSCheckStatusType structure.
  */
 
 #ifdef __ENHANCED_FIRMWARE
@@ -1973,8 +1992,8 @@ inline void SysCommLSCheckStatus(CommLSCheckStatusType & args);
  */
 inline void SysCommLSWriteEx(CommLSWriteExType & args);
 /** \example ex_syscommlswriteex.nxc
- * This is an example of how to use the SysCommLSWriteEx function along with the
- * CommLSWriteExType structure.
+ * This is an example of how to use the \ref SysCommLSWriteEx function along with the
+ * \ref CommLSWriteExType structure.
  */
 #endif
 
@@ -2155,7 +2174,7 @@ struct GetStartTickType {
  * \sa SysKeepAlive()
  */
 struct KeepAliveType {
-  unsigned long Result;   /*!< The function call result. \todo ?. */
+  unsigned long Result;   /*!< The current sleep timeout in milliseconds. */
 };
 
 /**
@@ -2299,15 +2318,14 @@ struct ComputeCalibValueType {
 
 /**
  * Read the current system tick.
- * This function lets you obtain the tick value at the time your program began
- * executing via the \ref GetStartTickType structure.
+ * This function lets you current system tick count.
  *
  * \return The current system tick count.
  */
 inline unsigned long CurrentTick();
 /** \example ex_cmdmmisc.nxc
- * This is an example of how to use the CurrentTick, FirstTick, and
- * ResetSleepTimer functions.
+ * This is an example of how to use the \ref CurrentTick, \ref FirstTick, and
+ * \ref ResetSleepTimer functions.
  */
 
 /**
@@ -2343,7 +2361,7 @@ inline long ResetSleepTimer();
  */
 inline void SysCall(byte funcID, variant & args);
 /** \example ex_syscall.nxc
- * This is an example of how to use the SysCall function.
+ * This is an example of how to use the \ref SysCall function.
  */
 
 /**
@@ -2355,8 +2373,8 @@ inline void SysCall(byte funcID, variant & args);
  */
 inline void SysGetStartTick(GetStartTickType & args);
 /** \example ex_sysgetstarttick.nxc
- * This is an example of how to use the SysGetStartTick function along with
- * the GetStartTickType structure.
+ * This is an example of how to use the \ref SysGetStartTick function along with
+ * the \ref GetStartTickType structure.
  */
 
 /**
@@ -2368,8 +2386,8 @@ inline void SysGetStartTick(GetStartTickType & args);
  */
 inline void SysKeepAlive(KeepAliveType & args);
 /** \example ex_syskeepalive.nxc
- * This is an example of how to use the SysKeepAlive function along with the
- * KeepAliveType structure.
+ * This is an example of how to use the \ref SysKeepAlive function along with the
+ * \ref KeepAliveType structure.
  */
 
 /**
@@ -2381,8 +2399,8 @@ inline void SysKeepAlive(KeepAliveType & args);
  */
 inline void SysIOMapRead(IOMapReadType & args);
 /** \example ex_sysiomapread.nxc
- * This is an example of how to use the SysIOMapRead function along with the
- * IOMapReadType structure.
+ * This is an example of how to use the \ref SysIOMapRead function along with the
+ * \ref IOMapReadType structure.
  */
 
 /**
@@ -2394,8 +2412,8 @@ inline void SysIOMapRead(IOMapReadType & args);
  */
 inline void SysIOMapWrite(IOMapWriteType & args);
 /** \example ex_sysiomapwrite.nxc
- * This is an example of how to use the SysIOMapWrite function along with the
- * IOMapWriteType structure.
+ * This is an example of how to use the \ref SysIOMapWrite function along with the
+ * \ref IOMapWriteType structure.
  */
 
 #ifdef __ENHANCED_FIRMWARE
@@ -2413,8 +2431,8 @@ inline void SysIOMapWrite(IOMapWriteType & args);
  */
 inline void SysIOMapReadByID(IOMapReadByIDType & args);
 /** \example ex_sysiomapreadbyid.nxc
- * This is an example of how to use the SysIOMapReadByID function along with
- * the IOMapReadByIDType structure.
+ * This is an example of how to use the \ref SysIOMapReadByID function along with
+ * the \ref IOMapReadByIDType structure.
  */
 
 /**
@@ -2431,8 +2449,8 @@ inline void SysIOMapReadByID(IOMapReadByIDType & args);
  */
 inline void SysIOMapWriteByID(IOMapWriteByIDType & args);
 /** \example ex_sysiomapwritebyid.nxc
- * This is an example of how to use the SysIOMapWriteByID function along with
- * the IOMapWriteByIDType structure.
+ * This is an example of how to use the \ref SysIOMapWriteByID function along with
+ * the \ref IOMapWriteByIDType structure.
  */
 
 #endif
@@ -2447,8 +2465,8 @@ inline void SysIOMapWriteByID(IOMapWriteByIDType & args);
  */
 inline void SysDatalogWrite(DatalogWriteType & args);
 /** \example ex_datalog.nxc
- * This is an example of how to use the SysDatalogWrite and SysDatalogGetTimes
- * functions along with the DatalogWriteType and DatalogGetTimesType structures.
+ * This is an example of how to use the \ref SysDatalogWrite and \ref SysDatalogGetTimes
+ * functions along with the \ref DatalogWriteType and \ref DatalogGetTimesType structures.
  */
 
 /**
@@ -2470,8 +2488,8 @@ inline void SysDatalogGetTimes(DatalogGetTimesType & args);
  */
 inline void SysReadSemData(ReadSemDataType & args);
 /** \example ex_SemData.nxc
- * This is an example of how to use the SysWriteSemData and SysReadSemData
- * functions along with the WriteSemDataType and ReadSemDataType structures.
+ * This is an example of how to use the \ref SysWriteSemData and \ref SysReadSemData
+ * functions along with the \ref WriteSemDataType and \ref ReadSemDataType structures.
  */
 
 /**
@@ -2493,9 +2511,9 @@ inline void SysWriteSemData(WriteSemDataType & args);
  */
 inline void SysUpdateCalibCacheInfo(UpdateCalibCacheInfoType & args);
 /** \example ex_SysCalib.nxc
- * This is an example of how to use the SysUpdateCalibCacheInfo and
- * SysComputeCalibValue functions along with the UpdateCalibCacheInfoType and
- * ComputeCalibValueType structures.
+ * This is an example of how to use the \ref SysUpdateCalibCacheInfo and
+ * \ref SysComputeCalibValue functions along with the \ref UpdateCalibCacheInfoType and
+ * \ref ComputeCalibValueType structures.
  */
 
 /**
@@ -2688,8 +2706,8 @@ struct MessageReadType {
  */
 struct CommBTCheckStatusType {
   char Result;       /*!< The function call result. Possible values include
-                       ERR_INVALID_PORT, STAT_COMM_PENDING,
-                       ERR_COMM_CHAN_NOT_READY, and LDR_SUCCESS (0). */
+                       \ref ERR_INVALID_PORT, \ref STAT_COMM_PENDING,
+                       \ref ERR_COMM_CHAN_NOT_READY, and \ref LDR_SUCCESS. */
   byte Connection;   /*!< The connection to check. */
 };
 
@@ -2700,7 +2718,9 @@ struct CommBTCheckStatusType {
  * \sa SysCommBTWrite()
  */
 struct CommBTWriteType {
-  char Result;       /*!< The function call result. \todo ?. */
+  char Result;       /*!< The function call result.  Possible values include
+                       \ref ERR_COMM_CHAN_NOT_READY
+                       and \ref STAT_COMM_PENDING (write accepted). */
   byte Connection;   /*!< The connection to use. */
   byte Buffer[];     /*!< The data to write to the connection. */
 };
@@ -2759,13 +2779,15 @@ struct CommBTWriteType {
  * \sa SysCommExecuteFunction()
  */
 struct CommExecuteFunctionType {
-  unsigned int Result;   /*!< The function call result. \todo ?. */
+  unsigned int Result;   /*!< The function call result. Possible values
+                           include \ref LoaderErrors. */
   byte Cmd;              /*!< The command to execute. */
   byte Param1;           /*!< The first parameter, see table. */
   byte Param2;           /*!< The second parameter, see table. */
   byte Param3;           /*!< The third parameter, see table. */
   string Name;           /*!< The name parameter, see table. */
-  unsigned int RetVal;   /*!< \todo ?. */
+  unsigned int RetVal;   /*!< The function call return value. Possible values
+                           include \ref LoaderErrors. */
 };
 
 // CommHSControl
@@ -3007,8 +3029,8 @@ inline void SetUSBState(byte usbState);
  */
 void SysMessageWrite(MessageWriteType & args);
 /** \example ex_sysmessagewrite.nxc
- * This is an example of how to use the SysMessageWrite function along with
- * the MessageWriteType structure.
+ * This is an example of how to use the \ref SysMessageWrite function along with
+ * the \ref MessageWriteType structure.
  */
 
 /**
@@ -3020,8 +3042,8 @@ void SysMessageWrite(MessageWriteType & args);
  */
 void SysMessageRead(MessageReadType & args);
 /** \example ex_sysmessageread.nxc
- * This is an example of how to use the SysMessageRead function along with the
- * MessageReadType structure.
+ * This is an example of how to use the \ref SysMessageRead function along with the
+ * \ref MessageReadType structure.
  */
 
 /**
@@ -3033,8 +3055,8 @@ void SysMessageRead(MessageReadType & args);
  */
 void SysCommBTWrite(CommBTWriteType & args);
 /** \example ex_syscommbtwrite.nxc
- * This is an example of how to use the SysCommBTWrite function along with the
- * CommBTWriteType structure.
+ * This is an example of how to use the \ref SysCommBTWrite function along with the
+ * \ref CommBTWriteType structure.
  */
 
 /**
@@ -3047,8 +3069,8 @@ void SysCommBTWrite(CommBTWriteType & args);
  */
 void SysCommBTCheckStatus(CommBTCheckStatusType & args);
 /** \example ex_syscommbtcheckstatus.nxc
- * This is an example of how to use the SysCommBTCheckStatus function along
- * with the CommBTCheckStatusType structure.
+ * This is an example of how to use the \ref SysCommBTCheckStatus function along
+ * with the \ref CommBTCheckStatusType structure.
  */
 
 #ifdef __ENHANCED_FIRMWARE
@@ -3064,8 +3086,8 @@ void SysCommBTCheckStatus(CommBTCheckStatusType & args);
  */
 inline void SysCommExecuteFunction(CommExecuteFunctionType & args);
 /** \example ex_syscommexecutefunction.nxc
- * This is an example of how to use the SysCommExecuteFunction function along
- * with the CommExecuteFunctionType structure.
+ * This is an example of how to use the \ref SysCommExecuteFunction function along
+ * with the \ref CommExecuteFunctionType structure.
  */
 
 #define SysCommHSControl(_args) asm { \
@@ -3345,7 +3367,7 @@ inline void SysCommExecuteFunction(CommExecuteFunctionType & args);
  * \sa SysReadButton()
  */
 struct ReadButtonType {
-  char Result;   /*!< The function call result. \todo ?. */
+  char Result;   /*!< The function call result, \ref ERR_INVALID_PORT or \ref NO_ERR. */
   byte Index;    /*!< The requested button index. See the \ref ButtonNameConstants group. */
   bool Pressed;  /*!< The returned button state. */
   byte Count;    /*!< The returned button pressed count. */
@@ -3377,11 +3399,11 @@ inline void SetButtonShortReleaseCount(const byte btn, const byte n);
 inline void SetButtonState(const byte btn, const byte state);
 
 /** \example ex_buttonmisc.nxc
- * This is an example of how to use the ButtonPressed, ButtonCount,
- * ReadButtonEx, ButtonPressCount, ButtonLongPressCount, ButtonShortReleaseCount,
- * ButtonLongReleaseCount, ButtonReleaseCount, ButtonState,
- * SetButtonLongPressCount, SetButtonLongReleaseCount, SetButtonPressCount,
- * SetButtonReleaseCount, SetButtonShortReleaseCount, and SetButtonState.
+ * This is an example of how to use the \ref ButtonPressed, \ref ButtonCount,
+ * \ref ReadButtonEx, \ref ButtonPressCount, \ref ButtonLongPressCount, \ref ButtonShortReleaseCount,
+ * \ref ButtonLongReleaseCount, \ref ButtonReleaseCount, \ref ButtonState,
+ * \ref SetButtonLongPressCount, \ref SetButtonLongReleaseCount, \ref SetButtonPressCount,
+ * \ref SetButtonReleaseCount, \ref SetButtonShortReleaseCount, and \ref SetButtonState.
  */
 
 /**
@@ -3393,8 +3415,8 @@ inline void SetButtonState(const byte btn, const byte state);
  */
 inline void SysReadButton(ReadButtonType & args);
 /** \example ex_sysreadbutton.nxc
- * This is an example of how to use the SysReadButton function along with the
- * ReadButtonType structure.
+ * This is an example of how to use the \ref SysReadButton function along with the
+ * \ref ReadButtonType structure.
  */
 
 #else
@@ -3552,47 +3574,95 @@ inline void SysSetSleepTimeout(SetSleepTimeoutType & args);
  * Types used by various Loader module functions.
  * @{
  */
-// FileOpenRead, FileOpenWrite, FileOpenAppend, FileOpenReadLinear, FileOpenWriteLinear, FileOpenWriteNonLinear
+/**
+ * FileOpenType structure.
+ * This structure is used when calling the \ref SysFileOpenAppend, \ref
+ * SysFileOpenRead, \ref SysFileOpenWrite, \ref SysFileOpenReadLinear,
+ * \ref SysFileOpenWriteLinear and \ref SysFileOpenWriteNonLinear system call
+ * functions.
+ * \sa SysFileOpenAppend(), SysFileOpenRead(), SysFileOpenWrite(),
+ * SysFileOpenReadLinear(), SysFileOpenWriteLinear()
+ */
 struct FileOpenType {
-  unsigned int Result;
-  byte FileHandle;
-  string Filename;
-  unsigned long Length;
+  unsigned int Result;    /*!< The function call result. Possible values
+                            include \ref LoaderErrors. */
+  byte FileHandle;        /*!< The returned file handle to use for subsequent
+                            file operations. */
+  string Filename;        /*!< The name of the file to open or create. */
+  unsigned long Length;   /*!< For SysFileOpenWrite(),
+                            SysFileOpenWriteLinear() and
+                            SysFileOpenWriteNonLinear(): the desired maximum
+                            file capacity.
+
+                            For SysFileOpenAppend(), SysFileOpenRead() and
+                            SysFileOpenReadLinear(): the returned available
+                            length in the file. */
 };
 
-// FileRead, FileWrite
+/**
+ * FileReadWriteType structure.
+ * This structure is used when calling the \ref SysFileRead and \ref SysFileWrite
+ * system call functions.
+ * \sa SysFileRead() and SysFileWrite()
+ */
 struct FileReadWriteType {
-  unsigned int Result;
-  byte FileHandle;
-  string Buffer;
-  unsigned long Length;
+  unsigned int Result;    /*!< The function call result. Possible values
+                            include \ref LoaderErrors. */
+  byte FileHandle;        /*!< The file handle to access. */
+  string Buffer;          /*!< The buffer to store read bytes or containing
+                            bytes to write. */
+  unsigned long Length;   /*!< The number of bytes to read or the returned
+                            number of bytes written. */
 };
 
-// FileClose
+/**
+ * FileCloseType structure.
+ * This structure is used when calling the \ref SysFileClose system call function.
+ * \sa SysFileClose()
+ */
 struct FileCloseType {
-  unsigned int Result;
-  byte FileHandle;
+  unsigned int Result;   /*!< The function call result. Possible values
+                           include \ref LoaderErrors. */
+  byte FileHandle;       /*!< The file handle to close. */
 };
 
-// FileResolveHandle
+/**
+ * FileResolveHandleType structure.
+ * This structure is used when calling the \ref SysFileResolveHandle system
+ * call function.
+ * \sa SysFileResolveHandle()
+ */
 struct FileResolveHandleType {
-  unsigned int Result;
-  byte FileHandle;
-  bool WriteHandle;
-  string Filename;
+  unsigned int Result;   /*!< The function call result. Possible values
+                           include \ref LDR_HANDLEALREADYCLOSED and \ref LDR_SUCCESS. */
+  byte FileHandle;       /*!< The returned resolved file handle. */
+  bool WriteHandle;      /*!< True if the returned handle is a write handle. */
+  string Filename;       /*!< The name of the file for which to resolve a handle. */
 };
 
-// FileRename
+/**
+ * FileRenameType structure.
+ * This structure is used when calling the \ref SysFileRename system call
+ * function.
+ * \sa SysFileRename()
+ */
 struct FileRenameType {
-  unsigned int Result;
-  string OldFilename;
-  string NewFilename;
+  unsigned int Result;   /*!< The function call result. Possible values
+                           include \ref LoaderErrors. */
+  string OldFilename;    /*!< The name of the file to be renamed. */
+  string NewFilename;    /*!< The new name to give to the file. */
 };
 
-// FileDelete
+/**
+ * FileDeleteType structure.
+ * This structure is used when calling the \ref SysFileDelete system call
+ * function.
+ * \sa SysFileDelete()
+ */
 struct FileDeleteType {
-  unsigned int Result;
-  string Filename;
+  unsigned int Result;   /*!< The function call result. Possible values
+                           include \ref LoaderErrors. */
+  string Filename;       /*!< The name of the file to delete. */
 };
 
 #ifdef __ENHANCED_FIRMWARE
@@ -3648,28 +3718,42 @@ struct FileDeleteType {
  * \sa SysLoaderExecuteFunction()
  */
 struct LoaderExecuteFunctionType {
-  unsigned int Result;    /*!< The function call result. \todo ?. */
+  unsigned int Result;    /*!< The function call result. Possible values
+                            include \ref LoaderErrors. */
   byte Cmd;               /*!< The command to execute. */
   string Filename;        /*!< The Filename parameter, see table. */
   byte Buffer[];          /*!< The Buffer parameter, see table. */
   unsigned long Length;   /*!< The Length parameter, see table. */
 };
 
-// FileFindFirst, FileFindNext
+/**
+ * FileFindType structure.
+ * This structure is used when calling the \ref SysFileFindFirst and \ref
+ * SysFileFindNext system call functions.
+ * \sa SysFileFindFirst() and SysFileFindNext()
+ */
 struct FileFindType {
- unsigned int Result;
- byte FileHandle;
- string Filename;
- unsigned long Length;
+  unsigned int Result;    /*!< The function call result. Possible values
+                            include \ref LoaderErrors. */
+  byte FileHandle;        /*!< The returned file handle to be used to continue
+                            iterations. Close it after usage. */
+  string Filename;        /*!< The pattern to match file name, then the
+                            returned found file name. */
+  unsigned long Length;   /*!< The found file length. */
 };
 
 #if __FIRMWARE_VERSION > 107
-//FileSeek
+/**
+ * FileSeekType structure.
+ * This structure is used when calling the \ref SysFileSeek system call function.
+ * \sa SysFileSeek()
+ */
 struct FileSeekType {
- unsigned int Result;
- byte FileHandle;
- byte Origin;
- long Length;
+ unsigned int Result; /*!< The function call result. Possible values include
+                        \ref LoaderErrors. */
+ byte FileHandle;     /*!< */
+ byte Origin;         /*!< */
+ long Length;         /*!< */
 };
 
 //FileResize
@@ -3727,42 +3811,135 @@ struct ListFilesType {
 #define WriteBytes(_handle, _buf, _cnt) asm { __writeBytes(_handle, _buf, _cnt, __RETVAL__) }
 #define WriteBytesEx(_handle, _len, _buf) asm { __writeBytesEx(_handle, _len, _buf, __RETVAL__) }
 
-#define SysFileOpenRead(_args) asm { \
-  compchktype _args, FileOpenType \
-  syscall FileOpenRead, _args \
-}
-#define SysFileOpenWrite(_args) asm { \
-  compchktype _args, FileOpenType \
-  syscall FileOpenWrite, _args \
-}
-#define SysFileOpenAppend(_args) asm { \
-  compchktype _args, FileOpenType \
-  syscall FileOpenAppend, _args \
-}
-#define SysFileRead(_args) asm { \
-  compchktype _args, FileReadWriteType \
-  syscall FileRead, _args \
-}
-#define SysFileWrite(_args) asm { \
-  compchktype _args, FileReadWriteType \
-  syscall FileWrite, _args \
-}
-#define SysFileClose(_args) asm { \
-  compchktype _args, FileCloseType \
-  syscall FileClose, _args \
-}
-#define SysFileResolveHandle(_args) asm { \
-  compchktype _args, FileResolveHandleType \
-  syscall FileResolveHandle, _args \
-}
-#define SysFileRename(_args) asm { \
-  compchktype _args, FileRenameType \
-  syscall FileRename, _args \
-}
-#define SysFileDelete(_args) asm { \
-  compchktype _args, FileDeleteType \
-  syscall FileDelete, _args \
-}
+/**
+ * Open file for reading.
+ * This function lets you open an existing file for reading using the values
+ * specified via the \ref FileOpenType structure.
+ *
+ * The number of bytes that can be read from the file is returned via the
+ * Length member.
+ *
+ * \param args The FileOpenType structure containing the needed parameters.
+ */
+inline void SysFileOpenRead(FileOpenType & args);
+/** \example ex_sysfileopenread.nxc
+ * This is an example of how to use the \ref SysFileOpenRead function along with
+ * the \ref FileOpenType structure.
+ */
+
+/**
+ * Open and create file for writing.
+ * This function lets you create a file that you can write to using the values
+ * specified via the \ref FileOpenType structure.
+ *
+ * The desired maximum file capacity in bytes is specified via the Length
+ * member.
+ *
+ * \param args The FileOpenType structure containing the needed parameters.
+ */
+inline void SysFileOpenWrite(FileOpenType & args);
+/** \example ex_sysfileopenwrite.nxc
+ * This is an example of how to use the \ref SysFileOpenWrite function along with
+ * the \ref FileOpenType structure.
+ */
+
+/**
+ * Open file for writing at end of file.
+ * This function lets you open an existing file that you can write to using
+ * the values specified via the \ref FileOpenType structure.
+ *
+ * The available length remaining in the file is returned via the Length
+ * member.
+ *
+ * \param args The FileOpenType structure containing the needed parameters.
+ */
+inline void SysFileOpenAppend(FileOpenType & args);
+/** \example ex_sysfileopenappend.nxc
+ * This is an example of how to use the \ref SysFileOpenAppend function along with
+ * the \ref FileOpenType structure.
+ */
+
+/**
+ * Read from file.
+ * This function lets you read from a file using the values specified via the
+ * \ref FileReadWriteType structure.
+ *
+ * \param args The FileReadWriteType structure containing the needed
+ * parameters.
+ */
+inline void SysFileRead(FileReadWriteType & args);
+/** \example ex_sysfileread.nxc
+ * This is an example of how to use the \ref SysFileRead function along with the
+ * \ref FileReadWriteType structure.
+ */
+
+/**
+ * File write.
+ * This function lets you write to a file using the values specified via the
+ * \ref FileReadWriteType structure.
+ *
+ * \param args The FileReadWriteType structure containing the needed
+ * parameters.
+ */
+inline void SysFileWrite(FileReadWriteType & args);
+/** \example ex_sysfilewrite.nxc
+ * This is an example of how to use the \ref SysFileWrite function along with the
+ * \ref FileReadWriteType structure.
+ */
+
+/**
+ * Close file handle.
+ * This function lets you close a file using the values specified via the \ref
+ * FileCloseType structure.
+ *
+ * \param args The FileCloseType structure containing the needed parameters.
+ */
+inline void SysFileClose(FileCloseType & args);
+/** \example ex_sysfileclose.nxc
+ * This is an example of how to use the \ref SysFileClose function along with the
+ * \ref FileCloseType structure.
+ */
+
+/**
+ * File resolve handle.
+ * This function lets you resolve the handle of a file using the values
+ * specified via the \ref FileResolveHandleType structure.  This will find a
+ * previously opened file handle.
+ *
+ * \param args The FileResolveHandleType structure containing the needed
+ * parameters.
+ */
+inline void SysFileResolveHandle(FileResolveHandleType & args);
+/** \example ex_sysfileresolvehandle.nxc
+ * This is an example of how to use the \ref SysFileResolveHandle function along
+ * with the \ref FileResolveHandleType structure.
+ */
+
+/**
+ * Rename file.
+ * This function lets you rename a file using the values specified via the
+ * \ref FileRenameType structure.
+ *
+ * \param args The FileRenameType structure containing the needed parameters.
+ */
+inline void SysFileRename(FileRenameType & args);
+/** \example ex_sysfilerename.nxc
+ * This is an example of how to use the \ref SysFileRename function along with the
+ * \ref FileRenameType structure.
+ */
+
+/**
+ * Delete file.
+ * This function lets you delete a file using the values specified via the
+ * \ref FileDeleteType structure.
+ *
+ * \param args The FileDeleteType structure containing the needed parameters.
+ */
+inline void SysFileDelete(FileDeleteType & args);
+/** \example ex_sysfiledelete.nxc
+ * This is an example of how to use the \ref SysFileDelete function along with the
+ * \ref FileDeleteType structure.
+ */
 
 #ifdef __ENHANCED_FIRMWARE
 /**
@@ -3778,22 +3955,131 @@ struct ListFilesType {
  */
 inline void SysLoaderExecuteFunction(LoaderExecuteFunctionType & args);
 /** \example ex_sysloaderexecutefunction.nxc
- * This is an example of how to use the SysLoaderExecuteFunction function
- * along with the LoaderExecuteFunctionType structure.
+ * This is an example of how to use the \ref SysLoaderExecuteFunction function
+ * along with the \ref LoaderExecuteFunctionType structure.
  */
 
+/**
+ * Start finding files.
+ * This function lets you begin iterating through files stored on the NXT.
+ *
+ * \param args The FileFindType structure containing the needed parameters.
+ *
+ * \warning This function requires the extended firmware.
+ */
 inline void SysFileFindFirst(FileFindType & args);
+/** \example ex_sysfilefindfirst.nxc
+ * This is an example of how to use the \ref SysFileFindFirst function along with
+ * the \ref FileFindType structure.
+ */
+
+/**
+ * Continue finding files.
+ * This function lets you continue iterating through files stored on the NXT.
+ *
+ * \param args The FileFindType structure containing the needed parameters.
+ *
+ * \warning This function requires the extended firmware.
+ */
 inline void SysFileFindNext(FileFindType & args);
+/** \example ex_sysfilefindnext.nxc
+ * This is an example of how to use the \ref SysFileFindNext function along with
+ * the \ref FileFindType structure.
+ */
+
+/**
+ * Open and create linear file for writing.
+ * This function lets you create a linear file that you can write to using the
+ * values specified via the \ref FileOpenType structure.
+ *
+ * \param args The FileOpenType structure containing the needed parameters.
+ *
+ * \warning This function requires the extended firmware.
+ */
 inline void SysFileOpenWriteLinear(FileOpenType & args);
+/** \example ex_sysfileopenwritelinear.nxc
+ * This is an example of how to use the \ref SysFileOpenWriteLinear function along
+ * with the \ref FileOpenType structure.
+ */
+
+/**
+ * Open and create non-linear file for writing.
+ * This function lets you create a non-linear linear file that you can write
+ * to using the values specified via the \ref FileOpenType structure.
+ *
+ * \param args The FileOpenType structure containing the needed parameters.
+ *
+ * \warning This function requires the extended firmware.
+ */
 inline void SysFileOpenWriteNonLinear(FileOpenType & args);
+/** \example ex_sysfileopenwritenonlinear.nxc
+ * This is an example of how to use the \ref SysFileOpenWriteNonLinear function
+ * along with the \ref FileOpenType structure.
+ */
+
+/**
+ * Open linear file for reading.
+ * This function lets you open an existing linear file for reading using the
+ * values specified via the \ref FileOpenType structure.
+ *
+ * \param args The FileOpenType structure containing the needed parameters.
+ *
+ * \warning This function requires the extended firmware.
+ */
 inline void SysFileOpenReadLinear(FileOpenType & args);
+/** \example ex_sysfileopenreadlinear.nxc
+ * This is an example of how to use the \ref SysFileOpenReadLinear function along
+ * with the \ref FileOpenType structure.
+ */
+
 #if __FIRMWARE_VERSION > 107
+/**
+ * Seek to file position.
+ * This function lets you seek to a specific file position using the
+ * values specified via the \ref FileSeekType structure.
+ *
+ * \param args The FileSeekType structure containing the needed parameters.
+ *
+ * \warning This function requires the extended firmware.
+ */
 inline void SysFileSeek(FileSeekType & args);
+/** \example ex_sysfileseek.nxc
+ * This is an example of how to use the \ref SysFileSeek function along
+ * with the \ref FileSeekType structure.
+ */
+
+/**
+ * Resize a file.
+ * This function lets you resize a file using the
+ * values specified via the \ref FileResizeType structure.
+ *
+ * \param args The FileResizeType structure containing the needed parameters.
+ *
+ * \warning This function requires the extended firmware.
+ * It has not yet been implemented at the firmware level.
+ */
 inline void SysFileResize(FileResizeType & args);
+/** \example ex_sysfileresize.nxc
+ * This is an example of how to use the \ref SysFileResize function along
+ * with the \ref FileResizeType structure.
+ */
+
 #endif
 #endif
 #if __FIRMWARE_VERSION > 107
+/**
+ * List files.
+ * This function lets you retrieve a list of files on the NXT using the
+ * values specified via the \ref ListFilesType structure.
+ *
+ * \param args The ListFilesType structure containing the needed parameters.
+ */
 inline void SysListFiles(ListFilesType & args);
+/** \example ex_syslistfiles.nxc
+ * This is an example of how to use the \ref SysListFiles function along
+ * with the \ref ListFilesType structure.
+ */
+
 #endif
 
 #else
@@ -4998,8 +5284,8 @@ inline int Random(unsigned int n = 0);
  */
 inline void SysRandomNumber(RandomNumberType & args);
 /** \example ex_sysrandomnumber.nxc
- * This is an example of how to use the SysRandomNumber function along with
- * the RandomNumberType structure.
+ * This is an example of how to use the \ref SysRandomNumber function along with
+ * the \ref RandomNumberType structure.
  */
 
 #else
