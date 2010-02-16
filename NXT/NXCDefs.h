@@ -433,8 +433,679 @@ inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
  * Functions for accessing and modifying output module features.
  * @{
  */
-//  AddAPIFunction('GetOutput', APIF_GETOUTPUT);
-// SetOutput(ports, field, value [, field, value, ...])
+
+#ifdef __DOXYGEN_DOCS
+
+// - SetMotorPwnFreq
+// - OnFwdSyncExPID
+// - OnRevSyncExPID
+// - OnFwdSyncPID
+// - OnRevSyncPID
+// - OnFwdRegExPID
+// - OnRevRegExPID
+// - OnFwdRegPID
+// - OnRevRegPID
+
+/**
+ * Turn motors off.
+ * Turn the specified outputs off (with braking).
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ */
+inline void Off(byte outputs);
+/** \example ex_off.nxc
+ * This is an example of how to use the Off function.
+ */
+
+/**
+ * Turn motors off and reset counters.
+ * Turn the specified outputs off (with braking).
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
+inline void OffEx(byte outputs, const byte reset);
+/** \example ex_offex.nxc
+ * This is an example of how to use the OffEx function.
+ */
+
+/**
+ * Coast motors.
+ * Turn off the specified outputs, making them coast to a stop.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ */
+inline void Coast(byte outputs);
+/** \example ex_coast.nxc
+ * This is an example of how to use the Coast function.
+ */
+
+/**
+ * Coast motors and reset counters.
+ * Turn off the specified outputs, making them coast to a stop.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
+inline void CoastEx(byte outputs, const byte reset);
+/** \example ex_coastex.nxc
+ * This is an example of how to use the CoastEx function.
+ */
+
+/**
+ * Float motors.
+ * Make outputs float. Float is an alias for Coast.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ */
+inline void Float(byte outputs);
+/** \example ex_float.nxc
+ * This is an example of how to use the Float function.
+ */
+
+/**
+ * Run motors forward.
+ * Set outputs to forward direction and turn them on.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ */
+inline void OnFwd(byte outputs, char pwr);
+/** \example ex_onfwd.nxc
+ * This is an example of how to use the OnFwd function.
+ */
+
+/**
+ * Run motors forward and reset counters.
+ * Set outputs to forward direction and turn them on.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
+inline void OnFwdEx(byte outputs, char pwr, const byte reset);
+/** \example ex_onfwdex.nxc
+ * This is an example of how to use the OnFwdEx function.
+ */
+
+/**
+ * Run motors backward.
+ * Set outputs to reverse direction and turn them on.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ */
+inline void OnRev(byte outputs, char pwr);
+/** \example ex_onrev.nxc
+ * This is an example of how to use the OnRev function.
+ */
+
+/**
+ * Run motors backward and reset counters.
+ * Set outputs to reverse direction and turn them on.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
+inline void OnRevEx(byte outputs, char pwr, const byte reset);
+/** \example ex_onrevex.nxc
+ * This is an example of how to use the OnRevEx function.
+ */
+
+/**
+ * Run motors forward regulated.
+ * Run the specified outputs forward using the specified regulation mode.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param regmode Regulation mode, see \ref OutRegModeConstants.
+ */
+inline void OnFwdReg(byte outputs, char pwr, byte regmode);
+/** \example ex_onfwdreg.nxc
+ * This is an example of how to use the OnFwdReg function.
+ */
+
+/**
+ * Run motors forward regulated and reset counters.
+ * Run the specified outputs forward using the specified regulation mode.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
+inline void OnFwdRegEx(byte outputs, char pwr, byte regmode, const byte reset);
+/** \example ex_onfwdregex.nxc
+ * This is an example of how to use the OnFwdRegEx function.
+ */
+
+/**
+ * Run motors forward regulated.
+ * Run the specified outputs in reverse using the specified regulation mode.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param regmode Regulation mode, see \ref OutRegModeConstants.
+ */
+inline void OnRevReg(byte outputs, char pwr, byte regmode);
+/** \example ex_onrevreg.nxc
+ * This is an example of how to use the OnRevReg function.
+ */
+
+/**
+ * Run motors backward regulated and reset counters.
+ * Run the specified outputs in reverse using the specified regulation mode.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
+inline void OnRevRegEx(byte outputs, char pwr, byte regmode, const byte reset);
+/** \example ex_onrevregex.nxc
+ * This is an example of how to use the OnRevRegEx function.
+ */
+
+/**
+ * Run motors forward synchronised.
+ * Run the specified outputs forward with regulated synchronization using the
+ * specified turn ratio.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ */
+inline void OnFwdSync(byte outputs, char pwr, char turnpct);
+/** \example ex_onfwdsync.nxc
+ * This is an example of how to use the OnFwdSync function.
+ */
+
+/**
+ * Run motors forward synchronised and reset counters.
+ * Run the specified outputs forward with regulated synchronization using the
+ * specified turn ratio.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
+inline void OnFwdSyncEx(byte outputs, char pwr, char turnpct, const byte reset);
+/** \example ex_onfwdsyncex.nxc
+ * This is an example of how to use the OnFwdSyncEx function.
+ */
+
+/**
+ * Run motors backward synchronised.
+ * Run the specified outputs in reverse with regulated synchronization using
+ * the specified turn ratio.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ */
+inline void OnRevSync(byte outputs, char pwr, char turnpct);
+/** \example ex_onrevsync.nxc
+ * This is an example of how to use the OnRevSync function.
+ */
+
+/**
+ * Run motors backward synchronised and reset counters.
+ * Run the specified outputs in reverse with regulated synchronization using
+ * the specified turn ratio.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
+inline void OnRevSyncEx(byte outputs, char pwr, char turnpct, const byte reset);
+/** \example ex_onrevsyncex.nxc
+ * This is an example of how to use the OnRevSyncEx function.
+ */
+
+/**
+ * Rotate motor.
+ * Run the specified outputs forward for the specified number of degrees.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param angle Angle limit, in degree. Can be negative to reverse direction.
+ */
+inline void RotateMotor(byte outputs, char pwr, long angle);
+/** \example ex_rotatemotor.nxc
+ * This is an example of how to use the RotateMotor function.
+ */
+
+/**
+ * Rotate motor with PID factors.
+ * Run the specified outputs forward for the specified number of degrees.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param angle Angle limit, in degree. Can be negative to reverse direction.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void RotateMotorPID(byte outputs, char pwr, long angle, byte p, byte i, byte d);
+/** \example ex_rotatemotorpid.nxc
+ * This is an example of how to use the RotateMotorPID function.
+ */
+
+/**
+ * Rotate motor.
+ * Run the specified outputs forward for the specified number of degrees.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param angle Angle limit, in degree. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param sync Synchronise two motors. Should be set to true if a non-zero
+ * turn percent is specified or no turning will occur.
+ * \param stop Specify whether the motor(s) should brake at the end of the
+ * rotation.
+ */
+inline void RotateMotorEx(byte outputs, char pwr, long angle, char turnpct, bool sync, bool stop);
+/** \example ex_rotatemotorex.nxc
+ * This is an example of how to use the RotateMotorEx function.
+ */
+
+/**
+ * Rotate motor.
+ * Run the specified outputs forward for the specified number of degrees.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param angle Angle limit, in degree. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param sync Synchronise two motors. Should be set to true if a non-zero
+ * turn percent is specified or no turning will occur.
+ * \param stop Specify whether the motor(s) should brake at the end of the
+ * rotation.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void RotateMotorExPID(byte outputs, char pwr, long angle, char turnpct, bool sync, bool stop, byte p, byte i, byte d);
+/** \example ex_rotatemotorexpid.nxc
+ * This is an example of how to use the RotateMotorExPID function.
+ */
+
+/**
+ * Reset tachometer counter.
+ * Reset the tachometer count and tachometer limit goal for the specified
+ * outputs.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. For multiple outputs at the same time
+ * you need to add single output port values into a byte array and pass the array
+ * instead of a single numeric value.
+ */
+inline void ResetTachoCount(byte outputs);
+/** \example ex_resettachocount.nxc
+ * This is an example of how to use the ResetTachoCount function.
+ */
+
+/**
+ * Reset block-relative counter.
+ * Reset the block-relative position counter for the specified outputs.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. For multiple outputs at the same time
+ * you need to add single output port values into a byte array and pass the array
+ * instead of a single numeric value.
+ */
+inline void ResetBlockTachoCount(byte outputs);
+/** \example ex_resetblocktachocount.nxc
+ * This is an example of how to use the ResetBlockTachoCount function.
+ */
+
+/**
+ * Reset program-relative counter.
+ * Reset the program-relative position counter for the specified outputs.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. For multiple outputs at the same time
+ * you need to add single output port values into a byte array and pass the array
+ * instead of a single numeric value.
+ */
+inline void ResetRotationCount(byte outputs);
+/** \example ex_resetrotationcount.nxc
+ * This is an example of how to use the ResetRotationCount function.
+ */
+
+/**
+ * Reset all tachometer counters.
+ * Reset all three position counters and reset the current tachometer limit
+ * goal for the specified outputs.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. For multiple outputs at the same time
+ * you need to add single output port values into a byte array and pass the array
+ * instead of a single numeric value.
+ */
+inline void ResetAllTachoCounts(byte outputs);
+/** \example ex_resetalltachocounts.nxc
+ * This is an example of how to use the ResetAllTachoCounts function.
+ */
+
+/**
+ * Set output fields.
+ * Set the specified field of the outputs to the value provided. The field
+ * must be a valid output field constant. This function takes a variable
+ * number of field/value pairs.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. For multiple outputs at the same time
+ * you need to add single output port values into a byte array and pass the array
+ * instead of a single numeric value.
+ * \param field1 The 1st output port field to access, this should be a constant, see
+ * \ref OutputFieldConstants.
+ * \param val1 Value to set for the 1st field.
+ * \param fieldN The Nth output port field to access, this should be a constant, see
+ * \ref OutputFieldConstants.
+ * \param valN The value to set for the Nth field.
+ */
+inline void SetOutput(byte outputs, byte field1, variant val1, ..., byte fieldN, variant valN);
+/** \example ex_setoutput.nxc
+ * This is an example of how to use the SetOutput function.
+ */
+
+/**
+ * Get output field.
+ * Get the value of the specified field for the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ * \param field Output port field to access, this should be a constant, see
+ * \ref OutputFieldConstants.
+ */
+inline variant GetOutput(byte output, const byte field);
+/** \example ex_getoutput.nxc
+ * This is an example of how to use the GetOutput function.
+ */
+
+/**
+ * Get motor mode.
+ * Get the mode of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline byte MotorMode(byte output);
+/** \example ex_motormode.nxc
+ * This is an example of how to use the MotorMode function.
+ */
+
+/**
+ * Get motor power level.
+ * Get the power level of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline char MotorPower(byte output);
+/** \example ex_motorpower.nxc
+ * This is an example of how to use the MotorPower function.
+ */
+
+/**
+ * Get motor actual speed.
+ * Get the actual speed value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline char MotorActualSpeed(byte output);
+/** \example ex_motoractualspeed.nxc
+ * This is an example of how to use the MotorActualSpeed function.
+ */
+
+/**
+ * Get motor tachometer counter.
+ * Get the tachometer count value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline long MotorTachoCount(byte output);
+/** \example ex_motortachocount.nxc
+ * This is an example of how to use the MotorTachoCount function.
+ */
+
+/**
+ * Get motor tachometer limit.
+ * Get the tachometer limit value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline long MotorTachoLimit(byte output);
+/** \example ex_motortacholimit.nxc
+ * This is an example of how to use the MotorTachoLimit function.
+ */
+
+/**
+ * Get motor run state.
+ * Get the RunState value of the specified output, see \ref
+ * OutRunStateConstants.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline byte MotorRunState(byte output);
+/** \example ex_motorrunstate.nxc
+ * This is an example of how to use the MotorRunState function.
+ */
+
+/**
+ * Get motor turn ratio.
+ * Get the turn ratio value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline char MotorTurnRatio(byte output);
+/** \example ex_motorturnratio.nxc
+ * This is an example of how to use the MotorTurnRatio function.
+ */
+
+/**
+ * Get motor regulation mode.
+ * Get the regulation value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline byte MotorRegulation(byte output);
+/** \example ex_motorregulation.nxc
+ * This is an example of how to use the MotorRegulation function.
+ */
+
+/**
+ * Get motor overload status.
+ * Get the overload value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline bool MotorOverload(byte output);
+/** \example ex_motoroverload.nxc
+ * This is an example of how to use the MotorOverload function.
+ */
+
+/**
+ * Get motor P value.
+ * Get the proportional PID value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline byte MotorRegPValue(byte output);
+/** \example ex_motorregpvalue.nxc
+ * This is an example of how to use the MotorRegPValue function.
+ */
+
+/**
+ * Get motor I value.
+ * Get the integral PID value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline byte MotorRegIValue(byte output);
+/** \example ex_motorregivalue.nxc
+ * This is an example of how to use the MotorRegIValue function.
+ */
+
+/**
+ * Get motor D value.
+ * Get the derivative PID value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline byte MotorRegDValue(byte output);
+/** \example ex_motorregdvalue.nxc
+ * This is an example of how to use the MotorRegDValue function.
+ */
+
+/**
+ * Get motor block-relative counter.
+ * Get the block-relative position counter value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline long MotorBlockTachoCount(byte output);
+/** \example ex_motorblocktachocount.nxc
+ * This is an example of how to use the MotorBlockTachoCount function.
+ */
+
+/**
+ * Get motor program-relative counter.
+ * Get the program-relative position counter value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ */
+inline long MotorRotationCount(byte output);
+/** \example ex_motorrotationcount.nxc
+ * This is an example of how to use the MotorRotationCount function.
+ */
+
+/**
+ * Get motor PWN frequency.
+ * Get the current motor pulse width modulation frequency.
+ */
+inline byte MotorPwnFreq();
+/** \example ex_motorpwnfreq.nxc
+ * This is an example of how to use the MotorPwnFreq function.
+ */
+
+#else
 
 // output fields
 #define MotorMode(_p) GetOutput(_p, OutputMode)
@@ -456,39 +1127,7 @@ inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
 
 #define SetMotorPwnFreq(_n) asm { __setOutPwnFreq(_n) }
 
-//RotateMotor(ports, pwr, angle)
-//RotateMotorEx(ports, pwr, angle, turnpct, bSync, bStop)
-//RotateMotorPID(ports, pwr, angle, p, i, d)
-//RotateMotorExPID(ports, pwr, angle, turnpct, bSync, bStop, p, i, d)
-//OnFwdSyncExPID(ports, pwr, turnpct, reset, p, i, d)
-//OnRevSyncExPID(ports, pwr, turnpct, reset, p, i, d)
-//OnFwdSyncPID(ports, pwr, turnpct, p, i, d)
-//OnRevSyncPID(ports, pwr, turnpct, p, i, d)
-//OnFwdRegExPID(ports, pwr, regmode, reset, p, i, d)
-//OnRevRegExPID(ports, pwr, regmode, reset, p, i, d)
-//OnFwdRegPID(ports, pwr, regmode, p, i, d)
-//OnRevRegPID(ports, pwr, regmode, p, i, d)
-//OnFwdSyncEx(ports, pwr, turnpct, reset)
-//OnRevSyncEx(ports, pwr, turnpct, reset)
-//OnFwdSync(ports, pwr, turnpct)
-//OnRevSync(ports, pwr, turnpct)
-//OnFwdRegEx(ports, pwr, regmode, reset)
-//OnRevRegEx(ports, pwr, regmode, reset)
-//OnFwdReg(ports, pwr, regmode)
-//OnRevReg(ports, pwr, regmode)
-//OnFwdEx(ports, pwr, reset)
-//OnRevEx(ports, pwr, reset)
-//OnFwd(ports, pwr)
-//OnRev(ports, pwr)
-// Off(ports)
-// Coast(ports)
-// Float(ports)
-// OffEx(ports, reset)
-// CoastEx(ports, reset)
-// ResetTachoCount(ports)
-// ResetBlockTachoCount(ports)
-// ResetRotationCount(ports)
-// ResetAllTachoCounts(ports)
+#endif
 
 /** @} */ // end of OutputModuleFunctions group
 /** @} */ // end of OutputModule group
@@ -687,35 +1326,54 @@ struct DisplayExecuteFunctionType {
  * \sa SysDrawGraphicArray()
  */
 struct DrawGraphicArrayType {
- char Result;            /*!< The function call result. \todo ?. */
+ char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
  LocationType Location;  /*!< The location on screen. */
  byte Data[];            /*!< A byte array containing the RIC opcodes. \ref RICMacros */
  long Variables[];       /*!< The variables passed as RIC arguments. */
  unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
+/**
+ * DrawPolygonType structure.
+ * This structure is used when calling the \ref SysDrawPolygon system call
+ * function.
+ * \sa SysDrawPolygon()
+ */
 struct DrawPolygonType {
- char Result;
- LocationType Points[];
- unsigned long Options;
+ char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
+ LocationType Points[];  /*!< An array of LocationType structures which define the polygon's shape. */
+ unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
-// DrawEllipse
+/**
+ * DrawEllipseType structure.
+ * This structure is used when calling the \ref SysDrawEllipse system call
+ * function.
+ * \sa SysDrawEllipse()
+ */
 struct DrawEllipseType {
- char Result;
- LocationType Center;
- byte SizeX;
- byte SizeY;
- unsigned long Options;
+ char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
+ LocationType Center;    /*!< The location of the ellipse center. */
+ byte SizeX;             /*!< The horizontal ellipse radius. */
+ byte SizeY;             /*!< The vertical ellipse radius. */
+ unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
-// DrawFont
+/**
+ * DrawFontType structure.
+ * This structure is used when calling the \ref SysDrawFont system call function.
+ * It lets you specify the text to draw, the LCD line and horizontal position using the
+ * \ref LocationType structure member, as well as drawing options defined
+ * in the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawFont()
+ */
 struct DrawFontType {
- char Result;
- LocationType Location;
- string Filename;
- string Text;
- unsigned long Options;
+ char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
+ LocationType Location;   /*!< The location in X, LCD line number coordinates. */
+ string Filename;         /*!< The filename of the RIC-based font file. */
+ string Text;             /*!< The text to draw on the LCD. */
+ unsigned long Options;   /*!< The options to use when writing to the LCD.
+                            \ref DisplayDrawOptionConstants */
 };
 #endif
 #endif
@@ -1869,73 +2527,313 @@ struct CommLSWriteExType {
 
 #ifdef __DOXYGEN_DOCS
 
+/**
+ * Read ultrasonic sensor value
+ * Return the ultrasonic sensor distance value. Since an
+ * ultrasonic sensor is an I2C digital sensor its value cannot be read using
+ * the standard Sensor(n) value.
+ * \param port The port to which the ultrasonic sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \return The ultrasonic sensor distance value (0..255)
+ */
 inline byte SensorUS(const byte port);
-inline char ReadSensorUSEx(const byte port, byte & values[]);
+/** \example ex_sensorus.nxc
+ * This is an example of how to use the \ref SensorUS function.
+ */
 
+/**
+ * Read multiple ultrasonic sensor values
+ * Return eight ultrasonic sensor distance values.
+ * \param port The port to which the ultrasonic sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param values An array of bytes that will contain the 8 distance values
+ * read from the ultrasonic sensor.
+ * \return A status code indicating whether the read completed successfully or not.
+ * See \ref CommLSReadType for possible Result values.
+ */
+inline char ReadSensorUSEx(const byte port, byte & values[]);
+/** \example ex_sensorusex.nxc
+ * This is an example of how to use the \ref ReadSensorUSEx function.
+ */
+
+/**
+ * Read I2C register
+ * Read a single byte from an I2C device register.
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param reg The I2C device register from which to read a single byte.
+ * \param out The single byte read from the I2C device.
+ * \return A status code indicating whether the read completed successfully or not.
+ * See \ref CommLSReadType for possible Result values.
+ */
 inline char ReadI2CRegister(byte port, byte reg, byte & out);
+/** \example ex_readi2cregister.nxc
+ * This is an example of how to use the \ref ReadI2CRegister function.
+ */
+
+/**
+ * Write I2C register
+ * Write a single byte to an I2C device register.
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param reg The I2C device register to which to write a single byte.
+ * \param val The byte to write to the I2C device.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
 inline char WriteI2CRegister(byte port, byte reg, byte val);
+/** \example ex_writei2cregister.nxc
+ * This is an example of how to use the \ref WriteI2CRegister function.
+ */
 
 inline long LowspeedStatus(const byte port, byte & bready);
+/** \example ex_lowspeedstatus.nxc
+ * This is an example of how to use the \ref LowspeedStatus function.
+ */
+
 inline long LowspeedCheckStatus(const byte port);
+/** \example ex_LowspeedCheckStatus.nxc
+ * This is an example of how to use the \ref LowspeedCheckStatus function.
+ */
+
 inline byte LowspeedBytesReady(const byte port);
+/** \example ex_LowspeedBytesReady.nxc
+ * This is an example of how to use the \ref LowspeedBytesReady function.
+ */
+
 inline long LowspeedWrite(const byte port, byte retlen, byte buffer[]);
+/** \example ex_LowspeedWrite.nxc
+ * This is an example of how to use the \ref LowspeedWrite function.
+ */
+
 inline long LowspeedRead(const byte port, byte buflen, byte & buffer[]);
+/** \example ex_LowspeedRead.nxc
+ * This is an example of how to use the \ref LowspeedRead function.
+ */
 
 inline long I2CStatus(const byte port, byte & bready);
+/** \example ex_I2CStatus.nxc
+ * This is an example of how to use the \ref I2CStatus function.
+ */
+
 inline long I2CCheckStatus(const byte port);
+/** \example ex_I2CCheckStatus.nxc
+ * This is an example of how to use the \ref I2CCheckStatus function.
+ */
+
 inline byte I2CBytesReady(const byte port);
+/** \example ex_I2CBytesReady.nxc
+ * This is an example of how to use the \ref I2CBytesReady function.
+ */
+
 inline long I2CWrite(const byte port, byte retlen, byte buffer[])
+/** \example ex_I2CWrite.nxc
+ * This is an example of how to use the \ref I2CWrite function.
+ */
+
 inline long I2CRead(const byte port, byte buflen, byte & buffer[])
+/** \example ex_I2CRead.nxc
+ * This is an example of how to use the \ref I2CRead function.
+ */
 
 inline long I2CBytes(const byte port, byte inbuf[], byte & count, byte & outbuf[]);
+/** \example ex_I2CBytes.nxc
+ * This is an example of how to use the \ref I2CBytes function.
+ */
 
 inline string I2CDeviceInfo(byte port, byte info);
+/** \example ex_I2CDeviceInfo.nxc
+ * This is an example of how to use the \ref I2CDeviceInfo function.
+ */
+
 inline string I2CDeviceInfoEx(byte port, byte addr, byte info);
+/** \example ex_I2CDeviceInfoEx.nxc
+ * This is an example of how to use the \ref I2CDeviceInfoEx function.
+ */
+
 inline string I2CVersion(byte port);
+/** \example ex_I2CVersion.nxc
+ * This is an example of how to use the \ref I2CVersion function.
+ */
+
 inline string I2CVersionEx(byte port, byte addr);
+/** \example ex_I2CVersionEx.nxc
+ * This is an example of how to use the \ref I2CVersionEx function.
+ */
+
 inline string I2CVendorId(byte port);
+/** \example ex_I2CVendorId.nxc
+ * This is an example of how to use the \ref I2CVendorId function.
+ */
+
 inline string I2CVendorIdEx(byte port, byte addr);
+/** \example ex_I2CVendorIdEx.nxc
+ * This is an example of how to use the \ref I2CVendorIdEx function.
+ */
+
 inline string I2CDeviceId(byte port);
+/** \example ex_I2CDeviceId.nxc
+ * This is an example of how to use the \ref I2CDeviceId function.
+ */
+
 inline string I2CDeviceIdEx(byte port, byte addr);
+/** \example ex_I2CDeviceIdEx.nxc
+ * This is an example of how to use the \ref I2CDeviceIdEx function.
+ */
 
 inline long I2CSendCommand(byte port, byte cmd);
+/** \example ex_I2CSendCommand.nxc
+ * This is an example of how to use the \ref I2CSendCommand function.
+ */
+
 inline long I2CSendCommandEx(byte port, byte addr, byte cmd);
+/** \example ex_I2CSendCommandEx.nxc
+ * This is an example of how to use the \ref I2CSendCommandEx function.
+ */
 
 inline void GetLSInputBuffer(const byte port, const byte offset, byte cnt, byte & data[]);
+/** \example ex_GetLSInputBuffer.nxc
+ * This is an example of how to use the \ref GetLSInputBuffer function.
+ */
+
 inline void GetLSOutputBuffer(const byte port, const byte offset, byte cnt, byte & data[]);
+/** \example ex_GetLSOutputBuffer.nxc
+ * This is an example of how to use the \ref GetLSOutputBuffer function.
+ */
 
 inline byte LSInputBufferInPtr(const byte port);
+/** \example ex_LSInputBufferInPtr.nxc
+ * This is an example of how to use the \ref LSInputBufferInPtr function.
+ */
+
 inline byte LSInputBufferOutPtr(const byte port);
+/** \example ex_LSInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref LSInputBufferOutPtr function.
+ */
+
 inline byte LSInputBufferBytesToRx(const byte port);
+/** \example ex_LSInputBufferBytesToRx.nxc
+ * This is an example of how to use the \ref LSInputBufferBytesToRx function.
+ */
+
 inline byte LSOutputBufferInPtr(const byte port);
+/** \example ex_LSOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref LSOutputBufferInPtr function.
+ */
+
 inline byte LSOutputBufferOutPtr(const byte port);
+/** \example ex_LSOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref LSOutputBufferOutPtr function.
+ */
+
 inline byte LSOutputBufferBytesToRx(const byte port);
+/** \example ex_LSOutputBufferBytesToRx.nxc
+ * This is an example of how to use the \ref LSOutputBufferBytesToRx function.
+ */
+
 inline byte LSMode(const byte port);
+/** \example ex_LSMode.nxc
+ * This is an example of how to use the \ref LSMode function.
+ */
+
 inline byte LSChannelState(const byte port);
+/** \example ex_LSChannelState.nxc
+ * This is an example of how to use the \ref LSChannelState function.
+ */
+
 inline byte LSErrorType(const byte port);
+/** \example ex_LSErrorType.nxc
+ * This is an example of how to use the \ref LSErrorType function.
+ */
+
 inline byte LSState();
+/** \example ex_LSState.nxc
+ * This is an example of how to use the \ref LSState function.
+ */
+
 inline byte LSSpeed();
+/** \example ex_LSSpeed.nxc
+ * This is an example of how to use the \ref LSSpeed function.
+ */
+
 #ifdef __ENHANCED_FIRMWARE
 inline byte LSNoRestartOnRead();
+/** \example ex_LSNoRestartOnRead.nxc
+ * This is an example of how to use the \ref LSNoRestartOnRead function.
+ */
+
 #endif
 
 inline void SetLSInputBuffer(const byte port, const byte offset, byte cnt, byte data[]);
+/** \example ex_SetLSInputBuffer.nxc
+ * This is an example of how to use the \ref SetLSInputBuffer function.
+ */
+
 inline void SetLSInputBufferInPtr(const byte port, byte n);
+/** \example ex_SetLSInputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetLSInputBufferInPtr function.
+ */
+
 inline void SetLSInputBufferOutPtr(const byte port, byte n);
+/** \example ex_SetLSInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetLSInputBufferOutPtr function.
+ */
+
 inline void SetLSInputBufferBytesToRx(const byte port, byte n);
+/** \example ex_SetLSInputBufferBytesToRx.nxc
+ * This is an example of how to use the \ref SetLSInputBufferBytesToRx function.
+ */
 
 inline void SetLSOutputBuffer(const byte port, const byte offset, byte cnt, byte data[]);
+/** \example ex_SetLSOutputBuffer.nxc
+ * This is an example of how to use the \ref SetLSOutputBuffer function.
+ */
+
 inline void SetLSOutputBufferInPtr(const byte port, byte n);
+/** \example ex_SetLSOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetLSOutputBufferInPtr function.
+ */
+
 inline void SetLSOutputBufferOutPtr(const byte port, n);
+/** \example ex_SetLSOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetLSOutputBufferOutPtr function.
+ */
+
 inline void SetLSOutputBufferBytesToRx(const byte port, byte n);
+/** \example ex_SetLSOutputBufferBytesToRx.nxc
+ * This is an example of how to use the \ref SetLSOutputBufferBytesToRx function.
+ */
 
 inline void SetLSMode(const byte port, const byte mode);
+/** \example ex_SetLSMode.nxc
+ * This is an example of how to use the \ref SetLSMode function.
+ */
+
 inline void SetLSChannelState(const byte port, const byte chState);
+/** \example ex_SetLSChannelState.nxc
+ * This is an example of how to use the \ref SetLSChannelState function.
+ */
+
 inline void SetLSErrorType(const byte port, const byte errType);
+/** \example ex_SetLSErrorType.nxc
+ * This is an example of how to use the \ref SetLSErrorType function.
+ */
+
 inline void SetLSState(const byte lsState);
+/** \example ex_SetLSState.nxc
+ * This is an example of how to use the \ref SetLSState function.
+ */
+
 inline void SetLSSpeed(const byte lsSpeed);
+/** \example ex_SetLSSpeed.nxc
+ * This is an example of how to use the \ref SetLSSpeed function.
+ */
+
 #ifdef __ENHANCED_FIRMWARE
 inline void SetLSNoRestartOnRead(const byte lsNoRestart);
+/** \example ex_SetLSNoRestartOnRead.nxc
+ * This is an example of how to use the \ref SetLSNoRestartOnRead function.
+ */
 #endif
 
 /**
@@ -2120,6 +3018,9 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
  * The running program will terminate as a result of this action.
  */
 inline void PowerDown();
+/** \example ex_powerdown.nxc
+ * This is an example of how to use the \ref PowerDown functions.
+ */
 
 /**
  * Put the brick to sleep immediately.
@@ -2127,6 +3028,9 @@ inline void PowerDown();
  * The running program will terminate as a result of this action.
  */
 inline void SleepNow();
+/** \example ex_sleepnow.nxc
+ * This is an example of how to use the \ref SleepNow functions.
+ */
 
 /**
  * Reboot the NXT in firmware download mode.
@@ -2134,6 +3038,9 @@ inline void SleepNow();
  * The running program will terminate as a result of this action.
  */
 inline void RebootInFirmwareMode();
+/** \example ex_rebootinfirmwaremode.nxc
+ * This is an example of how to use the \ref RebootInFirmwareMode functions.
+ */
 
 #else
 #define PowerDown() asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN) }
@@ -2622,34 +3529,186 @@ inline void Yield() { asm { wait 1 } }
  * How to use the \ref Yield function.
  */
 
+/**
+ * Stop all tasks.
+ * Stop all currently running tasks. This will halt the program completely,
+ * so any code following this command will be ignored.
+ */
+inline void StopAllTasks() { Stop(true); }
+/** \example ex_stopalltasks.nxc
+ * How to use the \ref StopAllTasks function.
+ */
+
+
 #ifdef __DOXYGEN_DOCS
-// Stop(stop?);
-// ExitTo(task);
-// Precedes(x, y, z, ...);
-// Follows(x, y, z);
-// Acquire(mutex);
-// Release(mutex);
-inline void StopAllTasks();
+/**
+ * Stop the running program.
+ * Stop the running program if bvalue is true. This will halt the program
+ * completely, so any code following this command will be ignored.
+ * \param bvalue If this value is true the program will stop executing.
+ */
+inline void Stop(bool bvalue);
+/** \example ex_stop.nxc
+ * How to use the \ref Stop function.
+ */
 
-#define StartTask(_t) start _t
-#define StopTask(_t) stop _t
+/**
+ * Exit to another task.
+ * Immediately exit the current task and start executing the specified task.
+ * \param newTask The task to start executing after exiting the current task.
+ */
+inline void ExitTo(task newTask);
+/** \example ex_exitto.nxc
+ * How to use the \ref ExitTo function.
+ */
 
-#define IOMA(_n) asm { mov __RETVAL__, _n }
-#define SetIOMA(_n, _val) asm { mov _n, _val }
+/**
+ * Declare tasks that this task precedes.
+ * Schedule the listed tasks for execution once the current task has
+ * completed executing. The tasks will all execute simultaneously unless other
+ * dependencies prevent them from doing so. This statement should be used once
+ * within a task - preferably at the start of the task definition. Any number
+ * of tasks may be listed in the Precedes statement.
+ * \param x The first task to start executing after the current task ends.
+ * \param y The second task to start executing after the current task ends.
+ * \param z The last task to start executing after the current task ends.
+ */
+inline void Precedes(task x, task y, ..., task z);
+/** \example ex_Precedes.nxc
+ * How to use the \ref Precedes statement.
+ */
 
-#define ArrayBuild(_aout, ...) asm { arrbuild _aout, __VA_ARGS__ }
-#define ArrayLen(_asrc) asm { arrsize __RETVAL__, _asrc }
-#define ArrayInit(_aout, _val, _cnt) asm { arrinit _aout, _val, _cnt }
-#define ArraySubset(_aout, _asrc, _idx, _len) asm { arrsubset _aout, _asrc, _idx, _len }
+/**
+ * Declare tasks that this task follows.
+ * Schedule this task to follow the specified tasks so that it will execute
+ * once any of the specified tasks has completed executing. This statement
+ * should occur once within a task - preferably at the start of the task
+ * definition. If multiple tasks declare that they follow the same task then
+ * they will all execute simultaneously unless other dependencies prevent them
+ * from doing so. Any number of tasks may be listed in the Follows statement.
+ * \param x The first task that this task follows.
+ * \param y The second task that this task follows.
+ * \param z The last task that this task follows.
+ */
+inline void Follows(task x, task y, ..., task z);
+/** \example ex_Follows.nxc
+ * How to use the \ref Follows statement.
+ */
+
+/**
+ * Acquire a mutex.
+ * Acquire the specified mutex variable. If another task already has acquired
+ * the mutex then the current task will be suspended until the mutex is
+ * released by the other task. This function is used to ensure that the current
+ * task has exclusive access to a shared resource, such as the display or a
+ * motor. After the current task has finished using the shared resource the
+ * program should call Release to allow other tasks to acquire the mutex.
+ * \param m The mutex to acquire.
+ */
+inline void Acquire(mutex m);
+/** \example ex_acquire.nxc
+ * How to use the \ref Acquire and \Release functions.
+ */
+
+/**
+ * Acquire a mutex.
+ * Release the specified mutex variable. Use this to relinquish a mutex so
+ * that it can be acquired by another task. Release should always be called
+ * after a matching call to Acquire and as soon as possible after a shared
+ * resource is no longer needed.
+ * \param m The mutex to release.
+ */
+inline void Release(mutex m);
+
+/**
+ * Start a task.
+ * Start the specified task.
+ * \param t The task to start.
+ */
+inline void StartTask(task t);
+/** \example ex_starttask.nxc
+ * How to use the \ref StartTask function.
+ */
+
+/**
+ * Stop a task.
+ * Stop the specified task.
+ * \param t The task to stop.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void StopTask(task t);
+/** \example ex_stoptask.nxc
+ * How to use the \ref StopTask function.
+ */
+
+/**
+ * Build an array.
+ * Build a new array from the specified source(s). The sources can be of any
+ * type so long as the number of dimensions is equal to or one less than the
+ * number of dimensions in the output array and the type is compatible with
+ * the type of the output array. If a source is an array with the same number
+ * of dimensions as the output array then all of its elements are added to
+ * the output array.
+ * \param aout The output array to build.
+ * \param src1 The first source to build into the output array.
+ * \param src2 The second source to build into the output array.
+ * \param srcN The first source to build into the output array.
+ */
+inline void ArrayBuild(variant & aout[], variant src1, variant src2, ..., variant srcN);
+/** \example ex_arraybuild.nxc
+ * How to use the \ref ArrayBuild function.
+ */
+
+/**
+ * Get array length.
+ * Return the length of the specified array. Any type of array of up to four
+ * dimensions can be passed into this function.
+ * \param data The array whose length you need to read.
+ * \return The length of the specified array.
+ */
+inline unsigned int ArrayLen(variant data[]);
+/** \example ex_arraylen.nxc
+ * How to use the \ref ArrayLen function.
+ */
+
+/**
+ * Initialize an array.
+ * Initialize the array to contain count elements with each element equal to
+ * the value provided. To initialize a multi-dimensional array, the value
+ * should be an array of N-1 dimensions, where N is the number of dimensions
+ * in the array being initialized.
+ * \param aout The output array to initialize.
+ * \param value The value to initialize each element to.
+ * \param count The number of elements to create in the output array.
+ */
+inline void ArrayInit(variant & aout[], variant value, unsigned int count);
+/** \example ex_arrayinit.nxc
+ * How to use the \ref ArrayInit function.
+ */
+
+/**
+ * Copy an array subset.
+ * Copy a subset of the source array starting at the specified index and
+ * containing the specified number of elements into the destination array.
+ * \param aout The output array containing the subset.
+ * \param asrc The input array from which to copy a subset.
+ * \param idx The start index of the array subset.
+ * \param len The length of the array subset.
+ */
+inline void ArraySubset(variant & aout[], variant asrc[], unsigned int idx, unsigned int len);
+/** \example ex_arraysubset.nxc
+ * How to use the \ref ArraySubset function.
+ */
 
 #else
 
-#define StopAllTasks() Stop(true)
 #define StartTask(_t) start _t
 #define StopTask(_t) stop _t
 
+#if __FIRMWARE_VERSION <= 107
 #define IOMA(_n) asm { mov __RETVAL__, _n }
 #define SetIOMA(_n, _val) asm { mov _n, _val }
+#endif
 
 #define ArrayBuild(_aout, ...) asm { arrbuild _aout, __VA_ARGS__ }
 #define ArrayLen(_asrc) asm { arrsize __RETVAL__, _asrc }
@@ -2790,50 +3849,79 @@ struct CommExecuteFunctionType {
                            include \ref LoaderErrors. */
 };
 
-// CommHSControl
+/**
+ * CommHSControlType structure.
+ * This structure is used when calling the \ref SysCommHSControl system call
+ * function.
+ * \sa SysCommHSControl()
+ */
 struct CommHSControlType {
- char Result;
- byte Command;
- byte BaudRate;
+ char Result;             /*!< The function call result. \todo values? */
+ byte Command;            /*!< The hi-speed port configuration command.
+                               See \ref CommHiSpeedCtrlConstants. */
+ byte BaudRate;           /*!< The hi-speed port baud rate. See \ref CommHiSpeedBaudConstants. */
 #if __FIRMWARE_VERSION > 107
- unsigned int Mode;
+ unsigned int Mode;       /*!< The hi-speed port mode. See \ref CommHiSpeedDataBitsConstants,
+                               \ref CommHiSpeedStopBitsConstants, \ref CommHiSpeedParityConstants,
+                               and \ref CommHiSpeedCombinedConstants. */
 #endif
 };
 
-// CommHSCheckStatus
+/**
+ * CommHSCheckStatusType structure.
+ * This structure is used when calling the \ref SysCommHSCheckStatus system call
+ * function.
+ * \sa SysCommHSCheckStatus()
+ */
 struct CommHSCheckStatusType {
- bool SendingData;
- bool DataAvailable;
+ bool SendingData;     /*!< Is data currently being sent? */
+ bool DataAvailable;   /*!< Is data available for reading? */
 };
 
-// CommHSRead, CommHSWrite
+/**
+ * CommHSReadWriteType structure.
+ * This structure is used when calling the \ref SysCommHSRead and
+ * \ref SysCommHSWrite system call functions.
+ * \sa SysCommHSRead(), SysCommHSWrite()
+ */
 struct CommHSReadWriteType {
- char Status;
- byte Buffer[];
+ char Status;    /*!< The result of the function call. */
+ byte Buffer[];  /*!< The buffer of data to write or to contain the data read
+                      from the hi-speed port. */
 };
 #endif
 
 #if __FIRMWARE_VERSION > 107
-// CommBTOnOff
+/**
+ * CommBTOnOffType structure.
+ * This structure is used when calling the \ref SysCommBTOnOff system call
+ * function.
+ * \sa SysCommBTOnOff()
+ */
 struct CommBTOnOffType {
 #ifdef __ENHANCED_FIRMWARE
- unsigned int Result;
+ unsigned int Result; /*!< The function call result. */
 #else
- char Result;
+ char Result;         /*!< The function call result. */
 #endif
- bool PowerState;
+ bool PowerState;     /*!< If true then turn on bluetooth, otherwise, turn it off. */
 };
 
-// CommBTConnection
+/**
+ * CommBTConnectionType structure.
+ * This structure is used when calling the \ref SysCommBTConnection system call
+ * function.
+ * \sa SysCommBTConnection()
+ */
 struct CommBTConnectionType {
 #ifdef __ENHANCED_FIRMWARE
- unsigned int Result;
+ unsigned int Result; /*!< The function call result. */
 #else
- char Result;
+ char Result;         /*!< The function call result. */
 #endif
- byte Action;
- string Name;
- byte ConnectionSlot;
+ byte Action;         /*!< The connection action (connect or disconnect). */
+ string Name;         /*!< The name of the device to connect or disconnect. */
+ byte ConnectionSlot; /*!< The connection slot to connect or disconnect. */
 };
 #endif
 
@@ -3751,26 +4839,37 @@ struct FileFindType {
 struct FileSeekType {
  unsigned int Result; /*!< The function call result. Possible values include
                         \ref LoaderErrors. */
- byte FileHandle;     /*!< */
- byte Origin;         /*!< */
- long Length;         /*!< */
+ byte FileHandle;     /*!< The handle of the file to seek in. */
+ byte Origin;         /*!< The origin of the file seek operation. See \ref fseekConstants. */
+ long Length;         /*!< The offset from the origin to seek to. */
 };
 
-//FileResize
+/**
+ * FileResizeType structure.
+ * This structure is used when calling the \ref SysFileResize system call function.
+ * \sa SysFileResize()
+ */
 struct FileResizeType {
- unsigned int Result;
- byte FileHandle;
- unsigned int NewSize;
+ unsigned int Result;   /*!< The function call result. Possible values include
+                         \ref LoaderErrors. */
+ byte FileHandle;       /*!< The handle of the file to resize. */
+ unsigned int NewSize;  /*!< The new file size. */
 };
 
 #endif
 #endif
 #if __FIRMWARE_VERSION > 107
-// ListFiles
+/**
+ * ListFilesType structure.
+ * This structure is used when calling the \ref SysListFiles system call function.
+ * \sa SysListFiles()
+ */
 struct ListFilesType {
- char Result;
- string Pattern;
- string FileList[];
+ char Result;       /*!< The function call result. Possible values include
+                         \ref LoaderErrors. */
+ string Pattern;    /*!< The file search pattern. */
+ string FileList[]; /*!< An array of strings containing the list of filenames
+                         that matched the file search pattern. */
 };
 #endif
 /** @} */ // end of LoaderModuleTypes group
