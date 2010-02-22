@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-01-16
- * version 57
+ * date 2010-02-18
+ * version 58
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H 1
@@ -5099,9 +5099,7 @@ dseg segment
   __CHSRMutex mutex
   __CHSCArgs TCommHSControl
   __CHSCMutex mutex
-  __SHSSTmpBuf byte[]
-  __SHSSTmpVal sdword
-  __SHSSFlattenBuf byte[]
+  __SHSTmpVal sdword
 dseg ends
 
 #define RS485Status(_sendingData, _dataAvail) __RS485Status(_sendingData, _dataAvail)
