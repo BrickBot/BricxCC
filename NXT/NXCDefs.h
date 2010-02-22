@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-02-11
- * \version 64
+ * \date 2010-02-19
+ * \version 66
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -329,6 +329,8 @@ inline void SetSensorLowspeed(byte port) { asm { __SetSensorLowspeed(port) } }
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in full color mode. Requires an NXT 2.0 compatible firmware.
  * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorFull(byte port) { asm { __SetSensorColorFull(port) } }
 
@@ -337,6 +339,8 @@ inline void SetSensorColorFull(byte port) { asm { __SetSensorColorFull(port) } }
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in red light mode. Requires an NXT 2.0 compatible firmware.
  * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorRed(byte port) { asm { __SetSensorColorRed(port) } }
 
@@ -345,6 +349,8 @@ inline void SetSensorColorRed(byte port) { asm { __SetSensorColorRed(port) } }
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in green light mode. Requires an NXT 2.0 compatible firmware.
  * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorGreen(byte port) { asm { __SetSensorColorGreen(port) } }
 
@@ -353,6 +359,8 @@ inline void SetSensorColorGreen(byte port) { asm { __SetSensorColorGreen(port) }
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in blue light mode. Requires an NXT 2.0 compatible firmware.
  * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorBlue(byte port) { asm { __SetSensorColorBlue(port) } }
 
@@ -361,6 +369,8 @@ inline void SetSensorColorBlue(byte port) { asm { __SetSensorColorBlue(port) } }
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in no light mode. Requires an NXT 2.0 compatible firmware.
  * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
 
@@ -1886,6 +1896,8 @@ inline void SysDisplayExecuteFunction(DisplayExecuteFunctionType & args);
  * Read the display contrast setting.
  * This function lets you read the current display contrast setting.
  * \return The current display contrast (byte).
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline byte DisplayContrast();
 /** \example ex_contrast.nxc
@@ -1898,6 +1910,8 @@ inline byte DisplayContrast();
  * in via the \ref DrawGraphicArrayType structure.
  *
  * \param args The DrawGraphicArrayType structure containing the drawing parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SysDrawGraphicArray(DrawGraphicArrayType & args);
 /** \example ex_drawgarray.nxc
@@ -1910,6 +1924,8 @@ inline void SysDrawGraphicArray(DrawGraphicArrayType & args);
  * in via the \ref DrawPolygonType structure.
  *
  * \param args The DrawPolygonType structure containing the drawing parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SysDrawPolygon(DrawPolygonType & args);
 /** \example ex_drawpoly.nxc
@@ -1922,6 +1938,8 @@ inline void SysDrawPolygon(DrawPolygonType & args);
  * in via the \ref DrawEllipseType structure.
  *
  * \param args The DrawEllipseType structure containing the drawing parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SysDrawEllipse(DrawEllipseType & args);
 /** \example ex_drawellipse.nxc
@@ -1934,6 +1952,8 @@ inline void SysDrawEllipse(DrawEllipseType & args);
  * in via the \ref DrawFontType structure.
  *
  * \param args The DrawFontType structure containing the drawing parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SysDrawFont(DrawFontType & args);
 /** \example ex_drawfont.nxc
@@ -2066,6 +2086,8 @@ inline void SetDisplayUpdateMask(unsigned long updateMask) { asm { __setDisplayU
  * Set the display contrast.
  * This function lets you set the display contrast setting.
  * \param contrast The desired display contrast.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SetDisplayContrast(byte contrast) { asm { __setDisplayContrast(contrast) } }
 #endif
@@ -2520,6 +2542,7 @@ struct CommLSWriteExType {
 #endif
 
 /** @} */ // end of LowSpeedModuleTypes group
+
 /** @defgroup LowSpeedModuleFunctions LowSpeed module functions
  * Functions for accessing and modifying low speed module features.
  * @{
@@ -2586,177 +2609,616 @@ inline char WriteI2CRegister(byte port, byte reg, byte val);
  * This is an example of how to use the \ref WriteI2CRegister function.
  */
 
-inline long LowspeedStatus(const byte port, byte & bready);
+/**
+ * Get lowspeed status
+ * This method checks the status of the I2C communication on the specified
+ * port. If the last operation on this port was a successful LowspeedWrite
+ * call that requested response data from the device then bytesready will
+ * be set to the number of bytes in the internal read buffer.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param bytesready The number of bytes available to be read from the internal I2C buffer.
+ * The maximum number of bytes that can be read is 16.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * Avoid calls to \ref LowspeedRead or \ref LowspeedWrite while LowspeedStatus returns
+ * \ref STAT_COMM_PENDING.
+ * \sa I2CStatus, I2CRead, I2CWrite, I2CCheckStatus, I2CBytesReady, LowspeedRead,
+ * LowspeedWrite, and LowspeedCheckStatus
+ */
+inline long LowspeedStatus(const byte port, byte & bytesready);
 /** \example ex_lowspeedstatus.nxc
  * This is an example of how to use the \ref LowspeedStatus function.
  */
 
+/**
+ * Check lowspeed status
+ * This method checks the status of the I2C communication on the specified
+ * port.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * Avoid calls to \ref LowspeedRead or \ref LowspeedWrite while LowspeedCheckStatus returns
+ * \ref STAT_COMM_PENDING.
+ * \sa I2CCheckStatus, I2CRead, I2CWrite, I2CStatus, I2CBytesReady, LowspeedRead,
+ * LowspeedWrite, and LowspeedStatus
+ */
 inline long LowspeedCheckStatus(const byte port);
 /** \example ex_LowspeedCheckStatus.nxc
  * This is an example of how to use the \ref LowspeedCheckStatus function.
  */
 
+/**
+ * Get lowspeed bytes ready
+ * This method checks the number of bytes that are ready to be read on the
+ * specified port. If the last operation on this port was a successful
+ * LowspeedWrite call that requested response data from the device then the
+ * return value will be the number of bytes in the internal read buffer.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \return The number of bytes available to be read from the internal I2C buffer.
+ * The maximum number of bytes that can be read is 16.
+ * \sa I2CCheckStatus, I2CRead, I2CWrite, I2CStatus, I2CBytesReady, LowspeedRead,
+ * LowspeedWrite, and LowspeedStatus
+ */
 inline byte LowspeedBytesReady(const byte port);
 /** \example ex_LowspeedBytesReady.nxc
  * This is an example of how to use the \ref LowspeedBytesReady function.
  */
 
+/**
+ * Write lowspeed data
+ * This method starts a transaction to write the bytes contained in the array
+ * buffer to the I2C device on the specified port. It also tells the I2C device
+ * the number of bytes that should be included in the response. The maximum
+ * number of bytes that can be written or read is 16.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param retlen The number of bytes that should be returned by the I2C device.
+ * \param buffer A byte array containing the address of the I2C device, the I2C
+ * device register at which to write data, and up to 14 bytes of data to be
+ * written at the specified register.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSWriteType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * \sa I2CCheckStatus, I2CRead, I2CWrite, I2CStatus, I2CBytesReady, LowspeedRead,
+ * LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
+ */
 inline long LowspeedWrite(const byte port, byte retlen, byte buffer[]);
 /** \example ex_LowspeedWrite.nxc
  * This is an example of how to use the \ref LowspeedWrite function.
  */
 
+/**
+ * Read lowspeed data
+ * Read the specified number of bytes from the I2C device on the specified
+ * port and store the bytes read in the byte array buffer provided.  The maximum
+ * number of bytes that can be written or read is 16.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param buflen The initial size of the output buffer.
+ * \param buffer A byte array that contains the data read from the internal I2C
+ * buffer.  If the return value is negative then the output buffer will be empty.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSReadType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * \sa I2CCheckStatus, I2CRead, I2CWrite, I2CStatus, I2CBytesReady, LowspeedWrite,
+ * LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
+ */
 inline long LowspeedRead(const byte port, byte buflen, byte & buffer[]);
 /** \example ex_LowspeedRead.nxc
  * This is an example of how to use the \ref LowspeedRead function.
  */
 
-inline long I2CStatus(const byte port, byte & bready);
+/**
+ * Get I2C status
+ * This method checks the status of the I2C communication on the specified
+ * port. If the last operation on this port was a successful I2CWrite
+ * call that requested response data from the device then bytesready will
+ * be set to the number of bytes in the internal read buffer.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param bytesready The number of bytes available to be read from the internal I2C buffer.
+ * The maximum number of bytes that can be read is 16.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible return values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * Avoid calls to \ref I2CRead or \ref I2CWrite while I2CStatus returns
+ * \ref STAT_COMM_PENDING.
+ * \sa I2CCheckStatus, I2CRead, I2CWrite, LowspeedStatus, LowspeedRead,
+ * LowspeedWrite, and LowspeedCheckStatus
+ */
+inline long I2CStatus(const byte port, byte & bytesready);
 /** \example ex_I2CStatus.nxc
  * This is an example of how to use the \ref I2CStatus function.
  */
 
+/**
+ * Check I2C status
+ * This method checks the status of the I2C communication on the specified
+ * port.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * Avoid calls to \ref I2CRead or \ref I2CWrite while I2CCheckStatus returns
+ * \ref STAT_COMM_PENDING.
+ * \sa I2CStatus, I2CRead, I2CWrite, LowspeedStatus, LowspeedRead,
+ * LowspeedWrite, and LowspeedCheckStatus
+ */
 inline long I2CCheckStatus(const byte port);
 /** \example ex_I2CCheckStatus.nxc
  * This is an example of how to use the \ref I2CCheckStatus function.
  */
 
+/**
+ * Get I2C bytes ready
+ * This method checks the number of bytes that are ready to be read on the
+ * specified port. If the last operation on this port was a successful
+ * I2CWrite call that requested response data from the device then the
+ * return value will be the number of bytes in the internal read buffer.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \return The number of bytes available to be read from the internal I2C buffer.
+ * The maximum number of bytes that can be read is 16.
+ * \sa I2CCheckStatus, I2CRead, I2CWrite, I2CStatus, LowspeedBytesReady, LowspeedRead,
+ * LowspeedWrite, and LowspeedStatus
+ */
 inline byte I2CBytesReady(const byte port);
 /** \example ex_I2CBytesReady.nxc
  * This is an example of how to use the \ref I2CBytesReady function.
  */
 
-inline long I2CWrite(const byte port, byte retlen, byte buffer[])
-/** \example ex_I2CWrite.nxc
+/**
+ * Write I2C data
+ * This method starts a transaction to write the bytes contained in the array
+ * buffer to the I2C device on the specified port. It also tells the I2C device
+ * the number of bytes that should be included in the response. The maximum
+ * number of bytes that can be written or read is 16.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param retlen The number of bytes that should be returned by the I2C device.
+ * \param buffer A byte array containing the address of the I2C device, the I2C
+ * device register at which to write data, and up to 14 bytes of data to be
+ * written at the specified register.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSWriteType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * \sa I2CCheckStatus, I2CRead, I2CStatus, I2CBytesReady, LowspeedRead, LowspeedWrite,
+ * LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
+ */
+inline long I2CWrite(const byte port, byte retlen, byte buffer[]);
+/** \example ex_i2cwrite.nxc
  * This is an example of how to use the \ref I2CWrite function.
  */
 
-inline long I2CRead(const byte port, byte buflen, byte & buffer[])
+/**
+ * Read I2C data
+ * Read the specified number of bytes from the I2C device on the specified
+ * port and store the bytes read in the byte array buffer provided.  The maximum
+ * number of bytes that can be written or read is 16.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param buflen The initial size of the output buffer.
+ * \param buffer A byte array that contains the data read from the internal I2C
+ * buffer.  If the return value is negative then the output buffer will be empty.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSReadType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * \sa I2CCheckStatus, I2CWrite, I2CStatus, I2CBytesReady, LowspeedRead, LowspeedWrite,
+ * LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
+ */
+inline long I2CRead(const byte port, byte buflen, byte & buffer[]);
 /** \example ex_I2CRead.nxc
  * This is an example of how to use the \ref I2CRead function.
  */
 
+/**
+ * Perform an I2C write/read transaction
+ * This method writes the bytes contained in the input buffer (inbuf) to the
+ * I2C device on the specified port, checks for the specified number of bytes
+ * to be ready for reading, and then tries to read the specified number (count)
+ * of bytes from the I2C device into the output buffer (outbuf).
+ *
+ * This is a higher-level wrapper around the three main I2C functions. It also
+ * maintains a "last good read" buffer and returns values from that buffer if
+ * the I2C communication transaction fails.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param inbuf A byte array containing the address of the I2C device, the I2C
+ * device register at which to write data, and up to 14 bytes of data to be
+ * written at the specified register.
+ * \param count The number of bytes that should be returned by the I2C device.
+ * On output count is set to the number of bytes in outbuf.
+ * \param outbuf A byte array that contains the data read from the internal I2C
+ * buffer.
+ * \return Returns true or false indicating whether the I2C transaction
+ * succeeded or failed.
+ * \sa I2CCheckStatus, I2CWrite, I2CStatus, I2CBytesReady, I2CRead, LowspeedRead, LowspeedWrite,
+ * LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
+ */
 inline long I2CBytes(const byte port, byte inbuf[], byte & count, byte & outbuf[]);
 /** \example ex_I2CBytes.nxc
  * This is an example of how to use the \ref I2CBytes function.
  */
 
+/**
+ * Read I2C device information
+ * Read standard I2C device information: version, vendor, and device ID. The
+ * I2C device must use address 0x02.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param info A value indicating the type of device information you are requesting.
+ * See \ref GenericI2CConstants.
+ * \return A string containing the requested device information.
+ * \sa I2CDeviceInfoEx
+ */
 inline string I2CDeviceInfo(byte port, byte info);
 /** \example ex_I2CDeviceInfo.nxc
  * This is an example of how to use the \ref I2CDeviceInfo function.
  */
 
+/**
+ * Read I2C device information extra
+ * Read standard I2C device information: version, vendor, and device ID. The
+ * I2C device uses the specified address.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param addr The I2C device address.
+ * \param info A value indicating the type of device information you are requesting.
+ * See \ref GenericI2CConstants.
+ * \return A string containing the requested device information.
+ * \sa I2CDeviceInfo
+ */
 inline string I2CDeviceInfoEx(byte port, byte addr, byte info);
 /** \example ex_I2CDeviceInfoEx.nxc
  * This is an example of how to use the \ref I2CDeviceInfoEx function.
  */
 
+/**
+ * Read I2C device version
+ * Read standard I2C device version. The I2C device must use address 0x02.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \return A string containing the device version.
+ * \sa I2CVersionEx
+ */
 inline string I2CVersion(byte port);
 /** \example ex_I2CVersion.nxc
  * This is an example of how to use the \ref I2CVersion function.
  */
 
+/**
+ * Read I2C device version extra
+ * Read standard I2C device version. The I2C device uses the specified address.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param addr The I2C device address.
+ * \return A string containing the device version.
+ * \sa I2CVersion
+ */
 inline string I2CVersionEx(byte port, byte addr);
 /** \example ex_I2CVersionEx.nxc
  * This is an example of how to use the \ref I2CVersionEx function.
  */
 
+/**
+ * Read I2C device vendor
+ * Read standard I2C device vendor. The I2C device must use address 0x02.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \return A string containing the device vendor.
+ * \sa I2CVendorIdEx
+ */
 inline string I2CVendorId(byte port);
 /** \example ex_I2CVendorId.nxc
  * This is an example of how to use the \ref I2CVendorId function.
  */
 
+/**
+ * Read I2C device vendor extra
+ * Read standard I2C device vendor. The I2C device uses the specified address.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param addr The I2C device address.
+ * \return A string containing the device vendor.
+ * \sa I2CVendorId
+ */
 inline string I2CVendorIdEx(byte port, byte addr);
 /** \example ex_I2CVendorIdEx.nxc
  * This is an example of how to use the \ref I2CVendorIdEx function.
  */
 
+/**
+ * Read I2C device identifier
+ * Read standard I2C device identifier. The I2C device must use address 0x02.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \return A string containing the device identifier.
+ * \sa I2CDeviceIdEx
+ */
 inline string I2CDeviceId(byte port);
 /** \example ex_I2CDeviceId.nxc
  * This is an example of how to use the \ref I2CDeviceId function.
  */
 
+/**
+ * Read I2C device identifier extra
+ * Read standard I2C device identifier. The I2C device uses the specified address.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param addr The I2C device address.
+ * \return A string containing the device identifier.
+ * \sa I2CDeviceId
+ */
 inline string I2CDeviceIdEx(byte port, byte addr);
 /** \example ex_I2CDeviceIdEx.nxc
  * This is an example of how to use the \ref I2CDeviceIdEx function.
  */
 
+/**
+ * Send an I2C command
+ * Send a command to an I2C device at the standard command register: \ref I2C_REG_CMD.
+ * The I2C device must use address 0x02.
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param cmd The command to send to the I2C device.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
 inline long I2CSendCommand(byte port, byte cmd);
 /** \example ex_I2CSendCommand.nxc
  * This is an example of how to use the \ref I2CSendCommand function.
  */
 
+/**
+ * Send an I2C command extra
+ * Send a command to an I2C device at the standard command register: \ref I2C_REG_CMD.
+ * The I2C device uses the specified address.
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param addr The I2C device address.
+ * \param cmd The command to send to the I2C device.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
 inline long I2CSendCommandEx(byte port, byte addr, byte cmd);
 /** \example ex_I2CSendCommandEx.nxc
  * This is an example of how to use the \ref I2CSendCommandEx function.
  */
 
+/** @defgroup LowLevelLowSpeedModuleFunctions Low level LowSpeed module functions
+ * Low level functions for accessing low speed module features.
+ * @{
+ */
+
+/**
+ * Get I2C input buffer data
+ * This method reads count bytes of data from the I2C input buffer for the
+ * specified port and writes it to the buffer provided.
+ * \param port A constant port number (S1..S4).
+ * \param offset A constant offset into the I2C input buffer.
+ * \param cnt The number of bytes to read.
+ * \param data The byte array reference which will contain the data read from
+ * the I2C input buffer.
+ */
 inline void GetLSInputBuffer(const byte port, const byte offset, byte cnt, byte & data[]);
 /** \example ex_GetLSInputBuffer.nxc
  * This is an example of how to use the \ref GetLSInputBuffer function.
  */
 
+/**
+ * Get I2C output buffer data
+ * This method reads cnt bytes of data from the I2C output buffer for the
+ * specified port and writes it to the buffer provided.
+ * \param port A constant port number (S1..S4).
+ * \param offset A constant offset into the I2C output buffer.
+ * \param cnt The number of bytes to read.
+ * \param data The byte array reference which will contain the data read from
+ * the I2C output buffer.
+ */
 inline void GetLSOutputBuffer(const byte port, const byte offset, byte cnt, byte & data[]);
 /** \example ex_GetLSOutputBuffer.nxc
  * This is an example of how to use the \ref GetLSOutputBuffer function.
  */
 
+/**
+ * Get I2C input buffer in-pointer
+ * This method returns the value of the input pointer of the I2C input
+ * buffer for the specified port.
+ * \param port A constant port number (S1..S4).
+ * \return The I2C input buffer's in-pointer value.
+ */
 inline byte LSInputBufferInPtr(const byte port);
 /** \example ex_LSInputBufferInPtr.nxc
  * This is an example of how to use the \ref LSInputBufferInPtr function.
  */
 
+/**
+ * Get I2C input buffer out-pointer
+ * This method returns the value of the output pointer of the I2C input
+ * buffer for the specified port.
+ * \param port A constant port number (S1..S4).
+ * \return The I2C input buffer's out-pointer value.
+ */
 inline byte LSInputBufferOutPtr(const byte port);
 /** \example ex_LSInputBufferOutPtr.nxc
  * This is an example of how to use the \ref LSInputBufferOutPtr function.
  */
 
+/**
+ * Get I2C input buffer bytes to rx
+ * This method returns the value of the bytes to rx field of the I2C input
+ * buffer for the specified port.
+ * \param port A constant port number (S1..S4).
+ * \return The I2C input buffer's bytes to rx value.
+ */
 inline byte LSInputBufferBytesToRx(const byte port);
 /** \example ex_LSInputBufferBytesToRx.nxc
  * This is an example of how to use the \ref LSInputBufferBytesToRx function.
  */
 
+/**
+ * Get I2C output buffer in-pointer
+ * This method returns the value of the input pointer of the I2C output
+ * buffer for the specified port.
+ * \param port A constant port number (S1..S4).
+ * \return The I2C output buffer's in-pointer value.
+ */
 inline byte LSOutputBufferInPtr(const byte port);
 /** \example ex_LSOutputBufferInPtr.nxc
  * This is an example of how to use the \ref LSOutputBufferInPtr function.
  */
 
+/**
+ * Get I2C output buffer out-pointer
+ * This method returns the value of the output pointer of the I2C output
+ * buffer for the specified port.
+ * \param port A constant port number (S1..S4).
+ * \return The I2C output buffer's out-pointer value.
+ */
 inline byte LSOutputBufferOutPtr(const byte port);
 /** \example ex_LSOutputBufferOutPtr.nxc
  * This is an example of how to use the \ref LSOutputBufferOutPtr function.
  */
 
+/**
+ * Get I2C output buffer bytes to rx
+ * This method returns the value of the bytes to rx field of the I2C output
+ * buffer for the specified port.
+ * \param port A constant port number (S1..S4).
+ * \return The I2C output buffer's bytes to rx value.
+ */
 inline byte LSOutputBufferBytesToRx(const byte port);
 /** \example ex_LSOutputBufferBytesToRx.nxc
  * This is an example of how to use the \ref LSOutputBufferBytesToRx function.
  */
 
+/**
+ * Get I2C mode
+ * This method returns the value of the I2C mode for the specified port.
+ * \param port A constant port number (S1..S4).
+ * \return The I2C port mode. See \ref LowSpeedModeConstants.
+ */
 inline byte LSMode(const byte port);
 /** \example ex_LSMode.nxc
  * This is an example of how to use the \ref LSMode function.
  */
 
+/**
+ * Get I2C channel state
+ * This method returns the value of the I2C channel state for the specified port.
+ * \param port A constant port number (S1..S4).
+ * \return The I2C port channel state. See \ref LowSpeedChannelStateConstants.
+ */
 inline byte LSChannelState(const byte port);
 /** \example ex_LSChannelState.nxc
  * This is an example of how to use the \ref LSChannelState function.
  */
 
+/**
+ * Get I2C error type
+ * This method returns the value of the I2C error type for the specified port.
+ * \param port A constant port number (S1..S4).
+ * \return The I2C port error type. See \ref LowSpeedErrorTypeConstants.
+ */
 inline byte LSErrorType(const byte port);
 /** \example ex_LSErrorType.nxc
  * This is an example of how to use the \ref LSErrorType function.
  */
 
+/**
+ * Get I2C state
+ * This method returns the value of the I2C state.
+ * \return The I2C state. See \ref LowSpeedStateConstants.
+ */
 inline byte LSState();
 /** \example ex_LSState.nxc
  * This is an example of how to use the \ref LSState function.
  */
 
+/**
+ * Get I2C speed
+ * This method returns the value of the I2C speed.
+ * \return The I2C speed.
+ * \warning This function is unimplemented within the firmware.
+ */
 inline byte LSSpeed();
 /** \example ex_LSSpeed.nxc
  * This is an example of how to use the \ref LSSpeed function.
  */
 
 #ifdef __ENHANCED_FIRMWARE
+/**
+ * Get I2C no restart on read setting
+ * This method returns the value of the I2C no restart on read field.
+ * \return The I2C no restart on read field. See \ref LowSpeedNoRestartConstants.
+ */
 inline byte LSNoRestartOnRead();
 /** \example ex_LSNoRestartOnRead.nxc
  * This is an example of how to use the \ref LSNoRestartOnRead function.
@@ -2764,77 +3226,32 @@ inline byte LSNoRestartOnRead();
 
 #endif
 
+/*
+// these low speed module IOMap fields are essentially read-only
 inline void SetLSInputBuffer(const byte port, const byte offset, byte cnt, byte data[]);
-/** \example ex_SetLSInputBuffer.nxc
- * This is an example of how to use the \ref SetLSInputBuffer function.
- */
-
 inline void SetLSInputBufferInPtr(const byte port, byte n);
-/** \example ex_SetLSInputBufferInPtr.nxc
- * This is an example of how to use the \ref SetLSInputBufferInPtr function.
- */
-
 inline void SetLSInputBufferOutPtr(const byte port, byte n);
-/** \example ex_SetLSInputBufferOutPtr.nxc
- * This is an example of how to use the \ref SetLSInputBufferOutPtr function.
- */
-
 inline void SetLSInputBufferBytesToRx(const byte port, byte n);
-/** \example ex_SetLSInputBufferBytesToRx.nxc
- * This is an example of how to use the \ref SetLSInputBufferBytesToRx function.
- */
-
 inline void SetLSOutputBuffer(const byte port, const byte offset, byte cnt, byte data[]);
-/** \example ex_SetLSOutputBuffer.nxc
- * This is an example of how to use the \ref SetLSOutputBuffer function.
- */
-
 inline void SetLSOutputBufferInPtr(const byte port, byte n);
-/** \example ex_SetLSOutputBufferInPtr.nxc
- * This is an example of how to use the \ref SetLSOutputBufferInPtr function.
- */
-
 inline void SetLSOutputBufferOutPtr(const byte port, n);
-/** \example ex_SetLSOutputBufferOutPtr.nxc
- * This is an example of how to use the \ref SetLSOutputBufferOutPtr function.
- */
-
 inline void SetLSOutputBufferBytesToRx(const byte port, byte n);
-/** \example ex_SetLSOutputBufferBytesToRx.nxc
- * This is an example of how to use the \ref SetLSOutputBufferBytesToRx function.
- */
-
 inline void SetLSMode(const byte port, const byte mode);
-/** \example ex_SetLSMode.nxc
- * This is an example of how to use the \ref SetLSMode function.
- */
-
 inline void SetLSChannelState(const byte port, const byte chState);
-/** \example ex_SetLSChannelState.nxc
- * This is an example of how to use the \ref SetLSChannelState function.
- */
-
 inline void SetLSErrorType(const byte port, const byte errType);
-/** \example ex_SetLSErrorType.nxc
- * This is an example of how to use the \ref SetLSErrorType function.
- */
-
 inline void SetLSState(const byte lsState);
-/** \example ex_SetLSState.nxc
- * This is an example of how to use the \ref SetLSState function.
- */
-
 inline void SetLSSpeed(const byte lsSpeed);
-/** \example ex_SetLSSpeed.nxc
- * This is an example of how to use the \ref SetLSSpeed function.
- */
-
 #ifdef __ENHANCED_FIRMWARE
 inline void SetLSNoRestartOnRead(const byte lsNoRestart);
-/** \example ex_SetLSNoRestartOnRead.nxc
- * This is an example of how to use the \ref SetLSNoRestartOnRead function.
- */
 #endif
+*/
+
+/** @} */ // end of LowLevelLowSpeedModuleFunctions group
+
+/** @defgroup LowSpeedModuleSystemCallFunctions LowSpeed module system call functions
+ * System call functions for accessing low speed module features.
+ * @{
+ */
 
 /**
  * Write to a Lowspeed sensor.
@@ -2894,6 +3311,8 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
  * \ref CommLSWriteExType structure.
  */
 #endif
+
+/** @} */ // end of LowSpeedModuleSystemCallFunctions group
 
 #else
 
@@ -3369,6 +3788,8 @@ inline void SysIOMapWriteByID(IOMapWriteByIDType & args);
  *
  * \todo figure out what this function is intended for
  * \param args The DatalogWriteType structure containing the needed parameters.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysDatalogWrite(DatalogWriteType & args);
 /** \example ex_datalog.nxc
@@ -3383,6 +3804,8 @@ inline void SysDatalogWrite(DatalogWriteType & args);
  *
  * \todo figure out what this function is intended for
  * \param args The DatalogGetTimesType structure containing the needed parameters.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysDatalogGetTimes(DatalogGetTimesType & args);
 
@@ -3392,6 +3815,8 @@ inline void SysDatalogGetTimes(DatalogGetTimesType & args);
  * values specified via the \ref ReadSemDataType structure.
  *
  * \param args The ReadSemDataType structure containing the needed parameters.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysReadSemData(ReadSemDataType & args);
 /** \example ex_SemData.nxc
@@ -3405,6 +3830,8 @@ inline void SysReadSemData(ReadSemDataType & args);
  * values specified via the \ref WriteSemDataType structure.
  *
  * \param args The WriteSemDataType structure containing the needed parameters.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysWriteSemData(WriteSemDataType & args);
 
@@ -3415,6 +3842,8 @@ inline void SysWriteSemData(WriteSemDataType & args);
  *
  * \todo figure out what this function is intended for
  * \param args The UpdateCalibCacheInfoType structure containing the needed parameters.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysUpdateCalibCacheInfo(UpdateCalibCacheInfoType & args);
 /** \example ex_SysCalib.nxc
@@ -3430,6 +3859,8 @@ inline void SysUpdateCalibCacheInfo(UpdateCalibCacheInfoType & args);
  *
  * \todo figure out what this function is intended for
  * \param args The ComputeCalibValueType structure containing the needed parameters.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysComputeCalibValue(ComputeCalibValueType & args);
 
@@ -3933,180 +4364,1256 @@ struct CommBTConnectionType {
 
 #ifdef __DOXYGEN_DOCS
 
+/**
+ * Send a message to a queue/mailbox.
+ * Write a message into a local mailbox.
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param msg The message to write to the mailbox.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
 inline char SendMessage(byte queue, string msg);
+/** \example ex_sendmessage.nxc
+ * This is an example of how to use the \ref SendMessage function.
+ */
+
+/**
+ * Read a message from a queue/mailbox.
+ * Read a message from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param msg The message that is read from the mailbox.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
 inline char ReceiveMessage(byte queue, bool clear, string & msg);
+/** \example ex_receivemessage.nxc
+ * This is an example of how to use the \ref ReceiveMessage function.
+ */
 
+/**
+ * Check bluetooth status.
+ * Check the status of the bluetooth subsystem for the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \return The bluetooth status for the specified connection.
+ */
 inline char BluetoothStatus(const byte conn);
+/** \example ex_bluetoothstatus.nxc
+ * This is an example of how to use the \ref BluetoothStatus function.
+ */
+
+/**
+ * Write to a bluetooth connection.
+ * Write data to the specified bluetooth connection.
+ * \param conn The connection slot (0..3).
+ * \param buffer The data to be written (up to 128 bytes)
+ * \return A char value indicating whether the function call succeeded or not.
+ */
 inline char BluetoothWrite(const byte conn, byte buffer[]);
+/** \example ex_bluetoothwrite.nxc
+ * This is an example of how to use the \ref BluetoothWrite function.
+ */
 
-#define SendRemoteBool(_conn, _queue, _bval) asm { __sendRemoteBool(_conn, _queue, _bval, __RETVAL__) }
-#define SendRemoteNumber(_conn, _queue, _val) asm { __sendRemoteNumber(_conn, _queue, _val, __RETVAL__) }
-#define SendRemoteString(_conn, _queue, _str) asm { __sendRemoteString(_conn, _queue, _str, __RETVAL__) }
+/**
+ * Send a boolean value to a remote mailbox.
+ * Send a boolean value via bluetooth on the specified connection to the
+ * specified remote mailbox number.
+ * \param conn The connection slot (0..3).
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param bval The boolean value to send.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char SendRemoteBool(byte conn, byte queue, bool bval);
+/** \example ex_sendremotebool.nxc
+ * This is an example of how to use the \ref SendRemoteBool function.
+ */
 
-#define SendResponseBool(_queue, _bval) asm { __sendResponseBool(_queue, _bval, __RETVAL__) }
-#define SendResponseNumber(_queue, _val) asm { __sendResponseNumber(_queue, _val, __RETVAL__) }
-#define SendResponseString(_queue, _msg) asm { __sendResponseString(_queue, _msg, __RETVAL__) }
+/**
+ * Send a numeric value to a remote mailbox.
+ * Send a numeric value via bluetooth on the specified connection to the
+ * specified remote mailbox number.
+ * \param conn The connection slot (0..3).
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param val The numeric value to send.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char SendRemoteNumber(byte conn, byte queue, long val);
+/** \example ex_SendRemoteNumber.nxc
+ * This is an example of how to use the \ref SendRemoteNumber function.
+ */
 
-#define ReceiveRemoteBool(_queue, _clear, _bval) asm { __receiveRemoteBool(_queue, _clear, _bval, __RETVAL__) }
-#define ReceiveRemoteNumber(_queue, _clear, _val) asm { __receiveRemoteNumber(_queue, _clear, _val, __RETVAL__) }
-#define ReceiveRemoteString(_queue, _clear, _str) asm { __receiveMessage(_queue, _clear, _str, __RETVAL__) }
-#define ReceiveRemoteMessageEx(_queue, _clear, _str, _val, _bval) asm { __receiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, __RETVAL__) }
+/**
+ * Send a string value to a remote mailbox.
+ * Send a string value via bluetooth on the specified connection to the
+ * specified remote mailbox number.
+ * \param conn The connection slot (0..3).
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param str The string value to send.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char SendRemoteString(byte conn, byte queue, string str);
+/** \example ex_SendRemoteString.nxc
+ * This is an example of how to use the \ref SendRemoteString function.
+ */
 
-#define RemoteMessageRead(_conn, _queue) asm { __remoteMessageRead(_conn, _queue, __RETVAL__) }
-#define RemoteMessageWrite(_conn, _queue, _msg) asm { __sendRemoteString(_conn, _queue, _msg, __RETVAL__) }
-#define RemoteStartProgram(_conn, _filename) asm { __remoteStartProgram(_conn, _filename, __RETVAL__) }
-#define RemoteStopProgram(_conn) asm { __bluetoothWrite(_conn, __DCStopProgramPacket, __RETVAL__) }
-#define RemotePlaySoundFile(_conn, _filename, _bloop) asm { __remotePlaySoundFile(_conn, _filename, _bloop, __RETVAL__) }
-#define RemotePlayTone(_conn, _frequency, _duration) asm { __remotePlayTone(_conn, _frequency, _duration, __RETVAL__) }
-#define RemoteStopSound(_conn) asm { __bluetoothWrite(_conn, __DCStopSoundPacket, __RETVAL__) }
-#define RemoteKeepAlive(_conn) asm { __bluetoothWrite(_conn, __DCKeepAlivePacket, __RETVAL__) }
-#define RemoteResetScaledValue(_conn, _port) asm { __remoteResetScaledValue(_conn, _port, __RETVAL__) }
-#define RemoteResetMotorPosition(_conn, _port, _brelative) asm { __remoteResetMotorPosition(_conn, _port, _brelative, __RETVAL__) }
-#define RemoteSetInputMode(_conn, _port, _type, _mode) asm { __remoteSetInputMode(_conn, _port, _type, _mode, __RETVAL__) }
-#define RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit) \
-  asm { __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, __RETVAL__) }
+/**
+ * Write a boolean value to a local response mailbox.
+ * Write a boolean value to a response mailbox (the mailbox number + 10).
+ * \param queue The mailbox number. See \ref MailboxConstants. This function
+ * shifts the specified value into the range of response mailbox numbers by
+ * adding 10.
+ * \param bval The boolean value to write.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char SendResponseBool(byte queue, bool bval);
+/** \example ex_SendResponseBool.nxc
+ * This is an example of how to use the \ref SendResponseBool function.
+ */
+
+/**
+ * Write a numeric value to a local response mailbox.
+ * Write a numeric value to a response mailbox (the mailbox number + 10).
+ * \param queue The mailbox number. See \ref MailboxConstants. This function
+ * shifts the specified value into the range of response mailbox numbers by
+ * adding 10.
+ * \param val The numeric value to write.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char SendResponseNumber(byte queue, long val);
+/** \example ex_SendResponseNumber.nxc
+ * This is an example of how to use the \ref SendResponseNumber function.
+ */
+
+/**
+ * Write a string value to a local response mailbox.
+ * Write a string value to a response mailbox (the mailbox number + 10).
+ * \param queue The mailbox number. See \ref MailboxConstants. This function
+ * shifts the specified value into the range of response mailbox numbers by
+ * adding 10.
+ * \param str The string value to write.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char SendResponseString(byte queue, string str);
+/** \example ex_SendResponseString.nxc
+ * This is an example of how to use the \ref SendResponseString function.
+ */
+
+/**
+ * Read a boolean value from a queue/mailbox.
+ * Read a boolean value from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param bval The boolean value that is read from the mailbox.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char ReceiveRemoteBool(byte queue, bool clear, bool & bval);
+/** \example ex_ReceiveRemoteBool.nxc
+ * This is an example of how to use the \ref ReceiveRemoteBool function.
+ */
+
+/**
+ * Read a value from a queue/mailbox.
+ * Read a value from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.  Output the value in string, number, and
+ * boolean form.
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param str The string value that is read from the mailbox.
+ * \param val The numeric value that is read from the mailbox.
+ * \param bval The boolean value that is read from the mailbox.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char ReceiveRemoteMessageEx(byte queue, bool clear, string & str, long & val, bool & bval);
+/** \example ex_ReceiveRemoteMessageEx.nxc
+ * This is an example of how to use the \ref ReceiveRemoteMessageEx function.
+ */
+
+/**
+ * Read a numeric value from a queue/mailbox.
+ * Read a numeric value from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param val The numeric value that is read from the mailbox.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char ReceiveRemoteNumber(byte queue, bool clear, long & val);
+/** \example ex_ReceiveRemoteNumber.nxc
+ * This is an example of how to use the \ref ReceiveRemoteNumber function.
+ */
+
+/**
+ * Read a string value from a queue/mailbox.
+ * Read a string value from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param str The string value that is read from the mailbox.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char ReceiveRemoteString(byte queue, bool clear, string & str);
+/** \example ex_ReceiveRemoteString.nxc
+ * This is an example of how to use the \ref ReceiveRemoteString function.
+ */
+
+/**
+ * Send a KeepAlive message.
+ * Send the KeepAlive direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteKeepAlive(byte conn);
+/** \example ex_RemoteKeepAlive.nxc
+ * This is an example of how to use the \ref RemoteKeepAlive function.
+ */
+
+/**
+ * Send a MessageRead message.
+ * Send the MessageRead direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \param queue The mailbox to read. See \ref MailboxConstants.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteMessageRead(byte conn, byte queue);
+/** \example ex_RemoteMessageRead.nxc
+ * This is an example of how to use the \ref RemoteMessageRead function.
+ */
+
+/**
+ * Send a MessageWrite message.
+ * Send the MessageWrite direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \param queue The mailbox to write. See \ref MailboxConstants.
+ * \param msg The message to write to the mailbox.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteMessageWrite(byte conn, byte queue, string msg);
+/** \example ex_RemoteMessageWrite.nxc
+ * This is an example of how to use the \ref RemoteMessageWrite function.
+ */
+
+/**
+ * Send a PlaySoundFile message.
+ * Send the PlaySoundFile direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \param filename The name of the sound file to play.
+ * \param bloop A boolean value indicating whether to loop the sound file or not.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemotePlaySoundFile(byte conn, string filename, bool bloop);
+/** \example ex_RemotePlaySoundFile.nxc
+ * This is an example of how to use the \ref RemotePlaySoundFile function.
+ */
+
+/**
+ * Send a PlayTone message.
+ * Send the PlayTone direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \param frequency The frequency of the tone.
+ * \param duration The duration of the tone.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemotePlayTone(byte conn, unsigned int frequency, unsigned int duration);
+/** \example ex_RemotePlayTone.nxc
+ * This is an example of how to use the \ref RemotePlayTone function.
+ */
+
+/**
+ * Send a ResetMotorPosition message.
+ * Send the ResetMotorPosition direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \param port The output port to reset.
+ * \param brelative A flag indicating whether the counter to reset is relative.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteResetMotorPosition(byte conn, byte port, bool brelative);
+/** \example ex_RemoteResetMotorPosition.nxc
+ * This is an example of how to use the \ref RemoteResetMotorPosition function.
+ */
+
+/**
+ * Send a ResetScaledValue message.
+ * Send the ResetScaledValue direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \param port The input port to reset.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteResetScaledValue(byte conn, byte port);
+/** \example ex_RemoteResetScaledValue.nxc
+ * This is an example of how to use the \ref RemoteResetScaledValue function.
+ */
+
+/**
+ * Send a SetInputMode message.
+ * Send the SetInputMode direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \param port The input port to configure. See \ref InPorts.
+ * \param type The sensor type. See \ref SensorTypes.
+ * \param mode The sensor mode. See \ref SensorModes.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteSetInputMode(byte conn, byte port, byte type, byte mode);
+/** \example ex_RemoteSetInputMode.nxc
+ * This is an example of how to use the \ref RemoteSetInputMode function.
+ */
+
+/**
+ * Send a SetOutputMode message.
+ * Send the SetOutputMode direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \param port The output port to configure. See \ref OutputPortConstants.
+ * \param speed The motor speed. (-100..100)
+ * \param mode The motor mode. See \ref OutModeConstants.
+ * \param regmode The motor regulation mode. See \ref OutRegModeConstants.
+ * \param turnpct The motor synchronized turn percentage. (-100..100)
+ * \param runstate The motor run state. See \ref OutRunStateConstants.
+ * \param tacholimit The motor tachometer limit.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteSetOutputState(byte conn, byte port, char speed, byte mode, byte regmode, char turnpct, byte runstate, unsigned long tacholimit);
+/** \example ex_RemoteSetOutputState.nxc
+ * This is an example of how to use the \ref RemoteSetOutputState function.
+ */
+
+/**
+ * Send a StartProgram message.
+ * Send the StartProgram direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \param filename The name of the program to start running.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteStartProgram(byte conn, string filename);
+/** \example ex_RemoteStartProgram.nxc
+ * This is an example of how to use the \ref RemoteStartProgram function.
+ */
+
+/**
+ * Send a StopProgram message.
+ * Send the StopProgram direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteStopProgram(byte conn);
+/** \example ex_RemoteStopProgram.nxc
+ * This is an example of how to use the \ref RemoteStopProgram function.
+ */
+
+/**
+ * Send a StopSound message.
+ * Send the StopSound direct command on the specified connection slot.
+ * \param conn The connection slot (0..3).
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteStopSound(byte conn);
+/** \example ex_RemoteStopSound.nxc
+ * This is an example of how to use the \ref RemoteStopSound function.
+ */
 
 #ifdef __ENHANCED_FIRMWARE
 
-#define RS485Status(_sendingData, _dataAvail) asm { __RS485Status(_sendingData, _dataAvail) }
-#define RS485SendingData() asm { __RS485Status(__RETVAL__, __TMPBYTE__) }
-#define RS485DataAvailable() asm { __RS485Status(__TMPBYTE__, __RETVAL__) }
-#define RS485Write(_buffer) asm { __RS485Write(_buffer, __RETVAL__) }
-#define RS485Read(_buffer) asm { __RS485Read(_buffer, __RETVAL__) }
+/**
+ * Control the RS485 port.
+ * Control the RS485 hi-speed port using the specified parameters.
+ * \param cmd The control command to send to the port. See \ref CommHiSpeedCtrlConstants.
+ * \param baud The baud rate for the RS485 port. See \ref CommHiSpeedBaudConstants.
+ * \param mode The RS485 port mode (data bits, stop bits, parity).  See \ref
+ * CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants, \ref
+ * CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char RS485Control(byte cmd, byte baud, unsigned int mode);
+/** \example ex_RS485Control.nxc
+ * This is an example of how to use the \ref RS485Control function.
+ */
 
-#if __FIRMWARE_VERSION > 107
+/**
+ * Check for RS485 available data.
+ * Check the RS485 hi-speed port for available data.
+ * \return A value indicating whether data is available or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline bool RS485DataAvailable(void);
+/** \example ex_RS485DataAvailable.nxc
+ * This is an example of how to use the \ref RS485DataAvailable function.
+ */
 
-#define RS485Control(_cmd, _baud, _mode) asm { __RS485Control(_cmd, _baud, _mode, __RETVAL__) }
-#define RS485Uart(_baud, _mode) asm { __RS485Control(HS_CTRL_UART, _baud, _mode, __RETVAL__) }
-#define RS485Init() asm { __RS485Control(HS_CTRL_INIT, 0, 0, __RETVAL__) }
-#define RS485Exit() asm { __RS485Control(HS_CTRL_EXIT, 0, 0, __RETVAL__) }
+/**
+ * Exit RS485.
+ * Turn off the RS485 port.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char RS485Exit(void);
+/** \example ex_RS485Exit.nxc
+ * This is an example of how to use the \ref RS485Exit function.
+ */
 
-#else
+/**
+ * Initialize RS485.
+ * Initialize the RS485 hi-speed port so that it can be used.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char RS485Init(void);
+/** \example ex_RS485Init.nxc
+ * This is an example of how to use the \ref RS485Init function.
+ */
 
-#define RS485Control(_cmd, _baud) asm { __RS485Control(_cmd, _baud, __RETVAL__) }
-#define RS485Uart(_baud) asm { __RS485Control(HS_CTRL_UART, _baud, __RETVAL__) }
-#define RS485Init() asm { __RS485Control(HS_CTRL_INIT, 0, __RETVAL__) }
-#define RS485Exit() asm { __RS485Control(HS_CTRL_EXIT, 0, __RETVAL__) }
+/**
+ * Read RS485 data.
+ * Read data from the RS485 hi-speed port.
+ * \param buffer A byte array that will contain the data read from the RS485 port.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char RS485Read(byte & buffer[]);
+/** \example ex_RS485Read.nxc
+ * This is an example of how to use the \ref RS485Read function.
+ */
+
+/**
+ * Is RS485 sending data.
+ * Check whether the RS485 is actively sending data.
+ * \return A value indicating whether data is being sent or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline bool RS485SendingData(void);
+/** \example ex_RS485SendingData.nxc
+ * This is an example of how to use the \ref RS485SendingData function.
+ */
+
+/**
+ * Check RS485 status.
+ * Check the status of the RS485 hi-speed port.
+ * \param sendingData A boolean value set to true on output if data is being sent.
+ * \param dataAvail A boolean value set to true on output if data is available to be read.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void RS485Status(bool & sendingData, bool & dataAvail);
+/** \example ex_RS485Status.nxc
+ * This is an example of how to use the \ref RS485Status function.
+ */
+
+/**
+ * Configure RS485 UART.
+ * Configure the RS485 UART parameters, including baud rate, data bits,
+ * stop bits, and parity.
+ * \param baud The baud rate for the RS485 port. See \ref CommHiSpeedBaudConstants.
+ * \param mode The RS485 port mode (data bits, stop bits, parity).  See \ref
+ * CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants, \ref
+ * CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char RS485Uart(byte baud, unsigned int mode);
+/** \example ex_RS485Uart.nxc
+ * This is an example of how to use the \ref RS485Uart function.
+ */
+
+/**
+ * Write RS485 data.
+ * Write data to the RS485 hi-speed port.
+ * \param buffer A byte array containing the data to write to the RS485 port.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char RS485Write(byte buffer[]);
+/** \example ex_RS485Write.nxc
+ * This is an example of how to use the \ref RS485Write function.
+ */
+
+/**
+ * Write RS485 boolean.
+ * Write a boolean value to the RS485 hi-speed port.
+ * \param bval A boolean value to write over the RS485 port.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char SendRS485Bool(bool bval);
+/** \example ex_SendRS485Bool.nxc
+ * This is an example of how to use the \ref SendRS485Bool function.
+ */
+
+/**
+ * Write RS485 numeric.
+ * Write a numeric value to the RS485 hi-speed port.
+ * \param val A numeric value to write over the RS485 port.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char SendRS485Number(long val);
+/** \example ex_SendRS485Number.nxc
+ * This is an example of how to use the \ref SendRS485Number function.
+ */
+
+/**
+ * Write RS485 string.
+ * Write a string value to the RS485 hi-speed port.
+ * \param str A string value to write over the RS485 port.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char SendRS485String(string str);
+/** \example ex_SendRS485String.nxc
+ * This is an example of how to use the \ref SendRS485String function.
+ */
 
 #endif
 
-#define SendRS485Bool(_bval) asm { __sendRS485Bool(_bval, __RETVAL__) }
-#define SendRS485Number(_val) asm { __sendRS485Number(_val, __RETVAL__) }
-#define SendRS485String(_str) asm { __sendRS485String(_str, __RETVAL__) }
-
-#endif
-
+/**
+ * Get bluetooth input buffer data
+ * This method reads count bytes of data from the Bluetooth input buffer and
+ * writes it to the buffer provided.
+ * \param offset A constant offset into the bluetooth input buffer.
+ * \param cnt The number of bytes to read.
+ * \param data The byte array reference which will contain the data read from
+ * the bluetooth input buffer.
+ */
 inline void GetBTInputBuffer(const byte offset, byte cnt, byte & data[]);
+/** \example ex_GetBTInputBuffer.nxc
+ * This is an example of how to use the \ref GetBTInputBuffer function.
+ */
+
+/**
+ * Get bluetooth output buffer data
+ * This method reads count bytes of data from the Bluetooth output buffer and
+ * writes it to the buffer provided.
+ * \param offset A constant offset into the bluetooth output buffer.
+ * \param cnt The number of bytes to read.
+ * \param data The byte array reference which will contain the data read from
+ * the bluetooth output buffer.
+ */
 inline void GetBTOutputBuffer(const byte offset, byte cnt, byte & data[]);
+/** \example ex_GetBTOutputBuffer.nxc
+ * This is an example of how to use the \ref GetBTOutputBuffer function.
+ */
+
+/**
+ * Get hi-speed port input buffer data
+ * This method reads count bytes of data from the hi-speed port input buffer and
+ * writes it to the buffer provided.
+ * \param offset A constant offset into the hi-speed port input buffer.
+ * \param cnt The number of bytes to read.
+ * \param data The byte array reference which will contain the data read from
+ * the hi-speed port input buffer.
+ */
 inline void GetHSInputBuffer(const byte offset, byte cnt, byte & data[]);
+/** \example ex_GetHSInputBuffer.nxc
+ * This is an example of how to use the \ref GetHSInputBuffer function.
+ */
+
+/**
+ * Get hi-speed port output buffer data
+ * This method reads count bytes of data from the hi-speed port output buffer and
+ * writes it to the buffer provided.
+ * \param offset A constant offset into the hi-speed port output buffer.
+ * \param cnt The number of bytes to read.
+ * \param data The byte array reference which will contain the data read from
+ * the hi-speed port output buffer.
+ */
 inline void GetHSOutputBuffer(const byte offset, byte cnt, byte & data[]);
+/** \example ex_GetHSOutputBuffer.nxc
+ * This is an example of how to use the \ref GetHSOutputBuffer function.
+ */
+
+/**
+ * Get usb input buffer data
+ * This method reads count bytes of data from the usb input buffer and
+ * writes it to the buffer provided.
+ * \param offset A constant offset into the usb input buffer.
+ * \param cnt The number of bytes to read.
+ * \param data The byte array reference which will contain the data read from
+ * the usb input buffer.
+ */
 inline void GetUSBInputBuffer(const byte offset, byte cnt, byte & data[]);
+/** \example ex_GetUSBInputBuffer.nxc
+ * This is an example of how to use the \ref GetUSBInputBuffer function.
+ */
+
+/**
+ * Get usb output buffer data
+ * This method reads count bytes of data from the usb output buffer and
+ * writes it to the buffer provided.
+ * \param offset A constant offset into the usb output buffer.
+ * \param cnt The number of bytes to read.
+ * \param data The byte array reference which will contain the data read from
+ * the usb output buffer.
+ */
 inline void GetUSBOutputBuffer(const byte offset, byte cnt, byte & data[]);
+/** \example ex_GetUSBOutputBuffer.nxc
+ * This is an example of how to use the \ref GetUSBOutputBuffer function.
+ */
+
+/**
+ * Get usb poll buffer data
+ * This method reads count bytes of data from the usb poll buffer and
+ * writes it to the buffer provided.
+ * \param offset A constant offset into the usb poll buffer.
+ * \param cnt The number of bytes to read.
+ * \param data The byte array reference which will contain the data read from
+ * the usb poll buffer.
+ */
 inline void GetUSBPollBuffer(const byte offset, byte cnt, byte & data[]);
+/** \example ex_GetUSBPollBuffer.nxc
+ * This is an example of how to use the \ref GetUSBPollBuffer function.
+ */
 
+/**
+ * Get bluetooth device name.
+ * This method returns the name of the device at the specified index in the
+ * Bluetooth device table.
+ * \param devidx The device table index.
+ * \return The device name of the specified bluetooth device.
+ */
 inline string BTDeviceName(const byte devidx);
+/** \example ex_BTDeviceName.nxc
+ * This is an example of how to use the \ref BTDeviceName function.
+ */
+
+/**
+ * Get bluetooth device name.
+ * This method returns the name of the device at the specified index in the
+ * Bluetooth connection table.
+ * \param conn The connection slot (0..3).
+ * \return The name of the bluetooth device at the specified connection slot.
+ */
 inline string BTConnectionName(const byte conn);
+/** \example ex_BTConnectionName.nxc
+ * This is an example of how to use the \ref BTConnectionName function.
+ */
+
+/**
+ * Get bluetooth device pin code.
+ * This method returns the pin code of the device at the specified index in the
+ * Bluetooth connection table.
+ * \param conn The connection slot (0..3).
+ * \return The pin code for the bluetooth device at the specified connection slot.
+ */
 inline string BTConnectionPinCode(const byte conn);
-inline string BrickDataName();
+/** \example ex_BTConnectionPinCode.nxc
+ * This is an example of how to use the \ref BTConnectionPinCode function.
+ */
 
+/**
+ * Get NXT name.
+ * This method returns the name of the NXT.
+ * \return The NXT's bluetooth name.
+ */
+inline string BrickDataName(void);
+/** \example ex_BrickDataName.nxc
+ * This is an example of how to use the \ref BrickDataName function.
+ */
+
+/**
+ * Get bluetooth device address.
+ * This method reads the address of the device at the specified index within
+ * the Bluetooth device table and stores it in the data buffer provided.
+ * \param devidx The device table index.
+ * \param data The byte array reference that will contain the device address.
+ */
 inline void GetBTDeviceAddress(const byte devidx, byte & data[]);
+/** \example ex_GetBTDeviceAddress.nxc
+ * This is an example of how to use the \ref GetBTDeviceAddress function.
+ */
+
+/**
+ * Get bluetooth device address.
+ * This method reads the address of the device at the specified index within
+ * the Bluetooth connection table and stores it in the data buffer provided.
+ * \param conn The connection slot (0..3).
+ * \param data The byte array reference that will contain the device address.
+ */
 inline void GetBTConnectionAddress(const byte conn, byte & data[]);
+/** \example ex_GetBTConnectionAddress.nxc
+ * This is an example of how to use the \ref GetBTConnectionAddress function.
+ */
+
+/**
+ * Get NXT address.
+ * This method reads the address of the NXT and stores it in the data buffer
+ * provided.
+ * \param data The byte array reference that will contain the device address.
+ */
 inline void GetBrickDataAddress(byte & data[]);
+/** \example ex_GetBrickDataAddress.nxc
+ * This is an example of how to use the \ref GetBrickDataAddress function.
+ */
 
+/**
+ * Get bluetooth device class.
+ * This method returns the class of the device at the specified index within
+ * the Bluetooth device table.
+ * \param devidx The device table index.
+ * \return The device class of the specified bluetooth device.
+ */
 inline long BTDeviceClass(const byte devidx);
+/** \example ex_BTDeviceClass.nxc
+ * This is an example of how to use the \ref BTDeviceClass function.
+ */
+
+/**
+ * Get bluetooth device status.
+ * This method returns the status of the device at the specified index within
+ * the Bluetooth device table.
+ * \param devidx The device table index.
+ * \return The status of the specified bluetooth device.
+ */
 inline byte BTDeviceStatus(const byte devidx);
+/** \example ex_BTDeviceStatus.nxc
+ * This is an example of how to use the \ref BTDeviceStatus function.
+ */
+
+/**
+ * Get bluetooth device class.
+ * This method returns the class of the device at the specified index within
+ * the Bluetooth connection table.
+ * \param conn The connection slot (0..3).
+ * \return The class of the bluetooth device at the specified connection slot.
+ */
 inline long BTConnectionClass(const byte conn);
+/** \example ex_BTConnectionClass.nxc
+ * This is an example of how to use the \ref BTConnectionClass function.
+ */
+
+/**
+ * Get bluetooth device handle number.
+ * This method returns the handle number of the device at the specified index within
+ * the Bluetooth connection table.
+ * \param conn The connection slot (0..3).
+ * \return The handle number of the bluetooth device at the specified connection slot.
+ */
 inline byte BTConnectionHandleNum(const byte conn);
+/** \example ex_BTConnectionHandleNum.nxc
+ * This is an example of how to use the \ref BTConnectionHandleNum function.
+ */
+
+/**
+ * Get bluetooth device stream status.
+ * This method returns the stream status of the device at the specified index within
+ * the Bluetooth connection table.
+ * \param conn The connection slot (0..3).
+ * \return The stream status of the bluetooth device at the specified connection slot.
+ */
 inline byte BTConnectionStreamStatus(const byte conn);
+/** \example ex_BTConnectionStreamStatus.nxc
+ * This is an example of how to use the \ref BTConnectionStreamStatus function.
+ */
+
+/**
+ * Get bluetooth device link quality.
+ * This method returns the link quality of the device at the specified index within
+ * the Bluetooth connection table.
+ * \param conn The connection slot (0..3).
+ * \return The link quality of the specified connection slot (unimplemented).
+ * \warning This function is not implemented at the firmware level.
+ */
 inline byte BTConnectionLinkQuality(const byte conn);
-inline int BrickDataBluecoreVersion();
-inline byte BrickDataBtStateStatus();
-inline byte BrickDataBtHardwareStatus();
-inline byte BrickDataTimeoutValue();
-inline byte BTInputBufferInPtr();
-inline byte BTInputBufferOutPtr();
-inline byte BTOutputBufferInPtr();
-inline byte BTOutputBufferOutPtr();
+/** \example ex_BTConnectionLinkQuality.nxc
+ * This is an example of how to use the \ref BTConnectionLinkQuality function.
+ */
 
-inline byte HSInputBufferInPtr();
-inline byte HSInputBufferOutPtr();
-inline byte HSOutputBufferInPtr();
-inline byte HSOutputBufferOutPtr();
+/**
+ * Get NXT bluecore version
+ * This method returns the bluecore version of the NXT.
+ * \return The NXT's bluecore version number.
+ */
+inline int BrickDataBluecoreVersion(void);
+/** \example ex_BrickDataBluecoreVersion.nxc
+ * This is an example of how to use the \ref BrickDataBluecoreVersion function.
+ */
 
-inline byte USBInputBufferInPtr();
-inline byte USBInputBufferOutPtr();
-inline byte USBOutputBufferInPtr();
-inline byte USBOutputBufferOutPtr();
-inline byte USBPollBufferInPtr();
-inline byte USBPollBufferOutPtr();
+/**
+ * Get NXT bluetooth state status
+ * This method returns the Bluetooth state status of the NXT.
+ * \return The NXT's bluetooth state status.
+ */
+inline byte BrickDataBtStateStatus(void);
+/** \example ex_BrickDataBtStateStatus.nxc
+ * This is an example of how to use the \ref BrickDataBtStateStatus function.
+ */
 
-inline byte BTDeviceCount();
-inline byte BTDeviceNameCount();
+/**
+ * Get NXT bluetooth hardware status
+ * This method returns the Bluetooth hardware status of the NXT.
+ * \return The NXT's bluetooth hardware status.
+ */
+inline byte BrickDataBtHardwareStatus(void);
+/** \example ex_BrickDataBtHardwareStatus.nxc
+ * This is an example of how to use the \ref BrickDataBtHardwareStatus function.
+ */
 
-inline byte HSFlags();
-inline byte HSSpeed();
-inline byte HSState();
-inline int HSMode();
-inline byte USBState();
+/**
+ * Get NXT bluetooth timeout value
+ * This method returns the Bluetooth timeout value of the NXT.
+ * \return The NXT's bluetooth timeout value.
+ */
+inline byte BrickDataTimeoutValue(void);
+/** \example ex_BrickDataTimeoutValue.nxc
+ * This is an example of how to use the \ref BrickDataTimeoutValue function.
+ */
 
-inline void SetBTDeviceName(const byte devidx, string str);
-inline void SetBTDeviceAddress(const byte devidx, const byte addr[]);
-inline void SetBTConnectionName(const byte conn, string str);
-inline void SetBTConnectionPinCode(const byte conn, const byte code[]);
-inline void SetBTConnectionAddress(const byte conn, const byte addr[]);
+/**
+ * Get bluetooth input buffer in-pointer
+ * This method returns the value of the input pointer of the Bluetooth input
+ * buffer.
+ * \return The bluetooth input buffer's in-pointer value.
+ */
+inline byte BTInputBufferInPtr(void);
+/** \example ex_BTInputBufferInPtr.nxc
+ * This is an example of how to use the \ref BTInputBufferInPtr function.
+ */
 
-inline void SetBrickDataName(string str);
-inline void SetBrickDataAddress(const byte p, byte addr[]);
+/**
+ * Get bluetooth input buffer out-pointer
+ * This method returns the value of the output pointer of the Bluetooth input
+ * buffer.
+ * \return The bluetooth input buffer's out-pointer value.
+ */
+inline byte BTInputBufferOutPtr(void);
+/** \example ex_BTInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref BTInputBufferOutPtr function.
+ */
 
-inline void SetBTDeviceClass(const byte devidx, unsigned long class);
-inline void SetBTDeviceStatus(const byte devidx, const byte status);
-inline void SetBTConnectionClass(const byte conn, unsigned long class);
-inline void SetBTConnectionHandleNum(const byte conn, const byte handleNum);
-inline void SetBTConnectionStreamStatus(const byte conn, const byte status);
-inline void SetBTConnectionLinkQuality(const byte conn, const byte quality);
+/**
+ * Get bluetooth output buffer in-pointer
+ * This method returns the value of the input pointer of the Bluetooth output
+ * buffer.
+ * \return The bluetooth output buffer's in-pointer value.
+ */
+inline byte BTOutputBufferInPtr(void);
+/** \example ex_BTOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref BTOutputBufferInPtr function.
+ */
 
-inline void SetBrickDataBluecoreVersion(int version);
-inline void SetBrickDataBtStateStatus(byte status);
-inline void SetBrickDataBtHardwareStatus(byte status);
-inline void SetBrickDataTimeoutValue(const byte timeout);
+/**
+ * Get bluetooth output buffer out-pointer
+ * This method returns the value of the output pointer of the Bluetooth output
+ * buffer.
+ * \return The bluetooth output buffer's out-pointer value.
+ */
+inline byte BTOutputBufferOutPtr(void);
+/** \example ex_BTOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref BTOutputBufferOutPtr function.
+ */
 
+/**
+ * Get hi-speed port input buffer in-pointer
+ * This method returns the value of the input pointer of the hi-speed port input
+ * buffer.
+ * \return The hi-speed port input buffer's in-pointer value.
+ */
+inline byte HSInputBufferInPtr(void);
+/** \example ex_HSInputBufferInPtr.nxc
+ * This is an example of how to use the \ref HSInputBufferInPtr function.
+ */
+
+/**
+ * Get hi-speed port input buffer out-pointer
+ * This method returns the value of the output pointer of the hi-speed port input
+ * buffer.
+ * \return The hi-speed port input buffer's out-pointer value.
+ */
+inline byte HSInputBufferOutPtr(void);
+/** \example ex_HSInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref HSInputBufferOutPtr function.
+ */
+
+/**
+ * Get hi-speed port output buffer in-pointer
+ * This method returns the value of the input pointer of the hi-speed port output
+ * buffer.
+ * \return The hi-speed port output buffer's in-pointer value.
+ */
+inline byte HSOutputBufferInPtr(void);
+/** \example ex_HSOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref HSOutputBufferInPtr function.
+ */
+
+/**
+ * Get hi-speed port output buffer out-pointer
+ * This method returns the value of the output pointer of the hi-speed port output
+ * buffer.
+ * \return The hi-speed port output buffer's out-pointer value.
+ */
+inline byte HSOutputBufferOutPtr(void);
+/** \example ex_HSOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref HSOutputBufferOutPtr function.
+ */
+
+/**
+ * Get usb port input buffer in-pointer
+ * This method returns the value of the input pointer of the usb port input
+ * buffer.
+ * \return The USB port input buffer's in-pointer value.
+ */
+inline byte USBInputBufferInPtr(void);
+/** \example ex_USBInputBufferInPtr.nxc
+ * This is an example of how to use the \ref USBInputBufferInPtr function.
+ */
+
+/**
+ * Get usb port input buffer out-pointer
+ * This method returns the value of the output pointer of the usb port input
+ * buffer.
+ * \return The USB port input buffer's out-pointer value.
+ */
+inline byte USBInputBufferOutPtr(void);
+/** \example ex_USBInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref USBInputBufferOutPtr function.
+ */
+
+/**
+ * Get usb port output buffer in-pointer
+ * This method returns the value of the input pointer of the usb port output
+ * buffer.
+ * \return The USB port output buffer's in-pointer value.
+ */
+inline byte USBOutputBufferInPtr(void);
+/** \example ex_USBOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref USBOutputBufferInPtr function.
+ */
+
+/**
+ * Get usb port output buffer out-pointer
+ * This method returns the value of the output pointer of the usb port output
+ * buffer.
+ * \return The USB port output buffer's out-pointer value.
+ */
+inline byte USBOutputBufferOutPtr(void);
+/** \example ex_USBOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref USBOutputBufferOutPtr function.
+ */
+
+/**
+ * Get usb port poll buffer in-pointer
+ * This method returns the value of the input pointer of the usb port poll
+ * buffer.
+ * \return The USB port poll buffer's in-pointer value.
+ */
+inline byte USBPollBufferInPtr(void);
+/** \example ex_USBPollBufferInPtr.nxc
+ * This is an example of how to use the \ref USBPollBufferInPtr function.
+ */
+
+/**
+ * Get usb port poll buffer out-pointer
+ * This method returns the value of the output pointer of the usb port poll
+ * buffer.
+ * \return The USB port poll buffer's out-pointer value.
+ */
+inline byte USBPollBufferOutPtr(void);
+/** \example ex_USBPollBufferOutPtr.nxc
+ * This is an example of how to use the \ref USBPollBufferOutPtr function.
+ */
+
+/**
+ * Get bluetooth device count.
+ * This method returns the number of devices defined within the Bluetooth
+ * device table.
+ * \return The count of known bluetooth devices.
+ */
+inline byte BTDeviceCount(void);
+/** \example ex_BTDeviceCount.nxc
+ * This is an example of how to use the \ref BTDeviceCount function.
+ */
+
+/**
+ * Get bluetooth device name count.
+ * This method returns the number of device names defined within the Bluetooth
+ * device table. This usually has the same value as BTDeviceCount but it can
+ * differ in some instances.
+ * \return The count of known bluetooth device names.
+ */
+inline byte BTDeviceNameCount(void);
+/** \example ex_BTDeviceNameCount.nxc
+ * This is an example of how to use the \ref BTDeviceNameCount function.
+ */
+
+/**
+ * Get hi-speed port flags
+ * This method returns the value of the hi-speed port flags.
+ * \return The hi-speed port flags.
+ */
+inline byte HSFlags(void);
+/** \example ex_HSFlags.nxc
+ * This is an example of how to use the \ref HSFlags function.
+ */
+
+/**
+ * Get hi-speed port speed
+ * This method returns the value of the hi-speed port speed (baud rate).
+ * \return The hi-speed port speed (baud rate).
+ */
+inline byte HSSpeed(void);
+/** \example ex_HSSpeed.nxc
+ * This is an example of how to use the \ref HSSpeed function.
+ */
+
+/**
+ * Get hi-speed port state
+ * This method returns the value of the hi-speed port state.
+ * \return The hi-speed port state.
+ */
+inline byte HSState(void);
+/** \example ex_HSState.nxc
+ * This is an example of how to use the \ref HSState function.
+ */
+
+/**
+ * Get hi-speed port mode
+ * This method returns the value of the hi-speed port mode.
+ * \return The hi-speed port mode (data bits, stop bits, parity).
+ */
+inline int HSMode(void);
+/** \example ex_HSMode.nxc
+ * This is an example of how to use the \ref HSMode function.
+ */
+
+/**
+ * Get USB state
+ * This method returns the value of the USB state.
+ * \return The USB state.
+ */
+inline byte USBState(void);
+/** \example ex_USBState.nxc
+ * This is an example of how to use the \ref USBState function.
+ */
+
+/**
+ *
+ */
 inline void SetBTInputBuffer(const byte offset, byte cnt, byte data[]);
+/** \example ex_SetBTInputBuffer.nxc
+ * This is an example of how to use the \ref SetBTInputBuffer function.
+ */
+
+/**
+ *
+ */
 inline void SetBTInputBufferInPtr(byte n);
+/** \example ex_SetBTInputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetBTInputBufferInPtr function.
+ */
+
+/**
+ *
+ */
 inline void SetBTInputBufferOutPtr(byte n);
+/** \example ex_SetBTInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetBTInputBufferOutPtr function.
+ */
 
+/**
+ *
+ */
 inline void SetBTOutputBuffer(const byte offset, cnt, byte data[]);
+/** \example ex_SetBTOutputBuffer.nxc
+ * This is an example of how to use the \ref SetBTOutputBuffer function.
+ */
+
+/**
+ *
+ */
 inline void SetBTOutputBufferInPtr(byte n);
+/** \example ex_SetBTOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetBTOutputBufferInPtr function.
+ */
+
+/**
+ *
+ */
 inline void SetBTOutputBufferOutPtr(byte n);
+/** \example ex_SetBTOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetBTOutputBufferOutPtr function.
+ */
 
+/**
+ *
+ */
 inline void SetHSInputBuffer(const byte offset, byte cnt, byte data[]);
+/** \example ex_SetHSInputBuffer.nxc
+ * This is an example of how to use the \ref SetHSInputBuffer function.
+ */
+
+/**
+ *
+ */
 inline void SetHSInputBufferInPtr(byte n);
+/** \example ex_SetHSInputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetHSInputBufferInPtr function.
+ */
+
+/**
+ *
+ */
 inline void SetHSInputBufferOutPtr(byte n);
+/** \example ex_SetHSInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetHSInputBufferOutPtr function.
+ */
 
+/**
+ *
+ */
 inline void SetHSOutputBuffer(const byte offset, byte cnt, byte data[]);
+/** \example ex_SetHSOutputBuffer.nxc
+ * This is an example of how to use the \ref SetHSOutputBuffer function.
+ */
+
+/**
+ *
+ */
 inline void SetHSOutputBufferInPtr(byte n);
+/** \example ex_SetHSOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetHSOutputBufferInPtr function.
+ */
+
+/**
+ *
+ */
 inline void SetHSOutputBufferOutPtr(byte n);
+/** \example ex_SetHSOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetHSOutputBufferOutPtr function.
+ */
 
+/**
+ *
+ */
 inline void SetUSBInputBuffer(const byte offset, byte cnt, byte data[]);
+/** \example ex_SetUSBInputBuffer.nxc
+ * This is an example of how to use the \ref SetUSBInputBuffer function.
+ */
+
+/**
+ *
+ */
 inline void SetUSBInputBufferInPtr(byte n);
+/** \example ex_SetUSBInputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetUSBInputBufferInPtr function.
+ */
+
+/**
+ *
+ */
 inline void SetUSBInputBufferOutPtr(byte n);
+/** \example ex_SetUSBInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetUSBInputBufferOutPtr function.
+ */
 
+/**
+ *
+ */
 inline void SetUSBOutputBuffer(const byte offset, byte cnt, byte data[]);
+/** \example ex_SetUSBOutputBuffer.nxc
+ * This is an example of how to use the \ref SetUSBOutputBuffer function.
+ */
+
+/**
+ *
+ */
 inline void SetUSBOutputBufferInPtr(byte n);
+/** \example ex_SetUSBOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetUSBOutputBufferInPtr function.
+ */
+
+/**
+ *
+ */
 inline void SetUSBOutputBufferOutPtr(byte n);
+/** \example ex_SetUSBOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetUSBOutputBufferOutPtr function.
+ */
 
+/**
+ *
+ */
 inline void SetUSBPollBuffer(const byte offset, byte cnt, byte data[]);
+/** \example ex_SetUSBPollBuffer.nxc
+ * This is an example of how to use the \ref SetUSBPollBuffer function.
+ */
+
+/**
+ *
+ */
 inline void SetUSBPollBufferInPtr(byte n);
+/** \example ex_SetUSBPollBufferInPtr.nxc
+ * This is an example of how to use the \ref SetUSBPollBufferInPtr function.
+ */
+
+/**
+ *
+ */
 inline void SetUSBPollBufferOutPtr(byte n);
+/** \example ex_SetUSBPollBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetUSBPollBufferOutPtr function.
+ */
 
-inline void SetBTDeviceCount(byte count);
-inline void SetBTDeviceNameCount(byte count);
-
+/**
+ *
+ */
 inline void SetHSFlags(const byte hsFlags);
-inline void SetHSSpeed(const byte hsSpeed);
-inline void SetHSState(const byte hsState);
-inline void SetHSMode(const unsigned int hsMode);
+/** \example ex_SetHSFlags.nxc
+ * This is an example of how to use the \ref SetHSFlags function.
+ */
 
+/**
+ *
+ */
+inline void SetHSSpeed(const byte hsSpeed);
+/** \example ex_SetHSSpeed.nxc
+ * This is an example of how to use the \ref SetHSSpeed function.
+ */
+
+/**
+ *
+ */
+inline void SetHSState(const byte hsState);
+/** \example ex_SetHSState.nxc
+ * This is an example of how to use the \ref SetHSState function.
+ */
+
+/**
+ *
+ */
+inline void SetHSMode(const unsigned int hsMode);
+/** \example ex_SetHSMode.nxc
+ * This is an example of how to use the \ref SetHSMode function.
+ */
+
+/**
+ *
+ */
 inline void SetUSBState(byte usbState);
+/** \example ex_SetUSBState.nxc
+ * This is an example of how to use the \ref SetUSBState function.
+ */
 
 /**
  * Write message.
@@ -4178,33 +5685,129 @@ inline void SysCommExecuteFunction(CommExecuteFunctionType & args);
  * with the \ref CommExecuteFunctionType structure.
  */
 
-#define SysCommHSControl(_args) asm { \
-  compchktype _args, CommHSControlType \
-  syscall CommHSControl, _args \
-}
-#define SysCommHSCheckStatus(_args) asm { \
-  compchktype _args, CommHSCheckStatusType \
-  syscall CommHSCheckStatus, _args \
-}
-#define SysCommHSRead(_args) asm { \
-  compchktype _args, CommHSReadWriteType \
-  syscall CommHSRead, _args \
-}
-#define SysCommHSWrite(_args) asm { \
-  compchktype _args, CommHSReadWriteType \
-  syscall CommHSWrite, _args \
-}
+/**
+ * Control the hi-speed port.
+ * This function lets you control the hi-speed port
+ * using the values specified via the \ref CommHSControlType structure.
+ *
+ * \param args The CommHSControlType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void SysCommHSControl(CommHSControlType & args);
+/** \example ex_SysCommHSControl.nxc
+ * This is an example of how to use the \ref SysCommHSControl function along
+ * with the \ref CommHSControlType structure.
+ */
+
+/**
+ * Check the hi-speed port status.
+ * This function lets you check the hi-speed port status
+ * using the values specified via the \ref CommHSCheckStatusType structure.
+ *
+ * \param args The CommHSCheckStatusType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void SysCommHSCheckStatus(CommHSCheckStatusType & args);
+/** \example ex_SysCommHSCheckStatus.nxc
+ * This is an example of how to use the \ref SysCommHSCheckStatus function along
+ * with the \ref CommHSCheckStatusType structure.
+ */
+
+/**
+ * Read from the hi-speed port.
+ * This function lets you read from the hi-speed port
+ * using the values specified via the \ref CommHSReadWriteType structure.
+ *
+ * \param args The CommHSReadWriteType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void SysCommHSRead(CommHSReadWriteType & args);
+/** \example ex_SysCommHSRead.nxc
+ * This is an example of how to use the \ref SysCommHSRead function along
+ * with the \ref CommHSReadType structure.
+ */
+
+/**
+ * Write to the hi-speed port.
+ * This function lets you write to the hi-speed port
+ * using the values specified via the \ref CommHSReadWriteType structure.
+ *
+ * \param args The CommHSReadWriteType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void SysCommHSWrite(CommHSReadWriteType & args);
+/** \example ex_SysCommHSWrite.nxc
+ * This is an example of how to use the \ref SysCommHSWrite function along
+ * with the \ref CommHSWriteType structure.
+ */
+
 #endif
+
 #if __FIRMWARE_VERSION > 107
-#define SysCommBTOnOff(_args) asm { \
-  compchktype _args, CommBTOnOffType \
-  syscall CommBTOnOff, _args \
-}
-#define SysCommBTConnection(_args) asm { \
-  compchktype _args, CommBTConnectionType \
-  syscall CommBTConnection, _args \
-}
+/**
+ * Turn on or off the bluetooth subsystem.
+ * This function lets you turn on or off the bluetooth subsystem
+ * using the values specified via the \ref CommBTOnOffType structure.
+ *
+ * \param args The CommBTOnOffType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+inline void SysCommBTOnOff(CommBTOnOffType & args);
+/** \example ex_SysCommBTOnOff.nxc
+ * This is an example of how to use the \ref SysCommBTOnOff function along
+ * with the \ref CommBTOnOffType structure.
+ */
+
+/**
+ * Connect or disconnect a bluetooth device.
+ * This function lets you connect or disconnect a bluetooth device
+ * using the values specified via the \ref CommBTConnectionType structure.
+ *
+ * \param args The CommBTConnectionType structure containing the needed
+ * parameters.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+inline void SysCommBTConnection(CommBTConnectionType & args);
+/** \example ex_SysCommBTConnection.nxc
+ * This is an example of how to use the \ref SysCommBTConnection function along
+ * with the \ref CommBTConnectionType structure.
+ */
+
 #endif
+
+/*
+// these functions really cannot be used for any useful purpose (read-only)
+inline void SetBTDeviceName(const byte devidx, string str);
+inline void SetBTDeviceAddress(const byte devidx, const byte addr[]);
+inline void SetBTConnectionName(const byte conn, string str);
+inline void SetBTConnectionPinCode(const byte conn, const byte code[]);
+inline void SetBTConnectionAddress(const byte conn, const byte addr[]);
+inline void SetBrickDataName(string str);
+inline void SetBrickDataAddress(const byte p, byte addr[]);
+inline void SetBTDeviceClass(const byte devidx, unsigned long class);
+inline void SetBTDeviceStatus(const byte devidx, const byte status);
+inline void SetBTConnectionClass(const byte conn, unsigned long class);
+inline void SetBTConnectionHandleNum(const byte conn, const byte handleNum);
+inline void SetBTConnectionStreamStatus(const byte conn, const byte status);
+inline void SetBTConnectionLinkQuality(const byte conn, const byte quality);
+inline void SetBrickDataBluecoreVersion(int version);
+inline void SetBrickDataBtStateStatus(byte status);
+inline void SetBrickDataBtHardwareStatus(byte status);
+inline void SetBrickDataTimeoutValue(const byte timeout);
+inline void SetBTDeviceCount(byte count);
+inline void SetBTDeviceNameCount(byte count);
+*/
 
 #else
 
@@ -4321,6 +5924,7 @@ inline void SysCommExecuteFunction(CommExecuteFunctionType & args);
 #define USBState() asm { GetUSBState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define HSMode() asm { GetHSMode(__TMPWORD__) __RETURN__ __TMPWORD__ }
 
+/*
 #define SetBTDeviceName(_p, _str) asm { __setBTDeviceName(_p, _str) }
 #define SetBTDeviceAddress(_p, _addr) asm { __setBTDeviceAddress(_p, _addr) }
 #define SetBTConnectionName(_p, _str) asm { __setBTConnectionName(_p, _str) }
@@ -4339,6 +5943,10 @@ inline void SysCommExecuteFunction(CommExecuteFunctionType & args);
 #define SetBrickDataBtStateStatus(_n) asm { __setBrickDataBtStateStatus(_n) }
 #define SetBrickDataBtHardwareStatus(_n) asm { __setBrickDataBtHardwareStatus(_n) }
 #define SetBrickDataTimeoutValue(_n) asm { __setBrickDataTimeoutValue(_n) }
+
+#define SetBTDeviceCount(_n) asm { __setBTDeviceCount(_n) }
+#define SetBTDeviceNameCount(_n) asm { __setBTDeviceNameCount(_n) }
+*/
 
 #define SetBTInputBuffer(_offset, _cnt, _data) asm { __setBTInputBuffer(_offset, _cnt, _data) }
 
@@ -4374,8 +5982,7 @@ inline void SysCommExecuteFunction(CommExecuteFunctionType & args);
 
 #define SetUSBPollBufferInPtr(_n) asm { __setUSBPollBufferInPtr(_n) }
 #define SetUSBPollBufferOutPtr(_n) asm { __setUSBPollBufferOutPtr(_n) }
-#define SetBTDeviceCount(_n) asm { __setBTDeviceCount(_n) }
-#define SetBTDeviceNameCount(_n) asm { __setBTDeviceNameCount(_n) }
+
 #define SetHSFlags(_n) asm { __setHSFlags(_n) }
 #define SetHSSpeed(_n) asm { __setHSSpeed(_n) }
 #define SetHSState(_n) asm { __setHSState(_n) }
@@ -5650,7 +7257,7 @@ inline int SensorHTGyro(const byte port, const int offset = 0) {
 ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @defgroup cmathAPI cmath API Functions
+/** @defgroup cmathAPI cmath API
  * Standard C cmath API functions.
  * @{
  */
@@ -6405,7 +8012,7 @@ inline void SysRandomNumber(RandomNumberType & args);
 ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @defgroup cstdioAPI cstdio API Functions
+/** @defgroup cstdioAPI cstdio API
  * Standard C cstdio API functions.
  * @{
  */
@@ -6729,8 +8336,47 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
 ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @defgroup cstdlibAPI cstdlib API Functions
- * Standard C cstdlib API functions.
+/** @defgroup cstdlibAPITypes cstdlib API types
+ * Standard C cstdlib API types.
+ * @{
+ */
+
+/**
+ * div_t structure.
+ * Structure used to represent the value of an integral division performed
+ * by div. It has two members of the same type, defined in either order as:
+ * int quot; int rem;.
+ * \sa div()
+ */
+struct div_t {
+  int quot;  /*!< Represents the quotient of the integral division operation
+                  performed by div, which is the integer of lesser magnitude
+                  that is nearest to the algebraic quotient. */
+  int rem;   /*!< Represents the remainder of the integral division operation
+                  performed by div, which is the integer resulting from
+                  subtracting quot to the numerator of the operation. */
+};
+
+/**
+ * ldiv_t structure.
+ * Structure used to represent the value of an integral division performed
+ * by ldiv. It has two members of the same type, defined in either order as:
+ * long quot; long rem;.
+ * \sa ldiv()
+ */
+struct ldiv_t {
+  long quot;  /*!< Represents the quotient of the integral division operation
+                  performed by div, which is the integer of lesser magnitude
+                  that is nearest to the algebraic quotient. */
+  long rem;   /*!< Represents the remainder of the integral division operation
+                  performed by div, which is the integer resulting from
+                  subtracting quot to the numerator of the operation. */
+};
+
+/** @} */ // end of cstdlibAPITypes group
+
+/** @defgroup cstdlibAPI cstdlib API
+ * Standard C cstdlib API functions and types.
  * @{
  */
 
@@ -6765,13 +8411,6 @@ inline unsigned int rand();
 
 #define abort() Stop(true)
 #define rand() Random(RAND_MAX)
-
-/*
-double strtod ( const char * str, char ** endptr );
-long int strtol ( const char * str, char ** endptr, int base );
-unsigned long int strtoul ( const char * str, char ** endptr, int base );
-
-*/
 
 #endif
 
@@ -6866,9 +8505,158 @@ inline long atol(const string str) { return StrToNum(str); }
  */
 inline long labs(long n) { return abs(n); }
 
+/**
+ * Convert string to float.
+ * Parses the string str interpreting its content as a floating point number
+ * and returns its value as a float.
+ *
+ * The function first discards as many whitespace characters as necessary until
+ * the first non-whitespace character is found. Then, starting from this
+ * character, takes as many characters as possible that are valid following a
+ * syntax resembling that of floating point literals, and interprets them as a
+ * numerical value. A string containing the rest of the string after the last
+ * valid character is stored in endptr.
+ *
+ * A valid floating point number for atof is formed by a succession of:
+ * - An optional plus or minus sign
+ * - A sequence of digits, optionally containing a decimal-point character
+ * - An optional exponent part, which itself consists on an 'e' or 'E'
+ * character followed by an optional sign and a sequence of digits.
+ *
+ * If the first sequence of non-whitespace characters in str does not form a
+ * valid floating-point number as just defined, or if no such sequence exists
+ * because either str is empty or contains only whitespace characters, no
+ * conversion is performed.
+ *
+ * \param str String beginning with the representation of a floating-point number.
+ * \param endptr Reference to a string, whose value is set by the function to
+ * the remaining characters in str after the numerical value.
+ * \return On success, the function returns the converted floating point number
+ * as a float value. If no valid conversion could be performed a zero value
+ * (0.0) is returned.
+ */
+inline float strtod(const string & str, string & endptr) {
+  float result;
+  int offsetpast;
+  asm {
+    strtonum result, offsetpast, str, NA, NA
+    strsubset endptr, str, offsetpast, NA
+  }
+  return result;
+}
+
+/**
+ * Convert string to long integer.
+ * Parses the C string str interpreting its content as an integral number of
+ * the specified base, which is returned as a long int value.
+ *
+ * The function first discards as many whitespace characters as necessary
+ * until the first non-whitespace character is found. Then, starting from this
+ * character, takes as many characters as possible that are valid following a
+ * syntax that depends on the base parameter, and interprets them as a
+ * numerical value. A string containing the rest of the characters following the
+ * integer representation in str is stored in endptr.
+ *
+ * If the first sequence of non-whitespace characters in str does not form a
+ * valid integral number, or if no such sequence exists
+ * because either str is empty or contains only whitespace characters, no
+ * conversion is performed.
+ *
+ * \param str String beginning with the representation of an integral number.
+ * \param endptr Reference to a string, whose value is set by the function to
+ * the remaining characters in str after the numerical value.
+ * \return On success, the function returns the converted integral number
+ * as a long int value. If no valid conversion could be performed a zero value
+ * is returned.
+ * \warning Only base = 10 is currently supported.
+ */
+inline long strtol(const string & str, string & endptr, int base = 10) {
+  long result;
+  int offsetpast;
+  asm {
+    strtonum result, offsetpast, str, NA, NA
+    strsubset endptr, str, offsetpast, NA
+  }
+  return result;
+}
+
+/**
+ * Convert string to unsigned long integer.
+ * Parses the C string str interpreting its content as an unsigned integral
+ * number of the specified base, which is returned as an unsigned long int value.
+ *
+ * The function first discards as many whitespace characters as necessary
+ * until the first non-whitespace character is found. Then, starting from this
+ * character, takes as many characters as possible that are valid following a
+ * syntax that depends on the base parameter, and interprets them as a
+ * numerical value. A string containing the rest of the characters following the
+ * integer representation in str is stored in endptr.
+ *
+ * If the first sequence of non-whitespace characters in str does not form a
+ * valid integral number, or if no such sequence exists
+ * because either str is empty or contains only whitespace characters, no
+ * conversion is performed.
+ *
+ * \param str String containing the representation of an unsigned integral number.
+ * \param endptr Reference to a string, whose value is set by the function to
+ * the remaining characters in str after the numerical value.
+ * \return On success, the function returns the converted integral number
+ * as an unsigned long int value. If no valid conversion could be performed a
+ * zero value is returned.
+ * \warning Only base = 10 is currently supported.
+ */
+inline long strtoul(const string & str, string & endptr, int base = 10) {
+  unsigned long result;
+  int offsetpast;
+  asm {
+    strtonum result, offsetpast, str, NA, NA
+    strsubset endptr, str, offsetpast, NA
+  }
+  return result;
+}
+
+/**
+ * Integral division.
+ * Returns the integral quotient and remainder of the division of numerator by
+ * denominator as a structure of type div_t, which has two members:
+ * quot and rem.
+ *
+ * \param numer Numerator.
+ * \param denom Denominator.
+ * \return The result is returned by value in a structure defined in cstdlib,
+ * which has two members. For div_t, these are, in either order:
+ * int quot; int rem.
+ */
+inline div_t div(int numer, int denom) {
+  div_t result;
+  result.quot = numer / denom;
+  result.rem  = numer % denom;
+  return result;
+}
+
+/**
+ * Integral division.
+ * Returns the integral quotient and remainder of the division of numerator by
+ * denominator as a structure of type ldiv_t, which has two members:
+ * quot and rem.
+ *
+ * \param numer Numerator.
+ * \param denom Denominator.
+ * \return The result is returned by value in a structure defined in cstdlib,
+ * which has two members. For ldiv_t, these are, in either order:
+ * long quot; long rem.
+ */
+inline ldiv_t ldiv(long numer, long denom) {
+  ldiv_t result;
+  result.quot = numer / denom;
+  result.rem  = numer % denom;
+  return result;
+}
+
 /** \example ex_cstdlib.nxc
  * How to use the cstdlib API functions: \ref abs, \ref labs, \ref atof,
- * \ref atoi, \ref atol, \ref abort, and \ref rand.
+ * \ref atoi, \ref atol, \ref strtod, \ref strtol, \ref strtoul, \ref dif,
+ * \ref ldiv, \ref abort, and \ref rand.
  */
 
 /** @} */ // end of cstdlibAPI group
@@ -6879,7 +8667,7 @@ inline long labs(long n) { return abs(n); }
 ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @defgroup cstringAPI cstring API Functions
+/** @defgroup cstringAPI cstring API
  * Standard C cstring API functions.
  * @{
  */
@@ -7057,6 +8845,11 @@ inline void StrToByteArray(string str, byte & data[]);
 
 #endif
 
+inline string Copy(string str, unsigned int idx, unsigned int len) { return SubStr(str, idx, len); }
+inline string MidStr(string str, unsigned int idx, unsigned int len) { return SubStr(str, idx, len); }
+inline string RightStr(string str, unsigned int size) { return SubStr(str, StrLen(str)-size+1, size); }
+inline string LeftStr(string str, unsigned int size) { return SubStr(str, 1, size); }
+
 // cstring functions
 
 /**
@@ -7177,8 +8970,10 @@ inline int strcmp(const string & str1, const string & str2) {
  */
 inline int strncmp(const string & str1, const string & str2, unsigned int num) {
   string sub1, sub2;
-  strncpy(sub1, str1, num);
-  strncpy(sub2, str2, num);
+  asm {
+    strsubset sub1, str1, 0, num
+    strsubset sub2, str2, 0, num
+  }
   int result = -1;
   if (sub1 == sub2)
     result = 0;
@@ -7274,7 +9069,7 @@ void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (s
 ///////////////////////////////////////////////////////////////////////////////
 
 
-/** @defgroup ctypeAPI ctype API Functions
+/** @defgroup ctypeAPI ctype API
  * Standard C ctype API functions.
  * @{
  */
