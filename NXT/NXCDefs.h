@@ -376,8 +376,54 @@ inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
 
 #endif
 
-//  AddAPIFunction('GetInput', APIF_GETINPUT);
-// SetInput(port, field, value)
+#ifdef __DOXYGEN_DOCS
+
+inline variant GetInput(const byte port, const byte field);
+inline void SetInput(const byte port, const int field, variant value);
+
+inline unsigned int Sensor(const byte port);
+inline bool SensorBoolean(const byte port);
+inline bool SensorInvalid(const byte port);
+inline byte SensorMode(const byte port);
+inline unsigned int SensorNormalized(const byte port);
+inline unsigned int SensorRaw(const byte port);
+inline unsigned int SensorScaled(const byte port);
+inline byte SensorType(const byte port);
+inline unsigned int SensorValue(const byte port);
+inline bool SensorValueBool(const byte port);
+inline unsigned int SensorValueRaw(const byte port);
+
+inline byte CustomSensorActiveStatus(const byte port);
+inline byte CustomSensorPercentFullScale(const byte port);
+inline unsigned int CustomSensorZeroOffset(const byte port);
+
+inline byte SensorDigiPinsDirection(const byte port);
+inline byte SensorDigiPinsOutputLevel(const byte port);
+inline byte SensorDigiPinsStatus(const byte port);
+
+inline void SetCustomSensorActiveStatus(const byte port, const byte activeStatus);
+inline void SetCustomSensorPercentFullScale(const byte port, const byte pctFullScale);
+inline void SetCustomSensorZeroOffset(const byte port, const int zeroOffset);
+
+inline void SetSensorBoolean(const byte port, bool value);
+inline void SetSensorDigiPinsDirection(const byte port, const byte direction);
+inline void SetSensorDigiPinsOutputLevel(const byte port, const byte outputLevel);
+inline void SetSensorDigiPinsStatus(const byte port, const byte status);
+
+#if __FIRMWARE_VERSION > 107
+inline void SysColorSensorRead(ColorSensorReadType & args);
+inline int ReadSensorColorEx(const byte port, int & colorval, unsigned int & raw[], unsigned int & norm[], int & scaled[]);
+inline int ReadSensorColorRaw(const byte port, unsigned int & rawVals[]);
+inline unsigned int ColorADRaw(const byte port, const byte color);
+inline bool ColorBoolean(const byte port, const byte color);
+inline long ColorCalibration(const byte port, const byte point, const byte color);
+inline byte ColorCalibrationState(const byte port);
+inline unsigned int ColorCalLimits(const byte port, const byte point);
+inline unsigned int ColorSensorRaw(const byte port, const byte color);
+inline unsigned int ColorSensorValue(const byte port, const byte color);
+#endif
+
+#else
 
 // input fields
 #define Sensor(_p) asm { ReadSensor(_p, __RETVAL__) }
@@ -425,6 +471,8 @@ inline void SetSensorColorNone(byte port) { asm { __SetSensorColorNone(port) } }
 #define ColorSensorValue(_p, _nc) asm { GetInColorSensorValue(_p, _nc, __TMPWORD__) __RETURN__ __TMPWORD__ }
 #define ColorBoolean(_p, _nc) asm { GetInColorBoolean(_p, _nc, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define ColorCalibrationState(_p) asm { GetInColorCalibrationState(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
+
+#endif
 
 #endif
 /** @} */ // end of InputModuleFunctions group
@@ -1510,7 +1558,7 @@ inline char PolyOut(LocationType points[], unsigned long options=DRAW_OPT_NORMAL
  * \return The result of the drawing operation.
  */
 inline char RectOut(int x, int y, int width, int height, unsigned long options=DRAW_OPT_NORMAL);
-/** \example ex_disppout.nxc
+/** \example ex_disprout.nxc
  * How to use the \ref LineOut function.
  */
 
@@ -4038,7 +4086,7 @@ inline void Follows(task x, task y, ..., task z);
  */
 inline void Acquire(mutex m);
 /** \example ex_acquire.nxc
- * How to use the \ref Acquire and \Release functions.
+ * How to use the \ref Acquire and \ref Release functions.
  */
 
 /**
@@ -5360,7 +5408,7 @@ inline byte BTDeviceNameCount(void);
 /**
  * Get hi-speed port flags
  * This method returns the value of the hi-speed port flags.
- * \return The hi-speed port flags.
+ * \return The hi-speed port flags. See \ref CommHiSpeedFlagsConstants.
  */
 inline byte HSFlags(void);
 /** \example ex_HSFlags.nxc
@@ -5370,7 +5418,7 @@ inline byte HSFlags(void);
 /**
  * Get hi-speed port speed
  * This method returns the value of the hi-speed port speed (baud rate).
- * \return The hi-speed port speed (baud rate).
+ * \return The hi-speed port speed (baud rate).  See \ref CommHiSpeedBaudConstants.
  */
 inline byte HSSpeed(void);
 /** \example ex_HSSpeed.nxc
@@ -5380,7 +5428,7 @@ inline byte HSSpeed(void);
 /**
  * Get hi-speed port state
  * This method returns the value of the hi-speed port state.
- * \return The hi-speed port state.
+ * \return The hi-speed port state. See \ref CommHiSpeedStateConstants.
  */
 inline byte HSState(void);
 /** \example ex_HSState.nxc
@@ -5390,7 +5438,9 @@ inline byte HSState(void);
 /**
  * Get hi-speed port mode
  * This method returns the value of the hi-speed port mode.
- * \return The hi-speed port mode (data bits, stop bits, parity).
+ * \return The hi-speed port mode (data bits, stop bits, parity).  See
+ * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
+ * \ref CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
  */
 inline int HSMode(void);
 /** \example ex_HSMode.nxc
@@ -5408,7 +5458,11 @@ inline byte USBState(void);
  */
 
 /**
- *
+ * Set bluetooth input buffer data
+ * Write cnt bytes of data to the bluetooth input buffer at offset.
+ * \param offset A constant offset into the input buffer
+ * \param cnt The number of bytes to write
+ * \param data A byte array containing the data to write
  */
 inline void SetBTInputBuffer(const byte offset, byte cnt, byte data[]);
 /** \example ex_SetBTInputBuffer.nxc
@@ -5416,7 +5470,9 @@ inline void SetBTInputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- *
+ * Set bluetooth input buffer in-pointer
+ * Set the value of the input buffer in-pointer.
+ * \param n The new in-pointer value (0..127).
  */
 inline void SetBTInputBufferInPtr(byte n);
 /** \example ex_SetBTInputBufferInPtr.nxc
@@ -5424,7 +5480,9 @@ inline void SetBTInputBufferInPtr(byte n);
  */
 
 /**
- *
+ * Set bluetooth input buffer out-pointer
+ * Set the value of the input buffer out-pointer.
+ * \param n The new out-pointer value (0..127).
  */
 inline void SetBTInputBufferOutPtr(byte n);
 /** \example ex_SetBTInputBufferOutPtr.nxc
@@ -5432,7 +5490,11 @@ inline void SetBTInputBufferOutPtr(byte n);
  */
 
 /**
- *
+ * Set bluetooth output buffer data
+ * Write cnt bytes of data to the bluetooth output buffer at offset.
+ * \param offset A constant offset into the output buffer
+ * \param cnt The number of bytes to write
+ * \param data A byte array containing the data to write
  */
 inline void SetBTOutputBuffer(const byte offset, cnt, byte data[]);
 /** \example ex_SetBTOutputBuffer.nxc
@@ -5440,7 +5502,9 @@ inline void SetBTOutputBuffer(const byte offset, cnt, byte data[]);
  */
 
 /**
- *
+ * Set bluetooth output buffer in-pointer
+ * Set the value of the output buffer in-pointer.
+ * \param n The new in-pointer value (0..127).
  */
 inline void SetBTOutputBufferInPtr(byte n);
 /** \example ex_SetBTOutputBufferInPtr.nxc
@@ -5448,7 +5512,9 @@ inline void SetBTOutputBufferInPtr(byte n);
  */
 
 /**
- *
+ * Set bluetooth output buffer out-pointer
+ * Set the value of the output buffer out-pointer.
+ * \param n The new out-pointer value (0..127).
  */
 inline void SetBTOutputBufferOutPtr(byte n);
 /** \example ex_SetBTOutputBufferOutPtr.nxc
@@ -5456,7 +5522,11 @@ inline void SetBTOutputBufferOutPtr(byte n);
  */
 
 /**
- *
+ * Set hi-speed port input buffer data
+ * Write cnt bytes of data to the hi-speed port input buffer at offset.
+ * \param offset A constant offset into the input buffer
+ * \param cnt The number of bytes to write
+ * \param data A byte array containing the data to write
  */
 inline void SetHSInputBuffer(const byte offset, byte cnt, byte data[]);
 /** \example ex_SetHSInputBuffer.nxc
@@ -5464,7 +5534,9 @@ inline void SetHSInputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- *
+ * Set hi-speed port input buffer in-pointer
+ * Set the value of the input buffer in-pointer.
+ * \param n The new in-pointer value (0..127).
  */
 inline void SetHSInputBufferInPtr(byte n);
 /** \example ex_SetHSInputBufferInPtr.nxc
@@ -5472,7 +5544,9 @@ inline void SetHSInputBufferInPtr(byte n);
  */
 
 /**
- *
+ * Set hi-speed port input buffer out-pointer
+ * Set the value of the input buffer out-pointer.
+ * \param n The new out-pointer value (0..127).
  */
 inline void SetHSInputBufferOutPtr(byte n);
 /** \example ex_SetHSInputBufferOutPtr.nxc
@@ -5480,7 +5554,11 @@ inline void SetHSInputBufferOutPtr(byte n);
  */
 
 /**
- *
+ * Set hi-speed port output buffer data
+ * Write cnt bytes of data to the hi-speed port output buffer at offset.
+ * \param offset A constant offset into the output buffer
+ * \param cnt The number of bytes to write
+ * \param data A byte array containing the data to write
  */
 inline void SetHSOutputBuffer(const byte offset, byte cnt, byte data[]);
 /** \example ex_SetHSOutputBuffer.nxc
@@ -5488,7 +5566,9 @@ inline void SetHSOutputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- *
+ * Set hi-speed port output buffer in-pointer
+ * Set the value of the output buffer in-pointer.
+ * \param n The new in-pointer value (0..127).
  */
 inline void SetHSOutputBufferInPtr(byte n);
 /** \example ex_SetHSOutputBufferInPtr.nxc
@@ -5496,7 +5576,9 @@ inline void SetHSOutputBufferInPtr(byte n);
  */
 
 /**
- *
+ * Set hi-speed port output buffer out-pointer
+ * Set the value of the output buffer out-pointer.
+ * \param n The new out-pointer value (0..127).
  */
 inline void SetHSOutputBufferOutPtr(byte n);
 /** \example ex_SetHSOutputBufferOutPtr.nxc
@@ -5504,7 +5586,11 @@ inline void SetHSOutputBufferOutPtr(byte n);
  */
 
 /**
- *
+ * Set USB input buffer data
+ * Write cnt bytes of data to the USB input buffer at offset.
+ * \param offset A constant offset into the input buffer
+ * \param cnt The number of bytes to write
+ * \param data A byte array containing the data to write
  */
 inline void SetUSBInputBuffer(const byte offset, byte cnt, byte data[]);
 /** \example ex_SetUSBInputBuffer.nxc
@@ -5512,7 +5598,9 @@ inline void SetUSBInputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- *
+ * Set USB input buffer in-pointer
+ * Set the value of the input buffer in-pointer.
+ * \param n The new in-pointer value (0..63).
  */
 inline void SetUSBInputBufferInPtr(byte n);
 /** \example ex_SetUSBInputBufferInPtr.nxc
@@ -5520,7 +5608,9 @@ inline void SetUSBInputBufferInPtr(byte n);
  */
 
 /**
- *
+ * Set USB input buffer out-pointer
+ * Set the value of the input buffer out-pointer.
+ * \param n The new out-pointer value (0..63).
  */
 inline void SetUSBInputBufferOutPtr(byte n);
 /** \example ex_SetUSBInputBufferOutPtr.nxc
@@ -5528,7 +5618,11 @@ inline void SetUSBInputBufferOutPtr(byte n);
  */
 
 /**
- *
+ * Set USB output buffer data
+ * Write cnt bytes of data to the USB output buffer at offset.
+ * \param offset A constant offset into the output buffer
+ * \param cnt The number of bytes to write
+ * \param data A byte array containing the data to write
  */
 inline void SetUSBOutputBuffer(const byte offset, byte cnt, byte data[]);
 /** \example ex_SetUSBOutputBuffer.nxc
@@ -5536,7 +5630,9 @@ inline void SetUSBOutputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- *
+ * Set USB output buffer in-pointer
+ * Set the value of the output buffer in-pointer.
+ * \param n The new in-pointer value (0..63).
  */
 inline void SetUSBOutputBufferInPtr(byte n);
 /** \example ex_SetUSBOutputBufferInPtr.nxc
@@ -5544,7 +5640,9 @@ inline void SetUSBOutputBufferInPtr(byte n);
  */
 
 /**
- *
+ * Set USB output buffer out-pointer
+ * Set the value of the output buffer out-pointer.
+ * \param n The new out-pointer value (0..63).
  */
 inline void SetUSBOutputBufferOutPtr(byte n);
 /** \example ex_SetUSBOutputBufferOutPtr.nxc
@@ -5552,7 +5650,11 @@ inline void SetUSBOutputBufferOutPtr(byte n);
  */
 
 /**
- *
+ * Set USB poll buffer data
+ * Write cnt bytes of data to the USB poll buffer at offset.
+ * \param offset A constant offset into the poll buffer
+ * \param cnt The number of bytes to write
+ * \param data A byte array containing the data to write
  */
 inline void SetUSBPollBuffer(const byte offset, byte cnt, byte data[]);
 /** \example ex_SetUSBPollBuffer.nxc
@@ -5560,7 +5662,9 @@ inline void SetUSBPollBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- *
+ * Set USB poll buffer in-pointer
+ * Set the value of the poll buffer in-pointer.
+ * \param n The new in-pointer value (0..63).
  */
 inline void SetUSBPollBufferInPtr(byte n);
 /** \example ex_SetUSBPollBufferInPtr.nxc
@@ -5568,7 +5672,9 @@ inline void SetUSBPollBufferInPtr(byte n);
  */
 
 /**
- *
+ * Set USB poll buffer out-pointer
+ * Set the value of the poll buffer out-pointer.
+ * \param n The new out-pointer value (0..63).
  */
 inline void SetUSBPollBufferOutPtr(byte n);
 /** \example ex_SetUSBPollBufferOutPtr.nxc
@@ -5576,7 +5682,9 @@ inline void SetUSBPollBufferOutPtr(byte n);
  */
 
 /**
- *
+ * Set hi-speed port flags
+ * This method sets the value of the hi-speed port flags.
+ * \param hsFlags The hi-speed port flags. See \ref CommHiSpeedFlagsConstants.
  */
 inline void SetHSFlags(const byte hsFlags);
 /** \example ex_SetHSFlags.nxc
@@ -5584,7 +5692,9 @@ inline void SetHSFlags(const byte hsFlags);
  */
 
 /**
- *
+ * Set hi-speed port speed
+ * This method sets the value of the hi-speed port speed (baud rate).
+ * \param hsSpeed The hi-speed port speed (baud rate).  See \ref CommHiSpeedBaudConstants.
  */
 inline void SetHSSpeed(const byte hsSpeed);
 /** \example ex_SetHSSpeed.nxc
@@ -5592,7 +5702,9 @@ inline void SetHSSpeed(const byte hsSpeed);
  */
 
 /**
- *
+ * Set hi-speed port state
+ * This method sets the value of the hi-speed port state.
+ * \param hsState The hi-speed port state. See \ref CommHiSpeedStateConstants.
  */
 inline void SetHSState(const byte hsState);
 /** \example ex_SetHSState.nxc
@@ -5600,7 +5712,11 @@ inline void SetHSState(const byte hsState);
  */
 
 /**
- *
+ * Set hi-speed port mode
+ * This method sets the value of the hi-speed port mode.
+ * \param hsMode The hi-speed port mode (data bits, stop bits, parity).  See
+ * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
+ * \ref CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
  */
 inline void SetHSMode(const unsigned int hsMode);
 /** \example ex_SetHSMode.nxc
@@ -5608,7 +5724,9 @@ inline void SetHSMode(const unsigned int hsMode);
  */
 
 /**
- *
+ * Set USB state
+ * This method sets the value of the USB state.
+ * \param usbState The USB state.
  */
 inline void SetUSBState(byte usbState);
 /** \example ex_SetUSBState.nxc
@@ -6153,10 +6271,15 @@ inline void SysReadButton(ReadButtonType & args);
  */
 
 #if __FIRMWARE_VERSION > 107
-// SetSleepTimeout
+/**
+ * SetSleepTimeoutType structure.
+ * This structure is used when calling the \ref SysSetSleepTimeout system call
+ * function.
+ * \sa SysSetSleepTimeout()
+ */
 struct SetSleepTimeoutType {
- char Result;
- unsigned long TheSleepTimeoutMS;
+ char Result;                     /*!< The result of the system call function. */
+ unsigned long TheSleepTimeoutMS; /*!< The new sleep timeout value in milliseconds. */
 };
 #endif
 
@@ -7063,7 +7186,7 @@ inline int SensorHTGyro(const byte port, const int offset = 0) {
   SetSensorType(_p, IN_TYPE_REFLECTION) \
   SetSensorMode(_p, IN_MODE_RAW) \
   ResetSensor(_p)
-	
+
 #define SetSensorMSDRODActive(_p) \
   SetSensorType(_p, IN_TYPE_LIGHT_ACTIVE) \
   SetSensorMode(_p, IN_MODE_PCTFULLSCALE) \
@@ -8100,7 +8223,7 @@ inline string fgets(string & str, int num, byte handle) {
 /**
  * Check End-of-file indicator.
  * Checks whether the End-of-File indicator associated with the handle is
- * set, returning a value different from zero if it is. 
+ * set, returning a value different from zero if it is.
  *
  * \param handle The handle of the file to check.
  * \return Currently always returns 0.
@@ -8142,7 +8265,7 @@ byte fopen(string filename, const string mode) {
 
 /**
  * Flush file.
- * Writes any buffered data to the file. A zero value indicates success. 
+ * Writes any buffered data to the file. A zero value indicates success.
  *
  * \param handle The handle of the file to be flushed.
  * \return Currently always returns 0.
