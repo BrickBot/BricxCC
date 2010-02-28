@@ -1,0 +1,1 @@
+result = WriteBytes(handle, buffer, count);

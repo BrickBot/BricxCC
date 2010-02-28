@@ -1,0 +1,1 @@
+result = rename("data.txt", "mydata.txt");

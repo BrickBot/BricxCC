@@ -1,0 +1,1 @@
+SetLSInputBuffer(S1, 0, 8, data);

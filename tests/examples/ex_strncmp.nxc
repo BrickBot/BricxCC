@@ -1,0 +1,1 @@
+int i = strncmp(msg, “foo”, 2); // returns -1, 0, or 1

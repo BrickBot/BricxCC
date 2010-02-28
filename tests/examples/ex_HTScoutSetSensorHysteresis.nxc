@@ -1,0 +1,1 @@
+HTScoutSetSensorHysteresis(RCX_ConstantSrc, 50);

@@ -1,0 +1,1 @@
+msg = StrReplace("testing", 3, "xx"); // returns "tesxxng"

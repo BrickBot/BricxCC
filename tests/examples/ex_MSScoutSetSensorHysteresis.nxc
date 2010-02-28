@@ -1,0 +1,2 @@
+MSScoutSetSensorHysteresis(RCX_ConstantSrc, 50);
+

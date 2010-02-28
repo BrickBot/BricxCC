@@ -1,0 +1,1 @@
+SetCommandFlags(UI_FLAGS_REDRAW_STATUS);

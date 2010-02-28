@@ -7886,7 +7886,7 @@ begin
   MatchString(TOK_COMMA);
   // arg3 = file
   CheckString;
-  fntname := Value;
+  fntname := GetDecoratedValue;
   Next;
   MatchString(TOK_COMMA);
   if idx = APIF_FONTNUMOUT then

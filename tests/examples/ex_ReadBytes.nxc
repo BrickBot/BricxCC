@@ -1,0 +1,1 @@
+result = ReadBytes(handle, len, buffer);

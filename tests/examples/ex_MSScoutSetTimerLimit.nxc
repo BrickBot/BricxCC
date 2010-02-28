@@ -1,0 +1,2 @@
+MSScoutSetTimerLimit(0, RCX_ConstantSrc, 10000);
+

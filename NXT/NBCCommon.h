@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-02-11
- * \version 45
+ * \date 2010-02-27
+ * \version 47
  */
 
 #ifndef NBCCOMMON_H
@@ -35,6 +35,11 @@
 #define NA 0xFFFF /*!< The specified argument does not apply (aka unwired) */
 
 #ifdef __ENHANCED_FIRMWARE
+
+/** @defgroup ArrayOpConstants Array operations
+ * Constants for use with the \ref ArrayOp function.
+ * @{
+ */
 // array operation definitions
 #define OPARR_SUM    0x00 /*!< Calculate the sum of the elements in the numeric input array */
 #define OPARR_MEAN   0x01 /*!< Calculate the mean value for the elements in the numeric input array */
@@ -43,6 +48,7 @@
 #define OPARR_MIN    0x04 /*!< Calculate the minimum value of the elements in the numeric input array */
 #define OPARR_MAX    0x05 /*!< Calculate the maximum value of the elements in the numeric input array */
 #define OPARR_SORT   0x06 /*!< Sort the elements in the numeric input array */
+/** @} */  // end of IOMapAddressConstants group
 #endif
 
 #if __FIRMWARE_VERSION > 107
@@ -393,12 +399,12 @@
  * Constants defining possible VM states.
  * @{
  */
-#define TIMES_UP      6
-#define ROTATE_QUEUE  5
-#define STOP_REQ      4
-#define BREAKOUT_REQ  3
-#define CLUMP_SUSPEND 2
-#define CLUMP_DONE    1
+#define TIMES_UP      6 /*!< VM time is up */
+#define ROTATE_QUEUE  5 /*!< VM should rotate queue */
+#define STOP_REQ      4 /*!< VM should stop executing program */
+#define BREAKOUT_REQ  3 /*!< VM should break out of current thread */
+#define CLUMP_SUSPEND 2 /*!< VM should suspend thread */
+#define CLUMP_DONE    1 /*!< VM has finished executing thread */
 /** @} */  // end of CommandVMState group
 
 #define NO_ERR        0 /*!< Successful execution of the specified command */
@@ -672,9 +678,9 @@
 #define SoundOffsetDuration       2 /*!< RW - Tone duration  [mS] (2 bytes) */
 #define SoundOffsetSampleRate     4 /*!< RW - Sound file sample rate [2000..16000] (2 bytes) */
 #define SoundOffsetSoundFilename  6 /*!< RW - Sound/melody filename (20 bytes) */
-#define SoundOffsetFlags         26 /*!< RW - Play flag  - described above (1 byte) \refgroup SoundFlagsConstants */
-#define SoundOffsetState         27 /*!< RW - Play state - described above (1 byte) \refgroup SoundStateConstants */
-#define SoundOffsetMode          28 /*!< RW - Play mode  - described above (1 byte) \refgroup SoundModeConstants */
+#define SoundOffsetFlags         26 /*!< RW - Play flag  - described above (1 byte) \ref SoundFlagsConstants */
+#define SoundOffsetState         27 /*!< RW - Play state - described above (1 byte) \ref SoundStateConstants */
+#define SoundOffsetMode          28 /*!< RW - Play mode  - described above (1 byte) \ref SoundModeConstants */
 #define SoundOffsetVolume        29 /*!< RW - Sound/melody volume [0..4] 0 = off (1 byte) */
 /** @} */  // end of SoundIOMAP group
 
@@ -950,7 +956,7 @@
 #define IN_TYPE_COLORGREEN     0x0F /*!< NXT 2.0 color sensor with green light */
 #define IN_TYPE_COLORBLUE      0x10 /*!< NXT 2.0 color sensor with blue light */
 #define IN_TYPE_COLORNONE      0x11 /*!< NXT 2.0 color sensor with no light */
-#define IN_TYPE_COLOREXIT      0x12
+#define IN_TYPE_COLOREXIT      0x12 /*!< NXT 2.0 color sensor internal state */
 #endif
 /** @} */  // end of NBCSensorTypeConstants group
 
@@ -1906,7 +1912,7 @@
  * @{
  */
 /** @defgroup RCXOutputConstants RCX output constants
- * Constants for use when configuring RCX outputs.
+ * Constants for use when choosing RCX outputs.
  * @{
  */
 #define RCX_OUT_A   0x01 /*!< RCX Output A */
@@ -1916,19 +1922,34 @@
 #define RCX_OUT_AC  0x05 /*!< RCX Outputs A and C */
 #define RCX_OUT_BC  0x06 /*!< RCX Outputs B and C */
 #define RCX_OUT_ABC 0x07 /*!< RCX Outputs A, B, and C */
+/** @} */  // end of RCXOutputConstants group
 
+/** @defgroup RCXOutputMode RCX output mode constants
+ * Constants for use when configuring RCX output mode.
+ * @{
+ */
 #define RCX_OUT_FLOAT 0    /*!< Set RCX output to float */
 #define RCX_OUT_OFF   0x40 /*!< Set RCX output to off */
 #define RCX_OUT_ON    0x80 /*!< Set RCX output to on */
+/** @} */  // end of RCXOutputMode group
 
+/** @defgroup RCXOutputDirection RCX output direction constants
+ * Constants for use when configuring RCX output direction.
+ * @{
+ */
 #define RCX_OUT_REV    0    /*!< Set RCX output direction to reverse */
 #define RCX_OUT_TOGGLE 0x40 /*!< Set RCX output direction to toggle */
 #define RCX_OUT_FWD    0x80 /*!< Set RCX output direction to forward */
+/** @} */  // end of RCXOutputConstants group
 
+/** @defgroup RCXOutputPower RCX output power constants
+ * Constants for use when configuring RCX output power.
+ * @{
+ */
 #define RCX_OUT_LOW  0 /*!< Set RCX output power level to low */
 #define RCX_OUT_HALF 3 /*!< Set RCX output power level to half */
 #define RCX_OUT_FULL 7 /*!< Set RCX output power level to full */
-/** @} */  // end of RCXOutputConstants group
+/** @} */  // end of RCXOutputPower group
 
 /** @defgroup RCXRemoteConstants RCX IR remote constants
  * Constants for use when simulating RCX IR remote messages.
@@ -2210,15 +2231,13 @@
 /** @} */  // end of RCXConstants group
 
 
-/** @addtogroup HiTechnicAPI
+/** @defgroup HTIRLinkPFConstants HiTechnic/mindsensors Power Function/IR Train constants
+ * Constants that are for use with the HiTechnic IRLink or mindsensors nRLink
+ * in Power Function or IR Train mode.
  * @{
  */
-/** @defgroup HiTechnicConstants HiTechnic device constants
- * Constants that are for use with HiTechnic devices.
- * @{
- */
-/** @defgroup HTIRLinkPFConstants HiTechnic Power Function/IR Train constants
- * Constants that are for use with the HiTechnic IRLink in Power Function or IR Train mode.
+/** @defgroup PFCmdConstants Power Function command constants
+ * Constants that are for sending Power Function commands.
  * @{
  */
 #define PF_CMD_STOP  0 /*!< Power function command stop */
@@ -2226,21 +2245,31 @@
 #define PF_CMD_REV   2 /*!< Power function command reverse */
 #define PF_CMD_BRAKE 3 /*!< Power function command brake */
 
+#define HTPF_CMD_STOP  0 /*!< Power function command stop */
+#define HTPF_CMD_FWD   1 /*!< Power function command forward */
+#define HTPF_CMD_REV   2 /*!< Power function command reverse */
+#define HTPF_CMD_BRAKE 3 /*!< Power function command brake */
+/** @} */  // end of PFCmdConstants group
+
+/** @defgroup PFChannelConstants Power Function channel constants
+ * Constants that are for specifying Power Function channels.
+ * @{
+ */
 #define PF_CHANNEL_1 0 /*!< Power function channel 1 */
 #define PF_CHANNEL_2 1 /*!< Power function channel 2 */
 #define PF_CHANNEL_3 2 /*!< Power function channel 3 */
 #define PF_CHANNEL_4 3 /*!< Power function channel 4 */
 
-#define HTPF_CMD_STOP  0 /*!< Power function command stop */
-#define HTPF_CMD_FWD   1 /*!< Power function command forward */
-#define HTPF_CMD_REV   2 /*!< Power function command reverse */
-#define HTPF_CMD_BRAKE 3 /*!< Power function command brake */
-
 #define HTPF_CHANNEL_1 0 /*!< Power function channel 1 */
 #define HTPF_CHANNEL_2 1 /*!< Power function channel 2 */
 #define HTPF_CHANNEL_3 2 /*!< Power function channel 3 */
 #define HTPF_CHANNEL_4 3 /*!< Power function channel 4 */
+/** @} */  // end of PFChannelConstants group
 
+/** @defgroup PFModeConstants Power Function mode constants
+ * Constants that are for choosing Power Function modes.
+ * @{
+ */
 #define PF_MODE_TRAIN             0 /*!< Power function mode IR Train */
 #define PF_MODE_COMBO_DIRECT      1 /*!< Power function mode combo direct */
 #define PF_MODE_SINGLE_PIN_CONT   2 /*!< Power function mode single pin continuous */
@@ -2248,28 +2277,58 @@
 #define PF_MODE_COMBO_PWM         4 /*!< Power function mode combo pulse width modulation (PWM) */
 #define PF_MODE_SINGLE_OUTPUT_PWM 4 /*!< Power function mode single output pulse width modulation (PWM) */
 #define PF_MODE_SINGLE_OUTPUT_CST 6 /*!< Power function mode single output clear, set, toggle (CST) */
+/** @} */  // end of PFModeConstants group
 
-#define TRAIN_FUNC_STOP         0 /*!< IR Train function stop */
-#define TRAIN_FUNC_INCR_SPEED   1 /*!< IR Train function increment speed */
-#define TRAIN_FUNC_DECR_SPEED   2 /*!< IR Train function decrement speed */
-#define TRAIN_FUNC_TOGGLE_LIGHT 4 /*!< IR Train function toggle light */
+/** @defgroup IRTrainFuncs PF/IR Train function constants
+ * Constants that are for sending PF/IR Train functions.
+ * @{
+ */
+#define TRAIN_FUNC_STOP         0 /*!< PF/IR Train function stop */
+#define TRAIN_FUNC_INCR_SPEED   1 /*!< PF/IR Train function increment speed */
+#define TRAIN_FUNC_DECR_SPEED   2 /*!< PF/IR Train function decrement speed */
+#define TRAIN_FUNC_TOGGLE_LIGHT 4 /*!< PF/IR Train function toggle light */
+/** @} */  // end of IRTrainFuncs group
 
+/** @defgroup IRTrainChannels IR Train channel constants
+ * Constants that are for specifying IR Train channels.
+ * @{
+ */
 #define TRAIN_CHANNEL_1   0 /*!< IR Train channel 1 */
 #define TRAIN_CHANNEL_2   1 /*!< IR Train channel 2 */
 #define TRAIN_CHANNEL_3   2 /*!< IR Train channel 3 */
 #define TRAIN_CHANNEL_ALL 3 /*!< IR Train channel all */
+/** @} */  // end of IRTrainChannels group
 
+/** @defgroup PFOutputs Power Function output constants
+ * Constants that are for choosing a Power Function output.
+ * @{
+ */
 #define PF_OUT_A 0 /*!< Power function output A */
 #define PF_OUT_B 1 /*!< Power function output B */
+/** @} */  // end of PFOutputs group
 
+/** @defgroup PFPinConstants Power Function pin constants
+ * Constants that are for choosing a Power Function pin.
+ * @{
+ */
 #define PF_PIN_C1 0 /*!< Power function pin C1 */
 #define PF_PIN_C2 1 /*!< Power function pin C2 */
+/** @} */  // end of PFOutputs group
 
+/** @defgroup PFCSTFuncs Power Function CST function constants
+ * Constants that are for sending Power Function CST functions.
+ * @{
+ */
 #define PF_FUNC_NOCHANGE 0 /*!< Power function CST - no change */
 #define PF_FUNC_CLEAR    1 /*!< Power function CST - clear */
 #define PF_FUNC_SET      2 /*!< Power function CST - set */
 #define PF_FUNC_TOGGLE   3 /*!< Power function CST - toggle */
+/** @} */  // end of PFCSTFuncs group
 
+/** @defgroup PFCSTOptions Power Function CST options constants
+ * Constants that are for specifying Power Function CST options.
+ * @{
+ */
 #define PF_CST_CLEAR1_CLEAR2 0 /*!< Power function CST clear 1 and clear 2 */
 #define PF_CST_SET1_CLEAR2   1 /*!< Power function CST set 1 and clear 2*/
 #define PF_CST_CLEAR1_SET2   2 /*!< Power function CST clear 1 and set 2 */
@@ -2279,7 +2338,12 @@
 #define PF_CST_FULL_FWD      6 /*!< Power function CST full forward */
 #define PF_CST_FULL_REV      7 /*!< Power function CST full reverse */
 #define PF_CST_TOGGLE_DIR    8 /*!< Power function CST toggle direction*/
+/** @} */  // end of PFCSTOptions group
 
+/** @defgroup PFPWMOptions Power Function PWM option constants
+ * Constants that are for specifying Power Function PWM options.
+ * @{
+ */
 #define PF_PWM_FLOAT 0  /*!< Power function PWM float */
 #define PF_PWM_FWD1  1  /*!< Power function PWM foward level 1 */
 #define PF_PWM_FWD2  2  /*!< Power function PWM foward level 2 */
@@ -2296,8 +2360,16 @@
 #define PF_PWM_REV3  13 /*!< Power function PWM reverse level 3 */
 #define PF_PWM_REV2  14 /*!< Power function PWM reverse level 2 */
 #define PF_PWM_REV1  15 /*!< Power function PWM reverse level 1 */
+/** @} */  // end of PFPWMOptions group
 /** @} */  // end of HTIRLinkPFConstants group
 
+/** @addtogroup HiTechnicAPI
+ * @{
+ */
+/** @defgroup HiTechnicConstants HiTechnic device constants
+ * Constants that are for use with HiTechnic devices.
+ * @{
+ */
 /** @defgroup HTIRSeeker2Constants HiTechnic IRSeeker2 constants
  * Constants that are for use with the HiTechnic IRSeeker2 device.
  * @{
@@ -2305,34 +2377,34 @@
 #define HTIR2_MODE_1200 0 /*!< Set IRSeeker2 to 1200 mode */
 #define HTIR2_MODE_600  1 /*!< Set IRSeeker2 to 600 mode */
 
-#define HTIR2_REG_MODE  0x41 /*!< */
-#define HTIR2_REG_DCDIR 0x42 /*!< */
-#define HTIR2_REG_DC01  0x43 /*!< */
-#define HTIR2_REG_DC02  0x44 /*!< */
-#define HTIR2_REG_DC03  0x45 /*!< */
-#define HTIR2_REG_DC04  0x46 /*!< */
-#define HTIR2_REG_DC05  0x47 /*!< */
-#define HTIR2_REG_DCAVG 0x48 /*!< */
-#define HTIR2_REG_ACDIR 0x49 /*!< */
-#define HTIR2_REG_AC01  0x4A /*!< */
-#define HTIR2_REG_AC02  0x4B /*!< */
-#define HTIR2_REG_AC03  0x4C /*!< */
-#define HTIR2_REG_AC04  0x4D /*!< */
-#define HTIR2_REG_AC05  0x4E /*!< */
+#define HTIR2_REG_MODE  0x41 /*!< IRSeeker 2 mode register */
+#define HTIR2_REG_DCDIR 0x42 /*!< IRSeeker 2 DC direction register */
+#define HTIR2_REG_DC01  0x43 /*!< IRSeeker 2 DC 01 register */
+#define HTIR2_REG_DC02  0x44 /*!< IRSeeker 2 DC 02 register */
+#define HTIR2_REG_DC03  0x45 /*!< IRSeeker 2 DC 03 register */
+#define HTIR2_REG_DC04  0x46 /*!< IRSeeker 2 DC 04 register */
+#define HTIR2_REG_DC05  0x47 /*!< IRSeeker 2 DC 05 register */
+#define HTIR2_REG_DCAVG 0x48 /*!< IRSeeker 2 DC average register */
+#define HTIR2_REG_ACDIR 0x49 /*!< IRSeeker 2 AC direction register */
+#define HTIR2_REG_AC01  0x4A /*!< IRSeeker 2 AC 01 register */
+#define HTIR2_REG_AC02  0x4B /*!< IRSeeker 2 AC 02 register */
+#define HTIR2_REG_AC03  0x4C /*!< IRSeeker 2 AC 03 register */
+#define HTIR2_REG_AC04  0x4D /*!< IRSeeker 2 AC 04 register */
+#define HTIR2_REG_AC05  0x4E /*!< IRSeeker 2 AC 05 register */
 /** @} */  // end of HTIRSeeker2Constants group
 
 /** @defgroup HTIRReceiverConstants HiTechnic IRReceiver constants
  * Constants that are for use with the HiTechnic IRReceiver device.
  * @{
  */
-#define HT_CH1_A 0 /*!< Use IRReceiver channel 1 A */
-#define HT_CH1_B 1 /*!< Use IRReceiver channel 1 B */
-#define HT_CH2_A 2 /*!< Use IRReceiver channel 2 A */
-#define HT_CH2_B 3 /*!< Use IRReceiver channel 2 B */
-#define HT_CH3_A 4 /*!< Use IRReceiver channel 3 A */
-#define HT_CH3_B 5 /*!< Use IRReceiver channel 3 B */
-#define HT_CH4_A 6 /*!< Use IRReceiver channel 4 A */
-#define HT_CH4_B 7 /*!< Use IRReceiver channel 4 B */
+#define HT_CH1_A 0 /*!< Use IRReceiver channel 1 output A */
+#define HT_CH1_B 1 /*!< Use IRReceiver channel 1 output B */
+#define HT_CH2_A 2 /*!< Use IRReceiver channel 2 output A */
+#define HT_CH2_B 3 /*!< Use IRReceiver channel 2 output B */
+#define HT_CH3_A 4 /*!< Use IRReceiver channel 3 output A */
+#define HT_CH3_B 5 /*!< Use IRReceiver channel 3 output B */
+#define HT_CH4_A 6 /*!< Use IRReceiver channel 4 output A */
+#define HT_CH4_B 7 /*!< Use IRReceiver channel 4 output B */
 /** @} */  // end of HTIRSeeker2Constants group
 
 /** @defgroup HTColor2Constants HiTechnic Color2 constants
@@ -2437,25 +2509,153 @@
 /** @addtogroup RICMacros
  * @{
  */
-#define RICImgPoint(_X, _Y) (_X)&0xFF, (_X)>>8, (_Y)&0xFF, (_Y)>>8 /*!< Output an RIC ImgPoint structure */
-#define RICImgRect(_Pt, _W, _H) _Pt, (_W)&0xFF, (_W)>>8, (_H)&0xFF, (_H)>>8 /*!< Output an RIC ImgRect structure */
-#define RICOpDescription(_Options, _Width, _Height) 8, 0, 0, 0, (_Options)&0xFF, (_Options)>>8, (_Width)&0xFF, (_Width)>>8, (_Height)&0xFF, (_Height)>>8 /*!< Output an RIC Description opcode*/
-#define RICOpCopyBits(_CopyOptions, _DataAddr, _SrcRect, _DstPoint) 18, 0, 3, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, (_DataAddr)&0xFF, (_DataAddr)>>8, _SrcRect, _DstPoint /*!< Output an RIC CopyBits opcode */
-#define RICOpPixel(_CopyOptions, _Point, _Value) 10, 0, 4, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Value)&0xFF, (_Value)>>8 /*!< Output an RIC Pixel opcode */
-#define RICOpLine(_CopyOptions, _Point1, _Point2) 12, 0, 5, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point1, _Point2 /*!< Output an RIC Line opcode */
-#define RICOpRect(_CopyOptions, _Point, _Width, _Height) 12, 0, 6, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Width)&0xFF, (_Width)>>8, (_Height)&0xFF, (_Height)>>8 /*!< Output an RIC Rect opcode */
-#define RICOpCircle(_CopyOptions, _Point, _Radius) 10, 0, 7, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Radius)&0xFF, (_Radius)>>8 /*!< Output an RIC Circle opcode */
-#define RICOpNumBox(_CopyOptions, _Point, _Value) 10, 0, 8, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Value)&0xFF, (_Value)>>8 /*!< Output an RIC NumBox opcode */
-#define RICOpSprite(_DataAddr, _Rows, _BytesPerRow, _SpriteData) ((_Rows*_BytesPerRow)+((_Rows*_BytesPerRow)%2)+8)&0xFF, ((_Rows*_BytesPerRow)+((_Rows*_BytesPerRow)%2)+8)>>8, 1, 0, (_DataAddr)&0xFF, (_DataAddr)>>8, (_Rows)&0xFF, (_Rows)>>8, (_BytesPerRow)&0xFF, (_BytesPerRow)>>8, _SpriteData /*!< Output an RIC Sprite opcode */
-#define RICSpriteData(...) __VA_ARGS__ /*!< Output RIC sprite data */
-#define RICOpVarMap(_DataAddr, _MapCount, _MapFunction) ((_MapCount*4)+6)&0xFF, ((_MapCount*4)+6)>>8, 2, 0, (_DataAddr)&0xFF, (_DataAddr)>>8, (_MapCount)&0xFF, (_MapCount)>>8, _MapFunction /*!< Output an RIC VarMap opcode */
-#define RICMapElement(_Domain, _Range) (_Domain)&0xFF, (_Domain)>>8, (_Range)&0xFF, (_Range)>>8 /*!< */
-#define RICMapFunction(_MapElement, ...) _MapElement, __VA_ARGS__ /*!< Output an RIC VarMap function */
-#define RICArg(_arg) ((_arg)|0x1000) /*!< Output an RIC parameterized argument */
-#define RICMapArg(_mapidx, _arg) ((_arg)|0x1000|(((_mapidx)&0xF)<<8)) /*!< Output an RIC parameterized and mapped argument */
-#define RICOpPolygon(_CopyOptions, _Count, _ThePoints)  ((_Count*4)+6)&0xFF, ((_Count*4)+6)>>8, 10, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, (_Count)&0xFF, (_Count)>>8, _ThePoints /*!< Output an RIC Polygon opcode */
-#define RICPolygonPoints(_pPoint1, _pPoint2, ...) _pPoint1, _pPoint2, __VA_ARGS__ /*!< Output RIC polygon points */
-#define RICOpEllipse(_CopyOptions, _Point, _Radius1, _Radius1) 12, 0, 9, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Radius1)&0xFF, (_Radius1)>>8, (_Radius2)&0xFF, (_Radius2)>>8 /*!< Output an RIC Ellipse opcode */
+/**
+ * Output an RIC ImgPoint structure
+ * \param _X The X coordinate.
+ * \param _Y The Y coordinate.
+ */
+#define RICImgPoint(_X, _Y) (_X)&0xFF, (_X)>>8, (_Y)&0xFF, (_Y)>>8
+
+/**
+ * Output an RIC ImgRect structure
+ * \param _Pt An ImgPoint. See \ref RICImgPoint.
+ * \param _W The rectangle width.
+ * \param _H The rectangle height.
+ */
+#define RICImgRect(_Pt, _W, _H) _Pt, (_W)&0xFF, (_W)>>8, (_H)&0xFF, (_H)>>8
+
+/**
+ * Output an RIC Description opcode
+ * \param _Options RIC options.
+ * \param _Width The total RIC width.
+ * \param _Height The total RIC height.
+ */
+#define RICOpDescription(_Options, _Width, _Height) 8, 0, 0, 0, (_Options)&0xFF, (_Options)>>8, (_Width)&0xFF, (_Width)>>8, (_Height)&0xFF, (_Height)>>8
+
+/**
+ * Output an RIC CopyBits opcode
+ * \param _CopyOptions CopyBits copy options.  See \ref DisplayDrawOptionConstants.
+ * \param _DataAddr The address of the sprite from which to copy data.
+ * \param _SrcRect The rectangular portion of the sprite to copy.  See \ref RICImgRect.
+ * \param _DstPoint The LCD coordinate to which to copy the data.  See \ref RICImgPoint.
+ */
+#define RICOpCopyBits(_CopyOptions, _DataAddr, _SrcRect, _DstPoint) 18, 0, 3, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, (_DataAddr)&0xFF, (_DataAddr)>>8, _SrcRect, _DstPoint
+
+/**
+ * Output an RIC Pixel opcode
+ * \param _CopyOptions Pixel copy options.  See \ref DisplayDrawOptionConstants.
+ * \param _Point The pixel coordinate. See \ref RICImgPoint.
+ * \param _Value The pixel value (unused).
+ */
+#define RICOpPixel(_CopyOptions, _Point, _Value) 10, 0, 4, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Value)&0xFF, (_Value)>>8
+
+/**
+ * Output an RIC Line opcode
+ * \param _CopyOptions Line copy options.  See \ref DisplayDrawOptionConstants.
+ * \param _Point1 The starting point of the line.  See \ref RICImgPoint.
+ * \param _Point2 The ending point of the line.  See \ref RICImgPoint.
+ */
+#define RICOpLine(_CopyOptions, _Point1, _Point2) 12, 0, 5, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point1, _Point2
+
+/**
+ * Output an RIC Rect opcode
+ * \param _CopyOptions Rect copy options.  See \ref DisplayDrawOptionConstants.
+ * \param _Point The rectangle's top left corner.  See \ref RICImgPoint.
+ * \param _Width The rectangle's width.
+ * \param _Height The rectangle's height.
+ */
+#define RICOpRect(_CopyOptions, _Point, _Width, _Height) 12, 0, 6, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Width)&0xFF, (_Width)>>8, (_Height)&0xFF, (_Height)>>8
+
+/**
+ * Output an RIC Circle opcode
+ * \param _CopyOptions Circle copy options.  See \ref DisplayDrawOptionConstants.
+ * \param _Point The circle's center point.  See \ref RICImgPoint.
+ * \param _Radius The circle's radius.
+ */
+#define RICOpCircle(_CopyOptions, _Point, _Radius) 10, 0, 7, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Radius)&0xFF, (_Radius)>>8
+
+/**
+ * Output an RIC NumBox opcode
+ * \param _CopyOptions NumBox copy options.  See \ref DisplayDrawOptionConstants.
+ * \param _Point The numbox bottom left corner.  See \ref RICImgPoint.
+ * \param _Value The number to draw.
+ */
+#define RICOpNumBox(_CopyOptions, _Point, _Value) 10, 0, 8, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_Value)&0xFF, (_Value)>>8
+
+/**
+ * Output an RIC Sprite opcode
+ * \param _DataAddr The address of the sprite.
+ * \param _Rows The number of rows of data.
+ * \param _BytesPerRow The number of bytes per row.
+ * \param _SpriteData The actual sprite data. See \ref RICSpriteData.
+ */
+#define RICOpSprite(_DataAddr, _Rows, _BytesPerRow, _SpriteData) ((_Rows*_BytesPerRow)+((_Rows*_BytesPerRow)%2)+8)&0xFF, ((_Rows*_BytesPerRow)+((_Rows*_BytesPerRow)%2)+8)>>8, 1, 0, (_DataAddr)&0xFF, (_DataAddr)>>8, (_Rows)&0xFF, (_Rows)>>8, (_BytesPerRow)&0xFF, (_BytesPerRow)>>8, _SpriteData
+
+/**
+ * Output RIC sprite data
+ */
+#define RICSpriteData(...) __VA_ARGS__
+
+/**
+ * Output an RIC VarMap opcode
+ * \param _DataAddr The address of the varmap.
+ * \param _MapCount The number of points in the function.
+ * \param _MapFunction The definition of the varmap function.  See \ref RICMapFunction.
+ */
+#define RICOpVarMap(_DataAddr, _MapCount, _MapFunction) ((_MapCount*4)+6)&0xFF, ((_MapCount*4)+6)>>8, 2, 0, (_DataAddr)&0xFF, (_DataAddr)>>8, (_MapCount)&0xFF, (_MapCount)>>8, _MapFunction
+
+/**
+ * Output an RIC map element
+ * \param _Domain The map element domain.
+ * \param _Range The map element range.
+ */
+#define RICMapElement(_Domain, _Range) (_Domain)&0xFF, (_Domain)>>8, (_Range)&0xFF, (_Range)>>8
+
+/**
+ * Output an RIC VarMap function
+ * \MapElement An entry in the varmap function.  At least 2 elements are
+ * required.  See \ref RICMapElement.
+ */
+#define RICMapFunction(_MapElement, ...) _MapElement, __VA_ARGS__
+
+/**
+ * Output an RIC parameterized argument
+ * \param _arg The argument that you want to parameterize.
+ */
+#define RICArg(_arg) ((_arg)|0x1000)
+
+/**
+ * Output an RIC parameterized and mapped argument
+ * \param _mapidx The varmap data address.
+ * \param _arg The parameterized argument you want to pass through a varmap.
+ */
+#define RICMapArg(_mapidx, _arg) ((_arg)|0x1000|(((_mapidx)&0xF)<<8))
+
+/**
+ * Output an RIC Polygon opcode
+ * \param _CopyOptions Polygon copy options.  See \ref DisplayDrawOptionConstants.
+ * \param _Count The number of points in the polygon.
+ * \param _ThePoints The list of polygon points.  See \ref RICPolygonPoints.
+ */
+#define RICOpPolygon(_CopyOptions, _Count, _ThePoints)  ((_Count*4)+6)&0xFF, ((_Count*4)+6)>>8, 10, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, (_Count)&0xFF, (_Count)>>8, _ThePoints
+
+/**
+ * Output RIC polygon points
+ * \param _pPoint1 The first polygon point.  See \ref RICImgPoint.
+ * \param _pPoint2 The second polygon point (at least 3 points are required).
+ * See \ref RICImgPoint.
+ */
+#define RICPolygonPoints(_pPoint1, _pPoint2, ...) _pPoint1, _pPoint2, __VA_ARGS__
+
+/**
+ * Output an RIC Ellipse opcode
+ * \param _CopyOptions Ellipse copy options.  See \ref DisplayDrawOptionConstants.
+ * \param _Point The center of the ellipse. See \ref RICImgPoint.
+ * \param _RadiusX The x-axis radius of the ellipse.
+ * \param _RadiusY The y-axis radius of the ellipse.
+ */
+#define RICOpEllipse(_CopyOptions, _Point, _RadiusX, _RadiusY) 12, 0, 9, 0, (_CopyOptions)&0xFF, (_CopyOptions)>>8, _Point, (_RadiusX)&0xFF, (_RadiusX)>>8, (_RadiusY)&0xFF, (_RadiusY)>>8
+
 /** @} */  // end of RICMacros group
 
 /** @defgroup NXTLimits Data type limits

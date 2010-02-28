@@ -1,0 +1,1 @@
+msg = NumToStr(-2); // returns "-2" in a string

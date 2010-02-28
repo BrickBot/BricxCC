@@ -1,0 +1,1 @@
+x = Sensor(S1); // read sensor 1

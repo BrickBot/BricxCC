@@ -99,6 +99,7 @@ type
     function IgnoringAtLowerLevel(const lineno: integer): boolean;
     function ImportRIC(const fname, varname : string) : string;
     function ImportFile(const fname : string; varname : string) : string;
+    function GetPreprocPath(const fname : string; const path : string) : string;
   public
     class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings; aLN : TLangName; MaxDepth : word) : string;
     class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string; aLN : TLangName; MaxDepth : word) : string;
@@ -711,12 +712,16 @@ begin
                 begin
                   tmpName := Copy(dirText, 1, qPos-1);
                   usePath := '';
-                  bFileFound := False;
-                  for i := 0 to IncludeDirs.Count - 1 do
+                  // first try to find the file without any include path
+                  bFileFound := FileExists(tmpName);
+                  if not bFileFound then
                   begin
-                    usePath := IncludeTrailingPathDelimiter(IncludeDirs[i]);
-                    bFileFound := FileExists(usePath+tmpName);
-                    if bFileFound then Break;
+                    for i := 0 to IncludeDirs.Count - 1 do
+                    begin
+                      usePath := GetPreprocPath(origName, IncludeDirs[i]);
+                      bFileFound := FileExists(usePath+tmpName);
+                      if bFileFound then Break;
+                    end;
                   end;
                   if bFileFound then
                   begin
@@ -760,12 +765,16 @@ begin
                   tmpName := Copy(dirText, 1, qPos-1);
                   System.Delete(dirText, 1, qPos);
                   usePath := '';
-                  bFileFound := False;
-                  for i := 0 to IncludeDirs.Count - 1 do
+                  // first try to find the file without any include path
+                  bFileFound := FileExists(tmpName);
+                  if not bFileFound then
                   begin
-                    usePath := IncludeTrailingPathDelimiter(IncludeDirs[i]);
-                    bFileFound := FileExists(usePath+tmpName);
-                    if bFileFound then Break;
+                    for i := 0 to IncludeDirs.Count - 1 do
+                    begin
+                      usePath := GetPreprocPath(origName, IncludeDirs[i]);
+                      bFileFound := FileExists(usePath+tmpName);
+                      if bFileFound then Break;
+                    end;
                   end;
                   if bFileFound then
                   begin
@@ -831,7 +840,7 @@ begin
                       begin
                         for i := 0 to IncludeDirs.Count - 1 do
                         begin
-                          usePath := IncludeTrailingPathDelimiter(IncludeDirs[i]);
+                          usePath := GetPreprocPath(origName, IncludeDirs[i]);
                           bFileFound := FileExists(usePath+tmpName);
                           if bFileFound then Break;
                         end;
@@ -1101,6 +1110,7 @@ begin
   fGLC := GLType;
   fWarnings := TStringList.Create;
   IncludeDirs := TStringList.Create;
+  IncludeDirs.Duplicates := dupIgnore;
   IncludeDirs.Add(defIncDir);
   MacroDefs := TMapList.Create;
   MacroFuncArgs := TMapList.Create;
@@ -1296,6 +1306,17 @@ begin
   end
   else
     Result := '// unable to import "' + ExtractFileName(fname) + '"';
+end;
+
+function TLangPreprocessor.GetPreprocPath(const fname,
+  path: string): string;
+begin
+  Result := IncludeTrailingPathDelimiter(path);
+  // if the path is relative then prepend it with the path from the file
+  if Pos('.', Result) = 1 then
+    Result := ExtractFilePath(fname) + Result
+  else if Pos(PathDelim, Result) = 1 then
+    Result := ExtractFileDrive(fname) + Result;
 end;
 
 { EPreprocessorException }

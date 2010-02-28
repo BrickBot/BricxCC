@@ -193,13 +193,13 @@ int b[] =
   b[_to] = b[_from]; \
   b[_from] = Vacant; \
   GraphicArrayOutEx( 8,8,Chess1_data , b, true); \
-  Wait(2000);
+  Wait(SEC_2);
 
 task main()
 {
   // setup board
   GraphicArrayOutEx( 8,8,Chess1_data, b, true);
-  Wait(2000);
+  WaitSEC_2);
 
   Move(A2, A3); // white pawn from A2 to A3
   Move(B7, B5); // black pawn from B7 to B5

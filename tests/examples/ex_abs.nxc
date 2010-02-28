@@ -1,0 +1,1 @@
+float val = abs(x); // return the absolute value of x

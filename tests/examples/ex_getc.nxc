@@ -1,0 +1,1 @@
+char val = getc(handle);

@@ -1,0 +1,1 @@
+SetSensorMode(S1, SENSOR_MODE_RAW); // raw mode

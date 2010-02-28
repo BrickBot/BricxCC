@@ -1,0 +1,1 @@
+result = CreateFile("data.txt", 1024, handle);

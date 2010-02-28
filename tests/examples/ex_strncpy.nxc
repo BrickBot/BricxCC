@@ -1,0 +1,1 @@
+strncpy(msg, “foo”, 2); // msg = ”fo”

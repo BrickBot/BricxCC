@@ -1,0 +1,1 @@
+strcat(msg, “foo”); // msg = msg+”foo”

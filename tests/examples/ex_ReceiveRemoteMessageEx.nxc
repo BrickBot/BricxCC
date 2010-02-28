@@ -1,0 +1,1 @@
+x = ReceiveRemoteMessageEx(MAILBOX1, true, strval, val, bval);

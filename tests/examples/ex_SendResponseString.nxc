@@ -1,0 +1,1 @@
+x = SendResponseString(MAILBOX1, "hello world");

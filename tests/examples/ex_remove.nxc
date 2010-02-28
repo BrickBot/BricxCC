@@ -1,0 +1,1 @@
+result = remove("data.txt");

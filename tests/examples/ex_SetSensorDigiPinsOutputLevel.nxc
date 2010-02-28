@@ -1,0 +1,1 @@
+SetSensorDigiPinsOutputLevel(S1, 100);

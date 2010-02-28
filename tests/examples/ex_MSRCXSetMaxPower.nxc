@@ -1,0 +1,2 @@
+MSRCXSetMaxPower(RCX_OUT_A, RCX_ConstantSrc, 5);
+

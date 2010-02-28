@@ -1,0 +1,1 @@
+x = LowspeedWrite(S1, 1, inbuffer);

@@ -1,0 +1,2 @@
+MSRCXSetSensorType(S1, SENSOR_TYPE_TOUCH);
+

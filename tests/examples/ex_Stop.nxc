@@ -1,0 +1,1 @@
+Stop(x == 24); // stop the program if x==24

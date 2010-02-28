@@ -1,0 +1,1 @@
+x = SendRemoteString(1, MAILBOX1, "hello world");

@@ -1,0 +1,1 @@
+SetLSOutputBufferBytesToRx(S1, x);

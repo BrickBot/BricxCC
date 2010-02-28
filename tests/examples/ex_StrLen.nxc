@@ -1,0 +1,1 @@
+x = strlen(msg); // return the length of msg
