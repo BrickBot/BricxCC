@@ -1,0 +1,1 @@
+x = RemoteSetInputMode(1, S1,   SENSOR_TYPE_LOWSPEED, SENSOR_MODE_RAW);

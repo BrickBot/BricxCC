@@ -1,0 +1,1 @@
+result = WriteLnString(handle, "testing", count);

@@ -1,0 +1,1 @@
+result = ResolveHandle("data.txt", handle, bCanWrite);

@@ -1,0 +1,1 @@
+SetBluetoothState(UI_BT_STATE_OFF);

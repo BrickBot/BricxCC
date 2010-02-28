@@ -1,0 +1,1 @@
+x = SendRemoteBool(1, MAILBOX1, false);

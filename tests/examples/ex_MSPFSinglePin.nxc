@@ -1,0 +1,2 @@
+MSPFSinglePin(S1, MSPF_CHANNEL_1, PF_OUT_A, PF_PIN_C1, PF_FUNC_SET, true);
+

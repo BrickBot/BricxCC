@@ -1,0 +1,2 @@
+MSScoutSetSensorUpper Limit(RCX_ConstantSrc, 400);
+

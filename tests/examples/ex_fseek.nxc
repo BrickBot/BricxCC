@@ -1,0 +1,1 @@
+fseek(handle, 10, SEEK_CUR);

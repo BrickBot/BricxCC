@@ -1,0 +1,1 @@
+x = RemoteMessageWrite(1, 5, "test");

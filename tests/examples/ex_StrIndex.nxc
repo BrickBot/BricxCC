@@ -1,0 +1,1 @@
+x = StrIndex(msg, 2); // return the value of msg[2]

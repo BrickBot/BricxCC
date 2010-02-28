@@ -1,0 +1,1 @@
+bVal = ReadSensorHTRawColor(S1, r, g, b);

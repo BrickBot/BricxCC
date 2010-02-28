@@ -1,0 +1,1 @@
+bVal = ReadSensorHTIRSeeker(port, dir, s1, s3, s5, s7, s9);

@@ -381,6 +381,7 @@ begin
     begin
       tmpIncDirs := TStringList.Create;
       try
+        tmpIncDirs.Duplicates := dupIgnore;
         // add the default include directory
         tmpIncDirs.Add(DefaultIncludeDir);
         if MoreIncludes then

@@ -1,0 +1,1 @@
+byte status = BTDeviceStatus(1);

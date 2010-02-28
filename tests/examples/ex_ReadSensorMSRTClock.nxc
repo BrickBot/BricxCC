@@ -1,0 +1,1 @@
+ReadSensorMSRTClock(S1, ss, mm, hh, dow, dd, mon, yy);

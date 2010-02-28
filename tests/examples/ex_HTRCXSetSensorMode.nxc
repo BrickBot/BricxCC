@@ -1,0 +1,1 @@
+HTRCXSetSensorMode(S1, SENSOR_MODE_BOOL);

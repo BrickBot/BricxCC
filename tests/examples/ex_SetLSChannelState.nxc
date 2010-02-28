@@ -1,0 +1,1 @@
+SetLSChannelState(S1, LOWSPEED_IDLE);

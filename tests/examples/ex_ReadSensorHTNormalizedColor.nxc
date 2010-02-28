@@ -1,0 +1,1 @@
+bVal = ReadSensorHTNormalizedColor(S1, c, r, g, b);

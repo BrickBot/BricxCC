@@ -1,0 +1,1 @@
+fgets(msg, 10, handle);

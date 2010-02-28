@@ -1,0 +1,1 @@
+dec = bcd2dec(0x3a);

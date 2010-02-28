@@ -1,0 +1,1 @@
+SetButtonState(BTN1, BTNSTATE_PRESSED_EV);

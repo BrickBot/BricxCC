@@ -1,0 +1,1 @@
+msg = Flatten(48); // returns "0" since 48 == ascii("0")

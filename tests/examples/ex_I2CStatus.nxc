@@ -1,0 +1,1 @@
+x = I2CStatus(S1, nRead);

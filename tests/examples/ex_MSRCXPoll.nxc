@@ -1,0 +1,2 @@
+x = MSRCXPoll(RCX_VariableSrc, 0);
+

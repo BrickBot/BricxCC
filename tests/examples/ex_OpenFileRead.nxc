@@ -1,0 +1,1 @@
+result = OpenFileRead("data.txt", fsize, handle);

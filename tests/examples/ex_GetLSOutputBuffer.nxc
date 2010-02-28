@@ -1,0 +1,1 @@
+GetLSOutputBuffer(S1, 0, 8, outbuffer);

@@ -1,0 +1,1 @@
+SetUSBInputBuffer(0, 10, buffer);
