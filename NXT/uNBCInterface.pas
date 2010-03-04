@@ -87,6 +87,7 @@ type
     procedure DoWriteSymbolTable(C : TRXEProgram);
     procedure DoWriteIntermediateCode(NC : TNXCComp);
     procedure DoWriteMessages(aStrings : TStrings);
+    procedure DoWriteMessage(const aString : String);
     function GetCurrentFilename : string;
     procedure SetCommandLine(const Value: string);
   public
@@ -145,7 +146,7 @@ implementation
 
 uses
   SysUtils, Math, uVersionInfo, ParamUtils, uNXTConstants,
-  NBCCommonData, NXTDefsData, NXCDefsData, uGlobals;
+  NBCCommonData, NXTDefsData, NXCDefsData, uGlobals, uLocalizedStrings;
 
 { TNBCCompiler }
 
@@ -355,7 +356,15 @@ begin
 
   sIn := TMemoryStream.Create;
   try
-    sIn.LoadFromFile(InputFilename);
+    if FileExists(InputFilename) then
+      sIn.LoadFromFile(InputFilename)
+    else
+    begin
+      // can't find input file
+      Result := 1; // compiler error
+      DoWriteMessage('# Error: ' + Format(sCannotFindFile, [InputFilename]));
+      Exit;
+    end;
     if BinaryInput and (Download or RunProgram) then
     begin
 {$IFDEF CAN_DOWNLOAD}
@@ -381,20 +390,21 @@ begin
     begin
       tmpIncDirs := TStringList.Create;
       try
+        tmpIncDirs.Sorted := True;
         tmpIncDirs.Duplicates := dupIgnore;
         // add the default include directory
-        tmpIncDirs.Add(DefaultIncludeDir);
+        tmpIncDirs.Add(IncludeTrailingPathDelimiter(DefaultIncludeDir));
         if MoreIncludes then
         begin
           incDirs := IncludePaths;
           // does the path contain ';'?  If so parse
           i := Pos(';', incDirs);
           while i > 0 do begin
-            tmpIncDirs.Add(Copy(incDirs, 1, i-1));
+            tmpIncDirs.Add(IncludeTrailingPathDelimiter(Copy(incDirs, 1, i-1)));
             Delete(incDirs, 1, i);
             i := Pos(';', incDirs);
           end;
-          tmpIncDirs.Add(incDirs);
+          tmpIncDirs.Add(IncludeTrailingPathDelimiter(incDirs));
         end;
         if LowerCase(ExtractFileExt(InputFilename)) = '.npg' then
         begin
@@ -494,6 +504,7 @@ begin
           begin
             NC := TNXCComp.Create;
             try
+              NC.OnCompilerStatusChange := HandleOnCompilerStatusChange;
               NC.Defines.AddStrings(ExtraDefines);
               NC.OptimizeLevel := OptimizationLevel;
               NC.IncludeDirs.AddStrings(tmpIncDirs);
@@ -505,7 +516,6 @@ begin
               NC.SafeCalls := SafeCalls;
               NC.MaxErrors := MaxErrors;
               NC.MaxPreprocessorDepth := MaxPreprocessorDepth;
-              NC.OnCompilerStatusChange := HandleOnCompilerStatusChange;
               try
                 NC.Parse(sIn);
                 DoWriteIntermediateCode(NC);
@@ -612,9 +622,11 @@ procedure TNBCCompiler.SetCommandLine(const Value: string);
 begin
   fCommandLine := Value;
   // set properties given command line switches
+  IgnoreSystemFile         := ParamSwitch('-n', False, Value);
+  Quiet                    := ParamSwitch('-q', False, Value);
   MaxErrors                := ParamIntValue('-ER', 0, False, Value);
   MaxPreprocessorDepth     := ParamIntValue('-PD', 10, False, Value);
-  Quiet                    := ParamSwitch('-q', False, Value);
+  FirmwareVersion          := ParamIntValue('-v', 105, False, Value);
   WriteCompilerOutput      := ParamSwitch('-L', False, Value);
   CompilerOutputFilename   := ParamValue('-L', False, Value);
   WriteSymbolTable         := ParamSwitch('-Y', False, Value);
@@ -644,7 +656,6 @@ begin
     OptimizationLevel      := 0;
   UsePort                  := ParamSwitch('-S', False, Value);
   PortName                 := ParamValue('-S', False, Value);
-  UseBluetooth             := ParamSwitch('-BT', False, Value);
   BinaryInput              := ParamSwitch('-b', False, Value);
   Download                 := ParamSwitch('-d', False, Value);
   RunProgram               := ParamSwitch('-r', False, Value);
@@ -652,11 +663,9 @@ begin
   IncludePaths             := ParamValue('-I', False, Value);
   WarningsAreOff           := ParamSwitch('-w-', False, Value);
   EnhancedFirmware         := ParamSwitch('-EF', False, Value);
-  FirmwareVersion          := ParamIntValue('-v', 105, False, Value);
   SafeCalls                := ParamSwitch('-safecall', False, Value);
   WriteCompilerMessages    := ParamSwitch('-E', False, Value);
   CompilerMessagesFilename := ParamValue('-E', False, Value);
-  IgnoreSystemFile         := ParamSwitch('-n', False, Value);
 end;
 
 procedure WriteBytes(data : array of byte);
@@ -786,6 +795,23 @@ begin
   end;
 end;
 {$ENDIF}
+
+procedure TNBCCompiler.DoWriteMessage(const aString: String);
+var
+  SL : TStringList;
+begin
+  fMessages.Add(aString);
+  if Assigned(fOnWriteMessages) then
+  begin
+    SL := TStringList.Create;
+    try
+      SL.Add(aString);
+      fOnWriteMessages(SL);
+    finally
+      SL.Free;
+    end;
+  end;
+end;
 
 initialization
   VerCompanyName      := 'JoCar Consulting';

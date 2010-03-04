@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-02-27
- * \version 67
+ * \date 2010-03-04
+ * \version 68
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -251,6 +251,9 @@ struct ColorSensorReadType {
  * \param type The desired sensor type.
  */
 inline void SetSensorType(const byte & port, byte type) { asm { setin type, port, Type } }
+/** \example ex_SetSensorType.nxc
+ * This is an example of how to use the \ref SetSensorType function.
+ */
 
 /**
  * Set sensor mode.
@@ -262,6 +265,9 @@ inline void SetSensorType(const byte & port, byte type) { asm { setin type, port
  * \param mode The desired sensor mode.
  */
 inline void SetSensorMode(const byte & port, byte mode) { asm { setin mode, port, InputMode } }
+/** \example ex_SetSensorMode.nxc
+ * This is an example of how to use the \ref SetSensorMode function.
+ */
 
 /**
  * Clear a sensor value.
@@ -298,6 +304,9 @@ inline void SetSensor(const byte & port, const unsigned int config) {
   SetSensorMode(port, config&0xff);
   ResetSensor(port);
 }
+/** \example ex_SetSensor.nxc
+ * This is an example of how to use the \ref SetSensor function.
+ */
 
 /**
  * Configure a touch sensor.
@@ -305,6 +314,9 @@ inline void SetSensor(const byte & port, const unsigned int config) {
  * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
  */
 inline void SetSensorTouch(const byte & port) { asm { __SetSensorTouch(port) } }
+/** \example ex_SetSensorTouch.nxc
+ * This is an example of how to use the \ref SetSensorTouch function.
+ */
 
 /**
  * Configure a light sensor.
@@ -312,6 +324,9 @@ inline void SetSensorTouch(const byte & port) { asm { __SetSensorTouch(port) } }
  * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
  */
 inline void SetSensorLight(const byte & port) { asm { __SetSensorLight(port) } }
+/** \example ex_SetSensorLight.nxc
+ * This is an example of how to use the \ref SetSensorLight function.
+ */
 
 /**
  * Configure a sound sensor.
@@ -319,6 +334,9 @@ inline void SetSensorLight(const byte & port) { asm { __SetSensorLight(port) } }
  * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
  */
 inline void SetSensorSound(const byte & port) { asm { __SetSensorSound(port) } }
+/** \example ex_SetSensorSound.nxc
+ * This is an example of how to use the \ref SetSensorSound function.
+ */
 
 /**
  * Configure an I2C sensor.
@@ -327,6 +345,9 @@ inline void SetSensorSound(const byte & port) { asm { __SetSensorSound(port) } }
  * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
  */
 inline void SetSensorLowspeed(const byte & port) { asm { __SetSensorLowspeed(port) } }
+/** \example ex_SetSensorLowspeed.nxc
+ * This is an example of how to use the \ref SetSensorLowspeed function.
+ */
 
 #if __FIRMWARE_VERSION > 107
 
@@ -339,6 +360,9 @@ inline void SetSensorLowspeed(const byte & port) { asm { __SetSensorLowspeed(por
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorFull(const byte & port) { asm { __SetSensorColorFull(port) } }
+/** \example ex_SetSensorColorFull.nxc
+ * This is an example of how to use the \ref SetSensorColorFull function.
+ */
 
 /**
  * Configure an NXT 2.0 red light sensor.
@@ -349,6 +373,9 @@ inline void SetSensorColorFull(const byte & port) { asm { __SetSensorColorFull(p
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorRed(const byte & port) { asm { __SetSensorColorRed(port) } }
+/** \example ex_SetSensorColorRed.nxc
+ * This is an example of how to use the \ref SetSensorColorRed function.
+ */
 
 /**
  * Configure an NXT 2.0 green light sensor.
@@ -359,6 +386,9 @@ inline void SetSensorColorRed(const byte & port) { asm { __SetSensorColorRed(por
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorGreen(const byte & port) { asm { __SetSensorColorGreen(port) } }
+/** \example ex_SetSensorColorGreen.nxc
+ * This is an example of how to use the \ref SetSensorColorGreen function.
+ */
 
 /**
  * Configure an NXT 2.0 blue light sensor.
@@ -369,6 +399,9 @@ inline void SetSensorColorGreen(const byte & port) { asm { __SetSensorColorGreen
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorBlue(const byte & port) { asm { __SetSensorColorBlue(port) } }
+/** \example ex_SetSensorColorBlue.nxc
+ * This is an example of how to use the \ref SetSensorColorBlue function.
+ */
 
 /**
  * Configure an NXT 2.0 no light sensor.
@@ -379,6 +412,9 @@ inline void SetSensorColorBlue(const byte & port) { asm { __SetSensorColorBlue(p
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SetSensorColorNone(const byte & port) { asm { __SetSensorColorNone(port) } }
+/** \example ex_SetSensorColorNone.nxc
+ * This is an example of how to use the \ref SetSensorColorNone function.
+ */
 
 #endif
 
@@ -388,7 +424,8 @@ inline void SetSensorColorNone(const byte & port) { asm { __SetSensorColorNone(p
  * Get an input field value.
  * Return the value of the specified field of a sensor on the specified port.
  *
- * \param port The sensor port. See \ref InPorts.  A constant or a variable may be used (no expressions).
+ * \param port The sensor port. See \ref InPorts.  A constant or a variable may
+ * be used (no expressions).
  * \param field An input field constant.  See \ref InputFieldConstants.
  * \return The input field value.
  */
@@ -397,59 +434,344 @@ inline variant GetInput(const byte & port, const byte field);
  * This is an example of how to use the \ref GetInput function.
  */
 
+/**
+ * Set an input field value
+ * Set the specified field of the sensor on the specified port to the value
+ * provided.
+ *
+ * \param port The sensor port. See \ref InPorts. A constant or a variable
+ * may be used (no expressions).
+ * \param field An input field constant. See \ref InputFieldConstants.
+ * \param value The new value, which may be any valid expression.
+ */
 inline void SetInput(const byte & port, const int field, variant value);
+/** \example ex_SetInput.nxc
+ * This is an example of how to use the \ref SetInput function.
+ */
 
+/**
+ * Read sensor scaled value
+ * Return the processed sensor reading for a sensor on the specified port.
+ * This is the same value that is returned by the sensor value names
+ * (e.g. \ref SENSOR_1).
+ *
+ * \param port The sensor port. See \ref InPorts. A variable whose value is
+ * the desired sensor port may also be used.
+ * \return The sensor's scaled value.
+ */
 inline unsigned int Sensor(const byte port);
+/** \example ex_Sensor.nxc
+ * This is an example of how to use the \ref Sensor function.
+ */
+
+/**
+ * Read sensor boolean value
+ * Return the boolean value of a sensor on the specified port. Boolean
+ * conversion is either done based on preset cutoffs, or a slope parameter
+ * specified by calling SetSensorMode.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \return The sensor's boolean value.
+ */
 inline bool SensorBoolean(const byte port);
-inline bool SensorInvalid(const byte port);
-inline byte SensorMode(const byte port);
+/** \example ex_SensorBoolean.nxc
+ * This is an example of how to use the \ref SensorBoolean function.
+ */
+
+/**
+ * Read sensor digital pins direction
+ * Return the digital pins direction value of a sensor on the specified port.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \return The sensor's digital pins direction.
+ */
+inline byte SensorDigiPinsDirection(const byte port);
+/** \example ex_SensorDigiPinsDirection.nxc
+ * This is an example of how to use the \ref SensorDigiPinsDirection function.
+ */
+
+/**
+ * Read sensor digital pins output level
+ * Return the digital pins output level value of a sensor on the specified port.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \return The sensor's digital pins output level.
+ */
+inline byte SensorDigiPinsOutputLevel(const byte port);
+/** \example ex_SensorDigiPinsOutputLevel.nxc
+ * This is an example of how to use the \ref SensorDigiPinsOutputLevel function.
+ */
+
+/**
+ * Read sensor digital pins status
+ * Return the digital pins status value of a sensor on the specified port.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \return The sensor's digital pins status.
+ */
+inline byte SensorDigiPinsStatus(const byte port);
+/** \example ex_SensorDigiPinsStatus.nxc
+ * This is an example of how to use the \ref SensorDigiPinsStatus function.
+ */
+
+/**
+ * Read sensor invalid data flag
+ * Return the value of the InvalidData flag of a sensor on the specified port.
+ *
+ * \param port The sensor port. See \ref InPorts. A variable whose value is
+ * the desired sensor port may also be used.
+ * \return The sensor's invalid data flag.
+ */
+inline bool SensorInvalid(const byte & port);
+/** \example ex_SensorInvalid.nxc
+ * This is an example of how to use the \ref SensorInvalid function.
+ */
+
+/**
+ * Read sensor mode
+ * Return the mode of a sensor on the specified port.
+ *
+ * \param port The sensor port. See \ref InPorts. A variable whose value is
+ * the desired sensor port may also be used.
+ * \return The sensor's mode. See \ref SensorModes.
+ */
+inline byte SensorMode(const byte & port);
+/** \example ex_SensorMode.nxc
+ * This is an example of how to use the \ref SensorMode function.
+ */
+
+/**
+ * Read sensor normalized value
+ * Return the normalized value of a sensor on the specified port.
+ *
+ * \param port The sensor port. See \ref InPorts. A variable whose value is
+ * the desired sensor port may also be used.
+ * \return The sensor's normalized value.
+ */
 inline unsigned int SensorNormalized(const byte port);
+/** \example ex_SensorNormalized.nxc
+ * This is an example of how to use the \ref SensorNormalized function.
+ */
+
+/**
+ * Read sensor raw value
+ * Return the raw value of a sensor on the specified port.
+ *
+ * \param port The sensor port. See \ref InPorts. A variable whose value is
+ * the desired sensor port may also be used.
+ * \return The sensor's raw value.
+ */
 inline unsigned int SensorRaw(const byte port);
+/** \example ex_SensorRaw.nxc
+ * This is an example of how to use the \ref SensorRaw function.
+ */
+
+/**
+ * Read sensor scaled value
+ * Return the processed sensor reading for a sensor on the specified port.
+ * This is the same value that is returned by the sensor value names
+ * (e.g. \ref SENSOR_1) or the \ref Sensor function.
+ *
+ * \param port The sensor port. See \ref InPorts. A variable whose value is
+ * the desired sensor port may also be used.
+ * \return The sensor's scaled value.
+ */
 inline unsigned int SensorScaled(const byte port);
+/** \example ex_SensorScaled.nxc
+ * This is an example of how to use the \ref SensorScaled function.
+ */
+
+/**
+ * Read sensor type
+ * Return the type of a sensor on the specified port.
+ *
+ * \param port The sensor port. See \ref InPorts. A variable whose value is
+ * the desired sensor port may also be used.
+ * \return The sensor's type. See \ref SensorTypes.
+ */
 inline byte SensorType(const byte port);
+/** \example ex_SensorType.nxc
+ * This is an example of how to use the \ref SensorType function.
+ */
+
+/**
+ * Read sensor scaled value
+ * Return the processed sensor reading for a sensor on the specified port.
+ * This is the same value that is returned by the sensor value names
+ * (e.g. \ref SENSOR_1) or the \ref Sensor function.
+ *
+ * \param port The sensor port. See \ref InPorts. A variable whose value is
+ * the desired sensor port may also be used.
+ * \return The sensor's scaled value.
+ */
 inline unsigned int SensorValue(const byte port);
+/** \example ex_SensorValue.nxc
+ * This is an example of how to use the \ref SensorValue function.
+ */
+ 
+/**
+ * Read sensor boolean value
+ * Return the boolean value of a sensor on the specified port. Boolean
+ * conversion is either done based on preset cutoffs, or a slope parameter
+ * specified by calling SetSensorMode.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \return The sensor's boolean value.
+ */
 inline bool SensorValueBool(const byte port);
+/** \example ex_SensorValueBool.nxc
+ * This is an example of how to use the \ref SensorValueBool function.
+ */
+ 
+/**
+ * Read sensor raw value
+ * Return the raw value of a sensor on the specified port.
+ *
+ * \param port The sensor port. See \ref InPorts. A variable whose value is
+ * the desired sensor port may also be used.
+ * \return The sensor's raw value.
+ */
 inline unsigned int SensorValueRaw(const byte port);
+/** \example ex_SensorValueRaw.nxc
+ * This is an example of how to use the \ref SensorValueRaw function.
+ */
 
 /**
  * Get the custom sensor active status
- * Return the custom sensor active status value of a sensor. * * \param port The sensor port. See \ref InPorts. * \return The custom sensor active status.*/
+ * Return the custom sensor active status value of a sensor.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The custom sensor active status.
+*/
 inline byte CustomSensorActiveStatus(const byte port);
 /** \example ex_CustomSensorActiveStatus.nxc
- * This is an example of how to use the \ref CustomSensorActiveStatus function. */
+ * This is an example of how to use the \ref CustomSensorActiveStatus function.
+ */
 
 /**
  * Get the custom sensor percent full scale
- * Return the custom sensor percent full scale value of a sensor. *
- * \param port The sensor port. See \ref InPorts. * \return The custom sensor percent full scale. */
+ * Return the custom sensor percent full scale value of a sensor.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The custom sensor percent full scale.
+ */
 inline byte CustomSensorPercentFullScale(const byte port);
 /** \example ex_CustomSensorPercentFullScale.nxc
- * This is an example of how to use the \ref CustomSensorPercentFullScale function. */
+ * This is an example of how to use the \ref CustomSensorPercentFullScale function.
+ */
 
 /**
  * Get the custom sensor zero offset
- * Return the custom sensor zero offset value of a sensor. *
- * \param port The sensor port. See \ref InPorts. * \return The custom sensor zero offset. */
+ * Return the custom sensor zero offset value of a sensor.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The custom sensor zero offset.
+ */
 inline unsigned int CustomSensorZeroOffset(const byte port);
 /** \example ex_CustomSensorZeroOffset.nxc
  * This is an example of how to use the \ref CustomSensorZeroOffset function.
  */
 
-inline byte SensorDigiPinsDirection(const byte port);
-inline byte SensorDigiPinsOutputLevel(const byte port);
-inline byte SensorDigiPinsStatus(const byte port);
-
+/**
+ * Set active status
+ * Sets the active status value of a custom sensor.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param activeStatus The new active status value.
+ */
 inline void SetCustomSensorActiveStatus(const byte port, const byte activeStatus);
-inline void SetCustomSensorPercentFullScale(const byte port, const byte pctFullScale);
-inline void SetCustomSensorZeroOffset(const byte port, const int zeroOffset);
+/** \example ex_SetCustomSensorActiveStatus.nxc
+ * This is an example of how to use the \ref SetCustomSensorActiveStatus function.
+ */
 
+/**
+ * Set percent full scale
+ * Sets the percent full scale value of a custom sensor.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param pctFullScale The new percent full scale value.
+ */
+inline void SetCustomSensorPercentFullScale(const byte port, const byte pctFullScale);
+/** \example ex_SetCustomSensorPercentFullScale.nxc
+ * This is an example of how to use the \ref SetCustomSensorPercentFullScale function.
+ */
+
+/**
+ * Set percent zero offset
+ * Sets the zero offset value of a custom sensor.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param zeroOffset The new zero offset value.
+ */
+inline void SetCustomSensorZeroOffset(const byte port, const int zeroOffset);
+/** \example ex_SetCustomSensorZeroOffset.nxc
+ * This is an example of how to use the \ref SetCustomSensorZeroOffset function.
+ */
+
+/**
+ * Set sensor boolean value
+ * Sets the boolean value of a sensor.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param value The new boolean value.
+ */
 inline void SetSensorBoolean(const byte port, bool value);
+/** \example ex_SetSensorBoolean.nxc
+ * This is an example of how to use the \ref SetSensorBoolean function.
+ */
+
+/**
+ * Set digital pins direction
+ * Sets the digital pins direction value of a sensor.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param direction The new digital pins direction value.
+ */
 inline void SetSensorDigiPinsDirection(const byte port, const byte direction);
+/** \example ex_SetSensorDigiPinsDirection.nxc
+ * This is an example of how to use the \ref SetSensorDigiPinsDirection function.
+ */
+
+/**
+ * Set digital pins output level
+ * Sets the digital pins output level value of a sensor.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param outputLevel The new digital pins output level value.
+ */
 inline void SetSensorDigiPinsOutputLevel(const byte port, const byte outputLevel);
+/** \example ex_SetSensorDigiPinsOutputLevel.nxc
+ * This is an example of how to use the \ref SetSensorDigiPinsOutputLevel function.
+ */
+
+/**
+ * Set digital pins status
+ * Sets the digital pins status value of a sensor.
+ *
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param status The new digital pins status value.
+ */
 inline void SetSensorDigiPinsStatus(const byte port, const byte status);
+/** \example ex_SetSensorDigiPinsStatus.nxc
+ * This is an example of how to use the \ref SetSensorDigiPinsStatus function.
+ */
+
 
 #if __FIRMWARE_VERSION > 107
+/**
+ * Read LEGO color sensor.
+ * This function lets you read the LEGO color sensor given the parameters you
+ * pass in via the \ref ColorSensorReadType structure.
+ *
+ * \param args The ColorSensorReadType structure containing the required parameters.
+ * 
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline void SysColorSensorRead(ColorSensorReadType & args);
+/** \example ex_SysColorSensorRead.nxc
+ * This is an example of how to use the \ref SysColorSensorRead function.
+ */
+
 inline int ReadSensorColorEx(const byte port, int & colorval, unsigned int & raw[], unsigned int & norm[], int & scaled[]);
 inline int ReadSensorColorRaw(const byte port, unsigned int & rawVals[]);
 inline unsigned int ColorADRaw(const byte port, const byte color);
@@ -532,19 +854,214 @@ inline unsigned int ColorSensorValue(const byte port, const byte color);
 
 #ifdef __DOXYGEN_DOCS
 
-// - SetMotorPwnFreq
+/**
+ * Set motor PWM frequency.
+ * Set the motor pulse width modulation frequency.
+ */
+inline void SetMotorPwnFreq(byte n);
+/** \example ex_setmotorpwnfreq.nxc
+ * This is an example of how to use the SetMotorPwnFreq function.
+ */
 
-inline void OnFwdSyncPID(const byte ports, char power, char turnpct, byte p, byte i, byte d);
-inline void OnFwdSyncExPID(const byte ports, char power, char turnpct, const byte reset, byte p, byte i, byte d);
+/**
+ * Run motors forward synchronised with PID factors.
+ * Run the specified outputs forward with regulated synchronization using the
+ * specified turn ratio.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void OnFwdSyncPID(byte outputs, char pwr, char turnpct, byte p, byte i, byte d);
+/** \example ex_onfwdsyncpid.nxc
+ * This is an example of how to use the OnFwdSyncPID function.
+ */
 
-inline void OnRevSyncPID(const byte ports, char power, char turnpct, byte p, byte i, byte d);
-inline void OnRevSyncExPID(const byte ports, char power, char turnpct, const byte reset, byte p, byte i, byte d);
+/**
+ * Run motors forward synchronised and reset counters with PID factors.
+ * Run the specified outputs forward with regulated synchronization using the
+ * specified turn ratio.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void OnFwdSyncExPID(byte outputs, char pwr, char turnpct, const byte reset, byte p, byte i, byte d);
+/** \example ex_onfwdsyncexpid.nxc
+ * This is an example of how to use the OnFwdSyncExPID function.
+ */
 
-inline void OnFwdRegPID(const byte ports, char power, byte regmode, byte p, byte i, byte d);
-inline void OnFwdRegExPID(const byte ports, char power, byte regmode, const byte reset, byte p, byte i, byte d);
+/**
+ * Run motors backward synchronised with PID factors.
+ * Run the specified outputs in reverse with regulated synchronization using
+ * the specified turn ratio.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void OnRevSyncPID(byte outputs, char pwr, char turnpct, byte p, byte i, byte d);
+/** \example ex_onrevsyncpid.nxc
+ * This is an example of how to use the OnRevSyncPID function.
+ */
 
-inline void OnRevRegPID(const byte ports, char power, byte regmode, byte p, byte i, byte d);
-inline void OnRevRegExPID(const byte ports, char power, byte regmode, const byte reset, byte p, byte i, byte d);
+/**
+ * Run motors backward synchronised and reset counters with PID factors.
+ * Run the specified outputs in reverse with regulated synchronization using
+ * the specified turn ratio.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void OnRevSyncExPID(byte outputs, char pwr, char turnpct, const byte reset, byte p, byte i, byte d);
+/** \example ex_onrevsyncexpid.nxc
+ * This is an example of how to use the OnRevSyncExPID function.
+ */
+
+/**
+ * Run motors forward regulated with PID factors.
+ * Run the specified outputs forward using the specified regulation mode.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void OnFwdRegPID(byte outputs, char pwr, byte regmode, byte p, byte i, byte d);
+/** \example ex_onfwdregpid.nxc
+ * This is an example of how to use the OnFwdRegPID function.
+ */
+
+/**
+ * Run motors forward regulated and reset counters with PID factors.
+ * Run the specified outputs forward using the specified regulation mode.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void OnFwdRegExPID(byte outputs, char pwr, byte regmode, const byte reset, byte p, byte i, byte d);
+/** \example ex_onfwdregexpid.nxc
+ * This is an example of how to use the OnFwdRegExPID function.
+ */
+
+/**
+ * Run motors reverse regulated with PID factors.
+ * Run the specified outputs in reverse using the specified regulation mode.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void OnRevRegPID(byte outputs, char pwr, byte regmode, byte p, byte i, byte d);
+/** \example ex_onrevregpid.nxc
+ * This is an example of how to use the OnRevRegPID function.
+ */
+
+/**
+ * Run motors backward regulated and reset counters with PID factors.
+ * Run the specified outputs in reverse using the specified regulation mode.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param outputs Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
+inline void OnRevRegExPID(byte outputs, char pwr, byte regmode, const byte reset, byte p, byte i, byte d);
+/** \example ex_onrevregexpid.nxc
+ * This is an example of how to use the OnRevRegExPID function.
+ */
 
 /**
  * Turn motors off.
@@ -1634,6 +2151,9 @@ inline char RectOut(int x, int y, int width, int height, unsigned long options=D
  * \return The result of the drawing operation.
  */
 inline char TextOut(int x, int y, string str, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_TextOut.nxc
+ * This is an example of how to use the \ref TextOut function.
+ */
 /** \example ex_disptout.nxc
  * This is an example of how to use the \ref TextOut function.
  */
@@ -1653,7 +2173,7 @@ inline char TextOut(int x, int y, string str, unsigned long options=DRAW_OPT_NOR
  * \param options The optional drawing options.
  * \return The result of the drawing operation.
  */
-inline char NumOut(int x, int y, variant number, unsigned long options=DRAW_OPT_NORMAL);
+inline char NumOut(int x, int y, variant value, unsigned long options=DRAW_OPT_NORMAL);
 /** \example ex_NumOut.nxc
  * This is an example of how to use the \ref NumOut function.
  */
@@ -1699,7 +2219,7 @@ inline char FontTextOut(int x, int y, string filename, string str, unsigned long
  * \param options The optional drawing options.
  * \return The result of the drawing operation.
  */
-inline char FontNumOut(int x, int y, string filename, variant number, unsigned long options=DRAW_OPT_NORMAL);
+inline char FontNumOut(int x, int y, string filename, variant value, unsigned long options=DRAW_OPT_NORMAL);
 /** \example ex_dispfnout.nxc
  * This is an example of how to use the \ref FontNumOut function.
  */
@@ -1837,6 +2357,9 @@ inline void GetDisplayNormal(const byte x, const byte line, unsigned int cnt, by
  * \param data The array of bytes from which pixel data is read.
  */
 inline void SetDisplayNormal(const byte x, const byte line, unsigned int cnt, byte data[]);
+/** \example ex_SetDisplayNormal.nxc
+ * This is an example of how to use the \ref SetDisplayNormal function.
+ */
 
 /**
  * Read pixel data from the popup display buffer.
@@ -1870,6 +2393,9 @@ inline void GetDisplayPopup(const byte x, const byte line, unsigned int cnt, byt
  * \param data The array of bytes from which pixel data is read.
  */
 inline void SetDisplayPopup(const byte x, const byte line, unsigned int cnt, byte data[]);
+/** \example ex_SetDisplayPopup.nxc
+ * This is an example of how to use the \ref SetDisplayPopup function.
+ */
 
 /**
  * Read the display erase mask value.
@@ -1882,7 +2408,7 @@ inline unsigned long DisplayEraseMask();
  */
 
 /** \example ex_dispmisc.nxc
- * How to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * This is an example of how to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
  * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
  * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
  * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
@@ -1926,7 +2452,8 @@ inline byte DisplayFlags();
  */
 inline byte DisplayTextLinesCenterFlags();
 /** \example ex_DisplayTextLinesCenterFlags.nxc
- * This is an example of how to use the \ref DisplayTextLinesCenterFlags function. */
+ * This is an example of how to use the \ref DisplayTextLinesCenterFlags function.
+ */
 
 /**
  * Draw text.
@@ -1976,7 +2503,7 @@ inline void SysDrawLine(DrawLineType & args);
  */
 inline void SysDrawCircle(DrawCircleType & args);
 /** \example ex_sysdrawcircle.nxc
- * How to use the \ref SysDrawCircle function along with the \ref DrawCircleType structure.
+ * This is an example of how to use the \ref SysDrawCircle function along with the \ref DrawCircleType structure.
  */
 
 /**
@@ -2050,7 +2577,7 @@ inline void SysDisplayExecuteFunction(DisplayExecuteFunctionType & args);
  */
 inline byte DisplayContrast();
 /** \example ex_contrast.nxc
- * How to use the \ref DisplayContrast and \ref SetDisplayContrast functions.
+ * This is an example of how to use the \ref DisplayContrast and \ref SetDisplayContrast functions.
  */
 
 /**
@@ -2064,7 +2591,7 @@ inline byte DisplayContrast();
  */
 inline void SysDrawGraphicArray(DrawGraphicArrayType & args);
 /** \example ex_drawgarray.nxc
- * How to use the \ref SysDrawGraphicArray function along with the \ref DrawGraphicArrayType structure.
+ * This is an example of how to use the \ref SysDrawGraphicArray function along with the \ref DrawGraphicArrayType structure.
  */
 
 /**
@@ -2078,7 +2605,7 @@ inline void SysDrawGraphicArray(DrawGraphicArrayType & args);
  */
 inline void SysDrawPolygon(DrawPolygonType & args);
 /** \example ex_drawpoly.nxc
- * How to use the \ref SysDrawPolygon function along with the \ref DrawPolygonType structure.
+ * This is an example of how to use the \ref SysDrawPolygon function along with the \ref DrawPolygonType structure.
  */
 
 /**
@@ -2092,7 +2619,7 @@ inline void SysDrawPolygon(DrawPolygonType & args);
  */
 inline void SysDrawEllipse(DrawEllipseType & args);
 /** \example ex_drawellipse.nxc
- * How to use the \ref SysDrawEllipse function along with the \ref DrawEllipseType structure.
+ * This is an example of how to use the \ref SysDrawEllipse function along with the \ref DrawEllipseType structure.
  */
 
 /**
@@ -2106,7 +2633,7 @@ inline void SysDrawEllipse(DrawEllipseType & args);
  */
 inline void SysDrawFont(DrawFontType & args);
 /** \example ex_drawfont.nxc
- * How to use the \ref SysDrawFont function along with the \ref DrawFontType structure.
+ * This is an example of how to use the \ref SysDrawFont function along with the \ref DrawFontType structure.
  */
 #endif
 #endif
@@ -2197,48 +2724,71 @@ inline void ClearScreen() { asm { PointOutEx(200, 200, TRUE) } }
 /**
  * Set the display memory address.
  * This function lets you set the current display memory address.
+ * 
  * \param addr The new display memory address.
  */
 inline void SetDisplayDisplay(unsigned long addr) { asm { __setDisplayDisplay(addr) } }
+/** \example ex_SetDisplayDisplay.nxc
+ * This is an example of how to use the \ref SetDisplayDisplay function.
+ */
 
 /**
  * Set the display erase mask.
  * This function lets you set the current display erase mask.
+ * 
  * \param eraseMask The new display erase mask.
  */
 inline void SetDisplayEraseMask(unsigned long eraseMask) { asm { __setDisplayEraseMask(eraseMask) } }
+/** \example ex_SetDisplayEraseMask.nxc
+ * This is an example of how to use the \ref SetDisplayEraseMask function.
+ */
 
 /**
  * Set the display flags.
  * This function lets you set the current display flags.
- * Valid flag values are listed in the \ref DisplayFlagsGroup group.
- * \param flags The new display flags.
+ *
+ * \param flags The new display flags. See \ref DisplayFlagsGroup.
  */
 inline void SetDisplayFlags(byte flags) { asm { __setDisplayFlags(flags) } }
+/** \example ex_SetDisplayFlags.nxc
+ * This is an example of how to use the \ref SetDisplayFlags function.
+ */
 
 /**
  * Set the display text lines center flags.
  * This function lets you set the current display text lines center flags.
+ *
  * \param ctrFlags The new display text lines center flags.
  */
 inline void SetDisplayTextLinesCenterFlags(byte ctrFlags) { asm { __setDisplayTextLinesCenterFlags(ctrFlags) } }
+/** \example ex_SetDisplayTextLinesCenterFlags.nxc
+ * This is an example of how to use the \ref SetDisplayTextLinesCenterFlags function.
+ */
 
 /**
  * Set the display update mask.
  * This function lets you set the current display update mask.
+ *
  * \param updateMask The new display update mask.
  */
 inline void SetDisplayUpdateMask(unsigned long updateMask) { asm { __setDisplayUpdateMask(updateMask) } }
+/** \example ex_SetDisplayUpdateMask.nxc
+ * This is an example of how to use the \ref SetDisplayUpdateMask function.
+ */
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 /**
  * Set the display contrast.
  * This function lets you set the display contrast setting.
+ *
  * \param contrast The desired display contrast.
  *
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SetDisplayContrast(byte contrast) { asm { __setDisplayContrast(contrast) } }
+/** \example ex_SetDisplayContrast.nxc
+ * This is an example of how to use the \ref SetDisplayContrast function.
+ */
 #endif
 
 /** @} */ // end of DisplayModuleFunctions group
@@ -2389,6 +2939,9 @@ inline char PlayToneEx(unsigned int frequency, unsigned int duration, byte volum
  * \return The current sound module state.
  */
 inline byte SoundState();
+/** \example ex_SoundState.nxc
+ * This is an example of how to use the \ref SoundState function.
+ */
 
 /**
  * Get sound module flags.
@@ -2398,6 +2951,9 @@ inline byte SoundState();
  * \return The current sound module flags.
  */
 inline byte SoundFlags();
+/** \example ex_SoundFlags.nxc
+ * This is an example of how to use the \ref SoundFlags function.
+ */
 
 /**
  * Stop sound.
@@ -2406,24 +2962,33 @@ inline byte SoundFlags();
  * \return The result \todo ?.
  */
 inline byte StopSound();
+/** \example ex_StopSound.nxc
+ * This is an example of how to use the \ref StopSound function.
+ */
 
 /**
- * Get frequency.
+ * Get sound frequency.
  * Return the current sound frequency.
  *
  * \sa SetSoundFrequency()
  * \return The current sound frequency.
  */
 inline unsigned int SoundFrequency();
+/** \example ex_SoundFrequency.nxc
+ * This is an example of how to use the \ref SoundFrequency function.
+ */
 
 /**
- * Get duration.
+ * Get sound duration.
  * Return the current sound duration.
  *
  * \sa SetSoundDuration()
  * \return The current sound duration.
  */
 inline unsigned int SoundDuration();
+/** \example ex_SoundDuration.nxc
+ * This is an example of how to use the \ref SoundDuration function.
+ */
 
 /**
  * Get sample rate.
@@ -2433,6 +2998,9 @@ inline unsigned int SoundDuration();
  * \return The current sound sample rate.
  */
 inline unsigned int SoundSampleRate();
+/** \example ex_SoundSampleRate.nxc
+ * This is an example of how to use the \ref SoundSampleRate function.
+ */
 
 /**
  * Get sound mode.
@@ -2442,6 +3010,9 @@ inline unsigned int SoundSampleRate();
  * \return The current sound mode.
  */
 inline byte SoundMode();
+/** \example ex_SoundMode.nxc
+ * This is an example of how to use the \ref SoundMode function.
+ */
 
 /**
  * Get volume.
@@ -2451,15 +3022,21 @@ inline byte SoundMode();
  * \return The current sound volume.
  */
 inline byte SoundVolume();
+/** \example ex_SoundVolume.nxc
+ * This is an example of how to use the \ref SoundVolume function.
+ */
 
 /**
- * Set duration.
+ * Set sound duration.
  * Set the sound duration.
  *
  * \sa SoundDuration()
  * \param duration The new sound duration
  */
 inline void SetSoundDuration(unsigned int duration);
+/** \example ex_SetSoundDuration.nxc
+ * This is an example of how to use the \ref SetSoundDuration function.
+ */
 
 /**
  * Set sound module flags.
@@ -2469,15 +3046,21 @@ inline void SetSoundDuration(unsigned int duration);
  * \param flags The new sound module flags
  */
 inline void SetSoundFlags(byte flags);
+/** \example ex_SetSoundFlags.nxc
+ * This is an example of how to use the \ref SetSoundFlags function.
+ */
 
 /**
- * Set frequency.
+ * Set sound frequency.
  * Set the sound frequency.
  *
  * \sa SoundFrequency()
- * \param frequency The new frequency
+ * \param frequency The new sound frequency
  */
 inline void SetSoundFrequency(unsigned int frequency);
+/** \example ex_SetSoundFrequency.nxc
+ * This is an example of how to use the \ref SetSoundFrequency function.
+ */
 
 /**
  * Set sound mode.
@@ -2487,6 +3070,9 @@ inline void SetSoundFrequency(unsigned int frequency);
  * \param mode The new sound mode
  */
 inline void SetSoundMode(byte mode);
+/** \example ex_SetSoundMode.nxc
+ * This is an example of how to use the \ref SetSoundMode function.
+ */
 
 /**
  * Set sound module state.
@@ -2496,6 +3082,9 @@ inline void SetSoundMode(byte mode);
  * \param state The new sound state
  */
 inline void SetSoundModuleState(byte state);
+/** \example ex_SetSoundModuleState.nxc
+ * This is an example of how to use the \ref SetSoundModuleState function.
+ */
 
 /**
  * Set sample rate.
@@ -2505,15 +3094,21 @@ inline void SetSoundModuleState(byte state);
  * \param sampleRate The new sample rate
  */
 inline void SetSoundSampleRate(unsigned int sampleRate);
+/** \example ex_SetSoundSampleRate.nxc
+ * This is an example of how to use the \ref SetSoundSampleRate function.
+ */
 
 /**
- * Set volume.
+ * Set sound volume.
  * Set the sound volume.
  *
  * \sa SoundVolume()
  * \param volume The new volume
  */
 inline void SetSoundVolume(byte volume);
+/** \example ex_SetSoundVolume.nxc
+ * This is an example of how to use the \ref SetSoundVolume function.
+ */
 
 /** \example ex_soundmisc.nxc
  * This is an example of how to use the \ref PlayFile, \ref PlayFileEx, \ref PlayTone,
@@ -2716,6 +3311,7 @@ struct CommLSWriteExType {
  * Return the ultrasonic sensor distance value. Since an
  * ultrasonic sensor is an I2C digital sensor its value cannot be read using
  * the standard Sensor(n) value.
+ * The port must be configured as a Lowspeed port before using this function.
  * \param port The port to which the ultrasonic sensor is attached. See the
  * \ref InPorts group. You may use a constant or a variable.
  * \return The ultrasonic sensor distance value (0..255)
@@ -3981,6 +4577,9 @@ inline void SysDatalogWrite(DatalogWriteType & args);
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysDatalogGetTimes(DatalogGetTimesType & args);
+/** \example ex_SysDatalogGetTimes.nxc
+* This is an example of how to use the \ref SysDatalogGetTimes function.
+*/
 
 /**
  * Read semaphore data.
@@ -4109,9 +4708,9 @@ inline void SysComputeCalibValue(ComputeCalibValueType & args);
 }
 #endif
 
-#endif
-
 #define until(_c) while(!(_c))
+
+#endif
 
 /**
  * Wait some milliseconds.
@@ -4121,7 +4720,7 @@ inline void SysComputeCalibValue(ComputeCalibValueType & args);
  */
 inline void Wait(unsigned long ms) { asm { waitv ms } }
 /** \example ex_wait.nxc
- * How to use the \ref Wait function.
+ * This is an example of how to use the \ref Wait function.
  */
 
 /**
@@ -4130,7 +4729,7 @@ inline void Wait(unsigned long ms) { asm { waitv ms } }
  */
 inline void Yield() { asm { wait 1 } }
 /** \example ex_yield.nxc
- * How to use the \ref Yield function.
+ * This is an example of how to use the \ref Yield function.
  */
 
 /**
@@ -4140,7 +4739,7 @@ inline void Yield() { asm { wait 1 } }
  */
 inline void StopAllTasks() { Stop(true); }
 /** \example ex_stopalltasks.nxc
- * How to use the \ref StopAllTasks function.
+ * This is an example of how to use the \ref StopAllTasks function.
  */
 
 
@@ -4153,7 +4752,7 @@ inline void StopAllTasks() { Stop(true); }
  */
 inline void Stop(bool bvalue);
 /** \example ex_stop.nxc
- * How to use the \ref Stop function.
+ * This is an example of how to use the \ref Stop function.
  */
 
 /**
@@ -4179,7 +4778,7 @@ inline void ExitTo(task newTask);
  */
 inline void Precedes(task task1, task task2, ..., task taskN);
 /** \example ex_Precedes.nxc
- * How to use the \ref Precedes statement.
+ * This is an example of how to use the \ref Precedes statement.
  */
 
 /**
@@ -4196,7 +4795,7 @@ inline void Precedes(task task1, task task2, ..., task taskN);
  */
 inline void Follows(task task1, task task2, ..., task taskN);
 /** \example ex_Follows.nxc
- * How to use the \ref Follows statement.
+ * This is an example of how to use the \ref Follows statement.
  */
 
 /**
@@ -4234,7 +4833,7 @@ inline void Release(mutex m);
  */
 inline void StartTask(task t);
 /** \example ex_starttask.nxc
- * How to use the \ref StartTask function.
+ * This is an example of how to use the \ref StartTask function.
  */
 
 /**
@@ -4245,7 +4844,7 @@ inline void StartTask(task t);
  */
 inline void StopTask(task t);
 /** \example ex_stoptask.nxc
- * How to use the \ref StopTask function.
+ * This is an example of how to use the \ref StopTask function.
  */
 
 /** @defgroup ArrayFunctions Array API functions
@@ -4752,7 +5351,9 @@ inline char BluetoothStatus(const byte conn);
 /**
  * Write to a bluetooth connection.
  * This method tells the NXT firmware to write the data in the buffer to the
- * device on the specified Bluetooth connection. Use \ref BluetoothStatus to * determine when this write request is completed. * 
+ * device on the specified Bluetooth connection. Use \ref BluetoothStatus to
+ * determine when this write request is completed.
+ * 
  * \param conn The connection slot (0..3).
  * \param buffer The data to be written (up to 128 bytes)
  * \return A char value indicating whether the function call succeeded or not.
@@ -5848,7 +6449,7 @@ inline void SetBTInputBufferOutPtr(byte n);
  * \param cnt The number of bytes to write
  * \param data A byte array containing the data to write
  */
-inline void SetBTOutputBuffer(const byte offset, cnt, byte data[]);
+inline void SetBTOutputBuffer(const byte offset, byte cnt, byte data[]);
 /** \example ex_SetBTOutputBuffer.nxc
  * This is an example of how to use the \ref SetBTOutputBuffer function.
  */
@@ -6200,7 +6801,7 @@ inline void SysCommHSCheckStatus(CommHSCheckStatusType & args);
 inline void SysCommHSRead(CommHSReadWriteType & args);
 /** \example ex_SysCommHSRead.nxc
  * This is an example of how to use the \ref SysCommHSRead function along
- * with the \ref CommHSReadType structure.
+ * with the \ref CommHSReadWriteType structure.
  */
 
 /**
@@ -6216,7 +6817,7 @@ inline void SysCommHSRead(CommHSReadWriteType & args);
 inline void SysCommHSWrite(CommHSReadWriteType & args);
 /** \example ex_SysCommHSWrite.nxc
  * This is an example of how to use the \ref SysCommHSWrite function along
- * with the \ref CommHSWriteType structure.
+ * with the \ref CommHSReadWriteType structure.
  */
 
 #endif
@@ -6562,7 +7163,10 @@ inline bool ButtonPressed(const byte btn, bool resetCount);
 
 /**
  * Get button press count
- * Return the number of times the specified button has been pressed since * the last time the button press count was reset. Optionally clear the count * after reading it. *
+ * Return the number of times the specified button has been pressed since
+ * the last time the button press count was reset. Optionally clear the count
+ * after reading it.
+ *
  * \param btn The button to check. See \ref ButtonNameConstants.
  * \param resetCount Whether or not to reset the press counter.
  * \return The button press count.
@@ -6602,7 +7206,9 @@ inline byte ButtonPressCount(const byte btn);
 
 /**
  * Get button long press count
- * Return the long press count of the specified button. * * \param btn The button to check. See \ref ButtonNameConstants.
+ * Return the long press count of the specified button.
+ *
+ * \param btn The button to check. See \ref ButtonNameConstants.
  * \return The button long press count.
  */
 inline byte ButtonLongPressCount(const byte btn);
@@ -6612,43 +7218,123 @@ inline byte ButtonLongPressCount(const byte btn);
 
 /**
  * Get button short release count
- * Return the short release count of the specified button. * * \param btn The button to check. See \ref ButtonNameConstants.
+ * Return the short release count of the specified button.
+ *
+ * \param btn The button to check. See \ref ButtonNameConstants.
  * \return The button short release count.
- */inline byte ButtonShortReleaseCount(const byte btn);
+ */
+inline byte ButtonShortReleaseCount(const byte btn);
 /** \example ex_ButtonShortReleaseCount.nxc
- * This is an example of how to use the \ref ButtonShortReleaseCount function. */
+ * This is an example of how to use the \ref ButtonShortReleaseCount function.
+ */
 
 /**
  * Get button long release count
- * Return the long release count of the specified button. * * \param btn The button to check. See \ref ButtonNameConstants.
+ * Return the long release count of the specified button.
+ *
+ * \param btn The button to check. See \ref ButtonNameConstants.
  * \return The button long release count.
  */
 inline byte ButtonLongReleaseCount(const byte btn);
 /** \example ex_ButtonLongReleaseCount.nxc
- * This is an example of how to use the \ref ButtonLongReleaseCount function. */
+ * This is an example of how to use the \ref ButtonLongReleaseCount function.
+ */
 
 /**
  * Get button release count
  * Return the release count of the specified button.
- * * \param btn The button to check. See \ref ButtonNameConstants. * \return The button release count.
-*/inline byte ButtonReleaseCount(const byte btn);
+ *
+ * \param btn The button to check. See \ref ButtonNameConstants.
+ * \return The button release count.
+*/
+inline byte ButtonReleaseCount(const byte btn);
 /** \example ex_ButtonReleaseCount.nxc
  * This is an example of how to use the \ref ButtonReleaseCount function.
  */
 
 /**
  * Get button state
- * Return the state of the specified button. See \ref ButtonStateConstants. * * \param btn The button to check. See \ref ButtonNameConstants. * \return The button state. */inline byte ButtonState(const byte btn);
+ * Return the state of the specified button. See \ref ButtonStateConstants.
+ *
+ * \param btn The button to check. See \ref ButtonNameConstants.
+ * \return The button state.
+ */
+inline byte ButtonState(const byte btn);
 /** \example ex_ButtonState.nxc
  * This is an example of how to use the \ref ButtonState function.
  */
 
+/**
+ * Set button long press count
+ * Set the long press count of the specified button.
+ *
+ * \param btn The button number. See \ref ButtonNameConstants.
+ * \param n The new long press count value.
+ */
 inline void SetButtonLongPressCount(const byte btn, const byte n);
+/** \example ex_SetButtonLongPressCount.nxc
+ * This is an example of how to use the \ref SetButtonLongPressCount function.
+ */
+
+/**
+ * Set button long release count
+ * Set the long release count of the specified button.
+ *
+ * \param btn The button number. See \ref ButtonNameConstants.
+ * \param n The new long release count value.
+ */
 inline void SetButtonLongReleaseCount(const byte btn, const byte n);
+/** \example ex_SetButtonLongReleaseCount.nxc
+ * This is an example of how to use the \ref SetButtonLongReleaseCount function.
+ */
+
+/**
+ * Set button press count
+ * Set the press count of the specified button.
+ *
+ * \param btn The button number. See \ref ButtonNameConstants.
+ * \param n The new press count value.
+ */
 inline void SetButtonPressCount(const byte btn, const byte n);
+/** \example ex_SetButtonPressCount.nxc
+ * This is an example of how to use the \ref SetButtonPressCount function.
+ */
+
+/**
+ * Set button release count
+ * Set the release count of the specified button.
+ *
+ * \param btn The button number. See \ref ButtonNameConstants.
+ * \param n The new release count value.
+ */
 inline void SetButtonReleaseCount(const byte btn, const byte n);
+/** \example ex_SetButtonReleaseCount.nxc
+ * This is an example of how to use the \ref SetButtonReleaseCount function.
+ */
+
+/**
+ * Set button short release count
+ * Set the short release count of the specified button.
+ *
+ * \param btn The button number. See \ref ButtonNameConstants.
+ * \param n The new short release count value.
+ */
 inline void SetButtonShortReleaseCount(const byte btn, const byte n);
+/** \example ex_SetButtonShortReleaseCount.nxc
+ * This is an example of how to use the \ref SetButtonShortReleaseCount function.
+ */
+
+/**
+ * Set button state
+ * Set the state of the specified button.
+ *
+ * \param btn The button to check. See \ref ButtonNameConstants.
+ * \param state The new button state. See \ref ButtonStateConstants.
+*/
 inline void SetButtonState(const byte btn, const byte state);
+/** \example ex_SetButtonState.nxc
+ * This is an example of how to use the \ref SetButtonState function.
+ */
 
 /** \example ex_buttonmisc.nxc
  * This is an example of how to use the \ref ButtonPressed, \ref ButtonCount,
@@ -6732,15 +7418,43 @@ struct SetSleepTimeoutType {
 
 /**
  * Get command flags
- * Return the command flags. See \ref UiFlagsConstants * \return Command flags. */
+ * Return the command flags.
+ * \return Command flags. See \ref UiFlagsConstants
+ */
 inline byte CommandFlags(void);
 /** \example ex_CommandFlags.nxc
  * This is an example of how to use the \ref CommandFlags function.
  */
 
+/**
+ * Get UI module state
+ * Return the user interface state.
+ * \return The UI module state. See \ref UiStateConstants.
+ */
 inline byte UIState(void);
+/** \example ex_UIState.nxc
+ * This is an example of how to use the \ref UIState function.
+ */
+
+/**
+ * Read UI button
+ * Return user interface button information.
+ * \return A UI button value.  See \ref UiButtonConstants.
+ */
 inline byte UIButton(void);
+/** \example ex_UIButton.nxc
+ * This is an example of how to use the \ref UIButton function.
+ */
+
+/**
+ * Read VM run state
+ * Return VM run state information.
+ * \return VM run state. See \ref UiVMRunStateConstants.
+ */
 inline byte VMRunState(void);
+/** \example ex_VMRunState.nxc
+ * This is an example of how to use the \ref VMRunState function.
+ */
 
 /**
  * Get battery state
@@ -6754,31 +7468,78 @@ inline byte BatteryState(void);
 
 /**
  * Get bluetooth state
- * Return the bluetooth state. See \ref UiBluetoothStateConstants.
- * \return The bluetooth state
+ * Return the bluetooth state.
+ * \return The bluetooth state. See \ref UiBluetoothStateConstants.
  */
 inline byte BluetoothState(void);
 /** \example ex_BluetoothState.nxc
  * This is an example of how to use the \ref BluetoothState function.
  */
 
+/**
+ * Get UI module USB state
+ * This method returns the UI module USB state.
+ * \return The UI module USB state.  (0=disconnected, 1=connected, 2=working)
+ */
 inline byte UsbState(void);
+/** \example ex_UiUsbState.nxc
+ * This is an example of how to use the \ref UsbState function.
+ */
+
+/**
+ * Read sleep timeout
+ * Return the number of minutes that the NXT will remain on before
+ * it automatically shuts down.
+ * \return The sleep timeout value
+ */
 inline byte SleepTimeout(void);
-inline byte SleepTime(void); // SleepTimeout()
+/** \example ex_SleepTimeout.nxc
+ * This is an example of how to use the \ref SleepTimeout function.
+ */
+
+/**
+ * Read sleep time
+ * Return the number of minutes that the NXT will remain on before
+ * it automatically shuts down.
+ * \return The sleep time value
+ * \sa SleepTimeout
+ */
+inline byte SleepTime(void);
+/** \example ex_SleepTime.nxc
+ * This is an example of how to use the \ref SleepTime function.
+ */
+
+/**
+ * Read sleep timer
+ * Return the number of minutes left in the countdown to zero from the
+ * original SleepTimeout value. When the SleepTimer value reaches zero the
+ * NXT will shutdown.
+ * \return The sleep timer value
+ */
 inline byte SleepTimer(void);
+/** \example ex_SleepTimer.nxc
+ * This is an example of how to use the \ref SleepTimer function.
+ */
 
 /**
  * Read battery type
  * Return whether the NXT has a rechargeable battery installed or not.
- *
- * \return Whether the battery is rechargeable or not
+ * \return Whether the battery is rechargeable or not. (false = no, true = yes)
  */
-inline byte RechargeableBattery(void);
+inline bool RechargeableBattery(void);
 /** \example ex_RechargeableBattery.nxc
  * This is an example of how to use the \ref RechargeableBattery function.
  */
 
+/**
+ * Read volume
+ * Return the user interface volume level. Valid values are from 0 to 4.
+ * \return The UI module volume. (0..4)
+ */
 inline byte Volume(void);
+/** \example ex_Volume.nxc
+ * This is an example of how to use the \ref Volume function.
+ */
 
 /**
  * Read the on brick program pointer value
@@ -6791,14 +7552,24 @@ inline byte OnBrickProgramPointer(void);
  * This is an example of how to use the \ref OnBrickProgramPointer function.
  */
 
+/**
+ * Read abort flag
+ * Return the enhanced NBC/NXC firmware's abort flag.
+ *
+ * \return The current abort flag value.  See \ref ButtonStateConstants.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+*/
 inline byte AbortFlag(void);
+/** \example ex_AbortFlag.nxc
+ * This is an example of how to use the \ref AbortFlag function.
+ */
 
 /**
- * LongAbort function
- * Return the enhanced NBC/NXC firmware's long abort setting (true or false).
- * If set to true then a program has access the escape button. Aborting a
- * program requires a long press of the escape button.
+ * Read long abort setting
+ * Return the enhanced NBC/NXC firmware's long abort setting.
  *
+ * \sa AbortFlag
+ * \return The current abort flag value.  See \ref ButtonStateConstants.
  * \warning This function requires the enhanced NBC/NXC firmware.
 */
 inline byte LongAbort(void);
@@ -6816,18 +7587,127 @@ inline unsigned int BatteryLevel(void);
  * This is an example of how to use the \ref BatteryLevel function.
  */
 
+/**
+ * Set command flags
+ * Set the command flags.
+ *
+ * \param cmdFlags The new command flags. See \ref UiFlagsConstants.
+ */
 inline void SetCommandFlags(const byte cmdFlags);
+/** \example ex_SetCommandFlags.nxc
+ * This is an example of how to use the \ref SetCommandFlags function.
+ */
+
+/**
+ * Set UI button
+ * Set user interface button information.
+ *
+ * \param btn A user interface button value. See \ref UiButtonConstants.
+ */
 inline void SetUIButton(byte btn);
+/** \example ex_SetUIButton.nxc
+ * This is an example of how to use the \ref SetUIButton function.
+ */
+
+/**
+ * Set UI state
+ * Set the user interface state.
+ *
+ * \param state A user interface state value. See \ref UiStateConstants.
+ */
 inline void SetUIState(byte state);
+/** \example ex_SetUIState.nxc
+ * This is an example of how to use the \ref SetUIState function.
+ */
+ 
+/**
+ * Set VM run state
+ * Set VM run state information.
+ *
+ * \param vmRunState The desired VM run state. See \ref UiVMRunStateConstants.
+ */
 inline void SetVMRunState(const byte vmRunState);
+/** \example ex_SetVMRunState.nxc
+ * This is an example of how to use the \ref SetVMRunState function.
+ */
+
+/**
+ * Set battery state
+ * Set battery state information.
+ *
+ * \param state The desired battery state (0..4).
+ */
 inline void SetBatteryState(byte state);
+/** \example ex_SetBatteryState.nxc
+ * This is an example of how to use the \ref SetBatteryState function.
+ */
+
+/**
+ * Set bluetooth state
+ * Set the Bluetooth state.
+ *
+ * \param state The desired bluetooth state. See \ref UiBluetoothStateConstants.
+ */
 inline void SetBluetoothState(byte state);
-inline void SetUsbState(byte usbState);
+/** \example ex_SetBluetoothState.nxc
+ * This is an example of how to use the \ref SetBluetoothState function.
+ */
+
+/**
+ * Set sleep timeout
+ * Set the NXT sleep timeout value to the specified number of minutes.
+ *
+ * \param n The minutes to wait before sleeping.
+ */
 inline void SetSleepTimeout(const byte n);
-inline void SetSleepTime(const byte n); // SetSleepTimeout(n)
+/** \example ex_SetSleepTimeout.nxc
+ * This is an example of how to use the \ref SetSleepTimeout function.
+ */
+
+/**
+ * Set sleep time
+ * Set the NXT sleep timeout value to the specified number of minutes.
+ *
+ * \param n The minutes to wait before sleeping.
+ * \sa SetSleepTimeout, SleepTimeout
+ */
+inline void SetSleepTime(const byte n);
+/** \example ex_SetSleepTime.nxc
+ * This is an example of how to use the \ref SetSleepTime function.
+ */
+
+/**
+ * Set the sleep timer
+ * Set the system sleep timer to the specified number of minutes.
+ *
+ * \param n The minutes left on the timer.
+ */
 inline void SetSleepTimer(const byte n);
+/** \example ex_SetSleepTimer.nxc
+ * This is an example of how to use the \ref SetSleepTimer function.
+ */
+
+/**
+ * Set volume
+ * Set the user interface volume level. Valid values are from 0 to 4.
+ *
+ * \param volume The new volume level.
+ */
 inline void SetVolume(byte volume);
+/** \example ex_SetVolume.nxc
+ * This is an example of how to use the \ref SetVolume function.
+ */
+
+/**
+ * Set on-brick program pointer
+ * Set the current OBP (on-brick program) step.
+ *
+ * \param obpStep The new on-brick program step.
+ */
 inline void SetOnBrickProgramPointer(byte obpStep);
+/** \example ex_SetOnBrickProgramPointer.nxc
+ * This is an example of how to use the \ref SetOnBrickProgramPointer function.
+ */
 
 /**
  * Turn off NXT
@@ -6839,11 +7719,51 @@ inline void ForceOff(byte num);
  * This is an example of how to use the \ref ForceOff function.
  */
 
+/**
+ * Set abort flag
+ * Set the enhanced NBC/NXC firmware's program abort flag. By default the
+ * running program can be interrupted by a short press of the escape button.
+ * You can change this to any other button state flag.
+ *
+ * \param abortFlag The new abort flag value. See \ref ButtonStateConstants
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 inline void SetAbortFlag(byte abortFlag);
+/** \example ex_SetAbortFlag.nxc
+* This is an example of how to use the \ref SetAbortFlag function.
+*/
+
+/**
+ * Set long abort
+ * Set the enhanced NBC/NXC firmware's long abort setting (true or false). If
+ * set to true then a program has access the escape button. Aborting a program
+ * requires a long press of the escape button.
+ *
+ * \param longAbort If true then require a long press of the escape button
+ * to abort a program, otherwise a short press will abort it.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 inline void SetLongAbort(bool longAbort);
+/** \example ex_SetLongAbort.nxc
+* This is an example of how to use the \ref SetLongAbort function.
+*/
 
 #if __FIRMWARE_VERSION > 107
+/**
+ * Set system sleep timeout
+ * This function lets you set the system sleep timeout value given the parameters you
+ * pass in via the \ref SetSleepTimeoutType structure.
+ *
+ * \param args The SetSleepTimeoutType structure containing the required parameters.
+ * 
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline void SysSetSleepTimeout(SetSleepTimeoutType & args);
+/** \example ex_SysSetSleepTimeout.nxc
+* This is an example of how to use the \ref SysSetSleepTimeout function.
+*/
 #endif
 
 #else
@@ -7140,7 +8060,10 @@ inline unsigned int FreeMemory(void);
 
 /**
  * Create a file
- * Create a new file with the specified filename and size and open it for * writing. The file handle is returned in the last parameter, which must be a * variable. The loader result code is returned as the value of the function * call. The filename and size parameters must be constants, constant
+ * Create a new file with the specified filename and size and open it for
+ * writing. The file handle is returned in the last parameter, which must be a
+ * variable. The loader result code is returned as the value of the function
+ * call. The filename and size parameters must be constants, constant
  * expressions, or variables. A file created with a size of zero bytes cannot
  * be written to since the NXC file writing functions do not grow the file if
  * its capacity is exceeded during a write attempt.
@@ -7193,7 +8116,14 @@ inline unsigned int OpenFileRead(string fname, unsigned int & fsize, byte & hand
 
 /**
  * Close a file
- * Close the file associated with the specified file handle. The loader * result code is returned as the value of the function call. The handle * parameter must be a constant or a variable. * * \param handle The file handle. * \return The function call result. See \ref LoaderErrors. */inline unsigned int CloseFile(byte handle);
+ * Close the file associated with the specified file handle. The loader
+ * result code is returned as the value of the function call. The handle
+ * parameter must be a constant or a variable.
+ *
+ * \param handle The file handle.
+ * \return The function call result. See \ref LoaderErrors.
+ */
+inline unsigned int CloseFile(byte handle);
 /** \example ex_CloseFile.nxc
  * This is an example of how to use the \ref CloseFile function.
  */
@@ -7218,7 +8148,6 @@ inline unsigned int ResolveHandle(string filename, byte & handle, bool & writeab
  * This is an example of how to use the \ref ResolveHandle function.
  */
 
-
 /**
  * Rename a file
  * Rename a file from the old filename to the new filename. The loader
@@ -7232,50 +8161,57 @@ inline unsigned int RenameFile(string oldname, string newname);
 
 /**
  * DeleteFile function
- * Delete the specified file. The loader result code is returned as the * value of the function call. The filename parameter must be a constant or a
+ * Delete the specified file. The loader result code is returned as the
+ * value of the function call. The filename parameter must be a constant or a
  * variable.
  *
- * \param fname The name of the file to delete. * \return The function call result. See \ref LoaderErrors. */
+ * \param fname The name of the file to delete.
+ * \return The function call result. See \ref LoaderErrors.
+ */
 inline unsigned int DeleteFile(string fname);
 /** \example ex_DeleteFile.nxc
  * This is an example of how to use the \ref DeleteFile function.
  */
 
-#define ResizeFile(_fname, _newsize) asm { __fileResize(_fname, _newsize, __RETVAL__) }
+inline unsigned int ResizeFile(string fname, const unsigned int newsize);
 
 #ifdef __ENHANCED_FIRMWARE
-#define CreateFileLinear(_fname, _fsize, _handle) asm { __createFileLinear(_fname, _fsize, _handle, __RETVAL__) }
-#define CreateFileNonLinear(_fname, _fsize, _handle) asm { __createFileNonLinear(_fname, _fsize, _handle, __RETVAL__) }
+inline unsigned int CreateFileLinear(string fname, const unsigned int & fsize, byte & handle);
+inline unsigned int CreateFileNonLinear(string fname, const unsigned int & fsize, byte & handle);
 inline unsigned int OpenFileReadLinear(string fname, unsigned int & fsize, byte & handle);
-#define FindFirstFile(_fname, _handle) asm { __findFirstFile(_fname, _handle, __RETVAL__) }
-#define FindNextFile(_fname, _handle) asm { __findNextFile(_fname, _handle, __RETVAL__) }
+inline unsigned int FindFirstFile(string & fname, byte & handle);
+inline unsigned int FindNextFile(string & fname, byte & handle);
 #endif
 
 /**
- * Read a numeric value from a file
- * Read a numeric value from the file associated with the specified handle.
- * The loader result code is returned as the value of the function call. The
- * handle parameter must be a variable. The value parameter must be a
+ * Read a value from a file
+ * Read a value from the file associated with the specified handle.
+ * The handle parameter must be a variable. The value parameter must be a
  * variable. The type of the value parameter determines the number of bytes of
  * data read.
  *
- * \param handle The file handle. * \param n The numeric variable to store the data read from the file. * \return The function call result. See \ref LoaderErrors. */
-inline unsigned int Read(byte handle, variant & n);
+ * \param handle The file handle. 
+ * \param value The variable to store the data read from the file.
+ * \return The function call result. See \ref LoaderErrors. 
+ */
+inline unsigned int Read(byte handle, variant & value);
 /** \example ex_Read.nxc
  * This is an example of how to use the \ref Read function.
  */
 
 /**
- * Read a numeric value from a file plus line ending
- * Read a numeric value from the file associated with the specified handle.
- * The loader result code is returned as the value of the function call.
+ * Read a value from a file plus line ending
+ * Read a value from the file associated with the specified handle.
  * The handle parameter must be a variable. The value parameter must be a
  * variable. The type of the value parameter determines the number of bytes
  * of data read. The ReadLn function reads two additional bytes from the
  * file which it assumes are a carriage return and line feed pair.
  *
- * \param handle The file handle. * \param n The numeric variable to store the data read from the file. * \return The function call result. See \ref LoaderErrors. */
-inline unsigned int ReadLn(byte handle, variant & n);
+ * \param handle The file handle.
+ * \param value The variable to store the data read from the file.
+ * \return The function call result. See \ref LoaderErrors.
+ */
+inline unsigned int ReadLn(byte handle, variant & value);
 /** \example ex_ReadLn.nxc
  * This is an example of how to use the \ref ReadLn function.
  */
@@ -7283,26 +8219,140 @@ inline unsigned int ReadLn(byte handle, variant & n);
 /**
  * Read bytes from a file
  * Read the specified number of bytes from the file associated with the
- * specified handle. The loader result code is returned as the value of the
- * function call. The handle parameter must be a variable. The length
+ * specified handle. The handle parameter must be a variable. The length
  * parameter must be a variable. The buf parameter must be an array or a
  * string variable. The actual number of bytes read is returned in the
  * length parameter.
  *
- * \param handle The file handle. * \param length The number of bytes to read. Returns the number of bytes actually read. * \param buf The byte array where the data is stored on output. * \return The function call result. See \ref LoaderErrors. */
+ * \param handle The file handle.
+ * \param length The number of bytes to read. Returns the number of bytes actually read.
+ * \param buf The byte array where the data is stored on output.
+ * \return The function call result. See \ref LoaderErrors.
+ */
 inline unsigned int ReadBytes(byte handle, unsigned int & length, byte & buf[]);
 /** \example ex_ReadBytes.nxc
  * This is an example of how to use the \ref ReadBytes function.
  */
 
-#define ReadLnString(_handle, _output) asm { __readLnString(_handle, _output, __RETVAL__) }
+/**
+ * Read a string from a file plus line ending
+ * Read a string from the file associated with the specified handle.
+ * The handle parameter must be a variable. The output parameter must be a
+ * variable. Appends bytes to the output variable until a line ending (CRLF)
+ * is reached. The line ending is also read but it is not appended to the
+ * output parameter.
+ *
+ * \param handle The file handle.
+ * \param output The variable to store the string read from the file.
+ * \return The function call result. See \ref LoaderErrors.
+ */
+inline unsigned int ReadLnString(byte handle, string & output);
 
-#define Write(_handle, _n) asm { __writeValue(_handle, _n, __RETVAL__) }
-#define WriteLn(_handle, _n) asm { __writeLnValue(_handle, _n, __RETVAL__) }
-#define WriteString(_handle, _str, _cnt) asm { __writeString(_handle, _str, _cnt, __RETVAL__) }
-#define WriteLnString(_handle, _str, _cnt) asm { __writeLnString(_handle, _str, _cnt, __RETVAL__) }
-#define WriteBytes(_handle, _buf, _cnt) asm { __writeBytes(_handle, _buf, _cnt, __RETVAL__) }
-#define WriteBytesEx(_handle, _len, _buf) asm { __writeBytesEx(_handle, _len, _buf, __RETVAL__) }
+/**
+ * Write value to file
+ * Write a value to the file associated with the specified handle.
+ * The handle parameter must be a variable. The value parameter must be a
+ * constant, a constant expression, or a variable. The type of the value
+ * parameter determines the number of bytes of data written.
+ *
+ * \param handle The file handle.
+ * \param value The value to write to the file.
+ * \return The function call result. See \ref LoaderErrors.
+ */
+inline unsigned int Write(byte handle, const variant & value);
+/** \example ex_Write.nxc
+ * This is an example of how to use the \ref Write function.
+ */
+
+/**
+ * Write bytes to file
+ * Write the contents of the data array to the file associated with the
+ * specified handle. The handle parameter must be a variable. The cnt
+ * parameter must be a variable. The data parameter must be a byte array. The
+ * actual number of bytes written is returned in the cnt parameter.
+ *
+ * \param handle The file handle.
+ * \param buf The byte array or string containing the data to write.
+ * \param cnt The number of bytes actually written to the file.
+ * \return The function call result. See \ref LoaderErrors.
+ */
+inline unsigned int WriteBytes(byte handle, const byte & buf[], unsigned int & cnt);
+/** \example ex_WriteBytes.nxc
+ * This is an example of how to use the \ref WriteBytes function.
+ */
+
+/**
+ * Write bytes to a file with limit
+ * Write the specified number of bytes to the file associated with the
+ * specified handle. The handle parameter must be a variable. The len
+ * parameter must be a variable. The buf parameter must be a byte array or a
+ * string variable or string constant. The actual number of bytes written is
+ * returned in the len parameter.
+ *
+ * \param handle The file handle.
+ * \param len The maximum number of bytes to write on input.  Returns the
+ * actual number of bytes written.
+ * \param buf The byte array or string containing the data to write.
+ * \return The function call result. See \ref LoaderErrors.
+ */
+inline unsigned int WriteBytesEx(byte handle, unsigned int & len, const byte & buf[]);
+/** \example ex_WriteBytesEx.nxc
+ * This is an example of how to use the \ref WriteBytesEx function.
+ */
+
+/**
+ * Write a value and new line to a file
+ * Write a value to the file associated with the specified handle. The
+ * handle parameter must be a variable. The value parameter must be a constant,
+ * a constant expression, or a variable. The type of the value parameter
+ * determines the number of bytes of data written. The WriteLn function also
+ * writes a carriage return and a line feed to the file following the numeric
+ * data.
+ *
+ * \param handle The file handle.
+ * \param value The value to write to the file.
+ * \return The function call result. See \ref LoaderErrors.
+ */
+inline unsigned int WriteLn(byte handle, const variant & value);
+/** \example ex_WriteLn.nxc
+ * This is an example of how to use the \ref WriteLn function.
+ */
+
+/**
+ * Write string and new line to a file
+ * Write the string to the file associated with the specified handle. The
+ * handle parameter must be a variable. The count parameter must be a variable.
+ * The str parameter must be a string variable or string constant. This
+ * function also writes a carriage return and a line feed to the file following
+ * the string data. The total number of bytes written is returned in the
+ * cnt parameter.
+ *
+ * \param handle The file handle.
+ * \param str The string to write to the file.
+ * \param cnt The number of bytes actually written to the file.
+ * \return The function call result. See \ref LoaderErrors.
+ */
+inline unsigned int WriteLnString(byte handle, const string & str, unsigned int & cnt);
+/** \example ex_WriteLnString.nxc
+ * This is an example of how to use the \ref WriteLnString function.
+ */
+
+/**
+ * Write string to a file
+ * Write the string to the file associated with the specified handle. The
+ * handle parameter must be a variable. The count parameter must be a variable.
+ * The str parameter must be a string variable or string constant. The actual
+ * number of bytes written is returned in the cnt parameter.
+ *
+ * \param handle The file handle.
+ * \param str The string to write to the file.
+ * \param cnt The number of bytes actually written to the file.
+ * \return The function call result. See \ref LoaderErrors.
+ */
+inline unsigned int WriteString(byte handle, const string & str, unsigned int & cnt);
+/** \example ex_WriteString.nxc
+ * This is an example of how to use the \ref WriteString function.
+ */
 
 /**
  * Open file for reading.
@@ -8758,7 +9808,7 @@ inline void HTRCXSelectProgram(const byte prog);
  * Send the SendSerial command to an RCX.
  *
  * \param first The first byte address.
- * \param ccount The number of bytes to send.
+ * \param count The number of bytes to send.
  */
 inline void HTRCXSendSerial(const byte first, const byte count);
 /** \example ex_HTRCXSendSerial.nxc
@@ -9574,7 +10624,7 @@ inline char MSPFRepeat(const byte port, const byte count, const unsigned int del
  * \param delay The number of milliseconds to delay between each repetition.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
 */
-inline char MSPFRepeatEx(const byte ort, const byte addr, const byte count, const unsigned int delay);
+inline char MSPFRepeatEx(const byte port, const byte addr, const byte count, const unsigned int delay);
 /** \example ex_MSPFRepeatEx.nxc
  * This is an example of how to use the \ref MSPFRepeatEx function.
  */
@@ -9767,8 +10817,8 @@ inline char MSPFTrainEx(const byte port, const byte addr, const byte channel, co
  * \param port The sensor port. See \ref InPorts.
  */
 inline void MSRCXSetNRLinkPort(const byte port);
-/** \example ex_MSRCXSetIRLinkPort.nxc
- * This is an example of how to use the \ref MSRCXSetIRLinkPort function.
+/** \example ex_MSRCXSetNRLinkPort.nxc
+ * This is an example of how to use the \ref MSRCXSetNRLinkPort function.
  */
 
 /**
@@ -9782,8 +10832,8 @@ inline void MSRCXSetNRLinkPort(const byte port);
  * \param addr The sensor I2C address. See sensor documentation for this value.
  */
 inline void MSRCXSetNRLinkPortEx(const byte port, const byte addr);
-/** \example ex_MSRCXSetIRLinkPortEx.nxc
- * This is an example of how to use the \ref MSRCXSetIRLinkPortEx function.
+/** \example ex_MSRCXSetNRLinkPortEx.nxc
+ * This is an example of how to use the \ref MSRCXSetNRLinkPortEx function.
  */
 
 /**
@@ -10313,7 +11363,7 @@ inline void MSRCXSelectProgram(const byte prog);
  * Send the SendSerial command to an RCX.
  *
  * \param first The first byte address.
- * \param ccount The number of bytes to send.
+ * \param count The number of bytes to send.
  */
 inline void MSRCXSendSerial(const byte first, const byte count);
 /** \example ex_MSRCXSendSerial.nxc
@@ -10510,7 +11560,7 @@ inline void MSRCXSetUserDisplay(const byte src, const unsigned int value, const 
  * \param src The RCX source.  See \ref RCXSourceConstants.
  * \param value The RCX value.
  */
-inline void MSRCXSetVar(varnum, const byte src, const unsigned int value);
+inline void MSRCXSetVar(const byte varnum, const byte src, const unsigned int value);
 /** \example ex_MSRCXSetVar.nxc
  * This is an example of how to use the \ref MSRCXSetVar function.
  */
@@ -11005,6 +12055,9 @@ inline void MSScoutUnmuteSound(void);
  * \return Square root of x.
  */
 inline float sqrt(float x) { asm { sqrt __FLTRETVAL__, x } }
+/** \example ex_sqrt.nxc
+ * This is an example of how to use the \ref sqrt function.
+ */
 
 #ifdef __ENHANCED_FIRMWARE
 
@@ -11363,6 +12416,9 @@ inline float cos(float x) { asm { cos __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float sin(float x) { asm { sin __FLTRETVAL__, x } }
+/** \example ex_sin.nxc
+ * This is an example of how to use the \ref sin function.
+ */
 
 /**
  * Compute tangent.
@@ -11374,6 +12430,9 @@ inline float sin(float x) { asm { sin __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float tan(float x) { asm { tan __FLTRETVAL__, x } }
+/** \example ex_tan.nxc
+ * This is an example of how to use the \ref tan function.
+ */
 
 /**
  * Compute arc cosine.
@@ -11466,6 +12525,9 @@ inline float cosh(float x) { asm { cosh __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float sinh(float x) { asm { sinh __FLTRETVAL__, x } }
+/** \example ex_sinh.nxc
+ * This is an example of how to use the \ref sinh function.
+ */
 
 /**
  * Compute hyperbolic tangent.
@@ -11477,6 +12539,9 @@ inline float sinh(float x) { asm { sinh __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float tanh(float x) { asm { tanh __FLTRETVAL__, x } }
+/** \example ex_tanh.nxc
+ * This is an example of how to use the \ref tanh function.
+ */
 
 /**
  * Compute exponential function.
@@ -11536,6 +12601,9 @@ inline float log10(float x) { asm { log10 __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline long trunc(float x) { asm { trunc __RETVAL__, x } }
+/** \example ex_trunc.nxc
+ * This is an example of how to use the \ref trunc function.
+ */
 
 /**
  * Compute fractional part.
@@ -11637,6 +12705,9 @@ inline float cosd(float x) { asm { cosd __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float sind(float x) { asm { sind __FLTRETVAL__, x } }
+/** \example ex_sind.nxc
+ * This is an example of how to use the \ref sind function.
+ */
 
 /**
  * Compute tangent (degrees).
@@ -11648,6 +12719,9 @@ inline float sind(float x) { asm { sind __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float tand(float x) { asm { tand __FLTRETVAL__, x } }
+/** \example ex_tand.nxc
+ * This is an example of how to use the \ref tand function.
+ */
 
 /**
  * Compute arc cosine (degrees).
@@ -11804,6 +12878,9 @@ struct RandomNumberType {
  * \return Whether the value is NaN.
  */
 inline bool isNAN(float value);
+/** \example ex_isNAN.nxc
+ * This is an example of how to use the \ref isNAN function.
+ */
 
 /**
  * Sign value.
@@ -11815,6 +12892,9 @@ inline bool isNAN(float value);
  * the parameter is positive.
  */
 inline char sign(variant num);
+/** \example ex_sign.nxc
+ * This is an example of how to use the \ref sign function.
+ */
 
 /**
  * Generate random number.
@@ -12109,8 +13189,8 @@ inline int fputs(string str, byte handle) {
  * format argument specifies. After the format parameter, the function
  * expects one value argument.
  *
- * \param _format A string specifying the desired format.
- * \param _value A value to be formatted for writing to the LCD.
+ * \param format A string specifying the desired format.
+ * \param value A value to be formatted for writing to the LCD.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
@@ -12142,13 +13222,16 @@ inline void fprintf(byte handle, string format, variant value);
  * string. After the format parameter, the function expects one value
  * argument.
  *
- * \param _str The string to write to.
- * \param _format A string specifying the desired format.
- * \param _value A value to be formatted for writing to the string.
+ * \param str The string to write to.
+ * \param format A string specifying the desired format.
+ * \param value A value to be formatted for writing to the string.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline void sprintf(string & str, string format, variant value);
+/** \example ex_sprintf.nxc
+ * This is an example of how to use the \ref sprintf function.
+ */
 
 #else
 
@@ -12227,7 +13310,7 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
 */
 
 /** \example ex_cstdio.nxc
- * How to use the cstdio API functions: \ref fopen, \ref fprintf, \ref fputc,
+ * This is an example of how to use the cstdio API functions: \ref fopen, \ref fprintf, \ref fputc,
  * \ref fputs, \ref fseek, \ref ftell, \ref fclose, \ref feof, \ref fflush,
  * \ref fgetc, \ref fgets, \ref getc, \ref putc, \ref rewind,
  * \ref printf, \ref sprintf, \ref rename, and \ref remove.
@@ -12294,6 +13377,9 @@ struct ldiv_t {
  * The function never returns to its caller.
  */
 inline void abort();
+/** \example ex_abort.nxc
+ * This is an example of how to use the \ref abort function.
+ */
 
 /**
  * Absolute value.
@@ -12305,8 +13391,7 @@ inline void abort();
  */
 inline variant abs(variant num);
 /** \example ex_abs.nxc
- * This is an example of how to use the \
- ref abs function.
+ * This is an example of how to use the \ref abs function.
  */
 
 /**
@@ -12316,6 +13401,9 @@ inline variant abs(variant num);
  * \return An integer value between 0 and RAND_MAX.
  */
 inline unsigned int rand();
+/** \example ex_rand.nxc
+ * This is an example of how to use the \ref rand function.
+ */
 
 #else
 
@@ -12475,6 +13563,7 @@ inline float strtod(const string & str, string & endptr) {
  * \param str String beginning with the representation of an integral number.
  * \param endptr Reference to a string, whose value is set by the function to
  * the remaining characters in str after the numerical value.
+ * \param base Optional and ignored if specified.
  * \return On success, the function returns the converted integral number
  * as a long int value. If no valid conversion could be performed a zero value
  * is returned.
@@ -12510,6 +13599,7 @@ inline long strtol(const string & str, string & endptr, int base = 10) {
  * \param str String containing the representation of an unsigned integral number.
  * \param endptr Reference to a string, whose value is set by the function to
  * the remaining characters in str after the numerical value.
+ * \param base Optional and ignored if specified.
  * \return On success, the function returns the converted integral number
  * as an unsigned long int value. If no valid conversion could be performed a
  * zero value is returned.
@@ -12564,8 +13654,8 @@ inline ldiv_t ldiv(long numer, long denom) {
 }
 
 /** \example ex_cstdlib.nxc
- * How to use the cstdlib API functions: \ref abs, \ref labs, \ref atof,
- * \ref atoi, \ref atol, \ref strtod, \ref strtol, \ref strtoul, \ref dif,
+ * This is an example of how to use the cstdlib API functions: \ref abs, \ref labs, \ref atof,
+ * \ref atoi, \ref atol, \ref strtod, \ref strtol, \ref strtoul, \ref div,
  * \ref ldiv, \ref abort, and \ref rand.
  */
 
@@ -12595,6 +13685,9 @@ inline ldiv_t ldiv(long numer, long denom) {
  * \return A number.
  */
 inline variant StrToNum(string str);
+/** \example ex_StrToNum.nxc
+ * This is an example of how to use the \ref StrToNum function.
+ */
 
 /**
  * Get string length.
@@ -12616,6 +13709,9 @@ inline unsigned int StrLen(string str);
  * \return The numeric value of the character at the specified index.
  */
 inline byte StrIndex(string str, unsigned int idx);
+/** \example ex_StrIndex.nxc
+ * This is an example of how to use the \ref StrIndex function.
+ */
 
 /**
  * Convert number to string.
@@ -12654,6 +13750,9 @@ inline string StrCat(string str1, string str2, string strN);
  * \return The sub-string extracted from parameter str.
  */
 inline string SubStr(string str, unsigned int idx, unsigned int len);
+/** \example ex_SubStr.nxc
+ * This is an example of how to use the \ref SubStr function.
+ */
 
 /**
  * Flatten a number to a string.
@@ -12679,6 +13778,9 @@ inline string Flatten(variant num);
  * \return The modified string.
  */
 inline string StrReplace(string str, unsigned int idx, string strnew);
+/** \example ex_StrReplace.nxc
+ * This is an example of how to use the \ref StrReplace function.
+ */
 
 /**
  * Format a number.
@@ -12720,6 +13822,9 @@ inline string FlattenVar(variant x);
  * \return A boolean value indicating whether the operation succeeded or not.
  */
 inline int UnflattenVar(string str, variant & x);
+/** \example ex_UnflattenVar.nxc
+ * This is an example of how to use the \ref UnflattenVar function.
+ */
 
 /**
  * Convert a byte array to a string.
@@ -12764,6 +13869,9 @@ inline void ByteArrayToStrEx(byte data[], string & str);
  * without its null terminator.
  */
 inline void StrToByteArray(string str, byte & data[]);
+/** \example ex_StrToByteArray.nxc
+ * This is an example of how to use the \ref StrToByteArray function.
+ */
 
 #else
 
@@ -12842,6 +13950,9 @@ inline string LeftStr(string str, unsigned int size) { return SubStr(str, 0, siz
  * \return The length of the string.
  */
 inline int strlen(const string & str) { asm { strlen __RETVAL__, str } }
+/** \example ex_strlen.nxc
+ * This is an example of how to use the \ref strlen function.
+ */
 
 /**
  * Concatenate strings.
@@ -12861,6 +13972,9 @@ inline string strcat(string & dest, const string & src) {
     mov dest, __STRBUFFER__
   }
 }
+/** \example ex_strcat.nxc
+ * This is an example of how to use the \ref strcat function.
+ */
 
 /**
  * Append characters from string.
@@ -12881,6 +13995,9 @@ inline string strncat(string & dest, const string & src, unsigned int num) {
     mov dest, __STRBUFFER__
   }
 }
+/** \example ex_strncat.nxc
+ * This is an example of how to use the \ref strncat function.
+ */
 
 /**
  * Copy string.
@@ -12897,6 +14014,9 @@ inline string strcpy(string & dest, const string & src) {
     mov dest, __STRBUFFER__
   }
 }
+/** \example ex_strcpy.nxc
+ * This is an example of how to use the \ref strcpy function.
+ */
 
 /**
  * Copy characters from string.
@@ -12914,6 +14034,9 @@ inline string strncpy(string & dest, const string & src, unsigned int num) {
     mov __STRBUFFER__, dest
   }
 }
+/** \example ex_strncpy.nxc
+ * This is an example of how to use the \ref strncpy function.
+ */
 
 /**
  * Compare two strings.
@@ -12935,6 +14058,9 @@ inline int strcmp(const string & str1, const string & str2) {
     result = 1;
   return result;
 }
+/** \example ex_strcmp.nxc
+ * This is an example of how to use the \ref strcmp function.
+ */
 
 /**
  * Compare characters of two strings.
@@ -12962,6 +14088,9 @@ inline int strncmp(const string & str1, const string & str2, unsigned int num) {
     result = 1;
   return result;
 }
+/** \example ex_strncmp.nxc
+ * This is an example of how to use the \ref strncmp function.
+ */
 
 #ifdef __DOXYGEN_DOCS
 
@@ -13039,14 +14168,14 @@ void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (s
 */
 
 /** \example ex_string.nxc
- * How to use the string API functions: \ref StrToNum, \ref StrLen,
+ * This is an example of how to use the string API functions: \ref StrToNum, \ref StrLen,
  * \ref StrIndex, \ref NumToStr, \ref StrCat, \ref SubStr, \ref Flatten,
  * \ref StrReplace, \ref FormatNum, \ref FlattenVar, \ref UnflattenVar,
  * \ref ByteArrayToStr, \ref ByteArrayToStrEx, and \ref StrToByteArray.
  */
 
 /** \example ex_cstring.nxc
- * How to use the cstring API functions: \ref strcat, \ref strcmp, \ref strcpy,
+ * This is an example of how to use the cstring API functions: \ref strcat, \ref strcmp, \ref strcpy,
  * \ref strlen, \ref strncat, \ref strncmp, \ref strncpy, \ref memcpy,
  * \ref memmove, and \ref memcmp.
  */
@@ -13240,7 +14369,7 @@ inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
  */
 
 /** \example ex_ctype.nxc
- * How to use the ctype API functions: \ref isupper, \ref islower, \ref isalpha,
+ * This is an example of how to use the ctype API functions: \ref isupper, \ref islower, \ref isalpha,
  * \ref isdigit, \ref isalnum, \ref isspace, \ref iscntrl, \ref isprint,
  * \ref isgraph, \ref ispunct, \ref isxdigit, \ref toupper, and \ref tolower.
  */
@@ -13250,6 +14379,12 @@ inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
 
 /** @addtogroup RICMacros
  * @{
+ */
+/**
+ * Set the value of an element in an RIC data array.
+ * \param _data The RIC data array
+ * \param _idx The array index to update
+ * \param _newval The new value to write into the RIC data array
  */
 #define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8
 /** @} */ // end of RICMacros group

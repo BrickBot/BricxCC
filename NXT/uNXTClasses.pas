@@ -657,6 +657,7 @@ type
     procedure HandleSpecialFunctionIsConst(Arg : TAsmArgument; const left, right, name : string);
     procedure HandleSpecialFunctionValueOf(Arg : TAsmArgument; const left, right, name : string);
     procedure HandleSpecialFunctionTypeOf(Arg : TAsmArgument; const left, right, name : string);
+    procedure HandlePreprocStatusChange(Sender : TObject; const StatusMsg : string);
     property  LineCounter : integer read fLineCounter write SetLineCounter;
   public
     constructor Create;
@@ -4426,6 +4427,8 @@ var
   S : TMemoryStream;
   tmpFile, tmpMsg : string;
 begin
+  DoCompilerStatusChange(sNBCCompBegin);
+  DoCompilerStatusChange(Format(sCompileTargets, [FirmwareVersion, BoolToString(EnhancedFirmware)]));
   Result := '';
   try
     if not IgnoreSystemFile then
@@ -4451,6 +4454,7 @@ begin
     fMainStateCurrent := masCodeSegment; // default state
     P := TLangPreprocessor.Create(TNBCLexer, ExtractFilePath(ParamStr(0)), lnNBC, MaxPreprocessorDepth);
     try
+      P.OnPreprocessorStatusChange := HandlePreprocStatusChange;
       P.Defines.AddDefines(Defines);
       if EnhancedFirmware then
         P.Defines.Define('__ENHANCED_FIRMWARE');
@@ -6676,8 +6680,12 @@ end;
 
 procedure TRXEProgram.SetCurrentFile(const Value: string);
 begin
-  fCurrentFile := ExtractFilename(Value);
-  fCurrentPath := ExtractFilePath(Value);
+  if fCurrentPath + fCurrentFile <> Value then
+  begin
+    fCurrentFile := ExtractFilename(Value);
+    fCurrentPath := ExtractFilePath(Value);
+//    DoCompilerStatusChange(Format(sCurrentFile, [Value]));
+  end;
 end;
 
 procedure TRXEProgram.FixupComparisonCodes(Arg: TAsmArgument);
@@ -7078,6 +7086,12 @@ begin
   Result := Replace(Result, '\r', #05);
   // replace " with '
   Result := Replace(Result, '"', '''');
+end;
+
+procedure TRXEProgram.HandlePreprocStatusChange(Sender: TObject;
+  const StatusMsg: string);
+begin
+  DoCompilerStatusChange(StatusMsg);
 end;
 
 { TAsmLine }

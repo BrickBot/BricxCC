@@ -53,6 +53,8 @@ type
     property ConsiderCase : boolean read fConsiderCase write SetConsiderCase;
   end;
 
+  TPreprocessorStatusChangeEvent = procedure(Sender : TObject; const StatusMsg : string) of object;
+
   TLangPreprocessor = class
   private
     fLangName : TLangName;
@@ -68,6 +70,7 @@ type
     fLexers : TObjectList;
     fRecursionDepth : integer;
     fAddPoundLine: boolean;
+    fOnPreprocessorStatusChange: TPreprocessorStatusChangeEvent;
 {
     fVarI : integer;
     fVarJ : integer;
@@ -100,6 +103,7 @@ type
     function ImportRIC(const fname, varname : string) : string;
     function ImportFile(const fname : string; varname : string) : string;
     function GetPreprocPath(const fname : string; const path : string) : string;
+    procedure DoPreprocessorStatusChange(const Status: string);
   public
     class function PreprocessStrings(GLType : TGenLexerClass; const fname : string; aStrings : TStrings; aLN : TLangName; MaxDepth : word) : string;
     class function PreprocessFile(GLType : TGenLexerClass; const fin, fout : string; aLN : TLangName; MaxDepth : word) : string;
@@ -112,6 +116,7 @@ type
     property Defines : TMapList read GetDefines;
     property AddPoundLineToMultiLineMacros : boolean read fAddPoundLine write fAddPoundLine;
     property Warnings : TStrings read fWarnings;
+    property OnPreprocessorStatusChange : TPreprocessorStatusChangeEvent read fOnPreprocessorStatusChange write fOnPreprocessorStatusChange;
   end;
 
 implementation
@@ -187,7 +192,7 @@ begin
 //  MacroDefs.Clear;
   fWarnings.Clear;
   fLevelIgnore.Clear;
-  IncludeDirs.Add(ExtractFilePath(fname));
+  IncludeDirs.Add(IncludeTrailingPathDelimiter(ExtractFilePath(fname)));
   fLevelIgnore.Add(TProcessLevel.Create); // level zero is NOT ignored
   fLevel := 0; // starting level is zero
   fRecursionDepth := 0;
@@ -642,6 +647,7 @@ var
   bFileFound, bDefined, bProcess : boolean;
   origName : string;
 begin
+  DoPreprocessorStatusChange(sIncludePath + ' = ' + IncludeDirs.DelimitedText);
   Result := '';
   origName := name;
   S := '';
@@ -711,20 +717,24 @@ begin
                 if qPos > 0 then
                 begin
                   tmpName := Copy(dirText, 1, qPos-1);
+                  DoPreprocessorStatusChange(sProcessingDownload + ': ' + tmpName);
                   usePath := '';
                   // first try to find the file without any include path
+                  DoPreprocessorStatusChange(sSearchingForFile + ': ' + usePath+tmpName);
                   bFileFound := FileExists(tmpName);
                   if not bFileFound then
                   begin
                     for i := 0 to IncludeDirs.Count - 1 do
                     begin
                       usePath := GetPreprocPath(origName, IncludeDirs[i]);
+                      DoPreprocessorStatusChange(sSearchingForFile + ': ' + usePath+tmpName);
                       bFileFound := FileExists(usePath+tmpName);
                       if bFileFound then Break;
                     end;
                   end;
                   if bFileFound then
                   begin
+                    DoPreprocessorStatusChange(sFoundFile + ': ' + usePath+tmpName);
                     // add this filename to the result
                     Result := Result + usePath+tmpName + #13#10;
                   end
@@ -763,21 +773,25 @@ begin
                 if qPos > 0 then
                 begin
                   tmpName := Copy(dirText, 1, qPos-1);
+                  DoPreprocessorStatusChange(sProcessingImport + ': ' + tmpName);
                   System.Delete(dirText, 1, qPos);
                   usePath := '';
                   // first try to find the file without any include path
+                  DoPreprocessorStatusChange(sSearchingForFile + ': ' + usePath+tmpName);
                   bFileFound := FileExists(tmpName);
                   if not bFileFound then
                   begin
                     for i := 0 to IncludeDirs.Count - 1 do
                     begin
                       usePath := GetPreprocPath(origName, IncludeDirs[i]);
+                      DoPreprocessorStatusChange(sSearchingForFile + ': ' + usePath+tmpName);
                       bFileFound := FileExists(usePath+tmpName);
                       if bFileFound then Break;
                     end;
                   end;
                   if bFileFound then
                   begin
+                    DoPreprocessorStatusChange(sFoundFile + ': ' + usePath+tmpName);
                     dirtext := Trim(dirText);
                     // the optional parameter is only up to the first space or '/'
                     i := Pos(' ', dirText);
@@ -829,24 +843,28 @@ begin
                 if qPos > 0 then
                 begin
                   tmpName := Copy(dirText, 1, qPos-1);
+                  DoPreprocessorStatusChange(sProcessingInclude + ': ' + tmpName);
                   if fIncludeFilesToSkip.IndexOf(tmpName) = -1 then
                   begin
                     X := TMemoryStream.Create;
                     try
                       usePath := '';
                       // first try to find the file without any include path
+                      DoPreprocessorStatusChange(sSearchingForFile + ': ' + usePath+tmpName);
                       bFileFound := FileExists(tmpName);
                       if not bFileFound then
                       begin
                         for i := 0 to IncludeDirs.Count - 1 do
                         begin
                           usePath := GetPreprocPath(origName, IncludeDirs[i]);
+                          DoPreprocessorStatusChange(sSearchingForFile + ': ' + usePath+tmpName);
                           bFileFound := FileExists(usePath+tmpName);
                           if bFileFound then Break;
                         end;
                       end;
                       if bFileFound then
                       begin
+                        DoPreprocessorStatusChange(sFoundFile + ': ' + usePath+tmpName);
                         // load into stream
                         X.LoadFromFile(usePath+tmpName);
                         // call function recursively
@@ -898,7 +916,9 @@ begin
           begin
             cnt := 1; // number of lines in #define
             if bProcess then
+            begin
               cnt := cnt + ProcessMacroDefinition(name, dir = '#undef', Lex, lineNo);
+            end;
             // output blank line(s) to replace #define
             for i := 0 to cnt - 1 do
               OutStrings.Add('');
@@ -1111,7 +1131,9 @@ begin
   fWarnings := TStringList.Create;
   IncludeDirs := TStringList.Create;
   IncludeDirs.Duplicates := dupIgnore;
-  IncludeDirs.Add(defIncDir);
+  IncludeDirs.Sorted := True;
+  IncludeDirs.Delimiter := ';';
+  IncludeDirs.Add(IncludeTrailingPathDelimiter(defIncDir));
   MacroDefs := TMapList.Create;
   MacroFuncArgs := TMapList.Create;
   fLevelIgnore := TObjectList.Create;
@@ -1150,8 +1172,11 @@ begin
 end;
 
 procedure TLangPreprocessor.AddIncludeDirs(aStrings: TStrings);
+var
+ i : integer;
 begin
-  IncludeDirs.AddStrings(aStrings);
+  for i := 0 to aStrings.Count - 1 do
+    IncludeDirs.Add(IncludeTrailingPathDelimiter(aStrings[i]));
 end;
 
 function TLangPreprocessor.GenLexerType: TGenLexerClass;
@@ -1317,6 +1342,12 @@ begin
     Result := ExtractFilePath(fname) + Result
   else if Pos(PathDelim, Result) = 1 then
     Result := ExtractFileDrive(fname) + Result;
+end;
+
+procedure TLangPreprocessor.DoPreprocessorStatusChange(const Status: string);
+begin
+  if Assigned(fOnPreprocessorStatusChange) then
+    fOnPreprocessorStatusChange(Self, Status);
 end;
 
 { EPreprocessorException }

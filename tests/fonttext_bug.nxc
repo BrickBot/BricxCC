@@ -1,0 +1,4 @@
+string filename="font.ric";
+task main(){
+  FontTextOut(0,0, filename, "test");
+}
