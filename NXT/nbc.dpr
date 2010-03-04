@@ -89,12 +89,19 @@ begin
   // on the NXT: -N=<nxtname>
 end;
 
+type
+  TStatusChangeHandler = class
+  public
+    procedure HandleCompilerStatusChange(Sender : TObject; const StatusMsg : string);
+  end;
+
 var
   C : TNBCCompiler;
   F : TextFile;
   i : integer;
   Filename : string;
   TheErrorCode : integer;
+  SCH : TStatusChangeHandler;
 
 procedure HandleWriteMessages(aStrings : TStrings);
 var
@@ -113,9 +120,26 @@ begin
   end;
 end;
 
+{ TStatusChangeHandler }
+
+procedure TStatusChangeHandler.HandleCompilerStatusChange(Sender: TObject;
+  const StatusMsg: string);
+var
+  SL : TStringList;
+begin
+  SL := TStringList.Create;
+  try
+    SL.Add('# Status: ' + StatusMsg);
+    HandleWriteMessages(SL);
+  finally
+    SL.Free;
+  end;
+end;
+
 begin
   TheErrorCode := 0;
 
+SCH := TStatusChangeHandler.Create;
 try
   if ParamSwitch('-help', False) then
   begin
@@ -147,6 +171,7 @@ try
     C := TNBCCompiler.Create;
     try
       LoadParamDefinitions(C.ExtraDefines);
+      C.OnCompilerStatusChange   := SCH.HandleCompilerStatusChange;
       C.OnWriteMessages          := HandleWriteMessages;
       C.InputFilename            := Filename;
       C.DefaultIncludeDir        := DEFAULT_INCLUDE_DIR;
@@ -166,7 +191,17 @@ try
       C.UseSpecialName           := ParamSwitch('-N', False);
       C.SpecialName              := ParamValue('-N', False);
       C.OptimizationLevel        := 1;
-      if ParamSwitch('-Z', False) or ParamSwitch('-Z2', False) then
+      if ParamSwitch('-Z', False) then
+        C.OptimizationLevel      := 2
+      else if ParamSwitch('-Z6', False) then
+        C.OptimizationLevel      := 6
+      else if ParamSwitch('-Z5', False) then
+        C.OptimizationLevel      := 5
+      else if ParamSwitch('-Z4', False) then
+        C.OptimizationLevel      := 4
+      else if ParamSwitch('-Z3', False) then
+        C.OptimizationLevel      := 3
+      else if ParamSwitch('-Z2', False) then
         C.OptimizationLevel      := 2
       else if ParamSwitch('-Z1', False) then
         C.OptimizationLevel      := 1
@@ -174,7 +209,6 @@ try
         C.OptimizationLevel      := 0;
       C.UsePort                  := ParamSwitch('-S', False);
       C.PortName                 := ParamValue('-S', False);
-      C.UseBluetooth             := ParamSwitch('-BT', False);
       C.BinaryInput              := ParamSwitch('-b', False);
       C.Download                 := ParamSwitch('-d', False);
       C.RunProgram               := ParamSwitch('-r', False);
@@ -183,6 +217,8 @@ try
       C.WarningsAreOff           := ParamSwitch('-w-', False);
       C.EnhancedFirmware         := ParamSwitch('-EF', False);
       C.SafeCalls                := ParamSwitch('-safecall', False);
+      C.WriteCompilerMessages    := ParamSwitch('-E', False);
+      C.CompilerMessagesFilename := ParamValue('-E', False);
       if Filename <> '' then
       begin
         if ParamSwitch('-x', False) then
@@ -211,6 +247,7 @@ try
   end;
 
 finally
+  SCH.Free;
   if TheErrorCode <> 0 then
     Halt(TheErrorCode);
 end;

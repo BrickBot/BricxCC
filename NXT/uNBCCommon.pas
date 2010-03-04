@@ -1190,6 +1190,7 @@ function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
   Strings: TStrings): Integer;
 function ValueToDataType(const value : integer) : char;
 function DataTypeToTypeName(const dt : char) : string;
+function BoolToString(aValue : boolean) : string;
 
 const
   TOK_SEMICOLON     = ';';
@@ -1568,6 +1569,14 @@ begin
   else
     Result := 'unexpected type';
   end;
+end;
+
+function BoolToString(aValue : boolean) : string;
+begin
+  if aValue then
+    Result := 'TRUE'
+  else
+    Result := 'FALSE';
 end;
 
 { TNBCExpParser }

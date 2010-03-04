@@ -442,6 +442,12 @@ resourcestring
   sInvalidPreprocExpression = 'Invalid preprocessor expression : %s';
   sInvalidCharConstant      = 'Invalid char constant';
   sMaxRecursionDepthError   = 'Max recursion depth (%d) exceeded';
+  sIncludePath              = 'Include path';
+  sSearchingForFile         = 'Searching for file';
+  sFoundFile                = 'Found file';
+  sProcessingDownload       = 'Processing download';
+  sProcessingImport         = 'Processing import';
+  sProcessingInclude        = 'Processing include';
 
 // uNXTClasses
 resourcestring
@@ -501,6 +507,7 @@ resourcestring
   sNBCPreprocess       = 'Running NBC Preprocessor';
   sNBCCompilingSource  = 'Compiling NBC source code';
   sNBCOptClump         = 'Optimizing clump: %s';
+  sNBCCompBegin        = 'NBC compilation begins';
 
 // uNXCComp unit
 resourcestring
@@ -551,8 +558,9 @@ resourcestring
   sNoUnsignedFloat         = 'float types cannot be declared as unsigned';
   sMainTaskNotFound        = 'No task named "main" exists';
   sNXCGenerateTrailer      = 'NXC generate trailer';
-  sNXCProcessGlobals       = 'NXC process global declarations';
-  sNXCProcedure            = 'NXC process procedure block: %s';
+  sNXCProcessGlobals       = 'NXC processing global declarations';
+  sNXCProcedure            = 'NXC processing procedure block: %s';
+  sNXCFunction             = 'NXC processing function block: %s';
   sNXCCompBegin            = 'NXC compilation begins';
   sNXCPreprocess           = 'Running NXC preprocessor';
   sNXCInitProgram          = 'NXC init program';
@@ -564,6 +572,8 @@ resourcestring
   sInvalidFunctionCall     = 'Invalid function call';
   sInvalidEnumDecl         = 'Invalid enum declaration';
   sUnknownDatatype         = 'Unknown datatype';
+  sCompileTargets          = 'Compiling for firmware version %d, NBC/NXC enhanced = %s';
+  sCurrentFile             = 'Current file = "%s"';
 
 // uNBCCommon unit
 resourcestring
@@ -609,7 +619,7 @@ resourcestring
   UsageMaxErrors = '   -ER=n: set maximum errors before aborting (0 == no limit)';
   UsageMaxDepth  = '   -PD=n: set max preprocessor recursion depth (10 == default)';
   UsageOutput    = '   -O=<outfile> : specify output file';
-  UsageErrors    = '   -E=<filename> : write compiler errors to <filename>';
+  UsageErrors    = '   -E=<filename> : write compiler messages to <filename>';
   UsageIncludes  = '   -I=<path>: search <path> for include files';
   UsageNBCOutput = '   -nbc=<filename> : save NXC intermediate NBC code to <filename>';
   UsageListing   = '   -L=<filename> : generate code listing to <filename>';
@@ -646,6 +656,10 @@ resourcestring
 resourcestring
   sSaveNXTDatChanges = 'Save changes to nxt.dat file?';
   
+// uNBCInterface.pas
+resourcestring
+  sCannotFindFile = 'Unable to find the specified input file'#13#10'File "%s" ; line 1';
+
 implementation
 
 end.

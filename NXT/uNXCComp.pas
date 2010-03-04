@@ -62,6 +62,8 @@ type
     procedure DoCommonFuncProcDecl(var bProtoExists: boolean;
       var Name: string; const tname: string; const tok, dt: char; bInline,
       bSafeCall: boolean);
+    procedure HandlePreprocStatusChange(Sender : TObject; const StatusMsg : string);
+    procedure SetCurFile(const Value: string);
   protected
     fDD: TDataDefs;
     fCurrentStruct : TDataspaceEntry;
@@ -479,7 +481,7 @@ type
     property  NBCSource : TStrings read GetNBCSrc;
     property  CompilerMessages : TStrings read fMessages;
     property  IncludeDirs : TStrings read fIncludeDirs;
-    property  CurrentFile : string read fCurFile write fCurFile;
+    property  CurrentFile : string read fCurFile write SetCurFile;
     property  OptimizeLevel : integer read fOptimizeLevel write fOptimizeLevel;
     property  WarningsOff : boolean read fWarningsOff write fWarningsOff;
     property  EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
@@ -4463,14 +4465,6 @@ begin
   pop;
 end;
 
-function BoolToString(aValue : boolean) : string;
-begin
-  if aValue then
-    Result := 'TRUE'
-  else
-    Result := 'FALSE';
-end;
-
 function StringToBool(const aValue : string) : boolean;
 begin
   Result := aValue = 'TRUE';
@@ -6073,6 +6067,7 @@ procedure TNXCComp.FunctionBlock(Name, tname : string; dt: char;
 var
   protoexists : boolean;
 begin
+  DoCompilerStatusChange(Format(sNXCFunction, [Name]));
   if bInline then
     IncrementInlineDepth;
 //  fInlining := bInline;
@@ -6280,6 +6275,7 @@ procedure TNXCComp.InternalParseStream;
 begin
   try
     DoCompilerStatusChange(sNXCCompBegin);
+    DoCompilerStatusChange(Format(sCompileTargets, [FirmwareVersion, BoolToString(EnhancedFirmware)]));
     fFuncParams.Clear;
     fThreadNames.Clear;
     fConstStringMap.Clear;
@@ -7179,6 +7175,7 @@ var
 begin
   P := TLangPreprocessor.Create(GetPreProcLexerClass, ExtractFilePath(ParamStr(0)), lnNXC, MaxPreprocessorDepth);
   try
+    P.OnPreprocessorStatusChange := HandlePreprocStatusChange;
     P.AddPoundLineToMultiLineMacros := True;
     P.Defines.AddDefines(Defines);
     if EnhancedFirmware then
@@ -9153,7 +9150,7 @@ var
   tmp : string;
 begin
   // load fMS with the contents of NBCCommon.h followed by NXCDefs.h
-  tmp := '#line 0 "NXTDefs.h"'#13#10;
+  tmp := '#line 0 "NXCDefs.h"'#13#10;
   S.Write(PChar(tmp)^, Length(tmp));
 
   S.Write(nbc_common_data, High(nbc_common_data)+1);
@@ -9641,6 +9638,21 @@ begin
                  TOK_USERDEFINEDTYPE..TOK_ARRAYULONGDEF4,
                  TOK_PROCEDURE, TOK_TASK, TOK_LABEL]) then
     AbortMsg(sUnknownDatatype);
+end;
+
+procedure TNXCComp.HandlePreprocStatusChange(Sender: TObject;
+  const StatusMsg: string);
+begin
+  DoCompilerStatusChange(StatusMsg);
+end;
+
+procedure TNXCComp.SetCurFile(const Value: string);
+begin
+  if CurrentFile <> Value then
+  begin
+    fCurFile := Value;
+    DoCompilerStatusChange(Format(sCurrentFile, [Value]));
+  end;
 end;
 
 end.

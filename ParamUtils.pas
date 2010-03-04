@@ -204,11 +204,9 @@ begin
   begin
     tmp := JCHParamStr(i, cmdLine);
     if Pos('-', tmp) = 1 then Continue; // a switch
-    if FileExists(tmp) then
-    begin
-      Result := tmp;
-      Break;
-    end;
+    // the first parameter that is not a switch is the filename
+    Result := tmp;
+    Break;
   end;
 end;
 

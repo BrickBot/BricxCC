@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-02-27
- * \version 47
+ * \date 2010-03-04
+ * \version 48
  */
 
 #ifndef NBCCOMMON_H
@@ -883,6 +883,19 @@
 #define UI_BT_CONNECT_REQUEST      0x40 /*!< RW - BT get connect accept in progress */
 #define UI_BT_PIN_REQUEST          0x80 /*!< RW - BT get pin code */
 /** @} */  // end of UiBluetoothStateConstants group
+
+/** @defgroup UiVMRunStateConstants VM run state constants
+ * Constants for use with the VMRunState() function.
+ * \sa VMRunState()
+ * @{
+ */
+#define UI_VM_IDLE        0 /*!< VM_IDLE: Just sitting around.  Request to run program will lead to ONE of the VM_RUN* states. */
+#define UI_VM_RUN_FREE    1 /*!< VM_RUN_FREE: Attempt to run as many instructions as possible within our timeslice */
+#define UI_VM_RUN_SINGLE  2 /*!< VM_RUN_SINGLE: Run exactly one instruction per timeslice */
+#define UI_VM_RUN_PAUSE   3 /*!< VM_RUN_PAUSE: Program still "active", but someone has asked us to pause */
+#define UI_VM_RESET1      4 /*!< VM_RESET2: Final clean up and return to IDLE */
+#define UI_VM_RESET2      5 /*!< VM_RESET1: Initialize state variables and some I/O devices -- executed when programs end */
+/** @} */  // end of UiVMRunStateConstants group
 
 /** @defgroup UiIOMAP Ui module IOMAP offsets
  * Constant offsets into the Ui module IOMAP structure.
@@ -2613,7 +2626,7 @@
 
 /**
  * Output an RIC VarMap function
- * \MapElement An entry in the varmap function.  At least 2 elements are
+ * \param _MapElement An entry in the varmap function.  At least 2 elements are
  * required.  See \ref RICMapElement.
  */
 #define RICMapFunction(_MapElement, ...) _MapElement, __VA_ARGS__
