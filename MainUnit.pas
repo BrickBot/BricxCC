@@ -630,6 +630,7 @@ type
     procedure HandleOnAddConstruct(Sender : TObject; const aTemplate : string; const aX : integer = -1; const aY : integer = -1);
   private
     { Private declarations }
+    fHTMLHelpInvoked : boolean;
     fGE : TGrepExpert;
     fGDE : TGrepDlgExpert;
     newcount : integer;
@@ -639,6 +640,7 @@ type
     FResume : boolean;
     fNQCAPIBase : TStringList;
     fNXCAPIBase : TStringList;
+    fUseHTMLHelp: boolean;
 {$IFNDEF FPC}
     procedure WMClose(var Message: TWMClose); message WM_CLOSE;
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
@@ -686,6 +688,10 @@ type
     procedure LoadNXCCompProp;
     procedure DoLoadAPI(cp: TSynCompletionProposal; aStrings: TStrings);
     procedure AddUserDefinedFunctions(aStrings : TStrings);
+    procedure CallHtmlHelp(AFile: String; Command: Word; Data: Integer);
+    function DoNewHelp(const Filename : string; Command: Word; Data: Integer;
+      var CallHelp: Boolean): Boolean;
+    procedure HelpQuit;
   public
     { Public declarations }
     procedure HandleOnCompilerStatusChange(Sender: TObject; const StatusMsg: string);
@@ -721,6 +727,7 @@ type
     property MDI : Boolean read fMDI write fMDI;
     property ActiveLine : integer read fActiveLine;
     property GrepDlgExpert : TGrepDlgExpert read fGDE;
+    property UseHTMLHelp : boolean read fUseHTMLHelp write fUseHTMLHelp;
   end;
 
 var
@@ -753,7 +760,7 @@ uses
   uPSI_FantomSpirit, uPSRuntime, uPSDebugger,
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,
-  uProgram, uCompStatus, uGlobals, uEditorUtils;
+  uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp;
 
 const
   K_NQC_GUIDE = 24;
@@ -966,6 +973,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
+  UseHTMLHelp := True;
   fGE := TGrepExpert.Create;
   fGDE := TGrepDlgExpert.Create;
   fNQCAPIBase := TStringList.Create;
@@ -1277,6 +1285,8 @@ begin
   FreeAndNil(fGDE);
   FreeAndNil(fNQCAPIBase);
   FreeAndNil(fNXCAPIBase);
+  if UseHTMLHelp then
+    HelpQuit;
   if BrickComm.VerboseMode then
     Clipboard.AsText := BrickComm.LinkLog;
   BrickComm.OnOpenStateChanged := nil;
@@ -3305,18 +3315,17 @@ begin
   end;
 end;
 
-function TMainForm.HandleOnHelp(Command: Word; Data: Integer;
-  var CallHelp: Boolean): Boolean;
-{$IFDEF FPC}
-begin
-{$ELSE}
+function TMainForm.HandleOnHelp(Command: Word; Data: Integer; var CallHelp: Boolean): Boolean;
+{$IFNDEF FPC}
 var
   i : integer;
   F : TForm;
   AEF : TEditorForm;
   SAF : TForm;
   HelpFile : PChar;
+{$ENDIF}
 begin
+{$IFNDEF FPC}
   // possibly the command is set to HELP_CONTEXTPOPUP and we
   // really want it to be HELP_CONTEXT instead.  This is the case if
   // the Data == the help context of any form.
@@ -3345,10 +3354,44 @@ begin
     else
       HelpFile := PChar(Application.HelpFile);
   end;
-  Result := WinHelp(Handle, HelpFile, Command, Data);
-  CallHelp := False;
+  if UseHTMLHelp then
+  begin
+    Result := DoNewHelp( ChangeFileExt(HelpFile, '.chm'), Command, Data, CallHelp);
+  end
+  else
+  begin
+    Result := WinHelp(Handle, HelpFile, Command, Data);
+    CallHelp := False;
+  end;
 {$ENDIF}
 end;
+
+function TMainForm.DoNewHelp(const Filename : string; Command: Word; Data: Longint;var CallHelp: Boolean): Boolean;
+begin
+  fHTMLHelpInvoked := True;
+  CallHtmlHelp(Filename,Command,Data);
+  CallHelp := False;
+  Result := True;
+end;
+
+procedure TMainForm.CallHtmlHelp(AFile: String; Command: Word; Data: Integer);
+begin
+  WinHelpToHtmlHelp(Command,Data);
+  if Command = HH_DISPLAY_TOPIC then
+    AFile := AFile {+ '>full'}
+  else
+    AFile := AFile {+ '>normal'};
+  HtmlHelp(GetDeskTopWindow,PChar(AFile),Command,Data);
+end;
+
+procedure TMainForm.HelpQuit;
+begin
+  if fHTMLHelpInvoked then begin
+    CallHtmlHelp('',HELP_QUIT,0);
+    fHTMLHelpInvoked := False;
+  end;
+end;
+
 
 {
 function TMainForm.CloseQuery: Boolean;
