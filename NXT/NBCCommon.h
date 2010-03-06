@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-03-04
- * \version 48
+ * \date 2010-03-05
+ * \version 49
  */
 
 #ifndef NBCCOMMON_H
@@ -2257,11 +2257,6 @@
 #define PF_CMD_FWD   1 /*!< Power function command forward */
 #define PF_CMD_REV   2 /*!< Power function command reverse */
 #define PF_CMD_BRAKE 3 /*!< Power function command brake */
-
-#define HTPF_CMD_STOP  0 /*!< Power function command stop */
-#define HTPF_CMD_FWD   1 /*!< Power function command forward */
-#define HTPF_CMD_REV   2 /*!< Power function command reverse */
-#define HTPF_CMD_BRAKE 3 /*!< Power function command brake */
 /** @} */  // end of PFCmdConstants group
 
 /** @defgroup PFChannelConstants Power Function channel constants
@@ -2272,11 +2267,6 @@
 #define PF_CHANNEL_2 1 /*!< Power function channel 2 */
 #define PF_CHANNEL_3 2 /*!< Power function channel 3 */
 #define PF_CHANNEL_4 3 /*!< Power function channel 4 */
-
-#define HTPF_CHANNEL_1 0 /*!< Power function channel 1 */
-#define HTPF_CHANNEL_2 1 /*!< Power function channel 2 */
-#define HTPF_CHANNEL_3 2 /*!< Power function channel 3 */
-#define HTPF_CHANNEL_4 3 /*!< Power function channel 4 */
 /** @} */  // end of PFChannelConstants group
 
 /** @defgroup PFModeConstants Power Function mode constants
@@ -2485,12 +2475,38 @@
 #define PSP_CMD_ANALOG  0x73 /*!< Set the PSP-Nx to analog mode */
 
 // PSP-Nx registers
-#define PSP_REG_BTN1   0x42 /*!< The PSP-Nx button 1 register */
-#define PSP_REG_BTN2   0x43 /*!< The PSP-Nx button 2 register */
-#define PSP_REG_XLEFT  0x44 /*!< The PSP-Nx X left register */
-#define PSP_REG_YLEFT  0x45 /*!< The PSP-Nx Y left register */
-#define PSP_REG_XRIGHT 0x46 /*!< The PSP-Nx X right register */
-#define PSP_REG_YRIGHT 0x47 /*!< The PSP-Nx Y right register */
+#define PSP_REG_BTNSET1 0x42 /*!< The PSP-Nx button set 1 register */
+#define PSP_REG_BTNSET2 0x43 /*!< The PSP-Nx button set 2 register */
+#define PSP_REG_XLEFT   0x44 /*!< The PSP-Nx X left register */
+#define PSP_REG_YLEFT   0x45 /*!< The PSP-Nx Y left register */
+#define PSP_REG_XRIGHT  0x46 /*!< The PSP-Nx X right register */
+#define PSP_REG_YRIGHT  0x47 /*!< The PSP-Nx Y right register */
+
+/** @defgroup MSPSPNXBtnSet1 MindSensors PSP-Nx button set 1 constants
+ * Constants that are for interpretting MindSensors PSP-Nx button set 1 values.
+ * @{
+ */
+#define PSP_BTNSET1_LEFT     0x01 /*!< The PSP-Nx button set 1 left arrow */
+#define PSP_BTNSET1_DOWN     0x02 /*!< The PSP-Nx button set 1 down arrow */
+#define PSP_BTNSET1_RIGHT    0x04 /*!< The PSP-Nx button set 1 right arrow */
+#define PSP_BTNSET1_UP       0x08 /*!< The PSP-Nx button set 1 up arrow */
+#define PSP_BTNSET1_R3       0x20 /*!< The PSP-Nx button set 1 R3 */
+#define PSP_BTNSET1_L3       0x40 /*!< The PSP-Nx button set 1 L3 */
+/** @} */  // end of MSPSPNXBtnSet1 group
+
+/** @defgroup MSPSPNXBtnSet2 MindSensors PSP-Nx button set 2 constants
+ * Constants that are for interpretting MindSensors PSP-Nx button set 2 values.
+ * @{
+ */
+#define PSP_BTNSET2_SQUARE   0x01 /*!< The PSP-Nx button set 2 square */
+#define PSP_BTNSET2_CROSS    0x02 /*!< The PSP-Nx button set 2 cross */
+#define PSP_BTNSET2_CIRCLE   0x04 /*!< The PSP-Nx button set 2 circle */
+#define PSP_BTNSET2_TRIANGLE 0x08 /*!< The PSP-Nx button set 2 triangle */
+#define PSP_BTNSET2_R1       0x10 /*!< The PSP-Nx button set 2 R1 */
+#define PSP_BTNSET2_L1       0x20 /*!< The PSP-Nx button set 2 L1 */
+#define PSP_BTNSET2_R2       0x40 /*!< The PSP-Nx button set 2 R2 */
+#define PSP_BTNSET2_L2       0x80 /*!< The PSP-Nx button set 2 L2 */
+/** @} */  // end of MSPSPNXBtnSet2 group
 /** @} */  // end of MSPSPNX group
 
 /** @defgroup MSNRLink MindSensors nRLink constants

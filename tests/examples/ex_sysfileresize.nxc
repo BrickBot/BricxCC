@@ -1,0 +1,15 @@
+task main()
+{
+  byte handle;
+  // get a file handle
+  // ...
+  // resize the file
+  FileResizeType args;
+  args.FileHandle = handle;
+  args.NewSize = 2048;
+  SysFileResize(args);
+  if (args.Result == NO_ERR)
+  {
+    // do something
+  }
+}

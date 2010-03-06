@@ -1,0 +1,13 @@
+task main()
+{
+  CommLSWriteExType args;
+  args.Port = S1;
+  args.Buffer = myBuf;
+  args.ReturnLen = 8;
+  args.NoRestartOnRead = true;
+  SysCommLSWriteEx(args);
+  if (args.Result == NO_ERR)
+  {
+    // do something
+  }
+}

@@ -1,0 +1,12 @@
+task main()
+{
+  // configure the hi-speed port and turn it on
+  // ...
+  // no write to the port
+  CommHSReadWriteType rwt;
+  ArrayBuild(rwt.Buffer, 0x01, 0x02, 0x03, 0x04); // four bytes
+  SysCommHSWrite(rwt);
+  if (rwt.Status = NO_ERR) {
+    // do something
+  }
+}

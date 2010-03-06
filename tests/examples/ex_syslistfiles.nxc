@@ -1,0 +1,11 @@
+task main()
+{
+  ListFilesType args;
+  args.Pattern = "*.rxe";
+  SysListFiles(args);
+  if (args.Result == NO_ERR && ArrayLen(args.FileList) > 0)
+  {
+    TextOut(0, LCD_LINE6, args.FileList[0]);
+  }
+  Wait(SEC_4);
+}

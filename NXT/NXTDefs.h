@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-02-18
- * version 58
+ * date 2010-03-05
+ * version 59
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H 1
@@ -7510,17 +7510,36 @@ dseg ends
 #define MSReadValueEx(_port, _addr, _reg, _bytes, _out, _result) __MSReadValue(_port, _addr, _reg, _bytes, _out, _result)
 #define MSReadValue(_port, _reg, _bytes, _out, _result) __MSReadValue(_port, 0x02, _reg, _bytes, _out, _result)
 
+#define MSEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
+#define MSEnergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ENERGIZED, _result)
+#define MSDeenergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_DEENERGIZED, _result)
+#define MSDeenergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_DEENERGIZED, _result)
+#define MSADPAOn(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_ON, _result)
+#define MSADPAOnEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_ON, _result)
+#define MSADPAOff(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_OFF, _result)
+#define MSADPAOffEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_OFF, _result)
+
 #define DISTNxGP2D12(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, _result)
 #define DISTNxGP2D120(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, _result)
 #define DISTNxGP2YA21(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, _result)
 #define DISTNxGP2YA02(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, _result)
-#define DISTNxEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
 #define ReadDISTNxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST, 2, _out, _result)
 #define ReadDISTNxVoltage(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_VOLT, 2, _out, _result)
 #define ReadDISTNxModuleType(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_MODULE_TYPE, 1, _out, _result)
 #define ReadDISTNxNumPoints(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_NUM_POINTS, 1, _out, _result)
 #define ReadDISTNxMinDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MIN, 2, _out, _result)
 #define ReadDISTNxMaxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MAX, 2, _out, _result)
+
+#define DISTNxGP2D12Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D12, _result)
+#define DISTNxGP2D120Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D120, _result)
+#define DISTNxGP2YA21Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA21, _result)
+#define DISTNxGP2YA02Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA02, _result)
+#define ReadDISTNxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST, 2, _out, _result)
+#define ReadDISTNxVoltageEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_VOLT, 2, _out, _result)
+#define ReadDISTNxModuleTypeEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_MODULE_TYPE, 1, _out, _result)
+#define ReadDISTNxNumPointsEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_NUM_POINTS, 1, _out, _result)
+#define ReadDISTNxMinDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MIN, 2, _out, _result)
+#define ReadDISTNxMaxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MAX, 2, _out, _result)
 
 subroutine __MSWriteBytesSub
   mov __WDSC_lswArgs.Port, __WDSC_Port
@@ -7582,7 +7601,10 @@ ends
 #define ReadSensorMSDROD(_p, _value) \
   getin _value, _p, NormalizedValue
 
-#define PSPNxEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
+#define PSPNxDigital(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_DIGITAL, _result)
+#define PSPNxAnalog(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_ANALOG, _result)
+#define PSPNxDigitalEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_DIGITAL, _result)
+#define PSPNxAnalogEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_ANALOG, _result)
 
 #define __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
   compif EQ, isconst(_port), FALSE \
@@ -7637,6 +7659,16 @@ ends
 #define NRLinkSetRCX(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, _result)
 #define NRLinkSetTrain(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, _result)
 #define NRLinkSetPF(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, _result)
+
+#define NRLink2400Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_2400, _result)
+#define NRLink4800Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_4800, _result)
+#define NRLinkFlushEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result)
+#define NRLinkIRLongEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_LONG, _result)
+#define NRLinkIRShortEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_SHORT, _result)
+#define NRLinkTxRawEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_TX_RAW, _result)
+#define NRLinkSetRCXEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_RCX, _result)
+#define NRLinkSetTrainEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_TRAIN, _result)
+#define NRLinkSetPFEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_PF, _result)
 
 #define __RunNRLinkMacroEx(_port, _addr, _macro, _result) \
   acquire __WDSCmutex \
