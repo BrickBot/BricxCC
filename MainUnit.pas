@@ -973,7 +973,7 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  UseHTMLHelp := True;
+  UseHTMLHelp := False;
   fGE := TGrepExpert.Create;
   fGDE := TGrepDlgExpert.Create;
   fNQCAPIBase := TStringList.Create;
