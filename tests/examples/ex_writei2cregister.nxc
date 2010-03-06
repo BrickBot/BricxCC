@@ -1,0 +1,1 @@
+char result = WriteI2CRegister(S1, I2C_REG_CMD, US_CMD_OFF);

@@ -1,0 +1,15 @@
+task main()
+{
+  byte handle;
+  // get a file handle
+  // ...
+  FileSeekType args;
+  args.FileHandle = handle;
+  args.Origin = SEEK_SET;
+  args.Length = 65;
+  SysFileSeek(args);
+  if (args.Result == NO_ERR)
+  {
+    // do something
+  }
+}

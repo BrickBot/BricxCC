@@ -247,7 +247,7 @@ struct ColorSensorReadType {
  * Set a sensor's type, which must be one of the predefined sensor type
  * constants.
  * \sa SetSensorMode(), SetSensor()
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  * \param type The desired sensor type.
  */
 inline void SetSensorType(const byte & port, byte type) { asm { setin type, port, Type } }
@@ -261,7 +261,7 @@ inline void SetSensorType(const byte & port, byte type) { asm { setin type, port
  * constants. A slope parameter for boolean conversion, if desired, may be
  * added to the mode.
  * \sa SetSensorType(), SetSensor()
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  * \param mode The desired sensor mode.
  */
 inline void SetSensorMode(const byte & port, byte mode) { asm { setin mode, port, InputMode } }
@@ -273,7 +273,7 @@ inline void SetSensorMode(const byte & port, byte mode) { asm { setin mode, port
  * Clear a sensor value.
  * Clear the value of a sensor - only affects sensors that are configured
  * to measure a cumulative quantity such as rotation or a pulse count.
- * \param port The port to clear. Use a constant (\ref InPorts) or a variable.
+ * \param port The port to clear. See \ref InPorts.
  */
 inline void ClearSensor(const byte & port) { asm { setin 0, port, ScaledValue } }
 /** \example ex_ClearSensor.nxc
@@ -284,7 +284,7 @@ inline void ClearSensor(const byte & port) { asm { setin 0, port, ScaledValue } 
  * Reset the sensor port.
  * Sets the invalid data flag on the specified port and waits for it to
  * become valid again.
- * \param port The port to reset. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to reset. See \ref InPorts.
  */
 inline void ResetSensor(const byte & port) { asm { __ResetSensor(port) } }
 /** \example ex_ResetSensor.nxc
@@ -296,7 +296,7 @@ inline void ResetSensor(const byte & port) { asm { __ResetSensor(port) } }
  * Set the type and mode of the given sensor to the specified configuration,
  * which must be a special constant containing both type and mode information.
  * \sa SetSensorType(), SetSensorMode(), and ResetSensor()
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  * \param config The configuration constant containing both the type and mode.
  */
 inline void SetSensor(const byte & port, const unsigned int config) {
@@ -311,7 +311,7 @@ inline void SetSensor(const byte & port, const unsigned int config) {
 /**
  * Configure a touch sensor.
  * Configure the sensor on the specified port as a touch sensor.
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  */
 inline void SetSensorTouch(const byte & port) { asm { __SetSensorTouch(port) } }
 /** \example ex_SetSensorTouch.nxc
@@ -321,7 +321,7 @@ inline void SetSensorTouch(const byte & port) { asm { __SetSensorTouch(port) } }
 /**
  * Configure a light sensor.
  * Configure the sensor on the specified port as a light sensor (active).
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  */
 inline void SetSensorLight(const byte & port) { asm { __SetSensorLight(port) } }
 /** \example ex_SetSensorLight.nxc
@@ -331,7 +331,7 @@ inline void SetSensorLight(const byte & port) { asm { __SetSensorLight(port) } }
 /**
  * Configure a sound sensor.
  * Configure the sensor on the specified port as a sound sensor (dB scaling).
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  */
 inline void SetSensorSound(const byte & port) { asm { __SetSensorSound(port) } }
 /** \example ex_SetSensorSound.nxc
@@ -342,7 +342,7 @@ inline void SetSensorSound(const byte & port) { asm { __SetSensorSound(port) } }
  * Configure an I2C sensor.
  * Configure the sensor on the specified port as an I2C digital sensor
  * (9V powered).
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  */
 inline void SetSensorLowspeed(const byte & port) { asm { __SetSensorLowspeed(port) } }
 /** \example ex_SetSensorLowspeed.nxc
@@ -355,7 +355,7 @@ inline void SetSensorLowspeed(const byte & port) { asm { __SetSensorLowspeed(por
  * Configure an NXT 2.0 full color sensor.
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in full color mode. Requires an NXT 2.0 compatible firmware.
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  *
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -368,7 +368,7 @@ inline void SetSensorColorFull(const byte & port) { asm { __SetSensorColorFull(p
  * Configure an NXT 2.0 red light sensor.
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in red light mode. Requires an NXT 2.0 compatible firmware.
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  *
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -381,7 +381,7 @@ inline void SetSensorColorRed(const byte & port) { asm { __SetSensorColorRed(por
  * Configure an NXT 2.0 green light sensor.
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in green light mode. Requires an NXT 2.0 compatible firmware.
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  *
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -394,7 +394,7 @@ inline void SetSensorColorGreen(const byte & port) { asm { __SetSensorColorGreen
  * Configure an NXT 2.0 blue light sensor.
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in blue light mode. Requires an NXT 2.0 compatible firmware.
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  *
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -407,7 +407,7 @@ inline void SetSensorColorBlue(const byte & port) { asm { __SetSensorColorBlue(p
  * Configure an NXT 2.0 no light sensor.
  * Configure the sensor on the specified port as an NXT 2.0 color sensor
  * in no light mode. Requires an NXT 2.0 compatible firmware.
- * \param port The port to configure. Use a constant (e.g., S1, S2, S3, or S4) or a variable.
+ * \param port The port to configure. See \ref InPorts.
  *
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -772,15 +772,145 @@ inline void SysColorSensorRead(ColorSensorReadType & args);
  * This is an example of how to use the \ref SysColorSensorRead function.
  */
 
+/**
+ * Read LEGO color sensor extra.
+ * This function lets you read the LEGO color sensor. It returns the color value,
+ * and three arrays containing raw, normalized, and scaled color values for
+ * red, green, blue, and none indices.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param colorval The color value. See \ref InputColorValueConstants.
+ * \param raw An array containing four raw color values. See \ref InputColorIdxConstants.
+ * \param norm An array containing four normalized color values. See \ref InputColorIdxConstants.
+ * \param scaled An array containing four scaled color values. See \ref InputColorIdxConstants.
+ * \return The function call result.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline int ReadSensorColorEx(const byte port, int & colorval, unsigned int & raw[], unsigned int & norm[], int & scaled[]);
+/** \example ex_ReadSensorColorEx.nxc
+ * This is an example of how to use the \ref ReadSensorColorEx function.
+ */
+
+/**
+ * Read LEGO color sensor raw values.
+ * This function lets you read the LEGO color sensor. It returns an array
+ * containing raw color values for red, green, blue, and none indices.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param rawVals An array containing four raw color values. See \ref InputColorIdxConstants.
+ * \return The function call result.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline int ReadSensorColorRaw(const byte port, unsigned int & rawVals[]);
+/** \example ex_ReadSensorColorRaw.nxc
+ * This is an example of how to use the \ref ReadSensorColorRaw function.
+ */
+
+/**
+ * Read a LEGO color sensor AD raw value.
+ * This function lets you directly access a specific LEGO color sensor AD raw value. Both the
+ * port and the color index must be constants.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param color The color index. See \ref InputColorIdxConstants.
+ * \return The AD raw value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline unsigned int ColorADRaw(const byte port, const byte color);
+/** \example ex_ColorADRaw.nxc
+ * This is an example of how to use the \ref ColorADRaw function.
+ */
+
+/**
+ * Read a LEGO color sensor boolean value.
+ * This function lets you directly access a specific LEGO color sensor boolean value. Both the
+ * port and the color index must be constants.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param color The color index. See \ref InputColorIdxConstants.
+ * \return The boolean value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline bool ColorBoolean(const byte port, const byte color);
+/** \example ex_ColorBoolean.nxc
+ * This is an example of how to use the \ref ColorBoolean function.
+ */
+
+/**
+ * Read a LEGO color sensor calibration point value.
+ * This function lets you directly access a specific LEGO color calibration point value.
+ * The port, point, and color index must be constants.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param point The calibration point. See \ref InputColorCalibrationConstants.
+ * \param color The color index. See \ref InputColorIdxConstants.
+ * \return The calibration point value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline long ColorCalibration(const byte port, const byte point, const byte color);
+/** \example ex_ColorCalibration.nxc
+ * This is an example of how to use the \ref ColorCalibration function.
+ */
+
+/**
+ * Read LEGO color sensor calibration state.
+ * This function lets you directly access the LEGO color calibration state.
+ * The port must be a constant.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The calibration state.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline byte ColorCalibrationState(const byte port);
+/** \example ex_ColorCalibrationState.nxc
+ * This is an example of how to use the \ref ColorCalibrationState function.
+ */
+
+/**
+ * Read a LEGO color sensor calibration limit value.
+ * This function lets you directly access a specific LEGO color calibration limit value.
+ * The port and the point must be constants.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param point The calibration point. See \ref InputColorCalibrationConstants.
+ * \return The calibration limit value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline unsigned int ColorCalLimits(const byte port, const byte point);
+/** \example ex_ColorCalLimits.nxc
+ * This is an example of how to use the \ref ColorCalLimits function.
+ */
+
+/**
+ * Read a LEGO color sensor raw value.
+ * This function lets you directly access a specific LEGO color sensor raw value. Both the
+ * port and the color index must be constants.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param color The color index. See \ref InputColorIdxConstants.
+ * \return The raw value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline unsigned int ColorSensorRaw(const byte port, const byte color);
+/** \example ex_ColorSensorRaw.nxc
+ * This is an example of how to use the \ref ColorSensorRaw function.
+ */
+
+/**
+ * Read a LEGO color sensor scaled value.
+ * This function lets you directly access a specific LEGO color sensor scaled value. Both the
+ * port and the color index must be constants.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param color The color index. See \ref InputColorIdxConstants.
+ * \return The scaled value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 inline unsigned int ColorSensorValue(const byte port, const byte color);
+/** \example ex_ColorSensorValue.nxc
+ * This is an example of how to use the \ref ColorSensorValue function.
+ */
+
 #endif
 
 #else
@@ -3110,14 +3240,6 @@ inline void SetSoundVolume(byte volume);
  * This is an example of how to use the \ref SetSoundVolume function.
  */
 
-/** \example ex_soundmisc.nxc
- * This is an example of how to use the \ref PlayFile, \ref PlayFileEx, \ref PlayTone,
- * \ref PlayToneEx, \ref SoundState, \ref SoundFlags, \ref StopSound, \ref SoundFrequency,
- * \ref SoundDuration, \ref SoundSampleRate, \ref SoundMode, \ref SoundVolume, \ref SetSoundDuration,
- * \ref SetSoundFlags, \ref SetSoundFrequency, \ref SetSoundMode, \ref SetSoundModuleState,
- * \ref SetSoundSampleRate, and \ref SetSoundVolume.
- */
-
 /**
  * Play sound file.
  * This function lets you play a sound file given the parameters you pass in
@@ -3289,11 +3411,13 @@ struct CommLSCheckStatusType {
  * \sa SysCommLSWriteEx()
  */
 struct CommLSWriteExType {
-  char Result;          /*!< The function call result. \todo ?. */
+  char Result;          /*!< The function call result. Possible values include
+                      \ref ERR_COMM_CHAN_INVALID, \ref ERR_COMM_CHAN_NOT_READY,
+                      \ref ERR_INVALID_SIZE, and \ref NO_ERR. */
   byte Port;            /*!< The port to which the I2C device is connected. */
   byte Buffer[];        /*!< The buffer written to the I2C device. */
   byte ReturnLen;       /*!< The number of bytes that you want to read from the I2C device. */
-  byte NoRestartOnRead; /*!< Should a restart occur before reading from the device? */
+  bool NoRestartOnRead; /*!< Should a restart occur before reading from the device? */
 };
 #endif
 
@@ -3523,7 +3647,7 @@ inline long I2CStatus(const byte port, byte & bytesready);
  * \return A status code indicating whether the write completed successfully or not.
  * See \ref CommLSCheckStatusType for possible Result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
- * Avoid calls to \ref I2CRead or \ref I2CWrite while I2CCheckStatus returns
+ * Avoid calls to \ref I2CRead or \ref I2CWrite while this function returns
  * \ref STAT_COMM_PENDING.
  * \sa I2CStatus, I2CRead, I2CWrite, LowspeedStatus, LowspeedRead,
  * LowspeedWrite, and LowspeedCheckStatus
@@ -3818,7 +3942,7 @@ inline long I2CSendCommandEx(byte port, byte addr, byte cmd);
  * Get I2C input buffer data
  * This method reads count bytes of data from the I2C input buffer for the
  * specified port and writes it to the buffer provided.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \param offset A constant offset into the I2C input buffer.
  * \param cnt The number of bytes to read.
  * \param data The byte array reference which will contain the data read from
@@ -3833,7 +3957,7 @@ inline void GetLSInputBuffer(const byte port, const byte offset, byte cnt, byte 
  * Get I2C output buffer data
  * This method reads cnt bytes of data from the I2C output buffer for the
  * specified port and writes it to the buffer provided.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \param offset A constant offset into the I2C output buffer.
  * \param cnt The number of bytes to read.
  * \param data The byte array reference which will contain the data read from
@@ -3848,7 +3972,7 @@ inline void GetLSOutputBuffer(const byte port, const byte offset, byte cnt, byte
  * Get I2C input buffer in-pointer
  * This method returns the value of the input pointer of the I2C input
  * buffer for the specified port.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C input buffer's in-pointer value.
  */
 inline byte LSInputBufferInPtr(const byte port);
@@ -3860,7 +3984,7 @@ inline byte LSInputBufferInPtr(const byte port);
  * Get I2C input buffer out-pointer
  * This method returns the value of the output pointer of the I2C input
  * buffer for the specified port.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C input buffer's out-pointer value.
  */
 inline byte LSInputBufferOutPtr(const byte port);
@@ -3872,7 +3996,7 @@ inline byte LSInputBufferOutPtr(const byte port);
  * Get I2C input buffer bytes to rx
  * This method returns the value of the bytes to rx field of the I2C input
  * buffer for the specified port.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C input buffer's bytes to rx value.
  */
 inline byte LSInputBufferBytesToRx(const byte port);
@@ -3884,7 +4008,7 @@ inline byte LSInputBufferBytesToRx(const byte port);
  * Get I2C output buffer in-pointer
  * This method returns the value of the input pointer of the I2C output
  * buffer for the specified port.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C output buffer's in-pointer value.
  */
 inline byte LSOutputBufferInPtr(const byte port);
@@ -3896,7 +4020,7 @@ inline byte LSOutputBufferInPtr(const byte port);
  * Get I2C output buffer out-pointer
  * This method returns the value of the output pointer of the I2C output
  * buffer for the specified port.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C output buffer's out-pointer value.
  */
 inline byte LSOutputBufferOutPtr(const byte port);
@@ -3908,7 +4032,7 @@ inline byte LSOutputBufferOutPtr(const byte port);
  * Get I2C output buffer bytes to rx
  * This method returns the value of the bytes to rx field of the I2C output
  * buffer for the specified port.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C output buffer's bytes to rx value.
  */
 inline byte LSOutputBufferBytesToRx(const byte port);
@@ -3919,7 +4043,7 @@ inline byte LSOutputBufferBytesToRx(const byte port);
 /**
  * Get I2C mode
  * This method returns the value of the I2C mode for the specified port.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C port mode. See \ref LowSpeedModeConstants.
  */
 inline byte LSMode(const byte port);
@@ -3930,7 +4054,7 @@ inline byte LSMode(const byte port);
 /**
  * Get I2C channel state
  * This method returns the value of the I2C channel state for the specified port.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C port channel state. See \ref LowSpeedChannelStateConstants.
  */
 inline byte LSChannelState(const byte port);
@@ -3941,7 +4065,7 @@ inline byte LSChannelState(const byte port);
 /**
  * Get I2C error type
  * This method returns the value of the I2C error type for the specified port.
- * \param port A constant port number (S1..S4).
+ * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C port error type. See \ref LowSpeedErrorTypeConstants.
  */
 inline byte LSErrorType(const byte port);
@@ -4337,8 +4461,8 @@ struct DatalogWriteType {
  * \sa SysDatalogGetTimes()
  */
 struct DatalogGetTimesType {
- unsigned long SyncTime;  /*!< The datalog synchronized time. \todo what is this. */
- unsigned long SyncTick;  /*!< The datalog synchronized tick. \todo what is this. */
+ unsigned long SyncTime;  /*!< The datalog synchronized time. */
+ unsigned long SyncTick;  /*!< The datalog synchronized tick. */
 };
 
 /**
@@ -4591,10 +4715,9 @@ inline void SysDatalogGetTimes(DatalogGetTimesType & args);
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysReadSemData(ReadSemDataType & args);
-/** \example ex_SemData.nxc
- * This is an example of how to use the \ref SysWriteSemData and \ref SysReadSemData
- * functions along with the \ref WriteSemDataType and \ref ReadSemDataType structures.
- */
+/** \example ex_SysReadSemData.nxc
+* This is an example of how to use the \ref SysReadSemData function.
+*/
 
 /**
  * Write semaphore data.
@@ -4606,6 +4729,9 @@ inline void SysReadSemData(ReadSemDataType & args);
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysWriteSemData(WriteSemDataType & args);
+/** \example ex_SysWriteSemData.nxc
+* This is an example of how to use the \ref SysWriteSemData function.
+*/
 
 /**
  * Update calibration cache information.
@@ -4618,11 +4744,9 @@ inline void SysWriteSemData(WriteSemDataType & args);
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysUpdateCalibCacheInfo(UpdateCalibCacheInfoType & args);
-/** \example ex_SysCalib.nxc
- * This is an example of how to use the \ref SysUpdateCalibCacheInfo and
- * \ref SysComputeCalibValue functions along with the \ref UpdateCalibCacheInfoType and
- * \ref ComputeCalibValueType structures.
- */
+/** \example ex_SysUpdateCalibCacheInfo.nxc
+* This is an example of how to use the \ref SysUpdateCalibCacheInfo function.
+*/
 
 /**
  * Compute calibration values.
@@ -4635,6 +4759,9 @@ inline void SysUpdateCalibCacheInfo(UpdateCalibCacheInfoType & args);
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysComputeCalibValue(ComputeCalibValueType & args);
+/** \example ex_SysComputeCalibValue.nxc
+* This is an example of how to use the \ref SysComputeCalibValue function.
+*/
 
 #endif
 
@@ -8160,7 +8287,7 @@ inline unsigned int RenameFile(string oldname, string newname);
  */
 
 /**
- * DeleteFile function
+ * Delete a file
  * Delete the specified file. The loader result code is returned as the
  * value of the function call. The filename parameter must be a constant or a
  * variable.
@@ -8173,14 +8300,114 @@ inline unsigned int DeleteFile(string fname);
  * This is an example of how to use the \ref DeleteFile function.
  */
 
+/**
+ * Resize a file
+ * Resize the specified file. The loader result code is returned as the
+ * value of the function call. The filename parameter must be a constant or a
+ * variable.
+ *
+ * \param fname The name of the file to resize.
+ * \param newsize The new size for the file.
+ * \return The function call result. See \ref LoaderErrors.
+ */
 inline unsigned int ResizeFile(string fname, const unsigned int newsize);
+/** \example ex_ResizeFile.nxc
+ * This is an example of how to use the \ref ResizeFile function.
+ */
 
 #ifdef __ENHANCED_FIRMWARE
-inline unsigned int CreateFileLinear(string fname, const unsigned int & fsize, byte & handle);
-inline unsigned int CreateFileNonLinear(string fname, const unsigned int & fsize, byte & handle);
+/**
+ * Create a linear file
+ * Create a new linear file with the specified filename and size and open it for
+ * writing. The file handle is returned in the last parameter, which must be a
+ * variable. The loader result code is returned as the value of the function
+ * call. The filename and size parameters must be constants, constant
+ * expressions, or variables. A file created with a size of zero bytes cannot
+ * be written to since the NXC file writing functions do not grow the file if
+ * its capacity is exceeded during a write attempt.
+ *
+ * \param fname The name of the file to create.
+ * \param fsize The size of the file.
+ * \param handle The file handle output from the function call.
+ * \return The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline unsigned int CreateFileLinear(string fname, unsigned int fsize, byte & handle);
+/** \example ex_CreateFileLinear.nxc
+ * This is an example of how to use the \ref CreateFileLinear function.
+ */
+
+/**
+ * Create a non-linear file
+ * Create a new non-linear file with the specified filename and size and open it for
+ * writing. The file handle is returned in the last parameter, which must be a
+ * variable. The loader result code is returned as the value of the function
+ * call. The filename and size parameters must be constants, constant
+ * expressions, or variables. A file created with a size of zero bytes cannot
+ * be written to since the NXC file writing functions do not grow the file if
+ * its capacity is exceeded during a write attempt.
+ *
+ * \param fname The name of the file to create.
+ * \param fsize The size of the file.
+ * \param handle The file handle output from the function call.
+ * \return The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline unsigned int CreateFileNonLinear(string fname, unsigned int fsize, byte & handle);
+/** \example ex_CreateFileNonLinear.nxc
+ * This is an example of how to use the \ref CreateFileNonLinear function.
+ */
+
+/**
+ * Open a linear file for reading
+ * Open an existing linear file with the specified filename for reading. The file
+ * size is returned in the second parameter, which must be a variable. The
+ * file handle is returned in the last parameter, which must be a variable.
+ * The loader result code is returned as the value of the function call. The
+ * filename parameter must be a constant or a variable.
+ *
+ * \param fname The name of the file to open.
+ * \param fsize The size of the file returned by the function.
+ * \param handle The file handle output from the function call.
+ * \return The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 inline unsigned int OpenFileReadLinear(string fname, unsigned int & fsize, byte & handle);
+/** \example ex_OpenFileReadLinear.nxc
+ * This is an example of how to use the \ref OpenFileReadLinear function.
+ */
+
+/**
+ * Start searching for files
+ * This function lets you begin iterating through files stored on the NXT.
+ *
+ * \param fname On input this contains the filename pattern you are searching
+ * for. On output this contains the name of the first file found that matches
+ * the pattern.
+ * \param handle The search handle input to and output from the function call.
+ * \return The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 inline unsigned int FindFirstFile(string & fname, byte & handle);
+/** \example ex_FindFirstFile.nxc
+ * This is an example of how to use the \ref FindFirstFile function.
+ */
+
+/**
+ * Continue searching for files
+ * This function lets you continue iterating through files stored on the NXT.
+ *
+ * \param fname On output this contains the name of the next file found that
+ * matches the pattern used when the search began by calling \ref FindFirstFile.
+ * \param handle The search handle input to and output from the function call.
+ * \return The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 inline unsigned int FindNextFile(string & fname, byte & handle);
+/** \example ex_FindNextFile.nxc
+ * This is an example of how to use the \ref FindNextFile function.
+ */
+
 #endif
 
 /**
@@ -8305,7 +8532,7 @@ inline unsigned int WriteBytesEx(byte handle, unsigned int & len, const byte & b
  * Write a value to the file associated with the specified handle. The
  * handle parameter must be a variable. The value parameter must be a constant,
  * a constant expression, or a variable. The type of the value parameter
- * determines the number of bytes of data written. The WriteLn function also
+ * determines the number of bytes of data written. This function also
  * writes a carriage return and a line feed to the file following the numeric
  * data.
  *
@@ -9186,10 +9413,10 @@ inline void ReadSensorHTTouchMultiplexer(const byte port, byte & t1, byte & t2, 
 /**
  * HTIRTrain function
  * Control an IR Train receiver set to the specified channel using the
- * HiTechnic iRLink device. Valid func values are TRAIN_FUNC_STOP,
- * TRAIN_FUNC_INCR_SPEED, TRAIN_FUNC_DECR_SPEED, and TRAIN_FUNC_TOGGLE_LIGMS.
- * Valid channel values are TRAIN_CHANNEL_1 through TRAIN_CHANNEL_3 and
- * TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
+ * HiTechnic iRLink device. Valid func values are \ref TRAIN_FUNC_STOP,
+ * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
+ * Valid channel values are \ref TRAIN_CHANNEL_1 through \ref TRAIN_CHANNEL_3 and
+ * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
  * using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -9206,8 +9433,8 @@ inline char HTIRTrain(const byte port, const byte channel, const byte func);
  * HTPFComboDirect function
  * Execute a pair of Power Function motor commands on the specified channel
  * using the HiTechnic iRLink device. Commands for outa and outb are
- * PF_CMD_STOP, PF_CMD_REV, PF_CMD_FWD, and HTPF_CMD_BRAKE. Valid channels are
- * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
+ * \ref PF_CMD_STOP, \ref PF_CMD_REV, \ref PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -9225,10 +9452,10 @@ inline char HTPFComboDirect(const byte port, const byte channel, const byte outa
  * HTPFComboPWM function
  * Control the speed of both outputs on a Power Function receiver set to the
  * specified channel using the HiTechnic iRLink device. Valid output values
- * are PF_PWM_FLOAT, PF_PWM_FWD1, PF_PWM_FWD2, PF_PWM_FWD3, PF_PWM_FWD4,
- * PF_PWM_FWD5, PF_PWM_FWD6, PF_PWM_FWD7, PF_PWM_BRAKE, PF_PWM_REV7,
- * PF_PWM_REV6, PF_PWM_REV5, PF_PWM_REV4, PF_PWM_REV3, PF_PWM_REV2, and
- * PF_PWM_REV1. Valid channels are PF_CHANNEL_1 through PF_CHANNEL_4. The
+ * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -9281,11 +9508,11 @@ inline char HTPFRepeat(const byte port, const byte count, const unsigned int del
  * HTPFSingleOutputCST function
  * Control a single output on a Power Function receiver set to the specified
  * channel using the HiTechnic iRLink device. Select the desired output
- * using PF_OUT_A or PF_OUT_B. Valid functions are PF_CST_CLEAR1_CLEAR2,
- * PF_CST_SET1_CLEAR2, PF_CST_CLEAR1_SET2, PF_CST_SET1_SET2,
- * PF_CST_INCREMENT_PWM, PF_CST_DECREMENT_PWM, PF_CST_FULL_FWD,
- * PF_CST_FULL_REV, and PF_CST_TOGGLE_DIR. Valid channels are
- * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
+ * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
+ * \ref PF_CST_SET1_CLEAR2, \ref PF_CST_CLEAR1_SET2, \ref PF_CST_SET1_SET2,
+ * \ref PF_CST_INCREMENT_PWM, \ref PF_CST_DECREMENT_PWM, \ref PF_CST_FULL_FWD,
+ * \ref PF_CST_FULL_REV, and \ref PF_CST_TOGGLE_DIR. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -9303,11 +9530,11 @@ inline char HTPFSingleOutputCST(const byte port, const byte channel, const byte 
  * HTPFSingleOutputPWM function
  * Control the speed of a single output on a Power Function receiver set to
  * the specified channel using the HiTechnic iRLink device. Select the
- * desired output using PF_OUT_A or PF_OUT_B. Valid functions are
- * PF_PWM_FLOAT, PF_PWM_FWD1, PF_PWM_FWD2, PF_PWM_FWD3, PF_PWM_FWD4,
- * PF_PWM_FWD5, PF_PWM_FWD6, PF_PWM_FWD7, PF_PWM_BRAKE, PF_PWM_REV7,
- * PF_PWM_REV6, PF_PWM_REV5, PF_PWM_REV4, PF_PWM_REV3, PF_PWM_REV2, and
- * PF_PWM_REV1. Valid channels are PF_CHANNEL_1 through PF_CHANNEL_4. The
+ * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
+ * \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -9325,10 +9552,10 @@ inline char HTPFSingleOutputPWM(const byte port, const byte channel, const byte 
  * HTPFSinglePin function
  * Control a single pin on a Power Function receiver set to the specified
  * channel using the HiTechnic iRLink device. Select the desired output
- * using PF_OUT_A or PF_OUT_B.  Select the desired pin using PF_PIN_C1 or
- * PF_PIN_C2. Valid functions are PF_FUNC_NOCHANGE, PF_FUNC_CLEAR,
- * PF_FUNC_SET, and PF_FUNC_TOGGLE. Valid channels are PF_CHANNEL_1 through
- * PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
+ * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
+ * \ref PF_PIN_C2. Valid functions are \ref PF_FUNC_NOCHANGE, \ref PF_FUNC_CLEAR,
+ * \ref PF_FUNC_SET, and \ref PF_FUNC_TOGGLE. Valid channels are \ref PF_CHANNEL_1 through
+ * \ref PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
  * false (timeout) as the final parameter. The port must be configured as a
  * Lowspeed port before using this function.
  *
@@ -9349,9 +9576,9 @@ inline char HTPFSinglePin(const byte port, const byte channel, const byte out, c
  * HTPFTrain function
  * Control both outputs on a Power Function receiver set to the specified
  * channel using the HiTechnic iRLink device as if it were an IR Train
- * receiver. Valid function values are TRAIN_FUNC_STOP, TRAIN_FUNC_INCR_SPEED,
- * TRAIN_FUNC_DECR_SPEED, and TRAIN_FUNC_TOGGLE_LIGMS. Valid channels are
- * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
+ * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
+ * \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10288,24 +10515,47 @@ inline void HTScoutUnmuteSound(void);
  * @{
  */
 
+/**
+ * Configure a mindsensors pressure sensor.
+ * Configure the specified port for a mindsensors pressure sensor.
+ * \param port The port to configure. See \ref InPorts.
+ */
 inline void SetSensorMSPressure(const byte & port ) {
   SetSensorType(port, SENSOR_TYPE_LIGHT);
   SetSensorMode(port, SENSOR_MODE_RAW);
   ResetSensor(port);
 }
+/** \example ex_SetSensorMSPressure.nxc
+ * This is an example of how to use the \ref SetSensorMSPressure function.
+ */
 
-inline void SetSensorMSDRODActive(const byte & port) {
-  SetSensorType(port, SENSOR_TYPE_LIGHT_ACTIVE);
+/**
+ * Configure a mindsensors DROD sensor.
+ * Configure the specified port for a mindsensors DROD sensor.
+ * \param port The port to configure. See \ref InPorts.
+ * \param bActive A flag indicating whether to configure the sensor in active
+ * or inactive mode.
+ */
+inline void SetSensorMSDROD(const byte & port, bool bActive) {
+  if (bActive)
+    SetSensorType(port, SENSOR_TYPE_LIGHT_ACTIVE);
+  else
+    SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
   SetSensorMode(port, SENSOR_MODE_PERCENT);
   ResetSensor(port);
 }
+/** \example ex_SetSensorMSDROD.nxc
+ * This is an example of how to use the \ref SetSensorMSDROD function.
+ */
 
-inline void SetSensorMSDRODInactive(const byte & port) {
-  SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
-  SetSensorMode(port, SENSOR_MODE_PERCENT);
-  ResetSensor(port);
-}
-
+/**
+ * Read mindsensors pressure sensor
+ * Read the pressure sensor value of the mindsensors pressure sensor on the
+ * specified port.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The pressure reading.
+ */
 inline int SensorMSPressure(const byte & port) {
   asm {
     getin __RETVAL__, port, RawValue
@@ -10313,6 +10563,9 @@ inline int SensorMSPressure(const byte & port) {
     div __RETVAL__, __RETVAL__, 25
   }
 }
+/** \example ex_SensorMSPressure.nxc
+ * This is an example of how to use the \ref SensorMSPressure function.
+ */
 
 #ifdef __DOXYGEN_DOCS
 
@@ -10349,7 +10602,7 @@ inline int SensorMSCompassEx(const byte & port, const byte addr);
  * \return The mindsensors DROD value
  */
 inline int SensorMSDROD(const byte & port);
-/** \example SensorMSDROD.nxc
+/** \example ex_SensorMSDROD.nxc
  * This is an example of how to use the \ref SensorMSDROD function.
  */
 
@@ -10365,10 +10618,85 @@ inline int SensorMSPressureRaw(const byte & port);
  * This is an example of how to use the \ref SensorMSPressureRaw function.
  */
 
+/**
+ * Read mindsensors acceleration values
+ * Read X, Y, and Z axis acceleration values from the mindsensors Accelerometer
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param x The output x-axis acceleration.
+ * \param y The output y-axis acceleration.
+ * \param z The output z-axis acceleration.
+ * \return The function call result.
+ */
 inline bool ReadSensorMSAccel(const byte port, int & x, int & y, int & z);
+/** \example ex_ReadSensorMSAccel.nxc
+ * This is an example of how to use the \ref ReadSensorMSAccel function.
+ */
+
+/**
+ * Read mindsensors acceleration values
+ * Read X, Y, and Z axis acceleration values from the mindsensors Accelerometer
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param x The output x-axis acceleration.
+ * \param y The output y-axis acceleration.
+ * \param z The output z-axis acceleration.
+ * \return The function call result.
+ */
 inline bool ReadSensorMSAccelEx(const byte port, const byte addr, int & x, int & y, int & z);
-inline bool ReadSensorMSPlayStation(const byte port, byte & b1, byte & b2, byte & xleft, byte & yleft, byte & xright, byte & yright);
-inline bool ReadSensorMSPlayStationEx(const byte port, const byte addr, byte & b1, byte & b2, byte & xleft, byte & yleft, byte & xright, byte & yright);
+/** \example ex_ReadSensorMSAccelEx.nxc
+ * This is an example of how to use the \ref ReadSensorMSAccelEx function.
+ */
+
+/**
+ * Read mindsensors playstation controller values
+ * Read playstation controller values from the mindsensors playstation
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param btnset1 The button set 1 values. See \ref MSPSPNXBtnSet1.
+ * \param btnset2 The button set 2 values. See \ref MSPSPNXBtnSet2.
+ * \param xleft The left joystick x value.
+ * \param yleft The left joystick y value.
+ * \param xright The right joystick x value.
+ * \param yright The right joystick y value.
+ * \return The function call result.
+ */
+inline bool ReadSensorMSPlayStation(const byte port, byte & btnset1, byte & btnset2, byte & xleft, byte & yleft, byte & xright, byte & yright);
+/** \example ex_ReadSensorMSPlayStation.nxc
+ * This is an example of how to use the \ref ReadSensorMSPlayStation function.
+ */
+
+/**
+ * Read mindsensors playstation controller values
+ * Read playstation controller values from the mindsensors playstation
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param btnset1 The button set 1 values. See \ref MSPSPNXBtnSet1.
+ * \param btnset2 The button set 2 values. See \ref MSPSPNXBtnSet2.
+ * \param xleft The left joystick x value.
+ * \param yleft The left joystick y value.
+ * \param xright The right joystick x value.
+ * \param yright The right joystick y value.
+ * \return The function call result.
+ */
+inline bool ReadSensorMSPlayStationEx(const byte port, const byte addr, byte & btnset1, byte & btnset2, byte & xleft, byte & yleft, byte & xright, byte & yright);
+/** \example ex_ReadSensorMSPlayStationEx.nxc
+ * This is an example of how to use the \ref ReadSensorMSPlayStationEx function.
+ */
 
 /**
  * Read mindsensors RTClock values
@@ -10392,57 +10720,816 @@ inline bool ReadSensorMSRTClock(const byte port, byte & sec, byte & min, byte & 
  * This is an example of how to use the \ref ReadSensorMSRTClock function.
  */
 
-
+/**
+ * Read mindsensors tilt values
+ * Read X, Y, and Z axis tilt values from the mindsensors tilt
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param x The output x-axis tilt.
+ * \param y The output y-axis tilt.
+ * \param z The output z-axis tilt.
+ * \return The function call result.
+ */
 inline bool ReadSensorMSTilt(const byte port, byte & x, byte & y, byte & z);
+/** \example ex_ReadSensorMSTilt.nxc
+ * This is an example of how to use the \ref ReadSensorMSTilt function.
+ */
+
+/**
+ * Read mindsensors tilt values
+ * Read X, Y, and Z axis tilt values from the mindsensors tilt
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param x The output x-axis tilt.
+ * \param y The output y-axis tilt.
+ * \param z The output z-axis tilt.
+ * \return The function call result.
+ */
 inline bool ReadSensorMSTiltEx(const byte port, const byte addr, byte & x, byte & y, byte & z);
+/** \example ex_ReadSensorMSTiltEx.nxc
+ * This is an example of how to use the \ref ReadSensorMSTiltEx function.
+ */
 
-inline long MSReadValue(const byte port, const byte reg, const byte numbytes);
-inline long MSReadValueEx(const byte port, const byte addr, const byte reg, const byte numbytes);
+/**
+ * Read a mindsensors device value
+ * Read a one or two byte value from a mindsensors sensor. The value must be
+ * stored with the least signficant byte (LSB) first. Returns a boolean value
+ * indicating whether or not the operation completed successfully. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param reg The device register to read.
+ * \param numbytes The number of bytes to read. Only 1 or 2 byte values are supported.
+ * \return The function call result.
+ */
+inline int MSReadValue(const byte port, const byte reg, const byte numbytes);
+/** \example ex_MSReadValue.nxc
+ * This is an example of how to use the \ref MSReadValue function.
+ */
 
-inline char DISTNxEnergize(const byte port);
+/**
+ * Read a mindsensors device value
+ * Read a one or two byte value from a mindsensors sensor. The value must be
+ * stored with the least signficant byte (LSB) first. Returns a boolean value
+ * indicating whether or not the operation completed successfully. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param reg The device register to read.
+ * \param numbytes The number of bytes to read. Only 1 or 2 byte values are supported.
+ * \return The function call result.
+ */
+inline int MSReadValueEx(const byte port, const byte addr, const byte reg, const byte numbytes);
+/** \example ex_MSReadValueEx.nxc
+ * This is an example of how to use the \ref MSReadValueEx function.
+ */
+
+/**
+ * Turn on power to the mindsensors device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
+inline char MSEnergize(const byte port);
+/** \example ex_MSEnergize.nxc
+ * This is an example of how to use the \ref MSEnergize function.
+ */
+
+/**
+ * Turn on power to the mindsensors device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char MSEnergizeEx(const byte port, const byte addr);
+/** \example ex_MSEnergizeEx.nxc
+ * This is an example of how to use the \ref MSEnergizeEx function.
+ */
+
+/**
+ * Turn off power to the mindsensors device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
+inline char MSDeenergize(const byte port);
+/** \example ex_MSDeenergize.nxc
+ * This is an example of how to use the \ref MSDeenergize function.
+ */
+
+/**
+ * Turn off power to the mindsensors device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char MSDeenergizeEx(const byte port, const byte addr);
+/** \example ex_MSDeenergizeEx.nxc
+ * This is an example of how to use the \ref MSDeenergizeEx function.
+ */
+
+/**
+ * Turn on ADPA mode for the mindsensors device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
+inline char MSADPAOn(const byte port);
+/** \example ex_MSADPAOn.nxc
+ * This is an example of how to use the \ref MSADPAOn function.
+ */
+
+/**
+ * Turn on ADPA mode for the mindsensors device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char MSADPAOnEx(const byte port, const byte addr);
+/** \example ex_MSADPAOnEx.nxc
+ * This is an example of how to use the \ref MSADPAOnEx function.
+ */
+
+/**
+ * Turn off ADPA mode for the mindsensors device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
+inline char MSADPAOff(const byte port);
+/** \example ex_MSADPAOff.nxc
+ * This is an example of how to use the \ref MSADPAOff function.
+ */
+
+/**
+ * Turn off ADPA mode for the mindsensors device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char MSADPAOffEx(const byte port, const byte addr);
+/** \example ex_MSADPAOffEx.nxc
+ * This is an example of how to use the \ref MSADPAOffEx function.
+ */
+
+/**
+ * Configure the mindsensors DISTNx device as GP2D12. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char DISTNxGP2D12(const byte port);
+/** \example ex_DISTNxGP2D12.nxc
+ * This is an example of how to use the \ref DISTNxGP2D12 function.
+ */
+
+/**
+ * Configure the mindsensors DISTNx device as GP2D12. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char DISTNxGP2D12Ex(const byte port, const byte addr);
+/** \example ex_DISTNxGP2D12Ex.nxc
+ * This is an example of how to use the \ref DISTNxGP2D12Ex function.
+ */
+
+/**
+ * Configure the mindsensors DISTNx device as GP2D120. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char DISTNxGP2D120(const byte port);
+/** \example ex_DISTNxGP2D120.nxc
+ * This is an example of how to use the \ref DISTNxGP2D120 function.
+ */
+
+/**
+ * Configure the mindsensors DISTNx device as GP2D120. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char DISTNxGP2D120Ex(const byte port, const byte addr);
+/** \example ex_DISTNxGP2D120Ex.nxc
+ * This is an example of how to use the \ref DISTNxGP2D120Ex function.
+ */
+
+/**
+ * Configure the mindsensors DISTNx device as GP2YA02. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char DISTNxGP2YA02(const byte port);
+/** \example ex_DISTNxGP2YA02.nxc
+ * This is an example of how to use the \ref DISTNxGP2YA02 function.
+ */
+
+/**
+ * Configure the mindsensors DISTNx device as GP2YA02. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char DISTNxGP2YA02Ex(const byte port, const byte addr);
+/** \example ex_DISTNxGP2YA02Ex.nxc
+ * This is an example of how to use the \ref DISTNxGP2YA02Ex function.
+ */
+
+/**
+ * Configure the mindsensors DISTNx device as GP2YA21. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char DISTNxGP2YA21(const byte port);
+/** \example ex_DISTNxGP2YA21.nxc
+ * This is an example of how to use the \ref DISTNxGP2YA21 function.
+ */
 
+/**
+ * Configure the mindsensors DISTNx device as GP2YA21. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char DISTNxGP2YA21Ex(const byte port, const byte addr);
+/** \example ex_DISTNxGP2YA21Ex.nxc
+ * This is an example of how to use the \ref DISTNxGP2YA21Ex function.
+ */
+
+/**
+ * Read mindsensors DISTNx distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The distance value.
+ */
 inline int DISTNxDistance(const byte port);
+/** \example ex_DISTNxDistance.nxc
+ * This is an example of how to use the \ref DISTNxDistance function.
+ */
+
+/**
+ * Read mindsensors DISTNx distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The distance value.
+ */
+inline int DISTNxDistanceEx(const byte port, const byte addr);
+/** \example ex_DISTNxDistanceEx.nxc
+ * This is an example of how to use the \ref DISTNxDistanceEx function.
+ */
+
+/**
+ * Read mindsensors DISTNx maximum distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The maximum distance value.
+ */
 inline int DISTNxMaxDistance(const byte port);
+/** \example ex_DISTNxMaxDistance.nxc
+ * This is an example of how to use the \ref DISTNxMaxDistance function.
+ */
+
+/**
+ * Read mindsensors DISTNx maximum distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The maximum distance value.
+ */
+inline int DISTNxMaxDistanceEx(const byte port, const byte addr);
+/** \example ex_DISTNxMaxDistanceEx.nxc
+ * This is an example of how to use the \ref DISTNxMaxDistanceEx function.
+ */
+
+/**
+ * Read mindsensors DISTNx minimum distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The distance value.
+ */
 inline int DISTNxMinDistance(const byte port);
+/** \example ex_DISTNxMinDistance.nxc
+ * This is an example of how to use the \ref DISTNxMinDistance function.
+ */
+
+/**
+ * Read mindsensors DISTNx minimum distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The distance value.
+ */
+inline int DISTNxMinDistanceEx(const byte port, const byte addr);
+/** \example ex_DISTNxMinDistanceEx.nxc
+ * This is an example of how to use the \ref DISTNxMinDistanceEx function.
+ */
+
+/**
+ * Read mindsensors DISTNx module type value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The module type value.
+ */
 inline byte DISTNxModuleType(const byte port);
+/** \example ex_DISTNxModuleType.nxc
+ * This is an example of how to use the \ref DISTNxModuleType function.
+ */
+
+/**
+ * Read mindsensors DISTNx module type value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The module type value.
+ */
+inline byte DISTNxModuleTypeEx(const byte port, const byte addr);
+/** \example ex_DISTNxModuleTypeEx.nxc
+ * This is an example of how to use the \ref DISTNxModuleTypeEx function.
+ */
+
+/**
+ * Read mindsensors DISTNx num points value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The num points value.
+ */
 inline byte DISTNxNumPoints(const byte port);
+/** \example ex_DISTNxNumPoints.nxc
+ * This is an example of how to use the \ref DISTNxNumPoints function.
+ */
+
+/**
+ * Read mindsensors DISTNx num points value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The num points value.
+ */
+inline byte DISTNxNumPointsEx(const byte port, const byte addr);
+/** \example ex_DISTNxNumPointsEx.nxc
+ * This is an example of how to use the \ref DISTNxNumPointsEx function.
+ */
+
+/**
+ * Read mindsensors DISTNx voltage value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The voltage value.
+ */
 inline int DISTNxVoltage(const byte port);
+/** \example ex_DISTNxVoltage.nxc
+ * This is an example of how to use the \ref DISTNxVoltage function.
+ */
 
-inline char PSPNxEnergize(const byte & port);
+/**
+ * Read mindsensors DISTNx voltage value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The voltage value.
+ */
+inline int DISTNxVoltageEx(const byte port, const byte addr);
+/** \example ex_DISTNxVoltageEx.nxc
+ * This is an example of how to use the \ref DISTNxVoltageEx function.
+ */
 
+/**
+ * Configure mindsensors PSPNx device in digital mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
+inline char PSPNxDigital(const byte & port);
+/** \example ex_PSPNxDigital.nxc
+ * This is an example of how to use the \ref PSPNxDigital function.
+ */
+
+/**
+ * Configure mindsensors PSPNx device in digital mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char PSPNxDigitalEx(const byte & port, const byte & addr);
+/** \example ex_PSPNxDigitalEx.nxc
+ * This is an example of how to use the \ref PSPNxDigitalEx function.
+ */
+
+/**
+ * Configure mindsensors PSPNx device in analog mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
+inline char PSPNxAnalog(const byte & port);
+/** \example ex_PSPNxAnalog.nxc
+ * This is an example of how to use the \ref PSPNxAnalog function.
+ */
+
+/**
+ * Configure mindsensors PSPNx device in analog mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char PSPNxAnalogEx(const byte & port, const byte & addr);
+/** \example ex_PSPNxAnalogEx.nxc
+ * This is an example of how to use the \ref PSPNxAnalogEx function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in 2400 baud mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char NRLink2400(const byte port);
+/** \example ex_NRLink2400.nxc
+ * This is an example of how to use the \ref NRLink2400 function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in 2400 baud mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char NRLink2400Ex(const byte port, const byte addr);
+/** \example ex_NRLink2400Ex.nxc
+ * This is an example of how to use the \ref NRLink2400Ex function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in 4800 baud mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char NRLink4800(const byte port);
+/** \example ex_NRLink4800.nxc
+ * This is an example of how to use the \ref NRLink4800 function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in 4800 baud mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char NRLink4800Ex(const byte port, const byte addr);
+/** \example ex_NRLink4800Ex.nxc
+ * This is an example of how to use the \ref NRLink4800Ex function.
+ */
+
+/**
+ * Flush the mindsensors NRLink device buffers. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char NRLinkFlush(const byte port);
+/** \example ex_NRLinkFlush.nxc
+ * This is an example of how to use the \ref NRLinkFlush function.
+ */
+
+/**
+ * Flush the mindsensors NRLink device buffers. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char NRLinkFlushEx(const byte port, const byte addr);
+/** \example ex_NRLinkFlushEx.nxc
+ * This is an example of how to use the \ref NRLinkFlushEx function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in IR long mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char NRLinkIRLong(const byte port);
+/** \example ex_NRLinkIRLong.nxc
+ * This is an example of how to use the \ref NRLinkIRLong function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in IR long mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char NRLinkIRLongEx(const byte port, const byte addr);
+/** \example ex_NRLinkIRLongEx.nxc
+ * This is an example of how to use the \ref NRLinkIRLongEx function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in IR short mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char NRLinkIRShort(const byte port);
+/** \example ex_NRLinkIRShort.nxc
+ * This is an example of how to use the \ref NRLinkIRShort function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in IR short mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char NRLinkIRShortEx(const byte port, const byte addr);
+/** \example ex_NRLinkIRShortEx.nxc
+ * This is an example of how to use the \ref NRLinkIRShortEx function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in power function mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char NRLinkSetPF(const byte port);
+/** \example ex_NRLinkSetPF.nxc
+ * This is an example of how to use the \ref NRLinkSetPF function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in power function mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char NRLinkSetPFEx(const byte port, const byte addr);
+/** \example ex_NRLinkSetPFEx.nxc
+ * This is an example of how to use the \ref NRLinkSetPFEx function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in RCX mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char NRLinkSetRCX(const byte port);
+/** \example ex_NRLinkSetRCX.nxc
+ * This is an example of how to use the \ref NRLinkSetRCX function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in RCX mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char NRLinkSetRCXEx(const byte port, const byte addr);
+/** \example ex_NRLinkSetRCXEx.nxc
+ * This is an example of how to use the \ref NRLinkSetRCXEx function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in IR train mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char NRLinkSetTrain(const byte port);
+/** \example ex_NRLinkSetTrain.nxc
+ * This is an example of how to use the \ref NRLinkSetTrain function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in IR train mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char NRLinkSetTrainEx(const byte port, const byte addr);
+/** \example ex_NRLinkSetTrainEx.nxc
+ * This is an example of how to use the \ref NRLinkSetTrainEx function.
+ */
+
+/**
+ * Configure mindsensors NRLink device in raw IR transmit mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
 inline char NRLinkTxRaw(const byte port);
+/** \example ex_NRLinkTxRaw.nxc
+ * This is an example of how to use the \ref NRLinkTxRaw function.
+ */
 
+/**
+ * Configure mindsensors NRLink device in raw IR transmit mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char NRLinkTxRawEx(const byte port, const byte addr);
+/** \example ex_NRLinkTxRawEx.nxc
+ * This is an example of how to use the \ref NRLinkTxRawEx function.
+ */
+
+/**
+ * Read the status of the mindsensors NRLink device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The mindsensors NRLink status.
+ */
 inline byte NRLinkStatus(const byte port);
+/** \example ex_NRLinkStatus.nxc
+ * This is an example of how to use the \ref NRLinkStatus function.
+ */
+
+/**
+ * Read the status of the mindsensors NRLink device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \return The mindsensors NRLink status.
+ */
 inline byte NRLinkStatusEx(const byte port, const byte addr);
+/** \example ex_NRLinkStatusEx.nxc
+ * This is an example of how to use the \ref NRLinkStatusEx function.
+ */
 
+/**
+ * Run a mindsensors NRLink macro. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param macro The address of the macro to execute.
+ * \return The function call result.
+ */
 inline char RunNRLinkMacro(const byte port, const byte macro);
+/** \example ex_RunNRLinkMacro.nxc
+ * This is an example of how to use the \ref RunNRLinkMacro function.
+ */
+
+/**
+ * Run a mindsensors NRLink macro. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param macro The address of the macro to execute.
+ * \return The function call result.
+ */
 inline char RunNRLinkMacroEx(const byte port, const byte addr, const byte macro);
+/** \example ex_RunNRLinkMacroEx.nxc
+ * This is an example of how to use the \ref RunNRLinkMacroEx function.
+ */
 
-inline char WriteNRLinkBytes(const byte port, const byte bytes[]);
-inline char WriteNRLinkBytesEx(const byte port, const byte addr, const byte bytes[]);
+/**
+ * Write data to the mindsensors NRLink device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param data A byte array containing the data to write.
+ * \return The function call result.
+ */
+inline char WriteNRLinkBytes(const byte port, const byte data[]);
+/** \example ex_WriteNRLinkBytes.nxc
+ * This is an example of how to use the \ref WriteNRLinkBytes function.
+ */
 
-inline bool ReadNRLinkBytes(const byte port, byte & bytes[]);
+/**
+ * Write data to the mindsensors NRLink device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param data A byte array containing the data to write.
+ * \return The function call result.
+ */
+inline char WriteNRLinkBytesEx(const byte port, const byte addr, const byte data[]);
+/** \example ex_WriteNRLinkBytesEx.nxc
+ * This is an example of how to use the \ref WriteNRLinkBytesEx function.
+ */
+
+/**
+ * Read data from the mindsensors NRLink device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param data A byte array that will contain the data read from the device on output.
+ * \return The function call result.
+ */
+inline bool ReadNRLinkBytes(const byte port, byte & data[]);
+/** \example ex_ReadNRLinkBytes.nxc
+ * This is an example of how to use the \ref ReadNRLinkBytes function.
+ */
+
+/**
+ * Read data from the mindsensors NRLink device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param data A byte array that will contain the data read from the device on output.
+ * \return The function call result.
+ */
 inline bool ReadNRLinkBytesEx(const byte port, const byte addr, byte & bytes[]);
+/** \example ex_ReadNRLinkBytesEx.nxc
+ * This is an example of how to use the \ref ReadNRLinkBytesEx function.
+ */
 
 /**
  * MSIRTrain function
  * Control an IR Train receiver set to the specified channel using the
- * mindsensors NRLink device. Valid func values are TRAIN_FUNC_STOP,
- * TRAIN_FUNC_INCR_SPEED, TRAIN_FUNC_DECR_SPEED, and TRAIN_FUNC_TOGGLE_LIGMS.
- * Valid channel values are TRAIN_CHANNEL_1 through TRAIN_CHANNEL_3 and
- * TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
+ * mindsensors NRLink device. Valid func values are \ref TRAIN_FUNC_STOP,
+ * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
+ * Valid channel values are \ref TRAIN_CHANNEL_1 through \ref TRAIN_CHANNEL_3 and
+ * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
  * using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10458,10 +11545,10 @@ inline char MSIRTrain(const byte port, const byte channel, const byte func);
 /**
  * MSIRTrainEx function
  * Control an IR Train receiver set to the specified channel using the
- * mindsensors NRLink device. Valid function values are TRAIN_FUNC_STOP,
- * TRAIN_FUNC_INCR_SPEED, TRAIN_FUNC_DECR_SPEED, and TRAIN_FUNC_TOGGLE_LIGMS.
- * Valid channels are TRAIN_CHANNEL_1 through TRAIN_CHANNEL_3 and
- * TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
+ * mindsensors NRLink device. Valid function values are \ref TRAIN_FUNC_STOP,
+ * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
+ * Valid channels are \ref TRAIN_CHANNEL_1 through \ref TRAIN_CHANNEL_3 and
+ * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
  * using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10479,7 +11566,7 @@ inline char MSIRTrainEx(const byte port, const byte addr, const byte channel, co
  * MSPFComboDirect function
  * Execute a pair of Power Function motor commands on the specified channel
  * using the mindsensors NRLink device. Commands for outa and outb are
- * PF_CMD_STOP, PF_CMD_REV, PF_CMD_FWD, and MSPF_CMD_BRAKE. Valid channels are
+ * \ref PF_CMD_STOP, \ref PF_CMD_REV, \ref PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
  * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
@@ -10498,7 +11585,7 @@ inline char MSPFComboDirect(const byte port, const byte channel, const byte outa
  * MSPFComboDirectEx function
  * Execute a pair of Power Function motor commands on the specified channel
  * using the mindsensors NRLink device. Commands for outa and outb are
- * PF_CMD_STOP, PF_CMD_REV, PF_CMD_FWD, and MSPF_CMD_BRAKE. Valid channels are
+ * PF_CMD_STOP, PF_CMD_REV, PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
  * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
@@ -10518,10 +11605,10 @@ inline char MSPFComboDirectEx(const byte port, const byte addr, const byte chann
  * MSPFComboPWM function
  * Control the speed of both outputs on a Power Function receiver set to the
  * specified channel using the mindsensors NRLink device. Valid output values
- * are PF_PWM_FLOAT, PF_PWM_FWD1, PF_PWM_FWD2, PF_PWM_FWD3, PF_PWM_FWD4,
- * PF_PWM_FWD5, PF_PWM_FWD6, PF_PWM_FWD7, PF_PWM_BRAKE, PF_PWM_REV7,
- * PF_PWM_REV6, PF_PWM_REV5, PF_PWM_REV4, PF_PWM_REV3, PF_PWM_REV2, and
- * PF_PWM_REV1. Valid channels are PF_CHANNEL_1 through PF_CHANNEL_4. The
+ * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10539,10 +11626,10 @@ inline char MSPFComboPWM(const byte port, const byte channel, const byte outa, c
  * MSPFComboPWMEx function
  * Control the speed of both outputs on a Power Function receiver set to the
  * specified channel using the mindsensors NRLink device. Valid output values
- * are PF_PWM_FLOAT, PF_PWM_FWD1, PF_PWM_FWD2, PF_PWM_FWD3, PF_PWM_FWD4,
- * PF_PWM_FWD5, PF_PWM_FWD6, PF_PWM_FWD7, PF_PWM_BRAKE, PF_PWM_REV7,
- * PF_PWM_REV6, PF_PWM_REV5, PF_PWM_REV4, PF_PWM_REV3, PF_PWM_REV2, and
- * PF_PWM_REV1. Valid channels are PF_CHANNEL_1 through PF_CHANNEL_4. The
+ * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10633,11 +11720,11 @@ inline char MSPFRepeatEx(const byte port, const byte addr, const byte count, con
  * MSPFSingleOutputCST function
  * Control a single output on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device. Select the desired output
- * using PF_OUT_A or PF_OUT_B. Valid functions are PF_CST_CLEAR1_CLEAR2,
- * PF_CST_SET1_CLEAR2, PF_CST_CLEAR1_SET2, PF_CST_SET1_SET2,
- * PF_CST_INCREMENT_PWM, PF_CST_DECREMENT_PWM, PF_CST_FULL_FWD,
- * PF_CST_FULL_REV, and PF_CST_TOGGLE_DIR. Valid channels are
- * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
+ * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
+ * \ref PF_CST_SET1_CLEAR2, \ref PF_CST_CLEAR1_SET2, \ref PF_CST_SET1_SET2,
+ * \ref PF_CST_INCREMENT_PWM, \ref PF_CST_DECREMENT_PWM, \ref PF_CST_FULL_FWD,
+ * \ref PF_CST_FULL_REV, and \ref PF_CST_TOGGLE_DIR. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10655,11 +11742,11 @@ inline char MSPFSingleOutputCST(const byte port, const byte channel, const byte 
  * MSPFSingleOutputCSTEx function
  * Control a single output on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device. Select the desired output
- * using PF_OUT_A or PF_OUT_B. Valid functions are PF_CST_CLEAR1_CLEAR2,
- * PF_CST_SET1_CLEAR2, PF_CST_CLEAR1_SET2, PF_CST_SET1_SET2,
- * PF_CST_INCREMENT_PWM, PF_CST_DECREMENT_PWM, PF_CST_FULL_FWD,
- * PF_CST_FULL_REV, and PF_CST_TOGGLE_DIR. Valid channels are
- * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
+ * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
+ * \ref PF_CST_SET1_CLEAR2, \ref PF_CST_CLEAR1_SET2, \ref PF_CST_SET1_SET2,
+ * \ref PF_CST_INCREMENT_PWM, \ref PF_CST_DECREMENT_PWM, \ref PF_CST_FULL_FWD,
+ * \ref PF_CST_FULL_REV, and \ref PF_CST_TOGGLE_DIR. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10678,11 +11765,11 @@ inline char MSPFSingleOutputCSTEx(const byte port, const byte addr, const byte c
  * MSPFSingleOutputPWM function
  * Control the speed of a single output on a Power Function receiver set to
  * the specified channel using the mindsensors NRLink device. Select the
- * desired output using PF_OUT_A or PF_OUT_B. Valid functions are
- * PF_PWM_FLOAT, PF_PWM_FWD1, PF_PWM_FWD2, PF_PWM_FWD3, PF_PWM_FWD4,
- * PF_PWM_FWD5, PF_PWM_FWD6, PF_PWM_FWD7, PF_PWM_BRAKE, PF_PWM_REV7,
- * PF_PWM_REV6, PF_PWM_REV5, PF_PWM_REV4, PF_PWM_REV3, PF_PWM_REV2, and
- * PF_PWM_REV1. Valid channels are PF_CHANNEL_1 through PF_CHANNEL_4. The
+ * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
+ * \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10700,11 +11787,11 @@ inline char MSPFSingleOutputPWM(const byte port, const byte channel, const byte 
  * MSPFSingleOutputPWMEx function
  * Control the speed of a single output on a Power Function receiver set to
  * the specified channel using the mindsensors NRLink device. Select the
- * desired output using PF_OUT_A or PF_OUT_B. Valid functions are
- * PF_PWM_FLOAT, PF_PWM_FWD1, PF_PWM_FWD2, PF_PWM_FWD3, PF_PWM_FWD4,
- * PF_PWM_FWD5, PF_PWM_FWD6, PF_PWM_FWD7, PF_PWM_BRAKE, PF_PWM_REV7,
- * PF_PWM_REV6, PF_PWM_REV5, PF_PWM_REV4, PF_PWM_REV3, PF_PWM_REV2, and
- * PF_PWM_REV1. Valid channels are PF_CHANNEL_1 through PF_CHANNEL_4. The
+ * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
+ * \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10723,10 +11810,10 @@ inline char MSPFSingleOutputPWMEx(const byte port, const byte addr, const byte c
  * MSPFSinglePin function
  * Control a single pin on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device. Select the desired output
- * using PF_OUT_A or PF_OUT_B.  Select the desired pin using PF_PIN_C1 or
- * PF_PIN_C2. Valid functions are PF_FUNC_NOCHANGE, PF_FUNC_CLEAR,
- * PF_FUNC_SET, and PF_FUNC_TOGGLE. Valid channels are PF_CHANNEL_1 through
- * PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
+ * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
+ * \ref PF_PIN_C2. Valid functions are \ref PF_FUNC_NOCHANGE, \ref PF_FUNC_CLEAR,
+ * \ref PF_FUNC_SET, and \ref PF_FUNC_TOGGLE. Valid channels are \ref PF_CHANNEL_1 through
+ * \ref PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
  * false (timeout) as the final parameter. The port must be configured as a
  * Lowspeed port before using this function.
  *
@@ -10747,10 +11834,10 @@ inline char MSPFSinglePin(const byte port, const byte channel, const byte out, c
  * MSPFSinglePinEx function
  * Control a single pin on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device. Select the desired output
- * using PF_OUT_A or PF_OUT_B.  Select the desired pin using PF_PIN_C1 or
- * PF_PIN_C2. Valid functions are PF_FUNC_NOCHANGE, PF_FUNC_CLEAR,
- * PF_FUNC_SET, and PF_FUNC_TOGGLE. Valid channels are PF_CHANNEL_1 through
- * PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
+ * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
+ * \ref PF_PIN_C2. Valid functions are \ref PF_FUNC_NOCHANGE, \ref PF_FUNC_CLEAR,
+ * \ref PF_FUNC_SET, and \ref PF_FUNC_TOGGLE. Valid channels are \ref PF_CHANNEL_1 through
+ * \ref PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
  * false (timeout) as the final parameter. The port must be configured as a
  * Lowspeed port before using this function.
  *
@@ -10772,9 +11859,9 @@ inline char MSPFSinglePinEx(const byte port, const byte addr, const byte channel
  * MSPFTrain function
  * Control both outputs on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device as if it were an IR Train
- * receiver. Valid function values are TRAIN_FUNC_STOP, TRAIN_FUNC_INCR_SPEED,
- * TRAIN_FUNC_DECR_SPEED, and TRAIN_FUNC_TOGGLE_LIGMS. Valid channels are
- * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
+ * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
+ * \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10791,8 +11878,8 @@ inline char MSPFTrain(const byte port, const byte channel, const byte func);
  * MSPFTrainEx function
  * Control both outputs on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device as if it were an IR Train
- * receiver. Valid function values are TRAIN_FUNC_STOP, TRAIN_FUNC_INCR_SPEED,
- * TRAIN_FUNC_DECR_SPEED, and TRAIN_FUNC_TOGGLE_LIGMS. Valid channels are
+ * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
+ * \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT. Valid channels are
  * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
@@ -11867,11 +12954,19 @@ inline void MSScoutUnmuteSound(void);
 #define MSReadValueEx(_port, _addr, _reg, _bytes) asm { __MSReadValue(_port, _addr, _reg, _bytes, __RETVAL__, __TMPBYTE__) }
 #define MSReadValue(_port, _reg, _bytes) asm { __MSReadValue(_port, 0x02, _reg, _bytes, __RETVAL__, __TMPBYTE__) }
 
+#define MSEnergize(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, __RETVAL__) }
+#define MSEnergizeEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, MS_CMD_ENERGIZED, __RETVAL__) }
+#define MSDeenergize(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_DEENERGIZED, __RETVAL__) }
+#define MSDeenergizeEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, MS_CMD_DEENERGIZED, __RETVAL__) }
+#define MSADPAOn(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_ON, __RETVAL__) }
+#define MSADPAOnEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, MS_CMD_ADPA_ON, __RETVAL__) }
+#define MSADPAOff(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_OFF, __RETVAL__) }
+#define MSADPAOffEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, MS_CMD_ADPA_OFF, __RETVAL__) }
+
 #define DISTNxGP2D12(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, __RETVAL__) }
 #define DISTNxGP2D120(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, __RETVAL__) }
 #define DISTNxGP2YA21(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, __RETVAL__) }
 #define DISTNxGP2YA02(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, __RETVAL__) }
-#define DISTNxEnergize(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, __RETVAL__) }
 #define DISTNxDistance(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_DIST, 2, __RETVAL__, __TMPBYTE__) }
 #define DISTNxVoltage(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_VOLT, 2, __RETVAL__, __TMPBYTE__) }
 #define DISTNxModuleType(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_MODULE_TYPE, 1, __RETVAL__, __TMPBYTE__) }
@@ -11879,9 +12974,23 @@ inline void MSScoutUnmuteSound(void);
 #define DISTNxMinDistance(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_DIST_MIN, 2, __RETVAL__, __TMPBYTE__) }
 #define DISTNxMaxDistance(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_DIST_MAX, 2, __RETVAL__, __TMPBYTE__) }
 
+#define DISTNxGP2D12Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, DIST_CMD_GP2D12, __RETVAL__) }
+#define DISTNxGP2D120Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, DIST_CMD_GP2D120, __RETVAL__) }
+#define DISTNxGP2YA21Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA21, __RETVAL__) }
+#define DISTNxGP2YA02Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA02, __RETVAL__) }
+#define DISTNxDistanceEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_DIST, 2, __RETVAL__, __TMPBYTE__) }
+#define DISTNxVoltageEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_VOLT, 2, __RETVAL__, __TMPBYTE__) }
+#define DISTNxModuleTypeEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_MODULE_TYPE, 1, __RETVAL__, __TMPBYTE__) }
+#define DISTNxNumPointsEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_NUM_POINTS, 1, __RETVAL__, __TMPBYTE__) }
+#define DISTNxMinDistanceEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_DIST_MIN, 2, __RETVAL__, __TMPBYTE__) }
+#define DISTNxMaxDistanceEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_DIST_MAX, 2, __RETVAL__, __TMPBYTE__) }
+
 #define SensorMSDROD(_p) asm { getin __RETVAL__, _p, NormalizedValue }
 
-#define PSPNxEnergize(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, __RETVAL__) }
+#define PSPNxDigital(_port) asm { __I2CSendCmd(_port, 0x02, PSP_CMD_DIGITAL, __RETVAL__) }
+#define PSPNxDigitalEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, PSP_CMD_DIGITAL, __RETVAL__) }
+#define PSPNxAnalog(_port) asm { __I2CSendCmd(_port, 0x02, PSP_CMD_ANALOG, __RETVAL__) }
+#define PSPNxAnalogEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, PSP_CMD_ANALOG, __RETVAL__) }
 
 #define ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright) asm { __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, __RETVAL__) }
 #define ReadSensorMSPlayStation(_port, _b1, _b2, _xleft, _yleft, _xright, _yright) ReadSensorMSPlayStationEx(_port, 0x02, _b1, _b2, _xleft, _yleft, _xright, _yright)
@@ -11895,6 +13004,16 @@ inline void MSScoutUnmuteSound(void);
 #define NRLinkSetRCX(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, __RETVAL__) }
 #define NRLinkSetTrain(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, __RETVAL__) }
 #define NRLinkSetPF(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, __RETVAL__) }
+
+#define NRLink2400Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_2400, __RETVAL__) }
+#define NRLink4800Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_4800, __RETVAL__) }
+#define NRLinkFlushEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, __RETVAL__) }
+#define NRLinkIRLongEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_LONG, __RETVAL__) }
+#define NRLinkIRShortEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_SHORT, __RETVAL__) }
+#define NRLinkTxRawEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_TX_RAW, __RETVAL__) }
+#define NRLinkSetRCXEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_RCX, __RETVAL__) }
+#define NRLinkSetTrainEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_TRAIN, __RETVAL__) }
+#define NRLinkSetPFEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_PF, __RETVAL__) }
 
 #define RunNRLinkMacroEx(_port, _addr, _macro) asm { __RunNRLinkMacroEx(_port, _addr, _macro, __RETVAL__) }
 #define RunNRLinkMacro(_port, _macro) asm { __RunNRLinkMacroEx(_port, 0x02, _macro, __RETVAL__) }

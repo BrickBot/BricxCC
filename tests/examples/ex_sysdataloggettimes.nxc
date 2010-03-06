@@ -1,0 +1,8 @@
+task main()
+{
+  DatalogGetTimesType args;
+  SysDatalogGetTimes(args);
+  NumOut(0, LCD_LINE4, args.SyncTime);
+  NumOut(0, LCD_LINE5, args.SyncTick);
+  Wait(SEC_5);
+}

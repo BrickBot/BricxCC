@@ -1,0 +1,6 @@
+task main()
+{
+  SetSleepTimeoutType args;
+  args.TheSleepTimeoutMS = MIN_1*5;
+  SysSetSleepTimeout(args);
+}
