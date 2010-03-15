@@ -435,7 +435,7 @@ inline variant GetInput(const byte & port, const byte field);
  */
 
 /**
- * Set an input field value
+ * Set an input field value.
  * Set the specified field of the sensor on the specified port to the value
  * provided.
  *
@@ -450,7 +450,7 @@ inline void SetInput(const byte & port, const int field, variant value);
  */
 
 /**
- * Read sensor scaled value
+ * Read sensor scaled value.
  * Return the processed sensor reading for a sensor on the specified port.
  * This is the same value that is returned by the sensor value names
  * (e.g. \ref SENSOR_1).
@@ -465,7 +465,7 @@ inline unsigned int Sensor(const byte port);
  */
 
 /**
- * Read sensor boolean value
+ * Read sensor boolean value.
  * Return the boolean value of a sensor on the specified port. Boolean
  * conversion is either done based on preset cutoffs, or a slope parameter
  * specified by calling SetSensorMode.
@@ -479,7 +479,7 @@ inline bool SensorBoolean(const byte port);
  */
 
 /**
- * Read sensor digital pins direction
+ * Read sensor digital pins direction.
  * Return the digital pins direction value of a sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -491,7 +491,7 @@ inline byte SensorDigiPinsDirection(const byte port);
  */
 
 /**
- * Read sensor digital pins output level
+ * Read sensor digital pins output level.
  * Return the digital pins output level value of a sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -503,7 +503,7 @@ inline byte SensorDigiPinsOutputLevel(const byte port);
  */
 
 /**
- * Read sensor digital pins status
+ * Read sensor digital pins status.
  * Return the digital pins status value of a sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -515,7 +515,7 @@ inline byte SensorDigiPinsStatus(const byte port);
  */
 
 /**
- * Read sensor invalid data flag
+ * Read sensor invalid data flag.
  * Return the value of the InvalidData flag of a sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts. A variable whose value is
@@ -528,7 +528,7 @@ inline bool SensorInvalid(const byte & port);
  */
 
 /**
- * Read sensor mode
+ * Read sensor mode.
  * Return the mode of a sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts. A variable whose value is
@@ -541,7 +541,7 @@ inline byte SensorMode(const byte & port);
  */
 
 /**
- * Read sensor normalized value
+ * Read sensor normalized value.
  * Return the normalized value of a sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts. A variable whose value is
@@ -554,7 +554,7 @@ inline unsigned int SensorNormalized(const byte port);
  */
 
 /**
- * Read sensor raw value
+ * Read sensor raw value.
  * Return the raw value of a sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts. A variable whose value is
@@ -567,7 +567,7 @@ inline unsigned int SensorRaw(const byte port);
  */
 
 /**
- * Read sensor scaled value
+ * Read sensor scaled value.
  * Return the processed sensor reading for a sensor on the specified port.
  * This is the same value that is returned by the sensor value names
  * (e.g. \ref SENSOR_1) or the \ref Sensor function.
@@ -582,7 +582,7 @@ inline unsigned int SensorScaled(const byte port);
  */
 
 /**
- * Read sensor type
+ * Read sensor type.
  * Return the type of a sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts. A variable whose value is
@@ -595,7 +595,7 @@ inline byte SensorType(const byte port);
  */
 
 /**
- * Read sensor scaled value
+ * Read sensor scaled value.
  * Return the processed sensor reading for a sensor on the specified port.
  * This is the same value that is returned by the sensor value names
  * (e.g. \ref SENSOR_1) or the \ref Sensor function.
@@ -610,7 +610,7 @@ inline unsigned int SensorValue(const byte port);
  */
  
 /**
- * Read sensor boolean value
+ * Read sensor boolean value.
  * Return the boolean value of a sensor on the specified port. Boolean
  * conversion is either done based on preset cutoffs, or a slope parameter
  * specified by calling SetSensorMode.
@@ -624,7 +624,7 @@ inline bool SensorValueBool(const byte port);
  */
  
 /**
- * Read sensor raw value
+ * Read sensor raw value.
  * Return the raw value of a sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts. A variable whose value is
@@ -637,7 +637,7 @@ inline unsigned int SensorValueRaw(const byte port);
  */
 
 /**
- * Get the custom sensor active status
+ * Get the custom sensor active status.
  * Return the custom sensor active status value of a sensor.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -649,7 +649,7 @@ inline byte CustomSensorActiveStatus(const byte port);
  */
 
 /**
- * Get the custom sensor percent full scale
+ * Get the custom sensor percent full scale.
  * Return the custom sensor percent full scale value of a sensor.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -661,7 +661,7 @@ inline byte CustomSensorPercentFullScale(const byte port);
  */
 
 /**
- * Get the custom sensor zero offset
+ * Get the custom sensor zero offset.
  * Return the custom sensor zero offset value of a sensor.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -673,7 +673,7 @@ inline unsigned int CustomSensorZeroOffset(const byte port);
  */
 
 /**
- * Set active status
+ * Set active status.
  * Sets the active status value of a custom sensor.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -685,7 +685,7 @@ inline void SetCustomSensorActiveStatus(const byte port, const byte activeStatus
  */
 
 /**
- * Set percent full scale
+ * Set percent full scale.
  * Sets the percent full scale value of a custom sensor.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -697,7 +697,7 @@ inline void SetCustomSensorPercentFullScale(const byte port, const byte pctFullS
  */
 
 /**
- * Set percent zero offset
+ * Set percent zero offset.
  * Sets the zero offset value of a custom sensor.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -709,7 +709,7 @@ inline void SetCustomSensorZeroOffset(const byte port, const int zeroOffset);
  */
 
 /**
- * Set sensor boolean value
+ * Set sensor boolean value.
  * Sets the boolean value of a sensor.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -721,7 +721,7 @@ inline void SetSensorBoolean(const byte port, bool value);
  */
 
 /**
- * Set digital pins direction
+ * Set digital pins direction.
  * Sets the digital pins direction value of a sensor.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -733,7 +733,7 @@ inline void SetSensorDigiPinsDirection(const byte port, const byte direction);
  */
 
 /**
- * Set digital pins output level
+ * Set digital pins output level.
  * Sets the digital pins output level value of a sensor.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -745,7 +745,7 @@ inline void SetSensorDigiPinsOutputLevel(const byte port, const byte outputLevel
  */
 
 /**
- * Set digital pins status
+ * Set digital pins status.
  * Sets the digital pins status value of a sensor.
  *
  * \param port The sensor port. See \ref InPorts. Must be a constant.
@@ -3431,7 +3431,7 @@ struct CommLSWriteExType {
 #ifdef __DOXYGEN_DOCS
 
 /**
- * Read ultrasonic sensor value
+ * Read ultrasonic sensor value.
  * Return the ultrasonic sensor distance value. Since an
  * ultrasonic sensor is an I2C digital sensor its value cannot be read using
  * the standard Sensor(n) value.
@@ -3446,7 +3446,7 @@ inline byte SensorUS(const byte port);
  */
 
 /**
- * Read multiple ultrasonic sensor values
+ * Read multiple ultrasonic sensor values.
  * Return eight ultrasonic sensor distance values.
  * \param port The port to which the ultrasonic sensor is attached. See the
  * \ref InPorts group. You may use a constant or a variable.
@@ -3461,7 +3461,7 @@ inline char ReadSensorUSEx(const byte port, byte & values[]);
  */
 
 /**
- * Read I2C register
+ * Read I2C register.
  * Read a single byte from an I2C device register.
  * \param port The port to which the I2C device is attached. See the
  * \ref InPorts group. You may use a constant or a variable.
@@ -3476,7 +3476,7 @@ inline char ReadI2CRegister(byte port, byte reg, byte & out);
  */
 
 /**
- * Write I2C register
+ * Write I2C register.
  * Write a single byte to an I2C device register.
  * \param port The port to which the I2C device is attached. See the
  * \ref InPorts group. You may use a constant or a variable.
@@ -3491,7 +3491,7 @@ inline char WriteI2CRegister(byte port, byte reg, byte val);
  */
 
 /**
- * Get lowspeed status
+ * Get lowspeed status.
  * This method checks the status of the I2C communication on the specified
  * port. If the last operation on this port was a successful LowspeedWrite
  * call that requested response data from the device then bytesready will
@@ -3517,7 +3517,7 @@ inline long LowspeedStatus(const byte port, byte & bytesready);
  */
 
 /**
- * Check lowspeed status
+ * Check lowspeed status.
  * This method checks the status of the I2C communication on the specified
  * port.
  *
@@ -3539,7 +3539,7 @@ inline long LowspeedCheckStatus(const byte port);
  */
 
 /**
- * Get lowspeed bytes ready
+ * Get lowspeed bytes ready.
  * This method checks the number of bytes that are ready to be read on the
  * specified port. If the last operation on this port was a successful
  * LowspeedWrite call that requested response data from the device then the
@@ -3560,7 +3560,7 @@ inline byte LowspeedBytesReady(const byte port);
  */
 
 /**
- * Write lowspeed data
+ * Write lowspeed data.
  * This method starts a transaction to write the bytes contained in the array
  * buffer to the I2C device on the specified port. It also tells the I2C device
  * the number of bytes that should be included in the response. The maximum
@@ -3586,7 +3586,7 @@ inline long LowspeedWrite(const byte port, byte retlen, byte buffer[]);
  */
 
 /**
- * Read lowspeed data
+ * Read lowspeed data.
  * Read the specified number of bytes from the I2C device on the specified
  * port and store the bytes read in the byte array buffer provided.  The maximum
  * number of bytes that can be written or read is 16.
@@ -3610,7 +3610,7 @@ inline long LowspeedRead(const byte port, byte buflen, byte & buffer[]);
  */
 
 /**
- * Get I2C status
+ * Get I2C status.
  * This method checks the status of the I2C communication on the specified
  * port. If the last operation on this port was a successful I2CWrite
  * call that requested response data from the device then bytesready will
@@ -3636,7 +3636,7 @@ inline long I2CStatus(const byte port, byte & bytesready);
  */
 
 /**
- * Check I2C status
+ * Check I2C status.
  * This method checks the status of the I2C communication on the specified
  * port.
  *
@@ -3658,7 +3658,7 @@ inline long I2CCheckStatus(const byte port);
  */
 
 /**
- * Get I2C bytes ready
+ * Get I2C bytes ready.
  * This method checks the number of bytes that are ready to be read on the
  * specified port. If the last operation on this port was a successful
  * I2CWrite call that requested response data from the device then the
@@ -3679,7 +3679,7 @@ inline byte I2CBytesReady(const byte port);
  */
 
 /**
- * Write I2C data
+ * Write I2C data.
  * This method starts a transaction to write the bytes contained in the array
  * buffer to the I2C device on the specified port. It also tells the I2C device
  * the number of bytes that should be included in the response. The maximum
@@ -3705,7 +3705,7 @@ inline long I2CWrite(const byte port, byte retlen, byte buffer[]);
  */
 
 /**
- * Read I2C data
+ * Read I2C data.
  * Read the specified number of bytes from the I2C device on the specified
  * port and store the bytes read in the byte array buffer provided.  The maximum
  * number of bytes that can be written or read is 16.
@@ -3729,7 +3729,7 @@ inline long I2CRead(const byte port, byte buflen, byte & buffer[]);
  */
 
 /**
- * Perform an I2C write/read transaction
+ * Perform an I2C write/read transaction.
  * This method writes the bytes contained in the input buffer (inbuf) to the
  * I2C device on the specified port, checks for the specified number of bytes
  * to be ready for reading, and then tries to read the specified number (count)
@@ -3761,7 +3761,7 @@ inline long I2CBytes(const byte port, byte inbuf[], byte & count, byte & outbuf[
  */
 
 /**
- * Read I2C device information
+ * Read I2C device information.
  * Read standard I2C device information: version, vendor, and device ID. The
  * I2C device must use address 0x02.
  *
@@ -3780,7 +3780,7 @@ inline string I2CDeviceInfo(byte port, byte info);
  */
 
 /**
- * Read I2C device information extra
+ * Read I2C device information extra.
  * Read standard I2C device information: version, vendor, and device ID. The
  * I2C device uses the specified address.
  *
@@ -3800,7 +3800,7 @@ inline string I2CDeviceInfoEx(byte port, byte addr, byte info);
  */
 
 /**
- * Read I2C device version
+ * Read I2C device version.
  * Read standard I2C device version. The I2C device must use address 0x02.
  *
  * \param port The port to which the I2C device is attached. See the
@@ -3816,7 +3816,7 @@ inline string I2CVersion(byte port);
  */
 
 /**
- * Read I2C device version extra
+ * Read I2C device version extra.
  * Read standard I2C device version. The I2C device uses the specified address.
  *
  * \param port The port to which the I2C device is attached. See the
@@ -3833,7 +3833,7 @@ inline string I2CVersionEx(byte port, byte addr);
  */
 
 /**
- * Read I2C device vendor
+ * Read I2C device vendor.
  * Read standard I2C device vendor. The I2C device must use address 0x02.
  *
  * \param port The port to which the I2C device is attached. See the
@@ -3849,7 +3849,7 @@ inline string I2CVendorId(byte port);
  */
 
 /**
- * Read I2C device vendor extra
+ * Read I2C device vendor extra.
  * Read standard I2C device vendor. The I2C device uses the specified address.
  *
  * \param port The port to which the I2C device is attached. See the
@@ -3866,7 +3866,7 @@ inline string I2CVendorIdEx(byte port, byte addr);
  */
 
 /**
- * Read I2C device identifier
+ * Read I2C device identifier.
  * Read standard I2C device identifier. The I2C device must use address 0x02.
  *
  * \param port The port to which the I2C device is attached. See the
@@ -3882,7 +3882,7 @@ inline string I2CDeviceId(byte port);
  */
 
 /**
- * Read I2C device identifier extra
+ * Read I2C device identifier extra.
  * Read standard I2C device identifier. The I2C device uses the specified address.
  *
  * \param port The port to which the I2C device is attached. See the
@@ -3899,7 +3899,7 @@ inline string I2CDeviceIdEx(byte port, byte addr);
  */
 
 /**
- * Send an I2C command
+ * Send an I2C command.
  * Send a command to an I2C device at the standard command register: \ref I2C_REG_CMD.
  * The I2C device must use address 0x02.
  * \param port The port to which the I2C device is attached. See the
@@ -3916,7 +3916,7 @@ inline long I2CSendCommand(byte port, byte cmd);
  */
 
 /**
- * Send an I2C command extra
+ * Send an I2C command extra.
  * Send a command to an I2C device at the standard command register: \ref I2C_REG_CMD.
  * The I2C device uses the specified address.
  * \param port The port to which the I2C device is attached. See the
@@ -3939,7 +3939,7 @@ inline long I2CSendCommandEx(byte port, byte addr, byte cmd);
  */
 
 /**
- * Get I2C input buffer data
+ * Get I2C input buffer data.
  * This method reads count bytes of data from the I2C input buffer for the
  * specified port and writes it to the buffer provided.
  * \param port A constant port number (S1..S4). See \ref InPorts.
@@ -3954,7 +3954,7 @@ inline void GetLSInputBuffer(const byte port, const byte offset, byte cnt, byte 
  */
 
 /**
- * Get I2C output buffer data
+ * Get I2C output buffer data.
  * This method reads cnt bytes of data from the I2C output buffer for the
  * specified port and writes it to the buffer provided.
  * \param port A constant port number (S1..S4). See \ref InPorts.
@@ -3969,7 +3969,7 @@ inline void GetLSOutputBuffer(const byte port, const byte offset, byte cnt, byte
  */
 
 /**
- * Get I2C input buffer in-pointer
+ * Get I2C input buffer in-pointer.
  * This method returns the value of the input pointer of the I2C input
  * buffer for the specified port.
  * \param port A constant port number (S1..S4). See \ref InPorts.
@@ -3981,7 +3981,7 @@ inline byte LSInputBufferInPtr(const byte port);
  */
 
 /**
- * Get I2C input buffer out-pointer
+ * Get I2C input buffer out-pointer.
  * This method returns the value of the output pointer of the I2C input
  * buffer for the specified port.
  * \param port A constant port number (S1..S4). See \ref InPorts.
@@ -3993,7 +3993,7 @@ inline byte LSInputBufferOutPtr(const byte port);
  */
 
 /**
- * Get I2C input buffer bytes to rx
+ * Get I2C input buffer bytes to rx.
  * This method returns the value of the bytes to rx field of the I2C input
  * buffer for the specified port.
  * \param port A constant port number (S1..S4). See \ref InPorts.
@@ -4005,7 +4005,7 @@ inline byte LSInputBufferBytesToRx(const byte port);
  */
 
 /**
- * Get I2C output buffer in-pointer
+ * Get I2C output buffer in-pointer.
  * This method returns the value of the input pointer of the I2C output
  * buffer for the specified port.
  * \param port A constant port number (S1..S4). See \ref InPorts.
@@ -4017,7 +4017,7 @@ inline byte LSOutputBufferInPtr(const byte port);
  */
 
 /**
- * Get I2C output buffer out-pointer
+ * Get I2C output buffer out-pointer.
  * This method returns the value of the output pointer of the I2C output
  * buffer for the specified port.
  * \param port A constant port number (S1..S4). See \ref InPorts.
@@ -4029,7 +4029,7 @@ inline byte LSOutputBufferOutPtr(const byte port);
  */
 
 /**
- * Get I2C output buffer bytes to rx
+ * Get I2C output buffer bytes to rx.
  * This method returns the value of the bytes to rx field of the I2C output
  * buffer for the specified port.
  * \param port A constant port number (S1..S4). See \ref InPorts.
@@ -4041,7 +4041,7 @@ inline byte LSOutputBufferBytesToRx(const byte port);
  */
 
 /**
- * Get I2C mode
+ * Get I2C mode.
  * This method returns the value of the I2C mode for the specified port.
  * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C port mode. See \ref LowSpeedModeConstants.
@@ -4052,7 +4052,7 @@ inline byte LSMode(const byte port);
  */
 
 /**
- * Get I2C channel state
+ * Get I2C channel state.
  * This method returns the value of the I2C channel state for the specified port.
  * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C port channel state. See \ref LowSpeedChannelStateConstants.
@@ -4063,7 +4063,7 @@ inline byte LSChannelState(const byte port);
  */
 
 /**
- * Get I2C error type
+ * Get I2C error type.
  * This method returns the value of the I2C error type for the specified port.
  * \param port A constant port number (S1..S4). See \ref InPorts.
  * \return The I2C port error type. See \ref LowSpeedErrorTypeConstants.
@@ -4074,7 +4074,7 @@ inline byte LSErrorType(const byte port);
  */
 
 /**
- * Get I2C state
+ * Get I2C state.
  * This method returns the value of the I2C state.
  * \return The I2C state. See \ref LowSpeedStateConstants.
  */
@@ -4084,7 +4084,7 @@ inline byte LSState();
  */
 
 /**
- * Get I2C speed
+ * Get I2C speed.
  * This method returns the value of the I2C speed.
  * \return The I2C speed.
  * \warning This function is unimplemented within the firmware.
@@ -4096,7 +4096,7 @@ inline byte LSSpeed();
 
 #ifdef __ENHANCED_FIRMWARE
 /**
- * Get I2C no restart on read setting
+ * Get I2C no restart on read setting.
  * This method returns the value of the I2C no restart on read field.
  * \return The I2C no restart on read field. See \ref LowSpeedNoRestartConstants.
  */
@@ -6012,7 +6012,7 @@ inline char SendRS485String(string str);
 #endif
 
 /**
- * Get bluetooth input buffer data
+ * Get bluetooth input buffer data.
  * This method reads count bytes of data from the Bluetooth input buffer and
  * writes it to the buffer provided.
  * 
@@ -6027,7 +6027,7 @@ inline void GetBTInputBuffer(const byte offset, byte cnt, byte & data[]);
  */
 
 /**
- * Get bluetooth output buffer data
+ * Get bluetooth output buffer data.
  * This method reads count bytes of data from the Bluetooth output buffer and
  * writes it to the buffer provided.
  * 
@@ -6042,7 +6042,7 @@ inline void GetBTOutputBuffer(const byte offset, byte cnt, byte & data[]);
  */
 
 /**
- * Get hi-speed port input buffer data
+ * Get hi-speed port input buffer data.
  * This method reads count bytes of data from the hi-speed port input buffer and
  * writes it to the buffer provided.
  * 
@@ -6057,7 +6057,7 @@ inline void GetHSInputBuffer(const byte offset, byte cnt, byte & data[]);
  */
 
 /**
- * Get hi-speed port output buffer data
+ * Get hi-speed port output buffer data.
  * This method reads count bytes of data from the hi-speed port output buffer and
  * writes it to the buffer provided.
  * 
@@ -6072,7 +6072,7 @@ inline void GetHSOutputBuffer(const byte offset, byte cnt, byte & data[]);
  */
 
 /**
- * Get usb input buffer data
+ * Get usb input buffer data.
  * This method reads count bytes of data from the usb input buffer and
  * writes it to the buffer provided.
  * 
@@ -6087,7 +6087,7 @@ inline void GetUSBInputBuffer(const byte offset, byte cnt, byte & data[]);
  */
 
 /**
- * Get usb output buffer data
+ * Get usb output buffer data.
  * This method reads count bytes of data from the usb output buffer and
  * writes it to the buffer provided.
  * \param offset A constant offset into the usb output buffer.
@@ -6101,7 +6101,7 @@ inline void GetUSBOutputBuffer(const byte offset, byte cnt, byte & data[]);
  */
 
 /**
- * Get usb poll buffer data
+ * Get usb poll buffer data.
  * This method reads count bytes of data from the usb poll buffer and
  * writes it to the buffer provided.
  * \param offset A constant offset into the usb poll buffer.
@@ -6269,7 +6269,7 @@ inline byte BTConnectionLinkQuality(const byte conn);
  */
 
 /**
- * Get NXT bluecore version
+ * Get NXT bluecore version.
  * This method returns the bluecore version of the NXT.
  * \return The NXT's bluecore version number.
  */
@@ -6279,7 +6279,7 @@ inline int BrickDataBluecoreVersion(void);
  */
 
 /**
- * Get NXT bluetooth state status
+ * Get NXT bluetooth state status.
  * This method returns the Bluetooth state status of the NXT.
  * \return The NXT's bluetooth state status.
  */
@@ -6289,7 +6289,7 @@ inline byte BrickDataBtStateStatus(void);
  */
 
 /**
- * Get NXT bluetooth hardware status
+ * Get NXT bluetooth hardware status.
  * This method returns the Bluetooth hardware status of the NXT.
  * \return The NXT's bluetooth hardware status.
  */
@@ -6299,7 +6299,7 @@ inline byte BrickDataBtHardwareStatus(void);
  */
 
 /**
- * Get NXT bluetooth timeout value
+ * Get NXT bluetooth timeout value.
  * This method returns the Bluetooth timeout value of the NXT.
  * \return The NXT's bluetooth timeout value.
  */
@@ -6309,7 +6309,7 @@ inline byte BrickDataTimeoutValue(void);
  */
 
 /**
- * Get bluetooth input buffer in-pointer
+ * Get bluetooth input buffer in-pointer.
  * This method returns the value of the input pointer of the Bluetooth input
  * buffer.
  * \return The bluetooth input buffer's in-pointer value.
@@ -6320,7 +6320,7 @@ inline byte BTInputBufferInPtr(void);
  */
 
 /**
- * Get bluetooth input buffer out-pointer
+ * Get bluetooth input buffer out-pointer.
  * This method returns the value of the output pointer of the Bluetooth input
  * buffer.
  * \return The bluetooth input buffer's out-pointer value.
@@ -6331,7 +6331,7 @@ inline byte BTInputBufferOutPtr(void);
  */
 
 /**
- * Get bluetooth output buffer in-pointer
+ * Get bluetooth output buffer in-pointer.
  * This method returns the value of the input pointer of the Bluetooth output
  * buffer.
  * \return The bluetooth output buffer's in-pointer value.
@@ -6342,7 +6342,7 @@ inline byte BTOutputBufferInPtr(void);
  */
 
 /**
- * Get bluetooth output buffer out-pointer
+ * Get bluetooth output buffer out-pointer.
  * This method returns the value of the output pointer of the Bluetooth output
  * buffer.
  * \return The bluetooth output buffer's out-pointer value.
@@ -6353,7 +6353,7 @@ inline byte BTOutputBufferOutPtr(void);
  */
 
 /**
- * Get hi-speed port input buffer in-pointer
+ * Get hi-speed port input buffer in-pointer.
  * This method returns the value of the input pointer of the hi-speed port input
  * buffer.
  * \return The hi-speed port input buffer's in-pointer value.
@@ -6364,7 +6364,7 @@ inline byte HSInputBufferInPtr(void);
  */
 
 /**
- * Get hi-speed port input buffer out-pointer
+ * Get hi-speed port input buffer out-pointer.
  * This method returns the value of the output pointer of the hi-speed port input
  * buffer.
  * \return The hi-speed port input buffer's out-pointer value.
@@ -6375,7 +6375,7 @@ inline byte HSInputBufferOutPtr(void);
  */
 
 /**
- * Get hi-speed port output buffer in-pointer
+ * Get hi-speed port output buffer in-pointer.
  * This method returns the value of the input pointer of the hi-speed port output
  * buffer.
  * \return The hi-speed port output buffer's in-pointer value.
@@ -6386,7 +6386,7 @@ inline byte HSOutputBufferInPtr(void);
  */
 
 /**
- * Get hi-speed port output buffer out-pointer
+ * Get hi-speed port output buffer out-pointer.
  * This method returns the value of the output pointer of the hi-speed port output
  * buffer.
  * \return The hi-speed port output buffer's out-pointer value.
@@ -6397,7 +6397,7 @@ inline byte HSOutputBufferOutPtr(void);
  */
 
 /**
- * Get usb port input buffer in-pointer
+ * Get usb port input buffer in-pointer.
  * This method returns the value of the input pointer of the usb port input
  * buffer.
  * \return The USB port input buffer's in-pointer value.
@@ -6408,7 +6408,7 @@ inline byte USBInputBufferInPtr(void);
  */
 
 /**
- * Get usb port input buffer out-pointer
+ * Get usb port input buffer out-pointer.
  * This method returns the value of the output pointer of the usb port input
  * buffer.
  * \return The USB port input buffer's out-pointer value.
@@ -6419,7 +6419,7 @@ inline byte USBInputBufferOutPtr(void);
  */
 
 /**
- * Get usb port output buffer in-pointer
+ * Get usb port output buffer in-pointer.
  * This method returns the value of the input pointer of the usb port output
  * buffer.
  * \return The USB port output buffer's in-pointer value.
@@ -6430,7 +6430,7 @@ inline byte USBOutputBufferInPtr(void);
  */
 
 /**
- * Get usb port output buffer out-pointer
+ * Get usb port output buffer out-pointer.
  * This method returns the value of the output pointer of the usb port output
  * buffer.
  * \return The USB port output buffer's out-pointer value.
@@ -6441,7 +6441,7 @@ inline byte USBOutputBufferOutPtr(void);
  */
 
 /**
- * Get usb port poll buffer in-pointer
+ * Get usb port poll buffer in-pointer.
  * This method returns the value of the input pointer of the usb port poll
  * buffer.
  * \return The USB port poll buffer's in-pointer value.
@@ -6452,7 +6452,7 @@ inline byte USBPollBufferInPtr(void);
  */
 
 /**
- * Get usb port poll buffer out-pointer
+ * Get usb port poll buffer out-pointer.
  * This method returns the value of the output pointer of the usb port poll
  * buffer.
  * \return The USB port poll buffer's out-pointer value.
@@ -6486,7 +6486,7 @@ inline byte BTDeviceNameCount(void);
  */
 
 /**
- * Get hi-speed port flags
+ * Get hi-speed port flags.
  * This method returns the value of the hi-speed port flags.
  * \return The hi-speed port flags. See \ref CommHiSpeedFlagsConstants.
  */
@@ -6496,7 +6496,7 @@ inline byte HSFlags(void);
  */
 
 /**
- * Get hi-speed port speed
+ * Get hi-speed port speed.
  * This method returns the value of the hi-speed port speed (baud rate).
  * \return The hi-speed port speed (baud rate).  See \ref CommHiSpeedBaudConstants.
  */
@@ -6506,7 +6506,7 @@ inline byte HSSpeed(void);
  */
 
 /**
- * Get hi-speed port state
+ * Get hi-speed port state.
  * This method returns the value of the hi-speed port state.
  * \return The hi-speed port state. See \ref CommHiSpeedStateConstants.
  */
@@ -6516,7 +6516,7 @@ inline byte HSState(void);
  */
 
 /**
- * Get hi-speed port mode
+ * Get hi-speed port mode.
  * This method returns the value of the hi-speed port mode.
  * \return The hi-speed port mode (data bits, stop bits, parity).  See
  * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
@@ -6528,7 +6528,7 @@ inline int HSMode(void);
  */
 
 /**
- * Get USB state
+ * Get USB state.
  * This method returns the value of the USB state.
  * \return The USB state.
  */
@@ -6538,7 +6538,7 @@ inline byte USBState(void);
  */
 
 /**
- * Set bluetooth input buffer data
+ * Set bluetooth input buffer data.
  * Write cnt bytes of data to the bluetooth input buffer at offset.
  * \param offset A constant offset into the input buffer
  * \param cnt The number of bytes to write
@@ -6550,7 +6550,7 @@ inline void SetBTInputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- * Set bluetooth input buffer in-pointer
+ * Set bluetooth input buffer in-pointer.
  * Set the value of the input buffer in-pointer.
  * \param n The new in-pointer value (0..127).
  */
@@ -6560,7 +6560,7 @@ inline void SetBTInputBufferInPtr(byte n);
  */
 
 /**
- * Set bluetooth input buffer out-pointer
+ * Set bluetooth input buffer out-pointer.
  * Set the value of the input buffer out-pointer.
  * \param n The new out-pointer value (0..127).
  */
@@ -6570,7 +6570,7 @@ inline void SetBTInputBufferOutPtr(byte n);
  */
 
 /**
- * Set bluetooth output buffer data
+ * Set bluetooth output buffer data.
  * Write cnt bytes of data to the bluetooth output buffer at offset.
  * \param offset A constant offset into the output buffer
  * \param cnt The number of bytes to write
@@ -6582,7 +6582,7 @@ inline void SetBTOutputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- * Set bluetooth output buffer in-pointer
+ * Set bluetooth output buffer in-pointer.
  * Set the value of the output buffer in-pointer.
  * \param n The new in-pointer value (0..127).
  */
@@ -6592,7 +6592,7 @@ inline void SetBTOutputBufferInPtr(byte n);
  */
 
 /**
- * Set bluetooth output buffer out-pointer
+ * Set bluetooth output buffer out-pointer.
  * Set the value of the output buffer out-pointer.
  * \param n The new out-pointer value (0..127).
  */
@@ -6602,7 +6602,7 @@ inline void SetBTOutputBufferOutPtr(byte n);
  */
 
 /**
- * Set hi-speed port input buffer data
+ * Set hi-speed port input buffer data.
  * Write cnt bytes of data to the hi-speed port input buffer at offset.
  * \param offset A constant offset into the input buffer
  * \param cnt The number of bytes to write
@@ -6614,7 +6614,7 @@ inline void SetHSInputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- * Set hi-speed port input buffer in-pointer
+ * Set hi-speed port input buffer in-pointer.
  * Set the value of the input buffer in-pointer.
  * \param n The new in-pointer value (0..127).
  */
@@ -6624,7 +6624,7 @@ inline void SetHSInputBufferInPtr(byte n);
  */
 
 /**
- * Set hi-speed port input buffer out-pointer
+ * Set hi-speed port input buffer out-pointer.
  * Set the value of the input buffer out-pointer.
  * \param n The new out-pointer value (0..127).
  */
@@ -6634,7 +6634,7 @@ inline void SetHSInputBufferOutPtr(byte n);
  */
 
 /**
- * Set hi-speed port output buffer data
+ * Set hi-speed port output buffer data.
  * Write cnt bytes of data to the hi-speed port output buffer at offset.
  * \param offset A constant offset into the output buffer
  * \param cnt The number of bytes to write
@@ -6646,7 +6646,7 @@ inline void SetHSOutputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- * Set hi-speed port output buffer in-pointer
+ * Set hi-speed port output buffer in-pointer.
  * Set the value of the output buffer in-pointer.
  * \param n The new in-pointer value (0..127).
  */
@@ -6656,7 +6656,7 @@ inline void SetHSOutputBufferInPtr(byte n);
  */
 
 /**
- * Set hi-speed port output buffer out-pointer
+ * Set hi-speed port output buffer out-pointer.
  * Set the value of the output buffer out-pointer.
  * \param n The new out-pointer value (0..127).
  */
@@ -6666,7 +6666,7 @@ inline void SetHSOutputBufferOutPtr(byte n);
  */
 
 /**
- * Set USB input buffer data
+ * Set USB input buffer data.
  * Write cnt bytes of data to the USB input buffer at offset.
  * \param offset A constant offset into the input buffer
  * \param cnt The number of bytes to write
@@ -6678,7 +6678,7 @@ inline void SetUSBInputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- * Set USB input buffer in-pointer
+ * Set USB input buffer in-pointer.
  * Set the value of the input buffer in-pointer.
  * \param n The new in-pointer value (0..63).
  */
@@ -6688,7 +6688,7 @@ inline void SetUSBInputBufferInPtr(byte n);
  */
 
 /**
- * Set USB input buffer out-pointer
+ * Set USB input buffer out-pointer.
  * Set the value of the input buffer out-pointer.
  * \param n The new out-pointer value (0..63).
  */
@@ -6698,7 +6698,7 @@ inline void SetUSBInputBufferOutPtr(byte n);
  */
 
 /**
- * Set USB output buffer data
+ * Set USB output buffer data.
  * Write cnt bytes of data to the USB output buffer at offset.
  * \param offset A constant offset into the output buffer
  * \param cnt The number of bytes to write
@@ -6710,7 +6710,7 @@ inline void SetUSBOutputBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- * Set USB output buffer in-pointer
+ * Set USB output buffer in-pointer.
  * Set the value of the output buffer in-pointer.
  * \param n The new in-pointer value (0..63).
  */
@@ -6720,7 +6720,7 @@ inline void SetUSBOutputBufferInPtr(byte n);
  */
 
 /**
- * Set USB output buffer out-pointer
+ * Set USB output buffer out-pointer.
  * Set the value of the output buffer out-pointer.
  * \param n The new out-pointer value (0..63).
  */
@@ -6730,7 +6730,7 @@ inline void SetUSBOutputBufferOutPtr(byte n);
  */
 
 /**
- * Set USB poll buffer data
+ * Set USB poll buffer data.
  * Write cnt bytes of data to the USB poll buffer at offset.
  * \param offset A constant offset into the poll buffer
  * \param cnt The number of bytes to write
@@ -6742,7 +6742,7 @@ inline void SetUSBPollBuffer(const byte offset, byte cnt, byte data[]);
  */
 
 /**
- * Set USB poll buffer in-pointer
+ * Set USB poll buffer in-pointer.
  * Set the value of the poll buffer in-pointer.
  * \param n The new in-pointer value (0..63).
  */
@@ -6752,7 +6752,7 @@ inline void SetUSBPollBufferInPtr(byte n);
  */
 
 /**
- * Set USB poll buffer out-pointer
+ * Set USB poll buffer out-pointer.
  * Set the value of the poll buffer out-pointer.
  * \param n The new out-pointer value (0..63).
  */
@@ -6762,7 +6762,7 @@ inline void SetUSBPollBufferOutPtr(byte n);
  */
 
 /**
- * Set hi-speed port flags
+ * Set hi-speed port flags.
  * This method sets the value of the hi-speed port flags.
  * \param hsFlags The hi-speed port flags. See \ref CommHiSpeedFlagsConstants.
  */
@@ -6772,7 +6772,7 @@ inline void SetHSFlags(const byte hsFlags);
  */
 
 /**
- * Set hi-speed port speed
+ * Set hi-speed port speed.
  * This method sets the value of the hi-speed port speed (baud rate).
  * \param hsSpeed The hi-speed port speed (baud rate).  See \ref CommHiSpeedBaudConstants.
  */
@@ -6782,7 +6782,7 @@ inline void SetHSSpeed(const byte hsSpeed);
  */
 
 /**
- * Set hi-speed port state
+ * Set hi-speed port state.
  * This method sets the value of the hi-speed port state.
  * \param hsState The hi-speed port state. See \ref CommHiSpeedStateConstants.
  */
@@ -6792,7 +6792,7 @@ inline void SetHSState(const byte hsState);
  */
 
 /**
- * Set hi-speed port mode
+ * Set hi-speed port mode.
  * This method sets the value of the hi-speed port mode.
  * \param hsMode The hi-speed port mode (data bits, stop bits, parity).  See
  * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
@@ -6804,7 +6804,7 @@ inline void SetHSMode(const unsigned int hsMode);
  */
 
 /**
- * Set USB state
+ * Set USB state.
  * This method sets the value of the USB state.
  * \param usbState The USB state.
  */
@@ -7275,7 +7275,7 @@ struct ReadButtonType {
 #ifdef __DOXYGEN_DOCS
 
 /**
- * Check for button press
+ * Check for button press.
  * This function checks whether the specified button is pressed or not. You may
  * optionally reset the press count.
  *
@@ -7289,7 +7289,7 @@ inline bool ButtonPressed(const byte btn, bool resetCount);
  */
 
 /**
- * Get button press count
+ * Get button press count.
  * Return the number of times the specified button has been pressed since
  * the last time the button press count was reset. Optionally clear the count
  * after reading it.
@@ -7304,7 +7304,7 @@ inline byte ButtonCount(const byte btn, bool resetCount);
  */
 
 /**
- * Read button information
+ * Read button information.
  * Read the specified button. Set the pressed and count parameters with the
  * current state of the button. Optionally reset the press count after
  * reading it.
@@ -7321,7 +7321,7 @@ inline char ReadButtonEx(const byte btn, bool reset, bool & pressed, unsigned in
  */
 
 /**
- * Get button press count
+ * Get button press count.
  * Return the press count of the specified button.
  * \param btn The button to check. See \ref ButtonNameConstants.
  * \return The button press count.
@@ -7332,7 +7332,7 @@ inline byte ButtonPressCount(const byte btn);
  */
 
 /**
- * Get button long press count
+ * Get button long press count.
  * Return the long press count of the specified button.
  *
  * \param btn The button to check. See \ref ButtonNameConstants.
@@ -7344,7 +7344,7 @@ inline byte ButtonLongPressCount(const byte btn);
  */
 
 /**
- * Get button short release count
+ * Get button short release count.
  * Return the short release count of the specified button.
  *
  * \param btn The button to check. See \ref ButtonNameConstants.
@@ -7356,7 +7356,7 @@ inline byte ButtonShortReleaseCount(const byte btn);
  */
 
 /**
- * Get button long release count
+ * Get button long release count.
  * Return the long release count of the specified button.
  *
  * \param btn The button to check. See \ref ButtonNameConstants.
@@ -7368,7 +7368,7 @@ inline byte ButtonLongReleaseCount(const byte btn);
  */
 
 /**
- * Get button release count
+ * Get button release count.
  * Return the release count of the specified button.
  *
  * \param btn The button to check. See \ref ButtonNameConstants.
@@ -7380,7 +7380,7 @@ inline byte ButtonReleaseCount(const byte btn);
  */
 
 /**
- * Get button state
+ * Get button state.
  * Return the state of the specified button. See \ref ButtonStateConstants.
  *
  * \param btn The button to check. See \ref ButtonNameConstants.
@@ -7392,7 +7392,7 @@ inline byte ButtonState(const byte btn);
  */
 
 /**
- * Set button long press count
+ * Set button long press count.
  * Set the long press count of the specified button.
  *
  * \param btn The button number. See \ref ButtonNameConstants.
@@ -7404,7 +7404,7 @@ inline void SetButtonLongPressCount(const byte btn, const byte n);
  */
 
 /**
- * Set button long release count
+ * Set button long release count.
  * Set the long release count of the specified button.
  *
  * \param btn The button number. See \ref ButtonNameConstants.
@@ -7416,7 +7416,7 @@ inline void SetButtonLongReleaseCount(const byte btn, const byte n);
  */
 
 /**
- * Set button press count
+ * Set button press count.
  * Set the press count of the specified button.
  *
  * \param btn The button number. See \ref ButtonNameConstants.
@@ -7428,7 +7428,7 @@ inline void SetButtonPressCount(const byte btn, const byte n);
  */
 
 /**
- * Set button release count
+ * Set button release count.
  * Set the release count of the specified button.
  *
  * \param btn The button number. See \ref ButtonNameConstants.
@@ -7440,7 +7440,7 @@ inline void SetButtonReleaseCount(const byte btn, const byte n);
  */
 
 /**
- * Set button short release count
+ * Set button short release count.
  * Set the short release count of the specified button.
  *
  * \param btn The button number. See \ref ButtonNameConstants.
@@ -7452,7 +7452,7 @@ inline void SetButtonShortReleaseCount(const byte btn, const byte n);
  */
 
 /**
- * Set button state
+ * Set button state.
  * Set the state of the specified button.
  *
  * \param btn The button to check. See \ref ButtonNameConstants.
@@ -7544,7 +7544,7 @@ struct SetSleepTimeoutType {
 #ifdef __DOXYGEN_DOCS
 
 /**
- * Get command flags
+ * Get command flags.
  * Return the command flags.
  * \return Command flags. See \ref UiFlagsConstants
  */
@@ -7554,7 +7554,7 @@ inline byte CommandFlags(void);
  */
 
 /**
- * Get UI module state
+ * Get UI module state.
  * Return the user interface state.
  * \return The UI module state. See \ref UiStateConstants.
  */
@@ -7564,7 +7564,7 @@ inline byte UIState(void);
  */
 
 /**
- * Read UI button
+ * Read UI button.
  * Return user interface button information.
  * \return A UI button value.  See \ref UiButtonConstants.
  */
@@ -7574,7 +7574,7 @@ inline byte UIButton(void);
  */
 
 /**
- * Read VM run state
+ * Read VM run state.
  * Return VM run state information.
  * \return VM run state. See \ref UiVMRunStateConstants.
  */
@@ -7584,7 +7584,7 @@ inline byte VMRunState(void);
  */
 
 /**
- * Get battery state
+ * Get battery state.
  * Return battery state information (0..4).
  * \return The battery state (0..4)
  */
@@ -7594,7 +7594,7 @@ inline byte BatteryState(void);
  */
 
 /**
- * Get bluetooth state
+ * Get bluetooth state.
  * Return the bluetooth state.
  * \return The bluetooth state. See \ref UiBluetoothStateConstants.
  */
@@ -7604,7 +7604,7 @@ inline byte BluetoothState(void);
  */
 
 /**
- * Get UI module USB state
+ * Get UI module USB state.
  * This method returns the UI module USB state.
  * \return The UI module USB state.  (0=disconnected, 1=connected, 2=working)
  */
@@ -7614,7 +7614,7 @@ inline byte UsbState(void);
  */
 
 /**
- * Read sleep timeout
+ * Read sleep timeout.
  * Return the number of minutes that the NXT will remain on before
  * it automatically shuts down.
  * \return The sleep timeout value
@@ -7625,7 +7625,7 @@ inline byte SleepTimeout(void);
  */
 
 /**
- * Read sleep time
+ * Read sleep time.
  * Return the number of minutes that the NXT will remain on before
  * it automatically shuts down.
  * \return The sleep time value
@@ -7637,7 +7637,7 @@ inline byte SleepTime(void);
  */
 
 /**
- * Read sleep timer
+ * Read sleep timer.
  * Return the number of minutes left in the countdown to zero from the
  * original SleepTimeout value. When the SleepTimer value reaches zero the
  * NXT will shutdown.
@@ -7649,7 +7649,7 @@ inline byte SleepTimer(void);
  */
 
 /**
- * Read battery type
+ * Read battery type.
  * Return whether the NXT has a rechargeable battery installed or not.
  * \return Whether the battery is rechargeable or not. (false = no, true = yes)
  */
@@ -7659,7 +7659,7 @@ inline bool RechargeableBattery(void);
  */
 
 /**
- * Read volume
+ * Read volume.
  * Return the user interface volume level. Valid values are from 0 to 4.
  * \return The UI module volume. (0..4)
  */
@@ -7669,7 +7669,7 @@ inline byte Volume(void);
  */
 
 /**
- * Read the on brick program pointer value
+ * Read the on brick program pointer value.
  * Return the current OBP (on-brick program) step
  *
  * \return On brick program pointer (step).
@@ -7680,7 +7680,7 @@ inline byte OnBrickProgramPointer(void);
  */
 
 /**
- * Read abort flag
+ * Read abort flag.
  * Return the enhanced NBC/NXC firmware's abort flag.
  *
  * \return The current abort flag value.  See \ref ButtonStateConstants.
@@ -7692,7 +7692,7 @@ inline byte AbortFlag(void);
  */
 
 /**
- * Read long abort setting
+ * Read long abort setting.
  * Return the enhanced NBC/NXC firmware's long abort setting.
  *
  * \sa AbortFlag
@@ -7705,7 +7705,7 @@ inline byte LongAbort(void);
  */
 
 /**
- * Get battery Level
+ * Get battery Level.
  * Return the battery level in millivolts.
  * \return The battery level
  */
@@ -7715,7 +7715,7 @@ inline unsigned int BatteryLevel(void);
  */
 
 /**
- * Set command flags
+ * Set command flags.
  * Set the command flags.
  *
  * \param cmdFlags The new command flags. See \ref UiFlagsConstants.
@@ -7726,7 +7726,7 @@ inline void SetCommandFlags(const byte cmdFlags);
  */
 
 /**
- * Set UI button
+ * Set UI button.
  * Set user interface button information.
  *
  * \param btn A user interface button value. See \ref UiButtonConstants.
@@ -7737,7 +7737,7 @@ inline void SetUIButton(byte btn);
  */
 
 /**
- * Set UI state
+ * Set UI state.
  * Set the user interface state.
  *
  * \param state A user interface state value. See \ref UiStateConstants.
@@ -7748,7 +7748,7 @@ inline void SetUIState(byte state);
  */
  
 /**
- * Set VM run state
+ * Set VM run state.
  * Set VM run state information.
  *
  * \param vmRunState The desired VM run state. See \ref UiVMRunStateConstants.
@@ -7759,7 +7759,7 @@ inline void SetVMRunState(const byte vmRunState);
  */
 
 /**
- * Set battery state
+ * Set battery state.
  * Set battery state information.
  *
  * \param state The desired battery state (0..4).
@@ -7770,7 +7770,7 @@ inline void SetBatteryState(byte state);
  */
 
 /**
- * Set bluetooth state
+ * Set bluetooth state.
  * Set the Bluetooth state.
  *
  * \param state The desired bluetooth state. See \ref UiBluetoothStateConstants.
@@ -7781,7 +7781,7 @@ inline void SetBluetoothState(byte state);
  */
 
 /**
- * Set sleep timeout
+ * Set sleep timeout.
  * Set the NXT sleep timeout value to the specified number of minutes.
  *
  * \param n The minutes to wait before sleeping.
@@ -7792,7 +7792,7 @@ inline void SetSleepTimeout(const byte n);
  */
 
 /**
- * Set sleep time
+ * Set sleep time.
  * Set the NXT sleep timeout value to the specified number of minutes.
  *
  * \param n The minutes to wait before sleeping.
@@ -7804,7 +7804,7 @@ inline void SetSleepTime(const byte n);
  */
 
 /**
- * Set the sleep timer
+ * Set the sleep timer.
  * Set the system sleep timer to the specified number of minutes.
  *
  * \param n The minutes left on the timer.
@@ -7815,7 +7815,7 @@ inline void SetSleepTimer(const byte n);
  */
 
 /**
- * Set volume
+ * Set volume.
  * Set the user interface volume level. Valid values are from 0 to 4.
  *
  * \param volume The new volume level.
@@ -7826,7 +7826,7 @@ inline void SetVolume(byte volume);
  */
 
 /**
- * Set on-brick program pointer
+ * Set on-brick program pointer.
  * Set the current OBP (on-brick program) step.
  *
  * \param obpStep The new on-brick program step.
@@ -7837,7 +7837,7 @@ inline void SetOnBrickProgramPointer(byte obpStep);
  */
 
 /**
- * Turn off NXT
+ * Turn off NXT.
  * Force the NXT to turn off if the specified value is greater than zero.
  * \param num If greater than zero the NXT will turn off.
 */
@@ -7847,7 +7847,7 @@ inline void ForceOff(byte num);
  */
 
 /**
- * Set abort flag
+ * Set abort flag.
  * Set the enhanced NBC/NXC firmware's program abort flag. By default the
  * running program can be interrupted by a short press of the escape button.
  * You can change this to any other button state flag.
@@ -7862,7 +7862,7 @@ inline void SetAbortFlag(byte abortFlag);
 */
 
 /**
- * Set long abort
+ * Set long abort.
  * Set the enhanced NBC/NXC firmware's long abort setting (true or false). If
  * set to true then a program has access the escape button. Aborting a program
  * requires a long press of the escape button.
@@ -7879,7 +7879,7 @@ inline void SetLongAbort(bool longAbort);
 
 #if __FIRMWARE_VERSION > 107
 /**
- * Set system sleep timeout
+ * Set system sleep timeout.
  * This function lets you set the system sleep timeout value given the parameters you
  * pass in via the \ref SetSleepTimeoutType structure.
  *
@@ -8186,7 +8186,7 @@ inline unsigned int FreeMemory(void);
  */
 
 /**
- * Create a file
+ * Create a file.
  * Create a new file with the specified filename and size and open it for
  * writing. The file handle is returned in the last parameter, which must be a
  * variable. The loader result code is returned as the value of the function
@@ -8206,7 +8206,7 @@ inline unsigned int CreateFile(string fname, unsigned int fsize, byte & handle);
  */
 
 /**
- * Open a file for appending
+ * Open a file for appending.
  * Open an existing file with the specified filename for writing. The file
  * size is returned in the second parameter, which must be a variable. The
  * file handle is returned in the last parameter, which must be a variable.
@@ -8224,7 +8224,7 @@ inline unsigned int OpenFileAppend(string fname, unsigned int & fsize, byte & ha
  */
 
 /**
- * Open a file for reading
+ * Open a file for reading.
  * Open an existing file with the specified filename for reading. The file
  * size is returned in the second parameter, which must be a variable. The
  * file handle is returned in the last parameter, which must be a variable.
@@ -8242,7 +8242,7 @@ inline unsigned int OpenFileRead(string fname, unsigned int & fsize, byte & hand
  */
 
 /**
- * Close a file
+ * Close a file.
  * Close the file associated with the specified file handle. The loader
  * result code is returned as the value of the function call. The handle
  * parameter must be a constant or a variable.
@@ -8256,7 +8256,7 @@ inline unsigned int CloseFile(byte handle);
  */
 
 /**
- * Resolve a handle
+ * Resolve a handle.
  * Resolve a file handle from the specified filename. The file handle is
  * returned in the second parameter, which must be a variable. A boolean
  * value indicating whether the handle can be used to write to the file or
@@ -8276,7 +8276,7 @@ inline unsigned int ResolveHandle(string filename, byte & handle, bool & writeab
  */
 
 /**
- * Rename a file
+ * Rename a file.
  * Rename a file from the old filename to the new filename. The loader
  * result code is returned as the value of the function call. The filename
  * parameters must be constants or variables.
@@ -8287,7 +8287,7 @@ inline unsigned int RenameFile(string oldname, string newname);
  */
 
 /**
- * Delete a file
+ * Delete a file.
  * Delete the specified file. The loader result code is returned as the
  * value of the function call. The filename parameter must be a constant or a
  * variable.
@@ -8301,7 +8301,7 @@ inline unsigned int DeleteFile(string fname);
  */
 
 /**
- * Resize a file
+ * Resize a file.
  * Resize the specified file. The loader result code is returned as the
  * value of the function call. The filename parameter must be a constant or a
  * variable.
@@ -8317,7 +8317,7 @@ inline unsigned int ResizeFile(string fname, const unsigned int newsize);
 
 #ifdef __ENHANCED_FIRMWARE
 /**
- * Create a linear file
+ * Create a linear file.
  * Create a new linear file with the specified filename and size and open it for
  * writing. The file handle is returned in the last parameter, which must be a
  * variable. The loader result code is returned as the value of the function
@@ -8338,7 +8338,7 @@ inline unsigned int CreateFileLinear(string fname, unsigned int fsize, byte & ha
  */
 
 /**
- * Create a non-linear file
+ * Create a non-linear file.
  * Create a new non-linear file with the specified filename and size and open it for
  * writing. The file handle is returned in the last parameter, which must be a
  * variable. The loader result code is returned as the value of the function
@@ -8359,7 +8359,7 @@ inline unsigned int CreateFileNonLinear(string fname, unsigned int fsize, byte &
  */
 
 /**
- * Open a linear file for reading
+ * Open a linear file for reading.
  * Open an existing linear file with the specified filename for reading. The file
  * size is returned in the second parameter, which must be a variable. The
  * file handle is returned in the last parameter, which must be a variable.
@@ -8378,7 +8378,7 @@ inline unsigned int OpenFileReadLinear(string fname, unsigned int & fsize, byte 
  */
 
 /**
- * Start searching for files
+ * Start searching for files.
  * This function lets you begin iterating through files stored on the NXT.
  *
  * \param fname On input this contains the filename pattern you are searching
@@ -8394,7 +8394,7 @@ inline unsigned int FindFirstFile(string & fname, byte & handle);
  */
 
 /**
- * Continue searching for files
+ * Continue searching for files.
  * This function lets you continue iterating through files stored on the NXT.
  *
  * \param fname On output this contains the name of the next file found that
@@ -8411,7 +8411,7 @@ inline unsigned int FindNextFile(string & fname, byte & handle);
 #endif
 
 /**
- * Read a value from a file
+ * Read a value from a file.
  * Read a value from the file associated with the specified handle.
  * The handle parameter must be a variable. The value parameter must be a
  * variable. The type of the value parameter determines the number of bytes of
@@ -8427,7 +8427,7 @@ inline unsigned int Read(byte handle, variant & value);
  */
 
 /**
- * Read a value from a file plus line ending
+ * Read a value from a file plus line ending.
  * Read a value from the file associated with the specified handle.
  * The handle parameter must be a variable. The value parameter must be a
  * variable. The type of the value parameter determines the number of bytes
@@ -8444,7 +8444,7 @@ inline unsigned int ReadLn(byte handle, variant & value);
  */
 
 /**
- * Read bytes from a file
+ * Read bytes from a file.
  * Read the specified number of bytes from the file associated with the
  * specified handle. The handle parameter must be a variable. The length
  * parameter must be a variable. The buf parameter must be an array or a
@@ -8462,7 +8462,7 @@ inline unsigned int ReadBytes(byte handle, unsigned int & length, byte & buf[]);
  */
 
 /**
- * Read a string from a file plus line ending
+ * Read a string from a file plus line ending.
  * Read a string from the file associated with the specified handle.
  * The handle parameter must be a variable. The output parameter must be a
  * variable. Appends bytes to the output variable until a line ending (CRLF)
@@ -8476,7 +8476,7 @@ inline unsigned int ReadBytes(byte handle, unsigned int & length, byte & buf[]);
 inline unsigned int ReadLnString(byte handle, string & output);
 
 /**
- * Write value to file
+ * Write value to file.
  * Write a value to the file associated with the specified handle.
  * The handle parameter must be a variable. The value parameter must be a
  * constant, a constant expression, or a variable. The type of the value
@@ -8492,7 +8492,7 @@ inline unsigned int Write(byte handle, const variant & value);
  */
 
 /**
- * Write bytes to file
+ * Write bytes to file.
  * Write the contents of the data array to the file associated with the
  * specified handle. The handle parameter must be a variable. The cnt
  * parameter must be a variable. The data parameter must be a byte array. The
@@ -8509,7 +8509,7 @@ inline unsigned int WriteBytes(byte handle, const byte & buf[], unsigned int & c
  */
 
 /**
- * Write bytes to a file with limit
+ * Write bytes to a file with limit.
  * Write the specified number of bytes to the file associated with the
  * specified handle. The handle parameter must be a variable. The len
  * parameter must be a variable. The buf parameter must be a byte array or a
@@ -8528,7 +8528,7 @@ inline unsigned int WriteBytesEx(byte handle, unsigned int & len, const byte & b
  */
 
 /**
- * Write a value and new line to a file
+ * Write a value and new line to a file.
  * Write a value to the file associated with the specified handle. The
  * handle parameter must be a variable. The value parameter must be a constant,
  * a constant expression, or a variable. The type of the value parameter
@@ -8546,7 +8546,7 @@ inline unsigned int WriteLn(byte handle, const variant & value);
  */
 
 /**
- * Write string and new line to a file
+ * Write string and new line to a file.
  * Write the string to the file associated with the specified handle. The
  * handle parameter must be a variable. The count parameter must be a variable.
  * The str parameter must be a string variable or string constant. This
@@ -8565,7 +8565,7 @@ inline unsigned int WriteLnString(byte handle, const string & str, unsigned int 
  */
 
 /**
- * Write string to a file
+ * Write string to a file.
  * Write the string to the file associated with the specified handle. The
  * handle parameter must be a variable. The count parameter must be a variable.
  * The str parameter must be a string variable or string constant. The actual
@@ -8981,7 +8981,7 @@ inline void SysListFiles(ListFilesType & args);
  */
 
 /**
- * Read HiTechnic Gyro sensor
+ * Read HiTechnic Gyro sensor.
  * Read the HiTechnic Gyro sensor on the specified port. The offset value
  * should be calculated by averaging several readings with an offset of zero
  * while the sensor is perfectly still.
@@ -9002,7 +9002,7 @@ inline int SensorHTGyro(byte port, const int offset = 0) {
  */
 
 /**
- * Read HiTechnic EOPD sensor
+ * Read HiTechnic EOPD sensor.
  * Read the HiTechnic EOPD sensor on the specified port.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -9019,7 +9019,7 @@ inline int SensorHTEOPD(byte port) {
  */
 
 /**
- * Set sensor as HiTechnic EOPD
+ * Set sensor as HiTechnic EOPD.
  * Configure the sensor on the specified port as a HiTechnic EOPD sensor.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -9035,7 +9035,7 @@ inline void SetSensorHTEOPD(const byte & port, bool bStandard) {
  */
 
 /**
- * Set sensor as HiTechnic Gyro
+ * Set sensor as HiTechnic Gyro.
  * Configure the sensor on the specified port as a HiTechnic Gyro sensor.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -9052,7 +9052,7 @@ inline void SetSensorHTGyro(const byte & port) {
 #ifdef __DOXYGEN_DOCS
 
 /**
- * Read HiTechnic color sensor color number
+ * Read HiTechnic color sensor color number.
  * Read the color number from the HiTechnic Color sensor on the specified
  * port. The port must be configured as a Lowspeed port before using this
  * function.
@@ -9066,7 +9066,7 @@ inline int SensorHTColorNum(const byte & port);
  */
 
 /**
- * Read HiTechnic compass
+ * Read HiTechnic compass.
  * Read the compass heading value of the HiTechnic Compass sensor on the
  * specified port. The port must be configured as a Lowspeed port before
  * using this function.
@@ -9080,7 +9080,7 @@ inline int SensorHTCompass(const byte & port);
  */
 
 /**
- * Read HiTechnic IRSeeker direction
+ * Read HiTechnic IRSeeker direction.
  * Read the direction value of the HiTechnic IR Seeker on the specified
  * port. The port must be configured as a Lowspeed port before using this
  * function.
@@ -9094,7 +9094,7 @@ inline int SensorHTIRSeekerDir(const byte & port);
  */
 
 /**
- * Read HiTechnic IRSeeker2 register
+ * Read HiTechnic IRSeeker2 register.
  * Read a register value from the HiTechnic IR Seeker2 on the specified
  * port. The port must be configured as a Lowspeed port before using this
  * function.
@@ -9109,7 +9109,7 @@ inline int SensorHTIRSeeker2Addr(const byte & port, const byte addr);
  */
 
 /**
- * Read HiTechnic IRSeeker2 DC direction
+ * Read HiTechnic IRSeeker2 DC direction.
  * Read the DC direction value from the HiTechnic IR Seeker2 on the specified
  * port. The port must be configured as a Lowspeed port before using this
  * function.
@@ -9123,7 +9123,7 @@ inline int SensorHTIRSeeker2DCDir(const byte & port);
  */
 
 /**
- * Read HiTechnic IRSeeker2 AC direction
+ * Read HiTechnic IRSeeker2 AC direction.
  * Read the AC direction value from the HiTechnic IR Seeker2 on the specified
  * port. The port must be configured as a Lowspeed port before using this
  * function.
@@ -9137,7 +9137,7 @@ inline int SensorHTIRSeeker2ACDir(const byte & port);
  */
 
 /**
- * Set HiTechnic Color2 mode
+ * Set HiTechnic Color2 mode.
  * Set the mode of the HiTechnic Color2 sensor on the specified
  * port. The port must be configured as a Lowspeed port before using this
  * function.
@@ -9152,7 +9152,7 @@ inline char SetHTColor2Mode(const byte & port, byte mode);
  */
 
 /**
- * Set HiTechnic IRSeeker2 mode
+ * Set HiTechnic IRSeeker2 mode.
  * Set the mode of the HiTechnic IRSeeker2 sensor on the specified
  * port. The port must be configured as a Lowspeed port before using this
  * function.
@@ -9167,7 +9167,7 @@ inline char SetHTIRSeeker2Mode(const byte & port, const byte mode);
  */
 
 /**
- * Read HiTechnic acceleration values
+ * Read HiTechnic acceleration values.
  * Read X, Y, and Z axis acceleration values from the HiTechnic Accelerometer
  * sensor. Returns a boolean value indicating whether or not the operation
  * completed successfully. The port must be configured as a Lowspeed port
@@ -9185,7 +9185,7 @@ inline bool ReadSensorHTAccel(const byte port, int & x, int & y, int & z);
  */
 
 /**
- * Read HiTechnic Color values
+ * Read HiTechnic Color values.
  * Read color number, red, green, and blue values from the HiTechnic Color
  * sensor. Returns a boolean value indicating whether or not the operation
  * completed successfully. The port must be configured as a Lowspeed port
@@ -9204,7 +9204,7 @@ inline bool ReadSensorHTColor(const byte port, byte & ColorNum, byte & Red, byte
  */
 
 /**
- * Read HiTechnic IRSeeker values
+ * Read HiTechnic IRSeeker values.
  * Read direction, and five signal strength values from the HiTechnic
  * IRSeeker sensor. Returns a boolean value indicating whether or not the
  * operation completed successfully. The port must be configured as a
@@ -9225,7 +9225,7 @@ inline bool ReadSensorHTIRSeeker(const byte port, byte & dir, byte & s1, byte & 
  */
 
 /**
- * Read HiTechnic Color normalized values
+ * Read HiTechnic Color normalized values.
  * Read the color index and the normalized red, green, and blue values from
  * the HiTechnic Color sensor. Returns a boolean value indicating whether or
  * not the operation completed successfully. The port must be configured as a
@@ -9244,7 +9244,7 @@ inline bool ReadSensorHTNormalizedColor(const byte port, byte & ColorIdx, byte &
  */
 
 /**
- * Read HiTechnic Color raw values
+ * Read HiTechnic Color raw values.
  * Read the raw red, green, and blue values from the HiTechnic Color sensor.
  * Returns a boolean value indicating whether or not the operation completed
  * successfully. The port must be configured as a Lowspeed port before using
@@ -9262,7 +9262,7 @@ inline bool ReadSensorHTRawColor(const byte port, unsigned int & Red, unsigned i
  */
 
 /**
- * Read HiTechnic Color2 active values
+ * Read HiTechnic Color2 active values.
  * Read color number, red, green, and blue values from the HiTechnic Color2
  * sensor. Returns a boolean value indicating whether or not the operation
  * completed successfully. The port must be configured as a Lowspeed port
@@ -9282,7 +9282,7 @@ inline bool ReadSensorHTColor2Active(byte port, byte & ColorNum, byte & Red, byt
  */
 
 /**
- * Read HiTechnic Color2 normalized active values
+ * Read HiTechnic Color2 normalized active values.
  * Read the color index and the normalized red, green, and blue values from
  * the HiTechnic Color2 sensor. Returns a boolean value indicating whether or
  * not the operation completed successfully. The port must be configured as a
@@ -9301,7 +9301,7 @@ inline bool ReadSensorHTNormalizedColor2Active(const byte port, byte & ColorIdx,
  */
 
 /**
- * Read HiTechnic Color2 raw values
+ * Read HiTechnic Color2 raw values.
  * Read the raw red, green, and blue values from the HiTechnic Color2 sensor.
  * Returns a boolean value indicating whether or not the operation completed
  * successfully. The port must be configured as a Lowspeed port before using
@@ -9320,7 +9320,7 @@ inline bool ReadSensorHTRawColor2(const byte port, unsigned int & Red, unsigned 
  */
 
 /**
- * Read HiTechnic IRReceiver Power Function bytes
+ * Read HiTechnic IRReceiver Power Function bytes.
  * Read Power Function bytes from the HiTechnic IRReceiver sensor.
  * Returns a boolean value indicating whether or not the operation completed
  * successfully. The port must be configured as a Lowspeed port before using
@@ -9336,7 +9336,7 @@ inline bool ReadSensorHTIRReceiver(const byte port, char & pfdata[]);
  */
 
 /**
- * Read HiTechnic IRReceiver Power Function value
+ * Read HiTechnic IRReceiver Power Function value.
  * Read a Power Function byte from the HiTechnic IRReceiver sensor.
  * Returns a boolean value indicating whether or not the operation completed
  * successfully. The port must be configured as a Lowspeed port before using
@@ -9353,7 +9353,7 @@ inline bool ReadSensorHTIRReceiverEx(const byte port, const byte offset, char & 
  */
 
 /**
- * Read HiTechnic IRSeeker2 AC values
+ * Read HiTechnic IRSeeker2 AC values.
  * Read direction, and five signal strength values from the HiTechnic
  * IRSeeker2 sensor in AC mode. Returns a boolean value indicating whether or
  * not the operation completed successfully. The port must be configured as a
@@ -9374,7 +9374,7 @@ inline bool ReadSensorHTIRSeeker2AC(const byte port, byte & dir, byte & s1, byte
  */
 
 /**
- * Read HiTechnic IRSeeker2 DC values
+ * Read HiTechnic IRSeeker2 DC values.
  * Read direction, five signal strength, and average strength values from the
  * HiTechnic IRSeeker2 sensor. Returns a boolean value indicating whether or
  * not the operation completed successfully. The port must be configured as a
@@ -9396,7 +9396,7 @@ inline bool ReadSensorHTIRSeeker2DC(const byte port, byte & dir, byte & s1, byte
  */
 
 /**
- * Read HiTechnic touch multiplexer
+ * Read HiTechnic touch multiplexer.
  * Read touch sensor values from the HiTechnic touch multiplexer device.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -9411,7 +9411,7 @@ inline void ReadSensorHTTouchMultiplexer(const byte port, byte & t1, byte & t2, 
  */
 
 /**
- * HTIRTrain function
+ * HTIRTrain function.
  * Control an IR Train receiver set to the specified channel using the
  * HiTechnic iRLink device. Valid func values are \ref TRAIN_FUNC_STOP,
  * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
@@ -9430,7 +9430,7 @@ inline char HTIRTrain(const byte port, const byte channel, const byte func);
  */
 
 /**
- * HTPFComboDirect function
+ * HTPFComboDirect function.
  * Execute a pair of Power Function motor commands on the specified channel
  * using the HiTechnic iRLink device. Commands for outa and outb are
  * \ref PF_CMD_STOP, \ref PF_CMD_REV, \ref PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
@@ -9449,7 +9449,7 @@ inline char HTPFComboDirect(const byte port, const byte channel, const byte outa
  */
 
 /**
- * HTPFComboPWM function
+ * HTPFComboPWM function.
  * Control the speed of both outputs on a Power Function receiver set to the
  * specified channel using the HiTechnic iRLink device. Valid output values
  * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
@@ -9470,7 +9470,7 @@ inline char HTPFComboPWM(const byte port, const byte channel, const byte outa, c
  */
 
 /**
- * HTPFRawOutput function
+ * HTPFRawOutput function.
  * Control a Power Function receiver set to the specified channel using the
  * HiTechnic iRLink device. Build the raw data stream using the 3 nibbles
  * (4 bit values). The port must be configured as a Lowspeed port before using
@@ -9488,7 +9488,7 @@ inline char HTPFRawOutput(const byte port, const byte nibble0, const byte nibble
  */
 
 /**
- * HTPFRepeat function
+ * HTPFRepeat function.
  * Repeat sending the last Power Function command using the HiTechnic
  * IRLink device. Specify the number of times to repeat the command and the
  * number of milliseconds of delay between each repetition. The port must be
@@ -9505,7 +9505,7 @@ inline char HTPFRepeat(const byte port, const byte count, const unsigned int del
  */
 
 /**
- * HTPFSingleOutputCST function
+ * HTPFSingleOutputCST function.
  * Control a single output on a Power Function receiver set to the specified
  * channel using the HiTechnic iRLink device. Select the desired output
  * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
@@ -9527,7 +9527,7 @@ inline char HTPFSingleOutputCST(const byte port, const byte channel, const byte 
  */
 
 /**
- * HTPFSingleOutputPWM function
+ * HTPFSingleOutputPWM function.
  * Control the speed of a single output on a Power Function receiver set to
  * the specified channel using the HiTechnic iRLink device. Select the
  * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
@@ -9549,7 +9549,7 @@ inline char HTPFSingleOutputPWM(const byte port, const byte channel, const byte 
  */
 
 /**
- * HTPFSinglePin function
+ * HTPFSinglePin function.
  * Control a single pin on a Power Function receiver set to the specified
  * channel using the HiTechnic iRLink device. Select the desired output
  * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
@@ -9563,7 +9563,7 @@ inline char HTPFSingleOutputPWM(const byte port, const byte channel, const byte 
  * \param channel The Power Function channel.  See \ref PFChannelConstants.
  * \param out The Power Function output. See \ref PFOutputs.
  * \param pin The Power Function pin. See \ref PFPinConstants.
- * \param func The Power Function CST function. See \ref PFCSTFuncs.
+ * \param func The Power Function single pin function. See \ref PFPinFuncs.
  * \param cont Control whether the mode is continuous or timeout.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
@@ -9573,7 +9573,7 @@ inline char HTPFSinglePin(const byte port, const byte channel, const byte out, c
  */
 
 /**
- * HTPFTrain function
+ * HTPFTrain function.
  * Control both outputs on a Power Function receiver set to the specified
  * channel using the HiTechnic iRLink device as if it were an IR Train
  * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
@@ -9592,7 +9592,7 @@ inline char HTPFTrain(const byte port, const byte channel, const byte func);
  */
 
 /**
- * HTRCXSetIRLinkPort function
+ * HTRCXSetIRLinkPort function.
  * Set the global port in advance of using the HTRCX* and HTScout* API
  * functions for sending RCX and Scout messages over the HiTechnic iRLink
  * device. The port must be configured as a Lowspeed port before using any of
@@ -9606,7 +9606,7 @@ inline void HTRCXSetIRLinkPort(const byte port);
  */
 
 /**
- * HTRCXBatteryLevel function
+ * HTRCXBatteryLevel function.
  * Send the BatteryLevel command to an RCX to read the current battery level.
  *
  * \return The RCX battery level.
@@ -9631,7 +9631,7 @@ inline int HTRCXPoll(const byte src, const byte value);
  */
 
 /**
- * HTRCXPollMemory function
+ * HTRCXPollMemory function.
  * Send the PollMemory command to an RCX.
  *
  * \param address The RCX memory address.
@@ -9643,7 +9643,7 @@ inline int HTRCXPollMemory(const unsigned int address);
  */
 
 /**
- * HTRCXAddToDatalog function
+ * HTRCXAddToDatalog function.
  * Send the AddToDatalog command to an RCX.
  *
  * \param src The RCX source.  See \ref RCXSourceConstants.
@@ -9655,7 +9655,7 @@ inline void HTRCXAddToDatalog(const byte src, const unsigned int value);
  */
 
 /**
- * HTRCXClearAllEvents function
+ * HTRCXClearAllEvents function.
  * Send the ClearAllEvents command to an RCX.
  */
 inline void HTRCXClearAllEvents(void);
@@ -9664,7 +9664,7 @@ inline void HTRCXClearAllEvents(void);
  */
 
 /**
- * HTRCXClearCounter function
+ * HTRCXClearCounter function.
  * Send the ClearCounter command to an RCX.
  *
  * \param counter The counter to clear.
@@ -9675,7 +9675,7 @@ inline void HTRCXClearCounter(const byte counter);
  */
 
 /**
- * HTRCXClearMsg function
+ * HTRCXClearMsg function.
  * Send the ClearMsg command to an RCX.
  */
 inline void HTRCXClearMsg(void);
@@ -9684,7 +9684,7 @@ inline void HTRCXClearMsg(void);
  */
 
 /**
- * HTRCXClearSensor function
+ * HTRCXClearSensor function.
  * Send the ClearSensor command to an RCX.
  *
  * \param port The RCX port number.
@@ -9695,7 +9695,7 @@ inline void HTRCXClearSensor(const byte port);
  */
 
 /**
- * HTRCXClearSound function
+ * HTRCXClearSound function.
  * Send the ClearSound command to an RCX.
  */
 inline void HTRCXClearSound(void);
@@ -9704,7 +9704,7 @@ inline void HTRCXClearSound(void);
  */
 
 /**
- * HTRCXClearTimer function
+ * HTRCXClearTimer function.
  * Send the ClearTimer command to an RCX.
  *
  * \param timer The timer to clear.
@@ -9715,7 +9715,7 @@ inline void HTRCXClearTimer(const byte timer);
  */
 
 /**
- * HTRCXCreateDatalog function
+ * HTRCXCreateDatalog function.
  * Send the CreateDatalog command to an RCX.
  *
  * \param size The new datalog size.
@@ -9726,7 +9726,7 @@ inline void HTRCXCreateDatalog(const unsigned int size);
  */
 
 /**
- * HTRCXDecCounter function
+ * HTRCXDecCounter function.
  * Send the DecCounter command to an RCX.
  *
  * \param counter The counter to decrement.
@@ -9737,7 +9737,7 @@ inline void HTRCXDecCounter(const byte counter);
  */
 
 /**
- * HTRCXDeleteSub function
+ * HTRCXDeleteSub function.
  * Send the DeleteSub command to an RCX.
  *
  * \param s The subroutine number to delete.
@@ -9748,7 +9748,7 @@ inline void HTRCXDeleteSub(const byte s);
  */
 
 /**
- * HTRCXDeleteSubs function
+ * HTRCXDeleteSubs function.
  * Send the DeleteSubs command to an RCX.
  */
 inline void HTRCXDeleteSubs(void);
@@ -9757,7 +9757,7 @@ inline void HTRCXDeleteSubs(void);
  */
 
 /**
- * HTRCXDeleteTask function
+ * HTRCXDeleteTask function.
  * Send the DeleteTask command to an RCX.
  *
  * \param t The task number to delete.
@@ -9768,7 +9768,7 @@ inline void HTRCXDeleteTask(const byte t);
  */
 
 /**
- * HTRCXDeleteTasks function
+ * HTRCXDeleteTasks function.
  * Send the DeleteTasks command to an RCX.
  */
 inline void HTRCXDeleteTasks(void);
@@ -9777,7 +9777,7 @@ inline void HTRCXDeleteTasks(void);
  */
 
 /**
- * HTRCXDisableOutput function
+ * HTRCXDisableOutput function.
  * Send the DisableOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to disable. See \ref RCXOutputConstants.
@@ -9788,7 +9788,7 @@ inline void HTRCXDisableOutput(const byte outputs);
  */
 
 /**
- * HTRCXEnableOutput function
+ * HTRCXEnableOutput function.
  * Send the EnableOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to enable. See \ref RCXOutputConstants.
@@ -9799,7 +9799,7 @@ inline void HTRCXEnableOutput(const byte outputs);
  */
 
 /**
- * HTRCXEvent function
+ * HTRCXEvent function.
  * Send the Event command to an RCX.
  *
  * \param src The RCX source.  See \ref RCXSourceConstants.
@@ -9811,7 +9811,7 @@ inline void HTRCXEvent(const byte src, const unsigned int value);
  */
 
 /**
- * HTRCXFloat function
+ * HTRCXFloat function.
  * Send commands to an RCX to float the specified outputs.
  *
  * \param outputs The RCX output(s) to float. See \ref RCXOutputConstants.
@@ -9822,7 +9822,7 @@ inline void HTRCXFloat(const byte outputs);
  */
 
 /**
- * HTRCXFwd function
+ * HTRCXFwd function.
  * Send commands to an RCX to set the specified outputs to the forward direction.
  *
  * \param outputs The RCX output(s) to set forward. See \ref RCXOutputConstants.
@@ -9833,7 +9833,7 @@ inline void HTRCXFwd(const byte outputs);
  */
 
 /**
- * HTRCXIncCounter function
+ * HTRCXIncCounter function.
  * Send the IncCounter command to an RCX.
  *
  * \param counter The counter to increment.
@@ -9844,7 +9844,7 @@ inline void HTRCXIncCounter(const byte counter);
  */
 
 /**
- * HTRCXInvertOutput function
+ * HTRCXInvertOutput function.
  * Send the InvertOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to invert. See \ref RCXOutputConstants.
@@ -9855,7 +9855,7 @@ inline void HTRCXInvertOutput(const byte outputs);
  */
 
 /**
- * HTRCXMuteSound function
+ * HTRCXMuteSound function.
  * Send the MuteSound command to an RCX.
  */
 inline void HTRCXMuteSound(void);
@@ -9864,7 +9864,7 @@ inline void HTRCXMuteSound(void);
  */
 
 /**
- * HTRCXObvertOutput function
+ * HTRCXObvertOutput function.
  * Send the ObvertOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to obvert. See \ref RCXOutputConstants.
@@ -9875,7 +9875,7 @@ inline void HTRCXObvertOutput(const byte outputs);
  */
 
 /**
- * HTRCXOff function
+ * HTRCXOff function.
  * Send commands to an RCX to turn off the specified outputs.
  *
  * \param outputs The RCX output(s) to turn off. See \ref RCXOutputConstants.
@@ -9886,7 +9886,7 @@ inline void HTRCXOff(const byte outputs);
  */
 
 /**
- * HTRCXOn function
+ * HTRCXOn function.
  * Send commands to an RCX to turn on the specified outputs.
  *
  * \param outputs The RCX output(s) to turn on. See \ref RCXOutputConstants.
@@ -9897,7 +9897,7 @@ inline void HTRCXOn(const byte outputs);
  */
 
 /**
- * HTRCXOnFor function
+ * HTRCXOnFor function.
  * Send commands to an RCX to turn on the specified outputs in the forward
  * direction for the specified duration.
  *
@@ -9910,7 +9910,7 @@ inline void HTRCXOnFor(const byte outputs, const unsigned int ms);
  */
 
 /**
- * HTRCXOnFwd function
+ * HTRCXOnFwd function.
  * Send commands to an RCX to turn on the specified outputs in the forward
  * direction.
  *
@@ -9922,7 +9922,7 @@ inline void HTRCXOnFwd(const byte outputs);
  */
 
 /**
- * HTRCXOnRev function
+ * HTRCXOnRev function.
  * Send commands to an RCX to turn on the specified outputs in the reverse direction.
  *
  * \param outputs The RCX output(s) to turn on in the reverse direction. See \ref RCXOutputConstants.
@@ -9933,7 +9933,7 @@ inline void HTRCXOnRev(const byte outputs);
  */
 
 /**
- * HTRCXPBTurnOff function
+ * HTRCXPBTurnOff function.
  * Send the PBTurnOff command to an RCX.
  */
 inline void HTRCXPBTurnOff(void);
@@ -9942,7 +9942,7 @@ inline void HTRCXPBTurnOff(void);
  */
 
 /**
- * HTRCXPing function
+ * HTRCXPing function.
  * Send the Ping command to an RCX.
  */
 inline void HTRCXPing(void);
@@ -9951,7 +9951,7 @@ inline void HTRCXPing(void);
  */
 
 /**
- * HTRCXPlaySound function
+ * HTRCXPlaySound function.
  * Send the PlaySound command to an RCX.
  *
  * \param snd The sound number to play.
@@ -9962,7 +9962,7 @@ inline void HTRCXPlaySound(const byte snd);
  */
 
 /**
- * HTRCXPlayTone function
+ * HTRCXPlayTone function.
  * Send the PlayTone command to an RCX.
  *
  * \param freq The frequency of the tone to play.
@@ -9974,7 +9974,7 @@ inline void HTRCXPlayTone(const unsigned int freq, const byte duration);
  */
 
 /**
- * HTRCXPlayToneVar function
+ * HTRCXPlayToneVar function.
  * Send the PlayToneVar command to an RCX.
  *
  * \param varnum The variable containing the tone frequency to play.
@@ -9986,7 +9986,7 @@ inline void HTRCXPlayToneVar(const byte varnum, const byte duration);
  */
 
 /**
- * HTRCXRemote function
+ * HTRCXRemote function.
  * Send the Remote command to an RCX.
  *
  * \param cmd The RCX IR remote command to send. See \ref RCXRemoteConstants.
@@ -9997,7 +9997,7 @@ inline void HTRCXRemote(unsigned int cmd);
  */
 
 /**
- * HTRCXRev function
+ * HTRCXRev function.
  * Send commands to an RCX to set the specified outputs to the reverse direction.
  *
  * \param outputs The RCX output(s) to reverse direction. See \ref RCXOutputConstants.
@@ -10008,7 +10008,7 @@ inline void HTRCXRev(const byte outputs);
  */
 
 /**
- * HTRCXSelectDisplay function
+ * HTRCXSelectDisplay function.
  * Send the SelectDisplay command to an RCX.
  *
  * \param src The RCX source.  See \ref RCXSourceConstants.
@@ -10020,7 +10020,7 @@ inline void HTRCXSelectDisplay(const byte src, const unsigned int value);
  */
 
 /**
- * HTRCXSelectProgram function
+ * HTRCXSelectProgram function.
  * Send the SelectProgram command to an RCX.
  *
  * \param prog The program number to select.
@@ -10031,7 +10031,7 @@ inline void HTRCXSelectProgram(const byte prog);
  */
 
 /**
- * HTRCXSendSerial function
+ * HTRCXSendSerial function.
  * Send the SendSerial command to an RCX.
  *
  * \param first The first byte address.
@@ -10043,7 +10043,7 @@ inline void HTRCXSendSerial(const byte first, const byte count);
  */
 
 /**
- * HTRCXSetDirection function
+ * HTRCXSetDirection function.
  * Send the SetDirection command to an RCX to configure the direction of the specified outputs.
  *
  * \param outputs The RCX output(s) to set direction. See \ref RCXOutputConstants.
@@ -10055,7 +10055,7 @@ inline void HTRCXSetDirection(const byte outputs, const byte dir);
  */
 
 /**
- * HTRCXSetEvent function
+ * HTRCXSetEvent function.
  * Send the SetEvent command to an RCX.
  *
  * \param evt The event number to set.
@@ -10068,7 +10068,7 @@ inline void HTRCXSetEvent(const byte evt, const byte src, const byte type);
  */
 
 /**
- * HTRCXSetGlobalDirection function
+ * HTRCXSetGlobalDirection function.
  * Send the SetGlobalDirection command to an RCX.
  *
  * \param outputs The RCX output(s) to set global direction. See \ref RCXOutputConstants.
@@ -10080,7 +10080,7 @@ inline void HTRCXSetGlobalDirection(const byte outputs, const byte dir);
  */
 
 /**
- * HTRCXSetGlobalOutput function
+ * HTRCXSetGlobalOutput function.
  * Send the SetGlobalOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to set global mode. See \ref RCXOutputConstants.
@@ -10092,7 +10092,7 @@ inline void HTRCXSetGlobalOutput(const byte outputs, const byte mode);
  */
 
 /**
- * HTRCXSetMaxPower function
+ * HTRCXSetMaxPower function.
  * Send the SetMaxPower command to an RCX.
  *
  * \param outputs The RCX output(s) to set max power. See \ref RCXOutputConstants.
@@ -10105,7 +10105,7 @@ inline void HTRCXSetMaxPower(const byte outputs, const byte pwrsrc, const byte p
  */
 
 /**
- * HTRCXSetMessage function
+ * HTRCXSetMessage function.
  * Send the SetMessage command to an RCX.
  *
  * \param msg The numeric message to send.
@@ -10116,7 +10116,7 @@ inline void HTRCXSetMessage(const byte msg);
  */
 
 /**
- * HTRCXSetOutput function
+ * HTRCXSetOutput function.
  * Send the SetOutput command to an RCX to configure the mode of the specified outputs
  *
  * \param outputs The RCX output(s) to set mode. See \ref RCXOutputConstants.
@@ -10128,7 +10128,7 @@ inline void HTRCXSetOutput(const byte outputs, const byte mode);
  */
 
 /**
- * HTRCXSetPower function
+ * HTRCXSetPower function.
  * Send the SetPower command to an RCX to configure the power level of the specified outputs.
  *
  * \param outputs The RCX output(s) to set power. See \ref RCXOutputConstants.
@@ -10141,7 +10141,7 @@ inline void HTRCXSetPower(const byte outputs, const byte pwrsrc, const byte pwrv
  */
 
 /**
- * HTRCXSetPriority function
+ * HTRCXSetPriority function.
  * Send the SetPriority command to an RCX.
  *
  * \param p The new task priority.
@@ -10152,7 +10152,7 @@ inline void HTRCXSetPriority(const byte p);
  */
 
 /**
- * HTRCXSetSensorMode function
+ * HTRCXSetSensorMode function.
  * Send the SetSensorMode command to an RCX.
  *
  * \param port The RCX sensor port.
@@ -10164,7 +10164,7 @@ inline void HTRCXSetSensorMode(const byte port, const byte mode);
  */
 
 /**
- * HTRCXSetSensorType function
+ * HTRCXSetSensorType function.
  * Send the SetSensorType command to an RCX.
  *
  * \param port The RCX sensor port.
@@ -10176,7 +10176,7 @@ inline void HTRCXSetSensorType(const byte port, const byte type);
  */
 
 /**
- * HTRCXSetSleepTime function
+ * HTRCXSetSleepTime function.
  * Send the SetSleepTime command to an RCX.
  *
  * \param t The new sleep time value.
@@ -10187,7 +10187,7 @@ inline void HTRCXSetSleepTime(const byte t);
  */
 
 /**
- * HTRCXSetTxPower function
+ * HTRCXSetTxPower function.
  * Send the SetTxPower command to an RCX.
  *
  * \param pwr The IR transmit power level.
@@ -10198,7 +10198,7 @@ inline void HTRCXSetTxPower(const byte pwr);
  */
 
 /**
- * HTRCXSetWatch function
+ * HTRCXSetWatch function.
  * Send the SetWatch command to an RCX.
  *
  * \param hours The new watch time hours value.
@@ -10210,7 +10210,7 @@ inline void HTRCXSetWatch(const byte hours, const byte minutes);
  */
 
 /**
- * HTRCXStartTask function
+ * HTRCXStartTask function.
  * Send the StartTask command to an RCX.
  *
  * \param t The task number to start.
@@ -10221,7 +10221,7 @@ inline void HTRCXStartTask(const byte t);
  */
 
 /**
- * HTRCXStopAllTasks function
+ * HTRCXStopAllTasks function.
  * Send the StopAllTasks command to an RCX.
  */
 inline void HTRCXStopAllTasks(void);
@@ -10230,7 +10230,7 @@ inline void HTRCXStopAllTasks(void);
  */
 
 /**
- * HTRCXStopTask function
+ * HTRCXStopTask function.
  * Send the StopTask command to an RCX.
  *
  * \param t The task number to stop.
@@ -10241,7 +10241,7 @@ inline void HTRCXStopTask(const byte t);
  */
 
 /**
- * HTRCXToggle function
+ * HTRCXToggle function.
  * Send commands to an RCX to toggle the direction of the specified outputs.
  *
  * \param outputs The RCX output(s) to toggle. See \ref RCXOutputConstants.
@@ -10252,7 +10252,7 @@ inline void HTRCXToggle(const byte outputs);
  */
 
 /**
- * HTRCXUnmuteSound function
+ * HTRCXUnmuteSound function.
  * Send the UnmuteSound command to an RCX.
  */
 inline void HTRCXUnmuteSound(void);
@@ -10261,7 +10261,7 @@ inline void HTRCXUnmuteSound(void);
  */
 
 /**
- * HTScoutCalibrateSensor function
+ * HTScoutCalibrateSensor function.
  * Send the CalibrateSensor command to a Scout.
  */
 inline void HTScoutCalibrateSensor(void);
@@ -10270,7 +10270,7 @@ inline void HTScoutCalibrateSensor(void);
  */
 
 /**
- * HTScoutMuteSound function
+ * HTScoutMuteSound function.
  * Send the MuteSound command to a Scout.
  */
 inline void HTScoutMuteSound(void);
@@ -10279,7 +10279,7 @@ inline void HTScoutMuteSound(void);
  */
 
 /**
- * HTScoutSelectSounds function
+ * HTScoutSelectSounds function.
  * Send the SelectSounds command to a Scout.
  *
  * \param grp The Scout sound group to select.
@@ -10290,7 +10290,7 @@ inline void HTScoutSelectSounds(const byte grp);
  */
 
 /**
- * HTScoutSendVLL function
+ * HTScoutSendVLL function.
  * Send the SendVLL command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -10302,7 +10302,7 @@ inline void HTScoutSendVLL(const byte src, const unsigned int value);
  */
 
 /**
- * HTScoutSetEventFeedback function
+ * HTScoutSetEventFeedback function.
  * Send the SetEventFeedback command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -10314,7 +10314,7 @@ inline void HTScoutSetEventFeedback(const byte src, const unsigned int value);
  */
 
 /**
- * HTScoutSetLight function
+ * HTScoutSetLight function.
  * Send the SetLight command to a Scout.
  *
  * \param x Set the light on or off using this value. See \ref ScoutLightConstants.
@@ -10325,7 +10325,7 @@ inline void HTScoutSetLight(const byte x);
  */
 
 /**
- * HTScoutSetScoutMode function
+ * HTScoutSetScoutMode function.
  * Send the SetScoutMode command to a Scout.
  *
  * \param mode Set the scout mode. See \ref ScoutModeConstants.
@@ -10336,7 +10336,7 @@ inline void HTScoutSetScoutMode(const byte mode);
  */
 
 /**
- * HTScoutSetSensorClickTime function
+ * HTScoutSetSensorClickTime function.
  * Send the SetSensorClickTime command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -10348,7 +10348,7 @@ inline void HTScoutSetSensorClickTime(const byte src, const unsigned int value);
  */
 
 /**
- * HTScoutSetSensorHysteresis function
+ * HTScoutSetSensorHysteresis function.
  * Send the SetSensorHysteresis command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -10360,7 +10360,7 @@ inline void HTScoutSetSensorHysteresis(const byte src, const unsigned int value)
  */
 
 /**
- * HTScoutSetSensorLowerLimit function
+ * HTScoutSetSensorLowerLimit function.
  * Send the SetSensorLowerLimit command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -10372,7 +10372,7 @@ inline void HTScoutSetSensorLowerLimit(const byte src, const unsigned int value)
  */
 
 /**
- * HTScoutSetSensorUpperLimit function
+ * HTScoutSetSensorUpperLimit function.
  * Send the SetSensorUpperLimit command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -10384,7 +10384,7 @@ inline void HTScoutSetSensorUpperLimit(const byte src, const unsigned int value)
  */
 
 /**
- * HTScoutUnmuteSound function
+ * HTScoutUnmuteSound function.
  * Send the UnmuteSound command to a Scout.
  */
 inline void HTScoutUnmuteSound(void);
@@ -10549,7 +10549,7 @@ inline void SetSensorMSDROD(const byte & port, bool bActive) {
  */
 
 /**
- * Read mindsensors pressure sensor
+ * Read mindsensors pressure sensor.
  * Read the pressure sensor value of the mindsensors pressure sensor on the
  * specified port.
  *
@@ -10570,7 +10570,7 @@ inline int SensorMSPressure(const byte & port) {
 #ifdef __DOXYGEN_DOCS
 
 /**
- * Read mindsensors compass value
+ * Read mindsensors compass value.
  * Return the Mindsensors Compass sensor value.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10582,7 +10582,7 @@ inline int SensorMSCompass(const byte & port);
  */
 
 /**
- * Read mindsensors compass value
+ * Read mindsensors compass value.
  * Return the Mindsensors Compass sensor value.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10595,7 +10595,7 @@ inline int SensorMSCompassEx(const byte & port, const byte addr);
  */
 
 /**
- * Read mindsensors DROD value
+ * Read mindsensors DROD value.
  * Return the Mindsensors DROD sensor value.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10607,7 +10607,7 @@ inline int SensorMSDROD(const byte & port);
  */
 
 /**
- * Read mindsensors raw pressure value
+ * Read mindsensors raw pressure value.
  * Return the Mindsensors pressure sensor raw value.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10619,7 +10619,7 @@ inline int SensorMSPressureRaw(const byte & port);
  */
 
 /**
- * Read mindsensors acceleration values
+ * Read mindsensors acceleration values.
  * Read X, Y, and Z axis acceleration values from the mindsensors Accelerometer
  * sensor. Returns a boolean value indicating whether or not the operation
  * completed successfully. The port must be configured as a Lowspeed port
@@ -10637,7 +10637,7 @@ inline bool ReadSensorMSAccel(const byte port, int & x, int & y, int & z);
  */
 
 /**
- * Read mindsensors acceleration values
+ * Read mindsensors acceleration values.
  * Read X, Y, and Z axis acceleration values from the mindsensors Accelerometer
  * sensor. Returns a boolean value indicating whether or not the operation
  * completed successfully. The port must be configured as a Lowspeed port
@@ -10656,7 +10656,7 @@ inline bool ReadSensorMSAccelEx(const byte port, const byte addr, int & x, int &
  */
 
 /**
- * Read mindsensors playstation controller values
+ * Read mindsensors playstation controller values.
  * Read playstation controller values from the mindsensors playstation
  * sensor. Returns a boolean value indicating whether or not the operation
  * completed successfully. The port must be configured as a Lowspeed port
@@ -10677,7 +10677,7 @@ inline bool ReadSensorMSPlayStation(const byte port, byte & btnset1, byte & btns
  */
 
 /**
- * Read mindsensors playstation controller values
+ * Read mindsensors playstation controller values.
  * Read playstation controller values from the mindsensors playstation
  * sensor. Returns a boolean value indicating whether or not the operation
  * completed successfully. The port must be configured as a Lowspeed port
@@ -10699,7 +10699,7 @@ inline bool ReadSensorMSPlayStationEx(const byte port, const byte addr, byte & b
  */
 
 /**
- * Read mindsensors RTClock values
+ * Read mindsensors RTClock values.
  * Read real-time clock values from the Mindsensors RTClock sensor. Returns
  * a boolean value indicating whether or not the operation completed
  * successfully. The port must be configured as a Lowspeed port before using
@@ -10721,7 +10721,7 @@ inline bool ReadSensorMSRTClock(const byte port, byte & sec, byte & min, byte & 
  */
 
 /**
- * Read mindsensors tilt values
+ * Read mindsensors tilt values.
  * Read X, Y, and Z axis tilt values from the mindsensors tilt
  * sensor. Returns a boolean value indicating whether or not the operation
  * completed successfully. The port must be configured as a Lowspeed port
@@ -10739,7 +10739,7 @@ inline bool ReadSensorMSTilt(const byte port, byte & x, byte & y, byte & z);
  */
 
 /**
- * Read mindsensors tilt values
+ * Read mindsensors tilt values.
  * Read X, Y, and Z axis tilt values from the mindsensors tilt
  * sensor. Returns a boolean value indicating whether or not the operation
  * completed successfully. The port must be configured as a Lowspeed port
@@ -10758,7 +10758,7 @@ inline bool ReadSensorMSTiltEx(const byte port, const byte addr, byte & x, byte 
  */
 
 /**
- * Read a mindsensors device value
+ * Read a mindsensors device value.
  * Read a one or two byte value from a mindsensors sensor. The value must be
  * stored with the least signficant byte (LSB) first. Returns a boolean value
  * indicating whether or not the operation completed successfully. The port
@@ -10775,7 +10775,7 @@ inline int MSReadValue(const byte port, const byte reg, const byte numbytes);
  */
 
 /**
- * Read a mindsensors device value
+ * Read a mindsensors device value.
  * Read a one or two byte value from a mindsensors sensor. The value must be
  * stored with the least signficant byte (LSB) first. Returns a boolean value
  * indicating whether or not the operation completed successfully. The port
@@ -10793,7 +10793,8 @@ inline int MSReadValueEx(const byte port, const byte addr, const byte reg, const
  */
 
 /**
- * Turn on power to the mindsensors device. The port
+ * Turn on power to device.
+ * Turn the power on for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10805,7 +10806,8 @@ inline char MSEnergize(const byte port);
  */
 
 /**
- * Turn on power to the mindsensors device. The port
+ * Turn on power to device.
+ * Turn the power on for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10818,7 +10820,8 @@ inline char MSEnergizeEx(const byte port, const byte addr);
  */
 
 /**
- * Turn off power to the mindsensors device. The port
+ * Turn off power to device.
+ * Turn power off for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10830,7 +10833,8 @@ inline char MSDeenergize(const byte port);
  */
 
 /**
- * Turn off power to the mindsensors device. The port
+ * Turn off power to device.
+ * Turn power off for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10843,7 +10847,8 @@ inline char MSDeenergizeEx(const byte port, const byte addr);
  */
 
 /**
- * Turn on ADPA mode for the mindsensors device. The port
+ * Turn on mindsensors ADPA mode.
+ * Turn ADPA mode on for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10855,7 +10860,8 @@ inline char MSADPAOn(const byte port);
  */
 
 /**
- * Turn on ADPA mode for the mindsensors device. The port
+ * Turn on mindsensors ADPA mode.
+ * Turn ADPA mode on for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10868,7 +10874,8 @@ inline char MSADPAOnEx(const byte port, const byte addr);
  */
 
 /**
- * Turn off ADPA mode for the mindsensors device. The port
+ * Turn off mindsensors ADPA mode.
+ * Turn ADPA mode off for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10880,7 +10887,8 @@ inline char MSADPAOff(const byte port);
  */
 
 /**
- * Turn off ADPA mode for the mindsensors device. The port
+ * Turn off mindsensors ADPA mode.
+ * Turn ADPA mode off for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10893,7 +10901,8 @@ inline char MSADPAOffEx(const byte port, const byte addr);
  */
 
 /**
- * Configure the mindsensors DISTNx device as GP2D12. The port
+ * Configure DISTNx as GP2D12.
+ * Configure the mindsensors DISTNx sensor as GP2D12. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10905,7 +10914,8 @@ inline char DISTNxGP2D12(const byte port);
  */
 
 /**
- * Configure the mindsensors DISTNx device as GP2D12. The port
+ * Configure DISTNx as GP2D12.
+ * Configure the mindsensors DISTNx sensor as GP2D12. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10918,7 +10928,8 @@ inline char DISTNxGP2D12Ex(const byte port, const byte addr);
  */
 
 /**
- * Configure the mindsensors DISTNx device as GP2D120. The port
+ * Configure DISTNx as GP2D120.
+ * Configure the mindsensors DISTNx sensor as GP2D120. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10930,7 +10941,8 @@ inline char DISTNxGP2D120(const byte port);
  */
 
 /**
- * Configure the mindsensors DISTNx device as GP2D120. The port
+ * Configure DISTNx as GP2D120.
+ * Configure the mindsensors DISTNx sensor as GP2D120. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10943,7 +10955,8 @@ inline char DISTNxGP2D120Ex(const byte port, const byte addr);
  */
 
 /**
- * Configure the mindsensors DISTNx device as GP2YA02. The port
+ * Configure DISTNx as GP2YA02.
+ * Configure the mindsensors DISTNx sensor as GP2YA02. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10955,7 +10968,8 @@ inline char DISTNxGP2YA02(const byte port);
  */
 
 /**
- * Configure the mindsensors DISTNx device as GP2YA02. The port
+ * Configure DISTNx as GP2YA02.
+ * Configure the mindsensors DISTNx sensor as GP2YA02. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10968,7 +10982,8 @@ inline char DISTNxGP2YA02Ex(const byte port, const byte addr);
  */
 
 /**
- * Configure the mindsensors DISTNx device as GP2YA21. The port
+ * Configure DISTNx as GP2YA21.
+ * Configure the mindsensors DISTNx sensor as GP2YA21. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10980,7 +10995,8 @@ inline char DISTNxGP2YA21(const byte port);
  */
 
 /**
- * Configure the mindsensors DISTNx device as GP2YA21. The port
+ * Configure DISTNx as GP2YA21.
+ * Configure the mindsensors DISTNx sensor as GP2YA21. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -10993,7 +11009,8 @@ inline char DISTNxGP2YA21Ex(const byte port, const byte addr);
  */
 
 /**
- * Read mindsensors DISTNx distance value.
+ * Read DISTNx distance value.
+ * Read the mindsensors DISTNx distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11005,7 +11022,8 @@ inline int DISTNxDistance(const byte port);
  */
 
 /**
- * Read mindsensors DISTNx distance value.
+ * Read DISTNx distance value.
+ * Read the mindsensors DISTNx sensor's distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11018,7 +11036,8 @@ inline int DISTNxDistanceEx(const byte port, const byte addr);
  */
 
 /**
- * Read mindsensors DISTNx maximum distance value.
+ * Read DISTNx maximum distance value.
+ * Read the mindsensors DISTNx sensor's maximum distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11030,7 +11049,8 @@ inline int DISTNxMaxDistance(const byte port);
  */
 
 /**
- * Read mindsensors DISTNx maximum distance value.
+ * Read DISTNx maximum distance value.
+ * Read the mindsensors DISTNx sensor's maximum distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11043,7 +11063,8 @@ inline int DISTNxMaxDistanceEx(const byte port, const byte addr);
  */
 
 /**
- * Read mindsensors DISTNx minimum distance value.
+ * Read DISTNx minimum distance value.
+ * Read the mindsensors DISTNx sensor's minimum distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11055,7 +11076,8 @@ inline int DISTNxMinDistance(const byte port);
  */
 
 /**
- * Read mindsensors DISTNx minimum distance value.
+ * Read DISTNx minimum distance value.
+ * Read the mindsensors DISTNx sensor's minimum distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11068,7 +11090,8 @@ inline int DISTNxMinDistanceEx(const byte port, const byte addr);
  */
 
 /**
- * Read mindsensors DISTNx module type value.
+ * Read DISTNx module type value.
+ * Read the mindsensors DISTNx sensor's module type value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11080,7 +11103,8 @@ inline byte DISTNxModuleType(const byte port);
  */
 
 /**
- * Read mindsensors DISTNx module type value.
+ * Read DISTNx module type value.
+ * Read the mindsensors DISTNx sensor's module type value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11093,7 +11117,8 @@ inline byte DISTNxModuleTypeEx(const byte port, const byte addr);
  */
 
 /**
- * Read mindsensors DISTNx num points value.
+ * Read DISTNx num points value.
+ * Read the mindsensors DISTNx sensor's num points value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11105,7 +11130,8 @@ inline byte DISTNxNumPoints(const byte port);
  */
 
 /**
- * Read mindsensors DISTNx num points value.
+ * Read DISTNx num points value.
+ * Read the mindsensors DISTNx sensor's num points value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11118,7 +11144,8 @@ inline byte DISTNxNumPointsEx(const byte port, const byte addr);
  */
 
 /**
- * Read mindsensors DISTNx voltage value.
+ * Read DISTNx voltage value.
+ * Read the mindsensors DISTNx sensor's voltage value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11130,7 +11157,8 @@ inline int DISTNxVoltage(const byte port);
  */
 
 /**
- * Read mindsensors DISTNx voltage value.
+ * Read DISTNx voltage value.
+ * Read the mindsensors DISTNx sensor's voltage value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11143,7 +11171,8 @@ inline int DISTNxVoltageEx(const byte port, const byte addr);
  */
 
 /**
- * Configure mindsensors PSPNx device in digital mode. The port
+ * Configure PSPNx in digital mode.
+ * Configure the mindsensors PSPNx device in digital mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11155,7 +11184,8 @@ inline char PSPNxDigital(const byte & port);
  */
 
 /**
- * Configure mindsensors PSPNx device in digital mode. The port
+ * Configure PSPNx in digital mode.
+ * Configure the mindsensors PSPNx device in digital mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11168,7 +11198,8 @@ inline char PSPNxDigitalEx(const byte & port, const byte & addr);
  */
 
 /**
- * Configure mindsensors PSPNx device in analog mode. The port
+ * Configure PSPNx in analog mode.
+ * Configure the mindsensors PSPNx device in analog mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11180,7 +11211,8 @@ inline char PSPNxAnalog(const byte & port);
  */
 
 /**
- * Configure mindsensors PSPNx device in analog mode. The port
+ * Configure PSPNx in analog mode.
+ * Configure the mindsensors PSPNx device in analog mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11193,7 +11225,8 @@ inline char PSPNxAnalogEx(const byte & port, const byte & addr);
  */
 
 /**
- * Configure mindsensors NRLink device in 2400 baud mode. The port
+ * Configure NRLink in 2400 baud mode.
+ * Configure the mindsensors NRLink device in 2400 baud mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11205,7 +11238,8 @@ inline char NRLink2400(const byte port);
  */
 
 /**
- * Configure mindsensors NRLink device in 2400 baud mode. The port
+ * Configure NRLink in 2400 baud mode.
+ * Configure the mindsensors NRLink device in 2400 baud mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11218,7 +11252,8 @@ inline char NRLink2400Ex(const byte port, const byte addr);
  */
 
 /**
- * Configure mindsensors NRLink device in 4800 baud mode. The port
+ * Configure NRLink in 4800 baud mode.
+ * Configure the mindsensors NRLink device in 4800 baud mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11230,7 +11265,8 @@ inline char NRLink4800(const byte port);
  */
 
 /**
- * Configure mindsensors NRLink device in 4800 baud mode. The port
+ * Configure NRLink in 4800 baud mode.
+ * Configure the mindsensors NRLink device in 4800 baud mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11243,6 +11279,7 @@ inline char NRLink4800Ex(const byte port, const byte addr);
  */
 
 /**
+ * Flush NRLink buffers.
  * Flush the mindsensors NRLink device buffers. The port
  * must be configured as a Lowspeed port before using this function.
  *
@@ -11255,6 +11292,7 @@ inline char NRLinkFlush(const byte port);
  */
 
 /**
+ * Flush NRLink buffers.
  * Flush the mindsensors NRLink device buffers. The port
  * must be configured as a Lowspeed port before using this function.
  *
@@ -11268,7 +11306,8 @@ inline char NRLinkFlushEx(const byte port, const byte addr);
  */
 
 /**
- * Configure mindsensors NRLink device in IR long mode. The port
+ * Configure NRLink in IR long mode.
+ * Configure the mindsensors NRLink device in IR long mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11280,7 +11319,8 @@ inline char NRLinkIRLong(const byte port);
  */
 
 /**
- * Configure mindsensors NRLink device in IR long mode. The port
+ * Configure NRLink in IR long mode.
+ * Configure the mindsensors NRLink device in IR long mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11293,7 +11333,8 @@ inline char NRLinkIRLongEx(const byte port, const byte addr);
  */
 
 /**
- * Configure mindsensors NRLink device in IR short mode. The port
+ * Configure NRLink in IR short mode.
+ * Configure the mindsensors NRLink device in IR short mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11305,7 +11346,8 @@ inline char NRLinkIRShort(const byte port);
  */
 
 /**
- * Configure mindsensors NRLink device in IR short mode. The port
+ * Configure NRLink in IR short mode.
+ * Configure the mindsensors NRLink device in IR short mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11318,7 +11360,8 @@ inline char NRLinkIRShortEx(const byte port, const byte addr);
  */
 
 /**
- * Configure mindsensors NRLink device in power function mode. The port
+ * Configure NRLink in power function mode.
+ * Configure the mindsensors NRLink device in power function mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11330,7 +11373,8 @@ inline char NRLinkSetPF(const byte port);
  */
 
 /**
- * Configure mindsensors NRLink device in power function mode. The port
+ * Configure NRLink in power function mode.
+ * Configure the mindsensors NRLink device in power function mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11343,7 +11387,8 @@ inline char NRLinkSetPFEx(const byte port, const byte addr);
  */
 
 /**
- * Configure mindsensors NRLink device in RCX mode. The port
+ * Configure NRLink in RCX mode.
+ * Configure the mindsensors NRLink device in RCX mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11355,7 +11400,8 @@ inline char NRLinkSetRCX(const byte port);
  */
 
 /**
- * Configure mindsensors NRLink device in RCX mode. The port
+ * Configure NRLink in RCX mode.
+ * Configure the mindsensors NRLink device in RCX mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11368,7 +11414,8 @@ inline char NRLinkSetRCXEx(const byte port, const byte addr);
  */
 
 /**
- * Configure mindsensors NRLink device in IR train mode. The port
+ * Configure NRLink in IR train mode.
+ * Configure the mindsensors NRLink device in IR train mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11380,7 +11427,8 @@ inline char NRLinkSetTrain(const byte port);
  */
 
 /**
- * Configure mindsensors NRLink device in IR train mode. The port
+ * Configure NRLink in IR train mode.
+ * Configure the mindsensors NRLink device in IR train mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11393,7 +11441,8 @@ inline char NRLinkSetTrainEx(const byte port, const byte addr);
  */
 
 /**
- * Configure mindsensors NRLink device in raw IR transmit mode. The port
+ * Configure NRLink in raw IR transmit mode.
+ * Configure the mindsensors NRLink device in raw IR transmit mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11405,7 +11454,8 @@ inline char NRLinkTxRaw(const byte port);
  */
 
 /**
- * Configure mindsensors NRLink device in raw IR transmit mode. The port
+ * Configure NRLink in raw IR transmit mode.
+ * Configure the mindsensors NRLink device in raw IR transmit mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11418,6 +11468,7 @@ inline char NRLinkTxRawEx(const byte port, const byte addr);
  */
 
 /**
+ * Read NRLink status.
  * Read the status of the mindsensors NRLink device. The port
  * must be configured as a Lowspeed port before using this function.
  *
@@ -11430,6 +11481,7 @@ inline byte NRLinkStatus(const byte port);
  */
 
 /**
+ * Read NRLink status.
  * Read the status of the mindsensors NRLink device. The port
  * must be configured as a Lowspeed port before using this function.
  *
@@ -11443,7 +11495,8 @@ inline byte NRLinkStatusEx(const byte port, const byte addr);
  */
 
 /**
- * Run a mindsensors NRLink macro. The port
+ * Run NRLink macro.
+ * Run the specified mindsensors NRLink device macro. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11456,7 +11509,8 @@ inline char RunNRLinkMacro(const byte port, const byte macro);
  */
 
 /**
- * Run a mindsensors NRLink macro. The port
+ * Run NRLink macro.
+ * Run the specified mindsensors NRLink device macro. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11470,7 +11524,8 @@ inline char RunNRLinkMacroEx(const byte port, const byte addr, const byte macro)
  */
 
 /**
- * Write data to the mindsensors NRLink device. The port
+ * Write data to NRLink.
+ * Write data to the mindsensors NRLink device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11483,7 +11538,8 @@ inline char WriteNRLinkBytes(const byte port, const byte data[]);
  */
 
 /**
- * Write data to the mindsensors NRLink device. The port
+ * Write data to NRLink.
+ * Write data to the mindsensors NRLink device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11497,7 +11553,8 @@ inline char WriteNRLinkBytesEx(const byte port, const byte addr, const byte data
  */
 
 /**
- * Read data from the mindsensors NRLink device. The port
+ * Read data from NRLink.
+ * Read data from the mindsensors NRLink device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11510,7 +11567,8 @@ inline bool ReadNRLinkBytes(const byte port, byte & data[]);
  */
 
 /**
- * Read data from the mindsensors NRLink device. The port
+ * Read data from NRLink.
+ * Read data from the mindsensors NRLink device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
@@ -11518,13 +11576,13 @@ inline bool ReadNRLinkBytes(const byte port, byte & data[]);
  * \param data A byte array that will contain the data read from the device on output.
  * \return The function call result.
  */
-inline bool ReadNRLinkBytesEx(const byte port, const byte addr, byte & bytes[]);
+inline bool ReadNRLinkBytesEx(const byte port, const byte addr, byte & data[]);
 /** \example ex_ReadNRLinkBytesEx.nxc
  * This is an example of how to use the \ref ReadNRLinkBytesEx function.
  */
 
 /**
- * MSIRTrain function
+ * MSIRTrain function.
  * Control an IR Train receiver set to the specified channel using the
  * mindsensors NRLink device. Valid func values are \ref TRAIN_FUNC_STOP,
  * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
@@ -11543,7 +11601,7 @@ inline char MSIRTrain(const byte port, const byte channel, const byte func);
  */
 
 /**
- * MSIRTrainEx function
+ * MSIRTrainEx function.
  * Control an IR Train receiver set to the specified channel using the
  * mindsensors NRLink device. Valid function values are \ref TRAIN_FUNC_STOP,
  * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
@@ -11563,7 +11621,7 @@ inline char MSIRTrainEx(const byte port, const byte addr, const byte channel, co
  */
 
 /**
- * MSPFComboDirect function
+ * MSPFComboDirect function.
  * Execute a pair of Power Function motor commands on the specified channel
  * using the mindsensors NRLink device. Commands for outa and outb are
  * \ref PF_CMD_STOP, \ref PF_CMD_REV, \ref PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
@@ -11582,7 +11640,7 @@ inline char MSPFComboDirect(const byte port, const byte channel, const byte outa
  */
 
 /**
- * MSPFComboDirectEx function
+ * MSPFComboDirectEx function.
  * Execute a pair of Power Function motor commands on the specified channel
  * using the mindsensors NRLink device. Commands for outa and outb are
  * PF_CMD_STOP, PF_CMD_REV, PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
@@ -11602,7 +11660,7 @@ inline char MSPFComboDirectEx(const byte port, const byte addr, const byte chann
  */
 
 /**
- * MSPFComboPWM function
+ * MSPFComboPWM function.
  * Control the speed of both outputs on a Power Function receiver set to the
  * specified channel using the mindsensors NRLink device. Valid output values
  * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
@@ -11623,7 +11681,7 @@ inline char MSPFComboPWM(const byte port, const byte channel, const byte outa, c
  */
 
 /**
- * MSPFComboPWMEx function
+ * MSPFComboPWMEx function.
  * Control the speed of both outputs on a Power Function receiver set to the
  * specified channel using the mindsensors NRLink device. Valid output values
  * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
@@ -11645,7 +11703,7 @@ inline char MSPFComboPWMEx(const byte port, const byte addr, const byte channel,
  */
 
 /**
- * MSPFRawOutput function
+ * MSPFRawOutput function.
  * Control a Power Function receiver set to the specified channel using the
  * mindsensors NRLink device. Build the raw data stream using the 3 nibbles
  * (4 bit values). The port must be configured as a Lowspeed port before using
@@ -11663,7 +11721,7 @@ inline char MSPFRawOutput(const byte port, const byte nibble0, const byte nibble
  */
 
 /**
- * MSPFRawOutputEx function
+ * MSPFRawOutputEx function.
  * Control a Power Function receiver set to the specified channel using the
  * mindsensors NRLink device. Build the raw data stream using the 3 nibbles
  * (4 bit values). The port must be configured as a Lowspeed port before using
@@ -11682,7 +11740,7 @@ inline char MSPFRawOutputEx(const byte port, const byte addr, const byte nibble0
  */
 
 /**
- * MSPFRepeat function
+ * MSPFRepeat function.
  * Repeat sending the last Power Function command using the mindsensors
  * NRLink device. Specify the number of times to repeat the command and the
  * number of milliseconds of delay between each repetition. The port must be
@@ -11699,7 +11757,7 @@ inline char MSPFRepeat(const byte port, const byte count, const unsigned int del
  */
 
 /**
- * MSPFRepeatEx function
+ * MSPFRepeatEx function.
  * Repeat sending the last Power Function command using the mindsensors
  * NRLink device. Specify the number of times to repeat the command and the
  * number of milliseconds of delay between each repetition. The port must be
@@ -11717,7 +11775,7 @@ inline char MSPFRepeatEx(const byte port, const byte addr, const byte count, con
  */
 
 /**
- * MSPFSingleOutputCST function
+ * MSPFSingleOutputCST function.
  * Control a single output on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device. Select the desired output
  * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
@@ -11739,7 +11797,7 @@ inline char MSPFSingleOutputCST(const byte port, const byte channel, const byte 
  */
 
 /**
- * MSPFSingleOutputCSTEx function
+ * MSPFSingleOutputCSTEx function.
  * Control a single output on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device. Select the desired output
  * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
@@ -11762,7 +11820,7 @@ inline char MSPFSingleOutputCSTEx(const byte port, const byte addr, const byte c
  */
 
 /**
- * MSPFSingleOutputPWM function
+ * MSPFSingleOutputPWM function.
  * Control the speed of a single output on a Power Function receiver set to
  * the specified channel using the mindsensors NRLink device. Select the
  * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
@@ -11784,7 +11842,7 @@ inline char MSPFSingleOutputPWM(const byte port, const byte channel, const byte 
  */
 
 /**
- * MSPFSingleOutputPWMEx function
+ * MSPFSingleOutputPWMEx function.
  * Control the speed of a single output on a Power Function receiver set to
  * the specified channel using the mindsensors NRLink device. Select the
  * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
@@ -11807,7 +11865,7 @@ inline char MSPFSingleOutputPWMEx(const byte port, const byte addr, const byte c
  */
 
 /**
- * MSPFSinglePin function
+ * MSPFSinglePin function.
  * Control a single pin on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device. Select the desired output
  * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
@@ -11821,7 +11879,7 @@ inline char MSPFSingleOutputPWMEx(const byte port, const byte addr, const byte c
  * \param channel The Power Function channel.  See \ref PFChannelConstants.
  * \param out The Power Function output. See \ref PFOutputs.
  * \param pin The Power Function pin. See \ref PFPinConstants.
- * \param func The Power Function CST function. See \ref PFCSTFuncs.
+ * \param func The Power Function single pin function. See \ref PFPinFuncs.
  * \param cont Control whether the mode is continuous or timeout.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
@@ -11831,7 +11889,7 @@ inline char MSPFSinglePin(const byte port, const byte channel, const byte out, c
  */
 
 /**
- * MSPFSinglePinEx function
+ * MSPFSinglePinEx function.
  * Control a single pin on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device. Select the desired output
  * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
@@ -11846,7 +11904,7 @@ inline char MSPFSinglePin(const byte port, const byte channel, const byte out, c
  * \param channel The Power Function channel.  See \ref PFChannelConstants.
  * \param out The Power Function output. See \ref PFOutputs.
  * \param pin The Power Function pin. See \ref PFPinConstants.
- * \param func The Power Function CST function. See \ref PFCSTFuncs.
+ * \param func The Power Function single pin function. See \ref PFPinFuncs.
  * \param cont Control whether the mode is continuous or timeout.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
@@ -11856,7 +11914,7 @@ inline char MSPFSinglePinEx(const byte port, const byte addr, const byte channel
  */
 
 /**
- * MSPFTrain function
+ * MSPFTrain function.
  * Control both outputs on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device as if it were an IR Train
  * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
@@ -11875,7 +11933,7 @@ inline char MSPFTrain(const byte port, const byte channel, const byte func);
  */
 
 /**
- * MSPFTrainEx function
+ * MSPFTrainEx function.
  * Control both outputs on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device as if it were an IR Train
  * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
@@ -11895,7 +11953,7 @@ inline char MSPFTrainEx(const byte port, const byte addr, const byte channel, co
  */
 
 /**
- * MSRCXSetIRLinkPort function
+ * MSRCXSetIRLinkPort function.
  * Set the global port in advance of using the MSRCX* and MSScout* API
  * functions for sending RCX and Scout messages over the mindsensors NRLink
  * device. The port must be configured as a Lowspeed port before using any of
@@ -11909,7 +11967,7 @@ inline void MSRCXSetNRLinkPort(const byte port);
  */
 
 /**
- * MSRCXSetIRLinkPortEx function
+ * MSRCXSetIRLinkPortEx function.
  * Set the global port in advance of using the MSRCX* and MSScout* API
  * functions for sending RCX and Scout messages over the mindsensors NRLink
  * device. The port must be configured as a Lowspeed port before using any of
@@ -11924,7 +11982,7 @@ inline void MSRCXSetNRLinkPortEx(const byte port, const byte addr);
  */
 
 /**
- * MSRCXBatteryLevel function
+ * MSRCXBatteryLevel function.
  * Send the BatteryLevel command to an RCX to read the current battery level.
  *
  * \return The RCX battery level.
@@ -11935,7 +11993,7 @@ inline int MSRCXBatteryLevel(void);
  */
 
 /**
- * MSRCXPoll function
+ * MSRCXPoll function.
  * Send the Poll command to an RCX to read a signed 2-byte value at the
  * specified source and value combination.
  *
@@ -11949,7 +12007,7 @@ inline int MSRCXPoll(const byte src, const byte value);
  */
 
 /**
- * MSRCXPollMemory function
+ * MSRCXPollMemory function.
  * Send the PollMemory command to an RCX.
  *
  * \param address The RCX memory address.
@@ -11961,7 +12019,7 @@ inline int MSRCXPollMemory(const unsigned int address);
  */
 
 /**
- * MSRCXAbsVar function
+ * MSRCXAbsVar function.
  * Send the AbsVar command to an RCX.
  *
  * \param varnum The variable number to change.
@@ -11974,7 +12032,7 @@ inline void MSRCXAbsVar(const byte varnum, const byte byte src, const unsigned i
  */
 
 /**
- * MSRCXAddToDatalog function
+ * MSRCXAddToDatalog function.
  * Send the AddToDatalog command to an RCX.
  *
  * \param src The RCX source.  See \ref RCXSourceConstants.
@@ -11986,7 +12044,7 @@ inline void MSRCXAddToDatalog(const byte src, const unsigned int value);
  */
 
 /**
- * MSRCXAndVar function
+ * MSRCXAndVar function.
  * Send the AndVar command to an RCX.
  *
  * \param varnum The variable number to change.
@@ -11999,7 +12057,7 @@ inline void MSRCXAndVar(const byte varnum, const byte src, const unsigned int va
  */
 
 /**
- * MSRCXBoot function
+ * MSRCXBoot function.
  * Send the Boot command to an RCX.
  */
 inline void MSRCXBoot(void);
@@ -12008,7 +12066,7 @@ inline void MSRCXBoot(void);
  */
 
 /**
- * MSRCXCalibrateEvent function
+ * MSRCXCalibrateEvent function.
  * Send the CalibrateEvent command to an RCX.
  *
  * \param evt The event number.
@@ -12022,7 +12080,7 @@ inline void MSRCXCalibrateEvent(const byte evt, const byte low, const byte hi, c
  */
 
 /**
- * MSRCXClearAllEvents function
+ * MSRCXClearAllEvents function.
  * Send the ClearAllEvents command to an RCX.
  */
 inline void MSRCXClearAllEvents(void);
@@ -12031,7 +12089,7 @@ inline void MSRCXClearAllEvents(void);
  */
 
 /**
- * MSRCXClearCounter function
+ * MSRCXClearCounter function.
  * Send the ClearCounter command to an RCX.
  *
  * \param counter The counter to clear.
@@ -12042,7 +12100,7 @@ inline void MSRCXClearCounter(const byte counter);
  */
 
 /**
- * MSRCXClearMsg function
+ * MSRCXClearMsg function.
  * Send the ClearMsg command to an RCX.
  */
 inline void MSRCXClearMsg(void);
@@ -12051,7 +12109,7 @@ inline void MSRCXClearMsg(void);
  */
 
 /**
- * MSRCXClearSensor function
+ * MSRCXClearSensor function.
  * Send the ClearSensor command to an RCX.
  *
  * \param port The RCX port number.
@@ -12062,7 +12120,7 @@ inline void MSRCXClearSensor(const byte port);
  */
 
 /**
- * MSRCXClearSound function
+ * MSRCXClearSound function.
  * Send the ClearSound command to an RCX.
  */
 inline void MSRCXClearSound(void);
@@ -12071,7 +12129,7 @@ inline void MSRCXClearSound(void);
  */
 
 /**
- * MSRCXClearTimer function
+ * MSRCXClearTimer function.
  * Send the ClearTimer command to an RCX.
  *
  * \param timer The timer to clear.
@@ -12082,7 +12140,7 @@ inline void MSRCXClearTimer(const byte timer);
  */
 
 /**
- * MSRCXCreateDatalog function
+ * MSRCXCreateDatalog function.
  * Send the CreateDatalog command to an RCX.
  *
  * \param size The new datalog size.
@@ -12093,7 +12151,7 @@ inline void MSRCXCreateDatalog(const unsigned int size);
  */
 
 /**
- * MSRCXDecCounter function
+ * MSRCXDecCounter function.
  * Send the DecCounter command to an RCX.
  *
  * \param counter The counter to decrement.
@@ -12104,7 +12162,7 @@ inline void MSRCXDecCounter(const byte counter);
  */
 
 /**
- * MSRCXDeleteSub function
+ * MSRCXDeleteSub function.
  * Send the DeleteSub command to an RCX.
  *
  * \param s The subroutine number to delete.
@@ -12115,7 +12173,7 @@ inline void MSRCXDeleteSub(const byte s);
  */
 
 /**
- * MSRCXDeleteSubs function
+ * MSRCXDeleteSubs function.
  * Send the DeleteSubs command to an RCX.
  */
 inline void MSRCXDeleteSubs(void);
@@ -12124,7 +12182,7 @@ inline void MSRCXDeleteSubs(void);
  */
 
 /**
- * MSRCXDeleteTask function
+ * MSRCXDeleteTask function.
  * Send the DeleteTask command to an RCX.
  *
  * \param t The task number to delete.
@@ -12135,7 +12193,7 @@ inline void MSRCXDeleteTask(const byte t);
  */
 
 /**
- * MSRCXDeleteTasks function
+ * MSRCXDeleteTasks function.
  * Send the DeleteTasks command to an RCX.
  */
 inline void MSRCXDeleteTasks(void);
@@ -12144,7 +12202,7 @@ inline void MSRCXDeleteTasks(void);
  */
 
 /**
- * MSRCXDisableOutput function
+ * MSRCXDisableOutput function.
  * Send the DisableOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to disable. See \ref RCXOutputConstants.
@@ -12155,7 +12213,7 @@ inline void MSRCXDisableOutput(const byte outputs);
  */
 
 /**
- * MSRCXDivVar function
+ * MSRCXDivVar function.
  * Send the DivVar command to an RCX.
  *
  * \param varnum The variable number to change.
@@ -12168,7 +12226,7 @@ inline void MSRCXDivVar(const byte varnum, const byte src, const unsigned int va
  */
 
 /**
- * MSRCXEnableOutput function
+ * MSRCXEnableOutput function.
  * Send the EnableOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to enable. See \ref RCXOutputConstants.
@@ -12179,7 +12237,7 @@ inline void MSRCXEnableOutput(const byte outputs);
  */
 
 /**
- * MSRCXEvent function
+ * MSRCXEvent function.
  * Send the Event command to an RCX.
  *
  * \param src The RCX source.  See \ref RCXSourceConstants.
@@ -12191,7 +12249,7 @@ inline void MSRCXEvent(const byte src, const unsigned int value);
  */
 
 /**
- * MSRCXFloat function
+ * MSRCXFloat function.
  * Send commands to an RCX to float the specified outputs.
  *
  * \param outputs The RCX output(s) to float. See \ref RCXOutputConstants.
@@ -12202,7 +12260,7 @@ inline void MSRCXFloat(const byte outputs);
  */
 
 /**
- * MSRCXFwd function
+ * MSRCXFwd function.
  * Send commands to an RCX to set the specified outputs to the forward direction.
  *
  * \param outputs The RCX output(s) to set forward. See \ref RCXOutputConstants.
@@ -12213,7 +12271,7 @@ inline void MSRCXFwd(const byte outputs);
  */
 
 /**
- * MSRCXIncCounter function
+ * MSRCXIncCounter function.
  * Send the IncCounter command to an RCX.
  *
  * \param counter The counter to increment.
@@ -12224,7 +12282,7 @@ inline void MSRCXIncCounter(const byte counter);
  */
 
 /**
- * MSRCXInvertOutput function
+ * MSRCXInvertOutput function.
  * Send the InvertOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to invert. See \ref RCXOutputConstants.
@@ -12235,7 +12293,7 @@ inline void MSRCXInvertOutput(const byte outputs);
  */
 
 /**
- * MSRCXMulVar function
+ * MSRCXMulVar function.
  * Send the MulVar command to an RCX.
  *
  * \param varnum The variable number to change.
@@ -12248,7 +12306,7 @@ inline void MSRCXMulVar(const byte varnum, const byte src, unsigned int value);
  */
 
 /**
- * MSRCXMuteSound function
+ * MSRCXMuteSound function.
  * Send the MuteSound command to an RCX.
  */
 inline void MSRCXMuteSound(void);
@@ -12257,7 +12315,7 @@ inline void MSRCXMuteSound(void);
  */
 
 /**
- * MSRCXObvertOutput function
+ * MSRCXObvertOutput function.
  * Send the ObvertOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to obvert. See \ref RCXOutputConstants.
@@ -12268,7 +12326,7 @@ inline void MSRCXObvertOutput(const byte outputs);
  */
 
 /**
- * MSRCXOff function
+ * MSRCXOff function.
  * Send commands to an RCX to turn off the specified outputs.
  *
  * \param outputs The RCX output(s) to turn off. See \ref RCXOutputConstants.
@@ -12279,7 +12337,7 @@ inline void MSRCXOff(const byte outputs);
  */
 
 /**
- * MSRCXOn function
+ * MSRCXOn function.
  * Send commands to an RCX to turn on the specified outputs.
  *
  * \param outputs The RCX output(s) to turn on. See \ref RCXOutputConstants.
@@ -12290,7 +12348,7 @@ inline void MSRCXOn(const byte outputs);
  */
 
 /**
- * MSRCXOnFor function
+ * MSRCXOnFor function.
  * Send commands to an RCX to turn on the specified outputs in the forward
  * direction for the specified duration.
  *
@@ -12303,7 +12361,7 @@ inline void MSRCXOnFor(const byte outputs, const unsigned int ms);
  */
 
 /**
- * MSRCXOnFwd function
+ * MSRCXOnFwd function.
  * Send commands to an RCX to turn on the specified outputs in the forward
  * direction.
  *
@@ -12315,7 +12373,7 @@ inline void MSRCXOnFwd(const byte outputs);
  */
 
 /**
- * MSRCXOnRev function
+ * MSRCXOnRev function.
  * Send commands to an RCX to turn on the specified outputs in the reverse direction.
  *
  * \param outputs The RCX output(s) to turn on in the reverse direction. See \ref RCXOutputConstants.
@@ -12326,7 +12384,7 @@ inline void MSRCXOnRev(const byte outputs);
  */
 
 /**
- * MSRCXOrVar function
+ * MSRCXOrVar function.
  * Send the OrVar command to an RCX.
  *
  * \param varnum The variable number to change.
@@ -12339,7 +12397,7 @@ inline void MSRCXOrVar(const byte varnum, const byte src, const unsigned int val
  */
 
 /**
- * MSRCXPBTurnOff function
+ * MSRCXPBTurnOff function.
  * Send the PBTurnOff command to an RCX.
  */
 inline void MSRCXPBTurnOff(void);
@@ -12348,7 +12406,7 @@ inline void MSRCXPBTurnOff(void);
  */
 
 /**
- * MSRCXPing function
+ * MSRCXPing function.
  * Send the Ping command to an RCX.
  */
 inline void MSRCXPing(void);
@@ -12357,7 +12415,7 @@ inline void MSRCXPing(void);
  */
 
 /**
- * MSRCXPlaySound function
+ * MSRCXPlaySound function.
  * Send the PlaySound command to an RCX.
  *
  * \param snd The sound number to play.
@@ -12368,7 +12426,7 @@ inline void MSRCXPlaySound(const byte snd);
  */
 
 /**
- * MSRCXPlayTone function
+ * MSRCXPlayTone function.
  * Send the PlayTone command to an RCX.
  *
  * \param freq The frequency of the tone to play.
@@ -12380,7 +12438,7 @@ inline void MSRCXPlayTone(const unsigned int freq, const byte duration);
  */
 
 /**
- * MSRCXPlayToneVar function
+ * MSRCXPlayToneVar function.
  * Send the PlayToneVar command to an RCX.
  *
  * \param varnum The variable containing the tone frequency to play.
@@ -12392,7 +12450,7 @@ inline void MSRCXPlayToneVar(const byte varnum, const byte duration);
  */
 
 /**
- * MSRCXRemote function
+ * MSRCXRemote function.
  * Send the Remote command to an RCX.
  *
  * \param cmd The RCX IR remote command to send. See \ref RCXRemoteConstants.
@@ -12403,7 +12461,7 @@ inline void MSRCXRemote(unsigned int cmd);
  */
 
 /**
- * MSRCXReset function
+ * MSRCXReset function.
  * Send the Reset command to an RCX.
  */
 inline void MSRCXReset(void);
@@ -12412,7 +12470,7 @@ inline void MSRCXReset(void);
  */
 
 /**
- * MSRCXRev function
+ * MSRCXRev function.
  * Send commands to an RCX to set the specified outputs to the reverse direction.
  *
  * \param outputs The RCX output(s) to reverse direction. See \ref RCXOutputConstants.
@@ -12423,7 +12481,7 @@ inline void MSRCXRev(const byte outputs);
  */
 
 /**
- * MSRCXSelectDisplay function
+ * MSRCXSelectDisplay function.
  * Send the SelectDisplay command to an RCX.
  *
  * \param src The RCX source.  See \ref RCXSourceConstants.
@@ -12435,7 +12493,7 @@ inline void MSRCXSelectDisplay(const byte src, const unsigned int value);
  */
 
 /**
- * MSRCXSelectProgram function
+ * MSRCXSelectProgram function.
  * Send the SelectProgram command to an RCX.
  *
  * \param prog The program number to select.
@@ -12446,7 +12504,7 @@ inline void MSRCXSelectProgram(const byte prog);
  */
 
 /**
- * MSRCXSendSerial function
+ * MSRCXSendSerial function.
  * Send the SendSerial command to an RCX.
  *
  * \param first The first byte address.
@@ -12458,7 +12516,7 @@ inline void MSRCXSendSerial(const byte first, const byte count);
  */
 
 /**
- * MSRCXSet function
+ * MSRCXSet function.
  * Send the Set command to an RCX.
  *
  * \param dstsrc The RCX destination source.  See \ref RCXSourceConstants.
@@ -12472,7 +12530,7 @@ inline void MSRCXSet(const byte dstsrc, const byte dstval, const byte src, unsig
  */
 
 /**
- * MSRCXSetDirection function
+ * MSRCXSetDirection function.
  * Send the SetDirection command to an RCX to configure the direction of the specified outputs.
  *
  * \param outputs The RCX output(s) to set direction. See \ref RCXOutputConstants.
@@ -12484,7 +12542,7 @@ inline void MSRCXSetDirection(const byte outputs, const byte dir);
  */
 
 /**
- * MSRCXSetEvent function
+ * MSRCXSetEvent function.
  * Send the SetEvent command to an RCX.
  *
  * \param evt The event number to set.
@@ -12497,7 +12555,7 @@ inline void MSRCXSetEvent(const byte evt, const byte src, const byte type);
  */
 
 /**
- * MSRCXSetGlobalDirection function
+ * MSRCXSetGlobalDirection function.
  * Send the SetGlobalDirection command to an RCX.
  *
  * \param outputs The RCX output(s) to set global direction. See \ref RCXOutputConstants.
@@ -12509,7 +12567,7 @@ inline void MSRCXSetGlobalDirection(const byte outputs, const byte dir);
  */
 
 /**
- * MSRCXSetGlobalOutput function
+ * MSRCXSetGlobalOutput function.
  * Send the SetGlobalOutput command to an RCX.
  *
  * \param outputs The RCX output(s) to set global mode. See \ref RCXOutputConstants.
@@ -12521,7 +12579,7 @@ inline void MSRCXSetGlobalOutput(const byte outputs, const byte mode);
  */
 
 /**
- * MSRCXSetMaxPower function
+ * MSRCXSetMaxPower function.
  * Send the SetMaxPower command to an RCX.
  *
  * \param outputs The RCX output(s) to set max power. See \ref RCXOutputConstants.
@@ -12534,7 +12592,7 @@ inline void MSRCXSetMaxPower(const byte outputs, const byte pwrsrc, const byte p
  */
 
 /**
- * MSRCXSetMessage function
+ * MSRCXSetMessage function.
  * Send the SetMessage command to an RCX.
  *
  * \param msg The numeric message to send.
@@ -12545,7 +12603,7 @@ inline void MSRCXSetMessage(const byte msg);
  */
 
 /**
- * MSRCXSetOutput function
+ * MSRCXSetOutput function.
  * Send the SetOutput command to an RCX to configure the mode of the specified outputs
  *
  * \param outputs The RCX output(s) to set mode. See \ref RCXOutputConstants.
@@ -12557,7 +12615,7 @@ inline void MSRCXSetOutput(const byte outputs, const byte mode);
  */
 
 /**
- * MSRCXSetPower function
+ * MSRCXSetPower function.
  * Send the SetPower command to an RCX to configure the power level of the specified outputs.
  *
  * \param outputs The RCX output(s) to set power. See \ref RCXOutputConstants.
@@ -12570,7 +12628,7 @@ inline void MSRCXSetPower(const byte outputs, const byte pwrsrc, const byte pwrv
  */
 
 /**
- * MSRCXSetPriority function
+ * MSRCXSetPriority function.
  * Send the SetPriority command to an RCX.
  *
  * \param p The new task priority.
@@ -12581,7 +12639,7 @@ inline void MSRCXSetPriority(const byte p);
  */
 
 /**
- * MSRCXSetSensorMode function
+ * MSRCXSetSensorMode function.
  * Send the SetSensorMode command to an RCX.
  *
  * \param port The RCX sensor port.
@@ -12593,7 +12651,7 @@ inline void MSRCXSetSensorMode(const byte port, const byte mode);
  */
 
 /**
- * MSRCXSetSensorType function
+ * MSRCXSetSensorType function.
  * Send the SetSensorType command to an RCX.
  *
  * \param port The RCX sensor port.
@@ -12605,7 +12663,7 @@ inline void MSRCXSetSensorType(const byte port, const byte type);
  */
 
 /**
- * MSRCXSetSleepTime function
+ * MSRCXSetSleepTime function.
  * Send the SetSleepTime command to an RCX.
  *
  * \param t The new sleep time value.
@@ -12616,7 +12674,7 @@ inline void MSRCXSetSleepTime(const byte t);
  */
 
 /**
- * MSRCXSetTxPower function
+ * MSRCXSetTxPower function.
  * Send the SetTxPower command to an RCX.
  *
  * \param pwr The IR transmit power level.
@@ -12627,7 +12685,7 @@ inline void MSRCXSetTxPower(const byte pwr);
  */
 
 /**
- * MSRCXSetUserDisplay function
+ * MSRCXSetUserDisplay function.
  * Send the SetUserDisplay command to an RCX.
  *
  * \param src The RCX source.  See \ref RCXSourceConstants.
@@ -12640,7 +12698,7 @@ inline void MSRCXSetUserDisplay(const byte src, const unsigned int value, const 
  */
 
 /**
- * MSRCXSetVar function
+ * MSRCXSetVar function.
  * Send the SetVar command to an RCX.
  *
  * \param varnum The variable number to change.
@@ -12653,7 +12711,7 @@ inline void MSRCXSetVar(const byte varnum, const byte src, const unsigned int va
  */
 
 /**
- * MSRCXSetWatch function
+ * MSRCXSetWatch function.
  * Send the SetWatch command to an RCX.
  *
  * \param hours The new watch time hours value.
@@ -12665,7 +12723,7 @@ inline void MSRCXSetWatch(const byte hours, const byte minutes);
  */
 
 /**
- * MSRCXSgnVar function
+ * MSRCXSgnVar function.
  * Send the SgnVar command to an RCX.
  *
  * \param varnum The variable number to change.
@@ -12678,7 +12736,7 @@ inline void MSRCXSgnVar(const byte varnum, const byte src, const unsigned int va
  */
 
 /**
- * MSRCXStartTask function
+ * MSRCXStartTask function.
  * Send the StartTask command to an RCX.
  *
  * \param t The task number to start.
@@ -12689,7 +12747,7 @@ inline void MSRCXStartTask(const byte t);
  */
 
 /**
- * MSRCXStopAllTasks function
+ * MSRCXStopAllTasks function.
  * Send the StopAllTasks command to an RCX.
  */
 inline void MSRCXStopAllTasks(void);
@@ -12698,7 +12756,7 @@ inline void MSRCXStopAllTasks(void);
  */
 
 /**
- * MSRCXStopTask function
+ * MSRCXStopTask function.
  * Send the StopTask command to an RCX.
  *
  * \param t The task number to stop.
@@ -12709,7 +12767,7 @@ inline void MSRCXStopTask(const byte t);
  */
 
 /**
- * MSRCXSubVar function
+ * MSRCXSubVar function.
  * Send the SubVar command to an RCX.
  *
  * \param varnum The variable number to change.
@@ -12722,7 +12780,7 @@ inline void MSRCXSubVar(const byte varnum, const byte src, const unsigned int va
  */
 
 /**
- * MSRCXSumVar function
+ * MSRCXSumVar function.
  * Send the SumVar command to an RCX.
  *
  * \param varnum The variable number to change.
@@ -12735,7 +12793,7 @@ inline void MSRCXSumVar(const byte varnum, const byte src, const unsigned int va
  */
 
 /**
- * MSRCXToggle function
+ * MSRCXToggle function.
  * Send commands to an RCX to toggle the direction of the specified outputs.
  *
  * \param outputs The RCX output(s) to toggle. See \ref RCXOutputConstants.
@@ -12746,7 +12804,7 @@ inline void MSRCXToggle(const byte outputs);
  */
 
 /**
- * MSRCXUnlock function
+ * MSRCXUnlock function.
  * Send the Unlock command to an RCX.
  */
 inline void MSRCXUnlock(void);
@@ -12755,7 +12813,7 @@ inline void MSRCXUnlock(void);
  */
 
 /**
- * MSRCXUnmuteSound function
+ * MSRCXUnmuteSound function.
  * Send the UnmuteSound command to an RCX.
  */
 inline void MSRCXUnmuteSound(void);
@@ -12764,7 +12822,7 @@ inline void MSRCXUnmuteSound(void);
  */
 
 /**
- * MSScoutCalibrateSensor function
+ * MSScoutCalibrateSensor function.
  * Send the CalibrateSensor command to a Scout.
  */
 inline void MSScoutCalibrateSensor(void);
@@ -12773,7 +12831,7 @@ inline void MSScoutCalibrateSensor(void);
  */
 
 /**
- * MSScoutMuteSound function
+ * MSScoutMuteSound function.
  * Send the MuteSound command to a Scout.
  */
 inline void MSScoutMuteSound(void);
@@ -12782,7 +12840,7 @@ inline void MSScoutMuteSound(void);
  */
 
 /**
- * MSScoutSelectSounds function
+ * MSScoutSelectSounds function.
  * Send the SelectSounds command to a Scout.
  *
  * \param grp The Scout sound group to select.
@@ -12793,7 +12851,7 @@ inline void MSScoutSelectSounds(const byte grp);
  */
 
 /**
- * MSScoutSendVLL function
+ * MSScoutSendVLL function.
  * Send the SendVLL command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -12805,7 +12863,7 @@ inline void MSScoutSendVLL(const byte src, const unsigned int value);
  */
 
 /**
- * MSScoutSetCounterLimit function
+ * MSScoutSetCounterLimit function.
  * Send the SetCounterLimit command to a Scout.
  *
  * \param ctr The counter for which to set the limit.
@@ -12818,7 +12876,7 @@ inline void MSScoutSetCounterLimit(const byte ctr, const byte src, const unsigne
  */
 
 /**
- * MSScoutSetEventFeedback function
+ * MSScoutSetEventFeedback function.
  * Send the SetEventFeedback command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -12830,7 +12888,7 @@ inline void MSScoutSetEventFeedback(const byte src, const unsigned int value);
  */
 
 /**
- * MSScoutSetLight function
+ * MSScoutSetLight function.
  * Send the SetLight command to a Scout.
  *
  * \param x Set the light on or off using this value. See \ref ScoutLightConstants.
@@ -12841,7 +12899,7 @@ inline void MSScoutSetLight(const byte x);
  */
 
 /**
- * MSScoutSetScoutMode function
+ * MSScoutSetScoutMode function.
  * Send the SetScoutMode command to a Scout.
  *
  * \param mode Set the scout mode. See \ref ScoutModeConstants.
@@ -12852,7 +12910,7 @@ inline void MSScoutSetScoutMode(const byte mode);
  */
 
 /**
- * MSScoutSetScoutRules function
+ * MSScoutSetScoutRules function.
  * Send the SetScoutRules command to a Scout.
  *
  * \param m Scout motion rule. See \ref ScoutMotionRuleConstants.
@@ -12867,7 +12925,7 @@ inline void MSScoutSetScoutRules(const byte m, const byte t, const byte l, const
  */
 
 /**
- * MSScoutSetSensorClickTime function
+ * MSScoutSetSensorClickTime function.
  * Send the SetSensorClickTime command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -12879,7 +12937,7 @@ inline void MSScoutSetSensorClickTime(const byte src, const unsigned int value);
  */
 
 /**
- * MSScoutSetSensorHysteresis function
+ * MSScoutSetSensorHysteresis function.
  * Send the SetSensorHysteresis command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -12891,7 +12949,7 @@ inline void MSScoutSetSensorHysteresis(const byte src, const unsigned int value)
  */
 
 /**
- * MSScoutSetSensorLowerLimit function
+ * MSScoutSetSensorLowerLimit function.
  * Send the SetSensorLowerLimit command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -12903,7 +12961,7 @@ inline void MSScoutSetSensorLowerLimit(const byte src, const unsigned int value)
  */
 
 /**
- * MSScoutSetSensorUpperLimit function
+ * MSScoutSetSensorUpperLimit function.
  * Send the SetSensorUpperLimit command to a Scout.
  *
  * \param src The Scout source.  See \ref RCXSourceConstants.
@@ -12915,7 +12973,7 @@ inline void MSScoutSetSensorUpperLimit(const byte src, const unsigned int value)
  */
 
 /**
- * MSScoutSetTimerLimit function
+ * MSScoutSetTimerLimit function.
  * Send the SetTimerLimit command to a Scout.
  *
  * \param tmr The timer for which to set a limit.
@@ -12928,7 +12986,7 @@ inline void MSScoutSetTimerLimit(const byte tmr, const byte src, const unsigned 
  */
 
 /**
- * MSScoutUnmuteSound function
+ * MSScoutUnmuteSound function.
  * Send the UnmuteSound command to a Scout.
  */
 inline void MSScoutUnmuteSound(void);
