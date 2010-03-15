@@ -207,9 +207,9 @@
  */
 #if __FIRMWARE_VERSION > 107
 /**
- * ColorSensorReadType structure.
+ * Parameters for the ColorSensorRead system call.
  * This structure is used when calling the \ref SysColorSensorRead system call function.
- * Choose the sensor port (S1, S2, S3, or S4) and after calling the function
+ * Choose the sensor port (\ref InPorts) and after calling the function
  * read the sensor values from the ColorValue field or the raw, normalized, or
  * scaled value arrays.
  * \sa SysColorSensorRead()
@@ -1893,7 +1893,7 @@ inline byte MotorPwnFreq();
  * @{
  */
 /**
- * LocationType structure.
+ * A point on the NXT LCD screen.
  * This structure is by other system call structures to specify an X, Y
  * LCD screen coordinate.
  * \sa DrawTextType, DrawPointType, DrawLineType, DrawCircleType, DrawRectType,
@@ -1902,11 +1902,12 @@ inline byte MotorPwnFreq();
  */
 struct LocationType {
   int X;  /*!< The X coordinate. Valid range is from 0 to 99 inclusive.  */
-  int Y;  /*!< The Y coordinate. Valid range is from 0 to 63 inclusive. For text drawing this value must be a multiple of 8. */
+  int Y;  /*!< The Y coordinate. Valid range is from 0 to 63 inclusive.
+               For text drawing this value must be a multiple of 8. */
 };
 
 /**
- * SizeType structure.
+ * Width and height dimensions for the DrawRect system call.
  * This structure is by the \ref DrawRectType to specify a width and
  * height for a rectangle.
  * \sa DrawRectType
@@ -1917,7 +1918,7 @@ struct SizeType {
 };
 
 /**
- * DrawTextType structure.
+ * Parameters for the DrawText system call.
  * This structure is used when calling the \ref SysDrawText system call function.
  * It lets you specify the text to draw, the LCD line and horizontal position using the
  * \ref LocationType structure member, as well as drawing options defined
@@ -1933,9 +1934,12 @@ struct DrawTextType {
 };
 
 /**
- * DrawPointType structure.
+ * Parameters for the DrawPoint system call.
  * This structure is used when calling the \ref SysDrawPoint system call
  * function.
+ * It lets you specify the pixel to draw using the
+ * \ref LocationType structure member, as well as drawing options defined
+ * in the \ref DisplayDrawOptionConstants group.
  * \sa SysDrawPoint()
  */
 struct DrawPointType {
@@ -1946,9 +1950,12 @@ struct DrawPointType {
 };
 
 /**
- * DrawLineType structure.
+ * Parameters for the DrawLine system call.
  * This structure is used when calling the \ref SysDrawLine system call
  * function.
+ * It lets you specify the end points of the line to draw using two
+ * \ref LocationType structure member, as well as drawing options defined
+ * in the \ref DisplayDrawOptionConstants group.
  * \sa SysDrawLine()
  */
 struct DrawLineType {
@@ -1960,9 +1967,12 @@ struct DrawLineType {
 };
 
 /**
- * DrawCircleType structure.
+ * Parameters for the DrawCircle system call.
  * This structure is used when calling the \ref SysDrawCircle system call
  * function.
+ * It lets you specify the center of the circle to draw using the
+ * \ref LocationType structure member, the radius, as well as drawing options defined
+ * in the \ref DisplayDrawOptionConstants group.
  * \sa SysDrawCircle()
  */
 struct DrawCircleType {
@@ -1974,9 +1984,12 @@ struct DrawCircleType {
 };
 
 /**
- * DrawRectType structure.
+ * Parameters for the DrawRect system call.
  * This structure is used when calling the \ref SysDrawRect system call
  * function.
+ * It lets you specify the corner of the rectangle using the \ref LocationType structure member,
+ * the width and height of the rectangle using the \ref SizeType structure member,
+ * as well as drawing options defined in the \ref DisplayDrawOptionConstants group.
  * \sa SysDrawRect()
  */
 struct DrawRectType {
@@ -1988,9 +2001,13 @@ struct DrawRectType {
 };
 
 /**
- * DrawGraphicType structure.
+ * Parameters for the DrawGraphic system call.
  * This structure is used when calling the \ref SysDrawGraphic system call
  * function.
+ * It lets you specify the screen location at which to draw the image using the
+ * \ref LocationType structure member, the filename of the graphic image, the
+ * image parameters (if needed), as well as drawing options defined
+ * in the \ref DisplayDrawOptionConstants group.
  * \sa SysDrawGraphic()
  */
 struct DrawGraphicType {
@@ -2004,7 +2021,7 @@ struct DrawGraphicType {
 };
 
 /**
- * SetScreenModeType structure.
+ * Parameters for the SetScreenMode system call.
  * This structure is used when calling the \ref SysSetScreenMode system call
  * function.
  * \sa SysSetScreenMode()
@@ -2024,7 +2041,7 @@ struct SetScreenModeType {
 
 #ifdef __ENHANCED_FIRMWARE
 /**
- * DisplayExecuteFunctionType structure.
+ * Parameters for the DisplayExecuteFunction system call.
  * This structure is used when calling the \ref SysDisplayExecuteFunction
  * system call function.
  *
@@ -2067,9 +2084,13 @@ struct DisplayExecuteFunctionType {
 
 #if __FIRMWARE_VERSION > 107
 /**
- * DrawGraphicArrayType structure.
+ * Parameters for the DrawGraphicArray system call.
  * This structure is used when calling the \ref SysDrawGraphicArray system call
  * function.
+ * It lets you specify the screen location at which to draw the image using the
+ * \ref LocationType structure member, the graphic image data array, the
+ * image parameters (if needed), as well as drawing options defined
+ * in the \ref DisplayDrawOptionConstants group.
  * \sa SysDrawGraphicArray()
  */
 struct DrawGraphicArrayType {
@@ -2081,9 +2102,12 @@ struct DrawGraphicArrayType {
 };
 
 /**
- * DrawPolygonType structure.
+ * Parameters for the DrawPolygon system call.
  * This structure is used when calling the \ref SysDrawPolygon system call
  * function.
+ * It lets you specify the points of the polygon to draw using the
+ * \ref LocationType array structure member, as well as drawing options defined
+ * in the \ref DisplayDrawOptionConstants group.
  * \sa SysDrawPolygon()
  */
 struct DrawPolygonType {
@@ -2093,9 +2117,12 @@ struct DrawPolygonType {
 };
 
 /**
- * DrawEllipseType structure.
+ * Parameters for the DrawEllipse system call.
  * This structure is used when calling the \ref SysDrawEllipse system call
  * function.
+ * It lets you specify the center of the ellipse using the
+ * \ref LocationType structure member, the x and y axis radii,
+ * as well as drawing options defined in the \ref DisplayDrawOptionConstants group.
  * \sa SysDrawEllipse()
  */
 struct DrawEllipseType {
@@ -2107,7 +2134,7 @@ struct DrawEllipseType {
 };
 
 /**
- * DrawFontType structure.
+ * Parameters for the DrawFont system call.
  * This structure is used when calling the \ref SysDrawFont system call function.
  * It lets you specify the text to draw, the LCD line and horizontal position using the
  * \ref LocationType structure member, as well as drawing options defined
@@ -2633,7 +2660,8 @@ inline void SysDrawLine(DrawLineType & args);
  */
 inline void SysDrawCircle(DrawCircleType & args);
 /** \example ex_sysdrawcircle.nxc
- * This is an example of how to use the \ref SysDrawCircle function along with the \ref DrawCircleType structure.
+ * This is an example of how to use the \ref SysDrawCircle function along with
+ * the \ref DrawCircleType structure.
  */
 
 /**
@@ -2735,7 +2763,8 @@ inline void SysDrawGraphicArray(DrawGraphicArrayType & args);
  */
 inline void SysDrawPolygon(DrawPolygonType & args);
 /** \example ex_drawpoly.nxc
- * This is an example of how to use the \ref SysDrawPolygon function along with the \ref DrawPolygonType structure.
+ * This is an example of how to use the \ref SysDrawPolygon function along
+ * with the \ref DrawPolygonType structure.
  */
 
 /**
@@ -2749,13 +2778,14 @@ inline void SysDrawPolygon(DrawPolygonType & args);
  */
 inline void SysDrawEllipse(DrawEllipseType & args);
 /** \example ex_drawellipse.nxc
- * This is an example of how to use the \ref SysDrawEllipse function along with the \ref DrawEllipseType structure.
+ * This is an example of how to use the \ref SysDrawEllipse function along
+ * with the \ref DrawEllipseType structure.
  */
 
 /**
  * Draw text using a custom font.
- * This function lets you draw text on the NXT LCD using a custom font with parameters you pass
- * in via the \ref DrawFontType structure.
+ * This function lets you draw text on the NXT LCD using a custom font
+ * with parameters you pass in via the \ref DrawFontType structure.
  *
  * \param args The DrawFontType structure containing the drawing parameters.
  *
@@ -2763,7 +2793,8 @@ inline void SysDrawEllipse(DrawEllipseType & args);
  */
 inline void SysDrawFont(DrawFontType & args);
 /** \example ex_drawfont.nxc
- * This is an example of how to use the \ref SysDrawFont function along with the \ref DrawFontType structure.
+ * This is an example of how to use the \ref SysDrawFont function along
+ * with the \ref DrawFontType structure.
  */
 #endif
 #endif
@@ -2938,7 +2969,7 @@ inline void SetDisplayContrast(byte contrast) { asm { __setDisplayContrast(contr
  * @{
  */
 /**
- * SoundPlayFileType structure.
+ * Parameters for the SoundPlayFile system call.
  * This structure is used when calling the \ref SysSoundPlayFile system call
  * function.
  * \sa SysSoundPlayFile()
@@ -2951,7 +2982,7 @@ struct SoundPlayFileType {
 };
 
 /**
- * SoundPlayToneType structure.
+ * Parameters for the SoundPlayTone system call.
  * This structure is used when calling the \ref SysSoundPlayTone system call
  * function.
  * \sa SysSoundPlayTone()
@@ -2965,7 +2996,7 @@ struct SoundPlayToneType {
 };
 
 /**
- * SoundGetStateType structure.
+ * Parameters for the SoundGetState system call.
  * This structure is used when calling the \ref SysSoundGetState system call
  * function.
  * \sa SysSoundGetState()
@@ -2976,7 +3007,7 @@ struct SoundGetStateType {
 };
 
 /**
- * SoundSetStateType structure.
+ * Parameters for the SoundSetState system call.
  * This structure is used when calling the \ref SysSoundSetState system call
  * function.
  * \sa SysSoundSetState()
@@ -3357,7 +3388,7 @@ inline void SysSoundSetState(SoundSetStateType & args);
  * @{
  */
 /**
- * CommLSWriteType structure.
+ * Parameters for the CommLSWrite system call.
  * This structure is used when calling the \ref SysCommLSWrite system call
  * function.
  * \sa SysCommLSWrite()
@@ -3373,7 +3404,7 @@ struct CommLSWriteType {
 };
 
 /**
- * CommLSReadType structure.
+ * Parameters for the CommLSRead system call.
  * This structure is used when calling the \ref SysCommLSRead system call
  * function.
  * \sa SysCommLSRead()
@@ -3389,7 +3420,7 @@ struct CommLSReadType {
 };
 
 /**
- * CommLSCheckStatusType structure.
+ * Parameters for the CommLSCheckStatus system call.
  * This structure is used when calling the \ref SysCommLSCheckStatus system
  * call function.
  * \sa SysCommLSCheckStatus()
@@ -3405,7 +3436,7 @@ struct CommLSCheckStatusType {
 
 #ifdef __ENHANCED_FIRMWARE
 /**
- * CommLSWriteExType structure.
+ * Parameters for the CommLSWriteEx system call.
  * This structure is used when calling the \ref SysCommLSWriteEx system call
  * function.
  * \sa SysCommLSWriteEx()
@@ -4365,7 +4396,7 @@ inline void RebootInFirmwareMode();
  */
 
 /**
- * GetStartTickType structure.
+ * Parameters for the GetStartTick system call.
  * This structure is used when calling the \ref SysGetStartTick system call
  * function.
  * \sa SysGetStartTick()
@@ -4375,7 +4406,7 @@ struct GetStartTickType {
 };
 
 /**
- * KeepAliveType structure.
+ * Parameters for the KeepAlive system call.
  * This structure is used when calling the \ref SysKeepAlive system call
  * function.
  * \sa SysKeepAlive()
@@ -4385,7 +4416,7 @@ struct KeepAliveType {
 };
 
 /**
- * IOMapReadType structure.
+ * Parameters for the IOMapRead system call.
  * This structure is used when calling the \ref SysIOMapRead system call
  * function.
  * \sa SysIOMapRead()
@@ -4399,7 +4430,7 @@ struct IOMapReadType {
 };
 
 /**
- * IOMapWriteType structure.
+ * Parameters for the IOMapWrite system call.
  * This structure is used when calling the \ref SysIOMapWrite system call
  * function.
  * \sa SysIOMapWrite()
@@ -4413,7 +4444,7 @@ struct IOMapWriteType {
 
 #ifdef __ENHANCED_FIRMWARE
 /**
- * IOMapReadByIDType structure.
+ * Parameters for the IOMapReadByID system call.
  * This structure is used when calling the \ref SysIOMapReadByID system call
  * function.
  * \sa SysIOMapReadByID()
@@ -4427,7 +4458,7 @@ struct IOMapReadByIDType {
 };
 
 /**
- * IOMapWriteByIDType structure.
+ * Parameters for the IOMapWriteByID system call.
  * This structure is used when calling the \ref SysIOMapWriteByID system call
  * function.
  * \sa SysIOMapWriteByID()
@@ -4444,7 +4475,7 @@ struct IOMapWriteByIDType {
 #if __FIRMWARE_VERSION > 107
 
 /**
- * DatalogWriteType structure.
+ * Parameters for the DatalogWrite system call.
  * This structure is used when calling the \ref SysDatalogWrite system call
  * function.
  * \sa SysDatalogWrite()
@@ -4455,7 +4486,7 @@ struct DatalogWriteType {
 };
 
 /**
- * DatalogGetTimesType structure.
+ * Parameters for the DatalogGetTimes system call.
  * This structure is used when calling the \ref SysDatalogGetTimes system call
  * function.
  * \sa SysDatalogGetTimes()
@@ -4466,7 +4497,7 @@ struct DatalogGetTimesType {
 };
 
 /**
- * ReadSemDataType structure.
+ * Parameters for the ReadSemData system call.
  * This structure is used when calling the \ref SysReadSemData system call
  * function.
  * \sa SysReadSemData()
@@ -4477,7 +4508,7 @@ struct ReadSemDataType {
 };
 
 /**
- * WriteSemDataType structure.
+ * Parameters for the WriteSemData system call.
  * This structure is used when calling the \ref SysWriteSemData system call
  * function.
  * \sa SysWriteSemData()
@@ -4490,7 +4521,7 @@ struct WriteSemDataType {
 };
 
 /**
- * UpdateCalibCacheInfoType structure.
+ * Parameters for the UpdateCalibCacheInfo system call.
  * This structure is used when calling the \ref SysUpdateCalibCacheInfo system call
  * function.
  * \sa SysUpdateCalibCacheInfo()
@@ -4503,7 +4534,7 @@ struct UpdateCalibCacheInfoType {
 };
 
 /**
- * ComputeCalibValueType structure.
+ * Parameters for the ComputeCalibValue system call.
  * This structure is used when calling the \ref SysComputeCalibValue system call
  * function.
  * \sa SysComputeCalibValue()
@@ -5151,7 +5182,8 @@ inline variant ArrayMax(const variant & src[], unsigned int idx, unsigned int le
 /**
  * Sort the elements in a numeric array.
  * This function sorts all or a subset of the elements in the
- * numeric src array and saves the results in the numeric dest array.
+ * numeric src array in ascending order and saves the results in the
+ * numeric dest array.
  *
  * \param dest The destination numeric array.
  * \param src The source numeric array.
@@ -5232,7 +5264,7 @@ inline void ArrayOp(const byte op, variant & dest, const variant & src[], unsign
  * @{
  */
 /**
- * MessageWriteType structure.
+ * Parameters for the MessageWrite system call.
  * This structure is used when calling the \ref SysMessageWrite system call
  * function.
  * \sa SysMessageWrite()
@@ -5244,7 +5276,7 @@ struct MessageWriteType {
 };
 
 /**
- * MessageReadType structure.
+ * Parameters for the MessageRead system call.
  * This structure is used when calling the \ref SysMessageRead system call
  * function.
  * \sa SysMessageRead()
@@ -5257,7 +5289,7 @@ struct MessageReadType {
 };
 
 /**
- * CommBTCheckStatusType structure.
+ * Parameters for the CommBTCheckStatus system call.
  * This structure is used when calling the \ref SysCommBTCheckStatus system
  * call function.
  * \sa SysCommBTCheckStatus()
@@ -5270,7 +5302,7 @@ struct CommBTCheckStatusType {
 };
 
 /**
- * CommBTWriteType structure.
+ * Parameters for the CommBTWrite system call.
  * This structure is used when calling the \ref SysCommBTWrite system call
  * function.
  * \sa SysCommBTWrite()
@@ -5285,7 +5317,7 @@ struct CommBTWriteType {
 
 #ifdef __ENHANCED_FIRMWARE
 /**
- * CommExecuteFunctionType structure.
+ * Parameters for the CommExecuteFunction system call.
  * This structure is used when calling the \ref SysCommExecuteFunction system
  * call function.
  *
@@ -5349,7 +5381,7 @@ struct CommExecuteFunctionType {
 };
 
 /**
- * CommHSControlType structure.
+ * Parameters for the CommHSControl system call.
  * This structure is used when calling the \ref SysCommHSControl system call
  * function.
  * \sa SysCommHSControl()
@@ -5367,7 +5399,7 @@ struct CommHSControlType {
 };
 
 /**
- * CommHSCheckStatusType structure.
+ * Parameters for the CommHSCheckStatus system call.
  * This structure is used when calling the \ref SysCommHSCheckStatus system call
  * function.
  * \sa SysCommHSCheckStatus()
@@ -5378,7 +5410,7 @@ struct CommHSCheckStatusType {
 };
 
 /**
- * CommHSReadWriteType structure.
+ * Parameters for the CommHSReadWrite system call.
  * This structure is used when calling the \ref SysCommHSRead and
  * \ref SysCommHSWrite system call functions.
  * \sa SysCommHSRead(), SysCommHSWrite()
@@ -5392,7 +5424,7 @@ struct CommHSReadWriteType {
 
 #if __FIRMWARE_VERSION > 107
 /**
- * CommBTOnOffType structure.
+ * Parameters for the CommBTOnOff system call.
  * This structure is used when calling the \ref SysCommBTOnOff system call
  * function.
  * \sa SysCommBTOnOff()
@@ -5407,7 +5439,7 @@ struct CommBTOnOffType {
 };
 
 /**
- * CommBTConnectionType structure.
+ * Parameters for the CommBTConnection system call.
  * This structure is used when calling the \ref SysCommBTConnection system call
  * function.
  * \sa SysCommBTConnection()
@@ -7254,7 +7286,7 @@ inline void SetBTDeviceNameCount(byte count);
  * @{
  */
 /**
- * ReadButtonType structure.
+ * Parameters for the ReadButton system call.
  * This structure is used when calling the \ref SysReadButton system call
  * function.
  * \sa SysReadButton()
@@ -7524,7 +7556,7 @@ inline void SysReadButton(ReadButtonType & args);
 
 #if __FIRMWARE_VERSION > 107
 /**
- * SetSleepTimeoutType structure.
+ * Parameters for the SetSleepTimeout system call.
  * This structure is used when calling the \ref SysSetSleepTimeout system call
  * function.
  * \sa SysSetSleepTimeout()
@@ -7959,7 +7991,7 @@ inline void SysSetSleepTimeout(SetSleepTimeoutType & args);
  * @{
  */
 /**
- * FileOpenType structure.
+ * Parameters for the FileOpen system call.
  * This structure is used when calling the \ref SysFileOpenAppend, \ref
  * SysFileOpenRead, \ref SysFileOpenWrite, \ref SysFileOpenReadLinear,
  * \ref SysFileOpenWriteLinear and \ref SysFileOpenWriteNonLinear system call
@@ -7984,7 +8016,7 @@ struct FileOpenType {
 };
 
 /**
- * FileReadWriteType structure.
+ * Parameters for the FileReadWrite system call.
  * This structure is used when calling the \ref SysFileRead and \ref SysFileWrite
  * system call functions.
  * \sa SysFileRead() and SysFileWrite()
@@ -8000,7 +8032,7 @@ struct FileReadWriteType {
 };
 
 /**
- * FileCloseType structure.
+ * Parameters for the FileClose system call.
  * This structure is used when calling the \ref SysFileClose system call function.
  * \sa SysFileClose()
  */
@@ -8011,7 +8043,7 @@ struct FileCloseType {
 };
 
 /**
- * FileResolveHandleType structure.
+ * Parameters for the FileResolveHandle system call.
  * This structure is used when calling the \ref SysFileResolveHandle system
  * call function.
  * \sa SysFileResolveHandle()
@@ -8025,7 +8057,7 @@ struct FileResolveHandleType {
 };
 
 /**
- * FileRenameType structure.
+ * Parameters for the FileRename system call.
  * This structure is used when calling the \ref SysFileRename system call
  * function.
  * \sa SysFileRename()
@@ -8038,7 +8070,7 @@ struct FileRenameType {
 };
 
 /**
- * FileDeleteType structure.
+ * Parameters for the FileDelete system call.
  * This structure is used when calling the \ref SysFileDelete system call
  * function.
  * \sa SysFileDelete()
@@ -8051,7 +8083,7 @@ struct FileDeleteType {
 
 #ifdef __ENHANCED_FIRMWARE
 /**
- * LoaderExecuteFunctionType structure.
+ * Parameters for the LoaderExecuteFunction system call.
  * This structure is used when calling the \ref SysLoaderExecuteFunction
  * system call function.
  *
@@ -8111,7 +8143,7 @@ struct LoaderExecuteFunctionType {
 };
 
 /**
- * FileFindType structure.
+ * Parameters for the FileFind system call.
  * This structure is used when calling the \ref SysFileFindFirst and \ref
  * SysFileFindNext system call functions.
  * \sa SysFileFindFirst() and SysFileFindNext()
@@ -8128,7 +8160,7 @@ struct FileFindType {
 
 #if __FIRMWARE_VERSION > 107
 /**
- * FileSeekType structure.
+ * Parameters for the FileSeek system call.
  * This structure is used when calling the \ref SysFileSeek system call function.
  * \sa SysFileSeek()
  */
@@ -8141,7 +8173,7 @@ struct FileSeekType {
 };
 
 /**
- * FileResizeType structure.
+ * Parameters for the FileResize system call.
  * This structure is used when calling the \ref SysFileResize system call function.
  * \sa SysFileResize()
  */
@@ -8156,7 +8188,7 @@ struct FileResizeType {
 #endif
 #if __FIRMWARE_VERSION > 107
 /**
- * ListFilesType structure.
+ * Parameters for the ListFiles system call.
  * This structure is used when calling the \ref SysListFiles system call function.
  * \sa SysListFiles()
  */
@@ -14036,7 +14068,7 @@ inline byte bcd2dec(byte bcd) { asm { __bcd2dec(bcd, __RETVAL__) } }
  */
 
 /**
- * RandomNumberType structure.
+ * Parameters for the RandomNumber system call.
  * This structure is used when calling the \ref SysRandomNumber system call
  * function.
  * \sa SysRandomNumber()
@@ -14508,6 +14540,7 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
  */
 
 /**
+ * Output type of the div function.
  * div_t structure.
  * Structure used to represent the value of an integral division performed
  * by div. It has two members of the same type, defined in either order as:
@@ -14524,7 +14557,7 @@ struct div_t {
 };
 
 /**
- * ldiv_t structure.
+ * Output type of the ldiv function.
  * Structure used to represent the value of an integral division performed
  * by ldiv. It has two members of the same type, defined in either order as:
  * long quot; long rem;.
