@@ -14534,6 +14534,11 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @defgroup cstdlibAPI cstdlib API
+ * Standard C cstdlib API functions and types.
+ * @{
+ */
+
 /** @defgroup cstdlibAPITypes cstdlib API types
  * Standard C cstdlib API types.
  * @{
@@ -14573,11 +14578,6 @@ struct ldiv_t {
 };
 
 /** @} */ // end of cstdlibAPITypes group
-
-/** @defgroup cstdlibAPI cstdlib API
- * Standard C cstdlib API functions and types.
- * @{
- */
 
 #ifdef __DOXYGEN_DOCS
 
