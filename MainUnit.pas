@@ -640,7 +640,6 @@ type
     FResume : boolean;
     fNQCAPIBase : TStringList;
     fNXCAPIBase : TStringList;
-    fUseHTMLHelp: boolean;
 {$IFNDEF FPC}
     procedure WMClose(var Message: TWMClose); message WM_CLOSE;
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
@@ -727,7 +726,6 @@ type
     property MDI : Boolean read fMDI write fMDI;
     property ActiveLine : integer read fActiveLine;
     property GrepDlgExpert : TGrepDlgExpert read fGDE;
-    property UseHTMLHelp : boolean read fUseHTMLHelp write fUseHTMLHelp;
   end;
 
 var
@@ -973,7 +971,6 @@ end;
 
 procedure TMainForm.FormCreate(Sender: TObject);
 begin
-  UseHTMLHelp := False;
   fGE := TGrepExpert.Create;
   fGDE := TGrepDlgExpert.Create;
   fNQCAPIBase := TStringList.Create;

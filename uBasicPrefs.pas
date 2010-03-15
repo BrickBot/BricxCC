@@ -338,6 +338,9 @@ var
   cc_nxc_commands: TStringList;
   cc_nxc_constants: TStringList;
 
+var
+  UseHTMLHelp : boolean;
+
 implementation
 
 uses
@@ -1644,6 +1647,8 @@ initialization
   EnhancedFirmware        := False;
   NXT2Firmware            := False;
   IgnoreSysFiles          := False;
+
+  UseHTMLHelp             := False;
 
 finalization
   CleanupTransferList(fCompXferList);
