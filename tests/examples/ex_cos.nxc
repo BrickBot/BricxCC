@@ -1,1 +1,2 @@
-x = cos(y);
+float x = cos(y); // radians
+

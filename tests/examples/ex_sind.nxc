@@ -1,1 +1,2 @@
-x = sind(theta);
+float x = sind(theta); // degrees
+

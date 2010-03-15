@@ -1,1 +1,2 @@
-x = asin(0.80);
+float x = asin(0.80); // radians
+

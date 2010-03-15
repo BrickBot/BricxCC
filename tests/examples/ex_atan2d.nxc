@@ -1,1 +1,2 @@
-z = atan2(y, x);
+z = atan2d(y, x);
+

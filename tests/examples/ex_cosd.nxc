@@ -1,1 +1,2 @@
-x = cosd(y);
+float x = cosd(y); // degrees
+

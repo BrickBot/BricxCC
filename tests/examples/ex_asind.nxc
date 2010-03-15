@@ -1,1 +1,2 @@
-x = asind(0.80);
+float x = asind(0.80); // degrees
+

@@ -1,1 +1,2 @@
-x = acos(0);
+float x = acos(0); // radians
+

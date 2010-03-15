@@ -1,1 +1,2 @@
-x = acos(0);
+float x = acosd(0);  // degrees
+

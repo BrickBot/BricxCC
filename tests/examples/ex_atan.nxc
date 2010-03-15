@@ -1,1 +1,2 @@
-x = atan(0);
+float x = atan(0); // radians
+

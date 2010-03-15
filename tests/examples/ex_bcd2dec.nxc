@@ -1,1 +1,3 @@
-dec = bcd2dec(0x3a);
+// convert binary-coded decimal byte to decimal.
+byte dec = bcd2dec(0x3a);
+

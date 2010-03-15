@@ -1,1 +1,3 @@
-ArraySubset(myArray, srcArray, 2, 5); copy 5 elements
+// copy 5 elements starting with the 3rd element, i.e., srcArray[2]
+ArraySubset(myArray, srcArray, 2, 5);
+
