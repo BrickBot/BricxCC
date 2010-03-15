@@ -243,7 +243,8 @@ uses
   GX_ProcedureList, SynEditTypes, uLegoSDKUtils, uParseCommon, uRICComp,
   uMiscDefines, uNXTClasses, uNBCInterface, ParamUtils, uNXTConstants,
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants, uEditorUtils,
-  uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals, uBasicPrefs;
+  uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals, uBasicPrefs,
+  uHTMLHelp, uNXCHTMLTopics;
 
 function HelpALink(keyword: string; bNQC : Boolean): Boolean;
 var
@@ -256,12 +257,22 @@ const
    );
 begin
 {$IFNDEF FPC}
-  if FileIsMindScriptOrLASM then
-    Result := Application.HelpCommand(HELP_KEY, Integer(PChar(keyword)))
+  if UseHTMLHelp then
+  begin
+    keyword := LookupHTMLTopic(keyword);
+    Result := Application.HelpCommand(HELP_COMMAND, Integer(PChar(keyword)));
+  end
   else
   begin
-    StrLFmt(MacroStr, SizeOf(MacroStr) - 1, MACRO_ARRAY[bNQC], [keyword]);
-    Result := Application.HelpCommand(HELP_COMMAND, Longint(@MacroStr));
+    if FileIsMindScriptOrLASM then
+    begin
+      Result := Application.HelpCommand(HELP_KEY, Integer(PChar(keyword)));
+    end
+    else
+    begin
+      StrLFmt(MacroStr, SizeOf(MacroStr) - 1, MACRO_ARRAY[bNQC], [keyword]);
+      Result := Application.HelpCommand(HELP_COMMAND, Longint(@MacroStr));
+    end;
   end;
 {$ENDIF}
 end;
@@ -1359,6 +1370,8 @@ begin
   else if FileIsNXC(AEH) then
   begin
     Self.HelpFile := ProgramDir + 'Help\nxc.hlp';
+    if UseHTMLHelp then
+      LoadHTMLTopicMap(uNXCHTMLTopicsData);
   end
   else if FileIsNPG(AEH) then
   begin

@@ -1,9 +1,31 @@
+(*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Initial Developer of this code is John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * All Rights Reserved.
+ *
+ *)
 unit uHTMLHelp;
 
 interface
 
 uses
   Windows;
+
+type
+  TNameValue = record
+    Name : string;
+    Value : string;
+  end;
 
 const
   HH_DISPLAY_TOPIC       =    0;
@@ -40,8 +62,17 @@ procedure WinHelpToHtmlHelp(var ACommand: Word; var AData: Integer);
 function HtmlHelp(hWndCaller: HWND; pszFile: PChar; uCommand: UINT; dwData: DWORD): HWND;
 function HtmlHelpA(hWndCaller: HWND; pszFile: PAnsiChar; uCommand: UINT; dwData: DWORD): HWND;
 function HtmlHelpW(hWndCaller: HWND; pszFile: PWideChar; uCommand: UINT; dwData: DWORD): HWND;
+function LookupHTMLTopic(keyword : string) : string;
+procedure ClearHTMLTopicMap;
+procedure LoadHTMLTopicMap(data : array of TNameValue);
 
 implementation
+
+uses
+  Classes, SysUtils;
+
+var
+  HTMLTopicMap : TStringList;
 
 procedure WinHelpToHtmlHelp(var ACommand: Word; var AData: Integer);
 begin
@@ -56,6 +87,8 @@ begin
     HELP_CONTEXTPOPUP:
       ACommand := HH_HELP_CONTEXT;
     HELP_FINDER:
+      ACommand := HH_DISPLAY_TOPIC;
+    HELP_COMMAND:
       ACommand := HH_DISPLAY_TOPIC;
     HELP_KEY:
       ACommand := HH_DISPLAY_INDEX;
@@ -118,11 +151,69 @@ begin
   end;
 end;
 
+type
+  TStringObj = class
+  public
+    Value : string;
+  end;
+
+function LookupHTMLTopic(keyword : string) : string;
+var
+  i : integer;
+begin
+  // map between a keyword such as DrawTextType and the HTML topic for that keyword
+  // (e.g., struct_draw_text_type.html)
+  Result := keyword;
+  i := HTMLTopicMap.IndexOf(keyword);
+  if i <> -1 then
+    Result := TStringObj(HTMLTopicMap.Objects[i]).Value;
+end;
+
+procedure ClearHTMLTopicMap;
+var
+  i : integer;
+begin
+  for i := 0 to HTMLTopicMap.Count - 1 do
+    HTMLTopicMap.Objects[i].Free;
+  HTMLTopicMap.Clear;
+end;
+
+procedure AddHTMLTopic(name, value : string);
+var
+  obj : TStringObj;
+begin
+  obj := TStringObj.Create;
+  try
+    HTMLTopicMap.AddObject(name, obj);
+    obj.Value := value;
+  except
+    obj.Free;
+  end;
+end;
+
+procedure LoadHTMLTopicMap(data : array of TNameValue);
+var
+  i : integer;
+  NV : TNameValue;
+begin
+  ClearHTMLTopicMap;
+  for i := Low(data) to High(data) do
+  begin
+    NV := data[i];
+    AddHTMLTopic(NV.Name, NV.Value);
+  end;
+end;
+
 initialization
   HtmlHelpModule := 0;
+  HTMLTopicMap := TStringList.Create;
+  HTMLTopicMap.Sorted := True;
+  HTMLTopicMap.CaseSensitive := True;
 
 finalization
   if HtmlHelpModule <> 0 then
     FreeLibrary(HtmlHelpModule);
-    
+  ClearHTMLTopicMap;
+  FreeAndNil(HTMLTopicMap);
+
 end.
