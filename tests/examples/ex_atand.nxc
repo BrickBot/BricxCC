@@ -1,1 +1,2 @@
-x = atan(0);
+float x = atand(0); // degrees
+

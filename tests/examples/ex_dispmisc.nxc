@@ -14,7 +14,7 @@ task main()
   flags |= DISPLAY_POPUP;
   SetDisplayFlags(flags);
   Wait(SEC_2);
-  flags = flags & !DISPLAY_POPUP;
+  flags = flags & (~DISPLAY_POPUP);
   SetDisplayFlags(flags);
   Wait(SEC_1);
   SetDisplayEraseMask(DisplayEraseMask());

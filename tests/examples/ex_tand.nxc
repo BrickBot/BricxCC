@@ -1,1 +1,2 @@
-x = tand(y);
+float x = tand(y); // degrees
+
