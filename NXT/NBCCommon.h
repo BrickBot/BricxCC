@@ -2318,14 +2318,14 @@
 #define PF_PIN_C2 1 /*!< Power function pin C2 */
 /** @} */  // end of PFOutputs group
 
-/** @defgroup PFCSTFuncs Power Function CST function constants
- * Constants that are for sending Power Function CST functions.
+/** @defgroup PFPinFuncs Power Function single pin function constants
+ * Constants that are for sending Power Function single pin functions.
  * @{
  */
-#define PF_FUNC_NOCHANGE 0 /*!< Power function CST - no change */
-#define PF_FUNC_CLEAR    1 /*!< Power function CST - clear */
-#define PF_FUNC_SET      2 /*!< Power function CST - set */
-#define PF_FUNC_TOGGLE   3 /*!< Power function CST - toggle */
+#define PF_FUNC_NOCHANGE 0 /*!< Power function single pin - no change */
+#define PF_FUNC_CLEAR    1 /*!< Power function single pin - clear */
+#define PF_FUNC_SET      2 /*!< Power function single pin - set */
+#define PF_FUNC_TOGGLE   3 /*!< Power function single pin - toggle */
 /** @} */  // end of PFCSTFuncs group
 
 /** @defgroup PFCSTOptions Power Function CST options constants
