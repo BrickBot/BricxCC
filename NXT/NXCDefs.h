@@ -459,7 +459,7 @@ inline void SetInput(const byte & port, const int field, variant value);
  * the desired sensor port may also be used.
  * \return The sensor's scaled value.
  */
-inline unsigned int Sensor(const byte port);
+inline unsigned int Sensor(const byte & port);
 /** \example ex_Sensor.nxc
  * This is an example of how to use the \ref Sensor function.
  */
@@ -548,7 +548,7 @@ inline byte SensorMode(const byte & port);
  * the desired sensor port may also be used.
  * \return The sensor's normalized value.
  */
-inline unsigned int SensorNormalized(const byte port);
+inline unsigned int SensorNormalized(const byte & port);
 /** \example ex_SensorNormalized.nxc
  * This is an example of how to use the \ref SensorNormalized function.
  */
@@ -561,7 +561,7 @@ inline unsigned int SensorNormalized(const byte port);
  * the desired sensor port may also be used.
  * \return The sensor's raw value.
  */
-inline unsigned int SensorRaw(const byte port);
+inline unsigned int SensorRaw(const byte & port);
 /** \example ex_SensorRaw.nxc
  * This is an example of how to use the \ref SensorRaw function.
  */
@@ -576,7 +576,7 @@ inline unsigned int SensorRaw(const byte port);
  * the desired sensor port may also be used.
  * \return The sensor's scaled value.
  */
-inline unsigned int SensorScaled(const byte port);
+inline unsigned int SensorScaled(const byte & port);
 /** \example ex_SensorScaled.nxc
  * This is an example of how to use the \ref SensorScaled function.
  */
@@ -589,7 +589,7 @@ inline unsigned int SensorScaled(const byte port);
  * the desired sensor port may also be used.
  * \return The sensor's type. See \ref SensorTypes.
  */
-inline byte SensorType(const byte port);
+inline byte SensorType(const byte & port);
 /** \example ex_SensorType.nxc
  * This is an example of how to use the \ref SensorType function.
  */
@@ -604,7 +604,7 @@ inline byte SensorType(const byte port);
  * the desired sensor port may also be used.
  * \return The sensor's scaled value.
  */
-inline unsigned int SensorValue(const byte port);
+inline unsigned int SensorValue(const byte & port);
 /** \example ex_SensorValue.nxc
  * This is an example of how to use the \ref SensorValue function.
  */
@@ -631,7 +631,7 @@ inline bool SensorValueBool(const byte port);
  * the desired sensor port may also be used.
  * \return The sensor's raw value.
  */
-inline unsigned int SensorValueRaw(const byte port);
+inline unsigned int SensorValueRaw(const byte & port);
 /** \example ex_SensorValueRaw.nxc
  * This is an example of how to use the \ref SensorValueRaw function.
  */
@@ -679,7 +679,7 @@ inline unsigned int CustomSensorZeroOffset(const byte port);
  * \param port The sensor port. See \ref InPorts. Must be a constant.
  * \param activeStatus The new active status value.
  */
-inline void SetCustomSensorActiveStatus(const byte port, const byte activeStatus);
+inline void SetCustomSensorActiveStatus(const byte port, const byte & activeStatus);
 /** \example ex_SetCustomSensorActiveStatus.nxc
  * This is an example of how to use the \ref SetCustomSensorActiveStatus function.
  */
@@ -691,7 +691,7 @@ inline void SetCustomSensorActiveStatus(const byte port, const byte activeStatus
  * \param port The sensor port. See \ref InPorts. Must be a constant.
  * \param pctFullScale The new percent full scale value.
  */
-inline void SetCustomSensorPercentFullScale(const byte port, const byte pctFullScale);
+inline void SetCustomSensorPercentFullScale(const byte port, const byte & pctFullScale);
 /** \example ex_SetCustomSensorPercentFullScale.nxc
  * This is an example of how to use the \ref SetCustomSensorPercentFullScale function.
  */
@@ -703,7 +703,7 @@ inline void SetCustomSensorPercentFullScale(const byte port, const byte pctFullS
  * \param port The sensor port. See \ref InPorts. Must be a constant.
  * \param zeroOffset The new zero offset value.
  */
-inline void SetCustomSensorZeroOffset(const byte port, const int zeroOffset);
+inline void SetCustomSensorZeroOffset(const byte port, const int & zeroOffset);
 /** \example ex_SetCustomSensorZeroOffset.nxc
  * This is an example of how to use the \ref SetCustomSensorZeroOffset function.
  */
@@ -715,7 +715,7 @@ inline void SetCustomSensorZeroOffset(const byte port, const int zeroOffset);
  * \param port The sensor port. See \ref InPorts. Must be a constant.
  * \param value The new boolean value.
  */
-inline void SetSensorBoolean(const byte port, bool value);
+inline void SetSensorBoolean(const byte port, const bool & value);
 /** \example ex_SetSensorBoolean.nxc
  * This is an example of how to use the \ref SetSensorBoolean function.
  */
@@ -727,7 +727,7 @@ inline void SetSensorBoolean(const byte port, bool value);
  * \param port The sensor port. See \ref InPorts. Must be a constant.
  * \param direction The new digital pins direction value.
  */
-inline void SetSensorDigiPinsDirection(const byte port, const byte direction);
+inline void SetSensorDigiPinsDirection(const byte port, const byte & direction);
 /** \example ex_SetSensorDigiPinsDirection.nxc
  * This is an example of how to use the \ref SetSensorDigiPinsDirection function.
  */
@@ -739,7 +739,7 @@ inline void SetSensorDigiPinsDirection(const byte port, const byte direction);
  * \param port The sensor port. See \ref InPorts. Must be a constant.
  * \param outputLevel The new digital pins output level value.
  */
-inline void SetSensorDigiPinsOutputLevel(const byte port, const byte outputLevel);
+inline void SetSensorDigiPinsOutputLevel(const byte port, const byte & outputLevel);
 /** \example ex_SetSensorDigiPinsOutputLevel.nxc
  * This is an example of how to use the \ref SetSensorDigiPinsOutputLevel function.
  */
@@ -751,7 +751,7 @@ inline void SetSensorDigiPinsOutputLevel(const byte port, const byte outputLevel
  * \param port The sensor port. See \ref InPorts. Must be a constant.
  * \param status The new digital pins status value.
  */
-inline void SetSensorDigiPinsStatus(const byte port, const byte status);
+inline void SetSensorDigiPinsStatus(const byte port, const byte & status);
 /** \example ex_SetSensorDigiPinsStatus.nxc
  * This is an example of how to use the \ref SetSensorDigiPinsStatus function.
  */
@@ -786,7 +786,7 @@ inline void SysColorSensorRead(ColorSensorReadType & args);
  * \return The function call result.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
-inline int ReadSensorColorEx(const byte port, int & colorval, unsigned int & raw[], unsigned int & norm[], int & scaled[]);
+inline int ReadSensorColorEx(const byte & port, int & colorval, unsigned int & raw[], unsigned int & norm[], int & scaled[]);
 /** \example ex_ReadSensorColorEx.nxc
  * This is an example of how to use the \ref ReadSensorColorEx function.
  */
@@ -801,7 +801,7 @@ inline int ReadSensorColorEx(const byte port, int & colorval, unsigned int & raw
  * \return The function call result.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
-inline int ReadSensorColorRaw(const byte port, unsigned int & rawVals[]);
+inline int ReadSensorColorRaw(const byte & port, unsigned int & rawVals[]);
 /** \example ex_ReadSensorColorRaw.nxc
  * This is an example of how to use the \ref ReadSensorColorRaw function.
  */
@@ -811,8 +811,8 @@ inline int ReadSensorColorRaw(const byte port, unsigned int & rawVals[]);
  * This function lets you directly access a specific LEGO color sensor AD raw value. Both the
  * port and the color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts.
- * \param color The color index. See \ref InputColorIdxConstants.
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
  * \return The AD raw value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -826,8 +826,8 @@ inline unsigned int ColorADRaw(const byte port, const byte color);
  * This function lets you directly access a specific LEGO color sensor boolean value. Both the
  * port and the color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts.
- * \param color The color index. See \ref InputColorIdxConstants.
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
  * \return The boolean value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -841,9 +841,9 @@ inline bool ColorBoolean(const byte port, const byte color);
  * This function lets you directly access a specific LEGO color calibration point value.
  * The port, point, and color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts.
- * \param point The calibration point. See \ref InputColorCalibrationConstants.
- * \param color The color index. See \ref InputColorIdxConstants.
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param point The calibration point. See \ref InputColorCalibrationConstants. Must be a constant.
+ * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
  * \return The calibration point value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -857,7 +857,7 @@ inline long ColorCalibration(const byte port, const byte point, const byte color
  * This function lets you directly access the LEGO color calibration state.
  * The port must be a constant.
  *
- * \param port The sensor port. See \ref InPorts.
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
  * \return The calibration state.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -871,8 +871,8 @@ inline byte ColorCalibrationState(const byte port);
  * This function lets you directly access a specific LEGO color calibration limit value.
  * The port and the point must be constants.
  *
- * \param port The sensor port. See \ref InPorts.
- * \param point The calibration point. See \ref InputColorCalibrationConstants.
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param point The calibration point. See \ref InputColorCalibrationConstants. Must be a constant.
  * \return The calibration limit value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -886,8 +886,8 @@ inline unsigned int ColorCalLimits(const byte port, const byte point);
  * This function lets you directly access a specific LEGO color sensor raw value. Both the
  * port and the color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts.
- * \param color The color index. See \ref InputColorIdxConstants.
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
  * \return The raw value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -901,8 +901,8 @@ inline unsigned int ColorSensorRaw(const byte port, const byte color);
  * This function lets you directly access a specific LEGO color sensor scaled value. Both the
  * port and the color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts.
- * \param color The color index. See \ref InputColorIdxConstants.
+ * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
  * \return The scaled value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
@@ -9022,7 +9022,7 @@ inline void SysListFiles(ListFilesType & args);
  * \param offset The zero offset.
  * \return The Gyro sensor reading.
  */
-inline int SensorHTGyro(byte port, const int offset = 0) {
+inline int SensorHTGyro(const byte & port, int offset = 0) {
   asm {
     getin __RETVAL__, port, RawValue
     sub __RETVAL__, __RETVAL__, 600
@@ -9040,7 +9040,7 @@ inline int SensorHTGyro(byte port, const int offset = 0) {
  * \param port The sensor port. See \ref InPorts.
  * \return The EOPD sensor reading.
  */
-inline int SensorHTEOPD(byte port) {
+inline int SensorHTEOPD(const byte & port) {
   asm {
     getin __RETVAL__, port, RawValue
     sub __RETVAL__, 1023, __RETVAL__
@@ -14713,6 +14713,7 @@ inline long atol(const string str) { return StrToNum(str); }
  */
 inline long labs(long n) { return abs(n); }
 
+#if __FIRMWARE_VERSION > 107
 /**
  * Convert string to float.
  * Parses the string str interpreting its content as a floating point number
@@ -14752,6 +14753,7 @@ inline float strtod(const string & str, string & endptr) {
   }
   return result;
 }
+#endif
 
 /**
  * Convert string to long integer.
