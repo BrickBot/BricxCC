@@ -27,6 +27,14 @@ type
   TGXAlignMode = (gamRightmost, gamFirstToken);
   TCommentType = (ctSlash, ctCpp);
 
+type
+  TEditorExpert = (eeCommentCode, eeUncommentCode, eeAlignLines,
+    eePrevIdent, eeNextIdent, eeReverse, eeGrepSearch, eeGrepResults);
+
+var
+  EditorExpertShortcuts : array[TEditorExpert] of TShortCut;
+  DefaultEditorExpertShortcuts : array[TEditorExpert] of TShortCut;
+
 var
   CommentType: TCommentType = ctSlash;
   InsertRemoveSpace: Boolean = False;
@@ -52,11 +60,34 @@ function UncommentLines(Lines: TStrings): Boolean;
 function SortLines(Lines: TStrings): Boolean;
 function AlignSelectedLines(Lines: TStrings): Boolean;
 
+function ExpertIsConfigurable(const idx : TEditorExpert) : boolean;
+function ExpertHelp(const idx : TEditorExpert) : string;
+function ExpertName(const idx : TEditorExpert) : string;
+procedure PopulateEditorExpertsList(aStrings : TStrings);
+
 implementation
 
 uses
   SysUtils, Menus, Math, Controls, uNBCCommon, uEEAlignOpt,
   uLocalizedStrings, uBasicPrefs;
+
+const
+  EditorExpertCommands : array[TEditorExpert] of integer = (
+    K_USER_COMMENTBLOCK, K_USER_UNCOMMENTBLOCK, K_USER_ALIGN,
+    K_USER_PREVIDENT, K_USER_NEXTIDENT, K_USER_REVERSE,
+    -1, -1 // grep search and grep replace do not have editor commands
+  );
+  EditorExpertConfigurable : array[TEditorExpert] of boolean = (
+    True, False, True, False, False, False, True, False
+  );
+  EditorExpertNames : array[TEditorExpert] of string = (
+    sEECommentName, sEEUncommentName, sEEAlignName, sEEPrevIdentName,
+    sEENextIdentName, sEEReverseName, sEEGrepSearchName, sEEGrepResultsName
+  );
+  EditorExpertHelps : array[TEditorExpert] of string = (
+    sEECommentHelp, sEEUncommentHelp, sEEAlignHelp, sEEPrevIdentHelp,
+    sEENextIdentHelp, sEEReverseHelp, sEEGrepSearchHelp, sEEGrepResultsHelp
+  );
 
 const
   VK_OEM_PERIOD = $BE; // '.' any country
@@ -71,26 +102,27 @@ const
 procedure AddEditorExpertCommands(aEditor : TSynEdit);
 var
   KS : TSynEditKeystroke;
+  ee : TEditorExpert;
+  i, cmd : integer;
 begin
+  // remove the previous editor expert commands
+  for ee := Low(TEditorExpert) to High(TEditorExpert) do
+  begin
+    i := aEditor.Keystrokes.FindCommand(EditorExpertCommands[ee]);
+    if i <> -1 then
+      aEditor.Keystrokes.Delete(i);
+  end;
   // add in the keystrokes for Editor Experts
-  KS := aEditor.Keystrokes.Add;
-  KS.Command := K_USER_PREVIDENT;
-  KS.ShortCut := ShortCut(VK_UP, [ssCtrl, ssAlt]);
-  KS := aEditor.Keystrokes.Add;
-  KS.Command := K_USER_NEXTIDENT;
-  KS.ShortCut := ShortCut(VK_DOWN, [ssCtrl, ssAlt]);
-  KS := aEditor.Keystrokes.Add;
-  KS.Command := K_USER_COMMENTBLOCK;
-  KS.ShortCut := ShortCut(VK_OEM_PERIOD, [ssCtrl, ssAlt]);
-  KS := aEditor.Keystrokes.Add;
-  KS.Command := K_USER_UNCOMMENTBLOCK;
-  KS.ShortCut := ShortCut(VK_OEM_COMMA, [ssCtrl, ssAlt]);
-  KS := aEditor.Keystrokes.Add;
-  KS.Command := K_USER_REVERSE;
-  KS.ShortCut := ShortCut(VK_HOME, [ssCtrl, ssAlt]);
-  KS := aEditor.Keystrokes.Add;
-  KS.Command := K_USER_ALIGN;
-  KS.ShortCut := ShortCut(VK_END, [ssCtrl, ssAlt]);
+  for ee := Low(TEditorExpert) to High(TEditorExpert) do
+  begin
+    cmd := EditorExpertCommands[ee];
+    if cmd <> 0 then
+    begin
+      KS := aEditor.Keystrokes.Add;
+      KS.Command := cmd;
+      KS.ShortCut := EditorExpertShortcuts[ee];
+    end;
+  end;
 end;
 
 function IsStrCaseIns(const Str: string; Pos: Integer; const SubStr: string): Boolean;
@@ -584,4 +616,53 @@ begin
   end;
 end;
 
+function ExpertIsConfigurable(const idx : TEditorExpert) : boolean;
+begin
+  Result := EditorExpertConfigurable[idx];
+end;
+
+function ExpertHelp(const idx : TEditorExpert) : string;
+begin
+  Result := EditorExpertHelps[idx];
+end;
+
+function ExpertName(const idx : TEditorExpert) : string;
+begin
+  Result := EditorExpertNames[idx];
+end;
+
+function ExpertNameAndShortcut(const idx : TEditorExpert) : string;
+begin
+  Result := EditorExpertNames[idx] + #9 + ShortCutToText(EditorExpertShortcuts[idx]);
+end;
+
+procedure PopulateEditorExpertsList(aStrings : TStrings);
+var
+  i : TEditorExpert;
+begin
+  aStrings.Clear;
+  for i := Low(TEditorExpert) to High(TEditorExpert) do
+  begin
+    aStrings.Add(ExpertNameAndShortcut(i));
+  end;
+end;
+
+initialization
+  EditorExpertShortcuts[eeCommentCode]   := ShortCut(VK_OEM_PERIOD, [ssCtrl, ssAlt]);
+  EditorExpertShortcuts[eeUncommentCode] := ShortCut(VK_OEM_COMMA, [ssCtrl, ssAlt]);
+  EditorExpertShortcuts[eeAlignLines]    := ShortCut(VK_END, [ssCtrl, ssAlt]);
+  EditorExpertShortcuts[eePrevIdent]     := ShortCut(VK_UP, [ssCtrl, ssAlt]);
+  EditorExpertShortcuts[eeNextIdent]     := ShortCut(VK_DOWN, [ssCtrl, ssAlt]);
+  EditorExpertShortcuts[eeReverse]       := ShortCut(VK_HOME, [ssCtrl, ssAlt]);
+  EditorExpertShortcuts[eeGrepSearch]    := ShortCut(Ord('S'), [ssShift, ssAlt]);
+  EditorExpertShortcuts[eeGrepResults]   := ShortCut(Ord('R'), [ssCtrl, ssAlt]);
+
+  DefaultEditorExpertShortcuts[eeCommentCode]   := ShortCut(VK_OEM_PERIOD, [ssCtrl, ssAlt]);
+  DefaultEditorExpertShortcuts[eeUncommentCode] := ShortCut(VK_OEM_COMMA, [ssCtrl, ssAlt]);
+  DefaultEditorExpertShortcuts[eeAlignLines]    := ShortCut(VK_END, [ssCtrl, ssAlt]);
+  DefaultEditorExpertShortcuts[eePrevIdent]     := ShortCut(VK_UP, [ssCtrl, ssAlt]);
+  DefaultEditorExpertShortcuts[eeNextIdent]     := ShortCut(VK_DOWN, [ssCtrl, ssAlt]);
+  DefaultEditorExpertShortcuts[eeReverse]       := ShortCut(VK_HOME, [ssCtrl, ssAlt]);
+  DefaultEditorExpertShortcuts[eeGrepSearch]    := ShortCut(Ord('S'), [ssShift, ssAlt]);
+  DefaultEditorExpertShortcuts[eeGrepResults]   := ShortCut(Ord('R'), [ssCtrl, ssAlt]);
 end.

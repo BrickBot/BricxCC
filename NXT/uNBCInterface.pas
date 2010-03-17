@@ -157,7 +157,7 @@ begin
   fMaxErrors := 0;
   fIgnoreSystemFile := False;
   fEnhancedFirmware := False;
-  fFirmwareVersion := 105; // 1.05 NXT 1.1 firmware
+  fFirmwareVersion := 128; // 1.28 NXT 2.0 firmware
   fWarningsAreOff := False;
   fMoreIncludes := False;
   fBinaryInput := False;
@@ -626,7 +626,7 @@ begin
   Quiet                    := ParamSwitch('-q', False, Value);
   MaxErrors                := ParamIntValue('-ER', 0, False, Value);
   MaxPreprocessorDepth     := ParamIntValue('-PD', 10, False, Value);
-  FirmwareVersion          := ParamIntValue('-v', 105, False, Value);
+  FirmwareVersion          := ParamIntValue('-v', 128, False, Value);
   WriteCompilerOutput      := ParamSwitch('-L', False, Value);
   CompilerOutputFilename   := ParamValue('-L', False, Value);
   WriteSymbolTable         := ParamSwitch('-Y', False, Value);
@@ -763,28 +763,23 @@ end;
 
 function TNBCCompiler.CheckFirmwareVersion: boolean;
 var
-  rom, ram : cardinal;
+  fwVer : word;
 begin
-  if BrickComm.Version(rom, ram) then
+  fwVer := BrickComm.NXTFirmwareVersion;
+  if fwVer <> 0 then
   begin
-    // only need the "ram" value
-    rom := 0;
-    rom := rom + ((ram and $FF000000) shr 24) * 1000; // should always be zero
-    rom := rom + ((ram and $00FF0000) shr 16) * 100;  // normally = 1
-    rom := rom + ((ram and $0000FF00) shr 8) * 10;    // normally = 0 or 2
-    rom := rom +  (ram and $000000FF);                // 3, 4, 5, 6, 7, 8
     // if we say we are targetting a 1.0x firmware then the actual
     // firmware version needs to be a 1.0x firmware.  If we are targetting
     // the 1.2x firmware thne the actual firmware version is a 1.2x firmware.
     if FirmwareVersion <= MAX_FW_VER1X then
     begin
       // 1.0x
-      Result := rom <= MAX_FW_VER1X;
+      Result := fwVer <= MAX_FW_VER1X;
     end
     else
     begin
       // 1.2x
-      Result := rom >= MIN_FW_VER2X;
+      Result := fwVer >= MIN_FW_VER2X;
     end;
   end
   else

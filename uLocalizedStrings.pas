@@ -617,7 +617,7 @@ resourcestring
   UsageDecompile = '   -x: decompile program';
   UsageOptimize  = '   -Z[1|2]: turn on compiler optimizations';
   UsageMaxErrors = '   -ER=n: set maximum errors before aborting (0 == no limit)';
-  UsageMaxDepth  = '   -PD=n: set max preprocessor recursion depth (10 == default)';
+  UsageMaxDepth  = '   -PD=n: set max preprocessor recursion depth (default == 10)';
   UsageOutput    = '   -O=<outfile> : specify output file';
   UsageErrors    = '   -E=<filename> : write compiler messages to <filename>';
   UsageIncludes  = '   -I=<path>: search <path> for include files';
@@ -628,12 +628,51 @@ resourcestring
   UsageEnhanced  = '   -EF : enhanced firmware';
   UsageSafecall  = '   -safecall: NXC will wrap all function calls in Acquire/Release';
   UsageAPI       = '   -api: dump the API to stdout';
-  UsageFirmVer   = '   -v=n: set the targeted firmware version (default == 105, NXT 2.0 == 128)';
+  UsageFirmVer   = '   -v=n: set the targeted firmware version (default == 128, NXT 1.1 == 105)';
   UsageHelp      = '   -help : display command line options';
 
 // uEditorExperts.pas
 resourcestring
   SNoTokens = 'No tokens found to align on.';
+  sEECommentName      = 'Comment Code';
+  sEEUncommentName    = 'Uncomment Code';
+  sEEAlignName        = 'Align Lines';
+  sEEPrevIdentName    = 'Previous Identifier';
+  sEENextIdentName    = 'Next Identifier';
+  sEEReverseName      = 'Reverse Statement';
+  sEEGrepSearchName   = 'Grep Search';
+  sEEGrepResultsName  = 'Grep Results';
+  sEECommentHelp      = '  This expert comments out a selected block of code. To ' +
+    'use it, select a block in the Delphi editor and activate this expert. ' + #13#10#13#10 +
+    '  You can configure this expert to use different comment styles.';
+  sEEUncommentHelp    = '  This expert uncomments a selected block of code.  To ' +
+    'use it, select a block in the IDE code editor and activate this expert.' + #13#10 +
+    '  Uncommenting is performed using the comment style that you selected for ' +
+    'the Comment Code editor expert.';
+  sEEAlignHelp        = '  This expert aligns the text of the selected lines at ' +
+    'the first occurrence of a chosen token in each line.  To use it, select a ' +
+    'block of code in the code editor and activate this expert.  You may find ' +
+    'this feature useful to align the right hand side of variable, field, or ' +
+    'constant declarations and other similar lists. ' + #13#10 +
+    '  There are two alignment modes.  In the "Align at rightmost token" mode, ' +
+    'the rightmost token found in the selected text becomes the column position ' +
+    'the other lines are aligned to.  In the "Align at first token" mode, the ' +
+    'first located token is used to determine the alignment column.  In this ' +
+    'second mode, any line whose token prefix is longer than the position of ' +
+    'the first token will not be modified. ' + #13#10 +
+    '  You can configure the list of tokens to align on as well as the minimum ' +
+    'number of space characters that must precede a token that is being aligned.';
+  sEEPrevIdentHelp    = '  This expert detects the identifier under the cursor ' +
+    'and allows you to quickly jump to the previous occurrence of that ' +
+    'identifier in the same file.';
+  sEENextIdentHelp    = '  This expert detects the identifier under the ' +
+    'cursor and allows you to quickly jump to the next occurrence of that ' +
+    'identifier in the same file.';
+  sEEReverseHelp      = '  This expert reverses all assignment statements in ' +
+    'a selected block of code. It expects all reversible statements to be ' +
+    'contained on a single line.';
+  sEEGrepSearchHelp   = 'Start a new grep search.';
+  sEEGrepResultsHelp  = 'Show previous grep search results.';
 
 // nextscreen.dpr
 resourcestring

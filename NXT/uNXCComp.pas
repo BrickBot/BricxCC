@@ -6188,7 +6188,7 @@ begin
   NumGlobals := 0;
   endofallsource := False;
   fEnhancedFirmware := False;
-  fFirmwareVersion  := 105; // 1.05 NXT 1.1 firmware 
+  fFirmwareVersion  := 128; // 1.28 NXT 2.0 firmware 
   fIgnoreSystemFile := False;
   fWarningsOff      := False;
   fDD := TDataDefs.Create;

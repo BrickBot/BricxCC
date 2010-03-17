@@ -338,6 +338,7 @@ function GetCompilerCommandLine(bDownload : Boolean; sTempdir, sIncludePath, sFi
 var
   ext, extbin, commandstr, extraSwitches, OE : string;
   H : TSynCustomHighlighter;
+  fwVer : word;
 begin
   H := GetActiveEditorHighlighter;
   OE := OptionalEquals;
@@ -363,8 +364,19 @@ begin
       commandstr := commandstr + Format(' -ER=%d', [NBCMaxErrors]);
     if EnhancedFirmware then
       commandstr := commandstr + ' -EF';
-    if NXT2Firmware then
-      commandstr := commandstr + ' -v=120';
+    if NXTAutoFWVersion then
+    begin
+      fwVer := BrickComm.NXTFirmwareVersion;
+      if fwVer <> 0 then
+        commandStr := commandstr + ' -v=' + IntToStr(fwVer);
+    end
+    else
+    begin
+      if NXT2Firmware then
+        commandstr := commandstr + ' -v=128'
+      else
+        commandstr := commandstr + ' -v=105';
+    end;
     if IgnoreSysFiles then
       commandstr := commandstr + ' -n';
     sIncludePath := sIncludePath + ';' + ExtractFilePath(sFilename);
