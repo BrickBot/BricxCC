@@ -232,7 +232,7 @@ type
     chkDroppedRecent: TCheckBox;
     chkUseIntNBCComp: TCheckBox;
     cboOptLevel: TComboBox;
-    Label2: TLabel;
+    lblOptLevel: TLabel;
     chkEnhancedFirmware: TCheckBox;
     chkIgnoreSysFiles: TCheckBox;
     pagEditor: TPageControl;
@@ -320,20 +320,13 @@ type
     hkRecMacro2: TEdit;
     hkPlayMacro2: TEdit;
     chkNXT2Firmare: TCheckBox;
-    GroupBox1: TGroupBox;
+    grpRICComp: TGroupBox;
     radRICDecompScript: TRadioButton;
     radRICDecompArray: TRadioButton;
-    Label6: TLabel;
+    lblArrayNameFormat: TLabel;
     edtRICDecompArrayFmt: TEdit;
     shtExperts: TTabSheet;
-    btnCommentConfig: TButton;
-    lblBlockComment: TLabel;
-    lblAlignLines: TLabel;
-    btnAlignLinesConfig: TButton;
-    btnPrevNextConfig: TButton;
-    lblPrevNext: TLabel;
-    btnReverseConfig: TButton;
-    lblReverse: TLabel;
+    btnEditorExpertsConfig: TButton;
     chkIncludeSrcInList: TCheckBox;
     pnlAPIRight: TPanel;
     grpAPIHeaders: TGroupBox;
@@ -361,8 +354,10 @@ type
     inpLeftOffset: TBricxccSpinEdit;
     inpDigitCount: TBricxccSpinEdit;
     inpGutterWidth: TBricxccSpinEdit;
-    lblGrepSearch: TLabel;
-    btnGrepSearchConfig: TButton;
+    lbEditorExperts: TListBox;
+    btnEditorExpertsShortcut: TButton;
+    mmoEditorExpertsHelp: TMemo;
+    chkNXTAutoFW: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -420,6 +415,9 @@ type
     procedure btnShowNXTDefsClick(Sender: TObject);
     procedure btnShowNXCDefsClick(Sender: TObject);
     procedure btnGrepSearchConfigClick(Sender: TObject);
+    procedure lbEditorExpertsClick(Sender: TObject);
+    procedure btnEditorExpertsConfigClick(Sender: TObject);
+    procedure btnEditorExpertsShortcutClick(Sender: TObject);
   private
     { Private declarations }
     fColorsChanged : boolean;
@@ -445,6 +443,7 @@ type
     SynPasSyn: TSynPasSyn;
     SynNBCSyn: TSynNBCSyn;
     SynCSSyn: TSynCSSyn;
+    procedure UpdateEditorExperts;
     procedure UpdateCheckState;
     function GetCustomHighlighter(index: Integer): TSynCustomHighlighter;
     function GetActiveHighlighter(reason : TActiveHighlighterReason = ahColors) : TSynCustomHighlighter;
@@ -607,7 +606,7 @@ uses
   uSpirit, brick_common, Transfer, uNXTExplorer, uNXTController,
   uNXTExplorerSettings, uLocalizedStrings, uGuiUtils, uEditorExperts,
   uEECommentConfig, uEEAlignConfig, uNBCInterface, uJoyGlobals,
-  uRemoteGlobals, uRegUtils, uGlobals, uBasicPrefs;
+  uRemoteGlobals, uRegUtils, uGlobals, uBasicPrefs, uEditorShortcut;
 
 
 var
@@ -2468,6 +2467,7 @@ begin
   DisplayOtherOptionValues;
   ConfigureOtherFirmwareOptions;
   UpdateCheckState;
+  UpdateEditorExperts;
 end;
 
 procedure TPrefForm.FormCreate(Sender: TObject);
@@ -2862,10 +2862,12 @@ begin
   Keystrokes := SynEditColors.Keystrokes;
 end;
 
-procedure TPrefForm.btnKeystrokesClick(Sender: TObject);
 {$IFDEF FPC}
+procedure TPrefForm.btnKeystrokesClick(Sender: TObject);
 begin
+end;
 {$ELSE}
+procedure TPrefForm.btnKeystrokesClick(Sender: TObject);
 var
   Dlg: TSynEditKeystrokesEditorForm;
 begin
@@ -2879,8 +2881,8 @@ begin
   finally
     Dlg.Free;
   end;
-{$ENDIF}
 end;
+{$ENDIF}
 
 procedure TPrefForm.SetKeystrokes(const Value: TSynEditKeyStrokes);
 begin
@@ -3767,6 +3769,7 @@ begin
   chkUseIntNBCComp.Checked       := UseInternalNBC;
   chkEnhancedFirmware.Checked    := EnhancedFirmware;
   chkNXT2Firmare.Checked         := NXT2Firmware;
+  chkNXTAutoFW.Checked           := NXTAutoFWVersion;
   chkIgnoreSysFiles.Checked      := IgnoreSysFiles;
   edtLeJOSRoot.Text              := LeJOSRoot;
   edtJavaPath.Text               := JavaCompilerPath;
@@ -3964,6 +3967,7 @@ begin
   UseInternalNBC          := chkUseIntNBCComp.Checked;
   EnhancedFirmware        := chkEnhancedFirmware.Checked;
   NXT2Firmware            := chkNXT2Firmare.Checked;
+  NXTAutoFWVersion        := chkNXTAutoFW.Checked;
   IgnoreSysFiles          := chkIgnoreSysFiles.Checked;
   LeJOSRoot               := edtLeJOSRoot.Text;
   JavaCompilerPath        := edtJavaPath.Text;
@@ -4127,15 +4131,81 @@ begin
   MainForm.GrepDlgExpert.Configure;
 end;
 
+procedure TPrefForm.lbEditorExpertsClick(Sender: TObject);
+var
+  ee : TEditorExpert;
+begin
+  if lbEditorExperts.ItemIndex <> -1 then
+  begin
+    ee := TeditorExpert(lbEditorExperts.ItemIndex);
+    btnEditorExpertsConfig.Enabled := ExpertIsConfigurable(ee);
+    mmoEditorExpertsHelp.Text      := ExpertHelp(ee)
+  end;
+end;
+
+procedure TPrefForm.btnEditorExpertsConfigClick(Sender: TObject);
+var
+  ee : TEditorExpert;
+begin
+  if lbEditorExperts.ItemIndex <> -1 then
+  begin
+    ee := TEditorExpert(lbEditorExperts.ItemIndex);
+    case ee of
+      eeCommentCode : btnCommentConfigClick(Sender);
+      eeAlignLines  : btnAlignLinesConfigClick(Sender);
+      eeGrepSearch  : btnGrepSearchConfigClick(Sender);
+    end;
+  end;
+end;
+
+procedure TPrefForm.btnEditorExpertsShortcutClick(Sender: TObject);
+var
+  ee : TEditorExpert;
+  E : TfmEditorShortcut;
+  oldIdx : integer;
+begin
+  if lbEditorExperts.ItemIndex <> -1 then
+  begin
+    ee := TEditorExpert(lbEditorExperts.ItemIndex);
+    E := TfmEditorShortcut.Create(nil);
+    try
+      E.gbxShortCut.Caption := ExpertName(ee);
+      E.ShortCut := EditorExpertShortcuts[ee];
+      if E.ShowModal = mrOK then
+      begin
+        EditorExpertShortcuts[ee] := E.ShortCut;
+        oldIdx := lbEditorExperts.ItemIndex;
+        try
+          PopulateEditorExpertsList(lbEditorExperts.Items);
+        finally
+          lbEditorExperts.ItemIndex := oldIdx;
+        end;
+      end;
+    finally
+      E.Free;
+    end;
+  end;
+end;
+
+procedure TPrefForm.UpdateEditorExperts;
+begin
+  PopulateEditorExpertsList(lbEditorExperts.Items);
+  if lbEditorExperts.Items.Count > 0 then
+  begin
+    lbEditorExperts.ItemIndex := 0;
+    lbEditorExpertsClick(Self);
+  end;
+end;
+
 initialization
 {$IFDEF FPC}
   {$i Preferences.lrs}
 
   VerCompanyName      := 'JoCar Consulting';
   VerFileDescription  := '';
-  VerFileVersion      := '3.3.7.20';
+  VerFileVersion      := '3.3.8.5';
   VerInternalName     := 'BricxCC';
-  VerLegalCopyright   := 'Copyright (c) 2009, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2010, John Hansen';
   VerOriginalFileName := 'BricxCC';
   VerProductName      := 'BricxCC';
   VerProductVersion   := '3.3';

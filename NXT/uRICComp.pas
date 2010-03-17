@@ -1108,7 +1108,7 @@ begin
   fMaxErrors  := 0;
   fCalc := TExpParser.Create(nil);
   fCalc.CaseSensitive := True;
-  fFirmwareVersion  := 105; // 1.05 NXT 1.1 firmware 
+  fFirmwareVersion  := 128; // 1.28 NXT 2.0 firmware 
 end;
 
 destructor TRICComp.Destroy;

@@ -222,6 +222,7 @@ var
   UseInternalNBC : Boolean;
   NXT2Firmware : Boolean;
   EnhancedFirmware : Boolean;
+  NXTAutoFWVersion : Boolean;
 
 const
   K_PASCAL_PREFIX = '/usr/local/bin/h8300-hitachi-hms-';
@@ -1145,6 +1146,7 @@ begin
     UseInternalNBC          := Reg_ReadBool(reg, 'UseInternalNBC', K_USEINTERNALNBC_DEFAULT);
     EnhancedFirmware        := Reg_ReadBool(reg, 'EnhancedFirmware', False);
     NXT2Firmware            := Reg_ReadBool(reg, 'NXT2Firmware', False);
+    NXTAutoFWVersion        := Reg_ReadBool(reg, 'NXTAutoFWVersion', False); 
     IgnoreSysFiles          := Reg_ReadBool(reg, 'IgnoreSysFiles', False);
   finally
     reg.CloseKey;
@@ -1192,10 +1194,29 @@ begin
   end;
 end;
 
+procedure LoadEditorExpertValues(reg : TRegistry);
+var
+  ee : TEditorExpert;
+begin
+  Reg_OpenKey(reg, 'EditorExpertShortcuts');
+  try
+    for ee := Low(TEditorExpert) to High(TEditorExpert) do
+      EditorExpertShortcuts[ee] := Reg_ReadInteger(reg, ExpertName(ee), DefaultEditorExpertShortcuts[ee]);
+  finally
+    reg.CloseKey;
+  end;
+end;
+
 procedure ResetShortcutValues(reg : TRegistry);
 begin
   Reg_DeleteKey(reg, 'Shortcuts');
   LoadShortcutValues(reg);
+end;
+
+procedure ResetEditorExpertValues(reg : TRegistry);
+begin
+  Reg_DeleteKey(reg, 'EditorExpertShortcuts');
+  LoadEditorExpertValues(reg);
 end;
 
 procedure LoadCodeTemplateValues(reg : TRegistry; S : TStrings);
@@ -1293,6 +1314,7 @@ begin
   LoadTransferValues('PostcompileSteps', PostcompileSteps, reg);
   LoadExplorerValues(reg);
   LoadProcListValues(reg);
+  LoadEditorExpertValues(reg);
 end;
 
 procedure SaveBasicGeneralValues(reg : TRegistry);
@@ -1413,6 +1435,7 @@ begin
     reg.WriteBool('UseInternalNBC', UseInternalNBC);
     reg.WriteBool('EnhancedFirmware', EnhancedFirmware);
     reg.WriteBool('NXT2Firmware', NXT2Firmware);
+    reg.WriteBool('NXTAutoFWVersion', NXTAutoFWVersion);
     reg.WriteBool('IgnoreSysFiles', IgnoreSysFiles);
   finally
     reg.CloseKey;
@@ -1466,6 +1489,22 @@ begin
   end;
 end;
 
+procedure SaveEditorExpertValues(reg : TRegistry);
+var
+  ee : TEditorExpert;
+begin
+  Reg_DeleteKey(reg, 'EditorExpertShortcuts');
+  Reg_OpenKey(reg, 'EditorExpertShortcuts');
+  try
+    for ee := Low(TEditorExpert) to High(TEditorExpert) do
+      reg.WriteInteger(ExpertName(ee), EditorExpertShortcuts[ee]);
+  finally
+    reg.CloseKey;
+  end;
+end;
+
+
+
 { Transfer }
 procedure SaveTransferValues(const aKey : string; aList : TList; reg : TRegistry);
 var
@@ -1517,6 +1556,7 @@ begin
   SaveTransferValues('PostcompileSteps', PostcompileSteps, reg);
   SaveExplorerValues(reg);
   SaveProcListValues(reg);
+  SaveEditorExpertValues(reg);
 end;
 
 procedure ResetBasicValues(reg : TRegistry; S : TStrings; aPrefHL, aMainHL : TSynBaseNCSyn);
@@ -1537,6 +1577,7 @@ begin
   ResetTransferValues('PostcompileSteps', PostcompileSteps, reg);
   ResetExplorerValues(reg);
   ResetProcListValues(reg);
+  ResetEditorExpertValues(reg);
 end;
 
 
@@ -1646,6 +1687,7 @@ initialization
   UseInternalNBC          := K_USEINTERNALNBC_DEFAULT;
   EnhancedFirmware        := False;
   NXT2Firmware            := False;
+  NXTAutoFWVersion        := False;
   IgnoreSysFiles          := False;
 
   UseHTMLHelp             := False;

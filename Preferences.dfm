@@ -814,93 +814,60 @@ object PrefForm: TPrefForm
           object shtExperts: TTabSheet
             Caption = 'Experts'
             ImageIndex = 2
-            object lblBlockComment: TLabel
-              Left = 8
-              Top = 16
-              Width = 251
-              Height = 13
-              Caption = 'Block comment/uncomment (Ctrl+Alt+Period/Comma)'
-            end
-            object lblAlignLines: TLabel
-              Left = 8
-              Top = 48
-              Width = 114
-              Height = 13
-              Caption = 'Align lines (Ctrl+Alt+End)'
-            end
-            object lblPrevNext: TLabel
-              Left = 8
-              Top = 80
-              Width = 205
-              Height = 13
-              Caption = 'Previous/Next identifier (Ctrl+Alt+Up/Down)'
-            end
-            object lblReverse: TLabel
-              Left = 8
-              Top = 112
-              Width = 170
-              Height = 13
-              Caption = 'Reverse statements (Ctrl+Alt+Home)'
-            end
-            object lblGrepSearch: TLabel
-              Left = 8
-              Top = 144
-              Width = 119
-              Height = 13
-              Caption = 'Grep search (Shift+Alt+S)'
-            end
-            object btnCommentConfig: TButton
+            object btnEditorExpertsConfig: TButton
               Left = 337
               Top = 10
               Width = 89
               Height = 25
-              Caption = 'Configure'
+              Caption = '&Configure...'
               TabOrder = 0
-              OnClick = btnCommentConfigClick
+              OnClick = btnEditorExpertsConfigClick
             end
-            object btnAlignLinesConfig: TButton
+            object chkCCInsensitive: TCheckBox
+              Left = 8
+              Top = 224
+              Width = 417
+              Height = 17
+              Caption = 'Code completion tool is always case-insensitive'
+              TabOrder = 1
+            end
+            object lbEditorExperts: TListBox
+              Left = 8
+              Top = 8
+              Width = 313
+              Height = 113
+              ItemHeight = 13
+              Items.Strings = (
+                'Comment Code'#9'Ctrl+Alt+.'
+                'Uncomment Code'#9'Ctrl+Alt+,'
+                'Align Lines'#9'Ctrl+Alt+End'
+                'Previous Identifier'#9'Ctrl+Alt+Up'
+                'Next Identifier'#9'Ctrl+Alt+Down'
+                'Reverse Statement'#9'Ctrl+Alt+Home'
+                'Grep Search'#9'Shift+Alt+S'
+                'Grep Results'#9'Ctrl+Alt+R')
+              TabOrder = 2
+              TabWidth = 120
+              OnClick = lbEditorExpertsClick
+            end
+            object btnEditorExpertsShortcut: TButton
               Left = 337
               Top = 42
               Width = 89
               Height = 25
-              Caption = 'Configure'
-              TabOrder = 1
-              OnClick = btnAlignLinesConfigClick
-            end
-            object btnPrevNextConfig: TButton
-              Left = 337
-              Top = 74
-              Width = 89
-              Height = 25
-              Caption = 'Configure'
-              Enabled = False
-              TabOrder = 2
-            end
-            object btnReverseConfig: TButton
-              Left = 337
-              Top = 106
-              Width = 89
-              Height = 25
-              Caption = 'Configure'
-              Enabled = False
+              Caption = '&Shortcut...'
               TabOrder = 3
+              OnClick = btnEditorExpertsShortcutClick
             end
-            object chkCCInsensitive: TCheckBox
+            object mmoEditorExpertsHelp: TMemo
               Left = 8
-              Top = 184
+              Top = 128
               Width = 417
-              Height = 17
-              Caption = 'Code completion tool is always case-insensitive'
-              TabOrder = 5
-            end
-            object btnGrepSearchConfig: TButton
-              Left = 337
-              Top = 138
-              Width = 89
-              Height = 25
-              Caption = 'Configure'
+              Height = 89
+              Color = clInfoBk
+              ReadOnly = True
+              ScrollBars = ssVertical
               TabOrder = 4
-              OnClick = btnGrepSearchConfigClick
             end
           end
         end
@@ -913,7 +880,7 @@ object PrefForm: TPrefForm
           Top = 8
           Width = 425
           Height = 276
-          ActivePage = shtCompilerCommon
+          ActivePage = shtNBC
           TabOrder = 0
           object shtCompilerCommon: TTabSheet
             Caption = 'Common'
@@ -1197,7 +1164,7 @@ object PrefForm: TPrefForm
               Height = 13
               Caption = 'EXE &path:'
             end
-            object Label2: TLabel
+            object lblOptLevel: TLabel
               Left = 261
               Top = 86
               Width = 85
@@ -1244,7 +1211,7 @@ object PrefForm: TPrefForm
             object chkUseIntNBCComp: TCheckBox
               Left = 76
               Top = 112
-              Width = 173
+              Width = 179
               Height = 17
               Caption = 'Use internal &compiler'
               TabOrder = 4
@@ -1256,7 +1223,7 @@ object PrefForm: TPrefForm
               Height = 21
               Style = csDropDownList
               ItemHeight = 13
-              TabOrder = 7
+              TabOrder = 9
               Items.Strings = (
                 '0'
                 '1'
@@ -1269,7 +1236,7 @@ object PrefForm: TPrefForm
             object chkEnhancedFirmware: TCheckBox
               Left = 76
               Top = 128
-              Width = 173
+              Width = 179
               Height = 17
               Caption = 'Enhanced &firmware'
               TabOrder = 5
@@ -1277,7 +1244,7 @@ object PrefForm: TPrefForm
             object chkIgnoreSysFiles: TCheckBox
               Left = 76
               Top = 144
-              Width = 173
+              Width = 179
               Height = 17
               Caption = 'Ignore system i&nclude files'
               TabOrder = 6
@@ -1294,19 +1261,19 @@ object PrefForm: TPrefForm
             object chkNXT2Firmare: TCheckBox
               Left = 76
               Top = 160
-              Width = 173
+              Width = 179
               Height = 17
               Caption = 'NXT &2.0 compatible firmware'
-              TabOrder = 9
+              TabOrder = 7
             end
-            object GroupBox1: TGroupBox
+            object grpRICComp: TGroupBox
               Left = 76
               Top = 180
               Width = 325
               Height = 61
               Caption = 'RIC Decompilation'
-              TabOrder = 10
-              object Label6: TLabel
+              TabOrder = 11
+              object lblArrayNameFormat: TLabel
                 Left = 160
                 Top = 16
                 Width = 88
@@ -1351,8 +1318,16 @@ object PrefForm: TPrefForm
               MaxLength = 3
               MaxValue = 999
               MinValue = 0
-              TabOrder = 8
+              TabOrder = 10
               Value = 0
+            end
+            object chkNXTAutoFW: TCheckBox
+              Left = 256
+              Top = 160
+              Width = 154
+              Height = 17
+              Caption = 'Automatic firmware version'
+              TabOrder = 8
             end
           end
           object shtCompilerBrickOS: TTabSheet

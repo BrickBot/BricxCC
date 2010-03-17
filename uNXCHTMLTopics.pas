@@ -5982,7 +5982,7 @@ const
     ),
     (
      Name: 'Sensor';
-     Value: 'group___input_module_functions_ga7436f71777da89f5e9e2ec9883c93fba.html'
+     Value: 'group___input_module_functions_gaed970c76e7d6b6ec934eacd5bd190bdd.html'
     ),
     (
      Name: 'SensorBoolean';
@@ -6010,23 +6010,23 @@ const
     ),
     (
      Name: 'SensorNormalized';
-     Value: 'group___input_module_functions_ga9594347328e06e7146b4ea9b41cb1bba.html'
+     Value: 'group___input_module_functions_gab188a488542719f43f561f14a4656cfc.html'
     ),
     (
      Name: 'SensorRaw';
-     Value: 'group___input_module_functions_gac4fdcb68f255f24b798575c6855b69ac.html'
+     Value: 'group___input_module_functions_gadd83e72ee5c6c3079321b31c582f66cc.html'
     ),
     (
      Name: 'SensorScaled';
-     Value: 'group___input_module_functions_ga487b39ae98f16c1ca629c458bf0d5c73.html'
+     Value: 'group___input_module_functions_ga09d82af4992d906d96b08832452f3cab.html'
     ),
     (
      Name: 'SensorType';
-     Value: 'group___input_module_functions_gab835a431020303599f8d1e7fda567df2.html'
+     Value: 'group___input_module_functions_ga0b0f61a2a0e92e9263bff25c79f98547.html'
     ),
     (
      Name: 'SensorValue';
-     Value: 'group___input_module_functions_gac14b84c6581df44e10906e1d08482ba8.html'
+     Value: 'group___input_module_functions_ga4c76db831f80cff3f9f341b54ccb7cf8.html'
     ),
     (
      Name: 'SensorValueBool';
@@ -6034,7 +6034,7 @@ const
     ),
     (
      Name: 'SensorValueRaw';
-     Value: 'group___input_module_functions_ga165e70451909b00bab0e197b68f7d362.html'
+     Value: 'group___input_module_functions_gabe616109f9bc876bece67ec3b10ec285.html'
     ),
     (
      Name: 'CustomSensorActiveStatus';
@@ -6050,31 +6050,31 @@ const
     ),
     (
      Name: 'SetCustomSensorActiveStatus';
-     Value: 'group___input_module_functions_ga1202b966eefa1eb86591cb87a76754d9.html'
+     Value: 'group___input_module_functions_gaeac66dc87896451330486c4f0babf6d5.html'
     ),
     (
      Name: 'SetCustomSensorPercentFullScale';
-     Value: 'group___input_module_functions_gaa2eeebaa3527d8c975a8045785331cf0.html'
+     Value: 'group___input_module_functions_ga9ffe53f67eda8333894b85ca29513f91.html'
     ),
     (
      Name: 'SetCustomSensorZeroOffset';
-     Value: 'group___input_module_functions_ga5f9f0512bca1b734f9fb98a92b44a7aa.html'
+     Value: 'group___input_module_functions_ga1cdbe7680a3ebf068c4809dc85dc5e42.html'
     ),
     (
      Name: 'SetSensorBoolean';
-     Value: 'group___input_module_functions_ga79b6519d7f1154b4850e38267b3e6ca5.html'
+     Value: 'group___input_module_functions_ga82fd04418f73f6aa524449d3ec9e9bed.html'
     ),
     (
      Name: 'SetSensorDigiPinsDirection';
-     Value: 'group___input_module_functions_ga57a803cd01983d741b08b80f91222c2f.html'
+     Value: 'group___input_module_functions_ga0c02582066fc338bbf8ad349db5bbaa0.html'
     ),
     (
      Name: 'SetSensorDigiPinsOutputLevel';
-     Value: 'group___input_module_functions_ga555b0b337d7e570d7d09ddff732afd9a.html'
+     Value: 'group___input_module_functions_gaa949cd79e050d881444f777d1240e954.html'
     ),
     (
      Name: 'SetSensorDigiPinsStatus';
-     Value: 'group___input_module_functions_ga9923d9026d579892536285cd50fb9d07.html'
+     Value: 'group___input_module_functions_gab6240485dfaa36b9ed94c14e125f4212.html'
     ),
     (
      Name: 'SysColorSensorRead';
@@ -6082,11 +6082,11 @@ const
     ),
     (
      Name: 'ReadSensorColorEx';
-     Value: 'group___input_module_functions_ga9b1bc2942c95bf6791350d37bd55f388.html'
+     Value: 'group___input_module_functions_gaf8e01f28be7f3476baface8d4515357f.html'
     ),
     (
      Name: 'ReadSensorColorRaw';
-     Value: 'group___input_module_functions_ga25a40e7d47e70674baa4b25ee7750829.html'
+     Value: 'group___input_module_functions_gae29b1117df46bf44aaf25843d61ccbaf.html'
     ),
     (
      Name: 'ColorADRaw';
@@ -7766,11 +7766,11 @@ const
     ),
     (
      Name: 'SensorHTGyro';
-     Value: 'group___hi_technic_a_p_i_gaf4b4652f82a7697e69c4239dfa75adef.html'
+     Value: 'group___hi_technic_a_p_i_gabdb455bf56fa8e2d0c834eccf0e5b532.html'
     ),
     (
      Name: 'SensorHTEOPD';
-     Value: 'group___hi_technic_a_p_i_gac25dd4405204b41f107d7b1984073412.html'
+     Value: 'group___hi_technic_a_p_i_ga666fbc3dea3a90268ddd4be401bd32d3.html'
     ),
     (
      Name: 'SetSensorHTEOPD';
@@ -11670,11 +11670,11 @@ const
     ),
     (
      Name: 'SensorHTGyro';
-     Value: 'group___hi_technic_a_p_i_gaf4b4652f82a7697e69c4239dfa75adef.html'
+     Value: 'group___hi_technic_a_p_i_gabdb455bf56fa8e2d0c834eccf0e5b532.html'
     ),
     (
      Name: 'SensorHTEOPD';
-     Value: 'group___hi_technic_a_p_i_gac25dd4405204b41f107d7b1984073412.html'
+     Value: 'group___hi_technic_a_p_i_ga666fbc3dea3a90268ddd4be401bd32d3.html'
     ),
     (
      Name: 'SetSensorHTEOPD';
@@ -12458,7 +12458,7 @@ const
     ),
     (
      Name: 'Sensor';
-     Value: 'group___input_module_functions_ga7436f71777da89f5e9e2ec9883c93fba.html'
+     Value: 'group___input_module_functions_gaed970c76e7d6b6ec934eacd5bd190bdd.html'
     ),
     (
      Name: 'SensorBoolean';
@@ -12486,23 +12486,23 @@ const
     ),
     (
      Name: 'SensorNormalized';
-     Value: 'group___input_module_functions_ga9594347328e06e7146b4ea9b41cb1bba.html'
+     Value: 'group___input_module_functions_gab188a488542719f43f561f14a4656cfc.html'
     ),
     (
      Name: 'SensorRaw';
-     Value: 'group___input_module_functions_gac4fdcb68f255f24b798575c6855b69ac.html'
+     Value: 'group___input_module_functions_gadd83e72ee5c6c3079321b31c582f66cc.html'
     ),
     (
      Name: 'SensorScaled';
-     Value: 'group___input_module_functions_ga487b39ae98f16c1ca629c458bf0d5c73.html'
+     Value: 'group___input_module_functions_ga09d82af4992d906d96b08832452f3cab.html'
     ),
     (
      Name: 'SensorType';
-     Value: 'group___input_module_functions_gab835a431020303599f8d1e7fda567df2.html'
+     Value: 'group___input_module_functions_ga0b0f61a2a0e92e9263bff25c79f98547.html'
     ),
     (
      Name: 'SensorValue';
-     Value: 'group___input_module_functions_gac14b84c6581df44e10906e1d08482ba8.html'
+     Value: 'group___input_module_functions_ga4c76db831f80cff3f9f341b54ccb7cf8.html'
     ),
     (
      Name: 'SensorValueBool';
@@ -12510,7 +12510,7 @@ const
     ),
     (
      Name: 'SensorValueRaw';
-     Value: 'group___input_module_functions_ga165e70451909b00bab0e197b68f7d362.html'
+     Value: 'group___input_module_functions_gabe616109f9bc876bece67ec3b10ec285.html'
     ),
     (
      Name: 'CustomSensorActiveStatus';
@@ -12526,31 +12526,31 @@ const
     ),
     (
      Name: 'SetCustomSensorActiveStatus';
-     Value: 'group___input_module_functions_ga1202b966eefa1eb86591cb87a76754d9.html'
+     Value: 'group___input_module_functions_gaeac66dc87896451330486c4f0babf6d5.html'
     ),
     (
      Name: 'SetCustomSensorPercentFullScale';
-     Value: 'group___input_module_functions_gaa2eeebaa3527d8c975a8045785331cf0.html'
+     Value: 'group___input_module_functions_ga9ffe53f67eda8333894b85ca29513f91.html'
     ),
     (
      Name: 'SetCustomSensorZeroOffset';
-     Value: 'group___input_module_functions_ga5f9f0512bca1b734f9fb98a92b44a7aa.html'
+     Value: 'group___input_module_functions_ga1cdbe7680a3ebf068c4809dc85dc5e42.html'
     ),
     (
      Name: 'SetSensorBoolean';
-     Value: 'group___input_module_functions_ga79b6519d7f1154b4850e38267b3e6ca5.html'
+     Value: 'group___input_module_functions_ga82fd04418f73f6aa524449d3ec9e9bed.html'
     ),
     (
      Name: 'SetSensorDigiPinsDirection';
-     Value: 'group___input_module_functions_ga57a803cd01983d741b08b80f91222c2f.html'
+     Value: 'group___input_module_functions_ga0c02582066fc338bbf8ad349db5bbaa0.html'
     ),
     (
      Name: 'SetSensorDigiPinsOutputLevel';
-     Value: 'group___input_module_functions_ga555b0b337d7e570d7d09ddff732afd9a.html'
+     Value: 'group___input_module_functions_gaa949cd79e050d881444f777d1240e954.html'
     ),
     (
      Name: 'SetSensorDigiPinsStatus';
-     Value: 'group___input_module_functions_ga9923d9026d579892536285cd50fb9d07.html'
+     Value: 'group___input_module_functions_gab6240485dfaa36b9ed94c14e125f4212.html'
     ),
     (
      Name: 'SysColorSensorRead';
@@ -12558,11 +12558,11 @@ const
     ),
     (
      Name: 'ReadSensorColorEx';
-     Value: 'group___input_module_functions_ga9b1bc2942c95bf6791350d37bd55f388.html'
+     Value: 'group___input_module_functions_gaf8e01f28be7f3476baface8d4515357f.html'
     ),
     (
      Name: 'ReadSensorColorRaw';
-     Value: 'group___input_module_functions_ga25a40e7d47e70674baa4b25ee7750829.html'
+     Value: 'group___input_module_functions_gae29b1117df46bf44aaf25843d61ccbaf.html'
     ),
     (
      Name: 'ColorADRaw';

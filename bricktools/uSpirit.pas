@@ -319,6 +319,7 @@ type
     function NXTFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; virtual; abstract;
     function NXTFindClose(var IterHandle : FantomHandle) : boolean; virtual; abstract;
     function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; virtual; abstract;
+    function NXTFirmwareVersion : word; virtual; abstract;
     function NXTOpenWriteLinear(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; virtual; abstract;
     function NXTOpenReadLinear(const filename : string; var handle : FantomHandle;

@@ -4201,7 +4201,7 @@ begin
   fProductVersion   := GetProductVersion;
   CreateObjects;
   InitializeHeader;
-  FirmwareVersion  := 105; // 1.05 NXT 1.1 firmware
+  FirmwareVersion  := 128; // 1.28 NXT 2.0 firmware
 end;
 
 destructor TRXEProgram.Destroy;
@@ -7701,7 +7701,7 @@ begin
   fMultiThreadedClumps := TStringList.Create;
   TStringList(fMultiThreadedClumps).CaseSensitive := True;
   TStringList(fMultiThreadedClumps).Duplicates := dupIgnore;
-  FirmwareVersion := 105;
+  FirmwareVersion := 128;
 end;
 
 destructor TCodeSpace.Destroy;

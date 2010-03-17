@@ -125,15 +125,10 @@ end;
 procedure TStatusChangeHandler.HandleCompilerStatusChange(Sender: TObject;
   const StatusMsg: string);
 var
-  SL : TStringList;
+  msg : string;
 begin
-  SL := TStringList.Create;
-  try
-    SL.Add('# Status: ' + StatusMsg);
-    HandleWriteMessages(SL);
-  finally
-    SL.Free;
-  end;
+  msg := '# Status: ' + StatusMsg;
+  WriteLn(Output, msg);
 end;
 
 begin
@@ -179,7 +174,7 @@ try
       C.Quiet                    := ParamSwitch('-q', False);
       C.MaxErrors                := ParamIntValue('-ER', 0, False);
       C.MaxPreprocessorDepth     := ParamIntValue('-PD', 10, False);
-      C.FirmwareVersion          := ParamIntValue('-v', 105, False);
+      C.FirmwareVersion          := ParamIntValue('-v', 128, False);
       C.WriteCompilerOutput      := ParamSwitch('-L', False);
       C.CompilerOutputFilename   := ParamValue('-L', False);
       C.WriteSymbolTable         := ParamSwitch('-Y', False);
