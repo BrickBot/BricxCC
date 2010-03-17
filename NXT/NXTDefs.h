@@ -1518,22 +1518,22 @@ dseg ends
 
 #define __SetSensorColorRed(_port) \
   SetSensorType(_port,IN_TYPE_COLORRED) \
-  SetSensorMode(_port,IN_MODE_RAW) \
+  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
   ResetSensor(_port)
 
 #define __SetSensorColorGreen(_port) \
   SetSensorType(_port,IN_TYPE_COLORGREEN) \
-  SetSensorMode(_port,IN_MODE_RAW) \
+  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
   ResetSensor(_port)
 
 #define __SetSensorColorBlue(_port) \
   SetSensorType(_port,IN_TYPE_COLORBLUE) \
-  SetSensorMode(_port,IN_MODE_RAW) \
+  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
   ResetSensor(_port)
 
 #define __SetSensorColorNone(_port) \
   SetSensorType(_port,IN_TYPE_COLORNONE) \
-  SetSensorMode(_port,IN_MODE_RAW) \
+  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
   ResetSensor(_port)
 
 #define SetSensorColorFull(_port) __SetSensorColorFull(_port)
