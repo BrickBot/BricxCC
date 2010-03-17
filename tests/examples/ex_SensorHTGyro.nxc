@@ -1,1 +1,7 @@
-x = SensorHTGyro(S1, gyroOffset);
+task main()
+{
+  int offset = 400;
+  SetSensorHTGyro(S1);
+  NumOut(0, LCD_LINE1, SensorHTGyro(S1, offset+5));
+  Wait(SEC_9);
+}
