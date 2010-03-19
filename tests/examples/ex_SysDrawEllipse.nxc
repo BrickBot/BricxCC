@@ -1,0 +1,13 @@
+task main()
+{
+  DrawEllipseType args;
+  args.Center.X = 50;
+  args.Center.Y = 32;
+  repeat (10) {
+    args.SizeX = 20+Random(15);
+    args.SizeY = 20+Random(10);
+    args.Options = DRAW_OPT_FILL_SHAPE|DRAW_OPT_LOGICAL_XOR;
+    SysDrawEllipse(args);
+  }
+  while(true);
+}

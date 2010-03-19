@@ -1,0 +1,27 @@
+LocationType myPoints[] = {16,16, 8,40, 32,52, 20,36, 52,36, 56,52, 64,32, 44,20, 24,20};
+
+task main()
+{
+  DrawPolygonType args;
+  args.Points = myPoints;
+  args.Options = 0x00;
+  SysDrawPolygon(args);
+  Wait(SEC_2);
+  ClearScreen();
+  args.Options = DRAW_OPT_LOGICAL_XOR|DRAW_OPT_FILL_SHAPE;
+  for(int i=0;i<10;i++) {
+    SysDrawPolygon(args);
+    Wait(SEC_1);
+  }
+  args.Options = true|DRAW_OPT_FILL_SHAPE;
+  SysDrawPolygon(args);
+  Wait(SEC_2);
+  ClearScreen();
+  args.Options = DRAW_OPT_LOGICAL_XOR|DRAW_OPT_FILL_SHAPE;
+  for (int i=0;i<100;i++) {
+    SysDrawPolygon(args);
+    Wait(MS_100);
+  }
+  Wait(SEC_1);
+}
+

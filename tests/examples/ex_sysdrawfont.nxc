@@ -1,0 +1,13 @@
+#download "PropTiny.ric"
+
+task main()
+{
+  DrawFontType dfArgs;
+  dfArgs.Location.X = 10;
+  dfArgs.Location.Y = 59;
+  dfArgs.Filename = "PropTiny.ric" ;
+  dfArgs.Text = "Hello" ;
+  dfArgs.Options = DRAW_OPT_NORMAL|DRAW_OPT_FONT_DIR_L2RT;
+  SysDrawFont(dfArgs);
+  Wait(SEC_4);
+}

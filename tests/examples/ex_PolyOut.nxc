@@ -1,0 +1,21 @@
+LocationType myPoints[] = {16,16, 8,40, 32,52, 20,36, 52,36, 56,52, 64,32, 44,20, 24,20};
+
+task main()
+{
+  PolyOut(myPoints, false);
+  Wait(SEC_2);
+  ClearScreen();
+  for(int i=0;i<10;i++) {
+    PolyOut(myPoints, DRAW_OPT_LOGICAL_XOR|DRAW_OPT_FILL_SHAPE);
+    Wait(SEC_1);
+  }
+  PolyOut(myPoints, true|DRAW_OPT_FILL_SHAPE);
+  Wait(SEC_2);
+  ClearScreen();
+  for (int i=0;i<100;i++) {
+    PolyOut(myPoints, DRAW_OPT_LOGICAL_XOR|DRAW_OPT_FILL_SHAPE);
+    Wait(MS_100);
+  }
+  Wait(SEC_1);
+}
+
