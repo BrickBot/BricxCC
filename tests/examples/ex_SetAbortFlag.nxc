@@ -1,0 +1,1 @@
+SetAbortFlag(BTNSTATE_LONG_PRESSED_EV);

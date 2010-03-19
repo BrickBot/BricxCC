@@ -1,1 +1,5 @@
-ClearScreen();
+task main()
+{
+  ClearScreen();
+  Wait(SEC_10);
+}
