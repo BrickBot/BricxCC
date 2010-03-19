@@ -1,1 +1,7 @@
-LineOut(40, 40, 10, 10); 
+task main()
+{
+  repeat(10) {
+    LineOut(0, 0, DISPLAY_WIDTH, DISPLAY_HEIGHT, DRAW_OPT_LOGICAL_XOR);
+    Wait(SEC_2);
+  }
+}
