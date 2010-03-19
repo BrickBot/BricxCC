@@ -1,1 +1,4 @@
-x = Random();
+int x = Random(); // signed int between -32767..32767
+unsigned i = Random(100); // 0..99
+int ending = 4000, starting = 1000;
+unsigned int j = Random(ending-starting)+starting; // 1000..3999

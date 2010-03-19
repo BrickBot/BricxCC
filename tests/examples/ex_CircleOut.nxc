@@ -1,1 +1,12 @@
-CircleOut(40, 40, 10); 
+task main()
+{
+  for (int i=0; i < 50; i++) {
+    int x = Random(10)+50;
+    int y = Random(10)+32;
+    int r = Random(20);
+    CircleOut(x, y, r, DRAW_OPT_NORMAL+DRAW_OPT_LOGICAL_XOR+DRAW_OPT_FILL_SHAPE);
+    Wait(MS_50);
+  }
+  CircleOut(20, 50, 20);
+  Wait(SEC_2);
+}
