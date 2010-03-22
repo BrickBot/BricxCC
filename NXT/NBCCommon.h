@@ -29,14 +29,21 @@
 #ifndef NBCCOMMON_H
 #define NBCCOMMON_H
 
+/** @addtogroup MiscConstants
+ * @{
+ */
 #define TRUE  1 /*!< A true value */
 #define FALSE 0 /*!< A false value */
 
 #define NA 0xFFFF /*!< The specified argument does not apply (aka unwired) */
 
-#ifdef __ENHANCED_FIRMWARE
+/** @} */  // end of MiscConstants group
 
-/** @defgroup ArrayOpConstants Array operations
+#ifdef __ENHANCED_FIRMWARE
+/** @addtogroup CommandModuleConstants
+ * @{
+ */
+/** @defgroup ArrayOpConstants Array operation constants
  * Constants for use with the \ref ArrayOp function.
  * @{
  */
@@ -48,14 +55,19 @@
 #define OPARR_MIN    0x04 /*!< Calculate the minimum value of the elements in the numeric input array */
 #define OPARR_MAX    0x05 /*!< Calculate the maximum value of the elements in the numeric input array */
 #define OPARR_SORT   0x06 /*!< Sort the elements in the numeric input array */
-/** @} */  // end of IOMapAddressConstants group
+/** @} */  // end of ArrayOpConstants group
+/** @} */  // end of CommandModuleConstants group
 #endif
 
+/** @addtogroup MiscConstants
+ * @{
+ */
 #if __FIRMWARE_VERSION > 107
 #define PI 3.141593               /*!< A constant for PI */
 #define RADIANS_PER_DEGREE PI/180 /*!< Used for converting from degrees to radians */
 #define DEGREES_PER_RADIAN 180/PI /*!< Used for converting from radians to degrees */
 #endif
+/** @} */  // end of MiscConstants group
 
 #if __FIRMWARE_VERSION <= 107
 /** @defgroup IOMapAddressConstants Direct IOMap data addresses
@@ -164,6 +176,9 @@
 /** @} */  // end of IOMapAddressConstants group
 #endif
 
+/** @addtogroup CommandModuleConstants
+ * @{
+ */
 /** @defgroup SysCallConstants System Call function constants
  * Constants for use in the SysCall() function.
  * @{
@@ -259,7 +274,11 @@
 #endif
 #endif
 /** @} */  // end of SysCallConstants group
+/** @} */  // end of CommandModuleConstants group
 
+/** @addtogroup DisplayModuleConstants
+ * @{
+ */
 /** @defgroup LineConstants Line number constants
  * Line numbers for use with DrawText system function.
  * \sa SysDrawText(), TextOut(), NumOut()
@@ -274,7 +293,11 @@
 #define LCD_LINE2 48 /*!< The 2nd line of the LCD screen */
 #define LCD_LINE1 56 /*!< The 1st line of the LCD screen */
 /** @} */  // end of LineConstants group
+/** @} */  // end of DisplayModuleConstants group
 
+/** @addtogroup CommandModuleConstants
+ * @{
+ */
 /** @defgroup TimeConstants Time constants
  * Constants for use with the Wait() function.
  * \sa Wait()
@@ -326,14 +349,18 @@
 #define SEC_30  30000 /*!< 30 seconds */
 #define MIN_1   60000 /*!< 1 minute */
 /** @} */  // end of TimeConstants group
+/** @} */ // end of CommandModuleConstants group
 
+/** @addtogroup CommModuleConstants
+ * @{
+ */
 /** @defgroup MailboxConstants Mailbox constants
  * Mailbox number constants should be used to avoid confusing NXT-G users.
  * \sa SysMessageWrite(), SysMessageRead(), SendMessage(), ReceiveMessage(),
  * SendRemoteBool(), SendRemoteNumber(), SendRemoteString(),
  * SendResponseBool(), SendResponseNumber(), SendResponseString(),
  * ReceiveRemoteBool(), ReceiveRemoteNumber(), ReceiveRemoteString(),
- * ReceiveRemoteMessageEx(), RemoteMessageRead(), RemoteMessageWrite()  
+ * ReceiveRemoteMessageEx(), RemoteMessageRead(), RemoteMessageWrite()
  * @{
  */
 #define MAILBOX1  0 /*!< Mailbox number 1 */
@@ -347,10 +374,12 @@
 #define MAILBOX9  8 /*!< Mailbox number 9 */
 #define MAILBOX10 9 /*!< Mailbox number 10 */
 /** @} */  // end of MailboxConstants group
+/** @} */ // end of CommModuleConstants group
 
-
-/** @defgroup ModuleNameConstants NXT firmware module names
- * Constant string names for all the NXT firmware modules.
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup ModuleNameConstants
  * @{
  */
 #define CommandModuleName  "Command.mod"   /*!< The command module name */
@@ -366,8 +395,7 @@
 #define CommModuleName     "Comm.mod"      /*!< The Comm module name */
 /** @} */  // end of ModuleNameConstants group
 
-/** @defgroup ModuleIDConstants NXT firmware module IDs
- * Constant numeric IDs for all the NXT firmware modules.
+/** @addtogroup ModuleIDConstants
  * @{
  */
 #define CommandModuleID  0x00010001 /*!< The command module ID */
@@ -382,13 +410,13 @@
 #define DisplayModuleID  0x000A0001 /*!< The display module ID */
 #define CommModuleID     0x00050001 /*!< The Comm module ID */
 /** @} */  // end of ModuleIDConstants group
+/** @} */ // end of NXTFirmwareModules group
 
 
 /** @addtogroup CommandModule
  * @{
  */
-/** @defgroup CommandModuleConstants Command module constants
- * Constants that are part of the NXT firmware's Command module.
+/** @addtogroup CommandModuleConstants
  * @{
  */
 //Status/error codes for the VM internal code and bytecodes
@@ -1496,9 +1524,16 @@
 
 #define DRAW_OPT_CLEAR_SCREEN_MODES         (0x0003) /*!< Bit mask for the clear screen modes */
 #define DRAW_OPT_LOGICAL_OPERATIONS         (0x0018) /*!< Bit mask for the logical drawing operations */
+
+/** @defgroup DisplayFontDrawOptionConstants Font drawing option constants
+ * These addition drawing option constants are only for use when drawing
+ * text and numbers on the LCD using an RIC-based font.
+ * \sa FontTextOut(), FontNumOut()
+ * @{
+ */
 #define DRAW_OPT_FONT_DIRECTIONS            (0x01C0) /*!< Bit mask for the font direction bits */
 
-#define DRAW_OPT_FONT_WRAP       (0x0200) /*!< Option to have text wrap in FontNumOut and FontTextOut calls */
+#define DRAW_OPT_FONT_WRAP       (0x0200) /*!< Option to have text wrap in \ref FontNumOut and \ref FontTextOut calls */
 
 #define DRAW_OPT_FONT_DIR_L2RB   (0x0000) /*!< Font left to right bottom align */
 #define DRAW_OPT_FONT_DIR_L2RT   (0x0040) /*!< Font left to right top align */
@@ -1508,6 +1543,7 @@
 #define DRAW_OPT_FONT_DIR_B2TR   (0x0140) /*!< Font bottom to top right align */
 #define DRAW_OPT_FONT_DIR_T2BL   (0x0180) /*!< Font top to bottom left align */
 #define DRAW_OPT_FONT_DIR_T2BR   (0x01C0) /*!< Font top to bottom right align */
+/** @} */  // end of DisplayFontDrawOptionConstants group
 /** @} */  // end of DisplayDrawOptionConstants group
 
 /** @defgroup DisplayFlagsGroup Display flags
@@ -1918,6 +1954,9 @@
 /** @} */  // end of CommModule group
 
 
+/** @addtogroup ThirdPartyDevices
+ * @{
+ */
 /** @defgroup RCXAPIConstants RCX constants
  * Constants that are for use with devices that communicate with the RCX or
  * Scout programmable bricks via IR such as the HiTechnic IRLink or the
@@ -2241,7 +2280,7 @@
 #define RCX_SetPriorityOp    0xd7 /*!< Set task priority */
 #define RCX_MessageOp        0xf7 /*!< Set message */
 /** @} */  // end of RCXOpcodeConstants group
-/** @} */  // end of RCXConstants group
+/** @} */  // end of RCXAPIConstants group
 
 
 /** @defgroup HTIRLinkPFConstants HiTechnic/mindsensors Power Function/IR Train constants
@@ -2534,6 +2573,8 @@
 /** @} */  // end of MindSensorsConstants group
 /** @} */  // end of MindSensorsAPI group
 
+/** @} */  // end of ThirdPartyDevices group
+
 
 /** @addtogroup RICMacros
  * @{
@@ -2687,6 +2728,9 @@
 
 /** @} */  // end of RICMacros group
 
+/** @addtogroup MiscConstants
+ * @{
+ */
 /** @defgroup NXTLimits Data type limits
  * Constants that define various data type limits.
  * @{
@@ -2706,7 +2750,8 @@
 #define LONG_MIN   -2147483647 /*!< The minimum value of the long type */
 #define LONG_MAX   2147483647 /*!< The maximum value of the long type */
 #define ULONG_MAX  4294967295 /*!< The maximum value of the unsigned long type */
-#define RAND_MAX   65535 /*!< The maximum unsigned int random number returned by \ref rand */
+#define RAND_MAX   32768 /*!< The maximum unsigned int random number returned by \ref rand */
 /** @} */  // end of NXTLimits group
+/** @} */  // end of MiscConstants group
 
 #endif // NBCCOMMON_H

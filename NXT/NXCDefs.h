@@ -28,73 +28,11 @@
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
 
-/** @defgroup InputModule Input module
- * Constants and functions related to the Input module.
- */
-
-/** @defgroup InputModuleConstants Input module constants
- * Constants that are part of the NXT firmware's Input module.
- */
-
-/** @defgroup OutputModule Output module
- * Constants and functions related to the Output module.
- */
-
-/** @defgroup OutputModuleConstants Output module constants
- * Constants that are part of the NXT firmware's Output module.
- */
-
-/** @defgroup CommandModule Command module
- * Constants and functions related to the Command module.
- */
-
-/** @defgroup CommModule Comm module
- * Constants and functions related to the Comm module.
- */
-
-/** @defgroup ButtonModule Button module
- * Constants and functions related to the Button module.
- */
-
-/** @defgroup IOCtrlModule IOCtrl module
- * Constants and functions related to the IOCtrl module.
- */
-
-/** @defgroup LoaderModule Loader module
- * Constants and functions related to the Loader module.
- */
-
-/** @defgroup SoundModule Sound module
- * Constants and functions related to the Sound module.
- */
-
-/** @defgroup UiModule Ui module
- * Constants and functions related to the Ui module.
- */
-
-/** @defgroup LowSpeedModule Low Speed module
- * Constants and functions related to the Low Speed module.
- */
-
-/** @defgroup DisplayModule Display module
- * Constants and functions related to the Display module.
- */
-
-/** @defgroup HiTechnicAPI HiTechnic API Functions
- * Functions for accessing and modifying HiTechnic devices.
- */
-
-/** @defgroup MindSensorsAPI MindSensors API Functions
- * Functions for accessing and modifying MindSensors devices.
- */
-
-/** @defgroup RICMacros RIC Macro Wrappers
- * Macro wrappers for use in defining RIC byte arrays.
- */
-
 #include "NBCCommon.h"
 
-
+/** @addtogroup MiscConstants
+ * @{
+ */
 /** @defgroup TypeAliases Type aliases
  *  Short type aliases indicating signed/unsigned and bit count for each type.
  *  @{
@@ -106,6 +44,7 @@
 #define u32 unsigned long /*!< Unsigned 32 bit type */
 #define s32 long          /*!< Signed 32 bit type */
 /** @} */  // end of TypeAliases group
+/** @} */  // end of MiscConstants group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -113,6 +52,9 @@
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup InputModule
  * @{
  */
@@ -179,7 +121,7 @@
  * \sa SetSensor()
  * @{
  */
-#define _SENSOR_CFG(_type,_mode)	(((_type)<<8)+(_mode))                               /*!< Macro for defining SetSensor combined type and mode constants */
+#define _SENSOR_CFG(_type,_mode)	(((_type)<<8)+(_mode))                               /*!< Macro for defining \ref SetSensor combined type and mode constants */
 #define SENSOR_TOUCH		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_BOOL)             /*!< Touch sensor in boolean mode */
 #define SENSOR_LIGHT		_SENSOR_CFG(SENSOR_TYPE_LIGHT, SENSOR_MODE_PERCENT)          /*!< Light sensor in percent mode */
 #define SENSOR_ROTATION		_SENSOR_CFG(SENSOR_TYPE_ROTATION, SENSOR_MODE_ROTATION)      /*!< RCX rotation sensor in rotation mode */
@@ -193,10 +135,10 @@
 #define SENSOR_LOWSPEED     _SENSOR_CFG(SENSOR_TYPE_LOWSPEED, SENSOR_MODE_RAW)           /*!< NXT I2C sensor without 9V power in raw mode */
 #if __FIRMWARE_VERSION > 107
 #define SENSOR_COLORFULL	_SENSOR_CFG(SENSOR_TYPE_COLORFULL, SENSOR_MODE_RAW)          /*!< NXT 2.0 color sensor (full) in raw mode */
-#define SENSOR_COLORRED		_SENSOR_CFG(SENSOR_TYPE_COLORRED, SENSOR_MODE_RAW)           /*!< NXT 2.0 color sensor (red) in raw mode */
-#define SENSOR_COLORGREEN	_SENSOR_CFG(SENSOR_TYPE_COLORGREEN, SENSOR_MODE_RAW)         /*!< NXT 2.0 color sensor (green) in raw mode */
-#define SENSOR_COLORBLUE	_SENSOR_CFG(SENSOR_TYPE_COLORBLUE, SENSOR_MODE_RAW)          /*!< NXT 2.0 color sensor (blue) in raw mode */
-#define SENSOR_COLORNONE	_SENSOR_CFG(SENSOR_TYPE_COLORNONE, SENSOR_MODE_RAW)          /*!< NXT 2.0 color sensor (none) in raw mode */
+#define SENSOR_COLORRED		_SENSOR_CFG(SENSOR_TYPE_COLORRED, SENSOR_MODE_PERCENT)       /*!< NXT 2.0 color sensor (red) in percent mode */
+#define SENSOR_COLORGREEN	_SENSOR_CFG(SENSOR_TYPE_COLORGREEN, SENSOR_MODE_PERCENT)     /*!< NXT 2.0 color sensor (green) in percent mode */
+#define SENSOR_COLORBLUE	_SENSOR_CFG(SENSOR_TYPE_COLORBLUE, SENSOR_MODE_PERCENT)      /*!< NXT 2.0 color sensor (blue) in percent mode */
+#define SENSOR_COLORNONE	_SENSOR_CFG(SENSOR_TYPE_COLORNONE, SENSOR_MODE_PERCENT)      /*!< NXT 2.0 color sensor (none) in percent mode */
 #endif
 /** @} */ // end of SensorModes group
 /** @} */ // end of InputModuleConstants group
@@ -245,10 +187,12 @@ struct ColorSensorReadType {
 /**
  * Set sensor type.
  * Set a sensor's type, which must be one of the predefined sensor type
- * constants.
+ * constants.  After changing the type or the mode of a sensor
+ * port you must call \ref ResetSensor to give the firmware time to reconfigure
+ * the sensor port.
  * \sa SetSensorMode(), SetSensor()
  * \param port The port to configure. See \ref InPorts.
- * \param type The desired sensor type.
+ * \param type The desired sensor type.  See \ref SensorTypes.
  */
 inline void SetSensorType(const byte & port, byte type) { asm { setin type, port, Type } }
 /** \example ex_SetSensorType.nxc
@@ -259,10 +203,12 @@ inline void SetSensorType(const byte & port, byte type) { asm { setin type, port
  * Set sensor mode.
  * Set a sensor's mode, which should be one of the predefined sensor mode
  * constants. A slope parameter for boolean conversion, if desired, may be
- * added to the mode.
+ * added to the mode. After changing the type or the mode of a sensor
+ * port you must call \ref ResetSensor to give the firmware time to reconfigure
+ * the sensor port.
  * \sa SetSensorType(), SetSensor()
  * \param port The port to configure. See \ref InPorts.
- * \param mode The desired sensor mode.
+ * \param mode The desired sensor mode. See \ref SensorModes.
  */
 inline void SetSensorMode(const byte & port, byte mode) { asm { setin mode, port, InputMode } }
 /** \example ex_SetSensorMode.nxc
@@ -283,7 +229,9 @@ inline void ClearSensor(const byte & port) { asm { setin 0, port, ScaledValue } 
 /**
  * Reset the sensor port.
  * Sets the invalid data flag on the specified port and waits for it to
- * become valid again.
+ * become valid again. After changing the type or the mode of a sensor
+ * port you must call this function to give the firmware time to reconfigure
+ * the sensor port.
  * \param port The port to reset. See \ref InPorts.
  */
 inline void ResetSensor(const byte & port) { asm { __ResetSensor(port) } }
@@ -298,6 +246,7 @@ inline void ResetSensor(const byte & port) { asm { __ResetSensor(port) } }
  * \sa SetSensorType(), SetSensorMode(), and ResetSensor()
  * \param port The port to configure. See \ref InPorts.
  * \param config The configuration constant containing both the type and mode.
+ * See \ref SensorTypeModes.
  */
 inline void SetSensor(const byte & port, const unsigned int config) {
   SetSensorType(port, config>>8);
@@ -341,10 +290,17 @@ inline void SetSensorSound(const byte & port) { asm { __SetSensorSound(port) } }
 /**
  * Configure an I2C sensor.
  * Configure the sensor on the specified port as an I2C digital sensor
- * (9V powered).
+ * for either powered (9 volt) or unpowered devices.
  * \param port The port to configure. See \ref InPorts.
+ * \param bIsPowered A boolean flag indicating whether to configure the port
+ * for powered or unpowered I2C devices.  The default value for this
+ * optional parameter is true.
  */
-inline void SetSensorLowspeed(const byte & port) { asm { __SetSensorLowspeed(port) } }
+inline void SetSensorLowspeed(const byte & port, bool bIsPowered = true) {
+  SetSensorType(port, bIsPowered ? SENSOR_TYPE_LOWSPEED_9V : SENSOR_TYPE_LOWSPEED);
+  SetSensorMode(port, SENSOR_MODE_RAW);
+  ResetSensor(port);
+}
 /** \example ex_SetSensorLowspeed.nxc
  * This is an example of how to use the \ref SetSensorLowspeed function.
  */
@@ -967,6 +923,7 @@ inline unsigned int ColorSensorValue(const byte port, const byte color);
 #endif
 /** @} */ // end of InputModuleFunctions group
 /** @} */ // end of InputModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -974,6 +931,9 @@ inline unsigned int ColorSensorValue(const byte port, const byte color);
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup OutputModule
  * @{
  */
@@ -1878,6 +1838,7 @@ inline byte MotorPwnFreq();
 
 /** @} */ // end of OutputModuleFunctions group
 /** @} */ // end of OutputModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -1885,6 +1846,9 @@ inline byte MotorPwnFreq();
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup DisplayModule
  * @{
  */
@@ -2168,15 +2132,12 @@ inline void ResetScreen();
 /** \example ex_ResetScreen.nxc
  * This is an example of how to use the \ref ResetScreen function.
  */
-/** \example ex_disprest.nxc
- * This is an example of how to use the \ref ResetScreen function.
- */
 
 /**
  * Draw a circle.
  * This function lets you draw a circle on the screen with its center at the
  * specified x and y location, using the specified radius. Optionally specify
- * drawing options. If this argument is not specified it defaults to DRAW_OPT_NORMAL.
+ * drawing options. If this argument is not specified it defaults to \ref DRAW_OPT_NORMAL.
  * Valid display option constants are listed in the \ref DisplayDrawOptionConstants group.
  *
  * \param x The x value for the center of the circle.
@@ -2186,7 +2147,7 @@ inline void ResetScreen();
  * \return The result of the drawing operation.
  */
 inline char CircleOut(int x, int y, byte radius, unsigned long options=DRAW_OPT_NORMAL);
-/** \example ex_dispcout.nxc
+/** \example ex_CircleOut.nxc
  * This is an example of how to use the \ref CircleOut, \ref Random, and
  * \ref Wait functions.
  */
@@ -2195,7 +2156,7 @@ inline char CircleOut(int x, int y, byte radius, unsigned long options=DRAW_OPT_
  * Draw an ellipse.
  * This function lets you draw an ellipse on the screen with its center at the
  * specified x and y location, using the specified radii. Optionally specify
- * drawing options. If this argument is not specified it defaults to DRAW_OPT_NORMAL.
+ * drawing options. If this argument is not specified it defaults to \ref DRAW_OPT_NORMAL.
  * Valid display option constants are listed in the \ref DisplayDrawOptionConstants group.
  *
  * \param x The x value for the center of the ellipse.
@@ -2206,7 +2167,7 @@ inline char CircleOut(int x, int y, byte radius, unsigned long options=DRAW_OPT_
  * \return The result of the drawing operation.
  */
 inline char EllipseOut(int x, int y, byte radiusX, byte radiusY, unsigned long options=DRAW_OPT_NORMAL);
-/** \example ex_dispeout.nxc
+/** \example ex_EllipseOut.nxc
  * This is an example of how to use the \ref EllipseOut and \ref Random functions.
  */
 
@@ -2214,7 +2175,7 @@ inline char EllipseOut(int x, int y, byte radiusX, byte radiusY, unsigned long o
  * Draw a line.
  * This function lets you draw a line on the screen from x1, y1 to x2, y2.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
  *
  * \param x1 The x value for the start of the line.
@@ -2228,15 +2189,12 @@ inline char LineOut(int x1, int y1, int x2, int y2, unsigned long options=DRAW_O
 /** \example ex_LineOut.nxc
  * This is an example of how to use the \ref LineOut function.
  */
-/** \example ex_displout.nxc
- * This is an example of how to use the \ref LineOut function.
- */
 
 /**
  * Draw a point.
  * This function lets you draw a point on the screen at x, y.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
  *
  * \param x The x value for the point.
@@ -2248,15 +2206,12 @@ inline char PointOut(int x, int y, unsigned long options=DRAW_OPT_NORMAL);
 /** \example ex_PointOut.nxc
  * This is an example of how to use the \ref PointOut function.
  */
-/** \example ex_disppout.nxc
- * This is an example of how to use the \ref PointOut function.
- */
 
 /**
  * Draw a polygon.
  * This function lets you draw a polygon on the screen using an array of points.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
  *
  * \param points An array of LocationType points that define the polygon.
@@ -2264,7 +2219,7 @@ inline char PointOut(int x, int y, unsigned long options=DRAW_OPT_NORMAL);
  * \return The result of the drawing operation.
  */
 inline char PolyOut(LocationType points[], unsigned long options=DRAW_OPT_NORMAL);
-/** \example ex_dispplout.nxc
+/** \example ex_PolyOut.nxc
  * This is an example of how to use the \ref PolyOut function.
  */
 
@@ -2273,7 +2228,7 @@ inline char PolyOut(LocationType points[], unsigned long options=DRAW_OPT_NORMAL
  * This function lets you draw a rectangle on the screen at x, y with the
  * specified width and height.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
  *
  * \param x The x value for the top left corner of the rectangle.
@@ -2287,10 +2242,6 @@ inline char RectOut(int x, int y, int width, int height, unsigned long options=D
 /** \example ex_RectOut.nxc
  * This is an example of how to use the \ref RectOut function.
  */
-/** \example ex_disprout.nxc
- * This is an example of how to use the \ref LineOut function.
- */
-
 
 /**
  * Draw text.
@@ -2298,7 +2249,7 @@ inline char RectOut(int x, int y, int width, int height, unsigned long options=D
  * value must be a multiple of 8.  Valid line number constants are listed in
  * the \ref LineConstants group.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
  *
  * \param x The x value for the start of the text output.
@@ -2311,9 +2262,6 @@ inline char TextOut(int x, int y, string str, unsigned long options=DRAW_OPT_NOR
 /** \example ex_TextOut.nxc
  * This is an example of how to use the \ref TextOut function.
  */
-/** \example ex_disptout.nxc
- * This is an example of how to use the \ref TextOut function.
- */
 
 /**
  * Draw a number.
@@ -2321,11 +2269,11 @@ inline char TextOut(int x, int y, string str, unsigned long options=DRAW_OPT_NOR
  * value must be a multiple of 8.  Valid line number constants are listed in
  * the \ref LineConstants group.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
  *
- * \param x The x value for the start of the text output.
- * \param y The text line number for the text output.
+ * \param x The x value for the start of the number output.
+ * \param y The text line number for the number output.
  * \param value The value to output to the LCD screen. Any numeric type is supported.
  * \param options The optional drawing options.
  * \return The result of the drawing operation.
@@ -2334,21 +2282,19 @@ inline char NumOut(int x, int y, variant value, unsigned long options=DRAW_OPT_N
 /** \example ex_NumOut.nxc
  * This is an example of how to use the \ref NumOut function.
  */
-/** \example ex_dispnout.nxc
- * This is an example of how to use the \ref NumOut function.
- */
 
 /**
  * Draw text with font.
  * Draw a text value on the screen at the specified x and y location using
- * a custom RIC font. The y value must be a multiple of 8.  Valid line number
- * constants are listed in the \ref LineConstants group.
- * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
- * the \ref DisplayDrawOptionConstants group.
+ * a custom RIC font. Optionally specify drawing options. If this argument is
+ * not specified it defaults to \ref DRAW_OPT_NORMAL. Valid display option
+ * constants are listed in the \ref DisplayDrawOptionConstants group.  See the
+ * \ref DisplayFontDrawOptionConstants for options specific to the font
+ * drawing functions.
+ * \sa FontNumOut
  *
  * \param x The x value for the start of the text output.
- * \param y The text line number for the text output.
+ * \param y The y value for the start of the text output.
  * \param filename The filename of the RIC font.
  * \param str The text to output to the LCD screen.
  * \param options The optional drawing options.
@@ -2363,14 +2309,15 @@ inline char FontTextOut(int x, int y, string filename, string str, unsigned long
 /**
  * Draw a number with font.
  * Draw a numeric value on the screen at the specified x and y location using
- * a custom RIC font. The y value must be a multiple of 8.  Valid line number
- * constants are listed in the \ref LineConstants group.
- * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
- * the \ref DisplayDrawOptionConstants group.
+ * a custom RIC font. Optionally specify drawing options. If this argument is
+ * not specified it defaults to \ref DRAW_OPT_NORMAL. Valid display option
+ * constants are listed in the \ref DisplayDrawOptionConstants group.  See the
+ * \ref DisplayFontDrawOptionConstants for options specific to the font
+ * drawing functions.
+ * \sa FontTextOut
  *
- * \param x The x value for the start of the text output.
- * \param y The text line number for the text output.
+ * \param x The x value for the start of the number output.
+ * \param y The y value for the start of the number output.
  * \param filename The filename of the RIC font.
  * \param value The value to output to the LCD screen. Any numeric type is supported.
  * \param options The optional drawing options.
@@ -2385,7 +2332,7 @@ inline char FontNumOut(int x, int y, string filename, variant value, unsigned lo
  * Draw a graphic image.
  * Draw a graphic image file on the screen at the specified x and y location.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
  * nothing will be drawn and no errors will be reported.
  *
@@ -2410,7 +2357,7 @@ inline char GraphicOut(int x, int y, string filename, unsigned long options=DRAW
  * Draw a graphic image from byte array.
  * Draw a graphic image byte array on the screen at the specified x and y location.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
  * nothing will be drawn and no errors will be reported.
  *
@@ -2434,7 +2381,7 @@ inline char GraphicArrayOut(int x, int y, byte data[], unsigned long options=DRA
  * Draw a graphic image file on the screen at the specified x and y location using
  * an array of parameters.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
  * nothing will be drawn and no errors will be reported.
  *
@@ -2458,7 +2405,7 @@ inline char GraphicOutEx(int x, int y, string filename, byte vars[], unsigned lo
  * Draw a graphic image byte array on the screen at the specified x and y location
  * using an array of parameters.
  * Optionally specify drawing options. If this argument is not specified it
- * defaults to DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
  * nothing will be drawn and no errors will be reported.
  *
@@ -2493,11 +2440,6 @@ inline char GraphicArrayOutEx(int x, int y, byte data[], byte vars[], unsigned l
 inline void GetDisplayNormal(const byte x, const byte line, unsigned int cnt, byte & data[]);
 /** \example ex_GetDisplayNormal.nxc
  * This is an example of how to use the \ref GetDisplayNormal function.
- */
-
-/** \example ex_getsetdisp.nxc
- * How to read and write pixel data using the \ref GetDisplayNormal, \ref GetDisplayPopup,
- * \ref SetDisplayNormal,  and \ref SetDisplayPopup functions.
  */
 
 /**
@@ -2748,7 +2690,7 @@ inline byte DisplayContrast();
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SysDrawGraphicArray(DrawGraphicArrayType & args);
-/** \example ex_drawgarray.nxc
+/** \example ex_sysdrawgraphicarray.nxc
  * This is an example of how to use the \ref SysDrawGraphicArray function along with the \ref DrawGraphicArrayType structure.
  */
 
@@ -2762,7 +2704,7 @@ inline void SysDrawGraphicArray(DrawGraphicArrayType & args);
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SysDrawPolygon(DrawPolygonType & args);
-/** \example ex_drawpoly.nxc
+/** \example ex_sysdrawpolygon.nxc
  * This is an example of how to use the \ref SysDrawPolygon function along
  * with the \ref DrawPolygonType structure.
  */
@@ -2777,7 +2719,7 @@ inline void SysDrawPolygon(DrawPolygonType & args);
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SysDrawEllipse(DrawEllipseType & args);
-/** \example ex_drawellipse.nxc
+/** \example ex_sysdrawellipse.nxc
  * This is an example of how to use the \ref SysDrawEllipse function along
  * with the \ref DrawEllipseType structure.
  */
@@ -2792,7 +2734,7 @@ inline void SysDrawEllipse(DrawEllipseType & args);
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SysDrawFont(DrawFontType & args);
-/** \example ex_drawfont.nxc
+/** \example ex_sysdrawfont.nxc
  * This is an example of how to use the \ref SysDrawFont function along
  * with the \ref DrawFontType structure.
  */
@@ -2878,7 +2820,7 @@ inline void SysDrawFont(DrawFontType & args);
  * This function lets you clear the NXT LCD to a blank screen.
  */
 inline void ClearScreen() { asm { PointOutEx(200, 200, TRUE) } }
-/** \example ex_dispcls.nxc
+/** \example ex_ClearScreen.nxc
  * This is an example of how to use the \ref ClearScreen and \ref Wait functions.
  */
 
@@ -2954,6 +2896,7 @@ inline void SetDisplayContrast(byte contrast) { asm { __setDisplayContrast(contr
 
 /** @} */ // end of DisplayModuleFunctions group
 /** @} */ // end of DisplayModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -2961,6 +2904,9 @@ inline void SetDisplayContrast(byte contrast) { asm { __setDisplayContrast(contr
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup SoundModule
  * @{
  */
@@ -3373,6 +3319,7 @@ inline void SysSoundSetState(SoundSetStateType & args);
 
 /** @} */ // end of SoundModuleFunctions group
 /** @} */ // end of SoundModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -3380,6 +3327,9 @@ inline void SysSoundSetState(SoundSetStateType & args);
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup LowSpeedModule
  * @{
  */
@@ -4322,6 +4272,7 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 
 /** @} */ // end of LowSpeedModuleFunctions group
 /** @} */ // end of LowSpeedModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -4329,6 +4280,9 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup IOCtrlModule
  * @{
  */
@@ -4380,6 +4334,7 @@ inline void RebootInFirmwareMode();
 #endif
 /** @} */ // end of IOCtrlModuleFunctions group
 /** @} */ // end of IOCtrlModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -4387,6 +4342,9 @@ inline void RebootInFirmwareMode();
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup CommandModule
  * @{
  */
@@ -4547,6 +4505,7 @@ struct ComputeCalibValueType {
 
 #endif
 /** @} */ // end of CommandModuleTypes group
+
 /** @defgroup CommandModuleFunctions Command module functions
  * Functions for accessing and modifying Command module features.
  * @{
@@ -4716,9 +4675,9 @@ inline void SysIOMapWriteByID(IOMapWriteByIDType & args);
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
 inline void SysDatalogWrite(DatalogWriteType & args);
-/** \example ex_datalog.nxc
- * This is an example of how to use the \ref SysDatalogWrite and \ref SysDatalogGetTimes
- * functions along with the \ref DatalogWriteType and \ref DatalogGetTimesType structures.
+/** \example ex_SysDatalogWrite.nxc
+ * This is an example of how to use the \ref SysDatalogWrite function along
+ * with the \ref DatalogWriteType structure.
  */
 
 /**
@@ -4733,8 +4692,9 @@ inline void SysDatalogWrite(DatalogWriteType & args);
  */
 inline void SysDatalogGetTimes(DatalogGetTimesType & args);
 /** \example ex_SysDatalogGetTimes.nxc
-* This is an example of how to use the \ref SysDatalogGetTimes function.
-*/
+ * This is an example of how to use the \ref SysDatalogGetTimes function along
+ * with the \ref DatalogGetTimesType structure.
+ */
 
 /**
  * Read semaphore data.
@@ -4747,8 +4707,9 @@ inline void SysDatalogGetTimes(DatalogGetTimesType & args);
  */
 inline void SysReadSemData(ReadSemDataType & args);
 /** \example ex_SysReadSemData.nxc
-* This is an example of how to use the \ref SysReadSemData function.
-*/
+ * This is an example of how to use the \ref SysReadSemData function along with
+ * the \ref ReadSemDataType structure.
+ */
 
 /**
  * Write semaphore data.
@@ -4761,8 +4722,9 @@ inline void SysReadSemData(ReadSemDataType & args);
  */
 inline void SysWriteSemData(WriteSemDataType & args);
 /** \example ex_SysWriteSemData.nxc
-* This is an example of how to use the \ref SysWriteSemData function.
-*/
+ * This is an example of how to use the \ref SysWriteSemData function along
+ * with the \ref WriteSemDataType structure.
+ */
 
 /**
  * Update calibration cache information.
@@ -4776,8 +4738,9 @@ inline void SysWriteSemData(WriteSemDataType & args);
  */
 inline void SysUpdateCalibCacheInfo(UpdateCalibCacheInfoType & args);
 /** \example ex_SysUpdateCalibCacheInfo.nxc
-* This is an example of how to use the \ref SysUpdateCalibCacheInfo function.
-*/
+ * This is an example of how to use the \ref SysUpdateCalibCacheInfo function
+ * along with the \ref UpdateCalibCacheInfoType structure.
+ */
 
 /**
  * Compute calibration values.
@@ -4791,8 +4754,9 @@ inline void SysUpdateCalibCacheInfo(UpdateCalibCacheInfoType & args);
  */
 inline void SysComputeCalibValue(ComputeCalibValueType & args);
 /** \example ex_SysComputeCalibValue.nxc
-* This is an example of how to use the \ref SysComputeCalibValue function.
-*/
+ * This is an example of how to use the \ref SysComputeCalibValue function
+ * along with the \ref ComputeCalibValueType structure.
+ */
 
 #endif
 
@@ -5202,7 +5166,7 @@ inline void ArraySort(variant & dest[], const variant & src[], unsigned int idx,
  * Operate on numeric arrays.
  * This function lets you perform various operations on numeric arrays.
  *
- * \param op  The array operation.
+ * \param op  The array operation. See \ref ArrayOpConstants.
  * \param dest The destination variant type (scalar or array, depending on the operation).
  * \param src The source numeric array.
  * \param idx The index of the start of the array subset to process. Pass
@@ -5236,19 +5200,20 @@ inline void ArrayOp(const byte op, variant & dest, const variant & src[], unsign
 #define ArraySubset(_aout, _asrc, _idx, _len) asm { arrsubset _aout, _asrc, _idx, _len }
 
 #ifdef __ENHANCED_FIRMWARE
-#define ArraySum(_src, _idx, _len) { asm { arrop OPARR_SUM, __RETVAL__, _src, _idx, _len} }
-#define ArrayMean(_src, _idx, _len) { asm { arrop OPARR_MEAN, __RETVAL__, _src, _idx, _len} }
-#define ArraySumSqr(_src, _idx, _len) { asm { arrop OPARR_SUMSQR, __RETVAL__, _src, _idx, _len} }
-#define ArrayStd(_src, _idx, _len) { asm { arrop OPARR_STD, __RETVAL__, _src, _idx, _len} }
-#define ArrayMin(_src, _idx, _len) { asm { arrop OPARR_MIN, __RETVAL__, _src, _idx, _len} }
-#define ArrayMax(_src, _idx, _len) { asm { arrop OPARR_MAX, __RETVAL__, _src, _idx, _len} }
-#define ArraySort(_dest, _src, _idx, _len) { asm { arrop OPARR_SORT, _dest, _src, _idx, _len} }
-#define ArrayOp(_op, _dest, _src, _idx, _len) { asm { arrop _op, _dest, _src, _idx, _len} }
+#define ArraySum(_src, _idx, _len) asm { arrop OPARR_SUM, __RETVAL__, _src, _idx, _len }
+#define ArrayMean(_src, _idx, _len) asm { arrop OPARR_MEAN, __RETVAL__, _src, _idx, _len }
+#define ArraySumSqr(_src, _idx, _len) asm { arrop OPARR_SUMSQR, __RETVAL__, _src, _idx, _len }
+#define ArrayStd(_src, _idx, _len) asm { arrop OPARR_STD, __RETVAL__, _src, _idx, _len }
+#define ArrayMin(_src, _idx, _len) asm { arrop OPARR_MIN, __RETVAL__, _src, _idx, _len }
+#define ArrayMax(_src, _idx, _len) asm { arrop OPARR_MAX, __RETVAL__, _src, _idx, _len }
+#define ArraySort(_dest, _src, _idx, _len) asm { arrop OPARR_SORT, _dest, _src, _idx, _len }
+#define ArrayOp(_op, _dest, _src, _idx, _len) asm { arrop _op, _dest, _src, _idx, _len }
 #endif
 
 #endif
 /** @} */ // end of CommandModuleFunctions group
 /** @} */ // end of CommandModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -5256,6 +5221,9 @@ inline void ArrayOp(const byte op, variant & dest, const variant & src[], unsign
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup CommModule
  * @{
  */
@@ -7271,6 +7239,7 @@ inline void SetBTDeviceNameCount(byte count);
 #endif
 /** @} */ // end of CommModuleFunctions group
 /** @} */ // end of CommModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -7278,6 +7247,9 @@ inline void SetBTDeviceNameCount(byte count);
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup ButtonModule
  * @{
  */
@@ -7495,14 +7467,6 @@ inline void SetButtonState(const byte btn, const byte state);
  * This is an example of how to use the \ref SetButtonState function.
  */
 
-/** \example ex_buttonmisc.nxc
- * This is an example of how to use the \ref ButtonPressed, \ref ButtonCount,
- * \ref ReadButtonEx, \ref ButtonPressCount, \ref ButtonLongPressCount, \ref ButtonShortReleaseCount,
- * \ref ButtonLongReleaseCount, \ref ButtonReleaseCount, \ref ButtonState,
- * \ref SetButtonLongPressCount, \ref SetButtonLongReleaseCount, \ref SetButtonPressCount,
- * \ref SetButtonReleaseCount, \ref SetButtonShortReleaseCount, and \ref SetButtonState.
- */
-
 /**
  * Read button.
  * This function lets you read button state information via the \ref
@@ -7539,6 +7503,7 @@ inline void SysReadButton(ReadButtonType & args);
 #endif
 /** @} */ // end of ButtonModuleFunctions group
 /** @} */ // end of ButtonModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -7546,6 +7511,9 @@ inline void SysReadButton(ReadButtonType & args);
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup UiModule
  * @{
  */
@@ -7976,6 +7944,7 @@ inline void SysSetSleepTimeout(SetSleepTimeoutType & args);
 #endif
 /** @} */ // end of UiModuleFunctions group
 /** @} */ // end of UiModule group
+/** @} */ // end of NXTFirmwareModules group
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -7983,6 +7952,9 @@ inline void SysSetSleepTimeout(SetSleepTimeoutType & args);
 ///////////////////////////////////////////////////////////////////////////////
 
 
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
 /** @addtogroup LoaderModule
  * @{
  */
@@ -9001,7 +8973,12 @@ inline void SysListFiles(ListFilesType & args);
 
 /** @} */ // end of LoaderModuleFunctions group
 /** @} */ // end of LoaderModule group
+/** @} */ // end of NXTFirmwareModules group
 
+
+/** @addtogroup ThirdPartyDevices
+ * @{
+ */
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// HiTechnic API ////////////////////////////////
@@ -13233,6 +13210,13 @@ inline void MSScoutUnmuteSound(void);
 
 /** @} */ // end of MindSensorsAPI group
 
+/** @} */ // end of ThirdPartyDevices group
+
+
+
+/** @addtogroup StandardCAPIFunctions
+ * @{
+ */
 
 ///////////////////////////////////////////////////////////////////////////////
 ////////////////////////////////// cmath API //////////////////////////////////
@@ -14651,6 +14635,9 @@ inline unsigned int rand();
  * (0.0) is returned.
  */
 inline float atof(const string str) { return StrToNum(str); }
+/** \example ex_atof.nxc
+ * This is an example of how to use the \ref atof function.
+ */
 
 /**
  * Convert string to integer.
@@ -14677,6 +14664,9 @@ inline float atof(const string str) { return StrToNum(str); }
  * is returned.
  */
 inline int atoi(const string str) { return StrToNum(str); }
+/** \example ex_atoi.nxc
+ * This is an example of how to use the \ref atoi function.
+ */
 
 /**
  * Convert string to long integer.
@@ -14703,6 +14693,9 @@ inline int atoi(const string str) { return StrToNum(str); }
  * is returned.
  */
 inline long atol(const string str) { return StrToNum(str); }
+/** \example ex_atol.nxc
+ * This is an example of how to use the \ref atol function.
+ */
 
 /**
  * Absolute value.
@@ -14712,6 +14705,9 @@ inline long atol(const string str) { return StrToNum(str); }
  * \return The absolute value of n.
  */
 inline long labs(long n) { return abs(n); }
+/** \example ex_labs.nxc
+ * This is an example of how to use the \ref labs function.
+ */
 
 #if __FIRMWARE_VERSION > 107
 /**
@@ -14753,6 +14749,9 @@ inline float strtod(const string & str, string & endptr) {
   }
   return result;
 }
+/** \example ex_strtod.nxc
+ * This is an example of how to use the \ref strtod function.
+ */
 #endif
 
 /**
@@ -14790,6 +14789,9 @@ inline long strtol(const string & str, string & endptr, int base = 10) {
   }
   return result;
 }
+/** \example ex_strtol.nxc
+ * This is an example of how to use the \ref strtol function.
+ */
 
 /**
  * Convert string to unsigned long integer.
@@ -14826,6 +14828,9 @@ inline long strtoul(const string & str, string & endptr, int base = 10) {
   }
   return result;
 }
+/** \example ex_strtoul.nxc
+ * This is an example of how to use the \ref strtoul function.
+ */
 
 /**
  * Integral division.
@@ -14845,6 +14850,9 @@ inline div_t div(int numer, int denom) {
   result.rem  = numer % denom;
   return result;
 }
+/** \example ex_div.nxc
+ * This is an example of how to use the \ref div function.
+ */
 
 /**
  * Integral division.
@@ -14864,11 +14872,8 @@ inline ldiv_t ldiv(long numer, long denom) {
   result.rem  = numer % denom;
   return result;
 }
-
-/** \example ex_cstdlib.nxc
- * This is an example of how to use the cstdlib API functions: \ref abs, \ref labs, \ref atof,
- * \ref atoi, \ref atol, \ref strtod, \ref strtol, \ref strtoul, \ref div,
- * \ref ldiv, \ref abort, and \ref rand.
+/** \example ex_ldiv.nxc
+ * This is an example of how to use the \ref ldiv function.
  */
 
 /** @} */ // end of cstdlibAPI group
@@ -15586,8 +15591,10 @@ inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
  * \ref isgraph, \ref ispunct, \ref isxdigit, \ref toupper, and \ref tolower.
  */
 
-
 /** @} */ // end of ctypeAPI group
+
+/** @} */ // end of StandardCAPIFunctions group
+
 
 /** @addtogroup RICMacros
  * @{
