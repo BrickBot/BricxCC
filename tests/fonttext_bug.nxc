@@ -1,4 +1,5 @@
-string filename="font.ric";
 task main(){
-  FontTextOut(0,0, filename, "test");
+  string filename="tahoma8.ric";
+  FontTextOut(0, 40, filename, "@This is a test", DRAW_OPT_FONT_WRAP);
+  Wait(SEC_5);
 }

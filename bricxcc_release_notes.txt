@@ -51,3 +51,5 @@ Version 3.3.7.20
 - Added editor experts: block comment/uncomment (Ctrl+Alt+Period/Comma), 
   align lines (Ctrl+Alt+End), previous/next identifier (Ctrl+Alt+Up/Down), and 
   Reverse statements (Ctrl+Alt+Home)
+- Added ability to edit the editor expert and the grep search shortcuts.
+- Added automatic firmware version number when compiling NBC/NXC code.
