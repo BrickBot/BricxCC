@@ -1,5 +1,5 @@
 task main(){
-  string filename="tahoma8.ric";
-  FontTextOut(0, 40, filename, "@This is a test", DRAW_OPT_FONT_WRAP);
-  Wait(SEC_5);
+  string filename="segoescr12.ric";
+  FontTextOut(0, 40, filename, "@This is a test! 123.45");
+  Wait(SEC_10);
 }

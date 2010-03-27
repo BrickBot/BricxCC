@@ -1,0 +1,9 @@
+task main()
+{
+  string msgs[] = {"please work", "testing, 1, 2, 3"};
+  string tmp = "123456";
+  string a = "AA", b = "BB", c = "CC";
+  
+  TextOut(0, LCD_LINE3, StrCat(a, SubStr(tmp, 2, 3), msgs[0]));
+  Wait(SEC_5);
+}

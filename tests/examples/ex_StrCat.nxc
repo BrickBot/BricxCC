@@ -1,1 +1,1 @@
-strcat(msg, “foo”); // msg = msg+”foo”
+strcat(msg, "foo"); // msg = msg+"foo"

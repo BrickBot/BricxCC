@@ -1,0 +1,31 @@
+// fixed as of of 2010-03-23 JCH
+
+task main()
+{
+  int xyz[][] = {{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}; // good code 2010-03-23 JCH
+  int tmp[4] = {1, 2, 3, 4}; // good code 2010-03-23 JCH
+
+  int x, y;
+  x = 0; // good code 2010-03-23 JCH
+  y = 1; // good code 2010-03-23 JCH
+
+  xyz[x] = xyz[y]; // good code 2010-03-23 JCH
+/*
+	mov __signed_stack_001main, __main_7qG2_x_7qG2_000
+	mov __signed_stack_002main, __main_7qG2_y_7qG2_000
+	index __ArrHelper__main_236_1, __main_7qG2_xyz_7qG2_000, __signed_stack_002main
+	mov __ArrHelper__main_236_0, __ArrHelper__main_236_1
+	replace __main_7qG2_xyz_7qG2_000, __main_7qG2_xyz_7qG2_000, __signed_stack_001main, __ArrHelper__main_236_0
+*/
+
+  tmp = xyz[y]; // good code 2010-03-23 JCH
+/*
+	mov __signed_stack_001main, __main_7qG2_y_7qG2_000
+	index __ArrHelper__main_236_0, __main_7qG2_xyz_7qG2_000, __signed_stack_001main
+	mov __main_7qG2_tmp_7qG2_000, __ArrHelper__main_236_0
+*/
+
+  NumOut(0, LCD_LINE1, tmp[y]); // good code 2010-03-23 JCH   (should be 3)
+  NumOut(0, LCD_LINE2, xyz[x][y]); // good code 2010-03-23 JCH  (ditto)
+  while(true);
+}

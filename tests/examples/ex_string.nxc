@@ -1,20 +1,36 @@
 task main()
 {
-/*
-inline variant StrToNum(string str);
-inline unsigned int StrLen(string str);
-inline byte StrIndex(string str, unsigned int idx);
-inline string NumToStr(variant num);
-inline string StrCat(string str1, string str2, string str3, string strN);
-inline string SubStr(string str, unsigned int idx, unsigned int len);
-inline string Flatten(variant num);
-inline string StrReplace(string str, unsigned int idx, string strnew);
-inline string FormatNum(string fmt, variant number);
+  string msgs[] = {"please work", "testing, 1, 2, 3"};
+  string fmts[] = {"x = %4.4d", "0x%x"};
+  string tmp = "123456";
+  string s = SubStr(tmp, 2, 3);
+  string a = "AA", b = "BB", c = "CC";
 
-inline string FlattenVar(variant x);
-inline int UnflattenVar(string str, variant & variable);
-inline string ByteArrayToStr(byte data[]);
-inline void ByteArrayToStrEx(byte data[], string & str);
-inline void StrToByteArray(string str, byte & data[]);
-*/
+  TextOut(0, LCD_LINE1, s);
+  TextOut(0, LCD_LINE2, SubStr(msgs[0], 2, 3));
+  TextOut(0, LCD_LINE3, StrCat(a, SubStr(tmp, 2, 3), msgs[0]));
+  TextOut(0, LCD_LINE4, StrReplace(msgs[0], 2, StrCat(a, b)));
+  NumOut(0, LCD_LINE5, StrIndex(msgs[0], 0));
+  NumOut(0, LCD_LINE6, StrLen(msgs[0]));
+  TextOut(0, LCD_LINE7, FormatNum(fmts[0], Random(34)));
+  float val = StrToNum("10.5abc123");
+  NumOut(0, LCD_LINE8, val);
+  Wait(SEC_5);
+  ClearScreen();
+  TextOut(0, LCD_LINE1, NumToStr(PI));
+  int x = 0x7172;
+  string foo = FlattenVar(x);
+  TextOut(0, LCD_LINE2, foo);
+  TextOut(0, LCD_LINE3, Flatten(0x7374));
+  NumOut(0, LCD_LINE4, strlen(foo));
+  NumOut(40, LCD_LINE4, UnflattenVar(foo, x));
+  TextOut(0, LCD_LINE5, FormatNum(fmts[1], x));
+  string bats = tmp; // "123456"
+  TextOut(0, LCD_LINE6, bats);
+  byte data[];
+  StrToByteArray(bats, data);
+  TextOut(0, LCD_LINE7, ByteArrayToStr(data));
+  ByteArrayToStrEx(data, tmp);
+  TextOut(0, LCD_LINE8, tmp);
+  Wait(SEC_10);
 }

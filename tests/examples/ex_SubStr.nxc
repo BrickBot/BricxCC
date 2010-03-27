@@ -1,1 +1,7 @@
-msg = SubStr("test", 1, 2); // returns "es"
+task main()
+{
+  string msgs[] = {"please work", "testing, 1, 2, 3"};
+  TextOut(0, LCD_LINE2, SubStr(msgs[0], 2, 3));
+  string msg = SubStr("test", 1, 2); // returns "es"
+  Wait(SEC_5);
+}

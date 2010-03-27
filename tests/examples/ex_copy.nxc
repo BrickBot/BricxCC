@@ -1,0 +1,7 @@
+task main()
+{
+  string s = "Now is the winter of our discontent";
+  TextOut(0, LCD_LINE1, Copy(s, 12, 5));
+  Wait(SEC_4);
+}
+

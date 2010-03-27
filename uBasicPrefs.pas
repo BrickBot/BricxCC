@@ -305,7 +305,7 @@ procedure ResetTemplateValues(reg : TRegistry);
 procedure SaveTemplateValues(const aLang : integer; reg : TRegistry);
 procedure LoadTemplateValues(const aLang : integer; reg : TRegistry);
 
-function CreateSortedStringList: TStringList;
+function CreateSortedStringList(bCaseSensitive : boolean = false): TStringList;
 procedure PutAPIValuesInSyntaxHighlighter(key, com, con : TStringList;
   aPrefHL, aMainHL : TSynBaseNCSyn);
 procedure LoadNXCAPIValues(reg : TRegistry; aPrefHL, aMainHL : TSynBaseNCSyn);
@@ -826,9 +826,10 @@ begin
     LoadTemplateValues(i, reg);
 end;
 
-function CreateSortedStringList: TStringList;
+function CreateSortedStringList(bCaseSensitive : boolean): TStringList;
 begin
   Result := TStringList.Create;
+  Result.CaseSensitive := bCaseSensitive;
   Result.Sorted := True;
   Result.Duplicates := dupIgnore;
 end;
@@ -1061,6 +1062,8 @@ begin
     gsSearchTextHistory   := Reg_ReadString(reg, 'SearchTextHistory', '');
     gsReplaceText         := Reg_ReadString(reg, 'ReplaceText', '');
     gsReplaceTextHistory  := Reg_ReadString(reg, 'ReplaceTextHistory', '');
+
+    UseHTMLHelp           := Reg_ReadBool(reg, 'UseHTMLHelp', false);
 
   finally
     reg.CloseKey;
@@ -1357,6 +1360,8 @@ begin
     reg.WriteString('ReplaceText', gsReplaceText);
     reg.WriteString('ReplaceTextHistory', gsReplaceTextHistory);
 
+    reg.WriteBool('UseHTMLHelp', UseHTMLHelp);
+
   finally
     reg.CloseKey;
   end;
@@ -1599,9 +1604,9 @@ begin
 end;
 
 initialization
-  cc_nxc_keywords := CreateSortedStringList;
-  cc_nxc_commands := CreateSortedStringList;
-  cc_nxc_constants := CreateSortedStringList;
+  cc_nxc_keywords := CreateSortedStringList(true);
+  cc_nxc_commands := CreateSortedStringList(true);
+  cc_nxc_constants := CreateSortedStringList(true);
   // general defaults
   SetMaxRecent(MaxRecent);
   ShowRecent            := True;

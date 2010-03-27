@@ -2,45 +2,79 @@
 
 task main()
 {
-  int aaa[4][4][4][4];
-  int xyz[][] = {{1, 2, 3}, {2, 3, 4}, {3, 4, 5}};
-  int pdq[3][4];
-  int tmp[4] = {1, 2, 3, 4};
+  int aaa[4][4][4][4];  // good code 2010-03-23 JCH
+  int xyz[][] = {{1, 2, 3}, {2, 3, 4}, {3, 4, 5}}; // good code 2010-03-23 JCH
+  int pdq[3][4]; // good code 2010-03-23 JCH
+  int tmp[4] = {1, 2, 3, 4}; // good code 2010-03-23 JCH
   
   int x, y;
-  x = 0;
-  y = 1;
+  x = 0; // good code 2010-03-23 JCH
+  y = 1; // good code 2010-03-23 JCH
 
   int a;
 
-  xyz[1][0] = 12;
-  xyz[x][y] = 45;
-  xyz = xyz;
-  xyz[x] = xyz[y];
-  a = xyz[x][y];
-  xyz[x][y] = xyz[x][y] + 2;
+  xyz[1][0] = 12; // good code 2010-03-23 JCH
+  xyz[x][y] = 45; // good code 2010-03-23 JCH
+  xyz = xyz; // good code 2010-03-23 JCH
 
-  a = tmp[x];
-  a = xyz[y][x];
-  tmp = xyz[y];
-  tmp = aaa[0][2][3];
+  xyz[x] = xyz[y]; // <-- bad code (reference to wrong temporary) 2010-03-23 JCH
+/*
+	mov __D0main, __main_7qG2_x_7qG2_000
+	mov __signed_stack_001main, __D0main
+	mov __D0main, __main_7qG2_y_7qG2_000
+	mov __signed_stack_002main, __D0main
+	index __ArrHelper__main_236_1, __main_7qG2_xyz_7qG2_000, __signed_stack_002main
+	replace __main_7qG2_xyz_7qG2_000, __main_7qG2_xyz_7qG2_000, __signed_stack_001main, __ArrHelper__main_236_0
+*/
+
+  a = xyz[x][y]; // good code 2010-03-23 JCH
+  xyz[x][y] = xyz[x][y] + 2; // good code 2010-03-23 JCH
+
+  a = tmp[x]; // good code 2010-03-23 JCH
+  a = xyz[y][x]; // good code 2010-03-23 JCH
   
-  pdq[0][0] = aaa[0][2][3][3] + 4;
+  tmp = xyz[y];   // <-- no code generated for assignment
+/*
+	mov __D0main, __main_7qG2_y_7qG2_000
+	mov __signed_stack_001main, __D0main
+	index __ArrHelper__main_236_0, __main_7qG2_xyz_7qG2_000, __signed_stack_001main
+*/
 
-  tmp = xyz[x];
-  tmp[y] = 45;
-  xyz[x] = tmp;
+  tmp = aaa[0][2][3]; // <-- no code generated for assignment
+/*
+	set __D0main, 0
+	mov __signed_stack_001main, __D0main
+	index __ArrHelper__main_238_0, __main_7qG2_aaa_7qG2_000, __signed_stack_001main
+	set __D0main, 2
+	mov __signed_stack_002main, __D0main
+	index __ArrHelper__main_237_0, __ArrHelper__main_238_0, __signed_stack_002main
+	set __D0main, 3
+	mov __signed_stack_003main, __D0main
+	index __ArrHelper__main_236_0, __ArrHelper__main_237_0, __signed_stack_003main
+*/
 
-  pdq[0] = tmp;
-  a = xyz[x][y];
-  aaa[0][2][3][3] = 23;
-  pdq[0][0] = 20;
+  pdq[0][0] = aaa[0][2][3][3] + 4; // good code 2010-03-23 JCH
 
-  NumOut(0, LCD_LINE1, a);
-  NumOut(0, LCD_LINE2, tmp[y]);
-  NumOut(0, LCD_LINE3, pdq[0][0]);
-  NumOut(0, LCD_LINE4, aaa[0][2][3][3] + pdq[0][0]);
-  NumOut(0, LCD_LINE5, xyz[x][y]);
+  tmp = xyz[x]; // <-- no code generated for assignment
+/*
+	mov __D0main, __main_7qG2_x_7qG2_000
+	mov __signed_stack_001main, __D0main
+	index __ArrHelper__main_236_0, __main_7qG2_xyz_7qG2_000, __signed_stack_001main
+*/
+
+  tmp[y] = 45; // good code 2010-03-23 JCH
+  xyz[x] = tmp; // good code 2010-03-23 JCH
+
+  pdq[0] = tmp; // good code 2010-03-23 JCH
+  a = xyz[x][y]; // good code 2010-03-23 JCH
+  aaa[0][2][3][3] = 23; // good code 2010-03-23 JCH
+  pdq[0][0] = 20; // good code 2010-03-23 JCH
+
+  NumOut(0, LCD_LINE1, a); // good code 2010-03-23 JCH
+  NumOut(0, LCD_LINE2, tmp[y]); // good code 2010-03-23 JCH
+  NumOut(0, LCD_LINE3, pdq[0][0]); // good code 2010-03-23 JCH
+  NumOut(0, LCD_LINE4, aaa[0][2][3][3] + pdq[0][0]); // good code 2010-03-23 JCH
+  NumOut(0, LCD_LINE5, xyz[x][y]); // good code 2010-03-23 JCH
   while(true);
 
 }

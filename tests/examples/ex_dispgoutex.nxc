@@ -1,10 +1,11 @@
 #download "letters.ric"
 
+string fnames[] = {"letters.ric", "letter2.ric" };
 int Values[] = {0};
 void Display( int n )
 {
   Values[0]=n*10;
-  GraphicOutEx(Values[0], 0, "letters.ric" , Values, DRAW_OPT_CLEAR_WHOLE_SCREEN);
+  GraphicOutEx(Values[0], Random(30), fnames[0], Values, DRAW_OPT_CLEAR_WHOLE_SCREEN);
   Wait(MS_200);
 }
 

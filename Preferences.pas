@@ -4213,9 +4213,9 @@ initialization
 {$ENDIF}
   fVersion := GetVersionInfo(Application.ExeName).ProductVersion;
 
-  cc_keywords := CreateSortedStringList;
-  cc_commands := CreateSortedStringList;
-  cc_constants := CreateSortedStringList;
+  cc_keywords := CreateSortedStringList(true);
+  cc_commands := CreateSortedStringList(true);
+  cc_constants := CreateSortedStringList(true);
 
 finalization
   FreeAndNil(cc_keywords);

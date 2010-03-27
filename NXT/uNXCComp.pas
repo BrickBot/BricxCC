@@ -346,6 +346,7 @@ type
     procedure DoStopMotors;
     procedure DoStopMotorsEx;
     procedure DoStrCat;
+    function StrCatHelper(const oldasmstr : string) : string;
     procedure DoSubString;
     procedure DoStrReplace;
     procedure DoStrToNum;
@@ -3690,6 +3691,7 @@ begin
   // beginning of addition for handling expressions for UDT and array parameters
               else if fp.IsArray or (fp.ParamType = fptUDT) then
               begin
+                fInputs.AddObject('', fp);
                 if IsArrayType(dt) then
                 begin
                   DoArrayAssignValue(parname, '', dt);
@@ -4097,10 +4099,21 @@ begin
       if Token = '!' then begin
         Next;
         NumericFactor;
+        if fUDTOnStack <> '' then
+        begin
+          Store(aName);
+          fUDTOnStack := '';
+        end;
         EmitLn(Format('not %0:s, %0:s', [GetDecoratedIdent(aName)]));
       end
-      else
+      else begin
         NumericFactor;
+        if fUDTOnStack <> '' then
+        begin
+          Store(aName);
+          fUDTOnStack := '';
+        end;
+      end;
     end
     else
     begin
@@ -4119,6 +4132,11 @@ begin
             if fGlobals.IndexOfName(fLHSName) = -1 then
               AddEntry(fLHSName, dt, udType, '');
             NumericFactor;
+            if fUDTOnStack <> '' then
+            begin
+              Store(fLHSName);
+              fUDTOnStack := '';
+            end;
             StoreArray(aName, idx, fLHSName);
           finally
             fArrayHelpers.ReleaseHelper(AHV);
@@ -4903,6 +4921,7 @@ procedure TNXCComp.Statement(const lend, lstart : string);
 var
   dt : Char;
 begin
+  fUDTOnStack := ''; // a UDT can't remain on the stack across a statement boundary
   ResetStatementType;
   fSemiColonRequired := True;
   if Token = TOK_BEGIN then
@@ -7549,18 +7568,20 @@ begin
   // StrReplace(string, idx, strnew)
   OpenParen;
   // string
-  str := GetDecoratedValue;
-  CheckString;
-  Next;
+  StringExpression('');
+  EmitLn(Format('mov %s, %s', [StrTmpBufName, StrBufName]));
+  str := StrTmpBufName;
   MatchString(TOK_COMMA);
   // idx
   BoolExpression;
   MatchString(TOK_COMMA);
   // strnew
-  strnew := GetDecoratedValue;
-  CheckString;
-  Next;
+  StringExpression('');
+  EmitLn(Format('mov %s, %s', [StrRetValName, StrBufName]));
+  strnew := StrRetValName;
   CloseParen;
+  // strip the null from the replacement string so that it doesn't embed a null
+  // in the middle of the output string
   EmitLn(Format('strtoarr %s, %s', [StrBufName, strnew]));
   EmitLn(Format('strreplace %s, %s, %s, %s', [StrRetValName, str, RegisterName, StrBufName]));
 end;
@@ -7571,17 +7592,34 @@ var
 begin
   // StrCat(str1, str2, ..., strN)
   OpenParen;
-  CheckString;
-  asmStr := Format('strcat %s, %s', [StrRetValName, GetDecoratedValue]);
-  Next;
-  while Token = TOK_COMMA do begin
-    Next;
-    CheckString;
-    asmStr := asmStr + ', ' + GetDecoratedValue;
-    Next;
-  end;
+  asmstr := Format('strcat %s, ', [StrRetValName]) + StrCatHelper('');
   CloseParen;
   EmitLn(asmStr);
+end;
+
+function TNXCComp.StrCatHelper(const oldasmstr : string) : string;
+var
+  AHV : TArrayHelperVar;
+  aval : string;
+begin
+  StringExpression('');
+  AHV := fArrayHelpers.GetHelper(fCurrentThreadName, '', TOK_ARRAYBYTEDEF);
+  try
+    aval := AHV.Name;
+    if fGlobals.IndexOfName(aval) = -1 then
+      AddEntry(aval, TOK_ARRAYBYTEDEF, '', '');
+    // move result of string expression to newly allocated temporary variable
+    EmitLn(Format('mov %s, %s', [aval, StrBufName]));
+    if Token <> TOK_CLOSEPAREN then
+    begin
+       Next; // skip past the comma
+       Result := oldasmstr + StrCatHelper(aval + ', ');
+    end
+    else
+       Result := oldasmstr + aval;
+  finally
+    fArrayHelpers.ReleaseHelper(AHV);
+  end;
 end;
 
 procedure TNXCComp.DoSubString;
@@ -7591,9 +7629,8 @@ begin
   // SubStr(string, idx, len)
   OpenParen;
   // string
-  str := GetDecoratedValue;
-  CheckString;
-  Next;
+  StringExpression('');
+  str := StrBufName;
   MatchString(TOK_COMMA);
   // idx
   BoolExpression;
@@ -7727,9 +7764,8 @@ begin
   // StrIndex(string, idx)
   OpenParen;
   // string
-  arg := GetDecoratedValue;
-  CheckString;
-  Next;
+  StringExpression('');
+  arg := StrBufName;
   MatchString(TOK_COMMA);
   // idx
   BoolExpression;
@@ -7744,9 +7780,8 @@ begin
   // StrLen(string)
   OpenParen;
   // string
-  arg := GetDecoratedValue;
-  CheckString;
-  Next;
+  StringExpression('');
+  arg := StrBufName;
   CloseParen;
   EmitLn(Format('strlen %s, %s', [RegisterName, arg]));
 end;
@@ -7758,9 +7793,8 @@ begin
   // StrToNum(string)
   OpenParen;
   // string
-  arg := GetDecoratedValue;
-  CheckString;
-  Next;
+  StringExpression('');
+  arg := StrBufName;
   CloseParen;
   push;
   EmitLn(Format('strtonum %0:s, %s, %s, NA, NA', [RegisterName, tos, arg]));
@@ -7882,9 +7916,9 @@ begin
   EmitLn(Format('mov %s, %s', [y, RegisterName]));
   MatchString(TOK_COMMA);
   // arg3 = file
-  CheckString;
-  fntname := GetDecoratedValue;
-  Next;
+  StringExpression('');
+  EmitLn(Format('mov %s, %s', [StrTmpBufName, StrBufName]));
+  fntname := StrTmpBufName;
   MatchString(TOK_COMMA);
   if idx = APIF_FONTNUMOUT then
   begin
@@ -8231,10 +8265,10 @@ var
   x, y, fname, vars : string;
   bCls : boolean;
 begin
-  //GraphicOut(x,y,fname,cls=false)
-  //GraphicOutEx(x,y,fname,vars,cls=false)
-  //GraphicArrayOut(x,y,data,cls=false)
-  //GraphicArrayOutEx(x,y,data,vars,cls=false)
+  //GraphicOut(x,y,fname,options=0)
+  //GraphicOutEx(x,y,fname,vars,options=0)
+  //GraphicArrayOut(x,y,data,options=0)
+  //GraphicArrayOutEx(x,y,data,vars,options=0)
   OpenParen;
   // arg1 = x
   BoolExpression;
@@ -8244,17 +8278,23 @@ begin
   MatchString(TOK_COMMA);
   // arg2 = y
   BoolExpression;
+  push;
+  y := tos;
+  EmitLn(Format('mov %s, %s', [y, RegisterName]));
   MatchString(TOK_COMMA);
   // arg3 = fname|data
-  fname := GetDecoratedValue;
   if idx in [APIF_DRAWGRAPHIC, APIF_DRAWGRAPHICEX] then
-    CheckString
+  begin
+    StringExpression('');
+    fname := StrBufName;
+  end
   else
   begin
+    fname := GetDecoratedValue;
     if DataType(Value) <> TOK_ARRAYBYTEDEF then
       Expected(sByteArrayType);
+    Next;
   end;
-  Next;
   if idx in [APIF_DRAWGRAPHICEX, APIF_DRAWGRAPHICAREX] then
   begin
     MatchString(TOK_COMMA);
@@ -8265,9 +8305,6 @@ begin
   bCls := Token = TOK_COMMA;
   if bCls then
   begin
-    push;
-    y := tos;
-    EmitLn(Format('mov %s, %s', [y, RegisterName]));
     MatchString(TOK_COMMA);
     // arg4 = cls
     BoolExpression;
@@ -8277,13 +8314,12 @@ begin
   if idx in [APIF_DRAWGRAPHIC, APIF_DRAWGRAPHICEX] then
   begin
     EmitLn('mov __GraphicOutArgs.Location.X, ' + x);
+    EmitLn('mov __GraphicOutArgs.Location.Y, ' + y);
     if bCls then begin
-      EmitLn('mov __GraphicOutArgs.Location.Y, ' + y);
       EmitLn('mov __GraphicOutArgs.Options, ' + RegisterName);
     end
     else begin
-      EmitLn('mov __GraphicOutArgs.Location.Y, ' + RegisterName);
-      EmitLn('set __GraphicOutArgs.Options, 0');
+      EmitLn('mov __GraphicOutArgs.Options, 0');
     end;
     EmitLn('mov __GraphicOutArgs.Filename, ' + fname);
     if idx = APIF_DRAWGRAPHICEX then
@@ -8297,12 +8333,11 @@ begin
   else
   begin
     EmitLn('mov __GraphicArrayOutArgs.Location.X, ' + x);
+    EmitLn('mov __GraphicArrayOutArgs.Location.Y, ' + y);
     if bCls then begin
-      EmitLn('mov __GraphicArrayOutArgs.Location.Y, ' + y);
       EmitLn('mov __GraphicArrayOutArgs.Options, ' + RegisterName);
     end
     else begin
-      EmitLn('mov __GraphicArrayOutArgs.Location.Y, ' + RegisterName);
       EmitLn('set __GraphicArrayOutArgs.Options, 0');
     end;
     EmitLn('mov __GraphicArrayOutArgs.Data, ' + fname);
@@ -8316,8 +8351,7 @@ begin
   end;
   EmitLn('release __GraphicOutMutex');
   pop;
-  if bCls then
-    pop;
+  pop;
 end;
 
 procedure TNXCComp.DoPlayToneEx;
@@ -8367,10 +8401,9 @@ var
 begin
   //PlayFileEx(file, vol, loop?)
   OpenParen;
-  // arg1 == Filename (either constant string or string variable)
-  fname := GetDecoratedValue;
-  CheckString;
-  Next;
+  // arg1 == Filename
+  StringExpression('');
+  fname := StrBufName;
   MatchString(TOK_COMMA);
   // arg2 == Volume
   BoolExpression;
@@ -9299,9 +9332,8 @@ begin
   // FormatNum(string, value)
   OpenParen;
   // string
-  str := GetDecoratedValue;
-  CheckString;
-  Next;
+  StringExpression('');
+  str := StrBufName;
   MatchString(TOK_COMMA);
   // value
   BoolExpression;

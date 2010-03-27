@@ -1,1 +1,8 @@
-msg = StrReplace("testing", 3, "xx"); // returns "tesxxng"
+task main()
+{
+  string msgs[] = {"please work", "testing, 1, 2, 3"};
+  string a = "AA", b = "BB", c = "CC";
+  TextOut(0, LCD_LINE4, StrReplace(msgs[0], 2, StrCat(a, b)));
+  string msg = StrReplace("testing", 3, "xx"); // returns "tesxxng"
+  Wait(SEC_5);
+}
