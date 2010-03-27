@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 4598;
+  uNXCHTMLTopicsSize = 4604;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -254,15 +254,15 @@ const
     ),
     (
      Name: 'TRUE';
-     Value: '_n_b_c_common_8h_aa8cecfc5c5c054d2875c03e77b7be15d.html'
+     Value: 'group___misc_constants_gaa8cecfc5c5c054d2875c03e77b7be15d.html'
     ),
     (
      Name: 'FALSE';
-     Value: '_n_b_c_common_8h_aa93f0eb578d23995850d61f7d61c55c1.html'
+     Value: 'group___misc_constants_gaa93f0eb578d23995850d61f7d61c55c1.html'
     ),
     (
      Name: 'NA';
-     Value: '_n_b_c_common_8h_a68eddd535923d17ddbc8bb03bab70b3b.html'
+     Value: 'group___misc_constants_ga68eddd535923d17ddbc8bb03bab70b3b.html'
     ),
     (
      Name: 'OPARR_SUM';
@@ -294,15 +294,15 @@ const
     ),
     (
      Name: 'PI';
-     Value: '_n_b_c_common_8h_a598a3330b3c21701223ee0ca14316eca.html'
+     Value: 'group___misc_constants_ga598a3330b3c21701223ee0ca14316eca.html'
     ),
     (
      Name: 'RADIANS_PER_DEGREE';
-     Value: '_n_b_c_common_8h_a3478b02a2cce17123c3d98aa39decee1.html'
+     Value: 'group___misc_constants_ga3478b02a2cce17123c3d98aa39decee1.html'
     ),
     (
      Name: 'DEGREES_PER_RADIAN';
-     Value: '_n_b_c_common_8h_af65f0fc64856d532f66e45529cabe800.html'
+     Value: 'group___misc_constants_gaf65f0fc64856d532f66e45529cabe800.html'
     ),
     (
      Name: 'FileOpenRead';
@@ -3078,43 +3078,43 @@ const
     ),
     (
      Name: 'DRAW_OPT_FONT_DIRECTIONS';
-     Value: 'group___display_draw_option_constants_gac50e4fb8be486c5ac2caa2523f2faa2f.html'
+     Value: 'group___display_font_draw_option_constants_gac50e4fb8be486c5ac2caa2523f2faa2f.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_WRAP';
-     Value: 'group___display_draw_option_constants_ga44ef2382d49d2ee3806d1044fa2d524f.html'
+     Value: 'group___display_font_draw_option_constants_ga44ef2382d49d2ee3806d1044fa2d524f.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIR_L2RB';
-     Value: 'group___display_draw_option_constants_ga05802e14d5f170501f40d876915ac316.html'
+     Value: 'group___display_font_draw_option_constants_ga05802e14d5f170501f40d876915ac316.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIR_L2RT';
-     Value: 'group___display_draw_option_constants_ga7bc586d1137a304d871276497d1d123d.html'
+     Value: 'group___display_font_draw_option_constants_ga7bc586d1137a304d871276497d1d123d.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIR_R2LB';
-     Value: 'group___display_draw_option_constants_gaa4028365a5b9f94db7be21199bae3373.html'
+     Value: 'group___display_font_draw_option_constants_gaa4028365a5b9f94db7be21199bae3373.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIR_R2LT';
-     Value: 'group___display_draw_option_constants_gaefc5fe8fa6218a8536829d4013e55521.html'
+     Value: 'group___display_font_draw_option_constants_gaefc5fe8fa6218a8536829d4013e55521.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIR_B2TL';
-     Value: 'group___display_draw_option_constants_ga9f972ce39d32783e9c6d162d4ecf2ae9.html'
+     Value: 'group___display_font_draw_option_constants_ga9f972ce39d32783e9c6d162d4ecf2ae9.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIR_B2TR';
-     Value: 'group___display_draw_option_constants_ga1052b115dcb4f65e97f437d824afbade.html'
+     Value: 'group___display_font_draw_option_constants_ga1052b115dcb4f65e97f437d824afbade.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIR_T2BL';
-     Value: 'group___display_draw_option_constants_ga9e1ef994697e73355c898256fb09ebcc.html'
+     Value: 'group___display_font_draw_option_constants_ga9e1ef994697e73355c898256fb09ebcc.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIR_T2BR';
-     Value: 'group___display_draw_option_constants_ga2b24738d192da82b7aafd9bbb4fbc9ce.html'
+     Value: 'group___display_font_draw_option_constants_ga2b24738d192da82b7aafd9bbb4fbc9ce.html'
     ),
     (
      Name: 'DISPLAY_ON';
@@ -5950,7 +5950,7 @@ const
     ),
     (
      Name: 'SetSensorLowspeed';
-     Value: 'group___input_module_functions_ga2bd011c00aa214f004875bee05098968.html'
+     Value: 'group___input_module_functions_ga218d00df36cc25f385be5eaf4972defc.html'
     ),
     (
      Name: 'SetSensorColorFull';
@@ -11389,46 +11389,6 @@ const
      Value: 'group___display_draw_option_constants_ga3f24240fd7905bac0e28c70c29bf12ad.html'
     ),
     (
-     Name: 'DRAW_OPT_FONT_DIRECTIONS';
-     Value: 'group___display_draw_option_constants_gac50e4fb8be486c5ac2caa2523f2faa2f.html'
-    ),
-    (
-     Name: 'DRAW_OPT_FONT_WRAP';
-     Value: 'group___display_draw_option_constants_ga44ef2382d49d2ee3806d1044fa2d524f.html'
-    ),
-    (
-     Name: 'DRAW_OPT_FONT_DIR_L2RB';
-     Value: 'group___display_draw_option_constants_ga05802e14d5f170501f40d876915ac316.html'
-    ),
-    (
-     Name: 'DRAW_OPT_FONT_DIR_L2RT';
-     Value: 'group___display_draw_option_constants_ga7bc586d1137a304d871276497d1d123d.html'
-    ),
-    (
-     Name: 'DRAW_OPT_FONT_DIR_R2LB';
-     Value: 'group___display_draw_option_constants_gaa4028365a5b9f94db7be21199bae3373.html'
-    ),
-    (
-     Name: 'DRAW_OPT_FONT_DIR_R2LT';
-     Value: 'group___display_draw_option_constants_gaefc5fe8fa6218a8536829d4013e55521.html'
-    ),
-    (
-     Name: 'DRAW_OPT_FONT_DIR_B2TL';
-     Value: 'group___display_draw_option_constants_ga9f972ce39d32783e9c6d162d4ecf2ae9.html'
-    ),
-    (
-     Name: 'DRAW_OPT_FONT_DIR_B2TR';
-     Value: 'group___display_draw_option_constants_ga1052b115dcb4f65e97f437d824afbade.html'
-    ),
-    (
-     Name: 'DRAW_OPT_FONT_DIR_T2BL';
-     Value: 'group___display_draw_option_constants_ga9e1ef994697e73355c898256fb09ebcc.html'
-    ),
-    (
-     Name: 'DRAW_OPT_FONT_DIR_T2BR';
-     Value: 'group___display_draw_option_constants_ga2b24738d192da82b7aafd9bbb4fbc9ce.html'
-    ),
-    (
      Name: 'ERR_ARG';
      Value: 'group___command_fatal_errors_ga8700518a3e3d0c7a4439a37dcbcf2143.html'
     ),
@@ -11491,6 +11451,46 @@ const
     (
      Name: 'ERR_NON_FATAL';
      Value: 'group___command_fatal_errors_gaef55386fde8897a72a72874d16cddde7.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_DIRECTIONS';
+     Value: 'group___display_font_draw_option_constants_gac50e4fb8be486c5ac2caa2523f2faa2f.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_WRAP';
+     Value: 'group___display_font_draw_option_constants_ga44ef2382d49d2ee3806d1044fa2d524f.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_DIR_L2RB';
+     Value: 'group___display_font_draw_option_constants_ga05802e14d5f170501f40d876915ac316.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_DIR_L2RT';
+     Value: 'group___display_font_draw_option_constants_ga7bc586d1137a304d871276497d1d123d.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_DIR_R2LB';
+     Value: 'group___display_font_draw_option_constants_gaa4028365a5b9f94db7be21199bae3373.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_DIR_R2LT';
+     Value: 'group___display_font_draw_option_constants_gaefc5fe8fa6218a8536829d4013e55521.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_DIR_B2TL';
+     Value: 'group___display_font_draw_option_constants_ga9f972ce39d32783e9c6d162d4ecf2ae9.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_DIR_B2TR';
+     Value: 'group___display_font_draw_option_constants_ga1052b115dcb4f65e97f437d824afbade.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_DIR_T2BL';
+     Value: 'group___display_font_draw_option_constants_ga9e1ef994697e73355c898256fb09ebcc.html'
+    ),
+    (
+     Name: 'DRAW_OPT_FONT_DIR_T2BR';
+     Value: 'group___display_font_draw_option_constants_ga2b24738d192da82b7aafd9bbb4fbc9ce.html'
     ),
     (
      Name: 'ERR_INVALID_PORT';
@@ -12426,7 +12426,7 @@ const
     ),
     (
      Name: 'SetSensorLowspeed';
-     Value: 'group___input_module_functions_ga2bd011c00aa214f004875bee05098968.html'
+     Value: 'group___input_module_functions_ga218d00df36cc25f385be5eaf4972defc.html'
     ),
     (
      Name: 'SetSensorColorFull';
@@ -14449,6 +14449,30 @@ const
      Value: 'group___comm_misc_constants_ga90ab712c66ab0903f5f66f7b867ab92d.html'
     ),
     (
+     Name: 'TRUE';
+     Value: 'group___misc_constants_gaa8cecfc5c5c054d2875c03e77b7be15d.html'
+    ),
+    (
+     Name: 'FALSE';
+     Value: 'group___misc_constants_gaa93f0eb578d23995850d61f7d61c55c1.html'
+    ),
+    (
+     Name: 'NA';
+     Value: 'group___misc_constants_ga68eddd535923d17ddbc8bb03bab70b3b.html'
+    ),
+    (
+     Name: 'PI';
+     Value: 'group___misc_constants_ga598a3330b3c21701223ee0ca14316eca.html'
+    ),
+    (
+     Name: 'RADIANS_PER_DEGREE';
+     Value: 'group___misc_constants_ga3478b02a2cce17123c3d98aa39decee1.html'
+    ),
+    (
+     Name: 'DEGREES_PER_RADIAN';
+     Value: 'group___misc_constants_gaf65f0fc64856d532f66e45529cabe800.html'
+    ),
+    (
      Name: 'IN_1';
      Value: 'group___n_b_c_input_port_constants_ga9f96581595ba16bf7696cde741877e1a.html'
     ),
@@ -16009,6 +16033,10 @@ const
      Value: 'group___r_c_x_output_power_gaa7e0c8d7d7dda5d94058dc9876d84a67.html'
     ),
     (
+     Name: 'RICSetValue';
+     Value: 'group___r_i_c_macros_gada63d00ea264346287dc9ad75809fd4e.html'
+    ),
+    (
      Name: 'RICImgPoint';
      Value: 'group___r_i_c_macros_ga8ec61712d0ac0a8dc03f6093515cac22.html'
     ),
@@ -16083,10 +16111,6 @@ const
     (
      Name: 'RICOpEllipse';
      Value: 'group___r_i_c_macros_ga1900edc23f6dcc942c194f529683eaea.html'
-    ),
-    (
-     Name: 'RICSetValue';
-     Value: 'group___r_i_c_macros_gada63d00ea264346287dc9ad75809fd4e.html'
     ),
     (
      Name: 'ERR_RC_ILLEGAL_VAL';
