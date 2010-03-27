@@ -38,7 +38,7 @@ end;
 
 function CreateDOMDocument : IXMLDOMDocument;
 begin
-  Result := CoDOMDocument40.Create;
+  Result := CoDOMDocument.Create;
   Result.validateOnParse := False;
   Result.resolveExternals := False;
   Result.async := False;
