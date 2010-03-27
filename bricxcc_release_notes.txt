@@ -6,6 +6,12 @@ Please send bug reports to bricxcc@comcast.net.
 For updates and additional documentation, visit the BricxCC Web Site:
 http://bricxcc.sourceforge.net/.  Send emails to bricxcc@comcast.net.
 
+version 3.3.8.6
+---------------
+- Initial HTML help support (currently manual registry edit)
+- Added ability to edit the editor expert and the grep search shortcuts.
+- Added automatic firmware version number when compiling NBC/NXC code.
+
 Version 3.3.7.20
 -----------------
 - Added a simple hex viewer for files on the NXT.  Within the NXT Explorer
@@ -51,5 +57,3 @@ Version 3.3.7.20
 - Added editor experts: block comment/uncomment (Ctrl+Alt+Period/Comma), 
   align lines (Ctrl+Alt+End), previous/next identifier (Ctrl+Alt+Up/Down), and 
   Reverse statements (Ctrl+Alt+Home)
-- Added ability to edit the editor expert and the grep search shortcuts.
-- Added automatic firmware version number when compiling NBC/NXC code.

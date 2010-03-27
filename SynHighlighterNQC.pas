@@ -187,19 +187,6 @@ uses
   Graphics,
   SynEditStrConst;
 
-type
-  TCSStringList = class(TStringList)
-  private
-    fCaseSensitive : boolean;
-    procedure CSQuickSort(L, R: Integer);
-  protected
-    procedure SetCaseSensitive(const Value: boolean);
-  public
-    function Find(const S: string; var Index: Integer): Boolean; override;
-    procedure Sort; override;
-    property CaseSensitive : boolean read fCaseSensitive write SetCaseSensitive;
-  end;
-
 {$IFDEF SYN_COMPILER_3_UP}
 resourcestring
 {$ELSE}
@@ -556,22 +543,23 @@ end;
 constructor TSynBaseNCSyn.Create(AOwner: TComponent);
 begin
   inherited Create(AOwner);
-  fKeyWords := TCSStringList.Create;
-  TCSStringList(fKeyWords).CaseSensitive := True;
-  TCSStringList(fKeyWords).Sorted        := True;
-  TCSStringList(fKeyWords).Duplicates    := dupIgnore;
+
+  fKeyWords := TStringList.Create;
+  TStringList(fKeyWords).CaseSensitive := True;
+  TStringList(fKeyWords).Sorted        := True;
+  TStringList(fKeyWords).Duplicates    := dupIgnore;
   LoadDefaultKeywords;
 
-  fCommands := TCSStringList.Create;
-  TCSStringList(fCommands).CaseSensitive := True;
-  TCSStringList(fCommands).Sorted        := True;
-  TCSStringList(fCommands).Duplicates    := dupIgnore;
+  fCommands := TStringList.Create;
+  TStringList(fCommands).CaseSensitive := True;
+  TStringList(fCommands).Sorted        := True;
+  TStringList(fCommands).Duplicates    := dupIgnore;
   LoadDefaultCommands;
 
-  fConstants := TCSStringList.Create;
-  TCSStringList(fConstants).CaseSensitive := True;
-  TCSStringList(fConstants).Sorted       := True;
-  TCSStringList(fConstants).Duplicates   := dupIgnore;
+  fConstants := TStringList.Create;
+  TStringList(fConstants).CaseSensitive := True;
+  TStringList(fConstants).Sorted       := True;
+  TStringList(fConstants).Duplicates   := dupIgnore;
   LoadDefaultConstants;
 
   fCommentAttri := TSynHighlighterAttributes.Create(SYNS_AttrComment);
@@ -1094,21 +1082,21 @@ function TSynBaseNCSyn.IsKeyword(const AKeyword: string): boolean;
 var
   i : integer;
 begin
-  Result := TCSStringList(fKeywords).Find(AKeyword, i);
+  Result := TStringList(fKeywords).Find(AKeyword, i);
 end;
 
 function TSynBaseNCSyn.IsCommand(const AToken: string): boolean;
 var
   i : integer;
 begin
-  Result := TCSStringList(fCommands).Find(AToken, i);
+  Result := TStringList(fCommands).Find(AToken, i);
 end;
 
 function TSynBaseNCSyn.IsConstant(const AToken: string): boolean;
 var
   i : integer;
 begin
-  Result := TCSStringList(fConstants).Find(AToken, i);
+  Result := TStringList(fConstants).Find(AToken, i);
 end;
 
 function TSynBaseNCSyn.GetStringDelim: TStringDelim;
@@ -1136,84 +1124,6 @@ begin
   if newCh <> fFieldDelimCh then begin
     fFieldDelimCh := newCh;
     MakeMethodTables;
-  end;
-end;
-
-{ TCSStringList }
-
-procedure TCSStringList.CSQuickSort(L, R: Integer);
-var
-  I, J: Integer;
-  P: string;
-begin
-  repeat
-    I := L;
-    J := R;
-    P := Get((L + R) shr 1);
-    repeat
-      while AnsiCompareStr(Get(I), P) < 0 do Inc(I);
-      while AnsiCompareStr(Get(J), P) > 0 do Dec(J);
-      if I <= J then
-      begin
-        Exchange(I, J);
-        Inc(I);
-        Dec(J);
-      end;
-    until I > J;
-    if L < J then CSQuickSort(L, J);
-    L := I;
-  until I >= R;
-end;
-
-function TCSStringList.Find(const S: string; var Index: Integer): Boolean;
-var
-  L, H, I, C: Integer;
-begin
-  if CaseSensitive then begin
-    Result := False;
-    L := 0;
-    H := Count - 1;
-    while L <= H do
-    begin
-      I := (L + H) shr 1;
-      C := AnsiCompareStr(Get(I), S);
-      if C < 0 then L := I + 1 else
-      begin
-        H := I - 1;
-        if C = 0 then
-        begin
-          Result := True;
-          if Duplicates <> dupAccept then L := I;
-        end;
-      end;
-    end;
-    Index := L;
-  end
-  else begin
-    Result := inherited Find(S, Index);
-  end;
-end;
-
-procedure TCSStringList.SetCaseSensitive(const Value: boolean);
-begin
-  if Value <> fCaseSensitive then begin
-    fCaseSensitive := Value;
-    Sorted := False;
-  end;
-end;
-
-procedure TCSStringList.Sort;
-begin
-  if CaseSensitive then begin
-    if not Sorted and (Count > 1) then
-    begin
-      Changing;
-      CSQuickSort(0, Count - 1);
-      Changed;
-    end;
-  end
-  else begin
-    inherited Sort;
   end;
 end;
 

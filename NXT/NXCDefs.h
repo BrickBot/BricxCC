@@ -14895,7 +14895,8 @@ inline ldiv_t ldiv(long numer, long denom) {
  * Convert string to number.
  * Return the numeric value specified by the string passed to the function.
  * If the content of the string is not a numeric value then this function
- * returns zero.
+ * returns zero. The input string parameter
+ * may be a variable, constant, or expression.
  *
  * \param str String beginning with the representation of a number.
  * \param str A string.
@@ -14909,17 +14910,22 @@ inline variant StrToNum(string str);
 /**
  * Get string length.
  * Return the length of the specified string. The length of a string does
- * not include the null terminator at the end of the string.
+ * not include the null terminator at the end of the string. The input
+ * string parameter may be a variable, constant, or expression.
  *
  * \param str A string.
  * \return The length of the string.
  */
 inline unsigned int StrLen(string str);
+/** \example ex_StrLenOld.nxc
+ * This is an example of how to use the \ref StrLen function.
+ */
 
 /**
  * Extract a character from a string.
  * Return the numeric value of the character in the specified string at the
- * specified index.
+ * specified index. The input string parameter
+ * may be a variable, constant, or expression.
  *
  * \param str A string.
  * \param idx The index of the character to retrieve.
@@ -14945,9 +14951,9 @@ inline string NumToStr(variant num);
 /**
  * Concatenate strings.
  * Return a string which is the result of concatenating all of the
- * string arguments together. Each argument must be either a constant string
- * or a string variable.  No expressions are allowed.  This function accepts
- * any number of parameters.
+ * string arguments together. This function accepts
+ * any number of parameters which may be string variables, constants,
+ * or expressions.
  *
  * \param str1 The first string.
  * \param str2 The second string.
@@ -14955,11 +14961,15 @@ inline string NumToStr(variant num);
  * \return The concatenated string.
  */
 inline string StrCat(string str1, string str2, string strN);
+/** \example ex_StrCatOld.nxc
+ * This is an example of how to use the \ref StrCat function.
+ */
 
 /**
  * Extract a portion of a string.
  * Return a sub-string from the specified input string starting at idx and
- * including the specified number of characters.
+ * including the specified number of characters. The input string parameter
+ * may be a variable, constant, or expression.
  *
  * \param str A string.
  * \param idx The starting point of the sub-string.
@@ -14987,7 +14997,8 @@ inline string Flatten(variant num);
  * Replace a portion of a string.
  * Return a string with the part of the string replaced (starting at the
  * specified index) with the contents of the new string value provided in
- * the third argument.
+ * the third argument. The input string parameters
+ * may be variables, constants, or expressions.
  *
  * \param str A string.
  * \param idx The starting point for the replace operation.
@@ -15002,7 +15013,8 @@ inline string StrReplace(string str, unsigned int idx, string strnew);
 /**
  * Format a number.
  * Return the formatted string using the format and value. Use a standard
- * numeric sprintf format specifier within the format string.
+ * numeric sprintf format specifier within the format string. The input string
+ * parameter may be a variable, constant, or expression.
  *
  * \param fmt The string format containing a sprintf numeric format specifier.
  * \param num A number.
@@ -15043,6 +15055,16 @@ inline int UnflattenVar(string str, variant & x);
  * This is an example of how to use the \ref UnflattenVar function.
  */
 
+#else
+
+#define FlattenVar(_value) asm { flatten __STRRETVAL__, _value }
+#define UnflattenVar(_str, _value) asm { \
+  unflatten _value, __RETVAL__, _str, _value \
+  not __RETVAL__, __RETVAL__ \
+}
+
+#endif
+
 /**
  * Convert a byte array to a string.
  * Convert the specified array to a string by appending a null terminator to
@@ -15053,7 +15075,7 @@ inline int UnflattenVar(string str, variant & x);
  * \param data A byte array.
  * \return A string containing data and a null terminator byte.
  */
-inline string ByteArrayToStr(byte data[]);
+inline string ByteArrayToStr(byte data[]) { asm { arrtostr __STRBUFFER__, data } }
 /** \example ex_ByteArrayToStr.nxc
  * This is an example of how to use the \ref ByteArrayToStr function.
  */
@@ -15069,7 +15091,7 @@ inline string ByteArrayToStr(byte data[]);
  * \param str A string variable reference which, on output, will contain
  * data and a null terminator byte.
  */
-inline void ByteArrayToStrEx(byte data[], string & str);
+inline void ByteArrayToStrEx(byte data[], string & str) { asm { arrtostr str, data } }
 /** \example ex_ByteArrayToStrEx.nxc
  * This is an example of how to use the \ref ByteArrayToStrEx function.
  */
@@ -15085,20 +15107,10 @@ inline void ByteArrayToStrEx(byte data[], string & str);
  * \param data A byte array reference which, on output, will contain str
  * without its null terminator.
  */
-inline void StrToByteArray(string str, byte & data[]);
+inline void StrToByteArray(string str, byte & data[]) { asm { strtoarr data, str } }
 /** \example ex_StrToByteArray.nxc
  * This is an example of how to use the \ref StrToByteArray function.
  */
-
-#else
-
-#define FlattenVar(_value) asm { flatten __STRRETVAL__, _value }
-#define UnflattenVar(_str, _value) asm { unflatten _value, __RETVAL__, _str, _value }
-#define ByteArrayToStr(_asrc) asm { arrtostr __STRRETVAL__, _asrc }
-#define ByteArrayToStrEx(_asrc, _sout) asm { arrtostr _sout, _asrc }
-#define StrToByteArray(_ssrc, _aout) asm { strtoarr _aout, _ssrc }
-
-#endif
 
 /**
  * Copy a portion of a string.
@@ -15109,7 +15121,9 @@ inline void StrToByteArray(string str, byte & data[]);
  * \param len The length of the substring.
  * \return The specified substring.
  */
-inline string Copy(string str, unsigned int idx, unsigned int len) { return SubStr(str, idx, len); }
+inline string Copy(string str, unsigned int idx, unsigned int len) {
+  asm { strsubset __STRBUFFER__, str, idx, len  }
+}
 /** \example ex_Copy.nxc
  * This is an example of how to use the \ref Copy function.
  */
@@ -15125,7 +15139,9 @@ inline string Copy(string str, unsigned int idx, unsigned int len) { return SubS
  * \return The substring of a specified length that appears at a specified
  * position in a string.
  */
-inline string MidStr(string str, unsigned int idx, unsigned int len) { return SubStr(str, idx, len); }
+inline string MidStr(string str, unsigned int idx, unsigned int len) {
+  asm { strsubset __STRBUFFER__, str, idx, len  }
+}
 /** \example ex_midstr.nxc
  * This is an example of how to use the \ref MidStr function.
  */
@@ -15138,7 +15154,14 @@ inline string MidStr(string str, unsigned int idx, unsigned int len) { return Su
  * \param size The size or length of the substring.
  * \return The substring of a specified length that appears at the end of a string.
  */
-inline string RightStr(string str, unsigned int size) { return SubStr(str, StrLen(str)-size, size); }
+inline string RightStr(string str, unsigned int size) {
+  unsigned int idx;
+  asm {
+    strlen idx, str
+    sub idx, idx, size
+    strsubset __STRBUFFER__, str, idx, size
+  }
+}
 /** \example ex_rightstr.nxc
  * This is an example of how to use the \ref RightStr function.
  */
@@ -15151,7 +15174,9 @@ inline string RightStr(string str, unsigned int size) { return SubStr(str, StrLe
  * \param size The size or length of the substring.
  * \return The substring of a specified length that appears at the start of a string.
  */
-inline string LeftStr(string str, unsigned int size) { return SubStr(str, 0, size); }
+inline string LeftStr(string str, unsigned int size) {
+  asm { strsubset __STRBUFFER__, str, 0, size  }
+}
 /** \example ex_leftstr.nxc
  * This is an example of how to use the \ref LeftStr function.
  */

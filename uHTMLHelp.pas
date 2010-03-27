@@ -39,6 +39,7 @@ const
   HH_ENUM_INFO_TYPE      =    7;
   HH_SET_INFO_TYPE       =    8;
   HH_SYNC                =    9;
+  HH_JCH_SETPOPUP_POS    =   $c; // dummy entry
   HH_KEYWORD_LOOKUP      =   $d;
   HH_DISPLAY_TEXT_POPUP  =   $e;
   HH_HELP_CONTEXT        =   $f;
@@ -85,13 +86,15 @@ begin
     HELP_CONTEXT:
       ACommand := HH_HELP_CONTEXT;
     HELP_CONTEXTPOPUP:
-      ACommand := HH_HELP_CONTEXT;
+      ACommand := HH_TP_HELP_CONTEXTMENU;
     HELP_FINDER:
       ACommand := HH_DISPLAY_TOPIC;
     HELP_COMMAND:
       ACommand := HH_DISPLAY_TOPIC;
     HELP_KEY:
       ACommand := HH_DISPLAY_INDEX;
+    HELP_SETPOPUP_POS :
+      ACommand := HH_JCH_SETPOPUP_POS;
     HELP_QUIT:
       begin
         ACommand :=  HH_CLOSE_ALL;

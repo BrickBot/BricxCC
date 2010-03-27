@@ -1,0 +1,17 @@
+task main()
+{
+  string msgs[] = {"please work", "testing, 1, 2, 3"};
+  string fmts[] = {"x = %4.4d", "x = %3.3d"};
+  string tmp = "123456";
+  string s = SubStr(tmp, 2, 3);
+  string a = "AA", b = "BB", c = "CC";
+  
+  TextOut(0, LCD_LINE1, s);
+  TextOut(0, LCD_LINE2, SubStr(msgs[0], 2, 3));
+  TextOut(0, LCD_LINE3, StrCat(a, SubStr(tmp, 2, 3), msgs[0]));
+  TextOut(0, LCD_LINE4, StrReplace(msgs[0], 2, StrCat(a, b)));
+  NumOut(0, LCD_LINE5, StrIndex(msgs[0], 0));
+  NumOut(0, LCD_LINE6, StrLen(msgs[0]));
+  TextOut(0, LCD_LINE7, FormatNum(fmts[0], Random(34)));
+  Wait(SEC_5);
+}

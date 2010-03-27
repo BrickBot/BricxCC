@@ -3371,14 +3371,33 @@ begin
   Result := True;
 end;
 
+var
+  tmpHandle : HWND;
+  
 procedure TMainForm.CallHtmlHelp(AFile: String; Command: Word; Data: Integer);
+var
+  dwIDs : array[0..3] of DWord;
 begin
   WinHelpToHtmlHelp(Command,Data);
   if Command = HH_DISPLAY_TOPIC then
     AFile := AFile {+ '>full'}
   else
     AFile := AFile {+ '>normal'};
-  HtmlHelp(GetDeskTopWindow,PChar(AFile),Command,Data);
+  if Command = HH_TP_HELP_CONTEXTMENU then
+  begin
+    dwIDs[0] := GetDlgCtrlID(tmpHandle);
+    dwIDs[1] := Data;
+    dwIDs[2] := 0;
+    dwIDs[3] := 0;
+    HtmlHelp(tmpHandle,PChar(AFile),Command, DWORD(@dwIDs[0]));
+    tmpHandle := GetDesktopWindow;
+  end
+  else if Command = HH_JCH_SETPOPUP_POS then
+  begin
+    tmpHandle := Data;
+  end
+  else
+    HtmlHelp(GetDeskTopWindow,PChar(AFile),Command,Data);
 end;
 
 procedure TMainForm.HelpQuit;

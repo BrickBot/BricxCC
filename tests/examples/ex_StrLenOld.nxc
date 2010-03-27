@@ -1,8 +1,8 @@
 task main()
 {
   string msgs[] = {"please work", "testing, 1, 2, 3"};
-  NumOut(0, LCD_LINE5, StrIndex(msgs[0], 0));
   string msg = "hi there";
-  byte x = StrIndex(msg, 2); // return the value of msg[2]
+  byte x = StrLen(msg); // return the length of msg
+  NumOut(0, LCD_LINE6, StrLen(msgs[0]));
   Wait(SEC_5);
 }

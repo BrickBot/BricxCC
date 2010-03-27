@@ -364,12 +364,11 @@ begin
       commandstr := commandstr + Format(' -ER=%d', [NBCMaxErrors]);
     if EnhancedFirmware then
       commandstr := commandstr + ' -EF';
+    fwVer := 0;
     if NXTAutoFWVersion then
-    begin
       fwVer := BrickComm.NXTFirmwareVersion;
-      if fwVer <> 0 then
-        commandStr := commandstr + ' -v=' + IntToStr(fwVer);
-    end
+    if NXTAutoFWVersion and (fwVer <> 0) then
+      commandStr := commandstr + ' -v=' + IntToStr(fwVer)
     else
     begin
       if NXT2Firmware then
