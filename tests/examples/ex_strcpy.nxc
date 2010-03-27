@@ -1,1 +1,2 @@
-strcpy(msg, “foo”); // msg = ”foo”
+strcpy(msg, "foo"); // msg = "foo"
+

@@ -1,1 +1,2 @@
-strncat(msg, “foo”, 2); // msg = msg+”fo”
+strncat(msg, "foo", 2); // msg = msg+"fo"
+
