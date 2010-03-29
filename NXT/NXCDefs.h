@@ -1979,7 +1979,7 @@ struct DrawGraphicType {
                              \ref LoaderErrors, \ref ERR_FILE, and \ref NO_ERR. */
   LocationType Location;   /*!< The location on screen. */
   string Filename;         /*!< The RIC file name. */
-  int Variables[];         /*!< The variables passed as RIC arguments. */
+  long Variables[];         /*!< The variables passed as RIC arguments. */
   unsigned long Options;   /*!< The options to use when writing to the LCD.
                              \ref DisplayDrawOptionConstants */
 };
@@ -2058,11 +2058,11 @@ struct DisplayExecuteFunctionType {
  * \sa SysDrawGraphicArray()
  */
 struct DrawGraphicArrayType {
- char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
- LocationType Location;  /*!< The location on screen. */
- byte Data[];            /*!< A byte array containing the RIC opcodes. \ref RICMacros */
- long Variables[];       /*!< The variables passed as RIC arguments. */
- unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
+  char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
+  LocationType Location;  /*!< The location on screen. */
+  byte Data[];            /*!< A byte array containing the RIC opcodes. \ref RICMacros */
+  long Variables[];       /*!< The variables passed as RIC arguments. */
+  unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
 /**
@@ -2075,9 +2075,9 @@ struct DrawGraphicArrayType {
  * \sa SysDrawPolygon()
  */
 struct DrawPolygonType {
- char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
- LocationType Points[];  /*!< An array of LocationType structures which define the polygon's shape. */
- unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
+  char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
+  LocationType Points[];  /*!< An array of LocationType structures which define the polygon's shape. */
+  unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
 /**
@@ -2090,11 +2090,11 @@ struct DrawPolygonType {
  * \sa SysDrawEllipse()
  */
 struct DrawEllipseType {
- char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
- LocationType Center;    /*!< The location of the ellipse center. */
- byte SizeX;             /*!< The horizontal ellipse radius. */
- byte SizeY;             /*!< The vertical ellipse radius. */
- unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
+  char Result;            /*!< The function call result. \ref NO_ERR means it succeeded. */
+  LocationType Center;    /*!< The location of the ellipse center. */
+  byte SizeX;             /*!< The horizontal ellipse radius. */
+  byte SizeY;             /*!< The vertical ellipse radius. */
+  unsigned long Options;  /*!< The options to use when writing to the LCD. \ref DisplayDrawOptionConstants */
 };
 
 /**
@@ -2106,12 +2106,12 @@ struct DrawEllipseType {
  * \sa SysDrawFont()
  */
 struct DrawFontType {
- char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
- LocationType Location;   /*!< The location in X, LCD line number coordinates. */
- string Filename;         /*!< The filename of the RIC-based font file. */
- string Text;             /*!< The text to draw on the LCD. */
- unsigned long Options;   /*!< The options to use when writing to the LCD.
-                            \ref DisplayDrawOptionConstants */
+  char Result;             /*!< The function call result. \ref NO_ERR means it succeeded. */
+  LocationType Location;   /*!< The location in X, LCD line number coordinates. */
+  string Filename;         /*!< The filename of the RIC-based font file. */
+  string Text;             /*!< The text to draw on the LCD. */
+  unsigned long Options;   /*!< The options to use when writing to the LCD.
+                             \ref DisplayDrawOptionConstants */
 };
 #endif
 #endif
@@ -2139,6 +2139,7 @@ inline void ResetScreen();
  * specified x and y location, using the specified radius. Optionally specify
  * drawing options. If this argument is not specified it defaults to \ref DRAW_OPT_NORMAL.
  * Valid display option constants are listed in the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawCircle, DrawCircleType
  *
  * \param x The x value for the center of the circle.
  * \param y The y value for the center of the circle.
@@ -2153,30 +2154,12 @@ inline char CircleOut(int x, int y, byte radius, unsigned long options=DRAW_OPT_
  */
 
 /**
- * Draw an ellipse.
- * This function lets you draw an ellipse on the screen with its center at the
- * specified x and y location, using the specified radii. Optionally specify
- * drawing options. If this argument is not specified it defaults to \ref DRAW_OPT_NORMAL.
- * Valid display option constants are listed in the \ref DisplayDrawOptionConstants group.
- *
- * \param x The x value for the center of the ellipse.
- * \param y The y value for the center of the ellipse.
- * \param radiusX The x axis radius.
- * \param radiusY The y axis radius.
- * \param options The optional drawing options.
- * \return The result of the drawing operation.
- */
-inline char EllipseOut(int x, int y, byte radiusX, byte radiusY, unsigned long options=DRAW_OPT_NORMAL);
-/** \example ex_EllipseOut.nxc
- * This is an example of how to use the \ref EllipseOut and \ref Random functions.
- */
-
-/**
  * Draw a line.
  * This function lets you draw a line on the screen from x1, y1 to x2, y2.
  * Optionally specify drawing options. If this argument is not specified it
  * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawLine, DrawLineType
  *
  * \param x1 The x value for the start of the line.
  * \param y1 The y value for the start of the line.
@@ -2196,6 +2179,7 @@ inline char LineOut(int x1, int y1, int x2, int y2, unsigned long options=DRAW_O
  * Optionally specify drawing options. If this argument is not specified it
  * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawPoint, DrawPointType
  *
  * \param x The x value for the point.
  * \param y The y value for the point.
@@ -2208,28 +2192,13 @@ inline char PointOut(int x, int y, unsigned long options=DRAW_OPT_NORMAL);
  */
 
 /**
- * Draw a polygon.
- * This function lets you draw a polygon on the screen using an array of points.
- * Optionally specify drawing options. If this argument is not specified it
- * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
- * the \ref DisplayDrawOptionConstants group.
- *
- * \param points An array of LocationType points that define the polygon.
- * \param options The optional drawing options.
- * \return The result of the drawing operation.
- */
-inline char PolyOut(LocationType points[], unsigned long options=DRAW_OPT_NORMAL);
-/** \example ex_PolyOut.nxc
- * This is an example of how to use the \ref PolyOut function.
- */
-
-/**
  * Draw a rectangle.
  * This function lets you draw a rectangle on the screen at x, y with the
  * specified width and height.
  * Optionally specify drawing options. If this argument is not specified it
  * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawRect, DrawRectType
  *
  * \param x The x value for the top left corner of the rectangle.
  * \param y The y value for the top left corner of the rectangle.
@@ -2251,6 +2220,7 @@ inline char RectOut(int x, int y, int width, int height, unsigned long options=D
  * Optionally specify drawing options. If this argument is not specified it
  * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawText, DrawTextType
  *
  * \param x The x value for the start of the text output.
  * \param y The text line number for the text output.
@@ -2271,6 +2241,7 @@ inline char TextOut(int x, int y, string str, unsigned long options=DRAW_OPT_NOR
  * Optionally specify drawing options. If this argument is not specified it
  * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawText, DrawTextType
  *
  * \param x The x value for the start of the number output.
  * \param y The text line number for the number output.
@@ -2284,6 +2255,47 @@ inline char NumOut(int x, int y, variant value, unsigned long options=DRAW_OPT_N
  */
 
 /**
+ * Draw an ellipse.
+ * This function lets you draw an ellipse on the screen with its center at the
+ * specified x and y location, using the specified radii. Optionally specify
+ * drawing options. If this argument is not specified it defaults to \ref DRAW_OPT_NORMAL.
+ * Valid display option constants are listed in the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawEllipse, DrawEllipseType
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param x The x value for the center of the ellipse.
+ * \param y The y value for the center of the ellipse.
+ * \param radiusX The x axis radius.
+ * \param radiusY The y axis radius.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char EllipseOut(int x, int y, byte radiusX, byte radiusY, unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_EllipseOut.nxc
+ * This is an example of how to use the \ref EllipseOut and \ref Random functions.
+ */
+
+/**
+ * Draw a polygon.
+ * This function lets you draw a polygon on the screen using an array of points.
+ * Optionally specify drawing options. If this argument is not specified it
+ * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawPolygon, DrawPolygonType
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param points An array of LocationType points that define the polygon.
+ * \param options The optional drawing options.
+ * \return The result of the drawing operation.
+ */
+inline char PolyOut(LocationType points[], unsigned long options=DRAW_OPT_NORMAL);
+/** \example ex_PolyOut.nxc
+ * This is an example of how to use the \ref PolyOut function.
+ */
+
+/**
  * Draw text with font.
  * Draw a text value on the screen at the specified x and y location using
  * a custom RIC font. Optionally specify drawing options. If this argument is
@@ -2291,7 +2303,9 @@ inline char NumOut(int x, int y, variant value, unsigned long options=DRAW_OPT_N
  * constants are listed in the \ref DisplayDrawOptionConstants group.  See the
  * \ref DisplayFontDrawOptionConstants for options specific to the font
  * drawing functions.
- * \sa FontNumOut
+ * \sa FontNumOut, SysDrawFont, DrawFontType
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param x The x value for the start of the text output.
  * \param y The y value for the start of the text output.
@@ -2314,7 +2328,9 @@ inline char FontTextOut(int x, int y, string filename, string str, unsigned long
  * constants are listed in the \ref DisplayDrawOptionConstants group.  See the
  * \ref DisplayFontDrawOptionConstants for options specific to the font
  * drawing functions.
- * \sa FontTextOut
+ * \sa FontTextOut, SysDrawFont, DrawFontType
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param x The x value for the start of the number output.
  * \param y The y value for the start of the number output.
@@ -2335,6 +2351,7 @@ inline char FontNumOut(int x, int y, string filename, variant value, unsigned lo
  * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
  * nothing will be drawn and no errors will be reported.
+ * \sa SysDrawGraphic, DrawGraphicType
  *
  * \param x The x value for the position of the graphic image.
  * \param y The y value for the position of the graphic image.
@@ -2360,6 +2377,7 @@ inline char GraphicOut(int x, int y, string filename, unsigned long options=DRAW
  * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
  * nothing will be drawn and no errors will be reported.
+ * \sa SysDrawGraphicArray, DrawGraphicArrayType
  *
  * \param x The x value for the position of the graphic image.
  * \param y The y value for the position of the graphic image.
@@ -2384,6 +2402,7 @@ inline char GraphicArrayOut(int x, int y, byte data[], unsigned long options=DRA
  * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
  * nothing will be drawn and no errors will be reported.
+ * \sa SysDrawGraphic, DrawGraphicType
  *
  * \param x The x value for the position of the graphic image.
  * \param y The y value for the position of the graphic image.
@@ -2408,6 +2427,7 @@ inline char GraphicOutEx(int x, int y, string filename, byte vars[], unsigned lo
  * defaults to \ref DRAW_OPT_NORMAL. Valid display option constants are listed in
  * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
  * nothing will be drawn and no errors will be reported.
+ * \sa SysDrawGraphicArray, DrawGraphicArrayType
  *
  * \param x The x value for the position of the graphic image.
  * \param y The y value for the position of the graphic image.

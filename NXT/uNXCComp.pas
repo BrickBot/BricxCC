@@ -88,13 +88,13 @@ type
     fCurrentLine : string;
     fExpStr : string;
     fExpStrHasVars : boolean;
-    fAPIFunctions : TStrings;
-    fAPIStrFunctions : TStrings;
-    fThreadNames : TStrings;
+    fAPIFunctions : TStringList;
+    fAPIStrFunctions : TStringList;
+    fThreadNames : TStringList;
     fCurrentThreadName : string;
     fBytesRead : integer;
-    fSwitchFixups : TStrings;
-    fSwitchRegNames : TStrings;
+    fSwitchFixups : TStringList;
+    fSwitchRegNames : TStringList;
     fSwitchDepth : integer;
     fCalc : TNBCExpParser;
     fOptimizeLevel: integer;
@@ -106,7 +106,7 @@ type
     fLHSDataType : char;
     fLHSName : string;
     fWarningsOff: boolean;
-    fFunctionNameCallStack : TStrings;
+    fFunctionNameCallStack : TStringList;
     fSemiColonRequired : boolean;
     fExpressionIsSigned : boolean;
     fConstStringMap : TStringList;
@@ -391,6 +391,7 @@ type
     function  APIStrFuncNameToID(procname: string): integer;
     function  IsAPIStrFunc(procname: string): boolean;
     procedure DoStrLen;
+//    procedure DoSizeOf;
     procedure DoStrIndex;
     procedure DoFormatNum;
     function  ReplaceTokens(const line: string): string;
@@ -461,8 +462,8 @@ type
     fDefines : TStrings;
     procedure InternalParseStream;
     procedure Clear;
-    property  SwitchFixups : TStrings read fSwitchFixups;
-    property  SwitchRegisterNames : TStrings read fSwitchRegNames;
+    property  SwitchFixups : TStringList read fSwitchFixups;
+    property  SwitchRegisterNames : TStringList read fSwitchRegNames;
   protected
     procedure TopDecls; virtual;
     procedure Header; virtual;
@@ -1798,9 +1799,7 @@ var
 begin
   if (n = '') then
     Result := TOK_LONGDEF
-  else if (n = 'true') or (n = 'false') then
-    Result := TOK_BYTEDEF
-  else if (n = '1') or (n = '0') then
+  else if (n = 'true') or (n = 'false') or (n = '1') or (n = '0') then
     Result := TOK_BYTEDEF
   else
   begin
@@ -5169,7 +5168,7 @@ begin
       if i <> -1 then
       begin
         Token := TOK_STRINGLIT;
-        Value := fConstStringMap.Values[Value];
+        Value := fConstStringMap.ValueFromIndex[i];
       end;
     end;
     Result := Value;
@@ -6207,7 +6206,7 @@ begin
   NumGlobals := 0;
   endofallsource := False;
   fEnhancedFirmware := False;
-  fFirmwareVersion  := 128; // 1.28 NXT 2.0 firmware 
+  fFirmwareVersion  := 128; // 1.28 NXT 2.0 firmware
   fIgnoreSystemFile := False;
   fWarningsOff      := False;
   fDD := TDataDefs.Create;
@@ -6216,6 +6215,8 @@ begin
   fNamedTypes.Duplicates := dupError;
   fDefines := TStringList.Create;
   fEmittedLocals := TStringList.Create;
+  fEmittedLocals.CaseSensitive := True;
+  fEmittedLocals.Sorted := True;
   fLocals := TVariableList.Create;
   fParams := TVariableList.Create;
   fGlobals := TVariableList.Create;
@@ -6230,18 +6231,22 @@ begin
   fMessages := TStringList.Create;
   fIncludeDirs := TStringList.Create;
   fAPIFunctions := TStringList.Create;
-  TStringList(fAPIFunctions).Sorted := True;
+  fAPIFunctions.CaseSensitive := True;
+  fAPIFunctions.Sorted := True;
   fAPIStrFunctions := TStringList.Create;
-  TStringList(fAPIStrFunctions).Sorted := True;
+  fAPIStrFunctions.CaseSensitive := True;
+  fAPIStrFunctions.Sorted := True;
   fThreadNames := TStringList.Create;
-  TStringList(fThreadNames).CaseSensitive := True;
-  TStringList(fThreadNames).Sorted := True;
-  TStringList(fThreadNames).Duplicates := dupIgnore;
+  fThreadNames.CaseSensitive := True;
+  fThreadNames.Sorted := True;
+  fThreadNames.Duplicates := dupIgnore;
   fSwitchFixups := TStringList.Create;
   fSwitchRegNames := TStringList.Create;
   fSwitchDepth := 0;
   fFunctionNameCallStack := TStringList.Create;
+  fFunctionNameCallStack.CaseSensitive := True;
   fConstStringMap := TStringList.Create;
+  fConstStringMap.CaseSensitive := True;
   fConstStringMap.Sorted := True;
   fArrayIndexStack := TStringList.Create;
   fStructDecls := TStringList.Create;
@@ -7675,6 +7680,7 @@ const
   APIF_DRAWELLIPSE      = 38;
   APIF_FONTTEXTOUT      = 39;
   APIF_FONTNUMOUT       = 40;
+//  APIF_SIZEOF           = 41;
 
 procedure TNXCComp.DoCallAPIFunc(procname: string);
 var
@@ -7754,8 +7760,50 @@ begin
     APIF_DRAWPOLY : DoDrawPoly;
     APIF_DRAWELLIPSE : DoDrawEllipse;
     APIF_FONTTEXTOUT, APIF_FONTNUMOUT : DoFontTextNumOut(id);
+//    APIF_SIZEOF : DoSizeOf;
   end;
 end;
+
+(*
+procedure TNXCComp.DoSizeOf;
+var
+  val : integer;
+  arg, savedval : string;
+  savedtok : Char;
+begin
+  // sizeof(var or type)
+  OpenParen;
+  Scan;
+  arg := '';
+  savedtok := #0;
+  while Token <> TOK_CLOSEPAREN do begin
+    // unsigned and const do not change the type size so skip them
+    if not (Token in [TOK_CONST, TOK_UNSIGNED]) then
+    begin
+      savedval := Value;
+      savedtok := Token;
+      arg := arg + Value + ' ';
+      if Token = TOK_IDENTIFIER then
+        Break;
+    end;
+    Next;
+    Scan;
+  end;
+  arg := Trim(arg);
+  if savedtok := TOK_IDENTIFIER then
+  begin
+    // first look up the type from the variable name
+  end
+  else
+  begin
+    // get type from type name
+  end;
+
+  //?????????
+  CloseParen;
+  EmitLn(Format('mov %s, %s', [RegisterName, IntToStr(val)]));
+end;
+*)
 
 procedure TNXCComp.DoStrIndex;
 var
@@ -8514,6 +8562,7 @@ begin
   AddAPIFunction('EllipseOut', APIF_DRAWELLIPSE);
   AddAPIFunction('FontTextOut', APIF_FONTTEXTOUT);
   AddAPIFunction('FontNumOut', APIF_FONTNUMOUT);
+//  AddAPIFunction('sizeof', APIF_SIZEOF);
 end;
 
 function TNXCComp.GetNBCSrc: TStrings;
