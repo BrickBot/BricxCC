@@ -52,10 +52,14 @@ var
   i, j, cnt : integer;
   refid, kind, name : string;
   tmpSL : TStringList;
+  nameIdx : TStringList;
 begin
   cnt := 0;
+  nameIdx := TStringList.Create;
   tmpSL := TStringList.Create;
   try
+    nameIdx.CaseSensitive := True;
+    nameIdx.Sorted := True;
     tmpSL.Add('unit uNXCHTMLTopics;');
     tmpSL.Add('');
     tmpSL.Add('interface');
@@ -74,29 +78,38 @@ begin
       E := nl.item[i] as IXMLDOMElement;
       n := E.selectSingleNode('name');
       name := n.text;
-      refid := E.getAttribute('refid');
-      tmpSL.Add('    (');
-      tmpSL.Add('     Name: ''' + name + ''';');
-      tmpSL.Add('     Value: ''' + refid + '.html''');
-      tmpSL.Add('    ),');
-      inc(cnt);
+      if nameIdx.IndexOf(name) = -1 then
+      begin
+        nameIdx.Add(name);
+        refid := E.getAttribute('refid');
+        tmpSL.Add('    (');
+        tmpSL.Add('     Name: ''' + name + ''';');
+        tmpSL.Add('     Value: ''' + refid + '.html''');
+        tmpSL.Add('    ),');
+        inc(cnt);
+      end;
     end;
+    nameIdx.Clear;
     // find all members
     nl := Doc.selectNodes('//member[@kind!="variable"]');
     for i := 0 to nl.length - 1 do
     begin
       E := nl.item[i] as IXMLDOMElement;
       n := E.selectSingleNode('name');
-      refid := E.getAttribute('refid');
-      kind := E.getAttribute('kind');
       name := n.text;
-      j := RPos('_', refid);
-      System.Delete(refid, j, MaxInt);
-      tmpSL.Add('    (');
-      tmpSL.Add('     Name: ''' + name + ''';');
-      tmpSL.Add('     Value: ''' + refid + '.html''');
-      tmpSL.Add('    ),');
-      inc(cnt);
+      if nameIdx.IndexOf(name) = -1 then
+      begin
+        nameIdx.Add(name);
+        refid := E.getAttribute('refid');
+        kind := E.getAttribute('kind');
+        j := RPos('_', refid);
+        System.Delete(refid, j, MaxInt);
+        tmpSL.Add('    (');
+        tmpSL.Add('     Name: ''' + name + ''';');
+        tmpSL.Add('     Value: ''' + refid + '.html''');
+        tmpSL.Add('    ),');
+        inc(cnt);
+      end;
     end;
 
     inc(cnt);
@@ -114,6 +127,7 @@ begin
     tmpSL.SaveToFile(ExtractFilePath(outputdir) + 'uNXCHTMLTopics.pas');
   finally
     tmpSL.Free;
+    nameIdx.Free;
   end;
 end;
 
