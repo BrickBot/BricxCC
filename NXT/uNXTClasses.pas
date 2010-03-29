@@ -141,8 +141,8 @@ type
     procedure AddValue(aValue : Cardinal);
     function AddValuesFromString(Calc : TNBCExpParser; sargs : string) : TDSType;
     function  ValueCount : Word;
-    function  ArrayElementSize : Word;
-    function  ElementSize : Word;
+    function  ArrayElementSize(bPad : boolean = true) : Word;
+    function  ElementSize(bPad : boolean = true) : Word;
     procedure IncRefCount;
     procedure DecRefCount;
     procedure AddThread(const aThreadName : string);
@@ -3666,7 +3666,7 @@ begin
   end;
 end;
 
-function TDataspaceEntry.ElementSize: Word;
+function TDataspaceEntry.ElementSize(bPad : boolean) : Word;
 var
   i, bpt, padBytes : integer;
   DE : TDataspaceEntry;
@@ -3685,7 +3685,7 @@ begin
       for i := 0 to SubEntries.Count - 1 do
       begin
         DE := SubEntries[i];
-        bpt := DE.ElementSize; // 2006-10-02 JCH recursively calculate the element size
+        bpt := DE.ElementSize(bPad); // 2006-10-02 JCH recursively calculate the element size
         // this fixes a problem with the size of arrays containing nested aggregate types
         padBytes := bpt - (Result mod bpt);
         if padBytes < bpt then
@@ -3694,7 +3694,8 @@ begin
         end;
         Result := Word(Result + bpt);
       end;
-      Result := RoundToBytesize(Result, DWORD_LEN);
+      if bPad then
+        Result := RoundToBytesize(Result, DWORD_LEN);
     end
     else if DataType = dsArray then
     begin
@@ -3707,14 +3708,14 @@ begin
   end;
 end;
 
-function TDataspaceEntry.ArrayElementSize: Word;
+function TDataspaceEntry.ArrayElementSize(bPad : boolean) : Word;
 begin
   Result := 0;
   if DataType <> dsArray then Exit;
   if SubEntries[0].DataType = dsArray then
     Result := 2
   else
-    Result := SubEntries[0].ElementSize;
+    Result := SubEntries[0].ElementSize(bPad);
 end;
 
 procedure TDataspaceEntry.AssignTo(Dest: TPersistent);
@@ -6874,7 +6875,7 @@ begin
   begin
     de1 := Dataspace.FindEntryByFullName(name);
     if Assigned(de1) then
-      Arg.Value := left + IntToStr(de1.ElementSize) + right
+      Arg.Value := left + IntToStr(de1.ElementSize(False)) + right
     else
     begin
       Arg.Value := left + '0' + right;
