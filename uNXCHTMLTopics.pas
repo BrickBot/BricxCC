@@ -6329,20 +6329,12 @@ const
      Value: 'group___display_module_functions_ga1eb681df7693ac76693a90a5ccd402a8.html'
     ),
     (
-     Name: 'EllipseOut';
-     Value: 'group___display_module_functions_ga396352abfce5d2487a8d94940c57f798.html'
-    ),
-    (
      Name: 'LineOut';
      Value: 'group___display_module_functions_ga36604633e8510bb5d498842ad2fac759.html'
     ),
     (
      Name: 'PointOut';
      Value: 'group___display_module_functions_ga032802d7467ad6b31a2db54cc374c0f5.html'
-    ),
-    (
-     Name: 'PolyOut';
-     Value: 'group___display_module_functions_ga3f09eb9b7d093628c603093e4ee1ef4c.html'
     ),
     (
      Name: 'RectOut';
@@ -6355,6 +6347,14 @@ const
     (
      Name: 'NumOut';
      Value: 'group___display_module_functions_ga6406022f2fd608fe87d8e11ae33b023d.html'
+    ),
+    (
+     Name: 'EllipseOut';
+     Value: 'group___display_module_functions_ga396352abfce5d2487a8d94940c57f798.html'
+    ),
+    (
+     Name: 'PolyOut';
+     Value: 'group___display_module_functions_ga3f09eb9b7d093628c603093e4ee1ef4c.html'
     ),
     (
      Name: 'FontTextOut';
@@ -11137,20 +11137,12 @@ const
      Value: 'group___display_module_functions_ga1eb681df7693ac76693a90a5ccd402a8.html'
     ),
     (
-     Name: 'EllipseOut';
-     Value: 'group___display_module_functions_ga396352abfce5d2487a8d94940c57f798.html'
-    ),
-    (
      Name: 'LineOut';
      Value: 'group___display_module_functions_ga36604633e8510bb5d498842ad2fac759.html'
     ),
     (
      Name: 'PointOut';
      Value: 'group___display_module_functions_ga032802d7467ad6b31a2db54cc374c0f5.html'
-    ),
-    (
-     Name: 'PolyOut';
-     Value: 'group___display_module_functions_ga3f09eb9b7d093628c603093e4ee1ef4c.html'
     ),
     (
      Name: 'RectOut';
@@ -11163,6 +11155,14 @@ const
     (
      Name: 'NumOut';
      Value: 'group___display_module_functions_ga6406022f2fd608fe87d8e11ae33b023d.html'
+    ),
+    (
+     Name: 'EllipseOut';
+     Value: 'group___display_module_functions_ga396352abfce5d2487a8d94940c57f798.html'
+    ),
+    (
+     Name: 'PolyOut';
+     Value: 'group___display_module_functions_ga3f09eb9b7d093628c603093e4ee1ef4c.html'
     ),
     (
      Name: 'FontTextOut';
