@@ -583,7 +583,10 @@ begin
                       sOut.SaveToFile(NXTName);
                   end
                   else
+                  begin
                     Result := 1;
+                    HandleOnCompilerStatusChange(Self, sNBCCompilationFailed);
+                  end;
                 finally
                   sOut.Free;
                 end;
@@ -596,7 +599,10 @@ begin
             end;
           end
           else
+          begin
             Result := 1;
+            HandleOnCompilerStatusChange(Self, sNXCCompilationFailed);
+          end;
         end;
       finally
         tmpIncDirs.Free;

@@ -697,7 +697,9 @@ resourcestring
   
 // uNBCInterface.pas
 resourcestring
-  sCannotFindFile = 'Unable to find the specified input file'#13#10'File "%s" ; line 1';
+  sCannotFindFile       = 'Unable to find the specified input file'#13#10'File "%s" ; line 1';
+  sNXCCompilationFailed = 'NXC compilation failed.';
+  sNBCCompilationFailed = 'NBC compilation failed.';
 
 implementation
 
