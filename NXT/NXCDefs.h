@@ -14071,16 +14071,6 @@ inline byte bcd2dec(byte bcd) { asm { __bcd2dec(bcd, __RETVAL__) } }
  * This is an example of how to use the \ref bcd2dec function.
  */
 
-/**
- * Parameters for the RandomNumber system call.
- * This structure is used when calling the \ref SysRandomNumber system call
- * function.
- * \sa SysRandomNumber()
- */
-struct RandomNumberType {
-  int Result; /*!< The random number. */
-};
-
 #ifdef __DOXYGEN_DOCS
 
 /**
@@ -14109,41 +14099,9 @@ inline char sign(variant num);
  * This is an example of how to use the \ref sign function.
  */
 
-/**
- * Generate random number.
- * Return a signed or unsigned 16-bit random number. If the optional argument n
- * is not provided the function will return a signed value.  Otherwise the
- * returned value will range between 0 and n (exclusive).
- *
- * \param n The maximum unsigned value desired (optional).
- * \return A random number
- */
-inline int Random(unsigned int n = 0);
-/** \example ex_Random.nxc
- * This is an example of how to use the \ref Random function.
- */
-
-/**
- * Draw a random number.
- * This function lets you obtain a random number via the \ref RandomNumberType
- * structure.
- *
- * \param args The RandomNumberType structure receiving results.
- */
-inline void SysRandomNumber(RandomNumberType & args);
-/** \example ex_sysrandomnumber.nxc
- * This is an example of how to use the \ref SysRandomNumber function along with
- * the \ref RandomNumberType structure.
- */
-
 #else
 
 #define isNAN(_x) ((_x) != (_x))
-
-#define SysRandomNumber(_args) asm { \
-  compchktype _args, RandomNumberType \
-  syscall RandomNumber, _args \
-}
 
 #endif
 /** @} */ // end of cmathAPI group
@@ -14512,13 +14470,45 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
  * This is an example of how to use the \ref rewind function.
  */
 
+/**
+ * Get character from stdin.
+ * Returns the next character from the standard input (stdin).
+ * It is equivalent to getc with stdin as its argument. On the NXT this means
+ * wait for a button press and return the value of the button pressed.
+ *
+ * \return The pressed button. See \ref ButtonNameConstants.
+ *
+ */
+inline int getchar() {
+  int result = -1;
+  while (true) {
+    if (ButtonPressed(BTN1, false))
+      result = BTN1;
+    else if (ButtonPressed(BTN2, false))
+      result = BTN2;
+    else if (ButtonPressed(BTN3, false))
+      result = BTN3;
+    else if (ButtonPressed(BTN4, false))
+      result = BTN4;
+    if (result <> -1)
+      break;
+    else
+      Yield();
+  }
+  while(ButtonPressed(result, false));
+  return result;
+}
+/** \example ex_getchar.nxc
+ * This is an example of how to use the \ref getchar function.
+ */
+
+
 #endif
 #endif
 
 /*
   size_t fread(ptr, size, count, FILE*); // read blocks of data from file; returns number of blocks read
   size_t fwrite(ptr, size, count, FILE*); // write blocks of data to stream; returns number of blocks written
-  int getchar(void); // read character from stdin (returns which button was pressed)
   int putchar(int character); // write character to stdout
 */
 
@@ -14547,6 +14537,16 @@ inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
  * Standard C cstdlib API types.
  * @{
  */
+
+/**
+ * Parameters for the RandomNumber system call.
+ * This structure is used when calling the \ref SysRandomNumber system call
+ * function.
+ * \sa SysRandomNumber()
+ */
+struct RandomNumberType {
+  int Result; /*!< The random number. */
+};
 
 /**
  * Output type of the div function.
@@ -14619,10 +14619,42 @@ inline unsigned int rand();
  * This is an example of how to use the \ref rand function.
  */
 
+/**
+ * Generate random number.
+ * Return a signed or unsigned 16-bit random number. If the optional argument n
+ * is not provided the function will return a signed value.  Otherwise the
+ * returned value will range between 0 and n (exclusive).
+ *
+ * \param n The maximum unsigned value desired (optional).
+ * \return A random number
+ */
+inline int Random(unsigned int n = 0);
+/** \example ex_Random.nxc
+ * This is an example of how to use the \ref Random function.
+ */
+
+/**
+ * Draw a random number.
+ * This function lets you obtain a random number via the \ref RandomNumberType
+ * structure.
+ *
+ * \param args The RandomNumberType structure receiving results.
+ */
+inline void SysRandomNumber(RandomNumberType & args);
+/** \example ex_sysrandomnumber.nxc
+ * This is an example of how to use the \ref SysRandomNumber function along with
+ * the \ref RandomNumberType structure.
+ */
+
 #else
 
 #define abort() Stop(true)
 #define rand() Random(RAND_MAX)
+
+#define SysRandomNumber(_args) asm { \
+  compchktype _args, RandomNumberType \
+  syscall RandomNumber, _args \
+}
 
 #endif
 

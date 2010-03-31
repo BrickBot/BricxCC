@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2333;
+  uNXCHTMLTopicsSize = 2334;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -9053,14 +9053,6 @@ const
      Value: 'group__cmath_a_p_i_ga90f77c8b3df60383861c2bf620063c74.html'
     ),
     (
-     Name: 'Random';
-     Value: 'group__cmath_a_p_i_ga7a0e69b48d53c5647f09ab8b80c148b6.html'
-    ),
-    (
-     Name: 'SysRandomNumber';
-     Value: 'group__cmath_a_p_i_gab485d2bc34b70873158cae0500683681.html'
-    ),
-    (
      Name: 'fclose';
      Value: 'group__cstdio_a_p_i_ga78341155278a926a518130763ae9887b.html'
     ),
@@ -9125,6 +9117,10 @@ const
      Value: 'group__cstdio_a_p_i_ga1628898dfcdc94ac664c7a7cafb773b5.html'
     ),
     (
+     Name: 'getchar';
+     Value: 'group__cstdio_a_p_i_gac45fdeab51c3197c1e7c4ec7beabaca9.html'
+    ),
+    (
      Name: 'abort';
      Value: 'group__cstdlib_a_p_i_gac54f53dc342019e8db34f4aa581a5792.html'
     ),
@@ -9135,6 +9131,14 @@ const
     (
      Name: 'rand';
      Value: 'group__cstdlib_a_p_i_ga866c3f5e3e89035c3ba01b22d786d8bc.html'
+    ),
+    (
+     Name: 'Random';
+     Value: 'group__cstdlib_a_p_i_ga7a0e69b48d53c5647f09ab8b80c148b6.html'
+    ),
+    (
+     Name: 'SysRandomNumber';
+     Value: 'group__cstdlib_a_p_i_gab485d2bc34b70873158cae0500683681.html'
     ),
     (
      Name: 'atof';
