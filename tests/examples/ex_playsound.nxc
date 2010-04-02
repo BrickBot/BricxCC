@@ -1,0 +1,9 @@
+task main()
+{
+  PlaySound(SOUND_UP);
+  PlaySound(SOUND_DOWN);
+  Wait(SEC_1);
+  PlaySound(SOUND_LOW_BEEP);
+  Wait(MS_500);
+  PlaySound(SOUND_FAST_UP);
+}

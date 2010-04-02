@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-03-04
- * \version 68
+ * \date 2010-04-01
+ * \version 69
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -2934,6 +2934,18 @@ inline void SetDisplayContrast(byte contrast) { asm { __setDisplayContrast(contr
  * Types used by various sound module functions.
  * @{
  */
+
+/**
+ * Type used with the PlayTones API function.
+ * An array of this structure is used when calling the \ref PlayTones
+ * API function.
+ * \sa PlayTones()
+ */
+struct Tone {
+  unsigned int Frequency; /*!< The tone frequency. See the \ref ToneConstants group. */
+  unsigned int Duration;  /*!< The tone duration in milliseconds. See the \ref TimeConstants group. */
+};
+
 /**
  * Parameters for the SoundPlayFile system call.
  * This structure is used when calling the \ref SysSoundPlayFile system call
@@ -3336,6 +3348,81 @@ inline void SysSoundSetState(SoundSetStateType & args);
 }
 
 #endif
+
+/**
+ * Play a system sound.
+ * Play a sound that mimics the RCX system sounds using one of the
+ * \ref RCXSoundConstants.
+ * <TABLE BORDER=1>
+ * <TR><TH>aCode</TH><TH>Resulting Sound</TH></TR>
+ * <TR><TD>\ref SOUND_CLICK</TD><TD>key click sound</TD></TR>
+ * <TR><TD>\ref SOUND_DOUBLE_BEEP</TD><TD>double beep</TD></TR>
+ * <TR><TD>\ref SOUND_DOWN</TD><TD>sweep down</TD></TR>
+ * <TR><TD>\ref SOUND_UP</TD><TD>sweep up</TD></TR>
+ * <TR><TD>\ref SOUND_LOW_BEEP</TD><TD>error sound</TD></TR>
+ * <TR><TD>\ref SOUND_FAST_UP</TD><TD>fast sweep up</TD></TR>
+ * </TABLE>
+ * \param aCode The system sound to play.  See \ref RCXSoundConstants.
+ */
+void PlaySound(const int &aCode)
+{
+    if (aCode == SOUND_CLICK)
+        PlayTone(600, MS_200);
+    else if (aCode == SOUND_DOUBLE_BEEP)
+    {
+        PlayTone(600, MS_150);
+        asm { wait MS_200 };
+        PlayTone(600, MS_150);
+        asm { wait MS_150 };
+    }
+    else if (aCode == SOUND_UP)
+        for (int i = 4; i < 8; i++)
+        {
+            PlayTone(TONE_C5 * i / 4, MS_100);
+            asm { wait MS_100 };
+        }
+    else if (aCode == SOUND_DOWN)
+        for (int i = 7; i > 3; i--)
+        {
+            PlayTone(TONE_C5 * i / 4, MS_100);
+            asm { wait MS_100 };
+        }
+    else if (aCode == SOUND_LOW_BEEP)
+    {
+        PlayTone(100, MS_500);
+        asm { wait MS_500 };
+    }
+    else if (aCode == SOUND_FAST_UP)
+        for (int i = 4; i < 8; i++)
+        {
+            PlayTone(TONE_C5 * i / 4, MS_50);
+            asm { wait MS_50 };
+        }
+}
+/** \example ex_playsound.nxc
+ * This is an example of how to use the \ref PlaySound function.
+ */
+
+/**
+ * Play multiple tones.
+ * Play a series of tones contained in the tones array.  Each element
+ * in the array is an instance of the \ref Tone structure, containing
+ * a frequency and a duration.
+ *
+ * \param tones The array of tones to play.
+ */
+void PlayTones(Tone tones[])
+{
+  for (int i = 0; i <  asm { arrsize __RETVAL__, tones }; i++) {
+    Tone tmp = tones[i];
+    PlayTone(tmp.Frequency, tmp.Duration);
+    asm { waitv tmp.Duration };
+  }
+}
+/** \example ex_playtones.nxc
+ * This is an example of how to use the \ref PlayTones function along with
+ * the \ref Tone structure.
+ */
 
 /** @} */ // end of SoundModuleFunctions group
 /** @} */ // end of SoundModule group

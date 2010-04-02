@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2334;
+  uNXCHTMLTopicsSize = 2337;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -243,6 +243,10 @@ const
     (
      Name: 'SoundSetStateType';
      Value: 'struct_sound_set_state_type.html'
+    ),
+    (
+     Name: 'Tone';
+     Value: 'struct_tone.html'
     ),
     (
      Name: 'UpdateCalibCacheInfoType';
@@ -4121,28 +4125,28 @@ const
      Value: 'group___r_c_x_remote_constants_gab1e407ef945eeb43e405a45086dd5b5c.html'
     ),
     (
-     Name: 'RCX_SOUND_CLICK';
-     Value: 'group___r_c_x_sound_constants_ga128a265414022bb7a2947ee0b1ba2240.html'
+     Name: 'SOUND_CLICK';
+     Value: 'group___r_c_x_sound_constants_ga462ff98696f599c724ae019fdba77164.html'
     ),
     (
-     Name: 'RCX_SOUND_DOUBLE_BEEP';
-     Value: 'group___r_c_x_sound_constants_gaa15b548de30075d4adb481e97ed4be59.html'
+     Name: 'SOUND_DOUBLE_BEEP';
+     Value: 'group___r_c_x_sound_constants_gafc552bfcd399998ee7aaeee58c3d94df.html'
     ),
     (
-     Name: 'RCX_SOUND_DOWN';
-     Value: 'group___r_c_x_sound_constants_ga4e8686d0d4701e739961839c382c196b.html'
+     Name: 'SOUND_DOWN';
+     Value: 'group___r_c_x_sound_constants_gaaf6556da89bf342c63b510846ba8b7fe.html'
     ),
     (
-     Name: 'RCX_SOUND_UP';
-     Value: 'group___r_c_x_sound_constants_gab5c8a127e793c76f74c86e7127669056.html'
+     Name: 'SOUND_UP';
+     Value: 'group___r_c_x_sound_constants_ga7177ff0898c62c6df3a0b0d519b6eb6a.html'
     ),
     (
-     Name: 'RCX_SOUND_LOW_BEEP';
-     Value: 'group___r_c_x_sound_constants_gaa09b3fe87f0e38a160fa99e201eebfc2.html'
+     Name: 'SOUND_LOW_BEEP';
+     Value: 'group___r_c_x_sound_constants_ga141f96108eb9899a1c1b2b681fc271e8.html'
     ),
     (
-     Name: 'RCX_SOUND_FAST_UP';
-     Value: 'group___r_c_x_sound_constants_gabc3b73dfef999ac4906b0c0050540b2f.html'
+     Name: 'SOUND_FAST_UP';
+     Value: 'group___r_c_x_sound_constants_gaf70fd08e5c244068d6df08e4421d6348.html'
     ),
     (
      Name: 'SCOUT_LIGHT_ON';
@@ -6587,6 +6591,14 @@ const
     (
      Name: 'SysSoundSetState';
      Value: 'group___sound_module_functions_ga6a74d183a87b2de187805e68691722c5.html'
+    ),
+    (
+     Name: 'PlaySound';
+     Value: 'group___sound_module_functions_gab633d7eec889632702c14374dab361cd.html'
+    ),
+    (
+     Name: 'PlayTones';
+     Value: 'group___sound_module_functions_ga343ce8b1180f1083e6216f6d26dd1150.html'
     ),
     (
      Name: 'SensorUS';

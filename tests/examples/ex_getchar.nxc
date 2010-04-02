@@ -1,0 +1,10 @@
+task main()
+{
+  SetLongAbort(true);
+  while (true) {
+    NumOut(0, LCD_LINE1, getchar(), true);
+    Wait(MS_5);
+  }
+}
+
+
