@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-03-05
- * \version 49
+ * \date 2010-04-01
+ * \version 50
  */
 
 #ifndef NBCCOMMON_H
@@ -2030,12 +2030,12 @@
  * Constants for use when playing standard RCX and Scout sounds.
  * @{
  */
-#define RCX_SOUND_CLICK       0 /*!< Play the standard click sound */
-#define RCX_SOUND_DOUBLE_BEEP 1 /*!< Play the standard double beep sound */
-#define RCX_SOUND_DOWN        2 /*!< Play the standard down sound */
-#define RCX_SOUND_UP          3 /*!< Play the standard up sound */
-#define RCX_SOUND_LOW_BEEP    4 /*!< Play the standard low beep sound */
-#define RCX_SOUND_FAST_UP     5 /*!< Play the standard fast up sound */
+#define SOUND_CLICK       0 /*!< Play the standard key click sound */
+#define SOUND_DOUBLE_BEEP 1 /*!< Play the standard double beep sound */
+#define SOUND_DOWN        2 /*!< Play the standard sweep down sound */
+#define SOUND_UP          3 /*!< Play the standard sweep up sound */
+#define SOUND_LOW_BEEP    4 /*!< Play the standard low beep sound */
+#define SOUND_FAST_UP     5 /*!< Play the standard fast up sound */
 /** @} */  // end of RCXSoundConstants group
 
 /** @defgroup ScoutConstants Scout constants
