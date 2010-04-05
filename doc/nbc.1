@@ -68,6 +68,9 @@ turn on compiler optimizations
 .B \-ER=n
 set maximum errors before aborting (0 == no limit)
 .TP
+.B \-PD=n
+set max preprocessor recursion depth (default == 10)
+.TP
 .B \-O=<filename>
 specify output file
 .TP
@@ -99,7 +102,7 @@ NXC will wrap all function calls in Acquire/Release
 dump the API to stdout
 .TP
 .B \-v=n
-set the targeted firmware version (default == 105, aka 1.05)
+set the targeted firmware version (default == 128, NXT 1.1 == 105)
 .TP
 .B \-help
 display command line options
