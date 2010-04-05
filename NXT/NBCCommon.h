@@ -2735,60 +2735,77 @@
  * Constants that define various data type limits.
  * @{
  */
-#define CHAR_BIT   8 /*!< The number of bits in the char type */
-#define SCHAR_MIN  -127 /*!< The minimum value of the signed char type */
-#define SCHAR_MAX  127 /*!< The maximum value of the signed char type */
-#define UCHAR_MAX  255 /*!< The maximum value of the unsigned char type */
-#define CHAR_MIN   -127 /*!< The minimum value of the char type */
-#define CHAR_MAX   127 /*!< The maximum value of the char type */
-#define SHRT_MIN   -32767 /*!< The minimum value of the short type */
-#define SHRT_MAX   32767 /*!< The maximum value of the short type */
-#define USHRT_MAX  65535 /*!< The maximum value of the unsigned short type */
-#define INT_MIN    -32767 /*!< The minimum value of the int type */
-#define INT_MAX    32767 /*!< The maximum value of the int type */
-#define UINT_MAX   65535 /*!< The maximum value of the unsigned int type */
+#define CHAR_BIT   8           /*!< The number of bits in the char type */
+#define SCHAR_MIN  -127        /*!< The minimum value of the signed char type */
+#define SCHAR_MAX  127         /*!< The maximum value of the signed char type */
+#define UCHAR_MAX  255         /*!< The maximum value of the unsigned char type */
+#define CHAR_MIN   -127        /*!< The minimum value of the char type */
+#define CHAR_MAX   127         /*!< The maximum value of the char type */
+#define SHRT_MIN   -32767      /*!< The minimum value of the short type */
+#define SHRT_MAX   32767       /*!< The maximum value of the short type */
+#define USHRT_MAX  65535       /*!< The maximum value of the unsigned short type */
+#define INT_MIN    -32767      /*!< The minimum value of the int type */
+#define INT_MAX    32767       /*!< The maximum value of the int type */
+#define UINT_MAX   65535       /*!< The maximum value of the unsigned int type */
 #define LONG_MIN   -2147483647 /*!< The minimum value of the long type */
-#define LONG_MAX   2147483647 /*!< The maximum value of the long type */
-#define ULONG_MAX  4294967295 /*!< The maximum value of the unsigned long type */
-#define RAND_MAX   32768 /*!< The maximum unsigned int random number returned by \ref rand */
+#define LONG_MAX   2147483647  /*!< The maximum value of the long type */
+#define ULONG_MAX  4294967295  /*!< The maximum value of the unsigned long type */
+#define RAND_MAX   32768       /*!< The maximum unsigned int random number returned by \ref rand */
 /** @} */  // end of NXTLimits group
 /** @} */  // end of MiscConstants group
 
-#ifdef __GRAPHICS_LIBRARY
-//;-----------------------------------------------------------------------------------------
-//; File          : nbcGL.nbc
-//; Description   : Data and subroutines for a very simple 3D engine.
-//; Programmed by : Arno van der Vegt, avandervegt@home.nl
-//;-----------------------------------------------------------------------------------------
 
-//; Begin modes...
-#define GL_MODE_POLYGON              1
-#define GL_MODE_LINE                 2
-#define GL_MODE_POINT                3
-#define GL_MODE_CIRCLE               4
+/** @addtogroup GraphicsLibrary
+ * @{
+ */
+/*------------------------------------------------------------------------------
+; File          : nbcGL.nbc
+; Description   : Data and subroutines for a very simple 3D engine.
+; Programmed by : Arno van der Vegt, avandervegt@home.nl
+;-----------------------------------------------------------------------------*/
 
-//; Actions...
-#define GL_ACTION_TRANSLATE_X        1
-#define GL_ACTION_TRANSLATE_Y        2
-#define GL_ACTION_TRANSLATE_Z        3
+/** @defgroup GLConstantsBeginModes Graphics library begin modes
+ * Constants that are used to specify the polygon surface begin mode.
+ * @{
+ */
+#define GL_MODE_POLYGON             1 /*!< Use polygon mode. */
+#define GL_MODE_LINE                2 /*!< Use line mode. */
+#define GL_MODE_POINT               3 /*!< Use point mode. */
+#define GL_MODE_CIRCLE              4 /*!< Use circle mode. */
+/** @} */  // end of GLConstantsBeginModes group
 
-#define GL_ACTION_ROTATE_X           4
-#define GL_ACTION_ROTATE_Y           5
-#define GL_ACTION_ROTATE_Z           6
+/** @defgroup GLConstantsActions Graphics library actions
+ * Constants that are used to specify a graphics library action.
+ * @{
+ */
+#define GL_ACTION_TRANSLATE_X       1 /*!< Translate along the X axis. */
+#define GL_ACTION_TRANSLATE_Y       2 /*!< Translate along the Y axis. */
+#define GL_ACTION_TRANSLATE_Z       3 /*!< Translate along the Z axis. */
+#define GL_ACTION_ROTATE_X          4 /*!< Rotate around the X axis. */
+#define GL_ACTION_ROTATE_Y          5 /*!< Rotate around the Y axis. */
+#define GL_ACTION_ROTATE_Z          6 /*!< Rotate around the Z axis. */
+#define GL_ACTION_SCALE_X           7 /*!< Scale along the X axis. */
+#define GL_ACTION_SCALE_Y           8 /*!< Scale along the Y axis. */
+#define GL_ACTION_SCALE_Z           9 /*!< Scale along the Z axis. */
+/** @} */  // end of GLConstantsSettings group
 
-#define GL_ACTION_SCALE_X            7
-#define GL_ACTION_SCALE_Y            8
-#define GL_ACTION_SCALE_Z            9
+/** @defgroup GLConstantsSettings Graphics library settings
+ * Constants that are used to configure the graphics library settings.
+ * @{
+ */
+#define GL_SET_CIRCLE_SIZE          1 /*!< Set the circle size. */
+#define GL_SET_CULL_MODE            2 /*!< Set the cull mode.  */
+/** @} */  // end of GLConstantsSettings group
 
-//; Settings...
-#define GL_SET_CIRCLE_SIZE          1
-#define GL_SET_CULL_MODE            2
+/** @defgroup GLConstantsCullMode Graphics library cull mode
+ * Constants to use when setting the graphics library cull mode.
+ * @{
+ */
+#define GL_CULL_MODE_BACK           2 /*!< Cull lines in back. */
+#define GL_CULL_MODE_FRONT          3 /*!< Cull lines in front. */
+#define GL_CULL_MODE_NONE           4 /*!< Do not cull any lines. */
+/** @} */  // end of GLConstantsCullMode group
 
-//; Cull mode ...
-#define GL_CULL_MODE_BACK            2
-#define GL_CULL_MODE_FRONT           3
-#define GL_CULL_MODE_NONE            4
-
-#endif
+/** @} */  // end of GraphicsLibrary group
 
 #endif // NBCCOMMON_H

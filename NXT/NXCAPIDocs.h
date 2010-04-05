@@ -139,6 +139,11 @@
  * Documentation for various Standard-C library routines.
  */
 
+/** @defgroup GraphicsLibrary A simple 3D graphics library
+ * Documentation for a simple 3D graphics library.  The library code was
+ * written by Arno van der Vegt.
+ */
+
 #include "NXCDefs.h"
 
 #endif // NXCAPIDOCS_H

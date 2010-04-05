@@ -15772,35 +15772,238 @@ inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
 #define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8
 /** @} */ // end of RICMacros group
 
-
-#ifdef __GRAPHICS_LIBRARY
+/** @addtogroup GraphicsLibrary
+ * @{
+ */
 //;-----------------------------------------------------------------------------------------
 //; File          : nbcGL.nbc
 //; Description   : Data and subroutines for a very simple 3D engine.
 //; Programmed by : Arno van der Vegt, avandervegt@home.nl
 //;-----------------------------------------------------------------------------------------
-#define glInit() asm { __glInit() }
-#define glSet(_glType, _glValue) asm { __glSet(_glType, _glValue) }
-#define glBeginObject() asm { __glBeginObject() }
-#define glEndObject() asm { __glEndObject() }
-#define glObjectAction(_glObjectId, _glAction, _glValue) asm { __glObjectAction(_glObjectId, _glAction, _glValue) }
-#define glAddVertex(_glX, _glY, _glZ) asm { __glAddVertex(_glX, _glY, _glZ) }
-#define glBegin(_glBeginMode) asm { __glBegin(_glBeginMode) }
-#define glEnd() asm { __glEnd() }
-#define glBeginRender() asm { __glBeginRender() }
-#define glCallObject(_glObjectId) asm { __glCallObject(_glObjectId) }
-#define glFinishRender() asm { __glFinishRender() }
-#define glSetAngleX(_glValue) asm { __glSetAngleX(_glValue) }
-#define glAddToAngleX(_glValue) asm { __glAddToAngleX(_glValue) }
-#define glSetAngleY(_glValue) asm { __glSetAngleY(_glValue) }
-#define glAddToAngleY(_glValue) asm { __glAddToAngleY(_glValue) }
-#define glSetAngleZ(_glValue) asm { __glSetAngleZ(_glValue) }
-#define glAddToAngleZ(_glValue) asm { __glAddToAngleZ(_glValue) }
-#define glSin32768(_glAngle) asm { __glSin32768(__RETVAL__, _glAngle) }
-#define glCos32768(_glAngle) asm { __glCos32768(__RETVAL__, _glAngle) }
-#define glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ) asm { __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ) }
-#define glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ) asm { __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ) }
 
-#endif
+/**
+ * Initialize graphics library.
+ * Setup all the necessary data for the graphics library to function. Call this
+ * function before any other graphics library routine.
+ */
+inline void glInit() { asm { __glInit() } }
+
+/**
+ * Set graphics library options.
+ * Adjust graphic library settings for circle size and cull mode.
+ *
+ * \param glType The setting type.  See \ref GLConstantsSettings.
+ * \param glValue The setting value. For culling modes see \ref GLConstantsCullMode.
+ */
+inline void glSet(int glType, int glValue) { asm { __glSet(glType, glValue) } }
+
+/**
+ * Begin defining an object.
+ * Start the process of defining a graphics library object using low level
+ * functions such as \ref glBegin, \ref glAddVertex, and \ref glEnd.
+ */
+inline void glBeginObject() { asm { __glBeginObject() } }
+
+/**
+ * Stop defining an object.
+ * Finish the process of defining a graphics library object.  Call this function
+ * after you have completed the object definition.
+ */
+inline void glEndObject() { asm { __glEndObject() } }
+
+/**
+ * Perform an object action.
+ * Execute the specified action on the specified object.
+ *
+ * \param glObjectId The object id.
+ * \param glAction The action to perform on the object. See \ref GLConstantsActions.
+ * \param glValue The setting value.
+ */
+inline void glObjectAction(int glObjectId, int glAction, int glValue) {
+  asm { __glObjectAction(glObjectId, glAction, glValue) }
+}
+
+/**
+ * Add a vertex to an object.
+ * Add a vertex to an object currently being defined.  This function should
+ * only be used between \ref glBegin and \ref glEnd which are themselves
+ * nested within a \ref glBeginObject and \ref glEndObject pair.
+ *
+ * \param glX The X axis coordinate.
+ * \param glY The Y axis coordinate.
+ * \param glZ The Z axis coordinate.
+ */
+inline void glAddVertex(int glX, int glY, int glZ) {
+  asm { __glAddVertex(glX, glY, glZ) }
+}
+
+/**
+ * Begin a new polygon for the current object.
+ * Start defining a polygon surface for the current graphics object using
+ * the specified begin mode.
+ *
+ * \param glBeginMode The desired mode.  See \ref GLConstantsBeginModes.
+ */
+inline void glBegin(int glBeginMode) { asm { __glBegin(glBeginMode) } }
+
+/**
+ * Finish a polygon for the current object.
+ * Stop defining a polgyon surface for the current graphics object.
+ */
+inline void glEnd() { asm { __glEnd() } }
+
+/**
+ * Begin a new render.
+ * Start the process of rendering the existing graphic objects.
+ */
+inline void glBeginRender() { asm { __glBeginRender() } }
+
+/**
+ * Call a graphic object.
+ * Tell the graphics library that you want it to include the specified
+ * object in the render.
+ *
+ * \param glObjectId The desired object id.
+ */
+inline void glCallObject(int glObjectId) { asm { __glCallObject(glObjectId) } }
+
+/**
+ * Finish the current render.
+ * Rotate the vertex list, clear the screen, and draw the rendered objects
+ * to the LCD.
+ */
+inline void glFinishRender() { asm { __glFinishRender() } }
+
+/**
+ * Set the X axis angle.
+ * Set the X axis angle to the specified value.
+ *
+ * \param glValue The new X axis angle.
+ */
+inline void glSetAngleX(int glValue) { asm { __glSetAngleX(glValue) } }
+
+/**
+ * Add to the X axis angle.
+ * Add the specified value to the existing X axis angle.
+ *
+ * \param glValue The value to add to the X axis angle.
+ */
+inline void glAddToAngleX(int glValue) { asm { __glAddToAngleX(glValue) } }
+
+/**
+ * Set the Y axis angle.
+ * Set the Y axis angle to the specified value.
+ *
+ * \param glValue The new Y axis angle.
+ */
+inline void glSetAngleY(int glValue) { asm { __glSetAngleY(glValue) } }
+
+/**
+ * Add to the Y axis angle.
+ * Add the specified value to the existing Y axis angle.
+ *
+ * \param glValue The value to add to the Y axis angle.
+ */
+inline void glAddToAngleY(int glValue) { asm { __glAddToAngleY(glValue) } }
+
+/**
+ * Set the Z axis angle.
+ * Set the Z axis angle to the specified value.
+ *
+ * \param glValue The new Z axis angle.
+ */
+inline void glSetAngleZ(int glValue) { asm { __glSetAngleZ(glValue) } }
+
+/**
+ * Add to the Z axis angle.
+ * Add the specified value to the existing Z axis angle.
+ *
+ * \param glValue The value to add to the Z axis angle.
+ */
+inline void glAddToAngleZ(int glValue) { asm { __glAddToAngleZ(glValue) } }
+
+/**
+ * Table-based sine scaled by 32768.
+ * Return the sine of the specified angle in degrees.  The result is scaled
+ * by 32768.
+ *
+ * \param glAngle The angle in degrees.
+ * \return The sine value scaled by 32768.
+ */
+inline int glSin32768(int glAngle) { asm { __glSin32768(__RETVAL__, glAngle) } }
+
+/**
+ * Table-based cosine scaled by 32768.
+ * Return the cosine of the specified angle in degrees.  The result is scaled
+ * by 32768.
+ *
+ * \param glAngle The angle in degrees.
+ * \return The cosine value scaled by 32768.
+ */
+inline int glCos32768(int glAngle) { asm { __glCos32768(__RETVAL__, glAngle) } }
+
+/**
+ * Create a 3D box.
+ * Define a 3D box using the specified begin mode for all faces. The center
+ * of the box is at the origin of the XYZ axis with width, height, and depth
+ * specified via the \ref glSizeX, \ref glSizeY, and \ref glSizeZ parameters.
+ *
+ * \param glMode The begin mode for each surface.  See \ref GLConstantsBeginModes.
+ * \param glSizeX The X axis size (width).
+ * \param glSizeY The Y axis size (height).
+ * \param glSizeZ The Z axis size (depth).
+ */
+inline void glBox(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
+  asm { __glBox(glMode, glSizeX, glSizeY, glSizeZ) }
+}
+
+/**
+ * Create a 3D pyramid.
+ * Define a 3D pyramid using the specified begin mode for all faces. The center
+ * of the pyramid is at the origin of the XYZ axis with width, height, and depth
+ * specified via the \ref glSizeX, \ref glSizeY, and \ref glSizeZ parameters.
+ *
+ * \param glMode The begin mode for each surface.  See \ref GLConstantsBeginModes.
+ * \param glSizeX The X axis size (width).
+ * \param glSizeY The Y axis size (height).
+ * \param glSizeZ The Z axis size (depth).
+ */
+inline void glPyramid(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
+  asm { __glPyramid(glMode, glSizeX, glSizeY, glSizeZ) }
+}
+
+/** \example glTranslateDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBox,
+ * \ref glSetAngleX, \ref glAddToAngleY, \ref glBeginRender, \ref glSet,
+ * \ref glCallObject, \ref glObjectAction, and \ref glFinishRender functions.
+ */
+
+/** \example glScaleDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBox,
+ * \ref glSetAngleX, \ref glAddToAngleY, \ref glBeginRender,
+ * \ref glCallObject, \ref glObjectAction, and \ref glFinishRender functions.
+ */
+
+/** \example glRotateDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBox,
+ * \ref glSetAngleX, \ref glBeginRender,
+ * \ref glCallObject, \ref glObjectAction, and \ref glFinishRender functions.
+ */
+
+/** \example glCircleDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBox,
+ * \ref glSetAngleX, \ref glBeginRender, \ref glAddToAngleY, \ref glAddToAngleX
+ * \ref glCallObject, \ref glSet, and \ref glFinishRender functions.
+ */
+
+/** \example glBoxDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBeginObject,
+ * \ref glBegin, \ref glAddVertex, \ref glEnd, \ref glEndObject,
+ * \ref glSetAngleX, \ref glBeginRender, \ref glAddToAngleY,
+ * \ref glCallObject, and \ref glFinishRender functions.
+ */
+
+
+/** @} */ // end of GraphicsLibrary group
 
 #endif // NXCDEFS_H

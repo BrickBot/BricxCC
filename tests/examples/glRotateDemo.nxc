@@ -1,0 +1,36 @@
+/*------------------------------------------------------------------------------
+; File          : glRotateDemo.nbc
+; Description   : A program demonstrating two 3D boxes with rotate actions...
+; Programmed by : Arno van der Vegt, avandervegt@home.nl
+;-----------------------------------------------------------------------------*/
+
+int angleX, angleY;
+
+task main()
+{
+  // Initialize the 3D engine...
+  glInit();
+  // Create a box, this is the first object which will be object id 0...
+  glBox(GL_MODE_POLYGON, 20, 20, 20);
+  // Create a box, this is the second object which will be object id 1...
+  glBox(GL_MODE_POLYGON, 40, 40, 40);
+  glSetAngleX(30);
+  angleX = 0;
+  angleY = 0;
+  while (true) {
+    // Setup for rendering...
+    glBeginRender();
+    // Call the object with id 0...
+    glCallObject(0);
+    glObjectAction(0, GL_ACTION_ROTATE_X, angleX);
+    // Call the object with id 1...
+    glCallObject(1);
+    glObjectAction(1, GL_ACTION_ROTATE_Y, angleY);
+    // Finish, clear the screen, rotate and render the called objects...
+    glFinishRender();
+    angleX += 3;
+    angleX %= 360;
+    angleY += 5;
+    angleY %= 360;
+  }
+}
