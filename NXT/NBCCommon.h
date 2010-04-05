@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-04-01
- * \version 50
+ * \date 2010-04-05
+ * \version 51
  */
 
 #ifndef NBCCOMMON_H
@@ -2753,5 +2753,42 @@
 #define RAND_MAX   32768 /*!< The maximum unsigned int random number returned by \ref rand */
 /** @} */  // end of NXTLimits group
 /** @} */  // end of MiscConstants group
+
+#ifdef __GRAPHICS_LIBRARY
+//;-----------------------------------------------------------------------------------------
+//; File          : nbcGL.nbc
+//; Description   : Data and subroutines for a very simple 3D engine.
+//; Programmed by : Arno van der Vegt, avandervegt@home.nl
+//;-----------------------------------------------------------------------------------------
+
+//; Begin modes...
+#define GL_MODE_POLYGON              1
+#define GL_MODE_LINE                 2
+#define GL_MODE_POINT                3
+#define GL_MODE_CIRCLE               4
+
+//; Actions...
+#define GL_ACTION_TRANSLATE_X        1
+#define GL_ACTION_TRANSLATE_Y        2
+#define GL_ACTION_TRANSLATE_Z        3
+
+#define GL_ACTION_ROTATE_X           4
+#define GL_ACTION_ROTATE_Y           5
+#define GL_ACTION_ROTATE_Z           6
+
+#define GL_ACTION_SCALE_X            7
+#define GL_ACTION_SCALE_Y            8
+#define GL_ACTION_SCALE_Z            9
+
+//; Settings...
+#define GL_SET_CIRCLE_SIZE          1
+#define GL_SET_CULL_MODE            2
+
+//; Cull mode ...
+#define GL_CULL_MODE_BACK            2
+#define GL_CULL_MODE_FRONT           3
+#define GL_CULL_MODE_NONE            4
+
+#endif
 
 #endif // NBCCOMMON_H
