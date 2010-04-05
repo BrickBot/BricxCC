@@ -627,7 +627,7 @@ type
     function  GetMemMgrTail: Word;
     function  GetNXTInstruction(const idx : integer) : NXTInstruction;
     procedure ReportProblem(const lineNo : integer; const fName, line, msg : string; err : boolean);
-    procedure ProcessASMLine(aStrings : TStrings; idx : integer);
+    procedure ProcessASMLine(aStrings : TStrings; var idx : integer);
     function  ReplaceSpecialStringCharacters(const line : string) : string;
     procedure HandleConstantExpressions(AL : TAsmLine);
     procedure ProcessSpecialFunctions(AL : TAsmLine);
@@ -4482,11 +4482,13 @@ begin
     end;
 //    aStrings.SaveToFile('preproc.txt');
     DoCompilerStatusChange(sNBCCompilingSource);
-    for i := 0 to aStrings.Count - 1 do
+    i := 0;
+    while i < aStrings.Count do
     begin
       if fSkipCount = 0 then
         LineCounter := LineCounter + 1;
       ProcessASMLine(aStrings, i);
+      inc(i);
       if fSkipCount > 0 then
         Dec(fSkipCount);
     end;
@@ -4848,9 +4850,9 @@ begin
   end;
 end;
 
-procedure TRXEProgram.ProcessASMLine(aStrings: TStrings; idx : integer);
+procedure TRXEProgram.ProcessASMLine(aStrings: TStrings; var idx : integer);
 var
-  i, endBCPos, cPos : integer;
+  i, endBCPos, cPos, len, oldIdx : integer;
   lbl, opcode, args, errMsg, tmpFile, tmpLine, line : string;
   lineType : TASMLineType;
   ValidLineTypes : TASMLineTypes;
@@ -4865,8 +4867,25 @@ begin
     opcode   := '';
     lbl      := '';
     line     := aStrings[idx];
+    oldIdx   := idx;
+    // check for and handle the case where the line ends with \ indicating that
+    // the line continues on the next line.
+    len := Length(line);
+    if len > 0 then
+    begin
+      while (line[len] = '\') and (idx < aStrings.Count - 1) do
+      begin
+        System.Delete(line, len, 1); // delete the '\'
+        inc(idx);
+        line := line + aStrings[idx];
+        len := Length(line);
+        aStrings[idx] := ''; // clear the current line
+      end;
+      if line[len] = '\' then
+        System.Delete(line, len, 1);
+    end;
     line := ReplaceTokens(Trim(line));
-    aStrings[idx] := line;
+    aStrings[oldIdx] := line;
     // do nothing if line is blank or a comment
     if (line = '') or (Pos(';', line) = 1) or (Pos('//', line) = 1) then
       Exit;
