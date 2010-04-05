@@ -1176,6 +1176,9 @@ function IsCharWhiteSpace(C: Char): Boolean;
 function StrContains(const SubStr, Str: string): Boolean;
 function InlineName(const tname, name: string): string;
 function StripInline(const name: string): string;
+function InlineThreadName(const name: string): string;
+function IsInlined(const name: string) : boolean;
+function StripAllInlineDecoration(const name: string): string;
 function StripDecoration(const name : string) : string;
 function PrettyNameStrip(const name : string) : string;
 function ApplyDecoration(const pre, val: string; const level : integer): string;
@@ -1348,6 +1351,31 @@ var
 begin
   Result := name;
   i := RPos(INLINE_DECOR_SEP, Result);
+  if i > 0 then
+    Result := Copy(Result, 1, i-1);
+end;
+
+function InlineThreadName(const name: string): string;
+var
+  i : integer;
+begin
+  Result := name;
+  i := RPos(INLINE_DECOR_SEP, Result);
+  if i > 0 then
+    Result := Copy(Result, i+Length(INLINE_DECOR_SEP), MaxInt);
+end;
+
+function IsInlined(const name: string) : boolean;
+begin
+  Result := Pos(INLINE_DECOR_SEP, name) > 0;
+end;
+
+function StripAllInlineDecoration(const name: string): string;
+var
+  i : integer;
+begin
+  Result := name;
+  i := Pos(INLINE_DECOR_SEP, Result);
   if i > 0 then
     Result := Copy(Result, 1, i-1);
 end;

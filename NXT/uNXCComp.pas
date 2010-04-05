@@ -5176,11 +5176,11 @@ begin
       AbortMsg(sInvalidStringInit);
     Next;
   end
-  else if IsArrayType(dt) then
+  else if IsArrayType(dt) or IsUDT(dt) then
   begin
-    // array initialization could involve nested {} pairs
+    // array and struct initialization could involve nested {} pairs
     if Token <> TOK_BEGIN then
-      AbortMsg(sInvalidGlobalArrayInit);
+      AbortMsg(sInvalidArrayInit);
     nestLevel := 1;
     while ((Token <> TOK_END) or (nestLevel > 0)) and not endofallsource do
     begin
@@ -5209,7 +5209,7 @@ begin
       Next;
     end
     else
-      AbortMsg(sInvalidGlobalArrayInit);
+      AbortMsg(sInvalidArrayInit);
   end
   else
   begin
@@ -5359,9 +5359,10 @@ begin
         begin
           // string constants - use a variable name to value map (string list)
           fConstStringMap.Add(savedval+'='+ival);
-        end
-        else if not bArray then
-          AbortMsg(sInvalidConstExpr);
+        end;
+        // it is now okay to have const struct types since you can initialize them
+//        else if not bArray then
+//          AbortMsg(sInvalidConstExpr);
       end;
       // arrays with > 1 dimension cannot be initialized statically
       if dimensions > 1 then
@@ -9080,6 +9081,7 @@ var
   fp : TFunctionParameter;
 begin
   Result := '';
+  n := StripInline(n);
   case WhatIs(n) of
     stParam : begin
       i := ParamIdx(n);

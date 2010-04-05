@@ -522,7 +522,7 @@ resourcestring
   sMainMustBeTask          = 'main must be a task';
   sUDTNotEqual             = 'User-defined types do not match';
   sInvalidArrayDeclaration = 'Invalid array declaration';
-  sInvalidGlobalArrayInit  = 'Invalid global array initialization';
+  sInvalidArrayInit        = 'Invalid array or struct initialization';
   sUnknownUDT              = 'Unknown user-defined type';
   sReturnInvalid           = 'return is invalid outside a subroutine';
   sInvalidBreakContinue    = '%s is invalid outside of a loop';
