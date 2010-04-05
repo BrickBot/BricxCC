@@ -207,6 +207,7 @@ begin
     Gutter.Font.Name := 'Terminal';
     Gutter.Font.Style := [];
     ReadOnly := True;
+    MaxLeftChar := 8192;
   end;
 end;
 
