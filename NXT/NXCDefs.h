@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-04-01
- * \version 69
+ * \date 2010-04-05
+ * \version 70
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -15772,5 +15772,35 @@ inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
 #define RICSetValue(_data, _idx, _newval) _data[(_idx)] = (_newval)&0xFF; _data[(_idx)+1] = (_newval)>>8
 /** @} */ // end of RICMacros group
 
+
+#ifdef __GRAPHICS_LIBRARY
+//;-----------------------------------------------------------------------------------------
+//; File          : nbcGL.nbc
+//; Description   : Data and subroutines for a very simple 3D engine.
+//; Programmed by : Arno van der Vegt, avandervegt@home.nl
+//;-----------------------------------------------------------------------------------------
+#define glInit() asm { __glInit() }
+#define glSet(_glType, _glValue) asm { __glSet(_glType, _glValue) }
+#define glBeginObject() asm { __glBeginObject() }
+#define glEndObject() asm { __glEndObject() }
+#define glObjectAction(_glObjectId, _glAction, _glValue) asm { __glObjectAction(_glObjectId, _glAction, _glValue) }
+#define glAddVertex(_glX, _glY, _glZ) asm { __glAddVertex(_glX, _glY, _glZ) }
+#define glBegin(_glBeginMode) asm { __glBegin(_glBeginMode) }
+#define glEnd() asm { __glEnd() }
+#define glBeginRender() asm { __glBeginRender() }
+#define glCallObject(_glObjectId) asm { __glCallObject(_glObjectId) }
+#define glFinishRender() asm { __glFinishRender() }
+#define glSetAngleX(_glValue) asm { __glSetAngleX(_glValue) }
+#define glAddToAngleX(_glValue) asm { __glAddToAngleX(_glValue) }
+#define glSetAngleY(_glValue) asm { __glSetAngleY(_glValue) }
+#define glAddToAngleY(_glValue) asm { __glAddToAngleY(_glValue) }
+#define glSetAngleZ(_glValue) asm { __glSetAngleZ(_glValue) }
+#define glAddToAngleZ(_glValue) asm { __glAddToAngleZ(_glValue) }
+#define glSin32768(_glAngle) asm { __glSin32768(__RETVAL__, _glAngle) }
+#define glCos32768(_glAngle) asm { __glCos32768(__RETVAL__, _glAngle) }
+#define glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ) asm { __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ) }
+#define glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ) asm { __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ) }
+
+#endif
 
 #endif // NXCDEFS_H
