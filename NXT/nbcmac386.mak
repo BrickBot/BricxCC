@@ -1,5 +1,5 @@
 PROGRAMS = nbc
-VER = 1.0.1.b36
+VER = 1.2.1.r1
 DOBJECTS=uNXTClasses.o uPreprocess.o Parser10.o P10Build.o uNXCComp.o uRPGComp.o uRIC.o uRICComp.o uNBCCommon.o uNXTConstants.o uNBCInterface.o nbc.dpr
 DEFAULT_INCLUDE_DIR=/usr/local/include/nbc
 

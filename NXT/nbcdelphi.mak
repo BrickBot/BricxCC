@@ -1,5 +1,5 @@
 PROGRAMS = nbc.exe
-VER = 1.0.1.b36
+VER = 1.2.1.r1
 DOBJECTS=uNXTClasses.dcu uPreprocess.dcu Parser10.dcu P10Build.dcu uNXCComp.dcu uRPGComp.dcu uRIC.dcu uRICComp.dcu uNBCCommon.dcu uNXTConstants.dcu uNBCInterface.dcu nbc.dpr
 DEFAULT_INCLUDE_DIR=.
 
@@ -12,7 +12,7 @@ realclean:: clean
 	rm -f $(PROGRAMS) mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
 
 # Delphi
-TOOLPREFIX=C:/win32apps/Borland/Delphi7/Bin/
+TOOLPREFIX=C:/winapps/Borland/Delphi7/Bin/
 DELPHI=$(TOOLPREFIX)dcc32.exe
 
 # how to link executable
