@@ -1,0 +1,76 @@
+/*------------------------------------------------------------------------------
+; File          : glBoxDemo.nbc
+; Description   : A program demonstrating a 3D box...
+; Programmed by : Arno van der Vegt, avandervegt@home.nl
+;-----------------------------------------------------------------------------*/
+
+inline void glCube(int glMode, int size)
+{
+  int x1, x0, y1, y0, z1, z0;
+  x1 = size / 2;
+  x0 = -x1;
+  y1 = x1;       
+  y0 = x0;
+  z1 = x1;       
+  z0 = x0;
+  glBeginObject();
+    glBegin(glMode);
+      glAddVertex(x0, y0, z0);
+      glAddVertex(x1, y0, z0);
+      glAddVertex(x1, y1, z0);
+      glAddVertex(x0, y1, z0);
+    glEnd();
+    glBegin(glMode);
+      glAddVertex(x0, y1, z1);
+      glAddVertex(x1, y1, z1);
+      glAddVertex(x1, y0, z1);
+      glAddVertex(x0, y0, z1);
+    glEnd();
+    glBegin(glMode);
+      glAddVertex(x0, y1, z0);
+      glAddVertex(x0, y1, z1);
+      glAddVertex(x0, y0, z1);
+      glAddVertex(x0, y0, z0);
+    glEnd();
+    glBegin(glMode);
+      glAddVertex(x1, y0, z0);
+      glAddVertex(x1, y0, z1);
+      glAddVertex(x1, y1, z1);
+      glAddVertex(x1, y1, z0);
+    glEnd();
+    glBegin(glMode);
+      glAddVertex(x0, y0, z0);
+      glAddVertex(x0, y0, z1);
+      glAddVertex(x1, y0, z1);
+      glAddVertex(x1, y0, z0);
+    glEnd();
+    glBegin(glMode);
+      glAddVertex(x1, y1, z0);
+      glAddVertex(x1, y1, z1);
+      glAddVertex(x0, y1, z1);
+      glAddVertex(x0, y1, z0);
+    glEnd();
+  glEndObject();
+}
+
+task main()
+{
+  // Initialize the 3D engine...
+  glInit();
+  // Create a cube, this is the first object which will be object id 0...
+  glCube(GL_MODE_POLYGON, 20);
+  // Set the main view x-angle...
+  glSetAngleX(45);
+  while (true)
+  {
+    // Rotate the main view....
+    glAddToAngleY(8);
+    // Setup for rendering...
+    glBeginRender();
+    // Call the object with id 0...
+    glCallObject(0);
+    // Finish, clear the screen, rotate and render the called objects...
+    glFinishRender();
+    Wait(MS_20);
+  }
+}

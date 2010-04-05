@@ -1,0 +1,39 @@
+/*-----------------------------------------------------------------------------
+; File          : glScaleDemo.nbc
+; Description   : A program demonstrating a scaling action...
+; Programmed by : Arno van der Vegt, avandervegt@home.nl
+;-----------------------------------------------------------------------------*/
+
+int scaleX, scaleXStep;
+
+task main()
+{
+  // Initialize the 3D engine...
+  glInit();
+  // Create a box, this is the first object which will be object id 0...
+  glBox(GL_MODE_POLYGON, 20, 20, 20);
+  // Set the main view x-angle...
+  glSetAngleX(45);
+  // Initialize the scaling vars...
+  scaleX     = 256;
+  scaleXStep = 16;
+  while (true)
+  {
+    // Rotate the main view....
+    glAddToAngleY(8);
+    // Setup for rendering...
+    glBeginRender();
+    // Call the object with id 0...
+    glObjectAction(0, GL_ACTION_SCALE_X, scaleX);
+    glCallObject(0);
+    // Finish, clear the screen, rotate and render the called objects...
+    glFinishRender();
+    // Scale between 256..512...
+    scaleX += scaleXStep;
+    if (scaleX >= 512)
+      scaleXStep = -16;
+    else if (scaleX <= 256)
+      scaleXStep = 16;
+    Wait(MS_20);
+  }
+}

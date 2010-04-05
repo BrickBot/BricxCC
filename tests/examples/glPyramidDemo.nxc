@@ -1,0 +1,74 @@
+inline void myObj(int bm)
+{
+/*
+(±1,±1,0)
+(±1,0,±1)
+(0,±1,±1)
+*/
+  glBeginObject();
+    glBegin(bm);
+      glAddVertex( 20,   0,   0);
+      glAddVertex(  0,  20,   0);
+      glAddVertex(  0,   0,  20);
+    glEnd();
+    glBegin(bm);
+      glAddVertex(-20,   0,   0);
+      glAddVertex(  0,  20,   0);
+      glAddVertex(  0,   0,  20);
+    glEnd();
+    glBegin(bm);
+      glAddVertex(-20,   0,   0);
+      glAddVertex(  0, -20,   0);
+      glAddVertex(  0,   0,  20);
+    glEnd();
+    glBegin(bm);
+      glAddVertex( 20,   0,   0);
+      glAddVertex(  0, -20,   0);
+      glAddVertex(  0,   0,  20);
+    glEnd();
+    glBegin(bm);
+      glAddVertex( 20,   0,   0);
+      glAddVertex(  0, -20,   0);
+      glAddVertex(  0,   0, -20);
+    glEnd();
+    glBegin(bm);
+      glAddVertex( 20,   0,   0);
+      glAddVertex(  0,  20,   0);
+      glAddVertex(  0,   0, -20);
+    glEnd();
+    glBegin(bm);
+      glAddVertex(-20,   0,   0);
+      glAddVertex(  0,  20,   0);
+      glAddVertex(  0,   0, -20);
+    glEnd();
+    glBegin(bm);
+      glAddVertex(-20,   0,   0);
+      glAddVertex(  0, -20,   0);
+      glAddVertex(  0,   0, -20);
+    glEnd();
+  glEndObject();
+}
+
+task main()
+{
+  // Initialize the 3D engine...
+  glInit();
+  // Create a cube, this is the first object which will be object id 0...
+  glPyramid(GL_MODE_POLYGON, 20, 20, 20);
+//  myObj(GL_MODE_POLYGON);
+  // Set the main view x-angle...
+  glSetAngleX(45);
+  while (true)
+  {
+    // Rotate the main view....
+    glAddToAngleY(8);
+    glAddToAngleX(4);
+    // Setup for rendering...
+    glBeginRender();
+    // Call the object with id 0...
+    glCallObject(0);
+    // Finish, clear the screen, rotate and render the called objects...
+    glFinishRender();
+    Wait(MS_50);
+  }
+}
