@@ -244,7 +244,7 @@ uses
   uMiscDefines, uNXTClasses, uNBCInterface, ParamUtils, uNXTConstants,
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants, uEditorUtils,
   uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals, uBasicPrefs,
-  uHTMLHelp, uNXCHTMLTopics;
+  uHTMLHelp, uNXCHTMLTopics, uNQCHTMLTopics;
 
 function HelpALink(keyword: string; bNQC : Boolean): Boolean;
 var
@@ -1354,6 +1354,8 @@ begin
   else if FileIsNQC(AEH) then
   begin
     Self.HelpFile := ProgramDir + 'Help\nqc.hlp';
+    if UseHTMLHelp then
+      LoadHTMLTopicMap(uNQCHTMLTopicsData);
   end
   else if FileIsJava(AEH) then
   begin
