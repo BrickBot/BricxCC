@@ -11,6 +11,8 @@ version 3.3.8.6
 - Initial HTML help support (currently manual registry edit)
 - Added ability to edit the editor expert and the grep search shortcuts.
 - Added automatic firmware version number when compiling NBC/NXC code.
+- Allow long lines in the code listing window (up to 8192 characters).
+- HTML help for NQC completed.
 
 Version 3.3.7.20
 -----------------
