@@ -15802,7 +15802,7 @@ inline void glSet(int glType, int glValue) { asm { __glSet(glType, glValue) } }
  * Start the process of defining a graphics library object using low level
  * functions such as \ref glBegin, \ref glAddVertex, and \ref glEnd.
  */
-inline void glBeginObject() { asm { __glBeginObject() } }
+inline int glBeginObject() { asm { __glBeginObject(__RETVAL__) } }
 
 /**
  * Stop defining an object.
@@ -15953,8 +15953,21 @@ inline int glCos32768(int glAngle) { asm { __glCos32768(__RETVAL__, glAngle) } }
  * \param glSizeY The Y axis size (height).
  * \param glSizeZ The Z axis size (depth).
  */
-inline void glBox(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
-  asm { __glBox(glMode, glSizeX, glSizeY, glSizeZ) }
+inline int glBox(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
+  asm { __glBox(glMode, glSizeX, glSizeY, glSizeZ, __RETVAL__) }
+}
+
+/**
+ * Create a 3D cube.
+ * Define a 3D cube using the specified begin mode for all faces. The center
+ * of the box is at the origin of the XYZ axis with equal width, height, and depth
+ * specified via the \ref glSize parameter.
+ *
+ * \param glMode The begin mode for each surface.  See \ref GLConstantsBeginModes.
+ * \param glSize The cube's width, height, and depth.
+ */
+inline int glCube(int glMode, int glSize) {
+  asm { __glBox(glMode, glSize, glSize, glSize, __RETVAL__) }
 }
 
 /**
@@ -15968,8 +15981,8 @@ inline void glBox(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
  * \param glSizeY The Y axis size (height).
  * \param glSizeZ The Z axis size (depth).
  */
-inline void glPyramid(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
-  asm { __glPyramid(glMode, glSizeX, glSizeY, glSizeZ) }
+inline int glPyramid(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
+  asm { __glPyramid(glMode, glSizeX, glSizeY, glSizeZ, __RETVAL__) }
 }
 
 /** \example glTranslateDemo.nxc

@@ -8636,7 +8636,7 @@ ends
 ;-----------------------------------------------------------------------------------------
 #define glInit() __glInit()
 #define glSet(_glType, _glValue) __glSet(_glType, _glValue)
-#define glBeginObject() __glBeginObject()
+#define glBeginObject(_glObjId) __glBeginObject(_glObjId)
 #define glEndObject() __glEndObject()
 #define glObjectAction(_glObjectId, _glAction, _glValue) __glObjectAction(_glObjectId, _glAction, _glValue)
 #define glAddVertex(_glX, _glY, _glZ) __glAddVertex(_glX, _glY, _glZ)
@@ -8653,8 +8653,9 @@ ends
 #define glAddToAngleZ(_glValue) __glAddToAngleZ(_glValue)
 #define glSin32768(_glResult, _glAngle) __glSin32768(_glResult, _glAngle)
 #define glCos32768(_glResult, _glAngle) __glCos32768(_glResult, _glAngle)
-#define glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ) __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ)
-#define glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ) __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ)
+#define glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId) __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)
+#define glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId) __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)
+#define glCube(_glMode, _glSize, _glObjId) __glBox(_glMode, _glSize, _glSize, _glSize, _glObjId)
 
 #define __glInit()                                                                             \
          call     __GL_glInit
@@ -8664,10 +8665,11 @@ ends
          mov      __GL_glSettingValue,        _glValue                                         \
          call     __GL_glSet
 
-#define __glBeginObject()                                                                      \
+#define __glBeginObject(_glObjId)                                                              \
          mov      __GL_object.firstVertex,    __GL_vertexCount                                 \
          mov      __GL_object.lastVertex,     __GL_vertexCount                                 \
-         mov      __GL_object.firstPolygon,   __GL_polygonCount
+         mov      __GL_object.firstPolygon,   __GL_polygonCount                                \
+         mov      _glObjId,                   __GL_objectCount
 
 #define __glEndObject()                                                                        \
          call     __GL_glEndObject
@@ -8741,19 +8743,21 @@ ends
          mod      __GL_angle,            __GL_angle, 360                                       \
          index    _glResult,             __GL_SIN_TABLE, __GL_angle
 
-#define __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ)                                         \
+#define __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)                               \
          mov      __GL_mode                   _glMode                                          \
          mov      __GL_sizeX                  _glSizeX                                         \
          mov      __GL_sizeY                  _glSizeY                                         \
          mov      __GL_sizeZ                  _glSizeZ                                         \
-         call     __GL_glBox
+         call     __GL_glBox                                                                   \
+         mov      _glObjId,                   __GL_tmpId
 
-#define __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ)                                     \
+#define __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glOjbId)                           \
          mov      __GL_mode                   _glMode                                          \
          mov      __GL_sizeX                  _glSizeX                                         \
          mov      __GL_sizeY                  _glSizeY                                         \
          mov      __GL_sizeZ                  _glSizeZ                                         \
-         call     __GL_glPyramid
+         call     __GL_glPyramid                                                               \
+         mov      _glObjId,                   __GL_tmpId
 
 ;-----------------------------------------------------------------------------------------
 ;
@@ -8767,7 +8771,7 @@ ends
          call     __GL_glRangeCheck
 
 ; Data sizes...
-#define __GL_MAX_VERICES        128
+#define __GL_MAX_VERTICES       128
 #define __GL_MAX_LINES          128
 #define __GL_MAX_POLYGONS        64
 #define __GL_MAX_OBJECT_ACTIONS  16
@@ -8812,6 +8816,8 @@ dseg segment
   TGLSettings struct
     cullMode         byte
     circleSize       byte
+    camDepth         byte
+    zoom             byte
   TGLSettings ends
 
   __GL_glSettings        TGLSettings
@@ -9025,23 +9031,20 @@ ends
 ; Description : Initialize vars.
 ;-----------------------------------------------------------------------------------------
 subroutine __GL_glInit
-  set      __GL_glSettings.cullMode,   GL_CULL_MODE_BACK
+  set      __GL_glSettings.cullMode,   GL_CULL_BACK
   set      __GL_glSettings.circleSize, 4
-  arrinit  __GL_vertexData,            0, __GL_MAX_VERICES
+  set      __GL_glSettings.camDepth,   100
+  set      __GL_glSettings.zoom,       0
+  arrinit  __GL_vertexData,            __GL_vertex0, __GL_MAX_VERTICES
   set      __GL_vertexCount,           0
-  arrinit  __GL_lineData,              0, __GL_MAX_LINES
+  arrinit  __GL_lineData,              __GL_line, __GL_MAX_LINES
   set      __GL_lineCount,             0
-  arrinit  __GL_polygonData,           0, __GL_MAX_POLYGONS
+  arrinit  __GL_polygonData,           __GL_polygon, __GL_MAX_POLYGONS
   set      __GL_polygonCount,          0
-  arrinit  __GL_objectActionData,      0, __GL_MAX_OBJECT_ACTIONS
-  arrinit  __GL_objectData,            0, __GL_MAX_OBJECTS
-  set      __GL_objectCount,           0
-  set      __GL_i,                     0
-__GL_nbc_gl_init_object:
+  arrinit  __GL_objectActionData,      __GL_objectAction, __GL_MAX_OBJECT_ACTIONS
   arrinit  __GL_object.actionList,     0, __GL_MAX_OBJECT_ACTIONS
-  replace  __GL_objectData,            __GL_objectData, __GL_i, __GL_object
-  add      __GL_i,                     __GL_i, 1
-  brcmp    LT,                         __GL_nbc_gl_init_object, __GL_i, __GL_MAX_OBJECTS
+  arrinit  __GL_objectData,            __GL_object, __GL_MAX_OBJECTS
+  set      __GL_objectCount,           0
   arrinit  __GL_pvData                 0, __GL_MAX_PV_DATA
   set      __GL_pvDataCount,           0
   arrinit  __GL_plData                 0, __GL_MAX_PL_DATA
@@ -9058,8 +9061,10 @@ ends
 ; Description : Change settings.
 ;-----------------------------------------------------------------------------------------
 subroutine __GL_glSet
-  brcmp    EQ,                     __GL_nbc_gl_set_circle_size, __GL_glSettingType, GL_SET_CIRCLE_SIZE
-  brcmp    EQ,                     __GL_nbc_gl_set_cull_mode,   __GL_glSettingType, GL_SET_CULL_MODE
+  brcmp    EQ,                     __GL_nbc_gl_set_circle_size,  __GL_glSettingType, GL_CIRCLE_SIZE
+  brcmp    EQ,                     __GL_nbc_gl_set_cull_mode,    __GL_glSettingType, GL_CULL_MODE
+  brcmp    EQ,                     __GL_nbc_gl_set_camera_depth, __GL_glSettingType, GL_CAMERA_DEPTH
+  brcmp    EQ,                     __GL_nbc_gl_set_zoom_factor,  __GL_glSettingType, GL_ZOOM_FACTOR
   ; unknown setting...
   jmp      __GL_nbc_gl_set_done
 __GL_nbc_gl_set_circle_size:
@@ -9067,6 +9072,12 @@ __GL_nbc_gl_set_circle_size:
   jmp      __GL_nbc_gl_set_done
 __GL_nbc_gl_set_cull_mode:
   mov      __GL_glSettings.cullMode,   __GL_glSettingValue
+  jmp      __GL_nbc_gl_set_done
+__GL_nbc_gl_set_camera_depth:
+  mov      __GL_glSettings.camDepth,   __GL_glSettingValue
+  jmp      __GL_nbc_gl_set_done
+__GL_nbc_gl_set_zoom_factor:
+  mov      __GL_glSettings.zoom,       __GL_glSettingValue
 __GL_nbc_gl_set_done:
   return
 ends
@@ -9094,7 +9105,7 @@ __GL_nbc_gl_vertex_not_equal:
   add      __GL_i,                  __GL_i, 1
   brcmp    LT,                      __GL_nbc_gl_find_vertex, __GL_i, __GL_object.lastVertex
 __GL_nbc_gl_empty_vertex_list:
-  __glRangeCheck(__GL_vertexCount, __GL_MAX_VERICES, 'Too many vertices')
+  __glRangeCheck(__GL_vertexCount, __GL_MAX_VERTICES, 'Too many vertices')
   brcmp    EQ,                      __GL_nbc_gl_add_vertex_error, __GL_glErrorState, TRUE
   ; there's no matching vertex found, add a new vertex to the list...
   replace  __GL_vertexData,         __GL_vertexData, __GL_vertexCount, __GL_vertex0
@@ -9137,7 +9148,7 @@ __GL_nbc_gl_find_lines1:
   brcmp    LT,                     __GL_nbc_gl_find_lines_modj, __GL_j, __GL_polygon.lastVertex
   mov      __GL_j,                 __GL_polygon.firstVertex
   ; if the beginMode is GL_LINE then don't close the polygon...
-  brcmp    EQ,                     __GL_nbc_gl_add_line_done2, __GL_polygon.beginMode, GL_MODE_LINE
+  brcmp    EQ,                     __GL_nbc_gl_add_line_done2, __GL_polygon.beginMode, GL_LINE
 __GL_nbc_gl_find_lines_modj:
   ; _a = _pvData[_i]
   index    __GL_a,                 __GL_pvData, __GL_i
@@ -9205,9 +9216,9 @@ subroutine __GL_glObjectAction
   index    __GL_object,             __GL_objectData, __GL_objectIndex
   mov      __GL_objectAction.type,  __GL_action
   mov      __GL_objectAction.value, __GL_value
-  brcmp    EQ,                      __GL_nbc_gl_action_rotate, __GL_action, GL_ACTION_ROTATE_X
-  brcmp    EQ,                      __GL_nbc_gl_action_rotate, __GL_action, GL_ACTION_ROTATE_Y
-  brcmp    EQ,                      __GL_nbc_gl_action_rotate, __GL_action, GL_ACTION_ROTATE_Z
+  brcmp    EQ,                      __GL_nbc_gl_action_rotate, __GL_action, GL_ROTATE_X
+  brcmp    EQ,                      __GL_nbc_gl_action_rotate, __GL_action, GL_ROTATE_Y
+  brcmp    EQ,                      __GL_nbc_gl_action_rotate, __GL_action, GL_ROTATE_Z
   jmp      __GL_nbc_gl_action_no_rotate
 __GL_nbc_gl_action_rotate:
   mod      __GL_value,              __GL_value, 360
@@ -9250,15 +9261,15 @@ __GL_nbc_gl_apply_next_action:
   ; _objectAction = _objectActionData[_object.actionData[_j]]
   index    __GL_k,                 __GL_object.actionList, __GL_j
   index    __GL_objectAction,      __GL_objectActionData, __GL_k
-  brcmp    EQ,                     __GL_nbc_gl_apply_translate_x, __GL_objectAction.type, GL_ACTION_TRANSLATE_X
-  brcmp    EQ,                     __GL_nbc_gl_apply_translate_y, __GL_objectAction.type, GL_ACTION_TRANSLATE_Y
-  brcmp    EQ,                     __GL_nbc_gl_apply_translate_z, __GL_objectAction.type, GL_ACTION_TRANSLATE_Z
-  brcmp    EQ,                     __GL_nbc_gl_apply_rotate_x,    __GL_objectAction.type, GL_ACTION_ROTATE_X
-  brcmp    EQ,                     __GL_nbc_gl_apply_rotate_y,    __GL_objectAction.type, GL_ACTION_ROTATE_Y
-  brcmp    EQ,                     __GL_nbc_gl_apply_rotate_z,    __GL_objectAction.type, GL_ACTION_ROTATE_Z
-  brcmp    EQ,                     __GL_nbc_gl_apply_scale_x,     __GL_objectAction.type, GL_ACTION_SCALE_X
-  brcmp    EQ,                     __GL_nbc_gl_apply_scale_y,     __GL_objectAction.type, GL_ACTION_SCALE_Y
-  brcmp    EQ,                     __GL_nbc_gl_apply_scale_z,     __GL_objectAction.type, GL_ACTION_SCALE_Z
+  brcmp    EQ,                     __GL_nbc_gl_apply_translate_x, __GL_objectAction.type, GL_TRANSLATE_X
+  brcmp    EQ,                     __GL_nbc_gl_apply_translate_y, __GL_objectAction.type, GL_TRANSLATE_Y
+  brcmp    EQ,                     __GL_nbc_gl_apply_translate_z, __GL_objectAction.type, GL_TRANSLATE_Z
+  brcmp    EQ,                     __GL_nbc_gl_apply_rotate_x,    __GL_objectAction.type, GL_ROTATE_X
+  brcmp    EQ,                     __GL_nbc_gl_apply_rotate_y,    __GL_objectAction.type, GL_ROTATE_Y
+  brcmp    EQ,                     __GL_nbc_gl_apply_rotate_z,    __GL_objectAction.type, GL_ROTATE_Z
+  brcmp    EQ,                     __GL_nbc_gl_apply_scale_x,     __GL_objectAction.type, GL_SCALE_X
+  brcmp    EQ,                     __GL_nbc_gl_apply_scale_y,     __GL_objectAction.type, GL_SCALE_Y
+  brcmp    EQ,                     __GL_nbc_gl_apply_scale_z,     __GL_objectAction.type, GL_SCALE_Z
   jmp      __GL_nbc_gl_apply_done
 __GL_nbc_gl_apply_translate_x:
   add      __GL_vertex0.rot.x,     __GL_vertex0.rot.x, __GL_objectAction.value
@@ -9357,8 +9368,8 @@ __GL_nbc_gl_dont_rotate_object:
   add      __GL_angleY,            __GL_angleY, 90
   mod      __GL_angleY,            __GL_angleY, 360
   index    __GL_cosY,              __GL_SIN_TABLE, __GL_angleY
-  set      __GL_camDepth,          100
-  set      __GL_zoom,              0
+  mov      __GL_camDepth,          __GL_glSettings.camDepth
+  mov      __GL_zoom,              __GL_glSettings.zoom
   set      __GL_i,                 0
   set      __GL_vertexOffset,      0
 __GL_nbc_gl_rotate_loop:
@@ -9457,10 +9468,10 @@ subroutine __GL_glDrawObject
 __GL_nbc_gl_draw_polygons:
   ; get the information for the polygon...
   index    __GL_polygon,                __GL_polygonData, __GL_i
-  brcmp    EQ,                          __GL_nbc_gl_render_polygon, __GL_polygon.beginMode, GL_MODE_POLYGON
-  brcmp    EQ,                          __GL_nbc_gl_render_line,    __GL_polygon.beginMode, GL_MODE_LINE
-  brcmp    EQ,                          __GL_nbc_gl_render_point,   __GL_polygon.beginMode, GL_MODE_POINT
-  brcmp    EQ,                          __GL_nbc_gl_render_circle,  __GL_polygon.beginMode, GL_MODE_CIRCLE
+  brcmp    EQ,                          __GL_nbc_gl_render_polygon, __GL_polygon.beginMode, GL_POLYGON
+  brcmp    EQ,                          __GL_nbc_gl_render_line,    __GL_polygon.beginMode, GL_LINE
+  brcmp    EQ,                          __GL_nbc_gl_render_point,   __GL_polygon.beginMode, GL_POINT
+  brcmp    EQ,                          __GL_nbc_gl_render_circle,  __GL_polygon.beginMode, GL_CIRCLE
   jmp      __GL_nbc_gl_cull_polygon
   ;---------------------------------------------------------------------------------------
   ; Render a polygon...
@@ -9481,7 +9492,7 @@ __GL_nbc_gl_render_polygon:
   index    __GL_vertexOffset,           __GL_pvData, __GL_j
   index    __GL_vertex2,                __GL_vertexData, __GL_vertexOffset
   ; check if culling is enabled...
-  brcmp    EQ,                          __GL_nbc_gl_no_culling, __GL_object.cullMode, GL_CULL_MODE_NONE
+  brcmp    EQ,                          __GL_nbc_gl_no_culling, __GL_object.cullMode, GL_CULL_NONE
   ; calculate the culling...
   ; ((x1 - x0) * (y2 - y0) >= (x2 - x0) * (y1 - y0))
   sub      __GL_a,                      __GL_vertex1.screen.x, __GL_vertex0.screen.x
@@ -9491,7 +9502,7 @@ __GL_nbc_gl_render_polygon:
   sub      __GL_e,                      __GL_vertex1.screen.y, __GL_vertex0.screen.y
   mul      __GL_f,                      __GL_d, __GL_e
   ; check if culling is enabled...
-  brcmp    EQ,                          __GL_nbc_gl_check_front_cull, __GL_object.cullMode, GL_CULL_MODE_FRONT
+  brcmp    EQ,                          __GL_nbc_gl_check_front_cull, __GL_object.cullMode, GL_CULL_FRONT
   brcmp    GTEQ,                        __GL_nbc_gl_cull_polygon, __GL_c, __GL_f
   jmp      __GL_nbc_gl_no_culling
 __GL_nbc_gl_check_front_cull:
@@ -9634,12 +9645,11 @@ __GL_nbc_gl_render_objects_error:
 ends
 
 dseg segment
+  __GL_tmpId             byte
   __GL_mode              byte
-
   __GL_sizeX             sdword
   __GL_sizeY             sdword
   __GL_sizeZ             sdword
-
   __GL_angle             sdword
 dseg ends
 
@@ -9655,7 +9665,7 @@ subroutine __GL_glBox
   neg      __GL_y0,                    __GL_y1
   shr      __GL_z1,                    __GL_sizeZ, 1
   neg      __GL_z0,                    __GL_z1
-  glBeginObject()
+  glBeginObject(__GL_tmpId)
     glBegin(__GL_mode)
       glAddVertex(__GL_x0, __GL_y0, __GL_z0)
       glAddVertex(__GL_x1, __GL_y0, __GL_z0)
@@ -9709,7 +9719,7 @@ subroutine __GL_glPyramid
   shr      __GL_z1,                    __GL_sizeZ, 1
   neg      __GL_z0,                    __GL_z1
   neg      __GL_y0,                    __GL_sizeY
-  glBeginObject()
+  glBeginObject(__GL_tmpId)
     glBegin(__GL_mode)
       glAddVertex(__GL_x1, 0, __GL_z0)
       glAddVertex(__GL_x1, 0, __GL_z1)
