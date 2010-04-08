@@ -129,10 +129,12 @@ task main()
   // Initialize the 3D engine...
   glInit();
   // Create a cube, this is the first object which will be object id 0...
-//  glPyramid(GL_MODE_POLYGON, 20, 20, 20);
-  glIcosahedron(GL_MODE_POLYGON);
+//  glPyramid(GL_POLYGON, 20, 20, 20);
+  glIcosahedron(GL_POLYGON);
   // Set the main view x-angle...
   glSetAngleX(45);
+  glSet(GL_ZOOM_FACTOR, 0);
+  glSet(GL_CAMERA_DEPTH, 100);
   while (true)
   {
     // Rotate the main view....
