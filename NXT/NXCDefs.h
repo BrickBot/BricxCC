@@ -269,20 +269,34 @@ inline void SetSensorTouch(const byte & port) { asm { __SetSensorTouch(port) } }
 
 /**
  * Configure a light sensor.
- * Configure the sensor on the specified port as a light sensor (active).
+ * Configure the sensor on the specified port as an NXT light sensor.
  * \param port The port to configure. See \ref InPorts.
+ * \param bActive A boolean flag indicating whether to configure the port
+ * as an active or inactive light sensor.  The default value for this
+ * optional parameter is true.
  */
-inline void SetSensorLight(const byte & port) { asm { __SetSensorLight(port) } }
+inline void SetSensorLight(const byte & port, bool bActive = true) {
+  SetSensorType(port, bActive ? SENSOR_TYPE_LIGHT_ACTIVE : SENSOR_TYPE_LIGHT_INACTIVE);
+  SetSensorMode(port, SENSOR_MODE_PERCENT);
+  ResetSensor(port);
+}
 /** \example ex_SetSensorLight.nxc
  * This is an example of how to use the \ref SetSensorLight function.
  */
 
 /**
  * Configure a sound sensor.
- * Configure the sensor on the specified port as a sound sensor (dB scaling).
+ * Configure the sensor on the specified port as a sound sensor.
  * \param port The port to configure. See \ref InPorts.
+ * \param bdBScaling A boolean flag indicating whether to configure the port
+ * as a sound sensor with dB or dBA scaling.  The default value for this
+ * optional parameter is true, meaning dB scaling.
  */
-inline void SetSensorSound(const byte & port) { asm { __SetSensorSound(port) } }
+inline void SetSensorSound(const byte & port, bool bdBScaling = true) {
+  SetSensorType(port, bdBScaling ? SENSOR_TYPE_SOUND_DB : SENSOR_TYPE_SOUND_DBA);
+  SetSensorMode(port, SENSOR_MODE_PERCENT);
+  ResetSensor(port);
+}
 /** \example ex_SetSensorSound.nxc
  * This is an example of how to use the \ref SetSensorSound function.
  */
@@ -15801,6 +15815,8 @@ inline void glSet(int glType, int glValue) { asm { __glSet(glType, glValue) } }
  * Begin defining an object.
  * Start the process of defining a graphics library object using low level
  * functions such as \ref glBegin, \ref glAddVertex, and \ref glEnd.
+ *
+ * \return The object index of the new object being created.
  */
 inline int glBeginObject() { asm { __glBeginObject(__RETVAL__) } }
 
