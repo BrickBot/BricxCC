@@ -8651,8 +8651,8 @@ ends
 #define glAddToAngleY(_glValue) __glAddToAngleY(_glValue)
 #define glSetAngleZ(_glValue) __glSetAngleZ(_glValue)
 #define glAddToAngleZ(_glValue) __glAddToAngleZ(_glValue)
-#define glSin32768(_glResult, _glAngle) __glSin32768(_glResult, _glAngle)
-#define glCos32768(_glResult, _glAngle) __glCos32768(_glResult, _glAngle)
+#define glSin32768(_glAngle, _glResult) __glSin32768(_glAngle, _glResult)
+#define glCos32768(_glAngle, _glResult) __glCos32768(_glAngle, _glResult)
 #define glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId) __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)
 #define glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId) __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)
 #define glCube(_glMode, _glSize, _glObjId) __glBox(_glMode, _glSize, _glSize, _glSize, _glObjId)
@@ -8698,46 +8698,49 @@ ends
          call     __GL_glResetObjects
 
 #define __glCallObject(_glObjectId)                                                            \
-         mov      __GL_objectIndex            _glObjectId                                      \
+         mov      __GL_objectIndex,           _glObjectId                                      \
          call     __GL_glCallObject
 
 #define __glFinishRender()                                                                     \
          call     __GL_glRotateVertexList                                                      \
-         set __GL_glDrawPoint.Location.X, 200                                                  \
-         set __GL_glDrawPoint.Options, DRAW_OPT_CLEAR_WHOLE_SCREEN                             \
-         syscall DrawPoint,__GL_glDrawPoint                                                    \
+         set      __GL_glDrawPoint.Location.X, 200                                             \
+         set      __GL_glDrawPoint.Options,    DRAW_OPT_CLEAR_WHOLE_SCREEN                     \
+         syscall  DrawPoint,                   __GL_glDrawPoint                                \
          call     __GL_glRenderObjects
 
 #define __glSetAngleX(_glValue)                                                                \
-         mov      __GL_angleX,                _glValue                                         \
+         add      __GL_angleX,                _glValue,    3600                                \
          mod      __GL_angleX,                __GL_angleX, 360
 
 #define __glAddToAngleX(_glValue)                                                              \
          add      __GL_angleX,                __GL_angleX, _glValue                            \
+         add      __GL_angleX,                __GL_angleX, 3600                                \
          mod      __GL_angleX,                __GL_angleX, 360
 
 #define __glSetAngleY(_glValue)                                                                \
-         mov      __GL_angleY,                _glValue                                         \
+         add      __GL_angleY,                _glValue,    3600                                \
          mod      __GL_angleY,                __GL_angleY, 360
 
 #define __glAddToAngleY(_glValue)                                                              \
          add      __GL_angleY,                __GL_angleY, _glValue                            \
+         add      __GL_angleY,                __GL_angleY, 3600                                \
          mod      __GL_angleY,                __GL_angleY, 360
 
 #define __glSetAngleZ(_glValue)                                                                \
-         mov      __GL_angleZ,                _glValue                                         \
+         add      __GL_angleZ,                _glValue,    3600                                \
          mod      __GL_angleZ,                __GL_angleZ, 360
 
 #define __glAddToAngleZ(_glValue)                                                              \
          add      __GL_angleZ,                __GL_angleZ, _glValue                            \
+         add      __GL_angleZ,                __GL_angleZ, 3600                                \
          mod      __GL_angleZ,                __GL_angleZ, 360
 
-#define __glSin32768(_glResult, _glAngle)                                                      \
+#define __glSin32768(_glAngle, _glResult)                                                      \
          mov      __GL_angle,            _glAngle                                              \
          mod      __GL_angle,            __GL_angle, 360                                       \
          index    _glResult,             __GL_SIN_TABLE, __GL_angle
 
-#define __glCos32768(_glResult, _glAngle)                                                      \
+#define __glCos32768(_glAngle, _glResult)                                                      \
          mov      __GL_angle,            _glAngle                                              \
          add      __GL_angle,            __GL_angle, 90                                        \
          mod      __GL_angle,            __GL_angle, 360                                       \
@@ -9221,6 +9224,7 @@ subroutine __GL_glObjectAction
   brcmp    EQ,                      __GL_nbc_gl_action_rotate, __GL_action, GL_ROTATE_Z
   jmp      __GL_nbc_gl_action_no_rotate
 __GL_nbc_gl_action_rotate:
+  ; if the action is a rotation of any kind then grab the sin and cos of the angle
   mod      __GL_value,              __GL_value, 360
 ;  sind     __GL_objectAction.fsin,  __GL_value
 ;  cosd     __GL_objectAction.fcos,  __GL_value
