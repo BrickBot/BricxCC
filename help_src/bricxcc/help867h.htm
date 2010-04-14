@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Spybot EEPROM</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="spybot eeprom">
+</OBJECT>
+
+<P><B><A NAME="idh_eeprom_form"></A>Spybot EEPROM</B></P>
+
+<P>Use this dialog to examine the Spybot EEPROM values.  It is accessed via Tools|Spybot EEPROM (<B>Alt-T</B>, <B>Y</B>).</P>
+
+<P>The <B>Game Items</B> tab contains two tabs.  The first (<B>Configuration data</B>) contains a variety of controls which let you view or edit the motor control, species, long ID, user level, ping rate, runs, wins, losses, points, play seconds, total play time, max robots, mission ID, mission points, high score, robot name, birth date, robot data, and status values.  The second tab (<B>Missions &amp; Tokens</B>) allows editing the missions which have been run and the Spybot token values.</P>
+
+<P>The <B>Raw Data</B> tab provides a byte-level view of the first 256 bytes of Spybot EEPROM.  The first 128 bytes are editable via the <B>Game Items</B> tab and the data is shared between these two tabs.  The remaining 128 bytes can only be edited and viewed via the <B>Raw Data</B> tab.</P>
+
+<P>To read the Spybot EEPROM data use the <B>Read</B> button.  This will populate the raw data fields on the second tab and update the controls on the <B>Game Items</B> tab.  Once the data has been loaded you can save the data to a simple text file via the <B>Save</B> button.  You can load previously saved Spybot EEPROM data using the <B>Load</B> button.  After you edit the values you can write them to the Spybot using the <B>Write</B> button.  Any attempt to write to the Spybot EEPROM requires that the user confirms the operation in order to avoid accidentally overwriting important data.</P>
+
+<P>To view all the Spybot EEPROM data use the <B>Custom</B> tab.  Here you can select the EEPROM block to start reading from and the number of blocks to read.  Select the <B>Read</B> button to retrieve the specified block range.  Select the <B>Clear</B> button to erase the contents of the data window.  The selected contents of the data window can be copied to the clipboard via <B>Ctrl-C</B> or via the right-click popup menu.</P>
+
+</BODY>
+</HTML>
