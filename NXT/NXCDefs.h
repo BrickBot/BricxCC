@@ -15964,7 +15964,7 @@ inline int glCos32768(int glAngle) { asm { __glCos32768(__RETVAL__, glAngle) } }
  * Create a 3D box.
  * Define a 3D box using the specified begin mode for all faces. The center
  * of the box is at the origin of the XYZ axis with width, height, and depth
- * specified via the \ref glSizeX, \ref glSizeY, and \ref glSizeZ parameters.
+ * specified via the glSizeX, glSizeY, and glSizeZ parameters.
  *
  * \param glMode The begin mode for each surface.  See \ref GLConstantsBeginModes.
  * \param glSizeX The X axis size (width).
@@ -15992,7 +15992,7 @@ inline int glCube(int glMode, int glSize) {
  * Create a 3D pyramid.
  * Define a 3D pyramid using the specified begin mode for all faces. The center
  * of the pyramid is at the origin of the XYZ axis with width, height, and depth
- * specified via the \ref glSizeX, \ref glSizeY, and \ref glSizeZ parameters.
+ * specified via the glSizeX, glSizeY, and glSizeZ parameters.
  *
  * \param glMode The begin mode for each surface.  See \ref GLConstantsBeginModes.
  * \param glSizeX The X axis size (width).
