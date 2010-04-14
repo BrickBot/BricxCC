@@ -130,6 +130,7 @@ resourcestring
   sFind         = '&Find';
   sFindNext     = 'Find &Next';
   sFindPrevious = 'Find &Previous';
+  sGotoLine     = '&Goto Line';
   sStayOnTop    = 'Stay on &top';
 
 // GotoLine unit
@@ -574,6 +575,7 @@ resourcestring
   sUnknownDatatype         = 'Unknown datatype';
   sCompileTargets          = 'Compiling for firmware version %d, NBC/NXC enhanced = %s';
   sCurrentFile             = 'Current file = "%s"';
+  sConstOrConstExpr        = 'constant or constant expression';
 
 // uNBCCommon unit
 resourcestring
