@@ -9549,6 +9549,91 @@ __GL_nbc_gl_line_done:
   add      __GL_j,                      __GL_j, 1
   brcmp    LT,                          __GL_nbc_gl_draw_lines, __GL_j, __GL_polygon.lastLine
   ;<-- render the lines...
+/*
+  mov      __GL_minX,                  1000
+  mov      __GL_maxX,                 -1000
+
+  set      __GL_a,                     0
+__GL_nbc_gl_polygon_loop:
+  add      __GL_b,                     __GL_a, 1
+
+  brcmp    LT,                         __GL_nbc_gl_modb, __GL_b, __GL_polygon.lastVertex
+  mov      __GL_b,                     __GL_polygon.firstVertex
+__GL_nbc_gl_modb:
+
+  ; _vertex1 = _vertexData[_pvData[_a]]
+  index    __GL_vertexOffset,          __GL_pvData, __GL_a
+  index    __GL_vertex1,               __GL_vertexData, __GL_vertexOffset
+  ; _vertex1 = _vertexData[_pvData[_b]]
+  index    __GL_vertexOffset,          __GL_pvData, __GL_b
+  index    __GL_vertex2,               __GL_vertexData, __GL_vertexOffset
+
+  brcmp    GTEQ,                       __GL_nbc_gl_minx1, __GL_vertex1.screen.x, __GL_minX
+  mov      __GL_minX,                  __GL_vertex1.screen.x
+__GL_nbc_gl_minx1:
+  brcmp    GTEQ,                       __GL_nbc_gl_minx2, __GL_vertex2.screen.x, __GL_minX
+  mov      __GL_minX,                  __GL_vertex2.screen.x
+__GL_nbc_gl_minx2:
+
+  brcmp    LTEQ,                       __GL_nbc_gl_maxx1, __GL_vertex1.screen.x, __GL_maxX
+  mov      __GL_maxX,                  __GL_vertex1.screen.x
+__GL_nbc_gl_maxx1:
+  brcmp    LTEQ,                       __GL_nbc_gl_maxx2, __GL_vertex2.screen.x, __GL_maxX
+  mov      __GL_maxX,                  __GL_vertex2.screen.x
+__GL_nbc_gl_maxx2:
+
+  mov      __GL_index,                 0
+
+  mov      __GL_startY,                __GL_vertex1.screen.y
+  mov      __GL_startX,                __GL_vertex1.screen.x
+  mov      __GL_endY,                  __GL_vertex2.screen.y
+  mov      __GL_endX,                  __GL_vertex2.screen.x
+
+  brcmp    GTEQ,                       __GL_nbc_gl_polygon_flip, __GL_endX, __GL_startX
+  mov      __GL_startY,                __GL_vertex2.screen.y
+  mov      __GL_startX,                __GL_vertex2.screen.x
+  mov      __GL_endY,                  __GL_vertex1.screen.y
+  mov      __GL_endX,                  __GL_vertex1.screen.x
+  mov      __GL_index,                 100
+__GL_nbc_gl_polygon_flip:
+
+  sub      __GL_deltaY,                __GL_endY, __GL_startY
+  sub      __GL_deltaX,                __GL_endX, __GL_startX
+
+  mov      __GL_c,                     __GL_startX
+__GL_nbc_gl_polygon_line:
+  add      __GL_offset,                __GL_c, __GL_index
+
+  ; _startY + _deltaY * (_c - _startX) / _deltaX
+  sub      __GL_value,                 __GL_c, __GL_startX
+  mul      __GL_value,                 __GL_value, __GL_deltaY
+  div      __GL_value,                 __GL_value, __GL_deltaX
+  add      __GL_value,                 __GL_value, __GL_startY
+
+  replace  __GL_buffer,                __GL_buffer, __GL_offset, __GL_value
+
+  add      __GL_c,                     __GL_c, 1
+  brcmp    LTEQ                        __GL_nbc_gl_polygon_line, __GL_c, __GL_endX
+
+  add      __GL_a,                     __GL_a, 1
+  brcmp    LT                          __GL_nbc_gl_polygon_loop, __GL_a, __GL_polygon.lastVertex
+
+  mov      __GL_a,                     __GL_minX
+__GL_nbc_gl_polygon_lines:
+  index    __GL_startY,                __GL_buffer, __GL_a
+  add      __GL_b,                     __GL_a, 100
+  index    __GL_endY,                  __GL_buffer, __GL_b
+
+  mov      __GL_glDrawLine.Options,    0
+  mov      __GL_glDrawLine.StartLoc.X, __GL_a
+  mov      __GL_glDrawLine.StartLoc.Y, __GL_startY
+  mov      __GL_glDrawLine.EndLoc.X,   __GL_a
+  mov      __GL_glDrawLine.EndLoc.Y,   __GL_endY
+  syscall  DrawLine,                   __GL_glDrawLine
+
+  add      __GL_a,                     __GL_a, 1
+  brcmp    LTEQ,                       __GL_nbc_gl_polygon_lines, __GL_a, __GL_maxX
+*/
   jmp      __GL_nbc_gl_cull_polygon
   ;---------------------------------------------------------------------------------------
   ; Render lines...
