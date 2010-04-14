@@ -1,0 +1,68 @@
+:Base BricxCC.hlp>main
+:Title Bricx Command Center Help
+;
+1 Bricx Command Center
+2 Introduction=IDH_RCXIntroduction
+2 Not Quite C=IDH_Introduction
+2 Starting Bricx Command Center=IDH_Starting
+2 Editor Windows=IDH_Editor
+2 Loading and Saving Files=IDH_Loading
+2 Editing a File=IDH_Editing
+2 Searching and Replacing Text=IDH_Searching
+2 Templates=IDH_Templates
+2 Macros=IDH_Macros
+2 Compiling, Downloading and Running=IDH_Compile
+2 Setting Preferences
+3 Preferences=IDH_Preferences
+3 Claiming File Extensions=IDH_EXTENSION_Form
+2 Tools
+3 Direct Control=IDH_Direct
+3 Diagnostics=IDH_Diagnostics
+3 Watching the Brick=IDH_Watching
+3 Brick Piano=IDH_Piano
+3 Brick Joystick=IDH_Joystick
+3 Remote=IDH_Remote
+3 Configurable Watch=IDH_NEW_WATCH_Form
+3 Set Values=IDH_SETVAL_Form
+3 Spybot EEPROM=IDH_EEPROM_Form
+2 Advanced Topics
+3 Sending Messages=IDH_Messages
+3 Datalog=IDH_Datalog
+3 Memory Map=IDH_Memory
+3 Clear Memory=IDH_Clear
+3 MIDI Conversion=IDH_MIDI_Form
+3 Find the Brick=IDH_Find
+3 Download Firmware=IDH_Firmware
+2 Features
+3 Data Analysis
+4 Graphing=IDH_DATA_ANALYSIS_Form
+4 Chart Configuration=IDH_CHART_CONFIG_Form
+4 Chart Export=IDH_CHART_EXPORT_Form
+4 Select Series=IDH_PROMPT_SERIES_Form
+4 Series Configuration=IDH_SERIES_CNFG_Form
+3 Configurable Tools Menu
+4 Tool Options=IDH_XFER_Form
+4 Tool Properties=IDH_XFER_EDIT_Form
+4 Transfer Macros=IDH_XFER_Macros
+4 Select Transfer Item=IDH_XFER_OPEN_Form
+2 Editor Features
+3 Page Setup=IDH_PAGE_SETUP_Form
+3 Print Preview=IDH_PREVIEW_Form
+3 Procedure List=IDH_PROC_LIST_Form
+3 Window List=IDH_WLIST_Form
+3 Go to Line Number=IDH_GOTO_Form
+3 Keyboard Macros
+4 Macro Library=IDH_MACRO_Form
+4 Macro Editor=IDH_MACRO_EDIT_Form
+3 Code Templates
+4 Code Templates=IDH_CODE_TEMPLATES_Form
+4 Edit Template=IDH_EDIT_TEMPLATE_Form
+3 Code Explorer
+4 Explorer Tree=IDH_CODE_EXPLORER_Form
+4 Explorer Options=IDH_EXP_OPTIONS_Form
+2 pbForth Features
+3 pbForth Console=IDH_FORTH_Form
+2 brickOS Features
+3 Project Manager=IDH_PROJ_MGR_Form
+3 Set LNP Address=IDH_SETLNP_Form
+; end of TOC

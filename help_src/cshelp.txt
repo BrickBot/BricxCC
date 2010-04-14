@@ -1,0 +1,2580 @@
+.topic IDH_GOTO_Line
+Enter the line number to go to here.
+
+.topic IDH_GOTO_Ok
+Select OK to move to the specified line in the active editor window.
+
+.topic IDH_GOTO_Cancel
+Select Cancel to remain at the current editor position.
+
+.topic IDH_GOTO_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_WLIST_List
+Select the editor window you wish to switch to here.
+
+.topic IDH_WLIST_Ok
+Select OK to switch to the specified window.
+
+.topic IDH_WLIST_Cancel
+Select Cancel to close the list without switching windows.
+
+.topic IDH_WLIST_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_XFER_List
+Configure custom Tools menu items here.
+
+.topic IDH_XFER_Add
+Select Add to create a new menu item.
+
+.topic IDH_XFER_Edit
+Select Edit to edit the selected item.
+
+.topic IDH_XFER_Delete
+Select Delete to remove the selected item.
+
+.topic IDH_XFER_Up
+Select the up arrow to move the selected item toward the top of the list.
+
+.topic IDH_XFER_Down
+Select the down arrow to move the selected item toward the bottom of the list.
+
+.topic IDH_XFER_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_XFER_Close
+Select Close to close the Tool Options dialog.
+
+.topic IDH_XFER_EDIT_Title
+Enter the menu item text to display on the Tools menu.
+
+.topic IDH_XFER_EDIT_Program
+Enter the path to the program you wish to launch.
+
+.topic IDH_XFER_EDIT_Dir
+Enter the path of the desired working directory.  Leave it blank to use the current working directory.
+
+.topic IDH_XFER_EDIT_Params
+Enter parameters to pass to the executable.
+
+.topic IDH_XFER_EDIT_Macros
+Show or hide parameter macro list
+
+.topic IDH_XFER_EDIT_MacroList
+This is the list of parameter macros that can be inserted into the parameters field.
+
+.topic IDH_XFER_EDIT_Browse
+Use this button to browse for the desired executable program.
+
+.topic IDH_XFER_EDIT_Insert
+Use this button to insert parameter macros into the parameters field.
+
+.topic IDH_XFER_EDIT_Ok
+Select OK to close the dialog and save changes to the item being edited.
+
+.topic IDH_XFER_EDIT_Cancel
+Select Cancel to close the dialog without saving changes.
+
+.topic IDH_XFER_EDIT_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_JOYSTICK_Movement
+Use the arrow buttons to control the movement of the brick
+
+.topic IDH_JOYSTICK_Task1
+This button starts task 1
+
+.topic IDH_JOYSTICK_Task2
+This button starts task 2
+
+.topic IDH_JOYSTICK_DriveMode
+Use the radio buttons to choose the drive mode for your robot.  In left-right mode both motors are used to move the robot.  In drive-steer mode one motor is used to propel the robot and the other motor is used to steer the robot.
+
+.topic IDH_JOYSTICK_LeftMotor
+Configure the left (or drive) motor. Use the radio buttons to pick which output it is connected to.  Use the checkbox to choose whether its direction should be reversed or not.
+
+.topic IDH_JOYSTICK_RightMotor
+ Configure the right (or steer) motor.  Use the radio buttons to pick which output it is connected to.  Use the checkbox to choose whether its direction should be reversed or not.
+
+.topic IDH_JOYSTICK_Speed
+Use the slider to select the desired speed setting
+
+.topic IDH_JOYSTICK_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_SETVAL_DstSrc
+Select the destination source here.
+
+.topic IDH_SETVAL_DstVal
+Enter the destination source value here.
+
+.topic IDH_SETVAL_DstValSpin
+Use the up and down buttons to adjust the destination source value.
+
+.topic IDH_SETVAL_SrcSrc
+Select the source to read here.
+
+.topic IDH_SETVAL_SrcVal
+Enter the source value to read here.
+
+.topic IDH_SETVAL_SrcValSpin
+Use the up and down buttons to adjust the source value to read.
+
+.topic IDH_SETVAL_Set
+Use the Set button to set the destination source to the desired value.
+
+.topic IDH_SETVAL_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_SETLNP_Value
+Enter the LNP address here.
+
+.topic IDH_SETLNP_Ok
+Select OK to close the dialog and save changes to the item being edited.
+
+.topic IDH_SETLNP_Cancel
+Select Cancel to close the dialog without saving changes.
+
+.topic IDH_SETLNP_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_EEPROM_MCNormal
+Set the normal motor speed here.
+
+.topic IDH_EEPROM_MCSlow
+Set the slow motor speed here.
+
+.topic IDH_EEPROM_LeftDir
+Set the left motor direction (forward or reverse) here.
+
+.topic IDH_EEPROM_RightDir
+ Set the right motor direction (forward or reverse) here.
+
+.topic IDH_EEPROM_Species
+Set the Spybot species here.
+
+.topic IDH_EEPROM_LongID
+Set the robot's long identifier here.
+
+.topic IDH_EEPROM_UserLevel
+Set the user level here.
+
+.topic IDH_EEPROM_PingRate
+Set the default ping rate here.
+
+.topic IDH_EEPROM_Runs
+Set the number of runs here.
+
+.topic IDH_EEPROM_Wins
+Set the number of wins here.
+
+.topic IDH_EEPROM_Losses
+Set the number of losses here.
+
+.topic IDH_EEPROM_Points
+Set the number of points here.
+
+.topic IDH_EEPROM_PlaySeconds
+Set the number of seconds played here.
+
+.topic IDH_EEPROM_PlayTime
+Set the total play time here.
+
+.topic IDH_EEPROM_MaxRobots
+Set the maximum robots here.
+
+.topic IDH_EEPROM_MissionID
+Set the mission identifier here.
+
+.topic IDH_EEPROM_MissionPoints
+Set the mission points here.
+
+.topic IDH_EEPROM_HighScore
+Set the high score here.
+
+.topic IDH_EEPROM_RobotName
+Set the robot name here.
+
+.topic IDH_EEPROM_BirthDate
+Set the birth date (mm/dd/yyyy) here.
+
+.topic IDH_EEPROM_BotData
+Set the robot data here.
+
+.topic IDH_EEPROM_Status
+Set the status here.
+
+.topic IDH_EEPROM_MissionsPlayed
+Select which missions have been played here.
+
+.topic IDH_EEPROM_Tokens
+Set the robot's token values here.
+
+.topic IDH_EEPROM_RawData
+View or set the writeable raw data values here.
+
+.topic IDH_EEPROM_Save
+Use this button to save the raw data to a file.
+
+.topic IDH_EEPROM_Load
+Use this button to load the raw data from a file.
+
+.topic IDH_EEPROM_Read
+Use this button to read data from the Spybot.
+
+.topic IDH_EEPROM_Write
+Use this button to write data to the Spybot.
+
+.topic IDH_EEPROM_BlockData
+View the uploaded blocks of EEPROM data here.
+
+.topic IDH_EEPROM_StartBlock
+Set the block number to start uploading from here.
+
+.topic IDH_EEPROM_BlockCount
+Set the number of blocks to upload here.
+
+.topic IDH_EEPROM_BlockRead
+Use this button to upload or read the specified EEPROM blocks.
+
+.topic IDH_EEPROM_Clear
+Use this button to clear the contents of the data window.
+
+.topic IDH_EEPROM_GameItems
+View or set the various Spybot game items on this page.
+
+.topic IDH_EEPROM_Custom
+View any EEPROM block on this page.
+
+.topic IDH_EEPROM_Config
+View or set game configuration data on this page.
+
+.topic IDH_EEPROM_MissionsTokens
+View or set missions played and tokens on this page.
+
+.topic IDH_EEPROM_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_PROMPT_SERIES_List
+Choose the series you wish to configure here.
+
+.topic IDH_PROMPT_SERIES_Ok
+ Select OK to close the dialog and configure the selected series.
+
+.topic IDH_PROMPT_SERIES_Cancel
+Select Cancel to close the dialog without configuring any series.
+
+.topic IDH_PROMPT_SERIES_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_PROJ_MGR_Files
+This is the list of files in your project.  You can add files to your project, remove files from your project, and open files from this dialog.
+
+.topic IDH_PROJ_MGR_Help
+Select Help to display the help for this dialog.
+
+.topic IDH_PANEL1_btnOK
+Select OK to close the dialog and save changes to the chart configuration.
+
+.topic IDH_PANEL1_btnCancel
+Select Cancel to close the dialog without saving chart configuration changes.
+
+.topic IDH_PANEL1_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_GRPCHARTTYPE_radTypeLine
+Select this option to configure the chart as a line graph.
+
+.topic IDH_GRPCHARTTYPE_radTypeBar
+Select this option to configure the chart as a bar graph.
+
+.topic IDH_GRPCHARTTYPE_radTypeHBar
+Select this option to configure the chart as a horizontal bar graph.
+
+.topic IDH_GRPCHARTTYPE_radTypeArea
+Select this option to configure the chart as an area graph.
+
+.topic IDH_GRPCHARTTYPE_radTypePoint
+Select this option to configure the chart as a point graph.
+
+.topic IDH_GRPPAGING_edtPointsPerPage
+Enter the number of data points to display per page.
+
+.topic IDH_GRPPAGING_udPointsPerPage
+Use the up and down arrows to adjust the number of points per page.
+
+.topic IDH_GRPPAGING_chkScaleLastPage
+Choose this option if you want the last page to be scaled.
+
+.topic IDH_GRPMARGINS_edtMarginTop
+Enter the top margin here.
+
+.topic IDH_GRPMARGINS_edtMarginLeft
+Enter the left margin here.
+
+.topic IDH_GRPMARGINS_edtMarginRight
+Enter the right margin here.
+
+.topic IDH_GRPMARGINS_edtMarginBot
+Enter the bottom margin here.
+
+.topic IDH_GRPMARGINS_udMarginRight
+Use the up and down arrows to adjust the right margin.
+
+.topic IDH_GRPMARGINS_udMarginTop
+Use the up and down arrows to adjust the top margin.
+
+.topic IDH_GRPMARGINS_udMarginBot
+Use the up and down arrows to adjust the bottom margin.
+
+.topic IDH_GRPMARGINS_udMarginLeft
+Use the up and down arrows to adjust the left margin.
+
+.topic IDH_GRPFOOTFRAME_chkFootFrameVis
+Select this option to make the footer visible.
+
+.topic IDH_GRPFOOTFRAME_edtFootFrameWidth
+Enter the footer frame width here.
+
+.topic IDH_GRPFOOTFRAME_udFootFrameWidth
+Use the up and down arrows to adjust the footer frame width.
+
+.topic IDH_GRPFOOTFRAME_btnFootFrameColor
+Choose the footer frame color.
+
+.topic IDH_GRPFOOTFRAME_cboFootFrameStyle
+Select the footer frame style from the drop-down list.
+
+.topic IDH_GRPTITLEFRAME_chkTitleFrameVis
+Select this option to make the title frame visible.
+
+.topic IDH_GRPTITLEFRAME_edtTitleFrameWidth
+Enter the title frame width here.
+
+.topic IDH_GRPTITLEFRAME_udTitleFrameWidth
+Use the up and down arrows to adjust the title frame width.
+
+.topic IDH_GRPTITLEFRAME_btnTitleFrameColor
+Choose the title frame color.
+
+.topic IDH_GRPTITLEFRAME_cboTitleFrameStyle
+Select the title frame style from the drop-down list.
+
+.topic IDH_GRPFOOTALIGN_radFootLeft
+Select this option to align the footer on the left.
+
+.topic IDH_GRPFOOTALIGN_radFootCenter
+Select this option to center the footer.
+
+.topic IDH_GRPFOOTALIGN_radFootRight
+Select this option to align the footer on the right.
+
+.topic IDH_SHTTITLES_chkFootAdjustFrame
+Check this option to adjust the frame based on the footer configuration.
+
+.topic IDH_SHTTITLES_chkFootVisible
+Check this option to make the footer visible.
+
+.topic IDH_SHTTITLES_mmoFoot
+Enter the footer text here.
+
+.topic IDH_SHTTITLES_mmoTitle
+Enter the title text here.
+
+.topic IDH_SHTTITLES_cboTitle
+Choose whether to edit the title settings or the footer settings.
+
+.topic IDH_SHTTITLES_chkTitleVisible
+Check this option to make the title visible.
+
+.topic IDH_SHTTITLES_btnTitleFont
+Choose the font to use for the title.
+
+.topic IDH_GRPTITLEALIGN_radTitleLeft
+Select this option to align the title on the left.
+
+.topic IDH_GRPTITLEALIGN_radTitleCenter
+Select this option to center the title.
+
+.topic IDH_GRPTITLEALIGN_radTitleRight
+Select this option to align the title on the right.
+
+.topic IDH_SHTTITLES_chkTitleAdjustFrame
+Check this option to adjust the frame based on the title configuration.
+
+.topic IDH_SHTTITLES_btnFootFont
+Choose the font to use for the footer.
+
+.topic IDH_SHTLEGEND_chkLegendVisible
+Check this option to make the legend visible.
+
+.topic IDH_SHTLEGEND_btnLegendBackColor
+Choose the background color for the legend.
+
+.topic IDH_SHTLEGEND_btnLegendFont
+Choose the font to use for the legend.
+
+.topic IDH_SHTLEGEND_cboLegendStyle
+Select the legend style from the drop-down list.
+
+.topic IDH_SHTLEGEND_cboTextStyle
+Select the text style from the drop-down list.
+
+.topic IDH_SHTLEGEND_chkResizeChart
+Check this option to resize the chart based on the legend configuration.
+
+.topic IDH_SHTLEGEND_chkInverted
+Check this option to invert the legend.
+
+.topic IDH_GRPLEGFRAME_chkLegFrameVisible
+Check this option to make the legend frame visible.
+
+.topic IDH_GRPLEGFRAME_edtLegFrameWidth
+Enter the legend frame width here.
+
+.topic IDH_GRPLEGFRAME_udLegFrameWidth
+Use the up and down arrows to adjust the legend frame width.
+
+.topic IDH_GRPLEGFRAME_btnLegFrameColor
+Choose the legend frame color.
+
+.topic IDH_GRPLEGFRAME_cboLegFrameStyle
+Select the legend frame style from the drop-down list.
+
+.topic IDH_GRPLEGENDPOSITION_radLegendTop
+Select this option to set the legend position to the top.
+
+.topic IDH_GRPLEGENDPOSITION_radLegendLeft
+Select this option to set the legend position to the left.
+
+.topic IDH_GRPLEGENDPOSITION_radLegendRight
+Select this option to set the legend position to the right.
+
+.topic IDH_GRPLEGENDPOSITION_radLegendBottom
+Select this option to set the legend position to the bottom.
+
+.topic IDH_GRPLEGENDPOSITION_edtLegendMargin
+Enter the legend position margin here.
+
+.topic IDH_GRPLEGENDPOSITION_udLegMargin
+Use the up and down arrows to adjust the legend position margin.
+
+.topic IDH_GRPLEGENDSHADOW_btnLegShadowColor
+Choose the legend shadow color.
+
+.topic IDH_GRPLEGENDSHADOW_edtLegShadowSize
+Enter the legend shadow size here.
+
+.topic IDH_GRPLEGENDSHADOW_udShadowSize
+Use the up and down arrows to adjust the legend shadow size.
+
+.topic IDH_GRPLEGDIVLINE_chkDivLineVisible
+Check this option to make the legend dividing lines visible.
+
+.topic IDH_GRPLEGDIVLINE_edtLegDivWidth
+Enter the legend dividing line width here.
+
+.topic IDH_GRPLEGDIVLINE_udLegDivWidth
+Use the up and down arrows to adjust the legend dividing line width.
+
+.topic IDH_GRPLEGDIVLINE_btnLegDLColor
+Choose the legend dividing line color.
+
+.topic IDH_GRPLEGDIVLINE_cboLegDLStyle
+Select the legend dividing line style from the drop-down list.
+
+.topic IDH_SHTPANEL_btnPanelColor
+Choose the chart background color.
+
+.topic IDH_SHTPANEL_chkPanelBorder
+Check this option to add a border to the chart background.
+
+.topic IDH_GRPGRADIENT_chkGradVisible
+Check this option to make a gradient background visible.
+
+.topic IDH_GRPGRADIENT_btnStartColor
+Choose the gradient start color.
+
+.topic IDH_GRPGRADIENT_btnEndColor
+Choose the gradient end color.
+
+.topic IDH_GRPDIRECTION_radGDirTopBot
+Choose this option to have the gradient start at the top and end at the bottom.
+
+.topic IDH_GRPDIRECTION_radGDirBotTop
+Choose this option to have the gradient start at the bottom and end at the top.
+
+.topic IDH_GRPDIRECTION_radGDirLeftRight
+Choose this option to have the gradient start at the left and end at the right.
+
+.topic IDH_GRPDIRECTION_radGDirFromBotLeft
+Choose this option to have the gradient start at the bottom left corner and end at the top right corner.
+
+.topic IDH_GRPDIRECTION_radGDirFromCenter
+Choose this option to have the gradient start at the center and end at the chart edges.
+
+.topic IDH_GRPDIRECTION_radGDirRightLeft
+Choose this option to have the gradient start at the right and end at the left.
+
+.topic IDH_GRPDIRECTION_radGDirFromTopLeft
+Choose this option to have the gradient start at the top left corner and end at the bottom right corner
+
+.topic IDH_SHTWALLS_chkWallsVisible
+Check this option to make the chart walls visible.
+
+.topic IDH_SHTLEFTWALL_btnLeftBack
+Choose the left wall background color.
+
+.topic IDH_GRPBORDER_chkLeftWallBVis
+Check this option to make the left wall border visible.
+
+.topic IDH_GRPBORDER_edtLeftWallWidth
+Enter the left wall border width here.
+
+.topic IDH_GRPBORDER_udLeftWallWidth
+Use the up and down arrows to adjust the left wall border width.
+
+.topic IDH_GRPBORDER_btnLeftWallBdrColor
+Choose the left wall border color.
+
+.topic IDH_GRPBORDER_cboLeftWallBdrStyle
+Select the left wall border style from the drop-down list.
+
+.topic IDH_SHTLEFTWALL_chkLeftWallTrans
+Check this option to make the left wall transparent.
+
+.topic IDH_SHTLEFTWALL_edtLeftWallSize
+Enter the left wall size here.
+
+.topic IDH_SHTLEFTWALL_udLeftWallSize
+Use the up and down arrows to adjust the left wall size.
+
+.topic IDH_GROUPBOX2_chkBotWallBVis
+Check this option to make the bottom wall border visible.
+
+.topic IDH_GROUPBOX2_edtBotWallWidth
+Enter the bottom wall border width here.
+
+.topic IDH_GROUPBOX2_udBotWallWidth
+Use the up and down arrows to adjust the bottom wall border width.
+
+.topic IDH_GROUPBOX2_btnBotWallBdrColor
+Choose the bottom wall border color.
+
+.topic IDH_GROUPBOX2_cboBotWallBdrStyle
+Select the bottom wall border style from the drop-down list.
+
+.topic IDH_SHTBOTTOMWALL_btnBotBack
+Choose the bottom wall background color.
+
+.topic IDH_SHTBOTTOMWALL_chkBotWallTrans
+Check this option to make the bottom wall transparent.
+
+.topic IDH_SHTBOTTOMWALL_udBotWallSize
+Use the up and down arrows to adjust the bottom wall size.
+
+.topic IDH_SHTBOTTOMWALL_edtBotWallSize
+Enter the bottom wall size here.
+
+.topic IDH_GROUPBOX5_chkBackWallBVis
+Check this option to make the back wall border visible
+
+.topic IDH_GROUPBOX5_edtBackWallWidth
+Enter the back wall border width here.
+
+.topic IDH_GROUPBOX5_udBackWallWidth
+Use the up and down arrows to adjust the back wall border width.
+
+.topic IDH_GROUPBOX5_btnBackWallBdrColor
+Choose the back wall border color.
+
+.topic IDH_GROUPBOX5_cboBackWallBdrStyle
+Select the back wall border style from the drop-down list.
+
+.topic IDH_SHTBACKWALL_btnBackBack
+Choose the back wall background color.
+
+.topic IDH_SHTBACKWALL_chkBackWallTrans
+Check this option to make the back wall transparent.
+
+.topic IDH_SHTBACKWALL_udBackWallSize
+Use the up and down arrows to adjust the back wall size.
+
+.topic IDH_SHTBACKWALL_edtBackWallSize
+Enter the back wall size here.
+
+.topic IDH_GRP3D_chk3D
+Check this option to make the chart 3-dimensional.
+
+.topic IDH_GRP3D_edt3DPct
+Enter the 3D percentage here.
+
+.topic IDH_GRP3D_ud3DPct
+Use the up and down arrows to adjust the 3D percentage.
+
+.topic IDH_GRP3D_chkOrthogonal
+Check this option to force the chart to be orthogonal.
+
+.topic IDH_GRP3D_barZoom
+Adjust the chart zoom using this slider.
+
+.topic IDH_GRP3D_barRotation
+Adjust the chart rotation using this slider.
+
+.topic IDH_GRP3D_barElevation
+Adjust the chart elevation using this slider.
+
+.topic IDH_GRP3D_barHorizOffset
+Adjust the chart horizontal offset using this slider.
+
+.topic IDH_GRP3D_barVertOffset
+Adjust the chart vertical offset using this slider.
+
+.topic IDH_GRP3D_barTilt
+Adjust the chart tilt using this slider.
+
+.topic IDH_GRP3D_chtPreview
+View a preview of the chart appearance here.
+
+.topic IDH_WATCHFORM_btnPollRegular
+Select Poll Regular to start polling at specified intervals.
+
+.topic IDH_WATCHFORM_btnGraph
+Select Graph to display a graph of the polled values.
+
+.topic IDH_GRPMESSAGE_CheckMessage
+Check this to poll the Message buffer.
+
+.topic IDH_GRPMESSAGE_ValueMessage
+The value of the Message buffer.
+
+.topic IDH_WATCHFORM_grpVar
+Global Variables
+
+.topic IDH_GRPVAR_VVar0
+The value of variable 0.
+
+.topic IDH_GRPVAR_CVar0
+Check this to poll variable 0.
+
+.topic IDH_GRPVAR_CVar1
+Check this to poll variable 1.
+
+.topic IDH_GRPVAR_VVar1
+The value of variable 1.
+
+.topic IDH_GRPVAR_CVar2
+Check this to poll variable 2.
+
+.topic IDH_GRPVAR_VVar2
+The value of variable 2.
+
+.topic IDH_GRPVAR_VVar3
+The value of variable 3.
+
+.topic IDH_GRPVAR_CVar3
+Check this to poll variable 3.
+
+.topic IDH_GRPVAR_CVar4
+Check this to poll variable 4.
+
+.topic IDH_GRPVAR_VVar4
+The value of variable 4.
+
+.topic IDH_GRPVAR_CVar5
+Check this to poll variable 5.
+
+.topic IDH_GRPVAR_VVar5
+The value of variable 5.
+
+.topic IDH_GRPVAR_VVar6
+The value of variable 6.
+
+.topic IDH_GRPVAR_CVar6
+Check this to poll variable 6.
+
+.topic IDH_GRPVAR_CVar7
+Check this to poll variable 7.
+
+.topic IDH_GRPVAR_VVar7
+The value of variable 7.
+
+.topic IDH_GRPVAR_CVar8
+Check this to poll variable 8.
+
+.topic IDH_GRPVAR_VVar8
+The value of variable 8.
+
+.topic IDH_GRPVAR_VVar9
+The value of variable 9.
+
+.topic IDH_GRPVAR_CVar9
+Check this to poll variable 9.
+
+.topic IDH_GRPVAR_CVar10
+Check this to poll variable 10.
+
+.topic IDH_GRPVAR_VVar10
+The value of variable 10.
+
+.topic IDH_GRPVAR_CVar11
+Check this to poll variable 11.
+
+.topic IDH_GRPVAR_VVar11
+The value of variable 11.
+
+.topic IDH_GRPVAR_VVar12
+The value of variable 12.
+
+.topic IDH_GRPVAR_CVar12
+Check this to poll variable 12.
+
+.topic IDH_GRPVAR_CVar13
+Check this to poll variable 13.
+
+.topic IDH_GRPVAR_VVar13
+The value of variable 13.
+
+.topic IDH_GRPVAR_CVar14
+Check this to poll variable 14.
+
+.topic IDH_GRPVAR_VVar14
+The value of variable 14.
+
+.topic IDH_GRPVAR_VVar15
+The value of variable 15.
+
+.topic IDH_GRPVAR_CVar15
+Check this to poll variable 15.
+
+.topic IDH_GRPVAR_VVar16
+The value of variable 16.
+
+.topic IDH_GRPVAR_CVar16
+Check this to poll variable 16.
+
+.topic IDH_GRPVAR_CVar17
+Check this to poll variable 17.
+
+.topic IDH_GRPVAR_VVar17
+The value of variable 17.
+
+.topic IDH_GRPVAR_CVar18
+Check this to poll variable 18.
+
+.topic IDH_GRPVAR_VVar18
+The value of variable 18.
+
+.topic IDH_GRPVAR_VVar19
+The value of variable 19.
+
+.topic IDH_GRPVAR_CVar19
+Check this to poll variable 19.
+
+.topic IDH_GRPVAR_CVar20
+Check this to poll variable 20.
+
+.topic IDH_GRPVAR_VVar20
+The value of variable 20.
+
+.topic IDH_GRPVAR_CVar21
+Check this to poll variable 21.
+
+.topic IDH_GRPVAR_VVar21
+The value of variable 21.
+
+.topic IDH_GRPVAR_VVar22
+The value of variable 22.
+
+.topic IDH_GRPVAR_CVar22
+Check this to poll variable 22.
+
+.topic IDH_GRPVAR_CVar23
+Check this to poll variable 23.
+
+.topic IDH_GRPVAR_VVar23
+The value of variable 23.
+
+.topic IDH_GRPVAR_VVar24
+The value of variable 24.
+
+.topic IDH_GRPVAR_CVar24
+Check this to poll variable 24.
+
+.topic IDH_GRPVAR_CVar25
+Check this to poll variable 25.
+
+.topic IDH_GRPVAR_VVar25
+The value of variable 25.
+
+.topic IDH_GRPVAR_CVar26
+Check this to poll variable 26.
+
+.topic IDH_GRPVAR_VVar26
+The value of variable 26.
+
+.topic IDH_GRPVAR_VVar27
+The value of variable 27.
+
+.topic IDH_GRPVAR_CVar27
+Check this to poll variable 27.
+
+.topic IDH_GRPVAR_CVar28
+Check this to poll variable 28.
+
+.topic IDH_GRPVAR_VVar28
+The value of variable 28.
+
+.topic IDH_GRPVAR_CVar29
+Check this to poll variable 29.
+
+.topic IDH_GRPVAR_VVar29
+The value of variable 29.
+
+.topic IDH_GRPVAR_VVar30
+The value of variable 30.
+
+.topic IDH_GRPVAR_CVar30
+Check this to poll variable 30.
+
+.topic IDH_GRPVAR_CVar31
+Check this to poll variable 31.
+
+.topic IDH_GRPVAR_VVar31
+The value of variable 31.
+
+.topic IDH_WATCHFORM_grpTimer
+Timers
+
+.topic IDH_GRPTIMER_CheckTimer0
+Check this to poll timer 0.
+
+.topic IDH_GRPTIMER_ValueTimer0
+The value of timer 0.
+
+.topic IDH_GRPTIMER_CheckTimer1
+Check this to poll timer 1.
+
+.topic IDH_GRPTIMER_ValueTImer1
+The value of timer 1.
+
+.topic IDH_GRPTIMER_CheckTimer2
+Check this to poll timer 2.
+
+.topic IDH_GRPTIMER_ValueTimer2
+The value of timer 2.
+
+.topic IDH_GRPTIMER_ValueTimer3
+The value of timer 3.
+
+.topic IDH_GRPTIMER_CheckTimer3
+Check this to poll timer 3.
+
+.topic IDH_WATCHFORM_btnPollNow
+Select Poll Now to read the checkmarked items from the brick.
+
+.topic IDH_WATCHFORM_grpMotor
+Motors
+
+.topic IDH_GRPMOTOR_CheckMotorA
+Check this to poll motor A.
+
+.topic IDH_GRPMOTOR_ValueMotorA
+The status value of motor A.
+
+.topic IDH_GRPMOTOR_CheckMotorB
+Check this to poll motor B.
+
+.topic IDH_GRPMOTOR_ValueMotorB
+The status value of motor B.
+
+.topic IDH_GRPMOTOR_CheckMotorC
+Check this to poll motor C.
+
+.topic IDH_GRPMOTOR_ValueMotorC
+The status value of motor C.
+
+.topic IDH_WATCHFORM_grpSensor
+Sensors
+
+.topic IDH_GRPSENSOR_CheckSensor1
+Check this to poll sensor 1.
+
+.topic IDH_GRPSENSOR_ValueSensor1
+The value of sensor 1.
+
+.topic IDH_GRPSENSOR_CheckSensor2
+Check this to poll sensor 2.
+
+.topic IDH_GRPSENSOR_ValueSensor2
+The value of sensor 2.
+
+.topic IDH_GRPSENSOR_CheckSensor3
+Check this to poll sensor 3.
+
+.topic IDH_GRPSENSOR_ValueSensor3
+The value of sensor 3.
+
+.topic IDH_WATCHFORM_btnCheckAll
+Select All to checkmark all the items for polling.
+
+.topic IDH_WATCHFORM_btnCheckNone
+Select None to remove all the checkmarks.
+
+.topic IDH_WATCHFORM_cboTimes
+Select a polling interval from the drop-down list.
+
+.topic IDH_WATCHFORM_chkIfActive
+Check this option to disable polling if the watch window is not active.
+
+.topic IDH_WATCHFORM_grpTacho
+Tachometers
+
+.topic IDH_GRPTACHO_CheckTCounterL
+Check this option to poll the left tachometer counter.
+
+.topic IDH_GRPTACHO_ValueTCounterL
+The left tachometer counter value.
+
+.topic IDH_GRPTACHO_CheckTSpeedR
+Check this option to poll the right tachometer speed.
+
+.topic IDH_GRPTACHO_ValueTSpeedR
+The right tachometer speed value.
+
+.topic IDH_GRPTACHO_CheckMCurrent
+Check this option to poll the motor current.
+
+.topic IDH_GRPTACHO_ValueMCurrent
+The motor current value.
+
+.topic IDH_GRPTACHO_ValueTCounterR
+The right tachometer counter value.
+
+.topic IDH_GRPTACHO_CheckTCounterR
+Check this option to poll the right tachometer counter.
+
+.topic IDH_GRPTACHO_ValueTSpeedL
+The left tachometer speed value.
+
+.topic IDH_GRPTACHO_CheckTSpeedL
+Check this option to poll the left tachometer speed.
+
+.topic IDH_WATCHFORM_grpCounter
+Counters
+
+.topic IDH_GRPCOUNTER_CheckCounter0
+Check this option to poll counter 0.
+
+.topic IDH_GRPCOUNTER_ValueCounter0
+The value of counter 0.
+
+.topic IDH_GRPCOUNTER_CheckCounter1
+Check this option to poll counter 1.
+
+.topic IDH_GRPCOUNTER_ValueCounter1
+The value of counter 1.
+
+.topic IDH_GRPCOUNTER_CheckCounter2
+Check this option to poll counter 2.
+
+.topic IDH_GRPCOUNTER_ValueCounter2
+The value of counter 2.
+
+.topic IDH_WATCHFORM_chkSyncSeries
+Check this option to synchronize graph series.
+
+.topic IDH_WATCHFORM_btnClear
+Select Clear to clear all the previously polled values.
+
+.topic IDH_WATCHFORM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_GROUPBOX1_radBmp
+Select this option to export the chart as a bitmap (.bmp).
+
+.topic IDH_GROUPBOX1_radWMF
+Select this option to export the chart as a windows metafile (.wmf).
+
+.topic IDH_GROUPBOX1_radEMF
+Select this option to export the chart as an enhanced metafile (.emf).
+
+.topic IDH_CHARTEXPORT_btnClipboard
+Select Copy To Clipboard to export the chart to the windows clipboard.
+
+.topic IDH_CHARTEXPORT_btnSave
+Select Save To File to export the chart to a file.
+
+.topic IDH_CHARTEXPORT_btnClose
+Select Close to close this dialog.
+
+.topic IDH_CHARTEXPORT_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_GRPTEMPLATES_grdTemplates
+This is the list of already defined code templates.
+
+.topic IDH_GRPTEMPLATES_btnAdd
+Select Add to create a new code template.
+
+.topic IDH_GRPTEMPLATES_btnEdit
+Select Edit to modify the code template selected in the grid.
+
+.topic IDH_GRPTEMPLATES_btnDelete
+Select Delete to delete the code template selected in the grid.
+
+.topic IDH_GRPTEMPLATES_mmoCode
+This is the text of the code template selected in the grid.
+
+.topic IDH_GRPTEMPLATES_btnLoad
+Select Load to load code templates from an external file.
+
+.topic IDH_GRPTEMPLATES_btnSave
+Select Save to save the code templates to an external file.
+
+.topic IDH_CODETEMPLATES_btnOK
+Select OK to close the dialog and save any changes to the code templates.
+
+.topic IDH_CODETEMPLATES_btnCancel
+Select Cancel to close the dialog without saving changes.
+
+.topic IDH_CODETEMPLATES_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_DIRECTFORM_grpMotors
+Motors
+
+.topic IDH_GRPMOTORS_SpeedA
+Adjust the speed of motor A with this slider.
+
+.topic IDH_GRPMOTORS_SpeedB
+Adjust the speed of motor B with this slider.
+
+.topic IDH_GRPMOTORS_SpeedC
+Adjust the speed of motor C with this slider.
+
+.topic IDH_DIRECTFORM_grpTasks
+Tasks
+
+.topic IDH_GRPTASKS_StartAllBtn
+Select Start All to start all the tasks on the brick.
+
+.topic IDH_GRPTASKS_StopAllBtn
+Select Stop All to stop all the tasks on the brick.
+
+.topic IDH_GRPTASKS_RunTask0
+Select this button to run the specified task
+
+.topic IDH_GRPTASKS_StopTask0
+Select this button to stop the specified task
+
+.topic IDH_DIRECTFORM_SensorGroup
+Sensors
+
+.topic IDH_SENSORGROUP_SensorType0
+Select the sensor type for sensor 0 from the drop-down list.
+
+.topic IDH_SENSORGROUP_SensorMode0
+Select the sensor mode for sensor 0 from the drop-down list.
+
+.topic IDH_SENSORGROUP_SensorType1
+Select the sensor type for sensor 1 from the drop-down list.
+
+.topic IDH_SENSORGROUP_SensorMode1
+Select the sensor mode for sensor 1 from the drop-down list.
+
+.topic IDH_SENSORGROUP_SensorType2
+Select the sensor type for sensor 2 from the drop-down list.
+
+.topic IDH_SENSORGROUP_SensorMode2
+Select the sensor mode for sensor 2 from the drop-down list.
+
+.topic IDH_DIRECTFORM_grpVariables
+Global variables
+
+.topic IDH_GRPVARIABLES_VariableBox
+Select the global variable from the drop-down list.
+
+.topic IDH_GRPVARIABLES_OperatorBox
+Select the math operator from the drop-down list.
+
+.topic IDH_GRPVARIABLES_ValueEdit
+Enter a constant value here.
+
+.topic IDH_GRPVARIABLES_ValueUpDown
+Use the up and down arrows to adjust the constant value.
+
+.topic IDH_GRPVARIABLES_SetBtn
+Select Set to execute the selected operation.
+
+.topic IDH_GRPVARIABLES_cboSource
+Select the source from the drop-down list.
+
+.topic IDH_DIRECTFORM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_DATAANALYSIS_chtData
+chtData
+
+.topic IDH_TBRMAIN_btnPrint
+Print
+
+.topic IDH_TBRMAIN_btnConfig
+Config
+
+.topic IDH_TBRMAIN_btnCopy
+Copy to clipboard
+
+.topic IDH_TBRMAIN_btnExport
+actExport
+
+.topic IDH_TBRMAIN_btnSelSeries
+Series
+
+.topic IDH_TBRMAIN_btnAddCalcSeries
+Add calculated series
+
+.topic IDH_TBRMAIN_btnClose
+Close
+
+.topic IDH_TBRMAIN_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_DATALOGFORM_DatalogMemo
+This is the datalog data retrieved from the brick.
+
+.topic IDH_DATALOGFORM_UploadBtn
+Select Upload Datalog to retrieve datalog data from the brick.
+
+.topic IDH_DATALOGFORM_ClearBtn
+Select Clear Datalog to clear the datalog on the brick.
+
+.topic IDH_DATALOGFORM_SizeBox
+Select the datalog size from the drop-down list or enter a different value in the edit field.
+
+.topic IDH_DATALOGFORM_SaveBtn
+Select Save to save the data to a text file.
+
+.topic IDH_DATALOGFORM_btnAnalyze
+Select Analyze to display a graph of the datalog data.
+
+.topic IDH_DATALOGFORM_btnAnalyzeXY
+Select XY Analyze to display a graph of the datalog data where pairs of values are treated as (x,y) points.
+
+.topic IDH_DATALOGFORM_btnLoad
+Select Load to load the dialog with previously saved datalog data.
+
+.topic IDH_DATALOGFORM_chkRelativeTime
+Check this option to graph the data using a relative time scale.
+
+.topic IDH_DATALOGFORM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_GRPINFO_RefreshBtn
+Select Refresh to update the diagnostic information.
+
+.topic IDH_IRGROUP_IRShort
+Select this option to set the IR range to short.
+
+.topic IDH_IRGROUP_IRLong
+Select this option to set the IR range to long.
+
+.topic IDH_WATCHGROUP_CurrentBtn
+Select Set Current to set the watch value on the brick to the current time.
+
+.topic IDH_DISPLAYGROUP_DisplayType
+Select the display type from the drop-down list.
+
+.topic IDH_DISPLAYGROUP_btnUpdateDisplay
+Select Update to change the user display settings on the brick.
+
+.topic IDH_DISPLAYGROUP_cboPrecision
+Select the user display precision from the drop-down list.
+
+.topic IDH_DISPLAYGROUP_cboSource
+Select the source to show on the display from the drop-down list.
+
+.topic IDH_DISPLAYGROUP_udValue
+Use the up and down arrows to adjust the source value.
+
+.topic IDH_DISPLAYGROUP_edtValue
+Enter the source value here.
+
+.topic IDH_POWERGROUP_PowerDown
+Enter the power down timeout value here.
+
+.topic IDH_DIAGFORM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_NXTDIAGGROUP_RefreshBtn
+Select Refresh to update the NXT diagnostic information.
+
+.topic IDH_EDITCODETEMPLATE_edtName
+Enter the code template name here.
+
+.topic IDH_EDITCODETEMPLATE_btnOK
+Select OK to close the dialog and save any changes.
+
+.topic IDH_EDITCODETEMPLATE_btnCancel
+Select Cancel close the dialog without saving changes.
+
+.topic IDH_EDITCODETEMPLATE_edtDesc
+Enter the description of the code template here.
+
+.topic IDH_EDITCODETEMPLATE_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_EO_PNLBOTTOM_btnOK
+Select OK to close the dialog and save changes to the code explorer options.
+
+.topic IDH_EO_PNLBOTTOM_btnCancel
+Select Cancel to close the dialog without saving changes.
+
+.topic IDH_EO_PNLBOTTOM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_GRPOPTIONS_chkAutoExplorer
+Check this option to automatically show the code explorer window.
+
+.topic IDH_GRPOPTIONS_chkDeclarationSyntax
+Check this option to show the declaration syntax in the code explorer window.
+
+.topic IDH_GRPSORTING_radAlphaSort
+Select this option to arrange the tree alphabetically.
+
+.topic IDH_GRPSORTING_radSourceSort
+Select this option to arrange the tree based on the source code order.
+
+.topic IDH_PNLCATEGORIES_lstExpOptions
+Check items in this list and expand or collapse the icon to control which items are included in the code explorer window and whether or not they are expanded by default.
+
+.topic IDH_EXTENSIONDLG_chkNQC
+Check this option to claim the .nqc and .nqh file extensions for this program's use.
+
+.topic IDH_EXTENSIONDLG_chkRCX2
+Check this option to claim the .rcx2 file extension for this program's use.
+
+.topic IDH_EXTENSIONDLG_chkLSC
+Check this option to claim the .lsc file extension for this program's use.
+
+.topic IDH_EXTENSIONDLG_chkASM
+Check this option to claim the .asm file extension for this program's use.
+
+.topic IDH_EXTENSIONDLG_btnOK
+Select OK to close the dialog and claim the selected file extensions.
+
+.topic IDH_EXTENSIONDLG_btnCancel
+Select Cancel to close the dialog without claiming any file extensions.
+
+.topic IDH_EXTENSIONDLG_chkCpp
+Check this option to claim the .cpp file extension for this program's use.
+
+.topic IDH_EXTENSIONDLG_chkPas
+Check this option to claim the .pas file extension for this program's use.
+
+.topic IDH_EXTENSIONDLG_chkC
+Check this option to claim the .c file extension for this program's use.
+
+.topic IDH_EXTENSIONDLG_chkJava
+Check this option to claim the .java file extension for this program's use.
+
+.topic IDH_EXTENSIONDLG_chkForth
+Check this option to claim the .4th, .fr, .f, and .fth file extensions for this program's use.
+
+.topic IDH_EXTENSIONDLG_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_FORTHCONSOLE_TheTerminal
+This is the console where you enter pbForth words and see the response from the brick.
+
+.topic IDH_FORTHCONSOLE_edtConsoleOutput
+This is the console output window.
+
+.topic IDH_ACLMAIN_actConnect
+Select Connect to connect to the brick running pbForth.
+
+.topic IDH_ACLMAIN_actClose
+Select Close to close the console window.
+
+.topic IDH_ACLMAIN_actCopy
+Copy
+
+.topic IDH_ACLMAIN_actCut
+Cut
+
+.topic IDH_ACLMAIN_actPaste
+Paste
+
+.topic IDH_ACLMAIN_actDownloadScript
+Select Download Script to download a script to the brick.
+
+.topic IDH_ACLMAIN_actClearConsole
+Select Clear to clear the contents of the console.
+
+.topic IDH_MACROMANAGER_edtName
+Enter the name of the keyboard macro here.
+
+.topic IDH_MACROMANAGER_lstMacros
+This is a list of all the previously defined keyboard macros.
+
+.topic IDH_MACROMANAGER_btnRun
+Select Run to execute the selected keyboard macro.
+
+.topic IDH_MACROMANAGER_btnEdit
+Select Edit to modify the contents of the selected keyboard macro.
+
+.topic IDH_MACROMANAGER_btnCreate
+Select Create to create a new keyboard macro.
+
+.topic IDH_MACROMANAGER_btnDelete
+Select Delete to delete the selected keyboard macro.
+
+.topic IDH_MACROMANAGER_btnCancel
+Select Cancel to close the macro manager dialog without saving any changes.
+
+.topic IDH_MACROMANAGER_cboLibrary
+Enter the path to the macro library file or select one from the drop-down list.
+
+.topic IDH_MACROMANAGER_btnBrowse
+Select this button to browse to an existing macro manager library file.
+
+.topic IDH_MACROMANAGER_mmoDescription
+Enter the description of the selected keyboard macro here.
+
+.topic IDH_MACROMANAGER_btnOK
+Select OK to close the macro manager dialog and save changes to the macro library.
+
+.topic IDH_MACROMANAGER_chkSuspend
+Check this option to suspend keyboard macro recording in the editor.
+
+.topic IDH_MACROMANAGER_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_MACROMANAGER_hkMacro
+Enter the hot key for the selected keyboard macro here.
+
+.topic IDH_PNLBOTRIGHT_btnCancel
+Select Cancel to close the macro editor without saving changes.
+
+.topic IDH_PNLBOTRIGHT_btnOK
+Select OK to close the macro editor and save changes to the macro.
+
+.topic IDH_PNLTOP_TheEditor
+Edit the keyboard macro here.
+
+.topic IDH_PNLBOTRIGHT_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_MEMORYFORM_MemoryMemo
+This window contains the memory map data downloaded from the brick.
+
+.topic IDH_MEMORYFORM_RefreshBtn
+Select Refresh to read the memory map data from the brick.
+
+.topic IDH_MEMORYFORM_chkUseHex
+Check this option to display the map values in hexadecimal format.
+
+.topic IDH_MEMORYFORM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_PANEL1_Button1
+Send message 1 to the brick.
+
+.topic IDH_PANEL1_Button2
+Send message 2 to the brick.
+
+.topic IDH_PANEL1_Button3
+Send message 3 to the brick.
+
+.topic IDH_PANEL1_Button4
+Send message 4 to the brick.
+
+.topic IDH_PANEL1_Button5
+Send message 5 to the brick.
+
+.topic IDH_PANEL1_Button6
+Send message 6 to the brick.
+
+.topic IDH_PANEL1_Button7
+Send message 7 to the brick.
+
+.topic IDH_PANEL1_Button8
+Send message 8 to the brick.
+
+.topic IDH_PANEL1_Button9
+Send message 9 to the brick.
+
+.topic IDH_PANEL1_Button0
+Send message 0 to the brick.
+
+.topic IDH_PANEL2_SendButton
+Select Send to send the specified message number to the brick.
+
+.topic IDH_PANEL2_edtMessageNum
+Enter a message number from 0 to 255 here.
+
+.topic IDH_MESSAGEFORM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_MSGNXT_MAILBOX
+Select the NXT mailbox number.
+
+.topic IDH_MSGNXT_RESPONSE
+Check this box if the message is a response.
+
+.topic IDH_MSGNXT_BOOLVAL
+Specify a boolean value by checking or unchecking this box.
+
+.topic IDH_MSGNXT_SENDBOOL
+Send a boolean value to the NXT.
+
+.topic IDH_MSGNXT_NUMVAL
+Enter a numeric value here.
+
+.topic IDH_MSGNXT_SENDNUM
+Send a numeric value to the NXT.
+
+.topic IDH_MSGNXT_STRVAL
+Enter a string message here.
+
+.topic IDH_MSGNXT_SENDSTR
+Send a string message to the NXT.
+
+.topic IDH_PNHOLDER_lvProcs
+This is the list of all the functions or methods defined in the source code.
+
+.topic IDH_FMPROCEDURELIST_StatusBar
+Status messages will be displayed here.
+
+.topic IDH_PNLHEADERLEFT_edtMethods
+Type here to perform an incremental search through the list of functions.
+
+.topic IDH_PNLHEADERRIGHT_cbxObjects
+Select an object from the drop-down list to filter the list.
+
+.topic IDH_MIDI_radGenNQC
+Select this option to generate NQC source code.
+
+.topic IDH_MIDI_radGenMS
+Select this option to generate MindScript source code.
+
+.topic IDH_MIDI_radGenLASM
+Select this option to generate LASM source code.
+
+.topic IDH_MIDI_radGenC
+Select this option to generate brickOS C source code.
+
+.topic IDH_MIDI_radGenPascal
+Select this option to generate brickOS Pascal source code.
+
+.topic IDH_MIDI_radGenForth
+Select this option to generate pbForth source code.
+
+.topic IDH_MIDI_radGenJava
+Select this option to generate leJOS Java source code.
+
+.topic IDH_MIDI_radGenNBC
+Select this option to generate NBC source code.
+
+.topic IDH_MIDI_radGenNXC
+Select this option to generate NXC source code.
+
+.topic IDH_MIDI_radGenNXTMelody
+Select this option to generate an NXT Melody file.
+
+.topic IDH_GRPDESTINATION_radToClip
+Select this option to write the generated code to the clipboard.
+
+.topic IDH_GRPDESTINATION_radToFile
+Select this option to write the generated code to a file.
+
+.topic IDH_GRPPARAMETERS_edtTrack
+Enter the desired track number here.
+
+.topic IDH_GRPPARAMETERS_edtGap
+Enter the note gap value here.
+
+.topic IDH_GRPPARAMETERS_edtTempo
+Enter the desired tempo value here.
+
+.topic IDH_GRPPARAMETERS_barTranspose
+Adjust the output by transposing up or down octaves by using this slider.
+
+.topic IDH_GRPPARAMETERS_chkUsePB
+Check this option to track pitch bend data in the MIDI file.
+
+.topic IDH_GRPPARAMETERS_edtPBS
+Enter the pitch bend sensitivity value here.
+
+.topic IDH_MIDICONVERSION_btnOK
+Select OK to select a MIDI file and convert it using the specified options.
+
+.topic IDH_MIDICONVERSION_btnCancel
+Select Cancel to close the dialog without performing any conversion.
+
+.topic IDH_MIDICONVERSION_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_NEWWATCH_btnPollRegular
+Select Poll Regular to start polling at specified intervals.
+
+.topic IDH_NEWWATCH_btnGraph
+Select Graph to display a graph of the polled values.
+
+.topic IDH_NEWWATCH_btnPollNow
+Select Poll Now to read the checkmarked items from the brick.
+
+.topic IDH_NEWWATCH_btnCheckAll
+Select All to checkmark all the items for polling.
+
+.topic IDH_NEWWATCH_btnCheckNone
+Select None to remove all the checkmarks.
+
+.topic IDH_NEWWATCH_TimeBox
+Select a polling interval from the drop-down list.
+
+.topic IDH_NEWWATCH_chkIfActive
+Check this option to disable polling if the watch window is not active.
+
+.topic IDH_NEWWATCH_chkSyncSeries
+Check this option to synchronize graph series.
+
+.topic IDH_NEWWATCH_cboSource
+Select the source to watch from the drop-down list.
+
+.topic IDH_NEWWATCH_edtValue
+Enter the source value here.
+
+.topic IDH_NEWWATCH_udValue
+Use the up and down arrows to adjust the source value.
+
+.topic IDH_NEWWATCH_btnAddWatch
+Select Watch to add a new configurable watch page using the specified source values.
+
+.topic IDH_NEWWATCH_btnRemoveWatch
+Select Remove to remove the current watch page.
+
+.topic IDH_NEWWATCH_btnClear
+Select Clear to clear all previously polled values.
+
+.topic IDH_NEWWATCH_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_NEWWATCH_pagWatch
+Watch these values.
+
+.topic IDH_NEWWATCH_chkWatch
+Check this option to poll the specified source value.
+
+.topic IDH_NEWWATCH_edtWatch
+The value retrieved from the specified source/value combination.
+
+.topic IDH_NEWWATCH_edtSrc
+Enter the watch source value here.
+
+.topic IDH_NEWWATCH_udSrc
+Use the up and down arrows to adjust the watch source value.
+
+.topic IDH_NEWWATCH_cboSrc
+This displays the selected watch source.
+
+.topic IDH_GRPLENGTH_radWhole
+Select this option to set the note and rest length to a whole note.
+
+.topic IDH_GRPLENGTH_radHalf
+Select this option to set the note and rest length to a half note.
+
+.topic IDH_GRPLENGTH_radQuarter
+Select this option to set the note and rest length to a quarter note.
+
+.topic IDH_GRPLENGTH_radEighth
+Select this option to set the note and rest length to an eighth note.
+
+.topic IDH_GRPLENGTH_radSixteenth
+Select this option to set the note and rest length to a sixteenth note.
+
+.topic IDH_PIANOFORM_btnPlay
+Select Play to playback the song you just wrote by clicking on the piano keys.
+
+.topic IDH_PIANOFORM_btnSave
+Select Save to write the song to a source code file in the specified language.
+
+.topic IDH_PIANOFORM_btnCopy
+Select Copy to write the song to the clipboard in the specified language.
+
+.topic IDH_PIANOFORM_btnClear
+Select Clear to erase the previously recorded song notes.
+
+.topic IDH_PIANOFORM_btnRest
+Select Rest to generate a rest in the song using the selected note length.
+
+.topic IDH_PIANOFORM_barTranspose
+Use this slider to select the octave of the piano keys.
+
+.topic IDH_PIANOFORM_edtNoteTime
+Enter the note time to use when generating source code here.
+
+.topic IDH_PIANOFORM_edtWaitTime
+Enter the wait time to use when generating source code here.
+
+.topic IDH_GRPCODE_radGenNQC
+Select this option to generate NQC source code.
+
+.topic IDH_GRPCODE_radGenMS
+Select this option to generate MindScript source code.
+
+.topic IDH_GRPCODE_radGenLASM
+Select this option to generate LASM source code.
+
+.topic IDH_GRPCODE_radGenC
+Select this option to generate brickOS C source code.
+
+.topic IDH_GRPCODE_radGenPascal
+Select this option to generate brickOS Pascal source code.
+
+.topic IDH_GRPCODE_radGenForth
+Select this option to generate pbForth source code.
+
+.topic IDH_GRPCODE_radGenJava
+Select this option to generate leJOS Java source code.
+
+.topic IDH_GRPCODE_radGenNBC
+Select this option to generate NBC source code.
+
+.topic IDH_GRPCODE_radGenNXC
+Select this option to generate NXC source code.
+
+.topic IDH_GRPCODE_radGenNXTMelody
+Select this option to generate an NXT Melody file.
+
+.topic IDH_PIANOFORM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_REMOTEFORM_StaticText1
+Control motor A using these buttons.
+
+.topic IDH_REMOTEFORM_StaticText2
+Control motor B using these buttons.
+
+.topic IDH_REMOTEFORM_StaticText3
+Control motor C using these buttons.
+
+.topic IDH_PANEL1_btnStop
+Select Stop to stop the program running on the brick.
+
+.topic IDH_REMOTEFORM_btnProg1
+Select P1 to start program number 1.
+
+.topic IDH_REMOTEFORM_btnProg5
+Select P5 to start program number 5.
+
+.topic IDH_REMOTEFORM_btnProg4
+Select P4 to start program number 4.
+
+.topic IDH_REMOTEFORM_btnProg3
+Select P3 to start program number 3.
+
+.topic IDH_REMOTEFORM_btnProg2
+Select P2 to start program number 2.
+
+.topic IDH_REMOTEFORM_btnBeep
+Select Beep to make the brick beep.
+
+.topic IDH_REMOTEFORM_btnMsg1
+Select this button to send message 1 to the brick.
+
+.topic IDH_REMOTEFORM_btnMsg2
+Select this button to send message 2 to the brick.
+
+.topic IDH_REMOTEFORM_btnMsg3
+Select this button to send message 3 to the brick.
+
+.topic IDH_REMOTEFORM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_SEARCHRCXFORM_OKBtn
+Select OK to close the dialog and try to find the brick using the specified settings.
+
+.topic IDH_SEARCHRCXFORM_CancelBtn
+Select Cancel to close the dialog without trying to find the brick.
+
+.topic IDH_GRPFIRMWARE_radStandard
+Select this option if your brick is running a firmware compatible with the standard LEGO firmware.
+
+.topic IDH_GRPFIRMWARE_radBrickOS
+Select this option if your brick is running brickOS.
+
+.topic IDH_GRPFIRMWARE_radPBForth
+Select this option if your brick is running pbForth.
+
+.topic IDH_GRPFIRMWARE_radLejos
+Select this option if your brick is running leJOS.
+
+.topic IDH_GRPFIRMWARE_radOtherFirmware
+Select this option if your brick is running some other non-standard firmware.
+
+.topic IDH_PNLPORTS_AutomaticBtn
+Select this option to automatically choose the tower port.
+
+.topic IDH_PNLPORTS_COM1Btn
+Select this option if your IR tower is attached to COM1.
+
+.topic IDH_PNLPORTS_COM2Btn
+Select this option if your IR tower is attached to COM2.
+
+.topic IDH_PNLPORTS_COM3Btn
+Select this option if your IR tower is attached to COM3.
+
+.topic IDH_PNLPORTS_COM4Btn
+Select this option if your IR tower is attached to COM4.
+
+.topic IDH_PNLPORTS_USB1Btn
+Select this option if your IR tower is USB and it is the first tower.
+
+.topic IDH_PNLPORTS_USB4Btn
+Select this option if your IR tower is USB and it is the fourth tower.
+
+.topic IDH_PNLPORTS_USB3Btn
+Select this option if your IR tower is USB and it is the third tower.
+
+.topic IDH_PNLPORTS_USB2Btn
+Select this option if your IR tower is USB and it is the second tower.
+
+.topic IDH_PNLPORTS_COM5Btn
+Select this option if your IR tower is attached to COM5.
+
+.topic IDH_PNLPORTS_COM6Btn
+Select this option if your IR tower is attached to COM6.
+
+.topic IDH_PNLPORTS_COM7Btn
+Select this option if your IR tower is attached to COM7.
+
+.topic IDH_PNLPORTS_COM8Btn
+Select this option if your IR tower is attached to COM8.
+
+.topic IDH_PNLFIRMWARE_RCXBtn
+Select this option if your brick is an RCX running the 1.0 firmware.
+
+.topic IDH_PNLFIRMWARE_CyberMasterBtn
+Select this option if your brick is a CyberMaster.
+
+.topic IDH_PNLFIRMWARE_ScoutBtn
+Select this option if your brick is a Scout.
+
+.topic IDH_PNLFIRMWARE_Rcx2Btn
+Select this option if your brick is an RCX running the 2.0 firmware.
+
+.topic IDH_PNLFIRMWARE_SpyBtn
+Select this option if your brick is a Spybot.
+
+.topic IDH_PNLFIRMWARE_MicroScoutBtn
+Select this option if your brick is a Microscout.
+
+.topic IDH_PNLFIRMWARE_SwanBtn
+Select this option if your brick is an RCX running the Swan firmware.
+
+.topic IDH_SEARCHRCXFORM_btnHelp
+Select Help to display the help for this dialog.
+
+.topic IDH_PAGSERIES_shtLine
+Line
+
+.topic IDH_SHTLINE_cboLinePattern
+cboLinePattern
+
+.topic IDH_SHTLINE_chkLineColorEach
+Color Each
+
+.topic IDH_SHTLINE_chkLineDark3D
+Dark 3D
+
+.topic IDH_GRPLINEMODE_chkLineStairs
+Stairs
+
+.topic IDH_GRPLINEMODE_chkLineInverted
+Inverted
+
+.topic IDH_SHTLINE_btnLineColor
+Color...
+
+.topic IDH_GRPBORDER_chkLineBVis
+Visible
+
+.topic IDH_GRPBORDER_edtLineBWidth
+edtLineBWidth
+
+.topic IDH_GRPBORDER_udLineBWidth
+udLineBWidth
+
+.topic IDH_GRPBORDER_btnLineBdrColor
+Color...
+
+.topic IDH_GRPBORDER_cboLineBdrStyle
+cboLineBdrStyle
+
+.topic IDH_PAGSERIES_shtBar
+Bar
+
+.topic IDH_SHTBAR_cboBarStyle
+cboBarStyle
+
+.topic IDH_SHTBAR_grpBarMBar
+Multiple Bars
+
+.topic IDH_GRPBAROPTS_chkDB3DSides
+Dark Bar 3D Sides
+
+.topic IDH_GRPBAROPTS_chkBarSideMargins
+Bar Side Margins
+
+.topic IDH_GRPBAROPTS_chkAutoMarkPos
+Auto Mark Position
+
+.topic IDH_SHTBAR_chkBarColorEach
+Color Each
+
+.topic IDH_SHTBAR_btnBarColor
+Color...
+
+.topic IDH_SHTBAR_chkBarUseOrigin
+Use Origin:
+
+.topic IDH_SHTBAR_edtBarYOrigin
+edtBarYOrigin
+
+.topic IDH_SHTBAR_udBarYOrigin
+udBarYOrigin
+
+.topic IDH_SHTBAR_edtBarWidthPct
+edtBarWidthPct
+
+.topic IDH_SHTBAR_udBarWidthPct
+udBarWidthPct
+
+.topic IDH_SHTBAR_edtBarOffsetPct
+edtBarOffsetPct
+
+.topic IDH_SHTBAR_udBarOffsetPct
+udBarOffsetPct
+
+.topic IDH_GROUPBOX1_btnBarBdrColor
+Color...
+
+.topic IDH_GROUPBOX1_cboBarBdrStyle
+cboBarBdrStyle
+
+.topic IDH_GROUPBOX1_chkBarBVis
+Visible
+
+.topic IDH_GROUPBOX1_udBarBWidth
+udBarBWidth
+
+.topic IDH_GROUPBOX1_edtBarBWidth
+edtBarBWidth
+
+.topic IDH_PAGSERIES_shtArea
+Area
+
+.topic IDH_SHTAREA_cboAreaPattern
+cboAreaPattern
+
+.topic IDH_SHTAREA_chkAreaStairs
+Stairs
+
+.topic IDH_SHTAREA_grpMultipleAreas
+Multiple Areas
+
+.topic IDH_SHTAREA_chkAreaColorEach
+Color Each
+
+.topic IDH_SHTAREA_btnAreaColor
+Color
+
+.topic IDH_GRPAREABORDER_btnAreaBdrColor
+Color...
+
+.topic IDH_GRPAREABORDER_cboAreaBdrStyle
+cboAreaBdrStyle
+
+.topic IDH_GRPAREABORDER_chkAreaBVis
+Visible
+
+.topic IDH_GRPAREABORDER_edtAreaBWidth
+edtAreaBWidth
+
+.topic IDH_GRPAREABORDER_udAreaBWidth
+udAreaBWidth
+
+.topic IDH_GRPAREALINES_btnAreaALColor
+Color...
+
+.topic IDH_GRPAREALINES_cboAreaALStyle
+cboAreaALStyle
+
+.topic IDH_GRPAREALINES_chkAreaLinesVis
+Visible
+
+.topic IDH_GRPAREALINES_edtAreaALWidth
+edtAreaALWidth
+
+.topic IDH_GRPAREALINES_udAreaALWidth
+udAreaALWidth
+
+.topic IDH_PAGSERIES_shtPoint
+Point
+
+.topic IDH_SHTPOINT_cboPointStyle
+cboPointStyle
+
+.topic IDH_SHTPOINT_chkPointVis
+Visible
+
+.topic IDH_SHTPOINT_chkPoint3D
+3D
+
+.topic IDH_SHTPOINT_edtPointWidth
+edtPointWidth
+
+.topic IDH_SHTPOINT_udPointWidth
+udPointWidth
+
+.topic IDH_SHTPOINT_edtPointHeight
+edtPointHeight
+
+.topic IDH_SHTPOINT_udPointHeight
+udPointHeight
+
+.topic IDH_SHTPOINT_chkPointInfMargin
+Inflate Margin
+
+.topic IDH_GRPPOINTBORDER_btnPointBdrColor
+Color...
+
+.topic IDH_GRPPOINTBORDER_cboPointBdrStyle
+cboPointBdrStyle
+
+.topic IDH_GRPPOINTBORDER_edtPointBWidth
+edtPointBWidth
+
+.topic IDH_GRPPOINTBORDER_udPointBWidth
+udPointBWidth
+
+.topic IDH_GRPPOINTBORDER_chkPointBVis
+Visible
+
+.topic IDH_PAGSERIES_shtMarks
+Marks
+
+.topic IDH_SHTMARKS_chkMarkVisible
+Visible
+
+.topic IDH_GRPMARKFORMAT_btnMarkBackColor
+Back Color...
+
+.topic IDH_GRPMARKFORMAT_btnMarkFont
+Font...
+
+.topic IDH_GRPMARKFORMAT_chkMarkTrans
+Transparent
+
+.topic IDH_GRPMARKFORMAT_chkMarkClip
+Clipped
+
+.topic IDH_GRPMARKBORDER_chkMarkBVis
+Visible
+
+.topic IDH_GRPMARKBORDER_edtMarkBWidth
+edtMarkBWidth
+
+.topic IDH_GRPMARKBORDER_udMarkBWidth
+udMarkBWidth
+
+.topic IDH_GRPARROWS_btnArrowColor
+Color...
+
+.topic IDH_GRPARROWS_edtArrowLen
+edtArrowLen
+
+.topic IDH_GRPARROWS_udArrowLen
+udArrowLen
+
+.topic IDH_GRPMARKSTYLE_radMarkVal
+Value
+
+.topic IDH_GRPMARKSTYLE_radMarkPct
+Percent
+
+.topic IDH_GRPMARKSTYLE_radMarkLbl
+Label
+
+.topic IDH_GRPMARKSTYLE_radMarkLblPct
+Label and Percent
+
+.topic IDH_GRPMARKSTYLE_radMarkLblVal
+Label and Value
+
+.topic IDH_GRPMARKSTYLE_radMarkLegend
+Legend
+
+.topic IDH_GRPMARKSTYLE_radMarkPctTot
+Percent Total
+
+.topic IDH_GRPMARKSTYLE_radMarkLblPctTot
+Label & Percent Total
+
+.topic IDH_GRPMARKSTYLE_radMarkXVal
+X Value
+
+.topic IDH_SHTFUNCTION_cboFunctions
+cboFunctions
+
+.topic IDH_GRPFUNCSERIES_lstFuncSeriesAvail
+lstFuncSeriesAvail
+
+.topic IDH_GRPFUNCSERIES_lstFuncSeriesSelected
+lstFuncSeriesSelected
+
+.topic IDH_GRPFUNCSERIES_btnSelOne
+>
+
+.topic IDH_GRPFUNCSERIES_btnSelAll
+>>
+
+.topic IDH_GRPFUNCSERIES_btnDesOne
+<
+
+.topic IDH_GRPFUNCSERIES_btnDesAll
+<<
+
+.topic IDH_SHTFUNCTION_btnEditFunction
+Edit...
+
+.topic IDH_PNLTITLE_edtTitle
+edtTitle
+
+.topic IDH_PNLBOTTOM_btnOK
+OK
+
+.topic IDH_PNLBOTTOM_btnCancel
+Cancel
+
+.topic IDH_PNLBOTTOM_btnHelp
+Help
+
+.topic IDH_PANEL3_btnDefault
+Default
+
+.topic IDH_PANEL3_btnOK
+OK
+
+.topic IDH_PANEL3_btnCancel
+Cancel
+
+.topic IDH_PANEL3_btnHelp
+Help
+
+.topic IDH_SHTTEMPLATES_TemplatesList
+TemplatesList
+
+.topic IDH_SHTTEMPLATES_UpBtn
+UpBtn
+
+.topic IDH_SHTGENERAL_CheckSavePos
+Save and restore window positions
+
+.topic IDH_SHTGENERAL_CheckSaveBackup
+Save backup copies
+
+.topic IDH_SHTGENERAL_CheckShowRecent
+Display recently opened files in menu
+
+.topic IDH_SHTGENERAL_chkShowCompileStatus
+Show compiler status message
+
+.topic IDH_SHTGENERAL_chkFirmfast
+Use fast mode when downloading firmware
+
+.topic IDH_GRPLOCKEDPROGS_cbProg1
+Program 1
+
+.topic IDH_GRPLOCKEDPROGS_cbProg2
+Program 2
+
+.topic IDH_GRPLOCKEDPROGS_cbProg3
+Program 3
+
+.topic IDH_GRPLOCKEDPROGS_cbProg4
+Program 4
+
+.topic IDH_GRPLOCKEDPROGS_cbProg5
+Program 5
+
+.topic IDH_GRPLOCKEDPROGS_cbProg6
+Program 6
+
+.topic IDH_GRPLOCKEDPROGS_cbProg7
+Program 7
+
+.topic IDH_GRPLOCKEDPROGS_cbProg8
+Program 8
+
+.topic IDH_SHTGENERAL_chkIncludeSrcInList
+Show source in code listing
+
+.topic IDH_GRPAUTOSAVE_chkAutoSave
+Editor files
+
+.topic IDH_GRPAUTOSAVE_chkSaveDesktop
+Project Desktop
+
+.topic IDH_SHTGENERAL_chkSaveBinaryOutput
+Save compiler output
+
+.topic IDH_SHTGENERAL_edtMaxRecent
+edtMaxRecent
+
+.topic IDH_SHTGENERAL_chkBarImage
+Show toolbar background
+
+.topic IDH_SHTGENERAL_chkLockToolbars
+Lock toolbars in default positions
+
+.topic IDH_SHTGENERAL_chkMaxEditWindows
+Maximize editor windows
+
+.topic IDH_SHTGENERAL_chkMultiFormatCopy
+Multi-format clipboard copy
+
+.topic IDH_SHTGENERAL_chkUseMDI
+Use MDI mode
+
+.topic IDH_SHTGENERAL_chkQuietFirmware
+Quiet firmware download
+
+.topic IDH_SHTGENERAL_edtFirmwareChunkSize
+edtFirmwareChunkSize
+
+.topic IDH_SHTGENERAL_chkFirmComp
+2 x
+
+.topic IDH_SHTEDITOR_CheckColorCoding
+Color code the program
+
+.topic IDH_SHTEDITOR_CheckShowTemplates
+Show pop-up menu with templates
+
+.topic IDH_SHTEDITOR_CheckAutoIndentCode
+Automatically indent lines
+
+.topic IDH_SHTEDITOR_CheckMacrosOn
+Use <Ctrl><Alt> combinations for macros
+
+.topic IDH_SHTEDITOR_btnFont
+Font ...
+
+.topic IDH_SHTEDITOR_cbHideSelection
+Hide selection
+
+.topic IDH_SHTEDITOR_cbScrollPastEOL
+Scroll Past EOL
+
+.topic IDH_SHTEDITOR_cbHalfPageScroll
+HalfPage Scroll
+
+.topic IDH_SHTEDITOR_inpExtraLineSpacing
+inpExtraLineSpacing
+
+.topic IDH_SHTEDITOR_inpRightEdge
+inpRightEdge
+
+.topic IDH_SHTEDITOR_cbxREColor
+cbxREColor
+
+.topic IDH_SHTEDITOR_cbxScrollBars
+cbxScrollBars
+
+.topic IDH_SHTEDITOR_cbxColor
+cbxColor
+
+.topic IDH_SHTEDITOR_cbxForeground
+cbxForeground
+
+.topic IDH_SHTEDITOR_cbxBackground
+cbxBackground
+
+.topic IDH_SHTEDITOR_inpMaxUndo
+inpMaxUndo
+
+.topic IDH_SHTEDITOR_inpTabWidth
+inpTabWidth
+
+.topic IDH_SHTEDITOR_chkDragDrop
+Drag and drop editing
+
+.topic IDH_SHTEDITOR_chkAltSelMode
+Alt sets column selection mode
+
+.topic IDH_SHTEDITOR_chkMoveRight
+Move cursor on right click
+
+.topic IDH_SHTEDITOR_chkKeepBlanks
+Keep trailing blanks
+
+.topic IDH_SHTEDITOR_chkSmartTab
+Quick tab
+
+.topic IDH_SHTEDITOR_chkEnhHomeKey
+Enhanced home key
+
+.topic IDH_SHTEDITOR_chkGroupUndo
+With grouped undo
+
+.topic IDH_SHTEDITOR_cbxStructureColor
+cbxStructureColor
+
+.topic IDH_SHTCOMPILERCOMMON_edtCompilerTimeout
+edtCompilerTimeout
+
+.topic IDH_SHTCOMPILERCOMMON_edtCompilerSwitches
+edtCompilerSwitches
+
+.topic IDH_GRPDEFLANGUAGE_radPrefNQC
+NQC
+
+.topic IDH_GRPDEFLANGUAGE_radPrefMindScript
+MindScript
+
+.topic IDH_GRPDEFLANGUAGE_radPrefLASM
+LASM
+
+.topic IDH_SHTCOMPILERNQC_btnGetNQCDir
+...
+
+.topic IDH_SHTCOMPILERNQC_edtNQCSwitches
+edtNQCSwitches
+
+.topic IDH_SHTCOMPILERNQC_edtNQCIncludePath
+edtNQCIncludePath
+
+.topic IDH_SHTCOMPILERNQC_edtNQCExePath
+edtNQCExePath
+
+.topic IDH_SHTCOMPILERNQC_btnGetNQCVersion
+Version
+
+.topic IDH_SHTCOMPILERLCC_btnGetLCCDir
+...
+
+.topic IDH_SHTCOMPILERLCC_edtLCCSwitches
+edtLCCSwitches
+
+.topic IDH_SHTCOMPILERLCC_edtLCCIncludePath
+edtLCCIncludePath
+
+.topic IDH_SHTCOMPILERLCC_edtLCCExePath
+edtLCCExePath
+
+.topic IDH_SHTCOMPILERLCC_btnGetLCCVersion
+Version
+
+.topic IDH_SHTCOMPILERBRICKOS_btnGetCygwinDir
+...
+
+.topic IDH_SHTCOMPILERBRICKOS_edtOSRoot
+edtOSRoot
+
+.topic IDH_SHTCOMPILERBRICKOS_edtCPPSwitches
+edtCPPSwitches
+
+.topic IDH_SHTCOMPILERBRICKOS_edtBrickOSMakefileTemplate
+edtBrickOSMakefileTemplate
+
+.topic IDH_SHTCOMPILERBRICKOS_edtCygwin
+edtCygwin
+
+.topic IDH_SHTCOMPILERBRICKOS_chkKeepBrickOSMakefile
+Keep the makefile after compilation
+
+.topic IDH_SHTCOMPILERBRICKOS_edtPascalCompilerPrefix
+edtPascalCompilerPrefix
+
+.topic IDH_SHTCOMPILERLEJOS_btnGetJavaCDir
+...
+
+.topic IDH_SHTCOMPILERLEJOS_btnLeJOSRoot
+...
+
+.topic IDH_SHTCOMPILERLEJOS_edtJavaSwitches
+edtJavaSwitches
+
+.topic IDH_SHTCOMPILERLEJOS_edtLeJOSMakefileTemplate
+edtLeJOSMakefileTemplate
+
+.topic IDH_SHTCOMPILERLEJOS_chkKeepLeJOSMakefile
+Keep the makefile after compilation
+
+.topic IDH_SHTCOMPILERLEJOS_edtJavaPath
+edtJavaPath
+
+.topic IDH_SHTCOMPILERLEJOS_edtLeJOSRoot
+edtLeJOSRoot
+
+.topic IDH_SHTFORTH_chkShowAllOutput
+Show all output
+
+.topic IDH_SHTFORTH_chkStopOnAborted
+Stop download on any error
+
+.topic IDH_SHTFORTH_chkSkipBlankLines
+Skip blank lines
+
+.topic IDH_SHTFORTH_chkStripComments
+Strip comments
+
+.topic IDH_SHTFORTH_edtICDelay
+edtICDelay
+
+.topic IDH_SHTFORTH_edtILDelay
+edtILDelay
+
+.topic IDH_SHTFORTH_chkConsoleSyntaxHL
+Syntax highlighting
+
+.topic IDH_SHTFORTH_chkOutputSeparate
+Download output in separate window
+
+.topic IDH_SHTFORTH_chkShowConsoleLineNumbers
+Show line numbers
+
+.topic IDH_GRPUSB_edtConsoleReadFirstTimeout
+edtConsoleReadFirstTimeout
+
+.topic IDH_GRPUSB_edtConsoleReadICTimeout
+edtConsoleReadICTimeout
+
+.topic IDH_GRPUSB_edtConsoleWriteTimeout
+edtConsoleWriteTimeout
+
+.topic IDH_SHTFORTH_chkConsoleCompProp
+Code completion
+
+.topic IDH_SHTAPIKEYWORDS_lstKeywords
+lstKeywords
+
+.topic IDH_SHTAPIKEYWORDS_edtKeyword
+edtKeyword
+
+.topic IDH_SHTAPICOMMANDS_lstCommands
+lstCommands
+
+.topic IDH_SHTAPICOMMANDS_edtCommand
+edtCommand
+
+.topic IDH_SHTAPICONSTANTS_lstConstants
+lstConstants
+
+.topic IDH_SHTAPICONSTANTS_edtConstant
+edtConstant
+
+.topic IDH_SHTAPI_btnAddAPI
+Add
+
+.topic IDH_SHTAPI_btnDeleteAPI
+Delete
+
+.topic IDH_SHTSTARTUP_CheckShowForm
+Show startup form
+
+.topic IDH_SHTSTARTUP_CheckNoConnect
+Don't connect to the brick
+
+.topic IDH_SHTSTARTUP_CheckConnect
+Connect immediately to the brick
+
+.topic IDH_PNLBRICKS_CheckMindStorms
+RCX
+
+.topic IDH_PNLBRICKS_CheckCyberMaster
+CyberMaster
+
+.topic IDH_PNLBRICKS_CheckScout
+Scout
+
+.topic IDH_PNLBRICKS_CheckRCX2
+RCX2
+
+.topic IDH_PNLBRICKS_CheckSpybot
+Spybot
+
+.topic IDH_PNLBRICKS_CheckMicroScout
+Microscout
+
+.topic IDH_PNLBRICKS_CheckSwan
+Swan
+
+.topic IDH_PNLPORTS_CheckAutomatic
+Automatic
+
+.topic IDH_PNLPORTS_CheckCOM1
+COM1
+
+.topic IDH_PNLPORTS_CheckCOM2
+COM2
+
+.topic IDH_PNLPORTS_CheckCOM3
+COM3
+
+.topic IDH_PNLPORTS_CheckCOM4
+COM4
+
+.topic IDH_PNLPORTS_CheckUSB1
+USB1
+
+.topic IDH_PNLPORTS_CheckUSB2
+USB2
+
+.topic IDH_PNLPORTS_CheckUSB3
+USB3
+
+.topic IDH_PNLPORTS_CheckUSB4
+USB4
+
+.topic IDH_PNLPORTS_CheckCOM5
+COM5
+
+.topic IDH_PNLPORTS_CheckCOM6
+COM6
+
+.topic IDH_PNLPORTS_CheckCOM7
+COM7
+
+.topic IDH_PNLPORTS_CheckCOM8
+COM8
+
+.topic IDH_COMBOX_radStandard
+Standard
+
+.topic IDH_COMBOX_radBrickOS
+brickOS
+
+.topic IDH_COMBOX_radPBForth
+pbForth
+
+.topic IDH_COMBOX_radLejos
+leJOS
+
+.topic IDH_COMBOX_radOtherFirmware
+Other
+
+.topic IDH_SHTSTARTUP_chkFBAlwaysPrompt
+Always prompt on Find Brick
+
+.topic IDH_SHTTEMPLATES_InsertBtn
+Insert
+
+.topic IDH_SHTTEMPLATES_ChangeBtn
+Change
+
+.topic IDH_SHTTEMPLATES_DeleteBtn
+Delete
+
+.topic IDH_SHTTEMPLATES_DownBtn
+DownBtn
+
+.topic IDH_SHTMACROS_MShift
+<Shift>
+
+.topic IDH_SHTMACROS_ShiftMacrosList
+ShiftMacrosList
+
+.topic IDH_SHTMACROS_MacrosList
+MacrosList
+
+.topic IDH_SHTMACROS_MChange
+Change
+
+.topic IDH_SHTMACROS_MDelete
+Delete
+
+.topic IDH_SHTCOLORS_cgColor
+cgColor
+
+.topic IDH_SHTCOLORS_lbElements
+lbElements
+
+.topic IDH_SHTCOLORS_SynEdit1
+SynEdit1
+
+.topic IDH_GRPTEXTATTRIBUTES_chkBold
+Bold
+
+.topic IDH_GRPTEXTATTRIBUTES_chkItalic
+Italic
+
+.topic IDH_GRPTEXTATTRIBUTES_chkUnderline
+Underline
+
+.topic IDH_GRPFGBG_chkFG
+Foreground
+
+.topic IDH_GRPFGBG_chkBG
+Background
+
+.topic IDH_SHTCOLORS_cboLanguages
+cboLanguages
+
+.topic IDH_GRPGUTTER_cbUseFontStyle
+Use font style
+
+.topic IDH_GRPGUTTER_cbGutterVisible
+Visible
+
+.topic IDH_GRPGUTTER_cbAutoSize
+Auto size
+
+.topic IDH_GRPGUTTER_cbLineNumbers
+Line numbers
+
+.topic IDH_GRPGUTTER_cbLeadingZeros
+Leading zeros
+
+.topic IDH_GRPGUTTER_cbZeroStart
+Zero start
+
+.topic IDH_GRPGUTTER_inpRightOffset
+inpRightOffset
+
+.topic IDH_GRPGUTTER_inpLeftOffset
+inpLeftOffset
+
+.topic IDH_GRPGUTTER_inpDigitCount
+inpDigitCount
+
+.topic IDH_GRPGUTTER_inpGutterWidth
+inpGutterWidth
+
+.topic IDH_GRPGUTTER_cbxGutterColor
+cbxGutterColor
+
+.topic IDH_SHTOPTIONS_btnKeystrokes
+Edit Keystrokes...
+
+.topic IDH_SHTOPTIONS_btnEditCodeTemplates
+Edit Code Templates...
+
+.topic IDH_SHTOPTIONS_btnClaimExt
+Claim File Extensions
+
+.topic IDH_GRPHOTKEYS_hkCodeComp
+hkCodeComp
+
+.topic IDH_GRPHOTKEYS_hkParamComp
+hkParamComp
+
+.topic IDH_GRPHOTKEYS_hkRecMacro
+hkRecMacro
+
+.topic IDH_GRPHOTKEYS_hkPlayMacro
+hkPlayMacro
+

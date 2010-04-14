@@ -1,0 +1,6 @@
+:Base BricxCC.hlp>main
+:Title Bricx Command Center Help
+
+:Include bricxcc.ohc
+:Include bricxcc.ohi
+:Include bricxcc.ohl
