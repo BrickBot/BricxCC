@@ -34,6 +34,7 @@ uses
 type
   TCodeForm = class(TForm)
     procedure FormCreate(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     pmnuCodeView: TOfficePopupMenu;
@@ -43,16 +44,24 @@ type
     mniCodeFind: TOfficeMenuItem;
     mniCodeFindNext: TOfficeMenuItem;
     mniCodeFindPrev: TOfficeMenuItem;
+    mniCodeGotoLine: TOfficeMenuItem;
     N2: TOfficeMenuItem;
     mniStayOnTop: TOfficeMenuItem;
+    barStatus : TStatusBar;
     procedure lmiEditCopyClick(Sender: TObject);
     procedure lmiEditSelectAllClick(Sender: TObject);
     procedure mniStayOnTopClick(Sender: TObject);
     procedure mniCodeFindClick(Sender: TObject);
     procedure mniCodeFindNextClick(Sender: TObject);
     procedure mniCodeFindPrevClick(Sender: TObject);
+    procedure mniGotoLineClick(Sender: TObject);
+    procedure CreateStatusBar;
     procedure CreatePopupMenu;
     procedure CreateSynEditComponents;
+    procedure UpdatePositionOnStatusBar;
+    procedure TheEditorStatusChange(Sender: TObject;
+      Changes: TSynStatusChanges);
+    procedure GotoLine;
   public
     { Public declarations }
     CodeEdit: TSynEdit;
@@ -68,7 +77,7 @@ implementation
 {$ENDIF}
 
 uses
-  uLocalizedStrings, uGuiUtils, uEditorUtils;
+  uLocalizedStrings, uGuiUtils, uEditorUtils, GotoLine;
 
 procedure TCodeForm.lmiEditCopyClick(Sender: TObject);
 begin
@@ -105,6 +114,7 @@ end;
 
 procedure TCodeForm.FormCreate(Sender: TObject);
 begin
+  CreateStatusBar;
   CreateSynEditComponents;
   CreatePopupMenu;
   CodeEdit.PopupMenu := pmnuCodeView;
@@ -120,10 +130,11 @@ begin
   mniCodeFind := TOfficeMenuItem.Create(pmnuCodeView);
   mniCodeFindNext := TOfficeMenuItem.Create(pmnuCodeView);
   mniCodeFindPrev := TOfficeMenuItem.Create(pmnuCodeView);
+  mniCodeGotoLine := TOfficeMenuItem.Create(pmnuCodeView);
   N2 := TOfficeMenuItem.Create(pmnuCodeView);
   mniStayOnTop := TOfficeMenuItem.Create(pmnuCodeView);
   pmnuCodeView.Items.Add([lmiEditCopy, lmiEditSelectAll, N1, mniCodeFind,
-                          mniCodeFindNext, mniCodeFindPrev, N2,
+                          mniCodeFindNext, mniCodeFindPrev, mniCodeGotoLine, N2,
                           mniStayOnTop]);
   with lmiEditCopy do
   begin
@@ -164,6 +175,12 @@ begin
     Caption := sFindPrevious;
     ShortCut := 8306;
     OnClick := mniCodeFindPrevClick;
+  end;
+  with mniCodeGotoLine do
+  begin
+    Name := 'mniCodeGotoLine';
+    Caption := sGotoLine;
+    OnClick := mniGotoLineClick;
   end;
   with N2 do
   begin
@@ -208,7 +225,93 @@ begin
     Gutter.Font.Style := [];
     ReadOnly := True;
     MaxLeftChar := 8192;
+    OnStatusChange := TheEditorStatusChange;
   end;
+end;
+
+procedure TCodeForm.TheEditorStatusChange(Sender: TObject;
+  Changes: TSynStatusChanges);
+begin
+  // Note: scAll for new file loaded
+  // caret position has changed
+  if Changes * [scAll, scCaretX, scCaretY] <> [] then begin
+    UpdatePositionOnStatusBar;
+  end;
+end;
+
+procedure TCodeForm.UpdatePositionOnStatusBar;
+var
+  p: TPoint;
+begin
+  p := CodeEdit.CaretXY;
+  barStatus.Panels[0].Text := Format('%6d:%3d', [p.Y, p.X]);
+end;
+
+procedure TCodeForm.FormShow(Sender: TObject);
+begin
+  UpdatePositionOnStatusBar;
+end;
+
+procedure TCodeForm.CreateStatusBar;
+begin
+  barStatus := TStatusBar.Create(Self);
+  with barStatus do
+  begin
+    Name := 'barStatus';
+    Parent := Self;
+    Left := 0;
+    Top := 319;
+    Width := 536;
+    Height := 22;
+    Hint := 'Copy';
+    with Panels.Add do begin
+      Alignment := taCenter;
+      Width := 80;
+    end;
+    with Panels.Add do begin
+      Width := 80;
+    end;
+    with Panels.Add do begin
+      Width := 80;
+    end;
+    with Panels.Add do begin
+      Width := 80;
+    end;
+    with Panels.Add do begin
+      Width := 80;
+    end;
+    with Panels.Add do begin
+      Width := 50;
+    end;
+  end;
+end;
+
+procedure TCodeForm.GotoLine;
+var
+  G : TGotoForm;
+begin
+  G := TGotoForm.Create(nil);
+  try
+    G.MaxLine := CodeEdit.Lines.Count;
+    G.TheLine := CodeEdit.CaretY;
+    if G.ShowModal = mrOK then
+    begin
+      with CodeEdit do begin
+        SetFocus;
+        CaretXY := Point(0, G.TheLine);
+        BlockBegin := CaretXY;
+        BlockEnd   := BlockBegin;
+        EnsureCursorPosVisible;
+      end;
+    end;
+  finally
+    G.Free;
+  end;
+end;
+
+procedure TCodeForm.mniGotoLineClick(Sender: TObject);
+begin
+  GotoLine;
 end;
 
 {$IFDEF FPC}
