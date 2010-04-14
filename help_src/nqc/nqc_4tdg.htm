@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SOUNDEFFECT</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SOUNDEFFECT">
+</OBJECT>
+
+<P><B><A NAME="idh_api_soundeffect"></A>SOUNDEFFECTResource Declaration - Spy</B></P>
+
+<P>Furthermore, with Spybotics you can define up to 15 of your own sound effects using a resource declaration. The declaration must be done at the global level (not within a task/sub/function), and must occur before the sound effect is used in the program. A sound effect declaration looks like this:</P>
+
+<PRE><CODE><B>SOUNDEFFECT</B> <I>name</I> { <I>data</I> ... };</CODE></PRE>
+
+<P>Where <I>name</I> is a name you pick for the sound effect, and <I>data</I> is a series of bytes that determine the sound effect sound. Use the following special commands (in a comma-separated list) to define the sound effect.</P>
+
+<P><B><U>Sound Effect Commands</U></B></P>
+
+<PRE><CODE>Gate(on, period)
+GateOff()
+Glide(freq1, freq2, time)
+Vibrato(freq1, freq2, time)
+WaitEffect(time)
+FixedWaitEffect(time)
+Tone(freq, time)
+FixedTone(freq, time)
+RepeatEffect()</CODE></PRE>
+
+<P>Once the sound effect is declared, its name may be used as an argument to <CODE>PlaySound()</CODE>. Here is an example:</P>
+
+<PRE><CODE><B>SOUNDEFFECT</B> my_effect { 
+  Gate(1, 10),
+  Glide(294, 660, 60),
+  GateOff(),
+  WaitEffect(50),
+  Vibrato(294, 660, 60),
+  FixedTone(500, 50),
+  RepeatEffect()
+};
+
+<B>task</B> main()
+{
+PlaySound(my_effect);
+Wait(500);
+}</CODE></PRE>
+
+</BODY>
+</HTML>

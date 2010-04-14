@@ -1,0 +1,52 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SetSensorMode</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SetSensorMode">
+	<PARAM NAME="Keyword" VALUE="SENSOR_MODE_RAW">
+	<PARAM NAME="Keyword" VALUE="SENSOR_MODE_BOOL">
+	<PARAM NAME="Keyword" VALUE="SENSOR_MODE_EDGE">
+	<PARAM NAME="Keyword" VALUE="SENSOR_MODE_PULSE">
+	<PARAM NAME="Keyword" VALUE="SENSOR_MODE_PERCENT">
+	<PARAM NAME="Keyword" VALUE="SENSOR_MODE_FAHRENHEIT">
+	<PARAM NAME="Keyword" VALUE="SENSOR_MODE_CELSIUS">
+	<PARAM NAME="Keyword" VALUE="SENSOR_MODE_ROTATION">
+</OBJECT>
+
+<P><B><A NAME="idh_api_setsensormode"></A>SetSensorMode(sensor, mode)Function - RCX, CM, Spy</B></P>
+
+<P>Set a sensor's mode, which should be one of the predefined sensor mode constants. A slope parameter for boolean conversion, if desired, may be added to the mode (RCX and Swan only).</P>
+
+<PRE><CODE>SetSensorMode(SENSOR_1, SENSOR_MODE_RAW); // raw mode
+SetSensorMode(SENSOR_1, SENSOR_MODE_RAW + 10) ; // slope 10</CODE></PRE>
+
+<P>The RCX, Swan, CyberMaster, and Spybotics allow a sensor to be configured in different modes. The sensor mode determines how a sensor's raw value is processed. Some modes only make sense for certain types of sensors, for example SENSOR_MODE_ROTATION is useful only with rotation sensors. The sensor mode can be set by calling SetSensorMode. The possible modes are shown below. Note that since CyberMaster does not support temperature or rotation sensors, the last three modes are restricted to the RCX and Swan only. Spybotics is even more restrictive, allowing only raw, boolean, and percentage modes.</P>
+
+<P><B><U>Sensor Mode</U><U>Meaning</U></B></P>
+
+<P>SENSOR_MODE_RAWraw value from 0 to 1023</P>
+
+<P>SENSOR_MODE_BOOLboolean value (0 or 1)</P>
+
+<P>SENSOR_MODE_EDGEcounts number of boolean transitions</P>
+
+<P>SENSOR_MODE_PULSEcounts number of boolean periods</P>
+
+<P>SENSOR_MODE_PERCENTvalue from 0 to 100</P>
+
+<P>SENSOR_MODE_FAHRENHEITdegrees F - RCX and Swan only</P>
+
+<P>SENSOR_MODE_CELSIUSdegrees C - RCX and Swan only</P>
+
+<P>SENSOR_MODE_ROTATIONrotation (16 ticks per revolution) - RCX and Swan only</P>
+
+<P>The RCX and Swan provide a boolean conversion for all sensors - not just touch sensors. This boolean conversion is normally based on preset thresholds for the raw value. A "low" value (less than 460) is a boolean value of 1. A high value (greater than 562) is a boolean value of 0. This conversion can be modified: a slope value between 0 and 31 may be added to a sensor's mode when calling SetSensorMode. If the sensor's value changes more than the slope value during a certain time (3ms), then the sensor's boolean state will change. This allows the boolean state to reflect rapid changes in the raw value. A rapid increase will result in a boolean value of 0, a rapid decrease is a boolean value of 1. Even when a sensor is configured for some other mode (i.e. SENSOR_MODE_PERCENT), the boolean conversion will still be carried out.</P>
+
+</BODY>
+</HTML>

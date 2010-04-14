@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>AddToDatalog</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="AddToDatalog">
+</OBJECT>
+
+<P><B><A NAME="idh_api_addtodatalog"></A>AddToDatalog(value)Function - RCX</B></P>
+
+<P>Add the value, which may be an expression, to the datalog. If the datalog is full the call has no effect.</P>
+
+<PRE><CODE>AddToDatalog(x);</CODE></PRE>
+
+<P>When the datalog is uploaded to a computer it will show both the value itself and the source of the value (timer, variable, etc). The datalog directly supports the following data sources: timers, sensor values, variables, and the system watch. Other data types (such as a constant or random number) may also be logged, but in this case NQC will first move the value into a variable and then log the variable. The values will still be captured faithfully in the datalog, but the sources of the data may be a bit misleading.</P>
+
+</BODY>
+</HTML>

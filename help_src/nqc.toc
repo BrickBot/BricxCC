@@ -1,0 +1,84 @@
+:Base NQC.hlp>main
+:Title Not Quite C Help
+;
+1 NQC Programmer's Guide
+2 Title=IDH_NQCProgrammersGuide
+2 Contents=IDH_NQC_Contents
+2 Introduction=IDH_NQC_Introduction
+2 The NQC Language
+3 The NQC Language=IDH_NQC_Language
+3 Lexical Rules
+4 Lexical Rules=IDH_NQC_LexicalRules
+4 Comments=IDH_NQC_Comments
+4 Whitespace=IDH_NQC_Whitespace
+4 Numerical Constants=IDH_NQC_NumericConstants
+4 Identifiers and Keywords=IDH_NQC_IdentKeywords
+3 Program Structure
+4 Program Structure=IDH_NQC_ProgStructure
+4 Tasks=IDH_NQC_Tasks
+4 Functions=IDH_NQC_Functions
+4 Subroutines=IDH_NQC_Subroutines
+4 Variables=IDH_NQC_Variables
+4 Arrays=IDH_NQC_Arrays
+3 Statements
+4 Statements=IDH_NQC_Statements
+4 Variable Declaration=IDH_NQC_VarDeclarations
+4 Assignment=IDH_NQC_Assignment
+4 Control Structures=IDH_NQC_ControlStructures
+4 Access Control and Events=IDH_NQC_AccessControlEvents
+4 Other Statements=IDH_NQC_OtherStatements
+3 Expressions
+4 Expressions=IDH_NQC_Expressions
+4 Conditions=IDH_NQC_Conditions
+3 The Preprocessor
+4 The Preprocessor=IDH_NQC_Preprocessor
+4 #include=IDH_NQC_Include
+4 #define=IDH_NQC_Define
+4 Conditional Compilation=IDH_NQC_CondCompilation
+4 Program Initialization=IDH_NQC_ProgInitialization
+4 Reserving Storage=IDH_NQC_ReservingStorage
+2 NQC API
+3 NQC API=IDH_NQC_API
+3 Sensors
+4 Sensors=IDH_NQC_Sensors
+4 Types and Modes=IDH_NQC_SensorTypes
+4 Sensor Information=IDH_NQC_SensorInfo
+4 Scout Light Sensor=IDH_NQC_ScoutLightSensor
+3 Outputs
+4 Outputs=IDH_NQC_Outputs
+4 Primitive Calls=IDH_NQC_OutputsPrimitive
+4 Convenience Calls=IDH_NQC_OutputsConvenience
+4 Global Control=IDH_NQC_OutputsGlobal
+3 Sound
+4 Sound=IDH_NQC_Sound
+3 LCD Display
+4 LCD Display=IDH_NQC_Display
+3 Communication
+4 Communication=IDH_NQC_Communication
+4 Messages=IDH_NQC_Messages
+4 Serial=IDH_NQC_Serial
+4 VLL=IDH_NQC_VLL
+3 Timers
+4 Timers=IDH_NQC_Timers
+3 Counters
+4 Counters=IDH_NQC_Counters
+3 Access Control
+4 Access Contro=IDH_NQC_AccessControl
+3 Events
+4 Events=IDH_NQC_Events
+4 Customizable Events=IDH_NQC_RCX2Events
+4 Scout Events=IDH_NQC_ScoutEvents
+3 Data Logging
+4 Data Logging=IDH_NQC_Datalogging
+3 General Features
+4 General Features=IDH_NQC_General
+3 Specific Features
+4 RCX Specific Features=IDH_NQC_RCXSpecific
+4 Scout Specific Features=IDH_NQC_ScoutSpecific
+4 CyberMaster Specific Features=IDH_NQC_CyberMasterSpecific
+4 Spybotics Specific Features=IDH_NQC_SpyboticSpecific
+2 Technical Details
+3 Technical Details=IDH_NQC_TechnicalDetails
+3 The asm statement=IDH_NQC_ASM
+3 Data Sources=IDH_NQC_DataSources
+; end of TOC

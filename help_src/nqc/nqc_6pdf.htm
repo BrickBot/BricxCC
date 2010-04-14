@@ -1,0 +1,66 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Access Control and Events</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="access control">
+	<PARAM NAME="Keyword" VALUE="events">
+</OBJECT>
+
+<P><A NAME="idh_nqc_accesscontrolevents"></A>2.3.4 Access Control and Events</P>
+
+<P>The Scout, RCX2, Swan, and Spybotics support access control and event monitoring. Access control allows a task to request ownership of one or more resources. In NQC, access control is provided by the acquire statement, which has two forms:</P>
+
+<PRE><CODE>acquire ( <I>resources</I> ) <I>body</I>
+acquire ( <I>resources</I> ) <I>body</I> catch <I>handler</I></CODE></PRE>
+
+<P>where <I>resources</I> is a constant that specifies the resources to be acquired and <I>body</I> and <I>handler</I> are statements. The NQC API defines constants for individual resources which may be added together to request multiple resources at the same time. The behavior of the <CODE>acquire</CODE> statement is as follows: Ownership of the specified resources will be requested. If another task of higher priority already owns the resources, then the request will fail and execution will jump to the handler (if present). Otherwise, the request will succeed, and the body will begin to be executed. While executing the body, if another task of equal or higher priority requests any of the owned resources, then the original task will lose ownership. When ownership is lost, execution will jump to the handler (if present). Once the body has completed, the resources will be returned back to the system (so that lower priority tasks may acquire them), and execution will continue with the statement following the acquire statement. If a handler is not specified, then in both the case of a failed request, or a subsequent loss of ownership, control will pass to the statement following the <CODE>acquire</CODE> statement. For example, the following code acquires a resource for 10 seconds, playing a sound if it cannot complete successfully:</P>
+
+<PRE><CODE>acquire(ACQUIRE_OUT_A)
+{
+Wait(1000);
+}
+catch
+{
+PlaySound(SOUND_UP);
+}</CODE></PRE>
+
+<P>Event monitoring is implemented with the <CODE>monitor</CODE> statement, which has a syntax very similar to <CODE>acquire</CODE>:</P>
+
+<PRE><CODE>monitor ( <I>events</I> ) <I>body</I>
+monitor ( <I>events</I> ) <I>body</I> <I>handler_list</I></CODE></PRE>
+
+<P>Where <I>handler_list</I> is one or more handlers of the form</P>
+
+<PRE><CODE>catch ( <I>catch_events</I> ) <I>handler</I></CODE></PRE>
+
+<P>The last handler in a handler list can omit the event specification:</P>
+
+<PRE><CODE>catch <I>handler</I></CODE></PRE>
+
+<P><I>Events</I> is a constant that determines which events should be monitored. For the Scout, events are predefined, so there are constants such as EVENT_1_PRESSED which can be used to specify events. With RCX2, Swan, and Spybotics, the meaning of each event is configured by the programmer. There are 16 events (numbers 0 to 15). In order to specify an event in a monitor statement, the event number must be converted to an event mask using the EVENT_MASK() macro. The Scout event constants or event masks may be added together to specify multiple events. Multiple masks can be combined using bitwise OR.</P>
+
+<P>The <CODE>monitor</CODE> statement will execute the body while monitoring the specified events. If any of the events occur, execution will jump to the first handler for that event (a handler without an event specification handles any event). If no event handler exists for the event, then control will continue at the statement following the <CODE>monitor</CODE> statement. The following example waits for 10 seconds while monitoring events 2, 3, and 4 for RCX2:</P>
+
+<PRE><CODE>monitor( EVENT_MASK(2) | EVENT_MASK(3) | EVENT_MASK(4) )
+{
+Wait(1000);
+}
+catch( EVENT_MASK(4) )
+{
+PlaySound(SOUND_DOWN); // event 4 happened
+}
+catch
+{
+PlaySound(SOUND_UP) ; // event 2 or 3 happened
+}</CODE></PRE>
+
+<P>Note that the <CODE>acquire</CODE> and <CODE>monitor</CODE> statements are only supported for targets that implement access control and event monitoring - specifically the Scout, RCX2, Swan, and Spybotics.</P>
+
+</BODY>
+</HTML>

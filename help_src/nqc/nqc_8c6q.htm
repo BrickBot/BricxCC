@@ -1,0 +1,31 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Timer</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="Timer">
+	<PARAM NAME="Keyword" VALUE="T1">
+	<PARAM NAME="Keyword" VALUE="T2">
+	<PARAM NAME="Keyword" VALUE="T3">
+	<PARAM NAME="Keyword" VALUE="T4">
+</OBJECT>
+
+<P><B><A NAME="idh_api_timer"></A>Timer(n)Value - All</B></P>
+
+<P>Return the current value of specified timer (in 100ms resolution).</P>
+
+<PRE><CODE>x = Timer(0);</CODE></PRE>
+
+<P><B>Timer constants</B></P>
+
+<P>T1, T2, T3, T4</P>
+
+<P>All targets provide several independent timers with 100ms resolution (10 ticks per second). The Scout provides 3 such timers while the RCX, Swan, CyberMaster, and Spybotics provide 4. The timers wrap around to 0 after 32767 ticks (about 55 minutes). The value of a timer can be read using Timer(n), where n is a constant that determines which timer to use (0- 2 for Scout, 0-3 for the others).</P>
+
+</BODY>
+</HTML>

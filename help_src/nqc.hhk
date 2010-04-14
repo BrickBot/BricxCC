@@ -1,0 +1,4213 @@
+<HTML>
+<!-- Sitemap 1.0 -->
+<OBJECT type="text/site properties">
+</OBJECT>
+<UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="!=">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#define">
+		<param name="Name" value="#define">
+		<param name="Local" value="nqc/nqc_2351.htm">
+		<param name="Name" value="#define">
+		<param name="Local" value="nqc/nqc_6ov9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#elif">
+		<param name="Name" value="#if, #ifdef, #ifndef, #else, #elif, #endif">
+		<param name="Local" value="nqc/nqc_6nn4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#else">
+		<param name="Name" value="#if, #ifdef, #ifndef, #else, #elif, #endif">
+		<param name="Local" value="nqc/nqc_6nn4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#endif">
+		<param name="Name" value="#if, #ifdef, #ifndef, #else, #elif, #endif">
+		<param name="Local" value="nqc/nqc_6nn4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#if">
+		<param name="Name" value="#if, #ifdef, #ifndef, #else, #elif, #endif">
+		<param name="Local" value="nqc/nqc_6nn4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#ifdef">
+		<param name="Name" value="#if, #ifdef, #ifndef, #else, #elif, #endif">
+		<param name="Local" value="nqc/nqc_6nn4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#ifndef">
+		<param name="Name" value="#if, #ifdef, #ifndef, #else, #elif, #endif">
+		<param name="Local" value="nqc/nqc_6nn4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#include">
+		<param name="Name" value="#include">
+		<param name="Local" value="nqc/nqc_2s85.htm">
+		<param name="Name" value="#Include">
+		<param name="Local" value="nqc/nqc_7eud.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#pragma">
+		<param name="Name" value="noinit, init">
+		<param name="Local" value="nqc/nqc_95tg.htm">
+		<param name="Name" value="reserve">
+		<param name="Local" value="nqc/nqc_2hut.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="#undef">
+		<param name="Name" value="#define">
+		<param name="Local" value="nqc/nqc_2351.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="&amp;&amp;">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="++">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="--">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="&lt;&lt;">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="&lt;=">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="==">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="&gt;=">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="&gt;&gt;">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="?">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="@">
+		<param name="Name" value="@">
+		<param name="Local" value="nqc/nqc_3gl0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="__event_src">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="__nolist">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="__res">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="__sensor">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="__taskid">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="__type">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="abs">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="access control">
+		<param name="Name" value="Access Control and Events">
+		<param name="Local" value="nqc/nqc_6pdf.htm">
+		<param name="Name" value="Access Control">
+		<param name="Local" value="nqc/nqc_3quk.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="acquire">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ACQUIRE_LED">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ACQUIRE_OUT_A">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ACQUIRE_OUT_B">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ACQUIRE_OUT_C">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ACQUIRE_SOUND">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ACQUIRE_USER_1">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ACQUIRE_USER_2">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ACQUIRE_USER_3">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ACQUIRE_USER_4">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Action">
+		<param name="Name" value="Action">
+		<param name="Local" value="nqc/nqc_9ir2.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ActiveEvents">
+		<param name="Name" value="ActiveEvents">
+		<param name="Local" value="nqc/nqc_59pv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="AddToDatalog">
+		<param name="Name" value="AddToDatalog">
+		<param name="Local" value="nqc/nqc_93tz.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="AGC">
+		<param name="Name" value="AGC">
+		<param name="Local" value="nqc/nqc_1grn.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="AnimateLED">
+		<param name="Name" value="AnimateLED">
+		<param name="Local" value="nqc/nqc_1smc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ANIMATION">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		<param name="Name" value="ANIMATION">
+		<param name="Local" value="nqc/nqc_1sfi.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ANIMATION_ALARM">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ANIMATION_FLASH">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ANIMATION_GREEN_TO_RED">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ANIMATION_POINT_FORWARD">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ANIMATION_RED_TO_GREEN">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ANIMATION_SCAN">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ANIMATION_SPARKLE">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ANIMATION_THINKING">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="api">
+		<param name="Name" value="NQC API">
+		<param name="Local" value="nqc/nqc_7ca1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="arrays">
+		<param name="Name" value="Arrays">
+		<param name="Local" value="nqc/nqc_63w3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="asm">
+		<param name="Name" value="asm">
+		<param name="Local" value="nqc/nqc_1hd9.htm">
+		<param name="Name" value="The asm statement">
+		<param name="Local" value="nqc/nqc_7cfh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ASPECT_BACK">
+		<param name="Name" value="GetWorldAspect">
+		<param name="Local" value="nqc/nqc_7ruc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ASPECT_BACK_LEFT">
+		<param name="Name" value="GetWorldAspect">
+		<param name="Local" value="nqc/nqc_7ruc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ASPECT_BACK_RIGHT">
+		<param name="Name" value="GetWorldAspect">
+		<param name="Local" value="nqc/nqc_7ruc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ASPECT_FRONT">
+		<param name="Name" value="GetWorldAspect">
+		<param name="Local" value="nqc/nqc_7ruc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ASPECT_FRONT_LEFT">
+		<param name="Name" value="GetWorldAspect">
+		<param name="Local" value="nqc/nqc_7ruc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ASPECT_FRONT_RIGHT">
+		<param name="Name" value="GetWorldAspect">
+		<param name="Local" value="nqc/nqc_7ruc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="assignment">
+		<param name="Name" value="assignment">
+		<param name="Local" value="nqc/nqc_6po4.htm">
+		<param name="Name" value="Assignment">
+		<param name="Local" value="nqc/nqc_6qyc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="BasicMove">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="BatteryLevel">
+		<param name="Name" value="BatteryLevel">
+		<param name="Local" value="nqc/nqc_465o.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="BeaconControl">
+		<param name="Name" value="BeaconControl">
+		<param name="Local" value="nqc/nqc_4wmk.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="BitClear">
+		<param name="Name" value="BitClear">
+		<param name="Local" value="nqc/nqc_3vzm.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="BitSet">
+		<param name="Name" value="BitSet">
+		<param name="Local" value="nqc/nqc_1yno.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="break">
+		<param name="Name" value="break, continue">
+		<param name="Local" value="nqc/nqc_64kl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CalibrateEvent">
+		<param name="Name" value="CalibrateEvent">
+		<param name="Local" value="nqc/nqc_0jn8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CalibrateSensor">
+		<param name="Name" value="CalibrateSensor">
+		<param name="Local" value="nqc/nqc_90s2.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="case">
+		<param name="Name" value="switch, case, default">
+		<param name="Local" value="nqc/nqc_2sh4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="catch">
+		<param name="Name" value="acquire">
+		<param name="Local" value="nqc/nqc_7git.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearAll">
+		<param name="Name" value="ClearAll">
+		<param name="Local" value="nqc/nqc_8ovg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearAllEvents">
+		<param name="Name" value="ClearAllEvents">
+		<param name="Local" value="nqc/nqc_98qb.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearCounter">
+		<param name="Name" value="ClearCounter">
+		<param name="Local" value="nqc/nqc_9jxu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearEvent">
+		<param name="Name" value="ClearEvent">
+		<param name="Local" value="nqc/nqc_25bo.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearMessage">
+		<param name="Name" value="ClearMessage">
+		<param name="Local" value="nqc/nqc_5fol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearSensor">
+		<param name="Name" value="ClearSensor">
+		<param name="Local" value="nqc/nqc_1k8i.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearSound">
+		<param name="Name" value="ClearSound">
+		<param name="Local" value="nqc/nqc_8jc4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearTachoCounter">
+		<param name="Name" value="ClearTachoCounter">
+		<param name="Local" value="nqc/nqc_9bqq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearTimer">
+		<param name="Name" value="ClearTimer">
+		<param name="Local" value="nqc/nqc_3pde.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClearWorld">
+		<param name="Name" value="ClearWorld">
+		<param name="Local" value="nqc/nqc_6nac.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClickCounter">
+		<param name="Name" value="ClickCounter">
+		<param name="Local" value="nqc/nqc_8oc2.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ClickTime">
+		<param name="Name" value="ClickTime">
+		<param name="Local" value="nqc/nqc_13fp.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="comments">
+		<param name="Name" value="Comments">
+		<param name="Local" value="nqc/nqc_0voz.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CommErrorsFraming">
+		<param name="Name" value="CommErrorsFraming">
+		<param name="Local" value="nqc/nqc_5giv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CommErrorsOverrun">
+		<param name="Name" value="CommErrorsOverrun">
+		<param name="Local" value="nqc/nqc_0omm.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CommErrorsParity">
+		<param name="Name" value="CommErrorsParity">
+		<param name="Local" value="nqc/nqc_1da1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CommErrorsTimeout">
+		<param name="Name" value="CommErrorsTimeout">
+		<param name="Local" value="nqc/nqc_6cac.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="communication">
+		<param name="Name" value="Communication">
+		<param name="Local" value="nqc/nqc_6coe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="conditional compilation">
+		<param name="Name" value="Conditional Compilation">
+		<param name="Local" value="nqc/nqc_3acu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="conditions">
+		<param name="Name" value="Conditions">
+		<param name="Local" value="nqc/nqc_5xpv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="const">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="constants">
+		<param name="Name" value="Numerical Constants">
+		<param name="Local" value="nqc/nqc_77qr.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="contents">
+		<param name="Name" value="Contents">
+		<param name="Local" value="nqc/nqc_21v7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="continue">
+		<param name="Name" value="break, continue">
+		<param name="Local" value="nqc/nqc_64kl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="control structures">
+		<param name="Name" value="Control Structures">
+		<param name="Local" value="nqc/nqc_2drn.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Counter">
+		<param name="Name" value="Counter">
+		<param name="Local" value="nqc/nqc_9df6.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="counters">
+		<param name="Name" value="Counters">
+		<param name="Local" value="nqc/nqc_62k3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CreateDatalog">
+		<param name="Name" value="CreateDatalog">
+		<param name="Local" value="nqc/nqc_6duv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CurrentEvents">
+		<param name="Name" value="CurrentEvents">
+		<param name="Local" value="nqc/nqc_6z1v.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CurrentTask">
+		<param name="Name" value="CurrentTask">
+		<param name="Local" value="nqc/nqc_3qy3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="CurrentTaskID">
+		<param name="Name" value="CurrentTaskID">
+		<param name="Local" value="nqc/nqc_436s.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="cybermaster specific features">
+		<param name="Name" value="CyberMaster Specific Features">
+		<param name="Local" value="nqc/nqc_5cir.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="data">
+		<param name="Name" value="Data Logging">
+		<param name="Local" value="nqc/nqc_3v53.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="data sources">
+		<param name="Name" value="Data Sources">
+		<param name="Local" value="nqc/nqc_7lbn.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DatalogByte">
+		<param name="Name" value="DatalogByte">
+		<param name="Local" value="nqc/nqc_4wh1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DatalogSize">
+		<param name="Name" value="DatalogSize">
+		<param name="Local" value="nqc/nqc_90th.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DatalogType">
+		<param name="Name" value="DatalogType">
+		<param name="Local" value="nqc/nqc_615x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DatalogValue">
+		<param name="Name" value="DatalogValue">
+		<param name="Local" value="nqc/nqc_02zp.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="dave baum">
+		<param name="Name" value="NQC Programmer's Guide">
+		<param name="Local" value="nqc/nqc_2xgl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DebugTaskMode">
+		<param name="Name" value="DebugTaskMode">
+		<param name="Local" value="nqc/nqc_4gh1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DecCounter">
+		<param name="Name" value="DecCounter">
+		<param name="Local" value="nqc/nqc_3woi.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="default">
+		<param name="Name" value="switch, case, default">
+		<param name="Local" value="nqc/nqc_2sh4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DefaultSerialComm">
+		<param name="Name" value="DefaultSerialComm">
+		<param name="Local" value="nqc/nqc_1zql.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DefaultSerialPacket">
+		<param name="Name" value="DefaultSerialPacket">
+		<param name="Local" value="nqc/nqc_3vp0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DefaultStackSize">
+		<param name="Name" value="DefaultStackSize">
+		<param name="Local" value="nqc/nqc_0wyt.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="defined">
+		<param name="Name" value="#if, #ifdef, #ifndef, #else, #elif, #endif">
+		<param name="Local" value="nqc/nqc_6nn4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DIRECTION_CENTER">
+		<param name="Name" value="GetWorldDirection">
+		<param name="Local" value="nqc/nqc_8nji.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DIRECTION_LEFT">
+		<param name="Name" value="GetWorldDirection">
+		<param name="Local" value="nqc/nqc_8nji.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DIRECTION_LEFT_OF_CENTER">
+		<param name="Name" value="GetWorldDirection">
+		<param name="Local" value="nqc/nqc_8nji.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DIRECTION_RIGHT">
+		<param name="Name" value="GetWorldDirection">
+		<param name="Local" value="nqc/nqc_8nji.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DIRECTION_RIGHT_OF_CENTER">
+		<param name="Name" value="GetWorldDirection">
+		<param name="Local" value="nqc/nqc_8nji.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DisableOutput">
+		<param name="Name" value="DisableOutput">
+		<param name="Local" value="nqc/nqc_22ic.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Disp">
+		<param name="Name" value="Disp">
+		<param name="Local" value="nqc/nqc_0v5c.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="display">
+		<param name="Name" value="LCD Display">
+		<param name="Local" value="nqc/nqc_84zd.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DISPLAY_EXCEPTION">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DISPLAY_OUT_A">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DISPLAY_OUT_B">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DISPLAY_OUT_C">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DISPLAY_SENSOR_1">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DISPLAY_SENSOR_2">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DISPLAY_SENSOR_3">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DISPLAY_USER">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="DISPLAY_WATCH">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="do">
+		<param name="Name" value="do">
+		<param name="Local" value="nqc/nqc_3gq7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Drive">
+		<param name="Name" value="Drive">
+		<param name="Local" value="nqc/nqc_52p1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EEPROM">
+		<param name="Name" value="EEPROM">
+		<param name="Local" value="nqc/nqc_32ul.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EffectSound">
+		<param name="Name" value="EffectSound">
+		<param name="Local" value="nqc/nqc_9xpg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EffectTime">
+		<param name="Name" value="EffectTime">
+		<param name="Local" value="nqc/nqc_9aqt.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="else">
+		<param name="Name" value="if statement">
+		<param name="Local" value="nqc/nqc_3gyu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EnableOutput">
+		<param name="Name" value="EnableOutput">
+		<param name="Local" value="nqc/nqc_294k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ES_ABOVE_UPPER">
+		<param name="Name" value="EventSrc">
+		<param name="Local" value="nqc/nqc_5e1v.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ES_BELOW_LOWER">
+		<param name="Name" value="EventSrc">
+		<param name="Local" value="nqc/nqc_5e1v.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ES_BETWEEN">
+		<param name="Name" value="EventSrc">
+		<param name="Local" value="nqc/nqc_5e1v.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ES_UNDETERMINED">
+		<param name="Name" value="EventSrc">
+		<param name="Local" value="nqc/nqc_5e1v.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_COUNTER_1">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_COUNTER_2">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_COUNTER_3">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_INFRARED_STATUS">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_LAST_IR_MSG">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_SENSOR_1">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_SENSOR_2">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_SENSOR_3">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_SENSOR_UNUSED">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_TIMER_1">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_TIMER_2">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_TIMER_3">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_TIMER_4">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_USER_EVENT_0">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_USER_EVENT_1">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_USER_EVENT_2">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_USER_EVENT_3">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_USER_EVENT_4">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_VIRTUAL_MOTOR">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_VIRTUAL_SENSOR">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EST_WAIT_FOR_MSG">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Event">
+		<param name="Name" value="Event">
+		<param name="Local" value="nqc/nqc_6s50.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_1_PRESSED">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_1_RELEASED">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_2_PRESSED">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_2_RELEASED">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_COUNTER_0">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_COUNTER_1">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_LIGHT_CLICK">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_LIGHT_DOUBLECLICK">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_LIGHT_HIGH">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_LIGHT_LOW">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_LIGHT_NORMAL">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_MASK">
+		<param name="Name" value="EVENT_MASK">
+		<param name="Local" value="nqc/nqc_8s6j.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_MESSAGE">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TIMER_0">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TIMER_1">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TIMER_2">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_CLICK">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_DOUBLECLICK">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_EDGE">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_FASTCHANGE">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_HIGH">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_LOW">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_MESSAGE">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_NORMAL">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_PRESSED">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_PULSE">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EVENT_TYPE_RELEASED">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EventCounts">
+		<param name="Name" value="EventCounts">
+		<param name="Local" value="nqc/nqc_9aib.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EventFeedback">
+		<param name="Name" value="EventFeedback">
+		<param name="Local" value="nqc/nqc_8obv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="events">
+		<param name="Name" value="Access Control and Events">
+		<param name="Local" value="nqc/nqc_6pdf.htm">
+		<param name="Name" value="Events">
+		<param name="Local" value="nqc/nqc_8mpf.htm">
+		<param name="Name" value="RCX2 Events">
+		<param name="Local" value="nqc/nqc_39mb.htm">
+		<param name="Name" value="Scout Events">
+		<param name="Local" value="nqc/nqc_5v5f.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="RCX2">
+			<param name="Local" value="nqc/nqc_39mb.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="scout">
+			<param name="Local" value="nqc/nqc_5v5f.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EventSrc">
+		<param name="Name" value="EventSrc">
+		<param name="Local" value="nqc/nqc_5e1v.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EventState">
+		<param name="Name" value="EventState">
+		<param name="Local" value="nqc/nqc_9zs5.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="EventType">
+		<param name="Name" value="EventType">
+		<param name="Local" value="nqc/nqc_18f9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ExpandedRemoteMessages">
+		<param name="Name" value="ExpandedRemoteMessages">
+		<param name="Local" value="nqc/nqc_4303.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ExpandedSubroutines">
+		<param name="Name" value="ExpandedSubroutines">
+		<param name="Local" value="nqc/nqc_1i2b.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="expressions">
+		<param name="Name" value="expressions">
+		<param name="Local" value="nqc/nqc_1qb7.htm">
+		<param name="Name" value="Expressions">
+		<param name="Local" value="nqc/nqc_40hf.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ExternalMotorRunning">
+		<param name="Name" value="ExternalMotorRunning">
+		<param name="Local" value="nqc/nqc_43mv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="false">
+		<param name="Name" value="expressions">
+		<param name="Local" value="nqc/nqc_1qb7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="FancyMove">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="FastTimer">
+		<param name="Name" value="FastTimer">
+		<param name="Local" value="nqc/nqc_6r76.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="FindWorld">
+		<param name="Name" value="FindWorld">
+		<param name="Local" value="nqc/nqc_2kx0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="FirmwareVersion">
+		<param name="Name" value="FirmwareVersion">
+		<param name="Local" value="nqc/nqc_233i.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="FixedTone">
+		<param name="Name" value="FixedTone">
+		<param name="Local" value="nqc/nqc_0x5x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="FixedWaitEffect">
+		<param name="Name" value="FixedWaitEffect">
+		<param name="Local" value="nqc/nqc_38dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Float">
+		<param name="Name" value="Float">
+		<param name="Local" value="nqc/nqc_11ro.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="FloatDuringInactivePWM">
+		<param name="Name" value="FloatDuringInactivePWM">
+		<param name="Local" value="nqc/nqc_5v71.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="for">
+		<param name="Name" value="for">
+		<param name="Local" value="nqc/nqc_1wz6.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="functions">
+		<param name="Name" value="Functions">
+		<param name="Local" value="nqc/nqc_5e9f.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Fwd">
+		<param name="Name" value="Fwd">
+		<param name="Local" value="nqc/nqc_1xd0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Gate">
+		<param name="Name" value="Gate">
+		<param name="Local" value="nqc/nqc_70px.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GateOff">
+		<param name="Name" value="GateOff">
+		<param name="Local" value="nqc/nqc_03c6.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="general features">
+		<param name="Name" value="General Features">
+		<param name="Local" value="nqc/nqc_3gvg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GetWorld">
+		<param name="Name" value="GetWorld">
+		<param name="Local" value="nqc/nqc_778k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GetWorldAspect">
+		<param name="Name" value="GetWorldAspect">
+		<param name="Local" value="nqc/nqc_7ruc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GetWorldDirection">
+		<param name="Name" value="GetWorldDirection">
+		<param name="Local" value="nqc/nqc_8nji.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GetWorldLinkID">
+		<param name="Name" value="GetWorldLinkID">
+		<param name="Local" value="nqc/nqc_5a5g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GetWorldNote">
+		<param name="Name" value="GetWorldNote">
+		<param name="Local" value="nqc/nqc_1cdh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GetWorldRange">
+		<param name="Name" value="GetWorldRange">
+		<param name="Local" value="nqc/nqc_56w5.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GetWorldShortID">
+		<param name="Name" value="GetWorldShortID">
+		<param name="Local" value="nqc/nqc_22sk.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Glide">
+		<param name="Name" value="Glide">
+		<param name="Local" value="nqc/nqc_04bp.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GlobalOutputStatus">
+		<param name="Name" value="GlobalOutputStatus">
+		<param name="Local" value="nqc/nqc_56lv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="GlobalVar">
+		<param name="Name" value="GlobalVar">
+		<param name="Local" value="nqc/nqc_6cdu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="goto">
+		<param name="Name" value="goto">
+		<param name="Local" value="nqc/nqc_88z3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="guide">
+		<param name="Name" value="NQC Programmer's Guide">
+		<param name="Local" value="nqc/nqc_2xgl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Hysteresis">
+		<param name="Name" value="Hysteresis">
+		<param name="Local" value="nqc/nqc_9l83.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_BOT_MAX">
+		<param name="Name" value="SetTargetID">
+		<param name="Local" value="nqc/nqc_9gv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_BOT_MIN">
+		<param name="Name" value="SetTargetID">
+		<param name="Local" value="nqc/nqc_9gv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_CTRL1">
+		<param name="Name" value="LinkID">
+		<param name="Local" value="nqc/nqc_7ov8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_CTRL2">
+		<param name="Name" value="LinkID">
+		<param name="Local" value="nqc/nqc_7ov8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_CTRL3">
+		<param name="Name" value="LinkID">
+		<param name="Local" value="nqc/nqc_7ov8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_CTRL4">
+		<param name="Name" value="LinkID">
+		<param name="Local" value="nqc/nqc_7ov8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_CTRL5">
+		<param name="Name" value="LinkID">
+		<param name="Local" value="nqc/nqc_7ov8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_CTRL6">
+		<param name="Name" value="LinkID">
+		<param name="Local" value="nqc/nqc_7ov8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_NONE">
+		<param name="Name" value="LinkID">
+		<param name="Local" value="nqc/nqc_7ov8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ID_PC">
+		<param name="Name" value="LinkID">
+		<param name="Local" value="nqc/nqc_7ov8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="identifiers">
+		<param name="Name" value="Identifiers and Keywords">
+		<param name="Local" value="nqc/nqc_25ir.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="if">
+		<param name="Name" value="if statement">
+		<param name="Local" value="nqc/nqc_3gyu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="IgnoreMessagesCPU">
+		<param name="Name" value="IgnoreMessagesCPU">
+		<param name="Local" value="nqc/nqc_24qd.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ImmediateBatteryLevel">
+		<param name="Name" value="ImmediateBatteryLevel">
+		<param name="Local" value="nqc/nqc_6624.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="IncCounter">
+		<param name="Name" value="IncCounter">
+		<param name="Local" value="nqc/nqc_21te.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Indirect">
+		<param name="Name" value="Indirect">
+		<param name="Local" value="nqc/nqc_6n5g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="init">
+		<param name="Name" value="noinit, init">
+		<param name="Local" value="nqc/nqc_95tg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="InitRCComm">
+		<param name="Name" value="InitRCComm">
+		<param name="Local" value="nqc/nqc_77l9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="InitSpybotComm">
+		<param name="Name" value="InitSpybotComm">
+		<param name="Local" value="nqc/nqc_3771.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="inline">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="int">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="InterCharTimeout">
+		<param name="Name" value="InterCharTimeout">
+		<param name="Local" value="nqc/nqc_5dis.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="IntrinsicIndGlobal">
+		<param name="Name" value="IntrinsicIndGlobal">
+		<param name="Local" value="nqc/nqc_18rw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="introduction">
+		<param name="Name" value="Introduction">
+		<param name="Local" value="nqc/nqc_5w32.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="InvertOutput">
+		<param name="Name" value="InvertOutput">
+		<param name="Local" value="nqc/nqc_2pbo.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="keywords">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		<param name="Name" value="Identifiers and Keywords">
+		<param name="Local" value="nqc/nqc_25ir.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="language">
+		<param name="Name" value="Introduction">
+		<param name="Local" value="nqc/nqc_5w32.htm">
+		<param name="Name" value="The NQC Language">
+		<param name="Local" value="nqc/nqc_1gh1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="lcd">
+		<param name="Name" value="LCD Display">
+		<param name="Local" value="nqc/nqc_84zd.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LCDRefreshRate">
+		<param name="Name" value="LCDRefreshRate">
+		<param name="Local" value="nqc/nqc_72ed.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED">
+		<param name="Name" value="LED">
+		<param name="Local" value="nqc/nqc_2ffo.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_ALL">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_ALL_GREEN">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_ALL_RED">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_ALL_RED_GREEN">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_GREEN1">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_GREEN2">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_GREEN3">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_BLINK">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_DURATION">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_GREEN_SCALE">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_GREEN_SCALE_BLINK">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_ON">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_RED_SCALE">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_RED_SCALE_BLINK">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_SCALE">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_SCALE_BLINK">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_SCALE_DURATION">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_VLL">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_VLL_BLINK">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_VLL_DURATION">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_YELLOW">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_YELLOW_BLINK">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_MODE_YELLOW_DURATION">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_RED1">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_RED2">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_RED3">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LED_YELLOW">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="lexical rules">
+		<param name="Name" value="Lexical Rules">
+		<param name="Local" value="nqc/nqc_0ckz.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="light">
+		<param name="Name" value="Scout Light Sensor">
+		<param name="Local" value="nqc/nqc_7icy.htm">
+		<param name="Name" value="Spybotics Sensors">
+		<param name="Local" value="nqc/nqc_54dv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LIGHT_OFF">
+		<param name="Name" value="SetLight">
+		<param name="Local" value="nqc/nqc_981g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LIGHT_ON">
+		<param name="Name" value="SetLight">
+		<param name="Local" value="nqc/nqc_981g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LinkID">
+		<param name="Name" value="LinkID">
+		<param name="Local" value="nqc/nqc_7ov8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="logging">
+		<param name="Name" value="Data Logging">
+		<param name="Local" value="nqc/nqc_3v53.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="LowerLimit">
+		<param name="Name" value="LowerLimit">
+		<param name="Local" value="nqc/nqc_0vqs.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MemoryMapAddress">
+		<param name="Name" value="MemoryMapAddress">
+		<param name="Local" value="nqc/nqc_8rar.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Message">
+		<param name="Name" value="Message">
+		<param name="Local" value="nqc/nqc_595x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MessageParam">
+		<param name="Name" value="MessageParam">
+		<param name="Local" value="nqc/nqc_0lkd.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="messages">
+		<param name="Name" value="Messages">
+		<param name="Local" value="nqc/nqc_2i43.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MissedSensorADConversions">
+		<param name="Name" value="MissedSensorADConversions">
+		<param name="Local" value="nqc/nqc_96yb.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="monitor">
+		<param name="Name" value="monitor">
+		<param name="Local" value="nqc/nqc_2wxe.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MotorBrakePower">
+		<param name="Name" value="MotorBrakePower">
+		<param name="Local" value="nqc/nqc_6rsi.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MotorPower128">
+		<param name="Name" value="MotorPower128">
+		<param name="Local" value="nqc/nqc_0u2g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MotorPower8">
+		<param name="Name" value="MotorPower8">
+		<param name="Local" value="nqc/nqc_6pmg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MotorPowerSigned">
+		<param name="Name" value="MotorPowerSigned">
+		<param name="Local" value="nqc/nqc_4810.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MotorTransitionDelay">
+		<param name="Name" value="MotorTransitionDelay">
+		<param name="Local" value="nqc/nqc_069l.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_AVOID_LEFT">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_AVOID_RIGHT">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_BACKWARD">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_FORWARD">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_REST">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_SPIN_LEFT">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_SPIN_RIGHT">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_STOP">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_TURN_LEFT">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_BASIC_TURN_RIGHT">
+		<param name="Name" value="BasicMove">
+		<param name="Local" value="nqc/nqc_4f6t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_BUG_FORWARD">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_DANCE">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_FAKE_LEFT">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_LAZY">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_RAKE_RIGHT">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_SCAN">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_SEARCH">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_SHAKE">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_STEP">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_STEP_BACK">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_WALK">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_WALK_BACK">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_FANCY_ZIGZAG">
+		<param name="Name" value="FancyMove">
+		<param name="Local" value="nqc/nqc_4rxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_RANDOM_BACKWARD">
+		<param name="Name" value="RandomMove">
+		<param name="Local" value="nqc/nqc_07ol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_RANDOM_FORWARD">
+		<param name="Name" value="RandomMove">
+		<param name="Local" value="nqc/nqc_07ol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_RANDOM_REST">
+		<param name="Name" value="RandomMove">
+		<param name="Local" value="nqc/nqc_07ol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_RANDOM_SPIN_LEFT">
+		<param name="Name" value="RandomMove">
+		<param name="Local" value="nqc/nqc_07ol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_RANDOM_SPIN_RIGHT">
+		<param name="Name" value="RandomMove">
+		<param name="Local" value="nqc/nqc_07ol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_RANDOM_TURN_LEFT">
+		<param name="Name" value="RandomMove">
+		<param name="Local" value="nqc/nqc_07ol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_RANDOM_TURN_RIGHT">
+		<param name="Name" value="RandomMove">
+		<param name="Local" value="nqc/nqc_07ol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_SLOWDOWN_BACKWARD">
+		<param name="Name" value="SlowDownMove">
+		<param name="Local" value="nqc/nqc_6acl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_SLOWDOWN_FORWARD">
+		<param name="Name" value="SlowDownMove">
+		<param name="Local" value="nqc/nqc_6acl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_SLOWDOWN_SPIN_LEFT">
+		<param name="Name" value="SlowDownMove">
+		<param name="Local" value="nqc/nqc_6acl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_SLOWDOWN_SPIN_RIGHT">
+		<param name="Name" value="SlowDownMove">
+		<param name="Local" value="nqc/nqc_6acl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_SPEEDUP_BACKWARD">
+		<param name="Name" value="SpeedUpMove">
+		<param name="Local" value="nqc/nqc_6msl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_SPEEDUP_FORWARD">
+		<param name="Name" value="SpeedUpMove">
+		<param name="Local" value="nqc/nqc_6msl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_SPEEDUP_SPIN_LEFT">
+		<param name="Name" value="SpeedUpMove">
+		<param name="Local" value="nqc/nqc_6msl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MOVE_SPEEDUP_SPIN_RIGHT">
+		<param name="Name" value="SpeedUpMove">
+		<param name="Local" value="nqc/nqc_6msl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MPD_FLOAT">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MPD_FWD">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MPD_OFF">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MPD_REV">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MS_BRAKE">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MS_FLOAT">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MS_FWD">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MS_REV">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MSG_COMMAND">
+		<param name="Name" value="RxMessage">
+		<param name="Local" value="nqc/nqc_8e1x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MSG_HI_BYTE">
+		<param name="Name" value="RxMessage">
+		<param name="Local" value="nqc/nqc_8e1x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MSG_INDEX">
+		<param name="Name" value="RxMessage">
+		<param name="Local" value="nqc/nqc_8e1x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MSG_IR">
+		<param name="Name" value="SetRxMessageLock">
+		<param name="Local" value="nqc/nqc_7hd7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MSG_LO_BYTE">
+		<param name="Name" value="RxMessage">
+		<param name="Local" value="nqc/nqc_8e1x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MSG_NONE">
+		<param name="Name" value="SetRxMessageLock">
+		<param name="Local" value="nqc/nqc_7hd7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MSG_PC">
+		<param name="Name" value="SetRxMessageLock">
+		<param name="Local" value="nqc/nqc_7hd7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MSTimer">
+		<param name="Name" value="MSTimer">
+		<param name="Local" value="nqc/nqc_5wky.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_A">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_B">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_BRAKE_POWER_1">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_BRAKE_POWER_2">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_BRAKE_POWER_3">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_BRAKE_POWER_4">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_BRAKE_POWER_5">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_BRAKE_POWER_6">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_BRAKE_POWER_7">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_BRAKE_POWER_8">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_C">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_D">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_E">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_F">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FLOAT_POWER_1">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FLOAT_POWER_2">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FLOAT_POWER_3">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FLOAT_POWER_4">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FLOAT_POWER_5">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FLOAT_POWER_6">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FLOAT_POWER_7">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FLOAT_POWER_8">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FWD_POWER_1">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FWD_POWER_2">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FWD_POWER_3">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FWD_POWER_4">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FWD_POWER_5">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FWD_POWER_6">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FWD_POWER_7">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_FWD_POWER_8">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_REV_POWER_1">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_REV_POWER_2">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_REV_POWER_3">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_REV_POWER_4">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_REV_POWER_5">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_REV_POWER_6">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_REV_POWER_7">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MTR_REV_POWER_8">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="MuteSound">
+		<param name="Name" value="MuteSound">
+		<param name="Local" value="nqc/nqc_5kh0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Negate">
+		<param name="Name" value="Negate">
+		<param name="Local" value="nqc/nqc_75d1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="noinit">
+		<param name="Name" value="noinit, init">
+		<param name="Local" value="nqc/nqc_95tg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="NoPowerDownOnAC">
+		<param name="Name" value="NoPowerDownOnAC">
+		<param name="Local" value="nqc/nqc_5mar.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="NQC">
+		<param name="Name" value="NQC Programmer's Guide">
+		<param name="Local" value="nqc/nqc_2xgl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="numerical constants">
+		<param name="Name" value="Numerical Constants">
+		<param name="Local" value="nqc/nqc_77qr.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ObvertOutput">
+		<param name="Name" value="ObvertOutput">
+		<param name="Local" value="nqc/nqc_0jp0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Off">
+		<param name="Name" value="Off">
+		<param name="Local" value="nqc/nqc_2oyu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="On">
+		<param name="Name" value="On">
+		<param name="Local" value="nqc/nqc_3h9q.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OnFor">
+		<param name="Name" value="OnFor">
+		<param name="Local" value="nqc/nqc_7v02.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OnFwd">
+		<param name="Name" value="OnFwd">
+		<param name="Local" value="nqc/nqc_7vdw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OnRev">
+		<param name="Name" value="OnRev">
+		<param name="Local" value="nqc/nqc_8wfq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OnWait">
+		<param name="Name" value="OnWait">
+		<param name="Local" value="nqc/nqc_7e44.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OnWaitDifferent">
+		<param name="Name" value="OnWaitDifferent">
+		<param name="Local" value="nqc/nqc_886s.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OpcodesPerTimeslice">
+		<param name="Name" value="OpcodesPerTimeslice">
+		<param name="Local" value="nqc/nqc_2pid.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="operators">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="other statements">
+		<param name="Name" value="Other Statements">
+		<param name="Local" value="nqc/nqc_701f.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_A">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_AB">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_ABC">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_AC">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_B">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_BC">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_C">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_D">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_E">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_F">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_FLOAT">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_FULL">
+		<param name="Name" value="SetPower">
+		<param name="Local" value="nqc/nqc_2pma.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_FWD">
+		<param name="Name" value="SetDirection">
+		<param name="Local" value="nqc/nqc_98vi.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_HALF">
+		<param name="Name" value="SetPower">
+		<param name="Local" value="nqc/nqc_2pma.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_L">
+		<param name="Name" value="Drive">
+		<param name="Local" value="nqc/nqc_52p1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_LOW">
+		<param name="Name" value="SetPower">
+		<param name="Local" value="nqc/nqc_2pma.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_OFF">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_ON">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_R">
+		<param name="Name" value="Drive">
+		<param name="Local" value="nqc/nqc_52p1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_REV">
+		<param name="Name" value="SetDirection">
+		<param name="Local" value="nqc/nqc_98vi.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_TOGGLE">
+		<param name="Name" value="SetDirection">
+		<param name="Local" value="nqc/nqc_98vi.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OUT_X">
+		<param name="Name" value="Drive">
+		<param name="Local" value="nqc/nqc_52p1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="outputs">
+		<param name="Name" value="Outputs">
+		<param name="Local" value="nqc/nqc_2dbn.htm">
+		<param name="Name" value="Primitive Calls">
+		<param name="Local" value="nqc/nqc_1a7a.htm">
+		<param name="Name" value="Convenience Calls">
+		<param name="Local" value="nqc/nqc_7cf9.htm">
+		<param name="Name" value="Global Control">
+		<param name="Local" value="nqc/nqc_4xf0.htm">
+		<param name="Name" value="Spybotics Outputs">
+		<param name="Local" value="nqc/nqc_32er.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="convenience calls">
+			<param name="Local" value="nqc/nqc_7cf9.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="global control">
+			<param name="Local" value="nqc/nqc_4xf0.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="primitive calls">
+			<param name="Local" value="nqc/nqc_1a7a.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="spybotics">
+			<param name="Local" value="nqc/nqc_32er.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="OutputStatus">
+		<param name="Name" value="OutputStatus">
+		<param name="Local" value="nqc/nqc_512r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="PingControl">
+		<param name="Name" value="PingControl">
+		<param name="Local" value="nqc/nqc_0lnw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="PingData">
+		<param name="Name" value="PingData">
+		<param name="Local" value="nqc/nqc_5iox.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="PingID">
+		<param name="Name" value="PingID">
+		<param name="Local" value="nqc/nqc_3e78.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="PingInterval">
+		<param name="Name" value="PingInterval">
+		<param name="Local" value="nqc/nqc_3j1o.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="PlaySound">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="PlaySounds">
+		<param name="Name" value="PlaySounds">
+		<param name="Local" value="nqc/nqc_5d6b.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="PlayTone">
+		<param name="Name" value="PlayTone">
+		<param name="Local" value="nqc/nqc_7s9x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Pop">
+		<param name="Name" value="Pop">
+		<param name="Local" value="nqc/nqc_2skw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="PowerDownDelay">
+		<param name="Name" value="PowerDownDelay">
+		<param name="Local" value="nqc/nqc_586x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="preprocessor">
+		<param name="Name" value="The Preprocessor">
+		<param name="Local" value="nqc/nqc_8joy.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Program">
+		<param name="Name" value="Program">
+		<param name="Local" value="nqc/nqc_3r1p.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="program initialization">
+		<param name="Name" value="Program Initialization">
+		<param name="Local" value="nqc/nqc_4e9a.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="programmer">
+		<param name="Name" value="NQC Programmer's Guide">
+		<param name="Local" value="nqc/nqc_2xgl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Push">
+		<param name="Name" value="Push">
+		<param name="Local" value="nqc/nqc_9cbs.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="QueuedSoundCount">
+		<param name="Name" value="QueuedSoundCount">
+		<param name="Local" value="nqc/nqc_03uc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Random">
+		<param name="Name" value="Random">
+		<param name="Local" value="nqc/nqc_4ey5.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RandomMove">
+		<param name="Name" value="RandomMove">
+		<param name="Local" value="nqc/nqc_07ol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RANGE_ANYWHERE">
+		<param name="Name" value="GetWorldRange">
+		<param name="Local" value="nqc/nqc_56w5.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RANGE_HERE">
+		<param name="Name" value="GetWorldRange">
+		<param name="Local" value="nqc/nqc_56w5.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RANGE_NOWHERE">
+		<param name="Name" value="GetWorldRange">
+		<param name="Local" value="nqc/nqc_56w5.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RANGE_THERE">
+		<param name="Name" value="GetWorldRange">
+		<param name="Local" value="nqc/nqc_56w5.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RC_CHANNEL_1">
+		<param name="Name" value="SetRCRxChannel">
+		<param name="Local" value="nqc/nqc_90h8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RC_CHANNEL_2">
+		<param name="Name" value="SetRCRxChannel">
+		<param name="Local" value="nqc/nqc_90h8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RC_CHANNEL_3">
+		<param name="Name" value="SetRCRxChannel">
+		<param name="Local" value="nqc/nqc_90h8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RC_CHANNEL_BROADCAST">
+		<param name="Name" value="SetRCRxChannel">
+		<param name="Local" value="nqc/nqc_90h8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RC_CHANNEL_DISABLED">
+		<param name="Name" value="SetRCRxChannel">
+		<param name="Local" value="nqc/nqc_90h8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RCRxChannel">
+		<param name="Name" value="RCRxChannel">
+		<param name="Local" value="nqc/nqc_9df0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RCTxChannel">
+		<param name="Name" value="RCTxChannel">
+		<param name="Local" value="nqc/nqc_392k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RCTxMode">
+		<param name="Name" value="RCTxMode">
+		<param name="Local" value="nqc/nqc_3kv9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RCTXMODE_CONTINUOUS">
+		<param name="Name" value="SetRCTxMode">
+		<param name="Local" value="nqc/nqc_8h9h.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RCTXMODE_SINGLE_SHOT">
+		<param name="Name" value="SetRCTxMode">
+		<param name="Local" value="nqc/nqc_8h9h.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="rcx specific features">
+		<param name="Name" value="RCX Specific Features">
+		<param name="Local" value="nqc/nqc_04o3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="REL_EQ">
+		<param name="Name" value="FindWorld">
+		<param name="Local" value="nqc/nqc_2kx0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="REL_GT">
+		<param name="Name" value="FindWorld">
+		<param name="Local" value="nqc/nqc_2kx0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="REL_LT">
+		<param name="Name" value="FindWorld">
+		<param name="Local" value="nqc/nqc_2kx0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="REL_NE">
+		<param name="Name" value="FindWorld">
+		<param name="Local" value="nqc/nqc_2kx0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="repeat">
+		<param name="Name" value="repeat">
+		<param name="Local" value="nqc/nqc_43hw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RepeatAnimation">
+		<param name="Name" value="RepeatAnimation">
+		<param name="Local" value="nqc/nqc_5rn2.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RepeatEffect">
+		<param name="Name" value="RepeatEffect">
+		<param name="Local" value="nqc/nqc_0sdw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="reserve">
+		<param name="Name" value="reserve">
+		<param name="Local" value="nqc/nqc_2hut.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="reserving storage">
+		<param name="Name" value="Reserving Storage">
+		<param name="Local" value="nqc/nqc_0zol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ResetMSTimer">
+		<param name="Name" value="ResetMSTimer">
+		<param name="Local" value="nqc/nqc_6o1e.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="return">
+		<param name="Name" value="return">
+		<param name="Local" value="nqc/nqc_7zzi.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Rev">
+		<param name="Name" value="Rev">
+		<param name="Local" value="nqc/nqc_2yeu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RotDebouncedGlitches">
+		<param name="Name" value="RotDebouncedGlitches">
+		<param name="Local" value="nqc/nqc_96sz.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RotErrorsCount">
+		<param name="Name" value="RotErrorsCount">
+		<param name="Local" value="nqc/nqc_8lx0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RxMessage">
+		<param name="Name" value="RxMessage">
+		<param name="Local" value="nqc/nqc_8e1x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RxMessageChannel">
+		<param name="Name" value="RxMessageChannel">
+		<param name="Local" value="nqc/nqc_6kdo.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RxMessageID">
+		<param name="Name" value="RxMessageID">
+		<param name="Local" value="nqc/nqc_73c4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RxMessageIndex">
+		<param name="Name" value="RxMessageIndex">
+		<param name="Local" value="nqc/nqc_869k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="RxMessageLock">
+		<param name="Name" value="RxMessageLock">
+		<param name="Local" value="nqc/nqc_9kiz.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="scout specific features">
+		<param name="Name" value="Scout Specific Features">
+		<param name="Local" value="nqc/nqc_78o3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="ScoutRules">
+		<param name="Name" value="ScoutRules">
+		<param name="Local" value="nqc/nqc_81ir.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SelectDisplay">
+		<param name="Name" value="SelectDisplay">
+		<param name="Local" value="nqc/nqc_32ux.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SelectProgram">
+		<param name="Name" value="SelectProgram">
+		<param name="Local" value="nqc/nqc_3bjh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SelectSounds">
+		<param name="Name" value="SelectSounds">
+		<param name="Local" value="nqc/nqc_835f.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendAllRangeMessage">
+		<param name="Name" value="SendAllRangeMessage">
+		<param name="Local" value="nqc/nqc_1291.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendMessage">
+		<param name="Name" value="SendMessage">
+		<param name="Local" value="nqc/nqc_7bj9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendMessageWithParam">
+		<param name="Name" value="SendMessageWithParam">
+		<param name="Local" value="nqc/nqc_9yr1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendRCMessage">
+		<param name="Name" value="SendRCMessage">
+		<param name="Local" value="nqc/nqc_661x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendRCMsg">
+		<param name="Name" value="SendRCMsg">
+		<param name="Local" value="nqc/nqc_186f.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendRCXMessage">
+		<param name="Name" value="SendRCXMessage">
+		<param name="Local" value="nqc/nqc_69b9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendSerial">
+		<param name="Name" value="SendSerial">
+		<param name="Local" value="nqc/nqc_8y7g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendSpybotCtrlMessage">
+		<param name="Name" value="SendSpybotCtrlMessage">
+		<param name="Local" value="nqc/nqc_2jol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendSpybotCtrlMsg">
+		<param name="Name" value="SendSpybotCtrlMsg">
+		<param name="Local" value="nqc/nqc_6v53.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendSpybotCtrlPingMessage">
+		<param name="Name" value="SendSpybotCtrlPingMessage">
+		<param name="Local" value="nqc/nqc_70h1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendSpybotCtrlPingMsg">
+		<param name="Name" value="SendSpybotCtrlPingMsg">
+		<param name="Local" value="nqc/nqc_4wtj.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendSpybotMessage">
+		<param name="Name" value="SendSpybotMessage">
+		<param name="Local" value="nqc/nqc_3ajp.htm">
+		<param name="Name" value="SendSpybotMessage">
+		<param name="Local" value="nqc/nqc_0r1u.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendSpybotMsg">
+		<param name="Name" value="SendSpybotMsg">
+		<param name="Local" value="nqc/nqc_9c87.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendSpybotPing">
+		<param name="Name" value="SendSpybotPing">
+		<param name="Local" value="nqc/nqc_3q7b.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendSpybotPingMsg">
+		<param name="Name" value="SendSpybotPingMsg">
+		<param name="Local" value="nqc/nqc_5non.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SendVLL">
+		<param name="Name" value="SendVLL">
+		<param name="Local" value="nqc/nqc_64fg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_1">
+		<param name="Name" value="SENSOR_1, SENSOR_2, SENSOR_3">
+		<param name="Local" value="nqc/nqc_6ynl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_2">
+		<param name="Name" value="SENSOR_1, SENSOR_2, SENSOR_3">
+		<param name="Local" value="nqc/nqc_6ynl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_3">
+		<param name="Name" value="SENSOR_1, SENSOR_2, SENSOR_3">
+		<param name="Local" value="nqc/nqc_6ynl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_CELSIUS">
+		<param name="Name" value="SetSensor">
+		<param name="Local" value="nqc/nqc_0b02.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_EDGE">
+		<param name="Name" value="SetSensor">
+		<param name="Local" value="nqc/nqc_0b02.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_FAHRENHEIT">
+		<param name="Name" value="SetSensor">
+		<param name="Local" value="nqc/nqc_0b02.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_L">
+		<param name="Name" value="Drive">
+		<param name="Local" value="nqc/nqc_52p1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_LIGHT">
+		<param name="Name" value="SetSensor">
+		<param name="Local" value="nqc/nqc_0b02.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_M">
+		<param name="Name" value="Drive">
+		<param name="Local" value="nqc/nqc_52p1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_MODE_BOOL">
+		<param name="Name" value="SetSensorMode">
+		<param name="Local" value="nqc/nqc_3279.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_MODE_CELSIUS">
+		<param name="Name" value="SetSensorMode">
+		<param name="Local" value="nqc/nqc_3279.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_MODE_EDGE">
+		<param name="Name" value="SetSensorMode">
+		<param name="Local" value="nqc/nqc_3279.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_MODE_FAHRENHEIT">
+		<param name="Name" value="SetSensorMode">
+		<param name="Local" value="nqc/nqc_3279.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_MODE_PERCENT">
+		<param name="Name" value="SetSensorMode">
+		<param name="Local" value="nqc/nqc_3279.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_MODE_PULSE">
+		<param name="Name" value="SetSensorMode">
+		<param name="Local" value="nqc/nqc_3279.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_MODE_RAW">
+		<param name="Name" value="SetSensorMode">
+		<param name="Local" value="nqc/nqc_3279.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_MODE_ROTATION">
+		<param name="Name" value="SetSensorMode">
+		<param name="Local" value="nqc/nqc_3279.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_PULSE">
+		<param name="Name" value="SetSensor">
+		<param name="Local" value="nqc/nqc_0b02.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_R">
+		<param name="Name" value="Drive">
+		<param name="Local" value="nqc/nqc_52p1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_ROTATION">
+		<param name="Name" value="SetSensor">
+		<param name="Local" value="nqc/nqc_0b02.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_TOUCH">
+		<param name="Name" value="SetSensor">
+		<param name="Local" value="nqc/nqc_0b02.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_TYPE_LIGHT">
+		<param name="Name" value="SetSensorType">
+		<param name="Local" value="nqc/nqc_3aat.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_TYPE_NONE">
+		<param name="Name" value="SetSensorType">
+		<param name="Local" value="nqc/nqc_3aat.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_TYPE_ROTATION">
+		<param name="Name" value="SetSensorType">
+		<param name="Local" value="nqc/nqc_3aat.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_TYPE_TEMPERATURE">
+		<param name="Name" value="SetSensorType">
+		<param name="Local" value="nqc/nqc_3aat.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SENSOR_TYPE_TOUCH">
+		<param name="Name" value="SetSensorType">
+		<param name="Local" value="nqc/nqc_3aat.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorDelayCycles">
+		<param name="Name" value="SensorDelayCycles">
+		<param name="Local" value="nqc/nqc_9u43.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorMode">
+		<param name="Name" value="SensorMode">
+		<param name="Local" value="nqc/nqc_3811.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorRefreshRate">
+		<param name="Name" value="SensorRefreshRate">
+		<param name="Local" value="nqc/nqc_56cl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorRefreshState">
+		<param name="Name" value="SensorRefreshState">
+		<param name="Local" value="nqc/nqc_5zol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="sensors">
+		<param name="Name" value="Sensors">
+		<param name="Local" value="nqc/nqc_4far.htm">
+		<param name="Name" value="Types and Modes">
+		<param name="Local" value="nqc/nqc_2yer.htm">
+		<param name="Name" value="Sensor Information">
+		<param name="Local" value="nqc/nqc_0p67.htm">
+		<param name="Name" value="Scout Light Sensor">
+		<param name="Local" value="nqc/nqc_7icy.htm">
+		<param name="Name" value="Spybotics Sensors">
+		<param name="Local" value="nqc/nqc_54dv.htm">
+		</OBJECT>
+	<UL>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="information">
+			<param name="Local" value="nqc/nqc_0p67.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="light">
+			<param name="Name" value="Scout Light Sensor">
+			<param name="Local" value="nqc/nqc_7icy.htm">
+			<param name="Name" value="Spybotics Sensors">
+			<param name="Local" value="nqc/nqc_54dv.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="modes">
+			<param name="Local" value="nqc/nqc_2yer.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="scout">
+			<param name="Local" value="nqc/nqc_7icy.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="spybotics">
+			<param name="Local" value="nqc/nqc_54dv.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="touch">
+			<param name="Local" value="nqc/nqc_54dv.htm">
+			</OBJECT>
+		<LI> <OBJECT type="text/sitemap">
+			<param name="Keyword" value="types">
+			<param name="Local" value="nqc/nqc_2yer.htm">
+			</OBJECT>
+	</UL>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorScanCount">
+		<param name="Name" value="SensorScanCount">
+		<param name="Local" value="nqc/nqc_3ilw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorStartupDelay">
+		<param name="Name" value="SensorStartupDelay">
+		<param name="Local" value="nqc/nqc_49tl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorType">
+		<param name="Name" value="SensorType">
+		<param name="Local" value="nqc/nqc_3g4l.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorValue">
+		<param name="Name" value="SensorValue">
+		<param name="Local" value="nqc/nqc_4omd.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorValueBool">
+		<param name="Name" value="SensorValueBool">
+		<param name="Local" value="nqc/nqc_8c30.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SensorValueRaw">
+		<param name="Name" value="SensorValueRaw">
+		<param name="Local" value="nqc/nqc_1ttj.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="serial">
+		<param name="Name" value="Serial">
+		<param name="Local" value="nqc/nqc_4awc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SERIAL_COMM_4800">
+		<param name="Name" value="SetSerialComm">
+		<param name="Local" value="nqc/nqc_53jh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SERIAL_COMM_76KHZ">
+		<param name="Name" value="SetSerialComm">
+		<param name="Local" value="nqc/nqc_53jh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SERIAL_COMM_DEFAULT">
+		<param name="Name" value="SetSerialComm">
+		<param name="Local" value="nqc/nqc_53jh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SERIAL_COMM_DUTY25">
+		<param name="Name" value="SetSerialComm">
+		<param name="Local" value="nqc/nqc_53jh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SERIAL_PACKET_CHECKSUM">
+		<param name="Name" value="SetSerialPacket">
+		<param name="Local" value="nqc/nqc_4ilw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SERIAL_PACKET_DEFAULT">
+		<param name="Name" value="SetSerialPacket">
+		<param name="Local" value="nqc/nqc_4ilw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SERIAL_PACKET_NEGATED">
+		<param name="Name" value="SetSerialPacket">
+		<param name="Local" value="nqc/nqc_4ilw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SERIAL_PACKET_PREAMBLE">
+		<param name="Name" value="SetSerialPacket">
+		<param name="Local" value="nqc/nqc_4ilw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SERIAL_PACKET_RCX">
+		<param name="Name" value="SetSerialPacket">
+		<param name="Local" value="nqc/nqc_4ilw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialBaud">
+		<param name="Name" value="SerialBaud">
+		<param name="Local" value="nqc/nqc_8f8k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialBiPhase">
+		<param name="Name" value="SerialBiPhase">
+		<param name="Local" value="nqc/nqc_4i3p.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialChannel">
+		<param name="Name" value="SerialChannel">
+		<param name="Local" value="nqc/nqc_8ai4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialChecksum">
+		<param name="Name" value="SerialChecksum">
+		<param name="Local" value="nqc/nqc_5kx9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialComm">
+		<param name="Name" value="SerialComm">
+		<param name="Local" value="nqc/nqc_59d9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialData">
+		<param name="Name" value="SerialData">
+		<param name="Local" value="nqc/nqc_9nq9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialLinkStatus">
+		<param name="Name" value="SerialLinkStatus">
+		<param name="Local" value="nqc/nqc_6mk3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialPacket">
+		<param name="Name" value="SerialPacket">
+		<param name="Local" value="nqc/nqc_7ino.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialPreambleLen">
+		<param name="Name" value="SerialPreambleLen">
+		<param name="Local" value="nqc/nqc_82b2.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialPreamblePos">
+		<param name="Name" value="SerialPreamblePos">
+		<param name="Local" value="nqc/nqc_8fg3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SerialType">
+		<param name="Name" value="SerialType">
+		<param name="Local" value="nqc/nqc_1nqd.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Set">
+		<param name="Name" value="Set">
+		<param name="Local" value="nqc/nqc_31kk.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetAnimation">
+		<param name="Name" value="SetAnimation">
+		<param name="Local" value="nqc/nqc_5dpq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetClickCounter">
+		<param name="Name" value="SetClickCounter">
+		<param name="Local" value="nqc/nqc_5oaa.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetClickTime">
+		<param name="Name" value="SetClickTime">
+		<param name="Local" value="nqc/nqc_4opx.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetCounterLimit">
+		<param name="Name" value="SetCounterLimit">
+		<param name="Local" value="nqc/nqc_3f78.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetDefaultSerialComm">
+		<param name="Name" value="SetDefaultSerialComm">
+		<param name="Local" value="nqc/nqc_344t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetDefaultSerialPacket">
+		<param name="Name" value="SetDefaultSerialPacket">
+		<param name="Local" value="nqc/nqc_9xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetDefaultStackSize">
+		<param name="Name" value="SetDefaultStackSize">
+		<param name="Local" value="nqc/nqc_8wh1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetDirection">
+		<param name="Name" value="SetDirection">
+		<param name="Local" value="nqc/nqc_98vi.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetEEPROM">
+		<param name="Name" value="SetEEPROM">
+		<param name="Local" value="nqc/nqc_59gt.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetEffectSound">
+		<param name="Name" value="SetEffectSound">
+		<param name="Local" value="nqc/nqc_9kro.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetEffectTime">
+		<param name="Name" value="SetEffectTime">
+		<param name="Local" value="nqc/nqc_94x1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetEvent">
+		<param name="Name" value="SetEvent">
+		<param name="Local" value="nqc/nqc_4xv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetEventCounts">
+		<param name="Name" value="SetEventCounts">
+		<param name="Local" value="nqc/nqc_8xkj.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetEventFeedback">
+		<param name="Name" value="SetEventFeedback">
+		<param name="Local" value="nqc/nqc_6l63.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetEventSrc">
+		<param name="Name" value="SetEventSrc">
+		<param name="Local" value="nqc/nqc_0ag3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetEventType">
+		<param name="Name" value="SetEventType">
+		<param name="Local" value="nqc/nqc_4tph.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetExpandedRemoteMessages">
+		<param name="Name" value="SetExpandedRemoteMessages">
+		<param name="Local" value="nqc/nqc_07ub.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetExpandedSubroutines">
+		<param name="Name" value="SetExpandedSubroutines">
+		<param name="Local" value="nqc/nqc_7k8j.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetFloatDuringInactivePWM">
+		<param name="Name" value="SetFloatDuringInactivePWM">
+		<param name="Local" value="nqc/nqc_2019.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetGlobalDirection">
+		<param name="Name" value="SetGlobalDirection">
+		<param name="Local" value="nqc/nqc_7uem.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetGlobalOutput">
+		<param name="Name" value="SetGlobalOutput">
+		<param name="Local" value="nqc/nqc_5fsk.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetHysteresis">
+		<param name="Name" value="SetHysteresis">
+		<param name="Local" value="nqc/nqc_9feb.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetIndirectVar">
+		<param name="Name" value="SetIndirectVar">
+		<param name="Local" value="nqc/nqc_6a42.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetInterCharTimeout">
+		<param name="Name" value="SetInterCharTimeout">
+		<param name="Local" value="nqc/nqc_3d10.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetLCDRefreshRate">
+		<param name="Name" value="SetLCDRefreshRate">
+		<param name="Local" value="nqc/nqc_3g4m.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetLED">
+		<param name="Name" value="SetLED">
+		<param name="Local" value="nqc/nqc_17dw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetLight">
+		<param name="Name" value="SetLight">
+		<param name="Local" value="nqc/nqc_981g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetLowerLimit">
+		<param name="Name" value="SetLowerLimit">
+		<param name="Local" value="nqc/nqc_0px0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMaxPower">
+		<param name="Name" value="SetMaxPower">
+		<param name="Local" value="nqc/nqc_519u.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMessage">
+		<param name="Name" value="SetMessage">
+		<param name="Local" value="nqc/nqc_50o5.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMessageByteParam">
+		<param name="Name" value="SetMessageByteParam">
+		<param name="Local" value="nqc/nqc_0rhp.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMessageVariableParam">
+		<param name="Name" value="SetMessageVariableParam">
+		<param name="Local" value="nqc/nqc_7bcd.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMessageWordParam">
+		<param name="Name" value="SetMessageWordParam">
+		<param name="Local" value="nqc/nqc_1uzx.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMotorBrakePower">
+		<param name="Name" value="SetMotorBrakePower">
+		<param name="Local" value="nqc/nqc_56eq.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMotorPower128">
+		<param name="Name" value="SetMotorPower128">
+		<param name="Local" value="nqc/nqc_8qwo.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMotorPower8">
+		<param name="Name" value="SetMotorPower8">
+		<param name="Local" value="nqc/nqc_6coo.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMotorPowerSigned">
+		<param name="Name" value="SetMotorPowerSigned">
+		<param name="Local" value="nqc/nqc_06g4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetMotorTransitionDelay">
+		<param name="Name" value="SetMotorTransitionDelay">
+		<param name="Local" value="nqc/nqc_81bt.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetNoPowerDownOnAC">
+		<param name="Name" value="SetNoPowerDownOnAC">
+		<param name="Local" value="nqc/nqc_40wz.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetOpcodesPerTimeslice">
+		<param name="Name" value="SetOpcodesPerTimeslice">
+		<param name="Local" value="nqc/nqc_8rol.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetOutput">
+		<param name="Name" value="SetOutput">
+		<param name="Local" value="nqc/nqc_17lg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetPingData">
+		<param name="Name" value="SetPingData">
+		<param name="Local" value="nqc/nqc_0f35.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetPingInterval">
+		<param name="Name" value="SetPingInterval">
+		<param name="Local" value="nqc/nqc_0izw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetPlaySounds">
+		<param name="Name" value="SetPlaySounds">
+		<param name="Local" value="nqc/nqc_57cj.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetPower">
+		<param name="Name" value="SetPower">
+		<param name="Local" value="nqc/nqc_2pma.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetPriority">
+		<param name="Name" value="SetPriority">
+		<param name="Local" value="nqc/nqc_8d89.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetRandomSeed">
+		<param name="Name" value="SetRandomSeed">
+		<param name="Local" value="nqc/nqc_2v1g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetRCMessage">
+		<param name="Name" value="SetRCMessage">
+		<param name="Local" value="nqc/nqc_82at.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetRCRxChannel">
+		<param name="Name" value="SetRCRxChannel">
+		<param name="Local" value="nqc/nqc_90h8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetRCTxChannel">
+		<param name="Name" value="SetRCTxChannel">
+		<param name="Local" value="nqc/nqc_2w4s.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetRCTxMode">
+		<param name="Name" value="SetRCTxMode">
+		<param name="Local" value="nqc/nqc_8h9h.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetRxMessageLock">
+		<param name="Name" value="SetRxMessageLock">
+		<param name="Local" value="nqc/nqc_7hd7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetScoutMode">
+		<param name="Name" value="SetScoutMode">
+		<param name="Local" value="nqc/nqc_5339.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetScoutRules">
+		<param name="Name" value="SetScoutRules">
+		<param name="Local" value="nqc/nqc_7voz.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSensor">
+		<param name="Name" value="SetSensor">
+		<param name="Local" value="nqc/nqc_0b02.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSensorClickTime">
+		<param name="Name" value="SetSensorClickTime">
+		<param name="Local" value="nqc/nqc_789x.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSensorHysteresis">
+		<param name="Name" value="SetSensorHysteresis">
+		<param name="Local" value="nqc/nqc_26yb.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSensorLowerLimit">
+		<param name="Name" value="SetSensorLowerLimit">
+		<param name="Local" value="nqc/nqc_3hh0.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSensorMode">
+		<param name="Name" value="SetSensorMode">
+		<param name="Local" value="nqc/nqc_3279.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSensorRefreshRate">
+		<param name="Name" value="SetSensorRefreshRate">
+		<param name="Local" value="nqc/nqc_6aqt.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSensorStartupDelay">
+		<param name="Name" value="SetSensorStartupDelay">
+		<param name="Local" value="nqc/nqc_633t.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSensorType">
+		<param name="Name" value="SetSensorType">
+		<param name="Local" value="nqc/nqc_3aat.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSensorUpperLimit">
+		<param name="Name" value="SetSensorUpperLimit">
+		<param name="Local" value="nqc/nqc_1cqc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialBaud">
+		<param name="Name" value="SetSerialBaud">
+		<param name="Local" value="nqc/nqc_89es.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialBiPhase">
+		<param name="Name" value="SetSerialBiPhase">
+		<param name="Local" value="nqc/nqc_2exx.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialChannel">
+		<param name="Name" value="SetSerialChannel">
+		<param name="Local" value="nqc/nqc_67cc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialChecksum">
+		<param name="Name" value="SetSerialChecksum">
+		<param name="Local" value="nqc/nqc_1ynh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialComm">
+		<param name="Name" value="SetSerialComm">
+		<param name="Local" value="nqc/nqc_53jh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialData">
+		<param name="Name" value="SetSerialData">
+		<param name="Local" value="nqc/nqc_9hwh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialPacket">
+		<param name="Name" value="SetSerialPacket">
+		<param name="Local" value="nqc/nqc_4ilw.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialPreambleLen">
+		<param name="Name" value="SetSerialPreambleLen">
+		<param name="Local" value="nqc/nqc_96pa.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialPreamblePos">
+		<param name="Name" value="SetSerialPreamblePos">
+		<param name="Local" value="nqc/nqc_9jub.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSerialType">
+		<param name="Name" value="SetSerialType">
+		<param name="Local" value="nqc/nqc_1hwl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSleepTime">
+		<param name="Name" value="SetSleepTime">
+		<param name="Local" value="nqc/nqc_47fp.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSpybotCtrlMessage">
+		<param name="Name" value="SetSpybotCtrlMessage">
+		<param name="Local" value="nqc/nqc_04dh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSpybotCtrlPingMessage">
+		<param name="Name" value="SetSpybotCtrlPingMessage">
+		<param name="Local" value="nqc/nqc_0rdx.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSpybotMessage">
+		<param name="Name" value="SetSpybotMessage">
+		<param name="Local" value="nqc/nqc_090l.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSpybotPing">
+		<param name="Name" value="SetSpybotPing">
+		<param name="Local" value="nqc/nqc_5207.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetStack">
+		<param name="Name" value="SetStack">
+		<param name="Local" value="nqc/nqc_7nhn.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSystem">
+		<param name="Name" value="SetSystem">
+		<param name="Local" value="nqc/nqc_0cod.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetSystemPreambleSize">
+		<param name="Name" value="SetSystemPreambleSize">
+		<param name="Local" value="nqc/nqc_85b9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetTargetID">
+		<param name="Name" value="SetTargetID">
+		<param name="Local" value="nqc/nqc_9gv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetTargetNote">
+		<param name="Name" value="SetTargetNote">
+		<param name="Local" value="nqc/nqc_2cbp.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetTaskAcquirePriority">
+		<param name="Name" value="SetTaskAcquirePriority">
+		<param name="Local" value="nqc/nqc_4xrt.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetTaskSchedulingPriority">
+		<param name="Name" value="SetTaskSchedulingPriority">
+		<param name="Local" value="nqc/nqc_229l.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetTimer">
+		<param name="Name" value="SetTimer">
+		<param name="Local" value="nqc/nqc_6hwy.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetTimerLimit">
+		<param name="Name" value="SetTimerLimit">
+		<param name="Local" value="nqc/nqc_0bas.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetTimerState">
+		<param name="Name" value="SetTimerState">
+		<param name="Local" value="nqc/nqc_88kl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetTxPower">
+		<param name="Name" value="SetTxPower">
+		<param name="Local" value="nqc/nqc_03hu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetUpperLimit">
+		<param name="Name" value="SetUpperLimit">
+		<param name="Local" value="nqc/nqc_8l6c.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetUserDisplay">
+		<param name="Name" value="SetUserDisplay">
+		<param name="Local" value="nqc/nqc_7um1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetVolume">
+		<param name="Name" value="SetVolume">
+		<param name="Local" value="nqc/nqc_77z9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetWatch">
+		<param name="Name" value="SetWatch">
+		<param name="Local" value="nqc/nqc_0xwo.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetWatchFormat">
+		<param name="Name" value="SetWatchFormat">
+		<param name="Local" value="nqc/nqc_7nlg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SetWorldNote">
+		<param name="Name" value="SetWorldNote">
+		<param name="Local" value="nqc/nqc_1qat.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="sign">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SleepNow">
+		<param name="Name" value="SleepNow">
+		<param name="Local" value="nqc/nqc_9yk7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SlowDownMove">
+		<param name="Name" value="SlowDownMove">
+		<param name="Local" value="nqc/nqc_6acl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="sound">
+		<param name="Name" value="Sound">
+		<param name="Local" value="nqc/nqc_7azo.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_ACTIVATE_CLOAK">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_ACTIVATE_FLASH_BLIND">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_ACTIVATE_REFLECT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_ACTIVATE_SHIELDS">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_BIG_EXPLOSION">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_BOMB_ALERT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_BOOST">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_BURNT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_CLICK">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_CRASH">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_DANGER_ALERT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_DEACTIVATE_CLOAK">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_DEACTIVATE_REFLECT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_DEACTIVATE_SHIELDS">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_DIZZY">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_DOUBLE_BEEP">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_DOWN">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_EXCEPTION">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_EXPLOSION">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_FAST_UP">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_FIGHT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_FINAL_COUNTDOWN">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_FIRE_ELECTRONET">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_FIRE_LASER">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_FIRE_SPINNER">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_FREEZE">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_GEIGER">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_GENERAL_ALERT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_GOT_IT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_GOTO">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_GRINDED">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_HELP">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_HIT_BY_ELECTRONET">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_HIT_BY_LASER">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_HIT_BY_SPINNER">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_HIT_BY_WIND">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_IM_IT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_LOW_BEEP">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_LOW_ENERGY_ALERT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_MAGNET">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_NONE">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_OUCH">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_OUT_OF_ENERGY_ALERT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_PLACE_BOMB">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_POINT_TO">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_PROXIMITY_ALERT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_QUAD_DAMAGE">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_REFLECT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_REPULSE">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_REVERSE">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_SCAN">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_SCORE_ALERT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_SHOCKED">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_SHORT_BLIP">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_SIREN">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_SLOW">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_SMACKED">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_TAG">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_TICK_TOCK">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_TIME_ALERT">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_TRILL_DOWN">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_TRILL_UP">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_TURBO">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_UP">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_WHISPER">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_WHISTLE">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUND_YELL">
+		<param name="Name" value="PlaySound">
+		<param name="Local" value="nqc/nqc_9aw4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SoundActive">
+		<param name="Name" value="SoundActive">
+		<param name="Local" value="nqc/nqc_90md.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SOUNDEFFECT">
+		<param name="Name" value="SOUNDEFFECT">
+		<param name="Local" value="nqc/nqc_4tdg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SpeedUpMove">
+		<param name="Name" value="SpeedUpMove">
+		<param name="Local" value="nqc/nqc_6msl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SPY_ASPECT">
+		<param name="Name" value="Target">
+		<param name="Local" value="nqc/nqc_560k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SPY_DIRECTION">
+		<param name="Name" value="Target">
+		<param name="Local" value="nqc/nqc_560k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SPY_INFO">
+		<param name="Name" value="Target">
+		<param name="Local" value="nqc/nqc_560k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SPY_LINKID">
+		<param name="Name" value="Target">
+		<param name="Local" value="nqc/nqc_560k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SPY_NOTE">
+		<param name="Name" value="Target">
+		<param name="Local" value="nqc/nqc_560k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SPY_RANGE">
+		<param name="Name" value="Target">
+		<param name="Local" value="nqc/nqc_560k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SPY_SHORTID">
+		<param name="Name" value="Target">
+		<param name="Local" value="nqc/nqc_560k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SPY_TARGETID">
+		<param name="Name" value="Target">
+		<param name="Local" value="nqc/nqc_560k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="spybotics specific features">
+		<param name="Name" value="Spybotics Specific Features">
+		<param name="Local" value="nqc/nqc_91r7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Stack">
+		<param name="Name" value="Stack">
+		<param name="Local" value="nqc/nqc_9hrf.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="StackAddress">
+		<param name="Name" value="StackAddress">
+		<param name="Local" value="nqc/nqc_7u0j.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="StackSize">
+		<param name="Name" value="StackSize">
+		<param name="Local" value="nqc/nqc_2zxh.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="start">
+		<param name="Name" value="start, stop">
+		<param name="Local" value="nqc/nqc_0i0g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="StartTask">
+		<param name="Name" value="StartTask">
+		<param name="Local" value="nqc/nqc_4gff.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="statements">
+		<param name="Name" value="Statements">
+		<param name="Local" value="nqc/nqc_3omr.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="stop">
+		<param name="Name" value="start, stop">
+		<param name="Local" value="nqc/nqc_0i0g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="StopAllTasks">
+		<param name="Name" value="StopAllTasks">
+		<param name="Local" value="nqc/nqc_62pf.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="StopTask">
+		<param name="Name" value="StopTask">
+		<param name="Local" value="nqc/nqc_1zqj.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="structure">
+		<param name="Name" value="Program Structure">
+		<param name="Local" value="nqc/nqc_0gyt.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="sub">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="subroutines">
+		<param name="Name" value="Subroutines">
+		<param name="Local" value="nqc/nqc_7nlf.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Sum2Mem">
+		<param name="Name" value="Sum2Mem">
+		<param name="Local" value="nqc/nqc_90kt.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Sum4Mem">
+		<param name="Name" value="Sum4Mem">
+		<param name="Local" value="nqc/nqc_094d.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="swan specific features">
+		<param name="Name" value="Swan Specific Features">
+		<param name="Local" value="nqc/nqc_86g3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="switch">
+		<param name="Name" value="switch, case, default">
+		<param name="Local" value="nqc/nqc_2sh4.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="System">
+		<param name="Name" value="System">
+		<param name="Local" value="nqc/nqc_8625.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="SystemPreambleSize">
+		<param name="Name" value="SystemPreambleSize">
+		<param name="Local" value="nqc/nqc_6c11.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="T1">
+		<param name="Name" value="Timer">
+		<param name="Local" value="nqc/nqc_8c6q.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="T2">
+		<param name="Name" value="Timer">
+		<param name="Local" value="nqc/nqc_8c6q.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="T3">
+		<param name="Name" value="Timer">
+		<param name="Local" value="nqc/nqc_8c6q.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="T4">
+		<param name="Name" value="Timer">
+		<param name="Local" value="nqc/nqc_8c6q.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TachoCount">
+		<param name="Name" value="TachoCount">
+		<param name="Local" value="nqc/nqc_9rec.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TachoSpeed">
+		<param name="Name" value="TachoSpeed">
+		<param name="Local" value="nqc/nqc_7gro.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Target">
+		<param name="Name" value="Target">
+		<param name="Local" value="nqc/nqc_560k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TARGET_NONE">
+		<param name="Name" value="SetTargetID">
+		<param name="Local" value="nqc/nqc_9gv8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="task">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TaskAcquirePriority">
+		<param name="Name" value="TaskAcquirePriority">
+		<param name="Local" value="nqc/nqc_8vll.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="tasks">
+		<param name="Name" value="Tasks">
+		<param name="Local" value="nqc/nqc_8243.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TaskSchedulingPriority()">
+		<param name="Name" value="TaskSchedulingPriority()">
+		<param name="Local" value="nqc/nqc_3yg9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="technical details">
+		<param name="Name" value="Technical Details">
+		<param name="Local" value="nqc/nqc_1mur.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Timer">
+		<param name="Name" value="Timer">
+		<param name="Local" value="nqc/nqc_8c6q.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TIMER_RUNNING">
+		<param name="Name" value="SetTimerState">
+		<param name="Local" value="nqc/nqc_88kl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TIMER_STOPPED">
+		<param name="Name" value="SetTimerState">
+		<param name="Local" value="nqc/nqc_88kl.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="timers">
+		<param name="Name" value="Timers">
+		<param name="Local" value="nqc/nqc_89rn.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TimerState">
+		<param name="Name" value="TimerState">
+		<param name="Local" value="nqc/nqc_8eed.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Toggle">
+		<param name="Name" value="Toggle">
+		<param name="Local" value="nqc/nqc_7opx.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Tone">
+		<param name="Name" value="Tone">
+		<param name="Local" value="nqc/nqc_1a79.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="touch">
+		<param name="Name" value="Spybotics Sensors">
+		<param name="Local" value="nqc/nqc_54dv.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TransmitterRange">
+		<param name="Name" value="TransmitterRange">
+		<param name="Local" value="nqc/nqc_9med.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="true">
+		<param name="Name" value="expressions">
+		<param name="Local" value="nqc/nqc_1qb7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TX_POWER_HI">
+		<param name="Name" value="SetTxPower">
+		<param name="Local" value="nqc/nqc_03hu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="TX_POWER_LO">
+		<param name="Name" value="SetTxPower">
+		<param name="Local" value="nqc/nqc_03hu.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="UnmuteSound">
+		<param name="Name" value="UnmuteSound">
+		<param name="Local" value="nqc/nqc_2s4k.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="UnsolicitedMessages">
+		<param name="Name" value="UnsolicitedMessages">
+		<param name="Local" value="nqc/nqc_1f03.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="until">
+		<param name="Name" value="until">
+		<param name="Local" value="nqc/nqc_6n8s.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="UploadDatalog">
+		<param name="Name" value="UploadDatalog">
+		<param name="Local" value="nqc/nqc_64h3.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="UpperLimit">
+		<param name="Name" value="UpperLimit">
+		<param name="Local" value="nqc/nqc_8r04.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="variable declaration">
+		<param name="Name" value="Variable Declaration">
+		<param name="Local" value="nqc/nqc_5myb.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="variables">
+		<param name="Name" value="Variables">
+		<param name="Local" value="nqc/nqc_2egj.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Vibrato">
+		<param name="Name" value="Vibrato">
+		<param name="Local" value="nqc/nqc_4igf.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="vll">
+		<param name="Name" value="VLL">
+		<param name="Local" value="nqc/nqc_96gc.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="void">
+		<param name="Name" value="Keywords">
+		<param name="Local" value="nqc/nqc_806r.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Volume">
+		<param name="Name" value="Volume">
+		<param name="Local" value="nqc/nqc_51d1.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Wait">
+		<param name="Name" value="Wait">
+		<param name="Local" value="nqc/nqc_6wj8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="WaitEffect">
+		<param name="Name" value="WaitEffect">
+		<param name="Local" value="nqc/nqc_2hf8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="WaitMS">
+		<param name="Name" value="WaitMS">
+		<param name="Local" value="nqc/nqc_7sj7.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="Watch">
+		<param name="Name" value="Watch">
+		<param name="Local" value="nqc/nqc_2s6g.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="WatchFormat">
+		<param name="Name" value="WatchFormat">
+		<param name="Local" value="nqc/nqc_80j8.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="while">
+		<param name="Name" value="while statement">
+		<param name="Local" value="nqc/nqc_15r9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="whitespace">
+		<param name="Name" value="Whitespace">
+		<param name="Local" value="nqc/nqc_6nj9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="World">
+		<param name="Name" value="World">
+		<param name="Local" value="nqc/nqc_1a3o.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="WorldAspect">
+		<param name="Name" value="WorldAspect">
+		<param name="Local" value="nqc/nqc_2ldg.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="WorldDirection">
+		<param name="Name" value="WorldDirection">
+		<param name="Local" value="nqc/nqc_1uem.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="WorldLinkID">
+		<param name="Name" value="WorldLinkID">
+		<param name="Local" value="nqc/nqc_03ok.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="WorldNote">
+		<param name="Name" value="WorldNote">
+		<param name="Local" value="nqc/nqc_850l.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="WorldRange">
+		<param name="Name" value="WorldRange">
+		<param name="Local" value="nqc/nqc_03z9.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="WorldShortID">
+		<param name="Name" value="WorldShortID">
+		<param name="Local" value="nqc/nqc_0kro.htm">
+		</OBJECT>
+	<LI> <OBJECT type="text/sitemap">
+		<param name="Keyword" value="||">
+		<param name="Name" value="operators">
+		<param name="Local" value="nqc/nqc_2elv.htm">
+		</OBJECT>
+</UL></HTML>

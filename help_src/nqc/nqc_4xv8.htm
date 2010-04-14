@@ -1,0 +1,106 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SetEvent</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SetEvent">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_PRESSED">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_RELEASED">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_PULSE">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_EDGE">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_FASTCHANGE">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_LOW">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_NORMAL">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_HIGH">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_CLICK">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_DOUBLECLICK">
+	<PARAM NAME="Keyword" VALUE="EVENT_TYPE_MESSAGE">
+</OBJECT>
+
+<P><B><A NAME="idh_api_setevent"></A>SetEvent(event, source, type)Function - RCX2, Spy</B></P>
+
+<P>Configure an event (a number from 0 to 15) to use the specified source and type. Both event and type must be constants, and source should be the actual source expression.</P>
+
+<PRE><CODE>SetEvent(2, Timer(0), EVENT_TYPE_HIGH);</CODE></PRE>
+
+<P>Legal event sources are sensors, timers, counters, or the message buffer. An event is configured by calling SetEvent(event, source, type), where event is a constant event number (0-15), source is the event source itself, and type is one of the types shown below (some combinations of sources and types are illegal).</P>
+
+<P><B><U>Event Type</U><U>Condition</U><U>Event Source</U></B></P>
+
+<P>EVENT_TYPE_PRESSEDvalue becomes onsensors only</P>
+
+<P>EVENT_TYPE_RELEASEDvalue becomes offsensors only</P>
+
+<P>EVENT_TYPE_PULSEvalue goes from off to on to offsensors only</P>
+
+<P>EVENT_TYPE_EDGEvalue goes from on to off or vice versasensors only</P>
+
+<P>EVENT_TYPE_FASTCHANGEvalue changes rapidlysensors only</P>
+
+<P>EVENT_TYPE_LOWvalue becomes lowany</P>
+
+<P>EVENT_TYPE_NORMALvalue becomes normalany</P>
+
+<P>EVENT_TYPE_HIGHvalue becomes highany</P>
+
+<P>EVENT_TYPE_CLICKvalue from low to high back to lowany</P>
+
+<P>EVENT_TYPE_DOUBLECLICKtwo clicks within a certain timeany (RCX2, Swan)</P>
+
+<P>EVENT_TYPE_MESSAGEnew message receivedMessage() only (RCX2)</P>
+
+<P>EVENT_TYPE_ENTRY_FOUNDworld entry foundVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_MSG_DISCARDMessage discardedVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_MSG_RECEIVEDMessage receivedVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_VLL_MSG_RECEIVEDVLL message receivedVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_ENTRY_CHANGEDWorld entry changedVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_4event type 4any (Swan)</P>
+
+<P>EVENT_TYPE_5event type 5any (Swan)</P>
+
+<P>EVENT_TYPE_6event type 6any (Swan)</P>
+
+<P>EVENT_TYPE_VIRTUAL_MOTOR_CHANGE virtual motor changesany (Swan)</P>
+
+<P>EVENT_TYPE_VIRTUAL_MOTOR_POWER virtual motor powerany (Swan)</P>
+
+<P>EVENT_TYPE_VIRTUAL_SENSOR_DEF virtual sensor defany (Swan)</P>
+
+<P>EVENT_TYPE_INFRARED_IDLEinfrared goes idleany (Swan)</P>
+
+<P>EVENT_TYPE_RESETresetany (Swan)</P>
+
+<P>The first four event types make use of a sensor's boolean value, thus are most useful with touch sensors. For example, to set event #2 to be triggered when a touch sensor on port 1 is pressed, the following call could be made:</P>
+
+<PRE><CODE>SetEvent(2, SENSOR_1, EVENT_TYPE_PRESSED);</CODE></PRE>
+
+<P>In order for EVENT_TYPE_PULSE or EVENT_TYPE_EDGE to be used, the sensor must be configured in the SENSOR_MODE_PULSE or SENSOR_MODE_EDGE respectively.</P>
+
+<P>EVENT_TYPE_FASTCHANGE should be used with sensors that have been configured with a slope parameter. When the raw value changes faster than the slope parameter an EVENT_TYPE_FASTCHANGE event will be triggered.</P>
+
+<P>The next three types (EVENT_TYPE_LOW, EVENT_TYPE_NORMAL, and EVENT_TYPE_HIGH) convert an event source's value into one of three ranges (low, normal, or high), and trigger an event when the value moves from one range into another. The ranges are defined by the lower limit and upper limit for the event. When the source value is lower than the lower limit, the source is considered low. When the source value is higher than the upper limit, the source is considered high. The source is normal whenever it is between the limits.</P>
+
+<P>The following example configures event #3 to trigger when the sensor on port 2's value goes into the high range. The upper limit is set for 80, and the lower limit is set for 50. This configuration is typical of how an event can be triggered when a light sensor detected a bright light.</P>
+
+<PRE><CODE>SetEvent(3, SENSOR_2, EVENT_TYPE_HIGH);
+SetLowerLimit(3, 50);
+SetUpperLimit(3, 80);</CODE></PRE>
+
+<P>A hysteresis parameter can be used to provide more stable transitions in cases where the source value may jitter. Hysteresis works by making the transition from low to normal a little higher than the transition from normal to low. In a sense, it makes it easier to get into the low range than get out of it. A symmetrical case applies to the transition between normal and high.</P>
+
+<P>A transition from low to high back to low will trigger a EVENT_TYPE_CLICK event, provided that the entire sequence is faster than the click time for the event. If two successive clicks occur and the time between clicks is also less than the click time, then an EVENT_TYPE_DOUBLECLICK event will be triggered. The system also keeps track of the total number of clicks for each event.</P>
+
+<P>The last event type, EVENT_TYPE_MESSAGE, is only valid when Message() is used as the event source. The event will be triggered whenever a new message arrives (even if its value is the same as a previous message).</P>
+
+</BODY>
+</HTML>

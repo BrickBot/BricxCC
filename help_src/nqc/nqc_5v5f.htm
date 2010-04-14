@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Scout Events</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="events">
+	<PARAM NAME="Keyword" VALUE="events, scout">
+</OBJECT>
+
+<P><A NAME="idh_nqc_scoutevents"></A>3.9.2 Scout EventsScout</P>
+
+<P>The Scout provides 15 events, each of which has a predefined meaning as shown in the table below.</P>
+
+<P><B>Event NameCondition</B></P>
+
+<P>EVENT_1_PRESSEDsensor 1 pressed</P>
+
+<P>EVENT_1_RELEASEDsensor 1 released</P>
+
+<P>EVENT_2_PRESSEDsensor 2 pressed</P>
+
+<P>EVENT_2_RELEASEDsensor 2 released</P>
+
+<P>EVENT_LIGHT_HIGHlight sensor "high"</P>
+
+<P>EVENT_LIGHT_NORMALlight sensor "normal"</P>
+
+<P>EVENT_LIGHT_LOWlight sensor "low"</P>
+
+<P>EVENT_LIGHT_CLICKlow to high to low</P>
+
+<P>EVENT_LIGHT_DOUBLECLICKtwo clicks</P>
+
+<P>EVENT_COUNTER_0counter 0 over limit</P>
+
+<P>EVENT_COUNTER_1counter 1 over limit</P>
+
+<P>EVENT_TIMER_0timer 0 over limit</P>
+
+<P>EVENT_TIMER_1timer 1 over limit</P>
+
+<P>EVENT_TIMER_2timer 2 over limit</P>
+
+<P>EVENT_MESSAGEnew message received</P>
+
+<P>The first four events are triggered by touch sensors connected to the two sensor ports. <CODE>EVENT_LIGHT_HIGH</CODE>, <CODE>EVENT_LIGHT_NORMAL</CODE>, and <CODE>EVENT_LIGHT_LOW</CODE> are triggered by the light sensor's value changing from one range to another. The ranges are defined by <CODE>SetSensorUpperLimit</CODE>, <CODE>SetSensorLowerLimit</CODE>, and <CODE>SetSensorHysteresis</CODE> which were described previously.</P>
+
+<P><CODE>EVENT_LIGHT_CLICK</CODE> and <CODE>EVENT_LIGHT_DOUBLECLICK</CODE> are also triggered by the light sensor. A click is a transition from low to high and back to low within a certain amount of time, called the <I>click time</I>.</P>
+
+<P>Each counter has a counter limit. When the counter exceeds this limit, <CODE>EVENT_COUNTER_0</CODE> or <CODE>EVENT_COUNTER_1</CODE> is triggered. Timers also have a limit, and they generate <CODE>EVENT_TIMER_0</CODE>, <CODE>EVENT_TIMER_1</CODE>, and <CODE>EVENT_TIMER_2</CODE>.</P>
+
+<P><CODE>EVENT_MESSAGE</CODE> is triggered whenever a new IR message is received.</P>
+
+<H3>SetSensorClickTime(value)Function - Scout</H3>
+
+<P>Set the click time used to generate events from the light sensor. Value should be specified in increments of 10ms, and may be any expression.</P>
+
+<PRE><CODE>SetSensorClickTime(x);</CODE></PRE>
+
+<H3>SetCounterLimit(n, value)Function - Scout</H3>
+
+<P>Set the limit for counter n. N must be 0 or 1, and value may be any expression.</P>
+
+<PRE><CODE>SetCounterLimit(0, 100); // set counter 0 limit to 100</CODE></PRE>
+
+<H3>SetTimerLimit(n, value)Function - Scout</H3>
+
+<P>Set the limit for timer n. N must be 0, 1, or 2, and value may be any expression.</P>
+
+<PRE><CODE>SetTimerLimit(1, 100); // set timer 1 limit to 100</CODE></PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Access Control</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="access control">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_accesscontrol"></A>3.8 Access ControlRCX2, Scout, Spy</H2>
+
+<P>Access control is implemented primarily by the <CODE>acquire</CODE> statement. The <CODE>SetPriority</CODE> function can be used to set a task's priority, and the following constants may be used to specify resources in an acquire statement. Note that the user defined resources are only available on the RCX2 and Swan.</P>
+
+<P><B>ConstantResource</B></P>
+
+<P>ACQUIRE_<CODE>OUT_A</CODE>,outputs</P>
+
+<P>ACQUIRE_<CODE>OUT_B</CODE>,</P>
+
+<P>ACQUIRE_<CODE>OUT_C</CODE></P>
+
+<P>ACQUIRE_SOUNDsound</P>
+
+<P>ACQUIRE_LEDLEDs (Spybotics only)</P>
+
+<P>ACQUIRE_USER_1,user defined - RCX2 and Swan only</P>
+
+<P>ACQUIRE_USER_2,</P>
+
+<P>ACQUIRE_USER_3,</P>
+
+<P>ACQUIRE_USER_4</P>
+
+<H3>SetPriority(p)Function - RCX2, Scout, Spy</H3>
+
+<P>Set a task's priority to p, which must be a constant. RCX2, Swan, and Spybotics support priorities 0-255, while Scout supports priorities 0-7. Note that lower numbers are higher priority.</P>
+
+<PRE><CODE>SetPriority(1);</CODE></PRE>
+
+</BODY>
+</HTML>

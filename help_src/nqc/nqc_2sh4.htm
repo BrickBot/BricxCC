@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>switch, case, default</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="switch">
+	<PARAM NAME="Keyword" VALUE="case">
+	<PARAM NAME="Keyword" VALUE="default">
+</OBJECT>
+
+<P><A NAME="idh_api_switch"></A>A <CODE>switch</CODE> statement can be used to execute one of several different blocks of code depending on the value of an expression. Each block of code is preceded by one or more <CODE>case</CODE> labels. Each <CODE>case</CODE> must be a constant and unique within the <CODE>switch</CODE> statement. The <CODE>switch</CODE> statement evaluates the expression then looks for a matching <CODE>case</CODE> label. It will then execute any statements following the matching <CODE>case</CODE> until either a <CODE>break</CODE> statement or the end of the <CODE>switch</CODE> is reached. A single default label may also be used - it will match any value not already appearing in a case label. Technically, a switch statement has the following syntax:</P>
+
+<PRE><CODE><B>switch</B> (<I>expression</I>) <I>body</I></CODE></PRE>
+
+<P>The case and default labels are not statements in themselves - they are labels that precede statements. Multiple labels can precede the same statement. These labels have the following syntax</P>
+
+<PRE><CODE><B>case</B> <I>constant_expression</I>:
+<B>default</B>:</CODE></PRE>
+
+<P>A typical switch statement might look like this:</P>
+
+<PRE><CODE><B>switch</B>(x)
+{
+<B>case</B> 1:
+// do something when x is 1
+<B>break</B>;
+<B>case</B> 2:
+<B>case</B> 3:
+// do something else when x is 2 or 3
+<B>break</B>;
+<B>default</B>:
+// do this when x is not 1, 2, or 3
+<B>break</B>;
+}</CODE></PRE>
+
+</BODY>
+</HTML>

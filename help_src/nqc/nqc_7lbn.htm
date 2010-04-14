@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Data Sources</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="data sources">
+</OBJECT>
+
+<H2><I><A NAME="idh_nqc_datasources"></A>4.2 Data Sources</I></H2>
+
+<P>The bytecode interpreters use different data sources to represent the various kinds of data (constants, variables, random numbers, sensor values, etc). The specific sources depend to a certain extent on which device you are using and are described in the SDK documentation available from LEGO.</P>
+
+<P>NQC provides a special operator to represent a data source:</P>
+
+<PRE><CODE>@ <I>constant</I></CODE></PRE>
+
+<P>The value of this expression is the data source described by the constant. The lower 16 bits of the constant represent the data value, and the next 8 bits are the source code. For example, the source code for a random number is 4, so the expression for a random number between 0 and 9 would be:</P>
+
+<PRE><CODE>@0x40009</CODE></PRE>
+
+<P>The NQC API file defines a number of macros which make the use of the <CODE>@</CODE> operator transparent to the programmer. For example, in the case of random numbers:</P>
+
+<PRE><CODE>#define Random(n) @(0x40000 + (n))</CODE></PRE>
+
+<P>Note that since source 0 is the global variable space, the global storage locations can be referenced by number: <CODE>@0</CODE> refers to storage location 0. If for some reason you need explicit control over where variables are being stored, then you should use <CODE>#pragma reserve</CODE> to instruct NQC not to use those storage locations, and then access them manually with the <CODE>@</CODE> operator. For example, the following code snippet reserves location 0 and creates a macro for it called x.</P>
+
+<PRE><CODE>#pragma reserve 0
+#define x(@0)</CODE></PRE>
+
+</BODY>
+</HTML>

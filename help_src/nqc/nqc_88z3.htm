@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>goto</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="goto">
+</OBJECT>
+
+<P><A NAME="idh_api_goto"></A>The <CODE>goto</CODE> statement forces a program to jump to the specified location. Statements in a program can be labeled by preceding them with an identifier and a colon. A <CODE>goto</CODE> statement then specifies the label which the program should jump to. For example, this is how an infinite loop that increments a variable could be implemented using <CODE>goto</CODE>:</P>
+
+<PRE><CODE>my_loop:
+x++;
+<B>goto</B> my_loop;</CODE></PRE>
+
+<P>The <CODE>goto</CODE> statement should be used sparingly and cautiously. In almost every case, control structures such as <CODE>if</CODE>, <CODE>while</CODE>, and <CODE>switch</CODE> make a program much more readable and maintainable than using <CODE>goto</CODE>. Care should be taken to never use a <CODE>goto</CODE> to jump into or out of a <CODE>monitor</CODE> or <CODE>acquire</CODE> statement. This is because <CODE>monitor</CODE> and <CODE>acquire</CODE> have special code that normally gets executed upon entry and exit, and a <CODE>goto</CODE> will bypass that code – probably resulting in undesirable behavior.</P>
+
+</BODY>
+</HTML>

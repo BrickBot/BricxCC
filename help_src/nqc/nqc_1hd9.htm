@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>asm</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="asm">
+</OBJECT>
+
+<P><A NAME="idh_api_asm"></A>The asm statement is used to define almost all of the NQC API calls. The syntax of the statement is:</P>
+
+<PRE><CODE><B>asm</B> { item1, item2 ... itemN }</CODE></PRE>
+
+<P>Where an item is one of the following</P>
+
+<PRE><CODE><I>constant_expression
+</I>$ <I>expression</I>
+$ <I>expression</I> : <I>restrictor</I></CODE></PRE>
+
+<P>The statement simply emits the values of each of the items as raw bytecodes. Constant items are the simplest - they result in a single byte of raw data (the lower 8 bits of the constant value). </P>
+
+<P>Many API functions take arguments, and these arguments must be encoded into an appropriate effective address for the bytecode interpreter. In the most general case, an effective address contains a source code followed by a two byte value (least significant byte first). Source codes are explained in the SDK documentation available from LEGO. However, it is often desirable to encode the value in some other manner - for example to use only a single byte value after the source code, omit the source code itself, or only allow certain sources to be used. A restrictor may be used to control how the effective address is formatted. A restrictor is a 32 bit constant value. The lower 24 bits form a bitmask indicating which sources are valid (bit 0 should be set to allow source 0, etc).</P>
+
+<P>The upper 8 bits include formatting flags for the effective address. Note that when no restrictor is specified, this is the same as using a restrictor of 0 (no restriction on sources, and a format of source followed by two value bytes). The API file defines the following constants which can be used to build restrictors:</P>
+
+<PRE><CODE># define __ASM_SMALL_VALUE 0x01000000
+# define __ASM_NO_TYPE 0x02000000
+# define __ASM_NO_LOCAL 0x04000000
+# if __RCX == 2
+// no restriction
+# define __ASM_SRC_BASIC 0
+# define __ASM_SRC_EXT 0
+# else
+# define __ASM_SRC_BASIC 0x000005
+# define __ASM_SRC_EXT 0x000015
+# endif</CODE></PRE>
+
+<P>The __ASM_SMALL_VALUE flag indicates that a one-byte value should be used instead of a two-byte value. The __ASM_NO_TYPE flag indicates that the source code should be omitted. The __ASM_NO_LOCAL flag specifies that local variables are not a legal source for the expression. Note that the RCX2, Swan, and Spybotics firmwares are less restrictive than the other interpreters, thus the definition of __ASM_SRC_BASIC and __ASM_SRC_EXT are relaxed in these cases.</P>
+
+</BODY>
+</HTML>

@@ -1,0 +1,76 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Global Control</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="outputs">
+	<PARAM NAME="Keyword" VALUE="outputs, global control">
+</OBJECT>
+
+<P><A NAME="idh_nqc_outputsglobal"></A>3.2.3 Global ControlRCX2, Scout, Spy</P>
+
+<H3>SetGlobalOutput(outputs, mode)Function - RCX2, Scout, Spy</H3>
+
+<P>Disable or re-enable outputs depending on the mode parameter. If mode is <CODE>OUT_OFF</CODE>, then the outputs will be turned off and disabled. While disabled any subsequent calls to <CODE>SetOutput()</CODE> (including convenience functions such as <CODE>On()</CODE>) will be ignored. Using a mode of <CODE>OUT_FLOAT</CODE> will put the outputs in float mode before disabling them. Outputs can be re-enabled by calling <CODE>SetGlobalOutput()</CODE> with a mode of <CODE>OUT_ON</CODE>. Note that enabling an output doesn't immediately turn it on - it just allows future calls to <CODE>SetOutput()</CODE> to take effect.</P>
+
+<PRE><CODE>SetGlobalOutput(OUT_A, OUT_OFF); // disable output A
+SetGlobalOutput(OUT_A, OUT_ON); // enable output A</CODE></PRE>
+
+<H3>SetGlobalDirection(outputs, direction)Function - RCX2, Scout, Spy</H3>
+
+<P>Reverses or restores the directions of outputs. The direction parameter should be <CODE>OUT_FWD</CODE>, <CODE>OUT_REV</CODE>, or <CODE>OUT_TOGGLE</CODE>. Normal behavior is a global direction of <CODE>OUT_FWD</CODE>. When the global direction is <CODE>OUT_REV</CODE>, then the actual output direction will be the opposite of whatever the regular output calls request. Calling <CODE>SetGlobalDirection()</CODE> with <CODE>OUT_TOGGLE</CODE> will switch between normal and opposite behavior.</P>
+
+<PRE><CODE>SetGlobalDirection(OUT_A, OUT_REV); // opposite direction
+SetGlobalDirection(OUT_A, OUT_FWD); // normal direction</CODE></PRE>
+
+<H3>SetMaxPower(outputs, power)Function - RCX2, Scout, Spy</H3>
+
+<P>Sets the maximum power level allowed for the outputs. The power level may be a variable, but should have a value between <CODE>OUT_LOW</CODE> and <CODE>OUT_FULL</CODE>.</P>
+
+<PRE><CODE>SetMaxPower(OUT_A, OUT_HALF);</CODE></PRE>
+
+<H3>GlobalOutputStatus(n)Value - RCX2, Scout, Spy</H3>
+
+<P>Returns the current global output setting for motor n. Note that n must be 0, 1, or 2 - not <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, or <CODE>OUT_C</CODE>.</P>
+
+<PRE><CODE>x = GlobalOutputStatus(0); // global status of OUT_A</CODE></PRE>
+
+<H3>EnableOutput(outputs)Function - RCX2, Scout, Spy</H3>
+
+<P>A helper function for enabling the specified outputs.  Use <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, or <CODE>OUT_C</CODE>.</P>
+
+<PRE><CODE>EnableOutput(OUT_A+OUT_B); // enable output OUT_A and OUT_B</CODE></PRE>
+
+<P>This is the same as using <CODE>SetGlobalOutput</CODE> with the <CODE>OUT_ON</CODE> mode.</P>
+
+<H3>DisableOutput(outputs)Function - RCX2, Scout, Spy</H3>
+
+<P>A helper function for disabling the specified outputs.  Use <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, or <CODE>OUT_C</CODE>.</P>
+
+<PRE><CODE>DisableOutput(OUT_A+OUT_B); // disable output OUT_A and OUT_B</CODE></PRE>
+
+<P>This is the same as using <CODE>SetGlobalOutput</CODE> with the <CODE>OUT_OFF</CODE> mode.</P>
+
+<H3>InvertOutput(outputs)Function - RCX2, Scout, Spy</H3>
+
+<P>A helper function for inverting the direction of the specified outputs.  Use <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, or <CODE>OUT_C</CODE>.</P>
+
+<PRE><CODE>InvertOutput(OUT_A+OUT_B); // reverse direction for OUT_A and OUT_B</CODE></PRE>
+
+<P>This is the same as using <CODE>SetGlobalDirection</CODE> with the <CODE>OUT_REV</CODE> direction.</P>
+
+<H3>ObvertOutput(outputs)Function - RCX2, Scout, Spy</H3>
+
+<P>A helper function for returning the direction of the specified outputs to forward.  Use <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, or <CODE>OUT_C</CODE>.</P>
+
+<PRE><CODE>ObvertOutput(OUT_A+OUT_B); // normal direction for OUT_A and OUT_B</CODE></PRE>
+
+<P>This is the same as using <CODE>SetGlobalDirection</CODE> with the <CODE>OUT_FWD</CODE> direction.</P>
+
+</BODY>
+</HTML>

@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Sensor Information</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="sensors">
+	<PARAM NAME="Keyword" VALUE="sensors, information">
+</OBJECT>
+
+<P><A NAME="idh_nqc_sensorinfo"></A>3.1.2 Sensor Information</P>
+
+<P>There are a number of values that can be inspected for each sensor. For all of these values the sensor must be specified by its sensor number (0, 1, or 2), and not a sensor name (e.g. <CODE>SENSOR_1</CODE>).</P>
+
+<H3>SensorValue(n)Value - All</H3>
+
+<P>Returns the processed sensor reading for sensor n, where n is 0, 1, or 2. This is the same value that is returned by the sensor names (e.g. <CODE>SENSOR_1</CODE>).</P>
+
+<PRE><CODE>x = SensorValue(0); // read sensor 1</CODE></PRE>
+
+<H3>SensorType(n)Value – All</H3>
+
+<P>Returns the configured type of sensor n, which must be 0, 1, or 2. Only the RCX has configurable sensors types, other targets will always return the pre-configured type of the sensor.</P>
+
+<PRE><CODE>x = SensorType(0);</CODE></PRE>
+
+<H3>SensorMode(n)Value - RCX, CM, Spy</H3>
+
+<P>Returns the current sensor mode for sensor n, which must be 0, 1, or 2.</P>
+
+<PRE><CODE>x = SensorMode(0);</CODE></PRE>
+
+<H3>SensorValueBool(n)Value – RCX</H3>
+
+<P>Returns the boolean value of sensor n, which must be 0, 1, or 2. Boolean conversion is either done based on preset cutoffs, or a slope parameter specified by calling <CODE>SetSensorMode</CODE>.</P>
+
+<PRE><CODE>x = SensorValueBool(0);</CODE></PRE>
+
+<H3>SensorValueRaw(n) Value - RCX, Scout, Spy</H3>
+
+<P>Returns the raw value of sensor n, which must be 0, 1, or 2. Raw values may range from 0 to 1023 (RCX, Spy) or 0 to 255 (Scout).</P>
+
+<PRE><CODE>x = SensorValueRaw(0);</CODE></PRE>
+
+</BODY>
+</HTML>

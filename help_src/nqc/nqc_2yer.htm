@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Types and Modes</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="sensors">
+	<PARAM NAME="Keyword" VALUE="sensors, types">
+	<PARAM NAME="Keyword" VALUE="sensors, modes">
+</OBJECT>
+
+<P><A NAME="idh_nqc_sensortypes"></A>3.1.1 Types and ModesRCX, CM, Spy</P>
+
+<P>The sensor ports on the RCX are capable of interfacing to a variety of different sensors (other targets don't support configurable sensor types). It is up to the program to tell the RCX what kind of sensor is attached to each port. A sensor's type may be configured by calling <CODE>SetSensorType</CODE>. There are four sensor types, each corresponding to a specific LEGO sensor. A fifth type (<CODE>SENSOR_TYPE_NONE</CODE>) can be used for reading the raw values of generic passive sensors. In general, a program should configure the type to match the actual sensor. If a sensor port is configured as the wrong type, the RCX may not be able to read it accurately.</P>
+
+<P><B>Sensor TypeMeaning</B></P>
+
+<P>SENSOR_TYPE_NONEgeneric passive sensor</P>
+
+<P>SENSOR_TYPE_TOUCHa touch sensor</P>
+
+<P>SENSOR_TYPE_TEMPERATUREa temperature sensor</P>
+
+<P>SENSOR_TYPE_LIGHTa light sensor</P>
+
+<P>SENSOR_TYPE_ROTATIONa rotation sensor</P>
+
+<P>SENSOR_TYPE_ACTIVE_RAWan active sensor with raw output (Swan only)</P>
+
+<P>The RCX, Swan, CyberMaster, and Spybotics allow a sensor to be configured in different modes. The sensor mode determines how a sensor's raw value is processed. Some modes only make sense for certain types of sensors, for example <CODE>SENSOR_MODE_ROTATION</CODE> is useful only with rotation sensors. The sensor mode can be set by calling <CODE>SetSensorMode</CODE>. The possible modes are shown below. Note that since CyberMaster does not support temperature or rotation sensors, the last three modes are restricted to the RCX and Swan only. Spybotics is even more restrictive, allowing only raw, boolean, and percentage modes.</P>
+
+<P><B>Sensor ModeMeaning</B></P>
+
+<P>SENSOR_MODE_RAWraw value from 0 to 1023</P>
+
+<P>SENSOR_MODE_BOOLboolean value (0 or 1)</P>
+
+<P>SENSOR_MODE_EDGEcounts number of boolean transitions</P>
+
+<P>SENSOR_MODE_PULSEcounts number of boolean periods</P>
+
+<P>SENSOR_MODE_PERCENTvalue from 0 to 100</P>
+
+<P>SENSOR_MODE_FAHRENHEITdegrees F - RCX only</P>
+
+<P>SENSOR_MODE_CELSIUSdegrees C - RCX only</P>
+
+<P>SENSOR_MODE_ROTATIONrotation (16 ticks per revolution) - RCX only</P>
+
+<P>When using the RCX or Swan, it is common to set both the type and mode at the same time. The <CODE>SetSensor</CODE> function makes this process a little easier by providing a single function to call and a set of standard type/mode combinations.</P>
+
+<P><B>Sensor ConfigurationTypeMode</B></P>
+
+<P>SENSOR_TOUCHSENSOR_TYPE_TOUCHSENSOR_MODE_BOOL</P>
+
+<P>SENSOR_LIGHTSENSOR_TYPE_LIGHTSENSOR_MODE_PERCENT</P>
+
+<P>SENSOR_ROTATIONSENSOR_TYPE_ROTATIONSENSOR_MODE_ROTATION</P>
+
+<P>SENSOR_CELSIUSSENSOR_TYPE_TEMPERATURESENSOR_MODE_CELSIUS</P>
+
+<P>SENSOR_FAHRENHEITSENSOR_TYPE_TEMPERATURESENSOR_MODE_FAHRENHEIT</P>
+
+<P>SENSOR_PULSESENSOR_TYPE_TOUCHSENSOR_MODE_PULSE</P>
+
+<P>SENSOR_EDGESENSOR_TYPE_TOUCHSENSOR_MODE_EDGE</P>
+
+<P>The RCX and Swan provide a boolean conversion for all sensors - not just touch sensors. This boolean conversion is normally based on preset thresholds for the raw value. A "low" value (less than 460) is a boolean value of 1. A high value (greater than 562) is a boolean value of 0. This conversion can be modified: a <I>slope value</I> between 0 and 31 may be added to a sensor's mode when calling <CODE>SetSensorMode</CODE>. If the sensor's value changes more than the slope value during a certain time (3ms), then the sensor's boolean state will change. This allows the boolean state to reflect rapid changes in the raw value. A rapid increase will result in a boolean value of 0, a rapid decrease is a boolean value of 1. </P>
+
+<P>Even when a sensor is configured for some other mode (i.e. <CODE>SENSOR_MODE_PERCENT</CODE>), the boolean conversion will still be carried out.</P>
+
+<H3>SetSensor(sensor, configuration)Function – RCX</H3>
+
+<P>Set the type and mode of the given sensor to the specified configuration, which must be a special constant containing </P>
+
+<P>both type and mode information.</P>
+
+<PRE><CODE>SetSensor(SENSOR_1, SENSOR_TOUCH);</CODE></PRE>
+
+<H3>SetSensorType(sensor, type)Function – RCX</H3>
+
+<P>Set a sensor's type, which must be one of the predefined sensor type constants.</P>
+
+<PRE><CODE>SetSensorType(SENSOR_1, SENSOR_TYPE_TOUCH);</CODE></PRE>
+
+<H3>SetSensorMode(sensor, mode)Function - RCX, CM, Spy</H3>
+
+<P>Set a sensor's mode, which should be one of the predefined sensor mode constants. A slope parameter for boolean conversion, if desired, may be added to the mode (RCX and Swan only).</P>
+
+<PRE><CODE>SetSensorMode(SENSOR_1, SENSOR_MODE_RAW); // raw mode
+SetSensorMode(SENSOR_1, SENSOR_MODE_RAW + 10) ; // slope 10</CODE></PRE>
+
+<H3>ClearSensor(sensor)Function - All</H3>
+
+<P>Clear the value of a sensor - only affects sensors that are configured to measure a cumulative quantity such as rotation or a pulse count.</P>
+
+<PRE><CODE>ClearSensor(SENSOR_1);</CODE></PRE>
+
+</BODY>
+</HTML>

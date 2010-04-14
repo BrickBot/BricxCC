@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>acquire</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="acquire">
+	<PARAM NAME="Keyword" VALUE="catch">
+	<PARAM NAME="Keyword" VALUE="ACQUIRE_OUT_A">
+	<PARAM NAME="Keyword" VALUE="ACQUIRE_OUT_B">
+	<PARAM NAME="Keyword" VALUE="ACQUIRE_OUT_C">
+	<PARAM NAME="Keyword" VALUE="ACQUIRE_SOUND">
+	<PARAM NAME="Keyword" VALUE="ACQUIRE_USER_1">
+	<PARAM NAME="Keyword" VALUE="ACQUIRE_USER_2">
+	<PARAM NAME="Keyword" VALUE="ACQUIRE_USER_3">
+	<PARAM NAME="Keyword" VALUE="ACQUIRE_USER_4">
+	<PARAM NAME="Keyword" VALUE="ACQUIRE_LED">
+</OBJECT>
+
+<P><A NAME="idh_api_acquire"></A>The Scout, RCX2, Swan, and Spybotics support access control and event monitoring. Access control allows a task to request ownership of one or more resources. In NQC, access control is provided by the acquire statement, which has two forms:</P>
+
+<PRE><CODE><B>acquire</B> ( <I>resources</I> ) <I>body</I>
+<B>acquire</B> ( <I>resources</I> ) <I>body</I> <B>catch</B> <I>handler</I></CODE></PRE>
+
+<P>where <I>resources</I> is a constant that specifies the resources to be acquired and <I>body</I> and <I>handler</I> are statements. The NQC API defines constants for individual resources which may be added together to request multiple resources at the same time. The behavior of the acquire statement is as follows: Ownership of the specified resources will be requested. If another task of higher priority already owns the resources, then the request will fail and execution will jump to the handler (if present). Otherwise, the request will succeed, and the body will begin to be executed. While executing the body, if another task of equal or higher priority requests any of the owned resources, then the original task will lose ownership. When ownership is lost, execution will jump to the handler (if present). Once the body has completed, the resources will be returned back to the system (so that lower priority tasks may acquire them), and execution will continue with the statement following the acquire statement. If a handler is not specified, then in both the case of a failed request, or a subsequent loss of ownership, control will pass to the statement following the acquire statement. For example, the following code acquires a resource for 10 seconds, playing a sound if it cannot complete successfully:</P>
+
+<PRE><CODE><B>acquire</B>(ACQUIRE_OUT_A)
+{
+Wait(1000);
+}
+<B>catch</B>
+{
+PlaySound(SOUND_UP);
+}</CODE></PRE>
+
+<P>The following constants may be used to specify resources in an acquire statement. Note that the user defined resources are only available on the RCX2 and Swan.</P>
+
+<P><B><U>Constant</U><U>Resource</U></B></P>
+
+<P>ACQUIRE_OUT_A,outputs</P>
+
+<P>ACQUIRE_OUT_B,</P>
+
+<P>ACQUIRE_OUT_C</P>
+
+<P>ACQUIRE_SOUNDsound</P>
+
+<P>ACQUIRE_LEDLEDs (Spybotics only)</P>
+
+<P>ACQUIRE_USER_1,user defined - RCX2 and Swan only</P>
+
+<P>ACQUIRE_USER_2,</P>
+
+<P>ACQUIRE_USER_3,</P>
+
+<P>ACQUIRE_USER_4</P>
+
+</BODY>
+</HTML>

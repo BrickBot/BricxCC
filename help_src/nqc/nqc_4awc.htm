@@ -1,0 +1,389 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Serial</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="serial">
+</OBJECT>
+
+<P><A NAME="idh_nqc_serial"></A>3.5.2 SerialRCX2, Spy</P>
+
+<P>The RCX2, Swan, and Spybotics can transmit serial data out the IR port. Prior to transmitting any data, the communication and packet settings must be specified. Then, for each transmission, data should be placed in the transmit buffer, then sent using the <CODE>SendSerial()</CODE> function.</P>
+
+<P>For the RCX2 and Swan the communication settings are set with <CODE>SetSerialComm</CODE>.  This determines how bits are sent over IR. Possible values are shown below.</P>
+
+<P><B>OptionEffect</B></P>
+
+<P>SERIAL_COMM_DEFAULTdefault settings</P>
+
+<P>SERIAL_COMM_48004800 baud</P>
+
+<P>SERIAL_COMM_DUTY2525% duty cycle</P>
+
+<P>SERIAL_COMM_76KHZ76kHz carrier</P>
+
+<P>SERIAL_COMM_RCXsame as default</P>
+
+<P>SERIAL_COMM_RC4800/76kHz/25%</P>
+
+<P>SERIAL_COMM_SPYBOT4800/76kHz/25%</P>
+
+<P>SERIAL_COMM_96009600 baud (Swan)</P>
+
+<P>The default is to send data at 2400 baud using a 50% duty cycle on a 38kHz carrier. To specify multiple options (such as 4800 baud with 25% duty cycle), combine the individual options using bitwise or (<CODE>SERIAL_COMM_4800 | SERIAL_COMM_DUTY25</CODE>).</P>
+
+<P>The RCX2 and Swan allow you to set the packet settings with <CODE>SetSerialPacket</CODE>.  This controls how bytes are assembled into packets. Possible values are shown below.</P>
+
+<P><B>OptionEffect</B></P>
+
+<P>SERIAL_PACKET_DEFAULTno packet format - just data bytes</P>
+
+<P>SERIAL_PACKET_PREAMBLEsend a packet preamble</P>
+
+<P>SERIAL_PACKET_NEGATEDfollow each byte with its complement</P>
+
+<P>SERIAL_PACKET_CHECKSUMinclude a checksum for each packet</P>
+
+<P>SERIAL_PACKET_RCXstandard RCX format (preamble,</P>
+
+<P>negated data, and checksum)</P>
+
+<P>Note that negated packets always include a checksum, so the <CODE>SERIAL_PACKET_CHECKSUM</CODE> option is only meaningful when <CODE>SERIAL_PACKET_NEGATED</CODE> is not specified. Likewise the preamble, negated, and checksum settings are implied by <CODE>SERIAL_PACKET_RCX</CODE>.</P>
+
+<P>The transmit buffer can hold up to 16 data bytes. These bytes may be set using <CODE>SetSerialData</CODE>, then transmitted by calling <CODE>SendSerial</CODE>. For example, the following code sends two bytes (0x12 and 0x34) out the serial port:</P>
+
+<PRE><CODE>SetSerialComm(SERIAL_COMM_DEFAULT);
+SetSerialPacket(SERIAL_PACKET_DEFAULT);
+SetSerialData(0, 0x12);
+SetSerialData(1, 0x34);
+SendSerial(0, 2);</CODE></PRE>
+
+<P>Spybotics uses a different mechanism for configuring the serial transmission parameters.  Use <CODE>SetSerialType</CODE> to specify the transmission type with the constants described in the following table.</P>
+
+<P><B>OptionEffect</B></P>
+
+<P>SERIAL_TYPE_SPYBOTSpybotics type</P>
+
+<P>SERIAL_TYPE_RCXRCX type</P>
+
+<P>SERIAL_TYPE_RCRC type</P>
+
+<P>SERIAL_TYPE_USERUser-defined type</P>
+
+<P>Use <CODE>SetSerialBaud</CODE> to specify the baud rate with the constants described in the following table.</P>
+
+<P><B>OptionEffect</B></P>
+
+<P>SERIAL_BAUD_24002400 baud</P>
+
+<P>SERIAL_BAUD_48004800 baud</P>
+
+<P>SERIAL_BAUD_96009600 baud</P>
+
+<P>Use <CODE>SetSerialChannel</CODE> to specify the transmission channel with the constants described in the following table.</P>
+
+<P><B>OptionEffect</B></P>
+
+<P>SERIAL_CHANNEL_IRIR channel</P>
+
+<P>SERIAL_CHANNEL_PCPC channel (visible light)</P>
+
+<P>Use <CODE>SetSerialPreamblePos</CODE> to specify the position of the preamble in the 16 bytes of serial data.  Use <CODE>SetSerialPreambleLen</CODE> to specify the length of the preamble.  Use <CODE>SetSerialChecksum</CODE> to specify the checksum type with the constants described in the following table.</P>
+
+<P><B>OptionEffect</B></P>
+
+<P>SERIAL_CHECKSUM_NONENo checksum</P>
+
+<P>SERIAL_CHECKSUM_SUMSum checksum</P>
+
+<P>SERIAL_CHECKSUM_ZERO_SUMZero sum checksum</P>
+
+<P>Use <CODE>SetSerialBiPhase</CODE> to specify the bi-phase mode with the constants described in the following table.</P>
+
+<P><B>OptionEffect</B></P>
+
+<P>SERIAL_BIPHASE_OFFNo bi-phase</P>
+
+<P>SERIAL_BIPHASE_ONUse bi-phase</P>
+
+<H3>SetSerialComm(settings)Function - RCX2</H3>
+
+<P>Set the communication settings, which determine how the bits are sent over IR</P>
+
+<PRE><CODE>SetSerialComm(SERIAL_COMM_DEFAULT);</CODE></PRE>
+
+<H3>SetSerialPacket(settings)Function - RCX2</H3>
+
+<P>Set the packet settings, which control how bytes are assembled into packets.</P>
+
+<PRE><CODE>SetSerialPacket(SERIAL_PACKET_DEFAULT);</CODE></PRE>
+
+<H3>SetSerialData(n, value)Function - RCX2, Spy</H3>
+
+<P>Set one byte of data in the transmit buffer. N is the index of the byte to set (0-15), and value can be any expression.</P>
+
+<PRE><CODE>SetSerialData(3, x); // set byte 3 to x</CODE></PRE>
+
+<H3>SerialData(n)Value - RCX2, Spy</H3>
+
+<P>Returns the value of a byte in the transmit buffer (NOT received data). N must be a constant between 0 and 15.</P>
+
+<PRE><CODE>x = SerialData(7) ; // read byte #7</CODE></PRE>
+
+<H3>SerialPacket()Value - RCX2</H3>
+
+<P>Returns the packet data formatting configuration.</P>
+
+<P>bit 0 : Preamble (0x55 0xFF 0x00)</P>
+
+<P>bit 1 : Negated (incl. negated checksum)</P>
+
+<P>bit 2 : Checksum (if not negated)</P>
+
+<PRE><CODE>x = SerialPacket(); // read packet configuration</CODE></PRE>
+
+<H3>SerialComm()Value - RCX2</H3>
+
+<P>Returns the UART transmit parameter configuration.  </P>
+
+<P>bit 0 : Baudrate (0 == 2400 baud, 1 == 4800 baud)</P>
+
+<P>bit 1 : Carrier freq (0 == 38 kHz, 1 == 76 kHz)</P>
+
+<P>bit 2 : Dutycycle (0 == 50 %, 1 == 25 %)</P>
+
+<P><CODE>x = SerialComm(); // read UART transmit parameters</CODE><B> </B></P>
+
+<H3>SendSerial(start, count)Function - RCX2, Spy</H3>
+
+<P>Use the contents of the transmit buffer to build a packet and send it out the IR port (according to the current packet and communication settings). Start and count are both constants that specify the first byte and the number of bytes within the buffer to be sent.</P>
+
+<PRE><CODE>SendSerial(0, 2); // send first two bytes in buffer</CODE></PRE>
+
+<H3>InitSpybotComm()Function - RCX2</H3>
+
+<P>Use this function to configure the serial communication registers in preparation for sending messages using the Spybot protocol.</P>
+
+<PRE><CODE>InitSpybotComm(); // prepare to send IR using Spybot protocol</CODE></PRE>
+
+<H3>SendSpybotMsg()Function - RCX2</H3>
+
+<P>Use this function to send a 7 byte Spybot message which was previously set via a call to <CODE>SetSpybotMessage</CODE>.</P>
+
+<PRE><CODE>SendSpybotMsg(); </CODE></PRE>
+
+<H3>SetSpybotMessage(mode, myID, addr, cmd, hi, lo)Function - RCX2</H3>
+
+<P>Use this function to set the contents of a Spybot message.  The message can then be sent repeatedly via calls to <CODE>SendSpybotMsg</CODE>.</P>
+
+<PRE><CODE>SetSpybotMessage(MSG_BROADCAST, 9, 0, CMD_FIRE_LASER, 1, 100); </CODE></PRE>
+
+<H3>SendSpybotMessage(mode, myID, addr, cmd, hi, lo)Function - RCX2</H3>
+
+<P>Use this function to send a 7 byte Spybot message.  This function calls <CODE>InitSpybotComm</CODE>, <CODE>SetSpybotMessage</CODE>, and <CODE>SendSpybotMsg</CODE> in sequence.</P>
+
+<PRE><CODE>SendSpybotMessage(MSG_BROADCAST, 9, 0, CMD_FIRE_LASER, 1, 100);</CODE></PRE>
+
+<H3>SendSpybotCtrlMsg()Function - RCX2</H3>
+
+<P>Use this function to send a 2 byte Spybot controller message which was previously set via a call to <CODE>SetSpybotCtrlMessage</CODE>.</P>
+
+<PRE><CODE>SendSpybotCtrlMsg(); </CODE></PRE>
+
+<H3>SetSpybotCtrlMessage(nMyID, nMsg)Function - RCX2</H3>
+
+<P>Use this function to set the contents of a Spybot controller message.  The message can then be sent repeatedly via calls to <CODE>SendSpybotCtrlMsg</CODE>.</P>
+
+<PRE><CODE>SetSpybotCtrlMessage(ID_CTRL_1, SPY_CTRL_BTN_1); </CODE></PRE>
+
+<H3>SendSpybotCtrlMessage(nMyID, nMsg)Function - RCX2</H3>
+
+<P>Use this function to send a 2 byte Spybot controller message.  This function calls <CODE>InitSpybotComm</CODE>, <CODE>SetSpybotCtrlMessage</CODE>, and <CODE>SendSpybotCtrlMsg</CODE> in sequence.</P>
+
+<PRE><CODE>SendSpybotCtrlMessage(ID_CTRL_1, SPY_CTRL_BTN_1);</CODE></PRE>
+
+<H3>SendSpybotCtrlPingMsg()Function - RCX2</H3>
+
+<P>Use this function to send a 2 byte Spybot controller ping message which was previously set via a call to <CODE>SetSpybotCtrlPingMessage</CODE>.</P>
+
+<PRE><CODE>SendSpybotCtrlPingMsg();</CODE></PRE>
+
+<H3>SetSpybotCtrlPingMessage(nID)Function - RCX2</H3>
+
+<P>Use this function to set the contents of a Spybot controller ping message.  The message can then be sent repeatedly via calls to <CODE>SendSpybotCtrlPingMsg</CODE>.</P>
+
+<PRE><CODE>SetSpybotCtrlPingMessage(ID_CTRL_1); </CODE></PRE>
+
+<H3>SendSpybotCtrlPingMessage(nID)Function - RCX2</H3>
+
+<P>Use this function to send a 2 byte Spybot controller ping message.  This function calls <CODE>InitSpybotComm</CODE>, <CODE>SetSpybotCtrlPingMessage</CODE>, and <CODE>SendSpybotCtrlPingMsg</CODE> in sequence.</P>
+
+<PRE><CODE>SendSpybotCtrlPingMessage(ID_CTRL_1);</CODE></PRE>
+
+<H3>SendSpybotPingMsg()Function - RCX2</H3>
+
+<P>Use this function to send a 4 byte Spybot ping message which was previously set via a call to <CODE>SetSpybotPingMessage</CODE>.</P>
+
+<PRE><CODE>SendSpybotPingMsg();</CODE></PRE>
+
+<H3>SetSpybotPing(nLinkID, nMyID, nInfo)Function – RCX2</H3>
+
+<P>Use this function to set the contents of a Spybot ping message.  The message can then be sent repeatedly via calls to <CODE>SendSpybotPingMsg</CODE>.</P>
+
+<PRE><CODE>SetSpybotPingMessage(ID_CTRL_1, ID_MIN_BOT+1, 10);</CODE></PRE>
+
+<H3>SendSpybotPing(nLinkID, nMyID, nInfo)Function - RCX2</H3>
+
+<P>Use this function to send a 2 byte Spybot ping message.  This function calls <CODE>InitSpybotComm</CODE>, <CODE>SetSpybotPingMessage</CODE>, and <CODE>SendSpybotPingMsg</CODE> in sequence.</P>
+
+<PRE><CODE>SendSpybotPingMessage(ID_CTRL_1, ID_MIN_BOT+1, 10);</CODE></PRE>
+
+<H3>InitRCComm()Function - RCX2</H3>
+
+<P>Use this function to configure the serial communication registers in preparation for sending messages using the Spybot RC protocol.</P>
+
+<PRE><CODE>InitRCComm(); // prepare to send IR using RC protocol</CODE></PRE>
+
+<H3>SendRCMsg()Function - RCX2</H3>
+
+<P>Use this function to send a 4 byte RC message which was previously set via a call to <CODE>SetRCMessage</CODE>.</P>
+
+<PRE><CODE>SendRCMsg();</CODE></PRE>
+
+<H3>SetRCMessage(nChannel, nLeft, nRight)Function - RCX2</H3>
+
+<P>Use this function to set the contents of a Spybot RC message.  The message can then be sent repeatedly via calls to <CODE>SendRCMsg</CODE>.</P>
+
+<PRE><CODE>SetRCMessage(RC_CHANNEL_2, RC_CMD_FWD, RC_CMD_FWD);</CODE></PRE>
+
+<H3>SendRCMessage(nChannel, nLeft, nRight)Function - RCX2</H3>
+
+<P>Use this function to send a 2 byte Spybot ping message.  This function calls <CODE>InitRCComm</CODE>, <CODE>SetRCMessage</CODE>, and <CODE>SendRCMsg</CODE> in sequence.</P>
+
+<PRE><CODE>SendRCMessage(RC_CHANNEL_2, RC_CMD_FWD, RC_CMD_FWD);</CODE></PRE>
+
+<H3>DefaultSerialComm()Value - Swan</H3>
+
+<P>Returns the default UART transmit parameter configuration.</P>
+
+<PRE><CODE>x = DefaultSerialComm(); // read the default UART transmit config</CODE></PRE>
+
+<H3>DefaultSerialPacket()Value - Swan</H3>
+
+<P>Returns the default packet data formatting configuration.</P>
+
+<PRE><CODE>x = DefaultSerialPacket(); // read the default packet config</CODE></PRE>
+
+<H3>SetDefaultSerialComm(settings)Function - Swan</H3>
+
+<P>Set the default communication settings, which determine how the bits are sent over IR</P>
+
+<PRE><CODE>SetDefaultSerialComm(SERIAL_COMM_DEFAULT);</CODE></PRE>
+
+<H3>SetDefaultSerialPacket(settings)Function - Swan</H3>
+
+<P>Set the default packet settings, which control how bytes are assembled into packets.</P>
+
+<PRE><CODE>SetDefaultSerialPacket(SERIAL_PACKET_DEFAULT);</CODE></PRE>
+
+<H3>SerialType()Value - Spy</H3>
+
+<P>Returns the type of the serial transmission.</P>
+
+<PRE><CODE>x = SerialType(); // SERIAL_TYPE_USER ??</CODE></PRE>
+
+<H3>SetSerialType(type)Function - Spy</H3>
+
+<P>Sets the type of the serial transmission.  </P>
+
+<PRE><CODE>SetSerialType(SERIAL_TYPE_USER); // set type to user</CODE></PRE>
+
+<P>Use one of the following constants: <CODE>SERIAL_TYPE_SPYBOT, SERIAL_TYPE_RCX, SERIAL_TYPE_RC, SERIAL_TYPE_USER</CODE>.  </P>
+
+<H3>SerialBaud()Value - Spy</H3>
+
+<P>Returns the baud rate of the serial transmission.</P>
+
+<PRE><CODE>x = SerialBaud(); // SERIAL_BAUD_2400 ??</CODE></PRE>
+
+<H3>SetSerialBaud(baud)Function - Spy</H3>
+
+<P>Sets the baud rate of the serial transmission.  </P>
+
+<PRE><CODE>SetSerialBaud(SERIAL_BAUD_2400); // set baud to 2400</CODE></PRE>
+
+<P>Use one of the following constants: <CODE>SERIAL_BAUD_2400, SERIAL_BAUD_4800, SERIAL_BAUD_9600</CODE>.  </P>
+
+<H3>SerialChannel()Value - Spy</H3>
+
+<P>Returns the transmission channel.</P>
+
+<PRE><CODE>x = SerialChannel(); // SERIAL_CHANNEL_PC ??</CODE></PRE>
+
+<H3>SetSerialChannel(channel)Function - Spy</H3>
+
+<P>Sets the transmission channel.  </P>
+
+<PRE><CODE>SetSerialChannel(SERIAL_CHANNEL_IR); // set channel to IR</CODE></PRE>
+
+<P>Use one of the following constants: <CODE>SERIAL_CHANNEL_IR, SERIAL_CHANNEL_PC</CODE>.  </P>
+
+<H3>SerialPreamblePos()Value - Spy</H3>
+
+<P>Returns the preamble position within the serial data buffer.</P>
+
+<PRE><CODE>x = SerialPreamblePos();</CODE></PRE>
+
+<H3>SetSerialPreamblePos(n)Function - Spy</H3>
+
+<P>Sets the position of the preamble within the serial data buffer.  </P>
+
+<PRE><CODE>SetSerialPreamblePos(12); // set preamble pos to 12</CODE></PRE>
+
+<H3>SerialPreambleLen()Value - Spy</H3>
+
+<P>Returns the preamble length.</P>
+
+<PRE><CODE>x = SerialPreambleLen();</CODE></PRE>
+
+<H3>SetSerialPreambleLen(n)Function - Spy</H3>
+
+<P>Sets the length of the preamble.  </P>
+
+<PRE><CODE>SetSerialPreambleLen(3); // set preamble length to 3</CODE></PRE>
+
+<H3>SerialChecksum()Value - Spy</H3>
+
+<P>Returns the transmission checksum type.</P>
+
+<PRE><CODE>x = SerialChecksum(); // SERIAL_CHECKSUM_SUM ??</CODE></PRE>
+
+<H3>SetSerialChecksum(check)Function - Spy</H3>
+
+<P>Sets the transmission checksum type.  </P>
+
+<PRE><CODE>SetSerialChecksum(SERIAL_CHECKSUM_SUM); // use Sum checksum</CODE></PRE>
+
+<P>Use one of the following constants: <CODE>SERIAL_CHECKSUM_NONE, SERIAL_CHECKSUM_SUM, SERIAL_CHECKSUM_ZERO_SUM</CODE>.  </P>
+
+<H3>SerialBiPhase()Value - Spy</H3>
+
+<P>Returns the transmission bi-phase mode.</P>
+
+<PRE><CODE>x = SerialBiPhase(); // SERIAL_BIPHASE_OFF ??</CODE></PRE>
+
+<H3>SetSerialBiPhase(mode)Function - Spy</H3>
+
+<P>Sets the transmission bi-phase mode.  </P>
+
+<PRE><CODE>SetSerialBiPhase(SERIAL_BIPHASE_OFF); // no bi-phase</CODE></PRE>
+
+<P>Use one of the following constants: <CODE>SERIAL_BIPHASE_OFF, SERIAL_BIPHASE_ON</CODE>.  </P>
+
+</BODY>
+</HTML>

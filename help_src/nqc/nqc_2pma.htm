@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SetPower</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SetPower">
+	<PARAM NAME="Keyword" VALUE="OUT_LOW">
+	<PARAM NAME="Keyword" VALUE="OUT_HALF">
+	<PARAM NAME="Keyword" VALUE="OUT_FULL">
+</OBJECT>
+
+<P><B><A NAME="idh_api_setpower"></A>SetPower(outputs, power)Function - All</B></P>
+
+<P>Sets the power level of the specified outputs. Power may be an expression, but should result in a value between 0 and 7. The constants OUT_LOW, OUT_HALF, and OUT_FULL may also be used.</P>
+
+<PRE><CODE>SetPower(OUT_A, OUT_FULL); // A full power
+SetPower(OUT_B, x);</CODE></PRE>
+
+<P>By default, all three motors are set to full power and the forward direction (but still turned off) when a program starts.</P>
+
+</BODY>
+</HTML>

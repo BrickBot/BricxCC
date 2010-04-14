@@ -1,0 +1,189 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>RCX2 Events</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="events">
+	<PARAM NAME="Keyword" VALUE="events, RCX2">
+</OBJECT>
+
+<P><A NAME="idh_nqc_rcx2events"></A>3.9.1 Configurable EventsRCX2, Spy</P>
+
+<P>RCX2, Swan, and Spybotics provide an extremely flexible event system. There are 16 events, each of which can be mapped to one of several event sources (the stimulus that can trigger the event), and an event type (the criteria for triggering). A number of other parameters may also be specified depending on the event type. For all of the configuration calls an event is identified by its event number - a constant from 0 to 15.</P>
+
+<P>Legal event sources are sensors, timers, counters, or the message buffer. An event is configured by calling <CODE>SetEvent(<I>event</I>, <I>source</I>, <I>type</I>)</CODE>, where event is a constant event number (0-15), source is the event source itself, and type is one of the types shown below (some combinations of sources and types are illegal).</P>
+
+<P><B>Event TypeConditionEvent Source</B></P>
+
+<P>EVENT_TYPE_PRESSEDvalue becomes onsensors only</P>
+
+<P>EVENT_TYPE_RELEASEDvalue becomes offsensors only</P>
+
+<P>EVENT_TYPE_PULSEvalue goes from off to on to offsensors only (RCX2)</P>
+
+<P>EVENT_TYPE_EDGEvalue goes from on to off or vice versasensors only (RCX2)</P>
+
+<P>EVENT_TYPE_FASTCHANGEvalue changes rapidlysensors only (RCX2)</P>
+
+<P>EVENT_TYPE_LOWvalue becomes lowany</P>
+
+<P>EVENT_TYPE_NORMALvalue becomes normalany</P>
+
+<P>EVENT_TYPE_HIGHvalue becomes highany</P>
+
+<P>EVENT_TYPE_CLICKvalue from low to high back to lowany</P>
+
+<P>EVENT_TYPE_DOUBLECLICKtwo clicks within a certain timeany (RCX2)</P>
+
+<P>EVENT_TYPE_MESSAGEnew message receivedMessage() only (RCX2)</P>
+
+<P>EVENT_TYPE_ENTRY_FOUNDworld entry foundVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_MSG_DISCARDMessage discardedVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_MSG_RECEIVEDMessage receivedVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_VLL_MSG_RECEIVEDVLL message receivedVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_ENTRY_CHANGEDWorld entry changedVLL() only (Spy)</P>
+
+<P>EVENT_TYPE_4event type 4any (Swan)</P>
+
+<P>EVENT_TYPE_5event type 5any (Swan)</P>
+
+<P>EVENT_TYPE_6event type 6any (Swan)</P>
+
+<P>EVENT_TYPE_VIRTUAL_MOTOR_CHANGE virtual motor changesany (Swan)</P>
+
+<P>EVENT_TYPE_VIRTUAL_MOTOR_POWER virtual motor powerany (Swan)</P>
+
+<P>EVENT_TYPE_VIRTUAL_SENSOR_DEFvirtual sensor defany (Swan)</P>
+
+<P>EVENT_TYPE_INFRARED_IDLEinfrared goes idleany (Swan)</P>
+
+<P>EVENT_TYPE_RESETresetany (Swan)</P>
+
+<P>The first four event types make use of a sensor's boolean value, thus are most useful with touch sensors. For example, to set event #2 to be triggered when a touch sensor on port 1 is pressed, the following call could be made:</P>
+
+<PRE><CODE>SetEvent(2, SENSOR_1, EVENT_TYPE_PRESSED);</CODE></PRE>
+
+<P>In order for <CODE>EVENT_TYPE_PULSE</CODE> or <CODE>EVENT_TYPE_EDGE</CODE> to be used, the sensor must be configured in the <CODE>SENSOR_MODE_PULSE</CODE> or <CODE>SENSOR_MODE_EDGE</CODE> respectively.</P>
+
+<P><CODE>EVENT_TYPE_FASTCHANGE</CODE> should be used with sensors that have been configured with a slope parameter. When the raw value changes faster than the slope parameter an <CODE>EVENT_TYPE_FASTCHANGE</CODE> event will be triggered.</P>
+
+<P>The next three types (<CODE>EVENT_TYPE_LOW</CODE>, <CODE>EVENT_TYPE_NORMAL</CODE>, and <CODE>EVENT_TYPE_HIGH</CODE>) convert an event source's value into one of three ranges (low, normal, or high), and trigger an event when the value moves from one range into another. The ranges are defined by the <I>lower limit</I> and <I>upper limit</I> for the event. When the source value is lower than the lower limit, the source is considered low. When the source value is higher than the upper limit, the source is considered high. The source is normal whenever it is between the limits.</P>
+
+<P>The following example configures event #3 to trigger when the sensor on port 2's value goes into the high range. The upper limit is set for 80, and the lower limit is set for 50. This configuration is typical of how an event can be triggered when a light sensor detected a bright light.</P>
+
+<PRE><CODE>SetEvent(3, SENSOR_2, EVENT_TYPE_HIGH);
+SetLowerLimit(3, 50);
+SetUpperLimit(3, 80);</CODE></PRE>
+
+<P>A hysteresis parameter can be used to provide more stable transitions in cases where the source value may jitter. Hysteresis works by making the transition from low to normal a little higher than the transition from normal to low. In a sense, it makes it easier to get into the low range than get out of it. A symmetrical case applies to the transition between normal and high.</P>
+
+<P>A transition from low to high back to low will trigger a <CODE>EVENT_TYPE_CLICK</CODE> event, provided that the entire sequence is faster than the <I>click time</I> for the event. If two successive clicks occur and the time between clicks is also less than the click time, then an <CODE>EVENT_TYPE_DOUBLECLICK</CODE> event will be triggered. The system also keeps track of the total number of clicks for each event.</P>
+
+<P>The last event type, <CODE>EVENT_TYPE_MESSAGE</CODE>, is only valid when <CODE>Message()</CODE> is used as the event source. The event will be triggered whenever a new message arrives (even if its value is the same as a previous message).</P>
+
+<P>The <CODE>monitor</CODE> statement and some API functions (such as <CODE>ActiveEvents()</CODE> or <CODE>Event()</CODE>) need to handle multiple events. This is done by converting each event number to an event mask, and then combining the masks with a bitwise OR. The <CODE>EVENT_MASK(<I>event</I>)</CODE> macro converts an event number to a mask. For example, to monitor events 2 and 3, the following statement could be used:</P>
+
+<PRE><CODE>monitor(EVENT_MASK(2) | EVENT_MASK(3))</CODE></PRE>
+
+<H3>SetEvent(event, source, type)Function - RCX2, Spy</H3>
+
+<P>Configure an event (a number from 0 to 15) to use the specified source and type. Both event and type must be constants, and source should be the actual source expression.</P>
+
+<PRE><CODE>SetEvent(2, Timer(0), EVENT_TYPE_HIGH);</CODE></PRE>
+
+<H3>ClearEvent(event)Value - RCX2, Spy</H3>
+
+<P>Clear the configuration for the specified event. This prevents it from triggering until it is re-configured.</P>
+
+<PRE><CODE>ClearEvent(2); // clear event #2</CODE></PRE>
+
+<H3>ClearAllEvents()Value - RCX2, Spy</H3>
+
+<P>Clear the configurations for all events.</P>
+
+<PRE><CODE>ClearAllEvents();</CODE></PRE>
+
+<H3>EventState(event)Value - RCX2, Spy</H3>
+
+<P>Return the state of a given event. States are 0: Low, 1: Normal, 2: High, 3: Undefined, 4: Start calibrating, 5: Calibrating in process.</P>
+
+<PRE><CODE>x = EventState(2);</CODE></PRE>
+
+<H3>CalibrateEvent(event, lower, upper, hyst)Function - RCX2, Spy</H3>
+
+<P>Calibrate the event by taking an actual sensor reading and then applying the specified lower, upper, and hyst ratios to determine actual limits and hysteresis value. The specific formulas for calibration depend on sensor type and are explained in the LEGO SDK. Calibration is not instantaneous - <CODE>EventState()</CODE> can be checked to determine when the calibration is complete (typically about 50ms).</P>
+
+<PRE><CODE>CalibrateEvent(2, 50, 50, 20);
+until(EventState(2) != 5); // wait for calibration</CODE></PRE>
+
+<H3>SetUpperLimit(event, limit)Function - RCX2, Spy</H3>
+
+<P>Set the upper limit for the event, where event is a constant event number and limit can be any expression.</P>
+
+<PRE><CODE>SetUpperLimit(2, x); // set upper limit for #2 to x</CODE></PRE>
+
+<H3>UpperLimit(event)Value - RCX2, Spy</H3>
+
+<P>Return the current upper limit for the specified event number.</P>
+
+<PRE><CODE>x = UpperLimit(2); // get upper limit for event 2</CODE></PRE>
+
+<H3>SetLowerLimit(event, limit)Function - RCX2, Spy</H3>
+
+<P>Set the lower limit for the event, where event is a constant event number and limit can be any expression.</P>
+
+<PRE><CODE>SetLowerLimit(2, x); // set lower limit for #2 to x</CODE></PRE>
+
+<H3>LowerLimit(event)Value - RCX2, Spy</H3>
+
+<P>Return the current lower limit for the specified event number.</P>
+
+<PRE><CODE>x = LowerLimit(2); // get lower limit for event 2</CODE></PRE>
+
+<H3>SetHysteresis(event, value)Function - RCX2, Spy</H3>
+
+<P>Set the hysteresis for the event, where event is a constant event number and value can be any expression.</P>
+
+<PRE><CODE>SetHysteresis(2, x);</CODE></PRE>
+
+<H3>Hysteresis(event)Value - RCX2, Spy</H3>
+
+<P>Return the current hysteresis for the specified event number.</P>
+
+<PRE><CODE>x = Hysteresis(2);</CODE></PRE>
+
+<H3>SetClickTime(event, value)Function - RCX2, Spy</H3>
+
+<P>Set the click time for the event, where event is a constant event number and value can be any expression. The time is specified in increments of 10ms, so one second would be a value of 100.</P>
+
+<PRE><CODE>SetClickTime(2, x);</CODE></PRE>
+
+<H3>ClickTime(event)Value - RCX2, Spy</H3>
+
+<P>Return the current click time for the specified event number.</P>
+
+<PRE><CODE>x = ClickTime(2);</CODE></PRE>
+
+<H3>SetClickCounter(event, value)Function - RCX2</H3>
+
+<P>Set the click counter for the event, where event is a constant event number and value can be any expression.</P>
+
+<PRE><CODE>SetClickCounter(2, x);</CODE></PRE>
+
+<H3>ClickCounter(event)Value - RCX2</H3>
+
+<P>Return the current click counter for the specified event number.</P>
+
+<PRE><CODE>x = ClickCounter(2);</CODE></PRE>
+
+</BODY>
+</HTML>

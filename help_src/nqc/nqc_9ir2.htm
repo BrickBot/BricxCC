@@ -1,0 +1,21 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Action</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="Action">
+</OBJECT>
+
+<P><B><A NAME="idh_api_action"></A>Action(nSound, nDisplay, nMovement, nRepeat, nTime)Function - Spy</B></P>
+
+<P>Built-in ROM subroutine number 44.  This subroutine plays any combination of sound, LED animation, and movement, like a multimedia presentation.  nSound is the sound to play (0-79, -1 = no sound).  nDisplay is the LED animation to play (0-15, -1 = no animation).  nMovement is the Spybot motion (see BasicMove, FancyMove, RandomMove, SlowDownMove, and SpeedUpMove) with -1 meaning no movement.  nRepeat is the number of times to repeat the motion.  nTime is the time to wait if nMovement = -1, otherwise it is passed on to the movement subroutines.</P>
+
+<PRE><CODE>Action(SOUND_GEIGER, ANIMATION_FLASH, -1, 0, 300);</CODE></PRE>
+
+</BODY>
+</HTML>

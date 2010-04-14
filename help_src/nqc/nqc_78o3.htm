@@ -1,0 +1,49 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Scout Specific Features</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="scout specific features">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_scoutspecific"></A>3.13 Scout Specific Features</H2>
+
+<H3>SetScoutRules(motion, touch, light, time, fx)Function - Scout</H3>
+
+<P>Set the various rules used by the scout in stand-alone mode.</P>
+
+<H3>ScoutRules(n)Value - Scout</H3>
+
+<P>Return current setting for one of the rules. N should be a constant between 0 and 4.</P>
+
+<PRE><CODE>x = ScoutRules(1); // get setting for rule #1</CODE></PRE>
+
+<H3>SetScoutMode(mode)Function - Scout</H3>
+
+<P>Put the scout into stand-alone (0) or power (1) mode. As a programming call it really only makes sense to put into stand-alone mode since it would already be in power mode to run an NQC program.</P>
+
+<H3>SetEventFeedback(events)Function - Scout</H3>
+
+<P>Set which events should be accompanied by audio feedback.</P>
+
+<PRE><CODE>SetEventFeedback(EVENT_1_PRESSED);</CODE></PRE>
+
+<H3>EventFeedback()Value - Scout</H3>
+
+<P>Return the set of events that have audio feedback.</P>
+
+<PRE><CODE>x = EventFeedback();</CODE></PRE>
+
+<H3>SetLight(mode)Function - Scout</H3>
+
+<P>Control the Scout's LED. Mode must be LIGHT_ON or LIGHT_OFF.</P>
+
+<PRE><CODE>SetLight(LIGHT_ON); // turn on LED</CODE></PRE>
+
+</BODY>
+</HTML>

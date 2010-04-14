@@ -1,0 +1,678 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Spybotics Specific Features</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="spybotics specific features">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_spyboticspecific"></A>3.15 Spybotics Specific Features</H2>
+
+<H3>SetLED(mode, value)Function - Spy</H3>
+
+<P>A single command, <CODE>SetLED(<I>mode</I>, <I>value</I>)</CODE>, can be used to control all of the different LEDs on the Spybotics brick. The function takes two arguments, a mode and a value. The mode parameter selects which group of LEDs to control, and how they should be affected.</P>
+
+<P><B><U>LED Mode Constants</U></B></P>
+
+<P>LED_MODE_ON, LED_MODE_BLINK, LED_MODE_DURATION, LED_MODE_SCALE, LED_MODE_SCALE_BLINK, LED_MODE_SCALE_DURATION, LED_MODE_RED_SCALE, LED_MODE_RED_SCALE_BLINK, LED_MODE_GREEN_SCALE, LED_MODE_GREEN_SCALE_BLINK, LED_MODE_YELLOW, LED_MODE_YELLOW_BLINK, LED_MODE_YELLOW_DURATION, LED_MODE_VLL, LED_MODE_VLL_BLINK, LED_MODE_VLL_DURATION</P>
+
+<P>The meaning of value parameter depends on the mode. Sometimes it is a mask of which LEDs should be controlled (as with <CODE>LED_MODE_ON</CODE>). Sometimes it is a single value that is used to determine how many LEDs to turn on (as with <CODE>LED_MODE_SCALE</CODE>). </P>
+
+<P><B><U>LED Value Constants</U></B></P>
+
+<P>LED_RED1, LED_RED2, LED_RED3, LED_GREEN1, LED_GREEN2, LED_GREEN3, LED_YELLOW, LED_ALL_RED, LED_ALL_GREEN, LED_ALL_RED_GREEN, LED_ALL</P>
+
+<P>Here is a short program that blinks all six of the top red/green LEDs.</P>
+
+<PRE><CODE>task main()
+{
+SetLED(LED_MODE_BLINK, 0x3f);
+Wait(200);
+}</CODE></PRE>
+
+<H3>LED(mode)Value - Spy</H3>
+
+<P>Return the value of the LED control registers.  Use the LED Mode constants as the parameter.</P>
+
+<PRE><CODE>x = LED(LED_MODE_ON);</CODE></PRE>
+
+<H3>SetAnimation(number)Function - Spy</H3>
+
+<P>A more sophisticated way to control the top LEDs is to use animations. An animation is a sequence of LED patterns. Each pattern is displayed for a certain amount of time, then the next pattern is displayed. Animations are activated using the <CODE>SetAnimation(number)</CODE> function. There are 8 pre-defined animations in ROM.</P>
+
+<P><B><U>ROM Animation Constants</U></B></P>
+
+<P>ANIMATION_SCAN, ANIMATION_SPARKLE, ANIMATION_FLASH, ANIMATION_RED_TO_GREEN, ANIMATION_GREEN_TO_RED, ANIMATION_POINT_FORWARD, ANIMATION_ALARM, ANIMATION_THINKING</P>
+
+<P>Here is a short program that runs a ROM animation.</P>
+
+<PRE><CODE>task main
+{
+  SetAnimation(ANIMATION_SCAN);
+  Wait(200);
+}</CODE></PRE>
+
+<P><B>ANIMATIONResource Declaration - Spy</B> </P>
+
+<P>It is also possible to define custom animations. This is done with a resource declaration (a new NQC feature). The declaration must be done at the global level (not within a task/sub/function), and must occur before the animation is used in the program. An animation declaration looks like this:</P>
+
+<PRE><CODE>ANIMATION <I>name</I> { <I>data</I> ... };</CODE></PRE>
+
+<P>Where <I>name</I> is a name you pick for the animation, and <I>data</I> is a series of bytes that determine the animation's appearance. The data bytes are interpreted in pairs, with the first byte of each pair specifying a mask of the LEDs that should be turned on, and the second byte determining how many 10ms ticks that pattern should be displayed for. A pair of 255,0 causes the animation to loop continuously.  You can also use the following two special commands (in a comma-separated list) to define an animation:</P>
+
+<P><B><U>Animation Commands</U></B></P>
+
+<PRE><CODE>AnimateLED(led_mask, time)
+RepeatAnimation()</CODE></PRE>
+
+<P>Once the animation is declared, its name may be used as an argument to <CODE>SetAnimation()</CODE>. Here is an example:</P>
+
+<PRE><CODE>ANIMATION my_animation { 
+  AnimateLED(1, 10), 
+  AnimateLED(2, 10), 
+  AnimateLED(4, 10), 
+  AnimateLED(2, 10), 
+  RepeatAnimation()
+};
+
+task main()
+{
+SetAnimation(my_animation);
+Wait(500);
+}</CODE></PRE>
+
+<H3>AnimateLED(led_mask, time)Animation Macro - Spy</H3>
+
+<P>User animations contain LED patterns.  The led_mask parameter is a mask of the LEDs that should be turned on (see the LED Value Constants).  The time parameter is the number of 10 ms steps to display the pattern for, ranging from 1 to 255 (2.55 seconds).</P>
+
+<PRE><CODE>AnimateLED(LED_RED1, 10)</CODE></PRE>
+
+<H3>RepeatAnimation()Animation Macro - Spy</H3>
+
+<P>Repeat the user animation from the beginning.</P>
+
+<PRE><CODE>RepeatAnimation()</CODE></PRE>
+
+<H3>SOUNDEFFECTResource Declaration - Spy</H3>
+
+<P>With Spybotics you can define up to 15 of your own sound effects using a resource declaration. The declaration must be done at the global level (not within a task/sub/function), and must occur before the sound effect is used in the program. A sound effect declaration looks like this:</P>
+
+<PRE><CODE>SOUNDEFFECT <I>name</I> { <I>data</I> ... };</CODE></PRE>
+
+<P>Where <I>name</I> is a name you pick for the sound effect, and <I>data</I> is a series of bytes that determine the sound effect sound. Use the following special commands (in a comma-separated list) to define the sound effect.</P>
+
+<P><B><U>User Sound Effect Commands</U></B></P>
+
+<PRE><CODE>Gate(on, period)
+GateOff()
+Glide(freq1, freq2, time)
+Vibrato(freq1, freq2, time)
+WaitEffect(time)
+FixedWaitEffect(time)
+Tone(freq, time)
+FixedTone(freq, time)
+RepeatEffect()</CODE></PRE>
+
+<P>Once the sound effect is declared, its name may be used as an argument to <CODE>PlaySound()</CODE>. Here is an example:</P>
+
+<PRE><CODE>SOUNDEFFECT my_effect { 
+  Gate(1, 10),
+  Glide(294, 660, 60),
+  GateOff(),
+  WaitEffect(50),
+  Vibrato(294, 660, 60),
+  FixedTone(500, 50),
+  RepeatEffect()
+};
+
+task main()
+{
+PlaySound(my_effect);
+Wait(500);
+}
+</CODE></PRE>
+
+<H3>Gate(on, period)Sound Effect Macro - Spy</H3>
+
+<P>User sound effects can be changed by turning the sound on and off rapidly.  The on parameter is that portion of the period during which sound is output.  The period parameter is the length of the gate cycle in 10 ms steps from 1 to 255 (2.55 seconds).</P>
+
+<PRE><CODE>Gate(1, 10)</CODE></PRE>
+
+<H3>GateOff()Sound Effect Macro - Spy</H3>
+
+<P>Stop gating the sound effect.</P>
+
+<PRE><CODE>GateOff()</CODE></PRE>
+
+<H3>Glide(frequency1, frequency2, duration)Sound Effect Macro - Spy</H3>
+
+<P>User sound effects can contain sounds which glide from one frequency to another.  The two frequency parameters can range from 32 to 20000 Hz.  The duration parameter is the time to glide from the first frequency to the second in 10 ms steps from 1 to 255 (2.55 seconds).</P>
+
+<PRE><CODE>Glide(294, 660, 60)</CODE></PRE>
+
+<H3>Vibrato(frequency1, frequency2, duration)Sound Effect Macro - Spy</H3>
+
+<P>User sound effects can contain vibratos, where the sound alternates rapidly between two frequencies.  The two frequency parameters can range from 32 to 20000 Hz.  The duration parameter is the number of 10 ms steps from 1 to 255 (2.55 seconds).</P>
+
+<PRE><CODE>Vibrato(294, 660, 60)</CODE></PRE>
+
+<H3>WaitEffect(duration)Sound Effect Macro - Spy</H3>
+
+<P>User sound effects can contain wait periods.  The duration parameter is the length of the wait in 10 ms steps from 1 to 255 (2.55 seconds).</P>
+
+<PRE><CODE>WaitEffect(60)</CODE></PRE>
+
+<H3>FixedWaitEffect(duration)Sound Effect Macro - Spy</H3>
+
+<P>User sound effects can contain fixed wait periods.  The duration parameter is the length of the wait in 10 ms steps from 1 to 255 (2.55 seconds).  This wait period will be unaffected by adjustments to the sound effect time.</P>
+
+<PRE><CODE>FixedWaitEffect(60)</CODE></PRE>
+
+<H3>Tone(frequency, duration)Sound Effect Macro - Spy</H3>
+
+<P>User sound effects can contain simple tones.  The frequency parameter is the tone to be played, ranging from 32 to 20000 Hz.  The duration parameter is the length of the wait in 10 ms steps from 1 to 255 (2.55 seconds).</P>
+
+<PRE><CODE>Tone(440, 60)</CODE></PRE>
+
+<H3>FixedTone(frequency, duration)Sound Effect Macro - Spy</H3>
+
+<P>User sound effects can contain fixed wait periods.  The frequency parameter is the tone to be played, ranging from 32 to 20000 Hz.  The duration parameter is the length of the wait in 10 ms steps from 1 to 255 (2.55 seconds).  This wait period will be unaffected by adjustments to the sound effect sound or time.</P>
+
+<PRE><CODE>FixedTone(440, 60)</CODE></PRE>
+
+<H3>RepeatEffect()Sound Effect Macro - Spy</H3>
+
+<P>Repeat the user sound effect from the beginning.</P>
+
+<PRE><CODE>RepeatEffect()</CODE></PRE>
+
+<H3>EffectSound()Value - Spy</H3>
+
+<P>Return the value of the sound effect frequency adjustment register. </P>
+
+<PRE><CODE>x = EffectSound(); // read the sound effect freq adj</CODE></PRE>
+
+<H3>EffectTime()Value - Spy</H3>
+
+<P>Return the value of the sound effect time adjustment register.</P>
+
+<PRE><CODE>x = EffectTime(); // read the sound effect time adj</CODE></PRE>
+
+<H3>SetEffectSound(s)Function - Spy</H3>
+
+<P>Set the value of the sound effect frequency adjustment register.  The parameter can range from 0 to 255 where 100 = 1.0 * the frequency.</P>
+
+<PRE><CODE>SetEffectSound(50); // cut freq in half (50%)</CODE></PRE>
+
+<H3>SetEffectTime(t)Function - Spy</H3>
+
+<P>Set the value of the sound effect time adjustment register.  The parameter can range from 0 to 255 where 100 = 1.0 * the duration.</P>
+
+<PRE><CODE>SetEffectTime(50); // cut sound duration in half (50%)</CODE></PRE>
+
+<H3>ClearWorld()Function - Spy</H3>
+
+<P>Clear the contents of the world relationship table.</P>
+
+<PRE><CODE>ClearWorld(); // empty world table</CODE></PRE>
+
+<H3>FindWorld(v, relationSource, criteria, threshold)Function - Spy</H3>
+
+<P>Sets variable v to the next entry in the world relationship table that matches the criteria specified.</P>
+
+<PRE><CODE>task main()
+{
+  int v = -1;
+  ClearWorld();
+  FindWorld(v, SPY_RANGE, REL_GT, RANGE_NOWHERE);
+  while (v != -1)
+  {
+    SetWorldNote(v, 40);
+    SetTargetID(v);
+    FindWorld(v, SPY_RANGE, REL_GT, RANGE_NOWHERE);
+  }</CODE></PRE>
+
+<P><B><U>Criteria Constants</U></B></P>
+
+<P>REL_GT, REL_LT, REL_EQ, REL_NE</P>
+
+<H3>Target(relationSource)Value - Spy</H3>
+
+<P>Return the value from the specified relation source for the current target.</P>
+
+<PRE><CODE>x = Target(SPY_RANGE); // get the target range
+</CODE></PRE>
+
+<P><B><U>Relation Source Constants</U></B></P>
+
+<P>SPY_TARGETID, SPY_NOTE, SPY_LINKID, SPY_RANGE, SPY_DIRECTION, SPY_ASPECT, SPY_INFO, SPY_SHORTID</P>
+
+<H3>SetTargetID(v)Function - Spy</H3>
+
+<P>Set the current target based on the value of variable v.  Setting the target to <CODE>TARGET_NONE</CODE> stops tracking.</P>
+
+<PRE><CODE>int x = 5;
+SetTargetID(x); // set the target ID</CODE></PRE>
+
+<P><B><U>ID Constants</U></B></P>
+
+<P>TARGET_NONE, ID_NONE, ID_CTRL1, ID_CTRL2, ID_CTRL3, ID_CTRL4, ID_CTRL5, ID_CTRL6, ID_PC, ID_BOT_MIN, ID_BOT_MAX</P>
+
+<H3>SetTargetNote(v)Function - Spy</H3>
+
+<P>Set the current target's game note.</P>
+
+<PRE><CODE>SetTargetNote(50); // set the target's note to 50</CODE></PRE>
+
+<H3>GetWorld(n, t, v)Function - Spy</H3>
+
+<P>Set variable v to the value in the relationSource for the specified target.</P>
+
+<PRE><CODE>GetWorld(SPY_RANGE, t, v); // set v to target t's range</CODE></PRE>
+
+<H3>World(relationSource, target)Value - Spy</H3>
+
+<P>Access the value in the relationSource for the specified target.</P>
+
+<P><CODE>x = World(SPY_RANGE, t); // set x to target t's range</CODE><B> </B></P>
+
+<H3>GetWorldAspect(t, v)Function - Spy</H3>
+
+<P>Set variable v to the specified target's aspect.</P>
+
+<PRE><CODE>GetWorldAspect(t, v); // set v to target t's aspect</CODE></PRE>
+
+<P><B><U>Aspect Constants</U></B></P>
+
+<P>ASPECT_FRONT_LEFT, ASPECT_FRONT, ASPECT_FRONT_RIGHT, ASPECT_BACK_RIGHT, ASPECT_BACK, ASPECT_BACK_LEFT</P>
+
+<H3>WorldAspect(t)Value - Spy</H3>
+
+<P>Access the specified target's aspect.</P>
+
+<PRE><CODE>x = WorldAspect(t); // set x to target t's aspect</CODE></PRE>
+
+<H3>GetWorldDirection(t, v)Function - Spy</H3>
+
+<P>Set variable v to the value in the relationSource for the specified target.</P>
+
+<PRE><CODE>GetWorldDirection(t, v); // set v to target t's direction</CODE></PRE>
+
+<P><B><U>Direction Constants</U></B></P>
+
+<P>DIRECTION_LEFT, DIRECTION_LEFT_OF_CENTER, DIRECTION_CENTER, DIRECTION_RIGHT_OF_CENTER, DIRECTION_RIGHT</P>
+
+<H3>WorldDirection(t)Value - Spy</H3>
+
+<P>Access the specified target's direction.</P>
+
+<PRE><CODE>x = WorldDirection(t); // set x to target t's direction</CODE></PRE>
+
+<H3>GetWorldLinkID(t, v)Function - Spy</H3>
+
+<P>Set variable v to the specified target's link ID.</P>
+
+<PRE><CODE>GetWorldLinkID(t, v); // set v to target t's link ID</CODE></PRE>
+
+<H3>WorldLinkID(t)Value - Spy</H3>
+
+<P>Access the specified target's link ID.</P>
+
+<PRE><CODE>x = WorldLinkID(t); // set x to target t's link ID</CODE></PRE>
+
+<H3>GetWorldNote(t, v)Function - Spy</H3>
+
+<P>Set variable v to the specified target's note.</P>
+
+<PRE><CODE>GetWorldNote(t, v); // set v to target t's note</CODE></PRE>
+
+<H3>WorldNote(t)Value - Spy</H3>
+
+<P>Access the specified target's note.</P>
+
+<PRE><CODE>x = WorldNote(t); // set x to target t's note</CODE></PRE>
+
+<H3>GetWorldRange(t, v)Function - Spy</H3>
+
+<P>Set variable v to the specified target's range.</P>
+
+<PRE><CODE>GetWorldRange(t, v); // set v to target t's range</CODE></PRE>
+
+<P><B><U>Range Constants</U></B></P>
+
+<P>RANGE_NOWHERE, RANGE_ANYWHERE, RANGE_THERE, RANGE_HERE</P>
+
+<H3>WorldRange(t)Value - Spy</H3>
+
+<P>Access the specified target's range.</P>
+
+<PRE><CODE>x = WorldRange(t); // set x to target t's range</CODE></PRE>
+
+<H3>GetWorldShortID(t, v)Function - Spy</H3>
+
+<P>Set variable v to the specified target's short ID.</P>
+
+<PRE><CODE>GetWorldShortID(t, v); // set v to target t's short ID</CODE></PRE>
+
+<H3>WorldShortID(t)Value - Spy</H3>
+
+<P>Access the specified target's short ID.</P>
+
+<PRE><CODE>x = WorldShortID(t); // set x to target t's short ID</CODE></PRE>
+
+<H3>SetWorldNote(t, v)Function - Spy</H3>
+
+<P>Set the specified target's note to the value v.</P>
+
+<PRE><CODE>SetWorldNote(t, v); // set target t's note</CODE></PRE>
+
+<H3>Pop(n)Function - Spy</H3>
+
+<P>Pop n entries off the stack.</P>
+
+<PRE><CODE>Pop(2); // pop 2 entries off the stack</CODE></PRE>
+
+<H3>Push(n)Function - Spy</H3>
+
+<P>Push a value onto the stack</P>
+
+<PRE><CODE>Push(v); // push the contents of variable v onto the stack</CODE></PRE>
+
+<H3>Stack(n)Value - Spy</H3>
+
+<P>Return the value at the specified stack index.</P>
+
+<PRE><CODE>x = Stack(0); // set x to first stack entry</CODE></PRE>
+
+<H3>SetStack(i, v)Function - Spy</H3>
+
+<P>Set the stack entry specified by index to the value v.</P>
+
+<PRE><CODE>SetStack(0, 4); // set the first stack entry to 4</CODE></PRE>
+
+<H3>TimerState(n)Value - Spy</H3>
+
+<P>Return the current running state of timer n.</P>
+
+<PRE><CODE>x = TimerState(0); // set x to timer 0's state</CODE></PRE>
+
+<H3>SetTimerState(n, s)Function - Spy</H3>
+
+<P>Set the running state of the specified timer. </P>
+
+<PRE><CODE>SetTimerState(0, TIMER_STOPPED); // stop timer 0</CODE></PRE>
+
+<P><B><U>State Constants</U></B></P>
+
+<P>TIMER_RUNNING, TIMER_STOPPED</P>
+
+<H3>EEPROM(index)Value - Spy</H3>
+
+<P>Return the value stored at the EEPROM location specified by index (either directly or indirectly).</P>
+
+<PRE><CODE>x = EEPROM(10); // read contents of EEPROM location 10</CODE></PRE>
+
+<H3>SetEEPROM(index, d)Function - Spy</H3>
+
+<P>Set the EEPROM location specified by index (directly or indirectly) to the value d.</P>
+
+<PRE><CODE>SetEEPROM(0, 5); // set EEPROM location 0 to 5
+int i = 3;
+SetEEPROM(i, TimerState(0)); // set EEPROM location 3</CODE></PRE>
+
+<H3>CurrentTaskID()Value - Spy</H3>
+
+<P>Return the current task ID.</P>
+
+<PRE><CODE>x = CurrentTaskID(); // read current task ID</CODE></PRE>
+
+<H3>RxMessageLock()Value - Spy</H3>
+
+<P>Return the receive buffer locking value.</P>
+
+<PRE><CODE>x = RxMessageLock(); // read the message locking value</CODE></PRE>
+
+<H3>SetRxMessageLock(lock)Function - Spy</H3>
+
+<P>Set the receive buffer locking value.  To lock both IR and PC buffers use <CODE>MSG_IR+MSG_PC.</CODE></P>
+
+<PRE><CODE>SetRxMessageLock(MSG_IR); // lock the IR message buffer</CODE></PRE>
+
+<P><B><U>Receive Message Locking Constants</U></B></P>
+
+<P>MSG_NONE, MSG_IR, MSG_PC</P>
+
+<H3>RxMessageIndex()Value - Spy</H3>
+
+<P>Return the index for the latest NewEntry event.</P>
+
+<PRE><CODE>x = RxMessageIndex();</CODE></PRE>
+
+<H3>RxMessageChannel()Value - Spy</H3>
+
+<P>Return the channel containing the latest received message.</P>
+
+<PRE><CODE>x = RxMessageChannel();</CODE></PRE>
+
+<H3>RxMessageID(channel)Value - Spy</H3>
+
+<P>Extract an ID from a received IR or PC message and convert it into an index.  The desired channel is <CODE>MSG_IR</CODE> or <CODE>MSG_PC.</CODE></P>
+
+<PRE><CODE>x = RxMessageID(MSG_IR);</CODE></PRE>
+
+<H3>RxMessage(channel, byte)Value - Spy</H3>
+
+<P>Read the contents of a received IR or PC message (4 bytes total).  The desired channel is <CODE>MSG_IR</CODE> or <CODE>MSG_PC.  </CODE>The desired byte is specified using MSG_INDEX, MSG_COMMAND, MSG_HI_BYTE, or MSG_LO_BYTE.</P>
+
+<PRE><CODE>if (RxMessage(MSG_IR, MSG_COMMAND) == COMMAND_CONTROLLER)
+{
+  x = RxMessage(MSG_IR, MSG_HI_BYTE);
+}</CODE></PRE>
+
+<H3>PingControl(n)Value - Spy</H3>
+
+<P>Return the value of the ping control registers (n = 0..2).</P>
+
+<PRE><CODE>x = PingControl(1); // read the current ping interval</CODE></PRE>
+
+<H3>PingData()Value - Spy</H3>
+
+<P>Return the current 8 bit information for ping messages</P>
+
+<PRE><CODE>x = PingData();</CODE></PRE>
+
+<H3>SetPingData(d)Function - Spy</H3>
+
+<P>Set the 8 bit information for ping messages.</P>
+
+<PRE><CODE>SetPingData(55); // send the value 55 when pinging</CODE></PRE>
+
+<H3>PingInterval()Value - Spy</H3>
+
+<P>Return the current ping interval.</P>
+
+<PRE><CODE>x = PingInterval();</CODE></PRE>
+
+<H3>SetPingInterval(interval)Function - Spy</H3>
+
+<P>Set the ping interval in 10ms steps.  Setting the interval to zero will disable pinging.</P>
+
+<PRE><CODE>SetPingInterval(0); // disable pings</CODE></PRE>
+
+<H3>PingID()Value - Spy</H3>
+
+<P>Return the Spybotics ping ID number.</P>
+
+<PRE><CODE>x = PingID(); // x = my ping ID</CODE></PRE>
+
+<H3>BeaconControl(n)Value - Spy</H3>
+
+<P>Return the value of the beacon control registers (n = 0..3).</P>
+
+<PRE><CODE>x = BeaconControl(1); // read the RC receive channel</CODE></PRE>
+
+<H3>LinkID()Value - Spy</H3>
+
+<P>Return the link ID (0-7; 0 = no link, 1-6 control unit ID, 7 = PC).</P>
+
+<PRE><CODE>x = LinkID(); // read link ID</CODE></PRE>
+
+<P><B><U>ID Constants</U></B></P>
+
+<P>ID_NONE, ID_CTRL1, ID_CTRL2, ID_CTRL3, ID_CTRL4, ID_CTRL5, ID_CTRL6, ID_PC</P>
+
+<H3>RCRxChannel()Value - Spy</H3>
+
+<P>Return the RC receive channel.</P>
+
+<PRE><CODE>x = RCRxChannel(); // read RC receive channel</CODE></PRE>
+
+<H3>SetRCRxChannel(channel)Function - Spy</H3>
+
+<P>Set the RC receive channel.</P>
+
+<PRE><CODE>SetRCRxChannel(RC_CHANNEL_1);</CODE></PRE>
+
+<P><B><U>RC Channel Constants</U></B></P>
+
+<P>RC_CHANNEL_BROADCAST, RC_CHANNEL_1, RC_CHANNEL_2, RC_CHANNEL_3, RC_CHANNEL_DISABLED</P>
+
+<H3>RCTxChannel()Value - Spy</H3>
+
+<P>Return the RC transmit channel.</P>
+
+<PRE><CODE>x = RCTxChannel(); // read RC transmit channel</CODE></PRE>
+
+<H3>SetRCTxChannel(channel)Function - Spy</H3>
+
+<P>Set the RC transmit channel.</P>
+
+<PRE><CODE>SetRCTxChannel(RC_CHANNEL_1);</CODE></PRE>
+
+<H3>RCTxMode()Value - Spy</H3>
+
+<P>Return the current RC transmit mode.</P>
+
+<PRE><CODE>x = RCTxMode(); // read RC transmit mode</CODE></PRE>
+
+<H3>SetRCTxMode(mode)Function - Spy</H3>
+
+<P>Set the RC transmit mode.</P>
+
+<PRE><CODE>SetRCTxMode(RCTXMODE_SINGLE_SHOT);</CODE></PRE>
+
+<P><B><U>RC Tx Mode Constants</U></B></P>
+
+<P>RCTXMODE_SINGLE_SHOT, RCTXMODE_CONTINUOUS</P>
+
+<H3>StartTask(task)Function - Spy</H3>
+
+<P>Start a task by numeric value rather than by name.</P>
+
+<PRE><CODE>StartTask(9); // start task number 9</CODE></PRE>
+
+<H3>StopTask(task)Function - Spy</H3>
+
+<P>Stop a task by numeric value rather than by name.</P>
+
+<PRE><CODE>StopTask(9); // stop task number 9</CODE></PRE>
+
+<H3>Action(nSound, nDisplay, nMovement, nRepeat, nTime)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 44.  This subroutine plays any combination of sound, LED animation, and movement, like a multimedia presentation.  nSound is the sound to play (0-79, -1 = no sound).  nDisplay is the LED animation to play (0-15, -1 = no animation).  nMovement is the Spybot motion (see BasicMove, FancyMove, RandomMove, SlowDownMove, and SpeedUpMove) with -1 meaning no movement.  nRepeat is the number of times to repeat the motion.  nTime is the time to wait if nMovement = -1, otherwise it is passed on to the movement subroutines.</P>
+
+<PRE><CODE>Action(SOUND_GEIGER, ANIMATION_FLASH, -1, 0, 300);</CODE></PRE>
+
+<H3>Disp(display)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 42.  This subroutine displays one of the LED animations.  Passing an undefined user animation will turn the display off (8-15).</P>
+
+<PRE><CODE>Disp(ANIMATION_FLASH);</CODE></PRE>
+
+<H3>BasicMove(move, time)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 43.  This subroutine performs the requested motion for the specified duration.  The motors are not floated or braked and motor power is not restored on exit.</P>
+
+<PRE><CODE>BasicMove(MOVE_BASIC_AVOID_LEFT, 500);</CODE></PRE>
+
+<P><B><U>Basic Motion Constants</U></B></P>
+
+<P>MOVE_BASIC_FORWARD, MOVE_BASIC_BACKWARD, MOVE_BASIC_SPIN_LEFT, MOVE_BASIC_SPIN_RIGHT, MOVE_BASIC_TURN_LEFT, MOVE_BASIC_TURN_RIGHT, MOVE_BASIC_AVOID_LEFT, MOVE_BASIC_AVOID_RIGHT, MOVE_BASIC_REST, MOVE_BASIC_STOP</P>
+
+<H3>FancyMove(move, time)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 47.  This subroutine performs the requested motion for the specified duration.  The motors are not floated or braked and motor power is not restored on exit.</P>
+
+<PRE><CODE>FancyMove(MOVE_FANCY_ZIGZAG, 500);</CODE></PRE>
+
+<P><B><U>Fancy Motion Constants</U></B></P>
+
+<P>MOVE_FANCY_ZIGZAG, MOVE_FANCY_SHAKE, MOVE_FANCY_SCAN, MOVE_FANCY_STEP, MOVE_FANCY_STEP_BACK, MOVE_FANCY_SEARCH, MOVE_FANCY_FAKE_LEFT, MOVE_FANCY_RAKE_RIGHT, MOVE_FANCY_BUG_FORWARD, MOVE_FANCY_LAZY, MOVE_FANCY_WALK, MOVE_FANCY_WALK_BACK, MOVE_FANCY_DANCE</P>
+
+<H3>RandomMove(move, time)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 46.  This subroutine performs the requested motion for the specified duration.  The motors are not floated or braked and motor power is not restored on exit.</P>
+
+<PRE><CODE>RandomMove(MOVE_RANDOM_FORWARD, 500);</CODE></PRE>
+
+<P><B><U>Random Motion Constants</U></B></P>
+
+<P>MOVE_RANDOM_FORWARD, MOVE_RANDOM_BACKWARD, MOVE_RANDOM_SPIN_LEFT, MOVE_RANDOM_SPIN_RIGHT, MOVE_RANDOM_TURN_LEFT, MOVE_RANDOM_TURN_RIGHT, MOVE_RANDOM_REST</P>
+
+<H3>SlowDownMove(move, time)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 48.  This subroutine performs the requested motion for the specified duration.  The motors are not floated or braked and motor power is not restored on exit.</P>
+
+<PRE><CODE>SlowDownMove(MOVE_SLOWDOWN_FORWARD, 500);</CODE></PRE>
+
+<P><B><U>SlowDown Motion Constants</U></B></P>
+
+<P>MOVE_SLOWDOWN_FORWARD, MOVE_SLOWDOWN_BACKWARD, MOVE_SLOWDOWN_SPIN_LEFT, MOVE_SLOWDOWN_SPIN_RIGHT</P>
+
+<H3>SpeedUpMove(move, time)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 49.  This subroutine performs the requested motion for the specified duration.  The motors are not floated or braked and motor power is not restored on exit.</P>
+
+<PRE><CODE>SpeedUpMove(MOVE_SPEEDUP_FORWARD, 500);</CODE></PRE>
+
+<P><B><U>SpeedUp Motion Constants</U></B></P>
+
+<P>MOVE_SPEEDUP_FORWARD, MOVE_SPEEDUP_BACKWARD, MOVE_SPEEDUP_SPIN_LEFT, MOVE_SPEEDUP_SPIN_RIGHT</P>
+
+<H3>Sum2Mem(mem, value)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 50.  This subroutine adds value to a 2-byte location in EEPROM.  The value is stored low byte first.  No overflow checking is performed.</P>
+
+<PRE><CODE>Sum2Mem(50, 400);</CODE></PRE>
+
+<H3>Sum4Mem(mem, value)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 51.  This subroutine adds value to a 4-byte location in EEPROM.  The value is stored least significant byte first.  No overflow checking is performed.</P>
+
+<PRE><CODE>Sum4Mem(50, 400);</CODE></PRE>
+
+<H3>SendAllRangeMessage (nMessage, nData)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 38.  This subroutine sends nMessage to all Spybots in the world relation table that are in the here, there, or anywhere zones with the actual Spybot range as the high byte of each message.</P>
+
+<PRE><CODE>SendAllRangeMessage(50, 40);</CODE></PRE>
+
+<H3>SendRCXMessage (nMessage)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 37.  This subroutine sends an RCX message at 2400 baud with bi-phase encoding and sum checksum.  These messages can be received by an RCX or Scout.</P>
+
+<PRE><CODE>SendRCXMessage(50);</CODE></PRE>
+
+<H3>SendSpybotMessage(nIndex, nCmd, nHiByte, nLoByte)Function - Spy</H3>
+
+<P>Built-in ROM subroutine number 34.  This subroutine sends a message to a Spybot.  If nIndex is a controller or PC then it does nothing.  nIndex is the index of the Spybot in the world relation table (0-15), INDEX_LINKCAST, or INDEX_BROADCAST.</P>
+
+<PRE><CODE>SendSpybotMessage(INDEX_LINKCAST, 50, 0, 10);</CODE></PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,33 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Comments</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="comments">
+</OBJECT>
+
+<P><A NAME="idh_nqc_comments"></A>2.1.1 Comments</P>
+
+<P>Two forms of comments are supported in NQC. The first form (traditional C comments) begin with /* and end with */. They may span multiple lines, but do not nest:</P>
+
+<PRE><CODE>/* this is a comment */
+/* this is a two
+line comment * /
+/* another comment...
+/* trying to nest...
+     ending the inner comment... */
+this text is no longer a comment! */</CODE></PRE>
+
+<P>The second form of comments begins with // and ends with a newline (sometimes known as C++ style comments).</P>
+
+<PRE><CODE>// a single line comment</CODE></PRE>
+
+<P>Comments are ignored by the compiler. Their only purpose is to allow the programmer to document the source code.</P>
+
+</BODY>
+</HTML>

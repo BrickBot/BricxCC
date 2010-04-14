@@ -1,0 +1,911 @@
+{\rtf1\ansi\ansicpg1252\uc1 \deff0\deflang1033\deflangfe1033{\fonttbl{\f0\froman\fcharset0\fprq2{\*\panose 02020603050405020304}Times New Roman;}{\f1\fswiss\fcharset0\fprq2{\*\panose 020b0604020202020204}Arial;}
+{\f2\fmodern\fcharset0\fprq1{\*\panose 02070309020205020404}Courier New;}{\f3\froman\fcharset2\fprq2{\*\panose 05050102010706020507}Symbol;}{\f6\fmodern\fcharset0\fprq1{\*\panose 00000000000000000000}Courier{\*\falt Courier New};}
+{\f14\fnil\fcharset2\fprq2{\*\panose 05000000000000000000}Wingdings;}{\f27\fswiss\fcharset0\fprq2{\*\panose 020b0604030504040204}Tahoma;}{\f180\froman\fcharset238\fprq2 Times New Roman CE;}{\f181\froman\fcharset204\fprq2 Times New Roman Cyr;}
+{\f183\froman\fcharset161\fprq2 Times New Roman Greek;}{\f184\froman\fcharset162\fprq2 Times New Roman Tur;}{\f185\froman\fcharset177\fprq2 Times New Roman (Hebrew);}{\f186\froman\fcharset178\fprq2 Times New Roman (Arabic);}
+{\f187\froman\fcharset186\fprq2 Times New Roman Baltic;}{\f188\fswiss\fcharset238\fprq2 Arial CE;}{\f189\fswiss\fcharset204\fprq2 Arial Cyr;}{\f191\fswiss\fcharset161\fprq2 Arial Greek;}{\f192\fswiss\fcharset162\fprq2 Arial Tur;}
+{\f193\fswiss\fcharset177\fprq2 Arial (Hebrew);}{\f194\fswiss\fcharset178\fprq2 Arial (Arabic);}{\f195\fswiss\fcharset186\fprq2 Arial Baltic;}{\f196\fmodern\fcharset238\fprq1 Courier New CE;}{\f197\fmodern\fcharset204\fprq1 Courier New Cyr;}
+{\f199\fmodern\fcharset161\fprq1 Courier New Greek;}{\f200\fmodern\fcharset162\fprq1 Courier New Tur;}{\f201\fmodern\fcharset177\fprq1 Courier New (Hebrew);}{\f202\fmodern\fcharset178\fprq1 Courier New (Arabic);}
+{\f203\fmodern\fcharset186\fprq1 Courier New Baltic;}{\f396\fswiss\fcharset238\fprq2 Tahoma CE;}{\f397\fswiss\fcharset204\fprq2 Tahoma Cyr;}{\f399\fswiss\fcharset161\fprq2 Tahoma Greek;}{\f400\fswiss\fcharset162\fprq2 Tahoma Tur;}
+{\f401\fswiss\fcharset177\fprq2 Tahoma (Hebrew);}{\f402\fswiss\fcharset178\fprq2 Tahoma (Arabic);}{\f403\fswiss\fcharset186\fprq2 Tahoma Baltic;}}{\colortbl;\red0\green0\blue0;\red0\green0\blue255;\red0\green255\blue255;\red0\green255\blue0;
+\red255\green0\blue255;\red255\green0\blue0;\red255\green255\blue0;\red255\green255\blue255;\red0\green0\blue128;\red0\green128\blue128;\red0\green128\blue0;\red128\green0\blue128;\red128\green0\blue0;\red128\green128\blue0;\red128\green128\blue128;
+\red192\green192\blue192;}{\stylesheet{\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \snext0 Normal;}{
+\s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 1;}{
+\s2\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel1\adjustright\rin0\lin0\itap0 \b\i\f1\fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 2;}{
+\s3\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel2\adjustright\rin0\lin0\itap0 \f1\fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 3;}{
+\s4\ql \li0\ri0\sb240\sa60\keepn\widctlpar\aspalpha\aspnum\faauto\outlinelevel3\adjustright\rin0\lin0\itap0 \b\f1\fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 4;}{
+\s5\ql \li0\ri0\sb240\sa60\widctlpar\aspalpha\aspnum\faauto\outlinelevel4\adjustright\rin0\lin0\itap0 \fs22\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 5;}{
+\s6\ql \li0\ri0\sb240\sa60\widctlpar\aspalpha\aspnum\faauto\outlinelevel5\adjustright\rin0\lin0\itap0 \i\fs22\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 6;}{
+\s7\ql \li0\ri0\sb240\sa60\widctlpar\aspalpha\aspnum\faauto\outlinelevel6\adjustright\rin0\lin0\itap0 \f1\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 7;}{
+\s8\ql \li0\ri0\sb240\sa60\widctlpar\aspalpha\aspnum\faauto\outlinelevel7\adjustright\rin0\lin0\itap0 \i\f1\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 8;}{
+\s9\ql \li0\ri0\sb240\sa60\widctlpar\aspalpha\aspnum\faauto\outlinelevel8\adjustright\rin0\lin0\itap0 \b\i\f1\fs18\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 heading 9;}{\*\cs10 \additive Default Paragraph Font;}{
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext15 footnote text;}{\*\cs16 \additive \super \sbasedon10 footnote reference;}{
+\s17\ql \li720\ri0\nowidctlpar\faauto\adjustright\rin0\lin720\itap0 \f6\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext17 Code;}{\s18\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \cbpat9 
+\f27\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext18 Document Map;}{\s19\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \f2\fs20\lang1043\langfe1033\cgrid\langnp1043\langfenp1033 \sbasedon0 \snext19 Plain Text;}{
+\s20\ql \li0\ri0\sa240\widctlpar\faauto\adjustright\rin0\lin0\itap0 \b\fs28\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext20 Section;}{\*\cs21 \additive \ul\cf2 \sbasedon10 Hyperlink;}{
+\s22\ql \li0\ri0\sb120\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \b\i\fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \sautoupd toc 1;}{
+\s23\ql \li200\ri0\sb120\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin200\itap0 \b\fs22\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \sautoupd toc 2;}{
+\s24\ql \li400\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin400\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \sautoupd toc 3;}{
+\s25\ql \li600\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin600\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \sautoupd toc 4;}{
+\s26\ql \li800\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin800\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \sautoupd toc 5;}{
+\s27\ql \li1000\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin1000\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \sautoupd toc 6;}{
+\s28\ql \li1200\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin1200\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \sautoupd toc 7;}{
+\s29\ql \li1400\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin1400\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \sautoupd toc 8;}{
+\s30\ql \li1600\ri0\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin1600\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext0 \sautoupd toc 9;}{\*\cs31 \additive \ul\cf12 \sbasedon10 FollowedHyperlink;}{
+\s32\qc \li0\ri0\sb240\sa60\widctlpar\aspalpha\aspnum\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs32\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext32 Title;}{
+\s33\qc \li0\ri0\sa60\widctlpar\aspalpha\aspnum\faauto\outlinelevel1\adjustright\rin0\lin0\itap0 \f1\fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext33 Subtitle;}{\s34\ql \li0\ri0\widctlpar
+\tqc\tx4536\tqr\tx9072\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext34 header;}{\s35\ql \li0\ri0\widctlpar
+\tqc\tx4536\tqr\tx9072\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext35 footer;}{\*\cs36 \additive \sbasedon10 page number;}{\s37\ql \li0\ri0\sa120\sl360\slmult1
+\widctlpar\aspalpha\aspnum\faauto\adjustright\rin0\lin0\itap0 \fs24\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 \sbasedon0 \snext37 Body Text;}{\*\cs38 \additive \b\i\f1\fs18\lang1033\langfe1033\langnp1033\langfenp1033 \sbasedon10 Heading 9 Char;}
+{\*\cs39 \additive \b\f1\fs28\lang1033\langfe1033\kerning28\langnp1033\langfenp1033 \sbasedon10 Heading 1 Char;}}{\*\listtable{\list\listtemplateid-1734441242\listsimple{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat4
+\levelspace0\levelindent0{\leveltext\'01\'00;}{\levelnumbers\'01;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-720\li1440\jclisttab\tx1440 }{\listname ;}\listid107166021}{\list\listtemplateid68354049\listsimple{\listlevel\levelnfc23
+\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace0\levelindent0{\leveltext\'01\u-3913 ?;}{\levelnumbers;}\f3\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li360\jclisttab\tx360 }{\listname ;}\listid156653440}
+{\list\listtemplateid1944737318\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698689\'01\u-3913 ?;}{\levelnumbers;}\f3\chbrdr\brdrnone\brdrcf1 
+\chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li720\jclisttab\tx720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698691\'01o;}{\levelnumbers;}\f2\chbrdr
+\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li1440\jclisttab\tx1440 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698693
+\'01\u-3929 ?;}{\levelnumbers;}\f14\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li2160\jclisttab\tx2160 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext
+\leveltemplateid67698689\'01\u-3913 ?;}{\levelnumbers;}\f3\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li2880\jclisttab\tx2880 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360
+\levelindent0{\leveltext\leveltemplateid67698691\'01o;}{\levelnumbers;}\f2\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li3600\jclisttab\tx3600 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1
+\levelspace360\levelindent0{\leveltext\leveltemplateid67698693\'01\u-3929 ?;}{\levelnumbers;}\f14\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li4320\jclisttab\tx4320 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0
+\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698689\'01\u-3913 ?;}{\levelnumbers;}\f3\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li5040\jclisttab\tx5040 }{\listlevel\levelnfc23\levelnfcn23
+\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698691\'01o;}{\levelnumbers;}\f2\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li5760\jclisttab\tx5760 }{\listlevel\levelnfc23
+\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698693\'01\u-3929 ?;}{\levelnumbers;}\f14\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li6480\jclisttab\tx6480 }
+{\listname ;}\listid241331705}{\list\listtemplateid1693582972\listsimple{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0\levelfollow0\levelstartat5\levelspace0\levelindent0{\leveltext\'01\'00;}{\levelnumbers\'01;}\chbrdr\brdrnone\brdrcf1 
+\chshdng0\chcfpat1\chcbpat1\fbias0 \fi-720\li1440\jclisttab\tx1440 }{\listname ;}\listid298150666}{\list\listtemplateid68354049\listsimple{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace0\levelindent0{\leveltext
+\'01\u-3913 ?;}{\levelnumbers;}\f3\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li360\jclisttab\tx360 }{\listname ;}\listid663700731}{\list\listtemplateid290347014\listsimple{\listlevel\levelnfc0\levelnfcn0\leveljc0\leveljcn0
+\levelfollow0\levelstartat3\levelspace0\levelindent0{\leveltext\'01\'00;}{\levelnumbers\'01;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li1080\jclisttab\tx1080 }{\listname ;}\listid956595244}{\list\listtemplateid1252801822
+{\listlevel\levelnfc1\levelnfcn1\leveljc0\leveljcn0\levelfollow1\levelstartat1\levelspace0\levelindent0{\leveltext\'02\'00.;}{\levelnumbers\'01;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 }{\listlevel\levelnfc255\levelnfcn255\leveljc0\leveljcn0
+\levelfollow2\levelstartat1\levelspace0\levelindent0{\leveltext\'00;}{\levelnumbers;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 }{\listlevel\levelnfc255\levelnfcn255\leveljc0\leveljcn0\levelfollow2\levelstartat1\levelspace0\levelindent0
+{\leveltext\'00;}{\levelnumbers;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 }{\listlevel\levelnfc255\levelnfcn255\leveljc0\leveljcn0\levelfollow2\levelstartat1\levelspace0\levelindent0{\leveltext\'00;}{\levelnumbers;}\chbrdr\brdrnone\brdrcf1 
+\chshdng0\chcfpat1\chcbpat1 }{\listlevel\levelnfc255\levelnfcn255\leveljc0\leveljcn0\levelfollow2\levelstartat1\levelspace0\levelindent0{\leveltext\'00;}{\levelnumbers;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 }{\listlevel\levelnfc255
+\levelnfcn255\leveljc0\leveljcn0\levelfollow2\levelstartat1\levelspace0\levelindent0{\leveltext\'00;}{\levelnumbers;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 }{\listlevel\levelnfc255\levelnfcn255\leveljc0\leveljcn0\levelfollow2\levelstartat1
+\levelspace0\levelindent0{\leveltext\'00;}{\levelnumbers;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 }{\listlevel\levelnfc255\levelnfcn255\leveljc0\leveljcn0\levelfollow2\levelstartat1\levelspace0\levelindent0{\leveltext\'00;}{\levelnumbers;}
+\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 }{\listlevel\levelnfc255\levelnfcn255\leveljc0\leveljcn0\levelfollow2\levelstartat1\levelspace0\levelindent0{\leveltext\'00;}{\levelnumbers;}\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1 }
+{\listname ;}\listid1621105010}{\list\listtemplateid1668292118\listhybrid{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698689\'01\u-3913 ?;}{\levelnumbers;}\f3
+\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li720\jclisttab\tx720 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698691\'01o;}{\levelnumbers
+;}\f2\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li1440\jclisttab\tx1440 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698693
+\'01\u-3929 ?;}{\levelnumbers;}\f14\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li2160\jclisttab\tx2160 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext
+\leveltemplateid67698689\'01\u-3913 ?;}{\levelnumbers;}\f3\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li2880\jclisttab\tx2880 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360
+\levelindent0{\leveltext\leveltemplateid67698691\'01o;}{\levelnumbers;}\f2\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li3600\jclisttab\tx3600 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1
+\levelspace360\levelindent0{\leveltext\leveltemplateid67698693\'01\u-3929 ?;}{\levelnumbers;}\f14\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li4320\jclisttab\tx4320 }{\listlevel\levelnfc23\levelnfcn23\leveljc0\leveljcn0
+\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698689\'01\u-3913 ?;}{\levelnumbers;}\f3\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li5040\jclisttab\tx5040 }{\listlevel\levelnfc23\levelnfcn23
+\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698691\'01o;}{\levelnumbers;}\f2\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li5760\jclisttab\tx5760 }{\listlevel\levelnfc23
+\levelnfcn23\leveljc0\leveljcn0\levelfollow0\levelstartat1\levelspace360\levelindent0{\leveltext\leveltemplateid67698693\'01\u-3929 ?;}{\levelnumbers;}\f14\chbrdr\brdrnone\brdrcf1 \chshdng0\chcfpat1\chcbpat1\fbias0 \fi-360\li6480\jclisttab\tx6480 }
+{\listname ;}\listid1789619211}}{\*\listoverridetable{\listoverride\listid298150666\listoverridecount0\ls1}{\listoverride\listid107166021\listoverridecount0\ls2}{\listoverride\listid956595244\listoverridecount0\ls3}{\listoverride\listid663700731
+\listoverridecount0\ls4}{\listoverride\listid156653440\listoverridecount0\ls5}{\listoverride\listid1621105010\listoverridecount0\ls6}{\listoverride\listid1621105010\listoverridecount9{\lfolevel\listoverridestartat\levelstartat1}{\lfolevel
+\listoverridestartat\levelstartat1}{\lfolevel\listoverridestartat\levelstartat1}{\lfolevel\listoverridestartat\levelstartat1}{\lfolevel\listoverridestartat\levelstartat1}{\lfolevel\listoverridestartat\levelstartat1}{\lfolevel\listoverridestartat
+\levelstartat1}{\lfolevel\listoverridestartat\levelstartat1}{\lfolevel\listoverridestartat\levelstartat1}\ls7}{\listoverride\listid1789619211\listoverridecount0\ls8}{\listoverride\listid241331705\listoverridecount0\ls9}}{\info{\title #$K}
+{\author John Hansen}{\operator John Hansen}{\creatim\yr2003\mo1\dy21\hr14\min40}{\revtim\yr2007\mo10\dy11\hr19\min54}{\printim\yr1998\mo12\dy21\hr15\min26}{\version71}{\edmins764}{\nofpages53}{\nofwords6612}{\nofchars-32766}
+{\*\company Aspect Communications, Inc.}{\nofcharsws0}{\vern8247}}\margl1417\margr1417\margt1417\margb1417 \widowctrl\ftnbj\aenddoc\hyphhotz425\noxlattoyen\expshrtn\noultrlspc\dntblnsbdb\nospaceforul\hyphcaps0\formshade\horzdoc\dghspace120\dgvspace120
+\dghorigin1701\dgvorigin1984\dghshow0\dgvshow3\jcompress\viewkind4\viewscale100\pgbrdrhead\pgbrdrfoot\htmautsp\nolnhtadjtbl \fet0{\*\ftnsep \pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\chftnsep 
+\par }}{\*\ftnsepc \pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\chftnsepc 
+\par }}{\*\ftncn \pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\par }}{\*\aftnsep \pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\chftnsep 
+\par }}{\*\aftnsepc \pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\chftnsepc 
+\par }}\sectd \sbknone\linex0\headery709\footery709\colsx709\endnhere\sectdefaultcl {\*\pnseclvl1\pnucrm\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl2\pnucltr\pnstart1\pnindent720\pnhang{\pntxta .}}{\*\pnseclvl3\pndec\pnstart1\pnindent720\pnhang
+{\pntxta .}}{\*\pnseclvl4\pnlcltr\pnstart1\pnindent720\pnhang{\pntxta )}}{\*\pnseclvl5\pndec\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl6\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl7
+\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl8\pnlcltr\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}{\*\pnseclvl9\pnlcrm\pnstart1\pnindent720\pnhang{\pntxtb (}{\pntxta )}}\pard\plain 
+\s1\qc \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_RcxIntroduction}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Bricx Command Center}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  spirit.ocx;registering spirit.ocx;internet site;copyright}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{
+\lang1036\langfe1033\langnp1036 Bricx Command Center
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 
+\par }\pard \qc \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 {\i\f1\lang1036\langfe1033\langnp1036 version 3.3
+\par }{\f1 Written by John Hansen
+\par }{\f1\fs16 (Based on code originally written by Mark Overmars)
+\par }\pard \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 {\f1 
+\par Bricx Command Center (BricxCC) was written to more easily work with the Lego MindStorms, CyberMaster, and Spybot robot systems.  It is built around NQC (Not Quite C Compiler), written by Dave Baum, that 
+makes it possible to program the RCX, the Scout, the Cybermaster, and the Spybot programmable bricks in a language that is close to C. For more information on NQC, see the tutorial and NQC reference guide provided.   BricxCC also supports programming thes
+e bricks via MindScript and LASM, LEGO's own programming languages, via the LEGO MindStorms SDK 2.5.
+\par 
+\par The foundation of BricxCC is a full-featured programmer's editor in which you can write your programs with the integrated ability to compile the programs a
+nd download them to the brick. In case of errors they are reported at the bottom of the editor window such that they can be corrected easily. In addition to providing an editor, BricxCC contains tools to control your robot directly, to watch what is happe
+ning in the brick, to download (new) firmware, etc.
+\par 
+\par To run BricxCC it is not necessary to have spirit.ocx (the ActiveX control used with the RIS 1.0 and 1.5 sets) registered on your system.
+\par 
+\par BricxCC can be used free of charge. Please note that NQC and it d
+ocumentation are copyrighted by Dave Baum & John Hansen.  BricxCC supports version 2.3r1 or later of NQC. See the readme file for more information on copyright and distribution issues. Please send your comments to bricxcc@comcast.net. See the web page
+
+\par 
+\par }\pard \ql \fi720\li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 {\f1 http://bricxcc.sourceforge.net/ 
+\par }\pard \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 {\f1 
+\par for more information.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Introduction}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Introduction}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  NQC;compiler;download;not quite C}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Not Quite C
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 
+\par Not Quite C (NQC) is
+ an easy to use language for programming the Lego robots.  The preprocessor and control structures of NQC are very similar to C.  NQC is not a general purpose language - there are many restrictions that originate from actual limitations of the programmabl
+e brick.
+\par 
+\par NQC was written by Dave Baum, with recent enhancements by John Hansen. BricxCC simply calls the NQC compiler for compiling and downloading code to the brick. For more information on NQC look in the tutorial (which contains a reference guide) provi
+ded with BricxCC. For more information of NQC, see the web page
+\par 
+\par }\pard \ql \fi720\li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 {\f1 http://bricxcc.sourceforge.net/nqc/
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Starting}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Starting Bricx Command Center}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  IR tower;dragging files;CyberMaster;MindStorms}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{
+ Starting Bricx Command Center
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 When you start BricxCC, it first asks you for the COM port or USB tower to connect to the robot.   Press }{\b\f1 Ok}{\f1 
+ to automatically detect it or choose the port yourself. (If you press }{\b\f1 Cancel}{\f1 , no connection is made and certain options are not available.) The program now tries to l
+ocate the tower used for communication with the brick.  If it cannot find it, certain options are unavailable.  Next it tries to find the brick itself. If it cannot find it you are notified. Try turning on the brick or move the robot closer to the tower, 
+and press }{\b\f1 Ok}{\f1  to try again.
+\par 
+\par You can also choose the type of programmable brick firmware with which you wish to communicate. Please note that for the CyberMaster, once the software has established the connection to the robot, you should not switch the robot 
+off and on again. The CyberMaster requires some special startup sequence whenever you switch it off. If this happens by incident, Choose }{\b\f1 Turn Brick Off}{\f1  from the }{\b\f1 Tools}{\f1  menu, switch the robot back on, and then choose }{\b\f1 
+Find Brick}{\f1 .
+\par 
+\par If your tower is always connected to the same port you probably don\rquote t want to see the form each time you start the program. This can be changed in the }{\b\f1 Preferences}{\f1  item in the }{\b\f1 Edit}{\f1  menu.
+\par 
+\par You can also start the program by dragging an NQC file to the icon, or by double clicking on an NQC file and indicating that it should be started with BricxCC.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Editor}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Editor Windows}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K
+}{\f1  main window;editor window;color coding;using Bricx Command Center;window menu}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}
+}}{ Editor windows
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 After starting BricxCC, the main window is shown with a m
+enu bar, a tool bar, a large area in which editor windows can appear, and a status bar. The default way of working is to indicate that you want a new file (in the toolbar or in the }{\b\f1 File}{\f1 
+ menu) or to open an existing file, to write the program in the editor window that appears, and then to download it to the brick using the }{\b\f1 Download}{\f1  command in the }{\b\f1 Compiler}{\f1 
+ menu. If there are errors in your program, a panel appears at the bottom of the editor window indicating the errors. You can click on the errors to make the cursor move to the corresponding place in your code, such that you can correct the errors. 
+
+\par 
+\par Note that BricxCC uses syntax highlighting to make your programs more readable. You can configure this syntax highlighting via the }{\b\f1 Preferences}{\f1  dialog. 
+\par 
+\par You can open multiple files and work on them simultaneously. Use the commands in the }{\b\f1 Window}{\f1  menu to arrange the different editor windows.  To view a list of all open windows (including any open tool windows) choose }{\b\f1 View}{\f1 
+ followed by }{\b\f1 Window List}{\f1  or just press }{\b\f1 Alt+0}{\f1 .  You can also use }{\b\f1 Ctrl+Tab}{\f1  to quickly cycle through the set of open editor windows.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Loading}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Loading and Saving Files}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  file handling;load file;save file;new file;insert file;print file;exit;recent files;backups}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Loading and Saving Files
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 All file handling is done using the }{\b\f1 File}{\f1 
+ menu. Here you find the usual commands to create a new, empty file, to open an existing file, to save a file, to print it, and to exit the program. You can also use the buttons on the toolba
+r for most of these commands. You can also open a file by dragging it from your windows explorer to the BricxCC window.
+\par 
+\par Other commands in the }{\b\f1 File}{\f1  menu include }{\b\f1 Insert File}{\f1  that inserts the contents of a file at the current cursor position, and commands to close the current or all files or to save them all. At the bottom of the }{\b\f1 File}{\f1 
+ menu appears a list of recently opened files. This makes it easier to open a file you are working on. (You can configure this list via the }{\b\f1 Preferences}{\f1  dialog.)
+\par 
+\par By default, BricxCC saves backups of files you have edited with an extension .BAK. This can be switched off in the }{\b\f1 Preferences}{\f1 .
+\par 
+\par The }{\b\f1 File}{\f1  menu also has options for printing or previewing the code in the current editor window.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Editing}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Editing a File}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K
+}{\f1  undo;cut;copy;paste;delete;select all}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Editing a File
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 
+The editor windows support all the usual edit functions. You can type in text, select it, delete it, etc. The editor syntax highlights the text such that it is easy to distinguish different aspects of the p
+rogram. Syntax highlighting can be switched off in the }{\b\f1 Preferences}{\f1  item in the }{\b\f1 Edit}{\f1  menu.
+\par 
+\par In the }{\b\f1 Edit}{\f1  menu you also find the usual cut, copy, and paste commands that are common in all editors, with the usual shortcuts. Last changes can be undone or redone.
+\par 
+\par As mentioned previously, the very important }{\b\f1 Preferences}{\f1  dialog is accessible via the Edit menu.
+\par 
+\par Users can also choose the }{\b\f1 Next Field}{\f1  option from this menu, which moves the cursor to the next block of text delimited by double quotes (e.g., "MY_TEXT").  This feature is more fully described in the Templates section.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Searching}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Searching and Replacing}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  searching for text;replacing text;finding text;goto line;status bar;procedure list}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super +}{\f1  cc}}}{Searching and Replacing
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 In the }{\b\f1 Search}{\f1 
+ menu you find commands for search for text. Fill in the text you want to search and select the appropriate options.  For searching there is a corresponding button on the toolbar.
+\par 
+\par You can also replace text. Fill in the search and replace text and choose the options. You can either search and replace the occurrences one by one or all at once. For replacing there is a corresponding button on the toolbar.
+\par 
+\par There is also a command to go to a particular line in the text. Note that the current line and the position are always indicated in the status bar at the bottom of the window.
+\par 
+\par A very useful }{\b\f1 Procedure List}{\f1  dialog is also accessible via the Search menu.  This dialog quickly lists all the various methods defined in your program and lets you easily filter, sele
+ct, and jump to the point in the editor window where the desired method is defined.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Templates}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Templates}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  template;construction;field;popup menu}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Templates
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Templates are meant to avoid the work of typing pieces of code over and over again.
+ At the right of the main window you find a small window with a number of items. Each such item is a template. (If you don\rquote t see the window, press once or twice on }{\b\f1 F9}{\f1  to make it appear.) For example, there is one item that reads
+
+\par 
+\par }{\f2 task ..() \{ .. \}
+\par }{\f1 
+\par This is the task template. If you click on it, in your edit window the following appears:
+\par 
+\par }\pard\plain \s19\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \f2\fs20\lang1043\langfe1033\cgrid\langnp1043\langfenp1033 {\lang2057\langfe1033\langnp2057 task "name"()
+\par \{
+\par   "statements"
+\par \}
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f2 
+\par }{\f1 The two words between double quotes, called fields, appear in red, and the first one is selected. These have to be replaced by your own code. Type the name of the task, e.g. t1. Next press }{\b\f1 F10}{\f1 
+ to move to the next field. Here you can type your statements. For example, you might want to switch a motor on. Choose the template
+\par 
+\par }{\f2 OnFwd(..);
+\par }{\f1 
+\par In the edit window we now have the following text:
+\par 
+\par }\pard\plain \s19\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \f2\fs20\lang1043\langfe1033\cgrid\langnp1043\langfenp1033 {\lang2057\langfe1033\langnp2057 task t1()
+\par \{
+\par   OnFwd("outs");
+\par   
+\par \}
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 
+\par The first field is again selected. Type in the motor(s), and go to the next line to type the next statement. In this way you continue.
+\par 
+\par There are templates for language constructions and for the most important NQC commands. Using templates is fast and also avoids making errors. You can change the templates or add your own in the }{\b\f1 Preferences}{\f1 .
+\par 
+\par In the }{\b\f1 Preferences}{\f1  you can also indicate that you want the list of templates to appear as a popup menu when you press the right mouse button.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Macros}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Macros}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1 
+ macros}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Macros
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 
+Besides templates, BricxCC also offers macros to quickly add pieces of text to your code. A macro consist of holding down the <Ctrl> and the <Alt> key (and sometimes the <Shift> key) and then pressi
+ng another key. For example, if you press <Ctrl><Alt>A the text OUT_A is added to your code. Macros behave similar to templates and many templates are also available as macros. By default the following macros are defined:
+\par 
+\par <Ctrl><Alt>A\tab \tab OUT_A
+\par <Ctrl><Alt>B\tab \tab OUT_B
+\par <Ctrl><Alt>C\tab \tab OUT_C
+\par }{\f1\lang1031\langfe1033\langnp1031 <Ctrl><Alt>1\tab \tab SENSOR_1
+\par <Ctrl><Alt>2\tab \tab SENSOR_2
+\par }{\f1 <Ctrl><Alt>3\tab \tab SENSOR_3
+\par 
+\par <Ctrl><Alt>I\tab \tab }{\b\f1 if}{\f1  construction
+\par <Ctrl><Alt>H\tab \tab }{\b\f1 while}{\f1  construction
+\par <Ctrl><Alt>E\tab \tab }{\b\f1 else}{\f1  construction
+\par 
+\par <Ctrl><Alt>F\tab \tab OnFwd();
+\par <Ctrl><Alt>R\tab \tab OnRev();
+\par <Ctrl><Alt>O\tab \tab Off();
+\par <Ctrl><Alt>L\tab \tab Float();
+\par <Ctrl><Alt>W\tab \tab Wait();
+\par 
+\par <Ctrl><Alt><Shift>T\tab }{\b\f1 task}{\f1  definition
+\par <Ctrl><Alt>><Shift>S\tab }{\b\f1 sub}{\f1  definition
+\par <Ctrl><Alt>><Shift>V\tab }{\b\f1 void}{\f1  (= inline) definition
+\par <Ctrl><Alt>><Shift>I\tab }{\b\f1 int}{\f1  definition
+\par 
+\par You can see a complete list of macros defined in the }{\b\f1 Macros}{\f1  tab in the }{\b\f1 Preferences}{\f1  window. Here you can also change the macros and add new macros.}{\b\f1\fs28\kerning28 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\b0 \page }{\cs16\b0\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Compile}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Compiling, Downloading and Running}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  compile;download;program number;errors;compile error
+s;show code.error listing;bytecode;listing;download and run;run;stop;hide errors; old programs; translating old programs; nqc 1.x to nqc 2.0}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Compiling, Downloading and Running
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 To compile the NQC program choose }{\b\f1 Compile}{\f1  from the }{\b\f1 Compile}{\f1  menu. This call
+s the NQC compiler, which is a separate process. When there are errors in your program you are notified and the error messages are shown below the edit window. Only a short description of each error is given. Clicking with your mouse on an error message w
+ill bring you to the corresponding line in the editor. You can remove the error panel by choosing }{\b\f1 Hide Errors}{\f1  in the }{\b\f1 View}{\f1  menu. 
+\par 
+\par If you want to see longer error messages, choose the }{\b\f1 Show Code/Error Listing}{\f1  option in the }{\b\f1 View}{\f1  menu. A form is shown with full
+ descriptions of the errors. If there are no errors, this form will show a byte code listing of the program. This is a very useful debugging feature.
+\par 
+\par You can also immediately download the compiled program to the brick. To this end, first select the program number in the toolbar or in the }{\b\f1 Program Number}{\f1  menu item. Next choose the }{\b\f1 Download}{\f1 
+ command (or press the corresponding button on the toolbar). This runs the NQC compiler and (if there are no errors) downloads the code to the brick. Because download also calls the compiler, there is no need to compile first.
+\par 
+\par If you also want to start the program immediately after downloading, choose }{\b\f1 Download and Run}{\f1 .
+\par 
+\par To run a program at a later stage, select the program number in the toolbar and choose }{\b\f1 Run}{\f1  (or the corresponding button on the toolbar). Stop the program by choosing }{\b\f1 Stop}{\f1 .
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Direct}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Direct Control}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K
+}{\f1  direct control;motors;sensors;variables;tasks}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1043\langfe1033\super\langnp1043 +}{
+\f1\lang1043\langfe1033\langnp1043  cc}}}{Direct Control
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 To directly control the brick, choose the command }{\b\f1 Direct Control}{\f1  from the }{\b\f1 Tools}{\f1 
+ menu. This opens a window with the following possibilities:
+\par 
+\par }{\b\f1 Sensors}{\f1 
+\par Here you can set the mode and type of the three sensors.  For CyberMaster and Spybot, only the mode can be set. The type shows which sensor you use.  This function is not available for the Scout.
+\par 
+\par }{\b\f1 Motors}{\f1 
+\par Here you can directly control the three motors of the robot. For each motor you have four options: Moving forwards, moving backwards, off (braking) and float (not braking). You can also set the speed of each motor.
+\par 
+\par }{\b\f1 Variables}{\f1 
+\par Here
+ you can set variables in the brick. At the left choose the variable you like to change; in the middle, choose the operation (set, add, subtract, multiply, divide, logical and, logical or); and at the right choose the value with the up and down arrows, or
+ type it in. Now press }{\b\f1 Set}{\f1  to make the change in the brick. 
+\par 
+\par }{\b\f1 Tasks}{\f1 
+\par Here you can start and stop the 10 tasks (6 for the Scout, 4 for the CyberMaster, 8 for the Spybot) that are in the current program in the brick. If you start a task that is already running
+, it is restarted. Starting and stopping tasks is useful for testing your code and for making remotely controlled robots. For the second application you can also use the Joystick.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1043\langfe1033\super\langnp1043 #}{\f1\lang1043\langfe1033\langnp1043  IDH_Diagnostics}}${\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1043\langfe1033\super\langnp1043 $}{\f1\lang1043\langfe1033\langnp1043  Diagnostics}}K{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  diagnostics;battery status;watch value;power down time;IR connection;display;firmware version}}+{\footnote 
+\pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Diagnostics
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Clicking the }{\b\f1 Diagnostics}{\f1  menu item in the }{\b\f1 Tools}{\f1 
+ menu opens a window displaying information about the brick. Information you can find here includes whether the brick is alive, the version of the firmware, the battery status, etc. (If the brick is not alive, turn it on and press the }{\b\f1 Refresh}{
+\f1  button to recheck the information.)
+\par 
+\par In this window you can also set the level of the IR connection of the brick, the watch, the power-down time, and what must be shown in the RCX display. (For the CyberMaster, the Scout, and the Spybot, most of these settings are not available.)
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Watching}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Watching the Brick}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  watching;polling;variable value;sensor value;timer value;message value}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\lang1043\langfe1033\super\langnp1043 +}{\f1\lang1043\langfe1033\langnp1043  cc}}}{Watching the Brick
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Clicking the }{\b\f1 Watching the Brick}{\f1  menu item in the }{\b\f1 Tools}{\f1 
+ menu opens a window in which you can ask for the status of the sensors, motors, variables, etc, of the b
+rick. Indicate the items you want to poll by clicking on the checkmarks in front of them. (You can select or deselect all items by clicking on the appropriate buttons at the bottom.) Once you selected the items, press the }{\b\f1 Poll Now}{\f1 
+ button to get the current status. 
+\par 
+\par You can also continuously poll the information. To this end, select the time interval with the listbox at the right, and press the }{\b\f1 Poll Regular}{\f1 
+ button. Please realize that polling the brick takes quite some time. If you want to poll a lot of information regularly then this will slow down both your computer and the robot.
+\par 
+\par If you wish you can graph the data obtained via polling the brick.  Selecting the Graph button will display a non-modal graph window that will plot the data as it is obtained from the brick.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1043\langfe1033\super\langnp1043 #}{\f1\lang1043\langfe1033\langnp1043  IDH_Piano}}${\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1043\langfe1033\super\langnp1043 $}{\f1\lang1043\langfe1033\langnp1043  Brick Piano}}K{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  music;piano;sounds;__NOTETIME;__WAITTIME}}+{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Brick Piano
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Choosing the }{\b\f1 Brick Piano}{\f1  menu item in the }{\b\f1 Tools}{\f1 
+ menu, you can make the brick play music. If you play with your mouse on the piano, the brick makes the corresponding sounds. At the bottom left you can select the length of the notes. Add rests to your music using the }{\b\f1 rest}{\f1 
+ button. The sequence of notes you play is stored. Press the }{\b\f1 Play}{\f1  button to play the whole sequence. Press }{\b\f1 Clear}{\f1  to clear the stored notes. 
+\par 
+\par Pressing }{\b\f1 Save}{\f1  gives you the opportunity to save the collection of notes as an NQC program. You can load this program in the editor and download it to the robot. Finally clicking }{\b\f1 Copy}{\f1 
+ copies the collection of notes as NQC code to the clipboard. In the editor you can paste it into you program. Note that Brick Piano defines two constant in your NQC code: __NOTETIME and __WAITTIME. You can change these to change the speed of the tune.
+
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Joystick}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Brick Joystick}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K
+}{\f1  joystick;left motor;right motor;reversed;speed;starting tasks}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{
+Brick Joystick
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 If you want to steer your robot with the computer as remote control, choose }{\b\f1 Brick Joystick}{\f1  in the }{\b\f1 
+Tools}{\f1  menu. Brick Joystick can work in two modes. The first mode assumes that two motors drive the left and r
+ight wheel of the robot. The second mode assumes one motor is used for driving and the other for steering. Indicate the correct. (The mode will be saved.) Below this you can indicate which motor is the left (or driving) motor, and which one it the right (
+or steering) motor. You can also indicate whether they should be reversed. Finally you can indicate the speed. 
+\par 
+\par Now you are ready to move your robot. This can be done with joystick (if you have one), mouse, or keyboard. Moving with the joystick works as ex
+pected.  (If the robot moves in the wrong direction, check the settings.) The buttons on the joystick (1-2 or 1-4 depending on your joystick) start the corresponding tasks in the brick. To use this, write a little NQC program that defines the first two (o
+r four) tasks. (Let main just be a dummy task.) Download it but don\rquote t start it. Now use the joystick to start the tasks.
+\par 
+\par To move the robot with the mouse, click on the buttons with the arrows. If you use the left mouse button, the robot moves in the direct
+ion as long as you keep the mouse button pressed. If you click with the right mouse button, the robot keeps on moving until you click another button. Clicking the buttons }{\b\f1 T1}{\f1  or }{\b\f1 T2}{\f1 
+ starts task one or two in the robot. To move the robot with the keyboard, use the numeric keypad (make sure the NumLock key is pressed). As long as you keep the keys pressed, the robot move in the direction.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Remote}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Remote}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1 
+ mindstorms remote;remote control;LEGO remote }}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Remote
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Press the }{\b\f1 Remote}{\f1  menu item in the }{\b\f1 Tools}{\f1 
+ menu to display the remote form.  Both the RCX and the Scout can be controlled via the Mindstorms remote control.  This form emulates the remote by sending the equivalent commands to the brick.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Messages}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Sending Messages}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  messages;sending messages}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1043\langfe1033\super\langnp1043 +}{
+\f1\lang1043\langfe1033\langnp1043  cc}}}{Sending Messages
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 
+The RCX and the Scout can react to messages. One RCX or Scout can send messages to another. But also the computer can send messages to the RCX/Scout. To use this feature, write an NQC program that looks at messages and make
+s to robot take action accordingly. For example, use the following program:
+\par 
+\par }{\b\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 task}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057  main()}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 \{}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057   }{\b\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 while}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057  (}{\b\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 true}{
+\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 )}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057   \{}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057     }{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 ClearMessage}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 ();}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057     }{\b\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 until}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057  (}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 Message}{
+\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 () != 0);}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057     }{\b\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 if}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057  (}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 Message}{
+\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 () == 1) \{}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 OnFwd}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 (}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 OUT_A}{
+\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 +}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 OUT_C}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 );\}}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057     }{\b\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 if}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057  (}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 Message}{
+\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 () == 2) \{}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 OnRev}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 (}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 OUT_A}{
+\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 +}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 OUT_C}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 );\}}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057     }{\b\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 if}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057  (}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 Message}{
+\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 () == 3) \{}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 Off}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 (}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 OUT_A}{
+\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 +}{\f2\fs18\cf2\lang2057\langfe1033\cgrid0\langnp2057 OUT_C}{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 );\}}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057   \}}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f2\fs18\cf1\lang2057\langfe1033\cgrid0\langnp2057 \}}{\f2\fs18\lang2057\langfe1033\cgrid0\langnp2057 
+\par }{\f1 
+\par It waits for a message not equal to 0 and then takes action according to the number of the message. Now choose }{\b\f1 Send Messages}{\f1  from the }{\b\f1 Tools }{\f1 menu. Click on the right number button to send the corresponding messag
+e. If you want to send a message larger than 9, choose it with the up and down arrows (or type in the desired message number) and press the button labeled }{\b\f1 Send}{\f1 .
+\par 
+\par Please note that sending messages is relatively slow. It takes about half a second before the robot reacts.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\b0 \page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1043\langfe1033\super\langnp1043 #}{\f1\lang1043\langfe1033\langnp1043  IDH_Datalog}}${\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1043\langfe1033\super\langnp1043 $}{\f1\lang1043\langfe1033\langnp1043  Datalog Window}}K{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  data logging;datalog; uploading the datalog}}+{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Datalog
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\i\f1 Not available in the CyberMaster, Spybot, or Scout.}{\f1 
+\par 
+\par The RCX supports a Datalog feature.  The RCX can write data into an internal datalog which can then be uploaded to the computer. Creating the datalog and writing data to it is done by the program running in the RCX. See the NQC documentation on how to do 
+this. Uploading the datalog needs to be done from the computer. 
+\par 
+\par The }{\b\f1 Datalog}{\f1  item in the }{\b\f1 Tools }{\f1 menu open a window in which you can upload this datalog. Simply press the button labeled }{\b\f1 Upload Datalog}{\f1  and the contents of the datalog is shown. 
+\par 
+\par You can also 
+change the size of the datalog by choosing or typing in a size. Please realize that each item requires 3 bytes in the RCX. Because the memory of the RCX is rather small preferably make a small datalog. Changing the datalog size will erase its contents. Th
+e button }{\b\f1 Clear Datalog}{\f1  sets the size to 0.
+\par 
+\par Once you have uploaded data from the RCX you can analyze (i.e., graph the data) in two ways.  The first method, selected via the }{\b\f1 Analyze}{\f1  button, treats every data point of the same type as a Y value with the X val
+ues incrementing by 1 for each new datapoint.  The second method treats the data as if it is a set of X,Y pairs (i.e., every two data elements uploaded are combined into one X,Y coordinate).  The analysis form is identical to the one used when you choose 
+to graph the data obtained via polling the brick from the }{\b\f1 Watching the Brick}{\f1  form.
+\par 
+\par You can save the contents of the datalog window to a file by pressing the button labeled }{\b\f1 Save}{\f1 .  You can also load a previously saved datalog via the }{\b\f1 Load}{\f1  button.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Memory}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Memory Map}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  memory map;pointers;free memory}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Memory Map
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Choosing the }{\b\f1 Memory Map}{\f1  item in the }{\b\f1 Tools}{\f1 
+ menu, you can get information about the memory of the brick. This is only useful for debugging when you experience weird problems in the brick t
+hat might have to do with memory problems. In particular, the tool is useful if you suspect that you might not have enough memory for your programs.
+\par 
+\par For the RCX the following data is given:
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 8 subroutines in each program
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 10 tasks in each program
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting address of the datalog
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the address of the last datalog item
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the total amount of memory used
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the top of the user memory
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the amount of free memory left
+\par }\pard \ql \li0\ri0\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\faauto\adjustright\rin0\lin0\itap0 {\f1 
+\par For the CyberMaster you get:
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 4 subroutines
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 4 tasks
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the total amount of memory used
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the top of the user memory
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the amount of free memory left
+\par }\pard \ql \li0\ri0\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\faauto\adjustright\rin0\lin0\itap0 {\f1 
+\par For the Scout you get:
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 3 subroutines
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 6 tasks
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the total amount of memory used
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the top of the user memory
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the amount of free memory left
+\par }\pard \ql \li0\ri0\widctlpar{\*\pn \pnlvlcont\ilvl0\ls0\pnrnot0\pndec }\faauto\adjustright\rin0\lin0\itap0 {\f1 
+\par For the Spybot you get:
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 32 subroutines
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 8 tasks
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 16 user sound effects
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting addresses of the 8 user LED animations
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the starting address of the user data area
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the total amount of memory used
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the top of the user memory
+\par {\pntext\pard\plain\f3\fs20 \loch\af3\dbch\af0\hich\f3 \'b7\tab}}\pard \ql \fi-360\li360\ri0\widctlpar\jclisttab\tx360{\*\pn \pnlvlblt\ilvl0\ls4\pnrnot0\pnf3\pnstart1\pnindent360\pnsp120\pnhang{\pntxtb \'b7}}\faauto\ls4\adjustright\rin0\lin360\itap0 {\f1 
+the amount of free memory left
+\par }\pard \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 {\f1 
+\par Press the }{\b\f1 Refresh }{\f1 button to update the numbers (e.g. after you downloaded a program).
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Clear}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Clear Memory}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  clear;memory clear;datalog}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Clear Memory
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Press the }{\b\f1 Clear Memory}{\f1  menu item in the }{\b\f1 Tools}{\f1 
+ menu to clear the memory in the brick. This command removes all tasks and subroutines in all programs, and removes the RCX datalog (if any). Clearing memory is important when loading large programs because the brick keeps all programs and tasks; also if 
+you switch it off. After clearing memory you have about 6K for your program in the RCX (using the RIS 1.0 and 1.5 firmware). For the CyberMaster this is about 512 bytes.  The Scout has NNN bytes.  The Spybot has 3.75K bytes.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Find}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Find Brick}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  finding the brick;IR tower;COM port;close communication;reopen communication;turn brick off}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super +}{\f1  cc}}}{Find Brick
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 If the program did not find the brick at the startup, you can press the }{\b\f1 Find Brick}{\f1  menu item in the }{\b\f1 
+Tools}{\f1  menu to try again, e.g. after switching on the brick. If you don\rquote t want to use the brick anymore, you can choose }{\b\f1 Turn Brick Off}{\f1  from the }{\b\f1 Tools}{\f1 
+ menu. This will turn the robot off and close the communication. If you want to use the brick again later, turn it on and choose }{\b\f1 Find Brick}{\f1 .
+\par 
+\par You can also temporarily close the communication with the RCX, without turning the robot off, by choosing the }{\b\f1 Close Communication}{\f1  item in the }{\b\f1 Tools}{\f1 
+ menu. This is useful if you want to run a different program that uses the COM port or USB tower, but don\rquote t want to stop BricxCC. The communication is reopened the next time you select any BricxCC function that tries to communicate with the brick.
+
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Firmware}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Download Firmware}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  firmware;download firmware;unlock;brickOS;PBForth}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{
+Download Firmware}{\i 
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\i\f1 Not available for the CyberMaster, Spybot, or Scout.}{\f1 
+\par 
+\par If the RCX looses its firmware (e.g. by changing the batteries) or if you want to download different firmware, use the }{\b\f1 Download Firmware}{\f1  command in the }{\b\f1 Tools}{\f1  menu. It will prompt you for the file containing the firmware
+. Next you need to have a little patience. A progress bar shows you how far the downloading is. (This is only an approximation because there is no way to actually check how far it is.). All programs are erased when downloading firmware. Make sure that the
+ robot is close to the IR tower, because downloading firmware only works at short range.
+\par 
+\par Alternative firmwares, such as brickOS, leJOS, or PBForth may also be downloaded using this feature.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_Preferences}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Preferences}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  preferences;settings;options
+;color coding;startup form;COM port;window positions; backup copies; popup menu;templates;recent files;font name;font size;changing templates;macros;changing macros;special characters;indentation;auto indentation;macros off;compatibility mode;old programs
+;syntax highlighting;NQC API;compiler settings;hot key settings}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Preferences
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 There are a number of preferences you can change. These will be saved between sessions. To this end, click the }{\b\f1 
+Preferences}{\f1  item in the }{\b\f1 Edit}{\f1  menu. A form with tabbed pages pops up. The following pages are available:
+\par 
+\par }{\b\f1 General}{\f1 
+\par Here you can set some general properties. First of all, you can indicate whether you want that window positions are saved between sessions. You can also indicate whether or not backup copies are made
+ of files that you are overwriting. (Backup copies have an extension .BAK.) You can indicate whether you want a list of recently opened files to be displayed in the }{\b\f1 File}{\f1 
+ menu.  You can control whether a compiler status message is displayed.  You can turn on auto save before compiling.  You can select to use fast mode when downloading the firmware.  You can lock and unlock program slots.  Press the }{\b\f1 Default}{\f1 
+ button to return to the default settings.  Press }{\b\f1 OK}{\f1  to save the changes. Press }{\b\f1 Cancel}{\f1  if you don\rquote t want to change them after all.
+\par 
+\par }{\b\f1 Editor}{\f1 
+\par Here you can set some preferences concerning the editor. First of all you can indicate whether you want color-coding or not. Secondly, you can indicate whether the templates should also be put in a popup menu that appears
+ when you click the right mouse button in the edit window. Also you can indicate whether or not you like the program to auto-indent lines of code. And you can switch off macros such that <Ctrl><Alt> combinations are available for special characters. You c
+an control whether drag and drop editing works.  You can control the scrolling style.  You can choose the font used in the edit window by clicking on the button }{\b\f1 Font}{\f1 
+. Several other important editor settings can be configured here as well.  Press the }{\b\f1 Default}{\f1  button to return to the default settings. Press }{\b\f1 OK}{\f1  to save the changes. Press }{\b\f1 Cancel}{\f1  if you don\rquote 
+t want to change them after all.
+\par 
+\par }{\b\f1 Compiler}{\f1 
+\par Here you can set some preferences concerning the three supported compilers. You can set a timeout for launching the 
+compilers.  You can enter common command line switches to pass to the compilers.  You can set an NQC include path and switches unique to the NQC compiler.  You can set an LCC (MindScript and LASM compiler) include path and switches unique to the LCC compi
+ler.  You can configure the GNU compiler via various settings.  You can also configure the pbForth console.  Press the }{\b\f1 Default}{\f1  button to return to the default settings. Press }{\b\f1 OK}{\f1  to save the changes. Press }{\b\f1 Cancel}{\f1 
+ if you don\rquote t want to change them after all.
+\par 
+\par }{\b\f1 NQC API}{\f1 
+\par Here you can edit the default NQC API information used by the NQC syntax highlighter and the NQC code completion feature.  Add or delete NQC keywords, commands, and constants.  Press the }{\b\f1 Default}{\f1 
+ button to return to the default settings. Press }{\b\f1 OK}{\f1  to save the changes. Press }{\b\f1 Cancel}{\f1  if you don\rquote t want to change them after all.
+\par 
+\par }{\b\f1 Startup}{\f1 
+\par Here you can change the startup behavior. You can choose between showing the startup form (default), not trying to make a connection with the robot, or immediately making 
+the connection. You additionally specify the default values for the type of brick firmware (RCX1, Scout, CyberMaster, RCX2, Spybot, or Swan) and the COM port or USB tower. Press the }{\b\f1 Default}{\f1  button to return to the default settings. Press }{
+\b\f1 OK}{\f1  to save the changes. Press }{\b\f1 Cancel}{\f1  if you don\rquote t want to change them after all.
+\par 
+\par }{\b\f1 Templates}{\f1 
+\par Here you can change the templates. You see a list of all templates currently defined. Click }{\b\f1 Insert}{\f1  to insert a new template above the selected one. Click }{\b\f1 Change}{\f1  to change the selected template and click }{\b\f1 Delete}{\f1 
+ to delete it. You can also double click on a template to change it. Use the arrows to move the current selected template up or down in the list. Each template is defined on one line. A line that consists of a single \endash  symbol mea
+ns a horizontal separator. A | symbol represents a vertical separator between columns in the menu. Other lines are the actual templates. Write fields between double quotes. The \\ symbol is given by \\\\. Go to the next line with \\
+=; to the next line with an indentation with \\>; and the next line going out of an indentation with \\<. So for example:
+\par 
+\par }\pard\plain \s19\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \f2\fs20\lang1043\langfe1033\cgrid\langnp1043\langfenp1033 {\lang2057\langfe1033\langnp2057 if ("condition")\\=\{\\>"statements"\\<\}\\=else\\=\{\\>"statements"\\<\}\\=
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 
+\par results in
+\par 
+\par }\pard\plain \s19\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \f2\fs20\lang1043\langfe1033\cgrid\langnp1043\langfenp1033 {\lang2057\langfe1033\langnp2057 if ("condition")
+\par \{
+\par   "statements"
+\par \}
+\par else
+\par \{
+\par   "statements"
+\par \}
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 
+\par Once you are done, press }{\b\f1 OK}{\f1  to save the changes. Press }{\b\f1 Cancel}{\f1  if you don\rquote t want to change them after all. Press the }{\b\f1 Default}{\f1  button to return to the default templates.
+\par 
+\par }{\b\f1 Macros}{\f1 
+\par Here you can change the macros and define your own.  There are two lists of macros. One without the <Shift> key pressed and the other with the <Shift> key press. To switch between the two lists, click on the }{\b\f1 Shift}{\f1 
+ checkmark. You can define macros for each of the 26 letters and for the number 0 to 9. So in total you can define 72 macros. To change or define a macro, double click on it, or select it and press the }{\b\f1 Change}{\f1 
+ button. To remove a macro, select it and press the }{\b\f1 Delete}{\f1  button. Macros are defined in exactly the same way as templates (see above). An undefined macro will give the cha
+racter the combination stands for. This is important for people having keyboards on which certain characters (like brackets) are not available. You might want to delete certain macros in this case. Once you are done, press }{\b\f1 OK}{\f1 
+ to save the changes. Press }{\b\f1 Cancel}{\f1  if you don\rquote t want to change the macros after all. Press the }{\b\f1 Default}{\f1  button to return to the default macros.
+\par 
+\par }{\b\f1 Color}{\f1 
+\par Here you can change the way the editor performs syntax highlighting on the programs you edit.  You can specify a foreground and backgroun
+d color as well as a font attribute for several different element types.   The syntax highlighting of all the supported programming languages can be customized.  Press the }{\b\f1 Default}{\f1  button to return to the default settings. Press }{\b\f1 OK}{
+\f1  to save the changes. Press }{\b\f1 Cancel}{\f1  if you don\rquote t want to change the syntax highlighting after all.
+\par 
+\par }{\b\f1 Options}{\f1 
+\par Here you specify your preferences for some additional editor options.  You can control a variety of settings relating to the editor\rquote s gutter.  Here you can also modify the editor\rquote 
+s keystroke commands.  You can edit code templates (which function by typing the template name in an editor window followed by }{\b\f1 Ctrl+J}{\f1  to expand the template).  You can claim the extensions for various supported file types.  Press the }{
+\b\f1 Default}{\f1  button to return to the default settings. Press }{\b\f1 OK}{\f1  to save the changes. Press }{\b\f1 Cancel}{\f1  if you don\rquote t want to change the additional options.
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_WLIST_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Window List}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  window list;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Window List
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use this resizable dialog to quickly switch to a specific editor window.  It is accessed via View|Window list (}{\b\f1 
+Alt-V}{\f1 , }{\b\f1 W}{\f1 ) or via the hot key }{\b\f1 Alt-0}{\f1  (zero).
+\par 
+\par Select the editor window you wish to activate in the list box and choose OK to close the list and activate the specified window.  You can also double-click the d
+esired item in the list or selected it and press the Enter key to perform the same action.  A numeric list of editor windows is also maintained on the Windows menu.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_GOTO_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Go to Line Number}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  go to line number;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Go to Line Number
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use this dialog to quickly jump to a specific line in the editor window.  It is accessed via Search|Go to Line Number (}{
+\b\f1 Alt-S}{\f1 , }{\b\f1 G}{\f1 ) or via the hot key }{\b\f1 Ctrl-G}{\f1 .
+\par 
+\par The specified line number must be between 1 and the maximum number of lines in the current editor.  Select OK to jump to the specified line in the active editor window.  You can also press the Enter key to perform the same action.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_XFER_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Tool Options}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  tool options;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Tool Options
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use this dialog box to add programs to, delete progra
+ms from, or edit programs on the Tools menu. These programs appear at the bottom of the Tools menu.
+\par Choose Tools|Configure Tools (}{\b\f1 Alt-T}{\f1 , }{\b\f1 T}{\f1 ) to open the Tool Options dialog box.
+\par 
+\par }{\b\f1 Tool Options dialog box 
+\par }{\f1 
+\par }\pard \ql \fi-1440\li1440\ri0\widctlpar\faauto\adjustright\rin0\lin1440\itap0 {\b\f1 Tools}{\f1 \tab \tab Lists the programs currently installed on the Tools menu.
+\par }{\b\f1 Add}{\f1 \tab \tab \tab Click Add to display the }{\f1\uldb Tool Properties}{\v\f1 IDH_XFER_EDIT_Form}{\f1  dialog box, where you can specify a menu name, a path, and startup parameters for the program. 
+\par }{\b\f1 Delete}{\f1 \tab \tab Click Delete to remove the currently selected program from the Tools menu. 
+\par }{\b\f1 Edit}{\f1 \tab \tab \tab Click Edit to display the }{\f1\uldb Tool Properties}{\v\f1 IDH_XFER_EDIT_Form}{\f1  dialog box, where you can edit the menu name, the path, or the startup parameters for the currently selected program. 
+\par }{\b\f1 Up/down arrows}{\f1 \tab Use the arrow buttons to rearrange the programs in the list. The programs appear on the Tools menu in the same order they are listed in the Tool Options dialog box. 
+\par }{\b\f1 Close}{\f1 \tab \tab Click Close to return to the IDE.
+\par }\pard \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 {\f1 
+\par }{\b\f1 To add a program to the tools menu:
+\par }{\f1 
+\par 1.\tab Click Add.
+\par The }{\f1\uldb Tool Properties dialog box}{\v\f1 IDH_XFER_EDIT_Form}{\f1  appears.
+\par 2.\tab Specify a title for the program. The title you specify will be listed on the Tools menu.
+\par 3.\tab Specify the program file or choose Browse to select it from a list.
+\par 4.\tab Specify the working directory for the program, if necessary.
+\par 5.\tab Specify startup parameters for the program, if necessary. You can type the parameters or click the }{\f1\uldb Macros button}{\v\f1 IDH_XFER_Macros}{\f1  to supply startup parameters. You can specify multiple parameters and macros.
+\par 6.\tab Click OK.
+\par The Tool Properties dialog box closes. The new program is on the Tools list in the Tool Options dialog box.
+\par 7.\tab Click Close.
+\par The Tool Options dialog box closes. The new program is on the Tools menu.
+\par 
+\par }{\b\f1 To delete a program from the tools menu:
+\par }{\f1 
+\par Select the program to delete, and click Delete. The product prompts you to confirm the deletion.
+\par 
+\par }{\b\f1 To change a program on the tools menu:
+\par }{\f1 
+\par Select the program to change, and click Edit. The }{\f1\uldb Tool Properties dialog box}{\v\f1 IDH_XFER_EDIT_Form}{\f1  appears with information for the selected program.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_XFER_EDIT_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Tool Properties}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super 
+K}{\f1  tool properties;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Tool Properties
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use the Tool Properties dialog box to enter or edit the properties for a program listed on the Tools menu.
+\par To display the Tool Properties dialog box, click Add or Edit in the }{\f1\uldb Tools Options}{\v\f1 IDH_XFER_Form}{\f1  dialog box.
+\par 
+\par }\pard \ql \fi-1440\li1440\ri0\widctlpar\faauto\adjustright\rin0\lin1440\itap0 {\b\f1 Tool Properties\tab Description
+\par }{\f1 
+\par }{\b\f1 Title\tab }{\f1 \tab Enter a name for the program you are adding. This name will appear on the Tools menu. To add an accelerator to the menu command, precede that letter with an ampersand (&).
+\par }{\b\f1 Program}{\f1 \tab Enter the location of the program you are adding. Include the full path to the program. To search your drives and directories to locate the path and file name for the program, click the Browse button
+\par }{\b\f1 Working Dir}{\f1 \tab Specify the working directory for the program. The product specifies a default working directory when you select the program name in the Program text box. You can change the directory path if needed.
+\par }{\b\f1 Parameters}{\f1 \tab Enter parameters to pass to the program at startup. For example, you migh
+t want to pass a file name when the program launches. Type the parameters or use the Macros button to supply startup parameters. You can specify multiple parameters and macros.
+\par }{\b\f1 Macros\tab }{\f1 \tab Click Macros to expand the Tool Properties dialog box to display a list of available }{\f1\uldb macros}{\v\f1 IDH_XFER_Macros}{\f1 
+. You can use these macros to supply startup parameters for your application. Select a macro and click Insert to add the macro to the Program, Working dir, or Parameters text box above.
+\par }{\b\f1 Browse\tab }{\f1 \tab Click Browse to select the program name for the Program text box. When you click Browse, the }{\f1\uldb Select Transfer Item}{\v\f1 IDH_XFER_OPEN_Form}{\f1  dialog box opens.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_XFER_Macros}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Transfer Macros}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super 
+K}{\f1  transfer macros;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Transfer macros
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use transfer macros to supply startup parameters to a program on the Tools menu.
+\par To display the macros, click the Macros button on the }{\f1\uldb Tool Properties}{\v\f1 IDH_XFER_EDIT_Form}{\f1  dialog box.
+\par }\pard \ql \fi-1440\li1440\ri0\widctlpar\faauto\adjustright\rin0\lin1440\itap0 {\f1 
+\par }{\b\f1 Macro\tab Description
+\par }{\f1 $COL\tab \tab Expands to the column number of the cursor in the active Code editor window.For example, if the cursor is in column 50, at startup the product passes 50 to the program.
+\par $ROW\tab \tab Expands to the row number of the cursor in the active Code editor window.For example, if the cursor is in row 8, at startup the product passes 8 to the program.
+\par $CURTOKEN\tab Expands to the word at the cursor in the active Code editor window.For example, if the cursor is on the word Token, at startup the product passes Token to the program.
+\par $PATH\tab \tab Expands to the directory portion of a par
+ameter you specify. When you insert the $PATH macro, the product inserts $PATH() and you specify a parameter within the parentheses.For example, if you specify $PATH($EDNAME), at startup the product passes the path for the file in the active Code editor w
+indow to the program.
+\par $NAME\tab \tab Expands to the file name portion of a parameter you specify. When you insert the $NAME macro, the product inserts $NAME() and you specify a parameter within the parentheses.For example, if you specify $NAME($EDNAME), at startup 
+the product passes the file name for the file in the active Code editor window to the program.
+\par $NAMEONLY\tab Expands to the file name portion of a parameter you specify, without an extension. When you insert the $NAMEONLY macro, the product inserts $NAMEONLY() and you specify a parameter within the parentheses.
+\par $EXT\tab \tab Expands to the file extension portion of a parameter you specify. When you insert the $EXT macro, the product inserts $EXT() and you specify a parameter within the parentheses.For example, if you s
+pecify $EXT($EDNAME), at startup the product passes the file extension for the file in the active Code editor window to the program.
+\par $EDNAME\tab Expands to the full file name of the active Code editor window.For example, if you are editing the file C:\\PROJ1\\UNIT1.PAS, at startup the product passes C:\\PROJ1\\UNIT1.PAS to the program.
+\par $PROMPT\tab Prompts you for parameters at startup. When you insert the $PROMPT macro, the product inserts $PROMPT() and you specify a default parameter within the parentheses.
+\par $SAVE\tab \tab Saves the active file in the Code editor.
+\par $SAVEALL\tab Saves the current project.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_XFER_OPEN_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Select Transfer Item}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  select transfer item;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Select Transfer Item
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use the Select Transfer Item dialog box to search drives and directories for a program to add to the Tools menu.
+\par To locate a transfer item, click the Browse button on the }{\f1\uldb Tool Properties}{\v\f1 IDH_XFER_EDIT_Form}{\f1  dialog box. 
+\par }\pard \ql \fi-1440\li1440\ri0\widctlpar\faauto\adjustright\rin0\lin1440\itap0 {\f1 
+\par }{\b\f1 Look in\tab }{\f1 \tab Select the directory whose contents you want to view. Files in the current directory that match the wildcards in the File name text box or the file type in the Files of type combo box appear in the Files list box.
+\par }{\b\f1 Files\tab }{\f1 \tab Displays the files in the current directory that match the wildcards in the File name list box or the file type in the Files of type list box.
+\par }{\b\f1 File name}{\f1 \tab Enter the name of the file you want to load, or enter wildcards to use as filters in the Files list box.
+\par 
+\par }{\b\f1 Files of type}{\f1 \tab Choose the type of file you want to open. The default file types are .EXE, .COM, and .PIF files. All files in the current directory of the selected type appear in the Files list box.
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_EEPROM_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Spybot EEPROM}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}
+{\f1  spybot eeprom;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Spybot EEPROM
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use this dialog to examine the Spybot EEPROM values.  It is accessed via Tools|Spybot EEPROM (}{\b\f1 Alt-T}{\f1 , }{\b\f1 
+Y}{\f1 ).
+\par 
+\par The }{\b\f1 Game Items}{\f1  tab contains two tabs.  The first (}{\b\f1 Configuration data}{\f1 ) contains a variety of controls which let you view or edit the motor control, species, long ID, user level, ping rate, runs, wins, losses, points, pl
+ay seconds, total play time, max robots, mission ID, mission points, high score, robot name, birth date, robot data, and status values.  The second tab (}{\b\f1 Missions & Tokens}{\f1 
+) allows editing the missions which have been run and the Spybot token values.
+\par 
+\par The }{\b\f1 Raw Data}{\f1  tab provides a byte-level view of the first 256 bytes of Spybot EEPROM.  The first 128 bytes are editable via the }{\b\f1 Game Items}{\f1 
+ tab and the data is shared between these two tabs.  The remaining 128 bytes can only be edited and viewed via the }{\b\f1 Raw Data}{\f1  tab.
+\par 
+\par To read the Spybot EEPROM data use the }{\b\f1 Read}{\f1  button.  This will populate the raw data fields on the second tab and update the controls on the }{\b\f1 Game Items}{\f1 
+ tab.  Once the data has been loaded you can save the data to a simple text file via the }{\b\f1 Save}{\f1  button.  You can load previously saved Spybot EEPROM data using the }{\b\f1 Load}{\f1 
+ button.  After you edit the values you can write them to the Spybot using the }{\b\f1 Write}{\f1  button.  Any attempt to write to the Spybot EEPROM requires that the user confirms the operation in order to avoid accidentally overwriting important data.
+
+\par 
+\par To view all the Spybot EEPROM data use the }{\b\f1 Custom}{\f1  tab.  Here you can select the EEPROM block to start reading from and the number of blocks to read.  Select the }{\b\f1 Read}{\f1  button to retrieve the specified block range.  Select the }{
+\b\f1 Clear}{\f1  button to erase the contents of the data window.  The selected contents of the data window can be copied to the clipboard via }{\b\f1 Ctrl-C}{\f1  or via the right-click popup menu.
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_SETVAL_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Set Values}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  set values;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Set Values
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 
+Use this dialog to set any writeable source/value combination to the value of any readable source/value combination.  It is accessed via Tools|Set Values (}{\b\f1 Alt-T}{\f1 , }{\b\f1 L}{\f1 ).
+\par 
+\par Some sources are write
+able only when the value is within a narrower range than the range of valid source values.  For example, the random source is only writeable when the value is set to zero.  The list of sources and value ranges will depend on the brick you have configured 
+BricxCC to communicate with.
+\par }\pard \ql \fi-1440\li1440\ri0\widctlpar\faauto\adjustright\rin0\lin1440\itap0 {\f1 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_SETLNP_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Set LNP Address}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super 
+K}{\f1  set LNP address;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Set LNP Address
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use this dialog to set the brickOS LNP address of your brick.  It is accessed via brickOS|Set LNP Address (}{\b\f1 Alt-B}{
+\f1 , }{\b\f1 S}{\f1 ).
+\par 
+\par Valid LNP addresses are between 0 and 15.  After you set the address on the brick you will need to configure BricxCC to use the correct address when speaking to the brick.
+\par 
+\par Configure the address BricxCC uses when talking to a brick running brickOS via the brickOS|LNP Address (}{\b\f1 Alt-B}{\f1 , }{\b\f1 A}{\f1 ) menu item.
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_PROMPT_SERIES_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Select Series}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}
+{\f1  select series;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Select Series
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use this dialog to select one of the series in your chart and configure its settings.  It is accessed from the }{\f1\uldb 
+Data Analysis}{\v\f1 IDH_DATA_ANALYSIS_Form}{\f1  dialog via the Select Series toolbar button (}{\b\f1 Ctrl-S}{\f1 ) or by holding down the }{\b\f1 Ctrl}{\f1 
+ key while clicking on the chart using the left mouse button.  If you click directly on one of the series in the chart this dialog will be bypassed and you will go directly to the }{\f1\uldb Series Configuration}{\v\f1 IDH_SERIES_CNFG_Form}{\f1  dialog.
+
+\par 
+\par Select the desired series using the list box.  The series can then be chosen either via selecting the OK button or by double-clicking on the series name in the list box.
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_SERIES_CNFG_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Series Configuration}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  series configuration;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Series Configuration
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use this dialog to configure a large number of parameters for the selected series.  It is accessed from the }{\f1\uldb 
+Data Analysis}{\v\f1 IDH_DATA_ANALYSIS_Form}{\f1  dialog using the }{\f1\uldb Select Series}{\v\f1 IDH_PROMPT_SERIES_Form}{\f1  dialog (}{\b\f1 Ctrl-S}{\f1 
+) or by clicking the left mouse button directly on one of the series in the chart while holding down the }{\b\f1 Ctrl}{\f1  key.
+\par 
+\par The available configuration options for a series depend on the chart type.  Some of the options are always available regardless of the chart type.  One of the options you can always configure is the series }{\b\f1 Title}{\f1 
+.  The default title is based on the data and you can change this value to be whatever title you choose.  
+\par 
+\par The other options that are always configurable regardless of the chart type are on the }{\b\f1 Marks}{\f1 
+ tab.  Marks are labels next to each data point in a series.  You can select whether these marks are visible or not (by default they are not visible).  You can configure the format of each mark by specify
+ing the background color, transparency, clipping, font, border visibility, and border width.  You can specify the length and color of the arrow between the mark and the data point.  Finally, you can select the desired mark style.
+\par 
+\par If the chart type is a Point chart then you can also configure options on the }{\b\f1 Point}{\f1 
+ tab.  A point is a small shape on the chart that represents the actual data value for each item in a series.  On this tab you configure the point visibility, 3D appearance, whether or not to inflat
+e the margin, width, height, and style of the point.  You can also configure the border visibility, width, color, and style.
+\par 
+\par If the chart type is an Area chart then you can also configure options on the }{\b\f1 Area}{\f1  tab.  On this tab you can configure the area pa
+ttern and color.  You can choose whether to use stairstep areas and whether or not to color each section of the area differently.  You can also configure the border visibility, width, color, and style.  You can configure area line visibility, width, color
+, and style.  And you can select multiple areas for none, stacked, or stacked 100%.
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_PROJ_MGR_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Project Manager}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super 
+K}{\f1  project manager;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Project Manager
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Use this dialog to manage a list of files that are all part of the same project.  It is accessed via View|Project Manager (
+}{\b\f1 Alt-V}{\f1 , }{\b\f1 P}{\f1 ) or by its hotkey }{\b\f1 Ctrl-Alt-F11}{\f1 .  This feature is only available when the active editor window contains a Pascal, C/C++, or Java source file.
+\par 
+\par A right-click popup menu provides access to the Add, Remove from Project, and Open features of this dialog.  These can also be accessed via hotkeys.  Use }{\b\f1 Ctrl-Ins}{\f1 , }{\b\f1 Ctrl-Del}{\f1 , and }{\b\f1 Ctrl-O}{\f1 
+ respectively.  You can also reorder the list of files by dragging and dropping a filename within the list box.
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_NEW_WATCH_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Configurable Watch}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {
+\cs16\f1\super K}{\f1  configurable watch;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Configurable Watch
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Configurable Watch
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_MIDI_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 $}{\f1\lang1036\langfe1033\langnp1036  MIDI Conversion}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 K}{\f1\lang1036\langfe1033\langnp1036  midi conversion;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{MIDI Conversion
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 MIDI Conversion
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_MACRO_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Macro Library}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}
+{\f1  macro library;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Macro Library
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Macro Library
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_MACRO_EDIT_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Macro Editor}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  macro editor;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Macro Editor
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Macro Editor
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_FORTH_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  pbForth Console}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super 
+K}{\f1  pbforth console;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{pbForth Console
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 pbForth Console
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_EXTENSION_Form}}${\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 $}{\f1\lang1036\langfe1033\langnp1036  File Extensions}}K{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 K}{\f1\lang1036\langfe1033\langnp1036  file extensions;}}+{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 +}{\f1\lang1036\langfe1033\langnp1036  cc}}}{\lang1036\langfe1033\langnp1036 
+File Extensions
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 File Extensions
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 #}{
+\f1\lang1036\langfe1033\langnp1036  IDH_CODE_EXPLORER_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 $}{
+\f1\lang1036\langfe1033\langnp1036  Code Explorer}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 K}{
+\f1\lang1036\langfe1033\langnp1036  code explorer;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 +}{
+\f1\lang1036\langfe1033\langnp1036  cc}}}{\lang1036\langfe1033\langnp1036 Code Explorer
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 Code Explorer
+\par 
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 #}{
+\f1\lang1036\langfe1033\langnp1036  IDH_EXP_OPTIONS_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 $}{
+\f1\lang1036\langfe1033\langnp1036  Code Explorer Options}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 K}{
+\f1\lang1036\langfe1033\langnp1036  code explorer options;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{
+\lang1036\langfe1033\langnp1036 Code Explorer Options
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 Code Explorer Options
+\par 
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_EDIT_TEMPLATE_Form}}${\footnote 
+\pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Code Template}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  code template;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +
+}{\f1  cc}}}{\lang1036\langfe1033\langnp1036 Code Template
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 Code Template
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_DATA_ANALYSIS_Form}}${\footnote 
+\pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Data Analysis}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  data analysis;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +
+}{\f1  cc}}}{\lang1036\langfe1033\langnp1036 Data Analysis
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 Data Analysis
+\par 
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_CODE_TEMPLATES_Form}}${\footnote 
+\pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Code Templates}}K{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  code templates;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{\lang1036\langfe1033\langnp1036 Code Templates
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 Code Templates
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_CHART_EXPORT_Form}}${\footnote 
+\pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Chart Export}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  chart export;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}
+{\f1  cc}}}{\lang1036\langfe1033\langnp1036 Chart Export
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 Chart Export
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_CHART_CONFIG_Form}}${\footnote 
+\pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Chart Configuration}}K{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  chart configuration;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{\lang1036\langfe1033\langnp1036 Chart Configuration
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 Chart Configuration
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_PROC_LIST_Form}}${\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Procedure List}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  procedure list;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super 
++}{\f1  cc}}}{\lang1036\langfe1033\langnp1036 Procedure List
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 Procedure List
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_PREVIEW_Form}}${\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Print Preview}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{\f1  print preview;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +
+}{\f1  cc}}}{\lang1036\langfe1033\langnp1036 Print Preview
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1\lang1036\langfe1033\langnp1036 Print Preview
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\lang1036\langfe1033\langnp1036 \page }{
+\cs16\lang1036\langfe1033\super\langnp1036 #{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_PAGE_SETUP_Form}}${\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 $}{\f1\lang1036\langfe1033\langnp1036  Page Setup}}K{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\lang1036\langfe1033\super\langnp1036 K}{\f1\lang1036\langfe1033\langnp1036  page setup;}}+{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{\lang1036\langfe1033\langnp1036 Page Setup
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Page Setup
+\par 
+\par }\pard\plain \s1\ql \li0\ri0\sb240\sa60\keepn\widctlpar\faauto\outlinelevel0\adjustright\rin0\lin0\itap0 \b\f1\fs28\lang1033\langfe1033\kerning28\cgrid\langnp1033\langfenp1033 {\page }{\cs16\super #{\footnote \pard\plain 
+\s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super #}{\f1  IDH_MAIN_Form}}${\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 
+\fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super $}{\f1  Main Window}}K{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super K}{
+\f1  main window;}}+{\footnote \pard\plain \s15\ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\cs16\f1\super +}{\f1  cc}}}{Main Window
+\par }\pard\plain \ql \li0\ri0\widctlpar\faauto\adjustright\rin0\lin0\itap0 \fs20\lang1033\langfe1033\cgrid\langnp1033\langfenp1033 {\f1 Main Window
+\par 
+\par 
+\par 
+\par }}

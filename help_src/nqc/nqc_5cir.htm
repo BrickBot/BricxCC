@@ -1,0 +1,81 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>CyberMaster Specific Features</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="cybermaster specific features">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_cybermasterspecific"></A>3.14 CyberMaster Specific Features</H2>
+
+<P>CyberMaster provides alternate names for the sensors: <CODE>SENSOR_L</CODE>, <CODE>SENSOR_M</CODE>, and <CODE>SENSOR_R</CODE>. It also provides alternate names for the outputs: <CODE>OUT_L</CODE>, <CODE>OUT_R</CODE>, <CODE>OUT_X</CODE>. Additionally, the two internal motors have tachometers, which measure 'clicks' and speed as the motors turn. There are about 50 clicks per revolution of the shaft. The tachometers can be used, for example, to create a robot which can detect if it has bumped into an object without using any external sensors. The tachometers have maximum values of 32767 and do not differentiate between directions. They will also count up if the shaft is turned by hand, including when no program is running.</P>
+
+<H3>Drive(motor0, motor1)Function - CM</H3>
+
+<P>Turns on both motors at the power levels specified. If a power level is negative, then the motor will run in reverse. Equivalent to this code:</P>
+
+<PRE><CODE>SetPower(OUT_L, abs(power0));
+SetPower(OUT_R, abs(power1));
+if(power0 &lt; 0)
+{ SetDirection(OUT_L, OUT_REV) }
+else
+{ SetDirection(OUT_L, OUT_FWD) }
+if(power1 &lt; 0)
+{ SetDirection(OUT_R, OUT_REV) }
+else
+{ SetDirection(OUT_R, OUT_FWD) }
+SetOutput(OUT_L + OUT_R, OUT_ON);</CODE></PRE>
+
+<H3>OnWait(motors, n time)Function - CM</H3>
+
+<P>Turns on the motors specified, all at the same power level then waits for the given time. The time is in 10ths of a second, with a maximum of 255 (or 25.5 seconds). Equivalent to this code:</P>
+
+<PRE><CODE>SetPower(motors, abs(power));
+if(power &lt; 0)
+{ SetDirection(motors, OUT_REV) }
+else
+{ SetDirection(motors, OUT_FWD) }
+SetOutput(motors, OUT_ON);
+Wait( time * 10);</CODE></PRE>
+
+<H3>OnWaitDifferent(motors, n0, n1, n2, time)Function - CM</H3>
+
+<P>Like OnWait(), except different power levels can be given for each motor.</P>
+
+<H3>ClearTachoCounter(motors)Function - CM</H3>
+
+<P>Resets the tachometer for the motor(s) specified.</P>
+
+<H3>TachoCount(n)Value - CM</H3>
+
+<P>Returns the current value of the tachometer for a specified motor.</P>
+
+<H3>TachoSpeed(n)Value - CM</H3>
+
+<P>Returns the current speed of the tachometer for a specified motor. The speed is fairly constant for an unladen motor at any speed, with a maximum value of 90. (This will be lower as your batteries lose power!) The value drops as the load on the motor increases. A value of 0 indicates that the motor is stalled.</P>
+
+<H3>ExternalMotorRunning()Value - CM</H3>
+
+<P>This is actually a measure of the current being drawn by the motor. The values returned tends to fluctuate slightly, but are, on average, as follows for an unladen motor:</P>
+
+<P>0 motor is floating</P>
+
+<P>1 motor is off</P>
+
+<P>&lt;=7 motor is running at around this power level. This is where the value fluctuates the most (probably related to the PWM method used to drive the motors.) In any case, you should know what power level you set the motor to in the first place. </P>
+
+<P>The value increases as the load on the motor increases, and a value between 260 and 300 indicates that the motor has stalled.</P>
+
+<H3>AGC()Value - CM</H3>
+
+<P>Return the current value of the automatic gain control on the RF receiver. This can be used to give a very rough (and somewhat inaccurate) measure of the distance between the CyberMaster and the RF transmitter.</P>
+
+<PRE><CODE>x = AGC();</CODE></PRE>
+
+</BODY>
+</HTML>

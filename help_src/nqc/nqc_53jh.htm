@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SetSerialComm</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SetSerialComm">
+	<PARAM NAME="Keyword" VALUE="SERIAL_COMM_DEFAULT">
+	<PARAM NAME="Keyword" VALUE="SERIAL_COMM_4800">
+	<PARAM NAME="Keyword" VALUE="SERIAL_COMM_DUTY25">
+	<PARAM NAME="Keyword" VALUE="SERIAL_COMM_76KHZ">
+</OBJECT>
+
+<P><B><A NAME="idh_api_setserialcomm"></A>SetSerialComm(settings)Function - RCX2</B></P>
+
+<P>Set the communication settings, which determine how the bits are sent over IR</P>
+
+<PRE><CODE>SetSerialComm(SERIAL_COMM_DEFAULT);</CODE></PRE>
+
+<P>Possible setting values are shown below.</P>
+
+<P><B><U>Option</U><U>Effect</U></B></P>
+
+<P>SERIAL_COMM_DEFAULTdefault settings</P>
+
+<P>SERIAL_COMM_48004800 baud</P>
+
+<P>SERIAL_COMM_DUTY2525% duty cycle</P>
+
+<P>SERIAL_COMM_76KHZ76kHz carrier</P>
+
+<P>The default is to send data at 2400 baud using a 50% duty cycle on a 38kHz carrier. To specify multiple options (such as 4800 baud with 25% duty cycle), combine the individual options using bitwise or (SERIAL_COMM_4800 | SERIAL_COMM_DUTY25).</P>
+
+</BODY>
+</HTML>
