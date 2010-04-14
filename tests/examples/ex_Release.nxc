@@ -1,1 +1,1 @@
-Acquire(motorMutex); // make sure we have exclusive access// use the motorsRelease(motorMutex); // release mutex for other tasks
+Acquire(motorMutex); // make sure we have exclusive access// use the motorsRelease(motorMutex); // release mutex for other tasks
