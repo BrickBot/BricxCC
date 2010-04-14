@@ -1,0 +1,24 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Subroutines</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="subroutines">
+</OBJECT>
+
+<P><A NAME="idh_nqc_subroutines"></A>2.2.3 Subroutines</P>
+
+<P>Unlike inline functions, subroutines allow a single copy of some code to be shared between several different callers. This makes subroutines much more space efficient than inline functions, but due to some limitations in the RCX, subroutines have some significant restrictions. First of all, subroutines cannot use any arguments. Second, a subroutine cannot call another subroutine. Last, the maximum number of subroutines is limited to 8 for the RCX, 4 for CyberMaster, 3 for Scout, and 32 for Spybotics. In addition, when using RCX 1.0 or CyberMaster, if the subroutine is called from multiple tasks then it cannot have any local variables or perform calculations that require temporary variables. These significant restrictions make subroutines less desirable than functions; therefore their use should be minimized to those situations where the resultant savings in code size is absolutely necessary. The syntax for a subroutine appears below:</P>
+
+<PRE><CODE>sub <I>name</I>()
+{
+// body of subroutine
+}</CODE></PRE>
+
+</BODY>
+</HTML>

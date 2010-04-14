@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Whitespace</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="whitespace">
+</OBJECT>
+
+<P><A NAME="idh_nqc_whitespace"></A>2.1.2 Whitespace</P>
+
+<P>Whitespace (spaces, tabs, and newlines) is used to separate tokens and to make programs more readable. As long as the tokens are distinguishable, adding or subtracting whitespace has no effect on the meaning of a program. For example, the following lines of code both have the same meaning:</P>
+
+<PRE><CODE>x=2;
+x = 2;</CODE></PRE>
+
+<P>Some of the C++ operators consist of multiple characters. In order to preserve these tokens whitespace must not be inserted within them. In the example below, the first line uses a right shift operator ('&gt;&gt;'), but in the second line the added space causes the '&gt;' symbols to be interpreted as two separate tokens and thus generate an error.</P>
+
+<PRE><CODE>x = 1 &gt;&gt; 4; / / set x to 1 right shifted by 4 bits
+x = 1 &gt; &gt; 4; // error</CODE></PRE>
+
+</BODY>
+</HTML>

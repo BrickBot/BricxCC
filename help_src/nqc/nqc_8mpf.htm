@@ -1,0 +1,38 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Events</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="events">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_events"></A>3.9 EventsRCX2, Scout, Spy</H2>
+
+<P>Although the RCX2, Swan, Scout, and Spybotics share a common event mechanism, the RCX2, Swan and Spybotics provide 16 completely configurable events while the Scout has 15 predefined events. The only functions common to both targets are the commands to inspect or force events.</P>
+
+<H3>ActiveEvents(task)Value - RCX2, Scout, Spy</H3>
+
+<P>Return the set of events that have been triggered for a given task.</P>
+
+<PRE><CODE>x = ActiveEvents(0);</CODE></PRE>
+
+<H3>CurrentEvents() Value - RCX2, Spy</H3>
+
+<P>Return the set of events that have been triggered for the active task.</P>
+
+<PRE><CODE>x = CurrentEvents();</CODE></PRE>
+
+<H3>Event(events)Function - RCX2, Scout, Spy</H3>
+
+<P>Manually triggers the specified events. This can be useful in testing event handling of the program, or in other cases simulating an event based on other criteria. Note that the specification of the events themselves is slightly different between brick types. RCX2, Swan, and Spybotics use the EVENT_MASK macro to compute an event mask, while Scout has predefined masks.</P>
+
+<PRE><CODE>Event(EVENT_MASK(3)); // triggering an RCX2 event
+Event(EVENT_1_PRESSED); // triggering a Scout event</CODE></PRE>
+
+</BODY>
+</HTML>

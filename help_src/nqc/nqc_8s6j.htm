@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>EVENT_MASK</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="EVENT_MASK">
+</OBJECT>
+
+<P><A NAME="idh_api_event_mask"></A><B>EVENT_MASK(event)Value – RCX2, Scout, Spy</B></P>
+
+<P>Convert an event number to a mask. The monitor statement and some API functions (such as ActiveEvents() or Event()) need to handle multiple events. This is done by converting each event number to an event mask, and then combining the masks with a bitwise OR. For example, to monitor events 2 and 3, the</P>
+
+<P>following statement could be used:</P>
+
+<PRE><CODE><B>monitor</B>(EVENT_MASK(2) | EVENT_MASK(3))</CODE></PRE>
+
+</BODY>
+</HTML>

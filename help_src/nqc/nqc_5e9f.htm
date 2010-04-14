@@ -1,0 +1,139 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Functions</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="functions">
+</OBJECT>
+
+<P><A NAME="idh_nqc_functions"></A>2.2.2 Functions</P>
+
+<P>It is often helpful to group a set of statements together into a single function, which can then be called as needed. NQC supports functions with arguments, but not return values. Functions are defined using the following syntax:</P>
+
+<PRE><CODE>void <I>name</I>(<I>argument_list</I>)
+{
+// body of the function
+}</CODE></PRE>
+
+<P>The keyword void is an artifact of NQC's heritage - in C functions are specified with the type of data they return. Functions that do not return data are specified to return void. Returning data is not supported in NQC, thus all functions are declared using the void keyword.</P>
+
+<P>The argument list may be empty, or may contain one or more argument definitions. An argument is defined by its type followed by its name. Multiple arguments are separated by commas. All values in the RCX are represented as 16 bit signed integers. However NQC supports six different argument types which correspond to different argument passing semantics and restrictions:</P>
+
+<P><B>TypeMeaningRestriction</B></P>
+
+<P>intpass by valuenone</P>
+
+<P>const intpass by valueonly constants may be used</P>
+
+<P>int&amp;pass by referenceonly variables may be used</P>
+
+<P>const int &amp;pass by referencefunction cannot modify argument</P>
+
+<P>int*pass pointeronly pointers may be used</P>
+
+<P>const int *pass pointerfunction cannot modify pointer argument</P>
+
+<P>Arguments of type <CODE>int</CODE> are passed by value from the calling function to the callee. This usually means that the compiler must allocate a temporary variable to hold the argument. There are no restrictions on the type of value that may be used. However, since the function is working with a copy of the actual argument, any changes it makes to the value will not be seen by the caller. In the example below, the function <CODE>foo</CODE> attempts to set the value of its argument to 2. This is perfectly legal, but since <CODE>foo</CODE> is working on a copy of the original argument, the variable <CODE>y</CODE> from main task remains unchanged.</P>
+
+<PRE><CODE>void foo(int x)
+{
+x = 2;
+}
+
+task main()
+{
+int y = 1; // y is now equal to 1
+foo(y); // y is still equal to 1!
+}</CODE></PRE>
+
+<P>The second type of argument, <CODE>const int</CODE>, is also passed by value, but with the restriction that only constant values (e.g. numbers) may be used. This is rather important since there are a number of RCX functions that only work with constant arguments.</P>
+
+<PRE><CODE>void foo(const int x)
+{
+PlaySound(x); // ok
+x = 1; // error - cannot modify argument
+}
+
+task main()
+{
+foo(2);   // ok
+foo(4*5); // ok - expression is still constant
+foo(x);   // error - x is not a constant
+}</CODE></PRE>
+
+<P>The third type, <CODE>int &amp;</CODE>, passes arguments by reference rather than by value. This allows the callee to modify the value and have those changes visible in the caller. However, only variables may be used when calling a function using int &amp; arguments:</P>
+
+<PRE><CODE>void foo(int &amp;x)
+{
+x = 2;
+}
+
+task main()
+{
+int y = 1; // y is equal to 1
+foo(y);    // y is now equal to 2
+foo(2);    // error - only variables allowed
+}</CODE></PRE>
+
+<P>The fourth type, <CODE>const int &amp;</CODE>, is rather unusual. It is also passed by reference, but with the restriction that the callee is not allowed to modify the value. Because of this restriction, the compiler is able to pass anything (not just variables) to functions using this type of argument. In general this is the most efficient way to pass arguments in NQC.</P>
+
+<P>There is one important difference between <CODE>int</CODE> arguments and <CODE>const int &amp;</CODE> arguments. An <CODE>int</CODE> argument is passed by value, so in the case of a dynamic expression (such as a sensor reading), the value is read once then saved. With <CODE>const int &amp;</CODE> arguments, the expression will be re-read each time it is used in the function:</P>
+
+<PRE><CODE>void foo(int x)
+{
+if (x == x) // this will always be true
+PlaySound(SOUND_CLICK);
+}
+
+void bar(const int &amp;x)
+{
+if (x == x) // may not be true. value could change
+PlaySound(SOUND_CLICK);
+}
+
+task main()
+{
+foo(SENSOR_1); // will play sound
+bar(2);        // will play sound
+bar(SENSOR_1); // may not play sound
+}</CODE></PRE>
+
+<P>The last two types, <CODE>int *</CODE> and <CODE>const int *</CODE>, pass pointer arguments.  Proper usage of pointer arguments requires that they be de-referenced.</P>
+
+<PRE><CODE>void foo(int * p)
+{
+    *p = 4;
+}
+
+task main()
+{
+    int x = 2;
+    int* y = &amp;x; // y contains the address of x
+    foo(y);    // x = 4
+}</CODE></PRE>
+
+<P>Functions must be invoked with the correct number (and type) of arguments. The example below shows several different legal and illegal calls to function <CODE>foo</CODE>:</P>
+
+<PRE><CODE>void foo(int bar, const int baz)
+{
+// do something here...
+}
+
+task main ()
+{
+int x;     // declare variable x
+foo(1, 2); // ok
+foo(x, 2); // ok
+foo(2, x); // error – 2nd argument not constant!
+foo(2);    // error - wrong number of arguments!
+}</CODE></PRE>
+
+<P>NQC functions are always expanded as inline functions. This means that each call to a function results in another copy of the function's code being included in the program. Unless used judiciously, inline functions can lead to excessive code size.</P>
+
+</BODY>
+</HTML>

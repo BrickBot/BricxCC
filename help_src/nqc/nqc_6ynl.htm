@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SENSOR_1, SENSOR_2, SENSOR_3</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SENSOR_1">
+	<PARAM NAME="Keyword" VALUE="SENSOR_2">
+	<PARAM NAME="Keyword" VALUE="SENSOR_3">
+</OBJECT>
+
+<P><A NAME="idh_api_sensor_1"></A>There are three sensors, which internally are numbered 0, 1, and 2. This is potentially confusing since they are externally labeled as sensors 1, 2, and 3. To help mitigate this confusion, the sensor names <CODE>SENSOR_1</CODE>, <CODE>SENSOR_2</CODE>, and <CODE>SENSOR_3</CODE> have been defined. These sensor names may be used in any function that requires a sensor as an argument. Furthermore, the names may also be used whenever a program wishes to read the current value of the sensor:</P>
+
+<PRE><CODE>x = SENSOR_1; // read sensor and store value in x</CODE></PRE>
+
+<P>Spybotics uses built-in sensors instead of externally connected ones. The touch sensor on the front of the Spybotics brick is <CODE>SENSOR_1</CODE>. It is normally configured in percentage mode, so it has a value of 0 when not pressed, and a value of 100 when pressed. </P>
+
+<P><CODE>SENSOR_2</CODE> is the light sensor (the connector on the back of the brick that is used to communicate with a computer). It is normally configured in percentage mode, where higher numbers indicate brighter light.</P>
+
+</BODY>
+</HTML>

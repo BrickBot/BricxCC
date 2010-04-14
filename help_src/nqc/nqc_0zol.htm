@@ -1,0 +1,26 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Reserving Storage</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="reserving storage">
+</OBJECT>
+
+<P><A NAME="idh_nqc_reservingstorage"></A>2.5.5 Reserving Storage</P>
+
+<P>The NQC compiler automatically assigns variables to storage locations. However, sometimes it is necessary to prevent the compiler from using certain storage locations. This can be done with the <CODE>#pragma reserve</CODE> directive:</P>
+
+<PRE><CODE>#pragma reserve <I>start</I>
+#pragma reserve <I>start</I> <I>end</I></CODE></PRE>
+
+<P>This directive forces the compiler to ignore one or more storage locations during variable assignment. Start and end must be numbers that refer to valid storage locations. If only a start is provided, then that single location is reserved. If start and end are both specified, then the range of locations from start to end (inclusive) are reserved. The most common use of this directive is to reserve locations 0, 1, and/or 2 when using counters for RCX2, Swan, and Spybotics. This is because the RCX2, Swan, and Spybotics counters are overlapped with storage locations 0, 1, and 2. For example, if all three counters were going to be used:</P>
+
+<PRE><CODE>#pragma reserve 0 2</CODE></PRE>
+
+</BODY>
+</HTML>

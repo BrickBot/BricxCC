@@ -1,0 +1,113 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Control Structures</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="control structures">
+</OBJECT>
+
+<P><A NAME="idh_nqc_controlstructures"></A>2.3.3 Control Structures</P>
+
+<P>The simplest control structure is a compound statement. This is a list of statements enclosed within curly braces ('<CODE>{</CODE>' and '<CODE>}</CODE>'):</P>
+
+<PRE><CODE>{
+x = 1;
+y = 2;
+}</CODE></PRE>
+
+<P>Although this may not seem very significant, it plays a crucial role in building more complicated control structures. Many control structures expect a single statement as their body. By using a compound statement, the same control structure can be used to control multiple statements.</P>
+
+<P>The <CODE>if</CODE> statement evaluates a condition. If the condition is true it executes one statement (the consequence). An optional second statement (the alternative) is executed if the condition is false. The two syntaxes for an <CODE>if</CODE> statement are shown below.</P>
+
+<PRE><CODE>if (<I>condition</I>) <I>consequence</I>
+if (<I>condition</I>) <I>consequence</I> else <I>alternative</I></CODE></PRE>
+
+<P>Note that the condition is enclosed in parentheses. Examples are shown below. Note how a compound statement is used in the last example to allow two statements to be executed as the consequence of the condition.</P>
+
+<PRE><CODE>if (x == 1) y = 2;
+if (x == 1) y = 3; else y = 4;
+if (x == 1) {y = 1; z = 2;}</CODE></PRE>
+
+<P>The <CODE>while</CODE> statement is used to construct a conditional loop. The condition is evaluated, and if true the body of the loop is executed, then the condition is tested again. This process continues until the condition becomes false (or a <CODE>break</CODE> statement is executed). The syntax for a <CODE>while</CODE> loop appears below:</P>
+
+<PRE><CODE>while (<I>condition</I>) <I>body</I></CODE></PRE>
+
+<P>It is very common to use a compound statement as the body of a loop:</P>
+
+<PRE><CODE>while (x &lt; 10)
+{
+x = x+1;
+y = y*2;
+}</CODE></PRE>
+
+<P>A variant of the <CODE>while</CODE> loop is the <CODE>do-while</CODE> loop. Its syntax is:</P>
+
+<PRE><CODE>do <I>body</I> while (<I>condition</I>)</CODE></PRE>
+
+<P>The difference between a <CODE>while</CODE> loop and a <CODE>do-while</CODE> loop is that the <CODE>do-while</CODE> loop always executes the body at least once, whereas the <CODE>while</CODE> loop may not execute it at all. Another kind of loop is the <CODE>for</CODE> loop:</P>
+
+<PRE><CODE>for (<I>stmt1</I>; <I>condition</I>; <I>stmt2</I>) <I>body</I></CODE></PRE>
+
+<P>A <CODE>for</CODE> loop always executes stmt1, then it repeatedly checks the condition and while it remains true executes the body followed by stmt2. The <CODE>for</CODE> loop is equivalent to:</P>
+
+<PRE><CODE><I>stmt1</I>;
+while (<I>condition</I>)
+{
+<I>body</I>
+<I>stmt2</I>;
+}</CODE></PRE>
+
+<P>The repeat statement executes a loop a specified number of times:</P>
+
+<PRE><CODE>repeat (<I>expression</I>) <I>body</I></CODE></PRE>
+
+<P>The expression determines how many times the body will be executed. Note that it is only evaluated a single time, then the body is repeated that number of times. This is different from both the <CODE>while</CODE> and <CODE>do-while</CODE> loops which evaluate their condition each time through the loop.</P>
+
+<P>A <CODE>switch</CODE> statement can be used to execute one of several different blocks of code depending on the value of an expression. Each block of code is preceded by one or more <CODE>case</CODE> labels. Each <CODE>case</CODE> must be a constant and unique within the <CODE>switch</CODE> statement. The <CODE>switch</CODE> statement evaluates the expression then looks for a matching <CODE>case</CODE> label. It will then execute any statements following the matching <CODE>case</CODE> until either a <CODE>break</CODE> statement or the end of the <CODE>switch</CODE> is reached. A single <CODE>default</CODE> label may also be used - it will match any value not already appearing in a <CODE>case</CODE> label. Technically, a <CODE>switch</CODE> statement has the following syntax:</P>
+
+<PRE><CODE>switch (<I>expression</I>) <I>body</I></CODE></PRE>
+
+<P>The <CODE>case</CODE> and <CODE>default</CODE> labels are not statements in themselves - they are <I>labels</I> that precede statements. Multiple labels can precede the same statement. These labels have the following syntax</P>
+
+<PRE><CODE>case <I>constant_expression</I> :
+default :</CODE></PRE>
+
+<P>A typical switch statement might look like this:</P>
+
+<PRE><CODE>switch(x)
+{
+case 1:
+// do something when x is 1
+break;
+case 2:
+case 3:
+// do something else when x is 2 or 3
+break;
+default:
+// do this when x is not 1, 2, or 3
+break;
+}</CODE></PRE>
+
+<P>The <CODE>goto</CODE> statement forces a program to jump to the specified location. Statements in a program can be labeled by preceding them with an identifier and a colon. A <CODE>goto</CODE> statement then specifies the label which the program should jump to. For example, this is how an infinite loop that increments a variable could be implemented using <CODE>goto</CODE>:</P>
+
+<PRE><CODE>my_loop:
+x++;
+goto my_loop;</CODE></PRE>
+
+<P>The <CODE>goto</CODE> statement should be used sparingly and cautiously. In almost every case, control structures such as <CODE>if</CODE>, <CODE>while</CODE>, and <CODE>switch</CODE> make a program much more readable and maintainable than using <CODE>goto</CODE>. Care should be taken to never use a <CODE>goto</CODE> to jump into or out of a <CODE>monitor</CODE> or <CODE>acquire</CODE> statement. This is because <CODE>monitor</CODE> and <CODE>acquire</CODE> have special code that normally gets executed upon entry and exit, and a <CODE>goto</CODE> will bypass that code – probably resulting in undesirable behavior.</P>
+
+<P>NQC also defines the <CODE>until</CODE> macro which provides a convenient alternative to the <CODE>while</CODE> loop. The actual definition of <CODE>until</CODE> is:</P>
+
+<PRE><CODE>#define until(c) while (!(c))</CODE></PRE>
+
+<P>In other words, <CODE>until</CODE> will continue looping until the condition becomes true. It is most often used in conjunction with an empty body statement:</P>
+
+<PRE><CODE>until(SENSOR_1 == 1); // wait for sensor to be pressed</CODE></PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,78 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>LCD Display</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="display">
+	<PARAM NAME="Keyword" VALUE="lcd">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_display"></A>3.4 LCD DisplayRCX</H2>
+
+<P>The RCX and Swan have seven different display modes as shown below.  It defaults to <CODE>DISPLAY_WATCH</CODE>.</P>
+
+<P><B>ModeLCD Contents</B></P>
+
+<P>DISPLAY_WATCHshow the system "watch"</P>
+
+<P>DISPLAY_SENSOR_1show value of sensor 1</P>
+
+<P>DISPLAY_SENSOR_2show value of sensor 2</P>
+
+<P>DISPLAY_SENSOR_3show value of sensor 3</P>
+
+<P>DISPLAY_<CODE>OUT_A</CODE>show setting for output A</P>
+
+<P>DISPLAY_<CODE>OUT_B</CODE>show setting for output B</P>
+
+<P>DISPLAY_<CODE>OUT_C</CODE>show setting for output C</P>
+
+<P>DISPLAY_USERshow user selected source (RCX2 or Swan)</P>
+
+<P>DISPLAY_EXCEPTIONshow exceptions (Swan)</P>
+
+<P>The RCX2 and Swan add an eighth display mode - <CODE>DISPLAY_USER</CODE>. User display mode continuously reads a source value and updates the display. It can optionally display a decimal point at any position within the number. This allows the display to give the illusion of working with fractions even though all values are stored internally as integers. For example, the following call will set the user display to show the value 1234 with two digits appearing after the decimal point, resulting in "12.34" appearing on the LCD.</P>
+
+<PRE><CODE>SetUserDisplay(1234, 2);</CODE></PRE>
+
+<P>The following short program illustrates the update of the user display:</P>
+
+<PRE><CODE>task main()
+{
+ClearTimer(0);
+SetUserDisplay(Timer(0), 0);
+until(false);
+}</CODE></PRE>
+
+<P>Because the user display mode continuously updates the LCD, there are certain restrictions on the source value. If a variable is used it must be assigned to a global storage location. The best way to ensure this is to make the variable a global one. There can also be some strange side effects. For example, if a variable is being displayed and later used as the target of a calculation, it is possible for the display to show some intermediate results of the calculation:</P>
+
+<PRE><CODE>int x;
+task main()
+{
+SetUserDisplay(x, 0);
+while(true)
+{
+// display may briefly show 1!
+x = 1 + Timer(0);
+}
+}</CODE></PRE>
+
+<H3>SelectDisplay(mode)Function – RCX</H3>
+
+<P>Select a display mode.</P>
+
+<PRE><CODE>SelectDisplay(DISPLAY_SENSOR_1); // view sensor 1</CODE></PRE>
+
+<H3>SetUserDisplay(value, precision)Function - RCX2</H3>
+
+<P>Set the LCD display to continuously monitor the specified value. Precision specifies the number of digits to the right of the decimal point. A precision of zero shows no decimal point.</P>
+
+<PRE><CODE>SetUserDisplay(Timer(0), 0); // view timer 0</CODE></PRE>
+
+</BODY>
+</HTML>

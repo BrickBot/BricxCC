@@ -1,0 +1,27 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SerialComm</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SerialComm">
+</OBJECT>
+
+<P><B><A NAME="idh_api_serialcomm"></A>SerialComm()Value - RCX2</B></P>
+
+<P>Returns the UART transmit parameter configuration.  </P>
+
+<P>bit 0 : Baudrate (0 == 2400 baud, 1 == 4800 baud)</P>
+
+<P>bit 1 : Carrier freq (0 == 38 kHz, 1 == 76 kHz)</P>
+
+<P>bit 2 : Dutycycle (0 == 50 %, 1 == 25 %)</P>
+
+<PRE><CODE>x = SerialComm(); // read UART transmit parameters</CODE></PRE>
+
+</BODY>
+</HTML>

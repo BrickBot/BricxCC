@@ -1,0 +1,74 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Convenience Calls</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="outputs">
+	<PARAM NAME="Keyword" VALUE="outputs, convenience calls">
+</OBJECT>
+
+<P><A NAME="idh_nqc_outputsconvenience"></A>3.2.2 Convenience Calls</P>
+
+<P>Since control of outputs is such a common feature of programs, a number of convenience functions are provided that make it easier to work with the outputs. It should be noted that these commands do not provide any new functionality above the <CODE>SetOutput</CODE> and <CODE>SetDirection</CODE> commands. They are merely convenient ways to make programs more concise.</P>
+
+<H3>On(outputs)Function - All</H3>
+
+<P>Turn specified outputs on. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> added together.</P>
+
+<PRE><CODE>On(OUT_A + OUT_C); // turn on outputs A and C</CODE></PRE>
+
+<H3>Off(outputs)Function - All</H3>
+
+<P>Turn specified outputs off. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> added together.</P>
+
+<PRE><CODE>Off(OUT_A); // turn off output A</CODE></PRE>
+
+<H3>Float(outputs)Function - All</H3>
+
+<P>Make outputs float. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> added together.</P>
+
+<PRE><CODE>Float(OUT_A); // float output A</CODE></PRE>
+
+<H3>Fwd(outputs)Function - All</H3>
+
+<P>Set outputs to forward direction. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> added together.</P>
+
+<PRE><CODE>Fwd(OUT_A);</CODE></PRE>
+
+<H3>Rev(outputs)Function - All</H3>
+
+<P>Set outputs to reverse direction. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> added together.</P>
+
+<PRE><CODE>Rev(OUT_A);</CODE></PRE>
+
+<H3>Toggle(outputs)Function - All</H3>
+
+<P>Flip the direction of the outputs. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> added together.</P>
+
+<PRE><CODE>Toggle(OUT_A);</CODE></PRE>
+
+<H3>OnFwd(outputs)Function - All</H3>
+
+<P>Set outputs to forward direction and turn them on. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> added together.</P>
+
+<PRE><CODE>OnFwd(OUT_A);</CODE></PRE>
+
+<H3>OnRev(outputs)Function - All</H3>
+
+<P>Set outputs to reverse direction and turn them on. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> added together.</P>
+
+<PRE><CODE>OnRev(OUT_A);</CODE></PRE>
+
+<H3>OnFor(outputs, time)Function - All</H3>
+
+<P>Turn outputs on for a specified amount of time, then turn them off. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> added together. Time is measures in 10ms increments (one second = 100) and may be any expression.</P>
+
+<PRE><CODE>OnFor(OUT_A, x);</CODE></PRE>
+
+</BODY>
+</HTML>

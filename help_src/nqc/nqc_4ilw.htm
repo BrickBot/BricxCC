@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SetSerialPacket</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SetSerialPacket">
+	<PARAM NAME="Keyword" VALUE="SERIAL_PACKET_DEFAULT">
+	<PARAM NAME="Keyword" VALUE="SERIAL_PACKET_PREAMBLE">
+	<PARAM NAME="Keyword" VALUE="SERIAL_PACKET_NEGATED">
+	<PARAM NAME="Keyword" VALUE="SERIAL_PACKET_CHECKSUM">
+	<PARAM NAME="Keyword" VALUE="SERIAL_PACKET_RCX">
+</OBJECT>
+
+<P><B><A NAME="idh_api_setserialpacket"></A>SetSerialPacket(settings)Function - RCX2</B></P>
+
+<P>Set the packet settings, which control how bytes are assembled into packets.</P>
+
+<PRE><CODE>SetSerialPacket(SERIAL_PACKET_DEFAULT);</CODE></PRE>
+
+<P>Possible settings values are shown below.</P>
+
+<P><B><U>Option</U><U>Effect</U></B></P>
+
+<P>SERIAL_PACKET_DEFAULTno packet format - just data bytes</P>
+
+<P>SERIAL_PACKET_PREAMBLEsend a packet preamble</P>
+
+<P>SERIAL_PACKET_NEGATEDfollow each byte with its complement</P>
+
+<P>SERIAL_PACKET_CHECKSUMinclude a checksum for each packet</P>
+
+<P>SERIAL_PACKET_RCXstandard RCX format (preamble,</P>
+
+<P>negated data, and checksum)</P>
+
+<P>Note that negated packets always include a checksum, so the SERIAL_PACKET_CHECKSUM option is only meaningful when SERIAL_PACKET_NEGATED is not specified. Likewise the preamble, negated, and checksum settings are implied by SERIAL_PACKET_RCX.</P>
+
+</BODY>
+</HTML>

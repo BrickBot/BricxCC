@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Variables</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="variables">
+</OBJECT>
+
+<P><A NAME="idh_nqc_variables"></A>2.2.4 Variables</P>
+
+<P>All variables in NQC are of one of two types - specifically 16 bit signed integers or pointers to 16 bit signed integers. Variables are declared using the <CODE>int</CODE> keyword followed by a comma separated list of variable names (each with an optional '*' pointer indicator in front of the name) and terminated by a semicolon ('<CODE>;</CODE>').  Optionally, an initial value for each variable may be specified using an equals sign ('=') after the variable name. Several examples appear below:</P>
+
+<PRE><CODE>int x;     // declare x
+int y,z;   // declare y and z
+int *q, *p = &amp;x; // declare ptrs q and p, p = address of x
+int a=1,b; // declare a and b, initialize a to 1</CODE></PRE>
+
+<P>Global variables are declared at the program scope (outside any code block). Once declared, they may be used within all tasks, functions, and subroutines. Their scope begins at declaration and ends at the end of the program.</P>
+
+<P>Local variables may be declared within tasks, functions, and sometimes within subroutines. Such variables are only accessible within the code block in which they are defined. Specifically, their scope begins with their declaration and ends at the end of their code block. In the case of local variables, a compound statement (a group of statements bracketed by <CODE>{</CODE> and <CODE>}</CODE>) is considered a block:</P>
+
+<PRE><CODE>int x; // x is global
+
+task main()
+{
+int y; // y is local to task main
+x = y; // ok
+{ // begin compound statement
+int z; // local z declared
+y = z; // ok
+}
+y = z; // error - z no longer in scope
+}
+
+task foo()
+{
+x = 1; // ok
+y = 2; // error - y is not global
+}</CODE></PRE>
+
+<P>In many cases NQC must allocate one or more temporary variables for its own use. In some cases a temporary variable is used to hold an intermediate value during a calculation. In other cases it is used to hold a value as it is passed to a function. These temporary variables deplete the pool of variables available to the rest of the program. NQC attempts to be as efficient as possible with temporary variables (including reusing them when possible).</P>
+
+<P>The RCX (and other targets) provide a number of storage locations which can be used to hold variables in an NQC program. There are two kinds of storage locations - global and local. When compiling a program, NQC assigns each variable to a specific storage location. Programmers for the most part can ignore the details of this assignment by following two basic rules:
+
+<UL>
+	<LI>If a variable needs to be in a global location, declare it as a global variable.<BR><BR></LI>
+
+	<LI> If a variable does not need to be a global variable, make it as local as possible. This gives the compiler the most flexibility in assigning an actual storage location. </LI>
+</UL>
+
+<P>The number of global and local locations varies by target</P>
+
+<P><B>TargetGlobalLocal</B></P>
+
+<P>RCX (1.0)320</P>
+
+<P>CyberMaster320</P>
+
+<P>Scout108</P>
+
+<P>RCX23216</P>
+
+<P>Swan3216</P>
+
+<P>Spybotics324</P>
+
+</BODY>
+</HTML>

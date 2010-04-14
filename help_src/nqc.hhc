@@ -1,0 +1,407 @@
+<HTML>
+<!--Sitemap 1.0-->
+<OBJECT type="text/site properties">
+</OBJECT>
+<UL>
+	<LI><OBJECT type="text/sitemap">
+		<param name="Name" value="NQC Programmer's Guide">
+		</OBJECT>
+	<UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Title">
+			<param name="Local" value="nqc/nqc_2xgl.htm">
+			</OBJECT>
+			<A HREF="nqc/nqc_2xgl.htm">Title</A><BR>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Contents">
+			<param name="Local" value="nqc/nqc_21v7.htm">
+			</OBJECT>
+			<A HREF="nqc/nqc_21v7.htm">Contents</A><BR>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Introduction">
+			<param name="Local" value="nqc/nqc_5w32.htm">
+			</OBJECT>
+			<A HREF="nqc/nqc_5w32.htm">Introduction</A><BR>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="The NQC Language">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="The NQC Language">
+				<param name="Local" value="nqc/nqc_1gh1.htm">
+				</OBJECT>
+				<A HREF="nqc/nqc_1gh1.htm">The NQC Language</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Lexical Rules">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Lexical Rules">
+					<param name="Local" value="nqc/nqc_0ckz.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_0ckz.htm">Lexical Rules</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Comments">
+					<param name="Local" value="nqc/nqc_0voz.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_0voz.htm">Comments</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Whitespace">
+					<param name="Local" value="nqc/nqc_6nj9.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_6nj9.htm">Whitespace</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Numerical Constants">
+					<param name="Local" value="nqc/nqc_77qr.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_77qr.htm">Numerical Constants</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Identifiers and Keywords">
+					<param name="Local" value="nqc/nqc_25ir.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_25ir.htm">Identifiers and Keywords</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Program Structure">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Program Structure">
+					<param name="Local" value="nqc/nqc_0gyt.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_0gyt.htm">Program Structure</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Tasks">
+					<param name="Local" value="nqc/nqc_8243.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_8243.htm">Tasks</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Functions">
+					<param name="Local" value="nqc/nqc_5e9f.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_5e9f.htm">Functions</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Subroutines">
+					<param name="Local" value="nqc/nqc_7nlf.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_7nlf.htm">Subroutines</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Variables">
+					<param name="Local" value="nqc/nqc_2egj.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_2egj.htm">Variables</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Arrays">
+					<param name="Local" value="nqc/nqc_63w3.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_63w3.htm">Arrays</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Statements">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Statements">
+					<param name="Local" value="nqc/nqc_3omr.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_3omr.htm">Statements</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Variable Declaration">
+					<param name="Local" value="nqc/nqc_5myb.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_5myb.htm">Variable Declaration</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Assignment">
+					<param name="Local" value="nqc/nqc_6qyc.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_6qyc.htm">Assignment</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Control Structures">
+					<param name="Local" value="nqc/nqc_2drn.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_2drn.htm">Control Structures</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Access Control and Events">
+					<param name="Local" value="nqc/nqc_6pdf.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_6pdf.htm">Access Control and Events</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Other Statements">
+					<param name="Local" value="nqc/nqc_701f.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_701f.htm">Other Statements</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Expressions">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Expressions">
+					<param name="Local" value="nqc/nqc_40hf.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_40hf.htm">Expressions</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Conditions">
+					<param name="Local" value="nqc/nqc_5xpv.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_5xpv.htm">Conditions</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="The Preprocessor">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="The Preprocessor">
+					<param name="Local" value="nqc/nqc_8joy.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_8joy.htm">The Preprocessor</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="#include">
+					<param name="Local" value="nqc/nqc_7eud.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_7eud.htm">#include</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="#define">
+					<param name="Local" value="nqc/nqc_6ov9.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_6ov9.htm">#define</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Conditional Compilation">
+					<param name="Local" value="nqc/nqc_3acu.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_3acu.htm">Conditional Compilation</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Program Initialization">
+					<param name="Local" value="nqc/nqc_4e9a.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_4e9a.htm">Program Initialization</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Reserving Storage">
+					<param name="Local" value="nqc/nqc_0zol.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_0zol.htm">Reserving Storage</A><BR>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="NQC API">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="NQC API">
+				<param name="Local" value="nqc/nqc_7ca1.htm">
+				</OBJECT>
+				<A HREF="nqc/nqc_7ca1.htm">NQC API</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Sensors">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Sensors">
+					<param name="Local" value="nqc/nqc_4far.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_4far.htm">Sensors</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Types and Modes">
+					<param name="Local" value="nqc/nqc_2yer.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_2yer.htm">Types and Modes</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Sensor Information">
+					<param name="Local" value="nqc/nqc_0p67.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_0p67.htm">Sensor Information</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Scout Light Sensor">
+					<param name="Local" value="nqc/nqc_7icy.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_7icy.htm">Scout Light Sensor</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Outputs">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Outputs">
+					<param name="Local" value="nqc/nqc_2dbn.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_2dbn.htm">Outputs</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Primitive Calls">
+					<param name="Local" value="nqc/nqc_1a7a.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_1a7a.htm">Primitive Calls</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Convenience Calls">
+					<param name="Local" value="nqc/nqc_7cf9.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_7cf9.htm">Convenience Calls</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Global Control">
+					<param name="Local" value="nqc/nqc_4xf0.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_4xf0.htm">Global Control</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Sound">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Sound">
+					<param name="Local" value="nqc/nqc_7azo.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_7azo.htm">Sound</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="LCD Display">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="LCD Display">
+					<param name="Local" value="nqc/nqc_84zd.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_84zd.htm">LCD Display</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Communication">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Communication">
+					<param name="Local" value="nqc/nqc_6coe.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_6coe.htm">Communication</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Messages">
+					<param name="Local" value="nqc/nqc_2i43.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_2i43.htm">Messages</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Serial">
+					<param name="Local" value="nqc/nqc_4awc.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_4awc.htm">Serial</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="VLL">
+					<param name="Local" value="nqc/nqc_96gc.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_96gc.htm">VLL</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Timers">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Timers">
+					<param name="Local" value="nqc/nqc_89rn.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_89rn.htm">Timers</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Counters">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Counters">
+					<param name="Local" value="nqc/nqc_62k3.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_62k3.htm">Counters</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Access Control">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Access Contro">
+					<param name="Local" value="nqc/nqc_3quk.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_3quk.htm">Access Contro</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Events">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Events">
+					<param name="Local" value="nqc/nqc_8mpf.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_8mpf.htm">Events</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Customizable Events">
+					<param name="Local" value="nqc/nqc_39mb.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_39mb.htm">Customizable Events</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Scout Events">
+					<param name="Local" value="nqc/nqc_5v5f.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_5v5f.htm">Scout Events</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Data Logging">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Data Logging">
+					<param name="Local" value="nqc/nqc_3v53.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_3v53.htm">Data Logging</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="General Features">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="General Features">
+					<param name="Local" value="nqc/nqc_3gvg.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_3gvg.htm">General Features</A><BR>
+			</UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Specific Features">
+				</OBJECT>
+			<UL>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="RCX Specific Features">
+					<param name="Local" value="nqc/nqc_04o3.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_04o3.htm">RCX Specific Features</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Scout Specific Features">
+					<param name="Local" value="nqc/nqc_78o3.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_78o3.htm">Scout Specific Features</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="CyberMaster Specific Features">
+					<param name="Local" value="nqc/nqc_5cir.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_5cir.htm">CyberMaster Specific Features</A><BR>
+				<LI><OBJECT type="text/sitemap">
+					<param name="Name" value="Spybotics Specific Features">
+					<param name="Local" value="nqc/nqc_91r7.htm">
+					</OBJECT>
+					<A HREF="nqc/nqc_91r7.htm">Spybotics Specific Features</A><BR>
+			</UL>
+		</UL>
+		<LI><OBJECT type="text/sitemap">
+			<param name="Name" value="Technical Details">
+			</OBJECT>
+		<UL>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Technical Details">
+				<param name="Local" value="nqc/nqc_1mur.htm">
+				</OBJECT>
+				<A HREF="nqc/nqc_1mur.htm">Technical Details</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="The asm statement">
+				<param name="Local" value="nqc/nqc_7cfh.htm">
+				</OBJECT>
+				<A HREF="nqc/nqc_7cfh.htm">The asm statement</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Data Sources">
+				<param name="Local" value="nqc/nqc_7lbn.htm">
+				</OBJECT>
+				<A HREF="nqc/nqc_7lbn.htm">Data Sources</A><BR>
+		</UL>
+	</UL>
+</UL>
+</HTML>

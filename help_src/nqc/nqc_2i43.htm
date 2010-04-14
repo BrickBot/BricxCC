@@ -1,0 +1,73 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Messages</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="messages">
+</OBJECT>
+
+<P><A NAME="idh_nqc_messages"></A>3.5.1 MessagesRCX, Scout</P>
+
+<P>The RCX, Swan, and Scout can send and receive simple messages using IR. A message can have a value from 0 to 255, but the use of message 0 is discouraged. The most recently received message is remembered and can be accessed as <CODE>Message()</CODE>. If no message has been received, <CODE>Message()</CODE> will return 0. Note that due to the nature of IR communication, receiving is disabled while a message is being transmitted.</P>
+
+<H3>ClearMessage()Function - RCX, Scout</H3>
+
+<P>Clear the message buffer. This facilitates detection of the next received message since the program can then wait for <CODE>Message()</CODE> to become non-zero:</P>
+
+<PRE><CODE>ClearMessage(); // clear out the received message
+until(Message() &gt; 0 ); // wait for next message</CODE></PRE>
+
+<H3>SendMessage(message)Function - RCX, Scout</H3>
+
+<P>Send an IR message. Message may be any expression, but the RCX can only send messages with a value between 0 and 255, so only the lowest 8 bits of the argument are used.</P>
+
+<PRE><CODE>SendMessage(3); // send message 3
+SendMessage(259); // another way to send message 3</CODE></PRE>
+
+<H3>SetMessage(message)Function – RCX2</H3>
+
+<P>Set the IR message. Message may be any expression, but the bricks can only set messages with a value between 0 and 255, so only the lowest 8 bits of the argument are used.</P>
+
+<PRE><CODE>SetMessage(3); // set message 3</CODE></PRE>
+
+<H3>SetTxPower(power)Function - RCX, Scout</H3>
+
+<P>Set the power level for IR transmission. Power should be one of the constants <CODE>TX_POWER_LO</CODE> or <CODE>TX_POWER_HI</CODE>.</P>
+
+<H3>MessageParam()Value - Swan</H3>
+
+<P>Read the message parameter.  The Swan firmware supports a 2 byte message parameter in addition to the single byte supported by the RCX firmware.</P>
+
+<PRE><CODE>x = MessageParam(); // read the received message parameter value</CODE></PRE>
+
+<H3>SendMessageWithParam(const int &amp;m, const int &amp;p) Function - Swan</H3>
+
+<P>Send an IR message with an additional parameter.  The first parameter is restricted a single byte while the second parameter can be two bytes.</P>
+
+<PRE><CODE>SendMessageWithParam(3, 1024);</CODE></PRE>
+
+<H3>SetMessageByteParam(const int m, const int p) Function - Swan</H3>
+
+<P>Set the IR message and its parameter using constants.  The parameter must be a single byte value.</P>
+
+<PRE><CODE>SetMessageByteParam(3, 43);</CODE></PRE>
+
+<H3>SetMessageWordParam(const int m, const int p) Function - Swan</H3>
+
+<P>Set the IR message and its parameter using constants.  The parameter can be 2 bytes.</P>
+
+<PRE><CODE>SetMessageWordParam(3, 1024);</CODE></PRE>
+
+<H3>SetMessageVariableParam(const int &amp;m, const int &amp;p) Function - Swan</H3>
+
+<P>Set the IR message and its parameter using variables.  The parameter can be 2 bytes.</P>
+
+<PRE><CODE>SetMessageVariableParam(x, y);</CODE></PRE>
+
+</BODY>
+</HTML>

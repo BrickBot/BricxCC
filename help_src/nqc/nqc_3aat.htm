@@ -1,0 +1,42 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SetSensorType</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SetSensorType">
+	<PARAM NAME="Keyword" VALUE="SENSOR_TYPE_NONE">
+	<PARAM NAME="Keyword" VALUE="SENSOR_TYPE_TOUCH">
+	<PARAM NAME="Keyword" VALUE="SENSOR_TYPE_TEMPERATURE">
+	<PARAM NAME="Keyword" VALUE="SENSOR_TYPE_LIGHT">
+	<PARAM NAME="Keyword" VALUE="SENSOR_TYPE_ROTATION">
+</OBJECT>
+
+<P><B><A NAME="idh_api_setsensortype"></A>SetSensorType(sensor, type)Function – RCX</B></P>
+
+<P>Set a sensor's type, which must be one of the predefined sensor type constants.</P>
+
+<PRE><CODE>SetSensorType(SENSOR_1, SENSOR_TYPE_TOUCH);</CODE></PRE>
+
+<P>There are four sensor types, each corresponding to a specific LEGO sensor. A fifth type (SENSOR_TYPE_NONE) can be used for reading the raw values of generic passive sensors. In general, a program should configure the type to match the actual sensor. If a sensor port is configured as the wrong type, the brick may not be able to read it accurately.</P>
+
+<P><B><U>Sensor Type</U><U>Meaning</U></B></P>
+
+<P>SENSOR_TYPE_NONEgeneric passive sensor</P>
+
+<P>SENSOR_TYPE_TOUCHa touch sensor</P>
+
+<P>SENSOR_TYPE_TEMPERATUREa temperature sensor</P>
+
+<P>SENSOR_TYPE_LIGHTa light sensor</P>
+
+<P>SENSOR_TYPE_ROTATIONa rotation sensor</P>
+
+<P>SENSOR_TYPE_ACTIVE_RAWan active sensor with raw output (Swan only)</P>
+
+</BODY>
+</HTML>

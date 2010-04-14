@@ -1,0 +1,23 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>#define</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="#define">
+	<PARAM NAME="Keyword" VALUE="#undef">
+</OBJECT>
+
+<P><A NAME="idh_api_define"></A>The #define command is used for simple macro substitution. Redefinition of a macro is an error (unlike in C where it is a warning). Macros are normally terminated by the end of the line, but the newline may be escaped with the backslash ('\') to allow multiline macros:</P>
+
+<PRE><CODE>#define foo(x) do { bar(x); \
+  baz(x); } while( false)</CODE></PRE>
+
+<P>The #undef directive may be used to remove a macro’s definition.</P>
+
+</BODY>
+</HTML>

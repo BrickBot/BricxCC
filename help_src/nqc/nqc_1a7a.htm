@@ -1,0 +1,91 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Primitive Calls</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="outputs">
+	<PARAM NAME="Keyword" VALUE="outputs, primitive calls">
+</OBJECT>
+
+<P><A NAME="idh_nqc_outputsprimitive"></A>3.2.1 Primitive Calls</P>
+
+<P>All of the functions dealing with outputs take a set of outputs as their first argument. This set must be a constant. The names <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE> are used to identify the three outputs. Multiple outputs can be combined by adding individual outputs together. For example, use <CODE>OUT_A+OUT_B</CODE> to specify outputs A and B together. The set of outputs must always be a compile time constant (it cannot be a variable).</P>
+
+<P><B>Output ConstantMeaning</B></P>
+
+<P>OUT_Aoutput A</P>
+
+<P>OUT_Boutput B</P>
+
+<P>OUT_Coutput C</P>
+
+<P>OUT_ABOUT_A + OUT_B</P>
+
+<P>OUT_ACOUT_A + OUT_C</P>
+
+<P>OUT_BCOUT_B + OUT_C</P>
+
+<P>OUT_ABCOUT_A + OUT_B + OUT_C</P>
+
+<P>OUT_Dvirtual output D (Swan only)</P>
+
+<P>OUT_Evirtual output E (Swan only)</P>
+
+<P>OUT_Fvirtual output F (Swan only)</P>
+
+<P>Each output has three different attributes: mode, direction, and power level. The mode can be set by calling <CODE>SetOutput(<I>outputs</I>, <I>mode</I>)</CODE>. The mode parameter should be one of the following constants:</P>
+
+<P><B>Output ModeMeaning</B></P>
+
+<P>OUT_OFFoutput is off (motor is prevented from turning)</P>
+
+<P>OUT_ONoutput is on (motor will be powered)</P>
+
+<P>OUT_FLOATmotor can "coast"</P>
+
+<P>The other two attributes, direction and power level, may be set at any time, but only have an effect when the output is on. The direction is set with the <CODE>SetDirection(<I>outputs</I>, <I>direction</I>)</CODE> command. The direction parameter should be one of the following constants:</P>
+
+<P><B>DirectionMeaning</B></P>
+
+<P>OUT_FWDSet to forward direction</P>
+
+<P>OUT_REVSet to reverse direction</P>
+
+<P>OUT_TOGGLESwitch direction to the opposite of what it is presently</P>
+
+<P>The power level can range 0 (lowest) to 7 (highest). The names <CODE>OUT_LOW</CODE>, <CODE>OUT_HALF</CODE>, and <CODE>OUT_FULL</CODE> are defined for use in setting power level. The level is set using the <CODE>SetPower(<I>outputs</I>, <I>power</I>)</CODE> function.</P>
+
+<P>Be default, all three motors are set to full power and the forward direction (but still turned off) when a program starts.</P>
+
+<H3>SetOutput(outputs, mode)Function - All</H3>
+
+<P>Set the outputs to the specified mode. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE>. Mode must be <CODE>OUT_ON</CODE>, <CODE>OUT_OFF</CODE>, or <CODE>OUT_FLOAT</CODE>.</P>
+
+<PRE><CODE>SetOutput(OUT_A + OUT_B, OUT_ON); // turn A and B on</CODE></PRE>
+
+<H3>SetDirection(outputs, direction)Function - All</H3>
+
+<P>Set the outputs to the specified direction. Outputs is one or more of <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, and <CODE>OUT_C</CODE>. Direction must be <CODE>OUT_FWD</CODE>, <CODE>OUT_REV</CODE>, or <CODE>OUT_TOGGLE</CODE>.</P>
+
+<PRE><CODE>SetDirection(OUT_A, OUT_REV); // make A turn backwards</CODE></PRE>
+
+<H3>SetPower(outputs, power)Function - All</H3>
+
+<P>Sets the power level of the specified outputs. Power may be an expression, but should result in a value between 0 and 7. The constants <CODE>OUT_LOW</CODE>, <CODE>OUT_HALF</CODE>, and <CODE>OUT_FULL</CODE> may also be used.</P>
+
+<PRE><CODE>SetPower(OUT_A, OUT_FULL); // A full power
+SetPower(OUT_B, x);</CODE></PRE>
+
+<H3>OutputStatus(n)Value - All</H3>
+
+<P>Returns the current output setting for motor n. Note that n must be 0, 1, or 2 – not <CODE>OUT_A</CODE>, <CODE>OUT_B</CODE>, or <CODE>OUT_C</CODE>.</P>
+
+<PRE><CODE>x = OutputStatus(0); // status of OUT_A</CODE></PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,111 @@
+:Base NBC.hlp>main
+:Title NeXT Byte Codes Help
+;
+1 NBC Programmer's Guide
+2 Title=IDH_NBCProgrammersGuide
+2 Contents=IDH_NBC_Contents
+2 Introduction=IDH_NBC_Introduction
+2 The NBC Language
+3 The NBC Language=IDH_NBC_Language
+3 Lexical Rules
+4 Lexical Rules=IDH_NBC_LexicalRules
+4 Comments=IDH_NBC_Comments
+4 Whitespace=IDH_NBC_Whitespace
+4 Numerical Constants=IDH_NBC_NumericConstants
+4 Identifiers and Keywords=IDH_NBC_IdentKeywords
+3 Program Structure
+4 Program Structure=IDH_NBC_ProgStructure
+4 Threads=IDH_NBC_Tasks
+4 Subroutines=IDH_NBC_Subroutines
+4 Macro Functions=IDH_NBC_MacroFunctions
+4 Data Segments
+5 Data Segments=IDH_NBC_DataSegments
+5 Type Definitions=IDH_NBC_TypeDefinitions
+5 Variable Declarations=IDH_NBC_VariableDeclarations
+3 The Preprocessor
+4 The Preprocessor=IDH_NBC_Preprocessor
+4 #include=IDH_NBC_Include
+4 #define=IDH_NBC_Define
+4 ## (Concatenation)=IDH_NBC_Concatenation
+4 Conditional Compilation=IDH_NBC_CondCompilation
+3 Advanced Features
+4 Compiler Tokens=IDH_NBC_CompilerTokens
+4 Expression Evaluator=IDH_NBC_ExpressionEvaluator
+4 IO-Map Address (IOMA) Constants=IDH_NBC_IOMAPAddresses
+3 Statements
+4 Statements=IDH_NBC_Statements
+4 Assignment Statements=IDH_NBC_Assignment
+4 Math Statements=IDH_NBC_MathStatements
+4 Logic Statements=IDH_NBC_LogicStatements
+4 Bit Manipulation Statements=IDH_NBC_BitManipulationStatements
+4 Comparison Statements=IDH_NBC_ComparisonStatements
+4 Control Flow Statements=IDH_NBC_ControlFlowStatements
+4 System Call Statements=IDH_NBC_SystemCallStatements
+4 Timing Statements=IDH_NBC_TimingStatements
+4 Array Statements=IDH_NBC_ArrayStatements
+4 String Statements=IDH_NBC_StringStatements
+4 Scheduling Statements=IDH_NBC_SchedulingStatements
+4 Input Statements=IDH_NBC_InputStatements
+4 Output Statements=IDH_NBC_OutputStatements
+4 Compile-time Statements=IDH_NBC_CompileTimeStatements
+2 NBC API
+3 NBC API=IDH_NBC_API
+3 General Features
+4 Timing Functions=IDH_NBC_TimingFunctions
+4 Numeric Functions=IDH_NBC_NumericFunctions
+4 Low-level System Functions=IDH_NBC_SystemFunctions
+3 Input Module
+4 Input Module=IDH_NBC_InputModule
+4 Types and Modes=IDH_NBC_SensorTypes
+4 Sensor Information=IDH_NBC_SensorInfo
+4 IOMap Offsets=IDH_NBC_InputIOMapOffsets
+3 Output Module
+4 Output Module=IDH_NBC_Outputs
+4 Convenience Calls=IDH_NBC_OutputsConvenience
+4 IOMap Offsets=IDH_NBC_OutputIOMapOffsets
+3 Sound Module
+4 Sound Module=IDH_NBC_Sound
+4 High-level functions=IDH_NBC_SoundHighLevel
+4 Low-level functions=IDH_NBC_SoundLowLevel
+4 IOMap Offsets=IDH_NBC_SoundIOMapOffsets
+3 IO Control Module
+4 IO Control Module=IDH_NBC_IOCtrl
+4 IOMap Offsets=IDH_NBC_IOCtrlIOMapOffsets
+3 Display Module
+4 Display Module=IDH_NBC_Display
+4 High-level functions=IDH_NBC_DisplayHighLevel
+4 Low-level functions=IDH_NBC_DisplayLowLevel
+4 IOMap Offsets=IDH_NBC_DisplayIOMapOffsets
+3 Loader Module
+4 Loader Module=IDH_NBC_Loader
+4 IOMap Offsets=IDH_NBC_LoaderIOMapOffsets
+3 Command Module
+4 Command Module=IDH_NBC_Command
+4 IOMap Offsets=IDH_NBC_CommandIOMapOffsets
+3 Button Module
+4 Button Module=IDH_NBC_Button
+4 High-level functions=IDH_NBC_ButtonHighLevel
+4 Low-level functions=IDH_NBC_ButtonLowLevel
+4 IOMap Offsets=IDH_NBC_ButtonIOMapOffsets
+3 UI Module
+4 UI Module=IDH_NBC_UserInterface
+4 IOMap Offsets=IDH_NBC_UIIOMapOffsets
+3 LowSpeed Module
+4 LowSpeed Module=IDH_NBC_LowSpeed
+4 High-level functions=IDH_NBC_LowSpeedHighLevel
+4 Low-level functions=IDH_NBC_LowSpeedLowLevel
+4 IOMap Offsets=IDH_NBC_LowSpeedIOMapOffsets
+3 Comm Module
+4 Comm Module=IDH_NBC_Comm
+4 High-level functions=IDH_NBC_CommHighLevel
+4 Low-level functions
+5 Low-level functions=IDH_NBC_CommLowLevel
+5 Usb functions=IDH_NBC_CommUSB
+5 Hi-speed functions=IDH_NBC_CommHS
+5 Bluetooth functions=IDH_NBC_CommBT
+4 IOMap Offsets
+5 IOMap Offsets=IDH_NBC_CommIOMapOffsets
+3 Third-Party Sensor API Functions
+4 HiTechnic API Functions=IDH_NBC_HiTechnic
+4 Mindsensors API Functions=IDH_NBC_Mindsensors
+; end of TOC

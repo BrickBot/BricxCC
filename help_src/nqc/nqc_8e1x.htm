@@ -1,0 +1,28 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>RxMessage</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="RxMessage">
+	<PARAM NAME="Keyword" VALUE="MSG_INDEX">
+	<PARAM NAME="Keyword" VALUE="MSG_COMMAND">
+	<PARAM NAME="Keyword" VALUE="MSG_HI_BYTE">
+	<PARAM NAME="Keyword" VALUE="MSG_LO_BYTE">
+</OBJECT>
+
+<P><B><A NAME="idh_api_rxmessage"></A>RxMessage(channel, byte)Value - Spy</B></P>
+
+<P>Read the contents of a received IR or PC message (4 bytes total).  The desired channel is <CODE>MSG_IR</CODE> or <CODE>MSG_PC.  </CODE>The desired byte is specified using MSG_INDEX, MSG_COMMAND, MSG_HI_BYTE, or MSG_LO_BYTE.</P>
+
+<PRE><CODE><B>if</B> (RxMessage(MSG_IR, MSG_COMMAND) == COMMAND_CONTROLLER)
+{
+  x = RxMessage(MSG_IR, MSG_HI_BYTE);
+}</CODE></PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,22 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SetGlobalDirection</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SetGlobalDirection">
+</OBJECT>
+
+<P><B><A NAME="idh_api_setglobaldirection"></A>SetGlobalDirection(outputs, direction)Function - RCX2, Scout, Spy</B></P>
+
+<P>Reverses or restores the directions of outputs. The direction parameter should be OUT_FWD, OUT_REV, or OUT_TOGGLE. Normal behavior is a global direction of OUT_FWD. When the global direction is OUT_REV, then the actual output direction will be the opposite of whatever the regular output calls request. Calling SetGlobalDirection() with OUT_TOGGLE will switch between normal and opposite behavior.</P>
+
+<PRE><CODE>SetGlobalDirection(OUT_A, OUT_REV); // opposite direction
+SetGlobalDirection(OUT_A, OUT_FWD); // normal direction</CODE></PRE>
+
+</BODY>
+</HTML>

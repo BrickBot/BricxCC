@@ -1,0 +1,79 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>General Features</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="general features">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_general"></A>3.11 General Features</H2>
+
+<H3>Wait(time)Function - All</H3>
+
+<P>Make a task sleep for specified amount of time (in 100ths of a second). The time argument may be an expression or a constant:</P>
+
+<PRE><CODE>Wait(100); // wait 1 second
+Wait(Random(100)); // wait random time up to 1 second</CODE></PRE>
+
+<H3>StopAllTasks()Function - All</H3>
+
+<P>Stop all currently running tasks. This will halt the program completely, so any code following this command will be ignored.</P>
+
+<PRE><CODE>StopAllTasks(); // stop the program</CODE></PRE>
+
+<H3>Random(n)Value - All</H3>
+
+<P>Return a random number between 0 and n. N must be a constant.</P>
+
+<PRE><CODE>x = Random(10);</CODE></PRE>
+
+<H3>SetRandomSeed(n)Function - RCX2, Spy</H3>
+
+<P>Seed the random number generator with n. N may be an expression.</P>
+
+<PRE><CODE>SetRandomSeed(x); // seed with value of x</CODE></PRE>
+
+<H3>BatteryLevel()Value - RCX2, Spy</H3>
+
+<P>Return the battery level in millivolts.</P>
+
+<PRE><CODE>x = BatteryLevel();</CODE></PRE>
+
+<H3>FirmwareVersion()Value - RCX2, Spy</H3>
+
+<P>Return the firmware version as an integer. For example, version 3.2.6 is 326.</P>
+
+<PRE><CODE>x = FirmwareVersion();</CODE></PRE>
+
+<H3>SetSleepTime(minutes)Function - All</H3>
+
+<P>Set the sleep timeout the requested number of minutes (which must be a constant). Specifying 0 minutes disables the sleep feature.</P>
+
+<PRE><CODE>SetSleepTime(5); // sleep after 5 minutes
+SetSleepTime(0) ; // disable sleep time</CODE></PRE>
+
+<H3>SleepNow()Function - All</H3>
+
+<P>Force the device to go to sleep. Only works if the sleep time is non-zero.</P>
+
+<PRE><CODE>SleepNow(); // go to sleep</CODE></PRE>
+
+<H3>Indirect(n)Value - RCX2, Spy</H3>
+
+<P>Read the value of a variable indirectly.  The parameter is the address of a global variable whose value is the address of the variable you wish to read.</P>
+
+<PRE><CODE>x = Indirect(0); // the value of the variable pointed to by variable 0</CODE></PRE>
+
+<H3>SetIndirectVar(const int &amp;v, const int &amp;n)Value - RCX2, Spy</H3>
+
+<P>Set the value of a variable indirectly.  The first parameter is the global variable whose value is the address of the variable you wish to set.  The second parameter is the value you wish to set it to.</P>
+
+<PRE><CODE>SetIndirectVar(x, 200);</CODE></PRE>
+
+</BODY>
+</HTML>

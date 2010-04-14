@@ -1,0 +1,53 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Timers</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="timers">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_timers"></A>3.6 Timers</H2>
+
+<P>All targets provide several independent timers with 100ms resolution (10 ticks per second). The Scout provides 3 such timers while the RCX, Swan, CyberMaster, and Spybotics provide 4. The timers wrap around to 0 after 32767 ticks (about 55 minutes). The value of a timer can be read using <CODE>Timer(<I>n</I>)</CODE>, where n is a constant that determines which timer to use (0-2 for Scout, 0-3 for the others). RCX2, Swan, and Spybotics provides the ability to read the same timers with higher resolution by using <CODE>FastTimer(<I>n</I>)</CODE>, which returns the timer's value with 10ms resolution (100 ticks per second).</P>
+
+<H3>ClearTimer(n)Function - All</H3>
+
+<P>Reset the specified timer to 0.</P>
+
+<PRE><CODE>ClearTimer(0);</CODE></PRE>
+
+<H3>Timer(n)Value - All</H3>
+
+<P>Return the current value of specified timer (in 100ms resolution).</P>
+
+<PRE><CODE>x = Timer(T1);</CODE></PRE>
+
+<P><B>Timer constantsMeaning</B></P>
+
+<P>T1timer 1</P>
+
+<P>T2timer 2</P>
+
+<P>T3timer 3</P>
+
+<P>T4timer 4</P>
+
+<H3>SetTimer(n, value)Function - RCX2, Spy</H3>
+
+<P>Set a timer to a specific value (which may be any expression).</P>
+
+<PRE><CODE>SetTimer(0, x);</CODE></PRE>
+
+<H3>FastTimer(n)Value - RCX2, Spy</H3>
+
+<P>Return the current value of specified timer in 10ms resolution.</P>
+
+<PRE><CODE>x = FastTimer(0);</CODE></PRE>
+
+</BODY>
+</HTML>

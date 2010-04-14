@@ -1,0 +1,70 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>SetOutput</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="SetOutput">
+	<PARAM NAME="Keyword" VALUE="OUT_OFF">
+	<PARAM NAME="Keyword" VALUE="OUT_ON">
+	<PARAM NAME="Keyword" VALUE="OUT_FLOAT">
+	<PARAM NAME="Keyword" VALUE="OUT_A">
+	<PARAM NAME="Keyword" VALUE="OUT_B">
+	<PARAM NAME="Keyword" VALUE="OUT_C">
+	<PARAM NAME="Keyword" VALUE="OUT_AB">
+	<PARAM NAME="Keyword" VALUE="OUT_AC">
+	<PARAM NAME="Keyword" VALUE="OUT_BC">
+	<PARAM NAME="Keyword" VALUE="OUT_ABC">
+	<PARAM NAME="Keyword" VALUE="OUT_D">
+	<PARAM NAME="Keyword" VALUE="OUT_E">
+	<PARAM NAME="Keyword" VALUE="OUT_F">
+</OBJECT>
+
+<P><A NAME="idh_api_setoutput"></A><B>SetOutput(outputs, mode)Function - All</B></P>
+
+<P>Set the outputs to the specified mode. The outputs parameter is one or more of OUT_A, OUT_B, and OUT_C.</P>
+
+<PRE><CODE>SetOutput(OUT_A + OUT_B, OUT_ON); // turn A and B on</CODE></PRE>
+
+<P>All of the functions dealing with outputs take a set of outputs as their first argument. This set must be a constant. The names OUT_A, OUT_B, and OUT_C are used to identify the three outputs. Multiple outputs can be combined by adding individual outputs together. For example, use OUT_A+OUT_B to specify outputs A and B together. The set of outputs must always be a compile time constant (it cannot be a variable).</P>
+
+<P><B><U>Output Constant</U><U>Meaning</U></B></P>
+
+<P>OUT_Aoutput A</P>
+
+<P>OUT_Boutput B</P>
+
+<P>OUT_Coutput C</P>
+
+<P>OUT_ABOUT_A + OUT_B</P>
+
+<P>OUT_ACOUT_A + OUT_C</P>
+
+<P>OUT_BCOUT_B + OUT_C</P>
+
+<P>OUT_ABCOUT_A + OUT_B + OUT_C</P>
+
+<P>OUT_Dvirtual output D (Swan only)</P>
+
+<P>OUT_Evirtual output E (Swan only)</P>
+
+<P>OUT_Fvirtual output F (Swan only)</P>
+
+<P>The mode parameter should be one of the following constants:</P>
+
+<P><B><U>Output Mode</U><U>Meaning</U></B></P>
+
+<P>OUT_OFFoutput is off (motor is prevented from turning)</P>
+
+<P>OUT_ONoutput is on (motor will be powered)</P>
+
+<P>OUT_FLOATmotor can "coast"</P>
+
+<P>Spybotics has two built-in motors. <CODE>OUT_A </CODE>refers to the right motor, and <CODE>OUT_B </CODE>is for the left motor. <CODE>OUT_C</CODE> will send VLL commands out the rear LED (the one used for communication with a computer). This allows a VLL device, such as a Micro-Scout, to be used as a third motor for Spybotics. The same LED may be controlled using the <CODE>SendVLL()</CODE> and <CODE>SetLight()</CODE> functions.</P>
+
+</BODY>
+</HTML>

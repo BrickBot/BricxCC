@@ -1,0 +1,105 @@
+:Base NXC.hlp>main
+:Title Not eXactly C Help
+;
+1 NXC Programmer's Guide
+2 Title=IDH_NXCProgrammersGuide
+2 Contents=IDH_NXC_Contents
+2 Introduction=IDH_NXC_Introduction
+2 The NXC Language
+3 The NXC Language=IDH_NXC_Language
+3 Lexical Rules
+4 Lexical Rules=IDH_NXC_LexicalRules
+4 Comments=IDH_NXC_Comments
+4 Whitespace=IDH_NXC_Whitespace
+4 Numerical Constants=IDH_NXC_NumericConstants
+4 Identifiers and Keywords=IDH_NXC_IdentKeywords
+3 Program Structure
+4 Program Structure=IDH_NXC_ProgStructure
+4 Tasks=IDH_NXC_Tasks
+4 Functions=IDH_NXC_Functions
+4 Variables=IDH_NXC_Variables
+4 Structs=IDH_NXC_Structs
+4 Arrays=IDH_NXC_Arrays
+3 Statements
+4 Statements=IDH_NXC_Statements
+4 Variable Declaration=IDH_NXC_VarDeclarations
+4 Assignment=IDH_NXC_Assignment
+4 Control Structures=IDH_NXC_ControlStructures
+4 The asm statementIDH_NXC_TheAsmStatement
+4 Other Statements=IDH_NXC_OtherStatements
+3 Expressions
+4 Expressions=IDH_NXC_Expressions
+4 Conditions=IDH_NXC_Conditions
+3 The Preprocessor
+4 The Preprocessor=IDH_NXC_Preprocessor
+4 #include=IDH_NXC_Include
+4 #define=IDH_NXC_Define
+4 ## (Concatenation)=IDH_NXC_Concatenation
+4 Conditional Compilation=IDH_NXC_CondCompilation
+2 NXC API
+3 NXC API=IDH_NXC_API
+3 General Features
+4 Timing Functions=IDH_NXC_TimingFunctions
+4 Program Control Functions=IDH_NXC_ProgramControlFunctions
+4 String Functions=IDH_NXC_StringFunctions
+4 Array Functions=IDH_NXC_ArrayFunctions
+4 Numeric Functions=IDH_NXC_NumericFunctions
+4 Low-level System Functions=IDH_NXC_SystemFunctions
+3 Input Module
+4 Input Module=IDH_NXC_InputModule
+4 Types and Modes=IDH_NXC_SensorTypes
+4 Sensor Information=IDH_NXC_SensorInfo
+4 IOMap Offsets=IDH_NXC_InputIOMapOffsets
+3 Output Module
+4 Output Module=IDH_NXC_Outputs
+4 Convenience Calls=IDH_NXC_OutputsConvenience
+4 Primitive Calls=IDH_NXC_OutputsPrimitive
+4 IOMap Offsets=IDH_NXC_OutputIOMapOffsets
+3 IOMap Addresses
+4 IOMap Addresses=IDH_NXC_IOMapAddresses
+3 Sound Module
+4 Sound Module=IDH_NXC_Sound
+4 High-level functions=IDH_NXC_SoundHighLevel
+4 Low-level functions=IDH_NXC_SoundLowLevel
+4 IOMap Offsets=IDH_NXC_SoundIOMapOffsets
+3 IO Control Module
+4 IO Control Module=IDH_NXC_IOCtrl
+4 IOMap Offsets=IDH_NXC_IOCtrlIOMapOffsets
+3 Display Module
+4 Display Module=IDH_NXC_Display
+4 High-level functions=IDH_NXC_DisplayHighLevel
+4 Low-level functions=IDH_NXC_DisplayLowLevel
+4 IOMap Offsets=IDH_NXC_DisplayIOMapOffsets
+3 Loader Module
+4 Loader Module=IDH_NXC_Loader
+4 IOMap Offsets=IDH_NXC_LoaderIOMapOffsets
+3 Command Module
+4 Command Module=IDH_NXC_Command
+4 IOMap Offsets=IDH_NXC_CommandIOMapOffsets
+3 Button Module
+4 Button Module=IDH_NXC_Button
+4 High-level functions=IDH_NXC_ButtonHighLevel
+4 Low-level functions=IDH_NXC_ButtonLowLevel
+4 IOMap Offsets=IDH_NXC_ButtonIOMapOffsets
+3 UI Module
+4 UI Module=IDH_NXC_UserInterface
+4 IOMap Offsets=IDH_NXC_UIIOMapOffsets
+3 LowSpeed Module
+4 LowSpeed Module=IDH_NXC_LowSpeed
+4 High-level functions=IDH_NXC_LowSpeedHighLevel
+4 Low-level functions=IDH_NXC_LowSpeedLowLevel
+4 IOMap Offsets=IDH_NXC_LowSpeedIOMapOffsets
+3 Comm Module
+4 Comm Module=IDH_NXC_Comm
+4 High-level functions=IDH_NXC_CommHighLevel
+4 Low-level functions
+5 Low-level functions=IDH_NXC_CommLowLevel
+5 Usb functions=IDH_NXC_CommUSB
+5 Hi-speed functions=IDH_NXC_CommHS
+5 Bluetooth functions=IDH_NXC_CommBT
+4 IOMap Offsets
+5 IOMap Offsets=IDH_NXC_CommIOMapOffsets
+3 Third-Party Sensor API Functions
+4 HiTechnic API Functions=IDH_NXC_HiTechnic
+4 Mindsensors API Functions=IDH_NXC_Mindsensors
+; end of TOC

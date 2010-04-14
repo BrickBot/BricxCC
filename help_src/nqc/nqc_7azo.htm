@@ -1,0 +1,63 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Sound</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="sound">
+</OBJECT>
+
+<H2><I><A NAME="idh_nqc_sound"></A>3.3 Sound</I></H2>
+
+<H3>PlaySound(sound)Function - All</H3>
+
+<P>Plays a preset sound. The sound argument must be a constant (except on Spybotics, which allows a variable to be used). The following constants are pre-defined for use with PlaySound: <CODE>SOUND_CLICK</CODE>, <CODE>SOUND_DOUBLE_BEEP</CODE>, <CODE>SOUND_DOWN</CODE>, <CODE>SOUND_UP</CODE>, <CODE>SOUND_LOW_BEEP</CODE>, <CODE>SOUND_FAST_UP</CODE>.</P>
+
+<PRE><CODE>PlaySound(SOUND_CLICK);</CODE></PRE>
+
+<P>The Swan firmware adds two additional sounds: <CODE>SOUND_SHORT_BLIP</CODE> and <CODE>SOUND_EXCEPTION</CODE>.</P>
+
+<P>The Spybotics brick has additional sound support via this function.  It has 64 preset sounds in ROM (numbered 0-63).  The additional 58 constants defined for these sounds are:</P>
+
+<P><B><U>Spybot Sound Effect Constants</U></B></P>
+
+<P>SOUND_SHOCKED, SOUND_FIRE_LASER, SOUND_FIRE_ELECTRONET, SOUND_FIRE_SPINNER, SOUND_HIT_BY_LASER, SOUND_HIT_BY_ELECTRONET, SOUND_HIT_BY_SPINNER, SOUND_TAG, SOUND_CRASH, SOUND_FIGHT, SOUND_GOT_IT, SOUND_GENERAL_ALERT, SOUND_OUT_OF_ENERGY_ALERT, SOUND_LOW_ENERGY_ALERT, SOUND_SCORE_ALERT, SOUND_TIME_ALERT, SOUND_PROXIMITY_ALERT, SOUND_DANGER_ALERT, SOUND_BOMB_ALERT, SOUND_FINAL_COUNTDOWN, SOUND_TICK_TOCK, SOUND_GOTO, SOUND_SCAN, SOUND_POINT_TO, SOUND_ACTIVATE_SHIELDS, SOUND_ACTIVATE_REFLECT, SOUND_ACTIVATE_CLOAK, SOUND_ACTIVATE_FLASH_BLIND, SOUND_MAGNET, SOUND_QUAD_DAMAGE, SOUND_REPULSE, SOUND_TURBO, SOUND_FREEZE, SOUND_SLOW, SOUND_REVERSE, SOUND_DIZZY, SOUND_BOOST, SOUND_DEACTIVATE_SHIELDS, SOUND_DEACTIVATE_REFLECT, SOUND_DEACTIVATE_CLOAK, SOUND_REFLECT, SOUND_EXPLOSION, SOUND_BIG_EXPLOSION, SOUND_PLACE_BOMB, SOUND_HIT_BY_WIND, SOUND_OUCH, SOUND_GEIGER, SOUND_WHISTLE, SOUND_IM_IT, SOUND_HELP, SOUND_SIREN, SOUND_BURNT, SOUND_GRINDED, SOUND_SMACKED, SOUND_TRILL_UP, SOUND_TRILL_DOWN, SOUND_YELL, SOUND_WHISPER</P>
+
+<P>A special constant, SOUND_NONE, is also defined to indicate that no sound should be played.</P>
+
+<H3>PlayTone(frequency, duration)Function - All</H3>
+
+<P>Plays a single tone of the specified frequency and duration. The frequency is in Hz and can be a variable for RCX2, Scout, and Spybotics, but has to be constant for RCX and CyberMaster. The duration is in 100ths of a second and must be a constant.</P>
+
+<PRE><CODE>PlayTone(440, 50); // Play 'A' for one half second</CODE></PRE>
+
+<H3>MuteSound()Function - RCX2, Scout, Spy</H3>
+
+<P>Stops all sounds and tones from being played.</P>
+
+<PRE><CODE>MuteSound();</CODE></PRE>
+
+<H3>UnmuteSound()Function - RCX2, Scout, Spy</H3>
+
+<P>Restores normal operation of sounds and tones.</P>
+
+<PRE><CODE>UnmuteSound();</CODE></PRE>
+
+<H3>ClearSound()Function - RCX2, Spy</H3>
+
+<P>Removes any pending sounds from the sound buffer.</P>
+
+<PRE><CODE>ClearSound();</CODE></PRE>
+
+<H3>SelectSounds(group) Function - Scout</H3>
+
+<P>Selects which group of system sounds should be used. The group must be a constant.</P>
+
+<PRE><CODE>SelectSounds(0);</CODE></PRE>
+
+</BODY>
+</HTML>

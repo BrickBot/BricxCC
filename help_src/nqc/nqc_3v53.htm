@@ -1,0 +1,71 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Data Logging</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="data">
+	<PARAM NAME="Keyword" VALUE="logging">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_datalogging"></A>3.10 Data LoggingRCX</H2>
+
+<P>The RCX contains a datalog which can be used to store readings from sensors, timers, variables, and the system watch. Before adding data, the datalog first needs to be created using the CreateDatalog(size) command. The 'size' parameter must be a constant and determines how many data points the datalog can hold.</P>
+
+<PRE><CODE>CreateDatalog(100); // datalog for 100 points</CODE></PRE>
+
+<P>Values can then be added to the datalog using AddToDatalog(value). When the datalog is uploaded to a computer it will show both the value itself and the source of the value (timer, variable, etc). The datalog directly supports the following data sources: timers, sensor values, variables, and the system watch. Other data types (such as a constant or random number) may also be logged, but in this case NQC will first move the value into a variable and then log the variable. The values will still be captured faithfully in the datalog, but the sources of the data may be a bit misleading.</P>
+
+<PRE><CODE>AddToDatalog(Timer(0)); // add timer 0 to datalog
+AddToDatalog(x); // add variable 'x'
+AddToDatalog(7); // add 7 - will look like a variable</CODE></PRE>
+
+<P>The RCX itself cannot read values back out of the datalog. The datalog must be uploaded to a host computer. The specifics of uploading the datalog depend on the NQC environment being used. For example, in the command line version of NQC, the following commands will upload and print the datalog:</P>
+
+<PRE><CODE>nqc -datalog
+nqc -datalog_full</CODE></PRE>
+
+<P>The Swan (and the standard LEGO firmware version 3.30 which is available via the ROBOLAB software) adds the ability to read values and types out of the datalog.  New firmware sources are used to implement this functionality.  Use the DatalogType, DatalogValue, and DatalogByte functions to programmatically access these sources.</P>
+
+<H3>CreateDatalog(size)Function – RCX</H3>
+
+<P>Create a datalog of the specified <I>size</I> (which must be a constant). A size of 0 clears the existing datalog without creating a new one.</P>
+
+<PRE><CODE>CreateDatalog(100); // datalog for 100 points</CODE></PRE>
+
+<H3>AddToDatalog(value)Function – RCX</H3>
+
+<P>Add the <I>value</I>, which may be an expression, to the datalog. If the datalog is full the call has no effect.</P>
+
+<PRE><CODE>AddToDatalog(x);</CODE></PRE>
+
+<H3>UploadDatalog(start, count)Function – RCX</H3>
+
+<P>Initiate and upload of <I>count</I> data points beginning at <I>start</I>. This is of relatively little use since the host computer usually initiates the upload.</P>
+
+<PRE><CODE>UploadDatalog(0, 100); // upload entire 100 point log</CODE></PRE>
+
+<H3>DatalogType(n)Value – Swan (and RCX2+)</H3>
+
+<P>Read or write the 8-bit datalog type specified by the parameter.  If a variable is used the type is read or written indirectly.</P>
+
+<PRE><CODE>x = DatalogType(0);</CODE></PRE>
+
+<H3>DatalogValue(n)Value – Swan (and RCX2+)</H3>
+
+<P>Read or write the 16-bit datalog value specified by the parameter.  If a variable is used the value is read or written indirectly.</P>
+
+<PRE><CODE>x = DatalogValue(0);</CODE></PRE>
+
+<H3>DatalogByte(n)Value – Swan (and RCX2+)</H3>
+
+<P>Read or write the 8-bit datalog byte specified by the parameter.  If a variable is used the byte is read or written indirectly.</P>
+
+<PRE><CODE>x = DatalogByte(0);</CODE></PRE>
+
+</BODY>
+</HTML>

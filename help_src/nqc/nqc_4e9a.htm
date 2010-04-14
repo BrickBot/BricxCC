@@ -1,0 +1,25 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Program Initialization</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="program initialization">
+</OBJECT>
+
+<P><A NAME="idh_nqc_proginitialization"></A>2.5.4 Program Initialization</P>
+
+<P>The compiler will insert a call to a special initialization function, <CODE>_init</CODE>, at the start of a program. This default function is part of the RCX API and sets all three outputs to full power in the forward direction (but still turned off). The initialization function can be disabled using the <CODE>#pragma noinit</CODE> directive:</P>
+
+<PRE><CODE>#pragma noinit // don't do any program initialization</CODE></PRE>
+
+<P>The default initialization function can be replaced with a different function using the <CODE>#pragma init</CODE> directive.</P>
+
+<PRE><CODE>#pragma init <I>function</I> // use custom initialization</CODE></PRE>
+
+</BODY>
+</HTML>

@@ -1,0 +1,41 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>RCX Specific Features</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="rcx specific features">
+</OBJECT>
+
+<H2><A NAME="idh_nqc_rcxspecific"></A>3.12 RCX Specific Features</H2>
+
+<H3>Program()Value – RCX</H3>
+
+<P>Number of the currently selected program.</P>
+
+<PRE><CODE>x = Program();</CODE></PRE>
+
+<H3>SelectProgram(n)Function - RCX2</H3>
+
+<P>Select the specified program and start running it. Note that programs are numbered 0-4 (not 1-5 as displayed on the LCD).</P>
+
+<PRE><CODE>SelectProgram(3);</CODE></PRE>
+
+<H3>Watch()Value - RCX</H3>
+
+<P>Return the value of the system clock in minutes.</P>
+
+<PRE><CODE>x = Watch();</CODE></PRE>
+
+<H3>SetWatch(hours, minutes)Function - RCX</H3>
+
+<P>Set the system watch to the specified number of hours and minutes. Hours must be a constant between 0 and 23 inclusive. Minutes must be a constant between 0 and 59 inclusive.</P>
+
+<PRE><CODE>SetWatch(3, 15); // set watch to 3:15</CODE></PRE>
+
+</BODY>
+</HTML>

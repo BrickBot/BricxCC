@@ -1,0 +1,104 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>monitor</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="monitor">
+	<PARAM NAME="Keyword" VALUE="EVENT_1_PRESSED">
+	<PARAM NAME="Keyword" VALUE="EVENT_1_RELEASED">
+	<PARAM NAME="Keyword" VALUE="EVENT_2_PRESSED">
+	<PARAM NAME="Keyword" VALUE="EVENT_2_RELEASED">
+	<PARAM NAME="Keyword" VALUE="EVENT_LIGHT_HIGH">
+	<PARAM NAME="Keyword" VALUE="EVENT_LIGHT_NORMAL">
+	<PARAM NAME="Keyword" VALUE="EVENT_LIGHT_LOW">
+	<PARAM NAME="Keyword" VALUE="EVENT_LIGHT_CLICK">
+	<PARAM NAME="Keyword" VALUE="EVENT_LIGHT_DOUBLECLICK">
+	<PARAM NAME="Keyword" VALUE="EVENT_COUNTER_0">
+	<PARAM NAME="Keyword" VALUE="EVENT_COUNTER_1">
+	<PARAM NAME="Keyword" VALUE="EVENT_TIMER_0">
+	<PARAM NAME="Keyword" VALUE="EVENT_TIMER_1">
+	<PARAM NAME="Keyword" VALUE="EVENT_TIMER_2">
+	<PARAM NAME="Keyword" VALUE="EVENT_MESSAGE">
+</OBJECT>
+
+<P><A NAME="idh_api_monitor"></A>Event monitoring is implemented with the monitor statement, which has a syntax very similar to acquire:</P>
+
+<PRE><CODE><B>monitor</B> ( <I>events</I> ) <I>body</I>
+<B>monitor</B> ( <I>events</I> ) <I>body</I> <I>handler_list</I></CODE></PRE>
+
+<P>Where <I>handler_list</I> is one or more handlers of the form</P>
+
+<PRE><CODE><B>catch</B> ( <I>catch_events</I> ) <I>handler</I></CODE></PRE>
+
+<P>The last handler in a handler list can omit the event specification:</P>
+
+<PRE><CODE><B>catch</B> <I>handler</I></CODE></PRE>
+
+<P><I>Events</I> is a constant that determines which events should be monitored. For the Scout, events are predefined, so there are constants such as EVENT_1_PRESSED which can be used to specify events. With RCX2, Swan, and Spybotics, the meaning of each event is configured by the programmer. There are 16 events (numbers 0 to 15). In order to specify an event in a monitor statement, the event number must be converted to an event mask using the EVENT_MASK() macro. The Scout event constants or event masks may be added together to specify multiple events. Multiple masks can be combined using bitwise OR.</P>
+
+<P>The monitor statement will execute the body while monitoring the specified events. If any of the events occur, execution will jump to the first handler for that event (a handler without an event specification handles any event). If no event handler exists for the event, then control will continue at the statement following the monitor statement. The following example waits for 10 seconds while monitoring events 2, 3, and 4 for RCX2 or Swan:</P>
+
+<PRE><CODE><B>monitor</B>( EVENT_MASK(2) | EVENT_MASK(3) | EVENT_MASK(4) )
+{
+Wait(1000);
+}
+<B>catch</B>( EVENT_MASK(4) )
+{
+PlaySound(SOUND_DOWN); // event 4 happened
+}
+<B>catch</B>
+{
+PlaySound(SOUND_UP) ; // event 2 or 3 happened
+}</CODE></PRE>
+
+<P>Note that the <CODE>acquire</CODE> and <CODE>monitor</CODE> statements are only supported for targets that implement access control and event monitoring - specifically the Scout, RCX2, Swan, and Spybotics.</P>
+
+<P>The Scout provides 15 events, each of which has a predefined meaning as shown in the table below.</P>
+
+<P><B><U>Event Name</U><U>Condition</U></B></P>
+
+<P>EVENT_1_PRESSEDsensor 1 pressed</P>
+
+<P>EVENT_1_RELEASEDsensor 1 released</P>
+
+<P>EVENT_2_PRESSEDsensor 2 pressed</P>
+
+<P>EVENT_2_RELEASEDsensor 2 released</P>
+
+<P>EVENT_LIGHT_HIGHlight sensor "high"</P>
+
+<P>EVENT_LIGHT_NORMALlight sensor "normal"</P>
+
+<P>EVENT_LIGHT_LOWlight sensor "low"</P>
+
+<P>EVENT_LIGHT_CLICKlow to high to low</P>
+
+<P>EVENT_LIGHT_DOUBLECLICKtwo clicks</P>
+
+<P>EVENT_COUNTER_0counter 0 over limit</P>
+
+<P>EVENT_COUNTER_1counter 1 over limit</P>
+
+<P>EVENT_TIMER_0timer 0 over limit</P>
+
+<P>EVENT_TIMER_1timer 1 over limit</P>
+
+<P>EVENT_TIMER_2timer 2 over limit</P>
+
+<P>EVENT_MESSAGEnew message received</P>
+
+<P>The first four events are triggered by touch sensors connected to the two sensor ports. EVENT_LIGHT_HIGH, EVENT_LIGHT_NORMAL, and EVENT_LIGHT_LOW are triggered by the light sensor's value changing from one range to another. The ranges are defined by SetSensorUpperLimit, SetSensorLowerLimit, and SetSensorHysteresis which were described previously.</P>
+
+<P>EVENT_LIGHT_CLICK and EVENT_LIGHT_DOUBLECLICK are also triggered by the light sensor. A click is a transition from low to high and back to low within a certain amount of time, called the click time.</P>
+
+<P>Each counter has a counter limit. When the counter exceeds this limit, EVENT_COUNTER_0 or EVENT_COUNTER_1 is triggered. Timers also have a limit, and they generate EVENT_TIMER_0, EVENT_TIMER_1, and EVENT_TIMER_2.</P>
+
+<P>EVENT_MESSAGE is triggered whenever a new IR message is received.</P>
+
+</BODY>
+</HTML>

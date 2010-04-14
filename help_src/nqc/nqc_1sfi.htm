@@ -1,0 +1,44 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>ANIMATION</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="ANIMATION">
+</OBJECT>
+
+<P><B><A NAME="idh_api_animation"></A>ANIMATIONResource Declaration - Spy</B></P>
+
+<P>It is also possible to define custom animations. This is done with a resource declaration (a new NQC feature). The declaration must be done at the global level (not within a task/sub/function), and must occur before the animation is used in the program. An animation declaration looks like this:</P>
+
+<PRE><CODE><B>ANIMATION</B> <I>name</I> { <I>data</I> ... };</CODE></PRE>
+
+<P>Where <I>name</I> is a name you pick for the animation, and <I>data</I> is a series of bytes that determine the animation's appearance. The data bytes are interpreted in pairs, with the first byte of each pair specifying a mask of the LEDs that should be turned on, and the second byte determining how many 10ms ticks that pattern should be displayed for. A pair of 255, 0 causes the animation to loop continuously.  You can also use the following two special commands (in a comma-separated list) to define an animation:</P>
+
+<P><B><U>Animation Commands</U></B></P>
+
+<PRE><CODE>AnimateLED(led_mask, time)
+RepeatAnimation()</CODE></PRE>
+
+<P>Once the animation is declared, its name may be used as an argument to <CODE>SetAnimation()</CODE>. Here is an example:</P>
+
+<PRE><CODE><B>ANIMATION</B> my_animation { 
+  AnimateLED(1, 10), 
+  AnimateLED(2, 10),
+  AnimateLED(4, 10), 
+  AnimateLED(2, 10),
+  RepeatAnimation()
+};
+
+<B>task</B> main()
+{
+SetAnimation(my_animation);
+Wait(500);
+}</CODE></PRE>
+
+</BODY>
+</HTML>

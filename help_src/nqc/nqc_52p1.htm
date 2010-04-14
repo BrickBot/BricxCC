@@ -1,0 +1,39 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Drive</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="Drive">
+	<PARAM NAME="Keyword" VALUE="OUT_L">
+	<PARAM NAME="Keyword" VALUE="OUT_R">
+	<PARAM NAME="Keyword" VALUE="OUT_X">
+	<PARAM NAME="Keyword" VALUE="SENSOR_L">
+	<PARAM NAME="Keyword" VALUE="SENSOR_M">
+	<PARAM NAME="Keyword" VALUE="SENSOR_R">
+</OBJECT>
+
+<P><A NAME="idh_api_drive"></A><B>Drive(motor0, motor1)Function - CM</B></P>
+
+<P>Turns on both motors at the power levels specified. If a power level is negative, then the motor will run in reverse. Equivalent to this code:</P>
+
+<PRE><CODE>SetPower(OUT_L, abs(power0));
+SetPower(OUT_R, abs(power1));
+<B>if</B>(power0 &lt; 0)
+{ SetDirection(OUT_L, OUT_REV) }
+<B>else</B>
+{ SetDirection(OUT_L, OUT_FWD) }
+<B>if</B>(power1 &lt; 0)
+{ SetDirection(OUT_R, OUT_REV) }
+<B>else</B>
+{ SetDirection(OUT_R, OUT_FWD) }
+SetOutput(OUT_L + OUT_R, OUT_ON);</CODE></PRE>
+
+<P>CyberMaster provides alternate names for the sensors: SENSOR_L, SENSOR_M, and SENSOR_R. It also provides alternate names for the outputs: OUT_L, OUT_R, OUT_X. </P>
+
+</BODY>
+</HTML>
