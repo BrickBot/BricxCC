@@ -184,7 +184,7 @@ type
     procedure DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string);
     procedure Assignment;
     procedure CheckNotConstant(const aName : string);
-    procedure Block(const lend : string = ''; const lstart : string = '');
+    function Block(const lend : string = ''; const lstart : string = '') : boolean;
     procedure BlockStatements(const lend : string = ''; const lstart : string = '');
     procedure CheckBytesRead(const oldBytesRead : integer);
     procedure DoFor;
@@ -3726,6 +3726,7 @@ begin
                 begin
                   // collect tokens to TOK_CLOSEPAREN or TOK_COMMA
                   parvalue := Value;
+                  SkipWhite; // skip any whitespace just in case
                   while not (Look in [TOK_CLOSEPAREN, TOK_COMMA]) or endofallsource do begin
                     Next;
                     parvalue := parvalue + Value;
@@ -3767,7 +3768,7 @@ begin
                     else
                     begin
                       fInputs.AddObject('', fp);
-                      Expected('constant or constant expression');
+                      Expected(sConstOrConstExpr);
                     end;
                   end;
                 end;
@@ -4967,12 +4968,10 @@ end;
 {--------------------------------------------------------------}
 { Parse and Translate a Block of Statements }
 
-procedure TNXCComp.Block(const lend, lstart : string);
-var
-  bBlockStatement : boolean;
+function TNXCComp.Block(const lend, lstart : string) : boolean;
 begin
-  bBlockStatement := Value = TOK_BEGIN;
-  if bBlockStatement then
+  Result := Value = TOK_BEGIN;
+  if Result then
   begin
     Next;
     inc(fNestingLevel);

@@ -249,9 +249,11 @@ inline void ResetSensor(const byte & port) { asm { __ResetSensor(port) } }
  * See \ref SensorTypeModes.
  */
 inline void SetSensor(const byte & port, const unsigned int config) {
-  SetSensorType(port, config>>8);
-  SetSensorMode(port, config&0xff);
-  ResetSensor(port);
+  asm {
+    setin config>>8, port, Type
+    setin config&0xff, port, InputMode
+    __ResetSensor(port)
+  }
 }
 /** \example ex_SetSensor.nxc
  * This is an example of how to use the \ref SetSensor function.
@@ -4416,14 +4418,15 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
  * Functions for accessing and modifying IOCtrl module features.
  * @{
  */
-#ifdef __DOXYGEN_DOCS
 
 /**
  * Power down the NXT.
  * This function powers down the NXT.
  * The running program will terminate as a result of this action.
  */
-inline void PowerDown();
+inline void PowerDown() {
+  asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN) }
+}
 /** \example ex_powerdown.nxc
  * This is an example of how to use the \ref PowerDown functions.
  */
@@ -4433,7 +4436,9 @@ inline void PowerDown();
  * This function lets you immediately put the NXT to sleep.
  * The running program will terminate as a result of this action.
  */
-inline void SleepNow();
+inline void SleepNow() {
+  asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN) }
+}
 /** \example ex_sleepnow.nxc
  * This is an example of how to use the \ref SleepNow functions.
  */
@@ -4443,16 +4448,13 @@ inline void SleepNow();
  * This function lets you reboot the NXT into SAMBA or firmware download mode.
  * The running program will terminate as a result of this action.
  */
-inline void RebootInFirmwareMode();
+inline void RebootInFirmwareMode() {
+  asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_BOOT) }
+}
 /** \example ex_rebootinfirmwaremode.nxc
  * This is an example of how to use the \ref RebootInFirmwareMode functions.
  */
 
-#else
-#define PowerDown() asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN) }
-#define SleepNow() PowerDown()
-#define RebootInFirmwareMode() asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_BOOT) }
-#endif
 /** @} */ // end of IOCtrlModuleFunctions group
 /** @} */ // end of IOCtrlModule group
 /** @} */ // end of NXTFirmwareModules group
