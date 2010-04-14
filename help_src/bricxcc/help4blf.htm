@@ -1,0 +1,45 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Transfer Macros</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="transfer macros">
+</OBJECT>
+
+<P><B><A NAME="idh_xfer_macros"></A>Transfer macros</B></P>
+
+<P>Use transfer macros to supply startup parameters to a program on the Tools menu.</P>
+
+<P>To display the macros, click the Macros button on the <A HREF="help58fh.htm">Tool Properties</A> dialog box.</P>
+
+<P><B>MacroDescription</B></P>
+
+<P>$COLExpands to the column number of the cursor in the active Code editor window.For example, if the cursor is in column 50, at startup the product passes 50 to the program.</P>
+
+<P>$ROWExpands to the row number of the cursor in the active Code editor window.For example, if the cursor is in row 8, at startup the product passes 8 to the program.</P>
+
+<P>$CURTOKENExpands to the word at the cursor in the active Code editor window.For example, if the cursor is on the word Token, at startup the product passes Token to the program.</P>
+
+<P>$PATHExpands to the directory portion of a parameter you specify. When you insert the $PATH macro, the product inserts $PATH() and you specify a parameter within the parentheses.For example, if you specify $PATH($EDNAME), at startup the product passes the path for the file in the active Code editor window to the program.</P>
+
+<P>$NAMEExpands to the file name portion of a parameter you specify. When you insert the $NAME macro, the product inserts $NAME() and you specify a parameter within the parentheses.For example, if you specify $NAME($EDNAME), at startup the product passes the file name for the file in the active Code editor window to the program.</P>
+
+<P>$NAMEONLYExpands to the file name portion of a parameter you specify, without an extension. When you insert the $NAMEONLY macro, the product inserts $NAMEONLY() and you specify a parameter within the parentheses.</P>
+
+<P>$EXTExpands to the file extension portion of a parameter you specify. When you insert the $EXT macro, the product inserts $EXT() and you specify a parameter within the parentheses.For example, if you specify $EXT($EDNAME), at startup the product passes the file extension for the file in the active Code editor window to the program.</P>
+
+<P>$EDNAMEExpands to the full file name of the active Code editor window.For example, if you are editing the file C:\PROJ1\UNIT1.PAS, at startup the product passes C:\PROJ1\UNIT1.PAS to the program.</P>
+
+<P>$PROMPTPrompts you for parameters at startup. When you insert the $PROMPT macro, the product inserts $PROMPT() and you specify a default parameter within the parentheses.</P>
+
+<P>$SAVESaves the active file in the Code editor.</P>
+
+<P>$SAVEALLSaves the current project.</P>
+
+</BODY>
+</HTML>

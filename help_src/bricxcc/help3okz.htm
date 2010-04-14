@@ -1,0 +1,95 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Preferences</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="preferences">
+	<PARAM NAME="Keyword" VALUE="settings">
+	<PARAM NAME="Keyword" VALUE="options">
+	<PARAM NAME="Keyword" VALUE="color coding">
+	<PARAM NAME="Keyword" VALUE="startup form">
+	<PARAM NAME="Keyword" VALUE="COM port">
+	<PARAM NAME="Keyword" VALUE="window positions">
+	<PARAM NAME="Keyword" VALUE="backup copies">
+	<PARAM NAME="Keyword" VALUE="popup menu">
+	<PARAM NAME="Keyword" VALUE="templates">
+	<PARAM NAME="Keyword" VALUE="recent files">
+	<PARAM NAME="Keyword" VALUE="font name">
+	<PARAM NAME="Keyword" VALUE="font size">
+	<PARAM NAME="Keyword" VALUE="changing templates">
+	<PARAM NAME="Keyword" VALUE="macros">
+	<PARAM NAME="Keyword" VALUE="changing macros">
+	<PARAM NAME="Keyword" VALUE="special characters">
+	<PARAM NAME="Keyword" VALUE="indentation">
+	<PARAM NAME="Keyword" VALUE="auto indentation">
+	<PARAM NAME="Keyword" VALUE="macros off">
+	<PARAM NAME="Keyword" VALUE="compatibility mode">
+	<PARAM NAME="Keyword" VALUE="old programs">
+	<PARAM NAME="Keyword" VALUE="syntax highlighting">
+	<PARAM NAME="Keyword" VALUE="NQC API">
+	<PARAM NAME="Keyword" VALUE="compiler settings">
+	<PARAM NAME="Keyword" VALUE="hot key settings">
+</OBJECT>
+
+<P><B><A NAME="idh_preferences"></A>Preferences</B></P>
+
+<P>There are a number of preferences you can change. These will be saved between sessions. To this end, click the <B>Preferences</B> item in the <B>Edit</B> menu. A form with tabbed pages pops up. The following pages are available:</P>
+
+<P><B>General</B></P>
+
+<P>Here you can set some general properties. First of all, you can indicate whether you want that window positions are saved between sessions. You can also indicate whether or not backup copies are made of files that you are overwriting. (Backup copies have an extension .BAK.) You can indicate whether you want a list of recently opened files to be displayed in the <B>File</B> menu.  You can control whether a compiler status message is displayed.  You can turn on auto save before compiling.  You can select to use fast mode when downloading the firmware.  You can lock and unlock program slots.  Press the <B>Default</B> button to return to the default settings.  Press <B>OK</B> to save the changes. Press <B>Cancel</B> if you don’t want to change them after all.</P>
+
+<P><B>Editor</B></P>
+
+<P>Here you can set some preferences concerning the editor. First of all you can indicate whether you want color-coding or not. Secondly, you can indicate whether the templates should also be put in a popup menu that appears when you click the right mouse button in the edit window. Also you can indicate whether or not you like the program to auto-indent lines of code. And you can switch off macros such that &lt;Ctrl&gt;&lt;Alt&gt; combinations are available for special characters. You can control whether drag and drop editing works.  You can control the scrolling style.  You can choose the font used in the edit window by clicking on the button <B>Font</B>. Several other important editor settings can be configured here as well.  Press the <B>Default</B> button to return to the default settings. Press <B>OK</B> to save the changes. Press <B>Cancel</B> if you don’t want to change them after all.</P>
+
+<P><B>Compiler</B></P>
+
+<P>Here you can set some preferences concerning the three supported compilers. You can set a timeout for launching the compilers.  You can enter common command line switches to pass to the compilers.  You can set an NQC include path and switches unique to the NQC compiler.  You can set an LCC (MindScript and LASM compiler) include path and switches unique to the LCC compiler.  You can configure the GNU compiler via various settings.  You can also configure the pbForth console.  Press the <B>Default</B> button to return to the default settings. Press <B>OK</B> to save the changes. Press <B>Cancel</B> if you don’t want to change them after all.</P>
+
+<P><B>NQC API</B></P>
+
+<P>Here you can edit the default NQC API information used by the NQC syntax highlighter and the NQC code completion feature.  Add or delete NQC keywords, commands, and constants.  Press the <B>Default</B> button to return to the default settings. Press <B>OK</B> to save the changes. Press <B>Cancel</B> if you don’t want to change them after all.</P>
+
+<P><B>Startup</B></P>
+
+<P>Here you can change the startup behavior. You can choose between showing the startup form (default), not trying to make a connection with the robot, or immediately making the connection. You additionally specify the default values for the type of brick firmware (RCX1, Scout, CyberMaster, RCX2, Spybot, or Swan) and the COM port or USB tower. Press the <B>Default</B> button to return to the default settings. Press <B>OK</B> to save the changes. Press <B>Cancel</B> if you don’t want to change them after all.</P>
+
+<P><B>Templates</B></P>
+
+<P>Here you can change the templates. You see a list of all templates currently defined. Click <B>Insert</B> to insert a new template above the selected one. Click <B>Change</B> to change the selected template and click <B>Delete</B> to delete it. You can also double click on a template to change it. Use the arrows to move the current selected template up or down in the list. Each template is defined on one line. A line that consists of a single – symbol means a horizontal separator. A | symbol represents a vertical separator between columns in the menu. Other lines are the actual templates. Write fields between double quotes. The \ symbol is given by \\. Go to the next line with \=; to the next line with an indentation with \&gt;; and the next line going out of an indentation with \&lt;. So for example:</P>
+
+<PRE><CODE>if ("condition")\={\&gt;"statements"\&lt;}\=else\={\&gt;"statements"\&lt;}\=</CODE></PRE>
+
+<P>results in</P>
+
+<PRE><CODE>if ("condition")
+{
+  "statements"
+}
+else
+{
+  "statements"
+}</CODE></PRE>
+
+<P>Once you are done, press <B>OK</B> to save the changes. Press <B>Cancel</B> if you don’t want to change them after all. Press the <B>Default</B> button to return to the default templates.</P>
+
+<P><B>Macros</B></P>
+
+<P>Here you can change the macros and define your own.  There are two lists of macros. One without the &lt;Shift&gt; key pressed and the other with the &lt;Shift&gt; key press. To switch between the two lists, click on the <B>Shift</B> checkmark. You can define macros for each of the 26 letters and for the number 0 to 9. So in total you can define 72 macros. To change or define a macro, double click on it, or select it and press the <B>Change</B> button. To remove a macro, select it and press the <B>Delete</B> button. Macros are defined in exactly the same way as templates (see above). An undefined macro will give the character the combination stands for. This is important for people having keyboards on which certain characters (like brackets) are not available. You might want to delete certain macros in this case. Once you are done, press <B>OK</B> to save the changes. Press <B>Cancel</B> if you don’t want to change the macros after all. Press the <B>Default</B> button to return to the default macros.</P>
+
+<P><B>Color</B></P>
+
+<P>Here you can change the way the editor performs syntax highlighting on the programs you edit.  You can specify a foreground and background color as well as a font attribute for several different element types.   The syntax highlighting of all the supported programming languages can be customized.  Press the <B>Default</B> button to return to the default settings. Press <B>OK</B> to save the changes. Press <B>Cancel</B> if you don’t want to change the syntax highlighting after all.</P>
+
+<P><B>Options</B></P>
+
+<P>Here you specify your preferences for some additional editor options.  You can control a variety of settings relating to the editor’s gutter.  Here you can also modify the editor’s keystroke commands.  You can edit code templates (which function by typing the template name in an editor window followed by <B>Ctrl+J</B> to expand the template).  You can claim the extensions for various supported file types.  Press the <B>Default</B> button to return to the default settings. Press <B>OK</B> to save the changes. Press <B>Cancel</B> if you don’t want to change the additional options.</P>
+
+</BODY>
+</HTML>

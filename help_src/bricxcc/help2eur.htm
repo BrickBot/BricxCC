@@ -1,0 +1,36 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Sending Messages</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="messages">
+	<PARAM NAME="Keyword" VALUE="sending messages">
+</OBJECT>
+
+<P><B><A NAME="idh_messages"></A>Sending Messages</B></P>
+
+<P>The RCX and the Scout can react to messages. One RCX or Scout can send messages to another. But also the computer can send messages to the RCX/Scout. To use this feature, write an NQC program that looks at messages and makes to robot take action accordingly. For example, use the following program:</P>
+
+<PRE><CODE><B>task</B> main()
+{
+  <B>while</B> (<B>true</B>)
+  {
+    ClearMessage();
+    <B>until</B> (Message() != 0);
+    <B>if</B> (Message() == 1) {OnFwd(OUT_A+OUT_C);}
+    <B>if</B> (Message() == 2) {OnRev(OUT_A+OUT_C);}
+    <B>if</B> (Message() == 3) {Off(OUT_A+OUT_C);}
+  }
+}</CODE></PRE>
+
+<P>It waits for a message not equal to 0 and then takes action according to the number of the message. Now choose <B>Send Messages</B> from the <B>Tools </B>menu. Click on the right number button to send the corresponding message. If you want to send a message larger than 9, choose it with the up and down arrows (or type in the desired message number) and press the button labeled <B>Send</B>.</P>
+
+<P>Please note that sending messages is relatively slow. It takes about half a second before the robot reacts.</P>
+
+</BODY>
+</HTML>

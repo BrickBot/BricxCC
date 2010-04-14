@@ -1,0 +1,50 @@
+<!DOCTYPE HTML PUBLIC "-//W3C//DTD HTML 3.2 Final//EN">
+<HTML>
+<HEAD>
+<META HTTP-EQUIV="Content-Type" Content="text/html; charset=Windows-1252">
+<TITLE>Templates</TITLE>
+</HEAD>
+
+<BODY BGCOLOR="#FFFFFF" TEXT="#000000">
+
+<OBJECT TYPE="application/x-oleobject" CLASSID="clsid:1e2a7bd0-dab9-11d0-b93a-00c04fc99f9e">
+	<PARAM NAME="Keyword" VALUE="template">
+	<PARAM NAME="Keyword" VALUE="construction">
+	<PARAM NAME="Keyword" VALUE="field">
+	<PARAM NAME="Keyword" VALUE="popup menu">
+</OBJECT>
+
+<P><B><A NAME="idh_templates"></A>Templates</B></P>
+
+<P>Templates are meant to avoid the work of typing pieces of code over and over again. At the right of the main window you find a small window with a number of items. Each such item is a template. (If you don’t see the window, press once or twice on <B>F9</B> to make it appear.) For example, there is one item that reads</P>
+
+<PRE><CODE>task ..() { .. }</CODE></PRE>
+
+<P>This is the task template. If you click on it, in your edit window the following appears:</P>
+
+<PRE><CODE>task "name"()
+{
+  "statements"
+}
+</CODE></PRE>
+
+<P>The two words between double quotes, called fields, appear in red, and the first one is selected. These have to be replaced by your own code. Type the name of the task, e.g. t1. Next press <B>F10</B> to move to the next field. Here you can type your statements. For example, you might want to switch a motor on. Choose the template</P>
+
+<PRE><CODE>OnFwd(..);</CODE></PRE>
+
+<P>In the edit window we now have the following text:</P>
+
+<PRE><CODE>task t1()
+{
+  OnFwd("outs");
+  
+}</CODE></PRE>
+
+<P>The first field is again selected. Type in the motor(s), and go to the next line to type the next statement. In this way you continue.</P>
+
+<P>There are templates for language constructions and for the most important NQC commands. Using templates is fast and also avoids making errors. You can change the templates or add your own in the <B>Preferences</B>.</P>
+
+<P>In the <B>Preferences</B> you can also indicate that you want the list of templates to appear as a popup menu when you press the right mouse button.</P>
+
+</BODY>
+</HTML>
