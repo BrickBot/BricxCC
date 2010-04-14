@@ -15979,7 +15979,7 @@ inline int glBox(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
  * Create a 3D cube.
  * Define a 3D cube using the specified begin mode for all faces. The center
  * of the box is at the origin of the XYZ axis with equal width, height, and depth
- * specified via the \ref glSize parameter.
+ * specified via the glSize parameter.
  *
  * \param glMode The begin mode for each surface.  See \ref GLConstantsBeginModes.
  * \param glSize The cube's width, height, and depth.
