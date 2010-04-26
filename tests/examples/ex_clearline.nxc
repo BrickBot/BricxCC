@@ -1,0 +1,9 @@
+task main()
+{
+  TextOut(0, LCD_LINE1, "testing 1234567890");
+  Wait(SEC_5);
+  ClearLine(LCD_LINE1);
+  Wait(SEC_5);
+  TextOut(0, LCD_LINE1, "testing 1234567890");
+  Wait(SEC_5);
+}

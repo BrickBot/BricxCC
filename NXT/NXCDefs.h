@@ -2861,6 +2861,16 @@ inline void ClearScreen() { asm { PointOutEx(200, 200, TRUE) } }
  */
 
 /**
+ * Clear a line on the LCD screen.
+ * This function lets you clear a single line on the NXT LCD.
+ */
+inline void ClearLine(byte line) { asm { TextOutEx(0, line, __BlankLine, 0) } }
+/** \example ex_ClearLine.nxc
+ * This is an example of how to use the \ref TextOut, \ref ClearLine, and
+ * \ref Wait functions.
+ */
+
+/**
  * Set the display memory address.
  * This function lets you set the current display memory address.
  * 
