@@ -1,0 +1,8 @@
+task main()
+{
+  SetSensorLowspeed(S1);
+  TextOut(0, LCD_LINE1, I2CVendorIdEx(S1, 0x10));
+  TextOut(0, LCD_LINE2, I2CDeviceIdEx(S1, 0x10));
+  TextOut(0, LCD_LINE3, I2CVersionEx(S1, 0x10));
+  Wait(SEC_10);
+}

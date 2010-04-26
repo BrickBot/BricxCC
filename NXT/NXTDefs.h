@@ -1731,6 +1731,7 @@ dseg ends
 dseg segment
   __TextOutMutex mutex
   __TextOutArgs TDrawText
+  __BlankLine byte[] '                    '
 dseg ends
 
 #define TextOut(_x,_y,_txt) TextOutEx(_x,_y,_txt,0)
@@ -1743,6 +1744,8 @@ dseg ends
   mov __TextOutArgs.Text,_txt \
   syscall DrawText,__TextOutArgs \
   release __TextOutMutex
+
+#define ClearLine(_line) TextOutEx(0, _line, __BlankLine, 0) 
 
 dseg segment
   __NumOutMutex mutex
