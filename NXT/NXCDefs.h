@@ -2560,6 +2560,16 @@ inline unsigned long DisplayUpdateMask();
  */
 
 /**
+ * Read the display font memory address.
+ * This function lets you read the current display font memory address.
+ * \return The current display font memory address.
+ */
+inline unsigned long DisplayFont();
+/** \example ex_DisplayFont.nxc
+ * This is an example of how to use the \ref DisplayFont function.
+ */
+
+/**
  * Read the display memory address.
  * This function lets you read the current display memory address.
  * \return The current display memory address.
@@ -2784,6 +2794,7 @@ inline void SysDrawFont(DrawFontType & args);
 
 #define DisplayEraseMask() asm { GetDisplayEraseMask(__TMPLONG__) __RETURN__ __TMPLONG__ }
 #define DisplayUpdateMask() asm { GetDisplayUpdateMask(__TMPLONG__) __RETURN__ __TMPLONG__ }
+#define DisplayFont() asm { GetDisplayFont(__TMPLONG__) __RETURN__ __TMPLONG__ }
 #define DisplayDisplay() asm { GetDisplayDisplay(__TMPLONG__) __RETURN__ __TMPLONG__ }
 #define DisplayFlags() asm { GetDisplayFlags(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define DisplayTextLinesCenterFlags() asm { GetDisplayTextLinesCenterFlags(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
@@ -2868,6 +2879,17 @@ inline void ClearLine(byte line) { asm { TextOutEx(0, line, __BlankLine, 0) } }
 /** \example ex_ClearLine.nxc
  * This is an example of how to use the \ref TextOut, \ref ClearLine, and
  * \ref Wait functions.
+ */
+
+/**
+ * Set the display font memory address.
+ * This function lets you set the current display font memory address.
+ * 
+ * \param addr The new display font memory address.
+ */
+inline void SetDisplayFont(unsigned long addr) { asm { __setDisplayFont(addr) } }
+/** \example ex_SetDisplayFont.nxc
+ * This is an example of how to use the \ref SetDisplayFont function.
  */
 
 /**
@@ -3570,7 +3592,7 @@ inline byte SensorUS(const byte port);
  * See \ref CommLSReadType for possible Result values.
  */
 inline char ReadSensorUSEx(const byte port, byte & values[]);
-/** \example ex_sensorusex.nxc
+/** \example ex_readsensorusex.nxc
  * This is an example of how to use the \ref ReadSensorUSEx function.
  */
 
@@ -4657,11 +4679,6 @@ inline unsigned long CurrentTick();
  * This is an example of how to use the \ref CurrentTick function.
  */
  
-/** \example ex_cmdmmisc.nxc
- * This is an example of how to use the \ref CurrentTick, \ref FirstTick, and
- * \ref ResetSleepTimer functions.
- */
-
 /**
  * Get the first tick.
  * Return an unsigned 32-bit value, which is the system timing value
@@ -14799,7 +14816,11 @@ inline void SysRandomNumber(RandomNumberType & args);
  * as a float value. If no valid conversion could be performed a zero value
  * (0.0) is returned.
  */
-inline float atof(const string str) { return StrToNum(str); }
+inline float atof(const string str) {
+  float result;
+  asm { strtonum result, __TMPWORD__, str, NA, NA }
+  return result;
+}
 /** \example ex_atof.nxc
  * This is an example of how to use the \ref atof function.
  */
@@ -15546,6 +15567,21 @@ inline char memcmp(variant ptr1, variant ptr2, byte num);
  * This is an example of how to use the \ref memcmp function.
  */
 
+/**
+ * Get the address of a variable.
+ * Get the address of a variable and store it in the unsigned long pointer.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param data A variable whose address you wish to get.
+ * \param ptr The variable which will store the address. It must be an
+ * unsigned long type.
+ */
+inline void addr(variant data, unsigned long & ptr);
+/** \example ex_addr.nxc
+ * This is an example of how to use the \ref addr function.
+ */
+
 #else
 
 #define memcpy(_dest, _src, _num) asm { mov _dest, _src }
@@ -15557,6 +15593,11 @@ inline char memcmp(variant ptr1, variant ptr2, byte num);
   } else if ((_ptr1) > (_ptr2)) { \
     asm { mov __RETVAL__, 1 }; \
   } \
+}
+
+#define addr(_data, _ptr) asm { \
+  compchk EQ, sizeof(_ptr), 4 \
+  addrof _ptr, _data \
 }
 
 #endif
