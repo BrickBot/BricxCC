@@ -1,0 +1,2 @@
+result = ResizeFile("data.txt", 2048);
+

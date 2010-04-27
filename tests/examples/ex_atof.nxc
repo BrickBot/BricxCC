@@ -1,0 +1,6 @@
+task main()
+{
+  float f = atof("3.14159e2");
+  NumOut(0, LCD_LINE1, f);
+  Wait(SEC_5);
+}

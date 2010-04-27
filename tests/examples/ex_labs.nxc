@@ -1,0 +1,11 @@
+task main()
+{
+  float j = -1;
+  float f = sqrt(j);
+  if (isNAN(f))
+    TextOut(0, LCD_LINE1, "not a number");
+  else
+    NumOut(0, LCD_LINE1, f);
+  NumOut(0, LCD_LINE2, f);
+  Wait(SEC_5);
+}

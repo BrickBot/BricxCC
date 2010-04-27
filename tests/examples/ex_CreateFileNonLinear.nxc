@@ -1,0 +1,2 @@
+result = CreateFileNonLinear("data.txt", 1024, handle);
+
