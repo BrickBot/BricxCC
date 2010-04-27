@@ -919,7 +919,7 @@ const
   );
 
   StandardOpcodeCount2x = 56;
-  EnhancedOpcodeCount2x = 37;
+  EnhancedOpcodeCount2x = 38;
   PseudoOpcodeCount2x   = 39;
   NXTInstructionsCount2x = StandardOpcodeCount2x+EnhancedOpcodeCount2x+PseudoOpcodeCount2x;
   NXTInstructions2x : array[0..NXTInstructionsCount2x-1] of NXTInstruction =
@@ -1018,6 +1018,7 @@ const
     ( Encoding: OPS_SIND_2       ; CCType: 0; Arity: 2; Name: 'sind'; ),
     ( Encoding: OPS_SINHD_2      ; CCType: 0; Arity: 2; Name: 'sinhd'; ),
     ( Encoding: OPS_ATAN2D_2     ; CCType: 0; Arity: 3; Name: 'atan2d'; ),
+    ( Encoding: OPS_ADDROF       ; CCType: 0; Arity: 2; Name: 'addrof'; ),
 // pseudo-opcodes
     ( Encoding: OPS_THREAD       ; CCType: 0; Arity: 0; Name: 'thread'; ),
     ( Encoding: OPS_ENDT         ; CCType: 0; Arity: 0; Name: 'endt'; ),
@@ -1782,7 +1783,8 @@ begin
     OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
     OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2,
     OPS_ACOSD_2, OPS_ASIND_2, OPS_ATAND_2, OPS_TAND_2, OPS_TANHD_2,
-    OPS_COSD_2, OPS_COSHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2 :
+    OPS_COSD_2, OPS_COSHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2,
+    OPS_ADDROF :
     begin
       Result := TOCNameFromArg(DS, argValue);
     end;
@@ -4571,7 +4573,7 @@ begin
     OP_ADD..OP_GETTICK : Result := altCode;
     OPS_WAITV..OPS_POW : Result := altCode; // pseudo opcodes
 //    OPS_SQRT_2..OPS_ABS_2 : Result := altCode; // standard 1.26+ opcodes (included in OPS_WAITV..OPS_POW due to overlap)
-    OPS_WAITI_2..OPS_ATAN2D_2 : Result := altCode; // enhanced 1.26+ opcodes
+    OPS_WAITI_2..OPS_ADDROF : Result := altCode; // enhanced 1.26+ opcodes
     OPS_SEGMENT : Result := altBeginDS;
     OPS_ENDS :
       if state in [masStruct, masStructDSClump, masStructDSClumpSub] then
@@ -5272,7 +5274,8 @@ begin
     OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
     OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2,
     OPS_ACOSD_2, OPS_ASIND_2, OPS_ATAND_2, OPS_COSD_2, OPS_COSHD_2,
-    OPS_TAND_2, OPS_TANHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2 :
+    OPS_TAND_2, OPS_TANHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2,
+    OPS_ADDROF :
     begin
       if argIdx > 0 then
         Result := aatVariable
@@ -7580,7 +7583,7 @@ begin
      (op in [OP_GETIN, OP_GETOUT, OP_GETTICK]) or
      (op in [OP_INDEX..OP_BYTEARRTOSTR]) or
      ((FirmwareVersion > MAX_FW_VER1X) and
-      (op in [OP_SQRT_2, OP_ABS_2, OPS_SIGN_2, OPS_FMTNUM_2, OPS_ACOS_2..OPS_ATAN2D_2])) or
+      (op in [OP_SQRT_2, OP_ABS_2, OPS_SIGN_2, OPS_FMTNUM_2, OPS_ACOS_2..OPS_ADDROF])) or
      ((FirmwareVersion <= MAX_FW_VER1X) and
       (op in [OPS_ABS, OPS_SIGN, OPS_FMTNUM, OPS_ACOS..OPS_POW])) then
   begin
