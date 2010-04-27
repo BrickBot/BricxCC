@@ -1,0 +1,10 @@
+task main()
+{
+  string str, endptr;
+  str = "3.1415926e2abcdefg";
+  float f = strtod(str, endptr);
+  NumOut(0, LCD_LINE1, f);
+  TextOut(0, LCD_LINE2, str);
+  TextOut(0, LCD_LINE3, endptr);
+  Wait(SEC_6);
+}

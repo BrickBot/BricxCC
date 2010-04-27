@@ -1,0 +1,11 @@
+task main()
+{
+  long x, y;
+  x = 31464;
+  y = 33;
+  div_t r;
+  r = div(x, y);
+  NumOut(0, LCD_LINE1, r.quot);
+  NumOut(0, LCD_LINE2, r.rem);
+  Wait(SEC_3);
+}

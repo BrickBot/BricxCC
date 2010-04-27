@@ -1,0 +1,2 @@
+result = OpenFileReadLinear("data.txt", fsize, handle);
+
