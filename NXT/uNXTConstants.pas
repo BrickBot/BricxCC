@@ -181,6 +181,9 @@ const
   OPS_SINHD_2      = $87;
   OPS_ATAN2D_2     = $88;
 
+  // misc other enhanced opcodes
+  OPS_ADDROF       = $89;
+
   // pseudo opcodes
   OPS_THREAD       = $90;
   OPS_ENDT         = $91;
