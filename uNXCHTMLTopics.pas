@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2376;
+  uNXCHTMLTopicsSize = 2383;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -5549,76 +5549,84 @@ const
      Value: 'group___n_x_t_limits_ga690f251553b39fd4f31894826141b61a.html'
     ),
     (
-     Name: 'GL_MODE_POLYGON';
-     Value: 'group___g_l_constants_begin_modes_ga5e7cacd81c311802f624adb7c498f4e4.html'
+     Name: 'GL_POLYGON';
+     Value: 'group___g_l_constants_begin_modes_gabed3bfcbd65f2285c12e96b566668b6f.html'
     ),
     (
-     Name: 'GL_MODE_LINE';
-     Value: 'group___g_l_constants_begin_modes_gaf620d5ac1c5058ba920e7298128440f4.html'
+     Name: 'GL_LINE';
+     Value: 'group___g_l_constants_begin_modes_gabbfc2afe81343b8bb6e636fd60aa8e39.html'
     ),
     (
-     Name: 'GL_MODE_POINT';
-     Value: 'group___g_l_constants_begin_modes_ga59c043c05df2d7ab5882ac6dfcd367de.html'
+     Name: 'GL_POINT';
+     Value: 'group___g_l_constants_begin_modes_ga18f542292378fb0f3093fcaec1878b60.html'
     ),
     (
-     Name: 'GL_MODE_CIRCLE';
-     Value: 'group___g_l_constants_begin_modes_gaa14881300c107dd7353dd222803e43a4.html'
+     Name: 'GL_CIRCLE';
+     Value: 'group___g_l_constants_begin_modes_gaa4c003d85039abadc2665d71ac28fcb9.html'
     ),
     (
-     Name: 'GL_ACTION_TRANSLATE_X';
-     Value: 'group___g_l_constants_actions_ga09f0db449fed60961ebacf2a73affbbe.html'
+     Name: 'GL_TRANSLATE_X';
+     Value: 'group___g_l_constants_actions_gadd59c353c57bc6c417e9fc9f6b663b8d.html'
     ),
     (
-     Name: 'GL_ACTION_TRANSLATE_Y';
-     Value: 'group___g_l_constants_actions_ga5f0b8aead66cdb5ae4ea1ee51b4012c9.html'
+     Name: 'GL_TRANSLATE_Y';
+     Value: 'group___g_l_constants_actions_gaada02bd81a1adea0cf52210c53f14872.html'
     ),
     (
-     Name: 'GL_ACTION_TRANSLATE_Z';
-     Value: 'group___g_l_constants_actions_ga359ff570449a70c7afa5aa15cf30456b.html'
+     Name: 'GL_TRANSLATE_Z';
+     Value: 'group___g_l_constants_actions_ga6040ac3c11f3664cc19ea25a94ab48b7.html'
     ),
     (
-     Name: 'GL_ACTION_ROTATE_X';
-     Value: 'group___g_l_constants_actions_gae073800443596d312dc50ec6442366b5.html'
+     Name: 'GL_ROTATE_X';
+     Value: 'group___g_l_constants_actions_gada0d2b4207f230a6f76f90b4ced9045e.html'
     ),
     (
-     Name: 'GL_ACTION_ROTATE_Y';
-     Value: 'group___g_l_constants_actions_ga10bf2ac3b4aa49ff10899faaad196879.html'
+     Name: 'GL_ROTATE_Y';
+     Value: 'group___g_l_constants_actions_ga09dca7df94e864380ec7ee8113500be0.html'
     ),
     (
-     Name: 'GL_ACTION_ROTATE_Z';
-     Value: 'group___g_l_constants_actions_ga0db7df70c63399750ca05042f656d02d.html'
+     Name: 'GL_ROTATE_Z';
+     Value: 'group___g_l_constants_actions_ga26ab20bf9ddb23ddab50616a64473eab.html'
     ),
     (
-     Name: 'GL_ACTION_SCALE_X';
-     Value: 'group___g_l_constants_actions_ga6cdfdd753d28dcda5f508fb8f576f4cf.html'
+     Name: 'GL_SCALE_X';
+     Value: 'group___g_l_constants_actions_ga74be5736f17efc25b4ed860e30796b9f.html'
     ),
     (
-     Name: 'GL_ACTION_SCALE_Y';
-     Value: 'group___g_l_constants_actions_ga5d6379accafed2808716746f92bba239.html'
+     Name: 'GL_SCALE_Y';
+     Value: 'group___g_l_constants_actions_ga11cb5e554493dbc92165143a7e081eb3.html'
     ),
     (
-     Name: 'GL_ACTION_SCALE_Z';
-     Value: 'group___g_l_constants_actions_gadeeac6688931538ee7a46b14e79cc0ff.html'
+     Name: 'GL_SCALE_Z';
+     Value: 'group___g_l_constants_actions_gaca1325ac6d1545143e5db76c595989bb.html'
     ),
     (
-     Name: 'GL_SET_CIRCLE_SIZE';
-     Value: 'group___g_l_constants_settings_gab64b250660e2b1a79a026bb51cdb50d8.html'
+     Name: 'GL_CIRCLE_SIZE';
+     Value: 'group___g_l_constants_settings_ga33d43872a6831dba2fd6741793f54df1.html'
     ),
     (
-     Name: 'GL_SET_CULL_MODE';
-     Value: 'group___g_l_constants_settings_gad2f0772f0fe5946cb8c0c8a143b8479b.html'
+     Name: 'GL_CULL_MODE';
+     Value: 'group___g_l_constants_settings_gad79b50a1b2a95831c56ca6fc4dfa9c0b.html'
     ),
     (
-     Name: 'GL_CULL_MODE_BACK';
-     Value: 'group___g_l_constants_cull_mode_gaf5de00208da32d4a0eb6e114dbb2b3a7.html'
+     Name: 'GL_CAMERA_DEPTH';
+     Value: 'group___g_l_constants_settings_ga29f6e1a402743fcad0a489449616d9fa.html'
     ),
     (
-     Name: 'GL_CULL_MODE_FRONT';
-     Value: 'group___g_l_constants_cull_mode_ga6245ed6965ed455066ab125931ce9b73.html'
+     Name: 'GL_ZOOM_FACTOR';
+     Value: 'group___g_l_constants_settings_ga69fb657ae7e361b4a8c6e90edf14e4f0.html'
     ),
     (
-     Name: 'GL_CULL_MODE_NONE';
-     Value: 'group___g_l_constants_cull_mode_gacc6009ea17fab6ac801d86c08b2ca9ca.html'
+     Name: 'GL_CULL_BACK';
+     Value: 'group___g_l_constants_cull_mode_gaa786847ed4697e95ddd20d634a862907.html'
+    ),
+    (
+     Name: 'GL_CULL_FRONT';
+     Value: 'group___g_l_constants_cull_mode_gab6fdd16e37937bbe318ace2ce27bc310.html'
+    ),
+    (
+     Name: 'GL_CULL_NONE';
+     Value: 'group___g_l_constants_cull_mode_ga4183b74ce9f7e1517a76994b75178264.html'
     ),
     (
      Name: 'u8';
@@ -6018,11 +6026,11 @@ const
     ),
     (
      Name: 'SetSensorLight';
-     Value: 'group___input_module_functions_gad4ee525f94263650be8ee9457ac4ea3b.html'
+     Value: 'group___input_module_functions_gade667ac6b2ecd679eb548f7b82d560a6.html'
     ),
     (
      Name: 'SetSensorSound';
-     Value: 'group___input_module_functions_gaff2be15516c0f1a32d066109d205e144.html'
+     Value: 'group___input_module_functions_gaf55e8206edaeb0392f268787a0f06f55.html'
     ),
     (
      Name: 'SetSensorLowspeed';
@@ -6481,6 +6489,10 @@ const
      Value: 'group___display_module_functions_ga4c5712d4836fe5c931f3b30e22e8c098.html'
     ),
     (
+     Name: 'DisplayFont';
+     Value: 'group___display_module_functions_ga22044f19168be6ccbff00587d3bd2b31.html'
+    ),
+    (
      Name: 'DisplayDisplay';
      Value: 'group___display_module_functions_ga5e3407313d9a61510407c326697ce9bc.html'
     ),
@@ -6547,6 +6559,14 @@ const
     (
      Name: 'ClearScreen';
      Value: 'group___display_module_functions_ga6a3ca153f0817e8ba91a023b886bb662.html'
+    ),
+    (
+     Name: 'ClearLine';
+     Value: 'group___display_module_functions_ga615479be2064c4c7309b811ae51749bb.html'
+    ),
+    (
+     Name: 'SetDisplayFont';
+     Value: 'group___display_module_functions_ga0e116fce4ef1473bdca36f4f8888eff4.html'
     ),
     (
      Name: 'SetDisplayDisplay';
@@ -9373,6 +9393,10 @@ const
      Value: 'group__cstring_a_p_i_ga35b031b0ba754f880e5d0152634f77d8.html'
     ),
     (
+     Name: 'addr';
+     Value: 'group__cstring_a_p_i_ga57d662a153d3542f2afc413feb898357.html'
+    ),
+    (
      Name: 'isupper';
      Value: 'group__ctype_a_p_i_gadadd6582d46775aab6a51e29d16d9f77.html'
     ),
@@ -9434,7 +9458,7 @@ const
     ),
     (
      Name: 'glBeginObject';
-     Value: 'group___graphics_library_ga9de261c318dccf6ce891a953c01b098e.html'
+     Value: 'group___graphics_library_ga562a3ba8f37297f1da2ed152b3eea64b.html'
     ),
     (
      Name: 'glEndObject';
@@ -9502,11 +9526,15 @@ const
     ),
     (
      Name: 'glBox';
-     Value: 'group___graphics_library_ga12e20200381c0f2749b79a5648f4ee49.html'
+     Value: 'group___graphics_library_ga840325eac24ae7cca69d1db3c2f15b50.html'
+    ),
+    (
+     Name: 'glCube';
+     Value: 'group___graphics_library_gad1afb205fe30811d3f813ca86c475321.html'
     ),
     (
      Name: 'glPyramid';
-     Value: 'group___graphics_library_ga7c3565cb0ecf2bc942e2653f69092406.html'
+     Value: 'group___graphics_library_gab981e04cff461199d56633cb6411464e.html'
     ),
     (
      Name: '$##@$@#$@#$@$';

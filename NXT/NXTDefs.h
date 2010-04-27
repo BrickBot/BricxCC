@@ -2976,6 +2976,10 @@ dseg ends
   compchk EQ, sizeof(_n), 4 \
   GetDisplayModuleValue(DisplayOffsetUpdateMask, _n)
 
+#define GetDisplayFont(_n) \
+  compchk EQ, sizeof(_n), 4 \
+  GetDisplayModuleValue(DisplayOffsetPFont, _n)
+
 #define GetDisplayDisplay(_n) \
   compchk EQ, sizeof(_n), 4 \
   GetDisplayModuleValue(DisplayOffsetDisplay, _n)
@@ -3585,6 +3589,7 @@ dseg ends
 
 #define SetDisplayEraseMask(_n) __setDisplayEraseMask(_n)
 #define SetDisplayUpdateMask(_n) __setDisplayUpdateMask(_n)
+#define SetDisplayFont(_n) __setDisplayFont(_n)
 #define SetDisplayDisplay(_n) __setDisplayDisplay(_n)
 #define SetDisplayFlags(_n) __setDisplayFlags(_n)
 #define SetDisplayTextLinesCenterFlags(_n) __setDisplayTextLinesCenterFlags(_n)
@@ -4236,6 +4241,10 @@ dseg ends
 #define __setDisplayUpdateMask(_n) \
   compchk EQ, sizeof(_n), 4 \
   SetDisplayModuleValue(DisplayOffsetUpdateMask, _n)
+
+#define __setDisplayFont(_n) \
+  compchk EQ, sizeof(_n), 4 \
+  SetDisplayModuleValue(DisplayOffsetPFont, _n)
 
 #define __setDisplayDisplay(_n) \
   compchk EQ, sizeof(_n), 4 \
