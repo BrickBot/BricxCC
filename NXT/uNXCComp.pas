@@ -3862,7 +3862,10 @@ begin
           else if IsUDT(rdt) or IsArrayType(rdt) then
           begin
             // tell the compiler that a UDT/Array is on stack
-            fUDTOnStack := Format('__result_%s', [procname]);
+            if bFunctionIsInline then
+              fUDTOnStack := Format('__result_%s', [InlineName(fCurrentThreadName, procname)])
+            else
+              fUDTOnStack := Format('__result_%s', [procname]);
           end
           else if rdt in NonAggregateTypes then
           begin
