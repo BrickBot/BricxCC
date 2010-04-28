@@ -13263,7 +13263,7 @@ inline void MSScoutUnmuteSound(void);
 #define MSPFRepeatEx(_port, _addr, _count, _delay) asm { __MSPFRepeatLastCommand(_port, _addr, _count, _delay, __RETVAL__) }
 #define MSPFRepeat(_port, _count, _delay) asm { __MSPFRepeatLastCommand(_port, 0x02, _count, _delay, __RETVAL__) }
 
-#define MSRCXSetNRLinkEx(_port, _addr) asm { __MSRCXSetNRLink(_port, _addr) }
+#define MSRCXSetNRLinkPortEx(_port, _addr) asm { __MSRCXSetNRLink(_port, _addr) }
 #define MSRCXSetNRLinkPort(_port) asm { __MSRCXSetNRLink(_port, 0x02) }
 #define MSRCXPoll(_src, _value) asm { __MSRCXPoll(_src, _value, __RETVAL__) }
 #define MSRCXBatteryLevel() asm { __MSRCXBatteryLevel(__RETVAL__) }
