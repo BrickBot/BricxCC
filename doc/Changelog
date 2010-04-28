@@ -22,6 +22,10 @@ Version 1.2.1.r1
 - Added support for string expressions in several API functions including StrCat.
 - Default compiler firmware version target is now 128 (used to be 105).
 - Header files now contain doxygen comments
+- Fixed a bug in atof
+- Added DisplayFont, SetDisplayFont, and addr functions
+- Added support for assignments as expressions
+- Fixed a bug with asm statements passed into function call parameters
 
 Version 1.0.1.b36
 -----------------

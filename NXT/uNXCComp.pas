@@ -2598,6 +2598,9 @@ begin
     CloseParen;
   end
   else begin
+    // scan here so that Token is changed from IDENTIFIER to the
+    // appropriate keyword token
+    Scan;
     savedtoken := Token;
     savedvalue := Value;
     // JCH fix bug where function call with whitespace between function name
@@ -2634,6 +2637,14 @@ begin
             Next;
             Next;
           end
+          else if (Token = '=') and (Look <> '=') then
+          begin
+            // var = expression rather than var == expression
+            // i.e., an assignment statement
+            Next;
+            DoAssignValue(savedvalue, DataType(savedvalue));
+            LoadVar(savedvalue);
+          end
           else if savedvalue = 'true' then
             LoadConst('1')
           else if savedvalue = 'false' then
@@ -2659,6 +2670,9 @@ begin
           end
           else
             LoadVar(savedvalue);
+        end;
+        TOK_ASM : begin
+          DoAsm(fLHSDataType);
         end;
         TOK_NUM, TOK_HEX : begin
           LoadConst(savedvalue);
