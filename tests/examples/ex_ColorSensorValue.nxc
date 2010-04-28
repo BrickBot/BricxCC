@@ -1,0 +1,1 @@
+unsigned int valRed = ColorSensorValue(S1, INPUT_RED);

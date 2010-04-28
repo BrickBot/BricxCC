@@ -1,0 +1,1 @@
+int dist = DISTNxNumPointsEx(S1, 0x02);

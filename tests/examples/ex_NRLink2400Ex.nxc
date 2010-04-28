@@ -1,0 +1,1 @@
+char result = NRLink2400Ex(S1, 0x02);

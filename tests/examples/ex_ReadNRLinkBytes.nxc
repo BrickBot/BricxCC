@@ -1,0 +1,1 @@
+bool result = ReadNRLinkBytes(S1, data);

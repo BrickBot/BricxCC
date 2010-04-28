@@ -1,0 +1,4 @@
+unsigned int rawData[], normData[];
+int scaledData[];
+int cval;
+int result = ReadSensorColorEx(S1, cval, rawData, normData, scaledData);

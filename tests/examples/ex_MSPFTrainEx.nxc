@@ -1,0 +1,2 @@
+char result = MSPFTrainEx(S1, 0x02, PF_CHANNEL_1, TRAIN_FUNC_INCR_SPEED);
+

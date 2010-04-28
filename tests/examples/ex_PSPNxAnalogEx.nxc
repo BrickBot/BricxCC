@@ -1,0 +1,1 @@
+char result = PSPNxAnalogEx(S1, 0x02);
