@@ -1,0 +1,1 @@
+char result = ReadI2CRegister(S1, I2C_REG_CMD, out);

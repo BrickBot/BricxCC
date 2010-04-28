@@ -1,0 +1,1 @@
+unsigned int limit = ColorCalLimits(S1, INPUT_CAL_POINT_0);

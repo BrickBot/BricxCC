@@ -14,7 +14,7 @@ task main()
   for (int i = 0; Sensor(S1) > i; i++)
   {
   }
-  string test = ConcStringInt("test", fooBarIsh = Sensor(S1));
+  string test = ConcStringInt("test", Sensor(S1));
   TextOut(0, LCD_LINE1, test);
   int xyz = fooBarIsh = 23;
   NumOut(0, LCD_LINE1, xyz);

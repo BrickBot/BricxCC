@@ -1,0 +1,1 @@
+char result = NRLinkSetPF(S1);

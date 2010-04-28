@@ -1,0 +1,2 @@
+unsigned int rawData[];
+int result = ReadSensorColorRaw(S1, rawData);

@@ -1,2 +1,2 @@
-MSPFRepeat(S1, 5, 100);
+char result = MSPFRepeat(S1, 5, 100);
 

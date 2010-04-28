@@ -1,0 +1,1 @@
+char result = MSADPAOffEx(S1, 0x02);

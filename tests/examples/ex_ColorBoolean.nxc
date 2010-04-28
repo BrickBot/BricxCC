@@ -1,0 +1,1 @@
+bool bRed = ColorBoolean(S1, INPUT_RED);
