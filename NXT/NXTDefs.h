@@ -8034,7 +8034,7 @@ __MSRCSNoResponse:
   return
 ends
 
-#define MSRCXSetNRLinkEx(_port, _addr) __MSRCXSetNRLink(_port, _addr)
+#define MSRCXSetNRLinkPortEx(_port, _addr) __MSRCXSetNRLink(_port, _addr)
 #define MSRCXSetNRLinkPort(_port) __MSRCXSetNRLink(_port, 0x02)
 #define MSRCXPoll(_src, _value, _result) __MSRCXPoll(_src, _value, _result)
 #define MSRCXBatteryLevel(_result) __MSRCXBatteryLevel(_result)
