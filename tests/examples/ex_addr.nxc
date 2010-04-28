@@ -17,7 +17,6 @@ const byte NewFont[] =
 task main()
 {
   unsigned long ptr, pOldFont;
-  byte myData[800];
   addr(NewFont, ptr);
   TextOut(0, LCD_LINE1, FormatNum("%x", ptr));
   pOldFont = DisplayFont();
