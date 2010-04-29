@@ -47,6 +47,7 @@ type
     function GlobalTypeName(const n: string): string;
     function ParamDataType(const n: string): char;
     function ParamTypeName(const n: string): string;
+    function FuncParamDataType(const n: string): char;
 //    function ParamConstantValue(const n: string): string;
 //    procedure OptionalSemi;
     procedure CheckSemicolon;
@@ -1079,10 +1080,12 @@ end;
 procedure TNXCComp.SkipDirectiveLine;
 begin
   fDirLine := Value + ' ';
+  SkipWhite;
   repeat
-    GetCharX;
     fDirLine := fDirLine + Look;
+    GetCharX;
   until (Look = LF) or endofallsource;
+  fDirLine := fDirLine + Look;
   GetChar;
 end;
 
@@ -1245,6 +1248,25 @@ begin
   end;
 end;
 
+function TNXCComp.FuncParamDataType(const n: string): char;
+var
+  i : integer;
+  fp : TFunctionParameter;
+  decvar : string;
+begin
+  Result := #0;
+  // check in the fFuncParams
+  for i := 0 to fFuncParams.Count - 1 do
+  begin
+    fp := fFuncParams[i];
+    decvar := ApplyDecoration(fp.ProcName, fp.Name, 0);
+    if decvar = RootOf(n) then
+    begin
+      Result := fp.ParameterDataType;
+      Break;
+    end;
+  end;
+end;
 
 function TNXCComp.IsParam(n: string): boolean;
 begin
@@ -1291,10 +1313,14 @@ function TNXCComp.ParamDataType(const n: string): char;
 var
   i : integer;
 begin
-  Result := #0;
   i := ParamIdx(RootOf(n));
   if i <> -1 then
-    Result := fParams[i].DataType;
+    Result := fParams[i].DataType
+  else
+  begin
+    // maybe a function parameter?
+    Result := FuncParamDataType(RootOf(n));
+  end;
 end;
 
 function TNXCComp.ParamTypeName(const n: string): string;
@@ -1603,6 +1629,7 @@ begin
     ProcessDirectives(False);
     fExpStr := fExpStr + Value;
   end;
+  SkipWhite; // also skip any whitespace after this token
 end;
 
 function IsAPICommand(const name : string) : boolean;
@@ -4762,7 +4789,7 @@ begin
   MatchString(TOK_BEGIN);
   if Value <> TOK_END then
   begin
-    asmStr := Value + Look;
+    asmStr := Value + ' ' + Look;
     repeat
       nestLevel := 0;
       repeat
@@ -9561,7 +9588,7 @@ begin
           EmitLn(Format('strcat %s, %s', [aLHSName, GetDecoratedValue]))
         else if tmpDT in NonAggregateTypes then
           LoadVar(Value)
-        else if not IsArrayType(DataType(aLHSName)) then
+        else if not IsArrayType(DataType(StripInline(aLHSName))) then
           EmitLn(Format('mov %s, %s', [GetDecoratedIdent(aLHSName), GetDecoratedValue]))
         else
           fUDTOnStack := Value;

@@ -1,6 +1,6 @@
 
 string floattostring (float f)
-{string exp;
+{string ex;
  int e=0;
   while (abs(f)>=10)
  {e+=1;
@@ -10,9 +10,9 @@ string floattostring (float f)
   {e-=1;
    f*=10;
    }
-  exp=FormatNum("%10.4f e",f);
-  exp+=FormatNum("%02d",e);
-  return exp;
+  ex=FormatNum("%10.4f e",f);
+  ex+=FormatNum("%02d",e);
+  return ex;
 }
 
 
