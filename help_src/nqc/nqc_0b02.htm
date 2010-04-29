@@ -18,7 +18,7 @@
 	<PARAM NAME="Keyword" VALUE="SENSOR_EDGE">
 </OBJECT>
 
-<P><A NAME="idh_api_setsensor"></A><B>SetSensor(sensor, configuration)Function – RCX</B></P>
+<P><A NAME="idh_api_setsensor"></A><B>SetSensor(sensor, configuration)</B></P>
 
 <P>Set the type and mode of the given sensor to the specified configuration, which must be a special constant containing both type and mode information.</P>
 
@@ -26,21 +26,15 @@
 
 <P>When using the RCX or Swan, it is common to set both the type and mode at the same time. The SetSensor function makes this process a little easier by providing a single function to call and a set of standard type/mode combinations.</P>
 
-<P><B><U>Sensor Configuration</U><U>Type</U><U>Mode</U></B></P>
-
-<P>SENSOR_TOUCHSENSOR_TYPE_TOUCHSENSOR_MODE_BOOL</P>
-
-<P>SENSOR_LIGHTSENSOR_TYPE_LIGHTSENSOR_MODE_PERCENT</P>
-
-<P>SENSOR_ROTATIONSENSOR_TYPE_ROTATIONSENSOR_MODE_ROTATION</P>
-
-<P>SENSOR_CELSIUSSENSOR_TYPE_TEMPERATURESENSOR_MODE_CELSIUS</P>
-
-<P>SENSOR_FAHRENHEITSENSOR_TYPE_TEMPERATURESENSOR_MODE_FAHRENHEIT</P>
-
-<P>SENSOR_PULSESENSOR_TYPE_TOUCHSENSOR_MODE_PULSE</P>
-
-<P>SENSOR_EDGESENSOR_TYPE_TOUCHSENSOR_MODE_EDGE</P>
-
+<table>
+<tr><th><U>Sensor Configuration</U></th><th><U>Type</U></th><th><U>Mode</U></th></tr>
+<tr><td>SENSOR_TOUCH</td><td>SENSOR_TYPE_TOUCH</td><td>SENSOR_MODE_BOOL</td></tr>
+<tr><td>SENSOR_LIGHT</td><td>SENSOR_TYPE_LIGHT</td><td>SENSOR_MODE_PERCENT</td></tr>
+<tr><td>SENSOR_ROTATION</td><td>SENSOR_TYPE_ROTATION</td><td>SENSOR_MODE_ROTATION</td></tr>
+<tr><td>SENSOR_CELSIUS</td><td>SENSOR_TYPE_TEMPERATURE</td><td>SENSOR_MODE_CELSIUS</td></tr>
+<tr><td>SENSOR_FAHRENHEIT</td><td>SENSOR_TYPE_TEMPERATURE</td><td>SENSOR_MODE_FAHRENHEIT</td></tr>
+<tr><td>SENSOR_PULSE</td><td>SENSOR_TYPE_TOUCH</td><td>SENSOR_MODE_PULSE</td></tr>
+<tr><td>SENSOR_EDGE</td><td>SENSOR_TYPE_TOUCH</td><td>SENSOR_MODE_EDGE</td></tr>
+</table>
 </BODY>
 </HTML>
