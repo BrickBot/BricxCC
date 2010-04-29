@@ -1,4 +1,4 @@
-//typedef unsigned int HELLOWORLD;
+typedef unsigned int HELLOWORLD;
 
 void test(HELLOWORLD in)
 {

@@ -1,4 +1,4 @@
-typedef struct tagCOLOR
+typedef struct tagCOLOR    // unsupported syntax
 {
 byte Useless;
 byte R;
@@ -6,13 +6,13 @@ byte G;
 byte B;
 } COLOR;
 
-typedef struct tagXY
+typedef struct tagXY   // unsupported syntax
 {
 int X;
 int Y;
 } XY;
 
-typedef struct tagBasicObjectProperties
+typedef struct tagBasicObjectProperties  // unsupported syntax
 {
 COLOR color;
 XY xy;
