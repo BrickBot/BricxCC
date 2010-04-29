@@ -285,6 +285,8 @@ begin
   Filename := fname;
   SetCaption(ExtractFileName(fname));
   TheEditor.Modified := False;
+  if TheEditor.CanFocus then
+    TheEditor.SetFocus;
   MainForm.actFileSave.Enabled := False;
   SetSyntaxHighlighter;
   UpdateStatusBar;
@@ -354,6 +356,8 @@ begin
       TheEditor.Modified := False;
       MainForm.actFileSave.Enabled := False;
     end;
+    if TheEditor.CanFocus then
+      TheEditor.SetFocus;
     MainForm.LoadDesktop(fname);
     SetSyntaxHighlighter;
     UpdateStatusBar;
