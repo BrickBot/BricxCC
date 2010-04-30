@@ -1,0 +1,2 @@
+int x, y, z;
+bool result = ReadSensorMSAccel(S1, x, y, z);

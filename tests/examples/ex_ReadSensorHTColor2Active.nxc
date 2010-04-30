@@ -1,0 +1,3 @@
+byte cnum, red, green, blue, white;
+bool result = ReadSensorHTColor2Active(S1, cnum, red, green, blue, white);
+

@@ -1,0 +1,8 @@
+task main()
+{
+  DatalogWriteType args;
+  ArrayBuild(args.Message, 0x01, 0x02);
+  SysDatalogWrite(args);
+  if (args.Result == NO_ERR)
+    TextOut(0, LCD_LINE1, "success");
+}

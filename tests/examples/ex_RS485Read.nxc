@@ -1,0 +1,2 @@
+byte buffer[];
+char result = RS485Read(buffer);

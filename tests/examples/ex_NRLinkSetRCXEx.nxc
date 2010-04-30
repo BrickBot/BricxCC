@@ -1,0 +1,1 @@
+char result = NRLinkSetRCXEx(S1, 0x02);

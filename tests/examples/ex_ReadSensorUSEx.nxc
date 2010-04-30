@@ -1,0 +1,2 @@
+byte values[];
+char result = ReadSensorUSEx(S1, values);

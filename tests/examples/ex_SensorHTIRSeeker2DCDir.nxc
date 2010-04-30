@@ -1,0 +1,1 @@
+int val = SensorHTIRSeeker2DCDir(S1);

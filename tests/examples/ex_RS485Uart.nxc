@@ -1,0 +1,1 @@
+char result = RS485Uart(HS_BAUD_115200, HS_MODE_8N1);

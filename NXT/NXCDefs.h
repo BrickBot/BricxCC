@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-04-05
- * \version 70
+ * \date 2010-04-30
+ * \version 71
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -71,6 +71,9 @@
 #define S4 3 /*!< Input port 4 */
 /** @} */ // end of InPorts group
 
+/** @addtogroup InputModuleTypesAndModes
+ * @{
+ */
 /** @defgroup SensorTypes Sensor type constants
  *  Use sensor type constants to configure an input port for a specific type
  *  of sensor.
@@ -141,6 +144,7 @@
 #define SENSOR_COLORNONE	_SENSOR_CFG(SENSOR_TYPE_COLORNONE, SENSOR_MODE_PERCENT)      /*!< NXT 2.0 color sensor (none) in percent mode */
 #endif
 /** @} */ // end of SensorModes group
+/** @} */ // end of InputModuleTypesAndModes group
 /** @} */ // end of InputModuleConstants group
 
 /** @defgroup InputModuleTypes Input module types

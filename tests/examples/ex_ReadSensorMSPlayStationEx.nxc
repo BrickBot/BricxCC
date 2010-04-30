@@ -1,0 +1,2 @@
+byte btnset1, btnset2, xleft, yleft, xright, yright;
+bool result = ReadSensorMSPlayStationEx(S1, 0x02, btnset1, btnset2, xleft, yleft, xright, yright);
