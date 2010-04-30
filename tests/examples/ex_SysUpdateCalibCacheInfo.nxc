@@ -1,0 +1,9 @@
+task main()
+{
+  UpdateCalibCacheInfoType args;
+  args.Name = "light";
+  args.MinVal = 0;
+  args.MaxVal = 1023;
+  SysUpdateCalibCacheInfo(args);
+  NumOut(0, LCD_LINE1, args.Result);
+}

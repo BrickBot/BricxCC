@@ -1,0 +1,1 @@
+int val = SensorHTIRSeeker2Addr(S1, HTIR2_REG_DCAVG);

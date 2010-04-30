@@ -1,0 +1,9 @@
+task main()
+{
+  CommHSControlType hsc;
+  hsc.Command = HS_CTRL_INIT;
+  SysCommHSControl(hsc);
+  if (hsc.Result)
+    TextOut(0, LCD_LINE1, "hi-speed initialized");
+  Wait(SEC_10);
+}

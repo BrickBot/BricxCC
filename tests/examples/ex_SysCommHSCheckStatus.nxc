@@ -1,0 +1,9 @@
+task main()
+{
+  CommHSCheckStatusType hsc;
+  SysCommHSCheckStatus(hsc);
+  if (hsc.SendingData)
+    TextOut(0, LCD_LINE1, "sending data");
+  else if (hsc.DataAvailable)
+    TextOut(0, LCD_LINE1, "data available");
+}

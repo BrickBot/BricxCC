@@ -1,0 +1,9 @@
+task main()
+{
+  ComputeCalibValueType args;
+  args.Name = "light";
+  args.RawVal = Sensor(S1);
+  SysComputeCalibValue(args);
+  if (args.Result == NO_ERR)
+    TextOut(0, LCD_LINE1, "calib computed");
+}

@@ -1,0 +1,2 @@
+char pfchar;
+bool result = ReadSensorHTIRReceiverEx(S1, HT_CH1_A, pfchar);

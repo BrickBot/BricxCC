@@ -1,0 +1,7 @@
+task main()
+{
+  ReadSemDataType args;
+  args.Request = true;
+  SysReadSemData(args);
+  NumOut(0, LCD_LINE1, args.SemData);
+}

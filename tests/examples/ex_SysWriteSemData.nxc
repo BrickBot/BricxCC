@@ -1,0 +1,9 @@
+task main()
+{
+  WriteSemDataType args;
+  args.NewVal = 0x4;
+  args.Request = true;
+  args.ClearBits = false;
+  SysWriteSemData(args);
+  NumOut(0, LCD_LINE1, args.SemData);
+}

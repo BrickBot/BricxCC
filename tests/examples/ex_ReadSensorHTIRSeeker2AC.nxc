@@ -1,0 +1,2 @@
+byte s1, s3, s5, s7, s9;
+bool result = ReadSensorHTIRSeeker2AC(S1, dir, s1, s3, s5, s7, s9);

@@ -1,0 +1,2 @@
+bool sendingData, dataAvail;
+RS485Status(sendingData, dataAvail);

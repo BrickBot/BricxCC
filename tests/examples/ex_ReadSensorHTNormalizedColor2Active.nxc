@@ -1,0 +1,2 @@
+byte cidx, red, green, blue;
+bool result = ReadSensorHTNormalizedColor2Active(S1, cidx, red, green, blue);

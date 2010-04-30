@@ -1,0 +1,2 @@
+unsigned int red, green, blue, white;
+bool result = ReadSensorHTRawColor2(S1, red, green, blue, white);

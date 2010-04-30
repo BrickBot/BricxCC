@@ -1,0 +1,2 @@
+long val = 12345;
+char result = SendRS485Number(val);

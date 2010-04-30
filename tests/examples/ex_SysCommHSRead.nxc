@@ -1,0 +1,8 @@
+task main()
+{
+  CommHSReadWriteType hsr;
+  SysCommHSRead(hsr);
+  if (hsr.Status == NO_ERR)
+    TextOut(0, LCD_LINE1, hsr.Buffer);
+  Wait(SEC_1);
+}

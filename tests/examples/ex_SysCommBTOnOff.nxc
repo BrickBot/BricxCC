@@ -1,0 +1,8 @@
+task main()
+{
+  CommBTOnOffType bt;
+  bt.PowerState = false;
+  SysCommBTOnOff(bt);
+  if (bt.Result == NO_ERR)
+    TextOut(0, LCD_LINE1, "BT is off");
+}
