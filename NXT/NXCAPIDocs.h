@@ -28,7 +28,7 @@
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
 
-/** @mainpage
+/** @mainpage NXC Programmer's Guide
  * 
  * <h1>Not eXactly C</h1>
  * <h1>(NXC)</h1>
@@ -1103,7 +1103,7 @@
 
 /** @page condcomp Conditional Compilation
  * 
- * Conditional compilation works similar to the C preprocessor’s conditional compilation. 
+ * Conditional compilation works similar to the C preprocessor's conditional compilation. 
  * The following preprocessor directives may be used:
  * <center><table>
  * <tr><th>Directive</th><th>Meaning</th></tr>
