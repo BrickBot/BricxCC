@@ -1,10 +1,6 @@
-#define radius 30
 #define sqrt5 2.23607
 #define phi ((1.0+sqrt5)*0.5)
 #define ratio (3.80423/(4.0*phi))
-#define a ((radius/ratio)*0.5)
-#define b ((radius/ratio)/(2.0*phi))
-
 #define v01  0,  b, -a
 #define v02  b,  a,  0
 #define v03 -b,  a,  0
@@ -18,9 +14,11 @@
 #define v11  b, -a,  0
 #define v12 -b, -a,  0
 
-inline void glIcosahedron(int bm)
+int glIcosahedron(int bm, int radius)
 {
-  glBeginObject();
+  float a = (radius/ratio)*0.5;
+  float b = (radius/ratio)/(2.0*phi);
+  int id = glBeginObject();
     glBegin(bm); // f1
       glAddVertex(v01);
       glAddVertex(v02);
@@ -122,6 +120,7 @@ inline void glIcosahedron(int bm)
       glAddVertex(v11);
     glEnd();
   glEndObject();
+  return id;
 }
 
 task main()
@@ -130,7 +129,7 @@ task main()
   glInit();
   // Create a cube, this is the first object which will be object id 0...
 //  glPyramid(GL_POLYGON, 20, 20, 20);
-  glIcosahedron(GL_POLYGON);
+  int id1 = glIcosahedron(GL_POLYGON, 30);
   // Set the main view x-angle...
   glSetAngleX(45);
   glSet(GL_ZOOM_FACTOR, 0);
@@ -143,7 +142,7 @@ task main()
     // Setup for rendering...
     glBeginRender();
     // Call the object with id 0...
-    glCallObject(0);
+    glCallObject(id1);
     // Finish, clear the screen, rotate and render the called objects...
     glFinishRender();
 //    Wait(MS_20);

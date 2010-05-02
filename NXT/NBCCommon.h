@@ -1253,152 +1253,127 @@
  * \sa SetOutput(), GetOutput()
  * @{
  */
-#define UpdateFlags     0  /*!< Update flags field. Contains a combination of the update flag constants. Read/write. 
-                                
-                                Use \ref UF_UPDATE_MODE, \ref UF_UPDATE_SPEED, \ref UF_UPDATE_TACHO_LIMIT, and \ref UF_UPDATE_PID_VALUES 
-                                along with other fields to commit changes to the state of outputs. Set the appropriate 
-                                flags after setting one or more of the output fields in order for the changes to actually 
-                                go into affect. */
-#define OutputMode      1  /*!< Mode field. Contains a combination of the output mode constants. Read/write. 
-                                
-                                The \ref OUT_MODE_MOTORON bit must be set in order for power to be applied to the motors. 
-                                Add \ref OUT_MODE_BRAKE to enable electronic braking. Braking means that the output voltage 
-                                is not allowed to float between active PWM pulses. It improves the accuracy of motor 
-                                output but uses more battery power.
-                                
-				To use motor regulation include \ref OUT_MODE_REGULATED in the OutputMode value. Use 
-                                \ref UF_UPDATE_MODE with \ref UpdateFlags to commit changes to this field. */
-#define Power           2  /*!< Power field. Contains the desired power level (-100 to 100). Read/write. 
-                                
-                                Specify the power level of the output. The absolute value of Power is a percentage of the 
-                                full power of the motor. The sign of Power controls the rotation direction. Positive values 
-                                tell the firmware to turn the motor forward, while negative values turn the motor backward. 
-                                Use \ref UF_UPDATE_SPEED with \ref UpdateFlags to commit changes to this field. */
-#define ActualSpeed     3  /*!< Actual speed field. Contains the actual power level (-100 to 100). Read only. 
-                                
-                                Return the percent of full power the firmware is applying to the output. This may vary from the 
-                                Power value when auto-regulation code in the firmware responds to a load on the output. */
-#define TachoCount      4  /*!< Internal tachometer count field. Contains the current internal tachometer count. Read only. 
-                                
-                                Return the internal position counter value for the specified output. The internal count is reset 
-                                automatically when a new goal is set using the TachoLimit and the \ref UF_UPDATE_TACHO_LIMIT flag.
-                                
-                                Set the \ref UF_UPDATE_RESET_COUNT flag in \ref UpdateFlags to reset TachoCount and cancel any \ref TachoLimit.
-                                
-                                The sign of TachoCount indicates the motor rotation direction. */
-#define TachoLimit      5  /*!< Tachometer limit field. Contains the current tachometer limit. Read/write. 
-                                
-                                Specify the number of degrees the motor should rotate.
-                                
-                                Use \ref UF_UPDATE_TACHO_LIMIT with the \ref UpdateFlags field to commit changes to the TachoLimit. 
-                                
-                                The value of this field is a relative distance from the current motor position at the moment when 
-                                the \ref UF_UPDATE_TACHO_LIMIT flag is processed. */
-#define RunState        6  /*!< Run state field. Contains one of the run state constants. Read/write. 
-                                
-                                Use this field to specify the running state of an output. Set the RunState to \ref OUT_RUNSTATE_RUNNING 
-                                to enable power to any output. Use \ref OUT_RUNSTATE_RAMPUP to enable automatic ramping to a new \ref Power 
-                                level greater than the current \ref Power level. Use \ref OUT_RUNSTATE_RAMPDOWN to enable automatic ramping 
-                                to a new \ref Power level less than the current \ref Power level.
-                                
-                                Both the rampup and rampdown bits must be used in conjunction with appropriate \ref TachoLimit and \ref Power 
-                                values. In this case the firmware smoothly increases or decreases the actual power to the new \ref Power 
-                                level over the total number of degrees of rotation specified in \ref TachoLimit. */
-#define TurnRatio       7  /*!< Turn ratio field. Contains the current turn ratio. Only applicable when synchronizing multiple motors. Read/write. 
-                                
-                                Use this field to specify a proportional turning ratio. This field must be used in conjunction with other 
-                                field values: \ref OutputMode must include \ref OUT_MODE_MOTORON and \ref OUT_MODE_REGULATED, \ref RegMode must be set to 
-                                \ref OUT_REGMODE_SYNC, \ref RunState must not be \ref OUT_RUNSTATE_IDLE, and \ref Power must be non-zero. 
-                                
-                                There are only three valid combinations of left and right motors for use with TurnRatio: \ref OUT_AB, \ref OUT_BC, 
-                                and \ref OUT_AC. In each of these three options the first motor listed is considered to be the left motor and 
-                                the second motor is the right motor, regardless of the physical configuration of the robot.
-                                
-                                Negative TurnRatio values shift power toward the left motor while positive values shift power toward the 
-                                right motor. An absolute value of 50 usually results in one motor stopping. An absolute value of 100 usually 
-                                results in two motors turning in opposite directions at equal power. */
-#define RegMode         8  /*!< Regulation mode field. Contains one of the regulation mode constants. Read/write. 
-                                
-                                This field specifies the regulation mode to use with the specified port(s). It is ignored if 
-                                the \ref OUT_MODE_REGULATED bit is not set in the \ref OutputMode field. Unlike the \ref OutputMode field, RegMode is 
-                                not a bitfield. Only one RegMode value can be set at a time. 
-                                
-                                Speed regulation means that the firmware tries to maintain a certain speed based on the \ref Power setting. The 
-                                firmware adjusts the PWM duty cycle if the motor is affected by a physical load. This adjustment is 
-                                reflected by the value of the \ref ActualSpeed property. When using speed regulation, do not set Power to its 
-                                maximum value since the firmware cannot adjust to higher power levels in that situation.
-                                
-                                Synchronization means the firmware tries to keep two motors in synch regardless of physical loads. Use 
-                                this mode to maintain a straight path for a mobile robot automatically. Also use this mode with the 
-                                \ref TurnRatio property to provide proportional turning. 
-                                
-                                Set \ref OUT_REGMODE_SYNC on at least two motor ports in order for synchronization to function. Setting 
-                                \ref OUT_REGMODE_SYNC on all three motor ports will result in only the first two (\ref OUT_A and \ref OUT_B) being 
-                                synchronized. */
-#define Overload        9  /*!< Overload field. Contains a boolean value which is TRUE if the motor is overloaded. Read only. 
-                                
-                                This field will have a value of 1 (true) if the firmware speed regulation cannot overcome a physical 
-                                load on the motor. In other words, the motor is turning more slowly than expected. 
-                                
-                                If the motor speed can be maintained in spite of loading then this field value is zero (false). 
-                                
-                                In order to use this field the motor must have a non-idle \ref RunState, an \ref OutputMode which includes 
-                                \ref OUT_MODE_MOTORON and \ref OUT_MODE_REGULATED, and its \ref RegMode must be set to \ref OUT_REGMODE_SPEED. */
-#define RegPValue       10 /*!< Proportional field. Contains the proportional constant for the PID motor controller. Read/write. 
-                                
-                                This field specifies the proportional term used in the internal proportional-integral-derivative 
-                                (PID) control algorithm.
-                                
-                                Set \ref UF_UPDATE_PID_VALUES to commit changes to RegPValue, RegIValue, and RegDValue simultaneously.
-*/
-#define RegIValue       11 /*!< Integral field. Contains the integral constant for the PID motor controller. Read/write. 
-                                
-                                This field specifies the integral term used in the internal proportional-integral-derivative 
-                                (PID) control algorithm.
-                                
-                                Set \ref UF_UPDATE_PID_VALUES to commit changes to RegPValue, RegIValue, and RegDValue simultaneously.
-*/
-#define RegDValue       12 /*!< Derivative field. Contains the derivative constant for the PID motor controller. Read/write. 
-                                
-                                This field specifies the derivative term used in the internal proportional-integral-derivative 
-                                (PID) control algorithm.
-                                
-                                Set \ref UF_UPDATE_PID_VALUES to commit changes to RegPValue, RegIValue, and RegDValue simultaneously.
-*/
-#define BlockTachoCount 13 /*!< NXT-G block tachometer count field. Contains the current NXT-G block tachometer count. Read only. 
-                                
-                                Return the block-relative position counter value for the specified port.
-                                
-                                Refer to the \ref UpdateFlags description for information about how to use block-relative 
-                                position counts.
-                                
-                                Set the \ref UF_UPDATE_RESET_BLOCK_COUNT flag in UpdateFlags to request that the firmware 
-                                reset the BlockTachoCount. 
-                                
-                                The sign of BlockTachoCount indicates the direction of rotation. Positive values indicate 
-                                forward rotation and negative values indicate reverse rotation. Forward and reverse depend on 
-                                the orientation of the motor. */
-#define RotationCount   14 /*!< Rotation counter field. Contains the current rotation count. Read only. 
-                                
-                                Return the program-relative position counter value for the specified port.
-                                
-                                Refer to the \ref UpdateFlags description for information about how to use program-relative 
-                                position counts.
-                                
-                                Set the \ref UF_UPDATE_RESET_ROTATION_COUNT flag in UpdateFlags to request that the firmware reset 
-                                the RotationCount. 
-                                
-                                The sign of RotationCount indicates the direction of rotation. Positive values indicate forward 
-                                rotation and negative values indicate reverse rotation. Forward and reverse depend on the 
-                                orientation of the motor. */
+/** Update flags field. Contains a combination of the update flag constants. Read/write.
+ *  Use \ref UF_UPDATE_MODE, \ref UF_UPDATE_SPEED, \ref UF_UPDATE_TACHO_LIMIT, and \ref UF_UPDATE_PID_VALUES
+ *  along with other fields to commit changes to the state of outputs. Set the appropriate
+ *  flags after setting one or more of the output fields in order for the changes to actually
+ *  go into affect. */
+#define UpdateFlags     0
+/** Mode field. Contains a combination of the output mode constants. Read/write.
+ *  The \ref OUT_MODE_MOTORON bit must be set in order for power to be applied to the motors.
+ *  Add \ref OUT_MODE_BRAKE to enable electronic braking. Braking means that the output voltage
+ *  is not allowed to float between active PWM pulses. It improves the accuracy of motor
+ *  output but uses more battery power.
+ *  To use motor regulation include \ref OUT_MODE_REGULATED in the OutputMode value. Use
+ *  \ref UF_UPDATE_MODE with \ref UpdateFlags to commit changes to this field. */
+#define OutputMode      1
+/** Power field. Contains the desired power level (-100 to 100). Read/write.
+ *  Specify the power level of the output. The absolute value of Power is a percentage of the
+ *  full power of the motor. The sign of Power controls the rotation direction. Positive values
+ *  tell the firmware to turn the motor forward, while negative values turn the motor backward.
+ *  Use \ref UF_UPDATE_SPEED with \ref UpdateFlags to commit changes to this field. */
+#define Power           2
+/** Actual speed field. Contains the actual power level (-100 to 100). Read only.
+ *  Return the percent of full power the firmware is applying to the output. This may vary from the
+ *  Power value when auto-regulation code in the firmware responds to a load on the output. */
+#define ActualSpeed     3
+/** Internal tachometer count field. Contains the current internal tachometer count. Read only.
+ *  Return the internal position counter value for the specified output. The internal count is reset
+ *  automatically when a new goal is set using the TachoLimit and the \ref UF_UPDATE_TACHO_LIMIT flag.
+ *  Set the \ref UF_UPDATE_RESET_COUNT flag in \ref UpdateFlags to reset TachoCount and cancel any \ref TachoLimit.
+ *  The sign of TachoCount indicates the motor rotation direction. */
+#define TachoCount      4
+/** Tachometer limit field. Contains the current tachometer limit. Read/write.
+ *  Specify the number of degrees the motor should rotate.
+ *  Use \ref UF_UPDATE_TACHO_LIMIT with the \ref UpdateFlags field to commit changes to the TachoLimit.
+ *  The value of this field is a relative distance from the current motor position at the moment when
+ *  the \ref UF_UPDATE_TACHO_LIMIT flag is processed. */
+#define TachoLimit      5
+/** Run state field. Contains one of the run state constants. Read/write.
+ *  Use this field to specify the running state of an output. Set the RunState to \ref OUT_RUNSTATE_RUNNING
+ *  to enable power to any output. Use \ref OUT_RUNSTATE_RAMPUP to enable automatic ramping to a new \ref Power
+ *  level greater than the current \ref Power level. Use \ref OUT_RUNSTATE_RAMPDOWN to enable automatic ramping
+ *  to a new \ref Power level less than the current \ref Power level.
+ *  Both the rampup and rampdown bits must be used in conjunction with appropriate \ref TachoLimit and \ref Power
+ *  values. In this case the firmware smoothly increases or decreases the actual power to the new \ref Power
+ *  level over the total number of degrees of rotation specified in \ref TachoLimit. */
+#define RunState        6
+/** Turn ratio field. Contains the current turn ratio. Only applicable when synchronizing multiple motors. Read/write.
+ *  Use this field to specify a proportional turning ratio. This field must be used in conjunction with other
+ *  field values: \ref OutputMode must include \ref OUT_MODE_MOTORON and \ref OUT_MODE_REGULATED, \ref RegMode must be set to
+ *  \ref OUT_REGMODE_SYNC, \ref RunState must not be \ref OUT_RUNSTATE_IDLE, and \ref Power must be non-zero.
+ *  There are only three valid combinations of left and right motors for use with TurnRatio: \ref OUT_AB, \ref OUT_BC,
+ *  and \ref OUT_AC. In each of these three options the first motor listed is considered to be the left motor and
+ *  the second motor is the right motor, regardless of the physical configuration of the robot.
+ *  Negative TurnRatio values shift power toward the left motor while positive values shift power toward the
+ *  right motor. An absolute value of 50 usually results in one motor stopping. An absolute value of 100 usually
+ *  results in two motors turning in opposite directions at equal power. */
+#define TurnRatio       7
+/** Regulation mode field. Contains one of the regulation mode constants. Read/write.
+ *  This field specifies the regulation mode to use with the specified port(s). It is ignored if
+ *  the \ref OUT_MODE_REGULATED bit is not set in the \ref OutputMode field. Unlike the \ref OutputMode field, RegMode is
+ *  not a bitfield. Only one RegMode value can be set at a time.
+ *  Speed regulation means that the firmware tries to maintain a certain speed based on the \ref Power setting. The
+ *  firmware adjusts the PWM duty cycle if the motor is affected by a physical load. This adjustment is
+ *  reflected by the value of the \ref ActualSpeed property. When using speed regulation, do not set Power to its
+ *  maximum value since the firmware cannot adjust to higher power levels in that situation.
+ *  Synchronization means the firmware tries to keep two motors in synch regardless of physical loads. Use
+ *  this mode to maintain a straight path for a mobile robot automatically. Also use this mode with the
+ *  \ref TurnRatio property to provide proportional turning.
+ *  Set \ref OUT_REGMODE_SYNC on at least two motor ports in order for synchronization to function. Setting
+ *  \ref OUT_REGMODE_SYNC on all three motor ports will result in only the first two (\ref OUT_A and \ref OUT_B) being
+ *  synchronized. */
+#define RegMode         8
+/** Overload field. Contains a boolean value which is TRUE if the motor is overloaded. Read only.
+ *  This field will have a value of 1 (true) if the firmware speed regulation cannot overcome a physical
+ *  load on the motor. In other words, the motor is turning more slowly than expected.
+ *  If the motor speed can be maintained in spite of loading then this field value is zero (false).
+ *  In order to use this field the motor must have a non-idle \ref RunState, an \ref OutputMode which includes
+ *  \ref OUT_MODE_MOTORON and \ref OUT_MODE_REGULATED, and its \ref RegMode must be set to \ref OUT_REGMODE_SPEED. */
+#define Overload        9
+/** Proportional field. Contains the proportional constant for the PID motor controller. Read/write.
+ *  This field specifies the proportional term used in the internal proportional-integral-derivative
+ *  (PID) control algorithm.
+ *  Set \ref UF_UPDATE_PID_VALUES to commit changes to RegPValue, RegIValue, and RegDValue simultaneously. */
+#define RegPValue       10
+/** Integral field. Contains the integral constant for the PID motor controller. Read/write.
+ *  This field specifies the integral term used in the internal proportional-integral-derivative
+ *  (PID) control algorithm.
+ *  Set \ref UF_UPDATE_PID_VALUES to commit changes to RegPValue, RegIValue, and RegDValue simultaneously. */
+#define RegIValue       11
+/** Derivative field. Contains the derivative constant for the PID motor controller. Read/write.
+ *  This field specifies the derivative term used in the internal proportional-integral-derivative
+ *  (PID) control algorithm.
+ *  Set \ref UF_UPDATE_PID_VALUES to commit changes to RegPValue, RegIValue, and RegDValue simultaneously. */
+#define RegDValue       12
+/** NXT-G block tachometer count field. Contains the current NXT-G block tachometer count. Read only.
+ *  Return the block-relative position counter value for the specified port.
+ *  Refer to the \ref UpdateFlags description for information about how to use block-relative
+ *  position counts.
+ *  Set the \ref UF_UPDATE_RESET_BLOCK_COUNT flag in UpdateFlags to request that the firmware
+ *  reset the BlockTachoCount.
+ *  The sign of BlockTachoCount indicates the direction of rotation. Positive values indicate
+ *  forward rotation and negative values indicate reverse rotation. Forward and reverse depend on
+ *  the orientation of the motor. */
+#define BlockTachoCount 13
+/** Rotation counter field. Contains the current rotation count. Read only.
+ *  Return the program-relative position counter value for the specified port.
+ *  Refer to the \ref UpdateFlags description for information about how to use program-relative
+ *  position counts.
+ *  Set the \ref UF_UPDATE_RESET_ROTATION_COUNT flag in UpdateFlags to request that the firmware reset
+ *  the RotationCount.
+ *  The sign of RotationCount indicates the direction of rotation. Positive values indicate forward
+ *  rotation and negative values indicate reverse rotation. Forward and reverse depend on the
+ *  orientation of the motor. */
+#define RotationCount   14
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define OutputOptions   15 /*!< Options field. Contains a combination of the output options constants. Read/write. 
-                                
-                                Set options for how the output module will act when a tachometer limit is reached. Option
-                                constants can be combined with bitwise OR.  Use OUT_OPTION_HOLDATLIMIT to have the output
-                                module hold the motor when it reaches the tachometer limit.  Use OUT_OPTION_RAMPDOWNTOLIMIT
-                                to have the output module ramp down the motor power as it approaches the tachometer limit 
-                                (not yet implemented). */
+/** Options field. Contains a combination of the output options constants. Read/write.
+ *  Set options for how the output module will act when a tachometer limit is reached. Option
+ *  constants can be combined with bitwise OR.  Use OUT_OPTION_HOLDATLIMIT to have the output
+ *  module hold the motor when it reaches the tachometer limit.  Use OUT_OPTION_RAMPDOWNTOLIMIT
+ *  to have the output module ramp down the motor power as it approaches the tachometer limit
+ *  (not yet implemented). */
+#define OutputOptions   15
 #endif
 /** @} */  // end of OutputFieldConstants group
 

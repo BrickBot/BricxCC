@@ -30,7 +30,7 @@ task main()
   while (true)
   {
     // Rotate the main view....
-    glAddToAngleY(1);
+    glAddToAngleY(2);
     // Setup for rendering...
     glBeginRender();
     glSet(GL_CULL_MODE, GL_CULL_NONE);
