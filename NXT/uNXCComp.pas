@@ -59,7 +59,7 @@ type
     procedure pop;
     procedure push;
     procedure SetStatementType(const Value: TStatementType);
-    procedure DoCompilerStatusChange(const Status: string);
+    procedure DoCompilerStatusChange(const Status: string; const bDone : boolean = False);
     procedure DoCommonFuncProcDecl(var bProtoExists: boolean;
       var Name: string; const tname: string; const tok, dt: char; bInline,
       bSafeCall: boolean);
@@ -551,100 +551,88 @@ var
 { Definition of Keywords and Token Types }
 
 const
-  NKW  = 33; //18;
-  NKW1 = 34; //19;
+  NKW  = 32; //18;
+  NKW1 = 33; //19;
 
 const
   KWlist: array[1..NKW] of string =
               ('if', 'else', 'while',
                'for', 'sub', 'void', 'task',
                'do', 'repeat', 'switch', 'asm', 'const',
-               'default', 'case', 'struct', 'typedef', 'inline', 'safecall',
-               'start', 'stop', 'priority',
-               'unsigned', 'long', 'short', 'int',
+               'default', 'case', 'typedef', 'inline', 'long', 'enum',
+               'short', 'int', 'unsigned',
                'char', 'bool', 'byte', 'mutex', 'float', 'string',
-               'enum', 'end');
+               'struct', 'safecall',
+               'start', 'stop', 'priority'
+               );
 
 const                                     // 'xileweRWve'
   KWcode: array[1..NKW1+1] of Char =
     (TOK_IDENTIFIER, TOK_IF, TOK_ELSE, TOK_WHILE,
      TOK_FOR, TOK_PROCEDURE, TOK_PROCEDURE, TOK_TASK,
      TOK_DO, TOK_REPEAT, TOK_SWITCH, TOK_ASM, TOK_CONST,
-     TOK_DEFAULT, TOK_CASE, TOK_STRUCT, TOK_TYPEDEF, TOK_INLINE, TOK_SAFECALL,
-     TOK_START, TOK_STOP, TOK_PRIORITY,
-     TOK_UNSIGNED, TOK_LONGDEF, TOK_SHORTDEF, TOK_SHORTDEF,
+     TOK_DEFAULT, TOK_CASE, TOK_TYPEDEF, TOK_INLINE, TOK_LONGDEF, TOK_ENUM,
+     TOK_SHORTDEF, TOK_SHORTDEF, TOK_UNSIGNED,
      TOK_CHARDEF, TOK_BYTEDEF, TOK_BYTEDEF, TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF,
-     TOK_ENUM, TOK_END,
+     TOK_STRUCT, TOK_SAFECALL,
+     TOK_START, TOK_STOP, TOK_PRIORITY,
      #0);
 
 const
-  API_BREAK    = 0;
-  API_CONTINUE = 1;
-  API_ONFWD    = 3;
-  API_ONREV    = 4;
-  API_ONFWDREG = 5;
-  API_ONREVREG = 6;
-  API_ONFWDSYNC = 7;
-  API_ONREVSYNC = 8;
-  API_COAST     = 9;
-  API_OFF       = 10;
-  API_ROTATEMOTOR = 11;
-  API_ROTATEMOTOREX = 12;
-  API_RETURN = 21;
-  API_ACQUIRE = 22;
-  API_RELEASE = 23;
-  API_PRECEDES = 24;
-  API_FOLLOWS  = 25;
-  API_EXITTO = 26;
-  API_SETINPUT = 27;
-  API_SETOUTPUT = 28;
-  API_STOP = 29;
-  API_GOTO = 30;
-  API_FLOAT = 31;
-  API_ONFWDEX    = 32;
-  API_ONREVEX    = 33;
-  API_ONFWDREGEX = 34;
-  API_ONREVREGEX = 35;
-  API_ONFWDSYNCEX = 36;
-  API_ONREVSYNCEX = 37;
-  API_COASTEX     = 38;
-  API_OFFEX       = 39;
-  API_ROTATEMOTORPID = 40;
-  API_ROTATEMOTOREXPID = 41;
-  API_RESETTACHOCOUNT      = 42;
-  API_RESETBLOCKTACHOCOUNT = 43;
-  API_RESETROTATIONCOUNT   = 44;
-  API_RESETALLTACHOCOUNTS  = 45;
-  API_ONFWDREGPID = 46;
-  API_ONREVREGPID = 47;
-  API_ONFWDSYNCPID = 48;
-  API_ONREVSYNCPID = 49;
-  API_ONFWDREGEXPID = 50;
-  API_ONREVREGEXPID = 51;
-  API_ONFWDSYNCEXPID = 52;
-  API_ONREVSYNCEXPID = 53;
-  // moved to header file as inline functions
-  API_WAIT =  2;
-  API_SETSENSORTYPE = 13;
-  API_SETSENSORMODE = 14;
-  API_CLEARSENSOR = 15;
-  API_SETSENSORTOUCH = 16;
-  API_SETSENSORLIGHT = 17;
-  API_SETSENSORSOUND = 18;
-  API_SETSENSORLOWSPEED = 19;
-  API_RESETSENSOR = 20;
+  API_BREAK         = 0;
+  API_CONTINUE      = 1;
+  API_RETURN        = 2;
+  API_GOTO          = 3;
+  API_ONFWD         = 4;
+  API_ONREV         = 5;
+  API_ONFWDREG      = 6;
+  API_ONREVREG      = 7;
+  API_ONFWDSYNC     = 8;
+  API_ONREVSYNC     = 9;
+  API_COAST         = 10;
+  API_OFF           = 11;
+  API_ROTATEMOTOR   = 12;
+  API_ROTATEMOTOREX = 13;
+  API_ACQUIRE     = 14;
+  API_RELEASE     = 15;
+  API_PRECEDES    = 16;
+  API_FOLLOWS     = 17;
+  API_EXITTO      = 18;
+  API_SETINPUT    = 19;
+  API_SETOUTPUT   = 20;
+  API_STOP        = 21;
+  API_FLOAT       = 22;
+  API_ONFWDEX     = 23;
+  API_ONREVEX     = 24;
+  API_ONFWDREGEX  = 25;
+  API_ONREVREGEX  = 26;
+  API_ONFWDSYNCEX = 27;
+  API_ONREVSYNCEX = 28;
+  API_COASTEX     = 29;
+  API_OFFEX       = 30;
+  API_ROTATEMOTORPID   = 31;
+  API_ROTATEMOTOREXPID = 32;
+  API_RESETTACHOCOUNT      = 33;
+  API_RESETBLOCKTACHOCOUNT = 34;
+  API_RESETROTATIONCOUNT   = 35;
+  API_RESETALLTACHOCOUNTS  = 36;
+  API_ONFWDREGPID    = 37;
+  API_ONREVREGPID    = 38;
+  API_ONFWDSYNCPID   = 39;
+  API_ONREVSYNCPID   = 40;
+  API_ONFWDREGEXPID  = 41;
+  API_ONREVREGEXPID  = 42;
+  API_ONFWDSYNCEXPID = 43;
+  API_ONREVSYNCEXPID = 44;
 
-  APICount = 54;
+  APICount = 4+41;
   APIList : array[0..APICount-1] of string = (
-    'break', 'continue', '__Wait__',
+    'break', 'continue', 'return', 'goto',
     'OnFwd', 'OnRev', 'OnFwdReg', 'OnRevReg',
     'OnFwdSync', 'OnRevSync', 'Coast', 'Off',
     'RotateMotor', 'RotateMotorEx',
-    '__SetSensorType__', '__SetSensorMode__', '__ClearSensor__',
-    '__SetSensorTouch__', '__SetSensorLight__', '__SetSensorSound__', '__SetSensorLowspeed__',
-    '__ResetSensor__',
-    'return', 'Acquire', 'Release', 'Precedes', 'Follows',
-    'ExitTo', 'SetInput', 'SetOutput', 'Stop', 'goto', 'Float',
+    'Acquire', 'Release', 'Precedes', 'Follows',
+    'ExitTo', 'SetInput', 'SetOutput', 'Stop', 'Float',
     'OnFwdEx', 'OnRevEx', 'OnFwdRegEx', 'OnRevRegEx',
     'OnFwdSyncEx', 'OnRevSyncEx', 'CoastEx', 'OffEx',
     'RotateMotorPID', 'RotateMotorExPID',
@@ -9664,10 +9652,10 @@ begin
   AbortMsg(sMainTaskNotFound);
 end;
 
-procedure TNXCComp.DoCompilerStatusChange(const Status: string);
+procedure TNXCComp.DoCompilerStatusChange(const Status: string; const bDone : boolean);
 begin
   if Assigned(fOnCompilerStatusChange) then
-    fOnCompilerStatusChange(Self, Status);
+    fOnCompilerStatusChange(Self, Status, bDone);
 end;
 
 function TNXCComp.AmInlining: boolean;

@@ -6,6 +6,8 @@ object frmCompStatus: TfrmCompStatus
   BorderStyle = bsSizeToolWin
   Caption = 'Compiler Status'
   Color = clBtnFace
+  Constraints.MinHeight = 198
+  Constraints.MinWidth = 346
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
   Font.Height = -11
@@ -17,8 +19,8 @@ object frmCompStatus: TfrmCompStatus
   OnCreate = FormCreate
   OnShow = FormShow
   DesignSize = (
-    354
-    202)
+    346
+    198)
   PixelsPerInch = 96
   TextHeight = 13
   object edtMemo: TMemo
@@ -39,6 +41,7 @@ object frmCompStatus: TfrmCompStatus
     Anchors = [akRight, akBottom]
     Caption = 'Close'
     Default = True
+    Enabled = False
     ModalResult = 1
     TabOrder = 1
     OnClick = btnCloseClick
