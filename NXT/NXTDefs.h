@@ -8748,15 +8748,15 @@ ends
          mod      __GL_angleZ,                __GL_angleZ, 360
 
 #define __glSin32768(_glAngle, _glResult)                                                      \
-         mov      __GL_angle,            _glAngle                                              \
-         mod      __GL_angle,            __GL_angle, 360                                       \
-         index    _glResult,             __GL_SIN_TABLE, __GL_angle
+         mov      __GL_angle,                 _glAngle                                         \
+         mod      __GL_angle,                 __GL_angle, 360                                  \
+         index    _glResult,                  __GL_SIN_TABLE, __GL_angle
 
 #define __glCos32768(_glAngle, _glResult)                                                      \
-         mov      __GL_angle,            _glAngle                                              \
-         add      __GL_angle,            __GL_angle, 90                                        \
-         mod      __GL_angle,            __GL_angle, 360                                       \
-         index    _glResult,             __GL_SIN_TABLE, __GL_angle
+         mov      __GL_angle,                 _glAngle                                         \
+         add      __GL_angle,                 __GL_angle, 90                                   \
+         mod      __GL_angle,                 __GL_angle, 360                                  \
+         index    _glResult,                  __GL_SIN_TABLE, __GL_angle
 
 #define __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)                               \
          mov      __GL_mode                   _glMode                                          \
@@ -8786,13 +8786,13 @@ ends
          call     __GL_glRangeCheck
 
 ; Data sizes...
-#define __GL_MAX_VERTICES       128
-#define __GL_MAX_LINES          128
-#define __GL_MAX_POLYGONS        64
-#define __GL_MAX_OBJECT_ACTIONS  16
-#define __GL_MAX_OBJECTS          8
-#define __GL_MAX_PV_DATA        128
-#define __GL_MAX_PL_DATA        128
+#define __GL_MAX_VERTICES       256
+#define __GL_MAX_LINES          256
+#define __GL_MAX_POLYGONS       128
+#define __GL_MAX_OBJECT_ACTIONS  32
+#define __GL_MAX_OBJECTS         16
+#define __GL_MAX_PV_DATA        256
+#define __GL_MAX_PL_DATA        256
 
 dseg segment
   ; Sine table constants...
@@ -8841,14 +8841,14 @@ dseg segment
 
   ; Vertex data...
   TGLVertex struct
-    x                sdword
-    y                sdword
-    z                sdword
+    x                sword ;sdword
+    y                sword ;sdword
+    z                sword ;sdword
   TGLVertex ends
 
   TGLScreenVertex struct
-    x                sdword
-    y                sdword
+    x                sword ;sdword
+    y                sword ;sdword
   TGLScreenVertex ends
 
   TGLRotVertex struct
@@ -8902,11 +8902,11 @@ dseg segment
   ; Object action...
   TGLObjectAction struct
     type             byte
-    value            sdword
+    value            sword ;sdword
 ;    fsin             float
 ;    fcos             float
-    lsin             sdword
-    lcos             sdword
+    lsin             sword ;sdword
+    lcos             sword ;sdword
   TGLObjectAction ends
 
   __GL_objectAction      TGLObjectAction
@@ -8946,21 +8946,21 @@ dseg segment
   __GL_l                 word
 
   ; Angles...
-  __GL_angleX            sdword
-  __GL_angleY            sdword
-  __GL_angleZ            sdword
-  
-  ; Save angles...
-  __GL_saveAngleX        sdword
-  __GL_saveAngleY        sdword
-  __GL_saveAngleZ        sdword
+  __GL_angleX            sword ;sdword
+  __GL_angleY            sword ;sdword
+  __GL_angleZ            sword ;sdword
 
-  __GL_sinX              sdword
-  __GL_cosX              sdword
-  __GL_sinY              sdword
-  __GL_cosY              sdword
-  __GL_sinZ              sdword
-  __GL_cosZ              sdword
+  ; Save angles...
+  __GL_saveAngleX        sword ;sdword
+  __GL_saveAngleY        sword ;sdword
+  __GL_saveAngleZ        sword ;sdword
+
+  __GL_sinX              sword ;sdword
+  __GL_cosX              sword ;sdword
+  __GL_sinY              sword ;sdword
+  __GL_cosY              sword ;sdword
+  __GL_sinZ              sword ;sdword
+  __GL_cosZ              sword ;sdword
 ;  __GL_sinX              float
 ;  __GL_cosX              float
 ;  __GL_sinY              float
@@ -8991,7 +8991,7 @@ dseg segment
   __GL_x1                sdword
   __GL_y1                sdword
   __GL_z1                sdword
-  
+
   __GL_x2                sdword
   __GL_y2                sdword
   __GL_z2                sdword
@@ -9012,8 +9012,8 @@ dseg segment
   
   __GL_action            byte
   __GL_index             word
-  __GL_value             sdword
-  __GL_type              sdword
+  __GL_value             sword ;sdword
+  __GL_type              sword ;sdword
   
   ; rangecheck data...
   __GL_glRangeValue      word
@@ -9022,7 +9022,7 @@ dseg segment
 
   __GL_glErrorState      byte FALSE
   __GL_glErrorMsg        byte[]
-  
+
   __GL_glLinesClipped    byte
 dseg ends
 
@@ -9542,20 +9542,22 @@ __GL_nbc_gl_draw_lines:
   ; _vertex1 = _vertexData[_line.lastVertex]
   index    __GL_vertex2,                __GL_vertexData, __GL_line.lastVertex
   ; very crude clipping...
-  add      __GL_glLinesClipped,         __GL_glLinesClipped, 1
-  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex1.screen.x,  0
-  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex2.screen.x,  0
-  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex1.screen.y,  0
-  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex2.screen.y,  0
-  brcmp    GT,                          __GL_nbc_gl_line_done, __GL_vertex1.screen.x, 99
-  brcmp    GT,                          __GL_nbc_gl_line_done, __GL_vertex2.screen.x, 99
-  brcmp    GT,                          __GL_nbc_gl_line_done, __GL_vertex1.screen.y, 63
-  brcmp    GT,                          __GL_nbc_gl_line_done, __GL_vertex2.screen.y, 63
-  sub      __GL_glLinesClipped,         __GL_glLinesClipped, 1
-  mov      __GL_glDrawLine.StartLoc.X,  __GL_vertex1.screen.x
-  mov      __GL_glDrawLine.StartLoc.Y,  __GL_vertex1.screen.y
-  mov      __GL_glDrawLine.EndLoc.X,    __GL_vertex2.screen.x
-  mov      __GL_glDrawLine.EndLoc.Y,    __GL_vertex2.screen.y
+//  add      __GL_glLinesClipped,         __GL_glLinesClipped, 1
+//  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex1.screen.x,  0
+//  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex2.screen.x,  0
+//  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex1.screen.y,  0
+//  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex2.screen.y,  0
+//  brcmp    GT,                          __GL_nbc_gl_line_done, __GL_vertex1.screen.x, 99
+//  brcmp    GT,                          __GL_nbc_gl_line_done, __GL_vertex2.screen.x, 99
+//  brcmp    GT,                          __GL_nbc_gl_line_done, __GL_vertex1.screen.y, 63
+//  brcmp    GT,                          __GL_nbc_gl_line_done, __GL_vertex2.screen.y, 63
+//  sub      __GL_glLinesClipped,         __GL_glLinesClipped, 1
+//  mov      __GL_glDrawLine.StartLoc.X,  __GL_vertex1.screen.x
+//  mov      __GL_glDrawLine.StartLoc.Y,  __GL_vertex1.screen.y
+//  mov      __GL_glDrawLine.EndLoc.X,    __GL_vertex2.screen.x
+//  mov      __GL_glDrawLine.EndLoc.Y,    __GL_vertex2.screen.y
+  mov      __GL_glDrawLine.StartLoc,    __GL_vertex1.screen
+  mov      __GL_glDrawLine.EndLoc,      __GL_vertex2.screen
   syscall  DrawLine,                    __GL_glDrawLine
 __GL_nbc_gl_line_done:
   add      __GL_j,                      __GL_j, 1
@@ -9664,13 +9666,15 @@ __GL_nbc_gl_render_lines:
   ; _line = _lineData[_k]
   index    __GL_line,                   __GL_lineData, __GL_k
   ; _vertex1 = _vertexData[_line.firstVertex]
+  ; _vertex2 = _vertexData[_line.lastVertex]
   index    __GL_vertex1,                __GL_vertexData, __GL_line.firstVertex
-  ; _vertex1 = _vertexData[_line.lastVertex]
   index    __GL_vertex2,                __GL_vertexData, __GL_line.lastVertex
-  mov      __GL_glDrawLine.StartLoc.X,  __GL_vertex1.screen.x
-  mov      __GL_glDrawLine.StartLoc.Y,  __GL_vertex1.screen.y
-  mov      __GL_glDrawLine.EndLoc.X,    __GL_vertex2.screen.x
-  mov      __GL_glDrawLine.EndLoc.Y,    __GL_vertex2.screen.y
+  mov      __GL_glDrawLine.StartLoc,    __GL_vertex1.screen
+  mov      __GL_glDrawLine.EndLoc,      __GL_vertex2.screen
+//  mov      __GL_glDrawLine.StartLoc.X,  __GL_vertex1.screen.x
+//  mov      __GL_glDrawLine.StartLoc.Y,  __GL_vertex1.screen.y
+//  mov      __GL_glDrawLine.EndLoc.X,    __GL_vertex2.screen.x
+//  mov      __GL_glDrawLine.EndLoc.Y,    __GL_vertex2.screen.y
   syscall  DrawLine,                    __GL_glDrawLine
 __GL_nbc_gl_render_lines_done:
   add      __GL_j,                      __GL_j, 1
@@ -9686,8 +9690,9 @@ __GL_nbc_gl_render_points:
   ; _vertex0 = _vertexData[_pvData[j]]
   index    __GL_vertexOffset,           __GL_pvData, __GL_j
   index    __GL_vertex0,                __GL_vertexData, __GL_vertexOffset
-  mov      __GL_glDrawPoint.Location.X, __GL_vertex0.screen.x
-  mov      __GL_glDrawPoint.Location.Y, __GL_vertex0.screen.y
+  mov      __GL_glDrawPoint.Location,   __GL_vertex0.screen
+//  mov      __GL_glDrawPoint.Location.X, __GL_vertex0.screen.x
+//  mov      __GL_glDrawPoint.Location.Y, __GL_vertex0.screen.y
   syscall  DrawPoint,                   __GL_glDrawPoint
   add      __GL_j,                      __GL_j, 1
   brcmp    LT,                          __GL_nbc_gl_render_points, __GL_j, __GL_polygon.lastVertex
@@ -9703,8 +9708,9 @@ __GL_nbc_gl_render_circles:
   ; _vertex0 = _vertexData[_pvData[j]]
   index    __GL_vertexOffset,           __GL_pvData, __GL_j
   index    __GL_vertex0,                __GL_vertexData, __GL_vertexOffset
-  mov      __GL_glDrawCircle.Center.X,  __GL_vertex0.screen.x
-  mov      __GL_glDrawCircle.Center.Y,  __GL_vertex0.screen.y
+  mov      __GL_glDrawCircle.Center,    __GL_vertex0.screen
+//  mov      __GL_glDrawCircle.Center.X,  __GL_vertex0.screen.x
+//  mov      __GL_glDrawCircle.Center.Y,  __GL_vertex0.screen.y
   syscall  DrawCircle,                  __GL_glDrawCircle
   add      __GL_j,                      __GL_j, 1
   brcmp    LT,                          __GL_nbc_gl_render_circles, __GL_j, __GL_polygon.lastVertex

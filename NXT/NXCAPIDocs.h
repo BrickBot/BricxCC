@@ -30,12 +30,7 @@
 
 /** @mainpage NXC Programmer's Guide
  * 
- * <h1>Not eXactly C</h1>
- * <h1>(NXC)</h1>
- * <h1>Programmer's Guide</h1>
- * 
  * <center>
- * <h2>Version 1.2.1 r1</h2>
  * <h2>April 30, 2010</h2>
  * <h2>by John Hansen </h2>
  * </center>
@@ -52,7 +47,7 @@
  * 
  * NXC is a case-sensitive language, just like C and C++, which means the identifier "xYz" is 
  * not the same identifier as "Xyz". Similarly, the "if" statement begins with the keyword "if" 
- * but "iF", "If", or "IF" are all just valid identifiers – not keywords.
+ * but "iF", "If", or "IF" are all just valid identifiers - not keywords.
  * 
  * - @subpage lexrules
  * - @subpage progstruct
@@ -162,7 +157,7 @@
  * The NXC preprocessor implements the following standard preprocessor directives: 
  * \#include, \#define, \#ifdef, \#ifndef, \#endif, \#if, \#elif, \#undef, \#\#, \#line, 
  * \#error, and \#pragma. It also supports two non-standard directives: \#download and 
- * \#import. Its implementation is close to a standard C preprocessor’s, so most preprocessor 
+ * \#import. Its implementation is close to a standard C preprocessor's, so most preprocessor 
  * directives should work as C programmers expect in NXC. Any significant deviations are 
  * explained below.
  * 
@@ -289,9 +284,7 @@
  * A number of tokens are reserved for use in the NXC language itself. These are called keywords 
  * and may not be used as identifiers. A complete list of keywords appears below:
  *  
- * __FLTRETVAL__, __RETURN__, __RETURNF__, __RETURNS__, __RETURNU__, __RETVAL__, __STRRETVAL__,
- * __STRBUFFER__, __STRTMPBUFFER__, __TMPBYTE__, __TMPFLOAT__, __TMPLONG__, __TMPULONG__, __TMPWORD__,
- * asm, bool, break, byte, case, char, const, continue, default, do, else, false, float, for,
+ * asm, bool, break, byte, case, char, const, continue, default, do, else, enum, false, float, for,
  * goto, if, inline, int, long, mutex, priority, repeat, return, safecall, short, start, stop, 
  * string, struct, sub, switch, task, true, typedef, unsigned, until, void, while
  * 
@@ -704,7 +697,7 @@
  * <tr><td>-=</td><td>Subtract expression from variable</td></tr>
  * <tr><td>*=</td><td>Multiple variable by expression</td></tr>
  * <tr><td>/=</td><td>Divide variable by expression</td></tr>
- * <tr><td>%=</td><td>Set variable to remainder after dividing by expression</td></tr>
+ * <tr><td>\%=</td><td>Set variable to remainder after dividing by expression</td></tr>
  * <tr><td>&amp;=</td><td>Bitwise AND expression into variable</td></tr>
  * <tr><td>|=</td><td>Bitwise OR expression into variable</td></tr>
  * <tr><td>^=</td><td>Bitwise exclusive OR into variable</td></tr>
@@ -876,7 +869,7 @@
  * }
  * \endcode
  * The statement simply emits the body of the statement as NeXT Byte Codes (NBC) code 
- * and passes it directly to the NBC compiler’s backend. The asm statement can often be 
+ * and passes it directly to the NBC compiler's backend. The asm statement can often be 
  * used to optimize code so that it executes as fast as possible on the NXT firmware.  
  * The following example shows an asm block containing variable declarations, labels, 
  * and basic NBC statements as well as comments.
@@ -968,7 +961,7 @@
  * stop task_name;
  * \endcode
  * You can adjust the priority of a task using the priority statement. Setting task priorities 
- * also requires the enhanced NBC/NXC firmware. A task’s priority is simply the number of 
+ * also requires the enhanced NBC/NXC firmware. A task's priority is simply the number of 
  * operations it will try to execute before yielding to another task. This usually is 20 operations.
  * \code
  * priority task_name, new_priority;
@@ -980,7 +973,7 @@
  * continue;
  * \endcode
  * The break statement is also a critical component of most switch statements. It prevents code 
- * in subsequent code sections from being executed, which is usually a programmer’s intent, by 
+ * in subsequent code sections from being executed, which is usually a programmer's intent, by 
  * immediately exiting the switch statement. Missing break statements in a switch are a frequent 
  * source of hard-to-find bugs.
  * 
@@ -1005,7 +998,7 @@
  * Comparing two expressions forms a condition. There are also two constant conditions - true and 
  * false - that always evaluate to true or false respectively. A condition may be negated with the 
  * logical negation operator, or two conditions combined with the logical AND and logical OR operators. 
- * Like most modern computer languages, NXC supports something called “short-circuit” evaluation of 
+ * Like most modern computer languages, NXC supports something called "short-circuit" evaluation of 
  * conditions. This means that if the entire value of the conditional can be logically determined by 
  * only evaluating the left hand term of the condition, then the right hand term will not be evaluated.
  * 
@@ -1062,7 +1055,7 @@
  * #define foo(x)  do { bar(x); \\
  *                      baz(x); } while(false)
  * \endcode
- * The \#undef directive may be used to remove a macro’s definition.
+ * The \#undef directive may be used to remove a macro's definition.
  * 
  */
 
@@ -1130,8 +1123,8 @@
  * \endcode
  * By default, the format string is %s which means that the name of the file without any 
  * file extension will be the name of the variable. For instance, if the format string 
- * “data” were not specified in the example above, then the name of the byte array variable 
- * would be “myfile”. In this case the name of the byte array variable will be “data”.
+ * "data" were not specified in the example above, then the name of the byte array variable 
+ * would be "myfile". In this case the name of the byte array variable will be "data".
  * 
  * The \#import directive is often used in conjunction with the \ref GraphicArrayOut and 
  * \ref GraphicArrayOutEx API functions.
@@ -1140,7 +1133,7 @@
 
 /** @page downld #download
  * 
- * The \#download directive works in conjunction with the compiler’s built-in download 
+ * The \#download directive works in conjunction with the compiler's built-in download 
  * capability. It lets you tell the compiler to download a specified auxiliary file in 
  * addition to the .rxe file produced from your source code. If the file extension matches 
  * a type of source code that the compiler knows how to compile (such as .rs or .nbc) then 
