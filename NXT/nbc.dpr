@@ -92,7 +92,7 @@ end;
 type
   TStatusChangeHandler = class
   public
-    procedure HandleCompilerStatusChange(Sender : TObject; const StatusMsg : string);
+    procedure HandleCompilerStatusChange(Sender : TObject; const StatusMsg : string; const bDone : boolean);
   end;
 
 var
@@ -123,7 +123,7 @@ end;
 { TStatusChangeHandler }
 
 procedure TStatusChangeHandler.HandleCompilerStatusChange(Sender: TObject;
-  const StatusMsg: string);
+  const StatusMsg: string; const bDone : boolean);
 var
   msg : string;
 begin
