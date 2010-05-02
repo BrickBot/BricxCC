@@ -25,7 +25,7 @@ uses
   uNBCCommon;
 
 type
-  TCompilerStatusChangeEvent = procedure(Sender : TObject; const StatusMsg : string) of object;
+  TCompilerStatusChangeEvent = procedure(Sender : TObject; const StatusMsg : string; const bDone : boolean) of object;
 
   NXTInstruction = record
     Encoding : TOpCode;
@@ -610,7 +610,7 @@ type
     fIgnoreDupDefs : boolean;
     fSpecialFunctions : TObjectList;
     fIgnoreLines : boolean;
-    procedure DoCompilerStatusChange(const Status : string);
+    procedure DoCompilerStatusChange(const Status : string; const bDone : boolean = False);
     function  GetVersion: byte;
     procedure SetVersion(const Value: byte);
     function  GetFormat: string;
@@ -4320,7 +4320,7 @@ begin
       SaveToStrings(CompilerOutput);
     end;
   end;
-  DoCompilerStatusChange(sNBCFinished);
+  DoCompilerStatusChange(sNBCFinished, True);
 end;
 
 function TRXEProgram.GetVersion: byte;
@@ -7085,10 +7085,10 @@ begin
   Codespace.SaveToStrings(aStrings);
 end;
 
-procedure TRXEProgram.DoCompilerStatusChange(const Status: string);
+procedure TRXEProgram.DoCompilerStatusChange(const Status: string; const bDone : boolean);
 begin
   if Assigned(fOnCompilerStatusChange) then
-    fOnCompilerStatusChange(Self, Status);
+    fOnCompilerStatusChange(Self, Status, bDone);
 end;
 
 function TRXEProgram.ReplaceSpecialStringCharacters(const line: string): string;

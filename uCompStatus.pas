@@ -36,11 +36,14 @@ type
     procedure btnCloseClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
+    fFinished: boolean;
+    procedure SetFinished(const Value: boolean);
     { Private declarations }
   public
     { Public declarations }
     procedure Clear;
     procedure AddMessage(const msg : string);
+    property Finished : boolean read fFinished write SetFinished;
   end;
 
 var
@@ -57,6 +60,7 @@ uses
 
 procedure TfrmCompStatus.FormShow(Sender: TObject);
 begin
+  Finished := False;
   Clear;
 end;
 
@@ -78,6 +82,12 @@ end;
 procedure TfrmCompStatus.FormCreate(Sender: TObject);
 begin
 // load format settings from OS
+end;
+
+procedure TfrmCompStatus.SetFinished(const Value: boolean);
+begin
+  fFinished := Value;
+  btnClose.Enabled := Finished;
 end;
 
 {$IFDEF FPC}

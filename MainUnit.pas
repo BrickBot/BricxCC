@@ -693,7 +693,7 @@ type
     procedure HelpQuit;
   public
     { Public declarations }
-    procedure HandleOnCompilerStatusChange(Sender: TObject; const StatusMsg: string);
+    procedure HandleOnCompilerStatusChange(Sender: TObject; const StatusMsg: string; const bDone : boolean);
     procedure DoDisplayErrors(aShow : boolean);
     procedure DoHideErrors;
     procedure ExecuteTransferItem(TI: TTransferItem);
@@ -1660,9 +1660,11 @@ begin
 end;
 
 procedure TMainForm.HandleOnCompilerStatusChange(Sender: TObject;
-  const StatusMsg: string);
+  const StatusMsg: string; const bDone : boolean);
 begin
   frmCompStatus.AddMessage(StatusMsg);
+  if bDone then
+    frmCompStatus.Finished := True;
 end;
 
 procedure TMainForm.DoDisplayErrors(aShow : boolean);

@@ -96,7 +96,7 @@ type
     function Execute : integer;
     procedure Decompile;
     class procedure DumpAPI(const idx : integer);
-    procedure HandleOnCompilerStatusChange(Sender : TObject; const StatusMsg : string);
+    procedure HandleOnCompilerStatusChange(Sender : TObject; const StatusMsg : string; const bDone : boolean);
     property CommandLine : string read fCommandLine write SetCommandLine;
     property InputFilename : string read fFilename write fFilename;
     property IgnoreSystemFile : boolean read fIgnoreSystemFile write fIgnoreSystemFile;
@@ -585,7 +585,7 @@ begin
                   else
                   begin
                     Result := 1;
-                    HandleOnCompilerStatusChange(Self, sNBCCompilationFailed);
+                    HandleOnCompilerStatusChange(Self, sNBCCompilationFailed, True);
                   end;
                 finally
                   sOut.Free;
@@ -601,7 +601,7 @@ begin
           else
           begin
             Result := 1;
-            HandleOnCompilerStatusChange(Self, sNXCCompilationFailed);
+            HandleOnCompilerStatusChange(Self, sNXCCompilationFailed, True);
           end;
         end;
       finally
@@ -722,10 +722,10 @@ begin
 end;
 
 procedure TNBCCompiler.HandleOnCompilerStatusChange(Sender: TObject;
-  const StatusMsg: string);
+  const StatusMsg: string; const bDone : boolean);
 begin
   if Assigned(fOnCompilerStatusChange) then
-    fOnCompilerStatusChange(Sender, StatusMsg);
+    fOnCompilerStatusChange(Sender, StatusMsg, bDone);
 end;
 
 {$IFDEF CAN_DOWNLOAD}
