@@ -38,6 +38,15 @@
 #define IDH_Macros 9
 #define IDH_Compile 10
 #define IDH_Preferences 11
+#define IDH_Preferences_General 110
+#define IDH_Preferences_Editor 120
+#define IDH_Preferences_Compiler 130
+#define IDH_Preferences_API 140
+#define IDH_Preferences_Startup 150
+#define IDH_Preferences_Templates 160
+#define IDH_Preferences_Macros 170
+#define IDH_Preferences_Color 180
+#define IDH_Preferences_Options 190
 #define IDH_PANEL3_btnHelp 11001
 #define IDH_PANEL3_btnDefault 11002
 #define IDH_PANEL3_btnOK 11003
