@@ -140,14 +140,14 @@ begin
   begin
     Name := 'lmiEditCopy';
     Caption := sCopy;
-    ShortCut := 16451;
+    ShortCut := 16451; // Ctrl+C
     OnClick := lmiEditCopyClick;
   end;
   with lmiEditSelectAll do
   begin
     Name := 'lmiEditSelectAll';
     Caption := sSelectAll;
-    ShortCut := 16449;
+    ShortCut := 16449; // Ctrl+A
     OnClick := lmiEditSelectAllClick;
   end;
   with N1 do
@@ -159,27 +159,28 @@ begin
   begin
     Name := 'mniCodeFind';
     Caption := sFind + '...';
-    ShortCut := 16454;
+    ShortCut := 16454; // Ctrl+F
     OnClick := mniCodeFindClick;
   end;
   with mniCodeFindNext do
   begin
     Name := 'mniCodeFindNext';
     Caption := sFindNext;
-    ShortCut := 114;
+    ShortCut := 114; // F3
     OnClick := mniCodeFindNextClick;
   end;
   with mniCodeFindPrev do
   begin
     Name := 'mniCodeFindPrev';
     Caption := sFindPrevious;
-    ShortCut := 8306;
+    ShortCut := 8306; // Shift+F3
     OnClick := mniCodeFindPrevClick;
   end;
   with mniCodeGotoLine do
   begin
     Name := 'mniCodeGotoLine';
     Caption := sGotoLine;
+    ShortCut := 16455; // Ctrl+G
     OnClick := mniGotoLineClick;
   end;
   with N2 do
