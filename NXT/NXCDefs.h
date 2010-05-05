@@ -14793,43 +14793,6 @@ inline void SysRandomNumber(RandomNumberType & args);
 #endif
 
 /**
- * Convert string to float.
- * Parses the string str interpreting its content as a floating point number
- * and returns its value as a float.
- *
- * The function first discards as many whitespace characters as necessary until
- * the first non-whitespace character is found. Then, starting from this
- * character, takes as many characters as possible that are valid following a
- * syntax resembling that of floating point literals, and interprets them as a
- * numerical value. The rest of the string after the last valid character is
- * ignored and has no effect on the behavior of this function.
- *
- * A valid floating point number for atof is formed by a succession of:
- * - An optional plus or minus sign
- * - A sequence of digits, optionally containing a decimal-point character
- * - An optional exponent part, which itself consists on an 'e' or 'E'
- * character followed by an optional sign and a sequence of digits.
- *
- * If the first sequence of non-whitespace characters in str does not form a
- * valid floating-point number as just defined, or if no such sequence exists
- * because either str is empty or contains only whitespace characters, no
- * conversion is performed.
- *
- * \param str String beginning with the representation of a floating-point number.
- * \return On success, the function returns the converted floating point number
- * as a float value. If no valid conversion could be performed a zero value
- * (0.0) is returned.
- */
-inline float atof(const string str) {
-  float result;
-  asm { strtonum result, __TMPWORD__, str, NA, NA }
-  return result;
-}
-/** \example ex_atof.nxc
- * This is an example of how to use the \ref atof function.
- */
-
-/**
  * Convert string to integer.
  * Parses the string str interpreting its content as an integral number,
  * which is returned as an int value.
@@ -14900,6 +14863,43 @@ inline long labs(long n) { return abs(n); }
  */
 
 #if __FIRMWARE_VERSION > 107
+/**
+ * Convert string to float.
+ * Parses the string str interpreting its content as a floating point number
+ * and returns its value as a float.
+ *
+ * The function first discards as many whitespace characters as necessary until
+ * the first non-whitespace character is found. Then, starting from this
+ * character, takes as many characters as possible that are valid following a
+ * syntax resembling that of floating point literals, and interprets them as a
+ * numerical value. The rest of the string after the last valid character is
+ * ignored and has no effect on the behavior of this function.
+ *
+ * A valid floating point number for atof is formed by a succession of:
+ * - An optional plus or minus sign
+ * - A sequence of digits, optionally containing a decimal-point character
+ * - An optional exponent part, which itself consists on an 'e' or 'E'
+ * character followed by an optional sign and a sequence of digits.
+ *
+ * If the first sequence of non-whitespace characters in str does not form a
+ * valid floating-point number as just defined, or if no such sequence exists
+ * because either str is empty or contains only whitespace characters, no
+ * conversion is performed.
+ *
+ * \param str String beginning with the representation of a floating-point number.
+ * \return On success, the function returns the converted floating point number
+ * as a float value. If no valid conversion could be performed a zero value
+ * (0.0) is returned.
+ */
+inline float atof(const string str) {
+  float result;
+  asm { strtonum result, __TMPWORD__, str, NA, NA }
+  return result;
+}
+/** \example ex_atof.nxc
+ * This is an example of how to use the \ref atof function.
+ */
+
 /**
  * Convert string to float.
  * Parses the string str interpreting its content as a floating point number
