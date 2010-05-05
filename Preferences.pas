@@ -443,6 +443,7 @@ type
     SynPasSyn: TSynPasSyn;
     SynNBCSyn: TSynNBCSyn;
     SynCSSyn: TSynCSSyn;
+    procedure SetHelpContext;
     procedure UpdateEditorExperts;
     procedure UpdateCheckState;
     function GetCustomHighlighter(index: Integer): TSynCustomHighlighter;
@@ -2429,6 +2430,7 @@ end;
 
 procedure TPrefForm.FormShow(Sender: TObject);
 begin
+  SetHelpContext;
   NewTemplatesList.Font.Name := FontName;
   NewTemplatesList.Font.Size := FontSize;
   SynEditColors.Font.Name := FontName;
@@ -3053,6 +3055,7 @@ end;
 
 procedure TPrefForm.pagPrefsChange(Sender: TObject);
 begin
+  SetHelpContext;
   if pagPrefs.ActivePage = shtAPI then
     UpdateAPIButtonState;
 end;
@@ -4194,6 +4197,23 @@ begin
   begin
     lbEditorExperts.ItemIndex := 0;
     lbEditorExpertsClick(Self);
+  end;
+end;
+
+procedure TPrefForm.SetHelpContext;
+begin
+  case pagPrefs.ActivePageIndex of
+    0 : HelpContext := 110; // general
+    1 : HelpContext := 120; // editor
+    2 : HelpContext := 130; // compiler
+    3 : HelpContext := 140; // api
+    4 : HelpContext := 150; // startup
+    5 : HelpContext := 160; // templates
+    6 : HelpContext := 170; // macros
+    7 : HelpContext := 180; // color
+    8 : HelpContext := 190; // options
+  else
+    HelpContext := 11;
   end;
 end;
 
