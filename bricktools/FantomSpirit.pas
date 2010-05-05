@@ -247,7 +247,6 @@ type
     function NXTFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; override;
     function NXTFindClose(var IterHandle : FantomHandle) : boolean; override;
     function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; override;
-    function NXTFirmwareVersion : word; override;
     function NXTOpenWriteLinear(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; override;
     function NXTOpenReadLinear(const filename : string; var handle : FantomHandle;
@@ -850,16 +849,16 @@ function TFantomSpirit.Close: boolean;
 var
   status : integer;
 begin
-  Result := True;
+  Result := inherited Close;
   if IsOpen then
   begin
-    fResPort := ''; // clear this so that it gets looked up again when opening
-    fUseBT   := False;
-    status := kStatusNoError;
+    fResPort   := ''; // clear this so that it gets looked up again when opening
+    fUseBT     := False;
+    status     := kStatusNoError;
     destroyNXT(fNXTHandle, status);
-    fActive := False;
+    fActive    := False;
     fNXTHandle := 0;
-    Result := status >= kStatusNoError;
+    Result := Result and (status >= kStatusNoError);
   end;
 end;
 
@@ -1847,15 +1846,6 @@ begin
   status := kStatusNoError;
   iNXT_getFirmwareVersion(fNXTHandle, protmaj, protmin, firmmaj, firmmin, status);
   Result := status >= kStatusNoError;
-end;
-
-function TFantomSpirit.NXTFirmwareVersion : word;
-var
-  pmin, pmaj, fmin, fmaj : byte;
-begin
-  Result := 0;
-  if NXTGetVersions(pmin, pmaj, fmin, fmaj) then
-    Result := fmaj*100 + fmin;
 end;
 
 function TFantomSpirit.NXTCloseModuleHandle(var handle: FantomHandle; const chkResponse: boolean): boolean;
