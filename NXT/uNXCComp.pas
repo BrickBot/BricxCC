@@ -116,6 +116,7 @@ type
     fUDTOnStack : string;
     fLastExpressionOptimizedToConst : boolean;
     fLastLoadedConst : string;
+    fProcessingMathAssignment : boolean;
     function AmInlining : boolean;
     procedure IncrementInlineDepth;
     procedure DecrementInlineDepth;
@@ -2668,7 +2669,7 @@ begin
           begin
             DoCallAPIFunc(savedvalue);
           end
-          else if IsArrayType(fLHSDataType) then
+          else if IsArrayType(fLHSDataType) and not fProcessingMathAssignment then
           begin
             rdt := DataType(savedvalue);
             if not TypesAreCompatible(fLHSDataType, rdt) then
@@ -2676,7 +2677,7 @@ begin
             else
               EmitLn(Format('mov %s, %s', [GetDecoratedIdent(fLHSName), GetDecoratedIdent(savedvalue)]));
           end
-          else if fLHSDataType = TOK_USERDEFINEDTYPE then
+          else if (fLHSDataType = TOK_USERDEFINEDTYPE) and not fProcessingMathAssignment then
           begin
             if GetUDTType(fLHSName) <> GetUDTType(savedvalue) then
               AbortMsg(sUDTNotEqual)
@@ -3313,6 +3314,7 @@ begin
         if IsArrayType(fLHSDataType) or IsUDT(fLHSDataType) then
         begin
           // do something clever
+          fUDTOnStack := lhs;
         end
         else
           LoadConst('1'); // an array or UDT expression is "true"
@@ -4197,92 +4199,104 @@ end;
 procedure TNXCComp.MathAssignment(const name : string);
 var
   savedtoken : char;
-  oldType : char;
+//  oldType : char;
 begin
-  // Look has to be '=', '+', or '-' or it's all messed up
-  if Look = '=' then
-  begin
-    savedtoken := Token;
-    Next; // move to '='
-    Next; // move to next token
-    // 2009-06-24 JCH - to make such things as += work with scalars on the RHS
-    // and arrays or UDTs on the left I wrapped the boolexpression in
-    // try/finally which sets/resets the LHS data type
-    // !!! THIS MIGHT BREAK SOMETHING !!!
-    oldType := fLHSDataType;
-    try
-      fLHSDataType := TOK_LONGDEF;
-      BoolExpression;
-    finally
-      fLHSDataType := oldType;
-    end;
-    case savedtoken of
-      '+' : StoreAdd(name);
-      '-' : StoreSub(name);
-      '*' : StoreMul(name);
-      '/' : StoreDiv(name);
-      '%' : StoreMod(name);
-      '&' : StoreAnd(name);
-      '|' : StoreOr(name);
-      '^' : StoreXor(name);
-    end;
-  end
-  else if (Token = '+') and (Look = '+') then
-  begin
-    Next; // move to second +
-    Next;
-//    Semi;
-    StoreInc(name, 1);
-  end
-  else if (Token = '-') and (Look = '-') then
-  begin
-    Next; // move to second -
-    Next;
-//    Semi;
-    StoreDec(name, 1);
-  end
-  else if (Token = '+') and (Look = '-') then
-  begin
-    Next; // move to -
+  fProcessingMathAssignment := True;
+  try
+    // Look has to be '=', '+', or '-' or it's all messed up
     if Look = '=' then
     begin
+      savedtoken := Token;
       Next; // move to '='
       Next; // move to next token
+  (*
+      // 2009-06-24 JCH - to make such things as += work with scalars on the RHS
+      // and arrays or UDTs on the left I wrapped the boolexpression in
+      // try/finally which sets/resets the LHS data type
+      // !!! THIS MIGHT BREAK SOMETHING !!!
+      oldType := fLHSDataType;
+      try
+        fLHSDataType := TOK_LONGDEF;
+        BoolExpression;
+      finally
+        fLHSDataType := oldType;
+      end;
+  *)
+      // 2010-05-05 JCH - to make += work with non-scalars on the RHS I undid the
+      // above change.  Testing seems to prove that scalars on the RHS still
+      // work correctly.
       BoolExpression;
-      StoreSign(name);
+      // end of 2010-05-05 changes
+      case savedtoken of
+        '+' : StoreAdd(name);
+        '-' : StoreSub(name);
+        '*' : StoreMul(name);
+        '/' : StoreDiv(name);
+        '%' : StoreMod(name);
+        '&' : StoreAnd(name);
+        '|' : StoreOr(name);
+        '^' : StoreXor(name);
+      end;
+    end
+    else if (Token = '+') and (Look = '+') then
+    begin
+      Next; // move to second +
+      Next;
+  //    Semi;
+      StoreInc(name, 1);
+    end
+    else if (Token = '-') and (Look = '-') then
+    begin
+      Next; // move to second -
+      Next;
+  //    Semi;
+      StoreDec(name, 1);
+    end
+    else if (Token = '+') and (Look = '-') then
+    begin
+      Next; // move to -
+      if Look = '=' then
+      begin
+        Next; // move to '='
+        Next; // move to next token
+        BoolExpression;
+        StoreSign(name);
+      end
+      else
+        AbortMsg(sInvalidAssignment);
+    end
+    else if (Token = '|') and (Look = '|') then
+    begin
+      Next; // move to second |
+      if Look = '=' then
+      begin
+        Next; // move to '='
+        Next; // move to next token
+        BoolExpression;
+        StoreAbs(name);
+      end
+      else
+        AbortMsg(sInvalidAssignment);
+    end
+    else if ((Token = '>') and (Look = '>')) or ((Token = '<') and (Look = '<')) then
+    begin
+      savedtoken := Token;
+      Next; // move to second > or <
+      if Look = '=' then
+      begin
+        Next; // move to '='
+        Next; // move to next token
+        BoolExpression;
+        StoreShift(savedtoken='>', name);
+      end
+      else
+        AbortMsg(sInvalidAssignment);
     end
     else
       AbortMsg(sInvalidAssignment);
-  end
-  else if (Token = '|') and (Look = '|') then
-  begin
-    Next; // move to second |
-    if Look = '=' then
-    begin
-      Next; // move to '='
-      Next; // move to next token
-      BoolExpression;
-      StoreAbs(name);
-    end
-    else
-      AbortMsg(sInvalidAssignment);
-  end
-  else if ((Token = '>') and (Look = '>')) or ((Token = '<') and (Look = '<')) then
-  begin
-    savedtoken := Token;
-    Next; // move to second > or <
-    if Look = '=' then
-    begin
-      Next; // move to '='
-      Next; // move to next token
-      BoolExpression;
-      StoreShift(savedtoken='>', name);
-    end
-    else
-      AbortMsg(sInvalidAssignment);
-  end
-  else
-    AbortMsg(sInvalidAssignment);
+  finally
+    fProcessingMathAssignment := False;
+  end;
 end;
 
 procedure TNXCComp.DoLabel;
@@ -6203,6 +6217,7 @@ end;
 
 procedure TNXCComp.Init;
 begin
+  fProcessingMathAssignment := False;
   fInlineDepth := 0;
   fLastExpressionOptimizedToConst := False;
   fLastLoadedConst := '';
