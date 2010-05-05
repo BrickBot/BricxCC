@@ -66,6 +66,7 @@ type
   TGlobalOutAction = (goaFloat, goaOff, goaOn);
   TGlobalDirAction = (gdaBackward, gdaSwitch, gdaForward);
   TMotorsNum = 1..7;
+  TInstalledFirmware = (ifUnknown, ifStandard, ifEnhanced);
 
   EEPROMBlock = record
     Data : array[0..15] of Byte;
@@ -74,6 +75,8 @@ type
   TBrickComm = class
   private
   protected
+    fLocalIFW : TInstalledFirmware;
+    fLocalFV : Word;
     fOffsetDS : integer;
     fOffsetDVA : integer;
     fActive : boolean;
@@ -140,7 +143,7 @@ type
     destructor Destroy; override;
 
     function  Open : boolean; virtual; abstract;
-    function  Close : boolean; virtual; abstract;
+    function  Close : boolean; virtual;
 
     // PBrick sound commands
     function PlayTone(aFreq, aTime : word) : boolean; virtual; abstract;
@@ -319,7 +322,8 @@ type
     function NXTFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; virtual; abstract;
     function NXTFindClose(var IterHandle : FantomHandle) : boolean; virtual; abstract;
     function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; virtual; abstract;
-    function NXTFirmwareVersion : word; virtual; abstract;
+    function NXTFirmwareVersion : word; virtual;
+    function NXTInstalledFirmware : TInstalledFirmware; virtual;
     function NXTOpenWriteLinear(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; virtual; abstract;
     function NXTOpenReadLinear(const filename : string; var handle : FantomHandle;
@@ -405,6 +409,7 @@ function GetInitFilename: string;
 function FantomAPIAvailable : boolean;
 procedure LoadNXTPorts(aStrings : TStrings);
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
+function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string;
 
 implementation
 
@@ -419,6 +424,13 @@ uses
   {$IFDEF Windows}FANTOM{$ENDIF}
   {$ENDIF}
   {$ENDIF};
+
+function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string;
+const
+  FWSTR : array[TInstalledFirmware] of string = ('unknown', 'standard', 'enhanced');
+begin
+  Result := FWSTR[ifw];
+end;
 
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
 begin
@@ -490,6 +502,8 @@ begin
   fTowerExistsSleep := 30;
   fBST       := 30;
   fBTName    := '';
+  fLocalIFW  := ifUnknown;
+  fLocalFV   := 0;
 
   for i := 0 to 2 do
   begin
@@ -746,6 +760,44 @@ end;
 function GetInitFilename: string;
 begin
   Result := UserDataLocalPath+'nxt.dat';
+end;
+
+function TBrickComm.NXTFirmwareVersion: word;
+var
+  pmin, pmaj, fmin, fmaj : byte;
+begin
+  Result := fLocalFV;
+  if Result = 0 then
+  begin
+    if NXTGetVersions(pmin, pmaj, fmin, fmaj) then
+      Result := fmaj*100 + fmin;
+    fLocalFV := Result;
+  end;
+end;
+
+function TBrickComm.NXTInstalledFirmware: TInstalledFirmware;
+var
+  state, clump : byte;
+  pc : word;
+begin
+  Result := fLocalIFW;
+  if IsOpen and (Result = ifUnknown) then
+  begin
+    // if we can call a direct command that only exists in the enhanced firmware
+    // then we know that it is enhanced.
+    if GetVMState(state, clump, pc) then
+      Result := ifEnhanced
+    else
+      Result := ifStandard;
+    fLocalIFW := Result;
+  end;
+end;
+
+function TBrickComm.Close: boolean;
+begin
+  Result := True;
+  fLocalFV := 0;
+  fLocalIFW := ifUnknown;
 end;
 
 end.

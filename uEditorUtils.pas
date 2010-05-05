@@ -60,7 +60,7 @@ uses
 {$ENDIF}
   Controls, SysUtils, Dialogs,
   SynEditTypes, SynEditHighlighter,
-  uGlobals, dlgConfirmReplace, dlgSearchText, rcx_constants,
+  uGlobals, dlgConfirmReplace, dlgSearchText, rcx_constants, uSpirit,
   dlgReplaceText, uMiscDefines, brick_common, CodeUnit, uLocalizedStrings,
   uProgram, uNBCInterface, ParamUtils,
   uPSDisassembly, uCompStatus;
@@ -334,11 +334,14 @@ begin
   end;
 end;
 
-function GetCompilerCommandLine(bDownload : Boolean; sTempdir, sIncludePath, sFilename : string) : string;
+function GetCompilerCommandLine(bDownload : Boolean;
+  sTempdir, sIncludePath, sFilename : string;
+  sceHandler : TCompilerStatusChangeEvent) : string;
 var
   ext, extbin, commandstr, extraSwitches, OE : string;
   H : TSynCustomHighlighter;
   fwVer : word;
+  ifw : TInstalledFirmware;
 begin
   H := GetActiveEditorHighlighter;
   OE := OptionalEquals;
@@ -362,13 +365,26 @@ begin
     commandstr := commandstr + Format(' -Z%d', [NBCOptLevel]);
     if NBCMaxErrors > 0 then
       commandstr := commandstr + Format(' -ER=%d', [NBCMaxErrors]);
-    if EnhancedFirmware then
-      commandstr := commandstr + ' -EF';
+    ifw := ifUnknown;
     fwVer := 0;
     if NXTAutoFWVersion then
+    begin
       fwVer := BrickComm.NXTFirmwareVersion;
+      ifw   := BrickComm.NXTInstalledFirmware;
+    end;
+    if NXTAutoFWVersion and (ifw <> ifUnknown) then
+    begin
+      sceHandler(nil, Format('Automatically setting firmware to %s', [InstalledFirmwareAsString(ifw)]), False);
+      if ifw = ifEnhanced then
+        commandstr := commandstr + ' -EF';
+    end
+    else if EnhancedFirmware then
+      commandstr := commandstr + ' -EF';
     if NXTAutoFWVersion and (fwVer <> 0) then
-      commandStr := commandstr + ' -v=' + IntToStr(fwVer)
+    begin
+      sceHandler(nil, Format('Automatically setting firmware version to %d', [fwVer]), False);
+      commandStr := commandstr + ' -v=' + IntToStr(fwVer);
+    end
     else
     begin
       if NXT2Firmware then
@@ -873,7 +889,7 @@ begin
         DoExecuteTransferItem(PrecompileSteps[i]);
       end;
 
-    commandstr := GetCompilerCommandLine(download, tempDir, GetIncludePath(SaveDir), fName);
+    commandstr := GetCompilerCommandLine(download, tempDir, GetIncludePath(SaveDir), fName, sceHandler);
 
     wd := ExcludeTrailingPathDelimiter(ExtractFilePath(fName));
     if wd = '' then
