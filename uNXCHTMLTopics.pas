@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2383;
+  uNXCHTMLTopicsSize = 2384;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -3079,6 +3079,10 @@ const
     (
      Name: 'DRAW_OPT_LOGICAL_OPERATIONS';
      Value: 'group___display_draw_option_constants_ga3f24240fd7905bac0e28c70c29bf12ad.html'
+    ),
+    (
+     Name: 'DRAW_OPT_POLYGON_POLYLINE';
+     Value: 'group___display_draw_option_constants_ga83c7d7e89e00d814ef7ad101d63ee1a7.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIRECTIONS';
@@ -9245,10 +9249,6 @@ const
      Value: 'group__cstdlib_a_p_i_gab485d2bc34b70873158cae0500683681.html'
     ),
     (
-     Name: 'atof';
-     Value: 'group__cstdlib_a_p_i_ga98ed4a3e898eb3faa8707ffe8a770644.html'
-    ),
-    (
      Name: 'atoi';
      Value: 'group__cstdlib_a_p_i_gaf523a2033f2ca5f7794cb261879e9fe1.html'
     ),
@@ -9259,6 +9259,10 @@ const
     (
      Name: 'labs';
      Value: 'group__cstdlib_a_p_i_ga3b270e0b7f5c47e2511ecf21dab24b5b.html'
+    ),
+    (
+     Name: 'atof';
+     Value: 'group__cstdlib_a_p_i_ga98ed4a3e898eb3faa8707ffe8a770644.html'
     ),
     (
      Name: 'strtod';
