@@ -358,6 +358,7 @@ type
     btnEditorExpertsShortcut: TButton;
     mmoEditorExpertsHelp: TMemo;
     chkNXTAutoFW: TCheckBox;
+    chkUseHTMLHelp: TCheckBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -2811,11 +2812,13 @@ end;
 procedure TPrefForm.DisplayOtherOptionValues;
 begin
   chkNewMenu.Checked := AddMenuItemsToNewMenu;
+  chkUseHTMLHelp.Checked := UseHTMLHelp;
 end;
 
 procedure TPrefForm.UpdateGlobalOtherOptionValues;
 begin
   AddMenuItemsToNewMenu := chkNewMenu.Checked;
+  UseHTMLHelp           := chkUseHTMLHelp.Checked;
 end;
 
 procedure TPrefForm.DisplayGutterValues;

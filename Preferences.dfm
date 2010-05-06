@@ -86,7 +86,7 @@ object PrefForm: TPrefForm
       Top = 1
       Width = 450
       Height = 319
-      ActivePage = shtGeneral
+      ActivePage = shtOptions
       Align = alClient
       TabOrder = 0
       OnChange = pagPrefsChange
@@ -2763,6 +2763,16 @@ object PrefForm: TPrefForm
             Checked = True
             State = cbChecked
             TabOrder = 0
+          end
+          object chkUseHTMLHelp: TCheckBox
+            Left = 8
+            Top = 40
+            Width = 209
+            Height = 17
+            Caption = 'Use HTML help'
+            Checked = True
+            State = cbChecked
+            TabOrder = 1
           end
         end
       end
