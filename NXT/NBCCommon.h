@@ -1630,6 +1630,8 @@
 #define DRAW_OPT_CLEAR_SCREEN_MODES         (0x0003) /*!< Bit mask for the clear screen modes */
 #define DRAW_OPT_LOGICAL_OPERATIONS         (0x0018) /*!< Bit mask for the logical drawing operations */
 
+#define DRAW_OPT_POLYGON_POLYLINE           (0x0400) /*!< When drawing polygons, do not close (i.e., draw a polyline instead) */
+
 /** @defgroup DisplayFontDrawOptionConstants Font drawing option constants
  * These addition drawing option constants are only for use when drawing
  * text and numbers on the LCD using an RIC-based font.

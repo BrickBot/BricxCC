@@ -4838,7 +4838,7 @@ begin
   inc(fNestingLevel);
   try
     if Token in [TOK_UNSIGNED, TOK_LONGDEF, TOK_SHORTDEF, TOK_CHARDEF,
-                 TOK_BYTEDEF, TOK_STRINGDEF] then
+                 TOK_BYTEDEF, TOK_STRINGDEF, TOK_FLOATDEF] then
     begin
       DoLocals(fCurrentThreadName);
     end
