@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2384;
+  uNXCHTMLTopicsSize = 2386;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -9398,7 +9398,15 @@ const
     ),
     (
      Name: 'addr';
-     Value: 'group__cstring_a_p_i_ga57d662a153d3542f2afc413feb898357.html'
+     Value: 'group__cstring_a_p_i_ga810a1011fe85b256962407d5d2a228cf.html'
+    ),
+    (
+     Name: 'reladdr';
+     Value: 'group__cstring_a_p_i_gac0861585280d5116c461a37b3ae08aad.html'
+    ),
+    (
+     Name: 'addrex';
+     Value: 'group__cstring_a_p_i_ga35794af2522644095b0adf5ee17a30fd.html'
     ),
     (
      Name: 'isupper';

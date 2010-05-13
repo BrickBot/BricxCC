@@ -117,6 +117,7 @@ type
     fLastExpressionOptimizedToConst : boolean;
     fLastLoadedConst : string;
     fProcessingMathAssignment : boolean;
+    fProcessingAsmBlock : boolean;
     function AmInlining : boolean;
     procedure IncrementInlineDepth;
     procedure DecrementInlineDepth;
@@ -1618,7 +1619,8 @@ begin
     ProcessDirectives(False);
     fExpStr := fExpStr + Value;
   end;
-  SkipWhite; // also skip any whitespace after this token
+  if not fProcessingAsmBlock then
+    SkipWhite; // also skip any whitespace after this token
 end;
 
 function IsAPICommand(const name : string) : boolean;
@@ -3000,7 +3002,8 @@ procedure TNXCComp.Equal;
 begin
   Next; // two equal signs of equality comparison
   MatchString('=');
-  Expression;
+  BoolExpression;
+//  Expression;
   PopCmpEqual;
   StoreZeroFlag;
 end;
@@ -3153,7 +3156,8 @@ end;
 procedure TNXCComp.LessOrEqual;
 begin
   Next;
-  Expression;
+  BoolExpression;
+//  Expression;
   PopCmpLessOrEqual;
   StoreZeroFlag;
 end;
@@ -3164,7 +3168,8 @@ end;
 procedure TNXCComp.NotEqual;
 begin
   Next;
-  Expression;
+  BoolExpression;
+//  Expression;
   PopCmpNEqual;
   StoreZeroFlag;
 end;
@@ -3200,7 +3205,8 @@ begin
     '>' : NotEqual;
     '<' : LeftShift;
   else
-    Expression;
+    BoolExpression;
+//    Expression;
     PopCmpLess;
     StoreZeroFlag;
   end;
@@ -3215,7 +3221,8 @@ begin
   case Token of
     '=' : begin
       Next;
-      Expression;
+      BoolExpression;
+//      Expression;
       PopCmpGreaterOrEqual;
       StoreZeroFlag;
     end;
@@ -3223,7 +3230,8 @@ begin
       RightShift;
     end;
   else
-    Expression;
+    BoolExpression;
+//    Expression;
     PopCmpGreater;
     StoreZeroFlag;
   end;
@@ -4407,7 +4415,7 @@ begin
         end
         else if Token in ['+', '-', '/', '*', '%', '&', '|', '^', '>', '<'] then
         begin
-          if (Token = '+') and (dt = TOK_STRINGDEF) then
+          if (Token = '+') and (Look = '=')and (dt = TOK_STRINGDEF)  then
             StringConcatAssignment(Name)
           else
             MathAssignment(Name);
@@ -4787,38 +4795,43 @@ var
   nestLevel : integer;
 begin
 // gather everything within asm block and output it
-  EmitPoundLine;
-  MatchString(TOK_BEGIN);
-  if Value <> TOK_END then
-  begin
-    asmStr := Value + ' ' + Look;
-    repeat
-      nestLevel := 0;
+  fProcessingAsmBlock := True;
+  try
+    EmitPoundLine;
+    MatchString(TOK_BEGIN);
+    if Value <> TOK_END then
+    begin
+      asmStr := Value + ' ' + Look;
       repeat
-        GetCharX;
-        if Look = TOK_BEGIN then
-          inc(nestLevel);
-        if (Look <> TOK_END) or (nestLevel > 0) then
-          asmStr := asmStr + Look;
-        if Look = TOK_END then
-          dec(nestLevel);
-      until ((nestLevel < 0) and (Look = TOK_END)) or (Look = LF) or endofallsource;
-      if Pos('__STRRETVAL__', asmStr) > 0 then
-        dt := TOK_STRINGDEF
-      else if Pos('__FLTRETVAL__', asmStr) > 0 then
-        dt := TOK_FLOATDEF
-      else
-        dt := TOK_LONGDEF;
-      asmStr := ReplaceTokens(Trim(asmStr));
-      asmStr := DecorateVariables(asmStr);
-      if (asmStr <> '') or (Look <> TOK_END) then
-        EmitAsmLines(asmStr);
-      asmStr := '';
-    until (Look = TOK_END) or endofallsource;
-    GetChar; // get the end token
-    fSemiColonRequired := False;
+        nestLevel := 0;
+        repeat
+          GetCharX;
+          if Look = TOK_BEGIN then
+            inc(nestLevel);
+          if (Look <> TOK_END) or (nestLevel > 0) then
+            asmStr := asmStr + Look;
+          if Look = TOK_END then
+            dec(nestLevel);
+        until ((nestLevel < 0) and (Look = TOK_END)) or (Look = LF) or endofallsource;
+        if Pos('__STRRETVAL__', asmStr) > 0 then
+          dt := TOK_STRINGDEF
+        else if Pos('__FLTRETVAL__', asmStr) > 0 then
+          dt := TOK_FLOATDEF
+        else
+          dt := TOK_LONGDEF;
+        asmStr := ReplaceTokens(Trim(asmStr));
+        asmStr := DecorateVariables(asmStr);
+        if (asmStr <> '') or (Look <> TOK_END) then
+          EmitAsmLines(asmStr);
+        asmStr := '';
+      until (Look = TOK_END) or endofallsource;
+      GetChar; // get the end token
+      fSemiColonRequired := False;
+    end;
+    Next;
+  finally
+    fProcessingAsmBlock := False;
   end;
-  Next;
 end;
 
 {--------------------------------------------------------------}
@@ -9084,9 +9097,12 @@ begin
       end;
       bt := DataTypeOfDataspaceEntry(tmpDE);
       Result := ArrayOfType(bt, dim);
-      // temporarily tree byte[] as string
-      if Result = TOK_ARRAYBYTEDEF then
-        Result := TOK_STRINGDEF;
+// 2010-05-13 JCH - the code below was causing problems with byte array
+// types not being seen as compatible with parameters of that type
+// and not being allowed to use ++ or += since they were seen as a string type
+//      // temporarily treat byte[] as string
+//      if Result = TOK_ARRAYBYTEDEF then
+//        Result := TOK_STRINGDEF;
     end;
   else
     Result := #0;
