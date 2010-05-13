@@ -1,0 +1,8 @@
+task main()
+{
+  int x, y = 4;
+  asm {
+;/Testing
+    mov x, y
+  }
+}

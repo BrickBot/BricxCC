@@ -1018,7 +1018,7 @@ const
     ( Encoding: OPS_SIND_2       ; CCType: 0; Arity: 2; Name: 'sind'; ),
     ( Encoding: OPS_SINHD_2      ; CCType: 0; Arity: 2; Name: 'sinhd'; ),
     ( Encoding: OPS_ATAN2D_2     ; CCType: 0; Arity: 3; Name: 'atan2d'; ),
-    ( Encoding: OPS_ADDROF       ; CCType: 0; Arity: 2; Name: 'addrof'; ),
+    ( Encoding: OPS_ADDROF       ; CCType: 0; Arity: 3; Name: 'addrof'; ),
 // pseudo-opcodes
     ( Encoding: OPS_THREAD       ; CCType: 0; Arity: 0; Name: 'thread'; ),
     ( Encoding: OPS_ENDT         ; CCType: 0; Arity: 0; Name: 'endt'; ),
@@ -1773,6 +1773,12 @@ begin
     OPS_WAITI_2 : begin
       Result := Format(HEX_FMT, [argValue]);
     end;
+    OPS_ADDROF : begin
+      if argIdx = 2 then
+        Result := Format(HEX_FMT, [argValue])
+      else
+        Result := TOCNameFromArg(DS, argValue);
+    end;
     OPS_WAITV, OPS_ABS, {OP_SQRT_2, OP_ABS_2, }OPS_SIGN, OPS_FMTNUM,
     OPS_ACOS, OPS_ASIN, OPS_ATAN, OPS_CEIL,
     OPS_EXP, OPS_FABS, OPS_FLOOR, OPS_SQRT, OPS_TAN, OPS_TANH,
@@ -1783,8 +1789,7 @@ begin
     OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
     OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2,
     OPS_ACOSD_2, OPS_ASIND_2, OPS_ATAND_2, OPS_TAND_2, OPS_TANHD_2,
-    OPS_COSD_2, OPS_COSHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2,
-    OPS_ADDROF :
+    OPS_COSD_2, OPS_COSHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2 :
     begin
       Result := TOCNameFromArg(DS, argValue);
     end;
@@ -5274,8 +5279,7 @@ begin
     OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
     OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2,
     OPS_ACOSD_2, OPS_ASIND_2, OPS_ATAND_2, OPS_COSD_2, OPS_COSHD_2,
-    OPS_TAND_2, OPS_TANHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2,
-    OPS_ADDROF :
+    OPS_TAND_2, OPS_TANHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2 :
     begin
       if argIdx > 0 then
         Result := aatVariable
@@ -5564,6 +5568,14 @@ begin
         Result := aatString
       else // 0
         Result := aatStringNoConst;
+    end;
+    OPS_ADDROF : begin
+      if argIdx = 1 then
+        Result := aatVariable
+      else if argIdx = 2 then
+        Result := aatConstant
+      else
+        Result := aatVarNoConst;
     end;
   else
     Result := aatConstant;

@@ -67,6 +67,51 @@
 				</OBJECT>
 				<A HREF="bricxcc/help3okz.htm">Preferences</A><BR>
 			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="General Preferences">
+				<param name="Local" value="bricxcc/help3okz_general.htm">
+				</OBJECT>
+				<A HREF="bricxcc/help3okz_general.htm">General Preferences</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Editor Preferences">
+				<param name="Local" value="bricxcc/help3okz_editor.htm">
+				</OBJECT>
+				<A HREF="bricxcc/help3okz_editor.htm">Editor Preferences</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Compiler Preferences">
+				<param name="Local" value="bricxcc/help3okz_compiler.htm">
+				</OBJECT>
+				<A HREF="bricxcc/help3okz_compiler.htm">Compiler Preferences</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="API Preferences">
+				<param name="Local" value="bricxcc/help3okz_api.htm">
+				</OBJECT>
+				<A HREF="bricxcc/help3okz_api.htm">API Preferences</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Startup Preferences">
+				<param name="Local" value="bricxcc/help3okz_startup.htm">
+				</OBJECT>
+				<A HREF="bricxcc/help3okz_startup.htm">Startup Preferences</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Templates Preferences">
+				<param name="Local" value="bricxcc/help3okz_templates.htm">
+				</OBJECT>
+				<A HREF="bricxcc/help3okz_templates.htm">Templates Preferences</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Macros Preferences">
+				<param name="Local" value="bricxcc/help3okz_macros.htm">
+				</OBJECT>
+				<A HREF="bricxcc/help3okz_macros.htm">Macros Preferences</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Color Preferences">
+				<param name="Local" value="bricxcc/help3okz_color.htm">
+				</OBJECT>
+				<A HREF="bricxcc/help3okz_color.htm">Color Preferences</A><BR>
+			<LI><OBJECT type="text/sitemap">
+				<param name="Name" value="Other Preferences">
+				<param name="Local" value="bricxcc/help3okz_options.htm">
+				</OBJECT>
+				<A HREF="bricxcc/help3okz_options.htm">Other Preferences</A><BR>
+			<LI><OBJECT type="text/sitemap">
 				<param name="Name" value="Claiming File Extensions">
 				<param name="Local" value="bricxcc/help3hpp.htm">
 				</OBJECT>

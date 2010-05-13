@@ -8,8 +8,8 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
-Version 1.2.1.r1
-----------------
+Version 1.2.1.r1 (2010-05-13)
+-----------------------------
 - Added support for '\' line continuation characters in NBC source code.
 - Added support for initializing structs and for declaring const structs.
 - Added Arno van der Vegt's graphics library to the standard header files.
@@ -26,6 +26,19 @@ Version 1.2.1.r1
 - Added DisplayFont, SetDisplayFont, and addr functions
 - Added support for assignments as expressions
 - Fixed a bug with asm statements passed into function call parameters
+- Fixed a bug in for loop initialization when declaring a local variable of type float
+- Added DRAW_OPT_POLYGON_POLYLINE constant to support enhanced firmware change to 
+  DrawPolygon system call
+- Improved support for math assignment operations with arrays and structs
+- Fixed defect in NXCDefs.h where float type was used outside a check for firmware > 107
+- Added ClearLine API function
+- Fixed a bug in inline functions that return a struct
+- Fixed a bug passing a UDT array expression into an inline function taking a UDT arg
+- Added reladdr and addrex functions (requires latest enhanced NBC/NXC firmware)
+- Fixed memcmp function
+- Added support for full boolean expressions on RHS of relation
+
+
 
 Version 1.0.1.b36
 -----------------

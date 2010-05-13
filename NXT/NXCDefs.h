@@ -22,7 +22,7 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-04-30
+ * \date 2010-05-13
  * \version 71
  */
 #ifndef NXCDEFS_H
@@ -15560,8 +15560,6 @@ inline void memmove(variant dest, variant src, byte num);
  * indicating the relationship between the variables. The num argument is
  * ignored.
  *
- * \todo re-implement this function so that it actually works.
- *
  * \param ptr1 A variable to be compared.
  * \param ptr2 A variable to be compared.
  * \param num The number of bytes to compare (ignored).
@@ -15572,36 +15570,64 @@ inline char memcmp(variant ptr1, variant ptr2, byte num);
  */
 
 /**
- * Get the address of a variable.
- * Get the address of a variable and store it in the unsigned long pointer.
+ * Get the absolute address of a variable.
+ * Get the absolute address of a variable and return it to the calling routine
+ * as an unsigned long value.
  *
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param data A variable whose address you wish to get.
- * \param ptr The variable which will store the address. It must be an
- * unsigned long type.
+ * \return The absolute address of the variable.
  */
-inline void addr(variant data, unsigned long & ptr);
+inline unsigned long addr(variant data);
 /** \example ex_addr.nxc
  * This is an example of how to use the \ref addr function.
+ */
+
+/**
+ * Get the relative address of a variable.
+ * Get the relative address of a variable and return it to the calling routine
+ * as an unsigned long value.  The relative address is an offset from the
+ * Command module's MemoryPool address.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param data A variable whose address you wish to get.
+ * \return The relative address of the variable.
+ */
+inline unsigned long reladdr(variant data);
+/** \example ex_reladdr.nxc
+ * This is an example of how to use the \ref reladdr function.
+ */
+
+/**
+ * Get the absolute or relative address of a variable.
+ * Get the absolute or relative address of a variable and return it to the
+ * calling routine as an unsigned long value. The relative address is an
+ * offset from the Command module's MemoryPool address.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param data A variable whose address you wish to get.
+ * \param relative A boolean flag indicating whether you want to get the
+ * relative or absolute address.
+ * \return The absolute or relative address of the variable.
+ */
+inline unsigned long addrex(variant data, bool relative);
+/** \example ex_addrex.nxc
+ * This is an example of how to use the \ref addrex function.
  */
 
 #else
 
 #define memcpy(_dest, _src, _num) asm { mov _dest, _src }
 #define memmove(_dest, _src, _num) asm { mov _dest, _src }
-#define memcmp(_ptr1, _ptr2, _num) { \
-  asm { mov __RETVAL__, -1 }; \
-  if ((_ptr1) == (_ptr2)) { \
-    asm { mov __RETVAL__, 0 }; \
-  } else if ((_ptr1) > (_ptr2)) { \
-    asm { mov __RETVAL__, 1 }; \
-  } \
-}
+#define memcmp(_ptr1, _ptr2, _num) ( (_ptr1 == _ptr2) ? 0 : ( (_ptr1 > _ptr2) ? 1 : -1 ) )
 
-#define addr(_data, _ptr) asm { \
-  compchk EQ, sizeof(_ptr), 4 \
-  addrof _ptr, _data \
+#define addr(_data) asm { addrof __URETVAL__, _data, 0 }
+#define reladdr(_data) asm { addrof __URETVAL__, _data, 1 }
+#define addrex(_data, _rel) asm { \
+  addrof __URETVAL__, _data, _rel \
 }
 
 #endif

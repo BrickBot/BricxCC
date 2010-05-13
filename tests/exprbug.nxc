@@ -1,0 +1,11 @@
+task main()
+{
+  int t, k, p, r;
+  while (true) {
+    bool x = !t == !k == !p;
+    x++;
+    if (t&k|p<3&!(r&7) != !t) break;
+    if (x > 3)
+      t++;
+  }
+}
