@@ -79,6 +79,7 @@ begin
   Writeln(UsageListing);
   Writeln(UsageSymbols);
   Writeln(UsageWarnings);
+  Writeln(UsageStatusMsg);
   Writeln(UsageEnhanced);
   Writeln(UsageSafecall);
   Writeln(UsageAPI);
@@ -102,6 +103,7 @@ var
   Filename : string;
   TheErrorCode : integer;
   SCH : TStatusChangeHandler;
+  gNoStatusMessages : Boolean;
 
 procedure HandleWriteMessages(aStrings : TStrings);
 var
@@ -127,6 +129,7 @@ procedure TStatusChangeHandler.HandleCompilerStatusChange(Sender: TObject;
 var
   msg : string;
 begin
+  if gNoStatusMessages then Exit;
   msg := '# Status: ' + StatusMsg;
   WriteLn(Output, msg);
 end;
@@ -205,7 +208,7 @@ try
       C.UsePort                  := ParamSwitch('-S', False);
       C.PortName                 := ParamValue('-S', False);
       C.BinaryInput              := ParamSwitch('-b', False);
-      C.Download                 := ParamSwitch('-d', False);
+      C.Download                 := ParamSwitch('-d', False) or ParamSwitch('-r', False);
       C.RunProgram               := ParamSwitch('-r', False);
       C.MoreIncludes             := ParamSwitch('-I', False);
       C.IncludePaths             := ParamValue('-I', False);
@@ -214,6 +217,7 @@ try
       C.SafeCalls                := ParamSwitch('-safecall', False);
       C.WriteCompilerMessages    := ParamSwitch('-E', False);
       C.CompilerMessagesFilename := ParamValue('-E', False);
+      gNoStatusMessages          := ParamSwitch('-sm-', False);
       if Filename <> '' then
       begin
         if ParamSwitch('-x', False) then

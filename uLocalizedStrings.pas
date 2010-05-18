@@ -611,7 +611,7 @@ resourcestring
   UsageSyntax    = 'Syntax: %s [options] filename [options]';
   UsagePort      = '   -S=<portname>: specify port name (usb), brick resource name, or alias';
   UsageDownload  = '   -d: download program';
-  UsageRunProg   = '   -r: run program';
+  UsageRunProg   = '   -r: download and run program';
   UsageBinary    = '   -b: treat input file as a binary file (don''t compile it)';
   UsageQuiet     = '   -q: quiet';
   UsageNoSystem  = '   -n: prevent the system file from being included';
@@ -626,7 +626,8 @@ resourcestring
   UsageNBCOutput = '   -nbc=<filename> : save NXC intermediate NBC code to <filename>';
   UsageListing   = '   -L=<filename> : generate code listing to <filename>';
   UsageSymbols   = '   -Y=<filename> : generate symbol table to <filename>';
-  UsageWarnings  = '   -w[-|+] : warnings off or on [default is on]';
+  UsageWarnings  = '   -w[-|+] : warnings off or on (default is on)';
+  UsageStatusMsg = '   -sm[-|+] : status messages off or on (default is on)';
   UsageEnhanced  = '   -EF : enhanced firmware';
   UsageSafecall  = '   -safecall: NXC will wrap all function calls in Acquire/Release';
   UsageAPI       = '   -api: dump the API to stdout';
