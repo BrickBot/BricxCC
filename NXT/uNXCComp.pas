@@ -420,6 +420,8 @@ type
     function  NewLabel: string;
     procedure StoreArray(const name, idx, val: string);
     procedure CheckTask(const Name: string);
+    procedure StringRelation;
+    procedure ArrayOrUDTRelation;
     procedure NumericRelation;
     function  GetNBCSrc: TStrings;
     function  FunctionReturnType(const name: string): char;
@@ -965,7 +967,7 @@ end;
 procedure TNXCComp.CheckString;
 begin
   if (Token <> TOK_STRINGLIT) and
-     not (DataType(Value) in [TOK_STRINGDEF, TOK_ARRAYBYTEDEF]) then
+     not (DataType(Value) in [TOK_STRINGDEF, TOK_ARRAYBYTEDEF, TOK_ARRAYCHARDEF]) then
     Expected(sStringType);
 end;
 
@@ -2292,9 +2294,9 @@ begin
   begin
     Result := (Token = TOK_STRINGLIT) or
               ((Token = TOK_IDENTIFIER) and
-               (dt = TOK_STRINGDEF));
+               (dt in [TOK_STRINGDEF{, TOK_ARRAYBYTEDEF, TOK_ARRAYCHARDEF}]));
     if not Result then begin
-      Result := FunctionReturnType(Value) = TOK_STRINGDEF;
+      Result := FunctionReturnType(Value) in [TOK_STRINGDEF{, TOK_ARRAYBYTEDEF, TOK_ARRAYCHARDEF}];
       if not Result then begin
         // what about a string array?
         Result := (Token = TOK_IDENTIFIER) and
@@ -2592,10 +2594,16 @@ end;
 
 procedure TNXCComp.NotNumericFactor;
 begin
-  if Token = '~' then begin
+  if Token = '~' then begin  // handle unary complement
     Next;
     NumericFactor;
     Complement;
+  end
+  else if Token = '!' then // handle unary logical not
+  begin
+    Next;
+    NumericFactor;
+    NotIt;
   end
   else
     NumericFactor;
@@ -2804,13 +2812,13 @@ begin
     prev := NBCSource.Count;
     if IncrementOrDecrement then
     begin
-      // pre-increment or pre-decrement
+      // handle pre-increment or pre-decrement unary operators
       DoPreIncOrDec(true);
     end
     else
     begin
       if IsAddOp(Token) then
-        ClearReg
+        ClearReg  // handle + and - unary operators
       else
         Term;
       while IsAddop(Token) do begin
@@ -3002,7 +3010,8 @@ procedure TNXCComp.Equal;
 begin
   Next; // two equal signs of equality comparison
   MatchString('=');
-  BoolExpression;
+  Relation;
+//  BoolExpression;
 //  Expression;
   PopCmpEqual;
   StoreZeroFlag;
@@ -3156,7 +3165,8 @@ end;
 procedure TNXCComp.LessOrEqual;
 begin
   Next;
-  BoolExpression;
+  Relation;
+//  BoolExpression;
 //  Expression;
   PopCmpLessOrEqual;
   StoreZeroFlag;
@@ -3168,7 +3178,8 @@ end;
 procedure TNXCComp.NotEqual;
 begin
   Next;
-  BoolExpression;
+  Relation;
+//  BoolExpression;
 //  Expression;
   PopCmpNEqual;
   StoreZeroFlag;
@@ -3205,7 +3216,8 @@ begin
     '>' : NotEqual;
     '<' : LeftShift;
   else
-    BoolExpression;
+  Relation;
+//    BoolExpression;
 //    Expression;
     PopCmpLess;
     StoreZeroFlag;
@@ -3221,7 +3233,8 @@ begin
   case Token of
     '=' : begin
       Next;
-      BoolExpression;
+      Relation;
+//      BoolExpression;
 //      Expression;
       PopCmpGreaterOrEqual;
       StoreZeroFlag;
@@ -3230,7 +3243,8 @@ begin
       RightShift;
     end;
   else
-    BoolExpression;
+    Relation;
+//    BoolExpression;
 //    Expression;
     PopCmpGreater;
     StoreZeroFlag;
@@ -3244,6 +3258,62 @@ begin
     NotEqual
   else
     Expected('"!="');
+end;
+
+procedure TNXCComp.StringRelation;
+begin
+(*
+  The Expression function handles ++, --, +, -, ~, and ! unary operators
+  for numeric expressions.  Do I need to handle these operators for
+  string expressions (on both lhs and rhs)?
+*)
+  StringExpression('');
+  if IsRelop(Token) then begin
+    // copy to temp string buffer
+    EmitLn(Format('mov %s, %s', [StrTmpBufName, StrBufName]));
+    case Token of
+      '=': EqualString;
+      '<': LessString;
+      '>': GreaterString;
+      '!': NEqualString;
+    end;
+  end
+  else
+    LoadConst('1'); // a string expression is "true"
+end;
+
+procedure TNXCComp.ArrayOrUDTRelation;
+var
+  lhs : string;
+begin
+(*
+  The Expression function handles ++, --, +, -, ~, and ! unary operators
+  for numeric expressions.  Do I need to handle these operators for
+  string expressions (on both lhs and rhs)?
+*)
+  // only variables are allowed here - no expressions
+  CheckIdent;
+  lhs := GetDecoratedIdent(Value);
+  Next;
+  if IsRelop(Token) then begin
+    case Token of
+      '=': EqualArrayOrUDT(lhs);
+      '<': LessArrayOrUDT(lhs);
+      '>': GreaterArrayOrUDT(lhs);
+      '!': NEqualArrayOrUDT(lhs);
+    end;
+  end
+  else
+  begin
+    // is the left hand side an array, udt or a scalar?
+    if IsArrayType(fLHSDataType) or IsUDT(fLHSDataType) then
+    begin
+      // do something clever
+      fUDTOnStack := lhs;
+    end
+    else
+      LoadConst('1'); // an array or UDT expression is "true"
+  end;
 end;
 
 procedure TNXCComp.NumericRelation;
@@ -3265,26 +3335,15 @@ end;
 
 procedure TNXCComp.Relation;
 var
-  lhs : string;
   dt : char;
 begin
+  // would it be better to check for unary operators before branching by
+  // relation type???
   if ValueIsStringType(dt) then
   begin
     if (Look <> '[') or (dt in [TOK_ARRAYSTRING..TOK_ARRAYSTRING4]) then
     begin
-      StringExpression('');
-      if IsRelop(Token) then begin
-        // copy to temp string buffer
-        EmitLn(Format('mov %s, %s', [StrTmpBufName, StrBufName]));
-        case Token of
-          '=': EqualString;
-          '<': LessString;
-          '>': GreaterString;
-          '!': NEqualString;
-        end;
-      end
-      else
-        LoadConst('1'); // a string expression is "true"
+      StringRelation;
     end
     else
       NumericRelation;
@@ -3304,29 +3363,7 @@ begin
     end
     else
     begin
-      // only variables are allowed here - no expressions
-      CheckIdent;
-      lhs := GetDecoratedIdent(Value);
-      Next;
-      if IsRelop(Token) then begin
-        case Token of
-          '=': EqualArrayOrUDT(lhs);
-          '<': LessArrayOrUDT(lhs);
-          '>': GreaterArrayOrUDT(lhs);
-          '!': NEqualArrayOrUDT(lhs);
-        end;
-      end
-      else
-      begin
-        // is the left hand side an array, udt or a scalar?
-        if IsArrayType(fLHSDataType) or IsUDT(fLHSDataType) then
-        begin
-          // do something clever
-          fUDTOnStack := lhs;
-        end
-        else
-          LoadConst('1'); // an array or UDT expression is "true"
-      end;
+      ArrayOrUDTRelation;
     end;
   end
   else
@@ -3368,7 +3405,8 @@ var
   bLogicalAnd : boolean;
 begin
   L := NewLabel;
-  NotFactor;
+  Relation;
+//  NotFactor;
   while Token = '&' do begin
     bLogicalAnd := False;
     Next;
@@ -3388,7 +3426,8 @@ begin
       BranchFalse(L);
     end;
     PushPrim;
-    NotFactor;
+    Relation;
+//    NotFactor;
     if bLogicalAnd and not fCCSet then
     begin
       // convert D0 to boolean value if necessary
@@ -9100,9 +9139,9 @@ begin
 // 2010-05-13 JCH - the code below was causing problems with byte array
 // types not being seen as compatible with parameters of that type
 // and not being allowed to use ++ or += since they were seen as a string type
-//      // temporarily treat byte[] as string
-//      if Result = TOK_ARRAYBYTEDEF then
-//        Result := TOK_STRINGDEF;
+      // temporarily treat byte[] as string
+      if Result = TOK_ARRAYBYTEDEF then
+        Result := TOK_STRINGDEF;
     end;
   else
     Result := #0;
@@ -9405,8 +9444,8 @@ var
 begin
   Result := ((lhs <> TOK_MUTEXDEF) and (rhs <> TOK_MUTEXDEF)) and
             ((lhs = rhs) or
-             ((lhs in [TOK_ARRAYBYTEDEF, TOK_STRINGDEF]) and
-              (rhs in [TOK_ARRAYBYTEDEF, TOK_STRINGDEF])) or
+             ((lhs in [TOK_ARRAYBYTEDEF, TOK_ARRAYCHARDEF, TOK_STRINGDEF]) and
+              (rhs in [TOK_ARRAYBYTEDEF, TOK_ARRAYCHARDEF, TOK_STRINGDEF])) or
              ((lhs in [Chr(Ord(TOK_ARRAYBYTEDEF)+1), TOK_ARRAYSTRING]) and
               (rhs in [Chr(Ord(TOK_ARRAYBYTEDEF)+1), TOK_ARRAYSTRING])) or
              ((lhs in [Chr(Ord(TOK_ARRAYBYTEDEF)+2), Chr(Ord(TOK_ARRAYSTRING)+1)]) and
