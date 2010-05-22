@@ -18,7 +18,7 @@ task main()
 {
   unsigned long ptr, pOldFont;
   byte myData[800];
-  addr(NewFont, ptr);
+  ptr = addr(NewFont);
   TextOut(0, LCD_LINE1, FormatNum("%x", ptr));
   pOldFont = DisplayFont();
   SetDisplayFont(ptr);

@@ -2,7 +2,22 @@ task main()
 {
   int t, k, p, r;
   while (true) {
-    bool x = !t == !k == !p;
+    bool x = k < 8 && k > 2;
+/*
+	mov __signed_stack_001main, __main_7qG2_k_7qG2_000
+	set __D0main, 8
+	cmp 0, __zfmain, __signed_stack_001main, __D0main
+	mov __D0main, __zfmain
+	brtst 4, __NXC_Label_504, __zfmain
+	mov __signed_stack_001main, __D0main
+	mov __signed_stack_002main, __main_7qG2_k_7qG2_000
+	set __D0main, 2
+	cmp 1, __zfmain, __signed_stack_002main, __D0main
+	and __D0main, __signed_stack_001main, __zfmain
+__NXC_Label_504:
+	mov __main_7qG2_x_7qG2_001, __D0main
+*/
+    x = !t == !k == !p;
     x++;
     if (t&k|p<3&!(r&7) != !t) break;
     if (x > 3)
