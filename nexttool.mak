@@ -1,7 +1,7 @@
-PROGRAMS = NeXTTool
+PROGRAMS = nexttool
 VER = 1.0.2.0
 DOBJECTS=uCmdLineUtils.o ParamUtils.o uCommonUtils.o uVersionInfo.o NeXTTool.dpr
-BINDIST = nxt/NeXTTool
+BINDIST = nxt/nexttool
 FANTOM_SRC = bricktools/FANTOM.pas bricktools/FANTOM_CONST.INC bricktools/FANTOMFPC.PAS bricktools/fantomosx.pas bricktools/libusb.pas
 BT_SRC = bricktools/FantomSpirit.pas bricktools/rcx_cmd.pas bricktools/rcx_constants.pas bricktools/uSpirit.pas
 CMN_SRC = uCmdLineUtils.pas uCommonUtils.pas uVersionInfo.pas ParamUtils.pas
@@ -28,10 +28,10 @@ PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools
 
 # Linux
 PTOOLPREFIX=/usr/bin/
-PPC=$(PTOOLPREFIX)ppc386
+PPC=$(PTOOLPREFIX)fpc
 
 # how to link executable
-NeXTTool: NeXTTool.dpr nexttool_preproc.inc
+nexttool: NeXTTool.dpr nexttool_preproc.inc
 	$(PPC) $(PFLAGS) $< -o$@
 
 # how to compile pas source

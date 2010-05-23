@@ -119,7 +119,7 @@ AutoIncBuild=0
 MajorVer=1
 MinorVer=2
 Release=1
-Build=1
+Build=2
 Debug=0
 PreRelease=0
 Special=0
@@ -130,7 +130,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=JoCar Consulting
 FileDescription=Next Byte Codes Compiler
-FileVersion=1.2.1.1
+FileVersion=1.2.1.2
 InternalName=NBC
 LegalCopyright=Copyright (c) 2006-2010, John Hansen
 LegalTrademarks=
@@ -138,13 +138,6 @@ OriginalFilename=
 ProductName=Next Byte Codes Compiler
 ProductVersion=1.2
 Comments=
-[Excluded Packages]
-c:\winapps\borland\delphi7\Bin\dcltee70.bpl=TeeChart Components
-c:\winapps\borland\delphi7\Bin\dcldss70.bpl=Borland Decision Cube Components
-c:\winapps\borland\delphi7\Bin\dclshlctrls70.bpl=Shell Control Property and Component Editors
-c:\winapps\borland\delphi7\Projects\Bpl\ComDrv32_D7.bpl=Serial I/O Components
-c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
-c:\winapps\borland\delphi7\Bin\DBWEBXPRT.BPL=Borland Web Wizard Package
 [HistoryLists\hlDebugSourcePath]
 Count=3
 Item0=d:\nxt\nxt\BricxCC\source\bricktools\;d:\nxt\nxt\BricxCC\source\

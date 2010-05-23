@@ -9,15 +9,12 @@ MAKE = $(ROOT)\bin\make.exe -$(MAKEFLAGS) -f$**
 DCC = $(ROOT)\bin\dcc32.exe $**
 BRCC = $(ROOT)\bin\brcc32.exe $**
 #------------------------------------------------------------------------------
-PROJECTS = nbc.exe nbc.ZHH
+PROJECTS = nbc.exe
 #------------------------------------------------------------------------------
 default: $(PROJECTS)
 #------------------------------------------------------------------------------
 
 nbc.exe: nbc.dpr
-  $(DCC)
-
-nbc.ZHH: ZHH\nbc.dpr
   $(DCC)
 
 

@@ -31,7 +31,7 @@
 /** @mainpage NXC Programmer's Guide
  * 
  * <center>
- * <h2>April 30, 2010</h2>
+ * <h2>May 22, 2010</h2>
  * <h2>by John Hansen </h2>
  * </center>
  * 
@@ -76,6 +76,7 @@
  * blocks: tasks and functions. Each type of code block has its own unique features, but they share 
  * a common structure. The maximum number of code blocks of both tasks and functions combined is 256.
  * 
+ * - @subpage codeorder
  * - @subpage tasks
  * - @subpage func
  * - @subpage vars
@@ -288,6 +289,50 @@
  * goto, if, inline, int, long, mutex, priority, repeat, return, safecall, short, start, stop, 
  * string, struct, sub, switch, task, true, typedef, unsigned, until, void, while
  * 
+ */
+
+/** @page codeorder Code Order
+ *
+ * Code order has two aspects: the order in which the code appears in the source code file 
+ * and the order in which it is executed at runtime. The first will be referred to as the 
+ * lexical order and the second as the runtime order.
+ * 
+ * The lexical order is important to the NXC compiler, but not to the NXT brick. This means that 
+ * the order in which you write your task and function definitions has no effect on the runtime 
+ * order. The rules controlling runtime order are:
+ * 
+ * -# There must be a task called main and this task will always run first.
+ * -# The time at which any other task will run is determined by the API functions 
+ * documented in \ref CommandModuleFunctions section.
+ * -# A function will run whenever it is called from another block of code.
+ * 
+ * This last rule may seem trivial, but it has important consequences when multiple tasks are running. 
+ * If a task calls a function that is already in the midst of running because it was called first by 
+ * another task, unpredictable behavior and results may ensue. Tasks can share functions by treating 
+ * them as shared resources and using mutexes to prevent one task from calling the function while another 
+ * task is using it. The safecall keyword (see \ref func) may be used to simplify the coding.
+ * 
+ * The rules for lexical ordering are:
+ * 
+ * -# Any identifier naming a task or function must be known to the compiler before it is used in a code block.
+ * -# A task or function definition makes its naming identifier known to the compiler.
+ * -# A task or function declaration also makes a naming identifier known to the compiler.
+ * -# Once a task or function is defined it cannot be redefined or declared.
+ * -# Once a task or function is declared it cannot be redeclared.
+ * 
+ * Sometimes you will run into situations where is impossible or inconvenient to order the task 
+ * and function definitions so the compiler knows every task or function name before it sees that 
+ * name used in a code block. You can work around this by inserting task or function declarations 
+ * of the form 
+ *
+ * <tt>
+ *   <strong>task</strong> <em>name</em>();<br>
+ *   <em>return_type name</em>(<em>argument_list</em>);
+ * </tt>
+ *
+ * before the code block where the first usage occurs. The <tt><em>argument_list</em></tt> must match the 
+ * list of formal arguments given later in the function's actual definition.
+ *
  */
 
 /** @page tasks Tasks

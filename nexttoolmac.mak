@@ -1,4 +1,4 @@
-PROGRAMS = NeXTTool
+PROGRAMS = nexttool
 VER = 1.0.2.0
 
 all:: $(PROGRAMS)
@@ -23,7 +23,7 @@ ARCH=386
 PPC=$(PTOOLPREFIX)ppc$(ARCH)
 
 # how to link executable
-NeXTTool: nexttool.dpr nexttool_preproc.inc
+nexttool: nexttool.dpr nexttool_preproc.inc
 	$(PPC) $(PFLAGS) $< -o$@
 	strip $@
 	mkdir $(ARCH)

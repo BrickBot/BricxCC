@@ -1,0 +1,69 @@
+// JCH bugs as of 2010-05-05
+
+struct fpoint{
+  float X;
+  float Y;
+};
+
+LocationType p1 = {1, 2}, p2 = {3, 4};
+
+task main()
+{
+  int i = 0;
+  //give it some values...
+  p1 += p2;     // (JCH working now 2010-05-05)
+  NumOut(0, LCD_LINE1, p1.X);
+  NumOut(30, LCD_LINE1, p1.Y);
+
+  p1 += 4+i;     // (JCH still working)
+  NumOut(0, LCD_LINE2, p1.X);
+  NumOut(30, LCD_LINE2, p1.Y);
+
+  fpoint fp1, fp2;
+  fp1.X = 3.14;
+  fp1.Y = sqrt(2);
+  fp2.X = log(1.0);
+  fp2.Y = fp2.X;
+  //give it some values...
+  fp1 += sqrt(fp2.Y);  // (JCH still working)
+  fp1 += fp2;  // (JCH working now 2010-05-05)
+  NumOut(0, LCD_LINE3, fp1.X);
+  NumOut(30, LCD_LINE3, fp1.Y);
+
+//  Would something like this work?:  (JCH working now 2010-05-05)
+  LocationType p3[5], p4;
+  //give it some values...
+  p3[0].X = 1; p3[0].Y = 1;
+  p3[1].X = 2; p3[1].Y = 2;
+  p4.X = 10;
+  p4.Y = 5;
+  p3 += p4;
+//  NumOut(0, LCD_LINE1, p3.X); // p3.X generates bad code JCH 2010-05-05 (should be a compiler error)
+  NumOut(0, LCD_LINE4, p3[0].X);
+  NumOut(30, LCD_LINE4, p3[0].Y);
+  NumOut(0, LCD_LINE5, p3[1].X);
+  NumOut(30, LCD_LINE5, p3[1].Y);
+
+//  This doesn't seem to work either (and again still compiles):  (JCH still not working 2010-05-05)
+  LocationType p5[4], p6;
+  //give it some values...
+  p5[i] = p6; // good code
+  p5[i] *= p6;   // generates bad code JCH 2010-05-05
+//  NumOut(0, LCD_LINE1, p5[i].X);
+
+//  This would be nice... (compiles too, but doesn't work) (JCH working now 2010-05-05)
+  LocationType p7[2], p8[2];
+  // p7 items
+  p7[0].X = 2; p7[0].Y = 2;
+  p7[1].X = 4; p7[1].Y = 4;
+  // p8 items
+  p8[0].X = 4; p8[0].Y = 4;
+  p8[1].X = 5; p8[1].Y = 5;
+  //give it some values...
+  p7 *= p8;
+  NumOut(0, LCD_LINE6, p7[0].X);
+  NumOut(30, LCD_LINE6, p7[0].Y);
+  NumOut(0, LCD_LINE7, p7[1].X);
+  NumOut(30, LCD_LINE7, p7[1].Y);
+  Wait(SEC_5);
+}

@@ -1,5 +1,5 @@
 PROGRAMS = wavrsocvt.exe
-VER = 1.0.1.0
+VER = 1.0.2.0
 DOBJECTS=uCmdLineUtils.o ParamUtils.o uCommonUtils.o uWav2RsoCvt.o uVersionInfo.o wavrsocvt.dpr
 
 all:: $(DOBJECTS) $(PROGRAMS)

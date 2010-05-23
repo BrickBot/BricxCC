@@ -19,7 +19,7 @@ PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fusamplerate
 
 # Linux
 PTOOLPREFIX=/usr/bin/
-PPC=$(PTOOLPREFIX)ppc386
+PPC=$(PTOOLPREFIX)fpc
 
 # how to link executable
 wavrsocvt: wavrsocvt.dpr wavrsocvt_preproc.inc
