@@ -1,0 +1,15 @@
+//  Display battery voltage for four seconds.
+// This version does not use floats and will work on NXTs with firmware 1.07.
+
+// Note: the BatteryLevel API call returns an unsigned integer giving the 
+// battery level in millivolts.
+task main()
+{
+   unsigned int millivolts = BatteryLevel();
+   unsigned int int_volts = millivolts / 1000;
+   millivolts %= 1000;
+   string left = FormatNum("Battery: %d", int_volts);
+   string right = FormatNum(".%03d", millivolts);
+   TextOut(0, LCD_LINE2, StrCat(left, right), true);
+   Wait(SEC_4);
+}

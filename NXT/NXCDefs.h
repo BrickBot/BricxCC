@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-05-13
- * \version 71
+ * \date 2010-05-22
+ * \version 72
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -4682,6 +4682,9 @@ inline unsigned long CurrentTick();
 /** \example ex_CurrentTick.nxc
  * This is an example of how to use the \ref CurrentTick function.
  */
+/** \example util_rpm.nxc
+ * This is an example of how to use the \ref CurrentTick and \ref MotorRotationCount functions.
+ */
  
 /**
  * Get the first tick.
@@ -5037,7 +5040,7 @@ inline void Stop(bool bvalue);
  * \param newTask The task to start executing after exiting the current task.
  */
 inline void ExitTo(task newTask);
-/** \example ex_exitto.nxc
+/** \example alternating_tasks.nxc
  * This is an example of how to use the \ref ExitTo function.
  */
 
@@ -7864,7 +7867,10 @@ inline byte LongAbort(void);
  * \return The battery level
  */
 inline unsigned int BatteryLevel(void);
-/** \example ex_BatteryLevel.nxc
+/** \example util_battery_1.nxc
+ * This is an example of how to use the \ref BatteryLevel function.
+ */
+/** \example util_battery_2.nxc
  * This is an example of how to use the \ref BatteryLevel function.
  */
 
