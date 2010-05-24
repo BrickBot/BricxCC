@@ -161,6 +161,7 @@ type
     procedure LessOrEqual;
     procedure NotEqual;
     procedure Subtract;
+    procedure CommaExpression;
     procedure BoolExpression;
     procedure Greater;
     procedure LeftShift;
@@ -2620,7 +2621,7 @@ begin
   if Token = TOK_OPENPAREN then begin
     OpenParen;
 //    Next;
-    BoolExpression;
+    CommaExpression;
     CloseParen;
   end
   else begin
@@ -3010,9 +3011,7 @@ procedure TNXCComp.Equal;
 begin
   Next; // two equal signs of equality comparison
   MatchString('=');
-  Relation;
-//  BoolExpression;
-//  Expression;
+  Expression;
   PopCmpEqual;
   StoreZeroFlag;
 end;
@@ -3165,9 +3164,7 @@ end;
 procedure TNXCComp.LessOrEqual;
 begin
   Next;
-  Relation;
-//  BoolExpression;
-//  Expression;
+  Expression;
   PopCmpLessOrEqual;
   StoreZeroFlag;
 end;
@@ -3178,9 +3175,7 @@ end;
 procedure TNXCComp.NotEqual;
 begin
   Next;
-  Relation;
-//  BoolExpression;
-//  Expression;
+  Expression;
   PopCmpNEqual;
   StoreZeroFlag;
 end;
@@ -3216,9 +3211,7 @@ begin
     '>' : NotEqual;
     '<' : LeftShift;
   else
-  Relation;
-//    BoolExpression;
-//    Expression;
+    Expression;
     PopCmpLess;
     StoreZeroFlag;
   end;
@@ -3233,9 +3226,7 @@ begin
   case Token of
     '=' : begin
       Next;
-      Relation;
-//      BoolExpression;
-//      Expression;
+      Expression;
       PopCmpGreaterOrEqual;
       StoreZeroFlag;
     end;
@@ -3243,9 +3234,7 @@ begin
       RightShift;
     end;
   else
-    Relation;
-//    BoolExpression;
-//    Expression;
+    Expression;
     PopCmpGreater;
     StoreZeroFlag;
   end;
@@ -3439,6 +3428,17 @@ begin
   PostLabel(L);
 end;
 
+procedure TNXCComp.CommaExpression;
+begin
+  BoolExpression;
+  // handle comma?
+  if Token = TOK_COMMA then
+  begin
+    Next; // skip past the comma
+    CommaExpression;
+  end;
+end;
+
 {---------------------------------------------------------------}
 { Parse and Translate a Boolean Expression }
 
@@ -3454,11 +3454,11 @@ begin
     L1 := NewLabel;
     L2 := NewLabel;
     BranchFalse(L1);
-    BoolExpression;
+    CommaExpression;
     Branch(L2);
     MatchString(':');
     PostLabel(L1);
-    BoolExpression;
+    CommaExpression;
     PostLabel(L2);
   end;
 //  ResetStatementType;
@@ -4047,7 +4047,7 @@ begin
     oldType := fLHSDataType;
     try
       fLHSDataType := TOK_LONGDEF;
-      BoolExpression;
+      CommaExpression;
     finally
       fLHSDataType := oldType;
     end;
@@ -4238,7 +4238,7 @@ begin
   end
   else
   begin
-    BoolExpression;
+    CommaExpression;
     StoreArray(aName, idx, RegisterName);
   end;
 end;
@@ -4264,7 +4264,7 @@ begin
       oldType := fLHSDataType;
       try
         fLHSDataType := TOK_LONGDEF;
-        BoolExpression;
+        CommaExpression;
       finally
         fLHSDataType := oldType;
       end;
@@ -4272,7 +4272,7 @@ begin
       // 2010-05-05 JCH - to make += work with non-scalars on the RHS I undid the
       // above change.  Testing seems to prove that scalars on the RHS still
       // work correctly.
-      BoolExpression;
+      CommaExpression;
       // end of 2010-05-05 changes
       case savedtoken of
         '+' : StoreAdd(name);
@@ -4306,7 +4306,7 @@ begin
       begin
         Next; // move to '='
         Next; // move to next token
-        BoolExpression;
+        CommaExpression;
         StoreSign(name);
       end
       else
@@ -4319,7 +4319,7 @@ begin
       begin
         Next; // move to '='
         Next; // move to next token
-        BoolExpression;
+        CommaExpression;
         StoreAbs(name);
       end
       else
@@ -4333,7 +4333,7 @@ begin
       begin
         Next; // move to '='
         Next; // move to next token
-        BoolExpression;
+        CommaExpression;
         StoreShift(savedtoken='>', name);
       end
       else
@@ -4481,7 +4481,7 @@ begin
   end
   else
   begin
-    BoolExpression;
+    CommaExpression;
     Store(aName);
   end;
 end;
@@ -4495,7 +4495,7 @@ var
 begin
   Next;
   OpenParen;
-  BoolExpression;
+  CommaExpression;
   CloseParen;
   L1 := NewLabel;
   L2 := L1;
@@ -4527,7 +4527,7 @@ begin
   L1 := NewLabel;
   L2 := NewLabel;
   PostLabel(L1);
-  BoolExpression;
+  CommaExpression;
   CloseParen;
   BranchFalse(L2);
   Block(L2, L1);
@@ -4546,7 +4546,7 @@ begin
   Block(L2, L1);
   MatchString('while');
   OpenParen;
-  BoolExpression;
+  CommaExpression;
   CloseParen;
   BranchFalse(L2);
   Branch(L1);
@@ -4562,7 +4562,7 @@ begin
   OpenParen;
   L1 := NewLabel;
   L2 := NewLabel;
-  BoolExpression;
+  CommaExpression;
   CloseParen;
   push;
   svar := tos;
@@ -4594,7 +4594,7 @@ begin
   if bSwitchIsString then
     StringExpression('')
   else
-    BoolExpression;
+    CommaExpression;
   CloseParen;
   L2 := NewLabel;
   idx := SwitchFixupIndex;
@@ -4909,7 +4909,7 @@ begin
     end;
     PostLabel(L1);
     if Token <> TOK_SEMICOLON then
-      BoolExpression
+      CommaExpression
     else
       LoadConst('1');
     Semi;
@@ -5052,7 +5052,7 @@ begin
           Assignment;
       end;
       TOK_HEX, TOK_NUM, '+', '-': begin
-        BoolExpression;
+        CommaExpression;
       end;
       TOK_CLOSEPAREN : CloseParen;
       TOK_SEMICOLON : ;// do nothing
@@ -7227,7 +7227,7 @@ begin
   end
   else if rdt <> #0 then
   begin
-    BoolExpression;
+    CommaExpression;
     MoveToCorrectRegister(rdt);
   end;
 //  Semi;
@@ -9567,7 +9567,7 @@ begin
   oldExpStr := fExpStr;
   try
     fLHSDataType := TOK_LONGDEF;
-    BoolExpression;
+    CommaExpression;
   finally
     fLHSDataType := tmpDT;
     fExpStr      := oldExpStr;
