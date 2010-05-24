@@ -166,7 +166,7 @@ var
 begin
   // map between a keyword such as DrawTextType and the HTML topic for that keyword
   // (e.g., struct_draw_text_type.html)
-  Result := keyword;
+  Result := keyword + '.html';
   i := HTMLTopicMap.IndexOf(keyword);
   if i <> -1 then
     Result := TStringObj(HTMLTopicMap.Objects[i]).Value;

@@ -122,7 +122,7 @@
  * - @subpage vardecl
  * - @subpage asgn
  * - @subpage ctrls
- * - @subpage asm
+ * - @subpage asmblock
  * - @subpage otherst
  *
  */
@@ -928,7 +928,7 @@
  * 
  */
 
-/** @page asm The asm Statement
+/** @page asmblock The asm Statement
  * \brief
  * 
  * The asm statement is used to define many of the NXC API calls. The syntax of 
