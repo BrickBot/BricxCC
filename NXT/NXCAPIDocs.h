@@ -29,149 +29,18 @@
 #define NXCAPIDOCS_H
 
 /** @mainpage NXC Programmer's Guide
+ * \brief
  * 
- * <center>
- * <h2>May 22, 2010</h2>
- * <h2>by John Hansen </h2>
- * </center>
+ * <h2><center>May 22, 2010</center></h2>
+ * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
  * - @subpage lang
  *
  */
 
-/** @page lang The NXC Language
- * 
- * This section describes the NXC language. This includes the lexical rules used by the compiler, 
- * the structure of programs, statements and expressions, and the operation of the preprocessor.
- * 
- * NXC is a case-sensitive language, just like C and C++, which means the identifier "xYz" is 
- * not the same identifier as "Xyz". Similarly, the "if" statement begins with the keyword "if" 
- * but "iF", "If", or "IF" are all just valid identifiers - not keywords.
- * 
- * - @subpage lexrules
- * - @subpage progstruct
- * - @subpage statements
- * - @subpage expressions
- * - @subpage preproc
- *
- */
-
-/** @page lexrules Lexical Rules
- *
- * The lexical rules describe how NXC breaks a source file into individual tokens. This includes 
- * the way comments are written, the handling of whitespace, and valid characters for identifiers.
- * 
- * - @subpage cmts
- * - @subpage wspace
- * - @subpage consts
- * - @subpage strch
- * - @subpage idkey
- *
- */
-
-/** @page progstruct Program Structure
- * 
- * An NXC program is composed of code blocks and variables. There are two distinct types of code 
- * blocks: tasks and functions. Each type of code block has its own unique features, but they share 
- * a common structure. The maximum number of code blocks of both tasks and functions combined is 256.
- * 
- * - @subpage codeorder
- * - @subpage tasks
- * - @subpage func
- * - @subpage vars
- * - @subpage structs
- * - @subpage arrays
- *
- */
-
-/** @page statements Statements
- * 
- * The body of a code block (task or function) is composed of statements. Statements are 
- * terminated with a semi-colon (';'), as you have seen in the example code above.
- * 
- * - @subpage vardecl
- * - @subpage asgn
- * - @subpage ctrls
- * - @subpage asm
- * - @subpage otherst
- *
- */
-
-/** @page expressions Expressions
- * 
- * Values are the most primitive type of expressions. More complicated expressions are 
- * formed from values using various operators.
- * 
- * Numerical constants in the NXT are represented as integers or floating point values. The 
- * type depends on the value of the constant. NXC internally uses 32 bit floating point math 
- * for constant expression evaluation. Numeric constants are written as either decimal (e.g. 
- * 123, 3.14) or hexadecimal (e.g. 0xABC). Presently, there is very little range checking on 
- * constants, so using a value larger than expected may produce unusual results.
- * 
- * Two special values are predefined: true and false. The value of false is zero (0), while 
- * the value of true is one (1). The same values hold for relational operators (e.g. <): when 
- * the relation is false the value is 0, otherwise the value is 1.
- * 
- * Values may be combined using operators. NXC operators are listed here in order of precedence 
- * from highest to lowest.
- * 
- * <center><table>
- * <tr><th>Operator</th><th>Description</th><th>Associativity</th><th>Restriction</th><th>Example</th></tr>
- * <tr><td>abs()</td><td>Absolute value</td><td>n/a</td><td>&nbsp;</td><td>abs(x)</td></tr>
- * <tr><td>sign()</td><td>Sign of operand</td><td>n/a</td><td>&nbsp;</td><td>sign(x)</td></tr>
- * <tr><td>++, --</td><td>Pre/post increment, Pre/post decrement</td><td>right/left</td><td>variables only</td><td>++x, x++</td></tr>
- * <tr><td>-</td><td>Unary minus</td><td>right</td><td>&nbsp;</td><td>-x</td></tr>
- * <tr><td>~</td><td>Bitwise negation (unary)</td><td>right</td><td>&nbsp;</td><td>~123</td></tr>
- * <tr><td>!</td><td>Logical negation</td><td>right</td><td>&nbsp;</td><td>!x</td></tr>
- * <tr><td>*, /, %</td><td>Multiplication, division, modulo</td><td>left</td><td>&nbsp;</td><td>x * y</td></tr>
- * <tr><td>+, -</td><td>Addition, subtraction</td><td>left</td><td>&nbsp;</td><td>x + y</td></tr>
- * <tr><td><<, >></td><td>Left and right shift</td><td>left</td><td>&nbsp;</td><td>x <<  4</td></tr>
- * <tr><td><, >, <=, >=</td><td>relational operators</td><td>left</td><td>&nbsp;</td><td>x < y</td></tr>
- * <tr><td>==, !=</td><td>equal to, not equal to</td><td>left</td><td>&nbsp;</td><td>x == 1</td></tr>
- * <tr><td>&</td><td>Bitwise AND</td><td>left</td><td>&nbsp;</td><td>x & y</td></tr>
- * <tr><td>^</td><td>Bitwise XOR</td><td>left</td><td>&nbsp;</td><td>x ^  y</td></tr>
- * <tr><td>|</td><td>Bitwise OR</td><td>left</td><td>&nbsp;</td><td>x | y</td></tr>
- * <tr><td>&&</td><td>Logical AND</td><td>left</td><td>&nbsp;</td><td>x && y</td></tr>
- * <tr><td>||</td><td>Logical OR</td><td>left</td><td>&nbsp;</td><td>x || y</td></tr>
- * <tr><td>? :</td><td>conditional value</td><td>n/a</td><td>&nbsp;</td><td>x==1 ? y : z</td></tr>
- * </table>
- * Table 5. Expression Operators</center>
- * Where needed, parentheses are used to change the order of evaluation:
- * \code
- * x = 2 + 3 * 4;	// set x to 14
- * y = (2 + 3) * 4;	// set y to 20
- * \endcode
- * 
- * - @subpage condtn
- *
- */
-
-/** @page preproc The Preprocessor
- * 
- * NXC also includes a preprocessor that is modeled after the Standard C preprocessor. 
- * The C preprocessor processes a source code file before the compiler does. It handles 
- * such tasks as including code from other files, conditionally including or excluding 
- * blocks of code, stripping comments, defining simple and parameterized macros, and 
- * expanding macros wherever they are encountered in the source code. 
- * 
- * The NXC preprocessor implements the following standard preprocessor directives: 
- * \#include, \#define, \#ifdef, \#ifndef, \#endif, \#if, \#elif, \#undef, \#\#, \#line, 
- * \#error, and \#pragma. It also supports two non-standard directives: \#download and 
- * \#import. Its implementation is close to a standard C preprocessor's, so most preprocessor 
- * directives should work as C programmers expect in NXC. Any significant deviations are 
- * explained below.
- * 
- * - @subpage incl
- * - @subpage defn
- * - @subpage concat
- * - @subpage condcomp
- * - @subpage import
- * - @subpage downld
- *
- */
-
 /** @page intro Introduction
+ * \brief
  * 
  * NXC stands for Not eXactly C. It is a simple language for programming the LEGO MINDSTORMS 
  * NXT product. The NXT has a bytecode interpreter (provided by LEGO), which can be used to 
@@ -196,7 +65,147 @@
  * http://bricxcc.sourceforge.net/nxc/.
  */
 
+/** @page lang The NXC Language
+ * \brief
+ *
+ * This section describes the NXC language. This includes the lexical rules used by the compiler, 
+ * the structure of programs, statements and expressions, and the operation of the preprocessor.
+ * 
+ * NXC is a case-sensitive language, just like C and C++, which means the identifier "xYz" is 
+ * not the same identifier as "Xyz". Similarly, the "if" statement begins with the keyword "if" 
+ * but "iF", "If", or "IF" are all just valid identifiers - not keywords.
+ * 
+ * - @subpage lexrules
+ * - @subpage progstruct
+ * - @subpage statements
+ * - @subpage expressions
+ * - @subpage preproc
+ *
+ */
+
+/** @page lexrules Lexical Rules
+ * \brief
+ *
+ * The lexical rules describe how NXC breaks a source file into individual tokens. This includes 
+ * the way comments are written, the handling of whitespace, and valid characters for identifiers.
+ * 
+ * - @subpage cmts
+ * - @subpage wspace
+ * - @subpage consts
+ * - @subpage strch
+ * - @subpage idkey
+ *
+ */
+
+/** @page progstruct Program Structure
+ * \brief
+ * 
+ * An NXC program is composed of code blocks and variables. There are two distinct types of code 
+ * blocks: tasks and functions. Each type of code block has its own unique features, but they share 
+ * a common structure. The maximum number of code blocks of both tasks and functions combined is 256.
+ * 
+ * - @subpage codeorder
+ * - @subpage tasks
+ * - @subpage func
+ * - @subpage vars
+ * - @subpage structs
+ * - @subpage arrays
+ *
+ */
+
+/** @page statements Statements
+ * \brief
+ * 
+ * The body of a code block (task or function) is composed of statements. Statements are 
+ * terminated with a semi-colon (';'), as you have seen in the example code above.
+ * 
+ * - @subpage vardecl
+ * - @subpage asgn
+ * - @subpage ctrls
+ * - @subpage asm
+ * - @subpage otherst
+ *
+ */
+
+/** @page expressions Expressions
+ * \brief
+ * 
+ * Values are the most primitive type of expressions. More complicated expressions are 
+ * formed from values using various operators.
+ * 
+ * Numerical constants in the NXT are represented as integers or floating point values. The 
+ * type depends on the value of the constant. NXC internally uses 32 bit floating point math 
+ * for constant expression evaluation. Numeric constants are written as either decimal (e.g. 
+ * 123, 3.14) or hexadecimal (e.g. 0xABC). Presently, there is very little range checking on 
+ * constants, so using a value larger than expected may produce unusual results.
+ * 
+ * Two special values are predefined: true and false. The value of false is zero (0), while 
+ * the value of true is one (1). The same values hold for relational operators (e.g. <): when 
+ * the relation is false the value is 0, otherwise the value is 1.
+ * 
+ * Values may be combined using operators. NXC operators are listed here in order of precedence 
+ * from highest to lowest.
+ * 
+ * <center>
+ * <table>
+ * <tr><th>Operator</th><th>Description</th><th>Associativity</th><th>Restriction</th><th>Example</th></tr>
+ * <tr><td>abs()</td><td>Absolute value</td><td>n/a</td><td>&nbsp;</td><td>abs(x)</td></tr>
+ * <tr><td>sign()</td><td>Sign of operand</td><td>n/a</td><td>&nbsp;</td><td>sign(x)</td></tr>
+ * <tr><td>++, --</td><td>Pre/post increment, Pre/post decrement</td><td>right/left</td><td>variables only</td><td>++x, x++</td></tr>
+ * <tr><td>-</td><td>Unary minus</td><td>right</td><td>&nbsp;</td><td>-x</td></tr>
+ * <tr><td>~</td><td>Bitwise negation (unary)</td><td>right</td><td>&nbsp;</td><td>~123</td></tr>
+ * <tr><td>!</td><td>Logical negation</td><td>right</td><td>&nbsp;</td><td>!x</td></tr>
+ * <tr><td>*, /, %</td><td>Multiplication, division, modulo</td><td>left</td><td>&nbsp;</td><td>x * y</td></tr>
+ * <tr><td>+, -</td><td>Addition, subtraction</td><td>left</td><td>&nbsp;</td><td>x + y</td></tr>
+ * <tr><td><<, >></td><td>Left and right shift</td><td>left</td><td>&nbsp;</td><td>x <<  4</td></tr>
+ * <tr><td><, >, <=, >=</td><td>relational operators</td><td>left</td><td>&nbsp;</td><td>x < y</td></tr>
+ * <tr><td>==, !=</td><td>equal to, not equal to</td><td>left</td><td>&nbsp;</td><td>x == 1</td></tr>
+ * <tr><td>&</td><td>Bitwise AND</td><td>left</td><td>&nbsp;</td><td>x & y</td></tr>
+ * <tr><td>^</td><td>Bitwise XOR</td><td>left</td><td>&nbsp;</td><td>x ^  y</td></tr>
+ * <tr><td>|</td><td>Bitwise OR</td><td>left</td><td>&nbsp;</td><td>x | y</td></tr>
+ * <tr><td>&&</td><td>Logical AND</td><td>left</td><td>&nbsp;</td><td>x && y</td></tr>
+ * <tr><td>||</td><td>Logical OR</td><td>left</td><td>&nbsp;</td><td>x || y</td></tr>
+ * <tr><td>? :</td><td>conditional value</td><td>n/a</td><td>&nbsp;</td><td>x==1 ? y : z</td></tr>
+ * </table>
+ * </center>
+ * <center>Table 5. Expression Operators</center>
+ * Where needed, parentheses are used to change the order of evaluation:
+ * \code
+ * x = 2 + 3 * 4;	// set x to 14
+ * y = (2 + 3) * 4;	// set y to 20
+ * \endcode
+ * 
+ * - @subpage condtn
+ *
+ */
+
+/** @page preproc The Preprocessor
+ * \brief
+ * 
+ * NXC also includes a preprocessor that is modeled after the Standard C preprocessor. 
+ * The C preprocessor processes a source code file before the compiler does. It handles 
+ * such tasks as including code from other files, conditionally including or excluding 
+ * blocks of code, stripping comments, defining simple and parameterized macros, and 
+ * expanding macros wherever they are encountered in the source code. 
+ * 
+ * The NXC preprocessor implements the following standard preprocessor directives: 
+ * \#include, \#define, \#ifdef, \#ifndef, \#endif, \#if, \#elif, \#undef, \#\#, \#line, 
+ * \#error, and \#pragma. It also supports two non-standard directives: \#download and 
+ * \#import. Its implementation is close to a standard C preprocessor's, so most preprocessor 
+ * directives should work as C programmers expect in NXC. Any significant deviations are 
+ * explained below.
+ * 
+ * - @subpage incl
+ * - @subpage defn
+ * - @subpage concat
+ * - @subpage condcomp
+ * - @subpage import
+ * - @subpage downld
+ *
+ */
+
 /** @page cmts Comments
+ * \brief
  * 
  * Two forms of comments are supported in NXC. The first are traditional C comments. They begin 
  * with '/*' and end with '* /'. These comments are allowed to span multiple lines, but they cannot 
@@ -223,6 +232,7 @@
  */
 
 /** @page wspace Whitespace
+ * \brief
  * 
  * Whitespace consists of all spaces, tabs, and newlines. It is used to separate tokens and to 
  * make a program more readable. As long as the tokens are distinguishable, adding or subtracting 
@@ -244,6 +254,7 @@
  */
 
 /** @page consts Numerical Constants
+ * \brief
  * 
  * Numerical constants may be written in either decimal or hexadecimal form. Decimal 
  * constants consist of one or more decimal digits. Decimal constants may optionally 
@@ -259,6 +270,7 @@
  */
 
 /** @page strch String and Character Constants
+ * \brief
  * 
  * String constants in NXC, just as in C, are delimited with double quote characters. 
  * NXC has a string data type that makes strings easier to use than in C. Behind the scenes, 
@@ -277,6 +289,7 @@
  */
 
 /** @page idkey Identifiers and Keywords
+ * \brief
  * 
  * Identifiers are used for variable, task, function, and subroutine names. The first character 
  * of an identifier must be an upper or lower case letter or the underscore ('_'). Remaining 
@@ -292,6 +305,7 @@
  */
 
 /** @page codeorder Code Order
+ * \brief
  *
  * Code order has two aspects: the order in which the code appears in the source code file 
  * and the order in which it is executed at runtime. The first will be referred to as the 
@@ -336,6 +350,7 @@
  */
 
 /** @page tasks Tasks
+ * \brief
  * 
  * Since the NXT supports multi-threading, a task in NXC directly corresponds to an NXT thread. 
  * Tasks are defined using the task keyword with the syntax shown in the code sample below.
@@ -391,6 +406,7 @@
  */
 
 /** @page func Functions
+ * \brief
  * 
  * It is often helpful to group a set of statements together into a single function, which 
  * your code can then call as needed. NXC supports functions with arguments and return 
@@ -530,6 +546,7 @@
  */
 
 /** @page vars Variables
+ * \brief
  * 
  * All variables in NXC are defined using one of the types listed in the table below. 
  * <center><table>
@@ -547,7 +564,8 @@
  * <tr><td>Structure (struct)</td><td>User-defined structure types</td></tr>
  * <tr><td>Array</td><td>Arrays of any type</td></tr>
  * </table>
- * Table 2. Variable Types</center>
+ * </center>
+ * <center>Table 2. Variable Types</center>
  * Variables are declared using the keyword(s) for the desired type, followed by a comma-separated 
  * list of variable names and terminated by a semicolon (';'). Optionally, an initial value for 
  * each variable may be specified using an equals sign ('=') after the variable name. Several 
@@ -590,6 +608,7 @@
  */
 
 /** @page structs Structures
+ * \brief
  * 
  * NXC supports user-defined aggregate types known as structs. These are declared 
  * very much like you declare structs in a C program. 
@@ -624,6 +643,7 @@
  */
 
 /** @page arrays Arrays
+ * \brief
  * 
  * NXC also support arrays. Arrays are declared the same way as ordinary variables, but 
  * with an open and close bracket following the variable name.
@@ -697,6 +717,7 @@
  */
 
 /** @page vardecl Variable Declaration
+ * \brief
  * 
  * Variable declaration, which has already been discussed, is one type of statement. Its 
  * purpose is to declare a local variable (with optional initialization) for use within the 
@@ -726,6 +747,7 @@
  */
 
 /** @page asgn Assignment
+ * \brief
  * 
  * Once declared, variables may be assigned the value of an expression using the 
  * syntax shown in the code sample below.
@@ -751,7 +773,8 @@
  * <tr><td>&gt;&gt;=</td><td>Right shift variable by expression</td></tr>
  * <tr><td>&lt;&lt;=</td><td>Left shift variable by expression</td></tr>
  * </table>
- * Table 3. Operators</center>
+ * </center>
+ * <center>Table 3. Operators</center>
  * The code sample below shows a few of the different types of operators that you can 
  * use in NXC expressions.
  * \code
@@ -763,6 +786,7 @@
  */
 
 /** @page ctrls Control Structures
+ * \brief
  * 
  * The simplest control structure is a compound statement. This is a list of statements 
  * enclosed within curly braces ('{' and '}'):
@@ -905,6 +929,7 @@
  */
 
 /** @page asm The asm Statement
+ * \brief
  * 
  * The asm statement is used to define many of the NXC API calls. The syntax of 
  * the statement is shown below.
@@ -938,7 +963,8 @@
  * A few NXC keywords have meaning only within an asm statement. These keywords provide 
  * a means for returning string or scalar values from asm statements and for using 
  * temporary variables of byte, word, long, and float types.
- * <center><table>
+ * <center>
+ * <table>
  * <tr><th>ASM Keyword</th><th>Meaning</th></tr>
  * <tr><td>__RETURN__, __RETURNS__</td><td>Used to return a signed value other than __RETVAL__ or __STRRETVAL__</td></tr>
  * <tr><td>__RETURNU__</td><td>Used to return an unsigned value.</td></tr>
@@ -968,7 +994,8 @@
  * <tr><td>__FILE__</td><td>The current file name</td></tr>
  * <tr><td>__VER__</td><td>The product version number</td></tr>
  * </table>
- * Table 4. ASM Keywords</center>
+ * </center>
+ * <center>Table 4. ASM Keywords</center>
  * The asm block statement and these special ASM keywords are used throughout the NXC API. You 
  * can have a look at the NXCDefs.h header file for several examples of how they are used. To 
  * keep the main NXC code as "C-like" as possible and for the sake of better readability NXC asm 
@@ -990,6 +1017,7 @@
  */
 
 /** @page otherst Other NXC Statements
+ * \brief
  * 
  * A function call can also be a statement of the following form:
  * \code
@@ -1039,6 +1067,7 @@
  */
 
 /** @page condtn Conditions
+ * \brief
  * 
  * Comparing two expressions forms a condition. There are also two constant conditions - true and 
  * false - that always evaluate to true or false respectively. A condition may be negated with the 
@@ -1048,7 +1077,8 @@
  * only evaluating the left hand term of the condition, then the right hand term will not be evaluated.
  * 
  * The table below summarizes the different types of conditions.
- * <center><table>
+ * <center>
+ * <table>
  * <tr><th>Condition</th><th>Meaning</th></tr>
  * <tr><td>true</td><td>always true</td></tr>
  * <tr><td>false</td><td>always false</td></tr>
@@ -1063,13 +1093,15 @@
  * <tr><td>Cond1 &amp;&amp; cond2</td><td>logical AND of two conditions (true if and only if both conditions are true)</td></tr>
  * <tr><td>Cond1 || cond2</td><td>logical OR of two conditions (true if and only if at least one of the conditions are true)</td></tr>
  * </table>
- * Table 6. Conditions</center>
+ * </center>
+ * <center>Table 6. Conditions</center>
  * You can use conditions in NXC control structures, such as the if-statement and the while or until 
  * statements, to determine exactly how you want your program to behave.
  * 
  */
 
 /** @page incl #include
+ * \brief
  * 
  * The \#include command works as in Standard C, with the caveat that the filename 
  * must be enclosed in double quotes. There is no notion of a system include path, 
@@ -1087,6 +1119,7 @@
  */
 
 /** @page defn #define
+ * \brief
  * 
  * The \#define command is used for macro substitution. Redefinition of a macro will 
  * result in a compiler warning. Macros are normally restricted to one line because 
@@ -1105,6 +1138,7 @@
  */
 
 /** @page concat ## (Concatenation)
+ * \brief
  * 
  * The \#\# directive works similar to the C preprocessor. It is replaced by nothing, 
  * which causes tokens on either side to be concatenated together. Because it acts 
@@ -1140,10 +1174,12 @@
  */
 
 /** @page condcomp Conditional Compilation
+ * \brief
  * 
  * Conditional compilation works similar to the C preprocessor's conditional compilation. 
  * The following preprocessor directives may be used:
- * <center><table>
+ * <center>
+ * <table>
  * <tr><th>Directive</th><th>Meaning</th></tr>
  * <tr><td>\#ifdef symbol</td><td>If symbol is defined then compile the following code</td></tr>
  * <tr><td>\#ifndef symbol</td><td>If symbol is not defined then compile the following code</td></tr>
@@ -1152,11 +1188,15 @@
  * <tr><td>\#if condition</td><td>If the condition evaluates to true then compile the following code</td></tr>
  * <tr><td>\#elif</td><td>Same as \#else but used with \#if</td></tr>
  * </table>
- * Table 7. Conditional compilation directives</center>
+ * </center>
+ * <center>Table 7. Conditional compilation directives</center>
+ *
+ * See the NXTDefs.h and NXCDefs.h header files for many examples of how to use conditional compilation.
  * 
  */
 
 /** @page import #import
+ * \brief
  * 
  * The \#import directive lets you define a global byte array variable in your NXC program 
  * that contains the contents of the imported file. Like \#include, this directive is 
@@ -1177,6 +1217,7 @@
  */
 
 /** @page downld #download
+ * \brief
  * 
  * The \#download directive works in conjunction with the compiler's built-in download 
  * capability. It lets you tell the compiler to download a specified auxiliary file in 
