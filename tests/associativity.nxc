@@ -1,0 +1,45 @@
+task main()
+{
+  int x, y, z, p, d, q;
+  //
+  // LEVEL 5 binary operator precedence
+  //
+  // this code shows proper left-to-right associativity for *, /, %
+  // and right associativity for assignment operator
+  x = y * z / d % q;
+/*
+	mov __D0main, __main_7qG2_y_7qG2_000
+	mov __signed_stack_001main, __D0main
+	mov __D0main, __main_7qG2_z_7qG2_000
+	mul __D0main, __signed_stack_001main, __D0main
+	mov __signed_stack_001main, __D0main
+	mov __D0main, __main_7qG2_d_7qG2_000
+	div __D0main, __signed_stack_001main, __D0main
+	mov __signed_stack_001main, __D0main
+	mov __D0main, __main_7qG2_q_7qG2_000
+	mod __D0main, __signed_stack_001main, __D0main
+	mov __main_7qG2_x_7qG2_000, __D0main
+*/
+  //
+  // LEVEL 6 binary operator precedence
+  //
+  // this code shows proper left-to-right associativity for +, -
+  // and right associativity for assignment operator
+  x = y + z - d;
+/*
+	mov __D0main, __main_7qG2_y_7qG2_000
+	mov __signed_stack_001main, __D0main
+	mov __D0main, __main_7qG2_z_7qG2_000
+	add __D0main, __signed_stack_001main, __D0main
+	mov __signed_stack_001main, __D0main
+	mov __D0main, __main_7qG2_d_7qG2_000
+	sub __D0main, __signed_stack_001main, __D0main
+	mov __main_7qG2_x_7qG2_000, __D0main
+*/
+  //
+  // LEVEL 7 binary operator precedence
+  //
+  // this code shows INCORRECT associativity for << and >>
+  // and right associativity for assignment operator
+  x = y << z >> d;
+}
