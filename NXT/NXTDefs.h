@@ -7625,7 +7625,7 @@ ends
   acquire __RLSBmutex2 \
   acquire __RLSBmutex3 \
   mov __RLSReadPort, _port \
-  arrbuild __RLSReadBufVar, _addr, PSP_REG_BTN1 \
+  arrbuild __RLSReadBufVar, _addr, PSP_REG_BTNSET1 \
   set __RLSBytesCountVar, 6 \
   call __ReadLSBytesVar \
   tst EQ, _result, __RLSBResultVar \
@@ -7643,7 +7643,7 @@ ends
   compchk LT, _port, 0x04 \
   compchk GTEQ, _port, 0x00 \
   acquire __RLSBmutex##_port \
-  arrbuild __RLSReadBuf##_port, _addr, PSP_REG_BTN1 \
+  arrbuild __RLSReadBuf##_port, _addr, PSP_REG_BTNSET1 \
   set __RLSBytesCount##_port, 6 \
   call __ReadLSBytes##_port \
   tst EQ, _result, __RLSBResult##_port \
