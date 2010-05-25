@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, Forms, uParseCommon, SynEditHighlighter, 
-  BricxCCSynEdit;
+  BricxccSynEdit;
 
 type
   TFirmwareType = (ftStandard, ftBrickOS, ftPBForth, ftLeJOS, ftOther);

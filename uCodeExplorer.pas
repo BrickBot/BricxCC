@@ -28,7 +28,7 @@ uses
 {$ENDIF}
   Classes, Controls, Forms, ComCtrls, ExtCtrls, ImgList, Menus,
   uBricxCCProcLexer, uParseCommon, uOfficeComp, SynEditHighlighter,
-  BricxCCSynEdit;
+  BricxccSynEdit;
 
 type
   TfrmCodeExplorer = class(TForm)
