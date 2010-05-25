@@ -68,6 +68,9 @@ procedure PopulateEditorExpertsList(aStrings : TStrings);
 implementation
 
 uses
+{$IFDEF FPC}
+  LCLProc,
+{$ENDIF}
   SysUtils, Menus, Math, Controls, uNBCCommon, uEEAlignOpt,
   uLocalizedStrings, uBasicPrefs;
 
