@@ -14,6 +14,8 @@ Version 1.2.1.r2 (2010-05-24)
   parenthesis if you want a relation on the RHS of a relation.
 - Fixed a bug with the precedence level of the ! operator.
 - Added support for comma operator.
+- Fixed regression in ReadSensorMSPlayStation and ReadSensorMSPlayStationEx
+- Added command line switch to turn off status messages.
 
 Version 1.2.1.r1 (2010-05-13)
 -----------------------------
