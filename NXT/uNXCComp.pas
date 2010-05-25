@@ -461,6 +461,7 @@ type
     function  DataTypeOfDataspaceEntry(DE : TDataspaceEntry) : char;
     procedure LoadSystemFile(S : TStream);
     procedure CheckForMain;
+    function ProcessArrayDimensions(var lenexpr : string) : string;
   protected
     fTmpAsmLines : TStrings;
     fBadProgram : boolean;
@@ -5347,7 +5348,7 @@ procedure TNXCComp.AllocGlobal(const tname : string; dt : char; bInline, bSafeCa
 var
   savedval, ival, aval, lenexpr : string;
   dimensions, idx : integer;
-  bDone, bOpen, bArray : boolean;
+  bArray : boolean;
 begin
   Next;
   Scan;
@@ -5384,36 +5385,8 @@ begin
     lenexpr := '';
     bArray := False;
     dimensions := 0;
-    if (Token = '[') {and (Look = ']') }then begin
-//      if bConst then
-//        AbortMsg(sInvalidArrayDeclaration); // arrays cannot be declared constant
-      // declaring an array
-      bDone := False;
-      bOpen := False;
-      while not bDone {Token in ['[', ']']} do
-      begin
-        lenexpr := lenexpr + Value;
-        if Token in ['[', ']'] then
-          aval := aval + Token;
-        if bOpen and (Token = ']') then
-          bOpen := False
-        else if not bOpen and (Token = '[') then
-          bOpen := True
-        else if (bOpen and (Token = '[')) or
-                (not bOpen and (Token = ']')) then
-          AbortMsg(sInvalidArrayDeclaration);
-        Next;
-        if not bOpen and (Token <> '[') then
-          bDone := True;
-      end;
-{
-    if (Token = '[') and (Look = ']') then begin
-      // declaring an array
-      while Token in ['[', ']'] do begin
-        aval := aval + Token;
-        Next;
-      end;
-}
+    if Token = '[' then begin
+      aval := ProcessArrayDimensions(lenexpr);
       dimensions := Length(aval) div 2; // number of array dimensions
       dt := ArrayOfType(dt, dimensions);
       bArray := True;
@@ -8938,7 +8911,7 @@ end;
 
 procedure TNXCComp.ProcessStruct(bTypeDef : boolean);
 var
-  sname, mtype, aval, mname, mtypename : string;
+  sname, mtype, aval, mname, mtypename, tmp : string;
   DE : TDataspaceEntry;
   dt : TDSType;
   SL : TStringList;
@@ -9005,12 +8978,8 @@ begin
       Next;
       aval := '';
       while Token <> TOK_SEMICOLON do begin
-        if (Token = '[') and (Look = ']') then begin
-          // declaring an array
-          while Token in ['[', ']'] do begin
-            aval := aval + Token;
-            Next;
-          end;
+        if Token = '[' then begin
+          aval := ProcessArrayDimensions(tmp);
         end;
         if Token = ',' then begin
           AddMemberToCurrentStructure;
@@ -9836,6 +9805,33 @@ begin
   begin
     fCurFile := Value;
     DoCompilerStatusChange(Format(sCurrentFile, [Value]));
+  end;
+end;
+
+function TNXCComp.ProcessArrayDimensions(var lenexpr : string) : string;
+var
+  bDone, bOpen : boolean;
+begin
+  lenexpr := '';
+  Result := '';
+  // declaring an array
+  bDone := False;
+  bOpen := False;
+  while not bDone do
+  begin
+    lenexpr := lenexpr + Value;
+    if Token in ['[', ']'] then
+      Result := Result + Token;
+    if bOpen and (Token = ']') then
+      bOpen := False
+    else if not bOpen and (Token = '[') then
+      bOpen := True
+    else if (bOpen and (Token = '[')) or
+            (not bOpen and (Token = ']')) then
+      AbortMsg(sInvalidArrayDeclaration);
+    Next;
+    if not bOpen and (Token <> '[') then
+      bDone := True;
   end;
 end;
 
