@@ -251,6 +251,23 @@ begin
   end;
 end;
 
+{$IFDEF FPC}
+function StrRScanForCharInSet(const Line: string; Start: integer;
+  AChars: TSynIdentChars): integer;
+var
+  I: Integer;
+begin
+  Result := 0;
+  if (Start > 0) and (Start <= Length(Line)) then begin
+      for I := Start downto 1 do
+        if Line[I] in AChars then begin
+          Result := I;
+          Exit;
+        end;
+  end;
+end;
+{$ENDIF}
+
 function TBricxccSynEdit.DelimitedStartEx(XY: TPoint; DelimChars: TSynIdentChars): TPoint;
 var
   CX, CY: integer;
