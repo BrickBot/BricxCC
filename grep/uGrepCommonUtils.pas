@@ -87,7 +87,7 @@ resourcestring
 implementation
 
 uses
-  FileCtrl, uMiscDefines, BricxCCSynEdit, MainUnit, Math;
+  FileCtrl, uMiscDefines, BricxccSynEdit, MainUnit, Math;
 
 function IsCharIdentifier(aCh : Char) : boolean;
 const
