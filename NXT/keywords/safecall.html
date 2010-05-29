@@ -1,0 +1,19 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>safecall</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<p>Another optional keyword that can be specified prior to the return
+type of a function is the safecall keyword. If a function is marked as safecall
+then the compiler will synchronize the execution of this function across
+multiple threads by wrapping each call to the function in Acquire and Release
+calls. If a second thread tries to call a safecall function while another
+thread is executing it the second thread will have to wait until the function
+returns to the first thread. </p>
+</div>
+</body>
+</html>
