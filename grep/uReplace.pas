@@ -81,7 +81,6 @@ end;
 
 function InternalReplace(LineMode: Boolean; ALineResult: TLineResult; AFileResult: TFileResult; GrepSettings: TGrepSettings): Integer;
 var
-  InMemory: Boolean;
   TempString: string;
   MatchFile: string;
   TempFile: TStringList;
