@@ -48,8 +48,6 @@ type
     function ParamDataType(const n: string): char;
     function ParamTypeName(const n: string): string;
     function FuncParamDataType(const n: string): char;
-//    function ParamConstantValue(const n: string): string;
-//    procedure OptionalSemi;
     procedure CheckSemicolon;
     procedure OpenParen;
     procedure CloseParen;
@@ -99,7 +97,6 @@ type
     fSwitchDepth : integer;
     fCalc : TNBCExpParser;
     fOptimizeLevel: integer;
-//    fInlining : boolean;
     fInlineDepth : integer;
     fInlineStack : TObjectList; // list of TStrings
     fSafeCalling : boolean;
@@ -118,6 +115,7 @@ type
     fLastLoadedConst : string;
     fProcessingMathAssignment : boolean;
     fProcessingAsmBlock : boolean;
+    fNoCommaOperator : boolean;
     function AmInlining : boolean;
     procedure IncrementInlineDepth;
     procedure DecrementInlineDepth;
@@ -149,7 +147,6 @@ type
     procedure Multiply;
     procedure Term;
     procedure Add;
-    procedure Equal;
     procedure EqualString;
     procedure LessString;
     procedure EqualArrayOrUDT(const lhs : string);
@@ -158,23 +155,18 @@ type
     procedure DoPreIncOrDec(bPutOnStack : boolean);
     function  IncrementOrDecrement : boolean;
     function OptimizeExpression(const idx : integer) : string;
-    procedure LessOrEqual;
-    procedure NotEqual;
     procedure Subtract;
     procedure CommaExpression;
     procedure BoolExpression;
-    procedure Greater;
-    procedure LeftShift;
-    procedure Less;
-    procedure NEqual;
     procedure Relation;
     procedure StoreZeroFlag;
     function  ValueIsStringType(var dt : char) : boolean;
     function  ValueIsArrayType : boolean;
     function  ValueIsUserDefinedType : boolean;
-    procedure RightShift;
     procedure BoolTerm;
-    procedure NotFactor;
+    procedure BitOr;
+    procedure BitXor;
+    procedure BitAnd;
     function  TypesAreCompatible(lhs, rhs : char) : boolean;
     function  GetParamName(procname : string; idx : integer) : string;
     procedure DoCall(procname: string);
@@ -185,7 +177,7 @@ type
     procedure DoAssignValue(const aName : string; dt : char);
     procedure DoLocalArrayInit(const aName, ival : string; dt : char);
     procedure DoArrayAssignValue(const aName, idx : string; dt : char);
-    procedure DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string);
+    function DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;
     procedure Assignment;
     procedure CheckNotConstant(const aName : string);
     function Block(const lend : string = ''; const lstart : string = '') : boolean;
@@ -233,7 +225,6 @@ type
     procedure ProcedureBlock;
     procedure InitializeGlobalArrays;
     procedure FunctionBlock(Name, tname : string; dt : char; bInline, bSafeCall : boolean);
-//    procedure Error(s: string);
     procedure AbortMsg(s: string);
     procedure Expected(s: string);
     procedure Undefined(n: string);
@@ -264,12 +255,10 @@ type
     procedure EmitStackVariables;
     procedure EmitMutexDeclaration(const name : string);
     procedure EmitInlineParametersAndLocals(func : TInlineFunction);
-//    procedure EmitTypeDefs;
     procedure EmitLn(s: string);
     procedure EmitLnNoTab(s: string);
     procedure PostLabel(L: string);
     procedure LoadConst(n: string);
-//    procedure EmitInlineFunction(const idx : integer);
     procedure Negate;
     procedure NotIt;
     procedure Complement;
@@ -328,8 +317,6 @@ type
     procedure DoOnFwdRevSyncExPID;
     procedure DoResetCounters;
     procedure DoRotateMotors(idx : integer);
-//    procedure DoSetSensorTypeMode(idx : integer);
-//    procedure DoClearSetResetSensor;
     procedure DoTextNumOut(idx : integer);
     procedure DoFontTextNumOut(idx : integer);
     procedure DoDrawPoint;
@@ -372,7 +359,7 @@ type
     procedure LoadAPIFunctions;
     procedure AddAPIFunction(const name : string; id : integer);
     function  WhatIs(const n: string): TSymbolType;
-    procedure StringExpression(const Name : string; bAdd : boolean = False);
+    function StringExpression(const Name : string; bAdd : boolean = False) : boolean;
     procedure StringConcatAssignment(const Name : string);
     procedure StringFunction(const Name : string);
     function  TempSignedByteName: string;
@@ -424,6 +411,8 @@ type
     procedure StringRelation;
     procedure ArrayOrUDTRelation;
     procedure NumericRelation;
+    procedure NumericRelationLTGT;
+    procedure NumericShiftLeftRight;
     function  GetNBCSrc: TStrings;
     function  FunctionReturnType(const name: string): char;
     function  FunctionParameterCount(const name: string): integer;
@@ -1623,7 +1612,8 @@ begin
     ProcessDirectives(False);
     fExpStr := fExpStr + Value;
   end;
-  if not fProcessingAsmBlock then
+  if not fProcessingAsmBlock and
+     not (Token in ['<', '>', '|', '^', '&', '%', '/', '*', '-', '+', '=']) then
     SkipWhite; // also skip any whitespace after this token
 end;
 
@@ -2923,11 +2913,12 @@ begin
   Result := GetDecoratedIdent(Value);
 end;
 
-procedure TNXCComp.StringExpression(const Name : string; bAdd : boolean);
+function TNXCComp.StringExpression(const Name : string; bAdd : boolean) : boolean;
 var
   asmStr, val : string;
   dt : char;
 begin
+  Result := False;
   SkipWhite;
   fCCSet := False;
   if Look = TOK_OPENPAREN then
@@ -2957,7 +2948,7 @@ begin
     val := Value;
     Next;
     fArrayIndexStack.Clear;
-    DoNewArrayIndex(DataType(val), val, StrRetValName);
+    Result := DoNewArrayIndex(DataType(val), val, StrRetValName);
     if bAdd then
       asmStr := Format('strcat %s, %s, %s', [StrBufName, GetDecoratedIdent(Name), StrRetValName])
     else
@@ -3003,18 +2994,6 @@ begin
     end;
     EmitLn(asmStr);
   end;
-end;
-
-{---------------------------------------------------------------}
-{ Recognize and Translate a Relational "Equals" }
-
-procedure TNXCComp.Equal;
-begin
-  Next; // two equal signs of equality comparison
-  MatchString('=');
-  Expression;
-  PopCmpEqual;
-  StoreZeroFlag;
 end;
 
 procedure TNXCComp.EqualArrayOrUDT(const lhs : string);
@@ -3159,105 +3138,16 @@ begin
     Expected('"!="');
 end;
 
-{---------------------------------------------------------------}
-{ Recognize and Translate a Relational "Less Than or Equal" }
-
-procedure TNXCComp.LessOrEqual;
-begin
-  Next;
-  Expression;
-  PopCmpLessOrEqual;
-  StoreZeroFlag;
-end;
-
-{---------------------------------------------------------------}
-{ Recognize and Translate a Relational "Not Equals" }
-
-procedure TNXCComp.NotEqual;
-begin
-  Next;
-  Expression;
-  PopCmpNEqual;
-  StoreZeroFlag;
-end;
-
-{---------------------------------------------------------------}
-{ Recognize and Translate a left shift }
-
-procedure TNXCComp.LeftShift;
-begin
-  Next;
-  Expression;
-  PopLeftShift;
-end;
-
-{---------------------------------------------------------------}
-{ Recognize and Translate a right shift }
-
-procedure TNXCComp.RightShift;
-begin
-  Next;
-  Expression;
-  PopRightShift;
-end;
-
-{---------------------------------------------------------------}
-{ Recognize and Translate a Relational "Less Than" }
-
-procedure TNXCComp.Less;
-begin
-  Next;
-  case Token of
-    '=' : LessOrEqual;
-    '>' : NotEqual;
-    '<' : LeftShift;
-  else
-    Expression;
-    PopCmpLess;
-    StoreZeroFlag;
-  end;
-end;
-
-{---------------------------------------------------------------}
-{ Recognize and Translate a Relational "Greater Than" }
-
-procedure TNXCComp.Greater;
-begin
-  Next;
-  case Token of
-    '=' : begin
-      Next;
-      Expression;
-      PopCmpGreaterOrEqual;
-      StoreZeroFlag;
-    end;
-    '>' : begin
-      RightShift;
-    end;
-  else
-    Expression;
-    PopCmpGreater;
-    StoreZeroFlag;
-  end;
-end;
-
-procedure TNXCComp.NEqual;
-begin
-  Next;
-  if Token = '=' then
-    NotEqual
-  else
-    Expected('"!="');
-end;
-
 procedure TNXCComp.StringRelation;
+var
+  valLeftOnStack : boolean;
 begin
 (*
   The Expression function handles ++, --, +, -, ~, and ! unary operators
   for numeric expressions.  Do I need to handle these operators for
   string expressions (on both lhs and rhs)?
 *)
-  StringExpression('');
+  valLeftOnStack := StringExpression('');
   if IsRelop(Token) then begin
     // copy to temp string buffer
     EmitLn(Format('mov %s, %s', [StrTmpBufName, StrBufName]));
@@ -3269,7 +3159,10 @@ begin
     end;
   end
   else
-    LoadConst('1'); // a string expression is "true"
+  begin
+    if not valLeftOnStack then
+      LoadConst('1'); // a string expression is "true"
+  end;
 end;
 
 procedure TNXCComp.ArrayOrUDTRelation;
@@ -3279,7 +3172,7 @@ begin
 (*
   The Expression function handles ++, --, +, -, ~, and ! unary operators
   for numeric expressions.  Do I need to handle these operators for
-  string expressions (on both lhs and rhs)?
+  array/UDT expressions (on both lhs and rhs)?
 *)
   // only variables are allowed here - no expressions
   CheckIdent;
@@ -3307,16 +3200,76 @@ begin
 end;
 
 procedure TNXCComp.NumericRelation;
+var
+  savedToken, savedLook : Char;
+begin
+  NumericRelationLTGT;
+  while ((Token = '=') and (Look = '=')) or // C/C++ equal
+        ((Token = '!') and (Look = '=')) or // C/C++ not equal
+        ((Token = '<') and (Look = '>')) do // pascal not equal
+  begin
+    savedToken := Token;
+    savedLook  := Look;
+    PushPrim;
+    Next;
+    Next;
+    NumericRelationLTGT;
+    if (savedToken = '=') and (savedLook = '=') then
+      PopCmpEqual
+    else
+      PopCmpNEqual;
+    StoreZeroFlag;
+  end;
+end;
+
+procedure TNXCComp.NumericRelationLTGT;
+var
+  savedToken, savedLook : Char;
+begin
+  NumericShiftLeftRight;
+  while (not ((Token = '<') and (Look = '>'))) and // not <> (pascal not equal)
+        (((Token = '<') and (Look = '='))   or // <=
+         ((Token = '<') and (Look <> '<'))  or // < (not left shift)
+         ((Token = '>') and (Look = '='))   or // >=
+         ((Token = '>') and (Look <> '>'))) do // > (not right shift)
+  begin
+    savedToken := Token;
+    savedLook  := Look;
+    PushPrim;
+    if (Look = '=') then // handle <= and >= case
+      Next;
+    Next;
+    NumericShiftLeftRight;
+    if      (savedToken = '<') and (savedLook = '=')  then // <=
+      PopCmpLessOrEqual
+    else if (savedToken = '<') and (savedLook <> '<') then // <
+      PopCmpLess
+    else if (savedToken = '>') and (savedLook = '=')  then // >=
+      PopCmpGreaterOrEqual
+    else                                                   // >
+      PopCmpGreater;
+    StoreZeroFlag;
+  end;
+end;
+
+procedure TNXCComp.NumericShiftLeftRight;
+var
+  savedToken, savedLook : Char;
 begin
   Expression;
-  if IsRelop(Token) then begin
+  while ((Token = '<') and (Look = '<')) or  // <<
+        ((Token = '>') and (Look = '>')) do  // >>
+  begin
+    savedToken := Token;
+    savedLook  := Look;
     PushPrim;
-    case Token of
-      '=': Equal;
-      '<': Less;
-      '>': Greater;
-      '!': NEqual;
-    end;
+    Next;
+    Next;
+    Expression;
+    if (savedToken = '<') and (savedLook = '<')  then
+      PopLeftShift
+    else
+      PopRightShift;
   end;
 end;
 
@@ -3373,52 +3326,31 @@ begin
 end;
 
 {---------------------------------------------------------------}
-{ Parse and Translate a Boolean Factor with Leading NOT }
-
-procedure TNXCComp.NotFactor;
-begin
-  if Token = '!' then begin
-    Next;
-    Relation;
-    NotIt;
-  end
-  else
-    Relation;
-end;
-
-{---------------------------------------------------------------}
 { Parse and Translate a Boolean Term }
 
 procedure TNXCComp.BoolTerm;
 var
   L : string;
-  bLogicalAnd : boolean;
 begin
   L := NewLabel;
-  Relation;
-//  NotFactor;
-  while Token = '&' do begin
-    bLogicalAnd := False;
+  // 2010-05-27 JCH new code for BoolTerm
+  BitOr;
+  while (Token = '&') and (Look = '&') do
+  begin
+    // move to the second '&'
     Next;
-    if Token = '&' then
+    // move past the second '&'
+    Next;
+    // convert D0 to boolean value if necessary
+    if not fCCSet then
     begin
-      Next;
-      bLogicalAnd := True;
+      SetZeroCC;
+      StoreZeroFlag;
     end;
-    if bLogicalAnd then
-    begin
-      // convert D0 to boolean value if necessary
-      if not fCCSet then
-      begin
-        SetZeroCC;
-        StoreZeroFlag;
-      end;
-      BranchFalse(L);
-    end;
+    BranchFalse(L);
     PushPrim;
-    Relation;
-//    NotFactor;
-    if bLogicalAnd and not fCCSet then
+    BitOr;
+    if not fCCSet then
     begin
       // convert D0 to boolean value if necessary
       SetZeroCC;
@@ -3429,9 +3361,46 @@ begin
   PostLabel(L);
 end;
 
+procedure TNXCComp.BitOr;
+begin
+  BitXor;
+  while (Token = '|') and (Look <> '|') do
+  begin
+    Next;
+    PushPrim;
+    BitXor;
+    PopOr;
+  end;
+end;
+
+procedure TNXCComp.BitXor;
+begin
+  BitAnd;
+  while (Token = '^') do
+  begin
+    Next;
+    PushPrim;
+    BitAnd;
+    PopXor;
+  end;
+end;
+
+procedure TNXCComp.BitAnd;
+begin
+  Relation;
+  while (Token = '&') and (Look <> '&') do
+  begin
+    Next;
+    PushPrim;
+    Relation;
+    PopAnd;
+  end;
+end;
+
 procedure TNXCComp.CommaExpression;
 begin
   BoolExpression;
+  if fNoCommaOperator then Exit;
   // handle comma?
   if Token = TOK_COMMA then
   begin
@@ -3465,52 +3434,35 @@ begin
 //  ResetStatementType;
 end;
 
+// BoolTerm || BoolTerm
 procedure TNXCComp.BoolSubExpression;
 var
   L : string;
-  bLogicalOr : boolean;
+//  bLogicalOr : boolean;
 begin
   L := NewLabel;
   BoolTerm;
-  while IsOrOp(Token) do begin
-    case Token of
-      '|':
-      begin
-        bLogicalOr := False;
-        Next;
-        if Token = '|' then
-        begin
-          Next;
-          bLogicalOr := True;
-        end;
-        if bLogicalOr then
-        begin
-          // convert D0 to boolean value if necessary
-          if not fCCSet then
-          begin
-            SetZeroCC;
-            StoreZeroFlag;
-          end;
-          BranchTrue(L);
-        end;
-        PushPrim;
-        BoolTerm;
-        if bLogicalOr and not fCCSet then
-        begin
-          // convert D0 to boolean value if necessary
-          SetZeroCC;
-          StoreZeroFlag;
-        end;
-        PopOr;
-      end;
-      '^':
-      begin
-        Next;
-        PushPrim;
-        BoolTerm;
-        PopXor;
-      end;
+  while (Token = '|') and (Look = '|') do begin
+    // advance to second '|'
+    Next;
+    // advance past the second '|'
+    Next;
+    // convert D0 to boolean value if necessary
+    if not fCCSet then
+    begin
+      SetZeroCC;
+      StoreZeroFlag;
     end;
+    BranchTrue(L);
+    PushPrim;
+    BoolTerm;
+    if not fCCSet then
+    begin
+      // convert D0 to boolean value if necessary
+      SetZeroCC;
+      StoreZeroFlag;
+    end;
+    PopOr;
   end;
   PostLabel(L);
 end;
@@ -4899,11 +4851,16 @@ begin
     begin
       if Token <> TOK_SEMICOLON then
       begin
-        Assignment;
-        while Token = TOK_COMMA do
-        begin
-          Next;
+        fNoCommaOperator := True;
+        try
           Assignment;
+          while Token = TOK_COMMA do
+          begin
+            Next;
+            Assignment;
+          end;
+        finally
+          fNoCommaOperator := False;
         end;
       end;
       Semi;
@@ -4919,11 +4876,16 @@ begin
     PostLabel(L4);
     if Token <> TOK_CLOSEPAREN then
     begin
-      Assignment;
-      while Token = TOK_COMMA do
-      begin
-        Next;
+      fNoCommaOperator := True;
+      try
         Assignment;
+        while Token = TOK_COMMA do
+        begin
+          Next;
+          Assignment;
+        end;
+      finally
+        fNoCommaOperator := False;
       end;
     end;
     CloseParen;
@@ -5594,61 +5556,66 @@ var
   dt : char;
   tname : string;
 begin
-  bIsUnsigned := False;
-  bIsConst    := False;
-  bDummy      := False;
-  Scan;
-  if Token = TOK_IDENTIFIER then
-    CheckForTypedef(bIsUnsigned, bIsConst, bDummy, bDummy);
-  while (Token in [TOK_DIRECTIVE, TOK_UNSIGNED, TOK_CONST,
-    TOK_TYPEDEF, TOK_STRUCT, TOK_ENUM,
-    TOK_USERDEFINEDTYPE,
-    TOK_LONGDEF, TOK_SHORTDEF, TOK_CHARDEF,
-    TOK_BYTEDEF, TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF]) and not endofallsource do
-  begin
-    case Token of
-      TOK_DIRECTIVE : begin
-        ProcessDirectives;
-        Scan;
-      end;
-      TOK_CONST : begin
-        Next;
-        Scan;
-        bIsConst := True;
-      end;
-      TOK_UNSIGNED : begin
-        Next;
-        Scan;
-        bIsUnsigned := True;
-      end;
-      TOK_TYPEDEF : begin
-        ProcessTypedef;
-      end;
-      TOK_ENUM : begin
-        ProcessEnum(False);
-      end;
-      TOK_STRUCT : begin
-        ProcessStruct(False);
-      end;
-      TOK_USERDEFINEDTYPE,
-      TOK_LONGDEF, TOK_SHORTDEF,
-      TOK_CHARDEF, TOK_BYTEDEF,
-      TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF : begin
-        tname := Value;
-        dt := Token;
-        AllocLocal(sub, tname, GetVariableType(dt, bIsUnsigned), bIsConst);
-        while Token = TOK_COMMA do
-          AllocLocal(sub, tname, GetVariableType(dt, bIsUnsigned), bIsConst);
-        Semi;
-        Scan;
-        bIsUnsigned := False;
-        bIsConst    := False;
-      end;
-    else
-      Expected(sValidProgBlock);
-    end;
+  fNoCommaOperator := True;
+  try
+    bIsUnsigned := False;
+    bIsConst    := False;
+    bDummy      := False;
+    Scan;
     if Token = TOK_IDENTIFIER then
       CheckForTypedef(bIsUnsigned, bIsConst, bDummy, bDummy);
+    while (Token in [TOK_DIRECTIVE, TOK_UNSIGNED, TOK_CONST,
+      TOK_TYPEDEF, TOK_STRUCT, TOK_ENUM,
+      TOK_USERDEFINEDTYPE,
+      TOK_LONGDEF, TOK_SHORTDEF, TOK_CHARDEF,
+      TOK_BYTEDEF, TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF]) and not endofallsource do
+    begin
+      case Token of
+        TOK_DIRECTIVE : begin
+          ProcessDirectives;
+          Scan;
+        end;
+        TOK_CONST : begin
+          Next;
+          Scan;
+          bIsConst := True;
+        end;
+        TOK_UNSIGNED : begin
+          Next;
+          Scan;
+          bIsUnsigned := True;
+        end;
+        TOK_TYPEDEF : begin
+          ProcessTypedef;
+        end;
+        TOK_ENUM : begin
+          ProcessEnum(False);
+        end;
+        TOK_STRUCT : begin
+          ProcessStruct(False);
+        end;
+        TOK_USERDEFINEDTYPE,
+        TOK_LONGDEF, TOK_SHORTDEF,
+        TOK_CHARDEF, TOK_BYTEDEF,
+        TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF : begin
+          tname := Value;
+          dt := Token;
+          AllocLocal(sub, tname, GetVariableType(dt, bIsUnsigned), bIsConst);
+          while Token = TOK_COMMA do
+            AllocLocal(sub, tname, GetVariableType(dt, bIsUnsigned), bIsConst);
+          Semi;
+          Scan;
+          bIsUnsigned := False;
+          bIsConst    := False;
+        end;
+      else
+        Expected(sValidProgBlock);
+      end;
+      if Token = TOK_IDENTIFIER then
+        CheckForTypedef(bIsUnsigned, bIsConst, bDummy, bDummy);
+    end;
+  finally
+    fNoCommaOperator := False;
   end;
 end;
 
@@ -5968,7 +5935,6 @@ begin
     begin
       Next;
       IncrementInlineDepth;
-//      fInlining := True;
     end;
     if Token = TOK_SAFECALL then
     begin
@@ -5992,62 +5958,7 @@ begin
     Next;
 
     DoCommonFuncProcDecl(protoexists, Name, '', savedToken, #0, AmInlining, fSafeCalling);
-(*
-    procexists := GlobalIdx(Name);
-    if procexists <> 0 then begin
-      if not (GS_Type[procexists] in [TOK_PROCEDURE, TOK_TASK]) then
-        Duplicate(Name);
-      if GS_Size[procexists] = 0 then
-        protoexists := True
-      else
-        Duplicate(Name);
-    end
-    else begin
-      if bIsSub and (SafeCalls or fSafeCalling) then
-      begin
-        // define a mutex for this subroutine/function
-        EmitMutexDeclaration(Name);
-      end;
-      AddEntry(Name, savedToken, '', '', False, fSafeCalling);
-      GS_ReturnType[NumGlobals] := #0;
-    end;
 
-    OpenParen;
-    if bIsSub then
-      pltype := FormalList(protoexists, Name)
-    else
-      pltype := 0;
-    // allow for the possibility that tasks have (void) args
-    if Value = 'void' then
-      Next;
-    CloseParen;
-
-    fCurrentThreadName := Name;
-    fThreadNames.Add(Name);
-
-    // allow for "stuff" after the close parenthesis and before either ; or {
-    Scan;
-    ProcessDirectives; // just in case there are any between the ) and the {
-    // now it has to either be a ; or a {
-    if not (Token in [TOK_SEMICOLON, TOK_BEGIN]) then
-      AbortMsg(sInvalidFuncDecl);
-    if Token = TOK_SEMICOLON then
-    begin
-      // this is a function declaration (a prototype) - not a function definition
-      pltype := 1;
-      Next;
-    end;
-    if Token = TOK_BEGIN then
-    begin
-      if pltype = 1 then
-        AbortMsg(sNotValidForPrototype);
-      if protoexists then
-        GS_Size[procexists] := 1
-      else
-        GS_Size[NumGlobals] := 1;
-    end;
-//    OptionalSemi;
-*)
     if Token = TOK_BEGIN then
     begin
       Prolog(Name, bIsSub);
@@ -6148,7 +6059,6 @@ begin
     else
       GS_Size[NumGlobals] := 1;
   end;
-//  OptionalSemi;
 end;
 
 procedure TNXCComp.FunctionBlock(Name, tname : string; dt: char;
@@ -6159,61 +6069,10 @@ begin
   DoCompilerStatusChange(Format(sNXCFunction, [Name]));
   if bInline then
     IncrementInlineDepth;
-//  fInlining := bInline;
   if Name = 'main' then
     AbortMsg(sMainMustBeTask);
   protoexists := False;
   DoCommonFuncProcDecl(protoexists, Name, tname, TOK_PROCEDURE, dt, bInline, bSafeCall);
-(*
-  OpenParen;
-  pltype := FormalList(protoexists, Name);
-  CloseParen;
-
-  procexists := GlobalIdx(Name);
-  if procexists <> 0 then begin
-    if not (GS_Type[procexists] in [TOK_PROCEDURE, TOK_TASK]) then
-      Duplicate(Name);
-    if GS_Size[procexists] = 0 then
-      protoexists := True
-    else
-      Duplicate(Name);
-  end
-  else begin
-    // define a mutex for this function if safecall
-    if SafeCalls or bSafeCall then
-      EmitMutexDeclaration(Name);
-    AddEntry(Name, TOK_PROCEDURE, tname, '', False, bSafeCall);
-    GS_ReturnType[NumGlobals] := dt;
-    if IsArrayType(dt) or IsUDT(dt) then
-      AddEntry(Format('__result_%s', [Name]), dt, tname, '');
-  end;
-
-  fCurrentThreadName := Name;
-  fThreadNames.Add(Name);
-
-  // allow for "stuff" after the close parenthesis and before either ; or {
-  Scan;
-  ProcessDirectives; // just in case there are any in between the ) and the {
-  // now it has to either be a ; or a {
-  if not (Token in [TOK_SEMICOLON, TOK_BEGIN]) then
-    AbortMsg(sInvalidFuncDecl);
-  if Token = TOK_SEMICOLON then
-  begin
-    // this is a function declaration (a prototype) - not a function definition
-    pltype := 1;
-    Next;
-  end;
-  if Token = TOK_BEGIN then
-  begin
-    if pltype = 1 then
-      AbortMsg(sNotValidForPrototype);
-    if protoexists then
-      GS_Size[procexists] := 1
-    else
-      GS_Size[NumGlobals] := 1;
-  end;
-//  OptionalSemi;
-*)
   if Token = TOK_BEGIN then
   begin
     Prolog(Name, True);
@@ -6242,6 +6101,7 @@ end;
 
 procedure TNXCComp.Init;
 begin
+  fNoCommaOperator := False;
   fProcessingMathAssignment := False;
   fInlineDepth := 0;
   fLastExpressionOptimizedToConst := False;
@@ -6946,49 +6806,6 @@ begin
   end;
   pop;
 end;
-
-(*
-procedure TNXCComp.DoClearSetResetSensor;
-var
-  op, port : string;
-begin
-  //ClearSensor(port)
-  //SetSensorTouch(port)
-  //SetSensorLight(port)
-  //SetSensorSound(port)
-  //SetSensorLowspeed(port)
-  //ResetSensor(port)
-  op := Value;
-  Next;
-  OpenParen;
-  // port
-  port := GetDecoratedValue;
-  Next;
-  CloseParen;
-  EmitLn(op + TOK_OPENPAREN + port + TOK_CLOSEPAREN);
-end;
-
-procedure TNXCComp.DoSetSensorTypeMode(idx : integer);
-var
-  port : string;
-begin
-  //SetSensorType(port,type)
-  //SetSensorMode(port,mode)
-  Next;
-  OpenParen;
-  // port
-  port := GetDecoratedValue;
-  Next;
-  MatchString(TOK_COMMA);
-  // type/mode
-  BoolExpression;
-  CloseParen;
-  if idx = API_SETSENSORTYPE then
-    EmitLn(Format('setin %s, %s, Type',[RegisterName, port]))
-  else
-    EmitLn(Format('setin %s, %s, InputMode',[RegisterName, port]));
-end;
-*)
 
 procedure TNXCComp.DoAcquireRelease;
 var
@@ -9524,12 +9341,13 @@ begin
   EmitLn(asmstr);
 end;
 
-procedure TNXCComp.DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string);
+function TNXCComp.DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;
 var
   AHV : TArrayHelperVar;
   tmp, udType, aval, tmpUDTName, oldExpStr : string;
   tmpDT : char;
 begin
+  Result := False;
   // grab the index as an expression and put it on the stack
   Next;
   tmpDT := fLHSDataType;
@@ -9565,7 +9383,7 @@ begin
       // set the variable to the specified element from previous array
       EmitLn(Format('index %s, %s, %s',[aval, GetDecoratedIdent(theArray), tmp]));
       // pass its name into the call to DoNewArrayIndex
-      DoNewArrayIndex(theArrayDT, aval, aLHSName);
+      Result := DoNewArrayIndex(theArrayDT, aval, aLHSName);
     finally
       fArrayHelpers.ReleaseHelper(AHV);
     end;
@@ -9605,6 +9423,7 @@ begin
       tmpDT := DataType(Value);
       if (tmpDT in NonAggregateTypes) and (aLHSName = '') then
       begin
+        Result := True; // i.e., loaded a value on the stack
         LoadVar(Value);
         Next; // move to the next token
       end
@@ -9614,16 +9433,23 @@ begin
         if tmpDT = TOK_STRINGDEF then
           EmitLn(Format('strcat %s, %s', [aLHSName, GetDecoratedValue]))
         else if tmpDT in NonAggregateTypes then
-          LoadVar(Value)
+        begin
+          Result := True; // loaded a value onto the stack
+          LoadVar(Value);
+        end
         else if not IsArrayType(DataType(StripInline(aLHSName))) then
           EmitLn(Format('mov %s, %s', [GetDecoratedIdent(aLHSName), GetDecoratedValue]))
         else
+        begin
+          Result := True; // sort of loaded a value onto the stack
           fUDTOnStack := Value;
+        end;
         Next; // move to the next token
       end
       else
       begin
         // recurse to the NumericRelation procedure
+        Result := True; // a numeric relation always puts a value on the stack
         NumericRelation;
       end;
     finally
