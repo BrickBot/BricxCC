@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-05-22
- * \version 72
+ * \date 2010-05-29
+ * \version 74
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -13755,7 +13755,7 @@ inline float sqrt(float x) { asm { sqrt __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float cos(float x) { asm { cos __FLTRETVAL__, x } }
-/** \example ex_cos.nxc
+/** \example ex_sin_cos.nxc
  * This is an example of how to use the \ref cos function.
  */
 
@@ -13769,7 +13769,7 @@ inline float cos(float x) { asm { cos __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float sin(float x) { asm { sin __FLTRETVAL__, x } }
-/** \example ex_sin.nxc
+/** \example ex_sin_cos.nxc
  * This is an example of how to use the \ref sin function.
  */
 
@@ -14044,7 +14044,7 @@ inline long muldiv32(long a, long b, long c) { asm { muldiv __RETVAL__, a, b, c 
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float cosd(float x) { asm { cosd __FLTRETVAL__, x } }
-/** \example ex_cosd.nxc
+/** \example ex_sind_cosd.nxc
  * This is an example of how to use the \ref cosd function.
  */
 
@@ -14058,7 +14058,7 @@ inline float cosd(float x) { asm { cosd __FLTRETVAL__, x } }
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline float sind(float x) { asm { sind __FLTRETVAL__, x } }
-/** \example ex_sind.nxc
+/** \example ex_sind_cosd.nxc
  * This is an example of how to use the \ref sind function.
  */
 
@@ -14630,7 +14630,7 @@ inline int getchar() {
       result = BTN3;
     else if (ButtonPressed(BTN4, false))
       result = BTN4;
-    if (result <> -1)
+    if (result != -1)
       break;
     else
       Yield();
