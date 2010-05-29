@@ -1,0 +1,28 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>struct</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<p>NXC supports user-defined aggregate types known as structs.</p>
+<p>These are declared very much like you declare structs in a C program. </p>
+<div class="fragment"><pre class="fragment"> <span class="keyword">struct </span>car
+ {
+   <span class="keywordtype">string</span> car_type;
+   <span class="keywordtype">int</span> manu_year;
+ };
+
+ <span class="keyword">struct </span>person
+ {
+   <span class="keywordtype">string</span> name;
+   <span class="keywordtype">int</span> age;
+   car vehicle;
+ };
+
+ person myPerson;
+</pre></div>
+</body>
+</html>

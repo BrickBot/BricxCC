@@ -1,0 +1,21 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN" "http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+<meta http-equiv="Content-Type" content="text/xhtml;charset=UTF-8"/>
+<title>if</title>
+<link href="tabs.css" rel="stylesheet" type="text/css"/>
+<link href="doxygen.css" rel="stylesheet" type="text/css"/>
+</head>
+<body>
+<!-- if -->
+<p>The if statement evaluates a condition. If the condition is true, it executes one statement (the consequence). An optional second statement (the alternative), preceded by the keyword else, can be executed if the condition is false. The value of a condition is considered to be false only when it evaluates to zero. If it evaluates to any non-zero value, it is true. The two syntaxes for an if statement are shown below. </p>
+<div class="fragment"><pre class="fragment"> <span class="keywordflow">if</span> (condition) consequence
+ <span class="keywordflow">if</span> (condition) consequence <span class="keywordflow">else</span> alternative
+</pre></div>
+<p> The condition of an if-statement must be enclosed in parentheses, as shown in the code sample below. The compound statement in the last example allows two statements to execute as a consequence of the condition being true. </p>
+<div class="fragment"><pre class="fragment"> <span class="keywordflow">if</span> (x==1) y = 2;
+ <span class="keywordflow">if</span> (x==1) y = 3; <span class="keywordflow">else</span> y = 4;
+ <span class="keywordflow">if</span> (x==1) { y = 1; z = 2; }
+</pre></div>
+</body>
+</html>
