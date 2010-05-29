@@ -1,0 +1,13 @@
+task main()
+{
+  int p, k, y, u, j, G, M, x, r, F, t;
+  int board[10];
+  if(p<3&6*k+(y&0x70)==0x80
+     ||(u&~24)==36&j==7&&
+     G&M&&board[G=(x|7)-(r>>1&7)]&32
+     &&!(board[G^1]|board[G^2]))
+  {F=y;t--;}
+  NumOut(0, LCD_LINE1, F);
+  NumOut(0, LCD_LINE2, t);
+
+}

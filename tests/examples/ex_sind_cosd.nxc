@@ -1,0 +1,32 @@
+// ex_sind_cosd.nxc
+// Run this program and you will see a circle appear on the NXT screen in a 
+// strange random way. No two runs will produce the circle in exactly the same 
+// way.
+// This program runs indefinitely -- press gray button to exit.
+// Reguires enhanced firmware 1.28 or later.
+
+#define SCREEN_WIDH 100
+#define SCREEN_HEIGHT 64
+#define X_ZERO (SCREEN_WIDH / 2)
+#define Y_ZERO (SCREEN_HEIGHT / 2)
+#define R (Y_ZERO - 2)
+#define MAX_DEG 360
+
+// Convert a float to its nearest integer value.
+inline int integer(float x)
+{
+   return trunc(x + 0.5);
+}
+
+task main()
+{
+   while(true)
+   {
+      float angle = Random(MAX_DEG);
+      float x = X_ZERO + R * cosd(angle);
+      float y = Y_ZERO + R * sind(angle);
+      PointOut(integer(x), integer(y));
+      // Without the Wait, the program runs too fast!
+      Wait(MS_20);
+   }
+}

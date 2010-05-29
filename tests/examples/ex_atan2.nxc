@@ -1,2 +1,23 @@
-z = atan2(y, x);
+// ex_atan2.nxc
+// Display values of the atan2 API call.
+// This program runs indefinitely -- press gray button to exit.
+// Reguires enhanced firmware 1.28 or later.
 
+// The following two arrays comprise the x and y coordinates of the corners and 
+// the mid-points of the sides of a square centered at the origin and having 
+// sides two units long.
+const float y_coord[] = {-1.0, -1.0, -1.0, 0.0, 1.0, 1.0,  1.0,  0.0};
+const float x_coord[] = {-1.0,  0.0,  1.0, 1.0, 1.0, 0.0, -1.0, -1.0};
+
+// Display the angles made by lines from the origin to the points on the square 
+// as specified above.
+task main()
+{
+   const int pts = ArrayLen(y_coord);
+   for (int i = 0; i < pts; ++i)
+   {
+      float angle = atan2(y_coord[i], x_coord[i]);
+      TextOut(0, 56 - 8 * i, FormatNum("%7.4f RAD", angle));
+   }
+   while (true);
+}

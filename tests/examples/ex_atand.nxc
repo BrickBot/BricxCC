@@ -1,2 +1,24 @@
-float x = atand(0); // degrees
+// ex_atand.nxc
+// Display values of the atand API call.
+// This program runs indefinitely -- press gray button to exit.
+// Reguires enhanced firmware 1.28 or later.
 
+#define BIG_NEG_VAL -1000.0
+#define NEG_VAL -1.0
+#define POS_VAL 1.0
+#define BIG_POS_VAL 1000.0
+
+inline void show_atan(const float val, const int screen_y)
+{
+   TextOut(0, screen_y, FormatNum("%6.2f DEG", atand(val)));
+}
+
+task main()
+{
+   show_atan(BIG_NEG_VAL, LCD_LINE1); // shows -89.94 DEG
+   show_atan(NEG_VAL, LCD_LINE2);     // shows -45.00 DEG
+   show_atan(0.0, LCD_LINE3);         // shows   0.00 DEG
+   show_atan(POS_VAL, LCD_LINE4);     // shows  45.00 DEG
+   show_atan(BIG_POS_VAL, LCD_LINE5); // shows  89.94 DEG
+   while (true);
+}
