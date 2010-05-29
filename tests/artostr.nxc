@@ -1,0 +1,37 @@
+string ByteArrayToProperString(byte data[])
+{
+  byte tmp[];
+  string result;
+  int len = ArrayLen(data);
+  repeat(len)
+  {
+    len--;
+    if (data[len] != 0)
+      break;
+  }
+  len++;
+  asm {
+    arrsubset tmp, data, NA, len
+    arrtostr result, tmp
+  }
+  return result;
+}
+
+task main()
+{
+  byte data[] = {'h', 'e', 'l', 'l', 'o', 0, 0, 0, 0};
+  string test = ByteArrayToProperString(data);
+  NumOut(0, LCD_LINE1, strlen(test));
+  TextOut(0, LCD_LINE2, test);
+
+  byte data2[] = {'f', 'r', 'e', 'd'};
+  string test2 = ByteArrayToProperString(data2);
+  NumOut(0, LCD_LINE3, strlen(test2));
+  TextOut(0, LCD_LINE4, test2);
+
+  byte data3[] = {'X', 0, 0, 0, 0, 0, 0, 0};
+  string test3 = ByteArrayToProperString(data3);
+  NumOut(0, LCD_LINE5, strlen(test3));
+  TextOut(0, LCD_LINE6, test3);
+  Wait(SEC_10);
+}

@@ -1,2 +1,24 @@
-float x = asind(0.80); // degrees
+// ex_asind.nxc
+// Display values of the asind API call.
+// This program runs indefinitely -- press gray button to exit.
+// Reguires enhanced firmware 1.28 or later.
 
+#define MIN_VAL -1.0
+#define MID_VAL 0.0
+#define MAX_VAL 1.0
+#define INVALID 2.0
+
+inline void show_asin(const float val, const int screen_y)
+{
+   TextOut(0, screen_y, FormatNum("%6.2f DEG", asind(val)));
+}
+
+task main()
+{
+   show_asin(MIN_VAL, LCD_LINE1); // shows -90.00 DEG
+   show_asin(MID_VAL, LCD_LINE2); // shows   0.00 DEG
+   show_asin(MAX_VAL, LCD_LINE3); // shows  90.00 DEG
+   // An invalid value returns not-a-number (nan).
+   show_asin(INVALID, LCD_LINE4); // shows   -nan DEG
+   while (true);
+}

@@ -1,2 +1,24 @@
-float x = acos(0); // radians
+// ex_acos.nxc
+// Display values of the acos API call.
+// This program runs indefinitely -- press gray button to exit.
+// Reguires enhanced firmware 1.28 or later.
 
+#define MIN_VAL -1.0
+#define MID_VAL 0.0
+#define MAX_VAL 1.0
+#define INVALID 2.0
+
+inline void show_acos(const float val, const int screen_y)
+{
+   TextOut(0, screen_y, FormatNum("%7.4f RAD", acos(val)));
+}
+
+task main()
+{
+   show_acos(MIN_VAL, LCD_LINE1); // shows 3.1416 RAD
+   show_acos(MID_VAL, LCD_LINE2); // shows 1.5708 RAD
+   show_acos(MAX_VAL, LCD_LINE3); // shows 0.0000 RAD
+   // An invalid value returns not-a-number (nan).
+   show_acos(INVALID, LCD_LINE4); // shows   -nan RAD
+   while (true);
+}

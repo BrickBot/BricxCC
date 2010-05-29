@@ -1,2 +1,24 @@
-float x = atan(0); // radians
+// ex_atan.nxc
+// Display values of the atan API call.
+// This program runs indefinitely -- press gray button to exit.
+// Reguires enhanced firmware 1.28 or later.
 
+#define BIG_NEG_VAL -1000.0
+#define NEG_VAL -1.0
+#define POS_VAL 1.0
+#define BIG_POS_VAL 1000.0
+
+inline void show_atan(const float val, const int screen_y)
+{
+   TextOut(0, screen_y, FormatNum("%7.4f RAD", atan(val)));
+}
+
+task main()
+{
+   show_atan(BIG_NEG_VAL, LCD_LINE1); // shows -1.5698 RAD
+   show_atan(NEG_VAL, LCD_LINE2);     // shows -0.7854 RAD
+   show_atan(0.0, LCD_LINE3);         // shows  0.0000 RAD
+   show_atan(POS_VAL, LCD_LINE4);     // shows  0.7854 RAD
+   show_atan(BIG_POS_VAL, LCD_LINE5); // shows  1.5698 RAD
+   while (true);
+}
