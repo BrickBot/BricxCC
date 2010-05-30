@@ -795,6 +795,11 @@ begin
       else if fTempChar = '/' then begin
         Look := TOK_LINE_COMMENT;
         fTempChar := ' ';
+      end
+      else begin
+        // we need to put that character we just read back into the buffer
+        fMS.Seek(-1, soFromCurrent);
+        fTempChar := ' ';
       end;
     end;
   end;
@@ -1528,11 +1533,10 @@ end;
 
 procedure TNXCComp.GetCharLit;
 begin
-  SkipWhite;
-  GetChar; // skip the '
+  GetCharX; // skip the '
   Token := TOK_NUM;
   Value := IntToStr(Ord(Look));
-  GetChar;
+  GetCharX;
   if Look <> '''' then Expected(sCharLiteral);
   GetChar;
 end;
@@ -1544,14 +1548,12 @@ procedure TNXCComp.GetString;
 var
   bEscapeNext : boolean;
 begin
-  SkipWhite;
-  GetChar; // skip the "
+  GetCharX; // skip the "
   Token := TOK_STRINGLIT;
   if Look = '"' then
   begin
     // empty string
     Value := '''''';
-    GetChar;
   end
   else
   begin
@@ -1577,8 +1579,8 @@ begin
     until ((Look = '"') and not bEscapeNext) or (Look = LF) or endofallsource;
     Value := Value + '''';
     if Look <> '"' then Expected(sStringLiteral);
-    GetChar;
   end;
+  GetChar;
 end;
 
 
