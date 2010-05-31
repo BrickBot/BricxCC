@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-04-30
- * \version 52
+ * \date 2010-05-30
+ * \version 53
  */
 
 #ifndef NBCCOMMON_H
@@ -44,7 +44,7 @@
  * @{
  */
 /** @defgroup ArrayOpConstants Array operation constants
- * Constants for use with the \ref ArrayOp function.
+ * Constants for use with the NXC ArrayOp function and the NBC arrop statement.
  * @{
  */
 // array operation definitions
@@ -180,7 +180,7 @@
  * @{
  */
 /** @defgroup SysCallConstants System Call function constants
- * Constants for use in the SysCall() function.
+ * Constants for use in the SysCall() function or NBC syscall statement.
  * @{
  */
 #define FileOpenRead       0 /*!< Open a file for reading */

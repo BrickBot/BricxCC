@@ -47,7 +47,7 @@
  * can be used to execute programs. The NBC compiler translates a source program into LEGO 
  * NXT byte-codes, which can then be executed on the NXT itself. Although the preprocessor 
  * and format of NBC programs are similar to assembly, NBC is not a general-purpose assembly 
- * language – there are many restrictions that stem from limitations of the LEGO byte-code 
+ * language - there are many restrictions that stem from limitations of the LEGO byte-code 
  * interpreter.
  * 
  * Logically, NBC is defined as two separate pieces. The NBC language describes the syntax 
@@ -77,7 +77,7 @@
  * Unlike some assembly languages, NBC is a case-sensitive language.  That means that the 
  * identifier "xYz" is not the same identifier as "Xyz".  Similarly, the subtract statement 
  * begins with the keyword "sub" but "suB", "Sub", or "SUB" are all just valid 
- * identifiers – not keywords.
+ * identifiers - not keywords.
  * 
  * - @subpage lexrules
  * - @subpage progstruct
@@ -226,10 +226,10 @@
  * <tr><td>call</td><td>return</td><td>abs</td><td>sign</td></tr>
  * <tr><td>strindex</td><td>strreplace</td><td>strlen</td><td>shl</td></tr>
  * <tr><td>shr</td><td>sizeof</td><td>compchk</td><td>compif</td></tr>
- * <tr><td>compelse</td><td>compend</td><td>????</td><td>isconst</td></tr>
+ * <tr><td>compelse</td><td>compend</td><td>&nbps;</td><td>isconst</td></tr>
  * <tr><td>asl</td><td>asr</td><td>lsl</td><td>lsr</td></tr>
  * <tr><td>rotl</td><td>rotr</td><td>start</td><td>stopthread</td></tr>
- * <tr><td>priority</td><td>cmnt </td><td>fmtnum</td><td>compchktype</td></tr>
+ * <tr><td>priority</td><td>cmnt</td><td>fmtnum</td><td>compchktype</td></tr>
  * <tr><td>float</td><td>wait2</td><td>sqrt</td><td>waitv</td></tr>
  * <tr><td>arrop</td><td>acos</td><td>asin</td><td>atan</td></tr>
  * <tr><td>ceil</td><td>exp</td><td>floor</td><td>tan</td></tr>
@@ -261,9 +261,9 @@
  * NBC program are global.
  * 
  * - @subpage thread
- * - @subpage subs
+ * - @subpage subroutine
  * - @subpage macfunc
- * - @subpage dataseg
+ * - @subpage dseg
  *
  */
 
@@ -314,7 +314,7 @@
  * 
  */
 
-/** @page subs Subroutines
+/** @page subroutine Subroutines
  * \brief Subroutines
  * 
  * Subroutines allow a single copy of some code to be shared between several different 
@@ -420,13 +420,13 @@
  * \endcode
  *
  * NBC macro functions are always expanded inline by the NBC preprocessor. This means
- * that each call to a macro function results in another copy of the function’s code
+ * that each call to a macro function results in another copy of the function's code
  * being included in the program. Unless used judiciously, inline macro functions can
  * lead to excessive code size.
  *
  */
 
-/** @page dataseg Data Segments
+/** @page dseg Data Segments
  * \brief Data Segments
  * 
  * Data segments contain all type definitions and variable declarations. Data segments 
@@ -438,7 +438,7 @@
  * 
  * thread main
  *   dseg segment
- *     // or here – still global, though
+ *     // or here - still global, though
  *   dseg ends
  * endt
  * \endcode
@@ -447,34 +447,40 @@
  * regardless of where they are declared. Once declared, they may be used within all 
  * threads, subroutines, and macro functions. Their scope begins at the declaration 
  * and ends at the end of the program.
- * 
+ *
  * - @subpage typedef
+ * - @subpage struct
  * - @subpage vardecl
- * 
+ *
  */
 
 /** @page typedef Type Definitions
  * \brief Type Definitions
- * 
- * Type definitions must be contained within a data segment. They are used to define 
- * new type aliases or new aggregate types (i.e., structures). A type alias is 
+ *
+ * Type definitions must be contained within a data segment. They are used to define
+ * new type aliases or new aggregate types (i.e., structures). A type alias is
  * defined using the typedef keyword with the following syntax:
  * \code
- * type_alias typedef existing_type 
+ * type_alias typedef existing_type
  * \endcode
- * 
- * The new alias name may be any valid identifier.  The existing type must be some 
- * type already known by the compiler.  It can be a native type or a user-defined 
- * type. Once a type alias has been defined it can be used in subsequent variable 
- * declarations and aggregate type definitions. The following is an example of a 
+ *
+ * The new alias name may be any valid identifier.  The existing type must be some
+ * type already known by the compiler.  It can be a native type or a user-defined
+ * type. Once a type alias has been defined it can be used in subsequent variable
+ * declarations and aggregate type definitions. The following is an example of a
  * simple type alias definition:
  * \code
  * big typedef dword ; big is now an alias for the dword type
  * \endcode
- * 
- * Structure definitions must also be contained within a data segment. They are used 
- * to define a type which aggregates or contains other native or user-defined types. 
- * A structure definition is defined using the struct and ends keywords with the 
+ *
+ */
+
+/** @page struct Structure Definitions
+ * \brief Structure Definitions
+ *
+ * Structure definitions must also be contained within a data segment. They are used
+ * to define a type which aggregates or contains other native or user-defined types.
+ * A structure definition is defined using the struct and ends keywords with the
  * following syntax:
  * \code
  * TypeName struct
@@ -482,8 +488,8 @@
  *   y byte
  * TypeName ends
  * \endcode
- * 
- * Structure definitions allow you to manage related data in a single combined type. 
+ *
+ * Structure definitions allow you to manage related data in a single combined type.
  * They can be as simple or complex as the needs of your program dictate. The following 
  * is an example of a fairly complex structure:
  * \code
@@ -581,10 +587,12 @@
  * Byte arrays may be initialized either by using braces containing a list of 
  * numeric values ({val1, val2, ..., valN}) or by using a string constant 
  * delimited with single-quote characters ('Testing'). Embedded single quote 
- * characters are not supported. Arrays of any scalar type other than byte 
- * should be initialized using braces. Arrays of struct and nested arrays 
+ * characters must be escaped using the '\' character.  The '\' character can
+ * be part of the string by using two forward slashes: '\\'.
+ * Arrays of any scalar type other than byte
+ * should be initialized using braces. Arrays of struct and nested arrays
  * cannot be initialized.
- * 
+ *
  */
 
 /** @page preproc The Preprocessor
@@ -646,7 +654,7 @@
  * definition to the next line. The code sample below shows how to write a multi-line 
  * preprocessor macro.
  * \code
- * #define square(x, result) \\
+ * #define square(x, result) \
  *   mul result, x, x 
  * \endcode
  * The \#undef directive may be used to remove a macro's definition.
@@ -870,6 +878,15 @@
  * or to simply set the value of a variable.  In NBC there are two ways to assign
  * a new value to a variable.
  *
+ * - @subpage mov
+ * - @subpage set
+ * - @subpage addrof
+ *
+ */
+
+/** @page mov mov
+ * \brief The mov statement
+ *
  * The mov statement assigns the value of its second argument to its first argument.
  * The first argument must be the name of a variable.  It can be of any valid
  * variable type except mutex.  The second argument can be a variable or a numeric
@@ -885,7 +902,17 @@
  * mov x, y     // set x equal to y
  * \endcode
  *
- * The set statement also assigns its first argument to have the value of its second argument.  The first argument must be the name of a variable.  It must be a scalar type.  The second argument must be a numeric constant or constant expression.  The syntax of the set statement is shown below.
+ */
+
+/** @page set set
+ * \brief The set statement
+ *
+ * The set statement also assigns its first argument to have the value of
+ * its second argument.  The first argument must be the name of a variable.
+ * It must be a scalar type.  The second argument must be a numeric
+ * constant or constant expression. You should never use set with a variable
+ * of type float. For float types use \ref mov instead.
+ * The syntax of the set statement is shown below.
  * \code
  * set x, 10     // set x equal to 10
  * \endcode
@@ -894,7 +921,27 @@
  * second argument of the set statement is limited to a 16 bit signed or unsigned
  * value (-32768..65535).
  *
-    ( Encoding: OPS_ADDROF       ; CCType: 0; Arity: 3; Name: 'addrof'; ),
+ */
+
+/** @page addrof addrof
+ * \brief The addrof statement
+ *
+ * The addrof statement gets the address of its input (second) argument and
+ * stores it in the output (first) argument.  The third argument is a flag
+ * which indicates whether the address should be absolute or relative.
+ *
+ * Relative addresses can be used like pointers along with the IOMapWrite
+ * \ref syscall function.  The relative address is an offset from the start
+ * of the VM memory pool (\ref CommandOffsetMemoryPool).
+ * An absolute address is only useful for cases where
+ * module IOMap structures expose a pointer address field.  One example is the
+ * pFont address in the Display module IOMap structure (\ref DisplayOffsetPFont).
+ * The syntax of the addrof statement is shown below.
+ * \code
+ * ; addrof dest, src, brelative?
+ * addrof ptrFont, fontDataArray, FALSE
+ * \endcode
+ *
  */
 
 /** @page math Math Statements
@@ -905,9 +952,10 @@
  * expressions use standard math operators (such as *, -, +, /), in NBC, as
  * with other assembly languages, math operations are expressed as statements
  * with the math operation name coming first, followed by the arguments to the
- * operation.  All statements in this family have one output argument and two
- * input arguments except the negate statement, the absolute value statement,
- * and the sign statement.
+ * operation.  Nearly all the statements in this family have one output argument
+ * and two input arguments. The exceptions include sqrt (square root),
+ * neg (negate), abs (absolute value), and sign statements, which are unary
+ * statements having a single input argument.
  *
  * Math statements in NBC differ from traditional assembly math statements
  * because many of the operations can handle arguments of scalar, array, and
@@ -916,13 +964,69 @@
  * be the corresponding element in the original array multiplied by the scalar
  * value.
  *
- * Only the absolute value and sign statements require that their arguments
+ * Only the abs (absolute value) and sign statements require that their arguments
  * are scalar types.  When using the standard NXT firmware these two statements
- * are currently implemented by the compiler since it does not have built-in
+ * are implemented by the compiler since the firmware does not have built-in
  * support for them. If you install the enhanced NBC/NXC firmware and tell
- * the compiler to target it using the –EF command line switch then these
+ * the compiler to target it using the -EF command line switch then these
  * statements will be handled directly by the firmware itself rather than
  * by the compiler.
+ *
+ * This family of statements also includes several math operations that are
+ * supported only by the enhanced NBC/NXC firmware. These statements cannot be
+ * used at all if you tell the compiler to generate code for the standard
+ * NXT firmware. The enhanced NBC/NXC firmware math statements are mostly
+ * unary functions with a single input argument and a single output argument.
+ * They are sin, cos, tan, sind, cosd, tand, asin, acos, atan, asind, acosd,
+ * atand, sinh, cosh, tanh, sinhd, coshd, tanhd, ceil, floor, trunc, frac, exp,
+ * log, and log10. There are three enhanced firmware math statements which take
+ * two input arguments: pow, atan2, and atan2d. And the muldiv statement takes
+ * three input arguments.
+ *
+ * - @subpage add
+ * - @subpage sub
+ * - @subpage mul
+ * - @subpage div
+ * - @subpage mod
+ * - @subpage neg
+ * - @subpage abs
+ * - @subpage sign
+ * - @subpage sqrt
+ * - @subpage sin
+ * - @subpage cos
+ * - @subpage tan
+ * - @subpage sind
+ * - @subpage cosd
+ * - @subpage tand
+ * - @subpage asin
+ * - @subpage acos
+ * - @subpage atan
+ * - @subpage atan2
+ * - @subpage asind
+ * - @subpage acosd
+ * - @subpage atand
+ * - @subpage atan2d
+ * - @subpage sinh
+ * - @subpage cosh
+ * - @subpage tanh
+ * - @subpage sinhd
+ * - @subpage coshd
+ * - @subpage tanhd
+ * - @subpage ceil
+ * - @subpage floor
+ * - @subpage trunc
+ * - @subpage frac
+ * - @subpage exp
+ * - @subpage log
+ * - @subpage log10
+ * - @subpage log10
+ * - @subpage pow
+ * - @subpage muldiv
+ *
+ */
+
+/** @page add add
+ * \brief The add Statement
  *
  * The add statement lets you add two input values together and store the
  * result in the first argument.  The first argument must be a variable but
@@ -932,6 +1036,11 @@
  * add x, x, y ; add x and y and store result in x
  * \endcode
  *
+ */
+
+/** @page sub sub
+ * \brief The sub Statement
+ *
  * The sub statement lets you subtract two input values and store the result
  * in the first argument.  The first argument must be a variable but the
  * second and third arguments can be variables, numeric constants, or constant
@@ -939,6 +1048,11 @@
  * \code
  * sub x, x, y ; subtract y from x and store result in x
  * \endcode
+ *
+ */
+
+/** @page mul mul
+ * \brief The mul Statement
  *
  * The mul statement lets you multiply two input values and store the result
  * in the first argument.  The first argument must be a variable but the
@@ -948,6 +1062,11 @@
  * mul x, x, x ; set x equal to x^2
  * \endcode
  *
+ */
+
+/** @page div div
+ * \brief The div Statement
+ *
  * The div statement lets you divide two input values and store the result in
  * the first argument.  The first argument must be a variable but the second
  * and third arguments can be variables, numeric constants, or constant
@@ -955,6 +1074,11 @@
  * \code
  * div x, x, 2 ; set x equal to x / 2 (integer division)
  * \endcode
+ *
+ */
+
+/** @page mod mod
+ * \brief The mod Statement
  *
  * The mod statement lets you calculate the modulus value (or remainder) of
  * two input values and store the result in the first argument.  The first
@@ -965,6 +1089,11 @@
  * mod x, x, 4 ; set x equal to x % 4 (0..3)
  * \endcode
  *
+ */
+
+/** @page neg neg
+ * \brief The neg Statement
+ *
  * The neg statement lets you negate an input value and store the result
  * in the first argument.  The first argument must be a variable but the
  * second argument can be a variable, a numeric constant, or a constant
@@ -972,6 +1101,11 @@
  * \code
  * neg x, y ; set x equal to -y
  * \endcode
+ *
+ */
+
+/** @page abs abs
+ * \brief The abs Statement
  *
  * The abs statement lets you take the absolute value of an input value
  * and store the result in the first argument.  The first argument must
@@ -982,6 +1116,11 @@
  * abs x, y ; set x equal to the absolute value of y
  * \endcode
  *
+ */
+
+/** @page sign sign
+ * \brief The sign Statement
+ *
  * The sign statement lets you take the sign value (-1, 0, or 1) of
  * an input value and store the result in the first argument.  The first
  * argument must be a variable but the second argument can be a variable,
@@ -991,12 +1130,36 @@
  * sign x, y ; set x equal to -1, 0, or 1
  * \endcode
  *
+ */
+
+/** @page sqrt sqrt
+ * \brief The sqrt Statement
+ *
+ * The sqrt statement lets you take the square root of an input value
+ * and store the result in the first argument.  The first argument must
+ * be a variable but the second argument can be a variable, a numeric
+ * constant, or a constant expression.  The syntax of the sqrt statement
+ * is shown below.
+ * \code
+ * sqrt x, y ; set x equal to the square root of y
+ * \endcode
+ *
+ */
+
+/** @page cos cos
+ * \brief The cos Statement
+ *
  * The cos statement lets you calculate the cosine value of its
  * input (second) argument (radians) and store the result in its output (first)
  * argument.  The syntax of the cos statement is shown below.
  * \code
  * cos x, y ; store the cosine of y in x
  * \endcode
+ *
+ */
+
+/** @page sin sin
+ * \brief The sin Statement
  *
  * The sin statement lets you calculate the sine value of its
  * input (second) argument (radians) and store the result in its output (first)
@@ -1005,12 +1168,22 @@
  * sin x, y ; store the sine of y in x
  * \endcode
  *
+ */
+
+/** @page tan tan
+ * \brief The tan Statement
+ *
  * The tan statement lets you calculate the tangent value of its
  * input (second) argument (radians) and store the result in its output (first)
  * argument.  The syntax of the tan statement is shown below.
  * \code
  * tan x, y ; store the tangent of y in x
  * \endcode
+ *
+ */
+
+/** @page cosd cosd
+ * \brief The cosd Statement
  *
  * The cosd statement lets you calculate the cosine value of its
  * input (second) argument (degrees) and store the result in its output (first)
@@ -1019,12 +1192,22 @@
  * cosd x, y ; store the cosine of y in x
  * \endcode
  *
+ */
+
+/** @page sind sind
+ * \brief The sind Statement
+ *
  * The sind statement lets you calculate the sine value of its
  * input (second) argument (degress) and store the result in its output (first)
  * argument.  The syntax of the sind statement is shown below.
  * \code
  * sind x, y ; store the sine of y in x
  * \endcode
+ *
+ */
+
+/** @page tand tand
+ * \brief The tand Statement
  *
  * The tand statement lets you calculate the tangent value of its
  * input (second) argument (degrees) and store the result in its output (first)
@@ -1033,12 +1216,22 @@
  * tand x, y ; store the tangent of y in x
  * \endcode
  *
+ */
+
+/** @page acos acos
+ * \brief The acos Statement
+ *
  * The acos statement lets you calculate the arc cosine value of its
  * input (second) argument and store the result (radians) in its output (first)
  * argument.  The syntax of the acos statement is shown below.
  * \code
  * acos x, y ; store the arc cosine of y in x
  * \endcode
+ *
+ */
+
+/** @page asin asin
+ * \brief The asin Statement
  *
  * The asin statement lets you calculate the arc sine value of its
  * input (second) argument and store the result (radians) in its output (first)
@@ -1047,12 +1240,22 @@
  * asin x, y ; store the arc sine of y in x
  * \endcode
  *
+ */
+
+/** @page atan atan
+ * \brief The atan Statement
+ *
  * The atan statement lets you calculate the arc tangent value of its
  * input (second) argument and store the result (radians) in its output (first)
  * argument.  The syntax of the atan statement is shown below.
  * \code
  * atan x, y ; store the arc tangent of y in x
  * \endcode
+ *
+ */
+
+/** @page acosd acosd
+ * \brief The acosd Statement
  *
  * The acosd statement lets you calculate the arc cosine value of its
  * input (second) argument and store the result (degrees) in its output (first)
@@ -1061,6 +1264,11 @@
  * acosd x, y ; store the arc cosine of y in x
  * \endcode
  *
+ */
+
+/** @page asind asind
+ * \brief The asind Statement
+ *
  * The asind statement lets you calculate the arc sine value of its
  * input (second) argument and store the result (degrees) in its output (first)
  * argument.  The syntax of the asind statement is shown below.
@@ -1068,12 +1276,22 @@
  * asind x, y ; store the arc sine of y in x
  * \endcode
  *
+ */
+
+/** @page atand atand
+ * \brief The atand Statement
+ *
  * The atand statement lets you calculate the arc tangent value of its
  * input (second) argument and store the result (degrees) in its output (first)
  * argument.  The syntax of the atand statement is shown below.
  * \code
  * atand x, y ; store the arc tangent of y in x
  * \endcode
+ *
+ */
+
+/** @page atan2 atan2
+ * \brief The atan2 Statement
  *
  * The atan2 statement lets you calculate the arc tangent value of its
  * two input (second and third) arguments and store the result (radians)
@@ -1083,6 +1301,11 @@
  * atan2 result, y, x ; store the arc tangent of y/x in result
  * \endcode
  *
+ */
+
+/** @page atan2d atan2d
+ * \brief The atan2d Statement
+ *
  * The atan2d statement lets you calculate the arc tangent value of its
  * two input (second and third) arguments and store the result (degrees)
  * in its output (first) argument.  The syntax of the atan2d statement
@@ -1091,12 +1314,22 @@
  * atan2d result, y, x ; store the arc tangent of y/x in result
  * \endcode
  *
+ */
+
+/** @page cosh cosh
+ * \brief The cosh Statement
+ *
  * The cosh statement lets you calculate the hyperbolic cosine value of its
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the cosh statement is shown below.
  * \code
  * cosh x, y ; store the hyperbolic cosine of y in x
  * \endcode
+ *
+ */
+
+/** @page sinh sinh
+ * \brief The sinh Statement
  *
  * The sinh statement lets you calculate the hyperbolic sine value of its
  * input (second) argument and store the result in its output (first)
@@ -1105,12 +1338,22 @@
  * sinh x, y ; store the hyperbolic sine of y in x
  * \endcode
  *
+ */
+
+/** @page tanh tanh
+ * \brief The tanh Statement
+ *
  * The tanh statement lets you calculate the hyperbolic tangent value of its
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the tanh statement is shown below.
  * \code
  * tanh x, y ; store the hyperbolic tangent of y in x
  * \endcode
+ *
+ */
+
+/** @page coshd coshd
+ * \brief The coshd Statement
  *
  * The coshd statement lets you calculate the hyperbolic cosine value of its
  * input (second) argument and store the result in its output (first)
@@ -1119,12 +1362,22 @@
  * coshd x, y ; store the hyperbolic cosine of y in x
  * \endcode
  *
+ */
+
+/** @page sinhd sinhd
+ * \brief The sinhd Statement
+ *
  * The sinhd statement lets you calculate the hyperbolic sine value of its
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the sinhd statement is shown below.
  * \code
  * sinhd x, y ; store the hyperbolic sine of y in x
  * \endcode
+ *
+ */
+
+/** @page tanhd tanhd
+ * \brief The tanhd Statement
  *
  * The tanhd statement lets you calculate the hyperbolic tangent value of its
  * input (second) argument and store the result in its output (first)
@@ -1133,33 +1386,60 @@
  * tanhd x, y ; store the hyperbolic tangent of y in x
  * \endcode
  *
- * The ceil statement lets you calculate the ceiling value of its
- * input (second) argument and store the result in its output (first)
- * argument.  The syntax of the ceil statement is shown below.
+ */
+
+/** @page ceil ceil
+ * \brief The ceil Statement
+ *
+ * The ceil statement lets you calculate the smallest integral value
+ * that is not less than the input (second) argument and store the
+ * result in its output (first) argument.  The syntax of the ceil
+ * statement is shown below.
  * \code
  * ceil x, y ; store the ceil of y in x
  * \endcode
  *
- * The floor statement lets you calculate the floor value of its
- * input (second) argument and store the result in its output (first)
- * argument.  The syntax of the floor statement is shown below.
+ */
+
+/** @page floor floor
+ * \brief The floor Statement
+ *
+ * The floor statement lets you calculate the largest integral value
+ * that is not greater than the input (second) argument and store the result
+ * in its output (first) argument.  The syntax of the floor statement
+ * is shown below.
  * \code
  * floor x, y ; store the floor of y in x
  * \endcode
  *
- * The trunc statement lets you calculate the trunc value of its
+ */
+
+/** @page trunc trunc
+ * \brief The trunc Statement
+ *
+ * The trunc statement lets you calculate the integer part of its
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the trunc statement is shown below.
  * \code
  * trunc x, y ; store the trunc of y in x
  * \endcode
  *
- * The frac statement lets you calculate the frac value of its
+ */
+
+/** @page frac frac
+ * \brief The frac Statement
+ *
+ * The frac statement lets you calculate the fractional part of its
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the frac statement is shown below.
  * \code
  * frac x, y ; store the frac of y in x
  * \endcode
+ *
+ */
+
+/** @page exp exp
+ * \brief The exp Statement
  *
  * The exp statement lets you calculate the base-e exponential
  * function of x, which is the e number raised to the power x.
@@ -1168,11 +1448,21 @@
  * exp result, x ; store the value of e^x in result
  * \endcode
  *
+ */
+
+/** @page log log
+ * \brief The log Statement
+ *
  * The log statement lets you calculate the natural logarithm of x.
  * The syntax of the log statement is shown below.
  * \code
  * log result, x ; store the natural logarithm of x
  * \endcode
+ *
+ */
+
+/** @page log10 log10
+ * \brief The log10 Statement
  *
  * The log10 statement lets you calculate the base-10 logarithm of x.
  * The syntax of the log10 statement is shown below.
@@ -1180,12 +1470,22 @@
  * log10 result, x ; store the base-10 logarithm of x
  * \endcode
  *
+ */
+
+/** @page pow pow
+ * \brief The pow Statement
+ *
  * The pow statement lets you calculate the value of x raised to the y power
  * and store the result in the output (first) argument.
  * The syntax of the pow statement is shown below.
  * \code
  * pow result, x, y;  store the x^y in result
  * \endcode
+ *
+ */
+
+/** @page muldiv muldiv
+ * \brief The muldiv Statement
  *
  * The muldiv statement lets you multiply two 32-bit values and then
  * divide the 64-bit result by a third 32-bit value.
@@ -1206,6 +1506,16 @@
  * argument and two input arguments except the logical not statement.
  * Each statement supports arguments of any type, scalar, array, or struct.
  *
+ * - @subpage and
+ * - @subpage or
+ * - @subpage xor
+ * - @subpage not
+ *
+ */
+
+/** @page and and
+ * \brief The and Statement
+ *
  * The and statement lets you bitwise and together two input values and
  * store the result in the first argument.  The first argument must be a
  * variable but the second and third arguments can be a variable, a numeric
@@ -1215,6 +1525,11 @@
  * and x, x, y  // x = x & y
  * \endcode
  *
+ */
+
+/** @page or or
+ * \brief The or Statement
+ *
  * The or statement lets you bitwise or together two input values and store
  * the result in the first argument.  The first argument must be a variable
  * but the second and third arguments can be a variable, a numeric constant,
@@ -1222,6 +1537,11 @@
  * \code
  * or x, x, y  // x = x | y
  * \endcode
+ *
+ */
+
+/** @page xor xor
+ * \brief The xor Statement
  *
  * The xor statement lets you bitwise exclusive or together two input
  * values and store the result in the first argument.  The first argument
@@ -1231,6 +1551,11 @@
  * \code
  * xor x, x, y  // x = x ^ y
  * \endcode
+ *
+ */
+
+/** @page not not
+ * \brief The not Statement
  *
  * The not statement lets you logically not its input value and store the
  * result in the first argument.  The first argument must be a variable
@@ -1257,9 +1582,36 @@
  * directly by the firmware itself rather than by the compiler. The other
  * bit manipulation statements described in this section are only available
  * when targeting the enhanced firmware.
+ *
+ * - @subpage shr
+ * - @subpage shl
+ * - @subpage asr
+ * - @subpage asl
+ * - @subpage lsr
+ * - @subpage lsl
+ * - @subpage rotr
+ * - @subpage rotl
+ * - @subpage cmnt
+ *
+ */
+
+/** @page shr shr
+ * \brief The shr Statement
+ *
+ * The shr statement lets you shift right an input value by the number of
+ * bits specified by the second input argument and store the resulting
+ * value in the output argument.  The output (first) argument must be a
+ * variable but the second and third arguments can be a variable, a
+ * numeric constant, or a constant expression.  The syntax of the shr
+ * statement is shown below.
  * \code
  * shr x, x, y  // x = x >> y
  * \endcode
+ *
+ */
+
+/** @page shl shl
+ * \brief The shl Statement
  *
  * The shl statement lets you shift left an input value by the number of
  * bits specified by the second input argument and store the resulting
@@ -1271,6 +1623,11 @@
  * shl x, x, y  // x = x << y
  * \endcode
  *
+ */
+
+/** @page asr asr
+ * \brief The asr Statement
+ *
  * The asr statement lets you perform an arithmetic right shift operation.
  * The output (first) argument must be a variable but the second and
  * third arguments can be a variable, a numeric constant, or a constant
@@ -1278,6 +1635,11 @@
  * \code
  * asr x, x, y  // x = x >> y
  * \endcode
+ *
+ */
+
+/** @page asl asl
+ * \brief The asl Statement
  *
  * The asl statement lets you perform an arithmetic left shift operation.
  * The output (first) argument must be a variable but the second and third
@@ -1287,6 +1649,11 @@
  * asl x, x, y  // x = x << y
  * \endcode
  *
+ */
+
+/** @page lsr lsr
+ * \brief The lsr Statement
+ *
  * The lsr statement lets you perform a logical right shift operation.
  * The output (first) argument must be a variable but the second and
  * third arguments can be a variable, a numeric constant, or a constant
@@ -1294,6 +1661,11 @@
  * \code
  * lsr x, x, y
  * \endcode
+ *
+ */
+
+/** @page lsl lsl
+ * \brief The lsl Statement
  *
  * The lsl statement lets you perform a logical left shift operation.
  * The output (first) argument must be a variable but the second and
@@ -1303,6 +1675,11 @@
  * lsl x, x, y
  * \endcode
  *
+ */
+
+/** @page rotr rotr
+ * \brief The rotr Statement
+ *
  * The rotr statement lets you perform a rotate right operation.  The
  * output (first) argument must be a variable but the second and third
  * arguments can be a variable, a numeric constant, or a constant
@@ -1311,6 +1688,11 @@
  * rotr x, x, y
  * \endcode
  *
+ */
+
+/** @page rotl rotl
+ * \brief The rotl Statement
+ *
  * The rotl statement lets you perform a rotate left operation.  The
  * output (first) argument must be a variable but the second and
  * third arguments can be a variable, a numeric constant, or a
@@ -1318,6 +1700,11 @@
  * \code
  * rotl x, x, y
  * \endcode
+ *
+ */
+
+/** @page cmnt cmnt
+ * \brief The cmnt Statement
  *
  * The cmnt statement lets you perform a bitwise complement operation.
  * The output (first) argument must be a variable but the second can be
@@ -1329,26 +1716,33 @@
  *
  */
 
+/** @defgroup cmpconst Comparison Constants
+ *  Constants used in comparison and control statements.
+ *  @{
+ */
+#define LT   0x00 /*!< The first value is less than the second. */
+#define GT   0x01 /*!< The first value is greater than the second. */
+#define LTEQ 0x02 /*!< The first value is less than or equal to the second. */
+#define GTEQ 0x03 /*!< The first value is greater than or equal to the second. */
+#define EQ   0x04 /*!< The first value is equal to the second. */
+#define NEQ  0x05 /*!< The first value is not equal to the second. */
+/** @} */  // end of cmpconst group
+
 /** @page cmpstmnt Comparison Statements
  * \brief Comparison Statements
  *
  * Comparison statements enable you to compare data in your NBC programs. These
  * statements take a comparison code constant as their first argument. Valid
- * comparison constants are listed in the table below. You can use scalar,
+ * comparison constants are listed in the \ref cmpconst section. You can use scalar,
  * array, and aggregate types for the compare or test argument(s).
  *
- * <center>
- * <table>
- * <tr><th>Comparison</th><th>Constant</th><th>Function</th><th>Alternative Token</th></tr>
- * <tr><td>Less than</td><td>LT</td><td>0x00</td><td>&lt;</td></tr>
- * <tr><td>Greater than</td><td>GT</td><td>0x01</td><td>&gt;</td></tr>
- * <tr><td>Less than or equal</td><td>LTEQ</td><td>0x02</td><td>&lt;=</td></tr>
- * <tr><td>Greater than or equal</td><td>GTEQ</td><td>0x03</td><td>&gt;=</td></tr>
- * <tr><td>Equal</td><td>EQ</td><td>0x04</td><td>==</td></tr>
- * <tr><td>Not equal</td><td>NEQ</td><td>0x05</td><td>!= or &lt;&gt;</td></tr>
- * </table>
- * </center>
- * <center>Table 6. Comparison Constants</center>
+ * - @subpage cmp
+ * - @subpage tst
+ *
+ */
+
+/** @page cmp cmp
+ * \brief The cmp Statement
  *
  * The cmp statement lets you compare two different input sources.  The output
  * (second) argument must be a variable but the remaining arguments can be a
@@ -1357,6 +1751,11 @@
  * \code
  * cmp EQ, bXEqualsY, x, y // bXEqualsY = (x == y);
  * \endcode
+ *
+ */
+
+/** @page tst tst
+ * \brief The tst Statement
  *
  * The tst statement lets you compare an input source to zero.  The output (second)
  * argument must be a variable but the remaining argument can be a variable, a
@@ -1374,8 +1773,18 @@
  * Control flow statements enable you to manipulate or control the execution
  * flow of your NBC programs. Some of these statements take a comparison code
  * constant as their first argument. Valid comparison constants are listed
- * in Table 6 above. You can use scalar, array, and aggregate types for the
- * compare or test argument(s).
+ * in \ref cmpconst section. You can use scalar, array, and
+ * aggregate types for the compare or test argument(s).
+ *
+ * - @subpage jmp
+ * - @subpage brcmp
+ * - @subpage brtst
+ * - @subpage stop
+ *
+ */
+
+/** @page jmp jmp
+ * \brief The jmp Statement
  *
  * The jmp statement lets you unconditionally jump from the current execution
  * point to a new location.  Its only argument is a label that specifies where
@@ -1385,6 +1794,11 @@
  * jmp LoopStart // jump to the LoopStart label
  * \endcode
  *
+ */
+
+/** @page brcmp brcmp
+ * \brief The brcmp Statement
+ *
  * The brcmp statement lets you conditionally jump from the current execution
  * point to a new location.  It is like the cmp statement except that instead
  * of an output argument it has a label argument that specifies where program
@@ -1393,6 +1807,11 @@
  * brcmp EQ, LoopStart, x, y // jump to LoopStart if x == y
  * \endcode
  *
+ */
+
+/** @page brtst brtst
+ * \brief The brtst Statement
+ *
  * The brtst statement lets you conditionally jump from the current execution
  * point to a new location.  It is like the tst statement except that instead
  * of an output argument it has a label argument that specifies where program
@@ -1400,6 +1819,11 @@
  * \code
  * brtst GT, lblXGTZero, x // jump to lblXGTZero if x > 0
  * \endcode
+ *
+ */
+
+/** @page stop stop
+ * \brief The stop Statement
  *
  * The stop statement lets you stop program execution completely, depending
  * on the value of its boolean input argument. The syntax of the stop statement
@@ -1410,8 +1834,8 @@
  *
  */
 
-/** @page syscall System Call Statements
- * \brief System Call Statements
+/** @page syscall syscall
+ * \brief The syscall Statement
  *
  * The syscall statement enables execution of various system functions
  * via a constant function ID and an aggregate type variable for passing
@@ -1422,77 +1846,948 @@
  * syscall SoundPlayTone, ptArgs
  * \endcode
  *
- * <center>
- * <table>
- * <tr><th>Function ID</th><th>Function</th></tr>
- * <tr><td>FileOpenRead</td><td>0</td></tr>
- * <tr><td>FileOpenWrite</td><td>1</td></tr>
- * <tr><td>FileOpenAppend</td><td>2</td></tr>
- * <tr><td>FileRead</td><td>3</td></tr>
- * <tr><td>FileWrite</td><td>4</td></tr>
- * <tr><td>FileClose</td><td>5</td></tr>
- * <tr><td>FileResolveHandle</td><td>6</td></tr>
- * <tr><td>FileRename</td><td>7</td></tr>
- * <tr><td>FileDelete</td><td>8</td></tr>
- * <tr><td>SoundPlayFile</td><td>9</td></tr>
- * <tr><td>SoundPlayTone</td><td>10</td></tr>
- * <tr><td>SoundGetState</td><td>11</td></tr>
- * <tr><td>SoundSetState</td><td>12</td></tr>
- * <tr><td>DrawText</td><td>13</td></tr>
- * <tr><td>DrawPoint</td><td>14</td></tr>
- * <tr><td>DrawLine</td><td>15</td></tr>
- * <tr><td>DrawCircle</td><td>16</td></tr>
- * <tr><td>DrawRect</td><td>17</td></tr>
- * <tr><td>DrawGraphic</td><td>18</td></tr>
- * <tr><td>SetScreenMode</td><td>19</td></tr>
- * <tr><td>ReadButton</td><td>20</td></tr>
- * <tr><td>CommLSWrite</td><td>21</td></tr>
- * <tr><td>CommLSRead</td><td>22</td></tr>
- * <tr><td>CommLSCheckStatus</td><td>23</td></tr>
- * <tr><td>RandomNumber</td><td>24</td></tr>
- * <tr><td>GetStartTick</td><td>25</td></tr>
- * <tr><td>MessageWrite</td><td>26</td></tr>
- * <tr><td>MessageRead</td><td>27</td></tr>
- * <tr><td>CommBTCheckStatus</td><td>28</td></tr>
- * <tr><td>CommBTWrite</td><td>29</td></tr>
- * <tr><td>KeepAlive</td><td>31</td></tr>
- * <tr><td>IOMapRead</td><td>32</td></tr>
- * <tr><td>IOMapWrite</td><td>33</td></tr>
- * <tr><td>ColorSensorRead</td><td>34</td></tr>
- * <tr><td>CommBTOnOff</td><td>35</td></tr>
- * <tr><td>CommBTConnection</td><td>36</td></tr>
- * <tr><td>CommHSWrite</td><td>37</td></tr>
- * <tr><td>CommHSRead</td><td>38</td></tr>
- * <tr><td>CommHSCheckStatus</td><td>39</td></tr>
- * <tr><td>ReadSemData</td><td>40</td></tr>
- * <tr><td>WriteSemData</td><td>41</td></tr>
- * <tr><td>ComputeCalibValue</td><td>42</td></tr>
- * <tr><td>UpdateCalibCacheInfo</td><td>43</td></tr>
- * <tr><td>DatalogWrite</td><td>44</td></tr>
- * <tr><td>DatalogGetTimes</td><td>45</td></tr>
- * <tr><td>SetSleepTimeoutVal</td><td>46</td></tr>
- * <tr><td>ListFiles</td><td>47</td></tr>
- * <tr><td>IOMapReadByID</td><td>78</td></tr>
- * <tr><td>IOMapWriteByID</td><td>79</td></tr>
- * <tr><td>DisplayExecuteFunction</td><td>80</td></tr>
- * <tr><td>CommExecuteFunction</td><td>81</td></tr>
- * <tr><td>LoaderExecuteFunction</td><td>82</td></tr>
- * <tr><td>FileFindFirst</td><td>83</td></tr>
- * <tr><td>FileFindNext</td><td>84</td></tr>
- * <tr><td>FileOpenWriteLinear</td><td>85</td></tr>
- * <tr><td>FileOpenWriteNonLinear</td><td>86</td></tr>
- * <tr><td>FileOpenReadLinear</td><td>87</td></tr>
- * <tr><td>CommHSControl</td><td>88</td></tr>
- * <tr><td>CommLSWriteEx</td><td>89</td></tr>
- * <tr><td>FileSeek</td><td>90</td></tr>
- * <tr><td>FileResize</td><td>91</td></tr>
- * <tr><td>DrawGraphicArray</td><td>92</td></tr>
- * <tr><td>DrawPolygon</td><td>93</td></tr>
- * <tr><td>DrawEllipse</td><td>94</td></tr>
- * <tr><td>DrawFont</td><td>95</td></tr>
- * </table>
- * </center>
- * <center>Table 7. System Call Function IDs</center>
+ * Valid syscall statement function IDs are listed in the \ref SysCallConstants
+ * section.
+ *
+ * - @subpage syscallargs
+ *
+ */
+
+/** @page syscallargs System call structures
+ * \brief System call structures
+ *
+ * - @subpage TLocation
+ * - @subpage TSize
+ * - @subpage TFileOpen
+ * - @subpage TFileReadWrite
+ * - @subpage TFileClose
+ * - @subpage TFileResolveHandle
+ * - @subpage TFileRename
+ * - @subpage TFileDelete
+ * - @subpage TSoundPlayFile
+ * - @subpage TSoundPlayTone
+ * - @subpage TSoundGetState
+ * - @subpage TSoundSetState
+ * - @subpage TDrawText
+ * - @subpage TDrawPoint
+ * - @subpage TDrawLine
+ * - @subpage TDrawCircle
+ * - @subpage TDrawRect
+ * - @subpage TDrawGraphic
+ * - @subpage TSetScreenMode
+ * - @subpage TReadButton
+ * - @subpage TCommLSWrite
+ * - @subpage TCommLSRead
+ * - @subpage TCommLSCheckStatus
+ * - @subpage TRandomNumber
+ * - @subpage TGetStartTick
+ * - @subpage TMessageWrite
+ * - @subpage TMessageRead
+ * - @subpage TCommBTCheckStatus
+ * - @subpage TCommBTWrite
+ * - @subpage TCommBTRead
+ * - @subpage TKeepAlive
+ * - @subpage TIOMapRead
+ * - @subpage TIOMapWrite
+ * - @subpage TIOMapReadByID
+ * - @subpage TIOMapWriteByID
+ * - @subpage TDisplayExecuteFunction
+ * - @subpage TCommExecuteFunction
+ * - @subpage TLoaderExecuteFunction
+ * - @subpage TFileFind
+ * - @subpage TCommHSControl
+ * - @subpage TCommHSCheckStatus
+ * - @subpage TCommHSReadWrite
+ * - @subpage TCommLSWriteEx
+ * - @subpage TFileSeek
+ * - @subpage TFileResize
+ * - @subpage TDrawGraphicArray
+ * - @subpage TDrawPolygon
+ * - @subpage TDrawEllipse
+ * - @subpage TDrawFont
+ * - @subpage TColorSensorRead
+ * - @subpage TDatalogWrite
+ * - @subpage TDatalogGetTimes
+ * - @subpage TSetSleepTimeout
+ * - @subpage TCommBTOnOff
+ * - @subpage TCommBTConnection
+ * - @subpage TReadSemData
+ * - @subpage TWriteSemData
+ * - @subpage TUpdateCalibCacheInfo
+ * - @subpage TComputeCalibValue
+ * - @subpage TListFiles
+ *
+ */
+
+/** @page TLocation TLocation
+ * \brief The TLocation structure
+ *
+ * \code
+ * TLocation	struct
+ *  X		sword
+ *  Y		sword
+ * TLocation	ends
+ * \endcode
+ *
+ */
+
+/** @page TSize TSize
+ * \brief The TSize structure
+ *
+ * \code
+ * TSize	struct
+ *  Width	sword
+ *  Height	sword
+ * TSize	ends
+ * \endcode
+ *
+ */
+
+/** @page TFileOpen TFileOpen
+ * \brief The TFileOpen structure
+ *
+ * \code
+ * // FileOpenRead, FileOpenWrite, FileOpenAppend, FileOpenWriteLinear,
+ * // FileOpenWriteNonLinear, FileOpenReadLinear
+ * TFileOpen	struct
+ *  Result		word
+ *  FileHandle	byte
+ *  Filename	byte[]
+ *  Length		dword
+ * TFileOpen	ends
+ * \endcode
+ *
+ */
+
+/** @page TFileReadWrite TFileReadWrite
+ * \brief The TFileReadWrite structure
+ *
+ * // FileRead, FileWrite
+ * TFileReadWrite	struct
+ *  Result		word
+ *  FileHandle	byte
+ *  Buffer		byte[]
+ *  Length		dword
+ * TFileReadWrite	ends
+ * \endcode
+ *
+ */
+
+/** @page TFileClose TFileClose
+ * \brief The TFileClose structure
+ *
+ * \code
+ * // FileClose
+ * TFileClose	struct
+ *  Result		word
+ *  FileHandle	byte
+ * TFileClose	ends
+ * \endcode
+ *
+ */
+
+/** @page TFileResolveHandle TFileResolveHandle
+ * \brief The TFileResolveHandle structure
+ *
+ * \code
+ * // FileResolveHandle
+ * TFileResolveHandle	struct
+ *  Result		word
+ *  FileHandle	byte
+ *  WriteHandle	byte
+ *  Filename	byte[]
+ * TFileResolveHandle	ends
+ * \endcode
+ *
+ */
+
+/** @page TFileRename TFileRename
+ * \brief The TFileRename structure
+ *
+ * \code
+ * // FileRename
+ * TFileRename	struct
+ *  Result		word
+ *  OldFilename	byte[]
+ *  NewFilename	byte[]
+ * TFileRename	ends
+ * \endcode
+ *
+ */
+
+/** @page TFileDelete TFileDelete
+ * \brief The TFileDelete structure
+ *
+ * \code
+ * // FileDelete
+ * TFileDelete	struct
+ *  Result		word
+ *  Filename	byte[]
+ * TFileDelete	ends
+ * \endcode
+ *
+ */
+
+/** @page TSoundPlayFile TSoundPlayFile
+ * \brief The TSoundPlayFile structure
+ *
+ * \code
+ * // SoundPlayFile
+ * TSoundPlayFile	struct
+ *  Result		sbyte
+ *  Filename	byte[]
+ *  Loop		byte
+ *  Volume		byte
+ * TSoundPlayFile	ends
+ * \endcode
+ *
+ */
+
+/** @page TSoundPlayTone TSoundPlayTone
+ * \brief The TSoundPlayTone structure
+ *
+ * \code
+ * // SoundPlayTone
+ * TSoundPlayTone	struct
+ *  Result		sbyte
+ *  Frequency	word
+ *  Duration	word
+ *  Loop		byte
+ *  Volume		byte
+ * TSoundPlayTone	ends
+ * \endcode
+ *
+ */
+
+/** @page TSoundGetState TSoundGetState
+ * \brief The TSoundGetState structure
+ *
+ * \code
+ * // SoundGetState
+ * TSoundGetState	struct
+ *  State		byte
+ *  Flags		byte
+ * TSoundGetState	ends
+ * \endcode
+ *
+ */
+
+/** @page TSoundSetState TSoundSetState
+ * \brief The TSoundSetState structure
+ *
+ * \code
+ * // SoundSetState
+ * TSoundSetState	struct
+ *  Result		byte
+ *  State		byte
+ *  Flags		byte
+ * TSoundSetState	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawText TDrawText
+ * \brief The TDrawText structure
+ *
+ * \code
+ * // DrawText
+ * TDrawText	struct
+ *  Result		sbyte
+ *  Location	TLocation
+ *  Text		byte[]
+ *  Options	dword
+ * TDrawText	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawPoint TDrawPoint
+ * \brief The TDrawPoint structure
+ *
+ * \code
+ * // DrawPoint
+ * TDrawPoint	struct
+ *  Result		sbyte
+ *  Location	TLocation
+ *  Options	dword
+ * TDrawPoint	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawLine TDrawLine
+ * \brief The TDrawLine structure
+ *
+ * \code
+ * // DrawLine
+ * TDrawLine	struct
+ *  Result		sbyte
+ *  StartLoc	TLocation
+ *  EndLoc		TLocation
+ *  Options	dword
+ * TDrawLine	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawCircle TDrawCircle
+ * \brief The TDrawCircle structure
+ *
+ * \code
+ * // DrawCircle
+ * TDrawCircle	struct
+ *  Result		sbyte
+ *  Center		TLocation
+ *  Size		byte
+ *  Options	dword
+ * TDrawCircle	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawRect TDrawRect
+ * \brief The TDrawRect structure
+ *
+ * \code
+ * // DrawRect
+ * TDrawRect	struct
+ *  Result		sbyte
+ *  Location	TLocation
+ *  Size		TSize
+ *  Options	dword
+ * TDrawRect	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawGraphic TDrawGraphic
+ * \brief The TDrawGraphic structure
+ *
+ * \code
+ * // DrawGraphic
+ * TDrawGraphic	struct
+ *  Result		sbyte
+ *  Location	TLocation
+ *  Filename	byte[]
+ *  Variables	sdword[]
+ *  Options	dword
+ * TDrawGraphic	ends
+ * \endcode
+ *
+ */
+
+/** @page TSetScreenMode TSetScreenMode
+ * \brief The TSetScreenMode structure
+ *
+ * \code
+ * // SetScreenMode
+ * TSetScreenMode	struct
+ *  Result		sbyte
+ *  ScreenMode	dword
+ * TSetScreenMode	ends
+ * \endcode
+ *
+ */
+
+/** @page TReadButton TReadButton
+ * \brief The TReadButton structure
+ *
+ * \code
+ * // ReadButton
+ * TReadButton	struct
+ *  Result		sbyte
+ *  Index		byte
+ *  Pressed	byte
+ *  Count		byte
+ *  Reset		byte
+ * TReadButton	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommLSWrite TCommLSWrite
+ * \brief The TCommLSWrite structure
+ *
+ * \code
+ * // CommLSWrite
+ * TCommLSWrite	struct
+ *  Result		sbyte
+ *  Port		byte
+ *  Buffer		byte[]
+ *  ReturnLen	byte
+ * TCommLSWrite	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommLSRead TCommLSRead
+ * \brief The TCommLSRead structure
+ *
+ * \code
+ * // CommLSRead
+ * TCommLSRead	struct
+ *  Result		sbyte
+ *  Port		byte
+ *  Buffer		byte[]
+ *  BufferLen	byte
+ * TCommLSRead	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommLSCheckStatus TCommLSCheckStatus
+ * \brief The TCommLSCheckStatus structure
+ *
+ * \code
+ * // CommLSCheckStatus
+ * TCommLSCheckStatus	struct
+ *  Result		sbyte
+ *  Port		byte
+ *  BytesReady	byte
+ * TCommLSCheckStatus	ends
+ * \endcode
+ *
+ */
+
+/** @page TRandomNumber TRandomNumber
+ * \brief The TRandomNumber structure
+ *
+ * \code
+ * // RandomNumber
+ * TRandomNumber	struct
+ *  Result		sword
+ * TRandomNumber	ends
+ * \endcode
+ *
+ */
+
+/** @page TGetStartTick TGetStartTick
+ * \brief The TGetStartTick structure
+ *
+ * \code
+ * // GetStartTick
+ * TGetStartTick	struct
+ *  Result		dword
+ * TGetStartTick	ends
+ * \endcode
+ *
+ */
+
+/** @page TMessageWrite TMessageWrite
+ * \brief The TMessageWrite structure
+ *
+ * \code
+ * // MessageWrite
+ * TMessageWrite	struct
+ *  Result		sbyte
+ *  QueueID	byte
+ *  Message	byte[]
+ * TMessageWrite	ends
+ * \endcode
+ *
+ */
+
+/** @page TMessageRead TMessageRead
+ * \brief The TMessageRead structure
+ *
+ * \code
+ * // MessageRead
+ * TMessageRead	struct
+ *  Result		sbyte
+ *  QueueID	byte
+ *  Remove		byte
+ *  Message	byte[]
+ * TMessageRead	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommBTCheckStatus TCommBTCheckStatus
+ * \brief The TCommBTCheckStatus structure
+ *
+ * \code
+ * // CommBTCheckStatus
+ * TCommBTCheckStatus	struct
+ *  Result		sbyte
+ *  Connection	byte
+ * TCommBTCheckStatus	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommBTWrite TCommBTWrite
+ * \brief The TCommBTWrite structure
+ *
+ * \code
+ * // CommBTWrite
+ * TCommBTWrite	struct
+ *  Result		sbyte
+ *  Connection	byte
+ *  Buffer		byte[]
+ * TCommBTWrite	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommBTRead TCommBTRead
+ * \brief The TCommBTRead structure
+ *
+ * \code
+ * // CommBTRead
+ * TCommBTRead	struct
+ *  Result		sbyte
+ *  Count		byte
+ *  Buffer		byte[]
+ * TCommBTRead	ends
+ * \endcode
+ *
+ */
+
+/** @page TKeepAlive TKeepAlive
+ * \brief The TKeepAlive structure
+ *
+ * \code
+ * // KeepAlive
+ * TKeepAlive	struct
+ *  Result		dword
+ * TKeepAlive	ends
+ * \endcode
+ *
+ */
+
+/** @page TIOMapRead TIOMapRead
+ * \brief The TIOMapRead structure
+ *
+ * \code
+ * // IOMapRead
+ * TIOMapRead	struct
+ *  Result		sbyte
+ *  ModuleName	byte[]
+ *  Offset		word
+ *  Count		word
+ *  Buffer		byte[]
+ * TIOMapRead	ends
+ * \endcode
+ *
+ */
+
+/** @page TIOMapWrite TIOMapWrite
+ * \brief The TIOMapWrite structure
+ *
+ * \code
+ * // IOMapWrite
+ * TIOMapWrite	struct
+ *  Result		sbyte
+ *  ModuleName	byte[]
+ *  Offset		word
+ *  Buffer		byte[]
+ * TIOMapWrite	ends
+ * \endcode
+ *
+ */
+
+/** @page TIOMapReadByID TIOMapReadByID
+ * \brief The TIOMapReadByID structure
+ *
+ * \code
+ * // IOMapReadByID
+ * TIOMapReadByID struct
+ *   Result    sbyte
+ *   ModuleID  long
+ *   Offset    word
+ *   Count     word
+ *   Buffer    byte[]
+ * TIOMapReadByID ends
+ * \endcode
+ *
+ */
+
+/** @page TIOMapWriteByID TIOMapWriteByID
+ * \brief The TIOMapWriteByID structure
+ *
+ * \code
+ * // IOMapWriteByID
+ * TIOMapWriteByID struct
+ *   Result   sbyte
+ *   ModuleID long
+ *   Offset   word
+ *   Buffer   byte[]
+ * TIOMapWriteByID ends
+ * \endcode
+ *
+ */
+
+/** @page TDisplayExecuteFunction TDisplayExecuteFunction
+ * \brief The TDisplayExecuteFunction structure
+ *
+ * \code
+ * // DisplayExecuteFunction
+ * TDisplayExecuteFunction struct
+ *   Status byte
+ *   Cmd    byte
+ *   On     byte
+ *   X1     byte
+ *   Y1     byte
+ *   X2     byte
+ *   Y2     byte
+ * TDisplayExecuteFunction ends
+ * \endcode
+ *
+ */
+
+/** @page TCommExecuteFunction TCommExecuteFunction
+ * \brief The TCommExecuteFunction structure
+ *
+ * \code
+ * // CommExecuteFunction
+ * TCommExecuteFunction struct
+ *   Result word
+ *   Cmd    byte
+ *   Param1 byte
+ *   Param2 byte
+ *   Param3 byte
+ *   Name   byte[]
+ *   RetVal word
+ * TCommExecuteFunction ends
+ * \endcode
+ *
+ */
+
+/** @page TLoaderExecuteFunction TLoaderExecuteFunction
+ * \brief The TLoaderExecuteFunction structure
+ *
+ * \code
+ * // LoaderExecuteFunction
+ * TLoaderExecuteFunction struct
+ *   Result   word
+ *   Cmd      byte
+ *   Filename byte[]
+ *   Buffer   byte[]
+ *   Length   long
+ * TLoaderExecuteFunction ends
+ * \endcode
+ *
+ */
+
+/** @page TFileFind TFileFind
+ * \brief The TFileFind structure
+ *
+ * \code
+ * // FileFindFirst, FileFindNext
+ * TFileFind	struct
+ *  Result		word
+ *  FileHandle	byte
+ *  Filename	byte[]
+ *  Length		dword
+ * TFileFind	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommHSControl TCommHSControl
+ * \brief The TCommHSControl structure
+ *
+ * \code
+ * // CommHSControl
+ * TCommHSControl	struct
+ *  Result		sbyte
+ *  Command	byte
+ *  BaudRate	byte
+ *  Mode		word
+ * TCommHSControl	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommHSCheckStatus TCommHSCheckStatus
+ * \brief The TCommHSCheckStatus structure
+ *
+ * \code
+ * // CommHSCheckStatus
+ * TCommHSCheckStatus	struct
+ *  SendingData	byte
+ *  DataAvailable	byte
+ * TCommHSCheckStatus	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommHSReadWrite TCommHSReadWrite
+ * \brief The TCommHSReadWrite structure
+ *
+ * \code
+ * // CommHSRead, CommHSWrite
+ * TCommHSReadWrite	struct
+ *  Status	sbyte
+ *  Buffer	byte[]
+ * TCommHSReadWrite	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommLSWriteEx TCommLSWriteEx
+ * \brief The TCommLSWriteEx structure
+ *
+ * \code
+ * // CommLSWriteEx
+ * TCommLSWriteEx	struct
+ *  Result		sbyte
+ *  Port		byte
+ *  Buffer		byte[]
+ *  ReturnLen	byte
+ *  NoRestartOnRead	byte
+ * TCommLSWriteEx	ends
+ * \endcode
+ *
+ */
+
+/** @page TFileSeek TFileSeek
+ * \brief The TFileSeek structure
+ *
+ * \code
+ * //FileSeek
+ * TFileSeek	struct
+ *  Result		word
+ *  FileHandle	byte
+ *  Origin		byte
+ *  Length		sdword
+ * TFileSeek	ends
+ * \endcode
+ *
+ */
+
+/** @page TFileResize TFileResize
+ * \brief The TFileResize structure
+ *
+ * \code
+ * //FileResize
+ * TFileResize	struct
+ *  Result		word
+ *  FileHandle	byte
+ *  NewSize	word
+ * TFileResize	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawGraphicArray TDrawGraphicArray
+ * \brief The TDrawGraphicArray structure
+ *
+ * \code
+ * // DrawGraphicArray
+ * TDrawGraphicArray	struct
+ *  Result		sbyte
+ *  Location	TLocation
+ *  Data		byte[]
+ *  Variables	sdword[]
+ *  Options	dword
+ * TDrawGraphicArray	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawPolygon TDrawPolygon
+ * \brief The TDrawPolygon structure
+ *
+ * \code
+ * // DrawPolygon
+ * TDrawPolygon	struct
+ *  Result		sbyte
+ *  Points		TLocation[]
+ *  Options	dword
+ * TDrawPolygon	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawEllipse TDrawEllipse
+ * \brief The TDrawEllipse structure
+ *
+ * \code
+ * // DrawEllipse
+ * TDrawEllipse	struct
+ *  Result		sbyte
+ *  Center		TLocation
+ *  SizeX		byte
+ *  SizeY		byte
+ *  Options	dword
+ * TDrawEllipse	ends
+ * \endcode
+ *
+ */
+
+/** @page TDrawFont TDrawFont
+ * \brief The TDrawFont structure
+ *
+ * \code
+ * // DrawFont
+ * TDrawFont	struct
+ *  Result		sbyte
+ *  Location	TLocation
+ *  Filename	byte[]
+ *  Text		byte[]
+ *  Options	dword
+ * TDrawFont	ends
+ * \endcode
+ *
+ */
+
+/** @page TColorSensorRead TColorSensorRead
+ * Parameters for the ColorSensorRead system call.
+ * This structure is used when calling the \ref ColorSensorRead system call function.
+ * Choose the sensor port (\ref NBCInputPortConstants) and after calling the function
+ * read the sensor values from the ColorValue field or the raw, normalized, or
+ * scaled value arrays.
+ * \code
+ * // ColorSensorRead
+ * TColorSensorRead	struct
+ *  Result          sbyte    ; The function call result. NO_ERR means it succeeded.
+ *  Port			byte     ; The sensor port. See NBCInputPortConstants.
+ *  ColorValue		sword    ; The color value returned by the sensor. See InputColorValueConstants.
+ *  RawArray		word[]   ; Raw color values returned by the sensor. See InputColorIdxConstants.
+ *  NormalizedArray	word[]   ; Normalized color values returned by the sensor. See InputColorIdxConstants.
+ *  ScaledArray     sword[]  ; Scaled color values returned by the sensor. See InputColorIdxConstants.
+ *  Invalid         byte     ; Are the sensor values valid?
+ * TColorSensorRead	ends
+ * \endcode
+ *
+ */
+
+/** @page TDatalogWrite TDatalogWrite
+ * \brief The TDatalogWrite structure
+ *
+ * \code
+ * // DatalogWrite
+ * TDatalogWrite	struct
+ *  Result		sbyte
+ *  Message	byte[]
+ * TDatalogWrite	ends
+ * \endcode
+ *
+ */
+
+/** @page TDatalogGetTimes TDatalogGetTimes
+ * \brief The TDatalogGetTimes structure
+ *
+ * \code
+ * // DatalogGetTimes
+ * TDatalogGetTimes	struct
+ *  SyncTime	dword
+ *  SyncTick	dword
+ * TDatalogGetTimes	ends
+ * \endcode
+ *
+ */
+
+/** @page TSetSleepTimeout TSetSleepTimeout
+ * \brief The TSetSleepTimeout structure
+ *
+ * \code
+ * // SetSleepTimeout
+ * TSetSleepTimeout	struct
+ *  Result		sbyte
+ *  TheSleepTimeoutMS	dword
+ * TSetSleepTimeout	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommBTOnOff TCommBTOnOff
+ * \brief The TCommBTOnOff structure
+ *
+ * \code
+ * // CommBTOnOff
+ * TCommBTOnOff	struct
+ *  Result		word
+ *  PowerState	byte
+ * TCommBTOnOff	ends
+ * \endcode
+ *
+ */
+
+/** @page TCommBTConnection TCommBTConnection
+ * \brief The TCommBTConnection structure
+ *
+ * \code
+ * // CommBTConnection
+ * TCommBTConnection	struct
+ *  Result		word
+ *  Action		byte
+ *  Name		byte[]
+ *  ConnectionSlot	byte
+ * TCommBTConnection	ends
+ * \endcode
+ *
+ */
+
+/** @page TReadSemData TReadSemData
+ * \brief The TReadSemData structure
+ *
+ * \code
+ * // ReadSemData
+ * TReadSemData struct
+ *  SemData byte
+ *  Request byte
+ * TReadSemData ends
+ * \endcode
+ *
+ */
+
+/** @page TWriteSemData TWriteSemData
+ * \brief The TWriteSemData structure
+ *
+ * \code
+ * // WriteSemData
+ * TWriteSemData struct
+ *  SemData byte
+ *  Request byte
+ *  NewVal byte
+ *  ClearBits byte
+ * TWriteSemData ends
+ * \endcode
+ *
+ */
+
+/** @page TUpdateCalibCacheInfo TUpdateCalibCacheInfo
+ * \brief The TUpdateCalibCacheInfo structure
+ *
+ * \code
+ * // UpdateCalibCacheInfo
+ * TUpdateCalibCacheInfo struct
+ *  Result byte
+ *  Name byte[]
+ *  MinVal word
+ *  MaxVal word
+ * TUpdateCalibCacheInfo ends
+ * \endcode
+ *
+ */
+
+/** @page TComputeCalibValue TComputeCalibValue
+ * \brief The TComputeCalibValue structure
+ *
+ * \code
+ * // ComputeCalibValue
+ * TComputeCalibValue struct
+ *  Result byte
+ *  Name byte[]
+ *  RawVal word
+ * TComputeCalibValue ends
+ * \endcode
+ *
+ */
+
+/** @page TListFiles TListFiles
+ * \brief The TListFiles structure
+ *
+ * \code
+ * // ListFiles
+ * TListFiles	struct
+ *  Result		sbyte
+ *  Pattern	byte[]
+ *  FileList	byte[][]
+ * TListFiles	ends
+ * \endcode
  *
  */
 
@@ -1513,12 +2808,27 @@
  * brcmp LT, Loop, currTick, endTick
  * \endcode
  *
+ * - @subpage wait
+ * - @subpage waitv
+ * - @subpage wait2
+ * - @subpage gettick
+ *
+ */
+
+/** @page wait wait
+ * \brief The wait Statement
+ *
  * The wait statement suspends the current thread for the number of
  * milliseconds specified by its constant argument. The syntax of the
  * wait statement is shown below.
  * \code
  * wait 1000 // wait for 1 second
  * \endcode
+ *
+ */
+
+/** @page waitv waitv
+ * \brief The waitv Statement
  *
  * The waitv statement acts like wait but it takes a variable argument.
  * If you use a constant argument with waitv the compiler will generate
@@ -1527,6 +2837,11 @@
  * \code
  * waitv iDelay // wait for the number of milliseconds in iDelay
  * \endcode
+ *
+ */
+
+/** @page wait2 wait2
+ * \brief The wait2 Statement
  *
  * The wait2 statement suspends the current thread for the number of
  * milliseconds specified by its second argument. If the second argument
@@ -1537,6 +2852,11 @@
  * set ms, 1000
  * wait2 NA, ms // wait for 1 second
  * \endcode
+ *
+ */
+
+/** @page gettick gettick
+ * \brief The gettick Statement
  *
  * The gettick statement suspends the current thread for the number of
  * milliseconds specified by its constant argument. The syntax of the
@@ -1553,6 +2873,19 @@
  * Array statements enable you to populate and manipulate arrays in
  * your NBC programs.
  *
+ * - @subpage index
+ * - @subpage replace
+ * - @subpage arrsize
+ * - @subpage arrinit
+ * - @subpage arrsubset
+ * - @subpage arrbuild
+ * - @subpage arrop
+ *
+ */
+
+/** @page index index
+ * \brief The index Statement
+ *
  * The index statement extracts a single element from the source array
  * and returns the value in the output (first) argument. The last argument
  * is the index of the desired element. The syntax of the index statement
@@ -1561,6 +2894,11 @@
  * // extract arrayValues[index] and store it in value
  * index value, arrayValues, index
  * \endcode
+ *
+ */
+
+/** @page replace replace
+ * \brief The replace Statement
  *
  * The replace statement replaces one or more items in a source array
  * and stores the modified array contents in an output array. The array
@@ -1575,12 +2913,22 @@
  * replace arNew, arValues, idx, x
  * \endcode
  *
+ */
+
+/** @page arrsize arrsize
+ * \brief The arrsize Statement
+ *
  * The arrsize statement returns the number of elements in the input
  * array (second) argument in the scalar output (first) argument. The
  * syntax of the arrsize statement is shown below.
  * \code
  * arrsize nSize, arValues  // nSize == length of array
  * \endcode
+ *
+ */
+
+/** @page arrinit arrinit
+ * \brief The arrinit Statement
  *
  * The arrinit statement initializes the output array (first) argument
  * using the value (second) and size (third) arguments provided. The
@@ -1589,6 +2937,11 @@
  * // initialize arValues with nSize zeros
  * arrinit arValues, 0, nSize
  * \endcode
+ *
+ */
+
+/** @page arrsubset arrsubset
+ * \brief The arrsubset Statement
  *
  * The arrsubset statement copies a subset of the input array (second)
  * argument to the output array (first) argument. The subset begins at
@@ -1600,6 +2953,11 @@
  * arrsubset arSub, arValues, NA, x
  * \endcode
  *
+ */
+
+/** @page arrbuild arrbuild
+ * \brief The arrbuild Statement
+ *
  * The arrbuild statement constructs an output array from a variable
  * number of input arrays, scalars, or aggregates. The types of all
  * the input arguments must be compatible with the type of the output
@@ -1610,14 +2968,26 @@
  * arrbuild arData, arStart, arBody, arEnd
  * \endcode
  *
+ */
+
+/** @page arrop arrop
+ * \brief The arrop Statement
+ *
  * The arrop statement lets you perform several different operations on
- * an array containing numeric values.  The operations are OPARR_SUM,
- * OPARR_MEAN, OPARR_SUMSQR, OPARR_STD, OPARR_MIN, OPARR_MAX, and OPARR_SORT.
- * In the case of OPARR_SORT the output parameter should be an array of the
+ * an array containing numeric values.  The operations are \ref OPARR_SUM,
+ * \ref OPARR_MEAN, \ref OPARR_SUMSQR, \ref OPARR_STD, \ref OPARR_MIN,
+ * \ref OPARR_MAX, and \ref OPARR_SORT.
+ *
+ * In the case of \ref OPARR_SORT the output parameter should be an array of the
  * same type as the input array. In all the other cases it can be any
  * scalar type large enough to hold the resulting value. If the data in the
  * array is of the float type then the output should also be of the float
- * type. The syntax of the arrop statement is shown below.
+ * type.
+ *
+ * The fourth and fifth arguments indicate the starting element and
+ * the number of elements to operate on.  To use the entire input array you
+ * simply pass the \ref NA constant in as the value for start and length.
+ * The syntax of the arrop statement is shown below.
  * \code
  * // execute an array operation
  * ; arrop op, dest, src, start, len
@@ -1633,12 +3003,35 @@
  * String statements enable you to populate and manipulate null-terminated
  * byte arrays (aka strings) in your NBC programs.
  *
+ * - @subpage flatten
+ * - @subpage unflatten
+ * - @subpage numtostr
+ * - @subpage fmtnum
+ * - @subpage strtonum
+ * - @subpage strsubset
+ * - @subpage strcat
+ * - @subpage arrtostr
+ * - @subpage strtoarr
+ * - @subpage strindex
+ * - @subpage strreplace
+ * - @subpage strlen
+ *
+ */
+
+/** @page flatten flatten
+ * \brief The flatten Statement
+ *
  * The flatten statement converts its input (second) argument into its
  * string output (first) argument. The syntax of the flatten statement
  * is shown below.
  * \code
  * flatten strData, args  // copy args structure to strData
  * \endcode
+ *
+ */
+
+/** @page unflatten unflatten
+ * \brief The unflatten Statement
  *
  * The unflatten statement converts its input string (third) argument to
  * the output (first) argument type.  If the default value (fourth)
@@ -1650,12 +3043,22 @@
  * unflatten args, bErr, strSource, x  // convert string to cluster
  * \endcode
  *
+ */
+
+/** @page numtostr numtostr
+ * \brief The numtostr Statement
+ *
  * The numtostr statement converts its scalar input (second) argument to a
  * string output (first) argument. The syntax of the numtostr statement
  * is shown below.
  * \code
  * numtostr strValue, value  // convert value to a string
  * \endcode
+ *
+ */
+
+/** @page fmtnum fmtnum
+ * \brief The fmtnum Statement
  *
  * The fmtnum statement converts its scalar input (third) argument to
  * a string output (first) argument. The format of the string output is
@@ -1664,6 +3067,11 @@
  * \code
  * fmtnum strValue, fmtStr, value  // convert value to a string
  * \endcode
+ *
+ */
+
+/** @page strtonum strtonum
+ * \brief The strtonum Statement
  *
  * The strtonum statement parses its input string (third) argument into
  * a numeric output (first) argument, advancing an offset output (second)
@@ -1677,6 +3085,11 @@
  * strtonum value, idx, strValue, idx, nZero
  * \endcode
  *
+ */
+
+/** @page strsubset strsubset
+ * \brief The strsubset Statement
+ *
  * The strsubset statement copies a subset of the input string (second)
  * argument to the output string (first) argument. The subset begins at
  * the specified index (third) argument. The number of characters in
@@ -1687,6 +3100,11 @@
  * strsubset strSub, strSource, NA, x
  * \endcode
  *
+ */
+
+/** @page strcat strcat
+ * \brief The strcat Statement
+ *
  * The strcat statement constructs an output string from a variable number
  * of input strings. The input arguments must all be null-terminated byte
  * arrays. You must provide one or more comma-separated input arguments.
@@ -1696,6 +3114,11 @@
  * strcat strData, strStart, strBody, strEnd
  * \endcode
  *
+ */
+
+/** @page arrtostr arrtostr
+ * \brief The arrtostr Statement
+ *
  * The arrtostr statement copies the input byte array (second) argument
  * into its output string (first) argument and adds a null-terminator byte
  * at the end. The syntax of the arrtostr statement is shown below.
@@ -1703,12 +3126,22 @@
  * arrtostr strData, arrData  // convert byte array to string
  * \endcode
  *
+ */
+
+/** @page strtoarr strtoarr
+ * \brief The strtoarr Statement
+ *
  * The strtoarr statement copies the input string (second) argument into
  * its output byte array (first) argument excluding the last byte, which
  * should be a null. The syntax of the strtoarr statement is shown below.
  * \code
  * strtoarr arrData, strData  // convert string to byte array
  * \endcode
+ *
+ */
+
+/** @page strindex strindex
+ * \brief The strindex Statement
  *
  * The strindex statement extracts a single element from the source
  * string and returns the value in the output (first) argument. The
@@ -1718,6 +3151,11 @@
  * // extract strVal[idx] and store it in val
  * strindex val, strVal, idx
  * \endcode
+ *
+ */
+
+/** @page strreplace strreplace
+ * \brief The strreplace Statement
  *
  * The strreplace statement replaces one or more characters in a source
  * string and stores the modified string in an output string. The string
@@ -1731,6 +3169,11 @@
  * // replace strValues[idx] with newStr in strNew
  * strreplace strNew, strValues, idx, newStr
  * \endcode
+ *
+ */
+
+/** @page strlen strlen
+ * \brief The strlen Statement
  *
  * The strlen statement returns the length of the input string (second)
  * argument in the scalar output (first) argument. The syntax of the
@@ -1747,6 +3190,25 @@
  * Scheduling statements enable you to control the execution of multiple
  * threads and the calling of subroutines in your NBC programs.
  *
+ * - @subpage exit
+ * - @subpage exitto
+ * - @subpage start
+ * - @subpage stopthread
+ * - @subpage priority
+ * - @subpage precedes
+ * - @subpage follows
+ * - @subpage acquire
+ * - @subpage release
+ * - @subpage subcall
+ * - @subpage subret
+ * - @subpage call
+ * - @subpage return
+ *
+ */
+
+/** @page exit exit
+ * \brief The exit Statement
+ *
  * The exit statement finalizes the current thread and schedules zero or
  * more dependant threads by specifying start and end dependency list
  * indices. The thread indices are zero-based and inclusive. The two
@@ -1758,12 +3220,22 @@
  * exit // schedule all this thread's dependants
  * \endcode
  *
+ */
+
+/** @page exitto exitto
+ * \brief The exitto Statement
+ *
  * The exitto statement exits the current thread and schedules the
  * specified thread to begin executing. The syntax of the exitto
  * statement is shown below.
  * \code
  * exitto worker  // exit now and schedule worker thread
  * \endcode
+ *
+ */
+
+/** @page start start
+ * \brief The start Statement
  *
  * The start statement causes the thread specified in the statement to
  * start running immediately. Using the standard NXT firmware this
@@ -1775,6 +3247,11 @@
  * start worker  // start the worker thread
  * \endcode
  *
+ */
+
+/** @page stopthread stopthread
+ * \brief The stopthread Statement
+ *
  * The stopthread statement causes the thread specified in the
  * statement to stop running immediately. This statement cannot be used
  * with the standard NXT firmware. It is supported by the enhanced
@@ -1783,6 +3260,11 @@
  * stopthread worker  // stop the worker thread
  * \endcode
  *
+ */
+
+/** @page priority priority
+ * \brief The priority Statement
+ *
  * The priority statement modifies the priority of the thread specified
  * in the statement. This statement cannot be used with the standard
  * NXT firmware. It is supported by the enhanced NBC/NXC firmware. The
@@ -1790,6 +3272,11 @@
  * \code
  * priority worker, 50  // change the priority of the worker thread
  * \endcode
+ *
+ */
+
+/** @page precedes precedes
+ * \brief The precedes Statement
  *
  * The precedes statement causes the compiler to mark the threads listed
  * in the statement as dependants of the current thread. A subset of these
@@ -1800,6 +3287,11 @@
  * precedes worker, music, walking  // configure dependant threads
  * \endcode
  *
+ */
+
+/** @page follows follows
+ * \brief The follows Statement
+ *
  * The follows statement causes the compiler to mark the current thread
  * as a dependant of the threads listed in the statement. The current
  * thread will be scheduled to execute if all of the threads that precede
@@ -1809,6 +3301,11 @@
  * follows main  // configure thread dependencies
  * \endcode
  *
+ */
+
+/** @page acquire acquire
+ * \brief The acquire Statement
+ *
  * The acquire statement acquires the named mutex.  If the mutex is
  * already acquired the current thread waits until it becomes available.
  * The syntax of the acquire statement is shown below.
@@ -1816,11 +3313,21 @@
  * acquire muFoo  // acquire mutex for subroutine
  * \endcode
  *
+ */
+
+/** @page release release
+ * \brief The release Statement
+ *
  * The release statement releases the named mutex allowing other threads
  * to acquire it. The syntax of the release statement is shown below.
  * \code
  * release muFoo  // release mutex for subroutine
  * \endcode
+ *
+ */
+
+/** @page subcall subcall
+ * \brief The subcall Statement
  *
  * The subcall statement calls into the named thread/subroutine and waits
  * for a return (which might not come from the same thread). The second
@@ -1830,12 +3337,22 @@
  * subcall drawText, retDrawText  // call drawText subroutine
  * \endcode
  *
+ */
+
+/** @page subret subret
+ * \brief The subret Statement
+ *
  * The subret statement returns from a thread to the return address
  * value contained in its input argument. The syntax of the subret
  * statement is shown below.
  * \code
  * subret retDrawText  // return to calling routine
  * \endcode
+ *
+ */
+
+/** @page call call
+ * \brief The call Statement
  *
  * The call statement executes the named subroutine and waits for a
  * return.  The argument should specify a thread that was declared
@@ -1844,6 +3361,11 @@
  * \code
  * call MyFavoriteSubroutine  // call routine
  * \endcode
+ *
+ */
+
+/** @page return return
+ * \brief The return Statement
  *
  * The return statement returns from a subroutine. The compiler
  * automatically handles the return address for call and return when
@@ -1861,35 +3383,41 @@
  * Input statements enable you to configure the four input ports and read
  * analog sensor values in your NBC programs. Both statements in this
  * category use input field identifiers to control which attribute of
- * the input port you are manipulating. Valid input field identifiers
- * are listed in the following table.
+ * the input port you are manipulating.
  *
- * <center>
- * <table>
- * <tr><th>Input Field ID</th><th>Function</th></tr>
- * <tr><td>Type</td><td>0</td></tr>
- * <tr><td>InputMode</td><td>1</td></tr>
- * <tr><td>RawValue</td><td>2</td></tr>
- * <tr><td>NormalizedValue</td><td>3</td></tr>
- * <tr><td>ScaledValue</td><td>4</td></tr>
- * <tr><td>InvalidData</td><td>5</td></tr>
- * </table>
- * </center>
- * <center>Table 8. Input Field IDs</center>
+ * - @subpage setin
+ * - @subpage getin
+ *
+ */
+
+/** @page setin setin
+ * \brief The setin Statement
  *
  * The setin statement sets an input field of a sensor on a port to the
  * value specified in its first argument. The port is specified via the
- * second argument. The input field identifier is the third argument. The
- * syntax of the setin statement is shown below.
+ * second argument. The input field identifier is the third argument.
+ * Valid input field identifiers
+ * are listed in the \ref InputFieldConstants section. Valid port constants
+ * are listed in the \ref NBCInputPortConstants section.
+ * The syntax of the setin statement is shown below.
  * \code
  * setin IN_TYPE_SWITCH, IN_1, Type ; set sensor to switch type
  * setin IN_MODE_BOOLEAN, IN_1, InputMode ; set to boolean mode
  * \endcode
  *
+ */
+
+/** @page getin getin
+ * \brief The getin Statement
+ *
  * The getin statement reads a value from an input field of a sensor on a
  * port and writes the value to its first argument. The port is specified
  * via the second argument. The input field identifier is the third
- * argument. The syntax of the getin statement is shown below.
+ * argument.
+ * Valid input field identifiers
+ * are listed in the \ref InputFieldConstants section. Valid port constants
+ * are listed in the \ref NBCInputPortConstants section.
+ * The syntax of the getin statement is shown below.
  * \code
  * getin rVal, thePort, RawValue  // read raw sensor value
  * getin sVal, thePort, ScaledValue  // read scaled sensor value
@@ -1904,39 +3432,26 @@
  * Output statements enable you to configure and control the three NXT
  * outputs in your NBC programs. Both statements in this category use
  * output field identifiers to control which attribute of the output
- * you are manipulating. Valid output field identifiers are listed in
- * the following table.
+ * you are manipulating.
  *
- * <center>
- * <table>
- * <tr><th>Output Field ID</th><th>Function</th></tr>
- * <tr><td>UpdateFlags</td><td>0</td></tr>
- * <tr><td>OutputMode</td><td>1</td></tr>
- * <tr><td>Power</td><td>2</td></tr>
- * <tr><td>ActualSpeed</td><td>3</td></tr>
- * <tr><td>TachoCount</td><td>4</td></tr>
- * <tr><td>TachoLimit</td><td>5</td></tr>
- * <tr><td>RunState</td><td>6</td></tr>
- * <tr><td>TurnRatio</td><td>7</td></tr>
- * <tr><td>RegMode</td><td>8</td></tr>
- * <tr><td>Overload</td><td>9</td></tr>
- * <tr><td>RegPValue</td><td>10</td></tr>
- * <tr><td>RegIValue</td><td>11</td></tr>
- * <tr><td>RegDValue</td><td>12</td></tr>
- * <tr><td>BlockTachoCount</td><td>13</td></tr>
- * <tr><td>RotationCount</td><td>14</td></tr>
- * <tr><td>OutputOptions</td><td>15</td></tr>
- * </table>
- * </center>
- * <center>Table 9. Output Field IDs</center>
+ * - @subpage setout
+ * - @subpage getout
+ *
+ */
+
+/** @page setout setout
+ * \brief The setout Statement
  *
  * The setout statement sets one or more output fields of a motor on one
  * or more ports to the value specified by the coupled input arguments. The
  * first argument is either a scalar value specifying a single port or a
  * byte array specifying multiple ports. After the port argument you then
  * provide one or more pairs of output field identifiers and values. You
- * can set multiple fields via a single statement. The syntax of the
- * setout statement is shown below.
+ * can set multiple fields via a single statement.
+ * Valid output field identifiers
+ * are listed in the \ref OutputFieldConstants section. Valid output
+ * port constants are listed in the \ref OutputPortConstants section.
+ * The syntax of the setout statement is shown below.
  * \code
  * set theMode, OUT_MODE_MOTORON  // set mode to motor on
  * set rsVal, OUT_RUNSTATE_RUNNING // motor running
@@ -1946,10 +3461,19 @@
  * setout thePort, OutputMode, theMode, RunState, rsVal, Power, pwr
  * \endcode
  *
+ */
+
+/** @page getout getout
+ * \brief The getout Statement
+ *
  * The getout statement reads a value from an output field of a sensor on
  * a port and writes the value to its first output argument. The port is
  * specified via the second argument. The output field identifier is
- * the third argument. The syntax of the getout statement is shown below.
+ * the third argument.
+ * Valid output field identifiers
+ * are listed in the \ref OutputFieldConstants section. Valid output
+ * port constants are listed in the \ref OutputPortConstants section.
+ * The syntax of the getout statement is shown below.
  * \code
  * getout rmVal, thePort, RegMode  // read motor regulation mode
  * getout tlVal, thePort, TachoLimit  // read tachometer limit value
@@ -1964,6 +3488,20 @@
  * Compile-time statements and functions enable you to perform simple
  * compiler operations at the time you compile your NBC programs.
  *
+ * - @subpage sizeof
+ * - @subpage valueof
+ * - @subpage isconst
+ * - @subpage compchk
+ * - @subpage compif
+ * - @subpage compelse
+ * - @subpage compend
+ * - @subpage compchktype
+ *
+ */
+
+/** @page sizeof sizeof
+ * \brief The sizeof function
+ *
  * The sizeof(arg) compiler function returns the size of the variable you
  * pass into it. The syntax of the sizeof function is shown below.
  * \code
@@ -1975,12 +3513,22 @@
  * set argsize, sizeof(arg) ; argsize == 1
  * \endcode
  *
+ */
+
+/** @page valueof valueof
+ * \brief The valueof function
+ *
  * The valueof(arg) compiler function returns the value of the constant
  * expression you pass into it. The syntax of the valueof function is
  * shown below.
  * \code
  * set argval, valueof(4+3*2) ; argval == 10
  * \endcode
+ *
+ */
+
+/** @page isconst isconst
+ * \brief The isconst function
  *
  * The isconst(arg) compiler function returns TRUE if the argument you
  * pass into it is a constant and FALSE if it is not a constant. The
@@ -1989,19 +3537,29 @@
  * set argval, isconst(4+3*2) ; argval == TRUE
  * \endcode
  *
+ */
+
+/** @page compchk compchk
+ * \brief The compchk Statement
+ *
  * The compchk compiler statement takes a comparison constant as its first
  * argument. The second and third arguments must be constants or constant
  * expressions that can be evaluated by the compiler during program
  * compilation. It reports a compiler error if the comparison expression
  * does not evaluate to TRUE. Valid comparison constants are listed in
- * Table 6. The syntax of the compchk statement is shown below.
+ * the \ref cmpconst section. The syntax of the compchk statement is shown below.
  * \code
  * compchk EQ, sizeof(arg3), 2
  * \endcode
  *
- * The compif, compelse, and compend compiler statements work together to
- * create a compile-time if-else statement that enables you to control
- * whether or not sections of code should be included in the compiler
+ */
+
+/** @page compif compif
+ * \brief The compif Statement
+ *
+ * The compif statement works together with the compelse and compend compiler
+ * statements to create a compile-time if-else statement that enables you to
+ * control whether or not sections of code should be included in the compiler
  * output. The compif statement takes a comparison constant as its first
  * argument. The second and third arguments must be constants or constant
  * expressions that can be evaluated by the compiler during program
@@ -2010,14 +3568,70 @@
  * if statement ends when the compiler finds the next compend statement.
  * To optionally provide an else clause use the compelse statement between
  * the compif and compend statements. Valid comparison constants are
- * listed in Table 6. The syntax of the compif , compelse, and compend
- * statements is shown below.
+ * listed in the \ref cmpconst section.
+ * The syntax of the compif statement is demonstrated in the example below.
  * \code
  * compif EQ, sizeof(arg3), 2
  *   // compile this if sizeof(arg3) == 2
  * compelse
  *   // compile this if sizeof(arg3) != 2
  * compend
+ * \endcode
+ *
+ */
+
+/** @page compelse compelse
+ * \brief The compelse Statement
+ *
+ * The compelse statement works together with the compif and compend compiler
+ * statements to create a compile-time if-else statement that enables you to
+ * control whether or not sections of code should be included in the compiler
+ * output. If the comparison expression in the compif statement is false
+ * then code immediately following the compelse statement will be included
+ * in the executable. The compelse block ends when the compiler finds the next
+ * compend statement.
+ * The syntax of the compelse statement is shown in the example below.
+ * \code
+ * compif EQ, sizeof(arg3), 2
+ *   // compile this if sizeof(arg3) == 2
+ * compelse
+ *   // compile this if sizeof(arg3) != 2
+ * compend
+ * \endcode
+ *
+ */
+
+/** @page compend compend
+ * \brief The compend Statement
+ *
+ * The compend statement works together with the compif and compelse compiler
+ * statements to create a compile-time if-else statement that enables you to
+ * control whether or not sections of code should be included in the compiler
+ * output. The compif and compelse blocks end when the compiler finds the next
+ * compend statement.
+ * The syntax of the compend statement is shown in the example below.
+ * \code
+ * compif EQ, sizeof(arg3), 2
+ *   // compile this if sizeof(arg3) == 2
+ * compelse
+ *   // compile this if sizeof(arg3) != 2
+ * compend
+ * \endcode
+ *
+ */
+
+/** @page compchktype compchktype
+ * \brief The compchktype Statement
+ *
+ * The compchktype compiler statement takes a variable as its first
+ * argument. The second argument must be type name
+ * that can be evaluated by the compiler during program
+ * compilation. It reports a compiler error if the type of the variable does not
+ * match the second argument.
+ * The syntax of the compchktype statement is shown below.
+ * \code
+ *   compchktype _args, TDrawText
+ *   syscall DrawText, _args
  * \endcode
  *
  */
@@ -2036,7 +3650,7 @@
  * This is potentially confusing since they are externally labeled on the NXT
  * as sensors 1, 2, 3, and 4. To help mitigate this confusion,
  * the NBC port name constants
- * \ref IN_1, \ref IN_2, \ref IN_3, and \ref IN_4 may also be used when
+ * \ref IN_1, \ref IN_2, \ref IN_3, and \ref IN_4 may be used when
  * a sensor port is required. See \ref NBCInputPortConstants.
  */
 
@@ -2052,7 +3666,7 @@
  * Calling \ref SetSensorType configures a sensor's type. There are 16 sensor types, each
  * corresponding to a specific type of LEGO RCX or NXT sensor. Two of these types are
  * for NXT I2C digital sensors, either 9V powered or unpowered, and a third is used to
- * configure port S4 as a high-speed RS-485 serial port. A seventeenth type
+ * configure port \ref IN_4 as a high-speed RS-485 serial port. A seventeenth type
  * (\ref IN_TYPE_CUSTOM) is for use with custom analog sensors. And an eighteenth type
  * (\ref IN_TYPE_NO_SENSOR) is used to indicate that no sensor has been configured, effectively
  * turning off the specified port.
@@ -2085,19 +3699,23 @@
  *
  * The NXT output module encompasses all the motor outputs.
  *
- * Nearly all of the NBC API functions dealing with outputs take either a single output or a set of
- * outputs as their first argument. Depending on the function call, the output or set of outputs
- * may be a constant or a variable containing an appropriate output port value. The constants \ref OUT_A,
- * \ref OUT_B, and \ref OUT_C are used to identify the three outputs. Unlike NQC, adding individual outputs
- * together does not combine multiple outputs. Instead, the NBC API provides predefined combinations
- * of outputs: \ref OUT_AB, \ref OUT_AC, \ref OUT_BC, and \ref OUT_ABC. Manually combining outputs involves creating an
- * array and adding two or more of the three individual output constants to the array.
+ * Nearly all of the NBC API functions dealing with outputs take either a
+ * single output or a set of outputs as their first argument. Depending on
+ * the function call, the output or set of outputs may be a constant or a
+ * variable containing an appropriate output port value. The constants
+ * \ref OUT_A, \ref OUT_B, and \ref OUT_C are used to identify the three
+ * outputs. Unlike NQC, adding individual outputs together does not combine
+ * multiple outputs. Instead, the NBC API provides predefined combinations
+ * of outputs: \ref OUT_AB, \ref OUT_AC, \ref OUT_BC, and \ref OUT_ABC.
+ * Manually combining outputs involves creating an array and adding two or
+ * more of the three individual output constants to the array.
  *
- * \ref Power levels can range 0 (lowest) to 100 (highest). Negative power levels reverse the direction of
- * rotation (i.e., forward at a power level of -100 actually means reverse at a power level of 100).
+ * \ref Power levels can range 0 (lowest) to 100 (highest). Negative power
+ * levels reverse the direction of rotation (i.e., forward at a power level
+ * of -100 actually means reverse at a power level of 100).
  *
- * The outputs each have several fields that define the current state of the output port. These
- * fields are defined in the \ref OutputFieldConstants section.
+ * The outputs each have several fields that define the current state of the
+ * output port. These fields are defined in the \ref OutputFieldConstants section.
  */
 
 /** @defgroup OutputModuleConstants Output module constants
@@ -2195,8 +3813,8 @@
  *
  * When a sound or a file is played on the NXT, execution of the program does not wait for the
  * previous playback to complete. To play multiple tones or files sequentially it is necessary to
- * wait for the previous tone or file playback to complete first. This can be done via the Wait
- * API function or by using the sound state value within a while loop.
+ * wait for the previous tone or file playback to complete first. This can be done via the \ref wait
+ * statement or by using the sound state value within a while loop.
  *
  * The NBC API defines frequency and duration constants which may be used in calls to \ref PlayTone or
  * \ref PlayToneEx. Frequency constants start with \ref TONE_A3 (the 'A' pitch in octave 3) and go to
@@ -2208,8 +3826,8 @@
 /** @defgroup UiModule Ui module
  * Constants and functions related to the Ui module.
  *
- * The NXT UI module encompasses support for various aspects of the user interface for the
- * NXT brick.
+ * The NXT UI module encompasses support for various aspects of the user
+ * interface for the NXT brick.
  */
 
 /** @defgroup LowSpeedModule Low Speed module
@@ -2220,40 +3838,45 @@
  * Use the lowspeed (aka I2C) communication methods to access devices that use the I2C
  * protocol on the NXT brick's four input ports.
  *
- * You must set the input port's Type property to \ref SENSOR_TYPE_LOWSPEED or
- * \ref SENSOR_TYPE_LOWSPEED_9V on a given port before using an I2C device on that port. Use
- * \ref SENSOR_TYPE_LOWSPEED_9V if your device requires 9V power from the NXT brick. Remember
- * that you also need to set the input port's InvalidData property to true after setting a
- * new Type, and then wait in a loop for the NXT firmware to set InvalidData back to false.
- * This process ensures that the firmware has time to properly initialize the port, including
- * the 9V power lines, if applicable. Some digital devices might need additional time to
- * initialize after power up.
+ * You must set the input port's \ref Type property to \ref IN_TYPE_LOWSPEED or
+ * \ref IN_TYPE_LOWSPEED_9V on a given port before using an I2C device on that
+ * port. Use \ref IN_TYPE_LOWSPEED_9V if your device requires 9V power from the
+ * NXT brick. Remember that you also need to set the input port's
+ * \ref InvalidData property to true after setting a new \ref Type, and then
+ * wait in a loop for the NXT firmware to set \ref InvalidData back to false.
+ * This process ensures that the firmware has time to properly initialize the
+ * port, including the 9V power lines, if applicable. Some digital devices
+ * might need additional time to initialize after power up.
  *
- * The \ref SetSensorLowspeed API function sets the specified port to \ref SENSOR_TYPE_LOWSPEED_9V
- * and calls \ref ResetSensor to perform the \ref InvalidData reset loop described above.
+ * The \ref SetSensorLowspeed API function sets the specified port to
+ * \ref IN_TYPE_LOWSPEED_9V and calls \ref ResetSensor to perform the
+ * \ref InvalidData reset loop described above.
  *
- * When communicating with I2C devices, the NXT firmware uses a master/slave setup in which
- * the NXT brick is always the master device. This means that the firmware is responsible for
- * controlling the write and read operations. The NXT firmware maintains write and read buffers
- * for each port, and the three main Lowspeed (I2C) methods described below enable you to
- * access these buffers.
+ * When communicating with I2C devices, the NXT firmware uses a master/slave
+ * setup in which the NXT brick is always the master device. This means that
+ * the firmware is responsible for controlling the write and read operations.
+ * The NXT firmware maintains write and read buffers for each port, and the
+ * three main Lowspeed (I2C) methods described below enable you to access these
+ * buffers.
  *
- * A call to \ref LowspeedWrite starts an asynchronous transaction between the NXT brick and a
- * digital I2C device. The program continues to run while the firmware manages sending
- * bytes from the write buffer and reading the response bytes from the device. Because the
- * NXT is the master device, you must also specify the number of bytes to expect from the
- * device in response to each write operation. You can exchange up to 16 bytes in each
- * direction per transaction.
+ * A call to \ref LowspeedWrite starts an asynchronous transaction between
+ * the NXT brick and a digital I2C device. The program continues to run while
+ * the firmware manages sending bytes from the write buffer and reading the
+ * response bytes from the device. Because the NXT is the master device, you
+ * must also specify the number of bytes to expect from the device in response
+ * to each write operation. You can exchange up to 16 bytes in each direction
+ * per transaction.
  *
- * After you start a write transaction with \ref LowspeedWrite, use \ref LowspeedStatus in a loop
- * to check the status of the port. If \ref LowspeedStatus returns a status code of 0 and a
- * count of bytes available in the read buffer, the system is ready for you to use
- * \ref LowspeedRead to copy the data from the read buffer into the buffer you provide.
+ * After you start a write transaction with \ref LowspeedWrite, use \ref
+ * LowspeedStatus in a loop to check the status of the port. If \ref
+ * LowspeedStatus returns a status code of 0 and a count of bytes available
+ * in the read buffer, the system is ready for you to use \ref LowspeedRead
+ * to copy the data from the read buffer into the buffer you provide.
  *
- * Note that any of these calls might return various status codes at any time. A status
- * code of 0 means the port is idle and the last transaction (if any) did not result in
- * any errors. Negative status codes and the positive status code 32 indicate errors.
- * There are a few possible errors per call.
+ * Note that any of these calls might return various status codes at any time.
+ * A status code of 0 means the port is idle and the last transaction (if any)
+ * did not result in any errors. Negative status codes and the positive status
+ * code 32 indicate errors. There are a few possible errors per call.
  *
  * Valid low speed return values include \ref NO_ERR as well as the error codes
  * listed in the \ref CommandCommErrors section.
@@ -2262,22 +3885,25 @@
 /** @defgroup DisplayModule Display module
  * Constants and functions related to the Display module.
  *
- * The NXT display module encompasses support for drawing to the NXT LCD. The NXT supports
- * drawing points, lines, rectangles, and circles on the LCD. It supports drawing
- * graphic icon files on the screen as well as text and numbers. With the enhanced NBC/NXC
- * firmware you can also draw ellipses and polygons as well as text and numbers using custom
- * RIC-based font files. Also, all of the drawing operations have several drawing options for
- * how the shapes are drawn to the LCD.
+ * The NXT display module encompasses support for drawing to the NXT LCD.
+ * The NXT supports drawing points, lines, rectangles, and circles on the LCD.
+ * It supports drawing graphic icon files on the screen as well as text and
+ * numbers. With the enhanced NBC/NXC firmware you can also draw ellipses and
+ * polygons as well as text and numbers using custom RIC-based font files.
+ * Also, all of the drawing operations have several drawing options for how
+ * the shapes are drawn to the LCD.
  *
- * The LCD screen has its origin (0, 0) at the bottom left-hand corner of the screen with
- * the positive Y-axis extending upward and the positive X-axis extending toward the right.
- * The NBC API provides constants for use in the \ref NumOut and \ref TextOut functions which make
- * it possible to specify LCD line numbers between 1 and 8 with line 1 being at the top of
- * the screen and line 8 being at the bottom of the screen. These constants (\ref LCD_LINE1,
- * \ref LCD_LINE2, \ref LCD_LINE3, \ref LCD_LINE4, \ref LCD_LINE5, \ref LCD_LINE6, \ref LCD_LINE7, \ref LCD_LINE8)
- * should be used as the Y coordinate in NumOut and TextOut calls. Values of Y other than
- * these constants will be adjusted so that text and numbers are on one of 8 fixed line
- * positions.
+ * The LCD screen has its origin (0, 0) at the bottom left-hand corner of
+ * the screen with the positive Y-axis extending upward and the positive
+ * X-axis extending toward the right. The NBC API provides constants for
+ * use in the \ref NumOut and \ref TextOut functions which make it possible
+ * to specify LCD line numbers between 1 and 8 with line 1 being at the top of
+ * the screen and line 8 being at the bottom of the screen. These constants
+ * (\ref LCD_LINE1, \ref LCD_LINE2, \ref LCD_LINE3, \ref LCD_LINE4,
+ * \ref LCD_LINE5, \ref LCD_LINE6, \ref LCD_LINE7, \ref LCD_LINE8)
+ * should be used as the Y coordinate in NumOut and TextOut calls. Values of
+ * Y other than these constants will be adjusted so that text and numbers
+ * are on one of 8 fixed line positions.
  */
 
 /** @defgroup HiTechnicAPI HiTechnic API Functions
@@ -2315,5 +3941,241 @@
  */
 
 #include "NBCCommon.h"
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup InputModule
+ * @{
+ */
+
+/** @defgroup InputModuleFunctions Input module functions
+ * Functions for accessing and modifying input module features.
+ * @{
+ */
+
+/**
+ * Set sensor type.
+ * Set a sensor's type, which must be one of the predefined sensor type
+ * constants.  After changing the type or the mode of a sensor
+ * port you must call \ref ResetSensor to give the firmware time to reconfigure
+ * the sensor port.
+ * \sa SetSensorMode(), SetSensor()
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ * \param _type The desired sensor type.  See \ref NBCSensorTypeConstants.
+ */
+#define SetSensorType(_port, _type) setin _type, _port, Type
+/** \example ex_SetSensorType.nbc
+ * This is an example of how to use the \ref SetSensorType function.
+ */
+
+/**
+ * Set sensor mode.
+ * Set a sensor's mode, which should be one of the predefined sensor mode
+ * constants. A slope parameter for boolean conversion, if desired, may be
+ * added to the mode. After changing the type or the mode of a sensor
+ * port you must call \ref ResetSensor to give the firmware time to reconfigure
+ * the sensor port.
+ * \sa SetSensorType(), SetSensor()
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ * \param _mode The desired sensor mode. See \ref NBCSensorModeConstants.
+ */
+#define SetSensorMode(_port, _mode) setin _mode, _port, InputMode
+/** \example ex_SetSensorMode.nbc
+ * This is an example of how to use the \ref SetSensorMode function.
+ */
+
+/**
+ * Clear a sensor value.
+ * Clear the value of a sensor - only affects sensors that are configured
+ * to measure a cumulative quantity such as rotation or a pulse count.
+ * \param _port The port to clear. See \ref NBCInputPortConstants.
+ */
+#define ClearSensor(_port) setin 0, _port, ScaledValue
+/** \example ex_ClearSensor.nbc
+ * This is an example of how to use the \ref ClearSensor function.
+ */
+
+/**
+ * Reset the sensor port.
+ * Sets the invalid data flag on the specified port and waits for it to
+ * become valid again. After changing the type or the mode of a sensor
+ * port you must call this function to give the firmware time to reconfigure
+ * the sensor port.
+ * \param _port The port to reset. See \ref NBCInputPortConstants.
+ */
+#define ResetSensor(_port) __ResetSensor(_port)
+/** \example ex_ResetSensor.nbc
+ * This is an example of how to use the \ref ResetSensor function.
+ */
+
+/**
+ * Configure a touch sensor.
+ * Configure the sensor on the specified port as a touch sensor.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
+#define SetSensorTouch(_port) __SetSensorTouch(_port)
+/** \example ex_SetSensorTouch.nbc
+ * This is an example of how to use the \ref SetSensorTouch function.
+ */
+
+/**
+ * Configure a light sensor.
+ * Configure the sensor on the specified port as an active NXT light sensor.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
+#define SetSensorLight(_port) __SetSensorLight(_port)
+/** \example ex_SetSensorLight.nbc
+ * This is an example of how to use the \ref SetSensorLight function.
+ */
+
+/**
+ * Configure a sound sensor.
+ * Configure the sensor on the specified port as a sound sensor with dB scaling.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
+#define SetSensorSound(_port) __SetSensorSound(_port)
+/** \example ex_SetSensorSound.nbc
+ * This is an example of how to use the \ref SetSensorSound function.
+ */
+
+/**
+ * Configure an I2C sensor.
+ * Configure the sensor on the specified port as an I2C digital sensor
+ * for powered (9 volt) devices.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
+#define SetSensorLowspeed(_port) __SetSensorLowspeed(_port)
+/** \example ex_SetSensorLowspeed.nbc
+ * This is an example of how to use the \ref SetSensorLowspeed function.
+ */
+
+/**
+ * Configure an NXT 2.0 full color sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in full color mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define SetSensorColorFull(_port) __SetSensorColorFull(_port)
+/** \example ex_SetSensorColorFull.nbc
+ * This is an example of how to use the \ref SetSensorColorFull function.
+ */
+
+/**
+ * Configure an NXT 2.0 red light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in red light mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define SetSensorColorRed(_port) __SetSensorColorRed(_port)
+/** \example ex_SetSensorColorRed.nbc
+ * This is an example of how to use the \ref SetSensorColorRed function.
+ */
+
+/**
+ * Configure an NXT 2.0 green light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in green light mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define SetSensorColorGreen(_port) __SetSensorColorGreen(_port)
+/** \example ex_SetSensorColorGreen.nbc
+ * This is an example of how to use the \ref SetSensorColorGreen function.
+ */
+
+/**
+ * Configure an NXT 2.0 blue light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in blue light mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define SetSensorColorBlue(_port) __SetSensorColorBlue(_port)
+/** \example ex_SetSensorColorBlue.nbc
+ * This is an example of how to use the \ref SetSensorColorBlue function.
+ */
+
+/**
+ * Configure an NXT 2.0 no light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in no light mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define SetSensorColorNone(_port) __SetSensorColorNone(_port)
+/** \example ex_SetSensorColorNone.nbc
+ * This is an example of how to use the \ref SetSensorColorNone function.
+ */
+
+/**
+ * Read sensor scaled value.
+ * Return the processed sensor reading for a sensor on the specified port.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants. A variable whose value is
+ * the desired sensor port may also be used.
+ * \param _value The returned sensor scaled value.
+ */
+#define ReadSensor(_port,_value) getin _value, _port, ScaledValue
+/** \example ex_ReadSensor.nbc
+ * This is an example of how to use the \ref ReadSensor function.
+ */
+
+/**
+ * Read sensor boolean value.
+ * Return the boolean value of a sensor on the specified port. Boolean
+ * conversion is either done based on preset cutoffs, or a slope parameter
+ * specified by calling SetSensorMode.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants.
+ * \param _n The sensor's boolean value.
+ */
+#define GetInSensorBoolean(_p, _n) \
+  compchk EQ, sizeof(_n), 1 \
+  compif EQ, isconst(_p), TRUE \
+  compchk LT, _p, 0x04 \
+  compchk GTEQ, _p, 0x00 \
+  GetInputModuleValue(InputOffsetSensorBoolean(_p), _n) \
+  compelse \
+  acquire __inputModuleOffsetMutex \
+  mul __inputModuleOffset, _p, 20 \
+  add __inputModuleOffset, __inputModuleOffset, 10 \
+  GetInputModuleValue(__inputModuleOffset, _n) \
+  release __inputModuleOffsetMutex \
+  compend
+/** \example ex_GetInSensorBoolean.nbc
+ * This is an example of how to use the \ref GetInSensorBoolean function.
+ */
+
+/**
+ * Read sensor digital pins direction.
+ * Return the digital pins direction value of a sensor on the specified port.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The sensor's digital pins direction.
+ */
+#define GetInDigiPinsDirection(_p, _n) \
+  compchk EQ, sizeof(_n), 1 \
+  compif EQ, isconst(_p), TRUE \
+  compchk LT, _p, 0x04 \
+  compchk GTEQ, _p, 0x00 \
+  GetInputModuleValue(InputOffsetDigiPinsDir(_p), _n) \
+  compelse \
+  acquire __inputModuleOffsetMutex \
+  mul __inputModuleOffset, _p, 20 \
+  add __inputModuleOffset, __inputModuleOffset, 11 \
+  GetInputModuleValue(__inputModuleOffset, _n) \
+  release __inputModuleOffsetMutex \
+  compend
+/** \example ex_GetInDigiPinsDirectionn.nbc
+ * This is an example of how to use the \ref GetInDigiPinsDirection function.
+ */
 
 #endif // NBCAPIDOCS_H
