@@ -3694,10 +3694,13 @@ begin
         DE := SubEntries[i];
         bpt := DE.ElementSize(bPad); // 2006-10-02 JCH recursively calculate the element size
         // this fixes a problem with the size of arrays containing nested aggregate types
-        padBytes := bpt - (Result mod bpt);
-        if padBytes < bpt then
+        if bPad then
         begin
-          Result := Word(Result + padBytes);
+          padBytes := bpt - (Result mod bpt);
+          if padBytes < bpt then
+          begin
+            Result := Word(Result + padBytes);
+          end;
         end;
         Result := Word(Result + bpt);
       end;
