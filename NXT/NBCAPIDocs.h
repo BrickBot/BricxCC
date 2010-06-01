@@ -226,7 +226,7 @@
  * <tr><td>call</td><td>return</td><td>abs</td><td>sign</td></tr>
  * <tr><td>strindex</td><td>strreplace</td><td>strlen</td><td>shl</td></tr>
  * <tr><td>shr</td><td>sizeof</td><td>compchk</td><td>compif</td></tr>
- * <tr><td>compelse</td><td>compend</td><td>&nbps;</td><td>isconst</td></tr>
+ * <tr><td>compelse</td><td>compend</td><td>&nbsp;</td><td>isconst</td></tr>
  * <tr><td>asl</td><td>asr</td><td>lsl</td><td>lsr</td></tr>
  * <tr><td>rotl</td><td>rotr</td><td>start</td><td>stopthread</td></tr>
  * <tr><td>priority</td><td>cmnt</td><td>fmtnum</td><td>compchktype</td></tr>
@@ -1716,18 +1716,6 @@
  *
  */
 
-/** @defgroup cmpconst Comparison Constants
- *  Constants used in comparison and control statements.
- *  @{
- */
-#define LT   0x00 /*!< The first value is less than the second. */
-#define GT   0x01 /*!< The first value is greater than the second. */
-#define LTEQ 0x02 /*!< The first value is less than or equal to the second. */
-#define GTEQ 0x03 /*!< The first value is greater than or equal to the second. */
-#define EQ   0x04 /*!< The first value is equal to the second. */
-#define NEQ  0x05 /*!< The first value is not equal to the second. */
-/** @} */  // end of cmpconst group
-
 /** @page cmpstmnt Comparison Statements
  * \brief Comparison Statements
  *
@@ -1962,6 +1950,7 @@
 /** @page TFileReadWrite TFileReadWrite
  * \brief The TFileReadWrite structure
  *
+ * \code
  * // FileRead, FileWrite
  * TFileReadWrite	struct
  *  Result		word
@@ -3940,242 +3929,6 @@
  * written by Arno van der Vegt.
  */
 
-#include "NBCCommon.h"
-
-/** @addtogroup NXTFirmwareModules
- * @{
- */
-/** @addtogroup InputModule
- * @{
- */
-
-/** @defgroup InputModuleFunctions Input module functions
- * Functions for accessing and modifying input module features.
- * @{
- */
-
-/**
- * Set sensor type.
- * Set a sensor's type, which must be one of the predefined sensor type
- * constants.  After changing the type or the mode of a sensor
- * port you must call \ref ResetSensor to give the firmware time to reconfigure
- * the sensor port.
- * \sa SetSensorMode(), SetSensor()
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- * \param _type The desired sensor type.  See \ref NBCSensorTypeConstants.
- */
-#define SetSensorType(_port, _type) setin _type, _port, Type
-/** \example ex_SetSensorType.nbc
- * This is an example of how to use the \ref SetSensorType function.
- */
-
-/**
- * Set sensor mode.
- * Set a sensor's mode, which should be one of the predefined sensor mode
- * constants. A slope parameter for boolean conversion, if desired, may be
- * added to the mode. After changing the type or the mode of a sensor
- * port you must call \ref ResetSensor to give the firmware time to reconfigure
- * the sensor port.
- * \sa SetSensorType(), SetSensor()
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- * \param _mode The desired sensor mode. See \ref NBCSensorModeConstants.
- */
-#define SetSensorMode(_port, _mode) setin _mode, _port, InputMode
-/** \example ex_SetSensorMode.nbc
- * This is an example of how to use the \ref SetSensorMode function.
- */
-
-/**
- * Clear a sensor value.
- * Clear the value of a sensor - only affects sensors that are configured
- * to measure a cumulative quantity such as rotation or a pulse count.
- * \param _port The port to clear. See \ref NBCInputPortConstants.
- */
-#define ClearSensor(_port) setin 0, _port, ScaledValue
-/** \example ex_ClearSensor.nbc
- * This is an example of how to use the \ref ClearSensor function.
- */
-
-/**
- * Reset the sensor port.
- * Sets the invalid data flag on the specified port and waits for it to
- * become valid again. After changing the type or the mode of a sensor
- * port you must call this function to give the firmware time to reconfigure
- * the sensor port.
- * \param _port The port to reset. See \ref NBCInputPortConstants.
- */
-#define ResetSensor(_port) __ResetSensor(_port)
-/** \example ex_ResetSensor.nbc
- * This is an example of how to use the \ref ResetSensor function.
- */
-
-/**
- * Configure a touch sensor.
- * Configure the sensor on the specified port as a touch sensor.
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- */
-#define SetSensorTouch(_port) __SetSensorTouch(_port)
-/** \example ex_SetSensorTouch.nbc
- * This is an example of how to use the \ref SetSensorTouch function.
- */
-
-/**
- * Configure a light sensor.
- * Configure the sensor on the specified port as an active NXT light sensor.
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- */
-#define SetSensorLight(_port) __SetSensorLight(_port)
-/** \example ex_SetSensorLight.nbc
- * This is an example of how to use the \ref SetSensorLight function.
- */
-
-/**
- * Configure a sound sensor.
- * Configure the sensor on the specified port as a sound sensor with dB scaling.
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- */
-#define SetSensorSound(_port) __SetSensorSound(_port)
-/** \example ex_SetSensorSound.nbc
- * This is an example of how to use the \ref SetSensorSound function.
- */
-
-/**
- * Configure an I2C sensor.
- * Configure the sensor on the specified port as an I2C digital sensor
- * for powered (9 volt) devices.
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- */
-#define SetSensorLowspeed(_port) __SetSensorLowspeed(_port)
-/** \example ex_SetSensorLowspeed.nbc
- * This is an example of how to use the \ref SetSensorLowspeed function.
- */
-
-/**
- * Configure an NXT 2.0 full color sensor.
- * Configure the sensor on the specified port as an NXT 2.0 color sensor
- * in full color mode. Requires an NXT 2.0 compatible firmware.
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- *
- * \warning This function requires an NXT 2.0 compatible firmware.
- */
-#define SetSensorColorFull(_port) __SetSensorColorFull(_port)
-/** \example ex_SetSensorColorFull.nbc
- * This is an example of how to use the \ref SetSensorColorFull function.
- */
-
-/**
- * Configure an NXT 2.0 red light sensor.
- * Configure the sensor on the specified port as an NXT 2.0 color sensor
- * in red light mode. Requires an NXT 2.0 compatible firmware.
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- *
- * \warning This function requires an NXT 2.0 compatible firmware.
- */
-#define SetSensorColorRed(_port) __SetSensorColorRed(_port)
-/** \example ex_SetSensorColorRed.nbc
- * This is an example of how to use the \ref SetSensorColorRed function.
- */
-
-/**
- * Configure an NXT 2.0 green light sensor.
- * Configure the sensor on the specified port as an NXT 2.0 color sensor
- * in green light mode. Requires an NXT 2.0 compatible firmware.
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- *
- * \warning This function requires an NXT 2.0 compatible firmware.
- */
-#define SetSensorColorGreen(_port) __SetSensorColorGreen(_port)
-/** \example ex_SetSensorColorGreen.nbc
- * This is an example of how to use the \ref SetSensorColorGreen function.
- */
-
-/**
- * Configure an NXT 2.0 blue light sensor.
- * Configure the sensor on the specified port as an NXT 2.0 color sensor
- * in blue light mode. Requires an NXT 2.0 compatible firmware.
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- *
- * \warning This function requires an NXT 2.0 compatible firmware.
- */
-#define SetSensorColorBlue(_port) __SetSensorColorBlue(_port)
-/** \example ex_SetSensorColorBlue.nbc
- * This is an example of how to use the \ref SetSensorColorBlue function.
- */
-
-/**
- * Configure an NXT 2.0 no light sensor.
- * Configure the sensor on the specified port as an NXT 2.0 color sensor
- * in no light mode. Requires an NXT 2.0 compatible firmware.
- * \param _port The port to configure. See \ref NBCInputPortConstants.
- *
- * \warning This function requires an NXT 2.0 compatible firmware.
- */
-#define SetSensorColorNone(_port) __SetSensorColorNone(_port)
-/** \example ex_SetSensorColorNone.nbc
- * This is an example of how to use the \ref SetSensorColorNone function.
- */
-
-/**
- * Read sensor scaled value.
- * Return the processed sensor reading for a sensor on the specified port.
- *
- * \param _port The sensor port. See \ref NBCInputPortConstants. A variable whose value is
- * the desired sensor port may also be used.
- * \param _value The returned sensor scaled value.
- */
-#define ReadSensor(_port,_value) getin _value, _port, ScaledValue
-/** \example ex_ReadSensor.nbc
- * This is an example of how to use the \ref ReadSensor function.
- */
-
-/**
- * Read sensor boolean value.
- * Return the boolean value of a sensor on the specified port. Boolean
- * conversion is either done based on preset cutoffs, or a slope parameter
- * specified by calling SetSensorMode.
- *
- * \param _p The sensor port. See \ref NBCInputPortConstants.
- * \param _n The sensor's boolean value.
- */
-#define GetInSensorBoolean(_p, _n) \
-  compchk EQ, sizeof(_n), 1 \
-  compif EQ, isconst(_p), TRUE \
-  compchk LT, _p, 0x04 \
-  compchk GTEQ, _p, 0x00 \
-  GetInputModuleValue(InputOffsetSensorBoolean(_p), _n) \
-  compelse \
-  acquire __inputModuleOffsetMutex \
-  mul __inputModuleOffset, _p, 20 \
-  add __inputModuleOffset, __inputModuleOffset, 10 \
-  GetInputModuleValue(__inputModuleOffset, _n) \
-  release __inputModuleOffsetMutex \
-  compend
-/** \example ex_GetInSensorBoolean.nbc
- * This is an example of how to use the \ref GetInSensorBoolean function.
- */
-
-/**
- * Read sensor digital pins direction.
- * Return the digital pins direction value of a sensor on the specified port.
- *
- * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
- * \param _n The sensor's digital pins direction.
- */
-#define GetInDigiPinsDirection(_p, _n) \
-  compchk EQ, sizeof(_n), 1 \
-  compif EQ, isconst(_p), TRUE \
-  compchk LT, _p, 0x04 \
-  compchk GTEQ, _p, 0x00 \
-  GetInputModuleValue(InputOffsetDigiPinsDir(_p), _n) \
-  compelse \
-  acquire __inputModuleOffsetMutex \
-  mul __inputModuleOffset, _p, 20 \
-  add __inputModuleOffset, __inputModuleOffset, 11 \
-  GetInputModuleValue(__inputModuleOffset, _n) \
-  release __inputModuleOffsetMutex \
-  compend
-/** \example ex_GetInDigiPinsDirectionn.nbc
- * This is an example of how to use the \ref GetInDigiPinsDirection function.
- */
+#include "NXTDefs.h"
 
 #endif // NBCAPIDOCS_H

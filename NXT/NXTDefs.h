@@ -22,25 +22,28 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-04-05
- * version 60
+ * date 2010-05-31
+ * version 61
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H 1
 
 #include "NBCCommon.h"
 
-/*
+/** @defgroup cmpconst Comparison Constants
  * Logical comparison operators for use in brtst, tst, tstset, brcmp,
  * cmp, and cmpset.
+ *  @{
  */
-#define LT   0x00
-#define GT   0x01
-#define LTEQ 0x02
-#define GTEQ 0x03
-#define EQ   0x04
-#define NEQ  0x05 
+#define LT   0x00 /*!< The first value is less than the second. */
+#define GT   0x01 /*!< The first value is greater than the second. */
+#define LTEQ 0x02 /*!< The first value is less than or equal to the second. */
+#define GTEQ 0x03 /*!< The first value is greater than or equal to the second. */
+#define EQ   0x04 /*!< The first value is equal to the second. */
+#define NEQ  0x05 /*!< The first value is not equal to the second. */
+/** @} */  // end of cmpconst group
 
+#ifndef __DOXYGEN_DOCS
 // define structures for various system calls
 
 dseg	segment
@@ -519,228 +522,6 @@ dseg segment
   __OnRevMutex mutex
 dseg ends
 
-#define UF_UPDATE_ONFWD 0x28
-
-// API macros
-#define __resetMotorCounter0(_val) setout OUT_A, UpdateFlags, _val
-#define __resetMotorCounter1(_val) setout OUT_B, UpdateFlags, _val
-#define __resetMotorCounter2(_val) setout OUT_C, UpdateFlags, _val
-#define __resetMotorCounter3(_val) setout __OUT_AB, UpdateFlags, _val
-#define __resetMotorCounter4(_val) setout __OUT_AC, UpdateFlags, _val
-#define __resetMotorCounter5(_val) setout __OUT_BC, UpdateFlags, _val
-#define __resetMotorCounter6(_val) setout __OUT_ABC, UpdateFlags, _val
-
-#define __resetTachoCount(_p) \
-  compif EQ, isconst(_p), FALSE \
-  setout _p, UpdateFlags, RESET_COUNT \
-  compelse \
-  compchk LT, _p, 0x07 \
-  compchk GTEQ, _p, 0x00 \
-  __resetMotorCounter##_p(RESET_COUNT) \
-  compend
-
-#define __resetBlockTachoCount(_p) \
-  compif EQ, isconst(_p), FALSE \
-  setout _p, UpdateFlags, RESET_BLOCK_COUNT \
-  compelse \
-  compchk LT, _p, 0x07 \
-  compchk GTEQ, _p, 0x00 \
-  __resetMotorCounter##_p(RESET_BLOCK_COUNT) \
-  compend
-
-#define __resetRotationCount(_p) \
-  compif EQ, isconst(_p), FALSE \
-  setout _p, UpdateFlags, RESET_ROTATION_COUNT \
-  compelse \
-  compchk LT, _p, 0x07 \
-  compchk GTEQ, _p, 0x00 \
-  __resetMotorCounter##_p(RESET_ROTATION_COUNT) \
-  compend
-
-#define __resetAllTachoCounts(_p) \
-  compif EQ, isconst(_p), FALSE \
-  setout _p, UpdateFlags, RESET_ALL \
-  compelse \
-  compchk LT, _p, 0x07 \
-  compchk GTEQ, _p, 0x00 \
-  __resetMotorCounter##_p(RESET_ALL) \
-  compend
-
-#define ResetTachoCount(_p) __resetTachoCount(_p)
-#define ResetBlockTachoCount(_p) __resetBlockTachoCount(_p)
-#define ResetRotationCount(_p) __resetRotationCount(_p)
-#define ResetAllTachoCounts(_p) __resetAllTachoCounts(_p) 
-
-#define __onFwdExPIDAll(_ports, _pwr, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
-#define __onFwdExPID0(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_A, _pwr, _reset, _p, _i, _d)
-#define __onFwdExPID1(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_B, _pwr, _reset, _p, _i, _d)
-#define __onFwdExPID2(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_C, _pwr, _reset, _p, _i, _d)
-#define __onFwdExPID3(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_AB, _pwr, _reset, _p, _i, _d)
-#define __onFwdExPID4(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_AC, _pwr, _reset, _p, _i, _d)
-#define __onFwdExPID5(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_BC, _pwr, _reset, _p, _i, _d)
-#define __onFwdExPID6(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_ABC, _pwr, _reset, _p, _i, _d)
-
-#define OnFwdEx(_ports, _pwr, _reset) \
-  compif EQ, isconst(_ports), FALSE \
-  __onFwdExPIDAll(_ports, _pwr, _reset, PID_3, PID_1, PID_1) \
-  compelse \
-  compchk LT, _ports, 0x07 \
-  compchk GTEQ, _ports, 0x00 \
-  __onFwdExPID##_ports(_pwr, _reset, PID_3, PID_1, PID_1) \
-  compend
-
-#define OnRevEx(_ports, _pwr, _reset) \
-  acquire __OnRevMutex \
-  neg __OnRev_Tmp, _pwr \
-  OnFwdEx(_ports, __OnRev_Tmp, _reset) \
-  release __OnRevMutex
-
-#define OnFwdExPID(_ports, _pwr, _reset, _p, _i, _d) \
-  compif EQ, isconst(_ports), FALSE \
-  __onFwdExPIDAll(_ports, _pwr, _reset, _p, _i, _d) \
-  compelse \
-  compchk LT, _ports, 0x07 \
-  compchk GTEQ, _ports, 0x00 \
-  __onFwdExPID##_ports(_pwr, _reset, _p, _i, _d) \
-  compend
-
-#define OnRevExPID(_ports, _pwr, _reset, _p, _i, _d) \
-  acquire __OnRevMutex \
-  neg __OnRev_Tmp, _pwr \
-  OnFwdExPID(_ports, __OnRev_Tmp, _reset, _p, _i, _d) \
-  release __OnRevMutex
-
-#define OnFwd(_ports, _pwr) OnFwdEx(_ports, _pwr, RESET_BLOCKANDTACHO)
-#define OnRev(_ports, _pwr) OnRevEx(_ports, _pwr, RESET_BLOCKANDTACHO)
-
-#define __coastExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_IDLE, TurnRatio, 0, TachoLimit, 0, RegPValue, PID_3, RegIValue, PID_1, RegDValue, PID_1, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
-#define __coastEx0(_reset) __coastExAll(OUT_A, _reset)
-#define __coastEx1(_reset) __coastExAll(OUT_B, _reset)
-#define __coastEx2(_reset) __coastExAll(OUT_C, _reset)
-#define __coastEx3(_reset) __coastExAll(__OUT_AB, _reset)
-#define __coastEx4(_reset) __coastExAll(__OUT_AC, _reset)
-#define __coastEx5(_reset) __coastExAll(__OUT_BC, _reset)
-#define __coastEx6(_reset) __coastExAll(__OUT_ABC, _reset)
-
-#define CoastEx(_ports, _reset) \
-  compif EQ, isconst(_ports), FALSE \
-  __coastExAll(_ports, _reset) \
-  compelse \
-  compchk LT, _ports, 0x07 \
-  compchk GTEQ, _ports, 0x00 \
-  __coastEx##_ports(_reset) \
-  compend
-
-#define __offExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, PID_3, RegIValue, PID_1, RegDValue, PID_1, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
-#define __offEx0(_reset) __offExAll(OUT_A, _reset)
-#define __offEx1(_reset) __offExAll(OUT_B, _reset)
-#define __offEx2(_reset) __offExAll(OUT_C, _reset)
-#define __offEx3(_reset) __offExAll(__OUT_AB, _reset)
-#define __offEx4(_reset) __offExAll(__OUT_AC, _reset)
-#define __offEx5(_reset) __offExAll(__OUT_BC, _reset)
-#define __offEx6(_reset) __offExAll(__OUT_ABC, _reset)
-
-#define OffEx(_ports, _reset) \
-  compif EQ, isconst(_ports), FALSE \
-  __offExAll(_ports, _reset) \
-  compelse \
-  compchk LT, _ports, 0x07 \
-  compchk GTEQ, _ports, 0x00 \
-  __offEx##_ports(_reset) \
-  compend
-
-#define Coast(_ports) CoastEx(_ports, RESET_BLOCKANDTACHO)
-#define Off(_ports) OffEx(_ports, RESET_BLOCKANDTACHO)
-#define Float(_ports) Coast(_ports)
-
-#define __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, _regmode, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
-#define __onFwdRegExPID0(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_A, _pwr, _regmode, _reset, _p, _i, _d)
-#define __onFwdRegExPID1(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_B, _pwr, _regmode, _reset, _p, _i, _d)
-#define __onFwdRegExPID2(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_C, _pwr, _regmode, _reset, _p, _i, _d)
-#define __onFwdRegExPID3(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_AB, _pwr, _regmode, _reset, _p, _i, _d)
-#define __onFwdRegExPID4(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_AC, _pwr, _regmode, _reset, _p, _i, _d)
-#define __onFwdRegExPID5(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_BC, _pwr, _regmode, _reset, _p, _i, _d)
-#define __onFwdRegExPID6(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_ABC, _pwr, _regmode, _reset, _p, _i, _d)
-
-#define OnFwdRegEx(_ports, _pwr, _regmode, _reset) \
-  compif EQ, isconst(_ports), FALSE \
-  __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, PID_3, PID_1, PID_1) \
-  compelse \
-  compchk LT, _ports, 0x07 \
-  compchk GTEQ, _ports, 0x00 \
-  __onFwdRegExPID##_ports(_pwr, _regmode, _reset, PID_3, PID_1, PID_1) \
-  compend
-
-#define OnRevRegEx(_ports, _pwr, _regmode, _reset) \
-  acquire __OnRevMutex \
-  neg __OnRev_Tmp, _pwr \
-  OnFwdRegEx(_ports, __OnRev_Tmp, _regmode, _reset) \
-  release __OnRevMutex
-
-#define OnFwdRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) \
-  compif EQ, isconst(_ports), FALSE \
-  __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, _p, _i, _d) \
-  compelse \
-  compchk LT, _ports, 0x07 \
-  compchk GTEQ, _ports, 0x00 \
-  __onFwdRegExPID##_ports(_pwr, _regmode, _reset, _p, _i, _d) \
-  compend
-
-#define OnRevRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) \
-  acquire __OnRevMutex \
-  neg __OnRev_Tmp, _pwr \
-  OnFwdRegExPID(_ports, __OnRev_Tmp, _regmode, _reset, _p, _i, _d) \
-  release __OnRevMutex
-
-#define OnFwdReg(_ports, _pwr, _regmode) OnFwdRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
-#define OnRevReg(_ports, _pwr, _regmode) OnRevRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
-#define OnFwdRegPID(_ports, _pwr, _regmode, _p, _i, _d) OnFwdRegExPID(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO, _p, _i, _d)
-#define OnRevRegPID(_ports, _pwr, _regmode, _p, _i, _d) OnRevRegExPID(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO, _p, _i, _d)
-
-#define __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_SYNC, TurnRatio, _turnpct, RunState, OUT_RUNSTATE_RUNNING, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
-#define __onFwdSyncExPID0(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_A, _pwr, _turnpct, _reset, _p, _i, _d)
-#define __onFwdSyncExPID1(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_B, _pwr, _turnpct, _reset, _p, _i, _d)
-#define __onFwdSyncExPID2(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_C, _pwr, _turnpct, _reset, _p, _i, _d)
-#define __onFwdSyncExPID3(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_AB, _pwr, _turnpct, _reset, _p, _i, _d)
-#define __onFwdSyncExPID4(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_AC, _pwr, _turnpct, _reset, _p, _i, _d)
-#define __onFwdSyncExPID5(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_BC, _pwr, _turnpct, _reset, _p, _i, _d)
-#define __onFwdSyncExPID6(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_ABC, _pwr, _turnpct, _reset, _p, _i, _d)
-
-#define OnFwdSyncEx(_ports, _pwr, _turnpct, _reset) \
-  compif EQ, isconst(_ports), FALSE \
-  __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, PID_3, PID_1, PID_1) \
-  compelse \
-  compchk LT, _ports, 0x07 \
-  compchk GTEQ, _ports, 0x00 \
-  __onFwdSyncExPID##_ports(_pwr, _turnpct, _reset, PID_3, PID_1, PID_1) \
-  compend
-
-#define OnRevSyncEx(_ports, _pwr, _turnpct, _reset) \
-  acquire __OnRevMutex \
-  neg __OnRev_Tmp, _pwr \
-  OnFwdSyncEx(_ports, __OnRev_Tmp, _turnpct, _reset) \
-  release __OnRevMutex
-
-#define OnFwdSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) \
-  compif EQ, isconst(_ports), FALSE \
-  __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, _p, _i, _d) \
-  compelse \
-  compchk LT, _ports, 0x07 \
-  compchk GTEQ, _ports, 0x00 \
-  __onFwdSyncExPID##_ports(_pwr, _turnpct, _reset, _p, _i, _d) \
-  compend
-
-#define OnRevSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) \
-  acquire __OnRevMutex \
-  neg __OnRev_Tmp, _pwr \
-  OnFwdSyncExPID(_ports, __OnRev_Tmp, _turnpct, _reset, _p, _i, _d) \
-  release __OnRevMutex
-
-#define OnFwdSync(_ports, _pwr, _turnpct) OnFwdSyncEx(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO)
-#define OnRevSync(_ports, _pwr, _turnpct) OnRevSyncEx(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO)
-#define OnFwdSyncPID(_ports, _pwr, _turnpct, _p, _i, _d) OnFwdSyncExPID(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO, _p, _i, _d)
-#define OnRevSyncPID(_ports, _pwr, _turnpct, _p, _i, _d) OnRevSyncExPID(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO, _p, _i, _d)
-
 dseg segment
   __rotateMutex0 mutex
   __rotateMutex1 mutex
@@ -929,6 +710,98 @@ dseg segment
   __rotate_now6 dword
 dseg ends
 
+#define UF_UPDATE_ONFWD 0x28
+
+// API macros
+#define __resetMotorCounter0(_val) setout OUT_A, UpdateFlags, _val
+#define __resetMotorCounter1(_val) setout OUT_B, UpdateFlags, _val
+#define __resetMotorCounter2(_val) setout OUT_C, UpdateFlags, _val
+#define __resetMotorCounter3(_val) setout __OUT_AB, UpdateFlags, _val
+#define __resetMotorCounter4(_val) setout __OUT_AC, UpdateFlags, _val
+#define __resetMotorCounter5(_val) setout __OUT_BC, UpdateFlags, _val
+#define __resetMotorCounter6(_val) setout __OUT_ABC, UpdateFlags, _val
+
+#define __resetTachoCount(_p) \
+  compif EQ, isconst(_p), FALSE \
+  setout _p, UpdateFlags, RESET_COUNT \
+  compelse \
+  compchk LT, _p, 0x07 \
+  compchk GTEQ, _p, 0x00 \
+  __resetMotorCounter##_p(RESET_COUNT) \
+  compend
+
+#define __resetBlockTachoCount(_p) \
+  compif EQ, isconst(_p), FALSE \
+  setout _p, UpdateFlags, RESET_BLOCK_COUNT \
+  compelse \
+  compchk LT, _p, 0x07 \
+  compchk GTEQ, _p, 0x00 \
+  __resetMotorCounter##_p(RESET_BLOCK_COUNT) \
+  compend
+
+#define __resetRotationCount(_p) \
+  compif EQ, isconst(_p), FALSE \
+  setout _p, UpdateFlags, RESET_ROTATION_COUNT \
+  compelse \
+  compchk LT, _p, 0x07 \
+  compchk GTEQ, _p, 0x00 \
+  __resetMotorCounter##_p(RESET_ROTATION_COUNT) \
+  compend
+
+#define __resetAllTachoCounts(_p) \
+  compif EQ, isconst(_p), FALSE \
+  setout _p, UpdateFlags, RESET_ALL \
+  compelse \
+  compchk LT, _p, 0x07 \
+  compchk GTEQ, _p, 0x00 \
+  __resetMotorCounter##_p(RESET_ALL) \
+  compend
+
+#define __onFwdExPIDAll(_ports, _pwr, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __onFwdExPID0(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_A, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID1(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_B, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID2(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_C, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID3(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_AB, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID4(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_AC, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID5(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_BC, _pwr, _reset, _p, _i, _d)
+#define __onFwdExPID6(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_ABC, _pwr, _reset, _p, _i, _d)
+
+#define __coastExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_IDLE, TurnRatio, 0, TachoLimit, 0, RegPValue, PID_3, RegIValue, PID_1, RegDValue, PID_1, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __coastEx0(_reset) __coastExAll(OUT_A, _reset)
+#define __coastEx1(_reset) __coastExAll(OUT_B, _reset)
+#define __coastEx2(_reset) __coastExAll(OUT_C, _reset)
+#define __coastEx3(_reset) __coastExAll(__OUT_AB, _reset)
+#define __coastEx4(_reset) __coastExAll(__OUT_AC, _reset)
+#define __coastEx5(_reset) __coastExAll(__OUT_BC, _reset)
+#define __coastEx6(_reset) __coastExAll(__OUT_ABC, _reset)
+
+#define __offExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, PID_3, RegIValue, PID_1, RegDValue, PID_1, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __offEx0(_reset) __offExAll(OUT_A, _reset)
+#define __offEx1(_reset) __offExAll(OUT_B, _reset)
+#define __offEx2(_reset) __offExAll(OUT_C, _reset)
+#define __offEx3(_reset) __offExAll(__OUT_AB, _reset)
+#define __offEx4(_reset) __offExAll(__OUT_AC, _reset)
+#define __offEx5(_reset) __offExAll(__OUT_BC, _reset)
+#define __offEx6(_reset) __offExAll(__OUT_ABC, _reset)
+
+#define __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, _regmode, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __onFwdRegExPID0(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_A, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID1(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_B, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID2(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_C, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID3(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_AB, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID4(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_AC, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID5(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_BC, _pwr, _regmode, _reset, _p, _i, _d)
+#define __onFwdRegExPID6(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_ABC, _pwr, _regmode, _reset, _p, _i, _d)
+
+#define __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_SYNC, TurnRatio, _turnpct, RunState, OUT_RUNSTATE_RUNNING, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __onFwdSyncExPID0(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_A, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID1(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_B, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID2(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_C, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID3(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_AB, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID4(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_AC, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID5(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_BC, _pwr, _turnpct, _reset, _p, _i, _d)
+#define __onFwdSyncExPID6(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(__OUT_ABC, _pwr, _turnpct, _reset, _p, _i, _d)
+
 #define __rotateMotorExPID0(_pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
    acquire __rotateMutex0 \
    arrbuild __rotate_ports0, OUT_A \
@@ -1054,26 +927,6 @@ dseg ends
    release __rotateMutex2 \
    release __rotateMutex1 \
    release __rotateMutex0
-
-#define RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
-   compif EQ, isconst(_ports), FALSE \
-   __rotateMotorExPIDVar(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
-   compelse \
-   compchk LT, _ports, 0x07 \
-   compchk GTEQ, _ports, 0x00 \
-   __rotateMotorExPID##_ports(_pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
-   compend
-
-// default PID values are 96, 32, 32 (PID_3, PID_1, PID_1)
-
-#define RotateMotorPID(_ports, _pwr, _angle, _p, _i, _d) \
-   RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, _p, _i, _d)
-
-#define RotateMotorEx(_ports, _pwr, _angle, _turnpct, _bSync, _bStop) \
-   RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, PID_1, PID_0, PID_3)
-
-#define RotateMotor(_ports, _pwr, _angle) \
-   RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, PID_1, PID_0, PID_3)
 
 subroutine __RotateMotor0
   brtst EQ, __rotate_Done0, __rotate_angle0
@@ -1478,72 +1331,6 @@ dseg segment
   __SensorInvalidTmp byte
 dseg ends
 
-#define SetSensorType(_port,_t) setin _t, _port, Type
-#define SetSensorMode(_port,_m) setin _m, _port, InputMode
-#define ReadSensor(_port,_value) getin _value, _port, ScaledValue
-#define ClearSensor(_port) setin 0, _port, ScaledValue
-
-#define __SetSensorTouch(_port) \
-  SetSensorType(_port, IN_TYPE_SWITCH) \
-  SetSensorMode(_port, IN_MODE_BOOLEAN) \
-  ResetSensor(_port)
-
-#define __SetSensorLight(_port) \
-  SetSensorType(_port,IN_TYPE_LIGHT_ACTIVE) \
-  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_port)
-
-#define __SetSensorSound(_port) \
-  SetSensorType(_port,IN_TYPE_SOUND_DB) \
-  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_port)
-
-#define __SetSensorLowspeed(_port) \
-  SetSensorType(_port,IN_TYPE_LOWSPEED_9V) \
-  SetSensorMode(_port,IN_MODE_RAW) \
-  ResetSensor(_port)
-
-#define SetSensorTouch(_port) __SetSensorTouch(_port)
-#define SetSensorLight(_port) __SetSensorLight(_port)
-#define SetSensorSound(_port) __SetSensorSound(_port)
-#define SetSensorLowspeed(_port) __SetSensorLowspeed(_port)
-#define SetSensorUltrasonic(_port) __SetSensorLowspeed(_port)
-
-#if __FIRMWARE_VERSION > 107
-
-#define __SetSensorColorFull(_port) \
-  SetSensorType(_port,IN_TYPE_COLORFULL) \
-  SetSensorMode(_port,IN_MODE_RAW) \
-  ResetSensor(_port)
-
-#define __SetSensorColorRed(_port) \
-  SetSensorType(_port,IN_TYPE_COLORRED) \
-  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_port)
-
-#define __SetSensorColorGreen(_port) \
-  SetSensorType(_port,IN_TYPE_COLORGREEN) \
-  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_port)
-
-#define __SetSensorColorBlue(_port) \
-  SetSensorType(_port,IN_TYPE_COLORBLUE) \
-  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_port)
-
-#define __SetSensorColorNone(_port) \
-  SetSensorType(_port,IN_TYPE_COLORNONE) \
-  SetSensorMode(_port,IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_port)
-
-#define SetSensorColorFull(_port) __SetSensorColorFull(_port)
-#define SetSensorColorRed(_port) __SetSensorColorRed(_port)
-#define SetSensorColorGreen(_port) __SetSensorColorGreen(_port)
-#define SetSensorColorBlue(_port) __SetSensorColorBlue(_port)
-#define SetSensorColorNone(_port) __SetSensorColorNone(_port)
-
-#endif
-
 dseg segment
   __ResetSensorMutex mutex
   __ResetSensorPort byte
@@ -1564,7 +1351,54 @@ ends
   call __ResetSensorSubroutine \
   release __ResetSensorMutex
 
-#define ResetSensor(_port) __ResetSensor(_port)
+#define __SetSensorTouch(_port) \
+  setin IN_TYPE_SWITCH, _port, Type \
+  setin IN_MODE_BOOLEAN, _port, InputMode \
+  __ResetSensor(_port)
+
+#define __SetSensorLight(_port) \
+  setin IN_TYPE_LIGHT_ACTIVE, _port, Type \
+  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  __ResetSensor(_port)
+
+#define __SetSensorSound(_port) \
+  setin IN_TYPE_SOUND_DB, _port, Type \
+  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  __ResetSensor(_port)
+
+#define __SetSensorLowspeed(_port) \
+  setin IN_TYPE_LOWSPEED_9V, _port, Type \
+  setin IN_MODE_RAW, _port, InputMode \
+  __ResetSensor(_port)
+
+#if __FIRMWARE_VERSION > 107
+
+#define __SetSensorColorFull(_port) \
+  setin IN_TYPE_COLORFULL, _port, Type \
+  setin IN_MODE_RAW, _port, InputMode \
+  __ResetSensor(_port)
+
+#define __SetSensorColorRed(_port) \
+  setin IN_TYPE_COLORRED, _port, Type \
+  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  __ResetSensor(_port)
+
+#define __SetSensorColorGreen(_port) \
+  setin IN_TYPE_COLORGREEN, _port, Type \
+  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  __ResetSensor(_port)
+
+#define __SetSensorColorBlue(_port) \
+  setin IN_TYPE_COLORBLUE, _port, Type \
+  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  __ResetSensor(_port)
+
+#define __SetSensorColorNone(_port) \
+  setin IN_TYPE_COLORNONE, _port, Type \
+  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  __ResetSensor(_port)
+
+#endif
 
 dseg segment
 // port 0
@@ -1596,12 +1430,6 @@ dseg segment
   __CLSRArgs3 TCommLSRead
   __CLSRMutex3 mutex
 dseg ends
-
-#define LowspeedStatus(_port, _bready, _result) __lowspeedStatus(_port, _bready, _result)
-#define LowspeedCheckStatus(_port, _result) __lowspeedCheckStatus(_port, _result)
-#define LowspeedBytesReady(_port, _bready) __lowspeedBytesReady(_port, _bready)
-#define LowspeedWrite(_port, _retlen, _buffer, _result) __lowspeedWrite(_port, _retlen, _buffer, _result)
-#define LowspeedRead(_port, _buflen, _buffer, _result) __lowspeedRead(_port, _buflen, _buffer, _result)
 
 #define __lowspeedStatus(_port, _bready, _result) \
   compif EQ, isconst(_port), FALSE \
@@ -1732,199 +1560,32 @@ dseg segment
   __TextOutMutex mutex
   __TextOutArgs TDrawText
   __BlankLine byte[] '                    '
-dseg ends
-
-#define TextOut(_x,_y,_txt) TextOutEx(_x,_y,_txt,0)
-
-#define TextOutEx(_x,_y,_txt,_options) \
-  acquire __TextOutMutex \
-  mov __TextOutArgs.Location.X,_x \
-  mov __TextOutArgs.Location.Y,_y \
-  mov __TextOutArgs.Options,_options \
-  mov __TextOutArgs.Text,_txt \
-  syscall DrawText,__TextOutArgs \
-  release __TextOutMutex
-
-#define ClearLine(_line) TextOutEx(0, _line, __BlankLine, 0) 
-
-dseg segment
   __NumOutMutex mutex
   __NumOutArgs TDrawText
-dseg ends
-
-#define NumOut(_x,_y,_num) NumOutEx(_x,_y,_num,0)
-
-#define NumOutEx(_x,_y,_num,_options) \
-  acquire __NumOutMutex \
-  mov __NumOutArgs.Location.X,_x \
-  mov __NumOutArgs.Location.Y,_y \
-  mov __NumOutArgs.Options,_options \
-  numtostr __NumOutArgs.Text,_num \
-  syscall DrawText,__NumOutArgs \
-  release __NumOutMutex
-
-dseg segment
   __PointOutArgs TDrawPoint
   __PointOutMutex mutex
-dseg ends
-
-#define PointOut(_x,_y) PointOutEx(_x,_y,0)
-
-#define PointOutEx(_x,_y,_options) \
-  acquire __PointOutMutex \
-  mov __PointOutArgs.Location.X,_x \
-  mov __PointOutArgs.Location.Y,_y \
-  mov __PointOutArgs.Options,_options \
-  syscall DrawPoint,__PointOutArgs \
-  release __PointOutMutex
-
-#define ClearScreen() PointOutEx(200, 200, 1)
-
-dseg segment
   __LineOutArgs TDrawLine
   __LineOutMutex mutex
-dseg ends
-
-#define LineOut(_x1,_y1,_x2,_y2) LineOutEx(_x1,_y1,_x2,_y2,0)
-
-#define LineOutEx(_x1,_y1,_x2,_y2,_options) \
-  acquire __LineOutMutex \
-  mov __LineOutArgs.StartLoc.X,_x1 \
-  mov __LineOutArgs.StartLoc.Y,_y1 \
-  mov __LineOutArgs.EndLoc.X,_x2 \
-  mov __LineOutArgs.EndLoc.Y,_y2 \
-  mov __LineOutArgs.Options,_options \
-  syscall DrawLine,__LineOutArgs \
-  release __LineOutMutex
-
-dseg segment
   __RectOutArgs TDrawRect
   __RectOutMutex mutex
-dseg ends
-
-#define RectOut(_x,_y,_w,_h) RectOutEx(_x,_y,_w,_h,0)
-
-#define RectOutEx(_x,_y,_w,_h,_options) \
-  acquire __RectOutMutex \
-  mov __RectOutArgs.Location.X,_x \
-  mov __RectOutArgs.Location.Y,_y \
-  mov __RectOutArgs.Size.Width,_w \
-  mov __RectOutArgs.Size.Height,_h \
-  mov __RectOutArgs.Options,_options \
-  syscall DrawRect,__RectOutArgs \
-  release __RectOutMutex
-
-dseg segment
   __CircleOutArgs TDrawCircle
   __CircleOutMutex mutex
-dseg ends
-
-#define CircleOut(_x,_y,_r) CircleOutEx(_x,_y,_r,0)
-
-#define CircleOutEx(_x,_y,_r,_options) \
-  acquire __CircleOutMutex \
-  mov __CircleOutArgs.Center.X,_x \
-  mov __CircleOutArgs.Center.Y,_y \
-  mov __CircleOutArgs.Size,_r \
-  mov __CircleOutArgs.Options,_options \
-  syscall DrawCircle,__CircleOutArgs \
-  release __CircleOutMutex
-
-dseg segment
   __GraphicOutArgs TDrawGraphic
   __GraphicOutMutex mutex
   __GraphicOutEmptyVars sdword[]
 dseg ends
 
-#define GraphicOut(_x,_y,_file) GraphicOutEx(_x,_y,_file,__GraphicOutEmptyVars,0)
-
-#define GraphicOutEx(_x,_y,_file,_vars,_options) \
-  acquire __GraphicOutMutex \
-  mov __GraphicOutArgs.Location.X,_x \
-  mov __GraphicOutArgs.Location.Y,_y \
-  mov __GraphicOutArgs.Filename,_file \
-  mov __GraphicOutArgs.Variables,_vars \
-  mov __GraphicOutArgs.Options,_options \
-  syscall DrawGraphic,__GraphicOutArgs \
-  release __GraphicOutMutex
-
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 
 dseg segment
   __GraphicArrayOutArgs TDrawGraphicArray
-dseg ends
-
-#define GraphicArrayOut(_x,_y,_data) GraphicArrayOutEx(_x,_y,_data,__GraphicOutEmptyVars,0)
-
-#define GraphicArrayOutEx(_x,_y,_data,_vars,_options) \
-  acquire __GraphicOutMutex \
-  mov __GraphicArrayOutArgs.Location.X,_x \
-  mov __GraphicArrayOutArgs.Location.Y,_y \
-  mov __GraphicArrayOutArgs.Data,_data \
-  mov __GraphicArrayOutArgs.Variables,_vars \
-  mov __GraphicArrayOutArgs.Options,_options \
-  syscall DrawGraphicArray,__GraphicArrayOutArgs \
-  release __GraphicOutMutex
-
-dseg segment
   __PolyOutArgs TDrawPolygon
   __PolyOutMutex mutex
-dseg ends
-
-#define PolyOut(_points) PolyOutEx(_points,0)
-
-#define PolyOutEx(_points,_options) \
-  acquire __PolyOutMutex \
-  mov __PolyOutArgs.Points,_points \
-  mov __PolyOutArgs.Options,_options \
-  syscall DrawPolygon,__PolyOutArgs \
-  release __PolyOutMutex
-
-dseg segment
   __EllipseOutArgs TDrawEllipse
   __EllipseOutMutex mutex
-dseg ends
-
-#define EllipseOut(_x,_y,_rX,_rY) EllipseOutEx(_x,_y,_rX,_rY,0)
-
-#define EllipseOutEx(_x,_y,_rX,_rY,_options) \
-  acquire __EllipseOutMutex \
-  mov __EllipseOutArgs.Center.X,_x \
-  mov __EllipseOutArgs.Center.Y,_y \
-  mov __EllipseOutArgs.SizeX,_rX \
-  mov __EllipseOutArgs.SizeY,_rY \
-  mov __EllipseOutArgs.Options,_options \
-  syscall DrawEllipse,__EllipseOutArgs \
-  release __EllipseOutMutex
-
-dseg segment
   __FontOutMutex mutex
   __FontOutArgs TDrawFont
 dseg ends
-
-#define FontTextOut(_x,_y,_fnt,_txt) FontTextOutEx(_x,_y,_fnt,_txt,0)
-
-#define FontTextOutEx(_x,_y,_fnt,_txt,_options) \
-  acquire __FontOutMutex \
-  mov __FontOutArgs.Location.X,_x \
-  mov __FontOutArgs.Location.Y,_y \
-  mov __FontOutArgs.Options,_options \
-  mov __FontOutArgs.Filename,_fnt \
-  mov __FontOutArgs.Text,_txt \
-  syscall DrawFont,__FontOutArgs \
-  release __FontOutMutex
-
-#define FontNumOut(_x,_y,_fnt,_num) FontNumOutEx(_x,_y,_fnt,_num,0)
-
-#define FontNumOutEx(_x,_y,_fnt,_num,_options) \
-  acquire __FontOutMutex \
-  mov __FontOutArgs.Location.X,_x \
-  mov __FontOutArgs.Location.Y,_y \
-  mov __FontOutArgs.Options,_options \
-  mov __FontOutArgs.Filename,_fnt \
-  numtostr __FontOutArgs.Text,_num \
-  syscall DrawFont,__FontOutArgs \
-  release __FontOutMutex
 
 #endif
 
@@ -1954,76 +1615,7 @@ dseg ends
   tst EQ, _result, __ColorSensorReadArgs.Result \
   release __ColorSensorReadMutex
 
-#define ReadSensorColorRaw(_port, _rawVals, _result) __ReadSensorColorRaw(_port, _rawVals, _result)
-#define ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result) __ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result)
-
 #endif
-
-; generic I2C read routine
-
-#define ReadI2CBytes(_port, _inbuf, _count, _outbuf, _result) \
-  compif EQ, isconst(_port), FALSE \
-  acquire __RLSBmutex0 \
-  acquire __RLSBmutex1 \
-  acquire __RLSBmutex2 \
-  acquire __RLSBmutex3 \
-  mov __RLSReadPort, _port \
-  mov __RLSReadBufVar, _inbuf \
-  mov __RLSBytesCountVar, _count \
-  call __ReadLSBytesVar \
-  tst EQ, _result, __RLSBResultVar \
-  mov _count, __RLSBytesCountVar \
-  mov _outbuf, __RLSReadBufVar \
-  release __RLSBmutex0 \
-  release __RLSBmutex1 \
-  release __RLSBmutex2 \
-  release __RLSBmutex3 \
-  compelse \
-  compchk LT, _port, 0x04 \
-  compchk GTEQ, _port, 0x00 \
-  acquire __RLSBmutex##_port \
-  mov __RLSReadBuf##_port, _inbuf \
-  mov __RLSBytesCount##_port, _count \
-  call __ReadLSBytes##_port \
-  tst EQ, _result, __RLSBResult##_port \
-  mov _count, __RLSBytesCount##_port \
-  mov _outbuf, __RLSReadBuf##_port \
-  release __RLSBmutex##_port \
-  compend
-
-; US Sensor read routine
-
-dseg segment
-  __RLSBbufLSWrite1 byte[] 0x02, 0x42
-dseg ends
-
-#define ReadSensorUS(_port, _value) \
-  compif EQ, isconst(_port), FALSE \
-  acquire __RLSBmutex0 \
-  acquire __RLSBmutex1 \
-  acquire __RLSBmutex2 \
-  acquire __RLSBmutex3 \
-  mov __RLSReadPort, _port \
-  mov __RLSReadBufVar, __RLSBbufLSWrite1 \
-  set __RLSBytesCountVar, 1 \
-  wait 15 \
-  call __ReadLSBytesVar \
-  index _value, __RLSReadBufVar, NA \
-  release __RLSBmutex0 \
-  release __RLSBmutex1 \
-  release __RLSBmutex2 \
-  release __RLSBmutex3 \
-  compelse \
-  compchk LT, _port, 0x04 \
-  compchk GTEQ, _port, 0x00 \
-  acquire __RLSBmutex##_port \
-  mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
-  set __RLSBytesCount##_port, 1 \
-  wait 15 \
-  call __ReadLSBytes##_port \
-  index _value, __RLSReadBuf##_port, NA \
-  release __RLSBmutex##_port \
-  compend
 
 #define __ReadSensorUSEx(_port, _values, _result) \
   compif EQ, isconst(_port), FALSE \
@@ -2055,10 +1647,300 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
-#define ReadSensorUSEx(_port, _values, _result) __ReadSensorUSEx(_port, _values, _result)
+#define __OnFwdEx(_ports, _pwr, _reset) \
+  compif EQ, isconst(_ports), FALSE \
+  __onFwdExPIDAll(_ports, _pwr, _reset, PID_3, PID_1, PID_1) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __onFwdExPID##_ports(_pwr, _reset, PID_3, PID_1, PID_1) \
+  compend
 
-#define ReadI2CRegister(_port, _reg, _out, _result) __MSReadValue(_port, 0x02, _reg, 1, _out, _result)
-#define WriteI2CRegister(_port, _reg, _val, _result) __MSWriteToRegister(_port, 0x02, _reg, _val, _result)
+#define __OnRevEx(_ports, _pwr, _reset) \
+  acquire __OnRevMutex \
+  neg __OnRev_Tmp, _pwr \
+  __OnFwdEx(_ports, __OnRev_Tmp, _reset) \
+  release __OnRevMutex
+
+#define __OnFwdExPID(_ports, _pwr, _reset, _p, _i, _d) \
+  compif EQ, isconst(_ports), FALSE \
+  __onFwdExPIDAll(_ports, _pwr, _reset, _p, _i, _d) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __onFwdExPID##_ports(_pwr, _reset, _p, _i, _d) \
+  compend
+
+#define __OnRevExPID(_ports, _pwr, _reset, _p, _i, _d) \
+  acquire __OnRevMutex \
+  neg __OnRev_Tmp, _pwr \
+  __OnFwdExPID(_ports, __OnRev_Tmp, _reset, _p, _i, _d) \
+  release __OnRevMutex
+
+#define __CoastEx(_ports, _reset) \
+  compif EQ, isconst(_ports), FALSE \
+  __coastExAll(_ports, _reset) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __coastEx##_ports(_reset) \
+  compend
+
+#define __OffEx(_ports, _reset) \
+  compif EQ, isconst(_ports), FALSE \
+  __offExAll(_ports, _reset) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __offEx##_ports(_reset) \
+  compend
+
+#define __OnFwdRegEx(_ports, _pwr, _regmode, _reset) \
+  compif EQ, isconst(_ports), FALSE \
+  __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, PID_3, PID_1, PID_1) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __onFwdRegExPID##_ports(_pwr, _regmode, _reset, PID_3, PID_1, PID_1) \
+  compend
+
+#define __OnRevRegEx(_ports, _pwr, _regmode, _reset) \
+  acquire __OnRevMutex \
+  neg __OnRev_Tmp, _pwr \
+  __OnFwdRegEx(_ports, __OnRev_Tmp, _regmode, _reset) \
+  release __OnRevMutex
+
+#define __OnFwdRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) \
+  compif EQ, isconst(_ports), FALSE \
+  __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, _p, _i, _d) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __onFwdRegExPID##_ports(_pwr, _regmode, _reset, _p, _i, _d) \
+  compend
+
+#define __OnRevRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) \
+  acquire __OnRevMutex \
+  neg __OnRev_Tmp, _pwr \
+  __OnFwdRegExPID(_ports, __OnRev_Tmp, _regmode, _reset, _p, _i, _d) \
+  release __OnRevMutex
+
+#define __OnFwdSyncEx(_ports, _pwr, _turnpct, _reset) \
+  compif EQ, isconst(_ports), FALSE \
+  __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, PID_3, PID_1, PID_1) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __onFwdSyncExPID##_ports(_pwr, _turnpct, _reset, PID_3, PID_1, PID_1) \
+  compend
+
+#define __OnRevSyncEx(_ports, _pwr, _turnpct, _reset) \
+  acquire __OnRevMutex \
+  neg __OnRev_Tmp, _pwr \
+  __OnFwdSyncEx(_ports, __OnRev_Tmp, _turnpct, _reset) \
+  release __OnRevMutex
+
+#define __OnFwdSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) \
+  compif EQ, isconst(_ports), FALSE \
+  __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, _p, _i, _d) \
+  compelse \
+  compchk LT, _ports, 0x07 \
+  compchk GTEQ, _ports, 0x00 \
+  __onFwdSyncExPID##_ports(_pwr, _turnpct, _reset, _p, _i, _d) \
+  compend
+
+#define __OnRevSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) \
+  acquire __OnRevMutex \
+  neg __OnRev_Tmp, _pwr \
+  __OnFwdSyncExPID(_ports, __OnRev_Tmp, _turnpct, _reset, _p, _i, _d) \
+  release __OnRevMutex
+
+#define __RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
+   compif EQ, isconst(_ports), FALSE \
+   __rotateMotorExPIDVar(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
+   compelse \
+   compchk LT, _ports, 0x07 \
+   compchk GTEQ, _ports, 0x00 \
+   __rotateMotorExPID##_ports(_pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
+   compend
+
+#define __TextOutEx(_x,_y,_txt,_options) \
+  acquire __TextOutMutex \
+  mov __TextOutArgs.Location.X,_x \
+  mov __TextOutArgs.Location.Y,_y \
+  mov __TextOutArgs.Options,_options \
+  mov __TextOutArgs.Text,_txt \
+  syscall DrawText,__TextOutArgs \
+  release __TextOutMutex
+
+#define __NumOutEx(_x,_y,_num,_options) \
+  acquire __NumOutMutex \
+  mov __NumOutArgs.Location.X,_x \
+  mov __NumOutArgs.Location.Y,_y \
+  mov __NumOutArgs.Options,_options \
+  numtostr __NumOutArgs.Text,_num \
+  syscall DrawText,__NumOutArgs \
+  release __NumOutMutex
+
+#define __PointOutEx(_x,_y,_options) \
+  acquire __PointOutMutex \
+  mov __PointOutArgs.Location.X,_x \
+  mov __PointOutArgs.Location.Y,_y \
+  mov __PointOutArgs.Options,_options \
+  syscall DrawPoint,__PointOutArgs \
+  release __PointOutMutex
+
+#define __LineOutEx(_x1,_y1,_x2,_y2,_options) \
+  acquire __LineOutMutex \
+  mov __LineOutArgs.StartLoc.X,_x1 \
+  mov __LineOutArgs.StartLoc.Y,_y1 \
+  mov __LineOutArgs.EndLoc.X,_x2 \
+  mov __LineOutArgs.EndLoc.Y,_y2 \
+  mov __LineOutArgs.Options,_options \
+  syscall DrawLine,__LineOutArgs \
+  release __LineOutMutex
+
+#define __RectOutEx(_x,_y,_w,_h,_options) \
+  acquire __RectOutMutex \
+  mov __RectOutArgs.Location.X,_x \
+  mov __RectOutArgs.Location.Y,_y \
+  mov __RectOutArgs.Size.Width,_w \
+  mov __RectOutArgs.Size.Height,_h \
+  mov __RectOutArgs.Options,_options \
+  syscall DrawRect,__RectOutArgs \
+  release __RectOutMutex
+
+#define __CircleOutEx(_x,_y,_r,_options) \
+  acquire __CircleOutMutex \
+  mov __CircleOutArgs.Center.X,_x \
+  mov __CircleOutArgs.Center.Y,_y \
+  mov __CircleOutArgs.Size,_r \
+  mov __CircleOutArgs.Options,_options \
+  syscall DrawCircle,__CircleOutArgs \
+  release __CircleOutMutex
+
+#define __GraphicOutEx(_x,_y,_file,_vars,_options) \
+  acquire __GraphicOutMutex \
+  mov __GraphicOutArgs.Location.X,_x \
+  mov __GraphicOutArgs.Location.Y,_y \
+  mov __GraphicOutArgs.Filename,_file \
+  mov __GraphicOutArgs.Variables,_vars \
+  mov __GraphicOutArgs.Options,_options \
+  syscall DrawGraphic,__GraphicOutArgs \
+  release __GraphicOutMutex
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+
+#define __GraphicArrayOutEx(_x,_y,_data,_vars,_options) \
+  acquire __GraphicOutMutex \
+  mov __GraphicArrayOutArgs.Location.X,_x \
+  mov __GraphicArrayOutArgs.Location.Y,_y \
+  mov __GraphicArrayOutArgs.Data,_data \
+  mov __GraphicArrayOutArgs.Variables,_vars \
+  mov __GraphicArrayOutArgs.Options,_options \
+  syscall DrawGraphicArray,__GraphicArrayOutArgs \
+  release __GraphicOutMutex
+
+#define __PolyOutEx(_points,_options) \
+  acquire __PolyOutMutex \
+  mov __PolyOutArgs.Points,_points \
+  mov __PolyOutArgs.Options,_options \
+  syscall DrawPolygon,__PolyOutArgs \
+  release __PolyOutMutex
+
+#define __EllipseOutEx(_x,_y,_rX,_rY,_options) \
+  acquire __EllipseOutMutex \
+  mov __EllipseOutArgs.Center.X,_x \
+  mov __EllipseOutArgs.Center.Y,_y \
+  mov __EllipseOutArgs.SizeX,_rX \
+  mov __EllipseOutArgs.SizeY,_rY \
+  mov __EllipseOutArgs.Options,_options \
+  syscall DrawEllipse,__EllipseOutArgs \
+  release __EllipseOutMutex
+
+#define __FontTextOutEx(_x,_y,_fnt,_txt,_options) \
+  acquire __FontOutMutex \
+  mov __FontOutArgs.Location.X,_x \
+  mov __FontOutArgs.Location.Y,_y \
+  mov __FontOutArgs.Options,_options \
+  mov __FontOutArgs.Filename,_fnt \
+  mov __FontOutArgs.Text,_txt \
+  syscall DrawFont,__FontOutArgs \
+  release __FontOutMutex
+
+#define __FontNumOutEx(_x,_y,_fnt,_num,_options) \
+  acquire __FontOutMutex \
+  mov __FontOutArgs.Location.X,_x \
+  mov __FontOutArgs.Location.Y,_y \
+  mov __FontOutArgs.Options,_options \
+  mov __FontOutArgs.Filename,_fnt \
+  numtostr __FontOutArgs.Text,_num \
+  syscall DrawFont,__FontOutArgs \
+  release __FontOutMutex
+
+#endif
+
+dseg segment
+  __RLSBbufLSWrite1 byte[] 0x02, 0x42
+dseg ends
+
+#define __ReadI2CBytes(_port, _inbuf, _count, _outbuf, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, _inbuf \
+  mov __RLSBytesCountVar, _count \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  mov _count, __RLSBytesCountVar \
+  mov _outbuf, __RLSReadBufVar \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, _inbuf \
+  mov __RLSBytesCount##_port, _count \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  mov _count, __RLSBytesCount##_port \
+  mov _outbuf, __RLSReadBuf##_port \
+  release __RLSBmutex##_port \
+  compend
+
+#define __ReadSensorUS(_port, _value) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RLSBbufLSWrite1 \
+  set __RLSBytesCountVar, 1 \
+  wait 15 \
+  call __ReadLSBytesVar \
+  index _value, __RLSReadBufVar, NA \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
+  set __RLSBytesCount##_port, 1 \
+  wait 15 \
+  call __ReadLSBytes##_port \
+  index _value, __RLSReadBuf##_port, NA \
+  release __RLSBmutex##_port \
+  compend
 
 subroutine __ReadLSBytes0
   dseg segment
@@ -2069,13 +1951,13 @@ subroutine __ReadLSBytes0
     __RLSBIterations0 byte
     __RLSReadBuf0 byte[]
   dseg ends
-  LowspeedWrite(0, __RLSBytesCount0, __RLSReadBuf0, __RLSBResult0)
+  __lowspeedWrite(0, __RLSBytesCount0, __RLSReadBuf0, __RLSBResult0)
   brtst EQ, __RLSBReturn0, __RLSBytesCount0 ; terminate if zero bytes to read
   arrinit __RLSReadBuf0, 0, __RLSBytesCount0
   brtst NEQ, __RLSBError0, __RLSBResult0 ; terminate if not NO_ERR
   set __RLSBIterations0, 4
 __RLSBDoCheckStatus0:
-  LowspeedStatus(0, __RLSBytesCount0, __RLSBResult0)
+  __lowspeedStatus(0, __RLSBytesCount0, __RLSBResult0)
   sub __RLSBIterations0, __RLSBIterations0, 1
   brtst LTEQ, __RLSBError0, __RLSBIterations0
   brtst LT, __RLSBError0, __RLSBResult0 ; negative results are absolute errors
@@ -2085,7 +1967,7 @@ __RLSBDoCheckStatus0:
   jmp __RLSBDoCheckStatus0
 __RLSBReadyToRead0:
   ; Try reading now
-  LowspeedRead(0, __RLSBytesCount0, __RLSReadBuf0, __RLSBResult0)
+  __lowspeedRead(0, __RLSBytesCount0, __RLSReadBuf0, __RLSBResult0)
   brtst NEQ, __RLSBError0, __RLSBResult0 ; terminate if not NO_ERR
   mov __RLSLastGoodRead0, __RLSReadBuf0
   jmp __RLSBDone0
@@ -2106,13 +1988,13 @@ subroutine __ReadLSBytes1
     __RLSBIterations1 byte
     __RLSReadBuf1 byte[]
   dseg ends
-  LowspeedWrite(1, __RLSBytesCount1, __RLSReadBuf1, __RLSBResult1)
+  __lowspeedWrite(1, __RLSBytesCount1, __RLSReadBuf1, __RLSBResult1)
   brtst EQ, __RLSBReturn1, __RLSBytesCount1 ; terminate if zero bytes to read
   arrinit __RLSReadBuf1, 0, __RLSBytesCount1
   brtst NEQ, __RLSBError1, __RLSBResult1 ; terminate if not NO_ERR
   set __RLSBIterations1, 4
 __RLSBDoCheckStatus1:
-  LowspeedStatus(1, __RLSBytesCount1, __RLSBResult1)
+  __lowspeedStatus(1, __RLSBytesCount1, __RLSBResult1)
   sub __RLSBIterations1, __RLSBIterations1, 1
   brtst LTEQ, __RLSBError1, __RLSBIterations1
   brtst LT, __RLSBError1, __RLSBResult1 ; negative results are absolute errors
@@ -2122,7 +2004,7 @@ __RLSBDoCheckStatus1:
   jmp __RLSBDoCheckStatus1
 __RLSBReadyToRead1:
   ; Try reading now
-  LowspeedRead(1, __RLSBytesCount1, __RLSReadBuf1, __RLSBResult1)
+  __lowspeedRead(1, __RLSBytesCount1, __RLSReadBuf1, __RLSBResult1)
   brtst NEQ, __RLSBError1, __RLSBResult1 ; terminate if not NO_ERR
   mov __RLSLastGoodRead1, __RLSReadBuf1
   jmp __RLSBDone1
@@ -2143,13 +2025,13 @@ subroutine __ReadLSBytes2
     __RLSBIterations2 byte
     __RLSReadBuf2 byte[]
   dseg ends
-  LowspeedWrite(2, __RLSBytesCount2, __RLSReadBuf2, __RLSBResult2)
+  __lowspeedWrite(2, __RLSBytesCount2, __RLSReadBuf2, __RLSBResult2)
   brtst EQ, __RLSBReturn2, __RLSBytesCount2 ; terminate if zero bytes to read
   arrinit __RLSReadBuf2, 0, __RLSBytesCount2
   brtst NEQ, __RLSBError2, __RLSBResult2 ; terminate if not NO_ERR
   set __RLSBIterations2, 4
 __RLSBDoCheckStatus2:
-  LowspeedStatus(2, __RLSBytesCount2, __RLSBResult2)
+  __lowspeedStatus(2, __RLSBytesCount2, __RLSBResult2)
   sub __RLSBIterations2, __RLSBIterations2, 1
   brtst LTEQ, __RLSBError2, __RLSBIterations2
   brtst LT, __RLSBError2, __RLSBResult2 ; negative results are absolute errors
@@ -2159,7 +2041,7 @@ __RLSBDoCheckStatus2:
   jmp __RLSBDoCheckStatus2
 __RLSBReadyToRead2:
   ; Try reading now
-  LowspeedRead(2, __RLSBytesCount2, __RLSReadBuf2, __RLSBResult2)
+  __lowspeedRead(2, __RLSBytesCount2, __RLSReadBuf2, __RLSBResult2)
   brtst NEQ, __RLSBError2, __RLSBResult2 ; terminate if not NO_ERR
   mov __RLSLastGoodRead2, __RLSReadBuf2
   jmp __RLSBDone2
@@ -2180,13 +2062,13 @@ subroutine __ReadLSBytes3
     __RLSBIterations3 byte
     __RLSReadBuf3 byte[]
   dseg ends
-  LowspeedWrite(3, __RLSBytesCount3, __RLSReadBuf3, __RLSBResult3)
+  __lowspeedWrite(3, __RLSBytesCount3, __RLSReadBuf3, __RLSBResult3)
   brtst EQ, __RLSBReturn3, __RLSBytesCount3 ; terminate if zero bytes to read
   arrinit __RLSReadBuf3, 0, __RLSBytesCount3
   brtst NEQ, __RLSBError3, __RLSBResult3 ; terminate if not NO_ERR
   set __RLSBIterations3, 4
 __RLSBDoCheckStatus3:
-  LowspeedStatus(3, __RLSBytesCount3, __RLSBResult3)
+  __lowspeedStatus(3, __RLSBytesCount3, __RLSBResult3)
   sub __RLSBIterations3, __RLSBIterations3, 1
   brtst LTEQ, __RLSBError3, __RLSBIterations3
   brtst LT, __RLSBError3, __RLSBResult3 ; negative results are absolute errors
@@ -2196,7 +2078,7 @@ __RLSBDoCheckStatus3:
   jmp __RLSBDoCheckStatus3
 __RLSBReadyToRead3:
   ; Try reading now
-  LowspeedRead(3, __RLSBytesCount3, __RLSReadBuf3, __RLSBResult3)
+  __lowspeedRead(3, __RLSBytesCount3, __RLSReadBuf3, __RLSBResult3)
   brtst NEQ, __RLSBError3, __RLSBResult3 ; terminate if not NO_ERR
   mov __RLSLastGoodRead3, __RLSReadBuf3
   jmp __RLSBDone3
@@ -2217,13 +2099,13 @@ subroutine __ReadLSBytesVar
     __RLSReadBufVar byte[]
     __RLSReadPort byte
   dseg ends
-  LowspeedWrite(__RLSReadPort, __RLSBytesCountVar, __RLSReadBufVar, __RLSBResultVar)
+  __lowspeedWrite(__RLSReadPort, __RLSBytesCountVar, __RLSReadBufVar, __RLSBResultVar)
   brtst EQ, __RLSBReturnVar, __RLSBytesCountVar ; terminate if zero bytes to read
   arrinit __RLSReadBufVar, 0, __RLSBytesCountVar
   brtst NEQ, __RLSBErrorVar, __RLSBResultVar ; terminate if not NO_ERR
   set __RLSBIterationsVar, 4
 __RLSBDoCheckStatusVar:
-  LowspeedStatus(__RLSReadPort, __RLSBytesCountVar, __RLSBResultVar)
+  __lowspeedStatus(__RLSReadPort, __RLSBytesCountVar, __RLSBResultVar)
   sub __RLSBIterationsVar, __RLSBIterationsVar, 1
   brtst LTEQ, __RLSBErrorVar, __RLSBIterationsVar
   brtst LT, __RLSBErrorVar, __RLSBResultVar ; negative results are absolute errors
@@ -2233,7 +2115,7 @@ __RLSBDoCheckStatusVar:
   jmp __RLSBDoCheckStatusVar
 __RLSBReadyToReadVar:
   ; Try reading now
-  LowspeedRead(__RLSReadPort, __RLSBytesCountVar, __RLSReadBufVar, __RLSBResultVar)
+  __lowspeedRead(__RLSReadPort, __RLSBytesCountVar, __RLSReadBufVar, __RLSBResultVar)
   brtst NEQ, __RLSBErrorVar, __RLSBResultVar ; terminate if not NO_ERR
   mov __RLSLastGoodReadVar, __RLSReadBufVar
   jmp __RLSBDoneVar
@@ -2250,12 +2132,27 @@ dseg segment
   __PlayFileTmp TSoundPlayFile
   __PlayFileMutex mutex
   __PlayToneMutex mutex
+  __SGSMutex mutex
+  __SGSArgs TSoundGetState
+  __SSSMutex mutex
+  __SSSArgs TSoundSetState
+  __RandomTmp dword
+  __RandomArgs TRandomNumber
+  __RandomMutex mutex
+  __KeepAliveArgs TKeepAlive
+  __KeepAliveMutex mutex
+  __GSTArgs TGetStartTick
+  __GSTMutex mutex
+  __RBtnMutex mutex
+  __RBtnArgs TReadButton
+  __IOMRMutex mutex
+  __IOMRArgs TIOMapRead
+  __IOMRUnflattenErr byte
+  __IOMRUnflattenBuf byte[]
 dseg ends
 
-#define PlayTone(_freq,_dur) PlayToneEx(_freq,_dur,4,0)
-#define PlayFile(_file) PlayFileEx(_file,4,0)
 
-#define PlayToneEx(_freq,_dur,_vol,_loop) \
+#define __PlayToneEx(_freq,_dur,_vol,_loop) \
   acquire __PlayToneMutex \
   mov __PlayToneTmp.Frequency, _freq \
   mov __PlayToneTmp.Duration, _dur \
@@ -2264,29 +2161,13 @@ dseg ends
   syscall SoundPlayTone, __PlayToneTmp \
   release __PlayToneMutex
 
-#define PlayFileEx(_file,_vol,_loop) \
+#define __PlayFileEx(_file,_vol,_loop) \
   acquire __PlayFileMutex \
   mov __PlayFileTmp.Filename, _file \
   mov __PlayFileTmp.Volume, _vol \
   mov __PlayFileTmp.Loop, _loop \
   syscall SoundPlayFile, __PlayFileTmp \
   release __PlayFileMutex
-
-dseg segment
-  __SGSMutex mutex
-  __SGSArgs TSoundGetState
-  __SSSMutex mutex
-  __SSSArgs TSoundSetState
-dseg ends
-
-#define GetSoundState(_state, _flags) \
-  acquire __SGSMutex \
-  syscall SoundGetState, __SGSArgs \
-  mov _state, __SGSArgs.State \
-  mov _flags, __SGSArgs.Flags \
-  release __SGSMutex
-
-#define SetSoundState(_state, _flags, _result) __setSoundState(_state, _flags, _result)
 
 #define __setSoundState(_state, _flags, _result) \
   acquire __SSSMutex \
@@ -2296,13 +2177,14 @@ dseg ends
   mov _result, __SSSArgs.Result \
   release __SSSMutex
 
-dseg segment
-  __RandomTmp dword
-  __RandomArgs TRandomNumber
-  __RandomMutex mutex
-dseg ends
+#define __GetSoundState(_state, _flags) \
+  acquire __SGSMutex \
+  syscall SoundGetState, __SGSArgs \
+  mov _state, __SGSArgs.State \
+  mov _flags, __SGSArgs.Flags \
+  release __SGSMutex
 
-#define Random(_arg,_max) \
+#define __Random(_arg,_max) \
   acquire __RandomMutex \
   syscall RandomNumber, __RandomArgs \
   mov __RandomTmp, __RandomArgs.Result \
@@ -2312,38 +2194,20 @@ dseg ends
   mov _arg, __RandomTmp \
   release __RandomMutex
 
-#define SignedRandom(_arg) \
+#define __SignedRandom(_arg) \
   acquire __RandomMutex \
   syscall RandomNumber, __RandomArgs \
   mov _arg, __RandomArgs.Result \
   release __RandomMutex
 
-
-dseg segment
-   __KeepAliveArgs TKeepAlive
-   __KeepAliveMutex mutex
-dseg ends
-
-#define ResetSleepTimer syscall KeepAlive, __KeepAliveArgs
-
-dseg segment
-  __GSTArgs TGetStartTick
-  __GSTMutex mutex
-dseg ends
-
-#define GetFirstTick(_value) \
+#define __GetFirstTick(_value) \
   compchk EQ, sizeof(_value), 4 \
   acquire __GSTMutex \
   syscall GetStartTick, __GSTArgs \
   mov _value, __GSTArgs.Result \
   release __GSTMutex
 
-dseg segment
-  __RBtnMutex mutex
-  __RBtnArgs TReadButton
-dseg ends
-
-#define ReadButtonEx(_idx, _reset, _pressed, _count, _result) \
+#define __ReadButtonEx(_idx, _reset, _pressed, _count, _result) \
   acquire __RBtnMutex \
   mov __RBtnArgs.Index, _idx \
   mov __RBtnArgs.Reset, _reset \
@@ -2352,13 +2216,6 @@ dseg ends
   mov _count, __RBtnArgs.Count \
   mov _result, __RBtnArgs.Result \
   release __RBtnMutex
-
-dseg segment
-  __IOMRMutex mutex
-  __IOMRArgs TIOMapRead
-  __IOMRUnflattenErr byte
-  __IOMRUnflattenBuf byte[]
-dseg ends
 
 #define __getIOMapBytes(_modName, _offset, _cnt, _arrOut) \
   acquire __IOMRMutex \
@@ -2378,9 +2235,6 @@ dseg ends
   arrtostr __IOMRUnflattenBuf, __IOMRArgs.Buffer \
   unflatten _n, __IOMRUnflattenErr, __IOMRUnflattenBuf, _n \
   release __IOMRMutex
-
-#define GetIOMapBytes(_modName, _offset, _cnt, _arrOut) __getIOMapBytes(_modName, _offset, _cnt, _arrOut)
-#define GetIOMapValue(_modName, _offset, _n) __getIOMapValue(_modName, _offset, _n)
 
 #ifdef __ENHANCED_FIRMWARE
 
@@ -2407,36 +2261,11 @@ dseg ends
   unflatten _n, __IOMRUnflattenErr, __IOMRUnflattenBuf, _n \
   release __IOMRMutex
 
-#define GetIOMapBytesByID(_modID, _offset, _cnt, _arrOut) __getIOMapBytesByID(_modID, _offset, _cnt, _arrOut)
-#define GetIOMapValueByID(_modID, _offset, _n) __getIOMapValueByID(_modID, _offset, _n)
-
-#define GetCommandModuleValue(_offset, _n) GetIOMapValueByID(CommandModuleID, _offset, _n)
-#define GetLoaderModuleValue(_offset, _n) GetIOMapValueByID(LoaderModuleID, _offset, _n)
-#define GetSoundModuleValue(_offset, _n) GetIOMapValueByID(SoundModuleID, _offset, _n)
-#define GetButtonModuleValue(_offset, _n) GetIOMapValueByID(ButtonModuleID, _offset, _n)
-#define GetUIModuleValue(_offset, _n) GetIOMapValueByID(UIModuleID, _offset, _n)
-#define GetInputModuleValue(_offset, _n) GetIOMapValueByID(InputModuleID, _offset, _n)
-#define GetOutputModuleValue(_offset, _n) GetIOMapValueByID(OutputModuleID, _offset, _n)
-#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValueByID(LowSpeedModuleID, _offset, _n)
-#define GetDisplayModuleValue(_offset, _n) GetIOMapValueByID(DisplayModuleID, _offset, _n)
-#define GetCommModuleValue(_offset, _n) GetIOMapValueByID(CommModuleID, _offset, _n)
-
 #define __getLowSpeedModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrOut)
 #define __getDisplayModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrOut)
 #define __getCommModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytesByID(CommModuleID, _offset, _cnt, _arrOut)
 
 #else
-
-#define GetCommandModuleValue(_offset, _n) GetIOMapValue(CommandModuleName, _offset, _n)
-#define GetLoaderModuleValue(_offset, _n) GetIOMapValue(LoaderModuleName, _offset, _n)
-#define GetSoundModuleValue(_offset, _n) GetIOMapValue(SoundModuleName, _offset, _n)
-#define GetButtonModuleValue(_offset, _n) GetIOMapValue(ButtonModuleName, _offset, _n)
-#define GetUIModuleValue(_offset, _n) GetIOMapValue(UIModuleName, _offset, _n)
-#define GetInputModuleValue(_offset, _n) GetIOMapValue(InputModuleName, _offset, _n)
-#define GetOutputModuleValue(_offset, _n) GetIOMapValue(OutputModuleName, _offset, _n)
-#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValue(LowSpeedModuleName, _offset, _n)
-#define GetDisplayModuleValue(_offset, _n) GetIOMapValue(DisplayModuleName, _offset, _n)
-#define GetCommModuleValue(_offset, _n) GetIOMapValue(CommModuleName, _offset, _n)
 
 #define __getLowSpeedModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytes(LowSpeedModuleName, _offset, _cnt, _arrOut)
 #define __getDisplayModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytes(DisplayModuleID, _offset, _cnt, _arrOut)
@@ -2444,31 +2273,27 @@ dseg ends
 
 #endif
 
-#define GetLowSpeedModuleBytes(_offset, _cnt, _arrOut) __getLowSpeedModuleBytes(_offset, _cnt, _arrOut)
-#define GetDisplayModuleBytes(_offset, _cnt, _arrOut) __getDisplayModuleBytes(_offset, _cnt, _arrOut)
-#define GetCommModuleBytes(_offset, _cnt, _arrOut) __getCommModuleBytes(_offset, _cnt, _arrOut)
-
-#define GetFreeMemory(_value) \
+#define __GetFreeMemory(_value) \
   compchk EQ, sizeof(_value), 4 \
   GetLoaderModuleValue(LoaderOffsetFreeUserFlash, _value)
 
-#define GetSoundFrequency(_n) \
+#define __GetSoundFrequency(_n) \
   compchk EQ, sizeof(_n), 2 \
   GetSoundModuleValue(SoundOffsetFreq, _n)
 
-#define GetSoundDuration(_n) \
+#define __GetSoundDuration(_n) \
   compchk EQ, sizeof(_n), 2 \
   GetSoundModuleValue(SoundOffsetDuration, _n)
 
-#define GetSoundSampleRate(_n) \
+#define __GetSoundSampleRate(_n) \
   compchk EQ, sizeof(_n), 2 \
   GetSoundModuleValue(SoundOffsetSampleRate, _n)
 
-#define GetSoundMode(_n) \
+#define __GetSoundMode(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetSoundModuleValue(SoundOffsetMode, _n)
 
-#define GetSoundVolume(_n) \
+#define __GetSoundVolume(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetSoundModuleValue(SoundOffsetVolume, _n)
 
@@ -2477,7 +2302,7 @@ dseg segment
   __btnModuleOffset word
 dseg ends
 
-#define GetButtonPressCount(_b, _n) \
+#define __GetButtonPressCount(_b, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_b), TRUE \
   compchk LT, _b, 0x04 \
@@ -2490,7 +2315,7 @@ dseg ends
   release __btnModuleOffsetMutex \
   compend
 
-#define GetButtonLongPressCount(_b, _n) \
+#define __GetButtonLongPressCount(_b, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_b), TRUE \
   compchk LT, _b, 0x04 \
@@ -2504,7 +2329,7 @@ dseg ends
   release __btnModuleOffsetMutex \
   compend
 
-#define GetButtonShortReleaseCount(_b, _n) \
+#define __GetButtonShortReleaseCount(_b, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_b), TRUE \
   compchk LT, _b, 0x04 \
@@ -2518,7 +2343,7 @@ dseg ends
   release __btnModuleOffsetMutex \
   compend
 
-#define GetButtonLongReleaseCount(_b, _n) \
+#define __GetButtonLongReleaseCount(_b, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_b), TRUE \
   compchk LT, _b, 0x04 \
@@ -2532,7 +2357,7 @@ dseg ends
   release __btnModuleOffsetMutex \
   compend
 
-#define GetButtonReleaseCount(_b, _n) \
+#define __GetButtonReleaseCount(_b, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_b), TRUE \
   compchk LT, _b, 0x04 \
@@ -2546,7 +2371,7 @@ dseg ends
   release __btnModuleOffsetMutex \
   compend
 
-#define GetButtonState(_b, _n) \
+#define __GetButtonState(_b, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_b), TRUE \
   compchk LT, _b, 0x04 \
@@ -2559,59 +2384,59 @@ dseg ends
   release __btnModuleOffsetMutex \
   compend
 
-#define GetBatteryLevel(_n) \
+#define __GetBatteryLevel(_n) \
   compchk EQ, sizeof(_n), 2 \
   GetUIModuleValue(UIOffsetBatteryVoltage, _n)
 
-#define GetCommandFlags(_n) \
+#define __GetCommandFlags(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetFlags, _n)
 
-#define GetUIState(_n) \
+#define __GetUIState(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetState, _n)
 
-#define GetUIButton(_n) \
+#define __GetUIButton(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetButton, _n)
 
-#define GetVMRunState(_n) \
+#define __GetVMRunState(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetRunState, _n)
 
-#define GetBatteryState(_n) \
+#define __GetBatteryState(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetBatteryState, _n)
 
-#define GetBluetoothState(_n) \
+#define __GetBluetoothState(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetBluetoothState, _n)
 
-#define GetUsbState(_n) \
+#define __GetUsbState(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetUsbState, _n)
 
-#define GetSleepTimeout(_n) \
+#define __GetSleepTimeout(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetSleepTimeout, _n)
 
-#define GetSleepTimer(_n) \
+#define __GetSleepTimer(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetSleepTimer, _n)
 
-#define GetRechargeableBattery(_n) \
+#define __GetRechargeableBattery(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetRechargeable, _n)
 
-#define GetVolume(_n) \
+#define __GetVolume(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetVolume, _n)
 
-#define GetOnBrickProgramPointer(_n) \
+#define __GetOnBrickProgramPointer(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetOBPPointer, _n)
 
-#define GetAbortFlag(_n) \
+#define __GetAbortFlag(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetUIModuleValue(UIOffsetAbortFlag, _n)
 
@@ -2620,7 +2445,7 @@ dseg segment
   __inputModuleOffset word
 dseg ends
 
-#define GetInCustomZeroOffset(_p, _n) \
+#define __GetInCustomZeroOffset(_p, _n) \
   compchk EQ, sizeof(_n), 2 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2633,7 +2458,7 @@ dseg ends
   release __inputModuleOffsetMutex \
   compend
 
-#define GetInSensorBoolean(_p, _n) \
+#define __GetInSensorBoolean(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2647,7 +2472,7 @@ dseg ends
   release __inputModuleOffsetMutex \
   compend
 
-#define GetInDigiPinsDirection(_p, _n) \
+#define __GetInDigiPinsDirection(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2661,7 +2486,7 @@ dseg ends
   release __inputModuleOffsetMutex \
   compend
 
-#define GetInDigiPinsStatus(_p, _n) \
+#define __GetInDigiPinsStatus(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2675,7 +2500,7 @@ dseg ends
   release __inputModuleOffsetMutex \
   compend
 
-#define GetInDigiPinsOutputLevel(_p, _n) \
+#define __GetInDigiPinsOutputLevel(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2689,7 +2514,7 @@ dseg ends
   release __inputModuleOffsetMutex \
   compend
 
-#define GetInCustomPercentFullScale(_p, _n) \
+#define __GetInCustomPercentFullScale(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2703,7 +2528,7 @@ dseg ends
   release __inputModuleOffsetMutex \
   compend
 
-#define GetInCustomActiveStatus(_p, _n) \
+#define __GetInCustomActiveStatus(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2719,7 +2544,7 @@ dseg ends
 
 #if __FIRMWARE_VERSION > 107
 
-#define GetInColorCalibration(_p, _np, _nc, _n) \
+#define __GetInColorCalibration(_p, _np, _nc, _n) \
   compchk EQ, sizeof(_n), 4 \
   compchk EQ, isconst(_p), TRUE \
   compchk EQ, isconst(_np), TRUE \
@@ -2732,7 +2557,7 @@ dseg ends
   compchk GTEQ, _nc, 0x00 \
   GetInputModuleValue(InputOffsetColorCalibration(_p, _np, _nc), _n)
 
-#define GetInColorCalLimits(_p, _np, _n) \
+#define __GetInColorCalLimits(_p, _np, _n) \
   compchk EQ, sizeof(_n), 2 \
   compchk EQ, isconst(_p), TRUE \
   compchk EQ, isconst(_np), TRUE \
@@ -2742,7 +2567,7 @@ dseg ends
   compchk GTEQ, _np, 0x00 \
   GetInputModuleValue(InputOffsetColorCalLimits(_p, _np), _n)
 
-#define GetInColorADRaw(_p, _nc, _n) \
+#define __GetInColorADRaw(_p, _nc, _n) \
   compchk EQ, sizeof(_n), 2 \
   compchk EQ, isconst(_p), TRUE \
   compchk EQ, isconst(_nc), TRUE \
@@ -2752,7 +2577,7 @@ dseg ends
   compchk GTEQ, _nc, 0x00 \
   GetInputModuleValue(InputOffsetColorADRaw(_p, _nc), _n)
 
-#define GetInColorSensorRaw(_p, _nc, _n) \
+#define __GetInColorSensorRaw(_p, _nc, _n) \
   compchk EQ, sizeof(_n), 2 \
   compchk EQ, isconst(_p), TRUE \
   compchk EQ, isconst(_nc), TRUE \
@@ -2762,7 +2587,7 @@ dseg ends
   compchk GTEQ, _nc, 0x00 \
   GetInputModuleValue(InputOffsetColorSensorRaw(_p, _nc), _n)
 
-#define GetInColorSensorValue(_p, _nc, _n) \
+#define __GetInColorSensorValue(_p, _nc, _n) \
   compchk EQ, sizeof(_n), 2 \
   compchk EQ, isconst(_p), TRUE \
   compchk EQ, isconst(_nc), TRUE \
@@ -2772,7 +2597,7 @@ dseg ends
   compchk GTEQ, _nc, 0x00 \
   GetInputModuleValue(InputOffsetColorSensorValue(_p, _nc), _n)
 
-#define GetInColorBoolean(_p, _nc, _n) \
+#define __GetInColorBoolean(_p, _nc, _n) \
   compchk EQ, sizeof(_n), 1 \
   compchk EQ, isconst(_p), TRUE \
   compchk EQ, isconst(_nc), TRUE \
@@ -2782,7 +2607,7 @@ dseg ends
   compchk GTEQ, _nc, 0x00 \
   GetInputModuleValue(InputOffsetColorBoolean(_p, _nc), _n)
 
-#define GetInColorCalibrationState(_p, _n) \
+#define __GetInColorCalibrationState(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compchk EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2791,7 +2616,7 @@ dseg ends
 
 #endif
 
-#define GetOutPwnFreq(_n) \
+#define __GetOutPwnFreq(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetOutputModuleValue(OutputOffsetPwnFreq, _n)
 
@@ -2813,9 +2638,7 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSInputBuffer(_p, _offset, _cnt, _data) __getLSInputBuffer(_p, _offset, _cnt, _data)
-
-#define GetLSInputBufferInPtr(_p, _n) \
+#define __GetLSInputBufferInPtr(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2829,7 +2652,7 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSInputBufferOutPtr(_p, _n) \
+#define __GetLSInputBufferOutPtr(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2843,7 +2666,7 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSInputBufferBytesToRx(_p, _n) \
+#define __GetLSInputBufferBytesToRx(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2871,9 +2694,7 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSOutputBuffer(_p, _offset, _cnt, _data) __getLSOutputBuffer(_p, _offset, _cnt, _data)
-
-#define GetLSOutputBufferInPtr(_p, _n) \
+#define __GetLSOutputBufferInPtr(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2887,7 +2708,7 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSOutputBufferOutPtr(_p, _n) \
+#define __GetLSOutputBufferOutPtr(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2901,7 +2722,7 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSOutputBufferBytesToRx(_p, _n) \
+#define __GetLSOutputBufferBytesToRx(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2915,7 +2736,7 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSMode(_p, _n) \
+#define __GetLSMode(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2928,7 +2749,7 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSChannelState(_p, _n) \
+#define __GetLSChannelState(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2941,7 +2762,7 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSErrorType(_p, _n) \
+#define __GetLSErrorType(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -2954,48 +2775,52 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define GetLSState(_n) \
+#define __GetLSState(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetLowSpeedModuleValue(LowSpeedOffsetState, _n)
 
-#define GetLSSpeed(_n) \
+#define __GetLSSpeed(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetLowSpeedModuleValue(LowSpeedOffsetSpeed, _n)
 
 #ifdef __ENHANCED_FIRMWARE
-#define GetLSNoRestartOnRead(_n) \
+
+#define __GetLSNoRestartOnRead(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetLowSpeedModuleValue(LowSpeedOffsetNoRestartOnRead, _n)
+
 #endif
 
-#define GetDisplayEraseMask(_n) \
+#define __GetDisplayEraseMask(_n) \
   compchk EQ, sizeof(_n), 4 \
   GetDisplayModuleValue(DisplayOffsetEraseMask, _n)
 
-#define GetDisplayUpdateMask(_n) \
+#define __GetDisplayUpdateMask(_n) \
   compchk EQ, sizeof(_n), 4 \
   GetDisplayModuleValue(DisplayOffsetUpdateMask, _n)
 
-#define GetDisplayFont(_n) \
+#define __GetDisplayFont(_n) \
   compchk EQ, sizeof(_n), 4 \
   GetDisplayModuleValue(DisplayOffsetPFont, _n)
 
-#define GetDisplayDisplay(_n) \
+#define __GetDisplayDisplay(_n) \
   compchk EQ, sizeof(_n), 4 \
   GetDisplayModuleValue(DisplayOffsetDisplay, _n)
 
-#define GetDisplayFlags(_n) \
+#define __GetDisplayFlags(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetDisplayModuleValue(DisplayOffsetFlags, _n)
 
-#define GetDisplayTextLinesCenterFlags(_n) \
+#define __GetDisplayTextLinesCenterFlags(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetDisplayModuleValue(DisplayOffsetTextLinesCenterFlags, _n)
 
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define GetDisplayContrast(_n) \
+
+#define __GetDisplayContrast(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetDisplayModuleValue(DisplayOffsetContrast, _n)
+
 #endif
 
 dseg segment
@@ -3017,8 +2842,6 @@ dseg ends
   release __displayModuleOffsetMutex \
   compend
 
-#define GetDisplayNormal(_x, _line, _cnt, _data) __getDisplayNormal(_x, _line, _cnt, _data)
-
 #define __getDisplayPopup(_x, _line, _cnt, _data) \
   compif EQ, isconst(_line+_x), TRUE \
   compchk LT, _line, 0x08 \
@@ -3033,14 +2856,12 @@ dseg ends
   release __displayModuleOffsetMutex \
   compend
 
-#define GetDisplayPopup(_x, _line, _cnt, _data) __getDisplayPopup(_x, _line, _cnt, _data)
-
 dseg segment
   __commModuleOffsetMutex mutex
   __commModuleOffset word
 dseg ends
 
-#define GetBTDeviceName(_p, _str) \
+#define __GetBTDeviceName(_p, _str) \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
@@ -3053,7 +2874,7 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBTDeviceClass(_p, _n) \
+#define __GetBTDeviceClass(_p, _n) \
   compchk EQ, sizeof(_n), 4 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -3080,9 +2901,7 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBTDeviceAddress(_p, _addr) __getBTDeviceAddress(_p, _addr)
-
-#define GetBTDeviceStatus(_p, _n) \
+#define __GetBTDeviceStatus(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -3096,7 +2915,7 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBTConnectionName(_p, _str) \
+#define __GetBTConnectionName(_p, _str) \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
@@ -3109,7 +2928,7 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBTConnectionClass(_p, _n) \
+#define __GetBTConnectionClass(_p, _n) \
   compchk EQ, sizeof(_n), 4 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -3123,7 +2942,7 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBTConnectionPinCode(_p, _code) \
+#define __GetBTConnectionPinCode(_p, _code) \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
@@ -3149,9 +2968,7 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBTConnectionAddress(_p, _addr) __getBTConnectionAddress(_p, _addr)
-
-#define GetBTConnectionHandleNum(_p, _n) \
+#define __GetBTConnectionHandleNum(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -3165,7 +2982,7 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBTConnectionStreamStatus(_p, _n) \
+#define __GetBTConnectionStreamStatus(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -3179,7 +2996,7 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBTConnectionLinkQuality(_p, _n) \
+#define __GetBTConnectionLinkQuality(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -3193,28 +3010,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBrickDataName(_str) \
-  GetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
-
-#define GetBrickDataBluecoreVersion(_n) \
-  compchk EQ, sizeof(_n), 2 \
-  GetCommModuleValue(CommOffsetBrickDataBluecoreVersion, _n)
-
-#define GetBrickDataAddress(_addr) \
-  GetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr)
-
-#define GetBrickDataBtStateStatus(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBrickDataBtStateStatus, _n)
-
-#define GetBrickDataBtHardwareStatus(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBrickDataBtHwStatus, _n)
-
-#define GetBrickDataTimeoutValue(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBrickDataTimeOutValue, _n)
-
 #define __getBTInputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
   GetCommModuleBytes(CommOffsetBtInBufBuf+_offset, _cnt, _data) \
@@ -3224,16 +3019,6 @@ dseg ends
   GetCommModuleBytes(__commModuleOffset, _cnt, _data) \
   release __commModuleOffsetMutex \
   compend
-
-#define GetBTInputBuffer(_offset, _cnt, _data) __getBTInputBuffer(_offset, _cnt, _data)
-
-#define GetBTInputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtInBufInPtr, _n)
-
-#define GetBTInputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtInBufOutPtr, _n)
 
 #define __getBTOutputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
@@ -3245,16 +3030,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetBTOutputBuffer(_offset, _cnt, _data) __getBTOutputBuffer(_offset, _cnt, _data)
-
-#define GetBTOutputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtOutBufInPtr, _n)
-
-#define GetBTOutputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtOutBufOutPtr, _n)
-
 #define __getHSInputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
   GetCommModuleBytes(CommOffsetHsInBufBuf+_offset, _cnt, _data) \
@@ -3264,16 +3039,6 @@ dseg ends
   GetCommModuleBytes(__commModuleOffset, _cnt, _data) \
   release __commModuleOffsetMutex \
   compend
-
-#define GetHSInputBuffer(_offset, _cnt, _data) __getHSInputBuffer(_offset, _cnt, _data)
-
-#define GetHSInputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsInBufInPtr, _n)
-
-#define GetHSInputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsInBufOutPtr, _n)
 
 #define __getHSOutputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
@@ -3285,16 +3050,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetHSOutputBuffer(_offset, _cnt, _data) __getHSOutputBuffer(_offset, _cnt, _data)
-
-#define GetHSOutputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsOutBufInPtr, _n)
-
-#define GetHSOutputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsOutBufOutPtr, _n)
-
 #define __getUSBInputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
   GetCommModuleBytes(CommOffsetUsbInBufBuf+_offset, _cnt, _data) \
@@ -3304,16 +3059,6 @@ dseg ends
   GetCommModuleBytes(__commModuleOffset, _cnt, _data) \
   release __commModuleOffsetMutex \
   compend
-
-#define GetUSBInputBuffer(_offset, _cnt, _data) __getUSBInputBuffer(_offset, _cnt, _data)
-
-#define GetUSBInputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbInBufInPtr, _n)
-
-#define GetUSBInputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbInBufOutPtr, _n)
 
 #define __getUSBOutputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
@@ -3325,16 +3070,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetUSBOutputBuffer(_offset, _cnt, _data) __getUSBOutputBuffer(_offset, _cnt, _data)
-
-#define GetUSBOutputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbOutBufInPtr, _n)
-
-#define GetUSBOutputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbOutBufOutPtr, _n)
-
 #define __getUSBPollBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
   GetCommModuleBytes(CommOffsetUsbPollBufBuf+_offset, _cnt, _data) \
@@ -3345,51 +3080,13 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define GetUSBPollBuffer(_offset, _cnt, _data) __getUSBPollBuffer(_offset, _cnt, _data)
-
-#define GetUSBPollBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbPollBufInPtr, _n)
-
-#define GetUSBPollBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbPollBufOutPtr, _n)
-
-#define GetBTDeviceCount(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtDeviceCnt, _n)
-
-#define GetBTDeviceNameCount(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtDeviceNameCnt, _n)
-
-#define GetHSFlags(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsFlags, _n)
-
-#define GetHSSpeed(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsSpeed, _n)
-
-#define GetHSState(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsState, _n)
-
-#define GetUSBState(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbState, _n)
-
-#define GetHSMode(_n) \
-  compchk EQ, sizeof(_n), 2 \
-  GetCommModuleValue(CommOffsetHsMode, _n)
-
 dseg segment
   __IOMWArgs TIOMapWrite
   __IOMWMutex mutex
   __IOMWFlattenBuf byte[]
 dseg ends
 
-#define SetIOMapBytes(_modName, _offset, _cnt, _arrIn) \
+#define __SetIOMapBytes(_modName, _offset, _cnt, _arrIn) \
   acquire __IOMWMutex \
   mov __IOMWArgs.ModuleName, _modName \
   mov __IOMWArgs.Offset, _offset \
@@ -3397,7 +3094,7 @@ dseg ends
   syscall IOMapWrite, __IOMWArgs \
   release __IOMWMutex
 
-#define SetIOMapValue(_modName, _offset, _n) \
+#define __SetIOMapValue(_modName, _offset, _n) \
   acquire __IOMWMutex \
   mov __IOMWArgs.ModuleName, _modName \
   mov __IOMWArgs.Offset, _offset \
@@ -3412,7 +3109,7 @@ dseg segment
   __IOMWBIArgs TIOMapWriteByID
 dseg ends
 
-#define SetIOMapBytesByID(_modID, _offset, _cnt, _arrIn) \
+#define __SetIOMapBytesByID(_modID, _offset, _cnt, _arrIn) \
   acquire __IOMWMutex \
   mov __IOMWBIArgs.ModuleID, _modID \
   mov __IOMWBIArgs.Offset, _offset \
@@ -3420,7 +3117,7 @@ dseg ends
   syscall IOMapWriteByID, __IOMWBIArgs \
   release __IOMWMutex
 
-#define SetIOMapValueByID(_modID, _offset, _n) \
+#define __SetIOMapValueByID(_modID, _offset, _n) \
   acquire __IOMWMutex \
   mov __IOMWBIArgs.ModuleID, _modID \
   mov __IOMWBIArgs.Offset, _offset \
@@ -3429,86 +3126,7 @@ dseg ends
   syscall IOMapWriteByID, __IOMWBIArgs \
   release __IOMWMutex
 
-#define SetCommandModuleValue(_offset, _n) SetIOMapValueByID(CommandModuleID, _offset, _n)
-#define SetIOCtrlModuleValue(_offset, _n) SetIOMapValueByID(IOCtrlModuleID, _offset, _n)
-#define SetLoaderModuleValue(_offset, _n) SetIOMapValueByID(LoaderModuleID, _offset, _n)
-#define SetUIModuleValue(_offset, _n) SetIOMapValueByID(UIModuleID, _offset, _n)
-#define SetSoundModuleValue(_offset, _n) SetIOMapValueByID(SoundModuleID, _offset, _n)
-#define SetButtonModuleValue(_offset, _n) SetIOMapValueByID(ButtonModuleID, _offset, _n)
-#define SetInputModuleValue(_offset, _n) SetIOMapValueByID(InputModuleID, _offset, _n)
-#define SetOutputModuleValue(_offset, _n) SetIOMapValueByID(OutputModuleID, _offset, _n)
-#define SetLowSpeedModuleValue(_offset, _n) SetIOMapValueByID(LowSpeedModuleID, _offset, _n)
-#define SetDisplayModuleValue(_offset, _n) SetIOMapValueByID(DisplayModuleID, _offset, _n)
-#define SetCommModuleValue(_offset, _n) SetIOMapValueByID(CommModuleID, _offset, _n)
-
-#define SetCommandModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommandModuleID, _offset, _cnt, _arrIn)
-#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrIn)
-#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrIn)
-#define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommModuleID, _offset, _cnt, _arrIn)
-
-#else
-
-#define SetCommandModuleValue(_offset, _n) SetIOMapValue(CommandModuleName, _offset, _n)
-#define SetIOCtrlModuleValue(_offset, _n) SetIOMapValue(IOCtrlModuleName, _offset, _n)
-#define SetLoaderModuleValue(_offset, _n) SetIOMapValue(LoaderModuleName, _offset, _n)
-#define SetUIModuleValue(_offset, _n) SetIOMapValue(UIModuleName, _offset, _n)
-#define SetSoundModuleValue(_offset, _n) SetIOMapValue(SoundModuleName, _offset, _n)
-#define SetButtonModuleValue(_offset, _n) SetIOMapValue(ButtonModuleName, _offset, _n)
-#define SetInputModuleValue(_offset, _n) SetIOMapValue(InputModuleName, _offset, _n)
-#define SetOutputModuleValue(_offset, _n) SetIOMapValue(OutputModuleName, _offset, _n)
-#define SetLowSpeedModuleValue(_offset, _n) SetIOMapValue(LowSpeedModuleName, _offset, _n)
-#define SetDisplayModuleValue(_offset, _n) SetIOMapValue(DisplayModuleName, _offset, _n)
-#define SetCommModuleValue(_offset, _n) SetIOMapValue(CommModuleName, _offset, _n)
-
-#define SetCommandModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(CommandModuleName, _offset, _cnt, _arrIn)
-#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(LowSpeedModuleName, _offset, _cnt, _arrIn)
-#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(DisplayModuleName, _offset, _cnt, _arrIn)
-#define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(CommModuleName, _offset, _cnt, _arrIn)
-
 #endif
-
-
-#define PowerDown SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN)
-#define RebootInFirmwareMode SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_BOOT)
-
-#define SetSoundFrequency(_n) __setSoundFrequency(_n)
-#define SetSoundDuration(_n) __setSoundDuration(_n)
-#define SetSoundSampleRate(_n) __setSoundSampleRate(_n)
-#define SetSoundFlags(_n) __setSoundFlags(_n)
-#define SetSoundModuleState(_n) __setSoundModuleState(_n)
-#define SetSoundMode(_n) __setSoundMode(_n)
-#define SetSoundVolume(_n) __setSoundVolume(_n)
-
-#define SetButtonPressCount(_b, _n) __setButtonPressCount(_b, _n)
-#define SetButtonLongPressCount(_b, _n) __setButtonLongPressCount(_b, _n)
-#define SetButtonShortReleaseCount(_b, _n) __setButtonShortReleaseCount(_b, _n)
-#define SetButtonLongReleaseCount(_b, _n) __setButtonLongReleaseCount(_b, _n)
-#define SetButtonReleaseCount(_b, _n) __setButtonReleaseCount(_b, _n)
-#define SetButtonState(_b, _n) __setButtonState(_b, _n)
-
-#define SetCommandFlags(_n) __setCommandFlags(_n)
-#define SetUIState(_n) __setUIState(_n)
-#define SetUIButton(_n) __setUIButton(_n)
-#define SetVMRunState(_n) __setVMRunState(_n)
-#define SetBatteryState(_n) __setBatteryState(_n)
-#define SetBluetoothState(_n) __setBluetoothState(_n)
-#define SetUsbState(_n) __setUsbState(_n)
-#define SetSleepTimeout(_n) __setSleepTimeout(_n)
-#define SetSleepTimer(_n) __setSleepTimer(_n)
-#define SetVolume(_n) __setVolume(_n)
-#define SetOnBrickProgramPointer(_n) __setOnBrickProgramPointer(_n)
-#define ForceOff(_n) __forceOff(_n)
-#define SetAbortFlag(_n) __setAbortFlag(_n)
-
-#define SetInCustomZeroOffset(_p, _n) __setInCustomZeroOffset(_p, _n)
-#define SetInSensorBoolean(_p, _n) __setInSensorBoolean(_p, _n)
-#define SetInDigiPinsDirection(_p, _n) __setInDigiPinsDirection(_p, _n)
-#define SetInDigiPinsStatus(_p, _n) __setInDigiPinsStatus(_p, _n)
-#define SetInDigiPinsOutputLevel(_p, _n) __setInDigiPinsOutputLevel(_p, _n)
-#define SetInCustomPercentFullScale(_p, _n) __setInCustomPercentFullScale(_p, _n)
-#define SetInCustomActiveStatus(_p, _n) __setInCustomActiveStatus(_p, _n)
-
-#define SetOutPwnFreq(_n) __setOutPwnFreq(_n)
 
 #define __setLSInputBuffer(_p, _offset, _cnt, _data) \
   compif EQ, isconst(_p+_offset), TRUE \
@@ -3523,12 +3141,6 @@ dseg ends
   release __lsModuleOffsetMutex \
   compend
 
-#define SetLSInputBuffer(_p, _offset, _cnt, _data) __setLSInputBuffer(_p, _offset, _cnt, _data)
-
-#define SetLSInputBufferInPtr(_p, _n) __setLSInputBufferInPtr(_p, _n)
-#define SetLSInputBufferOutPtr(_p, _n) __setLSInputBufferOutPtr(_p, _n)
-#define SetLSInputBufferBytesToRx(_p, _n) __setLSInputBufferBytesToRx(_p, _n)
-
 #define __setLSOutputBuffer(_p, _offset, _cnt, _data) \
   compif EQ, isconst(_p+_offset), TRUE \
   compchk LT, _p, 0x04 \
@@ -3542,21 +3154,6 @@ dseg ends
   SetLowSpeedModuleBytes(__lsModuleOffset, _cnt, _data) \
   release __lsModuleOffsetMutex \
   compend
-
-#define SetLSOutputBuffer(_p, _offset, _cnt, _data) __setLSOutputBuffer(_p, _offset, _cnt, _data)
-
-#define SetLSOutputBufferInPtr(_p, _n) __setLSOutputBufferInPtr(_p, _n)
-#define SetLSOutputBufferOutPtr(_p, _n) __setLSOutputBufferOutPtr(_p, _n)
-#define SetLSOutputBufferBytesToRx(_p, _n) __setLSOutputBufferBytesToRx(_p, _n)
-#define SetLSMode(_p, _n) __setLSMode(_p, _n)
-#define SetLSChannelState(_p, _n) __setLSChannelState(_p, _n)
-#define SetLSErrorType(_p, _n) __setLSErrorType(_p, _n)
-#define SetLSState(_n) __setLSState(_n)
-#define SetLSSpeed(_n) __setLSSpeed(_n)
-#ifdef __ENHANCED_FIRMWARE
-#define SetLSNoRestartOnRead(_n) __setLSNoRestartOnRead(_n)
-#endif
-
 
 #ifdef __ENHANCED_FIRMWARE
 
@@ -3584,20 +3181,6 @@ dseg ends
 
 #endif
 
-#define SpawnProgram(_fname) __spawnProgram(_fname)
-
-
-#define SetDisplayEraseMask(_n) __setDisplayEraseMask(_n)
-#define SetDisplayUpdateMask(_n) __setDisplayUpdateMask(_n)
-#define SetDisplayFont(_n) __setDisplayFont(_n)
-#define SetDisplayDisplay(_n) __setDisplayDisplay(_n)
-#define SetDisplayFlags(_n) __setDisplayFlags(_n)
-#define SetDisplayTextLinesCenterFlags(_n) __setDisplayTextLinesCenterFlags(_n)
-
-#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define SetDisplayContrast(_n) __setDisplayContrast(_n)
-#endif
-
 #define __setDisplayNormal(_x, _line, _cnt, _data) \
   compif EQ, isconst(_line+_x), TRUE \
   compchk LT, _line, 0x08 \
@@ -3611,8 +3194,6 @@ dseg ends
   SetDisplayModuleBytes(__displayModuleOffset, _cnt, _data) \
   release __displayModuleOffsetMutex \
   compend
-
-#define SetDisplayNormal(_x, _line, _cnt, _data) __setDisplayNormal(_x, _line, _cnt, _data)
 
 #define __setDisplayPopup(_x, _line, _cnt, _data) \
   compif EQ, isconst(_line+_x), TRUE \
@@ -3628,8 +3209,6 @@ dseg ends
   release __displayModuleOffsetMutex \
   compend
 
-#define SetDisplayPopup(_x, _line, _cnt, _data) __setDisplayPopup(_x, _line, _cnt, _data)
-
 #define __setBTDeviceName(_p, _str) \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -3642,8 +3221,6 @@ dseg ends
   SetCommModuleBytes(__commModuleOffset, 16, _str) \
   release __commModuleOffsetMutex \
   compend
-
-#define SetBTDeviceName(_p, _str) __setBTDeviceName(_p, _str)
 
 #define __setBTDeviceAddress(_p, _addr) \
   compif EQ, isconst(_p), TRUE \
@@ -3658,8 +3235,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define SetBTDeviceAddress(_p, _addr) __setBTDeviceAddress(_p, _addr)
-
 #define __setBTConnectionName(_p, _str) \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -3672,8 +3247,6 @@ dseg ends
   SetCommModuleBytes(__commModuleOffset, 16, _str) \
   release __commModuleOffsetMutex \
   compend
-
-#define SetBTConnectionName(_p, _str) __setBTConnectionName(_p, _str)
 
 #define __setBTConnectionPinCode(_p, _code) \
   compif EQ, isconst(_p), TRUE \
@@ -3688,8 +3261,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define SetBTConnectionPinCode(_p, _code) __setBTConnectionPinCode(_p, _code)
-
 #define __setBTConnectionAddress(_p, _addr) \
   compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
@@ -3703,25 +3274,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define SetBTConnectionAddress(_p, _addr) __setBTConnectionAddress(_p, _addr)
-
-#define SetBrickDataName(_str) \
-  SetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
-
-#define SetBrickDataAddress(_addr) \
-  SetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr)
-
-#define SetBTDeviceClass(_p, _n) __setBTDeviceClass(_p, _n)
-#define SetBTDeviceStatus(_p, _n) __setBTDeviceStatus(_p, _n)
-#define SetBTConnectionClass(_p, _n) __setBTConnectionClass(_p, _n)
-#define SetBTConnectionHandleNum(_p, _n) __setBTConnectionHandleNum(_p, _n)
-#define SetBTConnectionStreamStatus(_p, _n) __setBTConnectionStreamStatus(_p, _n)
-#define SetBTConnectionLinkQuality(_p, _n) __setBTConnectionLinkQuality(_p, _n)
-#define SetBrickDataBluecoreVersion(_n) __setBrickDataBluecoreVersion(_n)
-#define SetBrickDataBtStateStatus(_n) __setBrickDataBtStateStatus(_n)
-#define SetBrickDataBtHardwareStatus(_n) __setBrickDataBtHardwareStatus(_n)
-#define SetBrickDataTimeoutValue(_n) __setBrickDataTimeoutValue(_n)
-
 #define __setBTInputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
   SetCommModuleBytes(CommOffsetBtInBufBuf+_offset, _cnt, _data) \
@@ -3731,11 +3283,6 @@ dseg ends
   SetCommModuleBytes(__commModuleOffset, _cnt, _data) \
   release __commModuleOffsetMutex \
   compend
-
-#define SetBTInputBuffer(_offset, _cnt, _data) __setBTInputBuffer(_offset, _cnt, _data)
-
-#define SetBTInputBufferInPtr(_n) __setBTInputBufferInPtr(_n)
-#define SetBTInputBufferOutPtr(_n) __setBTInputBufferOutPtr(_n)
 
 #define __setBTOutputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
@@ -3747,11 +3294,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define SetBTOutputBuffer(_offset, _cnt, _data) __setBTOutputBuffer(_offset, _cnt, _data)
-
-#define SetBTOutputBufferInPtr(_n) __setBTOutputBufferInPtr(_n)
-#define SetBTOutputBufferOutPtr(_n) __setBTOutputBufferOutPtr(_n)
-
 #define __setHSInputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
   SetCommModuleBytes(CommOffsetHsInBufBuf+_offset, _cnt, _data) \
@@ -3761,11 +3303,6 @@ dseg ends
   SetCommModuleBytes(__commModuleOffset, _cnt, _data) \
   release __commModuleOffsetMutex \
   compend
-
-#define SetHSInputBuffer(_offset, _cnt, _data) __setHSInputBuffer(_offset, _cnt, _data)
-
-#define SetHSInputBufferInPtr(_n) __setHSInputBufferInPtr(_n)
-#define SetHSInputBufferOutPtr(_n) __setHSInputBufferOutPtr(_n)
 
 #define __setHSOutputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
@@ -3777,11 +3314,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define SetHSOutputBuffer(_offset, _cnt, _data) __setHSOutputBuffer(_offset, _cnt, _data)
-
-#define SetHSOutputBufferInPtr(_n) __setHSOutputBufferInPtr(_n)
-#define SetHSOutputBufferOutPtr(_n) __setHSOutputBufferOutPtr(_n)
-
 #define __setUSBInputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
   SetCommModuleBytes(CommOffsetUsbInBufBuf+_offset, _cnt, _data) \
@@ -3791,11 +3323,6 @@ dseg ends
   SetCommModuleBytes(__commModuleOffset, _cnt, _data) \
   release __commModuleOffsetMutex \
   compend
-
-#define SetUSBInputBuffer(_offset, _cnt, _data) __setUSBInputBuffer(_offset, _cnt, _data)
-
-#define SetUSBInputBufferInPtr(_n) __setUSBInputBufferInPtr(_n)
-#define SetUSBInputBufferOutPtr(_n) __setUSBInputBufferOutPtr(_n)
 
 #define __setUSBOutputBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
@@ -3807,11 +3334,6 @@ dseg ends
   release __commModuleOffsetMutex \
   compend
 
-#define SetUSBOutputBuffer(_offset, _cnt, _data) __setUSBOutputBuffer(_offset, _cnt, _data)
-
-#define SetUSBOutputBufferInPtr(_n) __setUSBOutputBufferInPtr(_n)
-#define SetUSBOutputBufferOutPtr(_n) __setUSBOutputBufferOutPtr(_n)
-
 #define __setUSBPollBuffer(_offset, _cnt, _data) \
   compif EQ, isconst(_offset), TRUE \
   SetCommModuleBytes(CommOffsetUsbPollBufBuf+_offset, _cnt, _data) \
@@ -3821,18 +3343,6 @@ dseg ends
   SetCommModuleBytes(__commModuleOffset, _cnt, _data) \
   release __commModuleOffsetMutex \
   compend
-
-#define SetUSBPollBuffer(_offset, _cnt, _data) __setUSBPollBuffer(_offset, _cnt, _data)
-
-#define SetUSBPollBufferInPtr(_n) __setUSBPollBufferInPtr(_n)
-#define SetUSBPollBufferOutPtr(_n) __setUSBPollBufferOutPtr(_n)
-#define SetBTDeviceCount(_n) __setBTDeviceCount(_n)
-#define SetBTDeviceNameCount(_n) __setBTDeviceNameCount(_n)
-#define SetHSFlags(_n) __setHSFlags(_n)
-#define SetHSSpeed(_n) __setHSSpeed(_n)
-#define SetHSState(_n) __setHSState(_n)
-#define SetUSBState(_n) __setUSBState(_n)
-#define SetHSMode(_n) __setHSMode(_n)
 
 #define __setSoundFrequency(_n) \
   compchk EQ, sizeof(_n), 2 \
@@ -4460,38 +3970,11 @@ dseg segment
   __FFMutex mutex
 dseg ends
 
-#define CreateFile(_fname, _fsize, _handle, _result) __createFile(_fname, _fsize, _handle, _result)
-#define OpenFileAppend(_fname, _fsize, _handle, _result) __openFileAppend(_fname, _fsize, _handle, _result)
-#define OpenFileRead(_fname, _fsize, _handle, _result) __openFileRead(_fname, _fsize, _handle, _result)
-#define CloseFile(_handle, _result) __closeFile(_handle, _result)
-#define ResolveHandle(_fname, _handle, _writeable, _result) __resolveHandle(_fname, _handle, _writeable, _result)
-#define RenameFile(_oldname, _newname, _result) __renameFile(_oldname, _newname, _result)
-#define DeleteFile(_fname, _result) __deleteFile(_fname, _result)
-#define ResizeFile(_fname, _newsize, _result) __fileResize(_fname, _newsize, _result)
-
 #ifdef __ENHANCED_FIRMWARE
 dseg segment
   __FFArgs TFileFind
 dseg ends
-#define CreateFileLinear(_fname, _fsize, _handle, _result) __createFileLinear(_fname, _fsize, _handle, _result)
-#define CreateFileNonLinear(_fname, _fsize, _handle, _result) __createFileNonLinear(_fname, _fsize, _handle, _result)
-#define OpenFileReadLinear(_fname, _fsize, _handle, _result) __openFileReadLinear(_fname, _fsize, _handle, _result)
-#define FindFirstFile(_fname, _handle, _result) __findFirstFile(_fname, _handle, _result)
-#define FindNextFile(_fname, _handle, _result) __findNextFile(_fname, _handle, _result)
 #endif
-
-#define Read(_handle, _n, _result) __readValue(_handle, _n, _result)
-#define ReadLn(_handle, _n, _result) __readLnValue(_handle, _n, _result)
-#define ReadBytes(_handle, _len, _buf, _result) __readBytes(_handle, _len, _buf, _result)
-#define ReadLnString(_handle, _output, _result) __readLnString(_handle, _output, _result)
-
-#define Write(_handle, _n, _result) __writeValue(_handle, _n, _result)
-#define WriteLn(_handle, _n, _result) __writeLnValue(_handle, _n, _result)
-#define WriteString(_handle, _str, _cnt, _result) __writeString(_handle, _str, _cnt, _result)
-#define WriteLnString(_handle, _str, _cnt, _result) __writeLnString(_handle, _str, _cnt, _result)
-#define WriteBytes(_handle, _buf, _cnt, _result) __writeBytes(_handle, _buf, _cnt, _result)
-#define WriteBytesEx(_handle, _len, _buf, _result) __writeBytesEx(_handle, _len, _buf, _result)
-
 
 subroutine __fileResizeSub
   dseg segment
@@ -4656,6 +4139,7 @@ ends
   release __FDMutex
 
 #ifdef __ENHANCED_FIRMWARE
+
 #define __findFirstFile(_fname, _handle, _result) \
   acquire __FFMutex \
   mov __FFArgs.Filename, _fname \
@@ -4673,6 +4157,7 @@ ends
   mov _handle, __FFArgs.FileHandle \
   mov _fname, __FFArgs.Filename \
   release __FFMutex
+
 #endif
 
 dseg segment
@@ -4829,9 +4314,6 @@ dseg segment
   __RRNErr byte
 dseg ends
 
-#define SendMessage(_queue, _msg, _result) __sendMessage(_queue, _msg, _result)
-#define ReceiveMessage(_queue, _clear, _msg, _result) __receiveMessage(_queue, _clear, _msg, _result)
-
 #define __sendMessage(_queue, _msg, _result) \
   acquire __MWMutex \
   mov __MWArgs.QueueID, _queue \
@@ -4848,11 +4330,6 @@ dseg ends
   mov _msg, __MRArgs.Message \
   mov _result, __MRArgs.Result \
   release __MRMutex
-
-#define ReceiveRemoteBool(_queue, _clear, _bval, _result) __receiveRemoteBool(_queue, _clear, _bval, _result)
-#define ReceiveRemoteNumber(_queue, _clear, _val, _result) __receiveRemoteNumber(_queue, _clear, _val, _result)
-#define ReceiveRemoteString(_queue, _clear, _str, _result) __receiveMessage(_queue, _clear, _str, _result)
-#define ReceiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, _result) __receiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, _result)
 
 #define __receiveRemoteBool(_queue, _clear, _bval, _result) \
   acquire __MRMutex \
@@ -4894,10 +4371,6 @@ dseg ends
   mov _str, __MRArgs.Message \
   mov _result, __MRArgs.Result \
   release __MRMutex
-
-#define SendResponseString(_queue, _msg, _result) __sendResponseString(_queue, _msg, _result)
-#define SendResponseBool(_queue, _bval, _result) __sendResponseBool(_queue, _bval, _result)
-#define SendResponseNumber(_queue, _val, _result) __sendResponseNumber(_queue, _val, _result)
 
 #define __sendResponseBool(_queue, _bval, _result) \
   acquire __MWMutex \
@@ -4945,9 +4418,6 @@ dseg segment
   __DCPlayTonePacket byte[]     {0x80, 0x03, 0xFF, 0xFF, 0xFF, 0xFF}
 dseg ends
 
-#define BluetoothStatus(_conn, _result) __bluetoothStatus(_conn, _result)
-#define BluetoothWrite(_conn, _buffer, _result) __bluetoothWrite(_conn, _buffer, _result)
-
 #define __bluetoothStatus(_conn, _result) \
   acquire __CBTCSMutex \
   mov __CBTCSArgs.Connection, _conn \
@@ -4962,10 +4432,6 @@ dseg ends
   syscall CommBTWrite, __CBTWArgs \
   mov _result, __CBTWArgs.Result \
   release __CBTWMutex
-
-#define SendRemoteBool(_conn, _queue, _bval, _result) __sendRemoteBool(_conn, _queue, _bval, _result)
-#define SendRemoteNumber(_conn, _queue, _val, _result) __sendRemoteNumber(_conn, _queue, _val, _result)
-#define SendRemoteString(_conn, _queue, _str, _result) __sendRemoteString(_conn, _queue, _str, _result)
 
 #define __sendRemoteBool(_conn, _queue, _bval, _result) \
   acquire __CBTWMutex \
@@ -5002,22 +4468,6 @@ dseg ends
   syscall CommBTWrite, __CBTWArgs \
   mov _result, __CBTWArgs.Result \
   release __CBTWMutex
-
-#define Wait(_n) waitv _n
-
-#define RemoteMessageRead(_conn, _queue, _result) __remoteMessageRead(_conn, _queue, _result)
-#define RemoteMessageWrite(_conn, _queue, _msg, _result) __sendRemoteString(_conn, _queue, _msg, _result)
-#define RemoteStartProgram(_conn, _filename, _result) __remoteStartProgram(_conn, _filename, _result)
-#define RemoteStopProgram(_conn, _result) __bluetoothWrite(_conn, __DCStopProgramPacket, _result)
-#define RemotePlaySoundFile(_conn, _filename, _bloop, _result) __remotePlaySoundFile(_conn, _filename, _bloop, _result)
-#define RemotePlayTone(_conn, _frequency, _duration, _result) __remotePlayTone(_conn, _frequency, _duration, _result)
-#define RemoteStopSound(_conn, _result) __bluetoothWrite(_conn, __DCStopSoundPacket, _result)
-#define RemoteKeepAlive(_conn, _result) __bluetoothWrite(_conn, __DCKeepAlivePacket, _result)
-#define RemoteResetScaledValue(_conn, _port, _result) __remoteResetScaledValue(_conn, _port, _result)
-#define RemoteResetMotorPosition(_conn, _port, _brelative, _result) __remoteResetMotorPosition(_conn, _port, _brelative, _result)
-#define RemoteSetInputMode(_conn, _port, _type, _mode, _result) __remoteSetInputMode(_conn, _port, _type, _mode, _result)
-#define RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result) \
-  __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result)
 
 #define __remoteMessageRead(_conn, _queue, _result) \
   acquire __CBTWMutex \
@@ -5100,8 +4550,8 @@ dseg ends
   mov _result, __CBTWArgs.Result \
   release __CBTWMutex
 
-
 #ifdef __ENHANCED_FIRMWARE
+
 dseg segment
   __CHSCSArgs TCommHSCheckStatus
   __CHSCSMutex mutex
@@ -5113,10 +4563,6 @@ dseg segment
   __CHSCMutex mutex
   __SHSTmpVal sdword
 dseg ends
-
-#define RS485Status(_sendingData, _dataAvail) __RS485Status(_sendingData, _dataAvail)
-#define RS485Write(_buffer, _status) __RS485Write(_buffer, _status)
-#define RS485Read(_buffer, _status) __RS485Read(_buffer, _status)
 
 #define __RS485Status(_sendingData, _dataAvail) \
   acquire __CHSCSMutex \
@@ -5141,11 +4587,6 @@ dseg ends
 
 #if __FIRMWARE_VERSION > 107
 
-#define RS485Control(_cmd, _baud, _mode, _result) __RS485Control(_cmd, _baud, _mode, _result)
-#define RS485Uart(_baud, _mode, _result) __RS485Control(HS_CTRL_UART, _baud, _mode, _result)
-#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, 0, _result)
-#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, 0, _result)
-
 #define __RS485Control(_cmd, _baud, _mode, _result) \
   acquire __CHSCMutex \
   mov __CHSCArgs.Command, _cmd \
@@ -5157,11 +4598,6 @@ dseg ends
 
 #else
 
-#define RS485Control(_cmd, _baud, _result) __RS485Control(_cmd, _baud, _result)
-#define RS485Uart(_baud, _result) __RS485Control(HS_CTRL_UART, _baud, _result)
-#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, _result)
-#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, _result)
-
 #define __RS485Control(_cmd, _baud, _result) \
   acquire __CHSCMutex \
   mov __CHSCArgs.Command, _cmd \
@@ -5171,10 +4607,6 @@ dseg ends
   release __CHSCMutex
 
 #endif
-
-#define SendRS485Bool(_bval, _status) __sendRS485Bool(_bval, _status)
-#define SendRS485Number(_val, _status) __sendRS485Number(_val, _status)
-#define SendRS485String(_str, _status) __sendRS485String(_str, _status)
 
 #define __sendRS485Bool(_bval, _status) \
   acquire __CHSWMutex \
@@ -5197,25 +4629,8 @@ dseg ends
   syscall CommHSWrite, __CHSWArgs \
   mov _status, __CHSWArgs.Status \
   release __CHSWMutex
+
 #endif
-
-
-// standard firmware math functions written by Tamas Sorosy (www.sorosy.com)
-
-// X is any integer; Y is the sqrt value (0->max); if X<0, Y is the sqrt value of absolute X
-#define Sqrt(_X,_R) __SQRT(_X,_R)
-
-// X is any integer in degrees; Y is 100* the sin value (-100->100)
-#define Sin(_X,_R) __SIN(_X,_R)
-
-// X is any integer in degrees; Y is 100* the cos value (-100->100)
-#define Cos(_X,_R) __COS(_X,_R)
-
-// X is 100* the sin value (-100->100); Y is -90->90; Y is 101 if X is outside -100->100 range
-#define Asin(_X,_R) __ASIN(_X,_R)
-
-// X is 100* the cos value (-100->100); Y is 0->180; Y is -11 if X is outside -100->100 range
-#define Acos(_X,_R) __ACOS(_X,_R)
 
 #if defined(__ENHANCED_FIRMWARE)
 
@@ -5259,7 +4674,7 @@ dseg ends
   call __asinSub \
   mov _R, __asinResult \
   release __asinMutex
-                  
+
 #define __ACOS(_X,_R) \
   acquire __asinMutex \
   mov __asinValue, _X \
@@ -5268,7 +4683,6 @@ dseg ends
   release __asinMutex
 
 #endif
-
 
 // data segment
 dseg segment
@@ -5476,27 +4890,22 @@ dseg ends
   add _result, _result, __bcd2DecOnes \
   release __bcd2DecMutex
 
-#define bcd2dec(_bcd, _result) __bcd2dec(_bcd, _result)
+#define __SetSensorHTEOPD(_port, _bStd) \
+  setin IN_TYPE_LIGHT_ACTIVE+_bStd, _port, Type \
+  setin IN_MODE_RAW, _port, InputMode \
+  __ResetSensor(_port)
 
-
-// HiTechnic API functions
-
-#define SetSensorHTEOPD(_p, _bStd) \
-  SetSensorType(_p, IN_TYPE_LIGHT_ACTIVE+_bStd) \
-  SetSensorMode(_p, IN_MODE_RAW) \
-  ResetSensor(_p)
-
-#define ReadSensorHTEOPD(_p, _val) \
-  getin _val, _p, RawValue \
+#define __ReadSensorHTEOPD(_port, _val) \
+  getin _val, _port, RawValue \
   sub _val, 1023, _val
 
-#define SetSensorHTGyro(_p) \
-  SetSensorType(_p, IN_TYPE_LIGHT_INACTIVE) \
-  SetSensorMode(_p, IN_MODE_RAW) \
-  ResetSensor(_p)
-	
-#define ReadSensorHTGyro(_p, _offset, _val) \
-  getin _val, _p, RawValue \
+#define __SetSensorHTGyro(_port) \
+  setin IN_TYPE_LIGHT_INACTIVE, _port, Type \
+  setin IN_MODE_RAW, _port, InputMode \
+  __ResetSensor(_port)
+
+#define __ReadSensorHTGyro(_port, _offset, _val) \
+  getin _val, _port, RawValue \
   sub _val, _val, 600 \
   sub _val, _val, _offset
 
@@ -5519,8 +4928,6 @@ dseg ends
   and _t2, __HTMplexScaled, 2 \
   and _t1, __HTMplexScaled, 1 \
   release __HTMplexMutex
-
-#define ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) __ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4)
 
 dseg segment
   __HTPFStartIRLink  byte[] 0x02, 0x42
@@ -5994,38 +5401,7 @@ ends
   mov _result, __CLSWArgs##_port.Result \
   release __CLSWMutex##_port \
   __IncI__ \
-  compend 
-
-#define HTPowerFunctionCommand(_port, _channel, _outa, _outb, _result) \
-  __HTPFComboDirect(_port, _channel, _outa, _outb, _result)
-
-#define HTPFComboDirect(_port, _channel, _outa, _outb, _result) \
-  __HTPFComboDirect(_port, _channel, _outa, _outb, _result)
-
-#define HTPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result) \
-  __HTPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result)
-
-#define HTPFSingleOutputCST(_port, _channel, _out, _func, _result) \
-  __HTPFSingleOutput(_port, _channel, _out, _func, TRUE, _result)
-
-#define HTPFSingleOutputPWM(_port, _channel, _out, _func, _result) \
-  __HTPFSingleOutput(_port, _channel, _out, _func, FALSE, _result)
-
-#define HTPFComboPWM(_port, _channel, _outa, _outb, _result) \
-  __HTPFComboPWM(_port, _channel, _outa, _outb, _result)
-
-#define HTPFTrain(_port, _channel, _func, _result) \
-  __HTIRTrain(_port, _channel, _func, TRUE, _result)
-
-#define HTIRTrain(_port, _channel, _func, _result) \
-  __HTIRTrain(_port, _channel, _func, FALSE, _result)
-
-#define HTPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result) \
-  __HTPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result)
-
-#define HTPFRepeat(_port, _count, _delay, _result) \
-  __HTPFRepeatLastCommand(_port, _count, _delay, _result)
-
+  compend
 
 dseg segment
 
@@ -6133,75 +5509,13 @@ __RCSEndWhileILTCmdBytes:
 
   // do we need to read a response?
   brtst EQ, __RCSNoResponse, __gRCXCmd.ResponseBytes
-  
+
   arrbuild __RCSInCmd, __gRCXCmd.Address, 0x51
   mov __RCSTmpByte, __gRCXCmd.ResponseBytes
-  ReadI2CBytes(__gRCXCmd.Port, __RCSInCmd, __RCSTmpByte, __gRCXCmd.Response, __RCSResult)
+  __ReadI2CBytes(__gRCXCmd.Port, __RCSInCmd, __RCSTmpByte, __gRCXCmd.Response, __RCSResult)
 __RCSNoResponse:
   return
 ends
-
-#define HTRCXSetIRLinkPort(_port) __HTRCXSetIRLinkPort(_port)
-#define HTRCXPoll(_src, _value, _result) __HTRCXPoll(_src, _value, _result)
-#define HTRCXBatteryLevel(_result) __HTRCXBatteryLevel(_result)
-#define HTRCXPing() __HTRCXOpNoArgs(RCX_PingOp)
-#define HTRCXDeleteTasks() __HTRCXOpNoArgs(RCX_DeleteTasksOp)
-#define HTRCXStopAllTasks() __HTRCXOpNoArgs(RCX_StopAllTasksOp)
-#define HTRCXPBTurnOff() __HTRCXOpNoArgs(RCX_PBTurnOffOp)
-#define HTRCXDeleteSubs() __HTRCXOpNoArgs(RCX_DeleteSubsOp)
-#define HTRCXClearSound() __HTRCXOpNoArgs(RCX_ClearSoundOp)
-#define HTRCXClearMsg() __HTRCXOpNoArgs(RCX_ClearMsgOp)
-#define HTRCXMuteSound() __HTRCXOpNoArgs(RCX_MuteSoundOp)
-#define HTRCXUnmuteSound() __HTRCXOpNoArgs(RCX_UnmuteSoundOp)
-#define HTRCXClearAllEvents() __HTRCXOpNoArgs(RCX_ClearAllEventsOp)
-#define HTRCXSetOutput(_outputs, _mode) __HTRCXSetOutput(_outputs, _mode)
-#define HTRCXSetDirection(_outputs, _dir) __HTRCXSetDirection(_outputs, _dir)
-#define HTRCXSetPower(_outputs, _pwrsrc, _pwrval) __HTRCXSetPower(_outputs, _pwrsrc, _pwrval)
-#define HTRCXOn(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_ON)
-#define HTRCXOff(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_OFF)
-#define HTRCXFloat(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_FLOAT)
-#define HTRCXToggle(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_TOGGLE)
-#define HTRCXFwd(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_FWD)
-#define HTRCXRev(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_REV)
-#define HTRCXOnFwd(_outputs) __HTRCXOnFwd(_outputs)
-#define HTRCXOnRev(_outputs) __HTRCXOnRev(_outputs)
-#define HTRCXOnFor(_outputs, _ms) __HTRCXOnFor(_outputs, _ms)
-#define HTRCXSetTxPower(_pwr) __HTRCXSetTxPower(_pwr)
-#define HTRCXPlaySound(_snd) __HTRCXPlaySound(_snd)
-#define HTRCXDeleteTask(_t) __HTRCXDeleteTask(_t)
-#define HTRCXStartTask(_t) __HTRCXStartTask(_t)
-#define HTRCXStopTask(_t) __HTRCXStopTask(_t)
-#define HTRCXSelectProgram(_prog) __HTRCXSelectProgram(_prog)
-#define HTRCXClearTimer(_timer) __HTRCXClearTimer(_timer)
-#define HTRCXSetSleepTime(_t) __HTRCXSetSleepTime(_t)
-#define HTRCXDeleteSub(_s) __HTRCXDeleteSub(_s)
-#define HTRCXClearSensor(_port) __HTRCXClearSensor(_port)
-#define HTRCXPlayToneVar(_varnum, _duration) __HTRCXPlayToneVar(_varnum, _duration)
-#define HTRCXSetWatch(_hours, _minutes) __HTRCXSetWatch(_hours, _minutes)
-#define HTRCXSetSensorType(_port, _type) __HTRCXSetSensorType(_port, _type)
-#define HTRCXSetSensorMode(_port, _mode) __HTRCXSetSensorMode(_port, _mode)
-#define HTRCXCreateDatalog(_size) __HTRCXCreateDatalog(_size)
-#define HTRCXAddToDatalog(_src, _value) __HTRCXAddToDatalog(_src, _value)
-#define HTRCXSendSerial(_first, _count) __HTRCXSendSerial(_first, _count)
-#define HTRCXRemote(_cmd) __HTRCXRemote(_cmd)
-#define HTRCXEvent(_src, _value) __HTRCXEvent(_src, _value)
-#define HTRCXPlayTone(_freq, _duration) __HTRCXPlayTone(_freq, _duration)
-#define HTRCXSelectDisplay(_src, _value) __HTRCXSelectDisplay(_src, _value)
-#define HTRCXPollMemory(_address, _result) __HTRCXPollMemory(_address, _result)
-#define HTRCXSetEvent(_evt, _src, _type) __HTRCXSetEvent(_evt, _src, _type)
-#define HTRCXSetGlobalOutput(_outputs, _mode) __HTRCXSetGlobalOutput(_outputs, _mode)
-#define HTRCXSetGlobalDirection(_outputs, _dir) __HTRCXSetGlobalDirection(_outputs, _dir)
-#define HTRCXSetMaxPower(_outputs, _pwrsrc, _pwrval) __HTRCXSetMaxPower(_outputs, _pwrsrc, _pwrval)
-#define HTRCXEnableOutput(_outputs) __HTRCXSetGlobalOutput(_outputs, RCX_OUT_ON)
-#define HTRCXDisableOutput(_outputs) __HTRCXSetGlobalOutput(_outputs, RCX_OUT_OFF)
-#define HTRCXInvertOutput(_outputs) __HTRCXSetGlobalDirection(_outputs, RCX_OUT_REV)
-#define HTRCXObvertOutput(_outputs) __HTRCXSetGlobalDirection(_outputs, RCX_OUT_FWD)
-#define HTRCXIncCounter(_counter) __HTRCXIncCounter(_counter)
-#define HTRCXDecCounter(_counter) __HTRCXDecCounter(_counter)
-#define HTRCXClearCounter(_counter) __HTRCXClearCounter(_counter)
-#define HTRCXSetPriority(_p) __HTRCXSetPriority(_p)
-#define HTRCXSetMessage(_msg) __HTRCXSetMessage(_msg)
-
 
 #define __HTRCXSetIRLinkPort(_port) \
   set __gRCXCmd.Port, _port \
@@ -6507,19 +5821,6 @@ ends
   call __HTRCXCommandSub \
   release __RCXCmdMutex
 
-#define HTScoutCalibrateSensor() __HTRCXOpNoArgs(RCX_LSCalibrateOp)
-#define HTScoutMuteSound() __HTScoutMuteSound()
-#define HTScoutUnmuteSound() __HTScoutUnmuteSound()
-#define HTScoutSelectSounds(_grp) __HTScoutSelectSounds(_grp)
-#define HTScoutSetLight(_x) __HTScoutSetLight(_x)
-#define HTScoutSetSensorClickTime(_src, _value) __HTScoutSetSensorClickTime(_src, _value)
-#define HTScoutSetSensorHysteresis(_src, _value) __HTScoutSetSensorHysteresis(_src, _value)
-#define HTScoutSetSensorLowerLimit(_src, _value) __HTScoutSetSensorLowerLimit(_src, _value)
-#define HTScoutSetSensorUpperLimit(_src, _value) __HTScoutSetSensorUpperLimit(_src, _value)
-#define HTScoutSetEventFeedback(_src, _value) __HTScoutSetEventFeedback(_src, _value)
-#define HTScoutSendVLL(_src, _value) __HTScoutSendVLL(_src, _value)
-#define HTScoutSetScoutMode(_mode) __HTScoutSetScoutMode(_mode)
-
 #define __HTScoutSetScoutMode(_mode) \
   acquire __RCXCmdMutex \
   arrbuild __gRCXCmd.Command, RCX_ScoutOp, _mode \
@@ -6607,9 +5908,7 @@ ends
   call __HTRCXCommandSub \
   release __RCXCmdMutex
 
-
-
-#define ReadSensorHTCompass(_port, _value) \
+#define __ReadSensorHTCompass(_port, _value) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -7083,7 +6382,7 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
-#define ReadSensorHTIRSeeker2Addr(_port, _addr, _value) \
+#define __ReadSensorHTIRSeeker2Addr(_port, _addr, _value) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -7171,7 +6470,7 @@ dseg ends
 
 #define __SetHTColor2Mode(_port, _mode, _result) __I2CSendCmd(_port, 0x02, _mode, _result)
 
-#define ReadSensorHTColorNum(_port, _value) \
+#define __ReadSensorHTColorNum(_port, _value) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -7197,8 +6496,7 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
-
-#define ReadSensorHTIRSeekerDir(_port, _value) \
+#define __ReadSensorHTIRSeekerDir(_port, _value) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -7224,7 +6522,7 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
-#define ReadI2CDeviceInfoEx(_port, _addr, _info, _strVal) \
+#define __ReadI2CDeviceInfoEx(_port, _addr, _info, _strVal) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -7250,50 +6548,33 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
-#define ReadI2CDeviceInfo(_port, _info, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, _info, _strVal)
-#define ReadI2CVersionEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VERSION, _strVal)
-#define ReadI2CVersion(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VERSION, _strVal)
-#define ReadI2CVendorIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VENDOR_ID, _strVal)
-#define ReadI2CVendorId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VENDOR_ID, _strVal)
-#define ReadI2CDeviceIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_DEVICE_ID, _strVal)
-#define ReadI2CDeviceId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_DEVICE_ID, _strVal)
+#define __SetSensorMSPressure(_port) \
+  setin IN_TYPE_REFLECTION, _port, Type \
+  setin IN_MODE_RAW, _port, InputMode \
+  __ResetSensor(_port)
 
+#define __SetSensorMSDRODActive(_port) \
+  setin IN_TYPE_LIGHT_ACTIVE, _port, Type \
+  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  __ResetSensor(_port)
 
-#define ReadSensorHTAccel(_port, _x, _y, _z, _result) __ReadSensorHTAccel(_port, _x, _y, _z, _result)
-#define ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue, _result) __ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue, _result)
-#define ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result) __ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result)
-#define ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue, _result) __ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue, _result)
-#define ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) __ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result)
-#define ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result) __ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result)
-#define ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) __ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result)
-#define SetHTIRSeeker2Mode(_port, _mode, _result) __SetHTIRSeeker2Mode(_port, _mode, _result)
+#define __SetSensorMSDRODInactive(_port) \
+  setin IN_TYPE_LIGHT_INACTIVE, _port, Type \
+  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  __ResetSensor(_port)
 
-#define SetHTColor2Mode(_port, _mode, _result) __SetHTColor2Mode(_port, _mode, _result)
-#define ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result) __ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result)
-#define ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result) __ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result)
-#define ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result) __ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result)
-#define ReadSensorHTIRReceiver(_port, _pfdata, _result) __ReadSensorHTIRReceiver(_port, _pfdata, _result)
-#define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result) __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result) 
-
-
-
-
-// Mindsensors API functions
-
-#define SetSensorMSPressure(_p) \
-  SetSensorType(_p, IN_TYPE_REFLECTION) \
-  SetSensorMode(_p, IN_MODE_RAW) \
-  ResetSensor(_p)
-
-#define ReadSensorMSPressure(_p, _value) \
-  getin _value, _p, RawValue \
+#define __ReadSensorMSPressure(_port, _value) \
+  getin _value, _port, RawValue \
   sub _value, 1024, _value \
   div _value, _value, 25
 
-#define ReadSensorMSPressureRaw(_p, _value) \
-  getin _value, _p, RawValue
+#define __ReadSensorMSPressureRaw(_port, _value) \
+  getin _value, _port, RawValue
 
-#define ReadSensorMSCompassEx(_port, _addr, _value) \
+#define __ReadSensorMSDROD(_port, _value) \
+  getin _value, _port, NormalizedValue
+
+#define __ReadSensorMSCompassEx(_port, _addr, _value) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -7461,13 +6742,6 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
-#define ReadSensorMSCompass(_port, _value) ReadSensorMSCompassEx(_port, 0x02, _value)
-#define ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, _result) __ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, _result)
-#define ReadSensorMSTilt(_port, _x, _y, _z, _result) __ReadSensorMSTiltEx(_port, 0x02, _x, _y, _z, _result)
-#define ReadSensorMSTiltEx(_port, _addr, _x, _y, _z, _result) __ReadSensorMSTiltEx(_port, _addr, _x, _y, _z, _result)
-#define ReadSensorMSAccel(_port, _x, _y, _z, _result) __ReadSensorMSAccelEx(_port, 0x02, _x, _y, _z, _result)
-#define ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, _result) __ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, _result)
-
 dseg segment
   __WDSC_Port byte
   __WDSC_WriteBytes byte[]
@@ -7516,50 +6790,13 @@ dseg ends
   mov _result, __RDSD_LSStatus \
   release __DNRVmutex
 
-
-#define I2CSendCommandEx(_port, _addr, _cmd, _result) __I2CSendCmd(_port, _addr, _cmd, _result)
-#define I2CSendCommand(_port, _cmd, _result) __I2CSendCmd(_port, 0x02, _cmd, _result)
-#define MSReadValueEx(_port, _addr, _reg, _bytes, _out, _result) __MSReadValue(_port, _addr, _reg, _bytes, _out, _result)
-#define MSReadValue(_port, _reg, _bytes, _out, _result) __MSReadValue(_port, 0x02, _reg, _bytes, _out, _result)
-
-#define MSEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
-#define MSEnergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ENERGIZED, _result)
-#define MSDeenergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_DEENERGIZED, _result)
-#define MSDeenergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_DEENERGIZED, _result)
-#define MSADPAOn(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_ON, _result)
-#define MSADPAOnEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_ON, _result)
-#define MSADPAOff(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_OFF, _result)
-#define MSADPAOffEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_OFF, _result)
-
-#define DISTNxGP2D12(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, _result)
-#define DISTNxGP2D120(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, _result)
-#define DISTNxGP2YA21(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, _result)
-#define DISTNxGP2YA02(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, _result)
-#define ReadDISTNxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST, 2, _out, _result)
-#define ReadDISTNxVoltage(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_VOLT, 2, _out, _result)
-#define ReadDISTNxModuleType(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_MODULE_TYPE, 1, _out, _result)
-#define ReadDISTNxNumPoints(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_NUM_POINTS, 1, _out, _result)
-#define ReadDISTNxMinDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MIN, 2, _out, _result)
-#define ReadDISTNxMaxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MAX, 2, _out, _result)
-
-#define DISTNxGP2D12Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D12, _result)
-#define DISTNxGP2D120Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D120, _result)
-#define DISTNxGP2YA21Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA21, _result)
-#define DISTNxGP2YA02Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA02, _result)
-#define ReadDISTNxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST, 2, _out, _result)
-#define ReadDISTNxVoltageEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_VOLT, 2, _out, _result)
-#define ReadDISTNxModuleTypeEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_MODULE_TYPE, 1, _out, _result)
-#define ReadDISTNxNumPointsEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_NUM_POINTS, 1, _out, _result)
-#define ReadDISTNxMinDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MIN, 2, _out, _result)
-#define ReadDISTNxMaxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MAX, 2, _out, _result)
-
 subroutine __MSWriteBytesSub
   mov __WDSC_lswArgs.Port, __WDSC_Port
   arrbuild __WDSC_lswArgs.Buffer, __WDSC_SensorAddress, __WDSC_SensorRegister, __WDSC_WriteBytes
   set __WDSC_lswArgs.ReturnLen, 0
   syscall CommLSWrite, __WDSC_lswArgs
 __WDSC_StatusLoop:
-  LowspeedCheckStatus(__WDSC_Port, __WDSC_LSStatus)
+  __lowspeedCheckStatus(__WDSC_Port, __WDSC_LSStatus)
   brtst GT, __WDSC_StatusLoop, __WDSC_LSStatus
   return
 ends
@@ -7570,7 +6807,7 @@ subroutine __MSReadValueSub
   mov __RDSD_lswArgs.ReturnLen, __RDSD_NumBytesToRead
   syscall CommLSWrite, __RDSD_lswArgs
 __RDSD_CheckStatusAfterWriteLoop:
-  LowspeedCheckStatus(__RDSD_Port, __RDSD_LSStatus)
+  __lowspeedCheckStatus(__RDSD_Port, __RDSD_LSStatus)
   brtst GT, __RDSD_CheckStatusAfterWriteLoop, __RDSD_LSStatus
   brtst EQ, __RDSD_GoAheadWithRead, __RDSD_LSStatus
   jmp __RDSD_ReadError
@@ -7579,7 +6816,7 @@ __RDSD_GoAheadWithRead:
   mov __RDSD_lsrArgs.BufferLen, __RDSD_NumBytesToRead
   syscall CommLSRead, __RDSD_lsrArgs
 __RDSD_CheckStatusAfterReadLoop:
-  LowspeedCheckStatus(__RDSD_Port, __RDSD_LSStatus)
+  __lowspeedCheckStatus(__RDSD_Port, __RDSD_LSStatus)
   brtst GT, __RDSD_CheckStatusAfterReadLoop, __RDSD_LSStatus
   arrsize __RDSD_bytesRead, __RDSD_lsrArgs.Buffer
   brcmp NEQ, __RDSD_ReadError, __RDSD_bytesRead, __RDSD_NumBytesToRead
@@ -7599,24 +6836,6 @@ __RDSD_OneByte:
 __RDSD_ReturnResults:
   return
 ends
-
-#define SetSensorMSDRODActive(_p) \
-  SetSensorType(_p, IN_TYPE_LIGHT_ACTIVE) \
-  SetSensorMode(_p, IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_p)
-
-#define SetSensorMSDRODInactive(_p) \
-  SetSensorType(_p, IN_TYPE_LIGHT_INACTIVE) \
-  SetSensorMode(_p, IN_MODE_PCTFULLSCALE) \
-  ResetSensor(_p)
-
-#define ReadSensorMSDROD(_p, _value) \
-  getin _value, _p, NormalizedValue
-
-#define PSPNxDigital(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_DIGITAL, _result)
-#define PSPNxAnalog(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_ANALOG, _result)
-#define PSPNxDigitalEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_DIGITAL, _result)
-#define PSPNxAnalogEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_ANALOG, _result)
 
 #define __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
   compif EQ, isconst(_port), FALSE \
@@ -7656,32 +6875,6 @@ ends
   release __RLSBmutex##_port \
   compend
 
-#define ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
-  __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result)
-
-#define ReadSensorMSPlayStation(_port, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
-  __ReadSensorMSPlayStationEx(_port, 0x02, _b1, _b2, _xleft, _yleft, _xright, _yright, _result)
-
-#define NRLink2400(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_2400, _result)
-#define NRLink4800(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_4800, _result)
-#define NRLinkFlush(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_FLUSH, _result)
-#define NRLinkIRLong(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_LONG, _result)
-#define NRLinkIRShort(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_SHORT, _result)
-#define NRLinkTxRaw(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, _result)
-#define NRLinkSetRCX(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, _result)
-#define NRLinkSetTrain(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, _result)
-#define NRLinkSetPF(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, _result)
-
-#define NRLink2400Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_2400, _result)
-#define NRLink4800Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_4800, _result)
-#define NRLinkFlushEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result)
-#define NRLinkIRLongEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_LONG, _result)
-#define NRLinkIRShortEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_SHORT, _result)
-#define NRLinkTxRawEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_TX_RAW, _result)
-#define NRLinkSetRCXEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_RCX, _result)
-#define NRLinkSetTrainEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_TRAIN, _result)
-#define NRLinkSetPFEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_PF, _result)
-
 #define __RunNRLinkMacroEx(_port, _addr, _macro, _result) \
   acquire __WDSCmutex \
   mov __WDSC_Port, _port \
@@ -7691,10 +6884,7 @@ ends
   mov _result, __WDSC_LSStatus \
   release __WDSCmutex
 
-#define RunNRLinkMacroEx(_port, _addr, _macro, _result) __RunNRLinkMacroEx(_port, _addr, _macro, _result)
-#define RunNRLinkMacro(_port, _macro, _result) __RunNRLinkMacroEx(_port, 0x02, _macro, _result)
-
-#define ReadNRLinkStatusEx(_port, _addr, _value, _result) \
+#define __ReadNRLinkStatusEx(_port, _addr, _value, _result) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -7722,16 +6912,11 @@ ends
   release __RLSBmutex##_port \
   compend
 
-#define ReadNRLinkStatus(_port, _value, _result) ReadNRLinkStatusEx(_port, 0x02, _value, _result)
-
 #define __WriteNRLinkBytes(_port, _addr, _bytes, _result) \
   __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result) \
   __MSWriteToRegister(_port, _addr, NRLINK_REG_DATA, _bytes, _result) \
   arrsize __WDSC_ByteCount, _bytes \
   __MSWriteToRegister(_port, _addr, NRLINK_REG_BYTES, __WDSC_ByteCount, _result)
-
-#define WriteNRLinkBytesEx(_port, _addr, _bytes, _result) __WriteNRLinkBytes(_port, _addr, _bytes, _result)
-#define WriteNRLinkBytes(_port, _bytes, _result) __WriteNRLinkBytes(_port, 0x02, _bytes, _result)
 
 #define __ReadNRLinkBytes(_port, _addr, _bytes, _result) \
   acquire __DNRVmutex \
@@ -7769,10 +6954,6 @@ ends
   compend \
   __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result) \
   release __DNRVmutex
-
-#define ReadNRLinkBytesEx(_port, _addr, _bytes, _result) __ReadNRLinkBytes(_port, _addr, _bytes, _result)
-#define ReadNRLinkBytes(_port, _bytes, _result) __ReadNRLinkBytes(_port, 0x02, _bytes, _result)
-
 
 dseg segment
   __MSPFByte1 byte
@@ -7877,60 +7058,6 @@ ends
   release __PFMutex \
   __IncI__
 
-#define MSPFComboDirectEx(_port, _addr, _channel, _outa, _outb, _result) \
-  __MSPFComboDirect(_port, _addr, _channel, _outa, _outb, _result)
-
-#define MSPFComboDirect(_port, _channel, _outa, _outb, _result) \
-  __MSPFComboDirect(_port, 0x02, _channel, _outa, _outb, _result)
-
-#define MSPFSinglePinEx(_port, _addr, _channel, _out, _pin, _func, _cont, _result) \
-  __MSPFSinglePin(_port, _addr, _channel, _out, _pin, _func, _cont, _result)
-
-#define MSPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result) \
-  __MSPFSinglePin(_port, 0x02, _channel, _out, _pin, _func, _cont, _result)
-
-#define MSPFSingleOutputCSTEx(_port, _addr, _channel, _out, _func, _result) \
-  __MSPFSingleOutput(_port, _addr, _channel, _out, _func, TRUE, _result)
-
-#define MSPFSingleOutputCST(_port, _channel, _out, _func, _result) \
-  __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, TRUE, _result)
-
-#define MSPFSingleOutputPWMEx(_port, _addr, _channel, _out, _func, _result) \
-  __MSPFSingleOutput(_port, _addr, _channel, _out, _func, FALSE, _result)
-
-#define MSPFSingleOutputPWM(_port, _channel, _out, _func, _result) \
-  __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, FALSE, _result)
-
-#define MSPFComboPWMEx(_port, _addr, _channel, _outa, _outb, _result) \
-  __MSPFComboPWM(_port, _addr, _channel, _outa, _outb, _result)
-
-#define MSPFComboPWM(_port, _channel, _outa, _outb, _result) \
-  __MSPFComboPWM(_port, 0x02, _channel, _outa, _outb, _result)
-
-#define MSPFTrainEx(_port, _addr, _channel, _func, _result) \
-  __MSIRTrain(_port, _addr, _channel, _func, TRUE, _result)
-
-#define MSPFTrain(_port, _channel, _func, _result) \
-  __MSIRTrain(_port, 0x02, _channel, _func, TRUE, _result)
-
-#define MSIRTrainEx(_port, _addr, _channel, _func, _result) \
-  __MSIRTrain(_port, _addr, _channel, _func, FALSE, _result)
-
-#define MSIRTrain(_port, _channel, _func, _result) \
-  __MSIRTrain(_port, 0x02, _channel, _func, FALSE, _result)
-
-#define MSPFRawOutputEx(_port, _addr, _nibble0, _nibble1, _nibble2, _result) \
-  __MSPFRawOutput(_port, _addr, _nibble0, _nibble1, _nibble2, _result)
-
-#define MSPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result) \
-  __MSPFRawOutput(_port, 0x02, _nibble0, _nibble1, _nibble2, _result)
-
-#define MSPFRepeatEx(_port, _addr, _count, _delay, _result) \
-  __MSPFRepeatLastCommand(_port, _addr, _count, _delay, _result)
-
-#define MSPFRepeat(_port, _count, _delay, _result) \
-  __MSPFRepeatLastCommand(_port, 0x02, _count, _delay, _result)
-
 subroutine __MSRCXCommandSub
   dseg segment
     __MSRCSToggle byte
@@ -8021,7 +7148,7 @@ __MSRCSEndWhileMsgBufSizeGTZero:
 
   // do we need to read a response?
   brtst EQ, __MSRCSNoResponse, __gRCXCmd.ResponseBytes
-  
+
   // give the message time to be transferred
   add __MSRCSTmpWord, __MSRCSMsgBufSize, __gRCXCmd.ResponseBytes
   mul __MSRCSTmpWord, __MSRCSTmpWord, 5
@@ -8033,83 +7160,6 @@ __MSRCSEndWhileMsgBufSizeGTZero:
 __MSRCSNoResponse:
   return
 ends
-
-#define MSRCXSetNRLinkPortEx(_port, _addr) __MSRCXSetNRLink(_port, _addr)
-#define MSRCXSetNRLinkPort(_port) __MSRCXSetNRLink(_port, 0x02)
-#define MSRCXPoll(_src, _value, _result) __MSRCXPoll(_src, _value, _result)
-#define MSRCXBatteryLevel(_result) __MSRCXBatteryLevel(_result)
-#define MSRCXPing() __MSRCXOpNoArgs(RCX_PingOp)
-#define MSRCXDeleteTasks() __MSRCXOpNoArgs(RCX_DeleteTasksOp)
-#define MSRCXStopAllTasks() __MSRCXOpNoArgs(RCX_StopAllTasksOp)
-#define MSRCXPBTurnOff() __MSRCXOpNoArgs(RCX_PBTurnOffOp)
-#define MSRCXDeleteSubs() __MSRCXOpNoArgs(RCX_DeleteSubsOp)
-#define MSRCXClearSound() __MSRCXOpNoArgs(RCX_ClearSoundOp)
-#define MSRCXClearMsg() __MSRCXOpNoArgs(RCX_ClearMsgOp)
-#define MSRCXMuteSound() __MSRCXOpNoArgs(RCX_MuteSoundOp)
-#define MSRCXUnmuteSound() __MSRCXOpNoArgs(RCX_UnmuteSoundOp)
-#define MSRCXClearAllEvents() __MSRCXOpNoArgs(RCX_ClearAllEventsOp)
-#define MSRCXSetOutput(_outputs, _mode) __MSRCXSetOutput(_outputs, _mode)
-#define MSRCXSetDirection(_outputs, _dir) __MSRCXSetDirection(_outputs, _dir)
-#define MSRCXSetPower(_outputs, _pwrsrc, _pwrval) __MSRCXSetPower(_outputs, _pwrsrc, _pwrval)
-#define MSRCXOn(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_ON)
-#define MSRCXOff(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_OFF)
-#define MSRCXFloat(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_FLOAT)
-#define MSRCXToggle(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_TOGGLE)
-#define MSRCXFwd(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_FWD)
-#define MSRCXRev(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_REV)
-#define MSRCXOnFwd(_outputs) __MSRCXOnFwd(_outputs)
-#define MSRCXOnRev(_outputs) __MSRCXOnRev(_outputs)
-#define MSRCXOnFor(_outputs, _ms) __MSRCXOnFor(_outputs, _ms)
-#define MSRCXSetTxPower(_pwr) __MSRCXSetTxPower(_pwr)
-#define MSRCXPlaySound(_snd) __MSRCXPlaySound(_snd)
-#define MSRCXDeleteTask(_t) __MSRCXDeleteTask(_t)
-#define MSRCXStartTask(_t) __MSRCXStartTask(_t)
-#define MSRCXStopTask(_t) __MSRCXStopTask(_t)
-#define MSRCXSelectProgram(_prog) __MSRCXSelectProgram(_prog)
-#define MSRCXClearTimer(_timer) __MSRCXClearTimer(_timer)
-#define MSRCXSetSleepTime(_t) __MSRCXSetSleepTime(_t)
-#define MSRCXDeleteSub(_s) __MSRCXDeleteSub(_s)
-#define MSRCXClearSensor(_port) __MSRCXClearSensor(_port)
-#define MSRCXPlayToneVar(_varnum, _duration) __MSRCXPlayToneVar(_varnum, _duration)
-#define MSRCXSetWatch(_hours, _minutes) __MSRCXSetWatch(_hours, _minutes)
-#define MSRCXSetSensorType(_port, _type) __MSRCXSetSensorType(_port, _type)
-#define MSRCXSetSensorMode(_port, _mode) __MSRCXSetSensorMode(_port, _mode)
-#define MSRCXCreateDatalog(_size) __MSRCXCreateDatalog(_size)
-#define MSRCXAddToDatalog(_src, _value) __MSRCXAddToDatalog(_src, _value)
-#define MSRCXSendSerial(_first, _count) __MSRCXSendSerial(_first, _count)
-#define MSRCXRemote(_cmd) __MSRCXRemote(_cmd)
-#define MSRCXEvent(_src, _value) __MSRCXEvent(_src, _value)
-#define MSRCXPlayTone(_freq, _duration) __MSRCXPlayTone(_freq, _duration)
-#define MSRCXSelectDisplay(_src, _value) __MSRCXSelectDisplay(_src, _value)
-#define MSRCXPollMemory(_address, _result) __MSRCXPollMemory(_address, _result)
-#define MSRCXSetEvent(_evt, _src, _type) __MSRCXSetEvent(_evt, _src, _type)
-#define MSRCXSetGlobalOutput(_outputs, _mode) __MSRCXSetGlobalOutput(_outputs, _mode)
-#define MSRCXSetGlobalDirection(_outputs, _dir) __MSRCXSetGlobalDirection(_outputs, _dir)
-#define MSRCXSetMaxPower(_outputs, _pwrsrc, _pwrval) __MSRCXSetMaxPower(_outputs, _pwrsrc, _pwrval)
-#define MSRCXEnableOutput(_outputs) __MSRCXSetGlobalOutput(_outputs, RCX_OUT_ON)
-#define MSRCXDisableOutput(_outputs) __MSRCXSetGlobalOutput(_outputs, RCX_OUT_OFF)
-#define MSRCXInvertOutput(_outputs) __MSRCXSetGlobalDirection(_outputs, RCX_OUT_REV)
-#define MSRCXObvertOutput(_outputs) __MSRCXSetGlobalDirection(_outputs, RCX_OUT_FWD)
-#define MSRCXCalibrateEvent(_evt, _low, _hi, _hyst) __MSRCXCalibrateEvent(_evt, _low, _hi, _hyst)
-#define MSRCXSetVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SetVarOp, _varnum, _src, _value)
-#define MSRCXSumVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SumVarOp, _varnum, _src, _value)
-#define MSRCXSubVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SubVarOp, _varnum, _src, _value)
-#define MSRCXDivVar(_varnum, _src, _value) __MSRCXVarOp(RCX_DivVarOp, _varnum, _src, _value)
-#define MSRCXMulVar(_varnum, _src, _value) __MSRCXVarOp(RCX_MulVarOp, _varnum, _src, _value)
-#define MSRCXSgnVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SgnVarOp, _varnum, _src, _value)
-#define MSRCXAbsVar(_varnum, _src, _value) __MSRCXVarOp(RCX_AbsVarOp, _varnum, _src, _value)
-#define MSRCXAndVar(_varnum, _src, _value) __MSRCXVarOp(RCX_AndVarOp, _varnum, _src, _value)
-#define MSRCXOrVar(_varnum, _src, _value) __MSRCXVarOp(RCX_OrVarOp, _varnum, _src, _value)
-#define MSRCXSet(_dstsrc, _dstval, _src, _value) __MSRCXSet(_dstsrc, _dstval, _src, _value)
-#define MSRCXUnlock() __MSRCXUnlock()
-#define MSRCXReset() __MSRCXReset()
-#define MSRCXBoot() __MSRCXBoot()
-#define MSRCXSetUserDisplay(_src, _value, _precision) __MSRCXSetUserDisplay(_src, _value, _precision)
-#define MSRCXIncCounter(_counter) __MSRCXIncCounter(_counter)
-#define MSRCXDecCounter(_counter) __MSRCXDecCounter(_counter)
-#define MSRCXClearCounter(_counter) __MSRCXClearCounter(_counter)
-#define MSRCXSetPriority(_p) __MSRCXSetPriority(_p)
-#define MSRCXSetMessage(_msg) __MSRCXSetMessage(_msg)
 
 
 #define __MSRCXSetNRLink(_port, _addr) \
@@ -8471,22 +7521,6 @@ ends
   call __MSRCXCommandSub \
   release __RCXCmdMutex
 
-#define MSScoutCalibrateSensor() __MSRCXOpNoArgs(RCX_LSCalibrateOp)
-#define MSScoutMuteSound() __MSScoutMuteSound()
-#define MSScoutUnmuteSound() __MSScoutUnmuteSound()
-#define MSScoutSelectSounds(_grp) __MSScoutSelectSounds(_grp)
-#define MSScoutSetLight(_x) __MSScoutSetLight(_x)
-#define MSScoutSetCounterLimit(_ctr, _src, _value) __MSScoutSetCounterLimit(_ctr, _src, _value)
-#define MSScoutSetTimerLimit(_tmr, _src, _value) __MSScoutSetTimerLimit(_tmr, _src, _value)
-#define MSScoutSetSensorClickTime(_src, _value) __MSScoutSetSensorClickTime(_src, _value)
-#define MSScoutSetSensorHysteresis(_src, _value) __MSScoutSetSensorHysteresis(_src, _value)
-#define MSScoutSetSensorLowerLimit(_src, _value) __MSScoutSetSensorLowerLimit(_src, _value)
-#define MSScoutSetSensorUpperLimit(_src, _value) __MSScoutSetSensorUpperLimit(_src, _value)
-#define MSScoutSetEventFeedback(_src, _value) __MSScoutSetEventFeedback(_src, _value)
-#define MSScoutSendVLL(_src, _value) __MSScoutSendVLL(_src, _value)
-#define MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) __MSScoutSetScoutRules(_m, _t, _l, _tm, _fx)
-#define MSScoutSetScoutMode(_mode) __MSScoutSetScoutMode(_mode)
-
 #define __MSScoutSetScoutMode(_mode) \
   acquire __RCXCmdMutex \
   arrbuild __gRCXCmd.Command, RCX_ScoutOp, _mode \
@@ -8598,76 +7632,6 @@ ends
   set __gRCXCmd.ResponseBytes, 0 \
   call __MSRCXCommandSub \
   release __RCXCmdMutex
-
-
-#define SetSensorTemperature(_port) SetSensorLowspeed(_port)
-
-#define __TempSendCmd(_port, _cmd, _result) \
-  __MSWriteToRegister(_port, TEMP_I2C_ADDRESS, TEMP_REG_CONFIG, _cmd, _result)
-
-#define TemperatureResolution(_port, _cmd, _result) __TempSendCmd(_port, _cmd, _result)
-
-/*
-// R1/R0
-#define TEMP_RES_12BIT     0x60
-#define TEMP_RES_11BIT     0x40
-#define TEMP_RES_10BIT     0x20
-#define TEMP_RES_9BIT      0x00
-// SD (shutdown mode)
-#define TEMP_SD_CONTINUOUS 0x00
-#define TEMP_SD_SHUTDOWN   0x01
-// TM (thermostat mode)
-#define TEMP_TM_COMPARATOR 0x00
-#define TEMP_TM_INTERRUPT  0x02
-// OS (one shot)
-#define TEMP_OS_ONESHOT    0x80
-// F1/F0 (fault queue)
-#define TEMP_FQ_1          0x00
-#define TEMP_FQ_2          0x08
-#define TEMP_FQ_4          0x10
-#define TEMP_FQ_6          0x18
-// POL (polarity)
-#define TEMP_POL_LOW       0x00
-#define TEMP_POL_HIGH      0x04
-
-#define TEMP_I2C_ADDRESS   0x98
-#define TEMP_REG_TEMP      0x00
-#define TEMP_REG_CONFIG    0x01
-#define TEMP_REG_TLOW      0x02
-#define TEMP_REG_THIGH     0x03
-*/
-
-;-----------------------------------------------------------------------------------------
-; File          : nbcGL.nbc
-; Description   : Data and subroutines for a very simple 3D engine.
-; Programmed by : Arno van der Vegt, avandervegt@home.nl
-;-----------------------------------------------------------------------------------------
-
-;-----------------------------------------------------------------------------------------
-; Public definitions...
-;-----------------------------------------------------------------------------------------
-#define glInit() __glInit()
-#define glSet(_glType, _glValue) __glSet(_glType, _glValue)
-#define glBeginObject(_glObjId) __glBeginObject(_glObjId)
-#define glEndObject() __glEndObject()
-#define glObjectAction(_glObjectId, _glAction, _glValue) __glObjectAction(_glObjectId, _glAction, _glValue)
-#define glAddVertex(_glX, _glY, _glZ) __glAddVertex(_glX, _glY, _glZ)
-#define glBegin(_glBeginMode) __glBegin(_glBeginMode)
-#define glEnd() __glEnd()
-#define glBeginRender() __glBeginRender()
-#define glCallObject(_glObjectId) __glCallObject(_glObjectId)
-#define glFinishRender() __glFinishRender()
-#define glSetAngleX(_glValue) __glSetAngleX(_glValue)
-#define glAddToAngleX(_glValue) __glAddToAngleX(_glValue)
-#define glSetAngleY(_glValue) __glSetAngleY(_glValue)
-#define glAddToAngleY(_glValue) __glAddToAngleY(_glValue)
-#define glSetAngleZ(_glValue) __glSetAngleZ(_glValue)
-#define glAddToAngleZ(_glValue) __glAddToAngleZ(_glValue)
-#define glSin32768(_glAngle, _glResult) __glSin32768(_glAngle, _glResult)
-#define glCos32768(_glAngle, _glResult) __glCos32768(_glAngle, _glResult)
-#define glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId) __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)
-#define glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId) __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)
-#define glCube(_glMode, _glSize, _glObjId) __glBox(_glMode, _glSize, _glSize, _glSize, _glObjId)
 
 #define __glInit()                                                                             \
          call     __GL_glInit
@@ -8995,7 +7959,7 @@ dseg segment
   __GL_x2                sdword
   __GL_y2                sdword
   __GL_z2                sdword
-  
+
   ; data for filling polygons...
   __GL_buffer            byte[]
   
@@ -9772,46 +8736,46 @@ subroutine __GL_glBox
   neg      __GL_y0,                    __GL_y1
   shr      __GL_z1,                    __GL_sizeZ, 1
   neg      __GL_z0,                    __GL_z1
-  glBeginObject(__GL_tmpId)
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x0, __GL_y0, __GL_z0)
-      glAddVertex(__GL_x1, __GL_y0, __GL_z0)
-      glAddVertex(__GL_x1, __GL_y1, __GL_z0)
-      glAddVertex(__GL_x0, __GL_y1, __GL_z0)
-    glEnd()
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x0, __GL_y1, __GL_z1)
-      glAddVertex(__GL_x1, __GL_y1, __GL_z1)
-      glAddVertex(__GL_x1, __GL_y0, __GL_z1)
-      glAddVertex(__GL_x0, __GL_y0, __GL_z1)
-    glEnd()
+  __glBeginObject(__GL_tmpId)
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x0, __GL_y0, __GL_z0)
+      __glAddVertex(__GL_x1, __GL_y0, __GL_z0)
+      __glAddVertex(__GL_x1, __GL_y1, __GL_z0)
+      __glAddVertex(__GL_x0, __GL_y1, __GL_z0)
+    __glEnd()
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x0, __GL_y1, __GL_z1)
+      __glAddVertex(__GL_x1, __GL_y1, __GL_z1)
+      __glAddVertex(__GL_x1, __GL_y0, __GL_z1)
+      __glAddVertex(__GL_x0, __GL_y0, __GL_z1)
+    __glEnd()
 
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x0, __GL_y1, __GL_z0)
-      glAddVertex(__GL_x0, __GL_y1, __GL_z1)
-      glAddVertex(__GL_x0, __GL_y0, __GL_z1)
-      glAddVertex(__GL_x0, __GL_y0, __GL_z0)
-    glEnd()
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x1, __GL_y0, __GL_z0)
-      glAddVertex(__GL_x1, __GL_y0, __GL_z1)
-      glAddVertex(__GL_x1, __GL_y1, __GL_z1)
-      glAddVertex(__GL_x1, __GL_y1, __GL_z0)
-    glEnd()
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x0, __GL_y1, __GL_z0)
+      __glAddVertex(__GL_x0, __GL_y1, __GL_z1)
+      __glAddVertex(__GL_x0, __GL_y0, __GL_z1)
+      __glAddVertex(__GL_x0, __GL_y0, __GL_z0)
+    __glEnd()
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x1, __GL_y0, __GL_z0)
+      __glAddVertex(__GL_x1, __GL_y0, __GL_z1)
+      __glAddVertex(__GL_x1, __GL_y1, __GL_z1)
+      __glAddVertex(__GL_x1, __GL_y1, __GL_z0)
+    __glEnd()
 
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x0, __GL_y0, __GL_z0)
-      glAddVertex(__GL_x0, __GL_y0, __GL_z1)
-      glAddVertex(__GL_x1, __GL_y0, __GL_z1)
-      glAddVertex(__GL_x1, __GL_y0, __GL_z0)
-    glEnd()
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x1, __GL_y1, __GL_z0)
-      glAddVertex(__GL_x1, __GL_y1, __GL_z1)
-      glAddVertex(__GL_x0, __GL_y1, __GL_z1)
-      glAddVertex(__GL_x0, __GL_y1, __GL_z0)
-    glEnd()
-  glEndObject()
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x0, __GL_y0, __GL_z0)
+      __glAddVertex(__GL_x0, __GL_y0, __GL_z1)
+      __glAddVertex(__GL_x1, __GL_y0, __GL_z1)
+      __glAddVertex(__GL_x1, __GL_y0, __GL_z0)
+    __glEnd()
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x1, __GL_y1, __GL_z0)
+      __glAddVertex(__GL_x1, __GL_y1, __GL_z1)
+      __glAddVertex(__GL_x0, __GL_y1, __GL_z1)
+      __glAddVertex(__GL_x0, __GL_y1, __GL_z0)
+    __glEnd()
+  __glEndObject()
   return
 ends
 
@@ -9826,36 +8790,1437 @@ subroutine __GL_glPyramid
   shr      __GL_z1,                    __GL_sizeZ, 1
   neg      __GL_z0,                    __GL_z1
   neg      __GL_y0,                    __GL_sizeY
-  glBeginObject(__GL_tmpId)
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x1, 0, __GL_z0)
-      glAddVertex(__GL_x1, 0, __GL_z1)
-      glAddVertex(__GL_x0, 0, __GL_z1)
-      glAddVertex(__GL_x0, 0, __GL_z0)
-    glEnd()
+  __glBeginObject(__GL_tmpId)
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x1, 0, __GL_z0)
+      __glAddVertex(__GL_x1, 0, __GL_z1)
+      __glAddVertex(__GL_x0, 0, __GL_z1)
+      __glAddVertex(__GL_x0, 0, __GL_z0)
+    __glEnd()
 
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x0, 0,   __GL_z0)
-      glAddVertex(__GL_x0, 0,   __GL_z1)
-      glAddVertex(0,   __GL_y0, 0)
-    glEnd()
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x1, 0,   __GL_z1)
-      glAddVertex(__GL_x1, 0,   __GL_z0)
-      glAddVertex(0,   __GL_y0, 0)
-    glEnd()
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x1, 0,   __GL_z0)
-      glAddVertex(__GL_x0, 0,   __GL_z0)
-      glAddVertex(0,   __GL_y0, 0)
-    glEnd()
-    glBegin(__GL_mode)
-      glAddVertex(__GL_x0, 0,   __GL_z1)
-      glAddVertex(__GL_x1, 0,   __GL_z1)
-      glAddVertex(0,   __GL_y0, 0)
-    glEnd()
-  glEndObject()
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x0, 0,   __GL_z0)
+      __glAddVertex(__GL_x0, 0,   __GL_z1)
+      __glAddVertex(0,   __GL_y0, 0)
+    __glEnd()
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x1, 0,   __GL_z1)
+      __glAddVertex(__GL_x1, 0,   __GL_z0)
+      __glAddVertex(0,   __GL_y0, 0)
+    __glEnd()
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x1, 0,   __GL_z0)
+      __glAddVertex(__GL_x0, 0,   __GL_z0)
+      __glAddVertex(0,   __GL_y0, 0)
+    __glEnd()
+    __glBegin(__GL_mode)
+      __glAddVertex(__GL_x0, 0,   __GL_z1)
+      __glAddVertex(__GL_x1, 0,   __GL_z1)
+      __glAddVertex(0,   __GL_y0, 0)
+    __glEnd()
+  __glEndObject()
   return
 ends
+
+#endif // __DOXYGEN_DOCS
+
+#define ResetTachoCount(_p) __resetTachoCount(_p)
+#define ResetBlockTachoCount(_p) __resetBlockTachoCount(_p)
+#define ResetRotationCount(_p) __resetRotationCount(_p)
+#define ResetAllTachoCounts(_p) __resetAllTachoCounts(_p)
+
+#define OnFwdEx(_ports, _pwr, _reset) __OnFwdEx(_ports, _pwr, _reset)
+#define OnRevEx(_ports, _pwr, _reset) __OnRevEx(_ports, _pwr, _reset)
+#define OnFwdExPID(_ports, _pwr, _reset, _p, _i, _d) __OnFwdExPID(_ports, _pwr, _reset, _p, _i, _d)
+#define OnRevExPID(_ports, _pwr, _reset, _p, _i, _d) __OnRevExPID(_ports, _pwr, _reset, _p, _i, _d)
+#define OnFwd(_ports, _pwr) OnFwdEx(_ports, _pwr, RESET_BLOCKANDTACHO)
+#define OnRev(_ports, _pwr) OnRevEx(_ports, _pwr, RESET_BLOCKANDTACHO)
+
+#define CoastEx(_ports, _reset) __CoastEx(_ports, _reset)
+#define OffEx(_ports, _reset) __OffEx(_ports, _reset)
+#define Coast(_ports) CoastEx(_ports, RESET_BLOCKANDTACHO)
+#define Off(_ports) OffEx(_ports, RESET_BLOCKANDTACHO)
+#define Float(_ports) Coast(_ports)
+
+#define OnFwdRegEx(_ports, _pwr, _regmode, _reset) __OnFwdRegEx(_ports, _pwr, _regmode, _reset)
+#define OnRevRegEx(_ports, _pwr, _regmode, _reset) __OnRevRegEx(_ports, _pwr, _regmode, _reset)
+#define OnFwdRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) __OnFwdRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d)
+#define OnRevRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) __OnRevRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d)
+
+#define OnFwdReg(_ports, _pwr, _regmode) OnFwdRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
+#define OnRevReg(_ports, _pwr, _regmode) OnRevRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
+#define OnFwdRegPID(_ports, _pwr, _regmode, _p, _i, _d) OnFwdRegExPID(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO, _p, _i, _d)
+#define OnRevRegPID(_ports, _pwr, _regmode, _p, _i, _d) OnRevRegExPID(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO, _p, _i, _d)
+
+#define OnFwdSyncEx(_ports, _pwr, _turnpct, _reset) __OnFwdSyncEx(_ports, _pwr, _turnpct, _reset)
+#define OnRevSyncEx(_ports, _pwr, _turnpct, _reset) __OnRevSyncEx(_ports, _pwr, _turnpct, _reset)
+#define OnFwdSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) __OnFwdSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d)
+#define OnRevSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) __OnRevSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d)
+
+#define OnFwdSync(_ports, _pwr, _turnpct) OnFwdSyncEx(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO)
+#define OnRevSync(_ports, _pwr, _turnpct) OnRevSyncEx(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO)
+#define OnFwdSyncPID(_ports, _pwr, _turnpct, _p, _i, _d) OnFwdSyncExPID(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO, _p, _i, _d)
+#define OnRevSyncPID(_ports, _pwr, _turnpct, _p, _i, _d) OnRevSyncExPID(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO, _p, _i, _d)
+
+#define RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
+   __RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d)
+
+// default PID values are 96, 32, 32 (PID_3, PID_1, PID_1)
+
+#define RotateMotorPID(_ports, _pwr, _angle, _p, _i, _d) \
+   __RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, _p, _i, _d)
+
+#define RotateMotorEx(_ports, _pwr, _angle, _turnpct, _bSync, _bStop) \
+   __RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, PID_1, PID_0, PID_3)
+
+#define RotateMotor(_ports, _pwr, _angle) \
+   __RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, PID_1, PID_0, PID_3)
+
+#define SetSensorType(_port,_t) setin _t, _port, Type
+#define SetSensorMode(_port,_m) setin _m, _port, InputMode
+#define ReadSensor(_port,_value) getin _value, _port, ScaledValue
+#define ClearSensor(_port) setin 0, _port, ScaledValue
+
+#define SetSensorTouch(_port) __SetSensorTouch(_port)
+#define SetSensorLight(_port) __SetSensorLight(_port)
+#define SetSensorSound(_port) __SetSensorSound(_port)
+#define SetSensorLowspeed(_port) __SetSensorLowspeed(_port)
+#define SetSensorUltrasonic(_port) __SetSensorLowspeed(_port)
+
+#if __FIRMWARE_VERSION > 107
+
+#define SetSensorColorFull(_port) __SetSensorColorFull(_port)
+#define SetSensorColorRed(_port) __SetSensorColorRed(_port)
+#define SetSensorColorGreen(_port) __SetSensorColorGreen(_port)
+#define SetSensorColorBlue(_port) __SetSensorColorBlue(_port)
+#define SetSensorColorNone(_port) __SetSensorColorNone(_port)
+
+#endif
+
+#define ResetSensor(_port) __ResetSensor(_port)
+
+#define LowspeedStatus(_port, _bready, _result) __lowspeedStatus(_port, _bready, _result)
+#define LowspeedCheckStatus(_port, _result) __lowspeedCheckStatus(_port, _result)
+#define LowspeedBytesReady(_port, _bready) __lowspeedBytesReady(_port, _bready)
+#define LowspeedWrite(_port, _retlen, _buffer, _result) __lowspeedWrite(_port, _retlen, _buffer, _result)
+#define LowspeedRead(_port, _buflen, _buffer, _result) __lowspeedRead(_port, _buflen, _buffer, _result)
+
+#define TextOutEx(_x,_y,_txt,_options) __TextOutEx(_x,_y,_txt,_options)
+#define TextOut(_x,_y,_txt) __TextOutEx(_x,_y,_txt,0)
+
+#define ClearLine(_line) __TextOutEx(0, _line, __BlankLine, 0)
+
+#define NumOutEx(_x,_y,_num,_options) __NumOutEx(_x,_y,_num,_options)
+#define NumOut(_x,_y,_num) __NumOutEx(_x,_y,_num,0)
+
+#define PointOutEx(_x,_y,_options) __PointOutEx(_x,_y,_options)
+#define PointOut(_x,_y) __PointOutEx(_x,_y,0)
+
+#define ClearScreen() __PointOutEx(200, 200, 1)
+
+#define LineOutEx(_x1,_y1,_x2,_y2,_options) __LineOutEx(_x1,_y1,_x2,_y2,_options)
+#define LineOut(_x1,_y1,_x2,_y2) __LineOutEx(_x1,_y1,_x2,_y2,0)
+
+#define RectOutEx(_x,_y,_w,_h,_options) __RectOutEx(_x,_y,_w,_h,_options)
+#define RectOut(_x,_y,_w,_h) __RectOutEx(_x,_y,_w,_h,0)
+
+#define CircleOutEx(_x,_y,_r,_options) __CircleOutEx(_x,_y,_r,_options)
+#define CircleOut(_x,_y,_r) __CircleOutEx(_x,_y,_r,0)
+
+#define GraphicOutEx(_x,_y,_file,_vars,_options) __GraphicOutEx(_x,_y,_file,_vars,_options)
+#define GraphicOut(_x,_y,_file) __GraphicOutEx(_x,_y,_file,__GraphicOutEmptyVars,0)
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+
+#define GraphicArrayOutEx(_x,_y,_data,_vars,_options) __GraphicArrayOutEx(_x,_y,_data,_vars,_options)
+#define GraphicArrayOut(_x,_y,_data) __GraphicArrayOutEx(_x,_y,_data,__GraphicOutEmptyVars,0)
+
+#define PolyOutEx(_points,_options) __PolyOutEx(_points,_options)
+#define PolyOut(_points) __PolyOutEx(_points,0)
+
+#define EllipseOutEx(_x,_y,_rX,_rY,_options) __EllipseOutEx(_x,_y,_rX,_rY,_options)
+#define EllipseOut(_x,_y,_rX,_rY) __EllipseOutEx(_x,_y,_rX,_rY,0)
+
+#define FontTextOutEx(_x,_y,_fnt,_txt,_options) __FontTextOutEx(_x,_y,_fnt,_txt,_options)
+#define FontTextOut(_x,_y,_fnt,_txt) __FontTextOutEx(_x,_y,_fnt,_txt,0)
+
+#define FontNumOutEx(_x,_y,_fnt,_num,_options) __FontNumOutEx(_x,_y,_fnt,_num,_options)
+#define FontNumOut(_x,_y,_fnt,_num) __FontNumOutEx(_x,_y,_fnt,_num,0)
+
+#endif
+
+#if __FIRMWARE_VERSION > 107
+
+#define ReadSensorColorRaw(_port, _rawVals, _result) \
+   __ReadSensorColorRaw(_port, _rawVals, _result)
+
+#define ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result) \
+   __ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result)
+
+#endif
+
+#define ReadI2CBytes(_port, _inbuf, _count, _outbuf, _result) __ReadI2CBytes(_port, _inbuf, _count, _outbuf, _result)
+
+#define ReadSensorUS(_port, _value) __ReadSensorUS(_port, _value)
+#define ReadSensorUSEx(_port, _values, _result) __ReadSensorUSEx(_port, _values, _result)
+
+#define ReadI2CRegister(_port, _reg, _out, _result) __MSReadValue(_port, 0x02, _reg, 1, _out, _result)
+#define WriteI2CRegister(_port, _reg, _val, _result) __MSWriteToRegister(_port, 0x02, _reg, _val, _result)
+
+#define PlayToneEx(_freq,_dur,_vol,_loop) __PlayToneEx(_freq,_dur,_vol,_loop)
+#define PlayTone(_freq,_dur) __PlayToneEx(_freq,_dur,4,0)
+
+#define PlayFile(_file) __PlayFileEx(_file,4,0)
+#define PlayFileEx(_file,_vol,_loop) __PlayFileEx(_file,_vol,_loop)
+
+#define GetSoundState(_state, _flags) __GetSoundState(_state, _flags)
+#define SetSoundState(_state, _flags, _result) __setSoundState(_state, _flags, _result)
+
+#define Random(_arg,_max) __Random(_arg,_max)
+#define SignedRandom(_arg) __SignedRandom(_arg)
+
+#define ResetSleepTimer syscall KeepAlive, __KeepAliveArgs
+
+#define GetFirstTick(_value) __GetFirstTick(_value)
+
+#define ReadButtonEx(_idx, _reset, _pressed, _count, _result) __ReadButtonEx(_idx, _reset, _pressed, _count, _result)
+
+#define GetIOMapBytes(_modName, _offset, _cnt, _arrOut) __getIOMapBytes(_modName, _offset, _cnt, _arrOut)
+#define GetIOMapValue(_modName, _offset, _n) __getIOMapValue(_modName, _offset, _n)
+
+#ifdef __ENHANCED_FIRMWARE
+
+#define GetIOMapBytesByID(_modID, _offset, _cnt, _arrOut) __getIOMapBytesByID(_modID, _offset, _cnt, _arrOut)
+#define GetIOMapValueByID(_modID, _offset, _n) __getIOMapValueByID(_modID, _offset, _n)
+
+#define GetCommandModuleValue(_offset, _n) GetIOMapValueByID(CommandModuleID, _offset, _n)
+#define GetLoaderModuleValue(_offset, _n) GetIOMapValueByID(LoaderModuleID, _offset, _n)
+#define GetSoundModuleValue(_offset, _n) GetIOMapValueByID(SoundModuleID, _offset, _n)
+#define GetButtonModuleValue(_offset, _n) GetIOMapValueByID(ButtonModuleID, _offset, _n)
+#define GetUIModuleValue(_offset, _n) GetIOMapValueByID(UIModuleID, _offset, _n)
+#define GetInputModuleValue(_offset, _n) GetIOMapValueByID(InputModuleID, _offset, _n)
+#define GetOutputModuleValue(_offset, _n) GetIOMapValueByID(OutputModuleID, _offset, _n)
+#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValueByID(LowSpeedModuleID, _offset, _n)
+#define GetDisplayModuleValue(_offset, _n) GetIOMapValueByID(DisplayModuleID, _offset, _n)
+#define GetCommModuleValue(_offset, _n) GetIOMapValueByID(CommModuleID, _offset, _n)
+
+#else
+
+#define GetCommandModuleValue(_offset, _n) GetIOMapValue(CommandModuleName, _offset, _n)
+#define GetLoaderModuleValue(_offset, _n) GetIOMapValue(LoaderModuleName, _offset, _n)
+#define GetSoundModuleValue(_offset, _n) GetIOMapValue(SoundModuleName, _offset, _n)
+#define GetButtonModuleValue(_offset, _n) GetIOMapValue(ButtonModuleName, _offset, _n)
+#define GetUIModuleValue(_offset, _n) GetIOMapValue(UIModuleName, _offset, _n)
+#define GetInputModuleValue(_offset, _n) GetIOMapValue(InputModuleName, _offset, _n)
+#define GetOutputModuleValue(_offset, _n) GetIOMapValue(OutputModuleName, _offset, _n)
+#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValue(LowSpeedModuleName, _offset, _n)
+#define GetDisplayModuleValue(_offset, _n) GetIOMapValue(DisplayModuleName, _offset, _n)
+#define GetCommModuleValue(_offset, _n) GetIOMapValue(CommModuleName, _offset, _n)
+
+#endif
+
+#define GetLowSpeedModuleBytes(_offset, _cnt, _arrOut) __getLowSpeedModuleBytes(_offset, _cnt, _arrOut)
+#define GetDisplayModuleBytes(_offset, _cnt, _arrOut) __getDisplayModuleBytes(_offset, _cnt, _arrOut)
+#define GetCommModuleBytes(_offset, _cnt, _arrOut) __getCommModuleBytes(_offset, _cnt, _arrOut)
+
+#define GetFreeMemory(_value) __GetFreeMemory(_value)
+#define GetSoundFrequency(_n) __GetSoundFrequency(_n)
+#define GetSoundDuration(_n) __GetSoundDuration(_n)
+#define GetSoundSampleRate(_n) __GetSoundSampleRate(_n)
+#define GetSoundMode(_n) __GetSoundMode(_n)
+#define GetSoundVolume(_n) __GetSoundVolume(_n)
+
+#define GetButtonPressCount(_b, _n) __GetButtonPressCount(_b, _n)
+#define GetButtonLongPressCount(_b, _n) __GetButtonLongPressCount(_b, _n)
+#define GetButtonShortReleaseCount(_b, _n) __GetButtonShortReleaseCount(_b, _n)
+#define GetButtonLongReleaseCount(_b, _n) __GetButtonLongReleaseCount(_b, _n)
+#define GetButtonReleaseCount(_b, _n) __GetButtonReleaseCount(_b, _n)
+#define GetButtonState(_b, _n) __GetButtonState(_b, _n)
+#define GetBatteryLevel(_n) __GetBatteryLevel(_n)
+#define GetCommandFlags(_n) __GetCommandFlags(_n)
+#define GetUIState(_n) __GetUIState(_n)
+#define GetUIButton(_n) __GetUIButton(_n)
+#define GetVMRunState(_n) __GetVMRunState(_n)
+#define GetBatteryState(_n) __GetBatteryState(_n)
+#define GetBluetoothState(_n) __GetBluetoothState(_n)
+#define GetUsbState(_n) __GetUsbState(_n)
+#define GetSleepTimeout(_n) __GetSleepTimeout(_n)
+#define GetSleepTimer(_n) __GetSleepTimer(_n)
+#define GetRechargeableBattery(_n) __GetRechargeableBattery(_n)
+#define GetVolume(_n) __GetVolume(_n)
+#define GetOnBrickProgramPointer(_n) __GetOnBrickProgramPointer(_n)
+#define GetAbortFlag(_n) __GetAbortFlag(_n)
+
+#define GetInCustomZeroOffset(_p, _n) __GetInCustomZeroOffset(_p, _n)
+#define GetInSensorBoolean(_p, _n) __GetInSensorBoolean(_p, _n)
+#define GetInDigiPinsDirection(_p, _n) __GetInDigiPinsDirection(_p, _n)
+#define GetInDigiPinsStatus(_p, _n) __GetInDigiPinsStatus(_p, _n)
+#define GetInDigiPinsOutputLevel(_p, _n) __GetInDigiPinsOutputLevel(_p, _n)
+#define GetInCustomPercentFullScale(_p, _n) __GetInCustomPercentFullScale(_p, _n)
+#define GetInCustomActiveStatus(_p, _n) __GetInCustomActiveStatus(_p, _n)
+
+#if __FIRMWARE_VERSION > 107
+
+#define GetInColorCalibration(_p, _np, _nc, _n) __GetInColorCalibration(_p, _np, _nc, _n)
+#define GetInColorCalLimits(_p, _np, _n) __GetInColorCalLimits(_p, _np, _n)
+#define GetInColorADRaw(_p, _nc, _n) __GetInColorADRaw(_p, _nc, _n)
+#define GetInColorSensorRaw(_p, _nc, _n) __GetInColorSensorRaw(_p, _nc, _n)
+#define GetInColorSensorValue(_p, _nc, _n) __GetInColorSensorValue(_p, _nc, _n)
+#define GetInColorBoolean(_p, _nc, _n) __GetInColorBoolean(_p, _nc, _n)
+#define GetInColorCalibrationState(_p, _n) __GetInColorCalibrationState(_p, _n)
+
+#endif
+
+#define GetOutPwnFreq(_n) __GetOutPwnFreq(_n)
+
+#define GetLSInputBuffer(_p, _offset, _cnt, _data) __getLSInputBuffer(_p, _offset, _cnt, _data)
+
+#define GetLSInputBufferInPtr(_p, _n) __GetLSInputBufferInPtr(_p, _n)
+#define GetLSInputBufferOutPtr(_p, _n) __GetLSInputBufferOutPtr(_p, _n)
+#define GetLSInputBufferBytesToRx(_p, _n) __GetLSInputBufferBytesToRx(_p, _n)
+
+#define GetLSOutputBuffer(_p, _offset, _cnt, _data) __getLSOutputBuffer(_p, _offset, _cnt, _data)
+
+#define GetLSOutputBufferInPtr(_p, _n) __GetLSOutputBufferInPtr(_p, _n)
+#define GetLSOutputBufferOutPtr(_p, _n) __GetLSOutputBufferOutPtr(_p, _n)
+#define GetLSOutputBufferBytesToRx(_p, _n) __GetLSOutputBufferBytesToRx(_p, _n)
+#define GetLSMode(_p, _n) __GetLSMode(_p, _n)
+#define GetLSChannelState(_p, _n) __GetLSChannelState(_p, _n)
+#define GetLSErrorType(_p, _n) __GetLSErrorType(_p, _n)
+
+#define GetLSState(_n) __GetLSState(_n)
+#define GetLSSpeed(_n) __GetLSSpeed(_n)
+
+#ifdef __ENHANCED_FIRMWARE
+#define GetLSNoRestartOnRead(_n) __GetLSNoRestartOnRead(_n)
+#endif
+
+#define GetDisplayEraseMask(_n) __GetDisplayEraseMask(_n)
+#define GetDisplayUpdateMask(_n) __GetDisplayUpdateMask(_n)
+#define GetDisplayFont(_n) __GetDisplayFont(_n)
+#define GetDisplayDisplay(_n) __GetDisplayDisplay(_n)
+#define GetDisplayFlags(_n) __GetDisplayFlags(_n)
+#define GetDisplayTextLinesCenterFlags(_n) __GetDisplayTextLinesCenterFlags(_n)
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define GetDisplayContrast(_n) __GetDisplayContrast(_n)
+#endif
+
+#define GetDisplayNormal(_x, _line, _cnt, _data) __getDisplayNormal(_x, _line, _cnt, _data)
+#define GetDisplayPopup(_x, _line, _cnt, _data) __getDisplayPopup(_x, _line, _cnt, _data)
+
+#define GetBTDeviceName(_p, _str) __GetBTDeviceName(_p, _str)
+#define GetBTDeviceClass(_p, _n) __GetBTDeviceClass(_p, _n)
+
+#define GetBTDeviceAddress(_p, _addr) __getBTDeviceAddress(_p, _addr)
+
+#define GetBTDeviceStatus(_p, _n) __GetBTDeviceStatus(_p, _n)
+#define GetBTConnectionName(_p, _str) __GetBTConnectionName(_p, _str)
+#define GetBTConnectionClass(_p, _n) __GetBTConnectionClass(_p, _n)
+#define GetBTConnectionPinCode(_p, _code) __GetBTConnectionPinCode(_p, _code)
+
+#define GetBTConnectionAddress(_p, _addr) __getBTConnectionAddress(_p, _addr)
+
+#define GetBTConnectionHandleNum(_p, _n) __GetBTConnectionHandleNum(_p, _n)
+#define GetBTConnectionStreamStatus(_p, _n) __GetBTConnectionStreamStatus(_p, _n)
+#define GetBTConnectionLinkQuality(_p, _n) __GetBTConnectionLinkQuality(_p, _n)
+
+#define GetBrickDataName(_str) GetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
+
+#define GetBrickDataBluecoreVersion(_n) \
+  compchk EQ, sizeof(_n), 2 \
+  GetCommModuleValue(CommOffsetBrickDataBluecoreVersion, _n)
+
+#define GetBrickDataAddress(_addr) GetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr)
+
+#define GetBrickDataBtStateStatus(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBrickDataBtStateStatus, _n)
+
+#define GetBrickDataBtHardwareStatus(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBrickDataBtHwStatus, _n)
+
+#define GetBrickDataTimeoutValue(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBrickDataTimeOutValue, _n)
+
+#define GetBTInputBuffer(_offset, _cnt, _data) __getBTInputBuffer(_offset, _cnt, _data)
+
+#define GetBTInputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtInBufInPtr, _n)
+
+#define GetBTInputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtInBufOutPtr, _n)
+
+#define GetBTOutputBuffer(_offset, _cnt, _data) __getBTOutputBuffer(_offset, _cnt, _data)
+
+#define GetBTOutputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtOutBufInPtr, _n)
+
+#define GetBTOutputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtOutBufOutPtr, _n)
+
+#define GetHSInputBuffer(_offset, _cnt, _data) __getHSInputBuffer(_offset, _cnt, _data)
+
+#define GetHSInputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsInBufInPtr, _n)
+
+#define GetHSInputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsInBufOutPtr, _n)
+
+#define GetHSOutputBuffer(_offset, _cnt, _data) __getHSOutputBuffer(_offset, _cnt, _data)
+
+#define GetHSOutputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsOutBufInPtr, _n)
+
+#define GetHSOutputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsOutBufOutPtr, _n)
+
+#define GetUSBInputBuffer(_offset, _cnt, _data) __getUSBInputBuffer(_offset, _cnt, _data)
+
+#define GetUSBInputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbInBufInPtr, _n)
+
+#define GetUSBInputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbInBufOutPtr, _n)
+
+#define GetUSBOutputBuffer(_offset, _cnt, _data) __getUSBOutputBuffer(_offset, _cnt, _data)
+
+#define GetUSBOutputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbOutBufInPtr, _n)
+
+#define GetUSBOutputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbOutBufOutPtr, _n)
+
+#define GetUSBPollBuffer(_offset, _cnt, _data) __getUSBPollBuffer(_offset, _cnt, _data)
+
+#define GetUSBPollBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbPollBufInPtr, _n)
+
+#define GetUSBPollBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbPollBufOutPtr, _n)
+
+#define GetBTDeviceCount(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtDeviceCnt, _n)
+
+#define GetBTDeviceNameCount(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtDeviceNameCnt, _n)
+
+#define GetHSFlags(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsFlags, _n)
+
+#define GetHSSpeed(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsSpeed, _n)
+
+#define GetHSState(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsState, _n)
+
+#define GetUSBState(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbState, _n)
+
+#define GetHSMode(_n) \
+  compchk EQ, sizeof(_n), 2 \
+  GetCommModuleValue(CommOffsetHsMode, _n)
+
+#define SetIOMapBytes(_modName, _offset, _cnt, _arrIn) __SetIOMapBytes(_modName, _offset, _cnt, _arrIn)
+#define SetIOMapValue(_modName, _offset, _n) __SetIOMapValue(_modName, _offset, _n)
+
+#ifdef __ENHANCED_FIRMWARE
+
+#define SetIOMapBytesByID(_modID, _offset, _cnt, _arrIn) __SetIOMapBytesByID(_modID, _offset, _cnt, _arrIn)
+#define SetIOMapValueByID(_modID, _offset, _n) __SetIOMapValueByID(_modID, _offset, _n)
+
+#define SetCommandModuleValue(_offset, _n) SetIOMapValueByID(CommandModuleID, _offset, _n)
+#define SetIOCtrlModuleValue(_offset, _n) SetIOMapValueByID(IOCtrlModuleID, _offset, _n)
+#define SetLoaderModuleValue(_offset, _n) SetIOMapValueByID(LoaderModuleID, _offset, _n)
+#define SetUIModuleValue(_offset, _n) SetIOMapValueByID(UIModuleID, _offset, _n)
+#define SetSoundModuleValue(_offset, _n) SetIOMapValueByID(SoundModuleID, _offset, _n)
+#define SetButtonModuleValue(_offset, _n) SetIOMapValueByID(ButtonModuleID, _offset, _n)
+#define SetInputModuleValue(_offset, _n) SetIOMapValueByID(InputModuleID, _offset, _n)
+#define SetOutputModuleValue(_offset, _n) SetIOMapValueByID(OutputModuleID, _offset, _n)
+#define SetLowSpeedModuleValue(_offset, _n) SetIOMapValueByID(LowSpeedModuleID, _offset, _n)
+#define SetDisplayModuleValue(_offset, _n) SetIOMapValueByID(DisplayModuleID, _offset, _n)
+#define SetCommModuleValue(_offset, _n) SetIOMapValueByID(CommModuleID, _offset, _n)
+
+#define SetCommandModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommandModuleID, _offset, _cnt, _arrIn)
+#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrIn)
+#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrIn)
+#define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommModuleID, _offset, _cnt, _arrIn)
+
+#else
+
+#define SetCommandModuleValue(_offset, _n) SetIOMapValue(CommandModuleName, _offset, _n)
+#define SetIOCtrlModuleValue(_offset, _n) SetIOMapValue(IOCtrlModuleName, _offset, _n)
+#define SetLoaderModuleValue(_offset, _n) SetIOMapValue(LoaderModuleName, _offset, _n)
+#define SetUIModuleValue(_offset, _n) SetIOMapValue(UIModuleName, _offset, _n)
+#define SetSoundModuleValue(_offset, _n) SetIOMapValue(SoundModuleName, _offset, _n)
+#define SetButtonModuleValue(_offset, _n) SetIOMapValue(ButtonModuleName, _offset, _n)
+#define SetInputModuleValue(_offset, _n) SetIOMapValue(InputModuleName, _offset, _n)
+#define SetOutputModuleValue(_offset, _n) SetIOMapValue(OutputModuleName, _offset, _n)
+#define SetLowSpeedModuleValue(_offset, _n) SetIOMapValue(LowSpeedModuleName, _offset, _n)
+#define SetDisplayModuleValue(_offset, _n) SetIOMapValue(DisplayModuleName, _offset, _n)
+#define SetCommModuleValue(_offset, _n) SetIOMapValue(CommModuleName, _offset, _n)
+
+#define SetCommandModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(CommandModuleName, _offset, _cnt, _arrIn)
+#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(LowSpeedModuleName, _offset, _cnt, _arrIn)
+#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(DisplayModuleName, _offset, _cnt, _arrIn)
+#define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(CommModuleName, _offset, _cnt, _arrIn)
+
+#endif
+
+
+#define PowerDown SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN)
+#define RebootInFirmwareMode SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_BOOT)
+
+#define SetSoundFrequency(_n) __setSoundFrequency(_n)
+#define SetSoundDuration(_n) __setSoundDuration(_n)
+#define SetSoundSampleRate(_n) __setSoundSampleRate(_n)
+#define SetSoundFlags(_n) __setSoundFlags(_n)
+#define SetSoundModuleState(_n) __setSoundModuleState(_n)
+#define SetSoundMode(_n) __setSoundMode(_n)
+#define SetSoundVolume(_n) __setSoundVolume(_n)
+
+#define SetButtonPressCount(_b, _n) __setButtonPressCount(_b, _n)
+#define SetButtonLongPressCount(_b, _n) __setButtonLongPressCount(_b, _n)
+#define SetButtonShortReleaseCount(_b, _n) __setButtonShortReleaseCount(_b, _n)
+#define SetButtonLongReleaseCount(_b, _n) __setButtonLongReleaseCount(_b, _n)
+#define SetButtonReleaseCount(_b, _n) __setButtonReleaseCount(_b, _n)
+#define SetButtonState(_b, _n) __setButtonState(_b, _n)
+
+#define SetCommandFlags(_n) __setCommandFlags(_n)
+#define SetUIState(_n) __setUIState(_n)
+#define SetUIButton(_n) __setUIButton(_n)
+#define SetVMRunState(_n) __setVMRunState(_n)
+#define SetBatteryState(_n) __setBatteryState(_n)
+#define SetBluetoothState(_n) __setBluetoothState(_n)
+#define SetUsbState(_n) __setUsbState(_n)
+#define SetSleepTimeout(_n) __setSleepTimeout(_n)
+#define SetSleepTimer(_n) __setSleepTimer(_n)
+#define SetVolume(_n) __setVolume(_n)
+#define SetOnBrickProgramPointer(_n) __setOnBrickProgramPointer(_n)
+#define ForceOff(_n) __forceOff(_n)
+#define SetAbortFlag(_n) __setAbortFlag(_n)
+
+#define SetInCustomZeroOffset(_p, _n) __setInCustomZeroOffset(_p, _n)
+#define SetInSensorBoolean(_p, _n) __setInSensorBoolean(_p, _n)
+#define SetInDigiPinsDirection(_p, _n) __setInDigiPinsDirection(_p, _n)
+#define SetInDigiPinsStatus(_p, _n) __setInDigiPinsStatus(_p, _n)
+#define SetInDigiPinsOutputLevel(_p, _n) __setInDigiPinsOutputLevel(_p, _n)
+#define SetInCustomPercentFullScale(_p, _n) __setInCustomPercentFullScale(_p, _n)
+#define SetInCustomActiveStatus(_p, _n) __setInCustomActiveStatus(_p, _n)
+
+#define SetOutPwnFreq(_n) __setOutPwnFreq(_n)
+
+#define SetLSInputBuffer(_p, _offset, _cnt, _data) __setLSInputBuffer(_p, _offset, _cnt, _data)
+#define SetLSInputBufferInPtr(_p, _n) __setLSInputBufferInPtr(_p, _n)
+#define SetLSInputBufferOutPtr(_p, _n) __setLSInputBufferOutPtr(_p, _n)
+#define SetLSInputBufferBytesToRx(_p, _n) __setLSInputBufferBytesToRx(_p, _n)
+
+#define SetLSOutputBuffer(_p, _offset, _cnt, _data) __setLSOutputBuffer(_p, _offset, _cnt, _data)
+#define SetLSOutputBufferInPtr(_p, _n) __setLSOutputBufferInPtr(_p, _n)
+#define SetLSOutputBufferOutPtr(_p, _n) __setLSOutputBufferOutPtr(_p, _n)
+#define SetLSOutputBufferBytesToRx(_p, _n) __setLSOutputBufferBytesToRx(_p, _n)
+
+#define SetLSMode(_p, _n) __setLSMode(_p, _n)
+#define SetLSChannelState(_p, _n) __setLSChannelState(_p, _n)
+#define SetLSErrorType(_p, _n) __setLSErrorType(_p, _n)
+#define SetLSState(_n) __setLSState(_n)
+#define SetLSSpeed(_n) __setLSSpeed(_n)
+
+#ifdef __ENHANCED_FIRMWARE
+#define SetLSNoRestartOnRead(_n) __setLSNoRestartOnRead(_n)
+#endif
+
+#define SpawnProgram(_fname) __spawnProgram(_fname)
+
+#define SetDisplayEraseMask(_n) __setDisplayEraseMask(_n)
+#define SetDisplayUpdateMask(_n) __setDisplayUpdateMask(_n)
+#define SetDisplayFont(_n) __setDisplayFont(_n)
+#define SetDisplayDisplay(_n) __setDisplayDisplay(_n)
+#define SetDisplayFlags(_n) __setDisplayFlags(_n)
+#define SetDisplayTextLinesCenterFlags(_n) __setDisplayTextLinesCenterFlags(_n)
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define SetDisplayContrast(_n) __setDisplayContrast(_n)
+#endif
+
+#define SetDisplayNormal(_x, _line, _cnt, _data) __setDisplayNormal(_x, _line, _cnt, _data)
+#define SetDisplayPopup(_x, _line, _cnt, _data) __setDisplayPopup(_x, _line, _cnt, _data)
+#define SetBTDeviceName(_p, _str) __setBTDeviceName(_p, _str)
+#define SetBTDeviceAddress(_p, _addr) __setBTDeviceAddress(_p, _addr)
+#define SetBTConnectionName(_p, _str) __setBTConnectionName(_p, _str)
+#define SetBTConnectionPinCode(_p, _code) __setBTConnectionPinCode(_p, _code)
+#define SetBTConnectionAddress(_p, _addr) __setBTConnectionAddress(_p, _addr)
+
+#define SetBrickDataName(_str) SetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
+
+#define SetBrickDataAddress(_addr) SetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr)
+
+#define SetBTDeviceClass(_p, _n) __setBTDeviceClass(_p, _n)
+#define SetBTDeviceStatus(_p, _n) __setBTDeviceStatus(_p, _n)
+#define SetBTConnectionClass(_p, _n) __setBTConnectionClass(_p, _n)
+#define SetBTConnectionHandleNum(_p, _n) __setBTConnectionHandleNum(_p, _n)
+#define SetBTConnectionStreamStatus(_p, _n) __setBTConnectionStreamStatus(_p, _n)
+#define SetBTConnectionLinkQuality(_p, _n) __setBTConnectionLinkQuality(_p, _n)
+#define SetBrickDataBluecoreVersion(_n) __setBrickDataBluecoreVersion(_n)
+#define SetBrickDataBtStateStatus(_n) __setBrickDataBtStateStatus(_n)
+#define SetBrickDataBtHardwareStatus(_n) __setBrickDataBtHardwareStatus(_n)
+#define SetBrickDataTimeoutValue(_n) __setBrickDataTimeoutValue(_n)
+
+#define SetBTInputBuffer(_offset, _cnt, _data) __setBTInputBuffer(_offset, _cnt, _data)
+#define SetBTInputBufferInPtr(_n) __setBTInputBufferInPtr(_n)
+#define SetBTInputBufferOutPtr(_n) __setBTInputBufferOutPtr(_n)
+
+#define SetBTOutputBuffer(_offset, _cnt, _data) __setBTOutputBuffer(_offset, _cnt, _data)
+#define SetBTOutputBufferInPtr(_n) __setBTOutputBufferInPtr(_n)
+#define SetBTOutputBufferOutPtr(_n) __setBTOutputBufferOutPtr(_n)
+
+#define SetHSInputBuffer(_offset, _cnt, _data) __setHSInputBuffer(_offset, _cnt, _data)
+#define SetHSInputBufferInPtr(_n) __setHSInputBufferInPtr(_n)
+#define SetHSInputBufferOutPtr(_n) __setHSInputBufferOutPtr(_n)
+
+#define SetHSOutputBuffer(_offset, _cnt, _data) __setHSOutputBuffer(_offset, _cnt, _data)
+#define SetHSOutputBufferInPtr(_n) __setHSOutputBufferInPtr(_n)
+#define SetHSOutputBufferOutPtr(_n) __setHSOutputBufferOutPtr(_n)
+
+#define SetUSBInputBuffer(_offset, _cnt, _data) __setUSBInputBuffer(_offset, _cnt, _data)
+#define SetUSBInputBufferInPtr(_n) __setUSBInputBufferInPtr(_n)
+#define SetUSBInputBufferOutPtr(_n) __setUSBInputBufferOutPtr(_n)
+
+#define SetUSBOutputBuffer(_offset, _cnt, _data) __setUSBOutputBuffer(_offset, _cnt, _data)
+#define SetUSBOutputBufferInPtr(_n) __setUSBOutputBufferInPtr(_n)
+#define SetUSBOutputBufferOutPtr(_n) __setUSBOutputBufferOutPtr(_n)
+
+#define SetUSBPollBuffer(_offset, _cnt, _data) __setUSBPollBuffer(_offset, _cnt, _data)
+#define SetUSBPollBufferInPtr(_n) __setUSBPollBufferInPtr(_n)
+#define SetUSBPollBufferOutPtr(_n) __setUSBPollBufferOutPtr(_n)
+
+#define SetBTDeviceCount(_n) __setBTDeviceCount(_n)
+#define SetBTDeviceNameCount(_n) __setBTDeviceNameCount(_n)
+#define SetHSFlags(_n) __setHSFlags(_n)
+#define SetHSSpeed(_n) __setHSSpeed(_n)
+#define SetHSState(_n) __setHSState(_n)
+#define SetUSBState(_n) __setUSBState(_n)
+#define SetHSMode(_n) __setHSMode(_n)
+
+#define CreateFile(_fname, _fsize, _handle, _result) __createFile(_fname, _fsize, _handle, _result)
+#define OpenFileAppend(_fname, _fsize, _handle, _result) __openFileAppend(_fname, _fsize, _handle, _result)
+#define OpenFileRead(_fname, _fsize, _handle, _result) __openFileRead(_fname, _fsize, _handle, _result)
+#define CloseFile(_handle, _result) __closeFile(_handle, _result)
+#define ResolveHandle(_fname, _handle, _writeable, _result) __resolveHandle(_fname, _handle, _writeable, _result)
+#define RenameFile(_oldname, _newname, _result) __renameFile(_oldname, _newname, _result)
+#define DeleteFile(_fname, _result) __deleteFile(_fname, _result)
+#define ResizeFile(_fname, _newsize, _result) __fileResize(_fname, _newsize, _result)
+
+#ifdef __ENHANCED_FIRMWARE
+#define CreateFileLinear(_fname, _fsize, _handle, _result) __createFileLinear(_fname, _fsize, _handle, _result)
+#define CreateFileNonLinear(_fname, _fsize, _handle, _result) __createFileNonLinear(_fname, _fsize, _handle, _result)
+#define OpenFileReadLinear(_fname, _fsize, _handle, _result) __openFileReadLinear(_fname, _fsize, _handle, _result)
+#define FindFirstFile(_fname, _handle, _result) __findFirstFile(_fname, _handle, _result)
+#define FindNextFile(_fname, _handle, _result) __findNextFile(_fname, _handle, _result)
+#endif
+
+#define Read(_handle, _n, _result) __readValue(_handle, _n, _result)
+#define ReadLn(_handle, _n, _result) __readLnValue(_handle, _n, _result)
+#define ReadBytes(_handle, _len, _buf, _result) __readBytes(_handle, _len, _buf, _result)
+#define ReadLnString(_handle, _output, _result) __readLnString(_handle, _output, _result)
+
+#define Write(_handle, _n, _result) __writeValue(_handle, _n, _result)
+#define WriteLn(_handle, _n, _result) __writeLnValue(_handle, _n, _result)
+#define WriteString(_handle, _str, _cnt, _result) __writeString(_handle, _str, _cnt, _result)
+#define WriteLnString(_handle, _str, _cnt, _result) __writeLnString(_handle, _str, _cnt, _result)
+#define WriteBytes(_handle, _buf, _cnt, _result) __writeBytes(_handle, _buf, _cnt, _result)
+#define WriteBytesEx(_handle, _len, _buf, _result) __writeBytesEx(_handle, _len, _buf, _result)
+
+#define SendMessage(_queue, _msg, _result) __sendMessage(_queue, _msg, _result)
+#define ReceiveMessage(_queue, _clear, _msg, _result) __receiveMessage(_queue, _clear, _msg, _result)
+
+#define ReceiveRemoteBool(_queue, _clear, _bval, _result) __receiveRemoteBool(_queue, _clear, _bval, _result)
+#define ReceiveRemoteNumber(_queue, _clear, _val, _result) __receiveRemoteNumber(_queue, _clear, _val, _result)
+#define ReceiveRemoteString(_queue, _clear, _str, _result) __receiveMessage(_queue, _clear, _str, _result)
+#define ReceiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, _result) __receiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, _result)
+
+#define SendResponseString(_queue, _msg, _result) __sendResponseString(_queue, _msg, _result)
+#define SendResponseBool(_queue, _bval, _result) __sendResponseBool(_queue, _bval, _result)
+#define SendResponseNumber(_queue, _val, _result) __sendResponseNumber(_queue, _val, _result)
+
+#define BluetoothStatus(_conn, _result) __bluetoothStatus(_conn, _result)
+#define BluetoothWrite(_conn, _buffer, _result) __bluetoothWrite(_conn, _buffer, _result)
+
+#define SendRemoteBool(_conn, _queue, _bval, _result) __sendRemoteBool(_conn, _queue, _bval, _result)
+#define SendRemoteNumber(_conn, _queue, _val, _result) __sendRemoteNumber(_conn, _queue, _val, _result)
+#define SendRemoteString(_conn, _queue, _str, _result) __sendRemoteString(_conn, _queue, _str, _result)
+
+#define RemoteMessageRead(_conn, _queue, _result) __remoteMessageRead(_conn, _queue, _result)
+#define RemoteMessageWrite(_conn, _queue, _msg, _result) __sendRemoteString(_conn, _queue, _msg, _result)
+#define RemoteStartProgram(_conn, _filename, _result) __remoteStartProgram(_conn, _filename, _result)
+#define RemoteStopProgram(_conn, _result) __bluetoothWrite(_conn, __DCStopProgramPacket, _result)
+#define RemotePlaySoundFile(_conn, _filename, _bloop, _result) __remotePlaySoundFile(_conn, _filename, _bloop, _result)
+#define RemotePlayTone(_conn, _frequency, _duration, _result) __remotePlayTone(_conn, _frequency, _duration, _result)
+#define RemoteStopSound(_conn, _result) __bluetoothWrite(_conn, __DCStopSoundPacket, _result)
+#define RemoteKeepAlive(_conn, _result) __bluetoothWrite(_conn, __DCKeepAlivePacket, _result)
+#define RemoteResetScaledValue(_conn, _port, _result) __remoteResetScaledValue(_conn, _port, _result)
+#define RemoteResetMotorPosition(_conn, _port, _brelative, _result) __remoteResetMotorPosition(_conn, _port, _brelative, _result)
+#define RemoteSetInputMode(_conn, _port, _type, _mode, _result) __remoteSetInputMode(_conn, _port, _type, _mode, _result)
+#define RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result) \
+  __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result)
+
+#ifdef __ENHANCED_FIRMWARE
+
+#define RS485Status(_sendingData, _dataAvail) __RS485Status(_sendingData, _dataAvail)
+#define RS485Write(_buffer, _status) __RS485Write(_buffer, _status)
+#define RS485Read(_buffer, _status) __RS485Read(_buffer, _status)
+
+#if __FIRMWARE_VERSION > 107
+
+#define RS485Control(_cmd, _baud, _mode, _result) __RS485Control(_cmd, _baud, _mode, _result)
+#define RS485Uart(_baud, _mode, _result) __RS485Control(HS_CTRL_UART, _baud, _mode, _result)
+#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, 0, _result)
+#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, 0, _result)
+
+#else
+
+#define RS485Control(_cmd, _baud, _result) __RS485Control(_cmd, _baud, _result)
+#define RS485Uart(_baud, _result) __RS485Control(HS_CTRL_UART, _baud, _result)
+#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, _result)
+#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, _result)
+
+#endif
+
+#define SendRS485Bool(_bval, _status) __sendRS485Bool(_bval, _status)
+#define SendRS485Number(_val, _status) __sendRS485Number(_val, _status)
+#define SendRS485String(_str, _status) __sendRS485String(_str, _status)
+
+#endif
+
+#define Wait(_n) waitv _n
+
+/** @addtogroup StandardCAPIFunctions
+ * @{
+ */
+
+/** @defgroup cmathAPI cmath API
+ * Standard C cmath API functions.
+ * @{
+ */
+// standard firmware math functions written by Tamas Sorosy (www.sorosy.com)
+
+// X is any integer; Y is the sqrt value (0->max); if X<0, Y is the sqrt value of absolute X
+#define Sqrt(_X,_R) __SQRT(_X,_R)
+
+// X is any integer in degrees; Y is 100* the sin value (-100->100)
+#define Sin(_X,_R) __SIN(_X,_R)
+
+// X is any integer in degrees; Y is 100* the cos value (-100->100)
+#define Cos(_X,_R) __COS(_X,_R)
+
+// X is 100* the sin value (-100->100); Y is -90->90; Y is 101 if X is outside -100->100 range
+#define Asin(_X,_R) __ASIN(_X,_R)
+
+// X is 100* the cos value (-100->100); Y is 0->180; Y is -11 if X is outside -100->100 range
+#define Acos(_X,_R) __ACOS(_X,_R)
+
+#define bcd2dec(_bcd, _result) __bcd2dec(_bcd, _result)
+
+/** @} */ // end of cmathAPI group
+/** @} */ // end of StandardCAPIFunctions group
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup LowSpeedModule
+ * @{
+ */
+/** @defgroup LowSpeedModuleFunctions LowSpeed module functions
+ * Functions for accessing and modifying low speed module features.
+ * @{
+ */
+#define ReadI2CDeviceInfoEx(_port, _addr, _info, _strVal) __ReadI2CDeviceInfoEx(_port, _addr, _info, _strVal)
+#define ReadI2CDeviceInfo(_port, _info, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, _info, _strVal)
+#define ReadI2CVersionEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VERSION, _strVal)
+#define ReadI2CVersion(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VERSION, _strVal)
+#define ReadI2CVendorIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VENDOR_ID, _strVal)
+#define ReadI2CVendorId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VENDOR_ID, _strVal)
+#define ReadI2CDeviceIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_DEVICE_ID, _strVal)
+#define ReadI2CDeviceId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_DEVICE_ID, _strVal)
+
+#define I2CSendCommandEx(_port, _addr, _cmd, _result) __I2CSendCmd(_port, _addr, _cmd, _result)
+#define I2CSendCommand(_port, _cmd, _result) __I2CSendCmd(_port, 0x02, _cmd, _result)
+
+/** @} */ // end of LowSpeedModuleFunctions group
+/** @} */ // end of LowSpeedModule group
+/** @} */ // end of NXTFirmwareModules group
+
+
+/** @addtogroup ThirdPartyDevices
+ * @{
+ */
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// HiTechnic API ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup HiTechnicAPI
+ * @{
+ */
+
+#define SetSensorHTEOPD(_port, _bStd) __SetSensorHTEOPD(_port, _bStd)
+#define ReadSensorHTEOPD(_port, _val) __ReadSensorHTEOPD(_port, _val)
+#define SetSensorHTGyro(_port) __SetSensorHTGyro(_port)
+#define ReadSensorHTGyro(_p, _offset, _val) __ReadSensorHTGyro(_p, _offset, _val)
+
+#define ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) __ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4)
+
+#define HTPowerFunctionCommand(_port, _channel, _outa, _outb, _result) \
+  __HTPFComboDirect(_port, _channel, _outa, _outb, _result)
+
+#define HTPFComboDirect(_port, _channel, _outa, _outb, _result) \
+  __HTPFComboDirect(_port, _channel, _outa, _outb, _result)
+
+#define HTPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result) \
+  __HTPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result)
+
+#define HTPFSingleOutputCST(_port, _channel, _out, _func, _result) \
+  __HTPFSingleOutput(_port, _channel, _out, _func, TRUE, _result)
+
+#define HTPFSingleOutputPWM(_port, _channel, _out, _func, _result) \
+  __HTPFSingleOutput(_port, _channel, _out, _func, FALSE, _result)
+
+#define HTPFComboPWM(_port, _channel, _outa, _outb, _result) \
+  __HTPFComboPWM(_port, _channel, _outa, _outb, _result)
+
+#define HTPFTrain(_port, _channel, _func, _result) \
+  __HTIRTrain(_port, _channel, _func, TRUE, _result)
+
+#define HTIRTrain(_port, _channel, _func, _result) \
+  __HTIRTrain(_port, _channel, _func, FALSE, _result)
+
+#define HTPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result) \
+  __HTPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result)
+
+#define HTPFRepeat(_port, _count, _delay, _result) \
+  __HTPFRepeatLastCommand(_port, _count, _delay, _result)
+
+#define HTRCXSetIRLinkPort(_port) __HTRCXSetIRLinkPort(_port)
+#define HTRCXPoll(_src, _value, _result) __HTRCXPoll(_src, _value, _result)
+#define HTRCXBatteryLevel(_result) __HTRCXBatteryLevel(_result)
+#define HTRCXPing() __HTRCXOpNoArgs(RCX_PingOp)
+#define HTRCXDeleteTasks() __HTRCXOpNoArgs(RCX_DeleteTasksOp)
+#define HTRCXStopAllTasks() __HTRCXOpNoArgs(RCX_StopAllTasksOp)
+#define HTRCXPBTurnOff() __HTRCXOpNoArgs(RCX_PBTurnOffOp)
+#define HTRCXDeleteSubs() __HTRCXOpNoArgs(RCX_DeleteSubsOp)
+#define HTRCXClearSound() __HTRCXOpNoArgs(RCX_ClearSoundOp)
+#define HTRCXClearMsg() __HTRCXOpNoArgs(RCX_ClearMsgOp)
+#define HTRCXMuteSound() __HTRCXOpNoArgs(RCX_MuteSoundOp)
+#define HTRCXUnmuteSound() __HTRCXOpNoArgs(RCX_UnmuteSoundOp)
+#define HTRCXClearAllEvents() __HTRCXOpNoArgs(RCX_ClearAllEventsOp)
+#define HTRCXSetOutput(_outputs, _mode) __HTRCXSetOutput(_outputs, _mode)
+#define HTRCXSetDirection(_outputs, _dir) __HTRCXSetDirection(_outputs, _dir)
+#define HTRCXSetPower(_outputs, _pwrsrc, _pwrval) __HTRCXSetPower(_outputs, _pwrsrc, _pwrval)
+#define HTRCXOn(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_ON)
+#define HTRCXOff(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_OFF)
+#define HTRCXFloat(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_FLOAT)
+#define HTRCXToggle(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_TOGGLE)
+#define HTRCXFwd(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_FWD)
+#define HTRCXRev(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_REV)
+#define HTRCXOnFwd(_outputs) __HTRCXOnFwd(_outputs)
+#define HTRCXOnRev(_outputs) __HTRCXOnRev(_outputs)
+#define HTRCXOnFor(_outputs, _ms) __HTRCXOnFor(_outputs, _ms)
+#define HTRCXSetTxPower(_pwr) __HTRCXSetTxPower(_pwr)
+#define HTRCXPlaySound(_snd) __HTRCXPlaySound(_snd)
+#define HTRCXDeleteTask(_t) __HTRCXDeleteTask(_t)
+#define HTRCXStartTask(_t) __HTRCXStartTask(_t)
+#define HTRCXStopTask(_t) __HTRCXStopTask(_t)
+#define HTRCXSelectProgram(_prog) __HTRCXSelectProgram(_prog)
+#define HTRCXClearTimer(_timer) __HTRCXClearTimer(_timer)
+#define HTRCXSetSleepTime(_t) __HTRCXSetSleepTime(_t)
+#define HTRCXDeleteSub(_s) __HTRCXDeleteSub(_s)
+#define HTRCXClearSensor(_port) __HTRCXClearSensor(_port)
+#define HTRCXPlayToneVar(_varnum, _duration) __HTRCXPlayToneVar(_varnum, _duration)
+#define HTRCXSetWatch(_hours, _minutes) __HTRCXSetWatch(_hours, _minutes)
+#define HTRCXSetSensorType(_port, _type) __HTRCXSetSensorType(_port, _type)
+#define HTRCXSetSensorMode(_port, _mode) __HTRCXSetSensorMode(_port, _mode)
+#define HTRCXCreateDatalog(_size) __HTRCXCreateDatalog(_size)
+#define HTRCXAddToDatalog(_src, _value) __HTRCXAddToDatalog(_src, _value)
+#define HTRCXSendSerial(_first, _count) __HTRCXSendSerial(_first, _count)
+#define HTRCXRemote(_cmd) __HTRCXRemote(_cmd)
+#define HTRCXEvent(_src, _value) __HTRCXEvent(_src, _value)
+#define HTRCXPlayTone(_freq, _duration) __HTRCXPlayTone(_freq, _duration)
+#define HTRCXSelectDisplay(_src, _value) __HTRCXSelectDisplay(_src, _value)
+#define HTRCXPollMemory(_address, _result) __HTRCXPollMemory(_address, _result)
+#define HTRCXSetEvent(_evt, _src, _type) __HTRCXSetEvent(_evt, _src, _type)
+#define HTRCXSetGlobalOutput(_outputs, _mode) __HTRCXSetGlobalOutput(_outputs, _mode)
+#define HTRCXSetGlobalDirection(_outputs, _dir) __HTRCXSetGlobalDirection(_outputs, _dir)
+#define HTRCXSetMaxPower(_outputs, _pwrsrc, _pwrval) __HTRCXSetMaxPower(_outputs, _pwrsrc, _pwrval)
+#define HTRCXEnableOutput(_outputs) __HTRCXSetGlobalOutput(_outputs, RCX_OUT_ON)
+#define HTRCXDisableOutput(_outputs) __HTRCXSetGlobalOutput(_outputs, RCX_OUT_OFF)
+#define HTRCXInvertOutput(_outputs) __HTRCXSetGlobalDirection(_outputs, RCX_OUT_REV)
+#define HTRCXObvertOutput(_outputs) __HTRCXSetGlobalDirection(_outputs, RCX_OUT_FWD)
+#define HTRCXIncCounter(_counter) __HTRCXIncCounter(_counter)
+#define HTRCXDecCounter(_counter) __HTRCXDecCounter(_counter)
+#define HTRCXClearCounter(_counter) __HTRCXClearCounter(_counter)
+#define HTRCXSetPriority(_p) __HTRCXSetPriority(_p)
+#define HTRCXSetMessage(_msg) __HTRCXSetMessage(_msg)
+
+#define HTScoutCalibrateSensor() __HTRCXOpNoArgs(RCX_LSCalibrateOp)
+#define HTScoutMuteSound() __HTScoutMuteSound()
+#define HTScoutUnmuteSound() __HTScoutUnmuteSound()
+#define HTScoutSelectSounds(_grp) __HTScoutSelectSounds(_grp)
+#define HTScoutSetLight(_x) __HTScoutSetLight(_x)
+#define HTScoutSetSensorClickTime(_src, _value) __HTScoutSetSensorClickTime(_src, _value)
+#define HTScoutSetSensorHysteresis(_src, _value) __HTScoutSetSensorHysteresis(_src, _value)
+#define HTScoutSetSensorLowerLimit(_src, _value) __HTScoutSetSensorLowerLimit(_src, _value)
+#define HTScoutSetSensorUpperLimit(_src, _value) __HTScoutSetSensorUpperLimit(_src, _value)
+#define HTScoutSetEventFeedback(_src, _value) __HTScoutSetEventFeedback(_src, _value)
+#define HTScoutSendVLL(_src, _value) __HTScoutSendVLL(_src, _value)
+#define HTScoutSetScoutMode(_mode) __HTScoutSetScoutMode(_mode)
+
+#define ReadSensorHTCompass(_port, _value) __ReadSensorHTCompass(_port, _value)
+#define ReadSensorHTColorNum(_port, _value) __ReadSensorHTColorNum(_port, _value)
+#define ReadSensorHTIRSeekerDir(_port, _value) __ReadSensorHTIRSeekerDir(_port, _value)
+#define ReadSensorHTIRSeeker2Addr(_port, _addr, _value) __ReadSensorHTIRSeeker2Addr(_port, _addr, _value)
+
+#define ReadSensorHTAccel(_port, _x, _y, _z, _result) __ReadSensorHTAccel(_port, _x, _y, _z, _result)
+#define ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue, _result) __ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue, _result)
+#define ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result) __ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result)
+#define ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue, _result) __ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue, _result)
+#define ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) __ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result)
+#define ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result) __ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result)
+#define ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) __ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result)
+#define SetHTIRSeeker2Mode(_port, _mode, _result) __SetHTIRSeeker2Mode(_port, _mode, _result)
+
+#define SetHTColor2Mode(_port, _mode, _result) __SetHTColor2Mode(_port, _mode, _result)
+#define ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result) __ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result)
+#define ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result) __ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result)
+#define ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result) __ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result)
+#define ReadSensorHTIRReceiver(_port, _pfdata, _result) __ReadSensorHTIRReceiver(_port, _pfdata, _result)
+#define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result) __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result)
+
+/** @} */ // end of HiTechnicAPI group
+
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// MindSensors API ///////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup MindSensorsAPI
+ * @{
+ */
+
+#define SetSensorMSPressure(_port) __SetSensorMSPressure(_port)
+#define ReadSensorMSPressure(_port, _value) __ReadSensorMSPressure(_port, _value)
+#define ReadSensorMSPressureRaw(_port, _value) __ReadSensorMSPressureRaw(_port, _value)
+
+#define ReadSensorMSCompassEx(_port, _addr, _value) __ReadSensorMSCompassEx(_port, _addr, _value)
+#define ReadSensorMSCompass(_port, _value) __ReadSensorMSCompassEx(_port, 0x02, _value)
+#define ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, _result) __ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, _result)
+#define ReadSensorMSTilt(_port, _x, _y, _z, _result) __ReadSensorMSTiltEx(_port, 0x02, _x, _y, _z, _result)
+#define ReadSensorMSTiltEx(_port, _addr, _x, _y, _z, _result) __ReadSensorMSTiltEx(_port, _addr, _x, _y, _z, _result)
+#define ReadSensorMSAccel(_port, _x, _y, _z, _result) __ReadSensorMSAccelEx(_port, 0x02, _x, _y, _z, _result)
+#define ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, _result) __ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, _result)
+
+#define MSReadValueEx(_port, _addr, _reg, _bytes, _out, _result) __MSReadValue(_port, _addr, _reg, _bytes, _out, _result)
+#define MSReadValue(_port, _reg, _bytes, _out, _result) __MSReadValue(_port, 0x02, _reg, _bytes, _out, _result)
+
+#define MSEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
+#define MSEnergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ENERGIZED, _result)
+#define MSDeenergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_DEENERGIZED, _result)
+#define MSDeenergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_DEENERGIZED, _result)
+#define MSADPAOn(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_ON, _result)
+#define MSADPAOnEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_ON, _result)
+#define MSADPAOff(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_OFF, _result)
+#define MSADPAOffEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_OFF, _result)
+
+#define DISTNxGP2D12(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, _result)
+#define DISTNxGP2D120(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, _result)
+#define DISTNxGP2YA21(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, _result)
+#define DISTNxGP2YA02(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, _result)
+#define ReadDISTNxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST, 2, _out, _result)
+#define ReadDISTNxVoltage(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_VOLT, 2, _out, _result)
+#define ReadDISTNxModuleType(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_MODULE_TYPE, 1, _out, _result)
+#define ReadDISTNxNumPoints(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_NUM_POINTS, 1, _out, _result)
+#define ReadDISTNxMinDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MIN, 2, _out, _result)
+#define ReadDISTNxMaxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MAX, 2, _out, _result)
+
+#define DISTNxGP2D12Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D12, _result)
+#define DISTNxGP2D120Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D120, _result)
+#define DISTNxGP2YA21Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA21, _result)
+#define DISTNxGP2YA02Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA02, _result)
+#define ReadDISTNxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST, 2, _out, _result)
+#define ReadDISTNxVoltageEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_VOLT, 2, _out, _result)
+#define ReadDISTNxModuleTypeEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_MODULE_TYPE, 1, _out, _result)
+#define ReadDISTNxNumPointsEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_NUM_POINTS, 1, _out, _result)
+#define ReadDISTNxMinDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MIN, 2, _out, _result)
+#define ReadDISTNxMaxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MAX, 2, _out, _result)
+
+#define SetSensorMSDRODActive(_port) __SetSensorMSDRODActive(_port)
+#define SetSensorMSDRODInactive(_port) __SetSensorMSDRODInactive(_port)
+#define ReadSensorMSDROD(_port, _value) __ReadSensorMSDROD(_port, _value)
+
+#define PSPNxDigital(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_DIGITAL, _result)
+#define PSPNxAnalog(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_ANALOG, _result)
+#define PSPNxDigitalEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_DIGITAL, _result)
+#define PSPNxAnalogEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_ANALOG, _result)
+
+#define ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
+  __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result)
+
+#define ReadSensorMSPlayStation(_port, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
+  __ReadSensorMSPlayStationEx(_port, 0x02, _b1, _b2, _xleft, _yleft, _xright, _yright, _result)
+
+#define NRLink2400(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_2400, _result)
+#define NRLink4800(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_4800, _result)
+#define NRLinkFlush(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_FLUSH, _result)
+#define NRLinkIRLong(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_LONG, _result)
+#define NRLinkIRShort(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_SHORT, _result)
+#define NRLinkTxRaw(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, _result)
+#define NRLinkSetRCX(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, _result)
+#define NRLinkSetTrain(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, _result)
+#define NRLinkSetPF(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, _result)
+
+#define NRLink2400Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_2400, _result)
+#define NRLink4800Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_4800, _result)
+#define NRLinkFlushEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result)
+#define NRLinkIRLongEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_LONG, _result)
+#define NRLinkIRShortEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_SHORT, _result)
+#define NRLinkTxRawEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_TX_RAW, _result)
+#define NRLinkSetRCXEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_RCX, _result)
+#define NRLinkSetTrainEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_TRAIN, _result)
+#define NRLinkSetPFEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_PF, _result)
+
+#define RunNRLinkMacroEx(_port, _addr, _macro, _result) __RunNRLinkMacroEx(_port, _addr, _macro, _result)
+#define RunNRLinkMacro(_port, _macro, _result) __RunNRLinkMacroEx(_port, 0x02, _macro, _result)
+
+#define ReadNRLinkStatusEx(_port, _addr, _value, _result) __ReadNRLinkStatusEx(_port, _addr, _value, _result)
+#define ReadNRLinkStatus(_port, _value, _result) __ReadNRLinkStatusEx(_port, 0x02, _value, _result)
+
+#define WriteNRLinkBytesEx(_port, _addr, _bytes, _result) __WriteNRLinkBytes(_port, _addr, _bytes, _result)
+#define WriteNRLinkBytes(_port, _bytes, _result) __WriteNRLinkBytes(_port, 0x02, _bytes, _result)
+
+#define ReadNRLinkBytesEx(_port, _addr, _bytes, _result) __ReadNRLinkBytes(_port, _addr, _bytes, _result)
+#define ReadNRLinkBytes(_port, _bytes, _result) __ReadNRLinkBytes(_port, 0x02, _bytes, _result)
+
+#define MSPFComboDirectEx(_port, _addr, _channel, _outa, _outb, _result) \
+  __MSPFComboDirect(_port, _addr, _channel, _outa, _outb, _result)
+
+#define MSPFComboDirect(_port, _channel, _outa, _outb, _result) \
+  __MSPFComboDirect(_port, 0x02, _channel, _outa, _outb, _result)
+
+#define MSPFSinglePinEx(_port, _addr, _channel, _out, _pin, _func, _cont, _result) \
+  __MSPFSinglePin(_port, _addr, _channel, _out, _pin, _func, _cont, _result)
+
+#define MSPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result) \
+  __MSPFSinglePin(_port, 0x02, _channel, _out, _pin, _func, _cont, _result)
+
+#define MSPFSingleOutputCSTEx(_port, _addr, _channel, _out, _func, _result) \
+  __MSPFSingleOutput(_port, _addr, _channel, _out, _func, TRUE, _result)
+
+#define MSPFSingleOutputCST(_port, _channel, _out, _func, _result) \
+  __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, TRUE, _result)
+
+#define MSPFSingleOutputPWMEx(_port, _addr, _channel, _out, _func, _result) \
+  __MSPFSingleOutput(_port, _addr, _channel, _out, _func, FALSE, _result)
+
+#define MSPFSingleOutputPWM(_port, _channel, _out, _func, _result) \
+  __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, FALSE, _result)
+
+#define MSPFComboPWMEx(_port, _addr, _channel, _outa, _outb, _result) \
+  __MSPFComboPWM(_port, _addr, _channel, _outa, _outb, _result)
+
+#define MSPFComboPWM(_port, _channel, _outa, _outb, _result) \
+  __MSPFComboPWM(_port, 0x02, _channel, _outa, _outb, _result)
+
+#define MSPFTrainEx(_port, _addr, _channel, _func, _result) \
+  __MSIRTrain(_port, _addr, _channel, _func, TRUE, _result)
+
+#define MSPFTrain(_port, _channel, _func, _result) \
+  __MSIRTrain(_port, 0x02, _channel, _func, TRUE, _result)
+
+#define MSIRTrainEx(_port, _addr, _channel, _func, _result) \
+  __MSIRTrain(_port, _addr, _channel, _func, FALSE, _result)
+
+#define MSIRTrain(_port, _channel, _func, _result) \
+  __MSIRTrain(_port, 0x02, _channel, _func, FALSE, _result)
+
+#define MSPFRawOutputEx(_port, _addr, _nibble0, _nibble1, _nibble2, _result) \
+  __MSPFRawOutput(_port, _addr, _nibble0, _nibble1, _nibble2, _result)
+
+#define MSPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result) \
+  __MSPFRawOutput(_port, 0x02, _nibble0, _nibble1, _nibble2, _result)
+
+#define MSPFRepeatEx(_port, _addr, _count, _delay, _result) \
+  __MSPFRepeatLastCommand(_port, _addr, _count, _delay, _result)
+
+#define MSPFRepeat(_port, _count, _delay, _result) \
+  __MSPFRepeatLastCommand(_port, 0x02, _count, _delay, _result)
+
+#define MSRCXSetNRLinkPortEx(_port, _addr) __MSRCXSetNRLink(_port, _addr)
+#define MSRCXSetNRLinkPort(_port) __MSRCXSetNRLink(_port, 0x02)
+#define MSRCXPoll(_src, _value, _result) __MSRCXPoll(_src, _value, _result)
+#define MSRCXBatteryLevel(_result) __MSRCXBatteryLevel(_result)
+#define MSRCXPing() __MSRCXOpNoArgs(RCX_PingOp)
+#define MSRCXDeleteTasks() __MSRCXOpNoArgs(RCX_DeleteTasksOp)
+#define MSRCXStopAllTasks() __MSRCXOpNoArgs(RCX_StopAllTasksOp)
+#define MSRCXPBTurnOff() __MSRCXOpNoArgs(RCX_PBTurnOffOp)
+#define MSRCXDeleteSubs() __MSRCXOpNoArgs(RCX_DeleteSubsOp)
+#define MSRCXClearSound() __MSRCXOpNoArgs(RCX_ClearSoundOp)
+#define MSRCXClearMsg() __MSRCXOpNoArgs(RCX_ClearMsgOp)
+#define MSRCXMuteSound() __MSRCXOpNoArgs(RCX_MuteSoundOp)
+#define MSRCXUnmuteSound() __MSRCXOpNoArgs(RCX_UnmuteSoundOp)
+#define MSRCXClearAllEvents() __MSRCXOpNoArgs(RCX_ClearAllEventsOp)
+#define MSRCXSetOutput(_outputs, _mode) __MSRCXSetOutput(_outputs, _mode)
+#define MSRCXSetDirection(_outputs, _dir) __MSRCXSetDirection(_outputs, _dir)
+#define MSRCXSetPower(_outputs, _pwrsrc, _pwrval) __MSRCXSetPower(_outputs, _pwrsrc, _pwrval)
+#define MSRCXOn(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_ON)
+#define MSRCXOff(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_OFF)
+#define MSRCXFloat(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_FLOAT)
+#define MSRCXToggle(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_TOGGLE)
+#define MSRCXFwd(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_FWD)
+#define MSRCXRev(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_REV)
+#define MSRCXOnFwd(_outputs) __MSRCXOnFwd(_outputs)
+#define MSRCXOnRev(_outputs) __MSRCXOnRev(_outputs)
+#define MSRCXOnFor(_outputs, _ms) __MSRCXOnFor(_outputs, _ms)
+#define MSRCXSetTxPower(_pwr) __MSRCXSetTxPower(_pwr)
+#define MSRCXPlaySound(_snd) __MSRCXPlaySound(_snd)
+#define MSRCXDeleteTask(_t) __MSRCXDeleteTask(_t)
+#define MSRCXStartTask(_t) __MSRCXStartTask(_t)
+#define MSRCXStopTask(_t) __MSRCXStopTask(_t)
+#define MSRCXSelectProgram(_prog) __MSRCXSelectProgram(_prog)
+#define MSRCXClearTimer(_timer) __MSRCXClearTimer(_timer)
+#define MSRCXSetSleepTime(_t) __MSRCXSetSleepTime(_t)
+#define MSRCXDeleteSub(_s) __MSRCXDeleteSub(_s)
+#define MSRCXClearSensor(_port) __MSRCXClearSensor(_port)
+#define MSRCXPlayToneVar(_varnum, _duration) __MSRCXPlayToneVar(_varnum, _duration)
+#define MSRCXSetWatch(_hours, _minutes) __MSRCXSetWatch(_hours, _minutes)
+#define MSRCXSetSensorType(_port, _type) __MSRCXSetSensorType(_port, _type)
+#define MSRCXSetSensorMode(_port, _mode) __MSRCXSetSensorMode(_port, _mode)
+#define MSRCXCreateDatalog(_size) __MSRCXCreateDatalog(_size)
+#define MSRCXAddToDatalog(_src, _value) __MSRCXAddToDatalog(_src, _value)
+#define MSRCXSendSerial(_first, _count) __MSRCXSendSerial(_first, _count)
+#define MSRCXRemote(_cmd) __MSRCXRemote(_cmd)
+#define MSRCXEvent(_src, _value) __MSRCXEvent(_src, _value)
+#define MSRCXPlayTone(_freq, _duration) __MSRCXPlayTone(_freq, _duration)
+#define MSRCXSelectDisplay(_src, _value) __MSRCXSelectDisplay(_src, _value)
+#define MSRCXPollMemory(_address, _result) __MSRCXPollMemory(_address, _result)
+#define MSRCXSetEvent(_evt, _src, _type) __MSRCXSetEvent(_evt, _src, _type)
+#define MSRCXSetGlobalOutput(_outputs, _mode) __MSRCXSetGlobalOutput(_outputs, _mode)
+#define MSRCXSetGlobalDirection(_outputs, _dir) __MSRCXSetGlobalDirection(_outputs, _dir)
+#define MSRCXSetMaxPower(_outputs, _pwrsrc, _pwrval) __MSRCXSetMaxPower(_outputs, _pwrsrc, _pwrval)
+#define MSRCXEnableOutput(_outputs) __MSRCXSetGlobalOutput(_outputs, RCX_OUT_ON)
+#define MSRCXDisableOutput(_outputs) __MSRCXSetGlobalOutput(_outputs, RCX_OUT_OFF)
+#define MSRCXInvertOutput(_outputs) __MSRCXSetGlobalDirection(_outputs, RCX_OUT_REV)
+#define MSRCXObvertOutput(_outputs) __MSRCXSetGlobalDirection(_outputs, RCX_OUT_FWD)
+#define MSRCXCalibrateEvent(_evt, _low, _hi, _hyst) __MSRCXCalibrateEvent(_evt, _low, _hi, _hyst)
+#define MSRCXSetVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SetVarOp, _varnum, _src, _value)
+#define MSRCXSumVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SumVarOp, _varnum, _src, _value)
+#define MSRCXSubVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SubVarOp, _varnum, _src, _value)
+#define MSRCXDivVar(_varnum, _src, _value) __MSRCXVarOp(RCX_DivVarOp, _varnum, _src, _value)
+#define MSRCXMulVar(_varnum, _src, _value) __MSRCXVarOp(RCX_MulVarOp, _varnum, _src, _value)
+#define MSRCXSgnVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SgnVarOp, _varnum, _src, _value)
+#define MSRCXAbsVar(_varnum, _src, _value) __MSRCXVarOp(RCX_AbsVarOp, _varnum, _src, _value)
+#define MSRCXAndVar(_varnum, _src, _value) __MSRCXVarOp(RCX_AndVarOp, _varnum, _src, _value)
+#define MSRCXOrVar(_varnum, _src, _value) __MSRCXVarOp(RCX_OrVarOp, _varnum, _src, _value)
+#define MSRCXSet(_dstsrc, _dstval, _src, _value) __MSRCXSet(_dstsrc, _dstval, _src, _value)
+#define MSRCXUnlock() __MSRCXUnlock()
+#define MSRCXReset() __MSRCXReset()
+#define MSRCXBoot() __MSRCXBoot()
+#define MSRCXSetUserDisplay(_src, _value, _precision) __MSRCXSetUserDisplay(_src, _value, _precision)
+#define MSRCXIncCounter(_counter) __MSRCXIncCounter(_counter)
+#define MSRCXDecCounter(_counter) __MSRCXDecCounter(_counter)
+#define MSRCXClearCounter(_counter) __MSRCXClearCounter(_counter)
+#define MSRCXSetPriority(_p) __MSRCXSetPriority(_p)
+#define MSRCXSetMessage(_msg) __MSRCXSetMessage(_msg)
+
+#define MSScoutCalibrateSensor() __MSRCXOpNoArgs(RCX_LSCalibrateOp)
+#define MSScoutMuteSound() __MSScoutMuteSound()
+#define MSScoutUnmuteSound() __MSScoutUnmuteSound()
+#define MSScoutSelectSounds(_grp) __MSScoutSelectSounds(_grp)
+#define MSScoutSetLight(_x) __MSScoutSetLight(_x)
+#define MSScoutSetCounterLimit(_ctr, _src, _value) __MSScoutSetCounterLimit(_ctr, _src, _value)
+#define MSScoutSetTimerLimit(_tmr, _src, _value) __MSScoutSetTimerLimit(_tmr, _src, _value)
+#define MSScoutSetSensorClickTime(_src, _value) __MSScoutSetSensorClickTime(_src, _value)
+#define MSScoutSetSensorHysteresis(_src, _value) __MSScoutSetSensorHysteresis(_src, _value)
+#define MSScoutSetSensorLowerLimit(_src, _value) __MSScoutSetSensorLowerLimit(_src, _value)
+#define MSScoutSetSensorUpperLimit(_src, _value) __MSScoutSetSensorUpperLimit(_src, _value)
+#define MSScoutSetEventFeedback(_src, _value) __MSScoutSetEventFeedback(_src, _value)
+#define MSScoutSendVLL(_src, _value) __MSScoutSendVLL(_src, _value)
+#define MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) __MSScoutSetScoutRules(_m, _t, _l, _tm, _fx)
+#define MSScoutSetScoutMode(_mode) __MSScoutSetScoutMode(_mode)
+
+/** @} */ // end of MindSensorsAPI group
+/** @} */ // end of ThirdPartyDevices group
+
+#define SetSensorTemperature(_port) SetSensorLowspeed(_port)
+
+#define __TempSendCmd(_port, _cmd, _result) \
+  __MSWriteToRegister(_port, TEMP_I2C_ADDRESS, TEMP_REG_CONFIG, _cmd, _result)
+
+#define TemperatureResolution(_port, _cmd, _result) __TempSendCmd(_port, _cmd, _result)
+
+/*
+// R1/R0
+#define TEMP_RES_12BIT     0x60
+#define TEMP_RES_11BIT     0x40
+#define TEMP_RES_10BIT     0x20
+#define TEMP_RES_9BIT      0x00
+// SD (shutdown mode)
+#define TEMP_SD_CONTINUOUS 0x00
+#define TEMP_SD_SHUTDOWN   0x01
+// TM (thermostat mode)
+#define TEMP_TM_COMPARATOR 0x00
+#define TEMP_TM_INTERRUPT  0x02
+// OS (one shot)
+#define TEMP_OS_ONESHOT    0x80
+// F1/F0 (fault queue)
+#define TEMP_FQ_1          0x00
+#define TEMP_FQ_2          0x08
+#define TEMP_FQ_4          0x10
+#define TEMP_FQ_6          0x18
+// POL (polarity)
+#define TEMP_POL_LOW       0x00
+#define TEMP_POL_HIGH      0x04
+
+#define TEMP_I2C_ADDRESS   0x98
+#define TEMP_REG_TEMP      0x00
+#define TEMP_REG_CONFIG    0x01
+#define TEMP_REG_TLOW      0x02
+#define TEMP_REG_THIGH     0x03
+*/
+
+/** @addtogroup GraphicsLibrary
+ * @{
+ */
+
+/*--------------------------------------------------------------------------
+ * File          : nbcGL.nbc
+ * Description   : Data and subroutines for a very simple 3D engine.
+ * Programmed by : Arno van der Vegt, avandervegt@home.nl
+ *--------------------------------------------------------------------------/
+
+/**
+ * Initialize graphics library.
+ * Setup all the necessary data for the graphics library to function. Call this
+ * function before any other graphics library routine.
+ */
+#define glInit() __glInit()
+
+/**
+ * Set graphics library options.
+ * Adjust graphic library settings for circle size and cull mode.
+ *
+ * \param _glType The setting type.  See \ref GLConstantsSettings.
+ * \param _glValue The setting value. For culling modes see \ref GLConstantsCullMode.
+ */
+#define glSet(_glType, _glValue) __glSet(_glType, _glValue)
+
+/**
+ * Begin defining an object.
+ * Start the process of defining a graphics library object using low level
+ * functions such as \ref glBegin, \ref glAddVertex, and \ref glEnd.
+ *
+ * \param _glObjId The object index of the new object being created.
+ */
+#define glBeginObject(_glObjId) __glBeginObject(_glObjId)
+
+/**
+ * Stop defining an object.
+ * Finish the process of defining a graphics library object.  Call this function
+ * after you have completed the object definition.
+ */
+#define glEndObject() __glEndObject()
+
+/**
+ * Perform an object action.
+ * Execute the specified action on the specified object.
+ *
+ * \param _glObjectId The object id.
+ * \param _glAction The action to perform on the object. See \ref GLConstantsActions.
+ * \param _glValue The setting value.
+ */
+#define glObjectAction(_glObjectId, _glAction, _glValue) __glObjectAction(_glObjectId, _glAction, _glValue)
+
+/**
+ * Add a vertex to an object.
+ * Add a vertex to an object currently being defined.  This function should
+ * only be used between \ref glBegin and \ref glEnd which are themselves
+ * nested within a \ref glBeginObject and \ref glEndObject pair.
+ *
+ * \param _glX The X axis coordinate.
+ * \param _glY The Y axis coordinate.
+ * \param _glZ The Z axis coordinate.
+ */
+#define glAddVertex(_glX, _glY, _glZ) __glAddVertex(_glX, _glY, _glZ)
+
+/**
+ * Begin a new polygon for the current object.
+ * Start defining a polygon surface for the current graphics object using
+ * the specified begin mode.
+ *
+ * \param _glBeginMode The desired mode.  See \ref GLConstantsBeginModes.
+ */
+#define glBegin(_glBeginMode) __glBegin(_glBeginMode)
+
+/**
+ * Finish a polygon for the current object.
+ * Stop defining a polgyon surface for the current graphics object.
+ */
+#define glEnd() __glEnd()
+
+/**
+ * Begin a new render.
+ * Start the process of rendering the existing graphic objects.
+ */
+#define glBeginRender() __glBeginRender()
+
+/**
+ * Call a graphic object.
+ * Tell the graphics library that you want it to include the specified
+ * object in the render.
+ *
+ * \param _glObjectId The desired object id.
+ */
+#define glCallObject(_glObjectId) __glCallObject(_glObjectId)
+
+/**
+ * Finish the current render.
+ * Rotate the vertex list, clear the screen, and draw the rendered objects
+ * to the LCD.
+ */
+#define glFinishRender() __glFinishRender()
+
+/**
+ * Set the X axis angle.
+ * Set the X axis angle to the specified value.
+ *
+ * \param _glValue The new X axis angle.
+ */
+#define glSetAngleX(_glValue) __glSetAngleX(_glValue)
+
+/**
+ * Add to the X axis angle.
+ * Add the specified value to the existing X axis angle.
+ *
+ * \param _glValue The value to add to the X axis angle.
+ */
+#define glAddToAngleX(_glValue) __glAddToAngleX(_glValue)
+
+/**
+ * Set the Y axis angle.
+ * Set the Y axis angle to the specified value.
+ *
+ * \param _glValue The new Y axis angle.
+ */
+#define glSetAngleY(_glValue) __glSetAngleY(_glValue)
+
+/**
+ * Add to the Y axis angle.
+ * Add the specified value to the existing Y axis angle.
+ *
+ * \param _glValue The value to add to the Y axis angle.
+ */
+#define glAddToAngleY(_glValue) __glAddToAngleY(_glValue)
+
+/**
+ * Set the Z axis angle.
+ * Set the Z axis angle to the specified value.
+ *
+ * \param _glValue The new Z axis angle.
+ */
+#define glSetAngleZ(_glValue) __glSetAngleZ(_glValue)
+
+/**
+ * Add to the Z axis angle.
+ * Add the specified value to the existing Z axis angle.
+ *
+ * \param _glValue The value to add to the Z axis angle.
+ */
+#define glAddToAngleZ(_glValue) __glAddToAngleZ(_glValue)
+
+/**
+ * Table-based sine scaled by 32768.
+ * Return the sine of the specified angle in degrees.  The result is scaled
+ * by 32768.
+ *
+ * \param _glAngle The angle in degrees.
+ * \param _glResult The sine value scaled by 32768.
+ */
+#define glSin32768(_glAngle, _glResult) __glSin32768(_glAngle, _glResult)
+
+/**
+ * Table-based cosine scaled by 32768.
+ * Return the cosine of the specified angle in degrees.  The result is scaled
+ * by 32768.
+ *
+ * \param _glAngle The angle in degrees.
+ * \param _glResult The cosine value scaled by 32768.
+ */
+#define glCos32768(_glAngle, _glResult) __glCos32768(_glAngle, _glResult)
+
+/**
+ * Create a 3D box.
+ * Define a 3D box using the specified begin mode for all faces. The center
+ * of the box is at the origin of the XYZ axis with width, height, and depth
+ * specified via the glSizeX, glSizeY, and glSizeZ parameters.
+ *
+ * \param _glMode The begin mode for each surface.  See \ref GLConstantsBeginModes.
+ * \param _glSizeX The X axis size (width).
+ * \param _glSizeY The Y axis size (height).
+ * \param _glSizeZ The Z axis size (depth).
+ * \param _glObjId The object ID of the new object.
+ */
+#define glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId) __glBox(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)
+
+/**
+ * Create a 3D cube.
+ * Define a 3D cube using the specified begin mode for all faces. The center
+ * of the box is at the origin of the XYZ axis with equal width, height, and depth
+ * specified via the glSize parameter.
+ *
+ * \param _glMode The begin mode for each surface.  See \ref GLConstantsBeginModes.
+ * \param _glSize The cube's width, height, and depth.
+ * \param _glObjId The object ID of the new object.
+ */
+#define glCube(_glMode, _glSize, _glObjId) __glBox(_glMode, _glSize, _glSize, _glSize, _glObjId)
+
+/**
+ * Create a 3D pyramid.
+ * Define a 3D pyramid using the specified begin mode for all faces. The center
+ * of the pyramid is at the origin of the XYZ axis with width, height, and depth
+ * specified via the glSizeX, glSizeY, and glSizeZ parameters.
+ *
+ * \param _glMode The begin mode for each surface.  See \ref GLConstantsBeginModes.
+ * \param _glSizeX The X axis size (width).
+ * \param _glSizeY The Y axis size (height).
+ * \param _glSizeZ The Z axis size (depth).
+ * \param _glObjId The object ID of the new object.
+ */
+#define glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId) __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)
+
+/** @} */ // end of GraphicsLibrary group
+
 
 #endif // NXTDEFS__H
