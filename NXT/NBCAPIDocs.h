@@ -1716,6 +1716,11 @@
  *
  */
 
+/** @defgroup cmpconst Comparison Constants
+ * Logical comparison operators for use in brtst, tst, tstset, brcmp,
+ * cmp, and cmpset.
+ */
+
 /** @page cmpstmnt Comparison Statements
  * \brief Comparison Statements
  *

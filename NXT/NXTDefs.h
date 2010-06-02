@@ -22,18 +22,16 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-05-31
- * version 61
+ * date 2010-06-01
+ * version 62
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H 1
 
 #include "NBCCommon.h"
 
-/** @defgroup cmpconst Comparison Constants
- * Logical comparison operators for use in brtst, tst, tstset, brcmp,
- * cmp, and cmpset.
- *  @{
+/** @addtogroup cmpconst
+ * @{
  */
 #define LT   0x00 /*!< The first value is less than the second. */
 #define GT   0x01 /*!< The first value is greater than the second. */
