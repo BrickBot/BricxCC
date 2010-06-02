@@ -7,10 +7,13 @@ string ConcStringInt(string s,int t)
 task main()
 {
   int fooBarIsh;
+
+
   while (fooBarIsh = Random())
   {
     NumOut(0, LCD_LINE1, fooBarIsh);
   }
+
   for (int i = 0; Sensor(S1) > i; i++)
   {
   }
@@ -18,4 +21,5 @@ task main()
   TextOut(0, LCD_LINE1, test);
   int xyz = fooBarIsh = 23;
   NumOut(0, LCD_LINE1, xyz);
+  while(true);
 }
