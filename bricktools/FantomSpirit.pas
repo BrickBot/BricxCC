@@ -3537,9 +3537,13 @@ end;
 
 function TFantomSpirit.GetUseBT: Boolean;
 begin
+  DebugFmt('TFantomSpirit.GetUseBT: fUseBT was = %s', [BoolToStr(fUseBT)]);
+  DebugFmt('TFantomSpirit.GetUseBT: fResPort = %s', [fResPort]);
+  DebugFmt('TFantomSpirit.GetUseBT: (Pos(''BTH'', fResPort) > 0) = %s', [BoolToStr((Pos('BTH', fResPort) > 0))]);
   Result := fUseBT or (Pos('BTH', fResPort) > 0);
   if Result then
     fUseBT := True;
+  DebugFmt('TFantomSpirit.GetUseBT: fUseBT now = %s', [BoolToStr(fUseBT)]);
 end;
 
 procedure TFantomSpirit.NXTInitializeResourceNames;
