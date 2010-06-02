@@ -659,14 +659,17 @@ begin
     TOK_ARRAYBYTEDEF..TOK_ARRAYBYTEDEF4     : Result := Ord(dt) - Ord(TOK_ARRAYBYTEDEF) + 1;
     TOK_ARRAYUSHORTDEF..TOK_ARRAYUSHORTDEF4 : Result := Ord(dt) - Ord(TOK_ARRAYUSHORTDEF) + 1;
     TOK_ARRAYULONGDEF..TOK_ARRAYULONGDEF4   : Result := Ord(dt) - Ord(TOK_ARRAYULONGDEF) + 1;
+    TOK_STRINGDEF                           : Result := 1; // a string is an array of byte  
   else
     Result := 0;
   end;
 end;
 
-function IsArrayType(dt: char): boolean;
+function IsArrayType(dt: char; bAllowStrings : boolean = False): boolean;
 begin
   Result := (dt >= TOK_ARRAYFLOAT) and (dt <= TOK_ARRAYULONGDEF4);
+  if not Result and bAllowStrings then
+    Result := dt = TOK_STRINGDEF;
 end;
 
 function IsUDT(dt: char): boolean;
@@ -686,6 +689,7 @@ begin
     TOK_ARRAYBYTEDEF..TOK_ARRAYBYTEDEF4     : Result := TOK_BYTEDEF;
     TOK_ARRAYUSHORTDEF..TOK_ARRAYUSHORTDEF4 : Result := TOK_USHORTDEF;
     TOK_ARRAYULONGDEF..TOK_ARRAYULONGDEF4   : Result := TOK_ULONGDEF;
+    TOK_STRINGDEF                           : Result := TOK_BYTEDEF; // a string is an array of byte
   else
     Result := dt;
   end;
@@ -3709,7 +3713,7 @@ begin
                 pdt := DataType(parvalue);
                 if fp.IsArray then
                 begin
-                  if not IsArrayType(pdt) then
+                  if not IsArrayType(pdt, True) then
                     Expected(sArrayDatatype);
                 end;
                 fInputs.AddObject(parvalue, fp);
