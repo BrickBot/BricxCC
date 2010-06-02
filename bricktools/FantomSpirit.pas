@@ -293,7 +293,7 @@ type
 implementation
 
 uses
-  rcx_constants, Contnrs, Math, uNXTConstants, uCommonUtils,
+  rcx_constants, Contnrs, Math, uNXTConstants, uCommonUtils, uDebugLogging,
   {$IFNDEF FPC}
   FANTOM
   {$ELSE}
@@ -852,6 +852,7 @@ begin
   Result := inherited Close;
   if IsOpen then
   begin
+    DebugLog('TFantomSpirit.Close: Closing our open connection');
     fResPort   := ''; // clear this so that it gets looked up again when opening
     fUseBT     := False;
     status     := kStatusNoError;
@@ -870,9 +871,11 @@ var
   pairedResNamePC : array[0..54] of Char;
   resName, pName, bName : string;
 begin
+  DebugLog('TFantomSpirit.Open: Checking whether the connection is already open');
   Result := IsOpen;
   if not FantomAPILoaded then Exit;
   if not Result then begin
+    DebugLog('TFantomSpirit.Open: IsOpen returned FALSE');
     if fResPort = '' then
       LookupResourceName;
     if fResPort = '' then
@@ -880,6 +883,8 @@ begin
     resName := '';
     pName := AnsiUpperCase(fResPort);
     bName := AnsiUpperCase(BluetoothName);
+    DebugFmt('TFantomSpirit.Open: pName = "%s"', [pName]);
+    DebugFmt('TFantomSpirit.Open: bName = "%s"', [bName]);
     if (Length(pName) > 4) and (Pos('::', pName) > 0) then
     begin
       // we think this is a resource string
@@ -889,61 +894,56 @@ begin
       // if we are using a brick resource string we think we have already paired
       // with the PC so try without pairing.  If that fails then try again after
       // pairing.
+      DebugLog('TFantomSpirit.Open: Already have a full brick resource string so try to connect using it');
       fNXTHandle := createNXT(PChar(pName), status, 0);
       if status >= kStatusNoError then
       begin
+        DebugLog('TFantomSpirit.Open: First attempt to createNXT worked.  All done.');
         fActive := True;
         Result := True;
       end
       else
       begin
+        DebugFmt('TFantomSpirit.Open: First attempt to createNXT failed.  Status = %d.', [status]);
         // if bluetooth then try again after pairing
         if UseBluetooth then
         begin
+          DebugLog('TFantomSpirit.Open: UseBluetooth is TRUE');
           status := kStatusNoError;
+          DebugLog('TFantomSpirit.Open: Try pairing with pin = 1234');
           pairBluetooth(PChar(pName), '1234', pairedResNamePC, status);
           pName := pairedResNamePC;
+          DebugFmt('TFantomSpirit.Open: pName now = "%s"', [pName]);
           if status >= kStatusNoError then
           begin
+            DebugFmt('TFantomSpirit.Open: status = %d', [status]);
             status := kStatusNoError;
+            DebugLog('TFantomSpirit.Open: Try calling createNXT again');
             fNXTHandle := createNXT(PChar(pName), status, 0);
             if status >= kStatusNoError then
             begin
+              DebugLog('TFantomSpirit.Open: Second attempt to createNXT worked.  All done.');
               fActive := True;
               Result := True;
             end;
           end;
         end;
       end;
-(*
-      if UseBluetooth then // resource string starts with BTH == use bluetooth
-      begin
-//        unpairBluetooth(PChar(pName), status);
-        pairBluetooth(PChar(pName), '1234', pairedResNamePC, status);
-        pName := pairedResNamePC;
-      end;
-      if status >= kStatusNoError then
-      begin
-        status := kStatusNoError;
-        fNXTHandle := createNXT(PChar(pName), status, 0);
-        if status >= kStatusNoError then
-        begin
-          fActive := True;
-          Result := True;
-        end;
-      end;
-*)
     end
     else
     begin
+      DebugLog('TFantomSpirit.Open: We do not already have a full brick resource string');
       // use Fantom API to obtain a handle to an NXT on either USB or bluetooth
       status := kStatusNoError;
+      DebugLog('TFantomSpirit.Open: calling createNXTIterator to search for devices');
       nih := createNXTIterator(Ord(UseBluetooth), BluetoothSearchTimeout, status);
       while status >= kStatusNoError do
       begin
         status2 := kStatusNoError;
+        DebugLog('TFantomSpirit.Open: calling iNXTIterator_getName');
         iNXTIterator_getName(nih, resNamePC, status2);
         resName := AnsiUpperCase(resNamePC);
+        DebugFmt('TFantomSpirit.Open: current resource name = "%s"', [resNamePC]);
         if UseBluetooth then
         begin
           if bName = '' then
@@ -960,20 +960,25 @@ begin
       if UseBluetooth then
       begin
         status := kStatusNoError;
+        DebugLog('TFantomSpirit.Open: Try pairing with pin = 1234');
         pairBluetooth(resNamePC, '1234', pairedResNamePC, status);
         resName := AnsiUpperCase(pairedResNamePC);
+        DebugFmt('TFantomSpirit.Open: resource name now = "%s"', [resName]);
       end;
       if status >= kStatusNoError then
       begin
+        DebugLog('TFantomSpirit.Open: calling iNXTIterator_getNXT');
         fNXTHandle := iNXTIterator_getNXT(nih, status);
         if status >= kStatusNoError then
         begin
+          DebugFmt('TFantomSpirit.Open: Got NXT with resName = "%s".  All done.', [resName]);
           SetResourcePort(resName);
           fActive := True;
           Result := True;
         end;
       end;
       status := kStatusNoError;
+      DebugLog('TFantomSpirit.Open: calling destroyNXTIterator');
       destroyNXTIterator(nih, status);
     end;
   end;

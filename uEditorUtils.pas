@@ -63,7 +63,7 @@ uses
   uGlobals, dlgConfirmReplace, dlgSearchText, rcx_constants, uSpirit,
   dlgReplaceText, uMiscDefines, brick_common, CodeUnit, uLocalizedStrings,
   uProgram, uNBCInterface, ParamUtils,
-  uPSDisassembly, uCompStatus;
+  uPSDisassembly, uCompStatus, uDebugLogging;
 
 function GetLineNumber(const aY : integer) : integer;
 begin
@@ -846,16 +846,18 @@ function CompileIt(DisplayErrorsProc : TDisplayErrorsProc;
   download : Boolean; run : Boolean; sceHandler : TCompilerStatusChangeEvent;
   osHandler : TNotifyEvent): boolean;
 var
-  ext, SaveDir, tempDir, commandstr : string;
+  ext, SaveDir, tempDir, newDir, commandstr : string;
   wd, statusStr, outStr : string;
   i : Integer;
   NQC_Result : Longint;
   execError : Boolean;
   H : TSynCustomHighlighter;
   SL : TStringList;
+  TI : TTransferItem;
 begin
   outStr := '';
   H := GetActiveEditorHighlighter;
+  DebugFmt('CompileIt: ActiveEditorHighlighter name = %s', [H.LanguageName]);
 
   // first off we should hide any previous errors
   DisplayErrorsProc(false);
@@ -863,17 +865,22 @@ begin
 // switch to modal form to prevent doing other things in
 // the GUI while downloading/compiling
   tempDir := TempPath;
+  DebugFmt('CompileIt: temp directory = %s', [tempDir]);
   {Save current directory}
   SaveDir:= GetCurrentDir;
+  DebugFmt('CompileIt: saved directory = %s', [SaveDir]);
   if not FileIsCPPOrPascalOrJava(H) then
-    SetCurrentDir(ProgramDir)
+    newDir := ProgramDir
   else
-    SetCurrentDir(ExtractFilePath(fName));
+    newDir := ExtractFilePath(fName);
+  SetCurrentDir(newDir);
+  DebugFmt('CompileIt: SetCurrentDir = %s', [newDir]);
   try
     if FileIsCPPOrPascalOrJava(H) then
     begin
       // generate the Makefile
       GenerateMakefile(fName, run);
+      DebugLog('CompileIt: GenerateMakefile called');
     end
     else if not FileIsROPS(H) then
     begin
@@ -886,10 +893,13 @@ begin
     if Assigned(DoExecuteTransferItem) then
       for i := 0 to PrecompileSteps.Count - 1 do
       begin
-        DoExecuteTransferItem(PrecompileSteps[i]);
+        TI := TTransferItem(PrecompileSteps[i]);
+        DebugFmt('CompileIt: executing precompile step %d = %s', [i, TI.Title]);
+        DoExecuteTransferItem(TI);
       end;
 
     commandstr := GetCompilerCommandLine(download, tempDir, GetIncludePath(SaveDir), fName, sceHandler);
+    DebugFmt('CompileIt: command line = %s', [commandstr]);
 
     wd := ExcludeTrailingPathDelimiter(ExtractFilePath(fName));
     if wd = '' then
@@ -937,14 +947,17 @@ begin
     end
     else if FileIsNBCOrNXCOrNPGOrRICScript(H) and UseInternalNBC then
     begin
+      DebugLog('CompileIt: launching internal NBC compiler');
       NQC_Result := InternalNBCCompile(commandstr, sceHandler);
       execError  := NQC_Result < 0;
     end
     else
     begin
       {Execute the command, and wait}
+      DebugLog('CompileIt: launching an external compiler');
       if download then begin
         BrickComm.Ping;
+        DebugLog('CompileIt: closing connection so that external compiler can use it');
         BrickComm.Close;
       end;
       try
@@ -954,7 +967,10 @@ begin
         execError := NQC_Result < 0;
       finally
         if download then
+        begin
+          DebugLog('CompileIt: reopening connection now that the external compiler is finished with it');
           BrickComm.Open;
+        end;
         // make sure the toolbar refreshes no matter what
         osHandler(nil);
       end;
@@ -964,13 +980,19 @@ begin
     if Assigned(DoExecuteTransferItem) then
       for i := 0 to PostcompileSteps.Count - 1 do
       begin
-        DoExecuteTransferItem(PostcompileSteps[i]);
+        TI := TTransferItem(PostcompileSteps[i]);
+        DebugFmt('CompileIt: executing postcompile step %d = %s', [i, TI.Title]);
+        DoExecuteTransferItem(TI);
       end;
 
+    DebugLog('CompileIt: calling ReadAndShowErrorFile');
     Result := ReadAndShowErrorFile(DisplayErrorsProc, lstErrors, fName, fCaption, tempDir, ext);
-    
+
     if FileIsNBCOrNXC(H) then
+    begin
+      DebugLog('CompileIt: calling ReadSymbolFile');
       ReadSymbolFile(fName);
+    end;
 
     if (not execError) and ShowCompilerStatus then
     begin
