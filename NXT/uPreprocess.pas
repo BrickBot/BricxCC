@@ -84,7 +84,7 @@ type
       Stream: TMemoryStream; OutStrings: TStrings) : string;
     function GetLevelIgnoreValue(const lineno : integer): boolean;
     procedure SwitchLevelIgnoreValue(const lineno : integer);
-    function ProcessIdentifier(Lex: TGenLexer; var lineNo: integer): string;
+    function ProcessIdentifier(const ident : string; Lex: TGenLexer; var lineNo: integer): string;
     function EvaluateIdentifier(const ident : string) : string;
     function ReplaceTokens(const tokenstring: string; lineNo : integer;
       bArgs : boolean): string;
@@ -304,7 +304,7 @@ var
   procedure AddToResult;
   var
     i{, len} : integer;
-    charTok : string;
+    charTok, ident : string;
   begin
     if Lex.Id = piIdent then
     begin
@@ -321,7 +321,8 @@ var
       else
       begin
         // pass lex to ProcessIdentifier
-        Result := Result + ProcessIdentifier(Lex, lineNo);
+        ident := Lex.Token;
+        Result := Result + ProcessIdentifier(ident, Lex, lineNo);
       end;
     end
 {
@@ -385,7 +386,7 @@ begin
   end;
 end;
 
-function TLangPreprocessor.ProcessIdentifier(Lex : TGenLexer; var lineNo : integer) : string;
+function TLangPreprocessor.ProcessIdentifier(const ident : string; Lex : TGenLexer; var lineNo : integer) : string;
 var
   i, linesSkipped : integer;
   macroVal, dirText, prevToken, tmp, tok : string;
@@ -396,7 +397,7 @@ begin
   // is token in defmap?  if so replace it (smartly)
   // token may be a function which takes parameters
   // so if it is then we need to grab more tokens from ( to )
-  tok := Lex.Token;
+  tok := ident;
   i := MacroDefs.IndexOf(tok);
   if i <> -1 then
   begin
@@ -645,7 +646,7 @@ var
   X : TMemoryStream;
   i, j, cnt, origLevel, qPos, oldLineNo : integer;
   bFileFound, bDefined, bProcess : boolean;
-  origName : string;
+  origName, ident : string;
 begin
   DoPreprocessorStatusChange(sIncludePath + ' = ' + IncludeDirs.DelimitedText);
   Result := '';
@@ -1083,7 +1084,18 @@ begin
           if bProcess then
           begin
             oldLineNo := lineNo;
-            tmp := ProcessIdentifier(Lex, lineNo);
+            ident := Lex.Token;
+            // we need to fix a problem here where our tokenizer is including
+            // a leading "." as part of the identifier
+            if Pos('.', ident) = 1 then
+            begin
+              System.Delete(ident, 1, 1); // remove the "."
+              tmp := '.' + ProcessIdentifier(ident, Lex, lineNo);
+            end
+            else
+            begin
+              tmp := ProcessIdentifier(ident, Lex, lineNo);
+            end;
             if Pos(#10, tmp) > 0 then
             begin
               if AddPoundLineToMultiLineMacros then
