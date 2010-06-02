@@ -1,0 +1,170 @@
+// ex_file_system.nxc
+// This program is intended to serve as an introduction to data files on the 
+// NXT. It focuses on handling the codes returned by the file system's API 
+// calls, which is an important aspect of the API that is all too often 
+// neglected by programmers.
+// 
+// The program deals with a data file describing circles. On each run, it adds 
+// a new circle record to the data file. Then it reads in the whole data file 
+// and displays all the circles on NXT screen. It creates the data file if 
+// doesn't already exist. If you run it several times in seccession, you will 
+// fill the data file and get a file-is-full exception.
+//
+// The data flie created by this program is not visible on the NXT. To delete 
+// the file, circles.dat, you can use the NeXT Explorer or the example program 
+// ex_delete_data_file.nxc.
+
+#define MIN_R 10
+#define MAX_R 30
+#define MIN_X 20
+#define MAX_X 80
+#define MIN_Y 10
+#define MAX_Y 54
+
+byte handle = 0; // file handle
+
+#define FILE_NAME "circles.dat"
+// The file size is made small so it will fill up quickly.
+#define RECORDS 4
+#define RECORD_SIZE 3
+#define FILE_SIZE (RECORD_SIZE * RECORDS)
+
+// This struct defines the data records.
+struct circle
+{
+   byte r; // radius
+   byte cx; // center x-coordiate
+   byte cy; // center y-coordiate
+};
+
+// Initialize a circle with random radius r and center (cx, cy).
+void init_circle(circle & c)
+{
+   c.r = MIN_R + Random(MAX_R - MIN_R);
+   c.cx = MIN_X + Random(MAX_X - MIN_X);
+   c.cy = MIN_Y + Random(MAX_Y - MIN_Y);
+}
+
+// Make sure file is closed whether or not file operations succeed or fail.
+void shutdown(const int delay)
+{
+   if (handle) CloseFile(handle);
+   // Get user's attention.
+   PlayTone(TONE_C5, SEC_1);
+   // Give the user time to read screen messages.
+   Wait(delay);
+   Stop(true);
+}
+
+// Display a return code from a file sytem API call on the NXT screen.
+void rtn_code_out(const unsigned int code)
+{
+   TextOut(0, LCD_LINE2, "code            ");
+   TextOut(50, LCD_LINE2, FormatNum("%04x", code));
+}
+
+// Open the data file for writing.
+void open_for_write()
+{
+   unsigned int file_size = FILE_SIZE;
+   handle = 0;
+   // Start with the assumptions the file doesn't exist and needs to be created.
+   unsigned int rtn_code = CreateFile(FILE_NAME, file_size, handle);
+   // If the file already exists, open it with the intent of adding to the data 
+   // that is already there.
+   if (rtn_code == LDR_FILEEXISTS)
+      rtn_code = OpenFileAppend(FILE_NAME, file_size, handle);
+   // Return code handling   
+   switch (rtn_code)
+   {
+   case LDR_SUCCESS:
+      return;
+   case LDR_FILEISFULL:
+      TextOut(0, LCD_LINE1, "file is full    ");
+      break;
+   default:
+      // Unanticipated exception. 
+      TextOut(0, LCD_LINE1, "write open      ");
+      rtn_code_out(rtn_code);
+      break;
+   }
+   shutdown(SEC_8);
+}
+
+// Open the data file for reading.
+void open_for_read()
+{
+   unsigned int file_size = FILE_SIZE;
+   handle = 0;
+   unsigned int rtn_code = OpenFileRead(FILE_NAME, file_size, handle);
+   // Return code handling   
+   if (rtn_code != LDR_SUCCESS)
+   {
+      // Unanticipated exception. 
+      TextOut(0, LCD_LINE1, "read open       ");
+      rtn_code_out(rtn_code);
+      shutdown(SEC_8);
+   }
+}
+
+// Write one circle record to the data file.
+void write_recd(const circle recd)
+{
+   unsigned int rtn_code = Write(handle, recd);
+   // Return code handling
+   if (rtn_code != LDR_SUCCESS)
+   {
+      switch (rtn_code)
+      {
+      case LDR_EOFEXPECTED:
+         TextOut(0, LCD_LINE1, "no more space   ");
+         break;
+      default:
+         // Unanticipated exception. 
+         TextOut(0, LCD_LINE1, "write failed    ");
+         rtn_code_out(rtn_code);
+         break;
+      }
+      shutdown(SEC_8);
+   }
+}
+
+// Read all the circle records from the data file. Display each circle as it is 
+// read.
+void read_all(circle & recd)
+{
+   while (true)
+   {
+      unsigned int rtn_code = Read(handle, recd);
+      // rtn_code_out(rtn_code);
+      // Return code handling   
+      switch (rtn_code)
+      {
+      case LDR_SUCCESS:
+         // Record has been read. Display circle described by it.
+         CircleOut(recd.cx, recd.cy, recd.r);
+         Wait(SEC_2);
+         break;
+      case LDR_ENDOFFILE:
+         // No more data to read.
+         return;
+      default:
+         // Unanticipated exception. 
+         TextOut(0, LCD_LINE1, "read failed     ");
+         rtn_code_out(rtn_code);
+         shutdown(SEC_8);
+      }
+   }
+}
+
+task main()
+{
+   circle c;
+   open_for_write();
+   init_circle(c);
+   write_recd(c);
+   CloseFile(handle);
+   open_for_read();
+   read_all(c);
+   shutdown(SEC_8);
+}

@@ -1,0 +1,24 @@
+// ex_delete_data_file.nxc
+// Demonstates the use of the DeleteFile API call.
+// Useful for deleting the circles.dat file created by the program described 
+// in the ex_file_system.nxc example.
+
+#define FILE_NAME "circles.dat"
+
+// Display a return code from a file sytem API call on the NXT screen.
+// The codes most likely to be displayed are are: 
+//    LDR_SUCCESS        0x0000
+//    LDR_FILENOTFOUND   0x8700
+// See "Loader module error codes" to interpret any other code that appears.
+void rtn_code_out(const unsigned int code)
+{
+   TextOut(0, LCD_LINE1, "code            ");
+   TextOut(50, LCD_LINE1, FormatNum("%04x", code));
+}
+
+task main()
+{
+   unsigned int rtn_code = DeleteFile(FILE_NAME);
+   rtn_code_out(rtn_code);
+   Wait(SEC_5);
+}
