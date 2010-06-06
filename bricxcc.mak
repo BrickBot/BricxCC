@@ -12,7 +12,7 @@ DOCS = doc/Readme doc/Changelog
 MANPAGES = doc/nbc.1
 DISTFILES = $(NBC_SRC) $(NXT_SRC) $(CMN_SRC) $(SAMPLES) $(BT_SRC) $(FANTOM_SRC) $(RIC_SRC) $(EXTRA_DIST) $(DOCS)
 UNIXFILES = $(SAMPLES) $(DOCS) $(MANPAGES) $(NBC_SRC) $(NXT_SRC) $(FANTOM_SRC) $(CMN_SRC) $(BT_SRC)
-BINDIST = NXT/nbc tests/struct.nxc $(DOCS)
+BINDIST = NXT/nbc tests/struct.nxc $(DOCS) $(MANPAGES)
 OSXBINDIST = NXT/nxtcom_scripts.zip
 EXCLUDES = --exclude=*.exe --exclude=*.zip --exclude=*.o --exclude=*.~* --exclude=*.dll
 
