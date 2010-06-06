@@ -8,7 +8,7 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
-Version 1.2.1.r2 (2010-06=01)
+Version 1.2.1.r2 (2010-06-06)
 -----------------------------
 - Reverted changes to relation expressions so you again have to use
   parenthesis if you want a relation on the RHS of a relation.
@@ -23,6 +23,11 @@ Version 1.2.1.r2 (2010-06=01)
   byte-sized fields in structures).
 - Fixed compiler hang when a struct array member specifies a size.  The size
   now simply ignored.
+- Fixed preprocessor defect with "." in front of a preprocessor macro
+- Allow for a string to be considered an array type when passing it as 
+  parameter to a function. Also return an ArrayBaseType of TOK_BYTEDEF 
+  when a string is passed in and return 1 from GetArrayDimension when a 
+  string is passed in.
 
 
 Version 1.2.1.r1 (2010-05-13)
