@@ -8820,7 +8820,7 @@ subroutine __GL_glPyramid
   return
 ends
 
-#endif // __DOXYGEN_DOCS
+#endif // #ifndef __DOXYGEN_DOCS
 
 #define ResetTachoCount(_p) __resetTachoCount(_p)
 #define ResetBlockTachoCount(_p) __resetBlockTachoCount(_p)
@@ -8949,8 +8949,7 @@ ends
 
 #if __FIRMWARE_VERSION > 107
 
-#define ReadSensorColorRaw(_port, _rawVals, _result) \
-   __ReadSensorColorRaw(_port, _rawVals, _result)
+#define ReadSensorColorRaw(_port, _rawVals, _result) __ReadSensorColorRaw(_port, _rawVals, _result)
 
 #define ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result) \
    __ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result)

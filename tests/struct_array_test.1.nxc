@@ -1,0 +1,219 @@
+// strcut_array_test.1.nxc
+// This should show the number 43210 on the NXT screen in a pseudo=seven=segment 
+// display.
+
+// DIGITS should not be biggre than 5.
+#define DIGITS 5
+
+#define NO_STROKE      "   "
+#define HRZ_STROKE     " - "
+#define LF_VRT_STROKE  "|  "
+#define RT_VRT_STROKE  "  |"
+#define DBL_VRT_STROKE "| |"
+
+#define DIGIT_WIDTH (6 * 3 + 0)
+#define COUNTER_WIDTH (DIGIT_WIDTH * DIGITS)
+#define X_OFFSET ((100 - COUNTER_WIDTH) / 2)
+#define TOP_HRZ_LOC (56 - 1 * 8)
+#define TOP_VRT_LOC (56 - 2 * 8)
+#define MID_HRZ_LOC (56 - 3 * 8)
+#define BTM_VRT_LOC (56 - 4 * 8)
+#define BTM_HRZ_LOC (56 - 5 * 8)
+
+struct Digit
+{
+   string hrz_top;
+   string vrt_top;
+   string hrz_mid;
+   string vrt_btm;
+   string hrz_btm;
+};
+
+Digit digit[10];
+int counter[DIGITS];
+
+byte handle;
+
+void OutputDigit(/*const */Digit d)
+{
+   int cnt;
+   WriteLnString(handle, d.hrz_top, cnt);
+   WriteLnString(handle, d.vrt_top, cnt);
+   WriteLnString(handle, d.hrz_mid, cnt);
+   WriteLnString(handle, d.vrt_btm, cnt);
+   WriteLnString(handle, d.hrz_btm, cnt);
+}
+
+Digit make_digit(string hrz_top,
+                 string vrt_top,
+                 string hrz_mid,
+                 string vrt_btm,
+                 string hrz_btm)
+{
+   Digit d;
+   asm {
+     mov d.hrz_top, hrz_top
+     mov d.vrt_top, vrt_top
+     mov d.hrz_mid, hrz_mid
+     mov d.vrt_btm, vrt_btm
+     mov d.hrz_btm, hrz_btm
+   }
+/*
+   d.hrz_top = hrz_top;
+   d.vrt_top = vrt_top;
+   d.hrz_mid = hrz_mid;
+   d.vrt_btm = vrt_btm;
+   d.hrz_btm = hrz_btm;
+*/
+   return d;
+}
+
+void show_digit(const int place, const Digit digit)
+{
+   OutputDigit(digit);
+   int x_loc = X_OFFSET + (DIGITS - place - 1) * DIGIT_WIDTH;
+   TextOut(x_loc, TOP_HRZ_LOC, digit.hrz_top);
+   TextOut(x_loc, TOP_VRT_LOC, digit.vrt_top);
+   TextOut(x_loc, MID_HRZ_LOC, digit.hrz_mid);
+   TextOut(x_loc, BTM_VRT_LOC, digit.vrt_btm);
+   TextOut(x_loc, BTM_HRZ_LOC, digit.hrz_btm);
+}
+
+// WARNING: If the following subroutine is used, the program compiles without 
+// error, but gives inconsistent results when run of the NXT. The NXT may freeze 
+// or even go into SAMBA mode.
+
+ void show_count()
+ {
+    for (int i = 0; i < DIGITS; ++i)
+    {
+       Digit d = digit[counter[i]];
+       show_digit(i, d);
+    }
+ }
+
+
+// WARNING: If the following subroutine is used, the program compiles without 
+// error, but gives incorrect results when run of the NXT.
+//void show_count()
+//{
+//   Digit d;
+//   for (int i = 0; i < DIGITS; ++i)
+//   {
+//      switch (counter[i])
+//      {
+//      case 0:
+//         d = digit[0];
+//         break;
+//      case 1:
+//         d = digit[1];
+//         break;
+//      case 2:
+//         d = digit[2];
+//         break;
+//      case 3:
+//         d = digit[3];
+//         break;
+//      case 4:
+//         d = digit[4];
+//         break;
+//      case 5:
+//         d = digit[5];
+//         break;
+//      case 6:
+//         d = digit[6];
+//         break;
+//      case 7:
+//         d = digit[7];
+//         break;
+//      case 8:
+//         d = digit[8];
+//         break;
+//      case 9:
+//         d = digit[9];
+//         break;
+//      }
+//      show_digit(i, d);
+//   }
+//}
+
+task main()
+{
+   DeleteFile("digits.txt");
+   CreateFile("digits.txt" , 875, handle);
+   Digit d;
+   
+   // 0
+   d = make_digit(HRZ_STROKE, DBL_VRT_STROKE, NO_STROKE,
+                  DBL_VRT_STROKE, HRZ_STROKE);
+   OutputDigit(d);
+   digit[0] = d;
+   OutputDigit(digit[0]);
+   // 1
+   d = make_digit(NO_STROKE, RT_VRT_STROKE, NO_STROKE,
+                  RT_VRT_STROKE, NO_STROKE);
+   OutputDigit(d);
+   digit[1] = d;
+   OutputDigit(digit[1]);
+   // 2
+   d = make_digit(HRZ_STROKE, RT_VRT_STROKE, HRZ_STROKE,
+                  LF_VRT_STROKE, HRZ_STROKE);
+   OutputDigit(d);
+   digit[2] = d;
+   OutputDigit(digit[2]);
+   // 3
+   d = make_digit(HRZ_STROKE, RT_VRT_STROKE, HRZ_STROKE,
+                  RT_VRT_STROKE, HRZ_STROKE);
+   OutputDigit(d);
+   digit[3] = d;
+   OutputDigit(digit[3]);
+   // 4
+   d = make_digit(NO_STROKE, DBL_VRT_STROKE, HRZ_STROKE,
+                  RT_VRT_STROKE, NO_STROKE);
+   OutputDigit(d);
+   digit[4] = d;
+   OutputDigit(digit[4]);
+   // 5
+   d = make_digit(HRZ_STROKE, LF_VRT_STROKE, HRZ_STROKE,
+                  RT_VRT_STROKE, HRZ_STROKE);
+   OutputDigit(d);
+   digit[5] = d;
+   OutputDigit(digit[5]);
+   // 6
+   d = make_digit(HRZ_STROKE, LF_VRT_STROKE, HRZ_STROKE,
+                  DBL_VRT_STROKE, HRZ_STROKE);
+   OutputDigit(d);
+   digit[6] = d;
+   OutputDigit(digit[6]);
+   // 7
+   d = make_digit(HRZ_STROKE, RT_VRT_STROKE, NO_STROKE,
+                  RT_VRT_STROKE, NO_STROKE);
+   OutputDigit(d);
+   digit[7] = d;
+   OutputDigit(digit[7]);
+   // 8
+   d = make_digit(HRZ_STROKE, DBL_VRT_STROKE, HRZ_STROKE,
+                  DBL_VRT_STROKE, HRZ_STROKE);
+   OutputDigit(d);
+   digit[8] = d;
+   OutputDigit(digit[8]);
+   // 9
+   d = make_digit(HRZ_STROKE, DBL_VRT_STROKE, HRZ_STROKE,
+                  RT_VRT_STROKE, HRZ_STROKE);
+   OutputDigit(d);
+   digit[9] = d;
+   OutputDigit(digit[9]);
+
+   for (int i = 0; i < 10; i++)
+   {
+      OutputDigit(digit[i]);
+   }
+   
+   for (int i = 0; i < DIGITS; ++i)
+   {
+      counter[i] = i;
+   }
+   show_count();
+   CloseFile(handle);
+   while (true);
+}
