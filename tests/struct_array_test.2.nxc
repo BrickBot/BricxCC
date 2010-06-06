@@ -1,0 +1,139 @@
+// strcut_array_test.2.nxc
+// Show the number 43210 on the NXT screen in a pseudo=seven=segment display.
+
+// DIGITS should not be biggre than 5.
+#define DIGITS 5
+
+#define NO_STROKE      "   "
+#define HRZ_STROKE     " - "
+#define LF_VRT_STROKE  "|  "
+#define RT_VRT_STROKE  "  |"
+#define DBL_VRT_STROKE "| |"
+
+#define DIGIT_WIDTH (6 * 3 + 1)
+#define COUNTER_WIDTH (DIGIT_WIDTH * DIGITS)
+#define X_OFFSET ((100 - COUNTER_WIDTH) / 2)
+#define TOP_HRZ_LOC (56 - 1 * 8)
+#define TOP_VRT_LOC (56 - 2 * 8)
+#define MID_HRZ_LOC (56 - 3 * 8)
+#define BTM_VRT_LOC (56 - 4 * 8)
+#define BTM_HRZ_LOC (56 - 5 * 8)
+
+struct Digit
+{
+   string hrz_top;
+   string vrt_top;
+   string hrz_mid;
+   string vrt_btm;
+   string hrz_btm;
+};
+
+Digit digit_0;
+Digit digit_1;
+Digit digit_2;
+Digit digit_3;
+Digit digit_4;
+Digit digit_5;
+Digit digit_6;
+Digit digit_7;
+Digit digit_8;
+Digit digit_9;
+
+int counter[DIGITS];
+
+Digit make_digit(string hrz_top,
+                 string vrt_top,
+                 string hrz_mid,
+                 string vrt_btm,
+                 string hrz_btm)
+{
+   Digit d;
+   d.hrz_top = hrz_top;
+   d.vrt_top = vrt_top;
+   d.hrz_mid = hrz_mid;
+   d.vrt_btm = vrt_btm;
+   d.hrz_btm = hrz_btm;
+   return d;
+}
+
+void show_digit(const int place, const Digit digit)
+{
+   int x_loc = X_OFFSET + (DIGITS - place - 1) * DIGIT_WIDTH;
+   TextOut(x_loc, TOP_HRZ_LOC, digit.hrz_top);
+   TextOut(x_loc, TOP_VRT_LOC, digit.vrt_top);
+   TextOut(x_loc, MID_HRZ_LOC, digit.hrz_mid);
+   TextOut(x_loc, BTM_VRT_LOC, digit.vrt_btm);
+   TextOut(x_loc, BTM_HRZ_LOC, digit.hrz_btm);
+}
+
+void show_count()
+{
+   Digit d;
+   for (int i = 0; i < DIGITS; ++i)
+   {
+      switch (counter[i])
+      {
+      case 0:
+         d = digit_0;
+         break;
+      case 1:
+         d = digit_1;
+         break;
+      case 2:
+         d = digit_2;
+         break;
+      case 3:
+         d = digit_3;
+         break;
+      case 4:
+         d = digit_4;
+         break;
+      case 5:
+         d = digit_5;
+         break;
+      case 6:
+         d = digit_6;
+         break;
+      case 7:
+         d = digit_7;
+         break;
+      case 8:
+         d = digit_8;
+         break;
+      case 9:
+         d = digit_9;
+         break;
+      }
+      show_digit(i, d);
+   }
+}
+
+task main()
+{
+   digit_0 = make_digit(HRZ_STROKE, DBL_VRT_STROKE, NO_STROKE,
+                        DBL_VRT_STROKE, HRZ_STROKE);
+   digit_1 = make_digit(NO_STROKE, RT_VRT_STROKE, NO_STROKE,
+                        RT_VRT_STROKE, NO_STROKE);
+   digit_2 = make_digit(HRZ_STROKE, RT_VRT_STROKE, HRZ_STROKE,
+                        LF_VRT_STROKE, HRZ_STROKE);
+   digit_3 = make_digit(HRZ_STROKE, RT_VRT_STROKE, HRZ_STROKE,
+                        RT_VRT_STROKE, HRZ_STROKE);
+   digit_4 = make_digit(NO_STROKE, DBL_VRT_STROKE, HRZ_STROKE,
+                        RT_VRT_STROKE, NO_STROKE);
+   digit_5 = make_digit(HRZ_STROKE, LF_VRT_STROKE, HRZ_STROKE,
+                        RT_VRT_STROKE, HRZ_STROKE);
+   digit_6 = make_digit(HRZ_STROKE, LF_VRT_STROKE, HRZ_STROKE,
+                        DBL_VRT_STROKE, HRZ_STROKE);
+   digit_7 = make_digit(HRZ_STROKE, RT_VRT_STROKE, NO_STROKE,
+                        RT_VRT_STROKE, NO_STROKE);
+   digit_8 = make_digit(HRZ_STROKE, DBL_VRT_STROKE, HRZ_STROKE,
+                        DBL_VRT_STROKE, HRZ_STROKE);
+   digit_9 = make_digit(HRZ_STROKE, DBL_VRT_STROKE, HRZ_STROKE,
+                        RT_VRT_STROKE, HRZ_STROKE);
+   for (int i = 0; i < DIGITS; ++i)
+   {
+      counter[i] = i;
+   }
+   show_count();
+   while (true);
+}

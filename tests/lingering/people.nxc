@@ -1,0 +1,38 @@
+const string fnames[] = {"Fred", "George", "Mary", "Alice", "Carol", "Juliet", "John", "Karl"};
+const string lnames[] = {"Flintstone", "Smith", "Davis", "Lewis", "Hansen", "Taylor", "Farmer", "Bush"};
+
+struct Person {
+  int age;
+  int height;
+  string FirstName;
+  string LastName;
+};
+
+Person people[8];
+
+task main()
+{
+  while (true)
+  {
+    ClearScreen();
+    for(int i = 0; i < ArrayLen(people); i++)
+    {
+      people[i].age    = Random(40);
+      people[i].height = Random(72);
+      people[i].FirstName = fnames[Random(8)];
+      people[i].LastName  = lnames[Random(8)];
+    }
+
+    for (int j=0; j < ArrayLen(people); j++)
+    {
+      Person p = people[j];
+//      string fullname = p.FirstName + " " + p.LastName;
+//      string fullname = p.FirstName;
+  //    fullname += " " ;
+  //    fullname += p.LastName;
+      TextOut(0, LCD_LINE1-8*j, p.FirstName + " " + p.LastName);
+      NumOut(80, LCD_LINE1-8*j, p.age);
+    }
+    Wait(1000);
+  }
+}

@@ -1,0 +1,15 @@
+void foo( unsigned char &output[] )
+{
+}
+
+struct MyStruct
+{
+  unsigned char data[];
+};
+
+task main()
+{
+  MyStruct A;
+  ArrayInit( A.data, 0, 10 );
+  foo( A.data );
+}
