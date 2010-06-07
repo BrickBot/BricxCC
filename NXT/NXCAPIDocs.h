@@ -105,10 +105,10 @@
  * a common structure. The maximum number of code blocks of both tasks and functions combined is 256.
  * 
  * - @subpage codeorder
- * - @subpage tasks
+ * - @subpage task
  * - @subpage func
  * - @subpage vars
- * - @subpage structs
+ * - @subpage struct
  * - @subpage arrays
  *
  */
@@ -122,7 +122,7 @@
  * - @subpage vardecl
  * - @subpage asgn
  * - @subpage ctrls
- * - @subpage asmblock
+ * - @subpage asm
  * - @subpage otherst
  *
  */
@@ -135,7 +135,7 @@
  * 
  * Numerical constants in the NXT are represented as integers or floating point values. The 
  * type depends on the value of the constant. NXC internally uses 32 bit floating point math 
- * for constant expression evaluation. Numeric constants are written as either decimal (e.g. 
+ * for constant expression evaluation. Numeric constants are written as either decimal (e.g.
  * 123, 3.14) or hexadecimal (e.g. 0xABC). Presently, there is very little range checking on 
  * constants, so using a value larger than expected may produce unusual results.
  * 
@@ -151,21 +151,22 @@
  * <tr><th>Operator</th><th>Description</th><th>Associativity</th><th>Restriction</th><th>Example</th></tr>
  * <tr><td>abs()</td><td>Absolute value</td><td>n/a</td><td>&nbsp;</td><td>abs(x)</td></tr>
  * <tr><td>sign()</td><td>Sign of operand</td><td>n/a</td><td>&nbsp;</td><td>sign(x)</td></tr>
- * <tr><td>++, --</td><td>Pre/post increment, Pre/post decrement</td><td>right/left</td><td>variables only</td><td>++x, x++</td></tr>
+ * <tr><td>++, --</td><td>Postfix increment/decrement</td><td>left</td><td>variables only</td><td>x++</td></tr>
+ * <tr><td>++, --</td><td>Prefix increment/decrement</td><td>right</td><td>variables only</td><td>++x</td></tr>
  * <tr><td>-</td><td>Unary minus</td><td>right</td><td>&nbsp;</td><td>-x</td></tr>
  * <tr><td>~</td><td>Bitwise negation (unary)</td><td>right</td><td>&nbsp;</td><td>~123</td></tr>
  * <tr><td>!</td><td>Logical negation</td><td>right</td><td>&nbsp;</td><td>!x</td></tr>
- * <tr><td>*, /, %</td><td>Multiplication, division, modulo</td><td>left</td><td>&nbsp;</td><td>x * y</td></tr>
+ * <tr><td>*, /, %</td><td>Multiplication, division, modulus</td><td>left</td><td>&nbsp;</td><td>x * y</td></tr>
  * <tr><td>+, -</td><td>Addition, subtraction</td><td>left</td><td>&nbsp;</td><td>x + y</td></tr>
- * <tr><td><<, >></td><td>Left and right shift</td><td>left</td><td>&nbsp;</td><td>x <<  4</td></tr>
+ * <tr><td><<, >></td><td>Bitwise shift left and right</td><td>left</td><td>&nbsp;</td><td>x << 4</td></tr>
  * <tr><td><, >, <=, >=</td><td>relational operators</td><td>left</td><td>&nbsp;</td><td>x < y</td></tr>
  * <tr><td>==, !=</td><td>equal to, not equal to</td><td>left</td><td>&nbsp;</td><td>x == 1</td></tr>
  * <tr><td>&</td><td>Bitwise AND</td><td>left</td><td>&nbsp;</td><td>x & y</td></tr>
- * <tr><td>^</td><td>Bitwise XOR</td><td>left</td><td>&nbsp;</td><td>x ^  y</td></tr>
- * <tr><td>|</td><td>Bitwise OR</td><td>left</td><td>&nbsp;</td><td>x | y</td></tr>
+ * <tr><td>^</td><td>Bitwise exclusive OR</td><td>left</td><td>&nbsp;</td><td>x ^  y</td></tr>
+ * <tr><td>|</td><td>Bitwise inclusive OR</td><td>left</td><td>&nbsp;</td><td>x | y</td></tr>
  * <tr><td>&&</td><td>Logical AND</td><td>left</td><td>&nbsp;</td><td>x && y</td></tr>
  * <tr><td>||</td><td>Logical OR</td><td>left</td><td>&nbsp;</td><td>x || y</td></tr>
- * <tr><td>? :</td><td>conditional value</td><td>n/a</td><td>&nbsp;</td><td>x==1 ? y : z</td></tr>
+ * <tr><td>?:</td><td>Ternary conditional value</td><td>right</td><td>&nbsp;</td><td>x==1 ? y : z</td></tr>
  * </table>
  * </center>
  * <center>Table 5. Expression Operators</center>
@@ -297,10 +298,46 @@
  * 
  * A number of tokens are reserved for use in the NXC language itself. These are called keywords 
  * and may not be used as identifiers. A complete list of keywords appears below:
- *  
- * asm, bool, break, byte, case, char, const, continue, default, do, else, enum, false, float, for,
- * goto, if, inline, int, long, mutex, priority, repeat, return, safecall, short, start, stop, 
- * string, struct, sub, switch, task, true, typedef, unsigned, until, void, while
+ *
+ * - \ref asm
+ * - @subpage bool
+ * - \ref break
+ * - @subpage byte
+ * - @subpage case
+ * - @subpage char
+ * - @subpage const
+ * - \ref continue
+ * - @subpage default
+ * - \ref do
+ * - \ref else
+ * - @subpage enum
+ * - @subpage false
+ * - @subpage float
+ * - \ref for
+ * - \ref goto
+ * - \ref if
+ * - @subpage inline
+ * - @subpage int
+ * - @subpage long
+ * - @subpage mutex
+ * - \ref priority
+ * - \ref repeat
+ * - \ref return
+ * - @subpage safecall
+ * - @subpage short
+ * - \ref start
+ * - \ref stop
+ * - @subpage string
+ * - \ref struct
+ * - @subpage sub
+ * - \ref switch
+ * - \ref task
+ * - @subpage true
+ * - @subpage typedef
+ * - @subpage unsigned
+ * - \ref until
+ * - @subpage void
+ * - \ref while
  * 
  */
 
@@ -349,7 +386,7 @@
  *
  */
 
-/** @page tasks Tasks
+/** @page task Tasks
  * \brief
  * 
  * Since the NXT supports multi-threading, a task in NXC directly corresponds to an NXT thread. 
@@ -435,7 +472,7 @@
  * {
  * 	return x*y;
  * }
- * 
+ *
  * task main()
  * {
  * 	NumOut(0, LCD_LINE1, foo(10)); outputs 200
@@ -478,7 +515,7 @@
  * 	x = 1;	// error - cannot modify argument
  * 	Wait(SEC_1);
  * }
- * 
+ *
  * task main()
  * {
  * 	int x = TONE_A4;
@@ -607,7 +644,7 @@
  * 
  */
 
-/** @page structs Structures
+/** @page struct Structures
  * \brief
  * 
  * NXC supports user-defined aggregate types known as structs. These are declared 
@@ -787,8 +824,27 @@
 
 /** @page ctrls Control Structures
  * \brief
- * 
- * The simplest control structure is a compound statement. This is a list of statements 
+ *
+ * An NXC task or function usually contains a collection of nested control
+ * structures. There are several types described below.
+ *
+ * - @subpage compound
+ * - @subpage if
+ * - @subpage else
+ * - @subpage while
+ * - @subpage do
+ * - @subpage for
+ * - @subpage repeat
+ * - @subpage switch
+ * - @subpage goto
+ * - @subpage until
+ *
+ */
+
+/** @page compound The compound statement
+ * \brief
+ *
+ * The simplest control structure is a compound statement. This is a list of statements
  * enclosed within curly braces ('{' and '}'):
  * \code
  * {
@@ -796,36 +852,77 @@
  * 	y = 2;
  * }
  * \endcode
- * Although this may not seem very significant, it plays a crucial role in building more 
- * complicated control structures. Many control structures expect a single statement as 
- * their body. By using a compound statement, the same control structure can be used to 
+ * Although this may not seem very significant, it plays a crucial role in building more
+ * complicated control structures. Many control structures expect a single statement as
+ * their body. By using a compound statement, the same control structure can be used to
  * control multiple statements.
- * 
- * The if statement evaluates a condition. If the condition is true, it executes one 
- * statement (the consequence). An optional second statement (the alternative), preceded by 
- * the keyword else, can be executed if the condition is false. The value of a condition is 
- * considered to be false only when it evaluates to zero. If it evaluates to any non-zero value, 
- * it is true. The two syntaxes for an if statement are shown below.
+ *
+ *
+ */
+
+/** @page if The if statement
+ * \brief
+ *
+ * The if statement evaluates a condition. If the condition is true, it executes one
+ * statement (the consequence). The value of a condition is
+ * considered to be false only when it evaluates to zero. If it evaluates to any non-zero value,
+ * it is true. The syntax for an if statement is shown below.
  * \code
  * if (condition) consequence
- * if (condition) consequence else alternative
  * \endcode
- * The condition of an if-statement must be enclosed in parentheses, as shown in the code 
- * sample below. The compound statement in the last example allows two statements to execute 
+ * The condition of an if-statement must be enclosed in parentheses, as shown in the code
+ * sample below. The compound statement in the last example allows two statements to execute
  * as a consequence of the condition being true.
  * \code
  * if (x==1) y = 2;
- * if (x==1) y = 3; else y = 4;
  * if (x==1) { y = 1; z = 2; }
  * \endcode
- * The while statement is used to construct a conditional loop. The condition is evaluated, and 
- * if true the body of the loop is executed, then the condition is tested again. This process 
- * continues until the condition becomes false (or a break statement is executed). The syntax 
+ *
+ */
+
+/** @page else The if-else statement
+ * \brief
+ *
+ * The if-else statement evaluates a condition. If the condition is true, it executes one
+ * statement (the consequence). A second statement (the alternative), preceded by
+ * the keyword else, is executed if the condition is false. The value of a condition is
+ * considered to be false only when it evaluates to zero. If it evaluates to any non-zero value,
+ * it is true. The syntax for an if-else statement is shown below.
+ * \code
+ * if (condition) consequence else alternative
+ * \endcode
+ * The condition of an if-statement must be enclosed in parentheses, as shown in the code
+ * sample below. The compound statement in the last example allows two statements to execute
+ * as a consequence of the condition being true as well as two which execute when
+ * the condition is false.
+ * \code
+ * if (x==1)
+ *   y = 3;
+ * else
+ *   y = 4;
+ * if (x==1) {
+ *   y = 1;
+ *   z = 2;
+ * }
+ * else {
+ *   y = 3;
+ *   z = 5;
+ * }
+ * \endcode
+ *
+ */
+
+/** @page while The while statement
+ * \brief
+ *
+ * The while statement is used to construct a conditional loop. The condition is evaluated, and
+ * if true the body of the loop is executed, then the condition is tested again. This process
+ * continues until the condition becomes false (or a break statement is executed). The syntax
  * for a while loop appears in the code fragment below.
  * \code
  * while (condition) body
  * \endcode
- * Because the body of a while statement must be a single statement, it is very common to use a 
+ * Because the body of a while statement must be a single statement, it is very common to use a
  * compound statement as the body. The sample below illustrates this usage pattern.
  * \code
  * while(x < 10)
@@ -834,21 +931,42 @@
  * 	y = y*2;
  * }
  * \endcode
- * A variant of the while loop is the do-while loop. The syntax for this control structure is 
+ *
+ */
+
+/** @page do The do statement
+ * \brief
+ *
+ * A variant of the while loop is the do-while loop. The syntax for this control structure is
  * shown below.
  * \code
  * do body while (condition)
  * \endcode
- * The difference between a while loop and a do-while loop is that the do-while loop always executes 
+ * The difference between a while loop and a do-while loop is that the do-while loop always executes
  * the body at least once, whereas the while loop may not execute it at all.
- * 
- * Another kind of loop is the for loop. It uses the syntax shown below.
+ *
+ * \code
+ * do
+ * {
+ * 	x = x+1;
+ * 	y = y*2;
+ * } while(x < 10);
+ * \endcode
+ *
+ */
+
+/** @page for The for statement
+ * \brief
+ *
+ * Another kind of loop is the for loop. This type of loop allows automatic
+ * initialization and incrmementation of a counter variable. It uses the syntax
+ * shown below.
  * \code
  * for(statement1 ; condition ; statement2) body
  * \endcode
- * A for loop always executes statement1, and then it repeatedly checks the condition. While the 
- * condition remains true, it executes the body followed by statement2. The for loop is equivalent to 
- * the code shown below.
+ * A for loop always executes statement1, and then it repeatedly checks the
+ * condition. While the condition remains true, it executes the body followed
+ * by statement2. The for loop is equivalent to the code shown below.
  * \code
  * statement1;
  * while(condition)
@@ -857,18 +975,53 @@
  * 	statement2;
  * }
  * \endcode
- * The repeat statement executes a loop a specified number of times. This control structure is not 
- * included in the set of Standard C looping constructs. NXC inherits this statement from NQC. 
+ * Frequently, statement1 sets a loop counter variable to its starting value.
+ * The condition is generally a relational statement that checks the counter
+ * variable against a termination value, and statement2 increments or
+ * decrements the counter value.
+ *
+ * Here is an example of how to use the for loop:
+ *
+ * \code
+ * for (int i=0; i<8; i++)
+ * {
+ * 	 NumOut(0, LCD_LINE1-i*8, i);
+ * }
+ * \endcode
+ *
+ */
+
+/** @page repeat The repeat statement
+ * \brief
+ *
+ * The repeat statement executes a loop a specified number of times. This control structure is not
+ * included in the set of Standard C looping constructs. NXC inherits this statement from NQC.
  * The syntax is shown below.
  * \code
  * repeat (expression) body
  * \endcode
- * The expression determines how many times the body will be executed. Note: the expression 
- * following the repeat keyword is evaluated a single time and then the body is repeated that 
- * number of times. This is different from both the while and do-while loops which evaluate 
+ * The expression determines how many times the body will be executed. Note: the expression
+ * following the repeat keyword is evaluated a single time and then the body is repeated that
+ * number of times. This is different from both the while and do-while loops which evaluate
  * their condition each time through the loop.
- * 
- * A switch statement executes one of several different code sections depending on the value of 
+ *
+ *
+ * Here is an example of how to use the repeat loop:
+ *
+ * \code
+ * int i=0;
+ * repeat (8)
+ * {
+ * 	 NumOut(0, LCD_LINE1-i*8, i++);
+ * }
+ * \endcode
+ *
+ */
+
+/** @page switch The switch statement
+ * \brief
+ *
+ * A switch statement executes one of several different code sections depending on the value of
  * an expression. One or more case labels precede each code section. Each case must be a constant 
  * and unique within the switch statement. The switch statement evaluates the expression, and then 
  * looks for a matching case label. It will execute any statements following the matching case until 
@@ -903,32 +1056,49 @@
  * \endcode
  * NXC also supports using string types in the switch expression and constant strings in case labels.
  * 
- * The goto statement forces a program to jump to the specified location. Statements in a program 
- * can be labeled by preceding them with an identifier and a colon. A goto statement then specifies 
- * the label that the program should jump to. For example, here is an infinite loop that increments 
- * a variable:  
+ *
+ */
+
+/** @page goto The goto statement
+ * \brief
+ *
+ * The goto statement forces a program to jump to the specified location.
+ * Statements in a program can be labeled by preceding them with an identifier
+ * and a colon. A goto statement then specifies the label that the program
+ * should jump to. You can only branch to a label within the current function
+ * or task, not from one function or task to another.
+ *
+ * Here is an example of an infinite loop that increments a variable:
  * \code
  * my_loop:
  * 	x++;
  * 	goto my_loop;
  * \endcode
- * The goto statement should be used sparingly and cautiously. In almost every case, control structures 
- * such as if, while, and switch make a program much more readable and maintainable than using goto.
- * 
- * NXC also defines an until macro for compatibility with NQC. This construct provides a convenient 
- * alternative to the while loop. The actual definition of until is shown below.
+ * The goto statement should be used sparingly and cautiously. In almost
+ * every case, control structures such as if, while, and switch make a program
+ * much more readable and maintainable than using goto.
+ *
+ */
+
+/** @page until The until statement
+ * \brief
+ *
+ * NXC also defines an until macro for compatibility with NQC. This construct
+ * provides a convenient alternative to the while loop. The actual definition
+ * of until is shown below.
  * \code
  * #define until(c)	while(!(c))
  * \endcode
- * In other words, until will continue looping until the condition becomes true. It is most often used in 
- * conjunction with an empty body statement:
+ * In other words, until will continue looping until the condition becomes
+ * true. It is most often used in conjunction with an empty body statement or
+ * a body which simply yields to other tasks:
  * \code
  * until(EVENT_OCCURS);	// wait for some event to occur
  * \endcode
  * 
  */
 
-/** @page asmblock The asm Statement
+/** @page asm The asm statement
  * \brief
  * 
  * The asm statement is used to define many of the NXC API calls. The syntax of 
@@ -1013,57 +1183,145 @@
  *   __IncI__ \
  * }
  * \endcode
- * 
+ *
  */
 
 /** @page otherst Other NXC Statements
  * \brief
- * 
+ *
+ * NXC supports a few other statement types.  The other NXC statements
+ * are described below.
+ *
+ * - @subpage funccall
+ * - @subpage start
+ * - @subpage stop
+ * - @subpage priority
+ * - @subpage break
+ * - @subpage continue
+ * - @subpage return
+ *
+ * Many expressions are not legal statements. A notable exception are expressions using
+ * increment (++) or decrement (--) operators.
+ * \code
+ * x++;
+ * \endcode
+ *
+ * The empty statement (just a bare semicolon) is also a legal statement.
+ *
+ */
+
+/** @page funccall The function call statement
+ * \brief
+ *
  * A function call can also be a statement of the following form:
  * \code
  * name(arguments);
  * \endcode
- * The arguments list is a comma-separated list of expressions. The number and type of arguments 
- * supplied must match the definition of the function itself. Optionally, the return value may be 
+ * The arguments list is a comma-separated list of expressions. The number and type of arguments
+ * supplied must match the definition of the function itself. Optionally, the return value may be
  * assigned to a variable.
- * 
- * You can start or stop tasks with the following statements. The stop statement is only supported 
- * if you are running the enhanced NBC/NXC firmware on your NXT.
+ *
+ *
+ */
+
+/** @page start The start statement
+ * \brief
+ *
+ * You can start a task with the start statement. This statement can be used
+ * with both the standard and enhanced NBC/NXC firmwares.  The resulting operation
+ * is a native opcode in the enhanced firmware but it requires special
+ * compiler-generated subroutines in order to work with the standard firmware.
  * \code
  * start task_name;
+ * \endcode
+ *
+ */
+
+/** @page stop The stop statement
+ * \brief
+ *
+ * You can stop a task with the stop statement. The stop statement is only supported
+ * if you are running the enhanced NBC/NXC firmware on your NXT.
+ * \code
  * stop task_name;
  * \endcode
- * You can adjust the priority of a task using the priority statement. Setting task priorities 
- * also requires the enhanced NBC/NXC firmware. A task's priority is simply the number of 
- * operations it will try to execute before yielding to another task. This usually is 20 operations.
+ *
+ */
+
+/** @page priority The priority statement
+ * \brief
+ *
+ * You can adjust the priority of a task using the priority statement. Setting
+ * task priorities also requires the enhanced NBC/NXC firmware. A task's
+ * priority is simply the number of operations it will try to execute before
+ * yielding to another task. This usually is 20 operations.
  * \code
  * priority task_name, new_priority;
  * \endcode
- * Within loops (such as a while loop) you can use the break statement to exit the loop immediately. 
- * You can also use the continue statement to skip to the top of the next iteration of the loop.
+ *
+ */
+
+/** @page break The break statement
+ * \brief
+ *
+ * Within loops (such as a while loop) you can use the break statement to exit
+ * the loop immediately.  It only exits out of the innermost loop
  * \code
  * break;
+ * \endcode
+ * The break statement is also a critical component of most switch statements.
+ * It prevents code in subsequent code sections from being executed, which is
+ * usually a programmer's intent, by immediately exiting the switch statement.
+ * Missing break statements in a switch are a frequent source of hard-to-find
+ * bugs.
+ *
+ * Here is an example of how to use the break statement:
+ *
+ * \code
+ * while (x<100) {
+ *   x = get_new_x();
+ *   if (button_pressed())
+ *     break;
+ *   process(x);
+ * }
+ * \endcode
+ *
+ */
+
+/** @page continue The continue statement
+ * \brief
+ *
+ * Within loops you can use the continue statement to skip to the top of the
+ * next iteration of the loop without executing any of the code in the loop
+ * that follows the continue statement.
+ * \code
  * continue;
  * \endcode
- * The break statement is also a critical component of most switch statements. It prevents code 
- * in subsequent code sections from being executed, which is usually a programmer's intent, by 
- * immediately exiting the switch statement. Missing break statements in a switch are a frequent 
- * source of hard-to-find bugs.
- * 
- * If you want a function to return a value or to return before it reaches the end of its code, 
+ *
+ * Here is an example of how to use the continue statement:
+ *
+ * \code
+ * while (x<100) {
+ *   ch = get_char();
+ *   if (ch != 's')
+ *     continue;
+ *   process(ch);
+ * }
+ * \endcode
+ *
+ */
+
+/** @page return The return statement
+ * \brief
+ *
+ * If you want a function to return a value or to return before it reaches the end of its code,
  * use a return statement. An expression may optionally follow the return keyword and, when present, 
  * is the value returned by the function. The type of the expression must be compatible with the 
  * return type of the function.
  * \code
  * return [expression];
  * \endcode
- * Many expressions are not legal statements. A notable exception are expressions using 
- * increment (++) or decrement (--) operators.
- * \code
- * x++;
- * \endcode
- * The empty statement (just a bare semicolon) is also a legal statement.
- * 
+ *
  */
 
 /** @page condtn Conditions
