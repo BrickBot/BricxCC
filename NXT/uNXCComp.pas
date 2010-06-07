@@ -2662,6 +2662,14 @@ begin
             Next;
             Next;
           end
+          // The next two blocks are not exactly C with respect to operator precedence
+          // A better way to allow for assignment/math assignment within an expression
+          // should be found. 2010-06-07 JCH
+          else if (Token in ['+', '-', '/', '*', '%', '&', '|', '^']) and (Look = '=') then
+          begin
+            MathAssignment(savedvalue);
+            LoadVar(savedvalue);
+          end
           else if (Token = '=') and (Look <> '=') then
           begin
             // var = expression rather than var == expression
@@ -2670,6 +2678,9 @@ begin
             DoAssignValue(savedvalue, DataType(savedvalue));
             LoadVar(savedvalue);
           end
+          //
+          // end of not exactly C handling of assignment/math assignment
+          //
           else if savedvalue = 'true' then
             LoadConst('1')
           else if savedvalue = 'false' then
