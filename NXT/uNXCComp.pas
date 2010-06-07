@@ -203,6 +203,7 @@ type
     procedure DoStart;
     procedure DoStopTask;
     procedure DoSetPriority;
+    procedure CommaStatement(const lend, lstart : string);
     procedure Statement(const lend, lstart : string);
     procedure ProcessDirectives(bScan : boolean = True);
     procedure HandlePoundLine;
@@ -4197,7 +4198,9 @@ begin
   end
   else
   begin
-    CommaExpression;
+    // since this is an assignment statement we do not allow comma operators
+    // due to the = operator having a higher precedence than the , operator.
+    BoolExpression;
     StoreArray(aName, idx, RegisterName);
   end;
 end;
@@ -4223,7 +4226,7 @@ begin
       oldType := fLHSDataType;
       try
         fLHSDataType := TOK_LONGDEF;
-        CommaExpression;
+        BoolExpression;
       finally
         fLHSDataType := oldType;
       end;
@@ -4231,7 +4234,7 @@ begin
       // 2010-05-05 JCH - to make += work with non-scalars on the RHS I undid the
       // above change.  Testing seems to prove that scalars on the RHS still
       // work correctly.
-      CommaExpression;
+      BoolExpression;
       // end of 2010-05-05 changes
       case savedtoken of
         '+' : StoreAdd(name);
@@ -4265,7 +4268,7 @@ begin
       begin
         Next; // move to '='
         Next; // move to next token
-        CommaExpression;
+        BoolExpression;
         StoreSign(name);
       end
       else
@@ -4278,7 +4281,7 @@ begin
       begin
         Next; // move to '='
         Next; // move to next token
-        CommaExpression;
+        BoolExpression;
         StoreAbs(name);
       end
       else
@@ -4292,7 +4295,7 @@ begin
       begin
         Next; // move to '='
         Next; // move to next token
-        CommaExpression;
+        BoolExpression;
         StoreShift(savedtoken='>', name);
       end
       else
@@ -4418,10 +4421,16 @@ begin
           else
             MathAssignment(Name);
         end
-        else
+        else if Token = '=' then
         begin
           MatchString('=');
           DoAssignValue(Name, dt);
+        end
+        else
+        begin
+          // just an identifier but not assignment operator
+          // put it on the stack
+          LoadVar(Name);
         end;
       finally
         fLHSDataType := TOK_LONGDEF;
@@ -4440,7 +4449,9 @@ begin
   end
   else
   begin
-    CommaExpression;
+    // no comma expression here since the assignment operator has a
+    // higher precedence than the comma operator
+    BoolExpression;
     Store(aName);
   end;
 end;
@@ -5054,7 +5065,7 @@ begin
   else
   begin
     Scan;
-    Statement(lend, lstart);
+    CommaStatement(lend, lstart);
   end;
 end;
 
@@ -5077,7 +5088,7 @@ begin
   begin
     oldBytesRead := fBytesRead;
     DoLocals(fCurrentThreadName);
-    Statement(lend, lstart);
+    CommaStatement(lend, lstart);
     CheckSemicolon;
     CheckBytesRead(oldBytesRead);
   end;
@@ -9664,6 +9675,18 @@ begin
     Next;
     if not bOpen and (Token <> '[') then
       bDone := True;
+  end;
+end;
+
+procedure TNXCComp.CommaStatement(const lend, lstart: string);
+begin
+  Statement(lend, lstart);
+  if fNoCommaOperator then Exit;
+  // handle comma?
+  if Token = TOK_COMMA then
+  begin
+    Next; // skip past the comma
+    CommaStatement(lend, lstart);
   end;
 end;
 
