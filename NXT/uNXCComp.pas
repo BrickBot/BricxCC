@@ -2615,11 +2615,18 @@ procedure TNXCComp.NumericFactor;
 var
   savedtoken, rdt : char;
   savedvalue : string;
+  oldNoCommas : boolean;
 begin
   if Token = TOK_OPENPAREN then begin
     OpenParen;
 //    Next;
-    CommaExpression;
+    oldNoCommas := fNoCommaOperator;
+    try
+      fNoCommaOperator := False;
+      CommaExpression;
+    finally
+      fNoCommaOperator := oldNoCommas;
+    end;
     CloseParen;
   end
   else begin
@@ -3643,149 +3650,123 @@ var
   bFunctionIsInline, bSafeCall : boolean;
   inlineFunc : TInlineFunction;
 begin
-  fUDTOnStack := ''; // by default there is no UDT/Array on the return stack
-  if fFunctionNameCallStack.IndexOf(procname) = -1 then
-  begin
-    fFunctionNameCallStack.Add(procname);
-    try
-      // is procname the same as the current thread name
-      // (i.e., is this a recursive function call)?
-      if procname = fCurrentThreadName then
-        AbortMsg(sRecursiveNotAllowed);
-      // is procname an inline function?
-      idx := fInlineFunctions.IndexOfName(procname);
-      bFunctionIsInline := idx <> -1;
-//      if AmInlining and bFunctionIsInline then
-//        AbortMsg(sRecursiveInlineError);
-      if bFunctionIsInline then
-      begin
-        inlineFunc := fInlineFunctions[idx];
-        if inlineFunc.Parameters.Count = 0 then
-          inlineFunc.Parameters := fFuncParams;
-        inlineFunc.CurrentCaller := fCurrentThreadName;
-      end
-      else
-        inlineFunc := nil;
-      fInputs := TStringList.Create;
+  fNoCommaOperator := True;
+  try
+    fUDTOnStack := ''; // by default there is no UDT/Array on the return stack
+    if fFunctionNameCallStack.IndexOf(procname) = -1 then
+    begin
+      fFunctionNameCallStack.Add(procname);
       try
-        acount := 0;
-        protocount := FunctionParameterCount(procname);
-        protoreqcount := FunctionRequiredParameterCount(procname);
-        Next;
-        bError := Value <> TOK_OPENPAREN;
-        if not bError then
-          OpenParen
+        // is procname the same as the current thread name
+        // (i.e., is this a recursive function call)?
+        if procname = fCurrentThreadName then
+          AbortMsg(sRecursiveNotAllowed);
+        // is procname an inline function?
+        idx := fInlineFunctions.IndexOfName(procname);
+        bFunctionIsInline := idx <> -1;
+  //      if AmInlining and bFunctionIsInline then
+  //        AbortMsg(sRecursiveInlineError);
+        if bFunctionIsInline then
+        begin
+          inlineFunc := fInlineFunctions[idx];
+          if inlineFunc.Parameters.Count = 0 then
+            inlineFunc.Parameters := fFuncParams;
+          inlineFunc.CurrentCaller := fCurrentThreadName;
+        end
         else
-          Expected('"("');
-        if bFunctionIsInline and
-           (inlineFunc.Callers.IndexOf(fCurrentThreadName) = -1) then
-        begin
-          inlineFunc.Callers.Add(fCurrentThreadName);
-          // first call in this thread to this inline function
-          // output all parameters and local variables with decoration
-          EmitInlineParametersAndLocals(inlineFunc);
-          // make sure the very first call to this inline function
-          // by this thread doesn't get optimized out
-          fExpStr := '__DO_NOT_OPTIMIZE!@#$%_';
-        end;
-        bSafeCall := GlobalUsesSafeCall(procname);
-        // acquire the mutex
-        if not bFunctionIsInline and (SafeCalls or bSafeCall) then
-        begin
-          EmitLnNoTab('#pragma safecalling');
-          EmitLn(Format('acquire __%s_mutex', [procname]));
-        end;
-        rdt := FunctionReturnType(procname);
-        while not bError and (Token <> TOK_CLOSEPAREN) do begin
-          if acount >= protocount then
+          inlineFunc := nil;
+        fInputs := TStringList.Create;
+        try
+          acount := 0;
+          protocount := FunctionParameterCount(procname);
+          protoreqcount := FunctionRequiredParameterCount(procname);
+          Next;
+          bError := Value <> TOK_OPENPAREN;
+          if not bError then
+            OpenParen
+          else
+            Expected('"("');
+          if bFunctionIsInline and
+             (inlineFunc.Callers.IndexOf(fCurrentThreadName) = -1) then
           begin
-            AbortMsg(sTooManyArgs);
-            bError := True;
+            inlineFunc.Callers.Add(fCurrentThreadName);
+            // first call in this thread to this inline function
+            // output all parameters and local variables with decoration
+            EmitInlineParametersAndLocals(inlineFunc);
+            // make sure the very first call to this inline function
+            // by this thread doesn't get optimized out
+            fExpStr := '__DO_NOT_OPTIMIZE!@#$%_';
           end;
-          fp := GetFunctionParam(procname, acount);
-          if Assigned(fp) then
+          bSafeCall := GlobalUsesSafeCall(procname);
+          // acquire the mutex
+          if not bFunctionIsInline and (SafeCalls or bSafeCall) then
           begin
-            dt := FunctionParameterType(procname, acount);
-            parname := GetParamName(procname, acount);
-            if bFunctionIsInline then
-              parname := InlineName(fCurrentThreadName, parname);
-            // now process the current parameter
-            oldLHSDT := fLHSDataType;
-            oldLHSName := fLHSName;
-            fLHSDataType := dt;
-            fLHSName     := parname;
-            try
-              // reference types cannot take expressions
-              // mutex, user defined types, and array types cannot take expressions
-              if fp.IsVarReference or {fp.IsArray or}
-                 (fp.ParamType in [{fptUDT, }fptMutex]) then
-              begin
-                CheckIdent;
-                parvalue := GetDecoratedValue;
-                pdt := DataType(parvalue);
-                if fp.IsArray then
+            EmitLnNoTab('#pragma safecalling');
+            EmitLn(Format('acquire __%s_mutex', [procname]));
+          end;
+          rdt := FunctionReturnType(procname);
+          while not bError and (Token <> TOK_CLOSEPAREN) do begin
+            if acount >= protocount then
+            begin
+              AbortMsg(sTooManyArgs);
+              bError := True;
+            end;
+            fp := GetFunctionParam(procname, acount);
+            if Assigned(fp) then
+            begin
+              dt := FunctionParameterType(procname, acount);
+              parname := GetParamName(procname, acount);
+              if bFunctionIsInline then
+                parname := InlineName(fCurrentThreadName, parname);
+              // now process the current parameter
+              oldLHSDT := fLHSDataType;
+              oldLHSName := fLHSName;
+              fLHSDataType := dt;
+              fLHSName     := parname;
+              try
+                // reference types cannot take expressions
+                // mutex, user defined types, and array types cannot take expressions
+                if fp.IsVarReference or {fp.IsArray or}
+                   (fp.ParamType in [{fptUDT, }fptMutex]) then
                 begin
-                  if not IsArrayType(pdt, True) then
-                    Expected(sArrayDatatype);
-                end;
-                fInputs.AddObject(parvalue, fp);
-                EmitLn(Format('mov %s, %s', [parname, parvalue]));
-                junk := AdvanceToNextParam;
-                if junk <> '' then
-                  AbortMsg(sExpNotSupported)
-                else
-                  CheckTypeCompatibility(fp, pdt, parvalue);
-              end
-  // beginning of addition for handling expressions for UDT and array parameters
-              else if fp.IsArray or (fp.ParamType = fptUDT) then
-              begin
-                fInputs.AddObject('', fp);
-                if IsArrayType(dt) then
-                begin
-                  DoArrayAssignValue(parname, '', dt);
-                end
-                else if dt = TOK_USERDEFINEDTYPE then
-                begin
-                  GetAndStoreUDT(parname);
-                end;
-              end
-  // end of addition for handling expressions for UDT and array parameters
-  // beginning of previously commented out block
-              else if fp.IsConstant and not fp.IsReference then
-              begin
-                // must be a number (or constant expression) or a string literal
-                if dt = TOK_STRINGDEF then
-                begin
-                  parvalue := Value;
-                  CheckStringConst;
-                  fp.ConstantValue := parvalue;
+                  CheckIdent;
+                  parvalue := GetDecoratedValue;
+                  pdt := DataType(parvalue);
+                  if fp.IsArray then
+                  begin
+                    if not IsArrayType(pdt, True) then
+                      Expected(sArrayDatatype);
+                  end;
                   fInputs.AddObject(parvalue, fp);
-                  if bFunctionIsInline then
-                  begin
-                    i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
-                    if i <> -1 then
-                    begin
-                      inlineFunc.Parameters[i].Assign(fp);
-                    end;
-                  end;
                   EmitLn(Format('mov %s, %s', [parname, parvalue]));
-                  Next;
+                  junk := AdvanceToNextParam;
+                  if junk <> '' then
+                    AbortMsg(sExpNotSupported)
+                  else
+                    CheckTypeCompatibility(fp, pdt, parvalue);
                 end
-                else if dt <> #0 then
+    // beginning of addition for handling expressions for UDT and array parameters
+                else if fp.IsArray or (fp.ParamType = fptUDT) then
                 begin
-                  // collect tokens to TOK_CLOSEPAREN or TOK_COMMA
-                  parvalue := Value;
-                  SkipWhite; // skip any whitespace just in case
-                  while not (Look in [TOK_CLOSEPAREN, TOK_COMMA]) or endofallsource do begin
-                    Next;
-                    parvalue := parvalue + Value;
-                  end;
-                  Next;
-                  fCalc.SilentExpression := GetValueOf(parvalue);
-                  if not fCalc.ParserError then
+                  fInputs.AddObject('', fp);
+                  if IsArrayType(dt) then
                   begin
-                    parvalue := NBCFloatToStr(fCalc.Value);
-                    fCalc.SetVariable(parname, fCalc.Value);
+                    DoArrayAssignValue(parname, '', dt);
+                  end
+                  else if dt = TOK_USERDEFINEDTYPE then
+                  begin
+                    GetAndStoreUDT(parname);
+                  end;
+                end
+    // end of addition for handling expressions for UDT and array parameters
+    // beginning of previously commented out block
+                else if fp.IsConstant and not fp.IsReference then
+                begin
+                  // must be a number (or constant expression) or a string literal
+                  if dt = TOK_STRINGDEF then
+                  begin
+                    parvalue := Value;
+                    CheckStringConst;
                     fp.ConstantValue := parvalue;
                     fInputs.AddObject(parvalue, fp);
                     if bFunctionIsInline then
@@ -3797,13 +3778,24 @@ begin
                       end;
                     end;
                     EmitLn(Format('mov %s, %s', [parname, parvalue]));
+                    Next;
                   end
-                  else
+                  else if dt <> #0 then
                   begin
-                    if IsParamConst(parvalue) then
+                    // collect tokens to TOK_CLOSEPAREN or TOK_COMMA
+                    parvalue := Value;
+                    SkipWhite; // skip any whitespace just in case
+                    while not (Look in [TOK_CLOSEPAREN, TOK_COMMA]) or endofallsource do begin
+                      Next;
+                      parvalue := parvalue + Value;
+                    end;
+                    Next;
+                    fCalc.SilentExpression := GetValueOf(parvalue);
+                    if not fCalc.ParserError then
                     begin
-                      fp.ConstantValue := ApplyDecoration(fCurrentThreadName, parvalue, 0);
-  //                    fp.ConstantValue := parvalue;
+                      parvalue := NBCFloatToStr(fCalc.Value);
+                      fCalc.SetVariable(parname, fCalc.Value);
+                      fp.ConstantValue := parvalue;
                       fInputs.AddObject(parvalue, fp);
                       if bFunctionIsInline then
                       begin
@@ -3813,139 +3805,159 @@ begin
                           inlineFunc.Parameters[i].Assign(fp);
                         end;
                       end;
+                      EmitLn(Format('mov %s, %s', [parname, parvalue]));
                     end
                     else
                     begin
-                      fInputs.AddObject('', fp);
-                      Expected(sConstOrConstExpr);
+                      if IsParamConst(parvalue) then
+                      begin
+                        fp.ConstantValue := ApplyDecoration(fCurrentThreadName, parvalue, 0);
+    //                    fp.ConstantValue := parvalue;
+                        fInputs.AddObject(parvalue, fp);
+                        if bFunctionIsInline then
+                        begin
+                          i := inlineFunc.Parameters.IndexOf(inlineFunc.Name, acount);
+                          if i <> -1 then
+                          begin
+                            inlineFunc.Parameters[i].Assign(fp);
+                          end;
+                        end;
+                      end
+                      else
+                      begin
+                        fInputs.AddObject('', fp);
+                        Expected(sConstOrConstExpr);
+                      end;
                     end;
                   end;
-                end;
-              end
-  // end of previously commented out block
-              else
-              begin
-                fInputs.AddObject('', fp);
-                if dt = TOK_STRINGDEF then
-                begin
-                  StringExpression(parname);
-                  EmitLn(Format('mov %s, %s', [parname, StrBufName]));
                 end
-                else if dt <> #0 then
+    // end of previously commented out block
+                else
                 begin
-                  BoolExpression;
-                  EmitLn(Format('mov %s, %s', [parname, RegisterName]));
+                  fInputs.AddObject('', fp);
+                  if dt = TOK_STRINGDEF then
+                  begin
+                    StringExpression(parname);
+                    EmitLn(Format('mov %s, %s', [parname, StrBufName]));
+                  end
+                  else if dt <> #0 then
+                  begin
+                    BoolExpression;
+                    EmitLn(Format('mov %s, %s', [parname, RegisterName]));
+                  end;
                 end;
+              finally
+                fLHSDataType := oldLHSDT;
+                fLHSName     := oldLHSName;
               end;
-            finally
-              fLHSDataType := oldLHSDT;
-              fLHSName     := oldLHSName;
             end;
-          end;
-          inc(acount);
-          Scan;
-          if acount < protoreqcount then
-          begin
-            MatchString(TOK_COMMA);
+            inc(acount);
             Scan;
-          end
-          else begin
-            // we are now supposed to either have a comma or a close paren
-            // depending on the value of acount compared to protocount
-            if (acount < protocount) and not (Token in [TOK_COMMA, TOK_CLOSEPAREN]) then
+            if acount < protoreqcount then
             begin
               MatchString(TOK_COMMA);
               Scan;
             end
-            else
-            begin
-              if Token = TOK_COMMA then begin
-                Next;
+            else begin
+              // we are now supposed to either have a comma or a close paren
+              // depending on the value of acount compared to protocount
+              if (acount < protocount) and not (Token in [TOK_COMMA, TOK_CLOSEPAREN]) then
+              begin
+                MatchString(TOK_COMMA);
                 Scan;
+              end
+              else
+              begin
+                if Token = TOK_COMMA then begin
+                  Next;
+                  Scan;
+                end;
               end;
             end;
           end;
-        end;
-        if protoreqcount > acount then
-          AbortMsg(sTooFewParams);
-        while acount < protocount do
-        begin
-          // use default values for all the arguments not provided
-          fp := GetFunctionParam(procname, acount);
-          if Assigned(fp) then
+          if protoreqcount > acount then
+            AbortMsg(sTooFewParams);
+          while acount < protocount do
           begin
-            parname := GetParamName(procname, acount);
-            if bFunctionIsInline then
-              parname := InlineName(fCurrentThreadName, parname);
-            parvalue := FunctionParameterDefaultValue(procname, acount);
-            EmitLn(Format('mov %s, %s', [parname, parvalue]));
-          end;
-          inc(acount);
-        end;
-        if Value = TOK_CLOSEPAREN then
-        begin
-          CloseParen;
-          if bFunctionIsInline then
-            inlineFunc.Emit(NBCSource)
-          else
-            EmitLn('call '+procname);
-          fCCSet := False;
-          for i := 0 to fInputs.Count - 1 do begin
-            fp := TFunctionParameter(fInputs.Objects[i]);
-            if fp.IsVarReference then begin
-              // must copy out the non-const references
-              parname := GetParamName(procname, i);
+            // use default values for all the arguments not provided
+            fp := GetFunctionParam(procname, acount);
+            if Assigned(fp) then
+            begin
+              parname := GetParamName(procname, acount);
               if bFunctionIsInline then
                 parname := InlineName(fCurrentThreadName, parname);
-              EmitLn(Format('mov %s, %s', [fInputs[i], parname]));
+              parvalue := FunctionParameterDefaultValue(procname, acount);
+              EmitLn(Format('mov %s, %s', [parname, parvalue]));
             end;
+            inc(acount);
           end;
-          if rdt = TOK_STRINGDEF then
+          if Value = TOK_CLOSEPAREN then
           begin
-            // copy value from subroutine to register
+            CloseParen;
             if bFunctionIsInline then
-              EmitLn(Format('mov %s, %s', [StrRetValName, StrBufName(InlineName(fCurrentThreadName, procname))]))
+              inlineFunc.Emit(NBCSource)
             else
-              EmitLn(Format('mov %s, %s', [StrRetValName, StrBufName(procname)]));
+              EmitLn('call '+procname);
+            fCCSet := False;
+            for i := 0 to fInputs.Count - 1 do begin
+              fp := TFunctionParameter(fInputs.Objects[i]);
+              if fp.IsVarReference then begin
+                // must copy out the non-const references
+                parname := GetParamName(procname, i);
+                if bFunctionIsInline then
+                  parname := InlineName(fCurrentThreadName, parname);
+                EmitLn(Format('mov %s, %s', [fInputs[i], parname]));
+              end;
+            end;
+            if rdt = TOK_STRINGDEF then
+            begin
+              // copy value from subroutine to register
+              if bFunctionIsInline then
+                EmitLn(Format('mov %s, %s', [StrRetValName, StrBufName(InlineName(fCurrentThreadName, procname))]))
+              else
+                EmitLn(Format('mov %s, %s', [StrRetValName, StrBufName(procname)]));
+            end
+            else if IsUDT(rdt) or IsArrayType(rdt) then
+            begin
+              // tell the compiler that a UDT/Array is on stack
+              if bFunctionIsInline then
+                fUDTOnStack := Format('__result_%s', [InlineName(fCurrentThreadName, procname)])
+              else
+                fUDTOnStack := Format('__result_%s', [procname]);
+            end
+            else if rdt in NonAggregateTypes then
+            begin
+              // copy value from subroutine to register
+              if rdt = TOK_FLOATDEF then
+                StatementType := stFloat
+              else if not (rdt in UnsignedIntegerTypes) then
+                StatementType := stSigned
+              else
+                StatementType := stUnsigned;
+              if bFunctionIsInline then
+                EmitLn(Format('mov %s, %s', [RegisterName, RegisterName(InlineName(fCurrentThreadName, procname))]))
+              else
+                EmitLn(Format('mov %s, %s', [RegisterName, RegisterName(procname)]));
+            end;
+            // release the mutex
+            if not bFunctionIsInline and (SafeCalls or bSafeCall) then
+              EmitLn(Format('release __%s_mutex', [procname]));
           end
-          else if IsUDT(rdt) or IsArrayType(rdt) then
-          begin
-            // tell the compiler that a UDT/Array is on stack
-            if bFunctionIsInline then
-              fUDTOnStack := Format('__result_%s', [InlineName(fCurrentThreadName, procname)])
-            else
-              fUDTOnStack := Format('__result_%s', [procname]);
-          end
-          else if rdt in NonAggregateTypes then
-          begin
-            // copy value from subroutine to register
-            if rdt = TOK_FLOATDEF then
-              StatementType := stFloat
-            else if not (rdt in UnsignedIntegerTypes) then
-              StatementType := stSigned
-            else
-              StatementType := stUnsigned;
-            if bFunctionIsInline then
-              EmitLn(Format('mov %s, %s', [RegisterName, RegisterName(InlineName(fCurrentThreadName, procname))]))
-            else
-              EmitLn(Format('mov %s, %s', [RegisterName, RegisterName(procname)]));
-          end;
-          // release the mutex
-          if not bFunctionIsInline and (SafeCalls or bSafeCall) then
-            EmitLn(Format('release __%s_mutex', [procname]));
-        end
-        else
-          Expected('")"');
+          else
+            Expected('")"');
+        finally
+          fInputs.Free;
+        end;
       finally
-        fInputs.Free;
+        fFunctionNameCallStack.Delete(fFunctionNameCallStack.Count - 1);
       end;
-    finally
-      fFunctionNameCallStack.Delete(fFunctionNameCallStack.Count - 1);
+    end
+    else
+    begin
+      AbortMsg(sNestedCallsError);
     end;
-  end
-  else
-  begin
-    AbortMsg(sNestedCallsError);
+  finally
+    fNoCommaOperator := False;
   end;
 end;
 

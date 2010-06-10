@@ -1,0 +1,21 @@
+int foobar()
+{
+  int m=4;
+  int e=5;
+  // the use of math assignment operators in an expression was causing
+  // a compiler error until a change made on 2010-06-07 JCH
+  return m+=m<e;
+}
+
+task main()
+{
+  int test = foobar();
+  NumOut(0, LCD_LINE1, test);
+
+  int a = 4, b = 5, c = 6;
+  // C++Builder errors with this statement: Lvalue required
+  int x = a > b += c < 3;
+  NumOut(0, LCD_LINE2, b);
+  NumOut(0, LCD_LINE3, x);
+  Wait(SEC_5);
+}

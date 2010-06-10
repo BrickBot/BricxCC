@@ -1,0 +1,33 @@
+task main()
+{
+  int G=~0x88;
+  int board[10];
+  int F;
+  int k;
+  int v, H, x;
+  
+  // the comma operator in the following line resulted in a compiler error
+  // until the changes made to correct the operator precedence of the comma
+  // operator on 2010-06-07 JCH
+  if(!(G&0x88)) board[F]=k+6,v+=30;
+  int i, a = 4, b = 5, c = 6;
+  // the comma operator in the following line resulted in a compiler error
+  // until the changes made to correct the operator precedence of the comma
+  // operator on 2010-06-07 JCH
+  i = a, b, c;
+  // checking code generation when nested within ? : statement
+  i = G ? a, b, c : F, k, v;
+  NumOut(0, LCD_LINE1, i);
+  i += a, b, c;
+  NumOut(0, LCD_LINE2, i);
+  int m = 4, I=0, D=23;
+  m=m+I?m:-D;
+  NumOut(0, LCD_LINE3, m);
+
+  // assignment within expressions does not work for array/structs
+//  board[G]=board[H]=board[x]=0;
+  // assignment within expressions does not work for strings
+//  string s1, s2, s3;
+//  s1 = s2 = s3 = "testing";
+  Wait(SEC_5);
+}

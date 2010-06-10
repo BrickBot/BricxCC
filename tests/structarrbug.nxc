@@ -1,0 +1,23 @@
+struct foo {
+	int a[10]; // this does not actually initialize a
+	int b;
+};
+
+task main() {
+	foo f;
+	ArrayInit(f.a, 0, 10); // add 10 zeros to initialize a
+	int x;
+
+	f.a[0] = 1;
+	f.a[2] = 5;
+	f.b = 2;
+
+	f.a[f.b] = 3;
+
+	x = f.a[f.b];
+	x++;
+	NumOut(0, LCD_LINE1, x);
+
+	Wait(3000);
+}
+
