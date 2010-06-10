@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-05-29
- * \version 74
+ * \date 2010-06-10
+ * \version 75
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -7279,7 +7279,6 @@ inline void SetBTDeviceNameCount(byte count);
 #define USBState() asm { GetUSBState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define HSMode() asm { GetHSMode(__TMPWORD__) __RETURN__ __TMPWORD__ }
 
-/*
 #define SetBTDeviceName(_p, _str) asm { __setBTDeviceName(_p, _str) }
 #define SetBTDeviceAddress(_p, _addr) asm { __setBTDeviceAddress(_p, _addr) }
 #define SetBTConnectionName(_p, _str) asm { __setBTConnectionName(_p, _str) }
@@ -7301,7 +7300,6 @@ inline void SetBTDeviceNameCount(byte count);
 
 #define SetBTDeviceCount(_n) asm { __setBTDeviceCount(_n) }
 #define SetBTDeviceNameCount(_n) asm { __setBTDeviceNameCount(_n) }
-*/
 
 #define SetBTInputBuffer(_offset, _cnt, _data) asm { __setBTInputBuffer(_offset, _cnt, _data) }
 
