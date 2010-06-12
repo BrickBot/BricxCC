@@ -1,5 +1,5 @@
 PROGRAMS = nbc.exe
-VER = 1.2.1.r2
+VER = 1.2.1.r3
 DOBJECTS=uNXTClasses.dcu uPreprocess.dcu Parser10.dcu P10Build.dcu uNXCComp.dcu uRPGComp.dcu uRIC.dcu uRICComp.dcu uNBCCommon.dcu uNXTConstants.dcu uNBCInterface.dcu nbc.dpr
 DEFAULT_INCLUDE_DIR=.
 

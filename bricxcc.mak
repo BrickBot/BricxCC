@@ -1,4 +1,4 @@
-VER = 1.2.1.r2
+VER = 1.2.1.r3
 NBC_SRC = NXT/nbc.dpr NXT/nbc.cfg NXT/nbc.dof NXT/nbc.res NXT/mkdata.dpr NXT/mkdata.cfg NXT/mkdata.dof NXT/NBCCommon.h NXT/NXTDefs.h NXT/NXCDefs.h
 NXT_SRC = NXT/uNXTClasses.pas NXT/uNXTConstants.pas NXT/uPreprocess.pas NXT/Parser10.pas NXT/P10Build.pas NXT/uRIC.pas NXT/uNXCComp.pas NXT/uRPGComp.pas NXT/uRICComp.pas NXT/uNBCCommon.pas NXT/uNBCInterface.pas
 CMN_SRC = uLocalizedStrings.pas uCmdLineUtils.pas uCommonUtils.pas uGenLexer.pas uNBCLexer.pas uNXCLexer.pas uVersionInfo.pas mwGenericLex.pas ParamUtils.pas uGlobals.pas

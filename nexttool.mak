@@ -1,5 +1,5 @@
 PROGRAMS = nexttool
-VER = 1.0.2.0
+VER = 1.2.1.r3
 DOBJECTS=uCmdLineUtils.o ParamUtils.o uCommonUtils.o uVersionInfo.o NeXTTool.dpr
 BINDIST = nxt/nexttool
 FANTOM_SRC = bricktools/FANTOM.pas bricktools/FANTOM_CONST.INC bricktools/FANTOMFPC.PAS bricktools/fantomosx.pas bricktools/libusb.pas
