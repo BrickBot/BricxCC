@@ -463,7 +463,7 @@
  * declared. Typedef names allow you to encapsulate implementation details
  * that may change.
  *
- * A typedef declaration does not introduce a new type — it introduces a new
+ * A typedef declaration does not introduce a new type - it introduces a new
  * name for an existing type. Here are a few examples of how to use the
  * typedef keyword:
  *

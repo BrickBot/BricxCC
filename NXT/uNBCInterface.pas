@@ -817,7 +817,7 @@ end;
 initialization
   VerCompanyName      := 'JoCar Consulting';
   VerFileDescription  := '';
-  VerFileVersion      := '1.2.1.r2';
+  VerFileVersion      := '1.2.1.r3';
   VerInternalName     := 'NBC';
   VerLegalCopyright   := 'Copyright (c) 2006-2010, John Hansen';
   VerOriginalFileName := 'NBC';

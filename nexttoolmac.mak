@@ -1,5 +1,5 @@
 PROGRAMS = nexttool
-VER = 1.0.2.0
+VER = 1.2.1.r3
 
 all:: $(PROGRAMS)
 

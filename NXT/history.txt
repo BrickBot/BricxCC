@@ -8,6 +8,12 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
+Version 1.2.1.r3 (2010-06-12)
+-----------------------------
+- Fixed a bug with the new comma operator support when using ?: in 
+  function calls
+
+
 Version 1.2.1.r2 (2010-06-06)
 -----------------------------
 - Reverted changes to relation expressions so you again have to use

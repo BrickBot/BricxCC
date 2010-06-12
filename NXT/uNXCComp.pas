@@ -3835,16 +3835,7 @@ begin
                 else
                 begin
                   fInputs.AddObject('', fp);
-                  if dt = TOK_STRINGDEF then
-                  begin
-                    StringExpression(parname);
-                    EmitLn(Format('mov %s, %s', [parname, StrBufName]));
-                  end
-                  else if dt <> #0 then
-                  begin
-                    BoolExpression;
-                    EmitLn(Format('mov %s, %s', [parname, RegisterName]));
-                  end;
+                  DoAssignValue(parname, dt);
                 end;
               finally
                 fLHSDataType := oldLHSDT;
