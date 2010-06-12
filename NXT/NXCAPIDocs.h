@@ -22,11 +22,15 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-06-08
- * \version 3
+ * \date 2010-06-11
+ * \version 4
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
+
+/////////////////////////////////////////////////////////////////////////////
+/////////////////////  NXC Programmer's Guide ///////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
 
 /** @mainpage NXC Programmer's Guide
  * \brief
@@ -383,13 +387,94 @@
 /** @page enum enum
  * \brief
  *
- * TBD.
+ * The enum keyword is used to create an enumerated type named name. The
+ * syntax is show below.
+ * \code
+ * enum [name] {name-list} var-list;
+ * \endcode
+ * The enumerated type consists of the elements in name-list. The var-list
+ * argument is optional, and can be used to create instances of the type along
+ * with the declaration. For example, the following code creates an enumerated
+ * type for colors:
+ * \code
+ * enum ColorT {red, orange, yellow, green, blue, indigo, violet};
+ * \endcode
+ * In the above example, the effect of the enumeration is to introduce several
+ * new constants named red, orange, yellow, etc. By default, these constants
+ * are assigned consecutive integer values starting at zero. You can change
+ * the values of those constants, as shown by the next example:
+ * \code
+ * enum ColorT { red = 10, blue = 15, green };
+ * \endcode
+ * In the above example, green has a value of 16.  Once you have defined an
+ * enumerated type you can use it to declare variables just like you use
+ * any native type.  Here are a few examples of using the enum keyword:
+ * \code
+ * // values start from 0 and increment upward by 1
+ * enum { ONE, TWO, THREE };
+ * // optional equal sign with constant expression for the value
+ * enum { SMALL=10, MEDIUM=100, LARGE=1000 };
+ * // names without equal sign increment by one from last name's value
+ * enum { FRED=1, WILMA, BARNEY, BETTY };
+ * // optional named type (like a typedef)
+ * enum TheSeasons { SPRING, SUMMER, FALL, WINTER };
+ * // optional variable at end
+ * enum Days {
+ *    saturday,            // saturday = 0 by default
+ *    sunday = 0x0,          // sunday = 0 as well
+ *    monday,              // monday = 1
+ *    tuesday,             // tuesday = 2
+ *    wednesday,           // etc.
+ *    thursday,
+ *    friday
+ * } today;                // Variable today has type Days
+ *
+ * Days tomorrow;
+ *
+ * task main()
+ * {
+ *   TheSeasons test = FALL;
+ *   today = monday;
+ *   tomorrow = today+1;
+ *   NumOut(0, LCD_LINE1, THREE);
+ *   NumOut(0, LCD_LINE2, MEDIUM);
+ *   NumOut(0, LCD_LINE3, FRED);
+ *   NumOut(0, LCD_LINE4, SPRING);
+ *   NumOut(0, LCD_LINE5, friday);
+ *   NumOut(0, LCD_LINE6, today);
+ *   NumOut(0, LCD_LINE7, test);
+ *   NumOut(0, LCD_LINE8, tomorrow);
+ *   Wait(SEC_5);
+ * }
+ * \endcode
  */
 
 /** @page typedef typedef
  * \brief
  *
- * TBD.
+ * A typedef declaration introduces a name that, within its scope, becomes a
+ * synonym for the type given by the type-declaration portion of the
+ * declaration.
+ * \code
+ * typedef type-declaration synonym;
+ * \endcode
+ * You can use typedef declarations to construct shorter or more meaningful
+ * names for types already defined by the language or for types that you have
+ * declared. Typedef names allow you to encapsulate implementation details
+ * that may change.
+ *
+ * A typedef declaration does not introduce a new type — it introduces a new
+ * name for an existing type. Here are a few examples of how to use the
+ * typedef keyword:
+ *
+ * \code
+ * typedef char FlagType;
+ * const FlagType x;
+ * typedef char CHAR;          // Character type.
+ * CHAR ch;
+ * typedef unsigned long ulong;
+ * ulong ul;     // Equivalent to "unsigned long ul;"
+ * \endcode
  */
 
 /** @page codeorder Code Order
@@ -1933,6 +2018,10 @@
  * 
  */
 
+/////////////////////////////////////////////////////////////////////////////
+////////////////////////  NXT MODULE DOCS  //////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
 /** @defgroup NXTFirmwareModules NXT Firmware Modules
  * Documentation common to all NXT firmware modules.
  */
@@ -2270,6 +2359,2739 @@
  * Documentation for a simple 3D graphics library.  The library code was
  * written by Arno van der Vegt.
  */
+
+/////////////////////////////////////////////////////////////////////////////
+////////////////////////////  EXAMPLES  /////////////////////////////////////
+/////////////////////////////////////////////////////////////////////////////
+
+/**
+ * \example ex_SetSensorType.nxc
+ * This is an example of how to use the \ref SetSensorType function.
+ *
+ * \example ex_SetSensorMode.nxc
+ * This is an example of how to use the \ref SetSensorMode function.
+ *
+ * \example ex_ClearSensor.nxc
+ * This is an example of how to use the \ref ClearSensor function.
+ *
+ * \example ex_ResetSensor.nxc
+ * This is an example of how to use the \ref ResetSensor function.
+ *
+ * \example ex_SetSensor.nxc
+ * This is an example of how to use the \ref SetSensor function.
+ *
+ * \example ex_SetSensorTouch.nxc
+ * This is an example of how to use the \ref SetSensorTouch function.
+ *
+ * \example ex_SetSensorLight.nxc
+ * This is an example of how to use the \ref SetSensorLight function.
+ *
+ * \example ex_SetSensorSound.nxc
+ * This is an example of how to use the \ref SetSensorSound function.
+ *
+ * \example ex_SetSensorLowspeed.nxc
+ * This is an example of how to use the \ref SetSensorLowspeed function.
+ *
+ * \example ex_SetSensorColorFull.nxc
+ * This is an example of how to use the \ref SetSensorColorFull function.
+ *
+ * \example ex_SetSensorColorRed.nxc
+ * This is an example of how to use the \ref SetSensorColorRed function.
+ *
+ * \example ex_SetSensorColorGreen.nxc
+ * This is an example of how to use the \ref SetSensorColorGreen function.
+ *
+ * \example ex_SetSensorColorBlue.nxc
+ * This is an example of how to use the \ref SetSensorColorBlue function.
+ *
+ * \example ex_SetSensorColorNone.nxc
+ * This is an example of how to use the \ref SetSensorColorNone function.
+ *
+ * \example ex_GetInput.nxc
+ * This is an example of how to use the \ref GetInput function.
+ *
+ * \example ex_SetInput.nxc
+ * This is an example of how to use the \ref SetInput function.
+ *
+ * \example ex_Sensor.nxc
+ * This is an example of how to use the \ref Sensor function.
+ *
+ * \example ex_SensorBoolean.nxc
+ * This is an example of how to use the \ref SensorBoolean function.
+ *
+ * \example ex_SensorDigiPinsDirection.nxc
+ * This is an example of how to use the \ref SensorDigiPinsDirection function.
+ *
+ * \example ex_SensorDigiPinsOutputLevel.nxc
+ * This is an example of how to use the \ref SensorDigiPinsOutputLevel function.
+ *
+ * \example ex_SensorDigiPinsStatus.nxc
+ * This is an example of how to use the \ref SensorDigiPinsStatus function.
+ *
+ * \example ex_SensorInvalid.nxc
+ * This is an example of how to use the \ref SensorInvalid function.
+ *
+ * \example ex_SensorMode.nxc
+ * This is an example of how to use the \ref SensorMode function.
+ *
+ * \example ex_SensorNormalized.nxc
+ * This is an example of how to use the \ref SensorNormalized function.
+ *
+ * \example ex_SensorRaw.nxc
+ * This is an example of how to use the \ref SensorRaw function.
+ *
+ * \example ex_SensorScaled.nxc
+ * This is an example of how to use the \ref SensorScaled function.
+ *
+ * \example ex_SensorType.nxc
+ * This is an example of how to use the \ref SensorType function.
+ *
+ * \example ex_SensorValue.nxc
+ * This is an example of how to use the \ref SensorValue function.
+ *
+ * \example ex_SensorValueBool.nxc
+ * This is an example of how to use the \ref SensorValueBool function.
+ *
+ * \example ex_SensorValueRaw.nxc
+ * This is an example of how to use the \ref SensorValueRaw function.
+ *
+ * \example ex_CustomSensorActiveStatus.nxc
+ * This is an example of how to use the \ref CustomSensorActiveStatus function.
+ *
+ * \example ex_CustomSensorPercentFullScale.nxc
+ * This is an example of how to use the \ref CustomSensorPercentFullScale function.
+ *
+ * \example ex_CustomSensorZeroOffset.nxc
+ * This is an example of how to use the \ref CustomSensorZeroOffset function.
+ *
+ * \example ex_SetCustomSensorActiveStatus.nxc
+ * This is an example of how to use the \ref SetCustomSensorActiveStatus function.
+ *
+ * \example ex_SetCustomSensorPercentFullScale.nxc
+ * This is an example of how to use the \ref SetCustomSensorPercentFullScale function.
+ *
+ * \example ex_SetCustomSensorZeroOffset.nxc
+ * This is an example of how to use the \ref SetCustomSensorZeroOffset function.
+ *
+ * \example ex_SetSensorBoolean.nxc
+ * This is an example of how to use the \ref SetSensorBoolean function.
+ *
+ * \example ex_SetSensorDigiPinsDirection.nxc
+ * This is an example of how to use the \ref SetSensorDigiPinsDirection function.
+ *
+ * \example ex_SetSensorDigiPinsOutputLevel.nxc
+ * This is an example of how to use the \ref SetSensorDigiPinsOutputLevel function.
+ *
+ * \example ex_SetSensorDigiPinsStatus.nxc
+ * This is an example of how to use the \ref SetSensorDigiPinsStatus function.
+ *
+ * \example ex_SysColorSensorRead.nxc
+ * This is an example of how to use the \ref SysColorSensorRead function.
+ *
+ * \example ex_ReadSensorColorEx.nxc
+ * This is an example of how to use the \ref ReadSensorColorEx function.
+ *
+ * \example ex_ReadSensorColorRaw.nxc
+ * This is an example of how to use the \ref ReadSensorColorRaw function.
+ *
+ * \example ex_ColorADRaw.nxc
+ * This is an example of how to use the \ref ColorADRaw function.
+ *
+ * \example ex_ColorBoolean.nxc
+ * This is an example of how to use the \ref ColorBoolean function.
+ *
+ * \example ex_ColorCalibration.nxc
+ * This is an example of how to use the \ref ColorCalibration function.
+ *
+ * \example ex_ColorCalibrationState.nxc
+ * This is an example of how to use the \ref ColorCalibrationState function.
+ *
+ * \example ex_ColorCalLimits.nxc
+ * This is an example of how to use the \ref ColorCalLimits function.
+ *
+ * \example ex_ColorSensorRaw.nxc
+ * This is an example of how to use the \ref ColorSensorRaw function.
+ *
+ * \example ex_ColorSensorValue.nxc
+ * This is an example of how to use the \ref ColorSensorValue function.
+ *
+ * \example ex_setmotorpwnfreq.nxc
+ * This is an example of how to use the SetMotorPwnFreq function.
+ *
+ * \example ex_onfwdsyncpid.nxc
+ * This is an example of how to use the OnFwdSyncPID function.
+ *
+ * \example ex_onfwdsyncexpid.nxc
+ * This is an example of how to use the OnFwdSyncExPID function.
+ *
+ * \example ex_onrevsyncpid.nxc
+ * This is an example of how to use the OnRevSyncPID function.
+ *
+ * \example ex_onrevsyncexpid.nxc
+ * This is an example of how to use the OnRevSyncExPID function.
+ *
+ * \example ex_onfwdregpid.nxc
+ * This is an example of how to use the OnFwdRegPID function.
+ *
+ * \example ex_onfwdregexpid.nxc
+ * This is an example of how to use the OnFwdRegExPID function.
+ *
+ * \example ex_onrevregpid.nxc
+ * This is an example of how to use the OnRevRegPID function.
+ *
+ * \example ex_onrevregexpid.nxc
+ * This is an example of how to use the OnRevRegExPID function.
+ *
+ * \example ex_off.nxc
+ * This is an example of how to use the \ref Off function.
+ *
+ * \example ex_offex.nxc
+ * This is an example of how to use the \ref OffEx function.
+ *
+ * \example ex_coast.nxc
+ * This is an example of how to use the \ref Coast function.
+ *
+ * \example ex_coastex.nxc
+ * This is an example of how to use the \ref CoastEx function.
+ *
+ * \example ex_float.nxc
+ * This is an example of how to use the \ref Float function.
+ *
+ * \example ex_onfwd.nxc
+ * This is an example of how to use the \ref OnFwd function.
+ *
+ * \example ex_onfwdex.nxc
+ * This is an example of how to use the \ref OnFwdEx function.
+ *
+ * \example ex_onrev.nxc
+ * This is an example of how to use the \ref OnRev function.
+ *
+ * \example ex_onrevex.nxc
+ * This is an example of how to use the \ref OnRevEx function.
+ *
+ * \example ex_onfwdreg.nxc
+ * This is an example of how to use the \ref OnFwdReg function.
+ *
+ * \example ex_onfwdregex.nxc
+ * This is an example of how to use the \ref OnFwdRegEx function.
+ *
+ * \example ex_onrevreg.nxc
+ * This is an example of how to use the \ref OnRevReg function.
+ *
+ * \example ex_onrevregex.nxc
+ * This is an example of how to use the \ref OnRevRegEx function.
+ *
+ * \example ex_onfwdsync.nxc
+ * This is an example of how to use the \ref OnFwdSync function.
+ *
+ * \example ex_onfwdsyncex.nxc
+ * This is an example of how to use the \ref OnFwdSyncEx function.
+ *
+ * \example ex_onrevsync.nxc
+ * This is an example of how to use the \ref OnRevSync function.
+ *
+ * \example ex_onrevsyncex.nxc
+ * This is an example of how to use the \ref OnRevSyncEx function.
+ *
+ * \example ex_rotatemotor.nxc
+ * This is an example of how to use the \ref RotateMotor function.
+ *
+ * \example ex_rotatemotorpid.nxc
+ * This is an example of how to use the \ref RotateMotorPID function.
+ *
+ * \example ex_rotatemotorex.nxc
+ * This is an example of how to use the \ref RotateMotorEx function.
+ *
+ * \example ex_rotatemotorexpid.nxc
+ * This is an example of how to use the \ref RotateMotorExPID function.
+ *
+ * \example ex_resettachocount.nxc
+ * This is an example of how to use the \ref ResetTachoCount function.
+ *
+ * \example ex_resetblocktachocount.nxc
+ * This is an example of how to use the \ref ResetBlockTachoCount function.
+ *
+ * \example ex_resetrotationcount.nxc
+ * This is an example of how to use the \ref ResetRotationCount function.
+ *
+ * \example ex_resetalltachocounts.nxc
+ * This is an example of how to use the \ref ResetAllTachoCounts function.
+ *
+ * \example ex_setoutput.nxc
+ * This is an example of how to use the \ref SetOutput function.
+ *
+ * \example ex_getoutput.nxc
+ * This is an example of how to use the \ref GetOutput function.
+ *
+ * \example ex_motormode.nxc
+ * This is an example of how to use the \ref MotorMode function.
+ *
+ * \example ex_motorpower.nxc
+ * This is an example of how to use the \ref MotorPower function.
+ *
+ * \example ex_motoractualspeed.nxc
+ * This is an example of how to use the \ref MotorActualSpeed function.
+ *
+ * \example ex_motortachocount.nxc
+ * This is an example of how to use the \ref MotorTachoCount function.
+ *
+ * \example ex_motortacholimit.nxc
+ * This is an example of how to use the \ref MotorTachoLimit function.
+ *
+ * \example ex_motorrunstate.nxc
+ * This is an example of how to use the \ref MotorRunState function.
+ *
+ * \example ex_motorturnratio.nxc
+ * This is an example of how to use the \ref MotorTurnRatio function.
+ *
+ * \example ex_motorregulation.nxc
+ * This is an example of how to use the \ref MotorRegulation function.
+ *
+ * \example ex_motoroverload.nxc
+ * This is an example of how to use the \ref MotorOverload function.
+ *
+ * \example ex_motorregpvalue.nxc
+ * This is an example of how to use the \ref MotorRegPValue function.
+ *
+ * \example ex_motorregivalue.nxc
+ * This is an example of how to use the \ref MotorRegIValue function.
+ *
+ * \example ex_motorregdvalue.nxc
+ * This is an example of how to use the \ref MotorRegDValue function.
+ *
+ * \example ex_motorblocktachocount.nxc
+ * This is an example of how to use the \ref MotorBlockTachoCount function.
+ *
+ * \example ex_motorrotationcount.nxc
+ * This is an example of how to use the \ref MotorRotationCount function.
+ *
+ * \example ex_motorpwnfreq.nxc
+ * This is an example of how to use the \ref MotorPwnFreq function.
+ *
+ * \example ex_ResetScreen.nxc
+ * This is an example of how to use the \ref ResetScreen function.
+ *
+ * \example ex_CircleOut.nxc
+ * This is an example of how to use the \ref CircleOut, \ref Random, and
+ * \ref Wait functions.
+ *
+ * \example ex_LineOut.nxc
+ * This is an example of how to use the \ref LineOut function.
+ *
+ * \example ex_PointOut.nxc
+ * This is an example of how to use the \ref PointOut function.
+ *
+ * \example ex_RectOut.nxc
+ * This is an example of how to use the \ref RectOut function.
+ *
+ * \example ex_TextOut.nxc
+ * This is an example of how to use the \ref TextOut function.
+ *
+ * \example ex_NumOut.nxc
+ * This is an example of how to use the \ref NumOut function.
+ *
+ * \example ex_EllipseOut.nxc
+ * This is an example of how to use the \ref EllipseOut and \ref Random functions.
+ *
+ * \example ex_PolyOut.nxc
+ * This is an example of how to use the \ref PolyOut function.
+ *
+ * \example ex_dispftout.nxc
+ * This is an example of how to use the \ref FontTextOut, \ref SysDrawFont,
+ * \ref Wait, and \ref ClearScreen functions.
+ *
+ * \example ex_dispfnout.nxc
+ * This is an example of how to use the \ref FontNumOut function.
+ *
+ * \example ex_GraphicOut.nxc
+ * This is an example of how to use the \ref GraphicOut function.
+ *
+ * \example ex_dispgout.nxc
+ * This is an example of how to use the \ref GraphicOut, \ref SysCall,
+ * \ref TextOut, \ref CurrentTick, \ref NumOut, \ref Wait, and
+ * \ref ClearScreen functions. It also demonstrates how to use the
+ * \ref DrawGraphicArrayType structure.
+ *
+ * \example ex_dispgaout.nxc
+ * This is an example of how to use the \ref GraphicArrayOut, \ref NumOut, and
+ * \ref Wait function. It also demonstrates how to use the \ref RICOpSprite,
+ * \ref RICSpriteData, \ref RICOpCopyBits, \ref RICImgRect, and
+ * \ref RICImgPoint macros.
+ *
+ * \example ex_GraphicOutEx.nxc
+ * This is an example of how to use the \ref GraphicOutEx function.
+ *
+ * \example ex_dispgoutex.nxc
+ * This is an example of how to use the \ref GraphicOutEx and \ref Wait functions.
+ *
+ * \example ex_dispgaoutex.nxc
+ * This is an example of how to use the \ref GraphicArrayOutEx and \ref Wait functions.
+ * It also demonstrates how to use the \ref RICOpDescription, \ref RICOpSprite,
+ * \ref RICSpriteData, \ref RICOpCopyBits, \ref RICImgRect, and
+ * \ref RICImgPoint macros.
+ *
+ * \example ex_GetDisplayNormal.nxc
+ * This is an example of how to use the \ref GetDisplayNormal function.
+ *
+ * \example ex_SetDisplayNormal.nxc
+ * This is an example of how to use the \ref SetDisplayNormal function.
+ *
+ * \example ex_GetDisplayPopup.nxc
+ * This is an example of how to use the \ref GetDisplayPopup function.
+ *
+ * \example ex_SetDisplayPopup.nxc
+ * This is an example of how to use the \ref SetDisplayPopup function.
+ *
+ * \example ex_DisplayEraseMask.nxc
+ * This is an example of how to use the \ref DisplayEraseMask function.
+ *
+ * \example ex_dispmisc.nxc
+ * This is an example of how to use the \ref DisplayEraseMask, \ref DisplayUpdateMask, \ref DisplayDisplay,
+ * \ref DisplayFlags, \ref DisplayTextLinesCenterFlags functions,
+ * \ref SetDisplayEraseMask, \ref SetDisplayUpdateMask, \ref SetDisplayDisplay,
+ * \ref SetDisplayFlags, and \ref SetDisplayTextLinesCenterFlags functions,
+ *
+ * \example ex_DisplayUpdateMask.nxc
+ * This is an example of how to use the \ref DisplayUpdateMask function.
+ *
+ * \example ex_DisplayFont.nxc
+ * This is an example of how to use the \ref DisplayFont function.
+ *
+ * \example ex_DisplayDisplay.nxc
+ * This is an example of how to use the \ref DisplayDisplay function.
+ *
+ * \example ex_DisplayFlags.nxc
+ * This is an example of how to use the \ref DisplayFlags function.
+ *
+ * \example ex_DisplayTextLinesCenterFlags.nxc
+ * This is an example of how to use the \ref DisplayTextLinesCenterFlags function.
+ *
+ * \example ex_sysdrawtext.nxc
+ * This is an example of how to use the \ref SysDrawText function along with the
+ * \ref DrawTextType structure.
+ *
+ * \example ex_sysdrawpoint.nxc
+ * This is an example of how to use the \ref SysDrawPoint function along with the
+ * \ref DrawPointType structure.
+ *
+ * \example ex_sysdrawline.nxc
+ * This is an example of how to use the \ref SysDrawLine function along with the
+ * \ref DrawLineType structure.
+ *
+ * \example ex_sysdrawcircle.nxc
+ * This is an example of how to use the \ref SysDrawCircle function along with
+ * the \ref DrawCircleType structure.
+ *
+ * \example ex_sysdrawrect.nxc
+ * This is an example of how to use the \ref SysDrawRect function along with the
+ * \ref DrawRectType structure.
+ *
+ * \example ex_sysdrawgraphic.nxc
+ * This is an example of how to use the \ref SysDrawGraphic function along with the
+ * \ref DrawGraphicType structure.
+ *
+ * \example ex_syssetscreenmode.nxc
+ * This is an example of how to use the \ref SysSetScreenMode function along with
+ * the \ref SetScreenModeType structure.
+ *
+ * \example ex_sysdisplayexecutefunction.nxc
+ * This is an example of how to use the \ref SysDisplayExecuteFunction function
+ * along with the \ref DisplayExecuteFunctionType structure.
+ *
+ * \example ex_dispfunc.nxc
+ * This is an example of how to use the \ref SysDisplayExecuteFunction and \ref Wait functions
+ * along with the \ref DisplayExecuteFunctionType structure.
+ *
+ * \example ex_contrast.nxc
+ * This is an example of how to use the \ref DisplayContrast and \ref SetDisplayContrast functions.
+ *
+ * \example ex_sysdrawgraphicarray.nxc
+ * This is an example of how to use the \ref SysDrawGraphicArray function along with the \ref DrawGraphicArrayType structure.
+ *
+ * \example ex_sysdrawpolygon.nxc
+ * This is an example of how to use the \ref SysDrawPolygon function along
+ * with the \ref DrawPolygonType structure.
+ *
+ * \example ex_sysdrawellipse.nxc
+ * This is an example of how to use the \ref SysDrawEllipse function along
+ * with the \ref DrawEllipseType structure.
+ *
+ * \example ex_sysdrawfont.nxc
+ * This is an example of how to use the \ref SysDrawFont function along
+ * with the \ref DrawFontType structure.
+ *
+ * \example ex_ClearScreen.nxc
+ * This is an example of how to use the \ref ClearScreen and \ref Wait functions.
+ *
+ * \example ex_ClearLine.nxc
+ * This is an example of how to use the \ref TextOut, \ref ClearLine, and
+ * \ref Wait functions.
+ *
+ * \example ex_SetDisplayFont.nxc
+ * This is an example of how to use the \ref SetDisplayFont function.
+ *
+ * \example ex_SetDisplayDisplay.nxc
+ * This is an example of how to use the \ref SetDisplayDisplay function.
+ *
+ * \example ex_SetDisplayEraseMask.nxc
+ * This is an example of how to use the \ref SetDisplayEraseMask function.
+ *
+ * \example ex_SetDisplayFlags.nxc
+ * This is an example of how to use the \ref SetDisplayFlags function.
+ *
+ * \example ex_SetDisplayTextLinesCenterFlags.nxc
+ * This is an example of how to use the \ref SetDisplayTextLinesCenterFlags function.
+ *
+ * \example ex_SetDisplayUpdateMask.nxc
+ * This is an example of how to use the \ref SetDisplayUpdateMask function.
+ *
+ * \example ex_SetDisplayContrast.nxc
+ * This is an example of how to use the \ref SetDisplayContrast function.
+ *
+ * \example ex_PlayFile.nxc
+ * This is an example of how to use the \ref PlayFile function.
+ *
+ * \example ex_PlayFileEx.nxc
+ * This is an example of how to use the \ref PlayFileEx function.
+ *
+ * \example ex_PlayTone.nxc
+ * This is an example of how to use the \ref PlayTone function.
+ *
+ * \example ex_PlayToneEx.nxc
+ * This is an example of how to use the \ref PlayToneEx function.
+ *
+ * \example ex_SoundState.nxc
+ * This is an example of how to use the \ref SoundState function.
+ *
+ * \example ex_SoundFlags.nxc
+ * This is an example of how to use the \ref SoundFlags function.
+ *
+ * \example ex_StopSound.nxc
+ * This is an example of how to use the \ref StopSound function.
+ *
+ * \example ex_SoundFrequency.nxc
+ * This is an example of how to use the \ref SoundFrequency function.
+ *
+ * \example ex_SoundDuration.nxc
+ * This is an example of how to use the \ref SoundDuration function.
+ *
+ * \example ex_SoundSampleRate.nxc
+ * This is an example of how to use the \ref SoundSampleRate function.
+ *
+ * \example ex_SoundMode.nxc
+ * This is an example of how to use the \ref SoundMode function.
+ *
+ * \example ex_SoundVolume.nxc
+ * This is an example of how to use the \ref SoundVolume function.
+ *
+ * \example ex_SetSoundDuration.nxc
+ * This is an example of how to use the \ref SetSoundDuration function.
+ *
+ * \example ex_SetSoundFlags.nxc
+ * This is an example of how to use the \ref SetSoundFlags function.
+ *
+ * \example ex_SetSoundFrequency.nxc
+ * This is an example of how to use the \ref SetSoundFrequency function.
+ *
+ * \example ex_SetSoundMode.nxc
+ * This is an example of how to use the \ref SetSoundMode function.
+ *
+ * \example ex_SetSoundModuleState.nxc
+ * This is an example of how to use the \ref SetSoundModuleState function.
+ *
+ * \example ex_SetSoundSampleRate.nxc
+ * This is an example of how to use the \ref SetSoundSampleRate function.
+ *
+ * \example ex_SetSoundVolume.nxc
+ * This is an example of how to use the \ref SetSoundVolume function.
+ *
+ * \example ex_syssoundplayfile.nxc
+ * This is an example of how to use the \ref SysSoundPlayFile function along with
+ * the \ref SoundPlayFileType structure.
+ *
+ * \example ex_syssoundplaytone.nxc
+ * This is an example of how to use the \ref SysSoundPlayTone function along with
+ * the \ref SoundPlayToneType structure.
+ *
+ * \example ex_syssoundgetstate.nxc
+ * This is an example of how to use the \ref SysSoundGetState function along with
+ * the \ref SoundGetStateType structure.
+ *
+ * \example ex_syssoundsetstate.nxc
+ * This is an example of how to use the \ref SysSoundSetState function along with
+ * the \ref SoundSetStateType structure.
+ *
+ * \example ex_playsound.nxc
+ * This is an example of how to use the \ref PlaySound function.
+ *
+ * \example ex_playtones.nxc
+ * This is an example of how to use the \ref PlayTones function along with
+ * the \ref Tone structure.
+ *
+ * \example ex_sensorus.nxc
+ * This is an example of how to use the \ref SensorUS function.
+ *
+ * \example ex_readsensorusex.nxc
+ * This is an example of how to use the \ref ReadSensorUSEx function.
+ *
+ * \example ex_readi2cregister.nxc
+ * This is an example of how to use the \ref ReadI2CRegister function.
+ *
+ * \example ex_writei2cregister.nxc
+ * This is an example of how to use the \ref WriteI2CRegister function.
+ *
+ * \example ex_lowspeedstatus.nxc
+ * This is an example of how to use the \ref LowspeedStatus function.
+ *
+ * \example ex_LowspeedCheckStatus.nxc
+ * This is an example of how to use the \ref LowspeedCheckStatus function.
+ *
+ * \example ex_LowspeedBytesReady.nxc
+ * This is an example of how to use the \ref LowspeedBytesReady function.
+ *
+ * \example ex_LowspeedWrite.nxc
+ * This is an example of how to use the \ref LowspeedWrite function.
+ *
+ * \example ex_LowspeedRead.nxc
+ * This is an example of how to use the \ref LowspeedRead function.
+ *
+ * \example ex_I2CStatus.nxc
+ * This is an example of how to use the \ref I2CStatus function.
+ *
+ * \example ex_I2CCheckStatus.nxc
+ * This is an example of how to use the \ref I2CCheckStatus function.
+ *
+ * \example ex_I2CBytesReady.nxc
+ * This is an example of how to use the \ref I2CBytesReady function.
+ *
+ * \example ex_i2cwrite.nxc
+ * This is an example of how to use the \ref I2CWrite function.
+ *
+ * \example ex_I2CRead.nxc
+ * This is an example of how to use the \ref I2CRead function.
+ *
+ * \example ex_I2CBytes.nxc
+ * This is an example of how to use the \ref I2CBytes function.
+ *
+ * \example ex_I2CDeviceInfo.nxc
+ * This is an example of how to use the \ref I2CDeviceInfo function.
+ *
+ * \example ex_I2CDeviceInfoEx.nxc
+ * This is an example of how to use the \ref I2CDeviceInfoEx function.
+ *
+ * \example ex_I2CVersion.nxc
+ * This is an example of how to use the \ref I2CVersion function.
+ *
+ * \example ex_I2CVersionEx.nxc
+ * This is an example of how to use the \ref I2CVersionEx function.
+ *
+ * \example ex_I2CVendorId.nxc
+ * This is an example of how to use the \ref I2CVendorId function.
+ *
+ * \example ex_I2CVendorIdEx.nxc
+ * This is an example of how to use the \ref I2CVendorIdEx function.
+ *
+ * \example ex_I2CDeviceId.nxc
+ * This is an example of how to use the \ref I2CDeviceId function.
+ *
+ * \example ex_I2CDeviceIdEx.nxc
+ * This is an example of how to use the \ref I2CDeviceIdEx function.
+ *
+ * \example ex_I2CSendCommand.nxc
+ * This is an example of how to use the \ref I2CSendCommand function.
+ *
+ * \example ex_I2CSendCommandEx.nxc
+ * This is an example of how to use the \ref I2CSendCommandEx function.
+ *
+ * \example ex_GetLSInputBuffer.nxc
+ * This is an example of how to use the \ref GetLSInputBuffer function.
+ *
+ * \example ex_GetLSOutputBuffer.nxc
+ * This is an example of how to use the \ref GetLSOutputBuffer function.
+ *
+ * \example ex_LSInputBufferInPtr.nxc
+ * This is an example of how to use the \ref LSInputBufferInPtr function.
+ *
+ * \example ex_LSInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref LSInputBufferOutPtr function.
+ *
+ * \example ex_LSInputBufferBytesToRx.nxc
+ * This is an example of how to use the \ref LSInputBufferBytesToRx function.
+ *
+ * \example ex_LSOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref LSOutputBufferInPtr function.
+ *
+ * \example ex_LSOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref LSOutputBufferOutPtr function.
+ *
+ * \example ex_LSOutputBufferBytesToRx.nxc
+ * This is an example of how to use the \ref LSOutputBufferBytesToRx function.
+ *
+ * \example ex_LSMode.nxc
+ * This is an example of how to use the \ref LSMode function.
+ *
+ * \example ex_LSChannelState.nxc
+ * This is an example of how to use the \ref LSChannelState function.
+ *
+ * \example ex_LSErrorType.nxc
+ * This is an example of how to use the \ref LSErrorType function.
+ *
+ * \example ex_LSState.nxc
+ * This is an example of how to use the \ref LSState function.
+ *
+ * \example ex_LSSpeed.nxc
+ * This is an example of how to use the \ref LSSpeed function.
+ *
+ * \example ex_LSNoRestartOnRead.nxc
+ * This is an example of how to use the \ref LSNoRestartOnRead function.
+ *
+ * \example ex_syscommlswrite.nxc
+ * This is an example of how to use the \ref SysCommLSWrite function along with the
+ * \ref CommLSWriteType structure.
+ *
+ * \example ex_syscommlsread.nxc
+ * This is an example of how to use the \ref SysCommLSRead function along with the
+ * \ref CommLSReadType structure.
+ *
+ * \example ex_syscommlscheckstatus.nxc
+ * This is an example of how to use the \ref SysCommLSCheckStatus function along
+ * with the \ref CommLSCheckStatusType structure.
+ *
+ * \example ex_syscommlswriteex.nxc
+ * This is an example of how to use the \ref SysCommLSWriteEx function along with the
+ * \ref CommLSWriteExType structure.
+ *
+ * \example ex_powerdown.nxc
+ * This is an example of how to use the \ref PowerDown functions.
+ *
+ * \example ex_sleepnow.nxc
+ * This is an example of how to use the \ref SleepNow functions.
+ *
+ * \example ex_rebootinfirmwaremode.nxc
+ * This is an example of how to use the \ref RebootInFirmwareMode functions.
+ *
+ * \example ex_CurrentTick.nxc
+ * This is an example of how to use the \ref CurrentTick function.
+ *
+ * \example util_rpm.nxc
+ * This is an example of how to use the \ref CurrentTick and \ref MotorRotationCount functions.
+ *
+ * \example ex_FirstTick.nxc
+ * This is an example of how to use the \ref FirstTick function.
+ *
+ * \example ex_ResetSleepTimer.nxc
+ * This is an example of how to use the \ref ResetSleepTimer function.
+ *
+ * \example ex_syscall.nxc
+ * This is an example of how to use the \ref SysCall function.
+ *
+ * \example ex_sysgetstarttick.nxc
+ * This is an example of how to use the \ref SysGetStartTick function along with
+ * the \ref GetStartTickType structure.
+ *
+ * \example ex_syskeepalive.nxc
+ * This is an example of how to use the \ref SysKeepAlive function along with the
+ * \ref KeepAliveType structure.
+ *
+ * \example ex_sysiomapread.nxc
+ * This is an example of how to use the \ref SysIOMapRead function along with the
+ * \ref IOMapReadType structure.
+ *
+ * \example ex_sysiomapwrite.nxc
+ * This is an example of how to use the \ref SysIOMapWrite function along with the
+ * \ref IOMapWriteType structure.
+ *
+ * \example ex_sysiomapreadbyid.nxc
+ * This is an example of how to use the \ref SysIOMapReadByID function along with
+ * the \ref IOMapReadByIDType structure.
+ *
+ * \example ex_sysiomapwritebyid.nxc
+ * This is an example of how to use the \ref SysIOMapWriteByID function along with
+ * the \ref IOMapWriteByIDType structure.
+ *
+ * \example ex_SysDatalogWrite.nxc
+ * This is an example of how to use the \ref SysDatalogWrite function along
+ * with the \ref DatalogWriteType structure.
+ *
+ * \example ex_SysDatalogGetTimes.nxc
+ * This is an example of how to use the \ref SysDatalogGetTimes function along
+ * with the \ref DatalogGetTimesType structure.
+ *
+ * \example ex_SysReadSemData.nxc
+ * This is an example of how to use the \ref SysReadSemData function along with
+ * the \ref ReadSemDataType structure.
+ *
+ * \example ex_SysWriteSemData.nxc
+ * This is an example of how to use the \ref SysWriteSemData function along
+ * with the \ref WriteSemDataType structure.
+ *
+ * \example ex_SysUpdateCalibCacheInfo.nxc
+ * This is an example of how to use the \ref SysUpdateCalibCacheInfo function
+ * along with the \ref UpdateCalibCacheInfoType structure.
+ *
+ * \example ex_SysComputeCalibValue.nxc
+ * This is an example of how to use the \ref SysComputeCalibValue function
+ * along with the \ref ComputeCalibValueType structure.
+ *
+ * \example ex_wait.nxc
+ * This is an example of how to use the \ref Wait function.
+ *
+ * \example ex_yield.nxc
+ * This is an example of how to use the \ref Yield function.
+ *
+ * \example ex_stopalltasks.nxc
+ * This is an example of how to use the \ref StopAllTasks function.
+ *
+ * \example ex_stop.nxc
+ * This is an example of how to use the \ref Stop function.
+ *
+ * \example alternating_tasks.nxc
+ * This is an example of how to use the \ref ExitTo function.
+ *
+ * \example ex_Precedes.nxc
+ * This is an example of how to use the \ref Precedes statement.
+ *
+ * \example ex_Follows.nxc
+ * This is an example of how to use the \ref Follows statement.
+ *
+ * \example ex_Acquire.nxc
+ * This is an example of how to use the \ref Acquire function.
+ *
+ * \example ex_Release.nxc
+ * This is an example of how to use the \ref Release function.
+ *
+ * \example ex_starttask.nxc
+ * This is an example of how to use the \ref StartTask function.
+ *
+ * \example ex_stoptask.nxc
+ * This is an example of how to use the \ref StopTask function.
+ *
+ * \example ex_arraybuild.nxc
+ * This is an example of how to use the \ref ArrayBuild function.
+ *
+ * \example ex_arraylen.nxc
+ * This is an example of how to use the \ref ArrayLen function.
+ *
+ * \example ex_arrayinit.nxc
+ * This is an example of how to use the \ref ArrayInit function.
+ *
+ * \example ex_arraysubset.nxc
+ * This is an example of how to use the \ref ArraySubset function.
+ *
+ * \example ex_ArraySum.nxc
+ * This is an example of how to use the \ref ArraySum function.
+ *
+ * \example ex_ArrayMean.nxc
+ * This is an example of how to use the \ref ArrayMean function.
+ *
+ * \example ex_ArraySumSqr.nxc
+ * This is an example of how to use the \ref ArraySumSqr function.
+ *
+ * \example ex_ArrayStd.nxc
+ * This is an example of how to use the \ref ArrayStd function.
+ *
+ * \example ex_ArrayMin.nxc
+ * This is an example of how to use the \ref ArrayMin function.
+ *
+ * \example ex_ArrayMax.nxc
+ * This is an example of how to use the \ref ArrayMax function.
+ *
+ * \example ex_ArraySort.nxc
+ * This is an example of how to use the \ref ArraySort function.
+ *
+ * \example ex_ArrayOp.nxc
+ * This is an example of how to use the \ref ArrayOp function.
+ *
+ * \example ex_sendmessage.nxc
+ * This is an example of how to use the \ref SendMessage function.
+ *
+ * \example ex_receivemessage.nxc
+ * This is an example of how to use the \ref ReceiveMessage function.
+ *
+ * \example ex_bluetoothstatus.nxc
+ * This is an example of how to use the \ref BluetoothStatus function.
+ *
+ * \example ex_bluetoothwrite.nxc
+ * This is an example of how to use the \ref BluetoothWrite function.
+ *
+ * \example ex_sendremotebool.nxc
+ * This is an example of how to use the \ref SendRemoteBool function.
+ *
+ * \example ex_SendRemoteNumber.nxc
+ * This is an example of how to use the \ref SendRemoteNumber function.
+ *
+ * \example ex_SendRemoteString.nxc
+ * This is an example of how to use the \ref SendRemoteString function.
+ *
+ * \example ex_SendResponseBool.nxc
+ * This is an example of how to use the \ref SendResponseBool function.
+ *
+ * \example ex_SendResponseNumber.nxc
+ * This is an example of how to use the \ref SendResponseNumber function.
+ *
+ * \example ex_SendResponseString.nxc
+ * This is an example of how to use the \ref SendResponseString function.
+ *
+ * \example ex_ReceiveRemoteBool.nxc
+ * This is an example of how to use the \ref ReceiveRemoteBool function.
+ *
+ * \example ex_ReceiveRemoteMessageEx.nxc
+ * This is an example of how to use the \ref ReceiveRemoteMessageEx function.
+ *
+ * \example ex_ReceiveRemoteNumber.nxc
+ * This is an example of how to use the \ref ReceiveRemoteNumber function.
+ *
+ * \example ex_ReceiveRemoteString.nxc
+ * This is an example of how to use the \ref ReceiveRemoteString function.
+ *
+ * \example ex_RemoteKeepAlive.nxc
+ * This is an example of how to use the \ref RemoteKeepAlive function.
+ *
+ * \example ex_RemoteMessageRead.nxc
+ * This is an example of how to use the \ref RemoteMessageRead function.
+ *
+ * \example ex_RemoteMessageWrite.nxc
+ * This is an example of how to use the \ref RemoteMessageWrite function.
+ *
+ * \example ex_RemotePlaySoundFile.nxc
+ * This is an example of how to use the \ref RemotePlaySoundFile function.
+ *
+ * \example ex_RemotePlayTone.nxc
+ * This is an example of how to use the \ref RemotePlayTone function.
+ *
+ * \example ex_RemoteResetMotorPosition.nxc
+ * This is an example of how to use the \ref RemoteResetMotorPosition function.
+ *
+ * \example ex_RemoteResetScaledValue.nxc
+ * This is an example of how to use the \ref RemoteResetScaledValue function.
+ *
+ * \example ex_RemoteSetInputMode.nxc
+ * This is an example of how to use the \ref RemoteSetInputMode function.
+ *
+ * \example ex_RemoteSetOutputState.nxc
+ * This is an example of how to use the \ref RemoteSetOutputState function.
+ *
+ * \example ex_RemoteStartProgram.nxc
+ * This is an example of how to use the \ref RemoteStartProgram function.
+ *
+ * \example ex_RemoteStopProgram.nxc
+ * This is an example of how to use the \ref RemoteStopProgram function.
+ *
+ * \example ex_RemoteStopSound.nxc
+ * This is an example of how to use the \ref RemoteStopSound function.
+ *
+ * \example ex_RS485Control.nxc
+ * This is an example of how to use the \ref RS485Control function.
+ *
+ * \example ex_RS485DataAvailable.nxc
+ * This is an example of how to use the \ref RS485DataAvailable function.
+ *
+ * \example ex_RS485Exit.nxc
+ * This is an example of how to use the \ref RS485Exit function.
+ *
+ * \example ex_RS485Init.nxc
+ * This is an example of how to use the \ref RS485Init function.
+ *
+ * \example ex_RS485Read.nxc
+ * This is an example of how to use the \ref RS485Read function.
+ *
+ * \example ex_RS485SendingData.nxc
+ * This is an example of how to use the \ref RS485SendingData function.
+ *
+ * \example ex_RS485Status.nxc
+ * This is an example of how to use the \ref RS485Status function.
+ *
+ * \example ex_RS485Uart.nxc
+ * This is an example of how to use the \ref RS485Uart function.
+ *
+ * \example ex_RS485Write.nxc
+ * This is an example of how to use the \ref RS485Write function.
+ *
+ * \example ex_SendRS485Bool.nxc
+ * This is an example of how to use the \ref SendRS485Bool function.
+ *
+ * \example ex_SendRS485Number.nxc
+ * This is an example of how to use the \ref SendRS485Number function.
+ *
+ * \example ex_SendRS485String.nxc
+ * This is an example of how to use the \ref SendRS485String function.
+ *
+ * \example ex_GetBTInputBuffer.nxc
+ * This is an example of how to use the \ref GetBTInputBuffer function.
+ *
+ * \example ex_GetBTOutputBuffer.nxc
+ * This is an example of how to use the \ref GetBTOutputBuffer function.
+ *
+ * \example ex_GetHSInputBuffer.nxc
+ * This is an example of how to use the \ref GetHSInputBuffer function.
+ *
+ * \example ex_GetHSOutputBuffer.nxc
+ * This is an example of how to use the \ref GetHSOutputBuffer function.
+ *
+ * \example ex_GetUSBInputBuffer.nxc
+ * This is an example of how to use the \ref GetUSBInputBuffer function.
+ *
+ * \example ex_GetUSBOutputBuffer.nxc
+ * This is an example of how to use the \ref GetUSBOutputBuffer function.
+ *
+ * \example ex_GetUSBPollBuffer.nxc
+ * This is an example of how to use the \ref GetUSBPollBuffer function.
+ *
+ * \example ex_BTDeviceName.nxc
+ * This is an example of how to use the \ref BTDeviceName function.
+ *
+ * \example ex_BTConnectionName.nxc
+ * This is an example of how to use the \ref BTConnectionName function.
+ *
+ * \example ex_BTConnectionPinCode.nxc
+ * This is an example of how to use the \ref BTConnectionPinCode function.
+ *
+ * \example ex_BrickDataName.nxc
+ * This is an example of how to use the \ref BrickDataName function.
+ *
+ * \example ex_GetBTDeviceAddress.nxc
+ * This is an example of how to use the \ref GetBTDeviceAddress function.
+ *
+ * \example ex_GetBTConnectionAddress.nxc
+ * This is an example of how to use the \ref GetBTConnectionAddress function.
+ *
+ * \example ex_GetBrickDataAddress.nxc
+ * This is an example of how to use the \ref GetBrickDataAddress function.
+ *
+ * \example ex_BTDeviceClass.nxc
+ * This is an example of how to use the \ref BTDeviceClass function.
+ *
+ * \example ex_BTDeviceStatus.nxc
+ * This is an example of how to use the \ref BTDeviceStatus function.
+ *
+ * \example ex_BTConnectionClass.nxc
+ * This is an example of how to use the \ref BTConnectionClass function.
+ *
+ * \example ex_BTConnectionHandleNum.nxc
+ * This is an example of how to use the \ref BTConnectionHandleNum function.
+ *
+ * \example ex_BTConnectionStreamStatus.nxc
+ * This is an example of how to use the \ref BTConnectionStreamStatus function.
+ *
+ * \example ex_BTConnectionLinkQuality.nxc
+ * This is an example of how to use the \ref BTConnectionLinkQuality function.
+ *
+ * \example ex_BrickDataBluecoreVersion.nxc
+ * This is an example of how to use the \ref BrickDataBluecoreVersion function.
+ *
+ * \example ex_BrickDataBtStateStatus.nxc
+ * This is an example of how to use the \ref BrickDataBtStateStatus function.
+ *
+ * \example ex_BrickDataBtHardwareStatus.nxc
+ * This is an example of how to use the \ref BrickDataBtHardwareStatus function.
+ *
+ * \example ex_BrickDataTimeoutValue.nxc
+ * This is an example of how to use the \ref BrickDataTimeoutValue function.
+ *
+ * \example ex_BTInputBufferInPtr.nxc
+ * This is an example of how to use the \ref BTInputBufferInPtr function.
+ *
+ * \example ex_BTInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref BTInputBufferOutPtr function.
+ *
+ * \example ex_BTOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref BTOutputBufferInPtr function.
+ *
+ * \example ex_BTOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref BTOutputBufferOutPtr function.
+ *
+ * \example ex_HSInputBufferInPtr.nxc
+ * This is an example of how to use the \ref HSInputBufferInPtr function.
+ *
+ * \example ex_HSInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref HSInputBufferOutPtr function.
+ *
+ * \example ex_HSOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref HSOutputBufferInPtr function.
+ *
+ * \example ex_HSOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref HSOutputBufferOutPtr function.
+ *
+ * \example ex_USBInputBufferInPtr.nxc
+ * This is an example of how to use the \ref USBInputBufferInPtr function.
+ *
+ * \example ex_USBInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref USBInputBufferOutPtr function.
+ *
+ * \example ex_USBOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref USBOutputBufferInPtr function.
+ *
+ * \example ex_USBOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref USBOutputBufferOutPtr function.
+ *
+ * \example ex_USBPollBufferInPtr.nxc
+ * This is an example of how to use the \ref USBPollBufferInPtr function.
+ *
+ * \example ex_USBPollBufferOutPtr.nxc
+ * This is an example of how to use the \ref USBPollBufferOutPtr function.
+ *
+ * \example ex_BTDeviceCount.nxc
+ * This is an example of how to use the \ref BTDeviceCount function.
+ *
+ * \example ex_BTDeviceNameCount.nxc
+ * This is an example of how to use the \ref BTDeviceNameCount function.
+ *
+ * \example ex_HSFlags.nxc
+ * This is an example of how to use the \ref HSFlags function.
+ *
+ * \example ex_HSSpeed.nxc
+ * This is an example of how to use the \ref HSSpeed function.
+ *
+ * \example ex_HSState.nxc
+ * This is an example of how to use the \ref HSState function.
+ *
+ * \example ex_HSMode.nxc
+ * This is an example of how to use the \ref HSMode function.
+ *
+ * \example ex_USBState.nxc
+ * This is an example of how to use the \ref USBState function.
+ *
+ * \example ex_SetBTInputBuffer.nxc
+ * This is an example of how to use the \ref SetBTInputBuffer function.
+ *
+ * \example ex_SetBTInputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetBTInputBufferInPtr function.
+ *
+ * \example ex_SetBTInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetBTInputBufferOutPtr function.
+ *
+ * \example ex_SetBTOutputBuffer.nxc
+ * This is an example of how to use the \ref SetBTOutputBuffer function.
+ *
+ * \example ex_SetBTOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetBTOutputBufferInPtr function.
+ *
+ * \example ex_SetBTOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetBTOutputBufferOutPtr function.
+ *
+ * \example ex_SetHSInputBuffer.nxc
+ * This is an example of how to use the \ref SetHSInputBuffer function.
+ *
+ * \example ex_SetHSInputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetHSInputBufferInPtr function.
+ *
+ * \example ex_SetHSInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetHSInputBufferOutPtr function.
+ *
+ * \example ex_SetHSOutputBuffer.nxc
+ * This is an example of how to use the \ref SetHSOutputBuffer function.
+ *
+ * \example ex_SetHSOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetHSOutputBufferInPtr function.
+ *
+ * \example ex_SetHSOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetHSOutputBufferOutPtr function.
+ *
+ * \example ex_SetUSBInputBuffer.nxc
+ * This is an example of how to use the \ref SetUSBInputBuffer function.
+ *
+ * \example ex_SetUSBInputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetUSBInputBufferInPtr function.
+ *
+ * \example ex_SetUSBInputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetUSBInputBufferOutPtr function.
+ *
+ * \example ex_SetUSBOutputBuffer.nxc
+ * This is an example of how to use the \ref SetUSBOutputBuffer function.
+ *
+ * \example ex_SetUSBOutputBufferInPtr.nxc
+ * This is an example of how to use the \ref SetUSBOutputBufferInPtr function.
+ *
+ * \example ex_SetUSBOutputBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetUSBOutputBufferOutPtr function.
+ *
+ * \example ex_SetUSBPollBuffer.nxc
+ * This is an example of how to use the \ref SetUSBPollBuffer function.
+ *
+ * \example ex_SetUSBPollBufferInPtr.nxc
+ * This is an example of how to use the \ref SetUSBPollBufferInPtr function.
+ *
+ * \example ex_SetUSBPollBufferOutPtr.nxc
+ * This is an example of how to use the \ref SetUSBPollBufferOutPtr function.
+ *
+ * \example ex_SetHSFlags.nxc
+ * This is an example of how to use the \ref SetHSFlags function.
+ *
+ * \example ex_SetHSSpeed.nxc
+ * This is an example of how to use the \ref SetHSSpeed function.
+ *
+ * \example ex_SetHSState.nxc
+ * This is an example of how to use the \ref SetHSState function.
+ *
+ * \example ex_SetHSMode.nxc
+ * This is an example of how to use the \ref SetHSMode function.
+ *
+ * \example ex_SetUSBState.nxc
+ * This is an example of how to use the \ref SetUSBState function.
+ *
+ * \example ex_sysmessagewrite.nxc
+ * This is an example of how to use the \ref SysMessageWrite function along with
+ * the \ref MessageWriteType structure.
+ *
+ * \example ex_sysmessageread.nxc
+ * This is an example of how to use the \ref SysMessageRead function along with the
+ * \ref MessageReadType structure.
+ *
+ * \example ex_syscommbtwrite.nxc
+ * This is an example of how to use the \ref SysCommBTWrite function along with the
+ * \ref CommBTWriteType structure.
+ *
+ * \example ex_syscommbtcheckstatus.nxc
+ * This is an example of how to use the \ref SysCommBTCheckStatus function along
+ * with the \ref CommBTCheckStatusType structure.
+ *
+ * \example ex_syscommexecutefunction.nxc
+ * This is an example of how to use the \ref SysCommExecuteFunction function along
+ * with the \ref CommExecuteFunctionType structure.
+ *
+ * \example ex_SysCommHSControl.nxc
+ * This is an example of how to use the \ref SysCommHSControl function along
+ * with the \ref CommHSControlType structure.
+ *
+ * \example ex_SysCommHSCheckStatus.nxc
+ * This is an example of how to use the \ref SysCommHSCheckStatus function along
+ * with the \ref CommHSCheckStatusType structure.
+ *
+ * \example ex_SysCommHSRead.nxc
+ * This is an example of how to use the \ref SysCommHSRead function along
+ * with the \ref CommHSReadWriteType structure.
+ *
+ * \example ex_SysCommHSWrite.nxc
+ * This is an example of how to use the \ref SysCommHSWrite function along
+ * with the \ref CommHSReadWriteType structure.
+ *
+ * \example ex_SysCommBTOnOff.nxc
+ * This is an example of how to use the \ref SysCommBTOnOff function along
+ * with the \ref CommBTOnOffType structure.
+ *
+ * \example ex_SysCommBTConnection.nxc
+ * This is an example of how to use the \ref SysCommBTConnection function along
+ * with the \ref CommBTConnectionType structure.
+ *
+ * \example ex_ButtonPressed.nxc
+ * This is an example of how to use the \ref ButtonPressed function.
+ *
+ * \example ex_ButtonCount.nxc
+ * This is an example of how to use the \ref ButtonCount function.
+ *
+ * \example ex_ReadButtonEx.nxc
+ * This is an example of how to use the \ref ReadButtonEx function.
+ *
+ * \example ex_ButtonPressCount.nxc
+ * This is an example of how to use the \ref ButtonPressCount function.
+ *
+ * \example ex_ButtonLongPressCount.nxc
+ * This is an example of how to use the \ref ButtonLongPressCount function.
+ *
+ * \example ex_ButtonShortReleaseCount.nxc
+ * This is an example of how to use the \ref ButtonShortReleaseCount function.
+ *
+ * \example ex_ButtonLongReleaseCount.nxc
+ * This is an example of how to use the \ref ButtonLongReleaseCount function.
+ *
+ * \example ex_ButtonReleaseCount.nxc
+ * This is an example of how to use the \ref ButtonReleaseCount function.
+ *
+ * \example ex_ButtonState.nxc
+ * This is an example of how to use the \ref ButtonState function.
+ *
+ * \example ex_SetButtonLongPressCount.nxc
+ * This is an example of how to use the \ref SetButtonLongPressCount function.
+ *
+ * \example ex_SetButtonLongReleaseCount.nxc
+ * This is an example of how to use the \ref SetButtonLongReleaseCount function.
+ *
+ * \example ex_SetButtonPressCount.nxc
+ * This is an example of how to use the \ref SetButtonPressCount function.
+ *
+ * \example ex_SetButtonReleaseCount.nxc
+ * This is an example of how to use the \ref SetButtonReleaseCount function.
+ *
+ * \example ex_SetButtonShortReleaseCount.nxc
+ * This is an example of how to use the \ref SetButtonShortReleaseCount function.
+ *
+ * \example ex_SetButtonState.nxc
+ * This is an example of how to use the \ref SetButtonState function.
+ *
+ * \example ex_sysreadbutton.nxc
+ * This is an example of how to use the \ref SysReadButton function along with the
+ * \ref ReadButtonType structure.
+ *
+ * \example ex_CommandFlags.nxc
+ * This is an example of how to use the \ref CommandFlags function.
+ *
+ * \example ex_UIState.nxc
+ * This is an example of how to use the \ref UIState function.
+ *
+ * \example ex_UIButton.nxc
+ * This is an example of how to use the \ref UIButton function.
+ *
+ * \example ex_VMRunState.nxc
+ * This is an example of how to use the \ref VMRunState function.
+ *
+ * \example ex_BatteryState.nxc
+ * This is an example of how to use the \ref BatteryState function.
+ *
+ * \example ex_BluetoothState.nxc
+ * This is an example of how to use the \ref BluetoothState function.
+ *
+ * \example ex_UiUsbState.nxc
+ * This is an example of how to use the \ref UsbState function.
+ *
+ * \example ex_SleepTimeout.nxc
+ * This is an example of how to use the \ref SleepTimeout function.
+ *
+ * \example ex_SleepTime.nxc
+ * This is an example of how to use the \ref SleepTime function.
+ *
+ * \example ex_SleepTimer.nxc
+ * This is an example of how to use the \ref SleepTimer function.
+ *
+ * \example ex_RechargeableBattery.nxc
+ * This is an example of how to use the \ref RechargeableBattery function.
+ *
+ * \example ex_Volume.nxc
+ * This is an example of how to use the \ref Volume function.
+ *
+ * \example ex_OnBrickProgramPointer.nxc
+ * This is an example of how to use the \ref OnBrickProgramPointer function.
+ *
+ * \example ex_AbortFlag.nxc
+ * This is an example of how to use the \ref AbortFlag function.
+ *
+ * \example ex_LongAbort.nxc
+ * This is an example of how to use the \ref LongAbort function.
+ *
+ * \example util_battery_1.nxc
+ * This is an example of how to use the \ref BatteryLevel function.
+ *
+ * \example util_battery_2.nxc
+ * This is an example of how to use the \ref BatteryLevel function.
+ *
+ * \example ex_SetCommandFlags.nxc
+ * This is an example of how to use the \ref SetCommandFlags function.
+ *
+ * \example ex_SetUIButton.nxc
+ * This is an example of how to use the \ref SetUIButton function.
+ *
+ * \example ex_SetUIState.nxc
+ * This is an example of how to use the \ref SetUIState function.
+ *
+ * \example ex_SetVMRunState.nxc
+ * This is an example of how to use the \ref SetVMRunState function.
+ *
+ * \example ex_SetBatteryState.nxc
+ * This is an example of how to use the \ref SetBatteryState function.
+ *
+ * \example ex_SetBluetoothState.nxc
+ * This is an example of how to use the \ref SetBluetoothState function.
+ *
+ * \example ex_SetSleepTimeout.nxc
+ * This is an example of how to use the \ref SetSleepTimeout function.
+ *
+ * \example ex_SetSleepTime.nxc
+ * This is an example of how to use the \ref SetSleepTime function.
+ *
+ * \example ex_SetSleepTimer.nxc
+ * This is an example of how to use the \ref SetSleepTimer function.
+ *
+ * \example ex_SetVolume.nxc
+ * This is an example of how to use the \ref SetVolume function.
+ *
+ * \example ex_SetOnBrickProgramPointer.nxc
+ * This is an example of how to use the \ref SetOnBrickProgramPointer function.
+ *
+ * \example ex_ForceOff.nxc
+ * This is an example of how to use the \ref ForceOff function.
+ *
+ * \example ex_SetAbortFlag.nxc
+ * This is an example of how to use the \ref SetAbortFlag function.
+ *
+ * \example ex_SetLongAbort.nxc
+ * This is an example of how to use the \ref SetLongAbort function.
+ *
+ * \example ex_SysSetSleepTimeout.nxc
+ * This is an example of how to use the \ref SysSetSleepTimeout function.
+ *
+ * \example ex_FreeMemory.nxc
+ * This is an example of how to use the \ref FreeMemory function.
+ *
+ * \example ex_CreateFile.nxc
+ * This is an example of how to use the \ref CreateFile function.
+ *
+ * \example ex_OpenFileAppend.nxc
+ * This is an example of how to use the \ref OpenFileAppend function.
+ *
+ * \example ex_OpenFileRead.nxc
+ * This is an example of how to use the \ref OpenFileRead function.
+ *
+ * \example ex_CloseFile.nxc
+ * This is an example of how to use the \ref CloseFile function.
+ *
+ * \example ex_ResolveHandle.nxc
+ * This is an example of how to use the \ref ResolveHandle function.
+ *
+ * \example ex_RenameFile.nxc
+ * This is an example of how to use the \ref RenameFile function.
+ *
+ * \example ex_DeleteFile.nxc
+ * This is an example of how to use the \ref DeleteFile function.
+ *
+ * \example ex_ResizeFile.nxc
+ * This is an example of how to use the \ref ResizeFile function.
+ *
+ * \example ex_CreateFileLinear.nxc
+ * This is an example of how to use the \ref CreateFileLinear function.
+ *
+ * \example ex_CreateFileNonLinear.nxc
+ * This is an example of how to use the \ref CreateFileNonLinear function.
+ *
+ * \example ex_OpenFileReadLinear.nxc
+ * This is an example of how to use the \ref OpenFileReadLinear function.
+ *
+ * \example ex_FindFirstFile.nxc
+ * This is an example of how to use the \ref FindFirstFile function.
+ *
+ * \example ex_FindNextFile.nxc
+ * This is an example of how to use the \ref FindNextFile function.
+ *
+ * \example ex_Read.nxc
+ * This is an example of how to use the \ref Read function.
+ *
+ * \example ex_ReadLn.nxc
+ * This is an example of how to use the \ref ReadLn function.
+ *
+ * \example ex_ReadBytes.nxc
+ * This is an example of how to use the \ref ReadBytes function.
+ *
+ * \example ex_Write.nxc
+ * This is an example of how to use the \ref Write function.
+ *
+ * \example ex_WriteBytes.nxc
+ * This is an example of how to use the \ref WriteBytes function.
+ *
+ * \example ex_WriteBytesEx.nxc
+ * This is an example of how to use the \ref WriteBytesEx function.
+ *
+ * \example ex_WriteLn.nxc
+ * This is an example of how to use the \ref WriteLn function.
+ *
+ * \example ex_WriteLnString.nxc
+ * This is an example of how to use the \ref WriteLnString function.
+ *
+ * \example ex_WriteString.nxc
+ * This is an example of how to use the \ref WriteString function.
+ *
+ * \example ex_sysfileopenread.nxc
+ * This is an example of how to use the \ref SysFileOpenRead function along with
+ * the \ref FileOpenType structure.
+ *
+ * \example ex_sysfileopenwrite.nxc
+ * This is an example of how to use the \ref SysFileOpenWrite function along with
+ * the \ref FileOpenType structure.
+ *
+ * \example ex_sysfileopenappend.nxc
+ * This is an example of how to use the \ref SysFileOpenAppend function along with
+ * the \ref FileOpenType structure.
+ *
+ * \example ex_sysfileread.nxc
+ * This is an example of how to use the \ref SysFileRead function along with the
+ * \ref FileReadWriteType structure.
+ *
+ * \example ex_sysfilewrite.nxc
+ * This is an example of how to use the \ref SysFileWrite function along with the
+ * \ref FileReadWriteType structure.
+ *
+ * \example ex_sysfileclose.nxc
+ * This is an example of how to use the \ref SysFileClose function along with the
+ * \ref FileCloseType structure.
+ *
+ * \example ex_sysfileresolvehandle.nxc
+ * This is an example of how to use the \ref SysFileResolveHandle function along
+ * with the \ref FileResolveHandleType structure.
+ *
+ * \example ex_sysfilerename.nxc
+ * This is an example of how to use the \ref SysFileRename function along with the
+ * \ref FileRenameType structure.
+ *
+ * \example ex_sysfiledelete.nxc
+ * This is an example of how to use the \ref SysFileDelete function along with the
+ * \ref FileDeleteType structure.
+ *
+ * \example ex_sysloaderexecutefunction.nxc
+ * This is an example of how to use the \ref SysLoaderExecuteFunction function
+ * along with the \ref LoaderExecuteFunctionType structure.
+ *
+ * \example ex_sysfilefindfirst.nxc
+ * This is an example of how to use the \ref SysFileFindFirst function along with
+ * the \ref FileFindType structure.
+ *
+ * \example ex_sysfilefindnext.nxc
+ * This is an example of how to use the \ref SysFileFindNext function along with
+ * the \ref FileFindType structure.
+ *
+ * \example ex_sysfileopenwritelinear.nxc
+ * This is an example of how to use the \ref SysFileOpenWriteLinear function along
+ * with the \ref FileOpenType structure.
+ *
+ * \example ex_sysfileopenwritenonlinear.nxc
+ * This is an example of how to use the \ref SysFileOpenWriteNonLinear function
+ * along with the \ref FileOpenType structure.
+ *
+ * \example ex_sysfileopenreadlinear.nxc
+ * This is an example of how to use the \ref SysFileOpenReadLinear function along
+ * with the \ref FileOpenType structure.
+ *
+ * \example ex_sysfileseek.nxc
+ * This is an example of how to use the \ref SysFileSeek function along
+ * with the \ref FileSeekType structure.
+ *
+ * \example ex_sysfileresize.nxc
+ * This is an example of how to use the \ref SysFileResize function along
+ * with the \ref FileResizeType structure.
+ *
+ * \example ex_syslistfiles.nxc
+ * This is an example of how to use the \ref SysListFiles function along
+ * with the \ref ListFilesType structure.
+ *
+ * \example ex_SensorHTGyro.nxc
+ * This is an example of how to use the \ref SensorHTGyro function.
+ *
+ * \example ex_SensorHTEOPD.nxc
+ * This is an example of how to use the \ref SensorHTEOPD function.
+ *
+ * \example ex_SetSensorHTEOPD.nxc
+ * This is an example of how to use the \ref SetSensorHTEOPD function.
+ *
+ * \example ex_SetSensorHTGyro.nxc
+ * This is an example of how to use the \ref SetSensorHTGyro function.
+ *
+ * \example ex_SensorHTColorNum.nxc
+ * This is an example of how to use the \ref SensorHTColorNum function.
+ *
+ * \example ex_SensorHTCompass.nxc
+ * This is an example of how to use the \ref SensorHTCompass function.
+ *
+ * \example ex_SensorHTIRSeekerDir.nxc
+ * This is an example of how to use the \ref SensorHTIRSeekerDir function.
+ *
+ * \example ex_SensorHTIRSeeker2Addr.nxc
+ * This is an example of how to use the \ref SensorHTIRSeeker2Addr function.
+ *
+ * \example ex_SensorHTIRSeeker2DCDir.nxc
+ * This is an example of how to use the \ref SensorHTIRSeeker2DCDir function.
+ *
+ * \example ex_SensorHTIRSeeker2ACDir.nxc
+ * This is an example of how to use the \ref SensorHTIRSeeker2ACDir function.
+ *
+ * \example ex_SetHTColor2Mode.nxc
+ * This is an example of how to use the \ref SetHTColor2Mode function.
+ *
+ * \example ex_SetHTIRSeeker2Mode.nxc
+ * This is an example of how to use the \ref SetHTIRSeeker2Mode function.
+ *
+ * \example ex_ReadSensorHTAccel.nxc
+ * This is an example of how to use the \ref ReadSensorHTAccel function.
+ *
+ * \example ex_ReadSensorHTColor.nxc
+ * This is an example of how to use the \ref ReadSensorHTColor function.
+ *
+ * \example ex_ReadSensorHTIRSeeker.nxc
+ * This is an example of how to use the \ref ReadSensorHTIRSeeker function.
+ *
+ * \example ex_ReadSensorHTNormalizedColor.nxc
+ * This is an example of how to use the \ref ReadSensorHTNormalizedColor function.
+ *
+ * \example ex_ReadSensorHTRawColor.nxc
+ * This is an example of how to use the \ref ReadSensorHTRawColor function.
+ *
+ * \example ex_ReadSensorHTColor2Active.nxc
+ * This is an example of how to use the \ref ReadSensorHTColor2Active function.
+ *
+ * \example ex_ReadSensorHTNormalizedColor2Active.nxc
+ * This is an example of how to use the \ref ReadSensorHTNormalizedColor2Active function.
+ *
+ * \example ex_ReadSensorHTRawColor2.nxc
+ * This is an example of how to use the \ref ReadSensorHTRawColor2 function.
+ *
+ * \example ex_ReadSensorHTIRReceiver.nxc
+ * This is an example of how to use the \ref ReadSensorHTIRReceiver function.
+ *
+ * \example ex_ReadSensorHTIRReceiverEx.nxc
+ * This is an example of how to use the \ref ReadSensorHTIRReceiverEx function.
+ *
+ * \example ex_ReadSensorHTIRSeeker2AC.nxc
+ * This is an example of how to use the \ref ReadSensorHTIRSeeker2AC function.
+ *
+ * \example ex_ReadSensorHTIRSeeker2DC.nxc
+ * This is an example of how to use the \ref ReadSensorHTIRSeeker2DC function.
+ *
+ * \example ex_ReadSensorHTTouchMultiplexer.nxc
+ * This is an example of how to use the \ref ReadSensorHTTouchMultiplexer function.
+ *
+ * \example ex_HTIRTrain.nxc
+ * This is an example of how to use the \ref HTIRTrain function.
+ *
+ * \example ex_HTPFComboDirect.nxc
+ * This is an example of how to use the \ref HTPFComboDirect function.
+ *
+ * \example ex_HTPFComboPWM.nxc
+ * This is an example of how to use the \ref HTPFComboPWM function.
+ *
+ * \example ex_HTPFRawOutput.nxc
+ * This is an example of how to use the \ref HTPFRawOutput function.
+ *
+ * \example ex_HTPFRepeat.nxc
+ * This is an example of how to use the \ref HTPFRepeat function.
+ *
+ * \example ex_HTPFSingleOutputCST.nxc
+ * This is an example of how to use the \ref HTPFSingleOutputCST function.
+ *
+ * \example ex_HTPFSingleOutputPWM.nxc
+ * This is an example of how to use the \ref HTPFSingleOutputPWM function.
+ *
+ * \example ex_HTPFSinglePin.nxc
+ * This is an example of how to use the \ref HTPFSinglePin function.
+ *
+ * \example ex_HTPFTrain.nxc
+ * This is an example of how to use the \ref HTPFTrain function.
+ *
+ * \example ex_HTRCXSetIRLinkPort.nxc
+ * This is an example of how to use the \ref HTRCXSetIRLinkPort function.
+ *
+ * \example ex_HTRCXBatteryLevel.nxc
+ * This is an example of how to use the \ref HTRCXBatteryLevel function.
+ *
+ * \example ex_HTRCXPoll.nxc
+ * This is an example of how to use the \ref HTRCXPoll function.
+ *
+ * \example ex_HTRCXPollMemory.nxc
+ * This is an example of how to use the \ref HTRCXPollMemory function.
+ *
+ * \example ex_HTRCXAddToDatalog.nxc
+ * This is an example of how to use the \ref HTRCXAddToDatalog function.
+ *
+ * \example ex_HTRCXClearAllEvents.nxc
+ * This is an example of how to use the \ref HTRCXClearAllEvents function.
+ *
+ * \example ex_HTRCXClearCounter.nxc
+ * This is an example of how to use the \ref HTRCXClearCounter function.
+ *
+ * \example ex_HTRCXClearMsg.nxc
+ * This is an example of how to use the \ref HTRCXClearMsg function.
+ *
+ * \example ex_HTRCXClearSensor.nxc
+ * This is an example of how to use the \ref HTRCXClearSensor function.
+ *
+ * \example ex_HTRCXClearSound.nxc
+ * This is an example of how to use the \ref HTRCXClearSound function.
+ *
+ * \example ex_HTRCXClearTimer.nxc
+ * This is an example of how to use the \ref HTRCXClearTimer function.
+ *
+ * \example ex_HTRCXCreateDatalog.nxc
+ * This is an example of how to use the \ref HTRCXCreateDatalog function.
+ *
+ * \example ex_HTRCXDecCounter.nxc
+ * This is an example of how to use the \ref HTRCXDecCounter function.
+ *
+ * \example ex_HTRCXDeleteSub.nxc
+ * This is an example of how to use the \ref HTRCXDeleteSub function.
+ *
+ * \example ex_HTRCXDeleteSubs.nxc
+ * This is an example of how to use the \ref HTRCXDeleteSubs function.
+ *
+ * \example ex_HTRCXDeleteTask.nxc
+ * This is an example of how to use the \ref HTRCXDeleteTask function.
+ *
+ * \example ex_HTRCXDeleteTasks.nxc
+ * This is an example of how to use the \ref HTRCXDeleteTasks function.
+ *
+ * \example ex_HTRCXDisableOutput.nxc
+ * This is an example of how to use the \ref HTRCXDisableOutput function.
+ *
+ * \example ex_HTRCXEnableOutput.nxc
+ * This is an example of how to use the \ref HTRCXEnableOutput function.
+ *
+ * \example ex_HTRCXEvent.nxc
+ * This is an example of how to use the \ref HTRCXEvent function.
+ *
+ * \example ex_HTRCXFloat.nxc
+ * This is an example of how to use the \ref HTRCXFloat function.
+ *
+ * \example ex_HTRCXFwd.nxc
+ * This is an example of how to use the \ref HTRCXFwd function.
+ *
+ * \example ex_HTRCXIncCounter.nxc
+ * This is an example of how to use the \ref HTRCXIncCounter function.
+ *
+ * \example ex_HTRCXInvertOutput.nxc
+ * This is an example of how to use the \ref HTRCXInvertOutput function.
+ *
+ * \example ex_HTRCXMuteSound.nxc
+ * This is an example of how to use the \ref HTRCXMuteSound function.
+ *
+ * \example ex_HTRCXObvertOutput.nxc
+ * This is an example of how to use the \ref HTRCXObvertOutput function.
+ *
+ * \example ex_HTRCXOff.nxc
+ * This is an example of how to use the \ref HTRCXOff function.
+ *
+ * \example ex_HTRCXOn.nxc
+ * This is an example of how to use the \ref HTRCXOn function.
+ *
+ * \example ex_HTRCXOnFor.nxc
+ * This is an example of how to use the \ref HTRCXOnFor function.
+ *
+ * \example ex_HTRCXOnFwd.nxc
+ * This is an example of how to use the \ref HTRCXOnFwd function.
+ *
+ * \example ex_HTRCXOnRev.nxc
+ * This is an example of how to use the \ref HTRCXOnRev function.
+ *
+ * \example ex_HTRCXPBTurnOff.nxc
+ * This is an example of how to use the \ref HTRCXPBTurnOff function.
+ *
+ * \example ex_HTRCXPing.nxc
+ * This is an example of how to use the \ref HTRCXPing function.
+ *
+ * \example ex_HTRCXPlaySound.nxc
+ * This is an example of how to use the \ref HTRCXPlaySound function.
+ *
+ * \example ex_HTRCXPlayTone.nxc
+ * This is an example of how to use the \ref HTRCXPlayTone function.
+ *
+ * \example ex_HTRCXPlayToneVar.nxc
+ * This is an example of how to use the \ref HTRCXPlayToneVar function.
+ *
+ * \example ex_HTRCXRemote.nxc
+ * This is an example of how to use the \ref HTRCXRemote function.
+ *
+ * \example ex_HTRCXRev.nxc
+ * This is an example of how to use the \ref HTRCXRev function.
+ *
+ * \example ex_HTRCXSelectDisplay.nxc
+ * This is an example of how to use the \ref HTRCXSelectDisplay function.
+ *
+ * \example ex_HTRCXSelectProgram.nxc
+ * This is an example of how to use the \ref HTRCXSelectProgram function.
+ *
+ * \example ex_HTRCXSendSerial.nxc
+ * This is an example of how to use the \ref HTRCXSendSerial function.
+ *
+ * \example ex_HTRCXSetDirection.nxc
+ * This is an example of how to use the \ref HTRCXSetDirection function.
+ *
+ * \example ex_HTRCXSetEvent.nxc
+ * This is an example of how to use the \ref HTRCXSetEvent function.
+ *
+ * \example ex_HTRCXSetGlobalDirection.nxc
+ * This is an example of how to use the \ref HTRCXSetGlobalDirection function.
+ *
+ * \example ex_HTRCXSetGlobalOutput.nxc
+ * This is an example of how to use the \ref HTRCXSetGlobalOutput function.
+ *
+ * \example ex_HTRCXSetMaxPower.nxc
+ * This is an example of how to use the \ref HTRCXSetMaxPower function.
+ *
+ * \example ex_HTRCXSetMessage.nxc
+ * This is an example of how to use the \ref HTRCXSetMessage function.
+ *
+ * \example ex_HTRCXSetOutput.nxc
+ * This is an example of how to use the \ref HTRCXSetOutput function.
+ *
+ * \example ex_HTRCXSetPower.nxc
+ * This is an example of how to use the \ref HTRCXSetPower function.
+ *
+ * \example ex_HTRCXSetPriority.nxc
+ * This is an example of how to use the \ref HTRCXSetPriority function.
+ *
+ * \example ex_HTRCXSetSensorMode.nxc
+ * This is an example of how to use the \ref HTRCXSetSensorMode function.
+ *
+ * \example ex_HTRCXSetSensorType.nxc
+ * This is an example of how to use the \ref HTRCXSetSensorType function.
+ *
+ * \example ex_HTRCXSetSleepTime.nxc
+ * This is an example of how to use the \ref HTRCXSetSleepTime function.
+ *
+ * \example ex_HTRCXSetTxPower.nxc
+ * This is an example of how to use the \ref HTRCXSetTxPower function.
+ *
+ * \example ex_HTRCXSetWatch.nxc
+ * This is an example of how to use the \ref HTRCXSetWatch function.
+ *
+ * \example ex_HTRCXStartTask.nxc
+ * This is an example of how to use the \ref HTRCXStartTask function.
+ *
+ * \example ex_HTRCXStopAllTasks.nxc
+ * This is an example of how to use the \ref HTRCXStopAllTasks function.
+ *
+ * \example ex_HTRCXStopTask.nxc
+ * This is an example of how to use the \ref HTRCXStopTask function.
+ *
+ * \example ex_HTRCXToggle.nxc
+ * This is an example of how to use the \ref HTRCXToggle function.
+ *
+ * \example ex_HTRCXUnmuteSound.nxc
+ * This is an example of how to use the \ref HTRCXUnmuteSound function.
+ *
+ * \example ex_HTScoutCalibrateSensor.nxc
+ * This is an example of how to use the \ref HTScoutCalibrateSensor function.
+ *
+ * \example ex_HTScoutMuteSound.nxc
+ * This is an example of how to use the \ref HTScoutMuteSound function.
+ *
+ * \example ex_HTScoutSelectSounds.nxc
+ * This is an example of how to use the \ref HTScoutSelectSounds function.
+ *
+ * \example ex_HTScoutSendVLL.nxc
+ * This is an example of how to use the \ref HTScoutSendVLL function.
+ *
+ * \example ex_HTScoutSetEventFeedback.nxc
+ * This is an example of how to use the \ref HTScoutSetEventFeedback function.
+ *
+ * \example ex_HTScoutSetLight.nxc
+ * This is an example of how to use the \ref HTScoutSetLight function.
+ *
+ * \example ex_HTScoutSetScoutMode.nxc
+ * This is an example of how to use the \ref HTScoutSetScoutMode function.
+ *
+ * \example ex_HTScoutSetSensorClickTime.nxc
+ * This is an example of how to use the \ref HTScoutSetSensorClickTime function.
+ *
+ * \example ex_HTScoutSetSensorHysteresis.nxc
+ * This is an example of how to use the \ref HTScoutSetSensorHysteresis function.
+ *
+ * \example ex_HTScoutSetSensorLowerLimit.nxc
+ * This is an example of how to use the \ref HTScoutSetSensorLowerLimit function.
+ *
+ * \example ex_HTScoutSetSensorUpperLimit.nxc
+ * This is an example of how to use the \ref HTScoutSetSensorUpperLimit function.
+ *
+ * \example ex_HTScoutUnmuteSound.nxc
+ * This is an example of how to use the \ref HTScoutUnmuteSound function.
+ *
+ * \example ex_SetSensorMSPressure.nxc
+ * This is an example of how to use the \ref SetSensorMSPressure function.
+ *
+ * \example ex_SetSensorMSDROD.nxc
+ * This is an example of how to use the \ref SetSensorMSDROD function.
+ *
+ * \example ex_SensorMSPressure.nxc
+ * This is an example of how to use the \ref SensorMSPressure function.
+ *
+ * \example ex_SensorMSCompass.nxc
+ * This is an example of how to use the \ref SensorMSCompass function.
+ *
+ * \example ex_SensorMSCompassEx.nxc
+ * This is an example of how to use the \ref SensorMSCompassEx function.
+ *
+ * \example ex_SensorMSDROD.nxc
+ * This is an example of how to use the \ref SensorMSDROD function.
+ *
+ * \example ex_SensorMSPressureRaw.nxc
+ * This is an example of how to use the \ref SensorMSPressureRaw function.
+ *
+ * \example ex_ReadSensorMSAccel.nxc
+ * This is an example of how to use the \ref ReadSensorMSAccel function.
+ *
+ * \example ex_ReadSensorMSAccelEx.nxc
+ * This is an example of how to use the \ref ReadSensorMSAccelEx function.
+ *
+ * \example ex_ReadSensorMSPlayStation.nxc
+ * This is an example of how to use the \ref ReadSensorMSPlayStation function.
+ *
+ * \example ex_ReadSensorMSPlayStationEx.nxc
+ * This is an example of how to use the \ref ReadSensorMSPlayStationEx function.
+ *
+ * \example ex_ReadSensorMSTilt.nxc
+ * This is an example of how to use the \ref ReadSensorMSTilt function.
+ *
+ * \example ex_ReadSensorMSTiltEx.nxc
+ * This is an example of how to use the \ref ReadSensorMSTiltEx function.
+ *
+ * \example ex_ReadSensorMSRTClock.nxc
+ * This is an example of how to use the \ref ReadSensorMSRTClock function.
+ *
+ * \example ex_MSReadValue.nxc
+ * This is an example of how to use the \ref MSReadValue function.
+ *
+ * \example ex_MSReadValueEx.nxc
+ * This is an example of how to use the \ref MSReadValueEx function.
+ *
+ * \example ex_MSEnergize.nxc
+ * This is an example of how to use the \ref MSEnergize function.
+ *
+ * \example ex_MSEnergizeEx.nxc
+ * This is an example of how to use the \ref MSEnergizeEx function.
+ *
+ * \example ex_MSDeenergize.nxc
+ * This is an example of how to use the \ref MSDeenergize function.
+ *
+ * \example ex_MSDeenergizeEx.nxc
+ * This is an example of how to use the \ref MSDeenergizeEx function.
+ *
+ * \example ex_MSADPAOn.nxc
+ * This is an example of how to use the \ref MSADPAOn function.
+ *
+ * \example ex_MSADPAOnEx.nxc
+ * This is an example of how to use the \ref MSADPAOnEx function.
+ *
+ * \example ex_MSADPAOff.nxc
+ * This is an example of how to use the \ref MSADPAOff function.
+ *
+ * \example ex_MSADPAOffEx.nxc
+ * This is an example of how to use the \ref MSADPAOffEx function.
+ *
+ * \example ex_DISTNxGP2D12.nxc
+ * This is an example of how to use the \ref DISTNxGP2D12 function.
+ *
+ * \example ex_DISTNxGP2D12Ex.nxc
+ * This is an example of how to use the \ref DISTNxGP2D12Ex function.
+ *
+ * \example ex_DISTNxGP2D120.nxc
+ * This is an example of how to use the \ref DISTNxGP2D120 function.
+ *
+ * \example ex_DISTNxGP2D120Ex.nxc
+ * This is an example of how to use the \ref DISTNxGP2D120Ex function.
+ *
+ * \example ex_DISTNxGP2YA02.nxc
+ * This is an example of how to use the \ref DISTNxGP2YA02 function.
+ *
+ * \example ex_DISTNxGP2YA02Ex.nxc
+ * This is an example of how to use the \ref DISTNxGP2YA02Ex function.
+ *
+ * \example ex_DISTNxGP2YA21.nxc
+ * This is an example of how to use the \ref DISTNxGP2YA21 function.
+ *
+ * \example ex_DISTNxGP2YA21Ex.nxc
+ * This is an example of how to use the \ref DISTNxGP2YA21Ex function.
+ *
+ * \example ex_DISTNxDistance.nxc
+ * This is an example of how to use the \ref DISTNxDistance function.
+ *
+ * \example ex_DISTNxDistanceEx.nxc
+ * This is an example of how to use the \ref DISTNxDistanceEx function.
+ *
+ * \example ex_DISTNxMaxDistance.nxc
+ * This is an example of how to use the \ref DISTNxMaxDistance function.
+ *
+ * \example ex_DISTNxMaxDistanceEx.nxc
+ * This is an example of how to use the \ref DISTNxMaxDistanceEx function.
+ *
+ * \example ex_DISTNxMinDistance.nxc
+ * This is an example of how to use the \ref DISTNxMinDistance function.
+ *
+ * \example ex_DISTNxMinDistanceEx.nxc
+ * This is an example of how to use the \ref DISTNxMinDistanceEx function.
+ *
+ * \example ex_DISTNxModuleType.nxc
+ * This is an example of how to use the \ref DISTNxModuleType function.
+ *
+ * \example ex_DISTNxModuleTypeEx.nxc
+ * This is an example of how to use the \ref DISTNxModuleTypeEx function.
+ *
+ * \example ex_DISTNxNumPoints.nxc
+ * This is an example of how to use the \ref DISTNxNumPoints function.
+ *
+ * \example ex_DISTNxNumPointsEx.nxc
+ * This is an example of how to use the \ref DISTNxNumPointsEx function.
+ *
+ * \example ex_DISTNxVoltage.nxc
+ * This is an example of how to use the \ref DISTNxVoltage function.
+ *
+ * \example ex_DISTNxVoltageEx.nxc
+ * This is an example of how to use the \ref DISTNxVoltageEx function.
+ *
+ * \example ex_PSPNxDigital.nxc
+ * This is an example of how to use the \ref PSPNxDigital function.
+ *
+ * \example ex_PSPNxDigitalEx.nxc
+ * This is an example of how to use the \ref PSPNxDigitalEx function.
+ *
+ * \example ex_PSPNxAnalog.nxc
+ * This is an example of how to use the \ref PSPNxAnalog function.
+ *
+ * \example ex_PSPNxAnalogEx.nxc
+ * This is an example of how to use the \ref PSPNxAnalogEx function.
+ *
+ * \example ex_NRLink2400.nxc
+ * This is an example of how to use the \ref NRLink2400 function.
+ *
+ * \example ex_NRLink2400Ex.nxc
+ * This is an example of how to use the \ref NRLink2400Ex function.
+ *
+ * \example ex_NRLink4800.nxc
+ * This is an example of how to use the \ref NRLink4800 function.
+ *
+ * \example ex_NRLink4800Ex.nxc
+ * This is an example of how to use the \ref NRLink4800Ex function.
+ *
+ * \example ex_NRLinkFlush.nxc
+ * This is an example of how to use the \ref NRLinkFlush function.
+ *
+ * \example ex_NRLinkFlushEx.nxc
+ * This is an example of how to use the \ref NRLinkFlushEx function.
+ *
+ * \example ex_NRLinkIRLong.nxc
+ * This is an example of how to use the \ref NRLinkIRLong function.
+ *
+ * \example ex_NRLinkIRLongEx.nxc
+ * This is an example of how to use the \ref NRLinkIRLongEx function.
+ *
+ * \example ex_NRLinkIRShort.nxc
+ * This is an example of how to use the \ref NRLinkIRShort function.
+ *
+ * \example ex_NRLinkIRShortEx.nxc
+ * This is an example of how to use the \ref NRLinkIRShortEx function.
+ *
+ * \example ex_NRLinkSetPF.nxc
+ * This is an example of how to use the \ref NRLinkSetPF function.
+ *
+ * \example ex_NRLinkSetPFEx.nxc
+ * This is an example of how to use the \ref NRLinkSetPFEx function.
+ *
+ * \example ex_NRLinkSetRCX.nxc
+ * This is an example of how to use the \ref NRLinkSetRCX function.
+ *
+ * \example ex_NRLinkSetRCXEx.nxc
+ * This is an example of how to use the \ref NRLinkSetRCXEx function.
+ *
+ * \example ex_NRLinkSetTrain.nxc
+ * This is an example of how to use the \ref NRLinkSetTrain function.
+ *
+ * \example ex_NRLinkSetTrainEx.nxc
+ * This is an example of how to use the \ref NRLinkSetTrainEx function.
+ *
+ * \example ex_NRLinkTxRaw.nxc
+ * This is an example of how to use the \ref NRLinkTxRaw function.
+ *
+ * \example ex_NRLinkTxRawEx.nxc
+ * This is an example of how to use the \ref NRLinkTxRawEx function.
+ *
+ * \example ex_NRLinkStatus.nxc
+ * This is an example of how to use the \ref NRLinkStatus function.
+ *
+ * \example ex_NRLinkStatusEx.nxc
+ * This is an example of how to use the \ref NRLinkStatusEx function.
+ *
+ * \example ex_RunNRLinkMacro.nxc
+ * This is an example of how to use the \ref RunNRLinkMacro function.
+ *
+ * \example ex_RunNRLinkMacroEx.nxc
+ * This is an example of how to use the \ref RunNRLinkMacroEx function.
+ *
+ * \example ex_WriteNRLinkBytes.nxc
+ * This is an example of how to use the \ref WriteNRLinkBytes function.
+ *
+ * \example ex_WriteNRLinkBytesEx.nxc
+ * This is an example of how to use the \ref WriteNRLinkBytesEx function.
+ *
+ * \example ex_ReadNRLinkBytes.nxc
+ * This is an example of how to use the \ref ReadNRLinkBytes function.
+ *
+ * \example ex_ReadNRLinkBytesEx.nxc
+ * This is an example of how to use the \ref ReadNRLinkBytesEx function.
+ *
+ * \example ex_MSIRTrain.nxc
+ * This is an example of how to use the \ref MSIRTrain function.
+ *
+ * \example ex_MSIRTrainEx.nxc
+ * This is an example of how to use the \ref MSIRTrainEx function.
+ *
+ * \example ex_MSPFComboDirect.nxc
+ * This is an example of how to use the \ref MSPFComboDirect function.
+ *
+ * \example ex_MSPFComboDirectEx.nxc
+ * This is an example of how to use the \ref MSPFComboDirectEx function.
+ *
+ * \example ex_MSPFComboPWM.nxc
+ * This is an example of how to use the \ref MSPFComboPWM function.
+ *
+ * \example ex_MSPFComboPWMEx.nxc
+ * This is an example of how to use the \ref MSPFComboPWMEx function.
+ *
+ * \example ex_MSPFRawOutput.nxc
+ * This is an example of how to use the \ref MSPFRawOutput function.
+ *
+ * \example ex_MSPFRawOutputEx.nxc
+ * This is an example of how to use the \ref MSPFRawOutputEx function.
+ *
+ * \example ex_MSPFRepeat.nxc
+ * This is an example of how to use the \ref MSPFRepeat function.
+ *
+ * \example ex_MSPFRepeatEx.nxc
+ * This is an example of how to use the \ref MSPFRepeatEx function.
+ *
+ * \example ex_MSPFSingleOutputCST.nxc
+ * This is an example of how to use the \ref MSPFSingleOutputCST function.
+ *
+ * \example ex_MSPFSingleOutputCSTEx.nxc
+ * This is an example of how to use the \ref MSPFSingleOutputCSTEx function.
+ *
+ * \example ex_MSPFSingleOutputPWM.nxc
+ * This is an example of how to use the \ref MSPFSingleOutputPWM function.
+ *
+ * \example ex_MSPFSingleOutputPWMEx.nxc
+ * This is an example of how to use the \ref MSPFSingleOutputPWMEx function.
+ *
+ * \example ex_MSPFSinglePin.nxc
+ * This is an example of how to use the \ref MSPFSinglePin function.
+ *
+ * \example ex_MSPFSinglePinEx.nxc
+ * This is an example of how to use the \ref MSPFSinglePinEx function.
+ *
+ * \example ex_MSPFTrain.nxc
+ * This is an example of how to use the \ref MSPFTrain function.
+ *
+ * \example ex_MSPFTrainEx.nxc
+ * This is an example of how to use the \ref MSPFTrainEx function.
+ *
+ * \example ex_MSRCXSetNRLinkPort.nxc
+ * This is an example of how to use the \ref MSRCXSetNRLinkPort function.
+ *
+ * \example ex_MSRCXSetNRLinkPortEx.nxc
+ * This is an example of how to use the \ref MSRCXSetNRLinkPortEx function.
+ *
+ * \example ex_MSRCXBatteryLevel.nxc
+ * This is an example of how to use the \ref MSRCXBatteryLevel function.
+ *
+ * \example ex_MSRCXPoll.nxc
+ * This is an example of how to use the \ref MSRCXPoll function.
+ *
+ * \example ex_MSRCXPollMemory.nxc
+ * This is an example of how to use the \ref MSRCXPollMemory function.
+ *
+ * \example ex_MSRCXAbsVar.nxc
+ * This is an example of how to use the \ref MSRCXAbsVar function.
+ *
+ * \example ex_MSRCXAddToDatalog.nxc
+ * This is an example of how to use the \ref MSRCXAddToDatalog function.
+ *
+ * \example ex_MSRCXAndVar.nxc
+ * This is an example of how to use the \ref MSRCXAndVar function.
+ *
+ * \example ex_MSRCXBoot.nxc
+ * This is an example of how to use the \ref MSRCXBoot function.
+ *
+ * \example ex_MSRCXCalibrateEvent.nxc
+ * This is an example of how to use the \ref MSRCXCalibrateEvent function.
+ *
+ * \example ex_MSRCXClearAllEvents.nxc
+ * This is an example of how to use the \ref MSRCXClearAllEvents function.
+ *
+ * \example ex_MSRCXClearCounter.nxc
+ * This is an example of how to use the \ref MSRCXClearCounter function.
+ *
+ * \example ex_MSRCXClearMsg.nxc
+ * This is an example of how to use the \ref MSRCXClearMsg function.
+ *
+ * \example ex_MSRCXClearSensor.nxc
+ * This is an example of how to use the \ref MSRCXClearSensor function.
+ *
+ * \example ex_MSRCXClearSound.nxc
+ * This is an example of how to use the \ref MSRCXClearSound function.
+ *
+ * \example ex_MSRCXClearTimer.nxc
+ * This is an example of how to use the \ref MSRCXClearTimer function.
+ *
+ * \example ex_MSRCXCreateDatalog.nxc
+ * This is an example of how to use the \ref MSRCXCreateDatalog function.
+ *
+ * \example ex_MSRCXDecCounter.nxc
+ * This is an example of how to use the \ref MSRCXDecCounter function.
+ *
+ * \example ex_MSRCXDeleteSub.nxc
+ * This is an example of how to use the \ref MSRCXDeleteSub function.
+ *
+ * \example ex_MSRCXDeleteSubs.nxc
+ * This is an example of how to use the \ref MSRCXDeleteSubs function.
+ *
+ * \example ex_MSRCXDeleteTask.nxc
+ * This is an example of how to use the \ref MSRCXDeleteTask function.
+ *
+ * \example ex_MSRCXDeleteTasks.nxc
+ * This is an example of how to use the \ref MSRCXDeleteTasks function.
+ *
+ * \example ex_MSRCXDisableOutput.nxc
+ * This is an example of how to use the \ref MSRCXDisableOutput function.
+ *
+ * \example ex_MSRCXDivVar.nxc
+ * This is an example of how to use the \ref MSRCXDivVar function.
+ *
+ * \example ex_MSRCXEnableOutput.nxc
+ * This is an example of how to use the \ref MSRCXEnableOutput function.
+ *
+ * \example ex_MSRCXEvent.nxc
+ * This is an example of how to use the \ref MSRCXEvent function.
+ *
+ * \example ex_MSRCXFloat.nxc
+ * This is an example of how to use the \ref MSRCXFloat function.
+ *
+ * \example ex_MSRCXFwd.nxc
+ * This is an example of how to use the \ref MSRCXFwd function.
+ *
+ * \example ex_MSRCXIncCounter.nxc
+ * This is an example of how to use the \ref MSRCXIncCounter function.
+ *
+ * \example ex_MSRCXInvertOutput.nxc
+ * This is an example of how to use the \ref MSRCXInvertOutput function.
+ *
+ * \example ex_MSRCXMulVar.nxc
+ * This is an example of how to use the \ref MSRCXMulVar function.
+ *
+ * \example ex_MSRCXMuteSound.nxc
+ * This is an example of how to use the \ref MSRCXMuteSound function.
+ *
+ * \example ex_MSRCXObvertOutput.nxc
+ * This is an example of how to use the \ref MSRCXObvertOutput function.
+ *
+ * \example ex_MSRCXOff.nxc
+ * This is an example of how to use the \ref MSRCXOff function.
+ *
+ * \example ex_MSRCXOn.nxc
+ * This is an example of how to use the \ref MSRCXOn function.
+ *
+ * \example ex_MSRCXOnFor.nxc
+ * This is an example of how to use the \ref MSRCXOnFor function.
+ *
+ * \example ex_MSRCXOnFwd.nxc
+ * This is an example of how to use the \ref MSRCXOnFwd function.
+ *
+ * \example ex_MSRCXOnRev.nxc
+ * This is an example of how to use the \ref MSRCXOnRev function.
+ *
+ * \example ex_MSRCXOrVar.nxc
+ * This is an example of how to use the \ref MSRCXOrVar function.
+ *
+ * \example ex_MSRCXPBTurnOff.nxc
+ * This is an example of how to use the \ref MSRCXPBTurnOff function.
+ *
+ * \example ex_MSRCXPing.nxc
+ * This is an example of how to use the \ref MSRCXPing function.
+ *
+ * \example ex_MSRCXPlaySound.nxc
+ * This is an example of how to use the \ref MSRCXPlaySound function.
+ *
+ * \example ex_MSRCXPlayTone.nxc
+ * This is an example of how to use the \ref MSRCXPlayTone function.
+ *
+ * \example ex_MSRCXPlayToneVar.nxc
+ * This is an example of how to use the \ref MSRCXPlayToneVar function.
+ *
+ * \example ex_MSRCXRemote.nxc
+ * This is an example of how to use the \ref MSRCXRemote function.
+ *
+ * \example ex_MSRCXReset.nxc
+ * This is an example of how to use the \ref MSRCXReset function.
+ *
+ * \example ex_MSRCXRev.nxc
+ * This is an example of how to use the \ref MSRCXRev function.
+ *
+ * \example ex_MSRCXSelectDisplay.nxc
+ * This is an example of how to use the \ref MSRCXSelectDisplay function.
+ *
+ * \example ex_MSRCXSelectProgram.nxc
+ * This is an example of how to use the \ref MSRCXSelectProgram function.
+ *
+ * \example ex_MSRCXSendSerial.nxc
+ * This is an example of how to use the \ref MSRCXSendSerial function.
+ *
+ * \example ex_MSRCXSet.nxc
+ * This is an example of how to use the \ref MSRCXSet function.
+ *
+ * \example ex_MSRCXSetDirection.nxc
+ * This is an example of how to use the \ref MSRCXSetDirection function.
+ *
+ * \example ex_MSRCXSetEvent.nxc
+ * This is an example of how to use the \ref MSRCXSetEvent function.
+ *
+ * \example ex_MSRCXSetGlobalDirection.nxc
+ * This is an example of how to use the \ref MSRCXSetGlobalDirection function.
+ *
+ * \example ex_MSRCXSetGlobalOutput.nxc
+ * This is an example of how to use the \ref MSRCXSetGlobalOutput function.
+ *
+ * \example ex_MSRCXSetMaxPower.nxc
+ * This is an example of how to use the \ref MSRCXSetMaxPower function.
+ *
+ * \example ex_MSRCXSetMessage.nxc
+ * This is an example of how to use the \ref MSRCXSetMessage function.
+ *
+ * \example ex_MSRCXSetOutput.nxc
+ * This is an example of how to use the \ref MSRCXSetOutput function.
+ *
+ * \example ex_MSRCXSetPower.nxc
+ * This is an example of how to use the \ref MSRCXSetPower function.
+ *
+ * \example ex_MSRCXSetPriority.nxc
+ * This is an example of how to use the \ref MSRCXSetPriority function.
+ *
+ * \example ex_MSRCXSetSensorMode.nxc
+ * This is an example of how to use the \ref MSRCXSetSensorMode function.
+ *
+ * \example ex_MSRCXSetSensorType.nxc
+ * This is an example of how to use the \ref MSRCXSetSensorType function.
+ *
+ * \example ex_MSRCXSetSleepTime.nxc
+ * This is an example of how to use the \ref MSRCXSetSleepTime function.
+ *
+ * \example ex_MSRCXSetTxPower.nxc
+ * This is an example of how to use the \ref MSRCXSetTxPower function.
+ *
+ * \example ex_MSRCXSetUserDisplay.nxc
+ * This is an example of how to use the \ref MSRCXSetUserDisplay function.
+ *
+ * \example ex_MSRCXSetVar.nxc
+ * This is an example of how to use the \ref MSRCXSetVar function.
+ *
+ * \example ex_MSRCXSetWatch.nxc
+ * This is an example of how to use the \ref MSRCXSetWatch function.
+ *
+ * \example ex_MSRCXSgnVar.nxc
+ * This is an example of how to use the \ref MSRCXSgnVar function.
+ *
+ * \example ex_MSRCXStartTask.nxc
+ * This is an example of how to use the \ref MSRCXStartTask function.
+ *
+ * \example ex_MSRCXStopAllTasks.nxc
+ * This is an example of how to use the \ref MSRCXStopAllTasks function.
+ *
+ * \example ex_MSRCXStopTask.nxc
+ * This is an example of how to use the \ref MSRCXStopTask function.
+ *
+ * \example ex_MSRCXSubVar.nxc
+ * This is an example of how to use the \ref MSRCXSubVar function.
+ *
+ * \example ex_MSRCXSumVar.nxc
+ * This is an example of how to use the \ref MSRCXSumVar function.
+ *
+ * \example ex_MSRCXToggle.nxc
+ * This is an example of how to use the \ref MSRCXToggle function.
+ *
+ * \example ex_MSRCXUnlock.nxc
+ * This is an example of how to use the \ref MSRCXUnlock function.
+ *
+ * \example ex_MSRCXUnmuteSound.nxc
+ * This is an example of how to use the \ref MSRCXUnmuteSound function.
+ *
+ * \example ex_MSScoutCalibrateSensor.nxc
+ * This is an example of how to use the \ref MSScoutCalibrateSensor function.
+ *
+ * \example ex_MSScoutMuteSound.nxc
+ * This is an example of how to use the \ref MSScoutMuteSound function.
+ *
+ * \example ex_MSScoutSelectSounds.nxc
+ * This is an example of how to use the \ref MSScoutSelectSounds function.
+ *
+ * \example ex_MSScoutSendVLL.nxc
+ * This is an example of how to use the \ref MSScoutSendVLL function.
+ *
+ * \example ex_MSScoutSetCounterLimit.nxc
+ * This is an example of how to use the \ref MSScoutSetCounterLimit function.
+ *
+ * \example ex_MSScoutSetEventFeedback.nxc
+ * This is an example of how to use the \ref MSScoutSetEventFeedback function.
+ *
+ * \example ex_MSScoutSetLight.nxc
+ * This is an example of how to use the \ref MSScoutSetLight function.
+ *
+ * \example ex_MSScoutSetScoutMode.nxc
+ * This is an example of how to use the \ref MSScoutSetScoutMode function.
+ *
+ * \example ex_MSScoutSetScoutRules.nxc
+ * This is an example of how to use the \ref MSScoutSetScoutRules function.
+ *
+ * \example ex_MSScoutSetSensorClickTime.nxc
+ * This is an example of how to use the \ref MSScoutSetSensorClickTime function.
+ *
+ * \example ex_MSScoutSetSensorHysteresis.nxc
+ * This is an example of how to use the \ref MSScoutSetSensorHysteresis function.
+ *
+ * \example ex_MSScoutSetSensorLowerLimit.nxc
+ * This is an example of how to use the \ref MSScoutSetSensorLowerLimit function.
+ *
+ * \example ex_MSScoutSetSensorUpperLimit.nxc
+ * This is an example of how to use the \ref MSScoutSetSensorUpperLimit function.
+ *
+ * \example ex_MSScoutSetTimerLimit.nxc
+ * This is an example of how to use the \ref MSScoutSetTimerLimit function.
+ *
+ * \example ex_MSScoutUnmuteSound.nxc
+ * This is an example of how to use the \ref MSScoutUnmuteSound function.
+ *
+ * \example ex_sqrt.nxc
+ * This is an example of how to use the \ref sqrt function.
+ *
+ * \example ex_sin_cos.nxc
+ * This is an example of how to use the \ref cos and the \ref sin functions.
+ *
+ * \example ex_tan.nxc
+ * This is an example of how to use the \ref tan function.
+ *
+ * \example ex_acos.nxc
+ * This is an example of how to use the \ref acos function.
+ *
+ * \example ex_asin.nxc
+ * This is an example of how to use the \ref asin function.
+ *
+ * \example ex_atan.nxc
+ * This is an example of how to use the \ref atan function.
+ *
+ * \example ex_atan2.nxc
+ * This is an example of how to use the \ref atan2 function.
+ *
+ * \example ex_cosh.nxc
+ * This is an example of how to use the \ref cosh function.
+ *
+ * \example ex_sinh.nxc
+ * This is an example of how to use the \ref sinh function.
+ *
+ * \example ex_tanh.nxc
+ * This is an example of how to use the \ref tanh function.
+ *
+ * \example ex_exp.nxc
+ * This is an example of how to use the \ref exp function.
+ *
+ * \example ex_log.nxc
+ * This is an example of how to use the \ref log function.
+ *
+ * \example ex_log10.nxc
+ * This is an example of how to use the \ref log10 function.
+ *
+ * \example ex_trunc.nxc
+ * This is an example of how to use the \ref trunc function.
+ *
+ * \example ex_frac.nxc
+ * This is an example of how to use the \ref frac function.
+ *
+ * \example ex_pow.nxc
+ * This is an example of how to use the \ref pow function.
+ *
+ * \example ex_ceil.nxc
+ * This is an example of how to use the \ref ceil function.
+ *
+ * \example ex_floor.nxc
+ * This is an example of how to use the \ref floor function.
+ *
+ * \example ex_muldiv32.nxc
+ * This is an example of how to use the \ref muldiv32 function.
+ *
+ * \example ex_sind_cosd.nxc
+ * This is an example of how to use the \ref cosd and \ref sind functions.
+ *
+ * \example ex_tand.nxc
+ * This is an example of how to use the \ref tand function.
+ *
+ * \example ex_acosd.nxc
+ * This is an example of how to use the \ref acosd function.
+ *
+ * \example ex_asind.nxc
+ * This is an example of how to use the \ref asind function.
+ *
+ * \example ex_atand.nxc
+ * This is an example of how to use the \ref atand function.
+ *
+ * \example ex_atan2d.nxc
+ * This is an example of how to use the \ref atan2d function.
+ *
+ * \example ex_bcd2dec.nxc
+ * This is an example of how to use the \ref bcd2dec function.
+ *
+ * \example ex_isNAN.nxc
+ * This is an example of how to use the \ref isNAN function.
+ *
+ * \example ex_sign.nxc
+ * This is an example of how to use the \ref sign function.
+ *
+ * \example ex_fclose.nxc
+ * This is an example of how to use the \ref fclose function.
+ *
+ * \example ex_remove.nxc
+ * This is an example of how to use the \ref remove function.
+ *
+ * \example ex_rename.nxc
+ * This is an example of how to use the \ref rename function.
+ *
+ * \example ex_fgetc.nxc
+ * This is an example of how to use the \ref fgetc function.
+ *
+ * \example ex_getc.nxc
+ * This is an example of how to use the \ref getc function.
+ *
+ * \example ex_fgets.nxc
+ * This is an example of how to use the \ref fgets function.
+ *
+ * \example ex_feof.nxc
+ * This is an example of how to use the \ref feof function.
+ *
+ * \example ex_fopen.nxc
+ * This is an example of how to use the \ref fopen function.
+ *
+ * \example ex_fflush.nxc
+ * This is an example of how to use the \ref fflush function.
+ *
+ * \example ex_ftell.nxc
+ * This is an example of how to use the \ref ftell function.
+ *
+ * \example ex_fputc.nxc
+ * This is an example of how to use the \ref fputc function.
+ *
+ * \example ex_putc.nxc
+ * This is an example of how to use the \ref putc function.
+ *
+ * \example ex_fputs.nxc
+ * This is an example of how to use the \ref fputs function.
+ *
+ * \example ex_printf.nxc
+ * This is an example of how to use the \ref printf function.
+ *
+ * \example ex_fprintf.nxc
+ * This is an example of how to use the \ref fprintf function.
+ *
+ * \example ex_sprintf.nxc
+ * This is an example of how to use the \ref sprintf function.
+ *
+ * \example ex_fseek.nxc
+ * This is an example of how to use the \ref fseek function.
+ *
+ * \example ex_rewind.nxc
+ * This is an example of how to use the \ref rewind function.
+ *
+ * \example ex_getchar.nxc
+ * This is an example of how to use the \ref getchar function.
+ *
+ * \example ex_cstdio.nxc
+ * This is an example of how to use the cstdio API functions: \ref fopen, \ref fprintf, \ref fputc,
+ * \ref fputs, \ref fseek, \ref ftell, \ref fclose, \ref feof, \ref fflush,
+ * \ref fgetc, \ref fgets, \ref getc, \ref putc, \ref rewind,
+ * \ref printf, \ref sprintf, \ref rename, and \ref remove.
+ *
+ * \example ex_abort.nxc
+ * This is an example of how to use the \ref abort function.
+ *
+ * \example ex_abs.nxc
+ * This is an example of how to use the \ref abs function.
+ *
+ * \example ex_rand.nxc
+ * This is an example of how to use the \ref rand function.
+ *
+ * \example ex_Random.nxc
+ * This is an example of how to use the \ref Random function.
+ *
+ * \example ex_sysrandomnumber.nxc
+ * This is an example of how to use the \ref SysRandomNumber function along with
+ * the \ref RandomNumberType structure.
+ *
+ * \example ex_atoi.nxc
+ * This is an example of how to use the \ref atoi function.
+ *
+ * \example ex_atol.nxc
+ * This is an example of how to use the \ref atol function.
+ *
+ * \example ex_labs.nxc
+ * This is an example of how to use the \ref labs function.
+ *
+ * \example ex_atof.nxc
+ * This is an example of how to use the \ref atof function.
+ *
+ * \example ex_strtod.nxc
+ * This is an example of how to use the \ref strtod function.
+ *
+ * \example ex_strtol.nxc
+ * This is an example of how to use the \ref strtol function.
+ *
+ * \example ex_strtoul.nxc
+ * This is an example of how to use the \ref strtoul function.
+ *
+ * \example ex_div.nxc
+ * This is an example of how to use the \ref div function.
+ *
+ * \example ex_ldiv.nxc
+ * This is an example of how to use the \ref ldiv function.
+ *
+ * \example ex_StrToNum.nxc
+ * This is an example of how to use the \ref StrToNum function.
+ *
+ * \example ex_StrLenOld.nxc
+ * This is an example of how to use the \ref StrLen function.
+ *
+ * \example ex_StrIndex.nxc
+ * This is an example of how to use the \ref StrIndex function.
+ *
+ * \example ex_NumToStr.nxc
+ * This is an example of how to use the \ref NumToStr function.
+ *
+ * \example ex_StrCatOld.nxc
+ * This is an example of how to use the \ref StrCat function.
+ *
+ * \example ex_SubStr.nxc
+ * This is an example of how to use the \ref SubStr function.
+ *
+ * \example ex_Flatten.nxc
+ * This is an example of how to use the \ref Flatten function.
+ *
+ * \example ex_StrReplace.nxc
+ * This is an example of how to use the \ref StrReplace function.
+ *
+ * \example ex_FormatNum.nxc
+ * This is an example of how to use the \ref FormatNum function.
+ *
+ * \example ex_FlattenVar.nxc
+ * This is an example of how to use the \ref FlattenVar function.
+ *
+ * \example ex_UnflattenVar.nxc
+ * This is an example of how to use the \ref UnflattenVar function.
+ *
+ * \example ex_ByteArrayToStr.nxc
+ * This is an example of how to use the \ref ByteArrayToStr function.
+ *
+ * \example ex_ByteArrayToStrEx.nxc
+ * This is an example of how to use the \ref ByteArrayToStrEx function.
+ *
+ * \example ex_StrToByteArray.nxc
+ * This is an example of how to use the \ref StrToByteArray function.
+ *
+ * \example ex_Copy.nxc
+ * This is an example of how to use the \ref Copy function.
+ *
+ * \example ex_midstr.nxc
+ * This is an example of how to use the \ref MidStr function.
+ *
+ * \example ex_rightstr.nxc
+ * This is an example of how to use the \ref RightStr function.
+ *
+ * \example ex_leftstr.nxc
+ * This is an example of how to use the \ref LeftStr function.
+ *
+ * \example ex_strlen.nxc
+ * This is an example of how to use the \ref strlen function.
+ *
+ * \example ex_strcat.nxc
+ * This is an example of how to use the \ref strcat function.
+ *
+ * \example ex_strncat.nxc
+ * This is an example of how to use the \ref strncat function.
+ *
+ * \example ex_strcpy.nxc
+ * This is an example of how to use the \ref strcpy function.
+ *
+ * \example ex_strncpy.nxc
+ * This is an example of how to use the \ref strncpy function.
+ *
+ * \example ex_strcmp.nxc
+ * This is an example of how to use the \ref strcmp function.
+ *
+ * \example ex_strncmp.nxc
+ * This is an example of how to use the \ref strncmp function.
+ *
+ * \example ex_memcpy.nxc
+ * This is an example of how to use the \ref memcpy function.
+ *
+ * \example ex_memmove.nxc
+ * This is an example of how to use the \ref memmove function.
+ *
+ * \example ex_memcmp.nxc
+ * This is an example of how to use the \ref memcmp function.
+ *
+ * \example ex_addr.nxc
+ * This is an example of how to use the \ref addr function.
+ *
+ * \example ex_reladdr.nxc
+ * This is an example of how to use the \ref reladdr function.
+ *
+ * \example ex_addrex.nxc
+ * This is an example of how to use the \ref addrex function.
+ *
+ * \example ex_string.nxc
+ * This is an example of how to use the string API functions: \ref StrToNum, \ref StrLen,
+ * \ref StrIndex, \ref NumToStr, \ref StrCat, \ref SubStr, \ref Flatten,
+ * \ref StrReplace, \ref FormatNum, \ref FlattenVar, \ref UnflattenVar,
+ * \ref ByteArrayToStr, \ref ByteArrayToStrEx, and \ref StrToByteArray.
+ *
+ * \example ex_cstring.nxc
+ * This is an example of how to use the cstring API functions: \ref strcat, \ref strcmp, \ref strcpy,
+ * \ref strlen, \ref strncat, \ref strncmp, \ref strncpy, \ref memcpy,
+ * \ref memmove, and \ref memcmp.
+ *
+ * \example ex_isupper.nxc
+ * This is an example of how to use the \ref isupper function.
+ *
+ * \example ex_islower.nxc
+ * This is an example of how to use the \ref islower function.
+ *
+ * \example ex_isalpha.nxc
+ * This is an example of how to use the \ref isalpha function.
+ *
+ * \example ex_isdigit.nxc
+ * This is an example of how to use the \ref isdigit function.
+ *
+ * \example ex_isalnum.nxc
+ * This is an example of how to use the \ref isalnum function.
+ *
+ * \example ex_isspace.nxc
+ * This is an example of how to use the \ref isspace function.
+ *
+ * \example ex_iscntrl.nxc
+ * This is an example of how to use the \ref iscntrl function.
+ *
+ * \example ex_isprint.nxc
+ * This is an example of how to use the \ref isprint function.
+ *
+ * \example ex_isgraph.nxc
+ * This is an example of how to use the \ref isgraph function.
+ *
+ * \example ex_ispunct.nxc
+ * This is an example of how to use the \ref ispunct function.
+ *
+ * \example ex_isxdigit.nxc
+ * This is an example of how to use the \ref isxdigit function.
+ *
+ * \example ex_toupper.nxc
+ * This is an example of how to use the \ref toupper function.
+ *
+ * \example ex_tolower.nxc
+ * This is an example of how to use the \ref tolower function.
+ *
+ * \example ex_ctype.nxc
+ * This is an example of how to use the ctype API functions: \ref isupper, \ref islower, \ref isalpha,
+ * \ref isdigit, \ref isalnum, \ref isspace, \ref iscntrl, \ref isprint,
+ * \ref isgraph, \ref ispunct, \ref isxdigit, \ref toupper, and \ref tolower.
+ *
+ * \example glTranslateDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBox,
+ * \ref glSetAngleX, \ref glAddToAngleY, \ref glBeginRender, \ref glSet,
+ * \ref glCallObject, \ref glObjectAction, and \ref glFinishRender functions.
+ *
+ * \example glScaleDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBox,
+ * \ref glSetAngleX, \ref glAddToAngleY, \ref glBeginRender,
+ * \ref glCallObject, \ref glObjectAction, and \ref glFinishRender functions.
+ *
+ * \example glRotateDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBox,
+ * \ref glSetAngleX, \ref glBeginRender,
+ * \ref glCallObject, \ref glObjectAction, and \ref glFinishRender functions.
+ *
+ * \example glCircleDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBox,
+ * \ref glSetAngleX, \ref glBeginRender, \ref glAddToAngleY, \ref glAddToAngleX
+ * \ref glCallObject, \ref glSet, and \ref glFinishRender functions.
+ *
+ * \example glBoxDemo.nxc
+ * This is an example of how to use the \ref glInit, \ref glBeginObject,
+ * \ref glBegin, \ref glAddVertex, \ref glEnd, \ref glEndObject,
+ * \ref glSetAngleX, \ref glBeginRender, \ref glAddToAngleY,
+ * \ref glCallObject, and \ref glFinishRender functions.
+ *
+ */
+
 
 #include "NXCDefs.h"
 
