@@ -2259,15 +2259,17 @@ dseg ends
   unflatten _n, __IOMRUnflattenErr, __IOMRUnflattenBuf, _n \
   release __IOMRMutex
 
-#define __getLowSpeedModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrOut)
-#define __getDisplayModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrOut)
-#define __getCommModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytesByID(CommModuleID, _offset, _cnt, _arrOut)
+#define __getLowSpeedModuleBytes(_offset, _cnt, _arrOut) __getIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrOut)
+#define __getDisplayModuleBytes(_offset, _cnt, _arrOut) __getIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrOut)
+#define __getCommModuleBytes(_offset, _cnt, _arrOut) __getIOMapBytesByID(CommModuleID, _offset, _cnt, _arrOut)
+#define __getCommandModuleBytes(_offset, _cnt, _arrOut) __getIOMapBytesByID(CommandModuleID, _offset, _cnt, _arrOut)
 
 #else
 
-#define __getLowSpeedModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytes(LowSpeedModuleName, _offset, _cnt, _arrOut)
-#define __getDisplayModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytes(DisplayModuleID, _offset, _cnt, _arrOut)
-#define __getCommModuleBytes(_offset, _cnt, _arrOut) GetIOMapBytes(CommModuleID, _offset, _cnt, _arrOut)
+#define __getLowSpeedModuleBytes(_offset, _cnt, _arrOut) __getIOMapBytes(LowSpeedModuleName, _offset, _cnt, _arrOut)
+#define __getDisplayModuleBytes(_offset, _cnt, _arrOut) __getIOMapBytes(DisplayModuleName, _offset, _cnt, _arrOut)
+#define __getCommModuleBytes(_offset, _cnt, _arrOut) __getIOMapBytes(CommModuleName, _offset, _cnt, _arrOut)
+#define __getCommandModuleBytes(_offset, _cnt, _arrOut) __getIOMapBytes(CommandModuleName, _offset, _cnt, _arrOut)
 
 #endif
 

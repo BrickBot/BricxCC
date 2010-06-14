@@ -4534,6 +4534,586 @@ inline void ArrayOp(const byte op, variant & dest, const variant & src[], unsign
 #endif
 
 #endif
+
+
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * Set IOMap bytes by name.
+ * Modify one or more bytes of data in an IOMap structure. The IOMap
+ * structure is specified by its module name. You also provide the offset into
+ * the IOMap structure where you want to start writing, the number of bytes to
+ * write at that location, and a byte array containing the new data.
+ * \param moduleName The module name of the IOMap to modify. See \ref ModuleNameConstants.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the data should be written
+ * \param count The number of bytes to write at the specified IOMap
+ * offset.
+ * \param data The byte array containing the data to write to the IOMap
+ */
+inline void SetIOMapBytes(string moduleName, unsigned int offset, unsigned int count, byte data[]);
+
+/**
+ * Set IOMap value by name.
+ * Set one of the fields of an IOMap structure to a new value.  The IOMap
+ * structure is specified by its module name. You also provide the offset into
+ * the IOMap structure where you want to write the value along with a variable
+ * containing the new value.
+ * \param moduleName The module name of the IOMap to modify. See \ref ModuleNameConstants.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the new value should be written
+ * \param value A variable containing the new value to write to the IOMap
+ */
+inline void SetIOMapValue(string moduleName, unsigned int offset, variant value);
+
+/**
+ * Get IOMap bytes by name.
+ * Read one or more bytes of data from an IOMap structure. The IOMap
+ * structure is specified by its module name. You also provide the offset into
+ * the IOMap structure where you want to start reading, the number of bytes to
+ * read from that location, and a byte array where the data will be stored.
+ * \param moduleName The module name of the IOMap. See \ref ModuleNameConstants.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the data should be read
+ * \param count The number of bytes to read from the specified IOMap
+ * offset.
+ * \param data A byte array that will contain the data read from the IOMap
+ */
+inline void GetIOMapBytes(string moduleName, unsigned int offset, unsigned int count, byte & data[]);
+
+/**
+ * Get IOMap value by name.
+ * Read a value from an IOMap structure.  The IOMap
+ * structure is specified by its module name. You also provide the offset into
+ * the IOMap structure where you want to read the value along with a variable
+ * that will contain the IOMap value.
+ * \param moduleName The module name of the IOMap. See \ref ModuleNameConstants.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read
+ * \param value A variable that will contain the value read from the IOMap
+ */
+inline void GetIOMapValue(string moduleName, unsigned int offset, variant & value);
+
+/**
+ * Get Lowspeed module IOMap bytes.
+ * Read one or more bytes of data from Lowspeed module IOMap structure.
+ * You provide the offset into the Lowspeed module IOMap structure where you
+ * want to start reading, the number of bytes to read from that location, and
+ * a byte array where the data will be stored.
+ * \param offset The number of bytes offset from the start of the Lowspeed
+ * module IOMap structure where the data should be read. See \ref LowspeedIOMAP.
+ * \param count The number of bytes to read from the specified Lowspeed module
+ * IOMap offset.
+ * \param data A byte array that will contain the data read from the Lowspeed
+ * module IOMap.
+ */
+inline void GetLowSpeedModuleBytes(unsigned int offset, unsigned int count, byte & data[]);
+
+/**
+ * Get Display module IOMap bytes.
+ * Read one or more bytes of data from Display module IOMap structure.
+ * You provide the offset into the Display module IOMap structure where you
+ * want to start reading, the number of bytes to read from that location, and
+ * a byte array where the data will be stored.
+ * \param offset The number of bytes offset from the start of the Display
+ * module IOMap structure where the data should be read. See \ref DisplayIOMAP.
+ * \param count The number of bytes to read from the specified Display module
+ * IOMap offset.
+ * \param data A byte array that will contain the data read from the Display
+ * module IOMap.
+ */
+inline void GetDisplayModuleBytes(unsigned int offset, unsigned int count, byte & data[]);
+
+/**
+ * Get Comm module IOMap bytes.
+ * Read one or more bytes of data from Comm module IOMap structure.
+ * You provide the offset into the Comm module IOMap structure where you
+ * want to start reading, the number of bytes to read from that location, and
+ * a byte array where the data will be stored.
+ * \param offset The number of bytes offset from the start of the Comm module
+ * IOMap structure where the data should be read. See \ref CommIOMAP.
+ * \param count The number of bytes to read from the specified Comm module
+ * IOMap offset.
+ * \param data A byte array that will contain the data read from the Comm
+ * module IOMap.
+ */
+inline void GetCommModuleBytes(unsigned int offset, unsigned int count, byte & data[]);
+
+/**
+ * Get Command module IOMap bytes.
+ * Read one or more bytes of data from Command module IOMap structure.
+ * You provide the offset into the Command module IOMap structure where you
+ * want to start reading, the number of bytes to read from that location, and
+ * a byte array where the data will be stored.
+ * \param offset The number of bytes offset from the start of the Command module
+ * IOMap structure where the data should be read. See \ref CommandIOMAP.
+ * \param count The number of bytes to read from the specified Command module
+ * IOMap offset.
+ * \param data A byte array that will contain the data read from the Command
+ * module IOMap.
+ */
+inline void GetCommandModuleBytes(unsigned int offset, unsigned int count, byte & data[]);
+
+/**
+ * Set Command module IOMap bytes.
+ * Modify one or more bytes of data in the Command module IOMap structure. You
+ * provide the offset into the Command module IOMap structure where you want
+ * to start writing, the number of bytes to write at that location, and a byte
+ * array containing the new data.
+ * \param offset The number of bytes offset from the start of the Command module
+ * IOMap structure where the data should be written. See \ref CommandIOMap.
+ * \param count The number of bytes to write at the specified Command module
+ * IOMap offset.
+ * \param data The byte array containing the data to write to the Command
+ * module IOMap.
+ */
+inline void SetCommandModuleBytes(unsigned int offset, unsigned int offset, byte data[]);
+
+/**
+ * Set Lowspeed module IOMap bytes.
+ * Modify one or more bytes of data in the Lowspeed module IOMap structure. You
+ * provide the offset into the Lowspeed module IOMap structure where you want
+ * to start writing, the number of bytes to write at that location, and a byte
+ * array containing the new data.
+ * \param offset The number of bytes offset from the start of the Lowspeed
+ * module IOMap structure where the data should be written. See \ref LowspeedIOMap.
+ * \param count The number of bytes to write at the specified Lowspeed module
+ * IOMap offset.
+ * \param data The byte array containing the data to write to the Lowspeed
+ * module IOMap.
+ */
+inline void SetLowSpeedModuleBytes(unsigned int offset, unsigned int offset, byte data[]);
+
+/**
+ * Set Display module IOMap bytes.
+ * Modify one or more bytes of data in the Display module IOMap structure. You
+ * provide the offset into the Display module IOMap structure where you want to
+ * start writing, the number of bytes to write at that location, and a byte
+ * array containing the new data.
+ * \param offset The number of bytes offset from the start of the Display module
+ * IOMap structure where the data should be written. See \ref DisplayIOMap.
+ * \param count The number of bytes to write at the specified Display module
+ * IOMap offset.
+ * \param data The byte array containing the data to write to the Display
+ * module IOMap.
+ */
+inline void SetDisplayModuleBytes(unsigned int offset, unsigned int offset, byte data[]);
+
+/**
+ * Set Comm module IOMap bytes.
+ * Modify one or more bytes of data in an IOMap structure. You provide the
+ * offset into the Comm module IOMap structure where you want to start writing,
+ * the number of bytes to write at that location, and a byte array containing
+ * the new data.
+ * \param offset The number of bytes offset from the start of the Comm module
+ * IOMap structure where the data should be written. See \ref CommIOMap.
+ * \param count The number of bytes to write at the specified Comm module IOMap
+ * offset.
+ * \param data The byte array containing the data to write to the Comm module
+ * IOMap.
+ */
+inline void SetCommModuleBytes(unsigned int offset, unsigned int offset, byte data[]);
+
+
+#ifdef __ENHANCED_FIRMWARE
+/**
+ * Set IOMap bytes by ID.
+ * Modify one or more bytes of data in an IOMap structure. The IOMap
+ * structure is specified by its Module ID. You also provide the offset into
+ * the IOMap structure where you want to start writing, the number of bytes to
+ * write at that location, and a byte array containing the new data.
+ * \param moduleId The module ID of the IOMap to modify. See \ref ModuleIDConstants.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the data should be written.
+ * \param count The number of bytes to write at the specified IOMap
+ * offset.
+ * \param data The byte array containing the data to write to the IOMap.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void SetIOMapBytesByID(unsigned long moduleId, unsigned int offset, unsigned int count, byte data[]);
+
+/**
+ * Set IOMap value by ID.
+ * Set one of the fields of an IOMap structure to a new value.  The IOMap
+ * structure is specified by its Module ID. You also provide the offset into
+ * the IOMap structure where you want to write the value along with a variable
+ * containing the new value.
+ * \param moduleId The module ID of the IOMap to modify. See \ref ModuleIDConstants.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the new value should be written.
+ * \param value A variable containing the new value to write to the IOMap.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void SetIOMapValueByID(unsigned long moduleId, unsigned int offset, variant value);
+
+/**
+ * Get IOMap bytes by ID.
+ * Read one or more bytes of data from an IOMap structure. The IOMap
+ * structure is specified by its Module ID. You also provide the offset into
+ * the IOMap structure where you want to start reading, the number of bytes to
+ * read from that location, and a byte array where the data will be stored.
+ * \param moduleId The module ID of the IOMap. See \ref ModuleIDConstants.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the data should be read.
+ * \param count The number of bytes to read from the specified IOMap
+ * offset.
+ * \param data A byte array that will contain the data read from the IOMap.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void GetIOMapBytesByID(unsigned long moduleId, unsigned int offset, unsigned int count, byte & data[]);
+
+/**
+ * Get IOMap value by ID.
+ * Read a value from an IOMap structure.  The IOMap
+ * structure is specified by its Module ID. You also provide the offset into
+ * the IOMap structure where you want to read the value along with a variable
+ * that will contain the IOMap value.
+ * \param moduleId The module ID of the IOMap. See \ref ModuleIDConstants.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read.
+ * \param value A variable that will contain the value read from the IOMap.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline void GetIOMapValueByID(unsigned long moduleId, unsigned int offset, variant & value);
+
+#endif
+
+/**
+ * Set Command module IOMap value.
+ * Set one of the fields of the Command module IOMap structure to a new value.
+ * You provide the offset into the Command module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Command
+ * module IOMap structure where the new value should be written. See \ref CommandIOMap.
+ * \param value A variable containing the new value to write to the Command
+ * module IOMap.
+ */
+inline void SetCommandModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set IOCtrl module IOMap value.
+ * Set one of the fields of the IOCtrl module IOMap structure to a new value.
+ * You provide the offset into the IOCtrl module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the IOCtrl
+ * module IOMap structure where the new value should be written. See \ref IOCtrlIOMap.
+ * \param value A variable containing the new value to write to the IOCtrl
+ * module IOMap.
+ */
+inline void SetIOCtrlModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set Loader module IOMap value.
+ * Set one of the fields of the Loader module IOMap structure to a new value.
+ * You provide the offset into the Loader module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Loader
+ * module IOMap structure where the new value should be written. See \ref LoaderIOMap.
+ * \param value A variable containing the new value to write to the Loader
+ * module IOMap.
+ */
+inline void SetLoaderModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set Ui module IOMap value.
+ * Set one of the fields of the Ui module IOMap structure to a new value.
+ * You provide the offset into the Ui module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Ui
+ * module IOMap structure where the new value should be written. See \ref UiIOMap.
+ * \param value A variable containing the new value to write to the Ui
+ * module IOMap.
+ */
+inline void SetUIModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set Sound module IOMap value.
+ * Set one of the fields of the Sound module IOMap structure to a new value.
+ * You provide the offset into the Sound module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Sound
+ * module IOMap structure where the new value should be written. See \ref SoundIOMap.
+ * \param value A variable containing the new value to write to the Sound
+ * module IOMap.
+ */
+inline void SetSoundModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set Button module IOMap value.
+ * Set one of the fields of the Button module IOMap structure to a new value.
+ * You provide the offset into the Button module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Button
+ * module IOMap structure where the new value should be written. See \ref ButtonIOMap.
+ * \param value A variable containing the new value to write to the Button
+ * module IOMap.
+ */
+inline void SetButtonModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set Input module IOMap value.
+ * Set one of the fields of the Input module IOMap structure to a new value.
+ * You provide the offset into the Input module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Input
+ * module IOMap structure where the new value should be written. See \ref InputIOMap.
+ * \param value A variable containing the new value to write to the Input
+ * module IOMap.
+ */
+inline void SetInputModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set Output module IOMap value.
+ * Set one of the fields of the Output module IOMap structure to a new value.
+ * You provide the offset into the Output module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Output
+ * module IOMap structure where the new value should be written. See \ref OutputIOMap.
+ * \param value A variable containing the new value to write to the Output
+ * module IOMap.
+ */
+inline void SetOutputModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set Lowspeed module IOMap value.
+ * Set one of the fields of the Lowspeed module IOMap structure to a new value.
+ * You provide the offset into the Lowspeed module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Lowspeed
+ * module IOMap structure where the new value should be written. See \ref LowspeedIOMap.
+ * \param value A variable containing the new value to write to the Lowspeed
+ * module IOMap.
+ */
+inline void SetLowSpeedModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set Display module IOMap value.
+ * Set one of the fields of the Display module IOMap structure to a new value.
+ * You provide the offset into the Display module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Display
+ * module IOMap structure where the new value should be written. See \ref DisplayIOMap.
+ * \param value A variable containing the new value to write to the Display
+ * module IOMap.
+ */
+inline void SetDisplayModuleValue(unsigned int offset, variant value);
+
+/**
+ * Set Comm module IOMap value.
+ * Set one of the fields of the Comm module IOMap structure to a new value.
+ * You provide the offset into the Comm module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param offset The number of bytes offset from the start of the Comm
+ * module IOMap structure where the new value should be written. See \ref CommIOMap.
+ * \param value A variable containing the new value to write to the Comm
+ * module IOMap.
+ */
+inline void SetCommModuleValue(unsigned int offset, variant value);
+
+/**
+ * Get Command module IOMap value.
+ * Read a value from the Command module IOMap structure.  You provide the
+ * offset into the Command module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref CommandIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetCommandModuleValue(unsigned int offset, variant & value);
+
+/**
+ * Get Loader module IOMap value.
+ * Read a value from the Loader module IOMap structure.  You provide the
+ * offset into the Loader module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref LoaderIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetLoaderModuleValue(unsigned int offset, variant & value);
+
+/**
+ * Get Sound module IOMap value.
+ * Read a value from the Sound module IOMap structure.  You provide the
+ * offset into the Sound module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref SoundIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetSoundModuleValue(unsigned int offset, variant & value);
+
+/**
+ * Get Button module IOMap value.
+ * Read a value from the Button module IOMap structure.  You provide the
+ * offset into the Button module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref ButtonzIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetButtonModuleValue(unsigned int offset, variant & value);
+
+/**
+ * Get Ui module IOMap value.
+ * Read a value from the Ui module IOMap structure.  You provide the
+ * offset into the Ui module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref UiIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetUIModuleValue(unsigned int offset, variant & value);
+
+/**
+ * Get Input module IOMap value.
+ * Read a value from the Input module IOMap structure.  You provide the
+ * offset into the Input module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref InputIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetInputModuleValue(unsigned int offset, variant & value);
+
+/**
+ * Get Output module IOMap value.
+ * Read a value from the Output module IOMap structure.  You provide the
+ * offset into the Output module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref OutputIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetOutputModuleValue(unsigned int offset, variant & value);
+
+/**
+ * Get LowSpeed module IOMap value.
+ * Read a value from the LowSpeed module IOMap structure.  You provide the
+ * offset into the Command module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref LowSpeedIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetLowSpeedModuleValue(unsigned int offset, variant & value);
+
+/**
+ * Get Display module IOMap value.
+ * Read a value from the Display module IOMap structure.  You provide the
+ * offset into the Display module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref DisplayIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetDisplayModuleValue(unsigned int offset, variant & value);
+
+/**
+ * Get Comm module IOMap value.
+ * Read a value from the Comm module IOMap structure.  You provide the
+ * offset into the Comm module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref CommIOMap.
+ * \param value A variable that will contain the value read from the IOMap.
+ */
+inline void GetCommModuleValue(unsigned int offset, variant & value);
+
+
+#else
+
+#define SetIOMapBytes(_modName, _offset, _cnt, _arrIn) asm { __SetIOMapBytes(_modName, _offset, _cnt, _arrIn) }
+#define SetIOMapValue(_modName, _offset, _n) asm { __SetIOMapValue(_modName, _offset, _n) }
+
+#define GetIOMapBytes(_modName, _offset, _cnt, _arrOut) asm { __getIOMapBytes(_modName, _offset, _cnt, _arrOut) }
+#define GetIOMapValue(_modName, _offset, _n) asm { __getIOMapValue(_modName, _offset, _n) }
+
+#define GetLowSpeedModuleBytes(_offset, _cnt, _arrOut) asm { __getLowSpeedModuleBytes(_offset, _cnt, _arrOut) }
+#define GetDisplayModuleBytes(_offset, _cnt, _arrOut) asm { __getDisplayModuleBytes(_offset, _cnt, _arrOut) }
+#define GetCommModuleBytes(_offset, _cnt, _arrOut) asm { __getCommModuleBytes(_offset, _cnt, _arrOut) }
+
+#ifdef __ENHANCED_FIRMWARE
+
+#define SetIOMapBytesByID(_modID, _offset, _cnt, _arrIn) asm { __SetIOMapBytesByID(_modID, _offset, _cnt, _arrIn) }
+#define SetIOMapValueByID(_modID, _offset, _n) asm { __SetIOMapValueByID(_modID, _offset, _n) }
+
+#define GetIOMapBytesByID(_modID, _offset, _cnt, _arrOut) asm { __getIOMapBytesByID(_modID, _offset, _cnt, _arrOut) }
+#define GetIOMapValueByID(_modID, _offset, _n) asm { __getIOMapValueByID(_modID, _offset, _n) }
+
+#define SetCommandModuleValue(_offset, _n) SetIOMapValueByID(CommandModuleID, _offset, _n)
+#define SetIOCtrlModuleValue(_offset, _n) SetIOMapValueByID(IOCtrlModuleID, _offset, _n)
+#define SetLoaderModuleValue(_offset, _n) SetIOMapValueByID(LoaderModuleID, _offset, _n)
+#define SetUIModuleValue(_offset, _n) SetIOMapValueByID(UIModuleID, _offset, _n)
+#define SetSoundModuleValue(_offset, _n) SetIOMapValueByID(SoundModuleID, _offset, _n)
+#define SetButtonModuleValue(_offset, _n) SetIOMapValueByID(ButtonModuleID, _offset, _n)
+#define SetInputModuleValue(_offset, _n) SetIOMapValueByID(InputModuleID, _offset, _n)
+#define SetOutputModuleValue(_offset, _n) SetIOMapValueByID(OutputModuleID, _offset, _n)
+#define SetLowSpeedModuleValue(_offset, _n) SetIOMapValueByID(LowSpeedModuleID, _offset, _n)
+#define SetDisplayModuleValue(_offset, _n) SetIOMapValueByID(DisplayModuleID, _offset, _n)
+#define SetCommModuleValue(_offset, _n) SetIOMapValueByID(CommModuleID, _offset, _n)
+
+#define SetCommandModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommandModuleID, _offset, _cnt, _arrIn)
+#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrIn)
+#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrIn)
+#define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommModuleID, _offset, _cnt, _arrIn)
+
+#define GetCommandModuleValue(_offset, _n) GetIOMapValueByID(CommandModuleID, _offset, _n)
+#define GetLoaderModuleValue(_offset, _n) GetIOMapValueByID(LoaderModuleID, _offset, _n)
+#define GetSoundModuleValue(_offset, _n) GetIOMapValueByID(SoundModuleID, _offset, _n)
+#define GetButtonModuleValue(_offset, _n) GetIOMapValueByID(ButtonModuleID, _offset, _n)
+#define GetUIModuleValue(_offset, _n) GetIOMapValueByID(UIModuleID, _offset, _n)
+#define GetInputModuleValue(_offset, _n) GetIOMapValueByID(InputModuleID, _offset, _n)
+#define GetOutputModuleValue(_offset, _n) GetIOMapValueByID(OutputModuleID, _offset, _n)
+#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValueByID(LowSpeedModuleID, _offset, _n)
+#define GetDisplayModuleValue(_offset, _n) GetIOMapValueByID(DisplayModuleID, _offset, _n)
+#define GetCommModuleValue(_offset, _n) GetIOMapValueByID(CommModuleID, _offset, _n)
+
+#else
+
+#define SetCommandModuleValue(_offset, _n) SetIOMapValue(CommandModuleName, _offset, _n)
+#define SetIOCtrlModuleValue(_offset, _n) SetIOMapValue(IOCtrlModuleName, _offset, _n)
+#define SetLoaderModuleValue(_offset, _n) SetIOMapValue(LoaderModuleName, _offset, _n)
+#define SetUIModuleValue(_offset, _n) SetIOMapValue(UIModuleName, _offset, _n)
+#define SetSoundModuleValue(_offset, _n) SetIOMapValue(SoundModuleName, _offset, _n)
+#define SetButtonModuleValue(_offset, _n) SetIOMapValue(ButtonModuleName, _offset, _n)
+#define SetInputModuleValue(_offset, _n) SetIOMapValue(InputModuleName, _offset, _n)
+#define SetOutputModuleValue(_offset, _n) SetIOMapValue(OutputModuleName, _offset, _n)
+#define SetLowSpeedModuleValue(_offset, _n) SetIOMapValue(LowSpeedModuleName, _offset, _n)
+#define SetDisplayModuleValue(_offset, _n) SetIOMapValue(DisplayModuleName, _offset, _n)
+#define SetCommModuleValue(_offset, _n) SetIOMapValue(CommModuleName, _offset, _n)
+
+#define SetCommandModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(CommandModuleName, _offset, _cnt, _arrIn)
+#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(LowSpeedModuleName, _offset, _cnt, _arrIn)
+#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(DisplayModuleName, _offset, _cnt, _arrIn)
+#define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(CommModuleName, _offset, _cnt, _arrIn)
+
+#define GetCommandModuleValue(_offset, _n) GetIOMapValue(CommandModuleName, _offset, _n)
+#define GetLoaderModuleValue(_offset, _n) GetIOMapValue(LoaderModuleName, _offset, _n)
+#define GetSoundModuleValue(_offset, _n) GetIOMapValue(SoundModuleName, _offset, _n)
+#define GetButtonModuleValue(_offset, _n) GetIOMapValue(ButtonModuleName, _offset, _n)
+#define GetUIModuleValue(_offset, _n) GetIOMapValue(UIModuleName, _offset, _n)
+#define GetInputModuleValue(_offset, _n) GetIOMapValue(InputModuleName, _offset, _n)
+#define GetOutputModuleValue(_offset, _n) GetIOMapValue(OutputModuleName, _offset, _n)
+#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValue(LowSpeedModuleName, _offset, _n)
+#define GetDisplayModuleValue(_offset, _n) GetIOMapValue(DisplayModuleName, _offset, _n)
+#define GetCommModuleValue(_offset, _n) GetIOMapValue(CommModuleName, _offset, _n)
+
+#endif
+
+#endif
+
+
 /** @} */ // end of CommandModuleFunctions group
 /** @} */ // end of CommandModule group
 /** @} */ // end of NXTFirmwareModules group
