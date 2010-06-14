@@ -11,9 +11,15 @@ typedef unsigned int uint;
 struct Person {
   int age;
   string name;
+  tMUXSensor test;
 };
 
 Person me;
+tMUXSensor fiddle;
+
+void foo2(Person x) {
+//  TextOut(0, LCD_LINE1, "foo called");
+}
 
 
 uint x;
