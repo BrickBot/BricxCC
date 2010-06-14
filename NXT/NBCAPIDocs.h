@@ -42,42 +42,44 @@
 /** @page intro Introduction
  * \brief Introduction
  * 
- * NBC stands for NeXT Byte Codes. It is a simple language for programming the LEGO 
- * MINDSTORMS NXT product. The NXT has a byte-code interpreter (provided by LEGO), which 
- * can be used to execute programs. The NBC compiler translates a source program into LEGO 
- * NXT byte-codes, which can then be executed on the NXT itself. Although the preprocessor 
- * and format of NBC programs are similar to assembly, NBC is not a general-purpose assembly 
- * language - there are many restrictions that stem from limitations of the LEGO byte-code 
- * interpreter.
+ * NBC stands for NeXT Byte Codes. It is a simple language for programming the
+ * LEGO MINDSTORMS NXT product. The NXT has a byte-code interpreter (provided
+ * by LEGO), which can be used to execute programs. The NBC compiler translates
+ * a source program into LEGO NXT byte-codes, which can then be executed on the
+ * NXT itself. Although the preprocessor and format of NBC programs are similar
+ * to assembly, NBC is not a general-purpose assembly language - there are many
+ * restrictions that stem from limitations of the LEGO byte-code interpreter.
  * 
- * Logically, NBC is defined as two separate pieces. The NBC language describes the syntax 
- * to be used in writing programs. The NBC Application Programming Interface (API) describes 
- * the system functions, constants, and macros that can be used by programs. This API is 
- * defined in a special file known as a "header file" which is automatically included at the 
- * beginning of any NBC program.
- * 
- * This document describes both the NBC language and the NBC API. In short, it provides the 
- * information needed to write NBC programs. Since there are different interfaces for NBC, 
- * this document does not describe how to use any specific NBC implementation (such as the 
- * command-line compiler or Bricx Command Center). Refer to the documentation provided with 
- * the NBC tool, such as the NBC User Manual, for information specific to that implementation.
- * 
- * For up-to-date information and documentation for NBC, visit the NBC website 
+ * Logically, NBC is defined as two separate pieces. The NBC language describes
+ * the syntax to be used in writing programs. The NBC Application Programming
+ * Interface (API) describes the system functions, constants, and macros that
+ * can be used by programs. This API is defined in a special file known as a
+ * "header file" which is automatically included at the beginning of any NBC
+ * program.
+ *
+ * This document describes both the NBC language and the NBC API. In short, it
+ * provides the information needed to write NBC programs. Since there are
+ * different interfaces for NBC, this document does not describe how to use any
+ * specific NBC implementation (such as the command-line compiler or Bricx
+ * Command Center). Refer to the documentation provided with the NBC tool, such
+ * as the NBC User Manual, for information specific to that implementation.
+ *
+ * For up-to-date information and documentation for NBC, visit the NBC website
  * at http://bricxcc.sourceforge.net/nbc/.
- * 
+ *
  */
 
 /** @page lang The NBC Language
  * \brief The NBC Language
  * 
- * This section describes the NBC language itself. This includes the lexical rules used by 
- * the compiler, the structure programs, statements, and expressions, and the operation of 
- * the preprocessor.
+ * This section describes the NBC language itself. This includes the lexical
+ * rules used by the compiler, the structure programs, statements, and
+ * expressions, and the operation of the preprocessor.
  * 
- * Unlike some assembly languages, NBC is a case-sensitive language.  That means that the 
- * identifier "xYz" is not the same identifier as "Xyz".  Similarly, the subtract statement 
- * begins with the keyword "sub" but "suB", "Sub", or "SUB" are all just valid 
- * identifiers - not keywords.
+ * Unlike some assembly languages, NBC is a case-sensitive language.  That
+ * means that the identifier "xYz" is not the same identifier as "Xyz".
+ * Similarly, the subtract statement begins with the keyword "sub" but "suB",
+ * "Sub", or "SUB" are all just valid identifiers - not keywords.
  * 
  * - @subpage lexrules
  * - @subpage progstruct
@@ -91,8 +93,9 @@
 /** @page lexrules Lexical Rules
  * \brief Lexical Rules
  * 
- * The lexical rules describe how NBC breaks a source file into individual tokens. This includes 
- * the way comments are written, then handling of whitespace, and valid characters for identifiers.
+ * The lexical rules describe how NBC breaks a source file into individual
+ * tokens. This includes the way comments are written, then handling of
+ * whitespace, and valid characters for identifiers.
  * 
  * - @subpage cmts
  * - @subpage wspace
@@ -105,9 +108,9 @@
 /** @page cmts Comments
  * \brief Comments
  * 
- * Three forms of comments are supported in NBC. The first form (traditional C comments) begin 
- * with '/*' and end with '* /'. These comments are allowed to span multiple lines, but they cannot 
- * be nested.
+ * Three forms of comments are supported in NBC. The first form (traditional
+ * C comments) begin with '/*' and end with '* /'. These comments are allowed
+ * to span multiple lines, but they cannot be nested.
  * \code
  * /* this is a comment */
  * 
@@ -119,90 +122,97 @@
  *       ending the inner comment...*/
  *    this text is no longer a comment! */
  * \endcode
- * The second form of comments supported in NXBC begins with '//' and continues to the end of the current 
- * line. These are sometimes known as C++ style comments.
+ * The second form of comments supported in NXBC begins with '//' and
+ * continues to the end of the current line. These are sometimes known as
+ * C++ style comments.
  * \code
  * // a single line comment
  * \endcode
- * The third form of comments begins with ; and ends with a newline. This form is the traditional 
- * assembly language style comments.
+ * The third form of comments begins with ; and ends with a newline. This form
+ * is the traditional assembly language style comments.
  * \code
  * ; another single line comment
  * \endcode
- * As you might guess, the compiler ignores comments. Their only purpose is to allow the programmer 
- * to document the source code.
+ * As you might guess, the compiler ignores comments. Their only purpose is to
+ * allow the programmer to document the source code.
  * 
  */
 
 /** @page wspace Whitespace
  * \brief Whitespace
  * 
- * Whitespace consists of all spaces, tabs, and newlines. It is used to separate tokens and to 
- * make a program more readable. As long as the tokens are distinguishable, adding or subtracting 
- * whitespace has no effect on the meaning of a program. For example, the following lines of code 
- * both have the same meaning:
+ * Whitespace consists of all spaces, tabs, and newlines. It is used to
+ * separate tokens and to make a program more readable. As long as the tokens
+ * are distinguishable, adding or subtracting whitespace has no effect on the
+ * meaning of a program. For example, the following lines of code both have the
+ * same meaning:
  * \code
  * set x,2
  * set   x,   2
  * \endcode
- * Generally, whitespace is ignored outside of string constants and constant numeric expressions.  
- * However, unlike in C, NBC statements may not span multiple lines.  Aside from pre-processor 
- * macros invocations, each statement in an NBC program must begin and end on the same line.  
+ * Generally, whitespace is ignored outside of string constants and constant
+ * numeric expressions. However, unlike in C, NBC statements may not span
+ * multiple lines.  Aside from pre-processor macros invocations, each statement
+ * in an NBC program must begin and end on the same line.
  * \code
- * add x, x, 2 ; okay
+ * add x, x, 2 // okay
  * add x,      // error
  *     x, 2    // error
  * 
- * set x, (2*2)+43-12 ; okay
- * set x, 2 * 2 ; error (constant expression contains whitespace)
+ * set x, (2*2)+43-12 // okay
+ * set x, 2 * 2 // error (constant expression contains whitespace)
  * \endcode
- * The exception to this rule is if you end a line with the '\' character which makes the NBC parser
- * continue the current statement on the next line just like with preprocessor macros.
+ * The exception to this rule is if you end a line with the '\' character which
+ * makes the NBC parser continue the current statement on the next line just
+ * like with preprocessor macros.
  * \code
  * add x, \
- *     x, 2 ; okay
+ *     x, 2 // okay
  * \endcode
- * 
+ *
  */
 
 /** @page consts Numerical Constants
  * \brief Numerical Constants
- * 
- * Numerical constants may be written in either decimal or hexadecimal form. Decimal 
- * constants consist of one or more decimal digits. Decimal constants may optionally 
- * include a decimal point along with one or more decimal digits following the decimal 
- * point. Hexadecimal constants start with 0x or 0X followed by one or more hexadecimal 
- * digits.
+ *
+ * Numerical constants may be written in either decimal or hexadecimal form.
+ * Decimal constants consist of one or more decimal digits. Decimal constants
+ * may optionally include a decimal point along with one or more decimal digits
+ * following the decimal point. Hexadecimal constants start with 0x or 0X
+ * followed by one or more hexadecimal digits.
  * \code
  * set x, 10 // set x to 10
- * set x, 0x10 ; set x to 16 (10 hex)
- * mov f, 1.5 ; set f to 1.5
+ * set x, 0x10 // set x to 16 (10 hex)
+ * mov f, 1.5 // set f to 1.5
  * \endcode
- * 
+ *
  */
 
 /** @page strch String Constants
  * \brief String Constants
  * 
- * String constants in NBC are delimited with either single or double quote characters. 
- * NBC represents a string as an array of bytes, with the last byte in the array 
- * being a zero. The final zero byte is generally referred to as the null terminator.
+ * String constants in NBC are delimited with either single or double quote
+ * characters. NBC represents a string as an array of bytes, with the last
+ * byte in the array being a zero. The final zero byte is generally referred
+ * to as the null terminator.
  * \code
  * TextOut(0, LCD_LINE1, 'testing')
  * \endcode
- * 
+ *
  */
 
 /** @page idkey Identifiers and Keywords
  * \brief Identifiers and Keywords
- * 
- * Identifiers are used for variable, task, function, and subroutine names. The first character 
- * of an identifier must be an upper or lower case letter or the underscore ('_'). Remaining 
- * characters may be letters, numbers, and underscores.
- * 
- * A number of tokens are reserved for use in the NBC language itself. These are called keywords 
- * and may not be used as identifiers. A complete list of keywords appears below:
- *  
+ *
+ * Identifiers are used for variable, task, function, and subroutine names.
+ * The first character of an identifier must be an upper or lower case letter
+ * or the underscore ('_'). Remaining characters may be letters, numbers, and
+ * underscores.
+ *
+ * A number of tokens are reserved for use in the NBC language itself. These
+ * are called keywords and may not be used as identifiers. A complete list of
+ * keywords appears below:
+ *
  * <center>
  * <table>
  * <tr><td>add</td><td>sub</td><td>neg</td><td>mul</td></tr>
@@ -216,8 +226,8 @@
  * <tr><td>stop</td><td>exit</td><td>exitto</td><td>acquire</td></tr>
  * <tr><td>release</td><td>subcall</td><td>subret</td><td>setin</td></tr>
  * <tr><td>setout</td><td>getin</td><td>getout</td><td>wait</td></tr>
- * <tr><td>gettick</td><td>thread</td><td>endt</td><td>subroutine</td></tr>
- * <tr><td>follows</td><td>precedes</td><td>segment</td><td>ends</td></tr>
+ * <tr><td>gettick</td><td>thread</td><td>\ref endt</td><td>subroutine</td></tr>
+ * <tr><td>follows</td><td>precedes</td><td>segment</td><td>\ref ends</td></tr>
  * <tr><td>typedef</td><td>struct</td><td>db</td><td>byte</td></tr>
  * <tr><td>sbyte</td><td>ubyte</td><td>dw</td><td>word</td></tr>
  * <tr><td>sword</td><td>uword</td><td>dd</td><td>dword</td></tr>
@@ -247,18 +257,20 @@
 /** @page progstruct Program Structure
  * \brief Program Structure
  * 
- * An NBC program is composed of code blocks and global variables in data segments. There are 
- * two primary types of code blocks: thread and subroutines. Each of these types of code blocks 
- * has its own unique features and restrictions, but they share a common structure.  
- * 
- * A third type of code block is the preprocessor macro function.  This code block type is used 
- * throughout the NBC API.  Macro functions are the only type of code block, which use a parameter 
- * passing syntax similar to what you might see in a language like C or Pascal.
- * 
- * Data segment blocks are used to define types and to declare variables.  An NBC program can 
- * have zero or more data segments, which can be placed either outside of a code block or 
- * within a code block.  Regardless of the location of the data segment, all variables in an 
- * NBC program are global.
+ * An NBC program is composed of code blocks and global variables in data
+ * segments. There are two primary types of code blocks: thread and
+ * subroutines. Each of these types of code blocks has its own unique features
+ * and restrictions, but they share a common structure.
+ *
+ * A third type of code block is the preprocessor macro function.  This code
+ * block type is used throughout the NBC API.  Macro functions are the only
+ * type of code block, which use a parameter passing syntax similar to what
+ * you might see in a language like C or Pascal.
+ *
+ * Data segment blocks are used to define types and to declare variables.  An
+ * NBC program can have zero or more data segments, which can be placed either
+ * outside of a code block or within a code block.  Regardless of the location
+ * of the data segment, all variables in an NBC program are global.
  * 
  * - @subpage thread
  * - @subpage subroutine
@@ -270,143 +282,152 @@
 /** @page thread Threads
  * \brief Threads
  * 
- * The NXT implicitly supports multi-threading, thus an NBC thread directly corresponds to an 
- * NXT thread. Threads are defined using the thread keyword with the following syntax:
+ * The NXT implicitly supports multi-threading, thus an NBC thread directly
+ * corresponds to an NXT thread. Threads are defined using the thread keyword
+ * with the following syntax:
  * \code
  * thread name
  *   // the thread's code is placed here
  * endt
  * \endcode
- * The name of the thread may be any legal identifier. A program must always have at least 
- * one thread. If there is a thread named "main" then that thread will be the thread that 
- * is started whenever the program is run. If none of the threads are named "main" then 
- * the very first thread that the compiler encounters in the source code will be the main 
- * thread. The maximum number of threads supported by the NXT is 256.
- * 
- * The body of a thread consists of a list of statements and optional data segments. Threads 
- * may be started by scheduling dependant threads using the \ref precedes or \ref follows statements. 
- * You may also start a thread using the \ref start statement.  With the standard NXT firmware 
- * threads cannot be stopped by another thread.  The only way to stop a thread is by stopping 
- * all threads using the \ref stop statement or by a thread stopping on its own via the \ref exit and 
- * \ref exitto statements. Using the NBC/NBC enhanced firmware you can also stop another thread 
- * using the \ref stopthread statement.
+ * The name of the thread may be any legal identifier. A program must always
+ * have at least one thread. If there is a thread named "main" then that thread
+ * will be the thread that is started whenever the program is run. If none of
+ * the threads are named "main" then the very first thread that the compiler
+ * encounters in the source code will be the main thread. The maximum number of
+ * threads supported by the NXT is 256.
+ *
+ * The body of a thread consists of a list of statements and optional data
+ * segments. Threads may be started by scheduling dependant threads using the
+ * \ref precedes or \ref follows statements. You may also start a thread using
+ * the \ref start statement.  With the standard NXT firmware threads cannot be
+ * stopped by another thread.  The only way to stop a thread is by stopping
+ * all threads using the \ref stop statement or by a thread stopping on its own
+ * via the \ref exit and \ref exitto statements. Using the NBC/NBC enhanced
+ * firmware you can also stop another thread using the \ref stopthread
+ * statement.
  * \code
  * thread main
  *   precedes waiter, worker
- *   /* thread body goes here */
+ *   // thread body goes here
  *   // finalize this thread and schedule the threads in the
  *   // specified range to execute
  *   exit // all dependants are automatically scheduled
  * endt
- * 
+ *
  * thread waiter
- *   /* thread body goes here */
- * //  exit 
- *   ; exit is optional due to smart compiler finalization
+ *   // thread body goes here
+ * //  exit
+ *   // exit is optional due to smart compiler finalization
  * endt
- * 
+ *
  * thread worker
  *   precedes waiter
- *   /* thread body goes here */
+ *   // thread body goes here
  *   exit // only one dependent – schedule it to execute
  * endt
  * \endcode
- * 
+ *
  */
 
 /** @page subroutine Subroutines
  * \brief Subroutines
- * 
- * Subroutines allow a single copy of some code to be shared between several different 
- * callers. This makes subroutines much more space efficient than macro functions. 
- * Subroutines are defined using the subroutine keyword with the following syntax:
+ *
+ * Subroutines allow a single copy of some code to be shared between several
+ * different callers. This makes subroutines much more space efficient than
+ * macro functions. Subroutines are defined using the subroutine keyword with
+ * the following syntax:
  * \code
  * subroutine name
  *   // body of subroutine
  *   return // subroutines must end with a return statement
  * ends
  * \endcode
- * A subroutine is just a special type of thread that is designed to be called explicitly 
- * by other threads or subroutines.  Its name can be any legal identifier.  Subroutines 
- * are not scheduled to run via the same mechanism that is used with threads.  Instead, 
- * subroutines and threads execute other subroutines by using the \ref call statement (described 
- * in the \ref statements section). 
+ * A subroutine is just a special type of thread that is designed to be called
+ * explicitly by other threads or subroutines.  Its name can be any legal
+ * identifier.  Subroutines are not scheduled to run via the same mechanism
+ * that is used with threads.  Instead, subroutines and threads execute other
+ * subroutines by using the \ref call statement (described in the
+ * \ref statements section).
  * \code
  * thread main
- *   /* body of main thread goes here */
+ *   // body of main thread goes here
  *   call mySub // compiler handles subroutine return address
  *   exit // finalize execution (details handled by the compiler)
  * endt
- * 
+ *
  * subroutine mySub
- *   /* body of subroutine goes here */
+ *   // body of subroutine goes here 
  *   return // compiler handles the subroutine return address
  * ends
  * \endcode
- * You can pass arguments into and out of subroutines using global variables. If a subroutine 
- * is designed to be used by concurrently executing threads then calls to the subroutine must 
- * be protected by acquiring a mutex prior to the subroutine call and releasing the mutex after 
- * the call.
- * 
- * You can also call a thread as a subroutine using a slightly different syntax.  This technique 
- * is required if you want to call a subroutine which executes two threads simultaneously.  The 
- * \ref subcall and \ref subret statements must be used instead of \ref call and \ref return.  You 
- * also must provide a global variable to store the return address as shown in the sample code below.
+ * You can pass arguments into and out of subroutines using global variables.
+ * If a subroutine is designed to be used by concurrently executing threads
+ * then calls to the subroutine must be protected by acquiring a mutex prior
+ * to the subroutine call and releasing the mutex after the call.
+ *
+ * You can also call a thread as a subroutine using a slightly different
+ * syntax.  This technique is required if you want to call a subroutine which
+ * executes two threads simultaneously.  The \ref subcall and \ref subret
+ * statements must be used instead of \ref call and \ref return.  You also must
+ * provide a global variable to store the return address as shown in the sample
+ * code below.
  * \code
  * thread main
- *   /* thread body goes here */
+ *   // thread body goes here
  *   acquire ssMutex
- *   call SharedSub ; automatic return address
+ *   call SharedSub // automatic return address
  *   release ssMutex
  *   // calling a thread as a subroutine
  *   subcall AnotherSub, anothersub_returnaddress
  *   exit
  * endt
- * 
+ *
  * subroutine SharedSub
- *   /* subroutine body goes here */
- *   return ; return is required as the last operation
+ *   // subroutine body goes here
+ *   return // return is required as the last operation
  * ends
- * 	
+ *
  * thread AnotherSub
- *   /* threads can be subroutines too */
- *   subret anothersub_returnaddress ; manual return address
+ *   // threads can be subroutines too
+ *   subret anothersub_returnaddress // manual return address
  * endt
  * \endcode
- * After the subroutine completes executing, it returns back to the calling routine 
- * and program execution continues with the next statement following the subroutine 
- * call. The maximum number of threads and subroutines supported by the NXT firmware 
- * is 256.
- * 
+ * After the subroutine completes executing, it returns back to the calling
+ * routine and program execution continues with the next statement following
+ * the subroutine call. The maximum number of threads and subroutines supported
+ * by the NXT firmware is 256.
+ *
  */
 
 /** @page macfunc Macro Functions
  * \brief Macro Functions
- * 
- * It is often helpful to group a set of statements together into a single function, 
- * which can then be called as needed. NBC supports macro functions with arguments.  
- * Values may be returned from a macro function by changing the value of one or 
- * more of the arguments within the body of the macro function.
- * 
+ *
+ * It is often helpful to group a set of statements together into a single
+ * function, which can then be called as needed. NBC supports macro functions
+ * with arguments. Values may be returned from a macro function by changing the
+ * value of one or more of the arguments within the body of the macro function.
+ *
  * Macro functions are defined using the following syntax:
  * \code
  * #define name(argument_list) \
  *   // body of the macro function \
  *   // last line in macro function body has no '\' at the end
  * \endcode
- * 
- * Please note that the newline escape character ('\') must be the very last character 
- * on the line.  If it is followed by any whitespace or comments then the macro body 
- * is terminated at that point and the next line is not considered to be part of the 
- * macro definition.
- * 
- * The argument list may be empty, or it may contain one or more argument definitions. 
- * An argument to a macro function has no type. Each argument is simply defined by its 
- * name. Multiple arguments are separated by commas. Arguments to a macro function can 
- * either be inputs (constants or variables) for the code in the body of the function 
- * to process or they can be outputs (variables only) for the code to modify and return.  
- * The following sample shows how to define a macro function to simplify the process of
- * drawing text on the NXT LCD screen:
+ *
+ * Please note that the newline escape character ('\') must be the very last
+ * character on the line.  If it is followed by any whitespace or comments then
+ * the macro body is terminated at that point and the next line is not
+ * considered to be part of the macro definition.
+ *
+ * The argument list may be empty, or it may contain one or more argument
+ * definitions. An argument to a macro function has no type. Each argument is
+ * simply defined by its name. Multiple arguments are separated by commas.
+ * Arguments to a macro function can either be inputs (constants or variables)
+ * for the code in the body of the function to process or they can be outputs
+ * (variables only) for the code to modify and return. The following sample
+ * shows how to define a macro function to simplify the process of drawing text
+ * on the NXT LCD screen:
  * \code
  * #define MyMacro(x, y, berase, msg) \
  *   mov dtArgs.Location.X, x \
@@ -419,34 +440,34 @@
  * MyMacro(10, 20, FALSE, 'Please Work')
  * \endcode
  *
- * NBC macro functions are always expanded inline by the NBC preprocessor. This means
- * that each call to a macro function results in another copy of the function's code
- * being included in the program. Unless used judiciously, inline macro functions can
- * lead to excessive code size.
+ * NBC macro functions are always expanded inline by the NBC preprocessor. This
+ * means that each call to a macro function results in another copy of the
+ * function's code being included in the program. Unless used judiciously,
+ * inline macro functions can lead to excessive code size.
  *
  */
 
 /** @page dseg Data Segments
  * \brief Data Segments
- * 
- * Data segments contain all type definitions and variable declarations. Data segments 
- * are defined using the following syntax:
+ *
+ * Data segments contain all type definitions and variable declarations. Data
+ * segments are defined using the following syntax:
  * \code
  * dseg segment
  *   // type definitions and variable declarations go here
  * dseg ends
- * 
+ *
  * thread main
  *   dseg segment
  *     // or here - still global, though
  *   dseg ends
  * endt
  * \endcode
- * 
- * You can have multiple data segments in an NBC program. All variables are global 
- * regardless of where they are declared. Once declared, they may be used within all 
- * threads, subroutines, and macro functions. Their scope begins at the declaration 
- * and ends at the end of the program.
+ *
+ * You can have multiple data segments in an NBC program. All variables are
+ * global regardless of where they are declared. Once declared, they may be
+ * used within all threads, subroutines, and macro functions. Their scope
+ * begins at the declaration and ends at the end of the program.
  *
  * - @subpage typedef
  * - @subpage struct
@@ -457,20 +478,20 @@
 /** @page typedef Type Definitions
  * \brief Type Definitions
  *
- * Type definitions must be contained within a data segment. They are used to define
- * new type aliases or new aggregate types (i.e., structures). A type alias is
- * defined using the typedef keyword with the following syntax:
+ * Type definitions must be contained within a data segment. They are used to
+ * define new type aliases or new aggregate types (i.e., structures). A type
+ * alias is defined using the typedef keyword with the following syntax:
  * \code
  * type_alias typedef existing_type
  * \endcode
  *
- * The new alias name may be any valid identifier.  The existing type must be some
- * type already known by the compiler.  It can be a native type or a user-defined
- * type. Once a type alias has been defined it can be used in subsequent variable
- * declarations and aggregate type definitions. The following is an example of a
- * simple type alias definition:
+ * The new alias name may be any valid identifier.  The existing type must be
+ * some type already known by the compiler.  It can be a native type or a
+ * user-defined type. Once a type alias has been defined it can be used in
+ * subsequent variable declarations and aggregate type definitions. The
+ * following is an example of a simple type alias definition:
  * \code
- * big typedef dword ; big is now an alias for the dword type
+ * big typedef dword // big is now an alias for the dword type
  * \endcode
  *
  */
@@ -478,10 +499,10 @@
 /** @page struct Structure Definitions
  * \brief Structure Definitions
  *
- * Structure definitions must also be contained within a data segment. They are used
- * to define a type which aggregates or contains other native or user-defined types.
- * A structure definition is defined using the struct and ends keywords with the
- * following syntax:
+ * Structure definitions must also be contained within a data segment. They are
+ * used to define a type which aggregates or contains other native or
+ * user-defined types. A structure definition is defined using the struct and
+ * ends keywords with the following syntax:
  * \code
  * TypeName struct
  *   x byte
@@ -489,9 +510,9 @@
  * TypeName ends
  * \endcode
  *
- * Structure definitions allow you to manage related data in a single combined type.
- * They can be as simple or complex as the needs of your program dictate. The following 
- * is an example of a fairly complex structure:
+ * Structure definitions allow you to manage related data in a single combined
+ * type. They can be as simple or complex as the needs of your program dictate.
+ * The following is an example of a fairly complex structure:
  * \code
  * MyPoint struct
  *   x byte
@@ -500,93 +521,95 @@
  * ComplexStrut struct
  *   value1 big            // using a type alias
  *   value2 sdword
- *   buffer byte[]         /* array of byte */
+ *   buffer byte[]         // array of byte
  *   blen word
  *   extrastuff MyPoint[]  // array of structs
  *   pt_1 MyPoint          // struct contains struct instances
  *   pt_2 MyPoint
  * ComplexStruct ends
  * \endcode
- *  
+ *
  */
 
 /** @page vardecl Variable Declarations
  * \brief Variable Declarations
- * 
- * All variable declarations must be contained within a data segment. They 
- * are used to declare variables for use in a code block such as a thread, 
- * subroutine, or macro function. A variable is declared using the 
+ *
+ * All variable declarations must be contained within a data segment. They
+ * are used to declare variables for use in a code block such as a thread,
+ * subroutine, or macro function. A variable is declared using the
  * following syntax:
  * \code
  * var_name type_name optional_initialization
  * \endcode
- * 
- * The variable name may be any valid identifier. The type name must be a type 
- * or type alias already known by the compiler. The optional initialization 
- * format depends on the variable type, but for non-aggregate (scalar) types 
- * the format is simply a constant integer or constant expression (which may 
+ *
+ * The variable name may be any valid identifier. The type name must be a type
+ * or type alias already known by the compiler. The optional initialization
+ * format depends on the variable type, but for non-aggregate (scalar) types
+ * the format is simply a constant integer or constant expression (which may
  * not contain whitespace).  See the examples later in this section.
- * 
- * The NXT firmware supports several different types of variables which are 
- * grouped into two categories: scalar types and aggregate types. Scalar types 
- * are a single integer value which may be signed or unsigned and occupy one, 
- * two, or four bytes of memory. The keywords for declaring variables of a 
+ *
+ * The NXT firmware supports several different types of variables which are
+ * grouped into two categories: scalar types and aggregate types. Scalar types
+ * are a single integer value which may be signed or unsigned and occupy one,
+ * two, or four bytes of memory. The keywords for declaring variables of a
  * scalar type are listed in the following table:
- * 
+ *
  * <center>
  * <table>
  * <tr><th>Type Name</th><th>Information</th></tr>
- * <tr><td>byte, ubyte, db</td><td>8 bit unsigned</td></tr>
- * <tr><td>sbyte</td><td>8 bit signed</td></tr>
- * <tr><td>word, uword, dw</td><td>16 bit unsigned</td></tr>
- * <tr><td>sword</td><td>16 bit signed</td></tr>
- * <tr><td>dword, udword, dd</td><td>32 bit unsigned</td></tr>
- * <tr><td>sdword</td><td>32 bit signed</td></tr>
- * <tr><td>long, ulong</td><td>32 bit unsigned (alias for dword, udword)</td></tr>
- * <tr><td>slong</td><td>32 bit signed (alias for sdword)</td></tr>
- * <tr><td>mutex</td><td>Special type used for exclusive subroutine access</td></tr>
+ * <tr><td>@subpage byte, @subpage ubyte, @subpage db</td><td>8 bit unsigned</td></tr>
+ * <tr><td>@subpage sbyte</td><td>8 bit signed</td></tr>
+ * <tr><td>@subpage word, @subpage uword, @subpage dw</td><td>16 bit unsigned</td></tr>
+ * <tr><td>@subpage sword</td><td>16 bit signed</td></tr>
+ * <tr><td>@subpage dword, @subpage udword, @subpage dd</td><td>32 bit unsigned</td></tr>
+ * <tr><td>@subpage sdword</td><td>32 bit signed</td></tr>
+ * <tr><td>@subpage long, @subpage ulong</td><td>32 bit unsigned (alias for dword, udword)</td></tr>
+ * <tr><td>@subpage slong</td><td>32 bit signed (alias for sdword)</td></tr>
+ * <tr><td>@subpage float</td><td>32 bit IEEE 754 floating point type</td></tr>
+ * <tr><td>@subpage mutex</td><td>Special type used for exclusive subroutine access</td></tr>
  * </table>
  * </center>
  * <center>Table 1. Scalar Types</center>
- * 
+ *
  * Examples of scalar variable declarations are as follow:
  * \code
  * dseg segment
  *   x byte            // initialized to zero by default
- *   y byte 12         ; initialize to 12 
- *   z sword -2048     /* a signed value */
- *   myVar big 0x12345 ; use a type alias
- *   var1 dword 0xFF   ; value is 255
- *   myMutex mutex     ; mutexes ignore initialization, if present
- *   bTrue byte 1      ; byte variables can be used as booleans
+ *   y byte 12         // initialize to 12
+ *   z sword -2048     // a signed value
+ *   myVar big 0x12345 // use a type alias
+ *   var1 dword 0xFF   // value is 255
+ *   myMutex mutex     // mutexes ignore initialization, if present
+ *   bTrue byte 1      // byte variables can be used as booleans
  * dseg ends
  * \endcode
- * 
- * Aggregate variables are either structures or arrays of some other type (either 
- * scalar or aggregate). Once a user-defined struct type has been defined it may 
- * be used to declare a variable of that type. Similarly, user-defined struct 
- * types can be used in array declarations.  Arrays and structs may be nested 
- * (i.e., contained in other arrays or structures) as deeply as the needs of 
- * your program dictate, but nesting deeper than 2 or 3 levels may lead to slower 
- * program execution due to NXT firmware memory constraints.
- * 
+ *
+ * Aggregate variables are either structures or arrays of some other type
+ * (either scalar or aggregate). Once a user-defined struct type has been
+ * defined it may be used to declare a variable of that type. Similarly,
+ * user-defined struct types can be used in array declarations.  Arrays and
+ * structs may be nested (i.e., contained in other arrays or structures) as
+ * deeply as the needs of your program dictate, but nesting deeper than 2 or 3
+ * levels may lead to slower program execution due to NXT firmware memory
+ * constraints.
+ *
  * Examples of aggregate variable declarations are as follow:
  * \code
  * dseg segment
  *   buffer byte[] // starts off empty
- *   msg byte[] 'Testing' 
- *   // msg is an array of byte = 
+ *   msg byte[] 'Testing'
+ *   // msg is an array of byte =
  *   // (0x54, 0x65, 0x73, 0x74, 0x69, 0x6e, 0x67, 0x00)
- *   data long[] {0xabcde, 0xfade0} ; two values in the array
- *   myStruct ComplexStruct ; declare an instance of a struct
- *   Points MyPoint[] ; declare an array of a structs
- *   msgs byte[][] ; an array of an array of byte
+ *   data long[] {0xabcde, 0xfade0} // two values in the array
+ *   myStruct ComplexStruct // declare an instance of a struct
+ *   Points MyPoint[] // declare an array of a structs
+ *   msgs byte[][] // an array of an array of byte
  * dseg ends
  * \endcode
- * 
- * Byte arrays may be initialized either by using braces containing a list of 
- * numeric values ({val1, val2, ..., valN}) or by using a string constant 
- * delimited with single-quote characters ('Testing'). Embedded single quote 
+ *
+ * Byte arrays may be initialized either by using braces containing a list of
+ * numeric values ({val1, val2, ..., valN}) or by using a string constant
+ * delimited with single-quote characters ('Testing'). Embedded single quote
  * characters must be escaped using the '\' character.  The '\' character can
  * be part of the string by using two forward slashes: '\\'.
  * Arrays of any scalar type other than byte
@@ -595,64 +618,342 @@
  *
  */
 
+/** @page byte byte
+ * \brief The byte type
+ *
+ * In NBC the byte type is an unsigned 8-bit value. This type can store values
+ * from zero to \ref UCHAR_MAX. You can also define an unsigned 8-bit
+ * variable using the \ref ubyte or \ref db keywords.
+ * \code
+ *  dseg segment
+ *    x byte 12
+ *    b ubyte 0xE2
+ *    test db 0xa0
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page ubyte ubyte
+ * \brief The ubyte type
+ *
+ * In NBC the ubyte type is an unsigned 8-bit value. This type can store values
+ * from zero to \ref UCHAR_MAX. You can also define an unsigned 8-bit
+ * variable using the \ref byte or \ref db keywords.
+ * \code
+ *  dseg segment
+ *    x byte 12
+ *    b ubyte 0xE2
+ *    test db 0xa0
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page db db
+ * \brief The db type
+ *
+ * In NBC the db type is an unsigned 8-bit value. This type can store values
+ * from zero to \ref UCHAR_MAX. You can also define an unsigned 8-bit
+ * variable using the \ref ubyte or \ref byte keywords.
+ * \code
+ *  dseg segment
+ *    x byte 12
+ *    b ubyte 0xE2
+ *    test db 0xa0
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page sbyte sbyte
+ * \brief The sbyte type
+ *
+ * In NBC the sbyte type is a signed 8-bit value. This type can store values
+ * from \ref SCHAR_MIN to \ref SCHAR_MAX.  The sbyte type is often used to store
+ * the ASCII value of a single character.
+ * \code
+ *  dseg segment
+ *    ch sbyte 12
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page sword sword
+ * \brief The sword type
+ *
+ * In NBC the sword type is a signed 16-bit value. This type can store values
+ * from \ref INT_MIN to \ref INT_MAX.
+ * \code
+ *  dseg segment
+ *    x sword 0xfff
+ *    y sword -23
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page word word
+ * \brief The word type
+ *
+ * In NBC the word type is an unsigned 16-bit value. This type can store values
+ * from zero to \ref UINT_MAX. You can also define an unsigned 16-bit
+ * variable using the \ref uword or \ref dw keywords.
+ * \code
+ *  dseg segment
+ *    x word  0xfff0
+ *    y uword 62450
+ *    z dw    48500
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page uword uword
+ * \brief The uword type
+ *
+ * In NBC the uword type is an unsigned 16-bit value. This type can store values
+ * from zero to \ref UINT_MAX. You can also define an unsigned 16-bit
+ * variable using the \ref word or \ref dw keywords.
+ * \code
+ *  dseg segment
+ *    x word  0xfff0
+ *    y uword 62450
+ *    z dw    48500
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page dw dw
+ * \brief The dw type
+ *
+ * In NBC the dw type is an unsigned 16-bit value. This type can store values
+ * from zero to \ref UINT_MAX. You can also define an unsigned 16-bit
+ * variable using the \ref uword or \ref word keywords.
+ * \code
+ *  dseg segment
+ *    x word  0xfff0
+ *    y uword 62450
+ *    z dw    48500
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page slong slong
+ * \brief The slong type
+ *
+ * In NBC the slong type is a signed 32-bit value. This type can store values
+ * from \ref LONG_MIN to \ref LONG_MAX. You can also define a signed 32-bit
+ * variable using the \ref sdword keywords.
+ * \code
+ *  dseg segment
+ *    x slong 2147000000
+ *    y sdword -88235
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page sdword sdword
+ * \brief The sdword type
+ *
+ * In NBC the sdword type is a signed 32-bit value. This type can store values
+ * from \ref LONG_MIN to \ref LONG_MAX. You can also define a signed 32-bit
+ * variable using the \ref slong keywords.
+ * \code
+ *  dseg segment
+ *    x slong 2147000000
+ *    y sdword -88235
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page ulong ulong
+ * \brief The ulong type
+ *
+ * In NBC the ulong type is an unsigned 32-bit value. The
+ * range of values that can be stored in a ulong variable is from
+ * zero to \ref ULONG_MAX. You can also define an unsigned 32-bit
+ * variable using the \ref long, \ref dword, \ref udword, or \ref dd keywords.
+ * \code
+ *  dseg segment
+ *    a ulong  0xdeadbeef
+ *    b long   80000
+ *    c dword  150000
+ *    d udword 200000
+ *    e dd     400000
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page long long
+ * \brief The long type
+ *
+ * In NBC the long type is an unsigned 32-bit value. The
+ * range of values that can be stored in a ulong variable is from
+ * zero to \ref ULONG_MAX.
+ * \code
+ *  dseg segment
+ *    a ulong  0xdeadbeef
+ *    b long   80000
+ *    c dword  150000
+ *    d udword 200000
+ *    e dd     400000
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page dword dword
+ * \brief The dword type
+ *
+ * In NBC the dword type is an unsigned 32-bit value. The
+ * range of values that can be stored in a ulong variable is from
+ * zero to \ref ULONG_MAX.
+ * \code
+ *  dseg segment
+ *    a ulong  0xdeadbeef
+ *    b long   80000
+ *    c dword  150000
+ *    d udword 200000
+ *    e dd     400000
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page udword udword
+ * \brief The udword type
+ *
+ * In NBC the udword type is an unsigned 32-bit value. The
+ * range of values that can be stored in a ulong variable is from
+ * zero to \ref ULONG_MAX.
+ * \code
+ *  dseg segment
+ *    a ulong  0xdeadbeef
+ *    b long   80000
+ *    c dword  150000
+ *    d udword 200000
+ *    e dd     400000
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page dd dd
+ * \brief The dd type
+ *
+ * In NBC the dd type is an unsigned 32-bit value. The
+ * range of values that can be stored in a ulong variable is from
+ * zero to \ref ULONG_MAX.
+ * \code
+ *  dseg segment
+ *    a ulong  0xdeadbeef
+ *    b long   80000
+ *    c dword  150000
+ *    d udword 200000
+ *    e dd     400000
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page float float
+ * \brief The float type
+ *
+ * In NBC the float type is a 32-bit IEEE 754 single precision floating point
+ * representation. This is a binary format that occupies 32 bits (4 bytes) and
+ * its significand has a precision of 24 bits (about 7 decimal digits).
+ *
+ * Floating point arithmetic will be slower than integer operations but if you
+ * need to easily store decimal values the float type is your best option.
+ * The standard NXT firmware provides the sqrt function which benefits from
+ * the ability to use the float type.  In the enhanced NBC/NXC firmware there
+ * are many more native opcodes from the standard C math library which are
+ * designed to work with floats.
+ * \code
+ *  dseg segment
+ *    pi float 3.14159
+ *    e  float 2.71828
+ *    s2 float 1.4142
+ *  dseg ends
+ * \endcode
+ */
+
+/** @page mutex mutex
+ * \brief The mutex type
+ *
+ * In NBC the mutex type is a 32-bit value that is used to synchronize access
+ * to resources shared across multiple threads.  For this reason there is
+ * never a reason to declare a mutex variable inside a task or a subroutine.  It
+ * is designed for global variables that all tasks or functions can
+ * \ref acquire or \ref release in order to obtain exclusive access to a
+ * resource that other tasks or functions are also trying to use.
+ * \code
+ *  dseg segment
+ *    motorMutex mutex
+ *  dseg ends
+ *
+ *  thread main
+ *    acquire motorMutex
+ *    // use the motor(s) protected by this mutex.
+ *    release motorMutex
+ *    wait MS_500
+ *  endt
+ * \endcode
+ */
+
 /** @page preproc The Preprocessor
  * \brief The Preprocessor
- * 
- * NBC also includes a preprocessor that is modeled after the Standard C preprocessor. 
- * The C preprocessor processes a source code file before the compiler does. It handles 
- * such tasks as including code from other files, conditionally including or excluding 
- * blocks of code, stripping comments, defining simple and parameterized macros, and 
- * expanding macros wherever they are encountered in the source code. 
- * 
- * The NBC preprocessor implements the following standard preprocessor directives: 
- * \#include, \#define, \#ifdef, \#ifndef, \#endif, \#if, \#elif, \#undef, \#\#, \#line, 
- * \#error, and \#pragma. It also supports two non-standard directives: \#download and 
- * \#import. Its implementation is close to a standard C preprocessor's, so most preprocessor 
- * directives should work as C programmers expect in NBC. Any significant deviations are 
+ *
+ * NBC also includes a preprocessor that is modeled after the Standard C
+ * preprocessor. The C preprocessor processes a source code file before the
+ * compiler does. It handles such tasks as including code from other files,
+ * conditionally including or excluding blocks of code, stripping comments,
+ * defining simple and parameterized macros, and expanding macros wherever they
+ * are encountered in the source code.
+ *
+ * The NBC preprocessor implements the following standard preprocessor
+ * directives: \#include, \#define, \#ifdef, \#ifndef, \#endif, \#if, \#elif,
+ * \#undef, \#\#, \#line, \#error, and \#pragma. It also supports two
+ * non-standard directives: \#download and \#import. Its implementation is
+ * close to a standard C preprocessor's, so most preprocessor directives should
+ * work as C programmers expect in NBC. Any significant deviations are
  * explained below.
- * 
- * - @subpage incl
- * - @subpage defn
+ *
+ * - @subpage include
+ * - @subpage define
  * - @subpage concat
  * - @subpage condcomp
  * - @subpage import
- * - @subpage downld
+ * - @subpage download
  *
  */
 
-/** @page incl #include
+/** @page include #include
  * \brief include
- * 
- * The \#include command works as in Standard C, with the caveat that the filename 
- * must be enclosed in double quotes. There is no notion of a system include path, 
- * so enclosing a filename in angle brackets is forbidden.
+ *
+ * The \#include command works as in Standard C, with the caveat that the
+ * filename must be enclosed in double quotes. There is no notion of a system
+ * include path, so enclosing a filename in angle brackets is forbidden.
  * \code
  * #include "foo.h"  // ok
  * #include <foo.h> // error!
  * \endcode
- * NBC programs can begin with \#include "NXTDefs.h" but they don't need to. This 
- * standard header file includes many important constants and macros, which form 
- * the core NBC API. NBC no longer requires that you manually include the NXTDefs.h 
- * header file. Unless you specifically tell the compiler to ignore the standard 
- * system files, this header file is included automatically.
- * 
+ * NBC programs can begin with \#include "NXTDefs.h" but they don't need to.
+ * This standard header file includes many important constants and macros,
+ * which form the core NBC API. NBC no longer requires that you manually
+ * include the NXTDefs.h header file. Unless you specifically tell the compiler
+ * to ignore the standard system files, this header file is included
+ * automatically.
+ *
  */
 
-/** @page defn #define
+/** @page define #define
  * \brief define
- * 
- * The \#define command is used for macro substitution. Redefinition of a macro will 
- * result in a compiler warning. 
+ *
+ * The \#define command is used for macro substitution. Redefinition of a macro
+ * will result in a compiler warning.
  * \code
- * #define TurnTime 3000 ; 3 seconds
+ * #define TurnTime 3000 // 3 seconds
  * \endcode
- * Macros are normally restricted to one line because the newline character at the 
- * end of the line acts as a terminator. However, you can write multiline macros by 
- * instructing the preprocessor to ignore the newline character. This is accomplished 
- * by escaping the newline character with a backslash ('\\'). The backslash character 
- * must be the very last character in the line or it will not extend the macro 
- * definition to the next line. The code sample below shows how to write a multi-line 
- * preprocessor macro.
+ * Macros are normally restricted to one line because the newline character at
+ * the end of the line acts as a terminator. However, you can write multiline
+ * macros by instructing the preprocessor to ignore the newline character. This
+ * is accomplished by escaping the newline character with a backslash ('\\').
+ * The backslash character must be the very last character in the line or it
+ * will not extend the macro definition to the next line. The code sample below
+ * shows how to write a multi-line preprocessor macro.
  * \code
  * #define square(x, result) \
  *   mul result, x, x 
@@ -664,10 +965,10 @@
 /** @page concat ## (Concatenation)
  * \brief Concatenation
  * 
- * The \#\# directive works similar to the C preprocessor. It is replaced by nothing, 
- * which causes tokens on either side to be concatenated together. Because it acts 
- * as a separator initially, it can be used within macro functions to produce identifiers 
- * via combination with parameter values.
+ * The \#\# directive works similar to the C preprocessor. It is replaced by
+ * nothing, which causes tokens on either side to be concatenated together.
+ * Because it acts as a separator initially, it can be used within macro
+ * functions to produce identifiers via combination with parameter values.
  * \code
  * #define ELEMENT_OUT(n) \
  *   NumOut(0, LCD_LINE##n, b##n)
@@ -702,57 +1003,65 @@
 /** @page condcomp Conditional Compilation
  * \brief Conditional Compilation
  * 
- * Conditional compilation works similar to the C preprocessor's conditional compilation. 
- * The following preprocessor directives may be used:
+ * Conditional compilation works similar to the C preprocessor's conditional
+ * compilation. The following preprocessor directives may be used:
  * <center>
  * <table>
  * <tr><th>Directive</th><th>Meaning</th></tr>
- * <tr><td>\#ifdef symbol</td><td>If symbol is defined then compile the following code</td></tr>
- * <tr><td>\#ifndef symbol</td><td>If symbol is not defined then compile the following code</td></tr>
- * <tr><td>\#else</td><td>Switch from compiling to not compiling and vice versa</td></tr>
+ * <tr><td>\#ifdef symbol</td><td>If symbol is defined then compile the
+ * following code</td></tr>
+ * <tr><td>\#ifndef symbol</td><td>If symbol is not defined then compile the
+ * following code</td></tr>
+ * <tr><td>\#else</td><td>Switch from compiling to not compiling and vice
+ * versa</td></tr>
  * <tr><td>\#endif</td><td>Return to previous compiling state</td></tr>
- * <tr><td>\#if condition</td><td>If the condition evaluates to true then compile the following code</td></tr>
+ * <tr><td>\#if condition</td><td>If the condition evaluates to true then
+ * compile the following code</td></tr>
  * <tr><td>\#elif</td><td>Same as \#else but used with \#if</td></tr>
  * </table>
  * </center>
  * <center>Table 7. Conditional compilation directives</center>
  *
- * See the NXTDefs.h header files for many examples of how to use conditional compilation.
- * 
+ * See the NXTDefs.h header files for many examples of how to use conditional
+ * compilation.
+ *
  */
 
 /** @page import #import
  * \brief import
- * 
- * The \#import directive lets you define a global byte array variable in your NBC program 
- * that contains the contents of the imported file. Like \#include, this directive is 
- * followed by a filename enclosed in double quote characters. Following the filename you 
- * may optionally include a format string for constructing the name of the variable you want 
- * to define using this directive. 
+ *
+ * The \#import directive lets you define a global byte array variable in your
+ * NBC program that contains the contents of the imported file. Like \#include,
+ * this directive is followed by a filename enclosed in double quote characters.
+ * Following the filename you may optionally include a format string for
+ * constructing the name of the variable you want to define using this
+ * directive.
  * \code
  * #import "myfile.txt" data
  * \endcode
- * By default, the format string is %s which means that the name of the file without any 
- * file extension will be the name of the variable. For instance, if the format string 
- * "data" were not specified in the example above, then the name of the byte array variable 
- * would be "myfile". In this case the name of the byte array variable will be "data".
- * 
- * The \#import directive is often used in conjunction with the \ref GraphicArrayOut and 
- * \ref GraphicArrayOutEx API functions.
+ * By default, the format string is %s which means that the name of the file
+ * without any file extension will be the name of the variable. For instance,
+ * if the format string "data" were not specified in the example above, then
+ * the name of the byte array variable would be "myfile". In this case the name
+ * of the byte array variable will be "data".
+ *
+ * The \#import directive is often used in conjunction with the
+ * \ref GraphicArrayOut and \ref GraphicArrayOutEx API functions.
  * 
  */
 
-/** @page downld #download
+/** @page download #download
  * \brief download
  * 
- * The \#download directive works in conjunction with the compiler's built-in download 
- * capability. It lets you tell the compiler to download a specified auxiliary file in 
- * addition to the .rxe file produced from your source code. If the file extension matches 
- * a type of source code that the compiler knows how to compile (such as .rs or .nbc) then 
- * the compiler will first compile the source before downloading the resulting binary. The 
- * name of the file to download (and optionally compile) is enclosed in double quote 
- * characters immediately following this directive. If the compiler is only told to compile 
- * the original source code then the \#download directive is ignored.
+ * The \#download directive works in conjunction with the compiler's built-in
+ * download capability. It lets you tell the compiler to download a specified
+ * auxiliary file in addition to the .rxe file produced from your source code.
+ * If the file extension matches a type of source code that the compiler knows
+ * how to compile (such as .rs or .nbc) then the compiler will first compile
+ * the source before downloading the resulting binary. The name of the file to
+ * download (and optionally compile) is enclosed in double quote characters
+ * immediately following this directive. If the compiler is only told to
+ * compile the original source code then the \#download directive is ignored.
  * \code
  * #download "myfile.rs"
  * #download "mypicture.ric"
@@ -763,48 +1072,49 @@
 /** @page comptok Compiler Tokens
  * \brief Compiler Tokens
  * 
- * NBC supports special tokens, which it replaces on compilation. The tokens are similar to 
- * preprocessor \#define macros but they are actually handled directly by the compiler rather 
- * than the preprocessor.  The supported tokens are as follows:
+ * NBC supports special tokens, which it replaces on compilation. The tokens
+ * are similar to preprocessor \#define macros but they are actually handled
+ * directly by the compiler rather than the preprocessor.  The supported tokens
+ * are as follows:
  * <center>
  * <table>
  * <tr><th>Token</th><th>Usage</th></tr>
- * <tr><td>__FILE__</td><td>This token is replaced with the currently active 
- * <tr><td>__LINE__</td><td>This token is replaced with the current line number</td></tr>
+ * <tr><td>__FILE__</td><td>This token is replaced with the currently active
  * filename (no path)</td></tr>
+ * <tr><td>__LINE__</td><td>This token is replaced with the current line number</td></tr>
  * <tr><td>__VER__</td><td>This token is replaced with the compiler version number</td></tr>
  * <tr><td>__THREADNAME__</td><td>This token is replaced with the current thread name</td></tr>
- * <tr><td>__I__, __J__</td><td>These tokens are replaced with the current 
- * value of I or J.  They are both initialized to zero at the start of each 
+ * <tr><td>__I__, __J__</td><td>These tokens are replaced with the current
+ * value of I or J.  They are both initialized to zero at the start of each
  * thread or subroutine.</td></tr>
- * <tr><td>__ResetI__, __ResetJ__</td><td>These tokens are replaced with 
+ * <tr><td>__ResetI__, __ResetJ__</td><td>These tokens are replaced with
  * nothing.  As a side effect the value of I or J is reset to zero.</td></tr>
- * <tr><td>__IncI__, __IncJ__</td><td>These tokens are replaced with nothing.  
+ * <tr><td>__IncI__, __IncJ__</td><td>These tokens are replaced with nothing.
  * As a side effect the value of I or J is incremented by one.</td></tr>
- * <tr><td>__DecI__, __DecJ__</td><td>These tokens are replaced with nothing. 
+ * <tr><td>__DecI__, __DecJ__</td><td>These tokens are replaced with nothing.
  * As a side effect the value of I or J is decremented by one.</td></tr>
  * </table>
  * </center>
  * <center>Table 2. Compiler Tokens</center>
- * 
- * The \#\# preprocessor directive can help make the use of compiler tokens 
- * more readable. __THREADNAME__\#\#_\#\#__I__:  would become something like 
- * main_1:.  Without the \#\# directive it would much harder to read the 
+ *
+ * The \#\# preprocessor directive can help make the use of compiler tokens
+ * more readable. __THREADNAME__\#\#_\#\#__I__:  would become something like
+ * main_1:.  Without the \#\# directive it would much harder to read the
  * mixture of compiler tokens and underscores.
- * 
+ *
  */
 
 /** @page expreval Expression Evaluator
  * \brief Expression Evaluator
- * 
- * Constant expressions are supported by NBC for many statement arguments as 
- * well as variable initialization. Expressions are evaluated by the compiler 
- * when the program is compiled, not at run time. The compiler will return an 
- * error if it encounters an expression that contains whitespace. "4+4" is a 
- * valid constant expression but "4 + 4" is not.  
- * 
+ *
+ * Constant expressions are supported by NBC for many statement arguments as
+ * well as variable initialization. Expressions are evaluated by the compiler
+ * when the program is compiled, not at run time. The compiler will return an
+ * error if it encounters an expression that contains whitespace. "4+4" is a
+ * valid constant expression but "4 + 4" is not.
+ *
  * The expression evaluator supports the following operators:
- * 
+ *
  * <center>
  * <table>
  * <tr><td>+</td><td>addition</td></tr>
@@ -823,7 +1133,7 @@
  * </table>
  * </center>
  * <center>Table 3. Constant Expression Operators</center>
- * 
+ *
  * The expression evaluator also supports the following compile-time functions:
  * \code
  * tan(x), sin(x), cos(x)
@@ -839,7 +1149,7 @@
  * power(x, exp), intpower(x, exp)
  * \endcode
  * <center>Table 4. Constant Expression Functions</center>
- * 
+ *
  * The following example demonstrates how to use a constant expression:
  * \code
  * // expression value will be truncated to an integer
@@ -850,10 +1160,10 @@
 
 /** @page statements Statements
  * \brief Statements
- * 
- * The body of a code block (thread, subroutine, or macro function) is composed 
+ *
+ * The body of a code block (thread, subroutine, or macro function) is composed
  * of statements. All statements are terminated with the newline character.
- * 
+ *
  * - @subpage asgn
  * - @subpage math
  * - @subpage logic
@@ -938,7 +1248,7 @@
  * pFont address in the Display module IOMap structure (\ref DisplayOffsetPFont).
  * The syntax of the addrof statement is shown below.
  * \code
- * ; addrof dest, src, brelative?
+ * // addrof dest, src, brelative?
  * addrof ptrFont, fontDataArray, FALSE
  * \endcode
  *
@@ -1033,7 +1343,7 @@
  * the second and third arguments can be variables, numeric constants, or
  * constant expressions.  The syntax of the add statement is shown below.
  * \code
- * add x, x, y ; add x and y and store result in x
+ * add x, x, y // add x and y and store result in x
  * \endcode
  *
  */
@@ -1046,7 +1356,7 @@
  * second and third arguments can be variables, numeric constants, or constant
  * expressions.  The syntax of the sub statement is shown below.
  * \code
- * sub x, x, y ; subtract y from x and store result in x
+ * sub x, x, y // subtract y from x and store result in x
  * \endcode
  *
  */
@@ -1059,7 +1369,7 @@
  * second and third arguments can be variables, numeric constants, or constant
  * expressions.  The syntax of the mul statement is shown below.
  * \code
- * mul x, x, x ; set x equal to x^2
+ * mul x, x, x // set x equal to x^2
  * \endcode
  *
  */
@@ -1072,7 +1382,7 @@
  * and third arguments can be variables, numeric constants, or constant
  * expressions.  The syntax of the div statement is shown below.
  * \code
- * div x, x, 2 ; set x equal to x / 2 (integer division)
+ * div x, x, 2 // set x equal to x / 2 (integer division)
  * \endcode
  *
  */
@@ -1086,7 +1396,7 @@
  * variables, numeric constants, or constant expressions.  The syntax of
  * the mod statement is shown below.
  * \code
- * mod x, x, 4 ; set x equal to x % 4 (0..3)
+ * mod x, x, 4 // set x equal to x % 4 (0..3)
  * \endcode
  *
  */
@@ -1099,7 +1409,7 @@
  * second argument can be a variable, a numeric constant, or a constant
  * expression.  The syntax of the neg statement is shown below.
  * \code
- * neg x, y ; set x equal to -y
+ * neg x, y // set x equal to -y
  * \endcode
  *
  */
@@ -1113,7 +1423,7 @@
  * constant, or a constant expression.  The syntax of the abs statement
  * is shown below.
  * \code
- * abs x, y ; set x equal to the absolute value of y
+ * abs x, y // set x equal to the absolute value of y
  * \endcode
  *
  */
@@ -1127,7 +1437,7 @@
  * a numeric constant, or a constant expression.  The syntax of the sign
  * statement is shown below.
  * \code
- * sign x, y ; set x equal to -1, 0, or 1
+ * sign x, y // set x equal to -1, 0, or 1
  * \endcode
  *
  */
@@ -1141,7 +1451,7 @@
  * constant, or a constant expression.  The syntax of the sqrt statement
  * is shown below.
  * \code
- * sqrt x, y ; set x equal to the square root of y
+ * sqrt x, y // set x equal to the square root of y
  * \endcode
  *
  */
@@ -1153,7 +1463,7 @@
  * input (second) argument (radians) and store the result in its output (first)
  * argument.  The syntax of the cos statement is shown below.
  * \code
- * cos x, y ; store the cosine of y in x
+ * cos x, y // store the cosine of y in x
  * \endcode
  *
  */
@@ -1165,7 +1475,7 @@
  * input (second) argument (radians) and store the result in its output (first)
  * argument.  The syntax of the sin statement is shown below.
  * \code
- * sin x, y ; store the sine of y in x
+ * sin x, y // store the sine of y in x
  * \endcode
  *
  */
@@ -1177,7 +1487,7 @@
  * input (second) argument (radians) and store the result in its output (first)
  * argument.  The syntax of the tan statement is shown below.
  * \code
- * tan x, y ; store the tangent of y in x
+ * tan x, y // store the tangent of y in x
  * \endcode
  *
  */
@@ -1189,7 +1499,7 @@
  * input (second) argument (degrees) and store the result in its output (first)
  * argument.  The syntax of the cosd statement is shown below.
  * \code
- * cosd x, y ; store the cosine of y in x
+ * cosd x, y // store the cosine of y in x
  * \endcode
  *
  */
@@ -1201,7 +1511,7 @@
  * input (second) argument (degress) and store the result in its output (first)
  * argument.  The syntax of the sind statement is shown below.
  * \code
- * sind x, y ; store the sine of y in x
+ * sind x, y // store the sine of y in x
  * \endcode
  *
  */
@@ -1213,7 +1523,7 @@
  * input (second) argument (degrees) and store the result in its output (first)
  * argument.  The syntax of the tand statement is shown below.
  * \code
- * tand x, y ; store the tangent of y in x
+ * tand x, y // store the tangent of y in x
  * \endcode
  *
  */
@@ -1225,7 +1535,7 @@
  * input (second) argument and store the result (radians) in its output (first)
  * argument.  The syntax of the acos statement is shown below.
  * \code
- * acos x, y ; store the arc cosine of y in x
+ * acos x, y // store the arc cosine of y in x
  * \endcode
  *
  */
@@ -1237,7 +1547,7 @@
  * input (second) argument and store the result (radians) in its output (first)
  * argument.  The syntax of the asin statement is shown below.
  * \code
- * asin x, y ; store the arc sine of y in x
+ * asin x, y // store the arc sine of y in x
  * \endcode
  *
  */
@@ -1249,7 +1559,7 @@
  * input (second) argument and store the result (radians) in its output (first)
  * argument.  The syntax of the atan statement is shown below.
  * \code
- * atan x, y ; store the arc tangent of y in x
+ * atan x, y // store the arc tangent of y in x
  * \endcode
  *
  */
@@ -1261,7 +1571,7 @@
  * input (second) argument and store the result (degrees) in its output (first)
  * argument.  The syntax of the acosd statement is shown below.
  * \code
- * acosd x, y ; store the arc cosine of y in x
+ * acosd x, y // store the arc cosine of y in x
  * \endcode
  *
  */
@@ -1273,7 +1583,7 @@
  * input (second) argument and store the result (degrees) in its output (first)
  * argument.  The syntax of the asind statement is shown below.
  * \code
- * asind x, y ; store the arc sine of y in x
+ * asind x, y // store the arc sine of y in x
  * \endcode
  *
  */
@@ -1285,7 +1595,7 @@
  * input (second) argument and store the result (degrees) in its output (first)
  * argument.  The syntax of the atand statement is shown below.
  * \code
- * atand x, y ; store the arc tangent of y in x
+ * atand x, y // store the arc tangent of y in x
  * \endcode
  *
  */
@@ -1298,7 +1608,7 @@
  * in its output (first) argument.  The syntax of the atan2 statement
  * is shown below.
  * \code
- * atan2 result, y, x ; store the arc tangent of y/x in result
+ * atan2 result, y, x // store the arc tangent of y/x in result
  * \endcode
  *
  */
@@ -1311,7 +1621,7 @@
  * in its output (first) argument.  The syntax of the atan2d statement
  * is shown below.
  * \code
- * atan2d result, y, x ; store the arc tangent of y/x in result
+ * atan2d result, y, x // store the arc tangent of y/x in result
  * \endcode
  *
  */
@@ -1323,7 +1633,7 @@
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the cosh statement is shown below.
  * \code
- * cosh x, y ; store the hyperbolic cosine of y in x
+ * cosh x, y // store the hyperbolic cosine of y in x
  * \endcode
  *
  */
@@ -1335,7 +1645,7 @@
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the sinh statement is shown below.
  * \code
- * sinh x, y ; store the hyperbolic sine of y in x
+ * sinh x, y // store the hyperbolic sine of y in x
  * \endcode
  *
  */
@@ -1347,7 +1657,7 @@
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the tanh statement is shown below.
  * \code
- * tanh x, y ; store the hyperbolic tangent of y in x
+ * tanh x, y // store the hyperbolic tangent of y in x
  * \endcode
  *
  */
@@ -1359,7 +1669,7 @@
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the coshd statement is shown below.
  * \code
- * coshd x, y ; store the hyperbolic cosine of y in x
+ * coshd x, y // store the hyperbolic cosine of y in x
  * \endcode
  *
  */
@@ -1371,7 +1681,7 @@
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the sinhd statement is shown below.
  * \code
- * sinhd x, y ; store the hyperbolic sine of y in x
+ * sinhd x, y // store the hyperbolic sine of y in x
  * \endcode
  *
  */
@@ -1383,7 +1693,7 @@
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the tanhd statement is shown below.
  * \code
- * tanhd x, y ; store the hyperbolic tangent of y in x
+ * tanhd x, y // store the hyperbolic tangent of y in x
  * \endcode
  *
  */
@@ -1396,7 +1706,7 @@
  * result in its output (first) argument.  The syntax of the ceil
  * statement is shown below.
  * \code
- * ceil x, y ; store the ceil of y in x
+ * ceil x, y // store the ceil of y in x
  * \endcode
  *
  */
@@ -1409,7 +1719,7 @@
  * in its output (first) argument.  The syntax of the floor statement
  * is shown below.
  * \code
- * floor x, y ; store the floor of y in x
+ * floor x, y // store the floor of y in x
  * \endcode
  *
  */
@@ -1421,7 +1731,7 @@
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the trunc statement is shown below.
  * \code
- * trunc x, y ; store the trunc of y in x
+ * trunc x, y // store the trunc of y in x
  * \endcode
  *
  */
@@ -1433,7 +1743,7 @@
  * input (second) argument and store the result in its output (first)
  * argument.  The syntax of the frac statement is shown below.
  * \code
- * frac x, y ; store the frac of y in x
+ * frac x, y // store the frac of y in x
  * \endcode
  *
  */
@@ -1445,7 +1755,7 @@
  * function of x, which is the e number raised to the power x.
  * The syntax of the exp statement is shown below.
  * \code
- * exp result, x ; store the value of e^x in result
+ * exp result, x // store the value of e^x in result
  * \endcode
  *
  */
@@ -1456,7 +1766,7 @@
  * The log statement lets you calculate the natural logarithm of x.
  * The syntax of the log statement is shown below.
  * \code
- * log result, x ; store the natural logarithm of x
+ * log result, x // store the natural logarithm of x
  * \endcode
  *
  */
@@ -1467,7 +1777,7 @@
  * The log10 statement lets you calculate the base-10 logarithm of x.
  * The syntax of the log10 statement is shown below.
  * \code
- * log10 result, x ; store the base-10 logarithm of x
+ * log10 result, x // store the base-10 logarithm of x
  * \endcode
  *
  */
@@ -1479,7 +1789,7 @@
  * and store the result in the output (first) argument.
  * The syntax of the pow statement is shown below.
  * \code
- * pow result, x, y;  store the x^y in result
+ * pow result, x, y//  store the x^y in result
  * \endcode
  *
  */
@@ -1491,7 +1801,7 @@
  * divide the 64-bit result by a third 32-bit value.
  * The syntax of the muldiv statement is shown below.
  * \code
- * muldiv result, a, b, c;  store the a*b/c in result
+ * muldiv result, a, b, c//  store the a*b/c in result
  * \endcode
  *
  */
@@ -1726,8 +2036,8 @@
  *
  * Comparison statements enable you to compare data in your NBC programs. These
  * statements take a comparison code constant as their first argument. Valid
- * comparison constants are listed in the \ref cmpconst section. You can use scalar,
- * array, and aggregate types for the compare or test argument(s).
+ * comparison constants are listed in the \ref cmpconst section. You can use
+ * scalar, array, and aggregate types for the compare or test argument(s).
  *
  * - @subpage cmp
  * - @subpage tst
@@ -2635,13 +2945,13 @@
  * \code
  * // ColorSensorRead
  * TColorSensorRead	struct
- *  Result          sbyte    ; The function call result. NO_ERR means it succeeded.
- *  Port			byte     ; The sensor port. See NBCInputPortConstants.
- *  ColorValue		sword    ; The color value returned by the sensor. See InputColorValueConstants.
- *  RawArray		word[]   ; Raw color values returned by the sensor. See InputColorIdxConstants.
- *  NormalizedArray	word[]   ; Normalized color values returned by the sensor. See InputColorIdxConstants.
- *  ScaledArray     sword[]  ; Scaled color values returned by the sensor. See InputColorIdxConstants.
- *  Invalid         byte     ; Are the sensor values valid?
+ *  Result          sbyte    // The function call result. NO_ERR means it succeeded.
+ *  Port			byte     // The sensor port. See NBCInputPortConstants.
+ *  ColorValue		sword    // The color value returned by the sensor. See InputColorValueConstants.
+ *  RawArray		word[]   // Raw color values returned by the sensor. See InputColorIdxConstants.
+ *  NormalizedArray	word[]   // Normalized color values returned by the sensor. See InputColorIdxConstants.
+ *  ScaledArray     sword[]  // Scaled color values returned by the sensor. See InputColorIdxConstants.
+ *  Invalid         byte     // Are the sensor values valid?
  * TColorSensorRead	ends
  * \endcode
  *
@@ -2984,7 +3294,7 @@
  * The syntax of the arrop statement is shown below.
  * \code
  * // execute an array operation
- * ; arrop op, dest, src, start, len
+ * // arrop op, dest, src, start, len
  * arrop OPARR_SUM, sum, data, NA, NA
  * arrop OPARR_SORT, data2, data, NA, NA
  * \endcode
@@ -3395,8 +3705,8 @@
  * are listed in the \ref NBCInputPortConstants section.
  * The syntax of the setin statement is shown below.
  * \code
- * setin IN_TYPE_SWITCH, IN_1, Type ; set sensor to switch type
- * setin IN_MODE_BOOLEAN, IN_1, InputMode ; set to boolean mode
+ * setin IN_TYPE_SWITCH, IN_1, Type // set sensor to switch type
+ * setin IN_MODE_BOOLEAN, IN_1, InputMode // set to boolean mode
  * \endcode
  *
  */
@@ -3504,7 +3814,7 @@
  *   argsize byte
  * dseg ends
  * // ...
- * set argsize, sizeof(arg) ; argsize == 1
+ * set argsize, sizeof(arg) // argsize == 1
  * \endcode
  *
  */
@@ -3516,7 +3826,7 @@
  * expression you pass into it. The syntax of the valueof function is
  * shown below.
  * \code
- * set argval, valueof(4+3*2) ; argval == 10
+ * set argval, valueof(4+3*2) // argval == 10
  * \endcode
  *
  */
@@ -3528,7 +3838,7 @@
  * pass into it is a constant and FALSE if it is not a constant. The
  * syntax of the isconst function is shown below.
  * \code
- * set argval, isconst(4+3*2) ; argval == TRUE
+ * set argval, isconst(4+3*2) // argval == TRUE
  * \endcode
  *
  */
