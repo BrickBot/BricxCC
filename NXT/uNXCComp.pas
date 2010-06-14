@@ -174,7 +174,7 @@ type
     procedure DoCallAPIFunc(procname: string);
     function  APIFuncNameToID(procname : string) : integer;
     function  IsAPIFunc(procname : string) : boolean;
-    procedure DoAssignValue(const aName : string; dt : char);
+    procedure DoAssignValue(const aName : string; dt : char; bNoChecks : boolean = False);
     procedure DoLocalArrayInit(const aName, ival : string; dt : char);
     procedure DoArrayAssignValue(const aName, idx : string; dt : char);
     function DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;
@@ -245,11 +245,11 @@ type
     function  DataTypeName(const n: string): string;
     procedure LoadVar(const Name: string);
     procedure CheckNotProc(const Name : string);
-    procedure Store(const Name: string);
+    procedure Store(const Name: string; bNoChecks : boolean = False);
     procedure Allocate(const Name, aVal, Val, tname: string; dt: char);
     procedure InitializeArray(const Name, aVal, Val, tname: string; dt : char;
       lenexpr : string);
-    function  InlineDecoration : string;
+//    function  InlineDecoration : string;
     procedure Epilog(bIsSub: boolean);
     procedure Prolog(const name: string; bIsSub: boolean);
     procedure EmitRegisters;
@@ -378,7 +378,7 @@ type
     function  StrTmpBufName(name : string = '') : string;
     function  StrBufName(name : string = '') : string;
     function  StrRetValName(name : string = '') : string;
-    procedure StoreString(const Name: string);
+    procedure StoreString(const Name: string; bNoChecks : boolean = False);
     procedure AddAPIStringFunction(const name: string; id: integer);
     function  APIStrFuncNameToID(procname: string): integer;
     function  IsAPIStrFunc(procname: string): boolean;
@@ -392,7 +392,7 @@ type
     function  IsLocal(n: string): boolean;
     function  LocalIdx(n: string): integer;
     function  IsOldParam(n: string): boolean;
-    function  IsFuncParam(n: string): boolean;
+    function  IsFuncParam(n: string; bStripInline : boolean = false): boolean;
     function  IsParam(n: string): boolean;
     function  ParamIdx(n: string): integer;
     procedure AllocateHelper(const Name, aVal, Val, tname: string; dt: char);
@@ -1208,7 +1208,7 @@ begin
   Result := ParamIdx(RootOf(n)) <> -1{0};
 end;
 
-function TNXCComp.IsFuncParam(n: string): boolean;
+function TNXCComp.IsFuncParam(n: string; bStripInline : boolean): boolean;
 var
   i : integer;
   fp : TFunctionParameter;
@@ -1220,8 +1220,7 @@ begin
   begin
     fp := fFuncParams[i];
     decvar := ApplyDecoration(fp.ProcName, fp.Name, 0);
-{
-    if fp.FuncIsInline then
+    if bStripInline and fp.FuncIsInline then
     begin
       if decvar = StripInline(RootOf(n)) then
       begin
@@ -1231,13 +1230,12 @@ begin
     end
     else
     begin
-}
       if decvar = RootOf(n) then
       begin
         Result := True;
         Break;
       end;
-//    end;
+    end;
   end;
 end;
 
@@ -1253,7 +1251,7 @@ begin
   begin
     fp := fFuncParams[i];
     decvar := ApplyDecoration(fp.ProcName, fp.Name, 0);
-    if decvar = RootOf(n) then
+    if decvar = StripInline(RootOf(n)) then
     begin
       Result := fp.ParameterDataType;
       Break;
@@ -1802,7 +1800,10 @@ end;
 
 function TNXCComp.WhatIs(const n : string) : TSymbolType;
 begin
-  if IsParam(n) then Result := stParam
+  // calling IsOldParam and IsFuncParam separately in order to
+  // tell IsFuncParam to strip inline decoration in this case.
+  if IsOldParam(n) then Result := stParam
+  else if IsFuncParam(n, True) then Result := stParam
   else if IsLocal(n) then Result := stLocal
   else if IsGlobal(n) then Result := stGlobal
   else if IsAPIFunc(n) then Result := stAPIFunc
@@ -2385,15 +2386,17 @@ end;
 {---------------------------------------------------------------}
 { Store Primary to Variable }
 
-procedure TNXCComp.Store(const Name: string);
+procedure TNXCComp.Store(const Name: string; bNoChecks : boolean);
 begin
-  CheckNotProc(Name);
+  if not bNoChecks then
+    CheckNotProc(Name);
   EmitLn(Format('mov %s, %s',[GetDecoratedIdent(Name), RegisterName]));
 end;
 
-procedure TNXCComp.StoreString(const Name : string);
+procedure TNXCComp.StoreString(const Name : string; bNoChecks : boolean);
 begin
-  CheckNotProc(Name);
+  if not bNoChecks then
+    CheckNotProc(Name);
   EmitLn(Format('mov %s, %s', [GetDecoratedIdent(Name), StrBufName]));
 end;
 
@@ -3835,7 +3838,9 @@ begin
                 else
                 begin
                   fInputs.AddObject('', fp);
-                  DoAssignValue(parname, dt);
+                  // pass in True to make it so that no checks are performed
+                  // in Store and StoreString
+                  DoAssignValue(parname, dt, False);
                 end;
               finally
                 fLHSDataType := oldLHSDT;
@@ -4454,19 +4459,19 @@ begin
   end;
 end;
 
-procedure TNXCComp.DoAssignValue(const aName: string; dt: char);
+procedure TNXCComp.DoAssignValue(const aName: string; dt: char; bNoChecks : boolean);
 begin
   if dt = TOK_STRINGDEF then
   begin
     StringExpression(aName);
-    StoreString(aName);
+    StoreString(aName, bNoChecks);
   end
   else
   begin
     // no comma expression here since the assignment operator has a
     // higher precedence than the comma operator
     BoolExpression;
-    Store(aName);
+    Store(aName, bNoChecks);
   end;
 end;
 
@@ -5783,6 +5788,8 @@ var
     end;
     Value := tname;
     CheckForTypedef(bIsUnsigned, bIsConst, bInline, bSafeCall);
+    // re-assign type name variable in case CheckForTypedef changed it.
+    tname := Value;
     ptype := Token;
     if bFirstParam then pltype := 1;
     Next;
@@ -7197,12 +7204,12 @@ end;
 
 function TNXCComp.APIFuncNameToID(procname: string): integer;
 begin
-  Result := StrToIntDef(fAPIFunctions.Values[procname], 0);
+  Result := StrToIntDef(fAPIFunctions.Values[procname], -1);
 end;
 
 function TNXCComp.APIStrFuncNameToID(procname: string): integer;
 begin
-  Result := StrToIntDef(fAPIStrFunctions.Values[procname], 0);
+  Result := StrToIntDef(fAPIStrFunctions.Values[procname], -1);
 end;
 
 function TNXCComp.IsAPIFunc(procname: string): boolean;
@@ -7483,6 +7490,8 @@ begin
     APISF_SUBSTR : DoSubString;
     APISF_STRREPLACE : DoStrReplace;
     APISF_FORMATNUM : DoFormatNum;
+  else
+    AbortMsg(Format(sNotAnAPIStrFunc, [Name]));
   end;
 end;
 
@@ -7681,6 +7690,8 @@ begin
     APIF_DRAWELLIPSE : DoDrawEllipse;
     APIF_FONTTEXTOUT, APIF_FONTNUMOUT : DoFontTextNumOut(id);
 //    APIF_SIZEOF : DoSizeOf;
+  else
+    AbortMsg(Format(sNotAnAPIFunc, [procname]));
   end;
 end;
 
@@ -8586,6 +8597,7 @@ begin
   Result := TNXCLexer;
 end;
 
+(*
 function TNXCComp.InlineDecoration: string;
 begin
 //  if fInlining then
@@ -8593,6 +8605,7 @@ begin
 //  else
     Result := '';
 end;
+*)
 
 procedure TNXCComp.AddTypeNameAlias(const lbl, args: string);
 begin

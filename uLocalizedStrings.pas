@@ -576,6 +576,8 @@ resourcestring
   sCompileTargets          = 'Compiling for firmware version %d, NBC/NXC enhanced = %s';
   sCurrentFile             = 'Current file = "%s"';
   sConstOrConstExpr        = 'constant or constant expression';
+  sNotAnAPIFunc            = '%s is not an API function';
+  sNotAnAPIStrFunc         = '%s is not an API string function';
 
 // uNBCCommon unit
 resourcestring
