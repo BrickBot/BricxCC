@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-06-01
- * version 62
+ * date 2010-06-19
+ * version 63
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H 1
@@ -8824,86 +8824,1541 @@ ends
 
 #endif // #ifndef __DOXYGEN_DOCS
 
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// OUTPUT MODULE ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup OutputModule
+ * @{
+ */
+/** @defgroup OutputModuleFunctions Output module functions
+ * Functions for accessing and modifying output module features.
+ * @{
+ */
+/**
+ * Reset tachometer counter.
+ * Reset the tachometer count and tachometer limit goal for the specified
+ * outputs.
+ *
+ * \param _p Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. For multiple outputs at the same time
+ * you need to add single output port values into a byte array and pass the array
+ * instead of a single numeric value.
+ */
 #define ResetTachoCount(_p) __resetTachoCount(_p)
+
+/**
+ * Reset block-relative counter.
+ * Reset the block-relative position counter for the specified outputs.
+ *
+ * \param _p Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. For multiple outputs at the same time
+ * you need to add single output port values into a byte array and pass the array
+ * instead of a single numeric value.
+ */
 #define ResetBlockTachoCount(_p) __resetBlockTachoCount(_p)
+
+/**
+ * Reset program-relative counter.
+ * Reset the program-relative position counter for the specified outputs.
+ *
+ * \param _p Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. For multiple outputs at the same time
+ * you need to add single output port values into a byte array and pass the array
+ * instead of a single numeric value.
+ */
 #define ResetRotationCount(_p) __resetRotationCount(_p)
+
+/**
+ * Reset all tachometer counters.
+ * Reset all three position counters and reset the current tachometer limit
+ * goal for the specified outputs.
+ *
+ * \param _p Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. For multiple outputs at the same time
+ * you need to add single output port values into a byte array and pass the array
+ * instead of a single numeric value.
+ */
 #define ResetAllTachoCounts(_p) __resetAllTachoCounts(_p)
 
+/**
+ * Run motors forward and reset counters.
+ * Set outputs to forward direction and turn them on.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
 #define OnFwdEx(_ports, _pwr, _reset) __OnFwdEx(_ports, _pwr, _reset)
+
+/**
+ * Run motors backward and reset counters.
+ * Set outputs to reverse direction and turn them on.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
 #define OnRevEx(_ports, _pwr, _reset) __OnRevEx(_ports, _pwr, _reset)
+
+/**
+ * Run motors forward and reset counters.
+ * Set outputs to forward direction and turn them on.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnFwdExPID(_ports, _pwr, _reset, _p, _i, _d) __OnFwdExPID(_ports, _pwr, _reset, _p, _i, _d)
+
+/**
+ * Run motors backward and reset counters.
+ * Set outputs to reverse direction and turn them on.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnRevExPID(_ports, _pwr, _reset, _p, _i, _d) __OnRevExPID(_ports, _pwr, _reset, _p, _i, _d)
+
+/**
+ * Run motors forward.
+ * Set outputs to forward direction and turn them on.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ */
 #define OnFwd(_ports, _pwr) OnFwdEx(_ports, _pwr, RESET_BLOCKANDTACHO)
+
+/**
+ * Run motors backward.
+ * Set outputs to reverse direction and turn them on.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ */
 #define OnRev(_ports, _pwr) OnRevEx(_ports, _pwr, RESET_BLOCKANDTACHO)
 
+/**
+ * Coast motors and reset counters.
+ * Turn off the specified outputs, making them coast to a stop.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
 #define CoastEx(_ports, _reset) __CoastEx(_ports, _reset)
+
+/**
+ * Turn motors off and reset counters.
+ * Turn the specified outputs off (with braking).
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
 #define OffEx(_ports, _reset) __OffEx(_ports, _reset)
+
+/**
+ * Coast motors.
+ * Turn off the specified outputs, making them coast to a stop.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ */
 #define Coast(_ports) CoastEx(_ports, RESET_BLOCKANDTACHO)
+
+/**
+ * Turn motors off.
+ * Turn the specified outputs off (with braking).
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ */
 #define Off(_ports) OffEx(_ports, RESET_BLOCKANDTACHO)
+
+/**
+ * Float motors.
+ * Make outputs float. Float is an alias for Coast.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ */
 #define Float(_ports) Coast(_ports)
 
+/**
+ * Run motors forward regulated and reset counters.
+ * Run the specified outputs forward using the specified regulation mode.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
 #define OnFwdRegEx(_ports, _pwr, _regmode, _reset) __OnFwdRegEx(_ports, _pwr, _regmode, _reset)
+
+/**
+ * Run motors backward regulated and reset counters.
+ * Run the specified outputs in reverse using the specified regulation mode.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
 #define OnRevRegEx(_ports, _pwr, _regmode, _reset) __OnRevRegEx(_ports, _pwr, _regmode, _reset)
+
+/**
+ * Run motors forward regulated and reset counters with PID factors.
+ * Run the specified outputs forward using the specified regulation mode.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnFwdRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) __OnFwdRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d)
+
+/**
+ * Run motors backward regulated and reset counters with PID factors.
+ * Run the specified outputs in reverse using the specified regulation mode.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnRevRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d) __OnRevRegExPID(_ports, _pwr, _regmode, _reset, _p, _i, _d)
 
+/**
+ * Run motors forward regulated.
+ * Run the specified outputs forward using the specified regulation mode.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _regmode Regulation mode, see \ref OutRegModeConstants.
+ */
 #define OnFwdReg(_ports, _pwr, _regmode) OnFwdRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
+
+/**
+ * Run motors forward regulated.
+ * Run the specified outputs in reverse using the specified regulation mode.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _regmode Regulation mode, see \ref OutRegModeConstants.
+ */
 #define OnRevReg(_ports, _pwr, _regmode) OnRevRegEx(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO)
+
+/**
+ * Run motors forward regulated with PID factors.
+ * Run the specified outputs forward using the specified regulation mode.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnFwdRegPID(_ports, _pwr, _regmode, _p, _i, _d) OnFwdRegExPID(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO, _p, _i, _d)
+
+/**
+ * Run motors reverse regulated with PID factors.
+ * Run the specified outputs in reverse using the specified regulation mode.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _regmode Regulation mode, see \ref OutRegModeConstants.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnRevRegPID(_ports, _pwr, _regmode, _p, _i, _d) OnRevRegExPID(_ports, _pwr, _regmode, RESET_BLOCKANDTACHO, _p, _i, _d)
 
+/**
+ * Run motors forward synchronised and reset counters.
+ * Run the specified outputs forward with regulated synchronization using the
+ * specified turn ratio.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
 #define OnFwdSyncEx(_ports, _pwr, _turnpct, _reset) __OnFwdSyncEx(_ports, _pwr, _turnpct, _reset)
+
+/**
+ * Run motors backward synchronised and reset counters.
+ * Run the specified outputs in reverse with regulated synchronization using
+ * the specified turn ratio.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ */
 #define OnRevSyncEx(_ports, _pwr, _turnpct, _reset) __OnRevSyncEx(_ports, _pwr, _turnpct, _reset)
+
+/**
+ * Run motors forward synchronised and reset counters with PID factors.
+ * Run the specified outputs forward with regulated synchronization using the
+ * specified turn ratio.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnFwdSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) __OnFwdSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d)
+
+/**
+ * Run motors backward synchronised and reset counters with PID factors.
+ * Run the specified outputs in reverse with regulated synchronization using
+ * the specified turn ratio.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param _reset Position counters reset control. It must be a constant, see
+ * \ref TachoResetConstants.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnRevSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d) __OnRevSyncExPID(_ports, _pwr, _turnpct, _reset, _p, _i, _d)
 
+/**
+ * Run motors forward synchronised.
+ * Run the specified outputs forward with regulated synchronization using the
+ * specified turn ratio.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ */
 #define OnFwdSync(_ports, _pwr, _turnpct) OnFwdSyncEx(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO)
+
+/**
+ * Run motors backward synchronised.
+ * Run the specified outputs in reverse with regulated synchronization using
+ * the specified turn ratio.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ */
 #define OnRevSync(_ports, _pwr, _turnpct) OnRevSyncEx(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO)
+
+/**
+ * Run motors forward synchronised with PID factors.
+ * Run the specified outputs forward with regulated synchronization using the
+ * specified turn ratio.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnFwdSyncPID(_ports, _pwr, _turnpct, _p, _i, _d) OnFwdSyncExPID(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO, _p, _i, _d)
+
+/**
+ * Run motors backward synchronised with PID factors.
+ * Run the specified outputs in reverse with regulated synchronization using
+ * the specified turn ratio.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define OnRevSyncPID(_ports, _pwr, _turnpct, _p, _i, _d) OnRevSyncExPID(_ports, _pwr, _turnpct, RESET_BLOCKANDTACHO, _p, _i, _d)
 
+/**
+ * Rotate motor.
+ * Run the specified outputs forward for the specified number of degrees.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _angle Angle limit, in degree. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param _bSync Synchronise two motors. Should be set to true if a non-zero
+ * turn percent is specified or no turning will occur.
+ * \param _bStop Specify whether the motor(s) should brake at the end of the
+ * rotation.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d) \
    __RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, _p, _i, _d)
 
 // default PID values are 96, 32, 32 (PID_3, PID_1, PID_1)
 
+/**
+ * Rotate motor with PID factors.
+ * Run the specified outputs forward for the specified number of degrees.
+ * Specify proportional, integral, and derivative factors.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _angle Angle limit, in degree. Can be negative to reverse direction.
+ * \param _p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ * \param _d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants.
+ */
 #define RotateMotorPID(_ports, _pwr, _angle, _p, _i, _d) \
    __RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, _p, _i, _d)
 
+/**
+ * Rotate motor.
+ * Run the specified outputs forward for the specified number of degrees.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _angle Angle limit, in degree. Can be negative to reverse direction.
+ * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
+ * depend on its construction.
+ * \param _bSync Synchronise two motors. Should be set to true if a non-zero
+ * turn percent is specified or no turning will occur.
+ * \param _bStop Specify whether the motor(s) should brake at the end of the
+ * rotation.
+ */
 #define RotateMotorEx(_ports, _pwr, _angle, _turnpct, _bSync, _bStop) \
    __RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, PID_1, PID_0, PID_3)
 
+/**
+ * Rotate motor.
+ * Run the specified outputs forward for the specified number of degrees.
+ *
+ * \param _ports Desired output ports. Can be a constant or a variable, see
+ * \ref OutputPortConstants. If you use a variable and want to control multiple
+ * outputs in a single call you need to use a byte array rather than a byte and
+ * store the output port values in the byte array before passing it into this function.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _angle Angle limit, in degree. Can be negative to reverse direction.
+ */
 #define RotateMotor(_ports, _pwr, _angle) \
    __RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, PID_1, PID_0, PID_3)
 
+/**
+ * Set motor PWN frequency.
+ * Set the motor PWN frequency.
+ * \param _n The motor pwn frequency
+ */
+#define SetOutPwnFreq(_n) __setOutPwnFreq(_n)
+
+/**
+ * Get motor PWN frequency.
+ * Get the current motor pulse width modulation frequency.
+ * \param _n The motor pwn frequency
+ */
+#define GetOutPwnFreq(_n) __GetOutPwnFreq(_n)
+
+/** @} */ // end of OutputModuleFunctions group
+/** @} */ // end of OutputModule group
+/** @} */ // end of NXTFirmwareModules group
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// INPUT MODULE ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup InputModule
+ * @{
+ */
+/** @defgroup InputModuleFunctions Input module functions
+ * Functions for accessing and modifying input module features.
+ * @{
+ */
+
+/**
+ * Set sensor type.
+ * Set a sensor's type, which must be one of the predefined sensor type
+ * constants.  After changing the type or the mode of a sensor
+ * port you must call \ref ResetSensor to give the firmware time to reconfigure
+ * the sensor port.
+ * \sa SetSensorMode()
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ * \param _t The desired sensor type.  See \ref NBCSensorTypeConstants.
+ */
 #define SetSensorType(_port,_t) setin _t, _port, Type
+
+/**
+ * Set sensor mode.
+ * Set a sensor's mode, which should be one of the predefined sensor mode
+ * constants. A slope parameter for boolean conversion, if desired, may be
+ * added to the mode. After changing the type or the mode of a sensor
+ * port you must call \ref ResetSensor to give the firmware time to reconfigure
+ * the sensor port.
+ * \sa SetSensorType()
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ * \param _m The desired sensor mode. See \ref NBCSensorModeConstants.
+ */
 #define SetSensorMode(_port,_m) setin _m, _port, InputMode
+
+/**
+ * Read sensor scaled value.
+ * Return the processed sensor reading for a sensor on the specified port.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants. A variable whose value is
+ * the desired sensor port may also be used.
+ * \param _value The sensor's scaled value.
+ */
 #define ReadSensor(_port,_value) getin _value, _port, ScaledValue
+
+/**
+ * Clear a sensor value.
+ * Clear the value of a sensor - only affects sensors that are configured
+ * to measure a cumulative quantity such as rotation or a pulse count.
+ * \param _port The port to clear. See \ref NBCInputPortConstants.
+ */
 #define ClearSensor(_port) setin 0, _port, ScaledValue
 
+/**
+ * Configure a touch sensor.
+ * Configure the sensor on the specified port as a touch sensor.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
 #define SetSensorTouch(_port) __SetSensorTouch(_port)
+
+/**
+ * Configure a light sensor.
+ * Configure the sensor on the specified port as an NXT light sensor.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
 #define SetSensorLight(_port) __SetSensorLight(_port)
+
+/**
+ * Configure a sound sensor.
+ * Configure the sensor on the specified port as a sound sensor.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
 #define SetSensorSound(_port) __SetSensorSound(_port)
+
+/**
+ * Configure an I2C sensor.
+ * Configure the sensor on the specified port as a 9V powered I2C digital sensor.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
 #define SetSensorLowspeed(_port) __SetSensorLowspeed(_port)
+
+/**
+ * Configure an ultrasonic sensor.
+ * Configure the sensor on the specified port as an ultrasonic sensor.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
 #define SetSensorUltrasonic(_port) __SetSensorLowspeed(_port)
 
 #if __FIRMWARE_VERSION > 107
 
+/**
+ * Configure an NXT 2.0 full color sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in full color mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 #define SetSensorColorFull(_port) __SetSensorColorFull(_port)
+
+/**
+ * Configure an NXT 2.0 red light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in red light mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 #define SetSensorColorRed(_port) __SetSensorColorRed(_port)
+
+/**
+ * Configure an NXT 2.0 green light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in green light mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 #define SetSensorColorGreen(_port) __SetSensorColorGreen(_port)
+
+/**
+ * Configure an NXT 2.0 blue light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in blue light mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 #define SetSensorColorBlue(_port) __SetSensorColorBlue(_port)
+
+/**
+ * Configure an NXT 2.0 no light sensor.
+ * Configure the sensor on the specified port as an NXT 2.0 color sensor
+ * in no light mode. Requires an NXT 2.0 compatible firmware.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ *
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
 #define SetSensorColorNone(_port) __SetSensorColorNone(_port)
 
 #endif
 
+/**
+ * Reset the sensor port.
+ * Sets the invalid data flag on the specified port and waits for it to
+ * become valid again. After changing the type or the mode of a sensor
+ * port you must call this function to give the firmware time to reconfigure
+ * the sensor port.
+ * \param _port The port to reset. See \ref NBCInputPortConstants.
+ */
 #define ResetSensor(_port) __ResetSensor(_port)
 
+#if __FIRMWARE_VERSION > 107
+
+/**
+ * Read LEGO color sensor raw values.
+ * This function lets you read the LEGO color sensor. It returns an array
+ * containing raw color values for red, green, blue, and none indices.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _rawVals An array containing four raw color values. See \ref InputColorIdxConstants.
+ * \param _result The function call result.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define ReadSensorColorRaw(_port, _rawVals, _result) __ReadSensorColorRaw(_port, _rawVals, _result)
+
+/**
+ * Read LEGO color sensor extra.
+ * This function lets you read the LEGO color sensor. It returns the color value,
+ * and three arrays containing raw, normalized, and scaled color values for
+ * red, green, blue, and none indices.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _colorval The color value. See \ref InputColorValueConstants.
+ * \param _rawVals An array containing four raw color values. See \ref InputColorIdxConstants.
+ * \param _normVals An array containing four normalized color values. See \ref InputColorIdxConstants.
+ * \param _scaledVals An array containing four scaled color values. See \ref InputColorIdxConstants.
+ * \param _result The function call result.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result) \
+   __ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result)
+
+#endif
+
+/**
+ * Get the custom sensor zero offset.
+ * Return the custom sensor zero offset value of a sensor.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _n The custom sensor zero offset.
+ */
+#define GetInCustomZeroOffset(_p, _n) __GetInCustomZeroOffset(_p, _n)
+
+/**
+ * Read sensor boolean value.
+ * Return the boolean value of a sensor on the specified port. Boolean
+ * conversion is either done based on preset cutoffs, or a slope parameter
+ * specified by calling SetSensorMode.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The sensor's boolean value.
+ */
+#define GetInSensorBoolean(_p, _n) __GetInSensorBoolean(_p, _n)
+
+/**
+ * Read sensor digital pins direction.
+ * Return the digital pins direction value of a sensor on the specified port.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The sensor's digital pins direction.
+ */
+#define GetInDigiPinsDirection(_p, _n) __GetInDigiPinsDirection(_p, _n)
+
+/**
+ * Read sensor digital pins status.
+ * Return the digital pins status value of a sensor on the specified port.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The sensor's digital pins status.
+ */
+#define GetInDigiPinsStatus(_p, _n) __GetInDigiPinsStatus(_p, _n)
+
+/**
+ * Read sensor digital pins output level.
+ * Return the digital pins output level value of a sensor on the specified port.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The sensor's digital pins output level.
+ */
+#define GetInDigiPinsOutputLevel(_p, _n) __GetInDigiPinsOutputLevel(_p, _n)
+
+/**
+ * Get the custom sensor percent full scale.
+ * Return the custom sensor percent full scale value of a sensor.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _n The custom sensor percent full scale.
+ */
+#define GetInCustomPercentFullScale(_p, _n) __GetInCustomPercentFullScale(_p, _n)
+
+/**
+ * Get the custom sensor active status.
+ * Return the custom sensor active status value of a sensor.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _n The custom sensor active status.
+*/
+#define GetInCustomActiveStatus(_p, _n) __GetInCustomActiveStatus(_p, _n)
+
+#if __FIRMWARE_VERSION > 107
+
+/**
+ * Read a LEGO color sensor calibration point value.
+ * This function lets you directly access a specific LEGO color calibration point value.
+ * The port, point, and color index must be constants.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _np The calibration point. See \ref InputColorCalibrationConstants. Must be a constant.
+ * \param _nc The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param _n The calibration point value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define GetInColorCalibration(_p, _np, _nc, _n) __GetInColorCalibration(_p, _np, _nc, _n)
+
+/**
+ * Read a LEGO color sensor calibration limit value.
+ * This function lets you directly access a specific LEGO color calibration limit value.
+ * The port and the point must be constants.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _np The calibration point. See \ref InputColorCalibrationConstants. Must be a constant.
+ * \param _n The calibration limit value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define GetInColorCalLimits(_p, _np, _n) __GetInColorCalLimits(_p, _np, _n)
+
+/**
+ * Read a LEGO color sensor AD raw value.
+ * This function lets you directly access a specific LEGO color sensor AD raw value. Both the
+ * port and the color index must be constants.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _nc The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param _n The AD raw value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define GetInColorADRaw(_p, _nc, _n) __GetInColorADRaw(_p, _nc, _n)
+
+/**
+ * Read a LEGO color sensor raw value.
+ * This function lets you directly access a specific LEGO color sensor raw value. Both the
+ * port and the color index must be constants.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _nc The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param _n The raw value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define GetInColorSensorRaw(_p, _nc, _n) __GetInColorSensorRaw(_p, _nc, _n)
+
+/**
+ * Read a LEGO color sensor scaled value.
+ * This function lets you directly access a specific LEGO color sensor scaled value. Both the
+ * port and the color index must be constants.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _nc The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param _n The scaled value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define GetInColorSensorValue(_p, _nc, _n) __GetInColorSensorValue(_p, _nc, _n)
+
+/**
+ * Read a LEGO color sensor boolean value.
+ * This function lets you directly access a specific LEGO color sensor boolean value. Both the
+ * port and the color index must be constants.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _nc The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param _n The boolean value.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define GetInColorBoolean(_p, _nc, _n) __GetInColorBoolean(_p, _nc, _n)
+
+/**
+ * Read LEGO color sensor calibration state.
+ * This function lets you directly access the LEGO color calibration state.
+ * The port must be a constant.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The calibration state.
+ * \warning This function requires an NXT 2.0 compatible firmware.
+ */
+#define GetInColorCalibrationState(_p, _n) __GetInColorCalibrationState(_p, _n)
+
+#endif
+
+/**
+ * Set custom zero offset.
+ * Sets the zero offset value of a custom sensor.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The new zero offset value.
+ */
+#define SetInCustomZeroOffset(_p, _n) __setInCustomZeroOffset(_p, _n)
+
+/**
+ * Set sensor boolean value.
+ * Sets the boolean value of a sensor.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The new boolean value.
+ */
+#define SetInSensorBoolean(_p, _n) __setInSensorBoolean(_p, _n)
+
+/**
+ * Set digital pins direction.
+ * Sets the digital pins direction value of a sensor.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The new digital pins direction value.
+ */
+#define SetInDigiPinsDirection(_p, _n) __setInDigiPinsDirection(_p, _n)
+
+/**
+ * Set digital pins status.
+ * Sets the digital pins status value of a sensor.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The new digital pins status value.
+ */
+#define SetInDigiPinsStatus(_p, _n) __setInDigiPinsStatus(_p, _n)
+
+/**
+ * Set digital pins output level.
+ * Sets the digital pins output level value of a sensor.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The new digital pins output level value.
+ */
+#define SetInDigiPinsOutputLevel(_p, _n) __setInDigiPinsOutputLevel(_p, _n)
+
+/**
+ * Set percent full scale.
+ * Sets the percent full scale value of a custom sensor.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The new percent full scale value.
+ */
+#define SetInCustomPercentFullScale(_p, _n) __setInCustomPercentFullScale(_p, _n)
+
+/**
+ * Set active status.
+ * Sets the active status value of a custom sensor.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _n The new active status value.
+ */
+#define SetInCustomActiveStatus(_p, _n) __setInCustomActiveStatus(_p, _n)
+
+/** @} */ // end of InputModuleFunctions group
+/** @} */ // end of InputModule group
+/** @} */ // end of NXTFirmwareModules group
+
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// LOWSPEED MODULE ///////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup LowSpeedModule
+ * @{
+ */
+/** @defgroup LowSpeedModuleFunctions LowSpeed module functions
+ * Functions for accessing and modifying low speed module features.
+ * @{
+ */
+
+/**
+ * Read ultrasonic sensor value.
+ * Return the ultrasonic sensor distance value. Since an
+ * ultrasonic sensor is an I2C digital sensor its value cannot be read using
+ * the standard Sensor(n) value.
+ * The port must be configured as a Lowspeed port before using this function.
+ * \param _port The port to which the ultrasonic sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _value The ultrasonic sensor distance value (0..255)
+ */
+#define ReadSensorUS(_port, _value) __ReadSensorUS(_port, _value)
+
+/**
+ * Read multiple ultrasonic sensor values.
+ * Return eight ultrasonic sensor distance values.
+ * \param _port The port to which the ultrasonic sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _values An array of bytes that will contain the 8 distance values
+ * read from the ultrasonic sensor.
+ * \param _result A status code indicating whether the read completed successfully or not.
+ * See \ref CommLSReadType for possible Result values.
+ */
+#define ReadSensorUSEx(_port, _values, _result) __ReadSensorUSEx(_port, _values, _result)
+
+/**
+ * Read I2C register.
+ * Read a single byte from an I2C device register.
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _reg The I2C device register from which to read a single byte.
+ * \param _out The single byte read from the I2C device.
+ * \param _result A status code indicating whether the read completed successfully or not.
+ * See \ref CommLSReadType for possible Result values.
+ */
+#define ReadI2CRegister(_port, _reg, _out, _result) __MSReadValue(_port, 0x02, _reg, 1, _out, _result)
+
+/**
+ * Write I2C register.
+ * Write a single byte to an I2C device register.
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _reg The I2C device register to which to write a single byte.
+ * \param _val The byte to write to the I2C device.
+ * \param _result A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+#define WriteI2CRegister(_port, _reg, _val, _result) __MSWriteToRegister(_port, 0x02, _reg, _val, _result)
+
+/**
+ * Get lowspeed status.
+ * This method checks the status of the I2C communication on the specified
+ * port. If the last operation on this port was a successful LowspeedWrite
+ * call that requested response data from the device then bytesready will
+ * be set to the number of bytes in the internal read buffer.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _bready The number of bytes available to be read from the internal I2C buffer.
+ * The maximum number of bytes that can be read is 16.
+ * \param _result A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * Avoid calls to \ref LowspeedRead or \ref LowspeedWrite while LowspeedStatus returns
+ * \ref STAT_COMM_PENDING.
+ * \sa LowspeedRead, LowspeedWrite, and LowspeedCheckStatus
+ */
 #define LowspeedStatus(_port, _bready, _result) __lowspeedStatus(_port, _bready, _result)
+
+/**
+ * Check lowspeed status.
+ * This method checks the status of the I2C communication on the specified
+ * port.
+ *
+ * \param port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _result A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * Avoid calls to \ref LowspeedRead or \ref LowspeedWrite while LowspeedCheckStatus returns
+ * \ref STAT_COMM_PENDING.
+ * \sa LowspeedRead, LowspeedWrite, and LowspeedStatus
+ */
 #define LowspeedCheckStatus(_port, _result) __lowspeedCheckStatus(_port, _result)
+
+/**
+ * Get lowspeed bytes ready.
+ * This method checks the number of bytes that are ready to be read on the
+ * specified port. If the last operation on this port was a successful
+ * LowspeedWrite call that requested response data from the device then the
+ * return value will be the number of bytes in the internal read buffer.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _bready The number of bytes available to be read from the internal I2C buffer.
+ * The maximum number of bytes that can be read is 16.
+ * \sa LowspeedRead, LowspeedWrite, and LowspeedStatus
+ */
 #define LowspeedBytesReady(_port, _bready) __lowspeedBytesReady(_port, _bready)
+
+/**
+ * Write lowspeed data.
+ * This method starts a transaction to write the bytes contained in the array
+ * buffer to the I2C device on the specified port. It also tells the I2C device
+ * the number of bytes that should be included in the response. The maximum
+ * number of bytes that can be written or read is 16.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _retlen The number of bytes that should be returned by the I2C device.
+ * \param _buffer A byte array containing the address of the I2C device, the I2C
+ * device register at which to write data, and up to 14 bytes of data to be
+ * written at the specified register.
+ * \param _result A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSWriteType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * \sa LowspeedRead, LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
+ */
 #define LowspeedWrite(_port, _retlen, _buffer, _result) __lowspeedWrite(_port, _retlen, _buffer, _result)
+
+/**
+ * Read lowspeed data.
+ * Read the specified number of bytes from the I2C device on the specified
+ * port and store the bytes read in the byte array buffer provided.  The maximum
+ * number of bytes that can be written or read is 16.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _buflen The initial size of the output buffer.
+ * \param _buffer A byte array that contains the data read from the internal I2C
+ * buffer.  If the return value is negative then the output buffer will be empty.
+ * \param _result A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSReadType for possible Result values. If the return
+ * value is \ref NO_ERR then the last operation did not cause any errors.
+ * \sa LowspeedWrite, LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
+ */
 #define LowspeedRead(_port, _buflen, _buffer, _result) __lowspeedRead(_port, _buflen, _buffer, _result)
+
+/**
+ * Perform an I2C write/read transaction.
+ * This method writes the bytes contained in the input buffer (inbuf) to the
+ * I2C device on the specified port, checks for the specified number of bytes
+ * to be ready for reading, and then tries to read the specified number (count)
+ * of bytes from the I2C device into the output buffer (outbuf).
+ *
+ * This is a higher-level wrapper around the three main I2C functions. It also
+ * maintains a "last good read" buffer and returns values from that buffer if
+ * the I2C communication transaction fails.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _inbuf A byte array containing the address of the I2C device, the I2C
+ * device register at which to write data, and up to 14 bytes of data to be
+ * written at the specified register.
+ * \param _count The number of bytes that should be returned by the I2C device.
+ * On output count is set to the number of bytes in outbuf.
+ * \param _outbuf A byte array that contains the data read from the internal I2C
+ * buffer.
+ * \param _result Returns true or false indicating whether the I2C transaction
+ * succeeded or failed.
+ * \sa LowspeedRead, LowspeedWrite, LowspeedCheckStatus, LowspeedBytesReady,
+ * and LowspeedStatus
+ */
+#define ReadI2CBytes(_port, _inbuf, _count, _outbuf, _result) __ReadI2CBytes(_port, _inbuf, _count, _outbuf, _result)
+
+/**
+ * Read I2C device information extra.
+ * Read standard I2C device information: version, vendor, and device ID. The
+ * I2C device uses the specified address.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _addr The I2C device address.
+ * \param _info A value indicating the type of device information you are requesting.
+ * See \ref GenericI2CConstants.
+ * \param _strVal A string containing the requested device information.
+ * \sa I2CDeviceInfo
+ */
+#define ReadI2CDeviceInfoEx(_port, _addr, _info, _strVal) __ReadI2CDeviceInfoEx(_port, _addr, _info, _strVal)
+
+/**
+ * Read I2C device information.
+ * Read standard I2C device information: version, vendor, and device ID. The
+ * I2C device must use address 0x02.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _info A value indicating the type of device information you are requesting.
+ * See \ref GenericI2CConstants.
+ * \param _strVal A string containing the requested device information.
+ * \sa I2CDeviceInfoEx
+ */
+#define ReadI2CDeviceInfo(_port, _info, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, _info, _strVal)
+
+/**
+ * Read I2C device version extra.
+ * Read standard I2C device version. The I2C device uses the specified address.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _addr The I2C device address.
+ * \param _strVal A string containing the device version.
+ * \sa ReadI2CVersion
+ */
+#define ReadI2CVersionEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VERSION, _strVal)
+
+/**
+ * Read I2C device version.
+ * Read standard I2C device version. The I2C device must use address 0x02.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _strVal A string containing the device version.
+ * \sa ReadI2CVersionEx
+ */
+#define ReadI2CVersion(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VERSION, _strVal)
+
+/**
+ * Read I2C device vendor extra.
+ * Read standard I2C device vendor. The I2C device uses the specified address.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _addr The I2C device address.
+ * \param _strVal A string containing the device vendor.
+ * \sa ReadI2CVendorId
+ */
+#define ReadI2CVendorIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VENDOR_ID, _strVal)
+
+/**
+ * Read I2C device vendor.
+ * Read standard I2C device vendor. The I2C device must use address 0x02.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _strVal A string containing the device vendor.
+ * \sa ReadI2CVendorIdEx
+ */
+#define ReadI2CVendorId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VENDOR_ID, _strVal)
+
+/**
+ * Read I2C device identifier extra.
+ * Read standard I2C device identifier. The I2C device uses the specified address.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _addr The I2C device address.
+ * \param _strVal A string containing the device identifier.
+ * \sa ReadI2CDeviceId
+ */
+#define ReadI2CDeviceIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_DEVICE_ID, _strVal)
+
+/**
+ * Read I2C device identifier.
+ * Read standard I2C device identifier. The I2C device must use address 0x02.
+ *
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _strVal A string containing the device identifier.
+ * \sa ReadI2CDeviceIdEx
+ */
+#define ReadI2CDeviceId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_DEVICE_ID, _strVal)
+
+/**
+ * Send an I2C command.
+ * Send a command to an I2C device at the standard command register: \ref I2C_REG_CMD.
+ * The I2C device must use address 0x02.
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _cmd The command to send to the I2C device.
+ * \param _result A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+#define I2CSendCommand(_port, _cmd, _result) __I2CSendCmd(_port, 0x02, _cmd, _result)
+
+/**
+ * Send an I2C command extra.
+ * Send a command to an I2C device at the standard command register: \ref I2C_REG_CMD.
+ * The I2C device uses the specified address.
+ * \param _port The port to which the I2C device is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
+ * be used where possible to avoid blocking access to I2C devices on other
+ * ports by code running on other threads.
+ * \param _addr The I2C device address.
+ * \param _cmd The command to send to the I2C device.
+ * \param _result A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+#define I2CSendCommandEx(_port, _addr, _cmd, _result) __I2CSendCmd(_port, _addr, _cmd, _result)
+
+/** @defgroup LowLevelLowSpeedModuleFunctions Low level LowSpeed module functions
+ * Low level functions for accessing low speed module features.
+ * @{
+ */
+
+/**
+ * Get I2C input buffer data.
+ * This method reads count bytes of data from the I2C input buffer for the
+ * specified port and writes it to the buffer provided.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
+ * \param _offset A constant offset into the I2C input buffer.
+ * \param _cnt The number of bytes to read.
+ * \param _data The byte array reference which will contain the data read from
+ * the I2C input buffer.
+ */
+#define GetLSInputBuffer(_p, _offset, _cnt, _data) __getLSInputBuffer(_p, _offset, _cnt, _data)
+
+/**
+ * Get I2C input buffer in-pointer.
+ * This method returns the value of the input pointer of the I2C input
+ * buffer for the specified port.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _n The I2C input buffer's in-pointer value.
+ */
+#define GetLSInputBufferInPtr(_p, _n) __GetLSInputBufferInPtr(_p, _n)
+
+/**
+ * Get I2C input buffer out-pointer.
+ * This method returns the value of the output pointer of the I2C input
+ * buffer for the specified port.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _n The I2C input buffer's out-pointer value.
+ */
+#define GetLSInputBufferOutPtr(_p, _n) __GetLSInputBufferOutPtr(_p, _n)
+
+/**
+ * Get I2C input buffer bytes to rx.
+ * This method returns the value of the bytes to rx field of the I2C input
+ * buffer for the specified port.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _n The I2C input buffer's bytes to rx value.
+ */
+#define GetLSInputBufferBytesToRx(_p, _n) __GetLSInputBufferBytesToRx(_p, _n)
+
+/**
+ * Get I2C output buffer data.
+ * This method reads cnt bytes of data from the I2C output buffer for the
+ * specified port and writes it to the buffer provided.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _offset A constant offset into the I2C output buffer.
+ * \param _cnt The number of bytes to read.
+ * \param _data The byte array reference which will contain the data read from
+ * the I2C output buffer.
+ */
+#define GetLSOutputBuffer(_p, _offset, _cnt, _data) __getLSOutputBuffer(_p, _offset, _cnt, _data)
+
+/**
+ * Get I2C output buffer in-pointer.
+ * This method returns the value of the input pointer of the I2C output
+ * buffer for the specified port.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _n The I2C output buffer's in-pointer value.
+ */
+#define GetLSOutputBufferInPtr(_p, _n) __GetLSOutputBufferInPtr(_p, _n)
+
+/**
+ * Get I2C output buffer out-pointer.
+ * This method returns the value of the output pointer of the I2C output
+ * buffer for the specified port.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _n The I2C output buffer's out-pointer value.
+ */
+#define GetLSOutputBufferOutPtr(_p, _n) __GetLSOutputBufferOutPtr(_p, _n)
+
+/**
+ * Get I2C output buffer bytes to rx.
+ * This method returns the value of the bytes to rx field of the I2C output
+ * buffer for the specified port.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _n The I2C output buffer's bytes to rx value.
+ */
+#define GetLSOutputBufferBytesToRx(_p, _n) __GetLSOutputBufferBytesToRx(_p, _n)
+
+/**
+ * Get I2C mode.
+ * This method returns the value of the I2C mode for the specified port.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _n The I2C port mode. See \ref LowSpeedModeConstants.
+ */
+#define GetLSMode(_p, _n) __GetLSMode(_p, _n)
+
+/**
+ * Get I2C channel state.
+ * This method returns the value of the I2C channel state for the specified port.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _n The I2C port channel state. See \ref LowSpeedChannelStateConstants.
+ */
+#define GetLSChannelState(_p, _n) __GetLSChannelState(_p, _n)
+
+/**
+ * Get I2C error type.
+ * This method returns the value of the I2C error type for the specified port.
+ * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _n The I2C port error type. See \ref LowSpeedErrorTypeConstants.
+ */
+#define GetLSErrorType(_p, _n) __GetLSErrorType(_p, _n)
+
+/**
+ * Get I2C state.
+ * This method returns the value of the I2C state.
+ * \param _n The I2C state. See \ref LowSpeedStateConstants.
+ */
+#define GetLSState(_n) __GetLSState(_n)
+
+/**
+ * Get I2C speed.
+ * This method returns the value of the I2C speed.
+ * \param _n The I2C speed.
+ *
+ * \warning This function is unimplemented within the firmware.
+ */
+#define GetLSSpeed(_n) __GetLSSpeed(_n)
+
+#ifdef __ENHANCED_FIRMWARE
+/**
+ * Get I2C no restart on read setting.
+ * This method returns the value of the I2C no restart on read field.
+ * \param _n The I2C no restart on read field. See \ref LowSpeedNoRestartConstants.
+ */
+#define GetLSNoRestartOnRead(_n) __GetLSNoRestartOnRead(_n)
+#endif
+
+#define SetLSInputBuffer(_p, _offset, _cnt, _data) __setLSInputBuffer(_p, _offset, _cnt, _data)
+#define SetLSInputBufferInPtr(_p, _n) __setLSInputBufferInPtr(_p, _n)
+#define SetLSInputBufferOutPtr(_p, _n) __setLSInputBufferOutPtr(_p, _n)
+#define SetLSInputBufferBytesToRx(_p, _n) __setLSInputBufferBytesToRx(_p, _n)
+
+#define SetLSOutputBuffer(_p, _offset, _cnt, _data) __setLSOutputBuffer(_p, _offset, _cnt, _data)
+#define SetLSOutputBufferInPtr(_p, _n) __setLSOutputBufferInPtr(_p, _n)
+#define SetLSOutputBufferOutPtr(_p, _n) __setLSOutputBufferOutPtr(_p, _n)
+#define SetLSOutputBufferBytesToRx(_p, _n) __setLSOutputBufferBytesToRx(_p, _n)
+
+#define SetLSMode(_p, _n) __setLSMode(_p, _n)
+#define SetLSChannelState(_p, _n) __setLSChannelState(_p, _n)
+#define SetLSErrorType(_p, _n) __setLSErrorType(_p, _n)
+#define SetLSState(_n) __setLSState(_n)
+#define SetLSSpeed(_n) __setLSSpeed(_n)
+
+#ifdef __ENHANCED_FIRMWARE
+#define SetLSNoRestartOnRead(_n) __setLSNoRestartOnRead(_n)
+#endif
+
+/** @} */ // end of LowLevelLowSpeedModuleFunctions group
+
+/** @} */ // end of LowSpeedModuleFunctions group
+/** @} */ // end of LowSpeedModule group
+/** @} */ // end of NXTFirmwareModules group
+
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// DISPLAY MODULE ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup DisplayModule
+ * @{
+ */
+/** @defgroup DisplayModuleFunctions Display module functions
+ * Functions for accessing and modifying display module features.
+ * @{
+ */
 
 #define TextOutEx(_x,_y,_txt,_options) __TextOutEx(_x,_y,_txt,_options)
 #define TextOut(_x,_y,_txt) __TextOutEx(_x,_y,_txt,0)
@@ -8949,151 +10404,6 @@ ends
 
 #endif
 
-#if __FIRMWARE_VERSION > 107
-
-#define ReadSensorColorRaw(_port, _rawVals, _result) __ReadSensorColorRaw(_port, _rawVals, _result)
-
-#define ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result) \
-   __ReadSensorColorEx(_port, _colorval, _rawVals, _normVals, _scaledVals, _result)
-
-#endif
-
-#define ReadI2CBytes(_port, _inbuf, _count, _outbuf, _result) __ReadI2CBytes(_port, _inbuf, _count, _outbuf, _result)
-
-#define ReadSensorUS(_port, _value) __ReadSensorUS(_port, _value)
-#define ReadSensorUSEx(_port, _values, _result) __ReadSensorUSEx(_port, _values, _result)
-
-#define ReadI2CRegister(_port, _reg, _out, _result) __MSReadValue(_port, 0x02, _reg, 1, _out, _result)
-#define WriteI2CRegister(_port, _reg, _val, _result) __MSWriteToRegister(_port, 0x02, _reg, _val, _result)
-
-#define PlayToneEx(_freq,_dur,_vol,_loop) __PlayToneEx(_freq,_dur,_vol,_loop)
-#define PlayTone(_freq,_dur) __PlayToneEx(_freq,_dur,4,0)
-
-#define PlayFile(_file) __PlayFileEx(_file,4,0)
-#define PlayFileEx(_file,_vol,_loop) __PlayFileEx(_file,_vol,_loop)
-
-#define GetSoundState(_state, _flags) __GetSoundState(_state, _flags)
-#define SetSoundState(_state, _flags, _result) __setSoundState(_state, _flags, _result)
-
-#define Random(_arg,_max) __Random(_arg,_max)
-#define SignedRandom(_arg) __SignedRandom(_arg)
-
-#define ResetSleepTimer syscall KeepAlive, __KeepAliveArgs
-
-#define GetFirstTick(_value) __GetFirstTick(_value)
-
-#define ReadButtonEx(_idx, _reset, _pressed, _count, _result) __ReadButtonEx(_idx, _reset, _pressed, _count, _result)
-
-#define GetIOMapBytes(_modName, _offset, _cnt, _arrOut) __getIOMapBytes(_modName, _offset, _cnt, _arrOut)
-#define GetIOMapValue(_modName, _offset, _n) __getIOMapValue(_modName, _offset, _n)
-
-#ifdef __ENHANCED_FIRMWARE
-
-#define GetIOMapBytesByID(_modID, _offset, _cnt, _arrOut) __getIOMapBytesByID(_modID, _offset, _cnt, _arrOut)
-#define GetIOMapValueByID(_modID, _offset, _n) __getIOMapValueByID(_modID, _offset, _n)
-
-#define GetCommandModuleValue(_offset, _n) GetIOMapValueByID(CommandModuleID, _offset, _n)
-#define GetLoaderModuleValue(_offset, _n) GetIOMapValueByID(LoaderModuleID, _offset, _n)
-#define GetSoundModuleValue(_offset, _n) GetIOMapValueByID(SoundModuleID, _offset, _n)
-#define GetButtonModuleValue(_offset, _n) GetIOMapValueByID(ButtonModuleID, _offset, _n)
-#define GetUIModuleValue(_offset, _n) GetIOMapValueByID(UIModuleID, _offset, _n)
-#define GetInputModuleValue(_offset, _n) GetIOMapValueByID(InputModuleID, _offset, _n)
-#define GetOutputModuleValue(_offset, _n) GetIOMapValueByID(OutputModuleID, _offset, _n)
-#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValueByID(LowSpeedModuleID, _offset, _n)
-#define GetDisplayModuleValue(_offset, _n) GetIOMapValueByID(DisplayModuleID, _offset, _n)
-#define GetCommModuleValue(_offset, _n) GetIOMapValueByID(CommModuleID, _offset, _n)
-
-#else
-
-#define GetCommandModuleValue(_offset, _n) GetIOMapValue(CommandModuleName, _offset, _n)
-#define GetLoaderModuleValue(_offset, _n) GetIOMapValue(LoaderModuleName, _offset, _n)
-#define GetSoundModuleValue(_offset, _n) GetIOMapValue(SoundModuleName, _offset, _n)
-#define GetButtonModuleValue(_offset, _n) GetIOMapValue(ButtonModuleName, _offset, _n)
-#define GetUIModuleValue(_offset, _n) GetIOMapValue(UIModuleName, _offset, _n)
-#define GetInputModuleValue(_offset, _n) GetIOMapValue(InputModuleName, _offset, _n)
-#define GetOutputModuleValue(_offset, _n) GetIOMapValue(OutputModuleName, _offset, _n)
-#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValue(LowSpeedModuleName, _offset, _n)
-#define GetDisplayModuleValue(_offset, _n) GetIOMapValue(DisplayModuleName, _offset, _n)
-#define GetCommModuleValue(_offset, _n) GetIOMapValue(CommModuleName, _offset, _n)
-
-#endif
-
-#define GetLowSpeedModuleBytes(_offset, _cnt, _arrOut) __getLowSpeedModuleBytes(_offset, _cnt, _arrOut)
-#define GetDisplayModuleBytes(_offset, _cnt, _arrOut) __getDisplayModuleBytes(_offset, _cnt, _arrOut)
-#define GetCommModuleBytes(_offset, _cnt, _arrOut) __getCommModuleBytes(_offset, _cnt, _arrOut)
-
-#define GetFreeMemory(_value) __GetFreeMemory(_value)
-#define GetSoundFrequency(_n) __GetSoundFrequency(_n)
-#define GetSoundDuration(_n) __GetSoundDuration(_n)
-#define GetSoundSampleRate(_n) __GetSoundSampleRate(_n)
-#define GetSoundMode(_n) __GetSoundMode(_n)
-#define GetSoundVolume(_n) __GetSoundVolume(_n)
-
-#define GetButtonPressCount(_b, _n) __GetButtonPressCount(_b, _n)
-#define GetButtonLongPressCount(_b, _n) __GetButtonLongPressCount(_b, _n)
-#define GetButtonShortReleaseCount(_b, _n) __GetButtonShortReleaseCount(_b, _n)
-#define GetButtonLongReleaseCount(_b, _n) __GetButtonLongReleaseCount(_b, _n)
-#define GetButtonReleaseCount(_b, _n) __GetButtonReleaseCount(_b, _n)
-#define GetButtonState(_b, _n) __GetButtonState(_b, _n)
-#define GetBatteryLevel(_n) __GetBatteryLevel(_n)
-#define GetCommandFlags(_n) __GetCommandFlags(_n)
-#define GetUIState(_n) __GetUIState(_n)
-#define GetUIButton(_n) __GetUIButton(_n)
-#define GetVMRunState(_n) __GetVMRunState(_n)
-#define GetBatteryState(_n) __GetBatteryState(_n)
-#define GetBluetoothState(_n) __GetBluetoothState(_n)
-#define GetUsbState(_n) __GetUsbState(_n)
-#define GetSleepTimeout(_n) __GetSleepTimeout(_n)
-#define GetSleepTimer(_n) __GetSleepTimer(_n)
-#define GetRechargeableBattery(_n) __GetRechargeableBattery(_n)
-#define GetVolume(_n) __GetVolume(_n)
-#define GetOnBrickProgramPointer(_n) __GetOnBrickProgramPointer(_n)
-#define GetAbortFlag(_n) __GetAbortFlag(_n)
-
-#define GetInCustomZeroOffset(_p, _n) __GetInCustomZeroOffset(_p, _n)
-#define GetInSensorBoolean(_p, _n) __GetInSensorBoolean(_p, _n)
-#define GetInDigiPinsDirection(_p, _n) __GetInDigiPinsDirection(_p, _n)
-#define GetInDigiPinsStatus(_p, _n) __GetInDigiPinsStatus(_p, _n)
-#define GetInDigiPinsOutputLevel(_p, _n) __GetInDigiPinsOutputLevel(_p, _n)
-#define GetInCustomPercentFullScale(_p, _n) __GetInCustomPercentFullScale(_p, _n)
-#define GetInCustomActiveStatus(_p, _n) __GetInCustomActiveStatus(_p, _n)
-
-#if __FIRMWARE_VERSION > 107
-
-#define GetInColorCalibration(_p, _np, _nc, _n) __GetInColorCalibration(_p, _np, _nc, _n)
-#define GetInColorCalLimits(_p, _np, _n) __GetInColorCalLimits(_p, _np, _n)
-#define GetInColorADRaw(_p, _nc, _n) __GetInColorADRaw(_p, _nc, _n)
-#define GetInColorSensorRaw(_p, _nc, _n) __GetInColorSensorRaw(_p, _nc, _n)
-#define GetInColorSensorValue(_p, _nc, _n) __GetInColorSensorValue(_p, _nc, _n)
-#define GetInColorBoolean(_p, _nc, _n) __GetInColorBoolean(_p, _nc, _n)
-#define GetInColorCalibrationState(_p, _n) __GetInColorCalibrationState(_p, _n)
-
-#endif
-
-#define GetOutPwnFreq(_n) __GetOutPwnFreq(_n)
-
-#define GetLSInputBuffer(_p, _offset, _cnt, _data) __getLSInputBuffer(_p, _offset, _cnt, _data)
-
-#define GetLSInputBufferInPtr(_p, _n) __GetLSInputBufferInPtr(_p, _n)
-#define GetLSInputBufferOutPtr(_p, _n) __GetLSInputBufferOutPtr(_p, _n)
-#define GetLSInputBufferBytesToRx(_p, _n) __GetLSInputBufferBytesToRx(_p, _n)
-
-#define GetLSOutputBuffer(_p, _offset, _cnt, _data) __getLSOutputBuffer(_p, _offset, _cnt, _data)
-
-#define GetLSOutputBufferInPtr(_p, _n) __GetLSOutputBufferInPtr(_p, _n)
-#define GetLSOutputBufferOutPtr(_p, _n) __GetLSOutputBufferOutPtr(_p, _n)
-#define GetLSOutputBufferBytesToRx(_p, _n) __GetLSOutputBufferBytesToRx(_p, _n)
-#define GetLSMode(_p, _n) __GetLSMode(_p, _n)
-#define GetLSChannelState(_p, _n) __GetLSChannelState(_p, _n)
-#define GetLSErrorType(_p, _n) __GetLSErrorType(_p, _n)
-
-#define GetLSState(_n) __GetLSState(_n)
-#define GetLSSpeed(_n) __GetLSSpeed(_n)
-
-#ifdef __ENHANCED_FIRMWARE
-#define GetLSNoRestartOnRead(_n) __GetLSNoRestartOnRead(_n)
-#endif
-
 #define GetDisplayEraseMask(_n) __GetDisplayEraseMask(_n)
 #define GetDisplayUpdateMask(_n) __GetDisplayUpdateMask(_n)
 #define GetDisplayFont(_n) __GetDisplayFont(_n)
@@ -9108,163 +10418,335 @@ ends
 #define GetDisplayNormal(_x, _line, _cnt, _data) __getDisplayNormal(_x, _line, _cnt, _data)
 #define GetDisplayPopup(_x, _line, _cnt, _data) __getDisplayPopup(_x, _line, _cnt, _data)
 
-#define GetBTDeviceName(_p, _str) __GetBTDeviceName(_p, _str)
-#define GetBTDeviceClass(_p, _n) __GetBTDeviceClass(_p, _n)
+#define SetDisplayEraseMask(_n) __setDisplayEraseMask(_n)
+#define SetDisplayUpdateMask(_n) __setDisplayUpdateMask(_n)
+#define SetDisplayFont(_n) __setDisplayFont(_n)
+#define SetDisplayDisplay(_n) __setDisplayDisplay(_n)
+#define SetDisplayFlags(_n) __setDisplayFlags(_n)
+#define SetDisplayTextLinesCenterFlags(_n) __setDisplayTextLinesCenterFlags(_n)
 
-#define GetBTDeviceAddress(_p, _addr) __getBTDeviceAddress(_p, _addr)
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define SetDisplayContrast(_n) __setDisplayContrast(_n)
+#endif
 
-#define GetBTDeviceStatus(_p, _n) __GetBTDeviceStatus(_p, _n)
-#define GetBTConnectionName(_p, _str) __GetBTConnectionName(_p, _str)
-#define GetBTConnectionClass(_p, _n) __GetBTConnectionClass(_p, _n)
-#define GetBTConnectionPinCode(_p, _code) __GetBTConnectionPinCode(_p, _code)
+#define SetDisplayNormal(_x, _line, _cnt, _data) __setDisplayNormal(_x, _line, _cnt, _data)
+#define SetDisplayPopup(_x, _line, _cnt, _data) __setDisplayPopup(_x, _line, _cnt, _data)
 
-#define GetBTConnectionAddress(_p, _addr) __getBTConnectionAddress(_p, _addr)
+/** @} */ // end of DisplayModuleFunctions group
+/** @} */ // end of DisplayModule group
+/** @} */ // end of NXTFirmwareModules group
 
-#define GetBTConnectionHandleNum(_p, _n) __GetBTConnectionHandleNum(_p, _n)
-#define GetBTConnectionStreamStatus(_p, _n) __GetBTConnectionStreamStatus(_p, _n)
-#define GetBTConnectionLinkQuality(_p, _n) __GetBTConnectionLinkQuality(_p, _n)
 
-#define GetBrickDataName(_str) GetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// SOUND MODULE ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-#define GetBrickDataBluecoreVersion(_n) \
-  compchk EQ, sizeof(_n), 2 \
-  GetCommModuleValue(CommOffsetBrickDataBluecoreVersion, _n)
 
-#define GetBrickDataAddress(_addr) GetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr)
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup SoundModule
+ * @{
+ */
+/** @defgroup SoundModuleFunctions Sound module functions
+ * Functions for accessing and modifying sound module features.
+ * @{
+ */
 
-#define GetBrickDataBtStateStatus(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBrickDataBtStateStatus, _n)
+#define PlayToneEx(_freq,_dur,_vol,_loop) __PlayToneEx(_freq,_dur,_vol,_loop)
+#define PlayTone(_freq,_dur) __PlayToneEx(_freq,_dur,4,0)
 
-#define GetBrickDataBtHardwareStatus(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBrickDataBtHwStatus, _n)
+#define PlayFile(_file) __PlayFileEx(_file,4,0)
+#define PlayFileEx(_file,_vol,_loop) __PlayFileEx(_file,_vol,_loop)
 
-#define GetBrickDataTimeoutValue(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBrickDataTimeOutValue, _n)
+#define GetSoundState(_state, _flags) __GetSoundState(_state, _flags)
+#define SetSoundState(_state, _flags, _result) __setSoundState(_state, _flags, _result)
 
-#define GetBTInputBuffer(_offset, _cnt, _data) __getBTInputBuffer(_offset, _cnt, _data)
+#define GetSoundFrequency(_n) __GetSoundFrequency(_n)
+#define GetSoundDuration(_n) __GetSoundDuration(_n)
+#define GetSoundSampleRate(_n) __GetSoundSampleRate(_n)
+#define GetSoundMode(_n) __GetSoundMode(_n)
+#define GetSoundVolume(_n) __GetSoundVolume(_n)
 
-#define GetBTInputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtInBufInPtr, _n)
+#define SetSoundFrequency(_n) __setSoundFrequency(_n)
+#define SetSoundDuration(_n) __setSoundDuration(_n)
+#define SetSoundSampleRate(_n) __setSoundSampleRate(_n)
+#define SetSoundFlags(_n) __setSoundFlags(_n)
+#define SetSoundModuleState(_n) __setSoundModuleState(_n)
+#define SetSoundMode(_n) __setSoundMode(_n)
+#define SetSoundVolume(_n) __setSoundVolume(_n)
 
-#define GetBTInputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtInBufOutPtr, _n)
+/** @} */ // end of SoundModuleFunctions group
+/** @} */ // end of SoundModule group
+/** @} */ // end of NXTFirmwareModules group
 
-#define GetBTOutputBuffer(_offset, _cnt, _data) __getBTOutputBuffer(_offset, _cnt, _data)
 
-#define GetBTOutputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtOutBufInPtr, _n)
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// COMMAND MODULE ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
 
-#define GetBTOutputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtOutBufOutPtr, _n)
 
-#define GetHSInputBuffer(_offset, _cnt, _data) __getHSInputBuffer(_offset, _cnt, _data)
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup CommandModule
+ * @{
+ */
+/** @defgroup CommandModuleFunctions Command module functions
+ * Functions for accessing and modifying Command module features.
+ * @{
+ */
 
-#define GetHSInputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsInBufInPtr, _n)
-
-#define GetHSInputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsInBufOutPtr, _n)
-
-#define GetHSOutputBuffer(_offset, _cnt, _data) __getHSOutputBuffer(_offset, _cnt, _data)
-
-#define GetHSOutputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsOutBufInPtr, _n)
-
-#define GetHSOutputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsOutBufOutPtr, _n)
-
-#define GetUSBInputBuffer(_offset, _cnt, _data) __getUSBInputBuffer(_offset, _cnt, _data)
-
-#define GetUSBInputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbInBufInPtr, _n)
-
-#define GetUSBInputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbInBufOutPtr, _n)
-
-#define GetUSBOutputBuffer(_offset, _cnt, _data) __getUSBOutputBuffer(_offset, _cnt, _data)
-
-#define GetUSBOutputBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbOutBufInPtr, _n)
-
-#define GetUSBOutputBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbOutBufOutPtr, _n)
-
-#define GetUSBPollBuffer(_offset, _cnt, _data) __getUSBPollBuffer(_offset, _cnt, _data)
-
-#define GetUSBPollBufferInPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbPollBufInPtr, _n)
-
-#define GetUSBPollBufferOutPtr(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbPollBufOutPtr, _n)
-
-#define GetBTDeviceCount(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtDeviceCnt, _n)
-
-#define GetBTDeviceNameCount(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetBtDeviceNameCnt, _n)
-
-#define GetHSFlags(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsFlags, _n)
-
-#define GetHSSpeed(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsSpeed, _n)
-
-#define GetHSState(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetHsState, _n)
-
-#define GetUSBState(_n) \
-  compchk EQ, sizeof(_n), 1 \
-  GetCommModuleValue(CommOffsetUsbState, _n)
-
-#define GetHSMode(_n) \
-  compchk EQ, sizeof(_n), 2 \
-  GetCommModuleValue(CommOffsetHsMode, _n)
-
+/**
+ * Set IOMap bytes by name.
+ * Modify one or more bytes of data in an IOMap structure. The IOMap
+ * structure is specified by its module name. You also provide the offset into
+ * the IOMap structure where you want to start writing, the number of bytes to
+ * write at that location, and a byte array containing the new data.
+ * \param _modName The module name of the IOMap to modify. See \ref ModuleNameConstants.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the data should be written
+ * \param _cnt The number of bytes to write at the specified IOMap
+ * offset.
+ * \param _arrIn The byte array containing the data to write to the IOMap
+ */
 #define SetIOMapBytes(_modName, _offset, _cnt, _arrIn) __SetIOMapBytes(_modName, _offset, _cnt, _arrIn)
+
+/**
+ * Set IOMap value by name.
+ * Set one of the fields of an IOMap structure to a new value.  The IOMap
+ * structure is specified by its module name. You also provide the offset into
+ * the IOMap structure where you want to write the value along with a variable
+ * containing the new value.
+ * \param _modName The module name of the IOMap to modify. See \ref ModuleNameConstants.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the new value should be written
+ * \param _n A variable containing the new value to write to the IOMap
+ */
 #define SetIOMapValue(_modName, _offset, _n) __SetIOMapValue(_modName, _offset, _n)
 
 #ifdef __ENHANCED_FIRMWARE
 
+/**
+ * Set IOMap bytes by ID.
+ * Modify one or more bytes of data in an IOMap structure. The IOMap
+ * structure is specified by its Module ID. You also provide the offset into
+ * the IOMap structure where you want to start writing, the number of bytes to
+ * write at that location, and a byte array containing the new data.
+ * \param _modID The module ID of the IOMap to modify. See \ref ModuleIDConstants.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the data should be written.
+ * \param _cnt The number of bytes to write at the specified IOMap
+ * offset.
+ * \param _arrIn The byte array containing the data to write to the IOMap.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 #define SetIOMapBytesByID(_modID, _offset, _cnt, _arrIn) __SetIOMapBytesByID(_modID, _offset, _cnt, _arrIn)
+
+/**
+ * Set IOMap value by ID.
+ * Set one of the fields of an IOMap structure to a new value.  The IOMap
+ * structure is specified by its Module ID. You also provide the offset into
+ * the IOMap structure where you want to write the value along with a variable
+ * containing the new value.
+ * \param _modID The module ID of the IOMap to modify. See \ref ModuleIDConstants.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the new value should be written.
+ * \param _n A variable containing the new value to write to the IOMap.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 #define SetIOMapValueByID(_modID, _offset, _n) __SetIOMapValueByID(_modID, _offset, _n)
 
+/**
+ * Set Command module IOMap value.
+ * Set one of the fields of the Command module IOMap structure to a new value.
+ * You provide the offset into the Command module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Command
+ * module IOMap structure where the new value should be written. See \ref CommandIOMAP.
+ * \param _n A variable containing the new value to write to the Command
+ * module IOMap.
+ */
 #define SetCommandModuleValue(_offset, _n) SetIOMapValueByID(CommandModuleID, _offset, _n)
+
+/**
+ * Set IOCtrl module IOMap value.
+ * Set one of the fields of the IOCtrl module IOMap structure to a new value.
+ * You provide the offset into the IOCtrl module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the IOCtrl
+ * module IOMap structure where the new value should be written. See \ref IOCtrlIOMAP.
+ * \param _n A variable containing the new value to write to the IOCtrl
+ * module IOMap.
+ */
 #define SetIOCtrlModuleValue(_offset, _n) SetIOMapValueByID(IOCtrlModuleID, _offset, _n)
+
+/**
+ * Set Loader module IOMap value.
+ * Set one of the fields of the Loader module IOMap structure to a new value.
+ * You provide the offset into the Loader module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Loader
+ * module IOMap structure where the new value should be written. See \ref LoaderIOMAP.
+ * \param _n A variable containing the new value to write to the Loader
+ * module IOMap.
+ */
 #define SetLoaderModuleValue(_offset, _n) SetIOMapValueByID(LoaderModuleID, _offset, _n)
+
+/**
+ * Set Ui module IOMap value.
+ * Set one of the fields of the Ui module IOMap structure to a new value.
+ * You provide the offset into the Ui module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Ui
+ * module IOMap structure where the new value should be written. See \ref UiIOMAP.
+ * \param _n A variable containing the new value to write to the Ui
+ * module IOMap.
+ */
 #define SetUIModuleValue(_offset, _n) SetIOMapValueByID(UIModuleID, _offset, _n)
+
+/**
+ * Set Sound module IOMap value.
+ * Set one of the fields of the Sound module IOMap structure to a new value.
+ * You provide the offset into the Sound module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Sound
+ * module IOMap structure where the new value should be written. See \ref SoundIOMAP.
+ * \param _n A variable containing the new value to write to the Sound
+ * module IOMap.
+ */
 #define SetSoundModuleValue(_offset, _n) SetIOMapValueByID(SoundModuleID, _offset, _n)
+
+/**
+ * Set Button module IOMap value.
+ * Set one of the fields of the Button module IOMap structure to a new value.
+ * You provide the offset into the Button module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Button
+ * module IOMap structure where the new value should be written. See \ref ButtonIOMAP.
+ * \param _n A variable containing the new value to write to the Button
+ * module IOMap.
+ */
 #define SetButtonModuleValue(_offset, _n) SetIOMapValueByID(ButtonModuleID, _offset, _n)
+
+/**
+ * Set Input module IOMap value.
+ * Set one of the fields of the Input module IOMap structure to a new value.
+ * You provide the offset into the Input module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Input
+ * module IOMap structure where the new value should be written. See \ref InputIOMAP.
+ * \param _n A variable containing the new value to write to the Input
+ * module IOMap.
+ */
 #define SetInputModuleValue(_offset, _n) SetIOMapValueByID(InputModuleID, _offset, _n)
+
+/**
+ * Set Output module IOMap value.
+ * Set one of the fields of the Output module IOMap structure to a new value.
+ * You provide the offset into the Output module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Output
+ * module IOMap structure where the new value should be written. See \ref OutputIOMAP.
+ * \param _n A variable containing the new value to write to the Output
+ * module IOMap.
+ */
 #define SetOutputModuleValue(_offset, _n) SetIOMapValueByID(OutputModuleID, _offset, _n)
+
+/**
+ * Set Lowspeed module IOMap value.
+ * Set one of the fields of the Lowspeed module IOMap structure to a new value.
+ * You provide the offset into the Lowspeed module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Lowspeed
+ * module IOMap structure where the new value should be written. See \ref LowSpeedIOMAP.
+ * \param _n A variable containing the new value to write to the Lowspeed
+ * module IOMap.
+ */
 #define SetLowSpeedModuleValue(_offset, _n) SetIOMapValueByID(LowSpeedModuleID, _offset, _n)
+
+/**
+ * Set Display module IOMap value.
+ * Set one of the fields of the Display module IOMap structure to a new value.
+ * You provide the offset into the Display module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Display
+ * module IOMap structure where the new value should be written. See \ref DisplayIOMAP.
+ * \param _n A variable containing the new value to write to the Display
+ * module IOMap.
+ */
 #define SetDisplayModuleValue(_offset, _n) SetIOMapValueByID(DisplayModuleID, _offset, _n)
+
+/**
+ * Set Comm module IOMap value.
+ * Set one of the fields of the Comm module IOMap structure to a new value.
+ * You provide the offset into the Comm module IOMap structure where you
+ * want to write the value along with a variable containing the new value.
+ * \param _offset The number of bytes offset from the start of the Comm
+ * module IOMap structure where the new value should be written. See \ref CommIOMAP.
+ * \param _n A variable containing the new value to write to the Comm
+ * module IOMap.
+ */
 #define SetCommModuleValue(_offset, _n) SetIOMapValueByID(CommModuleID, _offset, _n)
 
+/**
+ * Set Command module IOMap bytes.
+ * Modify one or more bytes of data in the Command module IOMap structure. You
+ * provide the offset into the Command module IOMap structure where you want
+ * to start writing, the number of bytes to write at that location, and a byte
+ * array containing the new data.
+ * \param _offset The number of bytes offset from the start of the Command module
+ * IOMap structure where the data should be written. See \ref CommandIOMAP.
+ * \param _cnt The number of bytes to write at the specified Command module
+ * IOMap offset.
+ * \param _arrIn The byte array containing the data to write to the Command
+ * module IOMap.
+ */
 #define SetCommandModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommandModuleID, _offset, _cnt, _arrIn)
+
+/**
+ * Set Lowspeed module IOMap bytes.
+ * Modify one or more bytes of data in the Lowspeed module IOMap structure. You
+ * provide the offset into the Lowspeed module IOMap structure where you want
+ * to start writing, the number of bytes to write at that location, and a byte
+ * array containing the new data.
+ * \param _offset The number of bytes offset from the start of the Lowspeed
+ * module IOMap structure where the data should be written. See \ref LowSpeedIOMAP.
+ * \param _cnt The number of bytes to write at the specified Lowspeed module
+ * IOMap offset.
+ * \param _arrIn The byte array containing the data to write to the Lowspeed
+ * module IOMap.
+ */
 #define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrIn)
+
+/**
+ * Set Display module IOMap bytes.
+ * Modify one or more bytes of data in the Display module IOMap structure. You
+ * provide the offset into the Display module IOMap structure where you want to
+ * start writing, the number of bytes to write at that location, and a byte
+ * array containing the new data.
+ * \param _offset The number of bytes offset from the start of the Display module
+ * IOMap structure where the data should be written. See \ref DisplayIOMAP.
+ * \param _cnt The number of bytes to write at the specified Display module
+ * IOMap offset.
+ * \param _arrIn The byte array containing the data to write to the Display
+ * module IOMap.
+ */
 #define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrIn)
+
+/**
+ * Set Comm module IOMap bytes.
+ * Modify one or more bytes of data in an IOMap structure. You provide the
+ * offset into the Comm module IOMap structure where you want to start writing,
+ * the number of bytes to write at that location, and a byte array containing
+ * the new data.
+ * \param _offset The number of bytes offset from the start of the Comm module
+ * IOMap structure where the data should be written. See \ref CommIOMAP.
+ * \param _cnt The number of bytes to write at the specified Comm module IOMap
+ * offset.
+ * \param _arrIn The byte array containing the data to write to the Comm module
+ * IOMap.
+ */
 #define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommModuleID, _offset, _cnt, _arrIn)
 
 #else
@@ -9288,17 +10770,317 @@ ends
 
 #endif
 
+/**
+ * Get IOMap bytes by name.
+ * Read one or more bytes of data from an IOMap structure. The IOMap
+ * structure is specified by its module name. You also provide the offset into
+ * the IOMap structure where you want to start reading, the number of bytes to
+ * read from that location, and a byte array where the data will be stored.
+ * \param _modName The module name of the IOMap. See \ref ModuleNameConstants.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the data should be read
+ * \param _cnt The number of bytes to read from the specified IOMap
+ * offset.
+ * \param _arrOut A byte array that will contain the data read from the IOMap
+ */
+#define GetIOMapBytes(_modName, _offset, _cnt, _arrOut) __getIOMapBytes(_modName, _offset, _cnt, _arrOut)
 
-#define PowerDown SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN)
-#define RebootInFirmwareMode SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_BOOT)
+/**
+ * Get IOMap value by name.
+ * Read a value from an IOMap structure.  The IOMap
+ * structure is specified by its module name. You also provide the offset into
+ * the IOMap structure where you want to read the value along with a variable
+ * that will contain the IOMap value.
+ * \param _modName The module name of the IOMap. See \ref ModuleNameConstants.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read
+ * \param _n A variable that will contain the value read from the IOMap
+ */
+#define GetIOMapValue(_modName, _offset, _n) __getIOMapValue(_modName, _offset, _n)
 
-#define SetSoundFrequency(_n) __setSoundFrequency(_n)
-#define SetSoundDuration(_n) __setSoundDuration(_n)
-#define SetSoundSampleRate(_n) __setSoundSampleRate(_n)
-#define SetSoundFlags(_n) __setSoundFlags(_n)
-#define SetSoundModuleState(_n) __setSoundModuleState(_n)
-#define SetSoundMode(_n) __setSoundMode(_n)
-#define SetSoundVolume(_n) __setSoundVolume(_n)
+#ifdef __ENHANCED_FIRMWARE
+
+/**
+ * Get IOMap bytes by ID.
+ * Read one or more bytes of data from an IOMap structure. The IOMap
+ * structure is specified by its Module ID. You also provide the offset into
+ * the IOMap structure where you want to start reading, the number of bytes to
+ * read from that location, and a byte array where the data will be stored.
+ * \param _modID The module ID of the IOMap. See \ref ModuleIDConstants.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the data should be read.
+ * \param _cnt The number of bytes to read from the specified IOMap
+ * offset.
+ * \param _arrOut A byte array that will contain the data read from the IOMap.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define GetIOMapBytesByID(_modID, _offset, _cnt, _arrOut) __getIOMapBytesByID(_modID, _offset, _cnt, _arrOut)
+
+/**
+ * Get IOMap value by ID.
+ * Read a value from an IOMap structure.  The IOMap
+ * structure is specified by its Module ID. You also provide the offset into
+ * the IOMap structure where you want to read the value along with a variable
+ * that will contain the IOMap value.
+ * \param _modID The module ID of the IOMap. See \ref ModuleIDConstants.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read.
+ * \param _n A variable that will contain the value read from the IOMap.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define GetIOMapValueByID(_modID, _offset, _n) __getIOMapValueByID(_modID, _offset, _n)
+
+/**
+ * Get Command module IOMap value.
+ * Read a value from the Command module IOMap structure.  You provide the
+ * offset into the Command module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref CommandIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetCommandModuleValue(_offset, _n) GetIOMapValueByID(CommandModuleID, _offset, _n)
+
+/**
+ * Get Loader module IOMap value.
+ * Read a value from the Loader module IOMap structure.  You provide the
+ * offset into the Loader module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref LoaderIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetLoaderModuleValue(_offset, _n) GetIOMapValueByID(LoaderModuleID, _offset, _n)
+
+/**
+ * Get Sound module IOMap value.
+ * Read a value from the Sound module IOMap structure.  You provide the
+ * offset into the Sound module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref SoundIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetSoundModuleValue(_offset, _n) GetIOMapValueByID(SoundModuleID, _offset, _n)
+
+/**
+ * Get Button module IOMap value.
+ * Read a value from the Button module IOMap structure.  You provide the
+ * offset into the Button module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref ButtonzIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetButtonModuleValue(_offset, _n) GetIOMapValueByID(ButtonModuleID, _offset, _n)
+
+/**
+ * Get Ui module IOMap value.
+ * Read a value from the Ui module IOMap structure.  You provide the
+ * offset into the Ui module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref UiIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetUIModuleValue(_offset, _n) GetIOMapValueByID(UIModuleID, _offset, _n)
+
+/**
+ * Get Input module IOMap value.
+ * Read a value from the Input module IOMap structure.  You provide the
+ * offset into the Input module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref InputIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetInputModuleValue(_offset, _n) GetIOMapValueByID(InputModuleID, _offset, _n)
+
+/**
+ * Get Output module IOMap value.
+ * Read a value from the Output module IOMap structure.  You provide the
+ * offset into the Output module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref OutputIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetOutputModuleValue(_offset, _n) GetIOMapValueByID(OutputModuleID, _offset, _n)
+
+/**
+ * Get LowSpeed module IOMap value.
+ * Read a value from the LowSpeed module IOMap structure.  You provide the
+ * offset into the Command module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref LowSpeedIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValueByID(LowSpeedModuleID, _offset, _n)
+
+/**
+ * Get Display module IOMap value.
+ * Read a value from the Display module IOMap structure.  You provide the
+ * offset into the Display module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref DisplayIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetDisplayModuleValue(_offset, _n) GetIOMapValueByID(DisplayModuleID, _offset, _n)
+
+/**
+ * Get Comm module IOMap value.
+ * Read a value from the Comm module IOMap structure.  You provide the
+ * offset into the Comm module IOMap structure where you want to read
+ * the value from along with a variable that will store the value. The type
+ * of the variable determines how many bytes are read from the IOMap.
+ * \param _offset The number of bytes offset from the start of the IOMap
+ * structure where the value should be read. See \ref CommIOMAP.
+ * \param _n A variable that will contain the value read from the IOMap.
+ */
+#define GetCommModuleValue(_offset, _n) GetIOMapValueByID(CommModuleID, _offset, _n)
+
+#else
+
+#define GetCommandModuleValue(_offset, _n) GetIOMapValue(CommandModuleName, _offset, _n)
+#define GetLoaderModuleValue(_offset, _n) GetIOMapValue(LoaderModuleName, _offset, _n)
+#define GetSoundModuleValue(_offset, _n) GetIOMapValue(SoundModuleName, _offset, _n)
+#define GetButtonModuleValue(_offset, _n) GetIOMapValue(ButtonModuleName, _offset, _n)
+#define GetUIModuleValue(_offset, _n) GetIOMapValue(UIModuleName, _offset, _n)
+#define GetInputModuleValue(_offset, _n) GetIOMapValue(InputModuleName, _offset, _n)
+#define GetOutputModuleValue(_offset, _n) GetIOMapValue(OutputModuleName, _offset, _n)
+#define GetLowSpeedModuleValue(_offset, _n) GetIOMapValue(LowSpeedModuleName, _offset, _n)
+#define GetDisplayModuleValue(_offset, _n) GetIOMapValue(DisplayModuleName, _offset, _n)
+#define GetCommModuleValue(_offset, _n) GetIOMapValue(CommModuleName, _offset, _n)
+
+#endif
+
+/**
+ * Get Lowspeed module IOMap bytes.
+ * Read one or more bytes of data from Lowspeed module IOMap structure.
+ * You provide the offset into the Lowspeed module IOMap structure where you
+ * want to start reading, the number of bytes to read from that location, and
+ * a byte array where the data will be stored.
+ * \param _offset The number of bytes offset from the start of the Lowspeed
+ * module IOMap structure where the data should be read. See \ref LowSpeedIOMAP.
+ * \param _cnt The number of bytes to read from the specified Lowspeed module
+ * IOMap offset.
+ * \param _arrOut A byte array that will contain the data read from the Lowspeed
+ * module IOMap.
+ */
+#define GetLowSpeedModuleBytes(_offset, _cnt, _arrOut) __getLowSpeedModuleBytes(_offset, _cnt, _arrOut)
+
+/**
+ * Get Display module IOMap bytes.
+ * Read one or more bytes of data from Display module IOMap structure.
+ * You provide the offset into the Display module IOMap structure where you
+ * want to start reading, the number of bytes to read from that location, and
+ * a byte array where the data will be stored.
+ * \param _offset The number of bytes offset from the start of the Display
+ * module IOMap structure where the data should be read. See \ref DisplayIOMAP.
+ * \param _cnt The number of bytes to read from the specified Display module
+ * IOMap offset.
+ * \param _arrOut A byte array that will contain the data read from the Display
+ * module IOMap.
+ */
+#define GetDisplayModuleBytes(_offset, _cnt, _arrOut) __getDisplayModuleBytes(_offset, _cnt, _arrOut)
+
+/**
+ * Get Comm module IOMap bytes.
+ * Read one or more bytes of data from Comm module IOMap structure.
+ * You provide the offset into the Comm module IOMap structure where you
+ * want to start reading, the number of bytes to read from that location, and
+ * a byte array where the data will be stored.
+ * \param _offset The number of bytes offset from the start of the Comm module
+ * IOMap structure where the data should be read. See \ref CommIOMAP.
+ * \param _cnt The number of bytes to read from the specified Comm module
+ * IOMap offset.
+ * \param _arrOut A byte array that will contain the data read from the Comm
+ * module IOMap.
+ */
+#define GetCommModuleBytes(_offset, _cnt, _arrOut) __getCommModuleBytes(_offset, _cnt, _arrOut)
+
+/**
+ * Get Command module IOMap bytes.
+ * Read one or more bytes of data from Command module IOMap structure.
+ * You provide the offset into the Command module IOMap structure where you
+ * want to start reading, the number of bytes to read from that location, and
+ * a byte array where the data will be stored.
+ * \param _offset The number of bytes offset from the start of the Command module
+ * IOMap structure where the data should be read. See \ref CommandIOMAP.
+ * \param _cnt The number of bytes to read from the specified Command module
+ * IOMap offset.
+ * \param _arrOut A byte array that will contain the data read from the Command
+ * module IOMap.
+ */
+#define GetCommandModuleBytes(_offset, _cnt, _arrOut) __getCommandModuleBytes(_offset, _cnt, _arrOut)
+
+/**
+ * Reset the sleep timer.
+ * This function lets you reset the sleep timer.
+ *
+ */
+#define ResetSleepTimer syscall KeepAlive, __KeepAliveArgs
+
+/**
+ * Get the first tick.
+ * Return an unsigned 32-bit value, which is the system timing value
+ * (called a "tick") in milliseconds at the time that the program began
+ * running.
+ *
+ * \param _value The tick count at the start of program execution.
+ */
+#define GetFirstTick(_value) __GetFirstTick(_value)
+
+// not ready to be documented
+#define SpawnProgram(_fname) __spawnProgram(_fname)
+
+/**
+ * Wait some milliseconds.
+ * Make a task sleep for specified amount of time (in 1000ths of a second).
+ *
+ * \param _n The number of milliseconds to sleep.
+ */
+#define Wait(_n) waitv _n
+
+/** @} */ // end of CommandModuleFunctions group
+/** @} */ // end of CommandModule group
+/** @} */ // end of NXTFirmwareModules group
+
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// BUTTON MODULE ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup ButtonModule
+ * @{
+ */
+/** @defgroup ButtonModuleFunctions Button module functions
+ * Functions for accessing and modifying Button module features.
+ * @{
+ */
+#define ReadButtonEx(_idx, _reset, _pressed, _count, _result) __ReadButtonEx(_idx, _reset, _pressed, _count, _result)
+
+#define GetButtonPressCount(_b, _n) __GetButtonPressCount(_b, _n)
+#define GetButtonLongPressCount(_b, _n) __GetButtonLongPressCount(_b, _n)
+#define GetButtonShortReleaseCount(_b, _n) __GetButtonShortReleaseCount(_b, _n)
+#define GetButtonLongReleaseCount(_b, _n) __GetButtonLongReleaseCount(_b, _n)
+#define GetButtonReleaseCount(_b, _n) __GetButtonReleaseCount(_b, _n)
+#define GetButtonState(_b, _n) __GetButtonState(_b, _n)
 
 #define SetButtonPressCount(_b, _n) __setButtonPressCount(_b, _n)
 #define SetButtonLongPressCount(_b, _n) __setButtonLongPressCount(_b, _n)
@@ -9306,76 +11088,1167 @@ ends
 #define SetButtonLongReleaseCount(_b, _n) __setButtonLongReleaseCount(_b, _n)
 #define SetButtonReleaseCount(_b, _n) __setButtonReleaseCount(_b, _n)
 #define SetButtonState(_b, _n) __setButtonState(_b, _n)
+            
+/** @} */ // end of ButtonModuleFunctions group
+/** @} */ // end of ButtonModule group
+/** @} */ // end of NXTFirmwareModules group
 
+
+///////////////////////////////////////////////////////////////////////////////
+////////////////////////////////// UI MODULE //////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup UiModule
+ * @{
+ */
+/** @defgroup UiModuleFunctions Ui module functions
+ * Functions for accessing and modifying Ui module features.
+ * @{
+ */
+
+/**
+ * Set command flags.
+ * Set the command flags.
+ *
+ * \param _n The new command flags. See \ref UiFlagsConstants.
+ */
 #define SetCommandFlags(_n) __setCommandFlags(_n)
+
+/**
+ * Set UI state.
+ * Set the user interface state.
+ *
+ * \param _n A user interface state value. See \ref UiStateConstants.
+ */
 #define SetUIState(_n) __setUIState(_n)
+
+/**
+ * Set UI button.
+ * Set user interface button information.
+ *
+ * \param _n A user interface button value. See \ref UiButtonConstants.
+ */
 #define SetUIButton(_n) __setUIButton(_n)
+
+/**
+ * Set VM run state.
+ * Set VM run state information.
+ *
+ * \param _n The desired VM run state. See \ref UiVMRunStateConstants.
+ */
 #define SetVMRunState(_n) __setVMRunState(_n)
+
+/**
+ * Set battery state.
+ * Set battery state information.
+ *
+ * \param _n The desired battery state (0..4).
+ */
 #define SetBatteryState(_n) __setBatteryState(_n)
+
+/**
+ * Set bluetooth state.
+ * Set the Bluetooth state.
+ *
+ * \param _n The desired bluetooth state. See \ref UiBluetoothStateConstants.
+ */
 #define SetBluetoothState(_n) __setBluetoothState(_n)
+
 #define SetUsbState(_n) __setUsbState(_n)
+
+/**
+ * Set sleep timeout.
+ * Set the NXT sleep timeout value to the specified number of minutes.
+ *
+ * \param _n The minutes to wait before sleeping.
+ */
 #define SetSleepTimeout(_n) __setSleepTimeout(_n)
+
+/**
+ * Set the sleep timer.
+ * Set the system sleep timer to the specified number of minutes.
+ *
+ * \param _n The minutes left on the timer.
+ */
 #define SetSleepTimer(_n) __setSleepTimer(_n)
+
+/**
+ * Set volume.
+ * Set the user interface volume level. Valid values are from 0 to 4.
+ *
+ * \param _n The new volume level.
+ */
 #define SetVolume(_n) __setVolume(_n)
+
+/**
+ * Set on-brick program pointer.
+ * Set the current OBP (on-brick program) step.
+ *
+ * \param _n The new on-brick program step.
+ */
 #define SetOnBrickProgramPointer(_n) __setOnBrickProgramPointer(_n)
+
+/**
+ * Turn off NXT.
+ * Force the NXT to turn off if the specified value is greater than zero.
+ * \param _n If greater than zero the NXT will turn off.
+*/
 #define ForceOff(_n) __forceOff(_n)
+
+/**
+ * Set abort flag.
+ * Set the enhanced NBC/NXC firmware's program abort flag. By default the
+ * running program can be interrupted by a short press of the escape button.
+ * You can change this to any other button state flag.
+ *
+ * \param _n The new abort flag value. See \ref ButtonStateConstants
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 #define SetAbortFlag(_n) __setAbortFlag(_n)
 
-#define SetInCustomZeroOffset(_p, _n) __setInCustomZeroOffset(_p, _n)
-#define SetInSensorBoolean(_p, _n) __setInSensorBoolean(_p, _n)
-#define SetInDigiPinsDirection(_p, _n) __setInDigiPinsDirection(_p, _n)
-#define SetInDigiPinsStatus(_p, _n) __setInDigiPinsStatus(_p, _n)
-#define SetInDigiPinsOutputLevel(_p, _n) __setInDigiPinsOutputLevel(_p, _n)
-#define SetInCustomPercentFullScale(_p, _n) __setInCustomPercentFullScale(_p, _n)
-#define SetInCustomActiveStatus(_p, _n) __setInCustomActiveStatus(_p, _n)
+/**
+ * Get battery Level.
+ * Return the battery level in millivolts.
+ * \param _n The battery level
+ */
+#define GetBatteryLevel(_n) __GetBatteryLevel(_n)
 
-#define SetOutPwnFreq(_n) __setOutPwnFreq(_n)
 
-#define SetLSInputBuffer(_p, _offset, _cnt, _data) __setLSInputBuffer(_p, _offset, _cnt, _data)
-#define SetLSInputBufferInPtr(_p, _n) __setLSInputBufferInPtr(_p, _n)
-#define SetLSInputBufferOutPtr(_p, _n) __setLSInputBufferOutPtr(_p, _n)
-#define SetLSInputBufferBytesToRx(_p, _n) __setLSInputBufferBytesToRx(_p, _n)
+/**
+ * Get command flags.
+ * Return the command flags.
+ * \param _n Command flags. See \ref UiFlagsConstants
+ */
+#define GetCommandFlags(_n) __GetCommandFlags(_n)
 
-#define SetLSOutputBuffer(_p, _offset, _cnt, _data) __setLSOutputBuffer(_p, _offset, _cnt, _data)
-#define SetLSOutputBufferInPtr(_p, _n) __setLSOutputBufferInPtr(_p, _n)
-#define SetLSOutputBufferOutPtr(_p, _n) __setLSOutputBufferOutPtr(_p, _n)
-#define SetLSOutputBufferBytesToRx(_p, _n) __setLSOutputBufferBytesToRx(_p, _n)
+/**
+ * Get UI module state.
+ * Return the user interface state.
+ * \param _n The UI module state. See \ref UiStateConstants.
+ */
+#define GetUIState(_n) __GetUIState(_n)
 
-#define SetLSMode(_p, _n) __setLSMode(_p, _n)
-#define SetLSChannelState(_p, _n) __setLSChannelState(_p, _n)
-#define SetLSErrorType(_p, _n) __setLSErrorType(_p, _n)
-#define SetLSState(_n) __setLSState(_n)
-#define SetLSSpeed(_n) __setLSSpeed(_n)
+/**
+ * Read UI button.
+ * Return user interface button information.
+ * \param _n A UI button value.  See \ref UiButtonConstants.
+ */
+#define GetUIButton(_n) __GetUIButton(_n)
+
+/**
+ * Read VM run state.
+ * Return VM run state information.
+ * \param _n VM run state. See \ref UiVMRunStateConstants.
+ */
+#define GetVMRunState(_n) __GetVMRunState(_n)
+
+/**
+ * Get battery state.
+ * Return battery state information (0..4).
+ * \param _n The battery state (0..4)
+ */
+#define GetBatteryState(_n) __GetBatteryState(_n)
+
+/**
+ * Get bluetooth state.
+ * Return the bluetooth state.
+ * \param _n The bluetooth state. See \ref UiBluetoothStateConstants.
+ */
+#define GetBluetoothState(_n) __GetBluetoothState(_n)
+
+/**
+ * Get UI module USB state.
+ * This method returns the UI module USB state.
+ * \param _n The UI module USB state.  (0=disconnected, 1=connected, 2=working)
+ */
+#define GetUsbState(_n) __GetUsbState(_n)
+
+/**
+ * Read sleep timeout.
+ * Return the number of minutes that the NXT will remain on before
+ * it automatically shuts down.
+ * \param _n The sleep timeout value
+ */
+#define GetSleepTimeout(_n) __GetSleepTimeout(_n)
+
+/**
+ * Read sleep timer.
+ * Return the number of minutes left in the countdown to zero from the
+ * original SleepTimeout value. When the SleepTimer value reaches zero the
+ * NXT will shutdown.
+ * \param _n The sleep timer value
+ */
+#define GetSleepTimer(_n) __GetSleepTimer(_n)
+
+/**
+ * Read battery type.
+ * Return whether the NXT has a rechargeable battery installed or not.
+ * \param _n Whether the battery is rechargeable or not. (false = no, true = yes)
+ */
+#define GetRechargeableBattery(_n) __GetRechargeableBattery(_n)
+
+/**
+ * Read volume.
+ * Return the user interface volume level. Valid values are from 0 to 4.
+ * \param _n The UI module volume. (0..4)
+ */
+#define GetVolume(_n) __GetVolume(_n)
+
+/**
+ * Read the on brick program pointer value.
+ * Return the current OBP (on-brick program) step
+ *
+ * \param _n On brick program pointer (step).
+ */
+#define GetOnBrickProgramPointer(_n) __GetOnBrickProgramPointer(_n)
+
+/**
+ * Read abort flag.
+ * Return the enhanced NBC/NXC firmware's abort flag.
+ *
+ * \param _n The current abort flag value.  See \ref ButtonStateConstants.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+*/
+#define GetAbortFlag(_n) __GetAbortFlag(_n)
+
+/** @} */ // end of UiModuleFunctions group
+/** @} */ // end of UiModule group
+/** @} */ // end of NXTFirmwareModules group
+
+
+#define Random(_arg,_max) __Random(_arg,_max)
+#define SignedRandom(_arg) __SignedRandom(_arg)
+
+#define GetFreeMemory(_value) __GetFreeMemory(_value)
+
+
+///////////////////////////////////////////////////////////////////////////////
+///////////////////////////////// COMM MODULE /////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup CommModule
+ * @{
+ */
+/** @defgroup CommModuleFunctions Comm module functions
+ * Functions for accessing and modifying Comm module features.
+ * @{
+ */
+
+/**
+ * Send a message to a queue/mailbox.
+ * Write a message into a local mailbox.
+ * 
+ * \param _queue The mailbox number. See \ref MailboxConstants.
+ * \param _msg The message to write to the mailbox.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define SendMessage(_queue, _msg, _result) __sendMessage(_queue, _msg, _result)
+
+/**
+ * Read a message from a queue/mailbox.
+ * Read a message from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.
+ *
+ * \param _queue The mailbox number. See \ref MailboxConstants.
+ * \param _clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param _msg The message that is read from the mailbox.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define ReceiveMessage(_queue, _clear, _msg, _result) __receiveMessage(_queue, _clear, _msg, _result)
+
+/**
+ * Read a boolean value from a queue/mailbox.
+ * Read a boolean value from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.
+ *
+ * \param _queue The mailbox number. See \ref MailboxConstants.
+ * \param _clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param _bval The boolean value that is read from the mailbox.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define ReceiveRemoteBool(_queue, _clear, _bval, _result) __receiveRemoteBool(_queue, _clear, _bval, _result)
+
+/**
+ * Read a numeric value from a queue/mailbox.
+ * Read a numeric value from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.
+ *
+ * \param _queue The mailbox number. See \ref MailboxConstants.
+ * \param _clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param _val The numeric value that is read from the mailbox.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define ReceiveRemoteNumber(_queue, _clear, _val, _result) __receiveRemoteNumber(_queue, _clear, _val, _result)
+
+/**
+ * Read a string value from a queue/mailbox.
+ * Read a string value from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.
+ *
+ * \param _queue The mailbox number. See \ref MailboxConstants.
+ * \param _clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param _str The string value that is read from the mailbox.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define ReceiveRemoteString(_queue, _clear, _str, _result) __receiveMessage(_queue, _clear, _str, _result)
+
+/**
+ * Read a value from a queue/mailbox.
+ * Read a value from a mailbox and optionally remove it.  If the local mailbox
+ * is empty and this NXT is the master then it attempts to poll one of its
+ * slave NXTs for a message from the response mailbox that corresponds to the
+ * specified local mailbox number.  Output the value in string, number, and
+ * boolean form.
+ *
+ * \param _queue The mailbox number. See \ref MailboxConstants.
+ * \param _clear A flag indicating whether to remove the message from the mailbox
+ * after it has been read.
+ * \param _str The string value that is read from the mailbox.
+ * \param _val The numeric value that is read from the mailbox.
+ * \param _bval The boolean value that is read from the mailbox.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define ReceiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, _result) __receiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, _result)
+
+/**
+ * Write a string value to a local response mailbox.
+ * Write a string value to a response mailbox (the mailbox number + 10).
+ *
+ * \param _queue The mailbox number. See \ref MailboxConstants. This function
+ * shifts the specified value into the range of response mailbox numbers by
+ * adding 10.
+ * \param _msg The string value to write.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define SendResponseString(_queue, _msg, _result) __sendResponseString(_queue, _msg, _result)
+
+/**
+ * Write a boolean value to a local response mailbox.
+ * Write a boolean value to a response mailbox (the mailbox number + 10).
+ *
+ * \param _queue The mailbox number. See \ref MailboxConstants. This function
+ * shifts the specified value into the range of response mailbox numbers by
+ * adding 10.
+ * \param _bval The boolean value to write.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define SendResponseBool(_queue, _bval, _result) __sendResponseBool(_queue, _bval, _result)
+
+/**
+ * Write a numeric value to a local response mailbox.
+ * Write a numeric value to a response mailbox (the mailbox number + 10).
+ *
+ * \param _queue The mailbox number. See \ref MailboxConstants. This function
+ * shifts the specified value into the range of response mailbox numbers by
+ * adding 10.
+ * \param _val The numeric value to write.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define SendResponseNumber(_queue, _val, _result) __sendResponseNumber(_queue, _val, _result)
+
+/**
+ * Check bluetooth status.
+ * Check the status of the bluetooth subsystem for the specified connection slot.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _result The bluetooth status for the specified connection.
+ */
+#define BluetoothStatus(_conn, _result) __bluetoothStatus(_conn, _result)
+
+/**
+ * Write to a bluetooth connection.
+ * This method tells the NXT firmware to write the data in the buffer to the
+ * device on the specified Bluetooth connection. Use \ref BluetoothStatus to
+ * determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _buffer The data to be written (up to 128 bytes)
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define BluetoothWrite(_conn, _buffer, _result) __bluetoothWrite(_conn, _buffer, _result)
+
+/**
+ * Send a boolean value to a remote mailbox.
+ * Send a boolean value via bluetooth on the specified connection to the
+ * specified remote mailbox number.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _queue The mailbox number. See \ref MailboxConstants.
+ * \param _bval The boolean value to send.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define SendRemoteBool(_conn, _queue, _bval, _result) __sendRemoteBool(_conn, _queue, _bval, _result)
+
+/**
+ * Send a numeric value to a remote mailbox.
+ * Send a numeric value via bluetooth on the specified connection to the
+ * specified remote mailbox number.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _queue The mailbox number. See \ref MailboxConstants.
+ * \param _val The numeric value to send.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define SendRemoteNumber(_conn, _queue, _val, _result) __sendRemoteNumber(_conn, _queue, _val, _result)
+
+/**
+ * Send a string value to a remote mailbox.
+ * Send a string value via bluetooth on the specified connection to the
+ * specified remote mailbox number.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _queue The mailbox number. See \ref MailboxConstants.
+ * \param _str The string value to send.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define SendRemoteString(_conn, _queue, _str, _result) __sendRemoteString(_conn, _queue, _str, _result)
+
+/**
+ * Send a MessageRead message.
+ * This method sends a MessageRead direct command to the device on the
+ * specified connection. Use \ref BluetoothStatus to determine when this write
+ * request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _queue The mailbox to read. See \ref MailboxConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteMessageRead(_conn, _queue, _result) __remoteMessageRead(_conn, _queue, _result)
+
+/**
+ * Send a MessageWrite message.
+ * This method sends a MessageWrite direct command to the device on the
+ * specified connection. Use \ref BluetoothStatus to determine when this write
+ * request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _queue The mailbox to write. See \ref MailboxConstants.
+ * \param _msg The message to write to the mailbox.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteMessageWrite(_conn, _queue, _msg, _result) __sendRemoteString(_conn, _queue, _msg, _result)
+
+/**
+ * Send a StartProgram message.
+ * Send the StartProgram direct command on the specified connection slot.
+ * Use \ref BluetoothStatus to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _filename The name of the program to start running.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteStartProgram(_conn, _filename, _result) __remoteStartProgram(_conn, _filename, _result)
+
+/**
+ * Send a StopProgram message.
+ * Send the StopProgram direct command on the specified connection slot.
+ * Use \ref BluetoothStatus to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteStopProgram(_conn, _result) __bluetoothWrite(_conn, __DCStopProgramPacket, _result)
+
+/**
+ * Send a PlaySoundFile message.
+ * Send the PlaySoundFile direct command on the specified connection slot.
+ * Use \ref BluetoothStatus to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _filename The name of the sound file to play.
+ * \param _bloop A boolean value indicating whether to loop the sound file or not.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemotePlaySoundFile(_conn, _filename, _bloop, _result) __remotePlaySoundFile(_conn, _filename, _bloop, _result)
+
+/**
+ * Send a PlayTone message.
+ * Send the PlayTone direct command on the specified connection slot.
+ * Use \ref BluetoothStatus to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _frequency The frequency of the tone.
+ * \param _duration The duration of the tone.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemotePlayTone(_conn, _frequency, _duration, _result) __remotePlayTone(_conn, _frequency, _duration, _result)
+
+/**
+ * Send a StopSound message.
+ * Send the StopSound direct command on the specified connection slot.
+ * Use \ref BluetoothStatus to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteStopSound(_conn, _result) __bluetoothWrite(_conn, __DCStopSoundPacket, _result)
+
+/**
+ * Send a KeepAlive message.
+ * This method sends a KeepAlive direct command to the device on the specified
+ * connection. Use \ref BluetoothStatus to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteKeepAlive(_conn, _result) __bluetoothWrite(_conn, __DCKeepAlivePacket, _result)
+
+/**
+ * Send a ResetScaledValue message.
+ * Send the ResetScaledValue direct command on the specified connection slot.
+ * Use \ref BluetoothStatus to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _port The input port to reset.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteResetScaledValue(_conn, _port, _result) __remoteResetScaledValue(_conn, _port, _result)
+
+/**
+ * Send a ResetMotorPosition message.
+ * Send the ResetMotorPosition direct command on the specified connection slot.
+ * Use \ref BluetoothStatus to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _port The output port to reset.
+ * \param _brelative A flag indicating whether the counter to reset is relative.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteResetMotorPosition(_conn, _port, _brelative, _result) __remoteResetMotorPosition(_conn, _port, _brelative, _result)
+
+/**
+ * Send a SetInputMode message.
+ * Send the SetInputMode direct command on the specified connection slot.
+ * Use \ref BluetoothStatus to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _port The input port to configure. See \ref InPorts.
+ * \param _type The sensor type. See \ref SensorTypes.
+ * \param _mode The sensor mode. See \ref SensorModes.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteSetInputMode(_conn, _port, _type, _mode, _result) __remoteSetInputMode(_conn, _port, _type, _mode, _result)
+
+/**
+ * Send a SetOutputMode message.
+ * Send the SetOutputMode direct command on the specified connection slot.
+ * Use \ref BluetoothStatus to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..3).
+ * \param _port The output port to configure. See \ref OutputPortConstants.
+ * \param _speed The motor speed. (-100..100)
+ * \param _mode The motor mode. See \ref OutModeConstants.
+ * \param _regmode The motor regulation mode. See \ref OutRegModeConstants.
+ * \param _turnpct The motor synchronized turn percentage. (-100..100)
+ * \param _runstate The motor run state. See \ref OutRunStateConstants.
+ * \param _tacholimit The motor tachometer limit.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result) \
+  __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result)
 
 #ifdef __ENHANCED_FIRMWARE
-#define SetLSNoRestartOnRead(_n) __setLSNoRestartOnRead(_n)
+
+/**
+ * Check RS485 status.
+ * Check the status of the RS485 hi-speed port.
+ *
+ * \param _sendingData A boolean value set to true on output if data is being sent.
+ * \param _dataAvail A boolean value set to true on output if data is available to be read.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define RS485Status(_sendingData, _dataAvail) __RS485Status(_sendingData, _dataAvail)
+
+/**
+ * Write RS485 data.
+ * Write data to the RS485 hi-speed port.
+ *
+ * \param _buffer A byte array containing the data to write to the RS485 port.
+ * \param _status A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define RS485Write(_buffer, _status) __RS485Write(_buffer, _status)
+
+/**
+ * Read RS485 data.
+ * Read data from the RS485 hi-speed port.
+ *
+ * \param _buffer A byte array that will contain the data read from the RS485 port.
+ * \param _status A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define RS485Read(_buffer, _status) __RS485Read(_buffer, _status)
+
+#if __FIRMWARE_VERSION > 107
+
+/**
+ * Control the RS485 port.
+ * Control the RS485 hi-speed port using the specified parameters.
+ *
+ * \param _cmd The control command to send to the port. See \ref CommHiSpeedCtrlConstants.
+ * \param _baud The baud rate for the RS485 port. See \ref CommHiSpeedBaudConstants.
+ * \param _mode The RS485 port mode (data bits, stop bits, parity).  See \ref
+ * CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants, \ref
+ * CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define RS485Control(_cmd, _baud, _mode, _result) __RS485Control(_cmd, _baud, _mode, _result)
+
+/**
+ * Configure RS485 UART.
+ * Configure the RS485 UART parameters, including baud rate, data bits,
+ * stop bits, and parity.
+ *
+ * \param _baud The baud rate for the RS485 port. See \ref CommHiSpeedBaudConstants.
+ * \param _mode The RS485 port mode (data bits, stop bits, parity).  See \ref
+ * CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants, \ref
+ * CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define RS485Uart(_baud, _mode, _result) __RS485Control(HS_CTRL_UART, _baud, _mode, _result)
+
+/**
+ * Initialize RS485.
+ * Initialize the RS485 hi-speed port so that it can be used.
+ *
+ * \param _result A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, 0, _result)
+
+/**
+ * Exit RS485.
+ * Turn off the RS485 port.
+ *
+ * \param _result A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, 0, _result)
+
+#else
+
+#define RS485Control(_cmd, _baud, _result) __RS485Control(_cmd, _baud, _result)
+#define RS485Uart(_baud, _result) __RS485Control(HS_CTRL_UART, _baud, _result)
+#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, _result)
+#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, _result)
+
 #endif
 
-#define SpawnProgram(_fname) __spawnProgram(_fname)
+/**
+ * Write RS485 boolean.
+ * Write a boolean value to the RS485 hi-speed port.
+ *
+ * \param _bval A boolean value to write over the RS485 port.
+ * \param _status A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define SendRS485Bool(_bval, _status) __sendRS485Bool(_bval, _status)
 
-#define SetDisplayEraseMask(_n) __setDisplayEraseMask(_n)
-#define SetDisplayUpdateMask(_n) __setDisplayUpdateMask(_n)
-#define SetDisplayFont(_n) __setDisplayFont(_n)
-#define SetDisplayDisplay(_n) __setDisplayDisplay(_n)
-#define SetDisplayFlags(_n) __setDisplayFlags(_n)
-#define SetDisplayTextLinesCenterFlags(_n) __setDisplayTextLinesCenterFlags(_n)
+/**
+ * Write RS485 numeric.
+ * Write a numeric value to the RS485 hi-speed port.
+ *
+ * \param _val A numeric value to write over the RS485 port.
+ * \param _status A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define SendRS485Number(_val, _status) __sendRS485Number(_val, _status)
 
-#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define SetDisplayContrast(_n) __setDisplayContrast(_n)
+/**
+ * Write RS485 string.
+ * Write a string value to the RS485 hi-speed port.
+ *
+ * \param _str A string value to write over the RS485 port.
+ * \param _status A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define SendRS485String(_str, _status) __sendRS485String(_str, _status)
+
 #endif
 
-#define SetDisplayNormal(_x, _line, _cnt, _data) __setDisplayNormal(_x, _line, _cnt, _data)
-#define SetDisplayPopup(_x, _line, _cnt, _data) __setDisplayPopup(_x, _line, _cnt, _data)
+/**
+ * Get bluetooth device name.
+ * This method returns the name of the device at the specified index in the
+ * Bluetooth device table.
+ * \param _p The device table index.
+ * \param _str The device name of the specified bluetooth device.
+ */
+#define GetBTDeviceName(_p, _str) __GetBTDeviceName(_p, _str)
+
+/**
+ * Get bluetooth device class.
+ * This method returns the class of the device at the specified index within
+ * the Bluetooth device table.
+ * \param _p The device table index.
+ * \param _n The device class of the specified bluetooth device.
+ */
+#define GetBTDeviceClass(_p, _n) __GetBTDeviceClass(_p, _n)
+
+/**
+ * Get bluetooth device address.
+ * This method reads the address of the device at the specified index within
+ * the Bluetooth device table and stores it in the data buffer provided.
+ * \param _p The device table index.
+ * \param _addr The byte array reference that will contain the device address.
+ */
+#define GetBTDeviceAddress(_p, _addr) __getBTDeviceAddress(_p, _addr)
+
+/**
+ * Get bluetooth device status.
+ * This method returns the status of the device at the specified index within
+ * the Bluetooth device table.
+ * \param _p The device table index.
+ * \param _n The status of the specified bluetooth device.
+ */
+#define GetBTDeviceStatus(_p, _n) __GetBTDeviceStatus(_p, _n)
+
+/**
+ * Get bluetooth device name.
+ * This method returns the name of the device at the specified index in the
+ * Bluetooth connection table.
+ * \param _p The connection slot (0..3).
+ * \param _str The name of the bluetooth device at the specified connection slot.
+ */
+#define GetBTConnectionName(_p, _str) __GetBTConnectionName(_p, _str)
+
+/**
+ * Get bluetooth device class.
+ * This method returns the class of the device at the specified index within
+ * the Bluetooth connection table.
+ * \param _p The connection slot (0..3).
+ * \param _n The class of the bluetooth device at the specified connection slot.
+ */
+#define GetBTConnectionClass(_p, _n) __GetBTConnectionClass(_p, _n)
+
+/**
+ * Get bluetooth device pin code.
+ * This method returns the pin code of the device at the specified index in the
+ * Bluetooth connection table.
+ * \param _p The connection slot (0..3).
+ * \param _code The pin code for the bluetooth device at the specified connection slot.
+ */
+#define GetBTConnectionPinCode(_p, _code) __GetBTConnectionPinCode(_p, _code)
+
+/**
+ * Get bluetooth device address.
+ * This method reads the address of the device at the specified index within
+ * the Bluetooth connection table and stores it in the data buffer provided.
+ * \param _p The connection slot (0..3).
+ * \param _addr The byte array reference that will contain the device address.
+ */
+#define GetBTConnectionAddress(_p, _addr) __getBTConnectionAddress(_p, _addr)
+
+/**
+ * Get bluetooth device handle number.
+ * This method returns the handle number of the device at the specified index within
+ * the Bluetooth connection table.
+ * \param _p The connection slot (0..3).
+ * \param _n The handle number of the bluetooth device at the specified connection slot.
+ */
+#define GetBTConnectionHandleNum(_p, _n) __GetBTConnectionHandleNum(_p, _n)
+
+/**
+ * Get bluetooth device stream status.
+ * This method returns the stream status of the device at the specified index within
+ * the Bluetooth connection table.
+ * \param _p The connection slot (0..3).
+ * \param _n The stream status of the bluetooth device at the specified connection slot.
+ */
+#define GetBTConnectionStreamStatus(_p, _n) __GetBTConnectionStreamStatus(_p, _n)
+
+/**
+ * Get bluetooth device link quality.
+ * This method returns the link quality of the device at the specified index within
+ * the Bluetooth connection table.
+ * \param _p The connection slot (0..3).
+ * \param _n The link quality of the specified connection slot (unimplemented).
+ * \warning This function is not implemented at the firmware level.
+ */
+#define GetBTConnectionLinkQuality(_p, _n) __GetBTConnectionLinkQuality(_p, _n)
+
+/**
+ * Get NXT name.
+ * This method returns the name of the NXT.
+ * \param _str The NXT's bluetooth name.
+ */
+#define GetBrickDataName(_str) GetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
+
+/**
+ * Get NXT bluecore version.
+ * This method returns the bluecore version of the NXT.
+ * \param _n The NXT's bluecore version number.
+ */
+#define GetBrickDataBluecoreVersion(_n) \
+  compchk EQ, sizeof(_n), 2 \
+  GetCommModuleValue(CommOffsetBrickDataBluecoreVersion, _n)
+
+/**
+ * Get NXT address.
+ * This method reads the address of the NXT and stores it in the data buffer
+ * provided.
+ * \param _addr The byte array reference that will contain the device address.
+ */
+#define GetBrickDataAddress(_addr) GetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr)
+
+/**
+ * Get NXT bluetooth state status.
+ * This method returns the Bluetooth state status of the NXT.
+ * \param _n The NXT's bluetooth state status.
+ */
+#define GetBrickDataBtStateStatus(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBrickDataBtStateStatus, _n)
+
+/**
+ * Get NXT bluetooth hardware status.
+ * This method returns the Bluetooth hardware status of the NXT.
+ * \param _n The NXT's bluetooth hardware status.
+ */
+#define GetBrickDataBtHardwareStatus(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBrickDataBtHwStatus, _n)
+
+/**
+ * Get NXT bluetooth timeout value.
+ * This method returns the Bluetooth timeout value of the NXT.
+ * \param _n The NXT's bluetooth timeout value.
+ */
+#define GetBrickDataTimeoutValue(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBrickDataTimeOutValue, _n)
+
+/**
+ * Get bluetooth input buffer data.
+ * This method reads count bytes of data from the Bluetooth input buffer and
+ * writes it to the buffer provided.
+ * 
+ * \param _offset A constant offset into the bluetooth input buffer.
+ * \param _cnt The number of bytes to read.
+ * \param _data The byte array reference which will contain the data read from
+ * the bluetooth input buffer.
+ */
+#define GetBTInputBuffer(_offset, _cnt, _data) __getBTInputBuffer(_offset, _cnt, _data)
+
+/**
+ * Get bluetooth input buffer in-pointer.
+ * This method returns the value of the input pointer of the Bluetooth input
+ * buffer.
+ * \param _n The bluetooth input buffer's in-pointer value.
+ */
+#define GetBTInputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtInBufInPtr, _n)
+
+/**
+ * Get bluetooth input buffer out-pointer.
+ * This method returns the value of the output pointer of the Bluetooth input
+ * buffer.
+ * \param _n The bluetooth input buffer's out-pointer value.
+ */
+#define GetBTInputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtInBufOutPtr, _n)
+
+/**
+ * Get bluetooth output buffer data.
+ * This method reads count bytes of data from the Bluetooth output buffer and
+ * writes it to the buffer provided.
+ *
+ * \param _offset A constant offset into the bluetooth output buffer.
+ * \param _cnt The number of bytes to read.
+ * \param _data The byte array reference which will contain the data read from
+ * the bluetooth output buffer.
+ */
+#define GetBTOutputBuffer(_offset, _cnt, _data) __getBTOutputBuffer(_offset, _cnt, _data)
+
+/**
+ * Get bluetooth output buffer in-pointer.
+ * This method returns the value of the input pointer of the Bluetooth output
+ * buffer.
+ * \param _n The bluetooth output buffer's in-pointer value.
+ */
+#define GetBTOutputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtOutBufInPtr, _n)
+
+/**
+ * Get bluetooth output buffer out-pointer.
+ * This method returns the value of the output pointer of the Bluetooth output
+ * buffer.
+ * \param _n The bluetooth output buffer's out-pointer value.
+ */
+#define GetBTOutputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtOutBufOutPtr, _n)
+
+/**
+ * Get hi-speed port input buffer data.
+ * This method reads count bytes of data from the hi-speed port input buffer and
+ * writes it to the buffer provided.
+ * 
+ * \param _offset A constant offset into the hi-speed port input buffer.
+ * \param _cnt The number of bytes to read.
+ * \param _data The byte array reference which will contain the data read from
+ * the hi-speed port input buffer.
+ */
+#define GetHSInputBuffer(_offset, _cnt, _data) __getHSInputBuffer(_offset, _cnt, _data)
+
+/**
+ * Get hi-speed port input buffer in-pointer.
+ * This method returns the value of the input pointer of the hi-speed port input
+ * buffer.
+ * \param _n The hi-speed port input buffer's in-pointer value.
+ */
+#define GetHSInputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsInBufInPtr, _n)
+
+/**
+ * Get hi-speed port input buffer out-pointer.
+ * This method returns the value of the output pointer of the hi-speed port input
+ * buffer.
+ * \param _n The hi-speed port input buffer's out-pointer value.
+ */
+#define GetHSInputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsInBufOutPtr, _n)
+
+/**
+ * Get hi-speed port output buffer data.
+ * This method reads count bytes of data from the hi-speed port output buffer and
+ * writes it to the buffer provided.
+ *
+ * \param _offset A constant offset into the hi-speed port output buffer.
+ * \param _cnt The number of bytes to read.
+ * \param _data The byte array reference which will contain the data read from
+ * the hi-speed port output buffer.
+ */
+#define GetHSOutputBuffer(_offset, _cnt, _data) __getHSOutputBuffer(_offset, _cnt, _data)
+
+/**
+ * Get hi-speed port output buffer in-pointer.
+ * This method returns the value of the input pointer of the hi-speed port output
+ * buffer.
+ * \param _n The hi-speed port output buffer's in-pointer value.
+ */
+#define GetHSOutputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsOutBufInPtr, _n)
+
+/**
+ * Get hi-speed port output buffer out-pointer.
+ * This method returns the value of the output pointer of the hi-speed port output
+ * buffer.
+ * \param _n The hi-speed port output buffer's out-pointer value.
+ */
+#define GetHSOutputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsOutBufOutPtr, _n)
+
+/**
+ * Get usb input buffer data.
+ * This method reads count bytes of data from the usb input buffer and
+ * writes it to the buffer provided.
+ *
+ * \param _offset A constant offset into the usb input buffer.
+ * \param _cnt The number of bytes to read.
+ * \param _data The byte array reference which will contain the data read from
+ * the usb input buffer.
+ */
+#define GetUSBInputBuffer(_offset, _cnt, _data) __getUSBInputBuffer(_offset, _cnt, _data)
+
+/**
+ * Get usb port input buffer in-pointer.
+ * This method returns the value of the input pointer of the usb port input
+ * buffer.
+ * \param _n The USB port input buffer's in-pointer value.
+ */
+#define GetUSBInputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbInBufInPtr, _n)
+
+/**
+ * Get usb port input buffer out-pointer.
+ * This method returns the value of the output pointer of the usb port input
+ * buffer.
+ * \param _n The USB port input buffer's out-pointer value.
+ */
+#define GetUSBInputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbInBufOutPtr, _n)
+
+/**
+ * Get usb output buffer data.
+ * This method reads count bytes of data from the usb output buffer and
+ * writes it to the buffer provided.
+ * \param _offset A constant offset into the usb output buffer.
+ * \param _cnt The number of bytes to read.
+ * \param _data The byte array reference which will contain the data read from
+ * the usb output buffer.
+ */
+#define GetUSBOutputBuffer(_offset, _cnt, _data) __getUSBOutputBuffer(_offset, _cnt, _data)
+
+/**
+ * Get usb port output buffer in-pointer.
+ * This method returns the value of the input pointer of the usb port output
+ * buffer.
+ * \param _n The USB port output buffer's in-pointer value.
+ */
+#define GetUSBOutputBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbOutBufInPtr, _n)
+
+/**
+ * Get usb port output buffer out-pointer.
+ * This method returns the value of the output pointer of the usb port output
+ * buffer.
+ * \param _n The USB port output buffer's out-pointer value.
+ */
+#define GetUSBOutputBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbOutBufOutPtr, _n)
+
+/**
+ * Get usb poll buffer data.
+ * This method reads count bytes of data from the usb poll buffer and
+ * writes it to the buffer provided.
+ * \param _offset A constant offset into the usb poll buffer.
+ * \param _cnt The number of bytes to read.
+ * \param _data The byte array reference which will contain the data read from
+ * the usb poll buffer.
+ */
+#define GetUSBPollBuffer(_offset, _cnt, _data) __getUSBPollBuffer(_offset, _cnt, _data)
+
+/**
+ * Get usb port poll buffer in-pointer.
+ * This method returns the value of the input pointer of the usb port poll
+ * buffer.
+ * \param _n The USB port poll buffer's in-pointer value.
+ */
+#define GetUSBPollBufferInPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbPollBufInPtr, _n)
+
+/**
+ * Get usb port poll buffer out-pointer.
+ * This method returns the value of the output pointer of the usb port poll
+ * buffer.
+ * \param _n The USB port poll buffer's out-pointer value.
+ */
+#define GetUSBPollBufferOutPtr(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbPollBufOutPtr, _n)
+
+/**
+ * Get bluetooth device count.
+ * This method returns the number of devices defined within the Bluetooth
+ * device table.
+ * \return The count of known bluetooth devices.
+ */
+#define GetBTDeviceCount(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtDeviceCnt, _n)
+
+/**
+ * Get bluetooth device name count.
+ * This method returns the number of device names defined within the Bluetooth
+ * device table. This usually has the same value as BTDeviceCount but it can
+ * differ in some instances.
+ * \param _n The count of known bluetooth device names.
+ */
+#define GetBTDeviceNameCount(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtDeviceNameCnt, _n)
+
+/**
+ * Get hi-speed port flags.
+ * This method returns the value of the hi-speed port flags.
+ * \param _n The hi-speed port flags. See \ref CommHiSpeedFlagsConstants.
+ */
+#define GetHSFlags(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsFlags, _n)
+
+/**
+ * Get hi-speed port speed.
+ * This method returns the value of the hi-speed port speed (baud rate).
+ * \param _n The hi-speed port speed (baud rate).  See \ref CommHiSpeedBaudConstants.
+ */
+#define GetHSSpeed(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsSpeed, _n)
+
+/**
+ * Get hi-speed port state.
+ * This method returns the value of the hi-speed port state.
+ * \param _n The hi-speed port state. See \ref CommHiSpeedStateConstants.
+ */
+#define GetHSState(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsState, _n)
+
+/**
+ * Get USB state.
+ * This method returns the value of the USB state.
+ * \param _n The USB state.
+ */
+#define GetUSBState(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetUsbState, _n)
+
+/**
+ * Get hi-speed port mode.
+ * This method returns the value of the hi-speed port mode.
+ * \param _n The hi-speed port mode (data bits, stop bits, parity).  See
+ * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
+ * \ref CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ */
+#define GetHSMode(_n) \
+  compchk EQ, sizeof(_n), 2 \
+  GetCommModuleValue(CommOffsetHsMode, _n)
+
+// these functions really cannot be used for any useful purpose (read-only)
 #define SetBTDeviceName(_p, _str) __setBTDeviceName(_p, _str)
 #define SetBTDeviceAddress(_p, _addr) __setBTDeviceAddress(_p, _addr)
 #define SetBTConnectionName(_p, _str) __setBTConnectionName(_p, _str)
 #define SetBTConnectionPinCode(_p, _code) __setBTConnectionPinCode(_p, _code)
 #define SetBTConnectionAddress(_p, _addr) __setBTConnectionAddress(_p, _addr)
-
 #define SetBrickDataName(_str) SetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
-
 #define SetBrickDataAddress(_addr) SetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr)
-
 #define SetBTDeviceClass(_p, _n) __setBTDeviceClass(_p, _n)
 #define SetBTDeviceStatus(_p, _n) __setBTDeviceStatus(_p, _n)
 #define SetBTConnectionClass(_p, _n) __setBTConnectionClass(_p, _n)
@@ -9386,43 +12259,262 @@ ends
 #define SetBrickDataBtStateStatus(_n) __setBrickDataBtStateStatus(_n)
 #define SetBrickDataBtHardwareStatus(_n) __setBrickDataBtHardwareStatus(_n)
 #define SetBrickDataTimeoutValue(_n) __setBrickDataTimeoutValue(_n)
-
-#define SetBTInputBuffer(_offset, _cnt, _data) __setBTInputBuffer(_offset, _cnt, _data)
-#define SetBTInputBufferInPtr(_n) __setBTInputBufferInPtr(_n)
-#define SetBTInputBufferOutPtr(_n) __setBTInputBufferOutPtr(_n)
-
-#define SetBTOutputBuffer(_offset, _cnt, _data) __setBTOutputBuffer(_offset, _cnt, _data)
-#define SetBTOutputBufferInPtr(_n) __setBTOutputBufferInPtr(_n)
-#define SetBTOutputBufferOutPtr(_n) __setBTOutputBufferOutPtr(_n)
-
-#define SetHSInputBuffer(_offset, _cnt, _data) __setHSInputBuffer(_offset, _cnt, _data)
-#define SetHSInputBufferInPtr(_n) __setHSInputBufferInPtr(_n)
-#define SetHSInputBufferOutPtr(_n) __setHSInputBufferOutPtr(_n)
-
-#define SetHSOutputBuffer(_offset, _cnt, _data) __setHSOutputBuffer(_offset, _cnt, _data)
-#define SetHSOutputBufferInPtr(_n) __setHSOutputBufferInPtr(_n)
-#define SetHSOutputBufferOutPtr(_n) __setHSOutputBufferOutPtr(_n)
-
-#define SetUSBInputBuffer(_offset, _cnt, _data) __setUSBInputBuffer(_offset, _cnt, _data)
-#define SetUSBInputBufferInPtr(_n) __setUSBInputBufferInPtr(_n)
-#define SetUSBInputBufferOutPtr(_n) __setUSBInputBufferOutPtr(_n)
-
-#define SetUSBOutputBuffer(_offset, _cnt, _data) __setUSBOutputBuffer(_offset, _cnt, _data)
-#define SetUSBOutputBufferInPtr(_n) __setUSBOutputBufferInPtr(_n)
-#define SetUSBOutputBufferOutPtr(_n) __setUSBOutputBufferOutPtr(_n)
-
-#define SetUSBPollBuffer(_offset, _cnt, _data) __setUSBPollBuffer(_offset, _cnt, _data)
-#define SetUSBPollBufferInPtr(_n) __setUSBPollBufferInPtr(_n)
-#define SetUSBPollBufferOutPtr(_n) __setUSBPollBufferOutPtr(_n)
-
 #define SetBTDeviceCount(_n) __setBTDeviceCount(_n)
 #define SetBTDeviceNameCount(_n) __setBTDeviceNameCount(_n)
+
+/**
+ * Set bluetooth input buffer data.
+ * Write cnt bytes of data to the bluetooth input buffer at offset.
+ * \param _offset A constant offset into the input buffer
+ * \param _cnt The number of bytes to write
+ * \param _data A byte array containing the data to write
+ */
+#define SetBTInputBuffer(_offset, _cnt, _data) __setBTInputBuffer(_offset, _cnt, _data)
+
+/**
+ * Set bluetooth input buffer in-pointer.
+ * Set the value of the input buffer in-pointer.
+ * \param _n The new in-pointer value (0..127).
+ */
+#define SetBTInputBufferInPtr(_n) __setBTInputBufferInPtr(_n)
+
+/**
+ * Set bluetooth input buffer out-pointer.
+ * Set the value of the input buffer out-pointer.
+ * \param _n The new out-pointer value (0..127).
+ */
+#define SetBTInputBufferOutPtr(_n) __setBTInputBufferOutPtr(_n)
+
+/**
+ * Set bluetooth output buffer data.
+ * Write cnt bytes of data to the bluetooth output buffer at offset.
+ * \param _offset A constant offset into the output buffer
+ * \param _cnt The number of bytes to write
+ * \param _data A byte array containing the data to write
+ */
+#define SetBTOutputBuffer(_offset, _cnt, _data) __setBTOutputBuffer(_offset, _cnt, _data)
+
+/**
+ * Set bluetooth output buffer in-pointer.
+ * Set the value of the output buffer in-pointer.
+ * \param _n The new in-pointer value (0..127).
+ */
+#define SetBTOutputBufferInPtr(_n) __setBTOutputBufferInPtr(_n)
+
+/**
+ * Set bluetooth output buffer out-pointer.
+ * Set the value of the output buffer out-pointer.
+ * \param _n The new out-pointer value (0..127).
+ */
+#define SetBTOutputBufferOutPtr(_n) __setBTOutputBufferOutPtr(_n)
+
+/**
+ * Set hi-speed port input buffer data.
+ * Write cnt bytes of data to the hi-speed port input buffer at offset.
+ * \param _offset A constant offset into the input buffer
+ * \param _cnt The number of bytes to write
+ * \param _data A byte array containing the data to write
+ */
+#define SetHSInputBuffer(_offset, _cnt, _data) __setHSInputBuffer(_offset, _cnt, _data)
+
+/**
+ * Set hi-speed port input buffer in-pointer.
+ * Set the value of the input buffer in-pointer.
+ * \param _n The new in-pointer value (0..127).
+ */
+#define SetHSInputBufferInPtr(_n) __setHSInputBufferInPtr(_n)
+
+/**
+ * Set hi-speed port input buffer out-pointer.
+ * Set the value of the input buffer out-pointer.
+ * \param _n The new out-pointer value (0..127).
+ */
+#define SetHSInputBufferOutPtr(_n) __setHSInputBufferOutPtr(_n)
+
+/**
+ * Set hi-speed port output buffer data.
+ * Write cnt bytes of data to the hi-speed port output buffer at offset.
+ * \param _offset A constant offset into the output buffer
+ * \param _cnt The number of bytes to write
+ * \param _data A byte array containing the data to write
+ */
+#define SetHSOutputBuffer(_offset, _cnt, _data) __setHSOutputBuffer(_offset, _cnt, _data)
+
+/**
+ * Set hi-speed port output buffer in-pointer.
+ * Set the value of the output buffer in-pointer.
+ * \param _n The new in-pointer value (0..127).
+ */
+#define SetHSOutputBufferInPtr(_n) __setHSOutputBufferInPtr(_n)
+
+/**
+ * Set hi-speed port output buffer out-pointer.
+ * Set the value of the output buffer out-pointer.
+ * \param _n The new out-pointer value (0..127).
+ */
+#define SetHSOutputBufferOutPtr(_n) __setHSOutputBufferOutPtr(_n)
+
+/**
+ * Set USB input buffer data.
+ * Write cnt bytes of data to the USB input buffer at offset.
+ * \param _offset A constant offset into the input buffer
+ * \param _cnt The number of bytes to write
+ * \param _data A byte array containing the data to write
+ */
+#define SetUSBInputBuffer(_offset, _cnt, _data) __setUSBInputBuffer(_offset, _cnt, _data)
+
+/**
+ * Set USB input buffer in-pointer.
+ * Set the value of the input buffer in-pointer.
+ * \param _n The new in-pointer value (0..63).
+ */
+#define SetUSBInputBufferInPtr(_n) __setUSBInputBufferInPtr(_n)
+
+/**
+ * Set USB input buffer out-pointer.
+ * Set the value of the input buffer out-pointer.
+ * \param _n The new out-pointer value (0..63).
+ */
+#define SetUSBInputBufferOutPtr(_n) __setUSBInputBufferOutPtr(_n)
+
+/**
+ * Set USB output buffer data.
+ * Write cnt bytes of data to the USB output buffer at offset.
+ * \param _offset A constant offset into the output buffer
+ * \param _cnt The number of bytes to write
+ * \param _data A byte array containing the data to write
+ */
+#define SetUSBOutputBuffer(_offset, _cnt, _data) __setUSBOutputBuffer(_offset, _cnt, _data)
+
+/**
+ * Set USB output buffer in-pointer.
+ * Set the value of the output buffer in-pointer.
+ * \param _n The new in-pointer value (0..63).
+ */
+#define SetUSBOutputBufferInPtr(_n) __setUSBOutputBufferInPtr(_n)
+
+/**
+ * Set USB output buffer out-pointer.
+ * Set the value of the output buffer out-pointer.
+ * \param _n The new out-pointer value (0..63).
+ */
+#define SetUSBOutputBufferOutPtr(_n) __setUSBOutputBufferOutPtr(_n)
+
+/**
+ * Set USB poll buffer data.
+ * Write cnt bytes of data to the USB poll buffer at offset.
+ * \param _offset A constant offset into the poll buffer
+ * \param _cnt The number of bytes to write
+ * \param _data A byte array containing the data to write
+ */
+#define SetUSBPollBuffer(_offset, _cnt, _data) __setUSBPollBuffer(_offset, _cnt, _data)
+
+/**
+ * Set USB poll buffer in-pointer.
+ * Set the value of the poll buffer in-pointer.
+ * \param _n The new in-pointer value (0..63).
+ */
+#define SetUSBPollBufferInPtr(_n) __setUSBPollBufferInPtr(_n)
+
+/**
+ * Set USB poll buffer out-pointer.
+ * Set the value of the poll buffer out-pointer.
+ * \param _n The new out-pointer value (0..63).
+ */
+#define SetUSBPollBufferOutPtr(_n) __setUSBPollBufferOutPtr(_n)
+
+/**
+ * Set hi-speed port flags.
+ * This method sets the value of the hi-speed port flags.
+ * \param _n The hi-speed port flags. See \ref CommHiSpeedFlagsConstants.
+ */
 #define SetHSFlags(_n) __setHSFlags(_n)
+
+/**
+ * Set hi-speed port speed.
+ * This method sets the value of the hi-speed port speed (baud rate).
+ * \param _n The hi-speed port speed (baud rate).  See \ref CommHiSpeedBaudConstants.
+ */
 #define SetHSSpeed(_n) __setHSSpeed(_n)
+
+/**
+ * Set hi-speed port state.
+ * This method sets the value of the hi-speed port state.
+ * \param _n The hi-speed port state. See \ref CommHiSpeedStateConstants.
+ */
 #define SetHSState(_n) __setHSState(_n)
+
+/**
+ * Set USB state.
+ * This method sets the value of the USB state.
+ * \param _n The USB state.
+ */
 #define SetUSBState(_n) __setUSBState(_n)
+
+/**
+ * Set hi-speed port mode.
+ * This method sets the value of the hi-speed port mode.
+ * \param _n The hi-speed port mode (data bits, stop bits, parity).  See
+ * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
+ * \ref CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ */
 #define SetHSMode(_n) __setHSMode(_n)
 
+/** @} */ // end of CommModuleFunctions group
+/** @} */ // end of CommModule group
+/** @} */ // end of NXTFirmwareModules group
+
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// IOCTRL MODULE ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup IOCtrlModule
+ * @{
+ */
+/** @defgroup IOCtrlModuleFunctions IOCtrl module functions
+ * Functions for accessing and modifying IOCtrl module features.
+ * @{
+ */
+
+/**
+ * Power down the NXT.
+ * This function powers down the NXT.
+ * The running program will terminate as a result of this action.
+ */
+#define PowerDown SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN)
+
+/**
+ * Reboot the NXT in firmware download mode.
+ * This function lets you reboot the NXT into SAMBA or firmware download mode.
+ * The running program will terminate as a result of this action.
+ */
+#define RebootInFirmwareMode SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_BOOT)
+
+/** @} */ // end of IOCtrlModuleFunctions group
+/** @} */ // end of IOCtrlModule group
+/** @} */ // end of NXTFirmwareModules group
+
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// LOADER MODULE ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup LoaderModule
+ * @{
+ */
+/** @defgroup LoaderModuleFunctions Loader module functions
+ * Functions for accessing and modifying Loader module features.
+ * @{
+ */
 #define CreateFile(_fname, _fsize, _handle, _result) __createFile(_fname, _fsize, _handle, _result)
 #define OpenFileAppend(_fname, _fsize, _handle, _result) __openFileAppend(_fname, _fsize, _handle, _result)
 #define OpenFileRead(_fname, _fsize, _handle, _result) __openFileRead(_fname, _fsize, _handle, _result)
@@ -9452,68 +12544,9 @@ ends
 #define WriteBytes(_handle, _buf, _cnt, _result) __writeBytes(_handle, _buf, _cnt, _result)
 #define WriteBytesEx(_handle, _len, _buf, _result) __writeBytesEx(_handle, _len, _buf, _result)
 
-#define SendMessage(_queue, _msg, _result) __sendMessage(_queue, _msg, _result)
-#define ReceiveMessage(_queue, _clear, _msg, _result) __receiveMessage(_queue, _clear, _msg, _result)
-
-#define ReceiveRemoteBool(_queue, _clear, _bval, _result) __receiveRemoteBool(_queue, _clear, _bval, _result)
-#define ReceiveRemoteNumber(_queue, _clear, _val, _result) __receiveRemoteNumber(_queue, _clear, _val, _result)
-#define ReceiveRemoteString(_queue, _clear, _str, _result) __receiveMessage(_queue, _clear, _str, _result)
-#define ReceiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, _result) __receiveRemoteMessageEx(_queue, _clear, _str, _val, _bval, _result)
-
-#define SendResponseString(_queue, _msg, _result) __sendResponseString(_queue, _msg, _result)
-#define SendResponseBool(_queue, _bval, _result) __sendResponseBool(_queue, _bval, _result)
-#define SendResponseNumber(_queue, _val, _result) __sendResponseNumber(_queue, _val, _result)
-
-#define BluetoothStatus(_conn, _result) __bluetoothStatus(_conn, _result)
-#define BluetoothWrite(_conn, _buffer, _result) __bluetoothWrite(_conn, _buffer, _result)
-
-#define SendRemoteBool(_conn, _queue, _bval, _result) __sendRemoteBool(_conn, _queue, _bval, _result)
-#define SendRemoteNumber(_conn, _queue, _val, _result) __sendRemoteNumber(_conn, _queue, _val, _result)
-#define SendRemoteString(_conn, _queue, _str, _result) __sendRemoteString(_conn, _queue, _str, _result)
-
-#define RemoteMessageRead(_conn, _queue, _result) __remoteMessageRead(_conn, _queue, _result)
-#define RemoteMessageWrite(_conn, _queue, _msg, _result) __sendRemoteString(_conn, _queue, _msg, _result)
-#define RemoteStartProgram(_conn, _filename, _result) __remoteStartProgram(_conn, _filename, _result)
-#define RemoteStopProgram(_conn, _result) __bluetoothWrite(_conn, __DCStopProgramPacket, _result)
-#define RemotePlaySoundFile(_conn, _filename, _bloop, _result) __remotePlaySoundFile(_conn, _filename, _bloop, _result)
-#define RemotePlayTone(_conn, _frequency, _duration, _result) __remotePlayTone(_conn, _frequency, _duration, _result)
-#define RemoteStopSound(_conn, _result) __bluetoothWrite(_conn, __DCStopSoundPacket, _result)
-#define RemoteKeepAlive(_conn, _result) __bluetoothWrite(_conn, __DCKeepAlivePacket, _result)
-#define RemoteResetScaledValue(_conn, _port, _result) __remoteResetScaledValue(_conn, _port, _result)
-#define RemoteResetMotorPosition(_conn, _port, _brelative, _result) __remoteResetMotorPosition(_conn, _port, _brelative, _result)
-#define RemoteSetInputMode(_conn, _port, _type, _mode, _result) __remoteSetInputMode(_conn, _port, _type, _mode, _result)
-#define RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result) \
-  __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result)
-
-#ifdef __ENHANCED_FIRMWARE
-
-#define RS485Status(_sendingData, _dataAvail) __RS485Status(_sendingData, _dataAvail)
-#define RS485Write(_buffer, _status) __RS485Write(_buffer, _status)
-#define RS485Read(_buffer, _status) __RS485Read(_buffer, _status)
-
-#if __FIRMWARE_VERSION > 107
-
-#define RS485Control(_cmd, _baud, _mode, _result) __RS485Control(_cmd, _baud, _mode, _result)
-#define RS485Uart(_baud, _mode, _result) __RS485Control(HS_CTRL_UART, _baud, _mode, _result)
-#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, 0, _result)
-#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, 0, _result)
-
-#else
-
-#define RS485Control(_cmd, _baud, _result) __RS485Control(_cmd, _baud, _result)
-#define RS485Uart(_baud, _result) __RS485Control(HS_CTRL_UART, _baud, _result)
-#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, _result)
-#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, _result)
-
-#endif
-
-#define SendRS485Bool(_bval, _status) __sendRS485Bool(_bval, _status)
-#define SendRS485Number(_val, _status) __sendRS485Number(_val, _status)
-#define SendRS485String(_str, _status) __sendRS485String(_str, _status)
-
-#endif
-
-#define Wait(_n) waitv _n
+/** @} */ // end of LoaderModuleFunctions group
+/** @} */ // end of LoaderModule group
+/** @} */ // end of NXTFirmwareModules group
 
 /** @addtogroup StandardCAPIFunctions
  * @{
@@ -9544,34 +12577,6 @@ ends
 
 /** @} */ // end of cmathAPI group
 /** @} */ // end of StandardCAPIFunctions group
-
-
-/** @addtogroup NXTFirmwareModules
- * @{
- */
-/** @addtogroup LowSpeedModule
- * @{
- */
-/** @defgroup LowSpeedModuleFunctions LowSpeed module functions
- * Functions for accessing and modifying low speed module features.
- * @{
- */
-#define ReadI2CDeviceInfoEx(_port, _addr, _info, _strVal) __ReadI2CDeviceInfoEx(_port, _addr, _info, _strVal)
-#define ReadI2CDeviceInfo(_port, _info, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, _info, _strVal)
-#define ReadI2CVersionEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VERSION, _strVal)
-#define ReadI2CVersion(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VERSION, _strVal)
-#define ReadI2CVendorIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VENDOR_ID, _strVal)
-#define ReadI2CVendorId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VENDOR_ID, _strVal)
-#define ReadI2CDeviceIdEx(_port, _addr, _strVal) ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_DEVICE_ID, _strVal)
-#define ReadI2CDeviceId(_port, _strVal) ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_DEVICE_ID, _strVal)
-
-#define I2CSendCommandEx(_port, _addr, _cmd, _result) __I2CSendCmd(_port, _addr, _cmd, _result)
-#define I2CSendCommand(_port, _cmd, _result) __I2CSendCmd(_port, 0x02, _cmd, _result)
-
-/** @} */ // end of LowSpeedModuleFunctions group
-/** @} */ // end of LowSpeedModule group
-/** @} */ // end of NXTFirmwareModules group
-
 
 /** @addtogroup ThirdPartyDevices
  * @{
