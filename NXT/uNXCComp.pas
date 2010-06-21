@@ -225,6 +225,7 @@ type
     function  FormalList(protoexists: boolean; var procname: string): integer;
     procedure ProcedureBlock;
     procedure InitializeGlobalArrays;
+    procedure EmitGlobalDataInitSubroutine;
     procedure FunctionBlock(Name, tname : string; dt : char; bInline, bSafeCall : boolean);
     procedure AbortMsg(s: string);
     procedure Expected(s: string);
@@ -2470,6 +2471,8 @@ begin
 
     EmitLnNoTab('dseg ends');
     NBCSource.AddStrings(tmp);
+    // output the array initialization subroutine last
+    EmitGlobalDataInitSubroutine;
   finally
     tmp.Free;
   end;
@@ -9344,11 +9347,19 @@ begin
 end;
 
 procedure TNXCComp.InitializeGlobalArrays;
+begin
+  // all this routine does is emit a call to the global array
+  // initialization subroutine
+  EmitLn('call __initialize_global_data');
+end;
+
+procedure TNXCComp.EmitGlobalDataInitSubroutine;
 var
   i : integer;
   V : TVariable;
   aval : string;
 begin
+  EmitLnNoTab('subroutine __initialize_global_data');
   for i := 0 to fGlobals.Count - 1 do
   begin
     V := fGlobals[i];
@@ -9365,7 +9376,10 @@ begin
         DoLocalArrayInit(V.Name, V.Value, V.DataType);
       end;
     end
+    // possibly also initialize struct types containing arrays...
   end;
+  EmitLn('return');
+  EmitLnNoTab('ends');
 end;
 
 function StripBraces(str : string) : string;
