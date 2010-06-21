@@ -4863,7 +4863,7 @@ end;
 procedure TRXEProgram.ProcessASMLine(aStrings: TStrings; var idx : integer);
 var
   i, endBCPos, cPos, len, oldIdx : integer;
-  lbl, opcode, args, errMsg, tmpFile, tmpLine, line : string;
+  lbl, opcode, args, errMsg, tmpFile, tmpLine, line, varName : string;
   lineType : TASMLineType;
   ValidLineTypes : TASMLineTypes;
   DE : TDataspaceEntry;
@@ -5113,12 +5113,10 @@ begin
                 fCurrentClump.Filename := GetCurrentFile(true);
                 if fCurrentClump.IsSubroutine then
                 begin
+                  varName := Format('__%s_return', [fCurrentClump.Name]);
                   // subroutines each have their own unsigned byte variable in
                   // the dataspace to store the return address
-                  DE := Dataspace.Add;
-                  DE.DataType := SubroutineReturnAddressType;
-                  DE.Identifier := Format('__%s_return', [fCurrentClump.Name]);
-                  DE.IncRefCount;
+                  DefineVar(varName, SubroutineReturnAddressType);
                 end;
               end;
             end;
@@ -6401,7 +6399,8 @@ begin
       AL.Command := OP_SUBCALL;
       Arg := AL.Args.Add;
       Arg.Value := Format('__%s_return', [AL.Args[0].Value]);
-      Dataspace.FindEntryAndAddReference(Arg.Value); // inc refcount
+      if not fIgnoreLines then
+        DefineVar(Arg.Value, SubroutineReturnAddressType);
     end;
     OPS_RETURN : begin
       // first make sure it only is present in a subroutine
@@ -6411,7 +6410,8 @@ begin
       AL.Command := OP_SUBRET;
       Arg := AL.Args.Add;
       Arg.Value := Format('__%s_return', [fCurrentClump.Name]);
-      Dataspace.FindEntryAndAddReference(Arg.Value); // inc refcount
+      if not fIgnoreLines then
+        DefineVar(Arg.Value, SubroutineReturnAddressType);
     end;
     OPS_ABS{, OP_ABS_2} : begin
       // 2.x standard firmware supports ABS opcode
