@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2386;
+  uNXCHTMLTopicsSize = 2423;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -7035,6 +7035,154 @@ const
     (
      Name: 'ArrayOp';
      Value: 'group___array_functions_ga000a314fd93cd84a5c46b1e5e22c3a71.html'
+    ),
+    (
+     Name: 'SetIOMapBytes';
+     Value: 'group___command_module_functions_ga05fcc7e2bd55d7de8d59cc64b877b14e.html'
+    ),
+    (
+     Name: 'SetIOMapValue';
+     Value: 'group___command_module_functions_ga53cf48a293a44885b820c7159f5600bb.html'
+    ),
+    (
+     Name: 'GetIOMapBytes';
+     Value: 'group___command_module_functions_ga083b3b7e37bfeca001d63ee9e5f82330.html'
+    ),
+    (
+     Name: 'GetIOMapValue';
+     Value: 'group___command_module_functions_ga61c0f2c77fabbfe0c58e1cbc0944fe03.html'
+    ),
+    (
+     Name: 'GetLowSpeedModuleBytes';
+     Value: 'group___command_module_functions_ga18a57bbf17db5ff67b40962bbe4b0b71.html'
+    ),
+    (
+     Name: 'GetDisplayModuleBytes';
+     Value: 'group___command_module_functions_ga73ad5813431ba39b18e3464a94530eb6.html'
+    ),
+    (
+     Name: 'GetCommModuleBytes';
+     Value: 'group___command_module_functions_ga0760dd1fbb6d97987f16d12f2ec6432f.html'
+    ),
+    (
+     Name: 'GetCommandModuleBytes';
+     Value: 'group___command_module_functions_ga184cdd6dd985ca9b063c680d8d1611aa.html'
+    ),
+    (
+     Name: 'SetCommandModuleBytes';
+     Value: 'group___command_module_functions_ga9c757b0bcba51b7630bc6e01d7f9d587.html'
+    ),
+    (
+     Name: 'SetLowSpeedModuleBytes';
+     Value: 'group___command_module_functions_ga04288b37733d3d3567696b5905f5a0a3.html'
+    ),
+    (
+     Name: 'SetDisplayModuleBytes';
+     Value: 'group___command_module_functions_gadecce842539280744b836969002b1c61.html'
+    ),
+    (
+     Name: 'SetCommModuleBytes';
+     Value: 'group___command_module_functions_gafbd862595d0fb114160defd510e03216.html'
+    ),
+    (
+     Name: 'SetIOMapBytesByID';
+     Value: 'group___command_module_functions_ga149960623e37f7386f6d85938b42127d.html'
+    ),
+    (
+     Name: 'SetIOMapValueByID';
+     Value: 'group___command_module_functions_gab569a7e17343c370b592e0286e010cbf.html'
+    ),
+    (
+     Name: 'GetIOMapBytesByID';
+     Value: 'group___command_module_functions_ga2f883beb21431a0ddbc1baaf96165d6a.html'
+    ),
+    (
+     Name: 'GetIOMapValueByID';
+     Value: 'group___command_module_functions_ga2aeaef50ea9116c7f9856b529cb36871.html'
+    ),
+    (
+     Name: 'SetCommandModuleValue';
+     Value: 'group___command_module_functions_ga085fd22193f490cddd8346bb4a4ee398.html'
+    ),
+    (
+     Name: 'SetIOCtrlModuleValue';
+     Value: 'group___command_module_functions_ga2f2e48753c3f22c190a756030b61d264.html'
+    ),
+    (
+     Name: 'SetLoaderModuleValue';
+     Value: 'group___command_module_functions_gad9f53125941638e294b5202af3c1006b.html'
+    ),
+    (
+     Name: 'SetUIModuleValue';
+     Value: 'group___command_module_functions_ga015bc5e58737b3cf3bfd2319ad150d7d.html'
+    ),
+    (
+     Name: 'SetSoundModuleValue';
+     Value: 'group___command_module_functions_ga2821698fca45fe8ea07bf757a46fd055.html'
+    ),
+    (
+     Name: 'SetButtonModuleValue';
+     Value: 'group___command_module_functions_ga88a61dbe49d3438471b54192ed064ee3.html'
+    ),
+    (
+     Name: 'SetInputModuleValue';
+     Value: 'group___command_module_functions_ga6b12c44090001fdebdd26f6fd808492c.html'
+    ),
+    (
+     Name: 'SetOutputModuleValue';
+     Value: 'group___command_module_functions_ga684ce19906c5c5514fefa5bae41b9bb0.html'
+    ),
+    (
+     Name: 'SetLowSpeedModuleValue';
+     Value: 'group___command_module_functions_ga9c7d2af4bb4831dc7cf198329c0e772b.html'
+    ),
+    (
+     Name: 'SetDisplayModuleValue';
+     Value: 'group___command_module_functions_ga0e7f4325c94cb4a679cbcd459223ac52.html'
+    ),
+    (
+     Name: 'SetCommModuleValue';
+     Value: 'group___command_module_functions_ga32d542510dcaeb23ab38e53ec150cbea.html'
+    ),
+    (
+     Name: 'GetCommandModuleValue';
+     Value: 'group___command_module_functions_ga17e7f3db881d2815dbf4b5751c33fb45.html'
+    ),
+    (
+     Name: 'GetLoaderModuleValue';
+     Value: 'group___command_module_functions_ga4254a491680a4e774330788388d50d61.html'
+    ),
+    (
+     Name: 'GetSoundModuleValue';
+     Value: 'group___command_module_functions_ga04647ce2052a5d576164642b156db511.html'
+    ),
+    (
+     Name: 'GetButtonModuleValue';
+     Value: 'group___command_module_functions_ga46daccc6afc2f3dc6c158440bade4b36.html'
+    ),
+    (
+     Name: 'GetUIModuleValue';
+     Value: 'group___command_module_functions_gabdc537c3ae31eeb857d5e956921bdb81.html'
+    ),
+    (
+     Name: 'GetInputModuleValue';
+     Value: 'group___command_module_functions_ga3751d4aa53567e7b5fe3d0d966753959.html'
+    ),
+    (
+     Name: 'GetOutputModuleValue';
+     Value: 'group___command_module_functions_ga5eda5c73f74b606a7fef7451524bad03.html'
+    ),
+    (
+     Name: 'GetLowSpeedModuleValue';
+     Value: 'group___command_module_functions_ga9d3a79082188f0632ecfa67b251b1362.html'
+    ),
+    (
+     Name: 'GetDisplayModuleValue';
+     Value: 'group___command_module_functions_gaea8a97d919808edecb989d84e55b5bd2.html'
+    ),
+    (
+     Name: 'GetCommModuleValue';
+     Value: 'group___command_module_functions_ga0721e7f889fc06d5ae44a552c03a472f.html'
     ),
     (
      Name: 'SendMessage';
