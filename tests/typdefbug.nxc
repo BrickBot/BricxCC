@@ -1,0 +1,28 @@
+// 2010-06-13 using typedef in function call was causing a compiler
+// error until this date.  I fixed it by making sure that the
+// type name was used when adding the global or local variable. JCH
+
+typedef unsigned long time_t;
+
+time_t foobar;
+
+void foo(time_t &t, byte &v) {
+t = 12345;
+v = 123;
+}
+
+
+
+
+task main() {
+
+
+time_t t;
+byte v;
+foo(t, v);
+foo(foobar, v);
+NumOut(0, LCD_LINE1, t);
+NumOut(0, LCD_LINE2, v);
+Wait(3000);
+}
+

@@ -1,0 +1,31 @@
+void makeLogEntry( byte type, int value );
+void updateLogfile();
+
+task main()
+{
+	makeLogEntry( 1, 2 );
+	makeLogEntry( 2, 3 );
+	
+//	updateLogfile();
+}
+
+
+
+byte LFH;
+
+
+
+void
+updateLogfile()
+{	
+	makeLogEntry( 3, 2 );
+	makeLogEntry( 2, 3 );
+}
+
+void makeLogEntry( byte type, int value )
+{
+	Write( LFH, type );
+	Write( LFH, value );
+}
+
+
