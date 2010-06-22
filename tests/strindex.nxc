@@ -1,0 +1,51 @@
+sub write_line(string line){
+  bool down = false;
+  int StartRotation, a, b, x;
+  string symbol;
+  StartRotation = MotorRotationCount(OUT_A);
+  OnFwd(OUT_B, 25);
+  Wait(500);
+  Off(OUT_B);
+  Wait(500);
+
+  while(x<StrLen(line)){
+    a = StrIndex(line, x);
+//    a = StrToNum(symbol);
+    b = ' ';
+    if(a==b){
+      if(down==true){
+        down = false;
+        OnRev(OUT_B, 25);
+        Wait(500);
+        Off(OUT_B);
+      }
+    }else{
+      if(down==false){
+        down = true;
+        OnFwd(OUT_B, 25);
+        Wait(500);
+        Off(OUT_B);
+      }
+    }
+    RotateMotorEx(OUT_AC, 25, 10, 0, true,false);
+    x+=1;
+  }
+
+};
+
+
+task main(){
+  int fsize;
+  byte handle;
+  OpenFileRead("image.txt", fsize, handle);
+  bool eof = false;
+  string line;
+  until(eof){
+    if(ReadLnString(handle,line) != NO_ERR){
+      eof = true;
+    }else{
+      write_line(line);
+    }
+  }
+}
+

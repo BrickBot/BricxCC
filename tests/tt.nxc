@@ -1,0 +1,17 @@
+
+struct moveBlockT {
+	int moveState;
+	byte x;
+	bool flag;
+};
+
+moveBlockT moveBlocks[] = { {5, 4, true}, {6, 2, false}, {7, 3, true}, {8, 8, false} };
+
+
+task main()
+{
+	NumOut(  0, LCD_LINE1, moveBlocks[2].moveState );
+	NumOut(  0, LCD_LINE2, moveBlocks[2].x );
+	NumOut(  0, LCD_LINE3, moveBlocks[2].flag );
+	Wait( 2000 );
+}

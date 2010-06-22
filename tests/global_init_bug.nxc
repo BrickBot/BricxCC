@@ -1,0 +1,22 @@
+
+void trackFileSweep();
+
+
+task main()
+{
+	trackFileSweep();	
+}
+
+
+struct sweepEntriesT {
+	int hits;
+};
+sweepEntriesT sweepEntries[10];
+
+
+void
+trackFileSweep()
+{
+	sweepEntries[0].hits = 0;
+}
+
