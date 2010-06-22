@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-06-11
- * \version 4
+ * \date 2010-06-22
+ * \version 5
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -5000,14 +5000,14 @@
  * \example ex_memcmp.nxc
  * This is an example of how to use the \ref memcmp function.
  *
- * \example ex_addr.nxc
- * This is an example of how to use the \ref addr function.
+ * \example ex_addressof.nxc
+ * This is an example of how to use the \ref addressOf function.
  *
- * \example ex_reladdr.nxc
- * This is an example of how to use the \ref reladdr function.
+ * \example ex_reladdressof.nxc
+ * This is an example of how to use the \ref reladdressOf function.
  *
- * \example ex_addrex.nxc
- * This is an example of how to use the \ref addrex function.
+ * \example ex_addressofex.nxc
+ * This is an example of how to use the \ref addressOfEx function.
  *
  * \example ex_string.nxc
  * This is an example of how to use the string API functions: \ref StrToNum, \ref StrLen,

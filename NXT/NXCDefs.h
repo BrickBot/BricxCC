@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-06-11
- * \version 76
+ * \date 2010-06-22
+ * \version 77
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -13528,7 +13528,7 @@ inline char memcmp(variant ptr1, variant ptr2, byte num);
  * \param data A variable whose address you wish to get.
  * \return The absolute address of the variable.
  */
-inline unsigned long addr(variant data);
+inline unsigned long addressOf(variant data);
 
 /**
  * Get the relative address of a variable.
@@ -13541,7 +13541,7 @@ inline unsigned long addr(variant data);
  * \param data A variable whose address you wish to get.
  * \return The relative address of the variable.
  */
-inline unsigned long reladdr(variant data);
+inline unsigned long reladdressOf(variant data);
 
 /**
  * Get the absolute or relative address of a variable.
@@ -13556,7 +13556,7 @@ inline unsigned long reladdr(variant data);
  * relative or absolute address.
  * \return The absolute or relative address of the variable.
  */
-inline unsigned long addrex(variant data, bool relative);
+inline unsigned long addressOfEx(variant data, bool relative);
 
 #else
 
@@ -13564,9 +13564,9 @@ inline unsigned long addrex(variant data, bool relative);
 #define memmove(_dest, _src, _num) asm { mov _dest, _src }
 #define memcmp(_ptr1, _ptr2, _num) ( (_ptr1 == _ptr2) ? 0 : ( (_ptr1 > _ptr2) ? 1 : -1 ) )
 
-#define addr(_data) asm { addrof __URETVAL__, _data, 0 }
-#define reladdr(_data) asm { addrof __URETVAL__, _data, 1 }
-#define addrex(_data, _rel) asm { \
+#define addressOf(_data) asm { addrof __URETVAL__, _data, 0 }
+#define reladdressOf(_data) asm { addrof __URETVAL__, _data, 1 }
+#define addressOfEx(_data, _rel) asm { \
   addrof __URETVAL__, _data, _rel \
 }
 
