@@ -1,7 +1,7 @@
 task main()
 {
   char x[]={1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
-  unsigned long ptr = reladdr(x);
+  unsigned long ptr = reladdressOf(x);
   TextOut(0, LCD_LINE1, FormatNum("%x", ptr));
   IOMapReadByIDType args;
   args.ModuleID = CommandModuleID;
