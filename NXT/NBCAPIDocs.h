@@ -2223,290 +2223,309 @@
  */
 
 /** @page TLocation TLocation
- * \brief The TLocation structure
+ * \brief The TLocation structure.
  *
  * \code
  * TLocation	struct
- *  X		sword
- *  Y		sword
+ *  X		sword // The X coordinate. Valid range is from 0 to 99 inclusive.
+ *  Y		sword // The Y coordinate. Valid range is from 0 to 63 inclusive.
  * TLocation	ends
  * \endcode
- *
+ * For text drawing the Y value must be a multiple of 8.
  */
 
 /** @page TSize TSize
- * \brief The TSize structure
+ * \brief The TSize structure.
  *
  * \code
  * TSize	struct
- *  Width	sword
- *  Height	sword
+ *  Width	sword  // The rectangle width.
+ *  Height	sword  // The rectangle height.
  * TSize	ends
  * \endcode
  *
  */
 
 /** @page TFileOpen TFileOpen
- * \brief The TFileOpen structure
+ * \brief The TFileOpen structure.
  *
  * \code
  * // FileOpenRead, FileOpenWrite, FileOpenAppend, FileOpenWriteLinear,
  * // FileOpenWriteNonLinear, FileOpenReadLinear
  * TFileOpen	struct
- *  Result		word
- *  FileHandle	byte
- *  Filename	byte[]
- *  Length		dword
+ *  Result		word    // The function call result.
+ *  FileHandle	byte    // The returned file handle to use for subsequent file operations.
+ *  Filename	byte[]  // The name of the file to open or create.
+ *  Length		dword   // The desired maximum file capacity or the returned available length in the file.
  * TFileOpen	ends
  * \endcode
+ * Possible Result values include \ref LoaderErrors.
  *
  */
 
 /** @page TFileReadWrite TFileReadWrite
- * \brief The TFileReadWrite structure
+ * \brief The TFileReadWrite structure.
  *
  * \code
  * // FileRead, FileWrite
  * TFileReadWrite	struct
- *  Result		word
- *  FileHandle	byte
- *  Buffer		byte[]
- *  Length		dword
+ *  Result		word      // The function call result.
+ *  FileHandle	byte      // The file handle to access.
+ *  Buffer		byte[]    // The buffer to store read bytes or containing bytes to write.
+ *  Length		dword     // The number of bytes to read or the returned number of bytes written.
  * TFileReadWrite	ends
  * \endcode
+ * Possible Result values include \ref LoaderErrors.
  *
  */
 
 /** @page TFileClose TFileClose
- * \brief The TFileClose structure
+ * \brief The TFileClose structure.
  *
  * \code
  * // FileClose
  * TFileClose	struct
- *  Result		word
- *  FileHandle	byte
+ *  Result		word     // The function call result.
+ *  FileHandle	byte     // The file handle to close.
  * TFileClose	ends
  * \endcode
+ * Possible Result values include \ref LoaderErrors.
  *
  */
 
 /** @page TFileResolveHandle TFileResolveHandle
- * \brief The TFileResolveHandle structure
+ * \brief The TFileResolveHandle structure.
  *
  * \code
  * // FileResolveHandle
  * TFileResolveHandle	struct
- *  Result		word
- *  FileHandle	byte
- *  WriteHandle	byte
- *  Filename	byte[]
+ *  Result		word     // The function call result.
+ *  FileHandle	byte     // The returned resolved file handle.
+ *  WriteHandle	byte     // True if the returned handle is a write handle.
+ *  Filename	byte[]   // The name of the file for which to resolve a handle.
  * TFileResolveHandle	ends
  * \endcode
- *
+ * Possible Result values include \ref LDR_HANDLEALREADYCLOSED and \ref LDR_SUCCESS.
  */
 
 /** @page TFileRename TFileRename
- * \brief The TFileRename structure
+ * \brief The TFileRename structure.
  *
  * \code
  * // FileRename
  * TFileRename	struct
- *  Result		word
- *  OldFilename	byte[]
- *  NewFilename	byte[]
+ *  Result		word     // The function call result.
+ *  OldFilename	byte[]   // The name of the file to be renamed.
+ *  NewFilename	byte[]   // The new name to give to the file.
  * TFileRename	ends
  * \endcode
+ * Possible Result values include \ref LoaderErrors.
  *
  */
 
 /** @page TFileDelete TFileDelete
- * \brief The TFileDelete structure
+ * \brief The TFileDelete structure.
  *
  * \code
  * // FileDelete
  * TFileDelete	struct
- *  Result		word
- *  Filename	byte[]
+ *  Result		word     // The function call result.
+ *  Filename	byte[]   // The name of the file to delete.
  * TFileDelete	ends
  * \endcode
+ * Possible Result values include \ref LoaderErrors.
  *
  */
 
 /** @page TSoundPlayFile TSoundPlayFile
- * \brief The TSoundPlayFile structure
+ * \brief The TSoundPlayFile structure.
  *
  * \code
  * // SoundPlayFile
  * TSoundPlayFile	struct
- *  Result		sbyte
- *  Filename	byte[]
- *  Loop		byte
- *  Volume		byte
+ *  Result		sbyte   // The function call result, always NO_ERR.
+ *  Filename	byte[]  // The name of the file to play.
+ *  Loop		byte    // If true, loops at end of file.
+ *  Volume		byte    // The sound level. Valid values range from 0 to 4.
  * TSoundPlayFile	ends
  * \endcode
  *
  */
 
 /** @page TSoundPlayTone TSoundPlayTone
- * \brief The TSoundPlayTone structure
+ * \brief The TSoundPlayTone structure.
  *
  * \code
  * // SoundPlayTone
  * TSoundPlayTone	struct
- *  Result		sbyte
- *  Frequency	word
- *  Duration	word
- *  Loop		byte
- *  Volume		byte
+ *  Result		sbyte       // The function call result, always NO_ERR.
+ *  Frequency	word        // The tone frequency.
+ *  Duration	word        // The tone duration in milliseconds.
+ *  Loop		byte        // If true, loops forever.
+ *  Volume		byte        // The sound level. Valid values range from 0 to 4.
  * TSoundPlayTone	ends
  * \endcode
- *
+ * See the \ref ToneConstants group for Frequency values. See the
+ * \ref TimeConstants group for Duration values.
  */
 
 /** @page TSoundGetState TSoundGetState
- * \brief The TSoundGetState structure
+ * \brief The TSoundGetState structure.
  *
  * \code
  * // SoundGetState
  * TSoundGetState	struct
- *  State		byte
- *  Flags		byte
+ *  State		byte  // The returned sound state.
+ *  Flags		byte  // The returned sound flags.
  * TSoundGetState	ends
  * \endcode
- *
+ * See the \ref SoundStateConstants group for State values.
+ * See the \ref SoundFlagsConstants group for Flags values.
  */
 
 /** @page TSoundSetState TSoundSetState
- * \brief The TSoundSetState structure
+ * \brief The TSoundSetState structure.
  *
  * \code
  * // SoundSetState
  * TSoundSetState	struct
- *  Result		byte
- *  State		byte
- *  Flags		byte
+ *  Result		byte  // The function call result, same as State.
+ *  State		byte  // The new sound state.
+ *  Flags		byte  // The new sound flags.
  * TSoundSetState	ends
  * \endcode
+ * See the \ref SoundStateConstants group for State values.
+ * See the \ref SoundFlagsConstants group for Flags values.
  *
  */
 
 /** @page TDrawText TDrawText
- * \brief The TDrawText structure
+ * \brief The TDrawText structure.
  *
  * \code
  * // DrawText
  * TDrawText	struct
- *  Result		sbyte
- *  Location	TLocation
- *  Text		byte[]
- *  Options	dword
+ *  Result		sbyte      // The function call result. NO_ERR means it succeeded.
+ *  Location	TLocation  // The location in X, LCD line number coordinates.
+ *  Text		byte[]     // The text to draw on the LCD.
+ *  Options	dword          // The options to use when writing to the LCD.
  * TDrawText	ends
  * \endcode
- *
+ * See \ref DisplayDrawOptionConstants for valid Options values.
  */
 
 /** @page TDrawPoint TDrawPoint
- * \brief The TDrawPoint structure
+ * \brief The TDrawPoint structure.
  *
  * \code
  * // DrawPoint
  * TDrawPoint	struct
- *  Result		sbyte
- *  Location	TLocation
- *  Options	dword
+ *  Result		sbyte      // The function call result. NO_ERR means it succeeded.
+ *  Location	TLocation  // The point location on screen.
+ *  Options	dword          // The options to use when writing to the LCD.
  * TDrawPoint	ends
  * \endcode
+ * See \ref DisplayDrawOptionConstants for valid Options values.
  *
  */
 
 /** @page TDrawLine TDrawLine
- * \brief The TDrawLine structure
+ * \brief The TDrawLine structure.
  *
  * \code
  * // DrawLine
  * TDrawLine	struct
- *  Result		sbyte
- *  StartLoc	TLocation
- *  EndLoc		TLocation
- *  Options	dword
+ *  Result		sbyte      // The function call result. NO_ERR means it succeeded.
+ *  StartLoc	TLocation  // The location of the starting point.
+ *  EndLoc		TLocation  // The location of the ending point.
+ *  Options	dword          // The options to use when writing to the LCD.
  * TDrawLine	ends
  * \endcode
+ * See \ref DisplayDrawOptionConstants for valid Options values.
  *
  */
 
 /** @page TDrawCircle TDrawCircle
- * \brief The TDrawCircle structure
+ * \brief The TDrawCircle structure.
  *
  * \code
  * // DrawCircle
  * TDrawCircle	struct
- *  Result		sbyte
- *  Center		TLocation
- *  Size		byte
- *  Options	dword
+ *  Result		sbyte      // The function call result. NO_ERR means it succeeded.
+ *  Center		TLocation  // The location of the circle center.
+ *  Size		byte       // The circle radius.
+ *  Options	dword          // The options to use when writing to the LCD.
  * TDrawCircle	ends
  * \endcode
+ * See \ref DisplayDrawOptionConstants for valid Options values.
  *
  */
 
 /** @page TDrawRect TDrawRect
- * \brief The TDrawRect structure
+ * \brief The TDrawRect structure.
  *
  * \code
  * // DrawRect
  * TDrawRect	struct
- *  Result		sbyte
- *  Location	TLocation
- *  Size		TSize
- *  Options	dword
+ *  Result		sbyte      // The function call result. NO_ERR means it succeeded.
+ *  Location	TLocation  // The top left corner location.
+ *  Size		TSize      // The width and height of the rectangle.
+ *  Options	dword          // The options to use when writing to the LCD.
  * TDrawRect	ends
  * \endcode
+ * See \ref DisplayDrawOptionConstants for valid Options values.
  *
  */
 
 /** @page TDrawGraphic TDrawGraphic
- * \brief The TDrawGraphic structure
+ * \brief The TDrawGraphic structure.
  *
  * \code
  * // DrawGraphic
  * TDrawGraphic	struct
- *  Result		sbyte
- *  Location	TLocation
- *  Filename	byte[]
- *  Variables	sdword[]
- *  Options	dword
+ *  Result		sbyte      // The function call result.
+ *  Location	TLocation  // The location on screen.
+ *  Filename	byte[]     // The RIC file name.
+ *  Variables	sdword[]   // The variables passed as RIC arguments.
+ *  Options	dword          // The options to use when writing to the LCD.
  * TDrawGraphic	ends
  * \endcode
- *
+ * See \ref DisplayDrawOptionConstants for valid Options values.
+ * Possible values for Result include \ref LoaderErrors, \ref ERR_FILE,
+ * and \ref NO_ERR.
  */
 
 /** @page TSetScreenMode TSetScreenMode
- * \brief The TSetScreenMode structure
+ * \brief The TSetScreenMode structure.
  *
  * \code
  * // SetScreenMode
  * TSetScreenMode	struct
- *  Result		sbyte
- *  ScreenMode	dword
+ *  Result		sbyte         // The function call result, always NO_ERR.
+ *  ScreenMode	dword         // The requested screen mode.
  * TSetScreenMode	ends
  * \endcode
  *
+ * The standard NXT firmware only supports setting the ScreenMode
+ * to \ref SCREEN_MODE_RESTORE. If you install the NBC/NXC enhanced standard
+ * NXT firmware this system function also supports setting the ScreenMode to
+ * \ref SCREEN_MODE_CLEAR.
  */
 
 /** @page TReadButton TReadButton
- * \brief The TReadButton structure
+ * \brief The TReadButton structure.
  *
  * \code
  * // ReadButton
  * TReadButton	struct
- *  Result		sbyte
- *  Index		byte
- *  Pressed	byte
- *  Count		byte
- *  Reset		byte
+ *  Result		sbyte  // The function call result, ERR_INVALID_PORT or NO_ERR.
+ *  Index		byte   // The requested button index.
+ *  Pressed     byte   // The returned button state.
+ *  Count		byte   // The returned button pressed count.
+ *  Reset		byte   // If true, the count is reset after reading.
  * TReadButton	ends
  * \endcode
- *
+ * See the \ref ButtonNameConstants group for Index values.
  */
 
 /** @page TCommLSWrite TCommLSWrite
@@ -2515,13 +2534,14 @@
  * \code
  * // CommLSWrite
  * TCommLSWrite	struct
- *  Result		sbyte
- *  Port		byte
- *  Buffer		byte[]
- *  ReturnLen	byte
+ *  Result		sbyte   // The function call result.
+ *  Port		byte    // The port to which the I2C device is connected.
+ *  Buffer		byte[]  // The buffer containing data to be written to the I2C device.
+ *  ReturnLen	byte    // The number of bytes that you want to read from the I2C device after writing the data.  If no read is planned set this to zero.
  * TCommLSWrite	ends
  * \endcode
- *
+ * Possible Result values include \ref ERR_COMM_CHAN_INVALID,
+ * \ref ERR_COMM_CHAN_NOT_READY, \ref ERR_INVALID_SIZE, and \ref NO_ERR.
  */
 
 /** @page TCommLSRead TCommLSRead
@@ -2530,12 +2550,15 @@
  * \code
  * // CommLSRead
  * TCommLSRead	struct
- *  Result		sbyte
- *  Port		byte
- *  Buffer		byte[]
- *  BufferLen	byte
+ *  Result		sbyte   // The function call result.
+ *  Port		byte    // The port to which the I2C device is connected.
+ *  Buffer		byte[]  // The buffer used to store the bytes read from the I2C device.
+ *  BufferLen	byte    // The size of the output buffer on input.  This field is not updated during the function call.
  * TCommLSRead	ends
  * \endcode
+ * Possible Result values include \ref ERR_COMM_BUS_ERR,
+ * \ref ERR_COMM_CHAN_INVALID, \ref STAT_COMM_PENDING,
+ * \ref ERR_COMM_CHAN_NOT_READY, \ref ERR_INVALID_SIZE, and \ref NO_ERR.
  *
  */
 
@@ -2545,11 +2568,14 @@
  * \code
  * // CommLSCheckStatus
  * TCommLSCheckStatus	struct
- *  Result		sbyte
- *  Port		byte
- *  BytesReady	byte
+ *  Result		sbyte  // The function call result.
+ *  Port		byte   // The port to which the I2C device is connected.
+ *  BytesReady	byte   // The number of bytes ready to read from the specified port.
  * TCommLSCheckStatus	ends
  * \endcode
+ * Possible Result values include \ref ERR_COMM_BUS_ERR,
+ * \ref ERR_COMM_CHAN_INVALID, \ref STAT_COMM_PENDING,
+ * \ref ERR_COMM_CHAN_NOT_READY, and \ref NO_ERR.
  *
  */
 
@@ -2559,7 +2585,7 @@
  * \code
  * // RandomNumber
  * TRandomNumber	struct
- *  Result		sword
+ *  Result		sword   // The random number. 
  * TRandomNumber	ends
  * \endcode
  *
@@ -2571,7 +2597,7 @@
  * \code
  * // GetStartTick
  * TGetStartTick	struct
- *  Result		dword
+ *  Result		dword   // The returned tick value.
  * TGetStartTick	ends
  * \endcode
  *
@@ -2583,12 +2609,12 @@
  * \code
  * // MessageWrite
  * TMessageWrite	struct
- *  Result		sbyte
- *  QueueID	byte
- *  Message	byte[]
+ *  Result		sbyte    // The function call result. NO_ERR means it succeeded.
+ *  QueueID	    byte     // The queue identifier.
+ *  Message	    byte[]   // The message to write.
  * TMessageWrite	ends
  * \endcode
- *
+ * See the \ref MailboxConstants group for QueueID values
  */
 
 /** @page TMessageRead TMessageRead
@@ -2597,12 +2623,13 @@
  * \code
  * // MessageRead
  * TMessageRead	struct
- *  Result		sbyte
- *  QueueID	byte
- *  Remove		byte
- *  Message	byte[]
+ *  Result		sbyte  // The function call result. NO_ERR means it succeeded.
+ *  QueueID	    byte   // The queue identifier.
+ *  Remove		byte   // If true, remove the read message from the queue.
+ *  Message     byte[] // The contents of the mailbox/queue.
  * TMessageRead	ends
  * \endcode
+ * See the \ref MailboxConstants group for QueueID values
  *
  */
 
@@ -2795,7 +2822,7 @@
  * // CommHSControl
  * TCommHSControl	struct
  *  Result		sbyte
- *  Command	byte
+ *  Command	    byte
  *  BaudRate	byte
  *  Mode		word
  * TCommHSControl	ends
@@ -2809,7 +2836,7 @@
  * \code
  * // CommHSCheckStatus
  * TCommHSCheckStatus	struct
- *  SendingData	byte
+ *  SendingData	    byte
  *  DataAvailable	byte
  * TCommHSCheckStatus	ends
  * \endcode
@@ -2835,11 +2862,11 @@
  * \code
  * // CommLSWriteEx
  * TCommLSWriteEx	struct
- *  Result		sbyte
- *  Port		byte
- *  Buffer		byte[]
- *  ReturnLen	byte
- *  NoRestartOnRead	byte
+ *  Result          sbyte
+ *  Port            byte
+ *  Buffer		    byte[]
+ *  ReturnLen	    byte
+ *  NoRestartOnRead byte
  * TCommLSWriteEx	ends
  * \endcode
  *
@@ -2868,7 +2895,7 @@
  * TFileResize	struct
  *  Result		word
  *  FileHandle	byte
- *  NewSize	word
+ *  NewSize	    word
  * TFileResize	ends
  * \endcode
  *
@@ -2880,14 +2907,14 @@
  * \code
  * // DrawGraphicArray
  * TDrawGraphicArray	struct
- *  Result		sbyte
- *  Location	TLocation
- *  Data		byte[]
- *  Variables	sdword[]
- *  Options	dword
+ *  Result		sbyte      // The function call result. NO_ERR means it succeeded.
+ *  Location	TLocation  // The location on screen.
+ *  Data		byte[]     // A byte array containing the RIC opcodes.
+ *  Variables	sdword[]   // The variables passed as RIC arguments.
+ *  Options     dword      // The options to use when writing to the LCD.
  * TDrawGraphicArray	ends
  * \endcode
- *
+ * See \ref DisplayDrawOptionConstants for valid Options values.
  */
 
 /** @page TDrawPolygon TDrawPolygon
@@ -2898,7 +2925,7 @@
  * TDrawPolygon	struct
  *  Result		sbyte
  *  Points		TLocation[]
- *  Options	dword
+ *  Options	    dword
  * TDrawPolygon	ends
  * \endcode
  *
@@ -2914,7 +2941,7 @@
  *  Center		TLocation
  *  SizeX		byte
  *  SizeY		byte
- *  Options	dword
+ *  Options	    dword
  * TDrawEllipse	ends
  * \endcode
  *
@@ -2930,7 +2957,7 @@
  *  Location	TLocation
  *  Filename	byte[]
  *  Text		byte[]
- *  Options	dword
+ *  Options	    dword
  * TDrawFont	ends
  * \endcode
  *
@@ -2946,15 +2973,18 @@
  * // ColorSensorRead
  * TColorSensorRead	struct
  *  Result          sbyte    // The function call result. NO_ERR means it succeeded.
- *  Port			byte     // The sensor port. See NBCInputPortConstants.
- *  ColorValue		sword    // The color value returned by the sensor. See InputColorValueConstants.
- *  RawArray		word[]   // Raw color values returned by the sensor. See InputColorIdxConstants.
- *  NormalizedArray	word[]   // Normalized color values returned by the sensor. See InputColorIdxConstants.
- *  ScaledArray     sword[]  // Scaled color values returned by the sensor. See InputColorIdxConstants.
+ *  Port			byte     // The sensor port.
+ *  ColorValue		sword    // The color value returned by the sensor.
+ *  RawArray		word[]   // Raw color values returned by the sensor.
+ *  NormalizedArray	word[]   // Normalized color values returned by the sensor.
+ *  ScaledArray     sword[]  // Scaled color values returned by the sensor. 
  *  Invalid         byte     // Are the sensor values valid?
  * TColorSensorRead	ends
  * \endcode
- *
+ * See \ref NBCInputPortConstants for valid Port values.
+ * See \ref InputColorValueConstants for valid ColorValue values.
+ * See \ref InputColorIdxConstants for array index constants used to read
+ * values from the RawArray, NormalizedArray, and ScaledArray fields.
  */
 
 /** @page TDatalogWrite TDatalogWrite
@@ -2964,7 +2994,7 @@
  * // DatalogWrite
  * TDatalogWrite	struct
  *  Result		sbyte
- *  Message	byte[]
+ *  Message	    byte[]
  * TDatalogWrite	ends
  * \endcode
  *
@@ -2989,8 +3019,8 @@
  * \code
  * // SetSleepTimeout
  * TSetSleepTimeout	struct
- *  Result		sbyte
- *  TheSleepTimeoutMS	dword
+ *  Result		        sbyte
+ *  TheSleepTimeoutMS   dword
  * TSetSleepTimeout	ends
  * \endcode
  *
@@ -3015,9 +3045,9 @@
  * \code
  * // CommBTConnection
  * TCommBTConnection	struct
- *  Result		word
- *  Action		byte
- *  Name		byte[]
+ *  Result		    word
+ *  Action		    byte
+ *  Name		    byte[]
  *  ConnectionSlot	byte
  * TCommBTConnection	ends
  * \endcode
@@ -3043,9 +3073,9 @@
  * \code
  * // WriteSemData
  * TWriteSemData struct
- *  SemData byte
- *  Request byte
- *  NewVal byte
+ *  SemData   byte
+ *  Request   byte
+ *  NewVal    byte
  *  ClearBits byte
  * TWriteSemData ends
  * \endcode
@@ -3059,7 +3089,7 @@
  * // UpdateCalibCacheInfo
  * TUpdateCalibCacheInfo struct
  *  Result byte
- *  Name byte[]
+ *  Name   byte[]
  *  MinVal word
  *  MaxVal word
  * TUpdateCalibCacheInfo ends
@@ -3074,7 +3104,7 @@
  * // ComputeCalibValue
  * TComputeCalibValue struct
  *  Result byte
- *  Name byte[]
+ *  Name   byte[]
  *  RawVal word
  * TComputeCalibValue ends
  * \endcode
@@ -3088,7 +3118,7 @@
  * // ListFiles
  * TListFiles	struct
  *  Result		sbyte
- *  Pattern	byte[]
+ *  Pattern	    byte[]
  *  FileList	byte[][]
  * TListFiles	ends
  * \endcode

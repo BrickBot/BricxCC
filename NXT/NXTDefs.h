@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-06-19
- * version 63
+ * date 2010-06-26
+ * version 64
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H 1
@@ -10317,6 +10317,7 @@ ends
 #define GetLSNoRestartOnRead(_n) __GetLSNoRestartOnRead(_n)
 #endif
 
+// no documentation for these functions since they are essentially readonly
 #define SetLSInputBuffer(_p, _offset, _cnt, _data) __setLSInputBuffer(_p, _offset, _cnt, _data)
 #define SetLSInputBufferInPtr(_p, _n) __setLSInputBufferInPtr(_p, _n)
 #define SetLSInputBufferOutPtr(_p, _n) __setLSInputBufferOutPtr(_p, _n)
@@ -10360,76 +10361,544 @@ ends
  * @{
  */
 
-#define TextOutEx(_x,_y,_txt,_options) __TextOutEx(_x,_y,_txt,_options)
-#define TextOut(_x,_y,_txt) __TextOutEx(_x,_y,_txt,0)
-
+/**
+ * Clear a line on the LCD screen.
+ * This function lets you clear a single line on the NXT LCD.
+ * \param _line The line you want to clear. See \ref LineConstants.
+ */
 #define ClearLine(_line) __TextOutEx(0, _line, __BlankLine, 0)
 
-#define NumOutEx(_x,_y,_num,_options) __NumOutEx(_x,_y,_num,_options)
-#define NumOut(_x,_y,_num) __NumOutEx(_x,_y,_num,0)
-
+/**
+ * Draw a point with drawing options.
+ * This function lets you draw a point on the screen at x, y.
+ * Also specify drawing options. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ * \sa TDrawPoint
+ *
+ * \param _x The x value for the point.
+ * \param _y The y value for the point.
+ * \param _options The optional drawing options.
+ */
 #define PointOutEx(_x,_y,_options) __PointOutEx(_x,_y,_options)
+
+/**
+ * Draw a point.
+ * This function lets you draw a point on the screen at x, y.
+ * \sa TDrawPoint
+ *
+ * \param _x The x value for the point.
+ * \param _y The y value for the point.
+ */
 #define PointOut(_x,_y) __PointOutEx(_x,_y,0)
 
+/**
+ * Clear LCD screen.
+ * This function lets you clear the NXT LCD to a blank screen.
+ */
 #define ClearScreen() __PointOutEx(200, 200, 1)
 
+/**
+ * Draw a line with drawing options.
+ * This function lets you draw a line on the screen from x1, y1 to x2, y2.
+ * Also specify drawing options. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ * \sa TDrawLine
+ *
+ * \param _x1 The x value for the start of the line.
+ * \param _y1 The y value for the start of the line.
+ * \param _x2 The x value for the end of the line.
+ * \param _y2 The y value for the end of the line.
+ * \param _options The optional drawing options.
+ */
 #define LineOutEx(_x1,_y1,_x2,_y2,_options) __LineOutEx(_x1,_y1,_x2,_y2,_options)
+
+/**
+ * Draw a line.
+ * This function lets you draw a line on the screen from x1, y1 to x2, y2.
+ * \sa TDrawLine
+ *
+ * \param _x1 The x value for the start of the line.
+ * \param _y1 The y value for the start of the line.
+ * \param _x2 The x value for the end of the line.
+ * \param _y2 The y value for the end of the line.
+ */
 #define LineOut(_x1,_y1,_x2,_y2) __LineOutEx(_x1,_y1,_x2,_y2,0)
 
+/**
+ * Draw a rectangle with drawing options.
+ * This function lets you draw a rectangle on the screen at x, y with the
+ * specified width and height.
+ * Also specify drawing options. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ * \sa TDrawRect
+ *
+ * \param _x The x value for the top left corner of the rectangle.
+ * \param _y The y value for the top left corner of the rectangle.
+ * \param _w The width of the rectangle.
+ * \param _h The height of the rectangle.
+ * \param _options The optional drawing options.
+ */
 #define RectOutEx(_x,_y,_w,_h,_options) __RectOutEx(_x,_y,_w,_h,_options)
+
+/**
+ * Draw a rectangle.
+ * This function lets you draw a rectangle on the screen at x, y with the
+ * specified width and height.
+ * \sa TDrawRect
+ *
+ * \param _x The x value for the top left corner of the rectangle.
+ * \param _y The y value for the top left corner of the rectangle.
+ * \param _w The width of the rectangle.
+ * \param _h The height of the rectangle.
+ */
 #define RectOut(_x,_y,_w,_h) __RectOutEx(_x,_y,_w,_h,0)
 
+/**
+ * Draw a circle with drawing options.
+ * This function lets you draw a circle on the screen with its center at the
+ * specified x and y location, using the specified radius. Also specify
+ * drawing options. Valid display option constants are listed in the
+ * \ref DisplayDrawOptionConstants group.
+ * \sa TDrawCircle
+ *
+ * \param _x The x value for the center of the circle.
+ * \param _y The y value for the center of the circle.
+ * \param _r The radius of the circle.
+ * \param _options The optional drawing options.
+ */
 #define CircleOutEx(_x,_y,_r,_options) __CircleOutEx(_x,_y,_r,_options)
+
+/**
+ * Draw a circle.
+ * This function lets you draw a circle on the screen with its center at the
+ * specified x and y location, using the specified radius.
+ * \sa TDrawCircle
+ *
+ * \param _x The x value for the center of the circle.
+ * \param _y The y value for the center of the circle.
+ * \param _r The radius of the circle.
+ */
 #define CircleOut(_x,_y,_r) __CircleOutEx(_x,_y,_r,0)
 
+/**
+ * Draw a number with drawing options.
+ * Draw a numeric value on the screen at the specified x and y location. The y
+ * value must be a multiple of 8.  Valid line number constants are listed in
+ * the \ref LineConstants group.
+ * Also specify drawing options. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ * \sa TDrawText
+ *
+ * \param _x The x value for the start of the number output.
+ * \param _y The text line number for the number output.
+ * \param _num The value to output to the LCD screen. Any numeric type is supported.
+ * \param _options The optional drawing options.
+ */
+#define NumOutEx(_x,_y,_num,_options) __NumOutEx(_x,_y,_num,_options)
+
+/**
+ * Draw a number.
+ * Draw a numeric value on the screen at the specified x and y location. The y
+ * value must be a multiple of 8.  Valid line number constants are listed in
+ * the \ref LineConstants group.
+ * \sa TDrawText
+ *
+ * \param _x The x value for the start of the number output.
+ * \param _y The text line number for the number output.
+ * \param _num The value to output to the LCD screen. Any numeric type is supported.
+ */
+#define NumOut(_x,_y,_num) __NumOutEx(_x,_y,_num,0)
+
+/**
+ * Draw text.
+ * Draw a text value on the screen at the specified x and y location. The y
+ * value must be a multiple of 8.  Valid line number constants are listed in
+ * the \ref LineConstants group.
+ * Also specify drawing options. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ * \sa TDrawText
+ *
+ * \param _x The x value for the start of the text output.
+ * \param _y The text line number for the text output.
+ * \param _txt The text to output to the LCD screen.
+ * \param _options The optional drawing options.
+ */
+#define TextOutEx(_x,_y,_txt,_options) __TextOutEx(_x,_y,_txt,_options)
+
+/**
+ * Draw text.
+ * Draw a text value on the screen at the specified x and y location. The y
+ * value must be a multiple of 8.  Valid line number constants are listed in
+ * the \ref LineConstants group.
+ * \sa TDrawText
+ *
+ * \param _x The x value for the start of the text output.
+ * \param _y The text line number for the text output.
+ * \param _txt The text to output to the LCD screen.
+ */
+#define TextOut(_x,_y,_txt) __TextOutEx(_x,_y,_txt,0)
+
+/**
+ * Draw a graphic image with parameters and drawing options.
+ * Draw a graphic image file on the screen at the specified x and y location using
+ * an array of parameters. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group. If the file cannot be found then
+ * nothing will be drawn and no errors will be reported.
+ * \sa TDrawGraphic
+ *
+ * \param _x The x value for the position of the graphic image.
+ * \param _y The y value for the position of the graphic image.
+ * \param _file The filename of the RIC graphic image.
+ * \param _vars The byte array of parameters.
+ * \param _options The drawing options.
+ */
 #define GraphicOutEx(_x,_y,_file,_vars,_options) __GraphicOutEx(_x,_y,_file,_vars,_options)
+
+/**
+ * Draw a graphic image.
+ * Draw a graphic image file on the screen at the specified x and y location.
+ * If the file cannot be found then
+ * nothing will be drawn and no errors will be reported.
+ * \sa TDrawGraphic
+ *
+ * \param _x The x value for the position of the graphic image.
+ * \param _y The y value for the position of the graphic image.
+ * \param _file The filename of the RIC graphic image.
+ */
 #define GraphicOut(_x,_y,_file) __GraphicOutEx(_x,_y,_file,__GraphicOutEmptyVars,0)
 
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 
+/**
+ * Draw a graphic image from byte array with parameters and drawing options.
+ * Draw a graphic image byte array on the screen at the specified x and y
+ * location using an array of parameters and drawing options.
+ * Valid display option constants are listed in the
+ * \ref DisplayDrawOptionConstants group. If the file cannot be found then
+ * nothing will be drawn and no errors will be reported.
+ * \sa TDrawGraphicArray
+ *
+ * \param _x The x value for the position of the graphic image.
+ * \param _y The y value for the position of the graphic image.
+ * \param _data The byte array of the RIC graphic image.
+ * \param _vars The byte array of parameters.
+ * \param _options The drawing options.
+ */
 #define GraphicArrayOutEx(_x,_y,_data,_vars,_options) __GraphicArrayOutEx(_x,_y,_data,_vars,_options)
+
+/**
+ * Draw a graphic image from byte array.
+ * Draw a graphic image byte array on the screen at the specified x and y
+ * location. If the file cannot be found then nothing will be drawn and no
+ * errors will be reported.
+ * \sa TDrawGraphicArray
+ *
+ * \param _x The x value for the position of the graphic image.
+ * \param _y The y value for the position of the graphic image.
+ * \param _data The byte array of the RIC graphic image.
+ */
 #define GraphicArrayOut(_x,_y,_data) __GraphicArrayOutEx(_x,_y,_data,__GraphicOutEmptyVars,0)
 
-#define PolyOutEx(_points,_options) __PolyOutEx(_points,_options)
-#define PolyOut(_points) __PolyOutEx(_points,0)
-
+/**
+ * Draw an ellipse with drawing options.
+ * This function lets you draw an ellipse on the screen with its center at the
+ * specified x and y location, using the specified radii. Also specify
+ * drawing options. Valid display option constants are listed in the
+ * \ref DisplayDrawOptionConstants group.
+ * \sa SysDrawEllipse, DrawEllipseType
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _x The x value for the center of the ellipse.
+ * \param _y The y value for the center of the ellipse.
+ * \param _rX The x axis radius.
+ * \param _rY The y axis radius.
+ * \param _options The drawing options.
+ */
 #define EllipseOutEx(_x,_y,_rX,_rY,_options) __EllipseOutEx(_x,_y,_rX,_rY,_options)
+
+/**
+ * Draw an ellipse.
+ * This function lets you draw an ellipse on the screen with its center at the
+ * specified x and y location, using the specified radii.
+ * \sa TDrawEllipse
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _x The x value for the center of the ellipse.
+ * \param _y The y value for the center of the ellipse.
+ * \param _rX The x axis radius.
+ * \param _rY The y axis radius.
+ */
 #define EllipseOut(_x,_y,_rX,_rY) __EllipseOutEx(_x,_y,_rX,_rY,0)
 
+/**
+ * Draw a polygon with drawing options.
+ * This function lets you draw a polygon on the screen using an array of points.
+ * Also specify drawing options. Valid display option constants are listed in
+ * the \ref DisplayDrawOptionConstants group.
+ * \sa TDrawPolygon
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _points An array of \ref TLocation points that define the polygon.
+ * \param _options The drawing options.
+ */
+#define PolyOutEx(_points,_options) __PolyOutEx(_points,_options)
+
+/**
+ * Draw a polygon.
+ * This function lets you draw a polygon on the screen using an array of points.
+ * \sa TDrawPolygon
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _points An array of LocationType points that define the polygon.
+ */
+#define PolyOut(_points) __PolyOutEx(_points,0)
+
+/**
+ * Draw text with font and drawing options.
+ * Draw a text value on the screen at the specified x and y location using
+ * a custom RIC font. Also specify drawing options. Valid display option
+ * constants are listed in the \ref DisplayDrawOptionConstants group.  See the
+ * \ref DisplayFontDrawOptionConstants for options specific to the font
+ * drawing functions.
+ * \sa FontNumOut, TDrawFont
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _x The x value for the start of the text output.
+ * \param _y The y value for the start of the text output.
+ * \param _fnt The filename of the RIC font.
+ * \param _txt The text to output to the LCD screen.
+ * \param _options The drawing options.
+ */
 #define FontTextOutEx(_x,_y,_fnt,_txt,_options) __FontTextOutEx(_x,_y,_fnt,_txt,_options)
+
+/**
+ * Draw text with font.
+ * Draw a text value on the screen at the specified x and y location using
+ * a custom RIC font.
+ * \sa FontNumOut, TDrawFont
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _x The x value for the start of the text output.
+ * \param _y The y value for the start of the text output.
+ * \param _fnt The filename of the RIC font.
+ * \param _txt The text to output to the LCD screen.
+ */
 #define FontTextOut(_x,_y,_fnt,_txt) __FontTextOutEx(_x,_y,_fnt,_txt,0)
 
+/**
+ * Draw a number with font and drawing options.
+ * Draw a numeric value on the screen at the specified x and y location using
+ * a custom RIC font. Also specify drawing options. Valid display option
+ * constants are listed in the \ref DisplayDrawOptionConstants group.  See the
+ * \ref DisplayFontDrawOptionConstants for options specific to the font
+ * drawing functions.
+ * \sa FontTextOut, TDrawFont
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _x The x value for the start of the number output.
+ * \param _y The y value for the start of the number output.
+ * \param _fnt The filename of the RIC font.
+ * \param _num The value to output to the LCD screen. Any numeric type is supported.
+ * \param _options The optional drawing options.
+ */
 #define FontNumOutEx(_x,_y,_fnt,_num,_options) __FontNumOutEx(_x,_y,_fnt,_num,_options)
+
+/**
+ * Draw a number with font.
+ * Draw a numeric value on the screen at the specified x and y location using
+ * a custom RIC font.
+ * \sa FontTextOut, TDrawFont
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _x The x value for the start of the number output.
+ * \param _y The y value for the start of the number output.
+ * \param _fnt The filename of the RIC font.
+ * \param _num The value to output to the LCD screen. Any numeric type is supported.
+ */
 #define FontNumOut(_x,_y,_fnt,_num) __FontNumOutEx(_x,_y,_fnt,_num,0)
 
 #endif
 
+/**
+ * Read the display erase mask value.
+ * This function lets you read the current display erase mask value.
+ * \param _n The current display erase mask value.
+ */
 #define GetDisplayEraseMask(_n) __GetDisplayEraseMask(_n)
+
+/**
+ * Read the display update mask value.
+ * This function lets you read the current display update mask value.
+ * \param _n The current display update mask.
+ */
 #define GetDisplayUpdateMask(_n) __GetDisplayUpdateMask(_n)
+
+/**
+ * Read the display font memory address.
+ * This function lets you read the current display font memory address.
+ * \param _n The current display font memory address.
+ */
 #define GetDisplayFont(_n) __GetDisplayFont(_n)
+
+/**
+ * Read the display memory address.
+ * This function lets you read the current display memory address.
+ * \param _n The current display memory address.
+ */
 #define GetDisplayDisplay(_n) __GetDisplayDisplay(_n)
+
+/**
+ * Read the display flags.
+ * This function lets you read the current display flags.
+ * Valid flag values are listed in the \ref DisplayFlagsGroup group.
+ * \param _n The current display flags.
+ */
 #define GetDisplayFlags(_n) __GetDisplayFlags(_n)
+
+/**
+ * Read the display text lines center flags.
+ * This function lets you read the current display text lines center flags.
+ * \param _n The current display text lines center flags.
+ */
 #define GetDisplayTextLinesCenterFlags(_n) __GetDisplayTextLinesCenterFlags(_n)
 
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/**
+ * Read the display contrast setting.
+ * This function lets you read the current display contrast setting.
+ * \param _n The current display contrast (byte).
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
 #define GetDisplayContrast(_n) __GetDisplayContrast(_n)
 #endif
 
+/**
+ * Read pixel data from the normal display buffer.
+ * Read "cnt" bytes from the normal display memory into the data array. Start
+ * reading from the specified x, line coordinate. Each byte of data read from
+ * screen memory is a vertical strip of 8 bits at the desired location. Each
+ * bit represents a single pixel on the LCD screen. Use TEXTLINE_1 through
+ * TEXTLINE_8 for the "line" parameter.
+ *
+ * \param _x The desired x position from which to read pixel data.
+ * \param _line The desired line from which to read pixel data.
+ * \param _cnt The number of bytes of pixel data to read.
+ * \param _data The array of bytes into which pixel data is read.
+ */
 #define GetDisplayNormal(_x, _line, _cnt, _data) __getDisplayNormal(_x, _line, _cnt, _data)
+
+/**
+ * Read pixel data from the popup display buffer.
+ * Read "cnt" bytes from the popup display memory into the data array. Start
+ * reading from the specified x, line coordinate. Each byte of data read from
+ * screen memory is a vertical strip of 8 bits at the desired location. Each
+ * bit represents a single pixel on the LCD screen. Use TEXTLINE_1 through
+ * TEXTLINE_8 for the "line" parameter.
+ *
+ * \param _x The desired x position from which to read pixel data.
+ * \param _line The desired line from which to read pixel data.
+ * \param _cnt The number of bytes of pixel data to read.
+ * \param _data The array of bytes into which pixel data is read.
+ */
 #define GetDisplayPopup(_x, _line, _cnt, _data) __getDisplayPopup(_x, _line, _cnt, _data)
 
-#define SetDisplayEraseMask(_n) __setDisplayEraseMask(_n)
-#define SetDisplayUpdateMask(_n) __setDisplayUpdateMask(_n)
+/**
+ * Set the display font memory address.
+ * This function lets you set the current display font memory address.
+ *
+ * \param _n The new display font memory address.
+ */
 #define SetDisplayFont(_n) __setDisplayFont(_n)
+
+/**
+ * Set the display memory address.
+ * This function lets you set the current display memory address.
+ *
+ * \param _n The new display memory address.
+ */
 #define SetDisplayDisplay(_n) __setDisplayDisplay(_n)
+
+/**
+ * Set the display erase mask.
+ * This function lets you set the current display erase mask.
+ *
+ * \param _n The new display erase mask.
+ */
+#define SetDisplayEraseMask(_n) __setDisplayEraseMask(_n)
+
+/**
+ * Set the display flags.
+ * This function lets you set the current display flags.
+ *
+ * \param _n The new display flags. See \ref DisplayFlagsGroup.
+ */
 #define SetDisplayFlags(_n) __setDisplayFlags(_n)
+
+/**
+ * Set the display text lines center flags.
+ * This function lets you set the current display text lines center flags.
+ *
+ * \param _n The new display text lines center flags.
+ */
 #define SetDisplayTextLinesCenterFlags(_n) __setDisplayTextLinesCenterFlags(_n)
 
+/**
+ * Set the display update mask.
+ * This function lets you set the current display update mask.
+ *
+ * \param _n The new display update mask.
+ */
+#define SetDisplayUpdateMask(_n) __setDisplayUpdateMask(_n)
+
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/**
+ * Set the display contrast.
+ * This function lets you set the display contrast setting.
+ *
+ * \param _n The desired display contrast.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
 #define SetDisplayContrast(_n) __setDisplayContrast(_n)
 #endif
 
+/**
+ * Write pixel data to the normal display buffer.
+ * Write "cnt" bytes to the normal display memory from the data array. Start
+ * writing at the specified x, line coordinate. Each byte of data is a
+ * vertical strip of 8 bits at the desired location. Each
+ * bit represents a single pixel on the LCD screen. Use TEXTLINE_1 through
+ * TEXTLINE_8 for the "line" parameter.
+ *
+ * \param _x The desired x position where you wish to write pixel data.
+ * \param _line The desired line where you wish to write pixel data.
+ * \param _cnt The number of bytes of pixel data to write.
+ * \param _data The array of bytes from which pixel data is read.
+ */
 #define SetDisplayNormal(_x, _line, _cnt, _data) __setDisplayNormal(_x, _line, _cnt, _data)
+
+/**
+ * Write pixel data to the popup display buffer.
+ * Write "cnt" bytes to the popup display memory from the data array. Start
+ * writing at the specified x, line coordinate. Each byte of data is a
+ * vertical strip of 8 bits at the desired location. Each
+ * bit represents a single pixel on the LCD screen. Use TEXTLINE_1 through
+ * TEXTLINE_8 for the "line" parameter.
+ *
+ * \param _x The desired x position where you wish to write pixel data.
+ * \param _line The desired line where you wish to write pixel data.
+ * \param _cnt The number of bytes of pixel data to write.
+ * \param _data The array of bytes from which pixel data is read.
+ */
 #define SetDisplayPopup(_x, _line, _cnt, _data) __setDisplayPopup(_x, _line, _cnt, _data)
 
 /** @} */ // end of DisplayModuleFunctions group
@@ -10453,27 +10922,187 @@ ends
  * @{
  */
 
+/**
+ * Play a tone with extra options.
+ * Play a single tone of the specified frequency, duration, and volume. The
+ * frequency is in Hz (see the \ref ToneConstants group). The duration is in
+ * 1000ths of a second (see the \ref TimeConstants group). Volume should be a
+ * number from 0 (silent) to 4 (loudest). Play the tone repeatedly if loop is
+ * true.
+ *
+ * \param _freq The desired tone frequency, in Hz.
+ * \param _dur The desired tone duration, in ms.
+ * \param _vol The desired tone volume.
+ * \param _loop A boolean flag indicating whether to play the tone repeatedly.
+ */
 #define PlayToneEx(_freq,_dur,_vol,_loop) __PlayToneEx(_freq,_dur,_vol,_loop)
+
+/**
+ * Play a tone.
+ * Play a single tone of the specified frequency and duration. The frequency is
+ * in Hz (see the \ref ToneConstants group). The duration is in 1000ths of a
+ * second (see the \ref TimeConstants group). The tone is played at the loudest
+ * sound level supported by the firmware and it is not looped.
+ *
+ * \param _freq The desired tone frequency, in Hz.
+ * \param _dur The desired tone duration, in ms.
+ */
 #define PlayTone(_freq,_dur) __PlayToneEx(_freq,_dur,4,0)
 
+/**
+ * Play a file.
+ * Play the specified file. The filename may be any valid string expression.
+ * The sound file can either be an RSO file containing PCM or compressed ADPCM
+ * samples or it can be an NXT melody (RMD) file containing frequency and
+ * duration values.
+ *
+ * \param _file The name of the sound or melody file to play.
+ */
 #define PlayFile(_file) __PlayFileEx(_file,4,0)
+
+/**
+ * Play a file with extra options.
+ * Play the specified file. The filename may be any valid string expression.
+ * Volume should be a number from 0 (silent) to 4 (loudest). Play the file
+ * repeatedly if loop is true.
+ * The sound file can either be an RSO file containing PCM or compressed ADPCM
+ * samples or it can be an NXT melody (RMD) file containing frequency and
+ * duration values.
+ *
+ * \param _file The name of the sound or melody file to play.
+ * \param _vol The desired tone volume.
+ * \param _loop A boolean flag indicating whether to play the file repeatedly.
+ */
 #define PlayFileEx(_file,_vol,_loop) __PlayFileEx(_file,_vol,_loop)
 
+/**
+ * Get sound module state and flags.
+ * Return the current sound module state and flags.
+ * See the \ref SoundStateConstants group.
+ *
+ * \sa SetSoundState
+ * \param _state The current sound module state.
+ * \param _flags The current sound module flags.
+ */
 #define GetSoundState(_state, _flags) __GetSoundState(_state, _flags)
+
+/**
+ * Set sound module state and flags.
+ * Set the sound module state and flags.
+ * See the \ref SoundStateConstants group.
+ *
+ * \sa GetSoundState
+ * \param _state The sound module state.
+ * \param _flags The sound module flags.
+ * \param _result The function call result.
+ */
 #define SetSoundState(_state, _flags, _result) __setSoundState(_state, _flags, _result)
 
+/**
+ * Get sound frequency.
+ * Return the current sound frequency.
+ *
+ * \sa SetSoundFrequency
+ * \param _n The current sound frequency.
+ */
 #define GetSoundFrequency(_n) __GetSoundFrequency(_n)
+
+/**
+ * Get sound duration.
+ * Return the current sound duration.
+ *
+ * \sa SetSoundDuration
+ * \param _n The current sound duration.
+ */
 #define GetSoundDuration(_n) __GetSoundDuration(_n)
+
+/**
+ * Get sample rate.
+ * Return the current sound sample rate.
+ *
+ * \sa SetSoundSampleRate
+ * \param _n The current sound sample rate.
+ */
 #define GetSoundSampleRate(_n) __GetSoundSampleRate(_n)
+
+/**
+ * Get sound mode.
+ * Return the current sound mode.  See the \ref SoundModeConstants group.
+ *
+ * \sa SetSoundMode
+ * \param _n The current sound mode.
+ */
 #define GetSoundMode(_n) __GetSoundMode(_n)
+
+/**
+ * Get volume.
+ * Return the current sound volume.
+ *
+ * \sa SetSoundVolume
+ * \param _n The current sound volume.
+ */
 #define GetSoundVolume(_n) __GetSoundVolume(_n)
 
-#define SetSoundFrequency(_n) __setSoundFrequency(_n)
+/**
+ * Set sound duration.
+ * Set the sound duration.
+ *
+ * \sa GetSoundDuration
+ * \param _n The new sound duration
+ */
 #define SetSoundDuration(_n) __setSoundDuration(_n)
-#define SetSoundSampleRate(_n) __setSoundSampleRate(_n)
+
+/**
+ * Set sound module flags.
+ * Set the sound module flags. See the \ref SoundFlagsConstants group.
+ *
+ * \param _n The new sound module flags
+ */
 #define SetSoundFlags(_n) __setSoundFlags(_n)
-#define SetSoundModuleState(_n) __setSoundModuleState(_n)
+
+/**
+ * Set sound frequency.
+ * Set the sound frequency.
+ *
+ * \sa GetSoundFrequency
+ * \param _n The new sound frequency
+ */
+#define SetSoundFrequency(_n) __setSoundFrequency(_n)
+
+/**
+ * Set sound mode.
+ * Set the sound mode.  See the \ref SoundModeConstants group.
+ *
+ * \sa GetSoundMode
+ * \param _n The new sound mode
+ */
 #define SetSoundMode(_n) __setSoundMode(_n)
+
+/**
+ * Set sound module state.
+ * Set the sound module state. See the \ref SoundStateConstants group.
+ *
+ * \sa GetSoundState
+ * \param _n The new sound state
+ */
+#define SetSoundModuleState(_n) __setSoundModuleState(_n)
+
+/**
+ * Set sample rate.
+ * Set the sound sample rate.
+ *
+ * \sa GetSoundSampleRate
+ * \param _n The new sample rate
+ */
+#define SetSoundSampleRate(_n) __setSoundSampleRate(_n)
+
+/**
+ * Set sound volume.
+ * Set the sound volume.
+ *
+ * \sa GetSoundVolume
+ * \param _n The new volume
+ */
 #define SetSoundVolume(_n) __setSoundVolume(_n)
 
 /** @} */ // end of SoundModuleFunctions group
@@ -11073,22 +11702,129 @@ ends
  * Functions for accessing and modifying Button module features.
  * @{
  */
+
+/**
+ * Read button information.
+ * Read the specified button. Set the pressed and count parameters with the
+ * current state of the button. Optionally reset the press count after
+ * reading it.
+ *
+ * \param _idx The button to check. See \ref ButtonNameConstants.
+ * \param _reset Whether or not to reset the press counter.
+ * \param _pressed The button pressed state.
+ * \param _count The button press count.
+ * \param _result The function call result.
+ */
 #define ReadButtonEx(_idx, _reset, _pressed, _count, _result) __ReadButtonEx(_idx, _reset, _pressed, _count, _result)
 
+/**
+ * Get button press count.
+ * Return the press count of the specified button.
+ *
+ * \param _b The button to check. See \ref ButtonNameConstants.
+ * \param _n The button press count.
+ */
 #define GetButtonPressCount(_b, _n) __GetButtonPressCount(_b, _n)
+
+/**
+ * Get button long press count.
+ * Return the long press count of the specified button.
+ *
+ * \param _b The button to check. See \ref ButtonNameConstants.
+ * \param _n The button long press count.
+ */
 #define GetButtonLongPressCount(_b, _n) __GetButtonLongPressCount(_b, _n)
+
+/**
+ * Get button short release count.
+ * Return the short release count of the specified button.
+ *
+ * \param _b The button to check. See \ref ButtonNameConstants.
+ * \param _n The button short release count.
+ */
 #define GetButtonShortReleaseCount(_b, _n) __GetButtonShortReleaseCount(_b, _n)
+
+/**
+ * Get button long release count.
+ * Return the long release count of the specified button.
+ *
+ * \param _b The button to check. See \ref ButtonNameConstants.
+ * \param _n The button long release count.
+ */
 #define GetButtonLongReleaseCount(_b, _n) __GetButtonLongReleaseCount(_b, _n)
+
+/**
+ * Get button release count.
+ * Return the release count of the specified button.
+ *
+ * \param _b The button to check. See \ref ButtonNameConstants.
+ * \param _n The button release count.
+*/
 #define GetButtonReleaseCount(_b, _n) __GetButtonReleaseCount(_b, _n)
+
+/**
+ * Get button state.
+ * Return the state of the specified button. See \ref ButtonStateConstants.
+ *
+ * \param _b The button to check. See \ref ButtonNameConstants.
+ * \param _n The button state.
+ */
 #define GetButtonState(_b, _n) __GetButtonState(_b, _n)
 
+/**
+ * Set button press count.
+ * Set the press count of the specified button.
+ *
+ * \param _b The button number. See \ref ButtonNameConstants.
+ * \param _n The new press count value.
+ */
 #define SetButtonPressCount(_b, _n) __setButtonPressCount(_b, _n)
+
+/**
+ * Set button long press count.
+ * Set the long press count of the specified button.
+ *
+ * \param _b The button number. See \ref ButtonNameConstants.
+ * \param _n The new long press count value.
+ */
 #define SetButtonLongPressCount(_b, _n) __setButtonLongPressCount(_b, _n)
+
+/**
+ * Set button short release count.
+ * Set the short release count of the specified button.
+ *
+ * \param _n The button number. See \ref ButtonNameConstants.
+ * \param _n The new short release count value.
+ */
 #define SetButtonShortReleaseCount(_b, _n) __setButtonShortReleaseCount(_b, _n)
+
+/**
+ * Set button long release count.
+ * Set the long release count of the specified button.
+ *
+ * \param _b The button number. See \ref ButtonNameConstants.
+ * \param _n The new long release count value.
+ */
 #define SetButtonLongReleaseCount(_b, _n) __setButtonLongReleaseCount(_b, _n)
+
+/**
+ * Set button release count.
+ * Set the release count of the specified button.
+ *
+ * \param _n The button number. See \ref ButtonNameConstants.
+ * \param _n The new release count value.
+ */
 #define SetButtonReleaseCount(_b, _n) __setButtonReleaseCount(_b, _n)
+
+/**
+ * Set button state.
+ * Set the state of the specified button.
+ *
+ * \param _b The button to check. See \ref ButtonNameConstants.
+ * \param _n The new button state. See \ref ButtonStateConstants.
+*/
 #define SetButtonState(_b, _n) __setButtonState(_b, _n)
-            
+
 /** @} */ // end of ButtonModuleFunctions group
 /** @} */ // end of ButtonModule group
 /** @} */ // end of NXTFirmwareModules group
@@ -11218,7 +11954,6 @@ ends
  */
 #define GetBatteryLevel(_n) __GetBatteryLevel(_n)
 
-
 /**
  * Get command flags.
  * Return the command flags.
@@ -11319,12 +12054,6 @@ ends
 /** @} */ // end of UiModuleFunctions group
 /** @} */ // end of UiModule group
 /** @} */ // end of NXTFirmwareModules group
-
-
-#define Random(_arg,_max) __Random(_arg,_max)
-#define SignedRandom(_arg) __SignedRandom(_arg)
-
-#define GetFreeMemory(_value) __GetFreeMemory(_value)
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -12515,33 +13244,347 @@ ends
  * Functions for accessing and modifying Loader module features.
  * @{
  */
+
+/**
+ * Get free flash memory.
+ * Get the number of bytes of flash memory that are available for use.
+ *
+ * \param _value The number of bytes of unused flash memory.
+ */
+#define GetFreeMemory(_value) __GetFreeMemory(_value)
+
+/**
+ * Create a file.
+ * Create a new file with the specified filename and size and open it for
+ * writing. The file handle is returned in the last parameter, which must be a
+ * variable. The loader result code is returned as the value of the function
+ * call. The filename and size parameters must be constants, constant
+ * expressions, or variables. A file created with a size of zero bytes cannot
+ * be written to since the NXC file writing functions do not grow the file if
+ * its capacity is exceeded during a write attempt.
+ *
+ * \param _fname The name of the file to create.
+ * \param _fsize The size of the file.
+ * \param _handle The file handle output from the function call.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define CreateFile(_fname, _fsize, _handle, _result) __createFile(_fname, _fsize, _handle, _result)
+
+/**
+ * Open a file for appending.
+ * Open an existing file with the specified filename for writing. The file
+ * size is returned in the second parameter, which must be a variable. The
+ * file handle is returned in the last parameter, which must be a variable.
+ * The loader result code is returned as the value of the function call.
+ * The filename parameter must be a constant or a variable.
+ *
+ * \param _fname The name of the file to open.
+ * \param _fsize The size of the file returned by the function.
+ * \param _handle The file handle output from the function call.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define OpenFileAppend(_fname, _fsize, _handle, _result) __openFileAppend(_fname, _fsize, _handle, _result)
+
+/**
+ * Open a file for reading.
+ * Open an existing file with the specified filename for reading. The file
+ * size is returned in the second parameter, which must be a variable. The
+ * file handle is returned in the last parameter, which must be a variable.
+ * The loader result code is returned as the value of the function call. The
+ * filename parameter must be a constant or a variable.
+ *
+ * \param _fname The name of the file to open.
+ * \param _fsize The size of the file returned by the function.
+ * \param _handle The file handle output from the function call.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define OpenFileRead(_fname, _fsize, _handle, _result) __openFileRead(_fname, _fsize, _handle, _result)
+
+/**
+ * Close a file.
+ * Close the file associated with the specified file handle. The loader
+ * result code is returned as the value of the function call. The handle
+ * parameter must be a constant or a variable.
+ *
+ * \param _handle The file handle.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define CloseFile(_handle, _result) __closeFile(_handle, _result)
+
+/**
+ * Resolve a handle.
+ * Resolve a file handle from the specified filename. The file handle is
+ * returned in the second parameter, which must be a variable. A boolean
+ * value indicating whether the handle can be used to write to the file or
+ * not is returned in the last parameter, which must be a variable. The
+ * loader result code is returned as the value of the function call. The
+ * filename parameter must be a constant or a variable.
+ *
+ * \param _fname The name of the file for which to resolve a handle.
+ * \param _handle The file handle output from the function call.
+ * \param _writeable A boolean flag indicating whether the handle is
+ * to a file open for writing (true) or reading (false).
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define ResolveHandle(_fname, _handle, _writeable, _result) __resolveHandle(_fname, _handle, _writeable, _result)
+
+/**
+ * Rename a file.
+ * Rename a file from the old filename to the new filename. The loader
+ * param _result code is returned as the value of the function call. The filename
+ * parameters must be constants or variables.
+ *
+ * \param _oldname The old filename.
+ * \param _newname The new filename.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define RenameFile(_oldname, _newname, _result) __renameFile(_oldname, _newname, _result)
+
+/**
+ * Delete a file.
+ * Delete the specified file. The loader result code is returned as the
+ * value of the function call. The filename parameter must be a constant or a
+ * variable.
+ *
+ * \param _fname The name of the file to delete.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define DeleteFile(_fname, _result) __deleteFile(_fname, _result)
+
+/**
+ * Resize a file.
+ * Resize the specified file. The loader result code is returned as the
+ * value of the function call. The filename parameter must be a constant or a
+ * variable.
+ *
+ * \param _fname The name of the file to resize.
+ * \param _newsize The new size for the file.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define ResizeFile(_fname, _newsize, _result) __fileResize(_fname, _newsize, _result)
 
 #ifdef __ENHANCED_FIRMWARE
+
+/**
+ * Create a linear file.
+ * Create a new linear file with the specified filename and size and open it for
+ * writing. The file handle is returned in the last parameter, which must be a
+ * variable. The loader result code is returned as the value of the function
+ * call. The filename and size parameters must be constants, constant
+ * expressions, or variables. A file created with a size of zero bytes cannot
+ * be written to since the NXC file writing functions do not grow the file if
+ * its capacity is exceeded during a write attempt.
+ *
+ * \param _fname The name of the file to create.
+ * \param _fsize The size of the file.
+ * \param _handle The file handle output from the function call.
+ * \param _result The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 #define CreateFileLinear(_fname, _fsize, _handle, _result) __createFileLinear(_fname, _fsize, _handle, _result)
+
+/**
+ * Create a non-linear file.
+ * Create a new non-linear file with the specified filename and size and open it for
+ * writing. The file handle is returned in the last parameter, which must be a
+ * variable. The loader result code is returned as the value of the function
+ * call. The filename and size parameters must be constants, constant
+ * expressions, or variables. A file created with a size of zero bytes cannot
+ * be written to since the NXC file writing functions do not grow the file if
+ * its capacity is exceeded during a write attempt.
+ *
+ * \param _fname The name of the file to create.
+ * \param _fsize The size of the file.
+ * \param _handle The file handle output from the function call.
+ * \param _result The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 #define CreateFileNonLinear(_fname, _fsize, _handle, _result) __createFileNonLinear(_fname, _fsize, _handle, _result)
+
+/**
+ * Open a linear file for reading.
+ * Open an existing linear file with the specified filename for reading. The file
+ * size is returned in the second parameter, which must be a variable. The
+ * file handle is returned in the last parameter, which must be a variable.
+ * The loader result code is returned as the value of the function call. The
+ * filename parameter must be a constant or a variable.
+ *
+ * \param _fname The name of the file to open.
+ * \param _fsize The size of the file returned by the function.
+ * \param _handle The file handle output from the function call.
+ * \param _result The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 #define OpenFileReadLinear(_fname, _fsize, _handle, _result) __openFileReadLinear(_fname, _fsize, _handle, _result)
+
+/**
+ * Start searching for files.
+ * This function lets you begin iterating through files stored on the NXT.
+ *
+ * \param _fname On input this contains the filename pattern you are searching
+ * for. On output this contains the name of the first file found that matches
+ * the pattern.
+ * \param _handle The search handle input to and output from the function call.
+ * \param _result The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 #define FindFirstFile(_fname, _handle, _result) __findFirstFile(_fname, _handle, _result)
+
+/**
+ * Continue searching for files.
+ * This function lets you continue iterating through files stored on the NXT.
+ *
+ * \param _fname On output this contains the name of the next file found that
+ * matches the pattern used when the search began by calling \ref FindFirstFile.
+ * \param _handle The search handle input to and output from the function call.
+ * \param _result The function call result. See \ref LoaderErrors.
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
 #define FindNextFile(_fname, _handle, _result) __findNextFile(_fname, _handle, _result)
 #endif
 
+/**
+ * Read a value from a file.
+ * Read a value from the file associated with the specified handle.
+ * The handle parameter must be a variable. The value parameter must be a
+ * variable. The type of the value parameter determines the number of bytes of
+ * data read.
+ *
+ * \param _handle The file handle.
+ * \param _n The variable to store the data read from the file.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define Read(_handle, _n, _result) __readValue(_handle, _n, _result)
+
+/**
+ * Read a value from a file plus line ending.
+ * Read a value from the file associated with the specified handle.
+ * The handle parameter must be a variable. The value parameter must be a
+ * variable. The type of the value parameter determines the number of bytes
+ * of data read. The ReadLn function reads two additional bytes from the
+ * file which it assumes are a carriage return and line feed pair.
+ *
+ * \param _handle The file handle.
+ * \param _n The variable to store the data read from the file.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define ReadLn(_handle, _n, _result) __readLnValue(_handle, _n, _result)
+
+/**
+ * Read bytes from a file.
+ * Read the specified number of bytes from the file associated with the
+ * specified handle. The handle parameter must be a variable. The length
+ * parameter must be a variable. The buf parameter must be an array or a
+ * string variable. The actual number of bytes read is returned in the
+ * length parameter.
+ *
+ * \param _handle The file handle.
+ * \param _len The number of bytes to read. Returns the number of bytes actually read.
+ * \param _buf The byte array where the data is stored on output.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define ReadBytes(_handle, _len, _buf, _result) __readBytes(_handle, _len, _buf, _result)
+
+/**
+ * Read a string from a file plus line ending.
+ * Read a string from the file associated with the specified handle.
+ * The handle parameter must be a variable. The output parameter must be a
+ * variable. Appends bytes to the output variable until a line ending (CRLF)
+ * is reached. The line ending is also read but it is not appended to the
+ * output parameter.
+ *
+ * \param _handle The file handle.
+ * \param _output The variable to store the string read from the file.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define ReadLnString(_handle, _output, _result) __readLnString(_handle, _output, _result)
 
+/**
+ * Write value to file.
+ * Write a value to the file associated with the specified handle.
+ * The handle parameter must be a variable. The value parameter must be a
+ * constant, a constant expression, or a variable. The type of the value
+ * parameter determines the number of bytes of data written.
+ *
+ * \param _handle The file handle.
+ * \param _n The value to write to the file.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define Write(_handle, _n, _result) __writeValue(_handle, _n, _result)
+
+/**
+ * Write a value and new line to a file.
+ * Write a value to the file associated with the specified handle. The
+ * handle parameter must be a variable. The value parameter must be a constant,
+ * a constant expression, or a variable. The type of the value parameter
+ * determines the number of bytes of data written. This function also
+ * writes a carriage return and a line feed to the file following the numeric
+ * data.
+ *
+ * \param _handle The file handle.
+ * \param _n The value to write to the file.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define WriteLn(_handle, _n, _result) __writeLnValue(_handle, _n, _result)
+
+/**
+ * Write string to a file.
+ * Write the string to the file associated with the specified handle. The
+ * handle parameter must be a variable. The count parameter must be a variable.
+ * The str parameter must be a string variable or string constant. The actual
+ * number of bytes written is returned in the cnt parameter.
+ *
+ * \param _handle The file handle.
+ * \param _str The string to write to the file.
+ * \param _cnt The number of bytes actually written to the file.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define WriteString(_handle, _str, _cnt, _result) __writeString(_handle, _str, _cnt, _result)
+
+/**
+ * Write string and new line to a file.
+ * Write the string to the file associated with the specified handle. The
+ * handle parameter must be a variable. The count parameter must be a variable.
+ * The str parameter must be a string variable or string constant. This
+ * function also writes a carriage return and a line feed to the file following
+ * the string data. The total number of bytes written is returned in the
+ * cnt parameter.
+ *
+ * \param _handle The file handle.
+ * \param _str The string to write to the file.
+ * \param _cnt The number of bytes actually written to the file.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define WriteLnString(_handle, _str, _cnt, _result) __writeLnString(_handle, _str, _cnt, _result)
+
+/**
+ * Write bytes to file.
+ * Write the contents of the data array to the file associated with the
+ * specified handle. The handle parameter must be a variable. The cnt
+ * parameter must be a variable. The data parameter must be a byte array. The
+ * actual number of bytes written is returned in the cnt parameter.
+ *
+ * \param _handle The file handle.
+ * \param _buf The byte array or string containing the data to write.
+ * \param _cnt The number of bytes actually written to the file.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define WriteBytes(_handle, _buf, _cnt, _result) __writeBytes(_handle, _buf, _cnt, _result)
+
+/**
+ * Write bytes to a file with limit.
+ * Write the specified number of bytes to the file associated with the
+ * specified handle. The handle parameter must be a variable. The len
+ * parameter must be a variable. The buf parameter must be a byte array or a
+ * string variable or string constant. The actual number of bytes written is
+ * returned in the len parameter.
+ *
+ * \param _handle The file handle.
+ * \param _len The maximum number of bytes to write on input.  Returns the
+ * actual number of bytes written.
+ * \param _buf The byte array or string containing the data to write.
+ * \param _result The function call result. See \ref LoaderErrors.
+ */
 #define WriteBytesEx(_handle, _len, _buf, _result) __writeBytesEx(_handle, _len, _buf, _result)
 
 /** @} */ // end of LoaderModuleFunctions group
@@ -12551,6 +13594,31 @@ ends
 /** @addtogroup StandardCAPIFunctions
  * @{
  */
+
+/** @defgroup cstdlibAPI cstdlib API
+ * Standard C cstdlib API functions.
+ * @{
+ */
+
+/**
+ * Generate an unsigned random number.
+ * Return an unsigned 16-bit random number. The
+ * returned value will range between 0 and n (exclusive).
+ *
+ * \param _arg An unsigned random number.
+ * \param _max The maximum unsigned value desired.
+ */
+#define Random(_arg,_max) __Random(_arg,_max)
+
+/**
+ * Generate signed random number.
+ * Return a signed 16-bit random number.
+ *
+ * \param _arg A signed random number
+ */
+#define SignedRandom(_arg) __SignedRandom(_arg)
+
+/** @} */ // end of cstdlibAPI group
 
 /** @defgroup cmathAPI cmath API
  * Standard C cmath API functions.
@@ -12573,10 +13641,18 @@ ends
 // X is 100* the cos value (-100->100); Y is 0->180; Y is -11 if X is outside -100->100 range
 #define Acos(_X,_R) __ACOS(_X,_R)
 
+/**
+ * Convert from BCD to decimal
+ * Return the decimal equivalent of the binary coded decimal value provided.
+ *
+ * \param _bcd The value you want to convert from bcd to decimal.
+ * \param _result The decimal equivalent of the binary coded decimal byte.
+ */
 #define bcd2dec(_bcd, _result) __bcd2dec(_bcd, _result)
 
 /** @} */ // end of cmathAPI group
 /** @} */ // end of StandardCAPIFunctions group
+
 
 /** @addtogroup ThirdPartyDevices
  * @{
@@ -12591,136 +13667,1081 @@ ends
  * @{
  */
 
-#define SetSensorHTEOPD(_port, _bStd) __SetSensorHTEOPD(_port, _bStd)
-#define ReadSensorHTEOPD(_port, _val) __ReadSensorHTEOPD(_port, _val)
+/**
+ * Set sensor as HiTechnic Gyro.
+ * Configure the sensor on the specified port as a HiTechnic Gyro sensor.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ */
 #define SetSensorHTGyro(_port) __SetSensorHTGyro(_port)
+
+/**
+ * Read HiTechnic Gyro sensor.
+ * Read the HiTechnic Gyro sensor on the specified port. The offset value
+ * should be calculated by averaging several readings with an offset of zero
+ * while the sensor is perfectly still.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _offset The zero offset.
+ * \param _val The Gyro sensor reading.
+ */
 #define ReadSensorHTGyro(_p, _offset, _val) __ReadSensorHTGyro(_p, _offset, _val)
 
+/**
+ * Set sensor as HiTechnic EOPD.
+ * Configure the sensor on the specified port as a HiTechnic EOPD sensor.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _bStd Configure in standard or long-range mode.
+ */
+#define SetSensorHTEOPD(_port, _bStd) __SetSensorHTEOPD(_port, _bStd)
+
+/**
+ * Read HiTechnic EOPD sensor.
+ * Read the HiTechnic EOPD sensor on the specified port.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _val The EOPD sensor reading.
+ */
+#define ReadSensorHTEOPD(_port, _val) __ReadSensorHTEOPD(_port, _val)
+
+/**
+ * Read HiTechnic touch multiplexer.
+ * Read touch sensor values from the HiTechnic touch multiplexer device.
+ *
+ * \param _p The sensor port. See \ref InPorts.
+ * \param _t1 The value of touch sensor 1.
+ * \param _t2 The value of touch sensor 2.
+ * \param _t3 The value of touch sensor 3.
+ * \param _t4 The value of touch sensor 4.
+ */
 #define ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) __ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4)
 
+/**
+ * HTPowerFunctionCommand function.
+ * Execute a pair of Power Function motor commands on the specified channel
+ * using the HiTechnic iRLink device. Commands for outa and outb are
+ * \ref PF_CMD_STOP, \ref PF_CMD_REV, \ref PF_CMD_FWD, and \ref PF_CMD_BRAKE.
+ * Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _outa The Power Function command for output A. See \ref PFCmdConstants.
+ * \param _outb The Power Function command for output B. See \ref PFCmdConstants.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
 #define HTPowerFunctionCommand(_port, _channel, _outa, _outb, _result) \
   __HTPFComboDirect(_port, _channel, _outa, _outb, _result)
 
-#define HTPFComboDirect(_port, _channel, _outa, _outb, _result) \
-  __HTPFComboDirect(_port, _channel, _outa, _outb, _result)
-
-#define HTPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result) \
-  __HTPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result)
-
-#define HTPFSingleOutputCST(_port, _channel, _out, _func, _result) \
-  __HTPFSingleOutput(_port, _channel, _out, _func, TRUE, _result)
-
-#define HTPFSingleOutputPWM(_port, _channel, _out, _func, _result) \
-  __HTPFSingleOutput(_port, _channel, _out, _func, FALSE, _result)
-
-#define HTPFComboPWM(_port, _channel, _outa, _outb, _result) \
-  __HTPFComboPWM(_port, _channel, _outa, _outb, _result)
-
-#define HTPFTrain(_port, _channel, _func, _result) \
-  __HTIRTrain(_port, _channel, _func, TRUE, _result)
-
+/**
+ * HTIRTrain function.
+ * Control an IR Train receiver set to the specified channel using the
+ * HiTechnic iRLink device. Valid func values are \ref TRAIN_FUNC_STOP,
+ * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
+ * Valid channel values are \ref TRAIN_CHANNEL_1 through \ref TRAIN_CHANNEL_3 and
+ * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
+ * using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The IR Train channel.  See \ref IRTrainChannels.
+ * \param _func The IR Train function. See \ref IRTrainFuncs
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
 #define HTIRTrain(_port, _channel, _func, _result) \
   __HTIRTrain(_port, _channel, _func, FALSE, _result)
 
+/**
+ * HTPFComboDirect function.
+ * Execute a pair of Power Function motor commands on the specified channel
+ * using the HiTechnic iRLink device. Commands for outa and outb are
+ * \ref PF_CMD_STOP, \ref PF_CMD_REV, \ref PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _outa The Power Function command for output A. See \ref PFCmdConstants.
+ * \param _outb The Power Function command for output B. See \ref PFCmdConstants.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define HTPFComboDirect(_port, _channel, _outa, _outb, _result) \
+  __HTPFComboDirect(_port, _channel, _outa, _outb, _result)
+
+/**
+ * HTPFComboPWM function.
+ * Control the speed of both outputs on a Power Function receiver set to the
+ * specified channel using the HiTechnic iRLink device. Valid output values
+ * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
+ * port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _outa The Power Function PWM command for output A. See \ref PFPWMOptions.
+ * \param _outb The Power Function PWM command for output B. See \ref PFPWMOptions.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define HTPFComboPWM(_port, _channel, _outa, _outb, _result) \
+  __HTPFComboPWM(_port, _channel, _outa, _outb, _result)
+
+/**
+ * HTPFRawOutput function.
+ * Control a Power Function receiver set to the specified channel using the
+ * HiTechnic iRLink device. Build the raw data stream using the 3 nibbles
+ * (4 bit values). The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _nibble0 The first raw data nibble.
+ * \param _nibble1 The second raw data nibble.
+ * \param _nibble2 The third raw data nibble.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
 #define HTPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result) \
   __HTPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result)
 
+/**
+ * HTPFRepeat function.
+ * Repeat sending the last Power Function command using the HiTechnic
+ * IRLink device. Specify the number of times to repeat the command and the
+ * number of milliseconds of delay between each repetition. The port must be
+ * configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _count The number of times to repeat the command.
+ * \param _delay The number of milliseconds to delay between each repetition.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
 #define HTPFRepeat(_port, _count, _delay, _result) \
   __HTPFRepeatLastCommand(_port, _count, _delay, _result)
 
+/**
+ * HTPFSingleOutputCST function.
+ * Control a single output on a Power Function receiver set to the specified
+ * channel using the HiTechnic iRLink device. Select the desired output
+ * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
+ * \ref PF_CST_SET1_CLEAR2, \ref PF_CST_CLEAR1_SET2, \ref PF_CST_SET1_SET2,
+ * \ref PF_CST_INCREMENT_PWM, \ref PF_CST_DECREMENT_PWM, \ref PF_CST_FULL_FWD,
+ * \ref PF_CST_FULL_REV, and \ref PF_CST_TOGGLE_DIR. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _out The Power Function output. See \ref PFOutputs.
+ * \param _func The Power Function CST function. See \ref PFCSTOptions.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define HTPFSingleOutputCST(_port, _channel, _out, _func, _result) \
+  __HTPFSingleOutput(_port, _channel, _out, _func, TRUE, _result)
+
+/**
+ * HTPFSingleOutputPWM function.
+ * Control the speed of a single output on a Power Function receiver set to
+ * the specified channel using the HiTechnic iRLink device. Select the
+ * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
+ * \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
+ * port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _out The Power Function output. See \ref PFOutputs.
+ * \param _func The Power Function PWM function. See \ref PFPWMOptions.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define HTPFSingleOutputPWM(_port, _channel, _out, _func, _result) \
+  __HTPFSingleOutput(_port, _channel, _out, _func, FALSE, _result)
+
+/**
+ * HTPFSinglePin function.
+ * Control a single pin on a Power Function receiver set to the specified
+ * channel using the HiTechnic iRLink device. Select the desired output
+ * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
+ * \ref PF_PIN_C2. Valid functions are \ref PF_FUNC_NOCHANGE, \ref PF_FUNC_CLEAR,
+ * \ref PF_FUNC_SET, and \ref PF_FUNC_TOGGLE. Valid channels are \ref PF_CHANNEL_1 through
+ * \ref PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
+ * false (timeout) as the final parameter. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _out The Power Function output. See \ref PFOutputs.
+ * \param _pin The Power Function pin. See \ref PFPinConstants.
+ * \param _func The Power Function single pin function. See \ref PFPinFuncs.
+ * \param _cont Control whether the mode is continuous or timeout.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define HTPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result) \
+  __HTPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result)
+
+/**
+ * HTPFTrain function.
+ * Control both outputs on a Power Function receiver set to the specified
+ * channel using the HiTechnic iRLink device as if it were an IR Train
+ * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
+ * \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _func The Power Function train function. See \ref IRTrainFuncs.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define HTPFTrain(_port, _channel, _func, _result) \
+  __HTIRTrain(_port, _channel, _func, TRUE, _result)
+
+/**
+ * HTRCXSetIRLinkPort function.
+ * Set the global port in advance of using the HTRCX* and HTScout* API
+ * functions for sending RCX and Scout messages over the HiTechnic iRLink
+ * device. The port must be configured as a Lowspeed port before using any of
+ * the HiTechnic RCX and Scout iRLink functions.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ */
 #define HTRCXSetIRLinkPort(_port) __HTRCXSetIRLinkPort(_port)
-#define HTRCXPoll(_src, _value, _result) __HTRCXPoll(_src, _value, _result)
+
+/**
+ * HTRCXBatteryLevel function.
+ * Send the BatteryLevel command to an RCX to read the current battery level.
+ *
+ * \param _result The RCX battery level.
+ */
 #define HTRCXBatteryLevel(_result) __HTRCXBatteryLevel(_result)
-#define HTRCXPing() __HTRCXOpNoArgs(RCX_PingOp)
-#define HTRCXDeleteTasks() __HTRCXOpNoArgs(RCX_DeleteTasksOp)
-#define HTRCXStopAllTasks() __HTRCXOpNoArgs(RCX_StopAllTasksOp)
-#define HTRCXPBTurnOff() __HTRCXOpNoArgs(RCX_PBTurnOffOp)
-#define HTRCXDeleteSubs() __HTRCXOpNoArgs(RCX_DeleteSubsOp)
-#define HTRCXClearSound() __HTRCXOpNoArgs(RCX_ClearSoundOp)
-#define HTRCXClearMsg() __HTRCXOpNoArgs(RCX_ClearMsgOp)
-#define HTRCXMuteSound() __HTRCXOpNoArgs(RCX_MuteSoundOp)
-#define HTRCXUnmuteSound() __HTRCXOpNoArgs(RCX_UnmuteSoundOp)
-#define HTRCXClearAllEvents() __HTRCXOpNoArgs(RCX_ClearAllEventsOp)
-#define HTRCXSetOutput(_outputs, _mode) __HTRCXSetOutput(_outputs, _mode)
-#define HTRCXSetDirection(_outputs, _dir) __HTRCXSetDirection(_outputs, _dir)
-#define HTRCXSetPower(_outputs, _pwrsrc, _pwrval) __HTRCXSetPower(_outputs, _pwrsrc, _pwrval)
-#define HTRCXOn(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_ON)
-#define HTRCXOff(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_OFF)
-#define HTRCXFloat(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_FLOAT)
-#define HTRCXToggle(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_TOGGLE)
-#define HTRCXFwd(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_FWD)
-#define HTRCXRev(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_REV)
-#define HTRCXOnFwd(_outputs) __HTRCXOnFwd(_outputs)
-#define HTRCXOnRev(_outputs) __HTRCXOnRev(_outputs)
-#define HTRCXOnFor(_outputs, _ms) __HTRCXOnFor(_outputs, _ms)
-#define HTRCXSetTxPower(_pwr) __HTRCXSetTxPower(_pwr)
-#define HTRCXPlaySound(_snd) __HTRCXPlaySound(_snd)
-#define HTRCXDeleteTask(_t) __HTRCXDeleteTask(_t)
-#define HTRCXStartTask(_t) __HTRCXStartTask(_t)
-#define HTRCXStopTask(_t) __HTRCXStopTask(_t)
-#define HTRCXSelectProgram(_prog) __HTRCXSelectProgram(_prog)
-#define HTRCXClearTimer(_timer) __HTRCXClearTimer(_timer)
-#define HTRCXSetSleepTime(_t) __HTRCXSetSleepTime(_t)
-#define HTRCXDeleteSub(_s) __HTRCXDeleteSub(_s)
-#define HTRCXClearSensor(_port) __HTRCXClearSensor(_port)
-#define HTRCXPlayToneVar(_varnum, _duration) __HTRCXPlayToneVar(_varnum, _duration)
-#define HTRCXSetWatch(_hours, _minutes) __HTRCXSetWatch(_hours, _minutes)
-#define HTRCXSetSensorType(_port, _type) __HTRCXSetSensorType(_port, _type)
-#define HTRCXSetSensorMode(_port, _mode) __HTRCXSetSensorMode(_port, _mode)
-#define HTRCXCreateDatalog(_size) __HTRCXCreateDatalog(_size)
-#define HTRCXAddToDatalog(_src, _value) __HTRCXAddToDatalog(_src, _value)
-#define HTRCXSendSerial(_first, _count) __HTRCXSendSerial(_first, _count)
-#define HTRCXRemote(_cmd) __HTRCXRemote(_cmd)
-#define HTRCXEvent(_src, _value) __HTRCXEvent(_src, _value)
-#define HTRCXPlayTone(_freq, _duration) __HTRCXPlayTone(_freq, _duration)
-#define HTRCXSelectDisplay(_src, _value) __HTRCXSelectDisplay(_src, _value)
+
+/**
+ * HTRCXPoll function
+ * Send the Poll command to an RCX to read a signed 2-byte value at the
+ * specified source and value combination.
+ *
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ * \param _result The value read from the specified port and value.
+ */
+#define HTRCXPoll(_src, _value, _result) __HTRCXPoll(_src, _value, _result)
+
+/**
+ * HTRCXPollMemory function.
+ * Send the PollMemory command to an RCX.
+ *
+ * \param _address The RCX memory address.
+ * \param _result The value read from the specified address.
+ */
 #define HTRCXPollMemory(_address, _result) __HTRCXPollMemory(_address, _result)
-#define HTRCXSetEvent(_evt, _src, _type) __HTRCXSetEvent(_evt, _src, _type)
-#define HTRCXSetGlobalOutput(_outputs, _mode) __HTRCXSetGlobalOutput(_outputs, _mode)
-#define HTRCXSetGlobalDirection(_outputs, _dir) __HTRCXSetGlobalDirection(_outputs, _dir)
-#define HTRCXSetMaxPower(_outputs, _pwrsrc, _pwrval) __HTRCXSetMaxPower(_outputs, _pwrsrc, _pwrval)
-#define HTRCXEnableOutput(_outputs) __HTRCXSetGlobalOutput(_outputs, RCX_OUT_ON)
-#define HTRCXDisableOutput(_outputs) __HTRCXSetGlobalOutput(_outputs, RCX_OUT_OFF)
-#define HTRCXInvertOutput(_outputs) __HTRCXSetGlobalDirection(_outputs, RCX_OUT_REV)
-#define HTRCXObvertOutput(_outputs) __HTRCXSetGlobalDirection(_outputs, RCX_OUT_FWD)
-#define HTRCXIncCounter(_counter) __HTRCXIncCounter(_counter)
-#define HTRCXDecCounter(_counter) __HTRCXDecCounter(_counter)
+
+/**
+ * HTRCXAddToDatalog function.
+ * Send the AddToDatalog command to an RCX.
+ *
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define HTRCXAddToDatalog(_src, _value) __HTRCXAddToDatalog(_src, _value)
+
+/**
+ * HTRCXClearAllEvents function.
+ * Send the ClearAllEvents command to an RCX.
+ */
+#define HTRCXClearAllEvents() __HTRCXOpNoArgs(RCX_ClearAllEventsOp)
+
+/**
+ * HTRCXClearCounter function.
+ * Send the ClearCounter command to an RCX.
+ *
+ * \param _counter The counter to clear.
+ */
 #define HTRCXClearCounter(_counter) __HTRCXClearCounter(_counter)
-#define HTRCXSetPriority(_p) __HTRCXSetPriority(_p)
+
+/**
+ * HTRCXClearMsg function.
+ * Send the ClearMsg command to an RCX.
+ */
+#define HTRCXClearMsg() __HTRCXOpNoArgs(RCX_ClearMsgOp)
+
+/**
+ * HTRCXClearSensor function.
+ * Send the ClearSensor command to an RCX.
+ *
+ * \param _port The RCX port number.
+ */
+#define HTRCXClearSensor(_port) __HTRCXClearSensor(_port)
+
+/**
+ * HTRCXClearSound function.
+ * Send the ClearSound command to an RCX.
+ */
+#define HTRCXClearSound() __HTRCXOpNoArgs(RCX_ClearSoundOp)
+
+/**
+ * HTRCXClearTimer function.
+ * Send the ClearTimer command to an RCX.
+ *
+ * \param _timer The timer to clear.
+ */
+#define HTRCXClearTimer(_timer) __HTRCXClearTimer(_timer)
+
+/**
+ * HTRCXCreateDatalog function.
+ * Send the CreateDatalog command to an RCX.
+ *
+ * \param _size The new datalog size.
+ */
+#define HTRCXCreateDatalog(_size) __HTRCXCreateDatalog(_size)
+
+/**
+ * HTRCXDecCounter function.
+ * Send the DecCounter command to an RCX.
+ *
+ * \param _counter The counter to decrement.
+ */
+#define HTRCXDecCounter(_counter) __HTRCXDecCounter(_counter)
+
+/**
+ * HTRCXDeleteSub function.
+ * Send the DeleteSub command to an RCX.
+ *
+ * \param _s The subroutine number to delete.
+ */
+#define HTRCXDeleteSub(_s) __HTRCXDeleteSub(_s)
+
+/**
+ * HTRCXDeleteSubs function.
+ * Send the DeleteSubs command to an RCX.
+ */
+#define HTRCXDeleteSubs() __HTRCXOpNoArgs(RCX_DeleteSubsOp)
+
+/**
+ * HTRCXDeleteTask function.
+ * Send the DeleteTask command to an RCX.
+ *
+ * \param _t The task number to delete.
+ */
+#define HTRCXDeleteTask(_t) __HTRCXDeleteTask(_t)
+
+/**
+ * HTRCXDeleteTasks function.
+ * Send the DeleteTasks command to an RCX.
+ */
+#define HTRCXDeleteTasks() __HTRCXOpNoArgs(RCX_DeleteTasksOp)
+
+/**
+ * HTRCXDisableOutput function.
+ * Send the DisableOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to disable. See \ref RCXOutputConstants.
+ */
+#define HTRCXDisableOutput(_outputs) __HTRCXSetGlobalOutput(_outputs, RCX_OUT_OFF)
+
+/**
+ * HTRCXEnableOutput function.
+ * Send the EnableOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to enable. See \ref RCXOutputConstants.
+ */
+#define HTRCXEnableOutput(_outputs) __HTRCXSetGlobalOutput(_outputs, RCX_OUT_ON)
+
+/**
+ * HTRCXEvent function.
+ * Send the Event command to an RCX.
+ *
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define HTRCXEvent(_src, _value) __HTRCXEvent(_src, _value)
+
+/**
+ * HTRCXFloat function.
+ * Send commands to an RCX to float the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to float. See \ref RCXOutputConstants.
+ */
+#define HTRCXFloat(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_FLOAT)
+
+/**
+ * HTRCXFwd function.
+ * Send commands to an RCX to set the specified outputs to the forward direction.
+ *
+ * \param _outputs The RCX output(s) to set forward. See \ref RCXOutputConstants.
+ */
+#define HTRCXFwd(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_FWD)
+
+/**
+ * HTRCXIncCounter function.
+ * Send the IncCounter command to an RCX.
+ *
+ * \param _counter The counter to increment.
+ */
+#define HTRCXIncCounter(_counter) __HTRCXIncCounter(_counter)
+
+/**
+ * HTRCXInvertOutput function.
+ * Send the InvertOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to invert. See \ref RCXOutputConstants.
+ */
+#define HTRCXInvertOutput(_outputs) __HTRCXSetGlobalDirection(_outputs, RCX_OUT_REV)
+
+/**
+ * HTRCXMuteSound function.
+ * Send the MuteSound command to an RCX.
+ */
+#define HTRCXMuteSound() __HTRCXOpNoArgs(RCX_MuteSoundOp)
+
+/**
+ * HTRCXObvertOutput function.
+ * Send the ObvertOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to obvert. See \ref RCXOutputConstants.
+ */
+#define HTRCXObvertOutput(_outputs) __HTRCXSetGlobalDirection(_outputs, RCX_OUT_FWD)
+
+/**
+ * HTRCXOff function.
+ * Send commands to an RCX to turn off the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to turn off. See \ref RCXOutputConstants.
+ */
+#define HTRCXOff(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_OFF)
+
+/**
+ * HTRCXOn function.
+ * Send commands to an RCX to turn on the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to turn on. See \ref RCXOutputConstants.
+ */
+#define HTRCXOn(_outputs) __HTRCXSetOutput(_outputs, RCX_OUT_ON)
+
+/**
+ * HTRCXOnFor function.
+ * Send commands to an RCX to turn on the specified outputs in the forward
+ * direction for the specified duration.
+ *
+ * \param _outputs The RCX output(s) to turn on. See \ref RCXOutputConstants.
+ * \param _ms The number of milliseconds to leave the outputs on
+ */
+#define HTRCXOnFor(_outputs, _ms) __HTRCXOnFor(_outputs, _ms)
+
+/**
+ * HTRCXOnFwd function.
+ * Send commands to an RCX to turn on the specified outputs in the forward
+ * direction.
+ *
+ * \param _outputs The RCX output(s) to turn on in the forward direction. See \ref RCXOutputConstants.
+ */
+#define HTRCXOnFwd(_outputs) __HTRCXOnFwd(_outputs)
+
+/**
+ * HTRCXOnRev function.
+ * Send commands to an RCX to turn on the specified outputs in the reverse direction.
+ *
+ * \param _outputs The RCX output(s) to turn on in the reverse direction. See \ref RCXOutputConstants.
+ */
+#define HTRCXOnRev(_outputs) __HTRCXOnRev(_outputs)
+
+/**
+ * HTRCXPBTurnOff function.
+ * Send the PBTurnOff command to an RCX.
+ */
+#define HTRCXPBTurnOff() __HTRCXOpNoArgs(RCX_PBTurnOffOp)
+
+/**
+ * HTRCXPing function.
+ * Send the Ping command to an RCX.
+ */
+#define HTRCXPing() __HTRCXOpNoArgs(RCX_PingOp)
+
+/**
+ * HTRCXPlaySound function.
+ * Send the PlaySound command to an RCX.
+ *
+ * \param _snd The sound number to play.
+ */
+#define HTRCXPlaySound(_snd) __HTRCXPlaySound(_snd)
+
+/**
+ * HTRCXPlayTone function.
+ * Send the PlayTone command to an RCX.
+ *
+ * \param _freq The frequency of the tone to play.
+ * \param _duration The duration of the tone to play.
+ */
+#define HTRCXPlayTone(_freq, _duration) __HTRCXPlayTone(_freq, _duration)
+
+/**
+ * HTRCXPlayToneVar function.
+ * Send the PlayToneVar command to an RCX.
+ *
+ * \param _varnum The variable containing the tone frequency to play.
+ * \param _duration The duration of the tone to play.
+ */
+#define HTRCXPlayToneVar(_varnum, _duration) __HTRCXPlayToneVar(_varnum, _duration)
+
+/**
+ * HTRCXRemote function.
+ * Send the Remote command to an RCX.
+ *
+ * \param _cmd The RCX IR remote command to send. See \ref RCXRemoteConstants.
+ */
+#define HTRCXRemote(_cmd) __HTRCXRemote(_cmd)
+
+/**
+ * HTRCXRev function.
+ * Send commands to an RCX to set the specified outputs to the reverse direction.
+ *
+ * \param _outputs The RCX output(s) to reverse direction. See \ref RCXOutputConstants.
+ */
+#define HTRCXRev(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_REV)
+
+/**
+ * HTRCXSelectDisplay function.
+ * Send the SelectDisplay command to an RCX.
+ *
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define HTRCXSelectDisplay(_src, _value) __HTRCXSelectDisplay(_src, _value)
+
+/**
+ * HTRCXSelectProgram function.
+ * Send the SelectProgram command to an RCX.
+ *
+ * \param _prog The program number to select.
+ */
+#define HTRCXSelectProgram(_prog) __HTRCXSelectProgram(_prog)
+
+/**
+ * HTRCXSendSerial function.
+ * Send the SendSerial command to an RCX.
+ *
+ * \param _first The first byte address.
+ * \param _count The number of bytes to send.
+ */
+#define HTRCXSendSerial(_first, _count) __HTRCXSendSerial(_first, _count)
+
+/**
+ * HTRCXSetDirection function.
+ * Send the SetDirection command to an RCX to configure the direction of the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to set direction. See \ref RCXOutputConstants.
+ * \param _dir The RCX output direction. See \ref RCXOutputDirection.
+ */
+#define HTRCXSetDirection(_outputs, _dir) __HTRCXSetDirection(_outputs, _dir)
+
+/**
+ * HTRCXSetEvent function.
+ * Send the SetEvent command to an RCX.
+ *
+ * \param _evt The event number to set.
+ * \param _src The RCX source. See \ref RCXSourceConstants.
+ * \param _type The event type.
+ */
+#define HTRCXSetEvent(_evt, _src, _type) __HTRCXSetEvent(_evt, _src, _type)
+
+/**
+ * HTRCXSetGlobalDirection function.
+ * Send the SetGlobalDirection command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to set global direction. See \ref RCXOutputConstants.
+ * \param _dir The RCX output direction. See \ref RCXOutputDirection.
+ */
+#define HTRCXSetGlobalDirection(_outputs, _dir) __HTRCXSetGlobalDirection(_outputs, _dir)
+
+/**
+ * HTRCXSetGlobalOutput function.
+ * Send the SetGlobalOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to set global mode. See \ref RCXOutputConstants.
+ * \param _mode The RCX output mode. See \ref RCXOutputMode.
+ */
+#define HTRCXSetGlobalOutput(_outputs, _mode) __HTRCXSetGlobalOutput(_outputs, _mode)
+
+/**
+ * HTRCXSetMaxPower function.
+ * Send the SetMaxPower command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to set max power. See \ref RCXOutputConstants.
+ * \param _pwrsrc The RCX source.  See \ref RCXSourceConstants.
+ * \param _pwrval The RCX value.
+ */
+#define HTRCXSetMaxPower(_outputs, _pwrsrc, _pwrval) __HTRCXSetMaxPower(_outputs, _pwrsrc, _pwrval)
+
+/**
+ * HTRCXSetMessage function.
+ * Send the SetMessage command to an RCX.
+ *
+ * \param _msg The numeric message to send.
+ */
 #define HTRCXSetMessage(_msg) __HTRCXSetMessage(_msg)
 
+/**
+ * HTRCXSetOutput function.
+ * Send the SetOutput command to an RCX to configure the mode of the specified outputs
+ *
+ * \param _outputs The RCX output(s) to set mode. See \ref RCXOutputConstants.
+ * \param _mode The RCX output mode. See \ref RCXOutputMode.
+ */
+#define HTRCXSetOutput(_outputs, _mode) __HTRCXSetOutput(_outputs, _mode)
+
+/**
+ * HTRCXSetPower function.
+ * Send the SetPower command to an RCX to configure the power level of the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to set power. See \ref RCXOutputConstants.
+ * \param _pwrsrc The RCX source.  See \ref RCXSourceConstants.
+ * \param _pwrval The RCX value.
+ */
+#define HTRCXSetPower(_outputs, _pwrsrc, _pwrval) __HTRCXSetPower(_outputs, _pwrsrc, _pwrval)
+
+/**
+ * HTRCXSetPriority function.
+ * Send the SetPriority command to an RCX.
+ *
+ * \param _p The new task priority.
+ */
+#define HTRCXSetPriority(_p) __HTRCXSetPriority(_p)
+
+/**
+ * HTRCXSetSensorMode function.
+ * Send the SetSensorMode command to an RCX.
+ *
+ * \param _port The RCX sensor port.
+ * \param _mode The RCX sensor mode.
+ */
+#define HTRCXSetSensorMode(_port, _mode) __HTRCXSetSensorMode(_port, _mode)
+
+/**
+ * HTRCXSetSensorType function.
+ * Send the SetSensorType command to an RCX.
+ *
+ * \param _port The RCX sensor port.
+ * \param _type The RCX sensor type.
+ */
+#define HTRCXSetSensorType(_port, _type) __HTRCXSetSensorType(_port, _type)
+
+/**
+ * HTRCXSetSleepTime function.
+ * Send the SetSleepTime command to an RCX.
+ *
+ * \param _t The new sleep time value.
+ */
+#define HTRCXSetSleepTime(_t) __HTRCXSetSleepTime(_t)
+
+/**
+ * HTRCXSetTxPower function.
+ * Send the SetTxPower command to an RCX.
+ *
+ * \param _pwr The IR transmit power level.
+ */
+#define HTRCXSetTxPower(_pwr) __HTRCXSetTxPower(_pwr)
+
+/**
+ * HTRCXSetWatch function.
+ * Send the SetWatch command to an RCX.
+ *
+ * \param _hours The new watch time hours value.
+ * \param _minutes The new watch time minutes value.
+ */
+#define HTRCXSetWatch(_hours, _minutes) __HTRCXSetWatch(_hours, _minutes)
+
+/**
+ * HTRCXStartTask function.
+ * Send the StartTask command to an RCX.
+ *
+ * \param _t The task number to start.
+ */
+#define HTRCXStartTask(_t) __HTRCXStartTask(_t)
+
+/**
+ * HTRCXStopAllTasks function.
+ * Send the StopAllTasks command to an RCX.
+ */
+#define HTRCXStopAllTasks() __HTRCXOpNoArgs(RCX_StopAllTasksOp)
+
+/**
+ * HTRCXStopTask function.
+ * Send the StopTask command to an RCX.
+ *
+ * \param _t The task number to stop.
+ */
+#define HTRCXStopTask(_t) __HTRCXStopTask(_t)
+
+/**
+ * HTRCXToggle function.
+ * Send commands to an RCX to toggle the direction of the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to toggle. See \ref RCXOutputConstants.
+ */
+#define HTRCXToggle(_outputs) __HTRCXSetDirection(_outputs, RCX_OUT_TOGGLE)
+
+/**
+ * HTRCXUnmuteSound function.
+ * Send the UnmuteSound command to an RCX.
+ */
+#define HTRCXUnmuteSound() __HTRCXOpNoArgs(RCX_UnmuteSoundOp)
+
+/**
+ * HTScoutCalibrateSensor function.
+ * Send the CalibrateSensor command to a Scout.
+ */
 #define HTScoutCalibrateSensor() __HTRCXOpNoArgs(RCX_LSCalibrateOp)
+
+/**
+ * HTScoutMuteSound function.
+ * Send the MuteSound command to a Scout.
+ */
 #define HTScoutMuteSound() __HTScoutMuteSound()
-#define HTScoutUnmuteSound() __HTScoutUnmuteSound()
+
+/**
+ * HTScoutSelectSounds function.
+ * Send the SelectSounds command to a Scout.
+ *
+ * \param _grp The Scout sound group to select.
+ */
 #define HTScoutSelectSounds(_grp) __HTScoutSelectSounds(_grp)
-#define HTScoutSetLight(_x) __HTScoutSetLight(_x)
-#define HTScoutSetSensorClickTime(_src, _value) __HTScoutSetSensorClickTime(_src, _value)
-#define HTScoutSetSensorHysteresis(_src, _value) __HTScoutSetSensorHysteresis(_src, _value)
-#define HTScoutSetSensorLowerLimit(_src, _value) __HTScoutSetSensorLowerLimit(_src, _value)
-#define HTScoutSetSensorUpperLimit(_src, _value) __HTScoutSetSensorUpperLimit(_src, _value)
-#define HTScoutSetEventFeedback(_src, _value) __HTScoutSetEventFeedback(_src, _value)
+
+/**
+ * HTScoutSendVLL function.
+ * Send the SendVLL command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
 #define HTScoutSendVLL(_src, _value) __HTScoutSendVLL(_src, _value)
+
+/**
+ * HTScoutSetEventFeedback function.
+ * Send the SetEventFeedback command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define HTScoutSetEventFeedback(_src, _value) __HTScoutSetEventFeedback(_src, _value)
+
+/**
+ * HTScoutSetLight function.
+ * Send the SetLight command to a Scout.
+ *
+ * \param _x Set the light on or off using this value. See \ref ScoutLightConstants.
+ */
+#define HTScoutSetLight(_x) __HTScoutSetLight(_x)
+
+/**
+ * HTScoutSetScoutMode function.
+ * Send the SetScoutMode command to a Scout.
+ *
+ * \param _mode Set the scout mode. See \ref ScoutModeConstants.
+*/
 #define HTScoutSetScoutMode(_mode) __HTScoutSetScoutMode(_mode)
 
+/**
+ * HTScoutSetSensorClickTime function.
+ * Send the SetSensorClickTime command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define HTScoutSetSensorClickTime(_src, _value) __HTScoutSetSensorClickTime(_src, _value)
+
+/**
+ * HTScoutSetSensorHysteresis function.
+ * Send the SetSensorHysteresis command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define HTScoutSetSensorHysteresis(_src, _value) __HTScoutSetSensorHysteresis(_src, _value)
+
+/**
+ * HTScoutSetSensorLowerLimit function.
+ * Send the SetSensorLowerLimit command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define HTScoutSetSensorLowerLimit(_src, _value) __HTScoutSetSensorLowerLimit(_src, _value)
+
+/**
+ * HTScoutSetSensorUpperLimit function.
+ * Send the SetSensorUpperLimit command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define HTScoutSetSensorUpperLimit(_src, _value) __HTScoutSetSensorUpperLimit(_src, _value)
+
+/**
+ * HTScoutUnmuteSound function.
+ * Send the UnmuteSound command to a Scout.
+ */
+#define HTScoutUnmuteSound() __HTScoutUnmuteSound()
+
+/**
+ * Read HiTechnic compass.
+ * Read the compass heading value of the HiTechnic Compass sensor on the
+ * specified port. The port must be configured as a Lowspeed port before
+ * using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _value The compass heading.
+ */
 #define ReadSensorHTCompass(_port, _value) __ReadSensorHTCompass(_port, _value)
+
+/**
+ * Read HiTechnic color sensor color number.
+ * Read the color number from the HiTechnic Color sensor on the specified
+ * port. The port must be configured as a Lowspeed port before using this
+ * function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _value The color number.
+ */
 #define ReadSensorHTColorNum(_port, _value) __ReadSensorHTColorNum(_port, _value)
+
+/**
+ * Read HiTechnic IRSeeker direction.
+ * Read the direction value of the HiTechnic IR Seeker on the specified
+ * port. The port must be configured as a Lowspeed port before using this
+ * function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _value The IRSeeker direction.
+ */
 #define ReadSensorHTIRSeekerDir(_port, _value) __ReadSensorHTIRSeekerDir(_port, _value)
+
+/**
+ * Read HiTechnic IRSeeker2 register.
+ * Read a register value from the HiTechnic IR Seeker2 on the specified
+ * port. The port must be configured as a Lowspeed port before using this
+ * function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The register address. See \ref HTIRSeeker2Constants.
+ * \param _value The IRSeeker2 register value.
+ */
 #define ReadSensorHTIRSeeker2Addr(_port, _addr, _value) __ReadSensorHTIRSeeker2Addr(_port, _addr, _value)
 
+/**
+ * Read HiTechnic acceleration values.
+ * Read X, Y, and Z axis acceleration values from the HiTechnic Accelerometer
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _x The output x-axis acceleration.
+ * \param _y The output y-axis acceleration.
+ * \param _z The output z-axis acceleration.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTAccel(_port, _x, _y, _z, _result) __ReadSensorHTAccel(_port, _x, _y, _z, _result)
+
+/**
+ * Read HiTechnic Color values.
+ * Read color number, red, green, and blue values from the HiTechnic Color
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _ColorNum The output color number.
+ * \param _Red The red color value.
+ * \param _Green The green color value.
+ * \param _Blue The blue color value.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue, _result) __ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue, _result)
+
+/**
+ * Read HiTechnic Color raw values.
+ * Read the raw red, green, and blue values from the HiTechnic Color sensor.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _Red The raw red color value.
+ * \param _Green The raw green color value.
+ * \param _Blue The raw blue color value.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result) __ReadSensorHTRawColor(_port, _Red, _Green, _Blue, _result)
+
+/**
+ * Read HiTechnic Color normalized values.
+ * Read the color index and the normalized red, green, and blue values from
+ * the HiTechnic Color sensor. Returns a boolean value indicating whether or
+ * not the operation completed successfully. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _ColorIdx The output color index.
+ * \param _Red The normalized red color value.
+ * \param _Green The normalized green color value.
+ * \param _Blue The normalized blue color value.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue, _result) __ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue, _result)
+
+/**
+ * Read HiTechnic IRSeeker values.
+ * Read direction, and five signal strength values from the HiTechnic
+ * IRSeeker sensor. Returns a boolean value indicating whether or not the
+ * operation completed successfully. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _dir The direction.
+ * \param _s1 The signal strength from sensor 1.
+ * \param _s3 The signal strength from sensor 3.
+ * \param _s5 The signal strength from sensor 5.
+ * \param _s7 The signal strength from sensor 7.
+ * \param _s9 The signal strength from sensor 9.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) __ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result)
+
+/**
+ * Read HiTechnic IRSeeker2 DC values.
+ * Read direction, five signal strength, and average strength values from the
+ * HiTechnic IRSeeker2 sensor. Returns a boolean value indicating whether or
+ * not the operation completed successfully. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _dir The direction.
+ * \param _s1 The signal strength from sensor 1.
+ * \param _s3 The signal strength from sensor 3.
+ * \param _s5 The signal strength from sensor 5.
+ * \param _s7 The signal strength from sensor 7.
+ * \param _s9 The signal strength from sensor 9.
+ * \param _avg The average signal strength.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result) __ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, _result)
+
+/**
+ * Read HiTechnic IRSeeker2 AC values.
+ * Read direction, and five signal strength values from the HiTechnic
+ * IRSeeker2 sensor in AC mode. Returns a boolean value indicating whether or
+ * not the operation completed successfully. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _dir The direction.
+ * \param _s1 The signal strength from sensor 1.
+ * \param _s3 The signal strength from sensor 3.
+ * \param _s5 The signal strength from sensor 5.
+ * \param _s7 The signal strength from sensor 7.
+ * \param _s9 The signal strength from sensor 9.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result) __ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _result)
+
+/**
+ * Set HiTechnic IRSeeker2 mode.
+ * Set the mode of the HiTechnic IRSeeker2 sensor on the specified
+ * port. The port must be configured as a Lowspeed port before using this
+ * function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _mode The IRSeeker2 mode. See \ref HTIRSeeker2Constants.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
 #define SetHTIRSeeker2Mode(_port, _mode, _result) __SetHTIRSeeker2Mode(_port, _mode, _result)
 
+/**
+ * Set HiTechnic Color2 mode.
+ * Set the mode of the HiTechnic Color2 sensor on the specified
+ * port. The port must be configured as a Lowspeed port before using this
+ * function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _mode The Color2 mode. See \ref HTColor2Constants.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
 #define SetHTColor2Mode(_port, _mode, _result) __SetHTColor2Mode(_port, _mode, _result)
+
+/**
+ * Read HiTechnic Color2 active values.
+ * Read color number, red, green, and blue values from the HiTechnic Color2
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _ColorNum The output color number.
+ * \param _Red The red color value.
+ * \param _Green The green color value.
+ * \param _Blue The blue color value.
+ * \param _White The white color value.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result) __ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, _result)
+
+/**
+ * Read HiTechnic Color2 normalized active values.
+ * Read the color index and the normalized red, green, and blue values from
+ * the HiTechnic Color2 sensor. Returns a boolean value indicating whether or
+ * not the operation completed successfully. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _ColorIdx The output color index.
+ * \param _Red The normalized red color value.
+ * \param _Green The normalized green color value.
+ * \param _Blue The normalized blue color value.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result) __ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, _result)
+
+/**
+ * Read HiTechnic Color2 raw values.
+ * Read the raw red, green, and blue values from the HiTechnic Color2 sensor.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _Red The raw red color value.
+ * \param _Green The raw green color value.
+ * \param _Blue The raw blue color value.
+ * \param _White The raw white color value.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result) __ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, _result)
+
+/**
+ * Read HiTechnic IRReceiver Power Function bytes.
+ * Read Power Function bytes from the HiTechnic IRReceiver sensor.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _pfdata Eight bytes of power function remote IR data.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTIRReceiver(_port, _pfdata, _result) __ReadSensorHTIRReceiver(_port, _pfdata, _result)
+
+/**
+ * Read HiTechnic IRReceiver Power Function value.
+ * Read a Power Function byte from the HiTechnic IRReceiver sensor.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _reg The power function data offset. See \ref HTIRReceiverConstants.
+ * \param _pfchar A single byte of power function remote IR data.
+ * \param _result The function call result.
+ */
 #define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result) __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result)
 
 /** @} */ // end of HiTechnicAPI group
@@ -12735,245 +14756,1960 @@ ends
  * @{
  */
 
-#define SetSensorMSPressure(_port) __SetSensorMSPressure(_port)
-#define ReadSensorMSPressure(_port, _value) __ReadSensorMSPressure(_port, _value)
-#define ReadSensorMSPressureRaw(_port, _value) __ReadSensorMSPressureRaw(_port, _value)
-
-#define ReadSensorMSCompassEx(_port, _addr, _value) __ReadSensorMSCompassEx(_port, _addr, _value)
+/**
+ * Read mindsensors compass value.
+ * Return the Mindsensors Compass sensor value.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _value The mindsensors compass value
+ */
 #define ReadSensorMSCompass(_port, _value) __ReadSensorMSCompassEx(_port, 0x02, _value)
-#define ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, _result) __ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, _result)
-#define ReadSensorMSTilt(_port, _x, _y, _z, _result) __ReadSensorMSTiltEx(_port, 0x02, _x, _y, _z, _result)
-#define ReadSensorMSTiltEx(_port, _addr, _x, _y, _z, _result) __ReadSensorMSTiltEx(_port, _addr, _x, _y, _z, _result)
-#define ReadSensorMSAccel(_port, _x, _y, _z, _result) __ReadSensorMSAccelEx(_port, 0x02, _x, _y, _z, _result)
-#define ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, _result) __ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, _result)
 
-#define MSReadValueEx(_port, _addr, _reg, _bytes, _out, _result) __MSReadValue(_port, _addr, _reg, _bytes, _out, _result)
-#define MSReadValue(_port, _reg, _bytes, _out, _result) __MSReadValue(_port, 0x02, _reg, _bytes, _out, _result)
+/**
+ * Read mindsensors compass value.
+ * Return the Mindsensors Compass sensor value.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _value The mindsensors compass value
+ */
+#define ReadSensorMSCompassEx(_port, _addr, _value) __ReadSensorMSCompassEx(_port, _addr, _value)
 
-#define MSEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
-#define MSEnergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ENERGIZED, _result)
-#define MSDeenergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_DEENERGIZED, _result)
-#define MSDeenergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_DEENERGIZED, _result)
-#define MSADPAOn(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_ON, _result)
-#define MSADPAOnEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_ON, _result)
-#define MSADPAOff(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_OFF, _result)
-#define MSADPAOffEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_OFF, _result)
-
-#define DISTNxGP2D12(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, _result)
-#define DISTNxGP2D120(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, _result)
-#define DISTNxGP2YA21(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, _result)
-#define DISTNxGP2YA02(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, _result)
-#define ReadDISTNxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST, 2, _out, _result)
-#define ReadDISTNxVoltage(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_VOLT, 2, _out, _result)
-#define ReadDISTNxModuleType(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_MODULE_TYPE, 1, _out, _result)
-#define ReadDISTNxNumPoints(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_NUM_POINTS, 1, _out, _result)
-#define ReadDISTNxMinDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MIN, 2, _out, _result)
-#define ReadDISTNxMaxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MAX, 2, _out, _result)
-
-#define DISTNxGP2D12Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D12, _result)
-#define DISTNxGP2D120Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D120, _result)
-#define DISTNxGP2YA21Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA21, _result)
-#define DISTNxGP2YA02Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA02, _result)
-#define ReadDISTNxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST, 2, _out, _result)
-#define ReadDISTNxVoltageEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_VOLT, 2, _out, _result)
-#define ReadDISTNxModuleTypeEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_MODULE_TYPE, 1, _out, _result)
-#define ReadDISTNxNumPointsEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_NUM_POINTS, 1, _out, _result)
-#define ReadDISTNxMinDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MIN, 2, _out, _result)
-#define ReadDISTNxMaxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MAX, 2, _out, _result)
-
-#define SetSensorMSDRODActive(_port) __SetSensorMSDRODActive(_port)
-#define SetSensorMSDRODInactive(_port) __SetSensorMSDRODInactive(_port)
+/**
+ * Read mindsensors DROD value.
+ * Return the Mindsensors DROD sensor value.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _value The mindsensors DROD value
+ */
 #define ReadSensorMSDROD(_port, _value) __ReadSensorMSDROD(_port, _value)
 
-#define PSPNxDigital(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_DIGITAL, _result)
-#define PSPNxAnalog(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_ANALOG, _result)
-#define PSPNxDigitalEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_DIGITAL, _result)
-#define PSPNxAnalogEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_ANALOG, _result)
+/**
+ * Configure a mindsensors DROD active sensor.
+ * Configure the specified port for an active mindsensors DROD sensor.
+ *
+ * \param _port The port to configure. See \ref InPorts.
+ */
+#define SetSensorMSDRODActive(_port) __SetSensorMSDRODActive(_port)
 
-#define ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
-  __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result)
+/**
+ * Configure a mindsensors DROD inactive sensor.
+ * Configure the specified port for an inactive mindsensors DROD sensor.
+ *
+ * \param _port The port to configure. See \ref InPorts.
+ */
+#define SetSensorMSDRODInactive(_port) __SetSensorMSDRODInactive(_port)
 
+/**
+ * Read mindsensors raw pressure value.
+ * Return the Mindsensors pressure sensor raw value.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _value The mindsensors raw pressure value
+ */
+#define ReadSensorMSPressureRaw(_port, _value) __ReadSensorMSPressureRaw(_port, _value)
+
+/**
+ * Read mindsensors processed pressure value.
+ * Return the Mindsensors pressure sensor processed value.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _value The mindsensors processed pressure value
+ */
+#define ReadSensorMSPressure(_port, _value) __ReadSensorMSPressure(_port, _value)
+
+/**
+ * Configure a mindsensors pressure sensor.
+ * Configure the specified port for a mindsensors pressure sensor.
+ *
+ * \param _port The port to configure. See \ref InPorts.
+ */
+#define SetSensorMSPressure(_port) __SetSensorMSPressure(_port)
+
+/**
+ * Read mindsensors acceleration values.
+ * Read X, Y, and Z axis acceleration values from the mindsensors Accelerometer
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _x The output x-axis acceleration.
+ * \param _y The output y-axis acceleration.
+ * \param _z The output z-axis acceleration.
+ * \param _result The function call result.
+ */
+#define ReadSensorMSAccel(_port, _x, _y, _z, _result) __ReadSensorMSAccelEx(_port, 0x02, _x, _y, _z, _result)
+
+/**
+ * Read mindsensors acceleration values.
+ * Read X, Y, and Z axis acceleration values from the mindsensors Accelerometer
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _x The output x-axis acceleration.
+ * \param _y The output y-axis acceleration.
+ * \param _z The output z-axis acceleration.
+ * \param _result The function call result.
+ */
+#define ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, _result) __ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, _result)
+
+/**
+ * Read mindsensors playstation controller values.
+ * Read playstation controller values from the mindsensors playstation
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _b1 The button set 1 values. See \ref MSPSPNXBtnSet1.
+ * \param _b2 The button set 2 values. See \ref MSPSPNXBtnSet2.
+ * \param _xleft The left joystick x value.
+ * \param _yleft The left joystick y value.
+ * \param _xright The right joystick x value.
+ * \param _yright The right joystick y value.
+ * \param _result The function call result.
+ */
 #define ReadSensorMSPlayStation(_port, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
   __ReadSensorMSPlayStationEx(_port, 0x02, _b1, _b2, _xleft, _yleft, _xright, _yright, _result)
 
+/**
+ * Read mindsensors playstation controller values.
+ * Read playstation controller values from the mindsensors playstation
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _b1 The button set 1 values. See \ref MSPSPNXBtnSet1.
+ * \param _b2 The button set 2 values. See \ref MSPSPNXBtnSet2.
+ * \param _xleft The left joystick x value.
+ * \param _yleft The left joystick y value.
+ * \param _xright The right joystick x value.
+ * \param _yright The right joystick y value.
+ * \param _result The function call result.
+ */
+#define ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result) \
+  __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, _result)
+
+/**
+ * Read mindsensors RTClock values.
+ * Read real-time clock values from the Mindsensors RTClock sensor. Returns
+ * a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _sec The seconds.
+ * \param _min The minutes.
+ * \param _hrs The hours.
+ * \param _dow The day of week number.
+ * \param _date The day.
+ * \param _month The month.
+ * \param _year The year.
+ * \param _result The function call result.
+ */
+#define ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, _result) \
+  __ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, _result)
+
+/**
+ * Read mindsensors tilt values.
+ * Read X, Y, and Z axis tilt values from the mindsensors tilt
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _x The output x-axis tilt.
+ * \param _y The output y-axis tilt.
+ * \param _z The output z-axis tilt.
+ * \param _result The function call result.
+ */
+#define ReadSensorMSTilt(_port, _x, _y, _z, _result) __ReadSensorMSTiltEx(_port, 0x02, _x, _y, _z, _result)
+
+/**
+ * Read mindsensors tilt values.
+ * Read X, Y, and Z axis tilt values from the mindsensors tilt
+ * sensor. Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _x The output x-axis tilt.
+ * \param _y The output y-axis tilt.
+ * \param _z The output z-axis tilt.
+ * \param _result The function call result.
+ */
+#define ReadSensorMSTiltEx(_port, _addr, _x, _y, _z, _result) __ReadSensorMSTiltEx(_port, _addr, _x, _y, _z, _result)
+
+/**
+ * Read a mindsensors device value.
+ * Read a one or two byte value from a mindsensors sensor. The value must be
+ * stored with the least signficant byte (LSB) first. Returns a boolean value
+ * indicating whether or not the operation completed successfully. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _reg The device register to read.
+ * \param _bytes The number of bytes to read. Only 1 or 2 byte values are supported.
+ * \param _out The value read from the device.
+ * \param _result The function call result.
+ */
+#define MSReadValue(_port, _reg, _bytes, _out, _result) __MSReadValue(_port, 0x02, _reg, _bytes, _out, _result)
+
+/**
+ * Read a mindsensors device value.
+ * Read a one or two byte value from a mindsensors sensor. The value must be
+ * stored with the least signficant byte (LSB) first. Returns a boolean value
+ * indicating whether or not the operation completed successfully. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _reg The device register to read.
+ * \param _bytes The number of bytes to read. Only 1 or 2 byte values are supported.
+ * \param _out The value read from the device.
+ * \param _result The function call result.
+ */
+#define MSReadValueEx(_port, _addr, _reg, _bytes, _out, _result) __MSReadValue(_port, _addr, _reg, _bytes, _out, _result)
+
+/**
+ * Turn on power to device.
+ * Turn the power on for the mindsensors device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define MSEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
+
+/**
+ * Turn on power to device.
+ * Turn the power on for the mindsensors device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define MSEnergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ENERGIZED, _result)
+
+/**
+ * Turn off power to device.
+ * Turn power off for the mindsensors device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define MSDeenergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_DEENERGIZED, _result)
+
+/**
+ * Turn off power to device.
+ * Turn power off for the mindsensors device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define MSDeenergizeEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_DEENERGIZED, _result)
+
+/**
+ * Turn on mindsensors ADPA mode.
+ * Turn ADPA mode on for the mindsensors device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define MSADPAOn(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_ON, _result)
+
+/**
+ * Turn on mindsensors ADPA mode.
+ * Turn ADPA mode on for the mindsensors device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define MSADPAOnEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_ON, _result)
+
+/**
+ * Turn off mindsensors ADPA mode.
+ * Turn ADPA mode off for the mindsensors device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define MSADPAOff(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_OFF, _result)
+
+/**
+ * Turn off mindsensors ADPA mode.
+ * Turn ADPA mode off for the mindsensors device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define MSADPAOffEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, MS_CMD_ADPA_OFF, _result)
+
+/**
+ * Configure DISTNx as GP2D12.
+ * Configure the mindsensors DISTNx sensor as GP2D12. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define DISTNxGP2D12(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, _result)
+
+/**
+ * Configure DISTNx as GP2D12.
+ * Configure the mindsensors DISTNx sensor as GP2D12. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define DISTNxGP2D12Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D12, _result)
+
+/**
+ * Configure DISTNx as GP2D120.
+ * Configure the mindsensors DISTNx sensor as GP2D120. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define DISTNxGP2D120(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, _result)
+
+/**
+ * Configure DISTNx as GP2D120.
+ * Configure the mindsensors DISTNx sensor as GP2D120. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define DISTNxGP2D120Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2D120, _result)
+
+/**
+ * Configure DISTNx as GP2YA02.
+ * Configure the mindsensors DISTNx sensor as GP2YA02. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define DISTNxGP2YA02(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, _result)
+
+/**
+ * Configure DISTNx as GP2YA02.
+ * Configure the mindsensors DISTNx sensor as GP2YA02. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define DISTNxGP2YA02Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA02, _result)
+
+/**
+ * Configure DISTNx as GP2YA21.
+ * Configure the mindsensors DISTNx sensor as GP2YA21. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define DISTNxGP2YA21(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, _result)
+
+/**
+ * Configure DISTNx as GP2YA21.
+ * Configure the mindsensors DISTNx sensor as GP2YA21. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define DISTNxGP2YA21Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA21, _result)
+
+/**
+ * Read DISTNx distance value.
+ * Read the mindsensors DISTNx distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _out The distance value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST, 2, _out, _result)
+
+/**
+ * Read DISTNx distance value.
+ * Read the mindsensors DISTNx sensor's distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _out The distance value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST, 2, _out, _result)
+
+/**
+ * Read DISTNx maximum distance value.
+ * Read the mindsensors DISTNx sensor's maximum distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _out The maximum distance value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxMaxDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MAX, 2, _out, _result)
+
+/**
+ * Read DISTNx maximum distance value.
+ * Read the mindsensors DISTNx sensor's maximum distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _out The maximum distance value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxMaxDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MAX, 2, _out, _result)
+
+/**
+ * Read DISTNx minimum distance value.
+ * Read the mindsensors DISTNx sensor's minimum distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _out The minimum distance value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxMinDistance(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_DIST_MIN, 2, _out, _result)
+
+/**
+ * Read DISTNx minimum distance value.
+ * Read the mindsensors DISTNx sensor's minimum distance value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _out The minimum distance value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxMinDistanceEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_DIST_MIN, 2, _out, _result)
+
+/**
+ * Read DISTNx module type value.
+ * Read the mindsensors DISTNx sensor's module type value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _out The module type value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxModuleType(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_MODULE_TYPE, 1, _out, _result)
+
+/**
+ * Read DISTNx module type value.
+ * Read the mindsensors DISTNx sensor's module type value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _out The module type value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxModuleTypeEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_MODULE_TYPE, 1, _out, _result)
+
+/**
+ * Read DISTNx num points value.
+ * Read the mindsensors DISTNx sensor's num points value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _out The num points value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxNumPoints(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_NUM_POINTS, 1, _out, _result)
+
+/**
+ * Read DISTNx num points value.
+ * Read the mindsensors DISTNx sensor's num points value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _out The num points value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxNumPointsEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_NUM_POINTS, 1, _out, _result)
+
+/**
+ * Read DISTNx voltage value.
+ * Read the mindsensors DISTNx sensor's voltage value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _out The voltage value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxVoltage(_port, _out, _result) __MSReadValue(_port, 0x02, DIST_REG_VOLT, 2, _out, _result)
+
+/**
+ * Read DISTNx voltage value.
+ * Read the mindsensors DISTNx sensor's voltage value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _out The voltage value.
+ * \param _result The function call result.
+ */
+#define ReadDISTNxVoltageEx(_port, _addr, _out, _result) __MSReadValue(_port, _addr, DIST_REG_VOLT, 2, _out, _result)
+
+/**
+ * Configure PSPNx in digital mode.
+ * Configure the mindsensors PSPNx device in digital mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define PSPNxDigital(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_DIGITAL, _result)
+
+/**
+ * Configure PSPNx in digital mode.
+ * Configure the mindsensors PSPNx device in digital mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define PSPNxDigitalEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_DIGITAL, _result)
+
+/**
+ * Configure PSPNx in analog mode.
+ * Configure the mindsensors PSPNx device in analog mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define PSPNxAnalog(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_ANALOG, _result)
+
+/**
+ * Configure PSPNx in analog mode.
+ * Configure the mindsensors PSPNx device in analog mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define PSPNxAnalogEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, PSP_CMD_ANALOG, _result)
+
+/**
+ * Configure NRLink in 2400 baud mode.
+ * Configure the mindsensors NRLink device in 2400 baud mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
 #define NRLink2400(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_2400, _result)
+
+/**
+ * Configure NRLink in 2400 baud mode.
+ * Configure the mindsensors NRLink device in 2400 baud mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define NRLink2400Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_2400, _result)
+
+/**
+ * Configure NRLink in 4800 baud mode.
+ * Configure the mindsensors NRLink device in 4800 baud mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
 #define NRLink4800(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_4800, _result)
+
+/**
+ * Configure NRLink in 4800 baud mode.
+ * Configure the mindsensors NRLink device in 4800 baud mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define NRLink4800Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_4800, _result)
+
+/**
+ * Flush NRLink buffers.
+ * Flush the mindsensors NRLink device buffers. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
 #define NRLinkFlush(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_FLUSH, _result)
+
+/**
+ * Flush NRLink buffers.
+ * Flush the mindsensors NRLink device buffers. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define NRLinkFlushEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result)
+
+/**
+ * Configure NRLink in IR long mode.
+ * Configure the mindsensors NRLink device in IR long mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
 #define NRLinkIRLong(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_LONG, _result)
+
+/**
+ * Configure NRLink in IR long mode.
+ * Configure the mindsensors NRLink device in IR long mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define NRLinkIRLongEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_LONG, _result)
+
+/**
+ * Configure NRLink in IR short mode.
+ * Configure the mindsensors NRLink device in IR short mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
 #define NRLinkIRShort(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_SHORT, _result)
-#define NRLinkTxRaw(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, _result)
-#define NRLinkSetRCX(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, _result)
-#define NRLinkSetTrain(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, _result)
+
+/**
+ * Configure NRLink in IR short mode.
+ * Configure the mindsensors NRLink device in IR short mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define NRLinkIRShortEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_SHORT, _result)
+
+/**
+ * Configure NRLink in power function mode.
+ * Configure the mindsensors NRLink device in power function mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
 #define NRLinkSetPF(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, _result)
 
-#define NRLink2400Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_2400, _result)
-#define NRLink4800Ex(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_4800, _result)
-#define NRLinkFlushEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, _result)
-#define NRLinkIRLongEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_LONG, _result)
-#define NRLinkIRShortEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_SHORT, _result)
-#define NRLinkTxRawEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_TX_RAW, _result)
-#define NRLinkSetRCXEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_RCX, _result)
-#define NRLinkSetTrainEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_TRAIN, _result)
+/**
+ * Configure NRLink in power function mode.
+ * Configure the mindsensors NRLink device in power function mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
 #define NRLinkSetPFEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_PF, _result)
 
-#define RunNRLinkMacroEx(_port, _addr, _macro, _result) __RunNRLinkMacroEx(_port, _addr, _macro, _result)
-#define RunNRLinkMacro(_port, _macro, _result) __RunNRLinkMacroEx(_port, 0x02, _macro, _result)
+/**
+ * Configure NRLink in RCX mode.
+ * Configure the mindsensors NRLink device in RCX mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define NRLinkSetRCX(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, _result)
 
-#define ReadNRLinkStatusEx(_port, _addr, _value, _result) __ReadNRLinkStatusEx(_port, _addr, _value, _result)
+/**
+ * Configure NRLink in RCX mode.
+ * Configure the mindsensors NRLink device in RCX mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define NRLinkSetRCXEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_RCX, _result)
+
+/**
+ * Configure NRLink in IR train mode.
+ * Configure the mindsensors NRLink device in IR train mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define NRLinkSetTrain(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, _result)
+
+/**
+ * Configure NRLink in IR train mode.
+ * Configure the mindsensors NRLink device in IR train mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define NRLinkSetTrainEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_TRAIN, _result)
+
+/**
+ * Configure NRLink in raw IR transmit mode.
+ * Configure the mindsensors NRLink device in raw IR transmit mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _result The function call result.
+ */
+#define NRLinkTxRaw(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, _result)
+
+/**
+ * Configure NRLink in raw IR transmit mode.
+ * Configure the mindsensors NRLink device in raw IR transmit mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _result The function call result.
+ */
+#define NRLinkTxRawEx(_port, _addr, _result) __I2CSendCmd(_port, _addr, NRLINK_CMD_TX_RAW, _result)
+
+/**
+ * Read NRLink status.
+ * Read the status of the mindsensors NRLink device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _value The mindsensors NRLink status.
+ * \param _result The function call result.
+ */
 #define ReadNRLinkStatus(_port, _value, _result) __ReadNRLinkStatusEx(_port, 0x02, _value, _result)
 
-#define WriteNRLinkBytesEx(_port, _addr, _bytes, _result) __WriteNRLinkBytes(_port, _addr, _bytes, _result)
+/**
+ * Read NRLink status.
+ * Read the status of the mindsensors NRLink device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _value The mindsensors NRLink status.
+ * \param _result The function call result.
+ */
+#define ReadNRLinkStatusEx(_port, _addr, _value, _result) __ReadNRLinkStatusEx(_port, _addr, _value, _result)
+
+/**
+ * Run NRLink macro.
+ * Run the specified mindsensors NRLink device macro. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _macro The address of the macro to execute.
+ * \param _result The function call result.
+ */
+#define RunNRLinkMacro(_port, _macro, _result) __RunNRLinkMacroEx(_port, 0x02, _macro, _result)
+
+/**
+ * Run NRLink macro.
+ * Run the specified mindsensors NRLink device macro. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _macro The address of the macro to execute.
+ * \param _result The function call result.
+ */
+#define RunNRLinkMacroEx(_port, _addr, _macro, _result) __RunNRLinkMacroEx(_port, _addr, _macro, _result)
+
+/**
+ * Write data to NRLink.
+ * Write data to the mindsensors NRLink device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _bytes A byte array containing the data to write.
+ * \param _result The function call result.
+ */
 #define WriteNRLinkBytes(_port, _bytes, _result) __WriteNRLinkBytes(_port, 0x02, _bytes, _result)
 
-#define ReadNRLinkBytesEx(_port, _addr, _bytes, _result) __ReadNRLinkBytes(_port, _addr, _bytes, _result)
+/**
+ * Write data to NRLink.
+ * Write data to the mindsensors NRLink device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _bytes A byte array containing the data to write.
+ * \param _result The function call result.
+ */
+#define WriteNRLinkBytesEx(_port, _addr, _bytes, _result) __WriteNRLinkBytes(_port, _addr, _bytes, _result)
+
+/**
+ * Read data from NRLink.
+ * Read data from the mindsensors NRLink device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _bytes A byte array that will contain the data read from the device on output.
+ * \param _result The function call result.
+ */
 #define ReadNRLinkBytes(_port, _bytes, _result) __ReadNRLinkBytes(_port, 0x02, _bytes, _result)
 
-#define MSPFComboDirectEx(_port, _addr, _channel, _outa, _outb, _result) \
-  __MSPFComboDirect(_port, _addr, _channel, _outa, _outb, _result)
+/**
+ * Read data from NRLink.
+ * Read data from the mindsensors NRLink device on the specified port. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _bytes A byte array that will contain the data read from the device on output.
+ * \param _result The function call result.
+ */
+#define ReadNRLinkBytesEx(_port, _addr, _bytes, _result) __ReadNRLinkBytes(_port, _addr, _bytes, _result)
 
-#define MSPFComboDirect(_port, _channel, _outa, _outb, _result) \
-  __MSPFComboDirect(_port, 0x02, _channel, _outa, _outb, _result)
-
-#define MSPFSinglePinEx(_port, _addr, _channel, _out, _pin, _func, _cont, _result) \
-  __MSPFSinglePin(_port, _addr, _channel, _out, _pin, _func, _cont, _result)
-
-#define MSPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result) \
-  __MSPFSinglePin(_port, 0x02, _channel, _out, _pin, _func, _cont, _result)
-
-#define MSPFSingleOutputCSTEx(_port, _addr, _channel, _out, _func, _result) \
-  __MSPFSingleOutput(_port, _addr, _channel, _out, _func, TRUE, _result)
-
-#define MSPFSingleOutputCST(_port, _channel, _out, _func, _result) \
-  __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, TRUE, _result)
-
-#define MSPFSingleOutputPWMEx(_port, _addr, _channel, _out, _func, _result) \
-  __MSPFSingleOutput(_port, _addr, _channel, _out, _func, FALSE, _result)
-
-#define MSPFSingleOutputPWM(_port, _channel, _out, _func, _result) \
-  __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, FALSE, _result)
-
-#define MSPFComboPWMEx(_port, _addr, _channel, _outa, _outb, _result) \
-  __MSPFComboPWM(_port, _addr, _channel, _outa, _outb, _result)
-
-#define MSPFComboPWM(_port, _channel, _outa, _outb, _result) \
-  __MSPFComboPWM(_port, 0x02, _channel, _outa, _outb, _result)
-
-#define MSPFTrainEx(_port, _addr, _channel, _func, _result) \
-  __MSIRTrain(_port, _addr, _channel, _func, TRUE, _result)
-
-#define MSPFTrain(_port, _channel, _func, _result) \
-  __MSIRTrain(_port, 0x02, _channel, _func, TRUE, _result)
-
-#define MSIRTrainEx(_port, _addr, _channel, _func, _result) \
-  __MSIRTrain(_port, _addr, _channel, _func, FALSE, _result)
-
+/**
+ * MSIRTrain function.
+ * Control an IR Train receiver set to the specified channel using the
+ * mindsensors NRLink device. Valid func values are \ref TRAIN_FUNC_STOP,
+ * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
+ * Valid channel values are \ref TRAIN_CHANNEL_1 through \ref TRAIN_CHANNEL_3 and
+ * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
+ * using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The IR Train channel.  See \ref IRTrainChannels.
+ * \param _func The IR Train function. See \ref IRTrainFuncs
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
 #define MSIRTrain(_port, _channel, _func, _result) \
   __MSIRTrain(_port, 0x02, _channel, _func, FALSE, _result)
 
-#define MSPFRawOutputEx(_port, _addr, _nibble0, _nibble1, _nibble2, _result) \
-  __MSPFRawOutput(_port, _addr, _nibble0, _nibble1, _nibble2, _result)
+/**
+ * MSIRTrainEx function.
+ * Control an IR Train receiver set to the specified channel using the
+ * mindsensors NRLink device. Valid function values are \ref TRAIN_FUNC_STOP,
+ * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
+ * Valid channels are \ref TRAIN_CHANNEL_1 through \ref TRAIN_CHANNEL_3 and
+ * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
+ * using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _channel The IR Train channel.  See \ref IRTrainChannels.
+ * \param _func The IR Train function. See \ref IRTrainFuncs
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSIRTrainEx(_port, _addr, _channel, _func, _result) \
+  __MSIRTrain(_port, _addr, _channel, _func, FALSE, _result)
 
+/**
+ * MSPFComboDirect function.
+ * Execute a pair of Power Function motor commands on the specified channel
+ * using the mindsensors NRLink device. Commands for outa and outb are
+ * \ref PF_CMD_STOP, \ref PF_CMD_REV, \ref PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
+ * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _outa The Power Function command for output A. See \ref PFCmdConstants.
+ * \param _outb The Power Function command for output B. See \ref PFCmdConstants.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFComboDirect(_port, _channel, _outa, _outb, _result) \
+  __MSPFComboDirect(_port, 0x02, _channel, _outa, _outb, _result)
+
+/**
+ * MSPFComboDirectEx function.
+ * Execute a pair of Power Function motor commands on the specified channel
+ * using the mindsensors NRLink device. Commands for outa and outb are
+ * PF_CMD_STOP, PF_CMD_REV, PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
+ * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _outa The Power Function command for output A. See \ref PFCmdConstants.
+ * \param _outb The Power Function command for output B. See \ref PFCmdConstants.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFComboDirectEx(_port, _addr, _channel, _outa, _outb, _result) \
+  __MSPFComboDirect(_port, _addr, _channel, _outa, _outb, _result)
+
+/**
+ * MSPFComboPWM function.
+ * Control the speed of both outputs on a Power Function receiver set to the
+ * specified channel using the mindsensors NRLink device. Valid output values
+ * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
+ * port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _outa The Power Function PWM command for output A. See \ref PFPWMOptions.
+ * \param _outb The Power Function PWM command for output B. See \ref PFPWMOptions.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFComboPWM(_port, _channel, _outa, _outb, _result) \
+  __MSPFComboPWM(_port, 0x02, _channel, _outa, _outb, _result)
+
+/**
+ * MSPFComboPWMEx function.
+ * Control the speed of both outputs on a Power Function receiver set to the
+ * specified channel using the mindsensors NRLink device. Valid output values
+ * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
+ * port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _outa The Power Function PWM command for output A. See \ref PFPWMOptions.
+ * \param _outb The Power Function PWM command for output B. See \ref PFPWMOptions.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFComboPWMEx(_port, _addr, _channel, _outa, _outb, _result) \
+  __MSPFComboPWM(_port, _addr, _channel, _outa, _outb, _result)
+
+/**
+ * MSPFRawOutput function.
+ * Control a Power Function receiver set to the specified channel using the
+ * mindsensors NRLink device. Build the raw data stream using the 3 nibbles
+ * (4 bit values). The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _nibble0 The first raw data nibble.
+ * \param _nibble1 The second raw data nibble.
+ * \param _nibble2 The third raw data nibble.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
 #define MSPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result) \
   __MSPFRawOutput(_port, 0x02, _nibble0, _nibble1, _nibble2, _result)
 
-#define MSPFRepeatEx(_port, _addr, _count, _delay, _result) \
-  __MSPFRepeatLastCommand(_port, _addr, _count, _delay, _result)
+/**
+ * MSPFRawOutputEx function.
+ * Control a Power Function receiver set to the specified channel using the
+ * mindsensors NRLink device. Build the raw data stream using the 3 nibbles
+ * (4 bit values). The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _nibble0 The first raw data nibble.
+ * \param _nibble1 The second raw data nibble.
+ * \param _nibble2 The third raw data nibble.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFRawOutputEx(_port, _addr, _nibble0, _nibble1, _nibble2, _result) \
+  __MSPFRawOutput(_port, _addr, _nibble0, _nibble1, _nibble2, _result)
 
+/**
+ * MSPFRepeat function.
+ * Repeat sending the last Power Function command using the mindsensors
+ * NRLink device. Specify the number of times to repeat the command and the
+ * number of milliseconds of delay between each repetition. The port must be
+ * configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _count The number of times to repeat the command.
+ * \param _delay The number of milliseconds to delay between each repetition.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
 #define MSPFRepeat(_port, _count, _delay, _result) \
   __MSPFRepeatLastCommand(_port, 0x02, _count, _delay, _result)
 
-#define MSRCXSetNRLinkPortEx(_port, _addr) __MSRCXSetNRLink(_port, _addr)
+/**
+ * MSPFRepeatEx function.
+ * Repeat sending the last Power Function command using the mindsensors
+ * NRLink device. Specify the number of times to repeat the command and the
+ * number of milliseconds of delay between each repetition. The port must be
+ * configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _count The number of times to repeat the command.
+ * \param _delay The number of milliseconds to delay between each repetition.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFRepeatEx(_port, _addr, _count, _delay, _result) \
+  __MSPFRepeatLastCommand(_port, _addr, _count, _delay, _result)
+
+/**
+ * MSPFSingleOutputCST function.
+ * Control a single output on a Power Function receiver set to the specified
+ * channel using the mindsensors NRLink device. Select the desired output
+ * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
+ * \ref PF_CST_SET1_CLEAR2, \ref PF_CST_CLEAR1_SET2, \ref PF_CST_SET1_SET2,
+ * \ref PF_CST_INCREMENT_PWM, \ref PF_CST_DECREMENT_PWM, \ref PF_CST_FULL_FWD,
+ * \ref PF_CST_FULL_REV, and \ref PF_CST_TOGGLE_DIR. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _out The Power Function output. See \ref PFOutputs.
+ * \param _func The Power Function CST function. See \ref PFCSTOptions.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFSingleOutputCST(_port, _channel, _out, _func, _result) \
+  __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, TRUE, _result)
+
+/**
+ * MSPFSingleOutputCSTEx function.
+ * Control a single output on a Power Function receiver set to the specified
+ * channel using the mindsensors NRLink device. Select the desired output
+ * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
+ * \ref PF_CST_SET1_CLEAR2, \ref PF_CST_CLEAR1_SET2, \ref PF_CST_SET1_SET2,
+ * \ref PF_CST_INCREMENT_PWM, \ref PF_CST_DECREMENT_PWM, \ref PF_CST_FULL_FWD,
+ * \ref PF_CST_FULL_REV, and \ref PF_CST_TOGGLE_DIR. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _out The Power Function output. See \ref PFOutputs.
+ * \param _func The Power Function CST function. See \ref PFCSTOptions.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFSingleOutputCSTEx(_port, _addr, _channel, _out, _func, _result) \
+  __MSPFSingleOutput(_port, _addr, _channel, _out, _func, TRUE, _result)
+
+/**
+ * MSPFSingleOutputPWM function.
+ * Control the speed of a single output on a Power Function receiver set to
+ * the specified channel using the mindsensors NRLink device. Select the
+ * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
+ * \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
+ * port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _out The Power Function output. See \ref PFOutputs.
+ * \param _func The Power Function PWM function. See \ref PFPWMOptions.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFSingleOutputPWM(_port, _channel, _out, _func, _result) \
+  __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, FALSE, _result)
+
+/**
+ * MSPFSingleOutputPWMEx function.
+ * Control the speed of a single output on a Power Function receiver set to
+ * the specified channel using the mindsensors NRLink device. Select the
+ * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
+ * \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
+ * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
+ * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
+ * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
+ * port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _out The Power Function output. See \ref PFOutputs.
+ * \param _func The Power Function PWM function. See \ref PFPWMOptions.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFSingleOutputPWMEx(_port, _addr, _channel, _out, _func, _result) \
+  __MSPFSingleOutput(_port, _addr, _channel, _out, _func, FALSE, _result)
+
+/**
+ * MSPFSinglePin function.
+ * Control a single pin on a Power Function receiver set to the specified
+ * channel using the mindsensors NRLink device. Select the desired output
+ * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
+ * \ref PF_PIN_C2. Valid functions are \ref PF_FUNC_NOCHANGE, \ref PF_FUNC_CLEAR,
+ * \ref PF_FUNC_SET, and \ref PF_FUNC_TOGGLE. Valid channels are \ref PF_CHANNEL_1 through
+ * \ref PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
+ * false (timeout) as the final parameter. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _out The Power Function output. See \ref PFOutputs.
+ * \param _pin The Power Function pin. See \ref PFPinConstants.
+ * \param _func The Power Function single pin function. See \ref PFPinFuncs.
+ * \param _cont Control whether the mode is continuous or timeout.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result) \
+  __MSPFSinglePin(_port, 0x02, _channel, _out, _pin, _func, _cont, _result)
+
+/**
+ * MSPFSinglePinEx function.
+ * Control a single pin on a Power Function receiver set to the specified
+ * channel using the mindsensors NRLink device. Select the desired output
+ * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
+ * \ref PF_PIN_C2. Valid functions are \ref PF_FUNC_NOCHANGE, \ref PF_FUNC_CLEAR,
+ * \ref PF_FUNC_SET, and \ref PF_FUNC_TOGGLE. Valid channels are \ref PF_CHANNEL_1 through
+ * \ref PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
+ * false (timeout) as the final parameter. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _out The Power Function output. See \ref PFOutputs.
+ * \param _pin The Power Function pin. See \ref PFPinConstants.
+ * \param _func The Power Function single pin function. See \ref PFPinFuncs.
+ * \param _cont Control whether the mode is continuous or timeout.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFSinglePinEx(_port, _addr, _channel, _out, _pin, _func, _cont, _result) \
+  __MSPFSinglePin(_port, _addr, _channel, _out, _pin, _func, _cont, _result)
+
+/**
+ * MSPFTrain function.
+ * Control both outputs on a Power Function receiver set to the specified
+ * channel using the mindsensors NRLink device as if it were an IR Train
+ * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
+ * \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT. Valid channels are
+ * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _func The Power Function train function. See \ref IRTrainFuncs.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFTrain(_port, _channel, _func, _result) \
+  __MSIRTrain(_port, 0x02, _channel, _func, TRUE, _result)
+
+/**
+ * MSPFTrainEx function.
+ * Control both outputs on a Power Function receiver set to the specified
+ * channel using the mindsensors NRLink device as if it were an IR Train
+ * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
+ * \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT. Valid channels are
+ * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
+ * Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ * \param _channel The Power Function channel.  See \ref PFChannelConstants.
+ * \param _func The Power Function train function. See \ref IRTrainFuncs.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define MSPFTrainEx(_port, _addr, _channel, _func, _result) \
+  __MSIRTrain(_port, _addr, _channel, _func, TRUE, _result)
+
+/**
+ * MSRCXSetIRLinkPort function.
+ * Set the global port in advance of using the MSRCX* and MSScout* API
+ * functions for sending RCX and Scout messages over the mindsensors NRLink
+ * device. The port must be configured as a Lowspeed port before using any of
+ * the mindsensors RCX and Scout NRLink functions.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ */
 #define MSRCXSetNRLinkPort(_port) __MSRCXSetNRLink(_port, 0x02)
-#define MSRCXPoll(_src, _value, _result) __MSRCXPoll(_src, _value, _result)
+
+/**
+ * MSRCXSetIRLinkPortEx function.
+ * Set the global port in advance of using the MSRCX* and MSScout* API
+ * functions for sending RCX and Scout messages over the mindsensors NRLink
+ * device. The port must be configured as a Lowspeed port before using any of
+ * the mindsensors RCX and Scout NRLink functions.
+ *
+ * \param _port The sensor port. See \ref InPorts.
+ * \param _addr The sensor I2C address. See sensor documentation for this value.
+ */
+#define MSRCXSetNRLinkPortEx(_port, _addr) __MSRCXSetNRLink(_port, _addr)
+
+/**
+ * MSRCXBatteryLevel function.
+ * Send the BatteryLevel command to an RCX to read the current battery level.
+ *
+ * \param _result The RCX battery level.
+ */
 #define MSRCXBatteryLevel(_result) __MSRCXBatteryLevel(_result)
-#define MSRCXPing() __MSRCXOpNoArgs(RCX_PingOp)
-#define MSRCXDeleteTasks() __MSRCXOpNoArgs(RCX_DeleteTasksOp)
-#define MSRCXStopAllTasks() __MSRCXOpNoArgs(RCX_StopAllTasksOp)
-#define MSRCXPBTurnOff() __MSRCXOpNoArgs(RCX_PBTurnOffOp)
-#define MSRCXDeleteSubs() __MSRCXOpNoArgs(RCX_DeleteSubsOp)
-#define MSRCXClearSound() __MSRCXOpNoArgs(RCX_ClearSoundOp)
-#define MSRCXClearMsg() __MSRCXOpNoArgs(RCX_ClearMsgOp)
-#define MSRCXMuteSound() __MSRCXOpNoArgs(RCX_MuteSoundOp)
-#define MSRCXUnmuteSound() __MSRCXOpNoArgs(RCX_UnmuteSoundOp)
-#define MSRCXClearAllEvents() __MSRCXOpNoArgs(RCX_ClearAllEventsOp)
-#define MSRCXSetOutput(_outputs, _mode) __MSRCXSetOutput(_outputs, _mode)
-#define MSRCXSetDirection(_outputs, _dir) __MSRCXSetDirection(_outputs, _dir)
-#define MSRCXSetPower(_outputs, _pwrsrc, _pwrval) __MSRCXSetPower(_outputs, _pwrsrc, _pwrval)
-#define MSRCXOn(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_ON)
-#define MSRCXOff(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_OFF)
-#define MSRCXFloat(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_FLOAT)
-#define MSRCXToggle(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_TOGGLE)
-#define MSRCXFwd(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_FWD)
-#define MSRCXRev(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_REV)
-#define MSRCXOnFwd(_outputs) __MSRCXOnFwd(_outputs)
-#define MSRCXOnRev(_outputs) __MSRCXOnRev(_outputs)
-#define MSRCXOnFor(_outputs, _ms) __MSRCXOnFor(_outputs, _ms)
-#define MSRCXSetTxPower(_pwr) __MSRCXSetTxPower(_pwr)
-#define MSRCXPlaySound(_snd) __MSRCXPlaySound(_snd)
-#define MSRCXDeleteTask(_t) __MSRCXDeleteTask(_t)
-#define MSRCXStartTask(_t) __MSRCXStartTask(_t)
-#define MSRCXStopTask(_t) __MSRCXStopTask(_t)
-#define MSRCXSelectProgram(_prog) __MSRCXSelectProgram(_prog)
-#define MSRCXClearTimer(_timer) __MSRCXClearTimer(_timer)
-#define MSRCXSetSleepTime(_t) __MSRCXSetSleepTime(_t)
-#define MSRCXDeleteSub(_s) __MSRCXDeleteSub(_s)
-#define MSRCXClearSensor(_port) __MSRCXClearSensor(_port)
-#define MSRCXPlayToneVar(_varnum, _duration) __MSRCXPlayToneVar(_varnum, _duration)
-#define MSRCXSetWatch(_hours, _minutes) __MSRCXSetWatch(_hours, _minutes)
-#define MSRCXSetSensorType(_port, _type) __MSRCXSetSensorType(_port, _type)
-#define MSRCXSetSensorMode(_port, _mode) __MSRCXSetSensorMode(_port, _mode)
-#define MSRCXCreateDatalog(_size) __MSRCXCreateDatalog(_size)
-#define MSRCXAddToDatalog(_src, _value) __MSRCXAddToDatalog(_src, _value)
-#define MSRCXSendSerial(_first, _count) __MSRCXSendSerial(_first, _count)
-#define MSRCXRemote(_cmd) __MSRCXRemote(_cmd)
-#define MSRCXEvent(_src, _value) __MSRCXEvent(_src, _value)
-#define MSRCXPlayTone(_freq, _duration) __MSRCXPlayTone(_freq, _duration)
-#define MSRCXSelectDisplay(_src, _value) __MSRCXSelectDisplay(_src, _value)
+
+/**
+ * MSRCXPoll function.
+ * Send the Poll command to an RCX to read a signed 2-byte value at the
+ * specified source and value combination.
+ *
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ * \param _result The value read from the specified port and value.
+ */
+#define MSRCXPoll(_src, _value, _result) __MSRCXPoll(_src, _value, _result)
+
+/**
+ * MSRCXPollMemory function.
+ * Send the PollMemory command to an RCX.
+ *
+ * \param _address The RCX memory address.
+ * \param _result The value read from the specified address.
+ */
 #define MSRCXPollMemory(_address, _result) __MSRCXPollMemory(_address, _result)
-#define MSRCXSetEvent(_evt, _src, _type) __MSRCXSetEvent(_evt, _src, _type)
-#define MSRCXSetGlobalOutput(_outputs, _mode) __MSRCXSetGlobalOutput(_outputs, _mode)
-#define MSRCXSetGlobalDirection(_outputs, _dir) __MSRCXSetGlobalDirection(_outputs, _dir)
-#define MSRCXSetMaxPower(_outputs, _pwrsrc, _pwrval) __MSRCXSetMaxPower(_outputs, _pwrsrc, _pwrval)
-#define MSRCXEnableOutput(_outputs) __MSRCXSetGlobalOutput(_outputs, RCX_OUT_ON)
-#define MSRCXDisableOutput(_outputs) __MSRCXSetGlobalOutput(_outputs, RCX_OUT_OFF)
-#define MSRCXInvertOutput(_outputs) __MSRCXSetGlobalDirection(_outputs, RCX_OUT_REV)
-#define MSRCXObvertOutput(_outputs) __MSRCXSetGlobalDirection(_outputs, RCX_OUT_FWD)
-#define MSRCXCalibrateEvent(_evt, _low, _hi, _hyst) __MSRCXCalibrateEvent(_evt, _low, _hi, _hyst)
-#define MSRCXSetVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SetVarOp, _varnum, _src, _value)
-#define MSRCXSumVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SumVarOp, _varnum, _src, _value)
-#define MSRCXSubVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SubVarOp, _varnum, _src, _value)
-#define MSRCXDivVar(_varnum, _src, _value) __MSRCXVarOp(RCX_DivVarOp, _varnum, _src, _value)
-#define MSRCXMulVar(_varnum, _src, _value) __MSRCXVarOp(RCX_MulVarOp, _varnum, _src, _value)
-#define MSRCXSgnVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SgnVarOp, _varnum, _src, _value)
+
+/**
+ * MSRCXAbsVar function.
+ * Send the AbsVar command to an RCX.
+ *
+ * \param _varnum The variable number to change.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
 #define MSRCXAbsVar(_varnum, _src, _value) __MSRCXVarOp(RCX_AbsVarOp, _varnum, _src, _value)
+
+/**
+ * MSRCXAddToDatalog function.
+ * Send the AddToDatalog command to an RCX.
+ *
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXAddToDatalog(_src, _value) __MSRCXAddToDatalog(_src, _value)
+
+/**
+ * MSRCXAndVar function.
+ * Send the AndVar command to an RCX.
+ *
+ * \param _varnum The variable number to change.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
 #define MSRCXAndVar(_varnum, _src, _value) __MSRCXVarOp(RCX_AndVarOp, _varnum, _src, _value)
-#define MSRCXOrVar(_varnum, _src, _value) __MSRCXVarOp(RCX_OrVarOp, _varnum, _src, _value)
-#define MSRCXSet(_dstsrc, _dstval, _src, _value) __MSRCXSet(_dstsrc, _dstval, _src, _value)
-#define MSRCXUnlock() __MSRCXUnlock()
-#define MSRCXReset() __MSRCXReset()
+
+/**
+ * MSRCXBoot function.
+ * Send the Boot command to an RCX.
+ */
 #define MSRCXBoot() __MSRCXBoot()
-#define MSRCXSetUserDisplay(_src, _value, _precision) __MSRCXSetUserDisplay(_src, _value, _precision)
-#define MSRCXIncCounter(_counter) __MSRCXIncCounter(_counter)
-#define MSRCXDecCounter(_counter) __MSRCXDecCounter(_counter)
+
+/**
+ * MSRCXCalibrateEvent function.
+ * Send the CalibrateEvent command to an RCX.
+ *
+ * \param _evt The event number.
+ * \param _low The low threshold.
+ * \param _hi The high threshold.
+ * \param _hyst The hysterisis value.
+ */
+#define MSRCXCalibrateEvent(_evt, _low, _hi, _hyst) __MSRCXCalibrateEvent(_evt, _low, _hi, _hyst)
+
+/**
+ * MSRCXClearAllEvents function.
+ * Send the ClearAllEvents command to an RCX.
+ */
+#define MSRCXClearAllEvents() __MSRCXOpNoArgs(RCX_ClearAllEventsOp)
+
+/**
+ * MSRCXClearCounter function.
+ * Send the ClearCounter command to an RCX.
+ *
+ * \param _counter The counter to clear.
+ */
 #define MSRCXClearCounter(_counter) __MSRCXClearCounter(_counter)
-#define MSRCXSetPriority(_p) __MSRCXSetPriority(_p)
+
+/**
+ * MSRCXClearMsg function.
+ * Send the ClearMsg command to an RCX.
+ */
+#define MSRCXClearMsg() __MSRCXOpNoArgs(RCX_ClearMsgOp)
+
+/**
+ * MSRCXClearSensor function.
+ * Send the ClearSensor command to an RCX.
+ *
+ * \param _port The RCX port number.
+ */
+#define MSRCXClearSensor(_port) __MSRCXClearSensor(_port)
+
+/**
+ * MSRCXClearSound function.
+ * Send the ClearSound command to an RCX.
+ */
+#define MSRCXClearSound() __MSRCXOpNoArgs(RCX_ClearSoundOp)
+
+/**
+ * MSRCXClearTimer function.
+ * Send the ClearTimer command to an RCX.
+ *
+ * \param _timer The timer to clear.
+ */
+#define MSRCXClearTimer(_timer) __MSRCXClearTimer(_timer)
+
+/**
+ * MSRCXCreateDatalog function.
+ * Send the CreateDatalog command to an RCX.
+ *
+ * \param _size The new datalog size.
+ */
+#define MSRCXCreateDatalog(_size) __MSRCXCreateDatalog(_size)
+
+/**
+ * MSRCXDecCounter function.
+ * Send the DecCounter command to an RCX.
+ *
+ * \param _counter The counter to decrement.
+ */
+#define MSRCXDecCounter(_counter) __MSRCXDecCounter(_counter)
+
+/**
+ * MSRCXDeleteSub function.
+ * Send the DeleteSub command to an RCX.
+ *
+ * \param _s The subroutine number to delete.
+ */
+#define MSRCXDeleteSub(_s) __MSRCXDeleteSub(_s)
+
+/**
+ * MSRCXDeleteSubs function.
+ * Send the DeleteSubs command to an RCX.
+ */
+#define MSRCXDeleteSubs() __MSRCXOpNoArgs(RCX_DeleteSubsOp)
+
+/**
+ * MSRCXDeleteTask function.
+ * Send the DeleteTask command to an RCX.
+ *
+ * \param _t The task number to delete.
+ */
+#define MSRCXDeleteTask(_t) __MSRCXDeleteTask(_t)
+
+/**
+ * MSRCXDeleteTasks function.
+ * Send the DeleteTasks command to an RCX.
+ */
+#define MSRCXDeleteTasks() __MSRCXOpNoArgs(RCX_DeleteTasksOp)
+
+/**
+ * MSRCXDisableOutput function.
+ * Send the DisableOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to disable. See \ref RCXOutputConstants.
+ */
+#define MSRCXDisableOutput(_outputs) __MSRCXSetGlobalOutput(_outputs, RCX_OUT_OFF)
+
+/**
+ * MSRCXDivVar function.
+ * Send the DivVar command to an RCX.
+ *
+ * \param _varnum The variable number to change.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXDivVar(_varnum, _src, _value) __MSRCXVarOp(RCX_DivVarOp, _varnum, _src, _value)
+
+/**
+ * MSRCXEnableOutput function.
+ * Send the EnableOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to enable. See \ref RCXOutputConstants.
+ */
+#define MSRCXEnableOutput(_outputs) __MSRCXSetGlobalOutput(_outputs, RCX_OUT_ON)
+
+/**
+ * MSRCXEvent function.
+ * Send the Event command to an RCX.
+ *
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXEvent(_src, _value) __MSRCXEvent(_src, _value)
+
+/**
+ * MSRCXFloat function.
+ * Send commands to an RCX to float the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to float. See \ref RCXOutputConstants.
+ */
+#define MSRCXFloat(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_FLOAT)
+
+/**
+ * MSRCXFwd function.
+ * Send commands to an RCX to set the specified outputs to the forward direction.
+ *
+ * \param _outputs The RCX output(s) to set forward. See \ref RCXOutputConstants.
+ */
+#define MSRCXFwd(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_FWD)
+
+/**
+ * MSRCXIncCounter function.
+ * Send the IncCounter command to an RCX.
+ *
+ * \param _counter The counter to increment.
+ */
+#define MSRCXIncCounter(_counter) __MSRCXIncCounter(_counter)
+
+/**
+ * MSRCXInvertOutput function.
+ * Send the InvertOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to invert. See \ref RCXOutputConstants.
+ */
+#define MSRCXInvertOutput(_outputs) __MSRCXSetGlobalDirection(_outputs, RCX_OUT_REV)
+
+/**
+ * MSRCXMulVar function.
+ * Send the MulVar command to an RCX.
+ *
+ * \param _varnum The variable number to change.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXMulVar(_varnum, _src, _value) __MSRCXVarOp(RCX_MulVarOp, _varnum, _src, _value)
+
+/**
+ * MSRCXMuteSound function.
+ * Send the MuteSound command to an RCX.
+ */
+#define MSRCXMuteSound() __MSRCXOpNoArgs(RCX_MuteSoundOp)
+
+/**
+ * MSRCXObvertOutput function.
+ * Send the ObvertOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to obvert. See \ref RCXOutputConstants.
+ */
+#define MSRCXObvertOutput(_outputs) __MSRCXSetGlobalDirection(_outputs, RCX_OUT_FWD)
+
+/**
+ * MSRCXOff function.
+ * Send commands to an RCX to turn off the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to turn off. See \ref RCXOutputConstants.
+ */
+#define MSRCXOff(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_OFF)
+
+/**
+ * MSRCXOn function.
+ * Send commands to an RCX to turn on the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to turn on. See \ref RCXOutputConstants.
+ */
+#define MSRCXOn(_outputs) __MSRCXSetOutput(_outputs, RCX_OUT_ON)
+
+/**
+ * MSRCXOnFor function.
+ * Send commands to an RCX to turn on the specified outputs in the forward
+ * direction for the specified duration.
+ *
+ * \param _outputs The RCX output(s) to turn on. See \ref RCXOutputConstants.
+ * \param _ms The number of milliseconds to leave the outputs on
+ */
+#define MSRCXOnFor(_outputs, _ms) __MSRCXOnFor(_outputs, _ms)
+
+/**
+ * MSRCXOnFwd function.
+ * Send commands to an RCX to turn on the specified outputs in the forward
+ * direction.
+ *
+ * \param _outputs The RCX output(s) to turn on in the forward direction. See \ref RCXOutputConstants.
+ */
+#define MSRCXOnFwd(_outputs) __MSRCXOnFwd(_outputs)
+
+/**
+ * MSRCXOnRev function.
+ * Send commands to an RCX to turn on the specified outputs in the reverse direction.
+ *
+ * \param _outputs The RCX output(s) to turn on in the reverse direction. See \ref RCXOutputConstants.
+ */
+#define MSRCXOnRev(_outputs) __MSRCXOnRev(_outputs)
+
+/**
+ * MSRCXOrVar function.
+ * Send the OrVar command to an RCX.
+ *
+ * \param _varnum The variable number to change.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXOrVar(_varnum, _src, _value) __MSRCXVarOp(RCX_OrVarOp, _varnum, _src, _value)
+
+/**
+ * MSRCXPBTurnOff function.
+ * Send the PBTurnOff command to an RCX.
+ */
+#define MSRCXPBTurnOff() __MSRCXOpNoArgs(RCX_PBTurnOffOp)
+
+/**
+ * MSRCXPing function.
+ * Send the Ping command to an RCX.
+ */
+#define MSRCXPing() __MSRCXOpNoArgs(RCX_PingOp)
+
+/**
+ * MSRCXPlaySound function.
+ * Send the PlaySound command to an RCX.
+ *
+ * \param _snd The sound number to play.
+ */
+#define MSRCXPlaySound(_snd) __MSRCXPlaySound(_snd)
+
+/**
+ * MSRCXPlayTone function.
+ * Send the PlayTone command to an RCX.
+ *
+ * \param _freq The frequency of the tone to play.
+ * \param _duration The duration of the tone to play.
+ */
+#define MSRCXPlayTone(_freq, _duration) __MSRCXPlayTone(_freq, _duration)
+
+/**
+ * MSRCXPlayToneVar function.
+ * Send the PlayToneVar command to an RCX.
+ *
+ * \param _varnum The variable containing the tone frequency to play.
+ * \param _duration The duration of the tone to play.
+ */
+#define MSRCXPlayToneVar(_varnum, _duration) __MSRCXPlayToneVar(_varnum, _duration)
+
+/**
+ * MSRCXRemote function.
+ * Send the Remote command to an RCX.
+ *
+ * \param _cmd The RCX IR remote command to send. See \ref RCXRemoteConstants.
+ */
+#define MSRCXRemote(_cmd) __MSRCXRemote(_cmd)
+
+/**
+ * MSRCXReset function.
+ * Send the Reset command to an RCX.
+ */
+#define MSRCXReset() __MSRCXReset()
+
+/**
+ * MSRCXRev function.
+ * Send commands to an RCX to set the specified outputs to the reverse direction.
+ *
+ * \param _outputs The RCX output(s) to reverse direction. See \ref RCXOutputConstants.
+ */
+#define MSRCXRev(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_REV)
+
+/**
+ * MSRCXSelectDisplay function.
+ * Send the SelectDisplay command to an RCX.
+ *
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXSelectDisplay(_src, _value) __MSRCXSelectDisplay(_src, _value)
+
+/**
+ * MSRCXSelectProgram function.
+ * Send the SelectProgram command to an RCX.
+ *
+ * \param _prog The program number to select.
+ */
+#define MSRCXSelectProgram(_prog) __MSRCXSelectProgram(_prog)
+
+/**
+ * MSRCXSendSerial function.
+ * Send the SendSerial command to an RCX.
+ *
+ * \param _first The first byte address.
+ * \param _count The number of bytes to send.
+ */
+#define MSRCXSendSerial(_first, _count) __MSRCXSendSerial(_first, _count)
+
+/**
+ * MSRCXSet function.
+ * Send the Set command to an RCX.
+ *
+ * \param _dstsrc The RCX destination source.  See \ref RCXSourceConstants.
+ * \param _dstval The RCX destination value.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXSet(_dstsrc, _dstval, _src, _value) __MSRCXSet(_dstsrc, _dstval, _src, _value)
+
+/**
+ * MSRCXSetDirection function.
+ * Send the SetDirection command to an RCX to configure the direction of the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to set direction. See \ref RCXOutputConstants.
+ * \param _dir The RCX output direction. See \ref RCXOutputDirection.
+ */
+#define MSRCXSetDirection(_outputs, _dir) __MSRCXSetDirection(_outputs, _dir)
+
+/**
+ * MSRCXSetEvent function.
+ * Send the SetEvent command to an RCX.
+ *
+ * \param _evt The event number to set.
+ * \param _src The RCX source. See \ref RCXSourceConstants.
+ * \param _type The event type.
+ */
+#define MSRCXSetEvent(_evt, _src, _type) __MSRCXSetEvent(_evt, _src, _type)
+
+/**
+ * MSRCXSetGlobalDirection function.
+ * Send the SetGlobalDirection command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to set global direction. See \ref RCXOutputConstants.
+ * \param _dir The RCX output direction. See \ref RCXOutputDirection.
+ */
+#define MSRCXSetGlobalDirection(_outputs, _dir) __MSRCXSetGlobalDirection(_outputs, _dir)
+
+/**
+ * MSRCXSetGlobalOutput function.
+ * Send the SetGlobalOutput command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to set global mode. See \ref RCXOutputConstants.
+ * \param _mode The RCX output mode. See \ref RCXOutputMode.
+ */
+#define MSRCXSetGlobalOutput(_outputs, _mode) __MSRCXSetGlobalOutput(_outputs, _mode)
+
+/**
+ * MSRCXSetMaxPower function.
+ * Send the SetMaxPower command to an RCX.
+ *
+ * \param _outputs The RCX output(s) to set max power. See \ref RCXOutputConstants.
+ * \param _pwrsrc The RCX source.  See \ref RCXSourceConstants.
+ * \param _pwrval The RCX value.
+ */
+#define MSRCXSetMaxPower(_outputs, _pwrsrc, _pwrval) __MSRCXSetMaxPower(_outputs, _pwrsrc, _pwrval)
+
+/**
+ * MSRCXSetMessage function.
+ * Send the SetMessage command to an RCX.
+ *
+ * \param _msg The numeric message to send.
+ */
 #define MSRCXSetMessage(_msg) __MSRCXSetMessage(_msg)
 
+/**
+ * MSRCXSetOutput function.
+ * Send the SetOutput command to an RCX to configure the mode of the specified outputs
+ *
+ * \param _outputs The RCX output(s) to set mode. See \ref RCXOutputConstants.
+ * \param _mode The RCX output mode. See \ref RCXOutputMode.
+ */
+#define MSRCXSetOutput(_outputs, _mode) __MSRCXSetOutput(_outputs, _mode)
+
+/**
+ * MSRCXSetPower function.
+ * Send the SetPower command to an RCX to configure the power level of the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to set power. See \ref RCXOutputConstants.
+ * \param _pwrsrc The RCX source.  See \ref RCXSourceConstants.
+ * \param _pwrval The RCX value.
+ */
+#define MSRCXSetPower(_outputs, _pwrsrc, _pwrval) __MSRCXSetPower(_outputs, _pwrsrc, _pwrval)
+
+/**
+ * MSRCXSetPriority function.
+ * Send the SetPriority command to an RCX.
+ *
+ * \param _p The new task priority.
+ */
+#define MSRCXSetPriority(_p) __MSRCXSetPriority(_p)
+
+/**
+ * MSRCXSetSensorMode function.
+ * Send the SetSensorMode command to an RCX.
+ *
+ * \param _port The RCX sensor port.
+ * \param _mode The RCX sensor mode.
+ */
+#define MSRCXSetSensorMode(_port, _mode) __MSRCXSetSensorMode(_port, _mode)
+
+/**
+ * MSRCXSetSensorType function.
+ * Send the SetSensorType command to an RCX.
+ *
+ * \param _port The RCX sensor port.
+ * \param _type The RCX sensor type.
+ */
+#define MSRCXSetSensorType(_port, _type) __MSRCXSetSensorType(_port, _type)
+
+/**
+ * MSRCXSetSleepTime function.
+ * Send the SetSleepTime command to an RCX.
+ *
+ * \param _t The new sleep time value.
+ */
+#define MSRCXSetSleepTime(_t) __MSRCXSetSleepTime(_t)
+
+/**
+ * MSRCXSetTxPower function.
+ * Send the SetTxPower command to an RCX.
+ *
+ * \param _pwr The IR transmit power level.
+ */
+#define MSRCXSetTxPower(_pwr) __MSRCXSetTxPower(_pwr)
+
+/**
+ * MSRCXSetUserDisplay function.
+ * Send the SetUserDisplay command to an RCX.
+ *
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ * \param _precision The number of digits of precision.
+ */
+#define MSRCXSetUserDisplay(_src, _value, _precision) __MSRCXSetUserDisplay(_src, _value, _precision)
+
+/**
+ * MSRCXSetVar function.
+ * Send the SetVar command to an RCX.
+ *
+ * \param _varnum The variable number to change.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXSetVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SetVarOp, _varnum, _src, _value)
+
+/**
+ * MSRCXSetWatch function.
+ * Send the SetWatch command to an RCX.
+ *
+ * \param _hours The new watch time hours value.
+ * \param _minutes The new watch time minutes value.
+ */
+#define MSRCXSetWatch(_hours, _minutes) __MSRCXSetWatch(_hours, _minutes)
+
+/**
+ * MSRCXSgnVar function.
+ * Send the SgnVar command to an RCX.
+ *
+ * \param _varnum The variable number to change.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXSgnVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SgnVarOp, _varnum, _src, _value)
+
+/**
+ * MSRCXStartTask function.
+ * Send the StartTask command to an RCX.
+ *
+ * \param _t The task number to start.
+ */
+#define MSRCXStartTask(_t) __MSRCXStartTask(_t)
+
+/**
+ * MSRCXStopAllTasks function.
+ * Send the StopAllTasks command to an RCX.
+ */
+#define MSRCXStopAllTasks() __MSRCXOpNoArgs(RCX_StopAllTasksOp)
+
+/**
+ * MSRCXStopTask function.
+ * Send the StopTask command to an RCX.
+ *
+ * \param _t The task number to stop.
+ */
+#define MSRCXStopTask(_t) __MSRCXStopTask(_t)
+
+/**
+ * MSRCXSubVar function.
+ * Send the SubVar command to an RCX.
+ *
+ * \param _varnum The variable number to change.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXSubVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SubVarOp, _varnum, _src, _value)
+
+/**
+ * MSRCXSumVar function.
+ * Send the SumVar command to an RCX.
+ *
+ * \param _varnum The variable number to change.
+ * \param _src The RCX source.  See \ref RCXSourceConstants.
+ * \param _value The RCX value.
+ */
+#define MSRCXSumVar(_varnum, _src, _value) __MSRCXVarOp(RCX_SumVarOp, _varnum, _src, _value)
+
+/**
+ * MSRCXToggle function.
+ * Send commands to an RCX to toggle the direction of the specified outputs.
+ *
+ * \param _outputs The RCX output(s) to toggle. See \ref RCXOutputConstants.
+ */
+#define MSRCXToggle(_outputs) __MSRCXSetDirection(_outputs, RCX_OUT_TOGGLE)
+
+/**
+ * MSRCXUnlock function.
+ * Send the Unlock command to an RCX.
+ */
+#define MSRCXUnlock() __MSRCXUnlock()
+
+/**
+ * MSRCXUnmuteSound function.
+ * Send the UnmuteSound command to an RCX.
+ */
+#define MSRCXUnmuteSound() __MSRCXOpNoArgs(RCX_UnmuteSoundOp)
+
+/**
+ * MSScoutCalibrateSensor function.
+ * Send the CalibrateSensor command to a Scout.
+ */
 #define MSScoutCalibrateSensor() __MSRCXOpNoArgs(RCX_LSCalibrateOp)
+
+/**
+ * MSScoutMuteSound function.
+ * Send the MuteSound command to a Scout.
+ */
 #define MSScoutMuteSound() __MSScoutMuteSound()
-#define MSScoutUnmuteSound() __MSScoutUnmuteSound()
+
+/**
+ * MSScoutSelectSounds function.
+ * Send the SelectSounds command to a Scout.
+ *
+ * \param _grp The Scout sound group to select.
+ */
 #define MSScoutSelectSounds(_grp) __MSScoutSelectSounds(_grp)
-#define MSScoutSetLight(_x) __MSScoutSetLight(_x)
-#define MSScoutSetCounterLimit(_ctr, _src, _value) __MSScoutSetCounterLimit(_ctr, _src, _value)
-#define MSScoutSetTimerLimit(_tmr, _src, _value) __MSScoutSetTimerLimit(_tmr, _src, _value)
-#define MSScoutSetSensorClickTime(_src, _value) __MSScoutSetSensorClickTime(_src, _value)
-#define MSScoutSetSensorHysteresis(_src, _value) __MSScoutSetSensorHysteresis(_src, _value)
-#define MSScoutSetSensorLowerLimit(_src, _value) __MSScoutSetSensorLowerLimit(_src, _value)
-#define MSScoutSetSensorUpperLimit(_src, _value) __MSScoutSetSensorUpperLimit(_src, _value)
-#define MSScoutSetEventFeedback(_src, _value) __MSScoutSetEventFeedback(_src, _value)
+
+/**
+ * MSScoutSendVLL function.
+ * Send the SendVLL command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
 #define MSScoutSendVLL(_src, _value) __MSScoutSendVLL(_src, _value)
-#define MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) __MSScoutSetScoutRules(_m, _t, _l, _tm, _fx)
+
+/**
+ * MSScoutSetCounterLimit function.
+ * Send the SetCounterLimit command to a Scout.
+ *
+ * \param _ctr The counter for which to set the limit.
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define MSScoutSetCounterLimit(_ctr, _src, _value) __MSScoutSetCounterLimit(_ctr, _src, _value)
+
+/**
+ * MSScoutSetEventFeedback function.
+ * Send the SetEventFeedback command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define MSScoutSetEventFeedback(_src, _value) __MSScoutSetEventFeedback(_src, _value)
+
+/**
+ * MSScoutSetLight function.
+ * Send the SetLight command to a Scout.
+ *
+ * \param _x Set the light on or off using this value. See \ref ScoutLightConstants.
+ */
+#define MSScoutSetLight(_x) __MSScoutSetLight(_x)
+
+/**
+ * MSScoutSetScoutMode function.
+ * Send the SetScoutMode command to a Scout.
+ *
+ * \param _mode Set the scout mode. See \ref ScoutModeConstants.
+*/
 #define MSScoutSetScoutMode(_mode) __MSScoutSetScoutMode(_mode)
+
+/**
+ * MSScoutSetScoutRules function.
+ * Send the SetScoutRules command to a Scout.
+ *
+ * \param _m Scout motion rule. See \ref ScoutMotionRuleConstants.
+ * \param _t Scout touch rule. See \ref ScoutTouchRuleConstants.
+ * \param _l Scout light rule. See \ref ScoutLightRuleConstants.
+ * \param _tm Scout transmit rule. See \ref ScoutTransmitRuleConstants.
+ * \param _fx Scout special effects rule. See \ref ScoutSpecialEffectConstants.
+ */
+#define MSScoutSetScoutRules(_m, _t, _l, _tm, _fx) __MSScoutSetScoutRules(_m, _t, _l, _tm, _fx)
+
+/**
+ * MSScoutSetSensorClickTime function.
+ * Send the SetSensorClickTime command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define MSScoutSetSensorClickTime(_src, _value) __MSScoutSetSensorClickTime(_src, _value)
+
+/**
+ * MSScoutSetSensorHysteresis function.
+ * Send the SetSensorHysteresis command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define MSScoutSetSensorHysteresis(_src, _value) __MSScoutSetSensorHysteresis(_src, _value)
+
+/**
+ * MSScoutSetSensorLowerLimit function.
+ * Send the SetSensorLowerLimit command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define MSScoutSetSensorLowerLimit(_src, _value) __MSScoutSetSensorLowerLimit(_src, _value)
+
+/**
+ * MSScoutSetSensorUpperLimit function.
+ * Send the SetSensorUpperLimit command to a Scout.
+ *
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define MSScoutSetSensorUpperLimit(_src, _value) __MSScoutSetSensorUpperLimit(_src, _value)
+
+/**
+ * MSScoutSetTimerLimit function.
+ * Send the SetTimerLimit command to a Scout.
+ *
+ * \param _tmr The timer for which to set a limit.
+ * \param _src The Scout source.  See \ref RCXSourceConstants.
+ * \param _value The Scout value.
+ */
+#define MSScoutSetTimerLimit(_tmr, _src, _value) __MSScoutSetTimerLimit(_tmr, _src, _value)
+
+/**
+ * MSScoutUnmuteSound function.
+ * Send the UnmuteSound command to a Scout.
+ */
+#define MSScoutUnmuteSound() __MSScoutUnmuteSound()
 
 /** @} */ // end of MindSensorsAPI group
 /** @} */ // end of ThirdPartyDevices group
