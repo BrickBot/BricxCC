@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-06-22
- * \version 77
+ * \date 2010-06-26
+ * \version 78
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -2422,6 +2422,7 @@ inline void ClearScreen() { asm { PointOutEx(200, 200, TRUE) } }
 /**
  * Clear a line on the LCD screen.
  * This function lets you clear a single line on the NXT LCD.
+ * \param line The line you want to clear. See \ref LineConstants.
  */
 inline void ClearLine(byte line) { asm { TextOutEx(0, line, __BlankLine, 0) } }
 
@@ -7657,6 +7658,10 @@ inline unsigned int ResolveHandle(string filename, byte & handle, bool & writeab
  * Rename a file from the old filename to the new filename. The loader
  * result code is returned as the value of the function call. The filename
  * parameters must be constants or variables.
+ *
+ * \param oldname The old filename.
+ * \param newname The new filename.
+ * \return The function call result. See \ref LoaderErrors.
  */
 inline unsigned int RenameFile(string oldname, string newname);
 
@@ -9459,6 +9464,7 @@ inline void HTScoutUnmuteSound(void);
 /**
  * Configure a mindsensors pressure sensor.
  * Configure the specified port for a mindsensors pressure sensor.
+ *
  * \param port The port to configure. See \ref InPorts.
  */
 inline void SetSensorMSPressure(const byte & port ) {
@@ -9470,6 +9476,7 @@ inline void SetSensorMSPressure(const byte & port ) {
 /**
  * Configure a mindsensors DROD sensor.
  * Configure the specified port for a mindsensors DROD sensor.
+ *
  * \param port The port to configure. See \ref InPorts.
  * \param bActive A flag indicating whether to configure the sensor in active
  * or inactive mode.
@@ -12346,7 +12353,9 @@ inline float tanhd(float x) { asm { tanhd __FLTRETVAL__, x } }
 /**
  * Convert from BCD to decimal
  * Return the decimal equivalent of the binary coded decimal value provided.
- * \return The decimal equivalent of the binary coded decimal byte
+ *
+ * \param bcd The value you want to convert from bcd to decimal.
+ * \return The decimal equivalent of the binary coded decimal byte.
  */
 inline byte bcd2dec(byte bcd) { asm { __bcd2dec(bcd, __RETVAL__) } }
 
