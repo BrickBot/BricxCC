@@ -9545,16 +9545,16 @@ const
      Value: 'group__cstring_a_p_i_ga35b031b0ba754f880e5d0152634f77d8.html'
     ),
     (
-     Name: 'addr';
-     Value: 'group__cstring_a_p_i_ga810a1011fe85b256962407d5d2a228cf.html'
+     Name: 'addressOf';
+     Value: 'group__cstring_a_p_i_ga569febeaecaaf09f64cf52c379cf99e2.html'
     ),
     (
-     Name: 'reladdr';
-     Value: 'group__cstring_a_p_i_gac0861585280d5116c461a37b3ae08aad.html'
+     Name: 'reladdressOf';
+     Value: 'group__cstring_a_p_i_gac3fa202c27ae7100e30339dbe5891ee5.html'
     ),
     (
-     Name: 'addrex';
-     Value: 'group__cstring_a_p_i_ga35794af2522644095b0adf5ee17a30fd.html'
+     Name: 'addressOfEx';
+     Value: 'group__cstring_a_p_i_gad60c14d75b6751a29b42d3d37f99116f.html'
     ),
     (
      Name: 'isupper';

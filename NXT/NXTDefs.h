@@ -26,7 +26,7 @@
  * version 64
  */
 #ifndef NXTDEFS__H
-#define NXTDEFS__H 1
+#define NXTDEFS__H
 
 #include "NBCCommon.h"
 
@@ -41,7 +41,9 @@
 #define NEQ  0x05 /*!< The first value is not equal to the second. */
 /** @} */  // end of cmpconst group
 
-#ifndef __DOXYGEN_DOCS
+#ifdef __DOXYGEN_DOCS
+// nothing to see here
+#else
 // define structures for various system calls
 
 dseg	segment
@@ -956,7 +958,7 @@ __rotate_Running0:
   getout __rotate_rs0, __rotate_firstPort0, RunState
   brcmp EQ, __rotate_Running0, __rotate_rs0, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning0:
-  brtst EQ, __rotate_Reset0, __rotate_stop0 ; skip the speed regulation phase if __rotate_stop is false
+  brtst EQ, __rotate_Reset0, __rotate_stop0 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM0, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF0, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
@@ -1009,7 +1011,7 @@ __rotate_Running1:
   getout __rotate_rs1, __rotate_firstPort1, RunState
   brcmp EQ, __rotate_Running1, __rotate_rs1, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning1:
-  brtst EQ, __rotate_Reset1, __rotate_stop1 ; skip the speed regulation phase if __rotate_stop is false
+  brtst EQ, __rotate_Reset1, __rotate_stop1 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM1, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF1, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
@@ -1062,7 +1064,7 @@ __rotate_Running2:
   getout __rotate_rs2, __rotate_firstPort2, RunState
   brcmp EQ, __rotate_Running2, __rotate_rs2, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning2:
-  brtst EQ, __rotate_Reset2, __rotate_stop2 ; skip the speed regulation phase if __rotate_stop is false
+  brtst EQ, __rotate_Reset2, __rotate_stop2 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM2, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF2, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
@@ -1115,7 +1117,7 @@ __rotate_Running3:
   getout __rotate_rs3, __rotate_firstPort3, RunState
   brcmp EQ, __rotate_Running3, __rotate_rs3, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning3:
-  brtst EQ, __rotate_Reset3, __rotate_stop3 ; skip the speed regulation phase if __rotate_stop is false
+  brtst EQ, __rotate_Reset3, __rotate_stop3 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM3, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF3, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
@@ -1168,7 +1170,7 @@ __rotate_Running4:
   getout __rotate_rs4, __rotate_firstPort4, RunState
   brcmp EQ, __rotate_Running4, __rotate_rs4, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning4:
-  brtst EQ, __rotate_Reset4, __rotate_stop4 ; skip the speed regulation phase if __rotate_stop is false
+  brtst EQ, __rotate_Reset4, __rotate_stop4 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM4, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF4, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
@@ -1221,7 +1223,7 @@ __rotate_Running5:
   getout __rotate_rs5, __rotate_firstPort5, RunState
   brcmp EQ, __rotate_Running5, __rotate_rs5, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning5:
-  brtst EQ, __rotate_Reset5, __rotate_stop5 ; skip the speed regulation phase if __rotate_stop is false
+  brtst EQ, __rotate_Reset5, __rotate_stop5 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM5, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF5, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
@@ -1274,7 +1276,7 @@ __rotate_Running6:
   getout __rotate_rs6, __rotate_firstPort6, RunState
   brcmp EQ, __rotate_Running6, __rotate_rs6, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning6:
-  brtst EQ, __rotate_Reset6, __rotate_stop6 ; skip the speed regulation phase if __rotate_stop is false
+  brtst EQ, __rotate_Reset6, __rotate_stop6 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM6, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF6, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
@@ -1950,23 +1952,23 @@ subroutine __ReadLSBytes0
     __RLSReadBuf0 byte[]
   dseg ends
   __lowspeedWrite(0, __RLSBytesCount0, __RLSReadBuf0, __RLSBResult0)
-  brtst EQ, __RLSBReturn0, __RLSBytesCount0 ; terminate if zero bytes to read
+  brtst EQ, __RLSBReturn0, __RLSBytesCount0 // terminate if zero bytes to read
   arrinit __RLSReadBuf0, 0, __RLSBytesCount0
-  brtst NEQ, __RLSBError0, __RLSBResult0 ; terminate if not NO_ERR
+  brtst NEQ, __RLSBError0, __RLSBResult0 // terminate if not NO_ERR
   set __RLSBIterations0, 4
 __RLSBDoCheckStatus0:
   __lowspeedStatus(0, __RLSBytesCount0, __RLSBResult0)
   sub __RLSBIterations0, __RLSBIterations0, 1
   brtst LTEQ, __RLSBError0, __RLSBIterations0
-  brtst LT, __RLSBError0, __RLSBResult0 ; negative results are absolute errors
+  brtst LT, __RLSBError0, __RLSBResult0 // negative results are absolute errors
   brtst EQ, __RLSBReadyToRead0, __RLSBResult0
-  ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
   wait 15
   jmp __RLSBDoCheckStatus0
 __RLSBReadyToRead0:
-  ; Try reading now
+  // Try reading now
   __lowspeedRead(0, __RLSBytesCount0, __RLSReadBuf0, __RLSBResult0)
-  brtst NEQ, __RLSBError0, __RLSBResult0 ; terminate if not NO_ERR
+  brtst NEQ, __RLSBError0, __RLSBResult0 // terminate if not NO_ERR
   mov __RLSLastGoodRead0, __RLSReadBuf0
   jmp __RLSBDone0
 __RLSBError0:
@@ -1987,23 +1989,23 @@ subroutine __ReadLSBytes1
     __RLSReadBuf1 byte[]
   dseg ends
   __lowspeedWrite(1, __RLSBytesCount1, __RLSReadBuf1, __RLSBResult1)
-  brtst EQ, __RLSBReturn1, __RLSBytesCount1 ; terminate if zero bytes to read
+  brtst EQ, __RLSBReturn1, __RLSBytesCount1 // terminate if zero bytes to read
   arrinit __RLSReadBuf1, 0, __RLSBytesCount1
-  brtst NEQ, __RLSBError1, __RLSBResult1 ; terminate if not NO_ERR
+  brtst NEQ, __RLSBError1, __RLSBResult1 // terminate if not NO_ERR
   set __RLSBIterations1, 4
 __RLSBDoCheckStatus1:
   __lowspeedStatus(1, __RLSBytesCount1, __RLSBResult1)
   sub __RLSBIterations1, __RLSBIterations1, 1
   brtst LTEQ, __RLSBError1, __RLSBIterations1
-  brtst LT, __RLSBError1, __RLSBResult1 ; negative results are absolute errors
+  brtst LT, __RLSBError1, __RLSBResult1 // negative results are absolute errors
   brtst EQ, __RLSBReadyToRead1, __RLSBResult1
-  ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
   wait 15
   jmp __RLSBDoCheckStatus1
 __RLSBReadyToRead1:
-  ; Try reading now
+  // Try reading now
   __lowspeedRead(1, __RLSBytesCount1, __RLSReadBuf1, __RLSBResult1)
-  brtst NEQ, __RLSBError1, __RLSBResult1 ; terminate if not NO_ERR
+  brtst NEQ, __RLSBError1, __RLSBResult1 // terminate if not NO_ERR
   mov __RLSLastGoodRead1, __RLSReadBuf1
   jmp __RLSBDone1
 __RLSBError1:
@@ -2024,23 +2026,23 @@ subroutine __ReadLSBytes2
     __RLSReadBuf2 byte[]
   dseg ends
   __lowspeedWrite(2, __RLSBytesCount2, __RLSReadBuf2, __RLSBResult2)
-  brtst EQ, __RLSBReturn2, __RLSBytesCount2 ; terminate if zero bytes to read
+  brtst EQ, __RLSBReturn2, __RLSBytesCount2 // terminate if zero bytes to read
   arrinit __RLSReadBuf2, 0, __RLSBytesCount2
-  brtst NEQ, __RLSBError2, __RLSBResult2 ; terminate if not NO_ERR
+  brtst NEQ, __RLSBError2, __RLSBResult2 // terminate if not NO_ERR
   set __RLSBIterations2, 4
 __RLSBDoCheckStatus2:
   __lowspeedStatus(2, __RLSBytesCount2, __RLSBResult2)
   sub __RLSBIterations2, __RLSBIterations2, 1
   brtst LTEQ, __RLSBError2, __RLSBIterations2
-  brtst LT, __RLSBError2, __RLSBResult2 ; negative results are absolute errors
+  brtst LT, __RLSBError2, __RLSBResult2 // negative results are absolute errors
   brtst EQ, __RLSBReadyToRead2, __RLSBResult2
-  ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
   wait 15
   jmp __RLSBDoCheckStatus2
 __RLSBReadyToRead2:
-  ; Try reading now
+  // Try reading now
   __lowspeedRead(2, __RLSBytesCount2, __RLSReadBuf2, __RLSBResult2)
-  brtst NEQ, __RLSBError2, __RLSBResult2 ; terminate if not NO_ERR
+  brtst NEQ, __RLSBError2, __RLSBResult2 // terminate if not NO_ERR
   mov __RLSLastGoodRead2, __RLSReadBuf2
   jmp __RLSBDone2
 __RLSBError2:
@@ -2061,23 +2063,23 @@ subroutine __ReadLSBytes3
     __RLSReadBuf3 byte[]
   dseg ends
   __lowspeedWrite(3, __RLSBytesCount3, __RLSReadBuf3, __RLSBResult3)
-  brtst EQ, __RLSBReturn3, __RLSBytesCount3 ; terminate if zero bytes to read
+  brtst EQ, __RLSBReturn3, __RLSBytesCount3 // terminate if zero bytes to read
   arrinit __RLSReadBuf3, 0, __RLSBytesCount3
-  brtst NEQ, __RLSBError3, __RLSBResult3 ; terminate if not NO_ERR
+  brtst NEQ, __RLSBError3, __RLSBResult3 // terminate if not NO_ERR
   set __RLSBIterations3, 4
 __RLSBDoCheckStatus3:
   __lowspeedStatus(3, __RLSBytesCount3, __RLSBResult3)
   sub __RLSBIterations3, __RLSBIterations3, 1
   brtst LTEQ, __RLSBError3, __RLSBIterations3
-  brtst LT, __RLSBError3, __RLSBResult3 ; negative results are absolute errors
+  brtst LT, __RLSBError3, __RLSBResult3 // negative results are absolute errors
   brtst EQ, __RLSBReadyToRead3, __RLSBResult3
-  ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
   wait 15
   jmp __RLSBDoCheckStatus3
 __RLSBReadyToRead3:
-  ; Try reading now
+  // Try reading now
   __lowspeedRead(3, __RLSBytesCount3, __RLSReadBuf3, __RLSBResult3)
-  brtst NEQ, __RLSBError3, __RLSBResult3 ; terminate if not NO_ERR
+  brtst NEQ, __RLSBError3, __RLSBResult3 // terminate if not NO_ERR
   mov __RLSLastGoodRead3, __RLSReadBuf3
   jmp __RLSBDone3
 __RLSBError3:
@@ -2098,23 +2100,23 @@ subroutine __ReadLSBytesVar
     __RLSReadPort byte
   dseg ends
   __lowspeedWrite(__RLSReadPort, __RLSBytesCountVar, __RLSReadBufVar, __RLSBResultVar)
-  brtst EQ, __RLSBReturnVar, __RLSBytesCountVar ; terminate if zero bytes to read
+  brtst EQ, __RLSBReturnVar, __RLSBytesCountVar // terminate if zero bytes to read
   arrinit __RLSReadBufVar, 0, __RLSBytesCountVar
-  brtst NEQ, __RLSBErrorVar, __RLSBResultVar ; terminate if not NO_ERR
+  brtst NEQ, __RLSBErrorVar, __RLSBResultVar // terminate if not NO_ERR
   set __RLSBIterationsVar, 4
 __RLSBDoCheckStatusVar:
   __lowspeedStatus(__RLSReadPort, __RLSBytesCountVar, __RLSBResultVar)
   sub __RLSBIterationsVar, __RLSBIterationsVar, 1
   brtst LTEQ, __RLSBErrorVar, __RLSBIterationsVar
-  brtst LT, __RLSBErrorVar, __RLSBResultVar ; negative results are absolute errors
+  brtst LT, __RLSBErrorVar, __RLSBResultVar // negative results are absolute errors
   brtst EQ, __RLSBReadyToReadVar, __RLSBResultVar
-  ; if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
   wait 15
   jmp __RLSBDoCheckStatusVar
 __RLSBReadyToReadVar:
-  ; Try reading now
+  // Try reading now
   __lowspeedRead(__RLSReadPort, __RLSBytesCountVar, __RLSReadBufVar, __RLSBResultVar)
-  brtst NEQ, __RLSBErrorVar, __RLSBResultVar ; terminate if not NO_ERR
+  brtst NEQ, __RLSBErrorVar, __RLSBResultVar // terminate if not NO_ERR
   mov __RLSLastGoodReadVar, __RLSReadBufVar
   jmp __RLSBDoneVar
 __RLSBErrorVar:
@@ -7738,18 +7740,18 @@ ends
          call     __GL_glPyramid                                                               \
          mov      _glObjId,                   __GL_tmpId
 
-;-----------------------------------------------------------------------------------------
-;
-; Private definitions...
-;
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+//
+// Private definitions...
+//
+//-----------------------------------------------------------------------------------------
 #define __glRangeCheck(_glValue, _glMaxValue, _glErrorMsg)                                     \
          mov      __GL_glRangeValue,          _glValue                                         \
          mov      __GL_glRangeMaxValue,       _glMaxValue                                      \
          mov      __GL_glRangeErrorMsg,       _glErrorMsg                                      \
          call     __GL_glRangeCheck
 
-; Data sizes...
+// Data sizes...
 #define __GL_MAX_VERTICES       256
 #define __GL_MAX_LINES          256
 #define __GL_MAX_POLYGONS       128
@@ -7759,7 +7761,7 @@ ends
 #define __GL_MAX_PL_DATA        256
 
 dseg segment
-  ; Sine table constants...
+  // Sine table constants...
   __GL_SIN_TABLE sword[] 0,572,1144,1715,2286,2856,3425,3993,4560,5126,5690,6252,6813,7371,7927,   \
  8481,9032,9580,10126,10668,11207,11743,12275,12803,13328,13848,14365,14876,15384,15886,16384,     \
  16877,17364,17847,18324,18795,19261,19720,20174,20622,21063,21498,21926,22348,22763,23170,23571,  \
@@ -7785,13 +7787,13 @@ dseg segment
  -14365,-13848,-13328,-12803,-12275,-11743,-11207,-10668,-10126,-9580,-9032,-8481,-7927,-7371,     \
  -6813,-6252,-5690,-5126,-4560,-3993,-3425,-2856,-2286,-1715,-1144,-572,0
 
-  ; General stuff, copied from NXTDefs.h...
+  // General stuff, copied from NXTDefs.h...
   __GL_glDrawLine        TDrawLine
   __GL_glDrawPoint       TDrawPoint
   __GL_glDrawCircle      TDrawCircle
   __GL_glDrawData        TDrawText
 
-  ; settings...
+  // settings...
   TGLSettings struct
     cullMode         byte
     circleSize       byte
@@ -7803,16 +7805,16 @@ dseg segment
   __GL_glSettingType     byte
   __GL_glSettingValue    byte
 
-  ; Vertex data...
+  // Vertex data...
   TGLVertex struct
-    x                sword ;sdword
-    y                sword ;sdword
-    z                sword ;sdword
+    x                sword //sdword
+    y                sword //sdword
+    z                sword //sdword
   TGLVertex ends
 
   TGLScreenVertex struct
-    x                sword ;sdword
-    y                sword ;sdword
+    x                sword //sdword
+    y                sword //sdword
   TGLScreenVertex ends
 
   TGLRotVertex struct
@@ -7829,7 +7831,7 @@ dseg segment
   __GL_vertexIndex       byte
   __GL_vertexOffset      byte
 
-  ; Line data...
+  // Line data...
   TGLLine struct
     firstVertex      byte
     lastVertex       byte
@@ -7841,7 +7843,7 @@ dseg segment
   __GL_lineIndex         byte
   __GL_lineDone          byte[]
 
-  ; Polygon data...
+  // Polygon data...
   TGLPolygon struct
     beginMode        byte
     firstVertex      byte
@@ -7855,29 +7857,29 @@ dseg segment
   __GL_polygonCount      byte
   __GL_polygonIndex      byte
 
-  ; Polygon/vertex link...
+  // Polygon/vertex link...
   __GL_pvData            byte[]
   __GL_pvDataCount       byte
 
-  ; Polygon/line link...
+  // Polygon/line link...
   __GL_plData            byte[]
   __GL_plDataCount       byte
 
-  ; Object action...
+  // Object action...
   TGLObjectAction struct
     type             byte
-    value            sword ;sdword
-;    fsin             float
-;    fcos             float
-    lsin             sword ;sdword
-    lcos             sword ;sdword
+    value            sword //sdword
+//    fsin             float
+//    fcos             float
+    lsin             sword //sdword
+    lcos             sword //sdword
   TGLObjectAction ends
 
   __GL_objectAction      TGLObjectAction
   __GL_objectActionData  TGLObjectAction[]
   __GL_objectActionCount byte
 
-  ; Object data...
+  // Object data...
   TObject struct
     firstVertex      byte
     lastVertex       byte
@@ -7887,7 +7889,7 @@ dseg segment
     lastLine         byte
     render           byte
     
-    ; settings...
+    // settings...
     circleSize       byte
     cullMode         byte
 
@@ -7900,39 +7902,39 @@ dseg segment
   __GL_objectCount       byte
   __GL_objectIndex       byte
 
-  ; Temp offset...
+  // Temp offset...
   __GL_offset            word
 
-  ; Counters...
+  // Counters...
   __GL_i                 word
   __GL_j                 word
   __GL_k                 word
   __GL_l                 word
 
-  ; Angles...
-  __GL_angleX            sword ;sdword
-  __GL_angleY            sword ;sdword
-  __GL_angleZ            sword ;sdword
+  // Angles...
+  __GL_angleX            sword //sdword
+  __GL_angleY            sword //sdword
+  __GL_angleZ            sword //sdword
 
-  ; Save angles...
-  __GL_saveAngleX        sword ;sdword
-  __GL_saveAngleY        sword ;sdword
-  __GL_saveAngleZ        sword ;sdword
+  // Save angles...
+  __GL_saveAngleX        sword //sdword
+  __GL_saveAngleY        sword //sdword
+  __GL_saveAngleZ        sword //sdword
 
-  __GL_sinX              sword ;sdword
-  __GL_cosX              sword ;sdword
-  __GL_sinY              sword ;sdword
-  __GL_cosY              sword ;sdword
-  __GL_sinZ              sword ;sdword
-  __GL_cosZ              sword ;sdword
-;  __GL_sinX              float
-;  __GL_cosX              float
-;  __GL_sinY              float
-;  __GL_cosY              float
-;  __GL_sinZ              float
-;  __GL_cosZ              float
+  __GL_sinX              sword //sdword
+  __GL_cosX              sword //sdword
+  __GL_sinY              sword //sdword
+  __GL_cosY              sword //sdword
+  __GL_sinZ              sword //sdword
+  __GL_cosZ              sword //sdword
+//  __GL_sinX              float
+//  __GL_cosX              float
+//  __GL_sinY              float
+//  __GL_cosY              float
+//  __GL_sinZ              float
+//  __GL_cosZ              float
 
-  ; Temp vars for calculations...
+  // Temp vars for calculations...
   __GL_a                 sdword
   __GL_b                 sdword
   __GL_c                 sdword
@@ -7940,7 +7942,7 @@ dseg segment
   __GL_e                 sdword
   __GL_f                 sdword
 
-  ; Rotated x, y, z coords...
+  // Rotated x, y, z coords...
   __GL_xx                sdword
   __GL_yy                sdword
   __GL_zz                sdword
@@ -7960,7 +7962,7 @@ dseg segment
   __GL_y2                sdword
   __GL_z2                sdword
 
-  ; data for filling polygons...
+  // data for filling polygons...
   __GL_buffer            byte[]
   
   __GL_minX              sword
@@ -7976,10 +7978,10 @@ dseg segment
   
   __GL_action            byte
   __GL_index             word
-  __GL_value             sword ;sdword
-  __GL_type              sword ;sdword
+  __GL_value             sword //sdword
+  __GL_type              sword //sdword
   
-  ; rangecheck data...
+  // rangecheck data...
   __GL_glRangeValue      word
   __GL_glRangeMaxValue   word
   __GL_glRangeErrorMsg   byte[]
@@ -7990,14 +7992,14 @@ dseg segment
   __GL_glLinesClipped    byte
 dseg ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glRangeCheck
-; Description : Check array sizes.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glRangeCheck
+// Description : Check array sizes.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glRangeCheck
-  ; check if there's an already error...
+  // check if there's an already error...
   brcmp    EQ,                     __GL_nbc_gl_range_ok, __GL_glErrorState, TRUE
-  ; check the range...
+  // check the range...
   brcmp    LT,                     __GL_nbc_gl_range_ok, __GL_glRangeValue, __GL_glRangeMaxValue
   set      __GL_glErrorState,      TRUE
   mov      __GL_glErrorMsg,        __GL_glRangeErrorMsg
@@ -8005,10 +8007,10 @@ __GL_nbc_gl_range_ok:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glInit
-; Description : Initialize vars.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glInit
+// Description : Initialize vars.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glInit
   set      __GL_glSettings.cullMode,   GL_CULL_BACK
   set      __GL_glSettings.circleSize, 4
@@ -8035,16 +8037,16 @@ subroutine __GL_glInit
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glSet
-; Description : Change settings.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glSet
+// Description : Change settings.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glSet
   brcmp    EQ,                     __GL_nbc_gl_set_circle_size,  __GL_glSettingType, GL_CIRCLE_SIZE
   brcmp    EQ,                     __GL_nbc_gl_set_cull_mode,    __GL_glSettingType, GL_CULL_MODE
   brcmp    EQ,                     __GL_nbc_gl_set_camera_depth, __GL_glSettingType, GL_CAMERA_DEPTH
   brcmp    EQ,                     __GL_nbc_gl_set_zoom_factor,  __GL_glSettingType, GL_ZOOM_FACTOR
-  ; unknown setting...
+  // unknown setting...
   jmp      __GL_nbc_gl_set_done
 __GL_nbc_gl_set_circle_size:
   mov      __GL_glSettings.circleSize, __GL_glSettingValue
@@ -8061,17 +8063,17 @@ __GL_nbc_gl_set_done:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glAddVertex
-; Description : Check if there's an existing vertex with the same (x,y,z) coord.
-;               If there's an existing vertex found then return the index to that vertex
-;               else add the vertex to the list and return the index of the added vertex.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glAddVertex
+// Description : Check if there's an existing vertex with the same (x,y,z) coord.
+//               If there's an existing vertex found then return the index to that vertex
+//               else add the vertex to the list and return the index of the added vertex.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glAddVertex
   brcmp    EQ,                      __GL_nbc_gl_add_vertex_error, __GL_glErrorState, TRUE
-  ; check if the list is empty...
+  // check if the list is empty...
   brcmp    EQ,                      __GL_nbc_gl_empty_vertex_list, __GL_vertexCount, 0
-  ; loop through the list...
+  // loop through the list...
   mov      __GL_i,                  __GL_object.firstVertex
 __GL_nbc_gl_find_vertex:
   index    __GL_vertex1,            __GL_vertexData, __GL_i
@@ -8086,7 +8088,7 @@ __GL_nbc_gl_vertex_not_equal:
 __GL_nbc_gl_empty_vertex_list:
   __glRangeCheck(__GL_vertexCount, __GL_MAX_VERTICES, 'Too many vertices')
   brcmp    EQ,                      __GL_nbc_gl_add_vertex_error, __GL_glErrorState, TRUE
-  ; there's no matching vertex found, add a new vertex to the list...
+  // there's no matching vertex found, add a new vertex to the list...
   replace  __GL_vertexData,         __GL_vertexData, __GL_vertexCount, __GL_vertex0
   mov      __GL_vertexIndex,        __GL_vertexCount
   add      __GL_vertexCount,        __GL_vertexCount, 1
@@ -8099,10 +8101,10 @@ __GL_nbc_gl_add_vertex_error:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glEnd
-; Description : Store the polygon data, call __GL_glAddLines to optimize lines list.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glEnd
+// Description : Store the polygon data, call __GL_glAddLines to optimize lines list.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glEnd
   brcmp    EQ,                     __GL_nbc_gl_end_error, __GL_glErrorState, TRUE
   call     __GL_glAddLines
@@ -8112,30 +8114,30 @@ __GL_nbc_gl_end_error:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glAddLines
-; Description : Add the lines of the polygon and check if the line already exists.
-;               Each line should be rendered only once.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glAddLines
+// Description : Add the lines of the polygon and check if the line already exists.
+//               Each line should be rendered only once.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glAddLines
   brcmp    EQ,                     __GL_nbc_gl_add_lines_error, __GL_glErrorState, TRUE
   mov      __GL_polygon.firstLine, __GL_plDataCount
-  ; loop through polygon vertex the list...
+  // loop through polygon vertex the list...
   mov      __GL_i,                 __GL_polygon.firstVertex
 __GL_nbc_gl_find_lines1:
   add      __GL_j,                 __GL_i, 1
   brcmp    LT,                     __GL_nbc_gl_find_lines_modj, __GL_j, __GL_polygon.lastVertex
   mov      __GL_j,                 __GL_polygon.firstVertex
-  ; if the beginMode is GL_LINE then don't close the polygon...
+  // if the beginMode is GL_LINE then don't close the polygon...
   brcmp    EQ,                     __GL_nbc_gl_add_line_done2, __GL_polygon.beginMode, GL_LINE
 __GL_nbc_gl_find_lines_modj:
-  ; _a = _pvData[_i]
+  // _a = _pvData[_i]
   index    __GL_a,                 __GL_pvData, __GL_i
-  ; _b = _pvData[_j]
+  // _b = _pvData[_j]
   index    __GL_b,                 __GL_pvData, __GL_j
-  ; check if the list is empty...
+  // check if the list is empty...
   brcmp    EQ,                     __GL_nbc_empty_lines_list, __GL_lineCount, 0
-  ; loop through the line list to find a matching line...
+  // loop through the line list to find a matching line...
   mov      __GL_k,                 __GL_object.firstLine
 __GL_nbc_gl_find_lines2:
   index    __GL_line,              __GL_lineData, __GL_k
@@ -8156,14 +8158,14 @@ __GL_nbc_empty_lines_list:
   mov      __GL_line.lastVertex,   __GL_b
   __glRangeCheck(__GL_lineCount, __GL_MAX_LINES, 'Too many lines')
   brcmp    EQ,                     __GL_nbc_gl_add_lines_error, __GL_glErrorState, TRUE
-  ; _lineData[_lineCount] = _line
+  // _lineData[_lineCount] = _line
   replace  __GL_lineData,          __GL_lineData, __GL_lineCount, __GL_line
   mov      __GL_lineIndex,         __GL_lineCount
   add      __GL_lineCount,         __GL_lineCount, 1
 __GL_nbc_gl_add_line_done1:
   __glRangeCheck(__GL_plDataCount, __GL_MAX_PL_DATA, 'Too many poly-lines')
   brcmp    EQ,                     __GL_nbc_gl_add_lines_error, __GL_glErrorState, TRUE
-  ; _plData[_plDataCount] = _lineIndex
+  // _plData[_plDataCount] = _lineIndex
   replace  __GL_plData,            __GL_plData, __GL_plDataCount, __GL_lineIndex
   add      __GL_plDataCount,       __GL_plDataCount, 1
   add      __GL_i,                 __GL_i, 1
@@ -8174,10 +8176,10 @@ __GL_nbc_gl_add_lines_error:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glEndObject
-; Description : Save the last polygon number, store the object in the objectlist.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glEndObject
+// Description : Save the last polygon number, store the object in the objectlist.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glEndObject
   brcmp    EQ,                      __GL_nbc_gl_end_object_error, __GL_glErrorState, TRUE
   mov      __GL_object.lastPolygon, __GL_polygonCount
@@ -8187,10 +8189,10 @@ __GL_nbc_gl_end_object_error:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glObjectAction
-; Description : Add an action to the object...
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glObjectAction
+// Description : Add an action to the object...
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glObjectAction
   index    __GL_object,             __GL_objectData, __GL_objectIndex
   mov      __GL_objectAction.type,  __GL_action
@@ -8200,10 +8202,10 @@ subroutine __GL_glObjectAction
   brcmp    EQ,                      __GL_nbc_gl_action_rotate, __GL_action, GL_ROTATE_Z
   jmp      __GL_nbc_gl_action_no_rotate
 __GL_nbc_gl_action_rotate:
-  ; if the action is a rotation of any kind then grab the sin and cos of the angle
+  // if the action is a rotation of any kind then grab the sin and cos of the angle
   mod      __GL_value,              __GL_value, 360
-;  sind     __GL_objectAction.fsin,  __GL_value
-;  cosd     __GL_objectAction.fcos,  __GL_value
+//  sind     __GL_objectAction.fsin,  __GL_value
+//  cosd     __GL_objectAction.fcos,  __GL_value
   index    __GL_objectAction.lsin,  __GL_SIN_TABLE, __GL_value
   add      __GL_value,              __GL_value, 90
   mod      __GL_value,              __GL_value, 360
@@ -8211,23 +8213,23 @@ __GL_nbc_gl_action_rotate:
 __GL_nbc_gl_action_no_rotate:
   __glRangeCheck(__GL_object.actionCount, __GL_MAX_OBJECT_ACTIONS, 'Too many object-actions')
   brcmp    EQ,                      __GL_nbc_gl_add_object_error, __GL_glErrorState, TRUE
-  ; _object.actionList[_object.actionCount] = _objectActionCount
+  // _object.actionList[_object.actionCount] = _objectActionCount
   replace  __GL_object.actionList,  __GL_object.actionList, __GL_object.actionCount, __GL_objectActionCount
   add      __GL_object.actionCount, __GL_object.actionCount, 1
   replace  __GL_objectData,         __GL_objectData, __GL_objectIndex, __GL_object
   __glRangeCheck(__GL_objectActionCount, __GL_MAX_OBJECT_ACTIONS, 'Too many object-actions')
   brcmp    EQ,                      __GL_nbc_gl_add_object_error, __GL_glErrorState, TRUE
-  ; _objectActionData[_objectActionCount] = _objectAction
+  // _objectActionData[_objectActionCount] = _objectAction
   replace  __GL_objectActionData,   __GL_objectActionData, __GL_objectActionCount, __GL_objectAction
   add      __GL_objectActionCount,  __GL_objectActionCount, 1
 __GL_nbc_gl_add_object_error:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glRotateObject
-; Description : Check the object actions and apply them to the object...
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glRotateObject
+// Description : Check the object actions and apply them to the object...
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glRotateObject
   mov      __GL_i,                 __GL_object.firstVertex
 __GL_nbc_gl_apply_next_vertex:
@@ -8238,7 +8240,7 @@ __GL_nbc_gl_apply_next_vertex:
   brcmp    EQ,                     __GL_nbc_gl_no_actions, __GL_object.actionCount, 0
   set      __GL_j,                 0
 __GL_nbc_gl_apply_next_action:
-  ; _objectAction = _objectActionData[_object.actionData[_j]]
+  // _objectAction = _objectActionData[_object.actionData[_j]]
   index    __GL_k,                 __GL_object.actionList, __GL_j
   index    __GL_objectAction,      __GL_objectActionData, __GL_k
   brcmp    EQ,                     __GL_nbc_gl_apply_translate_x, __GL_objectAction.type, GL_TRANSLATE_X
@@ -8324,12 +8326,12 @@ __GL_nbc_gl_no_actions:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glRotateVertexList
-; Description : Rotate all the vertices in the vertext list...
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glRotateVertexList
+// Description : Rotate all the vertices in the vertext list...
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glRotateVertexList
-  ; update all object actions first...
+  // update all object actions first...
   set      __GL_l,                 0
 __GL_nbc_gl_rotate_objects:
   index    __GL_object,            __GL_objectData, __GL_l
@@ -8353,44 +8355,44 @@ __GL_nbc_gl_dont_rotate_object:
   set      __GL_i,                 0
   set      __GL_vertexOffset,      0
 __GL_nbc_gl_rotate_loop:
-  ; get the values from the vertex list...
+  // get the values from the vertex list...
   index    __GL_vertex0,           __GL_vertexData, __GL_vertexOffset
-  ; z1 = (_vertex0.rot.z * _cosY) - (_vertex0.rot.x * _sinY)
+  // z1 = (_vertex0.rot.z * _cosY) - (_vertex0.rot.x * _sinY)
   mul      __GL_a,                 __GL_vertex0.rot.z, __GL_cosY
   shr      __GL_a,                 __GL_a, 15
   mul      __GL_b,                 __GL_vertex0.rot.x, __GL_sinY
   shr      __GL_b,                 __GL_b, 15
   sub      __GL_z1,                __GL_a, __GL_b
-  ; xx = (_vertex0.rot.z * _sinY) + (_vertex0.rot.x * _cosY)
+  // xx = (_vertex0.rot.z * _sinY) + (_vertex0.rot.x * _cosY)
   mul      __GL_a,                 __GL_vertex0.rot.z, __GL_sinY
   shr      __GL_a,                 __GL_a, 15
   mul      __GL_b,                 __GL_vertex0.rot.x, __GL_cosY
   shr      __GL_b,                 __GL_b, 15
   add      __GL_xx,                __GL_a, __GL_b
-  ; zz = (_vertex0.rot.y * _sinX) + (_z1 * _cosX) + _zoom
+  // zz = (_vertex0.rot.y * _sinX) + (_z1 * _cosX) + _zoom
   mul      __GL_a,                 __GL_vertex0.rot.y, __GL_sinX
   shr      __GL_a,                 __GL_a, 15
   mul      __GL_b,                 __GL_z1, __GL_cosX
   shr      __GL_b,                 __GL_b, 15
   add      __GL_zz,                __GL_a, __GL_b
   add      __GL_zz,                __GL_zz, __GL_zoom
-  ; yy = (_vertex0.rot.y * cosX) - (z1 * sinX)
+  // yy = (_vertex0.rot.y * cosX) - (z1 * sinX)
   mul      __GL_a,                 __GL_vertex0.rot.y, __GL_cosX
   shr      __GL_a,                 __GL_a, 15
   mul      __GL_b,                 __GL_z1, __GL_sinX
   shr      __GL_b,                 __GL_b, 15
   sub      __GL_yy,                __GL_a, __GL_b
-  ; the actual screen coords...
+  // the actual screen coords...
   add      __GL_zz,                __GL_zz, __GL_camDepth
-  ; _vertex0.screen.sx = width  + (x * camDepth) / (zz + camDepth));
-  ; _vertex0.screen.sy = height - (y * camDepth) / (zz + camDepth));
+  // _vertex0.screen.sx = width  + (x * camDepth) / (zz + camDepth))
+  // _vertex0.screen.sy = height - (y * camDepth) / (zz + camDepth))
   mul      __GL_vertex0.screen.x,  __GL_xx, __GL_camDepth
   div      __GL_vertex0.screen.x,  __GL_vertex0.screen.x, __GL_zz
   add      __GL_vertex0.screen.x,  __GL_vertex0.screen.x, 50
   mul      __GL_vertex0.screen.y,  __GL_yy, __GL_camDepth
   div      __GL_vertex0.screen.y,  __GL_vertex0.screen.y, __GL_zz
   sub      __GL_vertex0.screen.y,  32, __GL_vertex0.screen.y
-  ; save the screen coords...
+  // save the screen coords...
   replace  __GL_vertexData,        __GL_vertexData, __GL_vertexOffset, __GL_vertex0
   add      __GL_vertexOffset,      __GL_vertexOffset, 1
   add      __GL_i,                 __GL_i, 1
@@ -8400,10 +8402,10 @@ __GL_nbc_gl_rotate_loop:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glResetObjects
-; Description : Reset the rotate, translate and scale actions for all objects...
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glResetObjects
+// Description : Reset the rotate, translate and scale actions for all objects...
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glResetObjects
   set      __GL_glLinesClipped,     0
   brcmp    EQ,                      __GL_nbc_gl_reset_objects_error, __GL_glErrorState, TRUE
@@ -8421,10 +8423,10 @@ __GL_nbc_gl_reset_objects_error:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glCallObject
-; Description : Set the render boolean, copy the settings...
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glCallObject
+// Description : Set the render boolean, copy the settings...
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glCallObject
   brcmp    EQ,                     __GL_nbc_gl_call_object_error, __GL_glErrorState, TRUE
   index    __GL_object,            __GL_objectData, __GL_objectIndex
@@ -8436,76 +8438,76 @@ __GL_nbc_gl_call_object_error:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glDrawObject
-; Description : Draw the object, this routine expects the '_object' struct to be set.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glDrawObject
+// Description : Draw the object, this routine expects the '_object' struct to be set.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glDrawObject
-  ; set once...
+  // set once...
   mov      __GL_glDrawLine.Options,     0
-  ; loop through the polygon list for this object...
+  // loop through the polygon list for this object...
   mov      __GL_i,                      __GL_object.firstPolygon
 __GL_nbc_gl_draw_polygons:
-  ; get the information for the polygon...
+  // get the information for the polygon...
   index    __GL_polygon,                __GL_polygonData, __GL_i
   brcmp    EQ,                          __GL_nbc_gl_render_polygon, __GL_polygon.beginMode, GL_POLYGON
   brcmp    EQ,                          __GL_nbc_gl_render_line,    __GL_polygon.beginMode, GL_LINE
   brcmp    EQ,                          __GL_nbc_gl_render_point,   __GL_polygon.beginMode, GL_POINT
   brcmp    EQ,                          __GL_nbc_gl_render_circle,  __GL_polygon.beginMode, GL_CIRCLE
   jmp      __GL_nbc_gl_cull_polygon
-  ;---------------------------------------------------------------------------------------
-  ; Render a polygon...
-  ;---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  // Render a polygon...
+  //---------------------------------------------------------------------------------------
 __GL_nbc_gl_render_polygon:
-  ; loop through the vertex list for this polygon...
+  // loop through the vertex list for this polygon...
   mov      __GL_j,                      __GL_polygon.firstVertex
   mov      __GL_k,                      __GL_polygon.lastVertex
-  ; _vertex0 = _vertexData[_pvData[j]]
+  // _vertex0 = _vertexData[_pvData[j]]
   index    __GL_vertexOffset,           __GL_pvData, __GL_j
   index    __GL_vertex0,                __GL_vertexData, __GL_vertexOffset
-  ; _vertex1 = _vertexData[_pvData[j + 1]]
+  // _vertex1 = _vertexData[_pvData[j + 1]]
   add      __GL_j,                      __GL_j, 1
   index    __GL_vertexOffset,           __GL_pvData, __GL_j
   index    __GL_vertex1,                __GL_vertexData, __GL_vertexOffset
-  ; _vertex2 = _vertexData[_pvData[j + 2]]
+  // _vertex2 = _vertexData[_pvData[j + 2]]
   add      __GL_j,                      __GL_j, 1
   index    __GL_vertexOffset,           __GL_pvData, __GL_j
   index    __GL_vertex2,                __GL_vertexData, __GL_vertexOffset
-  ; check if culling is enabled...
+  // check if culling is enabled...
   brcmp    EQ,                          __GL_nbc_gl_no_culling, __GL_object.cullMode, GL_CULL_NONE
-  ; calculate the culling...
-  ; ((x1 - x0) * (y2 - y0) >= (x2 - x0) * (y1 - y0))
+  // calculate the culling...
+  // ((x1 - x0) * (y2 - y0) >= (x2 - x0) * (y1 - y0))
   sub      __GL_a,                      __GL_vertex1.screen.x, __GL_vertex0.screen.x
   sub      __GL_b,                      __GL_vertex2.screen.y, __GL_vertex0.screen.y
   mul      __GL_c,                      __GL_a, __GL_b
   sub      __GL_d,                      __GL_vertex2.screen.x, __GL_vertex0.screen.x
   sub      __GL_e,                      __GL_vertex1.screen.y, __GL_vertex0.screen.y
   mul      __GL_f,                      __GL_d, __GL_e
-  ; check if culling is enabled...
+  // check if culling is enabled...
   brcmp    EQ,                          __GL_nbc_gl_check_front_cull, __GL_object.cullMode, GL_CULL_FRONT
   brcmp    GTEQ,                        __GL_nbc_gl_cull_polygon, __GL_c, __GL_f
   jmp      __GL_nbc_gl_no_culling
 __GL_nbc_gl_check_front_cull:
   brcmp    GTEQ,                        __GL_nbc_gl_cull_polygon, __GL_f, __GL_c
 __GL_nbc_gl_no_culling:
-  ;--> render the lines...
+  //--> render the lines...
   mov      __GL_j,                      __GL_polygon.firstLine
 __GL_nbc_gl_draw_lines:
-  ; _k = _plData[_j]
+  // _k = _plData[_j]
   index    __GL_k,                      __GL_plData, __GL_j
-  ; render every line only once!
-  ; _l = _lineDone[_k]
+  // render every line only once!
+  // _l = _lineDone[_k]
   index    __GL_l,                      __GL_lineDone, __GL_k
   brcmp    EQ,                          __GL_nbc_gl_line_done, __GL_l, 1
-  ; set the 'done' byte...
+  // set the 'done' byte...
   replace  __GL_lineDone,               __GL_lineDone, 1, __GL_l
-  ; _line = _lineData[_k]
+  // _line = _lineData[_k]
   index    __GL_line,                   __GL_lineData, __GL_k
-  ; _vertex1 = _vertexData[_line.firstVertex]
+  // _vertex1 = _vertexData[_line.firstVertex]
   index    __GL_vertex1,                __GL_vertexData, __GL_line.firstVertex
-  ; _vertex1 = _vertexData[_line.lastVertex]
+  // _vertex1 = _vertexData[_line.lastVertex]
   index    __GL_vertex2,                __GL_vertexData, __GL_line.lastVertex
-  ; very crude clipping...
+  // very crude clipping...
 //  add      __GL_glLinesClipped,         __GL_glLinesClipped, 1
 //  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex1.screen.x,  0
 //  brcmp    LT,                          __GL_nbc_gl_line_done, __GL_vertex2.screen.x,  0
@@ -8526,7 +8528,7 @@ __GL_nbc_gl_draw_lines:
 __GL_nbc_gl_line_done:
   add      __GL_j,                      __GL_j, 1
   brcmp    LT,                          __GL_nbc_gl_draw_lines, __GL_j, __GL_polygon.lastLine
-  ;<-- render the lines...
+  //<-- render the lines...
 /*
   mov      __GL_minX,                  1000
   mov      __GL_maxX,                 -1000
@@ -8539,10 +8541,10 @@ __GL_nbc_gl_polygon_loop:
   mov      __GL_b,                     __GL_polygon.firstVertex
 __GL_nbc_gl_modb:
 
-  ; _vertex1 = _vertexData[_pvData[_a]]
+  // _vertex1 = _vertexData[_pvData[_a]]
   index    __GL_vertexOffset,          __GL_pvData, __GL_a
   index    __GL_vertex1,               __GL_vertexData, __GL_vertexOffset
-  ; _vertex1 = _vertexData[_pvData[_b]]
+  // _vertex1 = _vertexData[_pvData[_b]]
   index    __GL_vertexOffset,          __GL_pvData, __GL_b
   index    __GL_vertex2,               __GL_vertexData, __GL_vertexOffset
 
@@ -8582,7 +8584,7 @@ __GL_nbc_gl_polygon_flip:
 __GL_nbc_gl_polygon_line:
   add      __GL_offset,                __GL_c, __GL_index
 
-  ; _startY + _deltaY * (_c - _startX) / _deltaX
+  // _startY + _deltaY * (_c - _startX) / _deltaX
   sub      __GL_value,                 __GL_c, __GL_startX
   mul      __GL_value,                 __GL_value, __GL_deltaY
   div      __GL_value,                 __GL_value, __GL_deltaX
@@ -8613,24 +8615,24 @@ __GL_nbc_gl_polygon_lines:
   brcmp    LTEQ,                       __GL_nbc_gl_polygon_lines, __GL_a, __GL_maxX
 */
   jmp      __GL_nbc_gl_cull_polygon
-  ;---------------------------------------------------------------------------------------
-  ; Render lines...
-  ;---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  // Render lines...
+  //---------------------------------------------------------------------------------------
 __GL_nbc_gl_render_line:
   mov      __GL_j,                      __GL_polygon.firstLine
 __GL_nbc_gl_render_lines:
-  ; _k = _plData[_j]
+  // _k = _plData[_j]
   index    __GL_k,                      __GL_plData, __GL_j
-  ; render every line only once!
-  ; _l = _lineDone[_k]
+  // render every line only once!
+  // _l = _lineDone[_k]
   index    __GL_l,                      __GL_lineDone, __GL_k
   brcmp    EQ,                          __GL_nbc_gl_render_lines_done, __GL_l, 1
-  ; set the 'done' byte...
+  // set the 'done' byte...
   replace  __GL_lineDone,               __GL_lineDone, 1, __GL_l
-  ; _line = _lineData[_k]
+  // _line = _lineData[_k]
   index    __GL_line,                   __GL_lineData, __GL_k
-  ; _vertex1 = _vertexData[_line.firstVertex]
-  ; _vertex2 = _vertexData[_line.lastVertex]
+  // _vertex1 = _vertexData[_line.firstVertex]
+  // _vertex2 = _vertexData[_line.lastVertex]
   index    __GL_vertex1,                __GL_vertexData, __GL_line.firstVertex
   index    __GL_vertex2,                __GL_vertexData, __GL_line.lastVertex
   mov      __GL_glDrawLine.StartLoc,    __GL_vertex1.screen
@@ -8644,14 +8646,14 @@ __GL_nbc_gl_render_lines_done:
   add      __GL_j,                      __GL_j, 1
   brcmp    LT,                          __GL_nbc_gl_render_lines, __GL_j, __GL_polygon.lastLine
   jmp      __GL_nbc_gl_cull_polygon
-  ;---------------------------------------------------------------------------------------
-  ; Render points...
-  ;---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  // Render points...
+  //---------------------------------------------------------------------------------------
 __GL_nbc_gl_render_point:
   set      __GL_glDrawPoint.Options,    0
   mov      __GL_j,                      __GL_polygon.firstVertex
 __GL_nbc_gl_render_points:
-  ; _vertex0 = _vertexData[_pvData[j]]
+  // _vertex0 = _vertexData[_pvData[j]]
   index    __GL_vertexOffset,           __GL_pvData, __GL_j
   index    __GL_vertex0,                __GL_vertexData, __GL_vertexOffset
   mov      __GL_glDrawPoint.Location,   __GL_vertex0.screen
@@ -8661,15 +8663,15 @@ __GL_nbc_gl_render_points:
   add      __GL_j,                      __GL_j, 1
   brcmp    LT,                          __GL_nbc_gl_render_points, __GL_j, __GL_polygon.lastVertex
   jmp      __GL_nbc_gl_cull_polygon
-  ;---------------------------------------------------------------------------------------
-  ; Render circle...
-  ;---------------------------------------------------------------------------------------
+  //---------------------------------------------------------------------------------------
+  // Render circle...
+  //---------------------------------------------------------------------------------------
 __GL_nbc_gl_render_circle:
   set      __GL_glDrawCircle.Options,   0
   mov      __GL_glDrawCircle.Size,      __GL_object.circleSize
   mov      __GL_j,                      __GL_polygon.firstVertex
 __GL_nbc_gl_render_circles:
-  ; _vertex0 = _vertexData[_pvData[j]]
+  // _vertex0 = _vertexData[_pvData[j]]
   index    __GL_vertexOffset,           __GL_pvData, __GL_j
   index    __GL_vertex0,                __GL_vertexData, __GL_vertexOffset
   mov      __GL_glDrawCircle.Center,    __GL_vertex0.screen
@@ -8685,15 +8687,15 @@ __GL_nbc_gl_cull_polygon:
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glRenderObjects
-; Description : Draw all objects which have been called...
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glRenderObjects
+// Description : Draw all objects which have been called...
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glRenderObjects
   brcmp    EQ,                          __GL_nbc_gl_render_objects_error, __GL_glErrorState, TRUE
   set      __GL_objectIndex,            0
 __GL_nbc_gl_render_objects:
-  ; get the information for the object...
+  // get the information for the object...
   index    __GL_object,                 __GL_objectData, __GL_objectIndex
   brcmp    EQ,                          __GL_nbc_gl_dont_render_object, __GL_object.render, FALSE
   call     __GL_glDrawObject
@@ -8702,7 +8704,7 @@ __GL_nbc_gl_dont_render_object:
   brcmp    LT,                          __GL_nbc_gl_render_objects, __GL_objectIndex, __GL_objectCount
   return
 __GL_nbc_gl_render_objects_error:
-  ; Display the error message...
+  // Display the error message...
   set       __GL_glDrawData.Options,    1
   set       __GL_glDrawData.Location.X, 0
   set       __GL_glDrawData.Location.Y, 56
@@ -8724,11 +8726,11 @@ dseg segment
   __GL_angle             sdword
 dseg ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glBox
-; Description : Add a box with the dimensions: _sizeX, _sizeY, _sizeZ.
-;               Use mode _mode.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glBox
+// Description : Add a box with the dimensions: _sizeX, _sizeY, _sizeZ.
+//               Use mode _mode.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glBox
   shr      __GL_x1,                    __GL_sizeX, 1
   neg      __GL_x0,                    __GL_x1
@@ -8779,11 +8781,11 @@ subroutine __GL_glBox
   return
 ends
 
-;-----------------------------------------------------------------------------------------
-; Subroutine  : __GL_glPyramid
-; Description : Add a pyramid with the dimensions: _sizeX, _sizeY, _sizeZ.
-;               Use mode _mode.
-;-----------------------------------------------------------------------------------------
+//-----------------------------------------------------------------------------------------
+// Subroutine  : __GL_glPyramid
+// Description : Add a pyramid with the dimensions: _sizeX, _sizeY, _sizeZ.
+//               Use mode _mode.
+//-----------------------------------------------------------------------------------------
 subroutine __GL_glPyramid
   shr      __GL_x1,                    __GL_sizeX, 1
   neg      __GL_x0,                    __GL_x1
@@ -8822,7 +8824,7 @@ subroutine __GL_glPyramid
   return
 ends
 
-#endif // #ifndef __DOXYGEN_DOCS
+#endif 
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -13626,19 +13628,19 @@ ends
  */
 // standard firmware math functions written by Tamas Sorosy (www.sorosy.com)
 
-// X is any integer; Y is the sqrt value (0->max); if X<0, Y is the sqrt value of absolute X
+// X is any integer, Y is the sqrt value (0->max), if X<0, Y is the sqrt value of absolute X
 #define Sqrt(_X,_R) __SQRT(_X,_R)
 
-// X is any integer in degrees; Y is 100* the sin value (-100->100)
+// X is any integer in degrees, Y is 100* the sin value (-100->100)
 #define Sin(_X,_R) __SIN(_X,_R)
 
-// X is any integer in degrees; Y is 100* the cos value (-100->100)
+// X is any integer in degrees, Y is 100* the cos value (-100->100)
 #define Cos(_X,_R) __COS(_X,_R)
 
-// X is 100* the sin value (-100->100); Y is -90->90; Y is 101 if X is outside -100->100 range
+// X is 100* the sin value (-100->100), Y is -90->90, Y is 101 if X is outside -100->100 range
 #define Asin(_X,_R) __ASIN(_X,_R)
 
-// X is 100* the cos value (-100->100); Y is 0->180; Y is -11 if X is outside -100->100 range
+// X is 100* the cos value (-100->100), Y is 0->180, Y is -11 if X is outside -100->100 range
 #define Acos(_X,_R) __ACOS(_X,_R)
 
 /**
