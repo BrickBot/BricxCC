@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-06-26
- * \version 78
+ * \date 2010-06-28
+ * \version 79
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -13766,11 +13766,11 @@ inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
 /** @addtogroup GraphicsLibrary
  * @{
  */
-//;-----------------------------------------------------------------------------------------
-//; File          : nbcGL.nbc
-//; Description   : Data and subroutines for a very simple 3D engine.
-//; Programmed by : Arno van der Vegt, avandervegt@home.nl
-//;-----------------------------------------------------------------------------------------
+//------------------------------------------------------------------------------
+// File          : nbcGL.nbc
+// Description   : Data and subroutines for a very simple 3D engine.
+// Programmed by : Arno van der Vegt, legoasimo@gmail.com
+//------------------------------------------------------------------------------
 
 /**
  * Initialize graphics library.

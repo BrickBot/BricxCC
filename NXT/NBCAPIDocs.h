@@ -23,7 +23,7 @@
  *
  * \author John Hansen (bricxcc_at_comcast.net)
  * \date 2010-06-28
- * \version 2
+ * \version 3
  */
 #ifndef NBCAPIDOCS_H
 #define NBCAPIDOCS_H
@@ -226,8 +226,8 @@
  * <tr><td>stop</td><td>exit</td><td>exitto</td><td>acquire</td></tr>
  * <tr><td>release</td><td>subcall</td><td>subret</td><td>setin</td></tr>
  * <tr><td>setout</td><td>getin</td><td>getout</td><td>wait</td></tr>
- * <tr><td>gettick</td><td>thread</td><td>\ref endt</td><td>subroutine</td></tr>
- * <tr><td>follows</td><td>precedes</td><td>segment</td><td>\ref ends</td></tr>
+ * <tr><td>gettick</td><td>thread</td><td>endt</td><td>subroutine</td></tr>
+ * <tr><td>follows</td><td>precedes</td><td>segment</td><td>ends</td></tr>
  * <tr><td>typedef</td><td>struct</td><td>db</td><td>byte</td></tr>
  * <tr><td>sbyte</td><td>ubyte</td><td>dw</td><td>word</td></tr>
  * <tr><td>sword</td><td>uword</td><td>dd</td><td>dword</td></tr>
@@ -273,9 +273,12 @@
  * of the data segment, all variables in an NBC program are global.
  * 
  * - @subpage thread
+ * - @subpage endt
  * - @subpage subroutine
+ * - @subpage ends
  * - @subpage macfunc
  * - @subpage dseg
+ * - @subpage segment
  *
  */
 
@@ -330,7 +333,7 @@
  *
  */
 
-/** @page endt End thread
+/** @page endt endt
  * \brief End thread
  * 
  * A thread definition ends with the endt keyword.
@@ -412,14 +415,21 @@
  *
  */
 
-/** @page ends End subroutine
- * \brief End subroutine.
- * 
+/** @page ends ends
+ * \brief End subroutine or data segment.
+ *
  * A subroutine definition ends with the ends keyword.
  * \code
  * subroutine doStuff
  *   // subroutine body goes here
  * ends
+ * \endcode
+ *
+ * A data segment also ends with the ends keyword.
+ * \code
+ * dseg segment
+ *   // data definitions go here
+ * dseg ends
  * \endcode
  *
  */
@@ -496,6 +506,18 @@
  * - @subpage typedef
  * - @subpage struct
  * - @subpage vardecl
+ *
+ */
+
+/** @page segment segment
+ * \brief Start a data segment.
+ *
+ * A data segment starts with the segment keyword.
+ * \code
+ * dseg segment
+ *   // data definitions go here
+ * dseg ends
+ * \endcode
  *
  */
 
