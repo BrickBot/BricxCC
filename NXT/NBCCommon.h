@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-05-30
- * \version 53
+ * \date 2010-06-28
+ * \version 54
  */
 
 #ifndef NBCCOMMON_H
@@ -972,6 +972,9 @@
 #define IN_4 0x03 /*!< Input port 4 */
 /** @} */  // end of InputPortConstants group
 
+/** @addtogroup InputModuleTypesAndModes
+ * @{
+ */
 /** @defgroup NBCSensorTypeConstants NBC sensor type constants
  * Use sensor type constants to configure an input port for a specific type
  * of sensor. These constants are intended for use in NBC.
@@ -1018,6 +1021,7 @@
 #define IN_MODE_SLOPEMASK     0x1F /*!< Mask for slope parameter added to mode */
 #define IN_MODE_MODEMASK      0xE0 /*!< Mask for the mode without any slope value */
 /** @} */  // end of NBCSensorModeConstants group
+/** @} */  // end of InputModuleTypesAndModes group
 
 /** @defgroup InputFieldConstants Input field constants
  * Constants for use with SetInput() and GetInput().

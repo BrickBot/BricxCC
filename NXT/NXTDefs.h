@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-06-26
- * version 64
+ * date 2010-06-28
+ * version 65
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -8824,7 +8824,107 @@ subroutine __GL_glPyramid
   return
 ends
 
-#endif 
+// no documentation for these functions since they are essentially readonly
+#define SetLSInputBuffer(_p, _offset, _cnt, _data) __setLSInputBuffer(_p, _offset, _cnt, _data)
+#define SetLSInputBufferInPtr(_p, _n) __setLSInputBufferInPtr(_p, _n)
+#define SetLSInputBufferOutPtr(_p, _n) __setLSInputBufferOutPtr(_p, _n)
+#define SetLSInputBufferBytesToRx(_p, _n) __setLSInputBufferBytesToRx(_p, _n)
+
+#define SetLSOutputBuffer(_p, _offset, _cnt, _data) __setLSOutputBuffer(_p, _offset, _cnt, _data)
+#define SetLSOutputBufferInPtr(_p, _n) __setLSOutputBufferInPtr(_p, _n)
+#define SetLSOutputBufferOutPtr(_p, _n) __setLSOutputBufferOutPtr(_p, _n)
+#define SetLSOutputBufferBytesToRx(_p, _n) __setLSOutputBufferBytesToRx(_p, _n)
+
+#define SetLSMode(_p, _n) __setLSMode(_p, _n)
+#define SetLSChannelState(_p, _n) __setLSChannelState(_p, _n)
+#define SetLSErrorType(_p, _n) __setLSErrorType(_p, _n)
+#define SetLSState(_n) __setLSState(_n)
+#define SetLSSpeed(_n) __setLSSpeed(_n)
+
+#ifdef __ENHANCED_FIRMWARE
+#define SetLSNoRestartOnRead(_n) __setLSNoRestartOnRead(_n)
+#endif
+
+// these functions really cannot be used for any useful purpose (read-only)
+#define SetBTDeviceName(_p, _str) __setBTDeviceName(_p, _str)
+#define SetBTDeviceAddress(_p, _addr) __setBTDeviceAddress(_p, _addr)
+#define SetBTConnectionName(_p, _str) __setBTConnectionName(_p, _str)
+#define SetBTConnectionPinCode(_p, _code) __setBTConnectionPinCode(_p, _code)
+#define SetBTConnectionAddress(_p, _addr) __setBTConnectionAddress(_p, _addr)
+#define SetBrickDataName(_str) SetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
+#define SetBrickDataAddress(_addr) SetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr)
+#define SetBTDeviceClass(_p, _n) __setBTDeviceClass(_p, _n)
+#define SetBTDeviceStatus(_p, _n) __setBTDeviceStatus(_p, _n)
+#define SetBTConnectionClass(_p, _n) __setBTConnectionClass(_p, _n)
+#define SetBTConnectionHandleNum(_p, _n) __setBTConnectionHandleNum(_p, _n)
+#define SetBTConnectionStreamStatus(_p, _n) __setBTConnectionStreamStatus(_p, _n)
+#define SetBTConnectionLinkQuality(_p, _n) __setBTConnectionLinkQuality(_p, _n)
+#define SetBrickDataBluecoreVersion(_n) __setBrickDataBluecoreVersion(_n)
+#define SetBrickDataBtStateStatus(_n) __setBrickDataBtStateStatus(_n)
+#define SetBrickDataBtHardwareStatus(_n) __setBrickDataBtHardwareStatus(_n)
+#define SetBrickDataTimeoutValue(_n) __setBrickDataTimeoutValue(_n)
+#define SetBTDeviceCount(_n) __setBTDeviceCount(_n)
+#define SetBTDeviceNameCount(_n) __setBTDeviceNameCount(_n)
+
+// not ready to be documented
+#define SpawnProgram(_fname) __spawnProgram(_fname)
+
+// standard firmware math functions written by Tamas Sorosy (www.sorosy.com)
+
+// X is any integer, Y is the sqrt value (0->max), if X<0, Y is the sqrt value of absolute X
+#define Sqrt(_X,_R) __SQRT(_X,_R)
+
+// X is any integer in degrees, Y is 100* the sin value (-100->100)
+#define Sin(_X,_R) __SIN(_X,_R)
+
+// X is any integer in degrees, Y is 100* the cos value (-100->100)
+#define Cos(_X,_R) __COS(_X,_R)
+
+// X is 100* the sin value (-100->100), Y is -90->90, Y is 101 if X is outside -100->100 range
+#define Asin(_X,_R) __ASIN(_X,_R)
+
+// X is 100* the cos value (-100->100), Y is 0->180, Y is -11 if X is outside -100->100 range
+#define Acos(_X,_R) __ACOS(_X,_R)
+
+
+#define SetSensorTemperature(_port) SetSensorLowspeed(_port)
+
+#define __TempSendCmd(_port, _cmd, _result) \
+  __MSWriteToRegister(_port, TEMP_I2C_ADDRESS, TEMP_REG_CONFIG, _cmd, _result)
+
+#define TemperatureResolution(_port, _cmd, _result) __TempSendCmd(_port, _cmd, _result)
+
+/*
+// R1/R0
+#define TEMP_RES_12BIT     0x60
+#define TEMP_RES_11BIT     0x40
+#define TEMP_RES_10BIT     0x20
+#define TEMP_RES_9BIT      0x00
+// SD (shutdown mode)
+#define TEMP_SD_CONTINUOUS 0x00
+#define TEMP_SD_SHUTDOWN   0x01
+// TM (thermostat mode)
+#define TEMP_TM_COMPARATOR 0x00
+#define TEMP_TM_INTERRUPT  0x02
+// OS (one shot)
+#define TEMP_OS_ONESHOT    0x80
+// F1/F0 (fault queue)
+#define TEMP_FQ_1          0x00
+#define TEMP_FQ_2          0x08
+#define TEMP_FQ_4          0x10
+#define TEMP_FQ_6          0x18
+// POL (polarity)
+#define TEMP_POL_LOW       0x00
+#define TEMP_POL_HIGH      0x04
+
+#define TEMP_I2C_ADDRESS   0x98
+#define TEMP_REG_TEMP      0x00
+#define TEMP_REG_CONFIG    0x01
+#define TEMP_REG_TLOW      0x02
+#define TEMP_REG_THIGH     0x03
+*/
+
+#endif
 
 
 ///////////////////////////////////////////////////////////////////////////////
@@ -9303,7 +9403,7 @@ ends
  * \ref OutputPortConstants. If you use a variable and want to control multiple
  * outputs in a single call you need to use a byte array rather than a byte and
  * store the output port values in the byte array before passing it into this function.
- * \param pwr Output power, 0 to 100. Can be negative to reverse direction.
+ * \param _pwr Output power, 0 to 100. Can be negative to reverse direction.
  * \param _turnpct Turn ratio, -100 to 100. The direction of your vehicle will
  * depend on its construction.
  * \param _p Proportional factor used by the firmware's PID motor control
@@ -9635,7 +9735,7 @@ ends
  * Get the custom sensor zero offset.
  * Return the custom sensor zero offset value of a sensor.
  *
- * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _p The sensor port. See \ref NBCInputPortConstants.
  * \param _n The custom sensor zero offset.
  */
 #define GetInCustomZeroOffset(_p, _n) __GetInCustomZeroOffset(_p, _n)
@@ -9646,7 +9746,7 @@ ends
  * conversion is either done based on preset cutoffs, or a slope parameter
  * specified by calling SetSensorMode.
  *
- * \param _port The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
  * \param _n The sensor's boolean value.
  */
 #define GetInSensorBoolean(_p, _n) __GetInSensorBoolean(_p, _n)
@@ -9655,7 +9755,7 @@ ends
  * Read sensor digital pins direction.
  * Return the digital pins direction value of a sensor on the specified port.
  *
- * \param _port The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
  * \param _n The sensor's digital pins direction.
  */
 #define GetInDigiPinsDirection(_p, _n) __GetInDigiPinsDirection(_p, _n)
@@ -9664,7 +9764,7 @@ ends
  * Read sensor digital pins status.
  * Return the digital pins status value of a sensor on the specified port.
  *
- * \param _port The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
  * \param _n The sensor's digital pins status.
  */
 #define GetInDigiPinsStatus(_p, _n) __GetInDigiPinsStatus(_p, _n)
@@ -9673,7 +9773,7 @@ ends
  * Read sensor digital pins output level.
  * Return the digital pins output level value of a sensor on the specified port.
  *
- * \param _port The sensor port. See \ref NBCInputPortConstants. Must be a constant.
+ * \param _p The sensor port. See \ref NBCInputPortConstants. Must be a constant.
  * \param _n The sensor's digital pins output level.
  */
 #define GetInDigiPinsOutputLevel(_p, _n) __GetInDigiPinsOutputLevel(_p, _n)
@@ -9682,7 +9782,7 @@ ends
  * Get the custom sensor percent full scale.
  * Return the custom sensor percent full scale value of a sensor.
  *
- * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _p The sensor port. See \ref NBCInputPortConstants.
  * \param _n The custom sensor percent full scale.
  */
 #define GetInCustomPercentFullScale(_p, _n) __GetInCustomPercentFullScale(_p, _n)
@@ -9691,7 +9791,7 @@ ends
  * Get the custom sensor active status.
  * Return the custom sensor active status value of a sensor.
  *
- * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _p The sensor port. See \ref NBCInputPortConstants.
  * \param _n The custom sensor active status.
 */
 #define GetInCustomActiveStatus(_p, _n) __GetInCustomActiveStatus(_p, _n)
@@ -9888,7 +9988,7 @@ ends
  * \param _values An array of bytes that will contain the 8 distance values
  * read from the ultrasonic sensor.
  * \param _result A status code indicating whether the read completed successfully or not.
- * See \ref CommLSReadType for possible Result values.
+ * See \ref TCommLSRead for possible Result values.
  */
 #define ReadSensorUSEx(_port, _values, _result) __ReadSensorUSEx(_port, _values, _result)
 
@@ -9900,7 +10000,7 @@ ends
  * \param _reg The I2C device register from which to read a single byte.
  * \param _out The single byte read from the I2C device.
  * \param _result A status code indicating whether the read completed successfully or not.
- * See \ref CommLSReadType for possible Result values.
+ * See \ref TCommLSRead for possible Result values.
  */
 #define ReadI2CRegister(_port, _reg, _out, _result) __MSReadValue(_port, 0x02, _reg, 1, _out, _result)
 
@@ -9912,7 +10012,7 @@ ends
  * \param _reg The I2C device register to which to write a single byte.
  * \param _val The byte to write to the I2C device.
  * \param _result A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values.
+ * See \ref TCommLSCheckStatus for possible Result values.
  */
 #define WriteI2CRegister(_port, _reg, _val, _result) __MSWriteToRegister(_port, 0x02, _reg, _val, _result)
 
@@ -9930,7 +10030,7 @@ ends
  * \param _bready The number of bytes available to be read from the internal I2C buffer.
  * The maximum number of bytes that can be read is 16.
  * \param _result A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * See \ref TCommLSCheckStatus for possible Result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * Avoid calls to \ref LowspeedRead or \ref LowspeedWrite while LowspeedStatus returns
  * \ref STAT_COMM_PENDING.
@@ -9943,12 +10043,12 @@ ends
  * This method checks the status of the I2C communication on the specified
  * port.
  *
- * \param port The port to which the I2C device is attached. See the
+ * \param _port The port to which the I2C device is attached. See the
  * \ref NBCInputPortConstants group. You may use a constant or a variable. Constants should
  * be used where possible to avoid blocking access to I2C devices on other
  * ports by code running on other threads.
  * \param _result A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * See \ref TCommLSCheckStatus for possible Result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * Avoid calls to \ref LowspeedRead or \ref LowspeedWrite while LowspeedCheckStatus returns
  * \ref STAT_COMM_PENDING.
@@ -9989,7 +10089,7 @@ ends
  * device register at which to write data, and up to 14 bytes of data to be
  * written at the specified register.
  * \param _result A status code indicating whether the write completed successfully or not.
- * See \ref CommLSWriteType for possible Result values. If the return
+ * See \ref TCommLSWrite for possible Result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * \sa LowspeedRead, LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
  */
@@ -10009,7 +10109,7 @@ ends
  * \param _buffer A byte array that contains the data read from the internal I2C
  * buffer.  If the return value is negative then the output buffer will be empty.
  * \param _result A status code indicating whether the write completed successfully or not.
- * See \ref CommLSReadType for possible Result values. If the return
+ * See \ref TCommLSRead for possible Result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * \sa LowspeedWrite, LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
  */
@@ -10168,7 +10268,7 @@ ends
  * ports by code running on other threads.
  * \param _cmd The command to send to the I2C device.
  * \param _result A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values.
+ * See \ref TCommLSCheckStatus for possible Result values.
  */
 #define I2CSendCommand(_port, _cmd, _result) __I2CSendCmd(_port, 0x02, _cmd, _result)
 
@@ -10183,7 +10283,7 @@ ends
  * \param _addr The I2C device address.
  * \param _cmd The command to send to the I2C device.
  * \param _result A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values.
+ * See \ref TCommLSCheckStatus for possible Result values.
  */
 #define I2CSendCommandEx(_port, _addr, _cmd, _result) __I2CSendCmd(_port, _addr, _cmd, _result)
 
@@ -10208,7 +10308,7 @@ ends
  * Get I2C input buffer in-pointer.
  * This method returns the value of the input pointer of the I2C input
  * buffer for the specified port.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _n The I2C input buffer's in-pointer value.
  */
 #define GetLSInputBufferInPtr(_p, _n) __GetLSInputBufferInPtr(_p, _n)
@@ -10217,7 +10317,7 @@ ends
  * Get I2C input buffer out-pointer.
  * This method returns the value of the output pointer of the I2C input
  * buffer for the specified port.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _n The I2C input buffer's out-pointer value.
  */
 #define GetLSInputBufferOutPtr(_p, _n) __GetLSInputBufferOutPtr(_p, _n)
@@ -10226,7 +10326,7 @@ ends
  * Get I2C input buffer bytes to rx.
  * This method returns the value of the bytes to rx field of the I2C input
  * buffer for the specified port.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _n The I2C input buffer's bytes to rx value.
  */
 #define GetLSInputBufferBytesToRx(_p, _n) __GetLSInputBufferBytesToRx(_p, _n)
@@ -10235,7 +10335,7 @@ ends
  * Get I2C output buffer data.
  * This method reads cnt bytes of data from the I2C output buffer for the
  * specified port and writes it to the buffer provided.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _offset A constant offset into the I2C output buffer.
  * \param _cnt The number of bytes to read.
  * \param _data The byte array reference which will contain the data read from
@@ -10247,7 +10347,7 @@ ends
  * Get I2C output buffer in-pointer.
  * This method returns the value of the input pointer of the I2C output
  * buffer for the specified port.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _n The I2C output buffer's in-pointer value.
  */
 #define GetLSOutputBufferInPtr(_p, _n) __GetLSOutputBufferInPtr(_p, _n)
@@ -10256,7 +10356,7 @@ ends
  * Get I2C output buffer out-pointer.
  * This method returns the value of the output pointer of the I2C output
  * buffer for the specified port.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _n The I2C output buffer's out-pointer value.
  */
 #define GetLSOutputBufferOutPtr(_p, _n) __GetLSOutputBufferOutPtr(_p, _n)
@@ -10265,7 +10365,7 @@ ends
  * Get I2C output buffer bytes to rx.
  * This method returns the value of the bytes to rx field of the I2C output
  * buffer for the specified port.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _n The I2C output buffer's bytes to rx value.
  */
 #define GetLSOutputBufferBytesToRx(_p, _n) __GetLSOutputBufferBytesToRx(_p, _n)
@@ -10273,7 +10373,7 @@ ends
 /**
  * Get I2C mode.
  * This method returns the value of the I2C mode for the specified port.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _n The I2C port mode. See \ref LowSpeedModeConstants.
  */
 #define GetLSMode(_p, _n) __GetLSMode(_p, _n)
@@ -10281,7 +10381,7 @@ ends
 /**
  * Get I2C channel state.
  * This method returns the value of the I2C channel state for the specified port.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _n The I2C port channel state. See \ref LowSpeedChannelStateConstants.
  */
 #define GetLSChannelState(_p, _n) __GetLSChannelState(_p, _n)
@@ -10289,7 +10389,7 @@ ends
 /**
  * Get I2C error type.
  * This method returns the value of the I2C error type for the specified port.
- * \param _p A constant port number (S1..S4). See \ref InPorts.
+ * \param _p A constant port number (S1..S4). See \ref NBCInputPortConstants.
  * \param _n The I2C port error type. See \ref LowSpeedErrorTypeConstants.
  */
 #define GetLSErrorType(_p, _n) __GetLSErrorType(_p, _n)
@@ -10317,27 +10417,6 @@ ends
  * \param _n The I2C no restart on read field. See \ref LowSpeedNoRestartConstants.
  */
 #define GetLSNoRestartOnRead(_n) __GetLSNoRestartOnRead(_n)
-#endif
-
-// no documentation for these functions since they are essentially readonly
-#define SetLSInputBuffer(_p, _offset, _cnt, _data) __setLSInputBuffer(_p, _offset, _cnt, _data)
-#define SetLSInputBufferInPtr(_p, _n) __setLSInputBufferInPtr(_p, _n)
-#define SetLSInputBufferOutPtr(_p, _n) __setLSInputBufferOutPtr(_p, _n)
-#define SetLSInputBufferBytesToRx(_p, _n) __setLSInputBufferBytesToRx(_p, _n)
-
-#define SetLSOutputBuffer(_p, _offset, _cnt, _data) __setLSOutputBuffer(_p, _offset, _cnt, _data)
-#define SetLSOutputBufferInPtr(_p, _n) __setLSOutputBufferInPtr(_p, _n)
-#define SetLSOutputBufferOutPtr(_p, _n) __setLSOutputBufferOutPtr(_p, _n)
-#define SetLSOutputBufferBytesToRx(_p, _n) __setLSOutputBufferBytesToRx(_p, _n)
-
-#define SetLSMode(_p, _n) __setLSMode(_p, _n)
-#define SetLSChannelState(_p, _n) __setLSChannelState(_p, _n)
-#define SetLSErrorType(_p, _n) __setLSErrorType(_p, _n)
-#define SetLSState(_n) __setLSState(_n)
-#define SetLSSpeed(_n) __setLSSpeed(_n)
-
-#ifdef __ENHANCED_FIRMWARE
-#define SetLSNoRestartOnRead(_n) __setLSNoRestartOnRead(_n)
 #endif
 
 /** @} */ // end of LowLevelLowSpeedModuleFunctions group
@@ -11504,7 +11583,7 @@ ends
  * the value from along with a variable that will store the value. The type
  * of the variable determines how many bytes are read from the IOMap.
  * \param _offset The number of bytes offset from the start of the IOMap
- * structure where the value should be read. See \ref ButtonzIOMAP.
+ * structure where the value should be read. See \ref ButtonIOMAP.
  * \param _n A variable that will contain the value read from the IOMap.
  */
 #define GetButtonModuleValue(_offset, _n) GetIOMapValueByID(ButtonModuleID, _offset, _n)
@@ -11673,9 +11752,6 @@ ends
  */
 #define GetFirstTick(_value) __GetFirstTick(_value)
 
-// not ready to be documented
-#define SpawnProgram(_fname) __spawnProgram(_fname)
-
 /**
  * Wait some milliseconds.
  * Make a task sleep for specified amount of time (in 1000ths of a second).
@@ -11795,7 +11871,7 @@ ends
  * Set button short release count.
  * Set the short release count of the specified button.
  *
- * \param _n The button number. See \ref ButtonNameConstants.
+ * \param _b The button number. See \ref ButtonNameConstants.
  * \param _n The new short release count value.
  */
 #define SetButtonShortReleaseCount(_b, _n) __setButtonShortReleaseCount(_b, _n)
@@ -11813,7 +11889,7 @@ ends
  * Set button release count.
  * Set the release count of the specified button.
  *
- * \param _n The button number. See \ref ButtonNameConstants.
+ * \param _b The button number. See \ref ButtonNameConstants.
  * \param _n The new release count value.
  */
 #define SetButtonReleaseCount(_b, _n) __setButtonReleaseCount(_b, _n)
@@ -11896,6 +11972,11 @@ ends
  */
 #define SetBluetoothState(_n) __setBluetoothState(_n)
 
+/**
+ * Set Usb state.
+ * This method sets the value of the Usb state.
+ * \param _n The Usb state.
+ */
 #define SetUsbState(_n) __setUsbState(_n)
 
 /**
@@ -12375,9 +12456,9 @@ ends
  * Use \ref BluetoothStatus to determine when this write request is completed.
  *
  * \param _conn The connection slot (0..3).
- * \param _port The input port to configure. See \ref InPorts.
- * \param _type The sensor type. See \ref SensorTypes.
- * \param _mode The sensor mode. See \ref SensorModes.
+ * \param _port The input port to configure. See \ref NBCInputPortConstants.
+ * \param _type The sensor type. See \ref NBCSensorTypeConstants.
+ * \param _mode The sensor mode. See \ref NBCSensorModeConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
 #define RemoteSetInputMode(_conn, _port, _type, _mode, _result) __remoteSetInputMode(_conn, _port, _type, _mode, _result)
@@ -12971,27 +13052,6 @@ ends
 #define GetHSMode(_n) \
   compchk EQ, sizeof(_n), 2 \
   GetCommModuleValue(CommOffsetHsMode, _n)
-
-// these functions really cannot be used for any useful purpose (read-only)
-#define SetBTDeviceName(_p, _str) __setBTDeviceName(_p, _str)
-#define SetBTDeviceAddress(_p, _addr) __setBTDeviceAddress(_p, _addr)
-#define SetBTConnectionName(_p, _str) __setBTConnectionName(_p, _str)
-#define SetBTConnectionPinCode(_p, _code) __setBTConnectionPinCode(_p, _code)
-#define SetBTConnectionAddress(_p, _addr) __setBTConnectionAddress(_p, _addr)
-#define SetBrickDataName(_str) SetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
-#define SetBrickDataAddress(_addr) SetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr)
-#define SetBTDeviceClass(_p, _n) __setBTDeviceClass(_p, _n)
-#define SetBTDeviceStatus(_p, _n) __setBTDeviceStatus(_p, _n)
-#define SetBTConnectionClass(_p, _n) __setBTConnectionClass(_p, _n)
-#define SetBTConnectionHandleNum(_p, _n) __setBTConnectionHandleNum(_p, _n)
-#define SetBTConnectionStreamStatus(_p, _n) __setBTConnectionStreamStatus(_p, _n)
-#define SetBTConnectionLinkQuality(_p, _n) __setBTConnectionLinkQuality(_p, _n)
-#define SetBrickDataBluecoreVersion(_n) __setBrickDataBluecoreVersion(_n)
-#define SetBrickDataBtStateStatus(_n) __setBrickDataBtStateStatus(_n)
-#define SetBrickDataBtHardwareStatus(_n) __setBrickDataBtHardwareStatus(_n)
-#define SetBrickDataTimeoutValue(_n) __setBrickDataTimeoutValue(_n)
-#define SetBTDeviceCount(_n) __setBTDeviceCount(_n)
-#define SetBTDeviceNameCount(_n) __setBTDeviceNameCount(_n)
 
 /**
  * Set bluetooth input buffer data.
@@ -13626,22 +13686,6 @@ ends
  * Standard C cmath API functions.
  * @{
  */
-// standard firmware math functions written by Tamas Sorosy (www.sorosy.com)
-
-// X is any integer, Y is the sqrt value (0->max), if X<0, Y is the sqrt value of absolute X
-#define Sqrt(_X,_R) __SQRT(_X,_R)
-
-// X is any integer in degrees, Y is 100* the sin value (-100->100)
-#define Sin(_X,_R) __SIN(_X,_R)
-
-// X is any integer in degrees, Y is 100* the cos value (-100->100)
-#define Cos(_X,_R) __COS(_X,_R)
-
-// X is 100* the sin value (-100->100), Y is -90->90, Y is 101 if X is outside -100->100 range
-#define Asin(_X,_R) __ASIN(_X,_R)
-
-// X is 100* the cos value (-100->100), Y is 0->180, Y is -11 if X is outside -100->100 range
-#define Acos(_X,_R) __ACOS(_X,_R)
 
 /**
  * Convert from BCD to decimal
@@ -13673,7 +13717,7 @@ ends
  * Set sensor as HiTechnic Gyro.
  * Configure the sensor on the specified port as a HiTechnic Gyro sensor.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  */
 #define SetSensorHTGyro(_port) __SetSensorHTGyro(_port)
 
@@ -13683,7 +13727,7 @@ ends
  * should be calculated by averaging several readings with an offset of zero
  * while the sensor is perfectly still.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _p The sensor port. See \ref NBCInputPortConstants.
  * \param _offset The zero offset.
  * \param _val The Gyro sensor reading.
  */
@@ -13693,7 +13737,7 @@ ends
  * Set sensor as HiTechnic EOPD.
  * Configure the sensor on the specified port as a HiTechnic EOPD sensor.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _bStd Configure in standard or long-range mode.
  */
 #define SetSensorHTEOPD(_port, _bStd) __SetSensorHTEOPD(_port, _bStd)
@@ -13702,7 +13746,7 @@ ends
  * Read HiTechnic EOPD sensor.
  * Read the HiTechnic EOPD sensor on the specified port.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _val The EOPD sensor reading.
  */
 #define ReadSensorHTEOPD(_port, _val) __ReadSensorHTEOPD(_port, _val)
@@ -13711,7 +13755,7 @@ ends
  * Read HiTechnic touch multiplexer.
  * Read touch sensor values from the HiTechnic touch multiplexer device.
  *
- * \param _p The sensor port. See \ref InPorts.
+ * \param _p The sensor port. See \ref NBCInputPortConstants.
  * \param _t1 The value of touch sensor 1.
  * \param _t2 The value of touch sensor 2.
  * \param _t3 The value of touch sensor 3.
@@ -13727,7 +13771,7 @@ ends
  * Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _outa The Power Function command for output A. See \ref PFCmdConstants.
  * \param _outb The Power Function command for output B. See \ref PFCmdConstants.
@@ -13745,7 +13789,7 @@ ends
  * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
  * using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The IR Train channel.  See \ref IRTrainChannels.
  * \param _func The IR Train function. See \ref IRTrainFuncs
  * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
@@ -13761,7 +13805,7 @@ ends
  * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _outa The Power Function command for output A. See \ref PFCmdConstants.
  * \param _outb The Power Function command for output B. See \ref PFCmdConstants.
@@ -13780,7 +13824,7 @@ ends
  * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _outa The Power Function PWM command for output A. See \ref PFPWMOptions.
  * \param _outb The Power Function PWM command for output B. See \ref PFPWMOptions.
@@ -13796,7 +13840,7 @@ ends
  * (4 bit values). The port must be configured as a Lowspeed port before using
  * this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _nibble0 The first raw data nibble.
  * \param _nibble1 The second raw data nibble.
  * \param _nibble2 The third raw data nibble.
@@ -13812,7 +13856,7 @@ ends
  * number of milliseconds of delay between each repetition. The port must be
  * configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _count The number of times to repeat the command.
  * \param _delay The number of milliseconds to delay between each repetition.
  * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
@@ -13831,7 +13875,7 @@ ends
  * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _out The Power Function output. See \ref PFOutputs.
  * \param _func The Power Function CST function. See \ref PFCSTOptions.
@@ -13851,7 +13895,7 @@ ends
  * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _out The Power Function output. See \ref PFOutputs.
  * \param _func The Power Function PWM function. See \ref PFPWMOptions.
@@ -13871,7 +13915,7 @@ ends
  * false (timeout) as the final parameter. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _out The Power Function output. See \ref PFOutputs.
  * \param _pin The Power Function pin. See \ref PFPinConstants.
@@ -13891,7 +13935,7 @@ ends
  * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _func The Power Function train function. See \ref IRTrainFuncs.
  * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
@@ -13906,7 +13950,7 @@ ends
  * device. The port must be configured as a Lowspeed port before using any of
  * the HiTechnic RCX and Scout iRLink functions.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  */
 #define HTRCXSetIRLinkPort(_port) __HTRCXSetIRLinkPort(_port)
 
@@ -14490,7 +14534,7 @@ ends
  * specified port. The port must be configured as a Lowspeed port before
  * using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _value The compass heading.
  */
 #define ReadSensorHTCompass(_port, _value) __ReadSensorHTCompass(_port, _value)
@@ -14501,7 +14545,7 @@ ends
  * port. The port must be configured as a Lowspeed port before using this
  * function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _value The color number.
  */
 #define ReadSensorHTColorNum(_port, _value) __ReadSensorHTColorNum(_port, _value)
@@ -14512,7 +14556,7 @@ ends
  * port. The port must be configured as a Lowspeed port before using this
  * function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _value The IRSeeker direction.
  */
 #define ReadSensorHTIRSeekerDir(_port, _value) __ReadSensorHTIRSeekerDir(_port, _value)
@@ -14523,7 +14567,7 @@ ends
  * port. The port must be configured as a Lowspeed port before using this
  * function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The register address. See \ref HTIRSeeker2Constants.
  * \param _value The IRSeeker2 register value.
  */
@@ -14536,7 +14580,7 @@ ends
  * completed successfully. The port must be configured as a Lowspeed port
  * before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _x The output x-axis acceleration.
  * \param _y The output y-axis acceleration.
  * \param _z The output z-axis acceleration.
@@ -14551,7 +14595,7 @@ ends
  * completed successfully. The port must be configured as a Lowspeed port
  * before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _ColorNum The output color number.
  * \param _Red The red color value.
  * \param _Green The green color value.
@@ -14567,7 +14611,7 @@ ends
  * successfully. The port must be configured as a Lowspeed port before using
  * this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _Red The raw red color value.
  * \param _Green The raw green color value.
  * \param _Blue The raw blue color value.
@@ -14582,7 +14626,7 @@ ends
  * not the operation completed successfully. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _ColorIdx The output color index.
  * \param _Red The normalized red color value.
  * \param _Green The normalized green color value.
@@ -14598,7 +14642,7 @@ ends
  * operation completed successfully. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _dir The direction.
  * \param _s1 The signal strength from sensor 1.
  * \param _s3 The signal strength from sensor 3.
@@ -14616,7 +14660,7 @@ ends
  * not the operation completed successfully. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _dir The direction.
  * \param _s1 The signal strength from sensor 1.
  * \param _s3 The signal strength from sensor 3.
@@ -14635,7 +14679,7 @@ ends
  * not the operation completed successfully. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _dir The direction.
  * \param _s1 The signal strength from sensor 1.
  * \param _s3 The signal strength from sensor 3.
@@ -14652,7 +14696,7 @@ ends
  * port. The port must be configured as a Lowspeed port before using this
  * function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _mode The IRSeeker2 mode. See \ref HTIRSeeker2Constants.
  * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
@@ -14664,7 +14708,7 @@ ends
  * port. The port must be configured as a Lowspeed port before using this
  * function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _mode The Color2 mode. See \ref HTColor2Constants.
  * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
@@ -14677,7 +14721,7 @@ ends
  * completed successfully. The port must be configured as a Lowspeed port
  * before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _ColorNum The output color number.
  * \param _Red The red color value.
  * \param _Green The green color value.
@@ -14694,7 +14738,7 @@ ends
  * not the operation completed successfully. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _ColorIdx The output color index.
  * \param _Red The normalized red color value.
  * \param _Green The normalized green color value.
@@ -14710,7 +14754,7 @@ ends
  * successfully. The port must be configured as a Lowspeed port before using
  * this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _Red The raw red color value.
  * \param _Green The raw green color value.
  * \param _Blue The raw blue color value.
@@ -14726,7 +14770,7 @@ ends
  * successfully. The port must be configured as a Lowspeed port before using
  * this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _pfdata Eight bytes of power function remote IR data.
  * \param _result The function call result.
  */
@@ -14739,7 +14783,7 @@ ends
  * successfully. The port must be configured as a Lowspeed port before using
  * this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _reg The power function data offset. See \ref HTIRReceiverConstants.
  * \param _pfchar A single byte of power function remote IR data.
  * \param _result The function call result.
@@ -14762,7 +14806,7 @@ ends
  * Read mindsensors compass value.
  * Return the Mindsensors Compass sensor value.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _value The mindsensors compass value
  */
 #define ReadSensorMSCompass(_port, _value) __ReadSensorMSCompassEx(_port, 0x02, _value)
@@ -14771,7 +14815,7 @@ ends
  * Read mindsensors compass value.
  * Return the Mindsensors Compass sensor value.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _value The mindsensors compass value
  */
@@ -14781,7 +14825,7 @@ ends
  * Read mindsensors DROD value.
  * Return the Mindsensors DROD sensor value.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _value The mindsensors DROD value
  */
 #define ReadSensorMSDROD(_port, _value) __ReadSensorMSDROD(_port, _value)
@@ -14790,7 +14834,7 @@ ends
  * Configure a mindsensors DROD active sensor.
  * Configure the specified port for an active mindsensors DROD sensor.
  *
- * \param _port The port to configure. See \ref InPorts.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
  */
 #define SetSensorMSDRODActive(_port) __SetSensorMSDRODActive(_port)
 
@@ -14798,7 +14842,7 @@ ends
  * Configure a mindsensors DROD inactive sensor.
  * Configure the specified port for an inactive mindsensors DROD sensor.
  *
- * \param _port The port to configure. See \ref InPorts.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
  */
 #define SetSensorMSDRODInactive(_port) __SetSensorMSDRODInactive(_port)
 
@@ -14806,7 +14850,7 @@ ends
  * Read mindsensors raw pressure value.
  * Return the Mindsensors pressure sensor raw value.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _value The mindsensors raw pressure value
  */
 #define ReadSensorMSPressureRaw(_port, _value) __ReadSensorMSPressureRaw(_port, _value)
@@ -14815,7 +14859,7 @@ ends
  * Read mindsensors processed pressure value.
  * Return the Mindsensors pressure sensor processed value.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _value The mindsensors processed pressure value
  */
 #define ReadSensorMSPressure(_port, _value) __ReadSensorMSPressure(_port, _value)
@@ -14824,7 +14868,7 @@ ends
  * Configure a mindsensors pressure sensor.
  * Configure the specified port for a mindsensors pressure sensor.
  *
- * \param _port The port to configure. See \ref InPorts.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
  */
 #define SetSensorMSPressure(_port) __SetSensorMSPressure(_port)
 
@@ -14835,7 +14879,7 @@ ends
  * completed successfully. The port must be configured as a Lowspeed port
  * before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _x The output x-axis acceleration.
  * \param _y The output y-axis acceleration.
  * \param _z The output z-axis acceleration.
@@ -14850,7 +14894,7 @@ ends
  * completed successfully. The port must be configured as a Lowspeed port
  * before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _x The output x-axis acceleration.
  * \param _y The output y-axis acceleration.
@@ -14866,7 +14910,7 @@ ends
  * completed successfully. The port must be configured as a Lowspeed port
  * before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _b1 The button set 1 values. See \ref MSPSPNXBtnSet1.
  * \param _b2 The button set 2 values. See \ref MSPSPNXBtnSet2.
  * \param _xleft The left joystick x value.
@@ -14885,7 +14929,7 @@ ends
  * completed successfully. The port must be configured as a Lowspeed port
  * before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _b1 The button set 1 values. See \ref MSPSPNXBtnSet1.
  * \param _b2 The button set 2 values. See \ref MSPSPNXBtnSet2.
@@ -14905,7 +14949,7 @@ ends
  * successfully. The port must be configured as a Lowspeed port before using
  * this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _sec The seconds.
  * \param _min The minutes.
  * \param _hrs The hours.
@@ -14925,7 +14969,7 @@ ends
  * completed successfully. The port must be configured as a Lowspeed port
  * before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _x The output x-axis tilt.
  * \param _y The output y-axis tilt.
  * \param _z The output z-axis tilt.
@@ -14940,7 +14984,7 @@ ends
  * completed successfully. The port must be configured as a Lowspeed port
  * before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _x The output x-axis tilt.
  * \param _y The output y-axis tilt.
@@ -14956,7 +15000,7 @@ ends
  * indicating whether or not the operation completed successfully. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _reg The device register to read.
  * \param _bytes The number of bytes to read. Only 1 or 2 byte values are supported.
  * \param _out The value read from the device.
@@ -14971,7 +15015,7 @@ ends
  * indicating whether or not the operation completed successfully. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _reg The device register to read.
  * \param _bytes The number of bytes to read. Only 1 or 2 byte values are supported.
@@ -14985,7 +15029,7 @@ ends
  * Turn the power on for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define MSEnergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, _result)
@@ -14995,7 +15039,7 @@ ends
  * Turn the power on for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15006,7 +15050,7 @@ ends
  * Turn power off for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define MSDeenergize(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_DEENERGIZED, _result)
@@ -15016,7 +15060,7 @@ ends
  * Turn power off for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15027,7 +15071,7 @@ ends
  * Turn ADPA mode on for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define MSADPAOn(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_ON, _result)
@@ -15037,7 +15081,7 @@ ends
  * Turn ADPA mode on for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15048,7 +15092,7 @@ ends
  * Turn ADPA mode off for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define MSADPAOff(_port, _result) __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_OFF, _result)
@@ -15058,7 +15102,7 @@ ends
  * Turn ADPA mode off for the mindsensors device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15069,7 +15113,7 @@ ends
  * Configure the mindsensors DISTNx sensor as GP2D12. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define DISTNxGP2D12(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, _result)
@@ -15079,7 +15123,7 @@ ends
  * Configure the mindsensors DISTNx sensor as GP2D12. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15090,7 +15134,7 @@ ends
  * Configure the mindsensors DISTNx sensor as GP2D120. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define DISTNxGP2D120(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, _result)
@@ -15100,7 +15144,7 @@ ends
  * Configure the mindsensors DISTNx sensor as GP2D120. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15111,7 +15155,7 @@ ends
  * Configure the mindsensors DISTNx sensor as GP2YA02. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define DISTNxGP2YA02(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, _result)
@@ -15121,7 +15165,7 @@ ends
  * Configure the mindsensors DISTNx sensor as GP2YA02. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15132,7 +15176,7 @@ ends
  * Configure the mindsensors DISTNx sensor as GP2YA21. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define DISTNxGP2YA21(_port, _result) __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, _result)
@@ -15142,7 +15186,7 @@ ends
  * Configure the mindsensors DISTNx sensor as GP2YA21. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15153,7 +15197,7 @@ ends
  * Read the mindsensors DISTNx distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _out The distance value.
  * \param _result The function call result.
  */
@@ -15164,7 +15208,7 @@ ends
  * Read the mindsensors DISTNx sensor's distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _out The distance value.
  * \param _result The function call result.
@@ -15176,7 +15220,7 @@ ends
  * Read the mindsensors DISTNx sensor's maximum distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _out The maximum distance value.
  * \param _result The function call result.
  */
@@ -15187,7 +15231,7 @@ ends
  * Read the mindsensors DISTNx sensor's maximum distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _out The maximum distance value.
  * \param _result The function call result.
@@ -15199,7 +15243,7 @@ ends
  * Read the mindsensors DISTNx sensor's minimum distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _out The minimum distance value.
  * \param _result The function call result.
  */
@@ -15210,7 +15254,7 @@ ends
  * Read the mindsensors DISTNx sensor's minimum distance value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _out The minimum distance value.
  * \param _result The function call result.
@@ -15222,7 +15266,7 @@ ends
  * Read the mindsensors DISTNx sensor's module type value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _out The module type value.
  * \param _result The function call result.
  */
@@ -15233,7 +15277,7 @@ ends
  * Read the mindsensors DISTNx sensor's module type value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _out The module type value.
  * \param _result The function call result.
@@ -15245,7 +15289,7 @@ ends
  * Read the mindsensors DISTNx sensor's num points value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _out The num points value.
  * \param _result The function call result.
  */
@@ -15256,7 +15300,7 @@ ends
  * Read the mindsensors DISTNx sensor's num points value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _out The num points value.
  * \param _result The function call result.
@@ -15268,7 +15312,7 @@ ends
  * Read the mindsensors DISTNx sensor's voltage value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _out The voltage value.
  * \param _result The function call result.
  */
@@ -15279,7 +15323,7 @@ ends
  * Read the mindsensors DISTNx sensor's voltage value.
  * The port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _out The voltage value.
  * \param _result The function call result.
@@ -15291,7 +15335,7 @@ ends
  * Configure the mindsensors PSPNx device in digital mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define PSPNxDigital(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_DIGITAL, _result)
@@ -15301,7 +15345,7 @@ ends
  * Configure the mindsensors PSPNx device in digital mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15312,7 +15356,7 @@ ends
  * Configure the mindsensors PSPNx device in analog mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define PSPNxAnalog(_port, _result) __I2CSendCmd(_port, 0x02, PSP_CMD_ANALOG, _result)
@@ -15322,7 +15366,7 @@ ends
  * Configure the mindsensors PSPNx device in analog mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15333,7 +15377,7 @@ ends
  * Configure the mindsensors NRLink device in 2400 baud mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define NRLink2400(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_2400, _result)
@@ -15343,7 +15387,7 @@ ends
  * Configure the mindsensors NRLink device in 2400 baud mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15354,7 +15398,7 @@ ends
  * Configure the mindsensors NRLink device in 4800 baud mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define NRLink4800(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_4800, _result)
@@ -15364,7 +15408,7 @@ ends
  * Configure the mindsensors NRLink device in 4800 baud mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15375,7 +15419,7 @@ ends
  * Flush the mindsensors NRLink device buffers. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define NRLinkFlush(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_FLUSH, _result)
@@ -15385,7 +15429,7 @@ ends
  * Flush the mindsensors NRLink device buffers. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15396,7 +15440,7 @@ ends
  * Configure the mindsensors NRLink device in IR long mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define NRLinkIRLong(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_LONG, _result)
@@ -15406,7 +15450,7 @@ ends
  * Configure the mindsensors NRLink device in IR long mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15417,7 +15461,7 @@ ends
  * Configure the mindsensors NRLink device in IR short mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define NRLinkIRShort(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_SHORT, _result)
@@ -15427,7 +15471,7 @@ ends
  * Configure the mindsensors NRLink device in IR short mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15438,7 +15482,7 @@ ends
  * Configure the mindsensors NRLink device in power function mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define NRLinkSetPF(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, _result)
@@ -15448,7 +15492,7 @@ ends
  * Configure the mindsensors NRLink device in power function mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15459,7 +15503,7 @@ ends
  * Configure the mindsensors NRLink device in RCX mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define NRLinkSetRCX(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, _result)
@@ -15469,7 +15513,7 @@ ends
  * Configure the mindsensors NRLink device in RCX mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15480,7 +15524,7 @@ ends
  * Configure the mindsensors NRLink device in IR train mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define NRLinkSetTrain(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, _result)
@@ -15490,7 +15534,7 @@ ends
  * Configure the mindsensors NRLink device in IR train mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15501,7 +15545,7 @@ ends
  * Configure the mindsensors NRLink device in raw IR transmit mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _result The function call result.
  */
 #define NRLinkTxRaw(_port, _result) __I2CSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, _result)
@@ -15511,7 +15555,7 @@ ends
  * Configure the mindsensors NRLink device in raw IR transmit mode. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _result The function call result.
  */
@@ -15522,7 +15566,7 @@ ends
  * Read the status of the mindsensors NRLink device. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _value The mindsensors NRLink status.
  * \param _result The function call result.
  */
@@ -15533,7 +15577,7 @@ ends
  * Read the status of the mindsensors NRLink device. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _value The mindsensors NRLink status.
  * \param _result The function call result.
@@ -15545,7 +15589,7 @@ ends
  * Run the specified mindsensors NRLink device macro. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _macro The address of the macro to execute.
  * \param _result The function call result.
  */
@@ -15556,7 +15600,7 @@ ends
  * Run the specified mindsensors NRLink device macro. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _macro The address of the macro to execute.
  * \param _result The function call result.
@@ -15568,7 +15612,7 @@ ends
  * Write data to the mindsensors NRLink device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _bytes A byte array containing the data to write.
  * \param _result The function call result.
  */
@@ -15579,7 +15623,7 @@ ends
  * Write data to the mindsensors NRLink device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _bytes A byte array containing the data to write.
  * \param _result The function call result.
@@ -15591,7 +15635,7 @@ ends
  * Read data from the mindsensors NRLink device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _bytes A byte array that will contain the data read from the device on output.
  * \param _result The function call result.
  */
@@ -15602,7 +15646,7 @@ ends
  * Read data from the mindsensors NRLink device on the specified port. The port
  * must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _bytes A byte array that will contain the data read from the device on output.
  * \param _result The function call result.
@@ -15618,7 +15662,7 @@ ends
  * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
  * using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The IR Train channel.  See \ref IRTrainChannels.
  * \param _func The IR Train function. See \ref IRTrainFuncs
  * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
@@ -15635,7 +15679,7 @@ ends
  * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
  * using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _channel The IR Train channel.  See \ref IRTrainChannels.
  * \param _func The IR Train function. See \ref IRTrainFuncs
@@ -15652,7 +15696,7 @@ ends
  * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _outa The Power Function command for output A. See \ref PFCmdConstants.
  * \param _outb The Power Function command for output B. See \ref PFCmdConstants.
@@ -15669,7 +15713,7 @@ ends
  * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _outa The Power Function command for output A. See \ref PFCmdConstants.
@@ -15689,7 +15733,7 @@ ends
  * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _outa The Power Function PWM command for output A. See \ref PFPWMOptions.
  * \param _outb The Power Function PWM command for output B. See \ref PFPWMOptions.
@@ -15708,7 +15752,7 @@ ends
  * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _outa The Power Function PWM command for output A. See \ref PFPWMOptions.
@@ -15725,7 +15769,7 @@ ends
  * (4 bit values). The port must be configured as a Lowspeed port before using
  * this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _nibble0 The first raw data nibble.
  * \param _nibble1 The second raw data nibble.
  * \param _nibble2 The third raw data nibble.
@@ -15741,7 +15785,7 @@ ends
  * (4 bit values). The port must be configured as a Lowspeed port before using
  * this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _nibble0 The first raw data nibble.
  * \param _nibble1 The second raw data nibble.
@@ -15758,7 +15802,7 @@ ends
  * number of milliseconds of delay between each repetition. The port must be
  * configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _count The number of times to repeat the command.
  * \param _delay The number of milliseconds to delay between each repetition.
  * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
@@ -15773,7 +15817,7 @@ ends
  * number of milliseconds of delay between each repetition. The port must be
  * configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _count The number of times to repeat the command.
  * \param _delay The number of milliseconds to delay between each repetition.
@@ -15793,7 +15837,7 @@ ends
  * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _out The Power Function output. See \ref PFOutputs.
  * \param _func The Power Function CST function. See \ref PFCSTOptions.
@@ -15813,7 +15857,7 @@ ends
  * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _out The Power Function output. See \ref PFOutputs.
@@ -15834,7 +15878,7 @@ ends
  * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _out The Power Function output. See \ref PFOutputs.
  * \param _func The Power Function PWM function. See \ref PFPWMOptions.
@@ -15854,7 +15898,7 @@ ends
  * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
  * port must be configured as a Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _out The Power Function output. See \ref PFOutputs.
@@ -15875,7 +15919,7 @@ ends
  * false (timeout) as the final parameter. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _out The Power Function output. See \ref PFOutputs.
  * \param _pin The Power Function pin. See \ref PFPinConstants.
@@ -15897,7 +15941,7 @@ ends
  * false (timeout) as the final parameter. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _out The Power Function output. See \ref PFOutputs.
@@ -15918,7 +15962,7 @@ ends
  * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _func The Power Function train function. See \ref IRTrainFuncs.
  * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
@@ -15935,7 +15979,7 @@ ends
  * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
  * Lowspeed port before using this function.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  * \param _channel The Power Function channel.  See \ref PFChannelConstants.
  * \param _func The Power Function train function. See \ref IRTrainFuncs.
@@ -15951,7 +15995,7 @@ ends
  * device. The port must be configured as a Lowspeed port before using any of
  * the mindsensors RCX and Scout NRLink functions.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  */
 #define MSRCXSetNRLinkPort(_port) __MSRCXSetNRLink(_port, 0x02)
 
@@ -15962,7 +16006,7 @@ ends
  * device. The port must be configured as a Lowspeed port before using any of
  * the mindsensors RCX and Scout NRLink functions.
  *
- * \param _port The sensor port. See \ref InPorts.
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _addr The sensor I2C address. See sensor documentation for this value.
  */
 #define MSRCXSetNRLinkPortEx(_port, _addr) __MSRCXSetNRLink(_port, _addr)
@@ -16716,52 +16760,16 @@ ends
 /** @} */ // end of MindSensorsAPI group
 /** @} */ // end of ThirdPartyDevices group
 
-#define SetSensorTemperature(_port) SetSensorLowspeed(_port)
-
-#define __TempSendCmd(_port, _cmd, _result) \
-  __MSWriteToRegister(_port, TEMP_I2C_ADDRESS, TEMP_REG_CONFIG, _cmd, _result)
-
-#define TemperatureResolution(_port, _cmd, _result) __TempSendCmd(_port, _cmd, _result)
-
-/*
-// R1/R0
-#define TEMP_RES_12BIT     0x60
-#define TEMP_RES_11BIT     0x40
-#define TEMP_RES_10BIT     0x20
-#define TEMP_RES_9BIT      0x00
-// SD (shutdown mode)
-#define TEMP_SD_CONTINUOUS 0x00
-#define TEMP_SD_SHUTDOWN   0x01
-// TM (thermostat mode)
-#define TEMP_TM_COMPARATOR 0x00
-#define TEMP_TM_INTERRUPT  0x02
-// OS (one shot)
-#define TEMP_OS_ONESHOT    0x80
-// F1/F0 (fault queue)
-#define TEMP_FQ_1          0x00
-#define TEMP_FQ_2          0x08
-#define TEMP_FQ_4          0x10
-#define TEMP_FQ_6          0x18
-// POL (polarity)
-#define TEMP_POL_LOW       0x00
-#define TEMP_POL_HIGH      0x04
-
-#define TEMP_I2C_ADDRESS   0x98
-#define TEMP_REG_TEMP      0x00
-#define TEMP_REG_CONFIG    0x01
-#define TEMP_REG_TLOW      0x02
-#define TEMP_REG_THIGH     0x03
-*/
 
 /** @addtogroup GraphicsLibrary
  * @{
  */
 
-/*--------------------------------------------------------------------------
- * File          : nbcGL.nbc
- * Description   : Data and subroutines for a very simple 3D engine.
- * Programmed by : Arno van der Vegt, avandervegt@home.nl
- *--------------------------------------------------------------------------/
+//------------------------------------------------------------------------------
+// File          : nbcGL.nbc
+// Description   : Data and subroutines for a very simple 3D engine.
+// Programmed by : Arno van der Vegt, legoasimo@gmail.com
+//------------------------------------------------------------------------------
 
 /**
  * Initialize graphics library.
