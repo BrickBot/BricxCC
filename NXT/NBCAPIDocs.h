@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-05-29
- * \version 1
+ * \date 2010-06-28
+ * \version 2
  */
 #ifndef NBCAPIDOCS_H
 #define NBCAPIDOCS_H
@@ -31,7 +31,7 @@
 /** @mainpage NBC Programmer's Guide
  * \brief
  * 
- * <h2><center>May 29, 2010</center></h2>
+ * <h2><center>June 28, 2010</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -330,6 +330,18 @@
  *
  */
 
+/** @page endt End thread
+ * \brief End thread
+ * 
+ * A thread definition ends with the endt keyword.
+ * \code
+ * thread main
+ *   // thread body goes here
+ * endt
+ * \endcode
+ *
+ */
+
 /** @page subroutine Subroutines
  * \brief Subroutines
  *
@@ -397,6 +409,18 @@
  * routine and program execution continues with the next statement following
  * the subroutine call. The maximum number of threads and subroutines supported
  * by the NXT firmware is 256.
+ *
+ */
+
+/** @page ends End subroutine
+ * \brief End subroutine.
+ * 
+ * A subroutine definition ends with the ends keyword.
+ * \code
+ * subroutine doStuff
+ *   // subroutine body goes here
+ * ends
+ * \endcode
  *
  */
 
@@ -2252,12 +2276,12 @@
  * \code
  * // FileOpenRead, FileOpenWrite, FileOpenAppend, FileOpenWriteLinear,
  * // FileOpenWriteNonLinear, FileOpenReadLinear
- * TFileOpen	struct
- *  Result		word    // The function call result.
- *  FileHandle	byte    // The returned file handle to use for subsequent file operations.
- *  Filename	byte[]  // The name of the file to open or create.
- *  Length		dword   // The desired maximum file capacity or the returned available length in the file.
- * TFileOpen	ends
+ * TFileOpen    struct
+ *  Result      word    // The function call result.
+ *  FileHandle  byte    // The returned file handle to use for subsequent file operations.
+ *  Filename    byte[]  // The name of the file to open or create.
+ *  Length      dword   // The desired maximum file capacity or the returned available length in the file.
+ * TFileOpen    ends
  * \endcode
  * Possible Result values include \ref LoaderErrors.
  *
@@ -2268,12 +2292,12 @@
  *
  * \code
  * // FileRead, FileWrite
- * TFileReadWrite	struct
- *  Result		word      // The function call result.
- *  FileHandle	byte      // The file handle to access.
- *  Buffer		byte[]    // The buffer to store read bytes or containing bytes to write.
- *  Length		dword     // The number of bytes to read or the returned number of bytes written.
- * TFileReadWrite	ends
+ * TFileReadWrite       struct
+ *  Result              word      // The function call result.
+ *  FileHandle          byte      // The file handle to access.
+ *  Buffer              byte[]    // The buffer to store read bytes or containing bytes to write.
+ *  Length              dword     // The number of bytes to read or the returned number of bytes written.
+ * TFileReadWrite       ends
  * \endcode
  * Possible Result values include \ref LoaderErrors.
  *
@@ -2284,10 +2308,10 @@
  *
  * \code
  * // FileClose
- * TFileClose	struct
- *  Result		word     // The function call result.
- *  FileHandle	byte     // The file handle to close.
- * TFileClose	ends
+ * TFileClose   struct
+ *  Result      word     // The function call result.
+ *  FileHandle  byte     // The file handle to close.
+ * TFileClose   ends
  * \endcode
  * Possible Result values include \ref LoaderErrors.
  *
@@ -2298,11 +2322,11 @@
  *
  * \code
  * // FileResolveHandle
- * TFileResolveHandle	struct
- *  Result		word     // The function call result.
- *  FileHandle	byte     // The returned resolved file handle.
- *  WriteHandle	byte     // True if the returned handle is a write handle.
- *  Filename	byte[]   // The name of the file for which to resolve a handle.
+ * TFileResolveHandle   struct
+ *  Result              word     // The function call result.
+ *  FileHandle          byte     // The returned resolved file handle.
+ *  WriteHandle         byte     // True if the returned handle is a write handle.
+ *  Filename            byte[]   // The name of the file for which to resolve a handle.
  * TFileResolveHandle	ends
  * \endcode
  * Possible Result values include \ref LDR_HANDLEALREADYCLOSED and \ref LDR_SUCCESS.
@@ -2313,11 +2337,11 @@
  *
  * \code
  * // FileRename
- * TFileRename	struct
- *  Result		word     // The function call result.
- *  OldFilename	byte[]   // The name of the file to be renamed.
- *  NewFilename	byte[]   // The new name to give to the file.
- * TFileRename	ends
+ * TFileRename  struct
+ *  Result      word     // The function call result.
+ *  OldFilename byte[]   // The name of the file to be renamed.
+ *  NewFilename byte[]   // The new name to give to the file.
+ * TFileRename  ends
  * \endcode
  * Possible Result values include \ref LoaderErrors.
  *
@@ -2328,10 +2352,10 @@
  *
  * \code
  * // FileDelete
- * TFileDelete	struct
- *  Result		word     // The function call result.
- *  Filename	byte[]   // The name of the file to delete.
- * TFileDelete	ends
+ * TFileDelete  struct
+ *  Result      word     // The function call result.
+ *  Filename    byte[]   // The name of the file to delete.
+ * TFileDelete  ends
  * \endcode
  * Possible Result values include \ref LoaderErrors.
  *
@@ -4240,6 +4264,11 @@
  * are on one of 8 fixed line positions.
  */
 
+/** @defgroup ThirdPartyDevices Third-party NXT devices
+ * Documentation for NXT devices made by companies other than LEGO such
+ * as HiTechnic, mindsensors.com, and CodaTex.
+ */
+
 /** @defgroup HiTechnicAPI HiTechnic API Functions
  * Functions for accessing and modifying HiTechnic devices.
  */
@@ -4262,11 +4291,6 @@
 
 /** @defgroup MiscConstants Miscellaneous NBC/NXC constants
  * Miscellaneous constants for use in NBC and NXC.
- */
-
-/** @defgroup ThirdPartyDevices Third-party NXT devices
- * Documentation for NXT devices made by companies other than LEGO such
- * as HiTechnic, mindsensors.com, and CodaTex.
  */
 
 /** @defgroup GraphicsLibrary A simple 3D graphics library
