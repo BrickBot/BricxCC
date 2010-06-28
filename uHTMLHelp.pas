@@ -160,16 +160,53 @@ type
     Value : string;
   end;
 
-function LookupHTMLTopic(keyword : string) : string;
+function ConvertDoxygenCase(keyword : string) : string;
 var
   i : integer;
 begin
+  Result := '';
+  for i := 1 to Length(keyword) do
+  begin
+    if keyword[i] in ['a'..'z'] then
+      Result := Result + keyword[i]
+    else if keyword[i] in ['A'..'Z'] then
+      Result := Result + '_' + Chr(Ord(keyword[i])+32);
+  end;
+end;
+
+// preprocessor keywords
+const
+  preproc_keywords : array[0..3] of string = ('include', 'define', 'import', 'download');
+
+function LookupHTMLTopic(keyword : string) : string;
+var
+  i : integer;
+  tmpKeyword : string;
+begin
   // map between a keyword such as DrawTextType and the HTML topic for that keyword
   // (e.g., struct_draw_text_type.html)
-  Result := keyword + '.html';
+  if Pos('#', keyword) = 1 then
+  begin
+    // these are preprocessor keywords (#...)
+    System.Delete(keyword, 1, 1);
+    tmpKeyword := 'condcomp';
+    for i := Low(preproc_keywords) to High(preproc_keywords) do
+    begin
+      if keyword = preproc_keywords[i] then
+      begin
+        tmpKeyword := preproc_keywords[i];
+      end;
+    end;
+    keyword := tmpKeyword;
+  end;
   i := HTMLTopicMap.IndexOf(keyword);
   if i <> -1 then
-    Result := TStringObj(HTMLTopicMap.Objects[i]).Value;
+    Result := TStringObj(HTMLTopicMap.Objects[i]).Value
+  else
+  begin
+    keyword := ConvertDoxygenCase(keyword);
+    Result := keyword + '.html';
+  end;
 end;
 
 procedure ClearHTMLTopicMap;

@@ -25,10 +25,11 @@ var
   Doc : IXMLDOMDocument;
   srcFile, destDir : string;
   NeedToUninitialize : boolean;
+  theLang : string = 'NXC';
 
 procedure PrintUsage;
 begin
-  WriteLn('Usage: ' + progName + ' sourceFile [outputdir]');
+  WriteLn('Usage: ' + progName + ' langname sourceFile [outputdir]');
 end;
 
 function RPos(SubStr, S : string) : integer;
@@ -44,7 +45,7 @@ begin
   Result.async := False;
 end;
 
-procedure CreateNXCHTMLTopicMap(const outputdir : string);
+procedure CreateHTMLTopicMap(const LangName, outputdir : string);
 var
   nl : IXMLDOMNodeList;
   n : IXMLDOMNode;
@@ -60,7 +61,7 @@ begin
   try
     nameIdx.CaseSensitive := True;
     nameIdx.Sorted := True;
-    tmpSL.Add('unit uNXCHTMLTopics;');
+    tmpSL.Add('unit u%0:sHTMLTopics;');
     tmpSL.Add('');
     tmpSL.Add('interface');
     tmpSL.Add('');
@@ -68,8 +69,8 @@ begin
     tmpSL.Add('  uHTMLHelp;');
     tmpSL.Add('');
     tmpSL.Add('const');
-    tmpSL.Add('  uNXCHTMLTopicsSize = %d;');
-    tmpSL.Add('  uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (');
+    tmpSL.Add('  u%0:sHTMLTopicsSize = %1:d;');
+    tmpSL.Add('  u%0:sHTMLTopicsData: array[0..u%0:sHTMLTopicsSize-1] of TNameValue = (');
 
     // find all compounds of type struct
     nl := Doc.selectNodes('//compound[@kind="struct"]');
@@ -122,9 +123,9 @@ begin
     tmpSL.Add('implementation');
     tmpSL.Add('');
     tmpSL.Add('end.');
-    tmpSL.Text := Format(tmpSL.Text, [cnt]);
+    tmpSL.Text := Format(tmpSL.Text, [LangName, cnt]);
     ForceDirectories(outputdir);
-    tmpSL.SaveToFile(ExtractFilePath(outputdir) + 'uNXCHTMLTopics.pas');
+    tmpSL.SaveToFile(ExtractFilePath(outputdir) + Format('u%sHTMLTopics.pas', [LangName]));
   finally
     tmpSL.Free;
     nameIdx.Free;
@@ -136,7 +137,7 @@ begin
   Write(msg);
 end;
 
-procedure CreateNXCAPIFile(const outputdir : string);
+procedure CreateAPIFile(const LangName, outputdir : string);
 var
   nl, fNL : IXMLDOMNodeList;
   n, args : IXMLDOMNode;
@@ -201,7 +202,7 @@ begin
         end;
       end;
       tmpSL.Sort;
-      tmpSL.SaveToFile(ExtractFilePath(outputdir) + 'nxc_api.txt');
+      tmpSL.SaveToFile(ExtractFilePath(outputdir) + Format('%s_api.txt', [LowerCase(LangName)]));
     finally
       tmpSL.Free;
     end;
@@ -210,7 +211,7 @@ begin
   end;
 end;
 
-procedure CreateNXCConstantsFile(const outputdir : string);
+procedure CreateConstantsFile(const LangName, outputdir : string);
 var
   nl : IXMLDOMNodeList;
   i : integer;
@@ -225,23 +226,24 @@ begin
     nl := Doc.selectNodes('//member[@kind="define"]');
     for i := 0 to nl.length - 1 do
       tmpSL.Add(nl.item[i].selectSingleNode('name').text);
-    tmpSL.SaveToFile(ExtractFilePath(outputdir) + 'nxc_constants.txt');
+    tmpSL.SaveToFile(ExtractFilePath(outputdir) + Format('%s_constants.txt', [LowerCase(LangName)]));
   finally
     tmpSL.Free;
   end;
 end;
 
 begin
-  if ParamCount < 1 then
+  if ParamCount < 2 then
   begin
     PrintUsage;
     Exit;
   end;
   NeedToUninitialize := CoInitialize(nil) = S_OK;
   try
-    srcFile := ParamStr(1);
-    if ParamCount = 2 then
-      destDir := ParamStr(2)
+    theLang := ParamStr(1);
+    srcFile := ParamStr(2);
+    if ParamCount = 3 then
+      destDir := ParamStr(3)
     else
       destDir := ExtractFilePath(ParamStr(0));
     ForceDirectories(destDir);
@@ -259,9 +261,9 @@ begin
         else
         begin
           // process the file
-          CreateNXCHTMLTopicMap(destDir);
-          CreateNXCAPIFile(destDir);
-          CreateNXCConstantsFile(destDir);
+          CreateHTMLTopicMap(theLang, destDir);
+          CreateAPIFile(theLang, destDir);
+          CreateConstantsFile(theLang, destDir);
         end;
       except
         on E : Exception do

@@ -86,7 +86,7 @@ object PrefForm: TPrefForm
       Top = 1
       Width = 450
       Height = 319
-      ActivePage = shtOptions
+      ActivePage = shtGeneral
       Align = alClient
       TabOrder = 0
       OnChange = pagPrefsChange
@@ -880,7 +880,7 @@ object PrefForm: TPrefForm
           Top = 8
           Width = 425
           Height = 276
-          ActivePage = shtNBC
+          ActivePage = shtCompilerCommon
           TabOrder = 0
           object shtCompilerCommon: TTabSheet
             Caption = 'Common'
@@ -1042,7 +1042,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11092
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNQCIncludePathExit
             end
@@ -1115,7 +1115,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11101
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtLCCIncludePathExit
             end
@@ -1204,7 +1204,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11107
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNBCIncludePathExit
             end
@@ -2205,7 +2205,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnChange = cboLangTempChange
         end
@@ -2435,7 +2435,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnChange = cboLanguagesChange
         end
@@ -2773,6 +2773,7 @@ object PrefForm: TPrefForm
             Checked = True
             State = cbChecked
             TabOrder = 1
+            Visible = False
           end
         end
       end
