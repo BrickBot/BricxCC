@@ -1321,7 +1321,7 @@
  *  firmware adjusts the PWM duty cycle if the motor is affected by a physical load. This adjustment is
  *  reflected by the value of the \ref ActualSpeed property. When using speed regulation, do not set Power to its
  *  maximum value since the firmware cannot adjust to higher power levels in that situation.
- *  Synchronization means the firmware tries to keep two motors in synch regardless of physical loads. Use
+ *  Synchronization means the firmware tries to keep two motors in sync regardless of physical loads. Use
  *  this mode to maintain a straight path for a mobile robot automatically. Also use this mode with the
  *  \ref TurnRatio property to provide proportional turning.
  *  Set \ref OUT_REGMODE_SYNC on at least two motor ports in order for synchronization to function. Setting

@@ -273,12 +273,9 @@
  * of the data segment, all variables in an NBC program are global.
  * 
  * - @subpage thread
- * - @subpage endt
  * - @subpage subroutine
- * - @subpage ends
  * - @subpage macfunc
  * - @subpage dseg
- * - @subpage segment
  *
  */
 
@@ -331,6 +328,7 @@
  * endt
  * \endcode
  *
+ * - @subpage endt
  */
 
 /** @page endt endt
@@ -413,6 +411,7 @@
  * the subroutine call. The maximum number of threads and subroutines supported
  * by the NXT firmware is 256.
  *
+ * - @subpage ends
  */
 
 /** @page ends ends
@@ -497,6 +496,8 @@
  *   dseg ends
  * endt
  * \endcode
+ *
+ * - @subpage segment
  *
  * You can have multiple data segments in an NBC program. All variables are
  * global regardless of where they are declared. Once declared, they may be
@@ -4286,11 +4287,6 @@
  * are on one of 8 fixed line positions.
  */
 
-/** @defgroup ThirdPartyDevices Third-party NXT devices
- * Documentation for NXT devices made by companies other than LEGO such
- * as HiTechnic, mindsensors.com, and CodaTex.
- */
-
 /** @defgroup HiTechnicAPI HiTechnic API Functions
  * Functions for accessing and modifying HiTechnic devices.
  */
@@ -4315,6 +4311,15 @@
  * Miscellaneous constants for use in NBC and NXC.
  */
 
+/** @defgroup ThirdPartyDevices Third-party NXT devices
+ * Documentation for NXT devices made by companies other than LEGO such
+ * as HiTechnic, mindsensors.com, and CodaTex.
+ */
+
+/** @defgroup StandardCAPIFunctions Standard-C API functions
+ * Documentation for various Standard-C library routines.
+ */
+ 
 /** @defgroup GraphicsLibrary A simple 3D graphics library
  * Documentation for a simple 3D graphics library.  The library code was
  * written by Arno van der Vegt.

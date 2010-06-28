@@ -278,7 +278,6 @@ const
   K_REDGE_COLOR_DEFAULT     = clSilver;
   K_STRUCT_COLOR_DEFAULT    = clNone;
   K_GUTTER_COLOR_DEFAULT    = clSilver;
-  K_USEINTERNALNBC_DEFAULT  = True;
 {$ELSE}
   K_EDITOR_FONTNAME_DEFAULT = 'Courier New';
   K_EDITOR_COLOR_DEFAULT    = clWindow;
@@ -288,7 +287,6 @@ const
   K_REDGE_COLOR_DEFAULT     = clSilver;
   K_STRUCT_COLOR_DEFAULT    = clNone;
   K_GUTTER_COLOR_DEFAULT    = clBtnFace;
-  K_USEINTERNALNBC_DEFAULT  = False;
 {$ENDIF}
 
 procedure ResetProcListValues(reg : TRegistry);
@@ -1063,7 +1061,7 @@ begin
     gsReplaceText         := Reg_ReadString(reg, 'ReplaceText', '');
     gsReplaceTextHistory  := Reg_ReadString(reg, 'ReplaceTextHistory', '');
 
-    UseHTMLHelp           := Reg_ReadBool(reg, 'UseHTMLHelp', false);
+    UseHTMLHelp           := Reg_ReadBool(reg, 'UseHTMLHelp', true);
 
   finally
     reg.CloseKey;
@@ -1139,17 +1137,17 @@ begin
     CompilerTimeout         := Reg_ReadInteger(reg, 'CompilerTimeout', 60000);
     LocalCompilerTimeout    := CompilerTimeout;
     CompilerSwitches        := Reg_ReadString(reg, 'CompilerSwitches', '');
-    PreferredLanguage       := Reg_ReadInteger(reg, 'PreferredLanguage', 0);
+    PreferredLanguage       := Reg_ReadInteger(reg, 'PreferredLanguage', 4);
     NBCSwitches             := Reg_ReadString(reg, 'NBCSwitches', '');
-    NBCOptLevel             := Reg_ReadInteger(reg, 'NBCOptLevel', 1);
+    NBCOptLevel             := Reg_ReadInteger(reg, 'NBCOptLevel', 2);
     NBCMaxErrors            := Reg_ReadInteger(reg, 'NBCMaxErrors', 0);
     NBCIncludePath          := Reg_ReadString(reg, 'NBCIncludePath', '');
     OldNBCIncPaths          := Reg_ReadString(reg, 'OldNBCIncPaths', '');
     NBCExePath              := Reg_ReadString(reg, 'NBCExePath', '');
-    UseInternalNBC          := Reg_ReadBool(reg, 'UseInternalNBC', K_USEINTERNALNBC_DEFAULT);
-    EnhancedFirmware        := Reg_ReadBool(reg, 'EnhancedFirmware', False);
-    NXT2Firmware            := Reg_ReadBool(reg, 'NXT2Firmware', False);
-    NXTAutoFWVersion        := Reg_ReadBool(reg, 'NXTAutoFWVersion', False); 
+    UseInternalNBC          := Reg_ReadBool(reg, 'UseInternalNBC', True);
+    EnhancedFirmware        := Reg_ReadBool(reg, 'EnhancedFirmware', True);
+    NXT2Firmware            := Reg_ReadBool(reg, 'NXT2Firmware', True);
+    NXTAutoFWVersion        := Reg_ReadBool(reg, 'NXTAutoFWVersion', True); 
     IgnoreSysFiles          := Reg_ReadBool(reg, 'IgnoreSysFiles', False);
   finally
     reg.CloseKey;
@@ -1674,13 +1672,13 @@ initialization
 
   // compiler defaults
   CompilerSwitches        := '';
-  PreferredLanguage       := 0;
+  PreferredLanguage       := 4; // NXC
   NQCSwitches             := '';
   LCCSwitches             := '';
   NBCSwitches             := '';
   CPPSwitches             := '';
   JavaSwitches            := '';
-  NBCOptLevel             := 1;
+  NBCOptLevel             := 2;
   NBCMaxErrors            := 0;
   NQCIncludePath          := '';
   LCCIncludePath          := '';
@@ -1689,13 +1687,13 @@ initialization
   OldLCCIncPaths          := '';
   OldNBCIncPaths          := '';
   NBCExePath              := '';
-  UseInternalNBC          := K_USEINTERNALNBC_DEFAULT;
-  EnhancedFirmware        := False;
-  NXT2Firmware            := False;
-  NXTAutoFWVersion        := False;
+  UseInternalNBC          := True;
+  EnhancedFirmware        := True;
+  NXT2Firmware            := True;
+  NXTAutoFWVersion        := True;
   IgnoreSysFiles          := False;
 
-  UseHTMLHelp             := False;
+  UseHTMLHelp             := True;
 
 finalization
   CleanupTransferList(fCompXferList);

@@ -1514,7 +1514,7 @@
  * case constant_expression :
  * \endcode
  *
- * See the \ref switch page for an example of how to use the case label. 
+ * \ref switch page contains an example of how to use the case label.
  *
  */
 
@@ -1529,7 +1529,7 @@
  * default :
  * \endcode
  *
- * See the \ref switch page for an example of how to use the default label.
+ * \ref switch page contains an example of how to use the default label.
  *
  */
 
