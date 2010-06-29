@@ -324,7 +324,7 @@
  * thread worker
  *   precedes waiter
  *   // thread body goes here
- *   exit // only one dependent – schedule it to execute
+ *   exit // only one dependent - schedule it to execute
  * endt
  * \endcode
  *
@@ -1919,7 +1919,7 @@
  * but the second argument can be a variable, a numeric constant, or a
  * constant expression.  The syntax of the not statement is shown below.
  * \code
- * not x, x  // x = !x (logical not – not bitwise)
+ * not x, x  // x = !x (logical not - not bitwise)
  * \endcode
  *
  */
@@ -1935,7 +1935,7 @@
  * statements (shr and shl) are implemented by the compiler since the firmware
  * does not support shift operations at this time. If you install the
  * enhanced NBC/NBC firmware and tell the compiler to target it using
- * the –EF command line switch, then these operations will be handled
+ * the -EF command line switch, then these operations will be handled
  * directly by the firmware itself rather than by the compiler. The other
  * bit manipulation statements described in this section are only available
  * when targeting the enhanced firmware.
