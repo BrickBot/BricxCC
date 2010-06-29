@@ -6,6 +6,23 @@ Please send bug reports to bricxcc@comcast.net.
 For updates and additional documentation, visit the BricxCC Web Site:
 http://bricxcc.sourceforge.net/.  Send emails to bricxcc@comcast.net.
 
+version 3.3.8.8
+---------------
+- NBC 1.2.1.r3
+- Removed HTML help option in Preferences dialog. HTML help is now the default
+  and in order to use Win32 help a manual registry edit is required.
+- Automatic firmware version option is now on by default, as is NXT 2.0 and 
+  Enhanced Firmware.
+- HTML help for NBC completed.
+
+version 3.3.8.7
+---------------
+- NBC 1.2.1.r2
+- Exposed HTML help option in Preferences dialog (Options tab)
+- Automatic firmware version option also now checks enhanced vs standard firmware.
+- HTML help for NXC completed.
+- Code listing window has goto-line and status bar.
+
 version 3.3.8.6
 ---------------
 - Initial HTML help support (currently manual registry edit)

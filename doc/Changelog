@@ -8,11 +8,15 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
-Version 1.2.1.r3 (2010-06-12)
+Version 1.2.1.r3 (2010-06-29)
 -----------------------------
 - Fixed a bug with the new comma operator support when using ?: in 
   function calls
-
+- Fixed reference count NBC optimization defect when function is defined after 
+  all its callers.
+- Fixed global initialization defect when the global declaration occurs after 
+  task main.
+- Renaming addr, reladdr, and addrex to be addressOf, reladdressOf, and addressOfEx.
 
 Version 1.2.1.r2 (2010-06-06)
 -----------------------------
@@ -22,7 +26,7 @@ Version 1.2.1.r2 (2010-06-06)
 - Added support for comma operator.
 - Fixed regression in ReadSensorMSPlayStation and ReadSensorMSPlayStationEx
 - Added command line switch to turn off status messages.
-- Signficant changes to expression parsing to correct operator precedence
+- Significant changes to expression parsing to correct operator precedence
   and associativity defects.
 - Fixed string and character literal parsing bug (for the '/' character)
 - Fixed NBC sizeof operator bug (it was incorrectly padding the size of 
