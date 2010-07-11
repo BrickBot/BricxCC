@@ -1,2 +1,0 @@
-char result = MSPFRepeatEx(S1, 0x02, 5, 100);
-

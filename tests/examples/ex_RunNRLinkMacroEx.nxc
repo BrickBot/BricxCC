@@ -1,1 +1,0 @@
-char result = RunNRLinkMacroEx(S1, 0x02, macro);

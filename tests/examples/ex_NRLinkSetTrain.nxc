@@ -1,1 +1,1 @@
-char result = NRLinkSetTrain(S1);
+char result = NRLinkSetTrain(S1, MS_ADDR_NRLINK);

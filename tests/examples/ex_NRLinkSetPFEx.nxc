@@ -1,1 +1,0 @@
-char result = NRLinkSetPFEx(S1, 0x02);

@@ -1,1 +1,1 @@
-char result = PSPNxAnalog(S1);
+char result = PSPNxAnalog(S1, MS_ADDR_PSPNX);

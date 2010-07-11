@@ -1,1 +1,1 @@
-byte result = NRLinkStatus(S1);
+byte result = NRLinkStatus(S1, MS_ADDR_NRLINK);

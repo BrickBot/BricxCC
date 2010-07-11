@@ -1,1 +1,1 @@
-char result = NRLinkIRShort(S1);
+char result = NRLinkIRShort(S1, MS_ADDR_NRLINK);

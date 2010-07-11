@@ -1,2 +1,2 @@
-char result = MSPFSingleOutputCST(S1, PF_CHANNEL_1, PF_OUT_A, PF_CST_SET1_SET2);
+char result = MSPFSingleOutputCST(S1, I2C_ADDR_DEFAULT, PF_CHANNEL_1, PF_OUT_A, PF_CST_SET1_SET2);
 

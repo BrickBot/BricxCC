@@ -1,1 +1,0 @@
-long result = I2CSendCommandEx(S1, 0x10, HT_CMD_COLOR2_ACTIVE);

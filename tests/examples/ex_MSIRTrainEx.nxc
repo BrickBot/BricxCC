@@ -1,2 +1,0 @@
-char result = MSIRTrainEx(S1, 0x02, TRAIN_CHANNEL_1, TRAIN_FUNC_INCR_SPEED);
-

@@ -1,1 +1,1 @@
-MSRCXSetNRLinkPort(S1);
+MSRCXSetNRLinkPort(S1, MS_ADDR_NRLINK);

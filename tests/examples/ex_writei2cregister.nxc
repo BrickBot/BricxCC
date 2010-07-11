@@ -1,1 +1,1 @@
-char result = WriteI2CRegister(S1, I2C_REG_CMD, US_CMD_OFF);
+char result = WriteI2CRegister(S1, I2C_ADDR_DEFAULT, I2C_REG_CMD, US_CMD_OFF);

@@ -1,2 +1,0 @@
-byte x, y, z;
-bool result = ReadSensorMSTiltEx(S1, 0x02, x, y, z);

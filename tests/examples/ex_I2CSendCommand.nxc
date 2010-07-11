@@ -1,1 +1,1 @@
-long result = I2CSendCommand(S1, HT_CMD_COLOR2_ACTIVE);
+long result = I2CSendCommand(S1, I2C_ADDR_DEFAULT, HT_CMD_COLOR2_ACTIVE);

@@ -1,1 +1,0 @@
-byte result = NRLinkStatusEx(S1, 0x02);

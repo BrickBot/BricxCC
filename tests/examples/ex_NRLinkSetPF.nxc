@@ -1,1 +1,1 @@
-char result = NRLinkSetPF(S1);
+char result = NRLinkSetPF(S1, MS_ADDR_NRLINK);

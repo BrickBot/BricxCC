@@ -1,1 +1,1 @@
-char result = NRLinkFlush(S1);
+char result = NRLinkFlush(S1, MS_ADDR_NRLINK);

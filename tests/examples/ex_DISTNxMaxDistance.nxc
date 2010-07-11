@@ -1,1 +1,1 @@
-int dist = DISTNxMaxDistance(S1);
+int dist = DISTNxMaxDistance(S1, MS_ADDR_DISTNX);
