@@ -1,1 +1,1 @@
-char result = MSADPAOn(S1);
+char result = MSADPAOn(S1, MS_ADDR_DISTNX);

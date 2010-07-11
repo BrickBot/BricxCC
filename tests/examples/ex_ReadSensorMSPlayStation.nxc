@@ -1,2 +1,2 @@
 byte btnset1, btnset2, xleft, yleft, xright, yright;
-bool result = ReadSensorMSPlayStation(S1, btnset1, btnset2, xleft, yleft, xright, yright);
+bool result = ReadSensorMSPlayStation(S1, MS_ADDR_PSPNX, btnset1, btnset2, xleft, yleft, xright, yright);

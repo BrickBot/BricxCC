@@ -1,1 +1,1 @@
-char result = DISTNxGP2YA02(S1);
+char result = DISTNxGP2YA02(S1, MS_ADDR_DISTNX);

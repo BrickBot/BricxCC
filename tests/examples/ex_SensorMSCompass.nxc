@@ -1,1 +1,1 @@
-x = SensorMSCompass(S1);
+x = SensorMSCompass(S1, MS_ADDR_CMPSNX);

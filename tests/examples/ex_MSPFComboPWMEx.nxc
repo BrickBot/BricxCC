@@ -1,2 +1,0 @@
-char result = MSPFComboPWMEx(S1, 0x02, PF_CHANNEL_1, PF_PWM_REV4, PF_PWM_FWD5);
-

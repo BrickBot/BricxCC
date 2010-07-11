@@ -1,1 +1,1 @@
-char result = MSADPAOff(S1);
+char result = MSADPAOff(S1, MS_ADDR_DISTNX);

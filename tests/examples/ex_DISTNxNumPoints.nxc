@@ -1,1 +1,1 @@
-int dist = DISTNxNumPoints(S1);
+int numpoints = DISTNxNumPoints(S1, MS_ADDR_DISTNX);

@@ -1,1 +1,1 @@
-char result = NRLink4800(S1);
+char result = NRLink4800(S1, MS_ADDR_NRLINK);

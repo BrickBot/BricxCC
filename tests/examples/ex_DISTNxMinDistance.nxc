@@ -1,1 +1,1 @@
-int dist = DISTNxMinDistance(S1);
+int dist = DISTNxMinDistance(S1, MS_ADDR_DISTNX);

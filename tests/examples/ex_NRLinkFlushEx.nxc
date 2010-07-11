@@ -1,1 +1,0 @@
-char result = NRLinkFlushEx(S1, 0x02);

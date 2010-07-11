@@ -1,1 +1,0 @@
-byte value = MSReadValueEx(S1, 0x02, I2C_REG_CMD, 1);

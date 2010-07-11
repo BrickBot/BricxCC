@@ -1,2 +1,0 @@
-int x, y, z;
-bool result = ReadSensorMSAccelEx(S1, 0x02, x, y, z);

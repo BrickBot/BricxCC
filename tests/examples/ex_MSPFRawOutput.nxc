@@ -1,2 +1,2 @@
-char result = MSPFRawOutput(S1, 0x0a, 0x01, 0x02);
+char result = MSPFRawOutput(S1, I2C_ADDR_DEFAULT, 0x0a, 0x01, 0x02);
 

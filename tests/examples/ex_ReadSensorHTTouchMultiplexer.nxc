@@ -1,2 +1,24 @@
-byte t1, t2, t3, t4;
-ReadSensorHTTouchMultiplexer(S1, t1, t2, t3, t4);
+task main()
+{
+  byte t1, t2, t3, t4;
+  SetSensorTouch(S1);
+  while (true) {
+    ReadSensorHTTouchMultiplexer(S1, t1, t2, t3, t4);
+    if (t1)
+      TextOut(0, LCD_LINE1, "1 pressed" );
+    else
+      TextOut(0, LCD_LINE1, "         " );
+    if (t2)
+      TextOut(0, LCD_LINE2, "2 pressed" );
+    else
+      TextOut(0, LCD_LINE2, "         " );
+    if (t3)
+      TextOut(0, LCD_LINE3, "3 pressed" );
+    else
+      TextOut(0, LCD_LINE3, "         " );
+    if (t4)
+      TextOut(0, LCD_LINE4, "4 pressed" );
+    else
+      TextOut(0, LCD_LINE4, "         " );
+  }
+}

@@ -1,1 +1,1 @@
-char result = MSDeenergize(S1);
+char result = MSDeenergize(S1, I2C_ADDR_DEFAULT);

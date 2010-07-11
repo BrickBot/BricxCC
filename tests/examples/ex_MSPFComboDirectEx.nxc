@@ -1,2 +1,0 @@
-char result = MSPFComboDirectEx(S1, 0x02, PF_CHANNEL_1, PF_CMD_STOP, PF_CMD_FWD);
-
