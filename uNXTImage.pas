@@ -170,7 +170,10 @@ type
     procedure ScaleForm(const i : integer);
     procedure ResizeImage;
     procedure DoClick;
-    function GraphicClassFromExt(const ext: string): TGraphicClass;
+    function GraphicClassFromExt(ext: string): TGraphicClass;
+    function GraphicClassFromFilterIndex(const idx: integer): TGraphicClass;
+    function GetFilterIndexFromExt(ext: string): integer;
+    function GetExtFromFilterIndex(const idx: integer): string;
     procedure CheckForCustomClick;
     function GetCurrentName: string;
     procedure SetCurrentName(const Value: string);
@@ -203,6 +206,13 @@ uses
 type
   TPortableNetworkGraphic = TPNGObject;
 {$ENDIF}
+
+function StripPeriod(const ext : string) : string;
+begin
+  Result := LowerCase(ext);
+  if Pos('.', ext) = 1 then
+    System.Delete(Result, 1, 1);
+end;
 
 procedure TfrmNXTImage.tmrRefreshTimer(Sender: TObject);
 begin
@@ -537,12 +547,16 @@ var
 begin
   fBusy := True;
   try
-    fGC := TBitmap;
+    fGC := GraphicClassFromExt(DefaultNXTImageFileExt);
+    dlgSavePic.DefaultExt := StripPeriod(DefaultNXTImageFileExt);
+    dlgSavePic.FilterIndex := GetFilterIndexFromExt(DefaultNXTImageFileExt);
     if dlgSavePic.Execute then
     begin
       ext := LowerCase(ExtractFileExt(dlgSavePic.FileName));
       if dlgSavePic.FilterIndex = 1 then
-        fGC := GraphicClassFromExt(ext);
+        fGC := GraphicClassFromExt(ext)
+      else
+        fGC := GraphicClassFromFilterIndex(dlgSavePic.FilterIndex);
       G := fGC.Create;
       try
         G.Assign(imgScreen.Picture.Graphic);
@@ -635,35 +649,80 @@ end;
 
 procedure TfrmNXTImage.dlgSavePicTypeChange(Sender: TObject);
 begin
-  case dlgSavePic.FilterIndex of
-    2    : fGC := TPortableNetworkGraphic;
-    3, 4 : fGC := TJPEGImage;
-{$IFNDEF FPC}
-    5    : fGC := TGIFImage;
-{$ELSE}
-    5    : fGC := TPixmap;
-{$ENDIF}
-    6    : fGC := TBitmap;
-  else
-    fGC := TBitmap;
-  end;
+  fGC := GraphicClassFromFilterIndex(dlgSavePic.FilterIndex);
+  dlgSavePic.DefaultExt := GetExtFromFilterIndex(dlgSavePic.FilterIndex);
 end;
 
-function TfrmNXTImage.GraphicClassFromExt(const ext: string): TGraphicClass;
+function TfrmNXTImage.GraphicClassFromExt(ext: string): TGraphicClass;
 begin
+  ext := StripPeriod(ext);
 {$IFNDEF FPC}
-  if (ext = '.gif') then
+  if (ext = 'gif') then
     Result := TGIFImage
 {$ELSE}
-  if (ext = '.xpm') then
+  if (ext = 'xpm') then
     Result := TPixmap
 {$ENDIF}
-  else if (ext = '.jpg') or (ext = '.jpeg') then
+  else if (ext = 'jpg') or (ext = 'jpeg') then
     Result := TJPEGImage
-  else if (ext = '.png') then
+  else if (ext = 'png') then
     Result := TPortableNetworkGraphic
   else
     Result := TBitmap;
+end;
+
+function TfrmNXTImage.GraphicClassFromFilterIndex(const idx: integer): TGraphicClass;
+begin
+  case idx of
+    2 : Result := TPortableNetworkGraphic;
+    3 : Result := TJPEGImage;
+    4 : Result := TJPEGImage;
+{$IFNDEF FPC}
+    5 : Result := TGIFImage;
+{$ELSE}
+    5 : Result := TPixmap;
+{$ENDIF}
+    6 : Result := TBitmap;
+  else
+    Result := TBitmap;
+  end;
+end;
+
+function TfrmNXTImage.GetFilterIndexFromExt(ext: string): integer;
+begin
+  ext := StripPeriod(ext);
+{$IFNDEF FPC}
+  if (ext = 'gif') then
+    Result := 5
+{$ELSE}
+  if (ext = 'xpm') then
+    Result := 5
+{$ENDIF}
+  else if (ext = 'jpg') then
+    Result := 3
+  else if (ext = 'jpeg') then
+    Result := 4
+  else if (ext = 'png') then
+    Result := 2
+  else
+    Result := 6;
+end;
+
+function TfrmNXTImage.GetExtFromFilterIndex(const idx: integer): string;
+begin
+  case dlgSavePic.FilterIndex of
+    2 : Result := 'png';
+    3 : Result := 'jpg';
+    4 : Result := 'jpeg';
+{$IFNDEF FPC}
+    5 : Result := 'gif';
+{$ELSE}
+    5 : Result := 'xpm';
+{$ENDIF}
+    6 : Result := 'bmp';
+  else
+    Result := 'bmp';
+  end;
 end;
 
 procedure TfrmNXTImage.CheckForCustomClick;
