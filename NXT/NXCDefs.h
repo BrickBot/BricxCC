@@ -2430,17 +2430,17 @@ inline void ClearLine(byte line) { asm { TextOutEx(0, line, __BlankLine, 0) } }
  * Set the display font memory address.
  * This function lets you set the current display font memory address.
  * 
- * \param addr The new display font memory address.
+ * \param fontaddr The new display font memory address.
  */
-inline void SetDisplayFont(unsigned long addr) { asm { __setDisplayFont(addr) } }
+inline void SetDisplayFont(unsigned long fontaddr) { asm { __setDisplayFont(fontaddr) } }
 
 /**
  * Set the display memory address.
  * This function lets you set the current display memory address.
  * 
- * \param addr The new display memory address.
+ * \param dispaddr The new display memory address.
  */
-inline void SetDisplayDisplay(unsigned long addr) { asm { __setDisplayDisplay(addr) } }
+inline void SetDisplayDisplay(unsigned long dispaddr) { asm { __setDisplayDisplay(dispaddr) } }
 
 /**
  * Set the display erase mask.
@@ -3031,33 +3031,28 @@ inline byte SensorUS(const byte port);
  * \param values An array of bytes that will contain the 8 distance values
  * read from the ultrasonic sensor.
  * \return A status code indicating whether the read completed successfully or not.
- * See \ref CommLSReadType for possible Result values.
+ * See \ref CommLSReadType for possible result values.
  */
 inline char ReadSensorUSEx(const byte port, byte & values[]);
 
 /**
- * Read I2C register.
- * Read a single byte from an I2C device register.
- * \param port The port to which the I2C device is attached. See the
+ * Read the LEGO EMeter values.
+ * Read all the LEGO EMeter register values.
+ * They must all be read at once to ensure data coherency.
+ *
+ * \param port The port to which the LEGO EMeter sensor is attached. See the
  * \ref InPorts group. You may use a constant or a variable.
- * \param reg The I2C device register from which to read a single byte.
- * \param out The single byte read from the I2C device.
+ * \param vIn Input voltage
+ * \param aIn Input current
+ * \param vOut Output voltage
+ * \param aOut Output current
+ * \param joules The number of joules stored in the EMeter
+ * \param wIn The number of watts generated
+ * \param wOut The number of watts consumed
  * \return A status code indicating whether the read completed successfully or not.
- * See \ref CommLSReadType for possible Result values.
+ * See \ref CommLSReadType for possible result values.
  */
-inline char ReadI2CRegister(byte port, byte reg, byte & out);
-
-/**
- * Write I2C register.
- * Write a single byte to an I2C device register.
- * \param port The port to which the I2C device is attached. See the
- * \ref InPorts group. You may use a constant or a variable.
- * \param reg The I2C device register to which to write a single byte.
- * \param val The byte to write to the I2C device.
- * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values.
- */
-inline char WriteI2CRegister(byte port, byte reg, byte val);
+inline char ReadSensorEMeter(const byte port, float &vIn, float &aIn, float &vOut, float &aOut, int &joules, float &wIn, float &wOut);
 
 /**
  * Get lowspeed status.
@@ -3073,7 +3068,7 @@ inline char WriteI2CRegister(byte port, byte reg, byte val);
  * \param bytesready The number of bytes available to be read from the internal I2C buffer.
  * The maximum number of bytes that can be read is 16.
  * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * See \ref CommLSCheckStatusType for possible result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * Avoid calls to \ref LowspeedRead or \ref LowspeedWrite while LowspeedStatus returns
  * \ref STAT_COMM_PENDING.
@@ -3092,7 +3087,7 @@ inline long LowspeedStatus(const byte port, byte & bytesready);
  * be used where possible to avoid blocking access to I2C devices on other
  * ports by code running on other threads.
  * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * See \ref CommLSCheckStatusType for possible result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * Avoid calls to \ref LowspeedRead or \ref LowspeedWrite while LowspeedCheckStatus returns
  * \ref STAT_COMM_PENDING.
@@ -3135,7 +3130,7 @@ inline byte LowspeedBytesReady(const byte port);
  * device register at which to write data, and up to 14 bytes of data to be
  * written at the specified register.
  * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSWriteType for possible Result values. If the return
+ * See \ref CommLSWriteType for possible result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * \sa I2CCheckStatus, I2CRead, I2CWrite, I2CStatus, I2CBytesReady, LowspeedRead,
  * LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
@@ -3156,7 +3151,7 @@ inline long LowspeedWrite(const byte port, byte retlen, byte buffer[]);
  * \param buffer A byte array that contains the data read from the internal I2C
  * buffer.  If the return value is negative then the output buffer will be empty.
  * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSReadType for possible Result values. If the return
+ * See \ref CommLSReadType for possible result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * \sa I2CCheckStatus, I2CRead, I2CWrite, I2CStatus, I2CBytesReady, LowspeedWrite,
  * LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
@@ -3196,7 +3191,7 @@ inline long I2CStatus(const byte port, byte & bytesready);
  * be used where possible to avoid blocking access to I2C devices on other
  * ports by code running on other threads.
  * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values. If the return
+ * See \ref CommLSCheckStatusType for possible result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * Avoid calls to \ref I2CRead or \ref I2CWrite while this function returns
  * \ref STAT_COMM_PENDING.
@@ -3239,7 +3234,7 @@ inline byte I2CBytesReady(const byte port);
  * device register at which to write data, and up to 14 bytes of data to be
  * written at the specified register.
  * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSWriteType for possible Result values. If the return
+ * See \ref CommLSWriteType for possible result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * \sa I2CCheckStatus, I2CRead, I2CStatus, I2CBytesReady, LowspeedRead, LowspeedWrite,
  * LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
@@ -3260,7 +3255,7 @@ inline long I2CWrite(const byte port, byte retlen, byte buffer[]);
  * \param buffer A byte array that contains the data read from the internal I2C
  * buffer.  If the return value is negative then the output buffer will be empty.
  * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSReadType for possible Result values. If the return
+ * See \ref CommLSReadType for possible result values. If the return
  * value is \ref NO_ERR then the last operation did not cause any errors.
  * \sa I2CCheckStatus, I2CWrite, I2CStatus, I2CBytesReady, LowspeedRead, LowspeedWrite,
  * LowspeedCheckStatus, LowspeedBytesReady, and LowspeedStatus
@@ -3297,23 +3292,33 @@ inline long I2CRead(const byte port, byte buflen, byte & buffer[]);
 inline long I2CBytes(const byte port, byte inbuf[], byte & count, byte & outbuf[]);
 
 /**
- * Read I2C device information.
- * Read standard I2C device information: version, vendor, and device ID. The
- * I2C device must use address 0x02.
- *
+ * Read I2C register.
+ * Read a single byte from an I2C device register.
  * \param port The port to which the I2C device is attached. See the
- * \ref InPorts group. You may use a constant or a variable. Constants should
- * be used where possible to avoid blocking access to I2C devices on other
- * ports by code running on other threads.
- * \param info A value indicating the type of device information you are requesting.
- * See \ref GenericI2CConstants.
- * \return A string containing the requested device information.
- * \sa I2CDeviceInfoEx
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param i2caddr The I2C device address.
+ * \param reg The I2C device register from which to read a single byte.
+ * \param out The single byte read from the I2C device.
+ * \return A status code indicating whether the read completed successfully or not.
+ * See \ref CommLSReadType for possible result values.
  */
-inline string I2CDeviceInfo(byte port, byte info);
+inline char ReadI2CRegister(byte port, byte i2caddr, byte reg, byte & out);
 
 /**
- * Read I2C device information extra.
+ * Write I2C register.
+ * Write a single byte to an I2C device register.
+ * \param port The port to which the I2C device is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param i2caddr The I2C device address.
+ * \param reg The I2C device register to which to write a single byte.
+ * \param val The byte to write to the I2C device.
+ * \return A status code indicating whether the write completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char WriteI2CRegister(byte port, byte i2caddr, byte reg, byte val);
+
+/**
+ * Read I2C device information.
  * Read standard I2C device information: version, vendor, and device ID. The
  * I2C device uses the specified address.
  *
@@ -3321,123 +3326,66 @@ inline string I2CDeviceInfo(byte port, byte info);
  * \ref InPorts group. You may use a constant or a variable. Constants should
  * be used where possible to avoid blocking access to I2C devices on other
  * ports by code running on other threads.
- * \param addr The I2C device address.
+ * \param i2caddr The I2C device address.
  * \param info A value indicating the type of device information you are requesting.
  * See \ref GenericI2CConstants.
  * \return A string containing the requested device information.
- * \sa I2CDeviceInfo
  */
-inline string I2CDeviceInfoEx(byte port, byte addr, byte info);
+inline string I2CDeviceInfo(byte port, byte i2caddr, byte info);
 
 /**
  * Read I2C device version.
- * Read standard I2C device version. The I2C device must use address 0x02.
- *
- * \param port The port to which the I2C device is attached. See the
- * \ref InPorts group. You may use a constant or a variable. Constants should
- * be used where possible to avoid blocking access to I2C devices on other
- * ports by code running on other threads.
- * \return A string containing the device version.
- * \sa I2CVersionEx
- */
-inline string I2CVersion(byte port);
-
-/**
- * Read I2C device version extra.
  * Read standard I2C device version. The I2C device uses the specified address.
  *
  * \param port The port to which the I2C device is attached. See the
  * \ref InPorts group. You may use a constant or a variable. Constants should
  * be used where possible to avoid blocking access to I2C devices on other
  * ports by code running on other threads.
- * \param addr The I2C device address.
+ * \param i2caddr The I2C device address.
  * \return A string containing the device version.
- * \sa I2CVersion
  */
-inline string I2CVersionEx(byte port, byte addr);
+inline string I2CVersion(byte port, byte i2caddr);
 
 /**
  * Read I2C device vendor.
- * Read standard I2C device vendor. The I2C device must use address 0x02.
- *
- * \param port The port to which the I2C device is attached. See the
- * \ref InPorts group. You may use a constant or a variable. Constants should
- * be used where possible to avoid blocking access to I2C devices on other
- * ports by code running on other threads.
- * \return A string containing the device vendor.
- * \sa I2CVendorIdEx
- */
-inline string I2CVendorId(byte port);
-
-/**
- * Read I2C device vendor extra.
  * Read standard I2C device vendor. The I2C device uses the specified address.
  *
  * \param port The port to which the I2C device is attached. See the
  * \ref InPorts group. You may use a constant or a variable. Constants should
  * be used where possible to avoid blocking access to I2C devices on other
  * ports by code running on other threads.
- * \param addr The I2C device address.
+ * \param i2caddr The I2C device address.
  * \return A string containing the device vendor.
- * \sa I2CVendorId
  */
-inline string I2CVendorIdEx(byte port, byte addr);
+inline string I2CVendorId(byte port, byte i2caddr);
 
 /**
  * Read I2C device identifier.
- * Read standard I2C device identifier. The I2C device must use address 0x02.
- *
- * \param port The port to which the I2C device is attached. See the
- * \ref InPorts group. You may use a constant or a variable. Constants should
- * be used where possible to avoid blocking access to I2C devices on other
- * ports by code running on other threads.
- * \return A string containing the device identifier.
- * \sa I2CDeviceIdEx
- */
-inline string I2CDeviceId(byte port);
-
-/**
- * Read I2C device identifier extra.
  * Read standard I2C device identifier. The I2C device uses the specified address.
  *
  * \param port The port to which the I2C device is attached. See the
  * \ref InPorts group. You may use a constant or a variable. Constants should
  * be used where possible to avoid blocking access to I2C devices on other
  * ports by code running on other threads.
- * \param addr The I2C device address.
+ * \param i2caddr The I2C device address.
  * \return A string containing the device identifier.
- * \sa I2CDeviceId
  */
-inline string I2CDeviceIdEx(byte port, byte addr);
+inline string I2CDeviceId(byte port, byte i2caddr);
 
 /**
  * Send an I2C command.
- * Send a command to an I2C device at the standard command register: \ref I2C_REG_CMD.
- * The I2C device must use address 0x02.
- * \param port The port to which the I2C device is attached. See the
- * \ref InPorts group. You may use a constant or a variable. Constants should
- * be used where possible to avoid blocking access to I2C devices on other
- * ports by code running on other threads.
- * \param cmd The command to send to the I2C device.
- * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values.
- */
-inline long I2CSendCommand(byte port, byte cmd);
-
-/**
- * Send an I2C command extra.
  * Send a command to an I2C device at the standard command register: \ref I2C_REG_CMD.
  * The I2C device uses the specified address.
  * \param port The port to which the I2C device is attached. See the
  * \ref InPorts group. You may use a constant or a variable. Constants should
  * be used where possible to avoid blocking access to I2C devices on other
  * ports by code running on other threads.
- * \param addr The I2C device address.
+ * \param i2caddr The I2C device address.
  * \param cmd The command to send to the I2C device.
  * \return A status code indicating whether the write completed successfully or not.
- * See \ref CommLSCheckStatusType for possible Result values.
+ * See \ref CommLSCheckStatusType for possible result values.
  */
-inline long I2CSendCommandEx(byte port, byte addr, byte cmd);
+inline long I2CSendCommand(byte port, byte i2caddr, byte cmd);
 
 /** @defgroup LowLevelLowSpeedModuleFunctions Low level LowSpeed module functions
  * Low level functions for accessing low speed module features.
@@ -3650,8 +3598,10 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 #define SensorUS(_p) asm { ReadSensorUS(_p, __RETVAL__) }
 #define ReadSensorUSEx(_port, _values) asm { __ReadSensorUSEx(_port, _values, __RETVAL__) }
 
-#define ReadI2CRegister(_port, _reg, _out) asm { __MSReadValue(_port, 0x02, _reg, 1, _out, __RETVAL__) }
-#define WriteI2CRegister(_port, _reg, _val) asm { __MSWriteToRegister(_port, 0x02, _reg, _val, __RETVAL__) }
+#define ReadSensorEMeter(_port, _vIn, _aIn, _vOut, _aOut, _joules, _wIn, _wOut) asm { __ReadSensorEMeter(_port, _vIn, _aIn, _vOut, _aOut, _joules, _wIn, _wOut, __RETVAL__) }
+
+#define ReadI2CRegister(_port, _i2caddr, _reg, _out) asm { __MSReadValue(_port, _i2caddr, _reg, 1, _out, __RETVAL__) }
+#define WriteI2CRegister(_port, _i2caddr, _reg, _val) asm { __MSWriteToRegister(_port, _i2caddr, _reg, _val, __RETVAL__) }
 
 #define LowspeedStatus(_port, _bready) asm { __lowspeedStatus(_port, _bready, __RETVAL__) }
 #define LowspeedCheckStatus(_port) asm { __lowspeedStatus(_port, __TMPBYTE__, __RETVAL__) }
@@ -3667,17 +3617,12 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 
 #define I2CBytes(_port, _inbuf, _count, _outbuf) asm { ReadI2CBytes(_port, _inbuf, _count, _outbuf, __RETVAL__) }
 
-#define I2CDeviceInfoEx(_port, _addr, _info) asm { ReadI2CDeviceInfoEx(_port, _addr, _info, __STRRETVAL__) }
-#define I2CDeviceInfo(_port, _info) asm { ReadI2CDeviceInfoEx(_port, 0x02, _info, __STRRETVAL__) }
-#define I2CVersionEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VERSION, __STRRETVAL__) }
-#define I2CVersion(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VERSION, __STRRETVAL__) }
-#define I2CVendorIdEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_VENDOR_ID, __STRRETVAL__) }
-#define I2CVendorId(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_VENDOR_ID, __STRRETVAL__) }
-#define I2CDeviceIdEx(_port, _addr) asm { ReadI2CDeviceInfoEx(_port, _addr, I2C_REG_DEVICE_ID, __STRRETVAL__) }
-#define I2CDeviceId(_port) asm { ReadI2CDeviceInfoEx(_port, 0x02, I2C_REG_DEVICE_ID, __STRRETVAL__) }
+#define I2CDeviceInfo(_port, _i2caddr, _info) asm { ReadI2CDeviceInfo(_port, _i2caddr, _info, __STRRETVAL__) }
+#define I2CVersion(_port, _i2caddr) asm { ReadI2CDeviceInfo(_port, _i2caddr, I2C_REG_VERSION, __STRRETVAL__) }
+#define I2CVendorId(_port, _i2caddr) asm { ReadI2CDeviceInfo(_port, _i2caddr, I2C_REG_VENDOR_ID, __STRRETVAL__) }
+#define I2CDeviceId(_port, _i2caddr) asm { ReadI2CDeviceInfo(_port, _i2caddr, I2C_REG_DEVICE_ID, __STRRETVAL__) }
 
-#define I2CSendCommandEx(_port, _addr, _cmd) asm { __I2CSendCmd(_port, _addr, _cmd, __RETVAL__) }
-#define I2CSendCommand(_port, _cmd) asm { __I2CSendCmd(_port, 0x02, _cmd, __RETVAL__) }
+#define I2CSendCommand(_port, _i2caddr, _cmd) asm { __I2CSendCmd(_port, _i2caddr, _cmd, __RETVAL__) }
 
 #define GetLSInputBuffer(_p, _offset, _cnt, _data) asm { __getLSInputBuffer(_p, _offset, _cnt, _data) }
 #define GetLSOutputBuffer(_p, _offset, _cnt, _data) asm { __getLSOutputBuffer(_p, _offset, _cnt, _data) }
@@ -6523,12 +6468,12 @@ inline void SysCommBTConnection(CommBTConnectionType & args);
 /*
 // these functions really cannot be used for any useful purpose (read-only)
 inline void SetBTDeviceName(const byte devidx, string str);
-inline void SetBTDeviceAddress(const byte devidx, const byte addr[]);
+inline void SetBTDeviceAddress(const byte devidx, const byte btaddr[]);
 inline void SetBTConnectionName(const byte conn, string str);
 inline void SetBTConnectionPinCode(const byte conn, const byte code[]);
-inline void SetBTConnectionAddress(const byte conn, const byte addr[]);
+inline void SetBTConnectionAddress(const byte conn, const byte btaddr[]);
 inline void SetBrickDataName(string str);
-inline void SetBrickDataAddress(const byte p, byte addr[]);
+inline void SetBrickDataAddress(const byte p, byte btaddr[]);
 inline void SetBTDeviceClass(const byte devidx, unsigned long class);
 inline void SetBTDeviceStatus(const byte devidx, const byte status);
 inline void SetBTConnectionClass(const byte conn, unsigned long class);
@@ -6659,12 +6604,12 @@ inline void SetBTDeviceNameCount(byte count);
 #define HSMode() asm { GetHSMode(__TMPWORD__) __RETURN__ __TMPWORD__ }
 
 #define SetBTDeviceName(_p, _str) asm { __setBTDeviceName(_p, _str) }
-#define SetBTDeviceAddress(_p, _addr) asm { __setBTDeviceAddress(_p, _addr) }
+#define SetBTDeviceAddress(_p, _btaddr) asm { __setBTDeviceAddress(_p, _btaddr) }
 #define SetBTConnectionName(_p, _str) asm { __setBTConnectionName(_p, _str) }
 #define SetBTConnectionPinCode(_p, _code) asm { __setBTConnectionPinCode(_p, _code) }
-#define SetBTConnectionAddress(_p, _addr) asm { __setBTConnectionAddress(_p, _addr) }
+#define SetBTConnectionAddress(_p, _btaddr) asm { __setBTConnectionAddress(_p, _btaddr) }
 #define SetBrickDataName(_str) asm { SetCommModuleBytes(CommOffsetBrickDataName, 16, _str) }
-#define SetBrickDataAddress(_addr) asm { SetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _addr) }
+#define SetBrickDataAddress(_btaddr) asm { SetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _btaddr) }
 
 #define SetBTDeviceClass(_p, _n) asm { __setBTDeviceClass(_p, _n) }
 #define SetBTDeviceStatus(_p, _n) asm { __setBTDeviceStatus(_p, _n) }
@@ -8343,10 +8288,10 @@ inline int SensorHTIRSeekerDir(const byte & port);
  * function.
  *
  * \param port The sensor port. See \ref InPorts.
- * \param addr The register address. See \ref HTIRSeeker2Constants.
+ * \param reg The register address. See \ref HTIRSeeker2Constants.
  * \return The IRSeeker2 register value.
  */
-inline int SensorHTIRSeeker2Addr(const byte & port, const byte addr);
+inline int SensorHTIRSeeker2Addr(const byte & port, const byte reg);
 
 /**
  * Read HiTechnic IRSeeker2 DC direction.
@@ -9349,9 +9294,9 @@ inline void HTScoutUnmuteSound(void);
 #define SensorHTIRSeekerDir(_port) asm { ReadSensorHTIRSeekerDir(_port, __RETVAL__) }
 #define SensorHTColorNum(_port) asm { ReadSensorHTColorNum(_port, __RETVAL__) }
 #define ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) asm { __ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) }
-#define SensorHTIRSeeker2Addr(_port, _addr) asm { ReadSensorHTIRSeeker2Addr(_port, _addr, __RETVAL__) }
-#define SensorHTIRSeeker2DCDir(_port) asm { ReadSensorHTIRSeeker2Addr(_port, HTIR2_ADDR_DCDIR, __RETVAL__) }
-#define SensorHTIRSeeker2ACDir(_port) asm { ReadSensorHTIRSeeker2Addr(_port, HTIR2_ADDR_ACDIR, __RETVAL__) }
+#define SensorHTIRSeeker2Addr(_port, _reg) asm { ReadSensorHTIRSeeker2Addr(_port, _reg, __RETVAL__) }
+#define SensorHTIRSeeker2DCDir(_port) asm { ReadSensorHTIRSeeker2Addr(_port, HTIR2_REG_DCDIR, __RETVAL__) }
+#define SensorHTIRSeeker2ACDir(_port) asm { ReadSensorHTIRSeeker2Addr(_port, HTIR2_REG_ACDIR, __RETVAL__) }
 #define ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg) asm { __ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, __RETVAL__) }
 #define ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9) asm { __ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, __RETVAL__) }
 #define SetHTIRSeeker2Mode(_port, _mode) asm { __SetHTIRSeeker2Mode(_port, _mode, __RETVAL__) }
@@ -9420,7 +9365,7 @@ inline void HTScoutUnmuteSound(void);
 #define HTRCXEvent(_src, _value) asm { __HTRCXEvent(_src, _value) }
 #define HTRCXPlayTone(_freq, _duration) asm { __HTRCXPlayTone(_freq, _duration) }
 #define HTRCXSelectDisplay(_src, _value) asm { __HTRCXSelectDisplay(_src, _value) }
-#define HTRCXPollMemory(_address) asm { __HTRCXPollMemory(_address, __RETVAL__) }
+#define HTRCXPollMemory(_memaddress) asm { __HTRCXPollMemory(_memaddress, __RETVAL__) }
 #define HTRCXSetEvent(_evt, _src, _type) asm { __HTRCXSetEvent(_evt, _src, _type) }
 #define HTRCXSetGlobalOutput(_outputs, _mode) asm { __HTRCXSetGlobalOutput(_outputs, _mode) }
 #define HTRCXSetGlobalDirection(_outputs, _dir) asm { __HTRCXSetGlobalDirection(_outputs, _dir) }
@@ -9513,19 +9458,10 @@ inline int SensorMSPressure(const byte & port) {
  * Return the Mindsensors Compass sensor value.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The mindsensors compass value
  */
-inline int SensorMSCompass(const byte & port);
-
-/**
- * Read mindsensors compass value.
- * Return the Mindsensors Compass sensor value.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The mindsensors compass value
- */
-inline int SensorMSCompassEx(const byte & port, const byte addr);
+inline int SensorMSCompass(const byte & port, const byte i2caddr);
 
 /**
  * Read mindsensors DROD value.
@@ -9553,28 +9489,13 @@ inline int SensorMSPressureRaw(const byte & port);
  * before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param x The output x-axis acceleration.
  * \param y The output y-axis acceleration.
  * \param z The output z-axis acceleration.
  * \return The function call result.
  */
-inline bool ReadSensorMSAccel(const byte port, int & x, int & y, int & z);
-
-/**
- * Read mindsensors acceleration values.
- * Read X, Y, and Z axis acceleration values from the mindsensors Accelerometer
- * sensor. Returns a boolean value indicating whether or not the operation
- * completed successfully. The port must be configured as a Lowspeed port
- * before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param x The output x-axis acceleration.
- * \param y The output y-axis acceleration.
- * \param z The output z-axis acceleration.
- * \return The function call result.
- */
-inline bool ReadSensorMSAccelEx(const byte port, const byte addr, int & x, int & y, int & z);
+inline bool ReadSensorMSAccel(const byte port, const byte i2caddr, int & x, int & y, int & z);
 
 /**
  * Read mindsensors playstation controller values.
@@ -9584,6 +9505,7 @@ inline bool ReadSensorMSAccelEx(const byte port, const byte addr, int & x, int &
  * before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param btnset1 The button set 1 values. See \ref MSPSPNXBtnSet1.
  * \param btnset2 The button set 2 values. See \ref MSPSPNXBtnSet2.
  * \param xleft The left joystick x value.
@@ -9592,26 +9514,7 @@ inline bool ReadSensorMSAccelEx(const byte port, const byte addr, int & x, int &
  * \param yright The right joystick y value.
  * \return The function call result.
  */
-inline bool ReadSensorMSPlayStation(const byte port, byte & btnset1, byte & btnset2, byte & xleft, byte & yleft, byte & xright, byte & yright);
-
-/**
- * Read mindsensors playstation controller values.
- * Read playstation controller values from the mindsensors playstation
- * sensor. Returns a boolean value indicating whether or not the operation
- * completed successfully. The port must be configured as a Lowspeed port
- * before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param btnset1 The button set 1 values. See \ref MSPSPNXBtnSet1.
- * \param btnset2 The button set 2 values. See \ref MSPSPNXBtnSet2.
- * \param xleft The left joystick x value.
- * \param yleft The left joystick y value.
- * \param xright The right joystick x value.
- * \param yright The right joystick y value.
- * \return The function call result.
- */
-inline bool ReadSensorMSPlayStationEx(const byte port, const byte addr, byte & btnset1, byte & btnset2, byte & xleft, byte & yleft, byte & xright, byte & yright);
+inline bool ReadSensorMSPlayStation(const byte port, const byte i2caddr, byte & btnset1, byte & btnset2, byte & xleft, byte & yleft, byte & xright, byte & yright);
 
 /**
  * Read mindsensors RTClock values.
@@ -9640,28 +9543,13 @@ inline bool ReadSensorMSRTClock(const byte port, byte & sec, byte & min, byte & 
  * before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param x The output x-axis tilt.
  * \param y The output y-axis tilt.
  * \param z The output z-axis tilt.
  * \return The function call result.
  */
-inline bool ReadSensorMSTilt(const byte port, byte & x, byte & y, byte & z);
-
-/**
- * Read mindsensors tilt values.
- * Read X, Y, and Z axis tilt values from the mindsensors tilt
- * sensor. Returns a boolean value indicating whether or not the operation
- * completed successfully. The port must be configured as a Lowspeed port
- * before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param x The output x-axis tilt.
- * \param y The output y-axis tilt.
- * \param z The output z-axis tilt.
- * \return The function call result.
- */
-inline bool ReadSensorMSTiltEx(const byte port, const byte addr, byte & x, byte & y, byte & z);
+inline bool ReadSensorMSTilt(const byte port, const byte i2caddr, byte & x, byte & y, byte & z);
 
 /**
  * Read a mindsensors device value.
@@ -9671,26 +9559,12 @@ inline bool ReadSensorMSTiltEx(const byte port, const byte addr, byte & x, byte 
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param reg The device register to read.
  * \param numbytes The number of bytes to read. Only 1 or 2 byte values are supported.
  * \return The function call result.
  */
-inline int MSReadValue(const byte port, const byte reg, const byte numbytes);
-
-/**
- * Read a mindsensors device value.
- * Read a one or two byte value from a mindsensors sensor. The value must be
- * stored with the least signficant byte (LSB) first. Returns a boolean value
- * indicating whether or not the operation completed successfully. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param reg The device register to read.
- * \param numbytes The number of bytes to read. Only 1 or 2 byte values are supported.
- * \return The function call result.
- */
-inline int MSReadValueEx(const byte port, const byte addr, const byte reg, const byte numbytes);
+inline int MSReadValue(const byte port, const byte i2caddr, const byte reg, const byte numbytes);
 
 /**
  * Turn on power to device.
@@ -9698,20 +9572,10 @@ inline int MSReadValueEx(const byte port, const byte addr, const byte reg, const
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char MSEnergize(const byte port);
-
-/**
- * Turn on power to device.
- * Turn the power on for the mindsensors device on the specified port. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char MSEnergizeEx(const byte port, const byte addr);
+inline char MSEnergize(const byte port, const byte i2caddr);
 
 /**
  * Turn off power to device.
@@ -9719,20 +9583,10 @@ inline char MSEnergizeEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char MSDeenergize(const byte port);
-
-/**
- * Turn off power to device.
- * Turn power off for the mindsensors device on the specified port. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char MSDeenergizeEx(const byte port, const byte addr);
+inline char MSDeenergize(const byte port, const byte i2caddr);
 
 /**
  * Turn on mindsensors ADPA mode.
@@ -9740,20 +9594,10 @@ inline char MSDeenergizeEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char MSADPAOn(const byte port);
-
-/**
- * Turn on mindsensors ADPA mode.
- * Turn ADPA mode on for the mindsensors device on the specified port. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char MSADPAOnEx(const byte port, const byte addr);
+inline char MSADPAOn(const byte port, const byte i2caddr);
 
 /**
  * Turn off mindsensors ADPA mode.
@@ -9761,20 +9605,10 @@ inline char MSADPAOnEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char MSADPAOff(const byte port);
-
-/**
- * Turn off mindsensors ADPA mode.
- * Turn ADPA mode off for the mindsensors device on the specified port. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char MSADPAOffEx(const byte port, const byte addr);
+inline char MSADPAOff(const byte port, const byte i2caddr);
 
 /**
  * Configure DISTNx as GP2D12.
@@ -9782,20 +9616,10 @@ inline char MSADPAOffEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char DISTNxGP2D12(const byte port);
-
-/**
- * Configure DISTNx as GP2D12.
- * Configure the mindsensors DISTNx sensor as GP2D12. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char DISTNxGP2D12Ex(const byte port, const byte addr);
+inline char DISTNxGP2D12(const byte port, const byte i2caddr);
 
 /**
  * Configure DISTNx as GP2D120.
@@ -9803,20 +9627,10 @@ inline char DISTNxGP2D12Ex(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char DISTNxGP2D120(const byte port);
-
-/**
- * Configure DISTNx as GP2D120.
- * Configure the mindsensors DISTNx sensor as GP2D120. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char DISTNxGP2D120Ex(const byte port, const byte addr);
+inline char DISTNxGP2D120(const byte port, const byte i2caddr);
 
 /**
  * Configure DISTNx as GP2YA02.
@@ -9824,20 +9638,10 @@ inline char DISTNxGP2D120Ex(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char DISTNxGP2YA02(const byte port);
-
-/**
- * Configure DISTNx as GP2YA02.
- * Configure the mindsensors DISTNx sensor as GP2YA02. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char DISTNxGP2YA02Ex(const byte port, const byte addr);
+inline char DISTNxGP2YA02(const byte port, const byte i2caddr);
 
 /**
  * Configure DISTNx as GP2YA21.
@@ -9845,30 +9649,10 @@ inline char DISTNxGP2YA02Ex(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char DISTNxGP2YA21(const byte port);
-
-/**
- * Configure DISTNx as GP2YA21.
- * Configure the mindsensors DISTNx sensor as GP2YA21. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char DISTNxGP2YA21Ex(const byte port, const byte addr);
-
-/**
- * Read DISTNx distance value.
- * Read the mindsensors DISTNx distance value.
- * The port must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \return The distance value.
- */
-inline int DISTNxDistance(const byte port);
+inline char DISTNxGP2YA21(const byte port, const byte i2caddr);
 
 /**
  * Read DISTNx distance value.
@@ -9876,10 +9660,10 @@ inline int DISTNxDistance(const byte port);
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The distance value.
  */
-inline int DISTNxDistanceEx(const byte port, const byte addr);
+inline int DISTNxDistance(const byte port, const byte i2caddr);
 
 /**
  * Read DISTNx maximum distance value.
@@ -9887,20 +9671,10 @@ inline int DISTNxDistanceEx(const byte port, const byte addr);
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The maximum distance value.
  */
-inline int DISTNxMaxDistance(const byte port);
-
-/**
- * Read DISTNx maximum distance value.
- * Read the mindsensors DISTNx sensor's maximum distance value.
- * The port must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The maximum distance value.
- */
-inline int DISTNxMaxDistanceEx(const byte port, const byte addr);
+inline int DISTNxMaxDistance(const byte port, const byte i2caddr);
 
 /**
  * Read DISTNx minimum distance value.
@@ -9908,20 +9682,10 @@ inline int DISTNxMaxDistanceEx(const byte port, const byte addr);
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The distance value.
  */
-inline int DISTNxMinDistance(const byte port);
-
-/**
- * Read DISTNx minimum distance value.
- * Read the mindsensors DISTNx sensor's minimum distance value.
- * The port must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The distance value.
- */
-inline int DISTNxMinDistanceEx(const byte port, const byte addr);
+inline int DISTNxMinDistance(const byte port, const byte i2caddr);
 
 /**
  * Read DISTNx module type value.
@@ -9929,20 +9693,10 @@ inline int DISTNxMinDistanceEx(const byte port, const byte addr);
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The module type value.
  */
-inline byte DISTNxModuleType(const byte port);
-
-/**
- * Read DISTNx module type value.
- * Read the mindsensors DISTNx sensor's module type value.
- * The port must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The module type value.
- */
-inline byte DISTNxModuleTypeEx(const byte port, const byte addr);
+inline byte DISTNxModuleType(const byte port, const byte i2caddr);
 
 /**
  * Read DISTNx num points value.
@@ -9950,20 +9704,10 @@ inline byte DISTNxModuleTypeEx(const byte port, const byte addr);
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The num points value.
  */
-inline byte DISTNxNumPoints(const byte port);
-
-/**
- * Read DISTNx num points value.
- * Read the mindsensors DISTNx sensor's num points value.
- * The port must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The num points value.
- */
-inline byte DISTNxNumPointsEx(const byte port, const byte addr);
+inline byte DISTNxNumPoints(const byte port, const byte i2caddr);
 
 /**
  * Read DISTNx voltage value.
@@ -9971,20 +9715,176 @@ inline byte DISTNxNumPointsEx(const byte port, const byte addr);
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The voltage value.
  */
-inline int DISTNxVoltage(const byte port);
+inline int DISTNxVoltage(const byte port, const byte i2caddr);
 
 /**
- * Read DISTNx voltage value.
- * Read the mindsensors DISTNx sensor's voltage value.
+ * Calibrate ACCL-Nx X-axis.
+ * Calibrate the mindsensors ACCL-Nx sensor X-axis. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char ACCLNxCalibrateX(const byte port, const byte i2caddr);
+
+/**
+ * Stop calibrating ACCL-Nx X-axis.
+ * Stop calibrating the mindsensors ACCL-Nx sensor X-axis. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char ACCLNxCalibrateXEnd(const byte port, const byte i2caddr);
+
+/**
+ * Calibrate ACCL-Nx Y-axis.
+ * Calibrate the mindsensors ACCL-Nx sensor Y-axis. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char ACCLNxCalibrateY(const byte port, const byte i2caddr);
+
+/**
+ * Stop calibrating ACCL-Nx Y-axis.
+ * Stop calibrating the mindsensors ACCL-Nx sensor Y-axis. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char ACCLNxCalibrateYEnd(const byte port, const byte i2caddr);
+
+/**
+ * Calibrate ACCL-Nx Z-axis.
+ * Calibrate the mindsensors ACCL-Nx sensor Z-axis. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char ACCLNxCalibrateZ(const byte port, const byte i2caddr);
+
+/**
+ * Stop calibrating ACCL-Nx Z-axis.
+ * Stop calibrating the mindsensors ACCL-Nx sensor Z-axis. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char ACCLNxCalibrateZEnd(const byte port, const byte i2caddr);
+
+/**
+ * Reset ACCL-Nx calibration.
+ * Reset the mindsensors ACCL-Nx sensor calibration to factory settings. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The function call result.
+ */
+inline char ACCLNxResetCalibration(const byte port, const byte i2caddr);
+
+/**
+ * Set ACCL-Nx sensitivity.
+ * Reset the mindsensors ACCL-Nx sensor calibration to factory settings. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param slevel The sensitivity level. See \ref MSACCLNxSLevel.
+ * \return The function call result.
+ */
+inline char SetACCLNxSensitivity(const byte port, const byte i2caddr, byte slevel);
+
+/**
+ * Read ACCL-Nx sensitivity value.
+ * Read the mindsensors ACCL-Nx sensitivity value.
  * The port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The voltage value.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The sensitivity value.
  */
-inline int DISTNxVoltageEx(const byte port, const byte addr);
+inline byte ACCLNxSensitivity(const byte port, const byte i2caddr);
+
+/**
+ * Read ACCL-Nx X offset value.
+ * Read the mindsensors ACCL-Nx sensor's X offset value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The X offset value.
+ */
+inline int ACCLNxXOffset(const byte port, const byte i2caddr);
+
+/**
+ * Read ACCL-Nx X range value.
+ * Read the mindsensors ACCL-Nx sensor's X range value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The X range value.
+ */
+inline int ACCLNxXRange(const byte port, const byte i2caddr);
+
+/**
+ * Read ACCL-Nx Y offset value.
+ * Read the mindsensors ACCL-Nx sensor's Y offset value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The Y offset value.
+ */
+inline int ACCLNxYOffset(const byte port, const byte i2caddr);
+
+/**
+ * Read ACCL-Nx Y range value.
+ * Read the mindsensors ACCL-Nx sensor's Y range value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The Y range value.
+ */
+inline int ACCLNxYRange(const byte port, const byte i2caddr);
+
+/**
+ * Read ACCL-Nx Z offset value.
+ * Read the mindsensors ACCL-Nx sensor's Z offset value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The Z offset value.
+ */
+inline int ACCLNxZOffset(const byte port, const byte i2caddr);
+
+/**
+ * Read ACCL-Nx Z range value.
+ * Read the mindsensors ACCL-Nx sensor's Z range value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The Z range value.
+ */
+inline int ACCLNxZRange(const byte port, const byte i2caddr);
 
 /**
  * Configure PSPNx in digital mode.
@@ -9992,20 +9892,10 @@ inline int DISTNxVoltageEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char PSPNxDigital(const byte & port);
-
-/**
- * Configure PSPNx in digital mode.
- * Configure the mindsensors PSPNx device in digital mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char PSPNxDigitalEx(const byte & port, const byte & addr);
+inline char PSPNxDigital(const byte & port, const byte & i2caddr);
 
 /**
  * Configure PSPNx in analog mode.
@@ -10013,20 +9903,10 @@ inline char PSPNxDigitalEx(const byte & port, const byte & addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char PSPNxAnalog(const byte & port);
-
-/**
- * Configure PSPNx in analog mode.
- * Configure the mindsensors PSPNx device in analog mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char PSPNxAnalogEx(const byte & port, const byte & addr);
+inline char PSPNxAnalog(const byte & port, const byte & i2caddr);
 
 /**
  * Configure NRLink in 2400 baud mode.
@@ -10034,20 +9914,10 @@ inline char PSPNxAnalogEx(const byte & port, const byte & addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char NRLink2400(const byte port);
-
-/**
- * Configure NRLink in 2400 baud mode.
- * Configure the mindsensors NRLink device in 2400 baud mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char NRLink2400Ex(const byte port, const byte addr);
+inline char NRLink2400(const byte port, const byte i2caddr);
 
 /**
  * Configure NRLink in 4800 baud mode.
@@ -10055,20 +9925,10 @@ inline char NRLink2400Ex(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char NRLink4800(const byte port);
-
-/**
- * Configure NRLink in 4800 baud mode.
- * Configure the mindsensors NRLink device in 4800 baud mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char NRLink4800Ex(const byte port, const byte addr);
+inline char NRLink4800(const byte port, const byte i2caddr);
 
 /**
  * Flush NRLink buffers.
@@ -10076,20 +9936,10 @@ inline char NRLink4800Ex(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char NRLinkFlush(const byte port);
-
-/**
- * Flush NRLink buffers.
- * Flush the mindsensors NRLink device buffers. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char NRLinkFlushEx(const byte port, const byte addr);
+inline char NRLinkFlush(const byte port, const byte i2caddr);
 
 /**
  * Configure NRLink in IR long mode.
@@ -10097,20 +9947,10 @@ inline char NRLinkFlushEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char NRLinkIRLong(const byte port);
-
-/**
- * Configure NRLink in IR long mode.
- * Configure the mindsensors NRLink device in IR long mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char NRLinkIRLongEx(const byte port, const byte addr);
+inline char NRLinkIRLong(const byte port, const byte i2caddr);
 
 /**
  * Configure NRLink in IR short mode.
@@ -10118,20 +9958,10 @@ inline char NRLinkIRLongEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char NRLinkIRShort(const byte port);
-
-/**
- * Configure NRLink in IR short mode.
- * Configure the mindsensors NRLink device in IR short mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char NRLinkIRShortEx(const byte port, const byte addr);
+inline char NRLinkIRShort(const byte port, const byte i2caddr);
 
 /**
  * Configure NRLink in power function mode.
@@ -10139,20 +9969,10 @@ inline char NRLinkIRShortEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char NRLinkSetPF(const byte port);
-
-/**
- * Configure NRLink in power function mode.
- * Configure the mindsensors NRLink device in power function mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char NRLinkSetPFEx(const byte port, const byte addr);
+inline char NRLinkSetPF(const byte port, const byte i2caddr);
 
 /**
  * Configure NRLink in RCX mode.
@@ -10160,20 +9980,10 @@ inline char NRLinkSetPFEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char NRLinkSetRCX(const byte port);
-
-/**
- * Configure NRLink in RCX mode.
- * Configure the mindsensors NRLink device in RCX mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char NRLinkSetRCXEx(const byte port, const byte addr);
+inline char NRLinkSetRCX(const byte port, const byte i2caddr);
 
 /**
  * Configure NRLink in IR train mode.
@@ -10181,20 +9991,10 @@ inline char NRLinkSetRCXEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char NRLinkSetTrain(const byte port);
-
-/**
- * Configure NRLink in IR train mode.
- * Configure the mindsensors NRLink device in IR train mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char NRLinkSetTrainEx(const byte port, const byte addr);
+inline char NRLinkSetTrain(const byte port, const byte i2caddr);
 
 /**
  * Configure NRLink in raw IR transmit mode.
@@ -10202,20 +10002,10 @@ inline char NRLinkSetTrainEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The function call result.
  */
-inline char NRLinkTxRaw(const byte port);
-
-/**
- * Configure NRLink in raw IR transmit mode.
- * Configure the mindsensors NRLink device in raw IR transmit mode. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The function call result.
- */
-inline char NRLinkTxRawEx(const byte port, const byte addr);
+inline char NRLinkTxRaw(const byte port, const byte i2caddr);
 
 /**
  * Read NRLink status.
@@ -10223,20 +10013,10 @@ inline char NRLinkTxRawEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \return The mindsensors NRLink status.
  */
-inline byte NRLinkStatus(const byte port);
-
-/**
- * Read NRLink status.
- * Read the status of the mindsensors NRLink device. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \return The mindsensors NRLink status.
- */
-inline byte NRLinkStatusEx(const byte port, const byte addr);
+inline byte NRLinkStatus(const byte port, const byte i2caddr);
 
 /**
  * Run NRLink macro.
@@ -10244,22 +10024,11 @@ inline byte NRLinkStatusEx(const byte port, const byte addr);
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param macro The address of the macro to execute.
  * \return The function call result.
  */
-inline char RunNRLinkMacro(const byte port, const byte macro);
-
-/**
- * Run NRLink macro.
- * Run the specified mindsensors NRLink device macro. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param macro The address of the macro to execute.
- * \return The function call result.
- */
-inline char RunNRLinkMacroEx(const byte port, const byte addr, const byte macro);
+inline char RunNRLinkMacro(const byte port, const byte i2caddr, const byte macro);
 
 /**
  * Write data to NRLink.
@@ -10267,22 +10036,11 @@ inline char RunNRLinkMacroEx(const byte port, const byte addr, const byte macro)
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param data A byte array containing the data to write.
  * \return The function call result.
  */
-inline char WriteNRLinkBytes(const byte port, const byte data[]);
-
-/**
- * Write data to NRLink.
- * Write data to the mindsensors NRLink device on the specified port. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param data A byte array containing the data to write.
- * \return The function call result.
- */
-inline char WriteNRLinkBytesEx(const byte port, const byte addr, const byte data[]);
+inline char WriteNRLinkBytes(const byte port, const byte i2caddr, const byte data[]);
 
 /**
  * Read data from NRLink.
@@ -10290,41 +10048,14 @@ inline char WriteNRLinkBytesEx(const byte port, const byte addr, const byte data
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param data A byte array that will contain the data read from the device on output.
  * \return The function call result.
  */
-inline bool ReadNRLinkBytes(const byte port, byte & data[]);
-
-/**
- * Read data from NRLink.
- * Read data from the mindsensors NRLink device on the specified port. The port
- * must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param data A byte array that will contain the data read from the device on output.
- * \return The function call result.
- */
-inline bool ReadNRLinkBytesEx(const byte port, const byte addr, byte & data[]);
+inline bool ReadNRLinkBytes(const byte port, const byte i2caddr, byte & data[]);
 
 /**
  * MSIRTrain function.
- * Control an IR Train receiver set to the specified channel using the
- * mindsensors NRLink device. Valid func values are \ref TRAIN_FUNC_STOP,
- * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
- * Valid channel values are \ref TRAIN_CHANNEL_1 through \ref TRAIN_CHANNEL_3 and
- * \ref TRAIN_CHANNEL_ALL. The port must be configured as a Lowspeed port before
- * using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param channel The IR Train channel.  See \ref IRTrainChannels.
- * \param func The IR Train function. See \ref IRTrainFuncs
- * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
- */
-inline char MSIRTrain(const byte port, const byte channel, const byte func);
-
-/**
- * MSIRTrainEx function.
  * Control an IR Train receiver set to the specified channel using the
  * mindsensors NRLink device. Valid function values are \ref TRAIN_FUNC_STOP,
  * \ref TRAIN_FUNC_INCR_SPEED, \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT.
@@ -10333,31 +10064,15 @@ inline char MSIRTrain(const byte port, const byte channel, const byte func);
  * using this function.
  *
  * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param channel The IR Train channel.  See \ref IRTrainChannels.
  * \param func The IR Train function. See \ref IRTrainFuncs
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
-inline char MSIRTrainEx(const byte port, const byte addr, const byte channel, const byte func);
+inline char MSIRTrain(const byte port, const byte i2caddr, const byte channel, const byte func);
 
 /**
  * MSPFComboDirect function.
- * Execute a pair of Power Function motor commands on the specified channel
- * using the mindsensors NRLink device. Commands for outa and outb are
- * \ref PF_CMD_STOP, \ref PF_CMD_REV, \ref PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
- * PF_CHANNEL_1 through PF_CHANNEL_4. The port must be configured as a
- * Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param channel The Power Function channel.  See \ref PFChannelConstants.
- * \param outa The Power Function command for output A. See \ref PFCmdConstants.
- * \param outb The Power Function command for output B. See \ref PFCmdConstants.
- * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
- */
-inline char MSPFComboDirect(const byte port, const byte channel, const byte outa, const byte outb);
-
-/**
- * MSPFComboDirectEx function.
  * Execute a pair of Power Function motor commands on the specified channel
  * using the mindsensors NRLink device. Commands for outa and outb are
  * PF_CMD_STOP, PF_CMD_REV, PF_CMD_FWD, and \ref PF_CMD_BRAKE. Valid channels are
@@ -10365,13 +10080,13 @@ inline char MSPFComboDirect(const byte port, const byte channel, const byte outa
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param channel The Power Function channel.  See \ref PFChannelConstants.
  * \param outa The Power Function command for output A. See \ref PFCmdConstants.
  * \param outb The Power Function command for output B. See \ref PFCmdConstants.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
-inline char MSPFComboDirectEx(const byte port, const byte addr, const byte channel, const byte outa, const byte outb);
+inline char MSPFComboDirect(const byte port, const byte i2caddr, const byte channel, const byte outa, const byte outb);
 
 /**
  * MSPFComboPWM function.
@@ -10384,31 +10099,13 @@ inline char MSPFComboDirectEx(const byte port, const byte addr, const byte chann
  * port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param channel The Power Function channel.  See \ref PFChannelConstants.
  * \param outa The Power Function PWM command for output A. See \ref PFPWMOptions.
  * \param outb The Power Function PWM command for output B. See \ref PFPWMOptions.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
-inline char MSPFComboPWM(const byte port, const byte channel, const byte outa, const byte outb);
-
-/**
- * MSPFComboPWMEx function.
- * Control the speed of both outputs on a Power Function receiver set to the
- * specified channel using the mindsensors NRLink device. Valid output values
- * are \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
- * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
- * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
- * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
- * port must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param channel The Power Function channel.  See \ref PFChannelConstants.
- * \param outa The Power Function PWM command for output A. See \ref PFPWMOptions.
- * \param outb The Power Function PWM command for output B. See \ref PFPWMOptions.
- * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
- */
-inline char MSPFComboPWMEx(const byte port, const byte addr, const byte channel, const byte outa, const byte outb);
+inline char MSPFComboPWM(const byte port, const byte i2caddr, const byte channel, const byte outa, const byte outb);
 
 /**
  * MSPFRawOutput function.
@@ -10418,28 +10115,13 @@ inline char MSPFComboPWMEx(const byte port, const byte addr, const byte channel,
  * this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param nibble0 The first raw data nibble.
  * \param nibble1 The second raw data nibble.
  * \param nibble2 The third raw data nibble.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
-inline char MSPFRawOutput(const byte port, const byte nibble0, const byte nibble1, const byte nibble2);
-
-/**
- * MSPFRawOutputEx function.
- * Control a Power Function receiver set to the specified channel using the
- * mindsensors NRLink device. Build the raw data stream using the 3 nibbles
- * (4 bit values). The port must be configured as a Lowspeed port before using
- * this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param nibble0 The first raw data nibble.
- * \param nibble1 The second raw data nibble.
- * \param nibble2 The third raw data nibble.
- * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
- */
-inline char MSPFRawOutputEx(const byte port, const byte addr, const byte nibble0, const byte nibble1, const byte nibble2);
+inline char MSPFRawOutput(const byte port, const byte i2caddr, const byte nibble0, const byte nibble1, const byte nibble2);
 
 /**
  * MSPFRepeat function.
@@ -10449,26 +10131,12 @@ inline char MSPFRawOutputEx(const byte port, const byte addr, const byte nibble0
  * configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param count The number of times to repeat the command.
  * \param delay The number of milliseconds to delay between each repetition.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
-inline char MSPFRepeat(const byte port, const byte count, const unsigned int delay);
-
-/**
- * MSPFRepeatEx function.
- * Repeat sending the last Power Function command using the mindsensors
- * NRLink device. Specify the number of times to repeat the command and the
- * number of milliseconds of delay between each repetition. The port must be
- * configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param count The number of times to repeat the command.
- * \param delay The number of milliseconds to delay between each repetition.
- * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
- */
-inline char MSPFRepeatEx(const byte port, const byte addr, const byte count, const unsigned int delay);
+inline char MSPFRepeat(const byte port, const byte i2caddr, const byte count, const unsigned int delay);
 
 /**
  * MSPFSingleOutputCST function.
@@ -10482,32 +10150,13 @@ inline char MSPFRepeatEx(const byte port, const byte addr, const byte count, con
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param channel The Power Function channel.  See \ref PFChannelConstants.
  * \param out The Power Function output. See \ref PFOutputs.
  * \param func The Power Function CST function. See \ref PFCSTOptions.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
-inline char MSPFSingleOutputCST(const byte port, const byte channel, const byte out, const byte func);
-
-/**
- * MSPFSingleOutputCSTEx function.
- * Control a single output on a Power Function receiver set to the specified
- * channel using the mindsensors NRLink device. Select the desired output
- * using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are \ref PF_CST_CLEAR1_CLEAR2,
- * \ref PF_CST_SET1_CLEAR2, \ref PF_CST_CLEAR1_SET2, \ref PF_CST_SET1_SET2,
- * \ref PF_CST_INCREMENT_PWM, \ref PF_CST_DECREMENT_PWM, \ref PF_CST_FULL_FWD,
- * \ref PF_CST_FULL_REV, and \ref PF_CST_TOGGLE_DIR. Valid channels are
- * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
- * Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param channel The Power Function channel.  See \ref PFChannelConstants.
- * \param out The Power Function output. See \ref PFOutputs.
- * \param func The Power Function CST function. See \ref PFCSTOptions.
- * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
- */
-inline char MSPFSingleOutputCSTEx(const byte port, const byte addr, const byte channel, const byte out, const byte func);
+inline char MSPFSingleOutputCST(const byte port, const byte i2caddr, const byte channel, const byte out, const byte func);
 
 /**
  * MSPFSingleOutputPWM function.
@@ -10521,32 +10170,13 @@ inline char MSPFSingleOutputCSTEx(const byte port, const byte addr, const byte c
  * port must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param channel The Power Function channel.  See \ref PFChannelConstants.
  * \param out The Power Function output. See \ref PFOutputs.
  * \param func The Power Function PWM function. See \ref PFPWMOptions.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
-inline char MSPFSingleOutputPWM(const byte port, const byte channel, const byte out, const byte func);
-
-/**
- * MSPFSingleOutputPWMEx function.
- * Control the speed of a single output on a Power Function receiver set to
- * the specified channel using the mindsensors NRLink device. Select the
- * desired output using \ref PF_OUT_A or \ref PF_OUT_B. Valid functions are
- * \ref PF_PWM_FLOAT, \ref PF_PWM_FWD1, \ref PF_PWM_FWD2, \ref PF_PWM_FWD3, \ref PF_PWM_FWD4,
- * \ref PF_PWM_FWD5, \ref PF_PWM_FWD6, \ref PF_PWM_FWD7, \ref PF_PWM_BRAKE, \ref PF_PWM_REV7,
- * \ref PF_PWM_REV6, \ref PF_PWM_REV5, \ref PF_PWM_REV4, \ref PF_PWM_REV3, \ref PF_PWM_REV2, and
- * \ref PF_PWM_REV1. Valid channels are \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The
- * port must be configured as a Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param channel The Power Function channel.  See \ref PFChannelConstants.
- * \param out The Power Function output. See \ref PFOutputs.
- * \param func The Power Function PWM function. See \ref PFPWMOptions.
- * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
- */
-inline char MSPFSingleOutputPWMEx(const byte port, const byte addr, const byte channel, const byte out, const byte func);
+inline char MSPFSingleOutputPWM(const byte port, const byte i2caddr, const byte channel, const byte out, const byte func);
 
 /**
  * MSPFSinglePin function.
@@ -10560,6 +10190,7 @@ inline char MSPFSingleOutputPWMEx(const byte port, const byte addr, const byte c
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param channel The Power Function channel.  See \ref PFChannelConstants.
  * \param out The Power Function output. See \ref PFOutputs.
  * \param pin The Power Function pin. See \ref PFPinConstants.
@@ -10567,48 +10198,10 @@ inline char MSPFSingleOutputPWMEx(const byte port, const byte addr, const byte c
  * \param cont Control whether the mode is continuous or timeout.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
-inline char MSPFSinglePin(const byte port, const byte channel, const byte out, const byte pin, const byte func, bool cont);
-
-/**
- * MSPFSinglePinEx function.
- * Control a single pin on a Power Function receiver set to the specified
- * channel using the mindsensors NRLink device. Select the desired output
- * using \ref PF_OUT_A or \ref PF_OUT_B.  Select the desired pin using \ref PF_PIN_C1 or
- * \ref PF_PIN_C2. Valid functions are \ref PF_FUNC_NOCHANGE, \ref PF_FUNC_CLEAR,
- * \ref PF_FUNC_SET, and \ref PF_FUNC_TOGGLE. Valid channels are \ref PF_CHANNEL_1 through
- * \ref PF_CHANNEL_4. Specify whether the mode by passing true (continuous) or
- * false (timeout) as the final parameter. The port must be configured as a
- * Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- * \param channel The Power Function channel.  See \ref PFChannelConstants.
- * \param out The Power Function output. See \ref PFOutputs.
- * \param pin The Power Function pin. See \ref PFPinConstants.
- * \param func The Power Function single pin function. See \ref PFPinFuncs.
- * \param cont Control whether the mode is continuous or timeout.
- * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
- */
-inline char MSPFSinglePinEx(const byte port, const byte addr, const byte channel, const byte out, const byte pin, const byte func, bool cont);
+inline char MSPFSinglePin(const byte port, const byte i2caddr, const byte channel, const byte out, const byte pin, const byte func, bool cont);
 
 /**
  * MSPFTrain function.
- * Control both outputs on a Power Function receiver set to the specified
- * channel using the mindsensors NRLink device as if it were an IR Train
- * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
- * \ref TRAIN_FUNC_DECR_SPEED, and \ref TRAIN_FUNC_TOGGLE_LIGHT. Valid channels are
- * \ref PF_CHANNEL_1 through \ref PF_CHANNEL_4. The port must be configured as a
- * Lowspeed port before using this function.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param channel The Power Function channel.  See \ref PFChannelConstants.
- * \param func The Power Function train function. See \ref IRTrainFuncs.
- * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
- */
-inline char MSPFTrain(const byte port, const byte channel, const byte func);
-
-/**
- * MSPFTrainEx function.
  * Control both outputs on a Power Function receiver set to the specified
  * channel using the mindsensors NRLink device as if it were an IR Train
  * receiver. Valid function values are \ref TRAIN_FUNC_STOP, \ref TRAIN_FUNC_INCR_SPEED,
@@ -10617,12 +10210,12 @@ inline char MSPFTrain(const byte port, const byte channel, const byte func);
  * Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param channel The Power Function channel.  See \ref PFChannelConstants.
  * \param func The Power Function train function. See \ref IRTrainFuncs.
  * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
  */
-inline char MSPFTrainEx(const byte port, const byte addr, const byte channel, const byte func);
+inline char MSPFTrain(const byte port, const byte i2caddr, const byte channel, const byte func);
 
 /**
  * MSRCXSetIRLinkPort function.
@@ -10632,20 +10225,9 @@ inline char MSPFTrainEx(const byte port, const byte addr, const byte channel, co
  * the mindsensors RCX and Scout NRLink functions.
  *
  * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  */
-inline void MSRCXSetNRLinkPort(const byte port);
-
-/**
- * MSRCXSetIRLinkPortEx function.
- * Set the global port in advance of using the MSRCX* and MSScout* API
- * functions for sending RCX and Scout messages over the mindsensors NRLink
- * device. The port must be configured as a Lowspeed port before using any of
- * the mindsensors RCX and Scout NRLink functions.
- *
- * \param port The sensor port. See \ref InPorts.
- * \param addr The sensor I2C address. See sensor documentation for this value.
- */
-inline void MSRCXSetNRLinkPortEx(const byte port, const byte addr);
+inline void MSRCXSetNRLinkPort(const byte port, const byte i2caddr);
 
 /**
  * MSRCXBatteryLevel function.
@@ -11395,116 +10977,79 @@ inline void MSScoutUnmuteSound(void);
 
 #else
 
-#define SensorMSPressureRaw(_p) asm { getin __RETVAL__, _p, RawValue }
-
-#define SensorMSCompass(_port) asm { ReadSensorMSCompass(_port, __RETVAL__) }
-#define SensorMSCompassEx(_port, _addr) asm { ReadSensorMSCompassEx(_port, _addr, __RETVAL__) }
-
-#define ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year) asm { __ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, __RETVAL__) }
-
-#define ReadSensorMSTilt(_port, _x, _y, _z) asm { __ReadSensorMSTiltEx(_port, 0x02, _x, _y, _z, __RETVAL__) }
-#define ReadSensorMSTiltEx(_port, _addr, _x, _y, _z) asm { __ReadSensorMSTiltEx(_port, _addr, _x, _y, _z, __RETVAL__) }
-
-#define ReadSensorMSAccel(_port, _x, _y, _z) asm { __ReadSensorMSAccelEx(_port, 0x02, _x, _y, _z, __RETVAL__) }
-#define ReadSensorMSAccelEx(_port, _addr, _x, _y, _z) asm { __ReadSensorMSAccelEx(_port, _addr, _x, _y, _z, __RETVAL__) }
-
-#define MSReadValueEx(_port, _addr, _reg, _bytes) asm { __MSReadValue(_port, _addr, _reg, _bytes, __RETVAL__, __TMPBYTE__) }
-#define MSReadValue(_port, _reg, _bytes) asm { __MSReadValue(_port, 0x02, _reg, _bytes, __RETVAL__, __TMPBYTE__) }
-
-#define MSEnergize(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ENERGIZED, __RETVAL__) }
-#define MSEnergizeEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, MS_CMD_ENERGIZED, __RETVAL__) }
-#define MSDeenergize(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_DEENERGIZED, __RETVAL__) }
-#define MSDeenergizeEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, MS_CMD_DEENERGIZED, __RETVAL__) }
-#define MSADPAOn(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_ON, __RETVAL__) }
-#define MSADPAOnEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, MS_CMD_ADPA_ON, __RETVAL__) }
-#define MSADPAOff(_port) asm { __I2CSendCmd(_port, 0x02, MS_CMD_ADPA_OFF, __RETVAL__) }
-#define MSADPAOffEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, MS_CMD_ADPA_OFF, __RETVAL__) }
-
-#define DISTNxGP2D12(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D12, __RETVAL__) }
-#define DISTNxGP2D120(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2D120, __RETVAL__) }
-#define DISTNxGP2YA21(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA21, __RETVAL__) }
-#define DISTNxGP2YA02(_port) asm { __I2CSendCmd(_port, 0x02, DIST_CMD_GP2YA02, __RETVAL__) }
-#define DISTNxDistance(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_DIST, 2, __RETVAL__, __TMPBYTE__) }
-#define DISTNxVoltage(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_VOLT, 2, __RETVAL__, __TMPBYTE__) }
-#define DISTNxModuleType(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_MODULE_TYPE, 1, __RETVAL__, __TMPBYTE__) }
-#define DISTNxNumPoints(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_NUM_POINTS, 1, __RETVAL__, __TMPBYTE__) }
-#define DISTNxMinDistance(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_DIST_MIN, 2, __RETVAL__, __TMPBYTE__) }
-#define DISTNxMaxDistance(_port) asm { __MSReadValue(_port, 0x02, DIST_REG_DIST_MAX, 2, __RETVAL__, __TMPBYTE__) }
-
-#define DISTNxGP2D12Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, DIST_CMD_GP2D12, __RETVAL__) }
-#define DISTNxGP2D120Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, DIST_CMD_GP2D120, __RETVAL__) }
-#define DISTNxGP2YA21Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA21, __RETVAL__) }
-#define DISTNxGP2YA02Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, DIST_CMD_GP2YA02, __RETVAL__) }
-#define DISTNxDistanceEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_DIST, 2, __RETVAL__, __TMPBYTE__) }
-#define DISTNxVoltageEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_VOLT, 2, __RETVAL__, __TMPBYTE__) }
-#define DISTNxModuleTypeEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_MODULE_TYPE, 1, __RETVAL__, __TMPBYTE__) }
-#define DISTNxNumPointsEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_NUM_POINTS, 1, __RETVAL__, __TMPBYTE__) }
-#define DISTNxMinDistanceEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_DIST_MIN, 2, __RETVAL__, __TMPBYTE__) }
-#define DISTNxMaxDistanceEx(_port, _addr) asm { __MSReadValue(_port, _addr, DIST_REG_DIST_MAX, 2, __RETVAL__, __TMPBYTE__) }
-
 #define SensorMSDROD(_p) asm { getin __RETVAL__, _p, NormalizedValue }
+#define SensorMSPressureRaw(_p) asm { getin __RETVAL__, _p, RawValue }
+#define SensorMSCompass(_port, _i2caddr) asm { ReadSensorMSCompass(_port, _i2caddr, __RETVAL__) }
+#define ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year) asm { __ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, __RETVAL__) }
+#define ReadSensorMSTilt(_port, _i2caddr, _x, _y, _z) asm { __ReadSensorMSTilt(_port, _i2caddr, _x, _y, _z, __RETVAL__) }
+#define ReadSensorMSAccel(_port, _i2caddr, _x, _y, _z) asm { __ReadSensorMSAccel(_port, _i2caddr, _x, _y, _z, __RETVAL__) }
+#define MSReadValue(_port, _i2caddr, _reg, _bytes) asm { __MSReadValue(_port, _i2caddr, _reg, _bytes, __RETVAL__, __TMPBYTE__) }
 
-#define PSPNxDigital(_port) asm { __I2CSendCmd(_port, 0x02, PSP_CMD_DIGITAL, __RETVAL__) }
-#define PSPNxDigitalEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, PSP_CMD_DIGITAL, __RETVAL__) }
-#define PSPNxAnalog(_port) asm { __I2CSendCmd(_port, 0x02, PSP_CMD_ANALOG, __RETVAL__) }
-#define PSPNxAnalogEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, PSP_CMD_ANALOG, __RETVAL__) }
+#define MSEnergize(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, MS_CMD_ENERGIZED, __RETVAL__) }
+#define MSDeenergize(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, MS_CMD_DEENERGIZED, __RETVAL__) }
+#define MSADPAOn(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, MS_CMD_ADPA_ON, __RETVAL__) }
+#define MSADPAOff(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, MS_CMD_ADPA_OFF, __RETVAL__) }
 
-#define ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright) asm { __ReadSensorMSPlayStationEx(_port, _addr, _b1, _b2, _xleft, _yleft, _xright, _yright, __RETVAL__) }
-#define ReadSensorMSPlayStation(_port, _b1, _b2, _xleft, _yleft, _xright, _yright) ReadSensorMSPlayStationEx(_port, 0x02, _b1, _b2, _xleft, _yleft, _xright, _yright)
+#define DISTNxGP2D12(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, DIST_CMD_GP2D12, __RETVAL__) }
+#define DISTNxGP2D120(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, DIST_CMD_GP2D120, __RETVAL__) }
+#define DISTNxGP2YA21(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, DIST_CMD_GP2YA21, __RETVAL__) }
+#define DISTNxGP2YA02(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, DIST_CMD_GP2YA02, __RETVAL__) }
+#define DISTNxDistance(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, DIST_REG_DIST, 2, __RETVAL__, __TMPBYTE__) }
+#define DISTNxVoltage(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, DIST_REG_VOLT, 2, __RETVAL__, __TMPBYTE__) }
+#define DISTNxModuleType(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, DIST_REG_MODULE_TYPE, 1, __RETVAL__, __TMPBYTE__) }
+#define DISTNxNumPoints(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, DIST_REG_NUM_POINTS, 1, __RETVAL__, __TMPBYTE__) }
+#define DISTNxMinDistance(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, DIST_REG_DIST_MIN, 2, __RETVAL__, __TMPBYTE__) }
+#define DISTNxMaxDistance(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, DIST_REG_DIST_MAX, 2, __RETVAL__, __TMPBYTE__) }
 
-#define NRLink2400(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_2400, __RETVAL__) }
-#define NRLink4800(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_4800, __RETVAL__) }
-#define NRLinkFlush(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_FLUSH, __RETVAL__) }
-#define NRLinkIRLong(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_LONG, __RETVAL__) }
-#define NRLinkIRShort(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_IR_SHORT, __RETVAL__) }
-#define NRLinkTxRaw(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_TX_RAW, __RETVAL__) }
-#define NRLinkSetRCX(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_RCX, __RETVAL__) }
-#define NRLinkSetTrain(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_TRAIN, __RETVAL__) }
-#define NRLinkSetPF(_port) asm { __I2CSendCmd(_port, 0x02, NRLINK_CMD_SET_PF, __RETVAL__) }
+#define ACCLNxCalibrateX(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, ACCL_CMD_X_CAL, __RETVAL__) }
+#define ACCLNxCalibrateXEnd(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, ACCL_CMD_X_CAL_END, __RETVAL__) }
+#define ACCLNxCalibrateY(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, ACCL_CMD_Y_CAL, __RETVAL__) }
+#define ACCLNxCalibrateYEnd(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, ACCL_CMD_Y_CAL_END, __RETVAL__) }
+#define ACCLNxCalibrateZ(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, ACCL_CMD_Z_CAL, __RETVAL__) }
+#define ACCLNxCalibrateZEnd(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, ACCL_CMD_Z_CAL_END, __RETVAL__) }
+#define ACCLNxResetCalibration(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, ACCL_CMD_RESET_CAL, __RETVAL__) }
+#define SetACCLNxSensitivity(_port, _i2caddr, _slevel) asm { __I2CSendCmd(_port, _i2caddr, _slevel, __RETVAL__) }
+#define ACCLNxSensitivity(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_sENS_LVL, 1, __RETVAL__, __TMPBYTE__) }
+#define ACCLNxXOffset(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_X_OFFSET, 2, __RETVAL__, __TMPBYTE__) }
+#define ACCLNxXRange(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_X_RANGE, 2, __RETVAL__, __TMPBYTE__) }
+#define ACCLNxYOffset(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_Y_OFFSET, 2, __RETVAL__, __TMPBYTE__) }
+#define ACCLNxYRange(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_Y_RANGE, 2, __RETVAL__, __TMPBYTE__) }
+#define ACCLNxZOffset(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_Z_OFFSET, 2, __RETVAL__, __TMPBYTE__) }
+#define ACCLNxZRange(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_Z_RANGE, 2, __RETVAL__, __TMPBYTE__) }
 
-#define NRLink2400Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_2400, __RETVAL__) }
-#define NRLink4800Ex(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_4800, __RETVAL__) }
-#define NRLinkFlushEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_FLUSH, __RETVAL__) }
-#define NRLinkIRLongEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_LONG, __RETVAL__) }
-#define NRLinkIRShortEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_IR_SHORT, __RETVAL__) }
-#define NRLinkTxRawEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_TX_RAW, __RETVAL__) }
-#define NRLinkSetRCXEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_RCX, __RETVAL__) }
-#define NRLinkSetTrainEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_TRAIN, __RETVAL__) }
-#define NRLinkSetPFEx(_port, _addr) asm { __I2CSendCmd(_port, _addr, NRLINK_CMD_SET_PF, __RETVAL__) }
+#define PSPNxDigital(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, PSP_CMD_DIGITAL, __RETVAL__) }
+#define PSPNxAnalog(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, PSP_CMD_ANALOG, __RETVAL__) }
 
-#define RunNRLinkMacroEx(_port, _addr, _macro) asm { __RunNRLinkMacroEx(_port, _addr, _macro, __RETVAL__) }
-#define RunNRLinkMacro(_port, _macro) asm { __RunNRLinkMacroEx(_port, 0x02, _macro, __RETVAL__) }
+#define ReadSensorMSPlayStation(_port, _i2caddr, _b1, _b2, _xleft, _yleft, _xright, _yright) asm { __ReadSensorMSPlayStation(_port, _i2caddr, _b1, _b2, _xleft, _yleft, _xright, _yright, __RETVAL__) }
 
-#define NRLinkStatusEx(_port, _addr) asm { ReadNRLinkStatusEx(_port, _addr, __RETVAL__, __TMPBYTE__) }
-#define NRLinkStatus(_port) asm { ReadNRLinkStatusEx(_port, 0x02, __RETVAL__, __TMPBYTE__) }
+#define NRLink2400(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NRLINK_CMD_2400, __RETVAL__) }
+#define NRLink4800(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NRLINK_CMD_4800, __RETVAL__) }
+#define NRLinkFlush(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NRLINK_CMD_FLUSH, __RETVAL__) }
+#define NRLinkIRLong(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NRLINK_CMD_IR_LONG, __RETVAL__) }
+#define NRLinkIRShort(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NRLINK_CMD_IR_SHORT, __RETVAL__) }
+#define NRLinkTxRaw(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NRLINK_CMD_TX_RAW, __RETVAL__) }
+#define NRLinkSetRCX(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NRLINK_CMD_SET_RCX, __RETVAL__) }
+#define NRLinkSetTrain(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NRLINK_CMD_SET_TRAIN, __RETVAL__) }
+#define NRLinkSetPF(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NRLINK_CMD_SET_PF, __RETVAL__) }
 
-#define WriteNRLinkBytesEx(_port, _addr, _bytes) asm { __WriteNRLinkBytes(_port, _addr, _bytes, __RETVAL__) }
-#define WriteNRLinkBytes(_port, _bytes) asm { __WriteNRLinkBytes(_port, 0x02, _bytes, __RETVAL__) }
+#define RunNRLinkMacro(_port, _i2caddr, _macro) asm { __RunNRLinkMacro(_port, _i2caddr, _macro, __RETVAL__) }
 
-#define ReadNRLinkBytesEx(_port, _addr, _bytes) asm { __ReadNRLinkBytes(_port, _addr, _bytes, __RETVAL__) }
-#define ReadNRLinkBytes(_port, _bytes) asm { __ReadNRLinkBytes(_port, 0x02, _bytes, __RETVAL__) }
+#define NRLinkStatus(_port, _i2caddr) asm { ReadNRLinkStatus(_port, _i2caddr, __RETVAL__, __TMPBYTE__) }
 
-#define MSPFComboDirectEx(_port, _addr, _channel, _outa, _outb) asm { __MSPFComboDirect(_port, _addr, _channel, _outa, _outb, __RETVAL__) }
-#define MSPFComboDirect(_port, _channel, _outa, _outb) asm { __MSPFComboDirect(_port, 0x02, _channel, _outa, _outb, __RETVAL__) }
-#define MSPFSinglePinEx(_port, _addr, _channel, _out, _pin, _func, _cont) asm { __MSPFSinglePin(_port, _addr, _channel, _out, _pin, _func, _cont, __RETVAL__) }
-#define MSPFSinglePin(_port, _channel, _out, _pin, _func, _cont) asm { __MSPFSinglePin(_port, 0x02, _channel, _out, _pin, _func, _cont, __RETVAL__) }
-#define MSPFSingleOutputCSTEx(_port, _addr, _channel, _out, _func) asm { __MSPFSingleOutput(_port, _addr, _channel, _out, _func, TRUE, __RETVAL__) }
-#define MSPFSingleOutputCST(_port, _channel, _out, _func) asm { __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, TRUE, __RETVAL__) }
-#define MSPFSingleOutputPWMEx(_port, _addr, _channel, _out, _func) asm { __MSPFSingleOutput(_port, _addr, _channel, _out, _func, FALSE, __RETVAL__) }
-#define MSPFSingleOutputPWM(_port, _channel, _out, _func) asm { __MSPFSingleOutput(_port, 0x02, _channel, _out, _func, FALSE, __RETVAL__) }
-#define MSPFComboPWMEx(_port, _addr, _channel, _outa, _outb) asm { __MSPFComboPWM(_port, _addr, _channel, _outa, _outb, __RETVAL__) }
-#define MSPFComboPWM(_port, _channel, _outa, _outb) asm { __MSPFComboPWM(_port, 0x02, _channel, _outa, _outb, __RETVAL__) }
-#define MSPFTrainEx(_port, _addr, _channel, _func) asm { __MSIRTrain(_port, _addr, _channel, _func, TRUE, __RETVAL__) }
-#define MSPFTrain(_port, _channel, _func) asm { __MSIRTrain(_port, 0x02, _channel, _func, TRUE, __RETVAL__) }
-#define MSIRTrainEx(_port, _addr, _channel, _func) asm { __MSIRTrain(_port, _addr, _channel, _func, FALSE, __RETVAL__) }
-#define MSIRTrain(_port, _channel, _func) asm { __MSIRTrain(_port, 0x02, _channel, _func, FALSE, __RETVAL__) }
-#define MSPFRawOutputEx(_port, _addr, _nibble0, _nibble1, _nibble2) asm { __MSPFRawOutput(_port, _addr, _nibble0, _nibble1, _nibble2, __RETVAL__) }
-#define MSPFRawOutput(_port, _nibble0, _nibble1, _nibble2) asm { __MSPFRawOutput(_port, 0x02, _nibble0, _nibble1, _nibble2, __RETVAL__) }
-#define MSPFRepeatEx(_port, _addr, _count, _delay) asm { __MSPFRepeatLastCommand(_port, _addr, _count, _delay, __RETVAL__) }
-#define MSPFRepeat(_port, _count, _delay) asm { __MSPFRepeatLastCommand(_port, 0x02, _count, _delay, __RETVAL__) }
+#define WriteNRLinkBytes(_port, _i2caddr, _bytes) asm { __WriteNRLinkBytes(_port, _i2caddr, _bytes, __RETVAL__) }
+#define ReadNRLinkBytes(_port, _i2caddr, _bytes) asm { __ReadNRLinkBytes(_port, _i2caddr, _bytes, __RETVAL__) }
 
-#define MSRCXSetNRLinkPortEx(_port, _addr) asm { __MSRCXSetNRLink(_port, _addr) }
-#define MSRCXSetNRLinkPort(_port) asm { __MSRCXSetNRLink(_port, 0x02) }
+#define MSPFComboDirect(_port, _i2caddr, _channel, _outa, _outb) asm { __MSPFComboDirect(_port, _i2caddr, _channel, _outa, _outb, __RETVAL__) }
+#define MSPFSinglePin(_port, _i2caddr, _channel, _out, _pin, _func, _cont) asm { __MSPFSinglePin(_port, _i2caddr, _channel, _out, _pin, _func, _cont, __RETVAL__) }
+#define MSPFSingleOutputCST(_port, _i2caddr, _channel, _out, _func) asm { __MSPFSingleOutput(_port, _i2caddr, _channel, _out, _func, TRUE, __RETVAL__) }
+#define MSPFSingleOutputPWM(_port, _i2caddr, _channel, _out, _func) asm { __MSPFSingleOutput(_port, _i2caddr, _channel, _out, _func, FALSE, __RETVAL__) }
+#define MSPFComboPWM(_port, _i2caddr, _channel, _outa, _outb) asm { __MSPFComboPWM(_port, _i2caddr, _channel, _outa, _outb, __RETVAL__) }
+#define MSPFTrain(_port, _i2caddr, _channel, _func) asm { __MSIRTrain(_port, _i2caddr, _channel, _func, TRUE, __RETVAL__) }
+#define MSIRTrain(_port, _i2caddr, _channel, _func) asm { __MSIRTrain(_port, _i2caddr, _channel, _func, FALSE, __RETVAL__) }
+#define MSPFRawOutput(_port, _i2caddr, _nibble0, _nibble1, _nibble2) asm { __MSPFRawOutput(_port, _i2caddr, _nibble0, _nibble1, _nibble2, __RETVAL__) }
+#define MSPFRepeat(_port, _i2caddr, _count, _delay) asm { __MSPFRepeatLastCommand(_port, _i2caddr, _count, _delay, __RETVAL__) }
+
+#define MSRCXSetNRLinkPort(_port, _i2caddr) asm { __MSRCXSetNRLink(_port, _i2caddr) }
 #define MSRCXPoll(_src, _value) asm { __MSRCXPoll(_src, _value, __RETVAL__) }
 #define MSRCXBatteryLevel() asm { __MSRCXBatteryLevel(__RETVAL__) }
 #define MSRCXPing() asm { __MSRCXOpNoArgs(RCX_PingOp) }
@@ -11550,7 +11095,7 @@ inline void MSScoutUnmuteSound(void);
 #define MSRCXEvent(_src, _value) asm { __MSRCXEvent(_src, _value) }
 #define MSRCXPlayTone(_freq, _duration) asm { __MSRCXPlayTone(_freq, _duration) }
 #define MSRCXSelectDisplay(_src, _value) asm { __MSRCXSelectDisplay(_src, _value) }
-#define MSRCXPollMemory(_address) asm { __MSRCXPollMemory(_address, __RETVAL__) }
+#define MSRCXPollMemory(_memaddress) asm { __MSRCXPollMemory(_memaddress, __RETVAL__) }
 #define MSRCXSetEvent(_evt, _src, _type) asm { __MSRCXSetEvent(_evt, _src, _type) }
 #define MSRCXSetGlobalOutput(_outputs, _mode) asm { __MSRCXSetGlobalOutput(_outputs, _mode) }
 #define MSRCXSetGlobalDirection(_outputs, _dir) asm { __MSRCXSetGlobalDirection(_outputs, _dir) }
@@ -12885,7 +12430,7 @@ inline void SysRandomNumber(RandomNumberType & args);
  * as an int value. If no valid conversion could be performed a zero value
  * is returned.
  */
-inline int atoi(const string str) { return StrToNum(str); }
+inline int atoi(const string & str) { return StrToNum(str); }
 
 /**
  * Convert string to long integer.
@@ -12911,7 +12456,7 @@ inline int atoi(const string str) { return StrToNum(str); }
  * as a long int value. If no valid conversion could be performed a zero value
  * is returned.
  */
-inline long atol(const string str) { return StrToNum(str); }
+inline long atol(const string & str) { return StrToNum(str); }
 
 /**
  * Absolute value.
@@ -12951,7 +12496,7 @@ inline long labs(long n) { return abs(n); }
  * as a float value. If no valid conversion could be performed a zero value
  * (0.0) is returned.
  */
-inline float atof(const string str) {
+inline float atof(const string & str) {
   float result;
   asm { strtonum result, __TMPWORD__, str, NA, NA }
   return result;

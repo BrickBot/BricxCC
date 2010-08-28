@@ -2976,32 +2976,17 @@
  * \example ex_I2CDeviceInfo.nxc
  * This is an example of how to use the \ref I2CDeviceInfo function.
  *
- * \example ex_I2CDeviceInfoEx.nxc
- * This is an example of how to use the \ref I2CDeviceInfoEx function.
- *
  * \example ex_I2CVersion.nxc
  * This is an example of how to use the \ref I2CVersion function.
- *
- * \example ex_I2CVersionEx.nxc
- * This is an example of how to use the \ref I2CVersionEx function.
  *
  * \example ex_I2CVendorId.nxc
  * This is an example of how to use the \ref I2CVendorId function.
  *
- * \example ex_I2CVendorIdEx.nxc
- * This is an example of how to use the \ref I2CVendorIdEx function.
- *
  * \example ex_I2CDeviceId.nxc
  * This is an example of how to use the \ref I2CDeviceId function.
  *
- * \example ex_I2CDeviceIdEx.nxc
- * This is an example of how to use the \ref I2CDeviceIdEx function.
- *
  * \example ex_I2CSendCommand.nxc
  * This is an example of how to use the \ref I2CSendCommand function.
- *
- * \example ex_I2CSendCommandEx.nxc
- * This is an example of how to use the \ref I2CSendCommandEx function.
  *
  * \example ex_GetLSInputBuffer.nxc
  * This is an example of how to use the \ref GetLSInputBuffer function.
@@ -4189,9 +4174,6 @@
  * \example ex_SensorMSCompass.nxc
  * This is an example of how to use the \ref SensorMSCompass function.
  *
- * \example ex_SensorMSCompassEx.nxc
- * This is an example of how to use the \ref SensorMSCompassEx function.
- *
  * \example ex_SensorMSDROD.nxc
  * This is an example of how to use the \ref SensorMSDROD function.
  *
@@ -4201,20 +4183,11 @@
  * \example ex_ReadSensorMSAccel.nxc
  * This is an example of how to use the \ref ReadSensorMSAccel function.
  *
- * \example ex_ReadSensorMSAccelEx.nxc
- * This is an example of how to use the \ref ReadSensorMSAccelEx function.
- *
  * \example ex_ReadSensorMSPlayStation.nxc
  * This is an example of how to use the \ref ReadSensorMSPlayStation function.
  *
- * \example ex_ReadSensorMSPlayStationEx.nxc
- * This is an example of how to use the \ref ReadSensorMSPlayStationEx function.
- *
  * \example ex_ReadSensorMSTilt.nxc
  * This is an example of how to use the \ref ReadSensorMSTilt function.
- *
- * \example ex_ReadSensorMSTiltEx.nxc
- * This is an example of how to use the \ref ReadSensorMSTiltEx function.
  *
  * \example ex_ReadSensorMSRTClock.nxc
  * This is an example of how to use the \ref ReadSensorMSRTClock function.
@@ -4222,242 +4195,167 @@
  * \example ex_MSReadValue.nxc
  * This is an example of how to use the \ref MSReadValue function.
  *
- * \example ex_MSReadValueEx.nxc
- * This is an example of how to use the \ref MSReadValueEx function.
- *
  * \example ex_MSEnergize.nxc
  * This is an example of how to use the \ref MSEnergize function.
- *
- * \example ex_MSEnergizeEx.nxc
- * This is an example of how to use the \ref MSEnergizeEx function.
  *
  * \example ex_MSDeenergize.nxc
  * This is an example of how to use the \ref MSDeenergize function.
  *
- * \example ex_MSDeenergizeEx.nxc
- * This is an example of how to use the \ref MSDeenergizeEx function.
- *
  * \example ex_MSADPAOn.nxc
  * This is an example of how to use the \ref MSADPAOn function.
- *
- * \example ex_MSADPAOnEx.nxc
- * This is an example of how to use the \ref MSADPAOnEx function.
  *
  * \example ex_MSADPAOff.nxc
  * This is an example of how to use the \ref MSADPAOff function.
  *
- * \example ex_MSADPAOffEx.nxc
- * This is an example of how to use the \ref MSADPAOffEx function.
- *
  * \example ex_DISTNxGP2D12.nxc
  * This is an example of how to use the \ref DISTNxGP2D12 function.
- *
- * \example ex_DISTNxGP2D12Ex.nxc
- * This is an example of how to use the \ref DISTNxGP2D12Ex function.
  *
  * \example ex_DISTNxGP2D120.nxc
  * This is an example of how to use the \ref DISTNxGP2D120 function.
  *
- * \example ex_DISTNxGP2D120Ex.nxc
- * This is an example of how to use the \ref DISTNxGP2D120Ex function.
- *
  * \example ex_DISTNxGP2YA02.nxc
  * This is an example of how to use the \ref DISTNxGP2YA02 function.
- *
- * \example ex_DISTNxGP2YA02Ex.nxc
- * This is an example of how to use the \ref DISTNxGP2YA02Ex function.
  *
  * \example ex_DISTNxGP2YA21.nxc
  * This is an example of how to use the \ref DISTNxGP2YA21 function.
  *
- * \example ex_DISTNxGP2YA21Ex.nxc
- * This is an example of how to use the \ref DISTNxGP2YA21Ex function.
- *
  * \example ex_DISTNxDistance.nxc
  * This is an example of how to use the \ref DISTNxDistance function.
- *
- * \example ex_DISTNxDistanceEx.nxc
- * This is an example of how to use the \ref DISTNxDistanceEx function.
  *
  * \example ex_DISTNxMaxDistance.nxc
  * This is an example of how to use the \ref DISTNxMaxDistance function.
  *
- * \example ex_DISTNxMaxDistanceEx.nxc
- * This is an example of how to use the \ref DISTNxMaxDistanceEx function.
- *
  * \example ex_DISTNxMinDistance.nxc
  * This is an example of how to use the \ref DISTNxMinDistance function.
- *
- * \example ex_DISTNxMinDistanceEx.nxc
- * This is an example of how to use the \ref DISTNxMinDistanceEx function.
  *
  * \example ex_DISTNxModuleType.nxc
  * This is an example of how to use the \ref DISTNxModuleType function.
  *
- * \example ex_DISTNxModuleTypeEx.nxc
- * This is an example of how to use the \ref DISTNxModuleTypeEx function.
- *
  * \example ex_DISTNxNumPoints.nxc
  * This is an example of how to use the \ref DISTNxNumPoints function.
- *
- * \example ex_DISTNxNumPointsEx.nxc
- * This is an example of how to use the \ref DISTNxNumPointsEx function.
  *
  * \example ex_DISTNxVoltage.nxc
  * This is an example of how to use the \ref DISTNxVoltage function.
  *
- * \example ex_DISTNxVoltageEx.nxc
- * This is an example of how to use the \ref DISTNxVoltageEx function.
+ * \example ex_ACCLNxCalibrateX.nxc
+ * This is an example of how to use the \ref ACCLNxCalibrateX function.
+ *
+ * \example ex_ACCLNxCalibrateXEnd.nxc
+ * This is an example of how to use the \ref ACCLNxCalibrateXEnd function.
+ *
+ * \example ex_ACCLNxCalibrateY.nxc
+ * This is an example of how to use the \ref ACCLNxCalibrateY function.
+ *
+ * \example ex_ACCLNxCalibrateYEnd.nxc
+ * This is an example of how to use the \ref ACCLNxCalibrateYEnd function.
+ *
+ * \example ex_ACCLNxCalibrateZ.nxc
+ * This is an example of how to use the \ref ACCLNxCalibrateZ function.
+ *
+ * \example ex_ACCLNxCalibrateZEnd.nxc
+ * This is an example of how to use the \ref ACCLNxCalibrateZEnd function.
+ *
+ * \example ex_ACCLNxResetCalibration.nxc
+ * This is an example of how to use the \ref ACCLNxResetCalibration function.
+ *
+ * \example ex_SetACCLNxSensitivity.nxc
+ * This is an example of how to use the \ref SetACCLNxSensitivity function.
+ *
+ * \example ex_ACCLNxSensitivity.nxc
+ * This is an example of how to use the \ref ACCLNxSensitivity function.
+ *
+ * \example ex_ACCLNxXOffset.nxc
+ * This is an example of how to use the \ref ACCLNxXOffset function.
+ *
+ * \example ex_ACCLNxXRange.nxc
+ * This is an example of how to use the \ref ACCLNxXRange function.
+ *
+ * \example ex_ACCLNxYOffset.nxc
+ * This is an example of how to use the \ref ACCLNxYOffset function.
+ *
+ * \example ex_ACCLNxYRange.nxc
+ * This is an example of how to use the \ref ACCLNxYRange function.
+ *
+ * \example ex_ACCLNxZOffset.nxc
+ * This is an example of how to use the \ref ACCLNxZOffset function.
+ *
+ * \example ex_ACCLNxZRange.nxc
+ * This is an example of how to use the \ref ACCLNxZRange function.
  *
  * \example ex_PSPNxDigital.nxc
  * This is an example of how to use the \ref PSPNxDigital function.
  *
- * \example ex_PSPNxDigitalEx.nxc
- * This is an example of how to use the \ref PSPNxDigitalEx function.
- *
  * \example ex_PSPNxAnalog.nxc
  * This is an example of how to use the \ref PSPNxAnalog function.
- *
- * \example ex_PSPNxAnalogEx.nxc
- * This is an example of how to use the \ref PSPNxAnalogEx function.
  *
  * \example ex_NRLink2400.nxc
  * This is an example of how to use the \ref NRLink2400 function.
  *
- * \example ex_NRLink2400Ex.nxc
- * This is an example of how to use the \ref NRLink2400Ex function.
- *
  * \example ex_NRLink4800.nxc
  * This is an example of how to use the \ref NRLink4800 function.
- *
- * \example ex_NRLink4800Ex.nxc
- * This is an example of how to use the \ref NRLink4800Ex function.
  *
  * \example ex_NRLinkFlush.nxc
  * This is an example of how to use the \ref NRLinkFlush function.
  *
- * \example ex_NRLinkFlushEx.nxc
- * This is an example of how to use the \ref NRLinkFlushEx function.
- *
  * \example ex_NRLinkIRLong.nxc
  * This is an example of how to use the \ref NRLinkIRLong function.
- *
- * \example ex_NRLinkIRLongEx.nxc
- * This is an example of how to use the \ref NRLinkIRLongEx function.
  *
  * \example ex_NRLinkIRShort.nxc
  * This is an example of how to use the \ref NRLinkIRShort function.
  *
- * \example ex_NRLinkIRShortEx.nxc
- * This is an example of how to use the \ref NRLinkIRShortEx function.
- *
  * \example ex_NRLinkSetPF.nxc
  * This is an example of how to use the \ref NRLinkSetPF function.
- *
- * \example ex_NRLinkSetPFEx.nxc
- * This is an example of how to use the \ref NRLinkSetPFEx function.
  *
  * \example ex_NRLinkSetRCX.nxc
  * This is an example of how to use the \ref NRLinkSetRCX function.
  *
- * \example ex_NRLinkSetRCXEx.nxc
- * This is an example of how to use the \ref NRLinkSetRCXEx function.
- *
  * \example ex_NRLinkSetTrain.nxc
  * This is an example of how to use the \ref NRLinkSetTrain function.
- *
- * \example ex_NRLinkSetTrainEx.nxc
- * This is an example of how to use the \ref NRLinkSetTrainEx function.
  *
  * \example ex_NRLinkTxRaw.nxc
  * This is an example of how to use the \ref NRLinkTxRaw function.
  *
- * \example ex_NRLinkTxRawEx.nxc
- * This is an example of how to use the \ref NRLinkTxRawEx function.
- *
  * \example ex_NRLinkStatus.nxc
  * This is an example of how to use the \ref NRLinkStatus function.
- *
- * \example ex_NRLinkStatusEx.nxc
- * This is an example of how to use the \ref NRLinkStatusEx function.
  *
  * \example ex_RunNRLinkMacro.nxc
  * This is an example of how to use the \ref RunNRLinkMacro function.
  *
- * \example ex_RunNRLinkMacroEx.nxc
- * This is an example of how to use the \ref RunNRLinkMacroEx function.
- *
  * \example ex_WriteNRLinkBytes.nxc
  * This is an example of how to use the \ref WriteNRLinkBytes function.
- *
- * \example ex_WriteNRLinkBytesEx.nxc
- * This is an example of how to use the \ref WriteNRLinkBytesEx function.
  *
  * \example ex_ReadNRLinkBytes.nxc
  * This is an example of how to use the \ref ReadNRLinkBytes function.
  *
- * \example ex_ReadNRLinkBytesEx.nxc
- * This is an example of how to use the \ref ReadNRLinkBytesEx function.
- *
  * \example ex_MSIRTrain.nxc
  * This is an example of how to use the \ref MSIRTrain function.
- *
- * \example ex_MSIRTrainEx.nxc
- * This is an example of how to use the \ref MSIRTrainEx function.
  *
  * \example ex_MSPFComboDirect.nxc
  * This is an example of how to use the \ref MSPFComboDirect function.
  *
- * \example ex_MSPFComboDirectEx.nxc
- * This is an example of how to use the \ref MSPFComboDirectEx function.
- *
  * \example ex_MSPFComboPWM.nxc
  * This is an example of how to use the \ref MSPFComboPWM function.
- *
- * \example ex_MSPFComboPWMEx.nxc
- * This is an example of how to use the \ref MSPFComboPWMEx function.
  *
  * \example ex_MSPFRawOutput.nxc
  * This is an example of how to use the \ref MSPFRawOutput function.
  *
- * \example ex_MSPFRawOutputEx.nxc
- * This is an example of how to use the \ref MSPFRawOutputEx function.
- *
  * \example ex_MSPFRepeat.nxc
  * This is an example of how to use the \ref MSPFRepeat function.
- *
- * \example ex_MSPFRepeatEx.nxc
- * This is an example of how to use the \ref MSPFRepeatEx function.
  *
  * \example ex_MSPFSingleOutputCST.nxc
  * This is an example of how to use the \ref MSPFSingleOutputCST function.
  *
- * \example ex_MSPFSingleOutputCSTEx.nxc
- * This is an example of how to use the \ref MSPFSingleOutputCSTEx function.
- *
  * \example ex_MSPFSingleOutputPWM.nxc
  * This is an example of how to use the \ref MSPFSingleOutputPWM function.
- *
- * \example ex_MSPFSingleOutputPWMEx.nxc
- * This is an example of how to use the \ref MSPFSingleOutputPWMEx function.
  *
  * \example ex_MSPFSinglePin.nxc
  * This is an example of how to use the \ref MSPFSinglePin function.
  *
- * \example ex_MSPFSinglePinEx.nxc
- * This is an example of how to use the \ref MSPFSinglePinEx function.
- *
  * \example ex_MSPFTrain.nxc
  * This is an example of how to use the \ref MSPFTrain function.
  *
- * \example ex_MSPFTrainEx.nxc
- * This is an example of how to use the \ref MSPFTrainEx function.
- *
  * \example ex_MSRCXSetNRLinkPort.nxc
  * This is an example of how to use the \ref MSRCXSetNRLinkPort function.
- *
- * \example ex_MSRCXSetNRLinkPortEx.nxc
- * This is an example of how to use the \ref MSRCXSetNRLinkPortEx function.
  *
  * \example ex_MSRCXBatteryLevel.nxc
  * This is an example of how to use the \ref MSRCXBatteryLevel function.
