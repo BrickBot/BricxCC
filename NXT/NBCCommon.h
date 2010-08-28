@@ -1512,11 +1512,21 @@
  * Constants for use with standard I2C devices.
  * @{
  */
+#define I2C_ADDR_DEFAULT  0x02 /*!< Standard NXT I2C device address */
 #define I2C_REG_VERSION   0x00 /*!< Standard NXT I2C version register */
 #define I2C_REG_VENDOR_ID 0x08 /*!< Standard NXT I2C vendor ID register */
 #define I2C_REG_DEVICE_ID 0x10 /*!< Standard NXT I2C device ID register */
 #define I2C_REG_CMD       0x41 /*!< Standard NXT I2C device command register */
 /** @} */  // end of GenericI2CConstants group
+
+/** @defgroup LEGOI2CAddressConstants LEGO I2C address constants
+ * Constants for LEGO I2C device addresses.
+ * @{
+ */
+#define LEGO_ADDR_US         0x02 /*!< The LEGO ultrasonic sensor's I2C address */
+#define LEGO_ADDR_TEMP       0x98 /*!< The LEGO temperature sensor's I2C address */
+#define LEGO_ADDR_EMETER     0x04 /*!< The LEGO e-meter sensor's I2C address */
+/** @} */  // end of LEGOI2CAddressConstants group
 
 /** @defgroup USI2CConstants Ultrasonic sensor constants
  * Constants for use with the ultrasonic sensor.
@@ -1539,8 +1549,8 @@
 #define US_REG_MEASUREMENT_UNITS     0x14 /*!< The register address containing the measurement units (degrees C or F) */
 /** @} */  // end of USI2CConstants group
 
-/** @defgroup TempI2CConstants Temperature sensor constants
- * Constants for use with the temperature sensor.
+/** @defgroup TempI2CConstants LEGO temperature sensor constants
+ * Constants for use with the LEGO temperature sensor.
  * @{
  */
 // R1/R0
@@ -1565,12 +1575,24 @@
 #define TEMP_POL_LOW       0x00 /*!< Set polarity to low */
 #define TEMP_POL_HIGH      0x04 /*!< Set polarity to high */
 
-#define TEMP_I2C_ADDRESS   0x98 /*!< The temperature sensor's I2C address */
 #define TEMP_REG_TEMP      0x00 /*!< The register where temperature values can be read */
 #define TEMP_REG_CONFIG    0x01 /*!< The register for reading/writing sensor configuration values */
 #define TEMP_REG_TLOW      0x02 /*!< The register where temperature low values can be read */
 #define TEMP_REG_THIGH     0x03 /*!< The register where temperature high values can be read */
 /** @} */  // end of TempI2CConstants group
+
+/** @defgroup EMeterI2CConstants E-Meter sensor constants
+ * Constants for use with the e-meter sensor.
+ * @{
+ */
+#define EMETER_REG_VIN    0x0a /*!< The register address for voltage in */
+#define EMETER_REG_AIN    0x0c /*!< The register address for amps in */
+#define EMETER_REG_VOUT   0x0e /*!< The register address for voltage out */
+#define EMETER_REG_AOUT   0x10 /*!< The register address for amps out */
+#define EMETER_REG_JOULES 0x12 /*!< The register address for joules */
+#define EMETER_REG_WIN    0x14 /*!< The register address for watts in */
+#define EMETER_REG_WOUT   0x16 /*!< The register address for watts out */
+/** @} */  // end of EMeterI2CConstants group
 
 /** @} */  // end of LowSpeedModuleConstants group
 /** @} */  // end of LowSpeedModule group
@@ -2523,6 +2545,16 @@
  * Constants that are for use with HiTechnic devices.
  * @{
  */
+
+#define HT_ADDR_IRSEEKER   0x02 /*!< HiTechnic IRSeeker I2C address */
+#define HT_ADDR_IRSEEKER2  0x10 /*!< HiTechnic IRSeeker2 I2C address */
+#define HT_ADDR_IRRECEIVER 0x02 /*!< HiTechnic IRReceiver I2C address */
+#define HT_ADDR_COMPASS    0x02 /*!< HiTechnic Compass I2C address */
+#define HT_ADDR_ACCEL      0x02 /*!< HiTechnic Accel I2C address */
+#define HT_ADDR_COLOR      0x02 /*!< HiTechnic Color I2C address */
+#define HT_ADDR_COLOR2     0x02 /*!< HiTechnic Color2 I2C address */
+#define HT_ADDR_IRLINK     0x02 /*!< HiTechnic IRLink I2C address */
+
 /** @defgroup HTIRSeeker2Constants HiTechnic IRSeeker2 constants
  * Constants that are for use with the HiTechnic IRSeeker2 device.
  * @{
@@ -2530,20 +2562,20 @@
 #define HTIR2_MODE_1200 0 /*!< Set IRSeeker2 to 1200 mode */
 #define HTIR2_MODE_600  1 /*!< Set IRSeeker2 to 600 mode */
 
-#define HTIR2_REG_MODE  0x41 /*!< IRSeeker 2 mode register */
-#define HTIR2_REG_DCDIR 0x42 /*!< IRSeeker 2 DC direction register */
-#define HTIR2_REG_DC01  0x43 /*!< IRSeeker 2 DC 01 register */
-#define HTIR2_REG_DC02  0x44 /*!< IRSeeker 2 DC 02 register */
-#define HTIR2_REG_DC03  0x45 /*!< IRSeeker 2 DC 03 register */
-#define HTIR2_REG_DC04  0x46 /*!< IRSeeker 2 DC 04 register */
-#define HTIR2_REG_DC05  0x47 /*!< IRSeeker 2 DC 05 register */
-#define HTIR2_REG_DCAVG 0x48 /*!< IRSeeker 2 DC average register */
-#define HTIR2_REG_ACDIR 0x49 /*!< IRSeeker 2 AC direction register */
-#define HTIR2_REG_AC01  0x4A /*!< IRSeeker 2 AC 01 register */
-#define HTIR2_REG_AC02  0x4B /*!< IRSeeker 2 AC 02 register */
-#define HTIR2_REG_AC03  0x4C /*!< IRSeeker 2 AC 03 register */
-#define HTIR2_REG_AC04  0x4D /*!< IRSeeker 2 AC 04 register */
-#define HTIR2_REG_AC05  0x4E /*!< IRSeeker 2 AC 05 register */
+#define HTIR2_REG_MODE  0x41 /*!< IRSeeker2 mode register */
+#define HTIR2_REG_DCDIR 0x42 /*!< IRSeeker2 DC direction register */
+#define HTIR2_REG_DC01  0x43 /*!< IRSeeker2 DC 01 register */
+#define HTIR2_REG_DC02  0x44 /*!< IRSeeker2 DC 02 register */
+#define HTIR2_REG_DC03  0x45 /*!< IRSeeker2 DC 03 register */
+#define HTIR2_REG_DC04  0x46 /*!< IRSeeker2 DC 04 register */
+#define HTIR2_REG_DC05  0x47 /*!< IRSeeker2 DC 05 register */
+#define HTIR2_REG_DCAVG 0x48 /*!< IRSeeker2 DC average register */
+#define HTIR2_REG_ACDIR 0x49 /*!< IRSeeker2 AC direction register */
+#define HTIR2_REG_AC01  0x4A /*!< IRSeeker2 AC 01 register */
+#define HTIR2_REG_AC02  0x4B /*!< IRSeeker2 AC 02 register */
+#define HTIR2_REG_AC03  0x4C /*!< IRSeeker2 AC 03 register */
+#define HTIR2_REG_AC04  0x4D /*!< IRSeeker2 AC 04 register */
+#define HTIR2_REG_AC05  0x4E /*!< IRSeeker2 AC 05 register */
 /** @} */  // end of HTIRSeeker2Constants group
 
 /** @defgroup HTIRReceiverConstants HiTechnic IRReceiver constants
@@ -2594,6 +2626,22 @@
 #define MS_CMD_ADPA_ON     0x4E /*!< Turn MindSensors ADPA mode on */
 #define MS_CMD_ADPA_OFF    0x4F /*!< Turn MindSensors ADPA mode off */
 
+#define MS_ADDR_RTCLOCK    0xD0 /*!< MindSensors RTClock I2C address */
+#define MS_ADDR_DISTNX     0x02 /*!< MindSensors DIST-Nx I2C address */
+#define MS_ADDR_NRLINK     0x02 /*!< MindSensors NRLink I2C address */
+#define MS_ADDR_ACCLNX     0x02 /*!< MindSensors ACCL-Nx I2C address */
+#define MS_ADDR_CMPSNX     0x02 /*!< MindSensors CMPS-Nx I2C address */
+#define MS_ADDR_PSPNX      0x02 /*!< MindSensors PSP-Nx I2C address */
+#define MS_ADDR_LINELDR    0x02 /*!< MindSensors LineLdr I2C address */
+#define MS_ADDR_NXTCAM     0x02 /*!< MindSensors NXTCam I2C address */
+#define MS_ADDR_NXTHID     0x04 /*!< MindSensors NXTHID I2C address */
+#define MS_ADDR_NXTSERVO   0xB0 /*!< MindSensors NXTServo I2C address */
+#define MS_ADDR_PFMATE     0x48 /*!< MindSensors PFMate I2C address */
+#define MS_ADDR_MTRMUX     0xB4 /*!< MindSensors MTRMux I2C address */
+#define MS_ADDR_NXTMMX     0x06 /*!< MindSensors NXTMMX I2C address */
+#define MS_ADDR_IVSENS     0x12 /*!< MindSensors IVSens I2C address */
+#define MS_ADDR_RXMUX      0x7E /*!< MindSensors RXMux I2C address */
+
 /** @defgroup MSDistNX MindSensors DIST-Nx constants
  * Constants that are for use with the MindSensors DIST-Nx device.
  * @{
@@ -2609,7 +2657,7 @@
 #define DIST_REG_DIST          0x42 /*!< The DIST-Nx distance register */
 #define DIST_REG_VOLT          0x44 /*!< The DIST-Nx voltage register */
 #define DIST_REG_MODULE_TYPE   0x50 /*!< The DIST-Nx module type register */
-#define DIST_REG_NUM_POINTS    0x51 /*!< The DIST-Nx number of points register */
+#define DIST_REG_NUM_POINTS    0x51 /*!< The DIST-Nx number of data points in Custom curve register */
 #define DIST_REG_DIST_MIN      0x52 /*!< The DIST-Nx minimum distance register */
 #define DIST_REG_DIST_MAX      0x54 /*!< The DIST-Nx maximum distance register */
 #define DIST_REG_VOLT1         0x56 /*!< The DIST-Nx voltage 1 register */
@@ -2679,7 +2727,48 @@
 #define NRLINK_REG_BYTES  0x40 /*!< The NRLink bytes register */
 #define NRLINK_REG_DATA   0x42 /*!< The NRLink data register */
 #define NRLINK_REG_EEPROM 0x50 /*!< The NRLink eeprom register */
+
 /** @} */  // end of MSNRLink group
+
+/** @defgroup MSACCLNx MindSensors ACCL-Nx constants
+ * Constants that are for use with the MindSensors ACCL-Nx device.
+ * @{
+ */
+// ACCL-Nx commands
+#define ACCL_CMD_X_CAL      0x58 /*!< Acquire X-axis calibration point */
+#define ACCL_CMD_Y_CAL      0x59 /*!< Acquire Y-axis calibration point */
+#define ACCL_CMD_Z_CAL      0x5a /*!< Acquire Z-axis calibration point */
+#define ACCL_CMD_X_CAL_END  0x78 /*!< Acquire X-axis calibration point and end calibration */
+#define ACCL_CMD_Y_CAL_END  0x79 /*!< Acquire Y-axis calibration point and end calibration */
+#define ACCL_CMD_Z_CAL_END  0x7a /*!< Acquire Z-axis calibration point and end calibration */
+#define ACCL_CMD_RESET_CAL  0x52 /*!< Reset to factory calibration */
+
+// ACCL-Nx registers
+#define ACCL_REG_SENS_LVL 0x19 /*!< The current sensitivity */
+#define ACCL_REG_X_TILT   0x42 /*!< The X-axis tilt data */
+#define ACCL_REG_Y_TILT   0x43 /*!< The Y-axis tilt data */
+#define ACCL_REG_Z_TILT   0x44 /*!< The Z-axis tilt data */
+#define ACCL_REG_X_ACCEL  0x45 /*!< The X-axis acceleration data */
+#define ACCL_REG_Y_ACCEL  0x47 /*!< The Y-axis acceleration data */
+#define ACCL_REG_Z_ACCEL  0x49 /*!< The Z-axis acceleration data */
+#define ACCL_REG_X_OFFSET 0x4b /*!< The X-axis offset */
+#define ACCL_REG_X_RANGE  0x4d /*!< The X-axis range */
+#define ACCL_REG_Y_OFFSET 0x4f /*!< The Y-axis offset */
+#define ACCL_REG_Y_RANGE  0x51 /*!< The Y-axis range */
+#define ACCL_REG_Z_OFFSET 0x53 /*!< The Z-axis offset */
+#define ACCL_REG_Z_RANGE  0x55 /*!< The Z-axis range */
+
+/** @defgroup MSACCLNxSLevel MindSensors ACCL-Nx sensitivity level constants
+ * Constants that are for setting the MindSensors ACCL-Nx sensitivity level.
+ * @{
+ */
+#define ACCL_SENSITIVITY_LEVEL_1 0x31 /*!< The ACCL-Nx sensitivity level 1 */
+#define ACCL_SENSITIVITY_LEVEL_2 0x32 /*!< The ACCL-Nx sensitivity level 2 */
+#define ACCL_SENSITIVITY_LEVEL_3 0x33 /*!< The ACCL-Nx sensitivity level 3 */
+#define ACCL_SENSITIVITY_LEVEL_4 0x34 /*!< The ACCL-Nx sensitivity level 4 */
+/** @} */  // end of MSACCLNxSLevel group
+
+/** @} */  // end of MSACCLNx group
 
 /** @} */  // end of MindSensorsConstants group
 /** @} */  // end of MindSensorsAPI group
