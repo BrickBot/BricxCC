@@ -4779,11 +4779,11 @@ function TNXCComp.DecorateVariables(const asmStr: string): string;
 var
   Lex : TGenLexer;
   len : integer;
-  bPartOfStruct : boolean;
+  bPartOfStruct, bPastFirstKeyword : boolean;
 
   procedure AddToResult;
   begin
-    if Lex.Id = piIdent then
+    if (Lex.Id = piIdent) or (bPastFirstKeyword and (Lex.Id = piKeyWord)) then
     begin
       // is this a local variable or a parameter?
       if bPartOfStruct then
@@ -4806,10 +4806,13 @@ begin
     Lex := TNBCLexer.CreateLexer;
     try
       bPartOfStruct := False;
+      bPastFirstKeyword := False;
       Lex.SetStartData(@asmStr[1], len);
       while not Lex.AtEnd do
       begin
         AddToResult;
+        if not bPastFirstKeyword and (Lex.Id = piKeyWord) then
+          bPastFirstKeyword := True;
         Lex.Next;
       end;
       if Lex.Id <> piUnknown then

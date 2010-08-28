@@ -46,7 +46,6 @@ type
     fUseSpecialName: boolean;
     fSpecialName: string;
     fOptLevel: integer;
-    fUseBluetooth: boolean;
     fBinaryInput: boolean;
     fDownload: boolean;
     fRunProgram: boolean;
@@ -122,7 +121,6 @@ type
     property OptimizationLevel : integer read fOptLevel write fOptLevel;
     property UsePort : boolean read fUsePort write fUsePort;
     property PortName : string read fPortName write fPortName;
-    property UseBluetooth : boolean read fUseBluetooth write fUseBluetooth;
     property BinaryInput : boolean read fBinaryInput write fBinaryInput;
     property Download : boolean read fDownload write fDownload;
     property RunProgram : boolean read fRunProgram write fRunProgram;
@@ -164,7 +162,6 @@ begin
   fDownload := False;
   fRunProgram := False;
   fUsePort := False;
-  fUseBluetooth := False;
   fBCCreated := False;
   fQuiet := False;
   fWriteSymbolTable := False;
@@ -350,7 +347,6 @@ begin
       else
         BrickComm.Port := 'usb'; // if no port is specified then default to usb
     end;
-    BrickComm.UseBluetooth := UseBluetooth;
   end;
 {$ENDIF}
 

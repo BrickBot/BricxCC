@@ -1,1 +1,21 @@
-UnflattenVar(stringValue, myStruct);
+task main()
+{
+  long data[] = {-50123, 68142, 128176, -45123};
+  long data2[4];
+  float fdata[] = {12.123, 3.14159, 2.68};
+  float fdata2[3];
+  NumOut(0, LCD_LINE1, data[0]);
+  NumOut(0, LCD_LINE2, fdata[1]);
+  string sdata = FlattenVar(data);
+  string tmp;
+  // transfer the string to another NXT
+  tmp = sdata;
+  UnflattenVar(tmp, data2);
+  NumOut(0, LCD_LINE3, data2[0]);
+  sdata = FlattenVar(fdata);
+  // transfer the string to another NXT
+  tmp = sdata;
+  UnflattenVar(tmp, fdata2);
+  NumOut(0, LCD_LINE4, fdata2[1]);
+  Wait(SEC_5);
+}
