@@ -3689,59 +3689,6 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 
 
 ///////////////////////////////////////////////////////////////////////////////
-//////////////////////////////// IOCTRL MODULE ////////////////////////////////
-///////////////////////////////////////////////////////////////////////////////
-
-
-/** @addtogroup NXTFirmwareModules
- * @{
- */
-/** @addtogroup IOCtrlModule
- * @{
- */
-/** @defgroup IOCtrlModuleTypes IOCtrl module types
- * Types used by various IOCtrl module functions.
- * @{
- */
-/** @} */ // end of IOCtrlModuleTypes group
-/** @defgroup IOCtrlModuleFunctions IOCtrl module functions
- * Functions for accessing and modifying IOCtrl module features.
- * @{
- */
-
-/**
- * Power down the NXT.
- * This function powers down the NXT.
- * The running program will terminate as a result of this action.
- */
-inline void PowerDown() {
-  asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN) }
-}
-
-/**
- * Put the brick to sleep immediately.
- * This function lets you immediately put the NXT to sleep.
- * The running program will terminate as a result of this action.
- */
-inline void SleepNow() {
-  asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN) }
-}
-
-/**
- * Reboot the NXT in firmware download mode.
- * This function lets you reboot the NXT into SAMBA or firmware download mode.
- * The running program will terminate as a result of this action.
- */
-inline void RebootInFirmwareMode() {
-  asm { SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_BOOT) }
-}
-
-/** @} */ // end of IOCtrlModuleFunctions group
-/** @} */ // end of IOCtrlModule group
-/** @} */ // end of NXTFirmwareModules group
-
-
-///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// COMMAND MODULE ////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
@@ -5065,6 +5012,59 @@ inline void GetCommModuleValue(unsigned int offset, variant & value);
 
 /** @} */ // end of CommandModuleFunctions group
 /** @} */ // end of CommandModule group
+/** @} */ // end of NXTFirmwareModules group
+
+
+///////////////////////////////////////////////////////////////////////////////
+//////////////////////////////// IOCTRL MODULE ////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup IOCtrlModule
+ * @{
+ */
+/** @defgroup IOCtrlModuleTypes IOCtrl module types
+ * Types used by various IOCtrl module functions.
+ * @{
+ */
+/** @} */ // end of IOCtrlModuleTypes group
+/** @defgroup IOCtrlModuleFunctions IOCtrl module functions
+ * Functions for accessing and modifying IOCtrl module features.
+ * @{
+ */
+
+/**
+ * Power down the NXT.
+ * This function powers down the NXT.
+ * The running program will terminate as a result of this action.
+ */
+inline void PowerDown() {
+  SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN);
+}
+
+/**
+ * Put the brick to sleep immediately.
+ * This function lets you immediately put the NXT to sleep.
+ * The running program will terminate as a result of this action.
+ */
+inline void SleepNow() {
+  SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_POWERDOWN);
+}
+
+/**
+ * Reboot the NXT in firmware download mode.
+ * This function lets you reboot the NXT into SAMBA or firmware download mode.
+ * The running program will terminate as a result of this action.
+ */
+inline void RebootInFirmwareMode() {
+  SetIOCtrlModuleValue(IOCtrlOffsetPowerOn, IOCTRL_BOOT);
+}
+
+/** @} */ // end of IOCtrlModuleFunctions group
+/** @} */ // end of IOCtrlModule group
 /** @} */ // end of NXTFirmwareModules group
 
 
@@ -6569,7 +6569,7 @@ inline void SetBTDeviceNameCount(byte count);
 
 #define GetBTDeviceAddress(_p, _data) asm { __getBTDeviceAddress(_p, _data) }
 #define GetBTConnectionAddress(_p, _data) asm { __getBTConnectionAddress(_p, _data) }
-#define GetBrickDataAddress(_data) asm { GetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _data) }
+#define GetBrickDataAddress(_data) asm { __getCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _data) }
 
 #define BTDeviceClass(_p) asm { GetBTDeviceClass(_p, __TMPLONG__) __RETURN__ __TMPLONG__ }
 #define BTDeviceStatus(_p) asm { GetBTDeviceStatus(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
@@ -6608,8 +6608,8 @@ inline void SetBTDeviceNameCount(byte count);
 #define SetBTConnectionName(_p, _str) asm { __setBTConnectionName(_p, _str) }
 #define SetBTConnectionPinCode(_p, _code) asm { __setBTConnectionPinCode(_p, _code) }
 #define SetBTConnectionAddress(_p, _btaddr) asm { __setBTConnectionAddress(_p, _btaddr) }
-#define SetBrickDataName(_str) asm { SetCommModuleBytes(CommOffsetBrickDataName, 16, _str) }
-#define SetBrickDataAddress(_btaddr) asm { SetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _btaddr) }
+#define SetBrickDataName(_str) SetCommModuleBytes(CommOffsetBrickDataName, 16, _str)
+#define SetBrickDataAddress(_btaddr) SetCommModuleBytes(CommOffsetBrickDataBdAddr, 7, _btaddr)
 
 #define SetBTDeviceClass(_p, _n) asm { __setBTDeviceClass(_p, _n) }
 #define SetBTDeviceStatus(_p, _n) asm { __setBTDeviceStatus(_p, _n) }
