@@ -1,1 +1,14 @@
-GetBrickDataAddress(buffer);
+task main()
+{
+  byte data[];
+  GetBrickDataAddress(data);
+  // 6 bytes plus null
+  TextOut(0, LCD_LINE1, StrCat(
+    FormatNum("%2.2x", data[0]),
+    FormatNum("%2.2x", data[1]),
+    FormatNum("%2.2x", data[2]),
+    FormatNum("%2.2x", data[3]),
+    FormatNum("%2.2x", data[4]),
+    FormatNum("%2.2x", data[5])));
+  while (true);
+}
