@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-06-28
- * version 65
+ * date 2010-10-06
+ * version 66
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -416,6 +416,13 @@ TDrawFont	struct
  Options	dword
 TDrawFont	ends
 
+// MemoryManager
+TMemoryManager struct
+ Result        sbyte
+ Compact       byte
+ PoolSize      word
+ DataspaceSize word
+TMemoryManager ends
 #endif
 #endif
 
@@ -1585,6 +1592,8 @@ dseg segment
   __EllipseOutMutex mutex
   __FontOutMutex mutex
   __FontOutArgs TDrawFont
+  __MemMgrMutex mutex
+  __MemMgrArgs TMemoryManager
 dseg ends
 
 #endif
@@ -1847,6 +1856,16 @@ dseg ends
   numtostr __FontOutArgs.Text,_num \
   syscall DrawFont,__FontOutArgs \
   release __FontOutMutex
+
+#define __GetMemoryInfo(_Compact,_PoolSize,_DataspaceSize,_Result) \
+  acquire __MemMgrMutex \
+  mov __MemMgrArgs.Compact,_Compact \
+  syscall MemoryManager,__MemMgrArgs \
+  mov _PoolSize, __MemMgrArgs.PoolSize \
+  mov _DataspaceSize, __MemMgrArgs.DataspaceSize \
+  mov _Result, __MemMgrArgs.Result \
+  release __MemMgrMutex
+
 
 #endif
 
@@ -11808,6 +11827,28 @@ ends
  * \param _n The number of milliseconds to sleep.
  */
 #define Wait(_n) waitv _n
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/**
+ * Read memory information.
+ * Read the current pool size and dataspace size.  Optionally compact the
+ * dataspace before returning the information. Running programs have a maximum
+ * of 32k bytes of memory available.  The amount of free RAM can be calculated
+ * by subtracting the value returned by this function from \ref POOL_MAX_SIZE.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _Compact A boolean value indicating whether to compact the dataspace or not.
+ * \param _PoolSize The current pool size.
+ * \param _DataspaceSize The current dataspace size.
+ * \param _Result The function call result. It will be \ref NO_ERR if the compact
+ * operation is not performed.  Otherwise it will be the result of the compact
+ * operation.
+ */
+#define GetMemoryInfo(_Compact,_PoolSize,_DataspaceSize,_Result) __GetMemoryInfo(_Compact,_PoolSize,_DataspaceSize,_Result)
+
+#endif
+
 
 /** @} */ // end of CommandModuleFunctions group
 /** @} */ // end of CommandModule group
