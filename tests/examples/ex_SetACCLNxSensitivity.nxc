@@ -1,0 +1,1 @@
+result = SetACCLNxSensitivity(S1, MS_ADDR_ACCLNX, ACCL_SENSITIVITY_LEVEL_1);
