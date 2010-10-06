@@ -4988,6 +4988,29 @@
  * \ref glSetAngleX, \ref glBeginRender, \ref glAddToAngleY,
  * \ref glCallObject, and \ref glFinishRender functions.
  *
+ * \example ex_file_system.nxc
+ * This is an example of how to use the \ref PlayTone, \ref Wait, \ref Stop,
+ * \ref TextOut, \ref OpenFileAppend, \ref CloseFile, \ref OpenFileRead, \ref FormatNum,
+ * \ref Write, \ref Read, and \ref CircleOut functions.
+ * This program is intended to serve as an introduction to data files on the 
+ * NXT. It focuses on handling the codes returned by the file system's API 
+ * calls, which is an important aspect of the API that is all too often 
+ * neglected by programmers.
+ * The program deals with a data file describing circles. On each run, it adds 
+ * a new circle record to the data file. Then it reads in the whole data file 
+ * and displays all the circles on NXT screen. It creates the data file if 
+ * doesn't already exist. If you run it several times in seccession, you will 
+ * fill the data file and get a file-is-full exception.
+ * The data flie created by this program is not visible on the NXT. To delete 
+ * the file, circles.dat, you can use the NeXT Explorer or the example program 
+ * \ref ex_delete_data_file.nxc.
+ *
+ * \example ex_delete_data_file.nxc
+ * This is an example of how to use the \ref DeleteFile, \ref TextOut,
+ * \ref FormatNum, and \ref Wait functions.
+ * It is useful for deleting the circles.dat file created by the program described 
+ * in the \ref ex_file_system.nxc example.
+ *
  */
 
 
