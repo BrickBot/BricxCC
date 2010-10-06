@@ -122,7 +122,7 @@ AutoIncBuild=1
 MajorVer=3
 MinorVer=3
 Release=8
-Build=8
+Build=9
 Debug=0
 PreRelease=0
 Special=0
@@ -133,7 +133,7 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=JoCar Consulting
 FileDescription=Programmable Brick IDE
-FileVersion=3.3.8.8
+FileVersion=3.3.8.9
 InternalName=Bricx Command Center
 LegalCopyright=Copyright (c) 2010 John Hansen
 LegalTrademarks=
@@ -141,15 +141,10 @@ OriginalFilename=bricxcc.exe
 ProductName=Bricx Command Center
 ProductVersion=3.3
 Comments=NQC (c) 1998-2010 David Baum, John Hansen
-[Excluded Packages]
-C:\myzips\qt\JEDI QuickTime\QuickTime\Delphi7\output\QuickTime.bpl=JEDI QuickTime
-C:\myzips\qt\JEDI QuickTime\QuickTimeComponents\Delphi7\output\JEDI_QuickTimeComponents.bpl=JEDI QuickTime Components Runtime
-C:\myzips\qt\JEDI QuickTime\QuickTimeComponents\Delphi7\output\JEDI_QuickTimeComponentsDesign.bpl=JEDI QuickTime Components DesignTime
-c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
-c:\winapps\borland\delphi7\Bin\DBWEBXPRT.BPL=Borland Web Wizard Package
 [HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=G:\nxt\BricxCC\source\NXT\
+Count=2
+Item0=D:\BricxCC\NXT\;D:\bricxcc\bricktools\
+Item1=G:\nxt\BricxCC\source\NXT\
 [HistoryLists\hlConditionals]
 Count=1
 Item0=FAST_MM, CAN_DOWNLOAD
@@ -157,6 +152,7 @@ Item0=FAST_MM, CAN_DOWNLOAD
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=2
-Item0=bricktools;NXT;samplerate;png
-Item1=bricktools;NXT;samplerate;png;syn
+Count=3
+Item0=bricktools;NXT;samplerate;png;grep
+Item1=bricktools;NXT;samplerate;png
+Item2=bricktools;NXT;samplerate;png;syn

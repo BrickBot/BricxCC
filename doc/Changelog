@@ -8,6 +8,12 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
+Version 1.2.1.r4 (2010-10-05)
+-----------------------------
+- Revised several Mindsensor API functions.  Added a few more for the ACCLNx sensor.
+- Fixed a problem with GetBrickDataAddress introduced in the previous version.
+
+
 Version 1.2.1.r3 (2010-06-29)
 -----------------------------
 - Fixed a bug with the new comma operator support when using ?: in 
