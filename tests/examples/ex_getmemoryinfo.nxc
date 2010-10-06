@@ -1,0 +1,40 @@
+task main() {
+  byte data[];
+  byte data2[];
+  int data3[];
+  int ps, ds;
+  char result = GetMemoryInfo(false, ps, ds);
+  NumOut(0, LCD_LINE1, ps);
+  NumOut(0, LCD_LINE2, ds);
+  Wait(SEC_5);
+  ClearScreen();
+  Wait(SEC_1);
+/*
+  result = GetMemoryInfo(true, ps, ds);
+  NumOut(0, LCD_LINE1, ps);
+  NumOut(0, LCD_LINE2, ds);
+  Wait(SEC_5);
+  ClearScreen();
+  Wait(SEC_1);
+*/
+  ArrayInit(data, 10, 3000);
+  data[10]++;
+  ps = data[10];
+  data2 = data;
+  ArrayBuild(data3, ps, ds, ps, ds, ps, ds, ps, ds);
+  result = GetMemoryInfo(false, ps, ds);
+  NumOut(0, LCD_LINE1, ps);
+  NumOut(0, LCD_LINE2, ds);
+  NumOut(0, LCD_LINE8, data[10]);
+  Wait(SEC_5);
+  ClearScreen();
+  Wait(SEC_1);
+  result = GetMemoryInfo(true, ps, ds);
+  NumOut(0, LCD_LINE1, ps);
+  NumOut(0, LCD_LINE2, ds);
+  NumOut(0, LCD_LINE8, data2[10]);
+  Wait(SEC_5);
+  ClearScreen();
+  Wait(SEC_1);
+//  while(true);
+}

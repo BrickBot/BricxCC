@@ -1,0 +1,34 @@
+task main() {
+  byte data[];
+  byte data2[];
+  int data3[];
+  int ps, ds;
+  MemoryManagerType args;
+  args.Compact = false;
+  SysMemoryManager(args);
+  NumOut(0, LCD_LINE1, args.PoolSize);
+  NumOut(0, LCD_LINE2, args.DataspaceSize);
+  Wait(SEC_5);
+  ClearScreen();
+  Wait(SEC_1);
+  ArrayInit(data, 10, 3000);
+  data[10]++;
+  ps = data[10];
+  data2 = data;
+  ArrayBuild(data3, ps, ds, ps, ds, ps, ds, ps, ds);
+  SysMemoryManager(args);
+  NumOut(0, LCD_LINE1, args.PoolSize);
+  NumOut(0, LCD_LINE2, args.DataspaceSize);
+  NumOut(0, LCD_LINE8, data[10]);
+  Wait(SEC_5);
+  ClearScreen();
+  Wait(SEC_1);
+  SysMemoryManager(args);
+  NumOut(0, LCD_LINE1, args.PoolSize);
+  NumOut(0, LCD_LINE2, args.DataspaceSize);
+  NumOut(0, LCD_LINE8, data2[10]);
+  Wait(SEC_5);
+  ClearScreen();
+  Wait(SEC_1);
+//  while(true);
+}
