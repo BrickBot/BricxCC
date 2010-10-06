@@ -1,0 +1,28 @@
+task main()
+{
+  char v;
+  v = SCHAR_MIN;
+  NumOut(0, LCD_LINE1, v);
+  v--;
+  NumOut(0, LCD_LINE2, v);
+  v--;
+  NumOut(0, LCD_LINE3, v);
+  Wait(SEC_5);
+  int w;
+  w = SHRT_MIN;
+  NumOut(0, LCD_LINE1, w);
+  w--;
+  NumOut(0, LCD_LINE2, w);
+  w--;
+  NumOut(0, LCD_LINE3, w);
+  Wait(SEC_5);
+  long l;
+  l = LONG_MIN;
+  NumOut(0, LCD_LINE1, l);
+  l--;
+  NumOut(0, LCD_LINE2, l);
+  l--;
+  NumOut(0, LCD_LINE3, l);
+  Wait(SEC_5);
+  while(true);
+}
