@@ -70,10 +70,11 @@ procedure LoadHTMLTopicMap(data : array of TNameValue);
 implementation
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils, Registry, uDebugLogging;
 
 var
   HTMLTopicMap : TStringList;
+  HHCtrlPath : string;
 
 procedure WinHelpToHtmlHelp(var ACommand: Word; var AData: Integer);
 begin
@@ -116,17 +117,56 @@ var
   HtmlHelpAProc : THtmlHelpAProc;
   HtmlHelpWProc: THtmlHelpWPRoc;
 
+function ExpandEnvVars(const Str: string): string;
+var
+  BufSize: Integer; // size of expanded string
+begin
+  // Get required buffer size
+  BufSize := ExpandEnvironmentStrings(PChar(Str), nil, 0);
+  if BufSize > 0 then
+  begin
+    // Read expanded string into result string
+    SetLength(Result, BufSize);
+    ExpandEnvironmentStrings(PChar(Str), PChar(Result), BufSize);
+    Result := Trim(Result);
+  end
+  else
+    // Trying to expand empty string
+    Result := '';
+end;
+
+function LookupHHCtrlPath : string;
+var
+  R : TRegistry;
+begin
+  Result := 'hhctrl.ocx';
+  R := TRegistry.Create;
+  try
+    R.RootKey := HKEY_CLASSES_ROOT;
+    if R.OpenKeyReadOnly('CLSID\{ADB880A6-D8FF-11CF-9377-00AA003B7A11}\InprocServer32') then
+    begin
+      Result := ExpandEnvVars(R.ReadString(''));
+    end;
+  finally
+    R.Free;
+  end;
+  DebugLog('LookupHHCtrlPath: HTML help library path = ''' + Result + '''');
+end;
+
 function _HtmlHelpSetup : Boolean;
 begin
   Result := false;
   if (HtmlHelpModule = 0) then
   begin
-    HtmlHelpModule := LoadLibrary('hhctrl.ocx');
+    DebugLog('_HtmlHelpSetup: Attempting to load the HTML help library');
+    HtmlHelpModule := LoadLibrary(PChar(HHCtrlPath));
     if (HtmlHelpModule <> 0) then
     begin
       @HtmlHelpAProc := GetProcAddress(HtmlHelpModule, 'HtmlHelpA');
       @HtmlHelpWProc := GetProcAddress(HtmlHelpModule, 'HtmlHelpW');
-    end;
+    end
+    else
+      DebugLog('_HtmlHelpSetup: Unable to load the HTML help library (hhctrl.ocx)');
   end;
   if Assigned(HtmlHelpAProc) and Assigned(HtmlHelpWProc) then Result := true;
 end;
@@ -141,7 +181,7 @@ begin
   Result := 0;
   if _HtmlHelpSetup then
   begin
-   Result := HtmlHelpAProc(hWndCaller, pszFile, uCommand, dwData);
+    Result := HtmlHelpAProc(hWndCaller, pszFile, uCommand, dwData);
   end;
 end;
 
@@ -150,7 +190,7 @@ begin
   Result := 0;
   if _HtmlHelpSetup then
   begin
-   Result := HtmlHelpWProc(hWndCaller, pszFile, uCommand, dwData);
+    Result := HtmlHelpWProc(hWndCaller, pszFile, uCommand, dwData);
   end;
 end;
 
@@ -251,6 +291,7 @@ initialization
   HTMLTopicMap := TStringList.Create;
   HTMLTopicMap.Sorted := True;
   HTMLTopicMap.CaseSensitive := True;
+  HHCtrlPath := LookupHHCtrlPath;
 
 finalization
   if HtmlHelpModule <> 0 then
