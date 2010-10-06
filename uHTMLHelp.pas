@@ -205,6 +205,8 @@ begin
   else
   begin
     keyword := ConvertDoxygenCase(keyword);
+    if keyword = '' then
+      keyword := 'main';
     Result := keyword + '.html';
   end;
 end;
