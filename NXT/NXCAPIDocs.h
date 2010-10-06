@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-06-22
- * \version 5
+ * \date 2010-10-06
+ * \version 6
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -35,7 +35,7 @@
 /** @mainpage NXC Programmer's Guide
  * \brief
  * 
- * <h2><center>June 8, 2010</center></h2>
+ * <h2><center>October 6, 2010</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -5010,6 +5010,13 @@
  * \ref FormatNum, and \ref Wait functions.
  * It is useful for deleting the circles.dat file created by the program described 
  * in the \ref ex_file_system.nxc example.
+ *
+ * \example ex_sysmemorymanager.nxc
+ * This is an example of how to use the \ref SysMemoryManager function along
+ * with the \ref MemoryManagerType structure.
+ *
+ * \example ex_getmemoryinfo.nxc
+ * This is an example of how to use the \ref GetMemoryInfo function.
  *
  */
 

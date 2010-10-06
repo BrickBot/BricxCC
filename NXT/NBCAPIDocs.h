@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-06-28
- * \version 3
+ * \date 2010-10-06
+ * \version 4
  */
 #ifndef NBCAPIDOCS_H
 #define NBCAPIDOCS_H
@@ -31,7 +31,7 @@
 /** @mainpage NBC Programmer's Guide
  * \brief
  * 
- * <h2><center>June 28, 2010</center></h2>
+ * <h2><center>October 6, 2010</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -2266,6 +2266,7 @@
  * - @subpage TUpdateCalibCacheInfo
  * - @subpage TComputeCalibValue
  * - @subpage TListFiles
+ * - @subpage TMemoryManager
  *
  */
 
@@ -2970,11 +2971,12 @@
  * \code
  * // DrawPolygon
  * TDrawPolygon	struct
- *  Result		sbyte
- *  Points		TLocation[]
- *  Options	    dword
+ *  Result		sbyte        // The function call result. NO_ERR means it succeeded.
+ *  Points		TLocation[]  // The polygon vertices on the screen.
+ *  Options	    dword        // The options to use when writing to the LCD.
  * TDrawPolygon	ends
  * \endcode
+ * See \ref DisplayDrawOptionConstants for valid Options values.
  *
  */
 
@@ -2984,13 +2986,14 @@
  * \code
  * // DrawEllipse
  * TDrawEllipse	struct
- *  Result		sbyte
- *  Center		TLocation
+ *  Result		sbyte     // The function call result. NO_ERR means it succeeded.
+ *  Center		TLocation // The location on screen.
  *  SizeX		byte
  *  SizeY		byte
- *  Options	    dword
+ *  Options	    dword     // The options to use when writing to the LCD.
  * TDrawEllipse	ends
  * \endcode
+ * See \ref DisplayDrawOptionConstants for valid Options values.
  *
  */
 
@@ -3000,13 +3003,14 @@
  * \code
  * // DrawFont
  * TDrawFont	struct
- *  Result		sbyte
- *  Location	TLocation
- *  Filename	byte[]
- *  Text		byte[]
- *  Options	    dword
+ *  Result		sbyte      // The function call result. NO_ERR means it succeeded.
+ *  Location	TLocation  // The location on screen.
+ *  Filename	byte[]     // The filename of the font.
+ *  Text		byte[]     // The text to draw on the LCD.
+ *  Options	    dword      // The options to use when writing to the LCD.
  * TDrawFont	ends
  * \endcode
+ * See \ref DisplayDrawOptionConstants for valid Options values.
  *
  */
 
@@ -3168,6 +3172,21 @@
  *  Pattern	    byte[]
  *  FileList	byte[][]
  * TListFiles	ends
+ * \endcode
+ *
+ */
+
+/** @page TMemoryManager TMemoryManager
+ * \brief The TMemoryManager structure
+ *
+ * \code
+ * // MemoryManager
+ * TMemoryManager struct
+ *  Result        sbyte
+ *  Compact       byte
+ *  PoolSize      word
+ *  DataspaceSize word
+ * TMemoryManager ends
  * \endcode
  *
  */

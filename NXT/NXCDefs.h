@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-06-28
- * \version 79
+ * \date 2010-10-06
+ * \version 80
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -3854,6 +3854,21 @@ struct ComputeCalibValueType {
   unsigned int RawVal;  /*!< The raw value. \todo ?. */
 };
 
+#ifdef __ENHANCED_FIRMWARE
+/**
+ * Parameters for the MemoryManager system call.
+ * This structure is used when calling the \ref SysMemoryManager system call
+ * function.
+ * \sa SysMemoryManager()
+ */
+struct MemoryManagerType {
+  char Result;                /*!< The returned status value. */
+  bool Compact;               /*!< Should the dataspace be compacted or not. */
+  unsigned int PoolSize;      /*!< The returned pool size. */
+  unsigned int DataspaceSize; /*!< The returned dataspace size. */
+};
+#endif
+
 #endif
 /** @} */ // end of CommandModuleTypes group
 
@@ -4048,6 +4063,40 @@ inline void SysComputeCalibValue(ComputeCalibValueType & args);
 
 #endif
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/**
+ * Read memory information.
+ * Read the current pool size and dataspace size.  Optionally compact the
+ * dataspace before returning the information. Running programs have a maximum
+ * of 32k bytes of memory available.  The amount of free RAM can be calculated
+ * by subtracting the value returned by this function from \ref POOL_MAX_SIZE.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param Compact A boolean value indicating whether to compact the dataspace or not.
+ * \param PoolSize The current pool size.
+ * \param DataspaceSize The current dataspace size.
+ * \return The function call result. It will be \ref NO_ERR if the compact
+ * operation is not performed.  Otherwise it will be the result of the compact
+ * operation.
+ */
+inline char GetMemoryInfo(bool Compact, unsigned int & PoolSize, unsigned int & DataspaceSize);
+
+/**
+ * Read memory information.
+ * This function lets you read memory information using the
+ * values specified via the \ref MemoryManagerType structure.
+ *
+ * \param args The MemoryManagerType structure containing the required parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+inline void SysMemoryManager(MemoryManagerType & args);
+
+
+#endif
+
+
 #else
 
 #define CurrentTick() asm { gettick __RETVAL__ }
@@ -4115,6 +4164,15 @@ inline void SysComputeCalibValue(ComputeCalibValueType & args);
 #define SysComputeCalibValue(_args) asm { \
   compchktype _args, ComputeCalibValueType \
   syscall ComputeCalibValue, _args \
+}
+#endif
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+
+#define GetMemoryInfo(_Compact,_PoolSize,_DataspaceSize) asm { __GetMemoryInfo(_Compact,_PoolSize,_DataspaceSize,__RETVAL__) }
+#define SysMemoryManager(_args) asm { \
+  compchktype _args, MemoryManagerType \
+  syscall MemoryManager, _args \
 }
 #endif
 

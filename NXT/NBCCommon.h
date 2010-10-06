@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-06-28
- * \version 54
+ * \date 2010-10-06
+ * \version 55
  */
 
 #ifndef NBCCOMMON_H
@@ -271,6 +271,7 @@
 #define DrawPolygon            93 /*!< Draw a polygon on the LCD screen */
 #define DrawEllipse            94 /*!< Draw an ellipse on the LCD screen */
 #define DrawFont               95 /*!< Draw text using a custom RIC-based font to the LCD screen */
+#define MemoryManager          96 /*!< Read memory manager information, optionally compacting the dataspace first */
 #endif
 #endif
 /** @} */  // end of SysCallConstants group
@@ -422,6 +423,8 @@
 //Status/error codes for the VM internal code and bytecodes
 #define STAT_MSG_EMPTY_MAILBOX 64 /*!< Specified mailbox contains no new messages */
 #define STAT_COMM_PENDING 32      /*!< Pending setup operation in progress */
+
+#define POOL_MAX_SIZE 32768      /*!< Maximum size of memory pool, in bytes */
 
 /** @defgroup CommandVMState VM state constants
  * Constants defining possible VM states.
@@ -2936,18 +2939,18 @@
  * @{
  */
 #define CHAR_BIT   8           /*!< The number of bits in the char type */
-#define SCHAR_MIN  -127        /*!< The minimum value of the signed char type */
+#define SCHAR_MIN  -128        /*!< The minimum value of the signed char type */
 #define SCHAR_MAX  127         /*!< The maximum value of the signed char type */
 #define UCHAR_MAX  255         /*!< The maximum value of the unsigned char type */
-#define CHAR_MIN   -127        /*!< The minimum value of the char type */
+#define CHAR_MIN   -128        /*!< The minimum value of the char type */
 #define CHAR_MAX   127         /*!< The maximum value of the char type */
-#define SHRT_MIN   -32767      /*!< The minimum value of the short type */
+#define SHRT_MIN   -32768      /*!< The minimum value of the short type */
 #define SHRT_MAX   32767       /*!< The maximum value of the short type */
 #define USHRT_MAX  65535       /*!< The maximum value of the unsigned short type */
-#define INT_MIN    -32767      /*!< The minimum value of the int type */
+#define INT_MIN    -32768      /*!< The minimum value of the int type */
 #define INT_MAX    32767       /*!< The maximum value of the int type */
 #define UINT_MAX   65535       /*!< The maximum value of the unsigned int type */
-#define LONG_MIN   -2147483647 /*!< The minimum value of the long type */
+#define LONG_MIN   -2147483648 /*!< The minimum value of the long type */
 #define LONG_MAX   2147483647  /*!< The maximum value of the long type */
 #define ULONG_MAX  4294967295  /*!< The maximum value of the unsigned long type */
 #define RAND_MAX   32768       /*!< The maximum unsigned int random number returned by rand */
