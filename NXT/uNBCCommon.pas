@@ -624,7 +624,7 @@ const
     ( ID: 93; Name: 'DrawPolygon'; ),
     ( ID: 94; Name: 'DrawEllipse'; ),
     ( ID: 95; Name: 'DrawFont'; ),
-    ( ID: 96; Name: 'syscall96'; ),
+    ( ID: 96; Name: 'MemoryManager'; ),
     ( ID: 97; Name: 'syscall97'; ),
     ( ID: 98; Name: 'syscall98'; ),
     ( ID: 99; Name: 'syscall99'; )
