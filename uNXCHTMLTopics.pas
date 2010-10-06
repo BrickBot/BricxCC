@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2423;
+  uNXCHTMLTopicsSize = 2447;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -2849,6 +2849,10 @@ const
      Value: 'group___low_speed_no_restart_constants_ga2be9b6adec09a367c9dcd0b52f86b474.html'
     ),
     (
+     Name: 'I2C_ADDR_DEFAULT';
+     Value: 'group___generic_i2_c_constants_gaee2d9de639e34f5e042a88b9ed4cfe4d.html'
+    ),
+    (
      Name: 'I2C_REG_VERSION';
      Value: 'group___generic_i2_c_constants_gac6e70764e55d76e80fc93d09e76362c3.html'
     ),
@@ -2863,6 +2867,18 @@ const
     (
      Name: 'I2C_REG_CMD';
      Value: 'group___generic_i2_c_constants_ga54163be3ae882039a68a5983fc944dd5.html'
+    ),
+    (
+     Name: 'LEGO_ADDR_US';
+     Value: 'group___l_e_g_o_i2_c_address_constants_ga95b38b6a27727e3398f49047ed7c12f7.html'
+    ),
+    (
+     Name: 'LEGO_ADDR_TEMP';
+     Value: 'group___l_e_g_o_i2_c_address_constants_gaa004417307d1ce3c2823b5c033b55743.html'
+    ),
+    (
+     Name: 'LEGO_ADDR_EMETER';
+     Value: 'group___l_e_g_o_i2_c_address_constants_ga4f3c45258315d731f1025557633bc1c1.html'
     ),
     (
      Name: 'US_CMD_OFF';
@@ -2977,10 +2993,6 @@ const
      Value: 'group___temp_i2_c_constants_gab40a7daed813b085ca417f3a76f00ab1.html'
     ),
     (
-     Name: 'TEMP_I2C_ADDRESS';
-     Value: 'group___temp_i2_c_constants_ga51bd7ac0228ce613b61ecd0632474c54.html'
-    ),
-    (
      Name: 'TEMP_REG_TEMP';
      Value: 'group___temp_i2_c_constants_ga2c07c09ba69212b83cbd0133daa4ce0c.html'
     ),
@@ -2995,6 +3007,34 @@ const
     (
      Name: 'TEMP_REG_THIGH';
      Value: 'group___temp_i2_c_constants_ga0c081dbef3e1890f1b4abf65dd4a170c.html'
+    ),
+    (
+     Name: 'EMETER_REG_VIN';
+     Value: 'group___e_meter_i2_c_constants_ga2be9047872b33b8fe4ee94436b1f9e8b.html'
+    ),
+    (
+     Name: 'EMETER_REG_AIN';
+     Value: 'group___e_meter_i2_c_constants_ga6da2cb8af8125429f0f7eab105b14e4e.html'
+    ),
+    (
+     Name: 'EMETER_REG_VOUT';
+     Value: 'group___e_meter_i2_c_constants_gacd2d5a3137fd74e2b3e26119f8dc69e9.html'
+    ),
+    (
+     Name: 'EMETER_REG_AOUT';
+     Value: 'group___e_meter_i2_c_constants_gaafa2cec7fc5c628f9ff39384f0665c24.html'
+    ),
+    (
+     Name: 'EMETER_REG_JOULES';
+     Value: 'group___e_meter_i2_c_constants_gac2f6d150556cc6b1240ba867e923d2dd.html'
+    ),
+    (
+     Name: 'EMETER_REG_WIN';
+     Value: 'group___e_meter_i2_c_constants_ga2e94d0a3722221c982ce92be30e4a0ee.html'
+    ),
+    (
+     Name: 'EMETER_REG_WOUT';
+     Value: 'group___e_meter_i2_c_constants_ga352fa58ce7f96b4fec6db8b86ee09562.html'
     ),
     (
      Name: 'DISPLAY_ERASE_ALL';
@@ -5065,6 +5105,38 @@ const
      Value: 'group___p_f_p_w_m_options_ga9d7c0a3c81333c3fbcba9a66d3bc3909.html'
     ),
     (
+     Name: 'HT_ADDR_IRSEEKER';
+     Value: 'group___hi_technic_constants_ga12516597b79cd534e80f74ef9c6ac9b2.html'
+    ),
+    (
+     Name: 'HT_ADDR_IRSEEKER2';
+     Value: 'group___hi_technic_constants_ga966edd5ee8d796051cedffbcdd6ae18d.html'
+    ),
+    (
+     Name: 'HT_ADDR_IRRECEIVER';
+     Value: 'group___hi_technic_constants_gad9836f2a99d32124c0fda74a7cd18f04.html'
+    ),
+    (
+     Name: 'HT_ADDR_COMPASS';
+     Value: 'group___hi_technic_constants_ga2df9e2e68763fcb1c7f71b3dcd263d3f.html'
+    ),
+    (
+     Name: 'HT_ADDR_ACCEL';
+     Value: 'group___hi_technic_constants_ga7ab0dbcc8ac9fa3c11491ddb10ff7572.html'
+    ),
+    (
+     Name: 'HT_ADDR_COLOR';
+     Value: 'group___hi_technic_constants_gab5a9238d6d39fbac33d6d407f8d272d5.html'
+    ),
+    (
+     Name: 'HT_ADDR_COLOR2';
+     Value: 'group___hi_technic_constants_gae1b82171c88923d8ce812b59ff191e48.html'
+    ),
+    (
+     Name: 'HT_ADDR_IRLINK';
+     Value: 'group___hi_technic_constants_ga4633d2e9361d461022473411fb65a432.html'
+    ),
+    (
      Name: 'HTIR2_MODE_1200';
      Value: 'group___h_t_i_r_seeker2_constants_ga3ec2348617d3fae0aadb1eef110f7e2f.html'
     ),
@@ -5219,6 +5291,66 @@ const
     (
      Name: 'MS_CMD_ADPA_OFF';
      Value: 'group___mind_sensors_constants_gaab6ebb532c31888477242a6f49942986.html'
+    ),
+    (
+     Name: 'MS_ADDR_RTCLOCK';
+     Value: 'group___mind_sensors_constants_gacf5037b2757324aa61468db668d0be01.html'
+    ),
+    (
+     Name: 'MS_ADDR_DISTNX';
+     Value: 'group___mind_sensors_constants_ga69c3fd7d254825ea358e72e3d1ad7c8e.html'
+    ),
+    (
+     Name: 'MS_ADDR_NRLINK';
+     Value: 'group___mind_sensors_constants_ga2e6be74583fc4323102025fc9f8167fd.html'
+    ),
+    (
+     Name: 'MS_ADDR_ACCLNX';
+     Value: 'group___mind_sensors_constants_ga63484fdd24d22fbaff37c9b714b7e7eb.html'
+    ),
+    (
+     Name: 'MS_ADDR_CMPSNX';
+     Value: 'group___mind_sensors_constants_ga80056f355bc257b4b19ca9fc40976ce1.html'
+    ),
+    (
+     Name: 'MS_ADDR_PSPNX';
+     Value: 'group___mind_sensors_constants_gadf0423b83b3358f7274c0f8a1cb9efaa.html'
+    ),
+    (
+     Name: 'MS_ADDR_LINELDR';
+     Value: 'group___mind_sensors_constants_gaf1ff0e5278221cd93bac57b9ac5e7a0c.html'
+    ),
+    (
+     Name: 'MS_ADDR_NXTCAM';
+     Value: 'group___mind_sensors_constants_ga00aad4208f9ad6fba896d204d58bc774.html'
+    ),
+    (
+     Name: 'MS_ADDR_NXTHID';
+     Value: 'group___mind_sensors_constants_gaa1679bf33767504105dbdd2c949a5387.html'
+    ),
+    (
+     Name: 'MS_ADDR_NXTSERVO';
+     Value: 'group___mind_sensors_constants_ga87e40fae609239e7de3d0bc34c6fe9b0.html'
+    ),
+    (
+     Name: 'MS_ADDR_PFMATE';
+     Value: 'group___mind_sensors_constants_ga63ab6ca23a0e84220cdd965b63255d43.html'
+    ),
+    (
+     Name: 'MS_ADDR_MTRMUX';
+     Value: 'group___mind_sensors_constants_gae03be225a80f65dc4944447e99e65fff.html'
+    ),
+    (
+     Name: 'MS_ADDR_NXTMMX';
+     Value: 'group___mind_sensors_constants_gadf5d5eff85734dc24d54ab3a47c3a685.html'
+    ),
+    (
+     Name: 'MS_ADDR_IVSENS';
+     Value: 'group___mind_sensors_constants_ga5639a2403deee3cff0c7f72f4d8609d2.html'
+    ),
+    (
+     Name: 'MS_ADDR_RXMUX';
+     Value: 'group___mind_sensors_constants_gafebbbb3b894f637973b0969bb904251e.html'
     ),
     (
      Name: 'DIST_CMD_GP2D12';
@@ -5411,6 +5543,102 @@ const
     (
      Name: 'NRLINK_REG_EEPROM';
      Value: 'group___m_s_n_r_link_ga40e9a9f73332bdcf8f649910c940567d.html'
+    ),
+    (
+     Name: 'ACCL_CMD_X_CAL';
+     Value: 'group___m_s_a_c_c_l_nx_gabd1bd72c77161aaa841c1a337dd654f8.html'
+    ),
+    (
+     Name: 'ACCL_CMD_Y_CAL';
+     Value: 'group___m_s_a_c_c_l_nx_gaa247a68824167c085352a0c1e26a9d95.html'
+    ),
+    (
+     Name: 'ACCL_CMD_Z_CAL';
+     Value: 'group___m_s_a_c_c_l_nx_ga1f11e72f0874c0acfb53f80a658ef1da.html'
+    ),
+    (
+     Name: 'ACCL_CMD_X_CAL_END';
+     Value: 'group___m_s_a_c_c_l_nx_ga9245094468ab805aca19b28f96c587e2.html'
+    ),
+    (
+     Name: 'ACCL_CMD_Y_CAL_END';
+     Value: 'group___m_s_a_c_c_l_nx_gac2f6ae62f57d6f2d2d5c0b54219c1c60.html'
+    ),
+    (
+     Name: 'ACCL_CMD_Z_CAL_END';
+     Value: 'group___m_s_a_c_c_l_nx_gabab3e279362283825057696260774954.html'
+    ),
+    (
+     Name: 'ACCL_CMD_RESET_CAL';
+     Value: 'group___m_s_a_c_c_l_nx_gaaeb16eec898aebcf1abf0363055362b0.html'
+    ),
+    (
+     Name: 'ACCL_REG_SENS_LVL';
+     Value: 'group___m_s_a_c_c_l_nx_gacead314404dcf99da93ae0998b278f51.html'
+    ),
+    (
+     Name: 'ACCL_REG_X_TILT';
+     Value: 'group___m_s_a_c_c_l_nx_gac831044c126ec4fa5b12b4295042c36c.html'
+    ),
+    (
+     Name: 'ACCL_REG_Y_TILT';
+     Value: 'group___m_s_a_c_c_l_nx_ga0408596016102293fcef15e8aac92e8b.html'
+    ),
+    (
+     Name: 'ACCL_REG_Z_TILT';
+     Value: 'group___m_s_a_c_c_l_nx_gafeae9b18af1591c2c16b093572c95771.html'
+    ),
+    (
+     Name: 'ACCL_REG_X_ACCEL';
+     Value: 'group___m_s_a_c_c_l_nx_ga60140fdd177a7b5fd2fd7ab09f18b429.html'
+    ),
+    (
+     Name: 'ACCL_REG_Y_ACCEL';
+     Value: 'group___m_s_a_c_c_l_nx_gab95b8e9e3eb74d77adc452c701ea057a.html'
+    ),
+    (
+     Name: 'ACCL_REG_Z_ACCEL';
+     Value: 'group___m_s_a_c_c_l_nx_ga3fb6e95d0417f30adc442c21f41ab1f1.html'
+    ),
+    (
+     Name: 'ACCL_REG_X_OFFSET';
+     Value: 'group___m_s_a_c_c_l_nx_ga724abb56f7fec0f714ebaa99c92bf0dd.html'
+    ),
+    (
+     Name: 'ACCL_REG_X_RANGE';
+     Value: 'group___m_s_a_c_c_l_nx_ga34c2d0deeee76ecbda07248e9120604c.html'
+    ),
+    (
+     Name: 'ACCL_REG_Y_OFFSET';
+     Value: 'group___m_s_a_c_c_l_nx_ga170d3e8844d06b76695769b2bdceaf16.html'
+    ),
+    (
+     Name: 'ACCL_REG_Y_RANGE';
+     Value: 'group___m_s_a_c_c_l_nx_ga1f80ca111b07272e659efc7eb9779974.html'
+    ),
+    (
+     Name: 'ACCL_REG_Z_OFFSET';
+     Value: 'group___m_s_a_c_c_l_nx_ga46921c25df61e3bce140b750dce1bbe9.html'
+    ),
+    (
+     Name: 'ACCL_REG_Z_RANGE';
+     Value: 'group___m_s_a_c_c_l_nx_ga55c51263358c0cb8c4df4c0a60ddcd51.html'
+    ),
+    (
+     Name: 'ACCL_SENSITIVITY_LEVEL_1';
+     Value: 'group___m_s_a_c_c_l_nx_s_level_gaf0894b457aba4e013794de01b8205395.html'
+    ),
+    (
+     Name: 'ACCL_SENSITIVITY_LEVEL_2';
+     Value: 'group___m_s_a_c_c_l_nx_s_level_ga3052e165f2870854d4286eec088752f3.html'
+    ),
+    (
+     Name: 'ACCL_SENSITIVITY_LEVEL_3';
+     Value: 'group___m_s_a_c_c_l_nx_s_level_ga6a9a16f3eebff833d04d34908f861479.html'
+    ),
+    (
+     Name: 'ACCL_SENSITIVITY_LEVEL_4';
+     Value: 'group___m_s_a_c_c_l_nx_s_level_ga587b1074c4da94a77fe9acb8a844f1d0.html'
     ),
     (
      Name: 'RICImgPoint';
@@ -6570,11 +6798,11 @@ const
     ),
     (
      Name: 'SetDisplayFont';
-     Value: 'group___display_module_functions_ga0e116fce4ef1473bdca36f4f8888eff4.html'
+     Value: 'group___display_module_functions_ga10bd62343d1bd0495085d72b8b427270.html'
     ),
     (
      Name: 'SetDisplayDisplay';
-     Value: 'group___display_module_functions_ga91faf1ea1874d9f3ba7cdf7394e4d5b8.html'
+     Value: 'group___display_module_functions_gaa6704c4c9cdfc0fa38dad8a1abe90923.html'
     ),
     (
      Name: 'SetDisplayEraseMask';
@@ -6705,12 +6933,8 @@ const
      Value: 'group___low_speed_module_functions_ga95d443e1902408c417b392e6b829572c.html'
     ),
     (
-     Name: 'ReadI2CRegister';
-     Value: 'group___low_speed_module_functions_gaf9b8809b9b5a84ed4103d6ab1ef3708c.html'
-    ),
-    (
-     Name: 'WriteI2CRegister';
-     Value: 'group___low_speed_module_functions_gac6175981ccdad6db3e3ebbe364daa562.html'
+     Name: 'ReadSensorEMeter';
+     Value: 'group___low_speed_module_functions_gad3f5c6a58277867c130cf121a926b4a5.html'
     ),
     (
      Name: 'LowspeedStatus';
@@ -6757,44 +6981,32 @@ const
      Value: 'group___low_speed_module_functions_ga085c21caa6674a6066c1cf67b7ef5374.html'
     ),
     (
-     Name: 'I2CDeviceInfo';
-     Value: 'group___low_speed_module_functions_ga3a0e7d5f971ec679f7d50d3a1c2965f1.html'
+     Name: 'ReadI2CRegister';
+     Value: 'group___low_speed_module_functions_ga46f8045c53edabfb3809504e7fd3d94d.html'
     ),
     (
-     Name: 'I2CDeviceInfoEx';
-     Value: 'group___low_speed_module_functions_ga74ea3e9f81b6bafe9f499ccd0c4a85a8.html'
+     Name: 'WriteI2CRegister';
+     Value: 'group___low_speed_module_functions_ga49057ab15691eb3bb4e6edbb834a98c8.html'
+    ),
+    (
+     Name: 'I2CDeviceInfo';
+     Value: 'group___low_speed_module_functions_ga5c21631ed09d7934da9c8ef4c4e62696.html'
     ),
     (
      Name: 'I2CVersion';
-     Value: 'group___low_speed_module_functions_gac6fa850f732feee24341d8aab214069b.html'
-    ),
-    (
-     Name: 'I2CVersionEx';
-     Value: 'group___low_speed_module_functions_ga7ea1581017b559cec0735729b9c24716.html'
+     Value: 'group___low_speed_module_functions_ga77ddd2b08abf930381266eff42ae97b1.html'
     ),
     (
      Name: 'I2CVendorId';
-     Value: 'group___low_speed_module_functions_gad73c93d8cf6266d24c900637adb19a8e.html'
-    ),
-    (
-     Name: 'I2CVendorIdEx';
-     Value: 'group___low_speed_module_functions_ga9637a6fe16f4b15e496887da83bdbcd0.html'
+     Value: 'group___low_speed_module_functions_ga72a2eb153ff0a223a16fba981250a2af.html'
     ),
     (
      Name: 'I2CDeviceId';
-     Value: 'group___low_speed_module_functions_ga69b9bb6cdb18b9fc7b5b41812dad6402.html'
-    ),
-    (
-     Name: 'I2CDeviceIdEx';
-     Value: 'group___low_speed_module_functions_gade60329ca6ac7e0e904fe82f3b4b0bdc.html'
+     Value: 'group___low_speed_module_functions_ga2a97aab1ee2208825d421140396f9ce7.html'
     ),
     (
      Name: 'I2CSendCommand';
-     Value: 'group___low_speed_module_functions_ga3434f5e720ec58128372e6e9fca47513.html'
-    ),
-    (
-     Name: 'I2CSendCommandEx';
-     Value: 'group___low_speed_module_functions_ga27f583a892f54dbbe18cb7a704370125.html'
+     Value: 'group___low_speed_module_functions_ga62e239cfe170c7d6c9b9fc5fef7b88ae.html'
     ),
     (
      Name: 'GetLSInputBuffer';
@@ -6867,18 +7079,6 @@ const
     (
      Name: 'SysCommLSWriteEx';
      Value: 'group___low_speed_module_system_call_functions_ga24d58a9c2c21af890efad13984defc26.html'
-    ),
-    (
-     Name: 'PowerDown';
-     Value: 'group___i_o_ctrl_module_functions_gad250149295f663a8d474fd25086fd376.html'
-    ),
-    (
-     Name: 'SleepNow';
-     Value: 'group___i_o_ctrl_module_functions_gadecafd9ae6d682ee5a26fdfe68d8cf85.html'
-    ),
-    (
-     Name: 'RebootInFirmwareMode';
-     Value: 'group___i_o_ctrl_module_functions_ga64deba6187c8a5c061fcfed88b668566.html'
     ),
     (
      Name: 'CurrentTick';
@@ -7183,6 +7383,18 @@ const
     (
      Name: 'GetCommModuleValue';
      Value: 'group___command_module_functions_ga0721e7f889fc06d5ae44a552c03a472f.html'
+    ),
+    (
+     Name: 'PowerDown';
+     Value: 'group___i_o_ctrl_module_functions_gad250149295f663a8d474fd25086fd376.html'
+    ),
+    (
+     Name: 'SleepNow';
+     Value: 'group___i_o_ctrl_module_functions_gadecafd9ae6d682ee5a26fdfe68d8cf85.html'
+    ),
+    (
+     Name: 'RebootInFirmwareMode';
+     Value: 'group___i_o_ctrl_module_functions_ga64deba6187c8a5c061fcfed88b668566.html'
     ),
     (
      Name: 'SendMessage';
@@ -8050,7 +8262,7 @@ const
     ),
     (
      Name: 'SensorHTIRSeeker2Addr';
-     Value: 'group___hi_technic_a_p_i_gaae544e7992a52e58d4b733ab6964ae21.html'
+     Value: 'group___hi_technic_a_p_i_ga4915fb775c45886368f588d22c2b8818.html'
     ),
     (
      Name: 'SensorHTIRSeeker2DCDir';
@@ -8458,11 +8670,7 @@ const
     ),
     (
      Name: 'SensorMSCompass';
-     Value: 'group___mind_sensors_a_p_i_ga397d5dacc50adf1091b8d932dc77aa08.html'
-    ),
-    (
-     Name: 'SensorMSCompassEx';
-     Value: 'group___mind_sensors_a_p_i_ga2baf571c1002fc867b7f8a2b1b7145dc.html'
+     Value: 'group___mind_sensors_a_p_i_ga8c368c86a8474352df4955493a293e8a.html'
     ),
     (
      Name: 'SensorMSDROD';
@@ -8474,19 +8682,11 @@ const
     ),
     (
      Name: 'ReadSensorMSAccel';
-     Value: 'group___mind_sensors_a_p_i_ga384105eabf66c486b173d73cced2a98f.html'
-    ),
-    (
-     Name: 'ReadSensorMSAccelEx';
-     Value: 'group___mind_sensors_a_p_i_ga144d97cfd67bdc762d18cf62a212fa44.html'
+     Value: 'group___mind_sensors_a_p_i_gacf3ee6a0493ee564316e4b42f3feb517.html'
     ),
     (
      Name: 'ReadSensorMSPlayStation';
-     Value: 'group___mind_sensors_a_p_i_ga4c6bbe91b0203146fb6f58347addd5a4.html'
-    ),
-    (
-     Name: 'ReadSensorMSPlayStationEx';
-     Value: 'group___mind_sensors_a_p_i_gafb8db01475956bf5212a13ef1e4f9d7f.html'
+     Value: 'group___mind_sensors_a_p_i_ga121c0873665a939f3534c5e3e8b8d2fa.html'
     ),
     (
      Name: 'ReadSensorMSRTClock';
@@ -8494,331 +8694,227 @@ const
     ),
     (
      Name: 'ReadSensorMSTilt';
-     Value: 'group___mind_sensors_a_p_i_ga3f8d0b9da7cfaff99e030a8991685310.html'
-    ),
-    (
-     Name: 'ReadSensorMSTiltEx';
-     Value: 'group___mind_sensors_a_p_i_ga28208f617be209a168ad3286448f3847.html'
+     Value: 'group___mind_sensors_a_p_i_ga499f159b9c6078f6877dd20c3990d64b.html'
     ),
     (
      Name: 'MSReadValue';
-     Value: 'group___mind_sensors_a_p_i_gad74898de27308feb6813c3839d25dc59.html'
-    ),
-    (
-     Name: 'MSReadValueEx';
-     Value: 'group___mind_sensors_a_p_i_ga26d7d079a1fc8488aecca73c46a7335c.html'
+     Value: 'group___mind_sensors_a_p_i_gaa170823d0d410b75264115aaee29b182.html'
     ),
     (
      Name: 'MSEnergize';
-     Value: 'group___mind_sensors_a_p_i_ga24ac8d9a20f211ecef4c950e10dc09c7.html'
-    ),
-    (
-     Name: 'MSEnergizeEx';
-     Value: 'group___mind_sensors_a_p_i_gad6710978b098db1b1df28c750bca233f.html'
+     Value: 'group___mind_sensors_a_p_i_ga0014508e8fc2333c93c8fda832b2cf77.html'
     ),
     (
      Name: 'MSDeenergize';
-     Value: 'group___mind_sensors_a_p_i_ga8dd690bf22ef37449c6060ed4dd3264b.html'
-    ),
-    (
-     Name: 'MSDeenergizeEx';
-     Value: 'group___mind_sensors_a_p_i_gaac8a49b0c1353cca60ad6a73766a401f.html'
+     Value: 'group___mind_sensors_a_p_i_ga294d6e216c3d474cbacf1f01f52d9ebd.html'
     ),
     (
      Name: 'MSADPAOn';
-     Value: 'group___mind_sensors_a_p_i_gad14fba048fcc2edac04315ade29340ac.html'
-    ),
-    (
-     Name: 'MSADPAOnEx';
-     Value: 'group___mind_sensors_a_p_i_ga118eac1fe62bf9d476a8a49b7fd39b3f.html'
+     Value: 'group___mind_sensors_a_p_i_gaf690d1ab8a9533b67b96a78c6e870c54.html'
     ),
     (
      Name: 'MSADPAOff';
-     Value: 'group___mind_sensors_a_p_i_ga5cc0fb2350e2dbc5a28770265b6c214d.html'
-    ),
-    (
-     Name: 'MSADPAOffEx';
-     Value: 'group___mind_sensors_a_p_i_ga1ea9e4fcda989a2f6f68d864d4e19a5c.html'
+     Value: 'group___mind_sensors_a_p_i_ga6b9e97e1219c2200661ee360091af396.html'
     ),
     (
      Name: 'DISTNxGP2D12';
-     Value: 'group___mind_sensors_a_p_i_ga20045465c9d0ec5f20c9bf06603e0d0b.html'
-    ),
-    (
-     Name: 'DISTNxGP2D12Ex';
-     Value: 'group___mind_sensors_a_p_i_ga2dfb14de2f109886fa4a9c84c9b29880.html'
+     Value: 'group___mind_sensors_a_p_i_gacf3f145bb18b10a9db6d71fbf65503fa.html'
     ),
     (
      Name: 'DISTNxGP2D120';
-     Value: 'group___mind_sensors_a_p_i_ga446520375939b24af472492e6d800eb4.html'
-    ),
-    (
-     Name: 'DISTNxGP2D120Ex';
-     Value: 'group___mind_sensors_a_p_i_gabffca75446f0f2c28f47b1abdd573c21.html'
+     Value: 'group___mind_sensors_a_p_i_gafd0fe12d7b44df814bdb6659794eea94.html'
     ),
     (
      Name: 'DISTNxGP2YA02';
-     Value: 'group___mind_sensors_a_p_i_ga4864a2fff824729bd1233caddafcb912.html'
-    ),
-    (
-     Name: 'DISTNxGP2YA02Ex';
-     Value: 'group___mind_sensors_a_p_i_ga2a906af1ec2da506908e51a794e4ada3.html'
+     Value: 'group___mind_sensors_a_p_i_ga1fe2bf6b13ee75b00ccf1b671453283f.html'
     ),
     (
      Name: 'DISTNxGP2YA21';
-     Value: 'group___mind_sensors_a_p_i_gab6b98d561aa3652880db864206567aa4.html'
-    ),
-    (
-     Name: 'DISTNxGP2YA21Ex';
-     Value: 'group___mind_sensors_a_p_i_ga88fff288543593592831d411cf8fba6c.html'
+     Value: 'group___mind_sensors_a_p_i_ga03fac0b9e99303faf427cf0f7e07bbfb.html'
     ),
     (
      Name: 'DISTNxDistance';
-     Value: 'group___mind_sensors_a_p_i_ga981785c965d6639077a92965647a0bab.html'
-    ),
-    (
-     Name: 'DISTNxDistanceEx';
-     Value: 'group___mind_sensors_a_p_i_gaecd1ed4c6b9933c5624d7aa4ce83e05c.html'
+     Value: 'group___mind_sensors_a_p_i_gaa362d3858a715aa1fd18227b7b80dd94.html'
     ),
     (
      Name: 'DISTNxMaxDistance';
-     Value: 'group___mind_sensors_a_p_i_gaa16e1cf1d57781c5d903e900d83bca70.html'
-    ),
-    (
-     Name: 'DISTNxMaxDistanceEx';
-     Value: 'group___mind_sensors_a_p_i_ga9675c56c0295eb5f0c41c540df7b610b.html'
+     Value: 'group___mind_sensors_a_p_i_ga58f75c0d7346a36d45d18f1bbc4bd440.html'
     ),
     (
      Name: 'DISTNxMinDistance';
-     Value: 'group___mind_sensors_a_p_i_gadf51fb35f8bb69713a98a4b4224524a9.html'
-    ),
-    (
-     Name: 'DISTNxMinDistanceEx';
-     Value: 'group___mind_sensors_a_p_i_gab335530adc578901ce66504cb509746b.html'
+     Value: 'group___mind_sensors_a_p_i_gac940030e97c3ab329dbe5d72dce2fc21.html'
     ),
     (
      Name: 'DISTNxModuleType';
-     Value: 'group___mind_sensors_a_p_i_gaa999931722fc097db26f60e8139f11f6.html'
-    ),
-    (
-     Name: 'DISTNxModuleTypeEx';
-     Value: 'group___mind_sensors_a_p_i_gadc287913cfab152ed145439111111beb.html'
+     Value: 'group___mind_sensors_a_p_i_gab208bbcdea430b159644e85211b308eb.html'
     ),
     (
      Name: 'DISTNxNumPoints';
-     Value: 'group___mind_sensors_a_p_i_ga6eb702d3505730ea7b26381862a390fe.html'
-    ),
-    (
-     Name: 'DISTNxNumPointsEx';
-     Value: 'group___mind_sensors_a_p_i_ga037d3d199b8b9d2df60367926e9babf1.html'
+     Value: 'group___mind_sensors_a_p_i_gaeb8adf737b52b8962b06fb354f9619b1.html'
     ),
     (
      Name: 'DISTNxVoltage';
-     Value: 'group___mind_sensors_a_p_i_ga4c1bc8e163c37423eff555eb16984103.html'
+     Value: 'group___mind_sensors_a_p_i_ga97c0bc4bc8a331d2c0607dfd914f1fd2.html'
     ),
     (
-     Name: 'DISTNxVoltageEx';
-     Value: 'group___mind_sensors_a_p_i_ga01061a27012b43890ecffbde4de0a140.html'
+     Name: 'ACCLNxCalibrateX';
+     Value: 'group___mind_sensors_a_p_i_ga25b1d2399081348fca72594b3b66cc7b.html'
+    ),
+    (
+     Name: 'ACCLNxCalibrateXEnd';
+     Value: 'group___mind_sensors_a_p_i_ga261f32c08c80f93b3af6a7aab66f05f3.html'
+    ),
+    (
+     Name: 'ACCLNxCalibrateY';
+     Value: 'group___mind_sensors_a_p_i_gaa258e57599d577d03785f2fcf120d213.html'
+    ),
+    (
+     Name: 'ACCLNxCalibrateYEnd';
+     Value: 'group___mind_sensors_a_p_i_ga66701253178b3154986a5664a1138d3f.html'
+    ),
+    (
+     Name: 'ACCLNxCalibrateZ';
+     Value: 'group___mind_sensors_a_p_i_gab9eb8f6f755ebd7787587dc909b5ba61.html'
+    ),
+    (
+     Name: 'ACCLNxCalibrateZEnd';
+     Value: 'group___mind_sensors_a_p_i_ga60a7ce6d8ab39e211a8a065128c401dc.html'
+    ),
+    (
+     Name: 'ACCLNxResetCalibration';
+     Value: 'group___mind_sensors_a_p_i_gad4f93a786fe7af9770c24f09ecff4bac.html'
+    ),
+    (
+     Name: 'SetACCLNxSensitivity';
+     Value: 'group___mind_sensors_a_p_i_ga21ba98a18bd1be9c125eed31da9bb6f4.html'
+    ),
+    (
+     Name: 'ACCLNxSensitivity';
+     Value: 'group___mind_sensors_a_p_i_gabacec0b4845031c11c83cb886f6f1506.html'
+    ),
+    (
+     Name: 'ACCLNxXOffset';
+     Value: 'group___mind_sensors_a_p_i_gaa623e78eebfc2b8218d21161d6fe3df1.html'
+    ),
+    (
+     Name: 'ACCLNxXRange';
+     Value: 'group___mind_sensors_a_p_i_gac42d2302fba28248a2d63236ffa9f2c0.html'
+    ),
+    (
+     Name: 'ACCLNxYOffset';
+     Value: 'group___mind_sensors_a_p_i_gadff4c22de8b27e9af26b9b1171da75d1.html'
+    ),
+    (
+     Name: 'ACCLNxYRange';
+     Value: 'group___mind_sensors_a_p_i_ga4e8cd076710d5ad9570b7c20107715ef.html'
+    ),
+    (
+     Name: 'ACCLNxZOffset';
+     Value: 'group___mind_sensors_a_p_i_ga5e671b7b7ca728f1a6d3bede9b5f0333.html'
+    ),
+    (
+     Name: 'ACCLNxZRange';
+     Value: 'group___mind_sensors_a_p_i_gaaaaca61e17582ebc14b23064b3703090.html'
     ),
     (
      Name: 'PSPNxDigital';
-     Value: 'group___mind_sensors_a_p_i_ga672077ff5ff4766d9c89790d91de5814.html'
-    ),
-    (
-     Name: 'PSPNxDigitalEx';
-     Value: 'group___mind_sensors_a_p_i_ga7ed399172a37ef54999a9ce890d75a05.html'
+     Value: 'group___mind_sensors_a_p_i_gacb27c4393915249c7a4286f37a3b0043.html'
     ),
     (
      Name: 'PSPNxAnalog';
-     Value: 'group___mind_sensors_a_p_i_ga791e0b0a4cd0622068a869707fe7a9d2.html'
-    ),
-    (
-     Name: 'PSPNxAnalogEx';
-     Value: 'group___mind_sensors_a_p_i_gaaf91837c892a981f1eb479b74c262c20.html'
+     Value: 'group___mind_sensors_a_p_i_ga5b3b1c572eb60382dae6c9178a76c8c6.html'
     ),
     (
      Name: 'NRLink2400';
-     Value: 'group___mind_sensors_a_p_i_ga227f021c3b50d34b1375f6bc6118d9fd.html'
-    ),
-    (
-     Name: 'NRLink2400Ex';
-     Value: 'group___mind_sensors_a_p_i_ga5fa84690e1fbcfc86694df710fd40429.html'
+     Value: 'group___mind_sensors_a_p_i_gad20b47dee83421271a4f0edff77ac767.html'
     ),
     (
      Name: 'NRLink4800';
-     Value: 'group___mind_sensors_a_p_i_ga14a236002935be4da8756219000dcfac.html'
-    ),
-    (
-     Name: 'NRLink4800Ex';
-     Value: 'group___mind_sensors_a_p_i_gaf818fbcffd7c6289965d3df671e859ff.html'
+     Value: 'group___mind_sensors_a_p_i_gacaf171f6855f3fb0e941a65064143e5c.html'
     ),
     (
      Name: 'NRLinkFlush';
-     Value: 'group___mind_sensors_a_p_i_ga6a773813db0fb5e6a8af691c86a47d56.html'
-    ),
-    (
-     Name: 'NRLinkFlushEx';
-     Value: 'group___mind_sensors_a_p_i_ga6add7f58c1845d392954cb8eb70279db.html'
+     Value: 'group___mind_sensors_a_p_i_gac2a4f5323a941775632b8917d268bbe5.html'
     ),
     (
      Name: 'NRLinkIRLong';
-     Value: 'group___mind_sensors_a_p_i_gadffc14e03c60984954f1ee000d102aad.html'
-    ),
-    (
-     Name: 'NRLinkIRLongEx';
-     Value: 'group___mind_sensors_a_p_i_gaa2bd84a3b73176a8a761cf175cf1dbf6.html'
+     Value: 'group___mind_sensors_a_p_i_ga311d99d400580dec788aee698319935c.html'
     ),
     (
      Name: 'NRLinkIRShort';
-     Value: 'group___mind_sensors_a_p_i_gaa565ff17224a1702c300bfca9144a5e4.html'
-    ),
-    (
-     Name: 'NRLinkIRShortEx';
-     Value: 'group___mind_sensors_a_p_i_ga9bdf73107aeaeb4e9d9feff667287dac.html'
+     Value: 'group___mind_sensors_a_p_i_gaf3e230bed5c8872c91f754bf0521b598.html'
     ),
     (
      Name: 'NRLinkSetPF';
-     Value: 'group___mind_sensors_a_p_i_ga15a8a8ac2a9f44f2bb99507bfa75b082.html'
-    ),
-    (
-     Name: 'NRLinkSetPFEx';
-     Value: 'group___mind_sensors_a_p_i_gafc6368a10de6d82a340f0505167481b5.html'
+     Value: 'group___mind_sensors_a_p_i_ga43dd7daf154d8267887f1b089f58eacf.html'
     ),
     (
      Name: 'NRLinkSetRCX';
-     Value: 'group___mind_sensors_a_p_i_gad558fee7c5f5135a7f3ee9621370d7a3.html'
-    ),
-    (
-     Name: 'NRLinkSetRCXEx';
-     Value: 'group___mind_sensors_a_p_i_gab06c84cdf215b585a8a87b22bd6313ab.html'
+     Value: 'group___mind_sensors_a_p_i_gac00191339fcc01480cacad30cf26ecc0.html'
     ),
     (
      Name: 'NRLinkSetTrain';
-     Value: 'group___mind_sensors_a_p_i_gae21cd408f418dd198a9ac7351e1cdc27.html'
-    ),
-    (
-     Name: 'NRLinkSetTrainEx';
-     Value: 'group___mind_sensors_a_p_i_ga813d1ab22e678bd94b662a6ece03d63c.html'
+     Value: 'group___mind_sensors_a_p_i_ga331cc01cb3ffabd7b64f668c96de9938.html'
     ),
     (
      Name: 'NRLinkTxRaw';
-     Value: 'group___mind_sensors_a_p_i_ga282eb36b8045542aa3579e35c691d423.html'
-    ),
-    (
-     Name: 'NRLinkTxRawEx';
-     Value: 'group___mind_sensors_a_p_i_gaa1b01be64c8bbb65419a5ad98291d3a0.html'
+     Value: 'group___mind_sensors_a_p_i_ga58e7a65733e8e040fa71169e044fb558.html'
     ),
     (
      Name: 'NRLinkStatus';
-     Value: 'group___mind_sensors_a_p_i_ga928a1db7c91d31ab5cfa044cbdcd47a0.html'
-    ),
-    (
-     Name: 'NRLinkStatusEx';
-     Value: 'group___mind_sensors_a_p_i_gac0471a1dad88fd1e5f96175fedd71fdf.html'
+     Value: 'group___mind_sensors_a_p_i_gaa26b9472338fb131abd1fd90cd9173ca.html'
     ),
     (
      Name: 'RunNRLinkMacro';
-     Value: 'group___mind_sensors_a_p_i_gaa3f43341748875f5fcce4320cb7a5e4c.html'
-    ),
-    (
-     Name: 'RunNRLinkMacroEx';
-     Value: 'group___mind_sensors_a_p_i_gae9ecbe8a70298fd737127f16c7b7978f.html'
+     Value: 'group___mind_sensors_a_p_i_gadc62f13d02633855c903bc5a49f8ff72.html'
     ),
     (
      Name: 'WriteNRLinkBytes';
-     Value: 'group___mind_sensors_a_p_i_ga9fcfd7ce1ff4e7ec16b4b2f0aebe195e.html'
-    ),
-    (
-     Name: 'WriteNRLinkBytesEx';
-     Value: 'group___mind_sensors_a_p_i_ga5815d75aecabff2862bdcac734d76c4a.html'
+     Value: 'group___mind_sensors_a_p_i_gabbb22e4e52cb19702802956350018f3c.html'
     ),
     (
      Name: 'ReadNRLinkBytes';
-     Value: 'group___mind_sensors_a_p_i_gaa8757cf8b6d34983843930cf08cd1162.html'
-    ),
-    (
-     Name: 'ReadNRLinkBytesEx';
-     Value: 'group___mind_sensors_a_p_i_ga8f5037ccf2754d94cb96e7b69f967b97.html'
+     Value: 'group___mind_sensors_a_p_i_gab6f0003ea2a56e87c8f8553db1d89cfb.html'
     ),
     (
      Name: 'MSIRTrain';
-     Value: 'group___mind_sensors_a_p_i_gaa9c64f96b54b8a7dc4eeada46105bd39.html'
-    ),
-    (
-     Name: 'MSIRTrainEx';
-     Value: 'group___mind_sensors_a_p_i_gafbb4226ae32a56fe58594213b5518a1d.html'
+     Value: 'group___mind_sensors_a_p_i_ga78e99b9d5000ddbbf9666cf8305a4ca2.html'
     ),
     (
      Name: 'MSPFComboDirect';
-     Value: 'group___mind_sensors_a_p_i_ga66ffca20f417536c7b62ece948571eff.html'
-    ),
-    (
-     Name: 'MSPFComboDirectEx';
-     Value: 'group___mind_sensors_a_p_i_ga13d17d4db1aaa5df5620d88da4274008.html'
+     Value: 'group___mind_sensors_a_p_i_ga08e0757e4cb713ef287dd001e8fcf110.html'
     ),
     (
      Name: 'MSPFComboPWM';
-     Value: 'group___mind_sensors_a_p_i_ga8eee0ed9ca30b1cafe2025ae060a0b01.html'
-    ),
-    (
-     Name: 'MSPFComboPWMEx';
-     Value: 'group___mind_sensors_a_p_i_ga3ac6e455912a09ba0a9766afd1235240.html'
+     Value: 'group___mind_sensors_a_p_i_gae33dab6c3fa4ee05c3f4a162a8437eb6.html'
     ),
     (
      Name: 'MSPFRawOutput';
-     Value: 'group___mind_sensors_a_p_i_gae11576e34ff1d62f96fa05265e8c3252.html'
-    ),
-    (
-     Name: 'MSPFRawOutputEx';
-     Value: 'group___mind_sensors_a_p_i_ga656b5b1894fe7f8277c9d2bb6d73a6d8.html'
+     Value: 'group___mind_sensors_a_p_i_ga5e27b735a12ecb09d5dca0442f8d8f33.html'
     ),
     (
      Name: 'MSPFRepeat';
-     Value: 'group___mind_sensors_a_p_i_ga87ee0b4e86275ee54f386947d2cddc68.html'
-    ),
-    (
-     Name: 'MSPFRepeatEx';
-     Value: 'group___mind_sensors_a_p_i_gaf2a8b7f2f84a3c0aead076abc345b62b.html'
+     Value: 'group___mind_sensors_a_p_i_ga8716f435f3de969276577e30e4500663.html'
     ),
     (
      Name: 'MSPFSingleOutputCST';
-     Value: 'group___mind_sensors_a_p_i_ga093ebc5096bfd0512a59528533eef17f.html'
-    ),
-    (
-     Name: 'MSPFSingleOutputCSTEx';
-     Value: 'group___mind_sensors_a_p_i_gade5f5133e24ce6b33734fff88cbee0b1.html'
+     Value: 'group___mind_sensors_a_p_i_gae3d406cc00a01201b5f89218f912afa6.html'
     ),
     (
      Name: 'MSPFSingleOutputPWM';
-     Value: 'group___mind_sensors_a_p_i_gadbeaedb57e457cf2e551c16b11b59f4a.html'
-    ),
-    (
-     Name: 'MSPFSingleOutputPWMEx';
-     Value: 'group___mind_sensors_a_p_i_ga88009da2b94aaf0c6c87d5134e4d69ee.html'
+     Value: 'group___mind_sensors_a_p_i_ga2e891ead3ba94d1738e7b01ba6766ea6.html'
     ),
     (
      Name: 'MSPFSinglePin';
-     Value: 'group___mind_sensors_a_p_i_ga9f7f227c5a770ad2c5fda916042d1915.html'
-    ),
-    (
-     Name: 'MSPFSinglePinEx';
-     Value: 'group___mind_sensors_a_p_i_ga60b3bea477518b2369c74c7bf241e636.html'
+     Value: 'group___mind_sensors_a_p_i_gae2b6192847bcc0f7ecaef9f2fe6fe323.html'
     ),
     (
      Name: 'MSPFTrain';
-     Value: 'group___mind_sensors_a_p_i_ga3dfe5ce0d14a0bfb6b3316239ee72c66.html'
-    ),
-    (
-     Name: 'MSPFTrainEx';
-     Value: 'group___mind_sensors_a_p_i_ga14cac55b8dff221147c7648585ed2e07.html'
+     Value: 'group___mind_sensors_a_p_i_ga0cc2087b18e92a0e5b92c3bf17232e65.html'
     ),
     (
      Name: 'MSRCXSetNRLinkPort';
-     Value: 'group___mind_sensors_a_p_i_gaaed5113f2f6a1c132b55ba97a5e8a8ad.html'
-    ),
-    (
-     Name: 'MSRCXSetNRLinkPortEx';
-     Value: 'group___mind_sensors_a_p_i_gaa1cdb9f14adf5a569370332f29e9a1bf.html'
+     Value: 'group___mind_sensors_a_p_i_gac04ad8f352eaf70cc1f80beed7e5c79e.html'
     ),
     (
      Name: 'MSRCXBatteryLevel';
@@ -9398,11 +9494,11 @@ const
     ),
     (
      Name: 'atoi';
-     Value: 'group__cstdlib_a_p_i_gaf523a2033f2ca5f7794cb261879e9fe1.html'
+     Value: 'group__cstdlib_a_p_i_ga85e54114113967a00dfb8c3caf16627a.html'
     ),
     (
      Name: 'atol';
-     Value: 'group__cstdlib_a_p_i_ga3548d4cc5981e10c809f8cdc1e9ef225.html'
+     Value: 'group__cstdlib_a_p_i_gad7992156968cab995ddc15880dbfda70.html'
     ),
     (
      Name: 'labs';
@@ -9410,7 +9506,7 @@ const
     ),
     (
      Name: 'atof';
-     Value: 'group__cstdlib_a_p_i_ga98ed4a3e898eb3faa8707ffe8a770644.html'
+     Value: 'group__cstdlib_a_p_i_ga3115cd14bd7c409bb213020c414a1779.html'
     ),
     (
      Name: 'strtod';
