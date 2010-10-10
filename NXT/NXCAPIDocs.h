@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-06
- * \version 6
+ * \date 2010-10-08
+ * \version 7
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -2330,6 +2330,10 @@
  * Functions for accessing and modifying MindSensors devices.
  */
 
+/** @defgroup CodatexAPI Codatex API Functions
+ * Functions for accessing and modifying Codatex devices.
+ */
+
 /** @defgroup RICMacros RIC Macro Wrappers
  * Macro wrappers for use in defining RIC byte arrays.
  */
@@ -2392,19 +2396,19 @@
  * \example ex_SetSensorLowspeed.nxc
  * This is an example of how to use the \ref SetSensorLowspeed function.
  *
- * \example ex_SetSensorColorFull.nxc
+ * \example ex_setsensorcolorfull.nxc
  * This is an example of how to use the \ref SetSensorColorFull function.
  *
- * \example ex_SetSensorColorRed.nxc
+ * \example ex_setsensorcolorred.nxc
  * This is an example of how to use the \ref SetSensorColorRed function.
  *
- * \example ex_SetSensorColorGreen.nxc
+ * \example ex_setsensorcolorgreen.nxc
  * This is an example of how to use the \ref SetSensorColorGreen function.
  *
- * \example ex_SetSensorColorBlue.nxc
+ * \example ex_setsensorcolorblue.nxc
  * This is an example of how to use the \ref SetSensorColorBlue function.
  *
- * \example ex_SetSensorColorNone.nxc
+ * \example ex_setsensorcolornone.nxc
  * This is an example of how to use the \ref SetSensorColorNone function.
  *
  * \example ex_GetInput.nxc
@@ -2473,7 +2477,7 @@
  * \example ex_SetCustomSensorZeroOffset.nxc
  * This is an example of how to use the \ref SetCustomSensorZeroOffset function.
  *
- * \example ex_SetSensorBoolean.nxc
+ * \example ex_setsensorboolean.nxc
  * This is an example of how to use the \ref SetSensorBoolean function.
  *
  * \example ex_SetSensorDigiPinsDirection.nxc
@@ -2515,7 +2519,7 @@
  * \example ex_ColorSensorValue.nxc
  * This is an example of how to use the \ref ColorSensorValue function.
  *
- * \example ex_setmotorpwnfreq.nxc
+ * \example ex_SetMotorPwnFreq.nxc
  * This is an example of how to use the SetMotorPwnFreq function.
  *
  * \example ex_onfwdsyncpid.nxc
@@ -2754,7 +2758,7 @@
  * \example ex_DisplayUpdateMask.nxc
  * This is an example of how to use the \ref DisplayUpdateMask function.
  *
- * \example ex_DisplayFont.nxc
+ * \example ex_displayfont.nxc
  * This is an example of how to use the \ref DisplayFont function.
  *
  * \example ex_DisplayDisplay.nxc
@@ -2812,7 +2816,7 @@
  * This is an example of how to use the \ref SysDrawPolygon function along
  * with the \ref DrawPolygonType structure.
  *
- * \example ex_sysdrawellipse.nxc
+ * \example ex_SysDrawEllipse.nxc
  * This is an example of how to use the \ref SysDrawEllipse function along
  * with the \ref DrawEllipseType structure.
  *
@@ -2823,11 +2827,11 @@
  * \example ex_ClearScreen.nxc
  * This is an example of how to use the \ref ClearScreen and \ref Wait functions.
  *
- * \example ex_ClearLine.nxc
+ * \example ex_clearline.nxc
  * This is an example of how to use the \ref TextOut, \ref ClearLine, and
  * \ref Wait functions.
  *
- * \example ex_SetDisplayFont.nxc
+ * \example ex_setdisplayfont.nxc
  * This is an example of how to use the \ref SetDisplayFont function.
  *
  * \example ex_SetDisplayDisplay.nxc
@@ -2845,7 +2849,7 @@
  * \example ex_SetDisplayUpdateMask.nxc
  * This is an example of how to use the \ref SetDisplayUpdateMask function.
  *
- * \example ex_SetDisplayContrast.nxc
+ * \example ex_setdisplaycontrast.nxc
  * This is an example of how to use the \ref SetDisplayContrast function.
  *
  * \example ex_PlayFile.nxc
@@ -2928,10 +2932,10 @@
  * This is an example of how to use the \ref PlayTones function along with
  * the \ref Tone structure.
  *
- * \example ex_sensorus.nxc
+ * \example ex_SensorUS.nxc
  * This is an example of how to use the \ref SensorUS function.
  *
- * \example ex_readsensorusex.nxc
+ * \example ex_ReadSensorUSEx.nxc
  * This is an example of how to use the \ref ReadSensorUSEx function.
  *
  * \example ex_readi2cregister.nxc
@@ -2940,7 +2944,7 @@
  * \example ex_writei2cregister.nxc
  * This is an example of how to use the \ref WriteI2CRegister function.
  *
- * \example ex_lowspeedstatus.nxc
+ * \example ex_LowspeedStatus.nxc
  * This is an example of how to use the \ref LowspeedStatus function.
  *
  * \example ex_LowspeedCheckStatus.nxc
@@ -2964,7 +2968,7 @@
  * \example ex_I2CBytesReady.nxc
  * This is an example of how to use the \ref I2CBytesReady function.
  *
- * \example ex_i2cwrite.nxc
+ * \example ex_I2CWrite.nxc
  * This is an example of how to use the \ref I2CWrite function.
  *
  * \example ex_I2CRead.nxc
@@ -2973,16 +2977,16 @@
  * \example ex_I2CBytes.nxc
  * This is an example of how to use the \ref I2CBytes function.
  *
- * \example ex_I2CDeviceInfo.nxc
+ * \example ex_i2cdeviceinfo.nxc
  * This is an example of how to use the \ref I2CDeviceInfo function.
  *
- * \example ex_I2CVersion.nxc
+ * \example ex_i2cversion.nxc
  * This is an example of how to use the \ref I2CVersion function.
  *
- * \example ex_I2CVendorId.nxc
+ * \example ex_i2cvendorid.nxc
  * This is an example of how to use the \ref I2CVendorId function.
  *
- * \example ex_I2CDeviceId.nxc
+ * \example ex_i2cdeviceid.nxc
  * This is an example of how to use the \ref I2CDeviceId function.
  *
  * \example ex_I2CSendCommand.nxc
@@ -3046,13 +3050,13 @@
  * This is an example of how to use the \ref SysCommLSWriteEx function along with the
  * \ref CommLSWriteExType structure.
  *
- * \example ex_powerdown.nxc
+ * \example ex_PowerDown.nxc
  * This is an example of how to use the \ref PowerDown functions.
  *
- * \example ex_sleepnow.nxc
+ * \example ex_SleepNow.nxc
  * This is an example of how to use the \ref SleepNow functions.
  *
- * \example ex_rebootinfirmwaremode.nxc
+ * \example ex_RebootInFirmwareMode.nxc
  * This is an example of how to use the \ref RebootInFirmwareMode functions.
  *
  * \example ex_CurrentTick.nxc
@@ -3098,7 +3102,7 @@
  * This is an example of how to use the \ref SysDatalogWrite function along
  * with the \ref DatalogWriteType structure.
  *
- * \example ex_SysDatalogGetTimes.nxc
+ * \example ex_sysdataloggettimes.nxc
  * This is an example of how to use the \ref SysDatalogGetTimes function along
  * with the \ref DatalogGetTimesType structure.
  *
@@ -3124,10 +3128,10 @@
  * \example ex_yield.nxc
  * This is an example of how to use the \ref Yield function.
  *
- * \example ex_stopalltasks.nxc
+ * \example ex_StopAllTasks.nxc
  * This is an example of how to use the \ref StopAllTasks function.
  *
- * \example ex_stop.nxc
+ * \example ex_Stop.nxc
  * This is an example of how to use the \ref Stop function.
  *
  * \example alternating_tasks.nxc
@@ -3145,22 +3149,22 @@
  * \example ex_Release.nxc
  * This is an example of how to use the \ref Release function.
  *
- * \example ex_starttask.nxc
+ * \example ex_StartTask.nxc
  * This is an example of how to use the \ref StartTask function.
  *
- * \example ex_stoptask.nxc
+ * \example ex_StopTask.nxc
  * This is an example of how to use the \ref StopTask function.
  *
- * \example ex_arraybuild.nxc
+ * \example ex_ArrayBuild.nxc
  * This is an example of how to use the \ref ArrayBuild function.
  *
- * \example ex_arraylen.nxc
+ * \example ex_ArrayLen.nxc
  * This is an example of how to use the \ref ArrayLen function.
  *
- * \example ex_arrayinit.nxc
+ * \example ex_ArrayInit.nxc
  * This is an example of how to use the \ref ArrayInit function.
  *
- * \example ex_arraysubset.nxc
+ * \example ex_ArraySubset.nxc
  * This is an example of how to use the \ref ArraySubset function.
  *
  * \example ex_ArraySum.nxc
@@ -3187,19 +3191,19 @@
  * \example ex_ArrayOp.nxc
  * This is an example of how to use the \ref ArrayOp function.
  *
- * \example ex_sendmessage.nxc
+ * \example ex_SendMessage.nxc
  * This is an example of how to use the \ref SendMessage function.
  *
- * \example ex_receivemessage.nxc
+ * \example ex_ReceiveMessage.nxc
  * This is an example of how to use the \ref ReceiveMessage function.
  *
- * \example ex_bluetoothstatus.nxc
+ * \example ex_BluetoothStatus.nxc
  * This is an example of how to use the \ref BluetoothStatus function.
  *
- * \example ex_bluetoothwrite.nxc
+ * \example ex_BluetoothWrite.nxc
  * This is an example of how to use the \ref BluetoothWrite function.
  *
- * \example ex_sendremotebool.nxc
+ * \example ex_SendRemoteBool.nxc
  * This is an example of how to use the \ref SendRemoteBool function.
  *
  * \example ex_SendRemoteNumber.nxc
@@ -3433,7 +3437,7 @@
  * \example ex_HSMode.nxc
  * This is an example of how to use the \ref HSMode function.
  *
- * \example ex_USBState.nxc
+ * \example ex_UsbState.nxc
  * This is an example of how to use the \ref USBState function.
  *
  * \example ex_SetBTInputBuffer.nxc
@@ -3508,10 +3512,10 @@
  * \example ex_SetHSState.nxc
  * This is an example of how to use the \ref SetHSState function.
  *
- * \example ex_SetHSMode.nxc
+ * \example ex_sethsmode.nxc
  * This is an example of how to use the \ref SetHSMode function.
  *
- * \example ex_SetUSBState.nxc
+ * \example ex_SetUsbState.nxc
  * This is an example of how to use the \ref SetUSBState function.
  *
  * \example ex_sysmessagewrite.nxc
@@ -3554,11 +3558,11 @@
  * This is an example of how to use the \ref SysCommBTOnOff function along
  * with the \ref CommBTOnOffType structure.
  *
- * \example ex_SysCommBTConnection.nxc
+ * \example ex_syscommbtconnection.nxc
  * This is an example of how to use the \ref SysCommBTConnection function along
  * with the \ref CommBTConnectionType structure.
  *
- * \example ex_ButtonPressed.nxc
+ * \example ex_buttonpressed.nxc
  * This is an example of how to use the \ref ButtonPressed function.
  *
  * \example ex_ButtonCount.nxc
@@ -3631,7 +3635,7 @@
  * \example ex_SleepTimeout.nxc
  * This is an example of how to use the \ref SleepTimeout function.
  *
- * \example ex_SleepTime.nxc
+ * \example ex_sleeptime.nxc
  * This is an example of how to use the \ref SleepTime function.
  *
  * \example ex_SleepTimer.nxc
@@ -3679,7 +3683,7 @@
  * \example ex_SetSleepTimeout.nxc
  * This is an example of how to use the \ref SetSleepTimeout function.
  *
- * \example ex_SetSleepTime.nxc
+ * \example ex_setsleeptime.nxc
  * This is an example of how to use the \ref SetSleepTime function.
  *
  * \example ex_SetSleepTimer.nxc
@@ -3727,7 +3731,7 @@
  * \example ex_DeleteFile.nxc
  * This is an example of how to use the \ref DeleteFile function.
  *
- * \example ex_ResizeFile.nxc
+ * \example ex_resizefile.nxc
  * This is an example of how to use the \ref ResizeFile function.
  *
  * \example ex_CreateFileLinear.nxc
@@ -3739,10 +3743,10 @@
  * \example ex_OpenFileReadLinear.nxc
  * This is an example of how to use the \ref OpenFileReadLinear function.
  *
- * \example ex_FindFirstFile.nxc
+ * \example ex_findfirstfile.nxc
  * This is an example of how to use the \ref FindFirstFile function.
  *
- * \example ex_FindNextFile.nxc
+ * \example ex_findnextfile.nxc
  * This is an example of how to use the \ref FindNextFile function.
  *
  * \example ex_Read.nxc
@@ -3850,7 +3854,7 @@
  * \example ex_SensorHTEOPD.nxc
  * This is an example of how to use the \ref SensorHTEOPD function.
  *
- * \example ex_SetSensorHTEOPD.nxc
+ * \example ex_setsensorhteopd.nxc
  * This is an example of how to use the \ref SetSensorHTEOPD function.
  *
  * \example ex_SetSensorHTGyro.nxc
@@ -3874,10 +3878,10 @@
  * \example ex_SensorHTIRSeeker2ACDir.nxc
  * This is an example of how to use the \ref SensorHTIRSeeker2ACDir function.
  *
- * \example ex_SetHTColor2Mode.nxc
+ * \example ex_sethtcolor2mode.nxc
  * This is an example of how to use the \ref SetHTColor2Mode function.
  *
- * \example ex_SetHTIRSeeker2Mode.nxc
+ * \example ex_sethtirseeker2mode.nxc
  * This is an example of how to use the \ref SetHTIRSeeker2Mode function.
  *
  * \example ex_ReadSensorHTAccel.nxc
@@ -3918,6 +3922,12 @@
  *
  * \example ex_ReadSensorHTTouchMultiplexer.nxc
  * This is an example of how to use the \ref ReadSensorHTTouchMultiplexer function.
+ *
+ * \example ex_ReadSensorHTAngle.nxc
+ * This is an example of how to use the \ref ReadSensorHTAngle function.
+ *
+ * \example ex_ResetSensorHTAngle.nxc
+ * This is an example of how to use the \ref ResetSensorHTAngle function.
  *
  * \example ex_HTIRTrain.nxc
  * This is an example of how to use the \ref HTIRTrain function.
@@ -4162,10 +4172,10 @@
  * \example ex_HTScoutUnmuteSound.nxc
  * This is an example of how to use the \ref HTScoutUnmuteSound function.
  *
- * \example ex_SetSensorMSPressure.nxc
+ * \example ex_setsensormspressure.nxc
  * This is an example of how to use the \ref SetSensorMSPressure function.
  *
- * \example ex_SetSensorMSDROD.nxc
+ * \example ex_setsensormsdrod.nxc
  * This is an example of how to use the \ref SetSensorMSDROD function.
  *
  * \example ex_SensorMSPressure.nxc
@@ -4321,7 +4331,7 @@
  * \example ex_RunNRLinkMacro.nxc
  * This is an example of how to use the \ref RunNRLinkMacro function.
  *
- * \example ex_WriteNRLinkBytes.nxc
+ * \example ex_writenrlinkbytes.nxc
  * This is an example of how to use the \ref WriteNRLinkBytes function.
  *
  * \example ex_ReadNRLinkBytes.nxc
@@ -4702,7 +4712,7 @@
  * \example ex_bcd2dec.nxc
  * This is an example of how to use the \ref bcd2dec function.
  *
- * \example ex_isNAN.nxc
+ * \example ex_isnan.nxc
  * This is an example of how to use the \ref isNAN function.
  *
  * \example ex_sign.nxc
@@ -4856,7 +4866,7 @@
  * \example ex_StrToByteArray.nxc
  * This is an example of how to use the \ref StrToByteArray function.
  *
- * \example ex_Copy.nxc
+ * \example ex_copy.nxc
  * This is an example of how to use the \ref Copy function.
  *
  * \example ex_midstr.nxc
@@ -4868,10 +4878,10 @@
  * \example ex_leftstr.nxc
  * This is an example of how to use the \ref LeftStr function.
  *
- * \example ex_strlen.nxc
+ * \example ex_StrLen.nxc
  * This is an example of how to use the \ref strlen function.
  *
- * \example ex_strcat.nxc
+ * \example ex_StrCat.nxc
  * This is an example of how to use the \ref strcat function.
  *
  * \example ex_strncat.nxc

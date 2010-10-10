@@ -24,12 +24,12 @@ uses
 function NBCCodeCompIndex(aName : string) : Integer;
 procedure AddNBCCodeCompParams(aStrings : TStrings; Index : integer);
 procedure SaveNBCCodeCompToFile(const aname : string);
-procedure LoadNBCCodeCompFromFile(const aname : string);
+procedure LoadNBCCodeCompFromFile(const aname : string; bIncludeExtras : boolean = false);
 
 implementation
 
 uses
-  SysUtils, uCppCode;
+  SysUtils, uCppCode, uBasicPrefs, uGlobals;
 
 type
   TNBCCodeComp = record
@@ -78,35 +78,69 @@ begin
   end;
 end;
 
-procedure LoadNBCCodeCompFromFile(const aname : string);
+procedure LoadNBCCodeCompFromFile(const aname : string; bIncludeExtras : boolean);
 var
-  SL : TStringList;
+  SL, tmpSL : TStringList;
   i, p : integer;
   tmp, funcParams : string;
   cc : TNBCCodeComp;
 begin
-  NBCCodeCompDataSize := 0;
-  SetLength(NBCCodeCompData, 0);
-  if FileExists(aname) then
-  begin
-    SL := TStringList.Create;
-    try
-      SL.LoadFromFile(aname);
-      NBCCodeCompDataSize := SL.Count;
-      SetLength(NBCCodeCompData, NBCCodeCompDataSize);
-      for i := 0 to SL.Count - 1 do
-      begin
-        tmp := SL[i];
-        p := Pos('(', tmp);
-        funcParams := Copy(tmp, p, MaxInt);
-        System.Delete(tmp, p, MaxInt);
-        cc.Name   := tmp;
-        cc.Params := funcParams;
-        NBCCodeCompData[i] := cc;
+  SL := CreateSortedStringList(True);
+  try
+    NBCCodeCompDataSize := 0;
+    SetLength(NBCCodeCompData, 0);
+    // standard default nbc api file
+    if FileExists(aname) then
+    begin
+      tmpSL := CreateSortedStringList(True);
+      try
+        tmpSL.LoadFromFile(aname);
+        SL.AddStrings(tmpSL);
+      finally
+        tmpSL.Free;
       end;
-    finally
-      SL.Free;
     end;
+    if bIncludeExtras then
+    begin
+      // extra api in same folder as nbc_api.txt
+      tmp := ExtractFilePath(aname) + 'nbc_api_extra.txt';
+      if FileExists(tmp) then
+      begin
+        tmpSL := CreateSortedStringList(True);
+        try
+          tmpSL.LoadFromFile(tmp);
+          SL.AddStrings(tmpSL);
+        finally
+          tmpSL.Free;
+        end;
+      end;
+      // extra api in UserDataLocalPath folder
+      tmp := UserDataLocalPath + 'nbc_api_extra.txt';
+      if FileExists(tmp) then
+      begin
+        tmpSL := CreateSortedStringList(True);
+        try
+          tmpSL.LoadFromFile(tmp);
+          SL.AddStrings(tmpSL);
+        finally
+          tmpSL.Free;
+        end;
+      end;
+    end;
+    NBCCodeCompDataSize := SL.Count;
+    SetLength(NBCCodeCompData, NBCCodeCompDataSize);
+    for i := 0 to SL.Count - 1 do
+    begin
+      tmp := SL[i];
+      p := Pos('(', tmp);
+      funcParams := Copy(tmp, p, MaxInt);
+      System.Delete(tmp, p, MaxInt);
+      cc.Name   := tmp;
+      cc.Params := funcParams;
+      NBCCodeCompData[i] := cc;
+    end;
+  finally
+    SL.Free;
   end;
 end;
 

@@ -27,12 +27,12 @@ object MainForm: TMainForm
     Left = 105
     Top = 2
     Width = 4
-    Height = 358
+    Height = 354
   end
   object barStatus: TStatusBar
     Left = 0
-    Top = 360
-    Width = 584
+    Top = 356
+    Width = 576
     Height = 22
     Hint = 'Copy'
     Panels = <
@@ -60,7 +60,7 @@ object MainForm: TMainForm
     Left = 0
     Top = 2
     Width = 105
-    Height = 358
+    Height = 354
     Align = alLeft
     BevelOuter = bvNone
     BevelWidth = 0
@@ -94,7 +94,7 @@ object MainForm: TMainForm
   object pnlSep: TPanel
     Left = 0
     Top = 0
-    Width = 584
+    Width = 576
     Height = 2
     Align = alTop
     BevelOuter = bvNone
@@ -475,6 +475,7 @@ object MainForm: TMainForm
       Caption = 'Find B&rick'
       HelpContext = 22
       Hint = 'Find brick'
+      ShortCut = 24690
       OnExecute = actToolsFindBrickExecute
     end
     object actToolsTurnBrickOff: TAction
@@ -487,6 +488,7 @@ object MainForm: TMainForm
       Category = 'Tools'
       Caption = 'Close Commu&nication'
       Hint = 'Close communication'
+      ShortCut = 24691
       OnExecute = actToolsCloseCommExecute
     end
     object actToolsFirmware: TAction

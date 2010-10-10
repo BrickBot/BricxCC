@@ -121,6 +121,7 @@ function ExpandEnvVars(const Str: string): string;
 var
   BufSize: Integer; // size of expanded string
 begin
+  DebugLog('ExpandEnvVars: Input string = ''' + Str + '''');
   // Get required buffer size
   BufSize := ExpandEnvironmentStrings(PChar(Str), nil, 0);
   if BufSize > 0 then
@@ -133,6 +134,7 @@ begin
   else
     // Trying to expand empty string
     Result := '';
+  DebugLog('ExpandEnvVars: Output string = ''' + Result + '''');
 end;
 
 function LookupHHCtrlPath : string;

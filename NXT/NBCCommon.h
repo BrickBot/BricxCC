@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-06
- * \version 55
+ * \date 2010-10-07
+ * \version 56
  */
 
 #ifndef NBCCOMMON_H
@@ -1557,31 +1557,31 @@
  * @{
  */
 // R1/R0
-#define TEMP_RES_12BIT     0x60 /*!< Set the resolution to 12 bit */
-#define TEMP_RES_11BIT     0x40 /*!< Set the resolution to 11 bit */
-#define TEMP_RES_10BIT     0x20 /*!< Set the resolution to 10 bit */
-#define TEMP_RES_9BIT      0x00 /*!< Set the resolution to 9 bit */
+#define TEMP_RES_9BIT      0x00 /*!< Set the temperature conversion resolution to 9 bit */
+#define TEMP_RES_10BIT     0x20 /*!< Set the temperature conversion resolution to 10 bit */
+#define TEMP_RES_11BIT     0x40 /*!< Set the temperature conversion resolution to 11 bit */
+#define TEMP_RES_12BIT     0x60 /*!< Set the temperature conversion resolution to 12 bit */
 // SD (shutdown mode)
-#define TEMP_SD_CONTINUOUS 0x00 /*!< Set the mode to continuous */
-#define TEMP_SD_SHUTDOWN   0x01 /*!< Set the mode to shutdown */
+#define TEMP_SD_CONTINUOUS 0x00 /*!< Set the sensor mode to continuous */
+#define TEMP_SD_SHUTDOWN   0x01 /*!< Set the sensor mode to shutdown. The device will shut down after the current conversion is completed. */
 // TM (thermostat mode)
 #define TEMP_TM_COMPARATOR 0x00 /*!< Set the thermostat mode to comparator */
 #define TEMP_TM_INTERRUPT  0x02 /*!< Set the thermostat mode to interrupt */
 // OS (one shot)
-#define TEMP_OS_ONESHOT    0x80 /*!< Set the sensor into oneshot mode */
+#define TEMP_OS_ONESHOT    0x80 /*!< Set the sensor into oneshot mode. When the device is in shutdown mode this will start a single temperature conversion. The device returns to shutdown mode when it completes. */
 // F1/F0 (fault queue)
-#define TEMP_FQ_1          0x00 /*!< Set fault queue 1 */
-#define TEMP_FQ_2          0x08 /*!< Set fault queue 2 */
-#define TEMP_FQ_4          0x10 /*!< Set fault queue 4 */
-#define TEMP_FQ_6          0x18 /*!< Set fault queue 6 */
+#define TEMP_FQ_1          0x00 /*!< Set fault queue to 1 fault before alert */
+#define TEMP_FQ_2          0x08 /*!< Set fault queue to 2 faults before alert */
+#define TEMP_FQ_4          0x10 /*!< Set fault queue to 4 faults before alert */
+#define TEMP_FQ_6          0x18 /*!< Set fault queue to 6 faults before alert */
 // POL (polarity)
-#define TEMP_POL_LOW       0x00 /*!< Set polarity to low */
-#define TEMP_POL_HIGH      0x04 /*!< Set polarity to high */
+#define TEMP_POL_LOW       0x00 /*!< Set polarity of ALERT pin to be active LOW */
+#define TEMP_POL_HIGH      0x04 /*!< Set polarity of ALERT pin to be active HIGH */
 
 #define TEMP_REG_TEMP      0x00 /*!< The register where temperature values can be read */
 #define TEMP_REG_CONFIG    0x01 /*!< The register for reading/writing sensor configuration values */
-#define TEMP_REG_TLOW      0x02 /*!< The register where temperature low values can be read */
-#define TEMP_REG_THIGH     0x03 /*!< The register where temperature high values can be read */
+#define TEMP_REG_TLOW      0x02 /*!< The register for reading/writing a user-defined low temperature limit */
+#define TEMP_REG_THIGH     0x03 /*!< The register for reading/writing a user-defined high temperature limit */
 /** @} */  // end of TempI2CConstants group
 
 /** @defgroup EMeterI2CConstants E-Meter sensor constants
@@ -2418,7 +2418,6 @@
 /** @} */  // end of RCXOpcodeConstants group
 /** @} */  // end of RCXAPIConstants group
 
-
 /** @defgroup HTIRLinkPFConstants HiTechnic/mindsensors Power Function/IR Train constants
  * Constants that are for use with the HiTechnic IRLink or mindsensors nRLink
  * in Power Function or IR Train mode.
@@ -2557,6 +2556,7 @@
 #define HT_ADDR_COLOR      0x02 /*!< HiTechnic Color I2C address */
 #define HT_ADDR_COLOR2     0x02 /*!< HiTechnic Color2 I2C address */
 #define HT_ADDR_IRLINK     0x02 /*!< HiTechnic IRLink I2C address */
+#define HT_ADDR_ANGLE      0x02 /*!< HiTechnic Angle I2C address */
 
 /** @defgroup HTIRSeeker2Constants HiTechnic IRSeeker2 constants
  * Constants that are for use with the HiTechnic IRSeeker2 device.
@@ -2611,6 +2611,26 @@
 #define HT_CMD_COLOR2_LED_LOW 0x4C /*!< Set the Color2 sensor to LED low mode */
 #define HT_CMD_COLOR2_NEAR    0x4E /*!< Set the Color2 sensor to near mode */
 /** @} */  // end of HTColor2Constants group
+
+/** @defgroup HTAngleConstants HiTechnic Angle sensor constants
+ * Constants that are for use with the HiTechnic Angle sensor device.
+ * @{
+ */
+#define HTANGLE_MODE_NORMAL    0x00 /*!< Normal angle measurement mode */
+#define HTANGLE_MODE_CALIBRATE 0x43 /*!< Resets 0 degree position to current shaft angle */
+#define HTANGLE_MODE_RESET     0x52 /*!< Resets the accumulated angle */
+
+#define HTANGLE_REG_MODE  0x41 /*!< Angle mode register */
+#define HTANGLE_REG_DCDIR 0x42 /*!< Angle current angle (2 degree increments) register */
+#define HTANGLE_REG_DC01  0x43 /*!< Angle current angle (1 degree adder) register */
+#define HTANGLE_REG_DC02  0x44 /*!< Angle 32 bit accumulated angle, high byte register */
+#define HTANGLE_REG_DC03  0x45 /*!< Angle 32 bit accumulated angle, mid byte register */
+#define HTANGLE_REG_DC04  0x46 /*!< Angle 32 bit accumulated angle, mid byte register */
+#define HTANGLE_REG_DC05  0x47 /*!< Angle 32 bit accumulated angle, low byte register */
+#define HTANGLE_REG_DCAVG 0x48 /*!< Angle 16 bit revolutions per minute, high byte register */
+#define HTANGLE_REG_ACDIR 0x49 /*!< Angle 16 bit revolutions per minute, low byte register */
+/** @} */  // end of HTAngleConstants group
+
 
 /** @} */  // end of HiTechnicConstants group
 /** @} */  // end of HiTechnicAPI group
@@ -2775,6 +2795,37 @@
 
 /** @} */  // end of MindSensorsConstants group
 /** @} */  // end of MindSensorsAPI group
+
+
+/** @addtogroup CodatexAPI
+ * @{
+ */
+/** @defgroup CodatexConstants Codatex device constants
+ * Constants that are for use with Codatex devices.
+ * @{
+ */
+/** @defgroup CTRFIDConstants Codatex RFID sensor constants
+ * Constants that are for use with the Codatex RFID sensor device.
+ * @{
+ */
+/** @defgroup CTRFIDModeConstants Codatex RFID sensor modes
+ * Constants that are for configuring the Codatex RFID sensor mode.
+ * @{
+ */
+#define RFID_MODE_STOP       0  /*!< Stop the RFID device */
+#define RFID_MODE_SINGLE     1  /*!< Configure the RFID device for a single reading */
+#define RFID_MODE_CONTINUOUS 2  /*!< Configure the RFID device for continuous reading */
+/** @} */  // end of CTRFIDModeConstants group
+
+#define CT_ADDR_RFID     0x04   /*!< RFID I2C address */
+
+#define CT_REG_STATUS    0x32   /*!< RFID status register */
+#define CT_REG_MODE      0x41   /*!< RFID mode register */
+#define CT_REG_DATA      0x42   /*!< RFID data register */
+
+/** @} */  // end of CTRFIDConstants group
+/** @} */  // end of CodatexConstants group
+/** @} */  // end of CodatexAPI group
 
 /** @} */  // end of ThirdPartyDevices group
 

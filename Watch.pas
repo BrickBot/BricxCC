@@ -33,7 +33,7 @@ uses
   DataAnalysis,
 {$ENDIF}
 {$ENDIF}
-  BricxccSpin;
+  uSpirit, uProgram, BricxccSpin, Dialogs, Menus;
 
 type
   TVarControls = record
@@ -235,6 +235,9 @@ type
     edtI2CLen2: TBricxccSpinEdit;
     edtI2CLen4: TBricxccSpinEdit;
     edtI2CLen3: TBricxccSpinEdit;
+    menuPopup: TPopupMenu;
+    dlgOpen: TOpenDialog;
+    mniOpenSym: TMenuItem;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnPollNowClick(Sender: TObject);
     procedure btnCheckAllClick(Sender: TObject);
@@ -254,6 +257,7 @@ type
     procedure chkUltra2Click(Sender: TObject);
     procedure chkUltra3Click(Sender: TObject);
     procedure chkUltra4Click(Sender: TObject);
+    procedure mniOpenSymClick(Sender: TObject);
   private
     { Private declarations }
 {$IFNDEF FPC}
@@ -263,10 +267,19 @@ type
 {$ENDIF}
     fNewData : TStrings;
     fVarArray : array[0..31] of TVarControls;
+    fWatchedProgram : TProgram;
+    fOldOnGetVarInfoByID: TGetVarInfoByIDEvent;
+    fOldOnGetVarInfoByName: TGetVarInfoByNameEvent;
     procedure UpdateGraph;
     procedure PopulateVarArray;
     procedure ProcessI2C(port: byte; edtLen: TBricxCCSpinEdit; edtBuf,
       edtVal: TEdit);
+    procedure LoadWatchedProgram;
+    procedure HandleOnGetVarInfoByID(Sender: TObject; const ID: integer;
+      var offset, size, vartype: integer);
+    procedure HandleOnGetVarInfoByName(Sender: TObject; const name: string;
+      var offset, size, vartype: integer);
+    function IndexToID(const idx : integer) : integer;
   public
     { Public declarations }
     procedure GraphDestroyed;
@@ -282,8 +295,8 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Dialogs, brick_common, rcx_constants, uSpirit,
-  uLocalizedStrings, uGuiUtils, uProgram, uBasicPrefs,
+  SysUtils, brick_common, rcx_constants,
+  uLocalizedStrings, uGuiUtils, uBasicPrefs, uEditorUtils,
   uGlobals, uMiscDefines, uCommonUtils, Variants;
 
 function GetMotorData(numb : integer) : string;
@@ -395,7 +408,7 @@ begin
     begin
       if fVarArray[i].CheckBox.Checked then
       begin
-        val := BrickComm.GetVariableValue(i);
+        val := BrickComm.GetVariableValue(IndexToID(i));
         if VarType(val) in [varSingle, varDouble] then begin
           fVal := val;
           tmpStr2 := StripTrailingZeros(Format('%.4f', [fval]));
@@ -832,6 +845,7 @@ var
   cb : TCheckBox;
   tmp : string;
 begin
+  LoadWatchedProgram;
   grpVar.Visible   := True;
   grpMotor.Visible := not IsNXT;
   if grpVar.Visible then
@@ -845,13 +859,13 @@ begin
         cb.Checked := False;
       fVarArray[i].Edit.Visible := bVis;
     end;
-    if IsNXT and CurrentProgram.Loaded(GetActiveEditorFilename) then
+    if IsNXT {and fWatchedProgram.Loaded(GetActiveEditorFilename)} then
     begin
       for i := Low(fVarArray) to High(fVarArray) do
       begin
-        if CurrentProgram.Dataspace.Count > i then
+        if fWatchedProgram.Dataspace.Count > i then
         begin
-          tmp := CurrentProgram.Dataspace[i].PrettyName;
+          tmp := fWatchedProgram.Dataspace[i].PrettyName;
           fVarArray[i].CheckBox.Hint := tmp;
           fVarArray[i].Edit.Hint     := tmp;
         end;
@@ -940,6 +954,7 @@ end;
 
 procedure TWatchForm.FormCreate(Sender: TObject);
 begin
+  fWatchedProgram := TProgram.Create;
   fNewData := TStringList.Create;
 {$IFNDEF FPC}
 {$IFNDEF NXT_ONLY}
@@ -1001,6 +1016,7 @@ end;
 
 procedure TWatchForm.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(fWatchedProgram);
   fNewData.Free;
 end;
 
@@ -1032,14 +1048,56 @@ end;
 
 procedure TWatchForm.FormActivate(Sender: TObject);
 begin
+  fOldOnGetVarInfoByID   := BrickComm.OnGetVarInfoByID;
+  fOldOnGetVarInfoByName := BrickComm.OnGetVarInfoByName;
+  // make sure the variable watch event handlers are hooked up
+  BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
+  BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
   if chkIfActive.Checked then
     Timer1.Enabled := btnPollRegular.Down;
 end;
 
 procedure TWatchForm.FormDeactivate(Sender: TObject);
 begin
+  BrickComm.OnGetVarInfoByID   := fOldOnGetVarInfoByID;
+  BrickComm.OnGetVarInfoByName := fOldOnGetVarInfoByName;
   if chkIfActive.Checked then
     Timer1.Enabled := False;
+end;
+
+procedure TWatchForm.HandleOnGetVarInfoByID(Sender: TObject;
+  const ID: integer; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
+begin
+  // read offset, size, and vartype from compiler symbol table output
+  if fWatchedProgram.Dataspace.Count > ID then
+  begin
+    DSE     := fWatchedProgram.Dataspace[ID];
+    offset  := DSE.Offset;
+    size    := DSE.Size;
+    vartype := Ord(DSE.DataType);
+  end;
+end;
+
+procedure TWatchForm.HandleOnGetVarInfoByName(Sender: TObject;
+  const name: string; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
+  ID : integer;
+begin
+  // read offset, size, and vartype from compiler symbol table output
+  if fWatchedProgram.Dataspace.Count > 0 then
+  begin
+    ID := fWatchedProgram.Dataspace.IndexOfName(name);
+    if ID <> -1 then
+    begin
+      DSE     := fWatchedProgram.Dataspace[ID];
+      offset  := DSE.Offset;
+      size    := DSE.Size;
+      vartype := Ord(DSE.DataType);
+    end;
+  end;
 end;
 
 procedure TWatchForm.PopulateVarArray;
@@ -1110,6 +1168,37 @@ begin
   edtI2CBuf4.Text := '02 42';
   edtI2CLen4.Enabled := not chkUltra4.Checked;
   edtI2CLen4.Value := 1;
+end;
+
+procedure TWatchForm.LoadWatchedProgram;
+var
+  fname, name, tmp : string;
+begin
+  fname := GetActiveEditorFilename;
+  // is there a program running on the NXT?
+  if BrickComm.GetCurrentProgramName(name) and (name <> '') then
+  begin
+    tmp := ExtractFileName(fname);
+    if Pos(ChangeFileExt(name, ''), tmp) > 0 then
+      name := tmp;
+    fname := ExtractFilePath(fname) + name;
+  end;
+  ReadSymbolFile(fWatchedProgram, fname);
+end;
+
+function TWatchForm.IndexToID(const idx: integer): integer;
+begin
+  Result := idx;
+  if IsNXT then
+  begin
+    // allow the user to map variables to different variable numbers
+  end;
+end;
+
+procedure TWatchForm.mniOpenSymClick(Sender: TObject);
+begin
+  if dlgOpen.Execute then
+    ReadSymbolFile(fWatchedProgram, dlgOpen.Filename);
 end;
 
 {$IFDEF FPC}

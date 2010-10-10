@@ -268,7 +268,8 @@ uses
   FileUtil,
 {$ENDIF}
   brick_common, uGuiUtils,
-  uSpirit, uNXTExplorerSettings, uLocalizedStrings;
+  uSpirit, uNXTExplorerSettings, uLocalizedStrings,
+  uTextViewer;
 
 const
   K_FILTER =
@@ -881,9 +882,6 @@ end;
 {$ENDIF}
 
 procedure TfrmNXTExplorer.actFileViewExecute(Sender: TObject);
-{$IFDEF FPC}
-begin
-{$ELSE}
 var
   MS : TMemoryStream;
   fname : string;
@@ -892,11 +890,19 @@ begin
   try
     fname := NXTFiles.Selected.Caption;
     if BrickComm.NXTUploadFileToStream(fname, MS) then
-      frmHexView.ShowStreamData(fname, MS);
+    begin
+      if Lowercase(ExtractFileExt(fname)) = '.txt' then
+        frmTextView.ShowStreamData(fname, MS)
+{$IFNDEF FPC}
+      else
+        frmHexView.ShowStreamData(fname, MS);
+{$ELSE}
+      ;
+{$ENDIF}
+    end;
   finally
     MS.Free;
   end;
-{$ENDIF}
 end;
 
 procedure TfrmNXTExplorer.CreateMainMenu;

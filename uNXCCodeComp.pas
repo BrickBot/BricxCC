@@ -24,12 +24,12 @@ uses
 function NXCCodeCompIndex(aName : string) : Integer;
 procedure AddNXCCodeCompParams(aStrings : TStrings; Index : integer);
 procedure SaveNXCCodeCompToFile(const aname : string);
-procedure LoadNXCCodeCompFromFile(const aname : string);
+procedure LoadNXCCodeCompFromFile(const aname : string; bIncludeExtras : boolean = false);
 
 implementation
 
 uses
-  SysUtils, uCppCode;
+  SysUtils, uCppCode, uBasicPrefs, uGlobals;
 
 type
   TNXCCodeComp = record
@@ -78,35 +78,69 @@ begin
   end;
 end;
 
-procedure LoadNXCCodeCompFromFile(const aname : string);
+procedure LoadNXCCodeCompFromFile(const aname : string; bIncludeExtras : boolean);
 var
-  SL : TStringList;
+  SL, tmpSL : TStringList;
   i, p : integer;
   tmp, funcParams : string;
   cc : TNXCCodeComp;
 begin
-  NXCCodeCompDataSize := 0;
-  SetLength(NXCCodeCompData, 0);
-  if FileExists(aname) then
-  begin
-    SL := TStringList.Create;
-    try
-      SL.LoadFromFile(aname);
-      NXCCodeCompDataSize := SL.Count;
-      SetLength(NXCCodeCompData, NXCCodeCompDataSize);
-      for i := 0 to SL.Count - 1 do
-      begin
-        tmp := SL[i];
-        p := Pos('(', tmp);
-        funcParams := Copy(tmp, p, MaxInt);
-        System.Delete(tmp, p, MaxInt);
-        cc.Name   := tmp;
-        cc.Params := funcParams;
-        NXCCodeCompData[i] := cc;
+  SL := CreateSortedStringList(True);
+  try
+    NXCCodeCompDataSize := 0;
+    SetLength(NXCCodeCompData, 0);
+    // standard default nxc api file
+    if FileExists(aname) then
+    begin
+      tmpSL := CreateSortedStringList(True);
+      try
+        tmpSL.LoadFromFile(aname);
+        SL.AddStrings(tmpSL);
+      finally
+        tmpSL.Free;
       end;
-    finally
-      SL.Free;
     end;
+    if bIncludeExtras then
+    begin
+      // extra api in same folder as nxc_api.txt
+      tmp := ExtractFilePath(aname) + 'nxc_api_extra.txt';
+      if FileExists(tmp) then
+      begin
+        tmpSL := CreateSortedStringList(True);
+        try
+          tmpSL.LoadFromFile(tmp);
+          SL.AddStrings(tmpSL);
+        finally
+          tmpSL.Free;
+        end;
+      end;
+      // extra api in UserDataLocalPath folder
+      tmp := UserDataLocalPath + 'nxc_api_extra.txt';
+      if FileExists(tmp) then
+      begin
+        tmpSL := CreateSortedStringList(True);
+        try
+          tmpSL.LoadFromFile(tmp);
+          SL.AddStrings(tmpSL);
+        finally
+          tmpSL.Free;
+        end;
+      end;
+    end;
+    NXCCodeCompDataSize := SL.Count;
+    SetLength(NXCCodeCompData, NXCCodeCompDataSize);
+    for i := 0 to SL.Count - 1 do
+    begin
+      tmp := SL[i];
+      p := Pos('(', tmp);
+      funcParams := Copy(tmp, p, MaxInt);
+      System.Delete(tmp, p, MaxInt);
+      cc.Name   := tmp;
+      cc.Params := funcParams;
+      NXCCodeCompData[i] := cc;
+    end;
+  finally
+    SL.Free;
   end;
 end;
 

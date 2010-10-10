@@ -757,7 +757,7 @@ uses
   uNXTController, uNXTImage, Math, uPSI_brick_common, uPSI_uSpirit,
   uPSI_FantomSpirit, uPSRuntime, uPSDebugger,
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
-  uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp,
+  uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uDebugLogging,
   uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp;
 
 const
@@ -3355,10 +3355,12 @@ begin
   end;
   if UseHTMLHelp then
   begin
+    DebugLog('UseHTMLHelp is true: calling DoNewHelp');
     Result := DoNewHelp( ChangeFileExt(HelpFile, '.chm'), Command, Data, CallHelp);
   end
   else
   begin
+    DebugLog('UseHTMLHelp is false: calling WinHelp');
     Result := WinHelp(Handle, HelpFile, Command, Data);
     CallHelp := False;
   end;

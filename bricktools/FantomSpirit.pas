@@ -1027,6 +1027,7 @@ begin
   Result := FileExists(aFile);
   if Result and (bFast or bComp or bUnlock or True) then
   begin
+    // put the NXT into firmware download mode first and wait a few seconds
     MS := TMemoryStream.Create;
     try
       MS.LoadFromFile(aFile);
@@ -1520,6 +1521,7 @@ begin
       Buf[i] := Char(GetReplyByte(i));
     end;
     name := Buf;
+    Result := name <> '';
   finally
     cmd.Free;
   end;
@@ -2212,10 +2214,11 @@ var
   cur, i : integer;
 const
   K_SEC = 1000;
-  MaximumWait = 15*K_SEC; // 15 seconds
+  MaximumWait = 30*K_SEC; // 30 seconds
   K_STEPS = 30;
 begin
   Result := IsOpen;
+  DebugLog('TFantomSpirit.TransferFirmware: Connection is open = ' + BoolToStr(Result));
   size   := Cardinal(aStream.Size);
   bStop  := False;
   status := kStatusNoError;
@@ -2230,12 +2233,18 @@ begin
     // if we could open the NXT then it isn't in firmware download mode
     iNXT_getResourceString(fNXTHandle, resBuf, status);
     Result := status >= kStatusNoError;
+    DebugLog('TFantomSpirit.TransferFirmware: iNXT_getResourceString status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
     if Result then
     begin
+      status := kStatusNoError;
       iNXT_bootIntoFirmwareDownloadMode(resBuf, status);
+      DebugLog('TFantomSpirit.TransferFirmware: iNXT_bootIntoFirmwareDownloadMode status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
       Result := status >= kStatusNoError;
       if Result then
+      begin
         destroyNXT(fNXTHandle, status);
+        DebugLog('TFantomSpirit.TransferFirmware: destroyNXT status = ' + IntToStr(status));
+      end;
     end;
     inc(cur);
     DoDownloadStatus(cur, K_STEPS, bStop);
@@ -2251,6 +2260,7 @@ begin
     inc(elapsedTime, K_SEC);
     status := kStatusNoError;
     iNXT_findDeviceInFirmwareDownloadMode(resBuf, status);
+    DebugLog('TFantomSpirit.TransferFirmware: iNXT_findDeviceInFirmwareDownloadMode status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
     inc(cur);
     DoDownloadStatus(cur, K_STEPS, bStop);
     if bStop then begin
@@ -2267,7 +2277,9 @@ begin
   // now download the firmware
   if status >= kStatusNoError then
   begin
+    status := kStatusNoError;
     fNXTHandle := createNXT(resBuf, status, 0);
+    DebugLog('TFantomSpirit.TransferFirmware: createNXT status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
     inc(cur);
     DoDownloadStatus(cur, K_STEPS, bStop);
     if bStop then begin
@@ -2281,6 +2293,7 @@ begin
       aStream.Read(buf^, size);
       status := kStatusNoError;
       iNXT_downloadFirmware(fNXTHandle, buf, size, status);
+      DebugLog('TFantomSpirit.TransferFirmware: iNXT_downloadFirmware status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
       inc(cur);
       DoDownloadStatus(cur, K_STEPS, bStop);
       if bStop then begin
@@ -2290,6 +2303,7 @@ begin
     finally
       FreeMem(buf);
     end;
+    // wait 10 seconds
     for i := 0 to 9 do begin
       SysUtils.Sleep(K_SEC);
       inc(cur);
@@ -2300,6 +2314,8 @@ begin
       end;
     end;
     Close;
+    SysUtils.Sleep(K_SEC); // one more second before reopening
+    Open;
     Result := status >= kStatusNoError;
   end;
 end;
