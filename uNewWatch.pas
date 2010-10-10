@@ -28,7 +28,8 @@ uses
 {$ELSE}
   LResources,
 {$ENDIF}
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls;
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, Buttons, ComCtrls,
+  uSpirit, uProgram, Dialogs, Menus;
 
 type
   TVarControls = record
@@ -56,6 +57,9 @@ type
     btnRemoveWatch: TButton;
     btnClear: TButton;
     btnHelp: TButton;
+    menuPopup: TPopupMenu;
+    mniOpenSym: TMenuItem;
+    dlgOpen: TOpenDialog;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnPollNowClick(Sender: TObject);
     procedure btnCheckAllClick(Sender: TObject);
@@ -76,6 +80,7 @@ type
     procedure edtValueKeyPress(Sender: TObject; var Key: Char);
     procedure btnClearClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
+    procedure mniOpenSymClick(Sender: TObject);
   private
     { Private declarations }
 {$IFNDEF FPC}
@@ -83,6 +88,9 @@ type
 {$ENDIF}
     fNewData : TStrings;
     fWatchCount : Integer;
+    fWatchedProgram : TProgram;
+    fOldOnGetVarInfoByID: TGetVarInfoByIDEvent;
+    fOldOnGetVarInfoByName: TGetVarInfoByNameEvent;
     procedure UpdateGraph;
     procedure AdjustRangeOfValueSlider(source : Integer);
     procedure InitSources;
@@ -91,6 +99,11 @@ type
     procedure AddVariableHint(sht : TTabsheet; i : integer);
     procedure PopulateVariables(cbo : TCombobox);
     procedure cboNXTVarChange(Sender: TObject);
+    procedure HandleOnGetVarInfoByID(Sender: TObject; const ID: integer;
+      var offset, size, vartype: integer);
+    procedure HandleOnGetVarInfoByName(Sender: TObject; const name: string;
+      var offset, size, vartype: integer);
+    procedure LoadWatchedProgram;
   public
     { Public declarations }
     procedure GraphDestroyed;
@@ -106,9 +119,9 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, Graphics, Dialogs, uBasicPrefs, uMiscDefines,
+  SysUtils, Graphics, uBasicPrefs, uMiscDefines,
   brick_common, rcx_constants, uSources, uLocalizedStrings, uCommonUtils,
-  uProgram, uGlobals, Variants;
+  uGlobals, uEditorUtils, Variants;
 
 var
   busy : boolean = false;
@@ -222,6 +235,7 @@ end;
 
 procedure TfrmNewWatch.FormShow(Sender: TObject);
 begin
+  LoadWatchedProgram;
   InitSources;
   btnPollRegular.Down := false;
   Timer1.Enabled := false;
@@ -232,6 +246,7 @@ end;
 procedure TfrmNewWatch.FormCreate(Sender: TObject);
 begin
   fNewData := TStringList.Create;
+  fWatchedProgram := TProgram.Create;
 {$IFNDEF FPC}
   fGraph := nil;
 {$ENDIF}
@@ -284,7 +299,24 @@ end;
 
 procedure TfrmNewWatch.FormDestroy(Sender: TObject);
 begin
+  FreeAndNil(fWatchedProgram);
   fNewData.Free;
+end;
+
+procedure TfrmNewWatch.LoadWatchedProgram;
+var
+  fname, name, tmp : string;
+begin
+  fname := GetActiveEditorFilename;
+  // is there a program running on the NXT?
+  if BrickComm.GetCurrentProgramName(name) and (name <> '') then
+  begin
+    tmp := ExtractFileName(fname);
+    if Pos(ChangeFileExt(name, ''), tmp) > 0 then
+      name := tmp;
+    fname := ExtractFilePath(fname) + name;
+  end;
+  ReadSymbolFile(fWatchedProgram, fname);
 end;
 
 procedure TfrmNewWatch.UpdateGraph;
@@ -311,12 +343,19 @@ end;
 
 procedure TfrmNewWatch.FormActivate(Sender: TObject);
 begin
+  fOldOnGetVarInfoByID   := BrickComm.OnGetVarInfoByID;
+  fOldOnGetVarInfoByName := BrickComm.OnGetVarInfoByName;
+  // make sure the variable watch event handlers are hooked up
+  BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
+  BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
   if chkIfActive.Checked then
     Timer1.Enabled := btnPollRegular.Down;
 end;
 
 procedure TfrmNewWatch.FormDeactivate(Sender: TObject);
 begin
+  BrickComm.OnGetVarInfoByID   := fOldOnGetVarInfoByID;
+  BrickComm.OnGetVarInfoByName := fOldOnGetVarInfoByName;
   if chkIfActive.Checked then
     Timer1.Enabled := False;
 end;
@@ -483,10 +522,10 @@ begin
 //  udValue.Max := Min(BrickWatchSources[LocalBrickType][source].VMax, 255);
   udValue.Min := BrickWatchSources[LocalBrickType][source].VMin;
   udValue.Max := BrickWatchSources[LocalBrickType][source].VMax;
-  if (source = 0) and IsNXT and CurrentProgram.Loaded(GetActiveEditorFilename) then
+  if (source = 0) and IsNXT {and fWatchedProgram.Loaded(GetActiveEditorFilename)} then
   begin
     udValue.Min := 0;
-    udValue.Max := CurrentProgram.Dataspace.Count - 1;
+    udValue.Max := fWatchedProgram.Dataspace.Count - 1;
   end;
 end;
 
@@ -569,11 +608,11 @@ procedure TfrmNewWatch.AddVariableHint(sht: TTabsheet; i : integer);
 var
   tmp : string;
 begin
-  if IsNXT and CurrentProgram.Loaded(GetActiveEditorFilename) then
+  if IsNXT {and fWatchedProgram.Loaded(GetActiveEditorFilename)} then
   begin
-    if CurrentProgram.Dataspace.Count > i then
+    if fWatchedProgram.Dataspace.Count > i then
     begin
-      tmp := CurrentProgram.Dataspace[i].PrettyName;
+      tmp := fWatchedProgram.Dataspace[i].PrettyName;
       sht.Hint := tmp;
     end;
   end;
@@ -583,11 +622,11 @@ procedure TfrmNewWatch.PopulateVariables(cbo: TCombobox);
 var
   i : integer;
 begin
-  if IsNXT and CurrentProgram.Loaded(GetActiveEditorFilename) then
+  if IsNXT {and fWatchedProgram.Loaded(GetActiveEditorFilename)} then
   begin
     cbo.Items.Clear;
-    for i := 0 to CurrentProgram.Dataspace.Count - 1 do
-      cbo.Items.Add(CurrentProgram.Dataspace[i].PrettyName);
+    for i := 0 to fWatchedProgram.Dataspace.Count - 1 do
+      cbo.Items.Add(fWatchedProgram.Dataspace[i].PrettyName);
   end;
 end;
 
@@ -599,6 +638,49 @@ begin
   C := TCombobox(Sender);
   TUpDown(C.Parent.Controls[3]).Position := C.ItemIndex;
   C.Parent.Hint := C.Text;
+end;
+
+procedure TfrmNewWatch.HandleOnGetVarInfoByID(Sender: TObject;
+  const ID: integer; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
+begin
+  // read offset, size, and vartype from compiler symbol table output
+  if fWatchedProgram.Dataspace.Count > ID then
+  begin
+    DSE     := fWatchedProgram.Dataspace[ID];
+    offset  := DSE.Offset;
+    size    := DSE.Size;
+    vartype := Ord(DSE.DataType);
+  end;
+end;
+
+procedure TfrmNewWatch.HandleOnGetVarInfoByName(Sender: TObject;
+  const name: string; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
+  ID : integer;
+begin
+  // read offset, size, and vartype from compiler symbol table output
+  if fWatchedProgram.Dataspace.Count > 0 then
+  begin
+    ID := fWatchedProgram.Dataspace.IndexOfName(name);
+    if ID <> -1 then
+    begin
+      DSE     := fWatchedProgram.Dataspace[ID];
+      offset  := DSE.Offset;
+      size    := DSE.Size;
+      vartype := Ord(DSE.DataType);
+    end;
+  end;
+end;
+
+procedure TfrmNewWatch.mniOpenSymClick(Sender: TObject);
+begin
+  if dlgOpen.Execute then
+  begin
+    ReadSymbolFile(fWatchedProgram, dlgOpen.Filename);
+  end;
 end;
 
 {$IFDEF FPC}

@@ -4314,6 +4314,10 @@
  * Functions for accessing and modifying MindSensors devices.
  */
 
+/** @defgroup CodatexAPI Codatex API Functions
+ * Functions for accessing and modifying Codatex devices.
+ */
+
 /** @defgroup RICMacros RIC Macro Wrappers
  * Macro wrappers for use in defining RIC byte arrays.
  */

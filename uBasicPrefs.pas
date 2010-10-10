@@ -339,13 +339,14 @@ var
 
 var
   UseHTMLHelp : boolean;
+  DeleteSymFileAfterLoading : boolean;
 
 implementation
 
 uses
   SysUtils, Forms, ComCtrls, uRegUtils, uHighlighterProcs, uMiscDefines,
   uNXTExplorerSettings, uEditorExperts, uJoyGlobals, uRemoteGlobals,
-  uWatchGlobals, uNXTImageGlobals;
+  uWatchGlobals, uNXTImageGlobals, uGlobals;
 
 const
   K_DEF_MACRO_LIB = 'bricxcc.mlb';
@@ -1061,8 +1062,11 @@ begin
     gsReplaceText         := Reg_ReadString(reg, 'ReplaceText', '');
     gsReplaceTextHistory  := Reg_ReadString(reg, 'ReplaceTextHistory', '');
 
-    UseHTMLHelp           := Reg_ReadBool(reg, 'UseHTMLHelp', true);
-
+    UseHTMLHelp               := Reg_ReadBool(reg, 'UseHTMLHelp', true);
+    DeleteSymFileAfterLoading := Reg_ReadBool(reg, 'DeleteSymFileAfterLoading', false);
+    UserDataLocalPath         := Reg_ReadString(reg, 'UserDataLocalPath', UserDataLocalPath);
+    SymFileLibraryPath        := Reg_ReadString(reg, 'SymFileLibraryPath', SymFileLibraryPath);
+    
   finally
     reg.CloseKey;
   end;
@@ -1359,6 +1363,9 @@ begin
     reg.WriteString('ReplaceTextHistory', gsReplaceTextHistory);
 
     reg.WriteBool('UseHTMLHelp', UseHTMLHelp);
+    reg.WriteBool('DeleteSymFileAfterLoading', DeleteSymFileAfterLoading);
+    reg.WriteString('UserDataLocalPath', UserDataLocalPath);
+    reg.WriteString('SymFileLibraryPath', SymFileLibraryPath);
 
   finally
     reg.CloseKey;
@@ -1693,7 +1700,8 @@ initialization
   NXTAutoFWVersion        := True;
   IgnoreSysFiles          := False;
 
-  UseHTMLHelp             := True;
+  UseHTMLHelp               := True;
+  DeleteSymFileAfterLoading := False;
 
 finalization
   CleanupTransferList(fCompXferList);

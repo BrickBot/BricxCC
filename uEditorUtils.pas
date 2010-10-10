@@ -20,7 +20,7 @@ interface
 
 uses
   Classes, StdCtrls, SynEdit, SynEditMiscClasses, uNXTClasses, uBasicPrefs,
-  uPSComponent;
+  uPSComponent, uProgram;
 
 type
   TDisplayErrorsProc = procedure(aShow : boolean) of object;
@@ -40,6 +40,7 @@ function CompileIt(DisplayErrorsProc : TDisplayErrorsProc; theCode : TStrings;
   lstErrors : TListBox; const fName, fCaption : string;
   download : Boolean; run : Boolean; sceHandler : TCompilerStatusChangeEvent;
   osHandler : TNotifyEvent): boolean;
+procedure ReadSymbolFile(aProg : TProgram; const sFilename : string);
 
 procedure AddPaths(aPath : string; aPaths : TStrings);
 
@@ -62,7 +63,7 @@ uses
   SynEditTypes, SynEditHighlighter,
   uGlobals, dlgConfirmReplace, dlgSearchText, rcx_constants, uSpirit,
   dlgReplaceText, uMiscDefines, brick_common, CodeUnit, uLocalizedStrings,
-  uProgram, uNBCInterface, ParamUtils,
+  uNBCInterface, ParamUtils,
   uPSDisassembly, uCompStatus, uDebugLogging;
 
 function GetLineNumber(const aY : integer) : integer;
@@ -782,16 +783,50 @@ begin
   end;
 end;
 
-procedure ReadSymbolFile(const sFilename : string);
-var
-  symName : string;
+function LocateSymFile(symName : string; var symPath : string) : boolean;
 begin
-  symName := ChangeFileExt(sFilename, '.sym');
+  Result := False;
+  symPath := '';
   if FileExists(symName) then
   begin
-    CurrentProgram.IsNXC := FileIsNXC;
-    CurrentProgram.LoadFromFile(symName);
-    DeleteFile(symName);
+    symPath := ExtractFilePath(symName);
+    result := True;
+  end
+  else
+  begin
+    // check UserDataLocalPath
+    symName := UserDataLocalPath + ExtractFileName(symName);
+    if FileExists(symName) then
+    begin
+      symPath := UserDataLocalPath;
+      result := True;
+    end
+    else
+    begin
+      // check SymFileLibraryPath
+      symName := SymFileLibraryPath + ExtractFileName(symName);
+      if FileExists(symName) then
+      begin
+        symPath := SymFileLibraryPath;
+        result := True;
+      end;
+    end;
+  end;
+end;
+
+procedure ReadSymbolFile(aProg : TProgram; const sFilename : string);
+var
+  symName, symPath : string;
+begin
+  aProg.ClearAll;
+  symName := ChangeFileExt(sFilename, '.sym');
+  if LocateSymFile(symName, symPath) then
+  begin
+    aProg.IsNXC := LowerCase(ExtractFileExt(sFilename)) = '.nxc';
+    symName := symPath + ExtractFileName(symName);
+    aProg.LoadFromFile(symName);
+    if DeleteSymFileAfterLoading then
+      DeleteFile(symName);
   end;
 end;
 
@@ -991,7 +1026,7 @@ begin
     if FileIsNBCOrNXC(H) then
     begin
       DebugLog('CompileIt: calling ReadSymbolFile');
-      ReadSymbolFile(fName);
+      ReadSymbolFile(CurrentProgram, fName);
     end;
 
     if (not execError) and ShowCompilerStatus then

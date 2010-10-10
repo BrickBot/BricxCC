@@ -76,7 +76,8 @@ const
 
 var
   UserDataLocalPath : string;
-
+  SymFileLibraryPath : string;
+  
 var
   LocalBrickType : integer;
   LocalStandardFirmware : Boolean;
@@ -160,8 +161,10 @@ initialization
 
 {$IFNDEF FPC}
   UserDataLocalPath := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\';
+  SymFileLibraryPath := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\sym\';
 {$ELSE}
   UserDataLocalPath := IncludeTrailingPathDelimiter(ExpandFilename('~'));
+  SymFileLibraryPath := IncludeTrailingPathDelimiter(ExpandFilename('~')) + IncludeTrailingPathDelimiter('sym');
 {$ENDIF}
 
 end.

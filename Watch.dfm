@@ -14,6 +14,7 @@ object WatchForm: TWatchForm
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
+  PopupMenu = menuPopup
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -2335,5 +2336,20 @@ object WatchForm: TWatchForm
     OnTimer = Timer1Timer
     Left = 360
     Top = 8
+  end
+  object menuPopup: TPopupMenu
+    Left = 484
+    Top = 328
+    object mniOpenSym: TMenuItem
+      Caption = 'L&oad symbol file ...'
+      ShortCut = 16463
+      OnClick = mniOpenSymClick
+    end
+  end
+  object dlgOpen: TOpenDialog
+    Filter = 'Symbol files (*.sym)|*.sym'
+    Title = 'Open Symbol File'
+    Left = 484
+    Top = 368
   end
 end

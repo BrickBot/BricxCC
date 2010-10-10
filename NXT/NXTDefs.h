@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-10-06
- * version 66
+ * date 2010-10-07
+ * version 67
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -1872,6 +1872,9 @@ dseg ends
 dseg segment
   __RLSBbufLSWrite1 byte[] 0x02, 0x42
   __RSEMeterLSBuf byte[] 0x04, 0x0A
+  __RSTempConfigLSBuf byte[] 0x98, 0x01, 0x60
+  __RSTempLSBuf byte[] 0x98, 0x00
+  __RSTempRaw slong
 dseg ends
 
 #define __ReadI2CBytes(_port, _inbuf, _count, _outbuf, _result) \
@@ -2053,6 +2056,58 @@ dseg ends
   mul _wOut, _wOut, 256 \
   add _wOut, _wOut, __RLSBytesCount##_port \
   div _wOut, _wOut, 1000 \
+  release __RLSBmutex##_port \
+  compend
+
+#define __ReadSensorTemperature(_port, _temp) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RSTempLSBuf \
+  set __RLSBytesCountVar, 2 \
+  call __ReadLSBytesVar \
+  index __RSTempRaw, __RLSReadBufVar, NA \
+  index __RLSBytesCountVar, __RLSReadBufVar, 1 \
+  mul __RSTempRaw, __RSTempRaw, 256 \
+  add __RSTempRaw, __RSTempRaw, __RLSBytesCountVar \
+  mul __RSTempRaw, __RSTempRaw, 10 \
+  div __RSTempRaw, __RSTempRaw, 16 \
+  div _temp, __RSTempRaw, 16 \
+  brcmp LTEQ, __RRT_EndIf##__I__, __RSTempRaw, 20470 \
+  sub _temp, _temp, 2560 \
+  __RRT_EndIf##__I__: \
+  __IncI__ \
+  compif EQ, typeof(_temp), 10 \
+  div _temp, _temp, 10 \
+  compend \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RSTempLSBuf \
+  set __RLSBytesCount##_port, 2 \
+  call __ReadLSBytes##_port \
+  index __RSTempRaw, __RLSReadBuf##_port, NA \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 1 \
+  mul __RSTempRaw, __RSTempRaw, 256 \
+  add __RSTempRaw, __RSTempRaw, __RLSBytesCount##_port \
+  mul __RSTempRaw, __RSTempRaw, 10 \
+  div __RSTempRaw, __RSTempRaw, 16 \
+  div _temp, __RSTempRaw, 16 \
+  brcmp LTEQ, __RRT_EndIf##__I__, __RSTempRaw, 20470 \
+  sub _temp, _temp, 2560 \
+  __RRT_EndIf##__I__: \
+  __IncI__ \
+  compif EQ, typeof(_temp), 10 \
+  div _temp, _temp, 10 \
+  compend \
   release __RLSBmutex##_port \
   compend
 
@@ -5025,6 +5080,9 @@ dseg ends
   sub _val, _val, 600 \
   sub _val, _val, _offset
 
+#define __ReadSensorHTMagnet(_port, _offset, _val) __ReadSensorHTGyro(_port, _offset, _val)
+#define __SetSensorHTMagnet(_port) __SetSensorHTGyro(_port)
+
 dseg segment
   __HTMplexRaw word
   __HTMplexScaled dword
@@ -5699,7 +5757,7 @@ ends
 
 #define __HTRCXOnFor(_outputs, _ms) \
   __HTRCXSetOutput(_outputs, RCX_OUT_ON) \
-  wait _ms \
+  waitv _ms \
   __HTRCXSetOutput(_outputs, RCX_OUT_OFF)
 
 #define __HTRCXSetTxPower(_pwr) \
@@ -6638,6 +6696,75 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
+#define __ResetSensorHTAngle(_port, _mode, _result) \
+  compchk EQ, isconst(_mode), TRUE \
+  __I2CSendCmd(_port, 0x02, _mode, _result) \
+  compif EQ, _mode, HTANGLE_MODE_CALIBRATE \
+  wait 30 \
+  compend
+
+#define __ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RLSBbufLSWrite1 \
+  set __RLSBytesCountVar, 8 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  index _Angle, __RLSReadBufVar, NA \
+  add _Angle, _Angle, _Angle \
+  index __RLSBytesCountVar, __RLSReadBufVar, 1 \
+  add _Angle, _Angle, __RLSBytesCountVar \
+  index _AccAngle, __RLSReadBufVar, 2 \
+  mul _AccAngle, _AccAngle, 256 \
+  index __RLSBytesCountVar, __RLSReadBufVar, 3 \
+  add _AccAngle, _AccAngle, __RLSBytesCountVar \
+  mul _AccAngle, _AccAngle, 256 \
+  index __RLSBytesCountVar, __RLSReadBufVar, 4 \
+  add _AccAngle, _AccAngle, __RLSBytesCountVar \
+  mul _AccAngle, _AccAngle, 256 \
+  index __RLSBytesCountVar, __RLSReadBufVar, 5 \
+  add _AccAngle, _AccAngle, __RLSBytesCountVar \
+  index _RPM, __RLSReadBufVar, 6 \
+  mul _RPM, _RPM, 256 \
+  index __RLSBytesCountVar, __RLSReadBufVar, 7 \
+  add _RPM, _RPM, __RLSBytesCountVar \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
+  set __RLSBytesCount##_port, 8 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  index _Angle, __RLSReadBuf##_port, NA \
+  add _Angle, _Angle, _Angle \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 1 \
+  add _Angle, _Angle, __RLSBytesCount##_port \
+  index _AccAngle, __RLSReadBuf##_port, 2 \
+  mul _AccAngle, _AccAngle, 256 \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 3 \
+  add _AccAngle, _AccAngle, __RLSBytesCount##_port \
+  mul _AccAngle, _AccAngle, 256 \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 4 \
+  add _AccAngle, _AccAngle, __RLSBytesCount##_port \
+  mul _AccAngle, _AccAngle, 256 \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 5 \
+  add _AccAngle, _AccAngle, __RLSBytesCount##_port \
+  index _RPM, __RLSReadBuf##_port, 6 \
+  mul _RPM, _RPM, 256 \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 7 \
+  add _RPM, _RPM, __RLSBytesCount##_port \
+  release __RLSBmutex##_port \
+  compend
+
 #define __ReadI2CDeviceInfo(_port, _i2caddr, _info, _strVal) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
@@ -6864,6 +6991,68 @@ dseg ends
   compend
 
 dseg segment
+  __RLSBbufRFIDInit byte[] 0x04, 0x32
+  __RLSBbufRFIDData byte[] 0x04, 0x42
+  __RFIDCount byte
+  __RFIDCont_Port byte
+  __RFIDCont_Result byte
+  __RFIDCont_Output byte[]
+  __RFIDmutex mutex
+dseg ends
+
+#define __RFIDInit(_port, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RLSBbufRFIDInit \
+  set __RLSBytesCountVar, 0 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RLSBbufRFIDInit \
+  set __RLSBytesCount##_port, 0 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  release __RLSBmutex##_port \
+  compend
+
+#define __RFIDMode(_port, _mode, _result) __I2CSendCmd(_port, 0x04, _mode, _result)
+#define __RFIDStatus(_port, _result) __MSReadValue(_port, 0x04, 0x32, 1, _result, __RDSD_LSStatus)
+#define __RFIDRead(_port, _output, _result) \
+  set __RFIDCount, 5 \
+  __ReadI2CBytes(_port, __RLSBbufRFIDData, __RFIDCount, _output, _result)
+
+#define __RFIDStop(_port, _result) \
+  __RFIDInit(_port, _result) \
+  wait 10 \
+  __RFIDMode(_port, RFID_MODE_STOP, _result)
+
+#define __RFIDReadSingle(_port, _output, _result) \
+  __RFIDInit(_port, _result) \
+  wait 15 \
+  __RFIDMode(_port, RFID_MODE_SINGLE, _result) \
+  wait 250 \
+  __RFIDRead(_port, _output, _result)
+
+#define __RFIDReadContinuous(_port, _output, _result) \
+  acquire __RFIDmutex \
+  mov __RFIDCont_Port, _port \
+  call __RFIDReadContinuousSub \
+  mov _output, __RFIDCont_Output \
+  mov _result, __RFIDCont_Result \
+  release __RFIDmutex
+
+dseg segment
   __WDSC_Port byte
   __WDSC_WriteBytes byte[]
   __WDSC_SensorAddress byte
@@ -6900,6 +7089,9 @@ dseg ends
 #define __I2CSendCmd(_port, _i2caddr, _cmd, _result) \
   __MSWriteToRegister(_port, _i2caddr, I2C_REG_CMD, _cmd, _result)
 
+#define __TempSendCmd(_port, _cmd, _result) \
+  __MSWriteToRegister(_port, TEMP_I2C_ADDRESS, TEMP_REG_CONFIG, _cmd, _result)
+
 #define __MSReadValue(_port, _i2caddr, _reg, _bytes, _out, _result) \
   acquire __DNRVmutex \
   mov __RDSD_Port, _port \
@@ -6910,6 +7102,18 @@ dseg ends
   mov _out, __RDSD_Value \
   mov _result, __RDSD_LSStatus \
   release __DNRVmutex
+
+subroutine __RFIDReadContinuousSub
+  __RFIDInit(__RFIDCont_Port, __RFIDCont_Result)
+  wait 15
+  __RFIDStatus(__RFIDCont_Port, __RFIDCont_Result)
+  brtst GT, __RFIDCont_Endif, __RFIDCont_Result
+  __RFIDMode(__RFIDCont_Port, RFID_MODE_CONTINUOUS, __RFIDCont_Result)
+  wait 250
+__RFIDCont_Endif:
+  __RFIDRead(__RFIDCont_Port, __RFIDCont_Output, __RFIDCont_Result)
+  return
+ends
 
 subroutine __MSWriteBytesSub
   mov __WDSC_lswArgs.Port, __WDSC_Port
@@ -7349,7 +7553,7 @@ ends
 
 #define __MSRCXOnFor(_outputs, _ms) \
   __MSRCXSetOutput(_outputs, RCX_OUT_ON) \
-  wait _ms \
+  waitv _ms \
   __MSRCXSetOutput(_outputs, RCX_OUT_OFF)
 
 #define __MSRCXSetTxPower(_pwr) \
@@ -9006,43 +9210,6 @@ ends
 #define Acos(_X,_R) __ACOS(_X,_R)
 
 
-#define SetSensorTemperature(_port) SetSensorLowspeed(_port)
-
-#define __TempSendCmd(_port, _cmd, _result) \
-  __MSWriteToRegister(_port, TEMP_I2C_ADDRESS, TEMP_REG_CONFIG, _cmd, _result)
-
-#define TemperatureResolution(_port, _cmd, _result) __TempSendCmd(_port, _cmd, _result)
-
-/*
-// R1/R0
-#define TEMP_RES_12BIT     0x60
-#define TEMP_RES_11BIT     0x40
-#define TEMP_RES_10BIT     0x20
-#define TEMP_RES_9BIT      0x00
-// SD (shutdown mode)
-#define TEMP_SD_CONTINUOUS 0x00
-#define TEMP_SD_SHUTDOWN   0x01
-// TM (thermostat mode)
-#define TEMP_TM_COMPARATOR 0x00
-#define TEMP_TM_INTERRUPT  0x02
-// OS (one shot)
-#define TEMP_OS_ONESHOT    0x80
-// F1/F0 (fault queue)
-#define TEMP_FQ_1          0x00
-#define TEMP_FQ_2          0x08
-#define TEMP_FQ_4          0x10
-#define TEMP_FQ_6          0x18
-// POL (polarity)
-#define TEMP_POL_LOW       0x00
-#define TEMP_POL_HIGH      0x04
-
-#define TEMP_I2C_ADDRESS   0x98
-#define TEMP_REG_TEMP      0x00
-#define TEMP_REG_CONFIG    0x01
-#define TEMP_REG_TLOW      0x02
-#define TEMP_REG_THIGH     0x03
-*/
-
 #endif
 
 
@@ -9753,6 +9920,25 @@ ends
  */
 #define SetSensorUltrasonic(_port) __SetSensorLowspeed(_port)
 
+/**
+ * Configure an EMeter sensor.
+ * Configure the sensor on the specified port as an EMeter sensor.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
+#define SetSensorEMeter(_port) __SetSensorLowspeed(_port)
+
+/**
+ * Configure a temperature sensor.
+ * Configure the sensor on the specified port as a temperature sensor. Use this
+ * to setup the temperature sensor rather than \ref SetSensorLowspeed so that
+ * the sensor is properly configured in 12-bit conversion mode.
+ * \param _port The port to configure. See \ref NBCInputPortConstants.
+ */
+#define SetSensorTemperature(_port) \
+  __SetSensorLowspeed(_port) \
+  __MSWriteToRegister(_port, LEGO_ADDR_TEMP, TEMP_REG_CONFIG, TEMP_RES_12BIT, __WDSC_LSStatus)
+
+
 #if __FIRMWARE_VERSION > 107
 
 /**
@@ -10129,6 +10315,33 @@ ends
  * See \ref TCommLSRead for possible Result values.
  */
 #define ReadSensorEMeter(_port, _vIn, _aIn, _vOut, _aOut, _joules, _wIn, _wOut, _result) __ReadSensorEMeter(_port, _vIn, _aIn, _vOut, _aOut, _joules, _wIn, _wOut, _result)
+
+/**
+ * Configure LEGO Temperature sensor options.
+ * Set various LEGO Temperature sensor options.
+ *
+ * \param _port The port to which the LEGO EMeter sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _config The temperature sensor configuration settings.  See
+ * \ref TempI2CConstants for configuration constants that can be ORed or added
+ * together.
+ * \param _result A status code indicating whether the read completed successfully or not.
+ * See \ref TCommLSRead for possible Result values.
+ */
+#define ConfigureTemperatureSensor(_port, _config, _result) __TempSendCmd(_port, _config, _result)
+
+/**
+ * Read the LEGO Temperature sensor value.
+ * Return the temperature sensor value in degrees celcius. Since a
+ * temperature sensor is an I2C digital sensor its value cannot be read using
+ * the standard Sensor(n) value.
+ * The port must be configured as a temperature sensor port before using this
+ * function. Use \ref SetSensorTemperature to configure the port.
+ * \param _port The port to which the temperature sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _temp The temperature sensor value in degrees celcius.
+ */
+#define ReadSensorTemperature(_port, _temp) __ReadSensorTemperature(_port, _temp)
 
 /**
  * Get lowspeed status.
@@ -13824,6 +14037,26 @@ ends
 #define ReadSensorHTGyro(_p, _offset, _val) __ReadSensorHTGyro(_p, _offset, _val)
 
 /**
+ * Set sensor as HiTechnic Magnet.
+ * Configure the sensor on the specified port as a HiTechnic Magnet sensor.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ */
+#define SetSensorHTMagnet(_port) __SetSensorHTGyro(_port)
+
+/**
+ * Read HiTechnic Magnet sensor.
+ * Read the HiTechnic Magnet sensor on the specified port. The offset value
+ * should be calculated by averaging several readings with an offset of zero
+ * while the sensor is perfectly still.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants.
+ * \param _offset The zero offset.
+ * \param _val The Magnet sensor reading.
+ */
+#define ReadSensorHTMagnet(_p, _offset, _val) __ReadSensorHTGyro(_p, _offset, _val)
+
+/**
  * Set sensor as HiTechnic EOPD.
  * Configure the sensor on the specified port as a HiTechnic EOPD sensor.
  *
@@ -14879,6 +15112,34 @@ ends
  * \param _result The function call result.
  */
 #define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result) __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, _result)
+
+/**
+ * Reset HiTechnic Angle sensor.
+ * Reset the HiTechnic Angle sensor on the specified
+ * port. The port must be configured as a Lowspeed port before using this
+ * function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _mode The Angle reset mode. See \ref HTAngleConstants.
+ * \param _result The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+#define ResetSensorHTAngle(_port, _mode, _result) __ResetSensorHTAngle(_port, _mode, _result)
+
+/**
+ * Read HiTechnic Angle sensor values.
+ * Read values from the HiTechnic Angle sensor.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _Angle Current angle in degrees (0-359).
+ * \param _AccAngle Accumulated angle in degrees (-2147483648 to 2147483647).
+ * \param _RPM rotations per minute (-1000 to 1000).
+ * \param _result The function call result.
+ */
+#define ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, _result) __ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, _result)
+
 
 /** @} */ // end of HiTechnicAPI group
 
@@ -16482,6 +16743,90 @@ ends
 #define MSScoutUnmuteSound() __MSScoutUnmuteSound()
 
 /** @} */ // end of MindSensorsAPI group
+
+/** @addtogroup CodatexAPI
+ * @{
+ */
+
+// Codatex RFID functions
+
+/**
+ * RFIDInit function.
+ * Initialize the Codatex RFID sensor.
+ *
+ * \param _port The port to which the Codatex RFID sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The boolean function call result.
+ */
+#define RFIDInit(_port, _result) __RFIDInit(_port, _result)
+
+/**
+ * RFIDMode function.
+ * Configure the Codatex RFID sensor mode.
+ *
+ * \param _port The port to which the Codatex RFID sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _mode The RFID sensor mode.  See the \ref CTRFIDModeConstants group.
+ * \param _result The boolean function call result.
+ */
+#define RFIDMode(_port, _mode, _result) __RFIDMode(_port, _mode, _result)
+
+/**
+ * RFIDStatus function.
+ * Read the Codatex RFID sensor status.
+ *
+ * \param _port The port to which the Codatex RFID sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The RFID sensor status.
+ */
+#define RFIDStatus(_port, _result) __RFIDStatus(_port, _result)
+
+/**
+ * RFIDRead function.
+ * Read the Codatex RFID sensor value.
+ *
+ * \param _port The port to which the Codatex RFID sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _output The five bytes of RFID data.
+ * \param _result The boolean function call result.
+ */
+#define RFIDRead(_port, _output, _result) __RFIDRead(_port, _output, _result)
+
+/**
+ * RFIDStop function.
+ * Stop the Codatex RFID sensor.
+ *
+ * \param _port The port to which the Codatex RFID sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The boolean function call result.
+ */
+#define RFIDStop(_port, _result) __RFIDStop(_port, _result)
+
+/**
+ * RFIDReadSingle function.
+ * Set the Codatex RFID sensor into single mode and read the RFID data.
+ *
+ * \param _port The port to which the Codatex RFID sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _output The five bytes of RFID data.
+ * \param _result The boolean function call result.
+ */
+#define RFIDReadSingle(_port, _output, _result) __RFIDReadSingle(_port, _output, _result)
+
+/**
+ * RFIDReadContinuous function.
+ * Set the Codatex RFID sensor into continuous mode, if necessary, and read
+ * the RFID data.
+ *
+ * \param _port The port to which the Codatex RFID sensor is attached. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _output The five bytes of RFID data.
+ * \param _result The boolean function call result.
+ */
+#define RFIDReadContinuous(_port, _output, _result) __RFIDReadContinuous(_port, _output, _result)
+
+/** @} */  // end of CodatexAPI group
+
 /** @} */ // end of ThirdPartyDevices group
 
 

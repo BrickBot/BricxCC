@@ -119,7 +119,8 @@ uses
   uNXTConstants in 'NXT\uNXTConstants.pas',
   uNXTController in 'uNXTController.pas' {frmNXTController},
   uCompStatus in 'uCompStatus.pas' {frmCompStatus},
-  uHEXViewer in 'uHEXViewer.pas' {frmHexView},
+  uHexViewer in 'uHexViewer.pas' {frmHexView},
+  uTextViewer in 'uTextViewer.pas' {frmTextView},
   uNXTImage in 'uNXTImage.pas' {frmNXTImage};
 
 {$IFNDEF FPC}
@@ -140,8 +141,8 @@ begin
   {Find the program directory}
   ProgramDir := ExtractFilePath(Application.ExeName);
 
-  LoadNXCCodeCompFromFile(ProgramDir + 'Default\nxc_api.txt');
-  LoadNBCCodeCompFromFile(ProgramDir + 'Default\nbc_api.txt');
+  LoadNXCCodeCompFromFile(ProgramDir + 'Default\nxc_api.txt', True);
+  LoadNBCCodeCompFromFile(ProgramDir + 'Default\nbc_api.txt', True);
   LoadRICScriptCodeCompFromFile(ProgramDir + 'Default\ricscript_api.txt');
 
   if ParamSwitch('/NoNewMenuItems') then
@@ -195,7 +196,8 @@ begin
   uBasicPrefs.panelSplitter := MainForm.splCodeExplorer;
   Application.CreateForm(TfrmCodeExplorer, frmCodeExplorer);
   Application.CreateForm(TfrmMacroManager, frmMacroManager);
-  Application.CreateForm(TfrmHEXView, frmHEXView);
+  Application.CreateForm(TfrmHexView, frmHexView);
+  Application.CreateForm(TfrmTextView, frmTextView);
   Application.CreateForm(TfrmCompStatus, frmCompStatus);
 
   if ParamSwitch('/COM') then

@@ -359,6 +359,11 @@ type
     mmoEditorExpertsHelp: TMemo;
     chkNXTAutoFW: TCheckBox;
     chkUseHTMLHelp: TCheckBox;
+    shtPaths: TTabSheet;
+    edtUserDataPath2: TEdit;
+    Label2: TLabel;
+    Label6: TLabel;
+    edtSymLibPath2: TEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -525,6 +530,8 @@ type
     edtCygwin: TDirectoryEdit;
     edtJavaPath: TDirectoryEdit;
     edtLeJOSRoot: TDirectoryEdit;
+    edtUserDataPath: TDirectoryEdit;
+    edtSymLibPath: TDirectoryEdit;
     NewTemplatesList: TSynEdit;
     SynEditColors: TSynEdit;
 //    property ColorsChanged : boolean read fColorsChanged;
@@ -3593,18 +3600,22 @@ end;
 
 procedure TPrefForm.CreateDirectoryEdits;
 begin
-  edtNQCExePath := TDirectoryEdit.Create(Self);
-  edtLCCExePath := TDirectoryEdit.Create(Self);
-  edtNBCExePath := TDirectoryEdit.Create(Self);
-  edtCygwin     := TDirectoryEdit.Create(Self);
-  edtJavaPath   := TDirectoryEdit.Create(Self);
-  edtLeJOSRoot  := TDirectoryEdit.Create(Self);
+  edtNQCExePath   := TDirectoryEdit.Create(Self);
+  edtLCCExePath   := TDirectoryEdit.Create(Self);
+  edtNBCExePath   := TDirectoryEdit.Create(Self);
+  edtCygwin       := TDirectoryEdit.Create(Self);
+  edtJavaPath     := TDirectoryEdit.Create(Self);
+  edtLeJOSRoot    := TDirectoryEdit.Create(Self);
+  edtUserDataPath := TDirectoryEdit.Create(Self);
+  edtSymLibPath   := TDirectoryEdit.Create(Self);
   CloneDE(edtNQCExePath, edtNQCExePath2);
   CloneDE(edtLCCExePath, edtLCCExePath2);
   CloneDE(edtNBCExePath, edtNBCExePath2);
   CloneDE(edtCygwin, edtCygwin2);
   CloneDE(edtJavaPath, edtJavaPath2);
   CloneDE(edtLeJOSRoot, edtLeJOSRoot2);
+  CloneDE(edtUserDataPath, edtUserDataPath2);
+  CloneDE(edtSymLibPath, edtSymLibPath2);
 end;
 
 procedure TPrefForm.CreateSynEditComponents;
@@ -3836,6 +3847,9 @@ begin
   chkHighlightCurLine.Checked := HighlightCurLine;
   chkKeepCaretX.Checked       := KeepCaretX;
   chkAutoMaxLeft.Checked      := AutoMaxLeft;
+
+  edtUserDataPath.Text        := UserDataLocalPath;
+  edtSymLibPath.Text          := SymFileLibraryPath;
 end;
 
 procedure TPrefForm.DisplayGeneralValues;
@@ -4031,6 +4045,9 @@ begin
   HighlightCurLine    := chkHighlightCurLine.Checked;
   KeepCaretX          := chkKeepCaretX.Checked;
   AutoMaxLeft         := chkAutoMaxLeft.Checked;
+
+  UserDataLocalPath   := edtUserDataPath.Text;
+  SymFileLibraryPath  := edtSymLibPath.Text;
 end;
 
 procedure TPrefForm.GetGeneralValues;

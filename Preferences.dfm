@@ -870,6 +870,42 @@ object PrefForm: TPrefForm
               TabOrder = 4
             end
           end
+          object shtPaths: TTabSheet
+            Caption = 'Paths'
+            ImageIndex = 3
+            object Label2: TLabel
+              Left = 6
+              Top = 9
+              Width = 73
+              Height = 13
+              Caption = 'User data &path:'
+            end
+            object Label6: TLabel
+              Left = 6
+              Top = 33
+              Width = 107
+              Height = 13
+              Caption = 'Symbol file li&brary path:'
+            end
+            object edtUserDataPath2: TEdit
+              Left = 120
+              Top = 5
+              Width = 293
+              Height = 21
+              HelpContext = 11102
+              AutoSize = False
+              TabOrder = 0
+            end
+            object edtSymLibPath2: TEdit
+              Left = 120
+              Top = 29
+              Width = 293
+              Height = 21
+              HelpContext = 11102
+              AutoSize = False
+              TabOrder = 1
+            end
+          end
         end
       end
       object shtCompiler: TTabSheet

@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2447;
+  uNXCHTMLTopicsSize = 2488;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -195,6 +195,10 @@ const
     (
      Name: 'LocationType';
      Value: 'struct_location_type.html'
+    ),
+    (
+     Name: 'MemoryManagerType';
+     Value: 'struct_memory_manager_type.html'
     ),
     (
      Name: 'MessageReadType';
@@ -573,6 +577,10 @@ const
      Value: 'group___sys_call_constants_gaef725e2d3882d19d0e4bc47844d1af81.html'
     ),
     (
+     Name: 'MemoryManager';
+     Value: 'group___sys_call_constants_ga550d1be8705de22ee44c940c7aa4a586.html'
+    ),
+    (
      Name: 'LCD_LINE8';
      Value: 'group___line_constants_gabb513f5dfae0f51c17e6c50293aba7aa.html'
     ),
@@ -919,6 +927,10 @@ const
     (
      Name: 'STAT_COMM_PENDING';
      Value: 'group___command_module_constants_gaff5d0e89c9ff770ed9bb56948de1f8c6.html'
+    ),
+    (
+     Name: 'POOL_MAX_SIZE';
+     Value: 'group___command_module_constants_ga6e0c753131d7613db37ef5a3fd2108c0.html'
     ),
     (
      Name: 'TIMES_UP';
@@ -2933,20 +2945,20 @@ const
      Value: 'group___u_s_i2_c_constants_gaf1d2e605ad48ba2cb357c386b53ffd81.html'
     ),
     (
-     Name: 'TEMP_RES_12BIT';
-     Value: 'group___temp_i2_c_constants_gaf8320c5eda0d3f2055666fd84444941b.html'
-    ),
-    (
-     Name: 'TEMP_RES_11BIT';
-     Value: 'group___temp_i2_c_constants_ga52f0d6cb434712c9f4ca231398475e60.html'
+     Name: 'TEMP_RES_9BIT';
+     Value: 'group___temp_i2_c_constants_ga5f44cc4fc21a140905ac16b2a9416557.html'
     ),
     (
      Name: 'TEMP_RES_10BIT';
      Value: 'group___temp_i2_c_constants_gaa12067aa4df773c457133cb4627a2088.html'
     ),
     (
-     Name: 'TEMP_RES_9BIT';
-     Value: 'group___temp_i2_c_constants_ga5f44cc4fc21a140905ac16b2a9416557.html'
+     Name: 'TEMP_RES_11BIT';
+     Value: 'group___temp_i2_c_constants_ga52f0d6cb434712c9f4ca231398475e60.html'
+    ),
+    (
+     Name: 'TEMP_RES_12BIT';
+     Value: 'group___temp_i2_c_constants_gaf8320c5eda0d3f2055666fd84444941b.html'
     ),
     (
      Name: 'TEMP_SD_CONTINUOUS';
@@ -5137,6 +5149,10 @@ const
      Value: 'group___hi_technic_constants_ga4633d2e9361d461022473411fb65a432.html'
     ),
     (
+     Name: 'HT_ADDR_ANGLE';
+     Value: 'group___hi_technic_constants_gaab38d9edcb1bd4e47b34a11626bf140d.html'
+    ),
+    (
      Name: 'HTIR2_MODE_1200';
      Value: 'group___h_t_i_r_seeker2_constants_ga3ec2348617d3fae0aadb1eef110f7e2f.html'
     ),
@@ -5275,6 +5291,54 @@ const
     (
      Name: 'HT_CMD_COLOR2_NEAR';
      Value: 'group___h_t_color2_constants_ga72d606b2cde01cefb363ececf0321d04.html'
+    ),
+    (
+     Name: 'HTANGLE_MODE_NORMAL';
+     Value: 'group___h_t_angle_constants_ga5a088114760cd5b03077efbd77ac4b97.html'
+    ),
+    (
+     Name: 'HTANGLE_MODE_CALIBRATE';
+     Value: 'group___h_t_angle_constants_gadd4731a47ec48248156b673031ad8fbd.html'
+    ),
+    (
+     Name: 'HTANGLE_MODE_RESET';
+     Value: 'group___h_t_angle_constants_gaa299e655aeec12d8f3dc00377475d8e8.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_MODE';
+     Value: 'group___h_t_angle_constants_ga4a73be180f66ad29b6f29c6088db63fa.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DCDIR';
+     Value: 'group___h_t_angle_constants_ga07b8396774eeaf221d155be5dbcb1e87.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC01';
+     Value: 'group___h_t_angle_constants_ga709007c94793e98050c42284b1ee95fd.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC02';
+     Value: 'group___h_t_angle_constants_gada954aa1c1604bf9d7e71bbd13d4503b.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC03';
+     Value: 'group___h_t_angle_constants_gae2c8bfe0aecc11d221a9372f7ce738c8.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC04';
+     Value: 'group___h_t_angle_constants_ga5753a90fd6e79ac9bf54c8533eae470b.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC05';
+     Value: 'group___h_t_angle_constants_ga847084685d207668d9efd5e496d65c94.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DCAVG';
+     Value: 'group___h_t_angle_constants_ga58d62971264c00bd4a101b347eab5edc.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_ACDIR';
+     Value: 'group___h_t_angle_constants_gab98acbb8edd369f305062915025c13a1.html'
     ),
     (
      Name: 'MS_CMD_ENERGIZED';
@@ -5639,6 +5703,34 @@ const
     (
      Name: 'ACCL_SENSITIVITY_LEVEL_4';
      Value: 'group___m_s_a_c_c_l_nx_s_level_ga587b1074c4da94a77fe9acb8a844f1d0.html'
+    ),
+    (
+     Name: 'RFID_MODE_STOP';
+     Value: 'group___c_t_r_f_i_d_mode_constants_ga41f48d27490a21c45054c0dc4daef8a6.html'
+    ),
+    (
+     Name: 'RFID_MODE_SINGLE';
+     Value: 'group___c_t_r_f_i_d_mode_constants_ga9300bfb6f2ae049939c0923790e38eeb.html'
+    ),
+    (
+     Name: 'RFID_MODE_CONTINUOUS';
+     Value: 'group___c_t_r_f_i_d_mode_constants_ga9064d5262b76ff646fa0f9f8136673c8.html'
+    ),
+    (
+     Name: 'CT_ADDR_RFID';
+     Value: 'group___c_t_r_f_i_d_constants_ga8a306018ec49a04ec0b4cf3ccf8a0f89.html'
+    ),
+    (
+     Name: 'CT_REG_STATUS';
+     Value: 'group___c_t_r_f_i_d_constants_ga4ea363f279ab97a226f0815e9b28d388.html'
+    ),
+    (
+     Name: 'CT_REG_MODE';
+     Value: 'group___c_t_r_f_i_d_constants_gad885999bd4202cd96b7192981287c0b7.html'
+    ),
+    (
+     Name: 'CT_REG_DATA';
+     Value: 'group___c_t_r_f_i_d_constants_gafb06afdd122091ad3bf2a54b9dead516.html'
     ),
     (
      Name: 'RICImgPoint';
@@ -6267,6 +6359,18 @@ const
     (
      Name: 'SetSensorLowspeed';
      Value: 'group___input_module_functions_ga218d00df36cc25f385be5eaf4972defc.html'
+    ),
+    (
+     Name: 'SetSensorUltrasonic';
+     Value: 'group___input_module_functions_ga3a9558c29a009be254a0f0a24d85d05f.html'
+    ),
+    (
+     Name: 'SetSensorEMeter';
+     Value: 'group___input_module_functions_gae14dba7310766017ce21ebe89ce67c97.html'
+    ),
+    (
+     Name: 'SetSensorTemperature';
+     Value: 'group___input_module_functions_gad704d42e22b9e5355cd5b6d7d9c1e156.html'
     ),
     (
      Name: 'SetSensorColorFull';
@@ -6934,7 +7038,15 @@ const
     ),
     (
      Name: 'ReadSensorEMeter';
-     Value: 'group___low_speed_module_functions_gad3f5c6a58277867c130cf121a926b4a5.html'
+     Value: 'group___low_speed_module_functions_ga8d49890934bad6e9792406f36f125a0a.html'
+    ),
+    (
+     Name: 'ConfigureTemperatureSensor';
+     Value: 'group___low_speed_module_functions_ga76252d25beeca284d53ea263a4c6f3f9.html'
+    ),
+    (
+     Name: 'SensorTemperature';
+     Value: 'group___low_speed_module_functions_ga1a932d6f4ac5928923b3928de0a763ec.html'
     ),
     (
      Name: 'LowspeedStatus';
@@ -7143,6 +7255,14 @@ const
     (
      Name: 'SysComputeCalibValue';
      Value: 'group___command_module_functions_ga1d3daa068d5bb97a74bd00737219da3d.html'
+    ),
+    (
+     Name: 'GetMemoryInfo';
+     Value: 'group___command_module_functions_ga5a2a2017a422b66d7419af9eafb75ac7.html'
+    ),
+    (
+     Name: 'SysMemoryManager';
+     Value: 'group___command_module_functions_ga3d17a2c0f41de37508087b016a821433.html'
     ),
     (
      Name: 'Wait';
@@ -8237,6 +8357,10 @@ const
      Value: 'group___hi_technic_a_p_i_gabdb455bf56fa8e2d0c834eccf0e5b532.html'
     ),
     (
+     Name: 'SensorHTMagnet';
+     Value: 'group___hi_technic_a_p_i_ga0c7d81910084157f24be6f5a485e9401.html'
+    ),
+    (
      Name: 'SensorHTEOPD';
      Value: 'group___hi_technic_a_p_i_ga666fbc3dea3a90268ddd4be401bd32d3.html'
     ),
@@ -8247,6 +8371,10 @@ const
     (
      Name: 'SetSensorHTGyro';
      Value: 'group___hi_technic_a_p_i_gaea028b5e636bef58d384fe0f7f064027.html'
+    ),
+    (
+     Name: 'SetSensorHTMagnet';
+     Value: 'group___hi_technic_a_p_i_gac80c0b01120f05c7ee8c5282710e6ca2.html'
     ),
     (
      Name: 'SensorHTColorNum';
@@ -8327,6 +8455,14 @@ const
     (
      Name: 'ReadSensorHTIRSeeker2DC';
      Value: 'group___hi_technic_a_p_i_ga7aefe1c5216e6aab272eb4ba8b8ed0da.html'
+    ),
+    (
+     Name: 'ResetSensorHTAngle';
+     Value: 'group___hi_technic_a_p_i_ga6a4098c16a92e7915e51f6c8616d8c4d.html'
+    ),
+    (
+     Name: 'ReadSensorHTAngle';
+     Value: 'group___hi_technic_a_p_i_gafd97b81a5dc7ab5ac7a9a986b9aafdea.html'
     ),
     (
      Name: 'ReadSensorHTTouchMultiplexer';
@@ -9271,6 +9407,34 @@ const
     (
      Name: 'MSScoutUnmuteSound';
      Value: 'group___mind_sensors_a_p_i_gaffa127a4a3e3c555fb43f4b2fc9a3e3d.html'
+    ),
+    (
+     Name: 'RFIDInit';
+     Value: 'group___codatex_a_p_i_ga2a962f09e5423123f8dd6568b07db227.html'
+    ),
+    (
+     Name: 'RFIDMode';
+     Value: 'group___codatex_a_p_i_gaf09f5b8b421ee015141a69370558b669.html'
+    ),
+    (
+     Name: 'RFIDStatus';
+     Value: 'group___codatex_a_p_i_gafdc4a3023dfcde2d0a967c761c023201.html'
+    ),
+    (
+     Name: 'RFIDRead';
+     Value: 'group___codatex_a_p_i_ga8280fa6387acdbe597ce0befea14761d.html'
+    ),
+    (
+     Name: 'RFIDStop';
+     Value: 'group___codatex_a_p_i_ga5d44d1b5b775bc04467ff26aad5ba444.html'
+    ),
+    (
+     Name: 'RFIDReadSingle';
+     Value: 'group___codatex_a_p_i_gad43ea2fb600dc403b25bb57df066cd75.html'
+    ),
+    (
+     Name: 'RFIDReadContinuous';
+     Value: 'group___codatex_a_p_i_ga70e88437b71bbbb4b0fa8c5b0a994663.html'
     ),
     (
      Name: 'sqrt';

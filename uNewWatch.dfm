@@ -5,7 +5,7 @@ object frmNewWatch: TfrmNewWatch
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'Configurable Watch'
-  ClientHeight = 179
+  ClientHeight = 182
   ClientWidth = 512
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -14,6 +14,7 @@ object frmNewWatch: TfrmNewWatch
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = True
+  PopupMenu = menuPopup
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -213,6 +214,21 @@ object frmNewWatch: TfrmNewWatch
     Enabled = False
     OnTimer = Timer1Timer
     Left = 424
+    Top = 8
+  end
+  object menuPopup: TPopupMenu
+    Left = 260
+    Top = 8
+    object mniOpenSym: TMenuItem
+      Caption = 'L&oad symbol file ...'
+      ShortCut = 16463
+      OnClick = mniOpenSymClick
+    end
+  end
+  object dlgOpen: TOpenDialog
+    Filter = 'Symbol files (*.sym)|*.sym'
+    Title = 'Open Symbol File'
+    Left = 292
     Top = 8
   end
 end

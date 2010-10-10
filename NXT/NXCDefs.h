@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-06
- * \version 80
+ * \date 2010-10-07
+ * \version 81
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -297,6 +297,35 @@ inline void SetSensorLowspeed(const byte & port, bool bIsPowered = true) {
   SetSensorMode(port, SENSOR_MODE_RAW);
   ResetSensor(port);
 }
+
+/**
+ * Configure an ultrasonic sensor.
+ * Configure the sensor on the specified port as an ultrasonic sensor.
+ * \param port The port to configure. See \ref InPorts.
+ */
+inline void SetSensorUltrasonic(const byte & port) { SetSensorLowspeed(port); }
+
+/**
+ * Configure an EMeter sensor.
+ * Configure the sensor on the specified port as an EMeter sensor.
+ * \param port The port to configure. See \ref InPorts.
+ */
+inline void SetSensorEMeter(const byte & port) { SetSensorLowspeed(port); }
+
+/**
+ * Configure a temperature sensor.
+ * Configure the sensor on the specified port as a temperature sensor. Use this
+ * to setup the temperature sensor rather than \ref SetSensorLowspeed so that
+ * the sensor is properly configured in 12-bit conversion mode.
+ * \param port The port to configure. See \ref InPorts.
+ */
+inline void SetSensorTemperature(const byte & port) {
+  SetSensorLowspeed(port);
+  asm {
+    __MSWriteToRegister(port, LEGO_ADDR_TEMP, TEMP_REG_CONFIG, TEMP_RES_12BIT, __WDSC_LSStatus)
+  }
+}
+
 
 #if __FIRMWARE_VERSION > 107
 
@@ -3052,7 +3081,34 @@ inline char ReadSensorUSEx(const byte port, byte & values[]);
  * \return A status code indicating whether the read completed successfully or not.
  * See \ref CommLSReadType for possible result values.
  */
-inline char ReadSensorEMeter(const byte port, float &vIn, float &aIn, float &vOut, float &aOut, int &joules, float &wIn, float &wOut);
+inline char ReadSensorEMeter(const byte & port, float &vIn, float &aIn, float &vOut, float &aOut, int &joules, float &wIn, float &wOut);
+
+/**
+ * Configure LEGO Temperature sensor options.
+ * Set various LEGO Temperature sensor options.
+ *
+ * \param port The port to which the temperature sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param config The temperature sensor configuration settings.  See
+ * \ref TempI2CConstants for configuration constants that can be ORed or added
+ * together.
+ * \return A status code indicating whether the read completed successfully or not.
+ * See \ref CommLSReadType for possible Result values.
+ */
+inline char ConfigureTemperatureSensor(const byte & port, const byte & config);
+
+/**
+ * Read the LEGO Temperature sensor value.
+ * Return the temperature sensor value in degrees celcius. Since a
+ * temperature sensor is an I2C digital sensor its value cannot be read using
+ * the standard Sensor(n) value.
+ * The port must be configured as a temperature sensor port before using this
+ * function. Use \ref SetSensorTemperature to configure the port.
+ * \param port The port to which the temperature sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \return The temperature sensor value in degrees celcius.
+ */
+inline float SensorTemperature(const byte & port);
 
 /**
  * Get lowspeed status.
@@ -3599,6 +3655,13 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 #define ReadSensorUSEx(_port, _values) asm { __ReadSensorUSEx(_port, _values, __RETVAL__) }
 
 #define ReadSensorEMeter(_port, _vIn, _aIn, _vOut, _aOut, _joules, _wIn, _wOut) asm { __ReadSensorEMeter(_port, _vIn, _aIn, _vOut, _aOut, _joules, _wIn, _wOut, __RETVAL__) }
+
+#define ConfigureTemperatureSensor(_port, _config) asm { __TempSendCmd(_port, _config, __RETVAL__) }
+#if __FIRMWARE_VERSION > 107
+#define SensorTemperature(_port) asm { __ReadSensorTemperature(_port, __FLTRETVAL__) }
+#else
+#define SensorTemperature(_port) asm { __ReadSensorTemperature(_port, __RETVAL__) }
+#endif
 
 #define ReadI2CRegister(_port, _i2caddr, _reg, _out) asm { __MSReadValue(_port, _i2caddr, _reg, 1, _out, __RETVAL__) }
 #define WriteI2CRegister(_port, _i2caddr, _reg, _val) asm { __MSWriteToRegister(_port, _i2caddr, _reg, _val, __RETVAL__) }
@@ -8266,6 +8329,24 @@ inline int SensorHTGyro(const byte & port, int offset = 0) {
 }
 
 /**
+ * Read HiTechnic Magnet sensor.
+ * Read the HiTechnic Magnet sensor on the specified port. The offset value
+ * should be calculated by averaging several readings with an offset of zero
+ * while the sensor is perfectly still.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param offset The zero offset.
+ * \return The Magnet sensor reading.
+ */
+inline int SensorHTMagnet(const byte & port, int offset = 0) {
+  asm {
+    getin __RETVAL__, port, RawValue
+    sub __RETVAL__, __RETVAL__, 600
+    sub __RETVAL__, __RETVAL__, offset
+  }
+}
+
+/**
  * Read HiTechnic EOPD sensor.
  * Read the HiTechnic EOPD sensor on the specified port.
  *
@@ -8299,6 +8380,18 @@ inline void SetSensorHTEOPD(const byte & port, bool bStandard) {
  * \param port The sensor port. See \ref InPorts.
  */
 inline void SetSensorHTGyro(const byte & port) {
+  SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
+  SetSensorMode(port, SENSOR_MODE_RAW);
+  ResetSensor(port);
+}
+
+/**
+ * Set sensor as HiTechnic Magnet.
+ * Configure the sensor on the specified port as a HiTechnic Magnet sensor.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ */
+inline void SetSensorHTMagnet(const byte & port) {
   SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
   SetSensorMode(port, SENSOR_MODE_RAW);
   ResetSensor(port);
@@ -8589,6 +8682,33 @@ inline bool ReadSensorHTIRSeeker2AC(const byte port, byte & dir, byte & s1, byte
  * \return The function call result.
  */
 inline bool ReadSensorHTIRSeeker2DC(const byte port, byte & dir, byte & s1, byte & s3, byte & s5, byte & s7, byte & s9, byte & avg);
+
+/**
+ * Reset HiTechnic Angle sensor.
+ * Reset the HiTechnic Angle sensor on the specified
+ * port. The port must be configured as a Lowspeed port before using this
+ * function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param mode The Angle reset mode. See \ref HTAngleConstants.
+ * \return The function call result. \ref NO_ERR or \ref CommandCommErrors.
+ */
+inline char ResetSensorHTAngle(const byte port, const byte mode);
+
+/**
+ * Read HiTechnic Angle sensor values.
+ * Read values from the HiTechnic Angle sensor.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param Angle Current angle in degrees (0-359).
+ * \param AccAngle Accumulated angle in degrees (-2147483648 to 2147483647).
+ * \param RPM rotations per minute (-1000 to 1000).
+ * \return The function call result.
+ */
+inline bool ReadSensorHTAngle(const byte port, int & Angle, long & AccAngle, int & RPM);
 
 /**
  * Read HiTechnic touch multiplexer.
@@ -9363,8 +9483,11 @@ inline void HTScoutUnmuteSound(void);
 #define ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White) asm { __ReadSensorHTColor2Active(_port, _ColorNum, _Red, _Green, _Blue, _White, __RETVAL__) }
 #define ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue) asm { __ReadSensorHTNormalizedColor2Active(_port, _ColorIdx, _Red, _Green, _Blue, __RETVAL__) }
 #define ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White) asm { __ReadSensorHTRawColor2(_port, _Red, _Green, _Blue, _White, __RETVAL__) }
-#define ReadSensorHTIRReceiver(_port, _pfdata) asm { __ReadSensorHTIRReceiver(_port, _pfdata, __RETVAL__) } 
-#define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar) asm { __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, __RETVAL__) } 
+#define ReadSensorHTIRReceiver(_port, _pfdata) asm { __ReadSensorHTIRReceiver(_port, _pfdata, __RETVAL__) }
+#define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar) asm { __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, __RETVAL__) }
+#define ResetSensorHTAngle(_port, _mode) asm { __ResetSensorHTAngle(_port, _mode, __RETVAL__) }
+#define ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM) asm { __ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, __RETVAL__) }
+
 
 #define HTPowerFunctionCommand(_port, _channel, _outa, _outb) asm { __HTPFComboDirect(_port, _channel, _outa, _outb, __RETVAL__) }
 #define HTPFComboDirect(_port, _channel, _outa, _outb) asm { __HTPFComboDirect(_port, _channel, _outa, _outb, __RETVAL__) }
@@ -11202,6 +11325,106 @@ inline void MSScoutUnmuteSound(void);
 #endif
 
 /** @} */ // end of MindSensorsAPI group
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// Codatex API ///////////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup CodatexAPI
+ * @{
+ */
+
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * RFIDInit function.
+ * Initialize the Codatex RFID sensor.
+ *
+ * \param port The port to which the Codatex RFID sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \return The boolean function call result.
+ */
+inline bool RFIDInit(const byte & port);
+
+/**
+ * RFIDMode function.
+ * Configure the Codatex RFID sensor mode.
+ *
+ * \param port The port to which the Codatex RFID sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param mode The RFID sensor mode.  See the \ref CTRFIDModeConstants group.
+ * \return The boolean function call result.
+ */
+inline bool RFIDMode(const byte & port, const byte & mode);
+
+/**
+ * RFIDStatus function.
+ * Read the Codatex RFID sensor status.
+ *
+ * \param port The port to which the Codatex RFID sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \return The RFID sensor status.
+ */
+inline byte RFIDStatus(const byte & port);
+
+/**
+ * RFIDRead function.
+ * Read the Codatex RFID sensor value.
+ *
+ * \param port The port to which the Codatex RFID sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param output The five bytes of RFID data.
+ * \return The boolean function call result.
+ */
+inline bool RFIDRead(const byte & port, byte & output[]);
+
+/**
+ * RFIDStop function.
+ * Stop the Codatex RFID sensor.
+ *
+ * \param port The port to which the Codatex RFID sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \return The boolean function call result.
+ */
+inline bool RFIDStop(const byte & port);
+
+/**
+ * RFIDReadSingle function.
+ * Set the Codatex RFID sensor into single mode and read the RFID data.
+ *
+ * \param port The port to which the Codatex RFID sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param output The five bytes of RFID data.
+ * \return The boolean function call result.
+ */
+inline bool RFIDReadSingle(const byte & port, byte & output[]);
+
+/**
+ * RFIDReadContinuous function.
+ * Set the Codatex RFID sensor into continuous mode, if necessary, and read
+ * the RFID data.
+ *
+ * \param port The port to which the Codatex RFID sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param output The five bytes of RFID data.
+ * \return The boolean function call result.
+ */
+inline bool RFIDReadContinuous(const byte & port, byte & output[]);
+
+#else
+
+#define RFIDInit(_port) asm { __RFIDInit(_port, __RETVAL__) }
+#define RFIDMode(_port, _mode) asm { __RFIDMode(_port, _mode, __RETVAL__) }
+#define RFIDStatus(_port) asm { __RFIDStatus(_port, __RETVAL__) }
+#define RFIDRead(_port, _output) asm { __RFIDRead(_port, _output, __RETVAL__) }
+#define RFIDStop(_port) asm { __RFIDStop(_port, __RETVAL__) }
+#define RFIDReadSingle(_port, _output) asm { __RFIDReadSingle(_port, _output, __RETVAL__) }
+#define RFIDReadContinuous(_port, _output) asm { __RFIDReadContinuous(_port, _output, __RETVAL__) }
+
+#endif
+
+/** @} */ // end of CodatexAPI group
 
 /** @} */ // end of ThirdPartyDevices group
 
