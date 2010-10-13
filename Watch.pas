@@ -280,6 +280,7 @@ type
     procedure HandleOnGetVarInfoByName(Sender: TObject; const name: string;
       var offset, size, vartype: integer);
     function IndexToID(const idx : integer) : integer;
+    procedure SetVariableHints;
   public
     { Public declarations }
     procedure GraphDestroyed;
@@ -859,18 +860,8 @@ begin
         cb.Checked := False;
       fVarArray[i].Edit.Visible := bVis;
     end;
-    if IsNXT {and fWatchedProgram.Loaded(GetActiveEditorFilename)} then
-    begin
-      for i := Low(fVarArray) to High(fVarArray) do
-      begin
-        if fWatchedProgram.Dataspace.Count > i then
-        begin
-          tmp := fWatchedProgram.Dataspace[i].PrettyName;
-          fVarArray[i].CheckBox.Hint := tmp;
-          fVarArray[i].Edit.Hint     := tmp;
-        end;
-      end;
-    end;
+    if IsNXT then
+      SetVariableHints;
   end;
   CheckSensor4.Visible := IsNXT;
   ValueSensor4.Visible := IsNXT;
@@ -1198,7 +1189,26 @@ end;
 procedure TWatchForm.mniOpenSymClick(Sender: TObject);
 begin
   if dlgOpen.Execute then
+  begin
     ReadSymbolFile(fWatchedProgram, dlgOpen.Filename);
+    SetVariableHints;
+  end;
+end;
+
+procedure TWatchForm.SetVariableHints;
+var
+  i : integer;
+  tmp : string;
+begin
+  for i := Low(fVarArray) to High(fVarArray) do
+  begin
+    if fWatchedProgram.Dataspace.Count > i then
+    begin
+      tmp := fWatchedProgram.Dataspace[i].PrettyName;
+      fVarArray[i].CheckBox.Hint := tmp;
+      fVarArray[i].Edit.Hint     := tmp;
+    end;
+  end;
 end;
 
 {$IFDEF FPC}

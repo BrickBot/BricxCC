@@ -104,6 +104,7 @@ type
     procedure HandleOnGetVarInfoByName(Sender: TObject; const name: string;
       var offset, size, vartype: integer);
     procedure LoadWatchedProgram;
+    procedure RemoveAllWatches;
   public
     { Public declarations }
     procedure GraphDestroyed;
@@ -522,7 +523,7 @@ begin
 //  udValue.Max := Min(BrickWatchSources[LocalBrickType][source].VMax, 255);
   udValue.Min := BrickWatchSources[LocalBrickType][source].VMin;
   udValue.Max := BrickWatchSources[LocalBrickType][source].VMax;
-  if (source = 0) and IsNXT {and fWatchedProgram.Loaded(GetActiveEditorFilename)} then
+  if (source = 0) and IsNXT then
   begin
     udValue.Min := 0;
     udValue.Max := fWatchedProgram.Dataspace.Count - 1;
@@ -608,7 +609,7 @@ procedure TfrmNewWatch.AddVariableHint(sht: TTabsheet; i : integer);
 var
   tmp : string;
 begin
-  if IsNXT {and fWatchedProgram.Loaded(GetActiveEditorFilename)} then
+  if IsNXT then
   begin
     if fWatchedProgram.Dataspace.Count > i then
     begin
@@ -622,7 +623,7 @@ procedure TfrmNewWatch.PopulateVariables(cbo: TCombobox);
 var
   i : integer;
 begin
-  if IsNXT {and fWatchedProgram.Loaded(GetActiveEditorFilename)} then
+  if IsNXT then
   begin
     cbo.Items.Clear;
     for i := 0 to fWatchedProgram.Dataspace.Count - 1 do
@@ -679,8 +680,16 @@ procedure TfrmNewWatch.mniOpenSymClick(Sender: TObject);
 begin
   if dlgOpen.Execute then
   begin
+    RemoveAllWatches;
     ReadSymbolFile(fWatchedProgram, dlgOpen.Filename);
   end;
+end;
+
+procedure TfrmNewWatch.RemoveAllWatches;
+begin
+  while pagMain.ActivePage <> nil do
+    pagMain.ActivePage.Free;
+  UpdateControls;
 end;
 
 {$IFDEF FPC}
