@@ -1,0 +1,61 @@
+task main()
+{
+  SetSensorLowspeed(S1); // NXTLineLeader is an i2c device
+
+  char val;
+  // position sensor over white surface for 1 second
+  val = NXTLineLeaderCalibrateWhite(S1, MS_ADDR_LINELDR);
+
+  Wait(SEC_1);
+
+  // position sensor over black surface for 1 second
+  val = NXTLineLeaderCalibrateBlack(S1, MS_ADDR_LINELDR);
+
+  Wait(SEC_1);
+
+  // position sensor over line
+  byte steering, average, result;
+  steering = NXTLineLeaderSteering(S1, MS_ADDR_LINELDR);
+  average = NXTLineLeaderAverage(S1, MS_ADDR_LINELDR);
+  result = NXTLineLeaderResult(S1, MS_ADDR_LINELDR);
+
+  NumOut(0, LCD_LINE1, steering);
+  NumOut(0, LCD_LINE2, average);
+  NumOut(0, LCD_LINE3, result);
+
+  Wait(SEC_5);
+
+  // put the device to sleep
+  val = NXTLineLeaderPowerDown(S1, MS_ADDR_LINELDR);
+
+  Wait(SEC_5);
+
+  // wake up the device
+  val = NXTLineLeaderPowerUp(S1, MS_ADDR_LINELDR);
+
+  // invert colors (white line on black surface)
+  val = NXTLineLeaderInvert(S1, MS_ADDR_LINELDR);
+
+  Wait(SEC_5);
+ 
+  // reset back to default colors
+  val = NXTLineLeaderReset(S1, MS_ADDR_LINELDR);
+
+  Wait(SEC_5);
+
+  // take a snapshot of the surface below the device
+  val = NXTLineLeaderSnapshot(S1, MS_ADDR_LINELDR);
+
+  // set sensor configuration values to non-defaults
+  val = SetNXTLineLeaderSetpoint(S1, MS_ADDR_LINELDR, 10); // default is 45
+  // set PID values
+  val = SetNXTLineLeaderKpValue(S1, MS_ADDR_LINELDR, 100); // default is 25
+  val = SetNXTLineLeaderKiValue(S1, MS_ADDR_LINELDR, 10); // default is 0
+  val = SetNXTLineLeaderKdValue(S1, MS_ADDR_LINELDR, 50); // default is 8
+  // set PID factors
+  val = SetNXTLineLeaderKpFactor(S1, MS_ADDR_LINELDR, 40); // default is 32
+  val = SetNXTLineLeaderKiFactor(S1, MS_ADDR_LINELDR, 40); // default is 32
+  val = SetNXTLineLeaderKdFactor(S1, MS_ADDR_LINELDR, 40); // default is 32
+
+  Wait(SEC_5);
+}

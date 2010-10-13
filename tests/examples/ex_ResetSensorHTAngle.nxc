@@ -1,0 +1,6 @@
+task main ()
+{
+  SetSensorLowspeed(S4);
+  ResetSensorHTAngle(S4, HTANGLE_MODE_RESET);
+  Wait(50);
+}

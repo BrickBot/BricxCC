@@ -1,0 +1,28 @@
+task main()
+{
+  SetSensorLowspeed(S1); // NXTHID is an i2c device
+
+  char result;
+
+  // configure device in ASCII mode
+  result = NXTHIDAsciiMode(S1, MS_ADDR_NXTHID);
+
+  // load a character
+  result = NXTHIDLoadCharacter(S1, MS_ADDR_NXTHID, NXTHID_MOD_NONE, 'A');
+
+  // transmit the character
+  result = NXTHIDTransmit(S1, MS_ADDR_NXTSERVO);
+
+  Wait(SEC_5);
+
+  // configure device in Direct mode
+  result = NXTHIDDirectMode(S1, MS_ADDR_NXTHID);
+
+  // load a character
+  result = NXTHIDLoadCharacter(S1, MS_ADDR_NXTHID, NXTHID_MOD_LEFT_CTRL, 'd'); // ctrl+d
+
+  // transmit the character
+  result = NXTHIDTransmit(S1, MS_ADDR_NXTSERVO);
+
+  Wait(SEC_5);
+}

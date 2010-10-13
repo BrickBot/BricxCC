@@ -1,0 +1,14 @@
+task main()
+{
+  int angle, rpm;
+  long accangle;
+  SetSensorLowspeed(S4);
+  while (true) {
+    ClearScreen();
+    ReadSensorHTAngle(S4, angle, accangle, rpm);
+    NumOut(0, LCD_LINE1, angle);
+    NumOut(0, LCD_LINE2, accangle);
+    NumOut(0, LCD_LINE3, rpm);
+    Wait(MS_500);
+  }
+}
