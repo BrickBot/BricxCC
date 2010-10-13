@@ -1,0 +1,29 @@
+inline void TurnLeft() { }
+inline void TurnRight() { }
+inline void GoStraight() { }
+inline void SearchForObstacle() { }
+
+task main()
+{
+  SetSensorNXTSumoEyes(S1, true); // long range 
+  while(true)
+  {
+    char zone = SensorNXTSumoEyes(S1);
+    switch (zone) {
+      case NXTSE_ZONE_LEFT: 
+        TurnLeft();
+        break;
+      case NXTSE_ZONE_RIGHT: 
+        TurnRight();
+        break;
+      case NXTSE_ZONE_FRONT: 
+        GoStraight();
+        break;
+      default:
+        SearchForObstacle();
+        break;
+    }
+    NumOut(0, LCD_LINE1, SensorNXTSumoEyesRaw(S1));
+    Wait(MS_500);
+  }
+}

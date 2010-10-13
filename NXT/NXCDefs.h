@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-07
- * \version 81
+ * \date 2010-10-11
+ * \version 82
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -9616,6 +9616,25 @@ inline void SetSensorMSDROD(const byte & port, bool bActive) {
   ResetSensor(port);
 }
 
+
+/**
+ * Configure a mindsensors SumoEyes sensor.
+ * Configure the specified port for a mindsensors SumoEyes sensor.
+ *
+ * \param port The port to configure. See \ref InPorts.
+ * \param bLong A flag indicating whether to configure the sensor in long range
+ * or short range mode.
+ */
+inline void SetSensorNXTSumoEyes(const byte & port, bool bLong) {
+  if (bLong)
+    SetSensorType(port, SENSOR_TYPE_LIGHT_INACTIVE);
+  else
+    SetSensorType(port, SENSOR_TYPE_LIGHT_ACTIVE);
+  SetSensorMode(port, SENSOR_MODE_PERCENT);
+  ResetSensor(port);
+  Wait(275);
+}
+
 /**
  * Read mindsensors pressure sensor.
  * Read the pressure sensor value of the mindsensors pressure sensor on the
@@ -9630,6 +9649,31 @@ inline int SensorMSPressure(const byte & port) {
     sub __RETVAL__, 1024, __RETVAL__
     div __RETVAL__, __RETVAL__, 25
   }
+}
+
+/**
+ * Read mindsensors NXTSumoEyes obstacle zone.
+ * Return the Mindsensors NXTSumoEyes sensor obstacle zone value.  The port
+ * should be configured for the NXTSumoEyes device using \ref SetSensorNXTSumoEyes
+ * before calling this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The mindsensors NXTSumoEyes obstacle zone value.  See \ref NXTSumoEyesConstants.
+ */
+char SensorNXTSumoEyes(const byte & port) {
+  int value;
+  asm {
+    getin value, port, NormalizedValue
+    mul value, value, 100
+    div value, value, 1023
+  }
+  if (value > 30 && value < 36)
+    return NXTSE_ZONE_LEFT;
+  if (value > 63 && value < 69)
+    return NXTSE_ZONE_RIGHT;
+  if (value > 74 && value <= 80)
+    return NXTSE_ZONE_FRONT;
+  return NXTSE_ZONE_NONE;
 }
 
 #ifdef __DOXYGEN_DOCS
@@ -9652,6 +9696,17 @@ inline int SensorMSCompass(const byte & port, const byte i2caddr);
  * \return The mindsensors DROD value
  */
 inline int SensorMSDROD(const byte & port);
+
+/**
+ * Read mindsensors NXTSumoEyes raw value.
+ * Return the Mindsensors NXTSumoEyes raw sensor value. The port
+ * should be configured for the NXTSumoEyes device using \ref SetSensorNXTSumoEyes
+ * before calling this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The mindsensors NXTSumoEyes raw value
+ */
+inline int SensorNXTSumoEyesRaw(const byte & port);
 
 /**
  * Read mindsensors raw pressure value.
@@ -9730,19 +9785,54 @@ inline bool ReadSensorMSRTClock(const byte port, byte & sec, byte & min, byte & 
  * \param z The output z-axis tilt.
  * \return The function call result.
  */
-inline bool ReadSensorMSTilt(const byte port, const byte i2caddr, byte & x, byte & y, byte & z);
+inline bool ReadSensorMSTilt(const byte & port, const byte & i2caddr, byte & x, byte & y, byte & z);
+
+/**
+ * Send PFMate command.
+ * Send a PFMate command to the power function IR receiver.
+ * Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param channel The power function IR receiver channel. See the \ref PFMateChannelConstants group.
+ * \param motors The motor(s) to control. See the \ref PFMateMotorConstants group.
+ * \param cmdA The power function command for motor A.
+ * \param spdA The power function speed for motor A.
+ * \param cmdB The power function command for motor B.
+ * \param spdB The power function speed for motor B.
+ * \return The function call result.
+ */
+inline bool PFMateSend(const byte & port, const byte & i2caddr, const byte & channel, const byte & motors, const byte & cmdA, const byte & spdA, const byte & cmdB, const byte & spdB);
+
+/**
+ * Send raw PFMate command.
+ * Send a raw PFMate command to the power function IR receiver.
+ * Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param channel The power function IR receiver channel. See the \ref PFMateChannelConstants group.
+ * \param b1 Raw byte 1.
+ * \param b2 Raw byte 2.
+ * \return The function call result.
+ */
+inline bool PFMateSendRaw(const byte & port, const byte & i2caddr, const byte & channel, const byte & b1, const byte & b2);
 
 /**
  * Read a mindsensors device value.
- * Read a one or two byte value from a mindsensors sensor. The value must be
- * stored with the least signficant byte (LSB) first. Returns a boolean value
+ * Read a one, two, or four byte value from a mindsensors sensor. The value must be
+ * stored with the least signficant byte (LSB) first (i.e., little endian). Returns a boolean value
  * indicating whether or not the operation completed successfully. The port
  * must be configured as a Lowspeed port before using this function.
  *
  * \param port The sensor port. See \ref InPorts.
  * \param i2caddr The sensor I2C address. See sensor documentation for this value.
  * \param reg The device register to read.
- * \param numbytes The number of bytes to read. Only 1 or 2 byte values are supported.
+ * \param numbytes The number of bytes to read. Only 1, 2 or 4 byte values are supported.
  * \return The function call result.
  */
 inline int MSReadValue(const byte port, const byte i2caddr, const byte reg, const byte numbytes);
@@ -10088,6 +10178,622 @@ inline char PSPNxDigital(const byte & port, const byte & i2caddr);
  * \return The function call result.
  */
 inline char PSPNxAnalog(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTServo servo position value.
+ * Read the mindsensors NXTServo device's servo position value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param servo The servo number. See \ref NXTServoNumbers group.
+ * \return The specified servo's position value.
+ */
+inline unsigned int NXTServoPosition(const byte & port, const byte & i2caddr, const byte servo);
+
+/**
+ * Read NXTServo servo speed value.
+ * Read the mindsensors NXTServo device's servo speed value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param servo The servo number. See \ref NXTServoNumbers group.
+ * \return The specified servo's speed value.
+ */
+inline byte NXTServoSpeed(const byte & port, const byte & i2caddr, const byte servo);
+
+/**
+ * Read NXTServo battery voltage value.
+ * Read the mindsensors NXTServo device's battery voltage value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \result The battery level.
+ */
+inline byte NXTServoBatteryVoltage(const byte & port, const byte & i2caddr);
+
+/**
+ * Set NXTServo servo motor speed.
+ * Set the speed of a servo motor controlled by the NXTServo device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param servo The servo number. See \ref NXTServoNumbers group.
+ * \param speed The servo speed. (0..255)
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char SetNXTServoSpeed(const byte & port, const byte & i2caddr, const byte servo, const byte & speed);
+
+/**
+ * Set NXTServo servo motor quick position.
+ * Set the quick position of a servo motor controlled by the NXTServo device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param servo The servo number. See \ref NXTServoNumbers group.
+ * \param qpos The servo quick position. See \ref NXTServoQPos group.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char SetNXTServoQuickPosition(const byte & port, const byte & i2caddr, const byte servo, const byte & qpos);
+
+/**
+ * Set NXTServo servo motor position.
+ * Set the position of a servo motor controlled by the NXTServo device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param servo The servo number. See \ref NXTServoNumbers group.
+ * \param pos The servo position. See \ref NXTServoPos group.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char SetNXTServoPosition(const byte & port, const byte & i2caddr, const byte servo, const byte & pos);
+
+/**
+ * Reset NXTServo properties.
+ * Reset NXTServo device properties to factory defaults.
+ * Initial position = 1500.  Initial speed = 0. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char NXTServoReset(const byte & port, const byte & i2caddr);
+
+/**
+ * Halt NXTServo macro.
+ * Halt a macro executing on the NXTServo device. This command re-initializes
+ * the macro environment.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char NXTServoHaltMacro(const byte & port, const byte & i2caddr);
+
+/**
+ * Resume NXTServo macro.
+ * Resume a macro executing on the NXTServo device. This command resumes
+ * executing a macro where it was paused last, using the same environment.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char NXTServoResumeMacro(const byte & port, const byte & i2caddr);
+
+/**
+ * Pause NXTServo macro.
+ * Pause a macro executing on the NXTServo device. This command will pause the
+ * currently executing macro, and save the environment for subsequent resumption.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char NXTServoPauseMacro(const byte & port, const byte & i2caddr);
+
+/**
+ * Initialize NXTServo servo properties.
+ * Store the initial speed and position properties of the servo motor 'n'.
+ * Current speed and position values of the nth servo is read from the
+ * servo speed register and servo position register and written to permanent
+ * memory.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param servo The servo number. See \ref NXTServoNumbers group.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char NXTServoInit(const byte & port, const byte & i2caddr, const byte servo);
+
+/**
+ * Goto NXTServo macro address.
+ * Run the macro found at the specified EEPROM macro address. This command
+ * re-initializes the macro environment.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param macro The EEPROM macro address.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char NXTServoGotoMacroAddress(const byte & port, const byte & i2caddr, const byte & macro);
+
+/**
+ * Edit NXTServo macro.
+ * Put the NXTServo device into macro edit mode. This operation changes the
+ * I2C address of the device to 0x40.  Macros are written to EEPROM addresses
+ * between 0x21 and 0xFF. Use \ref NXTServoQuitEdit to return the device to
+ * its normal operation mode.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char NXTServoEditMacro(const byte & port, const byte & i2caddr);
+
+/**
+ * Quit NXTServo macro edit mode.
+ * Stop editing NXTServo device macro EEPROM memory. Use \ref NXTServoEditMacro
+ * to start editing a macro.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible result values.
+ */
+inline char NXTServoQuitEdit(const byte & port);
+
+/**
+ * Set NXTHID into ASCII data mode.
+ * Set the NXTHID device into ASCII data mode. Only printable characters can be
+ * transmitted in this mode. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTHIDAsciiMode(const byte & port, const byte & i2caddr);
+
+/**
+ * Set NXTHID into direct data mode.
+ * Set the NXTHID device into direct data mode. Any character can be transmitted
+ * while in this mode.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTHIDDirectMode(const byte & port, const byte & i2caddr);
+
+/**
+ * Transmit NXTHID character.
+ * Transmit a single character to a computer using the NXTHID device. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTHIDTransmit(const byte & port, const byte & i2caddr);
+
+/**
+ * Load NXTHID character.
+ * Load a character into the NXTHID device.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param modifier The key modifier. See the \ref NXTHIDModifiers group.
+ * \param character The character.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTHIDLoadCharacter(const byte & port, const byte & i2caddr, const byte & modifier, const byte & character);
+
+/**
+ * Reset NXTPowerMeter counters.
+ * Reset the NXTPowerMeter counters back to zero. The port
+ * must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTPowerMeterResetCounters(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter present current.
+ * Read the mindsensors NXTPowerMeter device's present current value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter present current.
+ */
+inline int NXTPowerMeterPresentCurrent(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter present voltage.
+ * Read the mindsensors NXTPowerMeter device's present voltage value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter present voltage.
+ */
+inline int NXTPowerMeterPresentVoltage(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter capacity used.
+ * Read the mindsensors NXTPowerMeter device's capacity used since the last reset command.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter capacity used value.
+ */
+inline int NXTPowerMeterCapacityUsed(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter present power.
+ * Read the mindsensors NXTPowerMeter device's present power value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter present power value.
+ */
+inline int NXTPowerMeterPresentPower(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter total power consumed.
+ * Read the mindsensors NXTPowerMeter device's total power consumed since the last reset command.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter total power consumed value.
+ */
+inline long NXTPowerMeterTotalPowerConsumed(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter maximum current.
+ * Read the mindsensors NXTPowerMeter device's maximum current value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter maximum current value.
+ */
+inline int NXTPowerMeterMaxCurrent(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter minimum current.
+ * Read the mindsensors NXTPowerMeter device's minimum current value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter minimum current value.
+ */
+inline int NXTPowerMeterMinCurrent(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter maximum voltage.
+ * Read the mindsensors NXTPowerMeter device's maximum voltage value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter maximum voltage value.
+ */
+inline int NXTPowerMeterMaxVoltage(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter minimum voltage.
+ * Read the mindsensors NXTPowerMeter device's minimum voltage value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter minimum voltage value.
+ */
+inline int NXTPowerMeterMinVoltage(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter elapsed time.
+ * Read the mindsensors NXTPowerMeter device's elapsed time since the last reset command.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter elapsed time value.
+ */
+inline long NXTPowerMeterElapsedTime(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTPowerMeter error count.
+ * Read the mindsensors NXTPowerMeter device's error count value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTPowerMeter error count value.
+ */
+inline int NXTPowerMeterErrorCount(const byte & port, const byte & i2caddr);
+
+/**
+ * Powerdown NXTLineLeader device.
+ * Put the NXTLineLeader to sleep so that it does not consume power when it is
+ * not required. The device wakes up on its own when any I2C communication
+ * happens or you can specifically wake it up by using the \ref NXTLineLeaderPowerUp
+ * command.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTLineLeaderPowerDown(const byte & port, const byte & i2caddr);
+
+/**
+ * Powerup NXTLineLeader device.
+ * Wake up the NXTLineLeader device so that it can be used. The device can be
+ * put to sleep using the \ref NXTLineLeaderPowerDown command.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTLineLeaderPowerUp(const byte & port, const byte & i2caddr);
+
+/**
+ * Invert NXTLineLeader colors.
+ * Invert color sensing so that the device can detect a white line on a
+ * black background.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTLineLeaderInvert(const byte & port, const byte & i2caddr);
+
+/**
+ * Reset NXTLineLeader color inversion.
+ * Reset the NXTLineLeader color detection back to its default state (black
+ * line on a white background).
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTLineLeaderReset(const byte & port, const byte & i2caddr);
+
+/**
+ * Take NXTLineLeader line snapshot.
+ * Takes a snapshot of the line under the sensor and tracks that position in
+ * subsequent tracking operations.  This function also will set color inversion
+ * if it sees a white line on a black background.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTLineLeaderSnapshot(const byte & port, const byte & i2caddr);
+
+/**
+ * Calibrate NXTLineLeader white color.
+ * Store calibration data for the white color.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTLineLeaderCalibrateWhite(const byte & port, const byte & i2caddr);
+
+/**
+ * Calibrate NXTLineLeader black color.
+ * Store calibration data for the black color.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char NXTLineLeaderCalibrateBlack(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTLineLeader steering.
+ * Read the mindsensors NXTLineLeader device's steering value. This is the power
+ * returned by the sensor to correct your course.  Add this value to your left
+ * motor and subtract it from your right motor.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTLineLeader steering value.
+ */
+inline char NXTLineLeaderSteering(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTLineLeader average.
+ * Read the mindsensors NXTLineLeader device's average value. The
+ * average is a weighted average of the bits set to 1 based on the position.
+ * The left most bit has a weight of 10, second bit has a weight of 20, and so
+ * forth. When all 8 sensors are over a black surface the average will be 45.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTLineLeader average value.
+ */
+inline char NXTLineLeaderAverage(const byte & port, const byte & i2caddr);
+
+/**
+ * Read NXTLineLeader result.
+ * Read the mindsensors NXTLineLeader device's result value. This is a single
+ * byte showing the 8 sensor's readings. Each bit corresponding to the sensor
+ * where the line is seen is set to 1, otherwise it is set to 0.
+ * When all 8 sensors are over a black surface the result will be 255 (b11111111).
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \return The NXTLineLeader result value.
+ */
+inline byte NXTLineLeaderResult(const byte & port, const byte & i2caddr);
+
+/**
+ * Write NXTLineLeader setpoint.
+ * Write a new setpoint value to the NXTLineLeader device. The Set Point is a
+ * value you can ask sensor to maintain the average to. The default value is
+ * 45, whereby the line is maintained in center of the sensor. If you need to
+ * maintain line towards left of the sensor, set the Set Point to
+ * a lower value (minimum: 10). If you need it to be towards on the right of the
+ * sensor, set it to higher value (maximum: 80). Set point is also useful while
+ * tracking an edge of dark and light areas.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param value The new setpoint value (10..80).
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char SetNXTLineLeaderSetpoint(const byte & port, const byte & i2caddr, const byte & value);
+
+/**
+ * Write NXTLineLeader Kp value.
+ * Write a Kp value to the NXTLineLeader device. This value divided by PID
+ * Factor for Kp is the Proportional value for the PID control. Suggested value
+ * is 25 with a divisor factor of 32 (which is also a factory default), start
+ * with this value, and tune it to meet your needs. Value ranges
+ * between 0 and 255.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param value The new Kp value (0..255).
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char SetNXTLineLeaderKpValue(const byte & port, const byte & i2caddr, const byte & value);
+
+/**
+ * Write NXTLineLeader Ki value.
+ * Write a Ki value to the NXTLineLeader device. This value divided by PID
+ * Factor for Ki is the Integral value for the PID control. Suggested value
+ * is 0 with a divisor factor of 32 (which is also a factory default), start
+ * with this value, and tune it to meet your needs. Value ranges
+ * between 0 and 255.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param value The new Ki value (0..255).
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char SetNXTLineLeaderKiValue(const byte & port, const byte & i2caddr, const byte & value);
+
+/**
+ * Write NXTLineLeader Kd value.
+ * Write a Kd value to the NXTLineLeader device. This value divided by PID
+ * Factor for Kd is the Derivative value for the PID control. Suggested value
+ * is 8 with a divisor factor of 32 (which is also a factory default), start
+ * with this value, and tune it to meet your needs. Value ranges
+ * between 0 and 255.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param value The new Kd value (0..255).
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char SetNXTLineLeaderKdValue(const byte & port, const byte & i2caddr, const byte & value);
+
+/**
+ * Write NXTLineLeader Kp factor.
+ * Write a Kp divisor factor to the NXTLineLeader device. Value ranges between
+ * 1 and 255. Change this value if you need more granularities in Kp value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param value The new Kp factor (1..255).
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char SetNXTLineLeaderKpFactor(const byte & port, const byte & i2caddr, const byte & value);
+
+/**
+ * Write NXTLineLeader Ki factor.
+ * Write a Ki divisor factor to the NXTLineLeader device. Value ranges between
+ * 1 and 255. Change this value if you need more granularities in Ki value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param value The new Ki factor (1..255).
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char SetNXTLineLeaderKiFactor(const byte & port, const byte & i2caddr, const byte & value);
+
+/**
+ * Write NXTLineLeader Kd factor.
+ * Write a Kd divisor factor to the NXTLineLeader device. Value ranges between
+ * 1 and 255. Change this value if you need more granularities in Kd value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param i2caddr The sensor I2C address. See sensor documentation for this value.
+ * \param value The new Kd factor (1..255).
+ * \return A status code indicating whether the operation completed successfully or not.
+ * See \ref CommLSCheckStatusType for possible Result values.
+ */
+inline char SetNXTLineLeaderKdFactor(const byte & port, const byte & i2caddr, const byte & value);
 
 /**
  * Configure NRLink in 2400 baud mode.
@@ -11159,13 +11865,14 @@ inline void MSScoutUnmuteSound(void);
 #else
 
 #define SensorMSDROD(_p) asm { getin __RETVAL__, _p, NormalizedValue }
+#define SensorNXTSumoEyesRaw(_p) asm { getin __RETVAL__, _p, NormalizedValue }
 #define SensorMSPressureRaw(_p) asm { getin __RETVAL__, _p, RawValue }
 #define SensorMSCompass(_port, _i2caddr) asm { ReadSensorMSCompass(_port, _i2caddr, __RETVAL__) }
 #define ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year) asm { __ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, __RETVAL__) }
 #define ReadSensorMSTilt(_port, _i2caddr, _x, _y, _z) asm { __ReadSensorMSTilt(_port, _i2caddr, _x, _y, _z, __RETVAL__) }
 #define ReadSensorMSAccel(_port, _i2caddr, _x, _y, _z) asm { __ReadSensorMSAccel(_port, _i2caddr, _x, _y, _z, __RETVAL__) }
-#define MSReadValue(_port, _i2caddr, _reg, _bytes) asm { __MSReadValue(_port, _i2caddr, _reg, _bytes, __RETVAL__, __TMPBYTE__) }
 
+#define MSReadValue(_port, _i2caddr, _reg, _bytes) asm { __MSReadValue(_port, _i2caddr, _reg, _bytes, __RETVAL__, __TMPBYTE__) }
 #define MSEnergize(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, MS_CMD_ENERGIZED, __RETVAL__) }
 #define MSDeenergize(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, MS_CMD_DEENERGIZED, __RETVAL__) }
 #define MSADPAOn(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, MS_CMD_ADPA_ON, __RETVAL__) }
@@ -11197,6 +11904,60 @@ inline void MSScoutUnmuteSound(void);
 #define ACCLNxYRange(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_Y_RANGE, 2, __RETVAL__, __TMPBYTE__) }
 #define ACCLNxZOffset(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_Z_OFFSET, 2, __RETVAL__, __TMPBYTE__) }
 #define ACCLNxZRange(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, ACCL_REG_Z_RANGE, 2, __RETVAL__, __TMPBYTE__) }
+
+#define PFMateSend(_port, _i2caddr, _channel, _motors, _cmdA, _spdA, _cmdB, _spdB) asm { __PFMateSend(_port, _i2caddr, _channel, _motors, _cmdA, _spdA, _cmdB, _spdB, __RETVAL__) }
+#define PFMateSendRaw(_port, _i2caddr, _channel, _b1, _b2) asm { __PFMateSendRaw(_port, _i2caddr, _channel, _b1, _b2, __RETVAL__) }
+
+#define NXTServoPosition(_port, _i2caddr, _servo) asm { __MSReadValue(_port, _i2caddr, NXTSERVO_REG_S1_POS+(_servo*2), 2, __RETVAL__, __TMPBYTE__) }
+#define NXTServoSpeed(_port, _i2caddr, _servo) asm { __MSReadValue(_port, _i2caddr, NXTSERVO_REG_S1_SPEED+_servo, 1, __RETVAL__, __TMPBYTE__) }
+#define NXTServoBatteryVoltage(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTSERVO_REG_VOLTAGE, 1, __RETVAL__, __TMPBYTE__) }
+#define SetNXTServoSpeed(_port, _i2caddr, _servo, _speed) asm { __MSWriteToRegister(_port, _i2caddr, NXTSERVO_REG_S1_SPEED+_servo, _speed, __RETVAL__) }
+#define SetNXTServoQuickPosition(_port, _i2caddr, _servo, _qpos) asm { __MSWriteToRegister(_port, _i2caddr, NXTSERVO_REG_S1_QPOS+_servo, _qpos, __RETVAL__) }
+#define SetNXTServoPosition(_port, _i2caddr, _servo, _pos) asm { __MSWriteLEIntToRegister(_port, _i2caddr, NXTSERVO_REG_S1_POS+(_servo*2), _pos, __RETVAL__) }
+#define NXTServoReset(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTSERVO_CMD_RESET, __RETVAL__) }
+#define NXTServoHaltMacro(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTSERVO_CMD_HALT, __RETVAL__) }
+#define NXTServoResumeMacro(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTSERVO_CMD_RESUME, __RETVAL__) }
+#define NXTServoPauseMacro(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTSERVO_CMD_PAUSE, __RETVAL__) }
+#define NXTServoInit(_port, _i2caddr, _servo) asm { __NXTServoInit(_port, _i2caddr, _servo, __RETVAL__) }
+#define NXTServoGotoMacroAddress(_port, _i2caddr, _macro) asm { __NXTServoGotoMacroAddress(_port, _i2caddr, _macro, __RETVAL__) }
+#define NXTServoEditMacro(_port, _i2caddr) asm { __NXTServoEditMacro(_port, _i2caddr, __RETVAL__) }
+#define NXTServoQuitEdit(_port) asm { __MSWriteToRegister(_port, MS_ADDR_NXTSERVO_EM, NXTSERVO_EM_REG_CMD, NXTSERVO_EM_CMD_QUIT, __RETVAL__) }
+
+#define NXTHIDAsciiMode(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTHID_CMD_ASCII, __RETVAL__) }
+#define NXTHIDDirectMode(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTHID_CMD_DIRECT, __RETVAL__) }
+#define NXTHIDTransmit(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTHID_CMD_TRANSMIT, __RETVAL__) }
+#define NXTHIDLoadCharacter(_port, _i2caddr, _modifier, _character) asm { __NXTHIDLoadCharacter(_port, _i2caddr, _modifier, _character, __RETVAL__) }
+
+#define NXTPowerMeterResetCounters(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTPM_CMD_RESET, __RETVAL__) }
+#define NXTPowerMeterPresentCurrent(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_CURRENT, 2, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterPresentVoltage(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_VOLTAGE, 2, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterCapacityUsed(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_CAPACITY, 2, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterPresentPower(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_POWER, 2, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterTotalPowerConsumed(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_POWER, 4, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterMaxCurrent(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_MAXCURRENT, 2, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterMinCurrent(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_MINCURRENT, 2, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterMaxVoltage(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_MAXVOLTAGE, 2, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterMinVoltage(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_MINVOLTAGE, 2, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterElapsedTime(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_TIME, 4, __RETVAL__, __TMPBYTE__) }
+#define NXTPowerMeterErrorCount(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTPM_REG_ERRORCOUNT, 2, __RETVAL__, __TMPBYTE__) }
+
+#define NXTLineLeaderSteering(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTLL_REG_STEERING, 1, __RETVAL__, __TMPBYTE__) }
+#define NXTLineLeaderAverage(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTLL_REG_AVERAGE, 1, __RETVAL__, __TMPBYTE__) }
+#define NXTLineLeaderResult(_port, _i2caddr) asm { __MSReadValue(_port, _i2caddr, NXTLL_REG_RESULT, 1, __RETVAL__, __TMPBYTE__) }
+#define NXTLineLeaderPowerDown(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTLL_CMD_POWERDOWN, __RETVAL__) }
+#define NXTLineLeaderPowerUp(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTLL_CMD_POWERUP, __RETVAL__) }
+#define NXTLineLeaderInvert(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTLL_CMD_INVERT, __RETVAL__) }
+#define NXTLineLeaderReset(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTLL_CMD_RESET, __RETVAL__) }
+#define NXTLineLeaderSnapshot(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTLL_CMD_SNAPSHOT, __RETVAL__) }
+#define NXTLineLeaderCalibrateWhite(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTLL_CMD_WHITE, __RETVAL__) }
+#define NXTLineLeaderCalibrateBlack(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, NXTLL_CMD_BLACK, __RETVAL__) }
+#define SetNXTLineLeaderSetpoint(_port, _i2caddr, _value) asm { __MSWriteToRegister(_port, _i2caddr, NXTLL_REG_SETPOINT, _value, __RETVAL__) }
+#define SetNXTLineLeaderKpValue(_port, _i2caddr, _value) asm { __MSWriteToRegister(_port, _i2caddr, NXTLL_REG_KP_VALUE, _value, __RETVAL__) }
+#define SetNXTLineLeaderKiValue(_port, _i2caddr, _value) asm { __MSWriteToRegister(_port, _i2caddr, NXTLL_REG_KI_VALUE, _value, __RETVAL__) }
+#define SetNXTLineLeaderKdValue(_port, _i2caddr, _value) asm { __MSWriteToRegister(_port, _i2caddr, NXTLL_REG_KD_VALUE, _value, __RETVAL__) }
+#define SetNXTLineLeaderKpFactor(_port, _i2caddr, _value) asm { __MSWriteToRegister(_port, _i2caddr, NXTLL_REG_KP_FACTOR, _value, __RETVAL__) }
+#define SetNXTLineLeaderKiFactor(_port, _i2caddr, _value) asm { __MSWriteToRegister(_port, _i2caddr, NXTLL_REG_KI_FACTOR, _value, __RETVAL__) }
+#define SetNXTLineLeaderKdFactor(_port, _i2caddr, _value) asm { __MSWriteToRegister(_port, _i2caddr, NXTLL_REG_KD_FACTOR, _value, __RETVAL__) }
 
 #define PSPNxDigital(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, PSP_CMD_DIGITAL, __RETVAL__) }
 #define PSPNxAnalog(_port, _i2caddr) asm { __I2CSendCmd(_port, _i2caddr, PSP_CMD_ANALOG, __RETVAL__) }

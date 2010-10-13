@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-08
- * \version 7
+ * \date 2010-10-11
+ * \version 8
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -5028,8 +5028,56 @@
  * \example ex_getmemoryinfo.nxc
  * This is an example of how to use the \ref GetMemoryInfo function.
  *
- */
-
+ * \example ex_HTGyroTest.nxc
+ * This is an example of how to use the \ref SetSensorHTGyro, \ref SensorHTGyro,
+ * \ref Wait, \ref TextOut, \ref NumOut, and \ref ButtonPressed functions.
+ *
+ * \example ex_NXTSumoEyes.nxc
+ * This is an example of how to use the \ref SetSensorNXTSumoEyes,
+ * \ref SensorNXTSumoEyes, \ref SensorNXTSumoEyesRaw, \ref NumOut, and
+ * \ref Wait functions.
+ *
+ * \example ex_PFMate.nxc
+ * This is an example of how to use the \ref PFMateSend, \ref PFMateSendRaw,
+ * \ref SetSensorLowspeed, and \ref Wait functions.
+ *
+ * \example ex_NXTServo.nxc
+ * This is an example of how to use the \ref NXTServoPosition,
+ * \ref NXTServoSpeed, \ref NXTServoBatteryVoltage, \ref SetNXTServoSpeed,
+ * \ref SetNXTServoQuickPosition, \ref SetNXTServoPosition,
+ * \ref NXTServoReset, \ref NXTServoHaltMacro, \ref NXTServoResumeMacro,
+ * \ref NXTServoPauseMacro, \ref NXTServoInit, \ref NXTServoGotoMacroAddress,
+ * \ref NXTServoEditMacro, \ref NXTServoQuitEdit, \ref SetSensorLowspeed,
+ * \ref NumOut, and \ref Wait functions.
+ *
+ * \example ex_NXTHID.nxc
+ * This is an example of how to use the \ref NXTHIDAsciiMode,
+ * \ref NXTHIDDirectMode, \ref NXTHIDTransmit, \ref NXTHIDLoadCharacter,
+ * \ref SetSensorLowspeed, and \ref Wait functions.
+ *
+ * \example ex_NXTPowerMeter.nxc
+ * This is an example of how to use the \ref NXTPowerMeterResetCounters,
+ * \ref NXTPowerMeterPresentCurrent, \ref NXTPowerMeterPresentVoltage,
+ * \ref NXTPowerMeterCapacityUsed, \ref NXTPowerMeterPresentPower,
+ * \ref NXTPowerMeterTotalPowerConsumed, \ref NXTPowerMeterMaxCurrent,
+ * \ref NXTPowerMeterMinCurrent, \ref NXTPowerMeterMaxVoltage,
+ * \ref NXTPowerMeterMinVoltage, \ref NXTPowerMeterElapsedTime,
+ * \ref NXTPowerMeterErrorCount, \ref SetSensorLowspeed, \ref NumOut,
+ * and \ref Wait functions.
+ *
+ * \example ex_NXTLineLeader.nxc
+ * This is an example of how to use the \ref NXTLineLeaderSteering,
+ * \ref NXTLineLeaderAverage, \ref NXTLineLeaderResult,
+ * \ref NXTLineLeaderPowerDown, \ref NXTLineLeaderPowerUp,
+ * \ref NXTLineLeaderInvert, \ref NXTLineLeaderReset,
+ * \ref NXTLineLeaderSnapshot, \ref NXTLineLeaderCalibrateWhite,
+ * \ref NXTLineLeaderCalibrateBlack, \ref SetNXTLineLeaderSetpoint,
+ * \ref SetNXTLineLeaderKpValue, \ref SetNXTLineLeaderKiValue,
+ * \ref SetNXTLineLeaderKpValue, \ref SetNXTLineLeaderKpFactor,
+ * \ref SetNXTLineLeaderKiFactor, \ref SetNXTLineLeaderKdFactor,
+ * \ref SetSensorLowspeed, \ref NumOut, and \ref Wait functions.
+ *
+*/
 
 #include "NXCDefs.h"
 

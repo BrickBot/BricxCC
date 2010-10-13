@@ -1,0 +1,58 @@
+task main()
+{
+  SetSensorLowspeed(S1); // NXTServo is an i2c device
+
+  // edit a macro
+  char result;
+  result = NXTServoEditMacro(S1, MS_ADDR_NXTSERVO);
+
+  // TODO: write bytes of macro data to the device
+
+  result = NXTServoQuitEdit(S1);
+
+  // run a macro at address 0x30
+  result = NXTServoGotoMacroAddress(S1, MS_ADDR_NXTSERVO, 0x30);
+  Wait(SEC_1);
+
+  // pause the macro
+  result = NXTServoPauseMacro(S1, MS_ADDR_NXTSERVO);
+  Wait(SEC_1);
+
+  // resume the macro
+  result = NXTServoResumeMacro(S1, MS_ADDR_NXTSERVO);
+  Wait(SEC_1);
+
+  // halt the macro
+  result = NXTServoHaltMacro(S1, MS_ADDR_NXTSERVO);
+
+  // set a non-default speed value for a servo (0 = full speed)
+  result = SetNXTServoSpeed(S1, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1, 10);
+
+  // set a non-default quick position value for a servo
+  result = SetNXTServoQuickPosition(S1, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1, NXTSERVO_QPOS_MIN);
+
+  // Wait a bit for the servo to reach its new position
+  Wait(SEC_5);
+
+  // set a non-default position value for a servo
+  result = SetNXTServoPosition(S1, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1, NXTSERVO_POS_CENTER);
+
+  // store these non-default values as the initial position for this servo
+  result = NXTServoInit(S1, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1);
+
+  // output the battery voltage
+  NumOut(0, LCD_LINE1, NXTServoBatteryVoltage(S1, MS_ADDR_NXTSERVO));
+
+  // output the current position
+  NumOut(0, LCD_LINE2, NXTServoPosition(S1, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1));
+
+  // output the current speed
+  NumOut(0, LCD_LINE3, NXTServoSpeed(S1, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1));
+
+  Wait(SEC_5);
+
+  // reset the device back to default speed/position (0/1500) settings for all servos
+  result = NXTServoReset(S1, MS_ADDR_NXTSERVO);
+
+  Wait(SEC_5);
+}

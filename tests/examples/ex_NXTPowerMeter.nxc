@@ -1,0 +1,28 @@
+task main()
+{
+  SetSensorLowspeed(S1); // NXTPowerMeter is an i2c device
+
+  char result;
+
+  // reset the counters
+  result = NXTPowerMeterResetCounters(S1, MS_ADDR_IVSENS);
+
+  // wait 10 seconds
+  Wait(SEC_10);
+
+  // output values
+
+  NumOut(0, LCD_LINE1, NXTPowerMeterPresentCurrent(S1, MS_ADDR_IVSENS));
+  NumOut(0, LCD_LINE2, NXTPowerMeterPresentVoltage(S1, MS_ADDR_IVSENS));
+  NumOut(0, LCD_LINE3, NXTPowerMeterCapacityUsed(S1, MS_ADDR_IVSENS));
+  NumOut(0, LCD_LINE4, NXTPowerMeterPresentPower(S1, MS_ADDR_IVSENS));
+  NumOut(0, LCD_LINE5, NXTPowerMeterTotalPowerConsumed(S1, MS_ADDR_IVSENS));
+  NumOut(0, LCD_LINE6, NXTPowerMeterMaxCurrent(S1, MS_ADDR_IVSENS));
+  NumOut(0, LCD_LINE7, NXTPowerMeterMinCurrent(S1, MS_ADDR_IVSENS));
+  Wait(SEC_5);
+  NumOut(0, LCD_LINE1, NXTPowerMeterMaxVoltage(S1, MS_ADDR_IVSENS));
+  NumOut(0, LCD_LINE2, NXTPowerMeterMinVoltage(S1, MS_ADDR_IVSENS));
+  NumOut(0, LCD_LINE3, NXTPowerMeterElapsedTime(S1, MS_ADDR_IVSENS));
+  NumOut(0, LCD_LINE4, NXTPowerMeterErrorCount(S1, MS_ADDR_IVSENS));
+  Wait(SEC_5);
+}

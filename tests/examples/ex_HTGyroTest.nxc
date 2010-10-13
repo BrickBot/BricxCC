@@ -1,0 +1,65 @@
+//=============================================================================
+// HiTechnic Gyro Test
+//
+#define GYRO   IN_1
+
+#define SAMPLESIZE 100
+
+task main()
+{
+  int i, y, d;
+  int v, offset;
+
+  float gyroAvg, gyroSum = 0;
+
+  int data[SAMPLESIZE];
+  int cSet[7];
+
+  SetSensorHTGyro(GYRO);
+
+  // Let user get finger off start button before starting sampling
+  Wait(1000);
+
+  for (i=0; i<SAMPLESIZE; i++) {
+    v = SensorHTGyro(GYRO);
+    data[i] = v;
+    gyroSum += v;
+    Wait(4);
+  }
+
+  // Display floating point gyro average
+  gyroAvg = gyroSum/SAMPLESIZE;
+  TextOut(0, LCD_LINE1, "Avg:     ");
+  NumOut(6*4, LCD_LINE1, gyroAvg);
+
+  // Round to nearest int
+  offset = gyroAvg+0.5;
+  
+  // Go through sample set and see how many are
+  // offset-3, offset-2, offset-1, offset, offset+1, offset+2, offset+3
+  for (i=0; i<SAMPLESIZE; i++) {
+    d = data[i] - offset;
+    if (d < -3) d = -3;
+    if (d > 3) d = 3;
+    d += 3;
+    cSet[d]++;
+  }
+  
+  // Display on the screen now many of each value was in the sample
+  y = LCD_LINE2;
+  for (i=0; i<7; i++) {
+    if (i==0)
+      TextOut(0, y, "<=   :");
+    else if (i==6)
+      TextOut(0, y, ">=   :" );
+    else
+      TextOut(0, y, "==   :");
+    NumOut(6*2, y, offset+i-3);
+    NumOut(6*6, y, cSet[i]);
+    
+    y-= 8;
+  }
+
+  // Keep display on screen until button pressed
+  until(ButtonPressed(BTNCENTER, false)) Wait(100);
+}

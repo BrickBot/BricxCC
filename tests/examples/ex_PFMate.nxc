@@ -1,0 +1,12 @@
+task main()
+{
+  SetSensorLowspeed(S1); // PFMate is an i2c device
+  // motor a forward full speed, motor b reverse full speed
+  bool result = PFMateSend(S1, MS_ADDR_PFMATE, PFMATE_CHANNEL_1, PFMATE_MOTORS_BOTH, PF_CMD_FWD, 7, PF_CMD_REV, 7); 
+  Wait(SEC_5);
+  byte b1, b2;
+  b1 = 0xFF;
+  b2 = 0x00;
+  result = PFMateSendRaw(S1, MS_ADDR_PFMATE, PFMATE_CHANNEL_1, b1, b2); 
+  Wait(SEC_5);
+}
