@@ -10,7 +10,7 @@ object frmNewWatch: TfrmNewWatch
   ClientHeight = 201
   ClientWidth = 539
   Font.Height = -11
-  Font.Name = 'MS Sans Serif'
+  PopupMenu = menuPopup
   OnActivate = FormActivate
   OnClose = FormClose
   OnCreate = FormCreate
@@ -218,5 +218,20 @@ object frmNewWatch: TfrmNewWatch
     OnTimer = Timer1Timer
     left = 424
     top = 8
+  end
+  object menuPopup: TPopupMenu
+    Left = 260
+    Top = 8
+    object mniOpenSym: TMenuItem
+      Caption = 'L&oad symbol file ...'
+      ShortCut = 16463
+      OnClick = mniOpenSymClick
+    end
+  end
+  object dlgOpen: TOpenDialog
+    Filter = 'Symbol files (*.sym)|*.sym'
+    Title = 'Open Symbol File'
+    Left = 292
+    Top = 8
   end
 end
