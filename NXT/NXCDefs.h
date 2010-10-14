@@ -126,7 +126,7 @@
  */
 #define _SENSOR_CFG(_type,_mode)	(((_type)<<8)+(_mode))                               /*!< Macro for defining \ref SetSensor combined type and mode constants */
 #define SENSOR_TOUCH		_SENSOR_CFG(SENSOR_TYPE_TOUCH, SENSOR_MODE_BOOL)             /*!< Touch sensor in boolean mode */
-#define SENSOR_LIGHT		_SENSOR_CFG(SENSOR_TYPE_LIGHT, SENSOR_MODE_PERCENT)          /*!< Light sensor in percent mode */
+#define SENSOR_LIGHT		_SENSOR_CFG(SENSOR_TYPE_LIGHT, SENSOR_MODE_PERCENT)          /*!< RCX Light sensor in percent mode */
 #define SENSOR_ROTATION		_SENSOR_CFG(SENSOR_TYPE_ROTATION, SENSOR_MODE_ROTATION)      /*!< RCX rotation sensor in rotation mode */
 #define SENSOR_CELSIUS		_SENSOR_CFG(SENSOR_TYPE_TEMPERATURE, SENSOR_MODE_CELSIUS)    /*!< RCX temperature sensor in celcius mode */
 #define SENSOR_FAHRENHEIT	_SENSOR_CFG(SENSOR_TYPE_TEMPERATURE, SENSOR_MODE_FAHRENHEIT) /*!< RCX temperature sensor in fahrenheit mode */
@@ -6245,14 +6245,38 @@ inline byte HSSpeed(void);
  */
 inline byte HSState(void);
 
+#if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
+
 /**
  * Get hi-speed port mode.
  * This method returns the value of the hi-speed port mode.
  * \return The hi-speed port mode (data bits, stop bits, parity).  See
  * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
  * \ref CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline int HSMode(void);
+
+/**
+ * Get Bluetooth data mode.
+ * This method returns the value of the Bluetooth data mode.
+ * \return The Bluetooth data mode.  See \ref CommDataModeConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+inline int BTDataMode(void);
+
+/**
+ * Get hi-speed port datamode.
+ * This method returns the value of the hi-speed port data mode.
+ * \return The hi-speed port data mode.  See \ref CommDataModeConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+inline int HSDataMode(void);
+
+#endif
 
 /**
  * Get USB state.
@@ -6443,14 +6467,38 @@ inline void SetHSSpeed(const byte hsSpeed);
  */
 inline void SetHSState(const byte hsState);
 
+#if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
+
 /**
  * Set hi-speed port mode.
  * This method sets the value of the hi-speed port mode.
  * \param hsMode The hi-speed port mode (data bits, stop bits, parity).  See
  * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
  * \ref CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void SetHSMode(const unsigned int hsMode);
+
+/**
+ * Set Bluetooth data mode.
+ * This method sets the value of the Bluetooth data mode.
+ * \param dataMode The Bluetooth data mode.  See \ref CommDataModeConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+inline void SetBTDataMode(const byte dataMode);
+
+/**
+ * Set hi-speed port data mode.
+ * This method sets the value of the hi-speed port data mode.
+ * \param dataMode The hi-speed port data mode.  See \ref CommDataModeConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+inline void SetHSDataMode(const byte dataMode);
+
+#endif
 
 /**
  * Set USB state.
@@ -6722,7 +6770,12 @@ inline void SetBTDeviceNameCount(byte count);
 #define HSSpeed() asm { GetHSSpeed(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define HSState() asm { GetHSState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define USBState() asm { GetUSBState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+
+#if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 #define HSMode() asm { GetHSMode(__TMPWORD__) __RETURN__ __TMPWORD__ }
+#define BTDataMode() asm { GetBTDataMode(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define HSDataMode() asm { GetHSDataMode(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#endif
 
 #define SetBTDeviceName(_p, _str) asm { __setBTDeviceName(_p, _str) }
 #define SetBTDeviceAddress(_p, _btaddr) asm { __setBTDeviceAddress(_p, _btaddr) }
@@ -6785,7 +6838,12 @@ inline void SetBTDeviceNameCount(byte count);
 #define SetHSSpeed(_n) asm { __setHSSpeed(_n) }
 #define SetHSState(_n) asm { __setHSState(_n) }
 #define SetUSBState(_n) asm { __setUSBState(_n) }
+
+#if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 #define SetHSMode(_n) asm { __setHSMode(_n) }
+#define SetBTDataMode(_n) asm { __setBTDataMode(_n) }
+#define SetHSDataMode(_n) asm { __setHSDataMode(_n) }
+#endif
 
 #define SysMessageWrite(_args) asm { \
   compchktype _args, MessageWriteType \
