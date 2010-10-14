@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2488;
+  uNXCHTMLTopicsSize = 2682;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -3545,6 +3545,26 @@ const
      Value: 'group___comm_bt_state_constants_ga8e9cf140e52658b4ce9e3cc5199191b5.html'
     ),
     (
+     Name: 'DATA_MODE_NXT';
+     Value: 'group___comm_data_mode_constants_gab6e0de6c5aa64bb363c9c69b73917958.html'
+    ),
+    (
+     Name: 'DATA_MODE_GPS';
+     Value: 'group___comm_data_mode_constants_gaf72ae86adb80283f92650cb634ec74d2.html'
+    ),
+    (
+     Name: 'DATA_MODE_RAW';
+     Value: 'group___comm_data_mode_constants_gaeeec1dd3127ec56730eb7f1d2a9dbcdc.html'
+    ),
+    (
+     Name: 'DATA_MODE_MASK';
+     Value: 'group___comm_data_mode_constants_ga395fe7349791be7cf743a2c63221fdea.html'
+    ),
+    (
+     Name: 'DATA_MODE_UPDATE';
+     Value: 'group___comm_data_mode_constants_gaa2c36f88935ef6bec1e1b1456ee9aa8b.html'
+    ),
+    (
      Name: 'BT_BRICK_VISIBILITY';
      Value: 'group___comm_bt_state_status_constants_ga1bdea7ce03cdd2c2dcbeed9925c178bb.html'
     ),
@@ -4047,6 +4067,14 @@ const
     (
      Name: 'CommOffsetHsMode';
      Value: 'group___comm_i_o_m_a_p_ga4b28fbc0d6b8de8fa092b05a3160ba4c.html'
+    ),
+    (
+     Name: 'CommOffsetBtDataMode';
+     Value: 'group___comm_i_o_m_a_p_ga59656e3cb25c2b0dcb92a0f967ec7c4e.html'
+    ),
+    (
+     Name: 'CommOffsetHsDataMode';
+     Value: 'group___comm_i_o_m_a_p_ga45843124709e2ee206503753c9966fa0.html'
     ),
     (
      Name: 'RCX_OUT_A';
@@ -4897,6 +4925,10 @@ const
      Value: 'group___p_f_cmd_constants_gabb5c3a931694750197d559339fc1d81b.html'
     ),
     (
+     Name: 'PF_CMD_FLOAT';
+     Value: 'group___p_f_cmd_constants_gaf6bd25144b71485cbd1042c6e9825583.html'
+    ),
+    (
      Name: 'PF_CMD_FWD';
      Value: 'group___p_f_cmd_constants_gad4dc6e9ac10070f09f815d33e61b4aaf.html'
     ),
@@ -5397,6 +5429,10 @@ const
      Value: 'group___mind_sensors_constants_ga87e40fae609239e7de3d0bc34c6fe9b0.html'
     ),
     (
+     Name: 'MS_ADDR_NXTSERVO_EM';
+     Value: 'group___mind_sensors_constants_gaf18de4e25af4060e7326924de071da5d.html'
+    ),
+    (
      Name: 'MS_ADDR_PFMATE';
      Value: 'group___mind_sensors_constants_ga63ab6ca23a0e84220cdd965b63255d43.html'
     ),
@@ -5703,6 +5739,522 @@ const
     (
      Name: 'ACCL_SENSITIVITY_LEVEL_4';
      Value: 'group___m_s_a_c_c_l_nx_s_level_ga587b1074c4da94a77fe9acb8a844f1d0.html'
+    ),
+    (
+     Name: 'PFMATE_REG_CMD';
+     Value: 'group___p_f_mate_constants_ga2d93e4757ee25902b0b02b70264e9b01.html'
+    ),
+    (
+     Name: 'PFMATE_REG_CHANNEL';
+     Value: 'group___p_f_mate_constants_gab03eea433a628449572288c69b1cd796.html'
+    ),
+    (
+     Name: 'PFMATE_REG_MOTORS';
+     Value: 'group___p_f_mate_constants_ga89fa31b2f05e97759e4d5d7ef80ea6db.html'
+    ),
+    (
+     Name: 'PFMATE_REG_A_CMD';
+     Value: 'group___p_f_mate_constants_ga4e5f39c463d33afbaadd578c1ab32374.html'
+    ),
+    (
+     Name: 'PFMATE_REG_A_SPEED';
+     Value: 'group___p_f_mate_constants_ga093f624cd3c2467b6dd5299989293ccd.html'
+    ),
+    (
+     Name: 'PFMATE_REG_B_CMD';
+     Value: 'group___p_f_mate_constants_ga46e3c8587624f5f7873571fc2378f766.html'
+    ),
+    (
+     Name: 'PFMATE_REG_B_SPEED';
+     Value: 'group___p_f_mate_constants_ga71b5c2a4b3f6a6174c0b8bf61ef31b62.html'
+    ),
+    (
+     Name: 'PFMATE_CMD_GO';
+     Value: 'group___p_f_mate_constants_gad591f4fe750ad78d2e32881fb7c4a8d7.html'
+    ),
+    (
+     Name: 'PFMATE_CMD_RAW';
+     Value: 'group___p_f_mate_constants_ga7b2f7a6cc67db262f7c6b71981ba66c7.html'
+    ),
+    (
+     Name: 'PFMATE_MOTORS_BOTH';
+     Value: 'group___p_f_mate_motor_constants_ga3d8086b2e9e2c174f3d681eaebc417df.html'
+    ),
+    (
+     Name: 'PFMATE_MOTORS_A';
+     Value: 'group___p_f_mate_motor_constants_gaa68b2f3f986d4d0efd3bc2e5890caa06.html'
+    ),
+    (
+     Name: 'PFMATE_MOTORS_B';
+     Value: 'group___p_f_mate_motor_constants_ga7c0a0967e176e300cdee409969d14a88.html'
+    ),
+    (
+     Name: 'PFMATE_CHANNEL_1';
+     Value: 'group___p_f_mate_channel_constants_ga200dd5516757729a2294072d6ac1595f.html'
+    ),
+    (
+     Name: 'PFMATE_CHANNEL_2';
+     Value: 'group___p_f_mate_channel_constants_ga32ae5dde62a21ab55ff6e06635bc28ff.html'
+    ),
+    (
+     Name: 'PFMATE_CHANNEL_3';
+     Value: 'group___p_f_mate_channel_constants_ga5b8b97dddc1bbe68dbff009f7e025634.html'
+    ),
+    (
+     Name: 'PFMATE_CHANNEL_4';
+     Value: 'group___p_f_mate_channel_constants_gabb2032002dcf2123b541b415d7a455f7.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_VOLTAGE';
+     Value: 'group___n_x_t_servo_registers_ga287bda9bb376fc4a8d614618c4245afd.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_CMD';
+     Value: 'group___n_x_t_servo_registers_ga6b03e903167c9e43596c35434b220b62.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S1_POS';
+     Value: 'group___n_x_t_servo_registers_ga3390792ce2e319b6c336152e3f0d4718.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S2_POS';
+     Value: 'group___n_x_t_servo_registers_ga60e107234e9f0809cffd69e947df6917.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S3_POS';
+     Value: 'group___n_x_t_servo_registers_ga8f16047b7e21adffe04e1580bf19953b.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S4_POS';
+     Value: 'group___n_x_t_servo_registers_ga6965e231288da30677d41923a46adc59.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S5_POS';
+     Value: 'group___n_x_t_servo_registers_ga7e123c79eef62f13097ba8136535a064.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S6_POS';
+     Value: 'group___n_x_t_servo_registers_gad708a2afd6617bdbf12c1de58f462dac.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S7_POS';
+     Value: 'group___n_x_t_servo_registers_ga11480dcfc13d383d5bc4214bd07de697.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S8_POS';
+     Value: 'group___n_x_t_servo_registers_ga80da5a0c8ce915cef87713044e3057dd.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S1_SPEED';
+     Value: 'group___n_x_t_servo_registers_gad3d788f80c8f78080058f629cd8128bf.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S2_SPEED';
+     Value: 'group___n_x_t_servo_registers_gac75cf2fa27c154db37583f46b449a7ed.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S3_SPEED';
+     Value: 'group___n_x_t_servo_registers_gaa88607f776bb89944b67adcc95b8d090.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S4_SPEED';
+     Value: 'group___n_x_t_servo_registers_ga5da5852b620dac4ef71cf3fff55f23d6.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S5_SPEED';
+     Value: 'group___n_x_t_servo_registers_ga7701fe1dd310c06ff3879fb42f70f08b.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S6_SPEED';
+     Value: 'group___n_x_t_servo_registers_gab2ff74483bfe03830e2b951a2577de2c.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S7_SPEED';
+     Value: 'group___n_x_t_servo_registers_ga9fc5f1cfd451c04d8593895ca2ae090a.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S8_SPEED';
+     Value: 'group___n_x_t_servo_registers_gad76e7737fa6c6f0e957d10a9fbf2b6f9.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S1_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga24ba0f078299671b66a99755134da690.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S2_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga566172cdce99bdc5640e787d2281b7c3.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S3_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga820b566fb17e83db083e9391aab6d3cd.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S4_QPOS';
+     Value: 'group___n_x_t_servo_registers_gac0d604cc04665cd5b281fbf445d67ae7.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S5_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga8473401c00badfa7d1d85522afcb5578.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S6_QPOS';
+     Value: 'group___n_x_t_servo_registers_gaac006f43f7c56e57734c06e042079f4c.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S7_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga22ce61c0e3ea41f27d7e537a560cc991.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S8_QPOS';
+     Value: 'group___n_x_t_servo_registers_gaf0f8857c863a85f58460a5356802bd83.html'
+    ),
+    (
+     Name: 'NXTSERVO_EM_REG_CMD';
+     Value: 'group___n_x_t_servo_registers_gaa83276220566201e2b8b465b155ae40f.html'
+    ),
+    (
+     Name: 'NXTSERVO_EM_REG_EEPROM_START';
+     Value: 'group___n_x_t_servo_registers_gae913bc597f057f3305146d14d2c53c11.html'
+    ),
+    (
+     Name: 'NXTSERVO_EM_REG_EEPROM_END';
+     Value: 'group___n_x_t_servo_registers_ga0846b1e87396008ae7c12f9bc70ae654.html'
+    ),
+    (
+     Name: 'NXTSERVO_POS_CENTER';
+     Value: 'group___n_x_t_servo_pos_ga96108e99d9a89f006fe91b985ec4f40e.html'
+    ),
+    (
+     Name: 'NXTSERVO_POS_MIN';
+     Value: 'group___n_x_t_servo_pos_ga206b839672b273a1924828ba85b4a067.html'
+    ),
+    (
+     Name: 'NXTSERVO_POS_MAX';
+     Value: 'group___n_x_t_servo_pos_gaaea20332e499a2cefda806c49dd422e6.html'
+    ),
+    (
+     Name: 'NXTSERVO_QPOS_CENTER';
+     Value: 'group___n_x_t_servo_q_pos_gaa7744a9d2d070e52fa1d12fdf202f611.html'
+    ),
+    (
+     Name: 'NXTSERVO_QPOS_MIN';
+     Value: 'group___n_x_t_servo_q_pos_ga254bc7338798fff9e239755e2ab88730.html'
+    ),
+    (
+     Name: 'NXTSERVO_QPOS_MAX';
+     Value: 'group___n_x_t_servo_q_pos_ga27690f7996fcabdf99270d2cf12fe5f5.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_1';
+     Value: 'group___n_x_t_servo_numbers_ga28f3c8b6640f21ca30ae2193529d71a4.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_2';
+     Value: 'group___n_x_t_servo_numbers_ga2e30ae52ca02ccfbf97540dd03409a8c.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_3';
+     Value: 'group___n_x_t_servo_numbers_ga502a5befe23ddfef3c88ae3c502747d2.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_4';
+     Value: 'group___n_x_t_servo_numbers_ga0108ac5b87b11b0fc22e7d0c4a20fee6.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_5';
+     Value: 'group___n_x_t_servo_numbers_ga9dd3d10492f87c11101955a524123994.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_6';
+     Value: 'group___n_x_t_servo_numbers_ga27b56e65c1ebc749622b2e4e980218c2.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_7';
+     Value: 'group___n_x_t_servo_numbers_gaa97196c0d4af6fb6205c52e11dc28952.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_8';
+     Value: 'group___n_x_t_servo_numbers_ga42d0bec1151b124fdd4e6181ed0cb502.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_INIT';
+     Value: 'group___n_x_t_servo_commands_ga2633d1e3c6809a35b10eebc7c112b534.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_RESET';
+     Value: 'group___n_x_t_servo_commands_ga0b7410596cd7f3e8830f206393497dec.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_HALT';
+     Value: 'group___n_x_t_servo_commands_ga1515ca535f65e13da8d48eae0ce7352a.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_RESUME';
+     Value: 'group___n_x_t_servo_commands_ga8fe50901f2f5b9a94eee57297971d648.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_GOTO';
+     Value: 'group___n_x_t_servo_commands_gab2bf2fff9e43022ee008eb44a6292973.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_PAUSE';
+     Value: 'group___n_x_t_servo_commands_gad0af90fbcff93ebf537215e0fb55ddee.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_EDIT1';
+     Value: 'group___n_x_t_servo_commands_ga5eef977a9ae25a76a7338ed2d67af5ea.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_EDIT2';
+     Value: 'group___n_x_t_servo_commands_ga19ed328ae27c95f16a74a0fcc1584f1e.html'
+    ),
+    (
+     Name: 'NXTSERVO_EM_CMD_QUIT';
+     Value: 'group___n_x_t_servo_commands_ga8127aeaf42188b4891d58e5ea218b8b0.html'
+    ),
+    (
+     Name: 'NXTHID_REG_CMD';
+     Value: 'group___n_x_t_h_i_d_registers_gaf3f882435a24a8e6b3b582f1d5600151.html'
+    ),
+    (
+     Name: 'NXTHID_REG_MODIFIER';
+     Value: 'group___n_x_t_h_i_d_registers_gaf66167418ef2d38068b4fb38d6f35671.html'
+    ),
+    (
+     Name: 'NXTHID_REG_DATA';
+     Value: 'group___n_x_t_h_i_d_registers_gaf49dcc2d29264aa614f24b9f00e60ea4.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_NONE';
+     Value: 'group___n_x_t_h_i_d_modifiers_gad12cbaf14463ae4efa05cac66129e198.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_LEFT_CTRL';
+     Value: 'group___n_x_t_h_i_d_modifiers_gab03597010e5e6d60ff937592931c9c90.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_LEFT_SHIFT';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga5f52ca6c188fa64fd7063773cba9bc1a.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_LEFT_ALT';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga2fc46b5f6840601fa68c8aae2254e6b0.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_LEFT_GUI';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga88ddf932d123408d432f42541d9f3ee2.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_RIGHT_CTRL';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga9032bd4c435601d27f67cc7413f74952.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_RIGHT_SHIFT';
+     Value: 'group___n_x_t_h_i_d_modifiers_gadee77c6ef5c2d0998ab3b94ff1f14ccf.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_RIGHT_ALT';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga703f342ce6bbec1a3fadbcf403e725c2.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_RIGHT_GUI';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga8aa3032a1cb47c43673b9d515190b8e8.html'
+    ),
+    (
+     Name: 'NXTHID_CMD_ASCII';
+     Value: 'group___n_x_t_h_i_d_commands_gab39891754361ab622625900317d7d232.html'
+    ),
+    (
+     Name: 'NXTHID_CMD_DIRECT';
+     Value: 'group___n_x_t_h_i_d_commands_ga30c9e1f05d842d41513eb4267e76f12e.html'
+    ),
+    (
+     Name: 'NXTHID_CMD_TRANSMIT';
+     Value: 'group___n_x_t_h_i_d_commands_gaf17b4b6cc5ba7bf20b2999084ade461e.html'
+    ),
+    (
+     Name: 'NXTPM_REG_CMD';
+     Value: 'group___n_x_t_power_meter_registers_ga732fa24e725593a449e0734b2920d23f.html'
+    ),
+    (
+     Name: 'NXTPM_REG_CURRENT';
+     Value: 'group___n_x_t_power_meter_registers_ga6e50c64055444b8f647be166f46442a8.html'
+    ),
+    (
+     Name: 'NXTPM_REG_VOLTAGE';
+     Value: 'group___n_x_t_power_meter_registers_ga99634dba77f573195d61b4890b66b34b.html'
+    ),
+    (
+     Name: 'NXTPM_REG_CAPACITY';
+     Value: 'group___n_x_t_power_meter_registers_gaa315ef2e1fe7819f2fcc20f17a8bd761.html'
+    ),
+    (
+     Name: 'NXTPM_REG_POWER';
+     Value: 'group___n_x_t_power_meter_registers_ga963e72a523adab6ef622adc6854f486f.html'
+    ),
+    (
+     Name: 'NXTPM_REG_TOTALPOWER';
+     Value: 'group___n_x_t_power_meter_registers_ga82ab42d6c27c251b72f1712a934c2c42.html'
+    ),
+    (
+     Name: 'NXTPM_REG_MAXCURRENT';
+     Value: 'group___n_x_t_power_meter_registers_ga98ad39c8bf7ff9baf306f2e1775bcd62.html'
+    ),
+    (
+     Name: 'NXTPM_REG_MINCURRENT';
+     Value: 'group___n_x_t_power_meter_registers_ga1bac59c4e72c23bc0e3a1391c0b7c270.html'
+    ),
+    (
+     Name: 'NXTPM_REG_MAXVOLTAGE';
+     Value: 'group___n_x_t_power_meter_registers_gac6e167c164f60b786bf3002027a780a5.html'
+    ),
+    (
+     Name: 'NXTPM_REG_MINVOLTAGE';
+     Value: 'group___n_x_t_power_meter_registers_gaf219965f9c0c2c91986e6b4ed60a4e31.html'
+    ),
+    (
+     Name: 'NXTPM_REG_TIME';
+     Value: 'group___n_x_t_power_meter_registers_ga1dac4fced36e1faa7d34b4f875067c67.html'
+    ),
+    (
+     Name: 'NXTPM_REG_USERGAIN';
+     Value: 'group___n_x_t_power_meter_registers_ga262e0ca6366cf2df66d492cd43f516c9.html'
+    ),
+    (
+     Name: 'NXTPM_REG_GAIN';
+     Value: 'group___n_x_t_power_meter_registers_gadc30f4f7cd67d0c224f72f7130c1ccd8.html'
+    ),
+    (
+     Name: 'NXTPM_REG_ERRORCOUNT';
+     Value: 'group___n_x_t_power_meter_registers_ga37b15d380dfde43dd7468ea9a8d310d0.html'
+    ),
+    (
+     Name: 'NXTPM_CMD_RESET';
+     Value: 'group___n_x_t_power_meter_commands_ga1f553aa2320905b5a4ad58ad116f9474.html'
+    ),
+    (
+     Name: 'NXTSE_ZONE_NONE';
+     Value: 'group___n_x_t_sumo_eyes_constants_gae94563ef1ecffd7dc46c109f6ffbee7e.html'
+    ),
+    (
+     Name: 'NXTSE_ZONE_FRONT';
+     Value: 'group___n_x_t_sumo_eyes_constants_ga627bcf8bbca51748ea951cc952fe53a1.html'
+    ),
+    (
+     Name: 'NXTSE_ZONE_LEFT';
+     Value: 'group___n_x_t_sumo_eyes_constants_gadf1e95c567847ba1d37b33b21a46eb51.html'
+    ),
+    (
+     Name: 'NXTSE_ZONE_RIGHT';
+     Value: 'group___n_x_t_sumo_eyes_constants_gaba18b35bba915186ccd95462ca5b1f78.html'
+    ),
+    (
+     Name: 'NXTLL_REG_CMD';
+     Value: 'group___n_x_t_line_leader_registers_gaf1b83cd1c4dea97b04c68323884810d2.html'
+    ),
+    (
+     Name: 'NXTLL_REG_STEERING';
+     Value: 'group___n_x_t_line_leader_registers_gaa060bb1f3ee54da02d7d83b4c93fa198.html'
+    ),
+    (
+     Name: 'NXTLL_REG_AVERAGE';
+     Value: 'group___n_x_t_line_leader_registers_gaa12f3096cfa20cf3bc87f52ac96d6064.html'
+    ),
+    (
+     Name: 'NXTLL_REG_RESULT';
+     Value: 'group___n_x_t_line_leader_registers_gad07a707d78a061529dcf1262c557962b.html'
+    ),
+    (
+     Name: 'NXTLL_REG_SETPOINT';
+     Value: 'group___n_x_t_line_leader_registers_ga7271c1d56d87fc0371b06cdbc0c0335d.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KP_VALUE';
+     Value: 'group___n_x_t_line_leader_registers_gac041b929daed4da9899520fb7462bd5c.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KI_VALUE';
+     Value: 'group___n_x_t_line_leader_registers_gab1f0b4e93abaacdbd5606372f2511abd.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KD_VALUE';
+     Value: 'group___n_x_t_line_leader_registers_ga457ad2bf94f21ec81082903776b5fb2b.html'
+    ),
+    (
+     Name: 'NXTLL_REG_CALIBRATED';
+     Value: 'group___n_x_t_line_leader_registers_ga7823527faae7ffa98f5c34e6b88095c6.html'
+    ),
+    (
+     Name: 'NXTLL_REG_WHITELIMITS';
+     Value: 'group___n_x_t_line_leader_registers_gab8c340ed1df9fb00968926a1ade36fc2.html'
+    ),
+    (
+     Name: 'NXTLL_REG_BLACKLIMITS';
+     Value: 'group___n_x_t_line_leader_registers_ga45a8397768404d1620dd4bc385b26439.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KP_FACTOR';
+     Value: 'group___n_x_t_line_leader_registers_ga5d3ca5bca1c8804e9f517c712f70e5d2.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KI_FACTOR';
+     Value: 'group___n_x_t_line_leader_registers_ga4ec90b2428450543210e0d1ae33f2aad.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KD_FACTOR';
+     Value: 'group___n_x_t_line_leader_registers_ga58d786c2b73476e1d64ffa000b803b95.html'
+    ),
+    (
+     Name: 'NXTLL_REG_WHITEDATA';
+     Value: 'group___n_x_t_line_leader_registers_ga7b97c59ee0d1adaa85570407a44272be.html'
+    ),
+    (
+     Name: 'NXTLL_REG_BLACKDATA';
+     Value: 'group___n_x_t_line_leader_registers_ga358aab0257eeb2251ffa450202053d3e.html'
+    ),
+    (
+     Name: 'NXTLL_REG_RAWVOLTAGE';
+     Value: 'group___n_x_t_line_leader_registers_gac08c56847666ea0cc42077a77285a323.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_USA';
+     Value: 'group___n_x_t_line_leader_commands_ga8f0a411fed71a8b02091f2e492bc3839.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_BLACK';
+     Value: 'group___n_x_t_line_leader_commands_gaddb44c9d49fcbda4f87fec05acdf9760.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_POWERDOWN';
+     Value: 'group___n_x_t_line_leader_commands_gaa587016e0a7df82add8c121f4aff2a6f.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_EUROPEAN';
+     Value: 'group___n_x_t_line_leader_commands_ga3b31aeac50d8f46cd941ada19e3ef7c7.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_INVERT';
+     Value: 'group___n_x_t_line_leader_commands_ga05232b42ebc9ee401726ea86cf68a88d.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_POWERUP';
+     Value: 'group___n_x_t_line_leader_commands_ga19fe19cc80c4caf5472bc19a897eba06.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_RESET';
+     Value: 'group___n_x_t_line_leader_commands_ga0641237242ecc2b7ad2b40e769dce2e0.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_SNAPSHOT';
+     Value: 'group___n_x_t_line_leader_commands_ga8e5a5d945df03dceb5585ee288140bfe.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_UNIVERSAL';
+     Value: 'group___n_x_t_line_leader_commands_ga127b045ebe4c4338f87e99bef0a0168f.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_WHITE';
+     Value: 'group___n_x_t_line_leader_commands_ga831a8f649ba0bd3187e76656944780b6.html'
     ),
     (
      Name: 'RFID_MODE_STOP';
@@ -7845,6 +8397,14 @@ const
      Value: 'group___comm_module_functions_ga1225d66a464ad788be40f93d8d526b66.html'
     ),
     (
+     Name: 'BTDataMode';
+     Value: 'group___comm_module_functions_gaa10c8e649787c11d9430c0e9b868f1c3.html'
+    ),
+    (
+     Name: 'HSDataMode';
+     Value: 'group___comm_module_functions_ga7f935b92a9ce9b322c7d3d34453609d7.html'
+    ),
+    (
      Name: 'USBState';
      Value: 'group___comm_module_functions_gae7579412c21a9ae26b4f36e86929fd11.html'
     ),
@@ -7947,6 +8507,14 @@ const
     (
      Name: 'SetHSMode';
      Value: 'group___comm_module_functions_ga3a2e446dc3cfd9445b0ddc237b9d7a41.html'
+    ),
+    (
+     Name: 'SetBTDataMode';
+     Value: 'group___comm_module_functions_ga2ca1be634f8b0ddd70995700a43abdea.html'
+    ),
+    (
+     Name: 'SetHSDataMode';
+     Value: 'group___comm_module_functions_gac5bbcbb8cf05419b7800cee328bbb769.html'
     ),
     (
      Name: 'SetUSBState';
@@ -8801,8 +9369,16 @@ const
      Value: 'group___mind_sensors_a_p_i_ga993ab384a7353851c077d81191c34581.html'
     ),
     (
+     Name: 'SetSensorNXTSumoEyes';
+     Value: 'group___mind_sensors_a_p_i_ga1d642480e31a4f0ca74ab73c22db81db.html'
+    ),
+    (
      Name: 'SensorMSPressure';
      Value: 'group___mind_sensors_a_p_i_ga6b50d16038277c477abac03df8a17983.html'
+    ),
+    (
+     Name: 'SensorNXTSumoEyes';
+     Value: 'group___mind_sensors_a_p_i_ga91eab754daed00c1455527924f185516.html'
     ),
     (
      Name: 'SensorMSCompass';
@@ -8811,6 +9387,10 @@ const
     (
      Name: 'SensorMSDROD';
      Value: 'group___mind_sensors_a_p_i_gacb172fcc9e6707d7ee159760212dff59.html'
+    ),
+    (
+     Name: 'SensorNXTSumoEyesRaw';
+     Value: 'group___mind_sensors_a_p_i_ga43b01ad9143d954b44f14cdd820ecf3f.html'
     ),
     (
      Name: 'SensorMSPressureRaw';
@@ -8830,7 +9410,15 @@ const
     ),
     (
      Name: 'ReadSensorMSTilt';
-     Value: 'group___mind_sensors_a_p_i_ga499f159b9c6078f6877dd20c3990d64b.html'
+     Value: 'group___mind_sensors_a_p_i_gaf3ba4928f305c19e58c6183986df7a38.html'
+    ),
+    (
+     Name: 'PFMateSend';
+     Value: 'group___mind_sensors_a_p_i_gab55a9de36288285f8376f08736fd3ffc.html'
+    ),
+    (
+     Name: 'PFMateSendRaw';
+     Value: 'group___mind_sensors_a_p_i_ga737ceb463f15f7a0cc6b59061b697a18.html'
     ),
     (
      Name: 'MSReadValue';
@@ -8959,6 +9547,194 @@ const
     (
      Name: 'PSPNxAnalog';
      Value: 'group___mind_sensors_a_p_i_ga5b3b1c572eb60382dae6c9178a76c8c6.html'
+    ),
+    (
+     Name: 'NXTServoPosition';
+     Value: 'group___mind_sensors_a_p_i_ga6ed5f76c165421dce3c338d90c44b90f.html'
+    ),
+    (
+     Name: 'NXTServoSpeed';
+     Value: 'group___mind_sensors_a_p_i_ga372fcb08f46bf1bcff01e9182b8be2e6.html'
+    ),
+    (
+     Name: 'NXTServoBatteryVoltage';
+     Value: 'group___mind_sensors_a_p_i_ga05a5a0396a45a8159168da061a2b4040.html'
+    ),
+    (
+     Name: 'SetNXTServoSpeed';
+     Value: 'group___mind_sensors_a_p_i_ga56bbe9a41513bea3dc7b26643b39beba.html'
+    ),
+    (
+     Name: 'SetNXTServoQuickPosition';
+     Value: 'group___mind_sensors_a_p_i_ga47e7943546faa67c9f6fe76d76871b4b.html'
+    ),
+    (
+     Name: 'SetNXTServoPosition';
+     Value: 'group___mind_sensors_a_p_i_ga580f1b8e3d606976fd74639b8ae7fb7e.html'
+    ),
+    (
+     Name: 'NXTServoReset';
+     Value: 'group___mind_sensors_a_p_i_gabe8d459b7ece54e5d97229f95a227822.html'
+    ),
+    (
+     Name: 'NXTServoHaltMacro';
+     Value: 'group___mind_sensors_a_p_i_gad197062f168033c8dad5bc7aa7927388.html'
+    ),
+    (
+     Name: 'NXTServoResumeMacro';
+     Value: 'group___mind_sensors_a_p_i_gad98e618feef42b79e46fb881b18f0128.html'
+    ),
+    (
+     Name: 'NXTServoPauseMacro';
+     Value: 'group___mind_sensors_a_p_i_ga06e2a94ccc82c1e16bbd4e2cdea0acff.html'
+    ),
+    (
+     Name: 'NXTServoInit';
+     Value: 'group___mind_sensors_a_p_i_ga0da05e5fa1be1c0d29e0144f3bb97205.html'
+    ),
+    (
+     Name: 'NXTServoGotoMacroAddress';
+     Value: 'group___mind_sensors_a_p_i_ga81c55dff0778b7dd6f11f25d68a8dd81.html'
+    ),
+    (
+     Name: 'NXTServoEditMacro';
+     Value: 'group___mind_sensors_a_p_i_ga90290bc4f5c3928a42812625ab84f450.html'
+    ),
+    (
+     Name: 'NXTServoQuitEdit';
+     Value: 'group___mind_sensors_a_p_i_ga09487a1fcbf80d0684c1020ec47a1794.html'
+    ),
+    (
+     Name: 'NXTHIDAsciiMode';
+     Value: 'group___mind_sensors_a_p_i_ga2b3d16b76dd669df0dee735ef72595ce.html'
+    ),
+    (
+     Name: 'NXTHIDDirectMode';
+     Value: 'group___mind_sensors_a_p_i_ga6e99a95197287d9e774ee8fa1688e0e3.html'
+    ),
+    (
+     Name: 'NXTHIDTransmit';
+     Value: 'group___mind_sensors_a_p_i_ga8eeb3d157131734b3e12b5f004244ce8.html'
+    ),
+    (
+     Name: 'NXTHIDLoadCharacter';
+     Value: 'group___mind_sensors_a_p_i_ga251d11a1e716805b9aa6be9e06b2e8d2.html'
+    ),
+    (
+     Name: 'NXTPowerMeterResetCounters';
+     Value: 'group___mind_sensors_a_p_i_ga997a8ad061e78d6519edee472a7797f6.html'
+    ),
+    (
+     Name: 'NXTPowerMeterPresentCurrent';
+     Value: 'group___mind_sensors_a_p_i_ga020cdd3c22c825b7e0e9ef05540df4cc.html'
+    ),
+    (
+     Name: 'NXTPowerMeterPresentVoltage';
+     Value: 'group___mind_sensors_a_p_i_gafb18d33bc35011baef361ff4aa3aeaaf.html'
+    ),
+    (
+     Name: 'NXTPowerMeterCapacityUsed';
+     Value: 'group___mind_sensors_a_p_i_ga65343ee215381ec0e2975c22b86ed38f.html'
+    ),
+    (
+     Name: 'NXTPowerMeterPresentPower';
+     Value: 'group___mind_sensors_a_p_i_gaf0941dc49c8f131e495f025236534209.html'
+    ),
+    (
+     Name: 'NXTPowerMeterTotalPowerConsumed';
+     Value: 'group___mind_sensors_a_p_i_ga1f64adae71faed68aa2648789c13934a.html'
+    ),
+    (
+     Name: 'NXTPowerMeterMaxCurrent';
+     Value: 'group___mind_sensors_a_p_i_ga69cbe8e4589bdf8ae66211d3c6941adb.html'
+    ),
+    (
+     Name: 'NXTPowerMeterMinCurrent';
+     Value: 'group___mind_sensors_a_p_i_ga1d047c1703b53bf64acb60c67069a37a.html'
+    ),
+    (
+     Name: 'NXTPowerMeterMaxVoltage';
+     Value: 'group___mind_sensors_a_p_i_ga265391878adbb6458c7aeec7c4f46a05.html'
+    ),
+    (
+     Name: 'NXTPowerMeterMinVoltage';
+     Value: 'group___mind_sensors_a_p_i_ga8a7c01195c040139d6f350c55fc2c9e3.html'
+    ),
+    (
+     Name: 'NXTPowerMeterElapsedTime';
+     Value: 'group___mind_sensors_a_p_i_ga1d41fe6baa48f7e4603613252072ad61.html'
+    ),
+    (
+     Name: 'NXTPowerMeterErrorCount';
+     Value: 'group___mind_sensors_a_p_i_ga34e38f013383371acf6a8d2d2567539e.html'
+    ),
+    (
+     Name: 'NXTLineLeaderPowerDown';
+     Value: 'group___mind_sensors_a_p_i_ga9d3f4c054dbb5c3ddea23b425669b474.html'
+    ),
+    (
+     Name: 'NXTLineLeaderPowerUp';
+     Value: 'group___mind_sensors_a_p_i_ga6db36414bf38a9abcb8f7b441586dc77.html'
+    ),
+    (
+     Name: 'NXTLineLeaderInvert';
+     Value: 'group___mind_sensors_a_p_i_gaf4e1753f179a1afa9845bb89b7b2e19e.html'
+    ),
+    (
+     Name: 'NXTLineLeaderReset';
+     Value: 'group___mind_sensors_a_p_i_ga5956afe257fda5892f217ea86abbaa00.html'
+    ),
+    (
+     Name: 'NXTLineLeaderSnapshot';
+     Value: 'group___mind_sensors_a_p_i_ga9e6849bc6af2c37cb61c643e6d04eb57.html'
+    ),
+    (
+     Name: 'NXTLineLeaderCalibrateWhite';
+     Value: 'group___mind_sensors_a_p_i_ga27917c0c4dd9aa7a2ed3c00b3e147201.html'
+    ),
+    (
+     Name: 'NXTLineLeaderCalibrateBlack';
+     Value: 'group___mind_sensors_a_p_i_ga1fc953e4eb1803afa996639ff586fc2a.html'
+    ),
+    (
+     Name: 'NXTLineLeaderSteering';
+     Value: 'group___mind_sensors_a_p_i_ga19e2190acd94e51909ca3ff7e1371b32.html'
+    ),
+    (
+     Name: 'NXTLineLeaderAverage';
+     Value: 'group___mind_sensors_a_p_i_gae6465863ab6db7fe02c13f04919df177.html'
+    ),
+    (
+     Name: 'NXTLineLeaderResult';
+     Value: 'group___mind_sensors_a_p_i_ga1dcdfd1f52ea66fdcadaa709251d91e0.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderSetpoint';
+     Value: 'group___mind_sensors_a_p_i_ga7c449f01adcb63ead4689407fdfa0142.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKpValue';
+     Value: 'group___mind_sensors_a_p_i_gabe6f5ccb37714b17e20b302e356a2491.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKiValue';
+     Value: 'group___mind_sensors_a_p_i_ga1b392245b70856e55d747d7f968d1ce7.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKdValue';
+     Value: 'group___mind_sensors_a_p_i_ga16f5dbc670beb167d7a5e2faa195c754.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKpFactor';
+     Value: 'group___mind_sensors_a_p_i_ga60e975ecf422d68c3d1a36e62a21867b.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKiFactor';
+     Value: 'group___mind_sensors_a_p_i_gae97171cb45e5e52c215e5f2187183268.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKdFactor';
+     Value: 'group___mind_sensors_a_p_i_gab7237837fe66c26f379e2ae54082cb83.html'
     ),
     (
      Name: 'NRLink2400';

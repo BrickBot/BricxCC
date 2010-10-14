@@ -5080,6 +5080,22 @@
  * \example ex_DataMode.nxc
  * This is an example of how to use the \ref HSDataMode, \ref BTDataMode,
  * \ref SetHSDataMode, \ref SetBTDataMode, \ref TextOut, and \ref Wait functions.
+ *
+ * \example ex_LowLevelModuleRoutines.nxc
+ * This is an example of how to use the \ref SetIOMapBytes, \ref SetIOMapValue,
+ * \ref GetIOMapBytes, \ref GetIOMapValue, \ref GetLowSpeedModuleBytes,
+ * \ref GetDisplayModuleBytes, \ref GetCommModuleBytes, \ref GetCommandModuleBytes,
+ * \ref SetLowSpeedModuleBytes, \ref SetDisplayModuleBytes, \ref SetCommModuleBytes,
+ * \ref SetCommandModuleBytes, ref SetIOMapBytesByID, \ref SetIOMapValueByID,
+ * \ref GetIOMapBytesByID, \ref GetIOMapValueByID, \ref SetCommandModuleValue,
+ * \ref SetIOCtrlModuleValue, \ref SetLoaderModuleValue, \ref SetUIModuleValue,
+ * \ref SetSoundModuleValue, \ref SetButtonModuleValue, \ref SetInputModuleValue,
+ * \ref SetOutputModuleValue, \ref SetLowSpeedModuleValue, \ref SetDisplayModuleValue,
+ * \ref SetCommModuleValue, \ref GetCommandModuleValue, \ref GetIOCtrlModuleValue,
+ * \ref GetLoaderModuleValue, \ref GetUIModuleValue, \ref GetSoundModuleValue,
+ * \ref GetButtonModuleValue, \ref GetInputModuleValue, \ref GetOutputModuleValue,
+ * \ref GetLowSpeedModuleValue, \ref GetDisplayModuleValue, \ref GetCommModuleValue,
+ *
 */
 
 #include "NXCDefs.h"

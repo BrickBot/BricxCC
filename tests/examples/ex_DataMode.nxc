@@ -1,0 +1,33 @@
+task main()
+{
+  string DataModeNames[3] = {"NXT", "GPS", "RAW"};
+
+  byte dm;
+
+  // hi-speed data mode
+  dm = HSDataMode();
+  TextOut( 0, LCD_LINE1, "HSDataMode: ");
+  TextOut(80, LCD_LINE1, DataModeNames[dm]);
+
+  // bluetooth data mode
+  dm = BTDataMode();
+  TextOut( 0, LCD_LINE2, "BTDataMode: ");
+  TextOut(80, LCD_LINE2, DataModeNames[dm]);
+
+  // change hi-speed port to NXT mode
+  SetHSDataMode(DATA_MODE_NXT);
+
+  // change Bluetooth to GPS mode
+  SetBTDataMode(DATA_MODE_GPS);
+
+  dm = HSDataMode();
+  TextOut( 0, LCD_LINE4, "HSDataMode: ");
+  TextOut(80, LCD_LINE4, DataModeNames[dm]);
+
+  dm = BTDataMode();
+  TextOut( 0, LCD_LINE5, "BTDataMode: ");
+  TextOut(80, LCD_LINE5, DataModeNames[dm]);
+
+  Wait(SEC_5);
+
+}
