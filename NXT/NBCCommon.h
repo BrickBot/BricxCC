@@ -1845,6 +1845,17 @@
 #define BT_ARM_DATA_MODE        2 /*!< BtState constant bluetooth data mode */
 /** @} */  // end of CommBtStateConstants group
 
+/** @defgroup CommDataModeConstants Data mode constants
+ * Constants related to the bluetooth and hi-speed data modes.
+ * @{
+ */
+#define DATA_MODE_NXT    0x00 /*!< Use NXT data mode */
+#define DATA_MODE_GPS    0x01 /*!< Use GPS data mode */
+#define DATA_MODE_RAW    0x02 /*!< Use RAW data mode */
+#define DATA_MODE_MASK   0x07 /*!< A mask for the data mode bits. */
+#define DATA_MODE_UPDATE 0x08 /*!< Indicates that the data mode has been changed. */
+/** @} */  // end of CommDataModeConstants group
+
 /** @defgroup CommBtStateStatusConstants Bluetooth state status constants
  * Constants related to the bluetooth state status.
  * @{
@@ -2069,11 +2080,11 @@
 #define CommOffsetUsbInBufBuf        1685 /*!< Offset to Usb input buffer data (64 bytes) */
 #define CommOffsetUsbInBufInPtr      1749 /*!< Offset to Usb input buffer front pointer (1 byte) */
 #define CommOffsetUsbInBufOutPtr     1750 /*!< Offset to Usb input buffer back pointer (1 byte) */
-//  USBBUF         UsbOutBuf;
+//  USBBUF         UsbOutBuf; (68 bytes)
 #define CommOffsetUsbOutBufBuf       1753 /*!< Offset to Usb output buffer data (64 bytes) */
 #define CommOffsetUsbOutBufInPtr     1817 /*!< Offset to Usb output buffer front pointer (1 byte) */
 #define CommOffsetUsbOutBufOutPtr    1818 /*!< Offset to Usb output buffer back pointer (1 byte) */
-//  USBBUF         UsbPollBuf;
+//  USBBUF         UsbPollBuf; (68 bytes)
 #define CommOffsetUsbPollBufBuf      1821 /*!< Offset to Usb Poll buffer data (64 bytes) */
 #define CommOffsetUsbPollBufInPtr    1885 /*!< Offset to Usb Poll buffer front pointer (1 byte) */
 #define CommOffsetUsbPollBufOutPtr   1886 /*!< Offset to Usb Poll buffer back pointer (1 byte) */
@@ -2082,9 +2093,13 @@
 #define CommOffsetBtDeviceNameCnt  1890 /*!< Offset to Bluetooth device name count (1 byte) */
 #define CommOffsetHsFlags          1891 /*!< Offset to High Speed flags (1 byte) */
 #define CommOffsetHsSpeed          1892 /*!< Offset to High Speed speed (1 byte) */
-#define CommOffsetHsState          1893 /*!< Offset to High Spped state (1 byte) */
+#define CommOffsetHsState          1893 /*!< Offset to High Speed state (1 byte) */
 #define CommOffsetUsbState         1894 /*!< Offset to Usb State (1 byte) */
-#define CommOffsetHsMode           1895 /*!< Offset to High Speed mode (2 bytes) */
+#ifdef __ENHANCED_FIRMWARE
+#define CommOffsetHsMode           1896 /*!< Offset to High Speed mode (2 bytes) */
+#define CommOffsetBtDataMode       1898 /*!< Offset to Bluetooth data mode (1 byte) */
+#define CommOffsetHsDataMode       1899 /*!< Offset to High Speed data mode (1 byte) */
+#endif
 /** @} */  // end of CommIOMAP group
 /** @} */  // end of CommModuleConstants group
 /** @} */  // end of CommModule group

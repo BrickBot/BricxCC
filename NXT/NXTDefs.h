@@ -4123,9 +4123,25 @@ dseg ends
   compchk EQ, sizeof(_n), 1 \
   SetCommModuleValue(CommOffsetUsbState, _n)
 
+#if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
+
 #define __setHSMode(_n) \
   compchk EQ, sizeof(_n), 2 \
   SetCommModuleValue(CommOffsetHsMode, _n)
+
+#define __setBTDataMode(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  compchk EQ, isconst(_n), 1 \
+  SetCommModuleValue(CommOffsetBtDataMode, _n|DATA_MODE_UPDATE) \
+  wait 1
+
+#define __setHSDataMode(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  compchk EQ, isconst(_n), 1 \
+  SetCommModuleValue(CommOffsetHsDataMode, _n|DATA_MODE_UPDATE) \
+  wait 1
+
+#endif
 
 dseg segment
   __FOMutex mutex
@@ -13488,16 +13504,44 @@ ends
   compchk EQ, sizeof(_n), 1 \
   GetCommModuleValue(CommOffsetUsbState, _n)
 
+#if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
+
 /**
  * Get hi-speed port mode.
  * This method returns the value of the hi-speed port mode.
  * \param _n The hi-speed port mode (data bits, stop bits, parity).  See
  * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
  * \ref CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 #define GetHSMode(_n) \
   compchk EQ, sizeof(_n), 2 \
   GetCommModuleValue(CommOffsetHsMode, _n)
+
+/**
+ * Get Bluetooth data mode.
+ * This method returns the value of the Bluetooth data mode.
+ * \param _n The Bluetooth data mode.  See \ref CommDataModeConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+#define GetBTDataMode(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetBtDataMode, _n)
+
+/**
+ * Get hi-speed port data mode.
+ * This method returns the value of the hi-speed port data mode.
+ * \param _n The hi-speed port data mode.  See \ref CommDataModeConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+#define GetHSDataMode(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsDataMode, _n)
+
+#endif  
 
 /**
  * Set bluetooth input buffer data.
@@ -13688,14 +13732,38 @@ ends
  */
 #define SetUSBState(_n) __setUSBState(_n)
 
+#if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
+
 /**
  * Set hi-speed port mode.
  * This method sets the value of the hi-speed port mode.
  * \param _n The hi-speed port mode (data bits, stop bits, parity).  See
  * \ref CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants,
  * \ref CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 #define SetHSMode(_n) __setHSMode(_n)
+
+/**
+ * Set Bluetooth data mode.
+ * This method sets the value of the Bluetooth data mode.
+ * \param _n The Bluetooth data mode.  See \ref CommDataModeConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+#define SetBTDataMode(_n) __setBTDataMode(_n)
+
+/**
+ * Set hi-speed port data mode.
+ * This method sets the value of the hi-speed port data mode.
+ * \param _n The hi-speed port data mode.  See \ref CommDataModeConstants.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+#define SetHSDataMode(_n) __setHSDataMode(_n)
+
+#endif
 
 /** @} */ // end of CommModuleFunctions group
 /** @} */ // end of CommModule group

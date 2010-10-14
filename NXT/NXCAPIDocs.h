@@ -5077,6 +5077,9 @@
  * \ref SetNXTLineLeaderKiFactor, \ref SetNXTLineLeaderKdFactor,
  * \ref SetSensorLowspeed, \ref NumOut, and \ref Wait functions.
  *
+ * \example ex_DataMode.nxc
+ * This is an example of how to use the \ref HSDataMode, \ref BTDataMode,
+ * \ref SetHSDataMode, \ref SetBTDataMode, \ref TextOut, and \ref Wait functions.
 */
 
 #include "NXCDefs.h"
