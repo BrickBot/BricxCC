@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2682;
+  uNXCHTMLTopicsSize = 2737;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -217,6 +217,10 @@ const
      Value: 'struct_read_button_type.html'
     ),
     (
+     Name: 'ReadLastResponseType';
+     Value: 'struct_read_last_response_type.html'
+    ),
+    (
      Name: 'ReadSemDataType';
      Value: 'struct_read_sem_data_type.html'
     ),
@@ -271,6 +275,22 @@ const
     (
      Name: 'NA';
      Value: 'group___misc_constants_ga68eddd535923d17ddbc8bb03bab70b3b.html'
+    ),
+    (
+     Name: 'RC_PROP_BTONOFF';
+     Value: 'group___r_c_property_constants_gaead0deb991108085e8831ba84841baab.html'
+    ),
+    (
+     Name: 'RC_PROP_SOUND_LEVEL';
+     Value: 'group___r_c_property_constants_ga70acce21ed290d3a32798c6f36e90e7c.html'
+    ),
+    (
+     Name: 'RC_PROP_SLEEP_TIMEOUT';
+     Value: 'group___r_c_property_constants_ga2b3b9232ed8a3aebf0acde1f9cf642d1.html'
+    ),
+    (
+     Name: 'RC_PROP_DEBUGGING';
+     Value: 'group___r_c_property_constants_gaf1bc14447737f83e98c387eae9095457.html'
     ),
     (
      Name: 'OPARR_SUM';
@@ -579,6 +599,10 @@ const
     (
      Name: 'MemoryManager';
      Value: 'group___sys_call_constants_ga550d1be8705de22ee44c940c7aa4a586.html'
+    ),
+    (
+     Name: 'ReadLastResponse';
+     Value: 'group___sys_call_constants_ga9dfd7356f9afbc92e2f3187c2d77a322.html'
     ),
     (
      Name: 'LCD_LINE8';
@@ -3587,6 +3611,26 @@ const
     (
      Name: 'BT_CONNECTION_3_ENABLE';
      Value: 'group___comm_bt_state_status_constants_gad4524437ec66c863b85eb9a86ffc42ed.html'
+    ),
+    (
+     Name: 'CONN_BT0';
+     Value: 'group___comm_connection_constants_gae8192686cbb9cb01165a7714b22dc170.html'
+    ),
+    (
+     Name: 'CONN_BT1';
+     Value: 'group___comm_connection_constants_ga869148ae3f5fb3ae68cd66c75cc8846e.html'
+    ),
+    (
+     Name: 'CONN_BT2';
+     Value: 'group___comm_connection_constants_gaecbae96ba68f09b11b5e6775562576dd.html'
+    ),
+    (
+     Name: 'CONN_BT3';
+     Value: 'group___comm_connection_constants_gafd7f9e58eb759a2782531bc31611ca6a.html'
+    ),
+    (
+     Name: 'CONN_HS4';
+     Value: 'group___comm_connection_constants_ga1102704ef285a2ee6b0f320683f9cc65.html'
     ),
     (
      Name: 'BT_ENABLE';
@@ -7289,6 +7333,10 @@ const
      Value: 'group___output_module_functions_ga24e7343c80ac7a9ec4eeb04e2e645131.html'
     ),
     (
+     Name: 'MotorOutputOptions';
+     Value: 'group___output_module_functions_ga7b5826e12371bc02e4b167fa16762059.html'
+    ),
+    (
      Name: 'MotorPwnFreq';
      Value: 'group___output_module_functions_ga3ea881cd98bd6a68ace54c31f0b3d0af.html'
     ),
@@ -7817,6 +7865,14 @@ const
      Value: 'group___command_module_functions_ga3d17a2c0f41de37508087b016a821433.html'
     ),
     (
+     Name: 'GetLastResponseInfo';
+     Value: 'group___command_module_functions_ga7159dd94311347bcabaec04edda55846.html'
+    ),
+    (
+     Name: 'SysReadLastResponse';
+     Value: 'group___command_module_functions_gac9f8743e4ae263e0762d820141f7cb0f.html'
+    ),
+    (
      Name: 'Wait';
      Value: 'group___command_module_functions_ga01e64d2250db0e5b41486e316228983f.html'
     ),
@@ -8085,16 +8141,24 @@ const
      Value: 'group___comm_module_functions_ga0cc59e241cc0e588d73818f5112bcbd1.html'
     ),
     (
+     Name: 'RemoteConnectionWrite';
+     Value: 'group___comm_module_functions_gac13a777a6e5396d5df97b89823c13a30.html'
+    ),
+    (
+     Name: 'RemoteConnectionIdle';
+     Value: 'group___comm_module_functions_gaf4a3f74c4302a1a1c4749cf49966bd2f.html'
+    ),
+    (
      Name: 'SendRemoteBool';
-     Value: 'group___comm_module_functions_ga932a8bf1221cb52b1ce54e8392a2a785.html'
+     Value: 'group___comm_module_functions_gacd950cec09ea541848b8c021518390e8.html'
     ),
     (
      Name: 'SendRemoteNumber';
-     Value: 'group___comm_module_functions_ga30beab417cafc0c414eaea0cf58ada14.html'
+     Value: 'group___comm_module_functions_gaba1fe3557c6b13b818d0b3e0497f419c.html'
     ),
     (
      Name: 'SendRemoteString';
-     Value: 'group___comm_module_functions_gab0fbb5bd16ba155fe3a7a3ac541b4952.html'
+     Value: 'group___comm_module_functions_gad92a9077a4667374113454a3aaa4bdc6.html'
     ),
     (
      Name: 'SendResponseBool';
@@ -8126,51 +8190,207 @@ const
     ),
     (
      Name: 'RemoteKeepAlive';
-     Value: 'group___comm_module_functions_ga077787b4e8e698a283aff23c529c6338.html'
+     Value: 'group___comm_module_d_c_functions_ga77ef1ab6daa9d7639bd8a5ce89fc9f88.html'
     ),
     (
      Name: 'RemoteMessageRead';
-     Value: 'group___comm_module_functions_ga9a6108ddeefefc5ff5a1893b16fce45a.html'
+     Value: 'group___comm_module_d_c_functions_ga5e1ba619aa84881800952010ccb0b817.html'
     ),
     (
      Name: 'RemoteMessageWrite';
-     Value: 'group___comm_module_functions_gaeb58ee321ceb422aa6096e53392d25de.html'
+     Value: 'group___comm_module_d_c_functions_ga542d4a5f29bb03a1bba31fa593e1fd9d.html'
     ),
     (
      Name: 'RemotePlaySoundFile';
-     Value: 'group___comm_module_functions_ga07c4a4214471ac4a594c7b3c19a7333e.html'
+     Value: 'group___comm_module_d_c_functions_ga712a65b95061a4295b2be4d5d9f2fe01.html'
     ),
     (
      Name: 'RemotePlayTone';
-     Value: 'group___comm_module_functions_ga4ee2a9d0917362d14a7045fda979e0fe.html'
+     Value: 'group___comm_module_d_c_functions_ga9aca4b16d9d1e52087002ce08860e65f.html'
     ),
     (
      Name: 'RemoteResetMotorPosition';
-     Value: 'group___comm_module_functions_gac67efce61704d809226ae014ed0fd188.html'
+     Value: 'group___comm_module_d_c_functions_gaa7c901a7d637b5b88e22581c0f0c134c.html'
     ),
     (
      Name: 'RemoteResetScaledValue';
-     Value: 'group___comm_module_functions_ga367136db44b6a133988b1142ddaec1b6.html'
+     Value: 'group___comm_module_d_c_functions_gaf54f5de7ad4c187e2ef38132cd996f23.html'
     ),
     (
      Name: 'RemoteSetInputMode';
-     Value: 'group___comm_module_functions_ga3c92f90fd5ffa0d6d8ee45c676c97249.html'
+     Value: 'group___comm_module_d_c_functions_gacaa9cd89c45de26e1520fe6f81803b0d.html'
     ),
     (
      Name: 'RemoteSetOutputState';
-     Value: 'group___comm_module_functions_ga9b80406ca9bd35fbc6d1ff38bb9a5a3f.html'
+     Value: 'group___comm_module_d_c_functions_ga690bdedab9b73b9cb9a56983e4025991.html'
     ),
     (
      Name: 'RemoteStartProgram';
-     Value: 'group___comm_module_functions_gaa323856be7980bd6f82f8f87b74fb387.html'
+     Value: 'group___comm_module_d_c_functions_ga8af4a84bb8d6daf5abfca3490ba8964b.html'
     ),
     (
      Name: 'RemoteStopProgram';
-     Value: 'group___comm_module_functions_gadb8ddf6b9e434b053aac96a304a18f98.html'
+     Value: 'group___comm_module_d_c_functions_gada19bcc9763d1f507f00a05b76742eec.html'
     ),
     (
      Name: 'RemoteStopSound';
-     Value: 'group___comm_module_functions_ga7783a50c02443a19e76b0e5b86505c8e.html'
+     Value: 'group___comm_module_d_c_functions_gabc238f2ce88a4bf1ff09d995f72a52c6.html'
+    ),
+    (
+     Name: 'RemoteGetBatteryLevel';
+     Value: 'group___comm_module_d_c_functions_ga85c474279cf6b2bdd67e3eaef69e153d.html'
+    ),
+    (
+     Name: 'RemoteLowspeedGetStatus';
+     Value: 'group___comm_module_d_c_functions_ga70e87bd954b1a97d7cb62594b3839536.html'
+    ),
+    (
+     Name: 'RemoteGetCurrentProgramName';
+     Value: 'group___comm_module_d_c_functions_ga78944dc213720e0a21a5bb7900325c11.html'
+    ),
+    (
+     Name: 'RemoteGetContactCount';
+     Value: 'group___comm_module_d_c_functions_ga390da2588f7f1b066d96839212ca573f.html'
+    ),
+    (
+     Name: 'RemoteGetConnectionCount';
+     Value: 'group___comm_module_d_c_functions_ga0bb2c82e74bee585c44fb0eed7c8e1f9.html'
+    ),
+    (
+     Name: 'RemoteGetOutputState';
+     Value: 'group___comm_module_d_c_functions_ga13a4801108d5d404b0ed66b3d6ac6720.html'
+    ),
+    (
+     Name: 'RemoteGetInputValues';
+     Value: 'group___comm_module_d_c_functions_ga0e6aa33a87f10b6251f46eff13249c82.html'
+    ),
+    (
+     Name: 'RemoteLowspeedRead';
+     Value: 'group___comm_module_d_c_functions_ga2731f6601e24082945f02442ef21b5b2.html'
+    ),
+    (
+     Name: 'RemoteResetTachoCount';
+     Value: 'group___comm_module_d_c_functions_gae4b8406781b8ce2b69789fc0d80eddeb.html'
+    ),
+    (
+     Name: 'RemoteGetProperty';
+     Value: 'group___comm_module_d_c_functions_ga814f8f4ec8c8b09a57553660aafd76f8.html'
+    ),
+    (
+     Name: 'RemoteDatalogRead';
+     Value: 'group___comm_module_d_c_functions_ga4f8b3b359f5534fd43ed342314763f44.html'
+    ),
+    (
+     Name: 'RemoteBTGetContactName';
+     Value: 'group___comm_module_d_c_functions_ga690ec5c08024fdd519640b81bc6a7246.html'
+    ),
+    (
+     Name: 'RemoteBTGetConnectionName';
+     Value: 'group___comm_module_d_c_functions_ga74175eff1ab709bd0b2e122b3b4ee187.html'
+    ),
+    (
+     Name: 'RemoteDatalogSetTimes';
+     Value: 'group___comm_module_d_c_functions_ga2818fda70f0cf8dc9f12c5aafc2fb5dd.html'
+    ),
+    (
+     Name: 'RemoteSetProperty';
+     Value: 'group___comm_module_d_c_functions_ga351dab12e8f635a98196136b87f8af9e.html'
+    ),
+    (
+     Name: 'RemoteLowspeedWrite';
+     Value: 'group___comm_module_d_c_functions_gae6ab0c527b990006679fc6313b2fe41a.html'
+    ),
+    (
+     Name: 'RemoteOpenRead';
+     Value: 'group___comm_module_s_c_functions_gacd45ebaa75ea163eac149a2c9da7b2f4.html'
+    ),
+    (
+     Name: 'RemoteOpenAppendData';
+     Value: 'group___comm_module_s_c_functions_ga76122c49115a5eada5a645d6c56c9670.html'
+    ),
+    (
+     Name: 'RemoteDeleteFile';
+     Value: 'group___comm_module_s_c_functions_ga825eb8e44f752297b89d329cd6aaeb83.html'
+    ),
+    (
+     Name: 'RemoteFindFirstFile';
+     Value: 'group___comm_module_s_c_functions_ga48868a3866a9963bb07baa04374d94aa.html'
+    ),
+    (
+     Name: 'RemoteGetFirmwareVersion';
+     Value: 'group___comm_module_s_c_functions_ga3510c1acdf0fba3719e50f1bfde90746.html'
+    ),
+    (
+     Name: 'RemoteGetBluetoothAddress';
+     Value: 'group___comm_module_s_c_functions_gaa5d6f356273797e6b7b88ecc416cd916.html'
+    ),
+    (
+     Name: 'RemoteGetDeviceInfo';
+     Value: 'group___comm_module_s_c_functions_ga1d901d409d055111afe397ffccebfdc1.html'
+    ),
+    (
+     Name: 'RemoteDeleteUserFlash';
+     Value: 'group___comm_module_s_c_functions_ga1eb070c80d58fddd76ffc7b6077a2845.html'
+    ),
+    (
+     Name: 'RemoteBluetoothFactoryReset';
+     Value: 'group___comm_module_s_c_functions_ga3c880316042b806fe787aedcfe583618.html'
+    ),
+    (
+     Name: 'RemoteOpenWrite';
+     Value: 'group___comm_module_s_c_functions_ga7736c16524e46684b6255a813e7c3864.html'
+    ),
+    (
+     Name: 'RemoteOpenWriteLinear';
+     Value: 'group___comm_module_s_c_functions_ga476bace8b246684c9d5ca9a5583b0dbf.html'
+    ),
+    (
+     Name: 'RemoteOpenWriteData';
+     Value: 'group___comm_module_s_c_functions_gabf0162b7568c936b4eb4b40e1634ab9f.html'
+    ),
+    (
+     Name: 'RemoteCloseFile';
+     Value: 'group___comm_module_s_c_functions_gafc64138b58beefc6f1f77b9833352e4f.html'
+    ),
+    (
+     Name: 'RemoteFindNextFile';
+     Value: 'group___comm_module_s_c_functions_ga11d4be83f42a89d008778d0ee21bacd6.html'
+    ),
+    (
+     Name: 'RemotePollCommandLength';
+     Value: 'group___comm_module_s_c_functions_ga734fce24b45730c7ca2a4d30e9489541.html'
+    ),
+    (
+     Name: 'RemoteWrite';
+     Value: 'group___comm_module_s_c_functions_ga4323746a1fd76fe13d43784e6ad7356a.html'
+    ),
+    (
+     Name: 'RemoteRead';
+     Value: 'group___comm_module_s_c_functions_gac0262afdbb45fb8dc2c5a7be5dbf04bf.html'
+    ),
+    (
+     Name: 'RemoteIOMapRead';
+     Value: 'group___comm_module_s_c_functions_gac8adb5b8fe0619442089c73b300ff757.html'
+    ),
+    (
+     Name: 'RemoteIOMapWriteValue';
+     Value: 'group___comm_module_s_c_functions_ga6804b06c3fa92743402bdfe3b7151460.html'
+    ),
+    (
+     Name: 'RemoteIOMapWriteBytes';
+     Value: 'group___comm_module_s_c_functions_ga8bb1e3f64565d570d0613ee361878de3.html'
+    ),
+    (
+     Name: 'RemoteSetBrickName';
+     Value: 'group___comm_module_s_c_functions_gaae8839da97d69d557b3e66ce555541ac.html'
+    ),
+    (
+     Name: 'RemoteRenameFile';
+     Value: 'group___comm_module_s_c_functions_gab105501f04412eafe9ceba75a1a0fe73.html'
+    ),
+    (
+     Name: 'RemotePollCommand';
+     Value: 'group___comm_module_s_c_functions_gac8ecc050e8886d07caa4c9f2626cc0b8.html'
     ),
     (
      Name: 'RS485Control';

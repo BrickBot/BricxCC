@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-06
- * \version 4
+ * \date 2010-10-16
+ * \version 5
  */
 #ifndef NBCAPIDOCS_H
 #define NBCAPIDOCS_H
@@ -2267,6 +2267,7 @@
  * - @subpage TComputeCalibValue
  * - @subpage TListFiles
  * - @subpage TMemoryManager
+ * - @subpage TReadLastResponse
  *
  */
 
@@ -3187,6 +3188,22 @@
  *  PoolSize      word
  *  DataspaceSize word
  * TMemoryManager ends
+ * \endcode
+ *
+ */
+
+/** @page TReadLastResponse TReadLastResponse
+ * \brief The TReadLastResponse structure
+ *
+ * \code
+ * // ReadLastResponse
+ * TReadLastResponse struct
+ *  Result  sbyte
+ *  Clear   byte
+ *  Length  byte
+ *  Command byte
+ *  Buffer	 byte[]
+ * TReadLastResponse ends
  * \endcode
  *
  */

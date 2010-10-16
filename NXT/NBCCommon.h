@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-11
- * \version 57
+ * \date 2010-10-16
+ * \version 58
  */
 
 #ifndef NBCCOMMON_H
@@ -36,6 +36,17 @@
 #define FALSE 0 /*!< A false value */
 
 #define NA 0xFFFF /*!< The specified argument does not apply (aka unwired) */
+
+/** @defgroup RCPropertyConstants Property constants
+ * Use these constants for specifying the property for the GetProperty
+ * and SetProperty direct commands.
+ * @{
+ */
+#define RC_PROP_BTONOFF       0x0  // 1 byte
+#define RC_PROP_SOUND_LEVEL   0x1  // 1 byte
+#define RC_PROP_SLEEP_TIMEOUT 0x2  // 4 bytes
+#define RC_PROP_DEBUGGING     0xF  // 4 bytes
+/** @} */  // end of RCPropertyConstants group
 
 /** @} */  // end of MiscConstants group
 
@@ -272,6 +283,7 @@
 #define DrawEllipse            94 /*!< Draw an ellipse on the LCD screen */
 #define DrawFont               95 /*!< Draw text using a custom RIC-based font to the LCD screen */
 #define MemoryManager          96 /*!< Read memory manager information, optionally compacting the dataspace first */
+#define ReadLastResponse       97 /*!< Read the last response packet received by the NXT.  Optionally clear the value after reading it. */
 #endif
 #endif
 /** @} */  // end of SysCallConstants group
@@ -1227,7 +1239,7 @@
  */
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define OUT_OPTION_HOLDATLIMIT     0x10 /*!< Option to have the firmware hold the motor when it reaches the tachometer limit */
-#define OUT_OPTION_RAMPDOWNTOLIMIT 0x20 /*!< Option to have the firmware rampdown the motor power as it approaches the tachometer limit (not implemented yet) */
+#define OUT_OPTION_RAMPDOWNTOLIMIT 0x20 /*!< Option to have the firmware rampdown the motor power as it approaches the tachometer limit */
 #endif
 /** @} */  // end of OutOptionConstants group
 
@@ -1378,8 +1390,8 @@
  *  Set options for how the output module will act when a tachometer limit is reached. Option
  *  constants can be combined with bitwise OR.  Use OUT_OPTION_HOLDATLIMIT to have the output
  *  module hold the motor when it reaches the tachometer limit.  Use OUT_OPTION_RAMPDOWNTOLIMIT
- *  to have the output module ramp down the motor power as it approaches the tachometer limit
- *  (not yet implemented). */
+ *  to have the output module ramp down the motor power as it approaches the tachometer limit.
+ */
 #define OutputOptions   15
 #endif
 /** @} */  // end of OutputFieldConstants group
@@ -1867,6 +1879,17 @@
 #define BT_CONNECTION_2_ENABLE  0x40 /*!< BtStateStatus connection 2 enable/disable bit */
 #define BT_CONNECTION_3_ENABLE  0x80 /*!< BtStateStatus connection 3 enable/disable bit */
 /** @} */  // end of CommBtStateStatusConstants group
+
+/** @defgroup CommConnectionConstants Remote connection constants
+ * Constants for specifying remote connection slots.
+ * @{
+ */
+#define CONN_BT0  0x0 /*!< Bluetooth connection 0 */
+#define CONN_BT1  0x1 /*!< Bluetooth connection 1 */
+#define CONN_BT2  0x2 /*!< Bluetooth connection 2 */
+#define CONN_BT3  0x3 /*!< Bluetooth connection 3 */
+#define CONN_HS4  0x4 /*!< RS485 (hi-speed) connection (port 4) */
+/** @} */  // end of CommConnectionConstants group
 
 /** @defgroup CommBtHwStatusConstants Bluetooth hardware status constants
  * Constants related to the bluetooth hardware status.

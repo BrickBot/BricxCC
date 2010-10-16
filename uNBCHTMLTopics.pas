@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNBCHTMLTopicsSize = 2074;
+  uNBCHTMLTopicsSize = 2358;
   uNBCHTMLTopicsData: array[0..uNBCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -19,6 +19,22 @@ const
     (
      Name: 'NA';
      Value: 'group___misc_constants_ga68eddd535923d17ddbc8bb03bab70b3b.html'
+    ),
+    (
+     Name: 'RC_PROP_BTONOFF';
+     Value: 'group___r_c_property_constants_gaead0deb991108085e8831ba84841baab.html'
+    ),
+    (
+     Name: 'RC_PROP_SOUND_LEVEL';
+     Value: 'group___r_c_property_constants_ga70acce21ed290d3a32798c6f36e90e7c.html'
+    ),
+    (
+     Name: 'RC_PROP_SLEEP_TIMEOUT';
+     Value: 'group___r_c_property_constants_ga2b3b9232ed8a3aebf0acde1f9cf642d1.html'
+    ),
+    (
+     Name: 'RC_PROP_DEBUGGING';
+     Value: 'group___r_c_property_constants_gaf1bc14447737f83e98c387eae9095457.html'
     ),
     (
      Name: 'OPARR_SUM';
@@ -323,6 +339,14 @@ const
     (
      Name: 'DrawFont';
      Value: 'group___sys_call_constants_gaef725e2d3882d19d0e4bc47844d1af81.html'
+    ),
+    (
+     Name: 'MemoryManager';
+     Value: 'group___sys_call_constants_ga550d1be8705de22ee44c940c7aa4a586.html'
+    ),
+    (
+     Name: 'ReadLastResponse';
+     Value: 'group___sys_call_constants_ga9dfd7356f9afbc92e2f3187c2d77a322.html'
     ),
     (
      Name: 'LCD_LINE8';
@@ -671,6 +695,10 @@ const
     (
      Name: 'STAT_COMM_PENDING';
      Value: 'group___command_module_constants_gaff5d0e89c9ff770ed9bb56948de1f8c6.html'
+    ),
+    (
+     Name: 'POOL_MAX_SIZE';
+     Value: 'group___command_module_constants_ga6e0c753131d7613db37ef5a3fd2108c0.html'
     ),
     (
      Name: 'TIMES_UP';
@@ -2685,20 +2713,20 @@ const
      Value: 'group___u_s_i2_c_constants_gaf1d2e605ad48ba2cb357c386b53ffd81.html'
     ),
     (
-     Name: 'TEMP_RES_12BIT';
-     Value: 'group___temp_i2_c_constants_gaf8320c5eda0d3f2055666fd84444941b.html'
-    ),
-    (
-     Name: 'TEMP_RES_11BIT';
-     Value: 'group___temp_i2_c_constants_ga52f0d6cb434712c9f4ca231398475e60.html'
+     Name: 'TEMP_RES_9BIT';
+     Value: 'group___temp_i2_c_constants_ga5f44cc4fc21a140905ac16b2a9416557.html'
     ),
     (
      Name: 'TEMP_RES_10BIT';
      Value: 'group___temp_i2_c_constants_gaa12067aa4df773c457133cb4627a2088.html'
     ),
     (
-     Name: 'TEMP_RES_9BIT';
-     Value: 'group___temp_i2_c_constants_ga5f44cc4fc21a140905ac16b2a9416557.html'
+     Name: 'TEMP_RES_11BIT';
+     Value: 'group___temp_i2_c_constants_ga52f0d6cb434712c9f4ca231398475e60.html'
+    ),
+    (
+     Name: 'TEMP_RES_12BIT';
+     Value: 'group___temp_i2_c_constants_gaf8320c5eda0d3f2055666fd84444941b.html'
     ),
     (
      Name: 'TEMP_SD_CONTINUOUS';
@@ -3285,6 +3313,26 @@ const
      Value: 'group___comm_bt_state_constants_ga8e9cf140e52658b4ce9e3cc5199191b5.html'
     ),
     (
+     Name: 'DATA_MODE_NXT';
+     Value: 'group___comm_data_mode_constants_gab6e0de6c5aa64bb363c9c69b73917958.html'
+    ),
+    (
+     Name: 'DATA_MODE_GPS';
+     Value: 'group___comm_data_mode_constants_gaf72ae86adb80283f92650cb634ec74d2.html'
+    ),
+    (
+     Name: 'DATA_MODE_RAW';
+     Value: 'group___comm_data_mode_constants_gaeeec1dd3127ec56730eb7f1d2a9dbcdc.html'
+    ),
+    (
+     Name: 'DATA_MODE_MASK';
+     Value: 'group___comm_data_mode_constants_ga395fe7349791be7cf743a2c63221fdea.html'
+    ),
+    (
+     Name: 'DATA_MODE_UPDATE';
+     Value: 'group___comm_data_mode_constants_gaa2c36f88935ef6bec1e1b1456ee9aa8b.html'
+    ),
+    (
      Name: 'BT_BRICK_VISIBILITY';
      Value: 'group___comm_bt_state_status_constants_ga1bdea7ce03cdd2c2dcbeed9925c178bb.html'
     ),
@@ -3307,6 +3355,26 @@ const
     (
      Name: 'BT_CONNECTION_3_ENABLE';
      Value: 'group___comm_bt_state_status_constants_gad4524437ec66c863b85eb9a86ffc42ed.html'
+    ),
+    (
+     Name: 'CONN_BT0';
+     Value: 'group___comm_connection_constants_gae8192686cbb9cb01165a7714b22dc170.html'
+    ),
+    (
+     Name: 'CONN_BT1';
+     Value: 'group___comm_connection_constants_ga869148ae3f5fb3ae68cd66c75cc8846e.html'
+    ),
+    (
+     Name: 'CONN_BT2';
+     Value: 'group___comm_connection_constants_gaecbae96ba68f09b11b5e6775562576dd.html'
+    ),
+    (
+     Name: 'CONN_BT3';
+     Value: 'group___comm_connection_constants_gafd7f9e58eb759a2782531bc31611ca6a.html'
+    ),
+    (
+     Name: 'CONN_HS4';
+     Value: 'group___comm_connection_constants_ga1102704ef285a2ee6b0f320683f9cc65.html'
     ),
     (
      Name: 'BT_ENABLE';
@@ -3787,6 +3855,14 @@ const
     (
      Name: 'CommOffsetHsMode';
      Value: 'group___comm_i_o_m_a_p_ga4b28fbc0d6b8de8fa092b05a3160ba4c.html'
+    ),
+    (
+     Name: 'CommOffsetBtDataMode';
+     Value: 'group___comm_i_o_m_a_p_ga59656e3cb25c2b0dcb92a0f967ec7c4e.html'
+    ),
+    (
+     Name: 'CommOffsetHsDataMode';
+     Value: 'group___comm_i_o_m_a_p_ga45843124709e2ee206503753c9966fa0.html'
     ),
     (
      Name: 'RCX_OUT_A';
@@ -4637,6 +4713,10 @@ const
      Value: 'group___p_f_cmd_constants_gabb5c3a931694750197d559339fc1d81b.html'
     ),
     (
+     Name: 'PF_CMD_FLOAT';
+     Value: 'group___p_f_cmd_constants_gaf6bd25144b71485cbd1042c6e9825583.html'
+    ),
+    (
      Name: 'PF_CMD_FWD';
      Value: 'group___p_f_cmd_constants_gad4dc6e9ac10070f09f815d33e61b4aaf.html'
     ),
@@ -4889,6 +4969,10 @@ const
      Value: 'group___hi_technic_constants_ga4633d2e9361d461022473411fb65a432.html'
     ),
     (
+     Name: 'HT_ADDR_ANGLE';
+     Value: 'group___hi_technic_constants_gaab38d9edcb1bd4e47b34a11626bf140d.html'
+    ),
+    (
      Name: 'HTIR2_MODE_1200';
      Value: 'group___h_t_i_r_seeker2_constants_ga3ec2348617d3fae0aadb1eef110f7e2f.html'
     ),
@@ -5029,6 +5113,54 @@ const
      Value: 'group___h_t_color2_constants_ga72d606b2cde01cefb363ececf0321d04.html'
     ),
     (
+     Name: 'HTANGLE_MODE_NORMAL';
+     Value: 'group___h_t_angle_constants_ga5a088114760cd5b03077efbd77ac4b97.html'
+    ),
+    (
+     Name: 'HTANGLE_MODE_CALIBRATE';
+     Value: 'group___h_t_angle_constants_gadd4731a47ec48248156b673031ad8fbd.html'
+    ),
+    (
+     Name: 'HTANGLE_MODE_RESET';
+     Value: 'group___h_t_angle_constants_gaa299e655aeec12d8f3dc00377475d8e8.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_MODE';
+     Value: 'group___h_t_angle_constants_ga4a73be180f66ad29b6f29c6088db63fa.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DCDIR';
+     Value: 'group___h_t_angle_constants_ga07b8396774eeaf221d155be5dbcb1e87.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC01';
+     Value: 'group___h_t_angle_constants_ga709007c94793e98050c42284b1ee95fd.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC02';
+     Value: 'group___h_t_angle_constants_gada954aa1c1604bf9d7e71bbd13d4503b.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC03';
+     Value: 'group___h_t_angle_constants_gae2c8bfe0aecc11d221a9372f7ce738c8.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC04';
+     Value: 'group___h_t_angle_constants_ga5753a90fd6e79ac9bf54c8533eae470b.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DC05';
+     Value: 'group___h_t_angle_constants_ga847084685d207668d9efd5e496d65c94.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_DCAVG';
+     Value: 'group___h_t_angle_constants_ga58d62971264c00bd4a101b347eab5edc.html'
+    ),
+    (
+     Name: 'HTANGLE_REG_ACDIR';
+     Value: 'group___h_t_angle_constants_gab98acbb8edd369f305062915025c13a1.html'
+    ),
+    (
      Name: 'MS_CMD_ENERGIZED';
      Value: 'group___mind_sensors_constants_gadf1788cf326ea1e2f73f4157ba67cf29.html'
     ),
@@ -5083,6 +5215,10 @@ const
     (
      Name: 'MS_ADDR_NXTSERVO';
      Value: 'group___mind_sensors_constants_ga87e40fae609239e7de3d0bc34c6fe9b0.html'
+    ),
+    (
+     Name: 'MS_ADDR_NXTSERVO_EM';
+     Value: 'group___mind_sensors_constants_gaf18de4e25af4060e7326924de071da5d.html'
     ),
     (
      Name: 'MS_ADDR_PFMATE';
@@ -5391,6 +5527,550 @@ const
     (
      Name: 'ACCL_SENSITIVITY_LEVEL_4';
      Value: 'group___m_s_a_c_c_l_nx_s_level_ga587b1074c4da94a77fe9acb8a844f1d0.html'
+    ),
+    (
+     Name: 'PFMATE_REG_CMD';
+     Value: 'group___p_f_mate_constants_ga2d93e4757ee25902b0b02b70264e9b01.html'
+    ),
+    (
+     Name: 'PFMATE_REG_CHANNEL';
+     Value: 'group___p_f_mate_constants_gab03eea433a628449572288c69b1cd796.html'
+    ),
+    (
+     Name: 'PFMATE_REG_MOTORS';
+     Value: 'group___p_f_mate_constants_ga89fa31b2f05e97759e4d5d7ef80ea6db.html'
+    ),
+    (
+     Name: 'PFMATE_REG_A_CMD';
+     Value: 'group___p_f_mate_constants_ga4e5f39c463d33afbaadd578c1ab32374.html'
+    ),
+    (
+     Name: 'PFMATE_REG_A_SPEED';
+     Value: 'group___p_f_mate_constants_ga093f624cd3c2467b6dd5299989293ccd.html'
+    ),
+    (
+     Name: 'PFMATE_REG_B_CMD';
+     Value: 'group___p_f_mate_constants_ga46e3c8587624f5f7873571fc2378f766.html'
+    ),
+    (
+     Name: 'PFMATE_REG_B_SPEED';
+     Value: 'group___p_f_mate_constants_ga71b5c2a4b3f6a6174c0b8bf61ef31b62.html'
+    ),
+    (
+     Name: 'PFMATE_CMD_GO';
+     Value: 'group___p_f_mate_constants_gad591f4fe750ad78d2e32881fb7c4a8d7.html'
+    ),
+    (
+     Name: 'PFMATE_CMD_RAW';
+     Value: 'group___p_f_mate_constants_ga7b2f7a6cc67db262f7c6b71981ba66c7.html'
+    ),
+    (
+     Name: 'PFMATE_MOTORS_BOTH';
+     Value: 'group___p_f_mate_motor_constants_ga3d8086b2e9e2c174f3d681eaebc417df.html'
+    ),
+    (
+     Name: 'PFMATE_MOTORS_A';
+     Value: 'group___p_f_mate_motor_constants_gaa68b2f3f986d4d0efd3bc2e5890caa06.html'
+    ),
+    (
+     Name: 'PFMATE_MOTORS_B';
+     Value: 'group___p_f_mate_motor_constants_ga7c0a0967e176e300cdee409969d14a88.html'
+    ),
+    (
+     Name: 'PFMATE_CHANNEL_1';
+     Value: 'group___p_f_mate_channel_constants_ga200dd5516757729a2294072d6ac1595f.html'
+    ),
+    (
+     Name: 'PFMATE_CHANNEL_2';
+     Value: 'group___p_f_mate_channel_constants_ga32ae5dde62a21ab55ff6e06635bc28ff.html'
+    ),
+    (
+     Name: 'PFMATE_CHANNEL_3';
+     Value: 'group___p_f_mate_channel_constants_ga5b8b97dddc1bbe68dbff009f7e025634.html'
+    ),
+    (
+     Name: 'PFMATE_CHANNEL_4';
+     Value: 'group___p_f_mate_channel_constants_gabb2032002dcf2123b541b415d7a455f7.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_VOLTAGE';
+     Value: 'group___n_x_t_servo_registers_ga287bda9bb376fc4a8d614618c4245afd.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_CMD';
+     Value: 'group___n_x_t_servo_registers_ga6b03e903167c9e43596c35434b220b62.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S1_POS';
+     Value: 'group___n_x_t_servo_registers_ga3390792ce2e319b6c336152e3f0d4718.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S2_POS';
+     Value: 'group___n_x_t_servo_registers_ga60e107234e9f0809cffd69e947df6917.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S3_POS';
+     Value: 'group___n_x_t_servo_registers_ga8f16047b7e21adffe04e1580bf19953b.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S4_POS';
+     Value: 'group___n_x_t_servo_registers_ga6965e231288da30677d41923a46adc59.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S5_POS';
+     Value: 'group___n_x_t_servo_registers_ga7e123c79eef62f13097ba8136535a064.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S6_POS';
+     Value: 'group___n_x_t_servo_registers_gad708a2afd6617bdbf12c1de58f462dac.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S7_POS';
+     Value: 'group___n_x_t_servo_registers_ga11480dcfc13d383d5bc4214bd07de697.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S8_POS';
+     Value: 'group___n_x_t_servo_registers_ga80da5a0c8ce915cef87713044e3057dd.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S1_SPEED';
+     Value: 'group___n_x_t_servo_registers_gad3d788f80c8f78080058f629cd8128bf.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S2_SPEED';
+     Value: 'group___n_x_t_servo_registers_gac75cf2fa27c154db37583f46b449a7ed.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S3_SPEED';
+     Value: 'group___n_x_t_servo_registers_gaa88607f776bb89944b67adcc95b8d090.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S4_SPEED';
+     Value: 'group___n_x_t_servo_registers_ga5da5852b620dac4ef71cf3fff55f23d6.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S5_SPEED';
+     Value: 'group___n_x_t_servo_registers_ga7701fe1dd310c06ff3879fb42f70f08b.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S6_SPEED';
+     Value: 'group___n_x_t_servo_registers_gab2ff74483bfe03830e2b951a2577de2c.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S7_SPEED';
+     Value: 'group___n_x_t_servo_registers_ga9fc5f1cfd451c04d8593895ca2ae090a.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S8_SPEED';
+     Value: 'group___n_x_t_servo_registers_gad76e7737fa6c6f0e957d10a9fbf2b6f9.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S1_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga24ba0f078299671b66a99755134da690.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S2_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga566172cdce99bdc5640e787d2281b7c3.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S3_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga820b566fb17e83db083e9391aab6d3cd.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S4_QPOS';
+     Value: 'group___n_x_t_servo_registers_gac0d604cc04665cd5b281fbf445d67ae7.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S5_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga8473401c00badfa7d1d85522afcb5578.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S6_QPOS';
+     Value: 'group___n_x_t_servo_registers_gaac006f43f7c56e57734c06e042079f4c.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S7_QPOS';
+     Value: 'group___n_x_t_servo_registers_ga22ce61c0e3ea41f27d7e537a560cc991.html'
+    ),
+    (
+     Name: 'NXTSERVO_REG_S8_QPOS';
+     Value: 'group___n_x_t_servo_registers_gaf0f8857c863a85f58460a5356802bd83.html'
+    ),
+    (
+     Name: 'NXTSERVO_EM_REG_CMD';
+     Value: 'group___n_x_t_servo_registers_gaa83276220566201e2b8b465b155ae40f.html'
+    ),
+    (
+     Name: 'NXTSERVO_EM_REG_EEPROM_START';
+     Value: 'group___n_x_t_servo_registers_gae913bc597f057f3305146d14d2c53c11.html'
+    ),
+    (
+     Name: 'NXTSERVO_EM_REG_EEPROM_END';
+     Value: 'group___n_x_t_servo_registers_ga0846b1e87396008ae7c12f9bc70ae654.html'
+    ),
+    (
+     Name: 'NXTSERVO_POS_CENTER';
+     Value: 'group___n_x_t_servo_pos_ga96108e99d9a89f006fe91b985ec4f40e.html'
+    ),
+    (
+     Name: 'NXTSERVO_POS_MIN';
+     Value: 'group___n_x_t_servo_pos_ga206b839672b273a1924828ba85b4a067.html'
+    ),
+    (
+     Name: 'NXTSERVO_POS_MAX';
+     Value: 'group___n_x_t_servo_pos_gaaea20332e499a2cefda806c49dd422e6.html'
+    ),
+    (
+     Name: 'NXTSERVO_QPOS_CENTER';
+     Value: 'group___n_x_t_servo_q_pos_gaa7744a9d2d070e52fa1d12fdf202f611.html'
+    ),
+    (
+     Name: 'NXTSERVO_QPOS_MIN';
+     Value: 'group___n_x_t_servo_q_pos_ga254bc7338798fff9e239755e2ab88730.html'
+    ),
+    (
+     Name: 'NXTSERVO_QPOS_MAX';
+     Value: 'group___n_x_t_servo_q_pos_ga27690f7996fcabdf99270d2cf12fe5f5.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_1';
+     Value: 'group___n_x_t_servo_numbers_ga28f3c8b6640f21ca30ae2193529d71a4.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_2';
+     Value: 'group___n_x_t_servo_numbers_ga2e30ae52ca02ccfbf97540dd03409a8c.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_3';
+     Value: 'group___n_x_t_servo_numbers_ga502a5befe23ddfef3c88ae3c502747d2.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_4';
+     Value: 'group___n_x_t_servo_numbers_ga0108ac5b87b11b0fc22e7d0c4a20fee6.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_5';
+     Value: 'group___n_x_t_servo_numbers_ga9dd3d10492f87c11101955a524123994.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_6';
+     Value: 'group___n_x_t_servo_numbers_ga27b56e65c1ebc749622b2e4e980218c2.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_7';
+     Value: 'group___n_x_t_servo_numbers_gaa97196c0d4af6fb6205c52e11dc28952.html'
+    ),
+    (
+     Name: 'NXTSERVO_SERVO_8';
+     Value: 'group___n_x_t_servo_numbers_ga42d0bec1151b124fdd4e6181ed0cb502.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_INIT';
+     Value: 'group___n_x_t_servo_commands_ga2633d1e3c6809a35b10eebc7c112b534.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_RESET';
+     Value: 'group___n_x_t_servo_commands_ga0b7410596cd7f3e8830f206393497dec.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_HALT';
+     Value: 'group___n_x_t_servo_commands_ga1515ca535f65e13da8d48eae0ce7352a.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_RESUME';
+     Value: 'group___n_x_t_servo_commands_ga8fe50901f2f5b9a94eee57297971d648.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_GOTO';
+     Value: 'group___n_x_t_servo_commands_gab2bf2fff9e43022ee008eb44a6292973.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_PAUSE';
+     Value: 'group___n_x_t_servo_commands_gad0af90fbcff93ebf537215e0fb55ddee.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_EDIT1';
+     Value: 'group___n_x_t_servo_commands_ga5eef977a9ae25a76a7338ed2d67af5ea.html'
+    ),
+    (
+     Name: 'NXTSERVO_CMD_EDIT2';
+     Value: 'group___n_x_t_servo_commands_ga19ed328ae27c95f16a74a0fcc1584f1e.html'
+    ),
+    (
+     Name: 'NXTSERVO_EM_CMD_QUIT';
+     Value: 'group___n_x_t_servo_commands_ga8127aeaf42188b4891d58e5ea218b8b0.html'
+    ),
+    (
+     Name: 'NXTHID_REG_CMD';
+     Value: 'group___n_x_t_h_i_d_registers_gaf3f882435a24a8e6b3b582f1d5600151.html'
+    ),
+    (
+     Name: 'NXTHID_REG_MODIFIER';
+     Value: 'group___n_x_t_h_i_d_registers_gaf66167418ef2d38068b4fb38d6f35671.html'
+    ),
+    (
+     Name: 'NXTHID_REG_DATA';
+     Value: 'group___n_x_t_h_i_d_registers_gaf49dcc2d29264aa614f24b9f00e60ea4.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_NONE';
+     Value: 'group___n_x_t_h_i_d_modifiers_gad12cbaf14463ae4efa05cac66129e198.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_LEFT_CTRL';
+     Value: 'group___n_x_t_h_i_d_modifiers_gab03597010e5e6d60ff937592931c9c90.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_LEFT_SHIFT';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga5f52ca6c188fa64fd7063773cba9bc1a.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_LEFT_ALT';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga2fc46b5f6840601fa68c8aae2254e6b0.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_LEFT_GUI';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga88ddf932d123408d432f42541d9f3ee2.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_RIGHT_CTRL';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga9032bd4c435601d27f67cc7413f74952.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_RIGHT_SHIFT';
+     Value: 'group___n_x_t_h_i_d_modifiers_gadee77c6ef5c2d0998ab3b94ff1f14ccf.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_RIGHT_ALT';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga703f342ce6bbec1a3fadbcf403e725c2.html'
+    ),
+    (
+     Name: 'NXTHID_MOD_RIGHT_GUI';
+     Value: 'group___n_x_t_h_i_d_modifiers_ga8aa3032a1cb47c43673b9d515190b8e8.html'
+    ),
+    (
+     Name: 'NXTHID_CMD_ASCII';
+     Value: 'group___n_x_t_h_i_d_commands_gab39891754361ab622625900317d7d232.html'
+    ),
+    (
+     Name: 'NXTHID_CMD_DIRECT';
+     Value: 'group___n_x_t_h_i_d_commands_ga30c9e1f05d842d41513eb4267e76f12e.html'
+    ),
+    (
+     Name: 'NXTHID_CMD_TRANSMIT';
+     Value: 'group___n_x_t_h_i_d_commands_gaf17b4b6cc5ba7bf20b2999084ade461e.html'
+    ),
+    (
+     Name: 'NXTPM_REG_CMD';
+     Value: 'group___n_x_t_power_meter_registers_ga732fa24e725593a449e0734b2920d23f.html'
+    ),
+    (
+     Name: 'NXTPM_REG_CURRENT';
+     Value: 'group___n_x_t_power_meter_registers_ga6e50c64055444b8f647be166f46442a8.html'
+    ),
+    (
+     Name: 'NXTPM_REG_VOLTAGE';
+     Value: 'group___n_x_t_power_meter_registers_ga99634dba77f573195d61b4890b66b34b.html'
+    ),
+    (
+     Name: 'NXTPM_REG_CAPACITY';
+     Value: 'group___n_x_t_power_meter_registers_gaa315ef2e1fe7819f2fcc20f17a8bd761.html'
+    ),
+    (
+     Name: 'NXTPM_REG_POWER';
+     Value: 'group___n_x_t_power_meter_registers_ga963e72a523adab6ef622adc6854f486f.html'
+    ),
+    (
+     Name: 'NXTPM_REG_TOTALPOWER';
+     Value: 'group___n_x_t_power_meter_registers_ga82ab42d6c27c251b72f1712a934c2c42.html'
+    ),
+    (
+     Name: 'NXTPM_REG_MAXCURRENT';
+     Value: 'group___n_x_t_power_meter_registers_ga98ad39c8bf7ff9baf306f2e1775bcd62.html'
+    ),
+    (
+     Name: 'NXTPM_REG_MINCURRENT';
+     Value: 'group___n_x_t_power_meter_registers_ga1bac59c4e72c23bc0e3a1391c0b7c270.html'
+    ),
+    (
+     Name: 'NXTPM_REG_MAXVOLTAGE';
+     Value: 'group___n_x_t_power_meter_registers_gac6e167c164f60b786bf3002027a780a5.html'
+    ),
+    (
+     Name: 'NXTPM_REG_MINVOLTAGE';
+     Value: 'group___n_x_t_power_meter_registers_gaf219965f9c0c2c91986e6b4ed60a4e31.html'
+    ),
+    (
+     Name: 'NXTPM_REG_TIME';
+     Value: 'group___n_x_t_power_meter_registers_ga1dac4fced36e1faa7d34b4f875067c67.html'
+    ),
+    (
+     Name: 'NXTPM_REG_USERGAIN';
+     Value: 'group___n_x_t_power_meter_registers_ga262e0ca6366cf2df66d492cd43f516c9.html'
+    ),
+    (
+     Name: 'NXTPM_REG_GAIN';
+     Value: 'group___n_x_t_power_meter_registers_gadc30f4f7cd67d0c224f72f7130c1ccd8.html'
+    ),
+    (
+     Name: 'NXTPM_REG_ERRORCOUNT';
+     Value: 'group___n_x_t_power_meter_registers_ga37b15d380dfde43dd7468ea9a8d310d0.html'
+    ),
+    (
+     Name: 'NXTPM_CMD_RESET';
+     Value: 'group___n_x_t_power_meter_commands_ga1f553aa2320905b5a4ad58ad116f9474.html'
+    ),
+    (
+     Name: 'NXTSE_ZONE_NONE';
+     Value: 'group___n_x_t_sumo_eyes_constants_gae94563ef1ecffd7dc46c109f6ffbee7e.html'
+    ),
+    (
+     Name: 'NXTSE_ZONE_FRONT';
+     Value: 'group___n_x_t_sumo_eyes_constants_ga627bcf8bbca51748ea951cc952fe53a1.html'
+    ),
+    (
+     Name: 'NXTSE_ZONE_LEFT';
+     Value: 'group___n_x_t_sumo_eyes_constants_gadf1e95c567847ba1d37b33b21a46eb51.html'
+    ),
+    (
+     Name: 'NXTSE_ZONE_RIGHT';
+     Value: 'group___n_x_t_sumo_eyes_constants_gaba18b35bba915186ccd95462ca5b1f78.html'
+    ),
+    (
+     Name: 'NXTLL_REG_CMD';
+     Value: 'group___n_x_t_line_leader_registers_gaf1b83cd1c4dea97b04c68323884810d2.html'
+    ),
+    (
+     Name: 'NXTLL_REG_STEERING';
+     Value: 'group___n_x_t_line_leader_registers_gaa060bb1f3ee54da02d7d83b4c93fa198.html'
+    ),
+    (
+     Name: 'NXTLL_REG_AVERAGE';
+     Value: 'group___n_x_t_line_leader_registers_gaa12f3096cfa20cf3bc87f52ac96d6064.html'
+    ),
+    (
+     Name: 'NXTLL_REG_RESULT';
+     Value: 'group___n_x_t_line_leader_registers_gad07a707d78a061529dcf1262c557962b.html'
+    ),
+    (
+     Name: 'NXTLL_REG_SETPOINT';
+     Value: 'group___n_x_t_line_leader_registers_ga7271c1d56d87fc0371b06cdbc0c0335d.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KP_VALUE';
+     Value: 'group___n_x_t_line_leader_registers_gac041b929daed4da9899520fb7462bd5c.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KI_VALUE';
+     Value: 'group___n_x_t_line_leader_registers_gab1f0b4e93abaacdbd5606372f2511abd.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KD_VALUE';
+     Value: 'group___n_x_t_line_leader_registers_ga457ad2bf94f21ec81082903776b5fb2b.html'
+    ),
+    (
+     Name: 'NXTLL_REG_CALIBRATED';
+     Value: 'group___n_x_t_line_leader_registers_ga7823527faae7ffa98f5c34e6b88095c6.html'
+    ),
+    (
+     Name: 'NXTLL_REG_WHITELIMITS';
+     Value: 'group___n_x_t_line_leader_registers_gab8c340ed1df9fb00968926a1ade36fc2.html'
+    ),
+    (
+     Name: 'NXTLL_REG_BLACKLIMITS';
+     Value: 'group___n_x_t_line_leader_registers_ga45a8397768404d1620dd4bc385b26439.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KP_FACTOR';
+     Value: 'group___n_x_t_line_leader_registers_ga5d3ca5bca1c8804e9f517c712f70e5d2.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KI_FACTOR';
+     Value: 'group___n_x_t_line_leader_registers_ga4ec90b2428450543210e0d1ae33f2aad.html'
+    ),
+    (
+     Name: 'NXTLL_REG_KD_FACTOR';
+     Value: 'group___n_x_t_line_leader_registers_ga58d786c2b73476e1d64ffa000b803b95.html'
+    ),
+    (
+     Name: 'NXTLL_REG_WHITEDATA';
+     Value: 'group___n_x_t_line_leader_registers_ga7b97c59ee0d1adaa85570407a44272be.html'
+    ),
+    (
+     Name: 'NXTLL_REG_BLACKDATA';
+     Value: 'group___n_x_t_line_leader_registers_ga358aab0257eeb2251ffa450202053d3e.html'
+    ),
+    (
+     Name: 'NXTLL_REG_RAWVOLTAGE';
+     Value: 'group___n_x_t_line_leader_registers_gac08c56847666ea0cc42077a77285a323.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_USA';
+     Value: 'group___n_x_t_line_leader_commands_ga8f0a411fed71a8b02091f2e492bc3839.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_BLACK';
+     Value: 'group___n_x_t_line_leader_commands_gaddb44c9d49fcbda4f87fec05acdf9760.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_POWERDOWN';
+     Value: 'group___n_x_t_line_leader_commands_gaa587016e0a7df82add8c121f4aff2a6f.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_EUROPEAN';
+     Value: 'group___n_x_t_line_leader_commands_ga3b31aeac50d8f46cd941ada19e3ef7c7.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_INVERT';
+     Value: 'group___n_x_t_line_leader_commands_ga05232b42ebc9ee401726ea86cf68a88d.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_POWERUP';
+     Value: 'group___n_x_t_line_leader_commands_ga19fe19cc80c4caf5472bc19a897eba06.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_RESET';
+     Value: 'group___n_x_t_line_leader_commands_ga0641237242ecc2b7ad2b40e769dce2e0.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_SNAPSHOT';
+     Value: 'group___n_x_t_line_leader_commands_ga8e5a5d945df03dceb5585ee288140bfe.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_UNIVERSAL';
+     Value: 'group___n_x_t_line_leader_commands_ga127b045ebe4c4338f87e99bef0a0168f.html'
+    ),
+    (
+     Name: 'NXTLL_CMD_WHITE';
+     Value: 'group___n_x_t_line_leader_commands_ga831a8f649ba0bd3187e76656944780b6.html'
+    ),
+    (
+     Name: 'RFID_MODE_STOP';
+     Value: 'group___c_t_r_f_i_d_mode_constants_ga41f48d27490a21c45054c0dc4daef8a6.html'
+    ),
+    (
+     Name: 'RFID_MODE_SINGLE';
+     Value: 'group___c_t_r_f_i_d_mode_constants_ga9300bfb6f2ae049939c0923790e38eeb.html'
+    ),
+    (
+     Name: 'RFID_MODE_CONTINUOUS';
+     Value: 'group___c_t_r_f_i_d_mode_constants_ga9064d5262b76ff646fa0f9f8136673c8.html'
+    ),
+    (
+     Name: 'CT_ADDR_RFID';
+     Value: 'group___c_t_r_f_i_d_constants_ga8a306018ec49a04ec0b4cf3ccf8a0f89.html'
+    ),
+    (
+     Name: 'CT_REG_STATUS';
+     Value: 'group___c_t_r_f_i_d_constants_ga4ea363f279ab97a226f0815e9b28d388.html'
+    ),
+    (
+     Name: 'CT_REG_MODE';
+     Value: 'group___c_t_r_f_i_d_constants_gad885999bd4202cd96b7192981287c0b7.html'
+    ),
+    (
+     Name: 'CT_REG_DATA';
+     Value: 'group___c_t_r_f_i_d_constants_gafb06afdd122091ad3bf2a54b9dead516.html'
     ),
     (
      Name: 'RICImgPoint';
@@ -5821,6 +6501,14 @@ const
      Value: 'group___input_module_functions_gaf593560e5687f87b840cfd5cb3c2b8b5.html'
     ),
     (
+     Name: 'SetSensorEMeter';
+     Value: 'group___input_module_functions_ga24eaffa7e27b089f52d934e9df6d19bf.html'
+    ),
+    (
+     Name: 'SetSensorTemperature';
+     Value: 'group___input_module_functions_ga97348a2088944e8ee11916adbb571d72.html'
+    ),
+    (
      Name: 'SetSensorColorFull';
      Value: 'group___input_module_functions_ga89d7bbd5fc09c5109051e476d5fb6170.html'
     ),
@@ -5947,6 +6635,14 @@ const
     (
      Name: 'ReadSensorEMeter';
      Value: 'group___low_speed_module_functions_ga71d57fcd77253d58db6ce99ec912bec4.html'
+    ),
+    (
+     Name: 'ConfigureTemperatureSensor';
+     Value: 'group___low_speed_module_functions_ga0a08bc67655d06dfc0c305341fb4e8e1.html'
+    ),
+    (
+     Name: 'ReadSensorTemperature';
+     Value: 'group___low_speed_module_functions_gae8e5962a351adeb3c8b810d0b42c513f.html'
     ),
     (
      Name: 'LowspeedStatus';
@@ -6465,6 +7161,14 @@ const
      Value: 'group___command_module_functions_ga162e90c0444b6165fde38f8544652e45.html'
     ),
     (
+     Name: 'GetMemoryInfo';
+     Value: 'group___command_module_functions_ga353c88e671ec5d25e1843000115c3361.html'
+    ),
+    (
+     Name: 'GetLastResponseInfo';
+     Value: 'group___command_module_functions_ga79c93d2601a45ae1965631c86bfbe5ff.html'
+    ),
+    (
      Name: 'ReadButtonEx';
      Value: 'group___button_module_functions_gace9d36ab22715e80fc10d89b13e6f42a.html'
     ),
@@ -6669,6 +7373,14 @@ const
      Value: 'group___comm_module_functions_gab59c0f07f85c23373dc62abb39cbe573.html'
     ),
     (
+     Name: 'RemoteConnectionWrite';
+     Value: 'group___comm_module_functions_gaf97be478344415ed5386d95a51d9d962.html'
+    ),
+    (
+     Name: 'RemoteConnectionIdle';
+     Value: 'group___comm_module_functions_gaa8875e02f6fe1dafad29849c17e47000.html'
+    ),
+    (
      Name: 'SendRemoteBool';
      Value: 'group___comm_module_functions_ga3feb9da6508ab1b5ecb203d9ae0d8337.html'
     ),
@@ -6682,51 +7394,207 @@ const
     ),
     (
      Name: 'RemoteMessageRead';
-     Value: 'group___comm_module_functions_ga6f6858fb2e74ee4b2a1a5ed970870961.html'
+     Value: 'group___comm_module_d_c_functions_ga6f6858fb2e74ee4b2a1a5ed970870961.html'
     ),
     (
      Name: 'RemoteMessageWrite';
-     Value: 'group___comm_module_functions_ga445d67d21f6011bbdcd061dbf943e8c8.html'
+     Value: 'group___comm_module_d_c_functions_ga445d67d21f6011bbdcd061dbf943e8c8.html'
     ),
     (
      Name: 'RemoteStartProgram';
-     Value: 'group___comm_module_functions_gab611aa719e7925801e0d3371a7b51a6f.html'
+     Value: 'group___comm_module_d_c_functions_gab611aa719e7925801e0d3371a7b51a6f.html'
     ),
     (
      Name: 'RemoteStopProgram';
-     Value: 'group___comm_module_functions_gac9410a75ad9502986e41e03d3ca995ea.html'
+     Value: 'group___comm_module_d_c_functions_gac9410a75ad9502986e41e03d3ca995ea.html'
     ),
     (
      Name: 'RemotePlaySoundFile';
-     Value: 'group___comm_module_functions_gab78ae911640b2c13402686272083e31d.html'
+     Value: 'group___comm_module_d_c_functions_gab78ae911640b2c13402686272083e31d.html'
     ),
     (
      Name: 'RemotePlayTone';
-     Value: 'group___comm_module_functions_ga271d5ca29d0df222e416b577e1c09df3.html'
+     Value: 'group___comm_module_d_c_functions_ga271d5ca29d0df222e416b577e1c09df3.html'
     ),
     (
      Name: 'RemoteStopSound';
-     Value: 'group___comm_module_functions_gaac8cb6c1fbc803531797de5769406030.html'
+     Value: 'group___comm_module_d_c_functions_gaac8cb6c1fbc803531797de5769406030.html'
     ),
     (
      Name: 'RemoteKeepAlive';
-     Value: 'group___comm_module_functions_gaebf9f386501148adad7bff7cf52063ed.html'
+     Value: 'group___comm_module_d_c_functions_gaebf9f386501148adad7bff7cf52063ed.html'
     ),
     (
      Name: 'RemoteResetScaledValue';
-     Value: 'group___comm_module_functions_ga0ff72e27e84798b5c138a6d6b98caec4.html'
+     Value: 'group___comm_module_d_c_functions_ga0ff72e27e84798b5c138a6d6b98caec4.html'
     ),
     (
      Name: 'RemoteResetMotorPosition';
-     Value: 'group___comm_module_functions_gafb551c0bf236c264e88a4586c5279f8f.html'
+     Value: 'group___comm_module_d_c_functions_gafb551c0bf236c264e88a4586c5279f8f.html'
     ),
     (
      Name: 'RemoteSetInputMode';
-     Value: 'group___comm_module_functions_ga8564097ef9bc0442c2e3c710046e72b5.html'
+     Value: 'group___comm_module_d_c_functions_ga8564097ef9bc0442c2e3c710046e72b5.html'
     ),
     (
      Name: 'RemoteSetOutputState';
-     Value: 'group___comm_module_functions_ga631259681dcc1c657bc9f716c6d61aea.html'
+     Value: 'group___comm_module_d_c_functions_ga631259681dcc1c657bc9f716c6d61aea.html'
+    ),
+    (
+     Name: 'RemoteGetBatteryLevel';
+     Value: 'group___comm_module_d_c_functions_gace2feddbd9c4a9b132f9d2c1c50967b5.html'
+    ),
+    (
+     Name: 'RemoteLowspeedGetStatus';
+     Value: 'group___comm_module_d_c_functions_gad5529ee88578bf27372423d68f271f80.html'
+    ),
+    (
+     Name: 'RemoteGetCurrentProgramName';
+     Value: 'group___comm_module_d_c_functions_gad48a56eec234f1d83bb4b9e7c2b94f4f.html'
+    ),
+    (
+     Name: 'RemoteGetContactCount';
+     Value: 'group___comm_module_d_c_functions_gafeac96a7a0259979db3739a0d7cbef28.html'
+    ),
+    (
+     Name: 'RemoteGetConnectionCount';
+     Value: 'group___comm_module_d_c_functions_gaca3a44c582d52220d2c3c7537bf4707d.html'
+    ),
+    (
+     Name: 'RemoteGetOutputState';
+     Value: 'group___comm_module_d_c_functions_ga9de0cc27e09fe940514dae4f54a67aa3.html'
+    ),
+    (
+     Name: 'RemoteGetInputValues';
+     Value: 'group___comm_module_d_c_functions_ga159861d59245547aa2fffe1c2863f96e.html'
+    ),
+    (
+     Name: 'RemoteLowspeedRead';
+     Value: 'group___comm_module_d_c_functions_ga8b19c925e3440af30f8ea998563db44a.html'
+    ),
+    (
+     Name: 'RemoteResetTachoCount';
+     Value: 'group___comm_module_d_c_functions_ga889968f499d66abb7bc30ae2af210296.html'
+    ),
+    (
+     Name: 'RemoteGetProperty';
+     Value: 'group___comm_module_d_c_functions_gaca60d4c73c3caffcdc3e29a84fb76cbc.html'
+    ),
+    (
+     Name: 'RemoteDatalogRead';
+     Value: 'group___comm_module_d_c_functions_gaf425e1ff68082fadcf24f786a4bccbdc.html'
+    ),
+    (
+     Name: 'RemoteBTGetContactName';
+     Value: 'group___comm_module_d_c_functions_gaeb826f4eaf78db6384df39e90278714f.html'
+    ),
+    (
+     Name: 'RemoteBTGetConnectionName';
+     Value: 'group___comm_module_d_c_functions_gadd3b4ff2eeee7ed75de6068f8704e88c.html'
+    ),
+    (
+     Name: 'RemoteDatalogSetTimes';
+     Value: 'group___comm_module_d_c_functions_ga913d043bfb1200408acc2e276c35b041.html'
+    ),
+    (
+     Name: 'RemoteSetProperty';
+     Value: 'group___comm_module_d_c_functions_ga80a278b855f8b79f634368985f02d334.html'
+    ),
+    (
+     Name: 'RemoteLowspeedWrite';
+     Value: 'group___comm_module_d_c_functions_ga047f09bf29e1744c715ddc515e8ecb47.html'
+    ),
+    (
+     Name: 'RemoteOpenRead';
+     Value: 'group___comm_module_s_c_functions_ga5b790f0036dedd9d74c5560a74212456.html'
+    ),
+    (
+     Name: 'RemoteOpenAppendData';
+     Value: 'group___comm_module_s_c_functions_gabad6c75e0375df54917615953100f477.html'
+    ),
+    (
+     Name: 'RemoteDeleteFile';
+     Value: 'group___comm_module_s_c_functions_ga62283d3078dc8d4ae101d6dc7e6b7395.html'
+    ),
+    (
+     Name: 'RemoteFindFirstFile';
+     Value: 'group___comm_module_s_c_functions_gaaf2caaf4097d94d8da1e12fa08108420.html'
+    ),
+    (
+     Name: 'RemoteGetFirmwareVersion';
+     Value: 'group___comm_module_s_c_functions_gaaab16ca8156025d191a324f486af140a.html'
+    ),
+    (
+     Name: 'RemoteGetBluetoothAddress';
+     Value: 'group___comm_module_s_c_functions_gabfd6b313b711856eb534e21ee80823fe.html'
+    ),
+    (
+     Name: 'RemoteGetDeviceInfo';
+     Value: 'group___comm_module_s_c_functions_ga889942a0e74445f05fbe1162514af46f.html'
+    ),
+    (
+     Name: 'RemoteDeleteUserFlash';
+     Value: 'group___comm_module_s_c_functions_ga9de90677a1d2ab654b819f9f6a1353b0.html'
+    ),
+    (
+     Name: 'RemoteBluetoothFactoryReset';
+     Value: 'group___comm_module_s_c_functions_gabae6a8c92d90bcb759be2611a062d10a.html'
+    ),
+    (
+     Name: 'RemoteOpenWrite';
+     Value: 'group___comm_module_s_c_functions_ga6d3042cbdc510f15359249649c028626.html'
+    ),
+    (
+     Name: 'RemoteOpenWriteLinear';
+     Value: 'group___comm_module_s_c_functions_gac123a9c02a7c129acf7acf4b28ec710c.html'
+    ),
+    (
+     Name: 'RemoteOpenWriteData';
+     Value: 'group___comm_module_s_c_functions_gae40674f0f47679ddd200dd1f76f2c038.html'
+    ),
+    (
+     Name: 'RemoteCloseFile';
+     Value: 'group___comm_module_s_c_functions_gae983d80cbece17e13c94f9afe36b1d41.html'
+    ),
+    (
+     Name: 'RemoteFindNextFile';
+     Value: 'group___comm_module_s_c_functions_ga3faa47bfcc2768e568329ed892ae1a9b.html'
+    ),
+    (
+     Name: 'RemotePollCommandLength';
+     Value: 'group___comm_module_s_c_functions_ga8a03b6a7f163e4932b3d8f53bdd29972.html'
+    ),
+    (
+     Name: 'RemoteWrite';
+     Value: 'group___comm_module_s_c_functions_ga1254d825a5493e65d3cf643278daf4f0.html'
+    ),
+    (
+     Name: 'RemoteRead';
+     Value: 'group___comm_module_s_c_functions_ga496229047840139d33a843665051409d.html'
+    ),
+    (
+     Name: 'RemoteIOMapRead';
+     Value: 'group___comm_module_s_c_functions_gab03f3560209b0339274980d237cba5fd.html'
+    ),
+    (
+     Name: 'RemoteIOMapWriteValue';
+     Value: 'group___comm_module_s_c_functions_gaff8f9006f40ac9e86388f7b3fbabd4ec.html'
+    ),
+    (
+     Name: 'RemoteIOMapWriteBytes';
+     Value: 'group___comm_module_s_c_functions_gab9b7f2e83d15d6ba28dba49a6dbb0689.html'
+    ),
+    (
+     Name: 'RemoteSetBrickName';
+     Value: 'group___comm_module_s_c_functions_ga4ae1e83c078bcd902950f0be32d34d43.html'
+    ),
+    (
+     Name: 'RemoteRenameFile';
+     Value: 'group___comm_module_s_c_functions_ga97566d63e972f36689d859bcc681e368.html'
+    ),
+    (
+     Name: 'RemotePollCommand';
+     Value: 'group___comm_module_s_c_functions_gaca7a687dcbf1bf98a2e3b75cc8a85c27.html'
     ),
     (
      Name: 'RS485Status';
@@ -6949,6 +7817,14 @@ const
      Value: 'group___comm_module_functions_gafcd1fc078f3c8e0a2a3ac507d33edc2d.html'
     ),
     (
+     Name: 'GetBTDataMode';
+     Value: 'group___comm_module_functions_gaf54caf6c0dcaf39be307410aeefb8f42.html'
+    ),
+    (
+     Name: 'GetHSDataMode';
+     Value: 'group___comm_module_functions_ga042075fc4444e8d8b1cc7be0aabf766f.html'
+    ),
+    (
      Name: 'SetBTInputBuffer';
      Value: 'group___comm_module_functions_ga6d0f5525c091f0aa8210c80300479f12.html'
     ),
@@ -7051,6 +7927,14 @@ const
     (
      Name: 'SetHSMode';
      Value: 'group___comm_module_functions_ga49c2796905fdda56cfc8bd5f4152731e.html'
+    ),
+    (
+     Name: 'SetBTDataMode';
+     Value: 'group___comm_module_functions_ga935f57b6d05f007f46b3d2c92c481128.html'
+    ),
+    (
+     Name: 'SetHSDataMode';
+     Value: 'group___comm_module_functions_gaa111595ee6de472ee80262e7f5d3ac22.html'
     ),
     (
      Name: 'PowerDown';
@@ -7175,6 +8059,14 @@ const
     (
      Name: 'ReadSensorHTGyro';
      Value: 'group___hi_technic_a_p_i_ga68bd42b99ccdd09b6bdc763a584f152e.html'
+    ),
+    (
+     Name: 'SetSensorHTMagnet';
+     Value: 'group___hi_technic_a_p_i_gaf02385dd35bc21b14eed9f6ecc3cc6f0.html'
+    ),
+    (
+     Name: 'ReadSensorHTMagnet';
+     Value: 'group___hi_technic_a_p_i_ga6d3b9dc81583aa8e3c62b7b8143bcc5b.html'
     ),
     (
      Name: 'SetSensorHTEOPD';
@@ -7589,6 +8481,14 @@ const
      Value: 'group___hi_technic_a_p_i_gad85044f5d543d62200daef12c73881b1.html'
     ),
     (
+     Name: 'ResetSensorHTAngle';
+     Value: 'group___hi_technic_a_p_i_ga2426d0a71f5232fe1cc64453ff03ee0f.html'
+    ),
+    (
+     Name: 'ReadSensorHTAngle';
+     Value: 'group___hi_technic_a_p_i_ga168678aaa538ad4f73091839ac89c57b.html'
+    ),
+    (
      Name: 'ReadSensorMSCompass';
      Value: 'group___mind_sensors_a_p_i_ga1af1f9b53eedf14ac15d73c62c06c1ee.html'
     ),
@@ -7603,6 +8503,18 @@ const
     (
      Name: 'SetSensorMSDRODInactive';
      Value: 'group___mind_sensors_a_p_i_ga8f056e379701566b0f2015da66c2ee2a.html'
+    ),
+    (
+     Name: 'ReadSensorNXTSumoEyes';
+     Value: 'group___mind_sensors_a_p_i_ga63202611e31a53093b1eaddd64349e82.html'
+    ),
+    (
+     Name: 'SetSensorNXTSumoEyesLong';
+     Value: 'group___mind_sensors_a_p_i_ga8cdaba30d4bb066a16ab221a1092341e.html'
+    ),
+    (
+     Name: 'SetSensorNXTSumoEyesShort';
+     Value: 'group___mind_sensors_a_p_i_gaa945cc85d762fc04b9837b4d3ce9aa7d.html'
     ),
     (
      Name: 'ReadSensorMSPressureRaw';
@@ -7635,6 +8547,14 @@ const
     (
      Name: 'ReadSensorMSTilt';
      Value: 'group___mind_sensors_a_p_i_ga1befaaedf90595ad85a368234f1e0a47.html'
+    ),
+    (
+     Name: 'PFMateSend';
+     Value: 'group___mind_sensors_a_p_i_ga660efa00c0dc9780a5d0a5bc9707e71e.html'
+    ),
+    (
+     Name: 'PFMateSendRaw';
+     Value: 'group___mind_sensors_a_p_i_ga933bea0816b78bb1ee0feded9794d757.html'
     ),
     (
      Name: 'MSReadValue';
@@ -7763,6 +8683,194 @@ const
     (
      Name: 'PSPNxAnalog';
      Value: 'group___mind_sensors_a_p_i_ga457c2061ad080d4388352044fe23df99.html'
+    ),
+    (
+     Name: 'ReadNXTServoPosition';
+     Value: 'group___mind_sensors_a_p_i_ga98b7268ad70f6a5192e6091b6fe5158f.html'
+    ),
+    (
+     Name: 'ReadNXTServoSpeed';
+     Value: 'group___mind_sensors_a_p_i_ga94c413275fbca515212e88ce366b26c3.html'
+    ),
+    (
+     Name: 'ReadNXTServoBatteryVoltage';
+     Value: 'group___mind_sensors_a_p_i_ga02f73d9873ab939b2f2c637396534f74.html'
+    ),
+    (
+     Name: 'SetNXTServoSpeed';
+     Value: 'group___mind_sensors_a_p_i_ga64ba71693c2ff1a59561d3e159cd90d9.html'
+    ),
+    (
+     Name: 'SetNXTServoQuickPosition';
+     Value: 'group___mind_sensors_a_p_i_gad050cd31604393e7f495f5d11f3dec18.html'
+    ),
+    (
+     Name: 'SetNXTServoPosition';
+     Value: 'group___mind_sensors_a_p_i_gac4042c6717667c5f4ea48a1e5f302cd5.html'
+    ),
+    (
+     Name: 'NXTServoReset';
+     Value: 'group___mind_sensors_a_p_i_gac9e61f97614f7c707fda2a1d1043c06b.html'
+    ),
+    (
+     Name: 'NXTServoHaltMacro';
+     Value: 'group___mind_sensors_a_p_i_ga89ec80ef66760098099df8cb16ec1c9c.html'
+    ),
+    (
+     Name: 'NXTServoResumeMacro';
+     Value: 'group___mind_sensors_a_p_i_ga89bccd030a1586d9d53dab9395a18636.html'
+    ),
+    (
+     Name: 'NXTServoPauseMacro';
+     Value: 'group___mind_sensors_a_p_i_ga736e23f057cc3ee06438edf703dcdc48.html'
+    ),
+    (
+     Name: 'NXTServoInit';
+     Value: 'group___mind_sensors_a_p_i_ga658f4abcc0d6bf0bcdf02d0ed1875350.html'
+    ),
+    (
+     Name: 'NXTServoGotoMacroAddress';
+     Value: 'group___mind_sensors_a_p_i_ga36324086a039f41879ba7be0d9e8c728.html'
+    ),
+    (
+     Name: 'NXTServoEditMacro';
+     Value: 'group___mind_sensors_a_p_i_ga3d043c7fdec784d23a2cbdf313a1615b.html'
+    ),
+    (
+     Name: 'NXTServoQuitEdit';
+     Value: 'group___mind_sensors_a_p_i_ga5ec02b67cc4870c79f12c709bc220b0e.html'
+    ),
+    (
+     Name: 'NXTHIDAsciiMode';
+     Value: 'group___mind_sensors_a_p_i_ga140c3f7872d486de103f9a08402f89c5.html'
+    ),
+    (
+     Name: 'NXTHIDDirectMode';
+     Value: 'group___mind_sensors_a_p_i_gac1f1b801ea7316c887c181d1432d4de0.html'
+    ),
+    (
+     Name: 'NXTHIDTransmit';
+     Value: 'group___mind_sensors_a_p_i_ga6796592b78bbc902c7b209261c0c4e1d.html'
+    ),
+    (
+     Name: 'NXTHIDLoadCharacter';
+     Value: 'group___mind_sensors_a_p_i_gaeb96d89f48e09a03ef5d4d3f8b5ec8c1.html'
+    ),
+    (
+     Name: 'NXTPowerMeterResetCounters';
+     Value: 'group___mind_sensors_a_p_i_ga73bb35c774fe22db75c4de3bc6d88c7d.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterPresentCurrent';
+     Value: 'group___mind_sensors_a_p_i_ga3497e967215b0057cb1bc8e2f9a85d41.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterPresentVoltage';
+     Value: 'group___mind_sensors_a_p_i_ga50a3ea2e7b805211cc8069aab064e65e.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterCapacityUsed';
+     Value: 'group___mind_sensors_a_p_i_gaa5960c9d9c1dda2690acf66692bfb790.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterPresentPower';
+     Value: 'group___mind_sensors_a_p_i_ga016b4b86a970ea4457287bd854da82e5.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterTotalPowerConsumed';
+     Value: 'group___mind_sensors_a_p_i_ga68b125493952d8b34028474c074372b8.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterMaxCurrent';
+     Value: 'group___mind_sensors_a_p_i_ga16f78a358fc83e1c4e5809bbc5740104.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterMinCurrent';
+     Value: 'group___mind_sensors_a_p_i_ga9e0d418d21ffd821d90a7a135485e6a2.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterMaxVoltage';
+     Value: 'group___mind_sensors_a_p_i_ga6db9b518444126e7e8f5a9cad86a47d6.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterMinVoltage';
+     Value: 'group___mind_sensors_a_p_i_gade0582c396cd99e1c096a24f934121f9.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterElapsedTime';
+     Value: 'group___mind_sensors_a_p_i_gaf9fa730ca5ef1bdd041631877a341a29.html'
+    ),
+    (
+     Name: 'ReadNXTPowerMeterErrorCount';
+     Value: 'group___mind_sensors_a_p_i_ga329680b7db6b50552e2d50d2e583bb4e.html'
+    ),
+    (
+     Name: 'NXTLineLeaderPowerDown';
+     Value: 'group___mind_sensors_a_p_i_gae61145b2c13cad9ab263553be4e56caa.html'
+    ),
+    (
+     Name: 'NXTLineLeaderPowerUp';
+     Value: 'group___mind_sensors_a_p_i_ga5ebdc059f7f756064c37b04ab97468ee.html'
+    ),
+    (
+     Name: 'NXTLineLeaderInvert';
+     Value: 'group___mind_sensors_a_p_i_gad1f301e1fbf012d25e1e12c0ed48ee36.html'
+    ),
+    (
+     Name: 'NXTLineLeaderReset';
+     Value: 'group___mind_sensors_a_p_i_ga91305ac2d217d9a73622b0e646b1a8a3.html'
+    ),
+    (
+     Name: 'NXTLineLeaderSnapshot';
+     Value: 'group___mind_sensors_a_p_i_gaf881f66e0606de1c68f7d26a40b52997.html'
+    ),
+    (
+     Name: 'NXTLineLeaderCalibrateWhite';
+     Value: 'group___mind_sensors_a_p_i_ga8ef8a704fe0dc352e0c06f4ee8092e95.html'
+    ),
+    (
+     Name: 'NXTLineLeaderCalibrateBlack';
+     Value: 'group___mind_sensors_a_p_i_ga5e44823c0066da14a496e9b1fa243166.html'
+    ),
+    (
+     Name: 'ReadNXTLineLeaderSteering';
+     Value: 'group___mind_sensors_a_p_i_ga8b23e9f3157cd35512347424ab294a58.html'
+    ),
+    (
+     Name: 'ReadNXTLineLeaderAverage';
+     Value: 'group___mind_sensors_a_p_i_gafb8179298e36cf9f8f2ae6cc6983251f.html'
+    ),
+    (
+     Name: 'ReadNXTLineLeaderResult';
+     Value: 'group___mind_sensors_a_p_i_ga33096826fb3ef808234419135b1c7696.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderSetpoint';
+     Value: 'group___mind_sensors_a_p_i_ga2558948fe189c9bc19aac07cb0ae7df4.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKpValue';
+     Value: 'group___mind_sensors_a_p_i_ga137af0336711eea7832ccce39bf2fc01.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKiValue';
+     Value: 'group___mind_sensors_a_p_i_gab06b64498891586c45444c77249e0035.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKdValue';
+     Value: 'group___mind_sensors_a_p_i_ga2498c2fe3d2a0f1d6e8bef752bb44ef4.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKpFactor';
+     Value: 'group___mind_sensors_a_p_i_ga9661639c2d4953b6dfe3073ab52443d0.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKiFactor';
+     Value: 'group___mind_sensors_a_p_i_ga5a5dc58b5a0304a88f2e46d69d43c507.html'
+    ),
+    (
+     Name: 'SetNXTLineLeaderKdFactor';
+     Value: 'group___mind_sensors_a_p_i_ga3f2e3a60a4614a5e40e8c9383ef9b081.html'
     ),
     (
      Name: 'NRLink2400';
@@ -8211,6 +9319,34 @@ const
     (
      Name: 'MSScoutUnmuteSound';
      Value: 'group___mind_sensors_a_p_i_gab269c6b6060501dd553ccd2e3694c88e.html'
+    ),
+    (
+     Name: 'RFIDInit';
+     Value: 'group___codatex_a_p_i_ga400c0de5de8f4f02a7a2d138f70251a2.html'
+    ),
+    (
+     Name: 'RFIDMode';
+     Value: 'group___codatex_a_p_i_gacb51a35d1ff521ffd4f517c052a746a6.html'
+    ),
+    (
+     Name: 'RFIDStatus';
+     Value: 'group___codatex_a_p_i_ga3d0c0a3b4502fc69e12f678da7a1de76.html'
+    ),
+    (
+     Name: 'RFIDRead';
+     Value: 'group___codatex_a_p_i_gae21bd94af642a9c768086e31a86d18c5.html'
+    ),
+    (
+     Name: 'RFIDStop';
+     Value: 'group___codatex_a_p_i_gaf0b68e0be49693c5e258ebb2bc591910.html'
+    ),
+    (
+     Name: 'RFIDReadSingle';
+     Value: 'group___codatex_a_p_i_gaad5e167befcfb5530692ca2506621c6c.html'
+    ),
+    (
+     Name: 'RFIDReadContinuous';
+     Value: 'group___codatex_a_p_i_ga78408313b07acb318e930325fd6e1961.html'
     ),
     (
      Name: 'glInit';

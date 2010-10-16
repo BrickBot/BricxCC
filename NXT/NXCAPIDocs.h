@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-11
- * \version 8
+ * \date 2010-10-16
+ * \version 9
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -2669,6 +2669,9 @@
  * \example ex_motorrotationcount.nxc
  * This is an example of how to use the \ref MotorRotationCount function.
  *
+ * \example ex_motoroutputoptions.nxc
+ * This is an example of how to use the \ref MotorOutputOptions function.
+ *
  * \example ex_motorpwnfreq.nxc
  * This is an example of how to use the \ref MotorPwnFreq function.
  *
@@ -5091,11 +5094,60 @@
  * \ref SetIOCtrlModuleValue, \ref SetLoaderModuleValue, \ref SetUIModuleValue,
  * \ref SetSoundModuleValue, \ref SetButtonModuleValue, \ref SetInputModuleValue,
  * \ref SetOutputModuleValue, \ref SetLowSpeedModuleValue, \ref SetDisplayModuleValue,
- * \ref SetCommModuleValue, \ref GetCommandModuleValue, \ref GetIOCtrlModuleValue,
+ * \ref SetCommModuleValue, \ref GetCommandModuleValue,
  * \ref GetLoaderModuleValue, \ref GetUIModuleValue, \ref GetSoundModuleValue,
  * \ref GetButtonModuleValue, \ref GetInputModuleValue, \ref GetOutputModuleValue,
  * \ref GetLowSpeedModuleValue, \ref GetDisplayModuleValue, \ref GetCommModuleValue,
  *
+*/
+
+/*
+inline bool RemoteConnectionIdle(byte conn);
+inline char RemoteConnectionWrite(byte conn, byte buffer[]);
+
+inline char RemoteGetBatteryLevel(byte conn);
+inline char RemoteLowspeedGetStatus(byte conn);
+inline char RemoteGetCurrentProgramName(byte conn);
+inline char RemoteGetContactCount(byte conn);
+inline char RemoteGetConnectionCount(byte conn);
+inline char RemoteGetOutputState(byte conn, byte port);
+inline char RemoteGetInputValues(byte conn, byte port);
+inline char RemoteLowspeedRead(byte conn, byte port);
+inline char RemoteResetTachoCount(byte conn, byte port);
+inline char RemoteGetProperty(byte conn, byte property);
+inline char RemoteDatalogRead(byte conn, bool remove);
+inline char RemoteBTGetContactName(byte conn, byte idx);
+inline char RemoteBTGetConnectionName(byte conn, byte idx);
+inline char RemoteDatalogSetTimes(byte conn, long synctime);
+inline char RemoteSetProperty(byte conn, byte prop, variant value);
+inline char RemoteLowspeedWrite(byte conn, byte port, byte txlen, byte rxlen, byte data[]);
+
+inline char RemoteOpenRead(byte conn, string filename);
+inline char RemoteOpenAppendData(byte conn, string filename);
+inline char RemoteDeleteFile(byte conn, string filename);
+inline char RemoteFindFirstFile(byte conn, string mask);
+inline char RemoteGetFirmwareVersion(byte conn);
+inline char RemoteGetBluetoothAddress(byte conn);
+inline char RemoteGetDeviceInfo(byte conn);
+inline char RemoteDeleteUserFlash(byte conn);
+inline char RemoteBluetoothFactoryReset(byte conn);
+inline char RemoteOpenWrite(byte conn, string filename, long size);
+inline char RemoteOpenWriteLinear(byte conn, string filename, long size);
+inline char RemoteOpenWriteData(byte conn, string filename, long size);
+inline char RemoteCloseFile(byte conn, byte handle);
+inline char RemoteFindNextFile(byte conn, byte handle);
+inline char RemotePollCommandLength(byte conn, byte bufnum);
+inline char RemoteWrite(byte conn, byte handle, byte data[]);
+inline char RemoteRead(byte conn, byte handle, byte numbytes);
+inline char RemoteIOMapRead(byte conn, long id, int offset, int numbytes);
+inline char RemoteIOMapWriteValue(byte conn, long id, int offset, variant value);
+inline char RemoteIOMapWriteBytes(byte conn, long id, int offset, byte data[]);
+inline char RemoteSetBrickName(byte conn, string name);
+inline char RemoteRenameFile(byte conn, string oldname, string newname);
+inline char RemotePollCommand(byte conn, byte bufnum, byte len);
+
+inline char GetLastResponseInfo(bool Clear, byte & Length, byte & Command, hyte Buffer[]);
+inline void SysReadLastResponse(ReadLastResponseType & args);
 */
 
 #include "NXCDefs.h"
