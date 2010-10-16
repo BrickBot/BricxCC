@@ -174,6 +174,11 @@ CommOffsetUsbPollBufInPtr
 CommOffsetUsbPollBufOutPtr
 CommOffsetUsbState
 ComputeCalibValue
+CONN_BT0
+CONN_BT1
+CONN_BT2
+CONN_BT3
+CONN_HS4
 Cos
 CosD
 Cosh
@@ -1067,6 +1072,10 @@ RADIANS_PER_DEGREE
 RAND_MAX
 RandomNumber
 RawValue
+RC_PROP_BTONOFF
+RC_PROP_DEBUGGING
+RC_PROP_SLEEP_TIMEOUT
+RC_PROP_SOUND_LEVEL
 RCX_AbsVarOp
 RCX_AndVarOp
 RCX_AutoOffOp
@@ -1214,6 +1223,7 @@ RCX_ViewSourceValOp
 RCX_VLLOp
 RCX_WatchSrc
 ReadButton
+ReadLastResponse
 ReadSemData
 RegDValue
 RegIValue

@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-10-11
- * version 68
+ * date 2010-10-16
+ * version 69
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -423,6 +423,15 @@ TMemoryManager struct
  PoolSize      word
  DataspaceSize word
 TMemoryManager ends
+
+// ReadLastResponse
+TReadLastResponse struct
+ Result  sbyte
+ Clear   byte
+ Length  byte
+ Command byte
+ Buffer	 byte[]
+TReadLastResponse ends
 #endif
 #endif
 
@@ -1594,6 +1603,8 @@ dseg segment
   __FontOutArgs TDrawFont
   __MemMgrMutex mutex
   __MemMgrArgs TMemoryManager
+  __ReadLastMutex mutex
+  __ReadLastArgs TReadLastResponse
 dseg ends
 
 #endif
@@ -1865,6 +1876,16 @@ dseg ends
   mov _DataspaceSize, __MemMgrArgs.DataspaceSize \
   mov _Result, __MemMgrArgs.Result \
   release __MemMgrMutex
+
+#define __GetLastResponseInfo(_Clear,_Length,_Command,_Buffer,_Result) \
+  acquire __ReadLastMutex \
+  mov __ReadLastArgs.Clear,_Clear \
+  syscall ReadLastResponse,__ReadLastArgs \
+  mov _Buffer, __ReadLastArgs.Buffer \
+  mov _Length, __ReadLastArgs.Length \
+  mov _Command, __ReadLastArgs.Command \
+  mov _Result, __ReadLastArgs.Result \
+  release __ReadLastMutex
 
 
 #endif
@@ -4388,7 +4409,7 @@ dseg ends
   syscall FileRead, __FReadArgs \
   mov _result, __FReadArgs.Result \
   release __FReadMutex
-  
+
 #define __readLnStringEx(_handle, _output, _max, _result) \
   acquire __FReadMutex \
   mov __FReadArgs.FileHandle, _handle \
@@ -4591,18 +4612,70 @@ dseg segment
   __CBTWArgs TCommBTWrite
   __CBTWMutex mutex
   __SRSTmpBuf byte[]
-  __SRSTmpVal sdword
+  __SRSSendBuf byte[]
+  __SRSTmpLongVal sdword
+  __SRSTmpWordVal sword
+  __SRSTmpByteVal sbyte
   __SRSFlattenBuf byte[]
+  __RemoteMutex mutex
 dseg ends
 
 dseg segment
-  __DCMessageWritePacket byte[] {0x80, 0x09, 0xFF, 0xFF} // append N bytes
-  __DCStopProgramPacket byte[]  {0x80, 0x01}
-  __DCStopSoundPacket byte[]    {0x80, 0x0c}
-  __DCKeepAlivePacket byte[]    {0x80, 0x0d}
-  __DCStartProgramPacket byte[] {0x80, 0x00, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-  __DCPlaySoundFilePacket byte[] {0x80, 0x02, 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
-  __DCPlayTonePacket byte[]     {0x80, 0x03, 0xFF, 0xFF, 0xFF, 0xFF}
+  __GenericCmdFilenamePacket byte[] {0xFF, 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+  __GenericCreateFilePacket byte[]  {0xFF, 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0xFF, 0xFF, 0xFF, 0xFF}
+  __GenericIOMapPacket byte[]       {0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF, 0xFF}
+// direct commands
+  __DCStartProgramPacket byte[]     {0x80, 0x00}
+  __DCStopProgramPacket byte[]      {0x80, 0x01}
+  __DCPlaySoundFilePacket byte[]    {0x80, 0x02, 0xFF, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+  __DCPlayTonePacket byte[]         {0x80, 0x03, 0xFF, 0xFF, 0xFF, 0xFF}
+  __DCSetOutputStatePacket byte[]   {0x80, 0x04}
+  __DCSetInputModePacket byte[]     {0x80, 0x05}
+  __DCGetOutputStatePacket byte[]   {0x00, 0x06}
+  __DCGetInputValuesPacket byte[]   {0x00, 0x07}
+  __DCResetScaledValuePacket byte[] {0x80, 0x08}
+  __DCMessageWritePacket byte[]     {0x80, 0x09, 0xFF, 0xFF}
+  __DCResetMotorPosPacket byte[]    {0x80, 0x0a}
+  __DCGetBatteryLevelPacket byte[]  {0x00, 0x0b}
+  __DCStopSoundPacket byte[]        {0x80, 0x0c}
+  __DCKeepAlivePacket byte[]        {0x80, 0x0d}
+  __DCLSGetStatusPacket byte[]      {0x00, 0x0e}
+  __DCLSWritePacket byte[]          {0x80, 0x0f}
+  __DCLSReadPacket byte[]           {0x00, 0x10}
+  __DCGetCurProgNamePacket byte[]   {0x00, 0x11}
+  __DCMessageReadPacket byte[]      {0x00, 0x13}
+  __DCDatalogReadPacket byte[]      {0x00, 0x19}
+  __DCDatalogSetTimesPacket byte[]  {0x80, 0x1a}
+  __DCBTGetContactCntPacket byte[]  {0x00, 0x1b}
+  __DCBTGetContactNamePacket byte[] {0x00, 0x1c}
+  __DCBTGetConnectCntPacket byte[]  {0x00, 0x1d}
+  __DCBTGetConnectNamePacket byte[] {0x00, 0x1e}
+  __DCSetPropertyPacket byte[]      {0x80, 0x1f}
+  __DCGetPropertyPacket byte[]      {0x00, 0x20}
+  __DCUpdateResetCountPacket byte[] {0x80, 0x21}
+// system commands
+  __SCOpenReadPacket byte[]         {0x01, 0x80}
+  __SCOpenWritePacket byte[]        {0x01, 0x81}
+  __SCReadPacket byte[]             {0x01, 0x82}
+  __SCWritePacket byte[]            {0x01, 0x83}
+  __SCClosePacket byte[]            {0x01, 0x84}
+  __SCDeletePacket byte[]           {0x01, 0x85}
+  __SCFindFirstPacket byte[]        {0x01, 0x86}
+  __SCFindNextPacket byte[]         {0x01, 0x87}
+  __SCGetFirmwareVerPacket byte[]   {0x01, 0x88}
+  __SCOpenWriteLinearPacket byte[]  {0x01, 0x89}
+  __SCOpenWriteDataPacket byte[]    {0x01, 0x8b}
+  __SCOpenAppendDataPacket byte[]   {0x01, 0x8c}
+  __SCIOMapReadPacket byte[]        {0x01, 0x94}
+  __SCIOMapWritePacket byte[]       {0x81, 0x95}
+  __SCSetBrickNamePacket byte[]     {0x81, 0x98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+  __SCBTGetAddressPacket byte[]     {0x01, 0x9a}
+  __SCGetDeviceInfoPacket byte[]    {0x01, 0x9b}
+  __SCDeleteUserFlashPacket byte[]  {0x81, 0xA0}
+  __SCPollCommandLenPacket byte[]   {0x01, 0xA1}
+  __SCPollCommandPacket byte[]      {0x01, 0xA2} // append buffer number, cmd len,
+  __SCRenameFilePacket byte[]       {0x81, 0xA3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
+  __SCBTFactoryResetPacket byte[]   {0x81, 0xA4}
 dseg ends
 
 #define __bluetoothStatus(_conn, _result) \
@@ -4616,123 +4689,6 @@ dseg ends
   acquire __CBTWMutex \
   mov __CBTWArgs.Connection, _conn \
   mov __CBTWArgs.Buffer, _buffer \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __sendRemoteBool(_conn, _queue, _bval, _result) \
-  acquire __CBTWMutex \
-  mov __SRSTmpBuf, __DCMessageWritePacket \
-  replace __SRSTmpBuf, __SRSTmpBuf, 2, _queue \
-  replace __SRSTmpBuf, __SRSTmpBuf, 3, 2 \
-  mov __CBTWArgs.Connection, _conn \
-  arrbuild __CBTWArgs.Buffer, __SRSTmpBuf, _bval, 0 \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __sendRemoteNumber(_conn, _queue, _val, _result) \
-  acquire __CBTWMutex \
-  mov __SRSTmpBuf, __DCMessageWritePacket \
-  replace __SRSTmpBuf, __SRSTmpBuf, 2, _queue \
-  replace __SRSTmpBuf, __SRSTmpBuf, 3, 5 \
-  mov __SRSTmpVal, _val \
-  flatten __SRSFlattenBuf, __SRSTmpVal \
-  mov __CBTWArgs.Connection, _conn \
-  arrbuild __CBTWArgs.Buffer, __SRSTmpBuf, __SRSFlattenBuf \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __sendRemoteString(_conn, _queue, _str, _result) \
-  acquire __CBTWMutex \
-  mov __SRSTmpBuf, __DCMessageWritePacket \
-  replace __SRSTmpBuf, __SRSTmpBuf, 2, _queue \
-  arrsize __SRSTmpVal, _str \
-  replace __SRSTmpBuf, __SRSTmpBuf, 3, __SRSTmpVal \
-  mov __CBTWArgs.Connection, _conn \
-  arrbuild __CBTWArgs.Buffer, __SRSTmpBuf, _str \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __remoteMessageRead(_conn, _queue, _result) \
-  acquire __CBTWMutex \
-  mov __CBTWArgs.Connection, _conn \
-  add __SRSTmpVal, _queue, 10 \
-  arrbuild __CBTWArgs.Buffer, 0x00, 0x13, __SRSTmpVal, _queue, 0x01 \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __remoteResetScaledValue(_conn, _port, _result) \
-  acquire __CBTWMutex \
-  mov __CBTWArgs.Connection, _conn \
-  arrbuild __CBTWArgs.Buffer, 0x80, 0x08, _port \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __remoteResetMotorPosition(_conn, _port, _brelative, _result) \
-  acquire __CBTWMutex \
-  mov __CBTWArgs.Connection, _conn \
-  arrbuild __CBTWArgs.Buffer, 0x80, 0x0a, _port, _brelative \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __remoteSetInputMode(_conn, _port, _type, _mode, _result) \
-  acquire __CBTWMutex \
-  mov __CBTWArgs.Connection, _conn \
-  arrbuild __CBTWArgs.Buffer, 0x80, 0x05, _port, _type, _mode \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result) \
-  acquire __CBTWMutex \
-  mov __CBTWArgs.Connection, _conn \
-  mov __SRSTmpVal, _tacholimit \
-  flatten __SRSFlattenBuf, __SRSTmpVal \
-  arrbuild __SRSTmpBuf, 0x80, 0x04, _port, _speed, _mode, _regmode, _turnpct, _runstate, __SRSFlattenBuf \
-  strtoarr __CBTWArgs.Buffer, __SRSTmpBuf \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __remoteStartProgram(_conn, _filename, _result) \
-  acquire __CBTWMutex \
-  mov __CBTWArgs.Connection, _conn \
-  mov __CBTWArgs.Buffer, __DCStartProgramPacket \
-  strsubset __SRSTmpBuf, _filename, NA, 19 \
-  replace __CBTWArgs.Buffer, __CBTWArgs.Buffer, 2, __SRSTmpBuf \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __remotePlaySoundFile(_conn, _filename, _bloop, _result) \
-  acquire __CBTWMutex \
-  mov __CBTWArgs.Connection, _conn \
-  mov __CBTWArgs.Buffer, __DCPlaySoundFilePacket \
-  strsubset __SRSTmpBuf, _filename, NA, 19 \
-  replace __CBTWArgs.Buffer, __CBTWArgs.Buffer, 2, _bloop \
-  replace __CBTWArgs.Buffer, __CBTWArgs.Buffer, 3, __SRSTmpBuf \
-  syscall CommBTWrite, __CBTWArgs \
-  mov _result, __CBTWArgs.Result \
-  release __CBTWMutex
-
-#define __remotePlayTone(_conn, _frequency, _duration, _result) \
-  acquire __CBTWMutex \
-  mov __CBTWArgs.Connection, _conn \
-  mov __CBTWArgs.Buffer, __DCPlayTonePacket \
-  and __SRSTmpVal, _frequency, 0xff \
-  replace __CBTWArgs.Buffer, __CBTWArgs.Buffer, 2, __SRSTmpVal \
-  div __SRSTmpVal, _frequency, 0xff \
-  replace __CBTWArgs.Buffer, __CBTWArgs.Buffer, 3, __SRSTmpVal \
-  and __SRSTmpVal, _duration, 0xff \
-  replace __CBTWArgs.Buffer, __CBTWArgs.Buffer, 4, __SRSTmpVal \
-  div __SRSTmpVal, _duration, 0xff \
-  replace __CBTWArgs.Buffer, __CBTWArgs.Buffer, 5, __SRSTmpVal \
   syscall CommBTWrite, __CBTWArgs \
   mov _result, __CBTWArgs.Result \
   release __CBTWMutex
@@ -4810,14 +4766,320 @@ dseg ends
   mov _status, __CHSWArgs.Status \
   release __CHSWMutex
 
-#define __sendRS485String(_str, _status) \
-  acquire __CHSWMutex \
-  mov __CHSWArgs.Buffer, _str \
-  syscall CommHSWrite, __CHSWArgs \
-  mov _status, __CHSWArgs.Status \
-  release __CHSWMutex
+#define __sendRS485String(_str, _status) __RS485Write(_str, _status)
 
 #endif
+
+#ifdef __ENHANCED_FIRMWARE
+
+#define __connectionWrite(_conn, _buffer, _result) \
+  compchk EQ, isconst(_conn), 1 \
+  compif LT, _conn, 4 \
+  __bluetoothWrite(_conn, _buffer, _result) \
+  compelse \
+  compchk EQ, _conn, 4 \
+  __RS485Write(_buffer, _result) \
+  compend
+
+#define __remoteConnectionIdle(_conn, _result) \
+  compchk EQ, isconst(_conn), 1 \
+  compif LT, _conn, 4 \
+  __bluetoothStatus(_conn, _result) \
+  tst EQ, _result, _result \
+  compelse \
+  compchk EQ, _conn, 4 \
+  __RS485Status(_result, __SHSTmpVal) \
+  tst EQ, _result, _result \
+  compend
+
+#else
+
+#define __connectionWrite(_conn, _buffer, _result) \
+  compchk EQ, isconst(_conn), 1 \
+  compchk LT, _conn, 4 \
+  __bluetoothWrite(_conn, _buffer, _result)
+
+#define __remoteConnectionIdle(_conn, _result) \
+  compchk EQ, isconst(_conn), 1 \
+  compchk LT, _conn, 4 \
+  __bluetoothStatus(_conn, _result) \
+  tst EQ, _result, _result
+
+#endif
+
+#define __sendRemoteBool(_conn, _queue, _bval, _result) \
+  acquire __RemoteMutex \
+  mov __SRSTmpBuf, __DCMessageWritePacket \
+  replace __SRSTmpBuf, __SRSTmpBuf, 2, _queue \
+  replace __SRSTmpBuf, __SRSTmpBuf, 3, 2 \
+  arrbuild __SRSSendBuf, __SRSTmpBuf, _bval, 0 \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __sendRemoteNumber(_conn, _queue, _val, _result) \
+  acquire __RemoteMutex \
+  mov __SRSTmpBuf, __DCMessageWritePacket \
+  replace __SRSTmpBuf, __SRSTmpBuf, 2, _queue \
+  replace __SRSTmpBuf, __SRSTmpBuf, 3, 5 \
+  mov __SRSTmpLongVal, _val \
+  flatten __SRSFlattenBuf, __SRSTmpLongVal \
+  arrbuild __SRSSendBuf, __SRSTmpBuf, __SRSFlattenBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __sendRemoteString(_conn, _queue, _str, _result) \
+  acquire __RemoteMutex \
+  mov __SRSTmpBuf, __DCMessageWritePacket \
+  replace __SRSTmpBuf, __SRSTmpBuf, 2, _queue \
+  arrsize __SRSTmpLongVal, _str \
+  replace __SRSTmpBuf, __SRSTmpBuf, 3, __SRSTmpLongVal \
+  arrbuild __SRSSendBuf, __SRSTmpBuf, _str \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteMessageRead(_conn, _queue, _result) \
+  acquire __RemoteMutex \
+  add __SRSTmpLongVal, _queue, 10 \
+  arrbuild __SRSSendBuf, __DCMessageReadPacket, __SRSTmpLongVal, _queue, 0x01 \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteResetScaledValue(_conn, _port, _result) \
+  acquire __RemoteMutex \
+  arrbuild __SRSSendBuf, __DCResetScaledValuePacket, _port \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteResetMotorPosition(_conn, _port, _brelative, _result) \
+  acquire __RemoteMutex \
+  arrbuild __SRSSendBuf, __DCResetMotorPosPacket, _port, _brelative \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteSetInputMode(_conn, _port, _type, _mode, _result) \
+  acquire __RemoteMutex \
+  arrbuild __SRSSendBuf, __DCSetInputModePacket, _port, _type, _mode \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result) \
+  acquire __RemoteMutex \
+  mov __SRSTmpLongVal, _tacholimit \
+  flatten __SRSFlattenBuf, __SRSTmpLongVal \
+  arrbuild __SRSTmpBuf, __DCSetOutputStatePacket, _port, _speed, _mode, _regmode, _turnpct, _runstate, __SRSFlattenBuf \
+  strtoarr __SRSSendBuf, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remotePlaySoundFile(_conn, _filename, _bloop, _result) \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __DCPlaySoundFilePacket \
+  strsubset __SRSTmpBuf, _filename, NA, 19 \
+  replace __SRSSendBuf, __SRSSendBuf, 2, _bloop \
+  replace __SRSSendBuf, __SRSSendBuf, 3, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remotePlayTone(_conn, _frequency, _duration, _result) \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __DCPlayTonePacket \
+  and __SRSTmpLongVal, _frequency, 0xff \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpLongVal \
+  div __SRSTmpLongVal, _frequency, 0xff \
+  replace __SRSSendBuf, __SRSSendBuf, 3, __SRSTmpLongVal \
+  and __SRSTmpLongVal, _duration, 0xff \
+  replace __SRSSendBuf, __SRSSendBuf, 4, __SRSTmpLongVal \
+  div __SRSTmpLongVal, _duration, 0xff \
+  replace __SRSSendBuf, __SRSSendBuf, 5, __SRSTmpLongVal \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteGenericFilenameCommand(_conn, _cmdBuf, _filename, _result) \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __GenericCmdFilenamePacket \
+  strsubset __SRSTmpBuf, _filename, NA, 19 \
+  replace __SRSSendBuf, __SRSSendBuf, NA, _cmdBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteStartProgram(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __DCStartProgramPacket, _filename, _result)
+#define __remoteOpenRead(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCOpenReadPacket, _filename, _result)
+#define __remoteDeleteFile(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCDeletePacket, _filename, _result)
+#define __remoteFindFirstFile(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCFindFirstPacket, _filename, _result)
+#define __remoteOpenAppendData(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCOpenAppendDataPacket, _filename, _result)
+
+#define __remoteGenericCreateFileCommand(_conn, _cmdBuf, _filename, _size, _result) \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __GenericCreateFilePacket \
+  strsubset __SRSTmpBuf, _filename, NA, 19 \
+  replace __SRSSendBuf, __SRSSendBuf, NA, _cmdBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
+  mov __SRSTmpLongVal, _size \
+  flatten __SRSFlattenBuf, __SRSTmpLongVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 22, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteOpenWrite(_conn, _filename, _size, _result) __remoteGenericCreateFileCommand(_conn, __SCOpenWritePacket, _filename, _size, _result)
+#define __remoteOpenWriteLinear(_conn, _filename, _size, _result) __remoteGenericCreateFileCommand(_conn, __SCOpenWritePacket, _filename, _size, _result)
+#define __remoteOpenWriteData(_conn, _filename, _size, _result) __remoteGenericCreateFileCommand(_conn, __SCOpenWriteDataPacket, _filename, _size, _result)
+
+#define __remoteGenericByteCommand(_conn, _cmdBuf, _val, _result) \
+  compchk EQ, sizeof(_val), 1 \
+  acquire __RemoteMutex \
+  arrbuild __SRSSendBuf, _cmdBuf, _val \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteGetOutputState(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCGetOutputStatePacket, _port, _result)
+#define __remoteGetInputValues(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCGetInputValuesPacket, _port, _result)
+#define __remoteLowspeedRead(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCLSReadPacket, _port, _result)
+#define __remoteResetTachoCount(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCUpdateResetCountPacket, _port, _result)
+#define __remoteGetProperty(_conn, _property, _result) __remoteGenericByteCommand(_conn, __DCGetPropertyPacket, _property, _result)
+#define __remoteDatalogRead(_conn, _remove, _result) __remoteGenericByteCommand(_conn, __DCDatalogReadPacket, _remove, _result)
+#define __remoteBTGetContactName(_conn, _idx, _result) __remoteGenericByteCommand(_conn, __DCBTGetContactNamePacket, _idx, _result)
+#define __remoteBTGetConnectionName(_conn, _idx, _result) __remoteGenericByteCommand(_conn, __DCBTGetConnectNamePacket, _idx, _result)
+#define __remoteCloseFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCClosePacket, _handle, _result)
+#define __remoteFindNextFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCFindNextPacket, _handle, _result)
+#define __remotePollCommandLength(_conn, _bufnum, _result) __remoteGenericByteCommand(_conn, __SCPollCommandLenPacket, _bufnum, _result)
+
+#define __remoteDatalogSetTimes(_conn, _synctime, _result) \
+  acquire __RemoteMutex \
+  mov __SRSTmpLongVal, _synctime \
+  flatten __SRSFlattenBuf, __SRSTmpLongVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  arrbuild __SRSSendBuf, __DCDatalogSetTimesPacket, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteSetProperty(_conn, _prop, _value, _result) \
+  compchk EQ, sizeof(_prop), 1 \
+  acquire __RemoteMutex \
+  flatten __SRSFlattenBuf, _value \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  arrbuild __SRSSendBuf, __DCSetPropertyPacket, _prop, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteLowspeedWrite(_conn, _port, _txlen, _rxlen, _data, _result) \
+  compchk EQ, sizeof(_port), 1 \
+  compchk EQ, sizeof(_txlen), 1 \
+  compchk EQ, sizeof(_rxlen), 1 \
+  acquire __RemoteMutex \
+  arrbuild __SRSSendBuf, __DCLSWritePacket, _port, _txlen, _rxlen, _data \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteWrite(_conn, _handle, _data, _result) \
+  compchk EQ, sizeof(_handle), 1 \
+  acquire __RemoteMutex \
+  arrbuild __SRSSendBuf, __SCWritePacket, _handle, _data \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteRead(_conn, _handle, _numbytes, _result) \
+  compchk EQ, sizeof(_handle), 1 \
+  acquire __RemoteMutex \
+  mov __SRSTmpWordVal, _numbytes \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  arrbuild __SRSSendBuf, __SCReadPacket, _handle, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteIOMapRead(_conn, _id, _offset, _numbytes, _result) \
+  compchk EQ, sizeof(_handle), 1 \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __GenericIOMapPacket \
+  replace __SRSSendBuf, __SRSSendBuf, NA, __SCIOMapReadPacket \
+  mov __SRSTmpLongVal, _offset \
+  flatten __SRSFlattenBuf, __SRSTmpLongVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
+  mov __SRSTmpWordVal, _offset \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 6, __SRSTmpBuf \
+  mov __SRSTmpWordVal, _numbytes \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 8, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteIOMapWriteValue(_conn, _id, _offset, _value, _result) \
+  compchk EQ, sizeof(_handle), 1 \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __GenericIOMapPacket \
+  replace __SRSSendBuf, __SRSSendBuf, NA, __SCIOMapWritePacket \
+  mov __SRSTmpLongVal, _offset \
+  flatten __SRSFlattenBuf, __SRSTmpLongVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
+  mov __SRSTmpWordVal, _offset \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 6, __SRSTmpBuf \
+  set __SRSTmpWordVal, sizeof(_value) \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 8, __SRSTmpBuf \
+  flatten __SRSFlattenBuf, _value \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  mov __SRSFlattenBuf, __SRSSendBuf \
+  arrbuild __SRSSendBuf, __SRSFlattenBuf, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteIOMapWriteBytes(_conn, _id, _offset, _data, _result) \
+  compchk EQ, sizeof(_handle), 1 \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __GenericIOMapPacket \
+  replace __SRSSendBuf, __SRSSendBuf, NA, __SCIOMapWritePacket \
+  mov __SRSTmpLongVal, _offset \
+  flatten __SRSFlattenBuf, __SRSTmpLongVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
+  mov __SRSTmpWordVal, _offset \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 6, __SRSTmpBuf \
+  arrsize __SRSTmpWordVal, _data \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 8, __SRSTmpBuf \
+  mov __SRSFlattenBuf, __SRSSendBuf \
+  arrbuild __SRSSendBuf, __SRSFlattenBuf, _data \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteSetBrickName(_conn, _name, _result) \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __SCSetBrickNamePacket \
+  strsubset __SRSTmpBuf, _name, NA, 15 \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteRenameFile(_conn, _oldname, _newname, _result) \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __SCRenameFilePacket \
+  strsubset __SRSTmpBuf, _oldname, NA, 19 \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
+  strsubset __SRSTmpBuf, _newname, NA, 19 \
+  replace __SRSSendBuf, __SRSSendBuf, 22, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remotePollCommand(_conn, _bufnum, _len, _result) \
+  compchk EQ, sizeof(_bufnum), 1 \
+  compchk EQ, sizeof(_len), 1 \
+  acquire __RemoteMutex \
+  arrbuild __SRSSendBuf, __SCPollCommandPacket, _bufnum, _len \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
 
 #if defined(__ENHANCED_FIRMWARE)
 
@@ -9967,16 +10229,16 @@ ends
    __RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, PID_1, PID_0, PID_3)
 
 /**
- * Set motor PWN frequency.
- * Set the motor PWN frequency.
- * \param _n The motor pwn frequency
+ * Set motor regulation frequency.
+ * Set the motor regulation frequency to the specified number of milliseconds.
+ * \param _n The motor regulation frequency in milliseconds
  */
 #define SetOutPwnFreq(_n) __setOutPwnFreq(_n)
 
 /**
- * Get motor PWN frequency.
- * Get the current motor pulse width modulation frequency.
- * \param _n The motor pwn frequency
+ * Get motor regulation frequency.
+ * Get the current motor regulation frequency.
+ * \param _n The motor regulation frequency in milliseconds
  */
 #define GetOutPwnFreq(_n) __GetOutPwnFreq(_n)
 
@@ -12219,6 +12481,21 @@ ends
  */
 #define GetMemoryInfo(_Compact,_PoolSize,_DataspaceSize,_Result) __GetMemoryInfo(_Compact,_PoolSize,_DataspaceSize,_Result)
 
+/**
+ * Read last response information.
+ * Read the last direct or system command response packet received by the NXT.
+ * Optionally clear the response after retrieving the information.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+.
+ *
+ * \param _Clear A boolean value indicating whether to clear the response or not.
+ * \param _Length The response packet length.
+ * \param _Command The original command byte.
+ * \param _Buffer The response packet buffer.
+ * \param _Result The response status code.
+ */
+#define GetLastResponseInfo(_Clear,_Length,_Command,_Buffer,_Result) __GetLastResponseInfo(_Clear,_Length,_Command,_Buffer,_Result)
+
 #endif
 
 
@@ -12745,7 +13022,8 @@ ends
  * Check bluetooth status.
  * Check the status of the bluetooth subsystem for the specified connection slot.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..3). Connections 0 through 3 are for
+ * bluetooth connections. See \ref CommConnectionConstants.
  * \param _result The bluetooth status for the specified connection.
  */
 #define BluetoothStatus(_conn, _result) __bluetoothStatus(_conn, _result)
@@ -12756,18 +13034,54 @@ ends
  * device on the specified Bluetooth connection. Use \ref BluetoothStatus to
  * determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..3). Connections 0 through 3 are for
+ * bluetooth connections.  See \ref CommConnectionConstants.
  * \param _buffer The data to be written (up to 128 bytes)
  * \param _result A char value indicating whether the function call succeeded or not.
  */
 #define BluetoothWrite(_conn, _buffer, _result) __bluetoothWrite(_conn, _buffer, _result)
 
 /**
- * Send a boolean value to a remote mailbox.
- * Send a boolean value via bluetooth on the specified connection to the
- * specified remote mailbox number.
+ * Write to a remote connection.
+ * This method tells the NXT firmware to write the data in the buffer to the
+ * device on the specified connection. Use \ref RemoteConnectionIdle to determine
+ * when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _buffer The data to be written (up to 128 bytes)
+ * \param _result A char value indicating whether the function call succeeded or not.
+ *
+ * \warning Writing to the RS485 hi-speed connection requires the enhanced
+ * NBC/NXC firmware 
+ */
+#define RemoteConnectionWrite(_conn, _buffer, _result) __connectionWrite(_conn, _buffer, _result)
+
+/**
+ * Check if remote connection is idle.
+ * Check whether a Bluetooth or RS485 hi-speed port connection is idle,
+ * i.e., not currently sending data.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A boolean value indicating whether the connection is idle or busy.
+ *
+ * \warning Checking the status of the RS485 hi-speed connection requires the
+ * enhanced NBC/NXC firmware
+ */
+#define RemoteConnectionIdle(_conn, _result) __remoteConnectionIdle(_conn, _result)
+
+/**
+ * Send a boolean value to a remote mailbox.
+ * Send a boolean value on the specified connection to the
+ * specified remote mailbox number.  Use \ref RemoteConnectionIdle to determine
+ * when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _queue The mailbox number. See \ref MailboxConstants.
  * \param _bval The boolean value to send.
  * \param _result A char value indicating whether the function call succeeded or not.
@@ -12776,10 +13090,13 @@ ends
 
 /**
  * Send a numeric value to a remote mailbox.
- * Send a numeric value via bluetooth on the specified connection to the
- * specified remote mailbox number.
+ * Send a numeric value on the specified connection to the
+ * specified remote mailbox number.  Use \ref RemoteConnectionIdle to determine
+ * when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _queue The mailbox number. See \ref MailboxConstants.
  * \param _val The numeric value to send.
  * \param _result A char value indicating whether the function call succeeded or not.
@@ -12788,23 +13105,34 @@ ends
 
 /**
  * Send a string value to a remote mailbox.
- * Send a string value via bluetooth on the specified connection to the
- * specified remote mailbox number.
+ * Send a string value on the specified connection to the
+ * specified remote mailbox number. Use \ref RemoteConnectionIdle to determine
+ * when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _queue The mailbox number. See \ref MailboxConstants.
  * \param _str The string value to send.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
 #define SendRemoteString(_conn, _queue, _str, _result) __sendRemoteString(_conn, _queue, _str, _result)
 
+
+/** @defgroup CommModuleDCFunctions Direct Command functions
+ * Functions for sending direct commands to another NXT.
+ * @{
+ */
+
 /**
  * Send a MessageRead message.
  * This method sends a MessageRead direct command to the device on the
- * specified connection. Use \ref BluetoothStatus to determine when this write
+ * specified connection. Use \ref RemoteConnectionIdle to determine when this write
  * request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _queue The mailbox to read. See \ref MailboxConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
@@ -12813,10 +13141,12 @@ ends
 /**
  * Send a MessageWrite message.
  * This method sends a MessageWrite direct command to the device on the
- * specified connection. Use \ref BluetoothStatus to determine when this write
+ * specified connection. Use \ref RemoteConnectionIdle to determine when this write
  * request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _queue The mailbox to write. See \ref MailboxConstants.
  * \param _msg The message to write to the mailbox.
  * \param _result A char value indicating whether the function call succeeded or not.
@@ -12826,9 +13156,11 @@ ends
 /**
  * Send a StartProgram message.
  * Send the StartProgram direct command on the specified connection slot.
- * Use \ref BluetoothStatus to determine when this write request is completed.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _filename The name of the program to start running.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
@@ -12837,19 +13169,23 @@ ends
 /**
  * Send a StopProgram message.
  * Send the StopProgram direct command on the specified connection slot.
- * Use \ref BluetoothStatus to determine when this write request is completed.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteStopProgram(_conn, _result) __bluetoothWrite(_conn, __DCStopProgramPacket, _result)
+#define RemoteStopProgram(_conn, _result) __connectionWrite(_conn, __DCStopProgramPacket, _result)
 
 /**
  * Send a PlaySoundFile message.
  * Send the PlaySoundFile direct command on the specified connection slot.
- * Use \ref BluetoothStatus to determine when this write request is completed.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _filename The name of the sound file to play.
  * \param _bloop A boolean value indicating whether to loop the sound file or not.
  * \param _result A char value indicating whether the function call succeeded or not.
@@ -12859,9 +13195,11 @@ ends
 /**
  * Send a PlayTone message.
  * Send the PlayTone direct command on the specified connection slot.
- * Use \ref BluetoothStatus to determine when this write request is completed.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _frequency The frequency of the tone.
  * \param _duration The duration of the tone.
  * \param _result A char value indicating whether the function call succeeded or not.
@@ -12871,30 +13209,36 @@ ends
 /**
  * Send a StopSound message.
  * Send the StopSound direct command on the specified connection slot.
- * Use \ref BluetoothStatus to determine when this write request is completed.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteStopSound(_conn, _result) __bluetoothWrite(_conn, __DCStopSoundPacket, _result)
+#define RemoteStopSound(_conn, _result) __connectionWrite(_conn, __DCStopSoundPacket, _result)
 
 /**
  * Send a KeepAlive message.
  * This method sends a KeepAlive direct command to the device on the specified
- * connection. Use \ref BluetoothStatus to determine when this write request is
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
  * completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteKeepAlive(_conn, _result) __bluetoothWrite(_conn, __DCKeepAlivePacket, _result)
+#define RemoteKeepAlive(_conn, _result) __connectionWrite(_conn, __DCKeepAlivePacket, _result)
 
 /**
  * Send a ResetScaledValue message.
  * Send the ResetScaledValue direct command on the specified connection slot.
- * Use \ref BluetoothStatus to determine when this write request is completed.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _port The input port to reset.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
@@ -12903,9 +13247,11 @@ ends
 /**
  * Send a ResetMotorPosition message.
  * Send the ResetMotorPosition direct command on the specified connection slot.
- * Use \ref BluetoothStatus to determine when this write request is completed.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _port The output port to reset.
  * \param _brelative A flag indicating whether the counter to reset is relative.
  * \param _result A char value indicating whether the function call succeeded or not.
@@ -12915,9 +13261,11 @@ ends
 /**
  * Send a SetInputMode message.
  * Send the SetInputMode direct command on the specified connection slot.
- * Use \ref BluetoothStatus to determine when this write request is completed.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _port The input port to configure. See \ref NBCInputPortConstants.
  * \param _type The sensor type. See \ref NBCSensorTypeConstants.
  * \param _mode The sensor mode. See \ref NBCSensorModeConstants.
@@ -12928,9 +13276,11 @@ ends
 /**
  * Send a SetOutputMode message.
  * Send the SetOutputMode direct command on the specified connection slot.
- * Use \ref BluetoothStatus to determine when this write request is completed.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
- * \param _conn The connection slot (0..3).
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
  * \param _port The output port to configure. See \ref OutputPortConstants.
  * \param _speed The motor speed. (-100..100)
  * \param _mode The motor mode. See \ref OutModeConstants.
@@ -12942,6 +13292,545 @@ ends
  */
 #define RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result) \
   __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result)
+
+/**
+ * Send a GetBatteryLevel message.
+ * This method sends a GetBatteryLevel direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetBatteryLevel(_conn, _result) __connectionWrite(_conn, __DCGetBatteryLevelPacket, _result)
+
+/**
+ * Send a LSGetStatus message.
+ * This method sends a LSGetStatus direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteLowspeedGetStatus(_conn, _result) __connectionWrite(_conn, __DCLSGetStatusPacket, _result)
+
+/**
+ * Send a GetCurrentProgramName message.
+ * This method sends a GetCurrentProgramName direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetCurrentProgramName(_conn, _result) __connectionWrite(_conn, __DCGetCurProgNamePacket, _result)
+
+/**
+ * Send a GetContactCount message.
+ * This method sends a GetContactCount direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetContactCount(_conn, _result) __connectionWrite(_conn, __DCBTGetContactCntPacket, _result)
+
+/**
+ * Send a GetConnectionCount message.
+ * This method sends a GetConnectionCount direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetConnectionCount(_conn, _result) __connectionWrite(_conn, __DCBTGetConnectCntPacket, _result)
+
+/**
+ * Send a GetOutputState message.
+ * Send the GetOutputState direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _port The output port from which to read state information. See \ref OutputPortConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetOutputState(_conn, _port, _result) __remoteGetOutputState(_conn, _port, _result)
+
+/**
+ * Send a GetInputValues message.
+ * Send the GetInputValues direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _port The input port from which to read sensor values. See \ref NBCInputPortConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetInputValues(_conn, _port, _result) __remoteGetInputValues(_conn, _port, _result)
+
+/**
+ * Send a LowspeedRead message.
+ * Send the LowspeedRead direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _port The input port from which to read I2C data. See \ref NBCInputPortConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteLowspeedRead(_conn, _port, _result) __remoteLowspeedRead(_conn, _port, _result)
+
+/**
+ * Send a ResetTachoCount message.
+ * Send the ResetTachoCount direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _port The output port to reset the tachometer count on. See \ref OutputPortConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteResetTachoCount(_conn, _port, _result) __remoteResetTachoCount(_conn, _port, _result)
+
+/**
+ * Send a GetProperty message.
+ * Send the GetProperty direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _property The property to read. See \ref RCPropertyConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetProperty(_conn, _property, _result) __remoteGetProperty(_conn, _property, _result)
+
+/**
+ * Send a DatalogRead message.
+ * Send the DatalogRead direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _remove Remove the datalog message from the queue after reading it (true or false).
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteDatalogRead(_conn, _remove, _result) __remoteDatalogRead(_conn, _remove, _result)
+
+/**
+ * Send a BTGetContactName message.
+ * Send the BTGetContactName direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _idx The index of the contact.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteBTGetContactName(_conn, _idx, _result) __remoteBTGetContactName(_conn, _idx, _result)
+
+/**
+ * Send a BTGetConnectionName message.
+ * Send the BTGetConnectionName direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _idx The index of the connection.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteBTGetConnectionName(_conn, _idx, _result) __remoteBTGetConnectionName(_conn, _idx, _result)
+
+/**
+ * Send a DatalogSetTimes message.
+ * Send the DatalogSetTimes direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _synctime The datalog sync time.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteDatalogSetTimes(_conn, _synctime, _result) __remoteDatalogSetTimes(_conn, _synctime, _result)
+
+/**
+ * Send a SetProperty message.
+ * Send the SetProperty direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _prop The property to set. See \ref RCPropertyConstants.
+ * \param _value The new property value.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteSetProperty(_conn, _prop, _value, _result) __remoteSetProperty(_conn, _prop, _value, _result)
+
+/**
+ * Send a LowspeedWrite message.
+ * Send the LowspeedWrite direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _port The I2C port. See \ref NBCInputPortConstants.
+ * \param _txlen The number of bytes you are writing to the I2C device.
+ * \param _rxlen The number of bytes want to read from the I2C device.
+ * \param _data A byte array containing the data you are writing to the device.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteLowspeedWrite(_conn, _port, _txlen, _rxlen, _data, _result) __remoteLowspeedWrite(_conn, _port, _txlen, _rxlen, _data, _result)
+
+
+/** @} */ // end of CommModuleDCFunctions group
+
+/** @defgroup CommModuleSCFunctions System Command functions
+ * Functions for sending system commands to another NXT.
+ * @{
+ */
+
+/**
+ * Send an OpenRead message.
+ * Send the OpenRead system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to open for reading.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenRead(_conn, _filename, _result) __remoteOpenRead(_conn, _filename, _result)
+
+/**
+ * Send an OpenAppendData message.
+ * Send the OpenAppendData system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to open for appending.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenAppendData(_conn, _filename, _result) __remoteOpenAppendData(_conn, _filename, _result)
+
+/**
+ * Send a DeleteFile message.
+ * Send the DeleteFile system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to delete.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteDeleteFile(_conn, _filename, _result) __remoteDeleteFile(_conn, _filename, _result)
+
+/**
+ * Send a FindFirstFile message.
+ * Send the FindFirstFile system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _mask The filename mask for the files you want to find.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteFindFirstFile(_conn, _mask, _result) __remoteFindFirstFile(_conn, _mask, _result)
+
+/**
+ * Send a GetFirmwareVersion message.
+ * This method sends a GetFirmwareVersion system command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetFirmwareVersion(_conn, _result) __connectionWrite(_conn, __SCGetFirmwareVerPacket, _result)
+
+/**
+ * Send a GetBluetoothAddress message.
+ * This method sends a GetBluetoothAddress system command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetBluetoothAddress(_conn, _result) __connectionWrite(_conn, __SCBTGetAddressPacket, _result)
+
+/**
+ * Send a GetDeviceInfo message.
+ * This method sends a GetDeviceInfo system command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetDeviceInfo(_conn, _result) __connectionWrite(_conn, __SCGetDeviceInfoPacket, _result)
+
+/**
+ * Send a DeleteUserFlash message.
+ * This method sends a DeleteUserFlash system command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteDeleteUserFlash(_conn, _result) __connectionWrite(_conn, __SCDeleteUserFlashPacket, _result)
+
+/**
+ * Send a BluetoothFactoryReset message.
+ * This method sends a BluetoothFactoryReset system command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteBluetoothFactoryReset(_conn, _result) __connectionWrite(_conn, __SCBTFactoryResetPacket, _result)
+
+/**
+ * Send an OpenWrite message.
+ * Send the OpenWrite system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to open for writing (i.e., create the file).
+ * \param _size The size for the new file.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenWrite(_conn, _filename, _size, _result) __remoteOpenWrite(_conn, _filename, _size, _result)
+
+/**
+ * Send an OpenWriteLinear message.
+ * Send the OpenWriteLinear system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to open for writing (i.e., create the file).
+ * \param _size The size for the new file.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenWriteLinear(_conn, _filename, _size, _result) __remoteOpenWriteLinear(_conn, _filename, _size, _result)
+
+/**
+ * Send an OpenWriteData message.
+ * Send the OpenWriteData system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to open for writing (i.e., create the file).
+ * \param _size The size for the new file.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenWriteData(_conn, _filename, _size, _result) __remoteOpenWriteData(_conn, _filename, _size, _result)
+
+/**
+ * Send a CloseFile message.
+ * Send the CloseFile system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _handle The handle of the file to close.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteCloseFile(_conn, _handle, _result) __remoteCloseFile(_conn, _handle, _result)
+
+/**
+ * Send a FindNextFile message.
+ * Send the FindNextFile system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _handle The handle returned by the last \ref FindFirstFile or FindNextFile call.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteFindNextFile(_conn, _handle, _result) __remoteFindNextFile(_conn, _handle, _result)
+
+/**
+ * Send a PollCommandLength message.
+ * Send the PollCommandLength system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _bufnum The poll buffer you want to query (0=USBPoll, 1=HiSpeed).
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemotePollCommandLength(_conn, _bufnum, _result) __remotePollCommandLength(_conn, _bufnum, _result)
+
+/**
+ * Send a Write message.
+ * Send the Write system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _handle The handle of the file you are writing to.
+ * \param _data A byte array containing the data you are writing.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteWrite(_conn, _handle, _data, _result) __remoteWrite(_conn, _handle, _data, _result)
+
+/**
+ * Send a Read message.
+ * Send the Read system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _handle The handle of the file you are reading from.
+ * \param _numbytes The number of bytes you want to read.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteRead(_conn, _handle, _numbytes, _result) __remoteRead(_conn, _handle, _numbytes, _result)
+
+/**
+ * Send an IOMapRead message.
+ * Send the IOMapRead system command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _id The ID of the module from which to read data.
+ * \param _offset The offset into the IOMap structure from which to read.
+ * \param _numbytes The number of bytes of data to read.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteIOMapRead(_conn, _id, _offset, _numbytes, _result) __remoteIOMapRead(_conn, _id, _offset, _numbytes, _result)
+
+/**
+ * Send an IOMapWrite value message.
+ * Send the IOMapWrite system command on the specified connection slot to
+ * write the value provided.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _id The ID of the module to which to write data.
+ * \param _offset The offset into the IOMap structure to which to write.
+ * \param _value A scalar variable containing the value you are writing to the IOMap structure.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteIOMapWriteValue(_conn, _id, _offset, _value, _result) __remoteIOMapWriteValue(_conn, _id, _offset, _value, _result)
+
+/**
+ * Send an IOMapWrite bytes message.
+ * Send the IOMapWrite system command on the specified connection slot to
+ * write the data provided.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _id The ID of the module to which to write data.
+ * \param _offset The offset into the IOMap structure to which to write.
+ * \param _data A byte array containing the data you are writing to the IOMap structure.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteIOMapWriteBytes(_conn, _id, _offset, _data, _result) __remoteIOMapWriteBytes(_conn, _id, _offset, _data, _result)
+
+/**
+ * Send an SetBrickName bytes message.
+ * Send the SetBrickName system command on the specified connection slot to
+ * write the data provided.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _name The new brick name.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteSetBrickName(_conn, _name, _result) __remoteSetBrickName(_conn, _name, _result)
+
+/**
+ * Send an RenameFile bytes message.
+ * Send the RenameFile system command on the specified connection slot to
+ * write the data provided.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _oldname The old filename.
+ * \param _newname The new filename.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteRenameFile(_conn, _oldname, _newname, _result) __remoteRenameFile(_conn, _oldname, _newname, _result)
+
+/**
+ * Send an PollCommand bytes message.
+ * Send the PollCommand system command on the specified connection slot to
+ * write the data provided.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _bufnum The buffer from which to read data (0=USBPoll, 1=HiSpeed).
+ * \param _len The number of bytes to read.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemotePollCommand(_conn, _bufnum, _len, _result) __remotePollCommand(_conn, _bufnum, _len, _result)
+
+/** @} */ // end of CommModuleSCFunctions group
 
 #ifdef __ENHANCED_FIRMWARE
 
@@ -16111,7 +17000,6 @@ ends
  *
  * \param _port The sensor port. See \ref NBCInputPortConstants.
  * \param _i2caddr The sensor I2C address. See sensor documentation for this value.
- * \param _macro The EEPROM macro address.
  * \param _result A status code indicating whether the operation completed successfully or not.
  * See \ref TCommLSCheckStatus for possible Result values.
  */
