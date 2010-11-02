@@ -1,1 +1,0 @@
-char result = RS485Control(HS_CTRL_UART, HS_BAUD_9600, HS_MODE_8N1);

@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-10-16
- * version 69
+ * date 2010-10-19
+ * version 70
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -526,6 +526,104 @@ TListFiles	ends
 
 #endif
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+TOutputState struct // for use with the RemoteGetOutputState direct command response
+  Port            byte
+  Power           sbyte
+  Mode            byte
+  RegMode         byte
+  TurnRatio       sbyte
+  RunState        byte
+  TachoLimit      dword
+  TachoCount      sdword
+  BlockTachoCount sdword
+  RotationCount   sdword
+TOutputState ends
+
+TInputValues struct // for use with the RemoteGetInputValues direct command response
+  Port            byte
+  Valid           byte
+  Calibrated      byte
+  SensorType      byte
+  SensorMode      byte
+  RawValue        word
+  NormalizedValue word
+  ScaledValue     sword
+  CalibratedValue sword
+TInputValues ends
+
+TInput struct
+  CustomZeroOffset   word
+  ADRaw              word
+  SensorRaw          word
+  SensorValue        sword
+  SensorType         byte
+  SensorMode         byte
+  SensorBoolean      byte
+  DigiPinsDir        byte
+  DigiPinsIn         byte
+  DigiPinsOut        byte
+  CustomPctFullScale byte
+  CustomActiveStatus byte
+  InvalidData        byte
+TInput ends // 17 bytes
+
+TOutput struct
+  TachoCnt          sdword
+  BlockTachoCount   sdword
+  RotationCount     sdword
+  TachoLimit        dword
+  MotorRPM          sword
+  Flags             byte
+  Mode              byte
+  Speed             sbyte
+  ActualSpeed       sbyte
+  RegPParameter     byte
+  RegIParameter     byte
+  RegDParameter     byte
+  RunState          byte
+  RegMode           byte
+  Overloaded        byte
+  SyncTurnParameter sbyte
+  Options           byte
+TOutput ends // 30 bytes
+
+TButtonCounts struct
+  BtnPressedCnt   byte
+  BtnLongPressCnt byte
+  BtnShortRelCnt  byte
+  BtnLongRelCnt   byte
+  BtnRelCnt       byte
+TButtonCounts ends // 5 bytes
+
+TBluetoothDevice struct
+  Name          byte[]
+  ClassOfDevice byte[]
+  BdAddr        byte[]
+  DeviceStatus  byte
+TBluetoothDevice ends // 28 bytes
+
+TBluetoothConnection struct
+  Name          byte[]
+  ClassOfDevice byte[]
+  PinCode       byte[]
+  BdAddr        byte[]
+  HandleNr      byte
+  StreamStatus  byte
+  LinkQuality   byte
+TBluetoothConnection ends // 46 bytes
+
+TBrickData struct
+  Name            byte[]
+  BluecoreVersion byte[]
+  BdAddr          byte[]
+  BtStateStatus   byte
+  BtHwStatus      byte
+  TimeOutValue    byte
+TBrickData ends // 28 bytes
+
+#endif
+
 dseg	ends
 
 // motor arrays (compiler will optimize these out if they are not used)
@@ -729,17 +827,17 @@ dseg ends
 #define UF_UPDATE_ONFWD 0x28
 
 // API macros
-#define __resetMotorCounter0(_val) setout OUT_A, UpdateFlags, _val
-#define __resetMotorCounter1(_val) setout OUT_B, UpdateFlags, _val
-#define __resetMotorCounter2(_val) setout OUT_C, UpdateFlags, _val
-#define __resetMotorCounter3(_val) setout __OUT_AB, UpdateFlags, _val
-#define __resetMotorCounter4(_val) setout __OUT_AC, UpdateFlags, _val
-#define __resetMotorCounter5(_val) setout __OUT_BC, UpdateFlags, _val
-#define __resetMotorCounter6(_val) setout __OUT_ABC, UpdateFlags, _val
+#define __resetMotorCounter0(_val) setout OUT_A, UpdateFlagsField, _val
+#define __resetMotorCounter1(_val) setout OUT_B, UpdateFlagsField, _val
+#define __resetMotorCounter2(_val) setout OUT_C, UpdateFlagsField, _val
+#define __resetMotorCounter3(_val) setout __OUT_AB, UpdateFlagsField, _val
+#define __resetMotorCounter4(_val) setout __OUT_AC, UpdateFlagsField, _val
+#define __resetMotorCounter5(_val) setout __OUT_BC, UpdateFlagsField, _val
+#define __resetMotorCounter6(_val) setout __OUT_ABC, UpdateFlagsField, _val
 
 #define __resetTachoCount(_p) \
   compif EQ, isconst(_p), FALSE \
-  setout _p, UpdateFlags, RESET_COUNT \
+  setout _p, UpdateFlagsField, RESET_COUNT \
   compelse \
   compchk LT, _p, 0x07 \
   compchk GTEQ, _p, 0x00 \
@@ -748,7 +846,7 @@ dseg ends
 
 #define __resetBlockTachoCount(_p) \
   compif EQ, isconst(_p), FALSE \
-  setout _p, UpdateFlags, RESET_BLOCK_COUNT \
+  setout _p, UpdateFlagsField, RESET_BLOCK_COUNT \
   compelse \
   compchk LT, _p, 0x07 \
   compchk GTEQ, _p, 0x00 \
@@ -757,7 +855,7 @@ dseg ends
 
 #define __resetRotationCount(_p) \
   compif EQ, isconst(_p), FALSE \
-  setout _p, UpdateFlags, RESET_ROTATION_COUNT \
+  setout _p, UpdateFlagsField, RESET_ROTATION_COUNT \
   compelse \
   compchk LT, _p, 0x07 \
   compchk GTEQ, _p, 0x00 \
@@ -766,14 +864,14 @@ dseg ends
 
 #define __resetAllTachoCounts(_p) \
   compif EQ, isconst(_p), FALSE \
-  setout _p, UpdateFlags, RESET_ALL \
+  setout _p, UpdateFlagsField, RESET_ALL \
   compelse \
   compchk LT, _p, 0x07 \
   compchk GTEQ, _p, 0x00 \
   __resetMotorCounter##_p(RESET_ALL) \
   compend
 
-#define __onFwdExPIDAll(_ports, _pwr, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __onFwdExPIDAll(_ports, _pwr, _reset, _p, _i, _d) setout _ports, PowerField, _pwr, OutputModeField, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegModeField, OUT_REGMODE_IDLE, RunStateField, OUT_RUNSTATE_RUNNING, TurnRatioField, 0, TachoLimitField, 0, RegPValueField, _p, RegIValueField, _i, RegDValueField, _d, UpdateFlagsField, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
 #define __onFwdExPID0(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_A, _pwr, _reset, _p, _i, _d)
 #define __onFwdExPID1(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_B, _pwr, _reset, _p, _i, _d)
 #define __onFwdExPID2(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(OUT_C, _pwr, _reset, _p, _i, _d)
@@ -782,7 +880,7 @@ dseg ends
 #define __onFwdExPID5(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_BC, _pwr, _reset, _p, _i, _d)
 #define __onFwdExPID6(_pwr, _reset, _p, _i, _d) __onFwdExPIDAll(__OUT_ABC, _pwr, _reset, _p, _i, _d)
 
-#define __coastExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_IDLE, TurnRatio, 0, TachoLimit, 0, RegPValue, PID_3, RegIValue, PID_1, RegDValue, PID_1, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __coastExAll(_ports, _reset) setout _ports, PowerField, 0, OutputModeField, OUT_MODE_BRAKE, RegModeField, OUT_REGMODE_IDLE, RunStateField, OUT_RUNSTATE_IDLE, TurnRatioField, 0, TachoLimitField, 0, RegPValueField, PID_3, RegIValueField, PID_1, RegDValueField, PID_1, UpdateFlagsField, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
 #define __coastEx0(_reset) __coastExAll(OUT_A, _reset)
 #define __coastEx1(_reset) __coastExAll(OUT_B, _reset)
 #define __coastEx2(_reset) __coastExAll(OUT_C, _reset)
@@ -791,7 +889,7 @@ dseg ends
 #define __coastEx5(_reset) __coastExAll(__OUT_BC, _reset)
 #define __coastEx6(_reset) __coastExAll(__OUT_ABC, _reset)
 
-#define __offExAll(_ports, _reset) setout _ports, Power, 0, OutputMode, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_IDLE, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, PID_3, RegIValue, PID_1, RegDValue, PID_1, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __offExAll(_ports, _reset) setout _ports, PowerField, 0, OutputModeField, OUT_MODE_MOTORON+OUT_MODE_BRAKE, RegModeField, OUT_REGMODE_IDLE, RunStateField, OUT_RUNSTATE_RUNNING, TurnRatioField, 0, TachoLimitField, 0, RegPValueField, PID_3, RegIValueField, PID_1, RegDValueField, PID_1, UpdateFlagsField, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
 #define __offEx0(_reset) __offExAll(OUT_A, _reset)
 #define __offEx1(_reset) __offExAll(OUT_B, _reset)
 #define __offEx2(_reset) __offExAll(OUT_C, _reset)
@@ -800,7 +898,7 @@ dseg ends
 #define __offEx5(_reset) __offExAll(__OUT_BC, _reset)
 #define __offEx6(_reset) __offExAll(__OUT_ABC, _reset)
 
-#define __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, _regmode, RunState, OUT_RUNSTATE_RUNNING, TurnRatio, 0, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __onFwdRegExPIDAll(_ports, _pwr, _regmode, _reset, _p, _i, _d) setout _ports, PowerField, _pwr, OutputModeField, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegModeField, _regmode, RunStateField, OUT_RUNSTATE_RUNNING, TurnRatioField, 0, TachoLimitField, 0, RegPValueField, _p, RegIValueField, _i, RegDValueField, _d, UpdateFlagsField, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
 #define __onFwdRegExPID0(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_A, _pwr, _regmode, _reset, _p, _i, _d)
 #define __onFwdRegExPID1(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_B, _pwr, _regmode, _reset, _p, _i, _d)
 #define __onFwdRegExPID2(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(OUT_C, _pwr, _regmode, _reset, _p, _i, _d)
@@ -809,7 +907,7 @@ dseg ends
 #define __onFwdRegExPID5(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_BC, _pwr, _regmode, _reset, _p, _i, _d)
 #define __onFwdRegExPID6(_pwr, _regmode, _reset, _p, _i, _d) __onFwdRegExPIDAll(__OUT_ABC, _pwr, _regmode, _reset, _p, _i, _d)
 
-#define __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, _p, _i, _d) setout _ports, Power, _pwr, OutputMode, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegMode, OUT_REGMODE_SYNC, TurnRatio, _turnpct, RunState, OUT_RUNSTATE_RUNNING, TachoLimit, 0, RegPValue, _p, RegIValue, _i, RegDValue, _d, UpdateFlags, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
+#define __onFwdSyncExPIDAll(_ports, _pwr, _turnpct, _reset, _p, _i, _d) setout _ports, PowerField, _pwr, OutputModeField, OUT_MODE_MOTORON+OUT_MODE_REGULATED+OUT_MODE_BRAKE, RegModeField, OUT_REGMODE_SYNC, TurnRatioField, _turnpct, RunStateField, OUT_RUNSTATE_RUNNING, TachoLimitField, 0, RegPValueField, _p, RegIValueField, _i, RegDValueField, _d, UpdateFlagsField, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+_reset
 #define __onFwdSyncExPID0(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_A, _pwr, _turnpct, _reset, _p, _i, _d)
 #define __onFwdSyncExPID1(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_B, _pwr, _turnpct, _reset, _p, _i, _d)
 #define __onFwdSyncExPID2(_pwr, _turnpct, _reset, _p, _i, _d) __onFwdSyncExPIDAll(OUT_C, _pwr, _turnpct, _reset, _p, _i, _d)
@@ -964,35 +1062,35 @@ __rotate_NoSync0:
   set __rotate_theTurnPct0, 0
 __rotate_Start0:
   set __rotate_theRS0, OUT_RUNSTATE_RUNNING
-  setout __rotate_ports0, OutputMode, __rotate_theOM0, RegMode, __rotate_theRM0, TachoLimit, __rotate_theAngle0, RunState, __rotate_theRS0, RegPValue, __rotate_theRVP0, RegIValue, __rotate_theRVI0, RegDValue, __rotate_theRVD0, Power, __rotate_thePower0, TurnRatio, __rotate_turnpct0, UpdateFlags, __rotate_theUF0
+  setout __rotate_ports0, OutputModeField, __rotate_theOM0, RegModeField, __rotate_theRM0, TachoLimitField, __rotate_theAngle0, RunStateField, __rotate_theRS0, RegPValueField, __rotate_theRVP0, RegIValueField, __rotate_theRVI0, RegDValueField, __rotate_theRVD0, PowerField, __rotate_thePower0, TurnRatioField, __rotate_turnpct0, UpdateFlagsField, __rotate_theUF0
 
 // Waits till angle reached
   index __rotate_firstPort0, __rotate_ports0, NA
 __rotate_Running0:
-  getout __rotate_power0, __rotate_firstPort0, Power
+  getout __rotate_power0, __rotate_firstPort0, PowerField
   brtst EQ, __rotate_doneRunning0, __rotate_power0
-  getout __rotate_rs0, __rotate_firstPort0, RunState
+  getout __rotate_rs0, __rotate_firstPort0, RunStateField
   brcmp EQ, __rotate_Running0, __rotate_rs0, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning0:
   brtst EQ, __rotate_Reset0, __rotate_stop0 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM0, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF0, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports0, OutputMode, __rotate_theOM0, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS0, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF0
+  setout __rotate_ports0, OutputModeField, __rotate_theOM0, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS0, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF0
 // Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount0, __rotate_firstPort0, RotationCount
+  getout __rotate_RotCount0, __rotate_firstPort0, RotationCountField
 __rotate_Stabilize0:
   mov __rotate_OldRotCount0, __rotate_RotCount0
   wait 50
   // check rotation
-  getout __rotate_RotCount0, __rotate_firstPort0, RotationCount
+  getout __rotate_RotCount0, __rotate_firstPort0, RotationCountField
   brcmp NEQ, __rotate_Stabilize0, __rotate_OldRotCount0, __rotate_RotCount0
   set __rotate_theOM0, OUT_MODE_COAST+OUT_MODE_REGULATED
-  setout __rotate_ports0, RegMode, __rotate_theRM0, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM0, UpdateFlags, UF_UPDATE_MODE
+  setout __rotate_ports0, RegModeField, __rotate_theRM0, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM0, UpdateFlagsField, UF_UPDATE_MODE
 __rotate_Reset0:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done0, __rotate_theTurnPct0
-  setout __rotate_ports0, UpdateFlags, UF_UPDATE_RESET_BLOCK_COUNT
+  setout __rotate_ports0, UpdateFlagsField, UF_UPDATE_RESET_BLOCK_COUNT
 __rotate_Done0:
   return
 ends
@@ -1017,35 +1115,35 @@ __rotate_NoSync1:
   set __rotate_theTurnPct1, 0
 __rotate_Start1:
   set __rotate_theRS1, OUT_RUNSTATE_RUNNING
-  setout __rotate_ports1, OutputMode, __rotate_theOM1, RegMode, __rotate_theRM1, TachoLimit, __rotate_theAngle1, RunState, __rotate_theRS1, RegPValue, __rotate_theRVP1, RegIValue, __rotate_theRVI1, RegDValue, __rotate_theRVD1, Power, __rotate_thePower1, TurnRatio, __rotate_turnpct1, UpdateFlags, __rotate_theUF1
+  setout __rotate_ports1, OutputModeField, __rotate_theOM1, RegModeField, __rotate_theRM1, TachoLimitField, __rotate_theAngle1, RunStateField, __rotate_theRS1, RegPValueField, __rotate_theRVP1, RegIValueField, __rotate_theRVI1, RegDValueField, __rotate_theRVD1, PowerField, __rotate_thePower1, TurnRatioField, __rotate_turnpct1, UpdateFlagsField, __rotate_theUF1
 
 // Waits till angle reached
   index __rotate_firstPort1, __rotate_ports1, NA
 __rotate_Running1:
-  getout __rotate_power1, __rotate_firstPort1, Power
+  getout __rotate_power1, __rotate_firstPort1, PowerField
   brtst EQ, __rotate_doneRunning1, __rotate_power1
-  getout __rotate_rs1, __rotate_firstPort1, RunState
+  getout __rotate_rs1, __rotate_firstPort1, RunStateField
   brcmp EQ, __rotate_Running1, __rotate_rs1, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning1:
   brtst EQ, __rotate_Reset1, __rotate_stop1 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM1, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF1, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports1, OutputMode, __rotate_theOM1, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS1, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF1
+  setout __rotate_ports1, OutputModeField, __rotate_theOM1, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS1, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF1
 // Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount1, __rotate_firstPort1, RotationCount
+  getout __rotate_RotCount1, __rotate_firstPort1, RotationCountField
 __rotate_Stabilize1:
   mov __rotate_OldRotCount1, __rotate_RotCount1
   wait 50
   // check rotation
-  getout __rotate_RotCount1, __rotate_firstPort1, RotationCount
+  getout __rotate_RotCount1, __rotate_firstPort1, RotationCountField
   brcmp NEQ, __rotate_Stabilize1, __rotate_OldRotCount1, __rotate_RotCount1
   set __rotate_theOM1, OUT_MODE_COAST+OUT_MODE_REGULATED
-  setout __rotate_ports1, RegMode, __rotate_theRM1, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM1, UpdateFlags, UF_UPDATE_MODE
+  setout __rotate_ports1, RegModeField, __rotate_theRM1, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM1, UpdateFlagsField, UF_UPDATE_MODE
 __rotate_Reset1:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done1, __rotate_theTurnPct1
-  setout __rotate_ports1, UpdateFlags, UF_UPDATE_RESET_BLOCK_COUNT
+  setout __rotate_ports1, UpdateFlagsField, UF_UPDATE_RESET_BLOCK_COUNT
 __rotate_Done1:
   return
 ends
@@ -1070,35 +1168,35 @@ __rotate_NoSync2:
   set __rotate_theTurnPct2, 0
 __rotate_Start2:
   set __rotate_theRS2, OUT_RUNSTATE_RUNNING
-  setout __rotate_ports2, OutputMode, __rotate_theOM2, RegMode, __rotate_theRM2, TachoLimit, __rotate_theAngle2, RunState, __rotate_theRS2, RegPValue, __rotate_theRVP2, RegIValue, __rotate_theRVI2, RegDValue, __rotate_theRVD2, Power, __rotate_thePower2, TurnRatio, __rotate_turnpct2, UpdateFlags, __rotate_theUF2
+  setout __rotate_ports2, OutputModeField, __rotate_theOM2, RegModeField, __rotate_theRM2, TachoLimitField, __rotate_theAngle2, RunStateField, __rotate_theRS2, RegPValueField, __rotate_theRVP2, RegIValueField, __rotate_theRVI2, RegDValueField, __rotate_theRVD2, PowerField, __rotate_thePower2, TurnRatioField, __rotate_turnpct2, UpdateFlagsField, __rotate_theUF2
 
 // Waits till angle reached
   index __rotate_firstPort2, __rotate_ports2, NA
 __rotate_Running2:
-  getout __rotate_power2, __rotate_firstPort2, Power
+  getout __rotate_power2, __rotate_firstPort2, PowerField
   brtst EQ, __rotate_doneRunning2, __rotate_power2
-  getout __rotate_rs2, __rotate_firstPort2, RunState
+  getout __rotate_rs2, __rotate_firstPort2, RunStateField
   brcmp EQ, __rotate_Running2, __rotate_rs2, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning2:
   brtst EQ, __rotate_Reset2, __rotate_stop2 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM2, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF2, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports2, OutputMode, __rotate_theOM2, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS2, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF2
+  setout __rotate_ports2, OutputModeField, __rotate_theOM2, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS2, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF2
 // Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount2, __rotate_firstPort2, RotationCount
+  getout __rotate_RotCount2, __rotate_firstPort2, RotationCountField
 __rotate_Stabilize2:
   mov __rotate_OldRotCount2, __rotate_RotCount2
   wait 50
   // check rotation
-  getout __rotate_RotCount2, __rotate_firstPort2, RotationCount
+  getout __rotate_RotCount2, __rotate_firstPort2, RotationCountField
   brcmp NEQ, __rotate_Stabilize2, __rotate_OldRotCount2, __rotate_RotCount2
   set __rotate_theOM2, OUT_MODE_COAST+OUT_MODE_REGULATED
-  setout __rotate_ports2, RegMode, __rotate_theRM2, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM2, UpdateFlags, UF_UPDATE_MODE
+  setout __rotate_ports2, RegModeField, __rotate_theRM2, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM2, UpdateFlagsField, UF_UPDATE_MODE
 __rotate_Reset2:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done2, __rotate_theTurnPct2
-  setout __rotate_ports2, UpdateFlags, UF_UPDATE_RESET_BLOCK_COUNT
+  setout __rotate_ports2, UpdateFlagsField, UF_UPDATE_RESET_BLOCK_COUNT
 __rotate_Done2:
   return
 ends
@@ -1123,35 +1221,35 @@ __rotate_NoSync3:
   set __rotate_theTurnPct3, 0
 __rotate_Start3:
   set __rotate_theRS3, OUT_RUNSTATE_RUNNING
-  setout __rotate_ports3, OutputMode, __rotate_theOM3, RegMode, __rotate_theRM3, TachoLimit, __rotate_theAngle3, RunState, __rotate_theRS3, RegPValue, __rotate_theRVP3, RegIValue, __rotate_theRVI3, RegDValue, __rotate_theRVD3, Power, __rotate_thePower3, TurnRatio, __rotate_turnpct3, UpdateFlags, __rotate_theUF3
+  setout __rotate_ports3, OutputModeField, __rotate_theOM3, RegModeField, __rotate_theRM3, TachoLimitField, __rotate_theAngle3, RunStateField, __rotate_theRS3, RegPValueField, __rotate_theRVP3, RegIValueField, __rotate_theRVI3, RegDValueField, __rotate_theRVD3, PowerField, __rotate_thePower3, TurnRatioField, __rotate_turnpct3, UpdateFlagsField, __rotate_theUF3
 
 // Waits till angle reached
   index __rotate_firstPort3, __rotate_ports3, NA
 __rotate_Running3:
-  getout __rotate_power3, __rotate_firstPort3, Power
+  getout __rotate_power3, __rotate_firstPort3, PowerField
   brtst EQ, __rotate_doneRunning3, __rotate_power3
-  getout __rotate_rs3, __rotate_firstPort3, RunState
+  getout __rotate_rs3, __rotate_firstPort3, RunStateField
   brcmp EQ, __rotate_Running3, __rotate_rs3, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning3:
   brtst EQ, __rotate_Reset3, __rotate_stop3 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM3, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF3, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports3, OutputMode, __rotate_theOM3, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS3, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF3
+  setout __rotate_ports3, OutputModeField, __rotate_theOM3, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS3, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF3
 // Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount3, __rotate_firstPort3, RotationCount
+  getout __rotate_RotCount3, __rotate_firstPort3, RotationCountField
 __rotate_Stabilize3:
   mov __rotate_OldRotCount3, __rotate_RotCount3
   wait 50
   // check rotation
-  getout __rotate_RotCount3, __rotate_firstPort3, RotationCount
+  getout __rotate_RotCount3, __rotate_firstPort3, RotationCountField
   brcmp NEQ, __rotate_Stabilize3, __rotate_OldRotCount3, __rotate_RotCount3
   set __rotate_theOM3, OUT_MODE_COAST+OUT_MODE_REGULATED
-  setout __rotate_ports3, RegMode, __rotate_theRM3, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM3, UpdateFlags, UF_UPDATE_MODE
+  setout __rotate_ports3, RegModeField, __rotate_theRM3, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM3, UpdateFlagsField, UF_UPDATE_MODE
 __rotate_Reset3:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done3, __rotate_theTurnPct3
-  setout __rotate_ports3, UpdateFlags, UF_UPDATE_RESET_BLOCK_COUNT
+  setout __rotate_ports3, UpdateFlagsField, UF_UPDATE_RESET_BLOCK_COUNT
 __rotate_Done3:
   return
 ends
@@ -1176,35 +1274,35 @@ __rotate_NoSync4:
   set __rotate_theTurnPct4, 0
 __rotate_Start4:
   set __rotate_theRS4, OUT_RUNSTATE_RUNNING
-  setout __rotate_ports4, OutputMode, __rotate_theOM4, RegMode, __rotate_theRM4, TachoLimit, __rotate_theAngle4, RunState, __rotate_theRS4, RegPValue, __rotate_theRVP4, RegIValue, __rotate_theRVI4, RegDValue, __rotate_theRVD4, Power, __rotate_thePower4, TurnRatio, __rotate_turnpct4, UpdateFlags, __rotate_theUF4
+  setout __rotate_ports4, OutputModeField, __rotate_theOM4, RegModeField, __rotate_theRM4, TachoLimitField, __rotate_theAngle4, RunStateField, __rotate_theRS4, RegPValueField, __rotate_theRVP4, RegIValueField, __rotate_theRVI4, RegDValueField, __rotate_theRVD4, PowerField, __rotate_thePower4, TurnRatioField, __rotate_turnpct4, UpdateFlagsField, __rotate_theUF4
 
 // Waits till angle reached
   index __rotate_firstPort4, __rotate_ports4, NA
 __rotate_Running4:
-  getout __rotate_power4, __rotate_firstPort4, Power
+  getout __rotate_power4, __rotate_firstPort4, PowerField
   brtst EQ, __rotate_doneRunning4, __rotate_power4
-  getout __rotate_rs4, __rotate_firstPort4, RunState
+  getout __rotate_rs4, __rotate_firstPort4, RunStateField
   brcmp EQ, __rotate_Running4, __rotate_rs4, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning4:
   brtst EQ, __rotate_Reset4, __rotate_stop4 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM4, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF4, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports4, OutputMode, __rotate_theOM4, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS4, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF4
+  setout __rotate_ports4, OutputModeField, __rotate_theOM4, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS4, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF4
 // Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount4, __rotate_firstPort4, RotationCount
+  getout __rotate_RotCount4, __rotate_firstPort4, RotationCountField
 __rotate_Stabilize4:
   mov __rotate_OldRotCount4, __rotate_RotCount4
   wait 50
   // check rotation
-  getout __rotate_RotCount4, __rotate_firstPort4, RotationCount
+  getout __rotate_RotCount4, __rotate_firstPort4, RotationCountField
   brcmp NEQ, __rotate_Stabilize4, __rotate_OldRotCount4, __rotate_RotCount4
   set __rotate_theOM4, OUT_MODE_COAST+OUT_MODE_REGULATED
-  setout __rotate_ports4, RegMode, __rotate_theRM4, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM4, UpdateFlags, UF_UPDATE_MODE
+  setout __rotate_ports4, RegModeField, __rotate_theRM4, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM4, UpdateFlagsField, UF_UPDATE_MODE
 __rotate_Reset4:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done4, __rotate_theTurnPct4
-  setout __rotate_ports4, UpdateFlags, UF_UPDATE_RESET_BLOCK_COUNT
+  setout __rotate_ports4, UpdateFlagsField, UF_UPDATE_RESET_BLOCK_COUNT
 __rotate_Done4:
   return
 ends
@@ -1229,35 +1327,35 @@ __rotate_NoSync5:
   set __rotate_theTurnPct5, 0
 __rotate_Start5:
   set __rotate_theRS5, OUT_RUNSTATE_RUNNING
-  setout __rotate_ports5, OutputMode, __rotate_theOM5, RegMode, __rotate_theRM5, TachoLimit, __rotate_theAngle5, RunState, __rotate_theRS5, RegPValue, __rotate_theRVP5, RegIValue, __rotate_theRVI5, RegDValue, __rotate_theRVD5, Power, __rotate_thePower5, TurnRatio, __rotate_turnpct5, UpdateFlags, __rotate_theUF5
+  setout __rotate_ports5, OutputModeField, __rotate_theOM5, RegModeField, __rotate_theRM5, TachoLimitField, __rotate_theAngle5, RunStateField, __rotate_theRS5, RegPValueField, __rotate_theRVP5, RegIValueField, __rotate_theRVI5, RegDValueField, __rotate_theRVD5, PowerField, __rotate_thePower5, TurnRatioField, __rotate_turnpct5, UpdateFlagsField, __rotate_theUF5
 
 // Waits till angle reached
   index __rotate_firstPort5, __rotate_ports5, NA
 __rotate_Running5:
-  getout __rotate_power5, __rotate_firstPort5, Power
+  getout __rotate_power5, __rotate_firstPort5, PowerField
   brtst EQ, __rotate_doneRunning5, __rotate_power5
-  getout __rotate_rs5, __rotate_firstPort5, RunState
+  getout __rotate_rs5, __rotate_firstPort5, RunStateField
   brcmp EQ, __rotate_Running5, __rotate_rs5, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning5:
   brtst EQ, __rotate_Reset5, __rotate_stop5 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM5, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF5, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports5, OutputMode, __rotate_theOM5, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS5, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF5
+  setout __rotate_ports5, OutputModeField, __rotate_theOM5, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS5, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF5
 // Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount5, __rotate_firstPort5, RotationCount
+  getout __rotate_RotCount5, __rotate_firstPort5, RotationCountField
 __rotate_Stabilize5:
   mov __rotate_OldRotCount5, __rotate_RotCount5
   wait 50
   // check rotation
-  getout __rotate_RotCount5, __rotate_firstPort5, RotationCount
+  getout __rotate_RotCount5, __rotate_firstPort5, RotationCountField
   brcmp NEQ, __rotate_Stabilize5, __rotate_OldRotCount5, __rotate_RotCount5
   set __rotate_theOM5, OUT_MODE_COAST+OUT_MODE_REGULATED
-  setout __rotate_ports5, RegMode, __rotate_theRM5, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM5, UpdateFlags, UF_UPDATE_MODE
+  setout __rotate_ports5, RegModeField, __rotate_theRM5, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM5, UpdateFlagsField, UF_UPDATE_MODE
 __rotate_Reset5:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done5, __rotate_theTurnPct5
-  setout __rotate_ports5, UpdateFlags, UF_UPDATE_RESET_BLOCK_COUNT
+  setout __rotate_ports5, UpdateFlagsField, UF_UPDATE_RESET_BLOCK_COUNT
 __rotate_Done5:
   return
 ends
@@ -1282,35 +1380,35 @@ __rotate_NoSync6:
   set __rotate_theTurnPct6, 0
 __rotate_Start6:
   set __rotate_theRS6, OUT_RUNSTATE_RUNNING
-  setout __rotate_ports6, OutputMode, __rotate_theOM6, RegMode, __rotate_theRM6, TachoLimit, __rotate_theAngle6, RunState, __rotate_theRS6, RegPValue, __rotate_theRVP6, RegIValue, __rotate_theRVI6, RegDValue, __rotate_theRVD6, Power, __rotate_thePower6, TurnRatio, __rotate_turnpct6, UpdateFlags, __rotate_theUF6
+  setout __rotate_ports6, OutputModeField, __rotate_theOM6, RegModeField, __rotate_theRM6, TachoLimitField, __rotate_theAngle6, RunStateField, __rotate_theRS6, RegPValueField, __rotate_theRVP6, RegIValueField, __rotate_theRVI6, RegDValueField, __rotate_theRVD6, PowerField, __rotate_thePower6, TurnRatioField, __rotate_turnpct6, UpdateFlagsField, __rotate_theUF6
 
 // Waits till angle reached
   index __rotate_firstPort6, __rotate_ports6, NA
 __rotate_Running6:
-  getout __rotate_power6, __rotate_firstPort6, Power
+  getout __rotate_power6, __rotate_firstPort6, PowerField
   brtst EQ, __rotate_doneRunning6, __rotate_power6
-  getout __rotate_rs6, __rotate_firstPort6, RunState
+  getout __rotate_rs6, __rotate_firstPort6, RunStateField
   brcmp EQ, __rotate_Running6, __rotate_rs6, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning6:
   brtst EQ, __rotate_Reset6, __rotate_stop6 // skip the speed regulation phase if __rotate_stop is false
 // Regulates for speed = 0
   set __rotate_theOM6, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF6, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports6, OutputMode, __rotate_theOM6, RegMode, OUT_REGMODE_SPEED, RunState, __rotate_theRS6, Power, 0, TachoLimit, 0, UpdateFlags, __rotate_theUF6
+  setout __rotate_ports6, OutputModeField, __rotate_theOM6, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS6, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF6
 // Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount6, __rotate_firstPort6, RotationCount
+  getout __rotate_RotCount6, __rotate_firstPort6, RotationCountField
 __rotate_Stabilize6:
   mov __rotate_OldRotCount6, __rotate_RotCount6
   wait 50
   // check rotation
-  getout __rotate_RotCount6, __rotate_firstPort6, RotationCount
+  getout __rotate_RotCount6, __rotate_firstPort6, RotationCountField
   brcmp NEQ, __rotate_Stabilize6, __rotate_OldRotCount6, __rotate_RotCount6
   set __rotate_theOM6, OUT_MODE_COAST+OUT_MODE_REGULATED
-  setout __rotate_ports6, RegMode, __rotate_theRM6, RunState, OUT_RUNSTATE_IDLE, OutputMode, __rotate_theOM6, UpdateFlags, UF_UPDATE_MODE
+  setout __rotate_ports6, RegModeField, __rotate_theRM6, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM6, UpdateFlagsField, UF_UPDATE_MODE
 __rotate_Reset6:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done6, __rotate_theTurnPct6
-  setout __rotate_ports6, UpdateFlags, UF_UPDATE_RESET_BLOCK_COUNT
+  setout __rotate_ports6, UpdateFlagsField, UF_UPDATE_RESET_BLOCK_COUNT
 __rotate_Done6:
   return
 ends
@@ -1354,9 +1452,9 @@ dseg segment
 dseg ends
 
 subroutine __ResetSensorSubroutine
-  setin TRUE, __ResetSensorPort, InvalidData
+  setin TRUE, __ResetSensorPort, InvalidDataField
 __SensorStillInvalid:
-  getin	__ResetSensorTmp, __ResetSensorPort, InvalidData
+  getin	__ResetSensorTmp, __ResetSensorPort, InvalidDataField
   brtst	NEQ, __SensorStillInvalid, __ResetSensorTmp
   return
 ends
@@ -1368,50 +1466,50 @@ ends
   release __ResetSensorMutex
 
 #define __SetSensorTouch(_port) \
-  setin IN_TYPE_SWITCH, _port, Type \
-  setin IN_MODE_BOOLEAN, _port, InputMode \
+  setin IN_TYPE_SWITCH, _port, TypeField \
+  setin IN_MODE_BOOLEAN, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorLight(_port) \
-  setin IN_TYPE_LIGHT_ACTIVE, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_LIGHT_ACTIVE, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorSound(_port) \
-  setin IN_TYPE_SOUND_DB, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_SOUND_DB, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorLowspeed(_port) \
-  setin IN_TYPE_LOWSPEED_9V, _port, Type \
-  setin IN_MODE_RAW, _port, InputMode \
+  setin IN_TYPE_LOWSPEED_9V, _port, TypeField \
+  setin IN_MODE_RAW, _port, InputModeField \
   __ResetSensor(_port)
 
 #if __FIRMWARE_VERSION > 107
 
 #define __SetSensorColorFull(_port) \
-  setin IN_TYPE_COLORFULL, _port, Type \
-  setin IN_MODE_RAW, _port, InputMode \
+  setin IN_TYPE_COLORFULL, _port, TypeField \
+  setin IN_MODE_RAW, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorColorRed(_port) \
-  setin IN_TYPE_COLORRED, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_COLORRED, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorColorGreen(_port) \
-  setin IN_TYPE_COLORGREEN, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_COLORGREEN, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorColorBlue(_port) \
-  setin IN_TYPE_COLORBLUE, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_COLORBLUE, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorColorNone(_port) \
-  setin IN_TYPE_COLORNONE, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_COLORNONE, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port)
 
 #endif
@@ -2635,6 +2733,7 @@ dseg ends
 dseg segment
   __inputModuleOffsetMutex mutex
   __inputModuleOffset word
+  __inputModuleOffsetTmp word
 dseg ends
 
 #define __GetInCustomZeroOffset(_p, _n) \
@@ -2738,73 +2837,129 @@ dseg ends
 
 #define __GetInColorCalibration(_p, _np, _nc, _n) \
   compchk EQ, sizeof(_n), 4 \
-  compchk EQ, isconst(_p), TRUE \
-  compchk EQ, isconst(_np), TRUE \
-  compchk EQ, isconst(_nc), TRUE \
+  compif EQ, isconst(_p+_np+_nc), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
   compchk LT, _np, INPUT_NO_OF_POINTS \
   compchk GTEQ, _np, 0x00 \
   compchk LT, _nc, INPUT_NO_OF_COLORS \
   compchk GTEQ, _nc, 0x00 \
-  GetInputModuleValue(InputOffsetColorCalibration(_p, _np, _nc), _n)
+  GetInputModuleValue(InputOffsetColorCalibration(_p, _np, _nc), _n) \
+  compelse \
+  acquire __inputModuleOffsetMutex \
+  mul __inputModuleOffset, _p, 84 \
+  mul __inputModuleOffsetTmp, _np, 16 \
+  add __inputModuleOffset, __inputModuleOffset, __inputModuleOffsetTmp \
+  mul __inputModuleOffsetTmp, _nc, 4 \
+  add __inputModuleOffset, __inputModuleOffset, __inputModuleOffsetTmp \
+  add __inputModuleOffset, __inputModuleOffset, 80 \
+  GetInputModuleValue(__inputModuleOffset, _n) \
+  release __inputModuleOffsetMutex \
+  compend
 
 #define __GetInColorCalLimits(_p, _np, _n) \
   compchk EQ, sizeof(_n), 2 \
-  compchk EQ, isconst(_p), TRUE \
-  compchk EQ, isconst(_np), TRUE \
+  compif EQ, isconst(_p+_np), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
   compchk LT, _np, 0x02 \
   compchk GTEQ, _np, 0x00 \
-  GetInputModuleValue(InputOffsetColorCalLimits(_p, _np), _n)
+  GetInputModuleValue(InputOffsetColorCalLimits(_p, _np), _n) \
+  compelse \
+  acquire __inputModuleOffsetMutex \
+  mul __inputModuleOffset, _p, 84 \
+  mul __inputModuleOffsetTmp, _np, 2 \
+  add __inputModuleOffset, __inputModuleOffset, __inputModuleOffsetTmp \
+  add __inputModuleOffset, __inputModuleOffset, 128 \
+  GetInputModuleValue(__inputModuleOffset, _n) \
+  release __inputModuleOffsetMutex \
+  compend
 
 #define __GetInColorADRaw(_p, _nc, _n) \
   compchk EQ, sizeof(_n), 2 \
-  compchk EQ, isconst(_p), TRUE \
-  compchk EQ, isconst(_nc), TRUE \
+  compif EQ, isconst(_p+_nc), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
   compchk LT, _nc, INPUT_NO_OF_COLORS \
   compchk GTEQ, _nc, 0x00 \
-  GetInputModuleValue(InputOffsetColorADRaw(_p, _nc), _n)
+  GetInputModuleValue(InputOffsetColorADRaw(_p, _nc), _n) \
+  compelse \
+  acquire __inputModuleOffsetMutex \
+  mul __inputModuleOffset, _p, 84 \
+  mul __inputModuleOffsetTmp, _nc, 2 \
+  add __inputModuleOffset, __inputModuleOffset, __inputModuleOffsetTmp \
+  add __inputModuleOffset, __inputModuleOffset, 132 \
+  GetInputModuleValue(__inputModuleOffset, _n) \
+  release __inputModuleOffsetMutex \
+  compend
 
 #define __GetInColorSensorRaw(_p, _nc, _n) \
   compchk EQ, sizeof(_n), 2 \
-  compchk EQ, isconst(_p), TRUE \
-  compchk EQ, isconst(_nc), TRUE \
+  compif EQ, isconst(_p+_nc), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
   compchk LT, _nc, INPUT_NO_OF_COLORS \
   compchk GTEQ, _nc, 0x00 \
-  GetInputModuleValue(InputOffsetColorSensorRaw(_p, _nc), _n)
+  GetInputModuleValue(InputOffsetColorSensorRaw(_p, _nc), _n) \
+  compelse \
+  acquire __inputModuleOffsetMutex \
+  mul __inputModuleOffset, _p, 84 \
+  mul __inputModuleOffsetTmp, _nc, 2 \
+  add __inputModuleOffset, __inputModuleOffset, __inputModuleOffsetTmp \
+  add __inputModuleOffset, __inputModuleOffset, 140 \
+  GetInputModuleValue(__inputModuleOffset, _n) \
+  release __inputModuleOffsetMutex \
+  compend
 
 #define __GetInColorSensorValue(_p, _nc, _n) \
   compchk EQ, sizeof(_n), 2 \
-  compchk EQ, isconst(_p), TRUE \
-  compchk EQ, isconst(_nc), TRUE \
+  compif EQ, isconst(_p+_nc), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
   compchk LT, _nc, INPUT_NO_OF_COLORS \
   compchk GTEQ, _nc, 0x00 \
-  GetInputModuleValue(InputOffsetColorSensorValue(_p, _nc), _n)
+  GetInputModuleValue(InputOffsetColorSensorValue(_p, _nc), _n) \
+  compelse \
+  acquire __inputModuleOffsetMutex \
+  mul __inputModuleOffset, _p, 84 \
+  mul __inputModuleOffsetTmp, _nc, 2 \
+  add __inputModuleOffset, __inputModuleOffset, __inputModuleOffsetTmp \
+  add __inputModuleOffset, __inputModuleOffset, 148 \
+  GetInputModuleValue(__inputModuleOffset, _n) \
+  release __inputModuleOffsetMutex \
+  compend
 
 #define __GetInColorBoolean(_p, _nc, _n) \
   compchk EQ, sizeof(_n), 1 \
-  compchk EQ, isconst(_p), TRUE \
-  compchk EQ, isconst(_nc), TRUE \
+  compif EQ, isconst(_p+_nc), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
   compchk LT, _nc, INPUT_NO_OF_COLORS \
   compchk GTEQ, _nc, 0x00 \
-  GetInputModuleValue(InputOffsetColorBoolean(_p, _nc), _n)
+  GetInputModuleValue(InputOffsetColorBoolean(_p, _nc), _n) \
+  compelse \
+  acquire __inputModuleOffsetMutex \
+  mul __inputModuleOffset, _p, 84 \
+  mul __inputModuleOffsetTmp, _nc, 2 \
+  add __inputModuleOffset, __inputModuleOffset, __inputModuleOffsetTmp \
+  add __inputModuleOffset, __inputModuleOffset, 156 \
+  GetInputModuleValue(__inputModuleOffset, _n) \
+  release __inputModuleOffsetMutex \
+  compend
 
 #define __GetInColorCalibrationState(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
-  compchk EQ, isconst(_p), TRUE \
+  compif EQ, isconst(_p), TRUE \
   compchk LT, _p, 0x04 \
   compchk GTEQ, _p, 0x00 \
-  GetInputModuleValue(InputOffsetColorCalibrationState(_p), _n)
+  GetInputModuleValue(InputOffsetColorCalibrationState(_p), _n) \
+  compelse \
+  acquire __inputModuleOffsetMutex \
+  mul __inputModuleOffset, _p, 84 \
+  add __inputModuleOffset, __inputModuleOffset, 160 \
+  GetInputModuleValue(__inputModuleOffset, _n) \
+  release __inputModuleOffsetMutex \
+  compend
 
 #endif
 
@@ -4693,6 +4848,10 @@ dseg ends
   mov _result, __CBTWArgs.Result \
   release __CBTWMutex
 
+#define __UseRS485() \
+  setin IN_TYPE_HISPEED, IN_4, TypeField \
+  wait 1
+
 #ifdef __ENHANCED_FIRMWARE
 
 dseg segment
@@ -4705,6 +4864,15 @@ dseg segment
   __CHSCArgs TCommHSControl
   __CHSCMutex mutex
   __SHSTmpVal sdword
+  __WFRRMutex mutex
+  __WFRRAvail byte
+  __WFRR_I byte
+  __WFRRCmd byte
+  __WFRRBuffer byte[]
+  __WFRRTmpBuffer byte[]
+  __WFRRUnflattenBuf byte[]
+  __WFRRUnflattenErr byte
+  __WFRRStatus sbyte
 dseg ends
 
 #define __RS485Status(_sendingData, _dataAvail) \
@@ -4737,7 +4905,8 @@ dseg ends
   mov __CHSCArgs.Mode, _mode \
   syscall CommHSControl, __CHSCArgs \
   mov _result, __CHSCArgs.Result \
-  release __CHSCMutex
+  release __CHSCMutex \
+  wait 1
 
 #else
 
@@ -4747,7 +4916,8 @@ dseg ends
   mov __CHSCArgs.BaudRate, _baud \
   syscall CommHSControl, __CHSCArgs \
   mov _result, __CHSCArgs.Result \
-  release __CHSCMutex
+  release __CHSCMutex \
+  wait 1
 
 #endif
 
@@ -4773,35 +4943,47 @@ dseg ends
 #ifdef __ENHANCED_FIRMWARE
 
 #define __connectionWrite(_conn, _buffer, _result) \
-  compchk EQ, isconst(_conn), 1 \
-  compif LT, _conn, 4 \
-  __bluetoothWrite(_conn, _buffer, _result) \
-  compelse \
-  compchk EQ, _conn, 4 \
+  brcmp NEQ, __ConnWrite_Else##__I__, _conn, 4 \
   __RS485Write(_buffer, _result) \
-  compend
+  jmp __ConnWrite_EndIf##__I__ \
+  __ConnWrite_Else##__I__: \
+  __bluetoothWrite(_conn, _buffer, _result) \
+  __ConnWrite_EndIf##__I__: \
+  __IncI__
 
 #define __remoteConnectionIdle(_conn, _result) \
-  compchk EQ, isconst(_conn), 1 \
-  compif LT, _conn, 4 \
-  __bluetoothStatus(_conn, _result) \
-  tst EQ, _result, _result \
-  compelse \
-  compchk EQ, _conn, 4 \
+  brcmp NEQ, __ConnIdle_Else##__I__, _conn, 4 \
   __RS485Status(_result, __SHSTmpVal) \
+  jmp __ConnIdle_EndIf##__I__ \
+  __ConnIdle_Else##__I__: \
+  __bluetoothStatus(_conn, _result) \
+  __ConnIdle_EndIf##__I__: \
   tst EQ, _result, _result \
-  compend
+  __IncI__
+
+subroutine __DoWaitForRemoteResponse
+  set __WFRR_I, 0
+  __wFRR_Repeat:
+  __GetLastResponseInfo(FALSE, __WFRRAvail, __WFRRCmd, __WFRRBuffer, __WFRRStatus)
+  wait 2
+  add __WFRR_I, __WFRR_I, 1
+  // if it rolls back around to 0 then break out of loop
+  brtst EQ, __wFRR_Break, __WFRR_I
+  brtst EQ, __wFRR_Repeat, __WFRRAvail
+  // > 0 bytes in last response so read it one more time and clear it
+  __GetLastResponseInfo(TRUE, __WFRRAvail, __WFRRCmd, __WFRRBuffer, __WFRRStatus)
+  jmp __wFRR_End
+  __wFRR_Break:
+  set __WFRRStatus, TRUE // timeout error occurred
+  __wFRR_End:
+  return
+ends
 
 #else
 
-#define __connectionWrite(_conn, _buffer, _result) \
-  compchk EQ, isconst(_conn), 1 \
-  compchk LT, _conn, 4 \
-  __bluetoothWrite(_conn, _buffer, _result)
+#define __connectionWrite(_conn, _buffer, _result) __bluetoothWrite(_conn, _buffer, _result)
 
 #define __remoteConnectionIdle(_conn, _result) \
-  compchk EQ, isconst(_conn), 1 \
-  compchk LT, _conn, 4 \
   __bluetoothStatus(_conn, _result) \
   tst EQ, _result, _result
 
@@ -4933,17 +5115,150 @@ dseg ends
   __connectionWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
+#define __remoteResetTachoCount(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCUpdateResetCountPacket, _port, _result)
+
+#ifdef __ENHANCED_FIRMWARE
+
+#define __remoteGetOutputState(_conn, _params, _result) \
+  __remoteGenericByteCommand(_conn, __DCGetOutputStatePacket, _params.Port, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGOSR_End##__I__, _result \
+  brcmp NEQ, __RRGOSR_End##__I__, __WFRRAvail, 23 \
+  unflatten _params, __WFRRUnflattenErr, __WFRRBuffer, _params \
+  __RRGOSR_End##__I__: \
+  __IncI__
+
+#define __remoteGetInputValues(_conn, _params, _result) \
+  __remoteGenericByteCommand(_conn, __DCGetInputValuesPacket, _params.Port, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 14 \
+  unflatten _params, __WFRRUnflattenErr, __WFRRBuffer, _params \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteGetBatteryLevel(_conn, _value, _result) \
+  compchk EQ, sizeof(_value), 2 \
+  __connectionWrite(_conn, __DCGetBatteryLevelPacket, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 3 \
+  unflatten _value, __WFRRUnflattenErr, __WFRRBuffer, _value \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteLowspeedGetStatus(_conn, _value, _result) \
+  __connectionWrite(_conn, __DCLSGetStatusPacket, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 2 \
+  index _value, __WFRRBuffer, NA \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteLowspeedRead(_conn, _port, _bread, _data, _result) \
+  __remoteGenericByteCommand(_conn, __DCLSReadPacket, _port, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 18 \
+  index _bread, __WFRRBuffer, NA \
+  arrsubset _data, __WFRRBuffer, 1, _bread \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteGetCurrentProgramName(_conn, _name, _result) \
+  __connectionWrite(_conn, __DCGetCurProgNamePacket, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 21 \
+  mov _name, __WFRRBuffer \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteDatalogRead(_conn, _remove, _cnt, _log, _result) \
+  __remoteGenericByteCommand(_conn, __DCDatalogReadPacket, _remove, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 62 \
+  index _cnt, __WFRRBuffer, NA \
+  arrsubset _log, __WFRRBuffer, 1, _cnt \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteGetContactCount(_conn, _cnt, _result) \
+  __connectionWrite(_conn, __DCBTGetContactCntPacket, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 2 \
+  index _cnt, __WFRRBuffer, NA \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteGetContactName(_conn, _idx, _name, _result) \
+  __remoteGenericByteCommand(_conn, __DCBTGetContactNamePacket, _idx, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 19 \
+  mov _name, __WFRRBuffer \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteGetConnectionCount(_conn, _cnt, _result) \
+  __connectionWrite(_conn, __DCBTGetConnectCntPacket, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 2 \
+  index _cnt, __WFRRBuffer, NA \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteGetConnectionName(_conn, _idx, _name, _result) \
+  __remoteGenericByteCommand(_conn, __DCBTGetConnectNamePacket, _idx, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGIVR_End##__I__, _result \
+  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 19 \
+  mov _name, __WFRRBuffer \
+  __RRGIVR_End##__I__: \
+  __IncI__
+
+#define __remoteGetProperty(_conn, _property, _result) __remoteGenericByteCommand(_conn, __DCGetPropertyPacket, _property, _result)
+
+#define __remoteCloseFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCClosePacket, _handle, _result)
+
+#define __remoteFindNextFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCFindNextPacket, _handle, _result)
+
+#define __remotePollCommandLength(_conn, _bufnum, _result) __remoteGenericByteCommand(_conn, __SCPollCommandLenPacket, _bufnum, _result)
+
+#else
+
 #define __remoteGetOutputState(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCGetOutputStatePacket, _port, _result)
 #define __remoteGetInputValues(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCGetInputValuesPacket, _port, _result)
+#define __remoteGetBatteryLevel(_conn, _result) __connectionWrite(_conn, __DCGetBatteryLevelPacket, _result)
+#define __remoteLowspeedGetStatus(_conn, _result) __connectionWrite(_conn, __DCLSGetStatusPacket, _result)
 #define __remoteLowspeedRead(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCLSReadPacket, _port, _result)
-#define __remoteResetTachoCount(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCUpdateResetCountPacket, _port, _result)
-#define __remoteGetProperty(_conn, _property, _result) __remoteGenericByteCommand(_conn, __DCGetPropertyPacket, _property, _result)
+#define __remoteGetCurrentProgramName(_conn, _result) __connectionWrite(_conn, __DCGetCurProgNamePacket, _result)
 #define __remoteDatalogRead(_conn, _remove, _result) __remoteGenericByteCommand(_conn, __DCDatalogReadPacket, _remove, _result)
-#define __remoteBTGetContactName(_conn, _idx, _result) __remoteGenericByteCommand(_conn, __DCBTGetContactNamePacket, _idx, _result)
-#define __remoteBTGetConnectionName(_conn, _idx, _result) __remoteGenericByteCommand(_conn, __DCBTGetConnectNamePacket, _idx, _result)
+#define __remoteGetContactCount(_conn, _result) __connectionWrite(_conn, __DCBTGetContactCntPacket, _result)
+#define __remoteGetContactName(_conn, _idx, _result) __remoteGenericByteCommand(_conn, __DCBTGetContactNamePacket, _idx, _result)
+#define __remoteGetConnectionCount(_conn, _result) __connectionWrite(_conn, __DCBTGetConnectCntPacket, _result)
+#define __remoteGetConnectionName(_conn, _idx, _result) __remoteGenericByteCommand(_conn, __DCBTGetConnectNamePacket, _idx, _result)
+#define __remoteGetProperty(_conn, _property, _result) __remoteGenericByteCommand(_conn, __DCGetPropertyPacket, _property, _result)
 #define __remoteCloseFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCClosePacket, _handle, _result)
 #define __remoteFindNextFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCFindNextPacket, _handle, _result)
 #define __remotePollCommandLength(_conn, _bufnum, _result) __remoteGenericByteCommand(_conn, __SCPollCommandLenPacket, _bufnum, _result)
+
+#endif
 
 #define __remoteDatalogSetTimes(_conn, _synctime, _result) \
   acquire __RemoteMutex \
@@ -5340,21 +5655,21 @@ dseg ends
   release __bcd2DecMutex
 
 #define __SetSensorHTEOPD(_port, _bStd) \
-  setin IN_TYPE_LIGHT_ACTIVE+_bStd, _port, Type \
-  setin IN_MODE_RAW, _port, InputMode \
+  setin IN_TYPE_LIGHT_ACTIVE+_bStd, _port, TypeField \
+  setin IN_MODE_RAW, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __ReadSensorHTEOPD(_port, _val) \
-  getin _val, _port, RawValue \
+  getin _val, _port, RawValueField \
   sub _val, 1023, _val
 
 #define __SetSensorHTGyro(_port) \
-  setin IN_TYPE_LIGHT_INACTIVE, _port, Type \
-  setin IN_MODE_RAW, _port, InputMode \
+  setin IN_TYPE_LIGHT_INACTIVE, _port, TypeField \
+  setin IN_MODE_RAW, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __ReadSensorHTGyro(_port, _offset, _val) \
-  getin _val, _port, RawValue \
+  getin _val, _port, RawValueField \
   sub _val, _val, 600 \
   sub _val, _val, _offset
 
@@ -5369,7 +5684,7 @@ dseg ends
 
 #define __ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) \
   acquire __HTMplexMutex \
-  getin __HTMplexRaw, _p, RawValue \
+  getin __HTMplexRaw, _p, RawValueField \
   mul __HTMplexScaled, __HTMplexRaw, 339 \
   sub __HTMplexScaled, 346797, __HTMplexScaled \
   div __HTMplexScaled, __HTMplexScaled, __HTMplexRaw \
@@ -7070,50 +7385,50 @@ dseg ends
   compend
 
 #define __SetSensorMSPressure(_port) \
-  setin IN_TYPE_REFLECTION, _port, Type \
-  setin IN_MODE_RAW, _port, InputMode \
+  setin IN_TYPE_REFLECTION, _port, TypeField \
+  setin IN_MODE_RAW, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorMSDRODActive(_port) \
-  setin IN_TYPE_LIGHT_ACTIVE, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_LIGHT_ACTIVE, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorMSDRODInactive(_port) \
-  setin IN_TYPE_LIGHT_INACTIVE, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_LIGHT_INACTIVE, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __SetSensorNXTSumoEyesLong(_port) \
-  setin IN_TYPE_LIGHT_INACTIVE, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_LIGHT_INACTIVE, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port) \
   wait 275
 
 #define __SetSensorNXTSumoEyesShort(_port) \
-  setin IN_TYPE_LIGHT_ACTIVE, _port, Type \
-  setin IN_MODE_PCTFULLSCALE, _port, InputMode \
+  setin IN_TYPE_LIGHT_ACTIVE, _port, TypeField \
+  setin IN_MODE_PCTFULLSCALE, _port, InputModeField \
   __ResetSensor(_port) \
   wait 275
 
 #define __SetSensorMSTouchMux(_port) \
-  setin IN_TYPE_LIGHT_INACTIVE, _port, Type \
-  setin IN_MODE_RAW, _port, InputMode \
+  setin IN_TYPE_LIGHT_INACTIVE, _port, TypeField \
+  setin IN_MODE_RAW, _port, InputModeField \
   __ResetSensor(_port)
 
 #define __ReadSensorMSPressure(_port, _value) \
-  getin _value, _port, RawValue \
+  getin _value, _port, RawValueField \
   sub _value, 1024, _value \
   div _value, _value, 25
 
 #define __ReadSensorMSPressureRaw(_port, _value) \
-  getin _value, _port, RawValue
+  getin _value, _port, RawValueField
 
 #define __ReadSensorMSDROD(_port, _value) \
-  getin _value, _port, NormalizedValue
+  getin _value, _port, NormalizedValueField
 
 #define __ReadSensorNXTSumoEyes(_port, _value) \
-  getin _value, _port, NormalizedValue \
+  getin _value, _port, NormalizedValueField \
   mul _value, _value, 100 \
   div _value, _value, 1023
 
@@ -10273,7 +10588,7 @@ ends
  * \param _port The port to configure. See \ref NBCInputPortConstants.
  * \param _t The desired sensor type.  See \ref NBCSensorTypeConstants.
  */
-#define SetSensorType(_port,_t) setin _t, _port, Type
+#define SetSensorType(_port,_t) setin _t, _port, TypeField
 
 /**
  * Set sensor mode.
@@ -10286,7 +10601,7 @@ ends
  * \param _port The port to configure. See \ref NBCInputPortConstants.
  * \param _m The desired sensor mode. See \ref NBCSensorModeConstants.
  */
-#define SetSensorMode(_port,_m) setin _m, _port, InputMode
+#define SetSensorMode(_port,_m) setin _m, _port, InputModeField
 
 /**
  * Read sensor scaled value.
@@ -10296,7 +10611,7 @@ ends
  * the desired sensor port may also be used.
  * \param _value The sensor's scaled value.
  */
-#define ReadSensor(_port,_value) getin _value, _port, ScaledValue
+#define ReadSensor(_port,_value) getin _value, _port, ScaledValueField
 
 /**
  * Clear a sensor value.
@@ -10304,7 +10619,7 @@ ends
  * to measure a cumulative quantity such as rotation or a pulse count.
  * \param _port The port to clear. See \ref NBCInputPortConstants.
  */
-#define ClearSensor(_port) setin 0, _port, ScaledValue
+#define ClearSensor(_port) setin 0, _port, ScaledValueField
 
 /**
  * Configure a touch sensor.
@@ -13293,70 +13608,157 @@ ends
 #define RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result) \
   __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result)
 
+#ifdef __ENHANCED_FIRMWARE
+
 /**
- * Send a GetBatteryLevel message.
- * This method sends a GetBatteryLevel direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
+ * Send a GetOutputState message.
+ * Send the GetOutputState direct command on the specified connection slot.
  *
  * \param _conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
+ * \param _params The input and output parameters for the function call.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteGetBatteryLevel(_conn, _result) __connectionWrite(_conn, __DCGetBatteryLevelPacket, _result)
+#define RemoteGetOutputState(_conn, _params, _result) \
+  compchktype _params, TOutputState \
+  __remoteGetOutputState(_conn, _params, _result)
+
+/**
+ * Send a GetInputValues message.
+ * Send the GetInputValues direct command on the specified connection slot.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _params The input and output parameters for the function call.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetInputValues(_conn, _params, _result) \
+  compchktype _params, TInputValues \
+__remoteGetInputValues(_conn, _params, _result)
+
+/**
+ * Send a GetBatteryLevel message.
+ * This method sends a GetBatteryLevel direct command to the device on the specified
+ * connection.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _value The battery level value.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetBatteryLevel(_conn, _value, _result) __remoteGetBatteryLevel(_conn, _value, _result)
 
 /**
  * Send a LSGetStatus message.
  * This method sends a LSGetStatus direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
+ * connection.
  *
  * \param _conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
+ * \param _value The count of available bytes to read.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteLowspeedGetStatus(_conn, _result) __connectionWrite(_conn, __DCLSGetStatusPacket, _result)
+#define RemoteLowspeedGetStatus(_conn, _value, _result) __remoteLowspeedGetStatus(_conn, _value, _result)
+
+/**
+ * Send a LowspeedRead message.
+ * Send the LowspeedRead direct command on the specified connection slot.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _port The input port from which to read I2C data. See \ref NBCInputPortConstants.
+ * \param _bread The number of bytes read.
+ * \param _data A byte array containing the data read from the I2C device.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteLowspeedRead(_conn, _port, _bread, _data, _result) __remoteLowspeedRead(_conn, _port, _bread, _data, _result)
 
 /**
  * Send a GetCurrentProgramName message.
  * This method sends a GetCurrentProgramName direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
+ * connection.
  *
  * \param _conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
+ * \param _name The current program name.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteGetCurrentProgramName(_conn, _result) __connectionWrite(_conn, __DCGetCurProgNamePacket, _result)
+#define RemoteGetCurrentProgramName(_conn, _name, _result) __remoteGetCurrentProgramName(_conn, _name, _result)
+
+/**
+ * Send a DatalogRead message.
+ * Send the DatalogRead direct command on the specified connection slot.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _remove Remove the datalog message from the queue after reading it (true or false).
+ * \param _cnt The number of bytes read from the datalog.
+ * \param _log A byte array containing the datalog contents.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteDatalogRead(_conn, _remove, _cnt, _log, _result) __remoteDatalogRead(_conn, _remove, _cnt, _log, _result)
 
 /**
  * Send a GetContactCount message.
  * This method sends a GetContactCount direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
+ * connection.
  *
  * \param _conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
+ * \param _cnt The number of contacts.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteGetContactCount(_conn, _result) __connectionWrite(_conn, __DCBTGetContactCntPacket, _result)
+#define RemoteGetContactCount(_conn, _cnt, _result) __remoteGetContactCount(_conn, _cnt, _result)
+
+/**
+ * Send a GetContactName message.
+ * Send the GetContactName direct command on the specified connection slot.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _idx The index of the contact.
+ * \param _name The name of the specified contact.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetContactName(_conn, _idx, _name, _result) __remoteGetContactName(_conn, _idx, _name, _result)
 
 /**
  * Send a GetConnectionCount message.
  * This method sends a GetConnectionCount direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
+ * connection.
  *
  * \param _conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
+ * \param _cnt The number of connections.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteGetConnectionCount(_conn, _result) __connectionWrite(_conn, __DCBTGetConnectCntPacket, _result)
+#define RemoteGetConnectionCount(_conn, _cnt, _result) __remoteGetConnectionCount(_conn, _cnt, _result)
+
+/**
+ * Send a GetConnectionName message.
+ * Send the GetConnectionName direct command on the specified connection slot.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _idx The index of the connection.
+ * \param _name The name of the specified connection.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetConnectionName(_conn, _idx, _name, _result) __remoteGetConnectionName(_conn, _idx, _name, _result)
+
+
+#else
 
 /**
  * Send a GetOutputState message.
@@ -13385,6 +13787,32 @@ ends
 #define RemoteGetInputValues(_conn, _port, _result) __remoteGetInputValues(_conn, _port, _result)
 
 /**
+ * Send a GetBatteryLevel message.
+ * This method sends a GetBatteryLevel direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetBatteryLevel(_conn, _result) __remoteGetBatteryLevel(_conn, _result)
+
+/**
+ * Send a LSGetStatus message.
+ * This method sends a LSGetStatus direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteLowspeedGetStatus(_conn, _result) __remoteLowspeedGetStatus(_conn, _result)
+
+/**
  * Send a LowspeedRead message.
  * Send the LowspeedRead direct command on the specified connection slot.
  * Use \ref RemoteConnectionIdle to determine when this write request is completed.
@@ -13396,6 +13824,87 @@ ends
  * \param _result A char value indicating whether the function call succeeded or not.
  */
 #define RemoteLowspeedRead(_conn, _port, _result) __remoteLowspeedRead(_conn, _port, _result)
+
+/**
+ * Send a GetCurrentProgramName message.
+ * This method sends a GetCurrentProgramName direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetCurrentProgramName(_conn, _result) __remoteGetCurrentProgramName(_conn, _result)
+
+/**
+ * Send a DatalogRead message.
+ * Send the DatalogRead direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _remove Remove the datalog message from the queue after reading it (true or false).
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteDatalogRead(_conn, _remove, _result) __remoteDatalogRead(_conn, _remove, _result)
+
+/**
+ * Send a GetContactCount message.
+ * This method sends a GetContactCount direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetContactCount(_conn, _result) __remoteGetContactCount(_conn, _result)
+
+/**
+ * Send a GetContactName message.
+ * Send the GetContactName direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _idx The index of the contact.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetContactName(_conn, _idx, _result) __remoteGetContactName(_conn, _idx, _result)
+
+/**
+ * Send a GetConnectionCount message.
+ * This method sends a GetConnectionCount direct command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write
+ * request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetConnectionCount(_conn, _result) __remoteGetConnectionCount(_conn, _result)
+
+/**
+ * Send a GetConnectionName message.
+ * Send the GetConnectionName direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _idx The index of the connection.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetConnectionName(_conn, _idx, _result) __remoteGetConnectionName(_conn, _idx, _result)
+
+
+#endif
 
 /**
  * Send a ResetTachoCount message.
@@ -13422,45 +13931,6 @@ ends
  * \param _result A char value indicating whether the function call succeeded or not.
  */
 #define RemoteGetProperty(_conn, _property, _result) __remoteGetProperty(_conn, _property, _result)
-
-/**
- * Send a DatalogRead message.
- * Send the DatalogRead direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param _conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param _remove Remove the datalog message from the queue after reading it (true or false).
- * \param _result A char value indicating whether the function call succeeded or not.
- */
-#define RemoteDatalogRead(_conn, _remove, _result) __remoteDatalogRead(_conn, _remove, _result)
-
-/**
- * Send a BTGetContactName message.
- * Send the BTGetContactName direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param _conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param _idx The index of the contact.
- * \param _result A char value indicating whether the function call succeeded or not.
- */
-#define RemoteBTGetContactName(_conn, _idx, _result) __remoteBTGetContactName(_conn, _idx, _result)
-
-/**
- * Send a BTGetConnectionName message.
- * Send the BTGetConnectionName direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param _conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param _idx The index of the connection.
- * \param _result A char value indicating whether the function call succeeded or not.
- */
-#define RemoteBTGetConnectionName(_conn, _idx, _result) __remoteBTGetConnectionName(_conn, _idx, _result)
 
 /**
  * Send a DatalogSetTimes message.
@@ -13832,6 +14302,13 @@ ends
 
 /** @} */ // end of CommModuleSCFunctions group
 
+/**
+ * Use the RS485 port.
+ * Configure port 4 for RS485 usage.
+ *
+ */
+#define UseRS485() __UseRS485()
+
 #ifdef __ENHANCED_FIRMWARE
 
 /**
@@ -13900,31 +14377,45 @@ ends
 #define RS485Uart(_baud, _mode, _result) __RS485Control(HS_CTRL_UART, _baud, _mode, _result)
 
 /**
- * Initialize RS485.
- * Initialize the RS485 hi-speed port so that it can be used.
+ * Initialize RS485 port.
+ * Initialize the RS485 UART port to its default values.  The baud rate is
+ * set to 921600 and the mode is set to 8N1 (8 data bits, no parity, 1 stop bit).
+ * Data cannot be sent or received over the RS485 port until the UART is
+ * initialized and the port has been configured for RS485 usage.
  *
  * \param _result A char value indicating whether the function call succeeded or not.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, 0, _result)
+#define RS485Initialize(_result) __RS485Control(HS_CTRL_UART, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, _result)
 
 /**
- * Exit RS485.
+ * Enable RS485.
+ * Turn on the RS485 hi-speed port so that it can be used.
+ *
+ * \param _result A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+#define RS485Enable(_result) __RS485Control(HS_CTRL_INIT, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, _result)
+
+/**
+ * Disable RS485.
  * Turn off the RS485 port.
  *
  * \param _result A char value indicating whether the function call succeeded or not.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, 0, _result)
+#define RS485Disable(_result) __RS485Control(HS_CTRL_EXIT, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, _result)
 
 #else
 
 #define RS485Control(_cmd, _baud, _result) __RS485Control(_cmd, _baud, _result)
 #define RS485Uart(_baud, _result) __RS485Control(HS_CTRL_UART, _baud, _result)
-#define RS485Init(_result) __RS485Control(HS_CTRL_INIT, 0, _result)
-#define RS485Exit(_result) __RS485Control(HS_CTRL_EXIT, 0, _result)
+#define RS485Initialize(_result) __RS485Control(HS_CTRL_UART, HS_BAUD_DEFAULT, _result)
+#define RS485Enable(_result) __RS485Control(HS_CTRL_INIT, HS_BAUD_DEFAULT, _result)
+#define RS485Disable(_result) __RS485Control(HS_CTRL_EXIT, HS_BAUD_DEFAULT, _result)
 
 #endif
 

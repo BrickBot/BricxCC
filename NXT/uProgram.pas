@@ -717,6 +717,7 @@ begin
   end;
 end;
 
+(*
 function TProgram.StepOver: boolean;
 var
   i, curLine, newLine : integer;
@@ -734,26 +735,24 @@ begin
 //    if Assigned(fNXTCurrentOffset)
 //    CD.offsets
   end;
-(*
-        i := CD.Offsets.IndexOfPC(fNXTProgramCounter);
-        if i <> -1 then
-        begin
-          CO := CD.Offsets[i];
-          fNXTCurrentOffset := CO;
-          newLine := CO.LineNumber;
-        end
-        else
-          Result := False;
-
-  if Assigned(fNXTCurrentOffset) then
-  begin
-    // find the next offset in our list of offsets
-    curLine := fNXTCurrentOffset.LineNumber;
-  end;
-*)
+//        i := CD.Offsets.IndexOfPC(fNXTProgramCounter);
+//        if i <> -1 then
+//        begin
+//          CO := CD.Offsets[i];
+//          fNXTCurrentOffset := CO;
+//          newLine := CO.LineNumber;
+//        end
+//        else
+//          Result := False;
+//
+//  if Assigned(fNXTCurrentOffset) then
+//  begin
+//    // find the next offset in our list of offsets
+//    curLine := fNXTCurrentOffset.LineNumber;
+//  end;
 end;
+*)
 
-(*
 function TProgram.StepOver: boolean;
 var
   i, curLine, newLine : integer;
@@ -777,7 +776,7 @@ begin
     curLine := fNXTCurrentOffset.LineNumber;
   newLine := curLine;
   Result := True;
-  while ((newLine = curLine) or (oldClump <> fNXTClump)) and Result) do
+  while ((newLine = curLine) or (oldClump <> fNXTClump)) and Result do
   begin
     if bc.SetVMState(kNXT_VMState_Single) then
     begin
@@ -803,7 +802,7 @@ begin
       Result := False;
   end;
 end;
-*)
+
 
 (*
 function TProgram.SingleStep(const bInto : boolean) : boolean;

@@ -722,7 +722,7 @@ end;
 
 procedure TEditorForm.FormShow(Sender: TObject);
 begin
-  PopupMenu := ConstructForm.ConstructMenu;
+//  PopupMenu := ConstructForm.ConstructMenu;
   TheEditor.Font.Name := FontName;
   TheEditor.Font.Size := FontSize;
 end;
@@ -1058,7 +1058,11 @@ begin
   lmiCopySpecial.Enabled   := True;
   lmiCopyHTML.Enabled      := True;
   lmiCopyRTF.Enabled       := True;
-  mniToggleBreakpoint.Enabled := FileIsROPS(Highlighter);
+  mniToggleBreakpoint.Enabled :=
+    FileIsROPS(Highlighter) or
+    (IsNXT and EnhancedFirmware and
+     FileIsNBCOrNXC(Highlighter) and
+     CurrentProgram.Loaded(Filename));
   if Assigned(TheEditor.Marks) then
   begin
     for i := 0 to mniToggleBookmarks.Count - 1 do
@@ -1751,12 +1755,19 @@ procedure TEditorForm.mniToggleBreakpointClick(Sender: TObject);
 var
   Line: Longint;
 begin
-  if not FileIsROPS(Highlighter) then Exit;
   Line := TheEditor.CaretY;
-  if MainForm.ce.HasBreakPoint(Filename, Line) then
-    MainForm.ce.ClearBreakPoint(Filename, Line)
-  else
-    MainForm.ce.SetBreakPoint(Filename, Line);
+  if FileIsROPS(Highlighter) then
+  begin
+    if MainForm.ce.HasBreakPoint(Filename, Line) then
+      MainForm.ce.ClearBreakPoint(Filename, Line)
+    else
+      MainForm.ce.SetBreakPoint(Filename, Line);
+  end
+  else if IsNXT and EnhancedFirmware and
+          FileIsNBCOrNXC(Highlighter) and
+          CurrentProgram.Loaded(Filename) then
+  begin
+  end;
   TheEditor.Refresh;
 end;
 
@@ -2148,7 +2159,7 @@ begin
     Font.Style := [];
     ParentColor := False;
     ParentFont := False;
-    PopupMenu := ConstructForm.ConstructMenu;
+//    PopupMenu := ConstructForm.ConstructMenu;
     TabOrder := 1;
     BookMarkOptions.BookmarkImages := ilBookmarkImages;
     Gutter.Font.Charset := DEFAULT_CHARSET;

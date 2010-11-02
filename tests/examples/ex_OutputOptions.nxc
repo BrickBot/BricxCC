@@ -1,0 +1,21 @@
+task main()
+{
+  SetMotorPwnFreq(100);
+  ResetRotationCount(OUT_A);
+  Yield();
+  NumOut(0, LCD_LINE1, MotorRunState(OUT_A));
+  Wait(SEC_5);
+  SetOutput(OUT_A,
+    PowerField, 75,
+    OutputModeField, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED,
+    RunStateField, OUT_RUNSTATE_RUNNING,
+    RegModeField, OUT_REGMODE_SPEED,
+    TachoLimitField, 1440,
+    OutputOptionsField, OUT_OPTION_HOLDATLIMIT+OUT_OPTION_RAMPDOWNTOLIMIT,
+    UpdateFlagsField, UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_TACHO_LIMIT);
+  while(true) {
+    NumOut(0, LCD_LINE1, MotorPower(OUT_A));
+    NumOut(0, LCD_LINE2, MotorRunState(OUT_A));
+    NumOut(0, LCD_LINE3, MotorRotationCount(OUT_A));
+  }
+}

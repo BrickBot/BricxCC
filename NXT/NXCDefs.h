@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-16
- * \version 83
+ * \date 2010-10-19
+ * \version 84
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -170,6 +170,46 @@ struct ColorSensorReadType {
  bool Invalid;                   /*!< Are the sensor values valid? */
 };
 #endif
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/**
+ * Parameters for the \ref RemoteGetInputValues function.
+ * This structure is used when calling the \ref RemoteGetInputValues function.
+ * Choose the sensor port (\ref InPorts) and after calling the function
+ * read the sensor values from the various structure fields.
+ */
+struct InputValuesType {
+  byte Port;                    /*!< The sensor port. See the \ref InPorts group. */
+  bool Valid;                   /*!< Is the sensor value valid? */
+  bool Calibrated;              /*!< Is the sensor calibrated? */
+  byte SensorType;              /*!< The sensor type. See the \ref SensorTypes group. */
+  byte SensorMode;              /*!< The sensor mode. See the \ref SensorModes group. */
+  unsigned int RawValue;        /*!< The raw value. */
+  unsigned int NormalizedValue; /*!< The normalized value. */
+  int ScaledValue;              /*!< The scaled value. */
+  int CalibratedValue;          /*!< The calibrated value. */
+};
+
+/*
+struct InputType {
+  unsigned int CustomZeroOffset;
+  unsigned int ADRaw;
+  unsigned int SensorRaw;
+  int SensorValue;
+  byte SensorType;
+  byte SensorMode;
+  bool SensorBoolean;
+  byte DigiPinsDir;
+  byte DigiPinsIn;
+  byte DigiPinsOut;
+  byte CustomPctFullScale;
+  byte CustomActiveStatus;
+  bool InvalidData;
+};
+*/
+
+#endif
+
 /** @} */ // end of InputModuleTypes group
 
 /** @defgroup InputModuleFunctions Input module functions
@@ -198,7 +238,7 @@ struct ColorSensorReadType {
  * \param port The port to configure. See \ref InPorts.
  * \param type The desired sensor type.  See \ref SensorTypes.
  */
-inline void SetSensorType(const byte & port, byte type) { asm { setin type, port, Type } }
+inline void SetSensorType(const byte & port, byte type) { asm { setin type, port, TypeField } }
 
 /**
  * Set sensor mode.
@@ -211,7 +251,7 @@ inline void SetSensorType(const byte & port, byte type) { asm { setin type, port
  * \param port The port to configure. See \ref InPorts.
  * \param mode The desired sensor mode. See \ref SensorModes.
  */
-inline void SetSensorMode(const byte & port, byte mode) { asm { setin mode, port, InputMode } }
+inline void SetSensorMode(const byte & port, byte mode) { asm { setin mode, port, InputModeField } }
 
 /**
  * Clear a sensor value.
@@ -219,7 +259,7 @@ inline void SetSensorMode(const byte & port, byte mode) { asm { setin mode, port
  * to measure a cumulative quantity such as rotation or a pulse count.
  * \param port The port to clear. See \ref InPorts.
  */
-inline void ClearSensor(const byte & port) { asm { setin 0, port, ScaledValue } }
+inline void ClearSensor(const byte & port) { asm { setin 0, port, ScaledValueField } }
 
 /**
  * Reset the sensor port.
@@ -242,8 +282,8 @@ inline void ResetSensor(const byte & port) { asm { __ResetSensor(port) } }
  */
 inline void SetSensor(const byte & port, const unsigned int config) {
   asm {
-    setin config>>8, port, Type
-    setin config&0xff, port, InputMode
+    setin config>>8, port, TypeField
+    setin config&0xff, port, InputModeField
     __ResetSensor(port)
   }
 }
@@ -770,15 +810,43 @@ inline unsigned int ColorSensorValue(const byte port, const byte color);
 
 #else
 
+enum InputFieldNames {
+  Type,
+  InputMode,
+  RawValue,
+  NormalizedValue,
+  ScaledValue,
+  InvalidData
+};
+
+enum OutputFieldNames {
+  UpdateFlags,
+  OutputMode,
+  Power,
+  ActualSpeed,
+  TachoCount,
+  TachoLimit,
+  RunState,
+  TurnRatio,
+  RegMode,
+  Overload,
+  RegPValue,
+  RegIValue,
+  RegDValue,
+  BlockTachoCount,
+  RotationCount,
+  OutputOptions
+};
+
 // input fields
 #define Sensor(_p) asm { ReadSensor(_p, __RETVAL__) }
 #define SensorValue(_p) Sensor(_p)
-#define SensorType(_p) GetInput(_p, Type)
-#define SensorMode(_p) GetInput(_p, InputMode)
-#define SensorRaw(_p) GetInput(_p, RawValue)
-#define SensorNormalized(_p) GetInput(_p, NormalizedValue)
-#define SensorScaled(_p) GetInput(_p, ScaledValue)
-#define SensorInvalid(_p) GetInput(_p, InvalidData)
+#define SensorType(_p) GetInput(_p, TypeField)
+#define SensorMode(_p) GetInput(_p, InputModeField)
+#define SensorRaw(_p) GetInput(_p, RawValueField)
+#define SensorNormalized(_p) GetInput(_p, NormalizedValueField)
+#define SensorScaled(_p) GetInput(_p, ScaledValueField)
+#define SensorInvalid(_p) GetInput(_p, InvalidDataField)
 #define SensorValueBool(_p) SensorBoolean(_p)
 #define SensorValueRaw(_p) SensorRaw(_p)
 
@@ -836,6 +904,35 @@ inline unsigned int ColorSensorValue(const byte port, const byte color);
 /** @addtogroup OutputModule
  * @{
  */
+/** @defgroup OutputModuleTypes Output module types
+ * Types used by various output module functions.
+ * @{
+ */
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/**
+ * Parameters for the \ref RemoteGetOutputState function.
+ * This structure is used when calling the \ref RemoteGetOutputState function.
+ * Choose the sensor port (\ref OutputPortConstants) and after calling the function
+ * read the output status values from the various structure fields.
+ */
+struct OutputStateType {
+  byte Port;                /*!< The output port. See the \ref OutputPortConstants group. */
+  char Power;               /*!< The output power level (-100..100). */
+  byte Mode;                /*!< The output mode. See \ref OutModeConstants group. */
+  byte RegMode;             /*!< The output regulation mode. See \ref OutRegModeConstants group. */
+  char TurnRatio;           /*!< The output turning ratio (-100..100). */
+  byte RunState;            /*!< The output run state. See \ref OutRunStateConstants group. */
+  unsigned long TachoLimit; /*!< The tachometer limit. */
+  long TachoCount;          /*!< The current tachometer count. */
+  long BlockTachoCount;     /*!< The current block tachometer count. */
+  long RotationCount;       /*!< The current rotation count. */
+};
+
+#endif
+
+/** @} */ // end of OutputModuleTypes group
+
 /** @defgroup OutputModuleFunctions Output module functions
  * Functions for accessing and modifying output module features.
  * @{
@@ -5515,7 +5612,7 @@ inline char ReceiveMessage(byte queue, bool clear, string & msg);
  * bluetooth connections.  See \ref CommConnectionConstants.
  * \return The bluetooth status for the specified connection.
  */
-inline char BluetoothStatus(const byte conn);
+inline char BluetoothStatus(byte conn);
 
 /**
  * Write to a bluetooth connection.
@@ -5528,7 +5625,7 @@ inline char BluetoothStatus(const byte conn);
  * \param buffer The data to be written (up to 128 bytes)
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char BluetoothWrite(const byte conn, byte buffer[]);
+inline char BluetoothWrite(byte conn, byte buffer[]);
 
 /**
  * Write to a remote connection.
@@ -5545,7 +5642,7 @@ inline char BluetoothWrite(const byte conn, byte buffer[]);
  * \warning Writing to the RS485 hi-speed connection requires the enhanced
  * NBC/NXC firmware
  */
-inline char RemoteConnectionWrite(const byte conn, byte buffer[]);
+inline char RemoteConnectionWrite(byte conn, byte buffer[]);
 
 /**
  * Check if remote connection is idle.
@@ -5575,7 +5672,7 @@ inline bool RemoteConnectionIdle(byte conn);
  * \param bval The boolean value to send.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char SendRemoteBool(const byte conn, byte queue, bool bval);
+inline char SendRemoteBool(byte conn, byte queue, bool bval);
 
 /**
  * Send a numeric value to a remote mailbox.
@@ -5590,7 +5687,7 @@ inline char SendRemoteBool(const byte conn, byte queue, bool bval);
  * \param val The numeric value to send.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char SendRemoteNumber(const byte conn, byte queue, long val);
+inline char SendRemoteNumber(byte conn, byte queue, long val);
 
 /**
  * Send a string value to a remote mailbox.
@@ -5605,7 +5702,7 @@ inline char SendRemoteNumber(const byte conn, byte queue, long val);
  * \param str The string value to send.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char SendRemoteString(const byte conn, byte queue, string str);
+inline char SendRemoteString(byte conn, byte queue, string str);
 
 /**
  * Write a boolean value to a local response mailbox.
@@ -5722,7 +5819,7 @@ inline char ReceiveRemoteString(byte queue, bool clear, string & str);
  * See \ref CommConnectionConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteKeepAlive(const byte conn);
+inline char RemoteKeepAlive(byte conn);
 
 /**
  * Send a MessageRead message.
@@ -5736,7 +5833,7 @@ inline char RemoteKeepAlive(const byte conn);
  * \param queue The mailbox to read. See \ref MailboxConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteMessageRead(const byte conn, byte queue);
+inline char RemoteMessageRead(byte conn, byte queue);
 
 /**
  * Send a MessageWrite message.
@@ -5751,7 +5848,7 @@ inline char RemoteMessageRead(const byte conn, byte queue);
  * \param msg The message to write to the mailbox.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteMessageWrite(const byte conn, byte queue, string msg);
+inline char RemoteMessageWrite(byte conn, byte queue, string msg);
 
 /**
  * Send a PlaySoundFile message.
@@ -5765,7 +5862,7 @@ inline char RemoteMessageWrite(const byte conn, byte queue, string msg);
  * \param bloop A boolean value indicating whether to loop the sound file or not.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemotePlaySoundFile(const byte conn, string filename, bool bloop);
+inline char RemotePlaySoundFile(byte conn, string filename, bool bloop);
 
 /**
  * Send a PlayTone message.
@@ -5779,7 +5876,7 @@ inline char RemotePlaySoundFile(const byte conn, string filename, bool bloop);
  * \param duration The duration of the tone.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemotePlayTone(const byte conn, unsigned int frequency, unsigned int duration);
+inline char RemotePlayTone(byte conn, unsigned int frequency, unsigned int duration);
 
 /**
  * Send a ResetMotorPosition message.
@@ -5793,7 +5890,7 @@ inline char RemotePlayTone(const byte conn, unsigned int frequency, unsigned int
  * \param brelative A flag indicating whether the counter to reset is relative.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteResetMotorPosition(const byte conn, byte port, bool brelative);
+inline char RemoteResetMotorPosition(byte conn, byte port, bool brelative);
 
 /**
  * Send a ResetScaledValue message.
@@ -5806,7 +5903,7 @@ inline char RemoteResetMotorPosition(const byte conn, byte port, bool brelative)
  * \param port The input port to reset.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteResetScaledValue(const byte conn, byte port);
+inline char RemoteResetScaledValue(byte conn, byte port);
 
 /**
  * Send a SetInputMode message.
@@ -5821,7 +5918,7 @@ inline char RemoteResetScaledValue(const byte conn, byte port);
  * \param mode The sensor mode. See \ref SensorModes.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteSetInputMode(const byte conn, byte port, byte type, byte mode);
+inline char RemoteSetInputMode(byte conn, byte port, byte type, byte mode);
 
 /**
  * Send a SetOutputMode message.
@@ -5840,7 +5937,7 @@ inline char RemoteSetInputMode(const byte conn, byte port, byte type, byte mode)
  * \param tacholimit The motor tachometer limit.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteSetOutputState(const byte conn, byte port, char speed, byte mode, byte regmode, char turnpct, byte runstate, unsigned long tacholimit);
+inline char RemoteSetOutputState(byte conn, byte port, char speed, byte mode, byte regmode, char turnpct, byte runstate, unsigned long tacholimit);
 
 /**
  * Send a StartProgram message.
@@ -5853,7 +5950,7 @@ inline char RemoteSetOutputState(const byte conn, byte port, char speed, byte mo
  * \param filename The name of the program to start running.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteStartProgram(const byte conn, string filename);
+inline char RemoteStartProgram(byte conn, string filename);
 
 /**
  * Send a StopProgram message.
@@ -5865,7 +5962,7 @@ inline char RemoteStartProgram(const byte conn, string filename);
  * See \ref CommConnectionConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteStopProgram(const byte conn);
+inline char RemoteStopProgram(byte conn);
 
 /**
  * Send a StopSound message.
@@ -5877,111 +5974,168 @@ inline char RemoteStopProgram(const byte conn);
  * See \ref CommConnectionConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteStopSound(const byte conn);
+inline char RemoteStopSound(byte conn);
 
-/**
- * Send a GetBatteryLevel message.
- * This method sends a GetBatteryLevel direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteGetBatteryLevel(const byte conn);
-
-/**
- * Send a LowspeedGetStatus message.
- * This method sends a LowspeedGetStatus direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteLowspeedGetStatus(const byte conn);
-
-/**
- * Send a GetCurrentProgramName message.
- * This method sends a GetCurrentProgramName direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteGetCurrentProgramName(const byte conn);
-
-/**
- * Send a GetContactCount message.
- * This method sends a GetContactCount direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteGetContactCount(const byte conn);
-
-/**
- * Send a GetConnectionCount message.
- * This method sends a GetConnectionCount direct command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteGetConnectionCount(const byte conn);
+#ifdef __ENHANCED_FIRMWARE
 
 /**
  * Send a GetOutputState message.
  * Send the GetOutputState direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
- * \param port The output port from which to read state information. See \ref OutputPortConstants.
+ * \param params The input and output parameters for the function call. See \ref OutputStateType.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteGetOutputState(const byte conn, byte port);
+inline char RemoteGetOutputState(byte conn, OutputStateType & params);
 
 /**
  * Send a GetInputValues message.
  * Send the GetInputValues direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
- * \param port The input port from which to read sensor values. See \ref InPorts.
+ * \param params The input and output parameters for the function call. See \ref InputValuesType.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteGetInputValues(const byte conn, byte port);
+inline char RemoteGetInputValues(byte conn, InputValuesType & params);
+
+/**
+ * Send a GetBatteryLevel message.
+ * Send the GetBatteryLevel direct command to the device on the specified
+ * connection.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param value The battery level value.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteGetBatteryLevel(byte conn, int & value);
+
+/**
+ * Send a LowspeedGetStatus message.
+ * This method sends a LowspeedGetStatus direct command to the device on the specified
+ * connection.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param value The count of available bytes to read.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteLowspeedGetStatus(byte conn, byte & value);
 
 /**
  * Send a LowspeedRead message.
  * Send the LowspeedRead direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
  * \param port The input port from which to read I2C data. See \ref InPorts.
+ * \param bread The number of bytes read.
+ * \param data A byte array containing the data read from the I2C device.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteLowspeedRead(const byte conn, byte port);
+inline char RemoteLowspeedRead(byte conn, byte port, byte & bread, byte & data[]);
+
+/**
+ * Send a GetCurrentProgramName message.
+ * This method sends a GetCurrentProgramName direct command to the device on the specified
+ * connection.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param name The current program name.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteGetCurrentProgramName(byte conn, string & name);
+
+/**
+ * Send a DatalogRead message.
+ * Send the DatalogRead direct command on the specified connection slot.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param remove Remove the datalog message from the queue after reading it (true or false).
+ * \param cnt The number of bytes read from the datalog.
+ * \param log A byte array containing the datalog contents.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteDatalogRead(byte conn, bool remove, byte & cnt, byte & log[]);
+
+/**
+ * Send a GetContactCount message.
+ * This method sends a GetContactCount direct command to the device on the specified
+ * connection. 
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param cnt The number of contacts.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteGetContactCount(byte conn, byte & cnt);
+
+/**
+ * Send a GetContactName message.
+ * Send the GetContactName direct command on the specified connection slot.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param idx The index of the contact.
+ * \param name The name of the specified contact.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteGetContactName(byte conn, byte idx, string & name);
+
+/**
+ * Send a GetConnectionCount message.
+ * This method sends a GetConnectionCount direct command to the device on the specified
+ * connection. 
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param cnt The number of connections.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteGetConnectionCount(byte conn, byte & cnt);
+
+/**
+ * Send a GetConnectionName message.
+ * Send the GetConnectionName direct command on the specified connection slot.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param idx The index of the connection.
+ * \param name The name of the specified connection.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteGetConnectionName(byte conn, byte idx, string & name);
+
+/**
+ * Send a GetProperty message.
+ * Send the GetProperty direct command on the specified connection slot.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param property The property to read. See \ref RCPropertyConstants.
+ * \param value The property value.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteGetProperty(byte conn, byte property, variant & value);
+
+#endif
 
 /**
  * Send a ResetTachoCount message.
@@ -5994,59 +6148,7 @@ inline char RemoteLowspeedRead(const byte conn, byte port);
  * \param port The output port to reset the tachometer count on. See \ref OutputPortConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteResetTachoCount(const byte conn, byte port);
-
-/**
- * Send a GetProperty message.
- * Send the GetProperty direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param property The property to read. See \ref RCPropertyConstants.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteGetProperty(const byte conn, byte property);
-
-/**
- * Send a DatalogRead message.
- * Send the DatalogRead direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param remove Remove the datalog message from the queue after reading it (true or false).
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteDatalogRead(const byte conn, bool remove);
-
-/**
- * Send a BTGetContactName message.
- * Send the BTGetContactName direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param idx The index of the contact.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteBTGetContactName(const byte conn, byte idx);
-
-/**
- * Send a BTGetConnectionName message.
- * Send the BTGetConnectionName direct command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param idx The index of the connection.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteBTGetConnectionName(const byte conn, byte idx);
+inline char RemoteResetTachoCount(byte conn, byte port);
 
 /**
  * Send a DatalogSetTimes message.
@@ -6059,7 +6161,7 @@ inline char RemoteBTGetConnectionName(const byte conn, byte idx);
  * \param synctime The datalog sync time.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteDatalogSetTimes(const byte conn, long synctime);
+inline char RemoteDatalogSetTimes(byte conn, long synctime);
 
 /**
  * Send a SetProperty message.
@@ -6073,7 +6175,7 @@ inline char RemoteDatalogSetTimes(const byte conn, long synctime);
  * \param value The new property value.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteSetProperty(const byte conn, byte prop, variant value);
+inline char RemoteSetProperty(byte conn, byte prop, variant value);
 
 /**
  * Send a LowspeedWrite message.
@@ -6089,7 +6191,7 @@ inline char RemoteSetProperty(const byte conn, byte prop, variant value);
  * \param data A byte array containing the data you are writing to the device.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteLowspeedWrite(const byte conn, byte port, byte txlen, byte rxlen, byte data[]);
+inline char RemoteLowspeedWrite(byte conn, byte port, byte txlen, byte rxlen, byte data[]);
 
 /** @} */ // end of CommModuleDCFunctions group
 
@@ -6109,7 +6211,7 @@ inline char RemoteLowspeedWrite(const byte conn, byte port, byte txlen, byte rxl
  * \param filename The name of the program to open for reading.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenRead(const byte conn, string filename);
+inline char RemoteOpenRead(byte conn, string filename);
 
 /**
  * Send an OpenAppendData message.
@@ -6122,7 +6224,7 @@ inline char RemoteOpenRead(const byte conn, string filename);
  * \param filename The name of the program to open for appending.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenAppendData(const byte conn, string filename);
+inline char RemoteOpenAppendData(byte conn, string filename);
 
 /**
  * Send a DeleteFile message.
@@ -6135,7 +6237,7 @@ inline char RemoteOpenAppendData(const byte conn, string filename);
  * \param filename The name of the program to delete.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteDeleteFile(const byte conn, string filename);
+inline char RemoteDeleteFile(byte conn, string filename);
 
 /**
  * Send a FindFirstFile message.
@@ -6148,7 +6250,7 @@ inline char RemoteDeleteFile(const byte conn, string filename);
  * \param mask The filename mask for the files you want to find.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteFindFirstFile(const byte conn, string mask);
+inline char RemoteFindFirstFile(byte conn, string mask);
 
 /**
  * Send a GetFirmwareVersion message.
@@ -6161,7 +6263,7 @@ inline char RemoteFindFirstFile(const byte conn, string mask);
  * See \ref CommConnectionConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteGetFirmwareVersion(const byte conn);
+inline char RemoteGetFirmwareVersion(byte conn);
 
 /**
  * Send a GetBluetoothAddress message.
@@ -6174,7 +6276,7 @@ inline char RemoteGetFirmwareVersion(const byte conn);
  * See \ref CommConnectionConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteGetBluetoothAddress(const byte conn);
+inline char RemoteGetBluetoothAddress(byte conn);
 
 /**
  * Send a GetDeviceInfo message.
@@ -6187,7 +6289,7 @@ inline char RemoteGetBluetoothAddress(const byte conn);
  * See \ref CommConnectionConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteGetDeviceInfo(const byte conn);
+inline char RemoteGetDeviceInfo(byte conn);
 
 /**
  * Send a DeleteUserFlash message.
@@ -6200,7 +6302,7 @@ inline char RemoteGetDeviceInfo(const byte conn);
  * See \ref CommConnectionConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteDeleteUserFlash(const byte conn);
+inline char RemoteDeleteUserFlash(byte conn);
 
 /**
  * Send a BluetoothFactoryReset message.
@@ -6213,7 +6315,7 @@ inline char RemoteDeleteUserFlash(const byte conn);
  * See \ref CommConnectionConstants.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteBluetoothFactoryReset(const byte conn);
+inline char RemoteBluetoothFactoryReset(byte conn);
 
 /**
  * Send an OpenWrite message.
@@ -6227,7 +6329,7 @@ inline char RemoteBluetoothFactoryReset(const byte conn);
  * \param size The size for the new file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenWrite(const byte conn, string filename, long size);
+inline char RemoteOpenWrite(byte conn, string filename, long size);
 
 /**
  * Send an OpenWriteLinear message.
@@ -6241,7 +6343,7 @@ inline char RemoteOpenWrite(const byte conn, string filename, long size);
  * \param size The size for the new file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenWriteLinear(const byte conn, string filename, long size);
+inline char RemoteOpenWriteLinear(byte conn, string filename, long size);
 
 /**
  * Send an OpenWriteData message.
@@ -6255,7 +6357,7 @@ inline char RemoteOpenWriteLinear(const byte conn, string filename, long size);
  * \param size The size for the new file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenWriteData(const byte conn, string filename, long size);
+inline char RemoteOpenWriteData(byte conn, string filename, long size);
 
 /**
  * Send a CloseFile message.
@@ -6268,7 +6370,7 @@ inline char RemoteOpenWriteData(const byte conn, string filename, long size);
  * \param handle The handle of the file to close.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteCloseFile(const byte conn, byte handle);
+inline char RemoteCloseFile(byte conn, byte handle);
 
 /**
  * Send a FindNextFile message.
@@ -6281,7 +6383,7 @@ inline char RemoteCloseFile(const byte conn, byte handle);
  * \param handle The handle returned by the last \ref FindFirstFile or FindNextFile call.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteFindNextFile(const byte conn, byte handle);
+inline char RemoteFindNextFile(byte conn, byte handle);
 
 /**
  * Send a PollCommandLength message.
@@ -6294,7 +6396,7 @@ inline char RemoteFindNextFile(const byte conn, byte handle);
  * \param bufnum The poll buffer you want to query (0=USBPoll, 1=HiSpeed).
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemotePollCommandLength(const byte conn, byte bufnum);
+inline char RemotePollCommandLength(byte conn, byte bufnum);
 
 /**
  * Send a Write message.
@@ -6308,7 +6410,7 @@ inline char RemotePollCommandLength(const byte conn, byte bufnum);
  * \param data A byte array containing the data you are writing.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteWrite(const byte conn, byte handle, byte data[]);
+inline char RemoteWrite(byte conn, byte handle, byte data[]);
 
 /**
  * Send a Read message.
@@ -6322,7 +6424,7 @@ inline char RemoteWrite(const byte conn, byte handle, byte data[]);
  * \param numbytes The number of bytes you want to read.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteRead(const byte conn, byte handle, byte numbytes);
+inline char RemoteRead(byte conn, byte handle, byte numbytes);
 
 /**
  * Send an IOMapRead message.
@@ -6337,7 +6439,7 @@ inline char RemoteRead(const byte conn, byte handle, byte numbytes);
  * \param numbytes The number of bytes of data to read.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteIOMapRead(const byte conn, long id, int offset, int numbytes);
+inline char RemoteIOMapRead(byte conn, long id, int offset, int numbytes);
 
 /**
  * Send an IOMapWrite value message.
@@ -6353,7 +6455,7 @@ inline char RemoteIOMapRead(const byte conn, long id, int offset, int numbytes);
  * \param value A scalar variable containing the value you are writing to the IOMap structure.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteIOMapWriteValue(const byte conn, long id, int offset, variant value);
+inline char RemoteIOMapWriteValue(byte conn, long id, int offset, variant value);
 
 /**
  * Send an IOMapWrite bytes message.
@@ -6369,7 +6471,7 @@ inline char RemoteIOMapWriteValue(const byte conn, long id, int offset, variant 
  * \param data A byte array containing the data you are writing to the IOMap structure.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteIOMapWriteBytes(const byte conn, long id, int offset, byte data[]);
+inline char RemoteIOMapWriteBytes(byte conn, long id, int offset, byte data[]);
 
 /**
  * Send an SetBrickName bytes message.
@@ -6383,7 +6485,7 @@ inline char RemoteIOMapWriteBytes(const byte conn, long id, int offset, byte dat
  * \param name The new brick name.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteSetBrickName(const byte conn, string name);
+inline char RemoteSetBrickName(byte conn, string name);
 
 /**
  * Send an RenameFile bytes message.
@@ -6398,7 +6500,7 @@ inline char RemoteSetBrickName(const byte conn, string name);
  * \param newname The new filename.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteRenameFile(const byte conn, string oldname, string newname);
+inline char RemoteRenameFile(byte conn, string oldname, string newname);
 
 /**
  * Send an PollCommand bytes message.
@@ -6413,10 +6515,17 @@ inline char RemoteRenameFile(const byte conn, string oldname, string newname);
  * \param len The number of bytes to read.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemotePollCommand(const byte conn, byte bufnum, byte len);
+inline char RemotePollCommand(byte conn, byte bufnum, byte len);
 
 /** @} */ // end of CommModuleSCFunctions group
 
+
+/**
+ * Use the RS485 port.
+ * Configure port 4 for RS485 usage.
+ *
+ */
+inline void UseRS485(void);
 
 #ifdef __ENHANCED_FIRMWARE
 
@@ -6438,7 +6547,7 @@ inline char RS485Control(byte cmd, byte baud, unsigned int mode);
 /**
  * Check for RS485 available data.
  * Check the RS485 hi-speed port for available data.
- * 
+ *
  * \return A value indicating whether data is available or not.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
@@ -6446,29 +6555,43 @@ inline char RS485Control(byte cmd, byte baud, unsigned int mode);
 inline bool RS485DataAvailable(void);
 
 /**
- * Exit RS485.
- * Turn off the RS485 port.
- * 
+ * Initialize RS485 port.
+ * Initialize the RS485 UART port to its default values.  The baud rate is
+ * set to 921600 and the mode is set to 8N1 (8 data bits, no parity, 1 stop bit).
+ * Data cannot be sent or received over the RS485 port until the port is
+ * configured as as a hi-speed port, the port is turned on, and the UART is
+ * initialized.
+ *
  * \return A char value indicating whether the function call succeeded or not.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-inline char RS485Exit(void);
+inline char RS485Initialize(void);
 
 /**
- * Initialize RS485.
- * Initialize the RS485 hi-speed port so that it can be used.
- * 
+ * Disable RS485.
+ * Turn off the RS485 port.
+ *
  * \return A char value indicating whether the function call succeeded or not.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-inline char RS485Init(void);
+inline char RS485Disable(void);
+
+/**
+ * Enable RS485.
+ * Turn on the RS485 hi-speed port so that it can be used.
+ *
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline char RS485Enable(void);
 
 /**
  * Read RS485 data.
  * Read data from the RS485 hi-speed port.
- * 
+ *
  * \param buffer A byte array that will contain the data read from the RS485 port.
  * \return A char value indicating whether the function call succeeded or not.
  *
@@ -7380,22 +7503,48 @@ inline void SetBTDeviceNameCount(byte count);
 #define RemoteResetMotorPosition(_conn, _port, _brelative) asm { __remoteResetMotorPosition(_conn, _port, _brelative, __RETVAL__) }
 #define RemoteSetInputMode(_conn, _port, _type, _mode) asm { __remoteSetInputMode(_conn, _port, _type, _mode, __RETVAL__) }
 #define RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit) asm { __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, __RETVAL__) }
-#define RemoteGetBatteryLevel(_conn) asm { __connectionWrite(_conn, __DCGetBatteryLevelPacket, __RETVAL__) }
-#define RemoteLowspeedGetStatus(_conn) asm { __connectionWrite(_conn, __DCLSGetStatusPacket, __RETVAL__) }
-#define RemoteGetCurrentProgramName(_conn) asm { __connectionWrite(_conn, __DCGetCurProgNamePacket, __RETVAL__) }
-#define RemoteGetContactCount(_conn) asm { __connectionWrite(_conn, __DCBTGetContactCntPacket, __RETVAL__) }
-#define RemoteGetConnectionCount(_conn) asm { __connectionWrite(_conn, __DCBTGetConnectCntPacket, __RETVAL__) }
-#define RemoteGetOutputState(_conn, _port) asm { __remoteGetOutputState(_conn, _port, __RETVAL__) }
-#define RemoteGetInputValues(_conn, _port) asm { __remoteGetInputValues(_conn, _port, __RETVAL__) }
-#define RemoteLowspeedRead(_conn, _port) asm { __remoteLowspeedRead(_conn, _port, __RETVAL__) }
 #define RemoteResetTachoCount(_conn, _port) asm { __remoteResetTachoCount(_conn, _port, __RETVAL__) }
-#define RemoteGetProperty(_conn, _property) asm { __remoteGetProperty(_conn, _property, __RETVAL__) }
-#define RemoteDatalogRead(_conn, _remove) asm { __remoteDatalogRead(_conn, _remove, __RETVAL__) }
-#define RemoteBTGetContactName(_conn, _idx) asm { __remoteBTGetContactName(_conn, _idx, __RETVAL__) }
-#define RemoteBTGetConnectionName(_conn, _idx) asm { __remoteBTGetConnectionName(_conn, _idx, __RETVAL__) }
 #define RemoteDatalogSetTimes(_conn, _synctime) asm { __remoteDatalogSetTimes(_conn, _synctime, __RETVAL__) }
 #define RemoteSetProperty(_conn, _prop, _value) asm { __remoteSetProperty(_conn, _prop, _value, __RETVAL__) }
 #define RemoteLowspeedWrite(_conn, _port, _txlen, _rxlen, _data) asm { __remoteLowspeedWrite(_conn, _port, _txlen, _rxlen, _data, __RETVAL__) }
+
+#ifdef __ENHANCED_FIRMWARE
+#define RemoteGetOutputState(_conn, _params) asm { \
+  compchktype _params, OutputStateType \
+  __remoteGetOutputState(_conn, _params, __RETVAL__) \
+}
+#define RemoteGetInputValues(_conn, _params) asm { \
+  compchktype _params, InputValuesType \
+  __remoteGetInputValues(_conn, _params, __RETVAL__) \
+}
+#define RemoteGetBatteryLevel(_conn, _value) asm { __remoteGetBatteryLevel(_conn, _value, __RETVAL__) }
+#define RemoteLowspeedGetStatus(_conn, _value) asm { __remoteLowspeedGetStatus(_conn, _value, __RETVAL__) }
+#define RemoteLowspeedRead(_conn, _port, _bread, _data) asm { __remoteLowspeedRead(_conn, _port, _bread, _data, __RETVAL__) }
+#define RemoteGetCurrentProgramName(_conn, _name) asm { __remoteGetCurrentProgramName(_conn, _name, __RETVAL__) }
+#define RemoteDatalogRead(_conn, _remove, _cnt, _log) asm { __remoteDatalogRead(_conn, _remove, _cnt, _log, __RETVAL__) }
+#define RemoteGetContactCount(_conn, _cnt) asm { __remoteGetContactCount(_conn, _cnt, __RETVAL__) }
+#define RemoteGetContactName(_conn, _idx, _name) asm { __remoteGetContactName(_conn, _idx, _name, __RETVAL__) }
+#define RemoteGetConnectionCount(_conn, _cnt) asm { __remoteGetConnectionCount(_conn, _cnt, __RETVAL__) }
+#define RemoteGetConnectionName(_conn, _idx, _name) asm { __remoteGetConnectionName(_conn, _idx, _name, __RETVAL__) }
+
+#define RemoteGetProperty(_conn, _property, _value) asm { __remoteGetProperty(_conn, _property, _value, __RETVAL__) }
+
+#else
+
+#define RemoteGetOutputState(_conn, _port) asm { __remoteGetOutputState(_conn, _port, __RETVAL__) }
+#define RemoteGetInputValues(_conn, _port) asm { __remoteGetInputValues(_conn, _port, __RETVAL__) }
+#define RemoteGetBatteryLevel(_conn) asm { __remoteGetBatteryLevel(_conn, __RETVAL__) }
+#define RemoteLowspeedGetStatus(_conn) asm { __remoteLowspeedGetStatus(_conn, __RETVAL__) }
+#define RemoteLowspeedRead(_conn, _port) asm { __remoteLowspeedRead(_conn, _port, __RETVAL__) }
+#define RemoteGetCurrentProgramName(_conn) asm { __remoteGetCurrentProgramName(_conn, __RETVAL__) }
+#define RemoteDatalogRead(_conn, _remove) asm { __remoteDatalogRead(_conn, _remove, __RETVAL__) }
+#define RemoteGetContactCount(_conn) asm { __remoteGetContactCount(_conn, __RETVAL__) }
+#define RemoteGetContactName(_conn, _idx) asm { __remoteGetContactName(_conn, _idx, __RETVAL__) }
+#define RemoteGetConnectionCount(_conn) asm { __remoteGetConnectionCount(_conn, __RETVAL__) }
+#define RemoteGetConnectionName(_conn, _idx) asm { __remoteGetConnectionName(_conn, _idx, __RETVAL__) }
+#define RemoteGetProperty(_conn, _property) asm { __remoteGetProperty(_conn, _property, __RETVAL__) }
+
+#endif
 
 #define RemoteOpenRead(_conn, _filename) asm { __remoteOpenRead(_conn, _filename, __RETVAL__) }
 #define RemoteOpenAppendData(_conn, _filename) asm { __remoteOpenAppendData(_conn, _filename, __RETVAL__) }
@@ -7421,6 +7570,8 @@ inline void SetBTDeviceNameCount(byte count);
 #define RemoteRenameFile(_conn, _oldname, _newname) asm { __remoteRenameFile(_conn, _oldname, _newname, __RETVAL__) }
 #define RemotePollCommand(_conn, _bufnum, _len) asm { __remotePollCommand(_conn, _bufnum, _len, __RETVAL__) }
 
+#define UseRS485() asm { __UseRS485() }
+
 #ifdef __ENHANCED_FIRMWARE
 
 #define RS485Status(_sendingData, _dataAvail) asm { __RS485Status(_sendingData, _dataAvail) }
@@ -7433,15 +7584,17 @@ inline void SetBTDeviceNameCount(byte count);
 
 #define RS485Control(_cmd, _baud, _mode) asm { __RS485Control(_cmd, _baud, _mode, __RETVAL__) }
 #define RS485Uart(_baud, _mode) asm { __RS485Control(HS_CTRL_UART, _baud, _mode, __RETVAL__) }
-#define RS485Init() asm { __RS485Control(HS_CTRL_INIT, 0, 0, __RETVAL__) }
-#define RS485Exit() asm { __RS485Control(HS_CTRL_EXIT, 0, 0, __RETVAL__) }
+#define RS485Initialize() asm { __RS485Control(HS_CTRL_UART, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, __RETVAL__) }
+#define RS485Enable() asm { __RS485Control(HS_CTRL_INIT, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, __RETVAL__) }
+#define RS485Disable() asm { __RS485Control(HS_CTRL_EXIT, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, __RETVAL__) }
 
 #else
 
 #define RS485Control(_cmd, _baud) asm { __RS485Control(_cmd, _baud, __RETVAL__) }
 #define RS485Uart(_baud) asm { __RS485Control(HS_CTRL_UART, _baud, __RETVAL__) }
-#define RS485Init() asm { __RS485Control(HS_CTRL_INIT, 0, __RETVAL__) }
-#define RS485Exit() asm { __RS485Control(HS_CTRL_EXIT, 0, __RETVAL__) }
+#define RS485Initialize() asm { __RS485Control(HS_CTRL_UART, HS_BAUD_DEFAULT, __RETVAL__) }
+#define RS485Enable() asm { __RS485Control(HS_CTRL_INIT, HS_BAUD_DEFAULT, __RETVAL__) }
+#define RS485Disable() asm { __RS485Control(HS_CTRL_EXIT, HS_BAUD_DEFAULT, __RETVAL__) }
 
 #endif
 
@@ -9108,7 +9261,7 @@ inline void SysListFiles(ListFilesType & args);
  */
 inline int SensorHTGyro(const byte & port, int offset = 0) {
   asm {
-    getin __RETVAL__, port, RawValue
+    getin __RETVAL__, port, RawValueField
     sub __RETVAL__, __RETVAL__, 600
     sub __RETVAL__, __RETVAL__, offset
   }
@@ -9126,7 +9279,7 @@ inline int SensorHTGyro(const byte & port, int offset = 0) {
  */
 inline int SensorHTMagnet(const byte & port, int offset = 0) {
   asm {
-    getin __RETVAL__, port, RawValue
+    getin __RETVAL__, port, RawValueField
     sub __RETVAL__, __RETVAL__, 600
     sub __RETVAL__, __RETVAL__, offset
   }
@@ -9141,7 +9294,7 @@ inline int SensorHTMagnet(const byte & port, int offset = 0) {
  */
 inline int SensorHTEOPD(const byte & port) {
   asm {
-    getin __RETVAL__, port, RawValue
+    getin __RETVAL__, port, RawValueField
     sub __RETVAL__, 1023, __RETVAL__
   }
 }
@@ -10431,7 +10584,7 @@ inline void SetSensorNXTSumoEyes(const byte & port, bool bLong) {
  */
 inline int SensorMSPressure(const byte & port) {
   asm {
-    getin __RETVAL__, port, RawValue
+    getin __RETVAL__, port, RawValueField
     sub __RETVAL__, 1024, __RETVAL__
     div __RETVAL__, __RETVAL__, 25
   }
@@ -10449,7 +10602,7 @@ inline int SensorMSPressure(const byte & port) {
 char SensorNXTSumoEyes(const byte & port) {
   int value;
   asm {
-    getin value, port, NormalizedValue
+    getin value, port, NormalizedValueField
     mul value, value, 100
     div value, value, 1023
   }
@@ -12650,9 +12803,9 @@ inline void MSScoutUnmuteSound(void);
 
 #else
 
-#define SensorMSDROD(_p) asm { getin __RETVAL__, _p, NormalizedValue }
-#define SensorNXTSumoEyesRaw(_p) asm { getin __RETVAL__, _p, NormalizedValue }
-#define SensorMSPressureRaw(_p) asm { getin __RETVAL__, _p, RawValue }
+#define SensorMSDROD(_p) asm { getin __RETVAL__, _p, NormalizedValueField }
+#define SensorNXTSumoEyesRaw(_p) asm { getin __RETVAL__, _p, NormalizedValueField }
+#define SensorMSPressureRaw(_p) asm { getin __RETVAL__, _p, RawValueField }
 #define SensorMSCompass(_port, _i2caddr) asm { ReadSensorMSCompass(_port, _i2caddr, __RETVAL__) }
 #define ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year) asm { __ReadSensorMSRTClock(_port, _sec, _min, _hrs, _dow, _date, _month, _year, __RETVAL__) }
 #define ReadSensorMSTilt(_port, _i2caddr, _x, _y, _z) asm { __ReadSensorMSTilt(_port, _i2caddr, _x, _y, _z, __RETVAL__) }

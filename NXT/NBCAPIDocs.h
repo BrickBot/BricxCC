@@ -3818,8 +3818,8 @@
  * are listed in the \ref NBCInputPortConstants section.
  * The syntax of the setin statement is shown below.
  * \code
- * setin IN_TYPE_SWITCH, IN_1, Type // set sensor to switch type
- * setin IN_MODE_BOOLEAN, IN_1, InputMode // set to boolean mode
+ * setin IN_TYPE_SWITCH, IN_1, TypeField // set sensor to switch type
+ * setin IN_MODE_BOOLEAN, IN_1, InputModeField // set to boolean mode
  * \endcode
  *
  */
@@ -3875,7 +3875,7 @@
  * set thePort, OUT_A  // set port to #1
  * set pwr, -75 // negative power means reverse motor direction
  * // set output values
- * setout thePort, OutputMode, theMode, RunState, rsVal, Power, pwr
+ * setout thePort, OutputModeField, theMode, RunStateField, rsVal, PowerField, pwr
  * \endcode
  *
  */
@@ -3892,9 +3892,9 @@
  * port constants are listed in the \ref OutputPortConstants section.
  * The syntax of the getout statement is shown below.
  * \code
- * getout rmVal, thePort, RegMode  // read motor regulation mode
- * getout tlVal, thePort, TachoLimit  // read tachometer limit value
- * getout rcVal, thePort, RotationCount // read the rotation count
+ * getout rmVal, thePort, RegModeField  // read motor regulation mode
+ * getout tlVal, thePort, TachoLimitField  // read tachometer limit value
+ * getout rcVal, thePort, RotationCountField // read the rotation count
  * \endcode
  *
  */
@@ -4127,7 +4127,7 @@
  * Manually combining outputs involves creating an array and adding two or
  * more of the three individual output constants to the array.
  *
- * \ref Power levels can range 0 (lowest) to 100 (highest). Negative power
+ * Output power levels can range 0 (lowest) to 100 (highest). Negative power
  * levels reverse the direction of rotation (i.e., forward at a power level
  * of -100 actually means reverse at a power level of 100).
  *
@@ -4255,19 +4255,19 @@
  * Use the lowspeed (aka I2C) communication methods to access devices that use the I2C
  * protocol on the NXT brick's four input ports.
  *
- * You must set the input port's \ref Type property to \ref IN_TYPE_LOWSPEED or
+ * You must set the input port's \ref TypeField property to \ref IN_TYPE_LOWSPEED or
  * \ref IN_TYPE_LOWSPEED_9V on a given port before using an I2C device on that
  * port. Use \ref IN_TYPE_LOWSPEED_9V if your device requires 9V power from the
  * NXT brick. Remember that you also need to set the input port's
- * \ref InvalidData property to true after setting a new \ref Type, and then
- * wait in a loop for the NXT firmware to set \ref InvalidData back to false.
+ * \ref InvalidDataField property to true after setting a new \ref TypeField, and then
+ * wait in a loop for the NXT firmware to set \ref InvalidDataField back to false.
  * This process ensures that the firmware has time to properly initialize the
  * port, including the 9V power lines, if applicable. Some digital devices
  * might need additional time to initialize after power up.
  *
  * The \ref SetSensorLowspeed API function sets the specified port to
  * \ref IN_TYPE_LOWSPEED_9V and calls \ref ResetSensor to perform the
- * \ref InvalidData reset loop described above.
+ * \ref InvalidDataField reset loop described above.
  *
  * When communicating with I2C devices, the NXT firmware uses a master/slave
  * setup in which the NXT brick is always the master device. This means that

@@ -8513,6 +8513,7 @@ var
   bDone, bArg1Numeric, bArg2Numeric, bCanOptimize : boolean;
   Arg1Val, Arg2Val : Double;
   DE : TDataspaceEntry;
+  bEnhanced : boolean;
 
   function CheckReferenceCount : boolean;
   var
@@ -8538,6 +8539,7 @@ var
     end;
   end;
 begin
+  bEnhanced := CodeSpace.RXEProgram.EnhancedFirmware;
   bDone := False;
   while not bDone do begin
     bDone := True; // assume we are done
@@ -8583,7 +8585,26 @@ begin
                (ALNext.Args[1].Value = arg1) then
             begin
               bCanOptimize := True;
-              if AL.Command = OP_SET then
+              if not bEnhanced then
+              begin
+                if AL.Command in [OP_GETTICK, OP_NOT, OP_ARRSIZE, OP_GETOUT, OP_CMP, OP_WAIT] then
+                begin
+                  DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);
+                  if Assigned(DE) then
+                    bCanOptimize := (DE.DataType <> dsFloat)
+                  else
+                    bCanOptimize := False;
+                end
+                else if AL.Command = OP_STRINGTONUM then
+                begin
+                  DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[1].Value);
+                  if Assigned(DE) then
+                    bCanOptimize := (DE.DataType <> dsFloat)
+                  else
+                    bCanOptimize := False;
+                end;
+              end
+              else if AL.Command = OP_SET then
               begin
                 // need to also check the type of the next line's output arg
                 DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);

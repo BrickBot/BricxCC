@@ -1,0 +1,175 @@
+#define RS485
+
+#ifdef RS485
+#define theConn CONN_HS4
+#else
+#define theConn CONN_BT1
+#endif
+
+
+void OnFwdAny(byte conn, byte output, char speed)
+{
+  if (conn == CONN_BT0)
+    OnFwd(output, speed);
+  else
+    RemoteSetOutputState(conn, output, speed, OUT_MODE_MOTORON+OUT_MODE_BRAKE, OUT_REGMODE_IDLE, 0, OUT_RUNSTATE_RUNNING, 0);
+}
+
+void OffAny(byte conn, byte output)
+{
+  if (conn == CONN_BT0)
+    Off(output);
+  else
+    RemoteSetOutputState(conn, output, 0, OUT_MODE_MOTORON+OUT_MODE_BRAKE, OUT_REGMODE_IDLE, 0, OUT_RUNSTATE_RUNNING, 0);
+}
+
+void OnRevAny(byte conn, byte output, byte speed)
+{
+  if (conn == CONN_BT0)
+    OnRev(output, speed);
+  else
+  {
+    speed *= -1;
+    RemoteSetOutputState(conn, output, speed, OUT_MODE_MOTORON+OUT_MODE_BRAKE, OUT_REGMODE_IDLE, 0, OUT_RUNSTATE_RUNNING, 0);
+  }
+}
+
+long MotorRotationCountAny(byte conn, byte output)
+{
+  if (conn == CONN_BT0)
+    return MotorRotationCount(output);
+  else
+  {
+    OutputStateType params;
+    params.Port = output;
+    RemoteGetOutputState(conn, params);
+    return params.RotationCount;
+  }
+}
+
+task main()
+{
+  byte len, cmd, cnt;
+  string name;
+  byte data[];
+  int mvolts;
+#ifdef RS485
+  UseRS485();
+  RS485Initialize();
+  SetHSDataMode(DATA_MODE_NXT);
+#endif
+
+/*
+  RemoteStopProgram(theConn);
+  until(RemoteConnectionIdle(theConn));
+  Wait(SEC_5);
+  RemoteStartProgram(theConn, "test.rxe");
+  until(RemoteConnectionIdle(theConn));
+  Wait(SEC_5);
+*/
+
+  RemotePlayTone(theConn, TONE_A5, 1000);
+  until(RemoteConnectionIdle(theConn));
+  Wait(SEC_1);
+
+  RemoteGetCurrentProgramName(theConn, name);
+  TextOut(0, LCD_LINE4, name);
+  Wait(SEC_5);
+  ClearScreen();
+
+  RemoteGetContactCount(theConn, cnt);
+  NumOut(0, LCD_LINE4, cnt);
+  Wait(SEC_5);
+  ClearScreen();
+
+  RemoteGetConnectionCount(theConn, cnt);
+  NumOut(0, LCD_LINE4, cnt);
+  Wait(SEC_5);
+  ClearScreen();
+
+  RemoteGetBatteryLevel(theConn, mvolts);
+  NumOut(0, LCD_LINE4, mvolts);
+  Wait(SEC_5);
+  ClearScreen();
+
+  OutputStateType params;
+  params.Port = OUT_A;
+  while (true) {
+    ClearScreen();
+    if (RemoteGetOutputState(theConn, params) != NO_ERR)
+      break;
+    NumOut(0, LCD_LINE1, params.Power);
+    NumOut(0, LCD_LINE2, params.Mode);
+    NumOut(0, LCD_LINE3, params.RegMode);
+    NumOut(0, LCD_LINE4, params.TurnRatio);
+    NumOut(0, LCD_LINE5, params.RunState);
+    NumOut(0, LCD_LINE6, params.TachoLimit);
+    NumOut(0, LCD_LINE7, params.TachoCount);
+    NumOut(0, LCD_LINE8, params.RotationCount);
+    Wait(MS_50);
+  }  
+
+/*
+  while (true) {
+    OnFwdAny(CONN_BT1, OUT_A, 75);
+    Wait(SEC_4);
+    OnRevAny(CONN_BT1, OUT_A, 75);
+    Wait(SEC_4);
+    OffAny(CONN_BT1, OUT_A);
+    Wait(SEC_1);
+    NumOut(0, LCD_LINE1, MotorRotationCountAny(CONN_BT1, OUT_A));
+  }
+*/
+  Stop(true);
+  
+/*
+// direct commands
+RemoteMessageRead(_conn, _queue)
+RemoteMessageWrite(_conn, _queue, _msg)
+RemotePlaySoundFile(_conn, _filename, _bloop)
+RemoteStopSound(_conn)
+RemoteKeepAlive(_conn)
+RemoteResetScaledValue(_conn, _port)
+RemoteResetMotorPosition(_conn, _port, _brelative)
+RemoteSetInputMode(_conn, _port, _type, _mode)
+RemoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit)
+RemoteLowspeedGetStatus(_conn)
+RemoteGetOutputState(_conn, _port)
+RemoteGetInputValues(_conn, _port)
+RemoteLowspeedRead(_conn, _port)
+RemoteResetTachoCount(_conn, _port)
+RemoteGetProperty(_conn, _property)
+RemoteDatalogRead(_conn, _remove)
+RemoteBTGetContactName(_conn, _idx)
+RemoteBTGetConnectionName(_conn, _idx)
+RemoteDatalogSetTimes(_conn, _synctime)
+RemoteSetProperty(_conn, _prop, _value)
+RemoteLowspeedWrite(_conn, _port, _txlen, _rxlen, _data)
+
+// system commands
+RemoteOpenRead(_conn, _filename)
+RemoteOpenAppendData(_conn, _filename)
+RemoteDeleteFile(_conn, _filename)
+RemoteFindFirstFile(_conn, _mask)
+RemoteGetFirmwareVersion(_conn)
+RemoteGetBluetoothAddress(_conn)
+RemoteGetDeviceInfo(_conn)
+RemoteDeleteUserFlash(_conn)
+RemoteBluetoothFactoryReset(_conn)
+RemoteOpenWrite(_conn, _filename, _size)
+RemoteOpenWriteLinear(_conn, _filename, _size)
+RemoteOpenWriteData(_conn, _filename, _size)
+RemoteCloseFile(_conn, _handle)
+RemoteFindNextFile(_conn, _handle)
+RemotePollCommandLength(_conn, _bufnum)
+RemoteWrite(_conn, _handle, _data)
+RemoteRead(_conn, _handle, _numbytes)
+RemoteIOMapRead(_conn, _id, _offset, _numbytes)
+RemoteIOMapWriteValue(_conn, _id, _offset, _value)
+RemoteIOMapWriteBytes(_conn, _id, _offset, _data)
+RemoteSetBrickName(_conn, _name)
+RemoteRenameFile(_conn, _oldname, _newname)
+RemotePollCommand(_conn, _bufnum, _len)
+
+*/
+}

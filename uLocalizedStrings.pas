@@ -541,6 +541,7 @@ resourcestring
   sUnknownAPICommand       = 'Unknown API command';
   sDefaultInvalid          = 'default is invalid outside a switch statement';
   sCaseInvalid             = 'case is invalid outside a switch statement';
+  sCaseDuplicateNotAllowed = 'duplicate case labels are not allowed';
   sInvalidUseOfTaskName    = 'Invalid use of task name';
   sInvalidArrayExpr        = 'Invalid array expression';
   sRecursiveInlineError    = 'Calling an inline function from an inline function is not supported';
@@ -606,6 +607,7 @@ resourcestring
   sTooFewParams            = 'Too few parameters';
   sMaxParamCountExceeded   = 'Max param count exceeded';
   sConstNotAllowed         = 'Constant not allowed on LHS of assignment';
+  sConstRequired           = 'A constant is required in this context';
   sFuncParamDeclMismatch   = 'Function parameter declaration mismatch';
 
 // nbc.dpr

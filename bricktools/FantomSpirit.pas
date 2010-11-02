@@ -3321,11 +3321,73 @@ begin
 end;
 
 function TFantomSpirit.SendRawCommand(aCmd: string; bRetry: boolean): string;
+var
+  SL : TStringList;
+  data : array of byte;
+  status, i, j : integer;
+  cmdType, reqResp, len : byte;
+  tmpStr : string;
+  scBuffer : PByte;
 begin
-  if bRetry then
-    Result := aCmd
+  Result := '';
+  if Length(aCmd) = 0 then Exit;
+  FillChar(scResponse, 64, 0);
+  // the raw command is either a system command or a direct command
+  // formatted as a series of 2digit hex bytes separated by a comma.
+  // first byte tells whether system or direct.
+  SL := TStringList.Create;
+  try
+    if aCmd[Length(aCmd)] = ',' then
+      System.Delete(aCmd, Length(aCmd), 1);
+    SL.CommaText := aCmd;
+    if SL.Count < 2 then Exit;
+    // convert string to array of bytes
+    // check that each byte is valid
+    SetLength(data, SL.Count-1);
+    j := StrToIntDef('$'+SL[0], -1);
+    if (j < 0) or (j > 255) then
+      Exit;
+    cmdType := Byte(j);
+    for i := 1 to SL.Count - 1 do
+    begin
+      tmpStr := SL[i];
+      j := StrToIntDef('$'+tmpStr, -1);
+      if (j < 0) or (j > 255) then
+        break;
+      data[i-1] := Byte(j);
+    end;
+  finally
+    SL.Free;
+  end;
+  // call system or direct command functions if it looks like it is a valid
+  // command
+  status := kStatusNoError;
+  reqResp := Byte((cmdType and $80) <> $80);
+  cmdType := cmdType and $7F;
+  if reqResp <> 0 then
+  begin
+    len := NXT_CMD_RESPONSE_LENGTH[data[0]]-1;
+    scBuffer := @scResponse[0];
+  end
   else
-    Result := '';
+  begin
+    len := 0;
+    scBuffer := nil;
+  end;
+  if cmdType = $01 then
+    iNXT_sendSystemCommand(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
+  else if cmdType = $00 then
+    iNXT_sendDirectCommandEnhanced(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
+  else
+    Exit;
+  if status >= kStatusNoError then
+  begin
+    for i := 0 to len - 1 do
+    begin
+      Result := Result + Format('%2.2x ', [scResponse[i]]);
+    end;
+    Result := Trim(Result);
+  end;
 end;
 
 function TFantomSpirit.SendRemoteStr(aEvent: string; aRepeat: integer): boolean;

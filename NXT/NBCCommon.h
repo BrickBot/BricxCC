@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-16
- * \version 58
+ * \date 2010-10-19
+ * \version 59
  */
 
 #ifndef NBCCOMMON_H
@@ -42,10 +42,10 @@
  * and SetProperty direct commands.
  * @{
  */
-#define RC_PROP_BTONOFF       0x0  // 1 byte
-#define RC_PROP_SOUND_LEVEL   0x1  // 1 byte
-#define RC_PROP_SLEEP_TIMEOUT 0x2  // 4 bytes
-#define RC_PROP_DEBUGGING     0xF  // 4 bytes
+#define RC_PROP_BTONOFF       0x0  /*!< Set/get whether bluetooth is on or off */
+#define RC_PROP_SOUND_LEVEL   0x1  /*!< Set/get the NXT sound level */
+#define RC_PROP_SLEEP_TIMEOUT 0x2  /*!< Set/get the NXT sleep timeout value (times 60000) */
+#define RC_PROP_DEBUGGING     0xF  /*!< Set/get enhanced firmware debugging information */
 /** @} */  // end of RCPropertyConstants group
 
 /** @} */  // end of MiscConstants group
@@ -91,28 +91,28 @@
 #define IO_IN_FPP  6
 #define IO_OUT_FPP 15
 
-#define InputIOType(p)            (IO_BASE+MOD_INPUT+Type+((p)*IO_IN_FPP))
-#define InputIOInputMode(p)       (IO_BASE+MOD_INPUT+InputMode+((p)*IO_IN_FPP))
-#define InputIORawValue(p)        (IO_BASE+MOD_INPUT+RawValue+((p)*IO_IN_FPP))
-#define InputIONormalizedValue(p) (IO_BASE+MOD_INPUT+NormalizedValue+((p)*IO_IN_FPP))
-#define InputIOScaledValue(p)     (IO_BASE+MOD_INPUT+ScaledValue+((p)*IO_IN_FPP))
-#define InputIOInvalidData(p)     (IO_BASE+MOD_INPUT+InvalidData+((p)*IO_IN_FPP))
+#define InputIOType(p)            (IO_BASE+MOD_INPUT+TypeField+((p)*IO_IN_FPP))
+#define InputIOInputMode(p)       (IO_BASE+MOD_INPUT+InputModeField+((p)*IO_IN_FPP))
+#define InputIORawValue(p)        (IO_BASE+MOD_INPUT+RawValueField+((p)*IO_IN_FPP))
+#define InputIONormalizedValue(p) (IO_BASE+MOD_INPUT+NormalizedValueField+((p)*IO_IN_FPP))
+#define InputIOScaledValue(p)     (IO_BASE+MOD_INPUT+ScaledValueField+((p)*IO_IN_FPP))
+#define InputIOInvalidData(p)     (IO_BASE+MOD_INPUT+InvalidDataField+((p)*IO_IN_FPP))
 
-#define OutputIOUpdateFlags(p)     (IO_BASE+MOD_OUTPUT+UpdateFlags+((p)*IO_OUT_FPP))
-#define OutputIOOutputMode(p)      (IO_BASE+MOD_OUTPUT+OutputMode+((p)*IO_OUT_FPP))
-#define OutputIOPower(p)           (IO_BASE+MOD_OUTPUT+Power+((p)*IO_OUT_FPP))
-#define OutputIOActualSpeed(p)     (IO_BASE+MOD_OUTPUT+ActualSpeed+((p)*IO_OUT_FPP))
-#define OutputIOTachoCount(p)      (IO_BASE+MOD_OUTPUT+TachoCount+((p)*IO_OUT_FPP))
-#define OutputIOTachoLimit(p)      (IO_BASE+MOD_OUTPUT+TachoLimit+((p)*IO_OUT_FPP))
-#define OutputIORunState(p)        (IO_BASE+MOD_OUTPUT+RunState+((p)*IO_OUT_FPP))
-#define OutputIOTurnRatio(p)       (IO_BASE+MOD_OUTPUT+TurnRatio+((p)*IO_OUT_FPP))
-#define OutputIORegMode(p)         (IO_BASE+MOD_OUTPUT+RegMode+((p)*IO_OUT_FPP))
-#define OutputIOOverload(p)        (IO_BASE+MOD_OUTPUT+Overload+((p)*IO_OUT_FPP))
-#define OutputIORegPValue(p)       (IO_BASE+MOD_OUTPUT+RegPValue+((p)*IO_OUT_FPP))
-#define OutputIORegIValue(p)       (IO_BASE+MOD_OUTPUT+RegIValue+((p)*IO_OUT_FPP))
-#define OutputIORegDValue(p)       (IO_BASE+MOD_OUTPUT+RegDValue+((p)*IO_OUT_FPP))
-#define OutputIOBlockTachoCount(p) (IO_BASE+MOD_OUTPUT+BlockTachoCount+((p)*IO_OUT_FPP))
-#define OutputIORotationCount(p)   (IO_BASE+MOD_OUTPUT+RotationCount+((p)*IO_OUT_FPP))
+#define OutputIOUpdateFlags(p)     (IO_BASE+MOD_OUTPUT+UpdateFlagsField+((p)*IO_OUT_FPP))
+#define OutputIOOutputMode(p)      (IO_BASE+MOD_OUTPUT+OutputModeField+((p)*IO_OUT_FPP))
+#define OutputIOPower(p)           (IO_BASE+MOD_OUTPUT+PowerField+((p)*IO_OUT_FPP))
+#define OutputIOActualSpeed(p)     (IO_BASE+MOD_OUTPUT+ActualSpeedField+((p)*IO_OUT_FPP))
+#define OutputIOTachoCount(p)      (IO_BASE+MOD_OUTPUT+TachoCountField+((p)*IO_OUT_FPP))
+#define OutputIOTachoLimit(p)      (IO_BASE+MOD_OUTPUT+TachoLimitField+((p)*IO_OUT_FPP))
+#define OutputIORunState(p)        (IO_BASE+MOD_OUTPUT+RunStateField+((p)*IO_OUT_FPP))
+#define OutputIOTurnRatio(p)       (IO_BASE+MOD_OUTPUT+TurnRatioField+((p)*IO_OUT_FPP))
+#define OutputIORegMode(p)         (IO_BASE+MOD_OUTPUT+RegModeField+((p)*IO_OUT_FPP))
+#define OutputIOOverload(p)        (IO_BASE+MOD_OUTPUT+OverloadField+((p)*IO_OUT_FPP))
+#define OutputIORegPValue(p)       (IO_BASE+MOD_OUTPUT+RegPValueField+((p)*IO_OUT_FPP))
+#define OutputIORegIValue(p)       (IO_BASE+MOD_OUTPUT+RegIValueField+((p)*IO_OUT_FPP))
+#define OutputIORegDValue(p)       (IO_BASE+MOD_OUTPUT+RegDValueField+((p)*IO_OUT_FPP))
+#define OutputIOBlockTachoCount(p) (IO_BASE+MOD_OUTPUT+BlockTachoCountField+((p)*IO_OUT_FPP))
+#define OutputIORotationCount(p)   (IO_BASE+MOD_OUTPUT+RotationCountField+((p)*IO_OUT_FPP))
 
 #define InputIOType0             0xc000
 #define InputIOInputMode0        0xc001
@@ -1043,12 +1043,12 @@
  * Each sensor has six fields that are used to define its state. The field constants are described in the table above. 
  * @{
  */
-#define Type            0 /*!< Type field. Contains one of the sensor type constants. Read/write. */
-#define InputMode       1 /*!< Input mode field. Contains one of the sensor mode constants. Read/write. */
-#define RawValue        2 /*!< Raw value field. Contains the current raw analog sensor value. Read only. */
-#define NormalizedValue 3 /*!< Normalized value field. Contains the current normalized analog sensor value. Read only. */
-#define ScaledValue     4 /*!< Scaled value field. Contains the current scaled analog sensor value. Read/write. */
-#define InvalidData     5 /*!< Invalid data field. Contains a boolean value indicating whether the sensor data is valid or not. Read/write. */
+#define TypeField            0 /*!< Type field. Contains one of the sensor type constants. Read/write. */
+#define InputModeField       1 /*!< Input mode field. Contains one of the sensor mode constants. Read/write. */
+#define RawValueField        2 /*!< Raw value field. Contains the current raw analog sensor value. Read only. */
+#define NormalizedValueField 3 /*!< Normalized value field. Contains the current normalized analog sensor value. Read only. */
+#define ScaledValueField     4 /*!< Scaled value field. Contains the current scaled analog sensor value. Read/write. */
+#define InvalidDataField     5 /*!< Invalid data field. Contains a boolean value indicating whether the sensor data is valid or not. Read/write. */
 /** @} */  // end of InputFieldConstants group
 
 
@@ -1141,7 +1141,7 @@
 #define InputOffsetColorADRaw(p, nc)           (80+((p)*84)+52+((nc)*2)) /*!< Read AD raw color sensor values */
 #define InputOffsetColorSensorRaw(p, nc)       (80+((p)*84)+60+((nc)*2)) /*!< Read raw color sensor values */
 #define InputOffsetColorSensorValue(p, nc)     (80+((p)*84)+68+((nc)*2)) /*!< Read scaled color sensor values */
-#define InputOffsetColorSensorBoolean(p, nc)   (80+((p)*84)+76+((nc)*2)) /*!< Read color sensor boolean values */
+#define InputOffsetColorBoolean(p, nc)         (80+((p)*84)+76+((nc)*2)) /*!< Read color sensor boolean values */
 #define InputOffsetColorCalibrationState(p)    (80+((p)*84)+80)          /*!< Read color sensor calibration state */
 #endif
 /** @} */  // end of InputIOMap group
@@ -1192,9 +1192,9 @@
  * \sa SetOutput()
  * @{
  */
-#define UF_UPDATE_MODE                 0x01 /*!< Commits changes to the OutputMode output property */
-#define UF_UPDATE_SPEED                0x02 /*!< Commits changes to the Power output property */
-#define UF_UPDATE_TACHO_LIMIT          0x04 /*!< Commits changes to the TachoLimit output property */
+#define UF_UPDATE_MODE                 0x01 /*!< Commits changes to the \ref OutputModeField output property */
+#define UF_UPDATE_SPEED                0x02 /*!< Commits changes to the \ref PowerField output property */
+#define UF_UPDATE_TACHO_LIMIT          0x04 /*!< Commits changes to the \ref TachoLimitField output property */
 #define UF_UPDATE_RESET_COUNT          0x08 /*!< Resets all rotation counters, cancels the current goal, and resets the rotation error-correction system */
 #define UF_UPDATE_PID_VALUES           0x10 /*!< Commits changes to the PID motor regulation properties */
 #define UF_UPDATE_RESET_BLOCK_COUNT    0x20 /*!< Resets the NXT-G block-relative rotation counter */
@@ -1224,9 +1224,9 @@
  * @{
  */
 #define OUT_MODE_COAST     0x00 /*!< No power and no braking so motors rotate freely. */
-#define OUT_MODE_MOTORON   0x01 /*!< Enables PWM power to the outputs given the Power setting */
+#define OUT_MODE_MOTORON   0x01 /*!< Enables PWM power to the outputs given the power setting */
 #define OUT_MODE_BRAKE     0x02 /*!< Uses electronic braking to outputs */
-#define OUT_MODE_REGULATED 0x04 /*!< Enables active power regulation using the RegMode value */
+#define OUT_MODE_REGULATED 0x04 /*!< Enables active power regulation using the regulation mode value */
 #define OUT_MODE_REGMETHOD 0xF0 /*!< Mask for unimplemented regulation mode */
 /** @} */  // end of OutModeConstants group
 
@@ -1250,9 +1250,9 @@
  * @{
  */
 #define OUT_RUNSTATE_IDLE     0x00 /*!< Disable all power to motors. */
-#define OUT_RUNSTATE_RAMPUP   0x10 /*!< Enable ramping up from a current Power to a new (higher) Power over a specified TachoLimit goal. */
-#define OUT_RUNSTATE_RUNNING  0x20 /*!< Enable power to motors at the specified Power level. */
-#define OUT_RUNSTATE_RAMPDOWN 0x40 /*!< Enable ramping down from a current Power to a new (lower) Power over a specified TachoLimit goal. */
+#define OUT_RUNSTATE_RAMPUP   0x10 /*!< Enable ramping up from a current power to a new (higher) power over a specified \ref TachoLimitField goal. */
+#define OUT_RUNSTATE_RUNNING  0x20 /*!< Enable power to motors at the specified power level. */
+#define OUT_RUNSTATE_RAMPDOWN 0x40 /*!< Enable ramping down from a current power to a new (lower) power over a specified \ref TachoLimitField goal. */
 #define OUT_RUNSTATE_HOLD     0x60 /*!< Set motor run state to hold at the current position. */
 /** @} */  // end of OutRunStateConstants group
 
@@ -1263,7 +1263,7 @@
  * @{
  */
 #define OUT_REGMODE_IDLE  0 /*!< No motor regulation. */
-#define OUT_REGMODE_SPEED 1 /*!< Regulate a motor's speed (Power). */
+#define OUT_REGMODE_SPEED 1 /*!< Regulate a motor's speed (aka power). */
 #define OUT_REGMODE_SYNC  2 /*!< Synchronize the rotation of two motors. */
 /** @} */  // end of OutRegModeConstants group
 
@@ -1277,114 +1277,114 @@
  *  along with other fields to commit changes to the state of outputs. Set the appropriate
  *  flags after setting one or more of the output fields in order for the changes to actually
  *  go into affect. */
-#define UpdateFlags     0
+#define UpdateFlagsField     0
 /** Mode field. Contains a combination of the output mode constants. Read/write.
  *  The \ref OUT_MODE_MOTORON bit must be set in order for power to be applied to the motors.
  *  Add \ref OUT_MODE_BRAKE to enable electronic braking. Braking means that the output voltage
  *  is not allowed to float between active PWM pulses. It improves the accuracy of motor
  *  output but uses more battery power.
- *  To use motor regulation include \ref OUT_MODE_REGULATED in the OutputMode value. Use
- *  \ref UF_UPDATE_MODE with \ref UpdateFlags to commit changes to this field. */
-#define OutputMode      1
+ *  To use motor regulation include \ref OUT_MODE_REGULATED in the \ref OutputModeField value. Use
+ *  \ref UF_UPDATE_MODE with \ref UpdateFlagsField to commit changes to this field. */
+#define OutputModeField      1
 /** Power field. Contains the desired power level (-100 to 100). Read/write.
- *  Specify the power level of the output. The absolute value of Power is a percentage of the
- *  full power of the motor. The sign of Power controls the rotation direction. Positive values
+ *  Specify the power level of the output. The absolute value of PowerField is a percentage of the
+ *  full power of the motor. The sign of PowerField controls the rotation direction. Positive values
  *  tell the firmware to turn the motor forward, while negative values turn the motor backward.
- *  Use \ref UF_UPDATE_SPEED with \ref UpdateFlags to commit changes to this field. */
-#define Power           2
+ *  Use \ref UF_UPDATE_SPEED with \ref UpdateFlagsField to commit changes to this field. */
+#define PowerField           2
 /** Actual speed field. Contains the actual power level (-100 to 100). Read only.
  *  Return the percent of full power the firmware is applying to the output. This may vary from the
- *  Power value when auto-regulation code in the firmware responds to a load on the output. */
-#define ActualSpeed     3
+ *  PowerField value when auto-regulation code in the firmware responds to a load on the output. */
+#define ActualSpeedField     3
 /** Internal tachometer count field. Contains the current internal tachometer count. Read only.
  *  Return the internal position counter value for the specified output. The internal count is reset
- *  automatically when a new goal is set using the TachoLimit and the \ref UF_UPDATE_TACHO_LIMIT flag.
- *  Set the \ref UF_UPDATE_RESET_COUNT flag in \ref UpdateFlags to reset TachoCount and cancel any \ref TachoLimit.
- *  The sign of TachoCount indicates the motor rotation direction. */
-#define TachoCount      4
+ *  automatically when a new goal is set using the \ref TachoLimitField and the \ref UF_UPDATE_TACHO_LIMIT flag.
+ *  Set the \ref UF_UPDATE_RESET_COUNT flag in \ref UpdateFlagsField to reset TachoCountField and cancel any \ref TachoLimitField.
+ *  The sign of TachoCountField indicates the motor rotation direction. */
+#define TachoCountField      4
 /** Tachometer limit field. Contains the current tachometer limit. Read/write.
  *  Specify the number of degrees the motor should rotate.
- *  Use \ref UF_UPDATE_TACHO_LIMIT with the \ref UpdateFlags field to commit changes to the TachoLimit.
+ *  Use \ref UF_UPDATE_TACHO_LIMIT with the \ref UpdateFlagsField field to commit changes to the TachoLimitField.
  *  The value of this field is a relative distance from the current motor position at the moment when
  *  the \ref UF_UPDATE_TACHO_LIMIT flag is processed. */
-#define TachoLimit      5
+#define TachoLimitField      5
 /** Run state field. Contains one of the run state constants. Read/write.
- *  Use this field to specify the running state of an output. Set the RunState to \ref OUT_RUNSTATE_RUNNING
- *  to enable power to any output. Use \ref OUT_RUNSTATE_RAMPUP to enable automatic ramping to a new \ref Power
- *  level greater than the current \ref Power level. Use \ref OUT_RUNSTATE_RAMPDOWN to enable automatic ramping
- *  to a new \ref Power level less than the current \ref Power level.
- *  Both the rampup and rampdown bits must be used in conjunction with appropriate \ref TachoLimit and \ref Power
- *  values. In this case the firmware smoothly increases or decreases the actual power to the new \ref Power
- *  level over the total number of degrees of rotation specified in \ref TachoLimit. */
-#define RunState        6
+ *  Use this field to specify the running state of an output. Set the RunStateField to \ref OUT_RUNSTATE_RUNNING
+ *  to enable power to any output. Use \ref OUT_RUNSTATE_RAMPUP to enable automatic ramping to a new \ref PowerField
+ *  level greater than the current \ref PowerField level. Use \ref OUT_RUNSTATE_RAMPDOWN to enable automatic ramping
+ *  to a new \ref PowerField level less than the current \ref PowerField level.
+ *  Both the rampup and rampdown bits must be used in conjunction with appropriate \ref TachoLimitField and \ref PowerField
+ *  values. In this case the firmware smoothly increases or decreases the actual power to the new \ref PowerField
+ *  level over the total number of degrees of rotation specified in \ref TachoLimitField. */
+#define RunStateField        6
 /** Turn ratio field. Contains the current turn ratio. Only applicable when synchronizing multiple motors. Read/write.
  *  Use this field to specify a proportional turning ratio. This field must be used in conjunction with other
- *  field values: \ref OutputMode must include \ref OUT_MODE_MOTORON and \ref OUT_MODE_REGULATED, \ref RegMode must be set to
- *  \ref OUT_REGMODE_SYNC, \ref RunState must not be \ref OUT_RUNSTATE_IDLE, and \ref Power must be non-zero.
- *  There are only three valid combinations of left and right motors for use with TurnRatio: \ref OUT_AB, \ref OUT_BC,
+ *  field values: \ref OutputModeField must include \ref OUT_MODE_MOTORON and \ref OUT_MODE_REGULATED, \ref RegModeField must be set to
+ *  \ref OUT_REGMODE_SYNC, \ref RunStateField must not be \ref OUT_RUNSTATE_IDLE, and \ref PowerField must be non-zero.
+ *  There are only three valid combinations of left and right motors for use with TurnRatioField: \ref OUT_AB, \ref OUT_BC,
  *  and \ref OUT_AC. In each of these three options the first motor listed is considered to be the left motor and
  *  the second motor is the right motor, regardless of the physical configuration of the robot.
- *  Negative TurnRatio values shift power toward the left motor while positive values shift power toward the
+ *  Negative turn ratio values shift power toward the left motor while positive values shift power toward the
  *  right motor. An absolute value of 50 usually results in one motor stopping. An absolute value of 100 usually
  *  results in two motors turning in opposite directions at equal power. */
-#define TurnRatio       7
+#define TurnRatioField       7
 /** Regulation mode field. Contains one of the regulation mode constants. Read/write.
  *  This field specifies the regulation mode to use with the specified port(s). It is ignored if
- *  the \ref OUT_MODE_REGULATED bit is not set in the \ref OutputMode field. Unlike the \ref OutputMode field, RegMode is
- *  not a bitfield. Only one RegMode value can be set at a time.
- *  Speed regulation means that the firmware tries to maintain a certain speed based on the \ref Power setting. The
+ *  the \ref OUT_MODE_REGULATED bit is not set in the \ref OutputModeField field. Unlike \ref OutputModeField, RegModeField is
+ *  not a bitfield. Only one regulation mode value can be set at a time.
+ *  Speed regulation means that the firmware tries to maintain a certain speed based on the \ref PowerField setting. The
  *  firmware adjusts the PWM duty cycle if the motor is affected by a physical load. This adjustment is
- *  reflected by the value of the \ref ActualSpeed property. When using speed regulation, do not set Power to its
+ *  reflected by the value of the \ref ActualSpeedField property. When using speed regulation, do not set \ref PowerField to its
  *  maximum value since the firmware cannot adjust to higher power levels in that situation.
  *  Synchronization means the firmware tries to keep two motors in sync regardless of physical loads. Use
  *  this mode to maintain a straight path for a mobile robot automatically. Also use this mode with the
- *  \ref TurnRatio property to provide proportional turning.
+ *  \ref TurnRatioField property to provide proportional turning.
  *  Set \ref OUT_REGMODE_SYNC on at least two motor ports in order for synchronization to function. Setting
  *  \ref OUT_REGMODE_SYNC on all three motor ports will result in only the first two (\ref OUT_A and \ref OUT_B) being
  *  synchronized. */
-#define RegMode         8
+#define RegModeField         8
 /** Overload field. Contains a boolean value which is TRUE if the motor is overloaded. Read only.
  *  This field will have a value of 1 (true) if the firmware speed regulation cannot overcome a physical
  *  load on the motor. In other words, the motor is turning more slowly than expected.
  *  If the motor speed can be maintained in spite of loading then this field value is zero (false).
- *  In order to use this field the motor must have a non-idle \ref RunState, an \ref OutputMode which includes
- *  \ref OUT_MODE_MOTORON and \ref OUT_MODE_REGULATED, and its \ref RegMode must be set to \ref OUT_REGMODE_SPEED. */
-#define Overload        9
+ *  In order to use this field the motor must have a non-idle \ref RunStateField, an \ref OutputModeField which includes
+ *  \ref OUT_MODE_MOTORON and \ref OUT_MODE_REGULATED, and its \ref RegModeField must be set to \ref OUT_REGMODE_SPEED. */
+#define OverloadField        9
 /** Proportional field. Contains the proportional constant for the PID motor controller. Read/write.
  *  This field specifies the proportional term used in the internal proportional-integral-derivative
  *  (PID) control algorithm.
  *  Set \ref UF_UPDATE_PID_VALUES to commit changes to RegPValue, RegIValue, and RegDValue simultaneously. */
-#define RegPValue       10
+#define RegPValueField       10
 /** Integral field. Contains the integral constant for the PID motor controller. Read/write.
  *  This field specifies the integral term used in the internal proportional-integral-derivative
  *  (PID) control algorithm.
  *  Set \ref UF_UPDATE_PID_VALUES to commit changes to RegPValue, RegIValue, and RegDValue simultaneously. */
-#define RegIValue       11
+#define RegIValueField       11
 /** Derivative field. Contains the derivative constant for the PID motor controller. Read/write.
  *  This field specifies the derivative term used in the internal proportional-integral-derivative
  *  (PID) control algorithm.
  *  Set \ref UF_UPDATE_PID_VALUES to commit changes to RegPValue, RegIValue, and RegDValue simultaneously. */
-#define RegDValue       12
+#define RegDValueField       12
 /** NXT-G block tachometer count field. Contains the current NXT-G block tachometer count. Read only.
  *  Return the block-relative position counter value for the specified port.
- *  Refer to the \ref UpdateFlags description for information about how to use block-relative
+ *  Refer to the \ref UpdateFlagsField description for information about how to use block-relative
  *  position counts.
- *  Set the \ref UF_UPDATE_RESET_BLOCK_COUNT flag in UpdateFlags to request that the firmware
- *  reset the BlockTachoCount.
- *  The sign of BlockTachoCount indicates the direction of rotation. Positive values indicate
+ *  Set the \ref UF_UPDATE_RESET_BLOCK_COUNT flag in \ref UpdateFlagsField to request that the firmware
+ *  reset the BlockTachoCountField.
+ *  The sign of BlockTachoCountField indicates the direction of rotation. Positive values indicate
  *  forward rotation and negative values indicate reverse rotation. Forward and reverse depend on
  *  the orientation of the motor. */
-#define BlockTachoCount 13
+#define BlockTachoCountField 13
 /** Rotation counter field. Contains the current rotation count. Read only.
  *  Return the program-relative position counter value for the specified port.
- *  Refer to the \ref UpdateFlags description for information about how to use program-relative
+ *  Refer to the \ref UpdateFlagsField description for information about how to use program-relative
  *  position counts.
- *  Set the \ref UF_UPDATE_RESET_ROTATION_COUNT flag in UpdateFlags to request that the firmware reset
- *  the RotationCount.
- *  The sign of RotationCount indicates the direction of rotation. Positive values indicate forward
+ *  Set the \ref UF_UPDATE_RESET_ROTATION_COUNT flag in \ref UpdateFlagsField to request that the firmware reset
+ *  the RotationCountField.
+ *  The sign of RotationCountField indicates the direction of rotation. Positive values indicate forward
  *  rotation and negative values indicate reverse rotation. Forward and reverse depend on the
  *  orientation of the motor. */
-#define RotationCount   14
+#define RotationCountField   14
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 /** Options field. Contains a combination of the output options constants. Read/write.
  *  Set options for how the output module will act when a tachometer limit is reached. Option
@@ -1392,7 +1392,7 @@
  *  module hold the motor when it reaches the tachometer limit.  Use OUT_OPTION_RAMPDOWNTOLIMIT
  *  to have the output module ramp down the motor power as it approaches the tachometer limit.
  */
-#define OutputOptions   15
+#define OutputOptionsField   15
 #endif
 /** @} */  // end of OutputFieldConstants group
 
@@ -1412,7 +1412,7 @@
 #define OutputOffsetRegPParameter(p)     (((p)*32)+22) /*!< RW - Holds the P-constant used in the regulation (1 byte) ubyte */
 #define OutputOffsetRegIParameter(p)     (((p)*32)+23) /*!< RW - Holds the I-constant used in the regulation (1 byte) ubyte */
 #define OutputOffsetRegDParameter(p)     (((p)*32)+24) /*!< RW - Holds the D-constant used in the regulation (1 byte) ubyte */
-#define OutputOffsetRunState(p)          (((p)*32)+25) /*!< RW - Holds the current RunState in the output module (1 byte) ubyte */
+#define OutputOffsetRunState(p)          (((p)*32)+25) /*!< RW - Holds the current motor run state in the output module (1 byte) ubyte */
 #define OutputOffsetRegMode(p)           (((p)*32)+26) /*!< RW - Tells which regulation mode should be used (1 byte) ubyte */
 #define OutputOffsetOverloaded(p)        (((p)*32)+27) /*!< R  - True if the motor has been overloaded within speed control regulation (1 byte) ubyte */
 #define OutputOffsetSyncTurnParameter(p) (((p)*32)+28) /*!< RW - Holds the turning parameter need within MoveBlock (1 byte) sbyte */
@@ -1936,26 +1936,33 @@
 #if __FIRMWARE_VERSION > 107
 
 /** @defgroup CommHiSpeedBaudConstants Hi-speed port baud rate constants
- * Constants for configuring the hi-speed port baud rate.
+ * Constants for configuring the hi-speed port baud rate (HsSpeed).
  * @{
  */
-#define HS_BAUD_1200     0 /*!< HsMode 1200 Baud */
-#define HS_BAUD_2400     1 /*!< HsMode 2400 Baud */
-#define HS_BAUD_3600     2 /*!< HsMode 3600 Baud */
-#define HS_BAUD_4800     3 /*!< HsMode 4800 Baud */
-#define HS_BAUD_7200     4 /*!< HsMode 7200 Baud */
-#define HS_BAUD_9600     5 /*!< HsMode 9600 Baud */
-#define HS_BAUD_14400    6 /*!< HsMode 14400 Baud */
-#define HS_BAUD_19200    7 /*!< HsMode 19200 Baud */
-#define HS_BAUD_28800    8 /*!< HsMode 28800 Baud */
-#define HS_BAUD_38400    9 /*!< HsMode 38400 Baud */
-#define HS_BAUD_57600   10 /*!< HsMode 57600 Baud */
-#define HS_BAUD_76800   11 /*!< HsMode 76800 Baud */
-#define HS_BAUD_115200  12 /*!< HsMode 115200 Baud */
-#define HS_BAUD_230400  13 /*!< HsMode 230400 Baud */
-#define HS_BAUD_460800  14 /*!< HsMode 460800 Baud */
-#define HS_BAUD_921600  15 /*!< HsMode 921600 Baud */
+#define HS_BAUD_1200     0 /*!< HsSpeed 1200 Baud */
+#define HS_BAUD_2400     1 /*!< HsSpeed 2400 Baud */
+#define HS_BAUD_3600     2 /*!< HsSpeed 3600 Baud */
+#define HS_BAUD_4800     3 /*!< HsSpeed 4800 Baud */
+#define HS_BAUD_7200     4 /*!< HsSpeed 7200 Baud */
+#define HS_BAUD_9600     5 /*!< HsSpeed 9600 Baud */
+#define HS_BAUD_14400    6 /*!< HsSpeed 14400 Baud */
+#define HS_BAUD_19200    7 /*!< HsSpeed 19200 Baud */
+#define HS_BAUD_28800    8 /*!< HsSpeed 28800 Baud */
+#define HS_BAUD_38400    9 /*!< HsSpeed 38400 Baud */
+#define HS_BAUD_57600   10 /*!< HsSpeed 57600 Baud */
+#define HS_BAUD_76800   11 /*!< HsSpeed 76800 Baud */
+#define HS_BAUD_115200  12 /*!< HsSpeed 115200 Baud */
+#define HS_BAUD_230400  13 /*!< HsSpeed 230400 Baud */
+#define HS_BAUD_460800  14 /*!< HsSpeed 460800 Baud */
+#define HS_BAUD_921600  15 /*!< HsSpeed 921600 Baud */
+#define HS_BAUD_DEFAULT 15 /*!< HsSpeed default Baud (921600) */
 /** @} */  // end of CommHiSpeedBaudConstants group
+
+/** @defgroup CommHiSpeedModeConstants Hi-speed port UART mode constants
+ * Constants referring to HsMode UART configuration settings
+ * @{
+ */
+#define HS_MODE_DEFAULT HS_MODE_8N1 /*!< HsMode default mode (8 data bits, no parity, 1 stop bit) */
 
 /** @defgroup CommHiSpeedDataBitsConstants Hi-speed port data bits constants
  * Constants referring to HsMode (number of data bits)
@@ -1994,6 +2001,7 @@
 #define HS_MODE_8N1 (HS_MODE_8_DATA|HS_MODE_N_PARITY|HS_MODE_10_STOP) /*!< HsMode 8 data bits, no parity, 1 stop bit */
 #define HS_MODE_7E1 (HS_MODE_7_DATA|HS_MODE_E_PARITY|HS_MODE_10_STOP) /*!< HsMode 7 data bits, even parity, 1 stop bit */
 /** @} */  // end of CommHiSpeedCombinedConstants group
+/** @} */  // end of CommHiSpeedModeConstants group
 
 #endif
 #endif

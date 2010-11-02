@@ -31,6 +31,9 @@ uses
 type
   TNXTImageMovie = class(TComponent)
   private
+    fMaxFrames : integer;
+    fFilename : string;
+    fIndex : integer;
     function GetFileName: string;
     function GetFrameTime: Cardinal;
     function GetHeight: Integer;
@@ -41,6 +44,8 @@ type
     procedure SetHeight(const aValue: Integer);
     procedure SetStretch(const aValue: boolean);
     procedure SetWidth(const aValue: Integer);
+    function GetMax: integer;
+    procedure SetMax(const Value: integer);
   protected
 {$IFNDEF FPC}
     fAVIWriter : TAviWriter;
@@ -56,6 +61,7 @@ type
     property Height : Integer read GetHeight write SetHeight;
     property Width : Integer read GetWidth write SetWidth;
     property Stretch : boolean read GetStretch write SetStretch;
+    property MaxFramesPerMovie : integer read GetMax write SetMax;
   end;
 
 implementation
@@ -73,6 +79,13 @@ begin
   aviBmp := TBitmap.Create;
   aviBmp.Assign(aPic.Bitmap);
   fAviWriter.Bitmaps.Add(aviBmp);
+  if fAVIWriter.Bitmaps.Count > fMaxFrames then
+  begin
+    Write;
+    Clear;
+    inc(fIndex);
+    fAVIWriter.FileName := Format('%s_%3.3d', [fFilename, fIndex]);
+  end;
 {$ENDIF}
 end;
 
@@ -86,6 +99,9 @@ end;
 constructor TNXTImageMovie.Create(aOwner: TComponent);
 begin
   inherited;
+  fFilename  := '';
+  fIndex     := 0;
+  fMaxFrames := MaxInt;
 {$IFNDEF FPC}
   fAVIWriter := TAVIWriter.Create(Self);
 {$ENDIF}
@@ -101,9 +117,7 @@ end;
 
 function TNXTImageMovie.GetFileName: string;
 begin
-{$IFNDEF FPC}
-  Result := fAVIWriter.FileName;
-{$ENDIF}
+  result := fFilename;
 end;
 
 function TNXTImageMovie.GetFrameTime: Cardinal;
@@ -118,6 +132,11 @@ begin
 {$IFNDEF FPC}
   Result := fAVIWriter.Height;
 {$ENDIF}
+end;
+
+function TNXTImageMovie.GetMax: integer;
+begin
+  result := fMaxFrames;
 end;
 
 function TNXTImageMovie.GetStretch: boolean;
@@ -136,6 +155,7 @@ end;
 
 procedure TNXTImageMovie.SetFileName(const aValue: string);
 begin
+  fFilename := aValue;
 {$IFNDEF FPC}
   fAVIWriter.FileName := aValue;
 {$ENDIF}
@@ -152,6 +172,20 @@ procedure TNXTImageMovie.SetHeight(const aValue: Integer);
 begin
 {$IFNDEF FPC}
   fAVIWriter.Height := aValue;
+{$ENDIF}
+end;
+
+procedure TNXTImageMovie.SetMax(const Value: integer);
+begin
+  fMaxFrames := Value;
+{$IFNDEF FPC}
+  if fAVIWriter.Bitmaps.Count > fMaxFrames then
+  begin
+    Write;
+    Clear;
+    inc(fIndex);
+    fAVIWriter.FileName := Format('%s_%3.3d', [fFilename, fIndex]);
+  end;
 {$ENDIF}
 end;
 

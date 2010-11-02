@@ -25,7 +25,7 @@ ACCL_SENSITIVITY_LEVEL_3
 ACCL_SENSITIVITY_LEVEL_4
 Acos
 AcosD
-ActualSpeed
+ActualSpeedField
 Asin
 AsinD
 Atan
@@ -37,7 +37,7 @@ BITMAP_2
 BITMAP_3
 BITMAP_4
 BITMAPS
-BlockTachoCount
+BlockTachoCountField
 BREAKOUT_REQ
 BT_ARM_CMD_MODE
 BT_ARM_DATA_MODE
@@ -383,6 +383,7 @@ HS_BAUD_7200
 HS_BAUD_76800
 HS_BAUD_921600
 HS_BAUD_9600
+HS_BAUD_DEFAULT
 HS_CMD_READY
 HS_CTRL_EXIT
 HS_CTRL_INIT
@@ -400,6 +401,7 @@ HS_MODE_7_DATA
 HS_MODE_7E1
 HS_MODE_8_DATA
 HS_MODE_8N1
+HS_MODE_DEFAULT
 HS_MODE_E_PARITY
 HS_MODE_M_PARITY
 HS_MODE_N_PARITY
@@ -527,15 +529,15 @@ INPUT_SENSOROFF
 INPUT_STARTCAL
 INPUT_WHITECOLOR
 INPUT_YELLOWCOLOR
-InputMode
+InputModeField
 InputModuleID
 InputModuleName
 InputOffsetADRaw
 InputOffsetColorADRaw
+InputOffsetColorBoolean
 InputOffsetColorCalibration
 InputOffsetColorCalibrationState
 InputOffsetColorCalLimits
-InputOffsetColorSensorBoolean
 InputOffsetColorSensorRaw
 InputOffsetColorSensorValue
 InputOffsetCustomActiveStatus
@@ -571,7 +573,7 @@ INTF_SETBTNAME
 INTF_SETCMDMODE
 INTF_STOPSEARCH
 INTF_VISIBILITY
-InvalidData
+InvalidDataField
 IOCTRL_BOOT
 IOCTRL_POWERDOWN
 IOCtrlModuleID
@@ -782,7 +784,7 @@ MulDiv32
 NA
 NO_ERR
 NO_OF_BTNS
-NormalizedValue
+NormalizedValueField
 NRLINK_CMD_2400
 NRLINK_CMD_4800
 NRLINK_CMD_FLUSH
@@ -939,7 +941,7 @@ OUT_RUNSTATE_IDLE
 OUT_RUNSTATE_RAMPDOWN
 OUT_RUNSTATE_RAMPUP
 OUT_RUNSTATE_RUNNING
-OutputMode
+OutputModeField
 OutputModuleID
 OutputModuleName
 OutputOffsetActualSpeed
@@ -960,8 +962,8 @@ OutputOffsetSpeed
 OutputOffsetSyncTurnParameter
 OutputOffsetTachoCount
 OutputOffsetTachoLimit
-OutputOptions
-Overload
+OutputOptionsField
+OverloadField
 PF_CHANNEL_1
 PF_CHANNEL_2
 PF_CHANNEL_3
@@ -1038,7 +1040,7 @@ PID_6
 PID_7
 POOL_MAX_SIZE
 Pow
-Power
+PowerField
 PROG_ABORT
 PROG_ERROR
 PROG_IDLE
@@ -1071,7 +1073,7 @@ putc
 RADIANS_PER_DEGREE
 RAND_MAX
 RandomNumber
-RawValue
+RawValueField
 RC_PROP_BTONOFF
 RC_PROP_DEBUGGING
 RC_PROP_SLEEP_TIMEOUT
@@ -1225,10 +1227,10 @@ RCX_WatchSrc
 ReadButton
 ReadLastResponse
 ReadSemData
-RegDValue
-RegIValue
-RegMode
-RegPValue
+RegDValueField
+RegIValueField
+RegModeField
+RegPValueField
 RESET_ALL
 RESET_BLOCK_COUNT
 RESET_BLOCKANDTACHO
@@ -1259,8 +1261,8 @@ RICPolygonPoints
 RICSetValue
 RICSpriteData
 ROTATE_QUEUE
-RotationCount
-RunState
+RotationCountField
+RunStateField
 S1
 s16
 S2
@@ -1271,7 +1273,7 @@ s8
 SAMPLERATE_DEFAULT
 SAMPLERATE_MAX
 SAMPLERATE_MIN
-ScaledValue
+ScaledValueField
 SCHAR_MAX
 SCHAR_MIN
 SCOUT_FXR_ALARM
@@ -1468,8 +1470,8 @@ STEPICON_5
 STEPICONS
 STEPLINE
 STOP_REQ
-TachoCount
-TachoLimit
+TachoCountField
+TachoLimitField
 Tan
 TanD
 Tanh
@@ -1565,8 +1567,8 @@ TRAIN_FUNC_STOP
 TRAIN_FUNC_TOGGLE_LIGHT
 TRUE
 Trunc
-TurnRatio
-Type
+TurnRatioField
+TypeField
 u16
 u32
 u8
@@ -1644,7 +1646,7 @@ UIOffsetUsbState
 UIOffsetVolume
 ULONG_MAX
 UpdateCalibCacheInfo
-UpdateFlags
+UpdateFlagsField
 US_CMD_CONTINUOUS
 US_CMD_EVENTCAPTURE
 US_CMD_OFF

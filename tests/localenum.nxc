@@ -1,0 +1,23 @@
+task main()
+{
+
+  enum foo {
+    test,
+    fred
+  };
+
+  foo pleaseWork;
+  pleaseWork = fred;
+
+//  int pleaseWork, test, fred;
+  NumOut(0, LCD_LINE1, test);
+  NumOut(0, LCD_LINE2, fred);
+  int x = fred;
+  switch(pleaseWork)
+  {
+    case test: 
+      break;
+    case fred: 
+      break;
+  }
+}
