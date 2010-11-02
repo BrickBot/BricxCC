@@ -1,0 +1,66 @@
+// RS-485 sender program
+
+inline void WaitForMessageToBeSent()
+{
+#if 0
+  // using low level functions to wait for RS485 message to be sent
+  bool sending, avail;
+  RS485Status(sending, avail);
+  while (sending) {
+    Wait(MS_1);
+    RS485Status(sending, avail);
+  }
+#else
+  // use hi level API functions (preferred)
+  while (RS485SendingData())
+    Wait(MS_1);
+#endif
+}
+
+task main()
+{
+  // configure the S4 port as RS485
+  UseRS485(); 
+  // make sure the RS485 system is turned on
+#if 0
+  // low level API function call
+  RS485Control(HS_CTRL_INIT, HS_BAUD_DEFAULT, HS_MODE_DEFAULT);
+#else
+  // hi level API function call
+  RS485Enable(); 
+#endif
+  // initialize the UART to default values
+#if 0
+  // low level API function call (allows changing UART settings)
+  RS485Uart(HS_BAUD_DEFAULT, HS_MODE_DEFAULT); 
+#else
+  // hi level API function call
+  RS485Initialize(); 
+#endif
+
+  Wait(MS_10);
+  int i;
+  while (true) {
+    string msg;
+    msg = "goofy ";
+    msg += NumToStr(i);
+    TextOut(0, LCD_LINE1, msg);
+    SendRS485String(msg);
+    WaitForMessageToBeSent();
+#if 0
+    // the RS485 receiver sample program is not written 
+    // in a way to handle these additional messages
+    // so do not send them (yet)
+    RS485Write(msg);
+    WaitForMessageToBeSent();
+    SendRS485Bool(true);
+    WaitForMessageToBeSent();
+    SendRS485Number(i);
+    WaitForMessageToBeSent();
+#endif
+    i++;
+  }
+  // disable RS485 (not usually needed)
+  RS485Disable();
+}
+

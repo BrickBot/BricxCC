@@ -1,0 +1,9 @@
+
+struct sweepEntriesT {
+	int iYavg
+};
+sweepEntriesT sweepEntries[5];
+
+
+
+

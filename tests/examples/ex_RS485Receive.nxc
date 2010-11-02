@@ -1,0 +1,33 @@
+// RS-485 receiver program
+
+task main()
+{
+  byte mlen;
+  string buffer;
+  // configure the S4 port as RS485
+  UseRS485(); 
+  // make sure the RS485 system is turned on
+  RS485Enable(); 
+  // initialize the UART to default values
+  RS485Initialize(); 
+
+  Wait(MS_10);
+  while (true) {
+    // wait for a message to arrive.
+    until(RS485DataAvailable());
+    RS485Read(buffer);
+    // display message
+    TextOut(0, LCD_LINE1, buffer);
+  }
+  // shut down the RS485 system
+  RS485Disable();
+  bool sendingData, dataAvail;
+  // check RS485 status
+  RS485Status(sendingData, dataAvail); 
+  // turn the system back on (this is equivalent to RS485Enable)
+  RS485Control(HS_CTRL_INIT, HS_BAUD_DEFAULT, HS_MODE_DEFAULT);
+  // configure the UART (this is equivalent to RS485Initialize)
+  RS485Uart(HS_BAUD_DEFAULT, HS_MODE_DEFAULT);
+ 
+}
+

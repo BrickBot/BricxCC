@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-16
- * \version 9
+ * \date 2010-10-19
+ * \version 10
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -2115,7 +2115,7 @@
  * outputs involves creating an array and adding two or more of the three
  * individual output constants to the array.
  * 
- * \ref Power levels can range 0 (lowest) to 100 (highest). Negative power
+ * Output power levels can range 0 (lowest) to 100 (highest). Negative power
  * levels reverse the direction of rotation (i.e., forward at a power level of
  * -100 actually means reverse at a power level of 100).
  * 
@@ -2257,15 +2257,16 @@
  * \ref SENSOR_TYPE_LOWSPEED_9V on a given port before using an I2C device on
  * that port. Use \ref SENSOR_TYPE_LOWSPEED_9V if your device requires 9V power
  * from the NXT brick. Remember that you also need to set the input port's
- * \ref InvalidData property to true after setting a new Type, and then wait in
- * a loop for the NXT firmware to set InvalidData back to false. This process
- * ensures that the firmware has time to properly initialize the port,
- * including the 9V power lines, if applicable. Some digital devices might
+ * \ref InvalidDataField property to true after setting \ref TypeField to a
+ * new value, and then wait in a loop for the NXT firmware to set
+ * \ref InvalidDataField back to false. This process ensures that the
+ * firmware has time to properly initialize the port, including the
+ * 9V power lines, if applicable. Some digital devices might
  * need additional time to initialize after power up.
  * 
  * The \ref SetSensorLowspeed API function sets the specified port to
  * \ref SENSOR_TYPE_LOWSPEED_9V and calls \ref ResetSensor to perform the
- * \ref InvalidData reset loop described above.
+ * \ref InvalidDataField reset loop described above.
  * 
  * When communicating with I2C devices, the NXT firmware uses a master/slave
  * setup in which the NXT brick is always the master device. This means that
@@ -3272,41 +3273,19 @@
  * \example ex_RemoteStopSound.nxc
  * This is an example of how to use the \ref RemoteStopSound function.
  *
- * \example ex_RS485Control.nxc
- * This is an example of how to use the \ref RS485Control function.
+ * \example ex_RS485Send.nxc
+ * This is an example of how to use the \ref RS485Control,
+ * \ref RS485Disable, \ref RS485Initialize,
+ * \ref RS485Enable, \ref UseRS485, \ref RS485Uart, \ref RS485Status,
+ * \ref RS485Write, \ref RS485SendingData, \ref SendRS485String,
+ * \ref SendRS485Bool, \ref SendRS485Number, \ref TextOut, and \ref Wait
+ * functions.
  *
- * \example ex_RS485DataAvailable.nxc
- * This is an example of how to use the \ref RS485DataAvailable function.
- *
- * \example ex_RS485Exit.nxc
- * This is an example of how to use the \ref RS485Exit function.
- *
- * \example ex_RS485Init.nxc
- * This is an example of how to use the \ref RS485Init function.
- *
- * \example ex_RS485Read.nxc
- * This is an example of how to use the \ref RS485Read function.
- *
- * \example ex_RS485SendingData.nxc
- * This is an example of how to use the \ref RS485SendingData function.
- *
- * \example ex_RS485Status.nxc
- * This is an example of how to use the \ref RS485Status function.
- *
- * \example ex_RS485Uart.nxc
- * This is an example of how to use the \ref RS485Uart function.
- *
- * \example ex_RS485Write.nxc
- * This is an example of how to use the \ref RS485Write function.
- *
- * \example ex_SendRS485Bool.nxc
- * This is an example of how to use the \ref SendRS485Bool function.
- *
- * \example ex_SendRS485Number.nxc
- * This is an example of how to use the \ref SendRS485Number function.
- *
- * \example ex_SendRS485String.nxc
- * This is an example of how to use the \ref SendRS485String function.
+ * \example ex_RS485Receive.nxc
+ * This is an example of how to use the \ref RS485Control,
+ * \ref RS485DataAvailable, \ref RS485Disable, \ref RS485Initialize,
+ * \ref RS485Enable, \ref UseRS485, \ref RS485Uart, \ref RS485Status,
+ * \ref RS485Read, \ref TextOut, and \ref Wait functions.
  *
  * \example ex_GetBTInputBuffer.nxc
  * This is an example of how to use the \ref GetBTInputBuffer function.

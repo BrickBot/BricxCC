@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNBCHTMLTopicsSize = 2358;
+  uNBCHTMLTopicsSize = 2362;
   uNBCHTMLTopicsData: array[0..uNBCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -1953,28 +1953,28 @@ const
      Value: 'group___n_b_c_sensor_mode_constants_ga544337aeb5577a74051ccf94f3666109.html'
     ),
     (
-     Name: 'Type';
-     Value: 'group___input_field_constants_gae1f0ac82c78444bf9b69e7dbdd1d1983.html'
+     Name: 'TypeField';
+     Value: 'group___input_field_constants_ga8e2023454ae2bf23914c98347e490c3c.html'
     ),
     (
-     Name: 'InputMode';
-     Value: 'group___input_field_constants_ga9eb109be24ed3161a6fe3ed738810f97.html'
+     Name: 'InputModeField';
+     Value: 'group___input_field_constants_ga3abfec79648ceddd0dead20674efba9b.html'
     ),
     (
-     Name: 'RawValue';
-     Value: 'group___input_field_constants_ga5d03adb0ac3829248c0731c3d51bf1c2.html'
+     Name: 'RawValueField';
+     Value: 'group___input_field_constants_ga930ec7a68aa71d31da8bae8f63942e33.html'
     ),
     (
-     Name: 'NormalizedValue';
-     Value: 'group___input_field_constants_ga4ae1a3bcdad74201d465ad2c0189a552.html'
+     Name: 'NormalizedValueField';
+     Value: 'group___input_field_constants_gac957b812aad4092d97eb04241e6b53b7.html'
     ),
     (
-     Name: 'ScaledValue';
-     Value: 'group___input_field_constants_ga635d01574d8cb1297fde091603fc506a.html'
+     Name: 'ScaledValueField';
+     Value: 'group___input_field_constants_ga7c552b90dc7f01b3b581b4023e71693a.html'
     ),
     (
-     Name: 'InvalidData';
-     Value: 'group___input_field_constants_ga0ce5c43add5742da785356baa4d60e12.html'
+     Name: 'InvalidDataField';
+     Value: 'group___input_field_constants_gaf1f2f17f4b8c6863bb9b6301a8765321.html'
     ),
     (
      Name: 'INPUT_DIGI0';
@@ -2153,8 +2153,8 @@ const
      Value: 'group___input_i_o_m_a_p_ga48812c03031f08b5c181a3756817ebda.html'
     ),
     (
-     Name: 'InputOffsetColorSensorBoolean';
-     Value: 'group___input_i_o_m_a_p_gac048d36ce295daa125e52c74a6d90a25.html'
+     Name: 'InputOffsetColorBoolean';
+     Value: 'group___input_i_o_m_a_p_gaafe8e00d90dc5070d5b37f9493d884f4.html'
     ),
     (
      Name: 'InputOffsetColorCalibrationState';
@@ -2337,68 +2337,68 @@ const
      Value: 'group___out_reg_mode_constants_ga19a355d3ef359f3d8bc2159fa5cc5223.html'
     ),
     (
-     Name: 'UpdateFlags';
-     Value: 'group___output_field_constants_ga0e47fc42dc4366472790f9f41b24e3fc.html'
+     Name: 'UpdateFlagsField';
+     Value: 'group___output_field_constants_ga9324894d6e935871fef24f5084495e19.html'
     ),
     (
-     Name: 'OutputMode';
-     Value: 'group___output_field_constants_gab4b3213ad49f7c3cf544861324332370.html'
+     Name: 'OutputModeField';
+     Value: 'group___output_field_constants_ga35b48d72e9ef1a94ed2c1a9ee11ce49e.html'
     ),
     (
-     Name: 'Power';
-     Value: 'group___output_field_constants_ga724d7c9183e504b583cddb0ac6d6fb18.html'
+     Name: 'PowerField';
+     Value: 'group___output_field_constants_ga03b0de7a59e4479208463a8f96dbab12.html'
     ),
     (
-     Name: 'ActualSpeed';
-     Value: 'group___output_field_constants_ga34120d406efe963e3ec869f28598794a.html'
+     Name: 'ActualSpeedField';
+     Value: 'group___output_field_constants_gaa4347d75f0a171a2fe9ef032e0876b14.html'
     ),
     (
-     Name: 'TachoCount';
-     Value: 'group___output_field_constants_gaa27a3e43ee02a5fce1711e18e63e5f99.html'
+     Name: 'TachoCountField';
+     Value: 'group___output_field_constants_gadbefe561893676f00de6af782d3c6e99.html'
     ),
     (
-     Name: 'TachoLimit';
-     Value: 'group___output_field_constants_ga860c3cb59292683f04dd757afa0f5bab.html'
+     Name: 'TachoLimitField';
+     Value: 'group___output_field_constants_gae1ad7bc4ec75dcc0dfd1fc4241a0baff.html'
     ),
     (
-     Name: 'RunState';
-     Value: 'group___output_field_constants_gad34c226de8411ee40ddf10006568957d.html'
+     Name: 'RunStateField';
+     Value: 'group___output_field_constants_ga0e7a195646903b42389e358fa482a965.html'
     ),
     (
-     Name: 'TurnRatio';
-     Value: 'group___output_field_constants_ga0f312efe3275dbd122377f67a94c44cb.html'
+     Name: 'TurnRatioField';
+     Value: 'group___output_field_constants_ga91064f8b19e74eacc19081445c4ad3fe.html'
     ),
     (
-     Name: 'RegMode';
-     Value: 'group___output_field_constants_ga5866ea8d43018227d31e5ad24c3eb59e.html'
+     Name: 'RegModeField';
+     Value: 'group___output_field_constants_ga783a1687b9af81c20435365efdba06ef.html'
     ),
     (
-     Name: 'Overload';
-     Value: 'group___output_field_constants_gaaa44331cd12167f50ae728bd81bf9923.html'
+     Name: 'OverloadField';
+     Value: 'group___output_field_constants_gaa3b52595839de27d7b1ba203426e1f65.html'
     ),
     (
-     Name: 'RegPValue';
-     Value: 'group___output_field_constants_ga63a9f7bc4a63ded6e2bbb445f487cd95.html'
+     Name: 'RegPValueField';
+     Value: 'group___output_field_constants_gad2207df2ba2fae972afe6ac609faf7e7.html'
     ),
     (
-     Name: 'RegIValue';
-     Value: 'group___output_field_constants_gabbb8be26902334fec6f1e665aa88723a.html'
+     Name: 'RegIValueField';
+     Value: 'group___output_field_constants_ga9af4da9cdf7226e96e11c845b7d67251.html'
     ),
     (
-     Name: 'RegDValue';
-     Value: 'group___output_field_constants_ga0172ec1d96069315677639ce6f56c5bd.html'
+     Name: 'RegDValueField';
+     Value: 'group___output_field_constants_ga09e5dfb061b8e11f70764135b521fee2.html'
     ),
     (
-     Name: 'BlockTachoCount';
-     Value: 'group___output_field_constants_ga834dcfeb2b6610afeefae3efb93d511c.html'
+     Name: 'BlockTachoCountField';
+     Value: 'group___output_field_constants_ga63b8d2e206a10d4301c9519c5c412d8e.html'
     ),
     (
-     Name: 'RotationCount';
-     Value: 'group___output_field_constants_ga8fbc06db521ef917fda60c86abda971f.html'
+     Name: 'RotationCountField';
+     Value: 'group___output_field_constants_ga6891156379ee7f8bf6261f7d7acb667a.html'
     ),
     (
-     Name: 'OutputOptions';
-     Value: 'group___output_field_constants_gaa889a83338b89b509edc0180fdaaf1bd.html'
+     Name: 'OutputOptionsField';
+     Value: 'group___output_field_constants_ga8169d3d3c8c851c27156d97d7272e751.html'
     ),
     (
      Name: 'OutputOffsetTachoCount';
@@ -3483,6 +3483,14 @@ const
     (
      Name: 'HS_BAUD_921600';
      Value: 'group___comm_hi_speed_baud_constants_gacccb5bdf2856e741a351af7c81a0f568.html'
+    ),
+    (
+     Name: 'HS_BAUD_DEFAULT';
+     Value: 'group___comm_hi_speed_baud_constants_gaa633e006ef5a2c6f8592bc91ba5dda14.html'
+    ),
+    (
+     Name: 'HS_MODE_DEFAULT';
+     Value: 'group___comm_hi_speed_mode_constants_gabf088f7bca4a51c61f3c309dfd9fdaee.html'
     ),
     (
      Name: 'HS_MODE_5_DATA';
@@ -7441,36 +7449,48 @@ const
      Value: 'group___comm_module_d_c_functions_ga631259681dcc1c657bc9f716c6d61aea.html'
     ),
     (
-     Name: 'RemoteGetBatteryLevel';
-     Value: 'group___comm_module_d_c_functions_gace2feddbd9c4a9b132f9d2c1c50967b5.html'
-    ),
-    (
-     Name: 'RemoteLowspeedGetStatus';
-     Value: 'group___comm_module_d_c_functions_gad5529ee88578bf27372423d68f271f80.html'
-    ),
-    (
-     Name: 'RemoteGetCurrentProgramName';
-     Value: 'group___comm_module_d_c_functions_gad48a56eec234f1d83bb4b9e7c2b94f4f.html'
-    ),
-    (
-     Name: 'RemoteGetContactCount';
-     Value: 'group___comm_module_d_c_functions_gafeac96a7a0259979db3739a0d7cbef28.html'
-    ),
-    (
-     Name: 'RemoteGetConnectionCount';
-     Value: 'group___comm_module_d_c_functions_gaca3a44c582d52220d2c3c7537bf4707d.html'
-    ),
-    (
      Name: 'RemoteGetOutputState';
-     Value: 'group___comm_module_d_c_functions_ga9de0cc27e09fe940514dae4f54a67aa3.html'
+     Value: 'group___comm_module_d_c_functions_gae22dac52803f846589927603f3a7d10b.html'
     ),
     (
      Name: 'RemoteGetInputValues';
-     Value: 'group___comm_module_d_c_functions_ga159861d59245547aa2fffe1c2863f96e.html'
+     Value: 'group___comm_module_d_c_functions_ga45c146d3ef42889420b8e79de11d9f3d.html'
+    ),
+    (
+     Name: 'RemoteGetBatteryLevel';
+     Value: 'group___comm_module_d_c_functions_ga0af7abec6d4fd0704fe736546164660b.html'
+    ),
+    (
+     Name: 'RemoteLowspeedGetStatus';
+     Value: 'group___comm_module_d_c_functions_gaf7fb2a0387b358633386cd280b3b82e2.html'
     ),
     (
      Name: 'RemoteLowspeedRead';
-     Value: 'group___comm_module_d_c_functions_ga8b19c925e3440af30f8ea998563db44a.html'
+     Value: 'group___comm_module_d_c_functions_ga67e4aa2e49f436b3527295bce4c2ce0f.html'
+    ),
+    (
+     Name: 'RemoteGetCurrentProgramName';
+     Value: 'group___comm_module_d_c_functions_ga9165a1565db32f122612c613bd50226f.html'
+    ),
+    (
+     Name: 'RemoteDatalogRead';
+     Value: 'group___comm_module_d_c_functions_ga16892f08737bf2c147d9750d97c9aa91.html'
+    ),
+    (
+     Name: 'RemoteGetContactCount';
+     Value: 'group___comm_module_d_c_functions_ga8bb70f31e15bdf98e071ede30db7c873.html'
+    ),
+    (
+     Name: 'RemoteGetContactName';
+     Value: 'group___comm_module_d_c_functions_gaf6b4ed2bc56ba0978c711e69040b77d4.html'
+    ),
+    (
+     Name: 'RemoteGetConnectionCount';
+     Value: 'group___comm_module_d_c_functions_ga81dbec85f517a31b083345d7001f4d07.html'
+    ),
+    (
+     Name: 'RemoteGetConnectionName';
+     Value: 'group___comm_module_d_c_functions_ga7213722de9d600d8f6a76c00acc66464.html'
     ),
     (
      Name: 'RemoteResetTachoCount';
@@ -7479,18 +7499,6 @@ const
     (
      Name: 'RemoteGetProperty';
      Value: 'group___comm_module_d_c_functions_gaca60d4c73c3caffcdc3e29a84fb76cbc.html'
-    ),
-    (
-     Name: 'RemoteDatalogRead';
-     Value: 'group___comm_module_d_c_functions_gaf425e1ff68082fadcf24f786a4bccbdc.html'
-    ),
-    (
-     Name: 'RemoteBTGetContactName';
-     Value: 'group___comm_module_d_c_functions_gaeb826f4eaf78db6384df39e90278714f.html'
-    ),
-    (
-     Name: 'RemoteBTGetConnectionName';
-     Value: 'group___comm_module_d_c_functions_gadd3b4ff2eeee7ed75de6068f8704e88c.html'
     ),
     (
      Name: 'RemoteDatalogSetTimes';
@@ -7597,6 +7605,10 @@ const
      Value: 'group___comm_module_s_c_functions_gaca7a687dcbf1bf98a2e3b75cc8a85c27.html'
     ),
     (
+     Name: 'UseRS485';
+     Value: 'group___comm_module_functions_ga8bea1385ebd3db2a4aaed2b699240f12.html'
+    ),
+    (
      Name: 'RS485Status';
      Value: 'group___comm_module_functions_gaa33f02829c707436e961302476bef461.html'
     ),
@@ -7617,12 +7629,16 @@ const
      Value: 'group___comm_module_functions_ga13ba6c532dbb256c5c37b182c4d662db.html'
     ),
     (
-     Name: 'RS485Init';
-     Value: 'group___comm_module_functions_gaaf77987cabae5ac4635df89539d0de87.html'
+     Name: 'RS485Initialize';
+     Value: 'group___comm_module_functions_gad02c97d76ba00e1956fe8bc05e8e44f2.html'
     ),
     (
-     Name: 'RS485Exit';
-     Value: 'group___comm_module_functions_ga565ff2d10ded69c386c5093570ba260e.html'
+     Name: 'RS485Enable';
+     Value: 'group___comm_module_functions_gab3fe552d24acd38be39de77b92af9f98.html'
+    ),
+    (
+     Name: 'RS485Disable';
+     Value: 'group___comm_module_functions_ga3c34e18a0e3c3795a84e2f2c5881f25d.html'
     ),
     (
      Name: 'SendRS485Bool';

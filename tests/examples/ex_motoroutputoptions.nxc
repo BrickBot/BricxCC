@@ -1,0 +1,5 @@
+task main()
+{
+  NumOut(0, LCD_LINE1, MotorOutputOptions(OUT_A));
+  while(true);
+}

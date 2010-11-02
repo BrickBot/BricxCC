@@ -325,6 +325,7 @@ begin
   imgScreen.PopupMenu := pmuMain;
   lblInfo.PopupMenu   := pmuMain;
   fMovieWriter := TNXTImageMovie.Create(Self);
+  fMovieWriter.MaxFramesPerMovie := 1000;
   fCurrentName := '';
   fDisplayNormal := True;
   imgNXT.Picture.Bitmap.FreeImage;
@@ -828,6 +829,7 @@ begin
     begin
       // finished recording
       fMovieWriter.Write;
+      fMovieWriter.Clear;
     end;
   finally
     actPolling.Checked := actCaptureAVI.Checked;

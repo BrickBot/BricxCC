@@ -3805,6 +3805,7 @@ begin
             AEF.TheEditor.GotoLineAndCenter(CO.LineNumber);
           end;
         end;
+        AEF.TheEditor.Refresh;
       end;
     end;
   end;

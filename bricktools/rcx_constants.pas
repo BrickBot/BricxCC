@@ -404,6 +404,102 @@ const
   kNXT_ModuleUI       = $000C0001;
 
 const
+  NXT_CMD_RESPONSE_LENGTH : array[0..$ff] of byte = (
+   3, // DCStartProgram (x00)
+   3, // DCStopProgram (x01)
+   3, // DCPlaySoundFile (x02)
+   3, // DCPlayTone (x03)
+   3, // DCSetOutputState (x04)
+   3, // DCSetInputMode (x05)
+  25, // DCGetOutputState (x06)
+  16, // DCGetInputValues (x07)
+   3, // DCResetInputScaledValue (x08)
+   3, // DCMessageWrite (x09)
+   3, // DCResetMotorPosition (x0a)
+   5, // DCGetBatteryLevel (x0b)
+   3, // DCStopSoundPlayback (x0c)
+   7, // DCKeepAlive (x0d)
+   4, // DCLSGetStatus (x0e)
+   3, // DCLSWrite (x0f)
+  20, // DCLSRead (x10)
+  23, // DCGetCurrentProgramName (x11)
+   0, // DCGetButtonState (not implemented) (x12)
+  64, // DCMessageRead (x13)
+   0, // DCRESERVED1 (x14)
+   0, // DCRESERVED2 (x15)
+   0, // DCRESERVED3 (x16)
+   0, // DCRESERVED4 (x17)
+   0, // DCRESERVED5 (x18)
+  64, // DCDatalogRead (1.28+) (x19)
+   3, // DCDatalogSetTimes (1.28+) (x1a)
+   4, // DCBTGetContactCount (1.28+) (x1b)
+  21, // DCBTGetContactName (1.28+) (x1c)
+   4, // DCBTGetConnCount (1.28+) (x1d)
+  21, // DCBTGetConnName (1.28+) (x1e)
+   3, // DCSetProperty(1.28+) (x1f)
+   7, // DCGetProperty (1.28+) (x20)
+   3, // DCUpdateResetCount (1.28+) (x21)
+   7, // RC_SET_VM_STATE (enhanced only) (x22)
+   7, // RC_GET_VM_STATE (enhanced only) (x23)
+  15, // RC_SET_BREAKPOINTS (enhanced only) (x24)
+  15, // RC_GET_BREAKPOINTS (enhanced only) (x25)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (x26-x2f)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (x30-x3f)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (x40-x4f)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (x50-x5f)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (x60-x6f)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (x70-x7f)
+   8, //   OPENREAD        = 0x80,
+   4, //   OPENWRITE       = 0x81,
+  64, //   READ            = 0x82, (actually is a variable length response)
+   6, //   WRITE           = 0x83,
+   4, //   CLOSE           = 0x84,
+  23, //   DELETE          = 0x85,
+  28, //   FINDFIRST       = 0x86,
+  28, //   FINDNEXT        = 0x87,
+   7, //   VERSIONS        = 0x88,
+   4, //   OPENWRITELINEAR = 0x89,
+   7, //   OPENREADLINEAR  = 0x8A, (not actually implemented)
+   4, //   OPENWRITEDATA   = 0x8B,
+   8, //   OPENAPPENDDATA  = 0x8C,
+   4, //   CROPDATAFILE    = 0x8D,    /* New cmd for datalogging */
+   0, //   XXXXXXXXXXXXXX  = 0x8E,
+   0, //   XXXXXXXXXXXXXX  = 0x8F,
+  34, //   FINDFIRSTMODULE = 0x90,
+  34, //   FINDNEXTMODULE  = 0x91,
+   4, //   CLOSEMODHANDLE  = 0x92,
+   0, //   XXXXXXXXXXXXXX  = 0x93,
+  64, //   IOMAPREAD       = 0x94, (actually is a variable length response)
+   9, //   IOMAPWRITE      = 0x95,
+   0, //   XXXXXXXXXXXXXX  = 0x96,
+   7, //   BOOTCMD         = 0x97,  (can only be executed via USB)
+   3, //   SETBRICKNAME    = 0x98,
+   0, //   XXXXXXXXXXXXXX  = 0x99,
+  10, //   BTGETADR        = 0x9A,
+  33, //   DEVICEINFO      = 0x9B,
+   0, //   XXXXXXXXXXXXXX  = 0x9C,
+   0, //   XXXXXXXXXXXXXX  = 0x9D,
+   0, //   XXXXXXXXXXXXXX  = 0x9E,
+   0, //   XXXXXXXXXXXXXX  = 0x9F,
+   3, //   DELETEUSERFLASH = 0xA0,
+   5, //   POLLCMDLEN      = 0xA1,
+  64, //   POLLCMD         = 0xA2,
+  44, //   RENAMEFILE      = 0xA3,
+   3, //   BTFACTORYRESET  = 0xA4,
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (xA5-xAF)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (xB0-xBf)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (xC0-xCf)
+   0, //   RESIZEDATAFILE  = 0xD0,
+   0, //   SEEKFROMSTART   = 0xD1,
+   0, //   SEEKFROMCURRENT = 0xD2,
+   0, //   SEEKFROMEND     = 0xD3
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (xD4-xDF)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, // (xE0-xEF)
+   0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0  // (xF0-xFF)
+);
+
+
+const
   kNXT_ModuleCmdName      = 'Command.mod';
   kNXT_ModuleOutputName   = 'Output.mod';
   kNXT_ModuleInputName    = 'Input.mod';

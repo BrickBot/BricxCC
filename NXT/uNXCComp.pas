@@ -63,6 +63,8 @@ type
       bSafeCall: boolean);
     procedure HandlePreprocStatusChange(Sender : TObject; const StatusMsg : string);
     procedure SetCurFile(const Value: string);
+    function IsCharLiteral(const aName: string): boolean;
+    function IsStringLiteral(const aName: string): boolean;
   protected
     fDD: TDataDefs;
     fCurrentStruct : TDataspaceEntry;
@@ -180,6 +182,7 @@ type
     function DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;
     procedure Assignment;
     procedure CheckNotConstant(const aName : string);
+    function CheckConstant(const aName : string) : string;
     function Block(const lend : string = ''; const lstart : string = '') : boolean;
     procedure BlockStatements(const lend : string = ''; const lstart : string = '');
     procedure CheckBytesRead(const oldBytesRead : integer);
@@ -236,7 +239,7 @@ type
     procedure CheckTypeCompatibility(fp : TFunctionParameter; dt : char; const name : string);
     procedure Duplicate(n: string);
 //    function SizeOfType(dt: char): integer;
-    procedure AddEntry(N: string; dt: char; const tname, lenexp : string; bConst : boolean = False; bSafeCall : boolean = False);
+    function AddEntry(N: string; dt: char; const tname, lenexp : string; bConst : boolean = False; bSafeCall : boolean = False) : integer;
     procedure CheckDup(N: string);
     procedure CheckTable(const N: string);
     procedure CheckGlobal(const N: string);
@@ -499,7 +502,7 @@ implementation
 
 uses
   SysUtils, Math, uNXCLexer, uNBCLexer, mwGenericLex, uLocalizedStrings,
-  NBCCommonData, NXCDefsData, uNXTConstants;
+  NBCCommonData, NXCDefsData, uNXTConstants, Parser10;
 
 {--------------------------------------------------------------}
 { Constant Declarations }
@@ -1432,8 +1435,10 @@ end;
 {--------------------------------------------------------------}
 { Add a New Entry to Symbol Table }
 
-procedure TNXCComp.AddEntry(N: string; dt: char; const tname, lenexp : string;
-  bConst, bSafeCall : boolean);
+function TNXCComp.AddEntry(N: string; dt: char; const tname, lenexp : string;
+  bConst, bSafeCall : boolean) : integer;
+var
+  V : TVariable;
 begin
   CheckForValidDataType(dt);
   CheckDup(N);
@@ -1442,7 +1447,8 @@ begin
   GS_Name[NumGlobals] := N;
   GS_Type[NumGlobals] := dt;
 
-  with fGlobals.Add do
+  V := fGlobals.Add;
+  with V do
   begin
     Name        := N;
     DataType    := dt;
@@ -1451,6 +1457,7 @@ begin
     TypeName    := tname;
     LenExpr     := lenexp;
   end;
+  Result := V.Index;
 end;
 
 
@@ -3670,8 +3677,6 @@ begin
         // is procname an inline function?
         idx := fInlineFunctions.IndexOfName(procname);
         bFunctionIsInline := idx <> -1;
-  //      if AmInlining and bFunctionIsInline then
-  //        AbortMsg(sRecursiveInlineError);
         if bFunctionIsInline then
         begin
           inlineFunc := fInlineFunctions[idx];
@@ -3710,7 +3715,6 @@ begin
             EmitLnNoTab('#pragma safecalling');
             EmitLn(Format('acquire __%s_mutex', [procname]));
           end;
-          rdt := FunctionReturnType(procname);
           while not bError and (Token <> TOK_CLOSEPAREN) do begin
             if acount >= protocount then
             begin
@@ -3731,9 +3735,7 @@ begin
               fLHSName     := parname;
               try
                 // reference types cannot take expressions
-                // mutex, user defined types, and array types cannot take expressions
-                if fp.IsVarReference or {fp.IsArray or}
-                   (fp.ParamType in [{fptUDT, }fptMutex]) then
+                if fp.IsVarReference then
                 begin
                   CheckIdent;
                   parvalue := GetDecoratedValue;
@@ -3874,25 +3876,34 @@ begin
               end;
             end;
           end;
-          if protoreqcount > acount then
-            AbortMsg(sTooFewParams);
-          while acount < protocount do
-          begin
-            // use default values for all the arguments not provided
-            fp := GetFunctionParam(procname, acount);
-            if Assigned(fp) then
-            begin
-              parname := GetParamName(procname, acount);
-              if bFunctionIsInline then
-                parname := InlineName(fCurrentThreadName, parname);
-              parvalue := FunctionParameterDefaultValue(procname, acount);
-              EmitLn(Format('mov %s, %s', [parname, parvalue]));
-            end;
-            inc(acount);
-          end;
           if Value = TOK_CLOSEPAREN then
           begin
             CloseParen;
+
+            // look up the decorated function name given the procname
+            // and the types of all the parameters passed into the function
+            // if we find a function with the right name and parameters
+            // then keep going.  Otherwise report an error
+            // if the number of parameters provided is less than the function's
+            // defined number of parameters
+
+            if protoreqcount > acount then
+              AbortMsg(sTooFewParams);
+            while acount < protocount do
+            begin
+              // use default values for all the arguments not provided
+              fp := GetFunctionParam(procname, acount);
+              if Assigned(fp) then
+              begin
+                parname := GetParamName(procname, acount);
+                if bFunctionIsInline then
+                  parname := InlineName(fCurrentThreadName, parname);
+                parvalue := FunctionParameterDefaultValue(procname, acount);
+                EmitLn(Format('mov %s, %s', [parname, parvalue]));
+              end;
+              inc(acount);
+            end;
+
             if bFunctionIsInline then
               inlineFunc.Emit(NBCSource)
             else
@@ -3908,6 +3919,7 @@ begin
                 EmitLn(Format('mov %s, %s', [fInputs[i], parname]));
               end;
             end;
+            rdt := FunctionReturnType(procname);
             if rdt = TOK_STRINGDEF then
             begin
               // copy value from subroutine to register
@@ -4615,12 +4627,15 @@ begin
   // convert true|false to TRUE|FALSE
   if (Result = 'true') or (Result = 'false') then
     Result := UpperCase(Result);
+  if IsLocal(Result) then
+    Result := GetDecoratedIdent(Result);
+  Result := CheckConstant(Result);
 end;
 
 procedure TNXCComp.DoSwitchCase;
 var
   L1 : string;
-  caseval, stackval : string;
+  caseval, stackval, tmp : string;
 begin
   caseval := '';
   if fSwitchDepth > 0 then
@@ -4634,7 +4649,14 @@ begin
       stackval := StrBufName
     else
       stackval := SwitchRegisterName;
-    SwitchFixups.Add(Format('%d=brcmp EQ, %s, %s, %s', [fSwitchDepth, L1, caseval, stackval]));
+    tmp := Format('%d_Cases=%s', [fSwitchDepth, caseval]);
+    if SwitchFixups.IndexOf(tmp) <> -1 then
+      AbortMsg(sCaseDuplicateNotAllowed)
+    else
+    begin
+      SwitchFixups.Add(tmp);
+      SwitchFixups.Add(Format('%d=brcmp EQ, %s, %s, %s', [fSwitchDepth, L1, caseval, stackval]));
+    end;
     fSemiColonRequired := False;
   end
   else
@@ -4661,17 +4683,21 @@ end;
 procedure TNXCComp.ClearSwitchFixups;
 var
   i : integer;
+  tmpType, tmpCases, tmpDepth, name : string;
 begin
 // remove all fixups with depth == fSwitchDepth
+  tmpDepth := IntTostr(fSwitchDepth);
+  tmpType  := Format('%d_Type', [fSwitchDepth]);
+  tmpCases := Format('%d_Cases', [fSwitchDepth]);
   for i := SwitchFixups.Count - 1 downto 0 do
   begin
-    if (SwitchFixups.Names[i] = IntToStr(fSwitchDepth)) or
-       (SwitchFixups.Names[i] = Format('%d_Type', [fSwitchDepth])) then
+    name := SwitchFixups.Names[i];
+    if (name = tmpDepth) or (name = tmpType) or (name = tmpCases) then
       SwitchFixups.Delete(i);
   end;
   for i := SwitchRegisterNames.Count - 1 downto 0 do
   begin
-    if SwitchRegisterNames.Names[i] = IntToStr(fSwitchDepth) then
+    if SwitchRegisterNames.Names[i] = tmpDepth then
       SwitchRegisterNames.Delete(i);
   end;
 end;
@@ -4679,11 +4705,13 @@ end;
 function TNXCComp.SwitchIsString: Boolean;
 var
   i : integer;
+  tmpType : string;
 begin
   Result := False;
+  tmpType := Format('%d_Type', [fSwitchDepth]);
   for i := 0 to SwitchFixups.Count - 1 do
   begin
-    if SwitchFixups.Names[i] = Format('%d_Type', [fSwitchDepth]) then
+    if SwitchFixups.Names[i] = tmpType then
     begin
       Result := Boolean(StrToIntDef(SwitchFixups.ValueFromIndex[i], 0));
       Break;
@@ -4710,14 +4738,16 @@ procedure TNXCComp.FixupSwitch(idx : integer; lbl : string);
 var
   i : integer;
   cnt : integer;
+  tmpDepth : string;
 begin
   // always add a jump to the end of the switch in case
   // there aren't any default labels in the switch
+  tmpDepth := IntToStr(fSwitchDepth);
   SwitchFixups.Add(Format('%d=jmp %s', [fSwitchDepth, lbl]));
   cnt := 0;
   for i := 0 to SwitchFixups.Count - 1 do
   begin
-    if SwitchFixups.Names[i] = IntToStr(fSwitchDepth) then
+    if SwitchFixups.Names[i] = tmpDepth then
     begin
       NBCSource.Insert(idx+cnt, SwitchFixups.ValueFromIndex[i]);
       inc(cnt);
@@ -8572,6 +8602,70 @@ begin
     AbortMsg(sConstNotAllowed);
 end;
 
+function TNXCComp.IsStringLiteral(const aName: string) : boolean;
+begin
+  Result := (Pos('"', aName) = 1) and (LastDelimiter('"', aName) = Length(aName));
+end;
+
+function TNXCComp.IsCharLiteral(const aName: string) : boolean;
+begin
+  Result := (Pos('''', aName) = 1) and (LastDelimiter('''', aName) = Length(aName));
+end;
+
+function TNXCComp.CheckConstant(const aName: string) : string;
+var
+  bIsConst : boolean;
+  idx : integer;
+  V : TVariable;
+begin
+  // is this thing constant?
+  Result := aName;
+  if IsParam(aName) then
+  begin
+    bIsConst := IsParamConst(aName);
+  end
+  else if IsLocal(aName) then
+  begin
+    idx := LocalIdx(aName);
+    if idx <> -1 then
+    begin
+      V := fLocals[idx];
+      bIsConst := V.IsConstant;
+      if bIsConst then
+        Result := V.Value;
+    end
+    else
+      bIsConst := False;
+  end
+  else if IsGlobal(aName) then
+  begin
+    idx := fGlobals.IndexOfName(aName);
+    if idx <> -1 then
+    begin
+      V := fGlobals[idx];
+      bIsConst := V.IsConstant;
+      if bIsConst then
+        Result := V.Value;
+    end
+    else
+      bIsConst := False;
+  end
+  else if IsStringLiteral(aName) or IsCharLiteral(aName) then
+  begin
+    bIsConst := True;
+  end
+  else
+  begin
+    // perhaps it is a constant expression that can be evaluated?
+    fCalc.SilentExpression := aName;
+    bIsConst := not fCalc.ParserError;
+    if bIsConst then
+      Result := NBCFloatToStr(fCalc.Value);
+  end;
+  if not bIsConst then
+    AbortMsg(sConstRequired);
+end;
+
 function TNXCComp.IncrementOrDecrement: boolean;
 begin
   Result := ((Token = '+') and (Look = '+')) or
@@ -8643,8 +8737,9 @@ procedure TNXCComp.ProcessEnum(bGlobal : boolean);
 var
   bNewType : boolean;
   sTypeName, varName, eName : string;
-  iEnumVal : integer;
+  iEnumVal, idx : integer;
   dt : Char;
+  V : TVariable;
 begin
   // enums in NXC are unsigned bytes by default
   dt        := TOK_BYTEDEF;
@@ -8678,19 +8773,26 @@ begin
       Next; // skip past the value to comma or }
     end;
     dt := ValueToDataType(iEnumVal);
+    V := nil;
     if bGlobal then
     begin
-      AddEntry(eName, dt, sTypeName, '', True);
+      idx := AddEntry(eName, dt, sTypeName, '', True);
+      if idx <> -1 then
+        V := fGlobals[idx];
       Allocate(eName, '', IntToStr(iEnumVal), sTypeName, dt);
     end
     else
     begin
       eName := ApplyDecoration(fCurrentThreadName, eName, fNestingLevel);
-      AddLocal(eName, dt, sTypeName, True, '');
+      idx := AddLocal(eName, dt, sTypeName, True, '');
+      if idx <> -1 then
+        V := fLocals[idx];
       // no need to allocate if we've already emitted this name&type
       if fEmittedLocals.IndexOf(eName+sTypeName) = -1 then
         Allocate(eName, '', IntToStr(iEnumVal), sTypeName, dt);
     end;
+    if Assigned(V) then
+      V.Value := IntToStr(iEnumVal);
     inc(iEnumVal);
     if Token <> TOK_END then
     begin
