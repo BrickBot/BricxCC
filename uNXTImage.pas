@@ -101,6 +101,9 @@ type
     procedure actCaptureAVIExecute(Sender: TObject);
     procedure actSaveExecute(Sender: TObject);
     procedure actPrefsExecute(Sender: TObject);
+    procedure FormShow(Sender: TObject);
+    procedure ScaleClick(Sender: TObject);
+    procedure RefreshRateClick(Sender: TObject);
   private
     pmuMain: TOfficePopupMenu;
     mniAbout: TOfficeMenuItem;
@@ -325,12 +328,13 @@ begin
   imgScreen.PopupMenu := pmuMain;
   lblInfo.PopupMenu   := pmuMain;
   fMovieWriter := TNXTImageMovie.Create(Self);
-  fMovieWriter.MaxFramesPerMovie := 1000;
+  fMovieWriter.MaxFramesPerMovie := NXTImageMaxFramesPerMovie;
   fCurrentName := '';
   fDisplayNormal := True;
   imgNXT.Picture.Bitmap.FreeImage;
   Self.DoubleBuffered := True;
-  ScaleForm(6);    // 2.5x
+  ScaleForm(NXTImageScale);    // 2.5x
+  tmrRefresh.Interval := NXTImageDefaultRefreshRate;
 {$IFNDEF FPC}
   dlgSavePic.Filter :=
     'All (*.png;*.jpg;*.jpeg;*.gif;*.bmp)|*.png;*.jpg;*.jpeg;*.gif;*.bmp|' +
@@ -387,7 +391,32 @@ end;
 procedure TfrmNXTImage.RescaleClick(Sender: TObject);
 begin
   TOfficeMenuItem(Sender).Checked := True;
-  ScaleForm(TOfficeMenuItem(Sender).Tag);
+  NXTImageScale := TOfficeMenuItem(Sender).Tag;
+  ScaleForm(NXTImageScale);
+end;
+
+procedure TfrmNXTImage.ScaleClick(Sender: TObject);
+var
+  i : integer;
+  M : TOfficeMenuItem;
+begin
+  for i := 0 to mniScale.Count - 1 do
+  begin
+    M := TOfficeMenuItem(mniScale.Items[i]);
+    M.Checked := M.Tag = NXTImageScale;
+  end;
+end;
+
+procedure TfrmNXTImage.RefreshRateClick(Sender: TObject);
+var
+  i : integer;
+  M : TOfficeMenuItem;
+begin
+  for i := 0 to mniRefreshRate.Count - 1 do
+  begin
+    M := TOfficeMenuItem(mniRefreshRate.Items[i]);
+    M.Checked := M.Tag = NXTImageDefaultRefreshRate;
+  end;
 end;
 
 const
@@ -602,7 +631,8 @@ begin
     TAction(Sender).Checked := True
   else if Sender is TOfficeMenuItem then
     TOfficeMenuItem(Sender).Checked := True;
-  tmrRefresh.Interval := TControl(Sender).Tag;
+  NXTImageDefaultRefreshRate := TControl(Sender).Tag;
+  tmrRefresh.Interval := NXTImageDefaultRefreshRate;
 end;
 
 procedure TfrmNXTImage.HandleKeyDown(Sender: TObject; var Key: Word;
@@ -958,6 +988,7 @@ begin
   begin
     Name := 'mniRefreshRate';
     Caption := sRefreshRate;
+    OnClick := RefreshRateClick;
   end;
   with mni50ms do
   begin
@@ -1058,6 +1089,7 @@ begin
   begin
     Name := 'mniScale';
     Caption := sScale;
+    OnClick := ScaleClick;
   end;
   with mni10x do
   begin
@@ -1273,6 +1305,14 @@ begin
   finally
     F.Free;
   end;
+end;
+
+procedure TfrmNXTImage.FormShow(Sender: TObject);
+begin
+  ScaleForm(NXTImageScale);
+  tmrRefresh.Interval := NXTImageDefaultRefreshRate;
+  fMovieWriter.MaxFramesPerMovie := NXTImageMaxFramesPerMovie;
+  dlgSavePic.InitialDir := DefaultNXTImageDirectory;
 end;
 
 {$IFDEF FPC}

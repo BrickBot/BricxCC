@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-19
- * \version 84
+ * \date 2010-11-04
+ * \version 85
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -5982,6 +5982,8 @@ inline char RemoteStopSound(byte conn);
  * Send a GetOutputState message.
  * Send the GetOutputState direct command on the specified connection slot.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
@@ -5993,6 +5995,8 @@ inline char RemoteGetOutputState(byte conn, OutputStateType & params);
 /**
  * Send a GetInputValues message.
  * Send the GetInputValues direct command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
@@ -6007,6 +6011,8 @@ inline char RemoteGetInputValues(byte conn, InputValuesType & params);
  * Send the GetBatteryLevel direct command to the device on the specified
  * connection.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
@@ -6020,6 +6026,8 @@ inline char RemoteGetBatteryLevel(byte conn, int & value);
  * This method sends a LowspeedGetStatus direct command to the device on the specified
  * connection.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
@@ -6031,6 +6039,8 @@ inline char RemoteLowspeedGetStatus(byte conn, byte & value);
 /**
  * Send a LowspeedRead message.
  * Send the LowspeedRead direct command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
@@ -6047,6 +6057,8 @@ inline char RemoteLowspeedRead(byte conn, byte port, byte & bread, byte & data[]
  * This method sends a GetCurrentProgramName direct command to the device on the specified
  * connection.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
@@ -6058,6 +6070,8 @@ inline char RemoteGetCurrentProgramName(byte conn, string & name);
 /**
  * Send a DatalogRead message.
  * Send the DatalogRead direct command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
@@ -6072,7 +6086,9 @@ inline char RemoteDatalogRead(byte conn, bool remove, byte & cnt, byte & log[]);
 /**
  * Send a GetContactCount message.
  * This method sends a GetContactCount direct command to the device on the specified
- * connection. 
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
@@ -6086,6 +6102,8 @@ inline char RemoteGetContactCount(byte conn, byte & cnt);
  * Send a GetContactName message.
  * Send the GetContactName direct command on the specified connection slot.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
@@ -6098,7 +6116,9 @@ inline char RemoteGetContactName(byte conn, byte idx, string & name);
 /**
  * Send a GetConnectionCount message.
  * This method sends a GetConnectionCount direct command to the device on the specified
- * connection. 
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
@@ -6111,6 +6131,8 @@ inline char RemoteGetConnectionCount(byte conn, byte & cnt);
 /**
  * Send a GetConnectionName message.
  * Send the GetConnectionName direct command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
@@ -6125,6 +6147,8 @@ inline char RemoteGetConnectionName(byte conn, byte idx, string & name);
  * Send a GetProperty message.
  * Send the GetProperty direct command on the specified connection slot.
  * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
@@ -6200,41 +6224,50 @@ inline char RemoteLowspeedWrite(byte conn, byte port, byte txlen, byte rxlen, by
  * @{
  */
 
+#ifdef __ENHANCED_FIRMWARE
+
 /**
  * Send an OpenRead message.
  * Send the OpenRead system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
- * \param filename The name of the program to open for reading.
+ * \param filename The name of the file to open for reading.
+ * \param handle The handle of the file.
+ * \param size The size of the file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenRead(byte conn, string filename);
+inline char RemoteOpenRead(byte conn, string filename, byte & handle, long & size);
 
 /**
  * Send an OpenAppendData message.
  * Send the OpenAppendData system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
- * \param filename The name of the program to open for appending.
+ * \param filename The name of the file to open for appending.
+ * \param handle The handle of the file.
+ * \param size The size of the file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenAppendData(byte conn, string filename);
+inline char RemoteOpenAppendData(byte conn, string filename, byte & handle, long & size);
 
 /**
  * Send a DeleteFile message.
  * Send the DeleteFile system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
- * \param filename The name of the program to delete.
+ * \param filename The name of the file to delete.
  * \return A char value indicating whether the function call succeeded or not.
  */
 inline char RemoteDeleteFile(byte conn, string filename);
@@ -6242,60 +6275,77 @@ inline char RemoteDeleteFile(byte conn, string filename);
 /**
  * Send a FindFirstFile message.
  * Send the FindFirstFile system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
  * \param mask The filename mask for the files you want to find.
+ * \param handle The handle of the found file.
+ * \param name The name of the found file.
+ * \param size The size of the found file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteFindFirstFile(byte conn, string mask);
+inline char RemoteFindFirstFile(byte conn, string mask, byte & handle, string & name, long & size);
 
 /**
  * Send a GetFirmwareVersion message.
  * This method sends a GetFirmwareVersion system command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
+ * \param pmin The protocol minor version byte.
+ * \param pmaj The protocol major version byte.
+ * \param fmin The firmware minor version byte.
+ * \param fmaj The firmware major version byte.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteGetFirmwareVersion(byte conn);
+inline char RemoteGetFirmwareVersion(byte conn, byte & pmin, byte & pmaj, byte & fmin, byte & fmaj);
 
 /**
  * Send a GetBluetoothAddress message.
  * This method sends a GetBluetoothAddress system command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
+ * \param btaddr The bluetooth address of the remote device.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteGetBluetoothAddress(byte conn);
+inline char RemoteGetBluetoothAddress(byte conn, byte & btaddr[]);
 
 /**
  * Send a GetDeviceInfo message.
  * This method sends a GetDeviceInfo system command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
+ * \param name The name of the remote device.
+ * \param btaddr The bluetooth address of the remote device.
+ * \param btsignal The signal strength of each connection on the remote device.
+ * \param freemem The number of bytes of free flash memory on the remote device.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteGetDeviceInfo(byte conn);
+inline char RemoteGetDeviceInfo(byte conn, string & name, byte & btaddr[], byte & btsignal[], long & freemem);
 
 /**
  * Send a DeleteUserFlash message.
  * This method sends a DeleteUserFlash system command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
@@ -6305,64 +6355,58 @@ inline char RemoteGetDeviceInfo(byte conn);
 inline char RemoteDeleteUserFlash(byte conn);
 
 /**
- * Send a BluetoothFactoryReset message.
- * This method sends a BluetoothFactoryReset system command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteBluetoothFactoryReset(byte conn);
-
-/**
  * Send an OpenWrite message.
  * Send the OpenWrite system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
- * \param filename The name of the program to open for writing (i.e., create the file).
+ * \param filename The name of the file to open for writing (i.e., create the file).
  * \param size The size for the new file.
+ * \param handle The handle of the new file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenWrite(byte conn, string filename, long size);
+inline char RemoteOpenWrite(byte conn, string filename, long size, byte & handle);
 
 /**
  * Send an OpenWriteLinear message.
  * Send the OpenWriteLinear system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
- * \param filename The name of the program to open for writing (i.e., create the file).
+ * \param filename The name of the file to open for writing (i.e., create the file).
  * \param size The size for the new file.
+ * \param handle The handle of the new file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenWriteLinear(byte conn, string filename, long size);
+inline char RemoteOpenWriteLinear(byte conn, string filename, long size, byte & handle);
 
 /**
  * Send an OpenWriteData message.
  * Send the OpenWriteData system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
- * \param filename The name of the program to open for writing (i.e., create the file).
+ * \param filename The name of the file to open for writing (i.e., create the file).
  * \param size The size for the new file.
+ * \param handle The handle of the new file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteOpenWriteData(byte conn, string filename, long size);
+inline char RemoteOpenWriteData(byte conn, string filename, long size, byte & handle);
 
 /**
  * Send a CloseFile message.
  * Send the CloseFile system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
@@ -6375,71 +6419,134 @@ inline char RemoteCloseFile(byte conn, byte handle);
 /**
  * Send a FindNextFile message.
  * Send the FindNextFile system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
  * \param handle The handle returned by the last \ref FindFirstFile or FindNextFile call.
+ * \param name The name of the next found file.
+ * \param size The size of the next found file.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteFindNextFile(byte conn, byte handle);
+inline char RemoteFindNextFile(byte conn, byte & handle, string & name, long & size);
 
 /**
  * Send a PollCommandLength message.
  * Send the PollCommandLength system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
  * \param bufnum The poll buffer you want to query (0=USBPoll, 1=HiSpeed).
+ * \param length The number of bytes available for polling.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemotePollCommandLength(byte conn, byte bufnum);
+inline char RemotePollCommandLength(byte conn, byte bufnum, byte & length);
 
 /**
  * Send a Write message.
  * Send the Write system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
  * \param handle The handle of the file you are writing to.
+ * \param numbytes The number of bytes actually written.
  * \param data A byte array containing the data you are writing.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteWrite(byte conn, byte handle, byte data[]);
+inline char RemoteWrite(byte conn, byte & handle, int & numbytes, byte data[]);
 
 /**
  * Send a Read message.
  * Send the Read system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
  * \param handle The handle of the file you are reading from.
- * \param numbytes The number of bytes you want to read.
+ * \param numbytes The number of bytes you want to read. Returns the number of
+ * bytes actually read.
+ * \param data A byte array containing the response data.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteRead(byte conn, byte handle, byte numbytes);
+inline char RemoteRead(byte conn, byte & handle, int & numbytes, byte & data[]);
 
 /**
  * Send an IOMapRead message.
  * Send the IOMapRead system command on the specified connection slot.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  *
  * \param conn The connection slot (0..4). Connections 0 through 3 are for
  * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
  * See \ref CommConnectionConstants.
  * \param id The ID of the module from which to read data.
  * \param offset The offset into the IOMap structure from which to read.
- * \param numbytes The number of bytes of data to read.
+ * \param numbytes The number of bytes of data to read. Returns the number of
+ * bytes actually read.
+ * \param data A byte array containing the response data.
  * \return A char value indicating whether the function call succeeded or not.
  */
-inline char RemoteIOMapRead(byte conn, long id, int offset, int numbytes);
+inline char RemoteIOMapRead(byte conn, long id, int offset, int & numbytes, byte & data[]);
+
+/**
+ * Send a PollCommand message.
+ * Send the PollCommand system command on the specified connection slot to
+ * write the data provided.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param bufnum The buffer from which to read data (0=USBPoll, 1=HiSpeed).
+ * \param len The number of bytes to read.  Returns the number of
+ * bytes actually read.
+ * \param data A byte array containing the response data.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemotePollCommand(byte conn, byte bufnum, byte & len, byte & data[]);
+
+/**
+ * Send a RenameFile message.
+ * Send the RenameFile system command on the specified connection slot to
+ * write the data provided.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param oldname The old filename.
+ * \param newname The new filename.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteRenameFile(byte conn, string oldname, string newname);
+
+#endif
+
+/**
+ * Send a BluetoothFactoryReset message.
+ * This method sends a BluetoothFactoryReset system command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.  This command cannot be sent over a bluetooth connection.
+ *
+ * \param conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char RemoteBluetoothFactoryReset(byte conn);
 
 /**
  * Send an IOMapWrite value message.
@@ -6474,7 +6581,7 @@ inline char RemoteIOMapWriteValue(byte conn, long id, int offset, variant value)
 inline char RemoteIOMapWriteBytes(byte conn, long id, int offset, byte data[]);
 
 /**
- * Send an SetBrickName bytes message.
+ * Send a SetBrickName message.
  * Send the SetBrickName system command on the specified connection slot to
  * write the data provided.
  * Use \ref RemoteConnectionIdle to determine when this write request is completed.
@@ -6486,36 +6593,6 @@ inline char RemoteIOMapWriteBytes(byte conn, long id, int offset, byte data[]);
  * \return A char value indicating whether the function call succeeded or not.
  */
 inline char RemoteSetBrickName(byte conn, string name);
-
-/**
- * Send an RenameFile bytes message.
- * Send the RenameFile system command on the specified connection slot to
- * write the data provided.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param oldname The old filename.
- * \param newname The new filename.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemoteRenameFile(byte conn, string oldname, string newname);
-
-/**
- * Send an PollCommand bytes message.
- * Send the PollCommand system command on the specified connection slot to
- * write the data provided.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param bufnum The buffer from which to read data (0=USBPoll, 1=HiSpeed).
- * \param len The number of bytes to read.
- * \return A char value indicating whether the function call succeeded or not.
- */
-inline char RemotePollCommand(byte conn, byte bufnum, byte len);
 
 /** @} */ // end of CommModuleSCFunctions group
 
@@ -7546,29 +7623,56 @@ inline void SetBTDeviceNameCount(byte count);
 
 #endif
 
-#define RemoteOpenRead(_conn, _filename) asm { __remoteOpenRead(_conn, _filename, __RETVAL__) }
-#define RemoteOpenAppendData(_conn, _filename) asm { __remoteOpenAppendData(_conn, _filename, __RETVAL__) }
+#ifdef __ENHANCED_FIRMWARE
+
+#define RemoteOpenRead(_conn, _filename, _handle, _size) asm { __remoteOpenRead(_conn, _filename, _handle, _size, __RETVAL__) }
+#define RemoteOpenWrite(_conn, _filename, _size, _handle) asm { __remoteOpenWrite(_conn, _filename, _size, _handle, __RETVAL__) }
+#define RemoteRead(_conn, _handle, _numbytes, _data) asm { __remoteRead(_conn, _handle, _numbytes, _data, __RETVAL__) }
+#define RemoteWrite(_conn, _handle, _numbytes, _data) asm { __remoteWrite(_conn, _handle, _numbytes, _data, __RETVAL__) }
+#define RemoteCloseFile(_conn, _handle) asm { __remoteCloseFile(_conn, _handle, __RETVAL__) }
 #define RemoteDeleteFile(_conn, _filename) asm { __remoteDeleteFile(_conn, _filename, __RETVAL__) }
-#define RemoteFindFirstFile(_conn, _mask) asm { __remoteFindFirstFile(_conn, _mask, __RETVAL__) }
-#define RemoteGetFirmwareVersion(_conn) asm { __connectionWrite(_conn, __SCGetFirmwareVerPacket, __RETVAL__) }
-#define RemoteGetBluetoothAddress(_conn) asm { __connectionWrite(_conn, __SCBTGetAddressPacket, __RETVAL__) }
-#define RemoteGetDeviceInfo(_conn) asm { __connectionWrite(_conn, __SCGetDeviceInfoPacket, __RETVAL__) }
-#define RemoteDeleteUserFlash(_conn) asm { __connectionWrite(_conn, __SCDeleteUserFlashPacket, __RETVAL__) }
-#define RemoteBluetoothFactoryReset(_conn) asm { __connectionWrite(_conn, __SCBTFactoryResetPacket, __RETVAL__) }
+#define RemoteDeleteUserFlash(_conn) asm { __remoteDeleteUserFlash(_conn, __RETVAL__) }
+#define RemoteFindFirstFile(_conn, _mask, _handle, _name, _size) asm { __remoteFindFirstFile(_conn, _mask, _handle, _name, _size, __RETVAL__) }
+#define RemoteFindNextFile(_conn, _handle, _name, _size) asm { __remoteFindNextFile(_conn, _handle, _name, _size, __RETVAL__) }
+#define RemoteGetFirmwareVersion(_conn, _pmin, _pmaj, _fmin, _fmaj) asm { __remoteGetFirmwareVersion(_conn, _pmin, _pmaj, _fmin, _fmaj, __RETVAL__) }
+#define RemoteOpenWriteLinear(_conn, _filename, _size, _handle) asm { __remoteOpenWriteLinear(_conn, _filename, _size, _handle, __RETVAL__) }
+#define RemoteOpenWriteData(_conn, _filename, _size, _handle) asm { __remoteOpenWriteData(_conn, _filename, _size, _handle, __RETVAL__) }
+#define RemoteOpenAppendData(_conn, _filename, _handle, _size) asm { __remoteOpenAppendData(_conn, _filename, _handle, _size, __RETVAL__) }
+#define RemoteGetDeviceInfo(_conn, _name, _btaddr, _btsignal, _freemem) asm { __remoteGetDeviceInfo(_conn, _name, _btaddr, _btsignal, _freemem, __RETVAL__) }
+#define RemotePollCommandLength(_conn, _bufnum, _length) asm { __remotePollCommandLength(_conn, _bufnum, _length, __RETVAL__) }
+#define RemotePollCommand(_conn, _bufnum, _len, _data) asm { __remotePollCommand(_conn, _bufnum, _len, _data, __RETVAL__) }
+#define RemoteIOMapRead(_conn, _id, _offset, _numbytes, _data) asm { __remoteIOMapRead(_conn, _id, _offset, _numbytes, _data, __RETVAL__) }
+#define RemoteGetBluetoothAddress(_conn, _btaddr) asm { __remoteGetBluetoothAddress(_conn, _btaddr, __RETVAL__) }
+
+#define RemoteRenameFile(_conn, _oldname, _newname) asm { __remoteRenameFile(_conn, _oldname, _newname, __RETVAL__) }
+
+#else
+
+#define RemoteOpenRead(_conn, _filename) asm { __remoteOpenRead(_conn, _filename, __RETVAL__) }
 #define RemoteOpenWrite(_conn, _filename, _size) asm { __remoteOpenWrite(_conn, _filename, _size, __RETVAL__) }
+#define RemoteRead(_conn, _handle, _numbytes) asm { __remoteRead(_conn, _handle, _numbytes, __RETVAL__) }
+#define RemoteWrite(_conn, _handle, _data) asm { __remoteWrite(_conn, _handle, _data, __RETVAL__) }
+#define RemoteCloseFile(_conn, _handle) asm { __remoteCloseFile(_conn, _handle, __RETVAL__) }
+#define RemoteDeleteFile(_conn, _filename) asm { __remoteDeleteFile(_conn, _filename, __RETVAL__) }
+#define RemoteDeleteUserFlash(_conn) asm { __connectionWrite(_conn, __SCDeleteUserFlashPacket, __RETVAL__) }
+#define RemoteFindFirstFile(_conn, _mask) asm { __remoteFindFirstFile(_conn, _mask, __RETVAL__) }
+#define RemoteFindNextFile(_conn, _handle) asm { __remoteFindNextFile(_conn, _handle, __RETVAL__) }
+#define RemoteGetFirmwareVersion(_conn) asm { __connectionWrite(_conn, __SCGetFirmwareVerPacket, __RETVAL__) }
 #define RemoteOpenWriteLinear(_conn, _filename, _size) asm { __remoteOpenWriteLinear(_conn, _filename, _size, __RETVAL__) }
 #define RemoteOpenWriteData(_conn, _filename, _size) asm { __remoteOpenWriteData(_conn, _filename, _size, __RETVAL__) }
-#define RemoteCloseFile(_conn, _handle) asm { __remoteCloseFile(_conn, _handle, __RETVAL__) }
-#define RemoteFindNextFile(_conn, _handle) asm { __remoteFindNextFile(_conn, _handle, __RETVAL__) }
+#define RemoteOpenAppendData(_conn, _filename) asm { __remoteOpenAppendData(_conn, _filename, __RETVAL__) }
+#define RemoteGetDeviceInfo(_conn) asm { __connectionWrite(_conn, __SCGetDeviceInfoPacket, __RETVAL__) }
 #define RemotePollCommandLength(_conn, _bufnum) asm { __remotePollCommandLength(_conn, _bufnum, __RETVAL__) }
-#define RemoteWrite(_conn, _handle, _data) asm { __remoteWrite(_conn, _handle, _data, __RETVAL__) }
-#define RemoteRead(_conn, _handle, _numbytes) asm { __remoteRead(_conn, _handle, _numbytes, __RETVAL__) }
+#define RemotePollCommand(_conn, _bufnum, _len) asm { __remotePollCommand(_conn, _bufnum, _len, __RETVAL__) }
 #define RemoteIOMapRead(_conn, _id, _offset, _numbytes) asm { __remoteIOMapRead(_conn, _id, _offset, _numbytes, __RETVAL__) }
+#define RemoteGetBluetoothAddress(_conn) asm { __connectionWrite(_conn, __SCBTGetAddressPacket, __RETVAL__) }
+
+#endif
+
+#define RemoteBluetoothFactoryReset(_conn) asm { __connectionWrite(_conn, __SCBTFactoryResetPacket, __RETVAL__) }
 #define RemoteIOMapWriteValue(_conn, _id, _offset, _value) asm { __remoteIOMapWriteValue(_conn, _id, _offset, _value, __RETVAL__) }
 #define RemoteIOMapWriteBytes(_conn, _id, _offset, _data) asm { __remoteIOMapWriteBytes(_conn, _id, _offset, _data, __RETVAL__) }
 #define RemoteSetBrickName(_conn, _name) asm { __remoteSetBrickName(_conn, _name, __RETVAL__) }
-#define RemoteRenameFile(_conn, _oldname, _newname) asm { __remoteRenameFile(_conn, _oldname, _newname, __RETVAL__) }
-#define RemotePollCommand(_conn, _bufnum, _len) asm { __remotePollCommand(_conn, _bufnum, _len, __RETVAL__) }
 
 #define UseRS485() asm { __UseRS485() }
 

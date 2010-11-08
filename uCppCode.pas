@@ -89,7 +89,9 @@ begin
   aCP.InsertList.Clear;
   for i := 0 to MaxSize - 1 do begin
     X := CCC[i];
-    if X.Count > 1 then begin
+    if X.Count = 0 then
+      Continue
+    else if X.Count > 1 then begin
       if X.Alpha = atNumeric1Upper then begin
         for j := 0 to X.Count - 1 do begin
           for k := 0 to X.Count - 1 do begin

@@ -32,6 +32,10 @@ var
   DefaultNXTImageDirectory : string;
   NXTImageIndex : integer = 0;
   NXTImageUseIndex : boolean = True;
+  NXTImageScale : integer = 6; // 2.5x
+  NXTImageMaxFramesPerMovie : integer = 1000;
+  NXTImageDefaultRefreshRate : integer = 1000;
+
 
 procedure LoadNXTImageValues(reg : TRegistry);
 procedure SaveNXTImageValues(reg : TRegistry);
@@ -56,6 +60,9 @@ begin
     DefaultNXTImageDirectory := Reg_ReadString(reg, 'DefaultNXTImageDirectory', DefaultNXTImageDirectory);
     NXTImageIndex := Reg_ReadInteger(reg, 'NXTImageIndex', NXTImageIndex);
     NXTImageUseIndex := Reg_ReadBool(reg, 'NXTImageUseIndex', NXTImageUseIndex);
+    NXTImageScale := Reg_ReadInteger(reg, 'NXTImageScale', NXTImageScale);
+    NXTImageMaxFramesPerMovie := Reg_ReadInteger(reg, 'NXTImageMaxFramesPerMovie', NXTImageMaxFramesPerMovie);
+    NXTImageDefaultRefreshRate := Reg_ReadInteger(reg, 'NXTImageDefaultRefreshRate', NXTImageDefaultRefreshRate);
   finally
     reg.CloseKey;
   end;
@@ -72,6 +79,9 @@ begin
     reg.WriteString('DefaultNXTImageDirectory', DefaultNXTImageDirectory);
     reg.WriteInteger('NXTImageIndex', NXTImageIndex);
     reg.WriteBool('NXTImageUseIndex', NXTImageUseIndex);
+    reg.WriteInteger('NXTImageScale', NXTImageScale);
+    reg.WriteInteger('NXTImageMaxFramesPerMovie', NXTImageMaxFramesPerMovie);
+    reg.WriteInteger('NXTImageDefaultRefreshRate', NXTImageDefaultRefreshRate);
   finally
     reg.CloseKey;
   end;

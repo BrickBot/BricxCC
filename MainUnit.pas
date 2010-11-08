@@ -755,7 +755,7 @@ uses
   uSetLNPAddress, uNewWatch, uSetValues, uEEPROM,
   Themes, brick_common, uWav2RSO, uNXTExplorer, uGuiUtils,
   uNXTController, uNXTImage, Math, uPSI_brick_common, uPSI_uSpirit,
-  uPSI_FantomSpirit, uPSRuntime, uPSDebugger,
+  uPSI_FantomSpirit, uPSRuntime, uPSDebugger, uPSI_uGlobals, uPSI_rcx_constants,
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uDebugLogging,
   uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp;
@@ -1430,18 +1430,6 @@ begin
     if F.WindowState = wsMinimized then
       F.WindowState := wsNormal;
   end;
-{
-  for i := 0 to Application.ComponentCount - 1 do
-  begin
-    if Application.Components[i] is TForm then
-    begin
-      F := TForm(Application.Components[i]);
-      if F.Visible and (F <> Self) and
-         (F.BorderStyle in [bsSizeToolWin, bsToolWindow]) then
-        F.BringToFront;
-    end;
-  end;
-}
 end;
 
 function TMainForm.ActiveEditorForm: TEditorForm;
@@ -2285,6 +2273,8 @@ begin
             lookup := Copy(locLine, TmpX, SavePos - TmpX + 1);
           if FileIsCPP(AEH) then
             NameIdx := CppCodeCompIndex(lookup)
+          else if FileIsROPS(AEH) then
+            NameIdx := ROPSCodeCompIndex(lookup)
           else if FileIsPascal(AEH) then
             NameIdx := PasCodeCompIndex(lookup)
           else if FileIsNQC(AEH) then
@@ -2295,8 +2285,6 @@ begin
             NameIdx := NBCCodeCompIndex(lookup)
           else if FileIsRICScript(AEH) then
             NameIdx := RICScriptCodeCompIndex(lookup)
-          else if FileIsROPS(AEH) then
-            NameIdx := ROPSCodeCompIndex(lookup)
           else if FileIsMindScript(AEH) then
             NameIdx := MSCodeCompIndex(lookup);
           FoundMatch := NameIdx > -1;
@@ -2323,6 +2311,10 @@ begin
         AddCppCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
       end
+      else if FileIsROPS(AEH) then begin // check before FileIsPascal since ROPS is also Pascal
+        AddROPSCodeCompParams(SCP.ItemList, NameIdx);
+        SCP.ParamSepString := '; ';
+      end
       else if FileIsPascal(AEH) then begin
         AddPasCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := '; ';
@@ -2342,10 +2334,6 @@ begin
       else if FileIsRICScript(AEH) then begin
         AddRICScriptCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
-      end
-      else if FileIsROPS(AEH) then begin
-        AddROPSCodeCompParams(SCP.ItemList, NameIdx);
-        SCP.ParamSepString := '; ';
       end
       else if FileIsMindScript(AEH) then begin
         AddMSCodeCompParams(SCP.ItemList, NameIdx);
@@ -2578,10 +2566,14 @@ begin
 end;
 
 procedure TMainForm.actCompileStopExecute(Sender: TObject);
+var
+  E : TEditorForm;
 begin
-  if FileIsROPS then begin
+  E := ActiveEditorForm;
+  if Assigned(E) and FileIsROPS then begin
     if ce.Exec.Status = isRunning then
       ce.Stop;
+    E.TheEditor.Refresh;
   end
   else if IsNXT then
   begin
@@ -2612,6 +2604,7 @@ begin
         ce.Execute;
       end;
     end;
+    E.TheEditor.Refresh;
   end
   else if IsNXT and EnhancedFirmware then
   begin
@@ -2640,6 +2633,7 @@ begin
         ce.Execute;
       end;
     end;
+    E.TheEditor.Refresh;
   end
   else if IsNXT and EnhancedFirmware then
   begin
@@ -3625,6 +3619,10 @@ procedure TMainForm.CreateSpiritPlugins;
 var
   Plugin : TPSPlugin;
 begin
+  Plugin := TPSImport_uGlobals.Create(Self);
+  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
+  Plugin := TPSImport_rcx_constants.Create(Self);
+  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
   Plugin := TPSImport_uSpirit.Create(Self);
   TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
   Plugin := TPSImport_brick_common.Create(Self);
@@ -3668,8 +3666,13 @@ begin
 end;
 
 procedure TMainForm.ceAfterExecute(Sender: TPSScript);
+var
+  E : TEditorForm;
 begin
   FActiveLine := 0;
+  E := ActiveEditorForm;
+  if Assigned(E) then
+    E.TheEditor.Refresh;
 end;
 
 procedure TMainForm.ceBreakpoint(Sender: TObject; const FileName: String;
@@ -3697,8 +3700,8 @@ var
 begin
   E := ActiveEditorForm;
   if not Assigned(E) then Exit;
-  if ce.Exec.DebugMode <> dmRun then
-  begin
+//  if ce.Exec.DebugMode <> dmRun then
+//  begin
     FActiveLine := Row;
     if (FActiveLine < E.TheEditor.TopLine + 2) or
        (FActiveLine > E.TheEditor.TopLine + E.TheEditor.LinesInWindow - 2) then
@@ -3708,7 +3711,7 @@ begin
     E.TheEditor.CaretY := FActiveLine;
     E.TheEditor.CaretX := 1;
     E.TheEditor.Refresh;
-  end;
+//  end;
 end;
 
 function TMainForm.ceNeedFile(Sender: TObject; const OrginFileName: String;
@@ -4615,7 +4618,7 @@ begin
     Name := 'mniViewToolWindows';
     Caption := sToolWindows;
     Hint := sToolWindows;
-    ShortCut := TextToShortCut('F9');
+    ShortCut := TextToShortCut('Shift+F9');
     OnClick := mniViewToolWindowsClick;
   end;
   with mniMacroManager do

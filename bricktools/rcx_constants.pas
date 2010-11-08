@@ -169,68 +169,6 @@ const
   kRCX_OutputToggle   = $40;
   kRCX_OutputForward  = $80;
 
-  // new swan opcodes
-{
-  kRCX_AssignSourceValueOp            = $2F;
-  kRCX_AddToSourceValueOp             = $08;
-  kRCX_MinusToSourceValueOp           = $09;
-  kRCX_TimesToSourceValueOp           = $0A;
-  kRCX_DivideToSourceValueOp          = $0B;
-  kRCX_AndToSourceValueOp             = $0C;
-  kRCX_OrToSourceValueOp              = $0D;
-  kRCX_BitComplementSourceValueOp     = $0E;
-  kRCX_ModuloToSourceValueOp          = $0F;
-
-  kRCX_AssignGlobalVariableOp         = $2D;
-  kRCX_AddToGlobalOp                  = $C8;
-  kRCX_MinusToGlobalOp                = $C9;
-  kRCX_TimesToGlobalOp                = $CA;
-  kRCX_DivideToGlobalOp               = $CB;
-  kRCX_AndToGlobalOp                  = $CC;
-  kRCX_OrToGlobalOp                   = $CD;
-  kRCX_BitComplementGlobalOp          = $CE;
-  kRCX_ModuloToGlobalOp               = $CF;
-
-  kRCX_ShiftLeftOp                    = $98;
-  kRCX_ShiftRightOp                   = $99;
-  kRCX_XOrOp                          = $88;
-  kRCX_AbsoluteValueSourceValueOp     = $7B;
-  kRCX_SignValueSourceValueOp         = $7C;
-  kRCX_NegateOp                       = $9B;
-  kRCX_BitSetOp                       = $7E;
-  kRCX_BitClearOp                     = $7F;
-}
-
-  kRCX_ClearAllOp                     = $C7;
-
-  kRCX_UploadEventMapOp               = $46;
-  kRCX_UploadGlobalVariablesOp        = $83;
-  kRCX_UploadEventOp                  = $87;
-  kRCX_UploadDeviceVariablesOp        = $D6;
-  kRCX_UploadTimersOp                 = $B6;
-
-  kRCX_DebugGetStatusOp               = $01;
-  kRCX_DebugUnsolicitedReportOp       = $07;
-  kRCX_DebugClearExceptionOp          = $16;
-  kRCX_DebugSuspendResumeStepOp       = $E2;
-  kRCX_DebugSetBreakPointOp           = $E4;
-  kRCX_DebugSetProgramCounterOp       = $F4;
-  kRCX_AssertOp                       = $66;
-  kRCX_Breakpoint0Op                  = $E6;
-  kRCX_Breakpoint1Op                  = $E7;
-  kRCX_Breakpoint2Op                  = $E8;
-  kRCX_Breakpoint3Op                  = $E9;
-  kRCX_Breakpoint4Op                  = $EA;
-  kRCX_Breakpoint5Op                  = $EB;
-  kRCX_Breakpoint6Op                  = $EC;
-  kRCX_Breakpoint7Op                  = $ED;
-  kRCX_Breakpoint8Op                  = $EE;
-  kRCX_Breakpoint9Op                  = $EF;
-
-  kRCX_SetMessageWordParmOp           = $B3;
-  kRCX_SetMessageByteParmOp           = $A2;
-  kRCX_SetMessageVariableParmOp       = $C4;
-
 const
   kNXT_VMState_Idle    = 0;
   kNXT_VMState_RunFree = 1;
@@ -243,8 +181,8 @@ const
   kNXT_DirectCmd        = $00;
   kNXT_SystemCmd        = $01;
   kNXT_CmdReply         = $02;
-  kNXT_DirectCmdNoReply = kNXT_DirectCmd + kNXT_NoResponseMask;
-  kNXT_SystemCmdNoReply = kNXT_SystemCmd + kNXT_NoResponseMask;
+  kNXT_DirectCmdNoReply = $80;
+  kNXT_SystemCmdNoReply = $81;
   kNXT_MaxBytes         = 64;
   kNXT_NameMaxLen       = 15;
 

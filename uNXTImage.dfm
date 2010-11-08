@@ -17,6 +17,7 @@ object frmNXTImage: TfrmNXTImage
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnKeyDown = HandleKeyDown
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
   object imgNXT: TImage

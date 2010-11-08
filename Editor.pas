@@ -244,7 +244,8 @@ uses
   uMiscDefines, uNXTClasses, uNBCInterface, ParamUtils, uNXTConstants,
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants, uEditorUtils,
   uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals, uBasicPrefs,
-  uHTMLHelp, uNXCHTMLTopics, uNQCHTMLTopics, uNBCHTMLTopics;
+  uHTMLHelp, uNXCHTMLTopics, uNQCHTMLTopics, uNBCHTMLTopics, uPSComponent,
+  uPSDebugger;
 
 function HelpALink(keyword: string; bNQC : Boolean): Boolean;
 var
@@ -1307,9 +1308,9 @@ begin
   SL := elNQC;
   if FileIsCPP(AEH) then
     SL := elCpp
-  else if FileIsPascal(AEH) then
-    SL := elPas
   else if FileIsROPS(AEH) then
+    SL := elPas
+  else if FileIsPascal(AEH) then
     SL := elPas
   else if FileIsJava(AEH) then
     SL := elJava
@@ -1396,6 +1397,10 @@ begin
   else if FileIsCPP(AEH) then
   begin
     Self.HelpFile := ProgramDir + 'Help\brickOS.hlp';
+  end
+  else if FileIsROPS(AEH) then
+  begin
+    Self.HelpFile := ProgramDir + 'Help\rops.hlp';
   end
   else if FileIsPascal(AEH) then
   begin
@@ -1634,6 +1639,14 @@ begin
 {$IFNDEF FPC}
   if (ssCtrl in Shift) and (Button = mbLeft) then
     FindDeclaration(TheEditor.WordAtMouse);
+  if (ssShift in Shift) and (Button = mbLeft) then
+  begin
+    if theROPSCompiler.Exec.DebugMode <> dmRun then
+    begin
+      ShowMessage(theROPSCompiler.GetVarContents(TheEditor.WordAtMouse));
+    end;
+  end;
+
 {$ENDIF}
 end;
 
@@ -2141,6 +2154,7 @@ end;
 procedure TEditorForm.CreateTheEditor;
 begin
   TheEditor := TBricxccSynEdit.Create(Self);
+  TheEditor.DoubleBuffered := True;
   with TheEditor do
   begin
     Name := 'TheEditor';

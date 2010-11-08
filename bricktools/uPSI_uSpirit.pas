@@ -209,6 +209,8 @@ begin
     RegisterMethod('Function NXTFindNextFile( var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean');
     RegisterMethod('Function NXTFindClose( var IterHandle : FantomHandle) : boolean');
     RegisterMethod('Function NXTGetVersions( var protmin, protmaj, firmmin, firmmaj : byte) : boolean');
+    RegisterMethod('function NXTFirmwareVersion : word');
+    RegisterMethod('function NXTInstalledFirmware : TInstalledFirmware');
     RegisterMethod('Function NXTOpenWriteLinear( const filename : string; const size : cardinal; var handle : FantomHandle) : boolean');
     RegisterMethod('Function NXTOpenReadLinear( const filename : string; var handle : FantomHandle; var size : cardinal) : boolean');
     RegisterMethod('Function NXTOpenWriteData( const filename : string; const size : cardinal; var handle : FantomHandle) : boolean');
@@ -239,7 +241,7 @@ begin
     RegisterMethod('Procedure NXTUpdateResourceNames');
     RegisterMethod('Function NXTDefragmentFlash : Boolean');
     RegisterProperty('EEPROM', 'Byte Byte', iptrw);
-    RegisterProperty('EEPROMBlock', 'EEPROMBlock Integer', iptr);
+    RegisterProperty('EEPROMBlocks', 'EEPROMBlock Integer', iptr);
     RegisterProperty('NXTLowSpeed', 'NXTLSBlock byte', iptrw);
     RegisterProperty('IsOpen', 'boolean', iptr);
     RegisterProperty('FastMode', 'boolean', iptrw);
@@ -276,43 +278,15 @@ end;
 (*----------------------------------------------------------------------------*)
 procedure SIRegister_uSpirit(CL: TPSPascalCompiler);
 begin
-  CL.AddConstantN('K_RCX','String').SetString( 'RCX');
-  CL.AddConstantN('K_CYBER','String').SetString( 'CyberMaster');
-  CL.AddConstantN('K_SCOUT','String').SetString( 'Scout');
-  CL.AddConstantN('K_RCX2','String').SetString( 'RCX2');
-  CL.AddConstantN('K_SPY','String').SetString( 'Spybot');
-  CL.AddConstantN('K_NXT','String').SetString( 'NXT');
-  CL.AddConstantN('rtRCX','byte').SetUInt( 0);
-  CL.AddConstantN('rtCybermaster','byte').SetUInt( 1);
-  CL.AddConstantN('rtScout','byte').SetUInt( 2);
-  CL.AddConstantN('rtRCX2','byte').SetUInt( 3);
-  CL.AddConstantN('rtSpy','byte').SetUInt( 4);
-  CL.AddConstantN('rtNXT','byte').SetUInt( 6);
   CL.AddConstantN('MAX_COMPORT','LongInt').SetInt( 8);
   CL.AddConstantN('MAX_USBPORT','LongInt').SetInt( MAX_COMPORT + 4);
-  CL.AddConstantN('kRemoteKeysReleased','LongWord').SetUInt( $0000);
-  CL.AddConstantN('kRemotePBMessage1','LongWord').SetUInt( $0100);
-  CL.AddConstantN('kRemotePBMessage2','LongWord').SetUInt( $0200);
-  CL.AddConstantN('kRemotePBMessage3','LongWord').SetUInt( $0400);
-  CL.AddConstantN('kRemoteOutAForward','LongWord').SetUInt( $0800);
-  CL.AddConstantN('kRemoteOutBForward','LongWord').SetUInt( $1000);
-  CL.AddConstantN('kRemoteOutCForward','LongWord').SetUInt( $2000);
-  CL.AddConstantN('kRemoteOutABackward','LongWord').SetUInt( $4000);
-  CL.AddConstantN('kRemoteOutBBackward','LongWord').SetUInt( $8000);
-  CL.AddConstantN('kRemoteOutCBackward','LongWord').SetUInt( $0001);
-  CL.AddConstantN('kRemoteSelProgram1','LongWord').SetUInt( $0002);
-  CL.AddConstantN('kRemoteSelProgram2','LongWord').SetUInt( $0004);
-  CL.AddConstantN('kRemoteSelProgram3','LongWord').SetUInt( $0008);
-  CL.AddConstantN('kRemoteSelProgram4','LongWord').SetUInt( $0010);
-  CL.AddConstantN('kRemoteSelProgram5','LongWord').SetUInt( $0020);
-  CL.AddConstantN('kRemoteStopOutOff','LongWord').SetUInt( $0040);
-  CL.AddConstantN('kRemotePlayASound','LongWord').SetUInt( $0080);
   CL.AddTypeS('NXTLSBlock', 'record TXCount : byte; RXCount : byte; Data : array[0..15] of Byte; end;');
   CL.AddTypeS('NXTMessage', 'record Inbox : byte; Size : byte; Data : array[0..58] of Byte; end;');
   CL.AddTypeS('NXTDataBuffer', 'record Data : array[0..63] of Byte; end;');
   CL.AddTypeS('TDownloadStatusEvent', 'Procedure ( Sender : TObject; cur, total : Integer; var Abort : boolean)');
   CL.AddTypeS('TGetVarInfoByIDEvent', 'Procedure ( Sender : TObject; const ID : integer; var offset, size, vartype : integer)');
   CL.AddTypeS('TGetVarInfoByNameEvent', 'Procedure ( Sender : TObject; const name : string; var offset, size, vartype : integer)');
+  CL.AddTypeS('EEPROMBlock', 'record Data : array[0..15] of Byte; end;');
   CL.AddTypeS('TNXTFileType', '( nftProgram, nftGraphics, nftSound, nftData, nftOther, nftFirmware )');
   CL.AddTypeS('TTransmitLevel', '( tlNear, tlFar )');
   CL.AddTypeS('TLSSource', '( lsVariable, lsError, lsConstant )');
@@ -330,14 +304,15 @@ begin
   CL.AddTypeS('TGlobalOutAction', '( goaFloat, goaOff, goaOn )');
   CL.AddTypeS('TGlobalDirAction', '( gdaBackward, gdaSwitch, gdaForward )');
   CL.AddTypeS('TMotorsNum', 'Integer');
+  CL.AddTypeS('TInstalledFirmware', ' (ifUnknown, ifStandard, ifEnhanced )');
   SIRegister_TBrickComm(CL);
   CL.AddDelphiFunction('Function NameToNXTFileType( name : string) : TNXTFileType');
   CL.AddDelphiFunction('Function MakeValidNXTFilename( const filename : string) : string');
   CL.AddDelphiFunction('Function GetInitFilename : string');
-  CL.AddDelphiFunction('Function GetJoystickButtonScript( const i : byte; bPress : boolean) : string');
   CL.AddDelphiFunction('Function FantomAPIAvailable : boolean');
   CL.AddDelphiFunction('Procedure LoadNXTPorts( aStrings : TStrings)');
   CL.AddDelphiFunction('Function BytesToCardinal( b1 : byte; b2 : byte; b3 : byte; b4 : Byte) : Cardinal');
+  CL.AddDelphiFunction('Function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string');
 end;
 
 (* === run-time registration functions === *)
@@ -546,8 +521,8 @@ procedure TBrickCommNXTLowSpeed_R(Self: TBrickComm; var T: NXTLSBlock; const t1:
 begin T := Self.NXTLowSpeed[t1]; end;
 
 (*----------------------------------------------------------------------------*)
-procedure TBrickCommEEPROMBlock_R(Self: TBrickComm; var T: EEPROMBlock; const t1: Integer);
-begin T := Self.EEPROMBlock[t1]; end;
+procedure TBrickCommEEPROMBlocks_R(Self: TBrickComm; var T: EEPROMBlock; const t1: Integer);
+begin T := Self.EEPROMBlocks[t1]; end;
 
 (*----------------------------------------------------------------------------*)
 procedure TBrickCommEEPROM_W(Self: TBrickComm; const T: Byte; const t1: Byte);
@@ -566,6 +541,7 @@ begin
  S.RegisterDelphiFunction(@FantomAPIAvailable, 'FantomAPIAvailable', cdRegister);
  S.RegisterDelphiFunction(@LoadNXTPorts, 'LoadNXTPorts', cdRegister);
  S.RegisterDelphiFunction(@BytesToCardinal, 'BytesToCardinal', cdRegister);
+ S.RegisterDelphiFunction(@InstalledFirmwareAsString, 'InstalledFirmwareAsString', cdRegister);
 end;
 
 (*----------------------------------------------------------------------------*)
@@ -705,6 +681,8 @@ begin
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTFindNextFile, 'NXTFindNextFile');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTFindClose, 'NXTFindClose');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTGetVersions, 'NXTGetVersions');
+    RegisterMethod(@TBrickComm.NXTFirmwareVersion, 'NXTFirmwareVersion');
+    RegisterMethod(@TBrickComm.NXTInstalledFirmware, 'NXTInstalledFirmware');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTOpenWriteLinear, 'NXTOpenWriteLinear');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTOpenReadLinear, 'NXTOpenReadLinear');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTOpenWriteData, 'NXTOpenWriteData');
@@ -735,7 +713,7 @@ begin
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTUpdateResourceNames, 'NXTUpdateResourceNames');
     RegisterVirtualMethod(@TBrickComm.NXTDefragmentFlash, 'NXTDefragmentFlash');
     RegisterPropertyHelper(@TBrickCommEEPROM_R,@TBrickCommEEPROM_W,'EEPROM');
-    RegisterPropertyHelper(@TBrickCommEEPROMBlock_R,nil,'EEPROMBlock');
+    RegisterPropertyHelper(@TBrickCommEEPROMBlocks_R,nil,'EEPROMBlocks');
     RegisterPropertyHelper(@TBrickCommNXTLowSpeed_R,@TBrickCommNXTLowSpeed_W,'NXTLowSpeed');
     RegisterPropertyHelper(@TBrickCommIsOpen_R,nil,'IsOpen');
     RegisterPropertyHelper(@TBrickCommFastMode_R,@TBrickCommFastMode_W,'FastMode');

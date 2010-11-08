@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-10-19
- * version 70
+ * date 2010-11-04
+ * version 71
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -4826,7 +4826,7 @@ dseg segment
   __SCSetBrickNamePacket byte[]     {0x81, 0x98, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
   __SCBTGetAddressPacket byte[]     {0x01, 0x9a}
   __SCGetDeviceInfoPacket byte[]    {0x01, 0x9b}
-  __SCDeleteUserFlashPacket byte[]  {0x81, 0xA0}
+  __SCDeleteUserFlashPacket byte[]  {0x01, 0xA0}
   __SCPollCommandLenPacket byte[]   {0x01, 0xA1}
   __SCPollCommandPacket byte[]      {0x01, 0xA2} // append buffer number, cmd len,
   __SCRenameFilePacket byte[]       {0x81, 0xA3, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0}
@@ -4872,6 +4872,9 @@ dseg segment
   __WFRRTmpBuffer byte[]
   __WFRRUnflattenBuf byte[]
   __WFRRUnflattenErr byte
+  __WFRRTmpByte byte
+  __WFRRTmpSWord sword
+  __WFRRTmpSDWord sdword
   __WFRRStatus sbyte
 dseg ends
 
@@ -5086,10 +5089,6 @@ ends
   release __RemoteMutex
 
 #define __remoteStartProgram(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __DCStartProgramPacket, _filename, _result)
-#define __remoteOpenRead(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCOpenReadPacket, _filename, _result)
-#define __remoteDeleteFile(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCDeletePacket, _filename, _result)
-#define __remoteFindFirstFile(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCFindFirstPacket, _filename, _result)
-#define __remoteOpenAppendData(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCOpenAppendDataPacket, _filename, _result)
 
 #define __remoteGenericCreateFileCommand(_conn, _cmdBuf, _filename, _size, _result) \
   acquire __RemoteMutex \
@@ -5104,10 +5103,6 @@ ends
   __connectionWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
-#define __remoteOpenWrite(_conn, _filename, _size, _result) __remoteGenericCreateFileCommand(_conn, __SCOpenWritePacket, _filename, _size, _result)
-#define __remoteOpenWriteLinear(_conn, _filename, _size, _result) __remoteGenericCreateFileCommand(_conn, __SCOpenWritePacket, _filename, _size, _result)
-#define __remoteOpenWriteData(_conn, _filename, _size, _result) __remoteGenericCreateFileCommand(_conn, __SCOpenWriteDataPacket, _filename, _size, _result)
-
 #define __remoteGenericByteCommand(_conn, _cmdBuf, _val, _result) \
   compchk EQ, sizeof(_val), 1 \
   acquire __RemoteMutex \
@@ -5116,6 +5111,52 @@ ends
   release __RemoteMutex
 
 #define __remoteResetTachoCount(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCUpdateResetCountPacket, _port, _result)
+
+#define __remoteDoWrite(_conn, _handle, _data, _result) \
+  compchk EQ, sizeof(_handle), 1 \
+  acquire __RemoteMutex \
+  arrbuild __SRSSendBuf, __SCWritePacket, _handle, _data \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteDoRead(_conn, _handle, _numbytes, _result) \
+  compchk EQ, sizeof(_handle), 1 \
+  acquire __RemoteMutex \
+  mov __SRSTmpWordVal, _numbytes \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  arrbuild __SRSSendBuf, __SCReadPacket, _handle, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteDoPollCommand(_conn, _bufnum, _len, _result) \
+  compchk EQ, sizeof(_bufnum), 1 \
+  compchk EQ, sizeof(_len), 1 \
+  acquire __RemoteMutex \
+  arrbuild __SRSSendBuf, __SCPollCommandPacket, _bufnum, _len \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
+#define __remoteDoIOMapRead(_conn, _id, _offset, _numbytes, _result) \
+  compchk EQ, sizeof(_handle), 1 \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __GenericIOMapPacket \
+  replace __SRSSendBuf, __SRSSendBuf, NA, __SCIOMapReadPacket \
+  mov __SRSTmpLongVal, _offset \
+  flatten __SRSFlattenBuf, __SRSTmpLongVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
+  mov __SRSTmpWordVal, _offset \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 6, __SRSTmpBuf \
+  mov __SRSTmpWordVal, _numbytes \
+  flatten __SRSFlattenBuf, __SRSTmpWordVal \
+  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
+  replace __SRSSendBuf, __SRSSendBuf, 8, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
+
 
 #ifdef __ENHANCED_FIRMWARE
 
@@ -5144,101 +5185,324 @@ ends
   __connectionWrite(_conn, __DCGetBatteryLevelPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRGIVR_End##__I__, _result \
-  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 3 \
+  brtst NEQ, __RRGBL_End##__I__, _result \
+  brcmp NEQ, __RRGBL_End##__I__, __WFRRAvail, 3 \
   unflatten _value, __WFRRUnflattenErr, __WFRRBuffer, _value \
-  __RRGIVR_End##__I__: \
+  __RRGBL_End##__I__: \
   __IncI__
 
 #define __remoteLowspeedGetStatus(_conn, _value, _result) \
   __connectionWrite(_conn, __DCLSGetStatusPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRGIVR_End##__I__, _result \
-  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 2 \
+  brtst NEQ, __RRLGS_End##__I__, _result \
+  brcmp NEQ, __RRLGS_End##__I__, __WFRRAvail, 2 \
   index _value, __WFRRBuffer, NA \
-  __RRGIVR_End##__I__: \
+  __RRLGS_End##__I__: \
   __IncI__
 
 #define __remoteLowspeedRead(_conn, _port, _bread, _data, _result) \
   __remoteGenericByteCommand(_conn, __DCLSReadPacket, _port, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRGIVR_End##__I__, _result \
-  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 18 \
+  brtst NEQ, __RRLR_End##__I__, _result \
+  brcmp NEQ, __RRLR_End##__I__, __WFRRAvail, 18 \
   index _bread, __WFRRBuffer, NA \
   arrsubset _data, __WFRRBuffer, 1, _bread \
-  __RRGIVR_End##__I__: \
+  __RRLR_End##__I__: \
   __IncI__
 
 #define __remoteGetCurrentProgramName(_conn, _name, _result) \
   __connectionWrite(_conn, __DCGetCurProgNamePacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRGIVR_End##__I__, _result \
-  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 21 \
+  brtst NEQ, __RRGCPN_End##__I__, _result \
+  brcmp NEQ, __RRGCPN_End##__I__, __WFRRAvail, 21 \
   mov _name, __WFRRBuffer \
-  __RRGIVR_End##__I__: \
+  __RRGCPN_End##__I__: \
   __IncI__
 
 #define __remoteDatalogRead(_conn, _remove, _cnt, _log, _result) \
   __remoteGenericByteCommand(_conn, __DCDatalogReadPacket, _remove, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRGIVR_End##__I__, _result \
-  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 62 \
+  brtst NEQ, __RRDR_End##__I__, _result \
+  brcmp NEQ, __RRDR_End##__I__, __WFRRAvail, 62 \
   index _cnt, __WFRRBuffer, NA \
   arrsubset _log, __WFRRBuffer, 1, _cnt \
-  __RRGIVR_End##__I__: \
+  __RRDR_End##__I__: \
   __IncI__
 
 #define __remoteGetContactCount(_conn, _cnt, _result) \
   __connectionWrite(_conn, __DCBTGetContactCntPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRGIVR_End##__I__, _result \
-  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 2 \
+  brtst NEQ, __RRGCTC_End##__I__, _result \
+  brcmp NEQ, __RRGCTC_End##__I__, __WFRRAvail, 2 \
   index _cnt, __WFRRBuffer, NA \
-  __RRGIVR_End##__I__: \
+  __RRGCTC_End##__I__: \
   __IncI__
 
 #define __remoteGetContactName(_conn, _idx, _name, _result) \
   __remoteGenericByteCommand(_conn, __DCBTGetContactNamePacket, _idx, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRGIVR_End##__I__, _result \
-  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 19 \
+  brtst NEQ, __RRGCTN_End##__I__, _result \
+  brcmp NEQ, __RRGCTN_End##__I__, __WFRRAvail, 19 \
   mov _name, __WFRRBuffer \
-  __RRGIVR_End##__I__: \
+  __RRGCTN_End##__I__: \
   __IncI__
 
 #define __remoteGetConnectionCount(_conn, _cnt, _result) \
   __connectionWrite(_conn, __DCBTGetConnectCntPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRGIVR_End##__I__, _result \
-  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 2 \
+  brtst NEQ, __RRGCNC_End##__I__, _result \
+  brcmp NEQ, __RRGCNC_End##__I__, __WFRRAvail, 2 \
   index _cnt, __WFRRBuffer, NA \
-  __RRGIVR_End##__I__: \
+  __RRGCNC_End##__I__: \
   __IncI__
 
 #define __remoteGetConnectionName(_conn, _idx, _name, _result) \
   __remoteGenericByteCommand(_conn, __DCBTGetConnectNamePacket, _idx, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRGIVR_End##__I__, _result \
-  brcmp NEQ, __RRGIVR_End##__I__, __WFRRAvail, 19 \
+  brtst NEQ, __RRGCNN_End##__I__, _result \
+  brcmp NEQ, __RRGCNN_End##__I__, __WFRRAvail, 19 \
   mov _name, __WFRRBuffer \
-  __RRGIVR_End##__I__: \
+  __RRGCNN_End##__I__: \
   __IncI__
 
-#define __remoteGetProperty(_conn, _property, _result) __remoteGenericByteCommand(_conn, __DCGetPropertyPacket, _property, _result)
+#define __remoteGetProperty(_conn, _property, _value, _result) \
+  mov _value, 0 \
+  __remoteGenericByteCommand(_conn, __DCGetPropertyPacket, _property, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGP_End##__I__, _result \
+  unflatten _value, __WFRRUnflattenErr, __WFRRBuffer, _value \
+  __RRGP_End##__I__: \
+  __IncI__
 
-#define __remoteCloseFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCClosePacket, _handle, _result)
+#define __remoteOpenRead(_conn, _filename, _handle, _size, _result) \
+  __remoteGenericFilenameCommand(_conn, __SCOpenReadPacket, _filename, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RROR_End##__I__, _result \
+  brcmp NEQ, __RROR_End##__I__, __WFRRAvail, 6 \
+  index _handle, __WFRRBuffer, NA \
+  arrsubset __WFRRTmpBuffer, __WFRRBuffer, 1, 5 \
+  unflatten __WFRRTmpSDWord, __WFRRUnflattenErr, __WFRRTmpBuffer, __WFRRTmpSDWord \
+  mov _size, __WFRRTmpSDWord \
+  __RROR_End##__I__: \
+  __IncI__
 
-#define __remoteFindNextFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCFindNextPacket, _handle, _result)
+#define __remoteOpenWrite(_conn, _filename, _size, _handle, _result) \
+  __remoteGenericCreateFileCommand(_conn, __SCOpenWritePacket, _filename, _size, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RROW_End##__I__, _result \
+  brcmp NEQ, __RROW_End##__I__, __WFRRAvail, 2 \
+  index _handle, __WFRRBuffer, NA \
+  __RROW_End##__I__: \
+  __IncI__
 
-#define __remotePollCommandLength(_conn, _bufnum, _result) __remoteGenericByteCommand(_conn, __SCPollCommandLenPacket, _bufnum, _result)
+#define __remoteRead(_conn, _handle, _numbytes, _data, _result) \
+  mov _result, 1 \
+  brcmp GT, __RRRead_End##__I__, _numbytes, 58 \
+  __remoteDoRead(_conn, _handle, _numbytes, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  add __WFRRTmpByte, _numbytes, 4 \
+  brtst NEQ, __RRRead_End##__I__, _result \
+  brcmp NEQ, __RRRead_End##__I__, __WFRRAvail, __WFRRTmpByte \
+  index _handle, __WFRRBuffer, NA \
+  arrsubset __WFRRTmpBuffer, __WFRRBuffer, 1, 2 \
+  arrtostr __WFRRUnflattenBuf, __WFRRTmpBuffer \
+  unflatten __WFRRTmpSWord, __WFRRUnflattenErr, __WFRRUnflattenBuf, __WFRRTmpSWord \
+  mov _numbytes, __WFRRTmpSWord \
+  arrsubset _data, __WFRRBuffer, 2, _numbytes \
+  __RRRead_End##__I__: \
+  __IncI__
+
+#define __remoteWrite(_conn, _handle, _numbytes, _data, _result) \
+  mov _result, 1 \
+  brcmp GT, __RRWrite_End##__I__, _numbytes, 58 \
+  __remoteDoWrite(_conn, _handle, _data, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRWrite_End##__I__, _result \
+  brcmp NEQ, __RRWrite_End##__I__, __WFRRAvail, 4 \
+  index _handle, __WFRRBuffer, NA \
+  arrsubset __WFRRTmpBuffer, __WFRRBuffer, 1, 3 \
+  unflatten __WFRRTmpSWord, __WFRRUnflattenErr, __WFRRTmpBuffer, __WFRRTmpSWord \
+  mov _numbytes, __WFRRTmpSWord \
+  __RRWrite_End##__I__: \
+  __IncI__
+
+#define __remoteCloseFile(_conn, _handle, _result) \
+  __remoteGenericByteCommand(_conn, __SCClosePacket, _handle, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus
+
+#define __remoteDeleteFile(_conn, _filename, _result) \
+  __remoteGenericFilenameCommand(_conn, __SCDeletePacket, _filename, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus
+
+#define __remoteDeleteUserFlash(_conn, _result) \
+  __connectionWrite(_conn, __SCDeleteUserFlashPacket, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus
+
+#define __remoteFindFirstFile(_conn, _mask, _handle, _name, _size, _result) \
+  __remoteGenericFilenameCommand(_conn, __SCFindFirstPacket, _mask, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRFindFirstFile_End##__I__, _result \
+  brcmp NEQ, __RRFindFirstFile_End##__I__, __WFRRAvail, 26 \
+  index _handle, __WFRRBuffer, NA \
+  arrsubset _name, __WFRRBuffer, 1, 20 \
+  arrsubset __WFRRTmpBuffer, __WFRRBuffer, 21, 5 \
+  unflatten __WFRRTmpSDWord, __WFRRUnflattenErr, __WFRRTmpBuffer, __WFRRTmpSDWord \
+  mov _size, __WFRRTmpSDWord \
+  __RRFindFirstFile_End##__I__: \
+  __IncI__
+
+#define __remoteFindNextFile(_conn, _handle, _name, _size, _result) \
+  __remoteGenericByteCommand(_conn, __SCFindNextPacket, _handle, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRFindNextFile_End##__I__, _result \
+  brcmp NEQ, __RRFindNextFile_End##__I__, __WFRRAvail, 26 \
+  index _handle, __WFRRBuffer, NA \
+  arrsubset _name, __WFRRBuffer, 1, 20 \
+  arrsubset __WFRRTmpBuffer, __WFRRBuffer, 21, 5 \
+  unflatten __WFRRTmpSDWord, __WFRRUnflattenErr, __WFRRTmpBuffer, __WFRRTmpSDWord \
+  mov _size, __WFRRTmpSDWord \
+  __RRFindNextFile_End##__I__: \
+  __IncI__
+
+#define __remoteGetFirmwareVersion(_conn, _pmin, _pmaj, _fmin, _fmaj, _result) \
+  __connectionWrite(_conn, __SCGetFirmwareVerPacket, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGetFirmwareVersion_End##__I__, _result \
+  brcmp NEQ, __RRGetFirmwareVersion_End##__I__, __WFRRAvail, 5 \
+  index _pmin, __WFRRBuffer, NA \
+  index _pmaj, __WFRRBuffer, 1 \
+  index _fmin, __WFRRBuffer, 2 \
+  index _fmaj, __WFRRBuffer, 3 \
+  __RRGetFirmwareVersion_End##__I__: \
+  __IncI__
+
+#define __remoteOpenWriteLinear(_conn, _filename, _size, _handle, _result) \
+  __remoteGenericCreateFileCommand(_conn, __SCOpenWriteLinearPacket, _filename, _size, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RROWL_End##__I__, _result \
+  brcmp NEQ, __RROWL_End##__I__, __WFRRAvail, 2 \
+  index _handle, __WFRRBuffer, NA \
+  __RROWL_End##__I__: \
+  __IncI__
+
+#define __remoteOpenWriteData(_conn, _filename, _size, _handle, _result) \
+  __remoteGenericCreateFileCommand(_conn, __SCOpenWriteDataPacket, _filename, _size, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RROWD_End##__I__, _result \
+  brcmp NEQ, __RROWD_End##__I__, __WFRRAvail, 2 \
+  index _handle, __WFRRBuffer, NA \
+  __RROWD_End##__I__: \
+  __IncI__
+
+#define __remoteOpenAppendData(_conn, _filename, _handle, _size, _result) \
+  __remoteGenericFilenameCommand(_conn, __SCOpenAppendDataPacket, _filename, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RROAD_End##__I__, _result \
+  brcmp NEQ, __RROAD_End##__I__, __WFRRAvail, 6 \
+  index _handle, __WFRRBuffer, NA \
+  arrsubset __WFRRTmpBuffer, __WFRRBuffer, 1, 5 \
+  unflatten __WFRRTmpSDWord, __WFRRUnflattenErr, __WFRRTmpBuffer, __WFRRTmpSDWord \
+  mov _size, __WFRRTmpSDWord \
+  __RROAD_End##__I__: \
+  __IncI__
+
+#define __remoteGetDeviceInfo(_conn, _name, _btaddr, _btsignal, _freemem, _result) \
+  __connectionWrite(_conn, __SCGetDeviceInfoPacket, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGetDeviceInfo_End##__I__, _result \
+  brcmp NEQ, __RRGetDeviceInfo_End##__I__, __WFRRAvail, 31 \
+  arrsubset _name, __WFRRBuffer, NA, 15 \
+  arrsubset _btaddr, __WFRRBuffer, 15, 7 \
+  arrsubset _btsignal, __WFRRBuffer, 22, 4 \
+  arrsubset __WFRRTmpBuffer, __WFRRBuffer, 26, 5 \
+  unflatten __WFRRTmpSDWord, __WFRRUnflattenErr, __WFRRTmpBuffer, __WFRRTmpSDWord \
+  mov _freemem, __WFRRTmpSDWord \
+  __RRGetDeviceInfo_End##__I__: \
+  __IncI__
+
+#define __remotePollCommandLength(_conn, _bufnum, _length, _result) \
+  __remoteGenericByteCommand(_conn, __SCPollCommandLenPacket, _bufnum, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRPollCommandLength_End##__I__, _result \
+  brcmp NEQ, __RRPollCommandLength_End##__I__, __WFRRAvail, 3 \
+  index _length, __WFRRBuffer, 1 \
+  __RRPollCommandLength_End##__I__: \
+  __IncI__
+
+#define __remotePollCommand(_conn, _bufnum, _len, _data, _result) \
+  mov _result, 1 \
+  brcmp GT, __RRPollCommand_End##__I__, _len, 58 \
+  __remoteDoPollCommand(_conn, _bufnum, _len, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  add __WFRRTmpByte, _len, 3 \
+  brtst NEQ, __RRPollCommand_End##__I__, _result \
+  brcmp NEQ, __RRPollCommand_End##__I__, __WFRRAvail, __WFRRTmpByte \
+  index _len, __WFRRBuffer, 1 \
+  arrsubset _data, __WFRRBuffer, 2, _len \
+  __RRPollCommand_End##__I__: \
+  __IncI__
+
+#define __remoteIOMapRead(_conn, _id, _offset, _numbytes, _data, _result) \
+  mov _result, 1 \
+  brcmp GT, __RRIOMapRead_End##__I__, _numbytes, 58 \
+  __remoteDoIOMapRead(_conn, _id, _offset, _numbytes, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  add __WFRRTmpByte, _numbytes, 7 \
+  brtst NEQ, __RRIOMapRead_End##__I__, _result \
+  brcmp NEQ, __RRIOMapRead_End##__I__, __WFRRAvail, __WFRRTmpByte \
+  arrsubset __WFRRTmpBuffer, __WFRRBuffer, 4, 2 \
+  arrtostr __WFRRUnflattenBuf, __WFRRTmpBuffer \
+  unflatten __WFRRTmpSWord, __WFRRUnflattenErr, __WFRRUnflattenBuf, __WFRRTmpSWord \
+  mov _numbytes, __WFRRTmpSWord \
+  arrsubset _data, __WFRRBuffer, 6, _numbytes \
+  __RRIOMapRead_End##__I__: \
+  __IncI__
+
+#define __remoteGetBluetoothAddress(_conn, _btaddr, _result) \
+  __connectionWrite(_conn, __SCBTGetAddressPacket, _result) \
+  call __DoWaitForRemoteResponse \
+  mov _result, __WFRRStatus \
+  brtst NEQ, __RRGetBluetoothAddress_End##__I__, _result \
+  brcmp NEQ, __RRGetBluetoothAddress_End##__I__, __WFRRAvail, 8 \
+  arrsubset _btaddr, __WFRRBuffer, NA, 7 \
+  __RRGetBluetoothAddress_End##__I__: \
+  __IncI__
+
+#define __remoteRenameFile(_conn, _oldname, _newname, _result) \
+  acquire __RemoteMutex \
+  mov __SRSSendBuf, __SCRenameFilePacket \
+  strsubset __SRSTmpBuf, _oldname, NA, 19 \
+  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
+  strsubset __SRSTmpBuf, _newname, NA, 19 \
+  replace __SRSSendBuf, __SRSSendBuf, 22, __SRSTmpBuf \
+  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  release __RemoteMutex
 
 #else
 
@@ -5254,9 +5518,22 @@ ends
 #define __remoteGetConnectionCount(_conn, _result) __connectionWrite(_conn, __DCBTGetConnectCntPacket, _result)
 #define __remoteGetConnectionName(_conn, _idx, _result) __remoteGenericByteCommand(_conn, __DCBTGetConnectNamePacket, _idx, _result)
 #define __remoteGetProperty(_conn, _property, _result) __remoteGenericByteCommand(_conn, __DCGetPropertyPacket, _property, _result)
+
+
+#define __remoteOpenRead(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCOpenReadPacket, _filename, _result)
+#define __remoteOpenWrite(_conn, _filename, _size, _result) __remoteGenericCreateFileCommand(_conn, __SCOpenWritePacket, _filename, _size, _result)
+#define __remoteRead(_conn, _handle, _numbytes, _result) __remoteDoRead(_conn, _handle, _numbytes, _result)
+#define __remoteWrite(_conn, _handle, _data, _result) __remoteDoWrite(_conn, _handle, _data, _result)
 #define __remoteCloseFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCClosePacket, _handle, _result)
+#define __remoteDeleteFile(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCDeletePacket, _filename, _result)
+#define __remoteFindFirstFile(_conn, _mask, _result) __remoteGenericFilenameCommand(_conn, __SCFindFirstPacket, _mask, _result)
 #define __remoteFindNextFile(_conn, _handle, _result) __remoteGenericByteCommand(_conn, __SCFindNextPacket, _handle, _result)
+#define __remoteOpenWriteLinear(_conn, _filename, _size, _result) __remoteGenericCreateFileCommand(_conn, __SCOpenWriteLinearPacket, _filename, _size, _result)
+#define __remoteOpenWriteData(_conn, _filename, _size, _result) __remoteGenericCreateFileCommand(_conn, __SCOpenWriteDataPacket, _filename, _size, _result)
+#define __remoteOpenAppendData(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __SCOpenAppendDataPacket, _filename, _result)
 #define __remotePollCommandLength(_conn, _bufnum, _result) __remoteGenericByteCommand(_conn, __SCPollCommandLenPacket, _bufnum, _result)
+#define __remotePollCommand(_conn, _bufnum, _len, _result) __remoteDoPollCommand(_conn, _bufnum, _len, _result)
+#define __remoteIOMapRead(_conn, _id, _offset, _numbytes, _result) __remoteDoIOMapRead(_conn, _id, _offset, _numbytes, _result)
 
 #endif
 
@@ -5284,43 +5561,6 @@ ends
   compchk EQ, sizeof(_rxlen), 1 \
   acquire __RemoteMutex \
   arrbuild __SRSSendBuf, __DCLSWritePacket, _port, _txlen, _rxlen, _data \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
-  release __RemoteMutex
-
-#define __remoteWrite(_conn, _handle, _data, _result) \
-  compchk EQ, sizeof(_handle), 1 \
-  acquire __RemoteMutex \
-  arrbuild __SRSSendBuf, __SCWritePacket, _handle, _data \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
-  release __RemoteMutex
-
-#define __remoteRead(_conn, _handle, _numbytes, _result) \
-  compchk EQ, sizeof(_handle), 1 \
-  acquire __RemoteMutex \
-  mov __SRSTmpWordVal, _numbytes \
-  flatten __SRSFlattenBuf, __SRSTmpWordVal \
-  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
-  arrbuild __SRSSendBuf, __SCReadPacket, _handle, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
-  release __RemoteMutex
-
-#define __remoteIOMapRead(_conn, _id, _offset, _numbytes, _result) \
-  compchk EQ, sizeof(_handle), 1 \
-  acquire __RemoteMutex \
-  mov __SRSSendBuf, __GenericIOMapPacket \
-  replace __SRSSendBuf, __SRSSendBuf, NA, __SCIOMapReadPacket \
-  mov __SRSTmpLongVal, _offset \
-  flatten __SRSFlattenBuf, __SRSTmpLongVal \
-  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
-  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
-  mov __SRSTmpWordVal, _offset \
-  flatten __SRSFlattenBuf, __SRSTmpWordVal \
-  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
-  replace __SRSSendBuf, __SRSSendBuf, 6, __SRSTmpBuf \
-  mov __SRSTmpWordVal, _numbytes \
-  flatten __SRSFlattenBuf, __SRSTmpWordVal \
-  strtoarr __SRSTmpBuf, __SRSFlattenBuf \
-  replace __SRSSendBuf, __SRSSendBuf, 8, __SRSTmpBuf \
   __connectionWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
@@ -5375,24 +5615,6 @@ ends
   mov __SRSSendBuf, __SCSetBrickNamePacket \
   strsubset __SRSTmpBuf, _name, NA, 15 \
   replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
-  release __RemoteMutex
-
-#define __remoteRenameFile(_conn, _oldname, _newname, _result) \
-  acquire __RemoteMutex \
-  mov __SRSSendBuf, __SCRenameFilePacket \
-  strsubset __SRSTmpBuf, _oldname, NA, 19 \
-  replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
-  strsubset __SRSTmpBuf, _newname, NA, 19 \
-  replace __SRSSendBuf, __SRSSendBuf, 22, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
-  release __RemoteMutex
-
-#define __remotePollCommand(_conn, _bufnum, _len, _result) \
-  compchk EQ, sizeof(_bufnum), 1 \
-  compchk EQ, sizeof(_len), 1 \
-  acquire __RemoteMutex \
-  arrbuild __SRSSendBuf, __SCPollCommandPacket, _bufnum, _len \
   __connectionWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
@@ -13983,6 +14205,304 @@ __remoteGetInputValues(_conn, _params, _result)
  * @{
  */
 
+#ifdef __ENHANCED_FIRMWARE
+
+/**
+ * Send an OpenRead message.
+ * Send the OpenRead system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the file to open for reading.
+ * \param _handle The handle of the file.
+ * \param _size The size of the file.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenRead(_conn, _filename, _handle, _size, _result) __remoteOpenRead(_conn, _filename, _handle, _size, _result)
+
+/**
+ * Send an OpenAppendData message.
+ * Send the OpenAppendData system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the file to open for appending.
+ * \param _handle The handle of the file.
+ * \param _size The size of the file.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenAppendData(_conn, _filename, _handle, _size, _result) __remoteOpenAppendData(_conn, _filename, _handle, _size, _result)
+
+/**
+ * Send a DeleteFile message.
+ * Send the DeleteFile system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to delete.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteDeleteFile(_conn, _filename, _result) __remoteDeleteFile(_conn, _filename, _result)
+
+/**
+ * Send a FindFirstFile message.
+ * Send the FindFirstFile system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _mask The filename mask for the files you want to find.
+ * \param _handle The handle of the found file.
+ * \param _name The name of the found file.
+ * \param _size The size of the found file.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteFindFirstFile(_conn, _mask, _handle, _name, _size, _result) __remoteFindFirstFile(_conn, _mask, _handle, _name, _size, _result)
+
+/**
+ * Send a GetFirmwareVersion message.
+ * This method sends a GetFirmwareVersion system command to the device on the specified
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _pmin The protocol minor version byte.
+ * \param _pmaj The protocol major version byte.
+ * \param _fmin The firmware minor version byte.
+ * \param _fmaj The firmware major version byte.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetFirmwareVersion(_conn, _pmin, _pmaj, _fmin, _fmaj, _result) __remoteGetFirmwareVersion(_conn, _pmin, _pmaj, _fmin, _fmaj, _result)
+
+/**
+ * Send a GetBluetoothAddress message.
+ * This method sends a GetBluetoothAddress system command to the device on the specified
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _btaddr The bluetooth address of the remote device.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetBluetoothAddress(_conn, _btaddr, _result) __remoteGetBluetoothAddress(_conn, _btaddr, _result)
+
+/**
+ * Send a GetDeviceInfo message.
+ * This method sends a GetDeviceInfo system command to the device on the specified
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _name The name of the remote device.
+ * \param _btaddr The bluetooth address of the remote device.
+ * \param _btsignal The signal strength of each connection on the remote device.
+ * \param _freemem The number of bytes of free flash memory on the remote device.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteGetDeviceInfo(_conn, _name, _btaddr, _btsignal, _freemem, _result) __remoteGetDeviceInfo(_conn, _name, _btaddr, _btsignal, _freemem, _result)
+
+/**
+ * Send a DeleteUserFlash message.
+ * This method sends a DeleteUserFlash system command to the device on the specified
+ * connection.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteDeleteUserFlash(_conn, _result) __remoteDeleteUserFlash(_conn, _result)
+
+/**
+ * Send an OpenWrite message.
+ * Send the OpenWrite system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to open for writing (i.e., create the file).
+ * \param _size The size for the new file.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenWrite(_conn, _filename, _size, _result) __remoteOpenWrite(_conn, _filename, _size, _result)
+
+/**
+ * Send an OpenWriteLinear message.
+ * Send the OpenWriteLinear system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to open for writing (i.e., create the file).
+ * \param _size The size for the new file.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenWriteLinear(_conn, _filename, _size, _result) __remoteOpenWriteLinear(_conn, _filename, _size, _result)
+
+/**
+ * Send an OpenWriteData message.
+ * Send the OpenWriteData system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _filename The name of the program to open for writing (i.e., create the file).
+ * \param _size The size for the new file.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteOpenWriteData(_conn, _filename, _size, _result) __remoteOpenWriteData(_conn, _filename, _size, _result)
+
+/**
+ * Send a CloseFile message.
+ * Send the CloseFile system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _handle The handle of the file to close.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteCloseFile(_conn, _handle, _result) __remoteCloseFile(_conn, _handle, _result)
+
+/**
+ * Send a FindNextFile message.
+ * Send the FindNextFile system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _handle The handle returned by the last \ref FindFirstFile or FindNextFile call.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteFindNextFile(_conn, _handle, _result) __remoteFindNextFile(_conn, _handle, _result)
+
+/**
+ * Send a PollCommandLength message.
+ * Send the PollCommandLength system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _bufnum The poll buffer you want to query (0=USBPoll, 1=HiSpeed).
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemotePollCommandLength(_conn, _bufnum, _result) __remotePollCommandLength(_conn, _bufnum, _result)
+
+/**
+ * Send a Write message.
+ * Send the Write system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _handle The handle of the file you are writing to.
+ * \param _data A byte array containing the data you are writing.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteWrite(_conn, _handle, _data, _result) __remoteWrite(_conn, _handle, _data, _result)
+
+/**
+ * Send a Read message.
+ * Send the Read system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _handle The handle of the file you are reading from.
+ * \param _numbytes The number of bytes you want to read.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteRead(_conn, _handle, _numbytes, _result) __remoteRead(_conn, _handle, _numbytes, _result)
+
+/**
+ * Send an IOMapRead message.
+ * Send the IOMapRead system command on the specified connection slot.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _id The ID of the module from which to read data.
+ * \param _offset The offset into the IOMap structure from which to read.
+ * \param _numbytes The number of bytes of data to read.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteIOMapRead(_conn, _id, _offset, _numbytes, _result) __remoteIOMapRead(_conn, _id, _offset, _numbytes, _result)
+
+/**
+ * Send a PollCommand message.
+ * Send the PollCommand system command on the specified connection slot to
+ * write the data provided.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _bufnum The buffer from which to read data (0=USBPoll, 1=HiSpeed).
+ * \param _len The number of bytes to read.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemotePollCommand(_conn, _bufnum, _len, _result) __remotePollCommand(_conn, _bufnum, _len, _result)
+
+/**
+ * Send a RenameFile message.
+ * Send the RenameFile system command on the specified connection slot to
+ * write the data provided.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _oldname The old filename.
+ * \param _newname The new filename.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteRenameFile(_conn, _oldname, _newname, _result) __remoteRenameFile(_conn, _oldname, _newname, _result)
+
+#else
+
 /**
  * Send an OpenRead message.
  * Send the OpenRead system command on the specified connection slot.
@@ -14086,19 +14606,6 @@ __remoteGetInputValues(_conn, _params, _result)
  * \param _result A char value indicating whether the function call succeeded or not.
  */
 #define RemoteDeleteUserFlash(_conn, _result) __connectionWrite(_conn, __SCDeleteUserFlashPacket, _result)
-
-/**
- * Send a BluetoothFactoryReset message.
- * This method sends a BluetoothFactoryReset system command to the device on the specified
- * connection. Use \ref RemoteConnectionIdle to determine when this write request is
- * completed.
- *
- * \param _conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param _result A char value indicating whether the function call succeeded or not.
- */
-#define RemoteBluetoothFactoryReset(_conn, _result) __connectionWrite(_conn, __SCBTFactoryResetPacket, _result)
 
 /**
  * Send an OpenWrite message.
@@ -14225,6 +14732,36 @@ __remoteGetInputValues(_conn, _params, _result)
 #define RemoteIOMapRead(_conn, _id, _offset, _numbytes, _result) __remoteIOMapRead(_conn, _id, _offset, _numbytes, _result)
 
 /**
+ * Send a PollCommand message.
+ * Send the PollCommand system command on the specified connection slot to
+ * write the data provided.
+ * Use \ref RemoteConnectionIdle to determine when this write request is completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _bufnum The buffer from which to read data (0=USBPoll, 1=HiSpeed).
+ * \param _len The number of bytes to read.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemotePollCommand(_conn, _bufnum, _len, _result) __remotePollCommand(_conn, _bufnum, _len, _result)
+
+#endif
+
+/**
+ * Send a BluetoothFactoryReset message.
+ * This method sends a BluetoothFactoryReset system command to the device on the specified
+ * connection. Use \ref RemoteConnectionIdle to determine when this write request is
+ * completed.
+ *
+ * \param _conn The connection slot (0..4). Connections 0 through 3 are for
+ * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
+ * See \ref CommConnectionConstants.
+ * \param _result A char value indicating whether the function call succeeded or not.
+ */
+#define RemoteBluetoothFactoryReset(_conn, _result) __connectionWrite(_conn, __SCBTFactoryResetPacket, _result)
+
+/**
  * Send an IOMapWrite value message.
  * Send the IOMapWrite system command on the specified connection slot to
  * write the value provided.
@@ -14257,7 +14794,7 @@ __remoteGetInputValues(_conn, _params, _result)
 #define RemoteIOMapWriteBytes(_conn, _id, _offset, _data, _result) __remoteIOMapWriteBytes(_conn, _id, _offset, _data, _result)
 
 /**
- * Send an SetBrickName bytes message.
+ * Send a SetBrickName message.
  * Send the SetBrickName system command on the specified connection slot to
  * write the data provided.
  * Use \ref RemoteConnectionIdle to determine when this write request is completed.
@@ -14269,36 +14806,6 @@ __remoteGetInputValues(_conn, _params, _result)
  * \param _result A char value indicating whether the function call succeeded or not.
  */
 #define RemoteSetBrickName(_conn, _name, _result) __remoteSetBrickName(_conn, _name, _result)
-
-/**
- * Send an RenameFile bytes message.
- * Send the RenameFile system command on the specified connection slot to
- * write the data provided.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param _conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param _oldname The old filename.
- * \param _newname The new filename.
- * \param _result A char value indicating whether the function call succeeded or not.
- */
-#define RemoteRenameFile(_conn, _oldname, _newname, _result) __remoteRenameFile(_conn, _oldname, _newname, _result)
-
-/**
- * Send an PollCommand bytes message.
- * Send the PollCommand system command on the specified connection slot to
- * write the data provided.
- * Use \ref RemoteConnectionIdle to determine when this write request is completed.
- *
- * \param _conn The connection slot (0..4). Connections 0 through 3 are for
- * bluetooth connections.  Connection 4 refers to the RS485 hi-speed port.
- * See \ref CommConnectionConstants.
- * \param _bufnum The buffer from which to read data (0=USBPoll, 1=HiSpeed).
- * \param _len The number of bytes to read.
- * \param _result A char value indicating whether the function call succeeded or not.
- */
-#define RemotePollCommand(_conn, _bufnum, _len, _result) __remotePollCommand(_conn, _bufnum, _len, _result)
 
 /** @} */ // end of CommModuleSCFunctions group
 

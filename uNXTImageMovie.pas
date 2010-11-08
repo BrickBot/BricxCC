@@ -33,6 +33,8 @@ type
   private
     fMaxFrames : integer;
     fFilename : string;
+    fBaseFilename : string;
+    fExt : string;
     fIndex : integer;
     function GetFileName: string;
     function GetFrameTime: Cardinal;
@@ -46,6 +48,8 @@ type
     procedure SetWidth(const aValue: Integer);
     function GetMax: integer;
     procedure SetMax(const Value: integer);
+    procedure SetAVIWriterName;
+    procedure CheckFrameCount;
   protected
 {$IFNDEF FPC}
     fAVIWriter : TAviWriter;
@@ -56,6 +60,7 @@ type
     procedure AddPicture(aPic : TPicture);
     procedure Clear;
     procedure Write;
+    function FrameCount : integer;
     property FileName : string read GetFileName write SetFileName;
     property FrameTime : Cardinal read GetFrameTime write SetFrameTime;
     property Height : Integer read GetHeight write SetHeight;
@@ -79,14 +84,19 @@ begin
   aviBmp := TBitmap.Create;
   aviBmp.Assign(aPic.Bitmap);
   fAviWriter.Bitmaps.Add(aviBmp);
-  if fAVIWriter.Bitmaps.Count > fMaxFrames then
+{$ENDIF}
+  CheckFrameCount;
+end;
+
+procedure TNXTImageMovie.CheckFrameCount;
+begin
+  if FrameCount >= fMaxFrames then
   begin
     Write;
     Clear;
     inc(fIndex);
-    fAVIWriter.FileName := Format('%s_%3.3d', [fFilename, fIndex]);
+    SetAVIWriterName;
   end;
-{$ENDIF}
 end;
 
 procedure TNXTImageMovie.Clear;
@@ -99,9 +109,10 @@ end;
 constructor TNXTImageMovie.Create(aOwner: TComponent);
 begin
   inherited;
-  fFilename  := '';
-  fIndex     := 0;
-  fMaxFrames := MaxInt;
+  fBaseFilename := 'nxtimage';
+  fExt          := '.avi';
+  fIndex        := 0;
+  fMaxFrames    := MaxInt;
 {$IFNDEF FPC}
   fAVIWriter := TAVIWriter.Create(Self);
 {$ENDIF}
@@ -115,15 +126,26 @@ begin
   inherited;
 end;
 
+function TNXTImageMovie.FrameCount: integer;
+begin
+{$IFNDEF FPC}
+  Result := fAVIWriter.Bitmaps.Count;
+{$ELSE}
+  Result := 0;
+{$ENDIF}
+end;
+
 function TNXTImageMovie.GetFileName: string;
 begin
-  result := fFilename;
+  Result := fFilename;
 end;
 
 function TNXTImageMovie.GetFrameTime: Cardinal;
 begin
 {$IFNDEF FPC}
   Result := fAVIWriter.FrameTime;
+{$ELSE}
+  Result := 0;
 {$ENDIF}
 end;
 
@@ -131,6 +153,8 @@ function TNXTImageMovie.GetHeight: Integer;
 begin
 {$IFNDEF FPC}
   Result := fAVIWriter.Height;
+{$ELSE}
+  Result := 0;
 {$ENDIF}
 end;
 
@@ -143,6 +167,8 @@ function TNXTImageMovie.GetStretch: boolean;
 begin
 {$IFNDEF FPC}
   Result := fAVIWriter.Stretch;
+{$ELSE}
+  Result := False;
 {$ENDIF}
 end;
 
@@ -150,15 +176,24 @@ function TNXTImageMovie.GetWidth: Integer;
 begin
 {$IFNDEF FPC}
   Result := fAVIWriter.Width;
+{$ELSE}
+  Result := 0;
+{$ENDIF}
+end;
+
+procedure TNXTImageMovie.SetAVIWriterName;
+begin
+{$IFNDEF FPC}
+  fAVIWriter.FileName := Format('%s_%3.3d%s', [fBaseFilename, fIndex, fExt]);
 {$ENDIF}
 end;
 
 procedure TNXTImageMovie.SetFileName(const aValue: string);
 begin
   fFilename := aValue;
-{$IFNDEF FPC}
-  fAVIWriter.FileName := aValue;
-{$ENDIF}
+  fBaseFilename := ChangeFileExt(aValue, '');
+  fExt := ExtractFileExt(aValue);
+  SetAVIWriterName;
 end;
 
 procedure TNXTImageMovie.SetFrameTime(const aValue: Cardinal);
@@ -178,15 +213,7 @@ end;
 procedure TNXTImageMovie.SetMax(const Value: integer);
 begin
   fMaxFrames := Value;
-{$IFNDEF FPC}
-  if fAVIWriter.Bitmaps.Count > fMaxFrames then
-  begin
-    Write;
-    Clear;
-    inc(fIndex);
-    fAVIWriter.FileName := Format('%s_%3.3d', [fFilename, fIndex]);
-  end;
-{$ENDIF}
+  CheckFrameCount;
 end;
 
 procedure TNXTImageMovie.SetStretch(const aValue: boolean);
@@ -206,7 +233,11 @@ end;
 procedure TNXTImageMovie.Write;
 begin
 {$IFNDEF FPC}
-  fAVIWriter.Write;
+  try
+    fAVIWriter.Write;
+  except
+    // eat any exceptions
+  end;
 {$ENDIF}
 end;
 

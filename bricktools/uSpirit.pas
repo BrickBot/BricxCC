@@ -370,7 +370,7 @@ type
 
     // properties
     property  EEPROM[addr : Byte] : Byte read GetEEPROM write SetEEPROM;
-    property  EEPROMBlock[idx : Integer] : EEPROMBlock read GetEEPROMBlock;
+    property  EEPROMBlocks[idx : Integer] : EEPROMBlock read GetEEPROMBlock;
     property  NXTLowSpeed[port : byte] : NXTLSBlock read GetLSBlock write SetLSBlock;
     property  IsOpen : boolean read GetIsOpen;
     property  FastMode : boolean read fFastMode write SetFastMode;

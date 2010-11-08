@@ -21,14 +21,14 @@ object frmNXTExplorer: TfrmNXTExplorer
   object Splitter1: TSplitter
     Left = 233
     Top = 0
-    Height = 442
+    Height = 446
     OnMoved = RefreshShellListView
   end
   object pnlLeft: TPanel
     Left = 0
     Top = 0
     Width = 233
-    Height = 442
+    Height = 446
     Align = alLeft
     BevelOuter = bvNone
     BorderWidth = 2
@@ -38,7 +38,7 @@ object frmNXTExplorer: TfrmNXTExplorer
       Left = 2
       Top = 27
       Width = 229
-      Height = 413
+      Height = 417
       Align = alClient
       Columns = <
         item
@@ -76,8 +76,8 @@ object frmNXTExplorer: TfrmNXTExplorer
   object pnlRight: TPanel
     Left = 236
     Top = 0
-    Width = 328
-    Height = 442
+    Width = 336
+    Height = 446
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 2
