@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-19
- * \version 10
+ * \date 2010-11-04
+ * \version 11
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -4989,7 +4989,7 @@
  * calls, which is an important aspect of the API that is all too often 
  * neglected by programmers.
  * The program deals with a data file describing circles. On each run, it adds 
- * a new circle record to the data file. Then it reads in the whole data file 
+ * a new circle record to the data file. Then it reads in the whole data file
  * and displays all the circles on NXT screen. It creates the data file if 
  * doesn't already exist. If you run it several times in seccession, you will 
  * fill the data file and get a file-is-full exception.
@@ -5000,7 +5000,7 @@
  * \example ex_delete_data_file.nxc
  * This is an example of how to use the \ref DeleteFile, \ref TextOut,
  * \ref FormatNum, and \ref Wait functions.
- * It is useful for deleting the circles.dat file created by the program described 
+ * It is useful for deleting the circles.dat file created by the program described
  * in the \ref ex_file_system.nxc example.
  *
  * \example ex_sysmemorymanager.nxc
@@ -5078,55 +5078,184 @@
  * \ref GetButtonModuleValue, \ref GetInputModuleValue, \ref GetOutputModuleValue,
  * \ref GetLowSpeedModuleValue, \ref GetDisplayModuleValue, \ref GetCommModuleValue,
  *
+ * \example ex_RemoteConnectionIdle.nxc
+ * This is an example of how to use the \ref RemoteConnectionIdle function.
+ *
+ * \example ex_RemoteConnectionWrite.nxc
+ * This is an example of how to use the \ref RemoteConnectionWrite function.
+ *
+ * \example ex_RemoteGetBatteryLevel.nxc
+ * This is an example of how to use the \ref RemoteGetBatteryLevel function.
+ *
+ * \example ex_RemoteLowspeedGetStatus.nxc
+ * This is an example of how to use the \ref RemoteLowspeedGetStatus function.
+ *
+ * \example ex_RemoteGetCurrentProgramName.nxc
+ * This is an example of how to use the \ref RemoteGetCurrentProgramName function.
+ *
+ * \example ex_RemoteGetContactCount.nxc
+ * This is an example of how to use the \ref RemoteGetContactCount function.
+ *
+ * \example ex_RemoteGetConnectionCount.nxc
+ * This is an example of how to use the \ref RemoteGetConnectionCount function.
+ *
+ * \example ex_RemoteGetOutputState.nxc
+ * This is an example of how to use the \ref RemoteGetOutputState function.
+ *
+ * \example ex_RemoteGetInputValues.nxc
+ * This is an example of how to use the \ref RemoteGetInputValues function.
+ *
+ * \example ex_RemoteLowspeedRead.nxc
+ * This is an example of how to use the \ref RemoteLowspeedRead function.
+ *
+ * \example ex_RemoteGetProperty.nxc
+ * This is an example of how to use the \ref RemoteGetProperty function.
+ *
+ * \example ex_RemoteDatalogRead.nxc
+ * This is an example of how to use the \ref RemoteDatalogRead function.
+ *
+ * \example ex_RemoteGetContactName.nxc
+ * This is an example of how to use the \ref RemoteGetContactName function.
+ *
+ * \example ex_RemoteGetConnectionName.nxc
+ * This is an example of how to use the \ref RemoteGetConnectionName function.
+ *
+ * \example ex_RemoteResetTachoCount.nxc
+ * This is an example of how to use the \ref RemoteResetTachoCount function.
+ *
+ * \example ex_RemoteDatalogSetTimes.nxc
+ * This is an example of how to use the \ref RemoteDatalogSetTimes function.
+ *
+ * \example ex_RemoteSetProperty.nxc
+ * This is an example of how to use the \ref RemoteSetProperty function.
+ *
+ * \example ex_RemoteLowspeedWrite.nxc
+ * This is an example of how to use the \ref RemoteLowspeedWrite function.
+ *
+ * \example ex_RemoteOpenRead.nxc
+ * This is an example of how to use the \ref RemoteOpenRead function.
+ *
+ * \example ex_RemoteOpenAppendData.nxc
+ * This is an example of how to use the \ref RemoteOpenAppendData function.
+ *
+ * \example ex_RemoteDeleteFile.nxc
+ * This is an example of how to use the \ref RemoteDeleteFile function.
+ *
+ * \example ex_RemoteFindFirstFile.nxc
+ * This is an example of how to use the \ref RemoteFindFirstFile function.
+ *
+ * \example ex_RemoteGetFirmwareVersion.nxc
+ * This is an example of how to use the \ref RemoteGetFirmwareVersion function.
+ *
+ * \example ex_RemoteGetBluetoothAddress.nxc
+ * This is an example of how to use the \ref RemoteGetBluetoothAddress function.
+ *
+ * \example ex_RemoteGetDeviceInfo.nxc
+ * This is an example of how to use the \ref RemoteGetDeviceInfo function.
+ *
+ * \example ex_RemoteDeleteUserFlash.nxc
+ * This is an example of how to use the \ref RemoteDeleteUserFlash function.
+ *
+ * \example ex_RemoteBluetoothFactoryReset.nxc
+ * This is an example of how to use the \ref RemoteBluetoothFactoryReset function.
+ *
+ * \example ex_RemoteOpenWrite.nxc
+ * This is an example of how to use the \ref RemoteOpenWrite function.
+ *
+ * \example ex_RemoteOpenWriteLinear.nxc
+ * This is an example of how to use the \ref RemoteOpenWriteLinear function.
+ *
+ * \example ex_RemoteOpenWriteData.nxc
+ * This is an example of how to use the \ref RemoteOpenWriteData function.
+ *
+ * \example ex_RemoteCloseFile.nxc
+ * This is an example of how to use the \ref RemoteCloseFile function.
+ *
+ * \example ex_RemoteFindNextFile.nxc
+ * This is an example of how to use the \ref RemoteFindNextFile function.
+ *
+ * \example ex_RemotePollCommandLength.nxc
+ * This is an example of how to use the \ref RemotePollCommandLength function.
+ *
+ * \example ex_RemoteWrite.nxc
+ * This is an example of how to use the \ref RemoteWrite function.
+ *
+ * \example ex_RemoteRead.nxc
+ * This is an example of how to use the \ref RemoteRead function.
+ *
+ * \example ex_RemoteIOMapRead.nxc
+ * This is an example of how to use the \ref RemoteIOMapRead function.
+ *
+ * \example ex_RemoteIOMapWriteValue.nxc
+ * This is an example of how to use the \ref RemoteIOMapWriteValue function.
+ *
+ * \example ex_RemoteIOMapWriteBytes.nxc
+ * This is an example of how to use the \ref RemoteIOMapWriteBytes function.
+ *
+ * \example ex_RemoteSetBrickName.nxc
+ * This is an example of how to use the \ref RemoteSetBrickName function.
+ *
+ * \example ex_RemoteRenameFile.nxc
+ * This is an example of how to use the \ref RemoteRenameFile function.
+ *
+ * \example ex_RemotePollCommand.nxc
+ * This is an example of how to use the \ref RemotePollCommand function.
+ *
+ * \example ex_GetLastResponseInfo.nxc
+ * This is an example of how to use the \ref GetLastResponseInfo function.
+ *
+ * \example ex_SysReadLastResponse.nxc
+ * This is an example of how to use the \ref SysReadLastResponse function.
+ *
+ * \example ex_SetSensorEMeter.nxc
+ * This is an example of how to use the \ref SetSensorEMeter function.
+ *
+ * \example ex_SetSensorUltrasonic.nxc
+ * This is an example of how to use the \ref SetSensorUltrasonic function.
+ *
+ * \example ex_SetSensorTemperature.nxc
+ * This is an example of how to use the \ref SetSensorTemperature function.
+ *
+ * \example ex_ReadSensorEMeter.nxc
+ * This is an example of how to use the \ref ReadSensorEMeter function.
+ *
+ * \example ex_ConfigureTemperatureSensor.nxc
+ * This is an example of how to use the \ref ConfigureTemperatureSensor function.
+ *
+ * \example ex_SensorTemperature.nxc
+ * This is an example of how to use the \ref SensorTemperature function.
+ *
+ * \example ex_SetSensorHTMagnet.nxc
+ * This is an example of how to use the \ref SetSensorHTMagnet function.
+ *
+ * \example ex_SensorHTMagnet.nxc
+ * This is an example of how to use the \ref SensorHTMagnet function.
+ *
+ * \example ex_RFIDInit.nxc
+ * This is an example of how to use the \ref RFIDInit function.
+ *
+ * \example ex_RFIDMode.nxc
+ * This is an example of how to use the \ref RFIDMode function.
+ *
+ * \example ex_RFIDStatus.nxc
+ * This is an example of how to use the \ref RFIDStatus function.
+ *
+ * \example ex_RFIDRead.nxc
+ * This is an example of how to use the \ref RFIDRead function.
+ *
+ * \example ex_RFIDStop.nxc
+ * This is an example of how to use the \ref RFIDStop function.
+ *
+ * \example ex_RFIDReadSingle.nxc
+ * This is an example of how to use the \ref RFIDReadSingle function.
+ *
+ * \example ex_RFIDReadContinuous.nxc
+ * This is an example of how to use the \ref RFIDReadContinuous function.
+ *
+ *
 */
 
 /*
-inline bool RemoteConnectionIdle(byte conn);
-inline char RemoteConnectionWrite(byte conn, byte buffer[]);
-
-inline char RemoteGetBatteryLevel(byte conn);
-inline char RemoteLowspeedGetStatus(byte conn);
-inline char RemoteGetCurrentProgramName(byte conn);
-inline char RemoteGetContactCount(byte conn);
-inline char RemoteGetConnectionCount(byte conn);
-inline char RemoteGetOutputState(byte conn, byte port);
-inline char RemoteGetInputValues(byte conn, byte port);
-inline char RemoteLowspeedRead(byte conn, byte port);
-inline char RemoteResetTachoCount(byte conn, byte port);
-inline char RemoteGetProperty(byte conn, byte property);
-inline char RemoteDatalogRead(byte conn, bool remove);
-inline char RemoteBTGetContactName(byte conn, byte idx);
-inline char RemoteBTGetConnectionName(byte conn, byte idx);
-inline char RemoteDatalogSetTimes(byte conn, long synctime);
-inline char RemoteSetProperty(byte conn, byte prop, variant value);
-inline char RemoteLowspeedWrite(byte conn, byte port, byte txlen, byte rxlen, byte data[]);
-
-inline char RemoteOpenRead(byte conn, string filename);
-inline char RemoteOpenAppendData(byte conn, string filename);
-inline char RemoteDeleteFile(byte conn, string filename);
-inline char RemoteFindFirstFile(byte conn, string mask);
-inline char RemoteGetFirmwareVersion(byte conn);
-inline char RemoteGetBluetoothAddress(byte conn);
-inline char RemoteGetDeviceInfo(byte conn);
-inline char RemoteDeleteUserFlash(byte conn);
-inline char RemoteBluetoothFactoryReset(byte conn);
-inline char RemoteOpenWrite(byte conn, string filename, long size);
-inline char RemoteOpenWriteLinear(byte conn, string filename, long size);
-inline char RemoteOpenWriteData(byte conn, string filename, long size);
-inline char RemoteCloseFile(byte conn, byte handle);
-inline char RemoteFindNextFile(byte conn, byte handle);
-inline char RemotePollCommandLength(byte conn, byte bufnum);
-inline char RemoteWrite(byte conn, byte handle, byte data[]);
-inline char RemoteRead(byte conn, byte handle, byte numbytes);
-inline char RemoteIOMapRead(byte conn, long id, int offset, int numbytes);
-inline char RemoteIOMapWriteValue(byte conn, long id, int offset, variant value);
-inline char RemoteIOMapWriteBytes(byte conn, long id, int offset, byte data[]);
-inline char RemoteSetBrickName(byte conn, string name);
-inline char RemoteRenameFile(byte conn, string oldname, string newname);
-inline char RemotePollCommand(byte conn, byte bufnum, byte len);
-
-inline char GetLastResponseInfo(bool Clear, byte & Length, byte & Command, hyte Buffer[]);
-inline void SysReadLastResponse(ReadLastResponseType & args);
 */
 
 #include "NXCDefs.h"

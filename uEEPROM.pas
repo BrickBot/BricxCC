@@ -422,7 +422,7 @@ begin
   Screen.Cursor := crHourGlass;
   try
     for i := 0 to 15 do begin
-      block := BrickComm.EEPROMBlock[i];
+      block := BrickComm.EEPROMBlocks[i];
       for j := 0 to 15 do
         RawData[i*16+j] := block.Data[j];
     end;
@@ -950,7 +950,7 @@ begin
     s := Min(edtBlock.Value, 255);
     c := Min(edtBlockCount.Value, 256-s);
     for i := s to s+c-1 do begin
-      block := BrickComm.EEPROMBlock[i];
+      block := BrickComm.EEPROMBlocks[i];
       tmp := Format('%3.3d 0x%4.4x: ', [i, i*16]);
       for j := 0 to 15 do
         tmp := tmp + Format('%2.2x ', [block.Data[j]]);

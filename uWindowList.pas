@@ -78,13 +78,23 @@ end;
 procedure TfrmWindowList.GotoSelectedWindow;
 var
   i : Integer;
-  F : TEditorForm;
+  F : TForm;
 begin
   i := lstWindows.ItemIndex;
   if i <> -1 then
   begin
-    F := TEditorForm(lstWindows.Items.Objects[i]);
-    MainForm.ActivateEditorForm(F);
+    F := TForm(lstWindows.Items.Objects[i]);
+    if F is TEditorForm then
+    begin
+      MainForm.ActivateEditorForm(TEditorForm(F));
+    end
+    else
+    begin
+      if F.Visible then
+        F.BringToFront;
+      if F.WindowState = wsMinimized then
+        F.WindowState := wsNormal;
+    end;
   end;
   ModalResult := mrOk;
 end;
@@ -104,7 +114,7 @@ begin
   for i := 0 to Screen.FormCount - 1 do
   begin
     F := Screen.Forms[i];
-    if F.Visible and (F is TEditorForm) then
+    if F.Visible and (F <> MainForm) and (F <> Self) then
     begin
       C := F.Caption;
       lstWindows.Items.AddObject(C, F);
