@@ -758,7 +758,8 @@ uses
   uPSI_FantomSpirit, uPSRuntime, uPSDebugger, uPSI_uGlobals, uPSI_rcx_constants,
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uDebugLogging,
-  uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp;
+  uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp,
+  uNXTWatchCommon, uNXTWatchList;
 
 const
   K_NQC_GUIDE = 24;

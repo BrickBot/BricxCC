@@ -19,7 +19,7 @@ unit FantomSpirit;
 interface
 
 uses
-  Classes, SysUtils, rcx_cmd, uSpirit, FantomDefs;
+  Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs;
 
 type
   TFantomSpirit = class(TBrickComm)
@@ -63,6 +63,9 @@ type
     procedure LookupResourceName;
     function InternalNXTUploadFileToStream(handle : FantomHandle; const name : string;
       const totalSize, availSize : cardinal; aStream : TStream) : boolean;
+    procedure LookupOffsetsIfNeeded;
+    function GetNXTVariableHelper(aNum, aIdx, aCount, aDigits : integer) : variant;
+    function GetVariantFromByteArray(dst : TDSType; buf : array of byte; idx : integer) : variant;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); override;
     destructor Destroy; override;
@@ -293,7 +296,7 @@ type
 implementation
 
 uses
-  rcx_constants, Contnrs, Math, uNXTConstants, uCommonUtils, uDebugLogging,
+  rcx_constants, Contnrs, Math, uCommonUtils, uDebugLogging,
   {$IFNDEF FPC}
   FANTOM
   {$ELSE}
@@ -2983,78 +2986,11 @@ var
   mode, regmode, runstate : byte;
   tacholimit : cardinal;
   protmin, protmaj, firmmin, firmmaj : byte;
-  offset, size, vartype : integer;
-  dst : TDSType;
 begin
   Result := 0;
   case aSrc of
     kRCX_VariableType : begin
-      // lookup our offsets if needed
-      if fOffsetDS = MaxInt then
-      begin
-        // IOMapRead CommandOffsetOffsetDS
-        modID := kNXT_ModuleCmd;
-        count := 2;
-        buffer.Data[0] := 0;
-        res := NXTReadIOMap(modID, CommandOffsetOffsetDS, count, buffer);
-        if res then
-          fOffsetDS := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
-      end;
-      if fOffsetDVA = MaxInt then
-      begin
-        // IOMapRead CommandOffsetOffsetDVA
-        modID := kNXT_ModuleCmd;
-        count := 2;
-        buffer.Data[0] := 0;
-        res := NXTReadIOMap(modID, CommandOffsetOffsetDVA, count, buffer);
-        if res then
-          fOffsetDVA := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
-      end;
-      if (fOffsetDS <> $FFFF) and (fOffsetDVA <> $FFFF) then
-      begin
-        DoGetVarInfoByID(aNum, offset, size, vartype);
-        if (offset <> -1) and (size <> -1) and (vartype <> -1) then
-        begin
-          dst := TDSType(Byte(vartype));
-          // if vartype == scalar type then
-          if dst in [dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong, dsFloat] then
-          begin
-            // IOMapRead from fOffsetDS+offset, size bytes
-            // IOMapRead CommandOffsetTick
-            modID := kNXT_ModuleCmd;
-            count := size; // variable size
-            buffer.Data[0] := 0;
-            res := NXTReadIOMap(modID, fOffsetDS+offset, count, buffer);
-            if res then
-            begin
-              case dst of
-                dsUByte : Result := Integer(buffer.Data[0]);
-                dsSByte : Result := Integer(Char(buffer.Data[0]));
-                dsUWord :
-                  Result := Integer(Word(BytesToCardinal(buffer.Data[0],
-                    buffer.Data[1])));
-                dsSWord :
-                  Result := Integer(SmallInt(BytesToCardinal(buffer.Data[0],
-                    buffer.Data[1])));
-                dsULong :
-                  Result := BytesToCardinal(buffer.Data[0], buffer.Data[1],
-                    buffer.Data[2], buffer.Data[2]);
-                dsSLong :
-                  Result := Integer(BytesToCardinal(buffer.Data[0],
-                    buffer.Data[1], buffer.Data[2], buffer.Data[3]));
-              else
-                Result := CardinalToSingle(BytesToCardinal(buffer.Data[0],
-                    buffer.Data[1], buffer.Data[2], buffer.Data[3]));
-              end;
-            end;
-          end
-          else if dst = dsArray then
-          begin
-            // read first value from array?????
-            Result := 0;
-          end;
-        end;
-      end;
+      Result := GetNXTVariableHelper(aNum, 0, 0, 18);
     end;
     kRCX_ConstantType : begin
       Result := aNum;
@@ -3869,6 +3805,202 @@ begin
     end;
   finally
     SL.Free;
+  end;
+end;
+
+procedure TFantomSpirit.LookupOffsetsIfNeeded;
+var
+  modID : Cardinal;
+  count : Word;
+  buffer : NXTDataBuffer;
+  res : boolean;
+begin
+  // lookup our offsets if needed
+  if (fOffsetDS = MaxInt) and (fOffsetDVA = MaxInt) then
+  begin
+    modID := kNXT_ModuleCmd;
+    count := 4;
+    buffer.Data[0] := 0;
+    res := NXTReadIOMap(modID, CommandOffsetOffsetDS, count, buffer);
+    if res then
+    begin
+      fOffsetDS := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
+      fOffsetDVA := Word(BytesToCardinal(buffer.Data[2], buffer.Data[3]));
+    end;
+  end
+  else if fOffsetDS = MaxInt then
+  begin
+    // IOMapRead CommandOffsetOffsetDS
+    modID := kNXT_ModuleCmd;
+    count := 2;
+    buffer.Data[0] := 0;
+    res := NXTReadIOMap(modID, CommandOffsetOffsetDS, count, buffer);
+    if res then
+      fOffsetDS := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
+  end
+  else if fOffsetDVA = MaxInt then
+  begin
+    // IOMapRead CommandOffsetOffsetDVA
+    modID := kNXT_ModuleCmd;
+    count := 2;
+    buffer.Data[0] := 0;
+    res := NXTReadIOMap(modID, CommandOffsetOffsetDVA, count, buffer);
+    if res then
+      fOffsetDVA := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
+  end;
+end;
+
+function TFantomSpirit.GetNXTVariableHelper(aNum, aIdx, aCount, aDigits: integer): variant;
+var
+  modID, cval : Cardinal;
+  count, dvindex, dvoff, dvsize, dvcount, totalbytes, idx, dims : Word;
+  buffer : NXTDataBuffer;
+  offset, size, vartype, ival : integer;
+  dst : TDSType;
+  res : boolean;
+  buf : array of Byte;
+  tmpVar : Variant;
+  fval : Single;
+begin
+  Result := 0;
+  LookupOffsetsIfNeeded;
+  if (fOffsetDS <> $FFFF) and (fOffsetDVA <> $FFFF) then
+  begin
+    modID := kNXT_ModuleCmd;
+    DoGetVarInfoByID(aNum, offset, size, vartype);
+    if (offset <> -1) and (size <> -1) and (vartype <> -1) then
+    begin
+      dst := TDSType(Byte(vartype));
+      // if vartype == scalar type then
+      if dst in [dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong, dsFloat] then
+      begin
+        // IOMapRead from fOffsetDS+offset, size bytes
+        count := size; // variable size
+        buffer.Data[0] := 0;
+        res := NXTReadIOMap(modID, fOffsetDS+offset, count, buffer);
+        if res then
+        begin
+          Result := GetVariantFromByteArray(dst, buffer.Data, 0);
+        end;
+      end
+      else if dst = dsArray then
+      begin
+        // TODO: this code only supports 1-dimensional arrays!!!!!
+        // Fix it to support N-dimensions
+
+        dims := 0; // how many dimensions are there?
+        // what is the base array type?
+        idx := 1;
+        while dst = dsArray do
+        begin
+          DoGetVarInfoByID(aNum+idx, offset, size, vartype);
+          if (offset <> -1) and (size <> -1) and (vartype <> -1) then
+            dst := TDSType(Byte(vartype))
+          else
+            break;
+          inc(idx);
+          inc(dims);
+        end;
+        if (offset <> -1) and (size <> -1) and (vartype <> -1) and (dims = 1) then
+        begin
+          // read aCount elements starting at aIdx
+          // first get dope vector index
+          count := 2; //  get a UWORD for the DVIndex
+          buffer.Data[0] := 0;
+          res := NXTReadIOMap(modID, fOffsetDS+offset, count, buffer);
+          if res then
+          begin
+            dvindex := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
+            // now get this array's dope vector information
+            count := 6; //  get 3 UWORD values from the dope vector array
+            buffer.Data[0] := 0;
+            res := NXTReadIOMap(modID, fOffsetDVA+(10*dvindex), count, buffer);
+            if res then
+            begin
+              dvoff   := Word(BytesToCardinal(buffer.Data[0], buffer.Data[1]));
+              dvsize  := Word(BytesToCardinal(buffer.Data[2], buffer.Data[3]));
+              dvcount := Word(BytesToCardinal(buffer.Data[4], buffer.Data[5]));
+              // I can read up to ~50 bytes at a time so try to optimize this, if possible
+              // the user has requested aCount elements (0 == 1)
+              if aCount = 0 then
+                aCount := 1;
+              if (aIdx + aCount) > dvcount then
+                aCount := dvcount-aIdx;
+              dvoff := dvoff + aIdx*dvsize; // move the offset forward to the specified element index
+              // number of bytes to read is dvsize*aCount but maxed out at dvsize*dvcount
+              totalbytes := dvsize*aCount; // total number of bytes
+              SetLength(buf, totalbytes);
+              idx := 0;
+              while totalbytes > 0 do
+              begin
+                count := Min(56, totalbytes);
+                res := NXTReadIOMap(modID, fOffsetDS+dvoff+idx, count, buffer);
+                if not res then
+                  Exit;
+                Move(buffer.Data[0], buf[idx], count);
+                inc(idx, count);
+                dec(totalbytes, count);
+              end;
+              // we have filled our byte array with all the values we need
+              Result := ''; // empty string
+              for idx := 0 to aCount - 1 do
+              begin
+                if dst in [dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong, dsFloat] then
+                begin
+                  tmpVar := GetVariantFromByteArray(dst, buf, idx);
+                  case dst of
+                    dsUByte, dsSByte, dsUWord, dsSWord, dsSLong : begin
+                      ival := tmpVar;
+                      Result := Result + Format('%d ', [ival]);
+                    end;
+                    dsULong : begin
+                      cval := tmpVar;
+                      Result := Result + Format('%d ', [cval]);
+                    end;
+                  else
+                    // dsFloat
+                    fval := tmpVar;
+                    Result := Result + Format('%.4f ', [fval]);
+                  end;
+                end
+                else if dst = dsCluster then
+                begin
+                  // ???
+                end;
+              end;
+            end;
+          end;
+        end
+        else
+          Result := 0;
+      end
+      else if dst = dsCluster then
+      begin
+        // output all the structure fields as a string
+      end;
+    end;
+  end;
+end;
+
+function TFantomSpirit.GetVariantFromByteArray(dst: TDSType; buf: array of byte; idx: integer): variant;
+begin
+  case dst of
+    dsUByte :
+      Result := Integer(buf[idx]);
+    dsSByte :
+      Result := Integer(Char(buf[idx]));
+    dsUWord :
+      Result := Integer(Word(BytesToCardinal(buf[idx*2], buf[(idx*2)+1])));
+    dsSWord :
+      Result := Integer(SmallInt(BytesToCardinal(buf[idx*2], buf[(idx*2)+1])));
+    dsULong :
+      Result := BytesToCardinal(buf[idx*4], buf[(idx*4)+1], buf[(idx*4)+2], buf[(idx*4)+3]);
+    dsSLong :
+      Result := Integer(BytesToCardinal(buf[idx*4], buf[(idx*4)+1], buf[(idx*4)+2], buf[(idx*4)+3]));
+    dsFloat :
+      Result := CardinalToSingle(BytesToCardinal(buf[idx*4], buf[(idx*4)+1], buf[(idx*4)+2], buf[(idx*4)+3]));
+  else
+    Result := 0;
   end;
 end;
 
