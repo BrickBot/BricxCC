@@ -167,6 +167,11 @@ begin
             tmpStr2 := StripTrailingZeros(Format('%.4f', [fval]));
             tmpStr  := TComboBox(TCheckBox(temp).Parent.Controls[5]).Items[num] + ': ' + tmpStr2;
           end
+          else if VarType(val) = varString then
+          begin
+            tmpStr2 := val;
+            tmpStr := TComboBox(TCheckBox(temp).Parent.Controls[5]).Items[num] + ': ' + tmpStr2;
+          end
           else
             FormatIntegerValue;
         end

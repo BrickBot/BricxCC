@@ -1,3 +1,19 @@
+(*
+ * The contents of this file are subject to the Mozilla Public License
+ * Version 1.1 (the "License"); you may not use this file except in
+ * compliance with the License. You may obtain a copy of the License at
+ * http://www.mozilla.org/MPL/
+ *
+ * Software distributed under the License is distributed on an "AS IS"
+ * basis, WITHOUT WARRANTY OF ANY KIND, either express or implied. See the
+ * License for the specific language governing rights and limitations
+ * under the License.
+ *
+ * The Initial Developer of this code is John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2010 John Hansen.
+ * All Rights Reserved.
+ *
+ *)
 unit uNXTWatchCommon;
 
 interface
@@ -9,6 +25,8 @@ type
   TWatchType = (wtCharacter, wtString, wtDecimal, wtHexadecimal, wtFloatingPoint,
     wtPointer, wtRecord, wtDefault, wtMemoryDump);
 
+  TWatchList = class;
+
   TWatchInfo = class(TCollectionItem)
   private
     fExpression: string;
@@ -18,13 +36,15 @@ type
     fWatchType : TWatchType;
     fRepeatCount: integer;
     fDigits: integer;
-    fValue : string;
-    function GetValue: string;
   protected
+    fValue : string;
     procedure AssignTo(Dest: TPersistent); override;
+    function IsProcessAccessible : boolean;
+    function GetValue: string;
+    function GetWatchList: TWatchList;
   public
     constructor Create(ACollection: TCollection); override;
-    procedure Refresh;
+    procedure Refresh(bCheckProcess : boolean = false);
     property Expression : string read fExpression write fExpression;
     property GroupName : string read fGroupName write fGroupName;
     property Enabled : boolean read fEnabled write fEnabled;
@@ -33,12 +53,21 @@ type
     property RepeatCount : integer read fRepeatCount write fRepeatCount;
     property Digits : integer read fDigits write fDigits;
     property Value : string read GetValue;
+    property WatchList: TWatchList read GetWatchList;
   end;
+
+  TIsProcessAccessibleEvent = procedure(Sender : TObject; var Accessible : boolean) of Object;
+  TGetWatchValueEvent = procedure(Info : TWatchInfo; var Value : string) of Object;
 
   TWatchList = class(TCollection)
   private
+    fOnIsProcessAccessible: TIsProcessAccessibleEvent;
+    fOnGetWatchValueEvent: TGetWatchValueEvent;
     function GetItem(Index: Integer): TWatchInfo;
     procedure SetItem(Index: Integer; const Value: TWatchInfo);
+  protected
+    procedure DoIsProcessAccessible(Sender : TObject; var Accessible : boolean);
+    procedure DoGetWatchValue(Info : TWatchInfo; var Value : string);
   public
     constructor Create; virtual;
     function  Add: TWatchInfo;
@@ -47,6 +76,8 @@ type
     procedure EnableAllWatches;
     procedure Refresh;
     property  Items[Index: Integer]: TWatchInfo read GetItem write SetItem; default;
+    property  OnIsProcessAccessible : TIsProcessAccessibleEvent read fOnIsProcessAccessible write fOnIsProcessAccessible;
+    property  OnGetWatchValue : TGetWatchValueEvent read fOnGetWatchValueEvent write fOnGetWatchValueEvent;
   end;
 
   function TheWatchList : TWatchList;
@@ -115,13 +146,35 @@ begin
     Result := DISABLED_VALUE;
 end;
 
-procedure TWatchInfo.Refresh;
+function TWatchInfo.GetWatchList: TWatchList;
+begin
+  Result := TWatchList(Collection);
+end;
+
+function TWatchInfo.IsProcessAccessible: boolean;
+begin
+  Result := False;
+  WatchList.DoIsProcessAccessible(Self, Result);
+end;
+
+procedure TWatchInfo.Refresh(bCheckProcess : boolean);
+var
+  bCanCalc : boolean;
 begin
   if Enabled then
   begin
     // attempt to get the current watch value using the
     // watch type, expression, repeat count, and digits settings
-    fValue := NOPROC_VALUE;
+    bCanCalc := True;
+    if bCheckProcess then
+      bCanCalc := IsProcessAccessible;
+    if bCanCalc then
+    begin
+      fValue := '';
+      WatchList.DoGetWatchValue(Self, fValue);
+    end
+    else
+      fValue := NOPROC_VALUE;
   end
   else
     fValue := DISABLED_VALUE;
@@ -150,6 +203,22 @@ begin
   end;
 end;
 
+procedure TWatchList.DoGetWatchValue(Info: TWatchInfo;
+  var Value: string);
+begin
+  Value := '';
+  if Assigned(fOnGetWatchValueEvent) then
+    fOnGetWatchValueEvent(Info, Value);
+end;
+
+procedure TWatchList.DoIsProcessAccessible(Sender: TObject;
+  var Accessible: boolean);
+begin
+  Accessible := False;
+  if Assigned(fOnIsProcessAccessible) then
+    fOnIsProcessAccessible(Sender, Accessible);
+end;
+
 procedure TWatchList.EnableAllWatches;
 var
   i : integer;
@@ -174,10 +243,20 @@ end;
 procedure TWatchList.Refresh;
 var
   i : integer;
+  bProcAccessible : boolean;
+  WI : TWatchInfo;
 begin
   // refresh all watches in our list
+  bProcAccessible := False;
+  DoIsProcessAccessible(Self, bProcAccessible);
   for i := 0 to Count - 1 do
-    Items[i].Refresh;
+  begin
+    WI := Items[i];
+    if bProcAccessible then
+      WI.Refresh(false)
+    else
+      WI.fValue := NOPROC_VALUE;
+  end;
 end;
 
 procedure TWatchList.SetItem(Index: Integer; const Value: TWatchInfo);

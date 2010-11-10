@@ -415,7 +415,13 @@ begin
           tmpStr2 := StripTrailingZeros(Format('%.4f', [fval]));
           tmpStr  := Format('Var %d: ', [i]) + tmpStr2;
         end
+        else if VarType(val) = varString then
+        begin
+          tmpStr2 := val;
+          tmpStr := Format('Var %d: ', [i]) + tmpStr2;
+        end
         else begin
+          // assuming a variant of integer type
           ival := val;
           tmpStr  := Format('Var %d: %d', [i, ival]);
           tmpStr2 := Format('%6d',[ival]);
