@@ -46,7 +46,8 @@ uses
   SynHighlighterROPS, SynHighlighterLua, SynHighlighterRuby,
   SynHighlighterNPG, SynHighlighterRS,
   uPSComponent_StdCtrls, uPSComponent_Controls, uPSComponent_Forms,
-  uPSComponent_Default, uPSComponent, uGrepExpert, uGrepSearch;
+  uPSComponent_Default, uPSComponent, uGrepExpert, uGrepSearch,
+  uNXTWatchCommon;
 
 {$IFNDEF FPC}
 const
@@ -159,6 +160,7 @@ type
     actHelpNBCTutorialPDF: TAction;
     actSearchGrepSearch: TAction;
     actSearchGrepResults: TAction;
+    actToolsNXTWatchList: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -266,6 +268,7 @@ type
     procedure FormCloseQuery(Sender: TObject; var CanClose: Boolean);
     procedure actSearchGrepSearchExecute(Sender: TObject);
     procedure actSearchGrepResultsExecute(Sender: TObject);
+    procedure actToolsNXTWatchListExecute(Sender: TObject);
   public
     // menu components
     mnuMain: TOfficeMainMenu;
@@ -370,6 +373,7 @@ type
     mniSpybotEEPROM: TOfficeMenuItem;
     mniNXTExplorer: TOfficeMenuItem;
     mniNXTScreen: TOfficeMenuItem;
+    mniNXTWatchList: TOfficeMenuItem;
     mniSyncMotors: TOfficeMenuItem;
     N7: TOfficeMenuItem;
     mniSendMessage: TOfficeMenuItem;
@@ -691,6 +695,9 @@ type
     function DoNewHelp(const Filename : string; Command: Word; Data: Integer;
       var CallHelp: Boolean): Boolean;
     procedure HelpQuit;
+    procedure HandleGetExpressions(Sender: TObject; aStrings : TStrings);
+    procedure HandleIsProcessAccessible(Sender : TObject; var Accessible : boolean);
+    procedure HandleGetWatchValue(Info : TWatchInfo; var Value : string);
   public
     { Public declarations }
     procedure HandleOnCompilerStatusChange(Sender: TObject; const StatusMsg: string; const bDone : boolean);
@@ -759,7 +766,7 @@ uses
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uDebugLogging,
   uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp,
-  uNXTWatchCommon, uNXTWatchList;
+  uNXTWatchList, uSpirit;
 
 const
   K_NQC_GUIDE = 24;
@@ -1089,6 +1096,10 @@ begin
      FileExists(DefaultMacroLibrary) then
     frmMacroManager.CurrentLibraryPath := DefaultMacroLibrary;
   ConfigureOtherFirmwareOptions;
+  // watch list stuff
+  frmNXTWatchList.OnGetExpressions   := HandleGetExpressions;
+  TheWatchList.OnIsProcessAccessible := HandleIsProcessAccessible;
+  TheWatchList.OnGetWatchValue       := HandleGetWatchValue;
 end;
 
 {Reacting on dropping a file on the form}
@@ -2131,6 +2142,7 @@ begin
   actToolsSpybotEEPROM.Enabled   := bBALSF and IsSpybotic;
   actToolsNXTExplorer.Enabled    := bBALSF and IsNXT;
   actToolsNXTScreen.Enabled      := bBALSF and IsNXT;
+  actToolsNXTWatchList.Enabled   := bBALSF and IsNXT;
   actToolsSyncMotors.Enabled     := bBALSF and IsNXT;
   actToolsFindBrick.Enabled      := not bBrickAlive;
   actToolsTurnBrickOff.Enabled   := bBALSF;
@@ -4175,6 +4187,7 @@ begin
   mniSpybotEEPROM := TOfficeMenuItem.Create(mniTools);
   mniNXTExplorer := TOfficeMenuItem.Create(mniTools);
   mniNXTScreen := TOfficeMenuItem.Create(mniTools);
+  mniNXTWatchList := TOfficeMenuItem.Create(mniTools);
   mniSyncMotors := TOfficeMenuItem.Create(mniTools);
   N7 := TOfficeMenuItem.Create(mniTools);
   mniSendMessage := TOfficeMenuItem.Create(mniTools);
@@ -4195,7 +4208,7 @@ begin
   // add menu items to tools menu
   mniTools.Add([mniDirectControl, mniDiagnose, mniWatch, mniRCXPiano,
                 mniRCXJoystick, mniRemote, mniNewWatch, mniSetvalues,
-                mniSpybotEEPROM, mniNXTExplorer, mniNXTScreen, mniSyncMotors,
+                mniSpybotEEPROM, mniNXTExplorer, mniNXTScreen, mniNXTWatchList, mniSyncMotors,
                 N7, mniSendMessage, mniDatalog, mniMemoryMap, mniClearMemory,
                 mniMIDIConversion, mniSoundConvert, N9, mniFindRCX,
                 mniTurnRCXOff, mniCloseComm, N3, mniFirmware,
@@ -4925,6 +4938,11 @@ begin
   begin
     Name := 'mniNXTScreen';
     Action := actToolsNXTScreen;
+  end;
+  with mniNXTWatchList do
+  begin
+    Name := 'mniNXTWatchList';
+    Action := actToolsNXTWatchList;
   end;
   with mniSyncMotors do
   begin
@@ -7158,8 +7176,81 @@ begin
   fGE.Click(Sender);
 end;
 
-{$IFDEF FPC}
+procedure TMainForm.actToolsNXTWatchListExecute(Sender: TObject);
+begin
+  frmNXTWatchList.Visible := not frmNXTWatchList.Visible;
+end;
+
+procedure TMainForm.HandleGetExpressions(Sender: TObject; aStrings: TStrings);
+var
+  i : integer;
+begin
+  aStrings.Clear;
+  if IsNXT then
+  begin
+    if FileIsROPS then
+    begin
+      if ce.Exec.Status in [isRunning, isPaused] then
+        for i := 0 to ce.Exec.GlobalVarNames.Count - 1 do
+          aStrings.Add(ce.Exec.GlobalVarNames[i]);
+      if ce.Exec.Status = isPaused then
+      begin
+        for i := 0 to ce.Exec.CurrentProcVars.Count - 1 do
+          aStrings.Add(ce.Exec.CurrentProcVars[i]);
+        for i := 0 to ce.Exec.CurrentProcParams.Count -1 do
+          aStrings.Add(ce.Exec.CurrentProcParams[i]);
+      end;
+    end
+    else if FileIsNBCOrNXC then
+    begin
+      for i := 0 to CurrentProgram.Dataspace.Count - 1 do
+        aStrings.Add(CurrentProgram.Dataspace[i].Name); // ?? PrettyName
+    end;
+  end;
+end;
+
+procedure TMainForm.HandleGetWatchValue(Info: TWatchInfo; var Value: string);
+var
+  i : integer;
+begin
+  if IsNXT then
+  begin
+    if FileIsROPS then
+    begin
+      Value := ce.GetVarContents(Info.Expression);
+    end
+    else if FileIsNBCOrNXC then
+    begin
+      i := CurrentProgram.Dataspace.IndexOfName(Info.Expression);
+      if i <> -1 then
+        Value := BrickComm.GetVariableValue(i);
+    end;
+  end;
+end;
+
+procedure TMainForm.HandleIsProcessAccessible(Sender: TObject; var Accessible: boolean);
+var
+  name : string;
+begin
+  if IsNXT then
+  begin
+    if FileIsROPS then
+    begin
+      Accessible := ce.Exec.Status in [isRunning, isPaused];
+    end
+    else if FileIsNBCOrNXC then
+    begin
+      Accessible := False;
+      if BrickComm.GetCurrentProgramName(name) then
+      begin
+        Accessible := CurrentProgram.Loaded(name);
+      end;
+    end;
+  end;
+end;
+
 initialization
+{$IFDEF FPC}
   {$i MainUnit.lrs}
 {$ENDIF}
 

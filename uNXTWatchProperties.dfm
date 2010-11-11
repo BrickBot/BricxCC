@@ -12,9 +12,10 @@ object frmNXTWatchProperties: TfrmNXTWatchProperties
   Font.Name = 'MS Sans Serif'
   Font.Style = []
   OldCreateOrder = False
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object Label1: TLabel
+  object lblExpression: TLabel
     Left = 8
     Top = 10
     Width = 54
@@ -22,13 +23,29 @@ object frmNXTWatchProperties: TfrmNXTWatchProperties
     Caption = '&Expression:'
     FocusControl = cboExpression
   end
-  object Label2: TLabel
+  object lblGroupName: TLabel
     Left = 8
     Top = 34
     Width = 64
     Height = 13
     Caption = 'Gr&oup name::'
     FocusControl = cboGroupName
+  end
+  object lblRepeatCount: TLabel
+    Left = 8
+    Top = 59
+    Width = 68
+    Height = 13
+    Caption = 'Repeat &count:'
+    FocusControl = edtRepeat
+  end
+  object lblDigits: TLabel
+    Left = 216
+    Top = 59
+    Width = 29
+    Height = 13
+    Caption = 'Di&gits:'
+    FocusControl = edtDigits
   end
   object btnOK: TButton
     Left = 221
@@ -39,7 +56,7 @@ object frmNXTWatchProperties: TfrmNXTWatchProperties
     Caption = 'OK'
     Default = True
     ModalResult = 1
-    TabOrder = 0
+    TabOrder = 7
   end
   object btnCancel: TButton
     Left = 277
@@ -50,7 +67,7 @@ object frmNXTWatchProperties: TfrmNXTWatchProperties
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
-    TabOrder = 1
+    TabOrder = 8
   end
   object btnHelp: TButton
     Left = 333
@@ -59,7 +76,7 @@ object frmNXTWatchProperties: TfrmNXTWatchProperties
     Height = 25
     HelpContext = 45004
     Caption = '&Help'
-    TabOrder = 2
+    TabOrder = 9
   end
   object cboExpression: TComboBox
     Left = 96
@@ -67,7 +84,8 @@ object frmNXTWatchProperties: TfrmNXTWatchProperties
     Width = 289
     Height = 21
     ItemHeight = 13
-    TabOrder = 3
+    TabOrder = 0
+    OnChange = cboExpressionChange
   end
   object cboGroupName: TComboBox
     Left = 96
@@ -75,17 +93,18 @@ object frmNXTWatchProperties: TfrmNXTWatchProperties
     Width = 289
     Height = 21
     ItemHeight = 13
-    TabOrder = 4
+    TabOrder = 1
     Text = 'Watches'
+    OnChange = cboGroupNameChange
     Items.Strings = (
       'Watches')
   end
-  object GroupBox1: TGroupBox
+  object grpFormat: TGroupBox
     Left = 8
     Top = 104
     Width = 377
     Height = 89
-    TabOrder = 5
+    TabOrder = 6
     object radCharacter: TRadioButton
       Left = 8
       Top = 16
@@ -167,7 +186,7 @@ object frmNXTWatchProperties: TfrmNXTWatchProperties
     Width = 81
     Height = 17
     Caption = 'E&nabled'
-    TabOrder = 6
+    TabOrder = 4
   end
   object chkAllowFunctionCalls: TCheckBox
     Left = 96
@@ -176,6 +195,28 @@ object frmNXTWatchProperties: TfrmNXTWatchProperties
     Height = 17
     Caption = '&Allow Function Calls'
     Enabled = False
-    TabOrder = 7
+    TabOrder = 5
+  end
+  object edtRepeat: TBricxccSpinEdit
+    Left = 96
+    Top = 54
+    Width = 49
+    Height = 22
+    MaxLength = 2
+    MaxValue = 32
+    MinValue = 0
+    TabOrder = 2
+    Value = 0
+  end
+  object edtDigits: TBricxccSpinEdit
+    Left = 256
+    Top = 54
+    Width = 49
+    Height = 22
+    MaxLength = 2
+    MaxValue = 20
+    MinValue = 0
+    TabOrder = 3
+    Value = 18
   end
 end
