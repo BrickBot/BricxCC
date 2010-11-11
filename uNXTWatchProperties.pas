@@ -23,18 +23,19 @@ unit uNXTWatchProperties;
 interface
 
 uses
-  SysUtils, Classes, Controls, Forms, StdCtrls, uNXTWatchCommon;
+  SysUtils, Classes, Controls, Forms, StdCtrls, uNXTWatchCommon,
+  BricxccSpin;
 
 type
   TfrmNXTWatchProperties = class(TForm)
     btnOK: TButton;
     btnCancel: TButton;
     btnHelp: TButton;
-    Label1: TLabel;
+    lblExpression: TLabel;
     cboExpression: TComboBox;
     cboGroupName: TComboBox;
-    Label2: TLabel;
-    GroupBox1: TGroupBox;
+    lblGroupName: TLabel;
+    grpFormat: TGroupBox;
     radCharacter: TRadioButton;
     radString: TRadioButton;
     radDecimal: TRadioButton;
@@ -46,6 +47,13 @@ type
     radMemoryDump: TRadioButton;
     chkEnabled: TCheckBox;
     chkAllowFunctionCalls: TCheckBox;
+    lblRepeatCount: TLabel;
+    edtRepeat: TBricxccSpinEdit;
+    edtDigits: TBricxccSpinEdit;
+    lblDigits: TLabel;
+    procedure cboExpressionChange(Sender: TObject);
+    procedure cboGroupNameChange(Sender: TObject);
+    procedure FormShow(Sender: TObject);
   private
     { Private declarations }
     function GetAllowFuncs: boolean;
@@ -62,10 +70,12 @@ type
     procedure SetGroupName(const Value: string);
     procedure SetRepeatCount(const Value: integer);
     procedure SetWatchType(const Value: TWatchType);
+    procedure UpdateButtonState;
   public
     { Public declarations }
     procedure InitDialog(wi : TWatchInfo);
     procedure UpdateWatchInfo(var wi : TWatchInfo);
+    procedure PopulateExpressions(const exprStr : string);
     property Expression : string read GetExpression write SetExpression;
     property GroupName : string read GetGroupName write SetGroupName;
     property WatchEnabled : boolean read GetWatchEnabled write SetWatchEnabled;
@@ -90,7 +100,7 @@ end;
 
 function TfrmNXTWatchProperties.GetDigits: integer;
 begin
-  Result := 18;
+  Result := edtDigits.Value;
 end;
 
 function TfrmNXTWatchProperties.GetWatchEnabled: boolean;
@@ -110,7 +120,7 @@ end;
 
 function TfrmNXTWatchProperties.GetRepeatCount: integer;
 begin
-  Result := 0;
+  Result := edtRepeat.Value;
 end;
 
 function TfrmNXTWatchProperties.GetWatchType: TWatchType;
@@ -143,7 +153,7 @@ end;
 
 procedure TfrmNXTWatchProperties.SetDigits(const Value: integer);
 begin
-  // do nothing for now
+  edtDigits.Value := Value;
 end;
 
 procedure TfrmNXTWatchProperties.SetWatchEnabled(const Value: boolean);
@@ -163,7 +173,7 @@ end;
 
 procedure TfrmNXTWatchProperties.SetRepeatCount(const Value: integer);
 begin
-  // do nothing for now
+  edtRepeat.Value := Value;
 end;
 
 procedure TfrmNXTWatchProperties.SetWatchType(const Value: TWatchType);
@@ -205,8 +215,33 @@ begin
   wi.WatchType          := WatchType;
 end;
 
-{$IFDEF FPC}
+procedure TfrmNXTWatchProperties.PopulateExpressions(const exprStr: string);
+begin
+  cboExpression.Items.CommaText := exprStr;
+end;
+
+procedure TfrmNXTWatchProperties.cboExpressionChange(Sender: TObject);
+begin
+  UpdateButtonState;
+end;
+
+procedure TfrmNXTWatchProperties.cboGroupNameChange(Sender: TObject);
+begin
+  UpdateButtonState;
+end;
+
+procedure TfrmNXTWatchProperties.UpdateButtonState;
+begin
+  btnOK.Enabled := (cboExpression.Text <> '') and (cboGroupName.Text <> '');
+end;
+
+procedure TfrmNXTWatchProperties.FormShow(Sender: TObject);
+begin
+  UpdateButtonState;
+end;
+
 initialization
+{$IFDEF FPC}
   {$i uNXTWatchProperties.lrs}
 {$ENDIF}
 

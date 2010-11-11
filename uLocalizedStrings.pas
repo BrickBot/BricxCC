@@ -708,6 +708,13 @@ resourcestring
   sNXCCompilationFailed = 'NXC compilation failed.';
   sNBCCompilationFailed = 'NBC compilation failed.';
 
+// uNXTWatchList
+resourcestring
+  sConfirmDeleteAllWatches = 'Delete all watches?';
+  sWatchName = 'Watch Name';
+  sWatchValue = 'Value';
+  sNotYetImplemented = 'Not yet implemented';
+
 implementation
 
 end.

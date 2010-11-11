@@ -75,12 +75,16 @@ type
     procedure DisableAllWatches;
     procedure EnableAllWatches;
     procedure Refresh;
+    function  IndexOf(const groupname, expression : string) : integer;
     property  Items[Index: Integer]: TWatchInfo read GetItem write SetItem; default;
     property  OnIsProcessAccessible : TIsProcessAccessibleEvent read fOnIsProcessAccessible write fOnIsProcessAccessible;
     property  OnGetWatchValue : TGetWatchValueEvent read fOnGetWatchValueEvent write fOnGetWatchValueEvent;
   end;
 
   function TheWatchList : TWatchList;
+
+const
+  DEFAULT_GROUP  = 'Watches';
 
 implementation
 
@@ -93,7 +97,6 @@ var
 const
   DISABLED_VALUE = '<disabled>';
   NOPROC_VALUE   = '(process not accessible)';
-  DEFAULT_GROUP  = 'Watches';
 
 function TheWatchList : TWatchList;
 begin
@@ -233,6 +236,23 @@ end;
 function TWatchList.GetItem(Index: Integer): TWatchInfo;
 begin
   Result := TWatchInfo(inherited GetItem(Index));
+end;
+
+function TWatchList.IndexOf(const groupname, expression: string): integer;
+var
+  i : integer;
+  wi : TWatchInfo;
+begin
+  Result := -1;
+  for i := 0 to Count - 1 do
+  begin
+    wi := Items[i];
+    if (wi.GroupName = groupname) and (wi.Expression = expression) then
+    begin
+      Result := i;
+      break;
+    end;
+  end;
 end;
 
 function TWatchList.Insert(Index: Integer): TWatchInfo;

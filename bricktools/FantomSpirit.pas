@@ -3856,6 +3856,7 @@ var
   count, dvindex, dvoff, dvsize, dvcount, totalbytes, idx, dims : Word;
   buffer : NXTDataBuffer;
   offset, size, vartype, ival : integer;
+  tmpoffset, tmpsize, tmpvartype : integer;
   dst : TDSType;
   res : boolean;
   buf : array of Byte;
@@ -3893,9 +3894,9 @@ begin
         idx := 1;
         while dst = dsArray do
         begin
-          DoGetVarInfoByID(aNum+idx, offset, size, vartype);
-          if (offset <> -1) and (size <> -1) and (vartype <> -1) then
-            dst := TDSType(Byte(vartype))
+          DoGetVarInfoByID(aNum+idx, tmpoffset, tmpsize, tmpvartype);
+          if (tmpoffset <> -1) and (tmpsize <> -1) and (tmpvartype <> -1) then
+            dst := TDSType(Byte(tmpvartype))
           else
             break;
           inc(idx);

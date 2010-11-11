@@ -15,9 +15,12 @@ object frmNXTWatchList: TfrmNXTWatchList
   Font.Style = []
   OldCreateOrder = False
   PopupMenu = pmuMain
+  OnCreate = FormCreate
+  OnDestroy = FormDestroy
+  OnShow = FormShow
   PixelsPerInch = 96
   TextHeight = 13
-  object TabSet1: TTabSet
+  object tabMain: TTabSet
     Left = 0
     Top = 142
     Width = 488
@@ -31,6 +34,7 @@ object frmNXTWatchList: TfrmNXTWatchList
     Tabs.Strings = (
       'Watches')
     TabIndex = 0
+    OnChange = tabMainChange
   end
   object lstWatches: TListView
     Left = 0
@@ -45,15 +49,22 @@ object frmNXTWatchList: TfrmNXTWatchList
     Columns = <
       item
         Caption = 'Watch Name'
+        MinWidth = 100
         Width = 100
       end
       item
         Caption = 'Value'
+        MinWidth = 100
         Width = 375
       end>
     RowSelect = True
     TabOrder = 1
     ViewStyle = vsReport
+    OnChange = lstWatchesChange
+    OnChanging = lstWatchesChanging
+    OnDblClick = lstWatchesDblClick
+    OnEditing = lstWatchesEditing
+    OnKeyDown = lstWatchesKeyDown
   end
   object pmuMain: TPopupMenu
     Left = 232
@@ -63,6 +74,9 @@ object frmNXTWatchList: TfrmNXTWatchList
     end
     object mniAddWatch: TMenuItem
       Action = actAddWatch
+    end
+    object Refresh1: TMenuItem
+      Action = actRefresh
     end
     object N1: TMenuItem
       Caption = '-'
@@ -80,7 +94,7 @@ object frmNXTWatchList: TfrmNXTWatchList
       Action = actCopyWatchValue
     end
     object mniCopyWatchName: TMenuItem
-      Action = actCopyWatchValue
+      Action = actCopyWatchName
     end
     object N2: TMenuItem
       Caption = '-'
@@ -224,6 +238,11 @@ object frmNXTWatchList: TfrmNXTWatchList
       Caption = 'D&ockable'
       Checked = True
       OnExecute = actDockableExecute
+    end
+    object actRefresh: TAction
+      Caption = '&Refresh'
+      ShortCut = 116
+      OnExecute = actRefreshExecute
     end
   end
 end
