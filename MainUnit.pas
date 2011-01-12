@@ -7193,7 +7193,7 @@ begin
       if ce.Exec.Status in [isRunning, isPaused] then
         for i := 0 to ce.Exec.GlobalVarNames.Count - 1 do
           aStrings.Add(ce.Exec.GlobalVarNames[i]);
-      if ce.Exec.Status = isPaused then
+      if ce.Exec.Status in [isRunning, isPaused] then
       begin
         for i := 0 to ce.Exec.CurrentProcVars.Count - 1 do
           aStrings.Add(ce.Exec.CurrentProcVars[i]);
