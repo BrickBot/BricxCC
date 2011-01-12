@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-11-04
- * version 71
+ * date 2010-12-06
+ * version 72
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -4376,12 +4376,12 @@ subroutine __fileResizeSub
 __frsCopyLoop:
   set __frsFReadArgs.Length, 1024
   syscall FileRead, __frsFReadArgs
-  brtst NEQ, __frsEndLoop, __frsFReadArgs.Result
   brtst LTEQ, __frsEndLoop, __frsFReadArgs.Length
   mov __frsFWriteArgs.Buffer, __frsFReadArgs.Buffer
   mov __frsFWriteArgs.Length, __frsFReadArgs.Length
   syscall FileWrite, __frsFWriteArgs
   brtst NEQ, __frsEndLoop, __frsFWriteArgs.Result
+  brtst NEQ, __frsEndLoop, __frsFReadArgs.Result
   jmp __frsCopyLoop
 __frsEndLoop:
   // close read file
@@ -4885,6 +4885,14 @@ dseg ends
   mov _dataAvail, __CHSCSArgs.DataAvailable \
   release __CHSCSMutex
 
+#define __RS485WriteSCDC(_conn, _buffer, _status) \
+  acquire __CHSWMutex \
+  sub __WFRRTmpByte, _conn, CONN_HS_ALL \
+  arrbuild __CHSWArgs.Buffer, __WFRRTmpByte, _buffer \
+  syscall CommHSWrite, __CHSWArgs \
+  mov _status, __CHSWArgs.Status \
+  release __CHSWMutex
+
 #define __RS485Write(_buffer, _status) \
   acquire __CHSWMutex \
   mov __CHSWArgs.Buffer, _buffer \
@@ -4945,8 +4953,17 @@ dseg ends
 
 #ifdef __ENHANCED_FIRMWARE
 
-#define __connectionWrite(_conn, _buffer, _result) \
-  brcmp NEQ, __ConnWrite_Else##__I__, _conn, 4 \
+#define __connectionSCDCWrite(_conn, _buffer, _result) \
+  brcmp LT, __ConnWrite_Else##__I__, _conn, 4 \
+  __RS485WriteSCDC(_conn, _buffer, _result) \
+  jmp __ConnWrite_EndIf##__I__ \
+  __ConnWrite_Else##__I__: \
+  __bluetoothWrite(_conn, _buffer, _result) \
+  __ConnWrite_EndIf##__I__: \
+  __IncI__
+
+#define __connectionRawWrite(_conn, _buffer, _result) \
+  brcmp LT, __ConnWrite_Else##__I__, _conn, 4 \
   __RS485Write(_buffer, _result) \
   jmp __ConnWrite_EndIf##__I__ \
   __ConnWrite_Else##__I__: \
@@ -4984,7 +5001,8 @@ ends
 
 #else
 
-#define __connectionWrite(_conn, _buffer, _result) __bluetoothWrite(_conn, _buffer, _result)
+#define __connectionSCDCWrite(_conn, _buffer, _result) __bluetoothWrite(_conn, _buffer, _result)
+#define __connectionRawWrite(_conn, _buffer, _result) __bluetoothWrite(_conn, _buffer, _result)
 
 #define __remoteConnectionIdle(_conn, _result) \
   __bluetoothStatus(_conn, _result) \
@@ -4998,7 +5016,7 @@ ends
   replace __SRSTmpBuf, __SRSTmpBuf, 2, _queue \
   replace __SRSTmpBuf, __SRSTmpBuf, 3, 2 \
   arrbuild __SRSSendBuf, __SRSTmpBuf, _bval, 0 \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __sendRemoteNumber(_conn, _queue, _val, _result) \
@@ -5009,7 +5027,7 @@ ends
   mov __SRSTmpLongVal, _val \
   flatten __SRSFlattenBuf, __SRSTmpLongVal \
   arrbuild __SRSSendBuf, __SRSTmpBuf, __SRSFlattenBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __sendRemoteString(_conn, _queue, _str, _result) \
@@ -5019,32 +5037,32 @@ ends
   arrsize __SRSTmpLongVal, _str \
   replace __SRSTmpBuf, __SRSTmpBuf, 3, __SRSTmpLongVal \
   arrbuild __SRSSendBuf, __SRSTmpBuf, _str \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteMessageRead(_conn, _queue, _result) \
   acquire __RemoteMutex \
   add __SRSTmpLongVal, _queue, 10 \
   arrbuild __SRSSendBuf, __DCMessageReadPacket, __SRSTmpLongVal, _queue, 0x01 \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteResetScaledValue(_conn, _port, _result) \
   acquire __RemoteMutex \
   arrbuild __SRSSendBuf, __DCResetScaledValuePacket, _port \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteResetMotorPosition(_conn, _port, _brelative, _result) \
   acquire __RemoteMutex \
   arrbuild __SRSSendBuf, __DCResetMotorPosPacket, _port, _brelative \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteSetInputMode(_conn, _port, _type, _mode, _result) \
   acquire __RemoteMutex \
   arrbuild __SRSSendBuf, __DCSetInputModePacket, _port, _type, _mode \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteSetOutputState(_conn, _port, _speed, _mode, _regmode, _turnpct, _runstate, _tacholimit, _result) \
@@ -5053,7 +5071,7 @@ ends
   flatten __SRSFlattenBuf, __SRSTmpLongVal \
   arrbuild __SRSTmpBuf, __DCSetOutputStatePacket, _port, _speed, _mode, _regmode, _turnpct, _runstate, __SRSFlattenBuf \
   strtoarr __SRSSendBuf, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remotePlaySoundFile(_conn, _filename, _bloop, _result) \
@@ -5062,7 +5080,7 @@ ends
   strsubset __SRSTmpBuf, _filename, NA, 19 \
   replace __SRSSendBuf, __SRSSendBuf, 2, _bloop \
   replace __SRSSendBuf, __SRSSendBuf, 3, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remotePlayTone(_conn, _frequency, _duration, _result) \
@@ -5076,7 +5094,7 @@ ends
   replace __SRSSendBuf, __SRSSendBuf, 4, __SRSTmpLongVal \
   div __SRSTmpLongVal, _duration, 0xff \
   replace __SRSSendBuf, __SRSSendBuf, 5, __SRSTmpLongVal \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteGenericFilenameCommand(_conn, _cmdBuf, _filename, _result) \
@@ -5085,7 +5103,7 @@ ends
   strsubset __SRSTmpBuf, _filename, NA, 19 \
   replace __SRSSendBuf, __SRSSendBuf, NA, _cmdBuf \
   replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteStartProgram(_conn, _filename, _result) __remoteGenericFilenameCommand(_conn, __DCStartProgramPacket, _filename, _result)
@@ -5100,14 +5118,14 @@ ends
   flatten __SRSFlattenBuf, __SRSTmpLongVal \
   strtoarr __SRSTmpBuf, __SRSFlattenBuf \
   replace __SRSSendBuf, __SRSSendBuf, 22, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteGenericByteCommand(_conn, _cmdBuf, _val, _result) \
   compchk EQ, sizeof(_val), 1 \
   acquire __RemoteMutex \
   arrbuild __SRSSendBuf, _cmdBuf, _val \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteResetTachoCount(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCUpdateResetCountPacket, _port, _result)
@@ -5116,7 +5134,7 @@ ends
   compchk EQ, sizeof(_handle), 1 \
   acquire __RemoteMutex \
   arrbuild __SRSSendBuf, __SCWritePacket, _handle, _data \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteDoRead(_conn, _handle, _numbytes, _result) \
@@ -5126,7 +5144,7 @@ ends
   flatten __SRSFlattenBuf, __SRSTmpWordVal \
   strtoarr __SRSTmpBuf, __SRSFlattenBuf \
   arrbuild __SRSSendBuf, __SCReadPacket, _handle, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteDoPollCommand(_conn, _bufnum, _len, _result) \
@@ -5134,7 +5152,7 @@ ends
   compchk EQ, sizeof(_len), 1 \
   acquire __RemoteMutex \
   arrbuild __SRSSendBuf, __SCPollCommandPacket, _bufnum, _len \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteDoIOMapRead(_conn, _id, _offset, _numbytes, _result) \
@@ -5154,7 +5172,7 @@ ends
   flatten __SRSFlattenBuf, __SRSTmpWordVal \
   strtoarr __SRSTmpBuf, __SRSFlattenBuf \
   replace __SRSSendBuf, __SRSSendBuf, 8, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 
@@ -5182,7 +5200,7 @@ ends
 
 #define __remoteGetBatteryLevel(_conn, _value, _result) \
   compchk EQ, sizeof(_value), 2 \
-  __connectionWrite(_conn, __DCGetBatteryLevelPacket, _result) \
+  __connectionSCDCWrite(_conn, __DCGetBatteryLevelPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   brtst NEQ, __RRGBL_End##__I__, _result \
@@ -5192,7 +5210,7 @@ ends
   __IncI__
 
 #define __remoteLowspeedGetStatus(_conn, _value, _result) \
-  __connectionWrite(_conn, __DCLSGetStatusPacket, _result) \
+  __connectionSCDCWrite(_conn, __DCLSGetStatusPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   brtst NEQ, __RRLGS_End##__I__, _result \
@@ -5213,7 +5231,7 @@ ends
   __IncI__
 
 #define __remoteGetCurrentProgramName(_conn, _name, _result) \
-  __connectionWrite(_conn, __DCGetCurProgNamePacket, _result) \
+  __connectionSCDCWrite(_conn, __DCGetCurProgNamePacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   brtst NEQ, __RRGCPN_End##__I__, _result \
@@ -5234,7 +5252,7 @@ ends
   __IncI__
 
 #define __remoteGetContactCount(_conn, _cnt, _result) \
-  __connectionWrite(_conn, __DCBTGetContactCntPacket, _result) \
+  __connectionSCDCWrite(_conn, __DCBTGetContactCntPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   brtst NEQ, __RRGCTC_End##__I__, _result \
@@ -5254,7 +5272,7 @@ ends
   __IncI__
 
 #define __remoteGetConnectionCount(_conn, _cnt, _result) \
-  __connectionWrite(_conn, __DCBTGetConnectCntPacket, _result) \
+  __connectionSCDCWrite(_conn, __DCBTGetConnectCntPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   brtst NEQ, __RRGCNC_End##__I__, _result \
@@ -5350,7 +5368,7 @@ ends
   mov _result, __WFRRStatus
 
 #define __remoteDeleteUserFlash(_conn, _result) \
-  __connectionWrite(_conn, __SCDeleteUserFlashPacket, _result) \
+  __connectionSCDCWrite(_conn, __SCDeleteUserFlashPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus
 
@@ -5383,7 +5401,7 @@ ends
   __IncI__
 
 #define __remoteGetFirmwareVersion(_conn, _pmin, _pmaj, _fmin, _fmaj, _result) \
-  __connectionWrite(_conn, __SCGetFirmwareVerPacket, _result) \
+  __connectionSCDCWrite(_conn, __SCGetFirmwareVerPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   brtst NEQ, __RRGetFirmwareVersion_End##__I__, _result \
@@ -5429,7 +5447,7 @@ ends
   __IncI__
 
 #define __remoteGetDeviceInfo(_conn, _name, _btaddr, _btsignal, _freemem, _result) \
-  __connectionWrite(_conn, __SCGetDeviceInfoPacket, _result) \
+  __connectionSCDCWrite(_conn, __SCGetDeviceInfoPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   brtst NEQ, __RRGetDeviceInfo_End##__I__, _result \
@@ -5485,7 +5503,7 @@ ends
   __IncI__
 
 #define __remoteGetBluetoothAddress(_conn, _btaddr, _result) \
-  __connectionWrite(_conn, __SCBTGetAddressPacket, _result) \
+  __connectionSCDCWrite(_conn, __SCBTGetAddressPacket, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   brtst NEQ, __RRGetBluetoothAddress_End##__I__, _result \
@@ -5501,21 +5519,21 @@ ends
   replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
   strsubset __SRSTmpBuf, _newname, NA, 19 \
   replace __SRSSendBuf, __SRSSendBuf, 22, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #else
 
 #define __remoteGetOutputState(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCGetOutputStatePacket, _port, _result)
 #define __remoteGetInputValues(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCGetInputValuesPacket, _port, _result)
-#define __remoteGetBatteryLevel(_conn, _result) __connectionWrite(_conn, __DCGetBatteryLevelPacket, _result)
-#define __remoteLowspeedGetStatus(_conn, _result) __connectionWrite(_conn, __DCLSGetStatusPacket, _result)
+#define __remoteGetBatteryLevel(_conn, _result) __connectionSCDCWrite(_conn, __DCGetBatteryLevelPacket, _result)
+#define __remoteLowspeedGetStatus(_conn, _result) __connectionSCDCWrite(_conn, __DCLSGetStatusPacket, _result)
 #define __remoteLowspeedRead(_conn, _port, _result) __remoteGenericByteCommand(_conn, __DCLSReadPacket, _port, _result)
-#define __remoteGetCurrentProgramName(_conn, _result) __connectionWrite(_conn, __DCGetCurProgNamePacket, _result)
+#define __remoteGetCurrentProgramName(_conn, _result) __connectionSCDCWrite(_conn, __DCGetCurProgNamePacket, _result)
 #define __remoteDatalogRead(_conn, _remove, _result) __remoteGenericByteCommand(_conn, __DCDatalogReadPacket, _remove, _result)
-#define __remoteGetContactCount(_conn, _result) __connectionWrite(_conn, __DCBTGetContactCntPacket, _result)
+#define __remoteGetContactCount(_conn, _result) __connectionSCDCWrite(_conn, __DCBTGetContactCntPacket, _result)
 #define __remoteGetContactName(_conn, _idx, _result) __remoteGenericByteCommand(_conn, __DCBTGetContactNamePacket, _idx, _result)
-#define __remoteGetConnectionCount(_conn, _result) __connectionWrite(_conn, __DCBTGetConnectCntPacket, _result)
+#define __remoteGetConnectionCount(_conn, _result) __connectionSCDCWrite(_conn, __DCBTGetConnectCntPacket, _result)
 #define __remoteGetConnectionName(_conn, _idx, _result) __remoteGenericByteCommand(_conn, __DCBTGetConnectNamePacket, _idx, _result)
 #define __remoteGetProperty(_conn, _property, _result) __remoteGenericByteCommand(_conn, __DCGetPropertyPacket, _property, _result)
 
@@ -5543,7 +5561,7 @@ ends
   flatten __SRSFlattenBuf, __SRSTmpLongVal \
   strtoarr __SRSTmpBuf, __SRSFlattenBuf \
   arrbuild __SRSSendBuf, __DCDatalogSetTimesPacket, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteSetProperty(_conn, _prop, _value, _result) \
@@ -5552,7 +5570,7 @@ ends
   flatten __SRSFlattenBuf, _value \
   strtoarr __SRSTmpBuf, __SRSFlattenBuf \
   arrbuild __SRSSendBuf, __DCSetPropertyPacket, _prop, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteLowspeedWrite(_conn, _port, _txlen, _rxlen, _data, _result) \
@@ -5561,7 +5579,7 @@ ends
   compchk EQ, sizeof(_rxlen), 1 \
   acquire __RemoteMutex \
   arrbuild __SRSSendBuf, __DCLSWritePacket, _port, _txlen, _rxlen, _data \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteIOMapWriteValue(_conn, _id, _offset, _value, _result) \
@@ -5585,7 +5603,7 @@ ends
   strtoarr __SRSTmpBuf, __SRSFlattenBuf \
   mov __SRSFlattenBuf, __SRSSendBuf \
   arrbuild __SRSSendBuf, __SRSFlattenBuf, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteIOMapWriteBytes(_conn, _id, _offset, _data, _result) \
@@ -5607,7 +5625,7 @@ ends
   replace __SRSSendBuf, __SRSSendBuf, 8, __SRSTmpBuf \
   mov __SRSFlattenBuf, __SRSSendBuf \
   arrbuild __SRSSendBuf, __SRSFlattenBuf, _data \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #define __remoteSetBrickName(_conn, _name, _result) \
@@ -5615,7 +5633,7 @@ ends
   mov __SRSSendBuf, __SCSetBrickNamePacket \
   strsubset __SRSTmpBuf, _name, NA, 15 \
   replace __SRSSendBuf, __SRSSendBuf, 2, __SRSTmpBuf \
-  __connectionWrite(_conn, __SRSSendBuf, _result) \
+  __connectionSCDCWrite(_conn, __SRSSendBuf, _result) \
   release __RemoteMutex
 
 #if defined(__ENHANCED_FIRMWARE)
@@ -13593,7 +13611,7 @@ ends
  * \warning Writing to the RS485 hi-speed connection requires the enhanced
  * NBC/NXC firmware 
  */
-#define RemoteConnectionWrite(_conn, _buffer, _result) __connectionWrite(_conn, _buffer, _result)
+#define RemoteConnectionWrite(_conn, _buffer, _result) __connectionRawWrite(_conn, _buffer, _result)
 
 /**
  * Check if remote connection is idle.
@@ -13713,7 +13731,7 @@ ends
  * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteStopProgram(_conn, _result) __connectionWrite(_conn, __DCStopProgramPacket, _result)
+#define RemoteStopProgram(_conn, _result) __connectionSCDCWrite(_conn, __DCStopProgramPacket, _result)
 
 /**
  * Send a PlaySoundFile message.
@@ -13753,7 +13771,7 @@ ends
  * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteStopSound(_conn, _result) __connectionWrite(_conn, __DCStopSoundPacket, _result)
+#define RemoteStopSound(_conn, _result) __connectionSCDCWrite(_conn, __DCStopSoundPacket, _result)
 
 /**
  * Send a KeepAlive message.
@@ -13766,7 +13784,7 @@ ends
  * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteKeepAlive(_conn, _result) __connectionWrite(_conn, __DCKeepAlivePacket, _result)
+#define RemoteKeepAlive(_conn, _result) __connectionSCDCWrite(_conn, __DCKeepAlivePacket, _result)
 
 /**
  * Send a ResetScaledValue message.
@@ -14566,7 +14584,7 @@ __remoteGetInputValues(_conn, _params, _result)
  * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteGetFirmwareVersion(_conn, _result) __connectionWrite(_conn, __SCGetFirmwareVerPacket, _result)
+#define RemoteGetFirmwareVersion(_conn, _result) __connectionSCDCWrite(_conn, __SCGetFirmwareVerPacket, _result)
 
 /**
  * Send a GetBluetoothAddress message.
@@ -14579,7 +14597,7 @@ __remoteGetInputValues(_conn, _params, _result)
  * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteGetBluetoothAddress(_conn, _result) __connectionWrite(_conn, __SCBTGetAddressPacket, _result)
+#define RemoteGetBluetoothAddress(_conn, _result) __connectionSCDCWrite(_conn, __SCBTGetAddressPacket, _result)
 
 /**
  * Send a GetDeviceInfo message.
@@ -14592,7 +14610,7 @@ __remoteGetInputValues(_conn, _params, _result)
  * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteGetDeviceInfo(_conn, _result) __connectionWrite(_conn, __SCGetDeviceInfoPacket, _result)
+#define RemoteGetDeviceInfo(_conn, _result) __connectionSCDCWrite(_conn, __SCGetDeviceInfoPacket, _result)
 
 /**
  * Send a DeleteUserFlash message.
@@ -14605,7 +14623,7 @@ __remoteGetInputValues(_conn, _params, _result)
  * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteDeleteUserFlash(_conn, _result) __connectionWrite(_conn, __SCDeleteUserFlashPacket, _result)
+#define RemoteDeleteUserFlash(_conn, _result) __connectionSCDCWrite(_conn, __SCDeleteUserFlashPacket, _result)
 
 /**
  * Send an OpenWrite message.
@@ -14759,7 +14777,7 @@ __remoteGetInputValues(_conn, _params, _result)
  * See \ref CommConnectionConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  */
-#define RemoteBluetoothFactoryReset(_conn, _result) __connectionWrite(_conn, __SCBTFactoryResetPacket, _result)
+#define RemoteBluetoothFactoryReset(_conn, _result) __connectionSCDCWrite(_conn, __SCBTFactoryResetPacket, _result)
 
 /**
  * Send an IOMapWrite value message.
