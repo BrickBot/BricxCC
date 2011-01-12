@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-11-04
- * \version 85
+ * \date 2010-12-06
+ * \version 86
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -4578,6 +4578,8 @@ inline void ArraySubset(variant & aout[], variant asrc[], unsigned int idx, unsi
  * This function calculates the sum of all or a subset of the elements in the
  * numeric src array.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ *
  * \param src The source numeric array.
  * \param idx The index of the start of the array subset to process. Pass
  * \ref NA to start with the first element.
@@ -4592,6 +4594,8 @@ inline variant ArraySum(const variant & src[], unsigned int idx, unsigned int le
  * Calculate the mean of the elements in a numeric array.
  * This function calculates the mean of all or a subset of the elements in the
  * numeric src array.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
  *
  * \param src The source numeric array.
  * \param idx The index of the start of the array subset to process. Pass
@@ -4608,6 +4612,8 @@ inline variant ArrayMean(const variant & src[], unsigned int idx, unsigned int l
  * This function calculates the sum of the squares of all or a subset of the elements in the
  * numeric src array.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ *
  * \param src The source numeric array.
  * \param idx The index of the start of the array subset to process. Pass
  * \ref NA to start with the first element.
@@ -4622,6 +4628,8 @@ inline variant ArraySumSqr(const variant & src[], unsigned int idx, unsigned int
  * Calculate the standard deviation of the elements in a numeric array.
  * This function calculates the standard deviation of all or a subset of the elements in the
  * numeric src array.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
  *
  * \param src The source numeric array.
  * \param idx The index of the start of the array subset to process. Pass
@@ -4638,6 +4646,8 @@ inline variant ArrayStd(const variant & src[], unsigned int idx, unsigned int le
  * This function calculates the minimum of all or a subset of the elements in the
  * numeric src array.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ *
  * \param src The source numeric array.
  * \param idx The index of the start of the array subset to process. Pass
  * \ref NA to start with the first element.
@@ -4652,6 +4662,8 @@ inline variant ArrayMin(const variant & src[], unsigned int idx, unsigned int le
  * Calculate the maximum of the elements in a numeric array.
  * This function calculates the maximum of all or a subset of the elements in the
  * numeric src array.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
  *
  * \param src The source numeric array.
  * \param idx The index of the start of the array subset to process. Pass
@@ -4669,6 +4681,8 @@ inline variant ArrayMax(const variant & src[], unsigned int idx, unsigned int le
  * numeric src array in ascending order and saves the results in the
  * numeric dest array.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ *
  * \param dest The destination numeric array.
  * \param src The source numeric array.
  * \param idx The index of the start of the array subset to process. Pass
@@ -4682,6 +4696,8 @@ inline void ArraySort(variant & dest[], const variant & src[], unsigned int idx,
 /**
  * Operate on numeric arrays.
  * This function lets you perform various operations on numeric arrays.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
  *
  * \param op  The array operation. See \ref ArrayOpConstants.
  * \param dest The destination variant type (scalar or array, depending on the operation).
@@ -7552,7 +7568,7 @@ inline void SetBTDeviceNameCount(byte count);
 
 #define BluetoothStatus(_conn) asm { __bluetoothStatus(_conn, __RETVAL__) }
 #define BluetoothWrite(_conn, _buffer) asm { __bluetoothWrite(_conn, _buffer, __RETVAL__) }
-#define RemoteConnectionWrite(_conn, _buffer) asm { __connectionWrite(_conn, _buffer, __RETVAL__) }
+#define RemoteConnectionWrite(_conn, _buffer) asm { __connectionRawWrite(_conn, _buffer, __RETVAL__) }
 #define RemoteConnectionIdle(_conn) asm { __remoteConnectionIdle(_conn, __RETVAL__) }
 
 #define SendRemoteBool(_conn, _queue, _bval) asm { __sendRemoteBool(_conn, _queue, _bval, __RETVAL__) }

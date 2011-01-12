@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-19
- * \version 59
+ * \date 2010-12-06
+ * \version 60
  */
 
 #ifndef NBCCOMMON_H
@@ -1040,7 +1040,7 @@
 
 /** @defgroup InputFieldConstants Input field constants
  * Constants for use with SetInput() and GetInput().
- * Each sensor has six fields that are used to define its state. The field constants are described in the table above. 
+ * Each sensor has six fields that are used to define its state.
  * @{
  */
 #define TypeField            0 /*!< Type field. Contains one of the sensor type constants. Read/write. */
@@ -1051,10 +1051,14 @@
 #define InvalidDataField     5 /*!< Invalid data field. Contains a boolean value indicating whether the sensor data is valid or not. Read/write. */
 /** @} */  // end of InputFieldConstants group
 
-
-// Constants related to Digital I/O
-#define INPUT_DIGI0 1 /*!< Digital pin 0 */
-#define INPUT_DIGI1 2 /*!< Digital pin 1*/
+/** @defgroup InputDigiPinConstants Input port digital pin constants
+ * Constants for use when directly controlling or reading a port's digital pin
+ * state.
+ * @{
+ */
+#define INPUT_DIGI0    0x01 /*!< Digital pin 0 */
+#define INPUT_DIGI1    0x02 /*!< Digital pin 1*/
+/** @} */  // end of InputDigiPinConstants group
 
 #define INPUT_CUSTOMINACTIVE 0x00 /*!< Custom sensor inactive */
 #define INPUT_CUSTOM9V       0x01 /*!< Custom sensor 9V */
@@ -1884,11 +1888,20 @@
  * Constants for specifying remote connection slots.
  * @{
  */
-#define CONN_BT0  0x0 /*!< Bluetooth connection 0 */
-#define CONN_BT1  0x1 /*!< Bluetooth connection 1 */
-#define CONN_BT2  0x2 /*!< Bluetooth connection 2 */
-#define CONN_BT3  0x3 /*!< Bluetooth connection 3 */
-#define CONN_HS4  0x4 /*!< RS485 (hi-speed) connection (port 4) */
+#define CONN_BT0    0x0 /*!< Bluetooth connection 0 */
+#define CONN_BT1    0x1 /*!< Bluetooth connection 1 */
+#define CONN_BT2    0x2 /*!< Bluetooth connection 2 */
+#define CONN_BT3    0x3 /*!< Bluetooth connection 3 */
+#define CONN_HS4    0x4 /*!< RS485 (hi-speed) connection (port 4, all devices) */
+#define CONN_HS_ALL 0x4 /*!< RS485 (hi-speed) connection (port 4, all devices) */
+#define CONN_HS_1   0x5 /*!< RS485 (hi-speed) connection (port 4, device address 1) */
+#define CONN_HS_2   0x6 /*!< RS485 (hi-speed) connection (port 4, device address 2) */
+#define CONN_HS_3   0x7 /*!< RS485 (hi-speed) connection (port 4, device address 3) */
+#define CONN_HS_4   0x8 /*!< RS485 (hi-speed) connection (port 4, device address 4) */
+#define CONN_HS_5   0x9 /*!< RS485 (hi-speed) connection (port 4, device address 5) */
+#define CONN_HS_6   0xa /*!< RS485 (hi-speed) connection (port 4, device address 6) */
+#define CONN_HS_7   0xb /*!< RS485 (hi-speed) connection (port 4, device address 7) */
+#define CONN_HS_8   0xc /*!< RS485 (hi-speed) connection (port 4, device address 8) */
 /** @} */  // end of CommConnectionConstants group
 
 /** @defgroup CommBtHwStatusConstants Bluetooth hardware status constants
@@ -2002,6 +2015,22 @@
 #define HS_MODE_7E1 (HS_MODE_7_DATA|HS_MODE_E_PARITY|HS_MODE_10_STOP) /*!< HsMode 7 data bits, even parity, 1 stop bit */
 /** @} */  // end of CommHiSpeedCombinedConstants group
 /** @} */  // end of CommHiSpeedModeConstants group
+
+
+/** @defgroup CommHiSpeedAddressConstants Hi-speed port address constants
+ * Constants that are used to specify the Hi-speed (RS-485) port device address.
+ * @{
+ */
+#define HS_ADDRESS_ALL 0 /*!< HsAddress all devices */
+#define HS_ADDRESS_1   1 /*!< HsAddress device address 1 */
+#define HS_ADDRESS_2   2 /*!< HsAddress device address 2 */
+#define HS_ADDRESS_3   3 /*!< HsAddress device address 3 */
+#define HS_ADDRESS_4   4 /*!< HsAddress device address 4 */
+#define HS_ADDRESS_5   5 /*!< HsAddress device address 5 */
+#define HS_ADDRESS_6   6 /*!< HsAddress device address 6 */
+#define HS_ADDRESS_7   7 /*!< HsAddress device address 7 */
+#define HS_ADDRESS_8   8 /*!< HsAddress device address 8 */
+/** @} */  // end of CommHiSpeedAddressConstants group
 
 #endif
 #endif
