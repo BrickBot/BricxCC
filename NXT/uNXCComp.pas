@@ -7533,7 +7533,7 @@ end;
 
 procedure TNXCComp.DoStrReplace;
 var
-  str, strnew : string;
+  str, strnew, idx : string;
 begin
   // StrReplace(string, idx, strnew)
   OpenParen;
@@ -7544,6 +7544,9 @@ begin
   MatchString(TOK_COMMA);
   // idx
   BoolExpression;
+  push;
+  idx := tos;
+  EmitLn(Format('mov %s, %s', [idx, RegisterName]));
   MatchString(TOK_COMMA);
   // strnew
   StringExpression('');
@@ -7553,7 +7556,8 @@ begin
   // strip the null from the replacement string so that it doesn't embed a null
   // in the middle of the output string
   EmitLn(Format('strtoarr %s, %s', [StrBufName, strnew]));
-  EmitLn(Format('strreplace %s, %s, %s, %s', [StrRetValName, str, RegisterName, StrBufName]));
+  EmitLn(Format('strreplace %s, %s, %s, %s', [StrRetValName, str, idx, StrBufName]));
+  pop;
 end;
 
 procedure TNXCComp.DoStrCat;
