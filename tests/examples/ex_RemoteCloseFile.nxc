@@ -1,0 +1,1 @@
+char result = RemoteCloseFile(CONN_BT1, handle);

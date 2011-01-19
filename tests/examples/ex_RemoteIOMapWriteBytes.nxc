@@ -1,0 +1,2 @@
+byte data[] = {1};
+char result = RemoteIOMapWriteBytes(CONN_BT1, CommandModuleID, CommandOffsetProgStatus, data);

@@ -1,0 +1,5 @@
+byte handle;
+string name;
+long size;
+
+char result = RemoteFindNextFile(CONN_BT1, handle, name, size);

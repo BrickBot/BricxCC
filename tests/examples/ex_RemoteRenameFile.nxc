@@ -1,0 +1,1 @@
+char result = RemoteRenameFile(CONN_BT1, "test.dat", "test2.dat");

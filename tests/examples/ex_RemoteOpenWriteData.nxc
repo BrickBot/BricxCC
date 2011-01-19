@@ -1,0 +1,4 @@
+byte handle;
+long size = 1024;
+
+char result = RemoteOpenWriteData(CONN_BT1, "test.dat", size, handle);

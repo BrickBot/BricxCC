@@ -1,0 +1,4 @@
+byte count;
+byte data[];
+
+char result = RemoteDatalogRead(CONN_BT1, true, count, data);

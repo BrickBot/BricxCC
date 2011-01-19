@@ -1,0 +1,6 @@
+byte port = S1;
+byte txlen = 2;
+byte rxlen = 8;
+byte data[] = {0x02, 0x00};
+
+char result = RemoteLowspeedWrite(CONN_BT1, port, txlen, rxlen, data);

@@ -1,0 +1,4 @@
+int numbytes = 1;
+byte data[];
+
+char result = RemoteIOMapRead(CONN_BT1, CommandModuleID, CommandOffsetProgStatus, numbytes, data);

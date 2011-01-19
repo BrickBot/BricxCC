@@ -1,0 +1,6 @@
+task main()
+{
+  SetHSDataMode(DATA_MODE_NXT);
+  UseRS485();
+  RS485Initialize();
+}

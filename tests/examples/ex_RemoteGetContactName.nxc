@@ -1,0 +1,4 @@
+string name;
+byte idx = 1;
+
+char result = RemoteGetContactName(CONN_BT1, idx, name);

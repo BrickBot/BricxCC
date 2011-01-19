@@ -1,0 +1,8 @@
+ReadLastResponseType args;
+args.Clear = true;
+SysReadLastResponse(args);
+if (args.Result == NO_ERR) {
+  NumOut(0, LCD_LINE1, args.Length);
+  NumOut(0, LCD_LINE2, args.Command);
+  // also could output args.Buffer[i]
+}

@@ -1,0 +1,4 @@
+byte len;
+byte data[];
+
+char result = RemotePollCommand(CONN_BT1, 0, len, data);

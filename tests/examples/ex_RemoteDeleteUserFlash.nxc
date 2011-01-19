@@ -1,0 +1,1 @@
+char result = RemoteDeleteUserFlash(CONN_BT1);

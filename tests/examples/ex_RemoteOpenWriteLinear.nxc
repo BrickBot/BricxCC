@@ -1,0 +1,4 @@
+byte handle;
+long size = 1024;
+
+char result = RemoteOpenWriteLinear(CONN_BT1, "test.rxe", size, handle);

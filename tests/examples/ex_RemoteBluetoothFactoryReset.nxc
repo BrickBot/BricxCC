@@ -1,0 +1,1 @@
+char result = RemoteBluetoothFactoryReset(CONN_HS1); // cannot be used over a blueooth connection 

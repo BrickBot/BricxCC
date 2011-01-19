@@ -1,0 +1,5 @@
+byte port = S1;
+byte bread;
+byte data[];
+
+char result = RemoteLowspeedRead(CONN_BT1, port, bread, data);
