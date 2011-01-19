@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-11-04
- * \version 11
+ * \date 2011-01-19
+ * \version 12
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -35,7 +35,7 @@
 /** @mainpage NXC Programmer's Guide
  * \brief
  * 
- * <h2><center>October 6, 2010</center></h2>
+ * <h2><center>January 19, 2011</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -5251,6 +5251,9 @@
  *
  * \example ex_RFIDReadContinuous.nxc
  * This is an example of how to use the \ref RFIDReadContinuous function.
+ *
+ * \example ex_SizeOf.nxc
+ * This is an example of how to use the \ref SizeOf and \ref NumOut functions.
  *
  *
 */

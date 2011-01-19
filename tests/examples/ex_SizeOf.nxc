@@ -1,0 +1,13 @@
+task main()
+{
+  int x;
+  float f;
+  byte b;
+  byte data[] = {1, 2, 3, 4, 5, 6};
+
+  NumOut(0, LCD_LINE1, SizeOf(x));
+  NumOut(0, LCD_LINE2, SizeOf(f));
+  NumOut(0, LCD_LINE3, SizeOf(b));
+  NumOut(0, LCD_LINE4, SizeOf(data));
+  while(true);
+}

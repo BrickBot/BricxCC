@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-12-06
- * \version 86
+ * \date 2011-01-18
+ * \version 87
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -4308,7 +4308,7 @@ inline void SysMemoryManager(MemoryManagerType & args);
  * \param Buffer The response packet buffer.
  * \return The response status code.
  */
-inline char GetLastResponseInfo(bool Clear, byte & Length, byte & Command, hyte Buffer[]);
+inline char GetLastResponseInfo(bool Clear, byte & Length, byte & Command, byte & Buffer[]);
 
 /**
  * Read last response information.
@@ -8894,6 +8894,16 @@ inline unsigned int FindNextFile(string & fname, byte & handle);
 #endif
 
 /**
+ * Calculate the size of a variable.
+ * Calculate the number of bytes required to store the contents of the
+ * variable passed into the function.
+ *
+ * \param value The variable.
+ * \return The number of bytes occupied by the variable.
+ */
+inline unsigned int SizeOf(variant & value);
+
+/**
  * Read a value from a file.
  * Read a value from the file associated with the specified handle.
  * The handle parameter must be a variable. The value parameter must be a
@@ -9257,6 +9267,7 @@ inline void SysListFiles(ListFilesType & args);
 #define FindNextFile(_fname, _handle) asm { __findNextFile(_fname, _handle, __RETVAL__) }
 #endif
 
+#define SizeOf(_n) asm { __sizeOF(_n, __RETVAL__) }
 #define Read(_handle, _n) asm { __readValue(_handle, _n, __RETVAL__) }
 #define ReadLn(_handle, _n) asm { __readLnValue(_handle, _n, __RETVAL__) }
 #define ReadBytes(_handle, _len, _buf) asm { __readBytes(_handle, _len, _buf, __RETVAL__) }

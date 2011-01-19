@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2010-12-06
- * version 72
+ * date 2011-01-18
+ * version 73
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -4533,7 +4533,20 @@ dseg segment
   __RLSReturnAddress byte
   __RLSMaxBytes word
   __RLSByteCount word
+  __soTmpBuf byte[]
+  __soMutex mutex
 dseg ends
+
+#define __sizeOF(_n, _result) \
+  compif EQ, ((typeof(_n)>=1)&&(typeof(_n)<=6))||(typeof(_n)==10), TRUE \
+  set _result, sizeof(_n) \
+  compelse \
+  acquire __soMutex \
+  flatten __soTmpBuf, _n \
+  arrsize _result, __soTmpBuf \
+  sub _result, _result, 1 \
+  release __soMutex \
+  compend
 
 #define __readBytes(_handle, _len, _buf, _result) \
   acquire __FReadMutex \
@@ -4548,7 +4561,7 @@ dseg ends
 #define __readValue(_handle, _n, _result) \
   acquire __FReadMutex \
   mov __FReadArgs.FileHandle, _handle \
-  set __FReadArgs.Length, sizeof(_n) \
+  __sizeOF(_n, __FReadArgs.Length) \
   syscall FileRead, __FReadArgs \
   mov _result, __FReadArgs.Result \
   unflatten _n, __FReadTmpByte, __FReadArgs.Buffer, _n \
@@ -4557,7 +4570,7 @@ dseg ends
 #define __readLnValue(_handle, _n, _result) \
   acquire __FReadMutex \
   mov __FReadArgs.FileHandle, _handle \
-  set __FReadArgs.Length, sizeof(_n) \
+  __sizeOF(_n, __FReadArgs.Length) \
   syscall FileRead, __FReadArgs \
   unflatten _n, __FReadTmpByte, __FReadArgs.Buffer, _n \
   set __FReadArgs.Length, 2 \
@@ -15923,6 +15936,16 @@ __remoteGetInputValues(_conn, _params, _result)
  */
 #define FindNextFile(_fname, _handle, _result) __findNextFile(_fname, _handle, _result)
 #endif
+
+/**
+ * Calculate the size of a variable.
+ * Calculate the number of bytes required to store the contents of the
+ * variable passed into the function.
+ *
+ * \param _n The variable.
+ * \param _result The number of bytes occupied by the variable.
+ */
+#define SizeOf(_n, _result) __sizeOF(_n, _result)
 
 /**
  * Read a value from a file.
