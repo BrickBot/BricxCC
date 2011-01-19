@@ -1,0 +1,1 @@
+char result = RemoteDatalogSetTimes(CONN_BT1, 1000);

@@ -1,0 +1,3 @@
+InputValuesType params;
+
+char result = RemoteGetInputValues(CONN_BT1, params);

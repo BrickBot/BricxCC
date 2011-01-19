@@ -1,0 +1,5 @@
+long size;
+string name;
+byte handle;
+
+char result = RemoteFindFirstFile(CONN_BT1, "*.rxe", handle, name, size);

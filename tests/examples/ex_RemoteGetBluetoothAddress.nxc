@@ -1,0 +1,3 @@
+byte btaddr[];
+
+char result = RemoteGetBluetoothAddress(CONN_BT1, btaddr);

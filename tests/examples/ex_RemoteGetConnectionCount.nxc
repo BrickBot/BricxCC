@@ -1,0 +1,3 @@
+byte cnt;
+
+char result = RemoteGetConnectionCount(CONN_BT1, cnt);

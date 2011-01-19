@@ -1,0 +1,3 @@
+byte len;
+
+char result = RemotePollCommandLength(CONN_BT1, 0, len);

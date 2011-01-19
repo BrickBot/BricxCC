@@ -1,0 +1,3 @@
+OutputStateType params;
+
+char result = RemoteGetOutputState(CONN_BT1, params);

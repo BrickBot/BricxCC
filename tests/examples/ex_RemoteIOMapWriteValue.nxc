@@ -1,0 +1,3 @@
+byte value;
+
+char result = RemoteIOMapWriteValue(CONN_BT1, CommandModuleID, CommandOffsetProgStatus, value);

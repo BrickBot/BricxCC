@@ -1,0 +1,3 @@
+byte cnt;
+
+char result = RemoteGetContactCount(CONN_BT1, cnt);

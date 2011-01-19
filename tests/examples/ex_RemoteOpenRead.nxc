@@ -1,0 +1,4 @@
+byte handle;
+long size;
+
+char result = RemoteOpenRead(CONN_BT1, "test.dat", handle, size);

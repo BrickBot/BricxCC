@@ -1,0 +1,3 @@
+int blevel;
+
+char result = RemoteGetBatteryLevel(CONN_BT1, blevel);

@@ -1,0 +1,5 @@
+byte len;
+byte cmd;
+byte buf[];
+
+char result = GetLastResponseInfo(true, len, cmd, buf);

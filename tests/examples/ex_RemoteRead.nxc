@@ -1,0 +1,5 @@
+byte handle;
+int numbytes = 10;
+byte data[];
+
+char result = RemoteRead(CONN_BT1, handle, numbytes, data);

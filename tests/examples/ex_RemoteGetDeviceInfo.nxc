@@ -1,0 +1,5 @@
+string name;
+byte btaddr[], btsignal[];
+long freemem;
+
+char result = RemoteGetDeviceInfo(CONN_BT1, name, btaddr, btsignal, freemem);

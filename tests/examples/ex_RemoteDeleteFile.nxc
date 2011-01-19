@@ -1,0 +1,1 @@
+char result = RemoteDeleteFile(CONN_BT1, "test.dat");

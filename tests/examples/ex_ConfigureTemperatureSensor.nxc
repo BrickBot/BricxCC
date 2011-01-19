@@ -1,0 +1,3 @@
+byte config = TEMP_RES_12BIT;
+
+char result = ConfigureTemperatureSensor(S1, config);

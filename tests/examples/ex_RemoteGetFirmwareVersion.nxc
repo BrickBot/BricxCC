@@ -1,0 +1,3 @@
+byte pmin, pmaj, fmin, fmaj;
+
+char result = RemoteGetFirmwareVersion(CONN_BT1, pmin, pmaj, fmin, fmaj);

@@ -1,0 +1,1 @@
+bool result = RFIDMode(S1, RFID_MODE_CONTINUOUS);

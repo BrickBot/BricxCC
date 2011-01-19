@@ -1,0 +1,3 @@
+string name;
+
+char result = RemoteGetCurrentProgramName(CONN_BT1, name);

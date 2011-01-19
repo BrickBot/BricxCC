@@ -1,0 +1,3 @@
+byte value;
+
+char result = RemoteLowspeedGetStatus(CONN_BT1, value);

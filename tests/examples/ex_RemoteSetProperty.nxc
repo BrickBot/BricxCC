@@ -1,0 +1,3 @@
+byte value = 3;
+
+char result = RemoteSetProperty(CONN_BT1, RC_PROP_SOUND_LEVEL, value);

@@ -1,0 +1,4 @@
+float vIn, aIn, vOut, aOut, wIn, wOut;
+int joules;
+
+char result = ReadSensorEMeter(S1, vIn, aIn, vOut, aOut, joules, wIn, wOut);
