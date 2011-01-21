@@ -5910,6 +5910,11 @@ var
       bHasDefault := True;
       Next;
       defValue := Value;
+      if defValue = '-' then
+      begin
+        Next;
+        defValue := defValue + Value;
+      end;
       Next;
     end;
     if bRequireDefaults and not bHasDefault then

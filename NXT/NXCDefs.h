@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-01-18
- * \version 87
+ * \date 2011-01-21
+ * \version 88
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -14919,7 +14919,23 @@ inline int UnflattenVar(string str, variant & x);
   not __RETVAL__, __RETVAL__ \
 }
 
+
 #endif
+
+/**
+ * Find substring position.
+ * Returns the index value of the first character in a specified substring
+ * that occurs in a given string.  Pos searches for Substr within S and
+ * returns an integer value that is the index of the first character of
+ * Substr within S. Pos is case-sensitive. If Substr is not found, Pos
+ * returns negative one.
+ *
+ * \param Substr A substring to search for in another string.
+ * \param S A string that might contain the specified substring.
+ * \return The position of the substring in the specified string or -1 if it is
+ * not found.
+ */
+inline int Pos(string Substr, string S) { asm { __doPos(Substr, S, __RETVAL__) } }
 
 /**
  * Convert a byte array to a string.

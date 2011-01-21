@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2762;
+  uNXCHTMLTopicsSize = 2763;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -10831,6 +10831,10 @@ const
     (
      Name: 'UnflattenVar';
      Value: 'group__cstring_a_p_i_ga057308170bd294325c21c7ed0db989db.html'
+    ),
+    (
+     Name: 'Pos';
+     Value: 'group__cstring_a_p_i_gafde1d6f63344e81232c5061041b416de.html'
     ),
     (
      Name: 'ByteArrayToStr';
