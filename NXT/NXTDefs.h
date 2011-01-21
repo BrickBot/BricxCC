@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-01-18
- * version 73
+ * date 2011-01-21
+ * version 74
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -10197,6 +10197,48 @@ ends
 
 // X is 100* the cos value (-100->100), Y is 0->180, Y is -11 if X is outside -100->100 range
 #define Acos(_X,_R) __ACOS(_X,_R)
+
+
+dseg segment
+  __Pos_i sword
+  __Pos_l1 sword
+  __Pos_lDelta sword
+  __Pos_tmpstr byte[]
+  __Pos_s2 byte[]
+  __Pos_s1 byte[]
+  __Pos_Result sword
+  __Pos_Mutex mutex
+dseg ends
+
+subroutine __PosSubroutine
+	arrsize __Pos_l1, __Pos_s1
+	sub __Pos_l1, __Pos_l1, 1
+	arrsize __Pos_lDelta, __Pos_s2
+	sub __Pos_lDelta, __Pos_lDelta, __Pos_l1
+	set __Pos_i, 0
+__Pos_Repeat:
+	sub __Pos_lDelta, __Pos_lDelta, 1
+	brtst 0, __Pos_RepeatEnd, __Pos_lDelta
+	strsubset __Pos_tmpstr, __Pos_s2, __Pos_i, __Pos_l1
+	cmp 4, __Pos_Result, __Pos_s1, __Pos_tmpstr
+	brtst 4, __Pos_RepeatAgain, __Pos_Result
+    mov __Pos_Result, __Pos_i
+	return
+__Pos_RepeatAgain:
+	add __Pos_i, __Pos_i, 1
+	jmp __Pos_Repeat
+__Pos_RepeatEnd:
+	set __Pos_Result, -1
+	return
+ends
+
+#define __doPos(_s1, _s2, _result) \
+  acquire __Pos_Mutex \
+  mov __Pos_s1, _s1 \
+  mov __Pos_s2, _s2 \
+  call __PosSubroutine \
+  mov _result, __Pos_Result \
+  release __Pos_Mutex \
 
 
 #endif

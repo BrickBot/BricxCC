@@ -1,0 +1,7 @@
+task main()
+{
+  string s1 = "hi there";
+  string s2 = "the";
+  NumOut(0, LCD_LINE1, Pos(s2, s1));
+  while(true);
+}

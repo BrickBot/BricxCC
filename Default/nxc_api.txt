@@ -564,6 +564,7 @@ PlayToneEx(unsigned int frequency, unsigned int duration, byte volume, bool loop
 PlayTones(Tone tones[])
 PointOut(int x, int y, unsigned long options=DRAW_OPT_NORMAL)
 PolyOut(LocationType points[], unsigned long options=DRAW_OPT_NORMAL)
+Pos(string Substr, string S)
 pow(float base, float exponent)
 PowerDown()
 Precedes(task task1, task task2,..., task taskN)

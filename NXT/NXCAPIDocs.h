@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-01-19
- * \version 12
+ * \date 2011-01-21
+ * \version 13
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -5254,6 +5254,9 @@
  *
  * \example ex_SizeOf.nxc
  * This is an example of how to use the \ref SizeOf and \ref NumOut functions.
+ *
+ * \example ex_Pos.nxc
+ * This is an example of how to use the \ref Pos and \ref NumOut functions.
  *
  *
 */

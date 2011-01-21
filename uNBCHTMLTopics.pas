@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNBCHTMLTopicsSize = 2362;
+  uNBCHTMLTopicsSize = 2381;
   uNBCHTMLTopicsData: array[0..uNBCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -1978,11 +1978,11 @@ const
     ),
     (
      Name: 'INPUT_DIGI0';
-     Value: 'group___input_module_constants_gad78c594fbae4333ba96cc7aeae31c101.html'
+     Value: 'group___input_digi_pin_constants_gad78c594fbae4333ba96cc7aeae31c101.html'
     ),
     (
      Name: 'INPUT_DIGI1';
-     Value: 'group___input_module_constants_ga335f5381a75a2fde58d057696c91c996.html'
+     Value: 'group___input_digi_pin_constants_ga335f5381a75a2fde58d057696c91c996.html'
     ),
     (
      Name: 'INPUT_CUSTOMINACTIVE';
@@ -3377,6 +3377,42 @@ const
      Value: 'group___comm_connection_constants_ga1102704ef285a2ee6b0f320683f9cc65.html'
     ),
     (
+     Name: 'CONN_HS_ALL';
+     Value: 'group___comm_connection_constants_gad7f2a6e07195c8f346170f2d5d6b7a33.html'
+    ),
+    (
+     Name: 'CONN_HS_1';
+     Value: 'group___comm_connection_constants_ga95315370d9f52ddf90be976cacf7b4b5.html'
+    ),
+    (
+     Name: 'CONN_HS_2';
+     Value: 'group___comm_connection_constants_ga0b37b2ca4b6acb921a10877c1f26c49f.html'
+    ),
+    (
+     Name: 'CONN_HS_3';
+     Value: 'group___comm_connection_constants_ga6602e61a746c180bcf19b762e1e0380b.html'
+    ),
+    (
+     Name: 'CONN_HS_4';
+     Value: 'group___comm_connection_constants_gad2203cfb23165d371b6fb15fc4161311.html'
+    ),
+    (
+     Name: 'CONN_HS_5';
+     Value: 'group___comm_connection_constants_ga744f40c4d7ac453eab7d47175c142f4a.html'
+    ),
+    (
+     Name: 'CONN_HS_6';
+     Value: 'group___comm_connection_constants_ga4ac9e84172d8cde269cdb2827e005a43.html'
+    ),
+    (
+     Name: 'CONN_HS_7';
+     Value: 'group___comm_connection_constants_ga34b61b5be3197259727de158c4bce432.html'
+    ),
+    (
+     Name: 'CONN_HS_8';
+     Value: 'group___comm_connection_constants_ga0247707c38e40d0fb544712f2b155b04.html'
+    ),
+    (
      Name: 'BT_ENABLE';
      Value: 'group___comm_bt_hw_status_constants_gaf6adcd80b73b825e326cd30b688ddf41.html'
     ),
@@ -3547,6 +3583,42 @@ const
     (
      Name: 'HS_MODE_7E1';
      Value: 'group___comm_hi_speed_combined_constants_ga7bb23f5c6f3e527be4a21b5cd46a9b29.html'
+    ),
+    (
+     Name: 'HS_ADDRESS_ALL';
+     Value: 'group___comm_hi_speed_address_constants_ga1b65637a8b7decbc4cf10066ee606205.html'
+    ),
+    (
+     Name: 'HS_ADDRESS_1';
+     Value: 'group___comm_hi_speed_address_constants_ga25abfab9246e25d850555f64544e4f37.html'
+    ),
+    (
+     Name: 'HS_ADDRESS_2';
+     Value: 'group___comm_hi_speed_address_constants_gac71fc16741b95b79bceaf91b357c8275.html'
+    ),
+    (
+     Name: 'HS_ADDRESS_3';
+     Value: 'group___comm_hi_speed_address_constants_ga46514c3410446effe049911f68de0867.html'
+    ),
+    (
+     Name: 'HS_ADDRESS_4';
+     Value: 'group___comm_hi_speed_address_constants_gac82c67011be549c2d86643633105f985.html'
+    ),
+    (
+     Name: 'HS_ADDRESS_5';
+     Value: 'group___comm_hi_speed_address_constants_gac675bc2db04e2174bea4cc247479ca4b.html'
+    ),
+    (
+     Name: 'HS_ADDRESS_6';
+     Value: 'group___comm_hi_speed_address_constants_gaa71760000ae0a339435f6355c61c0d2a.html'
+    ),
+    (
+     Name: 'HS_ADDRESS_7';
+     Value: 'group___comm_hi_speed_address_constants_ga6bdfb55279cabd7a2ec58b60fbc48441.html'
+    ),
+    (
+     Name: 'HS_ADDRESS_8';
+     Value: 'group___comm_hi_speed_address_constants_ga9481691fb839b72ff9e2e43af19113c6.html'
     ),
     (
      Name: 'BT_DEVICE_EMPTY';
@@ -7514,11 +7586,11 @@ const
     ),
     (
      Name: 'RemoteOpenRead';
-     Value: 'group___comm_module_s_c_functions_ga5b790f0036dedd9d74c5560a74212456.html'
+     Value: 'group___comm_module_s_c_functions_ga349b6258c460172ae9ae9af15c5b0360.html'
     ),
     (
      Name: 'RemoteOpenAppendData';
-     Value: 'group___comm_module_s_c_functions_gabad6c75e0375df54917615953100f477.html'
+     Value: 'group___comm_module_s_c_functions_ga4e51505136d7bc8ba50cd8b236b0ebb6.html'
     ),
     (
      Name: 'RemoteDeleteFile';
@@ -7526,27 +7598,23 @@ const
     ),
     (
      Name: 'RemoteFindFirstFile';
-     Value: 'group___comm_module_s_c_functions_gaaf2caaf4097d94d8da1e12fa08108420.html'
+     Value: 'group___comm_module_s_c_functions_gacc483523b89f0ef8d6a0f3449cb10a0e.html'
     ),
     (
      Name: 'RemoteGetFirmwareVersion';
-     Value: 'group___comm_module_s_c_functions_gaaab16ca8156025d191a324f486af140a.html'
+     Value: 'group___comm_module_s_c_functions_ga22ef42867cd3abe991b7a3f2cae35d20.html'
     ),
     (
      Name: 'RemoteGetBluetoothAddress';
-     Value: 'group___comm_module_s_c_functions_gabfd6b313b711856eb534e21ee80823fe.html'
+     Value: 'group___comm_module_s_c_functions_gaa61d87ee43d36258dbbe1a8e14bd2673.html'
     ),
     (
      Name: 'RemoteGetDeviceInfo';
-     Value: 'group___comm_module_s_c_functions_ga889942a0e74445f05fbe1162514af46f.html'
+     Value: 'group___comm_module_s_c_functions_ga8839739bef7917d8ad6b55c7bd277b9a.html'
     ),
     (
      Name: 'RemoteDeleteUserFlash';
      Value: 'group___comm_module_s_c_functions_ga9de90677a1d2ab654b819f9f6a1353b0.html'
-    ),
-    (
-     Name: 'RemoteBluetoothFactoryReset';
-     Value: 'group___comm_module_s_c_functions_gabae6a8c92d90bcb759be2611a062d10a.html'
     ),
     (
      Name: 'RemoteOpenWrite';
@@ -7585,6 +7653,18 @@ const
      Value: 'group___comm_module_s_c_functions_gab03f3560209b0339274980d237cba5fd.html'
     ),
     (
+     Name: 'RemotePollCommand';
+     Value: 'group___comm_module_s_c_functions_gaca7a687dcbf1bf98a2e3b75cc8a85c27.html'
+    ),
+    (
+     Name: 'RemoteRenameFile';
+     Value: 'group___comm_module_s_c_functions_ga97566d63e972f36689d859bcc681e368.html'
+    ),
+    (
+     Name: 'RemoteBluetoothFactoryReset';
+     Value: 'group___comm_module_s_c_functions_gabae6a8c92d90bcb759be2611a062d10a.html'
+    ),
+    (
      Name: 'RemoteIOMapWriteValue';
      Value: 'group___comm_module_s_c_functions_gaff8f9006f40ac9e86388f7b3fbabd4ec.html'
     ),
@@ -7595,14 +7675,6 @@ const
     (
      Name: 'RemoteSetBrickName';
      Value: 'group___comm_module_s_c_functions_ga4ae1e83c078bcd902950f0be32d34d43.html'
-    ),
-    (
-     Name: 'RemoteRenameFile';
-     Value: 'group___comm_module_s_c_functions_ga97566d63e972f36689d859bcc681e368.html'
-    ),
-    (
-     Name: 'RemotePollCommand';
-     Value: 'group___comm_module_s_c_functions_gaca7a687dcbf1bf98a2e3b75cc8a85c27.html'
     ),
     (
      Name: 'UseRS485';
@@ -8015,6 +8087,10 @@ const
     (
      Name: 'FindNextFile';
      Value: 'group___loader_module_functions_gaaae160166b4bf9d3bbf5e092bc29b645.html'
+    ),
+    (
+     Name: 'SizeOf';
+     Value: 'group___loader_module_functions_gae02eb7c427a635cfc955317e3dd21f84.html'
     ),
     (
      Name: 'Read';
