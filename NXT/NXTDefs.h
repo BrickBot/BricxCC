@@ -432,6 +432,13 @@ TReadLastResponse struct
  Command byte
  Buffer	 byte[]
 TReadLastResponse ends
+
+// FileTell
+TFileTell struct
+ Result     sbyte
+ FileHandle byte
+ Position   dword
+TFileTell ends
 #endif
 #endif
 

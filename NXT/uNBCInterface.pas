@@ -375,8 +375,10 @@ begin
       begin
         if BrickComm.NXTDownloadStream(sIn, InputFilename, theType) then
           DoBeep
-        else
+        else begin
           Result := 2;
+          HandleOnCompilerStatusChange(Self, sDownloadFailed, True);
+        end;
       end;
       if RunProgram then
         BrickComm.StartProgram(InputFilename);
@@ -566,11 +568,15 @@ begin
                         BrickComm.StopProgram;
                         if BrickComm.NXTDownloadStream(sOut, tmpName, nftProgram) then
                           DoBeep
-                        else
+                        else begin
                           Result := 2;
+                          HandleOnCompilerStatusChange(Self, sDownloadFailed, True);
+                        end;
                       end
-                      else
+                      else begin
                         Result := 3;
+                        HandleOnCompilerStatusChange(Self, sVersionCheckFailed, True);
+                      end;
                     end;
                     if RunProgram then
                       BrickComm.StartProgram(tmpName);
