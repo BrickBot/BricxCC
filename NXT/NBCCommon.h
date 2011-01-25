@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-12-06
- * \version 60
+ * \date 2011-01-21
+ * \version 61
  */
 
 #ifndef NBCCOMMON_H
@@ -284,6 +284,7 @@
 #define DrawFont               95 /*!< Draw text using a custom RIC-based font to the LCD screen */
 #define MemoryManager          96 /*!< Read memory manager information, optionally compacting the dataspace first */
 #define ReadLastResponse       97 /*!< Read the last response packet received by the NXT.  Optionally clear the value after reading it. */
+#define FileTell               98 /*!< Return the current file position in an open file */
 #endif
 #endif
 /** @} */  // end of SysCallConstants group

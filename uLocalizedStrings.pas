@@ -707,6 +707,7 @@ resourcestring
   sCannotFindFile       = 'Unable to find the specified input file'#13#10'File "%s" ; line 1';
   sNXCCompilationFailed = 'NXC compilation failed.';
   sNBCCompilationFailed = 'NBC compilation failed.';
+  sVersionCheckFailed   = 'Firmware version check failed.';
 
 // uNXTWatchList
 resourcestring

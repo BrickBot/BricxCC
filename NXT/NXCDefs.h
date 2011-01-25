@@ -8673,6 +8673,18 @@ struct FileResizeType {
  unsigned int NewSize;  /*!< The new file size. */
 };
 
+/**
+ * Parameters for the FileTell system call.
+ * This structure is used when calling the \ref SysFileTell system call function.
+ * \sa SysFileTell()
+ */
+struct FileTellType {
+ unsigned int Result;     /*!< The function call result. Possible values include
+                           \ref LoaderErrors. */
+ byte FileHandle;         /*!< The handle of the open file. */
+ unsigned long Position;  /*!< The current file position in the open file. */
+};
+
 #endif
 #endif
 #if __FIRMWARE_VERSION > 107
@@ -9232,6 +9244,17 @@ inline void SysFileSeek(FileSeekType & args);
  */
 inline void SysFileResize(FileResizeType & args);
 
+/**
+ * Return the file position.
+ * This function returns the current file position in the open file
+ * specified via the \ref FileTellType structure.
+ *
+ * \param args The FileTellType structure containing the needed parameters.
+ *
+ * \warning This function requires the extended firmware.
+ */
+inline void SysFileTell(FileTellType & args);
+
 #endif
 #endif
 #if __FIRMWARE_VERSION > 107
@@ -9350,6 +9373,10 @@ inline void SysListFiles(ListFilesType & args);
 #define SysFileResize(_args) asm { \
   compchktype _args, FileResizeType \
   syscall FileResize, _args \
+}
+#define SysFileTell(_args) asm { \
+  compchktype _args, FileTellType \
+  syscall FileTell, _args \
 }
 #endif
 #endif
@@ -14188,15 +14215,24 @@ byte fopen(string filename, const string mode) {
  */
 inline int fflush(byte handle) { return 0; }
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 /**
  * Get current position in file.
  * Returns the current value of the file position indicator of the specified
  * handle.
  *
  * \param handle The handle of the file.
- * \return Currently always returns -1.
+ * \return The current file position in the open file.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+.
  */
-inline long ftell(byte handle) { return -1; }
+inline unsigned long ftell(byte handle) {
+  FileTellType ftt;
+  ftt.FileHandle = handle;
+  SysFileTell(ftt);
+  return ftt.Position;
+}
+#endif
 
 /**
  * Write character to file.
