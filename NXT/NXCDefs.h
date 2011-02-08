@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-01-21
- * \version 88
+ * \date 2011-02-08
+ * \version 89
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -4327,8 +4327,8 @@ inline void SysReadLastResponse(ReadLastResponseType & args);
 
 #else
 
-#define CurrentTick() asm { gettick __RETVAL__ }
-#define FirstTick() asm { GetFirstTick(__RETVAL__) }
+#define CurrentTick() asm { gettick __URETVAL__ }
+#define FirstTick() asm { GetFirstTick(__URETVAL__) }
 #define ResetSleepTimer() asm { acquire __KeepAliveMutex \
   syscall KeepAlive, __KeepAliveArgs \
   mov __RETVAL__, __KeepAliveArgs.Result \
@@ -15284,9 +15284,7 @@ inline unsigned long addressOfEx(variant data, bool relative);
 
 #define addressOf(_data) asm { addrof __URETVAL__, _data, 0 }
 #define reladdressOf(_data) asm { addrof __URETVAL__, _data, 1 }
-#define addressOfEx(_data, _rel) asm { \
-  addrof __URETVAL__, _data, _rel \
-}
+#define addressOfEx(_data, _rel) asm { addrof __URETVAL__, _data, _rel }
 
 #endif
 
