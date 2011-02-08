@@ -432,23 +432,40 @@ begin
   JoyTimer.Enabled := false;
 end;
 
-procedure TJoystickForm.FormKeyDown(Sender: TObject; var Key: Word;
-  Shift: TShiftState);
 const
   VK_0 = 48;
   VK_1 = 49;
   VK_9 = 57;
+
+procedure TJoystickForm.FormKeyDown(Sender: TObject; var Key: Word;
+  Shift: TShiftState);
 begin
   if (Key >= VK_NUMPAD1) and (Key <= VK_NUMPAD9) then
     MoveRCX(Key - VK_NUMPAD0)
   else if (Key >= VK_1) and (Key <= VK_9) then
-    MoveRCX(Key - VK_0);
+    MoveRCX(Key - VK_0)
+  else begin
+    case Key of
+      VK_END   : MoveRCX(1);
+      VK_DOWN  : MoveRCX(2);
+      VK_NEXT  : MoveRCX(3);
+      VK_LEFT  : MoveRCX(4);
+      VK_CLEAR : MoveRCX(5);
+      VK_RIGHT : MoveRCX(6);
+      VK_HOME  : MoveRCX(7);
+      VK_UP    : MoveRCX(8);
+      VK_PRIOR : MoveRCX(9);
+    end;
+  end;
 end;
 
 procedure TJoystickForm.FormKeyUp(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
-  if (Key >= VK_NUMPAD1) and (Key <= VK_NUMPAD9) then
+  if ((Key >= VK_NUMPAD1) and (Key <= VK_NUMPAD9)) or
+     ((Key >= VK_1) and (Key <= VK_9)) or
+     (Key in [VK_END,   VK_DOWN, VK_NEXT, VK_LEFT,
+              VK_RIGHT, VK_HOME, VK_UP,   VK_PRIOR]) then
     MoveRCX(5);
 end;
 
