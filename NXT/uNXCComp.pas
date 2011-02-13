@@ -4121,6 +4121,30 @@ begin
       StoreArray(name, tmp, aval);
       pop;
     end
+    // 2011-02-11 - Added code to handle math assignment for arrays of UDTs
+    else if IsUDT(dt) and bIndexed then
+    begin
+      // dt is not non-aggregated
+      // set the variable to the specified element from previous array
+      udType := '';
+      if IsUDT(ArrayBaseType(dt)) then
+        udType := GetUDTType(name);
+      // get a temporary thread-safe variable of the right type
+      AHV := fArrayHelpers.GetHelper(fCurrentThreadName, udType, dt);
+      try
+        aval := AHV.Name;
+        if fGlobals.IndexOfName(aval) = -1 then
+          AddEntry(aval, dt, udType, '');
+        // set the variable to the specified element from previous array
+        EmitLn(Format('index %s, %s, %s',[aval, GetDecoratedIdent(name), tmp]));
+        MathAssignment(aval);
+        // store temporary thread-safe variable back into previous array
+        StoreArray(name, tmp, aval);
+      finally
+        fArrayHelpers.ReleaseHelper(AHV);
+      end;
+    end
+    // 2011-02-11 - End of new code for arrays of UDTs
     else
     begin
       MathAssignment(name);
@@ -9599,8 +9623,7 @@ begin
         LoadVar(Value);
         Next; // move to the next token
       end
-      else
-      if aLHSName <> '' then
+      else if aLHSName <> '' then
       begin
         if tmpDT = TOK_STRINGDEF then
           EmitLn(Format('strcat %s, %s', [aLHSName, GetDecoratedValue]))
