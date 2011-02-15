@@ -1,2 +1,19 @@
+task main() {
+  byte handle;
+  unsigned int result, fsize;
+  string fname = "*.ric";
   result = FindFirstFile(fname, handle);
-
+  NumOut(0, LCD_LINE1, result, true);
+  int i=1;
+  while (result == LDR_SUCCESS) {
+    NumOut(0, LCD_LINE2, i, false);
+    TextOut(0, LCD_LINE3, fname, false);
+    Wait(1500);
+//    fname = "";
+    result = FindNextFile(fname, handle);
+    NumOut(0, LCD_LINE1, result, true);
+    i++;
+  }
+  CloseFile(handle);
+  Wait(3000);
+}
