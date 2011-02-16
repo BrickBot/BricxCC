@@ -1637,7 +1637,7 @@ procedure TEditorForm.TheEditorMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
 {$IFNDEF FPC}
-  if (ssCtrl in Shift) and (Button = mbLeft) then
+  if ((ssCtrl in Shift) and (Button = mbLeft)) and not Selected then
     FindDeclaration(TheEditor.WordAtMouse);
   if (ssShift in Shift) and (Button = mbLeft) then
   begin
