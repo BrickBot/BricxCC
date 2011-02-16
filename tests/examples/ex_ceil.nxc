@@ -1,1 +1,8 @@
-y = ceil(x);
+float a = ceil(3.01);
+// a == 4.0
+float b = ceil(3.14);
+// b == 4.0
+float c = ceil(3.99);
+// c == 4.0
+float d = ceil(4.0);
+// d == 4.0

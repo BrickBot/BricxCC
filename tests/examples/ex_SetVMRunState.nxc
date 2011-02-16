@@ -1,1 +1,1 @@
-SetVMRunState(0); // stopped
+SetVMRunState(VM_RUN_PAUSE); // pause the virtual machine.  This could be used like a breakpoint
