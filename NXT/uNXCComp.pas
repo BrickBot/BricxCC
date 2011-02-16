@@ -342,7 +342,7 @@ type
     procedure DoStopMotors;
     procedure DoStopMotorsEx;
     procedure DoStrCat;
-    function StrCatHelper(const oldasmstr : string) : string;
+    function StrCatHelper(const oldasmstr : string; recurseToken : Char) : string;
     procedure DoSubString;
     procedure DoStrReplace;
     procedure DoStrToNum;
@@ -2953,12 +2953,14 @@ end;
 
 function TNXCComp.StringExpression(const Name : string; bAdd : boolean) : boolean;
 var
-  asmStr, val : string;
+  asmStr, val, aval, tmpStr : string;
   dt : char;
+  AHV : TArrayHelperVar;
 begin
   Result := False;
   SkipWhite;
   fCCSet := False;
+  asmStr := '';
   if Look = TOK_OPENPAREN then
   begin
     // a function call that returns a string
@@ -2975,11 +2977,11 @@ begin
       Next; // move to TOK_OPENPAREN
       StringFunction(val);
     end;
+    tmpStr := StrRetValName;
     if bAdd then
-      asmStr := Format('strcat %s, %s, %s', [StrBufName, GetDecoratedIdent(Name), StrRetValName])
+      asmStr := Format('strcat %s, %s, ', [StrBufName, GetDecoratedIdent(Name)])
     else
-      asmStr := Format('mov %s, %s', [StrBufName, StrRetValName]);
-    EmitLn(asmStr);
+      asmStr := Format('strcat %s, ', [StrBufName]);
   end
   else if Look = '[' then
   begin
@@ -2987,11 +2989,11 @@ begin
     Next;
     fArrayIndexStack.Clear;
     Result := DoNewArrayIndex(DataType(val), val, StrRetValName);
+    tmpStr := StrRetValName;
     if bAdd then
-      asmStr := Format('strcat %s, %s, %s', [StrBufName, GetDecoratedIdent(Name), StrRetValName])
+      asmStr := Format('strcat %s, %s, ', [StrBufName, GetDecoratedIdent(Name)])
     else
-      asmStr := Format('mov %s, %s', [StrBufName, StrRetValName]);
-    EmitLn(asmStr);
+      asmStr := Format('strcat %s, ', [StrBufName]);
   end
   else if Value = 'asm' then
   begin
@@ -3004,34 +3006,58 @@ begin
       Expected(sStringReturnValue)
     else
     begin
+      tmpStr := StrRetValName;
       if bAdd then
-        asmStr := Format('strcat %s, %s, %s', [StrBufName, GetDecoratedIdent(Name), StrRetValName])
+        asmStr := Format('strcat %s, %s, ', [StrBufName, GetDecoratedIdent(Name)])
       else
-        asmStr := Format('mov %s, %s', [StrBufName, StrRetValName]);
-      EmitLn(asmStr);
+        asmStr := Format('strcat %s, ', [StrBufName]);
     end;
   end
   else
   begin
     CheckString;
+    tmpStr := GetDecoratedValue;
     if bAdd then
-      asmStr := Format('strcat %s, %s, %s', [StrBufName, GetDecoratedIdent(Name), GetDecoratedValue])
+      asmStr := Format('strcat %s, %s, ', [StrBufName, GetDecoratedIdent(Name)])
     else
-    begin
-      if Look = TOK_SEMICOLON then
-        asmStr := Format('mov %s, %s', [StrBufName, GetDecoratedValue])
-      else
-        asmStr := Format('strcat %s, %s', [StrBufName, GetDecoratedValue]);
-    end;
+      asmStr := Format('strcat %s, ', [StrBufName]);
     Next;
-    while Token = '+' do begin
-      Next;
-      CheckString;
-      asmStr := asmStr + ', ' + GetDecoratedValue;
-      Next;
-    end;
-    EmitLn(asmStr);
   end;
+  // in all cases we may want to recurse
+  if Token = '+' then
+  begin
+    // we are overloading the + for string concatenation
+    // we need to store the value from this string expression into
+    // a temporary variable so that it is not overwritten by
+    // recursing into subsequent string expressions
+    AHV := fArrayHelpers.GetHelper(fCurrentThreadName, '', TOK_ARRAYBYTEDEF);
+    try
+      aval := AHV.Name;
+      if fGlobals.IndexOfName(aval) = -1 then
+        AddEntry(aval, TOK_ARRAYBYTEDEF, '', '');
+      // move result of string expression to newly allocated temporary variable
+      EmitLn(Format('mov %s, %s', [aval, tmpStr]));
+      Next; // skip past the +
+      asmStr := asmStr + StrCatHelper(aval + ', ', '+');
+{
+      while Token = '+' do begin
+        Next; // skip past +
+        CheckString;
+        asmStr := asmStr + ', ' + GetDecoratedValue;
+        Next;
+      end;
+}
+    finally
+      fArrayHelpers.ReleaseHelper(AHV);
+    end;
+  end
+  else
+  begin
+    // no string concatenation
+    asmStr := asmStr + tmpStr; // add in the variable from this string expression
+  end;
+  if asmStr <> '' then
+    EmitLn(asmStr);
 end;
 
 procedure TNXCComp.EqualArrayOrUDT(const lhs : string);
@@ -7595,12 +7621,12 @@ var
 begin
   // StrCat(str1, str2, ..., strN)
   OpenParen;
-  asmstr := Format('strcat %s, ', [StrRetValName]) + StrCatHelper('');
+  asmstr := Format('strcat %s, ', [StrRetValName]) + StrCatHelper('', ',');
   CloseParen;
   EmitLn(asmStr);
 end;
 
-function TNXCComp.StrCatHelper(const oldasmstr : string) : string;
+function TNXCComp.StrCatHelper(const oldasmstr : string; recurseToken : Char) : string;
 var
   AHV : TArrayHelperVar;
   aval : string;
@@ -7613,10 +7639,10 @@ begin
       AddEntry(aval, TOK_ARRAYBYTEDEF, '', '');
     // move result of string expression to newly allocated temporary variable
     EmitLn(Format('mov %s, %s', [aval, StrBufName]));
-    if Token <> TOK_CLOSEPAREN then
+    if Token = recurseToken then
     begin
-       Next; // skip past the comma
-       Result := oldasmstr + StrCatHelper(aval + ', ');
+       Next; // skip past the recurse token (comma or + depending on the context)
+       Result := oldasmstr + StrCatHelper(aval + ', ', ',');
     end
     else
        Result := oldasmstr + aval;
