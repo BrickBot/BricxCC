@@ -1,0 +1,20 @@
+task main()
+{
+  int buf, sum[], d2 = 45, j = 0;
+  ArrayInit(sum, 10, 10);
+//  buf=j=d2;
+//  sum[j]=sum[j]+d2;
+//  buf=sum[j]=d2 + sum[j];
+
+  LocationType p[] = { {10,10}, {30,50}, {55, 20}, {80, 20}, {100, 50} };
+  p[2] *= 2; // works as of 2011-02-11
+  p[2].Y *= 2;
+//  set __D0main, 2
+//  mul __main_7qG2_p_7qG2_000, __main_7qG2_p_7qG2_000, __D0main
+   
+  NumOut( 0, LCD_LINE1, p[0].X );
+  NumOut( 0, LCD_LINE2, p[0].Y );
+  NumOut( 0, LCD_LINE3, p[2].X );
+  NumOut( 0, LCD_LINE4, p[2].Y );
+  for(;;);
+}

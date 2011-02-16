@@ -1,0 +1,14 @@
+struct point{
+   byte X;
+   byte X2;
+   byte Y;
+   byte Z;
+   byte Z2;
+};
+point temp[1][1];
+
+task main(){
+   temp[0][0].X = 23;
+   temp[0][0].Y = temp[0][0].X;
+   while(true);
+}

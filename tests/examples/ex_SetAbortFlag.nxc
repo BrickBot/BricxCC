@@ -1,1 +1,28 @@
-SetAbortFlag(BTNSTATE_LONG_PRESSED_EV);
+task main()
+{
+   // Set exit button to end program only if it is pressed for longer than 2 seconds
+#ifdef __ENHANCED_FIRMWARE
+   SetLongAbort(true);
+   // is equivalent to
+   SetAbortFlag(BTNSTATE_LONG_PRESSED_EV);
+#endif
+
+   while(true)
+   {
+      ClearScreen();
+      // Display on NXT Screen: "Press the exit button longer (for 2 seconds) to exit"
+      TextOut(0, LCD_LINE1, "Press the exit", 0);
+      TextOut(0, LCD_LINE2, "button longer", 0);
+      TextOut(0, LCD_LINE3, "(for 2 seconds)", 0);
+      TextOut(0, LCD_LINE4, "to exit.", 0);
+      
+      
+      // Display number of times the user has pressed the exit button (for less than 2 seconds)
+      NumOut(0, LCD_LINE8, ButtonPressCount(BTNEXIT), 0);
+      
+      
+      // Wait until user presses and releases exit button before continuing loop
+      while(!(ButtonPressed(BTNEXIT, 0)));
+      while(ButtonPressed(BTNEXIT, 0));
+   }
+}
