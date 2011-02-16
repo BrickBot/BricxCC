@@ -487,12 +487,22 @@ const
 
 const
 //Fatal errors
-  ERR_ARG      = ShortInt($FF); //0xFF Bad arguments;
-  ERR_INSTR    = ShortInt($FE); //0xFE Illegal bytecode instruction;
-  ERR_FILE     = ShortInt($FD); //0xFD Mal-formed file contents;
-  ERR_VER      = ShortInt($FC); //0xFC Version mismatch between firmware and compiler;
-  ERR_MEM      = ShortInt($FB); //0xFB Insufficient memory available;
-  ERR_BAD_PTR  = ShortInt($FA); //0xFA Someone passed us a bad pointer!;
+  ERR_ARG             = ShortInt($FF); //0xFF Bad arguments;
+  ERR_INSTR           = ShortInt($FE); //0xFE Illegal bytecode instruction;
+  ERR_FILE            = ShortInt($FD); //0xFD Mal-formed file contents;
+  ERR_VER             = ShortInt($FC); //0xFC Version mismatch between firmware and compiler;
+  ERR_MEM             = ShortInt($FB); //0xFB Insufficient memory available;
+  ERR_BAD_PTR         = ShortInt($FA); //0xFA Someone passed us a bad pointer!;
+  ERR_CLUMP_COUNT     = ShortInt($F9); // //(FileClumpCount == 0 || FileClumpCount >= NOT_A_CLUMP)
+  ERR_NO_CODE         = ShortInt($F8); // VarsCmd.CodespaceCount == 0 */
+  ERR_INSANE_OFFSET   = ShortInt($F7); // CurrOffset != (DataSize - VarsCmd.CodespaceCount * 2) */
+  ERR_BAD_POOL_SIZE   = ShortInt($F6); // VarsCmd.PoolSize > POOL_MAX_SIZE */
+  ERR_LOADER_ERR      = ShortInt($F5); // LOADER_ERR(LStatus) != SUCCESS || pData == NULL || DataSize == 0 */
+  ERR_SPOTCHECK_FAIL  = ShortInt($F4); // ((UBYTE*)(VarsCmd.pCodespace) < pData) (c_cmd.c 1893) */
+  ERR_NO_ACTIVE_CLUMP = ShortInt($F3); // VarsCmd.RunQ.Head == NOT_A_CLUMP */
+  ERR_DEFAULT_OFFSETS = ShortInt($F2); // (DefaultsOffset != FileOffsets.DynamicDefaults) || (DefaultsOffset + FileOffsets.DynamicDefaultsSize != FileOffsets.DSDefaultsSize) */
+  ERR_MEMMGR_FAIL     = ShortInt($F1); // (UBYTE *)VarsCmd.MemMgr.pDopeVectorArray != VarsCmd.pDataspace + DV_ARRAY[0].Offset */
+
 //General errors
   ERR_INVALID_PORT   = ShortInt($F0); // Bad input or output port specified
   ERR_INVALID_FIELD  = ShortInt($EF); // Attempted to access invalid field of a structure
