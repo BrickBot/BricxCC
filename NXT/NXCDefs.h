@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-02-08
- * \version 89
+ * \date 2011-02-16
+ * \version 90
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -8305,6 +8305,9 @@ inline void SetUIState(byte state);
  * Set VM run state information.
  *
  * \param vmRunState The desired VM run state. See \ref UiVMRunStateConstants.
+ *
+ * \warning It is not a good idea to change the VM run state from within a
+ * running program unless you know what you are doing.
  */
 inline void SetVMRunState(const byte vmRunState);
 
@@ -14173,6 +14176,16 @@ inline string fgets(string & str, int num, byte handle) {
  */
 inline int feof(byte handle) { return 0; }
 
+unsigned long __fopen_default_size = 1024;
+
+/**
+ * Set the default fopen file size.
+ * Set the default size of a file created via a call to fopen.
+ *
+ * \param fsize The default new file size for fopen.
+ */
+inline void set_fopen_size(unsigned long fsize) { __fopen_default_size = fsize; }
+
 /**
  * Open file.
  * Opens the file whose name is specified in the parameter filename and
@@ -14188,21 +14201,22 @@ inline int feof(byte handle) { return 0; }
  */
 byte fopen(string filename, const string mode) {
   byte handle;
-  int fsize;
+  int result = LDR_ILLEGALHANDLE;
+  unsigned long fsize;
   switch(mode) {
     case "r" :
-      OpenFileRead(filename, fsize, handle);
+      result = OpenFileRead(filename, fsize, handle);
       break;
     case "w" :
-      fsize = 1024;
-      CreateFile(filename, fsize, handle);
+      fsize  = __fopen_default_size;
+      result = CreateFile(filename, fsize, handle);
       break;
     case "a" :
-      OpenFileAppend(filename, fsize, handle);
+      result = OpenFileAppend(filename, fsize, handle);
       break;
-    default:
-      handle = NULL;
   }
+  if (result != LDR_SUCCESS)
+    handle = NULL;
   return handle;
 }
 

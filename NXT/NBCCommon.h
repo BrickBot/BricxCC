@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-01-21
- * \version 61
+ * \date 2011-02-16
+ * \version 62
  */
 
 #ifndef NBCCOMMON_H
@@ -937,8 +937,8 @@
 #define UI_VM_RUN_FREE    1 /*!< VM_RUN_FREE: Attempt to run as many instructions as possible within our timeslice */
 #define UI_VM_RUN_SINGLE  2 /*!< VM_RUN_SINGLE: Run exactly one instruction per timeslice */
 #define UI_VM_RUN_PAUSE   3 /*!< VM_RUN_PAUSE: Program still "active", but someone has asked us to pause */
-#define UI_VM_RESET1      4 /*!< VM_RESET2: Final clean up and return to IDLE */
-#define UI_VM_RESET2      5 /*!< VM_RESET1: Initialize state variables and some I/O devices -- executed when programs end */
+#define UI_VM_RESET1      4 /*!< VM_RESET1: Initialize state variables and some I/O devices -- executed when programs end */
+#define UI_VM_RESET2      5 /*!< VM_RESET2: Final clean up and return to IDLE */
 /** @} */  // end of UiVMRunStateConstants group
 
 /** @defgroup UiIOMAP Ui module IOMAP offsets
