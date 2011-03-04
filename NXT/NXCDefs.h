@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-02-16
- * \version 90
+ * \date 2011-02-20
+ * \version 91
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -598,7 +598,7 @@ inline unsigned int SensorValueRaw(const byte & port);
  * \param port The sensor port. See \ref InPorts.
  * \return The custom sensor active status.
 */
-inline byte CustomSensorActiveStatus(const byte port);
+inline byte CustomSensorActiveStatus(byte port);
 
 /**
  * Get the custom sensor percent full scale.
@@ -607,7 +607,7 @@ inline byte CustomSensorActiveStatus(const byte port);
  * \param port The sensor port. See \ref InPorts.
  * \return The custom sensor percent full scale.
  */
-inline byte CustomSensorPercentFullScale(const byte port);
+inline byte CustomSensorPercentFullScale(byte port);
 
 /**
  * Get the custom sensor zero offset.
@@ -616,70 +616,70 @@ inline byte CustomSensorPercentFullScale(const byte port);
  * \param port The sensor port. See \ref InPorts.
  * \return The custom sensor zero offset.
  */
-inline unsigned int CustomSensorZeroOffset(const byte port);
+inline unsigned int CustomSensorZeroOffset(byte port);
 
 /**
  * Set active status.
  * Sets the active status value of a custom sensor.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
  * \param activeStatus The new active status value.
  */
-inline void SetCustomSensorActiveStatus(const byte port, const byte & activeStatus);
+inline void SetCustomSensorActiveStatus(byte port, byte activeStatus);
 
 /**
  * Set percent full scale.
  * Sets the percent full scale value of a custom sensor.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
  * \param pctFullScale The new percent full scale value.
  */
-inline void SetCustomSensorPercentFullScale(const byte port, const byte & pctFullScale);
+inline void SetCustomSensorPercentFullScale(byte port, byte pctFullScale);
 
 /**
  * Set custom zero offset.
  * Sets the zero offset value of a custom sensor.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
  * \param zeroOffset The new zero offset value.
  */
-inline void SetCustomSensorZeroOffset(const byte port, const int & zeroOffset);
+inline void SetCustomSensorZeroOffset(byte port, int zeroOffset);
 
 /**
  * Set sensor boolean value.
  * Sets the boolean value of a sensor.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
  * \param value The new boolean value.
  */
-inline void SetSensorBoolean(const byte port, const bool & value);
+inline void SetSensorBoolean(byte port, bool value);
 
 /**
  * Set digital pins direction.
  * Sets the digital pins direction value of a sensor.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
  * \param direction The new digital pins direction value.
  */
-inline void SetSensorDigiPinsDirection(const byte port, const byte & direction);
+inline void SetSensorDigiPinsDirection(byte port, byte direction);
 
 /**
  * Set digital pins output level.
  * Sets the digital pins output level value of a sensor.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
  * \param outputLevel The new digital pins output level value.
  */
-inline void SetSensorDigiPinsOutputLevel(const byte port, const byte & outputLevel);
+inline void SetSensorDigiPinsOutputLevel(byte port, byte outputLevel);
 
 /**
  * Set digital pins status.
  * Sets the digital pins status value of a sensor.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
  * \param status The new digital pins status value.
  */
-inline void SetSensorDigiPinsStatus(const byte port, const byte & status);
+inline void SetSensorDigiPinsStatus(byte port, byte status);
 
 
 #if __FIRMWARE_VERSION > 107
@@ -727,84 +727,84 @@ inline int ReadSensorColorRaw(const byte & port, unsigned int & rawVals[]);
  * This function lets you directly access a specific LEGO color sensor AD raw value. Both the
  * port and the color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
- * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
+ * \param color The color index. See \ref InputColorIdxConstants.
  * \return The AD raw value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
-inline unsigned int ColorADRaw(const byte port, const byte color);
+inline unsigned int ColorADRaw(byte port, byte color);
 
 /**
  * Read a LEGO color sensor boolean value.
  * This function lets you directly access a specific LEGO color sensor boolean value. Both the
  * port and the color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
- * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
+ * \param color The color index. See \ref InputColorIdxConstants.
  * \return The boolean value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
-inline bool ColorBoolean(const byte port, const byte color);
+inline bool ColorBoolean(byte port, byte color);
 
 /**
  * Read a LEGO color sensor calibration point value.
  * This function lets you directly access a specific LEGO color calibration point value.
  * The port, point, and color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
- * \param point The calibration point. See \ref InputColorCalibrationConstants. Must be a constant.
- * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
+ * \param point The calibration point. See \ref InputColorCalibrationConstants.
+ * \param color The color index. See \ref InputColorIdxConstants.
  * \return The calibration point value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
-inline long ColorCalibration(const byte port, const byte point, const byte color);
+inline long ColorCalibration(byte port, byte point, byte color);
 
 /**
  * Read LEGO color sensor calibration state.
  * This function lets you directly access the LEGO color calibration state.
  * The port must be a constant.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
  * \return The calibration state.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
-inline byte ColorCalibrationState(const byte port);
+inline byte ColorCalibrationState(byte port);
 
 /**
  * Read a LEGO color sensor calibration limit value.
  * This function lets you directly access a specific LEGO color calibration limit value.
  * The port and the point must be constants.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
- * \param point The calibration point. See \ref InputColorCalibrationConstants. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
+ * \param point The calibration point. See \ref InputColorCalibrationConstants.
  * \return The calibration limit value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
-inline unsigned int ColorCalLimits(const byte port, const byte point);
+inline unsigned int ColorCalLimits(byte port, byte point);
 
 /**
  * Read a LEGO color sensor raw value.
  * This function lets you directly access a specific LEGO color sensor raw value. Both the
  * port and the color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
- * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
+ * \param color The color index. See \ref InputColorIdxConstants.
  * \return The raw value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
-inline unsigned int ColorSensorRaw(const byte port, const byte color);
+inline unsigned int ColorSensorRaw(byte port, byte color);
 
 /**
  * Read a LEGO color sensor scaled value.
  * This function lets you directly access a specific LEGO color sensor scaled value. Both the
  * port and the color index must be constants.
  *
- * \param port The sensor port. See \ref InPorts. Must be a constant.
- * \param color The color index. See \ref InputColorIdxConstants. Must be a constant.
+ * \param port The sensor port. See \ref InPorts.
+ * \param color The color index. See \ref InputColorIdxConstants.
  * \return The scaled value.
  * \warning This function requires an NXT 2.0 compatible firmware.
  */
-inline unsigned int ColorSensorValue(const byte port, const byte color);
+inline unsigned int ColorSensorValue(byte port, byte color);
 
 #endif
 
@@ -7355,21 +7355,21 @@ inline void SetUSBPollBufferOutPtr(byte n);
  * This method sets the value of the hi-speed port flags.
  * \param hsFlags The hi-speed port flags. See \ref CommHiSpeedFlagsConstants.
  */
-inline void SetHSFlags(const byte hsFlags);
+inline void SetHSFlags(byte hsFlags);
 
 /**
  * Set hi-speed port speed.
  * This method sets the value of the hi-speed port speed (baud rate).
  * \param hsSpeed The hi-speed port speed (baud rate).  See \ref CommHiSpeedBaudConstants.
  */
-inline void SetHSSpeed(const byte hsSpeed);
+inline void SetHSSpeed(byte hsSpeed);
 
 /**
  * Set hi-speed port state.
  * This method sets the value of the hi-speed port state.
  * \param hsState The hi-speed port state. See \ref CommHiSpeedStateConstants.
  */
-inline void SetHSState(const byte hsState);
+inline void SetHSState(byte hsState);
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 
@@ -7382,12 +7382,12 @@ inline void SetHSState(const byte hsState);
  *
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
-inline void SetHSMode(const unsigned int hsMode);
+inline void SetHSMode(unsigned int hsMode) { asm { __setHSMode(_n) } }
 
 /**
  * Set Bluetooth data mode.
  * This method sets the value of the Bluetooth data mode.
- * \param dataMode The Bluetooth data mode.  See \ref CommDataModeConstants.
+ * \param dataMode The Bluetooth data mode.  See \ref CommDataModeConstants. Must be a constant.
  *
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
@@ -7396,7 +7396,7 @@ inline void SetBTDataMode(const byte dataMode);
 /**
  * Set hi-speed port data mode.
  * This method sets the value of the hi-speed port data mode.
- * \param dataMode The hi-speed port data mode.  See \ref CommDataModeConstants.
+ * \param dataMode The hi-speed port data mode.  See \ref CommDataModeConstants. Must be a constant.
  *
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
@@ -7841,7 +7841,6 @@ inline void SetBTDeviceNameCount(byte count);
 #define SetUSBState(_n) asm { __setUSBState(_n) }
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
-#define SetHSMode(_n) asm { __setHSMode(_n) }
 #define SetBTDataMode(_n) asm { __setBTDataMode(_n) }
 #define SetHSDataMode(_n) asm { __setHSDataMode(_n) }
 #endif
@@ -13655,7 +13654,7 @@ inline float sqrt(float x) { asm { sqrt __FLTRETVAL__, x } }
  * \deprecated Use atan2d() instead.
  * \param _Y Floating point value.
  * \param _X Floating point value.
- * \return Arc tangent of _Y/_X.
+ * \return Arc tangent of _Y/_X, in the interval [-180,+180] degrees.
  */
 #define Atan2D(_Y,_X) asm { atan2d __FLTRETVAL__, _Y, _X }
 
@@ -13971,7 +13970,7 @@ inline float atand(float x) { asm { atand __FLTRETVAL__, x } }
  *
  * \param y Floating point value representing a y coordinate.
  * \param x Floating point value representing an x coordinate.
- * \return Arc tangent of y/x, in the interval [-90,+90] degrees.
+ * \return Arc tangent of y/x, in the interval [-180,+180] degrees.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
@@ -14044,7 +14043,7 @@ inline float tanhd(float x) { asm { tanhd __FLTRETVAL__, x } }
  * \param bcd The value you want to convert from bcd to decimal.
  * \return The decimal equivalent of the binary coded decimal byte.
  */
-inline byte bcd2dec(byte bcd) { asm { __bcd2dec(bcd, __RETVAL__) } }
+inline byte bcd2dec(byte bcd) { asm { __bcd2dec(bcd, __URETVAL__) } }
 
 #ifdef __DOXYGEN_DOCS
 
