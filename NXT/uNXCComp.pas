@@ -193,7 +193,7 @@ type
     procedure DoRepeat;
     procedure DoAsm(var dt : char);
     function  DecorateVariables(const asmStr : string) : string;
-    procedure DoSwitch;
+    procedure DoSwitch(const lstart : string);
     procedure DoSwitchCase;
     function  GetCaseConstant : string;
     procedure DoSwitchDefault;
@@ -1543,10 +1543,35 @@ end;
 { Get a Character Literal }
 
 procedure TNXCComp.GetCharLit;
+var
+  i : integer;
 begin
   GetCharX; // skip the '
   Token := TOK_NUM;
-  Value := IntToStr(Ord(Look));
+  if Look = '\' then
+  begin
+    GetCharX; // skip the '\'
+    i := Pos(Look, 'abfnrtv''"\?');
+    case i of
+      1 : Value := '7'; // bell
+      2 : Value := '8'; // backspace
+      3 : Value := '12'; // formfeed
+      4 : Value := '10'; // new line
+      5 : Value := '13'; // carriage return
+      6 : Value := '9'; // tab
+      7 : Value := '11'; // vertical tab
+      8 : Value := '39'; // single quote
+      9 : Value := '34'; // double quote
+     10 : Value := '92'; // backslash
+     11 : Value := '63'; // question mark
+    else
+      Value := IntToStr(Ord(Look));
+    end;
+  end
+  else
+  begin
+    Value := IntToStr(Ord(Look));
+  end;
   GetCharX;
   if Look <> '''' then Expected(sCharLiteral);
   GetChar;
@@ -4635,7 +4660,7 @@ begin
   Result := aValue = 'TRUE';
 end;
 
-procedure TNXCComp.DoSwitch;
+procedure TNXCComp.DoSwitch(const lstart : string);
 var
   L2 : string;
   idx : integer;
@@ -4657,7 +4682,7 @@ begin
     ClearSwitchFixups;
     SwitchFixups.Add(Format('%d_Type=%s', [fSwitchDepth, IntToStr(Ord(bSwitchIsString))]));
     SwitchRegisterNames.Add(Format('%d=%s', [fSwitchDepth, RegisterName]));
-    Block(L2);
+    Block(L2, lstart);
     PostLabel(L2);
     FixupSwitch(idx, L2);
   finally
@@ -5118,7 +5143,7 @@ begin
       TOK_FOR:        DoFor;
       TOK_DO:         DoDoWhile;
       TOK_REPEAT:     DoRepeat;
-      TOK_SWITCH:     DoSwitch;
+      TOK_SWITCH:     DoSwitch(lstart);
       TOK_CASE:       DoSwitchCase;
       TOK_DEFAULT:    DoSwitchDefault;
       TOK_START:      DoStart;
