@@ -20,7 +20,7 @@ uses
 type 
 (*----------------------------------------------------------------------------*)
   TPSImport_rcx_constants = class(TPSPlugin)
-  protected
+  public
     procedure CompileImport1(CompExec: TPSScript); override;
     procedure ExecImport1(CompExec: TPSScript; const ri: TPSRuntimeClassImporter); override;
   end;
