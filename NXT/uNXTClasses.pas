@@ -5541,7 +5541,13 @@ begin
       else // 0
         Result := aatScalarNoConst;
     end;
-    OPS_COMPCHK, OPS_COMPIF : begin
+    OPS_COMPCHK : begin
+      if argIdx > 2 then
+        Result := aatString
+      else
+        Result := aatConstant;
+    end;
+    OPS_COMPIF : begin
       Result := aatConstant;
     end;
     OPS_COMPCHKTYPE : begin
@@ -5638,6 +5644,9 @@ begin
     delta := 0;
   for i := delta to AL.Args.Count - 1 do
   begin
+    // the optional 4th argument of the compchk opcode is a special case
+    if (AL.Command = OPS_COMPCHK) and (i = 3) then
+      Continue;
     expected := ExpectedArgType(FirmwareVersion, AL.Command, i);
     arg := AL.Args[i];
     if expected in
@@ -5903,12 +5912,21 @@ begin
                 Format(sConstOutOfRange, [val, Low(SmallInt), High(Word)]), true)
           end;
         end;
+        OPS_COMPCHK : begin
+          // can have 3 or 4 arguments
+          if (AL.Args.Count <> NI.Arity) and (AL.Args.Count <> NI.Arity+1) then
+            ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
+              Format(sInvalidNumArgs, [NI.Arity, AL.Args.Count]), true);
+        end;
       else // case
         if (NI.Arity < 6) and (AL.Args.Count <> NI.Arity) then
           ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
             Format(sInvalidNumArgs, [NI.Arity, AL.Args.Count]), true);
       end;
       for i := 0 to AL.Args.Count - 1 do begin
+        // the optional 4th argument of the compchk opcode is a special case
+        if (AL.Command = OPS_COMPCHK) and (i = 3) then
+          Continue;
         arg := AL.Args[i].Value;
         argType := ExpectedArgType(FirmwareVersion, Al.Command, i);
         case argType of
@@ -6784,10 +6802,11 @@ procedure TRXEProgram.DoCompilerCheck(AL: TAsmLine; bIfCheck : boolean);
 var
   i1, i2, i3 : integer;
   bCheckOkay : boolean;
+  errMsg : string;
 begin
   if fIgnoreLines then Exit;
   bCheckOkay := False;
-  if AL.Args.Count = 3 then
+  if AL.Args.Count >= 3 then
   begin
     i2 := StrToIntDef(AL.Args[0].Value, OPCC1_EQ);
     i1 := StrToIntDef(AL.Args[1].Value, 0);
@@ -6805,8 +6824,13 @@ begin
       if bIfCheck then
         fIgnoreLines := True
       else
-        ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
-          Format(sCompCheckFailed, [i1, CCToStr(i2), i3]), true);
+      begin
+        if AL.Args.Count > 3 then
+          errMsg := AL.Args[3].Value
+        else
+          errMsg := Format(sCompCheckFailed, [i1, CCToStr(i2), i3]);
+        ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, errMsg, true);
+      end;
     end
     else
       if bIfCheck then
