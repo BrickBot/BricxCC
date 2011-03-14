@@ -65,6 +65,8 @@ ResetBlockTachoCount("ports");\=
 ResetRotationCount("ports");\=
 ResetAllTachoCounts("ports");\=
 SetOutput("ports", "field", "value");\=
+SetMotorRegulationTime("time");\=
+SetMotorRegulationOptions("options");\=
 GetOutput("port", "field")
 MotorTachoLimit("port")
 MotorTachoCount("port")
@@ -80,10 +82,20 @@ MotorRegIValue("port")
 MotorRegDValue("port")
 MotorBlockTachoCount("port")
 MotorRotationCount("port")
+MotorOutputOptions("port")
+MotorMaxSpeed("port")
+MotorMaxAcceleration("port")
+MotorRegulationTime()
+MotorRegulationOptions()
+PosRegAddAngle("output", "angle_add");\=
+PosRegEnable("output", "p", "i", "d");\=
+PosRegSetAngle("output", "angle");\=
+PosRegSetMax("output", "max_speed", "max_acceleration");\=
 - Timing
 Wait("time(1 ms)");\=
 CurrentTick()
 FirstTick()
+Yield();\=
 - Sensors
 SetInput("port", "field", "value");\=
 GetInput("port", "field")
@@ -92,6 +104,8 @@ SetSensorLight("port");\=
 SetSensorSound("port");\=
 SetSensorLowspeed("port");\=
 SetSensorUltrasonic("port");\=
+SetSensorEMeter("port");\=
+SetSensorTemperature("port");\=
 SetSensorColorFull("port");\=
 SetSensorColorRed("port");\=
 SetSensorColorGreen("port");\=
@@ -143,6 +157,7 @@ ClearSensor("port");\=
 ResetSensor("port");\=
 Sensor("port")
 SensorUS("port")
+SensorTemperature("port")
 SensorType("port")
 SensorMode("port")
 SensorRaw("port") 
@@ -152,6 +167,7 @@ SensorInvalid("port")
 ReadSensorColorRaw("port", "rawValues");\=
 ReadSensorColorEx("port", "colorVal", "raw", "norm", "scaled");\=
 ReadSensorUSEx("port", "values");\=
+ReadSensorEMeter("port", "vIn", "aIn", "vOut", "aOut", "joules", "wIn", "wOut");\=
 - Digital Sensors
 I2CStatus("port", "bready");\=
 I2CCheckStatus("port");\=
@@ -159,18 +175,13 @@ I2CBytesReady("port");\=
 I2CWrite("port", "retlen", "buffer");\=
 I2CRead("port", "buflen", "buffer");\=
 I2CBytes("port", "inbuf", "count", "outbuf");\=
-I2CDeviceId("port");\=
-I2CDeviceIdEx("port", "addr");\=
-I2CDeviceInfo("port", "info");\=
-I2CDeviceInfoEx("port", "addr", "info");\=
-I2CSendCommand("port", "cmd");\=
-I2CSendCommandEx("port", "addr", "cmd");\=
-I2CVendorId("port");\=
-I2CVendorIdEx("port", "addr");\=
-I2CVersion("port");\=
-I2CVersionEx("port", "addr");\=
-ReadI2CRegister("port", "reg", "out");\=
-WriteI2CRegister("port", "reg", "value");\=
+I2CDeviceId("port", "i2caddr");\=
+I2CDeviceInfo("port", "i2caddr", "info");\=
+I2CSendCommand("port", "i2caddr", "cmd");\=
+I2CVendorId("port", "i2caddr");\=
+I2CVersion("port", "i2caddr");\=
+ReadI2CRegister("port", "i2caddr", "reg", "out");\=
+WriteI2CRegister("port", "i2caddr", "reg", "value");\=
 - Multitasking
 Precedes("task list");\=
 Follows("task list");\=
@@ -181,7 +192,9 @@ start "task";\=
 stop "task";\=
 Stop("stop?");\=
 - Sounds
+PlaySound("snd");\=
 PlayTone("frequency", "duration");\=
+PlayTones("tones");\=
 PlayToneEx("frequency", "duration", "volume", "loop?");\=
 PlayFile("filename");\=
 PlayFileEx("filename", "volume", "loop?");\=
@@ -245,12 +258,16 @@ sinhd("x")
 coshd("x")
 tanhd("x")
 atan2d("x", "y")
+atof("str")
+atoi("str")
+atol("str")
 - Misc stuff
 ResetSleepTimer();\=
 PowerDown();\=
 RebootInFirmwareMode();\=
 BatteryLevel()
 FreeMemory()
+SizeOf("value")
 - Strings
 NumToStr("val")
 FormatNum("fmt", "val")
@@ -272,6 +289,7 @@ strtod("str", "endptr")
 strtol("str", "endptr", "base")
 strtoul("str", "endptr", "base")
 sprintf("str", "format", "value")
+Pos("substr", "str")
 - File IO
 CreateFile("fname", "fsize", "handle");\=
 CreateFileLinear("fname", "fsize", "handle");\=
@@ -325,6 +343,47 @@ BluetoothWrite("conn", "buffer");\=
 SendRemoteBool("conn", "queue", "bval");\=
 SendRemoteNumber("conn", "queue", "val");\=
 SendRemoteString("conn", "queue", "str");\=
+RemoteBluetoothFactoryReset("conn");\=
+RemoteCloseFile("conn", "handle");\=
+RemoteConnectionIdle("conn");\=
+RemoteConnectionWrite("conn", "buffer");\=
+RemoteDatalogRead("conn", "remove", "cnt", "log");\=
+RemoteDatalogSetTimes("conn", "synctime");\=
+RemoteDeleteFile("conn", "filename");\=
+RemoteDeleteUserFlash("conn");\=
+RemoteFindFirstFile("conn", "mask", "handle", "name", "size");\=
+RemoteFindNextFile("conn", "handle", "name", "size");\=
+RemoteGetBatteryLevel("conn", "value");\=
+RemoteGetBluetoothAddress("conn", "btaddr");\=
+RemoteGetConnectionCount("conn", "cnt");\=
+RemoteGetConnectionName("conn", "idx", "name");\=
+RemoteGetContactCount("conn", "cnt");\=
+RemoteGetContactName("conn", "idx", "name");\=
+RemoteGetCurrentProgramName("conn", "name");\=
+RemoteGetDeviceInfo("conn", "name", "btaddr", "btsignal", "freemem");\=
+RemoteGetFirmwareVersion("conn", "pmin", "pmaj", "fmin", "fmaj");\=
+RemoteGetInputValues("conn", "params");\=
+RemoteGetOutputState("conn", "params");\=
+RemoteGetProperty("conn", "property", "value");\=
+RemoteIOMapRead("conn", "id", "offset", "numbytes", "data");\=
+RemoteIOMapWriteBytes("conn", "id", "offset", "data");\=
+RemoteIOMapWriteValue("conn", "id", "offset", "value");\=
+RemoteLowspeedGetStatus("conn", "value");\=
+RemoteLowspeedRead("conn", "port", "bread", "data");\=
+RemoteLowspeedWrite("conn", "port", "txlen", "rxlen", "data");\=
+RemoteOpenAppendData("conn", "filename", "handle", "size");\=
+RemoteOpenRead("conn", "filename", "handle", "size");\=
+RemoteOpenWrite("conn", "filename", "size", "handle");\=
+RemoteOpenWriteData("conn", "filename", "size", "handle");\=
+RemoteOpenWriteLinear("conn", "filename", "size", "handle");\=
+RemotePollCommand("conn", "bufnum", "len", "data");\=
+RemotePollCommandLength("conn", "bufnum", "length");\=
+RemoteRead("conn", "handle", "numbytes", "data");\=
+RemoteRenameFile("conn", "oldname", "newname");\=
+RemoteResetTachoCount("conn", "port");\=
+RemoteSetBrickName("conn", "name");\=
+RemoteSetProperty("conn", "prop", "value");\=
+RemoteWrite("conn", "handle", "numbytes", "data");\=
 RemoteMessageRead("conn", "queue");\=
 RemoteMessageWrite("conn", "queue", "msg");\=
 RemoteStartProgram("conn", "filename");\=
@@ -339,47 +398,78 @@ RemoteSetInputMode("conn", "port", "type", "mode");\=
 RemoteSetOutputState("conn", "port", "speed", "mode", "regmode", "turnpct", "runstate", "tacholimit");\=
 - Low-level System Calls
 SysCall("func", "args");\=
-SysFileOpenRead("args");\=
-SysFileOpenWrite("args");\=
-SysFileOpenAppend("args");\=
-SysFileRead("args");\=
-SysFileWrite("args");\=
+SysColorSensorRead("args");\=
+SysCommBTCheckStatus("args");\=
+SysCommBTConnection("args");\=
+SysCommBTOnOff("args");\=
+SysCommBTWrite("args");\=
+SysCommExecuteFunction("args");\=
+SysCommHSCheckStatus("args");\=
+SysCommHSControl("args");\=
+SysCommHSRead("args");\=
+SysCommHSWrite("args");\=
+SysCommLSCheckStatus("args");\=
+SysCommLSRead("args");\=
+SysCommLSWrite("args");\=
+SysCommLSWriteEx("args");\=
+SysComputeCalibValue("args");\=
+SysDatalogGetTimes("args");\=
+SysDatalogWrite("args");\=
+SysDisplayExecuteFunction("args");\=
+SysDrawCircle("args");\=
+SysDrawEllipse("args");\=
+SysDrawFont("args");\=
+SysDrawGraphic("args");\=
+SysDrawGraphicArray("args");\=
+SysDrawLine("args");\=
+SysDrawPoint("args");\=
+SysDrawPolygon("args");\=
+SysDrawRect("args");\=
+SysDrawText("args");\=
 SysFileClose("args");\=
-SysFileResolveHandle("args");\=
-SysFileRename("args");\=
 SysFileDelete("args");\=
+SysFileFindFirst("args");\=
+SysFileFindNext("args");\=
+SysFileOpenAppend("args");\=
+SysFileOpenRead("args");\=
+SysFileOpenReadLinear("args");\=
+SysFileOpenWrite("args");\=
+SysFileOpenWriteLinear("args");\=
+SysFileOpenWriteNonLinear("args");\=
+SysFileRead("args");\=
+SysFileRename("args");\=
+SysFileResize("args");\=
+SysFileResolveHandle("args");\=
+SysFileSeek("args");\=
+SysFileTell("args");\=
+SysFileWrite("args");\=
+SysGetStartTick("args");\=
+SysIOMapRead("args");\=
+SysIOMapReadByID("args");\=
+SysIOMapWrite("args");\=
+SysIOMapWriteByID("args");\=
+SysKeepAlive("args");\=
+SysListFiles("args");\=
+SysLoaderExecuteFunction("args");\=
+SysMemoryManager("args");\=
+SysMessageRead("args");\=
+SysMessageWrite("args");\=
+SysRandomNumber("args");\=
+SysReadButton("args");\=
+SysReadLastResponse("args");\=
+SysReadSemData("args");\=
+SysSetScreenMode("args");\=
+SysSetSleepTimeout("args");\=
+SysSoundGetState("args");\=
 SysSoundPlayFile("args");\=
 SysSoundPlayTone("args");\=
-SysSoundGetState("args");\=
 SysSoundSetState("args");\=
-SysDrawText("args");\=
-SysDrawPoint("args");\=
-SysDrawLine("args");\=
-SysDrawCircle("args");\=
-SysDrawRect("args");\=
-SysDrawGraphic("args");\=
-SysSetScreenMode("args");\=
-SysReadButton("args");\=
-SysCommLSWrite("args");\=
-SysCommLSRead("args");\=
-SysCommLSCheckStatus("args");\=
-SysRandomNumber("args");\=
-SysGetStartTick("args");\=
-SysMessageWrite("args");\=
-SysMessageRead("args");\=
-SysCommBTWrite("args");\=
-SysCommBTCheckStatus("args");\=
-SysKeepAlive("args");\=
-SysIOMapRead("args");\=
-SysIOMapWrite("args");\=
-SysIOMapReadByID("args");\=
-SysIOMapWriteByID("args");\=
-SysDisplayExecuteFunction("args");\=
-SysCommExecuteFunction("args");\=
-SysLoaderExecuteFunction("args");\=
+SysUpdateCalibCacheInfo("args");\=
+SysWriteSemData("args");\=
 - HiTechnic API functions
 SetSensorHTEOPD("port", "bStandard");\=
 SetSensorHTGyro("port");\=
+SetSensorHTMagnet("port");\=
 SetHTColor2Mode("port", "mode");\=
 SetHTIRSeeker2Mode("port", "mode");\=
 SensorHTEOPD("port");\=
@@ -388,9 +478,11 @@ SensorHTCompass("port");\=
 SensorHTColorNum("port");\=
 SensorHTIRSeekerDir("port");\=
 SensorHTIRSeeker2ACDir("port");\=
-SensorHTIRSeeker2Addr("port", "addr");\=
+SensorHTIRSeeker2Addr("port", "reg");\=
 SensorHTIRSeeker2DCDir("port");\=
+SensorHTMagnet("port", "offset");\=
 ReadSensorHTAccel("port", "x", "y", "z");\=
+ReadSensorHTAngle("port", "Angle", "AccAngle", "RPM");\=
 ReadSensorHTColor("port", "ColorNum", "Red", "Green", "Blue");\= 
 ReadSensorHTRawColor("port", "Red", "Green", "Blue");\=
 ReadSensorHTNormalizedColor("port", "ColorIdx", "Red", "Green", "Blue");\=
@@ -403,6 +495,7 @@ ReadSensorHTIRReceiver("port", "pfdata");\=
 ReadSensorHTIRReceiverEx("port", "offset", "pfchar");\=
 ReadSensorHTIRSeeker2AC("port", "dir", "s1", "s3, "s5, "s7", "s9");\=
 ReadSensorHTIRSeeker2DC("port", "dir", "s1", "s3, "s5, "s7", "s9", "avg");\=
+ResetSensorHTAngle("port", "mode");\=
 HTPFComboDirect("port", "channel", "outa", "outb");\=
 HTPFSinglePin("port", "channel", "out", "pin", "func", "cont");\=
 HTPFSingleOutputCST("port", "channel", "out", "func");\=
@@ -488,101 +581,54 @@ HTScoutSetScoutMode("mode");\=
 SetSensorMSPressure("port");\=
 SensorMSPressure("port");\=
 SensorMSPressureRaw("port");\=
-SensorMSCompassEx("port", "addr");\=
-SensorMSCompass("port");\=
+SensorMSCompass("port", "i2caddr");\=
 ReadSensorMSRTClock("port", "sec", "min", "hrs", "dow", "date", "month", "year");\=
-ReadSensorMSTilt("port", "x", "y", "z");\=
-ReadSensorMSTiltEx("port", "addr", "x", "y", "z");\=
-ReadSensorMSAccel("port", "x", "y", "z");\=
-ReadSensorMSAccelEx("port", "addr", "x", "y", "z");\=
-MSADPAOff("port");\=
-MSADPAOffEx("port", "addr");\=
-MSADPAOn("port");\=
-MSADPAOnEx("port", "addr");\=
-MSDeenergize("port");\=
-MSDeenergizeEx("port", "addr");\=
-MSEnergize("port");\=
-MSEnergizeEx("port", "addr");\=
-MSSendCommandEx("port", "addr", "cmd");\=
-MSSendCommand("port", "cmd");\=
-MSReadValueEx("port", "addr", "reg", "bytes");\=
-MSReadValue("port", "reg", "bytes");\=
-DISTNxGP2D12("port");\=
-DISTNxGP2D120("port");\=
-DISTNxGP2YA21("port");\=
-DISTNxGP2YA02("port");\=
-DISTNxEnergize("port");\=
-DISTNxDistance("port");\=
-DISTNxVoltage("port");\=
-DISTNxModuleType("port");\=
-DISTNxNumPoints("port");\=
-DISTNxMinDistance("port");\=
-DISTNxMaxDistance("port");\=
-DISTNxGP2D12Ex("port", "addr");\=
-DISTNxGP2D120Ex("port", "addr");\=
-DISTNxGP2YA21Ex("port", "addr");\=
-DISTNxGP2YA02Ex("port", "addr");\=
-DISTNxEnergizeEx("port", "addr");\=
-DISTNxDistanceEx("port", "addr");\=
-DISTNxVoltageEx("port", "addr");\=
-DISTNxModuleTypeEx("port", "addr");\=
-DISTNxNumPointsEx("port", "addr");\=
-DISTNxMinDistanceEx("port", "addr");\=
-DISTNxMaxDistanceEx("port", "addr");\=
+ReadSensorMSTilt("port", "i2caddr", "x", "y", "z");\=
+ReadSensorMSAccel("port", "i2caddr", "x", "y", "z");\=
+ReadSensorMSPlayStation("port", "i2caddr", "b1", "b2", "xleft", "yleft", "xright", "yright");\=
+MSADPAOff("port", "i2caddr");\=
+MSADPAOn("port", "i2caddr");\=
+MSDeenergize("port", "i2caddr");\=
+MSEnergize("port", "i2caddr");\=
+MSReadValue("port", "i2caddr", "reg", "numbytes");\=
+DISTNxGP2D12("port", "i2caddr");\=
+DISTNxGP2D120("port", "i2caddr");\=
+DISTNxGP2YA21("port", "i2caddr");\=
+DISTNxGP2YA02("port", "i2caddr");\=
+DISTNxEnergize("port", "i2caddr");\=
+DISTNxDistance("port", "i2caddr");\=
+DISTNxVoltage("port", "i2caddr");\=
+DISTNxModuleType("port", "i2caddr");\=
+DISTNxNumPoints("port", "i2caddr");\=
+DISTNxMinDistance("port", "i2caddr");\=
+DISTNxMaxDistance("port", "i2caddr");\=
 SetSensorMSDROD("port", "bActive");\=
 SensorMSDROD("port");\=
-PSPNxAnalog("port");\=
-PSPNxAnalogEx("port", "addr");\=
-PSPNxDigital("port");\=
-PSPNxDigitalEx("port", "addr");\=
-ReadSensorMSPlayStationEx("port", "addr", "b1", "b2", "xleft", "yleft", "xright", "yright");\=
-ReadSensorMSPlayStation("port", "b1", "b2", "xleft", "yleft", "xright", "yright");\=
-NRLink2400("port");\=
-NRLink4800("port");\=
-NRLinkFlush("port");\=
-NRLinkIRLong("port");\=
-NRLinkIRShort("port");\=
-NRLinkTxRaw("port");\=
-NRLinkSetRCX("port");\=
-NRLinkSetTrain("port");\=
-NRLinkSetPF("port");\=
-NRLink2400Ex("port", "addr");\=
-NRLink4800Ex("port", "addr");\=
-NRLinkFlushEx("port", "addr");\=
-NRLinkIRLongEx("port", "addr");\=
-NRLinkIRShortEx("port", "addr");\=
-NRLinkTxRawEx("port", "addr");\=
-NRLinkSetRCXEx("port", "addr");\=
-NRLinkSetTrainEx("port", "addr");\=
-NRLinkSetPFEx("port", "addr");\=
-NRLinkStatus("port");\=
-NRLinkStatusEx("port", "addr");\=
-RunNRLinkMacroEx("port", "addr", "macro");\=
-RunNRLinkMacro("port", "macro");\=
-WriteNRLinkBytesEx("port", "addr", "bytes");\=
-WriteNRLinkBytes("port", "bytes");\=
-ReadNRLinkBytesEx("port", "addr", "bytes");\=
-ReadNRLinkBytes("port", "bytes");\=
-MSPFComboDirectEx("port", "addr", "channel", "outa", "outb");\=
-MSPFComboDirect("port", "channel", "outa", "outb");\=
-MSPFSinglePinEx("port", "addr", "channel", "out", "pin", "func", "cont");\=
-MSPFSinglePin("port", "channel", "out", "pin", "func", "cont");\=
-MSPFSingleOutputCSTEx("port", "addr", "channel", "out", "func");\=
-MSPFSingleOutputCST("port", "channel", "out", "func");\=
-MSPFSingleOutputPWMEx("port", "addr", "channel", "out", "func");\=
-MSPFSingleOutputPWM("port", "channel", "out", "func");\=
-MSPFComboPWMEx("port", "addr", "channel", "outa", "outb");\=
-MSPFComboPWM("port", "channel", "outa", "outb");\=
-MSPFTrainEx("port", "addr", "channel", "func");\=
-MSPFTrain("port", "channel", "func");\=
-MSIRTrainEx("port", "addr", "channel", "func");\=
-MSIRTrain("port", "channel", "func");\=
-MSPFRawOutputEx("port", "addr", "nibble0", "nibble1", "nibble2");\=
-MSPFRawOutput("port", "nibble0", "nibble1", "nibble2");\=
-MSPFRepeatEx("port", "addr", "count", "delay");\=
-MSPFRepeat("port", "count", "delay");\=
-MSRCXSetNRLinkEx("port", "addr");\=
-MSRCXSetNRLinkPort("port");\=
+PSPNxAnalog("port", "i2caddr");\=
+PSPNxDigital("port", "i2caddr");\=
+NRLink2400("port", "i2caddr");\=
+NRLink4800("port", "i2caddr");\=
+NRLinkFlush("port", "i2caddr");\=
+NRLinkIRLong("port", "i2caddr");\=
+NRLinkIRShort("port", "i2caddr");\=
+NRLinkTxRaw("port", "i2caddr");\=
+NRLinkSetRCX("port", "i2caddr");\=
+NRLinkSetTrain("port", "i2caddr");\=
+NRLinkSetPF("port", "i2caddr");\=
+NRLinkStatus("port", "i2caddr");\=
+RunNRLinkMacro("port", "i2caddr", "macro");\=
+WriteNRLinkBytes("port", "i2caddr", "bytes");\=
+ReadNRLinkBytes("port", "i2caddr", "bytes");\=
+MSPFComboDirect("port", "i2caddr", "channel", "outa", "outb");\=
+MSPFSinglePin("port", "i2caddr", "channel", "out", "pin", "func", "cont");\=
+MSPFSingleOutputCST("port", "i2caddr", "channel", "out", "func");\=
+MSPFSingleOutputPWM("port", "i2caddr", "channel", "out", "func");\=
+MSPFComboPWM("port", "i2caddr", "channel", "outa", "outb");\=
+MSPFTrain("port", "i2caddr", "channel", "func");\=
+MSIRTrain("port", "i2caddr", "channel", "func");\=
+MSPFRawOutput("port", "i2caddr", "nibble0", "nibble1", "nibble2");\=
+MSPFRepeat("port", "i2caddr", "count", "delay");\=
+MSRCXSetNRLinkPort("port", "i2caddr");\=
 MSRCXPoll("src", "value");\=
 MSRCXBatteryLevel();\=
 MSRCXPing();\=
@@ -672,3 +718,103 @@ MSScoutSetEventFeedback("src", "value");\=
 MSScoutSendVLL("src", "value");\=
 MSScoutSetScoutRules("m", "t", "l", "tm", "fx");\=
 MSScoutSetScoutMode("mode");\=
+ACCLNxCalibrateX("port", "i2caddr");\=
+ACCLNxCalibrateXEnd("port", "i2caddr");\=
+ACCLNxCalibrateY("port", "i2caddr");\=
+ACCLNxCalibrateYEnd("port", "i2caddr");\=
+ACCLNxCalibrateZ("port", "i2caddr");\=
+ACCLNxCalibrateZEnd("port", "i2caddr");\=
+ACCLNxResetCalibration("port", "i2caddr");\=
+ACCLNxSensitivity("port", "i2caddr");\=
+ACCLNxXOffset("port", "i2caddr")
+ACCLNxXRange("port", "i2caddr")
+ACCLNxYOffset("port", "i2caddr")
+ACCLNxYRange("port", "i2caddr")
+ACCLNxZOffset("port", "i2caddr")
+ACCLNxZRange("port", "i2caddr")
+NXTHIDAsciiMode("port", "i2caddr");\=
+NXTHIDDirectMode("port", "i2caddr");\=
+NXTHIDLoadCharacter("port", "i2caddr", "modifier", "character");\=
+NXTHIDTransmit("port", "i2caddr");\=
+NXTLineLeaderAverage("port", "i2caddr");\=
+NXTLineLeaderCalibrateBlack("port", "i2caddr");\=
+NXTLineLeaderCalibrateWhite("port", "i2caddr");\=
+NXTLineLeaderInvert("port", "i2caddr");\=
+NXTLineLeaderPowerDown("port", "i2caddr");\=
+NXTLineLeaderPowerUp("port", "i2caddr");\=
+NXTLineLeaderReset("port", "i2caddr");\=
+NXTLineLeaderResult("port", "i2caddr");\=
+NXTLineLeaderSnapshot("port", "i2caddr");\=
+NXTLineLeaderSteering("port", "i2caddr");\=
+NXTPowerMeterCapacityUsed("port", "i2caddr");\=
+NXTPowerMeterElapsedTime("port", "i2caddr");\=
+NXTPowerMeterErrorCount("port", "i2caddr");\=
+NXTPowerMeterMaxCurrent("port", "i2caddr");\=
+NXTPowerMeterMaxVoltage("port", "i2caddr");\=
+NXTPowerMeterMinCurrent("port", "i2caddr");\=
+NXTPowerMeterMinVoltage("port", "i2caddr");\=
+NXTPowerMeterPresentCurrent("port", "i2caddr");\=
+NXTPowerMeterPresentPower("port", "i2caddr");\=
+NXTPowerMeterPresentVoltage("port", "i2caddr");\=
+NXTPowerMeterResetCounters("port", "i2caddr");\=
+NXTPowerMeterTotalPowerConsumed("port", "i2caddr");\=
+NXTServoBatteryVoltage("port", "i2caddr");\=
+NXTServoEditMacro("port", "i2caddr");\=
+NXTServoGotoMacroAddress("port", "i2caddr", "macro");\=
+NXTServoHaltMacro("port", "i2caddr");\=
+NXTServoInit("port", "i2caddr", "servo");\=
+NXTServoPauseMacro("port", "i2caddr");\=
+NXTServoPosition("port", "i2caddr", "servo");\=
+NXTServoQuitEdit("port");\=
+NXTServoReset("port", "i2caddr");\=
+NXTServoResumeMacro("port", "i2caddr");\=
+NXTServoSpeed("port", "i2caddr", "servo");\=
+PFMateSend("port", "i2caddr", "channel", "motors", "cmdA", "spdA", "cmdB", "spdB");\=
+PFMateSendRaw("port", "i2caddr", "channel", "b1", "b2");\=
+SensorNXTSumoEyes("port");\=
+SensorNXTSumoEyesRaw("port");\=
+SetACCLNxSensitivity("port", "i2caddr", "slevel");\=
+SetNXTLineLeaderKdFactor("port", "i2caddr", "value");\=
+SetNXTLineLeaderKdValue("port", "i2caddr", "value");\=
+SetNXTLineLeaderKiFactor("port", "i2caddr", "value");\=
+SetNXTLineLeaderKiValue("port", "i2caddr", "value");\=
+SetNXTLineLeaderKpFactor("port", "i2caddr", "value");\=
+SetNXTLineLeaderKpValue("port", "i2caddr", "value");\=
+SetNXTLineLeaderSetpoint("port", "i2caddr", "value");\=
+SetNXTServoPosition("port", "i2caddr", "servo", "pos");\=
+SetNXTServoQuickPosition("port", "i2caddr", "servo", "qpos");\=
+SetNXTServoSpeed("port", "i2caddr", "servo", "speed");\=
+SetSensorNXTSumoEyes("port", "bLong");\=
+- Codatex functions
+RFIDInit("port");\=
+RFIDMode("port", "mode");\=
+RFIDRead("port", "output");\=
+RFIDReadContinuous("port", "output");\=
+RFIDReadSingle("port", "output");\=
+RFIDStatus("port");\=
+RFIDStop("port");\=
+- RS485 functions
+UseRS485();\=
+RS485Disable();\=
+RS485Enable();\=
+RS485Initialize();\=
+RS485Control("cmd", "baud", "mode");\=
+RS485DataAvailable()
+RS485Read("buffer");\=
+RS485SendingData()
+RS485Status("sendingData", "dataAvail");\=
+RS485Uart("baud", "mode");\=
+RS485Write("buffer");\=
+SendRS485Bool("bval");\=
+SendRS485Number("val");\=
+SendRS485String("str");\=
+HSDataMode()
+HSFlags()
+HSSpeed()
+HSState()
+HSMode()
+SetHSDataMode("dataMode");\=
+SetHSFlags("hsFlags");\=
+SetHSMode("hsMode");\=
+SetHSSpeed("hsSpeed");\=
+SetHSState("hsState");\=
