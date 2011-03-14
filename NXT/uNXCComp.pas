@@ -638,8 +638,8 @@ const
     'RotateMotorPID', 'RotateMotorExPID',
     'ResetTachoCount', 'ResetBlockTachoCount',
     'ResetRotationCount', 'ResetAllTachoCounts',
-    'OnFwdRegPID', 'OnRevRegPID', 'OnFwdRegExPID', 'OnRevRegExPID',
-    'OnFwdSyncPID', 'OnRevSyncPID', 'OnFwdSyncExPID', 'OnRevSyncExPID'
+    'OnFwdRegPID', 'OnRevRegPID', 'OnFwdSyncPID', 'OnRevSyncPID',
+    'OnFwdRegExPID', 'OnRevRegExPID', 'OnFwdSyncExPID', 'OnRevSyncExPID'
   );
 
 const
