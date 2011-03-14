@@ -348,6 +348,7 @@ FileRename
 FileResize
 FileResolveHandle
 FileSeek
+FileTell
 FileWrite
 Floor
 Frac
@@ -738,6 +739,8 @@ MAILBOX7
 MAILBOX8
 MAILBOX9
 MAX_BT_MSG_SIZE
+MaxAccelerationField
+MaxSpeedField
 MemoryManager
 MENUICON_CENTER
 MENUICON_LEFT
@@ -952,8 +955,10 @@ OUT_MODE_REGULATED
 OUT_OPTION_HOLDATLIMIT
 OUT_OPTION_RAMPDOWNTOLIMIT
 OUT_REGMODE_IDLE
+OUT_REGMODE_POS
 OUT_REGMODE_SPEED
 OUT_REGMODE_SYNC
+OUT_REGOPTION_NO_SATURATION
 OUT_RUNSTATE_HOLD
 OUT_RUNSTATE_IDLE
 OUT_RUNSTATE_RAMPDOWN
@@ -965,15 +970,18 @@ OutputModuleName
 OutputOffsetActualSpeed
 OutputOffsetBlockTachoCount
 OutputOffsetFlags
+OutputOffsetMaxAccel
+OutputOffsetMaxSpeed
 OutputOffsetMode
 OutputOffsetMotorRPM
 OutputOffsetOptions
 OutputOffsetOverloaded
-OutputOffsetPwnFreq
 OutputOffsetRegDParameter
 OutputOffsetRegIParameter
 OutputOffsetRegMode
 OutputOffsetRegPParameter
+OutputOffsetRegulationOptions
+OutputOffsetRegulationTime
 OutputOffsetRotationCount
 OutputOffsetRunState
 OutputOffsetSpeed
