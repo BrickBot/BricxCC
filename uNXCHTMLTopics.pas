@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2763;
+  uNXCHTMLTopicsSize = 2784;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -155,6 +155,10 @@ const
     (
      Name: 'FileSeekType';
      Value: 'struct_file_seek_type.html'
+    ),
+    (
+     Name: 'FileTellType';
+     Value: 'struct_file_tell_type.html'
     ),
     (
      Name: 'GetStartTickType';
@@ -611,6 +615,10 @@ const
     (
      Name: 'ReadLastResponse';
      Value: 'group___sys_call_constants_ga9dfd7356f9afbc92e2f3187c2d77a322.html'
+    ),
+    (
+     Name: 'FileTell';
+     Value: 'group___sys_call_constants_ga96d34bde6de975ae279f2b38584ccb38.html'
     ),
     (
      Name: 'LCD_LINE8';
@@ -2569,6 +2577,10 @@ const
      Value: 'group___out_option_constants_gaaf5537f7d80f5de850d9a88646f455cd.html'
     ),
     (
+     Name: 'OUT_REGOPTION_NO_SATURATION';
+     Value: 'group___out_reg_option_constants_ga41c8ddf8711845616d6b03d5ad048593.html'
+    ),
+    (
      Name: 'OUT_RUNSTATE_IDLE';
      Value: 'group___out_run_state_constants_gacf6b1a9da8449ac73177323065842627.html'
     ),
@@ -2599,6 +2611,10 @@ const
     (
      Name: 'OUT_REGMODE_SYNC';
      Value: 'group___out_reg_mode_constants_ga19a355d3ef359f3d8bc2159fa5cc5223.html'
+    ),
+    (
+     Name: 'OUT_REGMODE_POS';
+     Value: 'group___out_reg_mode_constants_ga48a38ba28cf3b5eb6dff3670e3404578.html'
     ),
     (
      Name: 'UpdateFlagsField';
@@ -2663,6 +2679,14 @@ const
     (
      Name: 'OutputOptionsField';
      Value: 'group___output_field_constants_ga8169d3d3c8c851c27156d97d7272e751.html'
+    ),
+    (
+     Name: 'MaxSpeedField';
+     Value: 'group___output_field_constants_ga5bfe531937d84c6512885fee58fed498.html'
+    ),
+    (
+     Name: 'MaxAccelerationField';
+     Value: 'group___output_field_constants_ga8fabefa9d835342305f296fb9bdfafe6.html'
     ),
     (
      Name: 'OutputOffsetTachoCount';
@@ -2733,8 +2757,20 @@ const
      Value: 'group___output_i_o_m_a_p_ga14982701795bb219dce207423ba4f70b.html'
     ),
     (
-     Name: 'OutputOffsetPwnFreq';
-     Value: 'group___output_i_o_m_a_p_ga4b319c46049e7750be282c80d499b1d8.html'
+     Name: 'OutputOffsetMaxSpeed';
+     Value: 'group___output_i_o_m_a_p_ga8c40122b453a1347919871d5b7d5f023.html'
+    ),
+    (
+     Name: 'OutputOffsetMaxAccel';
+     Value: 'group___output_i_o_m_a_p_gae2179ef2fb9a0b8e29fbfde10e540e9f.html'
+    ),
+    (
+     Name: 'OutputOffsetRegulationTime';
+     Value: 'group___output_i_o_m_a_p_ga0c6dbfb0a59a93142f5f81f31ace2a1b.html'
+    ),
+    (
+     Name: 'OutputOffsetRegulationOptions';
+     Value: 'group___output_i_o_m_a_p_gad9ac1384f0cf49a9807698cb77e75f79.html'
     ),
     (
      Name: 'COM_CHANNEL_NONE_ACTIVE';
@@ -7142,43 +7178,43 @@ const
     ),
     (
      Name: 'CustomSensorActiveStatus';
-     Value: 'group___input_module_functions_ga15645554e5a449687abbef0aa5fe9fc6.html'
+     Value: 'group___input_module_functions_ga7d2b8c0efad65a5205778af414a5c026.html'
     ),
     (
      Name: 'CustomSensorPercentFullScale';
-     Value: 'group___input_module_functions_ga97bc91f36ced70284da3b7ef8fa2b3f1.html'
+     Value: 'group___input_module_functions_ga6f589a33bfaf2f7f05c08497f7512b2f.html'
     ),
     (
      Name: 'CustomSensorZeroOffset';
-     Value: 'group___input_module_functions_gab96ef3293574938fc41168a42ce3ca3c.html'
+     Value: 'group___input_module_functions_ga8a0d126b2b5fc81f6f277ca77969f6dd.html'
     ),
     (
      Name: 'SetCustomSensorActiveStatus';
-     Value: 'group___input_module_functions_gaeac66dc87896451330486c4f0babf6d5.html'
+     Value: 'group___input_module_functions_gabda6a5c64fd7b43d46fb8ab7d8ec5aee.html'
     ),
     (
      Name: 'SetCustomSensorPercentFullScale';
-     Value: 'group___input_module_functions_ga9ffe53f67eda8333894b85ca29513f91.html'
+     Value: 'group___input_module_functions_gad49e86cd85c6cbb1b1e067a30c61fd66.html'
     ),
     (
      Name: 'SetCustomSensorZeroOffset';
-     Value: 'group___input_module_functions_ga1cdbe7680a3ebf068c4809dc85dc5e42.html'
+     Value: 'group___input_module_functions_gacf1573ce100615dbbe37474322c0588a.html'
     ),
     (
      Name: 'SetSensorBoolean';
-     Value: 'group___input_module_functions_ga82fd04418f73f6aa524449d3ec9e9bed.html'
+     Value: 'group___input_module_functions_ga4c5ec096dcd43dae69a62b647c476c05.html'
     ),
     (
      Name: 'SetSensorDigiPinsDirection';
-     Value: 'group___input_module_functions_ga0c02582066fc338bbf8ad349db5bbaa0.html'
+     Value: 'group___input_module_functions_gaa869f34343500ea5653ba1ab8acb8d57.html'
     ),
     (
      Name: 'SetSensorDigiPinsOutputLevel';
-     Value: 'group___input_module_functions_gaa949cd79e050d881444f777d1240e954.html'
+     Value: 'group___input_module_functions_ga75e3229e6cb49e5aaa205e900b99e2f5.html'
     ),
     (
      Name: 'SetSensorDigiPinsStatus';
-     Value: 'group___input_module_functions_gab6240485dfaa36b9ed94c14e125f4212.html'
+     Value: 'group___input_module_functions_gad347f878eb91f22e7ec82874657a4669.html'
     ),
     (
      Name: 'SysColorSensorRead';
@@ -7194,35 +7230,43 @@ const
     ),
     (
      Name: 'ColorADRaw';
-     Value: 'group___input_module_functions_ga500d004e6827bea86423c79ac0e5049a.html'
+     Value: 'group___input_module_functions_ga992620b670d17d41327cc49f7626ae15.html'
     ),
     (
      Name: 'ColorBoolean';
-     Value: 'group___input_module_functions_ga0fdce903c2a4bd362606e65fb67b98cd.html'
+     Value: 'group___input_module_functions_gab0aa688d047eb3ab090c6b6a41dc2381.html'
     ),
     (
      Name: 'ColorCalibration';
-     Value: 'group___input_module_functions_ga6a1a0ebbc7e429fb65c6678c237a562e.html'
+     Value: 'group___input_module_functions_ga87fab8e8c67ffd2490f62da8bf12fbeb.html'
     ),
     (
      Name: 'ColorCalibrationState';
-     Value: 'group___input_module_functions_ga4f0505fbe213af9f58c0e10f737ea8fc.html'
+     Value: 'group___input_module_functions_ga805b78d8170496cd463c8d54600b251a.html'
     ),
     (
      Name: 'ColorCalLimits';
-     Value: 'group___input_module_functions_gabc2827613c0118f74db5a2fd57b87d3e.html'
+     Value: 'group___input_module_functions_ga5680d47160b611c0106ad18eda7d77b6.html'
     ),
     (
      Name: 'ColorSensorRaw';
-     Value: 'group___input_module_functions_gae26f02d545d5372e4b626845638bd293.html'
+     Value: 'group___input_module_functions_ga9f778b77712346ef6ad04253c1b2629d.html'
     ),
     (
      Name: 'ColorSensorValue';
-     Value: 'group___input_module_functions_gab48186b0feebd05618666269e1507270.html'
+     Value: 'group___input_module_functions_ga4808680141fee797afd46be59f0c19ab.html'
     ),
     (
      Name: 'SetMotorPwnFreq';
      Value: 'group___output_module_functions_ga2f740b6a6b9811aab0fb10062ca3b818.html'
+    ),
+    (
+     Name: 'SetMotorRegulationTime';
+     Value: 'group___output_module_functions_ga69c796a2ece94887ca9a94d05cfafe35.html'
+    ),
+    (
+     Name: 'SetMotorRegulationOptions';
+     Value: 'group___output_module_functions_ga84959a31e8b0b503c4a6b8a20236ad0e.html'
     ),
     (
      Name: 'OnFwdSyncPID';
@@ -7425,8 +7469,24 @@ const
      Value: 'group___output_module_functions_ga7b5826e12371bc02e4b167fa16762059.html'
     ),
     (
+     Name: 'MotorMaxSpeed';
+     Value: 'group___output_module_functions_ga37c5079b516971de14346a93b18bbf6e.html'
+    ),
+    (
+     Name: 'MotorMaxAcceleration';
+     Value: 'group___output_module_functions_gad5494337cb1aede0393ab3784ee35cb6.html'
+    ),
+    (
      Name: 'MotorPwnFreq';
      Value: 'group___output_module_functions_ga3ea881cd98bd6a68ace54c31f0b3d0af.html'
+    ),
+    (
+     Name: 'MotorRegulationTime';
+     Value: 'group___output_module_functions_ga49ccf83ad53dc4f6eec4e0c5b2a24dcf.html'
+    ),
+    (
+     Name: 'MotorRegulationOptions';
+     Value: 'group___output_module_functions_ga7938e4b863ad45a485b441e2eee628c9.html'
     ),
     (
      Name: 'ResetScreen';
@@ -8810,19 +8870,19 @@ const
     ),
     (
      Name: 'SetHSFlags';
-     Value: 'group___comm_module_functions_ga40e314b4f73197e41e02f5ffb182f6ed.html'
+     Value: 'group___comm_module_functions_ga9ea9826f1c9531b5b70943ad1bf2efe6.html'
     ),
     (
      Name: 'SetHSSpeed';
-     Value: 'group___comm_module_functions_gaaf2d7f541514e266ae3520205a2d119b.html'
+     Value: 'group___comm_module_functions_ga5d938e8e05d31cbfbe32124cd0e04ad4.html'
     ),
     (
      Name: 'SetHSState';
-     Value: 'group___comm_module_functions_ga24d8ec42f4e96f2efae10e7bacda9452.html'
+     Value: 'group___comm_module_functions_ga5e4d33cc0688fd92451ec2d89442b75a.html'
     ),
     (
      Name: 'SetHSMode';
-     Value: 'group___comm_module_functions_ga3a2e446dc3cfd9445b0ddc237b9d7a41.html'
+     Value: 'group___comm_module_functions_gae723872c42fc652026601da891c4fdb2.html'
     ),
     (
      Name: 'SetBTDataMode';
@@ -9235,6 +9295,10 @@ const
     (
      Name: 'SysFileResize';
      Value: 'group___loader_module_functions_ga99a07eba34cccd730476e3e3a0b42c80.html'
+    ),
+    (
+     Name: 'SysFileTell';
+     Value: 'group___loader_module_functions_ga8c37cbc30ee5808247c04c1a976c4030.html'
     ),
     (
      Name: 'SysListFiles';
@@ -10689,6 +10753,10 @@ const
      Value: 'group__cstdio_a_p_i_gaf3017f823c03bbc16dd3c66e99f68b52.html'
     ),
     (
+     Name: 'set_fopen_size';
+     Value: 'group__cstdio_a_p_i_gaa2ebe730b700188db9ab78b15b231609.html'
+    ),
+    (
      Name: 'fopen';
      Value: 'group__cstdio_a_p_i_ga5d172e1b352898e1a13a836656d70a03.html'
     ),
@@ -10698,7 +10766,7 @@ const
     ),
     (
      Name: 'ftell';
-     Value: 'group__cstdio_a_p_i_gab63bd34f14af56e990318f069f23297f.html'
+     Value: 'group__cstdio_a_p_i_ga9bd28c8309873723bc1360b1fafc0bdb.html'
     ),
     (
      Name: 'fputc';
@@ -11055,6 +11123,22 @@ const
     (
      Name: 'glPyramid';
      Value: 'group___graphics_library_gab981e04cff461199d56633cb6411464e.html'
+    ),
+    (
+     Name: 'PosRegEnable';
+     Value: 'group___output_module_functions_gac9b2c158f131ebe909d61b8eae40a736.html'
+    ),
+    (
+     Name: 'PosRegSetAngle';
+     Value: 'group___output_module_functions_gadbb21feba9bd8d38e9ac7accedc4855a.html'
+    ),
+    (
+     Name: 'PosRegAddAngle';
+     Value: 'group___output_module_functions_ga617d0da1fa87b8800a236edfbe8c1d7a.html'
+    ),
+    (
+     Name: 'PosRegSetMax';
+     Value: 'group___output_module_functions_ga938e600d946faf6505b60c454a7db239.html'
     ),
     (
      Name: '$##@$@#$@#$@$';

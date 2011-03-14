@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNBCHTMLTopicsSize = 2381;
+  uNBCHTMLTopicsSize = 2393;
   uNBCHTMLTopicsData: array[0..uNBCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -347,6 +347,10 @@ const
     (
      Name: 'ReadLastResponse';
      Value: 'group___sys_call_constants_ga9dfd7356f9afbc92e2f3187c2d77a322.html'
+    ),
+    (
+     Name: 'FileTell';
+     Value: 'group___sys_call_constants_ga96d34bde6de975ae279f2b38584ccb38.html'
     ),
     (
      Name: 'LCD_LINE8';
@@ -2305,6 +2309,10 @@ const
      Value: 'group___out_option_constants_gaaf5537f7d80f5de850d9a88646f455cd.html'
     ),
     (
+     Name: 'OUT_REGOPTION_NO_SATURATION';
+     Value: 'group___out_reg_option_constants_ga41c8ddf8711845616d6b03d5ad048593.html'
+    ),
+    (
      Name: 'OUT_RUNSTATE_IDLE';
      Value: 'group___out_run_state_constants_gacf6b1a9da8449ac73177323065842627.html'
     ),
@@ -2335,6 +2343,10 @@ const
     (
      Name: 'OUT_REGMODE_SYNC';
      Value: 'group___out_reg_mode_constants_ga19a355d3ef359f3d8bc2159fa5cc5223.html'
+    ),
+    (
+     Name: 'OUT_REGMODE_POS';
+     Value: 'group___out_reg_mode_constants_ga48a38ba28cf3b5eb6dff3670e3404578.html'
     ),
     (
      Name: 'UpdateFlagsField';
@@ -2399,6 +2411,14 @@ const
     (
      Name: 'OutputOptionsField';
      Value: 'group___output_field_constants_ga8169d3d3c8c851c27156d97d7272e751.html'
+    ),
+    (
+     Name: 'MaxSpeedField';
+     Value: 'group___output_field_constants_ga5bfe531937d84c6512885fee58fed498.html'
+    ),
+    (
+     Name: 'MaxAccelerationField';
+     Value: 'group___output_field_constants_ga8fabefa9d835342305f296fb9bdfafe6.html'
     ),
     (
      Name: 'OutputOffsetTachoCount';
@@ -2469,8 +2489,20 @@ const
      Value: 'group___output_i_o_m_a_p_ga14982701795bb219dce207423ba4f70b.html'
     ),
     (
-     Name: 'OutputOffsetPwnFreq';
-     Value: 'group___output_i_o_m_a_p_ga4b319c46049e7750be282c80d499b1d8.html'
+     Name: 'OutputOffsetMaxSpeed';
+     Value: 'group___output_i_o_m_a_p_ga8c40122b453a1347919871d5b7d5f023.html'
+    ),
+    (
+     Name: 'OutputOffsetMaxAccel';
+     Value: 'group___output_i_o_m_a_p_gae2179ef2fb9a0b8e29fbfde10e540e9f.html'
+    ),
+    (
+     Name: 'OutputOffsetRegulationTime';
+     Value: 'group___output_i_o_m_a_p_ga0c6dbfb0a59a93142f5f81f31ace2a1b.html'
+    ),
+    (
+     Name: 'OutputOffsetRegulationOptions';
+     Value: 'group___output_i_o_m_a_p_gad9ac1384f0cf49a9807698cb77e75f79.html'
     ),
     (
      Name: 'COM_CHANNEL_NONE_ACTIVE';
@@ -6543,6 +6575,22 @@ const
     (
      Name: 'GetOutPwnFreq';
      Value: 'group___output_module_functions_gabfb33d557f0f59260d7bd91c0335d51a.html'
+    ),
+    (
+     Name: 'SetOutRegulationTime';
+     Value: 'group___output_module_functions_ga3e6daa41ece9e8eb1f5cca8cb5839e70.html'
+    ),
+    (
+     Name: 'GetOutRegulationTime';
+     Value: 'group___output_module_functions_gaeb1772312b26f0a5b3f64720e1fd3895.html'
+    ),
+    (
+     Name: 'SetOutRegulationOptions';
+     Value: 'group___output_module_functions_ga75860a6a7e1b7a4929a06e21ff35c064.html'
+    ),
+    (
+     Name: 'GetOutRegulationOptions';
+     Value: 'group___output_module_functions_ga3d429c8db773483e91da9f010c03a327.html'
     ),
     (
      Name: 'SetSensorType';
