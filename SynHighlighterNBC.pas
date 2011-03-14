@@ -469,7 +469,8 @@ const
     'OutputOffsetSpeed, OutputOffsetActualSpeed, OutputOffsetRegPParameter,'+
     'OutputOffsetRegIParameter, OutputOffsetRegDParameter, OutputOffsetRunState,'+
     'OutputOffsetRegMode, OutputOffsetOverloaded, OutputOffsetSyncTurnParameter,'+
-    'OutputOffsetPwnFreq,'+
+    'OutputOffsetOutputOptions, OutputOffsetMaxSpeed, OutputOffsetMaxAcceleration,'+
+    'OutputOffsetRegulationTime, OutputOffsetRegulationOptions,'+
     'LowSpeedOffsetInBufBuf, LowSpeedOffsetInBufInPtr, LowSpeedOffsetInBufOutPtr,'+
     'LowSpeedOffsetInBufBytesToRx, LowSpeedOffsetOutBufBuf, LowSpeedOffsetOutBufInPtr,'+
     'LowSpeedOffsetOutBufOutPtr, LowSpeedOffsetOutBufBytesToRx, LowSpeedOffsetMode,'+

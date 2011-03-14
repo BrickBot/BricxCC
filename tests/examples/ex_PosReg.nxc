@@ -1,0 +1,15 @@
+task main()
+{
+  byte rt = MotorRegulationTime();
+  SetMotorRegulationTime(MS_10);
+  byte ro = MotorRegulationOptions();
+  SetMotorRegulationOptions(OUT_REGOPTION_NO_SATURATION);
+  PosRegSetMax(OUT_A, 75, 15);
+  byte ms = MotorMaxSpeed(OUT_A);
+  byte ma = MotorMaxAcceleration(OUT_A);
+  PosRegEnable(OUT_A);
+  PosRegSetAngle(OUT_A, 360);
+  Wait(5000);
+  PosRegAddAngle(OUT_A, 360);
+  Wait(5000);
+}
