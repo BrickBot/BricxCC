@@ -6,6 +6,30 @@ Please send bug reports to bricxcc@comcast.net.
 For updates and additional documentation, visit the BricxCC Web Site:
 http://bricxcc.sourceforge.net/.  Send emails to bricxcc@comcast.net.
 
+version 3.3.8.9
+---------------
+- NBC 1.2.1.r4
+- Fixed reported problem with saving to non BMP file types from NXT Screen tool.
+- Fixed a problem with the internal compiler when connected via bluetooth.
+- HTML help fix (unable to load hhctrl.ocx)
+- Added text viewer
+- Added manual loading of symbol file in watch and new watch tools
+- Added hot keys for close comm and find brick
+- Added support for user-defined API functions in code completion
+- Modified firmware download so that it allows more time for brick to boot in SAMBA mode
+- Added symbol file library path and exposed it and UserDataLocalPath in preferences
+- Loading symbol file manually in watch tools.
+- AVI movie changes in NXT Screen tool.
+- ROPS improvements 
+- New variable watch tool classes
+- Variable watching changes
+- More NXT Watch list changes
+- ROPS debug support change.
+- Added status messages for compiler download problems
+- Added additional keyboard support to Joystick tool
+- ctrl-click changes in the editor
+
+
 version 3.3.8.8
 ---------------
 - NBC 1.2.1.r3
