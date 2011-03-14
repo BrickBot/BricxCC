@@ -22,6 +22,7 @@ Version 1.2.1.r4 (2011-03-13)
 - Fixed CurrentTick and FirstTick to return unsigned value
 - Fixed bug in bcd2dec (was using signed stack instead unsigned)
 - Fixed bug in switch statement containing a continue
+- Fixed defect with OnFwdSyncPID, OnRevSyncPID, OnFwdRegExPID, and OnRevRegExPID.
 - Added support for math assignment with arrays of UDTs
 - Added support for new enhanced firmware FileTell system call function
 - Added MemoryManager system call function
