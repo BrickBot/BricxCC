@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-02-20
- * \version 91
+ * \date 2011-03-13
+ * \version 92
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -835,7 +835,9 @@ enum OutputFieldNames {
   RegDValue,
   BlockTachoCount,
   RotationCount,
-  OutputOptions
+  OutputOptions,
+  MaxSpeed,
+  MaxAcceleration
 };
 
 // input fields
@@ -947,6 +949,21 @@ struct OutputStateType {
  * \param n The motor regulation frequency.
  */
 inline void SetMotorPwnFreq(byte n);
+
+/**
+ * Set regulation time.
+ * Set the motor regulation time in milliseconds. By default this is set
+ * to 100ms.
+ * \param n The motor regulation time.
+ */
+inline void SetMotorRegulationTime(byte n);
+
+/**
+ * Set regulation options.
+ * Set the motor regulation options.
+ * \param n The motor regulation options.
+ */
+inline void SetMotorRegulationOptions(byte n);
 
 /**
  * Run motors forward synchronised with PID factors.
@@ -1678,11 +1695,47 @@ inline long MotorRotationCount(byte output);
 inline byte MotorOutputOptions(byte output);
 
 /**
+ * Get motor max speed.
+ * Get the max speed value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ * \return The max speed value of the specified output.
+ */
+inline byte MotorMaxSpeed(byte output);
+
+/**
+ * Get motor max acceleration.
+ * Get the max acceleration value of the specified output.
+ *
+ * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
+ * OUT_C or a variable containing one of these values, see \ref
+ * OutputPortConstants.
+ * \return The max acceleration value of the specified output.
+ */
+inline byte MotorMaxAcceleration(byte output);
+
+/**
  * Get motor regulation frequency.
  * Get the current motor regulation frequency in milliseconds.
  * \return The motor regulation frequency.
  */
 inline byte MotorPwnFreq();
+
+/**
+ * Get motor regulation time.
+ * Get the current motor regulation time in milliseconds.
+ * \return The motor regulation time.
+ */
+inline byte MotorRegulationTime();
+
+/**
+ * Get motor regulation options.
+ * Get the current motor regulation options.
+ * \return The motor regulation options.
+ */
+inline byte MotorRegulationOptions();
 
 #else
 
@@ -1702,10 +1755,16 @@ inline byte MotorPwnFreq();
 #define MotorBlockTachoCount(_p) GetOutput(_p, BlockTachoCount)
 #define MotorRotationCount(_p) GetOutput(_p, RotationCount)
 #define MotorOutputOptions(_p) GetOutput(_p, OutputOptions)
+#define MotorMaxSpeed(_p) GetOutput(_p, MaxSpeed)
+#define MotorMaxAcceleration(_p) GetOutput(_p, MaxAcceleration)
 
 #define MotorPwnFreq() asm { GetOutPwnFreq(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define MotorRegulationTime() asm { GetOutRegulationTime(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define MotorRegulationOptions() asm { GetOutRegulationOptions(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 
 #define SetMotorPwnFreq(_n) asm { __setOutPwnFreq(_n) }
+#define SetMotorRegulationTime(_n) asm { __setOutRegulationTime(_n) }
+#define SetMotorRegulationOptions(_n) asm { __setOutRegulationOptions(_n) }
 
 #endif
 
@@ -15699,5 +15758,102 @@ inline int glPyramid(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
 }
 
 /** @} */ // end of GraphicsLibrary group
+
+/** @addtogroup NXTFirmwareModules
+ * @{
+ */
+/** @addtogroup OutputModule
+ * @{
+ */
+/** @addtogroup OutputModuleFunctions
+ * @{
+ */
+
+/**
+ * Enable absolute position regulation with PID factors.
+ * Enable absolute position regulation on the specified output.  Motor is kept
+ * regulated as long as this is enabled.
+ * Optionally specify proportional, integral, and derivative factors.
+ *
+ * \param output Desired output port. Can be a constant or a variable, see
+ * \ref OutputPortConstants.
+ * \param p Proportional factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants. Default value is \ref PID_3.
+ * \param i Integral factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants. Default value is \ref PID_1.
+ * \param d Derivative factor used by the firmware's PID motor control
+ * algorithm. See \ref PIDConstants. Default value is \ref PID_1.
+ */
+inline void PosRegEnable(byte output, byte p = PID_3, byte i = PID_1, byte d = PID_1)
+{
+    SetOutput(output,
+	       OutputModeField, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED,
+	       RegModeField, OUT_REGMODE_POS,
+	       RunStateField, OUT_RUNSTATE_RUNNING,
+	       PowerField, 0,
+	       TurnRatioField, 0,
+	       RegPValueField, p, RegIValueField, i, RegDValueField, d,
+	       UpdateFlagsField, UF_UPDATE_MODE+UF_UPDATE_SPEED+UF_UPDATE_PID_VALUES+UF_UPDATE_RESET_COUNT);
+    Wait(MS_2);
+}
+
+/**
+ * Change the current value for set angle.
+ * Make the absolute position regulation going toward the new provided angle.
+ * Returns immediately, but keep regulating.
+ *
+ * \param output Desired output port. Can be a constant or a variable, see
+ * \ref OutputPortConstants.
+ * \param angle New set position, in degree. The 0 angle corresponds to the
+ * position of the motor when absolute position regulation was first enabled.
+ * Can be negative. Can be greater than 360 degree to make several turns.
+ */
+inline void PosRegSetAngle(byte output, long angle)
+{
+    SetOutput(output,
+	       TachoLimitField, angle,
+	       UpdateFlagsField, UF_UPDATE_TACHO_LIMIT);
+}
+
+/**
+ * Add to the current value for set angle.
+ * Add an offset to the current set position. Returns immediately, but keep
+ * regulating.
+ *
+ * \param output Desired output port. Can be a constant or a variable, see
+ * \ref OutputPortConstants.
+ * \param angle_add Value to add to the current set position, in degree. Can
+ * be negative. Can be greater than 360 degree to make several turns.
+ */
+inline void PosRegAddAngle(byte output, long angle_add)
+{
+    long current_angle = GetOutput(output, TachoLimitField);
+    SetOutput(output,
+	       TachoLimitField, current_angle + angle_add,
+	       UpdateFlagsField, UF_UPDATE_TACHO_LIMIT);
+}
+
+/**
+ * Set maximum limits.
+ * Set maximum speed and acceleration.
+ *
+ * \param output Desired output port. Can be a constant or a variable, see
+ * \ref OutputPortConstants.
+ * \param max_speed Maximum speed, or 0 to disable speed limiting.
+ * \param max_acceleration Maximum acceleration, or 0 to disable acceleration
+ * limiting. The max_speed parameter should not be 0 if this is not 0.
+ */
+inline void PosRegSetMax(byte output, byte max_speed, byte max_acceleration)
+{
+    SetOutput(output,
+	       MaxSpeedField, max_speed,
+	       MaxAccelerationField, max_acceleration,
+	       UpdateFlagsField, UF_UPDATE_PID_VALUES);
+    Wait(MS_2);
+}
+
+/** @} */ // end of OutputModuleFunctions group
+/** @} */ // end of OutputModule group
+/** @} */ // end of NXTFirmwareModules group
 
 #endif // NXCDEFS_H

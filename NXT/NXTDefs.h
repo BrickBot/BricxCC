@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-01-21
- * version 74
+ * date 2011-03-13
+ * version 75
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -2972,7 +2972,15 @@ dseg ends
 
 #define __GetOutPwnFreq(_n) \
   compchk EQ, sizeof(_n), 1 \
-  GetOutputModuleValue(OutputOffsetPwnFreq, _n)
+  GetOutputModuleValue(OutputOffsetRegulationTime, _n)
+
+#define __GetOutRegulationTime(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetOutputModuleValue(OutputOffsetRegulationTime, _n)
+
+#define __GetOutRegulationOptions(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetOutputModuleValue(OutputOffsetRegulationOptions, _n)
 
 dseg segment
   __lsModuleOffsetMutex mutex
@@ -3959,7 +3967,15 @@ dseg ends
 
 #define __setOutPwnFreq(_n) \
   compchk EQ, sizeof(_n), 1 \
-  SetOutputModuleValue(OutputOffsetPwnFreq, _n)
+  SetOutputModuleValue(OutputOffsetRegulationTime, _n)
+
+#define __setOutRegulationTime(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  SetOutputModuleValue(OutputOffsetRegulationTime, _n)
+
+#define __setOutRegulationOptions(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  SetOutputModuleValue(OutputOffsetRegulationOptions, _n)
 
 #define __setLSInputBufferInPtr(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
@@ -10858,6 +10874,34 @@ ends
  * \param _n The motor regulation frequency in milliseconds
  */
 #define GetOutPwnFreq(_n) __GetOutPwnFreq(_n)
+
+/**
+ * Set motor regulation time.
+ * Set the motor regulation time to the specified number of milliseconds.
+ * \param _n The motor regulation time in milliseconds
+ */
+#define SetOutRegulationTime(_n) __setOutRegulationTime(_n)
+
+/**
+ * Get motor regulation time.
+ * Get the current motor regulation time.
+ * \param _n The motor regulation time in milliseconds
+ */
+#define GetOutRegulationTime(_n) __GetOutRegulationTime(_n)
+
+/**
+ * Set motor regulation options.
+ * Set the motor regulation options.
+ * \param _n The motor regulation options
+ */
+#define SetOutRegulationOptions(_n) __setOutRegulationOptions(_n)
+
+/**
+ * Get motor regulation options.
+ * Get the current motor regulation options.
+ * \param _n The motor regulation options
+ */
+#define GetOutRegulationOptions(_n) __GetOutRegulationOptions(_n)
 
 /** @} */ // end of OutputModuleFunctions group
 /** @} */ // end of OutputModule group
