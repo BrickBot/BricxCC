@@ -8,10 +8,49 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
-Version 1.2.1.r4 (2010-10-05)
+Version 1.2.1.r4 (2011-03-13)
 -----------------------------
-- Revised several Mindsensor API functions.  Added a few more for the ACCLNx sensor.
-- Fixed a problem with GetBrickDataAddress introduced in the previous version.
+- Fixed a problem with using NBC keywords in NXC code.
+- Fixed GetBrickDataAddress defect (nested asm blocks are not supported)
+- Fixed HSMode offset in NBCCommon.h
+- Enum and switch case label fixes/changes for NXC
+- Fixed bug in StrReplace.
+- Fixed bug in FileResize subroutine
+- Compiler optimizer fix to work around standard firmware bug when output 
+  variable is float
+- Fixed small problem with negative numbers as parameter default values.
+- Fixed CurrentTick and FirstTick to return unsigned value
+- Fixed bug in bcd2dec (was using signed stack instead unsigned)
+- Fixed bug in switch statement containing a continue
+- Added support for math assignment with arrays of UDTs
+- Added support for new enhanced firmware FileTell system call function
+- Added MemoryManager system call function
+- Added API functions for the LEGO temperature sensor, HiTechnic Magnet and 
+  Angle sensors, the Codatex RFID sensor, and the new MemoryManager system call.
+- Added support for setting the new BtDataMode and HsDataMode fields in the 
+  Comm module IOMap
+- Added support for HS multi-NXT addressing (requires latest 1.31 enhanced 
+  NBC/NXC firmware)
+- Added SizeOf API function and modified Read and ReadLn to use it.
+- Added Pos function.
+- API header file changes for fopen and other minor things
+- Moved IOCtrl module functions after Command module functions
+- StrCat and overloaded + operator changes (for string concatenation)
+- Made SetHSMode an inline function so that it checks for int-sized input 
+  parameter
+- Added support for escaping in character literals
+- Added support for optional string error message in compchk opcode.
+- Added support for position regulation
+- Updated example code for GetBrickDataAddress
+- Replaced the sample programs for FlattenVar and UnflattenVar.
+- Added example file documentation
+- Added examples for the Mindsensors ACCLNx device
+- New examples for the MemoryManager system call function and limits.h constants.
+- Adding examples for new API functions.
+- New examples for FindFirstFile and FindNextFile.
+- Updated doxygen comments for several functions that no longer require constant 
+  inputs
+- Many API additions and changes
 
 
 Version 1.2.1.r3 (2010-06-29)
