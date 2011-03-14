@@ -462,6 +462,9 @@ const
   RegDValue       = 12;
   BlockTachoCount = 13;
   RotationCount   = 14;
+  OutputOptions   = 15;
+  MaxSpeed        = 16;
+  MaxAcceleration = 17;
 
 const
   InputType       = 0;
@@ -959,9 +962,9 @@ const
   OutputOffsetRegMode0           = 26;
   OutputOffsetOverloaded0        = 27;
   OutputOffsetSyncTurnParameter0 = 28;
-  OutputOffsetSpareOne0          = 29;
-  OutputOffsetSpareTwo0          = 30;
-  OutputOffsetSpareThree0        = 31;
+  OutputOffsetOptions0           = 29;
+  OutputOffsetMaxSpeed0          = 30;
+  OutputOffsetMaxAcceleration0   = 31;
   OutputOffsetTachoCnt1          = 32;
   OutputOffsetBlockTachoCount1   = 36;
   OutputOffsetRotationCount1     = 40;
@@ -978,9 +981,9 @@ const
   OutputOffsetRegMode1           = 58;
   OutputOffsetOverloaded1        = 59;
   OutputOffsetSyncTurnParameter1 = 60;
-  OutputOffsetSpareOne1          = 61;
-  OutputOffsetSpareTwo1          = 62;
-  OutputOffsetSpareThree1        = 63;
+  OutputOffsetOptions1           = 61;
+  OutputOffsetMaxSpeed1          = 62;
+  OutputOffsetMaxAcceleration1   = 63;
   OutputOffsetTachoCnt2          = 64;
   OutputOffsetBlockTachoCount2   = 68;
   OutputOffsetRotationCount2     = 72;
@@ -997,10 +1000,11 @@ const
   OutputOffsetRegMode2           = 90;
   OutputOffsetOverloaded2        = 91;
   OutputOffsetSyncTurnParameter2 = 92;
-  OutputOffsetSpareOne2          = 93;
-  OutputOffsetSpareTwo2          = 94;
-  OutputOffsetSpareThree2        = 95;
-  OutputOffsetPwnFreq            = 96;
+  OutputOffsetOptions2           = 93;
+  OutputOffsetMaxSpeed2          = 94;
+  OutputOffsetMaxAcceleration2   = 95;
+  OutputOffsetRegulationTime     = 96;
+  OutputOffsetRegulationOptions  = 97;
 
 const
   LowSpeedOffsetInBufBuf0        = 0;

@@ -358,7 +358,7 @@ const
   );
 
 const
-  OutputFieldIDsCount = 15;
+  OutputFieldIDsCount = 18;
   NumOutputs          = 3;
   OutputFieldIDs : array[0..OutputFieldIDsCount-1] of IDRec =
   (
@@ -376,7 +376,10 @@ const
     ( ID: RegIValue;       Name: 'RegIValue'; ),
     ( ID: RegDValue;       Name: 'RegDValue'; ),
     ( ID: BlockTachoCount; Name: 'BlockTachoCount'; ),
-    ( ID: RotationCount;   Name: 'RotationCount'; )
+    ( ID: RotationCount;   Name: 'RotationCount'; ),
+    ( ID: OutputOptions;   Name: 'OutputOptions'; ),
+    ( ID: MaxSpeed;        Name: 'MaxSpeed'; ),
+    ( ID: MaxAcceleration; Name: 'MaxAcceleration'; )
   );
 
 const
@@ -393,7 +396,7 @@ const
   );
 
 const
-  IOMapFieldIDsCount = (InputFieldIDsCount*NumInputs)+(OutputFieldIDsCount*NumOutputs);
+  IOMapFieldIDsCount = (InputFieldIDsCount*NumInputs)+((OutputFieldIDsCount-3)*NumOutputs);
   IOMapFieldIDs : array[0..IOMapFieldIDsCount-1] of IDRec =
   (
 // input IO Map addresses
@@ -625,8 +628,8 @@ const
     ( ID: 94; Name: 'DrawEllipse'; ),
     ( ID: 95; Name: 'DrawFont'; ),
     ( ID: 96; Name: 'MemoryManager'; ),
-    ( ID: 97; Name: 'syscall97'; ),
-    ( ID: 98; Name: 'syscall98'; ),
+    ( ID: 97; Name: 'ReadLastResponse'; ),
+    ( ID: 98; Name: 'FileTell'; ),
     ( ID: 99; Name: 'syscall99'; )
   );
 

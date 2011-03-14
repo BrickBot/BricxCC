@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-01-21
- * \version 13
+ * \date 2011-03-13
+ * \version 14
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -35,7 +35,7 @@
 /** @mainpage NXC Programmer's Guide
  * \brief
  * 
- * <h2><center>January 19, 2011</center></h2>
+ * <h2><center>March 13, 2011</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -5257,6 +5257,13 @@
  *
  * \example ex_Pos.nxc
  * This is an example of how to use the \ref Pos and \ref NumOut functions.
+ *
+ * \example ex_PosReg.nxc
+ * This is an example of how to use the \ref PosRegEnable, \ref PosRegSetAngle,
+ * \ref PosRegAddAngle, \ref PosRegSetMax, \ref SetMotorRegulationTime, 
+ * \ref SetMotorRegulationOptions, \ref MotorRegulationTime, 
+ * \ref MotorRegulationOptions, \ref MotorMaxSpeed, and
+ * \ref MotorMaxAcceleration functions.
  *
  *
 */

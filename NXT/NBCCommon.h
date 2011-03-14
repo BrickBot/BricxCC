@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-02-16
- * \version 62
+ * \date 2011-03-13
+ * \version 63
  */
 
 #ifndef NBCCOMMON_H
@@ -1235,6 +1235,7 @@
 #define OUT_MODE_REGMETHOD 0xF0 /*!< Mask for unimplemented regulation mode */
 /** @} */  // end of OutModeConstants group
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 /** @defgroup OutOptionConstants Output port option constants
  * Use these constants to configure the desired options for the
  * specified motor(s): hold at limit and ramp down to limit. Option constants
@@ -1242,11 +1243,18 @@
  * \sa SetOutput()
  * @{
  */
-#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define OUT_OPTION_HOLDATLIMIT     0x10 /*!< Option to have the firmware hold the motor when it reaches the tachometer limit */
 #define OUT_OPTION_RAMPDOWNTOLIMIT 0x20 /*!< Option to have the firmware rampdown the motor power as it approaches the tachometer limit */
-#endif
 /** @} */  // end of OutOptionConstants group
+
+/** @defgroup OutRegOptionConstants Output regulation option constants
+ * Use these constants to configure the desired options for
+ * position regulation.
+ * @{
+ */
+#define OUT_REGOPTION_NO_SATURATION 0x01 /*!< Do not limit intermediary regulation results */
+/** @} */  // end of OutRegOptionConstants group
+#endif
 
 /** @defgroup OutRunStateConstants Output port run state constants
  * Use these constants to configure the desired run state for the
@@ -1263,13 +1271,15 @@
 
 /** @defgroup OutRegModeConstants Output port regulation mode constants
  * Use these constants to configure the desired regulation mode for the
- * specified motor(s): none, speed regulation, or multi-motor synchronization.
+ * specified motor(s): none, speed regulation, multi-motor synchronization,
+ * or position regulation (requires the enhanced NBC/NXC firmware version 1.31+).
  * \sa SetOutput()
  * @{
  */
 #define OUT_REGMODE_IDLE  0 /*!< No motor regulation. */
 #define OUT_REGMODE_SPEED 1 /*!< Regulate a motor's speed (aka power). */
 #define OUT_REGMODE_SYNC  2 /*!< Synchronize the rotation of two motors. */
+#define OUT_REGMODE_POS   4 /*!< Regulate a motor's position. */
 /** @} */  // end of OutRegModeConstants group
 
 /** @defgroup OutputFieldConstants Output field constants
@@ -1398,6 +1408,14 @@
  *  to have the output module ramp down the motor power as it approaches the tachometer limit.
  */
 #define OutputOptionsField   15
+/** MaxSpeed field. Contains the current max speed value. Read/write.
+ *  Set the maximum speed to be used during position regulation.
+ */
+#define MaxSpeedField   16
+/** MaxAcceleration field. Contains the current max acceleration value. Read/write.
+ *  Set the maximum acceleration to be used during position regulation.
+ */
+#define MaxAccelerationField   17
 #endif
 /** @} */  // end of OutputFieldConstants group
 
@@ -1423,8 +1441,13 @@
 #define OutputOffsetSyncTurnParameter(p) (((p)*32)+28) /*!< RW - Holds the turning parameter need within MoveBlock (1 byte) sbyte */
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define OutputOffsetOptions(p)           (((p)*32)+29) /*!< RW - holds extra motor options related to the tachometer limit (1 byte) ubyte  (NBC/NXC) */
+#define OutputOffsetMaxSpeed(p)          (((p)*32)+30) /*!< RW - holds the maximum speed for position regulation (1 byte) sbyte  (NBC/NXC) */
+#define OutputOffsetMaxAccel(p)          (((p)*32)+31) /*!< RW - holds the maximum acceleration for position regulation (1 byte) sbyte  (NBC/NXC) */
 #endif
-#define OutputOffsetPwnFreq              96 /*!< use for frequency of checking regulation mode (1 byte) ubyte (NBC/NXC) */
+#define OutputOffsetRegulationTime       96 /*!< use for frequency of checking regulation mode (1 byte) ubyte (NBC/NXC) */
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define OutputOffsetRegulationOptions    97 /*!< use for position regulation options (1 byte) ubyte (NBC/NXC) */
+#endif
 /** @} */  // end of OutputIOMAP group
 /** @} */  // end of OutputModuleConstants group
 /** @} */  // end of OutputModule group
