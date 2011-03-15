@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-03-13
- * version 75
+ * date 2011-03-15
+ * version 76
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -2978,9 +2978,13 @@ dseg ends
   compchk EQ, sizeof(_n), 1 \
   GetOutputModuleValue(OutputOffsetRegulationTime, _n)
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+
 #define __GetOutRegulationOptions(_n) \
   compchk EQ, sizeof(_n), 1 \
   GetOutputModuleValue(OutputOffsetRegulationOptions, _n)
+
+#endif
 
 dseg segment
   __lsModuleOffsetMutex mutex
@@ -3973,9 +3977,13 @@ dseg ends
   compchk EQ, sizeof(_n), 1 \
   SetOutputModuleValue(OutputOffsetRegulationTime, _n)
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+
 #define __setOutRegulationOptions(_n) \
   compchk EQ, sizeof(_n), 1 \
   SetOutputModuleValue(OutputOffsetRegulationOptions, _n)
+
+#endif
 
 #define __setLSInputBufferInPtr(_p, _n) \
   compchk EQ, sizeof(_n), 1 \
@@ -8093,7 +8101,7 @@ dseg ends
   __MSWriteToRegister(_port, _i2caddr, I2C_REG_CMD, _cmd, _result)
 
 #define __TempSendCmd(_port, _cmd, _result) \
-  __MSWriteToRegister(_port, TEMP_I2C_ADDRESS, TEMP_REG_CONFIG, _cmd, _result)
+  __MSWriteToRegister(_port, LEGO_ADDR_TEMP, TEMP_REG_CONFIG, _cmd, _result)
 
 #define __MSReadValue(_port, _i2caddr, _reg, _bytes, _out, _result) \
   acquire __DNRVmutex \
@@ -10889,6 +10897,7 @@ ends
  */
 #define GetOutRegulationTime(_n) __GetOutRegulationTime(_n)
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 /**
  * Set motor regulation options.
  * Set the motor regulation options.
@@ -10902,6 +10911,7 @@ ends
  * \param _n The motor regulation options
  */
 #define GetOutRegulationOptions(_n) __GetOutRegulationOptions(_n)
+#endif
 
 /** @} */ // end of OutputModuleFunctions group
 /** @} */ // end of OutputModule group

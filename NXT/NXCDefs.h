@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-13
- * \version 92
+ * \date 2011-03-15
+ * \version 93
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -954,6 +954,9 @@ inline void SetMotorPwnFreq(byte n);
  * Set regulation time.
  * Set the motor regulation time in milliseconds. By default this is set
  * to 100ms.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
+ *
  * \param n The motor regulation time.
  */
 inline void SetMotorRegulationTime(byte n);
@@ -961,6 +964,9 @@ inline void SetMotorRegulationTime(byte n);
 /**
  * Set regulation options.
  * Set the motor regulation options.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
+ *
  * \param n The motor regulation options.
  */
 inline void SetMotorRegulationOptions(byte n);
@@ -1687,6 +1693,8 @@ inline long MotorRotationCount(byte output);
  * Get motor options.
  * Get the options value of the specified output.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+
+ *
  * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
  * OUT_C or a variable containing one of these values, see \ref
  * OutputPortConstants.
@@ -1698,6 +1706,8 @@ inline byte MotorOutputOptions(byte output);
  * Get motor max speed.
  * Get the max speed value of the specified output.
  *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
+ *
  * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
  * OUT_C or a variable containing one of these values, see \ref
  * OutputPortConstants.
@@ -1708,6 +1718,8 @@ inline byte MotorMaxSpeed(byte output);
 /**
  * Get motor max acceleration.
  * Get the max acceleration value of the specified output.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
  *
  * \param output Desired output port. Can be \ref OUT_A, \ref OUT_B, \ref
  * OUT_C or a variable containing one of these values, see \ref
@@ -1754,17 +1766,19 @@ inline byte MotorRegulationOptions();
 #define MotorRegDValue(_p) GetOutput(_p, RegDValue)
 #define MotorBlockTachoCount(_p) GetOutput(_p, BlockTachoCount)
 #define MotorRotationCount(_p) GetOutput(_p, RotationCount)
+
+#define MotorPwnFreq() asm { GetOutPwnFreq(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define SetMotorPwnFreq(_n) asm { __setOutPwnFreq(_n) }
+#define MotorRegulationTime() asm { GetOutRegulationTime(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define SetMotorRegulationTime(_n) asm { __setOutRegulationTime(_n) }
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 #define MotorOutputOptions(_p) GetOutput(_p, OutputOptions)
 #define MotorMaxSpeed(_p) GetOutput(_p, MaxSpeed)
 #define MotorMaxAcceleration(_p) GetOutput(_p, MaxAcceleration)
-
-#define MotorPwnFreq() asm { GetOutPwnFreq(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-#define MotorRegulationTime() asm { GetOutRegulationTime(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define MotorRegulationOptions() asm { GetOutRegulationOptions(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
-
-#define SetMotorPwnFreq(_n) asm { __setOutPwnFreq(_n) }
-#define SetMotorRegulationTime(_n) asm { __setOutRegulationTime(_n) }
 #define SetMotorRegulationOptions(_n) asm { __setOutRegulationOptions(_n) }
+#endif
 
 #endif
 
@@ -15759,6 +15773,7 @@ inline int glPyramid(int glMode, int glSizeX, int glSizeY, int glSizeZ) {
 
 /** @} */ // end of GraphicsLibrary group
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
 /** @addtogroup NXTFirmwareModules
  * @{
  */
@@ -15855,5 +15870,6 @@ inline void PosRegSetMax(byte output, byte max_speed, byte max_acceleration)
 /** @} */ // end of OutputModuleFunctions group
 /** @} */ // end of OutputModule group
 /** @} */ // end of NXTFirmwareModules group
+#endif
 
 #endif // NXCDEFS_H
