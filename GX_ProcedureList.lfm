@@ -15,20 +15,23 @@ object fmProcedureList: TfmProcedureList
   OnClose = FormClose
   OnKeyPress = edtMethodsKeyPress
   OnResize = FormResize
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object pnHolder: TPanel
-    Height = 273
+    Left = 0
+    Height = 276
     Top = 58
     Width = 527
     Align = alClient
     BevelOuter = bvNone
     Caption = 'pnHolder'
-    ClientHeight = 273
+    ClientHeight = 276
     ClientWidth = 527
     FullRepaint = False
     TabOrder = 0
     object lvProcs: TListView
-      Height = 273
+      Left = 0
+      Height = 276
+      Top = 0
       Width = 527
       HelpContext = 4901
       Align = alClient
@@ -60,8 +63,9 @@ object fmProcedureList: TfmProcedureList
     end
   end
   object StatusBar: TStatusBar
-    Height = 24
-    Top = 331
+    Left = 0
+    Height = 21
+    Top = 334
     Width = 527
     HelpContext = 4902
     Panels = <    
@@ -74,6 +78,7 @@ object fmProcedureList: TfmProcedureList
       end>
   end
   object pnlHeader: TPanel
+    Left = 0
     Height = 36
     Top = 22
     Width = 527
@@ -87,7 +92,9 @@ object fmProcedureList: TfmProcedureList
     TabOrder = 2
     OnResize = pnlHeaderResize
     object pnlHeaderLeft: TPanel
+      Left = 0
       Height = 36
+      Top = 0
       Width = 260
       Align = alLeft
       BevelOuter = bvNone
@@ -97,9 +104,9 @@ object fmProcedureList: TfmProcedureList
       TabOrder = 0
       object lblMethods: TLabel
         Left = 14
-        Height = 13
+        Height = 15
         Top = 10
-        Width = 34
+        Width = 41
         Alignment = taRightJustify
         Caption = '&Search'
         FocusControl = edtMethods
@@ -107,7 +114,7 @@ object fmProcedureList: TfmProcedureList
       end
       object edtMethods: TEdit
         Left = 53
-        Height = 21
+        Height = 24
         Top = 6
         Width = 200
         HelpContext = 4903
@@ -120,6 +127,7 @@ object fmProcedureList: TfmProcedureList
     object pnlHeaderRight: TPanel
       Left = 260
       Height = 36
+      Top = 0
       Width = 267
       Align = alClient
       BevelOuter = bvNone
@@ -129,9 +137,9 @@ object fmProcedureList: TfmProcedureList
       TabOrder = 1
       object lblObjects: TLabel
         Left = 16
-        Height = 17
+        Height = 15
         Top = 8
-        Width = 68
+        Width = 44
         Alignment = taRightJustify
         Caption = '&Objects'
         FocusControl = cbxObjects
@@ -139,11 +147,11 @@ object fmProcedureList: TfmProcedureList
       end
       object cbxObjects: TComboBox
         Left = 56
-        Height = 21
+        Height = 31
         Top = 4
         Width = 196
         HelpContext = 4904
-        AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+        ItemHeight = 0
         MaxLength = 65535
         OnChange = cbxObjectsChange
         OnKeyPress = edtMethodsKeyPress
@@ -154,12 +162,13 @@ object fmProcedureList: TfmProcedureList
     end
   end
   object ToolBar1: TToolBar
+    Left = 0
     Height = 22
+    Top = 0
     Width = 527
     AutoSize = True
     Caption = 'ToolBar1'
     EdgeBorders = []
-    Flat = True
     Images = ilActions
     ParentShowHint = False
     ShowHint = True
@@ -167,53 +176,57 @@ object fmProcedureList: TfmProcedureList
     Wrapable = False
     object tbnCopy: TToolButton
       Left = 1
-      Hint = 'Copy procedures to clipboard'
+      Top = 0
       Action = actEditCopy
     end
     object tbnSep1: TToolButton
       Left = 24
+      Top = 0
       Width = 8
       ImageIndex = 1
       Style = tbsSeparator
     end
     object tbnFont: TToolButton
       Left = 32
-      Hint = 'Configure font'
+      Top = 0
       Action = actOptionsFont
     end
     object tbnSep2: TToolButton
       Left = 55
+      Top = 0
       Width = 8
       ImageIndex = 2
       Style = tbsSeparator
     end
     object tbnStart: TToolButton
       Left = 63
-      Hint = 'Match only from the start'
+      Top = 0
       Action = actViewStart
       Grouped = True
       Style = tbsCheck
     end
     object tbnAny: TToolButton
       Left = 86
-      Hint = 'Match anywhere'
+      Top = 0
       Action = actViewAny
       Grouped = True
       Style = tbsCheck
     end
     object tbnSep3: TToolButton
       Left = 109
+      Top = 0
       Width = 8
       ImageIndex = 4
       Style = tbsSeparator
     end
     object tbnGoto: TToolButton
       Left = 117
-      Hint = 'Goto implementation'
+      Top = 0
       Action = actViewGoto
     end
     object tbnSep4: TToolButton
       Left = 140
+      Top = 0
       Width = 8
       Caption = 'tbnSep4'
       ImageIndex = 6
@@ -221,13 +234,13 @@ object fmProcedureList: TfmProcedureList
     end
     object tbnHelp: TToolButton
       Left = 148
-      Hint = 'Help'
+      Top = 0
       Action = actHelpHelp
     end
   end
   object ilImages: TImageList
     BkColor = clForeground
-    left = 96
+    left = 95
     top = 88
     Bitmap = {
       4C69040000001000000010000000000000000000000000000000008484FF0084
@@ -364,6 +377,8 @@ object fmProcedureList: TfmProcedureList
   object dlgProcFont: TFontDialog
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
+    MinFontSize = 0
+    MaxFontSize = 0
     Options = []
     left = 32
     top = 88
@@ -376,7 +391,6 @@ object fmProcedureList: TfmProcedureList
     object actEditCopy: TAction
       Category = 'Edit'
       Caption = '&Edit'
-      DisableIfNoHandler = True
       Hint = 'Copy procedures to clipboard'
       ImageIndex = 2
       OnExecute = actEditCopyExecute
@@ -385,7 +399,6 @@ object fmProcedureList: TfmProcedureList
     object actOptionsFont: TAction
       Category = 'Options'
       Caption = '&Font..'
-      DisableIfNoHandler = True
       Hint = 'Configure font'
       ImageIndex = 4
       OnExecute = actOptionsFontExecute
@@ -393,7 +406,6 @@ object fmProcedureList: TfmProcedureList
     object actViewStart: TAction
       Category = 'View'
       Caption = '&Start'
-      DisableIfNoHandler = True
       Hint = 'Match only from the start'
       ImageIndex = 0
       OnExecute = actViewStartExecute
@@ -401,7 +413,6 @@ object fmProcedureList: TfmProcedureList
     object actViewAny: TAction
       Category = 'View'
       Caption = '&Any'
-      DisableIfNoHandler = True
       Hint = 'Match anywhere'
       ImageIndex = 1
       OnExecute = actViewAnyExecute
@@ -409,7 +420,6 @@ object fmProcedureList: TfmProcedureList
     object actViewGoto: TAction
       Category = 'View'
       Caption = '&Goto'
-      DisableIfNoHandler = True
       Hint = 'Goto implementation'
       ImageIndex = 5
       OnExecute = actViewGotoExecute
@@ -418,7 +428,6 @@ object fmProcedureList: TfmProcedureList
     object actHelpHelp: TAction
       Category = 'Help'
       Caption = '&Help'
-      DisableIfNoHandler = True
       Hint = 'Help'
       ImageIndex = 3
       OnExecute = actHelpHelpExecute

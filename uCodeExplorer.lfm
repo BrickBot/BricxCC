@@ -13,16 +13,17 @@ object frmCodeExplorer: TfrmCodeExplorer
   OnClose = FormClose
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object treCodeExplorer: TTreeView
+    Left = 0
     Height = 217
+    Top = 0
     Width = 142
     Align = alClient
-    DefaultItemHeight = 18
+    DefaultItemHeight = 16
     HideSelection = False
     Images = ilCodeExplorer
     Indent = 19
-    PopupMenu = popCodeExplorer
     RightClickSelect = True
     SortType = stText
     TabOrder = 0
@@ -33,13 +34,13 @@ object frmCodeExplorer: TfrmCodeExplorer
   object tmrCodeExplorer: TTimer
     Interval = 2000
     OnTimer = tmrCodeExplorerTimer
-    left = 24
-    top = 80
+    left = 40
+    top = 96
   end
   object ilCodeExplorer: TImageList
     BkColor = clForeground
     left = 24
-    top = 32
+    top = 30
     Bitmap = {
       4C69130000001000000010000000000000000000000000000000000000000000
       0000000000000000000000000000000000000000000000000000000000000000
@@ -651,25 +652,5 @@ object frmCodeExplorer: TfrmCodeExplorer
       0000000000000000000000000000000000000000000000000000000000000000
       0000000000000000000000000000
     }
-  end
-  object popCodeExplorer: TOfficePopupMenu
-    left = 64
-    top = 144
-    object mniViewEditor: TOfficeMenuItem
-      Caption = 'View Editor'
-      ShortCut = 24645
-      OnClick = mniViewEditorClick
-    end
-    object mniClose: TOfficeMenuItem
-      Caption = 'Close'
-      OnClick = mniCloseClick
-    end
-    object N1: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniCodeExpProp: TOfficeMenuItem
-      Caption = 'Properties'
-      OnClick = mniCodeExpPropClick
-    end
   end
 end

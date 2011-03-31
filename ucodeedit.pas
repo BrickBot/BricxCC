@@ -32,23 +32,27 @@ uses
   LCLIntf,
   SynEditMarks,
 {$ENDIF}
-  Messages, SysUtils, Classes, Graphics, Controls, Forms,
-  Dialogs, ExtCtrls, ComCtrls, ToolWin,
-  StdCtrls, ImgList, ActnList, Menus,
-  uCodeExplorer, GX_ProcedureList, GotoLine, ConstructUnit, CodeUnit,
-  GX_IDECodeTemplates, EditCodeTemplate, CodeTemplates, uBasicPrefs,
-  uMacroLib, uMacroForm, uMacroEditor,
-  uPSComponent_StdCtrls, uPSComponent_Controls, uPSComponent_Forms,
-  uPSComponent_Default, uPSComponent,
-  SynEdit, SynEditEx, BricxccSynEdit, SynMacroRecorder, SynEditHighlighter,
-  SynHighlighterNQC, SynHighlighterNBC, SynHighlighterNPG, SynHighlighterRS,
-  SynHighlighterROPS,
-  SynEditAutoComplete, SynCompletionProposal, SynEditPlugins, SynEditTypes,
+  Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs, ExtCtrls,
+  ComCtrls, ToolWin, StdCtrls, ImgList, ActnList, Menus, uCodeExplorer,
+  GX_ProcedureList, GotoLine, ConstructUnit, CodeUnit, GX_IDECodeTemplates,
+  EditCodeTemplate, CodeTemplates, uBasicPrefs, uMacroLib, uMacroForm,
+  uMacroEditor, uPSComponent_StdCtrls, uPSComponent_Controls,
+  uPSComponent_Forms, uPSComponent_Default, uPSComponent, SynEdit, SynEditEx,
+  BricxccSynEdit, SynMacroRecorder, SynEditHighlighter, SynHighlighterNQC,
+  SynHighlighterNBC, SynHighlighterNPG, SynHighlighterRS, SynHighlighterROPS,
+  SynEditAutoComplete, uTreeSaver, SynEditPlugins, SynEditTypes,
   SynEditRegexSearch, SynEditMiscClasses, SynEditSearch, {SynEditPrintTypes,}
-  SynExportRTF, SynEditExport, SynExportHTML, SynEditKeyCmds;
+  syncompprop, SynExportRTF,
+  SynEditExport, SynExportHTML, SynEditKeyCmds;
 
 type
+
+  { TfrmCodeEdit }
+
   TfrmCodeEdit = class(TForm)
+    ilActions: TImageList;
+    mniExit: TMenuItem;
+    mniSepExit: TMenuItem;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
@@ -232,7 +236,7 @@ type
     procedure actEditDeleteExecute(Sender: TObject);
     procedure actEditNextFieldExecute(Sender: TObject);
     procedure actEditPasteExecute(Sender: TObject);
-//    procedure actEditPreferencesExecute(Sender: TObject);
+    procedure actEditPreferencesExecute(Sender: TObject);
     procedure actEditRedoExecute(Sender: TObject);
     procedure actEditSelectAllExecute(Sender: TObject);
     procedure actEditUndoExecute(Sender: TObject);
@@ -255,6 +259,7 @@ type
     procedure alMainUpdate(Action: TBasicAction; var Handled: Boolean);
     procedure mniCodeExplorerClick(Sender: TObject);
     procedure mniCompileClick(Sender: TObject);
+    procedure mniExitClick(Sender: TObject);
     procedure mniFileClick(Sender: TObject);
     procedure mniFindDeclarationClick(Sender: TObject);
     procedure mniHideErrorsClick(Sender: TObject);
@@ -268,6 +273,7 @@ type
     procedure mniViewExplorerClick(Sender: TObject);
     procedure mnTopicSearchClick(Sender: TObject);
     procedure pmnuEditorPopup(Sender: TObject);
+    procedure Preferences1Click(Sender: TObject);
     procedure RecentFileClick(Sender: TObject);
     procedure TheErrorsMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
@@ -290,6 +296,7 @@ type
       State: TDragState; var Accept: Boolean);
     procedure mniEditClick(Sender: TObject);
     procedure mniSearchClick(Sender: TObject);
+    procedure TheErrorsClick(Sender: TObject);
   private
     { Private declarations }
     IsNew:boolean;
@@ -304,6 +311,7 @@ type
     procedure CreateMainFormHighlighters;
     procedure CreateMiscSynEditComponents;
     procedure FindDeclaration(const aIdent: string);
+    function OkayToCloseCurrentFile: boolean;
     procedure OpenFileAtCursor;
     procedure OpenFile(fname:string; lineNo : integer = -1);
     function OpenFileOnPath(const fname: string): boolean;
@@ -353,7 +361,7 @@ type
     procedure SaveModifiedFiles;
     procedure DoDisplayErrors(aShow: boolean);
     procedure HandleOnCompilerStatusChange(Sender: TObject;
-      const StatusMsg: string);
+      const aStatusMsg: string; const bDone : boolean);
     procedure HandleOpenStateChanged(Sender: TObject);
     procedure HandleOnGetVarInfoByID(Sender: TObject; const ID: integer;
       var offset, size, vartype: integer);
@@ -364,7 +372,6 @@ type
     procedure SaveFileAs(fname: string);
     procedure ShowTheErrors;
     procedure DoHideErrors;
-    procedure TheErrorsClick(Sender: TObject);
     procedure SynMacroRecStateChange(Sender: TObject);
     procedure scpParamsExecute(Kind: SynCompletionType; Sender: TObject;
       var CurrentInput: String; var x, y: Integer;
@@ -457,9 +464,11 @@ type
     procedure TheEditorPlaceBookmark(Sender: TObject;
       var Mark: TSynEditMark);
     procedure TheEditorProcessCommand(Sender: TObject;
-      var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
+      var Command: TSynEditorCommand; var AChar: {$IFDEF FPC}TUTF8Char{$ELSE}Char{$ENDIF};
+      Data: Pointer);
     procedure TheEditorProcessUserCommand(Sender: TObject;
-      var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
+      var Command: TSynEditorCommand; var AChar: {$IFDEF FPC}TUTF8Char{$ELSE}Char{$ENDIF};
+      Data: Pointer);
     procedure TheEditorReplaceText(Sender: TObject; const ASearch,
       AReplace: String; Line, Column: Integer;
       var Action: TSynReplaceAction);
@@ -491,14 +500,14 @@ implementation
 {$ENDIF}
 
 uses
-  Clipbrd,
+  Clipbrd, Registry,
   uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uProgram, uCompStatus,
   uRICComp, uCppCode, Transdlg,
   uNXTClasses, uNBCInterface, uNBCCommon, uEditorExperts, ParamUtils,
   uPSI_brick_common, uPSI_uSpirit, uPSI_FantomSpirit, uPSRuntime,
   uPSDisassembly, uPSDebugger, 
   uGlobals, uHighlighterProcs, brick_common, FantomSpirit,
-  dlgSearchText, dlgReplaceText, dlgConfirmReplace, DTestPrintPreview,
+  dlgSearchText, dlgReplaceText, dlgConfirmReplace,// DTestPrintPreview,
   uEditorUtils, uMiscDefines, rcx_constants, uLocalizedStrings,
   uParseCommon, uNXTExplorer
   ;
@@ -510,11 +519,12 @@ begin
   with TheEditor do
   begin
     Name := 'TheEditor';
-    Parent := Self;
+    Parent := pnlRight;
+    Lines.Clear;
     Left := 0;
     Top := 0;
-    Width := 464;
-    Height := 285;
+//    Width := 464;
+//    Height := 285;
     Cursor := crIBeam;
     Align := alClient;
     Font.Charset := DEFAULT_CHARSET;
@@ -525,19 +535,23 @@ begin
     Font.Style := [];
     ParentColor := False;
     ParentFont := False;
-    PopupMenu := ConstructForm.ConstructMenu;
+    if ConstructForm <> nil then
+      PopupMenu := ConstructForm.ConstructMenu;
     TabOrder := 1;
     BookMarkOptions.BookmarkImages := ilBookmarkImages;
+{$IFNDEF FPC}
     Gutter.Font.Charset := DEFAULT_CHARSET;
     Gutter.Font.Color := clWindowText;
     Gutter.Font.Height := -11;
     Gutter.Font.Name := 'Terminal';
     Gutter.Font.Style := [];
+    ScrollHintFormat := shfTopToBottom;
+    OnMouseOverToken := TheEditorMouseOverToken;
+{$ENDIF}
     MaxUndo := 10;
     Options := [eoAutoIndent, eoDragDropEditing, eoScrollPastEol,
                 eoShowScrollHint, eoSmartTabDelete, eoSmartTabs,
                 eoTabsToSpaces, eoTrimTrailingSpaces];
-    ScrollHintFormat := shfTopToBottom;
     TabWidth := 2;
     WantTabs := True;
     OnDragDrop := TheEditorDragDrop;
@@ -554,7 +568,6 @@ begin
     OnReplaceText := TheEditorReplaceText;
     OnSpecialLineColors := TheEditorSpecialLineColors;
     OnStatusChange := TheEditorStatusChange;
-    OnMouseOverToken := TheEditorMouseOverToken;
     StructureLineColor := clNone;
   end;
 end;
@@ -563,7 +576,7 @@ procedure TfrmCodeEdit.CreateMiscSynEditComponents;
 begin
   SynMacroRec := TSynMacroRecorder.Create(Self);
   SynAutoComp := TSynEditAutoComplete.Create(Self);
-  SynEditSearch := TSynEditSearch.Create(Self);
+  SynEditSearch := TSynEditSearch.Create({$IFNDEF FPC}Self{$ENDIF});
   SynEditRegexSearch := TSynEditRegexSearch.Create(Self);
   expRTF := TSynExporterRTF.Create(Self);
   expHTML := TSynExporterHTML.Create(Self);
@@ -969,8 +982,8 @@ end;
 procedure TfrmCodeEdit.TheEditorMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if (ssCtrl in Shift) and (Button = mbLeft) then
-    FindDeclaration(TheEditor.WordAtMouse);
+//  if (ssCtrl in Shift) and (Button = mbLeft) then
+//    FindDeclaration(TheEditor.WordAtMouse);
 end;
 
 procedure TfrmCodeEdit.TheEditorChange(Sender: TObject);
@@ -997,8 +1010,11 @@ begin
 //
 end;
 
+const
+  ecContextHelp = 490;  // Help on Word, Data = Word
+
 procedure TfrmCodeEdit.TheEditorProcessCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
+  var Command: TSynEditorCommand; var AChar: {$IFDEF FPC}TUTF8Char{$ELSE}Char{$ENDIF}; Data: Pointer);
 var
   word : string;
   FoundPos: Integer;
@@ -1031,7 +1047,8 @@ begin
 end;
 
 procedure TfrmCodeEdit.TheEditorProcessUserCommand(Sender: TObject;
-  var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
+  var Command: TSynEditorCommand; var AChar: {$IFDEF FPC}TUTF8Char{$ELSE}Char{$ENDIF};
+  Data: Pointer);
 var
   FoundPos: Integer;
   Ident: string;
@@ -1120,15 +1137,15 @@ procedure TfrmCodeEdit.TheEditorStatusChange(Sender: TObject;
 begin
   // Note: scAll for new file loaded
   // caret position has changed
-  if Changes * [scAll, scCaretX, scCaretY] <> [] then begin
+  if Changes * [scCaretX, scCaretY] <> [] then begin
     UpdatePositionOnStatusBar;
   end;
   // InsertMode property has changed
-  if Changes * [scAll, scInsertMode, scReadOnly] <> [] then begin
+  if Changes * [scInsertMode, scReadOnly] <> [] then begin
     UpdateModeOnStatusBar;
   end;
   // Modified property has changed
-  if Changes * [scAll, scModified] <> [] then
+  if Changes * [scModified] <> [] then
     UpdateModifiedOnStatusBar;
 end;
 
@@ -1187,8 +1204,25 @@ begin
 }
 end;
 
+function TfrmCodeEdit.OkayToCloseCurrentFile : boolean;
+begin
+  Result := True;
+  if TheEditor.Modified then
+  begin
+    Result := False;
+    case MessageDlg(Format(S_FileChanged, [Caption]),
+            mtConfirmation, [mbYes, mbNo, mbCancel], 0) of
+      id_Yes: DoSave;
+      id_No: TheEditor.Modified := False;
+      id_Cancel: Exit; // bail out of this method
+    end;
+    Result := not TheEditor.Modified;
+  end;
+end;
+
 procedure TfrmCodeEdit.actFileNewExecute(Sender: TObject);
 begin
+  if not OkayToCloseCurrentFile then Exit;
   newcount := newcount + 1;
   NewFile(sUntitled + IntToStr(newcount));
 end;
@@ -1197,10 +1231,10 @@ procedure TfrmCodeEdit.actFileOpenExecute(Sender: TObject);
 var
   i : integer;
 begin
+  if not OkayToCloseCurrentFile then Exit;
   if dlgOpen.Execute then
   begin
-    for i := 0 to dlgOpen.Files.Count - 1 do
-      OpenFile(dlgOpen.Files[i]);
+    OpenFile(dlgOpen.Filename);
   end;
 end;
 
@@ -1376,13 +1410,15 @@ begin
   NextField;
 end;
 
-(*
 procedure TfrmCodeEdit.actEditPreferencesExecute(Sender: TObject);
+{
 var
   i : integer;
   F : TEditorForm;
   oldShowTempPopup : boolean;
+}
 begin
+(*
   oldShowTempPopup := ShowTemplatePopup;
   if PrefForm.ShowModal = mrOK then
   begin
@@ -1438,8 +1474,8 @@ begin
     // set filter index
     SetFilterIndexFromLanguage;
   end;
-end;
 *)
+end;
 
 procedure TfrmCodeEdit.actFileSaveExecute(Sender: TObject);
 begin
@@ -1764,12 +1800,14 @@ end;
 procedure TfrmCodeEdit.DragOverHelper(Sender, Source: TObject; X, Y: Integer;
   State: TDragState; var Accept: Boolean);
 begin
-  if Source = frmNXTExplorer.lstFiles then
+{
+if Source = frmNXTExplorer.lstFiles then
   begin
     Accept := True;
   end
   else
     Accept := False;
+}
 end;
 
 function StartDoc(const DocName : String) : Integer;
@@ -1876,6 +1914,11 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TfrmCodeEdit.Preferences1Click(Sender: TObject);
+begin
+  //
 end;
 
 function TfrmCodeEdit.IsMaximized: Boolean;
@@ -2067,11 +2110,13 @@ begin
   IsNew    := True;
   Filename := fname;
   SetCaption(ExtractFileName(fname));
+  TheEditor.Lines.Clear;
   TheEditor.Modified := False;
   actFileSave.Enabled := False;
   SetSyntaxHighlighter;
   UpdateStatusBar;
   HookCompProp;
+  frmCodeExplorer.ProcessFile(fname, '');
   frmCodeExplorer.RefreshEntireTree;
 end;
 
@@ -2107,7 +2152,7 @@ end;
 
 function TfrmCodeEdit.GetPosition: integer;
 begin
-  Result := TheEditor.RowColToCharIndex(TheEditor.CaretXY);
+//  Result := TheEditor.RowColToCharIndex(TheEditor.CaretXY);
 end;
 
 function TfrmCodeEdit.GetSource: string;
@@ -2117,7 +2162,7 @@ end;
 
 procedure TfrmCodeEdit.SetPosition(const Value: integer);
 begin
-  TheEditor.CaretXY := TheEditor.CharIndexToRowCol(Value-1);
+//  TheEditor.CaretXY := TheEditor.CharIndexToRowCol(Value-1);
 end;
 
 procedure TfrmCodeEdit.UpdatePositionOnStatusBar;
@@ -2146,8 +2191,8 @@ begin
 end;
 
 function TfrmCodeEdit.DoCompileAction(bDown, bRun: Boolean) : Boolean;
-//var
-//  SaveCursor : TCursor;
+var
+  SaveCursor : TCursor;
 begin
   if ShowCompilerStatus and UseInternalNBC and
      FileIsNBCOrNXCOrNPGOrRICScript then
@@ -2155,8 +2200,8 @@ begin
   Application.ProcessMessages;
 
   {Save cursor}
-//  SaveCursor := Screen.Cursor;
-//  Screen.Cursor := crHourglass;
+  SaveCursor := Screen.Cursor;
+  Screen.Cursor := crHourglass;
   try
     // check for auto save
     if AutoSaveFiles then
@@ -2166,7 +2211,7 @@ begin
       Filename, Caption, bDown, bRun, HandleOnCompilerStatusChange,
       HandleOpenStateChanged);
   finally
-//    Screen.Cursor := SaveCursor;
+    Screen.Cursor := SaveCursor;
   end;
 end;
 
@@ -2240,14 +2285,14 @@ begin
         if LowerCase(ExtractFileName(CO.Filename)) = LowerCase(ExtractFilename(CD.Filename)) then
         begin
           fNXTCurrentOffset := CO;
-          TheEditor.GotoLineAndCenter(CO.LineNumber);
+          TheEditor.GotoLineNumber(CO.LineNumber);
         end
         else
         begin
           // if the filenames are different then open the new file
           if OpenFileOnPath(CO.Filename) then
           begin
-            TheEditor.GotoLineAndCenter(CO.LineNumber);
+            TheEditor.GotoLineNumber(CO.LineNumber);
           end;
         end;
       end;
@@ -2569,9 +2614,6 @@ begin
   end;
 end;
 
-
-
-
 procedure TfrmCodeEdit.DoLoadAPI(cp : TSynCompletionProposal; aStrings : TStrings);
 var
   SL : TStrings;
@@ -2642,9 +2684,9 @@ begin
 end;
 
 procedure TfrmCodeEdit.HandleOnCompilerStatusChange(Sender: TObject;
-  const StatusMsg: string);
+  const aStatusMsg: string; const bDone : boolean);
 begin
-  frmCompStatus.AddMessage(StatusMsg);
+  frmCompStatus.AddMessage(aStatusMsg);
 end;
 
 procedure TfrmCodeEdit.HandleOpenStateChanged(Sender: TObject);
@@ -2758,9 +2800,14 @@ begin
     epos := Pos('line ',str);
     if epos > 0 then
     begin
-     tmp := Copy(str,epos+4,6); // up to 6 digit line numbers
-     Val(tmp,lnumb,c);
-     break;
+     tmp := Copy(str,epos+5,6); // up to 6 digit line numbers
+     epos := Pos(':', tmp); // should be a colon after the line number
+     if epos > 0 then
+     begin
+       System.Delete(tmp, epos, MaxInt);
+       Val(tmp,lnumb,c);
+       break;
+     end;
     end;
     if FileIsNBCOrNXCOrNPGOrRICScript then
       break;
@@ -2918,7 +2965,12 @@ begin
 end;
 
 procedure TfrmCodeEdit.FormCreate(Sender: TObject);
+var
+  R : TRegistry;
+  S : TStringList;
 begin
+  IsNew := True;
+  fFilename := sUntitled + '.nxc';
   fNXCAPIBase := TStringList.Create;
   CreateCompPropComponents;
   CreateMainFormHighlighters;
@@ -2932,11 +2984,18 @@ begin
   // set help file
   Application.HelpFile := ProgramDir + 'Help\BricxCC.HLP';
   HelpFile := Application.HelpFile;
+  // load registry values
+  R := TRegistry.Create;
+  try
+    LoadNXCAPIValues(R, nil, SynNXCSyn);
+  finally
+    R.Free;
+  end;
   // initialize the highlighter data
   GetSortedHighlighters(Self, Highlighters, False);
   dlgOpen.Filter := GetHighlightersFilter(Highlighters) + SFilterAllFiles;
   dlgSave.Filter := dlgOpen.Filter;
-  PopulateROPSCompProp(SynROPSCompProp);
+  PopulateROPSCompProp(SynROPSCompProp.InsertList, SynROPSCompProp.ItemList);
   LoadNBCCodeComplete(SynNBCCompProp.ItemList);
   LoadNPGCodeComplete(SynNPGCompProp.ItemList);
   LoadRSCodeComplete(SynRSCompProp.ItemList);
@@ -2971,6 +3030,7 @@ begin
   PopupMenu := ConstructForm.ConstructMenu;
   TheEditor.Font.Name := FontName;
   TheEditor.Font.Size := FontSize;
+  Application.ProcessMessages;
 end;
 
 procedure TfrmCodeEdit.ceExecute(Sender: TPSScript);
@@ -3176,15 +3236,19 @@ begin
     Width := GutterWidth;
     AutoSize := AutoSizeGutter;
     Visible  := GutterVisible;
+{$IFNDEF FPC}
     LeadingZeros := ShowLeadingZeros;
+{$ENDIF}
   end;
-  TheEditor.Gutter.DigitCount      := DigitCount;
   TheEditor.Gutter.LeftOffset      := LeftOffset;
   TheEditor.Gutter.RightOffset     := RightOffset;
+{$IFNDEF FPC}
+  TheEditor.Gutter.DigitCount      := DigitCount;
   TheEditor.Gutter.ShowLineNumbers := ShowLineNumbers;
   TheEditor.Gutter.ZeroStart       := ZeroStart;
   TheEditor.Gutter.UseFontStyle    := UseFontStyle;
-//  TheEditor.Keystrokes.Assign(PrefForm.Keystrokes);
+  TheEditor.Keystrokes.Assign(PrefForm.Keystrokes);
+{$ENDIF}
   AddEditorExpertCommands(TheEditor);
 end;
 
@@ -3194,8 +3258,8 @@ begin
     LoadNXCCompProp;
 end;
 
-procedure TfrmCodeEdit.HandleOnAddConstruct(Sender : TObject;
-  const aTemplate : string; const aX, aY : integer);
+procedure TfrmCodeEdit.HandleOnAddConstruct(Sender: TObject;
+  const aTemplate: string; const aX: integer; const aY: integer);
 begin
   AddConstructString(aTemplate, aX, aY);
 end;
@@ -3206,6 +3270,8 @@ begin
   pnlCodeExplorer.Visible := True;
   splCodeExplorer.Visible := True;
   frmCodeExplorer.FormShow(Self);
+  frmCodeExplorer.Dock(pnlCodeExplorer, Rect(0, 0, pnlCodeExplorer.Width, pnlCodeExplorer.Height));
+  frmCodeExplorer.Align := alClient;
 end;
 
 procedure TfrmCodeEdit.ShowTemplates(bSave : boolean);
@@ -3216,6 +3282,8 @@ begin
   ConstructForm.Rebuild(bSave);
   ConstructForm.Show;
   ConstructForm.FormShow(Self);
+  ConstructForm.Dock(pnlCodeExplorer, Rect(0, pnlCodeExplorer.Height div 2, pnlCodeExplorer.Width, pnlCodeExplorer.Height div 2));
+  ConstructForm.Align := alClient;
   bVisible := pnlCodeExplorer.VisibleDockClientCount > 0;
   pnlCodeExplorer.Visible := bVisible;
   splCodeExplorer.Visible := bVisible;
@@ -3227,6 +3295,11 @@ const
 procedure TfrmCodeEdit.mniCompileClick(Sender: TObject);
 begin
   ConfigureTransferMenuItemVisibility(CompXferList, mniCompile, K_COMP_TRANSFER_PREFIX);
+end;
+
+procedure TfrmCodeEdit.mniExitClick(Sender: TObject);
+begin
+  Close;
 end;
 
 procedure TfrmCodeEdit.UpdateCompilerMenu;
@@ -3276,7 +3349,7 @@ begin
     // drag and drop
     p := TheEditor.PixelsToRowColumn(Point(X, Y));
 //    p.X := 0;
-    TheEditor.SetCaretAndSelection(p, p, p);
+//    TheEditor.SetCaretAndSelection(p, p, p);
   end;
   if TheEditor.SelAvail then
     tt := TheEditor.BlockBegin.x - 1
@@ -3525,11 +3598,12 @@ procedure TfrmCodeEdit.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   if Assigned(ConstructForm) then
     ConstructForm.SaveTemplateTree;
-  Action := caFree;
+//  Action := caFree;
 end;
 
 procedure TfrmCodeEdit.FormDestroy(Sender: TObject);
 begin
+  alMain.OnUpdate := nil;
   SynAutoComp.RemoveEditor(TheEditor);
   SynMacroRec.RemoveEditor(TheEditor);
   SynNBCCompProp.RemoveEditor(TheEditor);
@@ -3538,12 +3612,14 @@ begin
   SynRSCompProp.RemoveEditor(TheEditor);
   SynROPSCompProp.RemoveEditor(TheEditor);
   scpParams.RemoveEditor(TheEditor);
+{$IFNDEF FPC}
   if Assigned(frmCodeExplorer) then
   begin
     frmCodeExplorer.ClearTree;
   end;
   if Assigned(frmMacroManager) and Assigned(frmMacroManager.MacroLibrary) then
     frmMacroManager.MacroLibrary.ActiveEditor := nil;
+{$ENDIF}
   FreeAndNil(fNXCAPIBase);
   if BrickComm.VerboseMode then
     Clipboard.AsText := BrickComm.LinkLog;
@@ -3595,7 +3671,7 @@ begin
       TSynCompletionProposal(C).ShortCut := CodeCompShortCut;
     end;
   end;
-  // also set font pref for exporters
+// also set font pref for exporters
   expHTML.Font.Name := FontName;
   expHTML.Font.Size := FontSize;
   expRTF.Font.Name  := FontName;

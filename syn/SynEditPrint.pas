@@ -180,6 +180,7 @@ type
     procedure InitRanges;
     function GetPageCount: Integer;
     procedure SetSynEdit(const Value: TSynEdit);
+    procedure UpdateETODistArray;
   protected
     property MaxLeftChar: Integer read FMaxLeftChar write SetMaxLeftChar;
     property CharWidth: Integer read FCharWidth write SetCharWidth;
@@ -526,31 +527,42 @@ begin
   FPagesCounted := False;
 end;
 
-procedure TSynEditPrint.SetCharWidth(const Value: Integer);
+procedure TSynEditPrint.UpdateETODistArray;
 var
   i: Integer;
+  p : PInteger;
 begin
-  if FCharWidth <> Value then begin
-    FCharWidth := Value;
+  for i := 0 to FMaxLeftChar - 1 do
+  begin
+    p := @((FETODist^)[0]);
+    inc(p, i);
+    p^ := FCharWidth;
+  end;
+(*
       // Must have range checking turned off here!
     for i := 0 to FMaxLeftChar - 1 do
+    begin
 {$IFOPT R+}{$DEFINE SYN_RESET_RANGE_CHECK}{$R-}{$ENDIF}
       (FETODist^)[i] := FCharWidth;
 {$IFDEF SYN_RESET_RANGE_CHECK}{$R+}{$UNDEF SYN_RESET_RANGE_CHECK}{$ENDIF}
+    end;
+*)
+end;
+
+procedure TSynEditPrint.SetCharWidth(const Value: Integer);
+begin
+  if FCharWidth <> Value then begin
+    FCharWidth := Value;
+    UpdateETODistArray;
   end;
 end;
 
 procedure TSynEditPrint.SetMaxLeftChar(const Value: Integer);
-var
-  i: Integer;
 begin
   if FMaxLeftChar <> Value then begin
     FMaxLeftChar := Value;
     ReallocMem(FETODist, FMaxLeftChar * SizeOf(Integer));
-    for i := 0 to FMaxLeftChar - 1 do
-{$IFOPT R+}{$DEFINE SYN_RESET_RANGE_CHECK}{$R-}{$ENDIF}
-      (FETODist^)[i] := FCharWidth;
-{$IFDEF SYN_RESET_RANGE_CHECK}{$R+}{$UNDEF SYN_RESET_RANGE_CHECK}{$ENDIF}
+    UpdateETODistArray;
   end;
 end;
 

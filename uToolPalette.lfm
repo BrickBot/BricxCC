@@ -5,17 +5,17 @@ object frmNXTTools: TfrmNXTTools
   Width = 445
   BorderStyle = bsDialog
   Caption = 'NeXT Tools'
-  ClientHeight = 254
+  ClientHeight = 229
   ClientWidth = 445
   Font.Height = -11
   Menu = MainMenu1
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 20
-    Top = 234
+    Height = 21
+    Top = 208
     Width = 445
     Panels = <>
   end

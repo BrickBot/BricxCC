@@ -5,22 +5,10 @@ inherited TextReplaceDialog: TTextReplaceDialog
   ClientHeight = 210
   ClientWidth = 333
   OnCloseQuery = nil
-  inherited Label1: TLabel
-  end
-  object Label2: TLabel[1]
-    Left = 8
-    Height = 17
-    Top = 41
-    Width = 109
-    Caption = '&Replace with:'
-    ParentColor = False
-  end
-  inherited cbSearchText: TComboBox[2]
-  end
-  inherited gbSearchOptions: TGroupBox[3]
+  inherited gbSearchOptions: TGroupBox
     Height = 132
     Top = 70
-    ClientHeight = 111
+    ClientHeight = 116
     TabOrder = 2
     inherited cbSearchCaseSensitive: TCheckBox
       Top = -1
@@ -38,27 +26,34 @@ inherited TextReplaceDialog: TTextReplaceDialog
       Top = 86
     end
   end
-  inherited rgSearchDirection: TRadioGroup[4]
+  inherited rgSearchDirection: TRadioGroup
     Height = 82
     Top = 70
-    ClientHeight = 61
-    ClientWidth = 150
+    ClientHeight = 66
     TabOrder = 3
   end
-  inherited btnOK: TButton[5]
+  inherited btnOK: TButton
     Top = 179
     TabOrder = 4
   end
-  inherited btnCancel: TButton[6]
+  inherited btnCancel: TButton
     Top = 179
     TabOrder = 5
   end
+  object Label2: TLabel[6]
+    Left = 8
+    Height = 15
+    Top = 41
+    Width = 76
+    Caption = '&Replace with:'
+    ParentColor = False
+  end
   object cbReplaceText: TComboBox[7]
     Left = 96
-    Height = 21
+    Height = 27
     Top = 37
     Width = 228
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 0
     MaxLength = 65535
     TabOrder = 1
   end

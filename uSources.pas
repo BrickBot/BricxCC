@@ -16,6 +16,10 @@
  *)
 unit uSources;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses

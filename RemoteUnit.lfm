@@ -12,7 +12,7 @@ object RemoteForm: TRemoteForm
   Font.Height = -11
   OnHide = FormHide
   OnShow = FormShow
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object Shape1: TShape
     Left = 15
     Height = 17
@@ -31,9 +31,9 @@ object RemoteForm: TRemoteForm
   end
   object lblMessage: TLabel
     Left = 70
-    Height = 16
+    Height = 15
     Top = 44
-    Width = 46
+    Width = 52
     Caption = 'Message'
     Font.Height = -11
     ParentColor = False
@@ -77,9 +77,9 @@ object RemoteForm: TRemoteForm
   end
   object lblProgram: TLabel
     Left = 72
-    Height = 16
+    Height = 15
     Top = 225
-    Width = 45
+    Width = 50
     Caption = 'Program'
     Font.Height = -11
     ParentColor = False
@@ -87,7 +87,7 @@ object RemoteForm: TRemoteForm
   end
   object lblP1: TLabel
     Left = 25
-    Height = 16
+    Height = 15
     Top = 214
     Width = 15
     Alignment = taCenter
@@ -98,7 +98,7 @@ object RemoteForm: TRemoteForm
   end
   object lblP2: TLabel
     Left = 145
-    Height = 16
+    Height = 15
     Top = 214
     Width = 15
     Alignment = taCenter
@@ -109,7 +109,7 @@ object RemoteForm: TRemoteForm
   end
   object lblP3: TLabel
     Left = 25
-    Height = 16
+    Height = 15
     Top = 245
     Width = 15
     Alignment = taCenter
@@ -120,7 +120,7 @@ object RemoteForm: TRemoteForm
   end
   object lblP4: TLabel
     Left = 85
-    Height = 16
+    Height = 15
     Top = 245
     Width = 15
     Alignment = taCenter
@@ -131,7 +131,7 @@ object RemoteForm: TRemoteForm
   end
   object lblP5: TLabel
     Left = 145
-    Height = 16
+    Height = 15
     Top = 245
     Width = 15
     Alignment = taCenter
@@ -142,9 +142,9 @@ object RemoteForm: TRemoteForm
   end
   object lblStop: TLabel
     Left = 51
-    Height = 16
+    Height = 15
     Top = 289
-    Width = 26
+    Width = 27
     Caption = 'Stop'
     Font.Color = clRed
     Font.Height = -11
@@ -153,9 +153,9 @@ object RemoteForm: TRemoteForm
   end
   object lblBeep: TLabel
     Left = 116
-    Height = 16
+    Height = 15
     Top = 289
-    Width = 21
+    Width = 22
     Caption = '<|))'
     Font.Height = -11
     ParentColor = False
@@ -199,8 +199,8 @@ object RemoteForm: TRemoteForm
     Height = 97
     Top = 108
     Width = 41
-    ClientHeight = 90
-    ClientWidth = 33
+    ClientHeight = 93
+    ClientWidth = 37
     TabOrder = 4
     object btnMotorAFwd: TSpeedButton
       Tag = 1
@@ -209,7 +209,6 @@ object RemoteForm: TRemoteForm
       Top = 9
       Width = 23
       AllowAllUp = True
-      Color = clBtnFace
       GroupIndex = 4
       NumGlyphs = 0
       OnMouseDown = MotorMouseDown
@@ -222,7 +221,6 @@ object RemoteForm: TRemoteForm
       Top = 69
       Width = 23
       AllowAllUp = True
-      Color = clBtnFace
       GroupIndex = 4
       NumGlyphs = 0
       OnMouseDown = MotorMouseDown
@@ -244,8 +242,8 @@ object RemoteForm: TRemoteForm
     Height = 97
     Top = 108
     Width = 41
-    ClientHeight = 90
-    ClientWidth = 33
+    ClientHeight = 93
+    ClientWidth = 37
     TabOrder = 6
     object btnMotorBFwd: TSpeedButton
       Tag = 2
@@ -254,7 +252,6 @@ object RemoteForm: TRemoteForm
       Top = 9
       Width = 23
       AllowAllUp = True
-      Color = clBtnFace
       GroupIndex = 5
       NumGlyphs = 0
       OnMouseDown = MotorMouseDown
@@ -267,7 +264,6 @@ object RemoteForm: TRemoteForm
       Top = 69
       Width = 23
       AllowAllUp = True
-      Color = clBtnFace
       GroupIndex = 5
       NumGlyphs = 0
       OnMouseDown = MotorMouseDown
@@ -289,8 +285,8 @@ object RemoteForm: TRemoteForm
     Height = 97
     Top = 108
     Width = 41
-    ClientHeight = 90
-    ClientWidth = 33
+    ClientHeight = 93
+    ClientWidth = 37
     TabOrder = 8
     object btnMotorCFwd: TSpeedButton
       Tag = 4
@@ -299,7 +295,6 @@ object RemoteForm: TRemoteForm
       Top = 9
       Width = 23
       AllowAllUp = True
-      Color = clBtnFace
       GroupIndex = 6
       NumGlyphs = 0
       OnMouseDown = MotorMouseDown
@@ -312,7 +307,6 @@ object RemoteForm: TRemoteForm
       Top = 69
       Width = 23
       AllowAllUp = True
-      Color = clBtnFace
       GroupIndex = 6
       NumGlyphs = 0
       OnMouseDown = MotorMouseDown

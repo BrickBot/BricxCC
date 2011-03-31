@@ -12,258 +12,252 @@ object MessageForm: TMessageForm
   Color = clBtnFace
   Font.Height = -11
   OnShow = FormShow
+  LCLVersion = '0.9.31'
   object btnHelp: TButton
     Left = 46
+    Height = 25
     Top = 246
     Width = 52
-    Height = 25
     HelpContext = 18015
     Caption = '&Help'
-    TabOrder = 0
     OnClick = btnHelpClick
+    TabOrder = 0
   end
   object grpSingleDigit: TGroupBox
     Left = 8
+    Height = 180
     Top = 5
     Width = 129
-    Height = 180
     Caption = 'Single digit message'
+    ClientHeight = 164
+    ClientWidth = 125
     TabOrder = 1
     object Button2: TButton
       Tag = 2
       Left = 45
+      Height = 33
       Top = 82
       Width = 33
-      Height = 33
       HelpContext = 18003
       Caption = '2'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 0
-      OnClick = Button0Click
     end
     object Button0: TButton
       Left = 5
+      Height = 33
       Top = 122
       Width = 33
-      Height = 33
       HelpContext = 18011
       Caption = '0'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 1
-      OnClick = Button0Click
     end
     object Button1: TButton
       Tag = 1
       Left = 5
+      Height = 33
       Top = 82
       Width = 33
-      Height = 33
       HelpContext = 18002
       Caption = '1'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 2
-      OnClick = Button0Click
     end
     object Button3: TButton
       Tag = 3
       Left = 85
+      Height = 33
       Top = 82
       Width = 33
-      Height = 33
       HelpContext = 18004
       Caption = '3'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 3
-      OnClick = Button0Click
     end
     object Button6: TButton
       Tag = 6
       Left = 85
+      Height = 33
       Top = 42
       Width = 33
-      Height = 33
       HelpContext = 18007
       Caption = '6'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 4
-      OnClick = Button0Click
     end
     object Button5: TButton
       Tag = 5
       Left = 45
+      Height = 33
       Top = 42
       Width = 33
-      Height = 33
       HelpContext = 18006
       Caption = '5'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 5
-      OnClick = Button0Click
     end
     object Button4: TButton
       Tag = 4
       Left = 5
+      Height = 33
       Top = 42
       Width = 33
-      Height = 33
       HelpContext = 18005
       Caption = '4'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 6
-      OnClick = Button0Click
     end
     object Button7: TButton
       Tag = 7
       Left = 5
+      Height = 33
       Top = 2
       Width = 33
-      Height = 33
       HelpContext = 18008
       Caption = '7'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 7
-      OnClick = Button0Click
     end
     object Button8: TButton
       Tag = 8
       Left = 45
+      Height = 33
       Top = 2
       Width = 33
-      Height = 33
       HelpContext = 18009
       Caption = '8'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 8
-      OnClick = Button0Click
     end
     object Button9: TButton
       Tag = 9
       Left = 85
+      Height = 33
       Top = 2
       Width = 33
-      Height = 33
       HelpContext = 18010
       Caption = '9'
-      Font.Charset = DEFAULT_CHARSET
       Font.Color = clWindowText
       Font.Height = -16
       Font.Name = 'MS Sans Serif'
       Font.Style = [fsBold]
+      OnClick = Button0Click
       ParentFont = False
       TabOrder = 9
-      OnClick = Button0Click
     end
   end
   object grpMultiDigit: TGroupBox
     Left = 8
+    Height = 49
     Top = 192
     Width = 129
-    Height = 49
     Caption = 'Numeric message'
+    ClientHeight = 33
+    ClientWidth = 125
     TabOrder = 2
     object SendButton: TButton
       Tag = 100
       Left = 78
+      Height = 25
       Top = 2
       Width = 41
-      Height = 25
       HelpContext = 18013
       Caption = 'Send'
-      TabOrder = 0
       OnClick = SendButtonClick
+      TabOrder = 0
     end
     object edtMessageNum: TBricxccSpinEdit
       Left = 8
+      Height = 24
       Top = 5
       Width = 57
-      Height = 16
       HelpContext = 18014
-      MaxLength = 3
       MaxValue = 255
-      MinValue = 0
       TabOrder = 1
-      Value = 0
+      MaxLength = 3
     end
   end
   object grpNXTMsg: TGroupBox
     Left = 144
+    Height = 236
     Top = 5
     Width = 145
-    Height = 236
     Caption = 'NXT Messages'
+    ClientHeight = 220
+    ClientWidth = 141
     TabOrder = 3
     object lblMailbox: TLabel
       Left = 4
+      Height = 15
       Top = 5
-      Width = 39
-      Height = 13
+      Width = 47
       Caption = '&Mailbox:'
       FocusControl = cboMailbox
+      ParentColor = False
     end
     object lblMemo: TLabel
       Left = 5
+      Height = 15
       Top = 103
-      Width = 32
-      Height = 13
+      Width = 39
       Caption = 'M&emo:'
       FocusControl = mmoMessage
+      ParentColor = False
     end
     object cboMailbox: TComboBox
       Left = 54
+      Height = 27
       Top = 1
       Width = 81
-      Height = 21
       HelpContext = 18016
-      Style = csDropDownList
-      ItemHeight = 13
+      ItemHeight = 0
       ItemIndex = 0
-      TabOrder = 0
-      Text = 'Mailbox 1'
       Items.Strings = (
         'Mailbox 1'
         'Mailbox 2'
@@ -274,13 +268,17 @@ object MessageForm: TMessageForm
         'Mailbox 7'
         'Mailbox 8'
         'Mailbox 9'
-        'Mailbox 10')
+        'Mailbox 10'
+      )
+      Style = csDropDownList
+      TabOrder = 0
+      Text = 'Mailbox 1'
     end
     object mmoMessage: TMemo
       Left = 5
+      Height = 90
       Top = 119
       Width = 81
-      Height = 90
       HelpContext = 18022
       MaxLength = 59
       ScrollBars = ssVertical
@@ -289,19 +287,19 @@ object MessageForm: TMessageForm
     object btnSendString: TButton
       Tag = 200
       Left = 94
+      Height = 25
       Top = 119
       Width = 41
-      Height = 25
       HelpContext = 18023
       Caption = 'Send'
-      TabOrder = 7
       OnClick = btnSendNXTClick
+      TabOrder = 7
     end
     object chkBoolValue: TCheckBox
       Left = 5
+      Height = 22
       Top = 50
-      Width = 81
-      Height = 17
+      Width = 70
       HelpContext = 18018
       Caption = 'Boolean'
       TabOrder = 2
@@ -309,44 +307,42 @@ object MessageForm: TMessageForm
     object btnSendBool: TButton
       Tag = 300
       Left = 94
+      Height = 25
       Top = 46
       Width = 41
-      Height = 25
       HelpContext = 18019
       Caption = 'Send'
-      TabOrder = 3
       OnClick = btnSendNXTClick
+      TabOrder = 3
     end
     object btnSendNum: TButton
       Tag = 400
       Left = 94
+      Height = 25
       Top = 77
       Width = 41
-      Height = 25
       HelpContext = 18021
       Caption = 'Send'
-      TabOrder = 5
       OnClick = btnSendNXTClick
+      TabOrder = 5
     end
     object chkResponse: TCheckBox
       Left = 54
+      Height = 22
       Top = 25
-      Width = 81
-      Height = 17
+      Width = 80
       HelpContext = 18017
       Caption = 'Response'
       TabOrder = 1
     end
     object edtNum: TBricxccSpinEdit
       Left = 5
+      Height = 24
       Top = 80
       Width = 81
-      Height = 16
       HelpContext = 18020
       MaxValue = 0
-      MinValue = 0
       TabOrder = 4
-      Value = 0
     end
   end
 end

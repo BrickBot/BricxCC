@@ -28,7 +28,7 @@ uses
 {$IFDEF FPC}
   LResources,
 {$ENDIF}
-  Classes, Controls, StdCtrls, Forms, BricxccSpin;
+  Classes, Controls, StdCtrls, Forms, Spin;
 
 type
   TfrmAlignOptions = class(TForm)
@@ -38,7 +38,7 @@ type
     gbxOptions: TGroupBox;
     lblWhitespace: TLabel;
     mmoTokens: TMemo;
-    edtWhitespace: TBricxccSpinEdit;
+    edtWhitespace: TSpinEdit;
   end;
 
 implementation

@@ -16,6 +16,10 @@
  *)
 unit uProgram;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
@@ -114,7 +118,7 @@ type
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
-    procedure AddOffset(const lineNo, PC : integer; const src, fname : string);
+    procedure AddOffset(const aLineNo, aPC : integer; const aSrc, aFilename : string);
     property Name : string read fName write fName;
     property Offset : integer read fOffset write fOffset;
     property Filename : string read fFilename write fFilename;
@@ -424,22 +428,22 @@ end;
 
 { TProgClumpData }
 
-procedure TProgClumpData.AddOffset(const lineNo, PC: integer; const src, fname: string);
+procedure TProgClumpData.AddOffset(const aLineNo, aPC: integer; const aSrc, aFilename: string);
 var
   CO : TOffset;
   i : integer;
 begin
-  i := Offsets.IndexOfLine(lineNo);
+  i := Offsets.IndexOfLine(aLineNo);
   if i = -1 then
   begin
     CO := Offsets.Add;
-    CO.LineNumber := lineNo;
+    CO.LineNumber := aLineNo;
   end
   else
     CO := Offsets.Items[i];
-  CO.PC := PC;
-  CO.Filename := fname;
-  CO.Source := src;
+  CO.PC := aPC;
+  CO.Filename := aFilename;
+  CO.Source := aSrc;
 end;
 
 constructor TProgClumpData.Create(ACollection: TCollection);

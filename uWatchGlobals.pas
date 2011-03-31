@@ -50,6 +50,7 @@ end;
 
 procedure SaveWatchValues(reg : TRegistry);
 begin
+  if not Assigned(WatchForm) then Exit;
   Reg_DeleteKey(reg, 'WatchValues');
   Reg_OpenKey(reg, 'WatchValues');
   try

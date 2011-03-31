@@ -1052,7 +1052,7 @@ begin
   //Calculate pointer to first byte of drawing destination
   pDestination = &(DISP_BUFFER_P[Line * DISPLAY_WIDTH + X]);
 
-  while (*pString)
+  while ( *pString )
   {
     FontWidth = pFont->ItemPixelsX;
     //Calculate X coordinate of the right edge of this character.

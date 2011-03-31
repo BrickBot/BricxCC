@@ -28,7 +28,7 @@ uses
   LCLType,
   LResources,
   {$ENDIF}
-  Classes, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, BricxccSpin;
+  Classes, Controls, Forms, StdCtrls, ExtCtrls, ComCtrls, Spin;
 
 type
   TGotoForm = class(TForm)
@@ -36,7 +36,7 @@ type
     btnOK: TButton;
     btnCancel: TButton;
     btnHelp: TButton;
-    GotoLineField: TBricxccSpinEdit;
+    GotoLineField: TSpinEdit;
     procedure FormShow(Sender: TObject);
     procedure btnOKClick(Sender: TObject);
     procedure GotoLineFieldKeyDown(Sender: TObject; var Key: Word;

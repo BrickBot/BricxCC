@@ -10,21 +10,21 @@ object TextSearchDialog: TTextSearchDialog
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCloseQuery = FormCloseQuery
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object Label1: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 12
-    Width = 91
+    Width = 65
     Caption = '&Search for:'
     ParentColor = False
   end
   object cbSearchText: TComboBox
     Left = 96
-    Height = 21
+    Height = 27
     Top = 8
     Width = 228
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 0
     MaxLength = 65535
     TabOrder = 0
   end
@@ -34,46 +34,46 @@ object TextSearchDialog: TTextSearchDialog
     Top = 40
     Width = 154
     Caption = 'Options'
-    ClientHeight = 106
+    ClientHeight = 111
     ClientWidth = 150
     TabOrder = 1
     object cbSearchCaseSensitive: TCheckBox
       Left = 8
-      Height = 26
+      Height = 22
       Top = 17
-      Width = 136
+      Width = 114
       Caption = 'C&ase sensitivity'
       TabOrder = 0
     end
     object cbSearchWholeWords: TCheckBox
       Left = 8
-      Height = 26
+      Height = 22
       Top = 39
-      Width = 151
+      Width = 123
       Caption = '&Whole words only'
       TabOrder = 1
     end
     object cbSearchFromCursor: TCheckBox
       Left = 8
-      Height = 26
+      Height = 22
       Top = 61
-      Width = 154
+      Width = 128
       Caption = 'Search from &caret'
       TabOrder = 2
     end
     object cbSearchSelectedOnly: TCheckBox
       Left = 8
-      Height = 26
+      Height = 22
       Top = 83
-      Width = 153
+      Width = 125
       Caption = '&Selected text only'
       TabOrder = 3
     end
     object cbRegularExpression: TCheckBox
       Left = 8
-      Height = 26
+      Height = 22
       Top = 104
-      Width = 162
+      Width = 134
       Caption = '&Regular expression'
       TabOrder = 4
     end
@@ -93,7 +93,7 @@ object TextSearchDialog: TTextSearchDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 44
+    ClientHeight = 49
     ClientWidth = 150
     ItemIndex = 0
     Items.Strings = (

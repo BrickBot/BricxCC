@@ -208,6 +208,7 @@ var
   IncludeSrcInList : Boolean;
   SaveBinaryOutput : Boolean;
   ProgramDir : string;
+  DefaultDir : string;
   ShowRecent:boolean;        // Whether to show recent files
 //  ShowRecentChanged:boolean; // Whether ShowRecent was changed
   MaxRecent : Byte = 4;
@@ -315,9 +316,9 @@ procedure LoadBasicCompilerValues(reg : TRegistry);
 procedure ResetGutterValues(reg : TRegistry);
 procedure ResetShortcutValues(reg : TRegistry);
 procedure ResetCodeTemplateValues(reg : TRegistry; S : TStrings);
-procedure LoadBasicValues(reg : TRegistry; S : TStrings; aPrefHL, aMainHL : TSynBaseNCSyn);
+procedure LoadBasicValues(reg : TRegistry; S : TStrings);
 procedure SaveBasicValues(reg : TRegistry; S : TStrings);
-procedure ResetBasicValues(reg : TRegistry; S : TStrings; aPrefHL, aMainHL : TSynBaseNCSyn);
+procedure ResetBasicValues(reg : TRegistry; S : TStrings);
 
 procedure RememberOtherOptionValues;
 procedure RememberGutterValues;
@@ -734,7 +735,7 @@ var
 begin
   if not Reg_KeyExists(reg, 'Templates') then
   begin
-    fName := ProgramDir+IncludeTrailingPathDelimiter('Default')+LanguageIndexToName(aLang)+'_templates.txt';
+    fName := ProgramDir+DefaultDir+LanguageIndexToName(aLang)+'_templates.txt';
     if FileExists(fName) then
     begin
       SL := TStringList.Create;
@@ -868,15 +869,15 @@ begin
   if not Reg_KeyExists(reg, 'NXC_Keywords') then
   begin
     // no registry key so load from file instead
-    if FileExists(ProgramDir+'Default\nxc_keywords.txt') then
-      cc_nxc_keywords.LoadFromFile(ProgramDir+'Default\nxc_keywords.txt');
-    if FileExists(ProgramDir+'Default\nxc_constants.txt') then
-      cc_nxc_constants.LoadFromFile(ProgramDir+'Default\nxc_constants.txt');
+    if FileExists(ProgramDir+DefaultDir+'nxc_keywords.txt') then
+      cc_nxc_keywords.LoadFromFile(ProgramDir+DefaultDir+'nxc_keywords.txt');
+    if FileExists(ProgramDir+DefaultDir+'nxc_constants.txt') then
+      cc_nxc_constants.LoadFromFile(ProgramDir+DefaultDir+'nxc_constants.txt');
     SL := TStringList.Create;
     try
-      if FileExists(ProgramDir+'Default\nxc_api.txt') then
+      if FileExists(ProgramDir+DefaultDir+'nxc_api.txt') then
       begin
-        SL.LoadFromFile(ProgramDir+'Default\nxc_api.txt');
+        SL.LoadFromFile(ProgramDir+DefaultDir+'nxc_api.txt');
         for i := 0 to SL.Count - 1 do
         begin
           tmpStr := SL[i];
@@ -1229,11 +1230,12 @@ var
   tmpSL : TStringList;
   tmpPath : string;
 begin
+  if not Assigned(S) then Exit;
   tmpSL := TStringList.Create;
   try
     if not Reg_KeyExists(reg, 'CodeTemplates') then
     begin
-      tmpPath := ProgramDir + IncludeTrailingPathDelimiter('Default') + 'code.dci';
+      tmpPath := ProgramDir + DefaultDir + 'code.dci';
       if FileExists(tmpPath) then
         tmpSL.LoadFromFile(tmpPath);
     end
@@ -1295,7 +1297,7 @@ begin
   LoadTransferValues(aKey, aList, reg);
 end;
 
-procedure LoadBasicValues(reg : TRegistry; S : TStrings; aPrefHL, aMainHL : TSynBaseNCSyn);
+procedure LoadBasicValues(reg : TRegistry; S : TStrings);
 var
   i : integer;
 begin
@@ -1305,7 +1307,6 @@ begin
   LoadJoystickValues(reg);
   LoadRemoteValues(reg);
   LoadRecentValues(reg);
-  LoadNXCAPIValues(reg, aPrefHL, aMainHL);
   for i := 0 to NUM_LANGS - 1 do
     LoadTemplateValues(i, reg);
   LoadGutterValues(reg);
@@ -1490,6 +1491,7 @@ end;
 
 procedure SaveCodeTemplateValues(reg : TRegistry; S : TStrings);
 begin
+  if not Assigned(S) then Exit;
   Reg_DeleteKey(reg, 'CodeTemplates');
   Reg_OpenKey(reg, 'CodeTemplates');
   try
@@ -1569,13 +1571,12 @@ begin
   SaveEditorExpertValues(reg);
 end;
 
-procedure ResetBasicValues(reg : TRegistry; S : TStrings; aPrefHL, aMainHL : TSynBaseNCSyn);
+procedure ResetBasicValues(reg : TRegistry; S : TStrings);
 begin
   ResetEditorValues(reg);
   ResetJoystickValues(reg);
   ResetRemoteValues(reg);
   ResetRecentValues(reg);
-  ResetNXCAPIValues(reg, aPrefHL, aMainHL);
   ResetTemplateValues(reg);
   ResetGutterValues(reg);
   ResetShortcutValues(reg);
@@ -1702,6 +1703,8 @@ initialization
 
   UseHTMLHelp               := True;
   DeleteSymFileAfterLoading := False;
+
+  DefaultDir := IncludeTrailingPathDelimiter('Default');
 
 finalization
   CleanupTransferList(fCompXferList);

@@ -27,11 +27,15 @@ uses
   Windows,
 {$ELSE}
   LResources,
+  LCLType,
 {$ENDIF}
   Messages, SysUtils, Classes, Graphics, Controls, Forms, Dialogs,
   StdCtrls, ComCtrls, SynEdit, Menus, uOfficeComp;
 
 type
+
+  { TCodeForm }
+
   TCodeForm = class(TForm)
     procedure FormCreate(Sender: TObject);
     procedure FormShow(Sender: TObject);
@@ -77,7 +81,7 @@ implementation
 {$ENDIF}
 
 uses
-  uLocalizedStrings, uGuiUtils, uEditorUtils, GotoLine;
+  uLocalizedStrings, uGuiUtils, uEditorUtils, GotoLine, SynEditTypes;
 
 procedure TCodeForm.lmiEditCopyClick(Sender: TObject);
 begin
@@ -120,6 +124,14 @@ begin
   CodeEdit.PopupMenu := pmnuCodeView;
 end;
 
+procedure AddMenuItems(aMI : TMenuItem; aMenuItems : array of TMenuItem);
+var
+  I : integer;
+begin
+  for I := Low(aMenuItems) to High(aMenuItems) do
+    aMI.Add(aMenuItems[I]);
+end;
+
 procedure TCodeForm.CreatePopupMenu;
 begin
   pmnuCodeView := TOfficePopupMenu.Create(Self);
@@ -133,9 +145,12 @@ begin
   mniCodeGotoLine := TOfficeMenuItem.Create(pmnuCodeView);
   N2 := TOfficeMenuItem.Create(pmnuCodeView);
   mniStayOnTop := TOfficeMenuItem.Create(pmnuCodeView);
-  pmnuCodeView.Items.Add([lmiEditCopy, lmiEditSelectAll, N1, mniCodeFind,
+  AddMenuItems(pmnuCodeView.Items,[lmiEditCopy, lmiEditSelectAll, N1, mniCodeFind,
                           mniCodeFindNext, mniCodeFindPrev, mniCodeGotoLine, N2,
                           mniStayOnTop]);
+//  pmnuCodeView.Items.Add([lmiEditCopy, lmiEditSelectAll, N1, mniCodeFind,
+//                          mniCodeFindNext, mniCodeFindPrev, mniCodeGotoLine, N2,
+//                          mniStayOnTop]);
   with lmiEditCopy do
   begin
     Name := 'lmiEditCopy';
@@ -219,11 +234,13 @@ begin
     ParentColor := False;
     ParentFont := False;
     TabOrder := 0;
+{$IFNDEF FPC}
     Gutter.Font.Charset := DEFAULT_CHARSET;
     Gutter.Font.Color := clWindowText;
     Gutter.Font.Height := -11;
     Gutter.Font.Name := 'Terminal';
     Gutter.Font.Style := [];
+{$ENDIF}
     ReadOnly := True;
     MaxLeftChar := 8192;
     OnStatusChange := TheEditorStatusChange;
@@ -235,7 +252,7 @@ procedure TCodeForm.TheEditorStatusChange(Sender: TObject;
 begin
   // Note: scAll for new file loaded
   // caret position has changed
-  if Changes * [scAll, scCaretX, scCaretY] <> [] then begin
+  if Changes * [{$IFNDEF FPC}scAll, {$ENDIF}scCaretX, scCaretY] <> [] then begin
     UpdatePositionOnStatusBar;
   end;
 end;

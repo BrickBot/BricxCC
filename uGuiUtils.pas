@@ -158,6 +158,7 @@ end;
 
 procedure CloneDE(aDest: TDirectoryEdit; aSrc: TEdit);
 begin
+  if (aSrc = nil) or (aDest = nil) then Exit;
   aDest.Name        := Copy(aSrc.Name, 1, Length(aSrc.Name)-1);
   aDest.Parent      := aSrc.Parent;
   aDest.Top         := aSrc.Top;
@@ -182,6 +183,7 @@ end;
 
 procedure CloneSynEdit(aDest: TSynEdit; aSrc: TMemo);
 begin
+  if (aSrc = nil) or (aDest = nil) then Exit;
   aDest.Name        := Copy(aSrc.Name, 1, Length(aSrc.Name)-1);
   aDest.Parent      := aSrc.Parent;
   aDest.Left        := aSrc.Left;
@@ -207,6 +209,7 @@ end;
 
 procedure CloneHotKey(aDest: TBricxCCHotKey; aSrc: TEdit);
 begin
+  if (aSrc = nil) or (aDest = nil) then Exit;
   aDest.Name        := Copy(aSrc.Name, 1, Length(aSrc.Name)-1);
   aDest.Parent      := aSrc.Parent;
   aDest.Left        := aSrc.Left;

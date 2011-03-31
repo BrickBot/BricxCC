@@ -14,17 +14,18 @@ object UnlockForm: TUnlockForm
   OnActivate = FormActivate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object Label1: TLabel
     Left = 18
-    Height = 17
+    Height = 15
     Top = 8
-    Width = 262
+    Width = 236
     Caption = 'Downloading Firmware, Please wait.'
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
     Font.Style = [fsBold]
     ParentColor = False
+    ParentFont = False
   end
   object ProgressBar1: TProgressBar
     Left = 49

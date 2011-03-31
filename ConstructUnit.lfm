@@ -1,14 +1,14 @@
 object ConstructForm: TConstructForm
   Left = 237
-  Height = 261
+  Height = 267
   Top = 136
-  Width = 186
+  Width = 192
   HelpContext = 8
   BorderIcons = []
   BorderStyle = bsSizeToolWin
   Caption = 'Templates'
-  ClientHeight = 261
-  ClientWidth = 186
+  ClientHeight = 267
+  ClientWidth = 192
   Constraints.MinHeight = 40
   Constraints.MinWidth = 40
   DragKind = dkDock
@@ -19,23 +19,26 @@ object ConstructForm: TConstructForm
   OnCreate = FormCreate
   OnEndDock = FormEndDock
   OnShow = FormShow
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object ConstructPanel: TPanel
-    Height = 261
-    Width = 186
+    Left = 0
+    Height = 267
+    Top = 0
+    Width = 192
     Align = alClient
     BevelOuter = bvNone
     TabOrder = 0
   end
   object treTemplates: TTreeView
-    Height = 261
-    Width = 186
+    Left = 0
+    Height = 267
+    Top = 0
+    Width = 192
     Align = alClient
-    DefaultItemHeight = 18
+    DefaultItemHeight = 16
     DragMode = dmAutomatic
     HideSelection = False
     Indent = 19
-    PopupMenu = popOptions
     RightClickSelect = True
     TabOrder = 1
     OnClick = treTemplatesClick
@@ -46,34 +49,5 @@ object ConstructForm: TConstructForm
     OnMouseUp = treTemplatesMouseUp
     OnStartDrag = treTemplatesStartDrag
     Options = [tvoAutoItemHeight, tvoKeepCollapsedNodes, tvoRightClickSelect, tvoShowButtons, tvoShowLines, tvoShowRoot, tvoToolTips]
-  end
-  object ConstructMenu: TOfficePopupMenu
-    left = 8
-    top = 16
-  end
-  object popOptions: TOfficePopupMenu
-    OnPopup = popOptionsPopup
-    left = 56
-    top = 128
-    object mniExpandAll: TOfficeMenuItem
-      Caption = 'Expand All'
-      OnClick = mniExpandAllClick
-    end
-    object mniCollapseAll: TOfficeMenuItem
-      Caption = 'Collapse All'
-      OnClick = mniCollapseAllClick
-    end
-    object mniPopSep1: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniDblClickInsert: TOfficeMenuItem
-      Caption = 'Double Click to Insert'
-      OnClick = mniDblClickInsertClick
-    end
-  end
-  object tsvTemplates: TBricxCCTreeSave
-    TreeView = treTemplates
-    left = 72
-    top = 24
   end
 end

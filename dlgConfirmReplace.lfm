@@ -11,7 +11,7 @@ object ConfirmReplaceDialog: TConfirmReplaceDialog
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   OnDestroy = FormDestroy
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object lblConfirmation: TLabel
     Left = 60
     Height = 44

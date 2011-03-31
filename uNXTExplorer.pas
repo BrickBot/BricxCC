@@ -209,8 +209,8 @@ type
     procedure CreatePopupMenu;
     procedure Exit1Click(Sender: TObject);
     procedure About1Click(Sender: TObject);
-{$IFNDEF FPC}
   public
+{$IFNDEF FPC}
     cboMask: TFilterComboBox;
     treShell: TShellTreeViewEx;
     Splitter2: TSplitter;

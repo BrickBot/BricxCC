@@ -13,7 +13,7 @@ object GotoForm: TGotoForm
   Font.Name = 'MS Sans Serif'
   OnShow = FormShow
   Position = poMainFormCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object pnlGoto: TPanel
     Left = 8
     Height = 41
@@ -26,9 +26,9 @@ object GotoForm: TGotoForm
     ClientHeight = 41
     ClientWidth = 256
     TabOrder = 0
-    object GotoLineField: TBricxccSpinEdit
+    object GotoLineField: TSpinEdit
       Left = 168
-      Height = 22
+      Height = 24
       Top = 9
       Width = 72
       HelpContext = 46003

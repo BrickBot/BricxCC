@@ -12,7 +12,7 @@ object frmNXTExplorer: TfrmNXTExplorer
   OnCreate = FormCreate
   OnDestroy = FormDestroy
   OnShow = FormShow
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object pnlLeft: TPanel
     Left = 80
     Height = 320
@@ -271,7 +271,7 @@ object frmNXTExplorer: TfrmNXTExplorer
     Height = 32
     Width = 32
     left = 32
-    top = 130
+    top = 128
     Bitmap = {
       4C69050000002000000020000000FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFF
       FF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF00FFFFFF008F90

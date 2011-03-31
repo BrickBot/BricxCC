@@ -1835,7 +1835,8 @@ end;
 procedure LoadAllValues(reg : TRegistry; k : TSynEditKeyStrokes; S : TStrings;
   aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
 begin
-  LoadBasicValues(reg, S, aPrefHLNXC, aMainHLNXC);
+  LoadBasicValues(reg, S);
+  LoadNXCAPIValues(reg, aPrefHLNXC, aMainHLNXC);
   LoadExtraGeneralValues(reg);
   LoadExtraCompilerValues(reg);
   LoadNQCAPIValues(reg, aPrefHLNQC, aMainHLNQC);
@@ -1865,12 +1866,14 @@ begin
   SaveDatalogValues(reg);
 end;
 
-procedure ResetAllValues(reg : TRegistry; S : TStrings; aPrefHL, aMainHL : TSynBaseNCSyn);
+procedure ResetAllValues(reg : TRegistry; S : TStrings;
+  aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
 begin
   ResetGeneralValues(reg);
   ResetCompilerValues(reg);
-  ResetBasicValues(reg, S, aPrefHL, aMainHL);
-  ResetNQCAPIValues(reg, aPrefHL, aMainHL);
+  ResetBasicValues(reg, S);
+  ResetNXCAPIValues(reg, aPrefHLNXC, aMainHLNXC);
+  ResetNQCAPIValues(reg, aPrefHLNQC, aMainHLNQC);
   ResetStartupValues(reg);
   ResetColorValues(reg);
   ResetOtherOptionValues(reg);
@@ -1880,7 +1883,6 @@ begin
   ResetPageSetupValues(reg);
   ResetDatalogValues(reg);
 end;
-
 
 procedure UpgradeRegistry(aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
 const

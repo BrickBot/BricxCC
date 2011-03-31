@@ -16,6 +16,10 @@
  *)
 unit uLASMProcLexer;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses

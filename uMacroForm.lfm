@@ -14,45 +14,45 @@ object frmMacroManager: TfrmMacroManager
   OnCreate = FormCreate
   OnShow = FormShow
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object lblMacroName: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 27
-    Width = 106
+    Width = 75
     Caption = '&Macro name:'
     FocusControl = edtName
     ParentColor = False
   end
   object lblMacrosIn: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 240
-    Width = 85
+    Width = 60
     Caption = 'M&acros in:'
     FocusControl = cboLibrary
     ParentColor = False
   end
   object lblDescription: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 284
-    Width = 96
+    Width = 69
     Caption = 'Descr&iption:'
     FocusControl = mmoDescription
     ParentColor = False
   end
   object lblHotKey: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 264
-    Width = 67
+    Width = 42
     Caption = '&Hotkey:'
     ParentColor = False
   end
   object edtName: TEdit
     Left = 8
-    Height = 21
+    Height = 24
     Top = 43
     Width = 224
     HelpContext = 3405
@@ -65,7 +65,7 @@ object frmMacroManager: TfrmMacroManager
     Top = 67
     Width = 224
     HelpContext = 3406
-    ItemHeight = 13
+    ItemHeight = 0
     OnClick = lstMacrosClick
     OnDblClick = btnRunClick
     TabOrder = 1
@@ -80,7 +80,7 @@ object frmMacroManager: TfrmMacroManager
     Caption = '&Run'
     Default = True
     OnClick = btnRunClick
-    TabOrder = 6
+    TabOrder = 5
   end
   object btnEdit: TButton
     Left = 245
@@ -90,7 +90,7 @@ object frmMacroManager: TfrmMacroManager
     HelpContext = 3408
     Caption = '&Edit'
     OnClick = btnEditClick
-    TabOrder = 7
+    TabOrder = 6
   end
   object btnCreate: TButton
     Left = 245
@@ -100,7 +100,7 @@ object frmMacroManager: TfrmMacroManager
     HelpContext = 3409
     Caption = '&Create'
     OnClick = btnCreateClick
-    TabOrder = 8
+    TabOrder = 7
   end
   object btnDelete: TButton
     Left = 245
@@ -110,7 +110,7 @@ object frmMacroManager: TfrmMacroManager
     HelpContext = 3410
     Caption = '&Delete'
     OnClick = btnDeleteClick
-    TabOrder = 9
+    TabOrder = 8
   end
   object btnCancel: TButton
     Left = 245
@@ -126,11 +126,11 @@ object frmMacroManager: TfrmMacroManager
   end
   object cboLibrary: TComboBox
     Left = 64
-    Height = 21
+    Height = 27
     Top = 236
     Width = 270
     HelpContext = 3412
-    AutoCompleteText = [cbactEndOfLineComplete, cbactSearchAscending]
+    ItemHeight = 0
     MaxLength = 65535
     OnClick = cboLibraryClick
     OnExit = cboLibraryExit
@@ -154,7 +154,7 @@ object frmMacroManager: TfrmMacroManager
     HelpContext = 3414
     MaxLength = 200
     OnChange = mmoDescriptionChange
-    TabOrder = 5
+    TabOrder = 13
   end
   object btnOK: TButton
     Left = 245
@@ -165,17 +165,17 @@ object frmMacroManager: TfrmMacroManager
     Caption = 'OK'
     ModalResult = 1
     OnClick = btnOKClick
-    TabOrder = 10
+    TabOrder = 9
   end
   object chkSuspend: TCheckBox
     Left = 8
-    Height = 26
+    Height = 22
     Top = 8
-    Width = 209
+    Width = 172
     HelpContext = 3416
     Caption = '&Suspend macro recording'
     OnClick = chkSuspendClick
-    TabOrder = 13
+    TabOrder = 10
   end
   object btnHelp: TButton
     Left = 245
@@ -187,9 +187,9 @@ object frmMacroManager: TfrmMacroManager
     OnClick = btnHelpClick
     TabOrder = 12
   end
-  object hkMacro: TBricxCCHotKey
+  object hkMacro2: TEdit
     Left = 64
-    Height = 21
+    Height = 24
     Top = 261
     Width = 121
     HelpContext = 3418
@@ -200,7 +200,7 @@ object frmMacroManager: TfrmMacroManager
   object dlgOpen: TOpenDialog
     Title = 'Browse for Macro Library'
     Filter = 'Macro Library (*.mlb)|*.mlb|All Files (*.*)|*.*'
-    left = 256
-    top = 276
+    left = 264
+    top = 272
   end
 end
