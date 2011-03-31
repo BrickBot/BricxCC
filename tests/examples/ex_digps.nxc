@@ -1,0 +1,22 @@
+task main()
+{
+  SetSensorLowspeed(S1);
+//  while(!SensorDIGPSStatus(S1)) Wait(10);
+  while (true)
+  {
+    // show link status
+    NumOut(0, LCD_LINE1, SensorDIGPSStatus(S1), true);
+    // show latitude & longitude
+    float lat = SensorDIGPSLatitude(S1) / 1000000;
+    float lng = SensorDIGPSLongitude(S1) / 1000000;
+    NumOut(0, LCD_LINE2, lat);
+    NumOut(0, LCD_LINE3, lng);
+    // show heading
+    NumOut(0, LCD_LINE4, SensorDIGPSHeading(S1));
+    // show velocity
+    NumOut(0, LCD_LINE5, SensorDIGPSVelocity(S1));
+    // show time in UTC
+    NumOut(0, LCD_LINE6, SensorDIGPSTime(S1));
+    Wait(500);
+  }
+}

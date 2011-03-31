@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-13
- * \version 14
+ * \date 2011-03-16
+ * \version 16
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -35,7 +35,7 @@
 /** @mainpage NXC Programmer's Guide
  * \brief
  * 
- * <h2><center>March 13, 2011</center></h2>
+ * <h2><center>March 16, 2011</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -2333,6 +2333,10 @@
 
 /** @defgroup CodatexAPI Codatex API Functions
  * Functions for accessing and modifying Codatex devices.
+ */
+
+/** @defgroup DexterIndustriesAPI Dexter Industries API Functions
+ * Functions for accessing and modifying Dexter Industries devices.
  */
 
 /** @defgroup RICMacros RIC Macro Wrappers

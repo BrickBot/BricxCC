@@ -1,0 +1,377 @@
+/*
+ * NXTBee commands
+ */
+
+/*!< Start command mode */
+byte cmd_enterCommandMode[] = {'+','+','+'};
+
+/*!< Exit command mode */
+byte cmd_ExitCommandMode[] = {'A','T','C','N',13};
+
+/*!< Setup pin command */
+byte cmd_SetPin[] = {'A','T',' ', 'D','7','7', 13};
+
+/*!< Set baud rate to 9600 */
+byte cmd_setbaudRate[] = {'A','T',' ', 'B','D','3', 13};
+
+/*!< Write configuration to device */
+const byte cmd_WriteConfig[] = {'A','T',' ', 'W','R', 13};
+
+/*!< Reset the device */
+byte cmd_resetNXTBee[] = {'A','T',' ', 'F','R', 13};
+
+/*!< baud rates in decreasing order of likelihood */
+const long baud_rates[] = {9600, 115200, 4800, 2400, 19200, 38400, 57600, 1200};
+
+/*!< baud rates settable by users */
+const long baud_rates_set[] = {1200, 2400, 4800, 9600, 19200, 38400, 57600, 115200};
+
+const byte baud_uart[] = {HS_BAUD_9600, HS_BAUD_115200, HS_BAUD_4800, HS_BAUD_2400, HS_BAUD_19200, HS_BAUD_38400, HS_BAUD_57600, HS_BAUD_1200};
+
+/*
+ * Prototypes
+ */
+
+void showIntro();
+int selectbaudRate();
+void enterCommandMode();
+bool checkResponse(bool showresponse = true);
+bool setPinMode(bool showresponse = true);
+bool setbaud(byte rate = 3);
+bool saveConfiguration();
+bool resetNXTBee();
+long setupHighSpeedLink();
+
+
+void WaitForMessageToBeSent()
+{
+  while (RS485SendingData())
+    Wait(MS_1);
+}
+
+int getbtn() {
+  int result = -1;
+  if (ButtonPressed(BTN1, false))
+    result = BTN1;
+  else if (ButtonPressed(BTN2, false))
+    result = BTN2;
+  else if (ButtonPressed(BTN3, false))
+    result = BTN3;
+  else if (ButtonPressed(BTN4, false))
+    result = BTN4;
+  return result;
+}
+
+/**
+ * Show intro screen
+ */
+void showIntro() {
+  TextOut(0, LCD_LINE1, "Dexter Ind.");
+  TextOut(0, LCD_LINE2, "NXTBee");
+  TextOut(0, LCD_LINE3, "Config Tool");
+  TextOut(0, LCD_LINE5, "Connect NXTBee");
+  TextOut(0, LCD_LINE6, "to S4");
+  Wait(SEC_2);
+}
+
+/**
+ * Allow the user to pick a desired baud rate for the NXT to NXTBee
+ * communications.
+ * @return index for the selected baud rate, one of baud_rates_set
+ */
+int selectbaudRate() {
+  int choice = 0;
+  byte oldchoice = 0;
+  ClearScreen();
+
+  TextOut(0, LCD_LINE1, "Select new baud");
+  TextOut(0, LCD_LINE2, "rate for the");
+  TextOut(0, LCD_LINE3, "NXTBee to run at:");
+  TextOut(0, LCD_LINE7, "Use < > to switch");
+  TextOut(0, LCD_LINE8, "[enter] to set");
+
+  ClearLine(LCD_LINE4);
+  NumOut(0, LCD_LINE4, baud_rates_set[choice]);
+
+  int currentBtn;
+  currentBtn = getbtn();
+  while (currentBtn != BTNCENTER) {
+    switch (currentBtn) {
+      case BTNLEFT:
+        choice--;
+        while (ButtonPressed(BTNLEFT, false))
+          Yield();
+        break;
+      case BTNRIGHT:
+        choice++;
+        while (ButtonPressed(BTNRIGHT, false))
+          Yield();
+        break;
+    }
+    if (choice > 7)
+      choice = 0;
+    else if (choice < 0)
+      choice = 7;
+
+    if (choice != oldchoice) {
+      ClearLine(LCD_LINE4);
+      NumOut(0, LCD_LINE4, baud_rates_set[choice]);
+    }
+
+    oldchoice = choice;
+    currentBtn = getbtn();
+  }
+  return choice;
+}
+
+
+/**
+ * Send +++ to NXTBee to go into command mode.  Needs the 1s wait before and after the command
+ * is sent.
+ */
+void enterCommandMode()
+{
+  Wait(SEC_1);                    // Wait 1 second.
+  RS485Write(cmd_enterCommandMode);
+  WaitForMessageToBeSent();
+  Wait(SEC_1);                      // Wait 1 second.
+}
+
+
+/**
+ * Clear out any left over bytes from the RS485 buffer from previous transactions.
+ */
+void clearBuffer() {
+  byte dummy[128];
+  RS485Read(dummy);
+}
+
+
+/**
+ * Check if the previous command elicited an "OK" from the NXTBee
+ * @param showresponse if it failed, show the response from the NXTBee
+ * @return true if no error occured, false if it did
+ */
+bool checkResponse(bool showresponse)
+{
+  byte response[];
+  byte OKresp[2];
+  byte OK[] = {'O', 'K'};
+
+  RS485Read(response);
+
+  if (ArrayLen(response) >= 2)
+    ArraySubset(OKresp, response, 0, 2);
+
+  if (OKresp == OK)
+      return true;
+
+  if (showresponse) {
+    string sString;
+    sString = ByteArrayToStr(OKresp);
+    string msg = "RESP: " + sString;
+    TextOut(0, LCD_LINE8, msg);
+  }
+  return false;
+}
+
+
+/**
+ * Set the D7 pin to the correct mode.
+ * @param showresponse if it failed, show the response from the NXTBee
+ * @return true if no error occured, false if it did
+ */
+bool setPinMode(bool showresponse)
+{
+  Wait(MS_100);
+  clearBuffer();
+  RS485Write(cmd_SetPin);
+  WaitForMessageToBeSent();
+  Wait(MS_100);
+  return checkResponse(showresponse);
+}
+
+
+/**
+ * Set the selected baud rate.
+ * @param rate the index for the baud_rates_set array
+ * @return true if no error occured, false if it did
+ */
+bool setbaud(byte rate)
+{
+  cmd_setbaudRate[5] = rate + 0x30;
+  Wait(MS_100);
+  clearBuffer();
+  RS485Write(cmd_setbaudRate);
+  WaitForMessageToBeSent();
+  Wait(MS_100);
+  return checkResponse();
+}
+
+
+/**
+ * Make the current configuration permanent
+ * @return true if no error occured, false if it did
+ */
+bool saveConfiguration()
+{
+  Wait(MS_100);
+  clearBuffer();
+  RS485Write(cmd_WriteConfig);
+  WaitForMessageToBeSent();
+  Wait(MS_100);
+  return checkResponse();
+}
+
+
+
+/**
+ * Reset the NXTBee module, this ensures that new baud rates take effect
+ * @return true if no error occured, false if it did
+ */
+bool resetNXTBee()
+{
+  Wait(MS_100);
+  clearBuffer();
+  RS485Write(cmd_resetNXTBee);
+  WaitForMessageToBeSent();
+  Wait(MS_100);
+  return checkResponse();
+}
+
+
+/**
+ * Probe the NXTBee at various baud rates with the setPin command.  This ensures that
+ * should the NXTBee not be configured properly, the setPin command will allow
+ * the NXTBee to respond.
+ * @return the index of the baud speed in the baud_rates array
+ */
+long setupHighSpeedLink()
+{
+  int baud_index = 0;                             // Which baud rate we're trying.
+  string propeller[2] = {"+", "-"};
+
+  for (baud_index = 0; baud_index < 8; baud_index++) {
+    // Show some indication of progress.
+    string msg;
+    msg = "Scanning " + propeller[baud_index % 2];
+    TextOut(0, LCD_LINE5, msg);
+
+    byte baudval = baud_uart[baud_index];
+    RS485Uart(baudval, HS_MODE_DEFAULT);
+
+    enterCommandMode();
+
+    // Run the "set pin" command twice if the first one fails
+    // This will reenable transmission if it has been disabled
+    if (setPinMode(false) || setPinMode(false))
+      break;
+
+  }
+
+  // If we haven't detected anything, exit with a nice -1
+  if (baud_index == 8)
+    return -1;
+
+  RS485Write(cmd_ExitCommandMode);     // Exit Command mode.
+  WaitForMessageToBeSent();
+  return baud_rates[baud_index];
+}
+
+
+/**
+ * Main task
+ */
+task main()
+{
+  UseRS485();
+  RS485Enable();
+  long baud_rate = 0;
+
+  showIntro();
+  ClearScreen();
+  TextOut(0, LCD_LINE3, "Curr baud Rate" );
+
+  // We go around 3 times, just to be sure.
+  for (int i = 0; i < 3; i++) {
+    baud_rate = setupHighSpeedLink();
+    if (baud_rate > 0)
+      break;
+  }
+
+  PlaySound(SOUND_FAST_UP);
+
+  if (baud_rate < 0) {
+    TextOut(0, LCD_LINE5, "not detected");
+    Wait(SEC_5);
+    StopAllTasks();
+  } else {
+    TextOut(0, LCD_LINE5, FormatNum("%d baud       " , baud_rate));
+  }
+
+  Wait(SEC_1);
+
+  baud_rate = selectbaudRate();
+
+  clearBuffer();
+  enterCommandMode();
+  ClearScreen();
+  TextOut(0, LCD_LINE1, "Config:...");
+  if (setPinMode())
+    TextOut(0, LCD_LINE3, "Config pins: OK");
+  else {
+    TextOut(0, LCD_LINE3, "Config pins: FAIL");
+    Wait(SEC_10);
+    StopAllTasks();
+  }
+
+  if (setbaud(baud_rate))
+    TextOut(0, LCD_LINE4, "Config baud: OK");
+  else {
+    TextOut(0, LCD_LINE4, "Config baud: FAIL");
+    Wait(SEC_10);
+    StopAllTasks();
+  }
+
+
+  if (saveConfiguration())
+    TextOut(0, LCD_LINE5, "Save conf:   OK");
+  else {
+    TextOut(0, LCD_LINE5, "Save conf:   FAIL");
+    Wait(SEC_10);
+    StopAllTasks();
+  }
+
+
+  if (resetNXTBee())
+    TextOut(0, LCD_LINE6, "Reset XBee:  OK");
+  else {
+    TextOut(0, LCD_LINE6, "Reset XBee:  FAIL");
+    Wait(SEC_10);
+    StopAllTasks();
+  }
+
+  TextOut(0, LCD_LINE1, "Config: done");
+  Wait(SEC_2);
+
+  ClearScreen();
+
+  TextOut(0, LCD_LINE3, "Verify baud Rate");
+
+  for (int i = 0; i < 3; i++) {
+    baud_rate = setupHighSpeedLink();
+    if (baud_rate > 0)
+      break;
+  }
+
+  PlaySound(SOUND_FAST_UP);
+
+  if (baud_rate < 0)
+    TextOut(0, LCD_LINE5, "not detected");
+  else
+    TextOut(0, LCD_LINE5, FormatNum("%d baud       " , baud_rate));
+
+  TextOut(0, LCD_LINE8, "[enter] to exit" );
+  while (!ButtonPressed(BTNCENTER, false))
+    Yield();
+}

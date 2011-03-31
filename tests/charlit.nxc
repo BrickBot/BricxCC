@@ -1,0 +1,19 @@
+inline float atof2(const string & str) {
+  float result;
+  asm { strtonum result, __TMPWORD__, str, NA, NA }
+  return result;
+}
+
+task main()
+{
+	char c;
+	float value;
+	string aFloat;
+
+	c = '\n';
+	c = '\t';
+	c = 'a';
+
+	aFloat = "12.3" ;
+	value = atof2( aFloat );
+}

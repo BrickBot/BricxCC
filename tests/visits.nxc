@@ -1,0 +1,53 @@
+const string visit_filename = "Visits.txt";
+const string tmp_filename = "___tmp.txt";
+
+long ReadVisitInformation() {
+  unsigned int fsize;
+  byte handle;
+  long result = 0;
+  if (OpenFileRead(visit_filename, fsize, handle) == LDR_SUCCESS) {
+    // read existing value
+    Read(handle, result);
+    // close the file
+    fclose(handle);
+  }
+  return result;
+}
+
+void SaveVisitInformation(long visits) {
+  byte handle;
+  // create temporary file
+  if (CreateFile(tmp_filename, 256, handle) == LDR_SUCCESS) {
+    // write the new visit value to the file
+    Write(handle, visits);
+    // close the temporary file
+    fclose(handle);
+    // delete old visit file
+    remove(visit_filename);
+    // rename temp file
+    rename(tmp_filename, visit_filename);
+  }
+}
+
+task main () {
+  long oldVisits = ReadVisitInformation();
+  if(oldVisits > 0)
+  {
+    TextOut(0,LCD_LINE1,"Welcome back");
+    TextOut(0,LCD_LINE2,"visit number");
+    NumOut(0,LCD_LINE3,oldVisits+1);
+    Wait(SEC_5);
+    // do NOT show user first time information
+  }
+  else
+  {
+    TextOut(0,LCD_LINE1,"I see that");
+    TextOut(0,LCD_LINE2,"this is your");
+    TextOut(0,LCD_LINE3,"first time");
+    Wait(SEC_5);
+    // ShowUserFirstRunInfo();
+  }
+  // now update the visits number
+  oldVisits++;
+  SaveVisitInformation(oldVisits);
+}

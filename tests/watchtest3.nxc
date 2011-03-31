@@ -1,0 +1,25 @@
+float globalFloat = PI;
+int globalInt = 45;
+long globalLong = -28534;
+
+task main()
+{
+  int i;
+  while(true)
+  {
+    i++;
+    NumOut(0, LCD_LINE1, globalFloat);
+    NumOut(0, LCD_LINE2, globalInt);
+    NumOut(0, LCD_LINE3, globalLong);
+    NumOut(0, LCD_LINE4, i);
+    for (int i=0; i<10; i++)
+    {
+      NumOut(0, LCD_LINE5, i);
+      Wait(MS_500);
+    }
+    globalFloat += sqrt(Random(50));
+    globalInt += i;
+    globalLong += Random(10);
+    Wait(SEC_1);
+  }
+}

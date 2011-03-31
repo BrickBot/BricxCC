@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2010-10-16
- * \version 5
+ * \date 2011-03-16
+ * \version 7
  */
 #ifndef NBCAPIDOCS_H
 #define NBCAPIDOCS_H
@@ -31,7 +31,7 @@
 /** @mainpage NBC Programmer's Guide
  * \brief
  * 
- * <h2><center>October 6, 2010</center></h2>
+ * <h2><center>March 16, 2011</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -4333,6 +4333,10 @@
 
 /** @defgroup CodatexAPI Codatex API Functions
  * Functions for accessing and modifying Codatex devices.
+ */
+
+/** @defgroup DexterIndustriesAPI Dexter Industries API Functions
+ * Functions for accessing and modifying Dexter Industries devices.
  */
 
 /** @defgroup RICMacros RIC Macro Wrappers

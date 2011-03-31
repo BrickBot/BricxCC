@@ -785,7 +785,7 @@ SetNXTServoPosition("port", "i2caddr", "servo", "pos");\=
 SetNXTServoQuickPosition("port", "i2caddr", "servo", "qpos");\=
 SetNXTServoSpeed("port", "i2caddr", "servo", "speed");\=
 SetSensorNXTSumoEyes("port", "bLong");\=
-- Codatex functions
+- Codatex API functions
 RFIDInit("port");\=
 RFIDMode("port", "mode");\=
 RFIDRead("port", "output");\=
@@ -793,6 +793,17 @@ RFIDReadContinuous("port", "output");\=
 RFIDReadSingle("port", "output");\=
 RFIDStatus("port");\=
 RFIDStop("port");\=
+- Dexter Industries API functions
+SensorDIGPSDistanceToWaypoint("port");\=
+SensorDIGPSHeading("port");\=
+SensorDIGPSHeadingToWaypoint("port");\=
+SensorDIGPSLatitude("port");\=
+SensorDIGPSLongitude("port");\=
+SensorDIGPSRelativeHeading("port");\=
+SensorDIGPSStatus("port");\=
+SensorDIGPSTime("port");\=
+SensorDIGPSVelocity("port");\=
+SetSensorDIGPSWaypoint("port", "latitude", "longitude");\=
 - RS485 functions
 UseRS485();\=
 RS485Disable();\=

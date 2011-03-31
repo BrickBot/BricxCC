@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-03-15
- * version 76
+ * date 2011-03-16
+ * version 77
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -2206,9 +2206,10 @@ dseg ends
   sub _temp, _temp, 2560 \
   __RRT_EndIf##__I__: \
   __IncI__ \
-  compif EQ, typeof(_temp), 10 \
+  brcmp NEQ, __RRT_FloatEndIf##__I__, typeof(_temp), 10 \
   div _temp, _temp, 10 \
-  compend \
+  __RRT_FloatEndIf##__I__: \
+  __IncI__ \
   release __RLSBmutex0 \
   release __RLSBmutex1 \
   release __RLSBmutex2 \
@@ -2231,9 +2232,10 @@ dseg ends
   sub _temp, _temp, 2560 \
   __RRT_EndIf##__I__: \
   __IncI__ \
-  compif EQ, typeof(_temp), 10 \
+  brcmp NEQ, __RRT_FloatEndIf##__I__, typeof(_temp), 10 \
   div _temp, _temp, 10 \
-  compend \
+  __RRT_FloatEndIf##__I__: \
+  __IncI__ \
   release __RLSBmutex##_port \
   compend
 
@@ -8011,6 +8013,59 @@ dseg ends
   mov _result, __RFIDCont_Result \
   release __RFIDmutex
 
+#define __ReadSensorDIGPSStatus(_port, _status) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_STATUS, 1, _status, __RDSD_LSStatus)
+#define __ReadSensorDIGPSTime(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_TIME, 4, _result, __RDSD_LSStatus)
+#define __ReadSensorDIGPSLatitude(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_LATITUDE, 4, _result, __RDSD_LSStatus)
+#define __ReadSensorDIGPSLongitude(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_LONGITUDE, 4, _result, __RDSD_LSStatus)
+#define __ReadSensorDIGPSVelocity(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_VELOCITY, 3, _result, __RDSD_LSStatus)
+#define __ReadSensorDIGPSHeading(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_HEADING, 2, _result, __RDSD_LSStatus)
+#define __ReadSensorDIGPSDistanceToWaypoint(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_DISTANCE, 4, _result, __RDSD_LSStatus)
+#define __ReadSensorDIGPSHeadingToWaypoint(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_WAYANGLE, 2, _result, __RDSD_LSStatus)
+#define __ReadSensorDIGPSRelativeHeading(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_LASTANGLE, 4, _result, __RDSD_LSStatus)
+
+dseg segment
+  __BEBFLMutex mutex
+  __BEBFLIn slong
+  __BEBFLB1 byte
+  __BEBFLB2 byte
+  __BEBFLB3 byte
+  __BEBFLB4 byte
+  __BEBFLOut byte[]
+dseg ends
+
+subroutine __BEBufferFromLong
+  flatten __BEBFLOut, __BEBFLIn
+  index __BEBFLB1, __BEBFLOut, NA
+  index __BEBFLB2, __BEBFLOut, 1
+  index __BEBFLB3, __BEBFLOut, 2
+  index __BEBFLB4, __BEBFLOut, 3
+  arrbuild __BEBFLOut, __BEBFLB4, __BEBFLB3, __BEBFLB2, __BEBFLB1
+  return
+ends
+
+dseg segment
+  __DGPSWay_Buffer byte[]
+  __DGPSWaymutex mutex
+dseg ends
+
+#define __SetSensorDIGPSWaypoint(_port, _lat, _long, _result) \
+  acquire __DGPSWaymutex \
+  acquire __BEBFLMutex \
+  mov __BEBFLIn, _lat \
+  call __BEBufferFromLong \
+  arrbuild __DGPSWay_Buffer, DI_ADDR_DGPS, DGPS_REG_SETLATITUDE, __BEBFLOut \
+  release __BEBFLMutex \
+  __lowspeedWrite(_port, 0, __DGPSWay_Buffer, _result) \
+  wait 150 \
+  acquire __BEBFLMutex \
+  mov __BEBFLIn, _long \
+  call __BEBufferFromLong \
+  arrbuild __DGPSWay_Buffer, DI_ADDR_DGPS, DGPS_REG_SETLONGITUDE, __BEBFLOut \
+  release __BEBFLMutex \
+  __lowspeedWrite(_port, 0, __DGPSWay_Buffer, _result) \
+  wait 50 \
+  release __DGPSWaymutex
+
 #define __NXTServoInit(_port, _i2caddr, _servo, _result) \
   __I2CSendCmd(_port, _i2caddr, NXTSERVO_CMD_INIT, _result) \
   __I2CSendCmd(_port, _i2caddr, _servo+1, _result)
@@ -8114,6 +8169,17 @@ dseg ends
   mov _result, __RDSD_LSStatus \
   release __DNRVmutex
 
+#define __ReadI2CBEValue(_port, _i2caddr, _reg, _bytes, _out, _result) \
+  acquire __DNRVmutex \
+  mov __RDSD_Port, _port \
+  mov __RDSD_SensorAddress, _i2caddr \
+  mov __RDSD_SensorRegister, _reg \
+  set __RDSD_NumBytesToRead, _bytes \
+  call __MSReadBEValueSub \
+  mov _out, __RDSD_Value \
+  mov _result, __RDSD_LSStatus \
+  release __DNRVmutex
+
 subroutine __RFIDReadContinuousSub
   __RFIDInit(__RFIDCont_Port, __RFIDCont_Result)
   wait 15
@@ -8164,9 +8230,11 @@ __RDSD_GoAheadAndCalculateValue:
   set __RDSD_Value, 0
   brcmp EQ, __RDSD_OneByte, __RDSD_NumBytesToRead, 1
   brcmp EQ, __RDSD_TwoBytes, __RDSD_NumBytesToRead, 2
+  brcmp EQ, __RDSD_ThreeBytes, __RDSD_NumBytesToRead, 3
   brcmp NEQ, __RDSD_ReadError, __RDSD_NumBytesToRead, 4
   index __RDSD_Byte, __RDSD_lsrArgs.Buffer, 3
   mul __RDSD_Value, __RDSD_Byte, 256
+__RDSD_ThreeBytes:
   index __RDSD_Byte, __RDSD_lsrArgs.Buffer, 2
   add __RDSD_Value, __RDSD_Value, __RDSD_Byte
   mul __RDSD_Value, __RDSD_Value, 256
@@ -8177,6 +8245,51 @@ __RDSD_TwoBytes:
 __RDSD_OneByte:
   index __RDSD_Byte, __RDSD_lsrArgs.Buffer, NA
   add __RDSD_Value, __RDSD_Value, __RDSD_Byte
+  mov __RDSD_PreviousValue, __RDSD_Value
+__RDSD_ReturnResults:
+  return
+ends
+
+subroutine __MSReadBEValueSub
+  mov __RDSD_lswArgs.Port, __RDSD_Port
+  arrbuild __RDSD_lswArgs.Buffer, __RDSD_SensorAddress, __RDSD_SensorRegister
+  mov __RDSD_lswArgs.ReturnLen, __RDSD_NumBytesToRead
+  syscall CommLSWrite, __RDSD_lswArgs
+__RDSD_CheckStatusAfterWriteLoop:
+  __lowspeedCheckStatus(__RDSD_Port, __RDSD_LSStatus)
+  brtst GT, __RDSD_CheckStatusAfterWriteLoop, __RDSD_LSStatus
+  brtst EQ, __RDSD_GoAheadWithRead, __RDSD_LSStatus
+  jmp __RDSD_ReadError
+__RDSD_GoAheadWithRead:
+  mov __RDSD_lsrArgs.Port, __RDSD_Port
+  mov __RDSD_lsrArgs.BufferLen, __RDSD_NumBytesToRead
+  syscall CommLSRead, __RDSD_lsrArgs
+__RDSD_CheckStatusAfterReadLoop:
+  __lowspeedCheckStatus(__RDSD_Port, __RDSD_LSStatus)
+  brtst GT, __RDSD_CheckStatusAfterReadLoop, __RDSD_LSStatus
+  arrsize __RDSD_bytesRead, __RDSD_lsrArgs.Buffer
+  brcmp NEQ, __RDSD_ReadError, __RDSD_bytesRead, __RDSD_NumBytesToRead
+  brtst EQ, __RDSD_GoAheadAndCalculateValue, __RDSD_LSStatus
+__RDSD_ReadError:
+  mov __RDSD_Value, __RDSD_PreviousValue
+  jmp __RDSD_ReturnResults
+__RDSD_GoAheadAndCalculateValue:
+  set __RDSD_Value, 0
+  index __RDSD_Byte, __RDSD_lsrArgs.Buffer, NA
+  mov __RDSD_Value, __RDSD_Byte
+  brcmp EQ, __RDSD_ReturnResults, __RDSD_NumBytesToRead, 1
+  mul __RDSD_Value, __RDSD_Value, 256
+  index __RDSD_Byte, __RDSD_lsrArgs.Buffer, 1
+  add __RDSD_Value, __RDSD_Value, __RDSD_Byte
+  brcmp EQ, __RDSD_ReturnResults, __RDSD_NumBytesToRead, 2
+  mul __RDSD_Value, __RDSD_Value, 256
+  index __RDSD_Byte, __RDSD_lsrArgs.Buffer, 2
+  add __RDSD_Value, __RDSD_Value, __RDSD_Byte
+  brcmp EQ, __RDSD_ReturnResults, __RDSD_NumBytesToRead, 3
+  mul __RDSD_Value, __RDSD_Value, 256
+  index __RDSD_Byte, __RDSD_lsrArgs.Buffer, 3
+  add __RDSD_Value, __RDSD_Value, __RDSD_Byte
+  brcmp NEQ, __RDSD_ReadError, __RDSD_NumBytesToRead, 4
   mov __RDSD_PreviousValue, __RDSD_Value
 __RDSD_ReturnResults:
   return
@@ -19776,6 +19889,112 @@ __remoteGetInputValues(_conn, _params, _result)
 #define RFIDReadContinuous(_port, _output, _result) __RFIDReadContinuous(_port, _output, _result)
 
 /** @} */  // end of CodatexAPI group
+
+/** @addtogroup DexterIndustriesAPI
+ * @{
+ */
+
+// Dexter Industries GPS functions
+
+/**
+ * ReadSensorDIGPSStatus function.
+ * Read the status of the GPS satellite link.
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _status The GPS status
+ */
+#define ReadSensorDIGPSStatus(_port, _status) __ReadSensorDIGPSStatus(_port, _status)
+
+/**
+ * ReadSensorDIGPSTime function.
+ * Read the current time reported by the GPS in UTC.
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The current time in UTC
+ */
+#define ReadSensorDIGPSTime(_port, _result) __ReadSensorDIGPSTime(_port, _result)
+
+/**
+ * ReadSensorDIGPSLatitude function.
+ * Read the integer latitude reported by the GPS
+ * (dddddddd; Positive = North; Negative = South).
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The integer latitude
+ */
+#define ReadSensorDIGPSLatitude(_port, _result) __ReadSensorDIGPSLatitude(_port, _result)
+
+/**
+ * ReadSensorDIGPSLongitude function.
+ * Read the integer longitude reported by the GPS
+ * (ddddddddd; Positive = East; Negative = West).
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The integer longitude
+ */
+#define ReadSensorDIGPSLongitude(_port, _result) __ReadSensorDIGPSLongitude(_port, _result)
+
+/**
+ * ReadSensorDIGPSVelocity function.
+ * Read the current velocity in cm/s.
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The current velocity in cm/s
+ */
+#define ReadSensorDIGPSVelocity(_port, _result) __ReadSensorDIGPSVelocity(_port, _result)
+
+/**
+ * ReadSensorDIGPSHeading function.
+ * Read the current heading in degrees.
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The current heading in degrees
+ */
+#define ReadSensorDIGPSHeading(_port, _result) __ReadSensorDIGPSHeading(_port, _result)
+
+/**
+ * ReadSensorDIGPSDistanceToWaypoint function.
+ * Read the distance remaining to reach the current waypoint in meters.
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The distance to the waypoint in meters
+ */
+#define ReadSensorDIGPSDistanceToWaypoint(_port, _result) __ReadSensorDIGPSDistanceToWaypoint(_port, _result)
+
+/**
+ * ReadSensorDIGPSHeadingToWaypoint function.
+ * Read the heading required to reach the current waypoint.
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The heading to the waypoint in degrees
+ */
+#define ReadSensorDIGPSHeadingToWaypoint(_port, _result) __ReadSensorDIGPSHeadingToWaypoint(_port, _result)
+
+/**
+ * ReadSensorDIGPSRelativeHeading function.
+ * Read the angle travelled since last request. Resets the request coordinates
+ * on the GPS sensor. Sends the angle of travel since the last call.
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _result The relative heading in degrees
+ */
+#define ReadSensorDIGPSRelativeHeading(_port, _result) __ReadSensorDIGPSRelativeHeading(_port, _result)
+
+/**
+ * SetSensorDIGPSWaypoint function.
+ * Set the coordinates of the waypoint destination. The GPS sensor uses
+ * this to calculate the heading and distance required to reach
+ * the waypoint.
+ *
+ * \param _port The port to which the Dexter Industries GPS sensor is attached.
+ * See the \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _lat The latitude of the waypoint.
+ * \param _long The longitude of the waypoint.
+ * \param _result The boolean function call result.
+ */
+#define SetSensorDIGPSWaypoint(_port, _lat, _long, _result) __SetSensorDIGPSWaypoint(_port, _lat, _long, _result)
+
+/** @} */  // end of DexterIndustriesAPI group
 
 /** @} */ // end of ThirdPartyDevices group
 
