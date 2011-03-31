@@ -19,7 +19,7 @@ unit uCppCode;
 interface
 
 uses
-  SynCompletionProposal, Classes;
+  Classes;
 
 type
   TCodeKind = (ckKeyword, ckAPIConst, ckAPIVar, ckAPIFunc, ckAPIType);
@@ -33,13 +33,13 @@ type
     Alpha : TAlphaType;
   end;
 
-procedure PopulateCppCompProp(aCP : TSynCompletionProposal);
+procedure PopulateCppCompProp(aInsertList, aItemList : TStrings);
 function CppCodeCompIndex(aName : string) : Integer;
 procedure AddCppCodeCompParams(aStrings : TStrings; Index : integer);
-procedure PopulatePasCompProp(aCP : TSynCompletionProposal);
+procedure PopulatePasCompProp(aInsertList, aItemList : TStrings);
 function PasCodeCompIndex(aName : string) : Integer;
 procedure AddPasCodeCompParams(aStrings : TStrings; Index : integer);
-procedure PopulateROPSCompProp(aCP : TSynCompletionProposal);
+procedure PopulateROPSCompProp(aInsertList, aItemList : TStrings);
 function ROPSCodeCompIndex(aName : string) : Integer;
 procedure AddROPSCodeCompParams(aStrings : TStrings; Index : integer);
 function MSCodeCompIndex(aName : string) : Integer;
@@ -62,7 +62,7 @@ var
   thePasNameList : TStringList;
   theROPSNameList : TStringList;
 
-procedure PopulateCompPropHelper(aCP : TSynCompletionProposal;
+procedure PopulateCompPropHelper(aInsertList, aItemList : TStrings;
   CCC : array of TCppCodeComp; MaxSize : Integer; NL : TStrings;
   UN : array of String; bCase : Boolean);
 var
@@ -76,17 +76,17 @@ var
       NL.AddObject(s, TObject(i))
     else
       NL.AddObject(LowerCase(s), TObject(i));
-    aCP.InsertList.Add(s);
+    aInsertList.Add(s);
     s := CodeKindNames[X.Kind] + '\column{}' + s + ' ' + X.Params;
     if X.Location <> 0 then
       s := s + ' - ' + UN[X.Location];
-    aCP.ItemList.Add(s);
+    aItemList.Add(s);
   end;
 
 begin
   // populate this item
-  aCP.ItemList.Clear;
-  aCP.InsertList.Clear;
+  aItemList.Clear;
+  aInsertList.Clear;
   for i := 0 to MaxSize - 1 do begin
     X := CCC[i];
     if X.Count = 0 then
@@ -126,15 +126,15 @@ begin
   end;
 end;
 
-procedure PopulateCppCompProp(aCP : TSynCompletionProposal);
+procedure PopulateCppCompProp(aInsertList, aItemList : TStrings);
 begin
-  PopulateCompPropHelper(aCP, CppCodeCompData, CppCodeCompDataSize,
+  PopulateCompPropHelper(aInsertList, aItemList, CppCodeCompData, CppCodeCompDataSize,
     theCppNameList, UnitNames, True);
 end;
 
-procedure PopulatePasCompProp(aCP : TSynCompletionProposal);
+procedure PopulatePasCompProp(aInsertList, aItemList : TStrings);
 begin
-  PopulateCompPropHelper(aCP, PasCodeCompData, PasCodeCompDataSize,
+  PopulateCompPropHelper(aInsertList, aItemList, PasCodeCompData, PasCodeCompDataSize,
     thePasNameList, PasUnitNames, False);
 end;
 
@@ -159,9 +159,9 @@ begin
     Result := Integer(thePasNameList.Objects[i]);
 end;
 
-procedure PopulateROPSCompProp(aCP : TSynCompletionProposal);
+procedure PopulateROPSCompProp(aInsertList, aItemList : TStrings);
 begin
-  PopulateCompPropHelper(aCP, ROPSCodeCompData, ROPSCodeCompDataSize,
+  PopulateCompPropHelper(aInsertList, aItemList, ROPSCodeCompData, ROPSCodeCompDataSize,
     theROPSNameList, ROPSUnitNames, False);
 end;
 

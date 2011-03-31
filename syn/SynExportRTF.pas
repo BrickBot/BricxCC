@@ -45,8 +45,10 @@ interface
 
 uses
   Classes,
-//  Windows,
-//  RichEdit,
+{$IFNDEF SYN_LAZARUS}
+  Windows,
+  RichEdit,
+{$ENDIF}
   Graphics,
   SynEditExport;
 

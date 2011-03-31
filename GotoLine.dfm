@@ -29,7 +29,7 @@ object GotoForm: TGotoForm
     BevelOuter = bvLowered
     Caption = '  Enter Line Number:'
     TabOrder = 0
-    object GotoLineField: TBricxccSpinEdit
+    object GotoLineField: TSpinEdit
       Left = 123
       Top = 9
       Width = 72

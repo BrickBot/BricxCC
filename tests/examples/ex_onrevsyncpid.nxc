@@ -1,1 +1,5 @@
-OnRevSyncPID(OUT_AB, 75, -100, 30, 50, 90); // spin left
+task main()
+{
+  OnRevSyncPID(OUT_AB, 75, -100, 30, 50, 90); // spin left
+  Wait(SEC_5);
+}

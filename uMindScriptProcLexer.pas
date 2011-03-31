@@ -16,6 +16,10 @@
  *)
 unit uMindScriptProcLexer;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses

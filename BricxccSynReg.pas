@@ -79,7 +79,7 @@ begin
   
   RegisterComponents('BricxCC', [TOfficeControlBar, TOfficeToolBar,
     TOfficeGradientPanel, TOfficePopupMenu, TOfficeMainMenu,
-    TOfficeSpeedButton, TBricxCCTreeSave, TDirectoryEdit]);
+    TOfficeSpeedButton, TBricxCCTreeSave{$IFNDEF FPC}, TDirectoryEdit{$ENDIF}]);
 {$IFDEF FPC}
   RegisterComponents('BricxCC', [TRichEdit]);
 {$ENDIF}

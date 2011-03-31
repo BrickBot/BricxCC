@@ -16,6 +16,10 @@
  *)
 unit uMacroLib;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
@@ -37,7 +41,7 @@ type
     function  GetShortCut: TShortCut;
     procedure HandleActionExecute(Sender: TObject);
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(aCollection: TCollection); override;
     destructor Destroy; override;
     property Name : string read FName write SetName;
     property Description : string read FDescription write SetDescription;
@@ -93,18 +97,18 @@ uses
 
 { TMacroItem }
 
-constructor TMacroItem.Create(Collection: TCollection);
+constructor TMacroItem.Create(aCollection: TCollection);
 begin
-  if not (Collection is TMacroLibrary) then
+  if not (aCollection is TMacroLibrary) then
     raise Exception.Create('Macro Items can only be contained in a Macro Library container');
-  inherited Create(Collection);
-  FName        := Format('Macro%d', [Collection.Count]);
+  inherited Create(aCollection);
+  FName        := Format('Macro%d', [aCollection.Count]);
   FDescription := '';
   FTimeStamp   := Now;
   FCode        := TStringList.Create;
   fAction      := TCustomAction.Create(nil);
   fAction.OnExecute  := HandleActionExecute;
-  fAction.ActionList := TMacroLibrary(Collection).fActList;
+  fAction.ActionList := TMacroLibrary(aCollection).fActList;
 end;
 
 destructor TMacroItem.Destroy;

@@ -16,6 +16,10 @@
  *)
 unit uForthProcLexer;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses

@@ -25,10 +25,11 @@ interface
 uses
 {$IFDEF FPC}
   LResources,
+  LCLType,
 {$ENDIF}
   Classes, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   SynEditHighlighter, SynEdit, BricxccSynEdit, SynHighlighterNQC,
-  SynCompletionProposal, SynEditEx;
+  syncompprop, SynEditEx;
 
 type
   TfrmMacroEditor = class(TForm)
@@ -49,7 +50,9 @@ type
     function GetMacroName: string;
     procedure AddCommand(const S: string);
   private
+{$IFNDEF FPC}
     SynCompProp: TSynCompletionProposal;
+{$ENDIF}
     TheEditor: TBricxccSynEdit;
     procedure CreateSynComponents;
   public
@@ -124,7 +127,9 @@ begin
     KeyWords.Add('macro');
   end;
   GetEditorCommandValues(AddCommand);
+{$IFNDEF FPC}
   SynCompProp.ItemList.Assign(TheHighlighter.Commands);
+{$ENDIF}
   TheEditor.Highlighter := TheHighlighter;
 end;
 
@@ -160,11 +165,13 @@ begin
     ParentColor := False;
     ParentFont := False;
     TabOrder := 0;
+{$IFNDEF FPC}
     Gutter.Font.Charset := DEFAULT_CHARSET;
     Gutter.Font.Color := clWindowText;
     Gutter.Font.Height := -11;
     Gutter.Font.Name := 'Terminal';
     Gutter.Font.Style := [];
+{$ENDIF}
     Lines.Clear;
     Lines.Add('macro unnamed');
     Lines.Add('begin');
@@ -172,6 +179,7 @@ begin
     Lines.Add('end');
     StructureLineColor := clNone;
   end;
+{$IFNDEF FPC}
   SynCompProp := TSynCompletionProposal.Create(Self);
   with SynCompProp do
   begin
@@ -194,6 +202,7 @@ begin
     ShortCut := 16416;
     Editor := TheEditor;
   end;
+{$ENDIF}
 end;
 
 {$IFDEF FPC}

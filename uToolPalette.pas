@@ -153,7 +153,7 @@ uses
   uMIDIConversion, uWav2RSO, Watch, uNXTImage, uNXTExplorer,
   Piano, MessageUnit, JoystickUnit, Diagnose, Controller, brick_common,
   MemoryUnit, uPortPrompt, uLocalizedStrings, RemoteUnit,
-  Unlock, uportsedit;
+  Unlock, uportsedit, ucodeedit;
 
 procedure TfrmNXTTools.FormCreate(Sender: TObject);
 begin
@@ -294,7 +294,7 @@ end;
 
 procedure TfrmNXTTools.actCodeExecute(Sender: TObject);
 begin
-//
+  frmCodeEdit.Show;
 end;
 
 procedure TfrmNXTTools.actClearExecute(Sender: TObject);
@@ -327,7 +327,7 @@ begin
   actFirmware.Enabled    := True;
   actMIDIConvert.Enabled := True;
   actRSOConvert.Enabled  := True;
-  actCode.Enabled        := False;
+  actCode.Enabled        := True;
 end;
 
 procedure TfrmNXTTools.DownloadFirmware;

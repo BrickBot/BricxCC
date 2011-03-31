@@ -37,7 +37,7 @@ uses
   StdCtrls, Menus, ComCtrls, ToolWin, Buttons, ExtCtrls,
   Preferences, uOfficeComp, uMiscDefines, Editor, uBasicPrefs,
   SynEditHighlighter, SynEditPrint, SynMacroRecorder,
-  SynEditAutoComplete, SynCompletionProposal, SynEditPlugins,
+  SynEditAutoComplete, SynEditPlugins, syncompprop,
   SynEditRegexSearch, SynEditMiscClasses, SynEditSearch,
   SynExportRTF, SynEditExport, SynExportHTML,
   SynHighlighterNQC, SynHighlighterForth, SynHighlighterJava,
@@ -1025,9 +1025,9 @@ begin
   dlgSave.Filter := dlgOpen.Filter;
   SynForthCompProp.EndOfTokenChr := '';
   PopulateMindscriptWordList('', SynMindScriptCompProp.ItemList);
-  PopulateCppCompProp(SynCppCompProp);
-  PopulatePasCompProp(SynPasCompProp);
-  PopulateROPSCompProp(SynROPSCompProp);
+  PopulateCppCompProp(SynCppCompProp.InsertList, SynCppCompProp.ItemList);
+  PopulatePasCompProp(SynPasCompProp.InsertList, SynPasCompProp.ItemList);
+  PopulateROPSCompProp(SynROPSCompProp.InsertList, SynROPSCompProp.ItemList);
   LoadLASMCodeComplete(SynLASMCompProp.ItemList);
   LoadNBCCodeComplete(SynNBCCompProp.ItemList);
   LoadNPGCodeComplete(SynNPGCompProp.ItemList);

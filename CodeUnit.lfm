@@ -1,71 +1,16 @@
 object CodeForm: TCodeForm
   Left = 200
-  Height = 365
+  Height = 498
   Top = 128
-  Width = 508
+  Width = 670
   HelpContext = 10
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsSizeToolWin
   Caption = 'Code Listing'
-  ClientHeight = 365
-  ClientWidth = 508
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
+  OnCreate = FormCreate
+  OnShow = FormShow
   Position = poDefault
-  LCLVersion = '0.9.25'
-  object CodeEdit: TSynEdit
-    Height = 365
-    Width = 508
-    Align = alClient
-    Font.Height = -13
-    Font.Name = 'Courier New'
-    ParentColor = False
-    PopupMenu = pmnuCodeView
-    TabOrder = 0
-    BookMarkOptions.OnChange = nil
-    Gutter.CodeFoldingWidth = 14
-    Keystrokes = <>
-    ReadOnly = True
-    SelectedColor.OnChange = nil
-  end
-  object pmnuCodeView: TOfficePopupMenu
-    left = 92
-    top = 28
-    object lmiEditCopy: TOfficeMenuItem
-      Caption = '&Copy'
-      ShortCut = 16451
-      OnClick = lmiEditCopyClick
-    end
-    object lmiEditSelectAll: TOfficeMenuItem
-      Caption = 'Select &All'
-      ShortCut = 16449
-      OnClick = lmiEditSelectAllClick
-    end
-    object N1: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniCodeFind: TOfficeMenuItem
-      Caption = '&Find...'
-      ShortCut = 16454
-      OnClick = mniCodeFindClick
-    end
-    object mniCodeFindNext: TOfficeMenuItem
-      Caption = 'Find &Next'
-      ShortCut = 114
-      OnClick = mniCodeFindNextClick
-    end
-    object mniCodeFindPrev: TOfficeMenuItem
-      Caption = 'Find &Previous'
-      ShortCut = 8306
-      OnClick = mniCodeFindPrevClick
-    end
-    object N2: TOfficeMenuItem
-      Caption = '-'
-    end
-    object mniStayOnTop: TOfficeMenuItem
-      Caption = 'Stay on &top'
-      RadioItem = True
-      OnClick = mniStayOnTopClick
-    end
-  end
+  LCLVersion = '0.9.31'
 end

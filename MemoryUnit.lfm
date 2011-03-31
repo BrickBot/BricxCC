@@ -12,6 +12,7 @@ object MemoryForm: TMemoryForm
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnShow = FormShow
+  LCLVersion = '0.9.31'
   object MemoryMemo: TMemo
     Left = 8
     Height = 337
@@ -21,6 +22,7 @@ object MemoryForm: TMemoryForm
     Font.CharSet = ANSI_CHARSET
     Font.Height = -12
     Font.Name = 'Courier New'
+    ParentFont = False
     ReadOnly = True
     ScrollBars = ssBoth
     TabOrder = 0
@@ -38,9 +40,9 @@ object MemoryForm: TMemoryForm
   end
   object chkUseHex: TCheckBox
     Left = 104
-    Height = 24
+    Height = 22
     Top = 356
-    Width = 169
+    Width = 138
     HelpContext = 21003
     Caption = 'Hexadecimal format'
     OnClick = chkUseHexClick

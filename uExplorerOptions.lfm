@@ -13,8 +13,9 @@ object frmExplorerOptions: TfrmExplorerOptions
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object pnlBottom: TPanel
+    Left = 0
     Height = 32
     Top = 208
     Width = 379
@@ -57,7 +58,9 @@ object frmExplorerOptions: TfrmExplorerOptions
     end
   end
   object pnlTop: TPanel
+    Left = 0
     Height = 208
+    Top = 0
     Width = 379
     Align = alClient
     BevelOuter = bvNone
@@ -76,13 +79,13 @@ object frmExplorerOptions: TfrmExplorerOptions
       TabOrder = 0
       object shtExplorer: TTabSheet
         Caption = 'Explorer'
-        ClientHeight = 162
+        ClientHeight = 165
         ClientWidth = 363
         object lblCategories: TLabel
           Left = 194
-          Height = 17
+          Height = 15
           Top = 8
-          Width = 154
+          Width = 116
           Caption = 'Explorer ca&tegories:'
           ParentColor = False
         end
@@ -92,13 +95,14 @@ object frmExplorerOptions: TfrmExplorerOptions
           Top = 8
           Width = 176
           Caption = 'Explorer options'
-          ClientHeight = 45
+          ClientHeight = 50
           ClientWidth = 172
           TabOrder = 0
           object chkAutoExplorer: TCheckBox
             Left = 8
-            Height = 26
-            Width = 227
+            Height = 22
+            Top = 0
+            Width = 184
             HelpContext = 30005
             Caption = '&Automatically show Explorer'
             Checked = True
@@ -107,9 +111,9 @@ object frmExplorerOptions: TfrmExplorerOptions
           end
           object chkDeclarationSyntax: TCheckBox
             Left = 8
-            Height = 26
+            Height = 22
             Top = 22
-            Width = 200
+            Width = 163
             HelpContext = 30006
             Caption = 'Show &declaration syntax'
             Enabled = False
@@ -130,24 +134,25 @@ object frmExplorerOptions: TfrmExplorerOptions
           Top = 77
           Width = 176
           Caption = 'Explorer sorting'
-          ClientHeight = 48
+          ClientHeight = 53
           ClientWidth = 172
           TabOrder = 2
           object radAlphaSort: TRadioButton
             Left = 8
-            Height = 26
-            Width = 111
+            Height = 22
+            Top = 0
+            Width = 92
             HelpContext = 30007
             Caption = 'Alpha&betical'
             Checked = True
-            State = cbChecked
             TabOrder = 0
+            TabStop = True
           end
           object radSourceSort: TRadioButton
             Left = 8
-            Height = 26
+            Height = 22
             Top = 22
-            Width = 75
+            Width = 64
             HelpContext = 30008
             Caption = '&Source'
             TabOrder = 1

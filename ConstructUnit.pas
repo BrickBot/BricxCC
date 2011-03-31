@@ -409,6 +409,14 @@ begin
     RestoreTemplateTree;
 end;
 
+procedure AddMenuItems(aMI : TMenuItem; aMenuItems : array of TMenuItem);
+var
+  I : integer;
+begin
+  for I := Low(aMenuItems) to High(aMenuItems) do
+    aMI.Add(aMenuItems[I]);
+end;
+
 procedure TConstructForm.CreatePopupMenus;
 begin
   ConstructMenu := TOfficePopupMenu.Create(Self);
@@ -419,7 +427,8 @@ begin
   mniCollapseAll := TOfficeMenuItem.Create(Self);
   mniPopSep1 := TOfficeMenuItem.Create(Self);
   mniDblClickInsert := TOfficeMenuItem.Create(Self);
-  popOptions.Items.Add([mniExpandAll, mniCollapseAll, mniPopSep1, mniDblClickInsert]);
+  AddMenuItems(popOptions.Items, [mniExpandAll, mniCollapseAll, mniPopSep1, mniDblClickInsert]);
+//  popOptions.Items.Add([mniExpandAll, mniCollapseAll, mniPopSep1, mniDblClickInsert]);
   with popOptions do
   begin
     Name := 'popOptions';

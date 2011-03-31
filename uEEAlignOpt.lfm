@@ -1,8 +1,9 @@
 object fmAlign: TfmAlign
   Left = 459
+  Height = 268
   Top = 281
+  Width = 181
   ActiveControl = lstTokens
-  AutoScroll = False
   BorderIcons = [biSystemMenu]
   Caption = 'Align Lines'
   ClientHeight = 268
@@ -12,20 +13,21 @@ object fmAlign: TfmAlign
   Constraints.MinWidth = 135
   Font.Height = -11
   Position = poScreenCenter
-  Scaled = False
+  LCLVersion = '0.9.31'
   object lblToken: TLabel
     Left = 8
+    Height = 15
     Top = 7
-    Width = 71
-    Height = 13
+    Width = 85
     Caption = '&Align on token:'
     FocusControl = lstTokens
+    ParentColor = False
   end
   object btnOK: TButton
     Left = 8
+    Height = 25
     Top = 235
     Width = 75
-    Height = 25
     Anchors = [akRight, akBottom]
     Caption = 'OK'
     Default = True
@@ -34,9 +36,9 @@ object fmAlign: TfmAlign
   end
   object btnCancel: TButton
     Left = 97
+    Height = 25
     Top = 235
     Width = 75
-    Height = 25
     Anchors = [akRight, akBottom]
     Cancel = True
     Caption = 'Cancel'
@@ -45,33 +47,35 @@ object fmAlign: TfmAlign
   end
   object lstTokens: TListBox
     Left = 8
+    Height = 181
     Top = 25
     Width = 163
-    Height = 181
-    Anchors = [akLeft, akTop, akRight, akBottom]
-    ItemHeight = 13
+    Anchors = [akTop, akLeft, akRight, akBottom]
+    ItemHeight = 0
+    OnDblClick = lstTokensDblClick
     PopupMenu = pmuTokens
     TabOrder = 0
-    OnDblClick = lstTokensDblClick
+    TopIndex = -1
   end
   object cbxMode: TComboBox
     Left = 8
-    Top = 210
+    Height = 25
+    Top = 207
     Width = 164
-    Height = 21
-    Style = csDropDownList
     Anchors = [akLeft, akRight, akBottom]
-    ItemHeight = 13
+    ItemHeight = 0
     ItemIndex = 0
-    TabOrder = 1
-    Text = 'Align at rightmost token'
     Items.Strings = (
       'Align at rightmost token'
-      'Align at first token')
+      'Align at first token'
+    )
+    Style = csDropDownList
+    TabOrder = 1
+    Text = 'Align at rightmost token'
   end
   object pmuTokens: TPopupMenu
-    Left = 16
-    Top = 32
+    left = 16
+    top = 32
     object mitConfiguration: TMenuItem
       Caption = 'Configuration...'
       OnClick = mitConfigurationClick

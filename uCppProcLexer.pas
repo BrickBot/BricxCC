@@ -16,6 +16,10 @@
  *)
 unit uCppProcLexer;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses

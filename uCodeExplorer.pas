@@ -121,10 +121,10 @@ var
   i : Integer;
   PT : TProcType;
 begin
-  if Assigned(fProcResults) then
-    fProcResults.Clear;
   if csDestroying in ComponentState then Exit;
   if not Assigned(treCodeExplorer) then Exit;
+  if Assigned(fProcResults) then
+    fProcResults.Clear;
   treCodeExplorer.Items.BeginUpdate;
   try
     fTopNodeIdx := GetNodeIndex(treCodeExplorer.TopItem);
@@ -545,6 +545,14 @@ begin
   Close;
 end;
 
+procedure AddMenuItems(aMI : TMenuItem; aMenuItems : array of TMenuItem);
+var
+  I : integer;
+begin
+  for I := Low(aMenuItems) to High(aMenuItems) do
+    aMI.Add(aMenuItems[I]);
+end;
+
 procedure TfrmCodeExplorer.CreatePopupMenu;
 begin
   popCodeExplorer := TOfficePopupMenu.Create(Self);
@@ -553,7 +561,8 @@ begin
   mniClose := TOfficeMenuItem.Create(popCodeExplorer);
   N1 := TOfficeMenuItem.Create(popCodeExplorer);
   mniCodeExpProp := TOfficeMenuItem.Create(popCodeExplorer);
-  popCodeExplorer.Items.Add([mniViewEditor, mniClose, N1, mniCodeExpProp]);
+  AddMenuItems(popCodeExplorer.Items, [mniViewEditor, mniClose, N1, mniCodeExpProp]);
+//  popCodeExplorer.Items.Add([mniViewEditor, mniClose, N1, mniCodeExpProp]);
   with mniViewEditor do
   begin
     Name := 'mniViewEditor';
@@ -588,6 +597,7 @@ end;
 procedure TfrmCodeExplorer.FormDestroy(Sender: TObject);
 begin
   FreeAndNil(fProcResults);
+  frmCodeExplorer := nil;
 end;
 
 procedure TfrmCodeExplorer.SetSource(const Value: string);

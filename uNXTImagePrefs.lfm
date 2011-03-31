@@ -10,37 +10,37 @@ object frmNXTImagePrefs: TfrmNXTImagePrefs
   Font.Height = -11
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object lblBackgroundColor: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 9
-    Width = 96
+    Width = 104
     Caption = 'Background color:'
     ParentColor = False
   end
   object lblBaseFilename: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 38
-    Width = 77
+    Width = 87
     Caption = 'Base filename:'
     FocusControl = edtBaseFilename
     ParentColor = False
   end
   object lblNQCPath: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 63
-    Width = 129
+    Width = 137
     Caption = 'Default Image directory:'
     ParentColor = False
   end
   object lblImageTypes: TLabel
     Left = 8
-    Height = 16
+    Height = 15
     Top = 90
-    Width = 69
+    Width = 75
     Caption = 'Image types:'
     ParentColor = False
   end
@@ -66,7 +66,7 @@ object frmNXTImagePrefs: TfrmNXTImagePrefs
   end
   object cbxBackgroundColor: TColorBox
     Left = 168
-    Height = 20
+    Height = 31
     Top = 7
     Width = 128
     DefaultColorColor = clMoneyGreen
@@ -76,7 +76,7 @@ object frmNXTImagePrefs: TfrmNXTImagePrefs
   end
   object edtBaseFilename: TEdit
     Left = 172
-    Height = 13
+    Height = 24
     Top = 40
     Width = 245
     TabOrder = 1
@@ -96,53 +96,52 @@ object frmNXTImagePrefs: TfrmNXTImagePrefs
     Top = 120
     Width = 243
     Caption = 'Automatic filenames'
-    ClientHeight = 93
-    ClientWidth = 235
+    ClientHeight = 97
+    ClientWidth = 239
     TabOrder = 4
     object lblCurrentIndex: TLabel
       Left = 30
-      Height = 16
+      Height = 15
       Top = 31
-      Width = 76
+      Width = 82
       Caption = 'Current index:'
       FocusControl = edtCurrentIndex
       ParentColor = False
     end
     object rbUseIndex: TRadioButton
       Left = 6
-      Height = 18
+      Height = 22
       Top = 8
-      Width = 73
+      Width = 80
       Caption = 'Use index'
       Checked = True
       OnClick = rbUseIndexClick
-      State = cbChecked
       TabOrder = 0
+      TabStop = True
     end
     object rbUseTimestamp: TRadioButton
       Left = 6
-      Height = 18
+      Height = 22
       Top = 64
-      Width = 100
+      Width = 111
       Caption = 'Use timestamp'
       OnClick = rbUseIndexClick
       TabOrder = 2
-      TabStop = False
     end
     object edtCurrentIndex: TBricxccSpinEdit
       Left = 112
-      Height = 13
+      Height = 24
       Top = 29
       Width = 60
       MaxValue = 9999
-      MaxLength = 4
       TabOrder = 1
+      MaxLength = 4
     end
   end
   object cboImageTypes: TComboBox
     Left = 168
-    Height = 20
-    Top = 88
+    Height = 25
+    Top = 87
     Width = 128
     ItemHeight = 0
     ItemIndex = 1

@@ -26,7 +26,7 @@ type
 
   TTreeNodeSaveEvent = procedure (Sender: TObject; Node: TTreeNode; var ID: String) of object;
 
-  TTreeSaveState = (ssNone,ssSaving,ssRestoring);
+  TTreeSaveState = (tssNone,tssSaving,tssRestoring);
 
   TBricxCCTreeSave = class(TComponent)
   protected
@@ -78,7 +78,7 @@ begin
   inherited Create(AOwner);
   Nodes := TStringList.Create;
   Nodes.Sorted := True;					// to make searching quicker
-  fSaverState := ssNone;
+  fSaverState := tssNone;
 end;
 
 destructor	TBricxCCTreeSave.Destroy;
@@ -117,7 +117,7 @@ NState:	TNodeState;
 begin
 	{this method scans the tree, populating the Nodes list with the tree nodes
   that are expanded}
-  fSaverState := ssSaving;
+  fSaverState := tssSaving;
   try
 		Clear;							// clear any nodes already in the list
 		CheckTree;					// make sure we have access to a treeview
@@ -143,7 +143,7 @@ begin
 	    end;
 	  end;
   finally
-	  fSaverState := ssNone;
+	  fSaverState := tssNone;
 	end;
 end;
 
@@ -157,7 +157,7 @@ Index:		Integer;
 NState:		TNodeState;
 begin
 	{this method restores the tree from a previously 'saved' state.}
-  fSaverState := ssRestoring;
+  fSaverState := tssRestoring;
   try
 		CheckTree;								// make sure we have access to a tree view
 	  SelectedNode := nil;			// assume no currently selected node
@@ -208,7 +208,7 @@ begin
 	    end;
   	end;
   finally
-	  fSaverState := ssNone;
+	  fSaverState := tssNone;
   end;
 end;
 

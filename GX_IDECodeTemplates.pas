@@ -16,6 +16,10 @@
  *)
 unit GX_IDECodeTemplates;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses

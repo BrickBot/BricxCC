@@ -18,6 +18,10 @@ unit uNXTClasses;
 
 {$B-}
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses

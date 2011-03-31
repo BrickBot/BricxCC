@@ -12,29 +12,29 @@ object frmEditCodeTemplate: TfrmEditCodeTemplate
   Font.Height = -11
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object lblName: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 12
-    Width = 60
+    Width = 38
     Caption = '&Name:'
     FocusControl = edtName
     ParentColor = False
   end
   object lblDesc: TLabel
     Left = 8
-    Height = 17
+    Height = 15
     Top = 36
-    Width = 96
+    Width = 69
     Caption = '&Description:'
     FocusControl = edtDesc
     ParentColor = False
   end
   object edtName: TEdit
-    Left = 72
-    Height = 21
-    Top = 8
+    Left = 75
+    Height = 24
+    Top = 7
     Width = 105
     HelpContext = 29003
     MaxLength = 20
@@ -63,9 +63,9 @@ object frmEditCodeTemplate: TfrmEditCodeTemplate
     TabOrder = 3
   end
   object edtDesc: TEdit
-    Left = 72
-    Height = 21
-    Top = 32
+    Left = 75
+    Height = 24
+    Top = 31
     Width = 193
     HelpContext = 29006
     MaxLength = 40

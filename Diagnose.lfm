@@ -1,6 +1,8 @@
 object DiagForm: TDiagForm
   Left = 258
+  Height = 458
   Top = 106
+  Width = 241
   HelpContext = 13
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
@@ -11,104 +13,112 @@ object DiagForm: TDiagForm
   Font.Height = -11
   OnCreate = FormCreate
   OnShow = FormShow
+  LCLVersion = '0.9.31'
   object grpInfo: TGroupBox
     Left = 8
+    Height = 161
     Top = 0
     Width = 225
-    Height = 161
     Caption = ' Info '
+    ClientHeight = 145
+    ClientWidth = 221
     TabOrder = 0
     object lblAlive: TLabel
       Left = 22
+      Height = 15
       Top = 3
-      Width = 23
-      Height = 13
+      Width = 27
       Alignment = taRightJustify
       Caption = 'Alive'
+      ParentColor = False
     end
     object lblVersion: TLabel
       Left = 10
+      Height = 15
       Top = 27
-      Width = 35
-      Height = 13
+      Width = 43
       Alignment = taRightJustify
       Caption = 'Version'
+      ParentColor = False
     end
     object lblBattery: TLabel
       Left = 12
+      Height = 15
       Top = 51
-      Width = 33
-      Height = 13
+      Width = 42
       Alignment = taRightJustify
       Caption = 'Battery'
+      ParentColor = False
     end
     object lblPort: TLabel
       Left = 26
+      Height = 15
       Top = 75
-      Width = 19
-      Height = 13
+      Width = 24
       Alignment = taRightJustify
       Caption = 'Port'
+      ParentColor = False
     end
     object lblProgram: TLabel
       Left = 6
+      Height = 15
       Top = 99
-      Width = 39
-      Height = 13
+      Width = 50
       Alignment = taRightJustify
       Caption = 'Program'
+      ParentColor = False
     end
     object Alive: TPanel
       Left = 52
+      Height = 17
       Top = 2
       Width = 161
-      Height = 17
       BevelOuter = bvLowered
       Caption = 'Brick is alive'
       TabOrder = 0
     end
     object Version: TPanel
       Left = 52
+      Height = 17
       Top = 26
       Width = 161
-      Height = 17
       BevelOuter = bvLowered
       Caption = '0'
       TabOrder = 1
     end
     object RefreshBtn: TButton
       Left = 142
+      Height = 22
       Top = 115
       Width = 72
-      Height = 22
       HelpContext = 13008
       Caption = '&Refresh'
-      TabOrder = 2
       OnClick = RefreshBtnClick
+      TabOrder = 2
     end
     object Port: TPanel
       Left = 52
+      Height = 17
       Top = 74
       Width = 161
-      Height = 17
       BevelOuter = bvLowered
       Caption = '0'
       TabOrder = 3
     end
     object ProgramNumb: TPanel
       Left = 52
+      Height = 17
       Top = 98
       Width = 161
-      Height = 17
       BevelOuter = bvLowered
       Caption = '0'
       TabOrder = 4
     end
     object BatStatus: TPanel
       Left = 52
+      Height = 17
       Top = 50
       Width = 161
-      Height = 17
       BevelOuter = bvLowered
       Caption = '0'
       TabOrder = 5
@@ -116,64 +126,69 @@ object DiagForm: TDiagForm
   end
   object IRGroup: TGroupBox
     Left = 8
+    Height = 41
     Top = 224
     Width = 225
-    Height = 41
     Caption = ' Infrared Power '
+    ClientHeight = 25
+    ClientWidth = 221
     TabOrder = 2
     object IRShort: TRadioButton
       Left = 48
+      Height = 22
       Top = 16
-      Width = 57
-      Height = 17
+      Width = 55
       HelpContext = 13009
       Caption = '&Short'
-      TabOrder = 0
       OnClick = IRShortClick
+      TabOrder = 0
     end
     object IRLong: TRadioButton
       Left = 128
+      Height = 22
       Top = 16
-      Width = 49
-      Height = 17
+      Width = 51
       HelpContext = 13010
       Caption = '&Long'
       Checked = True
+      OnClick = IRLongClick
       TabOrder = 1
       TabStop = True
-      OnClick = IRLongClick
     end
   end
   object WatchGroup: TGroupBox
     Left = 8
+    Height = 41
     Top = 272
     Width = 225
-    Height = 41
     Caption = ' Watch '
+    ClientHeight = 25
+    ClientWidth = 221
     TabOrder = 3
     object lblTime: TLabel
       Left = 26
+      Height = 15
       Top = 18
-      Width = 23
-      Height = 13
+      Width = 29
       Alignment = taRightJustify
       Caption = 'Time'
+      ParentColor = False
     end
     object CurrentBtn: TButton
       Left = 144
+      Height = 24
       Top = 12
       Width = 72
-      Height = 24
       HelpContext = 13012
       Caption = 'Set &Current'
-      TabOrder = 0
       OnClick = CurrentBtnClick
+      TabOrder = 0
     end
     object Watch: TPanel
       Left = 56
+      Height = 17
       Top = 16
       Width = 65
-      Height = 17
       BevelOuter = bvLowered
       Caption = '0'
       TabOrder = 1
@@ -181,227 +196,244 @@ object DiagForm: TDiagForm
   end
   object DisplayGroup: TGroupBox
     Left = 8
+    Height = 106
     Top = 320
     Width = 225
-    Height = 106
     Caption = ' Display '
+    ClientHeight = 90
+    ClientWidth = 221
     TabOrder = 4
     object lblPrecision: TLabel
       Left = 115
+      Height = 15
       Top = 20
-      Width = 46
-      Height = 13
+      Width = 57
       Caption = '&Precision:'
       FocusControl = cboPrecision
+      ParentColor = False
     end
     object lblSource: TLabel
       Left = 8
+      Height = 15
       Top = 47
-      Width = 37
-      Height = 13
+      Width = 45
       Caption = 'S&ource:'
+      ParentColor = False
     end
     object lblValue: TLabel
       Left = 8
+      Height = 15
       Top = 77
-      Width = 30
-      Height = 13
+      Width = 35
       Caption = '&Value:'
+      ParentColor = False
     end
     object DisplayType: TComboBox
       Left = 8
+      Height = 31
       Top = 16
       Width = 97
-      Height = 21
       HelpContext = 13002
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 0
+      ItemHeight = 0
       OnChange = DisplayTypeChange
+      Style = csDropDownList
+      TabOrder = 0
     end
     object btnUpdateDisplay: TButton
       Left = 144
+      Height = 24
       Top = 71
       Width = 72
-      Height = 24
       HelpContext = 13003
       Caption = '&Update'
-      TabOrder = 5
       OnClick = btnUpdateDisplayClick
+      TabOrder = 5
     end
     object cboPrecision: TComboBox
       Left = 168
+      Height = 31
       Top = 16
       Width = 49
-      Height = 21
       HelpContext = 13004
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 1
+      ItemHeight = 0
       Items.Strings = (
         '0'
         '1'
         '2'
         '3'
-        '4')
+        '4'
+      )
+      Style = csDropDownList
+      TabOrder = 1
     end
     object cboSource: TComboBox
       Left = 56
+      Height = 31
       Top = 43
       Width = 161
-      Height = 21
       HelpContext = 13005
-      Style = csDropDownList
-      ItemHeight = 13
-      TabOrder = 2
+      ItemHeight = 0
       OnChange = cboSourceChange
+      Style = csDropDownList
+      TabOrder = 2
     end
     object udValue: TUpDown
       Left = 105
+      Height = 24
       Top = 72
       Width = 16
-      Height = 21
       HelpContext = 13006
       Associate = edtValue
+      Min = 0
+      Position = 0
       TabOrder = 4
       Thousands = False
+      Wrap = False
     end
     object edtValue: TEdit
       Left = 56
+      Height = 24
       Top = 72
       Width = 49
-      Height = 21
       HelpContext = 13007
       MaxLength = 5
-      TabOrder = 3
-      Text = '0'
       OnExit = edtValueExit
       OnKeyPress = edtValueKeyPress
+      TabOrder = 3
+      Text = '0'
     end
   end
   object PowerGroup: TGroupBox
     Left = 8
+    Height = 49
     Top = 168
     Width = 225
-    Height = 49
     Caption = ' Power Down '
+    ClientHeight = 33
+    ClientWidth = 221
     TabOrder = 1
     object lblMinutes: TLabel
       Left = 8
+      Height = 15
       Top = 6
-      Width = 37
-      Height = 13
+      Width = 45
       Alignment = taRightJustify
       Caption = '&Minutes'
       FocusControl = PowerDown
+      ParentColor = False
     end
     object PowerDown: TBricxccSpinEdit
       Left = 60
+      Height = 24
       Top = 4
       Width = 57
-      Height = 16
       HelpContext = 13011
-      MaxLength = 3
       MaxValue = 255
-      MinValue = 0
+      OnChange = PowerDownChange
       TabOrder = 0
       Value = 15
-      OnChange = PowerDownChange
+      MaxLength = 3
     end
   end
   object grpNXTDiag: TGroupBox
     Left = 8
+    Height = 145
     Top = 224
     Width = 225
-    Height = 145
     Caption = 'NXT Info'
+    ClientHeight = 129
+    ClientWidth = 221
     TabOrder = 5
     object Label1: TLabel
       Left = 19
+      Height = 15
       Top = 7
-      Width = 28
-      Height = 13
+      Width = 34
       Alignment = taRightJustify
       Caption = 'Name'
+      ParentColor = False
     end
     object Label2: TLabel
       Left = 8
+      Height = 15
       Top = 31
-      Width = 39
-      Height = 13
+      Width = 46
       Alignment = taRightJustify
       Caption = 'BT Addr'
+      ParentColor = False
     end
     object Label3: TLabel
       Left = 1
+      Height = 15
       Top = 55
-      Width = 46
-      Height = 13
+      Width = 55
       Alignment = taRightJustify
       Caption = 'BT Signal'
+      ParentColor = False
     end
     object Label4: TLabel
       Left = 1
+      Height = 15
       Top = 79
-      Width = 46
-      Height = 13
+      Width = 58
       Alignment = taRightJustify
       Caption = 'Free mem'
+      ParentColor = False
     end
     object NXTName: TPanel
       Left = 54
+      Height = 17
       Top = 5
       Width = 161
-      Height = 17
       BevelOuter = bvLowered
       TabOrder = 0
       OnDblClick = NXTNameDblClick
     end
     object BTAddress: TPanel
       Left = 54
+      Height = 17
       Top = 31
       Width = 161
-      Height = 17
       BevelOuter = bvLowered
       TabOrder = 1
       OnDblClick = BTAddressDblClick
     end
     object BTSignal: TPanel
       Left = 54
+      Height = 17
       Top = 55
       Width = 161
-      Height = 17
       BevelOuter = bvLowered
       TabOrder = 2
     end
     object FreeMemory: TPanel
       Left = 54
+      Height = 17
       Top = 79
       Width = 161
-      Height = 17
       BevelOuter = bvLowered
       TabOrder = 3
     end
     object btnRefreshNXT: TButton
       Left = 142
+      Height = 22
       Top = 98
       Width = 72
-      Height = 22
       HelpContext = 13013
       Caption = '&Refresh'
-      TabOrder = 4
       OnClick = btnRefreshNXTClick
+      TabOrder = 4
     end
   end
   object btnHelp: TButton
     Left = 98
+    Height = 22
     Top = 430
     Width = 52
-    Height = 22
     HelpContext = 13001
     Anchors = [akLeft, akBottom]
     Caption = '&Help'
-    TabOrder = 6
     OnClick = btnHelpClick
+    TabOrder = 6
   end
 end

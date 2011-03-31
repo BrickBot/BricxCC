@@ -8,60 +8,66 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   ClientHeight = 196
   ClientWidth = 236
   OnCreate = FormCreate
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object lblP1: TLabel
     Left = 8
+    Height = 18
     Top = 12
-    Width = 16
-    Height = 13
+    Width = 21
     Caption = 'P&1:'
     FocusControl = edtP1
+    ParentColor = False
   end
   object lblP2: TLabel
     Left = 8
+    Height = 18
     Top = 36
-    Width = 16
-    Height = 13
+    Width = 21
     Caption = 'P&2:'
     FocusControl = edtP2
+    ParentColor = False
   end
   object lblP3: TLabel
     Left = 8
+    Height = 18
     Top = 60
-    Width = 16
-    Height = 13
+    Width = 21
     Caption = 'P&3:'
     FocusControl = edtP3
+    ParentColor = False
   end
   object lblP4: TLabel
     Left = 8
+    Height = 18
     Top = 84
-    Width = 16
-    Height = 13
+    Width = 21
     Caption = 'P&4:'
     FocusControl = edtP4
+    ParentColor = False
   end
   object lblP5: TLabel
     Left = 8
+    Height = 18
     Top = 108
-    Width = 16
-    Height = 13
+    Width = 21
     Caption = 'P&5:'
     FocusControl = edtP5
+    ParentColor = False
   end
   object lblTone: TLabel
     Left = 8
+    Height = 18
     Top = 132
-    Width = 28
-    Height = 13
+    Width = 34
     Caption = '&Tone:'
     FocusControl = edtTone
+    ParentColor = False
   end
   object btnOK: TButton
     Left = 37
+    Height = 25
     Top = 160
     Width = 75
-    Height = 25
     Caption = 'OK'
     Default = True
     ModalResult = 1
@@ -69,9 +75,9 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object btnCancel: TButton
     Left = 125
+    Height = 25
     Top = 160
     Width = 75
-    Height = 25
     Cancel = True
     Caption = 'Cancel'
     ModalResult = 2
@@ -79,49 +85,49 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object edtP1: TComboBox
     Left = 48
+    Height = 29
     Top = 8
     Width = 177
-    Height = 21
     ItemHeight = 0
     TabOrder = 0
   end
   object edtP2: TComboBox
     Left = 48
+    Height = 29
     Top = 32
     Width = 177
-    Height = 21
     ItemHeight = 0
     TabOrder = 1
   end
   object edtP3: TComboBox
     Left = 48
+    Height = 29
     Top = 56
     Width = 177
-    Height = 21
     ItemHeight = 0
     TabOrder = 2
   end
   object edtP4: TComboBox
     Left = 48
+    Height = 29
     Top = 80
     Width = 177
-    Height = 21
     ItemHeight = 0
     TabOrder = 3
   end
   object edtP5: TComboBox
     Left = 48
+    Height = 29
     Top = 104
     Width = 177
-    Height = 21
     ItemHeight = 0
     TabOrder = 4
   end
   object edtTone: TComboBox
     Left = 48
+    Height = 29
     Top = 128
     Width = 177
-    Height = 21
     ItemHeight = 0
     TabOrder = 7
   end

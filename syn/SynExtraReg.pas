@@ -7,7 +7,7 @@ uses
   LResources,
   SynEditPrint,
   SynEditPrintPreview,
-  syncompletionproposal,
+  syncompprop,
   SynExportRTF;
 
 procedure Register;

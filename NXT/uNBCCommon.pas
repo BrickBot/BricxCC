@@ -31,7 +31,7 @@ type
     fFirmwareVersion: word;
     procedure SetStandardDefs(const aValue: boolean);
     procedure SetExtraDefs(const aValue: boolean);
-    procedure SetFirmwareVersion(const Value: word);
+    procedure SetFirmwareVersion(const aValue: word);
   public
     constructor Create(AOwner: TComponent); override;
     procedure InitializeCalc;
@@ -1714,9 +1714,9 @@ begin
   end;
 end;
 
-procedure TNBCExpParser.SetFirmwareVersion(const Value: word);
+procedure TNBCExpParser.SetFirmwareVersion(const aValue: word);
 begin
-  fFirmwareVersion := Value;
+  fFirmwareVersion := aValue;
 end;
 
 procedure TNBCExpParser.SetStandardDefs(const aValue: boolean);

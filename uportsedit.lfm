@@ -10,7 +10,7 @@ object frmPortsEdit: TfrmPortsEdit
   OnCloseQuery = FormCloseQuery
   OnCreate = FormCreate
   OnShow = FormShow
-  LCLVersion = '0.9.27'
+  LCLVersion = '0.9.31'
   object barMain: TToolBar
     Left = 0
     Height = 42
@@ -69,7 +69,7 @@ object frmPortsEdit: TfrmPortsEdit
   end
   object mmoPorts: TMemo
     Left = 0
-    Height = 237
+    Height = 236
     Top = 42
     Width = 423
     Align = alClient
@@ -80,15 +80,15 @@ object frmPortsEdit: TfrmPortsEdit
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 20
-    Top = 279
+    Height = 21
+    Top = 278
     Width = 423
     Panels = <>
   end
   object lstImages: TImageList
     Height = 32
     Width = 32
-    left = 336
+    left = 328
     top = 8
     Bitmap = {
       4C69080000002000000020000000000000000000000000000000000000000000
@@ -1120,9 +1120,9 @@ object frmPortsEdit: TfrmPortsEdit
   end
   object ActionList1: TActionList
     Images = lstImages
+    OnUpdate = ActionList1Update
     left = 376
     top = 8
-    OnUpdate = ActionList1Update
     object EditCut1: TEditCut
       Category = 'Edit'
       Caption = 'Cu&t'

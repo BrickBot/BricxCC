@@ -12,8 +12,9 @@ object frmMacroEditor: TfrmMacroEditor
   Font.Name = 'MS Sans Serif'
   OnCreate = FormCreate
   Position = poScreenCenter
-  LCLVersion = '0.9.25'
+  LCLVersion = '0.9.31'
   object pnlBottom: TPanel
+    Left = 0
     Height = 31
     Top = 347
     Width = 330
@@ -25,6 +26,7 @@ object frmMacroEditor: TfrmMacroEditor
     object pnlBotRight: TPanel
       Left = 88
       Height = 31
+      Top = 0
       Width = 242
       Align = alRight
       BevelOuter = bvNone
@@ -65,7 +67,9 @@ object frmMacroEditor: TfrmMacroEditor
       end
     end
     object pnlBotLeft: TPanel
+      Left = 0
       Height = 31
+      Top = 0
       Width = 88
       Align = alClient
       BevelOuter = bvNone
@@ -73,54 +77,13 @@ object frmMacroEditor: TfrmMacroEditor
     end
   end
   object pnlTop: TPanel
+    Left = 0
     Height = 347
+    Top = 0
     Width = 330
     Align = alClient
     BevelOuter = bvNone
     BorderWidth = 6
-    ClientHeight = 347
-    ClientWidth = 330
     TabOrder = 1
-    object TheEditor: TBricxccSynEdit
-      Left = 6
-      Height = 335
-      Top = 6
-      Width = 318
-      HelpContext = 33003
-      Align = alClient
-      Font.Height = -13
-      Font.Name = 'Courier New'
-      ParentColor = False
-      TabOrder = 0
-      BookMarkOptions.OnChange = nil
-      Gutter.CodeFoldingWidth = 14
-      Keystrokes = <>
-      Lines.Strings = (
-        'macro unnamed'
-        'begin'
-        ''
-        'end'
-      )
-      SelectedColor.OnChange = nil
-      StructureLineColor = clNone
-    end
-  end
-  object SynCompProp: TSynCompletionProposal
-    Options = [scoAnsiStrings, scoCaseSensitive, scoLimitToMatchedText]
-    Width = 262
-    EndOfTokenChr = '()[]. '
-    TriggerChars = '.'
-    Font.Height = -11
-    Font.Name = 'MS Sans Serif'
-    TitleFont.Color = clBtnText
-    TitleFont.Height = -11
-    TitleFont.Name = 'MS Sans Serif'
-    TitleFont.Style = [fsBold]
-    Columns = <>
-    ParamSepString = ' '
-    ShortCut = 16416
-    Editor = TheEditor
-    left = 136
-    top = 176
   end
 end
