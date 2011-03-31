@@ -1,0 +1,23 @@
+byte bdata[] = {2, 4, 6, 8, 10};
+int idata[] = {1001, 2002, 3003, 4004};
+float fdata[] = {1.5, 2.5, 3.5, 4.5};
+string msg = "please work";
+
+task main()
+{
+  int i = 0; 
+  TextOut(0, LCD_LINE4, msg);
+  while (true)
+  {
+    NumOut(0, LCD_LINE1, bdata[0]);
+    NumOut(0, LCD_LINE2, idata[0]);
+    NumOut(0, LCD_LINE3, fdata[0]);
+    i++;
+    bdata += 1;
+    idata += 1;
+    fdata += sqrt(2);
+    Wait(SEC_2);
+  }
+}
+
+

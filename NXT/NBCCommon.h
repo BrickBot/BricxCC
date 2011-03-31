@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-13
- * \version 63
+ * \date 2011-03-16
+ * \version 64
  */
 
 #ifndef NBCCOMMON_H
@@ -3182,6 +3182,36 @@
 /** @} */  // end of CTRFIDConstants group
 /** @} */  // end of CodatexConstants group
 /** @} */  // end of CodatexAPI group
+
+/** @addtogroup DexterIndustriesAPI
+ * @{
+ */
+/** @defgroup DIConstants Dexter Industries device constants
+ * Constants that are for use with Dexter Industries devices.
+ * @{
+ */
+/** @defgroup DIGPSConstants Dexter Industries GPS sensor constants
+ * Constants that are for use with the Dexter Industries GPS sensor.
+ * @{
+ */
+
+#define DI_ADDR_DGPS          0x06 /*!< GPS I2C address */
+
+#define DGPS_REG_TIME         0x00 /*!< Read time in UTC (hhmmss). */
+#define DGPS_REG_STATUS       0x01 /*!< Read status of the GPS (0 - invalid signal, 1 - valid signal). */
+#define DGPS_REG_LATITUDE     0x02 /*!< Read integer latitude.(dddddddd; Positive = North; Negative = South). */
+#define DGPS_REG_LONGITUDE    0x04 /*!< Read integer longitude (ddddddddd; Positive = East; Negative = West). */
+#define DGPS_REG_VELOCITY     0x06 /*!< Read velocity in cm/s. */
+#define DGPS_REG_HEADING      0x07 /*!< Read heading in degrees. */
+#define DGPS_REG_DISTANCE     0x08 /*!< Read distance to current waypoint in meters. */
+#define DGPS_REG_WAYANGLE     0x09 /*!< Read angle to current waypoint in degrees. */
+#define DGPS_REG_LASTANGLE    0x0A /*!< Read angle travelled since last request, resets the request coordinates on the GPS sensor, sends the angle of travel since last reset. */
+#define DGPS_REG_SETLATITUDE  0x0B /*!< Set waypoint latitude as a 4 byte integer. */
+#define DGPS_REG_SETLONGITUDE 0x0C /*!< Set waypoint longitude as a 4 byte integer. */
+
+/** @} */  // end of DIGPSConstants group
+/** @} */  // end of DIConstants group
+/** @} */  // end of DexterIndustriesAPI group
 
 /** @} */  // end of ThirdPartyDevices group
 

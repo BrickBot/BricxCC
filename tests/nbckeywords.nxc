@@ -1,0 +1,8 @@
+int mov[];
+
+task main()
+{
+//  int mov[];
+  ArrayBuild(mov, 1, 2, 3, 4, 5);
+  NumOut(0, LCD_LINE1, mov[0]);
+}

@@ -1,0 +1,10 @@
+task main()
+{
+  string tmp;
+  string bar = "hi";
+  tmp = NumToStr(12.4) + "test" + StrCat("123" , FormatNum("%2.1f", 5.4)) + bar;
+  TextOut(0, LCD_LINE1, tmp);
+  tmp = StrCat(NumToStr(12.4), "test", StrCat("123" , FormatNum("%2.1f", 5.4)), bar);
+  TextOut(0, LCD_LINE2, tmp);
+  while(true);
+}

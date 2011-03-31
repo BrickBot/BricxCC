@@ -1,0 +1,7 @@
+task main()
+{
+  SetMotorRegulationTime(10);
+  PosRegEnable(OUT_A);
+  PosRegSetAngle(OUT_A, 360);
+  Wait(5000);
+}

@@ -1,0 +1,16 @@
+task main()
+{
+  int sensor=0xff;
+  int t1 = 32;
+  
+  if (sensor&0x08)
+    TextOut(0, LCD_LINE1, "true");
+  else
+    TextOut(0, LCD_LINE1, "false");
+
+  float value = t1 ? sqrt(Random(40))*cos(PI)-5*42+Random() : 0;
+
+  NumOut(0, LCD_LINE2, value);
+
+  while(true);
+}

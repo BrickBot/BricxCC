@@ -1,0 +1,79 @@
+int lookup( char name[] );
+void initDictionary();
+void addDictionaryEntry( int iValue, string name );
+
+task main()
+{
+	int i, j, iToken;
+	char token[10];
+
+	initDictionary();
+
+  StrToByteArray("fwd", token);
+/*
+	token[0] = 'f';
+	token[1] = 'w';
+	token[2] = 'd';
+	token[3] = 0;
+*/
+
+	iToken = lookup( token );
+
+	NumOut( 0, 0, iToken );
+
+	Wait( 1000 );
+}
+
+#define FWD         2
+#define REV         3
+
+
+struct entryT {
+	int iValue;
+	string name;
+};
+
+entryT dictionary[100];
+int numDictionEntries = 0;
+
+void
+initDictionary()
+{
+	addDictionaryEntry( FWD,      "fwd"   );
+	addDictionaryEntry( REV,      "rev"   );
+}
+
+
+void
+addDictionaryEntry( int iValue, string name )
+{
+	dictionary[numDictionEntries  ].iValue = iValue;
+	dictionary[numDictionEntries++].name   = name;
+}
+
+
+int
+lookup( char name[] )
+{
+	int i, j;
+
+	for( i=0; i<100; i++ ) {
+		if( dictionary[i].iValue == 0 ) break;
+#if 1
+		if( ByteArrayToStr(name) != dictionary[i].name ) continue;
+//		if( strcmp(ByteArrayToStr(name), dictionary[i].name) ) continue;
+#else
+		for( j=0; j<20; j++ ) {
+			if( name[j] == 0  ||  dictionary[i].name[j] == 0 ) break;
+			if( name[j] == dictionary[i].name[j] ) continue;
+			break;
+		}
+		if( name[j] != 0  ||  dictionary[i].name[j] != 0 ) continue;
+#endif
+
+		return( dictionary[i].iValue );
+	}
+
+	return( -1 );
+}
+
