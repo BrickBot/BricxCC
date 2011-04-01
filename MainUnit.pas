@@ -37,7 +37,7 @@ uses
   StdCtrls, Menus, ComCtrls, ToolWin, Buttons, ExtCtrls,
   Preferences, uOfficeComp, uMiscDefines, Editor, uBasicPrefs,
   SynEditHighlighter, SynEditPrint, SynMacroRecorder,
-  SynEditAutoComplete, SynEditPlugins, syncompprop,
+  SynEditAutoComplete, SynEditPlugins, SynCompletionProposal,
   SynEditRegexSearch, SynEditMiscClasses, SynEditSearch,
   SynExportRTF, SynEditExport, SynExportHTML,
   SynHighlighterNQC, SynHighlighterForth, SynHighlighterJava,
