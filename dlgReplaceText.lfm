@@ -8,7 +8,7 @@ inherited TextReplaceDialog: TTextReplaceDialog
   inherited gbSearchOptions: TGroupBox
     Height = 132
     Top = 70
-    ClientHeight = 116
+    ClientHeight = 109
     TabOrder = 2
     inherited cbSearchCaseSensitive: TCheckBox
       Top = -1
@@ -29,7 +29,7 @@ inherited TextReplaceDialog: TTextReplaceDialog
   inherited rgSearchDirection: TRadioGroup
     Height = 82
     Top = 70
-    ClientHeight = 66
+    ClientHeight = 59
     TabOrder = 3
   end
   inherited btnOK: TButton
@@ -42,19 +42,19 @@ inherited TextReplaceDialog: TTextReplaceDialog
   end
   object Label2: TLabel[6]
     Left = 8
-    Height = 15
+    Height = 16
     Top = 41
-    Width = 76
+    Width = 71
     Caption = '&Replace with:'
     ParentColor = False
   end
   object cbReplaceText: TComboBox[7]
     Left = 96
-    Height = 27
+    Height = 21
     Top = 37
     Width = 228
     ItemHeight = 0
     MaxLength = 65535
     TabOrder = 1
   end
-end
+end

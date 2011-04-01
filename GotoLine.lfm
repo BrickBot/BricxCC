@@ -28,7 +28,7 @@ object GotoForm: TGotoForm
     TabOrder = 0
     object GotoLineField: TSpinEdit
       Left = 168
-      Height = 24
+      Height = 16
       Top = 9
       Width = 72
       HelpContext = 46003
@@ -72,4 +72,4 @@ object GotoForm: TGotoForm
     OnClick = btnHelpClick
     TabOrder = 3
   end
-end
+end

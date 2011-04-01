@@ -13,9 +13,9 @@ object frmNXTName: TfrmNXTName
   LCLVersion = '0.9.31'
   object lblNXTName: TLabel
     Left = 8
-    Height = 15
+    Height = 14
     Top = 10
-    Width = 64
+    Width = 61
     Caption = 'NXT &Name:'
     FocusControl = edtNXTName
     ParentColor = False
@@ -42,7 +42,7 @@ object frmNXTName: TfrmNXTName
   end
   object edtNXTName: TEdit
     Left = 85
-    Height = 25
+    Height = 22
     Top = 6
     Width = 89
     Font.Height = -12
@@ -50,4 +50,4 @@ object frmNXTName: TfrmNXTName
     ParentFont = False
     TabOrder = 0
   end
-end
+end

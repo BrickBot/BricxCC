@@ -18,12 +18,12 @@ object frmMIDIConversion: TfrmMIDIConversion
     Top = 2
     Width = 99
     Caption = 'Language'
-    ClientHeight = 222
-    ClientWidth = 95
+    ClientHeight = 215
+    ClientWidth = 91
     TabOrder = 0
     object radGenNQC: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 2
       Width = 49
       HelpContext = 3502
@@ -35,9 +35,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radGenMS: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 22
-      Width = 83
+      Width = 87
       HelpContext = 3503
       Caption = '&MindScript'
       OnClick = LanguageClick
@@ -45,9 +45,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radGenLASM: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 42
-      Width = 54
+      Width = 55
       HelpContext = 3504
       Caption = '&LASM'
       OnClick = LanguageClick
@@ -55,9 +55,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radGenC: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 62
-      Width = 32
+      Width = 29
       HelpContext = 3505
       Caption = '&C'
       OnClick = LanguageClick
@@ -65,9 +65,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radGenPascal: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 82
-      Width = 61
+      Width = 59
       HelpContext = 3506
       Caption = '&Pascal'
       OnClick = LanguageClick
@@ -75,9 +75,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radGenForth: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 102
-      Width = 53
+      Width = 54
       HelpContext = 3507
       Caption = '&Forth'
       OnClick = LanguageClick
@@ -85,9 +85,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radGenJava: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 122
-      Width = 47
+      Width = 46
       HelpContext = 3508
       Caption = '&Java'
       OnClick = LanguageClick
@@ -95,9 +95,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radGenNBC: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 142
-      Width = 48
+      Width = 47
       HelpContext = 3509
       Caption = 'N&BC'
       OnClick = LanguageClick
@@ -105,9 +105,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radGenNXC: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 162
-      Width = 46
+      Width = 47
       HelpContext = 3510
       Caption = 'N&XC'
       OnClick = LanguageClick
@@ -115,9 +115,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radGenNXTMelody: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 182
-      Width = 89
+      Width = 96
       HelpContext = 3511
       Caption = 'NXT Melo&dy'
       OnClick = LanguageClick
@@ -130,14 +130,14 @@ object frmMIDIConversion: TfrmMIDIConversion
     Top = 248
     Width = 99
     Caption = 'Destination'
-    ClientHeight = 49
-    ClientWidth = 95
+    ClientHeight = 42
+    ClientWidth = 91
     TabOrder = 2
     object radToClip: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 2
-      Width = 78
+      Width = 82
       HelpContext = 3512
       Caption = 'Clip&board'
       Checked = True
@@ -146,7 +146,7 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object radToFile: TRadioButton
       Left = 4
-      Height = 22
+      Height = 18
       Top = 22
       Width = 42
       HelpContext = 3513
@@ -160,21 +160,21 @@ object frmMIDIConversion: TfrmMIDIConversion
     Top = 2
     Width = 193
     Caption = 'Parameters'
-    ClientHeight = 222
-    ClientWidth = 189
+    ClientHeight = 215
+    ClientWidth = 185
     TabOrder = 1
     object lblGap: TLabel
       Left = 4
-      Height = 15
+      Height = 14
       Top = 78
-      Width = 28
+      Width = 25
       Caption = '&Gap:'
       FocusControl = edtGap
       ParentColor = False
     end
     object lblTempo: TLabel
       Left = 4
-      Height = 15
+      Height = 14
       Top = 49
       Width = 42
       Caption = '&Tempo:'
@@ -183,27 +183,27 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object lblTranspose: TLabel
       Left = 4
-      Height = 15
+      Height = 14
       Top = 106
-      Width = 64
+      Width = 60
       Caption = 'T&ranspose:'
       FocusControl = barTranspose
       ParentColor = False
     end
     object lblPBS: TLabel
       Left = 4
-      Height = 15
+      Height = 14
       Top = 174
-      Width = 62
+      Width = 58
       Caption = '&Sensitivity:'
       FocusControl = edtPBS
       ParentColor = False
     end
     object lblTrack: TLabel
       Left = 4
-      Height = 15
+      Height = 14
       Top = 20
-      Width = 72
+      Width = 65
       Caption = 'Use trac&k #:'
       FocusControl = edtTrack
       ParentColor = False
@@ -226,9 +226,9 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object chkUsePB: TCheckBox
       Left = 4
-      Height = 22
+      Height = 18
       Top = 139
-      Width = 116
+      Width = 127
       HelpContext = 3520
       Caption = 'Track pitch &bend'
       OnClick = chkUsePBClick
@@ -236,7 +236,7 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object edtGap: TBricxccSpinEdit
       Left = 78
-      Height = 24
+      Height = 16
       Top = 76
       Width = 52
       HelpContext = 3517
@@ -247,7 +247,7 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object edtTempo: TBricxccSpinEdit
       Left = 78
-      Height = 24
+      Height = 16
       Top = 47
       Width = 52
       HelpContext = 3518
@@ -258,7 +258,7 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object edtPBS: TBricxccSpinEdit
       Left = 78
-      Height = 24
+      Height = 16
       Top = 172
       Width = 52
       HelpContext = 3521
@@ -270,7 +270,7 @@ object frmMIDIConversion: TfrmMIDIConversion
     end
     object edtTrack: TBricxccSpinEdit
       Left = 78
-      Height = 24
+      Height = 16
       Top = 18
       Width = 52
       HelpContext = 3516
@@ -317,4 +317,4 @@ object frmMIDIConversion: TfrmMIDIConversion
     left = 256
     top = 176
   end
-end
+end

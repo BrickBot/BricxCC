@@ -161,10 +161,11 @@ initialization
 
 {$IFNDEF FPC}
   UserDataLocalPath := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\';
-  SymFileLibraryPath := GetSpecialFolderPath(CSIDL_APPDATA{CSIDL_LOCAL_APPDATA})+'\JoCar Consulting\BricxCC\3.3\sym\';
+  SymFileLibraryPath := UserDataLocalPath + 'sym\';
 {$ELSE}
-  UserDataLocalPath := IncludeTrailingPathDelimiter(ExpandFilename('~'));
-  SymFileLibraryPath := IncludeTrailingPathDelimiter(ExpandFilename('~')) + IncludeTrailingPathDelimiter('sym');
+  UserDataLocalPath := IncludeTrailingPathDelimiter(ExpandFilename('~')) +
+                       IncludeTrailingPathDelimiter('bricxcc');
+  SymFileLibraryPath := UserDataLocalPath + IncludeTrailingPathDelimiter('sym');
 {$ENDIF}
 
-end.
+end.

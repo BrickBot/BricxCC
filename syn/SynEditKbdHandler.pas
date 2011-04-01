@@ -42,8 +42,12 @@ unit SynEditKbdHandler;
 interface
 
 uses
+{$IFNDEF FPC}
   Windows,
   Messages,
+{$ELSE}
+  LCLType,
+{$ENDIF}
   Graphics,
   Controls,
   Forms,
@@ -250,4 +254,4 @@ begin
   fKeyPressChain.Remove(aHandler);
 end;
 
-end.
+end.

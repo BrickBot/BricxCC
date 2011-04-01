@@ -14,9 +14,9 @@ object PianoForm: TPianoForm
   LCLVersion = '0.9.31'
   object lblNoteTime: TLabel
     Left = 8
-    Height = 14
+    Height = 13
     Top = 229
-    Width = 53
+    Width = 52
     Caption = '&Note time:'
     FocusControl = edtNoteTime
     Font.Height = -10
@@ -25,9 +25,9 @@ object PianoForm: TPianoForm
   end
   object Label1: TLabel
     Left = 136
-    Height = 14
+    Height = 13
     Top = 229
-    Width = 49
+    Width = 50
     Caption = '&Wait time:'
     FocusControl = edtWaitTime
     Font.Height = -10
@@ -36,9 +36,9 @@ object PianoForm: TPianoForm
   end
   object Label2: TLabel
     Left = 8
-    Height = 14
+    Height = 13
     Top = 112
-    Width = 52
+    Width = 55
     Caption = '&Transpose:'
     FocusControl = barTranspose
     Font.Height = -10
@@ -53,8 +53,8 @@ object PianoForm: TPianoForm
     BevelOuter = bvNone
     BorderWidth = 1
     BorderStyle = bsSingle
-    ClientHeight = 94
-    ClientWidth = 335
+    ClientHeight = 96
+    ClientWidth = 337
     TabOrder = 0
     object Shape01: TShape
       Tag = 7
@@ -264,15 +264,15 @@ object PianoForm: TPianoForm
     Top = 146
     Width = 113
     Caption = ' Length '
-    ClientHeight = 53
-    ClientWidth = 109
+    ClientHeight = 50
+    ClientWidth = 105
     TabOrder = 3
     object radWhole: TRadioButton
       Tag = 16
       Left = 6
-      Height = 22
+      Height = 18
       Top = 5
-      Width = 39
+      Width = 44
       HelpContext = 15030
       Caption = '1/&1'
       Font.Height = -10
@@ -283,9 +283,9 @@ object PianoForm: TPianoForm
     object radHalf: TRadioButton
       Tag = 6
       Left = 6
-      Height = 22
+      Height = 18
       Top = 23
-      Width = 39
+      Width = 44
       HelpContext = 15031
       Caption = '1/&2'
       Font.Height = -10
@@ -296,9 +296,9 @@ object PianoForm: TPianoForm
     object radQuarter: TRadioButton
       Tag = 4
       Left = 52
-      Height = 22
+      Height = 18
       Top = 0
-      Width = 39
+      Width = 44
       HelpContext = 15032
       Caption = '1/&4'
       Checked = True
@@ -311,9 +311,9 @@ object PianoForm: TPianoForm
     object radEighth: TRadioButton
       Tag = 2
       Left = 52
-      Height = 22
+      Height = 18
       Top = 18
-      Width = 39
+      Width = 44
       HelpContext = 15033
       Caption = '1/&8'
       Font.Height = -10
@@ -324,9 +324,9 @@ object PianoForm: TPianoForm
     object radSixteenth: TRadioButton
       Tag = 1
       Left = 52
-      Height = 22
+      Height = 18
       Top = 36
-      Width = 45
+      Width = 52
       HelpContext = 15034
       Caption = '1/1&6'
       Font.Height = -10
@@ -434,14 +434,14 @@ object PianoForm: TPianoForm
     Top = 249
     Width = 337
     Caption = 'Language'
-    ClientHeight = 74
-    ClientWidth = 333
+    ClientHeight = 71
+    ClientWidth = 329
     TabOrder = 11
     object radGenNQC: TRadioButton
       Left = 6
-      Height = 22
+      Height = 18
       Top = 2
-      Width = 48
+      Width = 49
       HelpContext = 15045
       Caption = '&NQC'
       Checked = True
@@ -452,9 +452,9 @@ object PianoForm: TPianoForm
     end
     object radGenMS: TRadioButton
       Left = 6
-      Height = 22
+      Height = 18
       Top = 20
-      Width = 75
+      Width = 87
       HelpContext = 15046
       Caption = '&MindScript'
       Font.Height = -10
@@ -463,9 +463,9 @@ object PianoForm: TPianoForm
     end
     object radGenLASM: TRadioButton
       Left = 6
-      Height = 22
+      Height = 18
       Top = 38
-      Width = 53
+      Width = 55
       HelpContext = 15047
       Caption = '&LASM'
       Font.Height = -10
@@ -474,9 +474,9 @@ object PianoForm: TPianoForm
     end
     object radGenC: TRadioButton
       Left = 6
-      Height = 22
+      Height = 18
       Top = 56
-      Width = 32
+      Width = 29
       HelpContext = 15048
       Caption = '&C'
       Font.Height = -10
@@ -485,9 +485,9 @@ object PianoForm: TPianoForm
     end
     object radGenPascal: TRadioButton
       Left = 112
-      Height = 22
+      Height = 18
       Top = 2
-      Width = 55
+      Width = 59
       HelpContext = 15049
       Caption = '&Pascal'
       Font.Height = -10
@@ -496,9 +496,9 @@ object PianoForm: TPianoForm
     end
     object radGenForth: TRadioButton
       Left = 112
-      Height = 22
+      Height = 18
       Top = 20
-      Width = 50
+      Width = 54
       HelpContext = 15050
       Caption = '&Forth'
       Font.Height = -10
@@ -507,9 +507,9 @@ object PianoForm: TPianoForm
     end
     object radGenJava: TRadioButton
       Left = 112
-      Height = 22
+      Height = 18
       Top = 38
-      Width = 45
+      Width = 46
       HelpContext = 15051
       Caption = '&Java'
       Font.Height = -10
@@ -518,7 +518,7 @@ object PianoForm: TPianoForm
     end
     object radGenNBC: TRadioButton
       Left = 112
-      Height = 22
+      Height = 18
       Top = 56
       Width = 47
       HelpContext = 15052
@@ -529,9 +529,9 @@ object PianoForm: TPianoForm
     end
     object radGenNXC: TRadioButton
       Left = 224
-      Height = 22
+      Height = 18
       Top = 2
-      Width = 45
+      Width = 47
       HelpContext = 15053
       Caption = 'N&XC'
       Font.Height = -10
@@ -540,9 +540,9 @@ object PianoForm: TPianoForm
     end
     object radGenNXTMelody: TRadioButton
       Left = 224
-      Height = 22
+      Height = 18
       Top = 20
-      Width = 81
+      Width = 96
       HelpContext = 15054
       Caption = 'NXT Melo&dy'
       Font.Height = -10
@@ -562,7 +562,7 @@ object PianoForm: TPianoForm
   end
   object edtNoteTime: TBricxccSpinEdit
     Left = 66
-    Height = 27
+    Height = 16
     Top = 226
     Width = 57
     HelpContext = 15042
@@ -574,7 +574,7 @@ object PianoForm: TPianoForm
   end
   object edtWaitTime: TBricxccSpinEdit
     Left = 194
-    Height = 27
+    Height = 16
     Top = 226
     Width = 57
     HelpContext = 15043
@@ -588,4 +588,4 @@ object PianoForm: TPianoForm
     left = 184
     top = 282
   end
-end
+end

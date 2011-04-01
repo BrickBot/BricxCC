@@ -69,7 +69,7 @@ object frmPortsEdit: TfrmPortsEdit
   end
   object mmoPorts: TMemo
     Left = 0
-    Height = 236
+    Height = 242
     Top = 42
     Width = 423
     Align = alClient
@@ -80,8 +80,8 @@ object frmPortsEdit: TfrmPortsEdit
   end
   object StatusBar1: TStatusBar
     Left = 0
-    Height = 21
-    Top = 278
+    Height = 15
+    Top = 284
     Width = 423
     Panels = <>
   end

@@ -79,13 +79,13 @@ object frmExplorerOptions: TfrmExplorerOptions
       TabOrder = 0
       object shtExplorer: TTabSheet
         Caption = 'Explorer'
-        ClientHeight = 165
-        ClientWidth = 363
+        ClientHeight = 157
+        ClientWidth = 361
         object lblCategories: TLabel
           Left = 194
-          Height = 15
+          Height = 16
           Top = 8
-          Width = 116
+          Width = 106
           Caption = 'Explorer ca&tegories:'
           ParentColor = False
         end
@@ -95,14 +95,14 @@ object frmExplorerOptions: TfrmExplorerOptions
           Top = 8
           Width = 176
           Caption = 'Explorer options'
-          ClientHeight = 50
-          ClientWidth = 172
+          ClientHeight = 43
+          ClientWidth = 168
           TabOrder = 0
           object chkAutoExplorer: TCheckBox
             Left = 8
-            Height = 22
+            Height = 18
             Top = 0
-            Width = 184
+            Width = 200
             HelpContext = 30005
             Caption = '&Automatically show Explorer'
             Checked = True
@@ -111,9 +111,9 @@ object frmExplorerOptions: TfrmExplorerOptions
           end
           object chkDeclarationSyntax: TCheckBox
             Left = 8
-            Height = 22
+            Height = 18
             Top = 22
-            Width = 163
+            Width = 173
             HelpContext = 30006
             Caption = 'Show &declaration syntax'
             Enabled = False
@@ -134,14 +134,14 @@ object frmExplorerOptions: TfrmExplorerOptions
           Top = 77
           Width = 176
           Caption = 'Explorer sorting'
-          ClientHeight = 53
-          ClientWidth = 172
+          ClientHeight = 46
+          ClientWidth = 168
           TabOrder = 2
           object radAlphaSort: TRadioButton
             Left = 8
-            Height = 22
+            Height = 18
             Top = 0
-            Width = 92
+            Width = 98
             HelpContext = 30007
             Caption = 'Alpha&betical'
             Checked = True
@@ -150,9 +150,9 @@ object frmExplorerOptions: TfrmExplorerOptions
           end
           object radSourceSort: TRadioButton
             Left = 8
-            Height = 22
+            Height = 18
             Top = 22
-            Width = 64
+            Width = 63
             HelpContext = 30008
             Caption = '&Source'
             TabOrder = 1
@@ -213,4 +213,4 @@ object frmExplorerOptions: TfrmExplorerOptions
       00000000000000000000000000000000000000000000
     }
   end
-end
+end

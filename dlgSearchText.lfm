@@ -13,15 +13,15 @@ object TextSearchDialog: TTextSearchDialog
   LCLVersion = '0.9.31'
   object Label1: TLabel
     Left = 8
-    Height = 15
+    Height = 16
     Top = 12
-    Width = 65
+    Width = 59
     Caption = '&Search for:'
     ParentColor = False
   end
   object cbSearchText: TComboBox
     Left = 96
-    Height = 27
+    Height = 21
     Top = 8
     Width = 228
     ItemHeight = 0
@@ -34,46 +34,46 @@ object TextSearchDialog: TTextSearchDialog
     Top = 40
     Width = 154
     Caption = 'Options'
-    ClientHeight = 111
-    ClientWidth = 150
+    ClientHeight = 104
+    ClientWidth = 146
     TabOrder = 1
     object cbSearchCaseSensitive: TCheckBox
       Left = 8
-      Height = 22
+      Height = 18
       Top = 17
-      Width = 114
+      Width = 118
       Caption = 'C&ase sensitivity'
       TabOrder = 0
     end
     object cbSearchWholeWords: TCheckBox
       Left = 8
-      Height = 22
+      Height = 18
       Top = 39
-      Width = 123
+      Width = 132
       Caption = '&Whole words only'
       TabOrder = 1
     end
     object cbSearchFromCursor: TCheckBox
       Left = 8
-      Height = 22
+      Height = 18
       Top = 61
-      Width = 128
+      Width = 132
       Caption = 'Search from &caret'
       TabOrder = 2
     end
     object cbSearchSelectedOnly: TCheckBox
       Left = 8
-      Height = 22
+      Height = 18
       Top = 83
-      Width = 125
+      Width = 132
       Caption = '&Selected text only'
       TabOrder = 3
     end
     object cbRegularExpression: TCheckBox
       Left = 8
-      Height = 22
+      Height = 18
       Top = 104
-      Width = 134
+      Width = 142
       Caption = '&Regular expression'
       TabOrder = 4
     end
@@ -93,8 +93,8 @@ object TextSearchDialog: TTextSearchDialog
     ChildSizing.ShrinkVertical = crsScaleChilds
     ChildSizing.Layout = cclLeftToRightThenTopToBottom
     ChildSizing.ControlsPerLine = 1
-    ClientHeight = 49
-    ClientWidth = 150
+    ClientHeight = 42
+    ClientWidth = 146
     ItemIndex = 0
     Items.Strings = (
       '&Forward'
@@ -122,4 +122,4 @@ object TextSearchDialog: TTextSearchDialog
     ModalResult = 2
     TabOrder = 4
   end
-end
+end

@@ -11,7 +11,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   LCLVersion = '0.9.31'
   object lblP1: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 12
     Width = 21
     Caption = 'P&1:'
@@ -20,7 +20,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object lblP2: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 36
     Width = 21
     Caption = 'P&2:'
@@ -29,7 +29,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object lblP3: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 60
     Width = 21
     Caption = 'P&3:'
@@ -38,7 +38,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object lblP4: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 84
     Width = 21
     Caption = 'P&4:'
@@ -47,7 +47,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object lblP5: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 108
     Width = 21
     Caption = 'P&5:'
@@ -56,9 +56,9 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object lblTone: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 132
-    Width = 34
+    Width = 37
     Caption = '&Tone:'
     FocusControl = edtTone
     ParentColor = False
@@ -85,7 +85,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object edtP1: TComboBox
     Left = 48
-    Height = 29
+    Height = 21
     Top = 8
     Width = 177
     ItemHeight = 0
@@ -93,7 +93,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object edtP2: TComboBox
     Left = 48
-    Height = 29
+    Height = 21
     Top = 32
     Width = 177
     ItemHeight = 0
@@ -101,7 +101,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object edtP3: TComboBox
     Left = 48
-    Height = 29
+    Height = 21
     Top = 56
     Width = 177
     ItemHeight = 0
@@ -109,7 +109,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object edtP4: TComboBox
     Left = 48
-    Height = 29
+    Height = 21
     Top = 80
     Width = 177
     ItemHeight = 0
@@ -117,7 +117,7 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object edtP5: TComboBox
     Left = 48
-    Height = 29
+    Height = 21
     Top = 104
     Width = 177
     ItemHeight = 0
@@ -125,10 +125,10 @@ object frmRemoteProgMap: TfrmRemoteProgMap
   end
   object edtTone: TComboBox
     Left = 48
-    Height = 29
+    Height = 21
     Top = 128
     Width = 177
     ItemHeight = 0
     TabOrder = 7
   end
-end
+end

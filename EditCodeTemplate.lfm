@@ -15,25 +15,25 @@ object frmEditCodeTemplate: TfrmEditCodeTemplate
   LCLVersion = '0.9.31'
   object lblName: TLabel
     Left = 8
-    Height = 15
+    Height = 16
     Top = 12
-    Width = 38
+    Width = 34
     Caption = '&Name:'
     FocusControl = edtName
     ParentColor = False
   end
   object lblDesc: TLabel
     Left = 8
-    Height = 15
+    Height = 16
     Top = 36
-    Width = 69
+    Width = 64
     Caption = '&Description:'
     FocusControl = edtDesc
     ParentColor = False
   end
   object edtName: TEdit
     Left = 75
-    Height = 24
+    Height = 22
     Top = 7
     Width = 105
     HelpContext = 29003
@@ -64,7 +64,7 @@ object frmEditCodeTemplate: TfrmEditCodeTemplate
   end
   object edtDesc: TEdit
     Left = 75
-    Height = 24
+    Height = 22
     Top = 31
     Width = 193
     HelpContext = 29006
@@ -81,4 +81,4 @@ object frmEditCodeTemplate: TfrmEditCodeTemplate
     OnClick = btnHelpClick
     TabOrder = 4
   end
-end
+end

@@ -1,7 +1,7 @@
 object frmMacroEditor: TfrmMacroEditor
-  Left = 411
+  Left = 413
   Height = 378
-  Top = 311
+  Top = 289
   Width = 330
   HelpContext = 33000
   BorderIcons = [biSystemMenu, biHelp]
@@ -86,4 +86,4 @@ object frmMacroEditor: TfrmMacroEditor
     BorderWidth = 6
     TabOrder = 1
   end
-end
+end

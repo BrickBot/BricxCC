@@ -25,6 +25,7 @@ interface
 uses
 {$IFNDEF FPC}
   Windows,
+  SynCompletionProposal,
 {$ELSE}
   LResources,
   LMessages,
@@ -36,13 +37,14 @@ uses
   ComCtrls, ToolWin, StdCtrls, ImgList, ActnList, Menus, uCodeExplorer,
   GX_ProcedureList, GotoLine, ConstructUnit, CodeUnit, GX_IDECodeTemplates,
   EditCodeTemplate, CodeTemplates, uBasicPrefs, uMacroLib, uMacroForm,
+  {uNXTWatchList, uGrepExpert, uGrepSearch, }
   uMacroEditor, uPSComponent_StdCtrls, uPSComponent_Controls,
   uPSComponent_Forms, uPSComponent_Default, uPSComponent, SynEdit, SynEditEx,
   BricxccSynEdit, SynMacroRecorder, SynEditHighlighter, SynHighlighterNQC,
   SynHighlighterNBC, SynHighlighterNPG, SynHighlighterRS, SynHighlighterROPS,
   SynEditAutoComplete, uTreeSaver, SynEditPlugins, SynEditTypes,
   SynEditRegexSearch, SynEditMiscClasses, SynEditSearch, {SynEditPrintTypes,}
-  syncompprop, SynExportRTF,
+  SynExportRTF,
   SynEditExport, SynExportHTML, SynEditKeyCmds;
 
 type
@@ -297,6 +299,9 @@ type
     procedure mniEditClick(Sender: TObject);
     procedure mniSearchClick(Sender: TObject);
     procedure TheErrorsClick(Sender: TObject);
+    procedure actSearchGrepResultsExecute(Sender: TObject);
+    procedure actSearchGrepSearchExecute(Sender: TObject);
+    procedure actToolsNXTWatchListExecute(Sender: TObject);
   private
     { Private declarations }
     IsNew:boolean;
@@ -306,6 +311,9 @@ type
     fNXCAPIBase : TStringList;
     newcount : integer;
     FActiveLine : integer;
+    procedure HandleGetExpressions(Sender: TObject; aStrings: TStrings);
+//    procedure HandleGetWatchValue(Info: TWatchInfo; var Value: string);
+    procedure HandleIsProcessAccessible(Sender: TObject; var Accessible: boolean);
     procedure CreateTheEditor;
     procedure CreateCompPropComponents;
     procedure CreateMainFormHighlighters;
@@ -373,9 +381,11 @@ type
     procedure ShowTheErrors;
     procedure DoHideErrors;
     procedure SynMacroRecStateChange(Sender: TObject);
+{$IFNDEF FPC}
     procedure scpParamsExecute(Kind: SynCompletionType; Sender: TObject;
       var CurrentInput: String; var x, y: Integer;
       var CanExecute: Boolean);
+{$ENDIF}
     procedure CreatePascalScriptComponents;
     procedure ceAfterExecute(Sender: TPSScript);
     procedure ceBreakpoint(Sender: TObject; const FileName: String;
@@ -417,7 +427,9 @@ type
     function IsMaximized: Boolean;
   private
     procedure LoadNXCCompProp;
+{$IFNDEF FPC}
     procedure DoLoadAPI(cp: TSynCompletionProposal; aStrings: TStrings);
+{$ENDIF}
     procedure AddUserDefinedFunctions(aStrings : TStrings);
   private
     // synedit highlighters
@@ -426,6 +438,7 @@ type
     SynNBCSyn: TSynNBCSyn;
     SynRSSyn: TSynRSSyn;
     SynROPSSyn: TSynROPSSyn;
+{$IFNDEF FPC}
     // completion proposal components
     SynNBCCompProp: TSynCompletionProposal;
     SynNXCCompProp: TSynCompletionProposal;
@@ -433,6 +446,7 @@ type
     SynRSCompProp: TSynCompletionProposal;
     SynROPSCompProp: TSynCompletionProposal;
     scpParams: TSynCompletionProposal;
+{$ENDIF}
     // misc synedit components
     SynMacroRec: TSynMacroRecorder;
     SynAutoComp: TSynEditAutoComplete;
@@ -448,6 +462,8 @@ type
     PSImport_DateUtils: TPSImport_DateUtils;
     PSImport_Classes: TPSImport_Classes;
     ce: TPSScriptDebugger;
+//    fGE : TGrepExpert;
+//    fGDE : TGrepDlgExpert;
     procedure TheEditorDragDrop(Sender, Source: TObject; X, Y: Integer);
     procedure TheEditorDragOver(Sender, Source: TObject; X, Y: Integer;
       State: TDragState; var Accept: Boolean);
@@ -514,6 +530,8 @@ uses
 
 
 procedure TfrmCodeEdit.CreateTheEditor;
+var
+  tmp : string;
 begin
   TheEditor := TBricxccSynEdit.Create(Self);
   with TheEditor do
@@ -527,10 +545,20 @@ begin
 //    Height := 285;
     Cursor := crIBeam;
     Align := alClient;
-    Font.Charset := DEFAULT_CHARSET;
+//    Font.Charset := DEFAULT_CHARSET;
     Font.Color := clWindowText;
     Font.Height := -13;
+{$IFDEF FPC}
+{$IFDEF LCLCarbon}
+    Font.Name := 'Monaco';
+{$ELSE}
     Font.Name := 'Courier New';
+{$ENDIF}
+    Font.Quality := fqDefault;
+{$ELSE}
+    Font.Name := 'Courier New';
+{$ENDIF}
+    Font.Size := 12;
     Font.Pitch := fpFixed;
     Font.Style := [];
     ParentColor := False;
@@ -669,6 +697,7 @@ end;
 
 procedure TfrmCodeEdit.CreateCompPropComponents;
 begin
+{$IFNDEF FPC}
   SynNBCCompProp := TSynCompletionProposal.Create(Self);
   SynROPSCompProp := TSynCompletionProposal.Create(Self);
   scpParams := TSynCompletionProposal.Create(Self);
@@ -807,14 +836,16 @@ begin
     ParamSepString := ' ';
     ShortCut := 16416;
   end;
+{$ENDIF}
 end;
 
 procedure TfrmCodeEdit.CreateMainFormHighlighters;
 begin
-  SynNXCSyn := TSynNXCSyn.Create(Self);
-  SynNPGSyn := TSynNPGSyn.Create(Self);
-  SynNBCSyn := TSynNBCSyn.Create(Self);
-  SynRSSyn := TSynRSSyn.Create(Self);
+  SynNXCSyn  := TSynNXCSyn.Create(Self);
+  SynNPGSyn  := TSynNPGSyn.Create(Self);
+  SynNBCSyn  := TSynNBCSyn.Create(Self);
+  SynRSSyn   := TSynRSSyn.Create(Self);
+  SynROPSSyn := TSynROPSSyn.Create(Self);
   with SynNXCSyn do
   begin
     Name := 'SynNXCSyn';
@@ -841,6 +872,11 @@ begin
   begin
     Name := 'SynRSSyn';
     DefaultFilter := 'RICScript Files (*.rs)|*.rs';
+  end;
+  with SynROPSSyn do
+  begin
+    Name := 'SynROPSSyn';
+//    PackageSource := False;
   end;
 end;
 
@@ -2586,6 +2622,7 @@ procedure TfrmCodeEdit.HookCompProp;
 var
   HL : TSynCustomHighlighter;
 begin
+{$IFNDEF FPC}
   SynNBCCompProp.RemoveEditor(TheEditor);
   SynNXCCompProp.RemoveEditor(TheEditor);
   SynNPGCompProp.RemoveEditor(TheEditor);
@@ -2612,8 +2649,10 @@ begin
     SynROPSCompProp.AddEditor(TheEditor);
     scpParams.AddEditor(TheEditor);
   end;
+{$ENDIF}
 end;
 
+{$IFNDEF FPC}
 procedure TfrmCodeEdit.DoLoadAPI(cp : TSynCompletionProposal; aStrings : TStrings);
 var
   SL : TStrings;
@@ -2629,10 +2668,14 @@ begin
     SL.Free;
   end;
 end;
+{$ENDIF}
+
 
 procedure TfrmCodeEdit.LoadNXCCompProp;
 begin
+{$IFNDEF FPC}
   DoLoadAPI(SynNXCCompProp, fNXCAPIBase);
+{$ENDIF}
 end;
 
 procedure TfrmCodeEdit.AddUserDefinedFunctions(aStrings: TStrings);
@@ -2851,6 +2894,7 @@ begin
   end;
 end;
 
+{$IFNDEF FPC}
 procedure TfrmCodeEdit.scpParamsExecute(Kind: SynCompletionType; Sender: TObject;
   var CurrentInput: String; var x, y: Integer; var CanExecute: Boolean);
 var
@@ -2963,6 +3007,7 @@ begin
   else
     SCP.ItemList.Clear;
 end;
+{$ENDIF}
 
 procedure TfrmCodeEdit.FormCreate(Sender: TObject);
 var
@@ -2995,10 +3040,14 @@ begin
   GetSortedHighlighters(Self, Highlighters, False);
   dlgOpen.Filter := GetHighlightersFilter(Highlighters) + SFilterAllFiles;
   dlgSave.Filter := dlgOpen.Filter;
+{$IFNDEF FPC}
   PopulateROPSCompProp(SynROPSCompProp.InsertList, SynROPSCompProp.ItemList);
   LoadNBCCodeComplete(SynNBCCompProp.ItemList);
   LoadNPGCodeComplete(SynNPGCompProp.ItemList);
   LoadRSCodeComplete(SynRSCompProp.ItemList);
+{$ENDIF}
+  // hook up the ROPS compiler
+  theROPSCompiler := Self.ce;
   CreateTheEditor;
   SetValuesFromPreferences;
   SetSyntaxHighlighter;
@@ -3028,7 +3077,7 @@ begin
     frmMacroManager.CurrentLibraryPath := DefaultMacroLibrary;
   ConfigureOtherFirmwareOptions;
   PopupMenu := ConstructForm.ConstructMenu;
-  TheEditor.Font.Name := FontName;
+  TheEditor.Font.Name := 'Monaco';//FontName;
   TheEditor.Font.Size := FontSize;
   Application.ProcessMessages;
 end;
@@ -3232,11 +3281,11 @@ begin
   TheEditor.StructureLineColor       := StructureColor;
   with TheEditor.Gutter do
   begin
-    Color := GutterColor;
     Width := GutterWidth;
     AutoSize := AutoSizeGutter;
     Visible  := GutterVisible;
 {$IFNDEF FPC}
+    Color := GutterColor;
     LeadingZeros := ShowLeadingZeros;
 {$ENDIF}
   end;
@@ -3248,6 +3297,14 @@ begin
   TheEditor.Gutter.ZeroStart       := ZeroStart;
   TheEditor.Gutter.UseFontStyle    := UseFontStyle;
   TheEditor.Keystrokes.Assign(PrefForm.Keystrokes);
+{$ELSE} // FPC
+  TheEditor.Gutter.LineNumberPart.Visible := ShowLineNumbers;
+  TheEditor.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf := GutterLNMultiple;
+
+  TheEditor.Gutter.CodeFoldPart.Visible := False;
+
+  TheEditor.Gutter.SeparatorPart.Visible := True;
+  TheEditor.Gutter.SeparatorPart(0).Index := 3;
 {$ENDIF}
   AddEditorExpertCommands(TheEditor);
 end;
@@ -3605,6 +3662,7 @@ procedure TfrmCodeEdit.FormDestroy(Sender: TObject);
 begin
   alMain.OnUpdate := nil;
   SynAutoComp.RemoveEditor(TheEditor);
+{$IFNDEF FPC}
   SynMacroRec.RemoveEditor(TheEditor);
   SynNBCCompProp.RemoveEditor(TheEditor);
   SynNXCCompProp.RemoveEditor(TheEditor);
@@ -3612,6 +3670,7 @@ begin
   SynRSCompProp.RemoveEditor(TheEditor);
   SynROPSCompProp.RemoveEditor(TheEditor);
   scpParams.RemoveEditor(TheEditor);
+{$ENDIF}
 {$IFNDEF FPC}
   if Assigned(frmCodeExplorer) then
   begin
@@ -3642,7 +3701,9 @@ procedure TfrmCodeEdit.UpdateSynComponents;
 var
   i : Integer;
   C : TComponent;
+{$IFNDEF FPC}
   TmpOptions : TSynCompletionOptions;
+{$ENDIF}
 begin
   // load NXC syntax completion proposal component
   fNXCAPIBase.Clear;
@@ -3650,6 +3711,7 @@ begin
   fNXCAPIBase.AddStrings(SynNXCSyn.Constants);
   fNXCAPIBase.AddStrings(SynNXCSyn.Keywords);
   fNXCAPIBase.Sort;
+{$IFNDEF FPC}
   SynNXCCompProp.ItemList := fNXCAPIBase;
   // configure code completion options for NQC, NBC, NXC, and RICScript
   if CCInsensitive then
@@ -3659,10 +3721,12 @@ begin
   SynNBCCompProp.Options := TmpOptions;
   SynNXCCompProp.Options := TmpOptions;
   SynRSCompProp.Options  := TmpOptions;
+{$ENDIF}
 //  SynAutoComp.AutoCompleteList.Assign(PrefForm.CodeTemplates);
   // also copy shortcut settings
   SynMacroRec.PlaybackShortCut := PlayMacroShortCut;
   SynMacroRec.RecordShortCut   := RecMacroShortCut;
+{$IFNDEF FPC}
   scpParams.ShortCut           := ParamCompShortCut;
   for i := 0 to ComponentCount - 1 do begin
     C := Components[i];
@@ -3671,6 +3735,7 @@ begin
       TSynCompletionProposal(C).ShortCut := CodeCompShortCut;
     end;
   end;
+{$ENDIF}
 // also set font pref for exporters
   expHTML.Font.Name := FontName;
   expHTML.Font.Size := FontSize;
@@ -3688,9 +3753,95 @@ begin
 //
 end;
 
+procedure TfrmCodeEdit.actSearchGrepSearchExecute(Sender: TObject);
+begin
+//  fGDE.Click(Sender);
+end;
+
+procedure TfrmCodeEdit.actSearchGrepResultsExecute(Sender: TObject);
+begin
+//  fGE.Click(Sender);
+end;
+
+procedure TfrmCodeEdit.actToolsNXTWatchListExecute(Sender: TObject);
+begin
+//  frmNXTWatchList.Visible := not frmNXTWatchList.Visible;
+end;
+
+procedure TfrmCodeEdit.HandleGetExpressions(Sender: TObject; aStrings: TStrings);
+var
+  i : integer;
+begin
+  aStrings.Clear;
+  if IsNXT then
+  begin
+    if FileIsROPS then
+    begin
+      if ce.Exec.Status in [isRunning, isPaused] then
+        for i := 0 to ce.Exec.GlobalVarNames.Count - 1 do
+          aStrings.Add(ce.Exec.GlobalVarNames[i]);
+      if ce.Exec.Status in [isRunning, isPaused] then
+      begin
+        for i := 0 to ce.Exec.CurrentProcVars.Count - 1 do
+          aStrings.Add(ce.Exec.CurrentProcVars[i]);
+        for i := 0 to ce.Exec.CurrentProcParams.Count -1 do
+          aStrings.Add(ce.Exec.CurrentProcParams[i]);
+      end;
+    end
+    else if FileIsNBCOrNXC then
+    begin
+      for i := 0 to CurrentProgram.Dataspace.Count - 1 do
+        aStrings.Add(CurrentProgram.Dataspace[i].Name); // ?? PrettyName
+    end;
+  end;
+end;
+
+(*
+procedure TfrmCodeEdit.HandleGetWatchValue(Info: TWatchInfo; var Value: string);
+var
+  i : integer;
+begin
+  if IsNXT then
+  begin
+    if FileIsROPS then
+    begin
+      Value := ce.GetVarContents(Info.Expression);
+    end
+    else if FileIsNBCOrNXC then
+    begin
+      i := CurrentProgram.Dataspace.IndexOfName(Info.Expression);
+      if i <> -1 then
+        Value := BrickComm.GetVariableValue(i);
+    end;
+  end;
+end;
+*)
+
+procedure TfrmCodeEdit.HandleIsProcessAccessible(Sender: TObject; var Accessible: boolean);
+var
+  name : string;
+begin
+  if IsNXT then
+  begin
+    if FileIsROPS then
+    begin
+      Accessible := ce.Exec.Status in [isRunning, isPaused];
+    end
+    else if FileIsNBCOrNXC then
+    begin
+      Accessible := False;
+      if BrickComm.GetCurrentProgramName(name) then
+      begin
+        Accessible := CurrentProgram.Loaded(name);
+      end;
+    end;
+  end;
+end;
+
+
 {$IFDEF FPC}
 initialization
   {$i ucodeedit.lrs}
 {$ENDIF}
 
-end.
+end.

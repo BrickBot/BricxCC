@@ -49,10 +49,10 @@ uses
   uWav2RSO in 'uWav2RSO.pas' {frmWave2RSO},
   ConstructUnit in 'ConstructUnit.pas' {ConstructForm},
   MemoryUnit in 'MemoryUnit.pas' {MemoryForm},
+//  uNXTWatchList in 'uNXTWatchList.pas' {frmNXTWatchList},
   ucodeedit, uCodeExplorer, 
   uMacroForm, CodeUnit, uCompStatus, uBasicPrefs, 
-  uNXCCodeComp, uNXTCodeComp, uRICCodeComp
-  { you can add units after this };
+  uNXCCodeComp, uNXTCodeComp, uRICCodeComp;
 
 {$R *.res}
 
@@ -62,6 +62,13 @@ var
 begin
   reg := TRegistry.Create;
   try
+{$IFDEF FPC}
+    ProgramDir := UserDataLocalPath;
+{$ELSE}
+    ProgramDir := ExtractFilePath(Application.ExeName);
+{$ENDIF}
+
+//    ResetBasicValues(reg, nil);
     LoadBasicValues(reg, nil);
     LocalBrickType := rtNXT;
     LocalStandardFirmware := True;
@@ -70,8 +77,6 @@ begin
     Application.Title:='NXT Command Center';
     RequireDerivedFormResource := True;
     Application.Initialize;
-
-    ProgramDir := ExtractFilePath(Application.ExeName);
 
     LoadNXCCodeCompFromFile(ProgramDir+DefaultDir+'nxc_api.txt', True);
     LoadNBCCodeCompFromFile(ProgramDir+DefaultDir+'nbc_api.txt', True);
@@ -95,6 +100,7 @@ begin
     Application.CreateForm(TfrmMacroManager, frmMacroManager);
     Application.CreateForm(TCodeForm, CodeForm);
     Application.CreateForm(TfrmCompStatus, frmCompStatus);
+//    Application.CreateForm(TfrmNXTWatchList, frmNXTWatchList);
 
     // prompt for port.
     with TfrmPortPrompt.Create(nil) do
@@ -110,7 +116,6 @@ begin
     finally
       Free;
     end;
-
     Application.Run;
 
     SaveBasicValues(reg, nil);

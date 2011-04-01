@@ -40,9 +40,9 @@ object MemoryForm: TMemoryForm
   end
   object chkUseHex: TCheckBox
     Left = 104
-    Height = 22
+    Height = 18
     Top = 356
-    Width = 138
+    Width = 148
     HelpContext = 21003
     Caption = 'Hexadecimal format'
     OnClick = chkUseHexClick
@@ -58,4 +58,4 @@ object MemoryForm: TMemoryForm
     OnClick = btnHelpClick
     TabOrder = 3
   end
-end
+end

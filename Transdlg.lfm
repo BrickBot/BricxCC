@@ -18,52 +18,52 @@ object frmTransEdit: TfrmTransEdit
   LCLVersion = '0.9.31'
   object lblTitle: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 12
-    Width = 31
+    Width = 33
     Caption = '&Title:'
     FocusControl = edTitle
     ParentColor = False
   end
   object lblProgram: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 40
-    Width = 60
+    Width = 58
     Caption = '&Program:'
     FocusControl = edProgram
     ParentColor = False
   end
   object lblParameters: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 96
-    Width = 79
+    Width = 75
     Caption = 'P&arameters:'
     FocusControl = edParameters
     ParentColor = False
   end
   object lblMacros: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 188
-    Width = 51
+    Width = 50
     Caption = 'Ma&cros:'
     FocusControl = MacroList
     ParentColor = False
   end
   object lblWorkingDir: TLabel
     Left = 8
-    Height = 18
+    Height = 17
     Top = 68
-    Width = 74
+    Width = 78
     Caption = '&Working dir:'
     FocusControl = edWorkingDir
     ParentColor = False
   end
   object lblExt: TLabel
     Left = 248
-    Height = 18
+    Height = 17
     Top = 124
     Width = 67
     Caption = 'E&xtension:'
@@ -72,7 +72,7 @@ object frmTransEdit: TfrmTransEdit
   end
   object edTitle: TEdit
     Left = 84
-    Height = 27
+    Height = 21
     Top = 8
     Width = 257
     HelpContext = 43001
@@ -82,7 +82,7 @@ object frmTransEdit: TfrmTransEdit
   end
   object edProgram: TEdit
     Left = 84
-    Height = 27
+    Height = 21
     Top = 36
     Width = 257
     HelpContext = 43002
@@ -92,7 +92,7 @@ object frmTransEdit: TfrmTransEdit
   end
   object edParameters: TEdit
     Left = 84
-    Height = 27
+    Height = 21
     Top = 92
     Width = 257
     HelpContext = 43004
@@ -120,11 +120,10 @@ object frmTransEdit: TfrmTransEdit
     OnClick = MacroListClick
     OnDblClick = InsertButtonClick
     TabOrder = 7
-    TopIndex = -1
   end
   object edWorkingDir: TEdit
     Left = 84
-    Height = 27
+    Height = 21
     Top = 64
     Width = 257
     HelpContext = 43003
@@ -185,23 +184,23 @@ object frmTransEdit: TfrmTransEdit
   end
   object chkWait: TCheckBox
     Left = 84
-    Height = 22
+    Height = 18
     Top = 152
-    Width = 130
+    Width = 128
     Caption = 'Wait for program'
     TabOrder = 13
   end
   object chkClose: TCheckBox
     Left = 204
-    Height = 22
+    Height = 18
     Top = 152
-    Width = 166
+    Width = 161
     Caption = 'Close and reopen port'
     TabOrder = 14
   end
   object edtExt: TEdit
     Left = 304
-    Height = 27
+    Height = 21
     Top = 120
     Width = 37
     HelpContext = 43004
@@ -210,9 +209,9 @@ object frmTransEdit: TfrmTransEdit
   end
   object chkRestrict: TCheckBox
     Left = 84
-    Height = 22
+    Height = 18
     Top = 122
-    Width = 185
+    Width = 182
     Caption = 'Restrict by file extension?'
     TabOrder = 4
   end
@@ -224,4 +223,4 @@ object frmTransEdit: TfrmTransEdit
     left = 376
     top = 228
   end
-end
+end
