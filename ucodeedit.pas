@@ -545,20 +545,20 @@ begin
 //    Height := 285;
     Cursor := crIBeam;
     Align := alClient;
-//    Font.Charset := DEFAULT_CHARSET;
+    Font.Charset := DEFAULT_CHARSET;
     Font.Color := clWindowText;
     Font.Height := -13;
 {$IFDEF FPC}
 {$IFDEF LCLCarbon}
     Font.Name := 'Monaco';
-{$ELSE}
-    Font.Name := 'Courier New';
-{$ENDIF}
+    Font.Size := 12;
     Font.Quality := fqDefault;
 {$ELSE}
     Font.Name := 'Courier New';
 {$ENDIF}
-    Font.Size := 12;
+{$ELSE}
+    Font.Name := 'Courier New';
+{$ENDIF}
     Font.Pitch := fpFixed;
     Font.Style := [];
     ParentColor := False;
