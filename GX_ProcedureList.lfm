@@ -18,19 +18,19 @@ object fmProcedureList: TfmProcedureList
   LCLVersion = '0.9.31'
   object pnHolder: TPanel
     Left = 0
-    Height = 276
+    Height = 282
     Top = 58
     Width = 527
     Align = alClient
     BevelOuter = bvNone
     Caption = 'pnHolder'
-    ClientHeight = 276
+    ClientHeight = 282
     ClientWidth = 527
     FullRepaint = False
     TabOrder = 0
     object lvProcs: TListView
       Left = 0
-      Height = 276
+      Height = 282
       Top = 0
       Width = 527
       HelpContext = 4901
@@ -64,8 +64,8 @@ object fmProcedureList: TfmProcedureList
   end
   object StatusBar: TStatusBar
     Left = 0
-    Height = 21
-    Top = 334
+    Height = 15
+    Top = 340
     Width = 527
     HelpContext = 4902
     Panels = <    
@@ -104,9 +104,9 @@ object fmProcedureList: TfmProcedureList
       TabOrder = 0
       object lblMethods: TLabel
         Left = 14
-        Height = 15
+        Height = 16
         Top = 10
-        Width = 41
+        Width = 37
         Alignment = taRightJustify
         Caption = '&Search'
         FocusControl = edtMethods
@@ -114,7 +114,7 @@ object fmProcedureList: TfmProcedureList
       end
       object edtMethods: TEdit
         Left = 53
-        Height = 24
+        Height = 22
         Top = 6
         Width = 200
         HelpContext = 4903
@@ -137,9 +137,9 @@ object fmProcedureList: TfmProcedureList
       TabOrder = 1
       object lblObjects: TLabel
         Left = 16
-        Height = 15
+        Height = 16
         Top = 8
-        Width = 44
+        Width = 42
         Alignment = taRightJustify
         Caption = '&Objects'
         FocusControl = cbxObjects
@@ -147,7 +147,7 @@ object fmProcedureList: TfmProcedureList
       end
       object cbxObjects: TComboBox
         Left = 56
-        Height = 31
+        Height = 20
         Top = 4
         Width = 196
         HelpContext = 4904
@@ -633,4 +633,4 @@ object fmProcedureList: TfmProcedureList
       0000000000000000000000000000
     }
   end
-end
+end

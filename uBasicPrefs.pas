@@ -128,6 +128,7 @@ var
   ShowLineNumbers : boolean;
   CompilerDebug : boolean;
   ShowCompilerStatus : boolean;
+  GutterLNMultiple : integer;
 
 var
   // forth console settings
@@ -271,7 +272,11 @@ function PreferredLanguageName : string;
 
 const
 {$IFDEF FPC}
+{$IFDEF LCLcarbon}
+  K_EDITOR_FONTNAME_DEFAULT = 'Monaco';
+{$ELSE}
   K_EDITOR_FONTNAME_DEFAULT = 'Courier 10 Pitch';
+{$ENDIF}
   K_EDITOR_COLOR_DEFAULT    = clWhite;
   K_SEL_FG_COLOR_DEFAULT    = clWhite;
   K_SEL_BG_COLOR_DEFAULT    = clNavy;
@@ -869,15 +874,18 @@ begin
   if not Reg_KeyExists(reg, 'NXC_Keywords') then
   begin
     // no registry key so load from file instead
-    if FileExists(ProgramDir+DefaultDir+'nxc_keywords.txt') then
-      cc_nxc_keywords.LoadFromFile(ProgramDir+DefaultDir+'nxc_keywords.txt');
-    if FileExists(ProgramDir+DefaultDir+'nxc_constants.txt') then
-      cc_nxc_constants.LoadFromFile(ProgramDir+DefaultDir+'nxc_constants.txt');
+    tmpStr := ProgramDir+DefaultDir+'nxc_keywords.txt';
+    if FileExists(tmpStr) then
+      cc_nxc_keywords.LoadFromFile(tmpStr);
+    tmpStr := ProgramDir+DefaultDir+'nxc_constants.txt';
+    if FileExists(tmpStr) then
+      cc_nxc_constants.LoadFromFile(tmpStr);
     SL := TStringList.Create;
     try
-      if FileExists(ProgramDir+DefaultDir+'nxc_api.txt') then
+      tmpStr := ProgramDir+DefaultDir+'nxc_api.txt';
+      if FileExists(tmpStr) then
       begin
-        SL.LoadFromFile(ProgramDir+DefaultDir+'nxc_api.txt');
+        SL.LoadFromFile(tmpStr);
         for i := 0 to SL.Count - 1 do
         begin
           tmpStr := SL[i];
@@ -1082,7 +1090,7 @@ begin
     ShowTemplateForm    := Reg_ReadBool(reg, 'ShowTemplateForm', true);
     ShowTemplatePopup   := Reg_ReadBool(reg, 'ShowTemplatePopup', false);
     FontName            := Reg_ReadString(reg, 'FontName', K_EDITOR_FONTNAME_DEFAULT);
-    FontSize            := Reg_ReadInteger(reg, 'FontSize', 9);
+    FontSize            := Reg_ReadInteger(reg, 'FontSize', 12);
     AutoIndentCode      := Reg_ReadBool(reg, 'AutoIndentCode', true);
     MacrosOn            := Reg_ReadBool(reg, 'MacrosOn', false);
     RICDecompAsData     := Reg_ReadBool(reg, 'RICDecompAsData', false);
@@ -1169,10 +1177,11 @@ begin
     DigitCount       := Reg_ReadInteger(reg, 'DigitCount', 4);
     LeftOffset       := Reg_ReadInteger(reg, 'LeftOffset', 16);
     RightOffset      := Reg_ReadInteger(reg, 'RightOffset', 2);
-    ShowLineNumbers  := Reg_ReadBool(reg, 'ShowLineNumbers', false);
+    ShowLineNumbers  := Reg_ReadBool(reg, 'ShowLineNumbers', true);
+    GutterLNMultiple := Reg_ReadInteger(reg, 'GutterLNMultiple', 5);
     ShowLeadingZeros := Reg_ReadBool(reg, 'ShowLeadingZeros', false);
     ZeroStart        := Reg_ReadBool(reg, 'ZeroStart', false);
-    AutoSizeGutter   := Reg_ReadBool(reg, 'AutoSizeGutter', false);
+    AutoSizeGutter   := Reg_ReadBool(reg, 'AutoSizeGutter', true);
     GutterVisible    := Reg_ReadBool(reg, 'GutterVisible', true);
     UseFontStyle     := Reg_ReadBool(reg, 'UseFontStyle', false);
     SelectOnClick    := Reg_ReadBool(reg, 'SelectOnClick', false);
@@ -1649,7 +1658,7 @@ initialization
   SelectionBackground := K_SEL_BG_COLOR_DEFAULT;
   StructureColor      := K_STRUCT_COLOR_DEFAULT;
   ActiveLineColor     := K_ALINE_COLOR_DEFAULT;
-  FontSize            := 9;
+  FontSize            := 12;
   AutoIndentCode      := true;
   MacrosOn            := false;
   RICDecompAsData     := false;
@@ -1717,4 +1726,4 @@ finalization
   FreeAndNil(cc_nxc_commands);
   FreeAndNil(cc_nxc_constants);
 
-end.
+end.

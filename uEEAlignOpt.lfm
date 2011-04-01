@@ -16,9 +16,9 @@ object fmAlign: TfmAlign
   LCLVersion = '0.9.31'
   object lblToken: TLabel
     Left = 8
-    Height = 15
+    Height = 14
     Top = 7
-    Width = 85
+    Width = 83
     Caption = '&Align on token:'
     FocusControl = lstTokens
     ParentColor = False
@@ -55,12 +55,11 @@ object fmAlign: TfmAlign
     OnDblClick = lstTokensDblClick
     PopupMenu = pmuTokens
     TabOrder = 0
-    TopIndex = -1
   end
   object cbxMode: TComboBox
     Left = 8
-    Height = 25
-    Top = 207
+    Height = 20
+    Top = 212
     Width = 164
     Anchors = [akLeft, akRight, akBottom]
     ItemHeight = 0
@@ -81,4 +80,4 @@ object fmAlign: TfmAlign
       OnClick = mitConfigurationClick
     end
   end
-end
+end

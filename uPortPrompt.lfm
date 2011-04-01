@@ -16,17 +16,17 @@ object frmPortPrompt: TfrmPortPrompt
   LCLVersion = '0.9.31'
   object lblPort: TLabel
     Left = 8
-    Height = 15
+    Height = 16
     Top = 12
-    Width = 28
+    Width = 27
     Caption = 'Port:'
     ParentColor = False
   end
   object chkUseBluetooth: TCheckBox
     Left = 40
-    Height = 22
+    Height = 18
     Top = 32
-    Width = 103
+    Width = 109
     Caption = 'Use bluetooth'
     TabOrder = 1
     Visible = False
@@ -53,11 +53,11 @@ object frmPortPrompt: TfrmPortPrompt
   end
   object cboPort: TComboBox
     Left = 40
-    Height = 27
+    Height = 21
     Top = 8
     Width = 121
     ItemHeight = 0
     TabOrder = 0
     Text = 'usb'
   end
-end
+end

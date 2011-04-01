@@ -18,14 +18,14 @@ object frmAlignOptions: TfrmAlignOptions
     Width = 229
     Anchors = [akTop, akLeft, akRight, akBottom]
     Caption = 'Tokens to Align On'
-    ClientHeight = 230
-    ClientWidth = 225
+    ClientHeight = 223
+    ClientWidth = 221
     TabOrder = 0
     object mmoTokens: TMemo
       Left = 11
-      Height = 212
+      Height = 205
       Top = 8
-      Width = 205
+      Width = 201
       Anchors = [akTop, akLeft, akRight, akBottom]
       ScrollBars = ssVertical
       TabOrder = 0
@@ -61,25 +61,25 @@ object frmAlignOptions: TfrmAlignOptions
     Width = 229
     Anchors = [akLeft, akRight, akBottom]
     Caption = 'Options'
-    ClientHeight = 38
-    ClientWidth = 225
+    ClientHeight = 31
+    ClientWidth = 221
     TabOrder = 1
     object lblWhitespace: TLabel
       Left = 11
-      Height = 15
+      Height = 14
       Top = 9
-      Width = 142
+      Width = 133
       Caption = 'Minimum leading spaces'
       FocusControl = edtWhitespace
       ParentColor = False
     end
     object edtWhitespace: TSpinEdit
       Left = 159
-      Height = 24
+      Height = 16
       Top = 5
       Width = 57
       MaxValue = 0
       TabOrder = 0
     end
   end
-end
+end

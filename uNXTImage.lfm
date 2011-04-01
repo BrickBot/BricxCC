@@ -26700,7 +26700,7 @@ object frmNXTImage: TfrmNXTImage
   end
   object lblInfo: TLabel
     Left = 0
-    Height = 20
+    Height = 19
     Top = 0
     Width = 429
     Align = alTop
@@ -26713,8 +26713,8 @@ object frmNXTImage: TfrmNXTImage
   end
   object lblNXTOff: TLabel
     Left = 0
-    Height = 18
-    Top = 644
+    Height = 17
+    Top = 645
     Width = 429
     Align = alBottom
     Alignment = taCenter
@@ -26936,4 +26936,4 @@ object frmNXTImage: TfrmNXTImage
     left = 80
     top = 87
   end
-end
+end

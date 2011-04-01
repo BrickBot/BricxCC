@@ -21,7 +21,11 @@ unit uGrepCommonUtils;
 interface
 
 uses
-  Classes, Controls, Dialogs, SysUtils, Windows, Registry, Graphics;
+  Classes, Controls, Dialogs, SysUtils,
+{$IFNDEF FPC}
+  Windows,
+{$ENDIF}
+  Registry, Graphics;
 
 type
   TGXFontFlag = (ffColor);
@@ -39,7 +43,7 @@ type
     procedure ReadStrings(const List: TStrings; const Section, Ident: string);
     // Read from registry at Section strings into List, using Ident as the prefix for the string values.
     procedure WriteStrings(const List: TStrings; const Section, Ident: string);
-    constructor Create(const FileName: string = '');
+    constructor Create(const aFileName: string = '');
   end;
 
 const
@@ -87,7 +91,9 @@ resourcestring
 implementation
 
 uses
-  FileCtrl, uMiscDefines, BricxccSynEdit, MainUnit, Math;
+  FileCtrl, uMiscDefines, BricxccSynEdit,
+//  MainUnit,
+  Math;
 
 function IsCharIdentifier(aCh : Char) : boolean;
 const
@@ -315,6 +321,7 @@ var
   SL : TStringList;
 begin
   Result := '';
+{$IFNDEF FPC}
   if Assigned(MainForm) then
   begin
     SL := TStringList.Create;
@@ -327,6 +334,8 @@ begin
       FreeAndNil(SL);
     end;
   end;
+{$ELSE}
+{$ENDIF}
 end;
 
 procedure GxOtaGoToFileLineColumn(const FileName: string; Line: Integer; StartColumn: Integer = 0; StopColumn: Integer = 0; ShowInMiddle: Boolean = True);
@@ -347,10 +356,13 @@ begin
   end
   else
   begin
+{$IFNDEF FPC}
     if Assigned(MainForm) then
     begin
       MainForm.OpenFile(Filename, Line);
     end;
+{$ELSE}
+{$ENDIF}
   end;
   E := GetActiveEditor;
   if Assigned(E) then
@@ -394,12 +406,12 @@ const
 
 { TGExpertsSettings }
 
-constructor TGExpertsSettings.Create(const FileName: string);
+constructor TGExpertsSettings.Create(const aFileName: string);
 begin
-  if FileName = '' then
+  if aFileName = '' then
     inherited Create('Software\BricxCC\3.3')
   else
-    inherited Create(FileName);
+    inherited Create(aFileName);
 end;
 
 procedure TGExpertsSettings.SaveFont(const Section: string; const Font: TFont; Flags: TGXFontFlags);
@@ -467,4 +479,4 @@ begin
   WriteInteger(Section, CountIdent, List.Count);
 end;
 
-end.
+end.

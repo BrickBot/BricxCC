@@ -21,7 +21,10 @@ unit uGrepResults;
 interface
 
 uses
-  Windows, Classes, Graphics, Controls, Forms,
+{$IFNDEF FPC}
+  Windows,
+{$ENDIF}
+  Classes, Graphics, Controls, Forms,
   StdCtrls, ExtCtrls, uGrepBackend, uGrepExpert, ComCtrls,
   Menus, ActnList, ToolWin, ImgList;
 
@@ -106,7 +109,7 @@ type
     procedure actListGotoSelectedExecute(Sender: TObject);
     procedure actListContractExecute(Sender: TObject);
     procedure actListExpandExecute(Sender: TObject);
-    procedure ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
+    procedure ActionsUpdate(aAction: TBasicAction; var Handled: Boolean);
     procedure lbResultsClick(Sender: TObject);
     procedure actShowMatchContextExecute(Sender: TObject);
     procedure actViewToolBarExecute(Sender: TObject);
@@ -862,7 +865,7 @@ begin
   fmGrepResults := nil;
 end;
 
-procedure TfmGrepResults.ActionsUpdate(Action: TBasicAction; var Handled: Boolean);
+procedure TfmGrepResults.ActionsUpdate(aAction: TBasicAction; var Handled: Boolean);
 var
   HaveItems: Boolean;
   Processing: Boolean;
@@ -954,9 +957,10 @@ begin
   RefreshContextLines;
 end;
 
-procedure TfmGrepResults.actReplaceSelectedExecute(Sender: TObject);
 resourcestring
   SReplaceLine = sLineBreak + 'On line: ';
+
+procedure TfmGrepResults.actReplaceSelectedExecute(Sender: TObject);
 var
   TimeStart: TDateTime;
   MatchesFound: Integer;
@@ -1063,4 +1067,4 @@ begin
 end;
 
 end.
-
+

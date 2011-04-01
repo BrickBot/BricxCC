@@ -23,14 +23,14 @@ object JoystickForm: TJoystickForm
     Width = 105
     HelpContext = 47005
     Caption = 'Left Motor'
-    ClientHeight = 52
-    ClientWidth = 101
+    ClientHeight = 45
+    ClientWidth = 97
     TabOrder = 0
     object LMotorA: TRadioButton
       Left = 2
-      Height = 22
+      Height = 18
       Top = 2
-      Width = 31
+      Width = 29
       Caption = 'A'
       Checked = True
       OnClick = LMotorClick
@@ -40,9 +40,9 @@ object JoystickForm: TJoystickForm
     object LMotorB: TRadioButton
       Tag = 1
       Left = 34
-      Height = 22
+      Height = 18
       Top = 2
-      Width = 32
+      Width = 28
       Caption = 'B'
       OnClick = LMotorClick
       TabOrder = 1
@@ -50,16 +50,16 @@ object JoystickForm: TJoystickForm
     object LMotorC: TRadioButton
       Tag = 2
       Left = 66
-      Height = 22
+      Height = 18
       Top = 2
-      Width = 32
+      Width = 29
       Caption = 'C'
       OnClick = LMotorClick
       TabOrder = 2
     end
     object LReversed: TCheckBox
       Left = 2
-      Height = 22
+      Height = 18
       Top = 26
       Width = 77
       Caption = 'Reversed'
@@ -74,14 +74,14 @@ object JoystickForm: TJoystickForm
     Width = 105
     HelpContext = 47006
     Caption = 'Right Motor'
-    ClientHeight = 52
-    ClientWidth = 101
+    ClientHeight = 45
+    ClientWidth = 97
     TabOrder = 1
     object RMotorA: TRadioButton
       Left = 2
-      Height = 22
+      Height = 18
       Top = 4
-      Width = 31
+      Width = 29
       Caption = 'A'
       OnClick = RMotorClick
       TabOrder = 0
@@ -89,9 +89,9 @@ object JoystickForm: TJoystickForm
     object RMotorB: TRadioButton
       Tag = 1
       Left = 34
-      Height = 22
+      Height = 18
       Top = 4
-      Width = 32
+      Width = 28
       Caption = 'B'
       OnClick = RMotorClick
       TabOrder = 1
@@ -99,9 +99,9 @@ object JoystickForm: TJoystickForm
     object RmotorC: TRadioButton
       Tag = 2
       Left = 66
-      Height = 22
+      Height = 18
       Top = 4
-      Width = 32
+      Width = 29
       Caption = 'C'
       Checked = True
       OnClick = RMotorClick
@@ -110,7 +110,7 @@ object JoystickForm: TJoystickForm
     end
     object RReversed: TCheckBox
       Left = 2
-      Height = 22
+      Height = 18
       Top = 28
       Width = 77
       Caption = 'Reversed'
@@ -125,8 +125,8 @@ object JoystickForm: TJoystickForm
     Width = 104
     HelpContext = 47007
     Caption = 'Speed'
-    ClientHeight = 45
-    ClientWidth = 100
+    ClientHeight = 38
+    ClientWidth = 96
     TabOrder = 2
     object SpeedBar: TTrackBar
       Left = 3
@@ -146,14 +146,14 @@ object JoystickForm: TJoystickForm
     Width = 105
     HelpContext = 47004
     Caption = 'Drive Mode'
-    ClientHeight = 52
-    ClientWidth = 101
+    ClientHeight = 45
+    ClientWidth = 97
     TabOrder = 3
     object LeftRightBtn: TRadioButton
       Left = 2
-      Height = 22
+      Height = 18
       Top = 3
-      Width = 77
+      Width = 85
       Caption = 'Left-Right'
       Checked = True
       OnClick = LeftRightBtnClick
@@ -162,9 +162,9 @@ object JoystickForm: TJoystickForm
     end
     object DriveSteerBtn: TRadioButton
       Left = 2
-      Height = 22
+      Height = 18
       Top = 27
-      Width = 88
+      Width = 92
       Caption = 'Drive-Steer'
       OnClick = DriveSteerBtnClick
       TabOrder = 1
@@ -177,8 +177,8 @@ object JoystickForm: TJoystickForm
     Width = 105
     HelpContext = 47001
     Caption = 'Movement'
-    ClientHeight = 121
-    ClientWidth = 101
+    ClientHeight = 114
+    ClientWidth = 97
     TabOrder = 4
     object DirBtn7: TSpeedButton
       Tag = 7

@@ -51,7 +51,7 @@ interface
 {$IFDEF VER130} {$DEFINE D5} {$DEFINE D4} {$DEFINE D3} {$DEFINE D2} {$ENDIF} // D5
 {$IFDEF VER140} {$DEFINE D6} {$DEFINE D5} {$DEFINE D4} {$DEFINE D3} {$DEFINE D2} {$ENDIF} // D6
 {$IFDEF VER150} {$DEFINE D7} {$DEFINE D6} {$DEFINE D5} {$DEFINE D4} {$DEFINE D3} {$DEFINE D2} {$ENDIF} // D7
-{$IF CompilerVersion > 15} {$DEFINE D7} {$DEFINE D6} {$DEFINE D5} {$DEFINE D4} {$DEFINE D3} {$DEFINE D2} {$IFEND} // D7
+(*{$IF CompilerVersion > 15} {$DEFINE D7} {$DEFINE D6} {$DEFINE D5} {$DEFINE D4} {$DEFINE D3} {$DEFINE D2} {$IFEND} // D7  *)
 
 // ======== Define base compiler options
 {$BOOLEVAL OFF}
@@ -72,9 +72,11 @@ interface
 
 // ======== Define options for TRegExpr engine
 {.$DEFINE UniCode} // Unicode support
+{$IFNDEF FPC}
 {$IF CompilerVersion >= 20}
   {$DEFINE UniCode}
 {$IFEND}
+{$ENDIF}
 {$DEFINE RegExpPCodeDump} // p-code dumping (see Dump method)
 {$IFNDEF FPC} // the option is not supported in FreePascal
  {$DEFINE reRealExceptionAddr} // exceptions will point to appropriate source line, not to Error procedure
@@ -108,11 +110,15 @@ uses
 type
  {$IFDEF UniCode}
  PRegExprChar = PWideChar;
+{$IFNDEF FPC}
  {$IF CompilerVersion >= 20}
  RegExprString = UnicodeString;
  {$ELSE}
  RegExprString = WideString;
  {$IFEND}
+{$ELSE}
+ RegExprString = WideString;
+{$ENDIF}
  REChar = WideChar;
  {$ELSE}
  PRegExprChar = PChar;
@@ -640,8 +646,10 @@ function RegExprSubExpressions (const ARegExpr : string;
 
 implementation
 
+{$IFNDEF FPC}
 uses
  Windows; // CharUpper/Lower
+{$ENDIF}
 
 const
  TRegExprVersionMajor : integer = 0;
@@ -4047,5 +4055,4 @@ initialization
  RegExprInvertCaseFunction := TRegExpr.InvertCaseFunction;
 
 {$ENDIF}
-end.
-
+end.

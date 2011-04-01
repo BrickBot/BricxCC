@@ -17,9 +17,9 @@ object UnlockForm: TUnlockForm
   LCLVersion = '0.9.31'
   object Label1: TLabel
     Left = 18
-    Height = 15
+    Height = 16
     Top = 8
-    Width = 236
+    Width = 189
     Caption = 'Downloading Firmware, Please wait.'
     Font.Height = -11
     Font.Name = 'MS Sans Serif'
@@ -46,4 +46,4 @@ object UnlockForm: TUnlockForm
     OnClick = btnCancelClick
     TabOrder = 1
   end
-end
+end

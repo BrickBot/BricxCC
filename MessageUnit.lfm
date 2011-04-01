@@ -29,8 +29,8 @@ object MessageForm: TMessageForm
     Top = 5
     Width = 129
     Caption = 'Single digit message'
-    ClientHeight = 164
-    ClientWidth = 125
+    ClientHeight = 157
+    ClientWidth = 121
     TabOrder = 1
     object Button2: TButton
       Tag = 2
@@ -198,8 +198,8 @@ object MessageForm: TMessageForm
     Top = 192
     Width = 129
     Caption = 'Numeric message'
-    ClientHeight = 33
-    ClientWidth = 125
+    ClientHeight = 26
+    ClientWidth = 121
     TabOrder = 2
     object SendButton: TButton
       Tag = 100
@@ -214,7 +214,7 @@ object MessageForm: TMessageForm
     end
     object edtMessageNum: TBricxccSpinEdit
       Left = 8
-      Height = 24
+      Height = 16
       Top = 5
       Width = 57
       HelpContext = 18014
@@ -229,12 +229,12 @@ object MessageForm: TMessageForm
     Top = 5
     Width = 145
     Caption = 'NXT Messages'
-    ClientHeight = 220
-    ClientWidth = 141
+    ClientHeight = 213
+    ClientWidth = 137
     TabOrder = 3
     object lblMailbox: TLabel
       Left = 4
-      Height = 15
+      Height = 14
       Top = 5
       Width = 47
       Caption = '&Mailbox:'
@@ -243,16 +243,16 @@ object MessageForm: TMessageForm
     end
     object lblMemo: TLabel
       Left = 5
-      Height = 15
+      Height = 14
       Top = 103
-      Width = 39
+      Width = 37
       Caption = 'M&emo:'
       FocusControl = mmoMessage
       ParentColor = False
     end
     object cboMailbox: TComboBox
       Left = 54
-      Height = 27
+      Height = 20
       Top = 1
       Width = 81
       HelpContext = 18016
@@ -297,7 +297,7 @@ object MessageForm: TMessageForm
     end
     object chkBoolValue: TCheckBox
       Left = 5
-      Height = 22
+      Height = 18
       Top = 50
       Width = 70
       HelpContext = 18018
@@ -328,16 +328,16 @@ object MessageForm: TMessageForm
     end
     object chkResponse: TCheckBox
       Left = 54
-      Height = 22
+      Height = 18
       Top = 25
-      Width = 80
+      Width = 81
       HelpContext = 18017
       Caption = 'Response'
       TabOrder = 1
     end
     object edtNum: TBricxccSpinEdit
       Left = 5
-      Height = 24
+      Height = 16
       Top = 80
       Width = 81
       HelpContext = 18020
@@ -345,4 +345,4 @@ object MessageForm: TMessageForm
       TabOrder = 4
     end
   end
-end
+end

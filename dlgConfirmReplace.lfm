@@ -65,4 +65,4 @@ object ConfirmReplaceDialog: TConfirmReplaceDialog
     ModalResult = 10
     TabOrder = 3
   end
-end
+end

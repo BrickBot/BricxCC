@@ -18,6 +18,10 @@
  *)
 unit uGrepBackend;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
@@ -53,7 +57,7 @@ type
     property SPos: Integer read FSPos write FSPos;
     property EPos: Integer read FEPos write FEPos;
     property ShowBold: Boolean read FShowBold write FShowBold;
-    constructor Create(Collection: TCollection); override;
+    constructor Create(aCollection: TCollection); override;
     function Length: Integer;
   end;
 
@@ -77,7 +81,7 @@ type
     FLineNo: Integer; // 1-based
     FMatches: TLineMatches;
   public
-    constructor Create(Collection: TCollection); override;
+    constructor Create(aCollection: TCollection); override;
     destructor Destroy; override;
     function Add: TMatchResult;
   public
@@ -212,9 +216,9 @@ end;
 
 { TLineResult }
 
-constructor TLineResult.Create(Collection: TCollection);
+constructor TLineResult.Create(aCollection: TCollection);
 begin
-  inherited Create(Collection);
+  inherited Create(aCollection);
   FMatches := TLineMatches.Create;
 end;
 
@@ -312,9 +316,10 @@ begin
   end;
 end;
 
-procedure TGrepSearchRunner.GrepDirectory(Dir, Mask: string);
 resourcestring
   SSpecifiedDirectoryDoesNotExist = 'The search directory %s does not exist';
+
+procedure TGrepSearchRunner.GrepDirectory(Dir, Mask: string);
 var
   Search: TSearchRec;
   Result: Integer;
@@ -389,9 +394,10 @@ begin
   end;
 end;
 
-procedure TGrepSearchRunner.GrepCurrentSourceEditor;
 resourcestring
   SNoFileOpen = 'No file is currently open';
+
+procedure TGrepSearchRunner.GrepCurrentSourceEditor;
 var
   CurrentFile: string;
 begin
@@ -567,7 +573,7 @@ end;
 
 { TMatchResult }
 
-constructor TMatchResult.Create(Collection: TCollection);
+constructor TMatchResult.Create(aCollection: TCollection);
 begin
   inherited;
   ShowBold := True;
@@ -578,4 +584,4 @@ begin
   Result := EPos - SPos + 1;
 end;
 
-end.
+end.

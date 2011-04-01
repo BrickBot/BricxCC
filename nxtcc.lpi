@@ -44,17 +44,16 @@
         <PackageName Value="LCL"/>
       </Item3>
     </RequiredPackages>
-    <Units Count="112">
+    <Units Count="134">
       <Unit0>
         <Filename Value="nxtcc.lpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="nxtcc"/>
-        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="57"/>
-        <CursorPos X="1" Y="1"/>
-        <UsageCount Value="34"/>
+        <TopLine Value="45"/>
+        <CursorPos X="1" Y="52"/>
+        <UsageCount Value="44"/>
         <Loaded Value="True"/>
       </Unit0>
       <Unit1>
@@ -65,7 +64,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="77" Y="8"/>
-        <UsageCount Value="23"/>
+        <UsageCount Value="22"/>
       </Unit1>
       <Unit2>
         <Filename Value="ucodeedit.pas"/>
@@ -74,11 +73,12 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="ucodeedit"/>
-        <EditorIndex Value="1"/>
+        <IsVisibleTab Value="True"/>
+        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="260"/>
-        <CursorPos X="58" Y="277"/>
-        <UsageCount Value="34"/>
+        <TopLine Value="453"/>
+        <CursorPos X="1" Y="465"/>
+        <UsageCount Value="44"/>
         <Loaded Value="True"/>
       </Unit2>
       <Unit3>
@@ -87,7 +87,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="98"/>
         <CursorPos X="3" Y="105"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit3>
       <Unit4>
         <Filename Value="mPasLex.pas"/>
@@ -95,7 +95,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="53"/>
         <CursorPos X="1" Y="82"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit4>
       <Unit5>
         <Filename Value="uCodeExplorer.pas"/>
@@ -104,12 +104,10 @@
         <HasResources Value="True"/>
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uCodeExplorer"/>
-        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="31"/>
-        <Loaded Value="True"/>
+        <UsageCount Value="41"/>
       </Unit5>
       <Unit6>
         <Filename Value="uExplorerOptions.pas"/>
@@ -118,9 +116,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uExplorerOptions"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="266"/>
+        <CursorPos X="56" Y="266"/>
+        <UsageCount Value="9"/>
       </Unit6>
       <Unit7>
         <Filename Value="uCppProcLexer.pas"/>
@@ -128,7 +126,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="20"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit7>
       <Unit8>
         <Filename Value="uNBCProcLexer.pas"/>
@@ -136,7 +134,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit8>
       <Unit9>
         <Filename Value="SynHighlighterNQC.pas"/>
@@ -144,7 +142,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="920"/>
         <CursorPos X="6" Y="943"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit9>
       <Unit10>
         <Filename Value="SynHighlighterLASM.pas"/>
@@ -152,7 +150,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="532"/>
         <CursorPos X="6" Y="534"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit10>
       <Unit11>
         <Filename Value="SynHighlighterForth.pas"/>
@@ -160,7 +158,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1764"/>
         <CursorPos X="6" Y="1766"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit11>
       <Unit12>
         <Filename Value="SynHighlighterMindScript.pas"/>
@@ -168,7 +166,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1065"/>
         <CursorPos X="6" Y="1089"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit12>
       <Unit13>
         <Filename Value="SynHighlighterNBC.pas"/>
@@ -176,7 +174,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1306"/>
         <CursorPos X="6" Y="1308"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit13>
       <Unit14>
         <Filename Value="SynHighlighterNPG.pas"/>
@@ -184,7 +182,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="479"/>
         <CursorPos X="6" Y="481"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit14>
       <Unit15>
         <Filename Value="SynHighlighterRS.pas"/>
@@ -192,22 +190,24 @@
         <WindowIndex Value="0"/>
         <TopLine Value="521"/>
         <CursorPos X="6" Y="523"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit15>
       <Unit16>
         <Filename Value="uMiscDefines.pas"/>
         <UnitName Value="uMiscDefines"/>
+        <EditorIndex Value="12"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="57"/>
-        <CursorPos X="69" Y="80"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="27"/>
+        <CursorPos X="10" Y="39"/>
+        <UsageCount Value="12"/>
+        <Loaded Value="True"/>
       </Unit16>
       <Unit17>
         <Filename Value="NXT/uNBCCommon.pas"/>
         <UnitName Value="uNBCCommon"/>
         <TopLine Value="1"/>
         <CursorPos X="61" Y="14"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit17>
       <Unit18>
         <Filename Value="uEEAlignConfig.pas"/>
@@ -216,9 +216,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uEEAlignConfig"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="38" Y="28"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="34"/>
+        <CursorPos X="44" Y="36"/>
+        <UsageCount Value="9"/>
       </Unit18>
       <Unit19>
         <Filename Value="BricxccSpin.pas"/>
@@ -226,7 +226,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="50" Y="19"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit19>
       <Unit20>
         <Filename Value="uEEAlignOpt.pas"/>
@@ -235,9 +235,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uEEAlignOpt"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="50" Y="4"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="70"/>
+        <CursorPos X="68" Y="71"/>
+        <UsageCount Value="9"/>
       </Unit20>
       <Unit21>
         <Filename Value="NXT/uProgram.pas"/>
@@ -245,7 +245,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit21>
       <Unit22>
         <Filename Value="NXT/uRIC.pas"/>
@@ -253,25 +253,23 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1212"/>
         <CursorPos X="1" Y="1245"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit22>
       <Unit23>
         <Filename Value="NXT/uNXTClasses.pas"/>
         <UnitName Value="uNXTClasses"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="15"/>
-        <CursorPos X="1" Y="32"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="1128"/>
+        <CursorPos X="47" Y="1138"/>
+        <UsageCount Value="9"/>
       </Unit23>
       <Unit24>
         <Filename Value="uEditorUtils.pas"/>
         <UnitName Value="uEditorUtils"/>
-        <EditorIndex Value="4"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1007"/>
-        <CursorPos X="1" Y="1026"/>
-        <UsageCount Value="14"/>
-        <Loaded Value="True"/>
+        <TopLine Value="12"/>
+        <CursorPos X="2" Y="23"/>
+        <UsageCount Value="13"/>
       </Unit24>
       <Unit25>
         <Filename Value="dlgConfirmReplace.pas"/>
@@ -280,9 +278,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="dlgConfirmReplace"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="69"/>
-        <CursorPos X="38" Y="80"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="81"/>
+        <CursorPos X="4" Y="99"/>
+        <UsageCount Value="9"/>
       </Unit25>
       <Unit26>
         <Filename Value="dlgSearchText.pas"/>
@@ -291,9 +289,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="dlgSearchText"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="170"/>
-        <CursorPos X="46" Y="180"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="183"/>
+        <CursorPos X="40" Y="184"/>
+        <UsageCount Value="9"/>
       </Unit26>
       <Unit27>
         <Filename Value="dlgReplaceText.pas"/>
@@ -302,9 +300,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="dlgReplaceText"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="75"/>
-        <CursorPos X="4" Y="106"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="88"/>
+        <CursorPos X="50" Y="89"/>
+        <UsageCount Value="9"/>
       </Unit27>
       <Unit28>
         <Filename Value="GotoLine.pas"/>
@@ -313,9 +311,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="GotoLine"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="119"/>
-        <CursorPos X="43" Y="122"/>
-        <UsageCount Value="11"/>
+        <TopLine Value="134"/>
+        <CursorPos X="23" Y="138"/>
+        <UsageCount Value="10"/>
       </Unit28>
       <Unit29>
         <Filename Value="CodeUnit.pas"/>
@@ -327,7 +325,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="115"/>
         <CursorPos X="40" Y="125"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="41"/>
       </Unit29>
       <Unit30>
         <Filename Value="uOfficeComp.pas"/>
@@ -335,7 +333,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit30>
       <Unit31>
         <Filename Value="../../program/lazarus-svn/lcl/menus.pp"/>
@@ -343,14 +341,14 @@
         <WindowIndex Value="0"/>
         <TopLine Value="330"/>
         <CursorPos X="19" Y="358"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit31>
       <Unit32>
         <Filename Value="../../program/lazarus-svn/lcl/include/menuitem.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="750"/>
         <CursorPos X="3" Y="760"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit32>
       <Unit33>
         <Filename Value="../../program/lazarus-svn/lcl/graphics.pp"/>
@@ -358,7 +356,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="531"/>
         <CursorPos X="80" Y="548"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit33>
       <Unit34>
         <Filename Value="../../program/lazarus-svn/lcl/lcltype.pp"/>
@@ -366,7 +364,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1377"/>
         <CursorPos X="3" Y="1394"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit34>
       <Unit35>
         <Filename Value="../../program/lazarus-svn/components/synedit/synedit.pp"/>
@@ -374,7 +372,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit35>
       <Unit36>
         <Filename Value="../../program/lazarus-svn/components/synedit/syngutter.pp"/>
@@ -382,7 +380,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="19"/>
         <CursorPos X="3" Y="19"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit36>
       <Unit37>
         <Filename Value="../../program/lazarus-svn/components/synedit/synedittypes.pp"/>
@@ -390,7 +388,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="72"/>
         <CursorPos X="23" Y="89"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit37>
       <Unit38>
         <Filename Value="BricxccSynReg.pas"/>
@@ -398,7 +396,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="57"/>
         <CursorPos X="1" Y="82"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit38>
       <Unit39>
         <Filename Value="NXT/uNXCComp.pas"/>
@@ -406,7 +404,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="6275"/>
         <CursorPos X="1" Y="6286"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit39>
       <Unit40>
         <Filename Value="NXT/uNBCInterface.pas"/>
@@ -414,7 +412,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="562"/>
         <CursorPos X="1" Y="573"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit40>
       <Unit41>
         <Filename Value="uCompStatus.pas"/>
@@ -426,7 +424,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="28" Y="13"/>
-        <UsageCount Value="30"/>
+        <UsageCount Value="40"/>
       </Unit41>
       <Unit42>
         <Filename Value="Watch.pas"/>
@@ -438,7 +436,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1191"/>
         <CursorPos X="54" Y="1194"/>
-        <UsageCount Value="28"/>
+        <UsageCount Value="38"/>
       </Unit42>
       <Unit43>
         <Filename Value="uNXTName.pas"/>
@@ -447,9 +445,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uNXTName"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="21"/>
-        <CursorPos X="50" Y="31"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="34"/>
+        <CursorPos X="4" Y="52"/>
+        <UsageCount Value="9"/>
       </Unit43>
       <Unit44>
         <Filename Value="uNXTImagePrefs.pas"/>
@@ -458,9 +456,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uNXTImagePrefs"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="186"/>
+        <CursorPos X="4" Y="198"/>
+        <UsageCount Value="9"/>
       </Unit44>
       <Unit45>
         <Filename Value="uNXTImage.pas"/>
@@ -469,9 +467,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uNXTImage"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1289"/>
-        <CursorPos X="41" Y="1291"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="1302"/>
+        <CursorPos X="52" Y="1303"/>
+        <UsageCount Value="9"/>
       </Unit45>
       <Unit46>
         <Filename Value="uMindScriptProcLexer.pas"/>
@@ -479,7 +477,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit46>
       <Unit47>
         <Filename Value="uLASMProcLexer.pas"/>
@@ -487,7 +485,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit47>
       <Unit48>
         <Filename Value="uForthProcLexer.pas"/>
@@ -495,7 +493,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit48>
       <Unit49>
         <Filename Value="GX_ProcedureList.pas"/>
@@ -504,9 +502,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="GX_ProcedureList"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="43" Y="14"/>
-        <UsageCount Value="11"/>
+        <TopLine Value="915"/>
+        <CursorPos X="4" Y="932"/>
+        <UsageCount Value="10"/>
       </Unit49>
       <Unit50>
         <Filename Value="ConstructUnit.pas"/>
@@ -518,7 +516,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="239"/>
         <CursorPos X="1" Y="256"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="41"/>
       </Unit50>
       <Unit51>
         <Filename Value="GX_IDECodeTemplates.pas"/>
@@ -526,7 +524,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit51>
       <Unit52>
         <Filename Value="EditCodeTemplate.pas"/>
@@ -535,9 +533,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="EditCodeTemplate"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="91"/>
-        <CursorPos X="38" Y="94"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="104"/>
+        <CursorPos X="31" Y="104"/>
+        <UsageCount Value="9"/>
       </Unit52>
       <Unit53>
         <Filename Value="CodeTemplates.pas"/>
@@ -546,9 +544,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="CodeTemplates"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="250"/>
+        <CursorPos X="4" Y="268"/>
+        <UsageCount Value="9"/>
       </Unit53>
       <Unit54>
         <Filename Value="uMacroLib.pas"/>
@@ -556,7 +554,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit54>
       <Unit55>
         <Filename Value="uMacroEditor.pas"/>
@@ -565,9 +563,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uMacroEditor"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="153"/>
-        <CursorPos X="8" Y="176"/>
-        <UsageCount Value="11"/>
+        <TopLine Value="192"/>
+        <CursorPos X="4" Y="210"/>
+        <UsageCount Value="10"/>
       </Unit55>
       <Unit56>
         <Filename Value="uMacroForm.pas"/>
@@ -579,7 +577,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="191"/>
         <CursorPos X="1" Y="206"/>
-        <UsageCount Value="31"/>
+        <UsageCount Value="41"/>
       </Unit56>
       <Unit57>
         <Filename Value="uCppCode.pas"/>
@@ -587,7 +585,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="132"/>
         <CursorPos X="44" Y="164"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit57>
       <Unit58>
         <Filename Value="Transdlg.pas"/>
@@ -596,9 +594,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Transdlg"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="198"/>
-        <CursorPos X="62" Y="201"/>
-        <UsageCount Value="11"/>
+        <TopLine Value="211"/>
+        <CursorPos X="41" Y="211"/>
+        <UsageCount Value="10"/>
       </Unit58>
       <Unit59>
         <Filename Value="DTestPrintPreview.pas"/>
@@ -607,7 +605,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="9"/>
         <CursorPos X="23" Y="16"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit59>
       <Unit60>
         <Filename Value="uNXTExplorer.pas"/>
@@ -616,9 +614,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uNXTExplorer"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="849"/>
-        <CursorPos X="1" Y="861"/>
-        <UsageCount Value="12"/>
+        <TopLine Value="1755"/>
+        <CursorPos X="4" Y="1773"/>
+        <UsageCount Value="11"/>
       </Unit60>
       <Unit61>
         <Filename Value="../../program/lazarus-svn/components/synedit/syneditsearch.pp"/>
@@ -626,7 +624,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="263"/>
         <CursorPos X="3" Y="265"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit61>
       <Unit62>
         <Filename Value="../../program/lazarus-svn/components/synedit/syneditkeycmds.pp"/>
@@ -634,7 +632,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="184"/>
         <CursorPos X="28" Y="184"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit62>
       <Unit63>
         <Filename Value="SynEditEx.pas"/>
@@ -642,29 +640,31 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit63>
       <Unit64>
         <Filename Value="BricxccSynEdit.pas"/>
         <UnitName Value="BricxccSynEdit"/>
+        <EditorIndex Value="9"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="21"/>
-        <CursorPos X="15" Y="46"/>
+        <TopLine Value="434"/>
+        <CursorPos X="1" Y="446"/>
         <UsageCount Value="10"/>
+        <Loaded Value="True"/>
       </Unit64>
       <Unit65>
         <Filename Value="../../program/lazarus-svn/lcl/include/customform.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2767"/>
         <CursorPos X="14" Y="2769"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit65>
       <Unit66>
         <Filename Value="../../program/lazarus-svn/lcl/include/control.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="3858"/>
         <CursorPos X="3" Y="3880"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit66>
       <Unit67>
         <Filename Value="../../program/lazarus-svn/lcl/lresources.pp"/>
@@ -672,7 +672,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="3089"/>
         <CursorPos X="1" Y="3106"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit67>
       <Unit68>
         <Filename Value="uTreeSaver.pas"/>
@@ -680,7 +680,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="194"/>
         <CursorPos X="27" Y="211"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit68>
       <Unit69>
         <Filename Value="uGuiUtils.pas"/>
@@ -688,16 +688,16 @@
         <WindowIndex Value="0"/>
         <TopLine Value="204"/>
         <CursorPos X="1" Y="227"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit69>
       <Unit70>
         <Filename Value="uBasicPrefs.pas"/>
         <UnitName Value="uBasicPrefs"/>
-        <EditorIndex Value="2"/>
+        <EditorIndex Value="3"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="483"/>
-        <CursorPos X="33" Y="485"/>
-        <UsageCount Value="12"/>
+        <TopLine Value="873"/>
+        <CursorPos X="11" Y="873"/>
+        <UsageCount Value="15"/>
         <Loaded Value="True"/>
       </Unit70>
       <Unit71>
@@ -706,14 +706,14 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit71>
       <Unit72>
         <Filename Value="uNXCCodeComp.pas"/>
         <UnitName Value="uNXCCodeComp"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="3" Y="88"/>
+        <TopLine Value="106"/>
+        <CursorPos X="34" Y="106"/>
         <UsageCount Value="10"/>
       </Unit72>
       <Unit73>
@@ -722,7 +722,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit73>
       <Unit74>
         <Filename Value="uRICCodeComp.pas"/>
@@ -730,7 +730,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit74>
       <Unit75>
         <Filename Value="Preferences.pas"/>
@@ -739,14 +739,14 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1072"/>
         <CursorPos X="44" Y="1089"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit75>
       <Unit76>
         <Filename Value="Preferences.lfm"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
         <DefaultSyntaxHighlighter Value="LFM"/>
       </Unit76>
       <Unit77>
@@ -755,29 +755,32 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit77>
       <Unit78>
         <Filename Value="/usr/share/fpcsrc/2.4.2/rtl/objpas/sysutils/finah.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="8"/>
         <CursorPos X="21" Y="33"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit78>
       <Unit79>
         <Filename Value="MainUnit.pas"/>
+        <HasResources Value="True"/>
         <UnitName Value="MainUnit"/>
+        <EditorIndex Value="10"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="6589"/>
-        <CursorPos X="31" Y="6612"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="35"/>
+        <CursorPos X="2" Y="35"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
       </Unit79>
       <Unit80>
         <Filename Value="../../program/lazarus-svn/lcl/interfaces/gtk2/gtk2widgetset.inc"/>
         <WindowIndex Value="0"/>
         <TopLine Value="2378"/>
         <CursorPos X="1" Y="2395"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit80>
       <Unit81>
         <Filename Value="uWatchGlobals.pas"/>
@@ -785,7 +788,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="36"/>
         <CursorPos X="3" Y="53"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit81>
       <Unit82>
         <Filename Value="uJoyGlobals.pas"/>
@@ -793,7 +796,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit82>
       <Unit83>
         <Filename Value="uRemoteGlobals.pas"/>
@@ -801,7 +804,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="47"/>
         <CursorPos X="3" Y="64"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit83>
       <Unit84>
         <Filename Value="uNXTImageGlobals.pas"/>
@@ -809,7 +812,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="70"/>
         <CursorPos X="3" Y="73"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit84>
       <Unit85>
         <Filename Value="uportsedit.pas"/>
@@ -818,9 +821,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uportsedit"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="6" Y="7"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="167"/>
+        <CursorPos X="14" Y="178"/>
+        <UsageCount Value="9"/>
       </Unit85>
       <Unit86>
         <Filename Value="uPortPrompt.pas"/>
@@ -829,9 +832,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uPortPrompt"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="67"/>
-        <CursorPos X="4" Y="98"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="80"/>
+        <CursorPos X="21" Y="85"/>
+        <UsageCount Value="9"/>
       </Unit86>
       <Unit87>
         <Filename Value="uMIDIConversion.pas"/>
@@ -840,9 +843,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uMIDIConversion"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="228"/>
-        <CursorPos X="4" Y="259"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="241"/>
+        <CursorPos X="50" Y="245"/>
+        <UsageCount Value="9"/>
       </Unit87>
       <Unit88>
         <Filename Value="uWav2RSO.pas"/>
@@ -851,9 +854,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uWav2RSO"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="176"/>
-        <CursorPos X="46" Y="183"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="180"/>
+        <CursorPos X="55" Y="182"/>
+        <UsageCount Value="9"/>
       </Unit88>
       <Unit89>
         <Filename Value="Piano.pas"/>
@@ -862,9 +865,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Piano"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="359"/>
-        <CursorPos X="69" Y="362"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="365"/>
+        <CursorPos X="44" Y="365"/>
+        <UsageCount Value="9"/>
       </Unit89>
       <Unit90>
         <Filename Value="MessageUnit.pas"/>
@@ -873,9 +876,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MessageUnit"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="140"/>
-        <CursorPos X="65" Y="146"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="146"/>
+        <CursorPos X="47" Y="148"/>
+        <UsageCount Value="9"/>
       </Unit90>
       <Unit91>
         <Filename Value="JoystickUnit.pas"/>
@@ -884,9 +887,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="JoystickUnit"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="495"/>
+        <CursorPos X="45" Y="496"/>
+        <UsageCount Value="9"/>
       </Unit91>
       <Unit92>
         <Filename Value="uSources.pas"/>
@@ -894,7 +897,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="23"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit92>
       <Unit93>
         <Filename Value="Diagnose.pas"/>
@@ -903,9 +906,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Diagnose"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="427"/>
-        <CursorPos X="58" Y="440"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="433"/>
+        <CursorPos X="36" Y="440"/>
+        <UsageCount Value="9"/>
       </Unit93>
       <Unit94>
         <Filename Value="Controller.pas"/>
@@ -914,9 +917,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Controller"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="631"/>
-        <CursorPos X="55" Y="640"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="637"/>
+        <CursorPos X="4" Y="655"/>
+        <UsageCount Value="9"/>
       </Unit94>
       <Unit95>
         <Filename Value="MemoryUnit.pas"/>
@@ -925,9 +928,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="MemoryUnit"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="37"/>
-        <CursorPos X="13" Y="53"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="249"/>
+        <CursorPos X="4" Y="267"/>
+        <UsageCount Value="9"/>
       </Unit95>
       <Unit96>
         <Filename Value="uRemoteProgMap.pas"/>
@@ -936,9 +939,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uRemoteProgMap"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="157"/>
-        <CursorPos X="29" Y="163"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="163"/>
+        <CursorPos X="38" Y="167"/>
+        <UsageCount Value="9"/>
       </Unit96>
       <Unit97>
         <Filename Value="RemoteUnit.pas"/>
@@ -947,9 +950,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="RemoteUnit"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="269"/>
-        <CursorPos X="41" Y="274"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="275"/>
+        <CursorPos X="4" Y="293"/>
+        <UsageCount Value="9"/>
       </Unit97>
       <Unit98>
         <Filename Value="Unlock.pas"/>
@@ -958,9 +961,9 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="Unlock"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="158"/>
-        <CursorPos X="19" Y="160"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="164"/>
+        <CursorPos X="4" Y="182"/>
+        <UsageCount Value="9"/>
       </Unit98>
       <Unit99>
         <Filename Value="uToolPalette.pas"/>
@@ -969,16 +972,16 @@
         <ResourceBaseClass Value="Form"/>
         <UnitName Value="uToolPalette"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="306"/>
-        <CursorPos X="39" Y="310"/>
-        <UsageCount Value="10"/>
+        <TopLine Value="354"/>
+        <CursorPos X="76" Y="354"/>
+        <UsageCount Value="12"/>
       </Unit99>
       <Unit100>
         <Filename Value="uGlobals.pas"/>
         <UnitName Value="uGlobals"/>
         <WindowIndex Value="0"/>
-        <TopLine Value="1"/>
-        <CursorPos X="55" Y="147"/>
+        <TopLine Value="116"/>
+        <CursorPos X="19" Y="117"/>
         <UsageCount Value="10"/>
       </Unit100>
       <Unit101>
@@ -987,7 +990,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="613"/>
         <CursorPos X="15" Y="624"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit101>
       <Unit102>
         <Filename Value="../../program/lazarus-svn/lcl/controls.pp"/>
@@ -995,7 +998,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="1246"/>
         <CursorPos X="15" Y="1257"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit102>
       <Unit103>
         <Filename Value="NXT/uPreprocess.pas"/>
@@ -1003,7 +1006,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="187"/>
         <CursorPos X="1" Y="200"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit103>
       <Unit104>
         <Filename Value="bricktools/FantomSpirit.pas"/>
@@ -1011,7 +1014,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="2342"/>
         <CursorPos X="1" Y="2353"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit104>
       <Unit105>
         <Filename Value="bricktools/fantomfpc.pas"/>
@@ -1019,7 +1022,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="2272"/>
         <CursorPos X="1" Y="2283"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit105>
       <Unit106>
         <Filename Value="bricktools/rcx_constants.pas"/>
@@ -1027,7 +1030,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="581"/>
         <CursorPos X="1" Y="1"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit106>
       <Unit107>
         <Filename Value="NXT/uNXTConstants.pas"/>
@@ -1035,7 +1038,7 @@
         <WindowIndex Value="0"/>
         <TopLine Value="724"/>
         <CursorPos X="57" Y="607"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit107>
       <Unit108>
         <Filename Value="bricktools/rcx_cmd.pas"/>
@@ -1043,14 +1046,14 @@
         <WindowIndex Value="0"/>
         <TopLine Value="328"/>
         <CursorPos X="1" Y="336"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit108>
       <Unit109>
         <Filename Value="../libusb-0.1.12/linux.c"/>
         <WindowIndex Value="0"/>
         <TopLine Value="267"/>
         <CursorPos X="1" Y="278"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
         <DefaultSyntaxHighlighter Value="C++"/>
       </Unit109>
       <Unit110>
@@ -1059,136 +1062,325 @@
         <WindowIndex Value="0"/>
         <TopLine Value="98"/>
         <CursorPos X="3" Y="109"/>
-        <UsageCount Value="11"/>
+        <UsageCount Value="10"/>
       </Unit110>
       <Unit111>
         <Filename Value="lib/i386-linux/ucodeedit.lrs"/>
         <WindowIndex Value="0"/>
         <TopLine Value="1"/>
         <CursorPos X="1" Y="3"/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="9"/>
       </Unit111>
+      <Unit112>
+        <Filename Value="syn/SynEditKbdHandler.pas"/>
+        <UnitName Value="SynEditKbdHandler"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="50"/>
+        <UsageCount Value="9"/>
+      </Unit112>
+      <Unit113>
+        <Filename Value="syncompprop.pas"/>
+        <UnitName Value="syncompprop"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="2864"/>
+        <CursorPos X="45" Y="2869"/>
+        <UsageCount Value="9"/>
+      </Unit113>
+      <Unit114>
+        <Filename Value="/Developer/lazarus/components/synedit/synedit.pp"/>
+        <UnitName Value="SynEdit"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="5856"/>
+        <CursorPos X="49" Y="5856"/>
+        <UsageCount Value="11"/>
+      </Unit114>
+      <Unit115>
+        <Filename Value="../syncompletion.pas"/>
+        <UnitName Value="SynCompletion"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="40"/>
+        <CursorPos X="2" Y="40"/>
+        <UsageCount Value="9"/>
+      </Unit115>
+      <Unit116>
+        <Filename Value="syn/syncompprop.pas"/>
+        <UnitName Value="syncompprop"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="12"/>
+        <CursorPos X="49" Y="13"/>
+        <UsageCount Value="9"/>
+      </Unit116>
+      <Unit117>
+        <Filename Value="/Developer/lazarus/lcl/include/font.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="935"/>
+        <CursorPos X="1" Y="946"/>
+        <UsageCount Value="11"/>
+      </Unit117>
+      <Unit118>
+        <Filename Value="/Developer/lazarus/components/synedit/syneditkeycmds.pp"/>
+        <UnitName Value="SynEditKeyCmds"/>
+        <EditorIndex Value="11"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="968"/>
+        <CursorPos X="1" Y="979"/>
+        <UsageCount Value="13"/>
+        <Loaded Value="True"/>
+      </Unit118>
+      <Unit119>
+        <Filename Value="/Developer/lazarus/components/synedit/syneditplugins.pas"/>
+        <UnitName Value="SynEditPlugins"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="212"/>
+        <CursorPos X="1" Y="223"/>
+        <UsageCount Value="11"/>
+      </Unit119>
+      <Unit120>
+        <Filename Value="/Developer/lazarus/doceditor/frmoptions.pp"/>
+        <UnitName Value="frmOptions"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="121"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="10"/>
+      </Unit120>
+      <Unit121>
+        <Filename Value="/Developer/lazarus/ide/editoroptions.pp"/>
+        <UnitName Value="EditorOptions"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="543"/>
+        <CursorPos X="68" Y="448"/>
+        <UsageCount Value="10"/>
+      </Unit121>
+      <Unit122>
+        <Filename Value="uHighlighterProcs.pas"/>
+        <UnitName Value="uHighlighterProcs"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="114"/>
+        <CursorPos X="66" Y="114"/>
+        <UsageCount Value="10"/>
+      </Unit122>
+      <Unit123>
+        <Filename Value="bricktools/brick_common.pas"/>
+        <UnitName Value="brick_common"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="34"/>
+        <CursorPos X="1" Y="54"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit123>
+      <Unit124>
+        <Filename Value="bricktools/uSpirit.pas"/>
+        <UnitName Value="uSpirit"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="571"/>
+        <CursorPos X="1" Y="584"/>
+        <UsageCount Value="11"/>
+        <Loaded Value="True"/>
+      </Unit124>
+      <Unit125>
+        <Filename Value="/Developer/lazarus/lcl/include/statuspanels.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="22"/>
+        <CursorPos X="26" Y="23"/>
+        <UsageCount Value="10"/>
+      </Unit125>
+      <Unit126>
+        <Filename Value="/Developer/lazarus/lcl/include/statuspanel.inc"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="126"/>
+        <CursorPos X="33" Y="126"/>
+        <UsageCount Value="10"/>
+      </Unit126>
+      <Unit127>
+        <Filename Value="uNXTWatchList.pas"/>
+        <IsPartOfProject Value="True"/>
+        <HasResources Value="True"/>
+        <UnitName Value="uNXTWatchList"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="66" Y="1"/>
+        <UsageCount Value="21"/>
+      </Unit127>
+      <Unit128>
+        <Filename Value="/usr/local/share/fpcsrc/packages/fv/src/tabs.pas"/>
+        <UnitName Value="tabs"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="19"/>
+        <CursorPos X="79" Y="19"/>
+        <UsageCount Value="10"/>
+      </Unit128>
+      <Unit129>
+        <Filename Value="grep/uGrepCommonUtils.pas"/>
+        <UnitName Value="uGrepCommonUtils"/>
+        <EditorIndex Value="5"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="347"/>
+        <CursorPos X="9" Y="364"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit129>
+      <Unit130>
+        <Filename Value="Editor.pas"/>
+        <UnitName Value="Editor"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="40"/>
+        <CursorPos X="83" Y="41"/>
+        <UsageCount Value="10"/>
+      </Unit130>
+      <Unit131>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <UnitName Value="uGrepResults"/>
+        <EditorIndex Value="6"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="137"/>
+        <CursorPos X="3" Y="149"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit131>
+      <Unit132>
+        <Filename Value="grep/RegExpr.pas"/>
+        <UnitName Value="RegExpr"/>
+        <EditorIndex Value="7"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="630"/>
+        <CursorPos X="8" Y="652"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit132>
+      <Unit133>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <UnitName Value="uGrepBackend"/>
+        <EditorIndex Value="8"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="25"/>
+        <UsageCount Value="10"/>
+        <Loaded Value="True"/>
+      </Unit133>
     </Units>
     <JumpHistory Count="30" HistoryIndex="29">
       <Position1>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="2115" Column="3" TopLine="2096"/>
+        <Filename Value="grep/RegExpr.pas"/>
+        <Caret Line="445" Column="23" TopLine="425"/>
       </Position1>
       <Position2>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="grep/RegExpr.pas"/>
+        <Caret Line="486" Column="12" TopLine="466"/>
       </Position2>
       <Position3>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="994" Column="19" TopLine="975"/>
+        <Filename Value="grep/RegExpr.pas"/>
+        <Caret Line="496" Column="16" TopLine="476"/>
       </Position3>
       <Position4>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1598" Column="47" TopLine="1579"/>
+        <Filename Value="grep/RegExpr.pas"/>
+        <Caret Line="571" Column="28" TopLine="551"/>
       </Position4>
       <Position5>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="2061" Column="21" TopLine="2042"/>
+        <Filename Value="grep/RegExpr.pas"/>
+        <Caret Line="605" Column="12" TopLine="585"/>
       </Position5>
       <Position6>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="2062" Column="21" TopLine="2043"/>
+        <Filename Value="grep/RegExpr.pas"/>
+        <Caret Line="607" Column="12" TopLine="587"/>
       </Position6>
       <Position7>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="2210" Column="1" TopLine="2193"/>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
       </Position7>
       <Position8>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="2206" Column="32" TopLine="2196"/>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <Caret Line="56" Column="25" TopLine="44"/>
       </Position8>
       <Position9>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="297" Column="27" TopLine="284"/>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <Caret Line="570" Column="34" TopLine="557"/>
       </Position9>
       <Position10>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="298" Column="27" TopLine="285"/>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <Caret Line="80" Column="25" TopLine="68"/>
       </Position10>
       <Position11>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="300" Column="27" TopLine="287"/>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <Caret Line="217" Column="21" TopLine="215"/>
       </Position11>
       <Position12>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="3320" Column="109" TopLine="3315"/>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <Caret Line="316" Column="1" TopLine="305"/>
       </Position12>
       <Position13>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <Caret Line="317" Column="3" TopLine="312"/>
       </Position13>
       <Position14>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1583" Column="16" TopLine="1564"/>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <Caret Line="395" Column="3" TopLine="383"/>
       </Position14>
       <Position15>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="2069" Column="10" TopLine="2050"/>
+        <Filename Value="grep/uGrepBackend.pas"/>
+        <Caret Line="452" Column="49" TopLine="444"/>
       </Position15>
       <Position16>
         <Filename Value="ucodeedit.pas"/>
-        <Caret Line="6" Column="58" TopLine="1"/>
+        <Caret Line="468" Column="1" TopLine="453"/>
       </Position16>
       <Position17>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="26" Column="8" TopLine="12"/>
       </Position17>
       <Position18>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="199" Column="13" TopLine="180"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="71" Column="25" TopLine="59"/>
       </Position18>
       <Position19>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="72" Column="5" TopLine="60"/>
       </Position19>
       <Position20>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1537" Column="12" TopLine="1518"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="112" Column="30" TopLine="100"/>
       </Position20>
       <Position21>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1538" Column="12" TopLine="1519"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="962" Column="3" TopLine="950"/>
       </Position21>
       <Position22>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1932" Column="5" TopLine="1930"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="72" Column="5" TopLine="60"/>
       </Position22>
       <Position23>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1545" Column="1" TopLine="1545"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="112" Column="29" TopLine="100"/>
       </Position23>
       <Position24>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="1" Column="1" TopLine="1"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="72" Column="5" TopLine="60"/>
       </Position24>
       <Position25>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="29" Column="15" TopLine="10"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="112" Column="19" TopLine="100"/>
       </Position25>
       <Position26>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="106" Column="19" TopLine="87"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="868" Column="41" TopLine="865"/>
       </Position26>
       <Position27>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="189" Column="15" TopLine="170"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="71" Column="25" TopLine="59"/>
       </Position27>
       <Position28>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="215" Column="8" TopLine="196"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="72" Column="5" TopLine="60"/>
       </Position28>
       <Position29>
-        <Filename Value="ucodeedit.pas"/>
-        <Caret Line="235" Column="29" TopLine="224"/>
+        <Filename Value="grep/uGrepResults.pas"/>
+        <Caret Line="149" Column="53" TopLine="137"/>
       </Position29>
       <Position30>
-        <Filename Value="nxtcc.lpr"/>
-        <Caret Line="99" Column="50" TopLine="94"/>
+        <Filename Value="ucodeedit.pas"/>
+        <Caret Line="40" Column="46" TopLine="33"/>
       </Position30>
     </JumpHistory>
   </ProjectOptions>
@@ -1199,14 +1391,17 @@
     </Target>
     <SearchPaths>
       <IncludeFiles Value="$(ProjOutDir)"/>
-      <OtherUnitFiles Value="$(LazarusDir)/components/synedit;bricktools;NXT;samplerate;../../program/pascalscript-svn/Source"/>
+      <OtherUnitFiles Value="$(LazarusDir)/components/synedit;bricktools;NXT;samplerate;syn;grep;../../program/pascalscript-svn/Source;../pascalscript/Source"/>
       <UnitOutputDirectory Value="lib/$(TargetCPU)-$(TargetOS)"/>
     </SearchPaths>
     <Linking>
       <Debugging>
+        <GenerateDebugInfo Value="True"/>
         <UseExternalDbgSyms Value="True"/>
       </Debugging>
       <Options>
+        <PassLinkerOptions Value="True"/>
+        <LinkerOptions Value="-framework Fantom "/>
         <Win32>
           <GraphicApplication Value="True"/>
         </Win32>
@@ -1221,42 +1416,39 @@
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="7">
+    <BreakPoints Count="5">
       <Item1>
-        <Source Value="ucodeedit.pas"/>
+        <Source Value="uBasicPrefs.pas"/>
         <InitialEnabled Value="False"/>
-        <Line Value="2569"/>
+        <Line Value="589"/>
       </Item1>
       <Item2>
         <Source Value="ucodeedit.pas"/>
-        <Line Value="1610"/>
+        <InitialEnabled Value="False"/>
+        <Line Value="1269"/>
       </Item2>
       <Item3>
-        <Source Value="uBasicPrefs.pas"/>
+        <Source Value="ucodeedit.pas"/>
         <InitialEnabled Value="False"/>
-        <Line Value="584"/>
+        <Line Value="1252"/>
       </Item3>
       <Item4>
         <Source Value="ucodeedit.pas"/>
         <InitialEnabled Value="False"/>
-        <Line Value="1233"/>
+        <Line Value="2860"/>
       </Item4>
       <Item5>
         <Source Value="ucodeedit.pas"/>
         <InitialEnabled Value="False"/>
-        <Line Value="1216"/>
+        <Line Value="2874"/>
       </Item5>
-      <Item6>
-        <Source Value="ucodeedit.pas"/>
-        <InitialEnabled Value="False"/>
-        <Line Value="2817"/>
-      </Item6>
-      <Item7>
-        <Source Value="ucodeedit.pas"/>
-        <InitialEnabled Value="False"/>
-        <Line Value="2831"/>
-      </Item7>
     </BreakPoints>
+    <Watches Count="1">
+      <Item1>
+        <Expression Value="ProgramDir"/>
+        <DisplayStyle Value="wdfString"/>
+      </Item1>
+    </Watches>
     <Exceptions Count="7">
       <Item1>
         <Name Value="EAbort"/>

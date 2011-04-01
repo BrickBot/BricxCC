@@ -56,6 +56,7 @@ type
     function WordEnd: TPoint; virtual;
     function WordEndEx(XY: TPoint): TPoint; virtual;
     property WordAtCursor: string read GetWordAtCursor;
+    procedure GotoLineAndCenter(aLine : Integer);
 {$ENDIF}
   end;
 
@@ -133,6 +134,13 @@ begin
   CaretXY    := p;
   EnsureCursorPosVisibleEx(True);
 end;
+
+{$IFDEF FPC}
+procedure TBricxccSynEdit.GotoLineAndCenter(aLine: Integer);
+begin
+  GotoLineNumber(aLine);
+end;
+{$ENDIF}
 
 procedure TBricxccSynEdit.SelectDelimited(const aStartDelim : string = '"'; const AStopDelim: string = '"');
 var
@@ -383,11 +391,13 @@ begin
   Result := WordStartEx(CaretXY);
 end;
 
-function TBricxccSynEdit.WordEnd: TPoint;begin
+function TBricxccSynEdit.WordEnd: TPoint;
+begin
   Result := WordEndEx(CaretXY);
 end;
 
-function TBricxccSynEdit.WordStartEx(XY: TPoint): TPoint;var
+function TBricxccSynEdit.WordStartEx(XY: TPoint): TPoint;
+var
   CX, CY: integer;
   Line: string;
   aIdentChars, aWhiteChars: TSynIdentChars;
@@ -410,7 +420,8 @@ begin
   Result := Point(CX, CY);
 end;
 
-function TBricxccSynEdit.WordEndEx(XY: TPoint): TPoint;var
+function TBricxccSynEdit.WordEndEx(XY: TPoint): TPoint;
+var
   CX, CY: integer;
   Line: string;
   aIdentChars, aWhiteChars: TSynIdentChars;
@@ -450,4 +461,4 @@ end;
 
 {$ENDIF}
 
-end.
+end.
