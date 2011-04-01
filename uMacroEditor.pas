@@ -26,10 +26,12 @@ uses
 {$IFDEF FPC}
   LResources,
   LCLType,
+{$ELSE}
+  SynCompletionProposal,
 {$ENDIF}
   Classes, Controls, Forms, Dialogs, StdCtrls, ExtCtrls,
   SynEditHighlighter, SynEdit, BricxccSynEdit, SynHighlighterNQC,
-  syncompprop, SynEditEx;
+  SynEditEx;
 
 type
   TfrmMacroEditor = class(TForm)

@@ -92,7 +92,9 @@ implementation
 
 uses
   FileCtrl, uMiscDefines, BricxccSynEdit,
-//  MainUnit,
+{$IFNDEF FPC}
+  MainUnit,
+{$ENDIF}
   Math;
 
 function IsCharIdentifier(aCh : Char) : boolean;

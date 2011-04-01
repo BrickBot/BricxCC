@@ -109,7 +109,7 @@ implementation
 {$ENDIF}
 
 uses
-  Registry, uLocalizedStrings, uBasicPrefs, uRegUtils;
+  Registry, uLocalizedStrings, uBasicPrefs, uRegUtils, uGuiUtils;
 
 const IMARGIN = 2;
       IHEIGHT = 16;
@@ -407,14 +407,6 @@ begin
   // if we dock we need to restore the tree again
   if treTemplates.Items.Count = 0 then
     RestoreTemplateTree;
-end;
-
-procedure AddMenuItems(aMI : TMenuItem; aMenuItems : array of TMenuItem);
-var
-  I : integer;
-begin
-  for I := Low(aMenuItems) to High(aMenuItems) do
-    aMI.Add(aMenuItems[I]);
 end;
 
 procedure TConstructForm.CreatePopupMenus;

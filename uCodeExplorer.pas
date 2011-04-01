@@ -545,14 +545,6 @@ begin
   Close;
 end;
 
-procedure AddMenuItems(aMI : TMenuItem; aMenuItems : array of TMenuItem);
-var
-  I : integer;
-begin
-  for I := Low(aMenuItems) to High(aMenuItems) do
-    aMI.Add(aMenuItems[I]);
-end;
-
 procedure TfrmCodeExplorer.CreatePopupMenu;
 begin
   popCodeExplorer := TOfficePopupMenu.Create(Self);

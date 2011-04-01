@@ -124,14 +124,6 @@ begin
   CodeEdit.PopupMenu := pmnuCodeView;
 end;
 
-procedure AddMenuItems(aMI : TMenuItem; aMenuItems : array of TMenuItem);
-var
-  I : integer;
-begin
-  for I := Low(aMenuItems) to High(aMenuItems) do
-    aMI.Add(aMenuItems[I]);
-end;
-
 procedure TCodeForm.CreatePopupMenu;
 begin
   pmnuCodeView := TOfficePopupMenu.Create(Self);
@@ -241,6 +233,7 @@ begin
     Gutter.Font.Name := 'Terminal';
     Gutter.Font.Style := [];
 {$ENDIF}
+    Lines.Clear;
     ReadOnly := True;
     MaxLeftChar := 8192;
     OnStatusChange := TheEditorStatusChange;
@@ -301,6 +294,7 @@ begin
     with Panels.Add do begin
       Width := 50;
     end;
+    SimplePanel := False;
   end;
 end;
 
