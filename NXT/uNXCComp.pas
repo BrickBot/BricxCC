@@ -403,7 +403,7 @@ type
     function  IsFuncParam(n: string; bStripInline : boolean = false): boolean;
     function  IsParam(n: string): boolean;
     function  ParamIdx(n: string): integer;
-    procedure AllocateHelper(const Name, aVal, Val, tname: string; dt: char);
+    procedure AllocateHelper(aName, aVal, Val, tname: string; dt: char);
     function  AlreadyDecorated(n : string) : boolean;
     function  GetDecoratedValue: string;
     function  GetDecoratedIdent(const val: string): string;
@@ -2560,37 +2560,41 @@ end;
 {--------------------------------------------------------------}
 { Allocate Storage for a Static variable }
 
-procedure TNXCComp.AllocateHelper(const Name, aVal, Val, tname: string; dt : char);
+procedure TNXCComp.AllocateHelper(aName, aVal, Val, tname: string; dt : char);
 begin
   case dt of
     TOK_CHARDEF,
     TOK_ARRAYCHARDEF..TOK_ARRAYCHARDEF4 :
-      EmitLn(Format('%s sbyte%s %s', [Name, aVal, Val]));
+      EmitLn(Format('%s sbyte%s %s', [aName, aVal, Val]));
     TOK_SHORTDEF,
     TOK_ARRAYSHORTDEF..TOK_ARRAYSHORTDEF4  :
-      EmitLn(Format('%s sword%s %s', [Name, aVal, Val]));
+      EmitLn(Format('%s sword%s %s', [aName, aVal, Val]));
     TOK_LONGDEF,
     TOK_ARRAYLONGDEF..TOK_ARRAYLONGDEF4   :
-      EmitLn(Format('%s sdword%s %s', [Name, aVal, Val]));
+      EmitLn(Format('%s sdword%s %s', [aName, aVal, Val]));
     TOK_BYTEDEF,
     TOK_ARRAYBYTEDEF..TOK_ARRAYBYTEDEF4   :
-      EmitLn(Format('%s byte%s %s', [Name, aVal, Val]));
+      EmitLn(Format('%s byte%s %s', [aName, aVal, Val]));
     TOK_USHORTDEF,
     TOK_ARRAYUSHORTDEF..TOK_ARRAYUSHORTDEF4 :
-      EmitLn(Format('%s word%s %s', [Name, aVal, Val]));
+      EmitLn(Format('%s word%s %s', [aName, aVal, Val]));
     TOK_ULONGDEF,
     TOK_ARRAYULONGDEF..TOK_ARRAYULONGDEF4  :
-      EmitLn(Format('%s dword%s %s', [Name, aVal, Val]));
-    TOK_MUTEXDEF  : EmitLn(Format('%s mutex', [Name]));
+      EmitLn(Format('%s dword%s %s', [aName, aVal, Val]));
+    TOK_MUTEXDEF  : EmitLn(Format('%s mutex', [aName]));
     TOK_FLOATDEF,
     TOK_ARRAYFLOAT..TOK_ARRAYFLOAT4  :
-      EmitLn(Format('%s float%s %s', [Name, aVal, Val]));
-    TOK_STRINGDEF : EmitLn(Format('%s byte[] %s', [Name, Val]));
+      EmitLn(Format('%s float%s %s', [aName, aVal, Val]));
+    TOK_STRINGDEF : begin
+      if Val = '' then
+        Val := '{0x00}';
+      EmitLn(Format('%s byte[] %s', [aName, Val]));
+    end;
     TOK_ARRAYSTRING..TOK_ARRAYSTRING4  :
-      EmitLn(Format('%s byte[]%s %s', [Name, aVal, Val]));
+      EmitLn(Format('%s byte[]%s %s', [aName, aVal, Val]));
     TOK_USERDEFINEDTYPE,
     TOK_ARRAYUDT..TOK_ARRAYUDT4 :
-      EmitLn(Format('%s %s%s %s', [Name, tname, aVal, Val]));
+      EmitLn(Format('%s %s%s %s', [aName, tname, aVal, Val]));
   else
     AbortMsg(sUnknownDatatype);
   end;
@@ -6084,15 +6088,17 @@ end;
 procedure TNXCComp.ProcedureBlock;
 var
   Name : string;
-  protoexists, bIsSub : boolean;
+  protoexists, bIsSub, bInline : boolean;
   savedToken : char;
 begin
   while Token in [TOK_INLINE, TOK_SAFECALL, TOK_PROCEDURE, TOK_TASK] do
   begin
+    bInline := False;
     if Token = TOK_INLINE then
     begin
       Next;
       IncrementInlineDepth;
+      bInline := True;
     end;
     if Token = TOK_SAFECALL then
     begin
@@ -6138,6 +6144,10 @@ begin
     end
     else
     begin
+      // if "inline" is used on a function prototype make sure we do not
+      // forget to decrement the inline depth which we incremented above.
+      if bInline then
+        DecrementInlineDepth;
       if protoexists then
         Expected(sProtoAlreadyDefined);
       Scan;
@@ -6247,6 +6257,10 @@ begin
   end
   else
   begin
+    // if "inline" is used on a function prototype make sure we do not
+    // forget to decrement the inline depth which we incremented above.
+    if bInline then
+      DecrementInlineDepth;
     if protoexists then
       Expected(sProtoAlreadyDefined);
     Scan;
