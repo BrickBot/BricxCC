@@ -9188,7 +9188,7 @@ ends
          call     __GL_glBox                                                                   \
          mov      _glObjId,                   __GL_tmpId
 
-#define __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glOjbId)                           \
+#define __glPyramid(_glMode, _glSizeX, _glSizeY, _glSizeZ, _glObjId)                           \
          mov      __GL_mode                   _glMode                                          \
          mov      __GL_sizeX                  _glSizeX                                         \
          mov      __GL_sizeY                  _glSizeY                                         \
