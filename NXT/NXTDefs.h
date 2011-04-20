@@ -2252,15 +2252,15 @@ subroutine __ReadLSBytes0
   brtst EQ, __RLSBReturn0, __RLSBytesCount0 // terminate if zero bytes to read
   arrinit __RLSReadBuf0, 0, __RLSBytesCount0
   brtst NEQ, __RLSBError0, __RLSBResult0 // terminate if not NO_ERR
-  set __RLSBIterations0, 4
+  set __RLSBIterations0, 60
 __RLSBDoCheckStatus0:
   __lowspeedStatus(0, __RLSBytesCount0, __RLSBResult0)
   sub __RLSBIterations0, __RLSBIterations0, 1
   brtst LTEQ, __RLSBError0, __RLSBIterations0
   brtst LT, __RLSBError0, __RLSBResult0 // negative results are absolute errors
   brtst EQ, __RLSBReadyToRead0, __RLSBResult0
-  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  wait 15
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 60 ms)
+  wait 1
   jmp __RLSBDoCheckStatus0
 __RLSBReadyToRead0:
   // Try reading now
@@ -2289,15 +2289,15 @@ subroutine __ReadLSBytes1
   brtst EQ, __RLSBReturn1, __RLSBytesCount1 // terminate if zero bytes to read
   arrinit __RLSReadBuf1, 0, __RLSBytesCount1
   brtst NEQ, __RLSBError1, __RLSBResult1 // terminate if not NO_ERR
-  set __RLSBIterations1, 4
+  set __RLSBIterations1, 60
 __RLSBDoCheckStatus1:
   __lowspeedStatus(1, __RLSBytesCount1, __RLSBResult1)
   sub __RLSBIterations1, __RLSBIterations1, 1
   brtst LTEQ, __RLSBError1, __RLSBIterations1
   brtst LT, __RLSBError1, __RLSBResult1 // negative results are absolute errors
   brtst EQ, __RLSBReadyToRead1, __RLSBResult1
-  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  wait 15
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 60 ms)
+  wait 1
   jmp __RLSBDoCheckStatus1
 __RLSBReadyToRead1:
   // Try reading now
@@ -2326,15 +2326,15 @@ subroutine __ReadLSBytes2
   brtst EQ, __RLSBReturn2, __RLSBytesCount2 // terminate if zero bytes to read
   arrinit __RLSReadBuf2, 0, __RLSBytesCount2
   brtst NEQ, __RLSBError2, __RLSBResult2 // terminate if not NO_ERR
-  set __RLSBIterations2, 4
+  set __RLSBIterations2, 60
 __RLSBDoCheckStatus2:
   __lowspeedStatus(2, __RLSBytesCount2, __RLSBResult2)
   sub __RLSBIterations2, __RLSBIterations2, 1
   brtst LTEQ, __RLSBError2, __RLSBIterations2
   brtst LT, __RLSBError2, __RLSBResult2 // negative results are absolute errors
   brtst EQ, __RLSBReadyToRead2, __RLSBResult2
-  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  wait 15
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 60 ms)
+  wait 1
   jmp __RLSBDoCheckStatus2
 __RLSBReadyToRead2:
   // Try reading now
@@ -2363,15 +2363,15 @@ subroutine __ReadLSBytes3
   brtst EQ, __RLSBReturn3, __RLSBytesCount3 // terminate if zero bytes to read
   arrinit __RLSReadBuf3, 0, __RLSBytesCount3
   brtst NEQ, __RLSBError3, __RLSBResult3 // terminate if not NO_ERR
-  set __RLSBIterations3, 4
+  set __RLSBIterations3, 60
 __RLSBDoCheckStatus3:
   __lowspeedStatus(3, __RLSBytesCount3, __RLSBResult3)
   sub __RLSBIterations3, __RLSBIterations3, 1
   brtst LTEQ, __RLSBError3, __RLSBIterations3
   brtst LT, __RLSBError3, __RLSBResult3 // negative results are absolute errors
   brtst EQ, __RLSBReadyToRead3, __RLSBResult3
-  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  wait 15
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 60 ms)
+  wait 1
   jmp __RLSBDoCheckStatus3
 __RLSBReadyToRead3:
   // Try reading now
@@ -2400,15 +2400,15 @@ subroutine __ReadLSBytesVar
   brtst EQ, __RLSBReturnVar, __RLSBytesCountVar // terminate if zero bytes to read
   arrinit __RLSReadBufVar, 0, __RLSBytesCountVar
   brtst NEQ, __RLSBErrorVar, __RLSBResultVar // terminate if not NO_ERR
-  set __RLSBIterationsVar, 4
+  set __RLSBIterationsVar, 60
 __RLSBDoCheckStatusVar:
   __lowspeedStatus(__RLSReadPort, __RLSBytesCountVar, __RLSBResultVar)
   sub __RLSBIterationsVar, __RLSBIterationsVar, 1
   brtst LTEQ, __RLSBErrorVar, __RLSBIterationsVar
   brtst LT, __RLSBErrorVar, __RLSBResultVar // negative results are absolute errors
   brtst EQ, __RLSBReadyToReadVar, __RLSBResultVar
-  // if STAT_COMM_PENDING then wait a bit and then try again (up to 4 times)
-  wait 15
+  // if STAT_COMM_PENDING then wait a bit and then try again (up to 60 ms)
+  wait 1
   jmp __RLSBDoCheckStatusVar
 __RLSBReadyToReadVar:
   // Try reading now
