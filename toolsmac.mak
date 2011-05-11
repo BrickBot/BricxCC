@@ -1,4 +1,4 @@
-#LAZRESPREFIX=/usr/local/bin/
+LAZRESPREFIX=/Developer/lazarus/tools/
 #PTOOLPREFIX=/usr/local/bin/
 DEFAULT_INCLUDE_DIR=.
 ARCH=386
@@ -6,9 +6,9 @@ FPC_TARGET=i386-darwin
 WIDGETSET=carbon
 PPC=$(PTOOLPREFIX)ppc$(ARCH)
 EXTRAFLAGS=-k-framework -kFantom -k-macosx_version_min -k10.4 -XR/Developer/SDKs/MacOSX10.4u.sdk/
-ROOT=/usr/local/share
-LAZROOT=~/program/lazarus-svn
-PSROOT=~/program/pascalscript-svn
+#ROOT=/usr/local/share
+LAZROOT=/Developer/lazarus
+PSROOT=~/Desktop/pascalscript
 PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools $(EXTRAFLAGS)
 LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fugrep -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/components/synedit/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(LAZROOT)/packager/units/$(FPC_TARGET)/ -Fu$(PSROOT)/Source/lib/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY -dCAN_DOWNLOAD $(EXTRAFLAGS)
 
