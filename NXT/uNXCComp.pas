@@ -9061,11 +9061,17 @@ begin
         if not (Token in [TOK_SEMICOLON, '[', ',']) then
         begin
           AbortMsg(sUnexpectedChar);
+          mname := '';
+          mtype := '';
+          break;
           Next;
         end;
       end;
-      Semi;
-      AddMemberToCurrentStructure;
+      if mname <> '' then
+      begin
+        Semi;
+        AddMemberToCurrentStructure;
+      end;
     end;
     Next; // skip past the '}' (aka TOK_END)
     if bTypeDef then
