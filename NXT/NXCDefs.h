@@ -7666,11 +7666,11 @@ inline void SetBTDeviceNameCount(byte count);
 #define RemoteMessageRead(_conn, _queue) asm { __remoteMessageRead(_conn, _queue, __RETVAL__) }
 #define RemoteMessageWrite(_conn, _queue, _msg) asm { __sendRemoteString(_conn, _queue, _msg, __RETVAL__) }
 #define RemoteStartProgram(_conn, _filename) asm { __remoteStartProgram(_conn, _filename, __RETVAL__) }
-#define RemoteStopProgram(_conn) asm { __connectionWrite(_conn, __DCStopProgramPacket, __RETVAL__) }
+#define RemoteStopProgram(_conn) asm { __connectionSCDCWrite(_conn, __DCStopProgramPacket, __RETVAL__) }
 #define RemotePlaySoundFile(_conn, _filename, _bloop) asm { __remotePlaySoundFile(_conn, _filename, _bloop, __RETVAL__) }
 #define RemotePlayTone(_conn, _frequency, _duration) asm { __remotePlayTone(_conn, _frequency, _duration, __RETVAL__) }
-#define RemoteStopSound(_conn) asm { __connectionWrite(_conn, __DCStopSoundPacket, __RETVAL__) }
-#define RemoteKeepAlive(_conn) asm { __connectionWrite(_conn, __DCKeepAlivePacket, __RETVAL__) }
+#define RemoteStopSound(_conn) asm { __connectionSCDCWrite(_conn, __DCStopSoundPacket, __RETVAL__) }
+#define RemoteKeepAlive(_conn) asm { __connectionSCDCWrite(_conn, __DCKeepAlivePacket, __RETVAL__) }
 #define RemoteResetScaledValue(_conn, _port) asm { __remoteResetScaledValue(_conn, _port, __RETVAL__) }
 #define RemoteResetMotorPosition(_conn, _port, _brelative) asm { __remoteResetMotorPosition(_conn, _port, _brelative, __RETVAL__) }
 #define RemoteSetInputMode(_conn, _port, _type, _mode) asm { __remoteSetInputMode(_conn, _port, _type, _mode, __RETVAL__) }
@@ -7749,22 +7749,22 @@ inline void SetBTDeviceNameCount(byte count);
 #define RemoteWrite(_conn, _handle, _data) asm { __remoteWrite(_conn, _handle, _data, __RETVAL__) }
 #define RemoteCloseFile(_conn, _handle) asm { __remoteCloseFile(_conn, _handle, __RETVAL__) }
 #define RemoteDeleteFile(_conn, _filename) asm { __remoteDeleteFile(_conn, _filename, __RETVAL__) }
-#define RemoteDeleteUserFlash(_conn) asm { __connectionWrite(_conn, __SCDeleteUserFlashPacket, __RETVAL__) }
+#define RemoteDeleteUserFlash(_conn) asm { __connectionSCDCWrite(_conn, __SCDeleteUserFlashPacket, __RETVAL__) }
 #define RemoteFindFirstFile(_conn, _mask) asm { __remoteFindFirstFile(_conn, _mask, __RETVAL__) }
 #define RemoteFindNextFile(_conn, _handle) asm { __remoteFindNextFile(_conn, _handle, __RETVAL__) }
-#define RemoteGetFirmwareVersion(_conn) asm { __connectionWrite(_conn, __SCGetFirmwareVerPacket, __RETVAL__) }
+#define RemoteGetFirmwareVersion(_conn) asm { __connectionSCDCWrite(_conn, __SCGetFirmwareVerPacket, __RETVAL__) }
 #define RemoteOpenWriteLinear(_conn, _filename, _size) asm { __remoteOpenWriteLinear(_conn, _filename, _size, __RETVAL__) }
 #define RemoteOpenWriteData(_conn, _filename, _size) asm { __remoteOpenWriteData(_conn, _filename, _size, __RETVAL__) }
 #define RemoteOpenAppendData(_conn, _filename) asm { __remoteOpenAppendData(_conn, _filename, __RETVAL__) }
-#define RemoteGetDeviceInfo(_conn) asm { __connectionWrite(_conn, __SCGetDeviceInfoPacket, __RETVAL__) }
+#define RemoteGetDeviceInfo(_conn) asm { __connectionSCDCWrite(_conn, __SCGetDeviceInfoPacket, __RETVAL__) }
 #define RemotePollCommandLength(_conn, _bufnum) asm { __remotePollCommandLength(_conn, _bufnum, __RETVAL__) }
 #define RemotePollCommand(_conn, _bufnum, _len) asm { __remotePollCommand(_conn, _bufnum, _len, __RETVAL__) }
 #define RemoteIOMapRead(_conn, _id, _offset, _numbytes) asm { __remoteIOMapRead(_conn, _id, _offset, _numbytes, __RETVAL__) }
-#define RemoteGetBluetoothAddress(_conn) asm { __connectionWrite(_conn, __SCBTGetAddressPacket, __RETVAL__) }
+#define RemoteGetBluetoothAddress(_conn) asm { __connectionSCDCWrite(_conn, __SCBTGetAddressPacket, __RETVAL__) }
 
 #endif
 
-#define RemoteBluetoothFactoryReset(_conn) asm { __connectionWrite(_conn, __SCBTFactoryResetPacket, __RETVAL__) }
+#define RemoteBluetoothFactoryReset(_conn) asm { __connectionSCDCWrite(_conn, __SCBTFactoryResetPacket, __RETVAL__) }
 #define RemoteIOMapWriteValue(_conn, _id, _offset, _value) asm { __remoteIOMapWriteValue(_conn, _id, _offset, _value, __RETVAL__) }
 #define RemoteIOMapWriteBytes(_conn, _id, _offset, _data) asm { __remoteIOMapWriteBytes(_conn, _id, _offset, _data, __RETVAL__) }
 #define RemoteSetBrickName(_conn, _name) asm { __remoteSetBrickName(_conn, _name, __RETVAL__) }
