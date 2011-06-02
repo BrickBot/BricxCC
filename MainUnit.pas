@@ -3713,8 +3713,8 @@ var
 begin
   E := ActiveEditorForm;
   if not Assigned(E) then Exit;
-//  if ce.Exec.DebugMode <> dmRun then
-//  begin
+  if ce.Exec.DebugMode <> dmRun then
+  begin
     FActiveLine := Row;
     if (FActiveLine < E.TheEditor.TopLine + 2) or
        (FActiveLine > E.TheEditor.TopLine + E.TheEditor.LinesInWindow - 2) then
@@ -3724,7 +3724,7 @@ begin
     E.TheEditor.CaretY := FActiveLine;
     E.TheEditor.CaretX := 1;
     E.TheEditor.Refresh;
-//  end;
+  end;
 end;
 
 function TMainForm.ceNeedFile(Sender: TObject; const OrginFileName: String;
