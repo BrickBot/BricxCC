@@ -25,13 +25,13 @@ type
   TFantomSpirit = class(TBrickComm)
   private
     fResPort : string;
-    fNXTHandle : FantomHandle;
     fResourceNames : TStrings;
 //    fNXTFileHandle : FantomHandle;
 //    fNXTFileIteratorHandle : FantomHandle;
     dcResponse : array [0..63] of byte;
     function TransferFirmware(aStream: TStream): boolean;
   protected
+    fNXTHandle : FantomHandle;
     function  GetDownloadWaitTime: Integer; override;
     function  GetEEPROM(addr: Byte): Byte; override;
     function  GetEEPROMBlock(idx: Integer): EEPROMBlock; override;
@@ -292,6 +292,10 @@ type
     procedure NXTInitializeResourceNames; override;
     procedure NXTUpdateResourceNames; override;
   end;
+
+procedure iNXT_sendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
+  inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
+  outputBufferSize : Cardinal; var status : integer);
 
 implementation
 
