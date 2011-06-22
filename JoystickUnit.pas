@@ -109,7 +109,7 @@ uses
 {$IFNDEF NXT_ONLY}
   MainUnit, Dialogs,
 {$ENDIF}
-  SysUtils, brick_common, uLocalizedStrings, uJoyGlobals, uGlobals;
+  SysUtils, brick_common, uLocalizedStrings, uJoyGlobals, uGlobals, uROPS;
 
 var oldldir:integer =100;                   // previous left motor direction
     oldrdir:integer =100;                   // previous right motor direction
@@ -133,23 +133,28 @@ var oldldir:integer =100;                   // previous left motor direction
     rdirB:array[1..9] of integer =
                (-1, 0, 1,-1, 0, 1,-1, 0, 1);
 
-procedure ExecuteScript(const i: byte; bPress : boolean);
-{$IFDEF NXT_ONLY}
+function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
+const
+  name_postfix : array[boolean] of string = ('r', 'p');
 begin
-{$ELSE}
-var
-  fname : string;
+  Result := UserDataLocalPath+Format('joybtn%2.2d%s.rops', [i, name_postfix[bPress]]);
+end;
+
+procedure ExecuteScript(const fname : string);
 begin
-  fname := GetJoystickButtonScript(i, bPress);
   if FileExists(fname) then begin
-    MainForm.ce.MainFileName := fname;
-    MainForm.ce.Script.LoadFromFile(fname);
-    if MainForm.ce.Compile then
-      MainForm.ce.Execute
+    ce.MainFileName := fname;
+    ce.Script.LoadFromFile(fname);
+    if ce.Compile then
+      ce.Execute
     else
-      ShowMessage(MainForm.ce.CompilerMessages[0].MessageToString);
+      ShowMessage(ce.CompilerMessages[0].MessageToString);
   end;
-{$ENDIF}
+end;
+
+procedure ExecuteJoyButtonScript(const i: byte; bPress : boolean);
+begin
+  ExecuteScript(GetJoystickButtonScript(i, bPress));
 end;
 
 function GetMotorList(m1 : integer; m2 : integer = -1) : Byte;
@@ -173,48 +178,58 @@ begin
   result := b1 + b2;
 end;
 
-procedure MoveRCX(dir:integer);
-{Computes the correct directions and set the motors}
-var
-  ldir,rdir:integer;
-  l, r, lr : Byte;
-  sp : TSpeedButton;
+function GetSCAScript(outputs : byte; speed : integer) : string;
 begin
-  {Show direction}
-  sp := TSpeedButton(JoystickForm.FindComponent('DirBtn'+IntToStr(dir)));
-  if not Assigned(sp) then Exit;
+  Result := UserDataLocalPath+Format('joysca%d%d.rops', [outputs, speed]);
+end;
 
-  sp.Down := True;
+function GetDCAScript(dir : integer; l, r, lr : byte; ldir, rdir : integer) : string;
+begin
+  Result := UserDataLocalPath+Format('joydca%d%d%d%d%d%d.rops', [dir, l, r, lr, ldir+1, rdir+1]);
+end;
 
-  {Convert dir to directions for the motors}
-  if LeftRight then
-  begin
-    ldir := ldirA[dir];
-    rdir := rdirA[dir];
-  end
-  else
-  begin
-    ldir := ldirB[dir];
-    rdir := rdirB[dir];
+procedure ExecuteSCAScript(outputs : byte; speed : integer);
+begin
+  ExecuteScript(GetSCAScript(outputs, speed));
+end;
+
+procedure ExecuteDCAScript(dir : integer; l, r, lr : byte; ldir, rdir : integer);
+begin
+  ExecuteScript(GetDCAScript(dir, l, r, lr, ldir, rdir));
+end;
+
+procedure SendSCAMessage(outputs : byte; speed : integer);
+var
+  msg : string;
+begin
+  msg := Format('%1.1d%d', [outputs, speed]);
+  BrickComm.MessageWrite(SCAInBox, msg);
+end;
+
+procedure SendDCAMessage(dir : integer; l, r, lr : byte; ldir, rdir : integer);
+var
+  msg : string;
+begin
+  msg := Format('%1.1d%1.1d%1.1d%1.1d%1.1d%1.1d', [dir, l, r, lr, ldir+1, rdir+1]);
+  BrickComm.MessageWrite(DCAInBox, msg);
+end;
+
+procedure MotorSpeedChanged(outputs : byte; speed : integer);
+begin
+  case SpeedChangeAction of
+    mscaScript :  ExecuteSCAScript(outputs, speed);
+    mscaMessage : SendSCAMessage(outputs, speed);
+  else // mscaDefault
+    BrickComm.SetMotorPower(outputs, 2, speed);
   end;
+end;
 
-  if LeftReversed then
-    ldir := -ldir;
-  if RightReversed then
-    rdir := -rdir;
-
-  l  := GetMotorList(LeftMotor);
-  r  := GetMotorList(RightMotor);
-  lr := GetMotorList(LeftMotor, RightMotor);
-
-  {Execute the motions}
-  if MotorSpeed <> oldspeed then
-  begin
-    BrickComm.SetMotorPower(lr, 2, MotorSpeed);
-  end;
-
-  if (ldir <> oldldir) or (rdir <> oldrdir) then
-  begin
+procedure MotorDirectionChanged(dir : integer; l, r, lr : byte; ldir, rdir : integer);
+begin
+  case DirChangeAction of
+    mdcaScript : ExecuteDCAScript(dir, l, r, lr, ldir, rdir);
+    mdcaMessage : SendDCAMessage(dir, l, r, lr, ldir, rdir);
+  else // mdcaDefault
     if ldir < 0 then
     begin
       if rdir = 0 then
@@ -255,7 +270,7 @@ begin
         BrickComm.MotorsOn(lr);
       end;
     end
-    else
+    else // if ldir = 0 then
     begin
       if rdir = 0 then
       begin
@@ -274,6 +289,52 @@ begin
         BrickComm.MotorsOn(r);
       end;
     end;
+  end;
+end;
+
+procedure MoveBrick(dir:integer);
+{Computes the correct directions and set the motors}
+var
+  ldir,rdir:integer;
+  l, r, lr : Byte;
+  sp : TSpeedButton;
+begin
+  {Show direction}
+  sp := TSpeedButton(JoystickForm.FindComponent('DirBtn'+IntToStr(dir)));
+  if not Assigned(sp) then Exit;
+
+  sp.Down := True;
+
+  {Convert dir to directions for the motors}
+  if LeftRight then
+  begin
+    ldir := ldirA[dir];
+    rdir := rdirA[dir];
+  end
+  else
+  begin
+    ldir := ldirB[dir];
+    rdir := rdirB[dir];
+  end;
+
+  if LeftReversed then
+    ldir := -ldir;
+  if RightReversed then
+    rdir := -rdir;
+
+  l  := GetMotorList(LeftMotor);
+  r  := GetMotorList(RightMotor);
+  lr := GetMotorList(LeftMotor, RightMotor);
+
+  {Execute the motions}
+  if MotorSpeed <> oldspeed then
+  begin
+    MotorSpeedChanged(lr, MotorSpeed);
+  end;
+
+  if (ldir <> oldldir) or (rdir <> oldrdir) then
+  begin
+    MotorDirectionChanged(dir, l, r, lr, ldir, rdir);
   end;
 
   {Save the values}
@@ -313,7 +374,7 @@ begin
   else                               dir:=dir+2;
 
   if dir <> oldjoydir then
-    MoveRCX(dir);
+    MoveBrick(dir);
   oldjoydir := dir;
 
   if joyinfo.wZpos <> oldrudder then begin
@@ -340,18 +401,18 @@ end;
 procedure TJoystickForm.DirBtnMouseDown(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  MoveRCX(TSpeedButton(Sender).Tag);
+  MoveBrick(TSpeedButton(Sender).Tag);
 end;
 
 procedure TJoystickForm.DirBtnMouseUp(Sender: TObject;
   Button: TMouseButton; Shift: TShiftState; X, Y: Integer);
 begin
-  if Button <> mbRight then MoveRCX(5);
+  if Button <> mbRight then MoveBrick(5);
 end;
 
 procedure TJoystickForm.DirBtnClick(Sender: TObject);
 begin
-  MoveRCX(5);
+  MoveBrick(5);
 end;
 
 procedure TJoystickForm.TaskBtnClick(Sender: TObject);
@@ -401,7 +462,7 @@ procedure TJoystickForm.SpeedBarChange(Sender: TObject);
 begin
   {Speed selection}
   MotorSpeed := SpeedBar.Position;
-  MoveRCX(oldjoydir);
+  MoveBrick(oldjoydir);
 end;
 
 procedure TJoystickForm.FormShow(Sender: TObject);
@@ -441,20 +502,20 @@ procedure TJoystickForm.FormKeyDown(Sender: TObject; var Key: Word;
   Shift: TShiftState);
 begin
   if (Key >= VK_NUMPAD1) and (Key <= VK_NUMPAD9) then
-    MoveRCX(Key - VK_NUMPAD0)
+    MoveBrick(Key - VK_NUMPAD0)
   else if (Key >= VK_1) and (Key <= VK_9) then
-    MoveRCX(Key - VK_0)
+    MoveBrick(Key - VK_0)
   else begin
     case Key of
-      VK_END   : MoveRCX(1);
-      VK_DOWN  : MoveRCX(2);
-      VK_NEXT  : MoveRCX(3);
-      VK_LEFT  : MoveRCX(4);
-      VK_CLEAR : MoveRCX(5);
-      VK_RIGHT : MoveRCX(6);
-      VK_HOME  : MoveRCX(7);
-      VK_UP    : MoveRCX(8);
-      VK_PRIOR : MoveRCX(9);
+      VK_END   : MoveBrick(1);
+      VK_DOWN  : MoveBrick(2);
+      VK_NEXT  : MoveBrick(3);
+      VK_LEFT  : MoveBrick(4);
+      VK_CLEAR : MoveBrick(5);
+      VK_RIGHT : MoveBrick(6);
+      VK_HOME  : MoveBrick(7);
+      VK_UP    : MoveBrick(8);
+      VK_PRIOR : MoveBrick(9);
     end;
   end;
 end;
@@ -466,7 +527,7 @@ begin
      ((Key >= VK_1) and (Key <= VK_9)) or
      (Key in [VK_END,   VK_DOWN, VK_NEXT, VK_LEFT,
               VK_RIGHT, VK_HOME, VK_UP,   VK_PRIOR]) then
-    MoveRCX(5);
+    MoveBrick(5);
 end;
 
 {$IFNDEF NXT_ONLY}
@@ -485,17 +546,17 @@ end;
 
 procedure TJoystickForm.DoJoyButton(const i: byte; bPress : boolean);
 begin
-{$IFNDEF NXT_ONLY}
   if IsNxt then begin
-    ExecuteScript(i, bPress);
+    ExecuteJoyButtonScript(i, bPress);
   end
   else begin
+{$IFNDEF NXT_ONLY}
     if RCXTasks and ((i < 5) and bPress) then
       BrickComm.StartTask(i+GetTaskOffset)
     else
-      ExecuteScript(i, bPress);
-  end;
+      ExecuteJoyButtonScript(i, bPress);
 {$ENDIF}
+  end;
 end;
 
 procedure TJoystickForm.SetSpeed(const val: word);

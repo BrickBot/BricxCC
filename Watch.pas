@@ -268,17 +268,12 @@ type
     fNewData : TStrings;
     fVarArray : array[0..31] of TVarControls;
     fWatchedProgram : TProgram;
-    fOldOnGetVarInfoByID: TGetVarInfoByIDEvent;
-    fOldOnGetVarInfoByName: TGetVarInfoByNameEvent;
+    fOldProgram : TProgram;
     procedure UpdateGraph;
     procedure PopulateVarArray;
     procedure ProcessI2C(port: byte; edtLen: TBricxCCSpinEdit; edtBuf,
       edtVal: TEdit);
     procedure LoadWatchedProgram;
-    procedure HandleOnGetVarInfoByID(Sender: TObject; const ID: integer;
-      var offset, size, vartype: integer);
-    procedure HandleOnGetVarInfoByName(Sender: TObject; const name: string;
-      var offset, size, vartype: integer);
     function IndexToID(const idx : integer) : integer;
     procedure SetVariableHints;
   public
@@ -850,7 +845,6 @@ var
   i : integer;
   bVis : boolean;
   cb : TCheckBox;
-  tmp : string;
 begin
   LoadWatchedProgram;
   grpVar.Visible   := True;
@@ -1045,56 +1039,18 @@ end;
 
 procedure TWatchForm.FormActivate(Sender: TObject);
 begin
-  fOldOnGetVarInfoByID   := BrickComm.OnGetVarInfoByID;
-  fOldOnGetVarInfoByName := BrickComm.OnGetVarInfoByName;
+  fOldProgram := BrickComm.TheProgram;
   // make sure the variable watch event handlers are hooked up
-  BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
-  BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
+  BrickComm.TheProgram := fWatchedProgram;
   if chkIfActive.Checked then
     Timer1.Enabled := btnPollRegular.Down;
 end;
 
 procedure TWatchForm.FormDeactivate(Sender: TObject);
 begin
-  BrickComm.OnGetVarInfoByID   := fOldOnGetVarInfoByID;
-  BrickComm.OnGetVarInfoByName := fOldOnGetVarInfoByName;
+  BrickComm.TheProgram := fOldProgram;
   if chkIfActive.Checked then
     Timer1.Enabled := False;
-end;
-
-procedure TWatchForm.HandleOnGetVarInfoByID(Sender: TObject;
-  const ID: integer; var offset, size, vartype: integer);
-var
-  DSE : TDSTocEntry;
-begin
-  // read offset, size, and vartype from compiler symbol table output
-  if fWatchedProgram.Dataspace.Count > ID then
-  begin
-    DSE     := fWatchedProgram.Dataspace[ID];
-    offset  := DSE.Offset;
-    size    := DSE.Size;
-    vartype := Ord(DSE.DataType);
-  end;
-end;
-
-procedure TWatchForm.HandleOnGetVarInfoByName(Sender: TObject;
-  const name: string; var offset, size, vartype: integer);
-var
-  DSE : TDSTocEntry;
-  ID : integer;
-begin
-  // read offset, size, and vartype from compiler symbol table output
-  if fWatchedProgram.Dataspace.Count > 0 then
-  begin
-    ID := fWatchedProgram.Dataspace.IndexOfName(name);
-    if ID <> -1 then
-    begin
-      DSE     := fWatchedProgram.Dataspace[ID];
-      offset  := DSE.Offset;
-      size    := DSE.Size;
-      vartype := Ord(DSE.DataType);
-    end;
-  end;
 end;
 
 procedure TWatchForm.PopulateVarArray;

@@ -91,7 +91,6 @@ function IsRCX2 : boolean;
 function IsRCX : boolean;
 function IsScout : boolean;
 function IsSpybotic : boolean;
-function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
 
 {$IFNDEF FPC}
 function GetSpecialFolderPath(folder : integer) : string;
@@ -134,13 +133,6 @@ end;
 function IsSpybotic : boolean;
 begin
   result := (LocalBrickType = SU_SPYBOTIC);
-end;
-
-function GetJoystickButtonScript(const i : byte; bPress : boolean) : string;
-const
-  name_postfix : array[boolean] of string = ('r', 'p');
-begin
-  Result := UserDataLocalPath+Format('joybtn%2.2d%s.rops', [i, name_postfix[bPress]]);
 end;
 
 {$IFNDEF FPC}

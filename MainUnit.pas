@@ -44,10 +44,8 @@ uses
   SynHighlighterCpp, SynHighlighterNBC, SynHighlighterCS,
   SynHighlighterMindScript, SynHighlighterLASM, SynHighlighterPas,
   SynHighlighterROPS, SynHighlighterLua, SynHighlighterRuby,
-  SynHighlighterNPG, SynHighlighterRS,
-  uPSComponent_StdCtrls, uPSComponent_Controls, uPSComponent_Forms,
-  uPSComponent_Default, uPSComponent, uGrepExpert, uGrepSearch,
-  uNXTWatchCommon;
+  SynHighlighterNPG, SynHighlighterRS, uPSComponent,
+  uGrepExpert, uGrepSearch, uNXTWatchCommon;
 
 {$IFNDEF FPC}
 const
@@ -483,13 +481,6 @@ type
     SynCppSyn: TSynCppSyn;
     SynForthSyn: TSynForthSyn;
     SynROPSSyn: TSynROPSSyn;
-    // pascal script components
-    PSImport_Controls: TPSImport_Controls;
-    PSImport_StdCtrls: TPSImport_StdCtrls;
-    PSImport_Forms: TPSImport_Forms;
-    PSImport_DateUtils: TPSImport_DateUtils;
-    PSImport_Classes: TPSImport_Classes;
-    ce: TPSScriptDebugger;
     // toolbar components
     cbrTop: TOfficeControlBar;
     ogpHelp: TOfficeGradientPanel;
@@ -649,7 +640,7 @@ type
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
     procedure HandleOnMessage(var Msg: tagMSG; var Handled: Boolean);
 {$ENDIF}
-    procedure CreateSpiritPlugins;
+    procedure HookupPascalScriptEventHandlers;
     function  CloseAllEditors : boolean;
     function  CloseEditor(E : TEditorForm; bAll : Boolean = False) : boolean;
     function  GetEditorFormCount: integer;
@@ -674,7 +665,6 @@ type
       aMenuItem: TOfficeMenuItem; const aPrefix: string);
     procedure CreateCompPropComponents;
     procedure CreateMainFormHighlighters;
-    procedure CreatePascalScriptComponents;
     procedure CreateMenus;
     procedure CreateToolbars;
     procedure CreateFileToolbar;
@@ -684,8 +674,6 @@ type
     procedure CreateHelpToolbar;
     procedure CreateToolsToolbar;
     procedure CreateMiscSynEditComponents;
-    procedure HandleOnGetVarInfoByID(Sender : TObject; const ID : integer; var offset, size, vartype : integer);
-    procedure HandleOnGetVarInfoByName(Sender : TObject; const name : string; var offset, size, vartype : integer);
     procedure UpdateEditorPosition;
     procedure LoadNQCCompProp;
     procedure LoadNXCCompProp;
@@ -695,9 +683,6 @@ type
     function DoNewHelp(const Filename : string; Command: Word; Data: Integer;
       var CallHelp: Boolean): Boolean;
     procedure HelpQuit;
-    procedure HandleGetExpressions(Sender: TObject; aStrings : TStrings);
-    procedure HandleIsProcessAccessible(Sender : TObject; var Accessible : boolean);
-    procedure HandleGetWatchValue(Info : TWatchInfo; var Value : string);
   public
     { Public declarations }
     procedure HandleOnCompilerStatusChange(Sender: TObject; const StatusMsg: string; const bDone : boolean);
@@ -752,7 +737,7 @@ uses
   JoystickUnit, DatalogUnit, MemoryUnit, RemoteUnit,
   CodeUnit, MessageUnit, SynEdit,
 {$IFNDEF FPC}
-  ShellApi, uForthConsole, DPageSetup, uPSI_FakeSpirit,
+  ShellApi, uForthConsole, DPageSetup,
 {$ENDIF}
   DTestPrintPreview,
   ParamUtils, uCodeExplorer,
@@ -761,8 +746,8 @@ uses
   BricxccSynEdit, SynEditTypes, uProjectManager, uMIDIConversion,
   uSetLNPAddress, uNewWatch, uSetValues, uEEPROM,
   Themes, brick_common, uWav2RSO, uNXTExplorer, uGuiUtils,
-  uNXTController, uNXTImage, Math, uPSI_brick_common, uPSI_uSpirit,
-  uPSI_FantomSpirit, uPSRuntime, uPSDebugger, uPSI_uGlobals, uPSI_rcx_constants,
+  uNXTController, uNXTImage, Math, uROPS,
+  uPSRuntime, uPSDebugger,
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uDebugLogging,
   uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp,
@@ -986,14 +971,13 @@ begin
   CreateMenus;
   CreateCompPropComponents;
   CreateMainFormHighlighters;
-  CreatePascalScriptComponents;
+  HookupPascalScriptEventHandlers;
   CreateToolbars;
   CreateMiscSynEditComponents;
   Application.OnHelp := HandleOnHelp;
 {$IFNDEF FPC}
   Application.OnMessage := HandleOnMessage;
 {$ENDIF}
-  CreateSpiritPlugins;
   SetColorScheme;
   fOldActiveEditorForm := nil;
   pnlCodeExplorer.DockOrientation := doVertical;
@@ -1035,7 +1019,7 @@ begin
   // hook up transfer item execution proc
   DoExecuteTransferItem := Self.ExecuteTransferItem;
   // hook up the ROPS compiler
-  theROPSCompiler := Self.ce;
+  theROPSCompiler := ce;
   // hook up the search engines
   seRegex  := Self.SynEditRegexSearch;
   seNormal := Self.SynEditSearch;
@@ -1096,10 +1080,6 @@ begin
      FileExists(DefaultMacroLibrary) then
     frmMacroManager.CurrentLibraryPath := DefaultMacroLibrary;
   ConfigureOtherFirmwareOptions;
-  // watch list stuff
-  frmNXTWatchList.OnGetExpressions   := HandleGetExpressions;
-  TheWatchList.OnIsProcessAccessible := HandleIsProcessAccessible;
-  TheWatchList.OnGetWatchValue       := HandleGetWatchValue;
 end;
 
 {Reacting on dropping a file on the form}
@@ -1174,8 +1154,9 @@ begin
         fNXTVMState := kNXT_VMState_RunFree;
         actCompilePause.Caption := sBreakAll;
         // make sure the variable watch event handlers are hooked up
-        BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
-        BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
+        BrickComm.TheProgram := CurrentProgram;
+//        BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
+//        BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
       end
       else
         ShowNXTTools;
@@ -3628,26 +3609,6 @@ begin
   end;
 end;
 
-procedure TMainForm.CreateSpiritPlugins;
-var
-  Plugin : TPSPlugin;
-begin
-  Plugin := TPSImport_uGlobals.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-  Plugin := TPSImport_rcx_constants.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-  Plugin := TPSImport_uSpirit.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-  Plugin := TPSImport_brick_common.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-{$IFNDEF FPC}
-  Plugin := TPSImport_FakeSpirit.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-{$ENDIF}
-  Plugin := TPSImport_FantomSpirit.Create(Self);
-  TPSPluginItem(ce.Plugins.Add).Plugin := Plugin;
-end;
-
 procedure TMainForm.ceExecute(Sender: TPSScript);
 begin
   ce.SetVarToInstance('SELF', Self);
@@ -3827,6 +3788,7 @@ begin
   end;
 end;
 
+(*
 procedure TMainForm.HandleOnGetVarInfoByID(Sender: TObject;
   const ID: integer; var offset, size, vartype: integer);
 var
@@ -3861,64 +3823,20 @@ begin
     end;
   end;
 end;
+*)
 
-procedure TMainForm.CreatePascalScriptComponents;
+procedure TMainForm.HookupPascalScriptEventHandlers;
 begin
-  PSImport_Controls := TPSImport_Controls.Create(Self);
-  PSImport_StdCtrls := TPSImport_StdCtrls.Create(Self);
-  PSImport_Forms := TPSImport_Forms.Create(Self);
-  PSImport_DateUtils := TPSImport_DateUtils.Create(Self);
-  PSImport_Classes := TPSImport_Classes.Create(Self);
-  ce := TPSScriptDebugger.Create(Self);
-  with PSImport_Controls do
-  begin
-    Name := 'PSImport_Controls';
-    EnableStreams := True;
-    EnableGraphics := True;
-    EnableControls := True;
-  end;
-  with PSImport_StdCtrls do
-  begin
-    Name := 'PSImport_StdCtrls';
-    EnableExtCtrls := True;
-    EnableButtons := True;
-  end;
-  with PSImport_Forms do
-  begin
-    Name := 'PSImport_Forms';
-    EnableForms := True;
-    EnableMenus := True;
-  end;
-  with PSImport_DateUtils do
-  begin
-    Name := 'PSImport_DateUtils';
-  end;
-  with PSImport_Classes do
-  begin
-    Name := 'PSImport_Classes';
-    EnableStreams := True;
-    EnableClasses := True;
-  end;
   with ce do
   begin
-    Name := 'ce';
-    CompilerOptions := [];
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_DateUtils;
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_Classes;
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_Controls;
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_StdCtrls;
-    TPSPluginItem(Plugins.Add).Plugin := PSImport_Forms;
-    MainFileName := 'Unnamed';
-    UsePreProcessor := True;
-    OnCompile := ceCompile;
-    OnExecute := ceExecute;
+    OnCompile      := ceCompile;
+    OnExecute      := ceExecute;
     OnAfterExecute := ceAfterExecute;
-    OnNeedFile := ceNeedFile;
-    OnIdle := ceIdle;
-    OnLineInfo := ceLineInfo;
-    OnBreakpoint := ceBreakpoint;
+    OnNeedFile     := ceNeedFile;
+    OnIdle         := ceIdle;
+    OnLineInfo     := ceLineInfo;
+    OnBreakpoint   := ceBreakpoint;
   end;
-//  ce.Comp.on
 end;
 
 procedure TMainForm.CreateMainFormHighlighters;
@@ -7179,74 +7097,6 @@ end;
 procedure TMainForm.actToolsNXTWatchListExecute(Sender: TObject);
 begin
   frmNXTWatchList.Visible := not frmNXTWatchList.Visible;
-end;
-
-procedure TMainForm.HandleGetExpressions(Sender: TObject; aStrings: TStrings);
-var
-  i : integer;
-begin
-  aStrings.Clear;
-  if IsNXT then
-  begin
-    if FileIsROPS then
-    begin
-      if ce.Exec.Status in [isRunning, isPaused] then
-        for i := 0 to ce.Exec.GlobalVarNames.Count - 1 do
-          aStrings.Add(ce.Exec.GlobalVarNames[i]);
-      if ce.Exec.Status in [isRunning, isPaused] then
-      begin
-        for i := 0 to ce.Exec.CurrentProcVars.Count - 1 do
-          aStrings.Add(ce.Exec.CurrentProcVars[i]);
-        for i := 0 to ce.Exec.CurrentProcParams.Count -1 do
-          aStrings.Add(ce.Exec.CurrentProcParams[i]);
-      end;
-    end
-    else if FileIsNBCOrNXC then
-    begin
-      for i := 0 to CurrentProgram.Dataspace.Count - 1 do
-        aStrings.Add(CurrentProgram.Dataspace[i].Name); // ?? PrettyName
-    end;
-  end;
-end;
-
-procedure TMainForm.HandleGetWatchValue(Info: TWatchInfo; var Value: string);
-var
-  i : integer;
-begin
-  if IsNXT then
-  begin
-    if FileIsROPS then
-    begin
-      Value := ce.GetVarContents(Info.Expression);
-    end
-    else if FileIsNBCOrNXC then
-    begin
-      i := CurrentProgram.Dataspace.IndexOfName(Info.Expression);
-      if i <> -1 then
-        Value := BrickComm.GetVariableValue(i);
-    end;
-  end;
-end;
-
-procedure TMainForm.HandleIsProcessAccessible(Sender: TObject; var Accessible: boolean);
-var
-  name : string;
-begin
-  if IsNXT then
-  begin
-    if FileIsROPS then
-    begin
-      Accessible := ce.Exec.Status in [isRunning, isPaused];
-    end
-    else if FileIsNBCOrNXC then
-    begin
-      Accessible := False;
-      if BrickComm.GetCurrentProgramName(name) then
-      begin
-        Accessible := CurrentProgram.Loaded(name);
-      end;
-    end;
-  end;
 end;
 
 initialization

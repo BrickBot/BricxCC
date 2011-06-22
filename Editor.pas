@@ -245,7 +245,7 @@ uses
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants, uEditorUtils,
   uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals, uBasicPrefs,
   uHTMLHelp, uNXCHTMLTopics, uNQCHTMLTopics, uNBCHTMLTopics, uPSComponent,
-  uPSDebugger;
+  uPSDebugger, uROPS;
 
 function HelpALink(keyword: string; bNQC : Boolean): Boolean;
 var
@@ -366,7 +366,7 @@ begin
     frmCodeExplorer.ProcessFile(fname, TheEditor.Lines.Text);
     frmCodeExplorer.RefreshEntireTree;
     if FileIsROPS(Highlighter) then
-      MainForm.ce.Script.Assign(TheEditor.Lines);
+      ce.Script.Assign(TheEditor.Lines);
     SelectLine(lineNo);
   end;
 end;
@@ -1732,7 +1732,7 @@ begin
   Special := False;
   if FileIsROPS(Highlighter) then
   begin
-    if MainForm.ce.HasBreakPoint(Filename, Line) then
+    if ce.HasBreakPoint(Filename, Line) then
     begin
       Special := True;
       if Line = MainForm.ActiveLine then
@@ -1789,10 +1789,10 @@ begin
   Line := TheEditor.CaretY;
   if FileIsROPS(Highlighter) then
   begin
-    if MainForm.ce.HasBreakPoint(Filename, Line) then
-      MainForm.ce.ClearBreakPoint(Filename, Line)
+    if ce.HasBreakPoint(Filename, Line) then
+      ce.ClearBreakPoint(Filename, Line)
     else
-      MainForm.ce.SetBreakPoint(Filename, Line);
+      ce.SetBreakPoint(Filename, Line);
   end
   else if IsNXT and EnhancedFirmware and
           FileIsNBCOrNXC(Highlighter) and
