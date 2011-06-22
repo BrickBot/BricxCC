@@ -2,24 +2,36 @@ float globalFloat = PI;
 int globalInt = 45;
 long globalLong = -28534;
 
-task main()
+void OutputGlobals(int idx)
 {
-  int i;
-  while(true)
-  {
-    i++;
     NumOut(0, LCD_LINE1, globalFloat);
     NumOut(0, LCD_LINE2, globalInt);
     NumOut(0, LCD_LINE3, globalLong);
-    NumOut(0, LCD_LINE4, i);
+    NumOut(0, LCD_LINE4, idx);
+}
+
+void ModifyGlobals(int idx)
+{
+    globalFloat += sqrt(Random(50));
+    globalInt   += idx;
+    globalLong  += Random(10);
+}
+
+task main()
+{
+  SetSleepTimeout(0);
+  int i;
+  Wait(SEC_5);
+  while(true)
+  {
+    i++;
+    OutputGlobals(i);
     for (int i=0; i<10; i++)
     {
       NumOut(0, LCD_LINE5, i);
       Wait(MS_500);
     }
-    globalFloat += sqrt(Random(50));
-    globalInt += i;
-    globalLong += Random(10);
+    ModifyGlobals(i);
     Wait(SEC_1);
   }
 }

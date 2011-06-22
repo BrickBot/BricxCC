@@ -3,9 +3,18 @@ int idata[] = {1001, 2002, 3003, 4004};
 float fdata[] = {1.5, 2.5, 3.5, 4.5};
 string msg = "please work";
 
+void UpdateGlobals(int delta)
+{
+  bdata += delta;
+  idata += delta;
+  fdata += sqrt(delta);
+}
+
 task main()
 {
-  int i = 0; 
+  SetSleepTimeout(0);
+  int i = 0;
+  Wait(SEC_5);
   TextOut(0, LCD_LINE4, msg);
   while (true)
   {
@@ -13,9 +22,7 @@ task main()
     NumOut(0, LCD_LINE2, idata[0]);
     NumOut(0, LCD_LINE3, fdata[0]);
     i++;
-    bdata += 1;
-    idata += 1;
-    fdata += sqrt(2);
+    UpdateGlobals(2);
     Wait(SEC_2);
   }
 }

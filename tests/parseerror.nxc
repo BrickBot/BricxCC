@@ -1,0 +1,22 @@
+struct foo {
+   unsigned int type;
+   unsigned int len;
+   unsigned long idx;
+};
+
+inline int Testing(unsigned long op, foo opands[], int out) {
+   foo tmp_opands[];
+
+   if(opands[0].id != tmp_opands[0].id) {
+      foo tmp = tmp_opands[0];
+   }
+
+   return(out);
+}
+
+task main() {
+   foo fred[1];
+   int tmp;
+   Testing(12, fred, tmp);
+   TextOut(0, 0, "Hello, world!", 0);
+}

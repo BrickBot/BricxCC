@@ -1,0 +1,19 @@
+void MyTimedFunction(int p1, int p2)
+{
+  float f = sqrt(p2);
+  p1 += trunc(f);
+  Wait(MS_2);
+}
+
+task main()
+{
+  int param1 = 2, param2 = 3;
+  unsigned long tick = CurrentTick();
+  repeat (1000) // NXC loop construct with less overhead than for or while.
+  {
+    MyTimedFunction(param1, param2);
+  }
+  float ms = (CurrentTick()-tick)/1000.0;
+  NumOut(0, LCD_LINE1, ms);
+  while(true);
+}
