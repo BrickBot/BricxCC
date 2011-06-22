@@ -1752,14 +1752,32 @@ begin
       BG := clBlue;
     end;
   end
-  else if Assigned(fNXTCurrentOffset) and FileIsNBCOrNXC(Highlighter) then
+  else if IsNXT and EnhancedFirmware and FileIsNBCOrNXC(Highlighter) then
   begin
-    Special := (Line = fNXTCurrentOffset.LineNumber) and
-               (fNXTVMState = kNXT_VMState_Pause);
-    if Special then
+    if CurrentProgram.Loaded(Filename) and CurrentProgram.HasBreakPoint(Line) then
     begin
-      FG := clWhite;
-      BG := clBlue;
+      Special := True;
+      if Assigned(fNXTCurrentOffset) and
+         (Line = fNXTCurrentOffset.LineNumber) and
+         (fNXTVMState = kNXT_VMState_Pause) then
+      begin
+        FG := clRed;
+        BG := clWhite;
+      end else
+      begin
+        FG := clWhite;
+        BG := clRed;
+      end;
+    end
+    else if Assigned(fNXTCurrentOffset) then
+    begin
+      Special := (Line = fNXTCurrentOffset.LineNumber) and
+                 (fNXTVMState = kNXT_VMState_Pause);
+      if Special then
+      begin
+        FG := clWhite;
+        BG := clBlue;
+      end;
     end;
   end;
 end;
@@ -1780,6 +1798,10 @@ begin
           FileIsNBCOrNXC(Highlighter) and
           CurrentProgram.Loaded(Filename) then
   begin
+    if CurrentProgram.HasBreakPoint(Line) then
+      CurrentProgram.ClearBreakPoint(Line)
+    else
+      CurrentProgram.SetBreakPoint(Line);
   end;
   TheEditor.Refresh;
 end;

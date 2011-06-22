@@ -159,6 +159,9 @@ type
     procedure LoadFromFile(const name : string);
     procedure UpdateOffsets;
     function  Loaded(const aName : string) : boolean;
+    function  HasBreakPoint(const aLine : integer) : boolean;
+    procedure ClearBreakPoint(const aLine : integer);
+    procedure SetBreakPoint(const aLine : integer);
     property  Items[Index: Integer]: TProgClumpData read GetItem write SetItem; default;
     property  Dataspace : TDSTocEntries read fDS;
     property  IsNXC : boolean read fIsNXC write fIsNXC;
@@ -433,6 +436,7 @@ var
   CO : TOffset;
   i : integer;
 begin
+{
   i := Offsets.IndexOfLine(aLineNo);
   if i = -1 then
   begin
@@ -441,6 +445,9 @@ begin
   end
   else
     CO := Offsets.Items[i];
+}
+  CO := Offsets.Add;
+  CO.LineNumber := aLineNo;
   CO.PC := aPC;
   CO.Filename := aFilename;
   CO.Source := aSrc;
@@ -780,7 +787,8 @@ begin
     curLine := fNXTCurrentOffset.LineNumber;
   newLine := curLine;
   Result := True;
-  while ((newLine = curLine) or (oldClump <> fNXTClump)) and Result do
+  while ((newLine = curLine) or
+         ((oldClump <> $FF) and (oldClump <> fNXTClump))) and Result do
   begin
     if bc.SetVMState(kNXT_VMState_Single) then
     begin
@@ -1029,6 +1037,93 @@ begin
   Clear;
   Dataspace.Clear;
   fName := '';
+end;
+
+function TProgram.HasBreakPoint(const aLine: integer): boolean;
+var
+  bc : TBrickComm;
+begin
+  Result := False;
+  bc := BrickComm;
+  Assert(bc <> nil, 'bc == nil');
+  // figure out what clump they are in based on the line number
+  // also figure out the PC for this line number.
+(*
+      case RC_SET_BREAKPOINTS:
+      {
+        CLUMP_ID Clump = (CLUMP_ID)pInBuf[1];
+        //Don't do anything if illegal clump specification is made
+        if (Clump >= VarsCmd.AllClumpsCount)
+        {
+          RCStatus = ERR_RC_ILLEGAL_VAL;
+          break;
+        }
+        // setting breakpoint information turns on debugging mode
+        VarsCmd.Debugging = TRUE;
+        CLUMP_BREAK_REC* pBreakpoints = VarsCmd.pAllClumps[Clump].Breakpoints;
+        // length varies from 6 bytes min to 18 bytes max
+        // clump byte, bpidx, bplocation (2 bytes), bp enabled, [...] terminal byte 0xFF
+        UBYTE idx = 2;
+        UBYTE bDone = FALSE;
+        while (!bDone) {
+          UBYTE bpIdx = (UBYTE)pInBuf[idx];
+          idx++;
+          memcpy((PSZ)(&(pBreakpoints[bpIdx].Location)), (PSZ)(&pInBuf[idx]), 2);
+          idx += 2;
+          pBreakpoints[bpIdx].Enabled = (UBYTE)pInBuf[idx];
+          idx++;
+          bDone = (((UBYTE)pInBuf[idx] == 0xFF) || (idx >= 18));
+        }
+        // fall through to RC_GET_BREAKPOINTS
+      }
+      
+      case RC_GET_BREAKPOINTS:
+      {
+        if (SendResponse == TRUE)
+        {
+          // output the list of breakpoints for the specified clump ID
+          CLUMP_ID Clump = (CLUMP_ID)pInBuf[1];
+          //Don't do anything if illegal clump specification is made
+          if (Clump >= VarsCmd.AllClumpsCount)
+          {
+            RCStatus = ERR_RC_ILLEGAL_VAL;
+            break;
+          }
+          CLUMP_BREAK_REC* pBreakpoints = VarsCmd.pAllClumps[Clump].Breakpoints;
+          for(int j = 0; j < MAX_BREAKPOINTS; j++)
+          {
+            memcpy((PSZ)&(pOutBuf[ResponseLen]), (PSZ)&(pBreakpoints[j].Location), 2);
+            ResponseLen += 2;
+            pOutBuf[ResponseLen] = pBreakpoints[j].Enabled;
+            ResponseLen++;
+          }
+        }
+      }
+*)
+(*
+  if bc.SetVMState(kNXT_VMState_Single) then
+  begin
+    Result := bc.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+  end
+*)
+end;
+
+procedure TProgram.ClearBreakPoint(const aLine: integer);
+var
+  bc : TBrickComm;
+begin
+  bc := BrickComm;
+  Assert(bc <> nil, 'bc == nil');
+
+end;
+
+procedure TProgram.SetBreakPoint(const aLine: integer);
+var
+  bc : TBrickComm;
+begin
+  bc := BrickComm;
+  Assert(bc <> nil, 'bc == nil');
+
 end;
 
 initialization
