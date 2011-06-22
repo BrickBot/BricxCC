@@ -354,13 +354,13 @@ begin
     end;
     Delete(ItemOrder, Length(ItemOrder), 1);
   end;
+  for PT := Low(TProcType) to High(TProcType) do
+    NodeArray[PT] := nil;
   with treCodeExplorer.Items do
   begin
     BeginUpdate;
     try
       Clear;
-      for PT := Low(TProcType) to High(TProcType) do
-        NodeArray[PT] := nil;
       while Length(ItemOrder) > 0 do begin
         p := Pos(';', ItemOrder);
         if p = 0 then p := Length(ItemOrder) + 1;
