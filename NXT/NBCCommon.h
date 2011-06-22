@@ -3390,7 +3390,7 @@
 #define LONG_MIN   -2147483648 /*!< The minimum value of the long type */
 #define LONG_MAX   2147483647  /*!< The maximum value of the long type */
 #define ULONG_MAX  4294967295  /*!< The maximum value of the unsigned long type */
-#define RAND_MAX   32768       /*!< The maximum unsigned int random number returned by rand */
+#define RAND_MAX   65535       /*!< The maximum unsigned int random number returned by rand */
 /** @} */  // end of NXTLimits group
 /** @} */  // end of MiscConstants group
 
