@@ -2484,8 +2484,7 @@ dseg ends
 #define __Random(_arg,_max) \
   acquire __RandomMutex \
   syscall RandomNumber, __RandomArgs \
-  mov __RandomTmp, __RandomArgs.Result \
-  add __RandomTmp, __RandomTmp, 32768 \
+  add __RandomTmp, __RandomArgs.Result, 32768 \
   mul __RandomTmp, __RandomTmp, _max \
   div __RandomTmp, __RandomTmp, 65536 \
   mov _arg, __RandomTmp \
