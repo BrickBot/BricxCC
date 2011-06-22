@@ -96,7 +96,6 @@ begin
  CL.AddDelphiFunction('Function IsRCX : boolean');
  CL.AddDelphiFunction('Function IsScout : boolean');
  CL.AddDelphiFunction('Function IsSpybotic : boolean');
- CL.AddDelphiFunction('Function GetJoystickButtonScript( const i : byte; bPress : boolean) : string');
  CL.AddDelphiFunction('Function GetSpecialFolderPath( folder : integer) : string');
 end;
 
@@ -116,7 +115,6 @@ begin
  S.RegisterDelphiFunction(@IsRCX, 'IsRCX', cdRegister);
  S.RegisterDelphiFunction(@IsScout, 'IsScout', cdRegister);
  S.RegisterDelphiFunction(@IsSpybotic, 'IsSpybotic', cdRegister);
- S.RegisterDelphiFunction(@GetJoystickButtonScript, 'GetJoystickButtonScript', cdRegister);
  S.RegisterDelphiFunction(@GetSpecialFolderPath, 'GetSpecialFolderPath', cdRegister);
 end;
 

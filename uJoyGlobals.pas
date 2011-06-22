@@ -27,14 +27,23 @@ interface
 uses
   Registry;
 
+type
+  TMotorSpeedChangedAction = (mscaDefault, mscaScript, mscaMessage);
+  TMotorDirChangedAction = (mdcaDefault, mdcaScript, mdcaMessage);
+
 {Joystick settings}
-var LeftRight:boolean;              // Whether in left-right mode
-    LeftMotor:integer;              // the left motor
-    RightMotor:integer;             // the right motor
-    LeftReversed:boolean;           // whether left must be reversed
-    RightReversed:boolean;          // whether right must be reversed
-    MotorSpeed:integer;             // speed of the motors
-    RCXTasks:boolean;               // use tasks or scripts
+var
+  LeftRight:boolean;              // Whether in left-right mode
+  LeftMotor:integer;              // the left motor
+  RightMotor:integer;             // the right motor
+  LeftReversed:boolean;           // whether left must be reversed
+  RightReversed:boolean;          // whether right must be reversed
+  MotorSpeed:integer;             // speed of the motors
+  RCXTasks:boolean;               // use tasks or scripts
+  SpeedChangeAction: TMotorSpeedChangedAction;
+  DirChangeAction: TMotorDirChangedAction;
+  SCAInBox: integer;
+  DCAInBox: integer;
 
 procedure LoadJoystickValues(reg : TRegistry);
 procedure SaveJoystickValues(reg : TRegistry);
@@ -57,6 +66,10 @@ begin
     RightReversed := Reg_ReadBool(reg, 'RightReversed', false);
     MotorSpeed    := Reg_ReadInteger(reg, 'MotorSpeed', 4);
     RCXTasks      := Reg_ReadBool(reg, 'RCXTasks', true);
+    SpeedChangeAction := TMotorSpeedChangedAction(Reg_ReadInteger(reg, 'SpeedChangeAction', Ord(mscaDefault)));
+    DirChangeAction   := TMotorDirChangedAction(Reg_ReadInteger(reg, 'DirChangeAction', Ord(mdcaDefault)));
+    SCAInBox      := Reg_ReadInteger(reg, 'SCAInBox', 0);
+    DCAInBox      := Reg_ReadInteger(reg, 'DCAInBox', 1);
   finally
     reg.CloseKey;
   end;
@@ -75,6 +88,10 @@ begin
     reg.WriteBool('RightReversed',RightReversed);
     reg.WriteInteger('MotorSpeed',MotorSpeed);
     reg.WriteBool('RCXTasks', RCXTasks);
+    reg.WriteInteger('SpeedChangeAction',Ord(SpeedChangeAction));
+    reg.WriteInteger('DirChangeAction',Ord(DirChangeAction));
+    reg.WriteInteger('SCAInBox', SCAInBox);
+    reg.WriteInteger('DCAInBox', DCAInBox);
   finally
     reg.CloseKey;
   end;

@@ -19,7 +19,7 @@ unit uSpirit;
 interface
 
 uses
-  rcx_constants, Classes, FantomDefs;
+  rcx_constants, Classes, FantomDefs, uProgram;
 
 const
   MAX_COMPORT   = 8;
@@ -94,6 +94,7 @@ type
     fOnOpenStateChanged: TNotifyEvent;
     fOnGetVarInfoByID: TGetVarInfoByIDEvent;
     fOnGetVarInfoByName: TGetVarInfoByNameEvent;
+    fProgram: TProgram;
     fPort: string;
     fTowerExistsSleep: Word;
     fUseBT: boolean;
@@ -395,6 +396,7 @@ type
     property  RCXFirmwareChunkSize : Integer read GetRCXFirmwareChunkSize write SetRCXFirmwareChunkSize;
     property  DownloadWaitTime : Integer read GetDownloadWaitTime write SetDownloadWaitTime;
     property  OmitHeader : Boolean read GetOmitHeader write SetOmitHeader;
+    property  TheProgram : TProgram read fProgram write fProgram;
     property  OnDownloadStart : TNotifyEvent read fOnDownloadStart write fOnDownloadStart;
     property  OnDownloadDone : TNotifyEvent read fOnDownloadDone write fOnDownloadDone;
     property  OnDownloadStatus : TDownloadStatusEvent read fOnDownloadStatus write fOnDownloadStatus;
@@ -558,21 +560,52 @@ begin
 end;
 
 procedure TBrickComm.DoGetVarInfoByID(const id: integer; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
 begin
   offset  := -1;
   size    := -1;
   vartype := -1;
   if Assigned(fOnGetVarInfoByID) then
-    fOnGetVarInfoByID(Self, id, offset, size, vartype);
+    fOnGetVarInfoByID(Self, id, offset, size, vartype)
+  else if Assigned(fProgram) then
+  begin
+    // read offset, size, and vartype from compiler symbol table output
+    if fProgram.Dataspace.Count > ID then
+    begin
+      DSE     := fProgram.Dataspace[ID];
+      offset  := DSE.Offset;
+      size    := DSE.Size;
+      vartype := Ord(DSE.DataType);
+    end;
+  end;
 end;
 
 procedure TBrickComm.DoGetVarInfoByName(const name: string; var offset, size, vartype: integer);
+var
+  DSE : TDSTocEntry;
+  ID : integer;
 begin
   offset  := -1;
   size    := -1;
   vartype := -1;
   if Assigned(fOnGetVarInfoByName) then
-    fOnGetVarInfoByName(Self, name, offset, size, vartype);
+    fOnGetVarInfoByName(Self, name, offset, size, vartype)
+  else if Assigned(fProgram) then
+  begin
+    // read offset, size, and vartype from compiler symbol table output
+    if fProgram.Dataspace.Count > 0 then
+    begin
+      ID := fProgram.Dataspace.IndexOfName(name);
+      if ID <> -1 then
+      begin
+        DSE     := fProgram.Dataspace[ID];
+        offset  := DSE.Offset;
+        size    := DSE.Size;
+        vartype := Ord(DSE.DataType);
+      end;
+    end;
+  end;
 end;
 
 function TBrickComm.GetBrickTypeName: string;

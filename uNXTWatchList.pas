@@ -169,7 +169,8 @@ implementation
 {$ENDIF}
 
 uses
-  Clipbrd, uNXTWatchProperties, uNXTWatchGroups, uLocalizedStrings;
+  Clipbrd, uNXTWatchProperties, uNXTWatchGroups, uLocalizedStrings,
+  uGlobals, uMiscDefines, uROPS, uProgram, uPSRuntime;
 
 procedure TfrmNXTWatchList.UpdateFormState;
 begin
@@ -708,45 +709,6 @@ begin
     OnChange := lstWatchesChange;
     OnDblClick := lstWatchesDblClick;
   end;
-(*
-var
-  lstWatches: TListView;
-
-  lstWatches := TListView.Create(Self);
-  with lstWatches do
-  begin
-    Name := 'lstWatches';
-    Parent := Self;
-    Left := 0;
-    Top := 0;
-    Width := 488;
-    Height := 142;
-    Align := alClient;
-    BevelInner := bvNone;
-    BevelKind := bkTile;
-    BorderStyle := bsNone;
-    Checkboxes := True;
-    with Columns.Add do begin 
-      Caption := 'Watch Name';
-      MinWidth := 100;
-      Width := 100;
-    end;
-    with Columns.Add do begin 
-      Caption := 'Value';
-      MinWidth := 100;
-      Width := 375;
-    end;
-    RowSelect := True;
-    TabOrder := 1;
-    ViewStyle := vsReport;
-    OnChange := lstWatchesChange;
-    OnChanging := lstWatchesChanging;
-    OnDblClick := lstWatchesDblClick;
-    OnEdited := lstWatchesEdited;
-    OnEditing := lstWatchesEditing;
-    OnKeyDown := lstWatchesKeyDown;
-  end;
-*)
 end;
 
 function TfrmNXTWatchList.CurrentGroupName: string;
@@ -764,11 +726,37 @@ end;
 function TfrmNXTWatchList.GetExpressions: string;
 var
   SL : TStringList;
+  i : integer;
 begin
   SL := TStringList.Create;
   try
     if Assigned(fOnGetExpressions) then
-      fOnGetExpressions(Self, SL);
+      fOnGetExpressions(Self, SL)
+    else
+    begin
+      SL.Clear;
+      if IsNXT then
+      begin
+        if FileIsROPS then
+        begin
+          if ce.Exec.Status in [isRunning, isPaused] then
+            for i := 0 to ce.Exec.GlobalVarNames.Count - 1 do
+              SL.Add(ce.Exec.GlobalVarNames[i]);
+          if ce.Exec.Status in [isRunning, isPaused] then
+          begin
+            for i := 0 to ce.Exec.CurrentProcVars.Count - 1 do
+              SL.Add(ce.Exec.CurrentProcVars[i]);
+            for i := 0 to ce.Exec.CurrentProcParams.Count -1 do
+              SL.Add(ce.Exec.CurrentProcParams[i]);
+          end;
+        end
+        else if FileIsNBCOrNXC then
+        begin
+          for i := 0 to CurrentProgram.Dataspace.Count - 1 do
+            SL.Add(CurrentProgram.Dataspace[i].Name); // ?? PrettyName
+        end;
+      end;
+    end;
     Result := SL.CommaText;
   finally
     SL.Free;

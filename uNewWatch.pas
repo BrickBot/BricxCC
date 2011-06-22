@@ -89,8 +89,7 @@ type
     fNewData : TStrings;
     fWatchCount : Integer;
     fWatchedProgram : TProgram;
-    fOldOnGetVarInfoByID: TGetVarInfoByIDEvent;
-    fOldOnGetVarInfoByName: TGetVarInfoByNameEvent;
+    fOldProgram : TProgram;
     procedure UpdateGraph;
     procedure AdjustRangeOfValueSlider(source : Integer);
     procedure InitSources;
@@ -99,10 +98,6 @@ type
     procedure AddVariableHint(sht : TTabsheet; i : integer);
     procedure PopulateVariables(cbo : TCombobox);
     procedure cboNXTVarChange(Sender: TObject);
-    procedure HandleOnGetVarInfoByID(Sender: TObject; const ID: integer;
-      var offset, size, vartype: integer);
-    procedure HandleOnGetVarInfoByName(Sender: TObject; const name: string;
-      var offset, size, vartype: integer);
     procedure LoadWatchedProgram;
     procedure RemoveAllWatches;
   public
@@ -349,19 +344,16 @@ end;
 
 procedure TfrmNewWatch.FormActivate(Sender: TObject);
 begin
-  fOldOnGetVarInfoByID   := BrickComm.OnGetVarInfoByID;
-  fOldOnGetVarInfoByName := BrickComm.OnGetVarInfoByName;
+  fOldProgram := BrickComm.TheProgram;
   // make sure the variable watch event handlers are hooked up
-  BrickComm.OnGetVarInfoByID := HandleOnGetVarInfoByID;
-  BrickComm.OnGetVarInfoByName := HandleOnGetVarInfoByName;
+  BrickComm.TheProgram := fWatchedProgram;
   if chkIfActive.Checked then
     Timer1.Enabled := btnPollRegular.Down;
 end;
 
 procedure TfrmNewWatch.FormDeactivate(Sender: TObject);
 begin
-  BrickComm.OnGetVarInfoByID   := fOldOnGetVarInfoByID;
-  BrickComm.OnGetVarInfoByName := fOldOnGetVarInfoByName;
+  BrickComm.TheProgram := fOldProgram;
   if chkIfActive.Checked then
     Timer1.Enabled := False;
 end;
@@ -644,41 +636,6 @@ begin
   C := TCombobox(Sender);
   TUpDown(C.Parent.Controls[3]).Position := C.ItemIndex;
   C.Parent.Hint := C.Text;
-end;
-
-procedure TfrmNewWatch.HandleOnGetVarInfoByID(Sender: TObject;
-  const ID: integer; var offset, size, vartype: integer);
-var
-  DSE : TDSTocEntry;
-begin
-  // read offset, size, and vartype from compiler symbol table output
-  if fWatchedProgram.Dataspace.Count > ID then
-  begin
-    DSE     := fWatchedProgram.Dataspace[ID];
-    offset  := DSE.Offset;
-    size    := DSE.Size;
-    vartype := Ord(DSE.DataType);
-  end;
-end;
-
-procedure TfrmNewWatch.HandleOnGetVarInfoByName(Sender: TObject;
-  const name: string; var offset, size, vartype: integer);
-var
-  DSE : TDSTocEntry;
-  ID : integer;
-begin
-  // read offset, size, and vartype from compiler symbol table output
-  if fWatchedProgram.Dataspace.Count > 0 then
-  begin
-    ID := fWatchedProgram.Dataspace.IndexOfName(name);
-    if ID <> -1 then
-    begin
-      DSE     := fWatchedProgram.Dataspace[ID];
-      offset  := DSE.Offset;
-      size    := DSE.Size;
-      vartype := Ord(DSE.DataType);
-    end;
-  end;
 end;
 
 procedure TfrmNewWatch.mniOpenSymClick(Sender: TObject);

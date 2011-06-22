@@ -89,7 +89,7 @@ const
 implementation
 
 uses
-  SysUtils;
+  SysUtils, uMiscDefines, uROPS, uGlobals, uProgram, brick_common, uPSRuntime;
 
 var
   fWatchList : TWatchList;
@@ -206,20 +206,55 @@ begin
   end;
 end;
 
-procedure TWatchList.DoGetWatchValue(Info: TWatchInfo;
-  var Value: string);
+procedure TWatchList.DoGetWatchValue(Info: TWatchInfo; var Value: string);
+var
+  i : integer;
 begin
   Value := '';
   if Assigned(fOnGetWatchValueEvent) then
-    fOnGetWatchValueEvent(Info, Value);
+    fOnGetWatchValueEvent(Info, Value)
+  else
+  begin
+    if IsNXT then
+    begin
+      if FileIsROPS then
+      begin
+        Value := ce.GetVarContents(Info.Expression);
+      end
+      else if FileIsNBCOrNXC then
+      begin
+        i := CurrentProgram.Dataspace.IndexOfName(Info.Expression);
+        if i <> -1 then
+          Value := BrickComm.GetVariableValue(i);
+      end;
+    end;
+  end;
 end;
 
-procedure TWatchList.DoIsProcessAccessible(Sender: TObject;
-  var Accessible: boolean);
+procedure TWatchList.DoIsProcessAccessible(Sender: TObject; var Accessible: boolean);
+var
+  name : string;
 begin
   Accessible := False;
   if Assigned(fOnIsProcessAccessible) then
-    fOnIsProcessAccessible(Sender, Accessible);
+    fOnIsProcessAccessible(Sender, Accessible)
+  else
+  begin
+    if IsNXT then
+    begin
+      if FileIsROPS then
+      begin
+        Accessible := ce.Exec.Status in [isRunning, isPaused];
+      end
+      else if FileIsNBCOrNXC then
+      begin
+        if BrickComm.GetCurrentProgramName(name) then
+        begin
+          Accessible := CurrentProgram.Loaded(name);
+        end;
+      end;
+    end;
+  end;
 end;
 
 procedure TWatchList.EnableAllWatches;
