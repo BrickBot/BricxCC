@@ -1,0 +1,148 @@
+// Test on statistical equal distribution
+//of Lego and customized randomization functions
+
+#define printf1( _x, _y, _format1, _value1) { \
+  string sval1 = FormatNum(_format1, _value1); \
+  TextOut(_x, _y, sval1); \
+}
+char LCDline[]={56,48,40,32,24,16,8,0};
+
+
+//********************************************
+// randomize functions
+//********************************************
+
+// global variables and functions to plant a random seed and to randomize
+// how to use:
+// srand(x)                         // x = val. for repet. sequences
+// myVar = rand_() % 100;           // assignes a random number
+
+
+unsigned long _RAND_SEED_ = 1;      // 1= default value (program start)
+unsigned long _OLD_SEED_  = 1;
+
+
+//--------------------------------------------
+
+unsigned long rand_()               // random function
+{
+  _RAND_SEED_ = _RAND_SEED_ * 1103515245 + 12345;
+  return (_RAND_SEED_ % (RAND_MAX + 1));
+}
+
+//--------------------------------------------
+
+void srand(unsigned long seed)      // seeds for a new random series
+{
+
+  if (seed==0)                      // 0: a "real" randomized random seed
+    {seed = abs(CurrentTick()*BatteryLevel());}  // substitute to time(0)
+
+  else
+  if (seed==-1) {                   // -1: restore last random series
+    seed = _OLD_SEED_;
+  }
+
+  _OLD_SEED_  = seed;
+  _RAND_SEED_ = seed;               // patch for rand_ function
+}
+
+
+#define RAND_MAX3 65535
+
+#define rand2() Random(RAND_MAX+1)
+#define rand3() (Random()+32768)
+
+//--------------------------------------------
+
+
+task main(){
+  SetDisplayContrast(DISPLAY_CONTRAST_MAX);
+  SetSleepTimeout(0);
+  long i, j;
+  long H[16];            // prevalence counter array
+
+
+                         // print output matrix
+  for (j=0; j<16; ++j) {
+    printf1(0+(j%2)*50, LCDline[j/2], "%2d:", j);
+  }
+
+                         //  (only for customized randomization function)
+  srand(1);             //  reproducible standard seeds 1 (2, 3, 4, ...)
+                         //  alternatively:
+  //srand(0);            //  randomized random seed (time(0)*Voltage)
+
+  unsigned long tick = CurrentTick();
+  for (i=0; i<1000000; ++i) {
+
+    // 1 Million randomizations of numbers between 0...15
+
+    // 231089
+    j=rand()/(RAND_MAX / 16 + 1);
+/*
+	syscall 24, __RandomArgs
+	add __signed_stack_001main, __RandomArgs.Result, __constVal32768
+	div __main_7qG2_j_7qG2_000, __signed_stack_001main, __constVal4096
+*/
+    // 288852
+//    j=rand2()/(RAND_MAX / 16 + 1);
+/*
+	mov __D0main, __constVal32768
+	syscall 24, __RandomArgs
+	add __RandomTmp, __RandomArgs.Result, __constVal32768
+	mul __RandomTmp, __RandomTmp, __D0main
+	div __RandomTmp, __RandomTmp, __constVal65536
+	div __main_7qG2_j_7qG2_000, __RandomTmp, __constVal2048
+*/
+    // 285057
+//    j=rand()%16;        // std Lego FW randomization function
+/*
+	subcall rand, __rand_return
+	mul __signed_stack_001rand, __NEXT_RAND_VALUE, __constVal1103515245
+	add __NEXT_RAND_VALUE, __signed_stack_001rand, __constVal12345
+	mod __DU0rand, __NEXT_RAND_VALUE, __constVal32768
+	subret __rand_return
+	mod __main_7qG2_j_7qG2_000, __DU0rand, __constVal16
+*/
+    // alternatively:
+
+    // 279698
+//    j=Random(16);
+/*
+	set __D0main, 16
+	syscall 24, __RandomArgs
+	add __RandomTmp, __RandomArgs.Result, __constVal32768
+	mul __RandomTmp, __RandomTmp, __D0main
+	div __RandomTmp, __RandomTmp, __constVal65536
+	mov __main_7qG2_j_7qG2_000, __RandomTmp
+*/
+
+    // 285057
+//    j=rand_()%16;       // customized randomization function
+/*
+	subcall rand_, __rand__return
+	mul __signed_stack_001rand_, _RAND_SEED_, __constVal1103515245
+	add _RAND_SEED_, __signed_stack_001rand_, __constVal12345
+	mod __DU0rand_, _RAND_SEED_, __constVal32768
+	subret __rand__return
+	mod __main_7qG2_j_7qG2_000, __DU0rand_, __constVal16
+*/
+
+    H[j]++;            // add +1 to the prevalence to the related counter
+
+  }
+  tick = CurrentTick()-tick;
+  
+  for (j=0; j<16; ++j) {
+    printf1(16+(j%2)*50,LCDline[j/2], "%5d", H[j]);
+  }
+  
+  until(ButtonPressed(BTNRIGHT, true));
+  NumOut(0, LCD_LINE1, tick, true);
+
+//  PlaySound(SOUND_FAST_UP);
+
+  while(true);
+
+}

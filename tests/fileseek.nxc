@@ -1,0 +1,53 @@
+void ViewBinFile(string filename){
+   //Load file
+   unsigned int fsize;
+   byte handle;
+   unsigned int result = OpenFileRead(filename, fsize, handle);
+
+   FileSeekType FSTargs;
+   FSTargs.FileHandle = handle;
+   FSTargs.Origin = SEEK_SET;
+
+   unsigned int line_amount = fsize / 8 +1;   //TODO: find actual value
+   unsigned int top_line = 0;
+   byte buffer[64];
+
+   bool viewing_file = true;
+   while(viewing_file){
+      FSTargs.Length = top_line*8;
+      SysFileSeek(FSTargs);
+
+      unsigned int read_size = 64;
+      ReadBytes(handle, read_size, buffer);
+
+      //Draw everything
+      ClearScreen();
+
+      //Show contents of buffer
+      for(int ix=0; ix<8; ix++)
+         for(int iy=0; iy<8; iy++){
+            TextOut(ix*12, LCD_LINE1 -iy*8, FormatNum("%02X", buffer[ix+iy*8]) );
+         }
+
+
+      //Do input
+      while( true ){
+         if(ButtonPressed(BTNLEFT, true) && top_line >0){
+            top_line--;
+            break;
+         }
+
+         if(ButtonPressed(BTNRIGHT, true) && top_line < (line_amount-8)){
+            top_line++;
+            break;
+         }
+      }
+      Wait( 100 );
+   }
+}
+
+
+task main(){
+   SetDisplayContrast(DISPLAY_CONTRAST_MAX);
+   ViewBinFile( "glRotateDemo.rxe" );
+}

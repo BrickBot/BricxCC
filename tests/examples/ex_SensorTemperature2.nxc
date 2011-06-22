@@ -1,0 +1,73 @@
+asm {
+#define __ReadSensorTemperature2(_port, _temp) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RSTempLSBuf \
+  set __RLSBytesCountVar, 2 \
+  call __ReadLSBytesVar \
+  index __RSTempRaw, __RLSReadBufVar, NA \
+  index __RLSBytesCountVar, __RLSReadBufVar, 1 \
+  mul __RSTempRaw, __RSTempRaw, 256 \
+  add __RSTempRaw, __RSTempRaw, __RLSBytesCountVar \
+  mul __RSTempRaw, __RSTempRaw, 10 \
+  div __RSTempRaw, __RSTempRaw, 16 \
+  div _temp, __RSTempRaw, 16 \
+  brcmp LTEQ, __RRT_EndIf##__I__, __RSTempRaw, 20470 \
+  sub _temp, _temp, 2560 \
+  __RRT_EndIf##__I__: \
+  __IncI__ \
+  brcmp NEQ, __RRT_FloatEndIf##__I__, typeof(_temp), 10 \
+  div _temp, _temp, 10 \
+  __RRT_FloatEndIf##__I__: \
+  __IncI__ \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RSTempLSBuf \
+  set __RLSBytesCount##_port, 2 \
+  call __ReadLSBytes##_port \
+  index __RSTempRaw, __RLSReadBuf##_port, NA \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 1 \
+  mul __RSTempRaw, __RSTempRaw, 256 \
+  add __RSTempRaw, __RSTempRaw, __RLSBytesCount##_port \
+  mul __RSTempRaw, __RSTempRaw, 10 \
+  div __RSTempRaw, __RSTempRaw, 16 \
+  div _temp, __RSTempRaw, 16 \
+  brcmp LTEQ, __RRT_EndIf##__I__, __RSTempRaw, 20470 \
+  sub _temp, _temp, 2560 \
+  __RRT_EndIf##__I__: \
+  __IncI__ \
+  brcmp NEQ, __RRT_FloatEndIf##__I__, typeof(_temp), 10 \
+  div _temp, _temp, 10 \
+  __RRT_FloatEndIf##__I__: \
+  __IncI__ \
+  release __RLSBmutex##_port \
+  compend
+}
+
+#define SensorTemperature2(_port) asm { __ReadSensorTemperature2(_port, __FLTRETVAL__) }
+
+
+task main()
+{
+  SetSensorTemperature(S2);
+  // outputs 0 which is good.
+//  asm { NumOut(0, LCD_LINE8, __WDSC_LSStatus) }
+//  Wait(SEC_5);
+  while (true)
+  {
+    float temp = SensorTemperature2(S2);
+    NumOut(0, LCD_LINE1, temp, true);
+    NumOut(0, LCD_LINE2, temp*1.8+32,false);
+    Wait(MS_500);
+  }
+}

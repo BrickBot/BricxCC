@@ -7,7 +7,9 @@ struct Person {
 
 task main()
 {
+  SetSleepTimeout(0);
   Person p;
+  Wait(SEC_5);
   while (true) {
     float f;
     for (int i=0; i < 10000; i++) {
