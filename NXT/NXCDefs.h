@@ -5525,6 +5525,21 @@ struct CommBTWriteType {
   byte Buffer[];     /*!< The data to write to the connection. */
 };
 
+/**
+ * The JoystickMessageType structure.
+ * This structure is used to contain Joystick values read via the
+ * \ref JoystickMessageRead API function.
+ */
+struct JoystickMessageType {
+  byte JoystickDir;      /*!< The joystick direction or position. Ranges from 1 to 9, with the values representing numeric keypad buttons.  8 is up, 2 is down, 5 is center, etc. */
+  byte LeftMotor;        /*!< The left motor. See \ref RCXOutputConstants for possible values. */
+  byte RightMotor;       /*!< The right motor. See \ref RCXOutputConstants for possible values. */
+  byte BothMotors;       /*!< The left and right motors. See \ref RCXOutputConstants for possible values. */
+  char LeftSpeed;        /*!< The left motor speed (-100 to 100). */
+  char RightSpeed;       /*!< The right motor speed (-100 to 100). */
+  unsigned long Buttons; /*!< The joystick buttons pressed state. */
+};
+
 #ifdef __ENHANCED_FIRMWARE
 /**
  * Parameters for the CommExecuteFunction system call.
@@ -5673,6 +5688,17 @@ struct CommBTConnectionType {
  */
 
 #ifdef __DOXYGEN_DOCS
+
+/**
+ * Read a joystick message from a queue/mailbox.
+ * Read a joystick message from a queue/mailbox.
+ *
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param msg The joystick message that is read from the mailbox. See
+ * \ref JoystickMessageType for details.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char JoystickMessageRead(byte queue, JoystickMessageType & msg);
 
 /**
  * Send a message to a queue/mailbox.
@@ -7641,6 +7667,20 @@ inline void SetBTDeviceNameCount(byte count);
 */
 
 #else
+
+#define JoystickMessageRead(_queue, _jmt) \
+asm { \
+  acquire __MRMutex \
+  mov __MRArgs.QueueID, _queue \
+  set __MRArgs.Remove, TRUE \
+  syscall MessageRead, __MRArgs \
+  brtst NEQ, __RRM_Err##__I__, __MRArgs.Result \
+  unflatten _jmt, __RRNErr, __MRArgs.Message, _jmt \
+  __RRM_Err##__I__: \
+  __IncI__ \
+  mov __RETVAL__, __MRArgs.Result \
+  release __MRMutex \
+}
 
 #define SendMessage(_queue, _msg) asm { __sendMessage(_queue, _msg, __RETVAL__) }
 #define ReceiveMessage(_queue, _clear, _msg) asm { __receiveMessage(_queue, _clear, _msg, __RETVAL__) }
