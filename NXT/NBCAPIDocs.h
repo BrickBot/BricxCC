@@ -3275,8 +3275,7 @@
 /** @page gettick gettick
  * \brief The gettick Statement
  *
- * The gettick statement suspends the current thread for the number of
- * milliseconds specified by its constant argument. The syntax of the
+ * The gettick statement retrieves the current system tick count. The syntax of the
  * gettick statement is shown below.
  * \code
  * gettick x // set x to the current system tick count
