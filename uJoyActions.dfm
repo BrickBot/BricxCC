@@ -1,10 +1,11 @@
 object frmJoyActions: TfrmJoyActions
   Left = 253
   Top = 139
+  BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Joystick Options'
-  ClientHeight = 168
-  ClientWidth = 345
+  ClientHeight = 198
+  ClientWidth = 263
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -85,8 +86,8 @@ object frmJoyActions: TfrmJoyActions
     end
   end
   object btnOK: TButton
-    Left = 264
-    Top = 16
+    Left = 96
+    Top = 168
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -95,8 +96,8 @@ object frmJoyActions: TfrmJoyActions
     TabOrder = 1
   end
   object btnCancel: TButton
-    Left = 264
-    Top = 48
+    Left = 182
+    Top = 168
     Width = 75
     Height = 25
     Cancel = True

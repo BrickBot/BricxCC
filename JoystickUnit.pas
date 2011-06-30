@@ -82,6 +82,7 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure btnHelpClick(Sender: TObject);
     procedure FormDblClick(Sender: TObject);
+    procedure FormCreate(Sender: TObject);
   private
     { Private declarations }
     procedure SetSpeed(const val : word);
@@ -430,7 +431,7 @@ end;
 
 procedure TJoystickForm.TaskBtnClick(Sender: TObject);
 begin
-  MoveBrick(oldjoydir, TBitBtn(Sender).Tag);
+  MoveBrick(5, TBitBtn(Sender).Tag);
 end;
 
 procedure TJoystickForm.LeftRightBtnClick(Sender: TObject);
@@ -475,7 +476,7 @@ procedure TJoystickForm.SpeedBarChange(Sender: TObject);
 begin
   {Speed selection}
   MotorSpeed := SpeedBar.Position;
-  MoveBrick(oldjoydir, oldWBtns);
+  MoveBrick(5, oldWBtns);
 end;
 
 procedure TJoystickForm.FormShow(Sender: TObject);
@@ -605,6 +606,15 @@ begin
   finally
     F.Free;
   end;
+end;
+
+procedure TJoystickForm.FormCreate(Sender: TObject);
+begin
+  grpLeftMotor.DoubleBuffered := True;
+  grpRightMotor.DoubleBuffered := True;
+  grpSpeed.DoubleBuffered := True;
+  grpDriveMode.DoubleBuffered := True;
+  grpMovement.DoubleBuffered := True;
 end;
 
 {$IFDEF FPC}
