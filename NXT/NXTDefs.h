@@ -6056,15 +6056,11 @@ __PFEndPowerFuncModeCheck:
 ends
 
 subroutine __PFComboDirectSub
-;  call __PFApplyToggle
-  mov __PFIdx, __PF_p1 ; store toggle index
   replace __PFNibbles, __PFNibbles, NA, __PF_p1
   replace __PFNibbles, __PFNibbles, 1, PF_MODE_COMBO_DIRECT
   mul __PF_p3, __PF_p3, 4
   add __PF_p3, __PF_p3, __PF_p2
   replace __PFNibbles, __PFNibbles, 2, __PF_p3
-;  call __PFUpdateToggle
-  replace __PFToggles, __PFToggles, __PFIdx, 0x00 ; reset the toggle
   return
 ends
 
@@ -6100,14 +6096,10 @@ __PFEndIfSOCst:
 ends
 
 subroutine __PFComboPWMSub
-;  call __PFApplyToggle
-  mov __PFIdx, __PF_p1 ; store toggle index
   add __PF_p1, __PF_p1, PF_MODE_COMBO_PWM
   replace __PFNibbles, __PFNibbles, NA, __PF_p1
   replace __PFNibbles, __PFNibbles, 1, __PF_p3
   replace __PFNibbles, __PFNibbles, 2, __PF_p2
-;  call __PFUpdateToggle
-  replace __PFToggles, __PFToggles, __PFIdx, 0x00 ; reset the toggle
   return
 ends
 
@@ -6130,13 +6122,9 @@ subroutine __RCTrainSub
 ends
 
 subroutine __PFRawOutputSub
-;  call __PFApplyToggle
-  mov __PFIdx, __PF_p1 ; store toggle index
   replace __PFNibbles, __PFNibbles, NA, __PF_p1
   replace __PFNibbles, __PFNibbles, 1, __PF_p2
   replace __PFNibbles, __PFNibbles, 2, __PF_p3
-;  call __PFUpdateToggle
-  replace __PFToggles, __PFToggles, __PFIdx, 0x00 ; reset the toggle
   return
 ends
 
