@@ -28,8 +28,7 @@ uses
   Registry;
 
 type
-  TMotorSpeedChangedAction = (mscaDefault, mscaScript, mscaMessage);
-  TMotorDirChangedAction = (mdcaDefault, mdcaScript, mdcaMessage);
+  TMotorChangedAction = (mcaDefault, mcaScript, mcaMessage);
 
 {Joystick settings}
 var
@@ -40,10 +39,8 @@ var
   RightReversed:boolean;          // whether right must be reversed
   MotorSpeed:integer;             // speed of the motors
   RCXTasks:boolean;               // use tasks or scripts
-  SpeedChangeAction: TMotorSpeedChangedAction;
-  DirChangeAction: TMotorDirChangedAction;
-  SCAInBox: integer;
-  DCAInBox: integer;
+  ChangeAction: TMotorChangedAction;
+  CAInBox: integer;
 
 procedure LoadJoystickValues(reg : TRegistry);
 procedure SaveJoystickValues(reg : TRegistry);
@@ -66,10 +63,8 @@ begin
     RightReversed := Reg_ReadBool(reg, 'RightReversed', false);
     MotorSpeed    := Reg_ReadInteger(reg, 'MotorSpeed', 4);
     RCXTasks      := Reg_ReadBool(reg, 'RCXTasks', true);
-    SpeedChangeAction := TMotorSpeedChangedAction(Reg_ReadInteger(reg, 'SpeedChangeAction', Ord(mscaDefault)));
-    DirChangeAction   := TMotorDirChangedAction(Reg_ReadInteger(reg, 'DirChangeAction', Ord(mdcaDefault)));
-    SCAInBox      := Reg_ReadInteger(reg, 'SCAInBox', 0);
-    DCAInBox      := Reg_ReadInteger(reg, 'DCAInBox', 1);
+    ChangeAction  := TMotorChangedAction(Reg_ReadInteger(reg, 'ChangeAction', Ord(mcaDefault)));
+    CAInBox       := Reg_ReadInteger(reg, 'CAInBox', 0);
   finally
     reg.CloseKey;
   end;
@@ -88,10 +83,8 @@ begin
     reg.WriteBool('RightReversed',RightReversed);
     reg.WriteInteger('MotorSpeed',MotorSpeed);
     reg.WriteBool('RCXTasks', RCXTasks);
-    reg.WriteInteger('SpeedChangeAction',Ord(SpeedChangeAction));
-    reg.WriteInteger('DirChangeAction',Ord(DirChangeAction));
-    reg.WriteInteger('SCAInBox', SCAInBox);
-    reg.WriteInteger('DCAInBox', DCAInBox);
+    reg.WriteInteger('ChangeAction',Ord(ChangeAction));
+    reg.WriteInteger('CAInBox', CAInBox);
   finally
     reg.CloseKey;
   end;
