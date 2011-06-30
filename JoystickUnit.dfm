@@ -16,6 +16,7 @@ object JoystickForm: TJoystickForm
   KeyPreview = True
   OldCreateOrder = True
   OnClose = FormClose
+  OnDblClick = FormDblClick
   OnKeyDown = FormKeyDown
   OnKeyUp = FormKeyUp
   OnShow = FormShow
@@ -29,6 +30,7 @@ object JoystickForm: TJoystickForm
     HelpContext = 47005
     Caption = 'Left Motor'
     TabOrder = 0
+    OnDblClick = FormDblClick
     object LMotorA: TRadioButton
       Left = 8
       Top = 16
@@ -78,6 +80,7 @@ object JoystickForm: TJoystickForm
     HelpContext = 47006
     Caption = 'Right Motor'
     TabOrder = 1
+    OnDblClick = FormDblClick
     object RMotorA: TRadioButton
       Left = 8
       Top = 16
@@ -127,6 +130,7 @@ object JoystickForm: TJoystickForm
     HelpContext = 47007
     Caption = 'Speed'
     TabOrder = 2
+    OnDblClick = FormDblClick
     object SpeedBar: TTrackBar
       Left = 8
       Top = 16
@@ -146,6 +150,7 @@ object JoystickForm: TJoystickForm
     HelpContext = 47004
     Caption = 'Drive Mode'
     TabOrder = 3
+    OnDblClick = FormDblClick
     object LeftRightBtn: TRadioButton
       Left = 8
       Top = 16
@@ -175,6 +180,7 @@ object JoystickForm: TJoystickForm
     HelpContext = 47001
     Caption = 'Movement'
     TabOrder = 4
+    OnDblClick = FormDblClick
     object DirBtn7: TSpeedButton
       Tag = 7
       Left = 16

@@ -564,7 +564,10 @@ begin
       oldpower := 0;
       Result := Result and GetNXTOutputState(i, oldpower, mode, regmode, turnratio,
         runstate, tacholimit, tachocount, blocktachocount, rotationcount);
-      power := fMotorPower[i] * 14;
+      if fMotorPower[i] = 7 then
+        power := 100
+      else
+        power := fMotorPower[i] * 14;
       if not fMotorForward[i] then
         power := power * -1;
       if (oldpower <> power) or
@@ -790,9 +793,10 @@ begin
         oldpower := 0;
         Result := Result and GetNXTOutputState(i, oldpower, mode, regmode, turnratio,
           runstate, tacholimit, tachocount, blocktachocount, rotationcount);
-        power := fMotorPower[i] * 14;
         if fMotorPower[i] = 7 then
-          power := 100;
+          power := 100
+        else
+          power := fMotorPower[i] * 14;
         if not fMotorForward[i] then
           power := power * -1;
         if oldpower <> power then
