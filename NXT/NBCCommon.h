@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-16
- * \version 64
+ * \date 2011-07-01
+ * \version 65
  */
 
 #ifndef NBCCOMMON_H
@@ -285,6 +285,7 @@
 #define MemoryManager          96 /*!< Read memory manager information, optionally compacting the dataspace first */
 #define ReadLastResponse       97 /*!< Read the last response packet received by the NXT.  Optionally clear the value after reading it. */
 #define FileTell               98 /*!< Return the current file position in an open file */
+#define RandomEx               99 /*!< Generate a random number or seed the RNG. */
 #endif
 #endif
 /** @} */  // end of SysCallConstants group
@@ -3390,7 +3391,11 @@
 #define LONG_MIN   -2147483648 /*!< The minimum value of the long type */
 #define LONG_MAX   2147483647  /*!< The maximum value of the long type */
 #define ULONG_MAX  4294967295  /*!< The maximum value of the unsigned long type */
+#ifdef __ENHANCED_FIRMWARE
+#define RAND_MAX   2147483646  /*!< The maximum long random number returned by rand */
+#else
 #define RAND_MAX   65535       /*!< The maximum unsigned int random number returned by rand */
+#endif
 /** @} */  // end of NXTLimits group
 /** @} */  // end of MiscConstants group
 

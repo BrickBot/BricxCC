@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-03-16
- * version 77
+ * date 2011-07-01
+ * version 78
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -439,6 +439,13 @@ TFileTell struct
  FileHandle byte
  Position   dword
 TFileTell ends
+
+// RandomEx
+TRandomEx	struct
+ Seed   long
+ ReSeed byte
+TRandomEx	ends
+
 #endif
 #endif
 
@@ -2446,6 +2453,10 @@ dseg segment
   __IOMRArgs TIOMapRead
   __IOMRUnflattenErr byte
   __IOMRUnflattenBuf byte[]
+#ifdef __ENHANCED_FIRMWARE
+  __RandomExArgs TRandomEx
+  __RandomExMutex mutex
+#endif
 dseg ends
 
 
@@ -2495,6 +2506,25 @@ dseg ends
   syscall RandomNumber, __RandomArgs \
   mov _arg, __RandomArgs.Result \
   release __RandomMutex
+
+#ifdef __ENHANCED_FIRMWARE
+
+#define __SeedRandomEx(_seedin, _out) \
+  acquire __RandomExMutex \
+  set __RandomExArgs.ReSeed, TRUE \
+  mov __RandomExArgs.Seed, _seedin \
+  syscall RandomEx, __RandomExArgs \
+  mov _out, __RandomExArgs.Seed \
+  release __RandomExMutex
+
+#define __RandomEx(_out) \
+  acquire __RandomExMutex \
+  set __RandomExArgs.ReSeed, FALSE \
+  syscall RandomEx, __RandomExArgs \
+  mov _out, __RandomExArgs.Seed \
+  release __RandomExMutex
+
+#endif
 
 #define __GetFirstTick(_value) \
   compchk EQ, sizeof(_value), 4 \
