@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-16
- * \version 94
+ * \date 2011-07-01
+ * \version 95
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -955,7 +955,6 @@ inline void SetMotorPwnFreq(byte n);
  * Set the motor regulation time in milliseconds. By default this is set
  * to 100ms.
  *
- * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
  *
  * \param n The motor regulation time.
  */
@@ -4809,12 +4808,12 @@ inline void ArrayOp(const byte op, variant & dest, const variant & src[], unsign
 #define ArraySubset(_aout, _asrc, _idx, _len) asm { arrsubset _aout, _asrc, _idx, _len }
 
 #ifdef __ENHANCED_FIRMWARE
-#define ArraySum(_src, _idx, _len) asm { arrop OPARR_SUM, __RETVAL__, _src, _idx, _len }
-#define ArrayMean(_src, _idx, _len) asm { arrop OPARR_MEAN, __RETVAL__, _src, _idx, _len }
-#define ArraySumSqr(_src, _idx, _len) asm { arrop OPARR_SUMSQR, __RETVAL__, _src, _idx, _len }
-#define ArrayStd(_src, _idx, _len) asm { arrop OPARR_STD, __RETVAL__, _src, _idx, _len }
-#define ArrayMin(_src, _idx, _len) asm { arrop OPARR_MIN, __RETVAL__, _src, _idx, _len }
-#define ArrayMax(_src, _idx, _len) asm { arrop OPARR_MAX, __RETVAL__, _src, _idx, _len }
+#define ArraySum(_src, _idx, _len) asm { arrop OPARR_SUM, __GENRETVAL__, _src, _idx, _len }
+#define ArrayMean(_src, _idx, _len) asm { arrop OPARR_MEAN, __GENRETVAL__, _src, _idx, _len }
+#define ArraySumSqr(_src, _idx, _len) asm { arrop OPARR_SUMSQR, __GENRETVAL__, _src, _idx, _len }
+#define ArrayStd(_src, _idx, _len) asm { arrop OPARR_STD, __GENRETVAL__, _src, _idx, _len }
+#define ArrayMin(_src, _idx, _len) asm { arrop OPARR_MIN, __GENRETVAL__, _src, _idx, _len }
+#define ArrayMax(_src, _idx, _len) asm { arrop OPARR_MAX, __GENRETVAL__, _src, _idx, _len }
 #define ArraySort(_dest, _src, _idx, _len) asm { arrop OPARR_SORT, _dest, _src, _idx, _len }
 #define ArrayOp(_op, _dest, _src, _idx, _len) asm { arrop _op, _dest, _src, _idx, _len }
 #endif
@@ -14719,6 +14718,17 @@ struct RandomNumberType {
 };
 
 /**
+ * Parameters for the RandomEx system call.
+ * This structure is used when calling the \ref SysRandomEx system call
+ * function.
+ * \sa SysRandomEx()
+ */
+struct RandomExType {
+  long Seed;   /*!< The random number or the new seed value. */
+  bool ReSeed; /*!< A flag indicating whether or not to seed the random number generator. */
+};
+
+/**
  * Output type of the div function.
  * div_t structure.
  * Structure used to represent the value of an integral division performed
@@ -14773,6 +14783,20 @@ inline void abort();
 inline variant abs(variant num);
 
 /**
+ * Seed the random number generator.
+ * Provide the random number generator with a new seed value.
+ *
+ * \param seed The new random number generator seed. A value of zero
+ * causes the seed to be based on the current time value.  A value less
+ * than zero causes the seed to be restored to the last specified seed.
+ *
+ * \return The new seed value (useful if you pass in 0 or -1).
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
+ */
+inline long srand(long seed);
+
+/**
  * Generate random number.
  * Returns a pseudo-random integral number in the range 0 to \ref RAND_MAX.
  *
@@ -14781,7 +14805,7 @@ inline variant abs(variant num);
  *
  * \return An integer value between 0 and \ref RAND_MAX (inclusive).
  */
-inline unsigned int rand();
+inline unsigned long rand();
 
 /**
  * Generate random number.
@@ -14803,10 +14827,34 @@ inline int Random(unsigned int n = 0);
  */
 inline void SysRandomNumber(RandomNumberType & args);
 
+/**
+ * Call the enhanced random number function.
+ * This function lets you either obtain a random number or seed the random
+ * number generator via the \ref RandomExType structure.
+ *
+ * \param args The RandomExType structure for passing inputs and receiving
+ * output values.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
+ */
+inline void SysRandomEx(RandomExType & args);
+
 #else
 
 #define abort() Stop(true)
+
+#ifdef __ENHANCED_FIRMWARE
+#define srand(_s) asm { __SeedRandomEx(_s, __RETVAL__) }
+#define rand() asm { __RandomEx(__RETVAL__) }
+
+#define SysRandomEx(_args) asm { \
+  compchktype _args, RandomExType \
+  syscall RandomEx, _args \
+}
+
+#else
 #define rand() (Random()+32768)
+#endif
 
 #define SysRandomNumber(_args) asm { \
   compchktype _args, RandomNumberType \
