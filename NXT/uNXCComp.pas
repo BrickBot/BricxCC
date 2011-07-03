@@ -30,7 +30,7 @@ type
   private
     fStackDepth : integer;
     fStatementType : TStatementType;
-    fInlineFunctionStack : TObjectStack;
+//    fInlineFunctionStack : TObjectStack;
     fLastErrLine : integer;
     fLastErrMsg : string;
     endofallsource : boolean;
@@ -460,6 +460,8 @@ type
     procedure LoadSystemFile(S : TStream);
     procedure CheckForMain;
     function ProcessArrayDimensions(var lenexpr : string) : string;
+    procedure CheckForCast;
+    procedure HandleCast;
   protected
     fTmpAsmLines : TStrings;
     fBadProgram : boolean;
@@ -3514,6 +3516,7 @@ var
   L1, L2 : string;
 begin
   fCCSet := False;
+  CheckForCast;
   BoolSubExpression;
   while Token = '?' do begin
     // we are parsing a ?: expression
@@ -3528,6 +3531,7 @@ begin
     CommaExpression;
     PostLabel(L2);
   end;
+  HandleCast;
 //  ResetStatementType;
 end;
 
@@ -4964,8 +4968,20 @@ begin
           dt := TOK_STRINGDEF
         else if Pos('__FLTRETVAL__', asmStr) > 0 then
           dt := TOK_FLOATDEF
-        else
-          dt := TOK_LONGDEF;
+        else if Pos('__URETVAL__', asmStr) > 0 then
+          dt := TOK_ULONGDEF
+        else if Pos('__RETVAL__', asmStr) > 0 then
+          dt := TOK_LONGDEF
+        else if Pos('__GENRETVAL__', asmStr) > 0 then
+        begin
+          // set the statment type so that RegisterName gets the right value
+          if dt = TOK_FLOATDEF then
+            StatementType := stFloat
+          else if not (dt in UnsignedIntegerTypes) then
+            StatementType := stSigned
+          else
+            StatementType := stUnsigned;
+        end;
         asmStr := ReplaceTokens(Trim(asmStr));
         asmStr := DecorateVariables(asmStr);
         if (asmStr <> '') or (Look <> TOK_END) then
@@ -6325,7 +6341,7 @@ begin
   fParams := TVariableList.Create;
   fGlobals := TVariableList.Create;
   fFuncParams := TFunctionParameters.Create;
-  fInlineFunctionStack := TObjectStack.Create;
+//  fInlineFunctionStack := TObjectStack.Create;
   fInlineFunctions := TInlineFunctions.Create;
   fArrayHelpers := TArrayHelperVars.Create;
   fTmpAsmLines := TStringList.Create;
@@ -6375,7 +6391,7 @@ begin
   FreeAndNil(fParams);
   FreeAndNil(fGlobals);
   FreeAndNil(fFuncParams);
-  FreeAndNil(fInlineFunctionStack);
+//  FreeAndNil(fInlineFunctionStack);
   FreeAndNil(fInlineFunctions);
   FreeAndNil(fArrayHelpers);
   FreeAndNil(fTmpAsmLines);
@@ -9941,6 +9957,18 @@ begin
     Next; // skip past the comma
     CommaStatement(lend, lstart);
   end;
+end;
+
+procedure TNXCComp.CheckForCast;
+begin
+  if Token = TOK_OPENPAREN then
+  begin
+  end;
+end;
+
+procedure TNXCComp.HandleCast;
+begin
+
 end;
 
 end.
