@@ -2514,12 +2514,12 @@ dseg ends
   set __RandomExArgs.ReSeed, TRUE \
   mov __RandomExArgs.Seed, _seedin \
   syscall RandomEx, __RandomExArgs \
+  set __RandomExArgs.ReSeed, FALSE \
   mov _out, __RandomExArgs.Seed \
   release __RandomExMutex
 
 #define __RandomEx(_out) \
   acquire __RandomExMutex \
-  set __RandomExArgs.ReSeed, FALSE \
   syscall RandomEx, __RandomExArgs \
   mov _out, __RandomExArgs.Seed \
   release __RandomExMutex
