@@ -1,4 +1,9 @@
 // RS-485 receiver program
+inline void WaitForMessageToBeSent()
+{
+  while(RS485SendingData())
+    Wait(MS_1);
+}
 
 task main()
 {
@@ -8,26 +13,40 @@ task main()
   UseRS485(); 
   // make sure the RS485 system is turned on
   RS485Enable(); 
-  // initialize the UART to default values
-  RS485Initialize(); 
+//  // initialize the UART to default values
+//  RS485Initialize();
+  // configure the UART (this is equivalent to RS485Initialize)
+  RS485Uart(HS_BAUD_DEFAULT, HS_MODE_DEFAULT);
 
-  Wait(MS_10);
+  Wait(MS_1); // make sure everything is turned on
+  byte ACK[] = {1};
   while (true) {
     // wait for a message to arrive.
-    until(RS485DataAvailable());
+
+    // read the number of bytes message
+    until(RS485DataAvailable() >= 5);
+
+    // read the number of bytes
     RS485Read(buffer);
+    long cnt = 0;
+    UnflattenVar(buffer, cnt);
+
+    // send out ACK
+    RS485Write(ACK);
+    WaitForMessageToBeSent();
+
+    // now wait for the real message
+    until(RS485DataAvailable() >= cnt);
+
+    // now read the actual message
+    RS485Read(buffer);
+
+    // send out ACK
+    RS485Write(ACK);
+    WaitForMessageToBeSent();
+
     // display message
     TextOut(0, LCD_LINE1, buffer);
   }
-  // shut down the RS485 system
-  RS485Disable();
-  bool sendingData, dataAvail;
-  // check RS485 status
-  RS485Status(sendingData, dataAvail); 
-  // turn the system back on (this is equivalent to RS485Enable)
-  RS485Control(HS_CTRL_INIT, HS_BAUD_DEFAULT, HS_MODE_DEFAULT);
-  // configure the UART (this is equivalent to RS485Initialize)
-  RS485Uart(HS_BAUD_DEFAULT, HS_MODE_DEFAULT);
- 
 }
 
