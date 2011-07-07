@@ -39,6 +39,7 @@ return
 safecall
 short
 start
+static
 stop
 string
 struct

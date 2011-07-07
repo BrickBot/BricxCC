@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -1227,6 +1227,7 @@ const
   TOK_TYPEDEF       = 't';
   TOK_STRUCT        = 'T';
   TOK_CONST         = 'k';
+  TOK_STATIC        = 'Q';
   TOK_INLINE        = 'n';
   TOK_START         = 'A';
   TOK_STOP          = 'X';
