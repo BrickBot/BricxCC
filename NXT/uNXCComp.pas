@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -222,8 +222,8 @@ type
     procedure IncLineNumber;
     function AddLocal(name: string; dt: char; const tname : string;
       bConst : boolean; const lenexp : string) : integer;
-    procedure AllocGlobal(const tname : string; dt: char; bInline, bSafeCall, bConst : boolean);
-    procedure AllocLocal(const sub, tname: string; dt: char; bConst : boolean);
+    procedure AllocGlobal(const tname : string; dt: char; bInline, bSafeCall, bConst, bStatic : boolean);
+    procedure AllocLocal(const sub, tname: string; dt: char; bConst, bStatic : boolean);
     function  GetInitialValue(dt : char) : string;
     procedure DoLocals(const sub: string);
     procedure AddFunctionParameter(pname, varname, tname : string; idx : integer;
@@ -453,7 +453,7 @@ type
     procedure ProcessEnum(bGlobal : boolean);
     procedure ProcessTypedef;
     procedure ProcessStruct(bTypeDef : boolean = False);
-    procedure CheckForTypedef(var bUnsigned, bConst, bInline, bSafeCall : boolean);
+    procedure CheckForTypedef(var bUnsigned, bConst, bStatic, bInline, bSafeCall : boolean);
     function  IsUserDefinedType(const name : string) : boolean;
     function  RootOf(const name : string) : string;
     function  DataTypeOfDataspaceEntry(DE : TDataspaceEntry) : char;
@@ -557,14 +557,14 @@ var
 { Definition of Keywords and Token Types }
 
 const
-  NKW  = 32; //18;
-  NKW1 = 33; //19;
+  NKW  = 33; //18;
+  NKW1 = 34; //19;
 
 const
   KWlist: array[1..NKW] of string =
               ('if', 'else', 'while',
                'for', 'sub', 'void', 'task',
-               'do', 'repeat', 'switch', 'asm', 'const',
+               'do', 'repeat', 'switch', 'asm', 'const', 'static',
                'default', 'case', 'typedef', 'inline', 'long', 'enum',
                'short', 'int', 'unsigned',
                'char', 'bool', 'byte', 'mutex', 'float', 'string',
@@ -576,7 +576,7 @@ const                                     // 'xileweRWve'
   KWcode: array[1..NKW1+1] of Char =
     (TOK_IDENTIFIER, TOK_IF, TOK_ELSE, TOK_WHILE,
      TOK_FOR, TOK_PROCEDURE, TOK_PROCEDURE, TOK_TASK,
-     TOK_DO, TOK_REPEAT, TOK_SWITCH, TOK_ASM, TOK_CONST,
+     TOK_DO, TOK_REPEAT, TOK_SWITCH, TOK_ASM, TOK_CONST, TOK_STATIC,
      TOK_DEFAULT, TOK_CASE, TOK_TYPEDEF, TOK_INLINE, TOK_LONGDEF, TOK_ENUM,
      TOK_SHORTDEF, TOK_SHORTDEF, TOK_UNSIGNED,
      TOK_CHARDEF, TOK_BYTEDEF, TOK_BYTEDEF, TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF,
@@ -2560,7 +2560,7 @@ begin
 end;
 
 {--------------------------------------------------------------}
-{ Allocate Storage for a Static variable }
+{ Allocate Storage for a variable }
 
 procedure TNXCComp.AllocateHelper(aName, aVal, Val, tname: string; dt : char);
 begin
@@ -5251,7 +5251,7 @@ end;
 {--------------------------------------------------------------}
 { Allocate Storage for a Variable }
 
-procedure TNXCComp.AllocLocal(const sub, tname : string; dt : char; bConst : boolean);
+procedure TNXCComp.AllocLocal(const sub, tname : string; dt : char; bConst, bStatic : boolean);
 var
   savedval : string;
   ival, aval, lenexpr, varName : string;
@@ -5301,6 +5301,8 @@ begin
   end;
   if bIsArray and bConst then
     AbortMsg(sConstLocArrNotSupported);
+  if bIsArray and bStatic then
+    AbortMsg(sStatLocArrNotSupported);
   varName := ApplyDecoration(sub, savedval, fNestingLevel);
   idx := AddLocal(varName, dt, tname, bConst, lenexpr);
   if (Token = TOK_COMMA) or (Token = TOK_SEMICOLON) then
@@ -5320,7 +5322,10 @@ begin
     fLHSName     := savedval;
     try
       Next;
-      ival := '';
+      if bStatic then
+        ival := GetInitialValue(dt)
+      else
+        ival := '';
       if fEmittedLocals.IndexOf(varName+tname) = -1 then
         Allocate(varName, aval, ival, tname, dt);
       if bIsArray then begin
@@ -5333,7 +5338,7 @@ begin
       begin
         GetAndStoreUDT(savedval);
       end
-      else
+      else if not bStatic then
       begin
         DoAssignValue(savedval, dt);
         if fLastExpressionOptimizedToConst and (idx <> -1) then
@@ -5477,7 +5482,7 @@ begin
   end;
 end;
 
-procedure TNXCComp.AllocGlobal(const tname : string; dt : char; bInline, bSafeCall, bConst : boolean);
+procedure TNXCComp.AllocGlobal(const tname : string; dt : char; bInline, bSafeCall, bConst, bStatic : boolean);
 var
   savedval, ival, aval, lenexpr : string;
   dimensions, idx : integer;
@@ -5599,7 +5604,7 @@ end;
 procedure TNXCComp.TopDecls;
 var
   vt : char;
-  bUnsigned, bInline, bSafeCall, bConst : boolean;
+  bUnsigned, bInline, bSafeCall, bConst, bStatic : boolean;
   oldBytesRead : Integer;
   dt : char;
   tname : string;
@@ -5609,9 +5614,10 @@ begin
   bInline   := False;
   bSafeCall := False;
   bConst    := False;
+  bStatic   := False;
   Scan;
   if Token = TOK_IDENTIFIER then
-    CheckForTypedef(bUnsigned, bConst, bInline, bSafeCall);
+    CheckForTypedef(bUnsigned, bConst, bStatic, bInline, bSafeCall);
   while not (Token in [TOK_TASK, TOK_PROCEDURE]) and not endofallsource do
   begin
     oldBytesRead := fBytesRead;
@@ -5630,6 +5636,11 @@ begin
         Next;
         Scan;
         bConst := True;
+      end;
+      TOK_STATIC : begin
+        Next;
+        Scan;
+        bStatic := True;
       end;
       TOK_UNSIGNED : begin
         Next;
@@ -5662,14 +5673,15 @@ begin
       TOK_STRINGDEF : begin
         tname := Value;
         vt := Token;
-        AllocGlobal(tname, GetVariableType(vt, bUnsigned), bInline, bSafeCall, bConst);
+        AllocGlobal(tname, GetVariableType(vt, bUnsigned), bInline, bSafeCall, bConst, bStatic);
         while Token = TOK_COMMA do
-          AllocGlobal(tname, GetVariableType(vt, bUnsigned), bInline, bSafeCall, bConst);
+          AllocGlobal(tname, GetVariableType(vt, bUnsigned), bInline, bSafeCall, bConst, bStatic);
         CheckSemicolon;
         bUnsigned := False;
         bInline   := False;
         bSafeCall := False;
         bConst    := False;
+        bStatic   := False;
       end;
     else
       // nothing here right now
@@ -5677,7 +5689,7 @@ begin
       Scan;
     end;
     if Token = TOK_IDENTIFIER then
-      CheckForTypedef(bUnsigned, bConst, bInline, bSafeCall);
+      CheckForTypedef(bUnsigned, bConst, bStatic, bInline, bSafeCall);
     CheckBytesRead(oldBytesRead);
   end;
   if bInLine then
@@ -5723,7 +5735,7 @@ end;
 
 procedure TNXCComp.DoLocals(const sub : string);
 var
-  bIsUnsigned, bIsConst, bDummy : boolean;
+  bIsUnsigned, bIsConst, bDummy, bIsStatic : boolean;
   dt : char;
   tname : string;
 begin
@@ -5732,10 +5744,11 @@ begin
     bIsUnsigned := False;
     bIsConst    := False;
     bDummy      := False;
+    bIsStatic   := False;
     Scan;
     if Token = TOK_IDENTIFIER then
-      CheckForTypedef(bIsUnsigned, bIsConst, bDummy, bDummy);
-    while (Token in [TOK_DIRECTIVE, TOK_UNSIGNED, TOK_CONST,
+      CheckForTypedef(bIsUnsigned, bIsConst, bIsStatic, bDummy, bDummy);
+    while (Token in [TOK_DIRECTIVE, TOK_UNSIGNED, TOK_CONST, TOK_STATIC,
       TOK_TYPEDEF, TOK_STRUCT, TOK_ENUM,
       TOK_USERDEFINEDTYPE,
       TOK_LONGDEF, TOK_SHORTDEF, TOK_CHARDEF,
@@ -5750,6 +5763,11 @@ begin
           Next;
           Scan;
           bIsConst := True;
+        end;
+        TOK_STATIC : begin
+          Next;
+          Scan;
+          bIsStatic := True;
         end;
         TOK_UNSIGNED : begin
           Next;
@@ -5771,19 +5789,20 @@ begin
         TOK_MUTEXDEF, TOK_FLOATDEF, TOK_STRINGDEF : begin
           tname := Value;
           dt := Token;
-          AllocLocal(sub, tname, GetVariableType(dt, bIsUnsigned), bIsConst);
+          AllocLocal(sub, tname, GetVariableType(dt, bIsUnsigned), bIsConst, bIsStatic);
           while Token = TOK_COMMA do
-            AllocLocal(sub, tname, GetVariableType(dt, bIsUnsigned), bIsConst);
+            AllocLocal(sub, tname, GetVariableType(dt, bIsUnsigned), bIsConst, bIsStatic);
           Semi;
           Scan;
           bIsUnsigned := False;
           bIsConst    := False;
+          bIsStatic   := False;
         end;
       else
         Expected(sValidProgBlock);
       end;
       if Token = TOK_IDENTIFIER then
-        CheckForTypedef(bIsUnsigned, bIsConst, bDummy, bDummy);
+        CheckForTypedef(bIsUnsigned, bIsConst, bIsStatic, bDummy, bDummy);
     end;
   finally
     fNoCommaOperator := False;
@@ -5801,7 +5820,7 @@ var
   pcount : integer;
   ptype : char;
   varnam : string;
-  bIsUnsigned, bIsArray, bIsConst, bIsRef, bError : boolean;
+  bIsUnsigned, bIsArray, bIsConst, bIsRef, bError, bIsStatic : boolean;
   bHasDefault, bRequireDefaults : boolean;
   aval, tname, defValue : string;
   dimensions : integer;
@@ -5904,6 +5923,7 @@ var
     bIsArray    := False;
     bIsConst    := False;
     bIsRef      := False;
+    bIsStatic   := False;
     ptype       := #0;
     if Token = TOK_CONST then begin
       bIsConst := True;
@@ -5922,7 +5942,7 @@ var
       tname := tname + ' ' + Value;
     end;
     Value := tname;
-    CheckForTypedef(bIsUnsigned, bIsConst, bInline, bSafeCall);
+    CheckForTypedef(bIsUnsigned, bIsConst, bIsStatic, bInline, bSafeCall);
     // re-assign type name variable in case CheckForTypedef changed it.
     tname := Value;
     ptype := Token;
@@ -9113,7 +9133,7 @@ begin
   Scan;
 end;
 
-procedure TNXCComp.CheckForTypedef(var bUnsigned, bConst, bInline, bSafeCall : boolean);
+procedure TNXCComp.CheckForTypedef(var bUnsigned, bConst, bStatic, bInline, bSafeCall : boolean);
 var
   i : integer;
   tmpName : string;
@@ -9135,6 +9155,12 @@ begin
     begin
       System.Delete(Value, i, 6);
       bConst := True;
+    end;
+    i := Pos('static ', Value);
+    if i > 0 then
+    begin
+      System.Delete(Value, i, 7);
+      bStatic := True;
     end;
     i := Pos('inline ', Value);
     if i > 0 then

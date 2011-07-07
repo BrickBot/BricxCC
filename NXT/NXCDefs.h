@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-07-01
- * \version 95
+ * \date 2011-07-07
+ * \version 96
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -5630,7 +5630,7 @@ struct CommHSControlType {
  */
 struct CommHSCheckStatusType {
  bool SendingData;     /*!< Is data currently being sent? */
- bool DataAvailable;   /*!< Is data available for reading? */
+ byte DataAvailable;   /*!< Number of bytes of data available for reading */
 };
 
 /**
@@ -6745,11 +6745,11 @@ inline char RS485Control(byte cmd, byte baud, unsigned int mode);
  * Check for RS485 available data.
  * Check the RS485 hi-speed port for available data.
  *
- * \return A value indicating whether data is available or not.
+ * \return The number of bytes of data available for reading.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-inline bool RS485DataAvailable(void);
+inline byte RS485DataAvailable(void);
 
 /**
  * Initialize RS485 port.

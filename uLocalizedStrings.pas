@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -538,6 +538,7 @@ resourcestring
   sInitNotAllowed          = 'Initialization is not allowed for mutex variables';
   sInvalidStringInit       = 'Invalid string initialization';
   sConstLocArrNotSupported = 'Constant local arrays are not supported';
+  sStatLocArrNotSupported  = 'Static local arrays are not supported';
   sUnknownAPICommand       = 'Unknown API command';
   sDefaultInvalid          = 'default is invalid outside a switch statement';
   sCaseInvalid             = 'case is invalid outside a switch statement';

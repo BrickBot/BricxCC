@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-16
- * \version 16
+ * \date 2011-07-05
+ * \version 17
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -35,7 +35,7 @@
 /** @mainpage NXC Programmer's Guide
  * \brief
  * 
- * <h2><center>March 16, 2011</center></h2>
+ * <h2><center>July 05, 2011</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -354,6 +354,7 @@
  * - \ref safecall
  * - \ref short
  * - \ref start
+ * - @subpage static
  * - \ref stop
  * - \ref string
  * - \ref struct
@@ -380,6 +381,36 @@
  * task main() {
  *   int x = myConst; // this works fine
  *   myConst++; // compiler error - you cannot modify a constant's value
+ * }
+ * \endcode
+ */
+
+/** @page static static
+ * \brief
+ *
+ * The static keyword is used to alter a variable declaration so that the
+ * variable is allocated statically - the lifetime of the variable extends
+ * across the entire run of the program - while having the same scope as
+ * variables declared without the static keyword.
+ *
+ * Note that the initialization of automatic and static variables is quite
+ * different. Automatic variables (local variables are automatic by default,
+ * unless you explicitly use static keyword) are initialized during the
+ * run-time, so the initialization will be executed whenever it is
+ * encountered in the program. Static (and global) variables are initialized
+ * during the compile-time, so the initial values will simply be embeded in
+ * the executable file itself.
+ * \code
+ * void func() {
+ *   static int x = 0; // x is initialized only once across three calls of func()
+ *   NumOut(0, LCD_LINE1, x); // outputs the value of x
+ *   x = x + 1;
+ * }
+ *
+ * task main() {
+ *   func(); // prints 0
+ *   func(); // prints 1
+ *   func(); // prints 2
  * }
  * \endcode
  */
