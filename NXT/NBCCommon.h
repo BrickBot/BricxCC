@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-07-01
- * \version 65
+ * \date 2011-07-08
+ * \version 66
  */
 
 #ifndef NBCCOMMON_H
@@ -1952,18 +1952,20 @@
  * Constants related to the hi-speed port state.
  * @{
  */
-#define HS_INITIALISE    1 /*!< HsState initialize */
-#define HS_INIT_RECEIVER 2 /*!< HsState initialize receiver */
-#define HS_SEND_DATA     3 /*!< HsState send data */
-#define HS_DISABLE       4 /*!< HsState disable */
-#define HS_ENABLE        5 /*!< HsState enable */
+#define HS_INITIALISE       1 /*!< HsState initialize */
+#define HS_INIT_RECEIVER    2 /*!< HsState initialize receiver */
+#define HS_SEND_DATA        3 /*!< HsState send data */
+#define HS_DISABLE          4 /*!< HsState disable */
+#define HS_ENABLE           5 /*!< HsState enable */
+#define HS_DEFAULT          6 /*!< HsState default */
+#define HS_BYTES_REMAINING 16 /*!< HsState bytes remaining to be sent */
 /** @} */  // end of CommHiSpeedStateConstants group
 
 #ifdef __ENHANCED_FIRMWARE
 
 /** @defgroup CommHiSpeedCtrlConstants Hi-speed port SysCommHSControl constants
  * Constants for use with the SysCommHSControl API function.
- * \sa SysCommHSControl() 
+ * \sa SysCommHSControl()
  * @{
  */
 #define HS_CTRL_INIT 0 /*!< Enable the high speed port */
@@ -1996,10 +1998,17 @@
 #define HS_BAUD_DEFAULT 15 /*!< HsSpeed default Baud (921600) */
 /** @} */  // end of CommHiSpeedBaudConstants group
 
+
 /** @defgroup CommHiSpeedModeConstants Hi-speed port UART mode constants
  * Constants referring to HsMode UART configuration settings
  * @{
  */
+#define HS_MODE_UART_RS485 0x0    /*!< HsMode UART in default or RS485 mode */
+#define HS_MODE_UART_RS232 0x1    /*!< HsMode UART in normal or RS232 mode */
+
+#define HS_MODE_MASK 0xFFF0        /*!< HsMode mode mask */
+#define HS_UART_MASK 0x000F        /*!< HsMode UART mask */
+
 #define HS_MODE_DEFAULT HS_MODE_8N1 /*!< HsMode default mode (8 data bits, no parity, 1 stop bit) */
 
 /** @defgroup CommHiSpeedDataBitsConstants Hi-speed port data bits constants

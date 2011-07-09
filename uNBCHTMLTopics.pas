@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNBCHTMLTopicsSize = 2416;
+  uNBCHTMLTopicsSize = 2422;
   uNBCHTMLTopicsData: array[0..uNBCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -3481,6 +3481,14 @@ const
      Value: 'group___comm_hi_speed_state_constants_ga6465eef4ccfead34c0786ca277b6344b.html'
     ),
     (
+     Name: 'HS_DEFAULT';
+     Value: 'group___comm_hi_speed_state_constants_ga4332d1cf05fdb47be1d498d43823327e.html'
+    ),
+    (
+     Name: 'HS_BYTES_REMAINING';
+     Value: 'group___comm_hi_speed_state_constants_gad7658f825654241da2d5b9168bf23c81.html'
+    ),
+    (
      Name: 'HS_CTRL_INIT';
      Value: 'group___comm_hi_speed_ctrl_constants_ga4c53c48a2553754f5f8de77979565a09.html'
     ),
@@ -3559,6 +3567,22 @@ const
     (
      Name: 'HS_BAUD_DEFAULT';
      Value: 'group___comm_hi_speed_baud_constants_gaa633e006ef5a2c6f8592bc91ba5dda14.html'
+    ),
+    (
+     Name: 'HS_MODE_UART_RS485';
+     Value: 'group___comm_hi_speed_mode_constants_ga89510f0386014e958949592a4d1a37dc.html'
+    ),
+    (
+     Name: 'HS_MODE_UART_RS232';
+     Value: 'group___comm_hi_speed_mode_constants_ga0dc367cce49f81da43805322e75da172.html'
+    ),
+    (
+     Name: 'HS_MODE_MASK';
+     Value: 'group___comm_hi_speed_mode_constants_gab67e6fc9c75513a71f14569963492af2.html'
+    ),
+    (
+     Name: 'HS_UART_MASK';
+     Value: 'group___comm_hi_speed_mode_constants_gacb9984fde22f5111914cad87d14158cf.html'
     ),
     (
      Name: 'HS_MODE_DEFAULT';
