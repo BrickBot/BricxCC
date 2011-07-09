@@ -1,0 +1,56 @@
+// Test on statistical equal distributionof (n, n+1)
+// of Lego and customized randomization functions
+// ver. 1.1
+
+#define printf1( _x, _y, _format1, _value1) { \
+  string sval1 = FormatNum(_format1, _value1); \
+  TextOut(_x, _y, sval1); \
+}
+char LCDline[]={56,48,40,32,24,16,8,0};
+
+//--------------------------------------------
+
+task main(){
+  long i, j, old;
+  long H[16];            // prevalence counter array
+  float x;
+
+  srand(2);
+
+                         // print output matrix
+  for (j=0; j<16; ++j) {
+    printf1(0+(j%2)*50, LCDline[j/2], "%2d:", j);
+  }
+
+  for (i=-1; i<= (1024 << 7); ++i) {
+
+    // 128 k  randomizations of numbers between 0...15
+
+    j=rand()%16;        // std Lego FW rand
+    //j=Random(16);       // NXC John Hansen rand
+    //j=Krand()%16;       // Kernighan and Ritchie LCG rand
+    //j=Mrand()%16;       // Mesenne Twister rand
+
+    if ((j==old+1) || ((j==0 && old==15)))
+    if (i>=0) H[j]+=1;   // add +1 to the prevalence to the related counter
+
+    old=j;
+                         // print prevalence test distribution
+    printf1(16+(j%2)*50,LCDline[j/2], "%5d", H[j]);
+  }
+
+//  PlaySound(SOUND_FAST_UP);
+
+  while(!ButtonPressed(BTNCENTER, true));
+
+
+  ClearScreen();
+                               printf1(0,56, "count=%8d", i+1); //  !!
+  j=ArrayMin (H, NA, NA);      printf1(0,48, "min  =%8d", j);
+  j=ArrayMax (H, NA, NA);      printf1(0,40, "max  =%8d", j);
+  j=ArrayMean(H, NA, NA);      printf1(0,32, "mean =%8d", j);
+  x=ArrayStd (H, NA, NA);      printf1(0,24, "stand=%8.2f", x);
+
+  while(1) {}
+
+}

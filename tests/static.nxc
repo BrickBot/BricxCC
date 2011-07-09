@@ -1,0 +1,18 @@
+static const int x = 25;
+
+int test(void)
+{
+  static int count = x;
+  count++;
+  return count;
+}
+
+
+task main()
+{
+  while (true)
+  {
+    NumOut(0, LCD_LINE1, x);
+    NumOut(0, LCD_LINE2, test());
+  }
+}

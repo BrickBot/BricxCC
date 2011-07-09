@@ -8,6 +8,10 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
+Version 1.2.1.r5 (2011-07-02)
+-----------------------------
+
+
 Version 1.2.1.r4 (2011-03-13)
 -----------------------------
 - Fixed a problem with using NBC keywords in NXC code.

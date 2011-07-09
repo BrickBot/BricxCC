@@ -1,0 +1,125 @@
+// Test on periodicity length ("Infinite Monkey Test"):
+// of Lego and customized randomization functions
+// ver. 1.6
+
+#define printf1( _x, _y, _format1, _value1) { \
+  string sval1 = FormatNum(_format1, _value1); \
+  TextOut(_x, _y, sval1); \
+}
+
+
+char LCDline[]={56,48,40,32,24,16,8,0};
+
+//--------------------------------------------
+
+unsigned long i;       // counter
+unsigned long H[10];   // for start sequence
+int maxZ;              // maximum level for subsequences
+
+void showWhat(){
+  float V;
+  int r, c;
+
+  TextOut( 0,56, "start rand sequence:");
+  for (c=0; c<3; ++c) {
+     r=H[c]; printf1(c*30,48,"%3u",r);
+  }
+  for (c=0; c<3; ++c) {
+     r=H[c+3]; printf1(c*30,40,"%3u",r);
+  }
+  for (c=0; c<3; ++c) {
+     r=H[c+6]; printf1(c*30,32,"%3u",r);
+  }
+  printf1( 0,24,"maxLevel=%2u", maxZ);   // max. reached level
+  if (maxZ>0) {                          // number of max. reached level
+    printf1(60,16,"sub%3u", H[maxZ-1]);
+  }
+
+  printf1(0, 8,"count=%d", i);
+  V=BatteryLevel()/1000.0;
+  printf1(0, 0,"Volt=%6.3f",V);
+}
+
+
+task main(){
+  unsigned long j;
+
+  float x;
+  int level;
+
+  srand(1);
+
+  for (i=0; i<10; ++i) {  // start store 9 generated numbers (1st dropped)
+
+    j=rand()%100;        // std Lego FW rand
+    //j=Random(100);       // NXC John Hansen rand
+    //j=Krand()%100;       // Kernighan and Ritchie LCG rand
+    //j=Mrand()%100;       // Mesenne Twister rand
+    if (i>0)
+      H[i-1]=j;            // end store the first 9 generated numbers
+  }
+
+  showWhat();
+  Wait(1000);
+  level=0;
+
+  while(1) {
+
+      j=rand()%100;        // std Lego FW rand
+      //j=Random(100);       // NXC John Hansen rand
+      //j=Krand()%100;       // Kernighan and Ritchie LCG rand
+      //j=Mrand()%100;       // Mesenne Twister rand
+
+
+      if (j==H[level])  {
+        level+=1;
+        if (level>maxZ)   {  maxZ=level;  }
+      }
+      else
+      {
+        if (level>0)    {
+          level=0;
+        }
+      }  // if
+      if (level>maxZ)   {
+        maxZ=level;
+      }
+      i+=1;
+
+      while (ButtonPressed(BTNCENTER, false)) {
+        showWhat();
+        printf1( 0,16,"rand=%3u", j);          // current rand number
+
+      }
+      if (ButtonPressed(BTNRIGHT,  false))  {
+        showWhat();
+        printf1( 0,16,"rand=%3u", j);          // current rand number
+
+        Wait(200);
+      }
+
+      if ((i%2000==0)|| (i<1000)) {
+        showWhat();
+        printf1( 0,16,"rand=%3u", j);          // current rand number
+
+      }
+
+      if (level>1) {
+        if (level>3) PlayTone(200*level, 100);
+        showWhat();
+         printf1( 0,16,"rand=%3u", j);          // current rand number
+
+        Wait(200); }
+
+      if (maxZ>8)
+      {
+        PlaySound(SOUND_FAST_UP);
+        ClearScreen();
+
+        showWhat();
+        printf1(0,16, "strtseq.reach%3u",j); // current number of final level
+        while(1);
+      }
+  }
+
+}
