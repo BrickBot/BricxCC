@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-07-07
- * \version 96
+ * \date 2011-07-08
+ * \version 97
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -5629,8 +5629,8 @@ struct CommHSControlType {
  * \sa SysCommHSCheckStatus()
  */
 struct CommHSCheckStatusType {
- bool SendingData;     /*!< Is data currently being sent? */
- byte DataAvailable;   /*!< Number of bytes of data available for reading */
+ byte SendingData;     /*!< Number of bytes of data currently being sent. */
+ byte DataAvailable;   /*!< Number of bytes of data available for reading. */
 };
 
 /**
@@ -6799,29 +6799,29 @@ inline char RS485Read(byte & buffer[]);
 /**
  * Is RS485 sending data.
  * Check whether the RS485 is actively sending data.
- * 
- * \return A value indicating whether data is being sent or not.
+ *
+ * \return The number of bytes of data being sent.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-inline bool RS485SendingData(void);
+inline byte RS485SendingData(void);
 
 /**
  * Check RS485 status.
  * Check the status of the RS485 hi-speed port.
- * 
- * \param sendingData A boolean value set to true on output if data is being sent.
- * \param dataAvail A boolean value set to true on output if data is available to be read.
+ *
+ * \param sendingData The number of bytes of data being sent.
+ * \param dataAvail The number of bytes of data available for reading.
  *
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
-inline void RS485Status(bool & sendingData, bool & dataAvail);
+inline void RS485Status(byte & sendingData, byte & dataAvail);
 
 /**
  * Configure RS485 UART.
  * Configure the RS485 UART parameters, including baud rate, data bits,
  * stop bits, and parity.
- * 
+ *
  * \param baud The baud rate for the RS485 port. See \ref CommHiSpeedBaudConstants.
  * \param mode The RS485 port mode (data bits, stop bits, parity).  See \ref
  * CommHiSpeedDataBitsConstants, \ref CommHiSpeedStopBitsConstants, \ref
@@ -6835,7 +6835,7 @@ inline char RS485Uart(byte baud, unsigned int mode);
 /**
  * Write RS485 data.
  * Write data to the RS485 hi-speed port.
- * 
+ *
  * \param buffer A byte array containing the data to write to the RS485 port.
  * \return A char value indicating whether the function call succeeded or not.
  *
@@ -6846,7 +6846,7 @@ inline char RS485Write(byte buffer[]);
 /**
  * Write RS485 boolean.
  * Write a boolean value to the RS485 hi-speed port.
- * 
+ *
  * \param bval A boolean value to write over the RS485 port.
  * \return A char value indicating whether the function call succeeded or not.
  *
@@ -6857,7 +6857,7 @@ inline char SendRS485Bool(bool bval);
 /**
  * Write RS485 numeric.
  * Write a numeric value to the RS485 hi-speed port.
- * 
+ *
  * \param val A numeric value to write over the RS485 port.
  * \return A char value indicating whether the function call succeeded or not.
  *
@@ -6868,7 +6868,7 @@ inline char SendRS485Number(long val);
 /**
  * Write RS485 string.
  * Write a string value to the RS485 hi-speed port.
- * 
+ *
  * \param str A string value to write over the RS485 port.
  * \return A char value indicating whether the function call succeeded or not.
  *
@@ -6882,7 +6882,7 @@ inline char SendRS485String(string str);
  * Get bluetooth input buffer data.
  * This method reads count bytes of data from the Bluetooth input buffer and
  * writes it to the buffer provided.
- * 
+ *
  * \param offset A constant offset into the bluetooth input buffer.
  * \param cnt The number of bytes to read.
  * \param data The byte array reference which will contain the data read from

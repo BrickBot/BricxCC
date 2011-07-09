@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNBCHTMLTopicsSize = 2393;
+  uNBCHTMLTopicsSize = 2416;
   uNBCHTMLTopicsData: array[0..uNBCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -351,6 +351,10 @@ const
     (
      Name: 'FileTell';
      Value: 'group___sys_call_constants_ga96d34bde6de975ae279f2b38584ccb38.html'
+    ),
+    (
+     Name: 'RandomEx';
+     Value: 'group___sys_call_constants_ga427a64253e63e090166d9a32a2473c4d.html'
     ),
     (
      Name: 'LCD_LINE8';
@@ -6185,6 +6189,54 @@ const
      Value: 'group___c_t_r_f_i_d_constants_gafb06afdd122091ad3bf2a54b9dead516.html'
     ),
     (
+     Name: 'DI_ADDR_DGPS';
+     Value: 'group___d_i_g_p_s_constants_gaa16dc7c944304f5bba03026112cdc0ea.html'
+    ),
+    (
+     Name: 'DGPS_REG_TIME';
+     Value: 'group___d_i_g_p_s_constants_gab8527946457679b19d1aacf73d28fdf2.html'
+    ),
+    (
+     Name: 'DGPS_REG_STATUS';
+     Value: 'group___d_i_g_p_s_constants_ga43ec4e1db6337325df342c416c28596b.html'
+    ),
+    (
+     Name: 'DGPS_REG_LATITUDE';
+     Value: 'group___d_i_g_p_s_constants_ga2f60a7f1ae5dba314ceffb08797335b9.html'
+    ),
+    (
+     Name: 'DGPS_REG_LONGITUDE';
+     Value: 'group___d_i_g_p_s_constants_ga8a345daecd19890aa8c232608267d5ca.html'
+    ),
+    (
+     Name: 'DGPS_REG_VELOCITY';
+     Value: 'group___d_i_g_p_s_constants_ga5d08a9a60e251413a9cb03b381962f97.html'
+    ),
+    (
+     Name: 'DGPS_REG_HEADING';
+     Value: 'group___d_i_g_p_s_constants_gaeaf881456fc3d4fa89dd50c643a32c47.html'
+    ),
+    (
+     Name: 'DGPS_REG_DISTANCE';
+     Value: 'group___d_i_g_p_s_constants_ga5b5d29b67278bfba59bf93292cc5fcb1.html'
+    ),
+    (
+     Name: 'DGPS_REG_WAYANGLE';
+     Value: 'group___d_i_g_p_s_constants_ga37fd69db76af8456c233067490b7ce9b.html'
+    ),
+    (
+     Name: 'DGPS_REG_LASTANGLE';
+     Value: 'group___d_i_g_p_s_constants_gaf49f358a3f1491e491f6c75cad217c54.html'
+    ),
+    (
+     Name: 'DGPS_REG_SETLATITUDE';
+     Value: 'group___d_i_g_p_s_constants_gaeba71854d1b4b32aba3c5a7b718019f3.html'
+    ),
+    (
+     Name: 'DGPS_REG_SETLONGITUDE';
+     Value: 'group___d_i_g_p_s_constants_ga337e05bb0e6f5aad4cc5debf22603810.html'
+    ),
+    (
      Name: 'RICImgPoint';
      Value: 'group___r_i_c_macros_ga8ec61712d0ac0a8dc03f6093515cac22.html'
     ),
@@ -9487,6 +9539,46 @@ const
     (
      Name: 'RFIDReadContinuous';
      Value: 'group___codatex_a_p_i_ga78408313b07acb318e930325fd6e1961.html'
+    ),
+    (
+     Name: 'ReadSensorDIGPSStatus';
+     Value: 'group___dexter_industries_a_p_i_gae744b0bb4d2f82f11ec38f3c797f90d9.html'
+    ),
+    (
+     Name: 'ReadSensorDIGPSTime';
+     Value: 'group___dexter_industries_a_p_i_gab2c2ce845ed9bb423e298d7e6d5a8cec.html'
+    ),
+    (
+     Name: 'ReadSensorDIGPSLatitude';
+     Value: 'group___dexter_industries_a_p_i_ga35d72a30e26e1ee73c07e5a045c18543.html'
+    ),
+    (
+     Name: 'ReadSensorDIGPSLongitude';
+     Value: 'group___dexter_industries_a_p_i_gac10cc3f3413fc3556a54954d7ae95f00.html'
+    ),
+    (
+     Name: 'ReadSensorDIGPSVelocity';
+     Value: 'group___dexter_industries_a_p_i_ga3ad282f72a7fbf7bf59fb4f6b2c3e54a.html'
+    ),
+    (
+     Name: 'ReadSensorDIGPSHeading';
+     Value: 'group___dexter_industries_a_p_i_gaa3f7123ca95172234a3dcbfc74b025f3.html'
+    ),
+    (
+     Name: 'ReadSensorDIGPSDistanceToWaypoint';
+     Value: 'group___dexter_industries_a_p_i_gafb1ef78d54ea14d203d198bc3ccaa4c3.html'
+    ),
+    (
+     Name: 'ReadSensorDIGPSHeadingToWaypoint';
+     Value: 'group___dexter_industries_a_p_i_ga419e802f6419a02e3e54866cfcbbbbf5.html'
+    ),
+    (
+     Name: 'ReadSensorDIGPSRelativeHeading';
+     Value: 'group___dexter_industries_a_p_i_ga7936d6684414fbfe9587e99e05a9878b.html'
+    ),
+    (
+     Name: 'SetSensorDIGPSWaypoint';
+     Value: 'group___dexter_industries_a_p_i_gacf18c4353ecc80f967f002d23efdf34b.html'
     ),
     (
      Name: 'glInit';
