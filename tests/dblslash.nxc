@@ -1,0 +1,10 @@
+task main(){
+//this works (in string)
+string first="http://www.fi";
+
+//this works (only one slash)
+string second[]={"a","b","http:/www.fi",};
+
+//this doesn't work (in array)
+string third[]={"a","b","http://www.fi",};
+}

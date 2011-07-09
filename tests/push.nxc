@@ -1,0 +1,42 @@
+inline void ArrayPushF(float &src[], float _new)
+{
+  for (int i=ArrayLen(src); i>0; --i)
+    src[i]=src[i-1]; // shift up
+  src[0]=_new;
+}
+
+inline void ArrayPushF2(float &src[], float _new)
+{
+  float tmp[];
+  ArraySubset(tmp, src, 1, NA);
+  ArrayBuild(src, _new, tmp);
+  ArrayInit(tmp, 0, 0);
+}
+
+
+task main()
+{
+  float gyrodata[];
+  int j = 5;
+  while (j <= 100)
+  {
+    NumOut(0, LCD_LINE1, j);
+    ArrayInit(gyrodata, 0, j);
+    unsigned long tick = CurrentTick();
+    for (int i=0; i < 1000; i++)
+    {
+       ArrayPushF(gyrodata, i);
+    }
+    NumOut(0, LCD_LINE2, CurrentTick()-tick);
+
+    tick = CurrentTick();
+    for (int i=0; i < 1000; i++)
+    {
+       ArrayPushF2(gyrodata, i);
+    }
+    NumOut(0, LCD_LINE3, CurrentTick()-tick);
+    j++;
+    Wait(SEC_1);
+  }
+  while(true);
+}

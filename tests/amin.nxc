@@ -1,0 +1,23 @@
+float x[] = {-0.5, -0.2, -0.1, 0.2, 0.4, 0.5};
+float y[] = {-0.4, -0.2, -0.1, 0.2, 0.4, 0.5};
+float xmax, ymax, xmin, ymin;
+
+task main()
+{
+//  ArrayOp(OPARR_MAX, xmax, x, NA, NA);
+//  ArrayOp(OPARR_MIN, xmin, x, NA, NA);
+//  ArrayOp(OPARR_MAX, ymax, y, NA, NA);
+//  ArrayOp(OPARR_MIN, ymin, y, NA, NA);
+  xmax = ArrayMax(x, NA, NA);
+  xmin = ArrayMin(x, NA, NA);
+  ymax = ArrayMax(y, NA, NA);
+  ymin = ArrayMin(y, NA, NA);
+
+  NumOut(0, LCD_LINE1, xmax); // all zeros!
+  NumOut(0, LCD_LINE2, xmin);
+  NumOut(0, LCD_LINE3, ymax);
+  NumOut(0, LCD_LINE4, ymin);
+  NumOut(0, LCD_LINE5, x[0]);
+  NumOut(0, LCD_LINE6, y[0]);
+  while(true);
+}

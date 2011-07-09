@@ -1,0 +1,58 @@
+//---------------------------------------------------------
+// Grafik RNG Test
+//---------------------------------------------------------
+
+struct target{
+    byte X;
+    byte Y;
+    bool sleep;
+    unsigned long wakeTick;
+};
+
+#define DrawTarget(x){ \
+if(x.sleep) {}         \
+else{                  \
+CircleOut(x.X,x.Y,1);  \
+CircleOut(x.X,x.Y,3);  \
+CircleOut(x.X,x.Y,5);  \
+    }                  \
+}
+
+#define SleepTarget(x){                         \
+x.sleep = true;                                 \
+x.wakeTick = CurrentTick() + 2000;   \
+}
+
+#define WakeTarget(x){ \
+x.sleep = false;       \
+x.X = rand()%100;     \
+x.Y = rand()% 63;     \
+}
+
+
+
+task main(){
+  long time0;
+  target MyTarget;
+  MyTarget.X = 30;
+  MyTarget.Y = 30;
+  MyTarget.sleep = 0;
+  bool slp = false;
+  time0=CurrentTick();
+//  srand(1);
+  while((CurrentTick()-time0)<1000*60*5) {  // do it for 5 min
+
+    if(slp)
+    {
+      slp = false;
+      SleepTarget(MyTarget);
+    }
+    else{slp=1;}
+    DrawTarget(MyTarget);
+    Wait(1000);
+    WakeTarget(MyTarget);
+  }
+//  PlayTone(1000,100); Wait(200);
+//  PlayTone(1000,100); Wait(100);
+  while(1);
+}
