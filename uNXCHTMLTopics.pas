@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2806;
+  uNXCHTMLTopicsSize = 2812;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -185,6 +185,10 @@ const
      Value: 'struct_i_o_map_write_type.html'
     ),
     (
+     Name: 'JoystickMessageType';
+     Value: 'struct_joystick_message_type.html'
+    ),
+    (
      Name: 'KeepAliveType';
      Value: 'struct_keep_alive_type.html'
     ),
@@ -219,6 +223,10 @@ const
     (
      Name: 'OutputStateType';
      Value: 'struct_output_state_type.html'
+    ),
+    (
+     Name: 'RandomExType';
+     Value: 'struct_random_ex_type.html'
     ),
     (
      Name: 'RandomNumberType';
@@ -619,6 +627,10 @@ const
     (
      Name: 'FileTell';
      Value: 'group___sys_call_constants_ga96d34bde6de975ae279f2b38584ccb38.html'
+    ),
+    (
+     Name: 'RandomEx';
+     Value: 'group___sys_call_constants_ga427a64253e63e090166d9a32a2473c4d.html'
     ),
     (
      Name: 'LCD_LINE8';
@@ -8321,6 +8333,10 @@ const
      Value: 'group___i_o_ctrl_module_functions_ga64deba6187c8a5c061fcfed88b668566.html'
     ),
     (
+     Name: 'JoystickMessageRead';
+     Value: 'group___comm_module_functions_ga7db28ed8b4ea16fd20208837bd711ed1.html'
+    ),
+    (
      Name: 'SendMessage';
      Value: 'group___comm_module_functions_gaa0dcf38898e9b509650a456d1393e9c7.html'
     ),
@@ -8598,7 +8614,7 @@ const
     ),
     (
      Name: 'RS485DataAvailable';
-     Value: 'group___comm_module_functions_gae53b9de9e9e0067eef1b773af74bc2de.html'
+     Value: 'group___comm_module_functions_ga481910c60e5fc16e9fbd07c6e26e3561.html'
     ),
     (
      Name: 'RS485Initialize';
@@ -8618,11 +8634,11 @@ const
     ),
     (
      Name: 'RS485SendingData';
-     Value: 'group___comm_module_functions_gace90b44caaee4367222a2047328e2f4d.html'
+     Value: 'group___comm_module_functions_ga546e38880720cf6296a69af77e607de0.html'
     ),
     (
      Name: 'RS485Status';
-     Value: 'group___comm_module_functions_ga40c51d3fb017399a10f65cb66dc1ffd6.html'
+     Value: 'group___comm_module_functions_gabcf800d305515226ac764bf97bd4c3d4.html'
     ),
     (
      Name: 'RS485Uart';
@@ -10897,8 +10913,12 @@ const
      Value: 'group__cstdlib_a_p_i_gafa60b7b723d42d4d0823518b011d2876.html'
     ),
     (
+     Name: 'srand';
+     Value: 'group__cstdlib_a_p_i_ga1b3a34ea993e2f01600fc09687b3b9a1.html'
+    ),
+    (
      Name: 'rand';
-     Value: 'group__cstdlib_a_p_i_ga866c3f5e3e89035c3ba01b22d786d8bc.html'
+     Value: 'group__cstdlib_a_p_i_ga12372a1ed425b34e4503a5f4c2bb5f53.html'
     ),
     (
      Name: 'Random';
@@ -10907,6 +10927,10 @@ const
     (
      Name: 'SysRandomNumber';
      Value: 'group__cstdlib_a_p_i_gab485d2bc34b70873158cae0500683681.html'
+    ),
+    (
+     Name: 'SysRandomEx';
+     Value: 'group__cstdlib_a_p_i_ga6d7aa40a0ebdf471f0cd08f7906029a7.html'
     ),
     (
      Name: 'atoi';
