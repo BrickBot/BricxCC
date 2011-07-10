@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-07-01
- * version 78
+ * date 2011-07-09
+ * version 79
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -7664,6 +7664,48 @@ dseg ends
   mul _RPM, _RPM, 256 \
   index __RLSBytesCount##_port, __RLSReadBuf##_port, 7 \
   add _RPM, _RPM, __RLSBytesCount##_port \
+  release __RLSBmutex##_port \
+  compend
+
+#define __ReadSensorHTBarometer(_port, _t, _p, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RLSBbufLSWrite1 \
+  set __RLSBytesCountVar, 4 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  index _t, __RLSReadBufVar, NA \
+  index __RLSBytesCountVar, __RLSReadBufVar, 1 \
+  mul _t, _t, 256 \
+  add _t, _t, __RLSBytesCountVar \
+  index _p, __RLSReadBufVar, 2 \
+  index __RLSBytesCountVar, __RLSReadBufVar, 3 \
+  mul _p, _p, 256 \
+  add _p, _p, __RLSBytesCountVar \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
+  set __RLSBytesCount##_port, 4 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  index _t, __RLSReadBuf##_port, NA \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 1 \
+  mul _t, _t, 256 \
+  add _t, _t, __RLSBytesCount##_port \
+  index _p, __RLSReadBuf##_port, 2 \
+  index __RLSBytesCount##_port, __RLSReadBuf##_port, 3 \
+  mul _p, _p, 256 \
+  add _p, _p, __RLSBytesCount##_port \
   release __RLSBmutex##_port \
   compend
 
@@ -17518,6 +17560,19 @@ __remoteGetInputValues(_conn, _params, _result)
  */
 #define ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, _result) __ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, _result)
 
+/**
+ * Read HiTechnic Barometric sensor values.
+ * Read values from the HiTechnic Barometric sensor.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _temp Current temperature in 1/10ths of degrees Celcius.
+ * \param _press Current barometric pressure in 1/1000 inches of mercury.
+ * \param _result The function call result.
+ */
+#define ReadSensorHTBarometer(_port, _temp, _press, _result) __ReadSensorHTBarometer(_port, _temp, _press, _result)
 
 /** @} */ // end of HiTechnicAPI group
 

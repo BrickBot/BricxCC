@@ -3230,6 +3230,10 @@
  * \example ex_ArrayOp.nxc
  * This is an example of how to use the \ref ArrayOp function.
  *
+ * \example ex_joystickmsg.nxc
+ * This is an example of how to use the \ref JoystickMessageRead function
+ * along with the \ref JoystickMessageType structure.
+ *
  * \example ex_SendMessage.nxc
  * This is an example of how to use the \ref SendMessage function.
  *
@@ -4807,12 +4811,19 @@
  * \example ex_rand.nxc
  * This is an example of how to use the \ref rand function.
  *
+ * \example ex_srand.nxc
+ * This is an example of how to use the \ref srand function.
+ *
  * \example ex_Random.nxc
  * This is an example of how to use the \ref Random function.
  *
  * \example ex_sysrandomnumber.nxc
  * This is an example of how to use the \ref SysRandomNumber function along with
  * the \ref RandomNumberType structure.
+ *
+ * \example ex_sysrandomex.nxc
+ * This is an example of how to use the \ref SysRandomEx function along with
+ * the \ref RandomExType structure.
  *
  * \example ex_atoi.nxc
  * This is an example of how to use the \ref atoi function.

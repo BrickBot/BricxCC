@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2818;
+  uNXCHTMLTopicsSize = 2819;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -9503,6 +9503,10 @@ const
     (
      Name: 'ReadSensorHTAngle';
      Value: 'group___hi_technic_a_p_i_gafd97b81a5dc7ab5ac7a9a986b9aafdea.html'
+    ),
+    (
+     Name: 'ReadSensorHTBarometer';
+     Value: 'group___hi_technic_a_p_i_ga589b5b585de43b740a8e36b73c4b01f8.html'
     ),
     (
      Name: 'ReadSensorHTTouchMultiplexer';

@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-07-08
- * \version 97
+ * \date 2011-07-09
+ * \version 98
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -9919,13 +9919,27 @@ inline char ResetSensorHTAngle(const byte port, const byte mode);
  * successfully. The port must be configured as a Lowspeed port before using
  * this function.
  *
- * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param port The sensor port. See \ref InPorts.
  * \param Angle Current angle in degrees (0-359).
  * \param AccAngle Accumulated angle in degrees (-2147483648 to 2147483647).
  * \param RPM rotations per minute (-1000 to 1000).
  * \return The function call result.
  */
 inline bool ReadSensorHTAngle(const byte port, int & Angle, long & AccAngle, int & RPM);
+
+/**
+ * Read HiTechnic Barometric sensor values.
+ * Read values from the HiTechnic Barometric sensor.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param temp Current temperature in 1/10ths of degrees Celcius.
+ * \param press Current barometric pressure in 1/1000 inches of mercury.
+ * \return The function call result.
+ */
+inline bool ReadSensorHTBarometer(const byte port, int & temp, int & press);
 
 /**
  * Read HiTechnic touch multiplexer.
@@ -10704,6 +10718,7 @@ inline void HTScoutUnmuteSound(void);
 #define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar) asm { __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, __RETVAL__) }
 #define ResetSensorHTAngle(_port, _mode) asm { __ResetSensorHTAngle(_port, _mode, __RETVAL__) }
 #define ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM) asm { __ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, __RETVAL__) }
+#define ReadSensorHTBarometer(_port, _temp, _press) asm { __ReadSensorHTBarometer(_port, _temp, _press, __RETVAL__) }
 
 
 #define HTPowerFunctionCommand(_port, _channel, _outa, _outb) asm { __HTPFComboDirect(_port, _channel, _outa, _outb, __RETVAL__) }

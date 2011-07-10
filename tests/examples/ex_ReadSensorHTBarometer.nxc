@@ -1,0 +1,16 @@
+task main()
+{
+  SetSensorLowspeed(S4);
+  int temp, press;
+  while (true)
+  {
+    ReadSensorHTBarometer(S4, temp, press);
+    NumOut(0, LCD_LINE1, temp);
+    TextOut(40, LCD_LINE1, " 1/10ths C");
+    NumOut(0, LCD_LINE2, press);
+    float tc = temp / 10.0;
+    TextOut(0, LCD_LINE3, FormatNum("%5.2f C", tc));
+    TextOut(0, LCD_LINE4, FormatNum("%5.2f F", tc*9/5+32));
+    Wait(MS_20);
+  }
+}
