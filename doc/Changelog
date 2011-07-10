@@ -8,8 +8,33 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
-Version 1.2.1.r5 (2011-07-02)
+Version 1.2.1.r5 (2011-07-10)
 -----------------------------
+- Cross platform updates for Linux (FPC/Lazarus)
+- Added support for Dexter Industries DiGPS sensor
+- Fixed typo defect in glPyramid API function
+- Fixed defect with the inline keyword being used with a function prototype.
+- Fixed defect with uninitialized strings not being valid strings (i.e., they are 
+  not null terminated) which crashes string opcodes in the firmware.
+- Changed the way that I2CBytes works (readlsbytes* in nxtdefs.h) so that there 
+  is not a minimum of 15 ms overhead.
+- Fixed infinite loop bug in structure declaration when unexpected characters are present.
+- Fixed definition for several Remote* API functions which sent direct/system commands 
+  to other NXT devices via Bluetooth or RS-485
+- Fixes for rand() and RAND_MAX and _Random in NXTDefs.h
+- Test program additions and updates
+- Changes to PF Combo and Raw API functions.
+- Added JoystickMessageType structure and JoystickMessageRead API function.
+- Added support for new RandomEx system call with rand() and srand()
+- Changed code in doAsm to set the statement type if the block contains 
+  __GENRETVAL__ so that the RegisterName function returns the right register name.
+- Changed __SeedRandomEx to reset the ReSeed flag back to FALSE so that the 
+  __RandomEx function does not have to set it before calling the RandomEx system call function.
+- Added support for static variables.
+- Changed RS485CheckStatus, RS485DataAvailable, and RS485SendingData API functions to return
+  byte values (number of bytes being sent or available to read) rather than booleans.
+- Updates to example programs for RS485 firmware fixes and API changes as well as the new 
+  rand() and srand() API functions.
 
 
 Version 1.2.1.r4 (2011-03-13)
