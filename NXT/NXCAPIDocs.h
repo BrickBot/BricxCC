@@ -3908,6 +3908,9 @@
  * \example ex_ReadSensorHTAccel.nxc
  * This is an example of how to use the \ref ReadSensorHTAccel function.
  *
+ * \example ex_ReadSensorHTBarometer.nxc
+ * This is an example of how to use the \ref ReadSensorHTBarometer function.
+ *
  * \example ex_ReadSensorHTColor.nxc
  * This is an example of how to use the \ref ReadSensorHTColor function.
  *

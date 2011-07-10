@@ -228,6 +228,8 @@ abs("expression")
 sign("expression")
 Random("expression")
 Random()
+rand()
+srand();\=
 sqrt("x")
 sin("x")
 cos("x")
@@ -261,6 +263,19 @@ atan2d("x", "y")
 atof("str")
 atoi("str")
 atol("str")
+- Arrays
+ArrayBuild("aout", "...")
+ArrayLen("asrc")
+ArrayInit("aout", "val", "cnt")
+ArraySubset("aout", "asrc", "idx", "len")
+ArraySum("src", "idx", "len")
+ArrayMean("src", "idx", "len")
+ArraySumSqr("src", "idx", "len")
+ArrayStd("src", "idx", "len")
+ArrayMin("src", "idx", "len")
+ArrayMax("src", "idx", "len")
+ArraySort("dest", "src", "idx", "len")
+ArrayOp("op", "dest", "src", "idx", "len")
 - Misc stuff
 ResetSleepTimer();\=
 PowerDown();\=
@@ -329,6 +344,7 @@ remove("filename");\=
 rename("old", "new");\=
 rewind("handle");\=
 - Messaging
+JoystickMessageRead("queue");\=
 SendMessage("queue", "msg");\=
 ReceiveMessage("queue", "clear", "msg");\=
 ReceiveRemoteBool("queue", "clear", "bval");\=
@@ -455,6 +471,7 @@ SysMemoryManager("args");\=
 SysMessageRead("args");\=
 SysMessageWrite("args");\=
 SysRandomNumber("args");\=
+SysRandomEx("args");\=
 SysReadButton("args");\=
 SysReadLastResponse("args");\=
 SysReadSemData("args");\=
@@ -483,6 +500,7 @@ SensorHTIRSeeker2DCDir("port");\=
 SensorHTMagnet("port", "offset");\=
 ReadSensorHTAccel("port", "x", "y", "z");\=
 ReadSensorHTAngle("port", "Angle", "AccAngle", "RPM");\=
+ReadSensorHTBarometer("port", "temp", "press");\=
 ReadSensorHTColor("port", "ColorNum", "Red", "Green", "Blue");\= 
 ReadSensorHTRawColor("port", "Red", "Green", "Blue");\=
 ReadSensorHTNormalizedColor("port", "ColorIdx", "Red", "Green", "Blue");\=
