@@ -1,0 +1,6 @@
+task main()
+{
+  RandomExType rnArgs;
+  SysRandomEx(rnArgs);
+  unsigned long myRandomValue = rnArgs.Seed;
+}

@@ -1,0 +1,35 @@
+/*
+struct JoystickMessageType {
+  byte JoystickDir;
+  byte LeftMotor;
+  byte RightMotor;
+  byte BothMotors;
+  char LeftSpeed;
+  char RightSpeed;
+  unsigned long Buttons;
+};
+*/
+task main()
+{
+  JoystickMessageType jmt;
+  while (true)
+  {
+    char result = JoystickMessageRead(MAILBOX1, jmt);
+    if (result == NO_ERR)
+    {
+      NumOut(0, LCD_LINE1, jmt.JoystickDir);
+      NumOut(0, LCD_LINE2, jmt.LeftMotor);
+      NumOut(0, LCD_LINE3, jmt.RightMotor);
+      NumOut(0, LCD_LINE4, jmt.BothMotors);
+      ClearLine(LCD_LINE5);
+      NumOut(0, LCD_LINE5, jmt.LeftSpeed);
+      ClearLine(LCD_LINE6);
+      NumOut(0, LCD_LINE6, jmt.RightSpeed);
+      ClearLine(LCD_LINE7);
+      NumOut(0, LCD_LINE7, jmt.Buttons);
+    }
+    else
+      NumOut(0, LCD_LINE8, result);
+    Wait(MS_100);
+  }
+}

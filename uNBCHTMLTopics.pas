@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNBCHTMLTopicsSize = 2422;
+  uNBCHTMLTopicsSize = 2423;
   uNBCHTMLTopicsData: array[0..uNBCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -8703,6 +8703,10 @@ const
     (
      Name: 'ReadSensorHTAngle';
      Value: 'group___hi_technic_a_p_i_ga168678aaa538ad4f73091839ac89c57b.html'
+    ),
+    (
+     Name: 'ReadSensorHTBarometer';
+     Value: 'group___hi_technic_a_p_i_gae32220006fe43341e53ba192dd2e9aac.html'
     ),
     (
      Name: 'ReadSensorMSCompass';
