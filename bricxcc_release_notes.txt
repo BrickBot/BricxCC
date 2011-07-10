@@ -6,6 +6,20 @@ Please send bug reports to bricxcc@comcast.net.
 For updates and additional documentation, visit the BricxCC Web Site:
 http://bricxcc.sourceforge.net/.  Send emails to bricxcc@comcast.net.
 
+version 3.3.8.10
+---------------
+- NBC 1.2.1.r5
+- Changed ROPS line highlighting to only be on while stepping through the code line by line.
+- Watch window changes and joystick tool enhancements
+- Fixed incorrect gettick help content
+- Help updates for JoystickMessageType, JoystickMessageRead, SysRandomEx, rand, and srand API functions.
+- Fixed text clipping defect in enhanced NBC/NXC firmware 1.31
+- Added a new random number generator system call to enhanced NBC/NXC firmware 1.31
+- ARROP enhanced firmware opcode fixes for floating point arrays
+- Changed ARROP to base float/signed/unsigned calculations on output type rather than input type
+- RS485 firmware changes to report more information from CommHSCheckStatus system call
+
+
 version 3.3.8.9
 ---------------
 - NBC 1.2.1.r4
