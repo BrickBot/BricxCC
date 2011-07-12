@@ -11,7 +11,7 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS) mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
 
-PFLAGS=-S2cdghi -dRELEASE -OG1 -gl -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD
+PFLAGS=-S2cdghi -dRELEASE -OG1 -gl -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD -dNXT_ONLY
 
 # Win32
 PTOOLPREFIX=C:/lazarus/fpc/2.2.2/bin/i386-win32/
