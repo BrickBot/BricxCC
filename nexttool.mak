@@ -1,10 +1,10 @@
 PROGRAMS = nexttool
-VER = 1.2.1.r3
+VER = 1.2.1.r5
 DOBJECTS=uCmdLineUtils.o ParamUtils.o uCommonUtils.o uVersionInfo.o NeXTTool.dpr
 BINDIST = nxt/nexttool
 FANTOM_SRC = bricktools/FANTOM.pas bricktools/FANTOM_CONST.INC bricktools/FANTOMFPC.PAS bricktools/fantomosx.pas bricktools/libusb.pas
 BT_SRC = bricktools/FantomSpirit.pas bricktools/rcx_cmd.pas bricktools/rcx_constants.pas bricktools/uSpirit.pas
-CMN_SRC = uCmdLineUtils.pas uCommonUtils.pas uVersionInfo.pas ParamUtils.pas
+CMN_SRC = uCmdLineUtils.pas uCommonUtils.pas uVersionInfo.pas ParamUtils.pas NXT/uProgram.pas
 DISTFILES = uCmdLineUtils.pas
 EXCLUDES = --exclude=*.exe --exclude=*.zip --exclude=*.o --exclude=*.~* --exclude=*.dll
 
@@ -19,12 +19,12 @@ archive_nexttool:: clean
 	mv nexttool-$(VER).src.tgz ..
 
 clean::
-	rm -f *.o *.ppu *.rst *.compiled nexttool_preproc.inc bricktools/*.o bricktools/*.ppu
+	rm -f *.o *.ppu *.rst *.compiled nexttool_preproc.inc bricktools/*.o bricktools/*.ppu NXT/*.o NXT/*.ppu
 
 realclean:: clean
 	rm -f $(PROGRAMS) 
 
-PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools
+PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools -FuNXT -dNXT_ONLY
 
 # Linux
 PTOOLPREFIX=/usr/bin/
