@@ -1,5 +1,5 @@
 PROGRAMS = nexttool
-VER = 1.2.1.r3
+VER = 1.2.1.r5
 
 all:: $(PROGRAMS)
 
@@ -8,7 +8,7 @@ archive:: clean $(PROGRAMS)
 	mv nexttool-$(VER).tgz ..
 
 clean::
-	rm -f *.o *.ppu *.rst *.compiled nexttool_preproc.inc bricktools/*.o bricktools/*.ppu
+	rm -f *.o *.ppu *.rst *.compiled nexttool_preproc.inc bricktools/*.o bricktools/*.ppu NXT/*.o NXT/*.ppu
 
 realclean:: clean
 	rm -rf $(PROGRAMS) ./$(ARCH)
@@ -16,7 +16,7 @@ realclean:: clean
 universal:: ./386/nexttool ./ppc/nexttool
 	lipo -create $^ -output ./nexttool
 
-PFLAGS=-S2cdghi -OG1 -gl -vewnhi -dRELEASE -l -Fu. -Fubricktools -k-framework -kFantom
+PFLAGS=-S2cdghi -OG1 -gl -vewnhi -dRELEASE -l -Fu. -Fubricktools -FuNXT -k-framework -kFantom
 
 #PTOOLPREFIX=/usr/local/bin/
 ARCH=386
