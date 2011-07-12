@@ -105,10 +105,10 @@ uses
   MMSystem,
 {$ENDIF}
 {$IFNDEF NXT_ONLY}
-  MainUnit, Dialogs,
+  MainUnit,
 {$ENDIF}
-  SysUtils, brick_common, uLocalizedStrings, uJoyGlobals, uGlobals, uROPS,
-  uJoyActions, Math;
+  SysUtils, Dialogs, brick_common, uLocalizedStrings, uJoyGlobals, uGlobals,
+  uROPS, uJoyActions, Math;
 
 var oldldir:integer =100;                   // previous left motor direction
     oldrdir:integer =100;                   // previous right motor direction
