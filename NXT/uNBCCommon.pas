@@ -630,7 +630,7 @@ const
     ( ID: 96; Name: 'MemoryManager'; ),
     ( ID: 97; Name: 'ReadLastResponse'; ),
     ( ID: 98; Name: 'FileTell'; ),
-    ( ID: 99; Name: 'syscall99'; )
+    ( ID: 99; Name: 'RandomEx'; )
   );
 
 const
