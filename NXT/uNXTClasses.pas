@@ -425,6 +425,7 @@ type
     procedure RemoveOrNOPLine(AL, ALNext: TAsmLine; const idx: integer);
     function GetCallerCount: Byte;
     function GetIsMultithreaded: boolean;
+    function IsMovOptimizationSafe(bEnhanced: boolean; op: TOpcode; aValue : string): boolean;
   protected
     fLabelMap : TStringList;
     fUpstream : TStringList;
@@ -525,6 +526,8 @@ type
     property  FirmwareVersion : word read fFirmwareVersion write SetFirmwareVersion;
     property  RXEProgram : TRXEProgram read fRXEProg;
   end;
+
+  TAsmArgDir = (aadInput, aadOutput, aadBoth);
 
   TAsmArgType = (aatVariable, aatVarNoConst, aatVarOrNull, aatConstant,
     aatClumpID, aatLabelID, aatCluster, aatString, aatStringNoConst,
@@ -5593,6 +5596,81 @@ begin
   end;
 end;
 
+function ArgDirection(const firmVer : word; const op : TOpCode; const argIdx: integer): TAsmArgDir;
+begin
+  case op of
+    OP_ADD, OP_SUB, OP_NEG, OP_MUL, OP_DIV, OP_MOD,
+    OP_AND, OP_OR, OP_XOR, OP_NOT,
+    OP_CMNT, OP_LSL, OP_LSR, OP_ASL, OP_ASR, OP_ROTL, OP_ROTR,
+    OP_SET, OP_MOV,
+    OPS_ACOS, OPS_ASIN, OPS_ATAN, OPS_CEIL,
+    OPS_EXP, OPS_FABS, OPS_FLOOR, OPS_SQRT, OPS_TAN, OPS_TANH,
+    OPS_COS, OPS_COSH, OPS_LOG, OPS_LOG10, OPS_SIN, OPS_SINH,
+    OPS_ATAN2, OPS_FMOD, OPS_POW,
+    OPS_ACOS_2, OPS_ASIN_2, OPS_ATAN_2, OPS_CEIL_2,
+    OPS_EXP_2, OPS_FLOOR_2, OPS_TAN_2, OPS_TANH_2,
+    OPS_COS_2, OPS_COSH_2, OPS_LOG_2, OPS_LOG10_2, OPS_SIN_2, OPS_SINH_2,
+    OPS_TRUNC_2, OPS_FRAC_2, OPS_ATAN2_2, OPS_POW_2, OPS_MULDIV_2,
+    OPS_ACOSD_2, OPS_ASIND_2, OPS_ATAND_2, OPS_COSD_2, OPS_COSHD_2,
+    OPS_TAND_2, OPS_TANHD_2, OPS_SIND_2, OPS_SINHD_2, OPS_ATAN2D_2,
+    OP_ARRBUILD, OP_FLATTEN, OP_STRCAT, OP_NUMTOSTRING, OP_ARRSIZE,
+    OP_INDEX, OP_REPLACE, OP_STRTOBYTEARR, OP_BYTEARRTOSTR,
+    OP_ARRSUBSET, OP_STRSUBSET, OP_GETIN, OP_GETOUT,
+    OPS_ABS, OPS_SIGN, OPS_SIGN_2, OPS_SHL, OPS_SHR,
+    OPS_STRINDEX, OPS_STRREPLACE, OPS_STRLEN, OP_ARRINIT,
+    OPS_FMTNUM, OPS_FMTNUM_2, OPS_ADDROF : begin
+      if argIdx > 0 then
+        Result := aadInput
+      else // 0
+        Result := aadOutput;
+    end;
+    OP_UNFLATTEN, OP_STRINGTONUM : begin
+      if argIdx > 1 then
+        Result := aadInput
+      else // 0
+        Result := aadOutput;
+    end;
+    OP_CMP, OP_TST, OP_CMPSET, OP_TSTSET, OPS_ARROP, OPS_ARROP_2 : begin
+      if argIdx = 0 then
+        Result := aadInput
+      else if argIdx > 1 then
+        Result := aadInput
+      else // 1
+        Result := aadOutput;
+    end;
+    OP_ACQUIRE, OP_RELEASE, OP_SUBRET, OP_GETTICK : begin
+      Result := aadOutput;
+    end;
+    OP_STOP, OP_FINCLUMP, OP_FINCLUMPIMMED, OP_JMP, OP_BRCMP, OP_BRTST,
+    OP_SETIN, OP_SETOUT, OP_WAIT, OPS_WAITV_2, OPS_CALL,
+    OPS_COMPCHK, OPS_COMPIF, OPS_COMPCHKTYPE,
+    OPS_START, OPS_START_2, OPS_STOPCLUMP, OPS_STOPCLUMP_2,
+    OPS_PRIORITY, OPS_PRIORITY_2 : begin
+      Result := aadInput;
+    end;
+    OP_SUBCALL, OP_SYSCALL : begin
+      if argIdx = 0 then
+        Result := aadInput
+      else
+        Result := aadBoth;
+    end;
+    OPS_WAITV{, OP_SQRT_2} : begin
+      if firmVer > MAX_FW_VER1X then
+      begin
+        // OPS_WAITV == OP_SQRT_2 in 2.x firmware
+        if argIdx > 0 then
+          Result := aadInput
+        else
+          Result := aadOutput;
+      end
+      else
+        Result := aadInput;
+    end;
+  else
+    Result := aadInput;
+  end;
+end;
+
 procedure TRXEProgram.HandleConstantExpressions(AL: TAsmLine);
 var
   expected : TAsmArgType;
@@ -8373,9 +8451,13 @@ end;
 
 function IsStackOrReg(const str : string) : boolean;
 begin
-  Result := (Pos('__D0', str) = 1) or (Pos('__signed_stack_', str) = 1) or
-            (Pos('__unsigned_stack_', str) = 1) or (Pos('__float_stack_', str) = 1) or
-            (Pos('__DU0', str) = 1) or (Pos('__DF0', str) = 1);
+  Result := (Pos('__D0', str) = 1) or
+            (Pos('__signed_stack_', str) = 1) or
+            (Pos('__unsigned_stack_', str) = 1) or
+            (Pos('__float_stack_', str) = 1) or
+            (Pos('__ArrHelper__', str) = 1) or
+            (Pos('__DU0', str) = 1) or
+            (Pos('__DF0', str) = 1);
 end;
 
 procedure TClump.RemoveOrNOPLine(AL, ALNext : TAsmLine; const idx : integer);
@@ -8532,16 +8614,34 @@ begin
   end;
 end;
 
+function TClump.IsMovOptimizationSafe(bEnhanced : boolean; op : TOpcode; aValue : string) : boolean;
+var
+  DE : TDataspaceEntry;
+begin
+  Result := True;
+  if (op = OP_SET) or ((not bEnhanced) and (op in
+        [OP_GETTICK, OP_NOT, OP_ARRSIZE, OP_GETOUT, OP_GETIN, OP_UNFLATTEN,
+         OP_CMP, OP_WAIT, OP_STRINGTONUM])) then
+  begin
+    // need to also check the type of the next line's output arg
+    DE := CodeSpace.Dataspace.FindEntryByFullName(aValue);
+    if Assigned(DE) then
+      Result := DE.DataType <> dsFloat
+    else
+      Result := False;
+  end;
+end;
+
 procedure TClump.Optimize(const level : Integer);
 var
-  i, offset : integer;
-  iVal : Double;
+  i, offset, j, tmpIdx : integer;
+  iVal, Arg1Val, Arg2Val : Double;
   AL, ALNext, tmpAL : TAsmLine;
   arg1, arg2, arg3, tmp : string;
-  bDone, bArg1Numeric, bArg2Numeric, bCanOptimize : boolean;
-  Arg1Val, Arg2Val : Double;
+  bEnhanced, bDone, bArg1Numeric, bArg2Numeric{, bCanOptimize} : boolean;
   DE : TDataspaceEntry;
-  bEnhanced : boolean;
+  firmVer : Word;
+  argDir : TAsmArgDir;
 
   function CheckReferenceCount : boolean;
   var
@@ -8568,11 +8668,16 @@ var
   end;
 begin
   bEnhanced := CodeSpace.RXEProgram.EnhancedFirmware;
+  firmVer   := CodeSpace.RXEProgram.FirmwareVersion;
   bDone := False;
   while not bDone do begin
     bDone := True; // assume we are done
     for i := 0 to ClumpCode.Count - 1 do begin
       AL := ClumpCode.Items[i];
+
+      // the first set of optimizations are for any optimizable opcode
+      // followed by a mov opcode
+
       // any line of this form: op reg/stack, rest
       // followed by this line  mov anything, reg/stack
       // where reg/stack1 == reg/stack2
@@ -8590,7 +8695,8 @@ begin
         arg1 := AL.Args[0].Value;
         if IsStackOrReg(arg1) then
         begin
-          // maybe we can do an optimization
+          // the output argument of this opcode is a temporary variable (stack/reg/array helper)
+          // so maybe we can do an optimization
           // find the next line (which may not be i+1) that is not (NOP or labeled)
           offset := 1;
           while (i < ClumpCode.Count - offset) do begin
@@ -8612,6 +8718,7 @@ begin
                (ALNext.Command = OP_MOV) and
                (ALNext.Args[1].Value = arg1) then
             begin
+(*
               bCanOptimize := True;
               if not bEnhanced then
               begin
@@ -8641,7 +8748,8 @@ begin
                 else
                   bCanOptimize := False;
               end;
-              if bCanOptimize then
+*)
+              if IsMovOptimizationSafe(bEnhanced, AL.Command, ALNext.Args[0].Value) then
               begin
                 AL.RemoveVariableReference(arg1, 0);
                 AL.Args[0].Value := ALNext.Args[0].Value; // switch output arg (no ref count changes)
@@ -8653,8 +8761,110 @@ begin
               end;
             end;
           end;
+
+          // at higher optimization levels we'll do more here
+          if level >= 3 then
+          begin
+            // the 0th output argument of this opcode is a temporary variable
+            // (aka stack/reg/array helper)
+            // so maybe we can do an optimization
+            // find the next line (which may not be i+1) that refers to the
+            // same temporary variable with no labeled statements in between
+            offset := 1;
+            tmpIdx := -1;
+            while (i < ClumpCode.Count - offset) do begin
+              tmpAL := ClumpCode.Items[i+offset];
+              tmpIdx := -1;
+              if tmpAL.LineLabel <> '' then
+                Break;
+              // does this line refer to the same temporary variable?
+              // prefer to find input parameters over finding output parameters
+              // so we start at the last arg and work toward the first
+              for j := tmpAL.Args.Count - 1 downto 0 do
+              begin
+                if arg1 = tmpAL.Args[j].Value then
+                begin
+                  tmpIdx := j;
+                  Break;
+                end;
+              end;
+              if tmpIdx <> -1 then
+                Break;
+              inc(offset);
+            end;
+            if (tmpIdx <> -1) and (i < (ClumpCode.Count - offset)) then
+            begin
+              ALNext := ClumpCode.Items[i+offset];
+              // now check other cases
+              // bricxcc-Bugs-1669679 - make sure the next line
+              // cannot be jumped to from elsewhere.  If it does then the
+              // "previous" line may actually be skipped so we cannot
+              // do any optimization
+              if ALNext.LineLabel = '' then
+              begin
+                // is the next reference to this temporary variable an output
+                // or is it an input?
+                argDir := ArgDirection(firmVer, ALNext.Command, tmpIdx);
+                if argDir = aadOutput then
+                begin
+                  // if the next line with no labels in between uses this
+                  // same temporary as an output variable then the first line
+                  // can be replaced with a no-op
+                  AL.RemoveVariableReferences;
+                  RemoveOrNOPLine(AL, nil, i);
+                  bDone := False;
+                  Break;
+                end
+                else if argDir = aadInput then
+                begin
+                  if ALNext.Command = OP_MOV then
+                  begin
+                    // if the next line with no labels in between uses this same
+                    // temporary as an input variable and it is a mov then
+                    // we may be able to optimize out the mov.
+                    if IsMovOptimizationSafe(bEnhanced, AL.Command, ALNext.Args[0].Value) then
+                    begin
+                      AL.RemoveVariableReference(arg1, 0);
+                      AL.Args[0].Value := ALNext.Args[0].Value; // switch output arg (no ref count changes)
+                      ALNext.RemoveVariableReference(arg1, 1);
+                      ALNext.Command := OPS_INVALID; // no-op next line
+                      ALNext.Args.Clear;
+                      bDone := False;
+                      Break;
+                    end;
+                  end
+                  else if AL.Command in [OP_MOV, OP_SET] then
+                  begin
+                    if AL.Command = OP_SET then
+                      tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
+                    else
+                    begin
+                      tmp := AL.Args[1].Value;
+                      CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
+                    end;
+                    // if the output of mov is input of any opcode then it is safe
+                    // to set the ALNext's input to AL's input
+                    // we can't remove the mov or the set in case the temporary
+                    // is reused as an input in subsequent lines
+                    ALNext.RemoveVariableReference(arg1, tmpIdx);
+                    ALNext.Args[tmpIdx].Value := tmp; // switch input arg (no ref count changes)
+                    bDone := False;
+                    Break;
+                  end;
+                end;
+              end;
+            end;
+          end;
+
         end;
       end;
+
+      // this next set of optimizations are organized by opcode
+      // 1. set or mov
+      // 2. add, sub, mul div, mod, and, or, xor, asl, asr
+      // 3. neg, not
+      // 4. jmp, brcmp, brtst
+
       case AL.Command of
         OP_SET, OP_MOV : begin
           // this is a set or mov line
@@ -8677,23 +8887,24 @@ begin
           offset := 1;
           while (i < ClumpCode.Count - offset) do begin
             tmpAL := ClumpCode.Items[i+offset];
-            if (tmpAL.Command <> OPS_INVALID) or (tmpAL.LineLabel <> '') then
+            if tmpAL.LineLabel <> '' then
+              Break
+            else if tmpAL.Command <> OPS_INVALID then
             begin
               // is it safe to ignore this line?  If it is a set or a mov for
               // different variables then yes (at higher optimization levels) ...
               // (this is not always safe AKA buggy)
               if not ((tmpAL.Command in [OP_SET, OP_MOV]) and
-                      (tmpAL.LineLabel = '') and
                       (arg1 <> tmpAL.Args[0].Value) and
                       (arg1 <> tmpAL.Args[1].Value) and
-                      (level >= 4)) then
+                      (level >= 5)) then
                 Break;
             end;
             inc(offset);
           end;
           // every line between Items[i] and Items[i+offset] are NOP lines without labels.
-          // OR lines that have nothing whatsoever to do with the output variable in
-          // Items[i]
+          // OR unlabeled set|mov opcodes that have nothing whatsoever to do with the
+          // output variable in Items[i]
           if i < (ClumpCode.Count - offset) then
           begin
             ALNext := ClumpCode.Items[i+offset];
@@ -8857,7 +9068,7 @@ begin
             bDone := False;
             Break;
           end;
-          if level >= 3 then
+          if level >= 4 then
           begin
             // process argument 1
             // is it a constant variable (i.e., aname == _constVal...)
@@ -8909,7 +9120,7 @@ begin
             bDone := False;
             Break;
           end;
-          if level >= 3 then
+          if level >= 4 then
           begin
             // process argument 1
             // is it a constant variable (i.e., aname == _constVal...)
