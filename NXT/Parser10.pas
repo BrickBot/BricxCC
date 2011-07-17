@@ -700,6 +700,10 @@ begin
 
                      CaseSensitive,
 
+                     Silent,
+
+                     FErrorMessage, 
+
                      FStartOperationList,
                      Result);
 

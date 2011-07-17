@@ -42,6 +42,10 @@ procedure ParseFunction( FunctionString: string; { the unparsed string }
 
                          CaseSensitive: boolean;
 
+                         bSilent: boolean; // raise exceptions or not
+
+                         var ErrorMessage : string;
+
                          { return pointer to tree, number of performed operations and error state }
                          var FirstOP : PExpOperation;
 
@@ -86,6 +90,10 @@ procedure ParseFunction( FunctionString: string;
                          UsePascalNumbers: boolean;
 
                          CaseSensitive: boolean;
+
+                         bSilent: boolean;
+
+                         var ErrorMessage: string;
 
                          var FirstOP: PExpOperation;
 
@@ -255,7 +263,7 @@ procedure ParseFunction( FunctionString: string;
                 {$ENDIF}
                   try
                     FloatNumber := NBCStrToFloatDef(s, 0);
-                    if (FloatNumber = 0) and (s <> '0') then
+                    if FloatNumber <> NBCStrToFloatDef(s, -1) then
                     begin
                       // if this failed try an integer variable (handles hex notation)
                       if Pos('0x', s) = 1 then
@@ -267,8 +275,9 @@ procedure ParseFunction( FunctionString: string;
                       end
                       else
                       begin
-                        FloatNumber := NBCStrToFloat(s);
-                        Result := true;
+                        // since we got two different values from NBCStrToFloatDef
+                        // we know that this is not a valid floating point string
+                        Result := False;
                       end;
                     end
                     else
@@ -2594,6 +2603,7 @@ begin
   Next1Term := nil;
   Next2Term := nil;
 
+  ErrorMessage := '';
   Error := false;
 
   BracketLevel[0] := 0;
@@ -2602,6 +2612,9 @@ begin
   CurBracketLevels := 0;
 
   new(Matrix);
+  try
+    // a new try/finally block to facilitate cleanup when
+    // Error is true and bSilent is true
 
   try { this block protects the whole of ALL assignments...}
     FillChar(Matrix^, SizeOf(Matrix^), 0);
@@ -2634,7 +2647,16 @@ begin
       StartString := Copy(StartString, counter1, counter2 - counter1 + 1);
 
       if Pos(' ', StartString) > 0 then
-        raise EExpressionHasBlanks.Create(msgErrBlanks);
+      begin
+        if bSilent then
+        begin
+          Error := True;
+          ErrorMessage := msgErrBlanks;
+          Exit;
+        end
+        else
+          raise EExpressionHasBlanks.Create(msgErrBlanks);
+      end;
       {
       Old code:
 
@@ -2653,7 +2675,16 @@ begin
       }
 
       if not CheckNumberBrackets(StartString) then
-        raise EMissMatchingBracket.Create(msgMissingBrackets);
+      begin
+        if bSilent then
+        begin
+          Error := True;
+          ErrorMessage := msgMissingBrackets;
+          Exit;
+        end
+        else
+          raise EMissMatchingBracket.Create(msgMissingBrackets);
+      end;
 
       { remove enclosing brackets, e.g. ((pi)) }
       while CheckBracket(StartString, FunctionString) do
@@ -2775,9 +2806,17 @@ begin
                 begin
                   Error := true; {with an exception raised this is meaningless...}
                   if (LeftString = BlankString) and (RightString = BlankString) then
-                    raise ESyntaxError.CreateFmt(msgParseError+' %s', [StartString])
+                  begin
+                    ErrorMessage := Format(msgParseError+' %s', [StartString]);
+                  end
                   else
-                    raise ESyntaxError.CreateFmt(msgParseError+' %s | %s', [Leftstring, RightString]);
+                  begin
+                    ErrorMessage := Format(msgParseError+' %s | %s', [Leftstring, RightString]);
+                  end;
+                  if bSilent then
+                    Exit
+                  else
+                    raise ESyntaxError.Create(ErrorMessage);
                 end;
               end;
             end;
@@ -2797,7 +2836,18 @@ begin
               if CurrentBracket > maxBracketLevels then
               begin
                 Error := true;
-                raise ETooManyNestings.Create(msgNestings);
+                if bSilent then
+                begin
+                  if assigned(Next1Term) then
+                  begin
+                    dispose(Next1Term);
+                    Next1Term := nil;
+                  end;
+                  ErrorMessage := msgNestings;
+                  Exit;
+                end
+                else
+                  raise ETooManyNestings.Create(msgNestings);
               end;
 
               if CurBracketLevels < CurrentBracket then
@@ -2807,7 +2857,18 @@ begin
               if i > maxLevelWidth then
               begin
                 Error := true;
-                raise EExpressionTooComplex.Create(msgTooComplex);
+                if bSilent then
+                begin
+                  if assigned(Next1Term) then
+                  begin
+                    dispose(Next1Term);
+                    Next1Term := nil;
+                  end;
+                  ErrorMessage := msgTooComplex;
+                  Exit;
+                end
+                else
+                  raise EExpressionTooComplex.Create(msgTooComplex);
               end;
 
               with Next1Term^ do
@@ -2889,7 +2950,18 @@ begin
                 if CurrentBracket > maxBracketLevels then
                 begin
                   Error := true;
-                  raise ETooManyNestings.Create(msgNestings);
+                  if bSilent then
+                  begin
+                    if assigned(Next2Term) then
+                    begin
+                      dispose(Next2Term);
+                      Next2Term := nil;
+                    end;
+                    ErrorMessage := msgNestings;
+                    Exit;
+                  end
+                  else
+                    raise ETooManyNestings.Create(msgNestings);
                 end;
 
                 if CurBracketLevels < CurrentBracket then
@@ -2899,7 +2971,18 @@ begin
                 if i > maxLevelWidth then
                 begin
                   Error := true;
-                  raise EExpressionTooComplex.Create(msgTooComplex);
+                  if bSilent then
+                  begin
+                    if assigned(Next2Term) then
+                    begin
+                      dispose(Next2Term);
+                      Next2Term := nil;
+                    end;
+                    ErrorMessage := msgTooComplex;
+                    Exit;
+                  end
+                  else
+                    raise EExpressionTooComplex.Create(msgTooComplex);
                 end;
 
                 with Next2Term^ do
@@ -2932,11 +3015,22 @@ begin
                     dispose(Next2Term);
                     Next2Term := nil;
                   end;
+
+                  raise;
                 end;
               end;
             end
             else
-              raise EParserInternalError.Create(msgInternalError);
+            begin
+              if bSilent then
+              begin
+                Error := True;
+                ErrorMessage := msgInternalError;
+                Exit;
+              end
+              else
+                raise EParserInternalError.Create(msgInternalError);
+            end;
           end;
         end;
 
@@ -3056,6 +3150,8 @@ begin
 
     dispose(Matrix);
 
+    Exit;
+
   except
 
     on E: Exception do
@@ -3098,6 +3194,39 @@ begin
       raise; { re-raise exception }
 
     end; { on E:Exception do }
+  end;
+
+  finally
+    if bSilent and Error then
+    begin
+      if Assigned(Matrix) then
+      begin
+        if assigned(Matrix^[0,1]) then
+          dispose(Matrix^[0,1]);
+
+        for counter1 := CurBracketLevels downto 1 do
+          for counter2 := 1 to BracketLevel[counter1] do
+            if Assigned(Matrix^[counter1, counter2]) then
+
+              dispose(Matrix^[counter1, counter2]);
+
+        dispose(Matrix);
+      end;
+
+      if Assigned(Next1Term) then
+        dispose(Next1Term);
+
+      if Assigned(Next2Term) then
+        dispose(Next2Term);
+
+      if Assigned(ANewTerm) then
+        dispose(ANewTerm);
+
+      if Assigned(LastTerm) and (LastTerm <> Next2Term) and (LastTerm <> Next1Term) then
+        dispose(LastTerm);
+
+      FirstOP := nil;
+    end;
   end;
 end;
 
