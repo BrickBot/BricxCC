@@ -199,6 +199,7 @@ type
 
   TArrayHelperVars = class(TCollection)
   private
+    fNBCSrc: TStrings;
     function GetItem(Index: Integer): TArrayHelperVar;
     procedure SetItem(Index: Integer; const Value: TArrayHelperVar);
   public
@@ -209,6 +210,7 @@ type
     function  GetHelper(const tname, udType : string; const dt : char) : TArrayHelperVar;
     procedure ReleaseHelper(aHelper : TArrayHelperVar);
     property  Items[Index: Integer]: TArrayHelperVar read GetItem write SetItem; default;
+    property  NBCSource : TStrings read fNBCSrc write fNBCSrc;
   end;
 
 const
@@ -2266,6 +2268,8 @@ begin
     Result.fIndex          := newIdx;
   end;
   Result.fLocked := True;
+  if Assigned(NBCSource) then
+    NBCSource.Add('#pragma acquire(' + Result.Name + ')');
 end;
 
 function TArrayHelperVars.GetItem(Index: Integer): TArrayHelperVar;
@@ -2296,6 +2300,8 @@ end;
 procedure TArrayHelperVars.ReleaseHelper(aHelper: TArrayHelperVar);
 begin
   aHelper.fLocked := False;
+  if Assigned(NBCSource) then
+    NBCSource.Add('#pragma release(' + aHelper.Name + ')');
 end;
 
 procedure TArrayHelperVars.SetItem(Index: Integer; const Value: TArrayHelperVar);
