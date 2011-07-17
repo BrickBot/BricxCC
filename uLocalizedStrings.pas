@@ -490,6 +490,7 @@ resourcestring
   sNBCOptMutexes       = 'Optimize mutexes';
   sNBCCompactCode      = 'Compact the codespace';
   sNBCRemoveLabels     = 'Remove unused labels';
+  sNBCRemovePragmas    = 'Remove unused pragmas';
   sNBCRunCodeOpts      = 'Run codespace optimizations';
   sNBCCompactAfterOpt  = 'Compact the codespace after optimizations';
   sNBCCompactData      = 'Compact the dataspace';
@@ -509,6 +510,7 @@ resourcestring
   sNBCCompilingSource  = 'Compiling NBC source code';
   sNBCOptClump         = 'Optimizing clump: %s';
   sNBCCompBegin        = 'NBC compilation begins';
+  sUnmatchedCompDir    = 'Unmatched compiler directive (compif/compelse/compend)';
 
 // uNXCComp unit
 resourcestring
