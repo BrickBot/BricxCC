@@ -435,12 +435,15 @@ type
     procedure FinalizeClump;
     procedure HandleNameToDSID(const aname : string; var aId : integer);
     procedure RemoveReferences;
+    procedure FixupPragmas(line1, line2 : TAsmLine; const arg : string);
+    procedure RemoveLineIfPossible(line : TAsmLine; const arg : string);
   public
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Optimize(const level : Integer);
     procedure OptimizeMutexes;
     procedure RemoveUnusedLabels;
+    procedure RemoveUnusedPragmas;
     procedure AddClumpDependencies(const opcode, args : string);
     procedure AddDependant(const clumpName : string);
     procedure AddAncestor(const clumpName : string);
@@ -501,6 +504,7 @@ type
     procedure HandleNameToDSID(const aName : string; var aId : integer);
     function  GetNXTInstruction(const idx : integer) : NXTInstruction;
     procedure RemoveUnusedLabels;
+    procedure RemoveUnusedPragmas;
   public
     constructor Create(rp : TRXEProgram; ds : TDataspace);
     destructor Destroy; override;
@@ -558,6 +562,8 @@ type
     fFirmwareVersion: word;
     fOnCompilerStatusChange: TCompilerStatusChangeEvent;
     fMaxPreProcDepth: word;
+    fLevel : integer;
+    fLevelIgnore : TObjectList;
     procedure SetCaseSensitive(const Value: boolean);
     procedure SetStandardDefines(const Value: boolean);
     procedure SetExtraDefines(const Value: boolean);
@@ -582,6 +588,10 @@ type
       namedTypes: TMapList; op: string; bUseCase: boolean): TAsmLineType;
     function StrToOpcode(const op: string; bUseCase: boolean = False): TOpCode;
     function OpcodeToStr(const op: TOpCode): string;
+    function GetLevelIgnoreValue: boolean;
+    function IgnoringAtLowerLevel: boolean;
+    procedure SwitchLevelIgnoreValue;
+    function DoCompilerEvaluateArgs(AL: TAsmLine; var errMsg : string): boolean;
   protected
     fDSData : TDSData;
     fClumpData : TClumpData;
@@ -641,7 +651,8 @@ type
     procedure HandlePseudoOpcodes(AL : TAsmLine; op : TOpCode{; const args : string});
     procedure UpdateHeader;
     procedure CheckArgs(AL : TAsmLine);
-    procedure DoCompilerCheck(AL : TAsmLine; bIfCheck : boolean);
+    procedure DoCompilerCheck(AL : TAsmLine);
+    procedure DoCompilerIf(AL : TAsmLine);
     procedure DoCompilerCheckType(AL : TAsmLine);
     procedure ValidateLabels(aClump : TClump);
     procedure HandleNameToDSID(const aName : string; var aId : integer);
@@ -1149,6 +1160,23 @@ const
   SubroutineReturnAddressType = dsUByte;
 
 type
+  TPreprocLevel = class
+  public
+    Taken : boolean;
+    Ignore : boolean;
+    constructor Create; virtual;
+  end;
+
+  TIgnoreLevel = class(TPreprocLevel)
+  public
+    constructor Create; override;
+  end;
+
+  TProcessLevel = class(TPreprocLevel)
+  public
+    constructor Create; override;
+  end;
+
   TCardinalObject = class
   protected
     fValue : Cardinal;
@@ -2799,7 +2827,7 @@ begin
   fDSIndexMap.CaseSensitive := True;
   fDSIndexMap.Sorted := True;
   // an unsorted list of all dataspace entries regardless of their nesting level
-  fDSList := TObjectList.Create;
+  fDSList := TObjectList.Create(False);
 end;
 
 destructor TDataspace.Destroy;
@@ -4262,6 +4290,10 @@ begin
     // possibly optimize if Optimize level > 0
     if OptimizeLevel >= 1 then
     begin
+      // we want to have as optimal access to variables as possible
+      // so we will generate a full index up front
+      Dataspace.DataspaceIndex('xyzzy');
+      // now proceed with optimizations
       DoCompilerStatusChange(Format(sNBCOptimizeLevel, [OptimizeLevel]));
       DoCompilerStatusChange(sNBCBuildRefs);
       // build references if we are optimizing
@@ -4287,6 +4319,9 @@ begin
         // after optimizations we should re-compact the codespace
         Codespace.Compact;
       end;
+      // also get rid of extra pragmas
+      DoCompilerStatusChange(sNBCRemovePragmas);
+      Codespace.RemoveUnusedPragmas;
       // after optimizing and compacting the codespace we remove
       // unused variables from the dataspace
       DoCompilerStatusChange(sNBCCompactData);
@@ -4295,9 +4330,12 @@ begin
     else
     begin
       // level zero (no optimizations)
+      // get rid of extra labels
       DoCompilerStatusChange(sNBCRemoveLabels);
-      // also get rid of extra labels
       Codespace.RemoveUnusedLabels;
+      // also get rid of extra pragmas
+      DoCompilerStatusChange(sNBCRemovePragmas);
+      Codespace.RemoveUnusedPragmas;
       // after optimizing and compacting the codespace we remove
       // unused variables from the dataspace
       DoCompilerStatusChange(sNBCCompactData);
@@ -4499,6 +4537,11 @@ begin
     end;
 //    aStrings.SaveToFile('preproc.txt');
     DoCompilerStatusChange(sNBCCompilingSource);
+
+    fLevelIgnore.Clear;
+    fLevelIgnore.Add(TProcessLevel.Create); // level zero is NOT ignored
+    fLevel := 0; // starting level is zero
+
     i := 0;
     while i < aStrings.Count do
     begin
@@ -4509,6 +4552,9 @@ begin
       if fSkipCount > 0 then
         Dec(fSkipCount);
     end;
+    if fLevel <> 0 then
+      raise Exception.Create(sUnmatchedCompDir);
+
     DoCompilerStatusChange(sNBCCompFinished);
     CheckMainThread;
     if not fBadProgram then
@@ -6147,6 +6193,8 @@ begin
   fVarI := 0;
   fVarJ := 0;
   fOptimizeLevel := 0;
+
+  fLevelIgnore := TObjectList.Create;
 end;
 
 procedure TRXEProgram.FreeObjects;
@@ -6169,6 +6217,7 @@ begin
   FreeAndNil(fDefines);
   FreeAndNil(fSpawnedThreads);
   FreeAndNil(fSpecialFunctions);
+  FreeAndNil(fLevelIgnore);
 end;
 
 procedure TRXEProgram.Clear;
@@ -6356,6 +6405,50 @@ begin
   DE.IncRefCount;
 end;
 
+function TRXEProgram.IgnoringAtLowerLevel : boolean;
+var
+  PL : TPreprocLevel;
+  i : integer;
+begin
+  Result := False;
+  if (fLevel < 0) or (fLevel >= fLevelIgnore.Count) then
+    raise Exception.Create('Invalid operation');
+  for i := fLevel-1 downto 0 do
+  begin
+    PL := TPreprocLevel(fLevelIgnore[i]);
+    if PL.Ignore then
+    begin
+      Result := True;
+      Break;
+    end;
+  end;
+end;
+
+function TRXEProgram.GetLevelIgnoreValue : boolean;
+var
+  PL : TPreprocLevel;
+begin
+  if (fLevel < 0) or (fLevel >= fLevelIgnore.Count) then
+    raise Exception.Create('Invalid operation');
+  PL := TPreprocLevel(fLevelIgnore[fLevel]);
+  Result := PL.Ignore;
+end;
+
+procedure TRXEProgram.SwitchLevelIgnoreValue;
+var
+  PL : TPreprocLevel;
+begin
+  if (fLevel < 0) or (fLevel >= fLevelIgnore.Count) then
+    raise Exception.Create('Invalid operation');
+  PL := TPreprocLevel(fLevelIgnore[fLevel]);
+  if PL.Taken then
+    PL.Ignore := True
+  else
+    PL.Ignore := not PL.Ignore;
+  if not PL.Ignore then
+    PL.Taken := True;
+end;
+
 procedure TRXEProgram.HandlePseudoOpcodes(AL: TAsmLine; op: TOpCode{; const args: string});
 var
   Arg : TAsmArgument;
@@ -6424,7 +6517,7 @@ begin
     end;
     OPS_COMPCHK : begin
       AL.Command := OPS_INVALID; // make this line a no-op
-      DoCompilerCheck(AL, False);
+      DoCompilerCheck(AL);
     end;
     OPS_COMPCHKTYPE : begin
       AL.Command := OPS_INVALID; // make this line a no-op
@@ -6432,15 +6525,25 @@ begin
     end;
     OPS_COMPIF : begin
       AL.Command := OPS_INVALID; // make this line a no-op
-      DoCompilerCheck(AL, True);
+      DoCompilerIf(AL);
     end;
     OPS_COMPELSE : begin
       AL.Command := OPS_INVALID; // make this line a no-op
-      fIgnoreLines := not fIgnoreLines;
+      // if we are already ignoring code because of a containing
+      // compif then we just ignore the compelse
+      if not IgnoringAtLowerLevel then
+      begin
+        // switch mode at current level (must be > 0)
+        SwitchLevelIgnoreValue;
+        fIgnoreLines := GetLevelIgnoreValue;
+      end;
     end;
     OPS_COMPEND : begin
       AL.Command := OPS_INVALID; // make this line a no-op
-      fIgnoreLines := False;
+      // decrement level
+      fLevelIgnore.Delete(fLevel);
+      dec(fLevel);
+      fIgnoreLines := GetLevelIgnoreValue;
     end;
     OPS_STRLEN : begin
       if AL.Args.Count = 2 then
@@ -6880,47 +6983,65 @@ begin
   DE.Identifier := Format('__%s_shift_tmp', [basename]);
 end;
 
-procedure TRXEProgram.DoCompilerCheck(AL: TAsmLine; bIfCheck : boolean);
+function TRXEProgram.DoCompilerEvaluateArgs(AL: TAsmLine; var errMsg : string) : boolean;
 var
   i1, i2, i3 : integer;
-  bCheckOkay : boolean;
+begin
+  Result := False;
+  errMsg := '';
+  i2 := StrToIntDef(AL.Args[0].Value, OPCC1_EQ);
+  i1 := StrToIntDef(AL.Args[1].Value, 0);
+  i3 := StrToIntDef(AL.Args[2].Value, 0);
+  case i2 of
+    OPCC1_LT   : Result := i1 < i3;
+    OPCC1_GT   : Result := i1 > i3;
+    OPCC1_LTEQ : Result := i1 <= i3;
+    OPCC1_GTEQ : Result := i1 >= i3;
+    OPCC1_EQ   : Result := i1 = i3;
+    OPCC1_NEQ  : Result := i1 <> i3;
+  end;
+  if not Result then
+    errMsg := Format(sCompCheckFailed, [i1, CCToStr(i2), i3]);
+end;
+
+procedure TRXEProgram.DoCompilerCheck(AL: TAsmLine);
+var
   errMsg : string;
 begin
   if fIgnoreLines then Exit;
-  bCheckOkay := False;
   if AL.Args.Count >= 3 then
   begin
-    i2 := StrToIntDef(AL.Args[0].Value, OPCC1_EQ);
-    i1 := StrToIntDef(AL.Args[1].Value, 0);
-    i3 := StrToIntDef(AL.Args[2].Value, 0);
-    case i2 of
-      OPCC1_LT   : bCheckOkay := i1 < i3;
-      OPCC1_GT   : bCheckOkay := i1 > i3;
-      OPCC1_LTEQ : bCheckOkay := i1 <= i3;
-      OPCC1_GTEQ : bCheckOkay := i1 >= i3;
-      OPCC1_EQ   : bCheckOkay := i1 = i3;
-      OPCC1_NEQ  : bCheckOkay := i1 <> i3;
-    end;
-    if not bCheckOkay then
+    if not DoCompilerEvaluateArgs(AL, errMsg) then
     begin
-      if bIfCheck then
-        fIgnoreLines := True
-      else
-      begin
-        if AL.Args.Count > 3 then
-          errMsg := AL.Args[3].Value
-        else
-          errMsg := Format(sCompCheckFailed, [i1, CCToStr(i2), i3]);
-        ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, errMsg, true);
-      end;
-    end
-    else
-      if bIfCheck then
-        fIgnoreLines := False;
+      if AL.Args.Count > 3 then
+        errMsg := AL.Args[3].Value;
+      ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString, errMsg, true);
+    end;
   end
   else
     ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
       sInvalidCompCheck, true);
+end;
+
+procedure TRXEProgram.DoCompilerIf(AL: TAsmLine);
+var
+  errMsg : string;
+begin
+  if fIgnoreLines then
+  begin
+    // if we are already ignoring code because of a containing
+    // ifdef/ifndef then always ignore anything below this level
+    fLevelIgnore.Add(TIgnoreLevel.Create);
+  end
+  else
+  begin
+    if DoCompilerEvaluateArgs(AL, errMsg) then
+      fLevelIgnore.Add(TProcessLevel.Create)
+    else
+      fLevelIgnore.Add(TIgnoreLevel.Create);
+  end;
+  inc(fLevel);
+  fIgnoreLines := GetLevelIgnoreValue;
 end;
 
 procedure TRXEProgram.DefineVar(aVarName: string; dt :TDSType);
@@ -7702,7 +7823,7 @@ begin
   op := Command;
   if (op in [OP_ADD..OP_ROTR]) or
      (op in [OP_GETIN, OP_GETOUT, OP_GETTICK]) or
-     (op in [OP_INDEX..OP_BYTEARRTOSTR]) or
+     (op in [OP_INDEX..OP_ARRSIZE, OP_ARRSUBSET..OP_STRINGTONUM, OP_STRSUBSET..OP_BYTEARRTOSTR]) or
      ((FirmwareVersion > MAX_FW_VER1X) and
       (op in [OP_SQRT_2, OP_ABS_2, OPS_SIGN_2, OPS_FMTNUM_2, OPS_ACOS_2..OPS_ADDROF])) or
      ((FirmwareVersion <= MAX_FW_VER1X) and
@@ -8187,6 +8308,15 @@ begin
   end;
 end;
 
+procedure TCodeSpace.RemoveUnusedPragmas;
+var
+  i : integer;
+begin
+  // now remove any #pragma acquire or #pragma release lines
+  for i := 0 to Count - 1 do
+    Items[i].RemoveUnusedPragmas;
+end;
+
 { TClump }
 
 procedure TClump.AddClumpDependencies(const opcode, args: string);
@@ -8449,15 +8579,23 @@ begin
   inc(fRefCount);
 end;
 
-function IsStackOrReg(const str : string) : boolean;
+function IsStack(const str : string) : boolean;
+begin
+  Result := (Pos('__signed_stack_', str) = 1) or
+            (Pos('__unsigned_stack_', str) = 1) or
+            (Pos('__float_stack_', str) = 1);
+end;
+
+function IsReg(const str : string) : boolean;
 begin
   Result := (Pos('__D0', str) = 1) or
-            (Pos('__signed_stack_', str) = 1) or
-            (Pos('__unsigned_stack_', str) = 1) or
-            (Pos('__float_stack_', str) = 1) or
-            (Pos('__ArrHelper__', str) = 1) or
             (Pos('__DU0', str) = 1) or
             (Pos('__DF0', str) = 1);
+end;
+
+function IsArrayHelper(const str : string) : boolean;
+begin
+  Result := (Pos('__ArrHelper__', str) = 1);
 end;
 
 procedure TClump.RemoveOrNOPLine(AL, ALNext : TAsmLine; const idx : integer);
@@ -8566,39 +8704,53 @@ begin
   end;
 end;
 
-function GetArgValue(EP : TNBCExpParser; arg1 : string; var val : Double) : boolean;
+function GetArgValuePart1(arg1 : string; var val : Double) : boolean;
 var
   bIsNeg : boolean;
   bIsFloat : boolean;
 begin
-  if Pos('__constVal', arg1) = 1 then
+  Result := True;
+  // remove __constVal or __constValNeg
+  bIsNeg := Pos('__constValNeg', arg1) = 1;
+  if bIsNeg then
+    System.Delete(arg1, 1, 13)
+  else
+    System.Delete(arg1, 1, 10);
+  bIsFloat := (Pos('f', arg1) > 0) or (Pos('P', arg1) > 0);
+  if bIsFloat then
   begin
-    Result := True;
-    // remove __constVal or __constValNeg
-    bIsNeg := Pos('__constValNeg', arg1) = 1;
-    if bIsNeg then
-      System.Delete(arg1, 1, 13)
-    else
-      System.Delete(arg1, 1, 10);
-    bIsFloat := (Pos('f', arg1) > 0) or (Pos('P', arg1) > 0);
-    if bIsFloat then
-    begin
-      arg1 := Replace(Replace(arg1, 'f', ''), 'P', '.');
-      val := NBCStrToFloatDef(arg1, 0);
-    end
-    else
-      val := StrToIntDef(arg1, 0);
-    if bIsNeg then
-      val := val * -1;
+    arg1 := Replace(Replace(arg1, 'f', ''), 'P', '.');
+    val := NBCStrToFloatDef(arg1, 0);
+  end
+  else
+    val := StrToIntDef(arg1, 0);
+  if bIsNeg then
+    val := val * -1;
+end;
+
+function GetArgValuePart2(EP : TNBCExpParser; arg1 : string; var val : Double) : boolean;
+begin
+  EP.SilentExpression := arg1;
+  Result := not EP.ParserError;
+  if Result then
+    val := EP.Value
+  else
+    val := 0;
+end;
+
+function GetArgValue(EP : TNBCExpParser; arg1 : string; var val : Double) : boolean;
+begin
+  if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
+  begin
+    Result := False;
+  end
+  else if Pos('__constVal', arg1) = 1 then
+  begin
+    Result := GetArgValuePart1(arg1, val);
   end
   else
   begin
-    EP.SilentExpression := arg1;
-    Result := not EP.ParserError;
-    if Result then
-      val := EP.Value
-    else
-      val := 0;
+    Result := GetArgValuePart2(EP, arg1, val);
   end;
 end;
 
@@ -8618,6 +8770,37 @@ function TClump.IsMovOptimizationSafe(bEnhanced : boolean; op : TOpcode; aValue 
 var
   DE : TDataspaceEntry;
 begin
+(*
+  bCanOptimize := True;
+  if not bEnhanced then
+  begin
+    if AL.Command in [OP_GETTICK, OP_NOT, OP_ARRSIZE, OP_GETOUT, OP_CMP, OP_WAIT] then
+    begin
+      DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);
+      if Assigned(DE) then
+        bCanOptimize := (DE.DataType <> dsFloat)
+      else
+        bCanOptimize := False;
+    end
+    else if AL.Command = OP_STRINGTONUM then
+    begin
+      DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[1].Value);
+      if Assigned(DE) then
+        bCanOptimize := (DE.DataType <> dsFloat)
+      else
+        bCanOptimize := False;
+    end;
+  end
+  else if AL.Command = OP_SET then
+  begin
+    // need to also check the type of the next line's output arg
+    DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);
+    if Assigned(DE) then
+      bCanOptimize := DE.DataType <> dsFloat
+    else
+      bCanOptimize := False;
+  end;
+*)
   Result := True;
   if (op = OP_SET) or ((not bEnhanced) and (op in
         [OP_GETTICK, OP_NOT, OP_ARRSIZE, OP_GETOUT, OP_GETIN, OP_UNFLATTEN,
@@ -8638,7 +8821,7 @@ var
   iVal, Arg1Val, Arg2Val : Double;
   AL, ALNext, tmpAL : TAsmLine;
   arg1, arg2, arg3, tmp : string;
-  bEnhanced, bDone, bArg1Numeric, bArg2Numeric{, bCanOptimize} : boolean;
+  bEnhanced, bDone, bArg1Numeric, bArg2Numeric : boolean;
   DE : TDataspaceEntry;
   firmVer : Word;
   argDir : TAsmArgDir;
@@ -8674,6 +8857,8 @@ begin
     bDone := True; // assume we are done
     for i := 0 to ClumpCode.Count - 1 do begin
       AL := ClumpCode.Items[i];
+      if AL.Command = OPS_INVALID then
+        Continue;
 
       // the first set of optimizations are for any optimizable opcode
       // followed by a mov opcode
@@ -8686,15 +8871,27 @@ begin
       //   nop
       if AL.Optimizable then
       begin
+
         // first check reference count of output variable
         if not CheckReferenceCount then
         begin
           bDone := False;
           Break;
         end;
+
         arg1 := AL.Args[0].Value;
-        if IsStackOrReg(arg1) then
+        if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
         begin
+          // mov arg1, arg1
+          // nop
+          if (AL.Command = OP_MOV) and (arg1 = AL.Args[1].Value) then
+          begin
+            AL.RemoveVariableReferences;
+            RemoveOrNOPLine(AL, nil, i);
+            bDone := False;
+            Break;
+          end;
+
           // the output argument of this opcode is a temporary variable (stack/reg/array helper)
           // so maybe we can do an optimization
           // find the next line (which may not be i+1) that is not (NOP or labeled)
@@ -8718,44 +8915,22 @@ begin
                (ALNext.Command = OP_MOV) and
                (ALNext.Args[1].Value = arg1) then
             begin
-(*
-              bCanOptimize := True;
-              if not bEnhanced then
-              begin
-                if AL.Command in [OP_GETTICK, OP_NOT, OP_ARRSIZE, OP_GETOUT, OP_CMP, OP_WAIT] then
-                begin
-                  DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);
-                  if Assigned(DE) then
-                    bCanOptimize := (DE.DataType <> dsFloat)
-                  else
-                    bCanOptimize := False;
-                end
-                else if AL.Command = OP_STRINGTONUM then
-                begin
-                  DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[1].Value);
-                  if Assigned(DE) then
-                    bCanOptimize := (DE.DataType <> dsFloat)
-                  else
-                    bCanOptimize := False;
-                end;
-              end
-              else if AL.Command = OP_SET then
-              begin
-                // need to also check the type of the next line's output arg
-                DE := CodeSpace.Dataspace.FindEntryByFullName(ALNext.Args[0].Value);
-                if Assigned(DE) then
-                  bCanOptimize := DE.DataType <> dsFloat
-                else
-                  bCanOptimize := False;
-              end;
-*)
+              // op reg/stack/ah, rest
+              // mov anything, reg/stack/ah
+              // op anything, rest
+              // nop
               if IsMovOptimizationSafe(bEnhanced, AL.Command, ALNext.Args[0].Value) then
               begin
                 AL.RemoveVariableReference(arg1, 0);
-                AL.Args[0].Value := ALNext.Args[0].Value; // switch output arg (no ref count changes)
+                tmp := ALNext.Args[0].Value;
+                AL.Args[0].Value := tmp; // switch output arg (no ref count changes)
                 ALNext.RemoveVariableReference(arg1, 1);
                 ALNext.Command := OPS_INVALID; // no-op next line
                 ALNext.Args.Clear;
+                // if the variable we moved from ALNext to AL was a stack or array helper
+                // then we have a little extra work to do
+                if IsStack(tmp) or IsArrayHelper(tmp) then
+                  FixupPragmas(AL, ALNext, tmp);
                 bDone := False;
                 Break;
               end;
@@ -8810,6 +8985,11 @@ begin
                   // if the next line with no labels in between uses this
                   // same temporary as an output variable then the first line
                   // can be replaced with a no-op
+                  //
+                  // op reg/stack/ah, rest
+                  // op reg/stack/ah, rest
+                  // nop
+                  // op reg/stack/ah, rest
                   AL.RemoveVariableReferences;
                   RemoveOrNOPLine(AL, nil, i);
                   bDone := False;
@@ -8822,19 +9002,33 @@ begin
                     // if the next line with no labels in between uses this same
                     // temporary as an input variable and it is a mov then
                     // we may be able to optimize out the mov.
+                    //
+                    // op reg/stack/ah, rest
+                    // mov anything, reg/stack/ah
+                    // op anything, rest
+                    // nop
                     if IsMovOptimizationSafe(bEnhanced, AL.Command, ALNext.Args[0].Value) then
                     begin
                       AL.RemoveVariableReference(arg1, 0);
-                      AL.Args[0].Value := ALNext.Args[0].Value; // switch output arg (no ref count changes)
+                      tmp := ALNext.Args[0].Value;
+                      AL.Args[0].Value := tmp; // switch output arg (no ref count changes)
                       ALNext.RemoveVariableReference(arg1, 1);
                       ALNext.Command := OPS_INVALID; // no-op next line
                       ALNext.Args.Clear;
+                      // if the variable we moved from ALNext to AL was a stack or array helper
+                      // then we have a little extra work to do
+                      if IsStack(tmp) or IsArrayHelper(tmp) then
+                        FixupPragmas(AL, ALNext, tmp);
                       bDone := False;
                       Break;
                     end;
                   end
-                  else if AL.Command in [OP_MOV, OP_SET] then
+                  else if (AL.Command in [OP_MOV, OP_SET]) and ALNext.Optimizable then
                   begin
+                    // mov reg/stack/ah, input
+                    // op anything, reg/stack/ah
+                    // mov reg/stack/ah, input - we might be able to remove/nop this line
+                    // op anything, input
                     if AL.Command = OP_SET then
                       tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
                     else
@@ -8844,16 +9038,22 @@ begin
                     end;
                     // if the output of mov is input of any opcode then it is safe
                     // to set the ALNext's input to AL's input
-                    // we can't remove the mov or the set in case the temporary
-                    // is reused as an input in subsequent lines
                     ALNext.RemoveVariableReference(arg1, tmpIdx);
                     ALNext.Args[tmpIdx].Value := tmp; // switch input arg (no ref count changes)
+                    // We can't remove the mov or the set in case the temporary
+                    // is reused as an input in subsequent lines.
+                    // This restriction can be removed if we can tell that this
+                    // particular temporary is never used as an input from the
+                    // time it is acquired to the time it is released.
+                    if IsStack(arg1) or IsArrayHelper(arg1) then
+                      RemoveLineIfPossible(AL, arg1);
                     bDone := False;
                     Break;
                   end;
                 end;
               end;
             end;
+
           end;
 
         end;
@@ -8868,12 +9068,14 @@ begin
       case AL.Command of
         OP_SET, OP_MOV : begin
           // this is a set or mov line
+{
           // first check reference count of output variable
           if not CheckReferenceCount then
           begin
             bDone := False;
             Break;
           end;
+}
           if AL.Args[0].Value = AL.Args[1].Value then
           begin
             // set|mov X, X <-- replace with nop or delete
@@ -8949,7 +9151,7 @@ begin
                       ALNext.Args[1].Value := AL.Args[1].Value;
 }
                       ALNext.RemoveVariableReference(arg2, 1);
-                      if IsStackOrReg(arg1) then
+                      if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
                       begin
                         // remove second reference to _D0
                         AL.RemoveVariableReferences;
@@ -8980,7 +9182,7 @@ begin
                         ALNext.Command := OP_WAIT;
                     end;
                     CodeSpace.Dataspace.FindEntryAndAddReference(ALNext.Args[0].Value);
-                    if IsStackOrReg(arg1) then
+                    if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
                     begin
                       // remove second reference to _D0
                       AL.RemoveVariableReferences;
@@ -9017,7 +9219,7 @@ begin
                       ALNext.Args[1].Value := tmp;
                       ALNext.RemoveVariableReference(arg3, 1);
                     end;
-                    if IsStackOrReg(arg1) then
+                    if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
                     begin
                       // remove second reference to _D0
                       AL.RemoveVariableReferences;
@@ -9045,7 +9247,7 @@ begin
                     end;
                     ALNext.Args[1].Value := tmp;
                     ALNext.RemoveVariableReference(arg2, 1);
-                    if IsStackOrReg(arg1) then
+                    if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
                     begin
                       // remove second reference to _D0
                       AL.RemoveVariableReference(arg1, 0);
@@ -9062,12 +9264,14 @@ begin
           end;
         end;
         OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD, OP_AND, OP_OR, OP_XOR, OP_ASL, OP_ASR : begin
+{
           // first check reference count of output variable
           if not CheckReferenceCount then
           begin
             bDone := False;
             Break;
           end;
+}
           if level >= 4 then
           begin
             // process argument 1
@@ -9114,12 +9318,14 @@ begin
           end;
         end;
         OP_NEG, OP_NOT : begin
+{
           // first check reference count of output variable
           if not CheckReferenceCount then
           begin
             bDone := False;
             Break;
           end;
+}
           if level >= 4 then
           begin
             // process argument 1
@@ -9270,6 +9476,116 @@ begin
     end;
   finally
     SL.Free;
+  end;
+end;
+
+procedure TClump.RemoveUnusedPragmas;
+var
+  i : integer;
+  tmp : string;
+begin
+  // now strip out all the #pragma acquire and #pragma release lines
+  for i := ClumpCode.Count - 1 downto 0 do
+  begin
+    tmp := ClumpCode.Items[i].AsString;
+    if (Pos('#pragma acquire(', tmp) <> 0) or (Pos('#pragma release(', tmp) <> 0) then
+    begin
+      ClumpCode.Delete(i);
+    end;
+  end;
+end;
+
+procedure TClump.FixupPragmas(line1, line2: TAsmLine; const arg : string);
+var
+  tmpAL : TAsmLine;
+  tmp : string;
+begin
+  // find the #pragma acquire for this variable prior to ALNext
+  tmpAL := line2;
+  while tmpAL.Index > line1.Index do begin
+    if (tmpAL.Command = OPS_INVALID) then
+    begin
+      tmp := tmpAL.AsString;
+      if (Pos('#pragma', tmp) > 0) and (Pos(arg, tmp) > 0) then
+      begin
+        // move this line before line1
+        tmpAL.Index := line1.Index - 1;
+      end;
+    end;
+    if tmpAL.Index > 0 then
+      tmpAL := ClumpCode.Items[tmpAL.Index - 1]
+    else
+      break;
+  end;
+end;
+
+procedure TClump.RemoveLineIfPossible(line: TAsmLine; const arg: string);
+var
+  tmpAL : TAsmLine;
+  acqIdx, relIdx, i, j : integer;
+  tmp : string;
+  firmVer : Word;
+  bCanDeleteLine : boolean;
+begin
+  firmVer := CodeSpace.RXEProgram.FirmwareVersion;
+  acqIdx := -1;
+  relIdx := -1;
+  // search backward to find where this variable is acquired
+  tmpAL := line;
+  while tmpAL.Index > 0 do
+  begin
+    if tmpAL.Command = OPS_INVALID then
+    begin
+      tmp := Trim(tmpAL.AsString);
+      if tmp = '#pragma acquire('+arg+')' then
+      begin
+        acqIdx := tmpAL.Index;
+        break;
+      end;
+    end;
+    tmpAL := ClumpCode.Items[tmpAL.Index - 1];
+  end;
+  // now search forward to find where this variable is released
+  tmpAL := line;
+  while tmpAL.Index < ClumpCode.Count - 1 do
+  begin
+    if tmpAL.Command = OPS_INVALID then
+    begin
+      tmp := Trim(tmpAL.AsString);
+      if tmp = '#pragma release('+arg+')' then
+      begin
+        relIdx := tmpAL.Index;
+        break;
+      end;
+    end;
+    tmpAL := ClumpCode.Items[tmpAL.Index + 1];
+  end;
+  if (acqIdx <> -1) and (relIdx <> -1) and (relIdx > acqIdx) then
+  begin
+    bCanDeleteLine := True;
+    // search within this acquire/release pair for a line other than the current
+    // line that uses this variable as an input argument
+    for i := acqIdx + 1 to relIdx - 1 do
+    begin
+      tmpAL := ClumpCode.Items[i];
+      if tmpAL = line then
+        Continue;
+      // prefer to find input parameters over finding output parameters
+      // so we start at the last arg and work toward the first
+      for j := tmpAL.Args.Count - 1 downto 0 do
+      begin
+        if (arg = tmpAL.Args[j].Value) and
+           (ArgDirection(firmVer, tmpAL.Command, j) = aadInput) then
+        begin
+          bCanDeleteLine := False;
+          Break;
+        end;
+      end;
+      if not bCanDeleteLine then
+        break;
+    end;
+    if bCanDeleteLine then
+      RemoveOrNOPLine(line, nil, line.Index);
   end;
 end;
 
@@ -9547,6 +9863,31 @@ end;
 constructor EDuplicateDataspaceEntry.Create(DE : TDataspaceEntry);
 begin
   inherited Create(Format(sDuplicateDSEntry, [DE.FullPathIdentifier]));
+end;
+
+{ TPreprocLevel }
+
+constructor TPreprocLevel.Create;
+begin
+  Taken := False;
+  Ignore := False;
+end;
+
+{ TProcessLevel }
+
+constructor TProcessLevel.Create;
+begin
+  inherited;
+  Ignore := False;
+  Taken  := True;
+end;
+
+{ TIgnoreLevel }
+
+constructor TIgnoreLevel.Create;
+begin
+  inherited;
+  Ignore := True;
 end;
 
 end.
