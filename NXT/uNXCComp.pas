@@ -748,6 +748,7 @@ end;
 procedure TNXCComp.pop;
 begin
   dec(fStackDepth);
+  EmitLnNoTab('#pragma release(' + fStackVarNames[fStackVarNames.Count - 1] + ')');
   fStackVarNames.Delete(fStackVarNames.Count - 1);
 end;
 
@@ -764,6 +765,7 @@ begin
   else
     tosName := Format('__signed_stack_%3.3d%s', [fStackDepth, fCurrentThreadName]);
   fStackVarNames.Add(tosName);
+  EmitLnNoTab('#pragma acquire(' + tosName + ')');
 end;
 
 procedure TNXCComp.GetCharX;
@@ -4660,9 +4662,8 @@ begin
   EmitLn(Format('mov %s, %s',[svar, RegisterName]));
   PostLabel(L1);
   StoreDec(svar);
-  EmitLn('brtst LT,' + L2 + ', ' + svar);
   Block(L2, L1);
-  Branch(L1);
+  EmitLn('brtst GT,' + L1 + ', ' + svar);
   PostLabel(L2);
   pop;
 end;
@@ -4852,7 +4853,12 @@ begin
   Result := line; // line is already trimmed
   if Length(Result) = 0 then Exit;
   Result := Replace(Result, '__RETURN__', Format(#13#10'mov %s,', [SignedRegisterName]));
-  Result := Replace(Result, '__RETURNS__', Format(#13#10'mov %s,', [SignedRegisterName]));
+  if Pos('__RETURNS__', Result) > 0 then
+  begin
+    Result := Replace(Result, '__RETURNS__', Format(#13#10'mov %s,', [SignedRegisterName]));
+    if StatementType <> stSigned then
+      StatementType := stSigned;
+  end;
   if Pos('__RETURNU__', Result) > 0 then
   begin
     Result := Replace(Result, '__RETURNU__', Format(#13#10'mov %s,', [UnsignedRegisterName]));
@@ -4971,8 +4977,13 @@ begin
         else if Pos('__URETVAL__', asmStr) > 0 then
           dt := TOK_ULONGDEF
         else if Pos('__RETVAL__', asmStr) > 0 then
-          dt := TOK_LONGDEF
-        else if Pos('__GENRETVAL__', asmStr) > 0 then
+        begin
+          // 2011-07-15 - this change fixes a bug found by muntoo 
+          //(http://sourceforge.net/apps/phpbb/mindboards/viewtopic.php?f=3&t=955)
+          dt := TOK_LONGDEF;
+          StatementType := stSigned; 
+        end
+        else if (Pos('__GENRETVAL__', asmStr) > 0) then
         begin
           // set the statment type so that RegisterName gets the right value
           if dt = TOK_FLOATDEF then
@@ -6363,10 +6374,11 @@ begin
   fFuncParams := TFunctionParameters.Create;
 //  fInlineFunctionStack := TObjectStack.Create;
   fInlineFunctions := TInlineFunctions.Create;
-  fArrayHelpers := TArrayHelperVars.Create;
   fTmpAsmLines := TStringList.Create;
   fStackVarNames := TStringList.Create;
   fNBCSrc := TStringList.Create;
+  fArrayHelpers := TArrayHelperVars.Create;
+  fArrayHelpers.NBCSource := fNBCSrc;
   fMS := TMemoryStream.Create;
   fMessages := TStringList.Create;
   fIncludeDirs := TStringList.Create;
