@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-07-09
- * \version 98
+ * \date 2011-07-15
+ * \version 99
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -4597,6 +4597,40 @@ inline void StartTask(task t);
  */
 inline void StopTask(task t);
 
+/** @defgroup cmpconst Comparison Constants
+ * Logical comparison operators for use in BranchTest and BranchComp.
+ * @{
+ */
+#define LT   0x00 /*!< The first value is less than the second. */
+#define GT   0x01 /*!< The first value is greater than the second. */
+#define LTEQ 0x02 /*!< The first value is less than or equal to the second. */
+#define GTEQ 0x03 /*!< The first value is greater than or equal to the second. */
+#define EQ   0x04 /*!< The first value is equal to the second. */
+#define NEQ  0x05 /*!< The first value is not equal to the second. */
+/** @} */  // end of cmpconst group
+
+/**
+ * Branch if test is true.
+ * Branch to the specified label if the variable compares to zero with a true
+ * result.
+ * \param cmp The constant comparison code. See the \ref cmpconst for valid values.
+ * \param lbl The name of the label where code should continue executing if
+ * the test is true.
+ * \param value The variable that you want to compare against zero.
+ */
+inline void BranchTest(const byte cmp, constant void lbl, variant value);
+
+/**
+ * Branch if compare is true.
+ * Branch to the specified label if the two variables compare with a true result.
+ * \param cmp The constant comparison code. See the \ref cmpconst for valid values.
+ * \param lbl The name of the label where code should continue executing if
+ * the comparison is true.
+ * \param v1 The first variable that you want to compare.
+ * \param v2 The second variable that you want to compare.
+ */
+inline void BranchComp(const byte cmp, constant void lbl, variant v1, variant v1);
+
 /** @defgroup ArrayFunctions Array API functions
  * Functions for use with NXC array types.
  * @{
@@ -4648,6 +4682,30 @@ inline void ArrayInit(variant & aout[], variant value, unsigned int count);
  * \param len The length of the array subset.
  */
 inline void ArraySubset(variant & aout[], variant asrc[], unsigned int idx, unsigned int len);
+
+/**
+ * Extract item from an array.
+ * Extract one element from an array.  The output type depends on the type of
+ * the source array.
+ * \param out The output value.
+ * \param asrc The input array from which to extract an item.
+ * \param idx The index of the item to extract.
+ */
+inline void ArrayIndex(variant & out, variant asrc[], unsigned int idx);
+
+/**
+ * Replace items in an array.
+ * Replace one or more items in the specified source array.  The items are
+ * replaced starting at the specified index.  If the value provided has the
+ * same number of dimensions as the source array then multiple items in the
+ * source are replaced.  If the value provided has one less dimension than
+ * the source array then one item will be replaced.  Other differences between
+ * the source array and the new value dimensionality are not supported.
+ * \param asrc The input array to be modified
+ * \param idx The index of the item to replace.
+ * \param value The new value or values to put into the source array.
+ */
+inline void ArrayReplace(variant & asrc[], unsigned int idx, variant value);
 
 #ifdef __ENHANCED_FIRMWARE
 
@@ -4797,15 +4855,21 @@ inline void ArrayOp(const byte op, variant & dest, const variant & src[], unsign
 #define StartTask(_t) start _t
 #define StopTask(_t) stop _t
 
+#define BranchTest(_cmp, _lbl, _v1) asm{ brtst _cmp, _lbl, _v1 }
+#define BranchComp(_cmp, _lbl, _v1, _v2) asm{ brcmp _cmp, _lbl, _v1, _v2 }
+
 #if __FIRMWARE_VERSION <= 107
 #define IOMA(_n) asm { mov __RETVAL__, _n }
 #define SetIOMA(_n, _val) asm { mov _n, _val }
 #endif
 
 #define ArrayBuild(_aout, ...) asm { arrbuild _aout, __VA_ARGS__ }
-#define ArrayLen(_asrc) asm { arrsize __RETVAL__, _asrc }
+#define ArrayLen(_asrc) asm { arrsize __GENRETVAL__, _asrc }
 #define ArrayInit(_aout, _val, _cnt) asm { arrinit _aout, _val, _cnt }
 #define ArraySubset(_aout, _asrc, _idx, _len) asm { arrsubset _aout, _asrc, _idx, _len }
+
+#define ArrayIndex(_out, _A, _i) asm { index _out, _A, _i }
+#define ArrayReplace(_A, _i, _new) asm { replace _A, _A, _i, _new }
 
 #ifdef __ENHANCED_FIRMWARE
 #define ArraySum(_src, _idx, _len) asm { arrop OPARR_SUM, __GENRETVAL__, _src, _idx, _len }
