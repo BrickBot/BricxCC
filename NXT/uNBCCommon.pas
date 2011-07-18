@@ -1199,6 +1199,7 @@ function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
 function ValueToDataType(const value : integer) : char;
 function DataTypeToTypeName(const dt : char) : string;
 function BoolToString(aValue : boolean) : string;
+function RootOf(const name: string): string;
 
 const
   TOK_SEMICOLON     = ';';
@@ -1317,6 +1318,17 @@ uses
   strutils,
   uCommonUtils;
 
+
+function RootOf(const name: string): string;
+var
+  p : integer;
+begin
+  p := Pos('.', name);
+  if p > 0 then
+    Result := Copy(name, 1, p-1)
+  else
+    Result := name;
+end;
 
 function IsAlpha(c: char): boolean;
 begin
