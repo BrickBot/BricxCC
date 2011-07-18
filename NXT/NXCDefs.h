@@ -4616,20 +4616,24 @@ inline void StopTask(task t);
  * \param cmp The constant comparison code. See the \ref cmpconst for valid values.
  * \param lbl The name of the label where code should continue executing if
  * the test is true.
- * \param value The variable that you want to compare against zero.
+ * \param value The value that you want to compare against zero.
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline void BranchTest(const byte cmp, constant void lbl, variant value);
 
 /**
  * Branch if compare is true.
- * Branch to the specified label if the two variables compare with a true result.
+ * Branch to the specified label if the two values compare with a true result.
  * \param cmp The constant comparison code. See the \ref cmpconst for valid values.
  * \param lbl The name of the label where code should continue executing if
  * the comparison is true.
- * \param v1 The first variable that you want to compare.
- * \param v2 The second variable that you want to compare.
+ * \param v1 The first value that you want to compare.
+ * \param v2 The second value that you want to compare.
+ *
+ * \warning You cannot use NXC expressions with this function
  */
-inline void BranchComp(const byte cmp, constant void lbl, variant v1, variant v1);
+inline void BranchComp(const byte cmp, constant void lbl, variant v1, variant v2);
 
 /** @defgroup ArrayFunctions Array API functions
  * Functions for use with NXC array types.
@@ -4648,6 +4652,8 @@ inline void BranchComp(const byte cmp, constant void lbl, variant v1, variant v1
  * \param src1 The first source to build into the output array.
  * \param src2 The second source to build into the output array.
  * \param srcN The first source to build into the output array.
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline void ArrayBuild(variant & aout[], variant src1, variant src2, ..., variant srcN);
 
@@ -4657,6 +4663,8 @@ inline void ArrayBuild(variant & aout[], variant src1, variant src2, ..., varian
  * dimensions can be passed into this function.
  * \param data The array whose length you need to read.
  * \return The length of the specified array.
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline unsigned int ArrayLen(variant data[]);
 
@@ -4669,6 +4677,8 @@ inline unsigned int ArrayLen(variant data[]);
  * \param aout The output array to initialize.
  * \param value The value to initialize each element to.
  * \param count The number of elements to create in the output array.
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline void ArrayInit(variant & aout[], variant value, unsigned int count);
 
@@ -4680,6 +4690,8 @@ inline void ArrayInit(variant & aout[], variant value, unsigned int count);
  * \param asrc The input array from which to copy a subset.
  * \param idx The start index of the array subset.
  * \param len The length of the array subset.
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline void ArraySubset(variant & aout[], variant asrc[], unsigned int idx, unsigned int len);
 
@@ -4690,6 +4702,8 @@ inline void ArraySubset(variant & aout[], variant asrc[], unsigned int idx, unsi
  * \param out The output value.
  * \param asrc The input array from which to extract an item.
  * \param idx The index of the item to extract.
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline void ArrayIndex(variant & out, variant asrc[], unsigned int idx);
 
@@ -4704,6 +4718,8 @@ inline void ArrayIndex(variant & out, variant asrc[], unsigned int idx);
  * \param asrc The input array to be modified
  * \param idx The index of the item to replace.
  * \param value The new value or values to put into the source array.
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline void ArrayReplace(variant & asrc[], unsigned int idx, variant value);
 
@@ -4723,6 +4739,8 @@ inline void ArrayReplace(variant & asrc[], unsigned int idx, variant value);
  * \ref NA to include the rest of the elements in the src array (from idx to
  * the end of the array).
  * \return The sum of len elements from the src numeric array (starting from idx).
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline variant ArraySum(const variant & src[], unsigned int idx, unsigned int len);
 
@@ -4740,6 +4758,8 @@ inline variant ArraySum(const variant & src[], unsigned int idx, unsigned int le
  * \ref NA to include the rest of the elements in the src array (from idx to
  * the end of the array).
  * \return The mean value of len elements from the src numeric array (starting from idx).
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline variant ArrayMean(const variant & src[], unsigned int idx, unsigned int len);
 
@@ -4757,6 +4777,8 @@ inline variant ArrayMean(const variant & src[], unsigned int idx, unsigned int l
  * \ref NA to include the rest of the elements in the src array (from idx to
  * the end of the array).
  * \return The sum of the squares of len elements from the src numeric array (starting from idx).
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline variant ArraySumSqr(const variant & src[], unsigned int idx, unsigned int len);
 
@@ -4774,6 +4796,8 @@ inline variant ArraySumSqr(const variant & src[], unsigned int idx, unsigned int
  * \ref NA to include the rest of the elements in the src array (from idx to
  * the end of the array).
  * \return The standard deviation of len elements from the src numeric array (starting from idx).
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline variant ArrayStd(const variant & src[], unsigned int idx, unsigned int len);
 
@@ -4791,6 +4815,8 @@ inline variant ArrayStd(const variant & src[], unsigned int idx, unsigned int le
  * \ref NA to include the rest of the elements in the src array (from idx to
  * the end of the array).
  * \return The minimum of len elements from the src numeric array (starting from idx).
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline variant ArrayMin(const variant & src[], unsigned int idx, unsigned int len);
 
@@ -4808,6 +4834,8 @@ inline variant ArrayMin(const variant & src[], unsigned int idx, unsigned int le
  * \ref NA to include the rest of the elements in the src array (from idx to
  * the end of the array).
  * \return The maximum of len elements from the src numeric array (starting from idx).
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline variant ArrayMax(const variant & src[], unsigned int idx, unsigned int len);
 
@@ -4826,6 +4854,8 @@ inline variant ArrayMax(const variant & src[], unsigned int idx, unsigned int le
  * \param len The number of elements to include in the sorting process. Pass
  * \ref NA to include the rest of the elements in the src array (from idx to
  * the end of the array).
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline void ArraySort(variant & dest[], const variant & src[], unsigned int idx, unsigned int len);
 
@@ -4843,6 +4873,8 @@ inline void ArraySort(variant & dest[], const variant & src[], unsigned int idx,
  * \param len The number of elements to include in the specified process. Pass
  * \ref NA to include the rest of the elements in the src array (from idx to
  * the end of the array).
+ *
+ * \warning You cannot use NXC expressions with this function
  */
 inline void ArrayOp(const byte op, variant & dest, const variant & src[], unsigned int idx, unsigned int len);
 

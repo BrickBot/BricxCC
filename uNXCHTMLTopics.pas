@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2819;
+  uNXCHTMLTopicsSize = 2829;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -6985,6 +6985,30 @@ const
      Value: 'group___basic_sensor_values_gaba55a26d989467d0e9efa34c1bcadb7c.html'
     ),
     (
+     Name: 'LT';
+     Value: 'group__cmpconst_gaaf56b99cbe34023f42ce5b7878c827d8.html'
+    ),
+    (
+     Name: 'GT';
+     Value: 'group__cmpconst_gab89310b3f2f97e4e9415fc5a51549612.html'
+    ),
+    (
+     Name: 'LTEQ';
+     Value: 'group__cmpconst_ga02df353ac0479078a86faf2cb90764d2.html'
+    ),
+    (
+     Name: 'GTEQ';
+     Value: 'group__cmpconst_gaa4a13738d5fcbfd2aa83aba2992d0b0e.html'
+    ),
+    (
+     Name: 'EQ';
+     Value: 'group__cmpconst_gabaab8d42f075ee8ddc9b70951d3fd6cd.html'
+    ),
+    (
+     Name: 'NEQ';
+     Value: 'group__cmpconst_ga2b6ba3ea1fe3e8cc970ad05cd05d703b.html'
+    ),
+    (
      Name: 'Sqrt';
      Value: 'group__cmath_a_p_i_ga6fa27ad1b70847bbde36914220d1eea3.html'
     ),
@@ -8149,6 +8173,14 @@ const
      Value: 'group___command_module_functions_ga3e86a933a9c4bc0e4bb7587a493ab9a7.html'
     ),
     (
+     Name: 'BranchTest';
+     Value: 'group___command_module_functions_ga53b3a5e50ed558c9afdbe601df787e68.html'
+    ),
+    (
+     Name: 'BranchComp';
+     Value: 'group___command_module_functions_gaf9cada4a12c26e741aba67a036fb641a.html'
+    ),
+    (
      Name: 'ArrayBuild';
      Value: 'group___array_functions_gae8d75e08c670f09f01200a897d7ed2ba.html'
     ),
@@ -8163,6 +8195,14 @@ const
     (
      Name: 'ArraySubset';
      Value: 'group___array_functions_ga007959abef61d9e7ca36c588d5a99fc8.html'
+    ),
+    (
+     Name: 'ArrayIndex';
+     Value: 'group___array_functions_ga38666bafad667cf22d45ee8c29f01f66.html'
+    ),
+    (
+     Name: 'ArrayReplace';
+     Value: 'group___array_functions_ga9c1799dc277afa1c4e7da7f5829e4846.html'
     ),
     (
      Name: 'ArraySum';

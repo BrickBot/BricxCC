@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-07-05
- * \version 17
+ * \date 2011-07-16
+ * \version 18
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -5314,6 +5314,17 @@
  * \ref MotorRegulationOptions, \ref MotorMaxSpeed, and
  * \ref MotorMaxAcceleration functions.
  *
+ * \example ex_digps.nxc
+ * This is an example of how to use the \ref SetSensorDIGPSWaypoint,
+ * \ref SensorDIGPSStatus,
+ * \ref SensorDIGPSTime, \ref SensorDIGPSLatitude, \ref SensorDIGPSLongitude,
+ * \ref SensorDIGPSVelocity, \ref SensorDIGPSHeading,
+ * \ref SensorDIGPSDistanceToWaypoint, \ref SensorDIGPSHeadingToWaypoint, and
+ * \ref SensorDIGPSRelativeHeading functions.
+ *
+ * \example ex_nbcopt.nxc
+ * This is an example of how to use the \ref ArrayIndex, \ref ArrayReplace,
+ * \ref BranchComp, and \ref BranchTest functions.
  *
 */
 

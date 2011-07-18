@@ -1,0 +1,28 @@
+task main()
+{
+   float A[3][3];
+   float C[][];
+   int R, S;
+   float tmp[], arr_temp[], val_temp;
+   int s, r;
+   ArrayInit(tmp, 0, R);
+   ArrayInit(C, tmp, S);
+   s = S;
+   lbl_Trans_start_s:
+   {
+      s--;
+      r = R;
+      lbl_Trans_start_r:
+      {
+         r--;
+         ArrayIndex(arr_temp, A, r);
+         ArrayIndex(val_temp, arr_temp, s);
+         ArrayReplace(tmp, r, val_temp);
+      }
+      BranchComp(GT, lbl_Trans_start_r, r, 0);
+      ArrayReplace(C, s, tmp);
+   }
+   BranchTest(GT, lbl_Trans_start_s, s);
+}
+
+

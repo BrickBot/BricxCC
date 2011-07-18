@@ -2,6 +2,8 @@ task main()
 {
   SetSensorLowspeed(S1);
 //  while(!SensorDIGPSStatus(S1)) Wait(10);
+
+  SetSensorDIGPSWaypoint(S1, 36165833, -86784444);
   while (true)
   {
     // show link status
@@ -17,6 +19,9 @@ task main()
     NumOut(0, LCD_LINE5, SensorDIGPSVelocity(S1));
     // show time in UTC
     NumOut(0, LCD_LINE6, SensorDIGPSTime(S1));
+    NumOut(0, LCD_LINE7, SensorDIGPSDistanceToWaypoint(S1));
+    NumOut(0, LCD_LINE8, SensorDIGPSHeadingToWaypoint(S1));
+    NumOut(50, LCD_LINE1, SensorDIGPSRelativeHeading(S1), true);
     Wait(500);
   }
 }
