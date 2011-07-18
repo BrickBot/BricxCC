@@ -8595,7 +8595,9 @@ end;
 
 function IsArrayHelper(const str : string) : boolean;
 begin
-  Result := (Pos('__ArrHelper__', str) = 1);
+  // if the array helper type is a struct and has a member reference
+  // then it is no longer an array helper type
+  Result := (Pos('__ArrHelper__', str) = 1) and (Pos('.', str) = 0);
 end;
 
 procedure TClump.RemoveOrNOPLine(AL, ALNext : TAsmLine; const idx : integer);
@@ -8957,7 +8959,7 @@ begin
               // so we start at the last arg and work toward the first
               for j := tmpAL.Args.Count - 1 downto 0 do
               begin
-                if arg1 = tmpAL.Args[j].Value then
+                if arg1 = RootOf(tmpAL.Args[j].Value) then
                 begin
                   tmpIdx := j;
                   Break;
@@ -8967,7 +8969,7 @@ begin
                 Break;
               inc(offset);
             end;
-            if (tmpIdx <> -1) and (i < (ClumpCode.Count - offset)) then
+            if (tmpIdx <> -1) and (i < (ClumpCode.Count - offset)) and (arg1 = tmpAL.Args[j].Value) then
             begin
               ALNext := ClumpCode.Items[i+offset];
               // now check other cases

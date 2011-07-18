@@ -455,7 +455,6 @@ type
     procedure ProcessStruct(bTypeDef : boolean = False);
     procedure CheckForTypedef(var bUnsigned, bConst, bStatic, bInline, bSafeCall : boolean);
     function  IsUserDefinedType(const name : string) : boolean;
-    function  RootOf(const name : string) : string;
     function  DataTypeOfDataspaceEntry(DE : TDataspaceEntry) : char;
     procedure LoadSystemFile(S : TStream);
     procedure CheckForMain;
@@ -9194,17 +9193,6 @@ end;
 function TNXCComp.IsUserDefinedType(const name: string): boolean;
 begin
   Result := DataDefinitions.IndexOfName(name) <> -1;
-end;
-
-function TNXCComp.RootOf(const name: string): string;
-var
-  p : integer;
-begin
-  p := Pos('.', name);
-  if p > 0 then
-    Result := Copy(name, 1, p-1)
-  else
-    Result := name;
 end;
 
 function TNXCComp.DataTypeOfDataspaceEntry(DE: TDataspaceEntry): char;
