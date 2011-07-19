@@ -13703,6 +13703,20 @@ struct XGPacketType {
 inline bool ResetMIXG1300L(byte port);
 
 /**
+ * SensorMIXG1300LScale function.
+ * Read the Microinfinity CruizCore XG1300L accelerometer scale.
+ * The accelerometer in the CruizCore XG1300L can be set to operate with a
+ * scale ranging from +/-2G, +/-4G, or +/-8G.
+ * Returns the scale value that the device is currently configured to use.
+ * The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See the \ref InPorts group.
+ * \return The current scale value.
+ */
+inline int SensorMIXG1300LScale(byte port);
+
+/**
  * SetSensorMIXG1300LScale function.
  * Set the Microinfinity CruizCore XG1300L accelerometer scale.
  * The accelerometer in the CruizCore XG1300L can be set to operate with a
@@ -13735,8 +13749,12 @@ inline bool ReadSensorMIXG1300L(byte port, XGPacketType & packet);
 #else
 
 #define ResetMIXG1300L(_port) asm { __ResetMIXG1300L(_port, __RETVAL__) }
+#define SensorMIXG1300LScale(_port) asm { __ReadSensorMIXG1300LScale(_port, __RETVAL__) }
 #define SetSensorMIXG1300LScale(_port, _scale) asm { __SetSensorMIXG1300LScale(_port, _scale, __RETVAL__) }
-#define ReadSensorMIXG1300L(_port, _packet) asm { __ReadSensorMIXG1300L(_port, _packet, __RETVAL__) }
+#define ReadSensorMIXG1300L(_port, _packet) asm { \
+  compchktype _packet, XGPacketType \
+  __ReadSensorMIXG1300L(_port, _packet, __RETVAL__) \
+}
 
 #endif
 

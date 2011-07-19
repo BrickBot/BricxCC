@@ -2268,6 +2268,8 @@
  * - @subpage TListFiles
  * - @subpage TMemoryManager
  * - @subpage TReadLastResponse
+ * - @subpage TFileTell
+ * - @subpage TRandomEx
  *
  */
 
@@ -3204,6 +3206,49 @@
  *  Command byte
  *  Buffer	 byte[]
  * TReadLastResponse ends
+ * \endcode
+ *
+ */
+
+/** @page TFileTell TFileTell
+ * \brief The TFileTell structure
+ *
+ * \code
+ * // FileTell
+ * TFileTell struct
+ *  Result     sbyte
+ *  FileHandle byte
+ *  Position   dword
+ * TFileTell ends
+ * \endcode
+ *
+ */
+
+/** @page TRandomEx TRandomEx
+ * \brief The TRandomEx structure
+ *
+ * \code
+ * // RandomEx
+ * TRandomEx	struct
+ *  Seed   long
+ *  ReSeed byte
+ * TRandomEx	ends
+ * \endcode
+ *
+ */
+
+/** @page TXGPacket TXGPacket
+ * \brief The TXGPacket structure
+ *
+ * \code
+ * // XGPacket
+ * TXGPacket struct
+ *   AccAngle sword
+ *   TurnRate sword
+ *   XAxis sword
+ *   YAxis sword
+ *   ZAxis sword
+ * TXGPacket ends
  * \endcode
  *
  */
@@ -4336,6 +4381,10 @@
 
 /** @defgroup DexterIndustriesAPI Dexter Industries API Functions
  * Functions for accessing and modifying Dexter Industries devices.
+ */
+
+/** @defgroup MicroinfinityAPI Microinfinity API Functions
+ * Functions for accessing and modifying Microinfinity devices.
  */
 
 /** @defgroup RICMacros RIC Macro Wrappers

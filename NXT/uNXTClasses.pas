@@ -7176,9 +7176,10 @@ begin
   Calc.SilentExpression := name;
   if Calc.ParserError then
   begin
-    Arg.Value := left + '0' + right;
-    ReportProblem(LineCounter, GetCurrentFile(true), '',
-      Format(sBadConstExpression, [name]), true);
+    Arg.Value := left + '-1' + right;
+// 2011-07-20 Changed valueof to return -1 if the expression is not a constant
+//    ReportProblem(LineCounter, GetCurrentFile(true), '',
+//      Format(sBadConstExpression, [name]), true);
   end
   else
   begin
