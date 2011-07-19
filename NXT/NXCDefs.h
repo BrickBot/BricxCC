@@ -13641,6 +13641,108 @@ inline bool SetSensorDIGPSWaypoint(byte port, long latitude, long longitude);
 
 /** @} */  // end of DexterIndustriesAPI group
 
+
+///////////////////////////////////////////////////////////////////////////////
+/////////////////////////////// Microinfinity API /////////////////////////////
+///////////////////////////////////////////////////////////////////////////////
+
+
+/** @addtogroup MicroinfinityAPI
+ * @{
+ */
+
+/** @defgroup MicroinfinityTypes Microinfinity types
+ * Types used by various Microinfinity device functions.
+ * @{
+ */
+
+/**
+ * Parameters for the \ref ReadSensorMIXG1300L function.
+ * This structure is used when calling the \ref ReadSensorMIXG1300L function.
+ * After calling the function read the sensor values from the various
+ * structure fields.  The values are all scaled by 100.
+ */
+struct XGPacketType {
+  int AccAngle;
+  int TurnRate;
+  int XAxis;
+  int YAxis;
+  int ZAxis;
+};
+
+/** @} */ // end of MicroinfinityTypes group
+
+/** @defgroup MicroinfinityFunctions Microinfinity functions
+ * Functions for interfacing with Microinfinity devices.
+ * @{
+ */
+#ifdef __DOXYGEN_DOCS
+
+/**
+ * ResetMIXG1300L function.
+ * Reset the Microinfinity CruizCore XG1300L device.
+ *
+ * During reset, the XG1300L will recomputed the bias drift value, therefore
+ * it must remain stationary. The bias drift value will change randomly over
+ * time due to temperature variations, however the internal algorithm in
+ * the XG1300L will compensate for these changes. We strongly recommend
+ * issuing a reset command to the XG1300L at the beginning of the program.
+ *
+ * The reset function also resets the accumulate angle value to a zero. Since
+ * the accelerometers measurements are taken with respect to the sensor
+ * reference frame the reset function will have no effect in the accelerometer
+ * measurements.
+ *
+ * Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See the \ref InPorts group.
+ * \return The boolean function call result.
+ */
+inline bool ResetMIXG1300L(byte port);
+
+/**
+ * SetSensorMIXG1300LScale function.
+ * Set the Microinfinity CruizCore XG1300L accelerometer scale.
+ * The accelerometer in the CruizCore XG1300L can be set to operate with a
+ * scale ranging from +/-2G, +/-4G, or +/-8G.
+ * Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See the \ref InPorts group.
+ * \param scale This value must be a constant.  See \ref XG1300LScaleConstants.
+ * \return The boolean function call result.
+ */
+inline bool SetSensorMIXG1300LScale(byte port, const byte scale);
+
+/**
+ * ReadSensorMIXG1300L function.
+ * Read Microinfinity CruizCore XG1300L values.
+ * Read accumulated angle, turn rate, and X, Y, and Z axis acceleration values
+ * from the Microinfinity CruizCore XG1300L sensor.
+ * Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param port The sensor port. See the \ref InPorts group.
+ * \param packet The output XK1300L data structure.  See \ref XGPacketType.
+ * \return The boolean function call result.
+ */
+inline bool ReadSensorMIXG1300L(byte port, XGPacketType & packet);
+
+#else
+
+#define ResetMIXG1300L(_port) asm { __ResetMIXG1300L(_port, __RETVAL__) }
+#define SetSensorMIXG1300LScale(_port, _scale) asm { __SetSensorMIXG1300LScale(_port, _scale, __RETVAL__) }
+#define ReadSensorMIXG1300L(_port, _packet) asm { __ReadSensorMIXG1300L(_port, _packet, __RETVAL__) }
+
+#endif
+
+/** @} */ // end of MicroinfinityFunctions group
+/** @} */  // end of MicroinfinityAPI group
+
 /** @} */ // end of ThirdPartyDevices group
 
 
