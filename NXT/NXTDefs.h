@@ -638,6 +638,14 @@ TBrickData ends // 28 bytes
 
 #endif
 
+TXGPacket struct
+  AccAngle sword
+  TurnRate sword
+  XAxis sword
+  YAxis sword
+  ZAxis sword
+TXGPacket ends
+
 dseg	ends
 
 // motor arrays (compiler will optimize these out if they are not used)
@@ -8131,6 +8139,72 @@ dseg ends
   wait 50 \
   release __DGPSWaymutex
 
+dseg segment
+  __XGAccRange byte 2
+  __XGTmpBufVar byte[]
+  __XGTmpBuf0 byte[]
+  __XGTmpBuf1 byte[]
+  __XGTmpBuf2 byte[]
+  __XGTmpBuf3 byte[]
+  __XGErrVar byte
+  __XGErr0 byte
+  __XGErr1 byte
+  __XGErr2 byte
+  __XGErr3 byte
+dseg ends
+
+#define __ResetMIXG1300L(_port, _result) \
+  __MSWriteToRegister(_port, MI_ADDR_XG1300L, XG1300L_REG_RESET, NA, _result) \
+  set __XGAccRange, 1
+
+#define __SetSensorMIXG1300LScale(_port, _scale, _result) \
+  compchk EQ, (_scale==1)||(_scale==2)||(_scale==4), TRUE \
+  set __XGAccRange, _scale \
+  compif EQ, _scale, 1 \
+  __MSWriteToRegister(_port, MI_ADDR_XG1300L, XG1300L_REG_2G, NA, _result) \
+  compelse \
+  compif EQ, _scale, 2 \
+  __MSWriteToRegister(_port, MI_ADDR_XG1300L, XG1300L_REG_4G, NA, _result) \
+  compelse \
+  __MSWriteToRegister(_port, MI_ADDR_XG1300L, XG1300L_REG_8G, NA, _result) \
+  compend \
+  compend
+
+#define __ReadSensorMIXG1300L(_port, _packet, result) \
+  compchktype _params, TXGPacket \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  mov __RLSReadBufVar, __RLSBbufLSWrite1 \
+  set __RLSBytesCountVar, 10 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  arrtostr __XGTmpBufVar, __RLSReadBufVar \
+  unflatten _packet, __XGErrVar, __XGTmpBufVar, _packet \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
+  set __RLSBytesCount##_port, 10 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  arrtostr __XGTmpBuf##_port, __RLSReadBuf##_port \
+  unflatten _packet, __XGErr##_port, __XGTmpBuf##_port, _packet \
+  release __RLSBmutex##_port \
+  compend \
+  mul _packet.XAxis, _packet.XAxis, __XGAccRange \
+  mul _packet.YAxis, _packet.YAxis, __XGAccRange \
+  mul _packet.ZAxis, _packet.ZAxis, __XGAccRange
+
+
 #define __NXTServoInit(_port, _i2caddr, _servo, _result) \
   __I2CSendCmd(_port, _i2caddr, NXTSERVO_CMD_INIT, _result) \
   __I2CSendCmd(_port, _i2caddr, _servo+1, _result)
@@ -8200,7 +8274,11 @@ dseg ends
   mov __WDSC_Port, _port \
   mov __WDSC_SensorAddress, _i2caddr \
   set __WDSC_SensorRegister, _reg \
+  compif EQ, _bytes, NA \
+  arrinit __WDSC_WriteBytes, 0, 0 \
+  compelse \
   arrbuild __WDSC_WriteBytes, _bytes \
+  compend \
   call __MSWriteBytesSub \
   mov _result, __WDSC_LSStatus \
   release __WDSCmutex
@@ -20073,6 +20151,66 @@ __remoteGetInputValues(_conn, _params, _result)
 #define SetSensorDIGPSWaypoint(_port, _lat, _long, _result) __SetSensorDIGPSWaypoint(_port, _lat, _long, _result)
 
 /** @} */  // end of DexterIndustriesAPI group
+
+/** @addtogroup MicroinfinityAPI
+ * @{
+ */
+
+// Microinfinity functions
+
+/**
+ * ResetMIXG1300L function.
+ * Reset the Microinfinity CruizCore XG1300L device.
+ *
+ * During reset, the XG1300L will recomputed the bias drift value, therefore
+ * it must remain stationary. The bias drift value will change randomly over
+ * time due to temperature variations, however the internal algorithm in
+ * the XG1300L will compensate for these changes. We strongly recommend
+ * issuing a reset command to the XG1300L at the beginning of the program.
+ *
+ * The reset function also resets the accumulate angle value to a zero. Since
+ * the accelerometers measurements are taken with respect to the sensor
+ * reference frame the reset function will have no effect in the accelerometer
+ * measurements.
+ *
+ * Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _result The function call result.
+ */
+#define ResetMIXG1300L(_port, _result) __ResetMIXG1300L(_port, _result)
+
+/**
+ * SetSensorMIXG1300LScale function.
+ * Set the Microinfinity CruizCore XG1300L accelerometer scale factor.
+ * Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _scale This value must be a constant.  See \ref XG1300LScaleConstants.
+ * \param _result The function call result.
+ */
+#define SetSensorMIXG1300LScale(_port, _scale, _result) __SetSensorMIXG1300LScale(_port, _scale, _result)
+
+/**
+ * ReadSensorMIXG1300L function.
+ * Read Microinfinity CruizCore XG1300L values.
+ * Read accumulated angle, turn rate, and X, Y, and Z axis acceleration values
+ * from the Microinfinity CruizCore XG1300L sensor.
+ * Returns a boolean value indicating whether or not the operation
+ * completed successfully. The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _packet The output XK1300L data structure.  See \ref TXGPacket.
+ * \param _result The function call result.
+ */
+#define ReadSensorMIXG1300L(_port, _packet, result) __ReadSensorMIXG1300L(_port, _packet, result)
+
+/** @} */  // end of MicroinfinityAPI group
 
 /** @} */ // end of ThirdPartyDevices group
 
