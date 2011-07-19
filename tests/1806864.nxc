@@ -1,16 +1,21 @@
 inline void dbString(const string & msg) {
-  TextOut(0, LCD_LINE1, msg);
+  static int line = LCD_LINE1; // defect as of 2011-07-18 (now fixed)
+  TextOut(0, line, msg);
+  line -= 8;
 }
 
 task main()
 {
 string text;
 
+char y = -1;
+byte z = -1;
+
 int a = -1;
 unsigned int b = -1;
 
-long c = -1;
-unsigned long d = -1;
+long c = -1;          // using set (wrong) 2011-07-18 Changed compiler to use mov for negative constants
+unsigned long d = -1; // using set (wrong) 2011-07-18 Changed compiler to use mov for negative constants
 
 text = NumToStr( a );
 dbString( text ); // -1
@@ -22,8 +27,16 @@ text = NumToStr( c );
 dbString( text ); // -1
 
 text = NumToStr( d );
-dbString( text ); // -1 (unsigned long)
+dbString( text ); // 65535 (wrong) 2011-07-18 Changed compiler to use mov for negative constants
+
+text = NumToStr( y );
+dbString( text ); // -1
+
+text = NumToStr( z );
+dbString( text ); // 255 (byte)
+
 
 //dbKey();
+  while(true);
 }
 

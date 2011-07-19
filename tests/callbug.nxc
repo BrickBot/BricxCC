@@ -1,9 +1,43 @@
 int D2(int a1, int a2, int a3, int a4, int a5, int a6, int a7)
 {
+  NumOut(0, LCD_LINE1, a1);
+  NumOut(0, LCD_LINE2, a2);
+  NumOut(0, LCD_LINE3, a3);
+  NumOut(0, LCD_LINE4, a4);
+  NumOut(0, LCD_LINE5, a5);
+  NumOut(0, LCD_LINE6, a6);
+  NumOut(0, LCD_LINE7, a7);
+  return a1+a2+a3+a4+a5+a6+a7;
 }
 
 task main()
 {
-  int k, l, m, q, e, v, i, F, y, s;
+  int k=2, l=5, m=3, q=6, e=3, v=8, i=7, F=9, y=-1, s=-9;
   v=-D2(24-k,-l,m>q?-m:-q,-e-v-i,F,y,s);
+  NumOut(0, LCD_LINE8, v);
+  while(true);
+/*
+  // level 4
+	set __signed_stack_001main, 0
+	sub __D2_7qG2_a1_7qG2_000, __constVal24, __main_7qG2_k_7qG2_000
+	sub __D2_7qG2_a2_7qG2_000, __constVal0, __main_7qG2_l_7qG2_000
+	mov __signed_stack_002main, __main_7qG2_m_7qG2_000
+	mov __D0main, __main_7qG2_q_7qG2_000
+	cmp 1, __zfmain, __signed_stack_002main, __D0main
+	brtst 4, __NXC_Label_654, __zfmain
+	sub __D0main, __constVal0, __main_7qG2_m_7qG2_000
+	jmp __NXC_Label_655
+__NXC_Label_654:
+	sub __D0main, __constVal0, __main_7qG2_q_7qG2_000
+__NXC_Label_655:
+	mov __D2_7qG2_a3_7qG2_000, __D0main
+	sub __signed_stack_002main, __constVal0, __main_7qG2_e_7qG2_000
+	sub __signed_stack_002main, __signed_stack_002main, __main_7qG2_v_7qG2_000
+	sub __D2_7qG2_a4_7qG2_000, __signed_stack_002main, __main_7qG2_i_7qG2_000
+	mov __D2_7qG2_a5_7qG2_000, __main_7qG2_F_7qG2_000
+	mov __D2_7qG2_a6_7qG2_000, __main_7qG2_y_7qG2_000
+	mov __D2_7qG2_a7_7qG2_000, __main_7qG2_s_7qG2_000
+	subcall D2, __D2_return
+	sub __main_7qG2_v_7qG2_000, __signed_stack_001main, __D0D2
+*/
 }

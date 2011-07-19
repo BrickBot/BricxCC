@@ -2138,15 +2138,22 @@ begin
   else
   begin
     cval := StrToInt64Def(n, 0);
-    if cval <= MaxInt then
-      StatementType := stSigned
-    else
-      StatementType := stUnsigned;
-    if (cval > High(smallint)) or
-       ((cval < 0) and (not EnhancedFirmware or (cval < Low(smallint)))) then
+    // 2011-07-18 Changed to use mov if the constant is negative in order to
+    // avoid using set with unsigned long types. Commented out redundant code below.
+    if cval < 0 then
       tmpSrc := 'mov %s, %s'
     else
-      tmpSrc := 'set %s, %s';
+    begin
+      if cval <= MaxInt then
+        StatementType := stSigned
+      else
+        StatementType := stUnsigned;
+      if (cval > High(smallint)) {or
+         ((cval < 0) and (not EnhancedFirmware or (cval < Low(smallint))))} then
+        tmpSrc := 'mov %s, %s'
+      else
+        tmpSrc := 'set %s, %s';
+    end;
   end;
   fCCSet := False;
   EmitLn(Format(tmpSrc, [RegisterName, n]));
@@ -5266,7 +5273,7 @@ var
   savedval : string;
   ival, aval, lenexpr, varName : string;
   bIsArray, bDone, bOpen : boolean;
-  idx, dimensions : integer;
+  idx, dimensions, i : integer;
   V : TVariable;
 begin
   Next;
@@ -5333,7 +5340,26 @@ begin
     try
       Next;
       if bStatic then
-        ival := GetInitialValue(dt)
+      begin
+        ival := GetInitialValue(dt);
+        // 2011-07-18 Fixed a problem with static variables used
+        // in inline functions not being statically initialized.
+        V := nil;
+        if idx <> -1 then
+        begin
+          V := fLocals[idx];
+          V.Value := ival;
+        end;
+        if AmInlining and Assigned(fCurrentInlineFunction) and Assigned(V) then
+        begin
+          i := fCurrentInlineFunction.LocalVariables.IndexOfName(V.Name);
+          if i <> -1 then
+          begin
+            V :=fCurrentInlineFunction.LocalVariables[i];
+            V.Value := ival;
+          end;
+        end;
+      end
       else
         ival := '';
       if fEmittedLocals.IndexOf(varName+tname) = -1 then
@@ -9520,7 +9546,8 @@ begin
     else
     begin
       // allocate this variable
-      Allocate(varname, DataTypeToArrayDimensions(dt), '', tname, dt);
+      // 2011-07-18 Fix for static variables in inline functions not being initialized statically
+      Allocate(varname, DataTypeToArrayDimensions(dt), v.Value, tname, dt);
     end;
   end;
 end;
