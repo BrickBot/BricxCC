@@ -8946,20 +8946,25 @@ begin
             // (aka stack/reg/array helper)
             // so maybe we can do an optimization
             // find the next line (which may not be i+1) that refers to the
-            // same temporary variable with no labeled statements in between
+            // same temporary variable with no labeled statements
+            // or branches in between
             offset := 1;
             tmpIdx := -1;
             while (i < ClumpCode.Count - offset) do begin
               tmpAL := ClumpCode.Items[i+offset];
               tmpIdx := -1;
+              tmp := '';
               if tmpAL.LineLabel <> '' then
+                Break;
+              if (tmpAL.Command in [OP_BRCMP, OP_BRTST, OP_JMP]) then
                 Break;
               // does this line refer to the same temporary variable?
               // prefer to find input parameters over finding output parameters
               // so we start at the last arg and work toward the first
               for j := tmpAL.Args.Count - 1 downto 0 do
               begin
-                if arg1 = RootOf(tmpAL.Args[j].Value) then
+                tmp := tmpAL.Args[j].Value;
+                if arg1 = RootOf(tmp) then
                 begin
                   tmpIdx := j;
                   Break;
@@ -8969,7 +8974,7 @@ begin
                 Break;
               inc(offset);
             end;
-            if (tmpIdx <> -1) and (i < (ClumpCode.Count - offset)) and (arg1 = tmpAL.Args[j].Value) then
+            if (tmpIdx <> -1) and (i < (ClumpCode.Count - offset)) and (arg1 = tmp) then
             begin
               ALNext := ClumpCode.Items[i+offset];
               // now check other cases
@@ -8984,7 +8989,7 @@ begin
                 argDir := ArgDirection(firmVer, ALNext.Command, tmpIdx);
                 if argDir = aadOutput then
                 begin
-                  // if the next line with no labels in between uses this
+                  // if the next line with no labels or branches in between uses this
                   // same temporary as an output variable then the first line
                   // can be replaced with a no-op
                   //
@@ -9001,7 +9006,7 @@ begin
                 begin
                   if ALNext.Command = OP_MOV then
                   begin
-                    // if the next line with no labels in between uses this same
+                    // if the next line with no labels or branches in between uses this same
                     // temporary as an input variable and it is a mov then
                     // we may be able to optimize out the mov.
                     //
@@ -9025,24 +9030,18 @@ begin
                       Break;
                     end;
                   end
-                  else if (AL.Command in [OP_MOV, OP_SET]) and ALNext.Optimizable then
+                  else if (AL.Command = OP_SET) and ALNext.Optimizable then
                   begin
-                    // mov reg/stack/ah, input
+                    // set reg/stack/ah, input
                     // op anything, reg/stack/ah
-                    // mov reg/stack/ah, input - we might be able to remove/nop this line
+                    // set reg/stack/ah, input - we might be able to remove/nop this line
                     // op anything, input
-                    if AL.Command = OP_SET then
-                      tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
-                    else
-                    begin
-                      tmp := AL.Args[1].Value;
-                      CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
-                    end;
-                    // if the output of mov is input of any opcode then it is safe
+                    tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True);
+                    // if the output of set is input of any opcode then it is safe
                     // to set the ALNext's input to AL's input
                     ALNext.RemoveVariableReference(arg1, tmpIdx);
                     ALNext.Args[tmpIdx].Value := tmp; // switch input arg (no ref count changes)
-                    // We can't remove the mov or the set in case the temporary
+                    // We can't remove the set in case the temporary
                     // is reused as an input in subsequent lines.
                     // This restriction can be removed if we can tell that this
                     // particular temporary is never used as an input from the
