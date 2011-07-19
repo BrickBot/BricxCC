@@ -8140,7 +8140,11 @@ dseg ends
   release __DGPSWaymutex
 
 dseg segment
-  __XGAccRange byte 2
+  __XGAccRangeVar byte 2
+  __XGAccRange0 byte 2
+  __XGAccRange1 byte 2
+  __XGAccRange2 byte 2
+  __XGAccRange3 byte 2
   __XGTmpBufVar byte[]
   __XGTmpBuf0 byte[]
   __XGTmpBuf1 byte[]
@@ -8155,11 +8159,32 @@ dseg ends
 
 #define __ResetMIXG1300L(_port, _result) \
   __MSWriteToRegister(_port, MI_ADDR_XG1300L, XG1300L_REG_RESET, NA, _result) \
-  set __XGAccRange, 1
+  compif EQ, isconst(_port), FALSE \
+  set __XGAccRangeVar, 1 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  set __XGAccRange##_port, 1 \
+  compend
+
+#define __ReadSensorMIXG1300LScale(_port, _result) \
+  compif EQ, isconst(_port), FALSE \
+  mul _result, __XGAccRangeVar, 2 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  mul _result, __XGAccRange##_port, 2 \
+  compend
 
 #define __SetSensorMIXG1300LScale(_port, _scale, _result) \
   compchk EQ, (_scale==1)||(_scale==2)||(_scale==4), TRUE \
-  set __XGAccRange, _scale \
+  compif EQ, isconst(_port), FALSE \
+  set __XGAccRangeVar, _scale \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  set __XGAccRange##_port, _scale \
+  compend \
   compif EQ, _scale, 1 \
   __MSWriteToRegister(_port, MI_ADDR_XG1300L, XG1300L_REG_2G, NA, _result) \
   compelse \
@@ -8170,8 +8195,7 @@ dseg ends
   compend \
   compend
 
-#define __ReadSensorMIXG1300L(_port, _packet, result) \
-  compchktype _params, TXGPacket \
+#define __ReadSensorMIXG1300L(_port, _packet, _result) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -8188,6 +8212,9 @@ dseg ends
   release __RLSBmutex1 \
   release __RLSBmutex2 \
   release __RLSBmutex3 \
+  mul _packet.XAxis, _packet.XAxis, __XGAccRangeVar \
+  mul _packet.YAxis, _packet.YAxis, __XGAccRangeVar \
+  mul _packet.ZAxis, _packet.ZAxis, __XGAccRangeVar \
   compelse \
   compchk LT, _port, 0x04 \
   compchk GTEQ, _port, 0x00 \
@@ -8199,10 +8226,10 @@ dseg ends
   arrtostr __XGTmpBuf##_port, __RLSReadBuf##_port \
   unflatten _packet, __XGErr##_port, __XGTmpBuf##_port, _packet \
   release __RLSBmutex##_port \
-  compend \
-  mul _packet.XAxis, _packet.XAxis, __XGAccRange \
-  mul _packet.YAxis, _packet.YAxis, __XGAccRange \
-  mul _packet.ZAxis, _packet.ZAxis, __XGAccRange
+  mul _packet.XAxis, _packet.XAxis, __XGAccRange##_port \
+  mul _packet.YAxis, _packet.YAxis, __XGAccRange##_port \
+  mul _packet.ZAxis, _packet.ZAxis, __XGAccRange##_port \
+  compend
 
 
 #define __NXTServoInit(_port, _i2caddr, _servo, _result) \
@@ -8274,7 +8301,7 @@ dseg ends
   mov __WDSC_Port, _port \
   mov __WDSC_SensorAddress, _i2caddr \
   set __WDSC_SensorRegister, _reg \
-  compif EQ, _bytes, NA \
+  compif EQ, valueof(_bytes), NA \
   arrinit __WDSC_WriteBytes, 0, 0 \
   compelse \
   arrbuild __WDSC_WriteBytes, _bytes \
@@ -20183,6 +20210,20 @@ __remoteGetInputValues(_conn, _params, _result)
 #define ResetMIXG1300L(_port, _result) __ResetMIXG1300L(_port, _result)
 
 /**
+ * ReadSensorMIXG1300LScale function.
+ * Read the Microinfinity CruizCore XG1300L accelerometer scale.
+ * The accelerometer in the CruizCore XG1300L can be set to operate with a
+ * scale ranging from +/-2G, +/-4G, or +/-8G.
+ * Returns the scale value that the device is currently configured to use.
+ * The port must be configured as a Lowspeed port
+ * before using this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _result The current scale value.
+ */
+#define ReadSensorMIXG1300LScale(_port, _result) __ReadSensorMIXG1300LScale(_port, _result)
+
+/**
  * SetSensorMIXG1300LScale function.
  * Set the Microinfinity CruizCore XG1300L accelerometer scale factor.
  * Returns a boolean value indicating whether or not the operation
@@ -20208,7 +20249,9 @@ __remoteGetInputValues(_conn, _params, _result)
  * \param _packet The output XK1300L data structure.  See \ref TXGPacket.
  * \param _result The function call result.
  */
-#define ReadSensorMIXG1300L(_port, _packet, result) __ReadSensorMIXG1300L(_port, _packet, result)
+#define ReadSensorMIXG1300L(_port, _packet, _result) \
+  compchktype _packet, TXGPacket \
+  __ReadSensorMIXG1300L(_port, _packet, _result)
 
 /** @} */  // end of MicroinfinityAPI group
 

@@ -1,0 +1,73 @@
+/*
+struct XGPacketType {
+  int AccAngle;
+  int TurnRate;
+  int XAxis;
+  int YAxis;
+  int ZAxis;
+};
+*/
+task main()
+{
+  XGPacketType data;
+  string msg;
+  ReadButtonType rbArgs;
+  int i = 0;
+  //Initialize system
+  SetSensorLowspeed(S1);
+  //Resets sensor and waits for hardware to settle
+  ResetMIXG1300L(S1);
+  Wait(MS_500);
+  //Main loop
+  while (true)
+  {
+    ClearScreen();
+    if (ReadSensorMIXG1300L(S1, data))
+    {
+      TextOut(0, LCD_LINE1,"<<RESET SENSOR", false);
+      //Print sensor data
+      TextOut(0, LCD_LINE2,"ANGLE:");
+      NumOut(40, LCD_LINE2,data.AccAngle);
+      TextOut(0, LCD_LINE3,"RATE:");
+      NumOut(40, LCD_LINE3,data.TurnRate);
+      TextOut(0, LCD_LINE6,"ACC_X:");
+      NumOut(40, LCD_LINE6,data.XAxis);
+      TextOut(0, LCD_LINE7,"ACC_Y:");
+      NumOut(40, LCD_LINE7,data.YAxis);
+      TextOut(0, LCD_LINE8,"ACC_Z:");
+      NumOut(40, LCD_LINE8,data.ZAxis);
+      //Reset sensor if user presses the left key
+      rbArgs.Index = BTNLEFT;
+      SysReadButton(rbArgs);
+      if (rbArgs.Pressed)
+      {
+        ResetMIXG1300L(S1);
+        i = 0;
+        TextOut(0, LCD_LINE1,"Resetting Device ", false);
+        Wait(MS_500);
+      }
+      asm { mov i, i };
+      //Change accelerometer range if user presses the right key
+      rbArgs.Index = BTNRIGHT;
+      SysReadButton(rbArgs);
+      if (rbArgs.Pressed)
+      {
+        i++;
+        i%=3;
+        TextOut(0, LCD_LINE5,"Range == " ,false);
+        if (i == 0) {
+          SetSensorMIXG1300LScale(S1, XG1300L_SCALE_2G);
+        }
+        else if (i == 1) {
+          SetSensorMIXG1300LScale(S1, XG1300L_SCALE_4G);
+        }
+        else
+          SetSensorMIXG1300LScale(S1, XG1300L_SCALE_8G);
+        NumOut(60, LCD_LINE5, SensorMIXG1300LScale(S1));
+        Wait(MS_500);
+      }
+      Wait(MS_100);
+    }
+  }
+}
+

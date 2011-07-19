@@ -2370,6 +2370,10 @@
  * Functions for accessing and modifying Dexter Industries devices.
  */
 
+/** @defgroup MicroinfinityAPI Microinfinity API Functions
+ * Functions for accessing and modifying Microinfinity devices.
+ */
+
 /** @defgroup RICMacros RIC Macro Wrappers
  * Macro wrappers for use in defining RIC byte arrays.
  */
@@ -5325,6 +5329,11 @@
  * \example ex_nbcopt.nxc
  * This is an example of how to use the \ref ArrayIndex, \ref ArrayReplace,
  * \ref BranchComp, and \ref BranchTest functions.
+ *
+ * \example ex_xg1300.nxc
+ * This is an example of how to use the \ref ResetMIXG1300L,
+ * \ref SetSensorMIXG1300LScale, \ref SensorMIXG1300LScale, and
+ * \ref ReadSensorMIXG1300L functions.
  *
 */
 
