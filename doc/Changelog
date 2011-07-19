@@ -8,10 +8,11 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
-Version 1.2.1.r5 (2011-07-10)
+Version 1.2.1.r5 (2011-07-19)
 -----------------------------
 - Cross platform updates for Linux (FPC/Lazarus)
 - Added support for Dexter Industries DiGPS sensor
+- Added support for HiTechnic Barometric sensor
 - Fixed typo defect in glPyramid API function
 - Fixed defect with the inline keyword being used with a function prototype.
 - Fixed defect with uninitialized strings not being valid strings (i.e., they are 
@@ -35,6 +36,14 @@ Version 1.2.1.r5 (2011-07-10)
   byte values (number of bytes being sent or available to read) rather than booleans.
 - Updates to example programs for RS485 firmware fixes and API changes as well as the new 
   rand() and srand() API functions.
+- Fixed bug with assigning a negative constant to an unsigned long variable.
+- Fixed bug where static variables in inline functions were not being statically initialized.
+- Added BranchComp, BranchTest, ArrayIndex, and ArrayReplace macros to NXCDefs.h
+- Modified code generated for the repeat loop so that it has less overhead
+- Changes to fix problems with using the wrong stack variables for unsigned types
+- Added support for nested compif/compelse/compend compiler directives.
+- Changes to speed up code optimizations.
+- Additional code optimizations for array helper temporaries and other opcodes.
 
 
 Version 1.2.1.r4 (2011-03-13)
