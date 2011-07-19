@@ -16,4 +16,7 @@ task main()
 
 	aFloat = "12.3" ;
 	value = atof2( aFloat );
+	NumOut(0, LCD_LINE1, c);
+	NumOut(0, LCD_LINE2, value);
+	while(true);
 }

@@ -17,14 +17,10 @@ task main()
   xyz[x][y] = 45; // good code 2010-03-23 JCH
   xyz = xyz; // good code 2010-03-23 JCH
 
-  xyz[x] = xyz[y]; // <-- bad code (reference to wrong temporary) 2010-03-23 JCH
+  xyz[x] = xyz[y]; // good code 2011-07-18 JCH
 /*
-	mov __D0main, __main_7qG2_x_7qG2_000
-	mov __signed_stack_001main, __D0main
-	mov __D0main, __main_7qG2_y_7qG2_000
-	mov __signed_stack_002main, __D0main
-	index __ArrHelper__main_236_1, __main_7qG2_xyz_7qG2_000, __signed_stack_002main
-	replace __main_7qG2_xyz_7qG2_000, __main_7qG2_xyz_7qG2_000, __signed_stack_001main, __ArrHelper__main_236_0
+	index __ArrHelper__main_236_0, __main_7qG2_xyz_7qG2_000, __main_7qG2_y_7qG2_000
+	replace __main_7qG2_xyz_7qG2_000, __main_7qG2_xyz_7qG2_000, __main_7qG2_x_7qG2_000, __ArrHelper__main_236_0
 */
 
   a = xyz[x][y]; // good code 2010-03-23 JCH
@@ -33,33 +29,23 @@ task main()
   a = tmp[x]; // good code 2010-03-23 JCH
   a = xyz[y][x]; // good code 2010-03-23 JCH
   
-  tmp = xyz[y];   // <-- no code generated for assignment
+  tmp = xyz[y];   // good code 2011-07-18 JCH
 /*
-	mov __D0main, __main_7qG2_y_7qG2_000
-	mov __signed_stack_001main, __D0main
-	index __ArrHelper__main_236_0, __main_7qG2_xyz_7qG2_000, __signed_stack_001main
+	index __main_7qG2_tmp_7qG2_000, __main_7qG2_xyz_7qG2_000, __main_7qG2_y_7qG2_000
 */
 
-  tmp = aaa[0][2][3]; // <-- no code generated for assignment
+  tmp = aaa[0][2][3]; // good code 2011-07-18 JCH
 /*
-	set __D0main, 0
-	mov __signed_stack_001main, __D0main
-	index __ArrHelper__main_238_0, __main_7qG2_aaa_7qG2_000, __signed_stack_001main
-	set __D0main, 2
-	mov __signed_stack_002main, __D0main
-	index __ArrHelper__main_237_0, __ArrHelper__main_238_0, __signed_stack_002main
-	set __D0main, 3
-	mov __signed_stack_003main, __D0main
-	index __ArrHelper__main_236_0, __ArrHelper__main_237_0, __signed_stack_003main
+	index __ArrHelper__main_238_0, __main_7qG2_aaa_7qG2_000, __constVal0
+	index __ArrHelper__main_237_0, __ArrHelper__main_238_0, __constVal2
+	index __main_7qG2_tmp_7qG2_000, __ArrHelper__main_237_0, __constVal3
 */
 
   pdq[0][0] = aaa[0][2][3][3] + 4; // good code 2010-03-23 JCH
 
-  tmp = xyz[x]; // <-- no code generated for assignment
+  tmp = xyz[x]; // good code 2011-07-18 JCH
 /*
-	mov __D0main, __main_7qG2_x_7qG2_000
-	mov __signed_stack_001main, __D0main
-	index __ArrHelper__main_236_0, __main_7qG2_xyz_7qG2_000, __signed_stack_001main
+	index __main_7qG2_tmp_7qG2_000, __main_7qG2_xyz_7qG2_000, __main_7qG2_x_7qG2_000
 */
 
   tmp[y] = 45; // good code 2010-03-23 JCH

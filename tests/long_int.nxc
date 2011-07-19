@@ -5,4 +5,5 @@ task main()
   unsigned short int x = 12;
   NumOut(0, LCD_LINE1, x);
   NumOut(0, LCD_LINE2, y);
+  while (true);
 }

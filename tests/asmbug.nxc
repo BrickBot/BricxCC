@@ -9,7 +9,7 @@ task main()
   int fooBarIsh;
 
 
-  while (fooBarIsh = Random())
+//  while (fooBarIsh = Random())
   {
     NumOut(0, LCD_LINE1, fooBarIsh);
   }
@@ -18,8 +18,8 @@ task main()
   {
   }
   string test = ConcStringInt("test", Sensor(S1));
-  TextOut(0, LCD_LINE1, test);
+  TextOut(0, LCD_LINE2, test);
   int xyz = fooBarIsh = 23;
-  NumOut(0, LCD_LINE1, xyz);
+  NumOut(0, LCD_LINE3, xyz);
   while(true);
 }
