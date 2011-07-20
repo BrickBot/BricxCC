@@ -7727,7 +7727,7 @@ dseg ends
   arrbuild __RLSReadBufVar, _i2caddr, _info \
   set __RLSBytesCountVar, 8 \
   call __ReadLSBytesVar \
-  mov _strVal, __RLSReadBufVar \
+  arrtostr _strVal, __RLSReadBufVar \
   release __RLSBmutex0 \
   release __RLSBmutex1 \
   release __RLSBmutex2 \
@@ -7739,7 +7739,7 @@ dseg ends
   arrbuild __RLSReadBuf##_port, _i2caddr, _info \
   set __RLSBytesCount##_port, 8 \
   call __ReadLSBytes##_port \
-  mov _strVal, __RLSReadBuf##_port \
+  arrtostr _strVal, __RLSReadBuf##_port \
   release __RLSBmutex##_port \
   compend
 
