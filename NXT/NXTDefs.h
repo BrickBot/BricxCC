@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-07-09
- * version 79
+ * date 2011-08-02
+ * version 81
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -355,6 +355,9 @@ TCommHSCheckStatus	ends
 TCommHSReadWrite	struct
  Status	sbyte
  Buffer	byte[]
+#if __FIRMWARE_VERSION > 107
+ BufferLen	byte
+#endif
 TCommHSReadWrite	ends
 
 // CommLSWriteEx
@@ -445,6 +448,15 @@ TRandomEx	struct
  Seed   long
  ReSeed byte
 TRandomEx	ends
+
+// InputPinFunction
+TInputPinFunction struct
+ Result word
+ Cmd    byte
+ Port   byte
+ Pin    byte
+ Data   byte
+TInputPinFunction ends
 
 #endif
 #endif
@@ -1565,6 +1577,11 @@ dseg segment
   __CLSWMutex3 mutex
   __CLSRArgs3 TCommLSRead
   __CLSRMutex3 mutex
+  __LSWriteOptionsVar byte
+  __LSWriteOptions0 byte
+  __LSWriteOptions1 byte
+  __LSWriteOptions2 byte
+  __LSWriteOptions3 byte
 dseg ends
 
 #define __lowspeedStatus(_port, _bready, _result) \
@@ -1644,7 +1661,7 @@ dseg ends
   acquire __CLSWMutex1 \
   acquire __CLSWMutex2 \
   acquire __CLSWMutex3 \
-  mov __CLSWArgs0.Port, _port \
+  or __CLSWArgs0.Port, _port, __LSWriteOptionsVar \
   mov __CLSWArgs0.ReturnLen, _retlen \
   mov __CLSWArgs0.Buffer, _buffer \
   syscall CommLSWrite, __CLSWArgs0 \
@@ -1657,7 +1674,7 @@ dseg ends
   compchk LT, _port, 0x04 \
   compchk GTEQ, _port, 0x00 \
   acquire __CLSWMutex##_port \
-  set __CLSWArgs##_port.Port, _port \
+  or __CLSWArgs##_port.Port, _port, __LSWriteOptions##_port \
   mov __CLSWArgs##_port.ReturnLen, _retlen \
   mov __CLSWArgs##_port.Buffer, _buffer \
   syscall CommLSWrite, __CLSWArgs##_port \
@@ -1691,6 +1708,17 @@ dseg ends
   mov _result, __CLSRArgs##_port.Result \
   release __CLSRMutex##_port \
   compend
+
+#define __setI2COptions(_port, _options) \
+  compif EQ, isconst(_port), FALSE \
+  mov __LSWriteOptionsVar, _options \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  mov __LSWriteOptions##_port, _options \
+  mov __LSWriteOptionsVar, __LSWriteOptions##_port \
+  compend
+
 
 dseg segment
   __TextOutMutex mutex
@@ -4983,14 +5011,15 @@ dseg ends
   mov _status, __CHSWArgs.Status \
   release __CHSWMutex
 
+#if __FIRMWARE_VERSION > 107
+
 #define __RS485Read(_buffer, _status) \
   acquire __CHSRMutex \
+  set __CHSRArgs.BufferLen, 0xFF \
   syscall CommHSRead, __CHSRArgs \
   mov _buffer, __CHSRArgs.Buffer \
   mov _status, __CHSRArgs.Status \
   release __CHSRMutex
-
-#if __FIRMWARE_VERSION > 107
 
 #define __RS485Control(_cmd, _baud, _mode, _result) \
   acquire __CHSCMutex \
@@ -5003,6 +5032,13 @@ dseg ends
   wait 1
 
 #else
+
+#define __RS485Read(_buffer, _status) \
+  acquire __CHSRMutex \
+  syscall CommHSRead, __CHSRArgs \
+  mov _buffer, __CHSRArgs.Buffer \
+  mov _status, __CHSRArgs.Status \
+  release __CHSRMutex
 
 #define __RS485Control(_cmd, _baud, _result) \
   acquire __CHSCMutex \
@@ -6232,33 +6268,8 @@ ends
   call __PFComboDirectSub \
   set __PFPowerFuncMode, TRUE \
   call __HTPowerFunctionCalcBits \
-  compif EQ, isconst(_port), FALSE \
-  acquire __CLSWMutex0 \
-  acquire __CLSWMutex1 \
-  acquire __CLSWMutex2 \
-  acquire __CLSWMutex3 \
-  mov __CLSWArgs0.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  mov __CLSWArgs0.Port, _port \
-  mov __CLSWArgs0.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs0 \
-  mov _result, __CLSWArgs0.Result \
-  release __CLSWMutex0 \
-  release __CLSWMutex1 \
-  release __CLSWMutex2 \
-  release __CLSWMutex3 \
-  compelse \
-  compchk LT, _port, 0x04 \
-  compchk GTEQ, _port, 0x00 \
-  acquire __CLSWMutex##_port \
-  mov __CLSWArgs##_port.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  set __CLSWArgs##_port.Port, _port \
-  mov __CLSWArgs##_port.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs##_port \
-  mov _result, __CLSWArgs##_port.Result \
-  release __CLSWMutex##_port \
-  compend
+  __lowspeedWrite(_port, 0, __HTPFI2CBuf, _result) \
+  release __PFMutex
 
 #define __HTPFSinglePin(_port, _channel, _out, _pin, _func, _cont, _result) \
   acquire __PFMutex \
@@ -6270,33 +6281,8 @@ ends
   call __PFSinglePinSub \
   set __PFPowerFuncMode, TRUE \
   call __HTPowerFunctionCalcBits \
-  compif EQ, isconst(_port), FALSE \
-  acquire __CLSWMutex0 \
-  acquire __CLSWMutex1 \
-  acquire __CLSWMutex2 \
-  acquire __CLSWMutex3 \
-  mov __CLSWArgs0.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  mov __CLSWArgs0.Port, _port \
-  mov __CLSWArgs0.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs0 \
-  mov _result, __CLSWArgs0.Result \
-  release __CLSWMutex0 \
-  release __CLSWMutex1 \
-  release __CLSWMutex2 \
-  release __CLSWMutex3 \
-  compelse \
-  compchk LT, _port, 0x04 \
-  compchk GTEQ, _port, 0x00 \
-  acquire __CLSWMutex##_port \
-  mov __CLSWArgs##_port.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  set __CLSWArgs##_port.Port, _port \
-  mov __CLSWArgs##_port.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs##_port \
-  mov _result, __CLSWArgs##_port.Result \
-  release __CLSWMutex##_port \
-  compend
+  __lowspeedWrite(_port, 0, __HTPFI2CBuf, _result) \
+  release __PFMutex
 
 #define __HTPFSingleOutput(_port, _channel, _out, _func, _cst, _result) \
   acquire __PFMutex \
@@ -6307,33 +6293,8 @@ ends
   call __PFSingleOutputSub \
   set __PFPowerFuncMode, TRUE \
   call __HTPowerFunctionCalcBits \
-  compif EQ, isconst(_port), FALSE \
-  acquire __CLSWMutex0 \
-  acquire __CLSWMutex1 \
-  acquire __CLSWMutex2 \
-  acquire __CLSWMutex3 \
-  mov __CLSWArgs0.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  mov __CLSWArgs0.Port, _port \
-  mov __CLSWArgs0.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs0 \
-  mov _result, __CLSWArgs0.Result \
-  release __CLSWMutex0 \
-  release __CLSWMutex1 \
-  release __CLSWMutex2 \
-  release __CLSWMutex3 \
-  compelse \
-  compchk LT, _port, 0x04 \
-  compchk GTEQ, _port, 0x00 \
-  acquire __CLSWMutex##_port \
-  mov __CLSWArgs##_port.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  set __CLSWArgs##_port.Port, _port \
-  mov __CLSWArgs##_port.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs##_port \
-  mov _result, __CLSWArgs##_port.Result \
-  release __CLSWMutex##_port \
-  compend
+  __lowspeedWrite(_port, 0, __HTPFI2CBuf, _result) \
+  release __PFMutex
 
 #define __HTPFComboPWM(_port, _channel, _outa, _outb, _result) \
   acquire __PFMutex \
@@ -6343,33 +6304,8 @@ ends
   call __PFComboPWMSub \
   set __PFPowerFuncMode, TRUE \
   call __HTPowerFunctionCalcBits \
-  compif EQ, isconst(_port), FALSE \
-  acquire __CLSWMutex0 \
-  acquire __CLSWMutex1 \
-  acquire __CLSWMutex2 \
-  acquire __CLSWMutex3 \
-  mov __CLSWArgs0.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  mov __CLSWArgs0.Port, _port \
-  mov __CLSWArgs0.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs0 \
-  mov _result, __CLSWArgs0.Result \
-  release __CLSWMutex0 \
-  release __CLSWMutex1 \
-  release __CLSWMutex2 \
-  release __CLSWMutex3 \
-  compelse \
-  compchk LT, _port, 0x04 \
-  compchk GTEQ, _port, 0x00 \
-  acquire __CLSWMutex##_port \
-  mov __CLSWArgs##_port.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  set __CLSWArgs##_port.Port, _port \
-  mov __CLSWArgs##_port.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs##_port \
-  mov _result, __CLSWArgs##_port.Result \
-  release __CLSWMutex##_port \
-  compend
+  __lowspeedWrite(_port, 0, __HTPFI2CBuf, _result) \
+  release __PFMutex
 
 #define __HTIRTrain(_port, _channel, _func, _PFMode, _result) \
   acquire __PFMutex \
@@ -6382,33 +6318,8 @@ ends
   compend \
   set __PFPowerFuncMode, _PFMode \
   call __HTPowerFunctionCalcBits \
-  compif EQ, isconst(_port), FALSE \
-  acquire __CLSWMutex0 \
-  acquire __CLSWMutex1 \
-  acquire __CLSWMutex2 \
-  acquire __CLSWMutex3 \
-  mov __CLSWArgs0.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  mov __CLSWArgs0.Port, _port \
-  mov __CLSWArgs0.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs0 \
-  mov _result, __CLSWArgs0.Result \
-  release __CLSWMutex0 \
-  release __CLSWMutex1 \
-  release __CLSWMutex2 \
-  release __CLSWMutex3 \
-  compelse \
-  compchk LT, _port, 0x04 \
-  compchk GTEQ, _port, 0x00 \
-  acquire __CLSWMutex##_port \
-  mov __CLSWArgs##_port.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  set __CLSWArgs##_port.Port, _port \
-  mov __CLSWArgs##_port.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs##_port \
-  mov _result, __CLSWArgs##_port.Result \
-  release __CLSWMutex##_port \
-  compend
+  __lowspeedWrite(_port, 0, __HTPFI2CBuf, _result) \
+  release __PFMutex
 
 #define __HTPFRawOutput(_port, _nibble0, _nibble1, _nibble2, _result) \
   acquire __PFMutex \
@@ -6418,33 +6329,8 @@ ends
   call __PFRawOutputSub \
   set __PFPowerFuncMode, TRUE \
   call __HTPowerFunctionCalcBits \
-  compif EQ, isconst(_port), FALSE \
-  acquire __CLSWMutex0 \
-  acquire __CLSWMutex1 \
-  acquire __CLSWMutex2 \
-  acquire __CLSWMutex3 \
-  mov __CLSWArgs0.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  mov __CLSWArgs0.Port, _port \
-  mov __CLSWArgs0.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs0 \
-  mov _result, __CLSWArgs0.Result \
-  release __CLSWMutex0 \
-  release __CLSWMutex1 \
-  release __CLSWMutex2 \
-  release __CLSWMutex3 \
-  compelse \
-  compchk LT, _port, 0x04 \
-  compchk GTEQ, _port, 0x00 \
-  acquire __CLSWMutex##_port \
-  mov __CLSWArgs##_port.Buffer, __HTPFI2CBuf \
-  release __PFMutex \
-  set __CLSWArgs##_port.Port, _port \
-  mov __CLSWArgs##_port.ReturnLen, 0 \
-  syscall CommLSWrite, __CLSWArgs##_port \
-  mov _result, __CLSWArgs##_port.Result \
-  release __CLSWMutex##_port \
-  compend
+  __lowspeedWrite(_port, 0, __HTPFI2CBuf, _result) \
+  release __PFMutex
 
 #define __HTPFRepeatLastCommand(_port, _count, _delay, _result) \
   acquire __PFMutex \
@@ -6456,7 +6342,7 @@ ends
   acquire __CLSWMutex3 \
   mov __CLSWArgs0.Buffer, __HTPFI2CBuf \
   release __PFMutex \
-  mov __CLSWArgs0.Port, _port \
+  or __CLSWArgs0.Port, _port, __LSWriteOptionsVar \
   mov __CLSWArgs0.ReturnLen, 0 \
   __HTPFRepeatLoop##__I__: \
   syscall CommLSWrite, __CLSWArgs0 \
@@ -6475,7 +6361,7 @@ ends
   acquire __CLSWMutex##_port \
   mov __CLSWArgs##_port.Buffer, __HTPFI2CBuf \
   release __PFMutex \
-  set __CLSWArgs##_port.Port, _port \
+  or __CLSWArgs##_port.Port, _port, __LSWriteOptions##_port \
   mov __CLSWArgs##_port.ReturnLen, 0 \
   __HTPFRepeatLoop##__I__: \
   syscall CommLSWrite, __CLSWArgs##_port \
@@ -7675,7 +7561,62 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
-#define __ReadSensorHTBarometer(_port, _t, _p, _result) \
+dseg segment
+  __ResetHTBCal byte[] 0xaa, 0x55
+  __SetHTBCal byte[] 0x55, 0xaa
+  __SetHTBCalByte1Var byte
+  __SetHTBCalByte2Var byte
+  __SetHTBCalByte10 byte
+  __SetHTBCalByte20 byte
+  __SetHTBCalByte11 byte
+  __SetHTBCalByte21 byte
+  __SetHTBCalByte12 byte
+  __SetHTBCalByte22 byte
+  __SetHTBCalByte13 byte
+  __SetHTBCalByte23 byte
+dseg ends
+
+#define __ResetHTBarometricCalibration(_port, _result) \
+  __MSWriteToRegister(_port, HT_ADDR_BAROMETRIC, HTBAR_REG_COMMAND, __ResetHTBCal, _result) \
+  tst EQ, _result, _result
+
+#define __SetHTBarometricCalibration(_port, _cal, _result) \
+  compif EQ, isconst(_port), FALSE \
+  acquire __RLSBmutex0 \
+  acquire __RLSBmutex1 \
+  acquire __RLSBmutex2 \
+  acquire __RLSBmutex3 \
+  mov __RLSReadPort, _port \
+  div __SetHTBCalByte1Var, _cal, 256 \
+  and __SetHTBCalByte2Var, _cal, 0xFF \
+  arrbuild __RLSReadBufVar, HT_ADDR_BAROMETRIC, HTBAR_REG_CALIBRATION, __SetHTBCalByte1Var, __SetHTBCalByte2Var \
+  set __RLSBytesCountVar, 0 \
+  call __ReadLSBytesVar \
+  tst EQ, _result, __RLSBResultVar \
+  release __RLSBmutex0 \
+  release __RLSBmutex1 \
+  release __RLSBmutex2 \
+  release __RLSBmutex3 \
+  compelse \
+  compchk LT, _port, 0x04 \
+  compchk GTEQ, _port, 0x00 \
+  acquire __RLSBmutex##_port \
+  div __SetHTBCalByte1##_port, _cal, 256 \
+  and __SetHTBCalByte2##_port, _cal, 0xFF \
+  arrbuild __RLSReadBuf##_port, HT_ADDR_BAROMETRIC, HTBAR_REG_CALIBRATION, __SetHTBCalByte1##_port, __SetHTBCalByte2##_port \
+  set __RLSBytesCount##_port, 0 \
+  call __ReadLSBytes##_port \
+  tst EQ, _result, __RLSBResult##_port \
+  release __RLSBmutex##_port \
+  compend \
+  brtst EQ, __SHTBCal_EndIf##__I__, _result \
+  wait 15 \
+  __MSWriteToRegister(_port, HT_ADDR_BAROMETRIC, HTBAR_REG_COMMAND, __SetHTBCal, _result) \
+  tst EQ, _result, _result \
+  __SHTBCal_EndIf##__I__: \
+  __IncI__
+
+#define __ReadSensorHTBarometric(_port, _t, _p, _result) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -8363,7 +8304,7 @@ __RFIDCont_Endif:
 ends
 
 subroutine __MSWriteBytesSub
-  mov __WDSC_lswArgs.Port, __WDSC_Port
+  or __WDSC_lswArgs.Port, __WDSC_Port, __LSWriteOptionsVar
   arrbuild __WDSC_lswArgs.Buffer, __WDSC_SensorAddress, __WDSC_SensorRegister, __WDSC_WriteBytes
   set __WDSC_lswArgs.ReturnLen, 0
   syscall CommLSWrite, __WDSC_lswArgs
@@ -8374,7 +8315,7 @@ __WDSC_StatusLoop:
 ends
 
 subroutine __MSReadLEValueSub
-  mov __RDSD_lswArgs.Port, __RDSD_Port
+  or __RDSD_lswArgs.Port, __RDSD_Port, __LSWriteOptionsVar
   arrbuild __RDSD_lswArgs.Buffer, __RDSD_SensorAddress, __RDSD_SensorRegister
   mov __RDSD_lswArgs.ReturnLen, __RDSD_NumBytesToRead
   syscall CommLSWrite, __RDSD_lswArgs
@@ -8421,7 +8362,7 @@ __RDSD_ReturnResults:
 ends
 
 subroutine __MSReadBEValueSub
-  mov __RDSD_lswArgs.Port, __RDSD_Port
+  or __RDSD_lswArgs.Port, __RDSD_Port, __LSWriteOptionsVar
   arrbuild __RDSD_lswArgs.Buffer, __RDSD_SensorAddress, __RDSD_SensorRegister
   mov __RDSD_lswArgs.ReturnLen, __RDSD_NumBytesToRead
   syscall CommLSWrite, __RDSD_lswArgs
@@ -12075,6 +12016,21 @@ ends
 #endif
 
 /** @} */ // end of LowLevelLowSpeedModuleFunctions group
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/**
+ * Set I2C options.
+ * This method lets you modify I2C options. Use this function to turn on
+ * or off the fast I2C mode and also control whether the standard I2C mode
+ * performs a restart prior to the read operation.
+ *
+ * \param _port The port whose I2C options you wish to change. See the
+ * \ref NBCInputPortConstants group. You may use a constant or a variable.
+ * \param _options The new option value. See \ref I2COptionConstants.
+ */
+#define SetI2COptions(_port, _options) __setI2COptions(_port, _options)
+
+#endif
 
 /** @} */ // end of LowSpeedModuleFunctions group
 /** @} */ // end of LowSpeedModule group
@@ -17666,6 +17622,31 @@ __remoteGetInputValues(_conn, _params, _result)
 #define ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, _result) __ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, _result)
 
 /**
+ * Reset HiTechnic Barometric sensor calibration.
+ * Reset the HiTechnic Barometric sensor to its factory calibration.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _result The function call result.
+ */
+#define ResetHTBarometricCalibration(_port, _result) __ResetHTBarometricCalibration(_port, _result)
+
+/**
+ * Set HiTechnic Barometric sensor calibration.
+ * Set the HiTechnic Barometric sensor pressure calibration value.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _cal The new pressure calibration value.
+ * \param _result The function call result.
+ */
+#define SetHTBarometricCalibration(_port, _cal, _result) __SetHTBarometricCalibration(_port, _cal, _result)
+
+/**
  * Read HiTechnic Barometric sensor values.
  * Read values from the HiTechnic Barometric sensor.
  * Returns a boolean value indicating whether or not the operation completed
@@ -17677,7 +17658,7 @@ __remoteGetInputValues(_conn, _params, _result)
  * \param _press Current barometric pressure in 1/1000 inches of mercury.
  * \param _result The function call result.
  */
-#define ReadSensorHTBarometer(_port, _temp, _press, _result) __ReadSensorHTBarometer(_port, _temp, _press, _result)
+#define ReadSensorHTBarometric(_port, _temp, _press, _result) __ReadSensorHTBarometric(_port, _temp, _press, _result)
 
 /** @} */ // end of HiTechnicAPI group
 

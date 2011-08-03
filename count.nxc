@@ -1,0 +1,14 @@
+void FooBar(int x)
+{
+  NumOut(0, LCD_LINE1, x);
+}
+
+task main()
+{
+  int i=0;
+  while (true)
+  {
+    i++;
+    FooBar(i);
+  }
+}

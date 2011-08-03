@@ -1,0 +1,16 @@
+#define pointer word
+
+thread main
+dseg segment
+  ptr pointer
+  x byte 4
+  y byte 2
+dseg ends
+
+  set ptr, &x
+  add @ptr, @ptr, 10
+  
+  
+  wait 10000
+
+endt

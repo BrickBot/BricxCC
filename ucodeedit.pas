@@ -52,9 +52,6 @@ type
   { TfrmCodeEdit }
 
   TfrmCodeEdit = class(TForm)
-    ilActions: TImageList;
-    mniExit: TMenuItem;
-    mniSepExit: TMenuItem;
     ToolBar1: TToolBar;
     ToolButton1: TToolButton;
     ToolButton2: TToolButton;
@@ -309,6 +306,7 @@ type
     fHighlighter: TSynCustomHighlighter;
     FResume : boolean;
     fNXCAPIBase : TStringList;
+    fSPCAPIBase : TStringList;
     newcount : integer;
     FActiveLine : integer;
     procedure HandleGetExpressions(Sender: TObject; aStrings: TStrings);
@@ -427,6 +425,7 @@ type
     function IsMaximized: Boolean;
   private
     procedure LoadNXCCompProp;
+    procedure LoadSPCCompProp;
 {$IFNDEF FPC}
     procedure DoLoadAPI(cp: TSynCompletionProposal; aStrings: TStrings);
 {$ENDIF}
@@ -438,6 +437,7 @@ type
     SynNBCSyn: TSynNBCSyn;
     SynRSSyn: TSynRSSyn;
     SynROPSSyn: TSynROPSSyn;
+    SynSPCSyn: TSynSPCSyn;
 {$IFNDEF FPC}
     // completion proposal components
     SynNBCCompProp: TSynCompletionProposal;
@@ -445,6 +445,7 @@ type
     SynNPGCompProp: TSynCompletionProposal;
     SynRSCompProp: TSynCompletionProposal;
     SynROPSCompProp: TSynCompletionProposal;
+    SynSPCCompProp: TSynCompletionProposal;
     scpParams: TSynCompletionProposal;
 {$ENDIF}
     // misc synedit components
@@ -518,7 +519,7 @@ implementation
 uses
   Clipbrd, Registry,
   uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uProgram, uCompStatus,
-  uRICComp, uCppCode, Transdlg,
+  uRICComp, uCppCode, Transdlg, uSPCCodeComp, 
   uNXTClasses, uNBCInterface, uNBCCommon, uEditorExperts, ParamUtils,
   uPSI_brick_common, uPSI_uSpirit, uPSI_FantomSpirit, uPSRuntime,
   uPSDisassembly, uPSDebugger, 
@@ -704,6 +705,7 @@ begin
   SynNXCCompProp := TSynCompletionProposal.Create(Self);
   SynNPGCompProp := TSynCompletionProposal.Create(Self);
   SynRSCompProp := TSynCompletionProposal.Create(Self);
+  SynSPCCompProp := TSynCompletionProposal.Create(Self);
   with SynNBCCompProp do
   begin
     Name := 'SynNBCCompProp';
@@ -836,6 +838,27 @@ begin
     ParamSepString := ' ';
     ShortCut := 16416;
   end;
+  with SynSPCCompProp do
+  begin
+    Name := 'SynSPCCompProp';
+    Options := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion];
+    NbLinesInWindow := 6;
+    Width := 262;
+    EndOfTokenChr := '()[].';
+    TriggerChars := '.';
+    Font.Charset := DEFAULT_CHARSET;
+    Font.Color := clWindowText;
+    Font.Height := -11;
+    Font.Name := 'MS Sans Serif';
+    Font.Style := [];
+    TitleFont.Charset := ANSI_CHARSET;
+    TitleFont.Color := clBtnText;
+    TitleFont.Height := -11;
+    TitleFont.Name := 'Arial';
+    TitleFont.Style := [fsBold];
+    ParamSepString := ' ';
+    ShortCut := 16416;
+  end;
 {$ENDIF}
 end;
 
@@ -846,6 +869,7 @@ begin
   SynNBCSyn  := TSynNBCSyn.Create(Self);
   SynRSSyn   := TSynRSSyn.Create(Self);
   SynROPSSyn := TSynROPSSyn.Create(Self);
+  SynSPCSyn  := TSynSPCSyn.Create(Self);
   with SynNXCSyn do
   begin
     Name := 'SynNXCSyn';
@@ -877,6 +901,17 @@ begin
   begin
     Name := 'SynROPSSyn';
 //    PackageSource := False;
+  end;
+  with SynSPCSyn do
+  begin
+    Name := 'SynSPCSyn';
+    DefaultFilter := 'SPC Files (*.spc)|*.spc';
+    Comments := [csCStyle];
+    DetectPreprocessor := True;
+    IdentifierChars := '#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
+    Keywords.Clear;
+    Commands.Clear;
+    Constants.Clear;
   end;
 end;
 
@@ -2170,6 +2205,10 @@ begin
   begin
     Self.HelpFile := ProgramDir + 'Help\nxc.hlp';
   end
+  else if FileIsSPC(AEF) then
+  begin
+    Self.HelpFile := ProgramDir + 'Help\spc.hlp';
+  end
   else if FileIsNPG(AEF) then
   begin
     Self.HelpFile := ProgramDir + 'Help\npg.hlp';
@@ -2231,7 +2270,7 @@ var
   SaveCursor : TCursor;
 begin
   if ShowCompilerStatus and UseInternalNBC and
-     FileIsNBCOrNXCOrNPGOrRICScript then
+     FileIsNBCOrNXCOrNPGOrRICScriptOrSPC then
     frmCompStatus.Show;
   Application.ProcessMessages;
 
@@ -2522,6 +2561,8 @@ begin
     SL := elNBC
   else if FileIsNXC(AEF) then
     SL := elNXC
+  else if FileIsSPC(AEF) then
+    SL := elSPC
   else if FileIsForth(AEF) then
     SL := elForth;
   line := TfmProcedureList.ShowForm(SL, TheEditor.Lines);
@@ -2628,6 +2669,7 @@ begin
   SynNPGCompProp.RemoveEditor(TheEditor);
   SynRSCompProp.RemoveEditor(TheEditor);
   SynROPSCompProp.RemoveEditor(TheEditor);
+  SynSPCCompProp.RemoveEditor(TheEditor);
   scpParams.RemoveEditor(TheEditor);
 
   HL := Self.Highlighter;
@@ -2637,6 +2679,10 @@ begin
   end
   else if HL = SynNXCSyn then begin
     SynNXCCompProp.AddEditor(TheEditor);
+    scpParams.AddEditor(TheEditor);
+  end
+  else if HL = SynSPCSyn then begin
+    SynSPCCompProp.AddEditor(TheEditor);
     scpParams.AddEditor(TheEditor);
   end
   else if HL = SynNPGSyn then
@@ -2675,6 +2721,13 @@ procedure TfrmCodeEdit.LoadNXCCompProp;
 begin
 {$IFNDEF FPC}
   DoLoadAPI(SynNXCCompProp, fNXCAPIBase);
+{$ENDIF}
+end;
+
+procedure TfrmCodeEdit.LoadSPCCompProp;
+begin
+{$IFNDEF FPC}
+  DoLoadAPI(SynSPCCompProp, fSPCAPIBase);
 {$ENDIF}
 end;
 
@@ -2852,7 +2905,7 @@ begin
        break;
      end;
     end;
-    if FileIsNBCOrNXCOrNPGOrRICScript then
+    if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC then
       break;
   end;
   bThisFile := True;
@@ -2965,7 +3018,9 @@ begin
           else if FileIsRICScript(AEF) then
             NameIdx := RICScriptCodeCompIndex(lookup)
           else if FileIsROPS(AEF) then
-            NameIdx := ROPSCodeCompIndex(lookup);
+            NameIdx := ROPSCodeCompIndex(lookup)
+          else if FileIsSPC(AEF) then
+            NameIdx := SPCCodeCompIndex(lookup);
           FoundMatch := NameIdx > -1;
           if not(FoundMatch) then
           begin
@@ -3001,6 +3056,10 @@ begin
       else if FileIsROPS(AEF) then begin
         AddROPSCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := '; ';
+      end
+      else if FileIsSPC(AEF) then begin
+        AddSPCCodeCompParams(SCP.ItemList, NameIdx);
+        SCP.ParamSepString := ', ';
       end;
     end;
   end
@@ -3017,6 +3076,7 @@ begin
   IsNew := True;
   fFilename := sUntitled + '.nxc';
   fNXCAPIBase := TStringList.Create;
+  fSPCAPIBase := TStringList.Create;
   CreateCompPropComponents;
   CreateMainFormHighlighters;
   CreatePascalScriptComponents;
@@ -3033,6 +3093,7 @@ begin
   R := TRegistry.Create;
   try
     LoadNXCAPIValues(R, nil, SynNXCSyn);
+    LoadSPCAPIValues(R, nil, SynSPCSyn);
   finally
     R.Free;
   end;
@@ -3313,6 +3374,8 @@ procedure TfrmCodeEdit.HandleExplorerFinished(Sender: TObject);
 begin
   if FileIsNXC then
     LoadNXCCompProp;
+  if FileIsSPC then
+    LoadSPCCompProp;
 end;
 
 procedure TfrmCodeEdit.HandleOnAddConstruct(Sender: TObject;
@@ -3669,6 +3732,7 @@ begin
   SynNPGCompProp.RemoveEditor(TheEditor);
   SynRSCompProp.RemoveEditor(TheEditor);
   SynROPSCompProp.RemoveEditor(TheEditor);
+  SynSPCCompProp.RemoveEditor(TheEditor);
   scpParams.RemoveEditor(TheEditor);
 {$ENDIF}
 {$IFNDEF FPC}
@@ -3680,6 +3744,7 @@ begin
     frmMacroManager.MacroLibrary.ActiveEditor := nil;
 {$ENDIF}
   FreeAndNil(fNXCAPIBase);
+  FreeAndNil(fSPCAPIBase);
   if BrickComm.VerboseMode then
     Clipboard.AsText := BrickComm.LinkLog;
   BrickComm.OnOpenStateChanged := nil;
@@ -3711,8 +3776,15 @@ begin
   fNXCAPIBase.AddStrings(SynNXCSyn.Constants);
   fNXCAPIBase.AddStrings(SynNXCSyn.Keywords);
   fNXCAPIBase.Sort;
+  // load SPC syntax completion proposal component
+  fSPCAPIBase.Clear;
+  fSPCAPIBase.AddStrings(SynSPCSyn.Commands);
+  fSPCAPIBase.AddStrings(SynSPCSyn.Constants);
+  fSPCAPIBase.AddStrings(SynSPCSyn.Keywords);
+  fSPCAPIBase.Sort;
 {$IFNDEF FPC}
   SynNXCCompProp.ItemList := fNXCAPIBase;
+  SynSPCCompProp.ItemList := fSPCAPIBase;
   // configure code completion options for NQC, NBC, NXC, and RICScript
   if CCInsensitive then
     TmpOptions := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion]
@@ -3720,6 +3792,7 @@ begin
     TmpOptions := [scoAnsiStrings, scoCaseSensitive, scoLimitToMatchedText, scoEndCharCompletion];
   SynNBCCompProp.Options := TmpOptions;
   SynNXCCompProp.Options := TmpOptions;
+  SynSPCCompProp.Options := TmpOptions;
   SynRSCompProp.Options  := TmpOptions;
 {$ENDIF}
 //  SynAutoComp.AutoCompleteList.Assign(PrefForm.CodeTemplates);

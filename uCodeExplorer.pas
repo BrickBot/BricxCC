@@ -106,10 +106,11 @@ implementation
 
 uses
   SysUtils, uExplorerOptions, uNXCProcLexer, uNBCProcLexer,
+  uSPCProcLexer, uPasProcLexer, 
   uLocalizedStrings, uGuiUtils, uBasicPrefs, uMiscDefines,
 {$IFNDEF NXT_ONLY}
   uNQCProcLexer, uMindScriptProcLexer, uCppProcLexer,
-  uPasProcLexer, uForthProcLexer, uLASMProcLexer, 
+  uForthProcLexer, uLASMProcLexer,
   SynHighlighterForth, SynHighlighterJava, SynHighlighterCpp,
   SynHighlighterMindScript, SynHighlighterLASM, SynHighlighterPas,
   SynHighlighterROPS,
@@ -474,6 +475,8 @@ begin
       Result := TNBCProcLexer.Create(True)
     else if H is TSynNXCSyn then
       Result := TNXCProcLexer.Create(True)
+    else if H is TSynSPCSyn then
+      Result := TSPCProcLexer.Create(True)
 {$IFNDEF NXT_ONLY}
     else if H is TSynNQCSyn then
       Result := TNQCProcLexer.Create(True)
@@ -483,8 +486,6 @@ begin
       Result := TCppProcLexer.Create(True)
     else if H is TSynPasSyn then
       Result := TPasProcLexer.Create(True)
-    else if H is TSynROPSSyn then
-      Result := TPasProcLexer.Create(True)
     else if H is TSynJavaSyn then
       Result := TJavaProcLexer.Create(True)
     else if H is TSynForthSyn then
@@ -492,6 +493,8 @@ begin
     else if H is TSynLASMSyn then
       Result := TLASMProcLexer.Create(True)
 {$ENDIF}
+    else if H is TSynROPSSyn then
+      Result := TPasProcLexer.Create(True)
     else
       Result := TUnknownProcLexer.Create(True);
   end
@@ -510,6 +513,8 @@ begin
       Result := elNBC
     else if H is TSynNXCSyn then
       Result := elNXC
+    else if H is TSynSPCSyn then
+      Result := elSPC
 {$IFNDEF NXT_ONLY}
     else if H is TSynNQCSyn then
       Result := elNQC
@@ -519,8 +524,6 @@ begin
       Result := elCpp
     else if H is TSynPasSyn then
       Result := elPas
-    else if H is TSynROPSSyn then
-      Result := elPas
     else if H is TSynJavaSyn then
       Result := elJava
     else if H is TSynForthSyn then
@@ -528,6 +531,8 @@ begin
     else if H is TSynLASMSyn then
       Result := elLASM
 {$ENDIF}
+    else if H is TSynROPSSyn then
+      Result := elPas
     else
       Result := elUnknown;
   end

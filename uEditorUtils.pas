@@ -19,7 +19,7 @@ unit uEditorUtils;
 interface
 
 uses
-  Classes, StdCtrls, SynEdit, SynEditMiscClasses, uNXTClasses, uBasicPrefs,
+  Classes, StdCtrls, SynEdit, SynEditMiscClasses, uNBCCommon, uBasicPrefs,
   uPSComponent, uProgram;
 
 type
@@ -287,7 +287,7 @@ begin
     Result := Result + ' ' + NQCSwitches
   else if FileIsMindScriptOrLASM then
     Result := Result + ' ' + LCCSwitches
-  else if FileIsNBCOrNXCOrNPGOrRICScript then
+  else if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC then
     Result := Result + ' ' + NBCSwitches
   else if FileIsJava then
     Result := Result + ' ' + JavaSwitches
@@ -351,7 +351,7 @@ begin
   // default compiler is NQC.
   if FileIsMindScriptOrLASM(H) then
     commandstr := LCCPath
-  else if FileIsNBCOrNXCOrNPGOrRICScript(H) then
+  else if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(H) then
     commandstr := NBCPath
   else if FileIsCPPOrPascalOrJava(H) then
     commandstr := '/bin/make'
@@ -360,7 +360,7 @@ begin
   else
     commandstr := DefaultPath;
 
-  if FileIsNBCOrNXCOrNPGOrRICScript(H) then
+  if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(H) then
   begin
     commandstr := commandstr + ' -Y="' + ChangeFileExt(sFilename, '.sym') + '"';
     commandstr := commandstr + Format(' -Z%d', [NBCOptLevel]);
@@ -417,13 +417,15 @@ begin
   if not FileIsCPPOrPascalOrJava(H) then
     commandstr := commandstr + ' -T' + OE + GetTarget;
 
-  if (FileIsNQC(H) or FileIsNBCOrNXCOrNPGOrRICScript(H)) and SaveBinaryOutput then
+  if (FileIsNQC(H) or FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(H)) and SaveBinaryOutput then
   begin
     extbin := '.rcx';
     if FileIsNBC(H) or FileIsNXC(H) then
       extbin := '.rxe'
     else if FileIsNPG(H) then
       extbin := '.rpg'
+    else if FileIsSPC(H) then
+      extbin := '.obj'
     else if FileIsRICScript(H) then
       extbin := '.ric';
     commandstr := commandstr + ' -O' + OE + '"' + ChangeFileExt(sFilename, extbin) + '"';
@@ -435,9 +437,9 @@ begin
     begin
       commandstr := commandstr + ' -d';
       // the internal NBC compiler does not need the port
-      if not (FileIsNBCOrNXCOrNPGOrRICScript(H) and UseInternalNBC) then
+      if not (FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(H) and UseInternalNBC) then
         commandstr := commandstr + ' -S' + OptionalEquals + LocalPort;
-      if FileIsNBCOrNXCOrNPGOrRICScript(H) then
+      if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(H) then
       begin
         if BrickComm.UseBluetooth then
           commandstr := commandstr + ' -BT';
@@ -479,7 +481,7 @@ begin
     else
       Result := IncludeTrailingPathDelimiter(sSaveDir);
   end
-  else if FileIsNBCOrNXCOrNPGOrRICScript(H) then
+  else if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(H) then
   begin
     if NBCIncludePath <> '' then
       Result := NBCIncludePath + ';' + sSaveDir
@@ -980,7 +982,7 @@ begin
         end;
       end;
     end
-    else if FileIsNBCOrNXCOrNPGOrRICScript(H) and UseInternalNBC then
+    else if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(H) and UseInternalNBC then
     begin
       DebugLog('CompileIt: launching internal NBC compiler');
       NQC_Result := InternalNBCCompile(commandstr, sceHandler);
@@ -1052,7 +1054,7 @@ begin
 {$ENDIF}
       if FileIsMindScriptOrLASM(H) then
         outStr := outStr + GetLASMErrorString(NQC_Result)
-      else if FileIsNBCOrNXCOrNPGOrRICScript(H) or FileIsROPS(H) then
+      else if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(H) or FileIsROPS(H) then
         outStr := outStr + GetNBCErrorString(NQC_Result)
       else
         outStr := outStr + GetGNUErrorString(NQC_Result);

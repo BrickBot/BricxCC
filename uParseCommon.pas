@@ -28,7 +28,7 @@ type
                ptConstructors, ptDestructors);
 
   TExploredLanguage = (elNQC, elMindScript, elCpp, elPas, elJava, elForth,
-    elNBC, elLASM, elNXC, elUnknown);
+    elNBC, elLASM, elNXC, elSPC, elUnknown);
 
   TCodeExplorerProperties = record
     CategorySort : string;
@@ -78,6 +78,7 @@ const
      (false, false,  true,  true, false, false, false), // elNBC
      (false, false,  true,  true, false, false, false), // elLASM
      (false,  true, false,  true,  true, false, false), // elNXC
+     (false,  true, false,  true,  true, false, false), // elSPC
      (false,  true, false,  true,  true, false, false)  // elUnknown
     );
 

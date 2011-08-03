@@ -1,0 +1,42 @@
+task main()
+{
+  float x[4];
+  float y;
+  y = x[0];
+  NumOut(0, LCD_LINE1, y);
+}
+
+/*
+Optimization Level 2
+
+thread main
+	subcall __initialize_global_data, ____initialize_global_data_return
+	arrinit __main_7qG2_x_7qG2_000, __constVal0, __constVal4
+	set __signed_stack_001main, 0
+	index __main_7qG2_y_7qG2_000, __main_7qG2_x_7qG2_000, __signed_stack_001main
+	set __signed_stack_001main, 0
+	set __signed_stack_002main, 56
+	mov __DF0main, __main_7qG2_y_7qG2_000
+	mov __TextOutArgs.Location.X, __signed_stack_001main
+	mov __TextOutArgs.Location.Y, __signed_stack_002main
+	set __TextOutArgs.Options, 0
+	numtostr __TextOutArgs.Text, __DF0main
+	syscall 13, __TextOutArgs
+	exit -1, -1
+endt
+
+Optimization Level 4
+thread main
+	subcall __initialize_global_data, ____initialize_global_data_return
+	arrinit __main_7qG2_x_7qG2_000, __constVal0, __constVal4
+	index __main_7qG2_y_7qG2_000, __main_7qG2_x_7qG2_000, __constVal0
+	set __TextOutArgs.Location.X, 0
+	set __TextOutArgs.Location.Y, 56
+	set __TextOutArgs.Options, 0
+	numtostr __TextOutArgs.Text, __main_7qG2_y_7qG2_000
+	syscall 13, __TextOutArgs
+	exit -1, -1
+endt
+
+*/
+

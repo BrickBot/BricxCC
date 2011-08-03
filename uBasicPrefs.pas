@@ -148,7 +148,7 @@ var
 
 {Templates}
 const
-  NUM_LANGS = 15;
+  NUM_LANGS = 16;
   LANG_CS = 0;
   LANG_CPP = 1;
   LANG_PAS = 2;

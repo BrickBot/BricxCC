@@ -22,7 +22,8 @@ uses
   Parser10, uNXTConstants, Classes, SysUtils;
 
 type
-  TLangName = (lnNBC, lnNXC, lnNXCHeader, lnRICScript, lnUnknown);
+  TLangName = (lnNBC, lnNXC, lnNXCHeader, lnRICScript, lnSPC, lnUnknown);
+  TCompilerStatusChangeEvent = procedure(Sender : TObject; const StatusMsg : string; const bDone : boolean) of object;
 
   TNBCExpParser = class(TExpParser)
   private
@@ -158,6 +159,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Emit(aStrings : TStrings);
+    function AsString : string;
     property Name : string read fName write fName;
     property Code : TStrings read fCode write SetCode;
     property LocalVariables : TVariableList read fVariables;
@@ -197,9 +199,12 @@ type
     property Name : string read GetName;
   end;
 
+  TAcquireReleaseHelperEvent = procedure(Sender : TObject; bAcquire : boolean; const aName : string) of object;
+
   TArrayHelperVars = class(TCollection)
   private
-    fNBCSrc: TStrings;
+    fASMSrc: TStrings;
+    fOnAcquireReleaseHelper : TAcquireReleaseHelperEvent;
     function GetItem(Index: Integer): TArrayHelperVar;
     procedure SetItem(Index: Integer; const Value: TArrayHelperVar);
   public
@@ -210,7 +215,7 @@ type
     function  GetHelper(const tname, udType : string; const dt : char) : TArrayHelperVar;
     procedure ReleaseHelper(aHelper : TArrayHelperVar);
     property  Items[Index: Integer]: TArrayHelperVar read GetItem write SetItem; default;
-    property  NBCSource : TStrings read fNBCSrc write fNBCSrc;
+    property  OnAcquireReleaseHelper : TAcquireReleaseHelperEvent read fOnAcquireReleaseHelper write fOnAcquireReleaseHelper;
   end;
 
 const
@@ -610,7 +615,7 @@ const
     ( ID: 74; Name: 'syscall74'; ),
     ( ID: 75; Name: 'syscall75'; ),
     ( ID: 76; Name: 'syscall76'; ),
-    ( ID: 77; Name: 'syscall77'; ),
+    ( ID: 77; Name: 'InputPinFunction'; ),
     ( ID: 78; Name: 'IOMapReadByID'; ),
     ( ID: 79; Name: 'IOMapWriteByID'; ),
     ( ID: 80; Name: 'DisplayExecuteFunction'; ),
@@ -1745,6 +1750,70 @@ end;
 
 { TInlineFunction }
 
+function TInlineFunction.AsString: string;
+var
+  tmpCode, oldname, newname, NameInline : string;
+  i : integer;
+  fp : TFunctionParameter;
+begin
+  inc(fEmitCount);
+  // adjust labels
+  tmpCode := FixupLabels(fCode.Text);
+  tmpCode := Replace(tmpCode, 'return', Format('jmp %s', [EndLabel]));
+  // do all the variable replacing that is needed
+  for i := 0 to Parameters.Count - 1 do
+  begin
+    fp := Parameters[i];
+    oldname := ApplyDecoration(fp.ProcName, fp.Name, 0);
+    newname := InlineName(CurrentCaller, oldname);
+    // is this parameter a constant?
+    if fp.IsConstant and not fp.IsReference then
+      tmpCode := Replace(tmpCode, oldname, fp.ConstantValue)
+    else
+      tmpCode := Replace(tmpCode, oldname, newname);
+  end;
+  for i := 0 to LocalVariables.Count - 1 do
+  begin
+    oldname := LocalVariables[i].Name;
+    newname := InlineName(CurrentCaller, oldname);
+    tmpCode := Replace(tmpCode, oldname, newname);
+  end;
+  // need to fix string return buffer name, string temp buffer name,
+  // register name, and all the stack variable names.
+  // YUCKY !!!!!!!
+  NameInline := InlineName(CurrentCaller, Name);
+  for i := Low(REGVARS_ARRAY) to High(REGVARS_ARRAY) do
+  begin
+    oldname := Format(REGVARS_ARRAY[i], [Name]);
+    newname := Format(REGVARS_ARRAY[i], [NameInline]);
+    tmpCode := Replace(tmpCode, oldName, newName);
+  end;
+  oldname := Format('__result_%s', [Name]);
+  newname := Format('__result_%s', [NameInline]);
+  tmpCode := Replace(tmpCode, oldName, newName);
+  for i := 1 to MaxStackDepth do
+  begin
+    oldname := Format('__signed_stack_%3.3d%s', [i, Name]);
+    newname := Format('__signed_stack_%3.3d%s', [i, NameInline]);
+    tmpCode := Replace(tmpCode, oldName, newName);
+  end;
+  for i := 1 to MaxStackDepth do
+  begin
+    oldname := Format('__unsigned_stack_%3.3d%s', [i, Name]);
+    newname := Format('__unsigned_stack_%3.3d%s', [i, NameInline]);
+    tmpCode := Replace(tmpCode, oldName, newName);
+  end;
+  for i := 1 to MaxStackDepth do
+  begin
+    oldname := Format('__float_stack_%3.3d%s', [i, Name]);
+    newname := Format('__float_stack_%3.3d%s', [i, NameInline]);
+    tmpCode := Replace(tmpCode, oldName, newName);
+  end;
+  if Pos(EndLabel, tmpCode) > 0 then
+    tmpCode := tmpCode + #13#10 + EndLabel + ':';
+  Result := tmpCode;
+end;
+
 constructor TInlineFunction.Create(ACollection: TCollection);
 begin
   inherited;
@@ -1769,68 +1838,10 @@ end;
 procedure TInlineFunction.Emit(aStrings: TStrings);
 var
   tmpSL : TStringList;
-  tmpCode, oldname, newname, NameInline : string;
-  i : integer;
-  fp : TFunctionParameter;
 begin
-  inc(fEmitCount);
-  // adjust labels
   tmpSL := TStringList.Create;
   try
-    tmpCode := FixupLabels(fCode.Text);
-    tmpCode := Replace(tmpCode, 'return', Format('jmp %s', [EndLabel]));
-    // do all the variable replacing that is needed
-    for i := 0 to Parameters.Count - 1 do
-    begin
-      fp := Parameters[i];
-      oldname := ApplyDecoration(fp.ProcName, fp.Name, 0);
-      newname := InlineName(CurrentCaller, oldname);
-      // is this parameter a constant?
-      if fp.IsConstant and not fp.IsReference then
-        tmpCode := Replace(tmpCode, oldname, fp.ConstantValue)
-      else
-        tmpCode := Replace(tmpCode, oldname, newname);
-    end;
-    for i := 0 to LocalVariables.Count - 1 do
-    begin
-      oldname := LocalVariables[i].Name;
-      newname := InlineName(CurrentCaller, oldname);
-      tmpCode := Replace(tmpCode, oldname, newname);
-    end;
-    // need to fix string return buffer name, string temp buffer name,
-    // register name, and all the stack variable names.
-    // YUCKY !!!!!!!
-    NameInline := InlineName(CurrentCaller, Name);
-    for i := Low(REGVARS_ARRAY) to High(REGVARS_ARRAY) do
-    begin
-      oldname := Format(REGVARS_ARRAY[i], [Name]);
-      newname := Format(REGVARS_ARRAY[i], [NameInline]);
-      tmpCode := Replace(tmpCode, oldName, newName);
-    end;
-    oldname := Format('__result_%s', [Name]);
-    newname := Format('__result_%s', [NameInline]);
-    tmpCode := Replace(tmpCode, oldName, newName);
-    for i := 1 to MaxStackDepth do
-    begin
-      oldname := Format('__signed_stack_%3.3d%s', [i, Name]);
-      newname := Format('__signed_stack_%3.3d%s', [i, NameInline]);
-      tmpCode := Replace(tmpCode, oldName, newName);
-    end;
-    for i := 1 to MaxStackDepth do
-    begin
-      oldname := Format('__unsigned_stack_%3.3d%s', [i, Name]);
-      newname := Format('__unsigned_stack_%3.3d%s', [i, NameInline]);
-      tmpCode := Replace(tmpCode, oldName, newName);
-    end;
-    for i := 1 to MaxStackDepth do
-    begin
-      oldname := Format('__float_stack_%3.3d%s', [i, Name]);
-      newname := Format('__float_stack_%3.3d%s', [i, NameInline]);
-      tmpCode := Replace(tmpCode, oldName, newName);
-    end;
-    if Pos(EndLabel, tmpCode) > 0 then
-      tmpCode := tmpCode + #13#10 + EndLabel + ':';
-    tmpSL.Text := tmpCode;
+    tmpSL.Text := AsString;
     aStrings.AddStrings(tmpSL);
   finally
     tmpSL.Free;
@@ -2280,8 +2291,8 @@ begin
     Result.fIndex          := newIdx;
   end;
   Result.fLocked := True;
-  if Assigned(NBCSource) then
-    NBCSource.Add('#pragma acquire(' + Result.Name + ')');
+  if Assigned(fOnAcquireReleaseHelper) then
+    fOnAcquireReleaseHelper(Self, True, Result.Name);
 end;
 
 function TArrayHelperVars.GetItem(Index: Integer): TArrayHelperVar;
@@ -2312,8 +2323,8 @@ end;
 procedure TArrayHelperVars.ReleaseHelper(aHelper: TArrayHelperVar);
 begin
   aHelper.fLocked := False;
-  if Assigned(NBCSource) then
-    NBCSource.Add('#pragma release(' + aHelper.Name + ')');
+  if Assigned(fOnAcquireReleaseHelper) then
+    fOnAcquireReleaseHelper(Self, False, aHelper.Name);
 end;
 
 procedure TArrayHelperVars.SetItem(Index: Integer; const Value: TArrayHelperVar);
