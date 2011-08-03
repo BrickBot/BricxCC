@@ -461,6 +461,7 @@ type
     function ProcessArrayDimensions(var lenexpr : string) : string;
     procedure CheckForCast;
     procedure HandleCast;
+    procedure HandleAcquireReleaseHelper(Sender : TObject; bAcquire : boolean; const aName : string);
   protected
     fTmpAsmLines : TStrings;
     fBadProgram : boolean;
@@ -2492,7 +2493,7 @@ procedure TNXCComp.Trailer;
 var
   tmp : TStrings;
 begin
-  DoCompilerStatusChange(sNXCGenerateTrailer);
+  DoCompilerStatusChange(Format(sXXXGenerateTrailer, ['NXC']));
   CheckForMain;
   // handle stack variables
   tmp := TStringList.Create;
@@ -5645,7 +5646,7 @@ var
   dt : char;
   tname : string;
 begin
-  DoCompilerStatusChange(sNXCProcessGlobals);
+  DoCompilerStatusChange(Format(sXXXProcessGlobals, ['NXC']));
   bUnsigned := False;
   bInline   := False;
   bSafeCall := False;
@@ -6187,7 +6188,7 @@ begin
     Scan;
     CheckIdent;
     Name := Value;
-    DoCompilerStatusChange(Format(sNXCProcedure, [Name]));
+    DoCompilerStatusChange(Format(sXXXProcedure, ['NXC', Name]));
     if bIsSub and (Name = 'main') then
       AbortMsg(sMainMustBeTask);
     protoexists := False;
@@ -6306,7 +6307,7 @@ procedure TNXCComp.FunctionBlock(Name, tname : string; dt: char;
 var
   protoexists : boolean;
 begin
-  DoCompilerStatusChange(Format(sNXCFunction, [Name]));
+  DoCompilerStatusChange(Format(sXXXFunction, ['NXC', Name]));
   if bInline then
     IncrementInlineDepth;
   if Name = 'main' then
@@ -6403,7 +6404,7 @@ begin
   fStackVarNames := TStringList.Create;
   fNBCSrc := TStringList.Create;
   fArrayHelpers := TArrayHelperVars.Create;
-  fArrayHelpers.NBCSource := fNBCSrc;
+  fArrayHelpers.OnAcquireReleaseHelper := HandleAcquireReleaseHelper;
   fMS := TMemoryStream.Create;
   fMessages := TStringList.Create;
   fIncludeDirs := TStringList.Create;
@@ -6475,7 +6476,7 @@ end;
 procedure TNXCComp.InternalParseStream;
 begin
   try
-    DoCompilerStatusChange(sNXCCompBegin);
+    DoCompilerStatusChange(Format(sXXXCompBegin, ['NXC']));
     DoCompilerStatusChange(Format(sCompileTargets, [FirmwareVersion, BoolToString(EnhancedFirmware)]));
     fFuncParams.Clear;
     fThreadNames.Clear;
@@ -6488,15 +6489,15 @@ begin
     fLastErrMsg     := '';
     fLHSDataType    := #0;
     fLHSName        := '';
-    DoCompilerStatusChange(sNXCPreprocess);
+    DoCompilerStatusChange(Format(sXXXPreprocess, ['NXC']));
     PreProcess;
     fMS.Position := 0;
     fParenDepth  := 0;
-    DoCompilerStatusChange(sNXCInitProgram);
+    DoCompilerStatusChange(Format(sXXXInitProgram, ['NXC']));
     Init;
-    DoCompilerStatusChange(sNXCParseProg);
+    DoCompilerStatusChange(Format(sXXXParseProg, ['NXC']));
     Prog;
-    DoCompilerStatusChange(sNXCCodeGenComplete);
+    DoCompilerStatusChange(Format(sXXXCodeGenComplete, ['NXC']));
   except
     on E : EAbort do
     begin
@@ -10022,6 +10023,15 @@ end;
 procedure TNXCComp.HandleCast;
 begin
 
+end;
+
+procedure TNXCComp.HandleAcquireReleaseHelper(Sender: TObject;
+  bAcquire: boolean; const aName: string);
+begin
+  if bAcquire then
+    NBCSource.Add('#pragma acquire(' + aName + ')')
+  else
+    NBCSource.Add('#pragma release(' + aName + ')');
 end;
 
 end.

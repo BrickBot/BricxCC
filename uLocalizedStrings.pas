@@ -561,16 +561,6 @@ resourcestring
   sInvalidArrayIndex       = 'Invalid array index';
   sFloatNotSupported       = 'float types are not supported at the specified firmware version';
   sNoUnsignedFloat         = 'float types cannot be declared as unsigned';
-  sMainTaskNotFound        = 'No task named "main" exists';
-  sNXCGenerateTrailer      = 'NXC generate trailer';
-  sNXCProcessGlobals       = 'NXC processing global declarations';
-  sNXCProcedure            = 'NXC processing procedure block: %s';
-  sNXCFunction             = 'NXC processing function block: %s';
-  sNXCCompBegin            = 'NXC compilation begins';
-  sNXCPreprocess           = 'Running NXC preprocessor';
-  sNXCInitProgram          = 'NXC init program';
-  sNXCParseProg            = 'NXC parse program code';
-  sNXCCodeGenComplete      = 'NXC code generation finished';
   sConstNotInline          = 'Only inline functions can correctly use non-reference constant parameters';
   sInvalidFuncDecl         = 'Declaration syntax error';
   sDefaultParamError       = 'Invalid parameter syntax with default values';
@@ -582,6 +572,19 @@ resourcestring
   sConstOrConstExpr        = 'constant or constant expression';
   sNotAnAPIFunc            = '%s is not an API function';
   sNotAnAPIStrFunc         = '%s is not an API string function';
+
+// shared between uNXCComp and uSPCComp
+resourcestring
+  sMainTaskNotFound     = 'No task named "main" exists';
+  sXXXGenerateTrailer   = '%s generate trailer';
+  sXXXProcessGlobals    = '%s processing global declarations';
+  sXXXProcedure         = '%s processing procedure block: %s';
+  sXXXFunction          = '%s processing function block: %s';
+  sXXXCompBegin         = '%s compilation begins';
+  sXXXPreprocess        = 'Running %s preprocessor';
+  sXXXInitProgram       = '%s init program';
+  sXXXParseProg         = '%s parse program code';
+  sXXXCodeGenComplete   = '%s code generation finished';
 
 // uNBCCommon unit
 resourcestring
@@ -624,26 +627,26 @@ resourcestring
   UsageNoSystem  = '   -n: prevent the system file from being included';
   UsageDefine    = '   -D=<sym>[=<value>]: define macro <sym>';
   UsageDecompile = '   -x: decompile program';
-  UsageOptimize  = '   -Z[1|2]: turn on compiler optimizations';
+  UsageOptimize  = '   -Z[1|2|3|4|5|6]: turn on compiler optimizations';
   UsageMaxErrors = '   -ER=n: set maximum errors before aborting (0 == no limit)';
   UsageMaxDepth  = '   -PD=n: set max preprocessor recursion depth (default == 10)';
   UsageOutput    = '   -O=<outfile> : specify output file';
   UsageErrors    = '   -E=<filename> : write compiler messages to <filename>';
   UsageIncludes  = '   -I=<path>: search <path> for include files';
-  UsageNBCOutput = '   -nbc=<filename> : save NXC intermediate NBC code to <filename>';
+  UsageASMOutput = '   -asm=<filename> : save intermediate (assembler) code to <filename>';
   UsageListing   = '   -L=<filename> : generate code listing to <filename>';
   UsageSymbols   = '   -Y=<filename> : generate symbol table to <filename>';
   UsageWarnings  = '   -w[-|+] : warnings off or on (default is on)';
   UsageStatusMsg = '   -sm[-|+] : status messages off or on (default is on)';
   UsageEnhanced  = '   -EF : enhanced firmware';
   UsageSafecall  = '   -safecall: NXC will wrap all function calls in Acquire/Release';
-  UsageAPI       = '   -api: dump the API to stdout';
+  UsageAPI       = '   -api: dump the NBC/NXC API to stdout';
   UsageFirmVer   = '   -v=n: set the targeted firmware version (default == 128, NXT 1.1 == 105)';
   UsageHelp      = '   -help : display command line options';
 
 // uEditorExperts.pas
 resourcestring
-  SNoTokens = 'No tokens found to align on.';
+  SNoTokens           = 'No tokens found to align on.';
   sEECommentName      = 'Comment Code';
   sEEUncommentName    = 'Uncomment Code';
   sEEAlignName        = 'Align Lines';
@@ -708,16 +711,23 @@ resourcestring
 // uNBCInterface.pas
 resourcestring
   sCannotFindFile       = 'Unable to find the specified input file'#13#10'File "%s" ; line 1';
+  sSPCCompilationFailed = 'SPC compilation failed.';
   sNXCCompilationFailed = 'NXC compilation failed.';
   sNBCCompilationFailed = 'NBC compilation failed.';
   sVersionCheckFailed   = 'Firmware version check failed.';
 
-// uNXTWatchList
+// uNXTWatchList.pas
 resourcestring
   sConfirmDeleteAllWatches = 'Delete all watches?';
   sWatchName = 'Watch Name';
   sWatchValue = 'Value';
   sNotYetImplemented = 'Not yet implemented';
+
+// uSPCComp.pas
+resourcestring
+  sConstantShifts   = 'shifts must be constant';
+  sArrayLenRequired = 'Arrays without initializer must have a constant length specified.';
+  sArrayLenInvalid  = 'Invalid array length specification';
 
 implementation
 

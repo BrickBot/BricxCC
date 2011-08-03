@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-07-08
- * \version 66
+ * \date 2011-07-27
+ * \version 67
  */
 
 #ifndef NBCCOMMON_H
@@ -264,6 +264,7 @@
 #define ListFiles              47 /*!< List files that match the specified filename pattern */
 
 #ifdef __ENHANCED_FIRMWARE
+#define InputPinFunction       77 /*!< Execute the Input module's pin function */
 #define IOMapReadByID          78 /*!< Read data from one of the firmware module's IOMap structures using the module's ID */
 #define IOMapWriteByID         79 /*!< Write data to one of the firmware module's IOMap structures using the module's ID */
 #define DisplayExecuteFunction 80 /*!< Execute one of the Display module's internal functions */
@@ -1151,6 +1152,28 @@
 #define InputOffsetColorCalibrationState(p)    (80+((p)*84)+80)          /*!< Read color sensor calibration state */
 #endif
 /** @} */  // end of InputIOMap group
+
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/** @defgroup InputPinFuncConstants Constants to use with the Input module's Pin function
+ * Constants for use with the Input module's Pin function.  These are the commands
+ * that you can pass into the pin function to change digital pin directions,
+ * set or clear pins, or read pin values. Also in this group are mask constants
+ * and a macro for ORing a microsecond wait onto the command byte which will
+ * occur after the command has been executed.
+ * @{
+ */
+#define INPUT_PINCMD_DIR    0x00 /*!< Set digital pin(s) direction */
+#define INPUT_PINCMD_SET    0x01 /*!< Set digital pin(s) */
+#define INPUT_PINCMD_CLEAR  0x02 /*!< Clear digital pin(s) */
+#define INPUT_PINCMD_READ   0x03 /*!< Read digital pin(s) */
+#define INPUT_PINCMD_MASK   0x03 /*!< Mask for the two bits used by pin function commands */
+#define INPUT_PINCMD_WAIT(_usec) ((_usec)<<2) /*!< A wait value in microseconds that can be added after one of the above commands by ORing with the command */
+#define INPUT_PINDIR_OUTPUT 0x00 /*!< Use with the direction command to set direction to input.  OR this with the pin value. */
+#define INPUT_PINDIR_INPUT  0x04 /*!< Use with the direction command to set direction to output.  OR this with the pin value. */
+/** @} */  // end of InputPinFuncCmdConstants group
+#endif
+
 /** @} */  // end of InputModuleConstants group
 /** @} */  // end of InputModule group
 
@@ -1637,6 +1660,20 @@
 #define EMETER_REG_WIN    0x14 /*!< The register address for watts in */
 #define EMETER_REG_WOUT   0x16 /*!< The register address for watts out */
 /** @} */  // end of EMeterI2CConstants group
+
+/** @defgroup I2COptionConstants I2C option constants
+ * Constants for the SetI2COptions function. These values are combined with a bitwise
+ * OR operation.
+ * \sa SetI2COptions()
+ * @{
+ */
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define I2C_OPTION_STANDARD  0x00
+#define I2C_OPTION_NORESTART 0x04
+#define I2C_OPTION_FAST      0x08
+#endif
+/** @} */  // end of I2COptionConstants group
+
 
 /** @} */  // end of LowSpeedModuleConstants group
 /** @} */  // end of LowSpeedModule group
@@ -2667,7 +2704,7 @@
 #define HT_ADDR_COLOR2     0x02 /*!< HiTechnic Color2 I2C address */
 #define HT_ADDR_IRLINK     0x02 /*!< HiTechnic IRLink I2C address */
 #define HT_ADDR_ANGLE      0x02 /*!< HiTechnic Angle I2C address */
-#define HT_ADDR_BAROMETER  0x02 /*!< HiTechnic Barometer I2C address */
+#define HT_ADDR_BAROMETRIC 0x02 /*!< HiTechnic Barometric I2C address */
 
 /** @defgroup HTIRSeeker2Constants HiTechnic IRSeeker2 constants
  * Constants that are for use with the HiTechnic IRSeeker2 device.
@@ -2742,6 +2779,15 @@
 #define HTANGLE_REG_ACDIR 0x49 /*!< Angle 16 bit revolutions per minute, low byte register */
 /** @} */  // end of HTAngleConstants group
 
+/** @defgroup HTBarometricConstants HiTechnic Barometric sensor constants
+ * Constants that are for use with the HiTechnic Barometric sensor device.
+ * @{
+ */
+#define HTBAR_REG_COMMAND     0x40 /*!< Barometric sensor command register */
+#define HTBAR_REG_TEMPERATURE 0x42 /*!< Barometric sensor temperature register (2 bytes msb/lsb) */
+#define HTBAR_REG_PRESSURE    0x44 /*!< Barometric sensor pressure register (2 bytes msb/lsb) */
+#define HTBAR_REG_CALIBRATION 0x46 /*!< Barometric sensor calibration register (2 bytes msb/lsb) */
+/** @} */  // end of HTBarometricConstants group
 
 /** @} */  // end of HiTechnicConstants group
 /** @} */  // end of HiTechnicAPI group

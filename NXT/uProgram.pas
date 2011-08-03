@@ -434,7 +434,7 @@ end;
 procedure TProgClumpData.AddOffset(const aLineNo, aPC: integer; const aSrc, aFilename: string);
 var
   CO : TOffset;
-  i : integer;
+//  i : integer;
 begin
 {
   i := Offsets.IndexOfLine(aLineNo);

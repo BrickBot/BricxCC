@@ -449,6 +449,7 @@ type
     SynPasSyn: TSynPasSyn;
     SynNBCSyn: TSynNBCSyn;
     SynCSSyn: TSynCSSyn;
+    SynSPCSyn: TSynSPCSyn;
     procedure SetHelpContext;
     procedure UpdateEditorExperts;
     procedure UpdateCheckState;
@@ -3501,6 +3502,7 @@ begin
   SynPasSyn        := TSynPasSyn.Create(Self);
   SynNBCSyn        := TSynNBCSyn.Create(Self);
   SynCSSyn         := TSynCSSyn.Create(Self);
+  SynSPCSyn        := TSynSPCSyn.Create(Self);
   with SynCppSyn do
   begin
     Name := 'SynCppSyn';
@@ -3585,6 +3587,22 @@ begin
   begin
     Name := 'SynCSSyn';
     DefaultFilter := 'C# Files (*.cs)|*.cs';
+  end;
+  with SynSPCSyn do
+  begin
+    Name := 'SynSPCSyn';
+    DefaultFilter := 'SPC Files (*.spc)|*.spc';
+    Comments := [csCStyle];
+    DetectPreprocessor := True;
+    IdentifierChars := '#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
+    Keywords.CommaText := 'asm, bool, break, case, const, continue, default, ' +
+                          'do, else, enum, false, for, goto, if, inline, int, ' +
+                          'long, repeat, return, static, struct, sub, switch, ' +
+                          'task, true, typedef, until, void, while';
+    Commands.Clear;
+    Constants.Clear;
+    if FileExists(ProgramDir + 'Default\spc_samplesource.txt') then
+      SampleSourceStrings.LoadFromFile(ProgramDir + 'Default\spc_samplesource.txt');
   end;
 end;
 

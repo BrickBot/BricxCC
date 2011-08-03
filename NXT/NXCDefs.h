@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-07-15
- * \version 99
+ * \date 2011-08-02
+ * \version 101
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -207,6 +207,32 @@ struct InputType {
   bool InvalidData;
 };
 */
+
+/**
+ * Parameters for the InputPinFunction system call.
+ * This structure is used when calling the \ref SysInputPinFunction system call
+ * function.
+ * \sa SysInputPinFunction()
+ */
+struct InputPinFunctionType {
+  unsigned int Result; /*!< The function call result. Possible return values are
+                            ERR_INVALID_PORT or NO_ERR. */
+  byte Cmd;            /*!< The command to execute. See \ref InputPinFuncConstants.
+                            You can add a microsecond wait after the command by
+                            ORing INPUT_PINCMD_WAIT(usec) with the command value.
+                            Wait times can range from 1 to 63 microseconds. */
+  byte Port;           /*!< The input port. See \ref InPorts. */
+  byte Pin;            /*!< The digital pin(s). See \ref InputDigiPinConstants.
+                            When setting pin direction you must OR the desired
+                            direction constant into this field.  See
+                            INPUT_PINDIR_INPUT and INPUT_PINDIR_OUTPUT
+                            from the \ref InputPinFuncConstants group. You
+                            can OR together the digital pin constants to
+                            operate on both in a single call. */
+  byte Data;           /*!< The pin value(s). This field is only used by the
+                            INPUT_PINCMD_READ command. */
+};
+
 
 #endif
 
@@ -806,6 +832,19 @@ inline unsigned int ColorSensorRaw(byte port, byte color);
  */
 inline unsigned int ColorSensorValue(byte port, byte color);
 
+#ifdef __ENHANCED_FIRMWARE
+/**
+ * Execute the Input module pin function.
+ * This function lets you execute the Input module's pin function using the
+ * values specified via the \ref InputPinFunctionType structure.
+ *
+ * \param args The InputPinFunctionType structure containing the required parameters.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
+ */
+inline void SysInputPinFunction(InputPinFunctionType & args);
+#endif
+
 #endif
 
 #else
@@ -886,6 +925,13 @@ enum OutputFieldNames {
 #define ColorSensorValue(_p, _nc) asm { GetInColorSensorValue(_p, _nc, __TMPWORD__) __RETURN__ __TMPWORD__ }
 #define ColorBoolean(_p, _nc) asm { GetInColorBoolean(_p, _nc, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define ColorCalibrationState(_p) asm { GetInColorCalibrationState(_p, __TMPBYTE__) __RETURN__ __TMPBYTE__ }
+
+#ifdef __ENHANCED_FIRMWARE
+#define SysInputPinFunction(_args) asm { \
+  compchktype _args, InputPinFunctionType \
+  syscall InputPinFunction, _args \
+}
+#endif
 
 #endif
 
@@ -3778,6 +3824,23 @@ inline byte LSNoRestartOnRead();
 
 #endif
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/**
+ * Set I2C options.
+ * This method lets you modify I2C options. Use this function to turn on
+ * or off the fast I2C mode and also control whether the standard I2C mode
+ * performs a restart prior to the read operation.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
+ *
+ * \param port The port whose I2C options you wish to change. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param options The new option value.  See \ref I2COptionConstants.
+ */
+inline void SetI2COptions(byte port, byte options);
+#endif
+
+
 /*
 // these low speed module IOMap fields are essentially read-only
 inline void SetLSInputBuffer(const byte port, const byte offset, byte cnt, byte data[]);
@@ -3906,6 +3969,10 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 #define LSSpeed() asm { GetLSSpeed(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #ifdef __ENHANCED_FIRMWARE
 #define LSNoRestartOnRead(_n) asm { GetLSNoRestartOnRead(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#endif
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define SetI2COptions(_port, _options) asm { __setI2COptions(_port, _options) }
 #endif
 
 #define SetLSInputBuffer(_p, _offset, _cnt, _data) asm { __setLSInputBuffer(_p, _offset, _cnt, _data) }
@@ -5690,14 +5757,14 @@ struct JoystickMessageType {
  */
 struct CommExecuteFunctionType {
   unsigned int Result;   /*!< The function call result. Possible values
-                           include \ref LoaderErrors. */
+                              include \ref LoaderErrors. */
   byte Cmd;              /*!< The command to execute. */
   byte Param1;           /*!< The first parameter, see table. */
   byte Param2;           /*!< The second parameter, see table. */
   byte Param3;           /*!< The third parameter, see table. */
   string Name;           /*!< The name parameter, see table. */
   unsigned int RetVal;   /*!< The function call return value. Possible values
-                           include \ref LoaderErrors. */
+                              include \ref LoaderErrors. */
 };
 
 /**
@@ -5739,6 +5806,10 @@ struct CommHSReadWriteType {
  char Status;    /*!< The result of the function call. */
  byte Buffer[];  /*!< The buffer of data to write or to contain the data read
                       from the hi-speed port. */
+#if __FIRMWARE_VERSION > 107
+ byte BufferLen; /*!< The size of the output buffer on input.  This field is
+                      not updated during the function call. */
+#endif
 };
 #endif
 
@@ -10024,6 +10095,31 @@ inline char ResetSensorHTAngle(const byte port, const byte mode);
 inline bool ReadSensorHTAngle(const byte port, int & Angle, long & AccAngle, int & RPM);
 
 /**
+ * Reset HiTechnic Barometric sensor calibration.
+ * Reset the HiTechnic Barometric sensor to its factory calibration.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The function call result.
+ */
+inline bool ResetHTBarometricCalibration(byte port);
+
+/**
+ * Set HiTechnic Barometric sensor calibration.
+ * Set the HiTechnic Barometric sensor pressure calibration value.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param cal The new pressure calibration value.
+ * \return The function call result.
+ */
+inline bool SetHTBarometricCalibration(byte port, unsigned int cal);
+
+/**
  * Read HiTechnic Barometric sensor values.
  * Read values from the HiTechnic Barometric sensor.
  * Returns a boolean value indicating whether or not the operation completed
@@ -10035,7 +10131,7 @@ inline bool ReadSensorHTAngle(const byte port, int & Angle, long & AccAngle, int
  * \param press Current barometric pressure in 1/1000 inches of mercury.
  * \return The function call result.
  */
-inline bool ReadSensorHTBarometer(const byte port, int & temp, int & press);
+inline bool ReadSensorHTBarometric(const byte port, int & temp, unsigned int & press);
 
 /**
  * Read HiTechnic touch multiplexer.
@@ -10814,7 +10910,10 @@ inline void HTScoutUnmuteSound(void);
 #define ReadSensorHTIRReceiverEx(_port, _reg, _pfchar) asm { __ReadSensorHTIRReceiverEx(_port, _reg, _pfchar, __RETVAL__) }
 #define ResetSensorHTAngle(_port, _mode) asm { __ResetSensorHTAngle(_port, _mode, __RETVAL__) }
 #define ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM) asm { __ReadSensorHTAngle(_port, _Angle, _AccAngle, _RPM, __RETVAL__) }
-#define ReadSensorHTBarometer(_port, _temp, _press) asm { __ReadSensorHTBarometer(_port, _temp, _press, __RETVAL__) }
+#define ReadSensorHTBarometric(_port, _temp, _press) asm { __ReadSensorHTBarometric(_port, _temp, _press, __RETVAL__) }
+#define ResetHTBarometricCalibration(_port) asm { __ResetHTBarometricCalibration(_port, __RETVAL__) }
+#define SetHTBarometricCalibration(_port, _cal) asm { __SetHTBarometricCalibration(_port, _cal, __RETVAL__) }
+
 
 
 #define HTPowerFunctionCommand(_port, _channel, _outa, _outb) asm { __HTPFComboDirect(_port, _channel, _outa, _outb, __RETVAL__) }

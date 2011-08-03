@@ -29,8 +29,6 @@ uses
   uNBCCommon;
 
 type
-  TCompilerStatusChangeEvent = procedure(Sender : TObject; const StatusMsg : string; const bDone : boolean) of object;
-
   NXTInstruction = record
     Encoding : TOpCode;
     CCType : Byte;
@@ -296,12 +294,20 @@ type
   private
     fValue: string;
     fDSID: integer;
-    procedure SetValue(const Value: string);
+    fIndirect: boolean;
+    fAddressOf: boolean;
+  protected
+    procedure SetValue(const aValue: string);
+    function  GetValue : string;
+    function GetDSID: integer;
   public
-    property Value : string read fValue write SetValue;
-    function IsQuoted(delim : char) : boolean;
-    property DSID : integer read fDSID;
+    constructor Create(Collection: TCollection); override;
     function Evaluate(Calc : TNBCExpParser) : Extended;
+    function IsQuoted(delim : char) : boolean;
+    property Value : string read GetValue write SetValue;
+    property DSID : integer read GetDSID;
+    property Indirect : boolean read fIndirect;
+    property AddressOf : boolean read fAddressOf;
   end;
 
   TOnNameToDSID = procedure(const aName : string; var aId : integer) of object;
@@ -482,13 +488,17 @@ type
     fCaseSensitive : Boolean;
     fDS: TDataspace;
     fFirmwareVersion: word;
+    fOnCompilerStatusChange: TCompilerStatusChangeEvent;
+    fEnhancedFirmware: boolean;
     function GetCaseSensitive: boolean;
     procedure SetCaseSensitive(const Value: boolean);
     procedure BuildReferences;
     procedure InitializeInstructions;
     function IndexOfOpcode(op: TOpCode): integer;
     function OpcodeToStr(const op : TOpCode) : string;
-    procedure SetFirmwareVersion(const Value: word);
+    procedure SetFirmwareVersion(const aValue: word);
+    procedure SetEnhancedFirmware(const aValue: boolean);
+    procedure DoCompilerStatusChange(const Status: string; const bDone: boolean = False);
   protected
     fRXEProg : TRXEProgram;
     fInitName: string;
@@ -506,7 +516,7 @@ type
     procedure RemoveUnusedLabels;
     procedure RemoveUnusedPragmas;
   public
-    constructor Create(rp : TRXEProgram; ds : TDataspace);
+    constructor Create({rp : TRXEProgram; }ds : TDataspace);
     destructor Destroy; override;
     function  Add: TClump;
     procedure Compact;
@@ -525,10 +535,12 @@ type
     property  InitialClumpName : string read fInitName write fInitName;
     property  Calc : TNBCExpParser read fCalc write fCalc;
     property  OnNameToDSID : TOnNameToDSID read fOnNameToDSID write fOnNameToDSID;
+    property  OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write fOnCompilerStatusChange;
     property  CaseSensitive : boolean read GetCaseSensitive write SetCaseSensitive;
-    property  Dataspace : TDataspace read fDS;
     property  FirmwareVersion : word read fFirmwareVersion write SetFirmwareVersion;
-    property  RXEProgram : TRXEProgram read fRXEProg;
+    property  EnhancedFirmware : boolean read fEnhancedFirmware write SetEnhancedFirmware;
+    property  Dataspace : TDataspace read fDS;
+//    property  RXEProgram : TRXEProgram read fRXEProg;
   end;
 
   TAsmArgDir = (aadInput, aadOutput, aadBoth);
@@ -578,7 +590,8 @@ type
     procedure SetDefines(const Value: TStrings);
     procedure LoadSystemFile(S: TStream);
     procedure SetLineCounter(const Value: integer);
-    procedure SetFirmwareVersion(const Value: word);
+    procedure SetFirmwareVersion(const aValue: word);
+    procedure SetEnhancedFirmware(const aValue: boolean);
     function IndexOfOpcode(op: TOpCode): integer;
     procedure InitializeInstructions;
     procedure ChunkLine(const state: TMainAsmState; namedTypes: TMapList;
@@ -592,6 +605,8 @@ type
     function IgnoringAtLowerLevel: boolean;
     procedure SwitchLevelIgnoreValue;
     function DoCompilerEvaluateArgs(AL: TAsmLine; var errMsg : string): boolean;
+    procedure HandleCompilerStatusChange(Sender: TObject;
+      const StatusMsg: string; const bDone: boolean);
   protected
     fDSData : TDSData;
     fClumpData : TClumpData;
@@ -720,7 +735,7 @@ type
     property  OptimizeLevel : integer read fOptimizeLevel write fOptimizeLevel;
     property  Defines : TStrings read fDefines write SetDefines;
     property  WarningsOff : boolean read fWarningsOff write fWarningsOff;
-    property  EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
+    property  EnhancedFirmware : boolean read fEnhancedFirmware write SetEnhancedFirmware;
     property  FirmwareVersion : word read fFirmwareVersion write SetFirmwareVersion;
     property  IgnoreSystemFile : boolean read fIgnoreSystemFile write fIgnoreSystemFile;
     property  MaxErrors : word read fMaxErrors write fMaxErrors;
@@ -799,11 +814,11 @@ const
 const
   STR_USES = 'precedes';
 
-type
-  TNXTInstructions = array of NXTInstruction;
-
-var
-  NXTInstructions : array of NXTInstruction;
+//type
+//  TNXTInstructions = array of NXTInstruction;
+//
+//var
+//  NXTInstructions : array of NXTInstruction;
 
 const
   StandardOpcodeCount1x = 54;
@@ -1203,6 +1218,42 @@ type
     property Func : string read fFunc write fFunc;
     property Execute : TSpecialFunctionExecute read fExecute write fExecute;
   end;
+
+function IsStack(const str : string) : boolean;
+begin
+  Result := (Pos('__signed_stack_', str) = 1) or
+            (Pos('__unsigned_stack_', str) = 1) or
+            (Pos('__float_stack_', str) = 1);
+end;
+
+function IsReg(const str : string) : boolean;
+begin
+  Result := (Pos('__D0', str) = 1) or
+            (Pos('__DU0', str) = 1) or
+            (Pos('__DF0', str) = 1);
+end;
+
+function IsArrayHelper(const str : string) : boolean;
+begin
+  // if the array helper type is a struct and has a member reference
+  // then it is no longer an array helper type
+  Result := (Pos('__ArrHelper__', str) = 1) and (Pos('.', str) = 0);
+end;
+
+function IsStackOrHelper(const str : string) : boolean;
+begin
+  Result := IsStack(str) or IsArrayHelper(str);
+end;
+
+function IsVolatile(const str : string) : boolean;
+begin
+  Result := IsReg(str) or IsStack(str) or IsArrayHelper(str);
+end;
+
+function IsConstant(const str : string) : boolean;
+begin
+  Result := (Pos('__constVal', str) = 1);
+end;
 
 function RoundToByteSize(addr : Word; size : byte) : Word;
 var
@@ -5684,7 +5735,10 @@ begin
       else // 1
         Result := aadOutput;
     end;
-    OP_ACQUIRE, OP_RELEASE, OP_SUBRET, OP_GETTICK : begin
+    OP_ACQUIRE, OP_RELEASE, OP_SUBRET : begin
+      Result := aadBoth;
+    end;
+    OP_GETTICK : begin
       Result := aadOutput;
     end;
     OP_STOP, OP_FINCLUMP, OP_FINCLUMPIMMED, OP_JMP, OP_BRCMP, OP_BRTST,
@@ -5943,6 +5997,7 @@ var
   i : integer;
   val : integer;
   argType : TAsmArgType;
+//  argDir : TAsmArgDir;
   de, de2 : TDataspaceEntry;
 begin
   if AL.Command <> OPS_INVALID then
@@ -6057,11 +6112,15 @@ begin
           Continue;
         arg := AL.Args[i].Value;
         argType := ExpectedArgType(FirmwareVersion, Al.Command, i);
+//        argDir  := ArgDirection(FirmwareVersion, Al.Command, i);
         case argType of
           aatVariable, aatVarNoConst, aatVarOrNull,
           aatScalar, aatScalarNoConst, aatScalarOrNull :
           begin
             // arg must be in list of known variables
+//            de := DataSpace.FindEntryByFullName(arg);
+//            if Assigned(de) and (argDir <> aadOutput) then
+//              DataSpace.AddReference(de);
             de := Dataspace.FindEntryAndAddReference(arg);
             if (de = nil) and (IndexOfIOMapName(arg) = -1) then
             begin
@@ -6085,6 +6144,9 @@ begin
             end;
           end;
           aatArray : begin
+//            de := DataSpace.FindEntryByFullName(arg);
+//            if Assigned(de) and (argDir <> aadOutput) then
+//              DataSpace.AddReference(de);
             de := Dataspace.FindEntryAndAddReference(arg);
             if (de = nil) or (de.DataType <> dsArray) then
               ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
@@ -6093,6 +6155,9 @@ begin
           aatString, aatStringNoConst :
           begin
             // arg must be in list of known variables
+//            de := DataSpace.FindEntryByFullName(arg);
+//            if Assigned(de) and (argDir <> aadOutput) then
+//              DataSpace.AddReference(de);
             de := Dataspace.FindEntryAndAddReference(arg);
             if (de = nil) or (de.DataType <> dsArray) or
                not (de.SubEntries[0].DataType in [dsUByte, dsSByte]) then
@@ -6117,12 +6182,18 @@ begin
                 Format(sInvalidClumpArg, [arg]), true);
           end;
           aatCluster : begin
+//            de := DataSpace.FindEntryByFullName(arg);
+//            if Assigned(de) and (argDir <> aadOutput) then
+//              DataSpace.AddReference(de);
             de := Dataspace.FindEntryAndAddReference(arg);
             if (de = nil) or (de.DataType <> dsCluster) then
               ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
                 Format(sInvalidClusterArg, [arg]), true);
           end;
           aatMutex : begin
+//            de := DataSpace.FindEntryByFullName(arg);
+//            if Assigned(de) and (argDir <> aadOutput) then
+//              DataSpace.AddReference(de);
             de := Dataspace.FindEntryAndAddReference(arg);
             // we want to keep a list of all the threads that reference a
             // mutex in order to help us correctly optimize them later on.
@@ -6146,6 +6217,12 @@ begin
   aId := Dataspace.DataspaceIndex(aName);
 end;
 
+procedure TRXEProgram.HandleCompilerStatusChange(Sender : TObject;
+  const StatusMsg : string; const bDone : boolean);
+begin
+  DoCompilerStatusChange(StatusMsg, bDone);
+end;
+
 procedure TRXEProgram.CreateObjects;
 begin
   fCalc := TNBCExpParser.Create(nil);
@@ -6158,9 +6235,10 @@ begin
   fDS := TDataspace.Create;
   fDS.CaseSensitive := fCaseSensitive;
 
-  fCS := TCodeSpace.Create(self, fDS);
+  fCS := TCodeSpace.Create({self, }fDS);
   fCS.CaseSensitive := fCaseSensitive;
   fCS.OnNameToDSID := HandleNameToDSID;
+  fCS.OnCompilerStatusChange := HandleCompilerStatusChange;
 
   fDSData := TDSData.Create;
   fClumpData := TClumpData.Create;
@@ -6727,7 +6805,7 @@ begin
         a2 := AL.Args[1].Value;
         a3 := AL.Args[2].Value;
         // is this argument a constant???
-        if Pos('__constVal', a3) = 1 then
+        if IsConstant(a3) then
         begin
           // if the argument is a constant then generate a single mul or div
           // shLR a1, a2, a3
@@ -7255,15 +7333,21 @@ begin
   Result := fNXTInstructions[idx];
 end;
 
-procedure TRXEProgram.SetFirmwareVersion(const Value: word);
+procedure TRXEProgram.SetFirmwareVersion(const aValue: word);
 begin
-  fFirmwareVersion := Value;
-  CodeSpace.FirmwareVersion := Value;
+  fFirmwareVersion := aValue;
+  CodeSpace.FirmwareVersion := aValue;
   if fFirmwareVersion > MAX_FW_VER1X then
     CompilerVersion := 6
   else
     CompilerVersion := 5;
   InitializeInstructions;
+end;
+
+procedure TRXEProgram.SetEnhancedFirmware(const aValue: boolean);
+begin
+  fEnhancedFirmware := aValue;
+  CodeSpace.EnhancedFirmware := aValue;
 end;
 
 function TRXEProgram.IndexOfOpcode(op : TOpCode) : integer;
@@ -7956,10 +8040,10 @@ begin
   end;
 end;
 
-constructor TCodeSpace.Create(rp : TRXEProgram; ds : TDataspace);
+constructor TCodeSpace.Create({rp : TRXEProgram; }ds : TDataspace);
 begin
   inherited Create(TClump);
-  fRXEProg := rp;
+//  fRXEProg := rp;
   fDS := ds;
   fInitName := 'main';
   fAddresses := TObjectList.Create;
@@ -7968,6 +8052,7 @@ begin
   TStringList(fMultiThreadedClumps).CaseSensitive := True;
   TStringList(fMultiThreadedClumps).Duplicates := dupIgnore;
   FirmwareVersion := 128;
+  EnhancedFirmware := False;
 end;
 
 destructor TCodeSpace.Destroy;
@@ -8143,6 +8228,12 @@ begin
   end;
 end;
 
+procedure TCodeSpace.DoCompilerStatusChange(const Status: string; const bDone : boolean);
+begin
+  if Assigned(fOnCompilerStatusChange) then
+    fOnCompilerStatusChange(Self, Status, bDone);
+end;
+
 procedure TCodeSpace.Optimize(const level : Integer);
 var
   i : integer;
@@ -8157,7 +8248,7 @@ begin
     // they are API-level (hand optimized) clumps
     if Pos('__', C.Name) = 1 then
       Continue;
-    RXEProgram.DoCompilerStatusChange(Format(sNBCOptClump, [C.Name]));
+    DoCompilerStatusChange(Format(sNBCOptClump, [C.Name]));
     C.Optimize(level);
   end;
 end;
@@ -8205,6 +8296,17 @@ begin
   fMultiThreadedClumps.Add(aName);
 end;
 
+procedure TCodeSpace.SetFirmwareVersion(const aValue: word);
+begin
+  fFirmwareVersion := aValue;
+  InitializeInstructions;
+end;
+
+procedure TCodeSpace.SetEnhancedFirmware(const aValue: boolean);
+begin
+  fEnhancedFirmware := aValue;
+end;
+
 function TCodeSpace.GetNXTInstruction(const idx: integer): NXTInstruction;
 begin
   Result := fNXTInstructions[idx];
@@ -8243,12 +8345,6 @@ begin
       Break;
     end;
   end;
-end;
-
-procedure TCodeSpace.SetFirmwareVersion(const Value: word);
-begin
-  fFirmwareVersion := Value;
-  InitializeInstructions;
 end;
 
 function TCodeSpace.OpcodeToStr(const op: TOpCode): string;
@@ -8580,27 +8676,6 @@ begin
   inc(fRefCount);
 end;
 
-function IsStack(const str : string) : boolean;
-begin
-  Result := (Pos('__signed_stack_', str) = 1) or
-            (Pos('__unsigned_stack_', str) = 1) or
-            (Pos('__float_stack_', str) = 1);
-end;
-
-function IsReg(const str : string) : boolean;
-begin
-  Result := (Pos('__D0', str) = 1) or
-            (Pos('__DU0', str) = 1) or
-            (Pos('__DF0', str) = 1);
-end;
-
-function IsArrayHelper(const str : string) : boolean;
-begin
-  // if the array helper type is a struct and has a member reference
-  // then it is no longer an array helper type
-  Result := (Pos('__ArrHelper__', str) = 1) and (Pos('.', str) = 0);
-end;
-
 procedure TClump.RemoveOrNOPLine(AL, ALNext : TAsmLine; const idx : integer);
 begin
   if AL.LineLabel = '' then
@@ -8743,11 +8818,11 @@ end;
 
 function GetArgValue(EP : TNBCExpParser; arg1 : string; var val : Double) : boolean;
 begin
-  if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
+  if IsVolatile(arg1) then
   begin
     Result := False;
   end
-  else if Pos('__constVal', arg1) = 1 then
+  else if IsConstant(arg1) then
   begin
     Result := GetArgValuePart1(arg1, val);
   end
@@ -8853,8 +8928,8 @@ var
     end;
   end;
 begin
-  bEnhanced := CodeSpace.RXEProgram.EnhancedFirmware;
-  firmVer   := CodeSpace.RXEProgram.FirmwareVersion;
+  bEnhanced := CodeSpace.EnhancedFirmware;
+  firmVer   := CodeSpace.FirmwareVersion;
   bDone := False;
   while not bDone do begin
     bDone := True; // assume we are done
@@ -8883,7 +8958,7 @@ begin
         end;
 
         arg1 := AL.Args[0].Value;
-        if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
+        if IsVolatile(arg1) then
         begin
           // mov arg1, arg1
           // nop
@@ -8932,7 +9007,7 @@ begin
                 ALNext.Args.Clear;
                 // if the variable we moved from ALNext to AL was a stack or array helper
                 // then we have a little extra work to do
-                if IsStack(tmp) or IsArrayHelper(tmp) then
+                if IsStackOrHelper(tmp) then
                   FixupPragmas(AL, ALNext, tmp);
                 bDone := False;
                 Break;
@@ -9005,7 +9080,8 @@ begin
                 end
                 else if argDir = aadInput then
                 begin
-                  if ALNext.Command = OP_MOV then
+                  tmp := ALNext.Args[0].Value;
+                  if (ALNext.Command = OP_MOV) and (IsVolatile(tmp) or not (AL.Command in [OP_MOV, OP_SET])) then
                   begin
                     // if the next line with no labels or branches in between uses this same
                     // temporary as an input variable and it is a mov then
@@ -9015,23 +9091,22 @@ begin
                     // mov anything, reg/stack/ah
                     // op anything, rest
                     // nop
-                    if IsMovOptimizationSafe(bEnhanced, AL.Command, ALNext.Args[0].Value) then
+                    if IsMovOptimizationSafe(bEnhanced, AL.Command, tmp) then
                     begin
                       AL.RemoveVariableReference(arg1, 0);
-                      tmp := ALNext.Args[0].Value;
                       AL.Args[0].Value := tmp; // switch output arg (no ref count changes)
                       ALNext.RemoveVariableReference(arg1, 1);
                       ALNext.Command := OPS_INVALID; // no-op next line
                       ALNext.Args.Clear;
                       // if the variable we moved from ALNext to AL was a stack or array helper
                       // then we have a little extra work to do
-                      if IsStack(tmp) or IsArrayHelper(tmp) then
+                      if IsStackOrHelper(tmp) then
                         FixupPragmas(AL, ALNext, tmp);
                       bDone := False;
                       Break;
                     end;
                   end
-                  else if (AL.Command = OP_SET) and ALNext.Optimizable then
+                  else if (AL.Command = OP_SET) {and ALNext.Optimizable} then
                   begin
                     // set reg/stack/ah, input
                     // op anything, reg/stack/ah
@@ -9047,10 +9122,35 @@ begin
                     // This restriction can be removed if we can tell that this
                     // particular temporary is never used as an input from the
                     // time it is acquired to the time it is released.
-                    if IsStack(arg1) or IsArrayHelper(arg1) then
+                    if IsStackOrHelper(arg1) then
                       RemoveLineIfPossible(AL, arg1);
                     bDone := False;
                     Break;
+                  end
+                  else if (AL.Command = OP_MOV) {and ALNext.Optimizable} then
+                  begin
+                    // mov reg/stack/ah, constant
+                    // op anything, reg/stack/ah
+                    // mov reg/stack/ah, constant - we might be able to remove/nop this line
+                    // op anything, constant
+                    tmp := AL.Args[1].Value;
+                    if IsConstant(tmp) then
+                    begin
+                      CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
+                      // if the output of set is input of any opcode then it is safe
+                      // to set the ALNext's input to AL's input
+                      ALNext.RemoveVariableReference(arg1, tmpIdx);
+                      ALNext.Args[tmpIdx].Value := tmp; // switch input arg (no ref count changes)
+                      // We can't remove the set in case the temporary
+                      // is reused as an input in subsequent lines.
+                      // This restriction can be removed if we can tell that this
+                      // particular temporary is never used as an input from the
+                      // time it is acquired to the time it is released.
+                      if IsStackOrHelper(arg1) then
+                        RemoveLineIfPossible(AL, arg1);
+                      bDone := False;
+                      Break;
+                    end;
                   end;
                 end;
               end;
@@ -9119,6 +9219,8 @@ begin
             // do any optimization
             if ALNext.LineLabel = '' then
             begin
+
+
               case ALNext.Command of
                 OP_SET, OP_MOV : begin
                   if ALNext.Args[0].Value = AL.Args[0].Value then begin
@@ -9153,7 +9255,7 @@ begin
                       ALNext.Args[1].Value := AL.Args[1].Value;
 }
                       ALNext.RemoveVariableReference(arg2, 1);
-                      if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
+                      if IsVolatile(arg1) then
                       begin
                         // remove second reference to _D0
                         AL.RemoveVariableReferences;
@@ -9184,7 +9286,7 @@ begin
                         ALNext.Command := OP_WAIT;
                     end;
                     CodeSpace.Dataspace.FindEntryAndAddReference(ALNext.Args[0].Value);
-                    if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
+                    if IsVolatile(arg1) then
                     begin
                       // remove second reference to _D0
                       AL.RemoveVariableReferences;
@@ -9221,7 +9323,7 @@ begin
                       ALNext.Args[1].Value := tmp;
                       ALNext.RemoveVariableReference(arg3, 1);
                     end;
-                    if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
+                    if IsVolatile(arg1) then
                     begin
                       // remove second reference to _D0
                       AL.RemoveVariableReferences;
@@ -9249,7 +9351,7 @@ begin
                     end;
                     ALNext.Args[1].Value := tmp;
                     ALNext.RemoveVariableReference(arg2, 1);
-                    if IsStack(arg1) or IsReg(arg1) or IsArrayHelper(arg1) then
+                    if IsVolatile(arg1) then
                     begin
                       // remove second reference to _D0
                       AL.RemoveVariableReference(arg1, 0);
@@ -9529,7 +9631,7 @@ var
   firmVer : Word;
   bCanDeleteLine : boolean;
 begin
-  firmVer := CodeSpace.RXEProgram.FirmwareVersion;
+  firmVer := CodeSpace.FirmwareVersion;
   acqIdx := -1;
   relIdx := -1;
   // search backward to find where this variable is acquired
@@ -9663,10 +9765,33 @@ end;
 
 { TAsmArgument }
 
+constructor TAsmArgument.Create(Collection: TCollection);
+begin
+  inherited;
+  fDSID := -1;
+  fValue := '';
+  fIndirect := False;
+  fAddressOf := False;
+end;
+
 function TAsmArgument.Evaluate(Calc: TNBCExpParser): Extended;
 begin
   Calc.Expression := Value;
   Result := Calc.Value;
+end;
+
+function TAsmArgument.GetDSID: integer;
+begin
+  Result := fDSID;
+  if Indirect then
+    Result := (fDSID and $00007FFF) or $8000;
+end;
+
+function TAsmArgument.GetValue: string;
+begin
+  Result := fValue;
+  if AddressOf then
+    Result := IntToStr(DSID);
 end;
 
 function TAsmArgument.IsQuoted(delim : char): boolean;
@@ -9677,10 +9802,14 @@ begin
              IsDelimiter(delim, Value, Length(Value)));
 end;
 
-procedure TAsmArgument.SetValue(const Value: string);
+procedure TAsmArgument.SetValue(const aValue: string);
 begin
   fDSID := -1;
-  fValue := Value;
+  fValue := aValue;
+  fIndirect := Pos('@', aValue) = 1;
+  fAddressOf := Pos('&', aValue) = 1;
+  if fIndirect or fAddressOf then
+    System.Delete(fValue, 1, 1); // remove the '@' or '&'
 end;
 
 { TDSData }

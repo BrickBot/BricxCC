@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -174,6 +174,13 @@ type
     function GetLanguageName: string; override;
   end;
 
+  TSynSPCSyn = class(TSynBaseNCSyn)
+  public
+    constructor Create(AOwner: TComponent); override;
+{$IFNDEF SYN_CPPB_1} class {$ENDIF}
+    function GetLanguageName: string; override;
+  end;
+
 const
   SYN_ATTR_FIELD    = 6;
   SYN_ATTR_COMMAND  = 7;
@@ -200,6 +207,8 @@ const
   SYNS_LangNQC      = 'NQC';
   SYNS_FilterNXC    = 'NXC Files (*.nxc)|*.nxc';
   SYNS_LangNXC      = 'NXC';
+  SYNS_FilterSPC    = 'SPC Files (*.spc)|*.spc';
+  SYNS_LangSPC      = 'SPC';
 
 const
   K_MAX_COMMANDS = 240+92;
@@ -1280,11 +1289,40 @@ begin
   Result := SYNS_LangNQC;
 end;
 
+{ TSynSPCSyn }
+
+constructor TSynSPCSyn.Create(AOwner: TComponent);
+begin
+  inherited;
+  fDefaultFilter := SYNS_FilterSPC;
+  fSampleSourceStrings.Text :=
+    '/* syntax highlighting */'#13#10 +
+    '// This is a Comment'#13#10 +
+    '// #define is a Preprocessor'#13#10 +
+    '#define NUM_LOOPS 4'#13#10 +
+    'task main() // task is a Keyword'#13#10 +
+    '{ // {},+(); are all Symbols'#13#10 +
+    '  // NUM_LOOPS is an Identifier'#13#10 +
+    '  repeat(NUM_LOOPS)'#13#10 +
+    '  {'#13#10 +
+    '    // 4000 is a Number'#13#10 +
+    '    Wait(4000);'#13#10 +
+    '  }'#13#10 +
+    '}';
+end;
+
+{$IFNDEF SYN_CPPB_1}class {$ENDIF}
+function TSynSPCSyn.GetLanguageName: string;
+begin
+  Result := SYNS_LangSPC;
+end;
+
 initialization
   MakeIdentTable;
 {$IFNDEF SYN_CPPB_1}
   RegisterPlaceableHighlighter(TSynNQCSyn);
   RegisterPlaceableHighlighter(TSynNXCSyn);
+  RegisterPlaceableHighlighter(TSynSPCSyn);
 {$ENDIF}
 end.
 

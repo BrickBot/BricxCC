@@ -1,0 +1,93 @@
+byte msg1[] = {0x10, 0x10};
+byte msg3[] = {0x02, 0x10};
+
+task tS1()
+{
+  SetSensorLowspeed(S1);
+  byte reply[];
+  byte count;
+  float time;
+  unsigned long T1;
+  while(true)
+  {
+    count = 8;
+    T1 = CurrentTick();
+    while (I2CCheckStatus(S1) != NO_ERR) Wait(0);
+    I2CWrite(S1, count, msg1);
+    while (I2CBytesReady(S1) == 0) Wait(0);
+    I2CRead(S1, count, reply);
+    time = (CurrentTick()-T1) / 500.0 + (0.998*time);
+    TextOut(0, LCD_LINE1, FormatNum("%3.2f" , time));
+    TextOut(0, LCD_LINE2, ByteArrayToStr(reply));
+  }
+}
+
+task tS3()
+{
+  SetSensorLowspeed(S3);
+  byte reply[];
+  byte count;
+  float time;
+  unsigned long T3;
+  while(true)
+  {
+    count = 8;
+    T3 = CurrentTick();
+    while (I2CCheckStatus(S3) != NO_ERR) Wait(0);
+    I2CWrite(S3, count, msg3);
+    while (I2CBytesReady(S3) == 0) Wait(0);
+    I2CRead(S3, count, reply);
+    time = (CurrentTick()-T3) / 500.0 + (0.998*time);
+    TextOut(0, LCD_LINE4, FormatNum("%3.2f" , time));
+    TextOut(0, LCD_LINE5, ByteArrayToStr(reply));
+  }
+}
+
+task both()
+{
+  SetSensorLowspeed(S1);
+  SetSensorLowspeed(S3);
+  byte reply1[];
+  byte reply3[];
+  byte count;
+  float time;
+  unsigned long T1;
+  while(true)
+  {
+    count = 8;
+    T1 = CurrentTick();
+    while (I2CCheckStatus(S1) != NO_ERR) Wait(0);
+    I2CWrite(S1, count, msg1);
+    while (I2CBytesReady(S1) == 0) Wait(0);
+    I2CRead(S1, count, reply1);
+    while (I2CCheckStatus(S3) != NO_ERR) Wait(0);
+    I2CWrite(S3, count, msg3);
+    while (I2CBytesReady(S3) == 0) Wait(0);
+    I2CRead(S3, count, reply3);
+    time = (CurrentTick()-T1) / 500.0 + (0.998*time);
+    TextOut(0, LCD_LINE1, FormatNum("%3.2f" , time));
+    TextOut(0, LCD_LINE2, ByteArrayToStr(reply1));
+    TextOut(0, LCD_LINE3, ByteArrayToStr(reply3));
+  }
+}
+
+task main()
+{
+  SetI2COptions(S1, I2C_OPTION_FAST);
+  SetI2COptions(S3, I2C_OPTION_FAST);
+  Precedes(tS1);
+//  Precedes(tS3);
+//  Precedes(tS1, tS3);
+//  Precedes(both);
+/*
+  SetSensorLowspeed(S1);
+  SetSensorLowspeed(S3);
+
+  while (true)
+  {
+    TextOut(0, LCD_LINE1, I2CVendorId(S1, I2C_ADDR_DEFAULT));
+    TextOut(0, LCD_LINE2, I2CVendorId(S3, I2C_ADDR_DEFAULT));
+    Wait(SEC_1);
+  }
+*/
+}

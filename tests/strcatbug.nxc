@@ -1,0 +1,52 @@
+string InsertSpaces(string a, string b, unsigned long len = 16)
+{
+   char chSpaces[];
+   unsigned int chSpaces_len = len - (strlen(a) + strlen(b));
+   ArrayInit(chSpaces, 0x20, chSpaces_len);
+
+   return a + ByteArrayToStr(chSpaces) + b;
+}
+
+
+void DisplayMenu(string title, string &list[], unsigned long pos = 0)
+{
+   TextOut(0, LCD_LINE1, title, DRAW_OPT_INVERT);
+}
+
+
+void DisplayFileList(unsigned long pos, ListFilesType &lftFiles)
+{
+   unsigned int FileCount = ArrayLen(lftFiles.FileList);
+
+   string fl[];
+   ArrayBuild(fl, lftFiles.FileList);
+
+   DisplayMenu(InsertSpaces("File Count:", NumToStr(FileCount), 16), fl, pos);
+}
+
+
+void SelectFile(ListFilesType &lftFiles)
+{
+//   unsigned long tick = CurrentTick();
+   float pleaseWork = Sensor(S1);
+   unsigned int FileCount = ArrayLen(lftFiles.FileList);
+
+   ClearScreen();
+   DisplayFileList(0, lftFiles);
+   TextOut(0, 0, InsertSpaces("File Count:", NumToStr(FileCount), 16));
+   NumOut(0, LCD_LINE5, pleaseWork);
+}
+
+
+task main()
+{
+   ListFilesType lftFiles;
+   lftFiles.Pattern = "*.*";
+   SysListFiles(lftFiles);
+
+   SelectFile(lftFiles);
+   
+
+
+   Wait(5000);
+}

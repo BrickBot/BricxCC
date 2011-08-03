@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-16
- * \version 7
+ * \date 2011-07-26
+ * \version 8
  */
 #ifndef NBCAPIDOCS_H
 #define NBCAPIDOCS_H
@@ -31,7 +31,7 @@
 /** @mainpage NBC Programmer's Guide
  * \brief
  * 
- * <h2><center>March 16, 2011</center></h2>
+ * <h2><center>July 26, 2011</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -2239,6 +2239,7 @@
  * - @subpage TKeepAlive
  * - @subpage TIOMapRead
  * - @subpage TIOMapWrite
+ * - @subpage TInputPinFunction
  * - @subpage TIOMapReadByID
  * - @subpage TIOMapWriteByID
  * - @subpage TDisplayExecuteFunction
@@ -2767,6 +2768,23 @@
  * \endcode
  *
  */
+
+/** @page TInputPinFunction TInputPinFunction
+ * \brief The TInputPinFunction structure
+ *
+ * \code
+ * // InputPinFunction
+ * TInputPinFunction struct
+ *  Result word
+ *  Cmd    byte
+ *  Port   byte
+ *  Pin    byte
+ *  Data   byte
+ * TInputPinFunction ends
+ * \endcode
+ *
+ */
+
 
 /** @page TIOMapReadByID TIOMapReadByID
  * \brief The TIOMapReadByID structure

@@ -195,7 +195,7 @@ var
           begin
             FindPascalProcs(K_TIMEOUT, Parser, HandlePasProcFound);
           end;
-        elNQC, elCpp, elJava, elNXC:
+        elNQC, elCpp, elJava, elNXC, elSPC:
           begin
             FindCppProcs(K_TIMEOUT, CParser, Language, HandleCppProcFound, False);
           end;
@@ -226,8 +226,9 @@ var
 begin
   case Language of
     elPas:        Parser := TmwPasLex.Create;
-    elNQC, elCpp, elJava,
-    elNXC:        CParser := TBCBTokenList.Create;
+    elNQC, elCpp,
+    elJava, elNXC,
+    elSPC:        CParser := TBCBTokenList.Create;
     elMindscript: MLexer := TMindScriptLexer.CreateLexer;
     elForth:      FLexer := TForthLexer.CreateLexer;
     elLASM:       LLexer := TLASMLexer.CreateLexer;
@@ -241,7 +242,7 @@ begin
       begin
         case Language of
           elPas: Parser.Origin := MemStream.Memory;
-          elNQC, elCpp, elJava, elNXC: CParser.SetOrigin(MemStream.Memory, MemStream.Size);
+          elNQC, elCpp, elJava, elNXC, elSPC: CParser.SetOrigin(MemStream.Memory, MemStream.Size);
           elMindscript: begin
             MLexer.Origin := MemStream.Memory;
             MLexer.EndPos := MemStream.Size;
@@ -280,7 +281,7 @@ begin
   finally
     case Language of
       elPas: Parser.Free;
-      elNQC, elCpp, elJava, elNXC: CParser.Free;
+      elNQC, elCpp, elJava, elNXC, elSPC: CParser.Free;
       elMindscript: MLexer.Free;
       elForth: FLexer.Free;
       elLASM: LLexer.Free;
@@ -316,7 +317,7 @@ begin
         end;
         FProcList.AddObject(#9 + TempStr + #9 + ProcedureInfo.ProcedureType + #9 + IntToStr(ProcedureInfo.LineNo), ProcedureInfo);
       end; //elPas
-    elNQC, elMindScript, elCpp, elJava, elForth, elLASM, elNBC, elNXC:
+    elNQC, elMindScript, elCpp, elJava, elForth, elLASM, elNBC, elNXC, elSPC:
       begin
         if Length(ProcedureInfo.ProcClass) > 0 then
           ProcedureInfo.DisplayName := ProcedureInfo.ProcClass + '::';
@@ -327,7 +328,7 @@ begin
           FObjectStrings.Add(SNoneString)
         else
           FObjectStrings.Add(ProcedureInfo.ProcClass);
-      end; //elNQC, elMindScript, elCpp, elJava, elForth, elLASM, elNBC, elNXC
+      end; //elNQC, elMindScript, elCpp, elJava, elForth, elLASM, elNBC, elNXC, elSPC
   end; //case Language
 end;
 
@@ -407,7 +408,7 @@ var
       elPas: ListItem.ImageIndex := SetIndex(ProcInfo.Name);
       elNQC, elMindScript,
       elCpp, elJava, elForth,
-      elLASM, elNBC, elNXC: ListItem.ImageIndex := ProcInfo.ProcIndex;
+      elLASM, elNBC, elNXC, elSPC: ListItem.ImageIndex := ProcInfo.ProcIndex;
     end;
     ListItem.SubItems.Add(ProcInfo.DisplayName);
     ListItem.SubItems.Add(ProcInfo.ProcedureType);
@@ -447,7 +448,7 @@ begin
         elPas: ProcName := ProcInfo.Name;
         elNQC, elMindScript,
         elCpp, elJava, elForth,
-        elLASM, elNBC, elNXC: ProcName := ProcInfo.ProcClass;
+        elLASM, elNBC, elNXC, elSPC: ProcName := ProcInfo.ProcClass;
       end;
       IsObject := Length(ProcInfo.ProcClass) > 0;
 
@@ -472,7 +473,7 @@ begin
         elPas: ProcName := GetMethodName(ProcName);
         elNQC, elMindScript,
         elCpp, elJava, elForth,
-        elLASM, elNBC, elNXC: ProcName := ProcInfo.ProcName;
+        elLASM, elNBC, elNXC, elSPC: ProcName := ProcInfo.ProcName;
       end;
 
       if Length(edtMethods.Text) = 0 then

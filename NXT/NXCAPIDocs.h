@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-07-16
- * \version 18
+ * \date 2011-07-26
+ * \version 19
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -35,7 +35,7 @@
 /** @mainpage NXC Programmer's Guide
  * \brief
  * 
- * <h2><center>July 05, 2011</center></h2>
+ * <h2><center>July 26, 2011</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -3912,8 +3912,8 @@
  * \example ex_ReadSensorHTAccel.nxc
  * This is an example of how to use the \ref ReadSensorHTAccel function.
  *
- * \example ex_ReadSensorHTBarometer.nxc
- * This is an example of how to use the \ref ReadSensorHTBarometer function.
+ * \example ex_ReadSensorHTBarometric.nxc
+ * This is an example of how to use the \ref ReadSensorHTBarometric function.
  *
  * \example ex_ReadSensorHTColor.nxc
  * This is an example of how to use the \ref ReadSensorHTColor function.
@@ -4831,6 +4831,10 @@
  * \example ex_sysrandomex.nxc
  * This is an example of how to use the \ref SysRandomEx function along with
  * the \ref RandomExType structure.
+ *
+ * \example ex_sysinputpinfunction.nxc
+ * This is an example of how to use the \ref SysInputPinFunction function along with
+ * the \ref InputPinFunctionType structure.
  *
  * \example ex_atoi.nxc
  * This is an example of how to use the \ref atoi function.

@@ -29,9 +29,11 @@ uses
   FantomSpirit,
 {$ENDIF}
   uNXTClasses,
+  uNBCCommon,
   uRPGComp,
   uNXCComp,
-  uRICComp;
+  uRICComp,
+  uSPCComp;
 
 type
   TWriteMessages = procedure(aStrings : TStrings);
@@ -88,7 +90,7 @@ type
 {$ENDIF}
     procedure DoWriteCompilerOutput(aStrings: TStrings);
     procedure DoWriteSymbolTable(C : TRXEProgram);
-    procedure DoWriteIntermediateCode(NC : TNXCComp);
+    procedure DoWriteIntermediateCode(aStrings : TStrings);
     procedure DoWriteMessages(aStrings : TStrings);
     procedure DoWriteMessage(const aString : String);
     function GetCurrentFilename : string;
@@ -252,7 +254,7 @@ begin
   end;
 end;
 
-procedure TNBCCompiler.DoWriteIntermediateCode(NC : TNXCComp);
+procedure TNBCCompiler.DoWriteIntermediateCode(aStrings : TStrings);
 var
   dir, logFilename : string;
 begin
@@ -262,7 +264,7 @@ begin
     dir := ExtractFilePath(logFilename);
     if dir <> '' then
       ForceDirectories(dir);
-    NC.NBCSource.SaveToFile(logFilename);
+    aStrings.SaveToFile(logFilename);
   end;
 end;
 
@@ -322,6 +324,7 @@ var
   NC : TNXCComp;
   RC : TRPGComp;
   RIC : TRICComp;
+  SC : TSPCComp;
 {$IFDEF CAN_DOWNLOAD}
   theType : TNXTFileType;
   tmpName : string;
@@ -329,6 +332,7 @@ var
   i : integer;
   incDirs : string;
   bNXCErrors : boolean;
+  bSPCErrors : boolean;
 begin
   fDownloadList := '';
   Result := 0;
@@ -499,6 +503,48 @@ begin
             RIC.Free;
           end;
         end
+        else if LowerCase(ExtractFileExt(InputFilename)) = '.spc' then
+        begin
+          // SPC compiler
+          SC := TSPCComp.Create;
+          try
+            SC.OnCompilerStatusChange := HandleOnCompilerStatusChange;
+            SC.Defines.AddStrings(ExtraDefines);
+            SC.OptimizeLevel := OptimizationLevel;
+            SC.IncludeDirs.AddStrings(tmpIncDirs);
+            SC.CurrentFile := GetCurrentFilename;
+            SC.WarningsOff := WarningsAreOff;
+            SC.IgnoreSystemFile := IgnoreSystemFile;
+            SC.EnhancedFirmware := EnhancedFirmware;
+            SC.FirmwareVersion  := FirmwareVersion;
+            SC.MaxErrors := MaxErrors;
+            SC.MaxPreprocessorDepth := MaxPreprocessorDepth;
+            try
+              SC.Parse(sIn);
+              DoWriteIntermediateCode(SC.ASMSource);
+              sIn.Clear;
+              SC.ASMSource.SaveToStream(sIn);
+              // this used to pass at least 1 as the optimization level
+              // but if a user says no optimizations then the compiler
+              // really should respect that and do no optimizations whatsoever
+              OptimizationLevel := Max(OptimizationLevel, 0);
+              sIn.Position := 0;
+            finally
+              DoWriteMessages(SC.CompilerMessages);
+            end;
+            bSPCErrors := SC.ErrorCount > 0;
+          finally
+            SC.Free;
+          end;
+          if not bSPCErrors then
+          begin
+          end
+          else
+          begin
+            Result := 1;
+            HandleOnCompilerStatusChange(Self, sSPCCompilationFailed, True);
+          end;
+        end
         else
         begin
           bNXCErrors := False;
@@ -520,7 +566,7 @@ begin
               NC.MaxPreprocessorDepth := MaxPreprocessorDepth;
               try
                 NC.Parse(sIn);
-                DoWriteIntermediateCode(NC);
+                DoWriteIntermediateCode(NC.NBCSource);
                 sIn.Clear;
                 NC.NBCSource.SaveToStream(sIn);
                 // this used to pass at least 1 as the optimization level
@@ -643,8 +689,8 @@ begin
   CompilerOutputFilename   := ParamValue('-L', False, Value);
   WriteSymbolTable         := ParamSwitch('-Y', False, Value);
   SymbolTableFilename      := ParamValue('-Y', False, Value);
-  WriteIntermediateCode    := ParamSwitch('-nbc', False, Value);
-  IntermediateCodeFilename := ParamValue('-nbc', False, Value);
+  WriteIntermediateCode    := ParamSwitch('-asm', False, Value);
+  IntermediateCodeFilename := ParamValue('-asm', False, Value);
   WriteOutput              := ParamSwitch('-O', False, Value);
   OutputFilename           := ParamValue('-O', False, Value);
   UseSpecialName           := ParamSwitch('-N', False, Value);

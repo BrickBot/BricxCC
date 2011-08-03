@@ -51,7 +51,7 @@ function FileCanBeCompiled: Boolean;
 function FileCanBeProcessed: Boolean;
 function FileIsCPPOrPascalOrJava(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsMindScriptOrLASM(AEH : TSynCustomHighlighter = nil): Boolean;
-function FileIsNBCOrNXCOrNPGOrRICScript(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsNBCOrNXC(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsPascal(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsCPP(AEH : TSynCustomHighlighter = nil): Boolean;
@@ -65,6 +65,7 @@ function FileIsNQC(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsJava(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsForth(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsROPS(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsSPC(AEH : TSynCustomHighlighter = nil): Boolean;
 
 function CheckAlive : boolean;
 
@@ -190,6 +191,7 @@ begin
             FileIsCPP(AEH) or
             FileIsPascal(AEH) or
             FileIsROPS(AEH) or
+            FileIsSPC(AEH) or
             FileIsJava(AEH);
 end;
 
@@ -207,6 +209,7 @@ begin
             FileIsJava(AEH) or
             FileIsForth(AEH) or
             FileIsROPS(AEH) or
+            FileIsSPC(AEH) or
             FileIsPascal(AEH);
 end;
 
@@ -228,11 +231,11 @@ begin
   Result := FileIsMindScript(AEH) or FileIsLASM(AEH);
 end;
 
-function FileIsNBCOrNXCOrNPGOrRICScript(AEH : TSynCustomHighlighter): Boolean;
+function FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(AEH : TSynCustomHighlighter): Boolean;
 begin
   if not Assigned(AEH) then
     AEH := GetActiveEditorHighlighter;
-  Result := FileIsNBC(AEH) or FileIsNXC(AEH) or FileIsNPG(AEH) or FileIsRICScript(AEH);
+  Result := FileIsNBC(AEH) or FileIsNXC(AEH) or FileIsNPG(AEH) or FileIsRICScript(AEH) or FileIsSPC(AEH);
 end;
 
 function FileIsNBCOrNXC(AEH : TSynCustomHighlighter): Boolean;
@@ -352,6 +355,16 @@ begin
     AEH := GetActiveEditorHighlighter;
   if not Assigned(AEH) then Exit;
   Result := AEH is TSynROPSSyn;
+end;
+
+function FileIsSPC(AEH : TSynCustomHighlighter = nil): Boolean;
+begin
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if AEH <> nil then
+    Result := AEH is TSynSPCSyn
+  else
+    Result := LowerCase(ExtractFileExt(GetActiveEditorFilename)) = '.spc';
 end;
 
 {Checks whether the brick is (still) alive}

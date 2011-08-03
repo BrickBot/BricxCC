@@ -244,8 +244,8 @@ uses
   uMiscDefines, uNXTClasses, uNBCInterface, ParamUtils, uNXTConstants,
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants, uEditorUtils,
   uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals, uBasicPrefs,
-  uHTMLHelp, uNXCHTMLTopics, uNQCHTMLTopics, uNBCHTMLTopics, uPSComponent,
-  uPSDebugger, uROPS;
+  uHTMLHelp, uNXCHTMLTopics, uNQCHTMLTopics, uNBCHTMLTopics, uSPCHTMLTopics,
+  uPSComponent, uPSDebugger, uROPS;
 
 function HelpALink(keyword: string; bNQC : Boolean): Boolean;
 var
@@ -599,7 +599,7 @@ begin
      Val(tmp,lnumb,c);
      break;
     end;
-    if FileIsNBCOrNXCOrNPGOrRICScript(Highlighter) then
+    if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(Highlighter) then
       break;
   end;
   bThisFile := True;
@@ -1323,7 +1323,9 @@ begin
   else if FileIsNXC(AEH) then
     SL := elNXC
   else if FileIsForth(AEH) then
-    SL := elForth;
+    SL := elForth
+  else if FileIsSPC(AEH) then
+    SL := elSPC;
   line := TfmProcedureList.ShowForm(SL, TheEditor.Lines);
   if line <> -1 then
   begin
@@ -1385,6 +1387,12 @@ begin
     Self.HelpFile := ProgramDir + 'Help\nxc.hlp';
     if UseHTMLHelp then
       LoadHTMLTopicMap(uNXCHTMLTopicsData);
+  end
+  else if FileIsSPC(AEH) then
+  begin
+    Self.HelpFile := ProgramDir + 'Help\spc.hlp';
+    if UseHTMLHelp then
+      LoadHTMLTopicMap(uSPCHTMLTopicsData);
   end
   else if FileIsNPG(AEH) then
   begin

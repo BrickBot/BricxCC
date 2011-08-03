@@ -1,0 +1,6 @@
+task main()
+{
+//  SetSoundFrequency(100000);
+//  SetHSMode(120000);
+  SetDisplayDisplay(12);
+}

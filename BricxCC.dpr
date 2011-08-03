@@ -94,6 +94,7 @@ uses
   uProjectManager in 'uProjectManager.pas' {frmProjectManager},
   uCppCode in 'uCppCode.pas',
   uNXCCodeComp in 'uNXCCodeComp.pas',
+  uSPCCodeComp in 'uSPCCodeComp.pas',
   uNXTCodeComp in 'uNXTCodeComp.pas',
   uRICCodeComp in 'uRICCodeComp.pas',
   uPasCode in 'uPasCode.pas',

@@ -481,6 +481,7 @@ type
     SynCppSyn: TSynCppSyn;
     SynForthSyn: TSynForthSyn;
     SynROPSSyn: TSynROPSSyn;
+    SynSPCSyn: TSynSPCSyn;
     // toolbar components
     cbrTop: TOfficeControlBar;
     ogpHelp: TOfficeGradientPanel;
@@ -552,6 +553,7 @@ type
     SynNXCCompProp: TSynCompletionProposal;
     SynNPGCompProp: TSynCompletionProposal;
     SynRSCompProp: TSynCompletionProposal;
+    SynSPCCompProp: TSynCompletionProposal;
     // misc synedit components
     SynMacroRec: TSynMacroRecorder;
     SynAutoComp: TSynEditAutoComplete;
@@ -635,6 +637,7 @@ type
     FResume : boolean;
     fNQCAPIBase : TStringList;
     fNXCAPIBase : TStringList;
+    fSPCAPIBase : TStringList;
 {$IFNDEF FPC}
     procedure WMClose(var Message: TWMClose); message WM_CLOSE;
     procedure WMDROPFILES(var Message: TWMDROPFILES); message WM_DROPFILES;
@@ -677,6 +680,7 @@ type
     procedure UpdateEditorPosition;
     procedure LoadNQCCompProp;
     procedure LoadNXCCompProp;
+    procedure LoadSPCCompProp;
     procedure DoLoadAPI(cp: TSynCompletionProposal; aStrings: TStrings);
     procedure AddUserDefinedFunctions(aStrings : TStrings);
     procedure CallHtmlHelp(AFile: String; Command: Word; Data: Integer);
@@ -750,7 +754,7 @@ uses
   uPSRuntime, uPSDebugger,
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uDebugLogging,
-  uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp,
+  uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp, uSPCCodeComp, 
   uNXTWatchList, uSpirit;
 
 const
@@ -968,6 +972,7 @@ begin
   fGDE := TGrepDlgExpert.Create;
   fNQCAPIBase := TStringList.Create;
   fNXCAPIBase := TStringList.Create;
+  fSPCAPIBase := TStringList.Create;
   CreateMenus;
   CreateCompPropComponents;
   CreateMainFormHighlighters;
@@ -1275,6 +1280,7 @@ begin
   FreeAndNil(fGDE);
   FreeAndNil(fNQCAPIBase);
   FreeAndNil(fNXCAPIBase);
+  FreeAndNil(fSPCAPIBase);
   if UseHTMLHelp then
     HelpQuit;
   if BrickComm.VerboseMode then
@@ -1372,6 +1378,13 @@ begin
   fNXCAPIBase.AddStrings(SynNXCSyn.Keywords);
   fNXCAPIBase.Sort;
   SynNXCCompProp.ItemList := fNXCAPIBase;
+  // load SPC syntax completion proposal component
+  fSPCAPIBase.Clear;
+  fSPCAPIBase.AddStrings(SynSPCSyn.Commands);
+  fSPCAPIBase.AddStrings(SynSPCSyn.Constants);
+  fSPCAPIBase.AddStrings(SynSPCSyn.Keywords);
+  fSPCAPIBase.Sort;
+  SynSPCCompProp.ItemList := fSPCAPIBase;
   // configure code completion options for NQC, NBC, NXC, and RICScript
   if CCInsensitive then
     TmpOptions := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion]
@@ -1381,6 +1394,7 @@ begin
   SynNBCCompProp.Options := TmpOptions;
   SynNXCCompProp.Options := TmpOptions;
   SynRSCompProp.Options  := TmpOptions;
+  SynSPCCompProp.Options := TmpOptions;
   SynAutoComp.AutoCompleteList.Assign(PrefForm.CodeTemplates);
   // also copy shortcut settings
   SynMacroRec.PlaybackShortCut := PlayMacroShortCut;
@@ -2280,7 +2294,9 @@ begin
           else if FileIsRICScript(AEH) then
             NameIdx := RICScriptCodeCompIndex(lookup)
           else if FileIsMindScript(AEH) then
-            NameIdx := MSCodeCompIndex(lookup);
+            NameIdx := MSCodeCompIndex(lookup)
+          else if FileIsSPC(AEH) then
+            NameIdx := SPCCodeCompIndex(lookup);
           FoundMatch := NameIdx > -1;
           if not(FoundMatch) then
           begin
@@ -2331,6 +2347,10 @@ begin
       end
       else if FileIsMindScript(AEH) then begin
         AddMSCodeCompParams(SCP.ItemList, NameIdx);
+        SCP.ParamSepString := ', ';
+      end
+      else if FileIsSPC(AEH) then begin
+        AddSPCCodeCompParams(SCP.ItemList, NameIdx);
         SCP.ParamSepString := ', ';
       end;
     end;
@@ -2461,7 +2481,7 @@ begin
       end;
     end;
     if ShowCompilerStatus and UseInternalNBC and
-       FileIsNBCOrNXCOrNPGOrRICScript then
+       FileIsNBCOrNXCOrNPGOrRICScriptOrSPC then
       frmCompStatus.Show;
     Application.ProcessMessages;
 
@@ -3856,6 +3876,7 @@ begin
   SynPasSyn        := TSynPasSyn.Create(Self);
   SynNBCSyn        := TSynNBCSyn.Create(Self);
   SynCSSyn         := TSynCSSyn.Create(Self);
+  SynSPCSyn        := TSynSPCSyn.Create(Self);
   with SynNXCSyn do
   begin
     Name := 'SynNXCSyn';
@@ -3939,6 +3960,21 @@ begin
   begin
     Name := 'SynROPSSyn';
     PackageSource := False;
+  end;
+  with SynSPCSyn do
+  begin
+    Name := 'SynSPCSyn';
+    DefaultFilter := 'SPC Files (*.spc)|*.spc';
+    Comments := [csCStyle];
+    DetectPreprocessor := True;
+    IdentifierChars := '#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
+    Keywords.CommaText := 'asm, bool, break, case, const, continue, default, ' +
+                          'do, else, enum, false, for, goto, if, inline, int, ' +
+                          'long, repeat, return, static, struct, sub, switch, ' +
+                          'task, true, typedef, until, void, while';
+    Commands.Clear;
+    Constants.Clear;
+    SampleSourceStrings.Clear;
   end;
 end;
 
@@ -6516,6 +6552,7 @@ begin
   SynNXCCompProp := TSynCompletionProposal.Create(Self);
   SynNPGCompProp := TSynCompletionProposal.Create(Self);
   SynRSCompProp := TSynCompletionProposal.Create(Self);
+  SynSPCCompProp := TSynCompletionProposal.Create(Self);
   with SynForthCompProp do
   begin
     Name := 'SynForthCompProp';
@@ -6797,6 +6834,27 @@ begin
     ParamSepString := ' ';
     ShortCut := 16416;
   end;
+  with SynSPCCompProp do
+  begin
+    Name := 'SynSPCCompProp';
+    Options := [scoAnsiStrings, scoLimitToMatchedText, scoEndCharCompletion];
+    NbLinesInWindow := 6;
+    Width := 262;
+    EndOfTokenChr := '()[].';
+    TriggerChars := '.';
+    Font.Charset := DEFAULT_CHARSET;
+    Font.Color := clWindowText;
+    Font.Height := -11;
+    Font.Name := 'MS Sans Serif';
+    Font.Style := [];
+    TitleFont.Charset := ANSI_CHARSET;
+    TitleFont.Color := clBtnText;
+    TitleFont.Height := -11;
+    TitleFont.Name := 'Arial';
+    TitleFont.Style := [fsBold];
+    ParamSepString := ' ';
+    ShortCut := 16416;
+  end;
 end;
 
 procedure TMainForm.CreateMiscSynEditComponents;
@@ -7022,7 +7080,9 @@ begin
   if FileIsNXC then
     LoadNXCCompProp
   else if FileIsNQC then
-    LoadNQCCompProp;
+    LoadNQCCompProp
+  else if FileIsSPC then
+    LoadSPCCompProp;
 end;
 
 procedure TMainForm.DoLoadAPI(cp : TSynCompletionProposal; aStrings : TStrings);
@@ -7049,6 +7109,11 @@ end;
 procedure TMainForm.LoadNXCCompProp;
 begin
   DoLoadAPI(SynNXCCompProp, fNXCAPIBase);
+end;
+
+procedure TMainForm.LoadSPCCompProp;
+begin
+  DoLoadAPI(SynSPCCompProp, fSPCAPIBase);
 end;
 
 procedure TMainForm.AddUserDefinedFunctions(aStrings: TStrings);

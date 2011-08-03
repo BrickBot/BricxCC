@@ -75,7 +75,7 @@ begin
   Writeln(UsageOutput);
   Writeln(UsageErrors);
   Writeln(UsageIncludes);
-  Writeln(UsageNBCOutput);
+  Writeln(UsageASMOutput);
   Writeln(UsageListing);
   Writeln(UsageSymbols);
   Writeln(UsageWarnings);
@@ -182,8 +182,8 @@ try
       C.CompilerOutputFilename   := ParamValue('-L', False);
       C.WriteSymbolTable         := ParamSwitch('-Y', False);
       C.SymbolTableFilename      := ParamValue('-Y', False);
-      C.WriteIntermediateCode    := ParamSwitch('-nbc', False);
-      C.IntermediateCodeFilename := ParamValue('-nbc', False);
+      C.WriteIntermediateCode    := ParamSwitch('-asm', False);
+      C.IntermediateCodeFilename := ParamValue('-asm', False);
       C.WriteOutput              := ParamSwitch('-O', False);
       C.OutputFilename           := ParamValue('-O', False);
       C.UseSpecialName           := ParamSwitch('-N', False);

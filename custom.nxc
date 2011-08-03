@@ -1,0 +1,55 @@
+#define   VCC_SENSOR                    5000
+#define   VCC_SENSOR_DIODE              4300
+#define   AD_MAX                        1023
+
+/*
+#define   REFLECTIONSENSORMIN           389
+#define   REFLECTIONSENSORMAX           899
+#define   REFLECTIONSENSORPCTDYN        49
+
+#define   NEWLIGHTSENSORMIN             163
+#define   NEWLIGHTSENSORMAX             900
+#define   NEWLIGHTSENSORPCTDYN          72
+
+#define   NEWSOUNDSENSORMIN             132
+#define   NEWSOUNDSENSORMAX             1018
+#define   NEWSOUNDSENSORPCTDYN          86
+*/
+#define   REFLECTIONSENSORMIN           (1906/(VCC_SENSOR/AD_MAX))
+#define   REFLECTIONSENSORMAX           ((AD_MAX*4398)/VCC_SENSOR)
+#define   REFLECTIONSENSORPCTDYN        (((REFLECTIONSENSORMAX-REFLECTIONSENSORMIN)*100)/AD_MAX)
+
+#define   NEWLIGHTSENSORMIN             (800/(VCC_SENSOR/AD_MAX))
+#define   NEWLIGHTSENSORMAX             ((AD_MAX*4400)/VCC_SENSOR)
+#define   NEWLIGHTSENSORPCTDYN          (((NEWLIGHTSENSORMAX-NEWLIGHTSENSORMIN)*100)/AD_MAX)
+
+#define   NEWSOUNDSENSORMIN             (650/(VCC_SENSOR/AD_MAX))
+#define   NEWSOUNDSENSORMAX             ((AD_MAX*4980)/VCC_SENSOR)
+#define   NEWSOUNDSENSORPCTDYN          (((NEWSOUNDSENSORMAX-NEWSOUNDSENSORMIN)*100)/AD_MAX)
+
+#define   SENSOR_RESOLUTION             1023
+
+task main()
+{
+  int zeroOffset = 0;
+  byte pctFullScale = 200;
+  SetSensorType(S1, SENSOR_TYPE_CUSTOM);
+  SetSensorMode(S1, SENSOR_MODE_RAW);
+  // SetCustomSensorZeroOffset currently requires a word-sized variable
+  // unless you pass in a value that cannot fit within a byte (i.e.,
+  // something greater than 255)
+  SetCustomSensorZeroOffset(S1, zeroOffset);
+  // SetCustomSensorZeroOffset(S1, 256); // this would compile
+  // SetCustomSensorZeroOffset(S1, 0); // this would not compile
+  SetCustomSensorActiveStatus(S1, INPUT_CUSTOMINACTIVE);
+  SetCustomSensorPercentFullScale(S1, pctFullScale);
+  ResetSensor(S1);
+  NumOut(0, LCD_LINE1, SensorValue(S1));
+  NumOut(0, LCD_LINE2, SensorRaw(S1));
+  NumOut(0, LCD_LINE3, SensorNormalized(S1));
+  NumOut(0, LCD_LINE4, REFLECTIONSENSORMIN);
+  NumOut(0, LCD_LINE5, REFLECTIONSENSORPCTDYN);
+  NumOut(0, LCD_LINE6, NEWLIGHTSENSORMIN);
+  NumOut(0, LCD_LINE7, NEWLIGHTSENSORPCTDYN);
+  while(true);
+}
