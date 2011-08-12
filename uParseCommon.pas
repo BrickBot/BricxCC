@@ -497,7 +497,7 @@ begin
   begin
     case idx of
       ImageIndexFunction, ImageIndexGear:
-        if theLang = elNXC then
+        if theLang in [elNXC, elSPC] then
         begin
           if Pos(K_VOID, retType) <> 0 then
             Result := K_PROC   // Procedure
@@ -534,7 +534,7 @@ begin
           else if Pos(K_TASK, retType) <> 0 then
             Result := sTask;
         end
-        else if theLang = elNXC then
+        else if theLang in [elNXC, elSPC] then
         begin
           if Pos(K_VOID, retType) <> 0 then
             Result := sSubroutine
@@ -777,7 +777,7 @@ begin
         // To guard against this we require that our procedures be of type
         // ctkidentifier.  If not, then skip this step.
         if (CParser.RunID = ctkidentifier) and {not InProcedureBlacklist(CParser.RunToken) and}
-          not ((theLang in [elNQC, elNXC]) and
+          not ((theLang in [elNQC, elNXC, elSPC]) and
                ((CParser.RunToken = 'until') or
                 (CParser.RunToken = 'repeat'))) and
           not ((theLang = elJava) and

@@ -245,7 +245,7 @@ uses
   uPSDisassembly, uLocalizedStrings, uNBCCommon, rcx_constants, uEditorUtils,
   uEditorExperts, uProgram, uNXTExplorer, uCompStatus, uGlobals, uBasicPrefs,
   uHTMLHelp, uNXCHTMLTopics, uNQCHTMLTopics, uNBCHTMLTopics, uSPCHTMLTopics,
-  uPSComponent, uPSDebugger, uROPS;
+  uPSComponent, uPSDebugger, uROPS, uCompTokens;
 
 function HelpALink(keyword: string; bNQC : Boolean): Boolean;
 var
@@ -1142,6 +1142,7 @@ begin
     MainForm.SynLASMCompProp.RemoveEditor(TheEditor);
     MainForm.SynNBCCompProp.RemoveEditor(TheEditor);
     MainForm.SynNXCCompProp.RemoveEditor(TheEditor);
+    MainForm.SynSPCCompProp.RemoveEditor(TheEditor);
     MainForm.SynNPGCompProp.RemoveEditor(TheEditor);
     MainForm.SynRSCompProp.RemoveEditor(TheEditor);
     MainForm.SynForthCompProp.RemoveEditor(TheEditor);
@@ -1243,6 +1244,7 @@ begin
   MainForm.SynLASMCompProp.RemoveEditor(TheEditor);
   MainForm.SynNBCCompProp.RemoveEditor(TheEditor);
   MainForm.SynNXCCompProp.RemoveEditor(TheEditor);
+  MainForm.SynSPCCompProp.RemoveEditor(TheEditor);
   MainForm.SynNPGCompProp.RemoveEditor(TheEditor);
   MainForm.SynRSCompProp.RemoveEditor(TheEditor);
   MainForm.SynForthCompProp.RemoveEditor(TheEditor);
@@ -1268,6 +1270,10 @@ begin
   end
   else if HL = MainForm.SynNXCSyn then begin
     MainForm.SynNXCCompProp.AddEditor(TheEditor);
+    MainForm.scpParams.AddEditor(TheEditor);
+  end
+  else if HL = MainForm.SynSPCSyn then begin
+    MainForm.SynSPCCompProp.AddEditor(TheEditor);
     MainForm.scpParams.AddEditor(TheEditor);
   end
   else if HL = MainForm.SynNPGSyn then

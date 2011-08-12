@@ -425,7 +425,7 @@ begin
     else if FileIsNPG(H) then
       extbin := '.rpg'
     else if FileIsSPC(H) then
-      extbin := '.obj'
+      extbin := '.bin'
     else if FileIsRICScript(H) then
       extbin := '.ric';
     commandstr := commandstr + ' -O' + OE + '"' + ChangeFileExt(sFilename, extbin) + '"';
@@ -765,7 +765,7 @@ begin
           for i := 0 to tmpSL.Count - 1 do
           begin
             tmpstr := tmpSL[i];
-            if (tmpstr <> '') and (Pos('#line', tmpstr) <> 1) then
+            if (tmpstr <> '') and (Pos('#line', tmpstr) <> 1) and (Pos('#pragma', tmpstr) <> 1) then
               CodeForm.CodeEdit.Lines.Add(tmpstr);
           end;
   //        CodeForm.CodeEdit.Lines.LoadFromFile(tempDir + 'temp.lst')

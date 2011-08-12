@@ -101,7 +101,7 @@ var
 begin
   for i := 0 to lstFiles.Items.Count - 1 do
     if lstFiles.Selected[i] then
-      FS.NXTDownloadFile(lstFiles.Items[i], NameToNXTFileType(lstFiles.Items[i]));
+      FS.DownloadFile(lstFiles.Items[i], NameToNXTFileType(lstFiles.Items[i]));
   btnListFilesClick(Sender);
 end;
 

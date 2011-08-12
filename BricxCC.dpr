@@ -133,7 +133,7 @@ uses
 {$ENDIF}
 
 const
-  K_RCXINFO = '(RCX = 0, Cybermaster = 1, Scout = 2, RCX2 = 3, Spybot = 4, Swan = 5, and NXT = 6)';
+  K_RCXINFO = '(RCX = 0, Cybermaster = 1, Scout = 2, RCX2 = 3, Spybot = 4, Swan = 5, NXT = 6, and Something = 7)';
 
 begin
   TheMenuItemType := TOfficeMenuItem;
@@ -146,6 +146,7 @@ begin
   LoadNXCCodeCompFromFile(ProgramDir + 'Default\nxc_api.txt', True);
   LoadNBCCodeCompFromFile(ProgramDir + 'Default\nbc_api.txt', True);
   LoadRICScriptCodeCompFromFile(ProgramDir + 'Default\ricscript_api.txt');
+  LoadSPCCodeCompFromFile(ProgramDir + 'Default\spc_api.txt', True);
 
   if ParamSwitch('/NoNewMenuItems') then
     AddMenuItemsToNewMenu := False;
@@ -186,7 +187,7 @@ begin
   Application.CreateForm(TfrmNXTImage, frmNXTImage);
   Application.CreateForm(TfrmNXTWatchList, frmNXTWatchList);
   if not ParamSwitch('/RESET') then
-    UpgradeRegistry(nil, nil, nil, nil); // must be done before creating preferences form
+    UpgradeRegistry(nil, nil, nil, nil, nil, nil); // must be done before creating preferences form
   if ParamSwitch('-EMBEDDING') or ParamSwitch('-AUTOMATION') then
   begin
     RunningAsCOMServer := True;

@@ -282,8 +282,8 @@ type
   kNXT_SCGetBTAddress          = $9A;
 }
     // wrapper functions
-    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
-    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
+    function DownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
+    function DownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
     function NXTUploadFile(const filename : string; const dir : string = '') : boolean; override;
     function NXTUploadFileToStream(const filename : string; aStream : TStream) : boolean; override;
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
@@ -1043,7 +1043,7 @@ begin
     try
       MS.LoadFromFile(aFile);
       DoDownloadStart;
-      Result := NXTDownloadStream(MS, aFile, nftFirmware);
+      Result := DownloadStream(MS, aFile, nftFirmware);
       DoDownloadDone;
     finally
       MS.Free;
@@ -2193,7 +2193,7 @@ begin
   iNXT_destroyModuleIterator(fNXTHandle, NXTModuleIteratorHandle, status);
 end;
 
-function TFantomSpirit.NXTDownloadFile(const filename: string;
+function TFantomSpirit.DownloadFile(const filename: string;
   const filetype: TNXTFileType): boolean;
 var
   MS : TMemoryStream;
@@ -2207,7 +2207,7 @@ begin
     MS := TMemoryStream.Create;
     try
       MS.LoadFromFile(filename);
-      Result := NXTDownloadStream(MS, filename, filetype);
+      Result := DownloadStream(MS, filename, filetype);
     finally
       MS.Free;
     end;
@@ -2331,7 +2331,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTDownloadStream(aStream: TStream; const dest : string;
+function TFantomSpirit.DownloadStream(aStream: TStream; const dest : string;
   const filetype: TNXTFileType): boolean;
 var
   size : Cardinal;

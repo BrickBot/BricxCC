@@ -1165,8 +1165,7 @@ implementation
 
 uses
   StrUtils, Math, uNBCLexer, uCommonUtils, uVersionInfo, uLocalizedStrings,
-  {$IFDEF FAST_MM}FastStrings, {$ENDIF}
-  NBCCommonData, NXTDefsData;
+  uCompTokens, NBCCommonData, NXTDefsData;
 
 const
   CLUMP_FMT = 't%3.3d';
@@ -1301,15 +1300,6 @@ begin
     else
       break;
   end;
-end;
-
-function Replace(const str : string; const src, rep : string) : string;
-begin
-{$IFDEF FAST_MM}
-  Result := FastReplace(str, src, rep, True);
-{$ELSE}
-  Result := StringReplace(str, src, rep, [rfReplaceAll]);
-{$ENDIF}
 end;
 
 function IndexOfIOMapID(iomapID : integer) : integer;
@@ -4335,7 +4325,7 @@ begin
   end
   else
   begin
-    DoCompilerStatusChange(sNBCFinalizeDepends);
+    DoCompilerStatusChange(sFinalizeDepends);
     // make sure our dependencies are finalized
     Codespace.FinalizeDependencies;
     // possibly optimize if Optimize level > 0
@@ -4345,17 +4335,17 @@ begin
       // so we will generate a full index up front
       Dataspace.DataspaceIndex('xyzzy');
       // now proceed with optimizations
-      DoCompilerStatusChange(Format(sNBCOptimizeLevel, [OptimizeLevel]));
-      DoCompilerStatusChange(sNBCBuildRefs);
+      DoCompilerStatusChange(Format(sOptimizeLevel, [OptimizeLevel]));
+      DoCompilerStatusChange(sBuildRefs);
       // build references if we are optimizing
       Codespace.BuildReferences;
       DoCompilerStatusChange(sNBCOptMutexes);
       // optimize mutexes
       Codespace.OptimizeMutexes;
-      DoCompilerStatusChange(sNBCCompactCode);
+      DoCompilerStatusChange(sCompactCode);
       // compact the codespace before codespace optimizations
       Codespace.Compact;
-      DoCompilerStatusChange(sNBCRemoveLabels);
+      DoCompilerStatusChange(sRemoveLabels);
       // also get rid of extra labels
       Codespace.RemoveUnusedLabels;
       // 2009-03-18 JCH: I have restored the level 2 optimizations
@@ -4364,67 +4354,67 @@ begin
       // level into the optimization function itself.
       if OptimizeLevel >= 2 then
       begin
-        DoCompilerStatusChange(sNBCRunCodeOpts);
+        DoCompilerStatusChange(sRunCodeOpts);
         Codespace.Optimize(OptimizeLevel);
-        DoCompilerStatusChange(sNBCCompactAfterOpt);
+        DoCompilerStatusChange(sCompactAfterOpt);
         // after optimizations we should re-compact the codespace
         Codespace.Compact;
       end;
       // also get rid of extra pragmas
-      DoCompilerStatusChange(sNBCRemovePragmas);
+      DoCompilerStatusChange(sRemovePragmas);
       Codespace.RemoveUnusedPragmas;
       // after optimizing and compacting the codespace we remove
       // unused variables from the dataspace
-      DoCompilerStatusChange(sNBCCompactData);
+      DoCompilerStatusChange(sCompactData);
       Dataspace.Compact;
     end
     else
     begin
       // level zero (no optimizations)
       // get rid of extra labels
-      DoCompilerStatusChange(sNBCRemoveLabels);
+      DoCompilerStatusChange(sRemoveLabels);
       Codespace.RemoveUnusedLabels;
       // also get rid of extra pragmas
-      DoCompilerStatusChange(sNBCRemovePragmas);
+      DoCompilerStatusChange(sRemovePragmas);
       Codespace.RemoveUnusedPragmas;
       // after optimizing and compacting the codespace we remove
       // unused variables from the dataspace
-      DoCompilerStatusChange(sNBCCompactData);
+      DoCompilerStatusChange(sCompactData);
       Dataspace.Compact;
     end;
     if not WarningsOff then
       OutputUnusedItemWarnings;
-    DoCompilerStatusChange(sNBCSortDataspace);
+    DoCompilerStatusChange(sSortDataspace);
     // sort the dataspace
     Dataspace.Sort;
-    DoCompilerStatusChange(sNBCGenerateRawDS);
+    DoCompilerStatusChange(sGenerateRawDS);
     // write the dataspace to DSData
     Dataspace.SaveToDSData(fDSData);
-    DoCompilerStatusChange(sNBCFillCodeArrays);
+    DoCompilerStatusChange(sFillCodeArrays);
     // fill the clumprecords and codespace array
     Codespace.SaveToCodeData(fClumpData, fCode);
-    DoCompilerStatusChange(sNBCUpdateHeader);
+    DoCompilerStatusChange(sUpdateHeader);
     // having done that I can now update the header
     UpdateHeader;
     // and write everything to the stream
     aStream.Position := 0;
-    DoCompilerStatusChange(sNBCWriteHeader);
+    DoCompilerStatusChange(sWriteHeader);
     WriteHeaderToStream(aStream, fHeader);
-    DoCompilerStatusChange(sNBCWriteDataspace);
+    DoCompilerStatusChange(sWriteDataspace);
     fDSData.SaveToStream(aStream);
-    DoCompilerStatusChange(sNBCWriteClumpData);
+    DoCompilerStatusChange(sWriteClumpData);
     fClumpData.SaveToStream(aStream);
-    DoCompilerStatusChange(sNBCWriteCodespace);
+    DoCompilerStatusChange(sWriteCodespace);
     fCode.SaveToStream(aStream);
     Result := not fBadProgram;
     if Result then
     begin
-      DoCompilerStatusChange(sNBCWriteOptSource);
+      DoCompilerStatusChange(sWriteOptSource);
       // replace the original "compiler output" with the optimized version
       SaveToStrings(CompilerOutput);
     end;
   end;
-  DoCompilerStatusChange(sNBCFinished, True);
+  DoCompilerStatusChange(sFinished, True);
 end;
 
 function TRXEProgram.GetVersion: byte;
@@ -4593,6 +4583,7 @@ begin
     fLevelIgnore.Add(TProcessLevel.Create); // level zero is NOT ignored
     fLevel := 0; // starting level is zero
 
+    fSkipCount := 0;
     i := 0;
     while i < aStrings.Count do
     begin
@@ -4647,35 +4638,6 @@ begin
   end;
 end;
 
-function CommasToSpaces(const line : string) : string;
-var
-  i, len : integer;
-  bInString : boolean;
-  ch : Char;
-begin
-  i := Pos('''', line); // is there a string initializer on this line?
-  if i > 0 then
-  begin
-    // if there is a string on this line then process a character at a time
-    bInString := False;
-    Result := '';
-    len := Length(line);
-    for i := 1 to len do begin
-      ch := line[i];
-      if (ch = ',') and not bInString then
-        ch := ' '
-//      else if (not bInString and (ch = '''')) or
-//              (bInString and (ch = '''') and
-//               ((i = len) or (line[i+1] <> ''''))) then
-      else if ch = '''' then
-        bInString := not bInString;
-      Result := Result + ch;
-    end;
-  end
-  else
-    Result := Replace(line, ',', ' ');
-end;
-
 function TRXEProgram.DetermineLineType(const state : TMainAsmState; namedTypes: TMapList;
   op : string; bUseCase : boolean) : TAsmLineType;
 begin
@@ -4714,43 +4676,6 @@ begin
     end
     else
       Result := altInvalid;
-  end;
-end;
-
-procedure TrimComments(var line : string; p : integer; const sub : string);
-var
-  k, j, x : integer;
-  tmp : string;
-begin
-  // before we decide to trim these comment we need to know whether they are
-  // embedded in a string or not.
-  tmp := line;
-  while (p > 0) do
-  begin
-    k := Pos('''', tmp);
-    j := 0;
-    if k < p then
-    begin
-      // hmmm, is there another single quote?
-      tmp := Copy(tmp, k+1, MaxInt);
-      j := Pos('''', tmp);
-      tmp := Copy(tmp, j+1, MaxInt);
-      j := j + k;
-    end;
-    if not ((p > k) and (p < j)) then
-    begin
-      Delete(line, p, MaxInt); // trim off any trailing comment
-      line := TrimRight(line); // trim off any trailing whitespace
-      tmp := line;
-      p := 0;
-    end
-    else
-      p := j;
-    x := Pos(sub, tmp);
-    if x > 0 then
-      inc(p, x-1)
-    else
-      p := 0;
   end;
 end;
 
@@ -8248,7 +8173,7 @@ begin
     // they are API-level (hand optimized) clumps
     if Pos('__', C.Name) = 1 then
       Continue;
-    DoCompilerStatusChange(Format(sNBCOptClump, [C.Name]));
+    DoCompilerStatusChange(Format(sOptClump, [C.Name]));
     C.Optimize(level);
   end;
 end;

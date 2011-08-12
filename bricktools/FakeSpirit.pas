@@ -274,8 +274,8 @@ type
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
     function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
     // wrapper functions
-    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
-    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
+    function DownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
+    function DownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
     function NXTUploadFile(const filename : string; const dir : string = '') : boolean; override;
     function NXTUploadFileToStream(const filename : string; aStream : TStream) : boolean; override;
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
@@ -3430,7 +3430,7 @@ begin
   Result := False;
 end;
 
-function TFakeSpirit.NXTDownloadFile(const filename: string;
+function TFakeSpirit.DownloadFile(const filename: string;
   const filetype: TNXTFileType): boolean;
 var
   MS : TMemoryStream;
@@ -3444,14 +3444,14 @@ begin
     MS := TMemoryStream.Create;
     try
       MS.LoadFromFile(filename);
-      Result := NXTDownloadStream(MS, filename, filetype);
+      Result := DownloadStream(MS, filename, filetype);
     finally
       MS.Free;
     end;
   end;
 end;
 
-function TFakeSpirit.NXTDownloadStream(aStream: TStream; const dest : string;
+function TFakeSpirit.DownloadStream(aStream: TStream; const dest : string;
   const filetype: TNXTFileType): boolean;
 var
   size, xferred : Cardinal;

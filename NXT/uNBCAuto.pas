@@ -121,7 +121,7 @@ begin
                 // download the compiled code to the brick
                 if not BrickComm.IsOpen then
                   BrickComm.Open;
-                BrickComm.NXTDownloadStream(sOut, ChangeFileExt(outputfile, '.rpg'), nftOther);
+                BrickComm.DownloadStream(sOut, ChangeFileExt(outputfile, '.rpg'), nftOther);
               end;
               if bOutput then
                 sOut.SaveToFile(outputfile);
@@ -190,7 +190,7 @@ begin
               begin
                 if not BrickComm.IsOpen then
                   BrickComm.Open;
-                BrickComm.NXTDownloadStream(sOut, ChangeFileExt(outputfile, '.rxe'), nftProgram);
+                BrickComm.DownloadStream(sOut, ChangeFileExt(outputfile, '.rxe'), nftProgram);
               end;
               if bOutput then
                 sOut.SaveToFile(outputfile);

@@ -262,7 +262,7 @@ type
                                 out ModSize: LongWord; out IOMapSize: Smallint): WordBool; safecall;
     function NXTFindNextModule(var handle: LongWord; out ModName: WideString; out ModID: LongWord; 
                                out ModSize: LongWord; out IOMapSize: Smallint): WordBool; safecall;
-    function NXTDownloadFile(const filename: WideString; filetype: TAutoNXTFileType): WordBool; safecall;
+    function DownloadFile(const filename: WideString; filetype: TAutoNXTFileType): WordBool; safecall;
     function NXTUploadFile(const filename: WideString; const dir: WideString): WordBool; safecall;
     function NXTListFiles(const searchPattern: WideString; out Files: WideString): WordBool; safecall;
     function NXTListModules(const searchPattern: WideString; out Files: WideString): WordBool; safecall;
@@ -1351,10 +1351,10 @@ begin
   Result := BrickComm.NXTSetBrickName(name, chkResponse);
 end;
 
-function TOleFakeSpirit.NXTDownloadFile(const filename: WideString;
+function TOleFakeSpirit.DownloadFile(const filename: WideString;
   filetype: TAutoNXTFileType): WordBool;
 begin
-  Result := BrickComm.NXTDownloadFile(filename, TNXTFileType(filetype));
+  Result := BrickComm.DownloadFile(filename, TNXTFileType(filetype));
 end;
 
 function TOleFakeSpirit.NXTWrite(var handle : LongWord; buffer: PByte;

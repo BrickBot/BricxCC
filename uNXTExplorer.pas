@@ -847,7 +847,7 @@ begin
   fsize := SizeOfFile(aFile);
   if fsize < K_NXT_MAX_MEM then
   begin
-    if not BrickComm.NXTDownloadFile(aFile, NameToNXTFileType(aFile)) then
+    if not BrickComm.DownloadFile(aFile, NameToNXTFileType(aFile)) then
     begin
       MessageDlg(sDownloadFailed, mtError, [mbOK], 0);
       Result := False;

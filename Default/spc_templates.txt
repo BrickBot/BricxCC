@@ -1,0 +1,30 @@
+- Programs
+task "name"()\={\>"body"\<}\=\=
+sub "name"()\={\>"body"\<}\=\=
+void "name"("arguments")\={\>"body"\<}\=\=
+int "name"("arguments")\={\>"body"\=return "value";\<}\=\=
+int "name";\=
+long "name";\=
+bool "name";\=
+struct "name" {\>"members"\<};\=\=
+#define "macro"\=
+#include "file"\=
+#import "file"\=
+#download "file"\=
+- If statements
+if ("condition")\={\>"statements"\<}\=
+if ("condition")\>"statement"\<else\>"statement"\=
+if ("condition")\={\>"body"\<}\=else\={\>"body"\<}\=
+if ("condition")\>"statement"\<else if ("condition")\>"statement"\<else\>"statement"\=
+- Loops etc...
+while ("condition")\={\>"body"\<}\=
+do\={\>"body"\<}\=while ("condition")\=
+repeat ("value")\={\>"body"\<}\=
+for ("init";"condition";"increment")\={\>"body"\<}\=
+until ("condition")\={\>"body"\<}\=
+switch ("var")\={\>case "num" :\=\>"body"\=break;\=default :\=\>"body"\<}\=
+break;\=
+continue;\=
+return;\=
+return "value";\=
+goto "label";\=

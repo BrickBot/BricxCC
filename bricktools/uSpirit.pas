@@ -358,8 +358,8 @@ type
   kNXT_SCGetBTAddress          = $9A;
 }
     // wrapper functions
-    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
-    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
+    function DownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
+    function DownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
     function NXTUploadFile(const filename : string; const dir : string = '') : boolean; virtual; abstract;
     function NXTUploadFileToStream(const filename : string; aStream : TStream) : boolean; virtual; abstract;
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; virtual; abstract;
@@ -610,8 +610,8 @@ end;
 
 function TBrickComm.GetBrickTypeName: string;
 const
-  BrickNames : array[rtRCX..rtNXT] of String = (K_RCX, K_CYBER, K_SCOUT, K_RCX2,
-    K_SPY, K_SWAN, K_NXT);
+  BrickNames : array[rtRCX..rtSPro] of String = (K_RCX, K_CYBER, K_SCOUT, K_RCX2,
+    K_SPY, K_SWAN, K_NXT, K_SPRO);
 begin
   Result := BrickNames[BrickType];
 end;
@@ -753,7 +753,7 @@ begin
           // now download these files in order
           for i := 0 to origFileList.Count - 1 do begin
             filename := origFileList.Names[i];
-            Result := NXTDownloadFile(UserDataLocalPath + filename, NameToNXTFileType(filename));
+            Result := DownloadFile(UserDataLocalPath + filename, NameToNXTFileType(filename));
             if not Result then begin
               // do something clever here
               Exit;

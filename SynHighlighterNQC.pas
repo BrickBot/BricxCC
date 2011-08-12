@@ -1302,6 +1302,9 @@ begin
     '#define NUM_LOOPS 4'#13#10 +
     'task main() // task is a Keyword'#13#10 +
     '{ // {},+(); are all Symbols'#13#10 +
+    '  // printf is a Command'#13#10 +
+    '  // "power = %d" is a Field (aka String)'#13#10 +
+    '  printf("power = %d", 10);'#13#10 +
     '  // NUM_LOOPS is an Identifier'#13#10 +
     '  repeat(NUM_LOOPS)'#13#10 +
     '  {'#13#10 +

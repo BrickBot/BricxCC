@@ -16,10 +16,14 @@
  *)
 unit uCommonUtils;
 
+{$IFDEF FPC}
+{$MODE Delphi}
+{$ENDIF}
+
 interface
 
 uses
-  Classes;
+  Classes, SysUtils;
 
 const
   DEFAULT_CHARSET = 1;
@@ -82,14 +86,23 @@ function MulDiv(const x, num, den : integer) : integer;
 function CardinalToSingle(const cVal : Cardinal) : Single;
 function SingleToCardinal(const sVal : Single) : Cardinal;
 function StripTrailingZeros(const aNum : string) : string;
+function StripQuotes(const str : string) : string;
+function StripBraces(const str : string) : string;
+function StripParens(const str : string) : string;
+function Replace(const str : string; const src, rep : string) : string;
+function CommasToSpaces(const line : string) : string;
+procedure TrimComments(var line : string; p : integer; const sub : string);
+function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
+  Strings: TStrings): Integer;
 
 implementation
 
 uses
 {$IFNDEF FPC}
-  Windows,
+  {$IFDEF FAST_MM}FastStrings, {$ENDIF}
+  Windows;
 {$ENDIF}
-  SysUtils;
+
 
 procedure WriteWordToStream(aStream : TStream; value : Word; bLittleEndian : Boolean);
 var
@@ -312,6 +325,21 @@ begin
     System.Delete(Result, Length(Result), 1);
 end;
 
+function StripQuotes(const str : string) : string;
+begin
+  Result := Copy(str, 2, Length(str)-2);
+end;
+
+function StripBraces(const str : string) : string;
+begin
+  Result := Copy(str, 2, Length(str)-2);
+end;
+
+function StripParens(const str : string) : string;
+begin
+  Result := Copy(str, 2, Length(str)-2);
+end;
+
 procedure GetFileList(const Directory : string; const Pattern : string; List : TStringlist);
 var
   SearchRec : TSearchRec;
@@ -327,7 +355,7 @@ begin
     end;
 
   finally
-    FindClose(SearchRec);
+    SysUtils.FindClose(SearchRec);
   end;
 end;
 
@@ -346,8 +374,139 @@ begin
       iRes := FindNext(SearchRec);
     end;
   finally
-    FindClose(SearchRec);
+    SysUtils.FindClose(SearchRec);
   end;
 end;
+
+function Replace(const str : string; const src, rep : string) : string;
+begin
+{$IFDEF FAST_MM}
+  Result := FastReplace(str, src, rep, True);
+{$ELSE}
+  Result := StringReplace(str, src, rep, [rfReplaceAll]);
+{$ENDIF}
+end;
+
+function CommasToSpaces(const line : string) : string;
+var
+  i, len : integer;
+  bInString : boolean;
+  ch : Char;
+begin
+  i := Pos('''', line); // is there a string initializer on this line?
+  if i > 0 then
+  begin
+    // if there is a string on this line then process a character at a time
+    bInString := False;
+    Result := '';
+    len := Length(line);
+    for i := 1 to len do begin
+      ch := line[i];
+      if (ch = ',') and not bInString then
+        ch := ' '
+      else if ch = '''' then
+        bInString := not bInString;
+      Result := Result + ch;
+    end;
+  end
+  else
+    Result := Replace(line, ',', ' ');
+end;
+
+procedure TrimComments(var line : string; p : integer; const sub : string);
+var
+  k, j, x : integer;
+  tmp : string;
+begin
+  // before we decide to trim these comment we need to know whether they are
+  // embedded in a string or not.
+  tmp := line;
+  while (p > 0) do
+  begin
+    k := Pos('''', tmp);
+    j := 0;
+    if k < p then
+    begin
+      // hmmm, is there another single quote?
+      tmp := Copy(tmp, k+1, MaxInt);
+      j := Pos('''', tmp);
+      tmp := Copy(tmp, j+1, MaxInt);
+      j := j + k;
+    end;
+    if not ((p > k) and (p < j)) then
+    begin
+      Delete(line, p, MaxInt); // trim off any trailing comment
+      line := TrimRight(line); // trim off any trailing whitespace
+      tmp := line;
+      p := 0;
+    end
+    else
+      p := j;
+    x := Pos(sub, tmp);
+    if x > 0 then
+      inc(p, x-1)
+    else
+      p := 0;
+  end;
+end;
+
+{$IFDEF FPC}
+function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
+  Strings: TStrings): Integer;
+var
+  Head, Tail: PChar;
+  EOS, InQuote: Boolean;
+  QuoteChar: Char;
+  Item: string;
+begin
+  Item := '';
+  Result := 0;
+  if (Content = nil) or (Content^=#0) or (Strings = nil) then Exit;
+  Tail := Content;
+  InQuote := False;
+  QuoteChar := #0;
+  Strings.BeginUpdate;
+  try
+    repeat
+      while Tail^ in WhiteSpace + [#13, #10] do inc(Tail);
+      Head := Tail;
+      while True do
+      begin
+        while (InQuote and not (Tail^ in [QuoteChar, #0])) or
+          not (Tail^ in Separators + [#0, #13, #10, '''', '"']) do
+            inc(Tail);
+        if Tail^ in ['''', '"'] then
+        begin
+          if (QuoteChar <> #0) and (QuoteChar = Tail^) then
+            QuoteChar := #0
+          else if QuoteChar = #0 then
+            QuoteChar := Tail^;
+          InQuote := QuoteChar <> #0;
+          inc(Tail);
+        end else Break;
+      end;
+      EOS := Tail^ = #0;
+      if (Head <> Tail) and (Head^ <> #0) then
+      begin
+        if Strings <> nil then
+        begin
+          SetString(Item, Head, Tail - Head);
+          Strings.Add(Item);
+        end;
+        Inc(Result);
+      end;
+      inc(Tail);
+    until EOS;
+  finally
+    Strings.EndUpdate;
+  end;
+end;
+{$ELSE}
+function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
+  Strings: TStrings): Integer;
+begin
+  Result := ExtractStrings(Separators, WhiteSpace, Content, Strings);
+end;
+{$ENDIF}
 
 end.
