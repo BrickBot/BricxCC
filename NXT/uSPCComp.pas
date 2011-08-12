@@ -23,8 +23,8 @@ unit uSPCComp;
 interface
 
 uses
-  Classes, uNBCCommon, uGenLexer, uPreprocess, Contnrs, uNXTClasses,
-  uSPCClasses;
+  Classes, uCompTokens, uNBCCommon, uGenLexer, uPreprocess, Contnrs,
+  uNXTClasses, uSPCClasses;
 
 type
   TCompareCode = (ccLT, ccGT, ccLTEQ, ccGTEQ, ccEQ, ccNEQ);
@@ -60,27 +60,84 @@ type
     procedure push;
     procedure DoCompilerStatusChange(const Status: string; const bDone : boolean = False);
     procedure DoCommonFuncProcDecl(var bProtoExists: boolean;
-      var Name: string; const tname: string; const tok, dt: char; bInline : boolean);
+      var Name: string; const tname: string; const tok, dt: char;
+      bInline, bPointer : boolean);
     procedure HandlePreprocStatusChange(Sender : TObject; const StatusMsg : string);
     procedure SetCurFile(const Value: string);
     function IsCharLiteral(const aName: string): boolean;
     function UDTSize(const tname: string): integer;
     function CountElements(lenexpr: string): integer;
     function CountValues(ival: string): integer;
-    function SwitchBranch(const aLabel, aLHS, aRHS : string): string;
+    function SubAsString(const aLHS, aRHS: string): string;
+    function MoveAsString(const aLHS, aRHS : string): string;
+    function SubImmAsString(const aLHS, aRHS : string): string;
+    function BranchAsString(const aLabel: string) : string;
+    function BranchPositiveAsString(const aLabel: string): string;
+    function BranchNegativeAsString(const aLabel: string): string;
+    function BranchFalseAsString(const aLabel: string) : string;
+    function BranchTrueAsString(const aLabel: string): string;
     procedure EndOfProcess;
     procedure StartOfCode(const aName: string);
     procedure StoreAddress(const dest, src: string);
     procedure ClearIndirect(const element: string);
     procedure DoIncrement(const aName: string);
     procedure DoDecrement(const aName: string);
-    procedure SourceAdd(const str: string);
-    procedure SourceAddStrings(aStrings: TStrings);
-    procedure HandleAcquireReleaseHelper(Sender: TObject;
-      bAcquire: boolean; const aName: string);
+    procedure SourceAdd(const str: string; const bAbortOnDS : boolean = False);
+    procedure SourceAddStrings(aStrings: TStrings; const bAbortOnDS : boolean = False);
+    procedure SourceRemoveCallToInitGlobals;
+    procedure SourceSwitchWaitToStart;
+    procedure SourceInsert(const idx: integer; const aValue: string);
+    procedure SourceDelete(const line: integer);
+    procedure SourceClear;
+    function SourceCount : integer;
+    procedure HandleAcquireReleaseHelper(Sender: TObject; bAcquire: boolean; const aName: string);
     procedure ReleaseVolatile(const aName: string);
     procedure AcquireVolatile(const aName: string);
-    procedure SetDataOrigin(const Org: Word; const comment: string);
+    procedure SetToFalse(const aName: string);
+    procedure SetToTrue(const aName: string);
+    procedure SetZeroCC;
+    function TestAsString(const aName: string): string;
+    procedure GetSProAddress;
+    procedure TraceChar(const C: Char);
+    procedure TraceString(const S: string);
+    procedure StartProcess(const aName: string);
+    procedure CloseLog;
+    procedure OpenLogForWrite;
+    procedure OpenLogForRead;
+    procedure LogStatus;
+    procedure Rotate(bRight: boolean; const aName: string);
+    procedure PopVar(const aName: string);
+    procedure PushVar(const aName: string);
+    procedure TraceVar(bDecimal: boolean; const aName: string);
+    procedure ReadVar(const aName: string);
+    procedure WriteVar(const aName: string);
+    procedure RunProgram(const slot: byte);
+    procedure ExitToProcess(const aName: string);
+    procedure SquareRoot(const aName: string);
+    procedure AbsoluteValue;
+    procedure SignValue;
+    procedure WaitForClock;
+    procedure StopAllProcesses(const aName: string);
+    procedure HaltEx;
+    procedure TraceCarriageReturn;
+    procedure TraceNewLine;
+    procedure TraceSpace;
+//    procedure TraceCRLF;
+    procedure GetStringLiteral;
+    procedure CheckStringConst;
+    procedure WaitMS(const aName: string);
+    procedure TraceStringWithEscapes(tmp: string);
+    procedure TraceCharAsString(const aValue: string);
+    procedure CheckPointer(const aName: string);
+    function IsParamPointer(n: string): boolean;
+    procedure StorePreDec(const name: string);
+    procedure StorePreInc(const name: string);
+    procedure CopyArrayVar(const dest, src: string);
+    procedure CopyUDTVar(const dest, src: string);
+    procedure TestVariable(const name: string);
+    procedure OutputDirective(const directive: string);
+    function GetCompilerOutput: TStrings;
+    function GetSymbolTable: TStrings;
   protected
     fDD: TDataDefs;
     fCurrentStruct : TDataspaceEntry;
@@ -97,6 +154,7 @@ type
     fMessages : TStrings;
     fMS : TMemoryStream;
     fTempChar : Char;
+    fCCSet : boolean;
     fIncludeDirs: TStrings;
     fCurFile: string;
     fOnCompMSg: TOnCompilerMessage;
@@ -104,6 +162,8 @@ type
     fCurrentLine : string;
     fExpStr : string;
     fExpStrHasVars : boolean;
+    fBoolSubExpStr : string;
+    fBoolSubExpStrHasVars : boolean;
     fAPIFunctions : TStringList;
     fAPIStrFunctions : TStringList;
     fThreadNames : TStringList;
@@ -131,10 +191,11 @@ type
     fProcessingMathAssignment : boolean;
     fProcessingAsmBlock : boolean;
     fNoCommaOperator : boolean;
-    procedure SourceInsert(const idx: integer; const aValue: string);
-    procedure SourceDelete(const line: integer);
-    procedure SourceClear;
-    function SourceCount : integer;
+    fDerefAssignment : boolean;
+    fDerefValue : boolean;
+    fAddressOfValue : boolean;
+    fAutoStart : boolean;
+    fIGDProcess : TProcessObject;
     function AmInlining : boolean;
     procedure IncrementInlineDepth;
     procedure DecrementInlineDepth;
@@ -167,7 +228,7 @@ type
     procedure Expression;
     procedure DoPreIncOrDec(bPutOnStack : boolean);
     function  IncrementOrDecrement : boolean;
-    function OptimizeExpression(const idx : integer) : string;
+    function OptimizeExpression(str : string; const idx : integer; bFlag : boolean) : string;
     procedure Subtract;
     procedure CommaExpression;
     procedure BoolExpression;
@@ -214,10 +275,12 @@ type
     procedure ClearSwitchFixups;
     procedure FixupSwitch(idx : integer; lbl : string);
     procedure DoLabel;
+    procedure DoStart;
     procedure CommaStatement(const lend, lstart : string);
     procedure Statement(const lend, lstart : string);
     procedure ProcessDirectives(bScan : boolean = True);
     procedure HandlePoundLine;
+    procedure HandlePoundPragma;
     function  ArrayOfType(dt : char; dimensions : integer) : char;
     function  GetVariableType(vt: char): char;
     procedure CheckForValidDataType(dt : char);
@@ -225,7 +288,7 @@ type
     function  AddArrayDimension(dt : char) : char;
     procedure IncLineNumber;
     function AddLocal(name: string; dt: char; const tname : string;
-      bConst : boolean; const lenexp : string) : integer;
+      bConst : boolean; const lenexp : string; bPointer : boolean) : integer;
     procedure AllocGlobal(const tname : string; dt: char; bInline, bConst, bStatic : boolean);
     procedure AllocLocal(const sub, tname: string; dt: char; bConst, bStatic : boolean);
     function  GetInitialValue(dt : char) : string;
@@ -237,17 +300,19 @@ type
     procedure ProcedureBlock;
     procedure InitializeGlobalArrays;
     procedure EmitGlobalDataInitSubroutine;
-    procedure FunctionBlock(Name, tname : string; dt : char; bInline : boolean);
-    procedure AbortMsg(s: string);
-    procedure Expected(s: string);
-    procedure Undefined(n: string);
+    procedure FunctionBlock(Name, tname : string; dt : char; bInline, bPointer : boolean);
+    procedure AbortMsg(const s: string);
+    procedure WarningMsg(const s: string);
+    procedure Expected(const s: string);
+    procedure Undefined(const n: string);
+    procedure Duplicate(const n: string);
     procedure CheckIdent;
     procedure CheckEnhancedFirmware;
     procedure CheckDataType(dt : char);
     procedure CheckTypeCompatibility(fp : TFunctionParameter; dt : char; const name : string);
-    procedure Duplicate(n: string);
 //    function SizeOfType(dt: char): integer;
-    function AddEntry(N: string; dt: char; const tname, lenexp : string; bConst : boolean = False) : integer;
+    function AddEntry(N: string; dt: char; const tname, lenexp : string;
+      bConst : boolean = False; bPointer : boolean = False) : integer;
     procedure CheckDup(N: string);
     procedure CheckTable(const N: string);
     procedure CheckGlobal(const N: string);
@@ -259,7 +324,7 @@ type
     procedure LoadVar(const Name: string);
     procedure CheckNotProc(const Name : string);
     procedure CheckAndStore(const Name: string);
-    procedure Store(const Name: string);
+    procedure Store(const name: string);
     procedure CopyVar(const dest, src : string);
     procedure Allocate(const Name, aVal, Val, tname: string; dt: char; cnt : integer = 1);
     procedure InitializeArray(const Name, aVal, Val, tname: string; dt : char;
@@ -270,9 +335,9 @@ type
     procedure EmitRegisters;
     procedure EmitStackVariables;
     procedure EmitInlineParametersAndLocals(func : TInlineFunction);
-    procedure EmitLn(s: string);
-    procedure EmitLnNoTab(s: string);
-    procedure PostLabel(L: string);
+    procedure EmitLn(const s: string);
+    procedure EmitLnNoTab(const s: string);
+    procedure PostLabel(const L: string);
     procedure LoadConstToDest(const dest, n: string);
     procedure LoadConst(const n: string);
     procedure Negate;
@@ -295,9 +360,10 @@ type
     procedure PopSub;
     procedure PopXor;
     procedure PushPrim;
-    procedure Branch(L: string);
-    procedure BranchFalse(L: string);
-    procedure BranchTrue(L: string);
+    procedure Branch(const L: string);
+    procedure BranchFalse(const L: string);
+    procedure BranchTrue(const L: string);
+    procedure BranchPositive(const L: string);
     procedure ClearReg;
     procedure ArrayAssignment(const name : string; dt : char; bIndexed : boolean);
     procedure UDTAssignment(const name : string);
@@ -316,8 +382,27 @@ type
     procedure StoreDec(const name: string);
     procedure DoAPICommands(const lend, lstart : string);
     procedure DoBreakContinue(idx : integer; const lbl : string);
+    procedure DoExitTo;
+    procedure DoOpenLog;
+    procedure DoCloseLog;
+    procedure DoWriteToLog;
+    procedure DoReadFromLog;
+    procedure DoLogStatus;
+    procedure DoRotate(const idx : integer);
+    procedure DoPush;
+    procedure DoPop;
+    procedure DoSquareRoot;
+    procedure DoRunProgram;
+    procedure DoWait;
+    procedure DoStopProcesses;
+    procedure DoPutChar;
+    procedure DoPutString;
+    procedure DoPrintf;
+    procedure DoStop;
     procedure DoGoto;
     procedure DoReturn;
+    procedure DoAbs;
+    procedure DoSign;
     procedure ReportProblem(const lineNo: integer; const fName, msg: string; const err: boolean);
     procedure Scan;
     function  IsWhite(c: char): boolean;
@@ -335,10 +420,10 @@ type
     function  WhatIs(const n: string): TSymbolType;
     function  TempSignedLongName : string;
     function  RegisterName(name : string = '') : string;
-    function  ZeroFlag : string;
+//    function  ZeroFlag : string;
     function  tos: string;
     function  ReplaceTokens(const line: string): string;
-    procedure EmitAsmLines(s: string);
+    procedure EmitAsmLines(const s: string);
     procedure EmitPoundLine;
     function  IsLocal(n: string): boolean;
     function  LocalIdx(n: string): integer;
@@ -398,7 +483,6 @@ type
     procedure CheckForCast;
     procedure HandleCast;
   protected
-    fCurrentSProProcess : TSProProcess;
     fDS : TDataspace;
     fSProProgram : TSProProgram;
     fTmpAsmLines : TStrings;
@@ -423,6 +507,7 @@ type
     procedure Parse(const aFilename : string); overload;
     procedure Parse(aStream : TStream); overload;
     procedure Parse(aStrings : TStrings); overload;
+    function SaveToStream(aStream: TStream): boolean;
     property  Defines : TStrings read fDefines write SetDefines;
     property  ASMSource : TStrings read GetASMSrc;
     property  CompilerMessages : TStrings read fMessages;
@@ -438,17 +523,25 @@ type
     property  OnCompilerMessage : TOnCompilerMessage read fOnCompMSg write fOnCompMsg;
     property  ErrorCount : integer read fProgErrorCount;
     property  OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write fOnCompilerStatusChange;
+    property  SymbolTable : TStrings read GetSymbolTable;
+    property  CompilerOutput : TStrings read GetCompilerOutput;
+    class function BinToText(aStream : TStream; const aFilename : string = '') : string; overload;
+    class function BinToText(const aFilename : string) : string; overload;
   end;
 
 implementation
 
 uses
   SysUtils, Math, uSPCLexer, uNBCLexer, mwGenericLex, uLocalizedStrings,
-  {SPCCommonData, SPCDefsData, }uNXTConstants, Parser10;
+  {SPCCommonData, SPCDefsData, }uNXTConstants, uCommonUtils, Parser10;
 
 {--------------------------------------------------------------}
 { Constant Declarations }
 
+const
+  PAD_RIGHT = 1;
+  PAD_ZERO  = 2;
+  
 const
   TAB = ^I;
   CR  = ^M;
@@ -493,8 +586,8 @@ var
 { Definition of Keywords and Token Types }
 
 const
-  NKW  = 22; //18;
-  NKW1 = 23; //19;
+  NKW  = 24; //18;
+  NKW1 = 25; //19;
 
 const
   KWlist: array[1..NKW] of string =
@@ -502,16 +595,16 @@ const
                'for', 'sub', 'void', 'task',
                'do', 'repeat', 'switch', 'asm', 'const', 'static',
                'default', 'case', 'typedef', 'inline', 'long', 'enum',
-               'int', 'bool', 'struct'
+               'int', 'bool', 'struct', 'start', 'char'
                );
 
-const                                     // 'xileweRWve'
+const                                     
   KWcode: array[1..NKW1+1] of Char =
     (TOK_IDENTIFIER, TOK_IF, TOK_ELSE, TOK_WHILE,
      TOK_FOR, TOK_PROCEDURE, TOK_PROCEDURE, TOK_TASK,
      TOK_DO, TOK_REPEAT, TOK_SWITCH, TOK_ASM, TOK_CONST, TOK_STATIC,
      TOK_DEFAULT, TOK_CASE, TOK_TYPEDEF, TOK_INLINE, TOK_LONGDEF, TOK_ENUM,
-     TOK_LONGDEF, TOK_LONGDEF, TOK_STRUCT,
+     TOK_LONGDEF, TOK_LONGDEF, TOK_STRUCT, TOK_START, TOK_LONGDEF,
      #0);
 
 const
@@ -519,10 +612,20 @@ const
   API_CONTINUE = 1;
   API_RETURN   = 2;
   API_GOTO     = 3;
+  API_STOP     = 4;
+  API_EXITTO   = 5;
+  API_ROTLEFT  = 6;
+  API_ROTRIGHT = 7;
+  API_RUN      = 8;
+  API_WAIT     = 9;
+  API_HALTEX   = 10;
 
-  APICount = 4;
+  APICount = 11;
   APIList : array[0..APICount-1] of string = (
-    'break', 'continue', 'return', 'goto'
+    'break', 'continue', 'return', 'goto',
+    'Stop', 'ExitTo',
+    'RotateLeft', 'RotateRight',
+    'Run', 'Wait', 'StopProcesses'
   );
 
 const
@@ -541,11 +644,6 @@ begin
   else
     Result := 0;
   end;
-end;
-
-function StripBraces(str : string) : string;
-begin
-  Result := Copy(str, 2, Length(str)-2);
 end;
 
 function IsArrayType(dt: char): boolean;
@@ -711,22 +809,27 @@ begin
   end;
 end;
 
-procedure TSPCComp.AbortMsg(s: string);
+procedure TSPCComp.AbortMsg(const s: string);
 begin
   ReportProblem(linenumber, CurrentFile, s, True);
 end;
 
-procedure TSPCComp.Expected(s: string);
+procedure TSPCComp.WarningMsg(const s: string);
+begin
+  ReportProblem(linenumber, CurrentFile, s, False);
+end;
+
+procedure TSPCComp.Expected(const s: string);
 begin
   AbortMsg(Format(sExpectedString, [s]));
 end;
 
-procedure TSPCComp.Undefined(n: string);
+procedure TSPCComp.Undefined(const n: string);
 begin
   AbortMsg(Format(sUndefinedIdentifier, [n]));
 end;
 
-procedure TSPCComp.Duplicate(n: string);
+procedure TSPCComp.Duplicate(const n: string);
 begin
    AbortMsg(Format(sDuplicateIdentifier, [StripDecoration(n)]));
 end;
@@ -780,6 +883,12 @@ procedure TSPCComp.CheckNumeric;
 begin
   if not ValueIsNumeric then
     Expected(sNumber);
+end;
+
+procedure TSPCComp.CheckStringConst;
+begin
+  if (Token <> TOK_STRINGLIT) then
+    Expected(sStringLiteral);
 end;
 
 function TSPCComp.IsDigit(c: char): boolean;
@@ -850,6 +959,7 @@ begin
     GetCharX;
   until (Look = LF) or endofallsource;
   fDirLine := fDirLine + Look;
+  fDirLine := Trim(fDirLine);
   GetChar;
 end;
 
@@ -887,7 +997,18 @@ end;
 
 function TSPCComp.IsGlobal(n: string): boolean;
 begin
-  Result := GlobalIdx(RootOf(n)) <> 0;
+  if (Pos('@', n) = 1) then
+  begin
+    System.Delete(n, 1, 1);
+    // is the remainder a valid number?
+    fCalc.SilentExpression := n;
+    if fCalc.ParserError then
+      Result := False
+    else
+      Result := True;
+  end
+  else
+    Result := GlobalIdx(RootOf(n)) <> 0;
 end;
 
 function TSPCComp.IsGlobalConst(n: string): boolean;
@@ -1028,6 +1149,16 @@ begin
     Result := fParams[i].IsConstant;
 end;
 
+function TSPCComp.IsParamPointer(n: string): boolean;
+var
+  i : integer;
+begin
+  Result := False;
+  i := ParamIdx(RootOf(n));
+  if i <> -1 then
+    Result := fParams[i].IsPointer;
+end;
+
 function TSPCComp.ParamDataType(const n: string): char;
 var
   i : integer;
@@ -1144,7 +1275,7 @@ begin
 end;
 
 function TSPCComp.AddEntry(N: string; dt: char; const tname, lenexp : string;
-  bConst : boolean) : integer;
+  bConst, bPointer : boolean) : integer;
 var
   V : TVariable;
 begin
@@ -1158,11 +1289,12 @@ begin
   V := fGlobals.Add;
   with V do
   begin
-    Name        := N;
-    DataType    := dt;
-    IsConstant  := bConst;
-    TypeName    := tname;
-    LenExpr     := lenexp;
+    Name       := N;
+    DataType   := dt;
+    IsConstant := bConst;
+    IsPointer  := bPointer;
+    TypeName   := tname;
+    LenExpr    := lenexp;
   end;
   Result := V.Index;
 end;
@@ -1190,6 +1322,7 @@ begin
     GetChar;
   until not IsAlNum(Look);
   fExpStrHasVars := True;
+  fBoolSubExpStrHasVars := True;
   HandleSpecialNames;
 end;
 
@@ -1230,6 +1363,20 @@ begin
   until not IsHex(Look);
 end;
 
+procedure TSPCComp.GetSProAddress;
+begin
+  SkipWhite;
+  GetChar; // skip the @
+  if IsDigit(Look) then
+  begin
+    GetNum;
+    Value := '@'+Value;
+    Token := TOK_IDENTIFIER;
+  end
+  else
+    Expected(sNumber);
+end;
+
 procedure TSPCComp.GetCharLit;
 var
   i : integer;
@@ -1239,21 +1386,16 @@ begin
   if Look = '\' then
   begin
     GetCharX; // skip the '\'
-    i := Pos(Look, 'abfnrtv''"\?');
+    i := Pos(Look, 'nr''"\?');
     case i of
-      1 : Value := '7'; // bell
-      2 : Value := '8'; // backspace
-      3 : Value := '12'; // formfeed
-      4 : Value := '10'; // new line
-      5 : Value := '13'; // carriage return
-      6 : Value := '9'; // tab
-      7 : Value := '11'; // vertical tab
-      8 : Value := '39'; // single quote
-      9 : Value := '34'; // double quote
-     10 : Value := '92'; // backslash
-     11 : Value := '63'; // question mark
+      1 : Value := '10'; // new line
+      2 : Value := '13'; // carriage return
+      3 : Value := '39'; // single quote
+      4 : Value := '34'; // double quote
+      5 : Value := '92'; // backslash
+      6 : Value := '63'; // question mark
     else
-      Value := IntToStr(Ord(Look));
+      Value := IntToStr(Ord(' ')); // unsupported character escape
     end;
   end
   else
@@ -1262,6 +1404,45 @@ begin
   end;
   GetCharX;
   if Look <> '''' then Expected(sCharLiteral);
+  GetChar;
+end;
+
+procedure TSPCComp.GetStringLiteral;
+var
+  bEscapeNext : boolean;
+begin
+  GetCharX; // skip the "
+  Token := TOK_STRINGLIT;
+  if Look = '"' then
+  begin
+    // empty string
+    Value := '''''';
+  end
+  else
+  begin
+    bEscapeNext := False;
+    Value := '''';
+    if (Look = '''') then
+      Value := Value + '\'''
+    else
+      Value := Value + Look;
+    repeat
+      if not bEscapeNext then
+        bEscapeNext := Look = '\'
+      else
+        bEscapeNext := False;
+      GetCharX;
+      if not ((Look = LF) or ((Look = '"') and not bEscapeNext)) then
+      begin
+        if (Look = '''') and not bEscapeNext then
+          Value := Value + '\'''
+        else
+          Value := Value + Look;
+      end;
+    until ((Look = '"') and not bEscapeNext) or (Look = LF) or endofallsource;
+    Value := Value + '''';
+    if Look <> '"' then Expected(sStringLiteral);
+  end;
   GetChar;
 end;
 
@@ -1277,15 +1458,18 @@ procedure TSPCComp.Next(bProcessDirectives : boolean);
 begin
   SkipWhite;
   if Look = '''' then GetCharLit
+  else if Look = '"' then GetStringLiteral
   else if Look = '#' then GetDirective
   else if IsAlpha(Look) then GetName
   else if IsDigit(Look) then GetNum
   else if Look = '$' then GetHexNum
+  else if Look = '@' then GetSProAddress
   else GetOp;
   if bProcessDirectives then
   begin
     ProcessDirectives(False);
     fExpStr := fExpStr + Value;
+    fBoolSubExpStr := fBoolSubExpStr + Value;
   end;
   if not fProcessingAsmBlock and
      not (Token in ['<', '>', '|', '^', '&', '%', '/', '*', '-', '+', '=']) then
@@ -1448,8 +1632,8 @@ begin
       // handle some special cases (register variables)
       if (Pos('__D0', n) = 1) or (Pos('__signed_stack_', n) = 1) or (Pos('__tmpslong', n) = 1) then
         Result := TOK_LONGDEF
-      else if (Pos('__zf', n) = 1) then
-        Result := TOK_LONGDEF
+//      else if (Pos('__zf', n) = 1) then
+//        Result := TOK_LONGDEF
       else
       begin
         Result := #0;
@@ -1586,7 +1770,7 @@ procedure TSPCComp.NumericFactor;
 var
   savedtoken, rdt : char;
   savedvalue : string;
-  oldNoCommas : boolean;
+  oldNoCommas, oldDA : boolean;
 begin
   if Token = TOK_OPENPAREN then begin
     OpenParen;
@@ -1617,19 +1801,32 @@ begin
     end
     else
     begin
+      // current token is stored in savedtoken
+      // is it '*'?
+      fDerefValue := Token = '*';
+      fAddressOfValue := Token = '&';
+      if fDerefValue or fAddressOfValue then
+      begin
+        Next;
+        Scan;
+        savedtoken := Token;
+        savedvalue := Value;
+      end;
       Next;
       case savedtoken of
         TOK_IDENTIFIER : begin
           if Token = '[' then
           begin
+            if fDerefValue or fAddressOfValue then
+              AbortMsg(sInvalidPointerSyntax);
             fArrayIndexStack.Clear;
             DoNewArrayIndex(DataType(savedvalue), savedvalue, fLHSName);
           end
           else if ((Token = '+') and (Look = '+')) or
                   ((Token = '-') and (Look = '-')) then
           begin
-            // increment/decrement
-            CheckAndLoadVar(savedvalue);
+            // postfix increment/decrement operators have higher precedence than dereference
+            CheckAndLoadVar(savedvalue); // put the current value in the register
             if Token = '+' then
               StoreInc(savedvalue)
             else
@@ -1642,7 +1839,13 @@ begin
           // should be found. 2010-06-07 JCH
           else if (Token in ['+', '-', '/', '*', '%', '&', '|', '^']) and (Look = '=') then
           begin
-            MathAssignment(savedvalue);
+            oldDA := fDerefAssignment;
+            fDerefAssignment := fDerefValue;
+            try
+              MathAssignment(savedvalue);
+            finally
+              fDerefAssignment := oldDA;
+            end;
             CheckAndLoadVar(savedvalue);
           end
           else if (Token = '=') and (Look <> '=') then
@@ -1650,18 +1853,34 @@ begin
             // var = expression rather than var == expression
             // i.e., an assignment statement
             Next;
-            DoAssignValue(savedvalue, DataType(savedvalue));
+            oldDA := fDerefAssignment;
+            fDerefAssignment := fDerefValue;
+            try
+              DoAssignValue(savedvalue, DataType(savedvalue));
+            finally
+              fDerefAssignment := oldDA;
+            end;
             CheckAndLoadVar(savedvalue);
           end
           //
           // end of not exactly C handling of assignment/math assignment
           //
           else if savedvalue = 'true' then
-            LoadConst('1')
+          begin
+            if fDerefValue or fAddressOfValue then
+              AbortMsg(sInvalidPointerSyntax);
+            LoadConst('1');
+          end
           else if savedvalue = 'false' then
-            LoadConst('0')
+          begin
+            if fDerefValue or fAddressOfValue then
+              AbortMsg(sInvalidPointerSyntax);
+            LoadConst('0');
+          end
           else if IsAPIFunc(savedvalue) then
           begin
+            if fDerefValue or fAddressOfValue then
+              AbortMsg(sInvalidPointerSyntax);
             DoCallAPIFunc(savedvalue);
           end
           else if IsArrayType(fLHSDataType) and not fProcessingMathAssignment then
@@ -1670,27 +1889,33 @@ begin
             if not TypesAreCompatible(fLHSDataType, rdt) then
               AbortMsg(sDatatypesNotCompatible)
             else
-              CopyVar(GetDecoratedIdent(fLHSName), GetDecoratedIdent(savedvalue));
+              CopyArrayVar(GetDecoratedIdent(fLHSName), GetDecoratedIdent(savedvalue));
           end
           else if (fLHSDataType = TOK_USERDEFINEDTYPE) and not fProcessingMathAssignment then
           begin
             if GetUDTType(fLHSName) <> GetUDTType(savedvalue) then
               AbortMsg(sUDTNotEqual)
             else
-              CopyVar(GetDecoratedIdent(fLHSName), GetDecoratedIdent(savedvalue));
+              CopyUDTVar(GetDecoratedIdent(fLHSName), GetDecoratedIdent(savedvalue));
           end
           else
             CheckAndLoadVar(savedvalue);
         end;
         TOK_ASM : begin
+          if fDerefValue or fAddressOfValue then
+            AbortMsg(sInvalidPointerSyntax);
           DoAsm(fLHSDataType);
         end;
         TOK_NUM, TOK_HEX : begin
+          if fDerefValue or fAddressOfValue then
+            AbortMsg(sInvalidPointerSyntax);
           LoadConst(savedvalue);
         end;
         '-' : begin
           if Token = TOK_NUM then
           begin
+            if fDerefValue or fAddressOfValue then
+              AbortMsg(sInvalidPointerSyntax);
             LoadConst(savedvalue+value);
             Next;
           end
@@ -1700,6 +1925,8 @@ begin
       else
         Expected(sMathFactor);
       end;
+      fDerefValue := False;
+      fAddressOfValue := False;
     end;
   end;
 end;
@@ -1755,7 +1982,7 @@ end;
 procedure TSPCComp.Expression;
 var
   prev, lenVal : integer;
-  oldExpStr, optExp : string;
+  oldExpStr, optExp, oldBS : string;
 begin
   fExpStrHasVars := False;
   // 2009-04-09 JCH:
@@ -1766,13 +1993,16 @@ begin
   // below.  Without this, an expression like x = MyFunc(233)+10; was being
   // optimized to x = 10;
   oldExpStr := fExpStr;
+  oldBS := fBoolSubExpStr;
   try
     // set the old expression to be everything except for the first token in
     // the new expression (aka "Value").
     lenVal := Length(Value);
     Delete(oldExpStr, Length(oldExpStr)-lenVal+1, lenVal);
+    Delete(oldBS, Length(oldBS)-lenVal+1, lenVal);
     // now start our new expression with the current token
     fExpStr := Value;
+    fBoolSubExpStr := Value;
     prev := SourceCount;
     if IncrementOrDecrement then
     begin
@@ -1792,20 +2022,20 @@ begin
           '-': Subtract;
         end;
       end;
-      optExp := OptimizeExpression(prev);
+      optExp := OptimizeExpression(fExpStr, prev, fExpStrHasVars);
     end;
   finally
     fExpStr := oldExpStr + optExp + Value;
+    fBoolSubExpStr := oldBS + optExp + Value;
   end;
 end;
 
-function TSPCComp.OptimizeExpression(const idx: integer) : string;
+function TSPCComp.OptimizeExpression(str : string; const idx: integer; bFlag : boolean) : string;
 begin
   fLastExpressionOptimizedToConst := False;
-  System.Delete(fExpStr, Length(fExpStr), 1);
-  Result := fExpStr;
-  if (OptimizeLevel >= 1) and (SourceCount > (idx+1)) and
-     not fExpStrHasVars then
+  System.Delete(str, Length(str), 1);
+  Result := str;
+  if (OptimizeLevel >= 1) and (SourceCount > (idx+1)) and not bFlag then
   begin
     // 2009-03-18 JCH: I do not recall why I added the check for
     // + and - as the first character of an expression
@@ -1816,19 +2046,19 @@ begin
     // The commented-out code was preventing a bug that had far too many
     // lines of code being removed if an expression ended in +nnn or -nnn.
 
-    if (fExpStr <> '') {and not (fExpStr[1] in ['+', '-'])} then
+    if (str <> '') {and not (str[1] in ['+', '-'])} then
     begin
-      fCalc.SilentExpression := fExpStr;
+      fCalc.SilentExpression := str;
       if not fCalc.ParserError then
       begin
-        fExpStr := IntToStr(Trunc(fCalc.Value));
-        Result := fExpStr;
+        str := IntToStr(Trunc(fCalc.Value));
+        Result := str;
         // in theory, we can replace all the lines between idx and
         // SourceCount with one line
         while SourceCount > idx do
           SourceDelete(SourceCount-1);
-        LoadConst(fExpStr);
-        fExpStr := '';
+        LoadConst(str);
+        str := '';
         fLastExpressionOptimizedToConst := True;
       end;
     end;
@@ -1857,6 +2087,15 @@ begin
       end;
     else
       Result := val;
+      if Pos('@', Result) = 1 then
+      begin
+        System.Delete(Result, 1, 1);
+        if Pos('0x', Result) = 1 then
+        begin
+          System.Delete(Result, 1, 2);
+          Result := Result + 'H';
+        end;
+      end;
     end;
   end;
 end;
@@ -1979,12 +2218,20 @@ begin
     // move past the second '&'
     Next;
     // convert D0 to boolean value if necessary
-    StoreZeroFlag;
+    if not fCCSet then
+    begin
+      SetZeroCC;
+      StoreZeroFlag;
+    end;
     BranchFalse(L);
     PushPrim;
     BitOr;
     // convert D0 to boolean value if necessary
-    StoreZeroFlag;
+    if not fCCSet then
+    begin
+      SetZeroCC;
+      StoreZeroFlag;
+    end;
     PopAnd;
   end;
   PostLabel(L);
@@ -2063,24 +2310,51 @@ end;
 procedure TSPCComp.BoolSubExpression;
 var
   L : string;
+  prev, lenVal : integer;
+  oldBS, optExp : string;
 begin
-  L := NewLabel;
-  BoolTerm;
-  while (Token = '|') and (Look = '|') do begin
-    // advance to second '|'
-    Next;
-    // advance past the second '|'
-    Next;
-    // convert D0 to boolean value if necessary
-    StoreZeroFlag;
-    BranchTrue(L);
-    PushPrim;
+  fBoolSubExpStrHasVars := False;
+  oldBS := fBoolSubExpStr;
+  try
+    // set the old expression to be everything except for the first token in
+    // the new expression (aka "Value").
+    lenVal := Length(Value);
+    Delete(oldBS, Length(oldBS)-lenVal+1, lenVal);
+    // now start our new bool sub expression with the current token
+    fExpStr := Value;
+    fBoolSubExpStr := Value;
+    prev := SourceCount;
+
+    L := NewLabel;
     BoolTerm;
-    // convert D0 to boolean value if necessary
-    StoreZeroFlag;
-    PopOr;
+    while (Token = '|') and (Look = '|') do begin
+      // advance to second '|'
+      Next;
+      // advance past the second '|'
+      Next;
+      // convert D0 to boolean value if necessary
+      if not fCCSet then
+      begin
+        SetZeroCC;
+        StoreZeroFlag;
+      end;
+      BranchTrue(L);
+      PushPrim;
+      BoolTerm;
+      // convert D0 to boolean value if necessary
+      if not fCCSet then
+      begin
+        SetZeroCC;
+        StoreZeroFlag;
+      end;
+      PopOr;
+    end;
+    PostLabel(L);
+
+    optExp := OptimizeExpression(fBoolSubExpStr, prev, fBoolSubExpStrHasVars);
+  finally
+    fBoolSubExpStr := oldBS + optExp + Value;
   end;
-  PostLabel(L);
 end;
 
 function TSPCComp.GetParamName(procname: string; idx: integer): string;
@@ -2277,6 +2551,7 @@ begin
             // make sure the very first call to this inline function
             // by this thread doesn't get optimized out
             fExpStr := '__DO_NOT_OPTIMIZE!@#$%_';
+            fBoolSubExpStr := fExpStr;
           end;
           while not bError and (Token <> TOK_CLOSEPAREN) do begin
             if acount >= protocount then
@@ -2309,7 +2584,12 @@ begin
                       Expected(sArrayDatatype);
                   end;
                   fInputs.AddObject(parvalue, fp);
-                  CopyVar(parname, parvalue);
+                  if fp.IsArray then
+                    CopyArrayVar(parname, parvalue)
+                  else if fp.ParamType = fptUDT then
+                    CopyUDTVar(parname, parvalue)
+                  else
+                    CopyVar(parname, parvalue);
                   junk := AdvanceToNextParam;
                   if junk <> '' then
                     AbortMsg(sExpNotSupported)
@@ -2450,7 +2730,7 @@ begin
             end;
 
             if bFunctionIsInline then
-              EmitAsmLines(inlineFunc.AsString)
+              EmitAsmLines(inlineFunc.AsString('RET', 'JMP'))
             else
               CallRoutine(procname);
               
@@ -2785,13 +3065,13 @@ begin
     begin
       Next; // move to second +
       Next;
-      StoreInc(name);
+      StoreInc(name); // postfix increment has higher precedence than dereference
     end
     else if (Token = '-') and (Look = '-') then
     begin
       Next; // move to second -
       Next;
-      StoreDec(name);
+      StoreDec(name); // postfix decrement has higher precedence than dereference
     end
     else if ((Token = '>') and (Look = '>')) or ((Token = '<') and (Look = '<')) then
     begin
@@ -2836,11 +3116,25 @@ begin
   Next;
 end;
 
+procedure TSPCComp.DoStart;
+var
+  taskname : string;
+begin
+  Next;
+  taskname := Value;
+  CheckTask(taskname);
+  Next;
+  StartProcess(taskname);
+end;
+
 procedure TSPCComp.Assignment;
 var
   Name: string;
   dt : char;
 begin
+  fDerefAssignment := Token = '*';
+  if fDerefAssignment then
+    Next;
   if IncrementOrDecrement then
   begin
     DoPreIncOrDec(false);
@@ -2867,6 +3161,8 @@ begin
       DoCallAPIFunc(Name); // functions should set register
     end
     else begin
+      if fDerefAssignment then
+        CheckPointer(Name);
       Next;
       fLHSDataType := dt;
       fLHSName     := Name;
@@ -2901,6 +3197,7 @@ begin
       end;
     end;
   end;
+  fDerefAssignment := False;
 end;
 
 procedure TSPCComp.DoAssignValue(const aName: string; dt: char; bNoChecks : boolean);
@@ -2991,7 +3288,8 @@ begin
   PostLabel(L1);
   StoreDec(svar);
   Block(L2, L1);
-  EmitLn('brtst GT,' + L1 + ', ' + svar);
+  TestVariable(svar);
+  BranchPositive(L1);
   PostLabel(L2);
   pop;
 end;
@@ -3062,7 +3360,11 @@ begin
     else
     begin
       SwitchFixups.Add(tmp);
-      SwitchFixups.Add(Format('%d=%s', [fSwitchDepth, SwitchBranch(L1, caseval, stackval)]));
+      push;
+      SwitchFixups.Add(Format('%d=%s', [fSwitchDepth, MoveAsString(tos, stackval)]));
+      SwitchFixups.Add(Format('%d=%s', [fSwitchDepth, SubImmAsString(tos, caseval)]));
+      SwitchFixups.Add(Format('%d=%s', [fSwitchDepth, BranchFalseAsString(L1)]));
+      pop;
     end;
     fSemiColonRequired := False;
   end
@@ -3080,7 +3382,7 @@ begin
     MatchString(':');
     L1 := NewLabel;
     PostLabel(L1);
-    SwitchFixups.Add(Format('%d=jmp %s', [fSwitchDepth, L1]));
+    SwitchFixups.Add(Format('%d=%s', [fSwitchDepth, BranchAsString(L1)]));
     fSemiColonRequired := False;
   end
   else
@@ -3133,13 +3435,13 @@ begin
   // always add a jump to the end of the switch in case
   // there aren't any default labels in the switch
   tmpDepth := IntToStr(fSwitchDepth);
-  SwitchFixups.Add(Format('%d=jmp %s', [fSwitchDepth, lbl]));
+  SwitchFixups.Add(Format('%d=%s', [fSwitchDepth, BranchAsString(lbl)]));
   cnt := 0;
   for i := 0 to SwitchFixups.Count - 1 do
   begin
     if SwitchFixups.Names[i] = tmpDepth then
     begin
-      SourceInsert(idx+cnt, SwitchFixups.ValueFromIndex[i]);
+      SourceInsert(idx+cnt, #9+SwitchFixups.ValueFromIndex[i]);
       inc(cnt);
     end;
   end;
@@ -3154,13 +3456,12 @@ function TSPCComp.ReplaceTokens(const line: string) : string;
 begin
   Result := line; // line is already trimmed
   if Length(Result) = 0 then Exit;
-  Result := Replace(Result, '__RETURN__', Format(#13#10'mov %s,', [RegisterName]));
-  Result := Replace(Result, '__RETURNS__', Format(#13#10'mov %s,', [RegisterName]));
+  Result := Replace(Result, '__RETURN__', #13#10#9+MoveAsString(RegisterName, ''));
+  Result := Replace(Result, '__RETURNS__', #13#10#9+MoveAsString(RegisterName, ''));
   Result := Replace(Result, '__TMPLONG__', TempSignedLongName);
   Result := Replace(Result, '__RETVAL__', RegisterName);
   Result := Replace(Result, 'true', 'TRUE');
   Result := Replace(Result, 'false', 'FALSE');
-  Result := Replace(Result, 'asminclude', '#include');
 end;
 
 function TSPCComp.DecorateVariables(const asmStr: string): string;
@@ -3344,7 +3645,14 @@ begin
     API_BREAK    : DoBreakContinue(idx, lend);
     API_CONTINUE : DoBreakContinue(idx, lstart);
     API_RETURN   : DoReturn;
+    API_STOP     : DoStop;
     API_GOTO     : DoGoto;
+    API_EXITTO   : DoExitTo;
+    API_ROTLEFT  : DoRotate(idx);
+    API_ROTRIGHT : DoRotate(idx);
+    API_RUN      : DoRunProgram;
+    API_WAIT     : DoWait;
+    API_HALTEX   : DoStopProcesses;
   else
     AbortMsg(sUnknownAPICommand);
   end;
@@ -3370,13 +3678,14 @@ begin
       TOK_SWITCH:     DoSwitch(lstart);
       TOK_CASE:       DoSwitchCase;
       TOK_DEFAULT:    DoSwitchDefault;
+      TOK_START:      DoStart;
       TOK_ASM: begin
         Next;
         dt := #0;
         DoAsm(dt);
       end;
       TOK_API:        DoAPICommands(lend, lstart);
-      TOK_IDENTIFIER: begin
+      TOK_IDENTIFIER, '*': begin
         if Look = ':' then
           DoLabel
         else
@@ -3445,14 +3754,18 @@ procedure TSPCComp.AllocLocal(const sub, tname : string; dt : char; bConst, bSta
 var
   savedval : string;
   ival, aval, lenexpr, varName : string;
-  bIsArray, bDone, bOpen : boolean;
+  bIsArray, bDone, bOpen, bPointer : boolean;
   idx, dimensions, i, cnt : integer;
   V : TVariable;
 begin
   Next;
   Scan;
-  // it is possible that the user has declared a variable using the "long int" or "short int" syntax.
-  // we want to support that syntax.
+  bPointer := Token = '*';
+  if bPointer then
+  begin
+    Next;
+    Scan;
+  end;
   if Token <> TOK_IDENTIFIER then
     Expected(sVariableName);
   savedval := Value;
@@ -3490,7 +3803,7 @@ begin
   if bIsArray and bStatic then
     AbortMsg(sStatLocArrNotSupported);
   varName := ApplyDecoration(sub, savedval, fNestingLevel);
-  idx := AddLocal(varName, dt, tname, bConst, lenexpr);
+  idx := AddLocal(varName, dt, tname, bConst, lenexpr, bPointer);
   if (Token = TOK_COMMA) or (Token = TOK_SEMICOLON) then
   begin
     if (aval <> '') and (aval = lenexpr) then
@@ -3663,9 +3976,16 @@ procedure TSPCComp.AllocGlobal(const tname : string; dt : char; bInline, bConst,
 var
   savedval, ival, aval, lenexpr : string;
   dimensions, idx, cnt : integer;
+  bPointer : boolean;
 begin
   Next;
   Scan;
+  bPointer := Token = '*';
+  if bPointer then
+  begin
+    Next;
+    Scan;
+  end;
   if Token <> TOK_IDENTIFIER then Expected(sVariableName);
   // optional initial value
   savedval := Value;
@@ -3675,7 +3995,7 @@ begin
   // rather than a variable declaration.
   if Token = TOK_OPENPAREN then
   begin
-    FunctionBlock(savedval, tname, dt, bInline);
+    FunctionBlock(savedval, tname, dt, bInline, bPointer);
     fSemiColonRequired := False;
   end
   else
@@ -3691,7 +4011,7 @@ begin
       dimensions := Length(aval) div 2; // number of array dimensions
       dt := ArrayOfType(dt, dimensions);
     end;
-    AddEntry(savedval, dt, tname, lenexpr, bConst);
+    AddEntry(savedval, dt, tname, lenexpr, bConst, bPointer);
     if (Token = TOK_COMMA) or (Token = TOK_SEMICOLON) then
     begin
       if bConst then
@@ -3808,7 +4128,7 @@ begin
 end;
 
 function TSPCComp.AddLocal(name : string; dt : char; const tname : string;
-  bConst : boolean; const lenexp : string) : integer;
+  bConst : boolean; const lenexp : string; bPointer : boolean) : integer;
 var
   l, IL : TVariable;
   bAmInlining : boolean;
@@ -3824,6 +4144,7 @@ begin
     l.Name       := name;
     l.DataType   := dt;
     l.IsConstant := bConst;
+    l.IsPointer  := bPointer;
     l.TypeName   := tname;
     l.LenExpr    := lenexp;
     l.Level      := fNestingLevel;
@@ -4203,7 +4524,7 @@ begin
     protoexists := False;
     Next;
 
-    DoCommonFuncProcDecl(protoexists, Name, '', savedToken, #0, AmInlining);
+    DoCommonFuncProcDecl(protoexists, Name, '', savedToken, #0, AmInlining, False);
 
     if Token = TOK_BEGIN then
     begin
@@ -4240,7 +4561,7 @@ end;
 
 procedure TSPCComp.DoCommonFuncProcDecl(var bProtoExists : boolean;
   var Name : string; const tname : string;
-  const tok, dt: char;  bInline : boolean);
+  const tok, dt: char;  bInline, bPointer : boolean);
 var
   procexists : integer;
   pltype : integer;
@@ -4261,10 +4582,10 @@ begin
       Duplicate(Name);
   end
   else begin
-    AddEntry(Name, tok, tname, '', False);
+    AddEntry(Name, tok, tname, '', False, bPointer);
     GS_ReturnType[NumGlobals] := dt;
     if (dt <> #0) and (IsArrayType(dt) or IsUDT(dt)) then
-      AddEntry(Format('__result_%s', [Name]), dt, tname, '');
+      AddEntry(Format('__result_%s', [Name]), dt, tname, '', False, bPointer);
   end;
 
   OpenParen;
@@ -4304,7 +4625,7 @@ begin
   end;
 end;
 
-procedure TSPCComp.FunctionBlock(Name, tname : string; dt: char; bInline : boolean);
+procedure TSPCComp.FunctionBlock(Name, tname : string; dt: char; bInline, bPointer : boolean);
 var
   protoexists : boolean;
 begin
@@ -4314,7 +4635,7 @@ begin
   if Name = 'main' then
     AbortMsg(sMainMustBeTask);
   protoexists := False;
-  DoCommonFuncProcDecl(protoexists, Name, tname, TOK_PROCEDURE, dt, bInline);
+  DoCommonFuncProcDecl(protoexists, Name, tname, TOK_PROCEDURE, dt, bInline, bPointer);
   if Token = TOK_BEGIN then
   begin
     Prolog(Name, True);
@@ -4355,6 +4676,8 @@ begin
   ClearParams;
   fStackDepth   := 0;
   MaxStackDepth := 0;
+  fAutoStart := False;
+  LCount := 0;
   GetChar;
   Next;
 end;
@@ -4567,6 +4890,35 @@ begin
     AbortMsg(Format(sInvalidBreakContinue, [val]));
 end;
 
+procedure TSPCComp.DoExitTo;
+var
+  val : string;
+begin
+  // ExitTo(task);
+  Next;
+  OpenParen;
+  // task
+  val := Value;
+  CheckIdent;
+  CheckGlobal(val); // must be global name
+  if DataType(val) <> TOK_TASK then
+    Expected(sTaskName);
+  Next;
+  CloseParen;
+  ExitToProcess(val);
+end;
+
+procedure TSPCComp.DoStop;
+begin
+  // Stop(stop?);
+  Next;
+  OpenParen;
+  // stop?
+  BoolExpression;
+  CloseParen;
+  StopAllProcesses(RegisterName);
+end;
+
 procedure TSPCComp.DoGoto;
 begin
   // goto labelName;
@@ -4615,6 +4967,279 @@ begin
   ReturnFromRoutine;
 end;
 
+procedure TSPCComp.TraceCharAsString(const aValue : string);
+var
+  i : integer;
+begin
+  i := StrToIntDef(aValue, -1);
+  if i = -1 then
+    AbortMsg('Invalid character literal');
+  if i = 13 then
+    TraceCarriageReturn
+  else if i = 10 then
+    TraceNewLine
+  else if i > 32 then
+    TraceChar(Char(i))
+  else
+    TraceSpace;
+end;
+
+procedure TSPCComp.TraceStringWithEscapes(tmp : string);
+var
+  t2 : string;
+  i : integer;
+  ch : char;
+begin
+  i := Pos('\', tmp);
+  while i > 0 do
+  begin
+    t2 := Copy(tmp, 1, i-1);
+    System.Delete(tmp, 1, i); // delete up to and including '\'
+    if t2 <> '' then
+      TraceString(t2);
+    // get the next character
+    t2 := Copy(tmp, 1, 1);
+    ch := t2[1];
+    System.Delete(tmp, 1, 1);
+    i := Pos(ch, 'nr''"\?');
+    case i of
+      1 : TraceNewLine; // new line
+      2 : TraceCarriageReturn; // carriage return
+      3..6 : TraceChar(ch);
+    else
+      // whitespace
+      TraceSpace;
+    end;
+    // check for another escape
+    i := Pos('\', tmp);
+  end;
+  if tmp <> '' then
+    TraceString(tmp);
+end;
+
+procedure TSPCComp.DoCloseLog;
+begin
+  // x = close();
+  OpenParen;
+  CloseParen;
+  CloseLog;
+end;
+
+procedure TSPCComp.DoLogStatus;
+begin
+  // x = stat();
+  OpenParen;
+  CloseParen;
+  LogStatus;
+end;
+
+procedure TSPCComp.DoOpenLog;
+begin
+  // x = open(mode);
+  OpenParen;
+  CheckStringConst;
+  if Value = '''r''' then
+    OpenLogForRead
+  else if Value = '''w''' then
+    OpenLogForWrite
+  else
+    AbortMsg('Invalid open mode');
+  Next;
+  CloseParen;
+end;
+
+procedure TSPCComp.DoPop;
+begin
+  // var = pop();
+  OpenParen;
+  CloseParen;
+  PopVar(RegisterName);
+end;
+
+procedure TSPCComp.DoPush;
+begin
+  // x = push(int var);
+  OpenParen;
+  BoolExpression;
+  CloseParen;
+  PushVar(RegisterName);
+end;
+
+procedure TSPCComp.DoPutChar;
+begin
+  // x = putchar(const char ch);
+  OpenParen;
+  CheckNumeric;
+  TraceCharAsString(Value);
+  LoadConst(Value);
+  Next;
+  CloseParen;
+end;
+
+procedure TSPCComp.DoPutString;
+begin
+  // x = puts(const char * s);
+  OpenParen;
+  CheckStringConst;
+  TraceStringWithEscapes(StripQuotes(Value));
+  SetToTrue(RegisterName);
+  Next;
+  CloseParen;
+end;
+
+procedure TSPCComp.DoReadFromLog;
+begin
+  // var = read();
+  OpenParen;
+  CloseParen;
+  ReadVar(RegisterName);
+end;
+
+procedure TSPCComp.DoWriteToLog;
+begin
+  // x = write(int var);
+  OpenParen;
+  BoolExpression;
+  CloseParen;
+  WriteVar(RegisterName);
+end;
+
+procedure TSPCComp.DoRunProgram;
+var
+  i : integer;
+begin
+  // run(const char slot);
+  Next;
+  OpenParen;
+  CheckNumeric;
+  i := StrToIntDef(Value, -1);
+  if (i >= 0) and (i <= 6) then
+    RunProgram(i)
+  else
+    AbortMsg('Invalid program slot number');
+  Next;
+  CloseParen;
+end;
+
+procedure TSPCComp.DoSquareRoot;
+begin
+  // x = sqrt(int value);
+  OpenParen;
+  BoolExpression;
+  CloseParen;
+  SquareRoot(RegisterName);
+end;
+
+procedure TSPCComp.DoAbs;
+begin
+  // x = abs(int value);
+  OpenParen;
+  BoolExpression;
+  CloseParen;
+  AbsoluteValue;
+end;
+
+procedure TSPCComp.DoSign;
+begin
+  // x = sign(int value);
+  OpenParen;
+  BoolExpression;
+  CloseParen;
+  SignValue;
+end;
+
+procedure TSPCComp.DoRotate(const idx: integer);
+var
+  tmp : string;
+begin
+  // RotateLeft(int & var);
+  // RotateRight(int & var);
+  Next;
+  OpenParen;
+  CheckIdent;
+  tmp := GetDecoratedIdent(Value);
+  Next;
+  CloseParen;
+  Rotate(idx = API_ROTRIGHT, tmp);
+end;
+
+procedure TSPCComp.DoStopProcesses;
+begin
+  // StopProcesses();
+  Next;
+  OpenParen;
+  CloseParen;
+  HaltEx;
+end;
+
+procedure TSPCComp.DoWait;
+begin
+  // Wait(int ms);
+  Next;
+  OpenParen;
+  BoolExpression;
+  CloseParen;
+  WaitMS(RegisterName);
+end;
+
+procedure TSPCComp.DoPrintf;
+var
+  fmt, tmp, t2 : string;
+  i : integer;
+begin
+  // x = printf(const char * fmt, ...);
+  OpenParen;
+  // first param must be string literal
+  CheckStringConst;
+  fmt := StripQuotes(Value);
+  Next;
+  // the presence of % in the format string controls the number
+  // of subsequent parameters
+  // variable number of parameters of various types
+  i := Pos('%', fmt);
+  while (i > 0) and (Token <> TOK_CLOSEPAREN) do
+  begin
+    tmp := Copy(fmt, 1, i-1);
+    System.Delete(fmt, 1, i); // delete through %
+    TraceStringWithEscapes(tmp);
+    // skip past the ocmma
+    MatchString(TOK_COMMA);
+    // process the format string
+    t2 := Copy(fmt, 1, 1);
+    System.Delete(fmt, 1, 1);
+    // t2 should be == s, d, x, X, c
+    if t2 = 's' then
+    begin
+      // get a string literal
+      CheckStringConst;
+      TraceStringWithEscapes(StripQuotes(Value));
+      Next;
+    end
+    else if t2[1] in ['d', 'x', 'X'] then
+    begin
+      // get a signed integer
+      BoolExpression;
+      TraceVar(t2 = 'd', RegisterName);
+    end
+    else if t2 = 'c' then
+    begin
+      // get a character literal
+      CheckNumeric;
+      TraceCharAsString(Value);
+      Next;
+    end
+    else
+    begin
+      AbortMsg('Unsupported or invalid printf format string');
+    end;
+    i := Pos('%', fmt);
+  end;
+  if fmt <> '' then
+    TraceStringWithEscapes(fmt);
+  CloseParen;
+  SetToTrue(RegisterName);
+end;
+
 procedure TSPCComp.PreProcess;
 var
   P : TLangPreprocessor;
@@ -4654,19 +5279,17 @@ begin
   while Token = TOK_DIRECTIVE do
   begin
     // look for #line statements
-    if LowerCase(Value) = '#line' then
+    SkipDirectiveLine;
+    if Pos('#line', fDirLine) = 1 then
     begin
-      SkipDirectiveLine;
       HandlePoundLine;
-      Next(False);
     end
-    else
+    else if Pos('#pragma', fDirLine) = 1 then
     begin
-      SkipDirectiveLine;
-      Next(False);
+      HandlePoundPragma;
     end;
-    EmitPoundLine;
-    EmitLnNoTab(Trim(fDirLine));
+    Next(False);
+    OutputDirective(fDirLine);
     if bScan then
       Scan;
   end;
@@ -4689,6 +5312,23 @@ begin
     Delete(tmpLine, 1, i);
     tmpFile      := Replace(tmpLine, '"', '');
     CurrentFile  := tmpFile;
+  end;
+end;
+
+procedure TSPCComp.HandlePoundPragma;
+var
+  i : integer;
+  tmpLine : string;
+begin
+  i := Pos('#pragma ', fDirLine);
+  if i = 1 then
+  begin
+    // this is a special preprocessor line
+    tmpLine := fDirLine;
+    Delete(tmpLine, 1, 8);
+    // could be 'macro nnn', 'safecalling', 'autostart'
+    if tmpLine = 'autostart' then
+      fAutoStart := True;
   end;
 end;
 
@@ -4738,13 +5378,26 @@ begin
   end;
 end;
 
-function TSPCComp.ZeroFlag: string;
-begin
-  Result := Format('__zf%s', [fCurrentThreadName]);
-end;
+//function TSPCComp.ZeroFlag: string;
+//begin
+//  Result := Format('__zf%s', [fCurrentThreadName]);
+//end;
 
 const
-  APIF_ASM  = 0;
+  APIF_ASM      = 0;
+  APIF_OPEN     = 1;
+  APIF_CLOSE    = 2;
+  APIF_WRITE    = 3;
+  APIF_READ     = 4;
+  APIF_STAT     = 5;
+  APIF_PUSH     = 6;
+  APIF_POP      = 7;
+  APIF_SQRT     = 8;
+  APIF_PUTCHAR  = 9;
+  APIF_PUTS     = 10;
+  APIF_PRINTF   = 11;
+  APIF_ABS      = 12;
+  APIF_SIGN     = 13;
 
 procedure TSPCComp.DoCallAPIFunc(procname: string);
 var
@@ -4758,6 +5411,19 @@ begin
       DoAsm(dt);
       fSemiColonRequired := True;
     end;
+    APIF_OPEN    : DoOpenLog;
+    APIF_CLOSE   : DoCloseLog;
+    APIF_WRITE   : DoWriteToLog;
+    APIF_READ    : DoReadFromLog;
+    APIF_STAT    : DoLogStatus;
+    APIF_PUSH    : DoPush;
+    APIF_POP     : DoPop;
+    APIF_SQRT    : DoSquareRoot;
+    APIF_PUTCHAR : DoPutChar;
+    APIF_PUTS    : DoPutString;
+    APIF_PRINTF  : DoPrintf;
+    APIF_ABS     : DoAbs;
+    APIF_SIGN    : DoSign;
   else
     AbortMsg(Format(sNotAnAPIFunc, [procname]));
   end;
@@ -4766,6 +5432,19 @@ end;
 procedure TSPCComp.LoadAPIFunctions;
 begin
   AddAPIFunction('asm', APIF_ASM);
+  AddAPIFunction('open', APIF_OPEN);
+  AddAPIFunction('close', APIF_CLOSE);
+  AddAPIFunction('write', APIF_WRITE);
+  AddAPIFunction('read', APIF_READ);
+  AddAPIFunction('stat', APIF_STAT);
+  AddAPIFunction('push', APIF_PUSH);
+  AddAPIFunction('pop', APIF_POP);
+  AddAPIFunction('sqrt', APIF_SQRT);
+  AddAPIFunction('putchar', APIF_PUTCHAR);
+  AddAPIFunction('puts', APIF_PUTS);
+  AddAPIFunction('printf', APIF_PRINTF);
+  AddAPIFunction('abs', APIF_ABS);
+  AddAPIFunction('sign', APIF_SIGN);
 end;
 
 function TSPCComp.GetASMSrc: TStrings;
@@ -4883,6 +5562,44 @@ begin
     AbortMsg(sConstRequired);
 end;
 
+procedure TSPCComp.CheckPointer(const aName: string);
+var
+  bIsPointer : boolean;
+  idx : integer;
+  V : TVariable;
+begin
+  bIsPointer := False;
+  // is this thing a pointer?
+  if IsParam(aName) then
+  begin
+    bIsPointer := IsParamPointer(aName);
+  end
+  else if IsLocal(aName) then
+  begin
+    idx := LocalIdx(aName);
+    if idx <> -1 then
+    begin
+      V := fLocals[idx];
+      bIsPointer := V.IsPointer;
+    end
+    else
+      bIsPointer := False;
+  end
+  else if IsGlobal(aName) then
+  begin
+    idx := fGlobals.IndexOfName(aName);
+    if idx <> -1 then
+    begin
+      V := fGlobals[idx];
+      bIsPointer := V.IsPointer;
+    end
+    else
+      bIsPointer := False;
+  end;
+  if not bIsPointer then
+    AbortMsg(sPointerRequired);
+end;
+
 function TSPCComp.IncrementOrDecrement: boolean;
 begin
   Result := ((Token = '+') and (Look = '+')) or
@@ -4901,9 +5618,9 @@ begin
   if not (DataType(Value) in NonAggregateTypes) then
     Expected(sNumericType);
   if bInc then
-    StoreInc(Value)
+    StorePreInc(Value)
   else
-    StoreDec(Value);
+    StorePreDec(Value);
   if bPutOnStack then
     CheckAndLoadVar(Value);
   Next;
@@ -4991,7 +5708,7 @@ begin
     else
     begin
       eName := ApplyDecoration(fCurrentThreadName, eName, fNestingLevel);
-      idx := AddLocal(eName, dt, sTypeName, True, '');
+      idx := AddLocal(eName, dt, sTypeName, True, '', False);
       if idx <> -1 then
         V := fLocals[idx];
       // no need to allocate if we've already emitted this name&type
@@ -5026,7 +5743,7 @@ begin
     else
     begin
       varName := ApplyDecoration(fCurrentThreadName, varName, fNestingLevel);
-      AddLocal(varName, dt, sTypeName, False, '');
+      AddLocal(varName, dt, sTypeName, False, '', False);
       // no need to allocate if we've already emitted this name&type
       if fEmittedLocals.IndexOf(varName+sTypeName) = -1 then
         Allocate(varName, '', '', sTypeName, dt, 1);
@@ -5423,22 +6140,23 @@ var
   v : TVariable;
   varname, tname : string;
   dt : char;
-  bConst : boolean;
+  bConst, bPointer : boolean;
 begin
   for i := 0 to FunctionParameterCount(func.Name) - 1 do
   begin
     p := GetFunctionParam(func.Name, i);
     if Assigned(p) then
     begin
-      varname := InlineName(fCurrentThreadName, ApplyDecoration(p.ProcName, p.Name, 0));
-      tname   := p.ParamTypeName;
-      dt      := p.ParameterDataType;
-      bConst  := p.IsConstant;
+      varname  := InlineName(fCurrentThreadName, ApplyDecoration(p.ProcName, p.Name, 0));
+      tname    := p.ParamTypeName;
+      dt       := p.ParameterDataType;
+      bConst   := p.IsConstant;
+      bPointer := p.IsPointer;
       if AmInlining then
       begin
         // call AddLocal instead
         if not IsLocal(varname) then
-          AddLocal(varname, dt, tname, bConst, '');
+          AddLocal(varname, dt, tname, bConst, '', bPointer);
       end
       else
       begin
@@ -5450,15 +6168,16 @@ begin
   for i := 0 to func.LocalVariables.Count - 1 do
   begin
     v := func.LocalVariables[i];
-    varname := InlineName(fCurrentThreadName, v.Name);
-    tname   := v.TypeName;
-    dt      := v.DataType;
-    bConst  := v.IsConstant;
+    varname  := InlineName(fCurrentThreadName, v.Name);
+    tname    := v.TypeName;
+    dt       := v.DataType;
+    bConst   := v.IsConstant;
+    bPointer := v.IsPointer;
     if AmInlining then
     begin
       // call AddLocal instead
       if not IsLocal(varname) then
-        AddLocal(varname, dt, tname, bConst, '');
+        AddLocal(varname, dt, tname, bConst, '', bPointer);
     end
     else
     begin
@@ -5529,7 +6248,7 @@ end;
 function TSPCComp.DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;
 var
   AHV : TArrayHelperVar;
-  tmp, udType, aval, tmpUDTName, oldExpStr : string;
+  tmp, udType, aval, tmpUDTName, oldExpStr, oldBS : string;
   tmpDT : char;
 begin
   Result := False;
@@ -5537,12 +6256,14 @@ begin
   Next;
   tmpDT := fLHSDataType;
   oldExpStr := fExpStr;
+  oldBS := fBoolSubExpStr;
   try
     fLHSDataType := TOK_LONGDEF;
     CommaExpression;
   finally
     fLHSDataType := tmpDT;
-    fExpStr      := oldExpStr;
+    fExpStr := oldExpStr;
+    fBoolSubExpStr := oldBS;
   end;
   if Value <> ']' then
     Expected(''']''');
@@ -5880,10 +6601,14 @@ begin
     else
     begin
       ReturnFromRoutine;
+      fSProProgram.EndProcess;
     end;
   end
   else
+  begin
     EndOfProcess;
+    fSProProgram.EndProcess;
+  end;
 end;
 
 procedure TSPCComp.LoadConst(const n: string);
@@ -5891,8 +6616,7 @@ begin
   LoadConstToDest(RegisterName, n);
 end;
 
-procedure TSPCComp.HandleAcquireReleaseHelper(Sender: TObject;
-  bAcquire: boolean; const aName: string);
+procedure TSPCComp.HandleAcquireReleaseHelper(Sender: TObject; bAcquire: boolean; const aName: string);
 begin
   if bAcquire then
     AcquireVolatile(aName)
@@ -5931,7 +6655,7 @@ end;
 
 procedure TSPCComp.EmitRegisters;
 const
-  REGVARS_ARRAY : array[0..2] of string = ('__tmpslong%s', '__D0%s', '__zf%s');
+  REGVARS_ARRAY : array[0..1] of string = ('__tmpslong%s', '__D0%s');
 var
   j, k, idx : integer;
   f : TInlineFunction;
@@ -6049,6 +6773,7 @@ var
   aval : string;
 begin
   StartOfCode('__initialize_global_data');
+  fIGDProcess := fSProProgram.CurrentProcess;
   for i := 0 to fGlobals.Count - 1 do
   begin
     V := fGlobals[i];
@@ -6074,9 +6799,10 @@ begin
     end;
   end;
   ReturnFromRoutine;
+  fSProProgram.EndProcess;
 end;
 
-procedure TSPCComp.EmitLn(s: string);
+procedure TSPCComp.EmitLn(const s: string);
 begin
   EmitPoundLine;
   SourceAdd(#9+s);
@@ -6087,22 +6813,22 @@ begin
   SourceAdd('#line ' + IntToStr(linenumber-1) + ' "' + CurrentFile + '"');
 end;
 
-procedure TSPCComp.EmitLnNoTab(s: string);
+procedure TSPCComp.EmitLnNoTab(const s: string);
 begin
   SourceAdd(s);
 end;
 
-procedure TSPCComp.EmitAsmLines(s: string);
+procedure TSPCComp.EmitAsmLines(const s: string);
 begin
   if Pos(#10, s) > 0 then
   begin
     fTmpAsmLines.Text := s;
     SourceAdd(Format('#pragma macro %d', [fTmpAsmLines.Count]));
-    SourceAddStrings(fTmpAsmLines);
+    SourceAddStrings(fTmpAsmLines, True);
     EmitPoundLine;
   end
   else
-    SourceAdd(s);
+    SourceAdd(s, True);
 end;
 
 procedure TSPCComp.StoreInc(const name : string);
@@ -6113,6 +6839,40 @@ end;
 procedure TSPCComp.StoreDec(const name : string);
 begin
   DoDecrement(GetDecoratedIdent(name));
+end;
+
+procedure TSPCComp.StorePreInc(const name : string);
+begin
+  DoIncrement(GetDecoratedIdent(name));
+end;
+
+procedure TSPCComp.StorePreDec(const name : string);
+begin
+  DoDecrement(GetDecoratedIdent(name));
+end;
+
+function TSPCComp.GetCompilerOutput: TStrings;
+begin
+  Result := fSProProgram.CompilerOutput;
+end;
+
+function TSPCComp.GetSymbolTable: TStrings;
+begin
+  Result := FSProProgram.SymbolTable;
+end;
+
+function TSPCComp.SaveToStream(aStream: TStream): boolean;
+begin
+  try
+    fSProProgram.OptimizeLevel := OptimizeLevel;
+    Result := fSProProgram.SaveToStream(aStream);
+  except
+    on E : Exception do
+    begin
+      Result := False;
+      AbortMsg(E.Message);
+    end;
+  end;
 end;
 
 procedure TSPCComp.CheckForCast;
@@ -6127,6 +6887,29 @@ begin
 
 end;
 
+class function TSPCComp.BINToText(aStream: TStream; const aFilename: string): string;
+begin
+  with TSProProgram.Create(nil) do
+  try
+    CurrentFile := aFilename;
+    LoadFromBinaryStream(aStream);
+    Result := AsString;
+  finally
+    Free;
+  end;
+end;
+
+class function TSPCComp.BINToText(const aFilename: string): string;
+begin
+  with TSProProgram.Create(nil) do
+  try
+    LoadFromBinaryFile(aFilename);
+    Result := AsString;
+  finally
+    Free;
+  end;
+end;
+
 //==========================================================================
 //==========================================================================
 //================== FUNCTIONS THAT GENERATE ASM CODE ======================
@@ -6135,33 +6918,89 @@ end;
 
 procedure TSPCComp.SourceInsert(const idx : integer; const aValue : string);
 begin
-  ASMSource.Insert(idx, aValue);
+  fSProProgram.InsertASMLine(idx, aValue);
 end;
 
 procedure TSPCComp.SourceClear;
 begin
-  ASMSource.Clear;
   fSProProgram.Clear;
 end;
 
 procedure TSPCComp.SourceDelete(const line : integer);
 begin
-  ASMSource.Delete(line);
+  fSProProgram.Delete(line);
 end;
 
 function TSPCComp.SourceCount: integer;
 begin
-  Result := ASMSource.Count;
+  Result := fSProProgram.Count;
 end;
 
-procedure TSPCComp.SourceAdd(const str : string);
+procedure TSPCComp.SourceSwitchWaitToStart;
+var
+  i : integer;
+  AL : TSPMLine;
 begin
-  ASMSource.Add(str);
+  for i := 0 to fSProProgram.Count - 1 do
+  begin
+    AL := fSProProgram[i];
+    if AL.CommandString = 'WAIT' then
+    begin
+      AL.CommandString := 'START';
+      break;
+    end;
+  end;
 end;
 
-procedure TSPCComp.SourceAddStrings(aStrings : TStrings);
+procedure TSPCComp.SourceRemoveCallToInitGlobals;
+var
+  i : integer;
+  AL : TSPMLine;
 begin
-  ASMSource.AddStrings(aStrings);
+  for i := 0 to fSProProgram.Count - 1 do
+  begin
+    AL := fSProProgram[i];
+    if (AL.CommandString = 'CALL') and
+       (AL.Args[0].Value = '__initialize_global_data') then
+    begin
+      fSProProgram.Delete(AL.Index);
+      break;
+    end;
+  end;
+end;
+
+procedure TSPCComp.SourceAdd(const str : string; const bAbortOnDS : boolean);
+var
+  tmp : string;
+begin
+  if AmInlining and Assigned(fCurrentInlineFunction) then
+  begin
+    fCurrentInlineFunction.Code.Add(str);
+  end
+  else
+  begin
+    // check to see if this happens to be a dataspace declaration
+    tmp := str;
+    tmp := UpperCase(Replace(Replace(tmp, ' ', ','), #9, ','));
+    if (Pos(',DS,', tmp) > 0) or (Pos('DORG,', tmp) > 0) then
+    begin
+      // handle as a dataspace declaration - not code
+      if bAbortOnDS then
+        AbortMsg('Dataspace declarations are not supported in asm statements');
+    end
+    else
+    begin
+      fSProProgram.AddASMLine(str);
+    end;
+  end;
+end;
+
+procedure TSPCComp.SourceAddStrings(aStrings : TStrings; const bAbortOnDS : boolean);
+var
+  i : integer;
+begin
+  for i := 0 to aStrings.Count - 1 do
+    SourceAdd(AStrings[i], bAbortOnDS);
 end;
 
 procedure TSPCComp.ReleaseVolatile(const aName : string);
@@ -6174,29 +7013,71 @@ begin
   EmitLnNoTab('#pragma acquire(' + aName + ')');
 end;
 
+procedure TSPCComp.CopyArrayVar(const dest, src: string);
+begin
+  AbortMsg('array copy not yet implemented');
+  EmitLn(MoveAsString(dest, src));
+end;
+
+procedure TSPCComp.CopyUDTVar(const dest, src: string);
+begin
+  AbortMsg('struct copy not yet implemented');
+  EmitLn(MoveAsString(dest, src));
+end;
+
 procedure TSPCComp.CopyVar(const dest, src: string);
 begin
-  EmitLn(Format('MOV %s, %s', [dest, src]));
+  EmitLn(MoveAsString(dest, src));
+end;
+
+procedure TSPCComp.Store(const name: string);
+var
+  tmp : string;
+begin
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    tmp := '(' + tmp + ')';
+  EmitLn(MoveAsString(tmp, RegisterName));
 end;
 
 procedure TSPCComp.StoreAdd(const name : string);
+var
+  tmp : string;
 begin
-  EmitLn(Format('ADD %s, %s', [GetDecoratedIdent(name), RegisterName]));
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    tmp := '(' + tmp + ')';
+  EmitLn(Format('ADD %s, %s', [tmp, RegisterName]));
 end;
 
 procedure TSPCComp.StoreSub(const name : string);
+var
+  tmp : string;
 begin
-  EmitLn(Format('SUB %s, %s', [GetDecoratedIdent(name), RegisterName]));
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    tmp := '(' + tmp + ')';
+  EmitLn(SubAsString(tmp, RegisterName));
 end;
 
 procedure TSPCComp.StoreMul(const name : string);
+var
+  tmp : string;
 begin
-  EmitLn(Format('MUL %s, %s', [GetDecoratedIdent(name), RegisterName]));
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    tmp := '(' + tmp + ')';
+  EmitLn(Format('MUL %s, %s', [tmp, RegisterName]));
 end;
 
 procedure TSPCComp.StoreDiv(const name : string);
+var
+  tmp : string;
 begin
-  EmitLn(Format('DIV %s, %s', [GetDecoratedIdent(name), RegisterName]));
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    tmp := '(' + tmp + ')';
+  EmitLn(Format('DIV %s, %s', [tmp, RegisterName]));
 end;
 
 procedure TSPCComp.StoreMod(const name : string);
@@ -6204,78 +7085,128 @@ var
   tmp, dest, src : string;
 begin
   dest := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    dest := '(' + dest + ')';
   src  := RegisterName;
   push;
   tmp := tos;
-  EmitLn(Format('MOV %s, %s', [tmp, dest]));
+  EmitLn(MoveAsString(tmp, dest));
   EmitLn(Format('DIV %s, %s', [tmp, src]));
   EmitLn(Format('MUL %s, %s', [tmp, src]));
-  EmitLn(Format('SUB %s, %s', [dest, tmp]));
+  EmitLn(SubAsString(dest, tmp));
   pop;
 end;
 
 procedure TSPCComp.StoreAnd(const name: string);
+var
+  tmp : string;
 begin
-  EmitLn(Format('AND %s, %s', [GetDecoratedIdent(name), RegisterName]));
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    tmp := '(' + tmp + ')';
+  EmitLn(Format('AND %s, %s', [tmp, RegisterName]));
 end;
 
 procedure TSPCComp.StoreOr(const name: string);
+var
+  tmp : string;
 begin
-  EmitLn(Format('OR %s, %s', [GetDecoratedIdent(name), RegisterName]));
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    tmp := '(' + tmp + ')';
+  EmitLn(Format('OR %s, %s', [tmp, RegisterName]));
 end;
 
 procedure TSPCComp.StoreXor(const name: string);
+var
+  tmp : string;
 begin
-  EmitLn(Format('XOR %s, %s', [GetDecoratedIdent(name), RegisterName]));
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    tmp := '(' + tmp + ')';
+  EmitLn(Format('XOR %s, %s', [tmp, RegisterName]));
+end;
+
+procedure TSPCComp.StoreShift(bRight: boolean; const name: string);
+var
+  tmp : string;
+begin
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment then
+    tmp := '(' + tmp + ')';
+  if bRight then
+    EmitLn(Format('ASR %s, %s', [tmp, fLastLoadedConst]))
+  else
+    EmitLn(Format('LSL %s, %s', [tmp, fLastLoadedConst]));
 end;
 
 procedure TSPCComp.Complement;
 begin
+  fCCSet := False;
   EmitLn(Format('COM %s', [RegisterName]));
 end;
 
 procedure TSPCComp.Negate;
 begin
+  fCCSet := False;
   EmitLn(Format('NEG %s', [RegisterName]));
 end;
 
 procedure TSPCComp.ClearReg;
 begin
+  fCCSet := False;
   EmitLn(Format('CLR %s', [RegisterName]));
 end;
 
 procedure TSPCComp.LoadVar(const Name: string);
+var
+  tmp : string;
 begin
-  EmitLn(Format('MOV %s, %s', [RegisterName, GetDecoratedIdent(Name)]));
+  fCCSet := False;
+  tmp := GetDecoratedIdent(Name);
+  if fAddressOfValue then
+  begin
+    StoreAddress(RegisterName, tmp);
+  end
+  else
+  begin
+    if fDerefValue then
+      tmp := '(' + tmp + ')';
+    EmitLn(MoveAsString(RegisterName, tmp));
+  end;
 end;
 
 procedure TSPCComp.PushPrim;
 begin
   push;
-  EmitLn(Format('MOV %s, %s', [tos, RegisterName]));
+  EmitLn(MoveAsString(tos, RegisterName));
 end;
 
 procedure TSPCComp.PopAdd;
 begin
+  fCCSet := False;
   EmitLn(Format('ADD %s, %s', [RegisterName, tos]));
   pop;
 end;
 
 procedure TSPCComp.PopSub;
 begin
-  EmitLn(Format('SUB %s, %s', [tos, RegisterName]));
+  fCCSet := False;
+  EmitLn(SubAsString(tos, RegisterName));
   CopyVar(RegisterName, tos);
   pop;
 end;
 
 procedure TSPCComp.PopMul;
 begin
+  fCCSet := False;
   EmitLn(Format('MUL %s, %s', [RegisterName, tos]));
   pop;
 end;
 
 procedure TSPCComp.PopDiv;
 begin
+  fCCSet := False;
   EmitLn(Format('DIV %s, %s', [tos, RegisterName]));
   CopyVar(RegisterName, tos);
   pop;
@@ -6283,46 +7214,41 @@ end;
 
 procedure TSPCComp.PopMod;
 var
-  tmp, dest, src : string;
+  tmp, lhs, rhs : string;
 begin
-  dest := RegisterName;
-  src  := tos;
+  fCCSet := False;
+  rhs := RegisterName;
+  lhs  := tos;
   push;
   tmp := tos;
-  EmitLn(Format('MOV %s, %s', [tmp, dest]));
-  EmitLn(Format('DIV %s, %s', [tmp, src]));
-  EmitLn(Format('MUL %s, %s', [tmp, src]));
-  EmitLn(Format('SUB %s, %s', [dest, tmp]));
+  EmitLn(MoveAsString(tmp, lhs));
+  EmitLn(Format('DIV %s, %s', [tmp, rhs]));
+  EmitLn(Format('MUL %s, %s', [tmp, rhs]));
+  EmitLn(SubAsString(lhs, tmp));
+  CopyVar(RegisterName, lhs);
   pop;
   pop;
 end;
 
 procedure TSPCComp.PopAnd;
 begin
+  fCCSet := False;
   EmitLn(Format('AND %s, %s', [RegisterName, tos]));
   pop;
 end;
 
 procedure TSPCComp.PopOr;
 begin
+  fCCSet := False;
   EmitLn(Format('OR %s, %s', [RegisterName, tos]));
   pop;
 end;
 
 procedure TSPCComp.PopXor;
 begin
+  fCCSet := False;
   EmitLn(Format('XOR %s, %s', [RegisterName, tos]));
   pop;
-end;
-
-procedure TSPCComp.Store(const Name: string);
-begin
-  EmitLn(Format('MOV %s, %s',[GetDecoratedIdent(Name), RegisterName]));
-end;
-
-procedure TSPCComp.StoreZeroFlag;
-begin
-  EmitLn(Format('MOV %s, %s', [RegisterName, ZeroFlag]));
 end;
 
 procedure TSPCComp.LoadConstToDest(const dest, n: string);
@@ -6340,22 +7266,12 @@ begin
   end
   else
     EmitLn(Format('MVI %s, %d', [dest, val]));
+  fCCSet := False;
 end;
 
-procedure TSPCComp.Branch(L: string);
+procedure TSPCComp.Branch(const L: string);
 begin
-  EmitLn('JMP ' + L);
-end;
-
-procedure TSPCComp.BranchFalse(L: string);
-begin
-  EmitLn(Format('JZ %s', [L]));
-end;
-
-procedure TSPCComp.BranchTrue(L: string);
-begin
-  EmitLn('JZ *+2');
-  EmitLn(Format('JMP %s', [L]));
+  EmitLn(BranchAsString(L));
 end;
 
 procedure TSPCComp.CallRoutine(const name : string);
@@ -6368,21 +7284,14 @@ begin
   EmitLn('RET');
 end;
 
-procedure TSPCComp.PostLabel(L: string);
+procedure TSPCComp.PostLabel(const L: string);
 begin
   EmitLnNoTab(L+':');
 end;
 
-procedure TSPCComp.StoreShift(bRight: boolean; const name: string);
-begin
-  if bRight then
-    EmitLn(Format('ASR %s, %s', [GetDecoratedIdent(name), fLastLoadedConst]))
-  else
-    EmitLn(Format('LSL %s, %s', [GetDecoratedIdent(name), fLastLoadedConst]));
-end;
-
 procedure TSPCComp.PopLeftShift;
 begin
+  fCCSet := False;
   EmitLn(Format('LSL %s, %s', [tos, fLastLoadedConst]));
   CopyVar(RegisterName, tos);
   pop;
@@ -6390,17 +7299,33 @@ end;
 
 procedure TSPCComp.PopRightShift;
 begin
+  fCCSet := False;
   EmitLn(Format('ASR %s, %s', [tos, fLastLoadedConst]));
   CopyVar(RegisterName, tos);
   pop;
 end;
 
-procedure TSPCComp.NotIt(const aName : string);
+procedure TSPCComp.SetToTrue(const aName : string);
 begin
-  EmitLn(Format('TST %s', [aName])); // sets Z flag
   EmitLn(Format('MVI %s, 1', [aName]));
-  EmitLn('JZ *+2');
+end;
+
+procedure TSPCComp.SetToFalse(const aName : string);
+begin
   EmitLn(Format('MVI %s, 0', [aName]));
+end;
+
+procedure TSPCComp.NotIt(const aName : string);
+var
+  L : string;
+begin
+  fCCSet := False;
+  L := NewLabel;
+  EmitLn(TestAsString(aName)); // sets Z flag
+  SetToTrue(aName);
+  EmitLn(BranchFalseAsString(L));
+  SetToFalse(aName);
+  PostLabel(L);
 end;
 
 procedure TSPCComp.StoreArray(const name, idx, val : string);
@@ -6438,8 +7363,9 @@ end;
 procedure TSPCComp.StartOfCode(const aName : string);
 begin
   PostLabel(aName);
-  fCurrentSProProcess := fSProProgram.Add;
-  fCurrentSProProcess.Name := aName
+  fSProProgram.AddProcess(aName);
+  if aName = 'main' then
+    fSProProgram.CurrentProcess.AddRef;
 end;
 
 procedure TSPCComp.EndOfProcess;
@@ -6450,34 +7376,28 @@ end;
 procedure TSPCComp.Header;
 begin
   EmitLn(Format('SUBTTL %s.ASM', [UpperCase(ChangeFileExt(ExtractFileName(CurrentFile), ''))]));
-  EmitLn('START');
+  // changed to WAIT instead of START to support download/download and run
+  EmitLn('WAIT');
 end;
 
 procedure TSPCComp.Trailer;
-var
-  tmp : TStrings;
 begin
   DoCompilerStatusChange(Format(sXXXGenerateTrailer, ['SPC']));
   CheckForMain;
-  // handle stack variables
-  tmp := TStringList.Create;
-  try
-    tmp.AddStrings(ASMSource);
-    ASMSource.Clear;
-    SetDataOrigin($40, ';start of user ram');
-//    // emit struct decls
-//    ASMSource.AddStrings(fStructDecls);
+  EmitRegisters;      // writes to a simple dataspace now
+  EmitStackVariables; // writes to a simple dataspace now
 
-    EmitRegisters;
-    EmitStackVariables;
+  if fAutoStart then
+    SourceSwitchWaitToStart;
 
-    ASMSource.AddStrings(tmp);
-    // output the array initialization subroutine last
-    EmitGlobalDataInitSubroutine;
-    EmitLn('END');
-  finally
-    tmp.Free;
+  // output the array initialization subroutine last
+  EmitGlobalDataInitSubroutine;
+  if Assigned(fIGDProcess) and (fIGDProcess.Count <= 3) then
+  begin
+    fSProProgram.DeleteProcess(fIGDProcess);
+    SourceRemoveCallToInitGlobals;
   end;
+  EmitLn('END');
 end;
 
 procedure TSPCComp.StoreAddress(const dest, src : string);
@@ -6500,10 +7420,258 @@ begin
   EmitLn(Format('DEC %s', [aName]));
 end;
 
-function TSPCComp.SwitchBranch(const aLabel, aLHS, aRHS : string) : string;
+procedure TSPCComp.StartProcess(const aName : string);
 begin
-  // jmp if equal to specified label
-  Result := Format('brcmp EQ, %s, %s, %s', [aLabel, aLHS, aRHS]);
+  EmitLn(Format('FORK %s', [aName]));
+end;
+
+procedure TSPCComp.TraceChar(const C : Char);
+begin
+  if C in [' ', ',', ';', '"'] then
+    TraceString(C)
+  else
+    EmitLn(Format('TRCH %s', [C]));
+end;
+
+procedure TSPCComp.TraceString(const S : string);
+begin
+  EmitLn(Format('TRST ''%s''', [S]));
+end;
+
+procedure TSPCComp.OpenLogForWrite;
+var
+  L : string;
+begin
+  L := NewLabel;
+  EmitLn('LINIT');
+  SetToFalse(RegisterName);
+  EmitLn('JC ' + L);
+  SetToTrue(RegisterName);
+  PostLabel(L);
+end;
+
+procedure TSPCComp.OpenLogForRead;
+var
+  L : string;
+begin
+  L := NewLabel;
+  EmitLn('LOPEN');
+  SetToFalse(RegisterName);
+  EmitLn('JC ' + L);
+  SetToTrue(RegisterName);
+  PostLabel(L);
+end;
+
+procedure TSPCComp.CloseLog;
+var
+  L : string;
+begin
+  L := NewLabel;
+  EmitLn('LCLOSE');
+  SetToFalse(RegisterName);
+  EmitLn('JC ' + L);
+  SetToTrue(RegisterName);
+  PostLabel(L);
+end;
+
+procedure TSPCComp.LogStatus;
+var
+  L : string;
+begin
+  // log file is closed (0), busy (1), or open (2)
+  L := NewLabel;
+  EmitLn('LSTAT');
+  EmitLn(Format('MVI %s, %d', [RegisterName, 2])); // open
+  EmitLn(BranchTrueAsString(L));
+  DoDecrement(RegisterName); // busy
+  EmitLn('JC ' + L);
+  DoDecrement(RegisterName); // closed
+  PostLabel(L);
+end;
+
+procedure TSPCComp.Rotate(bRight : boolean; const aName : string);
+begin
+  if bRight then
+    EmitLn('RRC ' + aName)
+  else
+    EmitLn('RLC ' + aName);
+end;
+
+procedure TSPCComp.PushVar(const aName : string);
+begin
+  EmitLn('PUSH ' + aName);
+end;
+
+procedure TSPCComp.PopVar(const aName : string);
+begin
+  EmitLn('POP ' + aName);
+end;
+
+procedure TSPCComp.TraceVar(bDecimal : boolean; const aName : string);
+begin
+  if bDecimal then
+    EmitLn('TRND ' + aName)
+  else
+    EmitLn('TRNH ' + aName);
+end;
+
+procedure TSPCComp.WriteVar(const aName : string);
+begin
+  EmitLn('LOG ' + aName);
+end;
+
+procedure TSPCComp.ReadVar(const aName : string);
+begin
+  EmitLn('READ ' + aName);
+end;
+
+procedure TSPCComp.RunProgram(const slot : byte);
+begin
+  EmitLn(Format('SWITCH %d',[slot]));
+end;
+
+procedure TSPCComp.SquareRoot(const aName : string);
+begin
+  EmitLn('SQRT ' + RegisterName);
+end;
+
+procedure TSPCComp.AbsoluteValue;
+var
+  L : string;
+begin
+  L := NewLabel;
+  EmitLn(TestAsString(RegisterName)); // test the value
+  EmitLn(BranchPositiveAsString(L));
+  Negate;
+  PostLabel(L);
+end;
+
+procedure TSPCComp.SignValue;
+var
+  L : string;
+begin
+  // set RegisterName to 1, 0, or -1 if positive, zero, or negative
+  L := NewLabel;
+  EmitLn(TestAsString(RegisterName)); // test the value
+  SetToTrue(RegisterName);
+  EmitLn(BranchPositiveAsString(L));
+  EmitLn(Format('MVI %s, -1', [RegisterName]));
+  EmitLn(BranchNegativeAsString(L));
+  SetToFalse(RegisterName);
+  PostLabel(L);
+end;
+
+procedure TSPCComp.WaitMS(const aName : string);
+var
+  L, svar : string;
+begin
+  L := NewLabel;
+  push;
+  svar := tos;
+  CopyVar(svar, '01FH');
+  EmitLn(Format('ADD %s, %s', [svar, aName]));
+  PostLabel(L);
+  push;
+  CopyVar(tos, svar);
+  EmitLn(Format('SUB %s, 01FH', [tos]));
+  pop;
+  EmitLn(BranchPositiveAsString(L));
+  pop;
+end;
+
+procedure TSPCComp.ExitToProcess(const aName : string);
+begin
+  StartProcess(aName);
+  EndOfProcess;
+end;
+
+procedure TSPCComp.WaitForClock;
+begin
+  EmitLn('STALL');
+end;
+
+procedure TSPCComp.StopAllProcesses(const aName : string);
+var
+  L : string;
+begin
+  L := NewLabel;
+  EmitLn(TestAsString(RegisterName));
+  EmitLn(BranchFalseAsString(L));
+  EmitLn('HALTALL');
+  PostLabel(L);
+end;
+
+procedure TSPCComp.HaltEx;
+begin
+  EmitLn('HALTEX');
+end;
+
+procedure TSPCComp.TraceCarriageReturn;
+begin
+  EmitLn('TRCR');
+end;
+
+procedure TSPCComp.TraceNewLine;
+begin
+  EmitLn('TRNL');
+end;
+
+procedure TSPCComp.TraceSpace;
+begin
+  EmitLn('TRSP');
+end;
+
+(*
+procedure TSPCComp.TraceCRLF;
+begin
+  TraceCarriageReturn;
+  TraceNewLine;
+end;
+*)
+
+function TSPCComp.SubAsString(const aLHS, aRHS : string) : string;
+begin
+  Result := Format('SUB %s, %s', [aLHS, aRHS]);
+end;
+
+function TSPCComp.MoveAsString(const aLHS, aRHS : string) : string;
+begin
+  Result := Format('MOV %s, %s', [aLHS, aRHS]);
+end;
+
+function TSPCComp.SubImmAsString(const aLHS, aRHS : string) : string;
+begin
+  Result := Format('SBI %s, %s', [aLHS, aRHS]);
+end;
+
+function TSPCComp.BranchAsString(const aLabel: string) : string;
+begin
+  Result := 'JMP ' + aLabel;
+end;
+
+function TSPCComp.BranchPositiveAsString(const aLabel: string) : string;
+begin
+  Result := 'JP ' + aLabel;
+end;
+
+function TSPCComp.BranchNegativeAsString(const aLabel: string) : string;
+begin
+  Result := 'JN ' + aLabel;
+end;
+
+function TSPCComp.BranchFalseAsString(const aLabel: string) : string;
+begin
+  Result := 'JZ ' + aLabel;
+end;
+
+function TSPCComp.BranchTrueAsString(const aLabel: string) : string;
+begin
+  Result := 'JNZ ' + aLabel;
+end;
+
+function TSPCComp.TestAsString(const aName : string) : string;
+begin
+  Result := 'TST ' + aName;
 end;
 
 procedure TSPCComp.CopyArray(const name, val: string);
@@ -6512,31 +7680,83 @@ begin
 end;
 
 procedure TSPCComp.CmpHelper(const cc : TCompareCode; const lhs, rhs: string);
+var
+  tmp, L : string;
 begin
-(*
-    ( Encoding: 0; Group: 1; Mode: 'LT'  ; Symbol: '<'; ),
-    ( Encoding: 1; Group: 1; Mode: 'GT'  ; Symbol: '>'; ),
-    ( Encoding: 2; Group: 1; Mode: 'LTEQ'; Symbol: '<='; ),
-    ( Encoding: 3; Group: 1; Mode: 'GTEQ'; Symbol: '>='; ),
-    ( Encoding: 4; Group: 1; Mode: 'EQ'  ; Symbol: '=='; ),
-    ( Encoding: 5; Group: 1; Mode: 'NEQ' ; Symbol: '!='; )
-  TCompareCode = (ccLT, ccGT, ccLTEQ, ccGTEQ, ccEQ, ccNEQ);
-*)
-  case cc of
-    ccLT : begin
-    end;
-    ccGT : begin
-    end;
-    ccLTEQ : begin
-    end;
-    ccGTEQ : begin
-    end;
-    ccNEQ : begin
-    end;
-  else
-    // ccEQ
+  fCCSet := True;
+  push;
+  tmp := tos;
+  L := NewLabel;
+  EmitLn(MoveAsString(tmp, lhs));
+  EmitLn(SubAsString(tmp, rhs));
+  SetToTrue(tmp);
+  if cc in [ccLT, ccLTEQ] then begin
+    if cc = ccLTEQ then
+      EmitLn(BranchFalseAsString(L)); // Z will be set if lhs == rhs
+    EmitLn(BranchNegativeAsString(L));   // N will be set if lhs < rhs
+  end
+  else if cc in [ccGT, ccGTEQ] then begin
+    if cc = ccGTEQ then
+      EmitLn(BranchFalseAsString(L)); // Z will be set if lhs == rhs
+    EmitLn(BranchPositiveAsString(L));   // P will be set if lhs > rhs
+  end
+  else begin
+    if cc = ccNEQ then
+      EmitLn('INVZ');  // Z will not be set if lhs != rhs
+    EmitLn(BranchFalseAsString(L));  // Z will be set if lhs == rhs
   end;
-  EmitLn(Format('cmp %d, %s, %s, %s',[Ord(cc), ZeroFlag, lhs, rhs]));
+  SetToFalse(tmp);
+  PostLabel(L);
+  EmitLn(TestAsString(tmp));
+  pop;
+end;
+
+procedure TSPCComp.StoreZeroFlag;
+var
+  L : string;
+begin
+  // set Register if Z is not set, otherwise clear register
+  L := NewLabel;
+  SetToFalse(RegisterName);
+  EmitLn(BranchFalseAsString(L));
+  SetToTrue(RegisterName);
+  PostLabel(L);
+end;
+
+procedure TSPCComp.BranchFalse(const L: string);
+begin
+  if not fCCSet then
+    SetZeroCC;
+  EmitLn(BranchFalseAsString(L));
+end;
+
+procedure TSPCComp.BranchTrue(const L: string);
+begin
+  if not fCCSet then
+    SetZeroCC;
+  EmitLn(BranchTrueAsString(L));
+end;
+
+procedure TSPCComp.BranchPositive(const L: string);
+begin
+  EmitLn(BranchPositiveAsString(L));
+end;
+
+procedure TSPCComp.SetZeroCC;
+begin
+  fCCSet := True;
+  EmitLn(TestAsString(RegisterName));
+end;
+
+procedure TSPCComp.TestVariable(const name : string);
+begin
+  EmitLn(TestAsString(name));
+end;
+
+procedure TSPCComp.OutputDirective(const directive : string);
+begin
+  EmitPoundLine;
+  EmitLnNoTab(directive);
 end;
 
 //==========================================================================
@@ -6546,33 +7766,57 @@ end;
 //==========================================================================
 
 procedure TSPCComp.AllocateHelper(aName, tname : string; dt : char; cnt : integer);
+var
+  DE, Sub : TDataspaceEntry;
+  i{, len, org} : integer;
 begin
   case dt of
-    TOK_LONGDEF :
-      EmitLnNoTab(Format('%s ds 1', [aName]));
-    TOK_ARRAYLONGDEF..TOK_ARRAYLONGDEF4   :
-    begin
-      // we need to know how many elements to allocate
-      EmitLnNoTab(Format('%s ds %d', [aName, cnt]));
+    TOK_LONGDEF : begin
+      fSProProgram.AddDataSpecifier(aName, 1);
     end;
     TOK_USERDEFINEDTYPE :
     begin
       // we need to know how many elements to allocate
-      EmitLnNoTab(Format('%s ds %d', [aName, UDTSize(tname)]));
+      DE := DataDefinitions.FindEntryByFullName(tname);
+      if Assigned(DE) then
+      begin
+{
+        len := UDTSize(tname);
+        org := fSProProgram.DataOrigin;
+        fSProProgram.AddDataSpecifier(aName, len);
+}
+        for i := 0 to DE.SubEntries.Count - 1 do
+        begin
+          Sub := DE.SubEntries[i];
+          case Sub.DataType of
+            dsSLong : begin
+              AllocateHelper(Replace(Sub.FullPathIdentifier, tname, aName), '', TOK_LONGDEF, 1);
+            end;
+            dsArray : begin
+              AllocateHelper(Replace(Sub.FullPathIdentifier, tname, aName), '', TOK_ARRAYLONGDEF, Sub.ValueCount);
+            end;
+            dsCluster : begin
+              AllocateHelper(Replace(Sub.FullPathIdentifier, tname, aName), sub.TypeName, TOK_USERDEFINEDTYPE, 1);
+            end;
+          end
+        end;
+      end
+      else
+        AbortMsg('Unknown struct type');
+    end;
+    TOK_ARRAYLONGDEF..TOK_ARRAYLONGDEF4   :
+    begin
+      // we need to know how many elements to allocate
+      fSProProgram.AddDataSpecifier(aName, cnt);
     end;
     TOK_ARRAYUDT..TOK_ARRAYUDT4 :
     begin
       // we need to know how many elements to allocate
-      EmitLnNoTab(Format('%s ds %d', [aName, UDTSize(tname)*cnt]));
+      fSProProgram.AddDataSpecifier(aName, UDTSize(tname)*cnt);
     end;
   else
     AbortMsg(sUnknownDatatype);
   end;
-end;
-
-procedure TSPCComp.SetDataOrigin(const Org : Word; const comment : string);
-begin
-  EmitLn(Format('DORG %3.3xH %s', [Org, comment]));
 end;
 
 end.

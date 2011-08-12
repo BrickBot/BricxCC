@@ -230,8 +230,8 @@ begin
     RegisterMethod('Function NXTFindFirstModule( var ModName : string; var Handle : FantomHandle; var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean');
     RegisterMethod('Function NXTFindNextModule( var Handle : FantomHandle; var ModName : string; var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean');
     RegisterMethod('Function NXTRenameFile( const old, new : string; const chkResponse : boolean) : boolean');
-    RegisterMethod('Function NXTDownloadFile( const filename : string; const filetype : TNXTFileType) : boolean');
-    RegisterMethod('Function NXTDownloadStream( aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean');
+    RegisterMethod('Function DownloadFile( const filename : string; const filetype : TNXTFileType) : boolean');
+    RegisterMethod('Function DownloadStream( aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean');
     RegisterMethod('Function NXTUploadFile( const filename : string; const dir : string) : boolean');
     RegisterMethod('Function NXTUploadFileToStream( const filename : string; aStream : TStream) : boolean');
     RegisterMethod('Function NXTListFiles( const searchPattern : string; Files : TStrings) : boolean');
@@ -702,8 +702,8 @@ begin
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTFindFirstModule, 'NXTFindFirstModule');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTFindNextModule, 'NXTFindNextModule');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTRenameFile, 'NXTRenameFile');
-    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTDownloadFile, 'NXTDownloadFile');
-    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTDownloadStream, 'NXTDownloadStream');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.DownloadFile, 'DownloadFile');
+    RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.DownloadStream, 'DownloadStream');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTUploadFile, 'NXTUploadFile');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTUploadFileToStream, 'NXTUploadFileToStream');
     RegisterVirtualAbstractMethod(TFantomSpirit, @TFantomSpirit.NXTListFiles, 'NXTListFiles');

@@ -484,31 +484,10 @@ resourcestring
   sInvalidSetStatement = 'The set opcode cannot be used with float variables';
   sMainUndefined       = 'The main thread is not explicitly named';
   sNoNegShifts         = 'Negative shifts are not supported';
-  sNBCFinalizeDepends  = 'Finalizing dependencies';
-  sNBCOptimizeLevel    = 'Optimizing at level %d';
-  sNBCBuildRefs        = 'Build codespace references';
-  sNBCOptMutexes       = 'Optimize mutexes';
-  sNBCCompactCode      = 'Compact the codespace';
-  sNBCRemoveLabels     = 'Remove unused labels';
-  sNBCRemovePragmas    = 'Remove unused pragmas';
-  sNBCRunCodeOpts      = 'Run codespace optimizations';
-  sNBCCompactAfterOpt  = 'Compact the codespace after optimizations';
-  sNBCCompactData      = 'Compact the dataspace';
-  sNBCSortDataspace    = 'Sort the dataspace';
-  sNBCGenerateRawDS    = 'Generate raw dataspace data';
-  sNBCFillCodeArrays   = 'Fill clump and codespace arrays';
-  sNBCUpdateHeader     = 'Update executable file header';
-  sNBCWriteHeader      = 'Write file header to executable';
-  sNBCWriteDataspace   = 'Write dataspace to executable';
-  sNBCWriteClumpData   = 'Write clump data to executable';
-  sNBCWriteCodespace   = 'Write code to executable';
-  sNBCWriteOptSource   = 'Write optimized source to compiler output';
-  sNBCFinished         = 'Finished';
-  sNBCCompFinished     = 'Finished compiling NBC source code';
   sNBCLoadSystemFiles  = 'Loading NBC system files';
   sNBCPreprocess       = 'Running NBC Preprocessor';
   sNBCCompilingSource  = 'Compiling NBC source code';
-  sNBCOptClump         = 'Optimizing clump: %s';
+  sNBCOptMutexes       = 'Optimize mutexes';
   sNBCCompBegin        = 'NBC compilation begins';
   sUnmatchedCompDir    = 'Unmatched compiler directive (compif/compelse/compend)';
 
@@ -586,6 +565,28 @@ resourcestring
   sXXXParseProg         = '%s parse program code';
   sXXXCodeGenComplete   = '%s code generation finished';
 
+  sOptClump            = 'Optimizing code: %s';
+  sFinalizeDepends  = 'Finalizing dependencies';
+  sOptimizeLevel    = 'Optimizing at level %d';
+  sBuildRefs        = 'Build codespace references';
+  sCompactCode      = 'Compact the codespace';
+  sRemoveLabels     = 'Remove unused labels';
+  sRemovePragmas    = 'Remove unused pragmas';
+  sRunCodeOpts      = 'Run codespace optimizations';
+  sCompactAfterOpt  = 'Compact the codespace after optimizations';
+  sCompactData      = 'Compact the dataspace';
+  sSortDataspace    = 'Sort the dataspace';
+  sGenerateRawDS    = 'Generate raw dataspace data';
+  sFillCodeArrays   = 'Fill code arrays';
+  sUpdateHeader     = 'Update executable file header';
+  sWriteHeader      = 'Write file header to executable';
+  sWriteDataspace   = 'Write dataspace to executable';
+  sWriteClumpData   = 'Write clump data to executable';
+  sWriteCodespace   = 'Write code to executable';
+  sWriteOptSource   = 'Write optimized source to compiler output';
+  sFinished         = 'Finished';
+  sNBCCompFinished     = 'Finished compiling NBC source code';
+
 // uNBCCommon unit
 resourcestring
   sExpectedString          = '%s expected';
@@ -615,6 +616,11 @@ resourcestring
   sConstNotAllowed         = 'Constant not allowed on LHS of assignment';
   sConstRequired           = 'A constant is required in this context';
   sFuncParamDeclMismatch   = 'Function parameter declaration mismatch';
+  sPointerRequired         = 'A pointer is required in this context';
+  sUnsupportedDeref        = 'Unsupported dereference syntax';
+  sInvalidDeref            = 'Invalid dereference syntax';
+  sInvalidAddressOf        = 'Invalid address of syntax';
+  sInvalidPointerSyntax    = 'Invalid pointer syntax';
 
 // nbc.dpr
 resourcestring
@@ -711,6 +717,7 @@ resourcestring
 // uNBCInterface.pas
 resourcestring
   sCannotFindFile       = 'Unable to find the specified input file'#13#10'File "%s" ; line 1';
+  sInvalidFileType      = 'Unexpected file type specified (%s)';
   sSPCCompilationFailed = 'SPC compilation failed.';
   sNXCCompilationFailed = 'NXC compilation failed.';
   sNBCCompilationFailed = 'NBC compilation failed.';

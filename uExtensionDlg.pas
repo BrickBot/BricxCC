@@ -49,6 +49,7 @@ type
     chkNPG: TCheckBox;
     chkLua: TCheckBox;
     chkPascalScript: TCheckBox;
+    chkSPC: TCheckBox;
   private
     { Private declarations }
     function GetASM: Boolean;
@@ -81,6 +82,8 @@ type
     procedure SetRS(const Value: Boolean);
     function GetROPS: Boolean;
     procedure SetROPS(const Value: Boolean);
+    function GetSPC: Boolean;
+    procedure SetSPC(const Value: Boolean);
   public
     { Public declarations }
     property ClaimNQC : Boolean read GetNQC write SetNQC;
@@ -98,6 +101,7 @@ type
     property ClaimRS : Boolean read GetRS write SetRS;
     property ClaimLua : Boolean read GetLua write SetLua;
     property ClaimROPS : Boolean read GetROPS write SetROPS;
+    property ClaimSPC : Boolean read GetSPC write SetSPC;
   end;
 
 implementation
@@ -166,6 +170,11 @@ end;
 function TfrmExtensionDlg.GetPas: Boolean;
 begin
   Result := chkPas.Checked;
+end;
+
+function TfrmExtensionDlg.GetSPC: Boolean;
+begin
+  Result := chkSPC.Checked;
 end;
 
 function TfrmExtensionDlg.GetRCX2: Boolean;
@@ -241,6 +250,11 @@ end;
 procedure TfrmExtensionDlg.SetPas(const Value: Boolean);
 begin
   chkPas.Checked := Value;
+end;
+
+procedure TfrmExtensionDlg.SetSPC(const Value: Boolean);
+begin
+  chkSPC.Checked := Value;
 end;
 
 procedure TfrmExtensionDlg.SetRCX2(const Value: Boolean);

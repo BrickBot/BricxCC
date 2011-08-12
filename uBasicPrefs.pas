@@ -315,6 +315,9 @@ procedure PutAPIValuesInSyntaxHighlighter(key, com, con : TStringList;
 procedure LoadNXCAPIValues(reg : TRegistry; aPrefHL, aMainHL : TSynBaseNCSyn);
 procedure SaveNXCAPIValues(reg : TRegistry);
 procedure ResetNXCAPIValues(reg : TRegistry; aPrefHL, aMainHL : TSynBaseNCSyn);
+procedure LoadSPCAPIValues(reg : TRegistry; aPrefHL, aMainHL : TSynBaseNCSyn);
+procedure SaveSPCAPIValues(reg : TRegistry);
+procedure ResetSPCAPIValues(reg : TRegistry; aPrefHL, aMainHL : TSynBaseNCSyn);
 procedure LoadBasicGeneralValues(reg : TRegistry);
 procedure ResetEditorValues(reg : TRegistry);
 procedure LoadBasicCompilerValues(reg : TRegistry);
@@ -342,6 +345,10 @@ var
   cc_nxc_keywords: TStringList;
   cc_nxc_commands: TStringList;
   cc_nxc_constants: TStringList;
+
+var
+  cc_spc_commands: TStringList;
+  cc_spc_constants: TStringList;
 
 var
   UseHTMLHelp : boolean;
@@ -844,15 +851,21 @@ procedure PutAPIValuesInSyntaxHighlighter(key, com, con : TStringList;
 begin
   if Assigned(aPrefHL) then
   begin
-    aPrefHL.KeyWords.Assign(key);
-    aPrefHL.Commands.Assign(com);
-    aPrefHL.Constants.Assign(con);
+    if Assigned(key) then
+      aPrefHL.KeyWords.Assign(key);
+    if Assigned(com) then
+      aPrefHL.Commands.Assign(com);
+    if Assigned(con) then
+      aPrefHL.Constants.Assign(con);
   end;
   if Assigned(aMainHL) then
   begin
-    aMainHL.KeyWords.Assign(key);
-    aMainHL.Commands.Assign(com);
-    aMainHL.Constants.Assign(con);
+    if Assigned(key) then
+      aMainHL.KeyWords.Assign(key);
+    if Assigned(com) then
+      aMainHL.Commands.Assign(com);
+    if Assigned(con) then
+      aMainHL.Constants.Assign(con);
   end;
 end;
 
@@ -959,6 +972,92 @@ begin
   Reg_DeleteKey(reg, 'NXC_Commands');
   Reg_DeleteKey(reg, 'NXC_Constants');
   LoadNXCAPIValues(reg, aPrefHL, aMainHL);
+end;
+
+procedure LoadSPCAPIValues(reg : TRegistry; aPrefHL, aMainHL : TSynBaseNCSyn);
+var
+  i:integer;
+  SL : TStringList;
+  tmpStr : string;
+begin
+  {first we populate our dynamic arrays from the highlighter if it exists}
+  if Assigned(aPrefHL) then
+  begin
+    // spc
+    cc_spc_commands.Assign(aPrefHL.Commands);
+    cc_spc_constants.Assign(aPrefHL.Constants);
+  end;
+  {Loads the SPC commands and constants from the registry}
+  if not Reg_KeyExists(reg, 'SPC_Commands') then
+  begin
+    // no registry key so load from file instead
+    tmpStr := ProgramDir+DefaultDir+'spc_constants.txt';
+    if FileExists(tmpStr) then
+      cc_spc_constants.LoadFromFile(tmpStr);
+    SL := TStringList.Create;
+    try
+      tmpStr := ProgramDir+DefaultDir+'spc_api.txt';
+      if FileExists(tmpStr) then
+      begin
+        SL.LoadFromFile(tmpStr);
+        for i := 0 to SL.Count - 1 do
+        begin
+          tmpStr := SL[i];
+          // skip the return type ?
+          SL[i] := Copy(tmpStr, 1, Pos('(', tmpStr)-1);
+        end;
+        cc_spc_commands.Assign(SL);
+      end;
+    finally
+      SL.Free;
+    end;
+  end
+  else
+  begin
+    Reg_OpenKey(reg, 'SPC_Commands');
+    try
+      cc_spc_commands.Text := Reg_ReadString(reg, 'Commands', '');
+    finally
+      reg.CloseKey;
+    end;
+
+    Reg_OpenKey(reg, 'SPC_Constants');
+    try
+      cc_spc_constants.Text := Reg_ReadString(reg, 'Constants', '');
+    finally
+      reg.CloseKey;
+    end;
+  end;
+  PutAPIValuesInSyntaxHighlighter(nil, cc_spc_commands, cc_spc_constants, aPrefHL, aMainHL);
+end;
+
+procedure SaveSPCAPIValues(reg : TRegistry);
+begin
+  {Saves the keyword values to the registry}
+  // SPC
+  Reg_DeleteKey(reg, 'SPC_Commands');
+  Reg_OpenKey(reg, 'SPC_Commands');
+  try
+    reg.WriteString('Commands', cc_spc_commands.Text);
+  finally
+    reg.CloseKey;
+  end;
+
+  Reg_DeleteKey(reg, 'SPC_Constants');
+  Reg_OpenKey(reg, 'SPC_Constants');
+  try
+    reg.WriteString('Constants', cc_spc_constants.Text);
+  finally
+    reg.CloseKey;
+  end;
+end;
+
+procedure ResetSPCAPIValues(reg : TRegistry; aPrefHL, aMainHL : TSynBaseNCSyn);
+begin
+{Resets the keyword values to default}
+  Reg_DeleteKey(reg, 'SPC_Commands');
+  Reg_DeleteKey(reg, 'SPC_Constants');
+  LoadSPCAPIValues(reg, aPrefHL, aMainHL);
 end;
 
 var
@@ -1565,6 +1664,7 @@ begin
   SaveRemoteValues(reg);
   SaveRecentValues(reg);
   SaveNXCAPIValues(reg);
+  SaveSPCAPIValues(reg);
   for i := 0 to NUM_LANGS - 1 do
     SaveTemplateValues(i, reg);
   SaveGutterValues(reg);
@@ -1622,6 +1722,8 @@ initialization
   cc_nxc_keywords := CreateSortedStringList(true);
   cc_nxc_commands := CreateSortedStringList(true);
   cc_nxc_constants := CreateSortedStringList(true);
+  cc_spc_commands := CreateSortedStringList(true);
+  cc_spc_constants := CreateSortedStringList(true);
   // general defaults
   SetMaxRecent(MaxRecent);
   ShowRecent            := True;
@@ -1725,5 +1827,7 @@ finalization
   FreeAndNil(cc_nxc_keywords);
   FreeAndNil(cc_nxc_commands);
   FreeAndNil(cc_nxc_constants);
+  FreeAndNil(cc_spc_commands);
+  FreeAndNil(cc_spc_constants);
 
 end.

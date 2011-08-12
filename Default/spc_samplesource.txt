@@ -1,0 +1,16 @@
+/* syntax highlighting */
+// This is a Comment
+// #define is a Preprocessor
+#define NUM_LOOPS 4
+task main() // task is a Keyword
+{ // {},+(); are all Symbols
+  // printf is a Command
+  // "power = %d" is a Field (aka String)
+  printf("power = %d", 10);
+  // NUM_LOOPS is an Identifier
+  repeat(NUM_LOOPS)
+  {
+    // 4000 is a Number
+    Wait(4000);
+  }
+}

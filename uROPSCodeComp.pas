@@ -32,7 +32,7 @@ const
   );
 
 const
-  ROPSCodeCompDataSize = 397;
+  ROPSCodeCompDataSize = 399;
   ROPSCodeCompData: array[0..ROPSCodeCompDataSize-1] of TCppCodeComp = (
     (Kind: ckKeyword; Name: 'and'; Location: 0; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckKeyword; Name: 'array'; Location: 0; Params: ''; Count: 1; Alpha: atNumeric),
@@ -221,12 +221,14 @@ const
     (Kind: ckAPIConst; Name: 'K_RCX2'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'K_SPY'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'K_NXT'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
+    (Kind: ckAPIConst; Name: 'K_SPRO'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'rtRCX'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'rtCybermaster'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'rtScout'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'rtRCX2'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'rtSpy'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'rtNXT'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
+    (Kind: ckAPIConst; Name: 'rtSPro'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'kRemoteKeysReleased'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'kRemotePBMessage1'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIConst; Name: 'kRemotePBMessage2'; Location: 3; Params: ''; Count: 1; Alpha: atNumeric),
@@ -435,8 +437,8 @@ const
     (Kind: ckAPIFunc; Name: 'NXTFindFirstModule'; Location: 2; Params: '(var ModName : string; var Handle : FantomHandle; var ModID: Cardinal; var ModSize: Cardinal; var IOMapSize : Word)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTFindNextModule'; Location: 2; Params: '(var Handle : FantomHandle; var ModName : string; var ModID: Cardinal; var ModSize: Cardinal; var IOMapSize : Word)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTRenameFile'; Location: 2; Params: '(const old: string; const new: string; const chkResponse : boolean)'; Count: 1; Alpha: atNumeric),
-    (Kind: ckAPIFunc; Name: 'NXTDownloadFile'; Location: 2; Params: '(const filename : string; const filetype : TNXTFileType)'; Count: 1; Alpha: atNumeric),
-    (Kind: ckAPIFunc; Name: 'NXTDownloadStream'; Location: 2; Params: '(aStream : TStream; const dest : string; const filetype : TNXTFileType)'; Count: 1; Alpha: atNumeric),
+    (Kind: ckAPIFunc; Name: 'DownloadFile'; Location: 2; Params: '(const filename : string; const filetype : TNXTFileType)'; Count: 1; Alpha: atNumeric),
+    (Kind: ckAPIFunc; Name: 'DownloadStream'; Location: 2; Params: '(aStream : TStream; const dest : string; const filetype : TNXTFileType)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTUploadFile'; Location: 2; Params: '(const filename : string; const dir : string)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTUploadFileToStream'; Location: 2; Params: '(const filename : string; aStream : TStream)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTListFiles'; Location: 2; Params: '(const searchPattern : string; Files : TStrings)'; Count: 1; Alpha: atNumeric),

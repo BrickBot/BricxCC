@@ -22,7 +22,6 @@ uses
   Parser10, uNXTConstants, Classes, SysUtils;
 
 type
-  TLangName = (lnNBC, lnNXC, lnNXCHeader, lnRICScript, lnSPC, lnUnknown);
   TCompilerStatusChangeEvent = procedure(Sender : TObject; const StatusMsg : string; const bDone : boolean) of object;
 
   TNBCExpParser = class(TExpParser)
@@ -43,7 +42,6 @@ type
 
   TStatementType = (stUnsigned, stSigned, stFloat);
   TSymbolType = (stUnknown, stParam, stLocal, stGlobal, stAPIFunc, stAPIStrFunc);
-  TOnCompilerMessage = procedure(const msg : string; var stop : boolean) of object;
   TFuncParamType = (fptUBYTE, fptSBYTE, fptUWORD, fptSWORD, fptULONG, fptSLONG, fptUDT, fptString, fptMutex, fptFloat);
 
   TFunctionParameter = class(TCollectionItem)
@@ -61,6 +59,7 @@ type
     fFuncIsInline: boolean;
     fHasDefault: boolean;
     fDefaultValue: string;
+    fIsPointer: boolean;
     function GetParamDataType: char;
     function GetIsConstReference: boolean;
     function GetIsVarReference: boolean;
@@ -77,6 +76,7 @@ type
     property ParamTypeName : string read fPTName write fPTName;
     property IsReference : boolean read fIsReference write fIsReference;
     property IsConstant : boolean read fIsConstant write fIsConstant;
+    property IsPointer : boolean read fIsPointer write fIsPointer;
     property IsArray : boolean read fIsArray write fIsArray;
     property ArrayDimension : integer read fDim write fDim;
     property ParameterDataType : char read GetParamDataType;
@@ -114,6 +114,7 @@ type
     fLevel: integer;
     fHasDef: boolean;
     fDefValue: string;
+    fIsPointer: boolean;
   protected
     procedure AssignTo(Dest: TPersistent); override;
   public
@@ -121,6 +122,7 @@ type
     property Name : string read fName write fName;
     property DataType : char read fDataType write fDataType;
     property IsConstant : boolean read fIsConst write fIsConst;
+    property IsPointer : boolean read fIsPointer write fIsPointer;
     property UseSafeCall : boolean read fUseSafeCall write fUseSafeCall;
     property Value : string read fValue write fValue;
     property TypeName : string read fTypeName write fTypeName;
@@ -159,7 +161,7 @@ type
     constructor Create(ACollection: TCollection); override;
     destructor Destroy; override;
     procedure Emit(aStrings : TStrings);
-    function AsString : string;
+    function AsString(const ret : string = 'return'; const jmp : string = 'jmp') : string;
     property Name : string read fName write fName;
     property Code : TStrings read fCode write SetCode;
     property LocalVariables : TVariableList read fVariables;
@@ -203,7 +205,6 @@ type
 
   TArrayHelperVars = class(TCollection)
   private
-    fASMSrc: TStrings;
     fOnAcquireReleaseHelper : TAcquireReleaseHelperEvent;
     function GetItem(Index: Integer): TArrayHelperVar;
     procedure SetItem(Index: Integer; const Value: TArrayHelperVar);
@@ -219,7 +220,7 @@ type
   end;
 
 const
-  LABEL_PREFIX = '__NXC_Label_';
+  LABEL_PREFIX = '__ASM_Label_';
 
 const
   STR_NA    = 'NA';
@@ -1198,83 +1199,10 @@ function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
 function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boolean;
 function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
 function NBCFloatToStr(const AValue: Double): string;
-function StripQuotes(const str : string) : string;
-function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
-  Strings: TStrings): Integer;
 function ValueToDataType(const value : integer) : char;
 function DataTypeToTypeName(const dt : char) : string;
 function BoolToString(aValue : boolean) : string;
 function RootOf(const name: string): string;
-
-const
-  TOK_SEMICOLON     = ';';
-  TOK_OPENPAREN     = '(';
-  TOK_CLOSEPAREN    = ')';
-  TOK_COMMA         = ',';
-  TOK_IDENTIFIER		= 'x';
-  TOK_IF			      = 'i';
-  TOK_ELSE		      = 'l';
-  TOK_DO            = 'd';
-  TOK_ASM           = 'a';
-  TOK_REPEAT        = 'r';
-  TOK_SWITCH        = 's';
-  TOK_DEFAULT       = 'D';
-  TOK_CASE          = 'c';
-  TOK_WHILE		      = 'w';
-  TOK_FOR			      = 'f';
-  TOK_ENUM          = 'm';
-  TOK_END			      = '}';
-  TOK_APISTRFUNC    = 'E';
-  TOK_APIFUNC       = 'F';
-  TOK_PROCEDURE		  = 'R';
-  TOK_TASK          = 'K';
-  TOK_BEGIN		      = '{';
-  TOK_DIRECTIVE		  = '#';
-  TOK_API           = 'Z';
-  TOK_LABEL         = 'B';
-  TOK_TYPEDEF       = 't';
-  TOK_STRUCT        = 'T';
-  TOK_CONST         = 'k';
-  TOK_STATIC        = 'Q';
-  TOK_INLINE        = 'n';
-  TOK_START         = 'A';
-  TOK_STOP          = 'X';
-  TOK_PRIORITY      = 'p';
-  TOK_NUM			      = 'N';
-  TOK_HEX			      = 'H';
-  TOK_UNSIGNED		  = 'U';
-  TOK_CHARDEF		    = 'C';
-  TOK_SHORTDEF 	    = 'I';
-  TOK_LONGDEF       = 'L';
-  TOK_BYTEDEF       = 'b';
-  TOK_USHORTDEF     = #06;
-  TOK_ULONGDEF      = #05;
-  TOK_MUTEXDEF      = 'M';
-  TOK_FLOATDEF      = 'O';
-  TOK_STRINGDEF     = 'S';
-  TOK_STRINGLIT     = 'G';
-  TOK_SAFECALL        = #218;
-  TOK_USERDEFINEDTYPE = #219;
-  TOK_ARRAYFLOAT      = #220;
-  TOK_ARRAYFLOAT4     = #223;
-  TOK_ARRAYSTRING     = #224;
-  TOK_ARRAYSTRING4    = #227;
-  TOK_ARRAYUDT        = #228;
-  TOK_ARRAYUDT4       = #231;
-  TOK_ARRAYCHARDEF    = #232;
-  TOK_ARRAYCHARDEF4   = #235;
-  TOK_ARRAYSHORTDEF   = #236;
-  TOK_ARRAYSHORTDEF4  = #239;
-  TOK_ARRAYLONGDEF    = #240;
-  TOK_ARRAYLONGDEF4   = #243;
-  TOK_ARRAYBYTEDEF    = #244;
-  TOK_ARRAYBYTEDEF4   = #247;
-  TOK_ARRAYUSHORTDEF  = #248;
-  TOK_ARRAYUSHORTDEF4 = #251;
-  TOK_ARRAYULONGDEF   = #252;
-  TOK_ARRAYULONGDEF4  = #255;
-  TOK_BLOCK_COMMENT   = #01;
-  TOK_LINE_COMMENT    = #02;
 
 const
   REGVARS_ARRAY : array[0..11] of string = (
@@ -1321,7 +1249,8 @@ uses
   FastStrings,
 {$ENDIF}
   strutils,
-  uCommonUtils;
+  uCommonUtils,
+  uCompTokens;
 
 
 function RootOf(const name: string): string;
@@ -1522,70 +1451,6 @@ begin
   Result := Format(FmtStr, theArgs, FS);
 end;
 
-function StripQuotes(const str : string) : string;
-begin
-  Result := Copy(str, 2, Length(str)-2);
-end;
-
-{$IFDEF FPC}
-function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
-  Strings: TStrings): Integer;
-var
-  Head, Tail: PChar;
-  EOS, InQuote: Boolean;
-  QuoteChar: Char;
-  Item: string;
-begin
-  Item := '';
-  Result := 0;
-  if (Content = nil) or (Content^=#0) or (Strings = nil) then Exit;
-  Tail := Content;
-  InQuote := False;
-  QuoteChar := #0;
-  Strings.BeginUpdate;
-  try
-    repeat
-      while Tail^ in WhiteSpace + [#13, #10] do inc(Tail);
-      Head := Tail;
-      while True do
-      begin
-        while (InQuote and not (Tail^ in [QuoteChar, #0])) or
-          not (Tail^ in Separators + [#0, #13, #10, '''', '"']) do
-            inc(Tail);
-        if Tail^ in ['''', '"'] then
-        begin
-          if (QuoteChar <> #0) and (QuoteChar = Tail^) then
-            QuoteChar := #0
-          else if QuoteChar = #0 then
-            QuoteChar := Tail^;
-          InQuote := QuoteChar <> #0;
-          inc(Tail);
-        end else Break;
-      end;
-      EOS := Tail^ = #0;
-      if (Head <> Tail) and (Head^ <> #0) then
-      begin
-        if Strings <> nil then
-        begin
-          SetString(Item, Head, Tail - Head);
-          Strings.Add(Item);
-        end;
-        Inc(Result);
-      end;
-      inc(Tail);
-    until EOS;
-  finally
-    Strings.EndUpdate;
-  end;
-end;
-{$ELSE}
-function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
-  Strings: TStrings): Integer;
-begin
-  Result := ExtractStrings(Separators, WhiteSpace, Content, Strings);
-end;
-{$ENDIF}
-
 function ValueToDataType(const value : integer) : char;
 begin
   if value < 0 then begin
@@ -1750,7 +1615,7 @@ end;
 
 { TInlineFunction }
 
-function TInlineFunction.AsString: string;
+function TInlineFunction.AsString(const ret : string; const jmp : string) : string;
 var
   tmpCode, oldname, newname, NameInline : string;
   i : integer;
@@ -1759,7 +1624,7 @@ begin
   inc(fEmitCount);
   // adjust labels
   tmpCode := FixupLabels(fCode.Text);
-  tmpCode := Replace(tmpCode, 'return', Format('jmp %s', [EndLabel]));
+  tmpCode := Replace(tmpCode, ret, Format('%s %s', [jmp, EndLabel]));
   // do all the variable replacing that is needed
   for i := 0 to Parameters.Count - 1 do
   begin
@@ -2172,14 +2037,15 @@ end;
 constructor TVariable.Create(ACollection: TCollection);
 begin
   inherited;
-  fName     := '';
-  fValue    := '';
-  fTypeName := '';
-  fDataType := TOK_BYTEDEF;
-  fIsConst  := False;
-  fLevel    := 0;
-  fHasDef   := False;
-  fDefValue := '';
+  fName      := '';
+  fValue     := '';
+  fTypeName  := '';
+  fDataType  := TOK_BYTEDEF;
+  fIsConst   := False;
+  fIsPointer := False;
+  fLevel     := 0;
+  fHasDef    := False;
+  fDefValue  := '';
 end;
 
 { TVariableList }

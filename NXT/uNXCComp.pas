@@ -23,7 +23,7 @@ unit uNXCComp;
 interface
 
 uses
-  Classes, uNBCCommon, uGenLexer, uNXTClasses, uPreprocess, Contnrs;
+  Classes, uNBCCommon, uGenLexer, uNXTClasses, uPreprocess, uCompTokens, Contnrs;
 
 type
   TNXCComp = class

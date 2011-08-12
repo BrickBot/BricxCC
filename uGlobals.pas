@@ -55,6 +55,7 @@ const
   K_SPY   = 'Spybot';
   K_SWAN  = 'Swan';
   K_NXT   = 'NXT';
+  K_SPRO  = 'SPC';
 
 const
   rtRCX         = 0;
@@ -64,6 +65,7 @@ const
   rtSpy         = 4;
   rtSwan        = 5;
   rtNXT         = 6;
+  rtSPro        = 7;
 
 const
   SU_RCX         = rtRCX;
@@ -73,6 +75,7 @@ const
   SU_SPYBOTIC    = rtSpy;
   SU_SWAN        = rtSwan;
   SU_NXT         = rtNXT;
+  SU_SPRO        = rtSPro;
 
 var
   UserDataLocalPath : string;
@@ -91,6 +94,7 @@ function IsRCX2 : boolean;
 function IsRCX : boolean;
 function IsScout : boolean;
 function IsSpybotic : boolean;
+function IsSuperPro : boolean;
 
 {$IFNDEF FPC}
 function GetSpecialFolderPath(folder : integer) : string;
@@ -133,6 +137,11 @@ end;
 function IsSpybotic : boolean;
 begin
   result := (LocalBrickType = SU_SPYBOTIC);
+end;
+
+function IsSuperPro : boolean;
+begin
+  result := (LocalBrickType = SU_SPRO);
 end;
 
 {$IFNDEF FPC}

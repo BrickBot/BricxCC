@@ -32,7 +32,7 @@ uses
 {$IFNDEF NXT_ONLY}
   FakeSpirit,
 {$ENDIF}
-  FantomSpirit, uGlobals;
+  FantomSpirit, SProSpirit, uGlobals;
 
 var
   BC : TBrickComm;
@@ -43,6 +43,8 @@ begin
   begin
     if LocalBrickType = SU_NXT then
       BC := TFantomSpirit.Create()
+    else if LocalBrickType = SU_SPRO then
+      BC := TSProSpirit.Create()
     else
 {$IFNDEF NXT_ONLY}
       BC := TFakeSpirit.Create();

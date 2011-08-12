@@ -858,7 +858,7 @@ begin
     // make sure the port is not held open here
     BrickComm.Close;
   end
-  else if not (IsRCX or IsSpybotic or IsNXT) then
+  else if not (IsRCX or IsSpybotic or IsNXT or IsSuperPro) then
   begin
     // scout or cybermaster
     if bTalkToBrick then
@@ -881,6 +881,16 @@ begin
   begin
     // NXT
     MainForm.barStatus.Panels[3].Text := K_NXT;
+  end
+  else if IsSuperPro then
+  begin
+    // SuperPro
+    MainForm.barStatus.Panels[3].Text := K_SPRO;
+    if bTalkToBrick then
+    begin
+      MainForm.SelectProgram(0);
+      MainForm.ProgramBox.ItemIndex := 0;
+    end;
   end
   else
   begin
@@ -3968,12 +3978,21 @@ begin
     Comments := [csCStyle];
     DetectPreprocessor := True;
     IdentifierChars := '#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
-    Keywords.CommaText := 'asm, bool, break, case, const, continue, default, ' +
+    Keywords.CommaText := 'asm, bool, break, case, char, const, continue, default, ' +
                           'do, else, enum, false, for, goto, if, inline, int, ' +
-                          'long, repeat, return, static, struct, sub, switch, ' +
+                          'long, repeat, return, start, static, struct, sub, switch, ' +
                           'task, true, typedef, until, void, while';
-    Commands.Clear;
-    Constants.Clear;
+    Commands.CommaText := 'abs, open, close, write, read, stat, push, pop, sign, sqrt, ' +
+                          'putchar, puts, printf, Stop, ExitTo, RotateLeft, ' +
+                          'RotateRight, Run, Wait, StopProcesses, ' +
+                          'Yield, StopAllTasks, StartTask, abort, CurrentTick';
+    Constants.CommaText := 'ADChannel0, ADChannel1, ADChannel2, ADChannel3, ' +
+                           'DigitalIn, DigitalOut, DigitalControl, StrobeControl, ' +
+                           'Timer0, Timer1, Timer2, Timer3, ' +
+                           'SerialInCount, SerialInByte, SerialOutCount, SerialOutByte, ' +
+                           'DAC0Mode, DAC0Frequency, DAC0Voltage, ' +
+                           'DAC1Mode, DAC1Frequency, DAC1Voltage, ' +
+                           'LEDControl, SystemClock';
     SampleSourceStrings.Clear;
   end;
 end;

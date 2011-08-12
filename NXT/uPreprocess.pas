@@ -19,7 +19,8 @@ unit uPreprocess;
 interface
 
 uses
-  Classes, Contnrs, SysUtils, mwGenericLex, uGenLexer, uNBCCommon;
+  Classes, Contnrs, SysUtils, mwGenericLex, uGenLexer, uCompTokens,
+  uNBCCommon;
 
 type
   EPreprocessorException = class(Exception)
@@ -122,7 +123,7 @@ type
 implementation
 
 uses
-  Math, uVersionInfo, uLocalizedStrings, uRICComp;
+  Math, uVersionInfo, uLocalizedStrings, uRICCompBase;
 
 type
   TPreprocLevel = class
@@ -1289,9 +1290,9 @@ end;
 
 function TLangPreprocessor.ImportRIC(const fname, varname: string): string;
 var
-  RC : TRICComp;
+  RC : TRICCompBase;
 begin
-  RC := TRICComp.Create;
+  RC := TRICCompBase.Create;
   try
     RC.LoadFromFile(fname);
     Result := RC.SaveAsDataArray(fLangName, varname);

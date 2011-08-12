@@ -1012,9 +1012,9 @@
  * \brief
  *
  * In NXC the long type is a signed 32-bit value. This type can store values
- * from \ref LONG_MIN to \ref LONG_MAX.  To declare an unsigned 16-bit value
- * you have to use the \ref unsigned keyword followed by the int type.  The
- * range of values that can be stored in an unsigned int variable is from
+ * from \ref LONG_MIN to \ref LONG_MAX.  To declare an unsigned 32-bit value
+ * you have to use the \ref unsigned keyword followed by the long type.  The
+ * range of values that can be stored in an unsigned long variable is from
  * zero to \ref ULONG_MAX.
  * \code
  *  long x = 2147000000;
@@ -1261,7 +1261,7 @@
  * \code
  * variable assign_operator expression;
  * \endcode
- * There are nine different assignment operators. The most basic operator, '=', 
+ * There are thirteen different assignment operators. The most basic operator, '=', 
  * simply assigns the value of the expression to the variable. The other
  * operators modify the variable's value in some other way as shown in the
  * table below.

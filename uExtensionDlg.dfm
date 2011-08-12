@@ -5,8 +5,8 @@ object frmExtensionDlg: TfrmExtensionDlg
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'File Extensions'
-  ClientHeight = 335
-  ClientWidth = 198
+  ClientHeight = 360
+  ClientWidth = 204
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
   Font.Color = clWindowText
@@ -53,7 +53,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkASM: TCheckBox
     Left = 8
-    Top = 77
+    Top = 78
     Width = 180
     Height = 17
     HelpContext = 3105
@@ -62,7 +62,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object btnOK: TButton
     Left = 17
-    Top = 304
+    Top = 328
     Width = 52
     Height = 25
     HelpContext = 3106
@@ -73,7 +73,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object btnCancel: TButton
     Left = 73
-    Top = 304
+    Top = 328
     Width = 52
     Height = 25
     HelpContext = 3107
@@ -84,7 +84,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkCpp: TCheckBox
     Left = 8
-    Top = 96
+    Top = 97
     Width = 180
     Height = 17
     HelpContext = 3108
@@ -93,7 +93,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkPas: TCheckBox
     Left = 8
-    Top = 133
+    Top = 135
     Width = 180
     Height = 17
     HelpContext = 3109
@@ -102,7 +102,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkC: TCheckBox
     Left = 8
-    Top = 114
+    Top = 116
     Width = 180
     Height = 17
     HelpContext = 3110
@@ -111,7 +111,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkJava: TCheckBox
     Left = 8
-    Top = 151
+    Top = 154
     Width = 180
     Height = 17
     HelpContext = 3111
@@ -120,7 +120,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkForth: TCheckBox
     Left = 8
-    Top = 170
+    Top = 172
     Width = 180
     Height = 17
     HelpContext = 3112
@@ -129,7 +129,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object btnHelp: TButton
     Left = 129
-    Top = 304
+    Top = 328
     Width = 52
     Height = 25
     HelpContext = 3113
@@ -138,7 +138,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkNBC: TCheckBox
     Left = 8
-    Top = 188
+    Top = 191
     Width = 180
     Height = 17
     HelpContext = 3114
@@ -147,7 +147,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkRICScript: TCheckBox
     Left = 8
-    Top = 244
+    Top = 248
     Width = 180
     Height = 17
     HelpContext = 3114
@@ -156,16 +156,16 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkNXC: TCheckBox
     Left = 8
-    Top = 207
+    Top = 210
     Width = 180
     Height = 17
     HelpContext = 3114
-    Caption = '.nxc (NXT C)'
+    Caption = '.nxc (Not eXactly C)'
     TabOrder = 10
   end
   object chkNPG: TCheckBox
     Left = 8
-    Top = 225
+    Top = 229
     Width = 180
     Height = 17
     HelpContext = 3114
@@ -174,7 +174,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkLua: TCheckBox
     Left = 8
-    Top = 263
+    Top = 267
     Width = 180
     Height = 17
     HelpContext = 3114
@@ -183,11 +183,20 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object chkPascalScript: TCheckBox
     Left = 8
-    Top = 281
+    Top = 286
     Width = 180
     Height = 17
     HelpContext = 3114
     Caption = '.rops (Pascal Script)'
     TabOrder = 17
+  end
+  object chkSPC: TCheckBox
+    Left = 8
+    Top = 305
+    Width = 180
+    Height = 17
+    HelpContext = 3114
+    Caption = '.spc (SPC)'
+    TabOrder = 18
   end
 end

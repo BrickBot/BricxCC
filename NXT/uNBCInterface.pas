@@ -289,6 +289,10 @@ begin
   begin
     fDump.Text := TRICComp.RICToText(fFilename);
   end
+  else if (ext = '.bin') then
+  begin
+    fDump.Text := TSPCComp.BinToText(fFilename);
+  end
   else
     Exit; // do nothing
   if WriteOutput then
@@ -331,6 +335,7 @@ var
 {$ENDIF}
   i : integer;
   incDirs : string;
+  ext : string;
   bNXCErrors : boolean;
   bSPCErrors : boolean;
 begin
@@ -369,6 +374,7 @@ begin
       DoWriteMessage('# Error: ' + Format(sCannotFindFile, [InputFilename]));
       Exit;
     end;
+    ext := LowerCase(ExtractFileExt(InputFilename));
     if BinaryInput and (Download or RunProgram) then
     begin
 {$IFDEF CAN_DOWNLOAD}
@@ -381,7 +387,7 @@ begin
       BrickComm.StopProgram;
       if Download then
       begin
-        if BrickComm.NXTDownloadStream(sIn, InputFilename, theType) then
+        if BrickComm.DownloadStream(sIn, InputFilename, theType) then
           DoBeep
         else begin
           Result := 2;
@@ -412,7 +418,7 @@ begin
           end;
           tmpIncDirs.Add(IncludeTrailingPathDelimiter(incDirs));
         end;
-        if LowerCase(ExtractFileExt(InputFilename)) = '.npg' then
+        if ext = '.npg' then
         begin
           // RPG compiler
           RC := TRPGComp.Create;
@@ -432,7 +438,7 @@ begin
                     if not BrickComm.IsOpen then
                       BrickComm.Open;
                     BrickComm.StopProgram;
-                    if BrickComm.NXTDownloadStream(sOut, ChangeFileExt(nxtName, '.rpg'), nftOther) then
+                    if BrickComm.DownloadStream(sOut, ChangeFileExt(nxtName, '.rpg'), nftOther) then
                       DoBeep
                     else
                       Result := 2;
@@ -453,7 +459,7 @@ begin
             RC.Free;
           end;
         end
-        else if LowerCase(ExtractFileExt(InputFilename)) = '.rs' then
+        else if ext = '.rs' then
         begin
           // RIC compiler
           RIC := TRICComp.Create;
@@ -479,7 +485,7 @@ begin
                     if CheckFirmwareVersion then
                     begin
                       BrickComm.StopProgram;
-                      if BrickComm.NXTDownloadStream(sOut, ChangeFileExt(nxtName, '.ric'), nftGraphics) then
+                      if BrickComm.DownloadStream(sOut, ChangeFileExt(nxtName, '.ric'), nftGraphics) then
                         DoBeep
                       else
                         Result := 2;
@@ -503,7 +509,7 @@ begin
             RIC.Free;
           end;
         end
-        else if LowerCase(ExtractFileExt(InputFilename)) = '.spc' then
+        else if ext = '.spc' then
         begin
           // SPC compiler
           SC := TSPCComp.Create;
@@ -522,33 +528,62 @@ begin
             try
               SC.Parse(sIn);
               DoWriteIntermediateCode(SC.ASMSource);
-              sIn.Clear;
-              SC.ASMSource.SaveToStream(sIn);
-              // this used to pass at least 1 as the optimization level
-              // but if a user says no optimizations then the compiler
-              // really should respect that and do no optimizations whatsoever
-              OptimizationLevel := Max(OptimizationLevel, 0);
-              sIn.Position := 0;
             finally
               DoWriteMessages(SC.CompilerMessages);
             end;
             bSPCErrors := SC.ErrorCount > 0;
+            if not bSPCErrors then
+            begin
+              sOut := TMemoryStream.Create;
+              try
+                if SC.SaveToStream(sOut) then
+                begin
+//                  DoWriteSymbolTable(SC);
+{$IFDEF CAN_DOWNLOAD}
+//                  tmpName := ChangeFileExt(MakeValidNXTFilename(NXTName), '.rxe');
+                  if Download then
+                  begin
+                    // download the compiled code to the brick
+                    if not BrickComm.IsOpen then
+                      BrickComm.Open;
+//                    BrickComm.StopProgram;
+//                    if BrickComm.DownloadStream(sOut, tmpName, nftProgram) then
+//                      DoBeep
+//                    else begin
+//                      Result := 2;
+//                      HandleOnCompilerStatusChange(Self, sDownloadFailed, True);
+//                    end;
+                  end;
+//                  if RunProgram then
+//                    BrickComm.StartProgram(tmpName);
+{$ENDIF}
+                  if WriteOutput then
+                    sOut.SaveToFile(NXTName);
+                end
+                else
+                begin
+                  Result := 1;
+                  HandleOnCompilerStatusChange(Self, sSPCCompilationFailed, True);
+                end;
+              finally
+                sOut.Free;
+              end;
+              DoWriteCompilerOutput(SC.CompilerOutput);
+            end
+            else
+            begin
+              Result := 1;
+              HandleOnCompilerStatusChange(Self, sSPCCompilationFailed, True);
+            end;
           finally
             SC.Free;
           end;
-          if not bSPCErrors then
-          begin
-          end
-          else
-          begin
-            Result := 1;
-            HandleOnCompilerStatusChange(Self, sSPCCompilationFailed, True);
-          end;
         end
-        else
+        else if (ext = '.nxc') or (ext = '.nbc') then
         begin
+          // .nbc or .nxc files
           bNXCErrors := False;
-          if LowerCase(ExtractFileExt(InputFilename)) = '.nxc' then
+          if ext = '.nxc' then
           begin
             NC := TNXCComp.Create;
             try
@@ -616,7 +651,7 @@ begin
                       if CheckFirmwareVersion then
                       begin
                         BrickComm.StopProgram;
-                        if BrickComm.NXTDownloadStream(sOut, tmpName, nftProgram) then
+                        if BrickComm.DownloadStream(sOut, tmpName, nftProgram) then
                           DoBeep
                         else begin
                           Result := 2;
@@ -655,7 +690,9 @@ begin
             Result := 1;
             HandleOnCompilerStatusChange(Self, sNXCCompilationFailed, True);
           end;
-        end;
+        end
+        else
+          DoWriteMessage('# Error: ' + Format(sInvalidFileType, [ext]));
       finally
         tmpIncDirs.Free;
       end;

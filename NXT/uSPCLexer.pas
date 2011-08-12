@@ -55,6 +55,46 @@ begin
   Pat := TIdentifier.Create(nil);
   Lex.Add(Pat);
 
+  // TODO: need to try to add support for \"
+  { String }
+  Pat := TAny.Create(nil);
+  Pat.Key := '"';
+  Lex.Add(Pat);
+  Pat := TAny.Create(Pat);
+  Pat.Key := '"';
+  Pat.Min := 1;
+  Pat.Max := 1;
+  Pat.Id := piString;
+  Pat.Kind := pkTillKey;
+  Temp:= Pat;
+  Pat := TAny.Create(Pat);
+  Pat.Key := '"';
+  Pat.Id := piBadString;
+  Pat.Min := 1;
+  Pat.Max := 1;
+  Pat.Regress := True;
+  Pat.ToRegress := Temp;
+
+  // TODO: need to try to add support for \'
+  { String }
+  Pat := TAny.Create(nil);
+  Pat.Key := '''';
+  Lex.Add(Pat);
+  Pat := TAny.Create(Pat);
+  Pat.Key := '''';
+  Pat.Min := 1;
+  Pat.Max := 1;
+  Pat.Id := piChar;
+  Pat.Kind := pkTillKey;
+  Temp:= Pat;
+  Pat := TAny.Create(Pat);
+  Pat.Key := '''';
+  Pat.Id := piBadString;
+  Pat.Min := 1;
+  Pat.Max := 1;
+  Pat.Regress := True;
+  Pat.ToRegress := Temp;
+
   { Symbol, Comment }
   Pat := TAny.Create(nil);
   Pat.Key := '/*';
@@ -111,13 +151,9 @@ begin
 
   { Symbol }
   Pat := TAny.Create(nil);
-  Pat.Key := '||=';
+  Pat.Key := '||';
   Pat.Min := 1;
   Lex.Add(Pat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := '||';
-  OptPat.Min := 1;
-  Pat.AddOption(OptPat);
   OptPat := TAny.Create(nil);
   OptPat.Key := '|=';
   OptPat.Min := 1;
@@ -202,13 +238,9 @@ begin
 
   { Symbol }
   Pat := TAny.Create(nil);
-  Pat.Key := '+-=';
+  Pat.Key := '+=';
   Pat.Min := 1;
   Lex.Add(Pat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := '+=';
-  OptPat.Min := 1;
-  Pat.AddOption(OptPat);
   OptPat := TAny.Create(nil);
   OptPat.Key := '++';
   OptPat.Min := 1;
@@ -232,6 +264,21 @@ begin
   OptPat.Min := 1;
   Pat.AddOption(OptPat);
 
+  { Symbol (VA_ARGS), Symbol (period)}
+  Pat := TAny.Create(nil);
+  Pat.Key:= '...';
+  Pat.Id:= piSymbol;
+  Pat.Min:= 1;
+  TAlphaNumeric.Create(Pat);
+  Lex.Add(Pat);
+  OptPat := TAny.Create(nil);
+  OptPat.Key := '.';
+  OptPat.Id:= piSymbol;
+  OptPat.Min:= 1;
+  Pat.AddOption(OptPat);
+  TAlphaNumeric.Create(OptPat);
+  Pat.AddOption(TIdentifier.Create(nil));
+
   { Directive, Identifier}
   Pat := TAny.Create(nil);
   Pat.Key:= '#include';
@@ -247,12 +294,6 @@ begin
   TAlphaNumeric.Create(OptPat);
   OptPat := TAny.Create(nil);
   OptPat.Key := '#ifndef';
-  OptPat.Id:= piDirective;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := '#import';
   OptPat.Id:= piDirective;
   OptPat.Min:= 1;
   Pat.AddOption(OptPat);
@@ -326,23 +367,11 @@ begin
 
   { KeyWord, Identifier}
   Pat := TAny.Create(nil);
-  Pat.Key:= '__TMPBYTE__';
+  Pat.Key:= '__TMPLONG__';
   Pat.Id:= piKeyWord;
   Pat.Min:= 1;
   TAlphaNumeric.Create(Pat);
   Lex.Add(Pat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := '__TMPLONG__';
-  OptPat.Id:= piKeyWord;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := '__TMPWORD__';
-  OptPat.Id:= piKeyWord;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
   OptPat := TAny.Create(nil);
   OptPat.Key := '__RETURN__';
   OptPat.Id:= piKeyWord;
@@ -359,17 +388,11 @@ begin
 
   { KeyWord, Identifier}
   Pat := TAny.Create(nil);
-  Pat.Key:= 'abs';
+  Pat.Key:= 'asm';
   Pat.Id:= piKeyWord;
   Pat.Min:= 1;
   TAlphaNumeric.Create(Pat);
   Lex.Add(Pat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := 'asm';
-  OptPat.Id:= piKeyWord;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
   Pat.AddOption(TIdentifier.Create(nil));
 
   { KeyWord, Identifier}
@@ -381,12 +404,6 @@ begin
   Lex.Add(Pat);
   OptPat := TAny.Create(nil);
   OptPat.Key := 'bool';
-  OptPat.Id:= piKeyWord;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := 'byte';
   OptPat.Id:= piKeyWord;
   OptPat.Min:= 1;
   Pat.AddOption(OptPat);
@@ -500,24 +517,6 @@ begin
 
   { KeyWord, Identifier}
   Pat := TAny.Create(nil);
-  Pat.Key:= 'mutex';
-  Pat.Id:= piKeyWord;
-  Pat.Min:= 1;
-  TAlphaNumeric.Create(Pat);
-  Lex.Add(Pat);
-  Pat.AddOption(TIdentifier.Create(nil));
-
-  { KeyWord, Identifier}
-  Pat := TAny.Create(nil);
-  Pat.Key:= 'priority';
-  Pat.Id:= piKeyWord;
-  Pat.Min:= 1;
-  TAlphaNumeric.Create(Pat);
-  Lex.Add(Pat);
-  Pat.AddOption(TIdentifier.Create(nil));
-
-  { KeyWord, Identifier}
-  Pat := TAny.Create(nil);
   Pat.Key:= 'repeat';
   Pat.Id:= piKeyWord;
   Pat.Min:= 1;
@@ -533,23 +532,11 @@ begin
 
   { KeyWord, Identifier}
   Pat := TAny.Create(nil);
-  Pat.Key:= 'safecall';
+  Pat.Key:= 'struct';
   Pat.Id:= piKeyWord;
   Pat.Min:= 1;
   TAlphaNumeric.Create(Pat);
   Lex.Add(Pat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := 'string';
-  OptPat.Id:= piKeyWord;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := 'struct';
-  OptPat.Id:= piKeyWord;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
   OptPat := TAny.Create(nil);
   OptPat.Key := 'switch';
   OptPat.Id:= piKeyWord;
@@ -557,25 +544,7 @@ begin
   Pat.AddOption(OptPat);
   TAlphaNumeric.Create(OptPat);
   OptPat := TAny.Create(nil);
-  OptPat.Key := 'short';
-  OptPat.Id:= piKeyWord;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
-  OptPat := TAny.Create(nil);
   OptPat.Key := 'start';
-  OptPat.Id:= piKeyWord;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := 'sign';
-  OptPat.Id:= piKeyWord;
-  OptPat.Min:= 1;
-  Pat.AddOption(OptPat);
-  TAlphaNumeric.Create(OptPat);
-  OptPat := TAny.Create(nil);
-  OptPat.Key := 'stop';
   OptPat.Id:= piKeyWord;
   OptPat.Min:= 1;
   Pat.AddOption(OptPat);
@@ -607,15 +576,6 @@ begin
   OptPat.Min:= 1;
   Pat.AddOption(OptPat);
   TAlphaNumeric.Create(OptPat);
-  Pat.AddOption(TIdentifier.Create(nil));
-
-  { KeyWord, Identifier}
-  Pat := TAny.Create(nil);
-  Pat.Key:= 'unsigned';
-  Pat.Id:= piKeyWord;
-  Pat.Min:= 1;
-  TAlphaNumeric.Create(Pat);
-  Lex.Add(Pat);
   Pat.AddOption(TIdentifier.Create(nil));
 
   { KeyWord, Identifier}

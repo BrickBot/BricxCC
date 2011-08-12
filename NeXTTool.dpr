@@ -365,7 +365,7 @@ begin
       begin
         pattern := ParamValue('-download');
         if pattern <> '' then
-          BrickComm.NXTDownloadFile(pattern, NameToNXTFileType(pattern));
+          BrickComm.DownloadFile(pattern, NameToNXTFileType(pattern));
       end;
       if ParamSwitch('-run') then begin
         BrickComm.StartProgram(ParamValue('-run'));
@@ -503,4 +503,3 @@ begin
       WriteLn('Exiting NeXTTool');
   end;
 end.
-

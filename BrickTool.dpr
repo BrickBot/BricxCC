@@ -435,7 +435,7 @@ begin
     if ParamSwitch('-download') and IsNXT then
     begin
       pattern := ParamValue('-download');
-      BrickComm.NXTDownloadFile(pattern, NameToNXTFileType(pattern));
+      BrickComm.DownloadFile(pattern, NameToNXTFileType(pattern));
     end;
     if ParamSwitch('-delete') and IsNXT then
     begin

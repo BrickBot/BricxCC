@@ -587,7 +587,7 @@ procedure SaveDesktopMiscToFile(aFilename : string);
 procedure LoadDesktopMiscFromFile(aFilename : string);
 procedure SaveWindowValuesToFile(aFilename : string);
 procedure LoadWindowValuesFromFile(aFilename : string);
-procedure UpgradeRegistry(aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
+procedure UpgradeRegistry(aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC, aPrefHLSPC, aMainHLSPC : TSynBaseNCSyn);
 procedure RegisterApp;
 procedure SetToolbarDragging(bAuto : Boolean);
 procedure RestoreToolbars;
@@ -1834,10 +1834,11 @@ end;
 
 { all }
 procedure LoadAllValues(reg : TRegistry; k : TSynEditKeyStrokes; S : TStrings;
-  aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
+  aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC, aPrefHLSPC, aMainHLSPC : TSynBaseNCSyn);
 begin
   LoadBasicValues(reg, S);
   LoadNXCAPIValues(reg, aPrefHLNXC, aMainHLNXC);
+  LoadSPCAPIValues(reg, aPrefHLSPC, aMainHLSPC);
   LoadExtraGeneralValues(reg);
   LoadExtraCompilerValues(reg);
   LoadNQCAPIValues(reg, aPrefHLNQC, aMainHLNQC);
@@ -1868,13 +1869,14 @@ begin
 end;
 
 procedure ResetAllValues(reg : TRegistry; S : TStrings;
-  aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
+  aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC, aPrefHLSPC, aMainHLSPC : TSynBaseNCSyn);
 begin
   ResetGeneralValues(reg);
   ResetCompilerValues(reg);
   ResetBasicValues(reg, S);
   ResetNXCAPIValues(reg, aPrefHLNXC, aMainHLNXC);
   ResetNQCAPIValues(reg, aPrefHLNQC, aMainHLNQC);
+  ResetSPCAPIValues(reg, aPrefHLSPC, aMainHLSPC);
   ResetStartupValues(reg);
   ResetColorValues(reg);
   ResetOtherOptionValues(reg);
@@ -1885,7 +1887,7 @@ begin
   ResetDatalogValues(reg);
 end;
 
-procedure UpgradeRegistry(aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC : TSynBaseNCSyn);
+procedure UpgradeRegistry(aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC, aPrefHLSPC, aMainHLSPC : TSynBaseNCSyn);
 const
   K_MINVER = 3.2;
 var
@@ -1916,14 +1918,14 @@ begin
                 fMainKey := K_MAINKEY;
                 fVersion := 'version ' + sVer;
                 // load values from old version
-                LoadAllValues(R, K, S, aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC);
+                LoadAllValues(R, K, S, aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC, aPrefHLSPC, aMainHLSPC);
                 bLoaded := True;
               end
               else if R.OpenKey(K_MAINKEY+'\'+sVer, false) then begin
                 fMainKey := K_MAINKEY;
                 fVersion := sVer;
                 // load values from old version
-                LoadAllValues(R, K, S, aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC);
+                LoadAllValues(R, K, S, aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC, aPrefHLSPC, aMainHLSPC);
                 bLoaded := True;
               end;
               dVer := dVer - 0.1;
@@ -1932,7 +1934,7 @@ begin
               fMainKey := K_OLDMAINKEY;
               fVersion := K_OLDVERSION;
               // load values from old version
-              LoadAllValues(R, K, S, aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC);
+              LoadAllValues(R, K, S, aPrefHLNXC, aMainHLNXC, aPrefHLNQC, aMainHLNQC, aPrefHLSPC, aMainHLSPC);
               bLoaded := True;
             end;
           finally
@@ -2112,6 +2114,11 @@ begin
   ClaimExtension('.rops', 'PascalScript Document', 'ROPS_Document', bClaim);
 end;
 
+procedure ClaimSPCExtension(bClaim : Boolean);
+begin
+  ClaimExtension('.spc', 'SPC Document', 'SPC_Document', bClaim);
+end;
+
 procedure RegisterApp;
 var
   R : TRegistry;
@@ -2245,6 +2252,7 @@ begin
   begin
     ResetNQCAPIValues(fReg, SynNQCSyn, MainForm.SynNQCSyn);
     ResetNXCAPIValues(fReg, SynNXCSyn, MainForm.SynNXCSyn);
+    ResetSPCAPIValues(fReg, SynSPCSyn, MainForm.SynSPCSyn);
     DisplayAPIValues;
   end
   else if pagPrefs.ActivePage = shtStartup then
@@ -2520,7 +2528,7 @@ begin
   NewTemplatesList.Highlighter := GetActiveHighlighter(ahTemplates);
   {Load the settings}
   LoadAllValues(fReg, Keystrokes, CodeTemplates, SynNXCSyn, MainForm.SynNXCSyn,
-    SynNQCSyn, MainForm.SynNQCSyn);
+    SynNQCSyn, MainForm.SynNQCSyn, SynSPCSyn, MainForm.SynSPCSyn);
   MainForm.UpdateSynComponents;
 end;
 
@@ -2953,6 +2961,7 @@ begin
     ClaimLua   := IsExtensionClaimed('.lua', 'Forth_LuaDocument') and
                   IsExtensionClaimed('.lpr', 'Forth_LprDocument');
     ClaimROPS  := IsExtensionClaimed('.rops', 'ROPS_Document');
+    ClaimSPC   := IsExtensionClaimed('.spc', 'SPC_Document');
     if ShowModal = mrOK then
     begin
       ClaimNQCExtension(ClaimNQC);
@@ -2973,6 +2982,7 @@ begin
       ClaimNPGExtension(ClaimNPG);
       ClaimRSExtension(ClaimRS);
       ClaimROPSExtension(ClaimROPS);
+      ClaimSPCExtension(ClaimSPC);
       ClaimExtension('.lua', 'Lua Document', 'Forth_LuaDocument', ClaimLua);
       ClaimExtension('.lpr', 'Lua Document', 'Forth_LprDocument', ClaimLua);
     end;
@@ -3595,12 +3605,21 @@ begin
     Comments := [csCStyle];
     DetectPreprocessor := True;
     IdentifierChars := '#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
-    Keywords.CommaText := 'asm, bool, break, case, const, continue, default, ' +
+    Keywords.CommaText := 'asm, bool, break, case, char, const, continue, default, ' +
                           'do, else, enum, false, for, goto, if, inline, int, ' +
-                          'long, repeat, return, static, struct, sub, switch, ' +
+                          'long, repeat, return, start, static, struct, sub, switch, ' +
                           'task, true, typedef, until, void, while';
-    Commands.Clear;
-    Constants.Clear;
+    Commands.CommaText := 'abs, open, close, write, read, stat, push, pop, sign, sqrt, ' +
+                          'putchar, puts, printf, Stop, ExitTo, RotateLeft, ' +
+                          'RotateRight, Run, Wait, StopProcesses, ' +
+                          'Yield, StopAllTasks, StartTask, abort, CurrentTick';
+    Constants.CommaText := 'ADChannel0, ADChannel1, ADChannel2, ADChannel3, ' +
+                           'DigitalIn, DigitalOut, DigitalControl, StrobeControl, ' +
+                           'Timer0, Timer1, Timer2, Timer3, ' +
+                           'SerialInCount, SerialInByte, SerialOutCount, SerialOutByte, ' +
+                           'DAC0Mode, DAC0Frequency, DAC0Voltage, ' +
+                           'DAC1Mode, DAC1Frequency, DAC1Voltage, ' +
+                           'LEDControl, SystemClock';
     if FileExists(ProgramDir + 'Default\spc_samplesource.txt') then
       SampleSourceStrings.LoadFromFile(ProgramDir + 'Default\spc_samplesource.txt');
   end;

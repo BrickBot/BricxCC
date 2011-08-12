@@ -435,7 +435,7 @@ type
                                 out ModSize: LongWord; out IOMapSize: Smallint): WordBool; safecall;
     function NXTFindNextModule(var handle: longword; out ModName: WideString; out ModID: LongWord; 
                                out ModSize: LongWord; out IOMapSize: Smallint): WordBool; safecall;
-    function NXTDownloadFile(const filename: WideString; filetype: TAutoNXTFileType): WordBool; safecall;
+    function DownloadFile(const filename: WideString; filetype: TAutoNXTFileType): WordBool; safecall;
     function NXTUploadFile(const filename: WideString; const dir: WideString): WordBool; safecall;
     function NXTListFiles(const searchPattern: WideString; out Files: WideString): WordBool; safecall;
     function NXTListModules(const searchPattern: WideString; out Files: WideString): WordBool; safecall;
@@ -653,7 +653,7 @@ type
                                 out ModSize: LongWord; out IOMapSize: Smallint): WordBool; dispid 258;
     function NXTFindNextModule(var handle: longword; out ModName: WideString; out ModID: LongWord; 
                                out ModSize: LongWord; out IOMapSize: Smallint): WordBool; dispid 259;
-    function NXTDownloadFile(const filename: WideString; filetype: TAutoNXTFileType): WordBool; dispid 260;
+    function DownloadFile(const filename: WideString; filetype: TAutoNXTFileType): WordBool; dispid 260;
     function NXTUploadFile(const filename: WideString; const dir: WideString): WordBool; dispid 261;
     function NXTListFiles(const searchPattern: WideString; out Files: WideString): WordBool; dispid 262;
     function NXTListModules(const searchPattern: WideString; out Files: WideString): WordBool; dispid 263;
