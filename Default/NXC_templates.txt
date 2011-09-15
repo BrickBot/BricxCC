@@ -822,6 +822,11 @@ SensorDIGPSStatus("port");\=
 SensorDIGPSTime("port");\=
 SensorDIGPSVelocity("port");\=
 SetSensorDIGPSWaypoint("port", "latitude", "longitude");\=
+- MicroInfinity API functions
+ResetMIXG1300L("port");\=
+SensorMIXG1300LScale("port");\=
+SetSensorMIXG1300LScale("port", "scale");\=
+ReadSensorMIXG1300L("port", "packet");\=
 - RS485 functions
 UseRS485();\=
 RS485Disable();\=

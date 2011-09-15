@@ -3328,7 +3328,7 @@
  * This is an example of how to use the \ref RS485Control,
  * \ref RS485DataAvailable, \ref RS485Disable, \ref RS485Initialize,
  * \ref RS485Enable, \ref UseRS485, \ref RS485Uart, \ref RS485Status,
- * \ref RS485Read, \ref TextOut, and \ref Wait functions.
+ * \ref RS485Read, \ref RS485ReadEx, \ref TextOut, and \ref Wait functions.
  *
  * \example ex_GetBTInputBuffer.nxc
  * This is an example of how to use the \ref GetBTInputBuffer function.
