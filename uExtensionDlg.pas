@@ -34,7 +34,7 @@ type
     chkNQC: TCheckBox;
     chkRCX2: TCheckBox;
     chkLSC: TCheckBox;
-    chkASM: TCheckBox;
+    chkLASM: TCheckBox;
     btnOK: TButton;
     btnCancel: TButton;
     chkCpp: TCheckBox;
@@ -50,9 +50,10 @@ type
     chkLua: TCheckBox;
     chkPascalScript: TCheckBox;
     chkSPC: TCheckBox;
+    chkSPASM: TCheckBox;
   private
     { Private declarations }
-    function GetASM: Boolean;
+    function GetLASM: Boolean;
     function GetLSC: Boolean;
     function GetNQC: Boolean;
     function GetRCX2: Boolean;
@@ -61,7 +62,7 @@ type
     function GetC: Boolean;
     function GetForth: Boolean;
     function GetJava: Boolean;
-    procedure SetASM(const Value: Boolean);
+    procedure SetLASM(const Value: Boolean);
     procedure SetC(const Value: Boolean);
     procedure SetCpp(const Value: Boolean);
     procedure SetForth(const Value: Boolean);
@@ -84,12 +85,14 @@ type
     procedure SetROPS(const Value: Boolean);
     function GetSPC: Boolean;
     procedure SetSPC(const Value: Boolean);
+    function GetSPASM: Boolean;
+    procedure SetSPASM(const Value: Boolean);
   public
     { Public declarations }
     property ClaimNQC : Boolean read GetNQC write SetNQC;
     property ClaimRCX2 : Boolean read GetRCX2 write SetRCX2;
     property ClaimLSC : Boolean read GetLSC write SetLSC;
-    property ClaimASM : Boolean read GetASM write SetASM;
+    property ClaimLASM : Boolean read GetLASM write SetLASM;
     property ClaimCpp : Boolean read GetCpp write SetCpp;
     property ClaimC : Boolean read GetC write SetC;
     property ClaimPas : Boolean read GetPas write SetPas;
@@ -102,6 +105,7 @@ type
     property ClaimLua : Boolean read GetLua write SetLua;
     property ClaimROPS : Boolean read GetROPS write SetROPS;
     property ClaimSPC : Boolean read GetSPC write SetSPC;
+    property ClaimSPASM : Boolean read GetSPASM write SetSPASM;
   end;
 
 implementation
@@ -112,9 +116,9 @@ implementation
 
 { TfrmExtensionDlg }
 
-function TfrmExtensionDlg.GetASM: Boolean;
+function TfrmExtensionDlg.GetLASM: Boolean;
 begin
-  Result := chkASM.Checked;
+  Result := chkLASM.Checked;
 end;
 
 function TfrmExtensionDlg.GetC: Boolean;
@@ -192,9 +196,9 @@ begin
   Result := chkRICScript.Checked;
 end;
 
-procedure TfrmExtensionDlg.SetASM(const Value: Boolean);
+procedure TfrmExtensionDlg.SetLASM(const Value: Boolean);
 begin
-  chkASM.Checked := Value;
+  chkLASM.Checked := Value;
 end;
 
 procedure TfrmExtensionDlg.SetC(const Value: Boolean);
@@ -270,6 +274,16 @@ end;
 procedure TfrmExtensionDlg.SetRS(const Value: Boolean);
 begin
   chkRICScript.Checked := Value;
+end;
+
+function TfrmExtensionDlg.GetSPASM: Boolean;
+begin
+  Result := chkSPASM.Checked;
+end;
+
+procedure TfrmExtensionDlg.SetSPASM(const Value: Boolean);
+begin
+  chkSPASM.Checked := Value;
 end;
 
 {$IFDEF FPC}

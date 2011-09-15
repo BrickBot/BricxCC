@@ -24,8 +24,10 @@ uses
 type
   TSProSpirit = class(TBrickComm)
   private
+    fSerialHandle : LongInt;
     dcResponse : array [0..63] of byte;
   protected
+    function  GetPortName: string; override;
     function  GetDownloadWaitTime: Integer; override;
     function  GetEEPROM(addr: Byte): Byte; override;
     function  GetEEPROMBlock(idx: Integer): EEPROMBlock; override;
@@ -49,6 +51,7 @@ type
     function  GetReplyByte(index: integer): Byte;
     function  GetReplyCardinal(index: integer): Cardinal;
     function  GetReplyWord(index: integer): Word;
+    function MonitorMode : boolean;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); override;
     destructor Destroy; override;
@@ -276,181 +279,32 @@ type
 implementation
 
 uses
-  rcx_constants, Contnrs, Math, uCommonUtils, uDebugLogging,
-  {$IFNDEF FPC}
-  FANTOM
-  {$ELSE}
-  {$IFDEF Darwin}fantomosx{$ENDIF}
-  {$IFNDEF Darwin}
-  {$IFDEF Unix}fantomfpc{$ENDIF}
-  {$IFDEF Windows}FANTOM{$ENDIF}
-  {$ENDIF}
-  {$ENDIF};
+{$IFNDEF FPC}
+  Windows,
+{$ENDIF}
+  rcx_constants, Contnrs, Math, uCommonUtils, uDebugLogging, uSerial;
 
+{$IFDEF FPC}
+const
+  NOPARITY = 0;
+  ODDPARITY = 1;
+  EVENPARITY = 2;
+  MARKPARITY = 3;
+  SPACEPARITY = 4;
 
-procedure iNXT_sendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
-  inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
-  outputBufferSize : Cardinal; var status : integer);
-var
-  BufOut, BufIn : PByte;
-  dstatus : integer;
+  ONESTOPBIT = 0;
+  ONE5STOPBITS = 1;
+  TWOSTOPBITS = 2;
+{$ENDIF}
+
+function SProSerialOpen(const DeviceName: String): LongInt;
 begin
-  if status < kStatusNoError then Exit;
-  BufOut := nil;
-  GetMem(BufOut, inputBufferSize+1);
-  try
-    BufOut^ := kNXT_SystemCmd;
-    if not Boolean(requireResponse) then
-      BufOut^ := BufOut^ or kNXT_NoResponseMask;
-    inc(BufOut);
-    Move(inputBufferPtr^, BufOut^, inputBufferSize);
-    dec(BufOut);
-    iNXT_write(nxtHandle, BufOut, inputBufferSize+1, status);
-    if Boolean(requireResponse) and (status >= kStatusNoError) then
-    begin
-      BufIn := nil;
-      GetMem(BufIn, outputBufferSize+1);
-      try
-        iNXT_read(nxtHandle, BufIn, outputBufferSize+1, status);
-        if Boolean(requireResponse) and (status >= kStatusNoError) then
-        begin
-          inc(BufIn);
-          Move(BufIn^, outputBufferPtr^, outputBufferSize);
-          dec(BufIn);
-        end;
-      finally
-        FreeMem(BufIn);
-      end;
-    end
-    else
-    begin
-      // no response required or error occurred on write
-      // drain our channel of any leftover data
-      BufIn := nil;
-      GetMem(BufIn, 1);
-      try
-        dstatus := kStatusNoError;
-        while dstatus = kStatusNoError do
-          iNXT_read(nxtHandle, BufIn, 1, dstatus);
-      finally
-        FreeMem(BufIn);
-      end;
-    end;
-  finally
-    FreeMem(BufOut);
-  end;
-end;
-
-var
-  scResponse : array [0..63] of byte;
-
-procedure iNXT_getDeviceInfoEx(nxtHandle : FantomHandle; name : PChar;
-  address : PByte; signalStrength : PByte; var availableFlash : Cardinal;
-  var status : integer);
-var
-  cmd : TNINxtCmd;
-  scBuffer : PByte;
-  b1, b2, b3, b4 : Byte;
-begin
-  FillChar(scResponse, 64, 0);
-  scBuffer := @scResponse[0];
-  cmd := TNINxtCmd.Create;
-  try
-    cmd.SetVal(kNXT_SystemCmd, kNXT_SCGetDeviceInfo);
-    iNXT_sendSystemCommand(nxtHandle, 1, cmd.BytePtr, cmd.Len, scBuffer, 32, status);
-    if status = kStatusNoError then
-    begin
-      inc(scBuffer, 2); // offset to start of name in the response
-      Move(scBuffer^, name^, 15);
-      inc(scBuffer, 15); // move to address
-      Move(scBuffer^, address^, 6);
-      inc(scBuffer, 7); // move to signal strength
-      Move(scBuffer^, signalStrength^, 4);
-      inc(scBuffer, 4);
-      b1 := scBuffer^; inc(scBuffer);
-      b2 := scBuffer^; inc(scBuffer);
-      b3 := scBuffer^; inc(scBuffer);
-      b4 := scBuffer^; inc(scBuffer);
-      availableFlash := BytesToCardinal(b1, b2, b3, b4);
-    end;
-  finally
-    cmd.Free;
-  end;
-end;
-
-
-procedure iNXT_sendDirectCommandEnhanced(nxtHandle : FantomHandle; requireResponse : byte;
-  inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
-  outputBufferSize : Cardinal; var status : integer; bEnhanced : boolean = false);
-var
-  BufOut, BufIn : PByte;
-  dstatus : integer;
-begin
-  // is this an enhanced direct command?
-  if requireResponse = 127 then
+  Result := SerialOpen(DeviceName);
+  if Result > 0 then
   begin
-    if status < kStatusNoError then Exit;
-    BufOut := nil;
-    GetMem(BufOut, inputBufferSize+1);
-    try
-      BufOut^ := kNXT_DirectCmd;
-      if not Boolean(requireResponse) then
-        BufOut^ := BufOut^ or kNXT_NoResponseMask;
-      inc(BufOut);
-      Move(inputBufferPtr^, BufOut^, inputBufferSize);
-      dec(BufOut);
-      iNXT_write(nxtHandle, BufOut, inputBufferSize+1, status);
-      if Boolean(requireResponse) and (status >= kStatusNoError) then
-      begin
-        BufIn := nil;
-        GetMem(BufIn, outputBufferSize+1);
-        try
-          iNXT_read(nxtHandle, BufIn, outputBufferSize+1, status);
-          if Boolean(requireResponse) and (status >= kStatusNoError) then
-          begin
-            inc(BufIn);
-            Move(BufIn^, outputBufferPtr^, outputBufferSize);
-            dec(BufIn);
-          end;
-        finally
-          FreeMem(BufIn);
-        end;
-      end
-      else
-      begin
-        // no response required or error occurred on write
-        // drain our channel of any leftover data
-        BufIn := nil;
-        GetMem(BufIn, 1);
-        try
-          dstatus := kStatusNoError;
-          while dstatus = kStatusNoError do
-            iNXT_read(nxtHandle, BufIn, 1, dstatus);
-        finally
-          FreeMem(BufIn);
-        end;
-      end;
-    finally
-      FreeMem(BufOut);
-    end;
-  end
-  else
-    iNXT_sendDirectCommand(nxtHandle, requireResponse, inputBufferPtr,
-      inputBufferSize, outputBufferPtr, outputBufferSize, status);
-end;
-
-function NXTModuleIDToName(const modID : cardinal) : string;
-var
-  i : integer;
-begin
-  Result := '*.*';
-  for i := Low(NXTModuleMap) to High(NXTModuleMap) do
-  begin
-    if NXTModuleMap[i].ID = modID then
-    begin
-      Result := NXTModuleMap[i].Name;
-      Break;
-    end;
+    SerialSetParams(Result, 115200, 8, NOPARITY, ONESTOPBIT);
+    SerialSetDTR(Result, True);
+    SerialSetRTS(Result, False);
   end;
 end;
 
@@ -517,7 +371,9 @@ end;
 
 function TSProSpirit.PlayTone(aFreq, aTime: word): boolean;
 begin
-  Result := False;
+  Result := IsOpen;
+  if not Result then Exit;
+  Beep(aFreq, aTime);
 end;
 
 function TSProSpirit.SetSensorType(aNum, aType: integer): boolean;
@@ -538,7 +394,7 @@ end;
 function TSProSpirit.Close: boolean;
 begin
   Result := inherited Close;
-//  Result := Result and fLink.Close;
+  SerialClose(fSerialHandle);
   fActive := False;
 end;
 
@@ -546,8 +402,9 @@ function TSProSpirit.Open: boolean;
 begin
   Result := IsOpen;
   if not Result then begin
-//    Result := fLink.Open;
-    fActive := Result;
+    fSerialHandle := SProSerialOpen(PortName);
+    fActive := fSerialHandle <> 0;
+    Result := fActive;
   end;
 end;
 
@@ -572,7 +429,6 @@ end;
 procedure TSProSpirit.SetPort(const Value: string);
 begin
   inherited SetPort(Value);
-//  fLink.Port := Value;
 end;
 
 function TSProSpirit.DownloadFirmware(aFile: string; bFast : Boolean;
@@ -585,6 +441,7 @@ function TSProSpirit.Ping: boolean;
 begin
   Result := Open;
   if not Result then Exit;
+  // send something and check for echo?
 end;
 
 function TSProSpirit.MuteSound: boolean;
@@ -604,18 +461,26 @@ begin
   Result := inherited GetIsOpen;
 end;
 
+function TSProSpirit.MonitorMode: boolean;
+var
+  Buf : PChar;
+begin
+  // send ^D^D^D^D
+  Buf := PChar(#04#04#04#04);
+  Result := SerialWrite(fSerialHandle, Buf, 4) = 4;
+  SerialFlushRead(fSerialHandle, 10);
+end;
+
 function TSProSpirit.StartProgram(const filename: string): boolean;
 begin
-  Result := IsOpen;
-  if not Result then Exit;
+  Result := StartTask(0);
 end;
 
 function TSProSpirit.StopProgram: boolean;
 begin
-  Result := IsOpen;
+  Result := Open;
   if not Result then Exit;
-  // TODO: Implement StopProgram command
-  // send ^D^D^D^D
+  Result := MonitorMode; // this stops any running program
 end;
 
 function TSProSpirit.PlaySoundFile(const filename: string; bLoop: boolean): boolean;
@@ -713,12 +578,14 @@ end;
 
 function TSProSpirit.GetCurrentProgramName(var name: string): boolean;
 begin
+  Result := IsOpen;
   name := '';
 end;
 
 function TSProSpirit.GetButtonState(const idx: byte; const reset: boolean;
   var pressed: boolean; var count: byte): boolean;
 begin
+  Result := IsOpen;
   pressed := False;
   count := 0;
 end;
@@ -907,7 +774,6 @@ var
 begin
   Result := IsOpen;
   if not Result then Exit;
-  // download means from PC to NXT
   Result := FileExists(filename);
   if Result then
   begin
@@ -923,9 +789,54 @@ end;
 
 function TSProSpirit.DownloadStream(aStream: TStream; const dest : string;
   const filetype: TNXTFileType): boolean;
+var
+  b1, b2, b3 : byte;
+  SL : TStringList;
+  i, len : integer;
+  tmp : string;
 begin
   Result := IsOpen;
-  // TODO: implement DownloadStream
+  if not Result then Exit;
+  // does the stream start with $0D$0A$3A?  If not then it is not in OBJ format.
+  // also needs to end in $0D$0A$1A
+  Result := aStream.Size > 3;
+  if not Result then Exit;
+  aStream.Position := 0;
+  aStream.Read(b1, 1);
+  aStream.Read(b2, 1);
+  aStream.Read(b3, 1);
+  Result := (b1 = $0D) and (b2 = $0A) and (b3 = $3A);
+  if not Result then Exit;
+  aStream.Seek(-3, soFromEnd);
+  aStream.Read(b1, 1);
+  aStream.Read(b2, 1);
+  aStream.Read(b3, 1);
+  Result := (b1 = $0D) and (b2 = $0A) and (b3 = $1A);
+  if not Result then Exit;
+
+  SerialFlushRead(fSerialHandle, 10);
+
+  aStream.Position := 0;
+  SL := TStringList.Create;
+  try
+    SL.LoadFromStream(aStream);
+    // skip line 0 since it is blank and the last line (containing only $1A)
+    for i := 1 to SL.Count - 2 do
+    begin
+      tmp := SL[i] + #13#10;  // need to send CRLF after each line (doh!)
+      len := Length(tmp);
+      Result := SerialWrite(fSerialHandle, PChar(tmp), len) = len;
+      if not Result then Exit;
+      // read echo until we (eventually) get the LF echo
+      b1 := 0;
+      while b1 <> $0A do
+        SerialRead(fSerialHandle, @b1, 1, 10);
+      // once we get the LF then drain anything else
+      SerialFlushRead(fSerialHandle, 10);
+    end;
+  finally
+    SL.Free;
+  end;
 end;
 
 function TSProSpirit.NXTPollCommandLen(const bufNum : byte; var count: byte): boolean;
@@ -1316,9 +1227,21 @@ begin
 end;
 
 function TSProSpirit.SelectProgram(aProg: integer): boolean;
+var
+  Buf : Char;
 begin
   Result := Open;
-  // TODO: implement the SelectProgram command
+  if Result then
+  begin
+    // break out of running program into monitor
+    Result := MonitorMode;
+    if Result then
+    begin
+      Buf := Chr(47+aProg);
+      Result := SerialWrite(fSerialHandle, @Buf, 1) = 1;
+      SerialFlushRead(fSerialHandle, 10);
+    end;
+  end;
 end;
 
 function TSProSpirit.SendMessage(aMsg: integer): boolean;
@@ -1469,14 +1392,26 @@ begin
 end;
 
 function TSProSpirit.StartTask(aTask: integer): boolean;
+var
+  Buf : Char;
 begin
   Result := Open;
-  if aTask = 0 then Exit;
+  if Result then
+  begin
+    // break out of running program into monitor
+    Result := MonitorMode;
+    if Result then
+    begin
+      Buf := 'T'; // trigger to start program in current slot
+      Result := SerialWrite(fSerialHandle, @Buf, 1) = 1;
+      SerialFlushRead(fSerialHandle, 10);
+    end;
+  end;
 end;
 
 function TSProSpirit.StopAllTasks: boolean;
 begin
-  Result := Open;
+  Result := StopProgram;
 end;
 
 function TSProSpirit.StopTask(aTask: integer): boolean;
@@ -1587,6 +1522,11 @@ end;
 
 procedure TSProSpirit.NXTUpdateResourceNames;
 begin
+end;
+
+function TSProSpirit.GetPortName: string;
+begin
+  Result := '\\.\'+fPort;
 end;
 
 end.

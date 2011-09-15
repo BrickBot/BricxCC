@@ -36,6 +36,7 @@ uses
   uSPCComp;
 
 type
+  TDeviceTarget = (dtNXT, dtSPC);
   TWriteMessages = procedure(aStrings : TStrings);
 
   TNBCCompiler = class
@@ -73,6 +74,7 @@ type
     fMaxErrors: word;
     fFirmwareVersion: word;
     fMaxPreProcDepth: word;
+    fTarget: TDeviceTarget;
   protected
     fOnCompilerStatusChange : TCompilerStatusChangeEvent;
     fDump : TStrings;
@@ -137,6 +139,7 @@ type
     property EnhancedFirmware : boolean read fEnhancedFirmware write fEnhancedFirmware;
     property FirmwareVersion : word read fFirmwareVersion write fFirmwareVersion;
     property SafeCalls : boolean read fSafeCalls write fSafeCalls;
+    property Target : TDeviceTarget read fTarget write fTarget;
     property OnWriteMessages : TWriteMessages read fOnWriteMessages write fOnWriteMessages;
     property OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write fOnCompilerStatusChange;
 {$IFDEF CAN_DOWNLOAD}
@@ -150,7 +153,8 @@ implementation
 
 uses
   SysUtils, Math, uVersionInfo, ParamUtils, uNXTConstants,
-  NBCCommonData, NXTDefsData, NXCDefsData, uGlobals, uLocalizedStrings;
+  NBCCommonData, NXTDefsData, NXCDefsData, SPCDefsData, SPMemData,
+  uGlobals, uLocalizedStrings, uSProObjUtils;
 
 { TNBCCompiler }
 
@@ -323,12 +327,14 @@ function TNBCCompiler.Execute : integer;
 var
   sIn : TMemoryStream;
   sOut : TMemoryStream;
+  sObj : TMemoryStream;
   tmpIncDirs : TStringList;
   C : TRXEProgram;
   NC : TNXCComp;
   RC : TRPGComp;
   RIC : TRICComp;
   SC : TSPCComp;
+  SL : TStringList;
 {$IFDEF CAN_DOWNLOAD}
   theType : TNXTFileType;
   tmpName : string;
@@ -338,6 +344,7 @@ var
   ext : string;
   bNXCErrors : boolean;
   bSPCErrors : boolean;
+  bDownloadOK : boolean;
 begin
   fDownloadList := '';
   Result := 0;
@@ -382,12 +389,24 @@ begin
       if not BrickComm.IsOpen then
         BrickComm.Open;
       theType := NameToNXTFileType(InputFilename);
-      if LowerCase(ExtractFileExt(InputFilename)) = '.rpg' then
-        theType := nftOther;
       BrickComm.StopProgram;
       if Download then
       begin
-        if BrickComm.DownloadStream(sIn, InputFilename, theType) then
+        if Target = dtSPC then
+        begin
+          sObj := TMemoryStream.Create;
+          try
+            SProBinToObj(sIn, sObj);
+            bDownloadOK := BrickComm.DownloadStream(sObj, InputFilename, theType);
+          finally
+            sObj.Free;
+          end;
+        end
+        else
+        begin
+          bDownloadOK := BrickComm.DownloadStream(sIn, InputFilename, theType);
+        end;
+        if bDownloadOK then
           DoBeep
         else begin
           Result := 2;
@@ -509,7 +528,7 @@ begin
             RIC.Free;
           end;
         end
-        else if ext = '.spc' then
+        else if (ext = '.spc') or (ext = '.spasm') then
         begin
           // SPC compiler
           SC := TSPCComp.Create;
@@ -526,8 +545,23 @@ begin
             SC.MaxErrors := MaxErrors;
             SC.MaxPreprocessorDepth := MaxPreprocessorDepth;
             try
-              SC.Parse(sIn);
-              DoWriteIntermediateCode(SC.ASMSource);
+              if (ext = '.spc') then
+              begin
+                SC.Parse(sIn);
+                DoWriteIntermediateCode(SC.ASMSource);
+              end
+              else
+              begin
+                // spasm code
+                SL := TStringList.Create;
+                try
+                  SL.LoadFromStream(sIn);
+                  SC.ParseASM(SL);
+                  DoWriteIntermediateCode(SL);
+                finally
+                  SL.Free;
+                end;
+              end;
             finally
               DoWriteMessages(SC.CompilerMessages);
             end;
@@ -536,32 +570,39 @@ begin
             begin
               sOut := TMemoryStream.Create;
               try
+                SC.CompilerMessages.Clear;
                 if SC.SaveToStream(sOut) then
                 begin
 //                  DoWriteSymbolTable(SC);
 {$IFDEF CAN_DOWNLOAD}
-//                  tmpName := ChangeFileExt(MakeValidNXTFilename(NXTName), '.rxe');
                   if Download then
                   begin
                     // download the compiled code to the brick
                     if not BrickComm.IsOpen then
                       BrickComm.Open;
-//                    BrickComm.StopProgram;
-//                    if BrickComm.DownloadStream(sOut, tmpName, nftProgram) then
-//                      DoBeep
-//                    else begin
-//                      Result := 2;
-//                      HandleOnCompilerStatusChange(Self, sDownloadFailed, True);
-//                    end;
+                    BrickComm.StopProgram;
+                    sObj := TMemoryStream.Create;
+                    try
+                      SProBinToObj(sOut, sObj);
+                      if BrickComm.DownloadStream(sObj, '', nftProgram) then
+                        DoBeep
+                      else begin
+                        Result := 2;
+                        HandleOnCompilerStatusChange(Self, sDownloadFailed, True);
+                      end;
+                    finally
+                      sObj.Free;
+                    end;
                   end;
-//                  if RunProgram then
-//                    BrickComm.StartProgram(tmpName);
+                  if RunProgram then
+                    BrickComm.StartProgram(tmpName);
 {$ENDIF}
                   if WriteOutput then
                     sOut.SaveToFile(NXTName);
                 end
                 else
                 begin
+                  DoWriteMessages(SC.CompilerMessages);
                   Result := 1;
                   HandleOnCompilerStatusChange(Self, sSPCCompilationFailed, True);
                 end;
@@ -803,6 +844,8 @@ begin
       1 : X.Write(nbc_common_data, SizeOf(nbc_common_data));
       2 : X.Write(nxt_defs_data, SizeOf(nxt_defs_data));
       3 : X.Write(nxc_defs_data, SizeOf(nxc_defs_data));
+      4 : X.Write(spc_defs_data, SizeOf(spc_defs_data));
+      5 : X.Write(spmem_data, SizeOf(spmem_data));
     end;
     Result := Copy(X.DataString, 1, MaxInt);
   finally

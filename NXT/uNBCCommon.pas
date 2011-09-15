@@ -115,10 +115,15 @@ type
     fHasDef: boolean;
     fDefValue: string;
     fIsPointer: boolean;
+    procedure SetLenExpr(const Value: string);
+    procedure FillDimensions(lenexpr: string);
   protected
+    fDims : array of integer;
     procedure AssignTo(Dest: TPersistent); override;
   public
     constructor Create(ACollection: TCollection); override;
+    procedure AddDim(aSize : integer);
+    function DimensionSize(aDim : integer) : integer;
     property Name : string read fName write fName;
     property DataType : char read fDataType write fDataType;
     property IsConstant : boolean read fIsConst write fIsConst;
@@ -126,7 +131,7 @@ type
     property UseSafeCall : boolean read fUseSafeCall write fUseSafeCall;
     property Value : string read fValue write fValue;
     property TypeName : string read fTypeName write fTypeName;
-    property LenExpr : string read fLenExpr write fLenExpr;
+    property LenExpr : string read fLenExpr write SetLenExpr;
     property Level : integer read fLevel write fLevel;
     property HasDefault : boolean read fHasDef write fHasDef;
     property DefaultValue : string read fDefValue write fDefValue;
@@ -2014,9 +2019,22 @@ end;
 
 { TVariable }
 
+procedure TVariable.AddDim(aSize: integer);
+var
+  L : integer;
+begin
+  L := Length(fDims);
+  if L < 4 then
+  begin
+    SetLength(fDims, L+1);
+    fDims[L] := aSize;
+  end;
+end;
+
 procedure TVariable.AssignTo(Dest: TPersistent);
 var
   V : TVariable;
+  i, len : integer;
 begin
   if Dest is TVariable then
   begin
@@ -2029,6 +2047,10 @@ begin
     V.Level        := Level;
     V.HasDefault   := HasDefault;
     V.DefaultValue := DefaultValue;
+    len := Length(fDims);
+    SetLength(V.fDims, len);
+    for i := 0 to len - 1 do
+      V.fDims[i] := fDims[i];
   end
   else
     inherited;
@@ -2046,6 +2068,46 @@ begin
   fLevel     := 0;
   fHasDef    := False;
   fDefValue  := '';
+  SetLength(fDims, 0);
+end;
+
+procedure TVariable.FillDimensions(lenexpr : string);
+var
+  expr : string;
+  idx, n, dim, i, len : integer;
+begin
+  if lenexpr = '' then
+    Exit;
+  dim := 0;
+  while (dim < 4) and (lenexpr <> '') do
+  begin
+    // grab the first array expression from lenexpr
+    idx := Pos('[', lenexpr);
+    n := Pos(']', lenexpr);
+    len := Length(fDims);
+    SetLength(fDims, len+1);
+    expr := Copy(lenexpr, idx+1, n-idx-1);
+    if expr <> '' then
+      fDims[dim] := StrToIntDef(expr, 0)
+    else
+      fDims[dim] := 0;
+    System.Delete(lenexpr, idx, n-idx+1);
+    inc(dim);
+  end;
+end;
+
+function TVariable.DimensionSize(aDim: integer): integer;
+begin
+  Result := 0;
+  if aDim < Length(fDims) then
+    Result := fDims[aDim];
+end;
+
+procedure TVariable.SetLenExpr(const Value: string);
+begin
+  fLenExpr := Value;
+  if fLenExpr <> '' then
+    FillDimensions(Value);
 end;
 
 { TVariableList }

@@ -599,7 +599,7 @@ begin
      Val(tmp,lnumb,c);
      break;
     end;
-    if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(Highlighter) then
+    if UsesNBCCompiler(Highlighter) then
       break;
   end;
   bThisFile := True;
@@ -757,6 +757,8 @@ begin
         Self.Highlighter := MainForm.SynLASMSyn
       else if PreferredLanguage = 3 then
         Self.Highlighter := MainForm.SynNBCSyn
+      else if PreferredLanguage = 5 then
+        Self.Highlighter := MainForm.SynSPCSyn
       else
         Self.Highlighter := MainForm.SynNXCSyn;
     end

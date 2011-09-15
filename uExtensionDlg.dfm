@@ -5,7 +5,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   BorderIcons = [biSystemMenu, biHelp]
   BorderStyle = bsDialog
   Caption = 'File Extensions'
-  ClientHeight = 360
+  ClientHeight = 379
   ClientWidth = 204
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -51,7 +51,7 @@ object frmExtensionDlg: TfrmExtensionDlg
     Caption = '.lsc (MindScript)'
     TabOrder = 2
   end
-  object chkASM: TCheckBox
+  object chkLASM: TCheckBox
     Left = 8
     Top = 78
     Width = 180
@@ -62,7 +62,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object btnOK: TButton
     Left = 17
-    Top = 328
+    Top = 348
     Width = 52
     Height = 25
     HelpContext = 3106
@@ -73,7 +73,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object btnCancel: TButton
     Left = 73
-    Top = 328
+    Top = 348
     Width = 52
     Height = 25
     HelpContext = 3107
@@ -129,7 +129,7 @@ object frmExtensionDlg: TfrmExtensionDlg
   end
   object btnHelp: TButton
     Left = 129
-    Top = 328
+    Top = 348
     Width = 52
     Height = 25
     HelpContext = 3113
@@ -196,7 +196,16 @@ object frmExtensionDlg: TfrmExtensionDlg
     Width = 180
     Height = 17
     HelpContext = 3114
-    Caption = '.spc (SPC)'
+    Caption = '.spc (SuperPro C)'
     TabOrder = 18
+  end
+  object chkSPASM: TCheckBox
+    Left = 8
+    Top = 324
+    Width = 180
+    Height = 17
+    HelpContext = 3114
+    Caption = '.spasm (SuperPro ASM)'
+    TabOrder = 19
   end
 end

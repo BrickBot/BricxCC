@@ -93,6 +93,8 @@ type
     fCurrentLine : string;
     fExpStr : string;
     fExpStrHasVars : boolean;
+    fBoolSubExpStr : string;
+    fBoolSubExpStrHasVars : boolean;
     fAPIFunctions : TStringList;
     fAPIStrFunctions : TStringList;
     fThreadNames : TStringList;
@@ -122,6 +124,7 @@ type
     fProcessingMathAssignment : boolean;
     fProcessingAsmBlock : boolean;
     fNoCommaOperator : boolean;
+    fCastingType : char;
     function AmInlining : boolean;
     procedure IncrementInlineDepth;
     procedure DecrementInlineDepth;
@@ -160,12 +163,13 @@ type
     procedure Expression;
     procedure DoPreIncOrDec(bPutOnStack : boolean);
     function  IncrementOrDecrement : boolean;
-    function OptimizeExpression(const idx : integer) : string;
+    function OptimizeExpression(str : string; const idx: integer; bFlag : boolean) : string;
     procedure Subtract;
     procedure CommaExpression;
     procedure BoolExpression;
+    procedure CastToType(const dt : char);
     procedure Relation;
-    procedure StoreZeroFlag;
+//    procedure StoreZeroFlag;
     function  ValueIsStringType(var dt : char) : boolean;
     function  ValueIsArrayType : boolean;
     function  ValueIsUserDefinedType : boolean;
@@ -381,7 +385,7 @@ type
     function  SignedRegisterName(name : string = '') : string;
     function  UnsignedRegisterName(name : string = '') : string;
     function  FloatRegisterName(name : string = '') : string;
-    function  ZeroFlag : string;
+//    function  ZeroFlag : string;
     function  tos: string;
     function  StrTmpBufName(name : string = '') : string;
     function  StrBufName(name : string = '') : string;
@@ -1498,6 +1502,7 @@ begin
     GetChar;
   until not IsAlNum(Look);
   fExpStrHasVars := True;
+  fBoolSubExpStrHasVars := True;
   HandleSpecialNames;
 end;
 
@@ -1657,6 +1662,7 @@ begin
   begin
     ProcessDirectives(False);
     fExpStr := fExpStr + Value;
+    fBoolSubExpStr := fBoolSubExpStr + Value;
   end;
   if not fProcessingAsmBlock and
      not (Token in ['<', '>', '|', '^', '&', '%', '/', '*', '-', '+', '=']) then
@@ -2318,7 +2324,9 @@ end;
 procedure TNXCComp.SetZeroCC;
 begin
   fCCSet := True;
-  EmitLn(Format('tst NEQ, %s, %s',[ZeroFlag, RegisterName]));
+//  EmitLn(Format('tst NEQ, %s, %s',[ZeroFlag, RegisterName]));
+  EmitLn(Format('tst NEQ, %s, %s',[SignedRegisterName, RegisterName]));
+  ResetStatementType;
 end;
 
 function TNXCComp.FunctionReturnType(const name : string) : char;
@@ -2374,7 +2382,9 @@ end;
 procedure TNXCComp.CmpHelper(const cc, lhs, rhs: string);
 begin
   fCCSet := True;
-  EmitLn(Format('cmp %s, %s, %s, %s',[cc, ZeroFlag, lhs, rhs]));
+//  EmitLn(Format('cmp %s, %s, %s, %s',[cc, ZeroFlag, lhs, rhs]));
+  ResetStatementType;
+  EmitLn(Format('cmp %s, %s, %s, %s',[cc, SignedRegisterName, lhs, rhs]));
 end;
 
 procedure TNXCComp.PopCmpHelper(const cc : string);
@@ -2464,7 +2474,8 @@ begin
   // if the condition code has not been set then set it manually
   if not fCCSet then
     SetZeroCC;
-  EmitLn(Format('brtst EQ, %s, %s', [L, ZeroFlag]));
+//  EmitLn(Format('brtst EQ, %s, %s', [L, ZeroFlag]));
+  EmitLn(Format('brtst EQ, %s, %s', [L, SignedRegisterName]));
 end;
 
 {---------------------------------------------------------------}
@@ -2475,7 +2486,8 @@ begin
   // if the condition code has not been set then set it manually
   if not fCCSet then
     SetZeroCC;
-  EmitLn(Format('brtst NEQ, %s, %s', [L, ZeroFlag]));
+//  EmitLn(Format('brtst NEQ, %s, %s', [L, ZeroFlag]));
+  EmitLn(Format('brtst NEQ, %s, %s', [L, SignedRegisterName]));
 end;
 
 {--------------------------------------------------------------}
@@ -2865,7 +2877,7 @@ end;
 procedure TNXCComp.Expression;
 var
   prev, lenVal : integer;
-  oldExpStr, optExp : string;
+  oldExpStr, optExp, oldBS : string;
 begin
   fExpStrHasVars := False;
   // 2009-04-09 JCH:
@@ -2876,13 +2888,16 @@ begin
   // below.  Without this, an expression like x = MyFunc(233)+10; was being
   // optimized to x = 10;
   oldExpStr := fExpStr;
+  oldBS := fBoolSubExpStr;
   try
     // set the old expression to be everything except for the first token in
     // the new expression (aka "Value").
     lenVal := Length(Value);
     Delete(oldExpStr, Length(oldExpStr)-lenVal+1, lenVal);
+    Delete(oldBS, Length(oldBS)-lenVal+1, lenVal);
     // now start our new expression with the current token
     fExpStr := Value;
+    fBoolSubExpStr := Value;
     prev := NBCSource.Count;
     if IncrementOrDecrement then
     begin
@@ -2902,20 +2917,24 @@ begin
           '-': Subtract;
         end;
       end;
-      optExp := OptimizeExpression(prev);
+      optExp := OptimizeExpression(fExpStr, prev, fExpStrHasVars);
     end;
   finally
     fExpStr := oldExpStr + optExp + Value;
+    fBoolSubExpStr := oldBS + optExp + Value;
   end;
 end;
 
-function TNXCComp.OptimizeExpression(const idx: integer) : string;
+function TNXCComp.OptimizeExpression(str : string; const idx: integer; bFlag : boolean) : string;
 begin
   fLastExpressionOptimizedToConst := False;
-  System.Delete(fExpStr, Length(fExpStr), 1);
-  Result := fExpStr;
-  if (OptimizeLevel >= 1) and (NBCSource.Count > (idx+1)) and
-     not fExpStrHasVars then
+//  System.Delete(str, Length(str), 1);
+  // if the last character is a ) or a ; then delete it.
+  if str[Length(str)] in [')', ';'] then
+    System.Delete(str, Length(str), 1);
+  Result := str;
+  if (OptimizeLevel >= 1) and (NBCSource.Count > (idx+1)) and 
+     not bFlag then
   begin
     // 2009-03-18 JCH: I do not recall why I added the check for
     // + and - as the first character of an expression
@@ -2926,22 +2945,22 @@ begin
     // The commented-out code was preventing a bug that had far too many
     // lines of code being removed if an expression ended in +nnn or -nnn.
 
-    if (fExpStr <> '') {and not (fExpStr[1] in ['+', '-'])} then
+    if (str <> '') {and not (str[1] in ['+', '-'])} then
     begin
-      fCalc.SilentExpression := fExpStr;
+      fCalc.SilentExpression := str;
       if not fCalc.ParserError then
       begin
         if StatementType = stFloat then
-          fExpStr := NBCFloatToStr(fCalc.Value)
+          str := NBCFloatToStr(fCalc.Value)
         else
-          fExpStr := IntToStr(Trunc(fCalc.Value));
-        Result := fExpStr;
+          str := IntToStr(Trunc(fCalc.Value));
+        Result := str;
         // in theory, we can replace all the lines between idx and
         // NBCSource.Count with one line
         while NBCSource.Count > idx do
           NBCSource.Delete(NBCSource.Count-1);
-        LoadConst(fExpStr);
-        fExpStr := '';
+        LoadConst(str);
+        str := '';
         fLastExpressionOptimizedToConst := True;
       end;
     end;
@@ -3114,7 +3133,7 @@ begin
   rhs := Value;
   Next;
   CmpHelper('EQ', lhs, GetDecoratedIdent(rhs));
-  StoreZeroFlag;
+//  StoreZeroFlag;
 end;
 
 procedure TNXCComp.LessArrayOrUDT(const lhs : string);
@@ -3143,7 +3162,7 @@ begin
     Next;
     CmpHelper('LT', lhs, GetDecoratedIdent(rhs));
   end;
-  StoreZeroFlag;
+//  StoreZeroFlag;
 end;
 
 procedure TNXCComp.GreaterArrayOrUDT(const lhs: string);
@@ -3165,7 +3184,7 @@ begin
     Next;
     CmpHelper('GT', lhs, GetDecoratedIdent(rhs));
   end;
-  StoreZeroFlag;
+//  StoreZeroFlag;
 end;
 
 procedure TNXCComp.NEqualArrayOrUDT(const lhs: string);
@@ -3180,7 +3199,7 @@ begin
     rhs := Value;
     Next;
     CmpHelper('NEQ', lhs, GetDecoratedIdent(rhs));
-    StoreZeroFlag;
+//    StoreZeroFlag;
   end
   else
     Expected('"!="');
@@ -3192,7 +3211,7 @@ begin
   MatchString('=');
   StringExpression('');
   CmpHelper('EQ', StrTmpBufName, StrBufName);
-  StoreZeroFlag;
+//  StoreZeroFlag;
 end;
 
 procedure TNXCComp.LessString;
@@ -3213,7 +3232,7 @@ begin
     StringExpression('');
     CmpHelper('LT', StrTmpBufName, StrBufName);
   end;
-  StoreZeroFlag;
+//  StoreZeroFlag;
 end;
 
 procedure TNXCComp.GreaterString;
@@ -3229,7 +3248,7 @@ begin
     StringExpression('');
     CmpHelper('GT', StrTmpBufName, StrBufName);
   end;
-  StoreZeroFlag;
+//  StoreZeroFlag;
 end;
 
 procedure TNXCComp.NEqualString;
@@ -3240,7 +3259,7 @@ begin
     Next;
     StringExpression('');
     CmpHelper('NEQ', StrTmpBufName, StrBufName);
-    StoreZeroFlag;
+//    StoreZeroFlag;
   end
   else
     Expected('"!="');
@@ -3326,7 +3345,7 @@ begin
       PopCmpEqual
     else
       PopCmpNEqual;
-    StoreZeroFlag;
+//    StoreZeroFlag;
   end;
 end;
 
@@ -3356,7 +3375,7 @@ begin
       PopCmpGreaterOrEqual
     else                                                   // >
       PopCmpGreater;
-    StoreZeroFlag;
+//    StoreZeroFlag;
   end;
 end;
 
@@ -3423,6 +3442,7 @@ begin
   end;
 end;
 
+(*
 procedure TNXCComp.StoreZeroFlag;
 begin
   // 2009-10-13 JCH
@@ -3432,6 +3452,7 @@ begin
   ResetStatementType;
   EmitLn(Format('mov %s, %s', [RegisterName, ZeroFlag]));
 end;
+*)
 
 {---------------------------------------------------------------}
 { Parse and Translate a Boolean Term }
@@ -3451,20 +3472,30 @@ begin
     Next;
     // convert D0 to boolean value if necessary
     if not fCCSet then
+      SetZeroCC;
+(*
+    // convert D0 to boolean value if necessary
+    if not fCCSet then
     begin
       SetZeroCC;
       StoreZeroFlag;
     end;
+*)
     BranchFalse(L);
-    PushPrim;
+//    PushPrim;
     BitOr;
+    // convert D0 to boolean value if necessary
+    if not fCCSet then
+      SetZeroCC;
+(*
     if not fCCSet then
     begin
       // convert D0 to boolean value if necessary
       SetZeroCC;
       StoreZeroFlag;
     end;
-    PopAnd;
+*)
+//    PopAnd;
   end;
   PostLabel(L);
 end;
@@ -3517,6 +3548,36 @@ begin
   end;
 end;
 
+procedure TNXCComp.CastToType(const dt : char);
+begin
+  if dt <> #0 then
+  begin
+    case dt of
+      TOK_FLOATDEF : begin
+        if StatementType <> stFloat then
+        begin
+          EmitLn(Format('mov %s, %s', [FloatRegisterName, RegisterName]));
+          StatementType := stFloat;
+        end;
+      end;
+      TOK_CHARDEF, TOK_SHORTDEF, TOK_LONGDEF : begin
+        if StatementType <> stSigned then
+        begin
+          EmitLn(Format('mov %s, %s', [SignedRegisterName, RegisterName]));
+          StatementType := stSigned;
+        end;
+      end;
+      TOK_BYTEDEF, TOK_USHORTDEF, TOK_ULONGDEF : begin
+        if StatementType <> stUnsigned then
+        begin
+          EmitLn(Format('mov %s, %s', [UnsignedRegisterName, RegisterName]));
+          StatementType := stUnsigned;
+        end;
+      end;
+    end;
+  end;
+end;
+
 {---------------------------------------------------------------}
 { Parse and Translate a Boolean Expression }
 
@@ -3527,6 +3588,12 @@ begin
   fCCSet := False;
   CheckForCast;
   BoolSubExpression;
+  // there is a bug in ?: expressions when the two expressions are of different
+  // types (i.e., signed, unsigned, or float).  The second expression sets
+  // the current statement type to its type and we have lost any knowledge of
+  // what register the first statement stored its value in.  This makes it
+  // impossible to get the correct value out of ?: if the condition is true
+  // and the second expression has a different type from the first expression.
   while Token = '?' do begin
     // we are parsing a ?: expression
     Next;
@@ -3534,10 +3601,12 @@ begin
     L2 := NewLabel;
     BranchFalse(L1);
     CommaExpression;
+    CastToType(fLHSDataType);
     Branch(L2);
     MatchString(':');
     PostLabel(L1);
     CommaExpression;
+    CastToType(fLHSDataType);
     PostLabel(L2);
   end;
   HandleCast;
@@ -3548,33 +3617,60 @@ end;
 procedure TNXCComp.BoolSubExpression;
 var
   L : string;
-//  bLogicalOr : boolean;
+  prev, lenVal : integer;
+  oldBS, optExp : string;
 begin
-  L := NewLabel;
-  BoolTerm;
-  while (Token = '|') and (Look = '|') do begin
-    // advance to second '|'
-    Next;
-    // advance past the second '|'
-    Next;
-    // convert D0 to boolean value if necessary
-    if not fCCSet then
-    begin
-      SetZeroCC;
-      StoreZeroFlag;
-    end;
-    BranchTrue(L);
-    PushPrim;
+  fBoolSubExpStrHasVars := False;
+  oldBS := fBoolSubExpStr;
+  try
+    // set the old expression to be everything except for the first token in
+    // the new expression (aka "Value").
+    lenVal := Length(Value);
+    Delete(oldBS, Length(oldBS)-lenVal+1, lenVal);
+    // now start our new bool sub expression with the current token
+    fBoolSubExpStr := Value;
+    prev := NBCSource.Count;
+
+    L := NewLabel;
     BoolTerm;
-    if not fCCSet then
-    begin
+    while (Token = '|') and (Look = '|') do begin
+      // advance to second '|'
+      Next;
+      // advance past the second '|'
+      Next;
       // convert D0 to boolean value if necessary
-      SetZeroCC;
-      StoreZeroFlag;
+      if not fCCSet then
+        SetZeroCC;
+(*
+      // convert D0 to boolean value if necessary
+      if not fCCSet then
+      begin
+        SetZeroCC;
+        StoreZeroFlag;
+      end;
+*)
+      BranchTrue(L);
+//      PushPrim;
+      BoolTerm;
+      // convert D0 to boolean value if necessary
+      if not fCCSet then
+        SetZeroCC;
+(*
+      if not fCCSet then
+      begin
+        // convert D0 to boolean value if necessary
+        SetZeroCC;
+        StoreZeroFlag;
+      end;
+*)
+//      PopOr;
     end;
-    PopOr;
+    PostLabel(L);
+
+    optExp := OptimizeExpression(fBoolSubExpStr, prev, fBoolSubExpStrHasVars);
+  finally
+    fBoolSubExpStr := oldBS + optExp + Value;
   end;
-  PostLabel(L);
 end;
 
 function TNXCComp.GetParamName(procname: string; idx: integer): string;
@@ -3779,6 +3875,7 @@ begin
             // make sure the very first call to this inline function
             // by this thread doesn't get optimized out
             fExpStr := '__DO_NOT_OPTIMIZE!@#$%_';
+            fBoolSubExpStr := '__DO_NOT_OPTIMIZE!@#$%_';
           end;
           bSafeCall := GlobalUsesSafeCall(procname);
           // acquire the mutex
@@ -4760,7 +4857,7 @@ end;
 
 procedure TNXCComp.DoSwitchDefault;
 var
-  L1 : string;
+  L1, tmp : string;
 begin
   if fSwitchDepth > 0 then
   begin
@@ -4768,7 +4865,14 @@ begin
     MatchString(':');
     L1 := NewLabel;
     PostLabel(L1);
-    SwitchFixups.Add(Format('%d=jmp %s', [fSwitchDepth, L1]));
+    tmp := Format('%d_Default=default', [fSwitchDepth]);
+    if SwitchFixups.IndexOf(tmp) <> -1 then
+      AbortMsg(sCaseDuplicateNotAllowed)
+    else
+    begin
+      SwitchFixups.Add(tmp);
+      SwitchFixups.Add(Format('%d_Default=jmp %s', [fSwitchDepth, L1]));
+    end;
     fSemiColonRequired := False;
   end
   else
@@ -4778,16 +4882,17 @@ end;
 procedure TNXCComp.ClearSwitchFixups;
 var
   i : integer;
-  tmpType, tmpCases, tmpDepth, name : string;
+  tmpType, tmpCases, tmpDepth, tmpDefault, name : string;
 begin
 // remove all fixups with depth == fSwitchDepth
   tmpDepth := IntTostr(fSwitchDepth);
   tmpType  := Format('%d_Type', [fSwitchDepth]);
   tmpCases := Format('%d_Cases', [fSwitchDepth]);
+  tmpDefault := Format('%d_Default', [fSwitchDepth]);
   for i := SwitchFixups.Count - 1 downto 0 do
   begin
     name := SwitchFixups.Names[i];
-    if (name = tmpDepth) or (name = tmpType) or (name = tmpCases) then
+    if (name = tmpDepth) or (name = tmpType) or (name = tmpCases) or (name = tmpDefault) then
       SwitchFixups.Delete(i);
   end;
   for i := SwitchRegisterNames.Count - 1 downto 0 do
@@ -4833,19 +4938,35 @@ procedure TNXCComp.FixupSwitch(idx : integer; lbl : string);
 var
   i : integer;
   cnt : integer;
-  tmpDepth : string;
+  tmpDepth, tmpDefault, tmpVal : string;
 begin
-  // always add a jump to the end of the switch in case
-  // there aren't any default labels in the switch
   tmpDepth := IntToStr(fSwitchDepth);
-  SwitchFixups.Add(Format('%d=jmp %s', [fSwitchDepth, lbl]));
+  tmpDefault := Format('%d_Default', [fSwitchDepth]);
+  // add a jump to the end of the switch if
+  // there isn't a default label in the switch
+  if SwitchFixups.IndexOf(tmpDefault+'=default') = -1 then
+    SwitchFixups.Add(Format('%d=jmp %s', [fSwitchDepth, lbl]));
   cnt := 0;
+  // add the case branches first
   for i := 0 to SwitchFixups.Count - 1 do
   begin
     if SwitchFixups.Names[i] = tmpDepth then
     begin
       NBCSource.Insert(idx+cnt, SwitchFixups.ValueFromIndex[i]);
       inc(cnt);
+    end;
+  end;
+  // now add the default branch last
+  for i := 0 to SwitchFixups.Count - 1 do
+  begin
+    if SwitchFixups.Names[i] = tmpDefault then
+    begin
+      tmpVal := SwitchFixups.ValueFromIndex[i];
+      if (tmpVal <> 'default') then
+      begin
+        NBCSource.Insert(idx+cnt, tmpVal);
+        break;
+      end;
     end;
   end;
 end;
@@ -5171,6 +5292,7 @@ procedure TNXCComp.Statement(const lend, lstart : string);
 var
   dt : Char;
 begin
+  fLHSDataType := #0;
   fUDTOnStack := ''; // a UDT can't remain on the stack across a statement boundary
   ResetStatementType;
   fSemiColonRequired := True;
@@ -7540,10 +7662,12 @@ begin
   Result := Format('__DF0%s',[name]);
 end;
 
+(*
 function TNXCComp.ZeroFlag: string;
 begin
   Result := Format('__zf%s', [fCurrentThreadName]);
 end;
+*)
 
 function TNXCComp.StrTmpBufName(name : string): string;
 begin
@@ -9685,7 +9809,7 @@ end;
 function TNXCComp.DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;
 var
   AHV : TArrayHelperVar;
-  tmp, udType, aval, tmpUDTName, oldExpStr : string;
+  tmp, udType, aval, tmpUDTName, oldExpStr, oldBS : string;
   tmpDT : char;
 begin
   Result := False;
@@ -9693,12 +9817,14 @@ begin
   Next;
   tmpDT := fLHSDataType;
   oldExpStr := fExpStr;
+  oldBS := fBoolSubExpStr;
   try
     fLHSDataType := TOK_LONGDEF;
     CommaExpression;
   finally
     fLHSDataType := tmpDT;
     fExpStr      := oldExpStr;
+    fBoolSubExpStr := oldBS;
   end;
   if Value <> ']' then
     Expected(''']''');
@@ -10014,9 +10140,44 @@ begin
 end;
 
 procedure TNXCComp.CheckForCast;
+//var
+//  pos : integer;
 begin
+  fCastingType := #0;
   if Token = TOK_OPENPAREN then
   begin
+(*
+    pos := fMS.Position;
+    OpenParen;
+    Scan;
+    // is this a valid keyword and type name?
+    if Token in [TOK_LONGDEF, TOK_SHORTDEF, TOK_UNSIGNED, TOK_CHARDEF,
+      TOK_BYTEDEF, TOK_FLOATDEF] then
+    begin
+      if Token = TOK_UNSIGNED then
+      begin
+        Next;
+        Scan;
+        case Token of
+          TOK_LONGDEF : Token := TOK_ULONGDEF;
+          TOK_SHORTDEF : Token := TOK_USHORTDEF;
+          TOK_CHARDEF : Token := TOK_BYTEDEF;
+        else
+          AbortMsg('Invalid cast expression');
+        end;
+      end;
+      fCastingType := Token;
+      CloseParen;
+      Scan;
+    end
+    else
+    begin
+      dec(fParenDepth); // undo the increment from OpenParen above
+      fMS.Position := pos; // rewind our stream
+      Token := TOK_OPENPAREN;
+      Value := '(';
+    end;
+*)
   end;
 end;
 

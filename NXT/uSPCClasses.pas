@@ -32,6 +32,7 @@ type
   TSProOpCode = Word;
   TSProArgType = (satConstant, satPC, satSlot, satChar, satAddress, satString, satNone);
   TSProArgDir = (sadInput, sadOutput, sadBoth, sadNeither);
+  TOpcodeType = (ot0, ot1, ot2, ot3, ot4, ot5, ot6, ot7, ot8, ot9, ot10);
 
   CodeArray = array of Word;
 
@@ -112,10 +113,12 @@ type
 
   TSPMLine = class(TCollectionItem)
   private
+    fOpType: TOpcodeType;
     procedure SetOpCode(const Value: TSProOpcode);
     function GetComStr: string;
     procedure SetComStr(const Value: string);
     procedure ChunkLine(line: string; var lbl, opcode, args: string);
+    function GetOpType: TOpcodeType;
   protected
     fCode : CodeArray;
     fComment: string;
@@ -160,6 +163,7 @@ type
     property LineLabel : string read fLabel write fLabel;
     property Command : TSProOpcode read fOpCode write SetOpCode;
     property CommandString : string read GetComStr write SetComStr;
+    property OpType : TOpcodeType read GetOpType write fOpType;
     property Args : TSPMArguments read fArgs write SetArgs;
     property Comment : string read fComment write fComment;
     property LineNum : integer read fLineNum write fLineNum;
@@ -266,7 +270,7 @@ type
     procedure InsertASMLine(const Index : Integer; const aLine : string);
     procedure AddProcess(const aName : string);
     procedure EndProcess;
-    procedure AddDataSpecifier(const aName : string; const cnt : word; addr : word = 0);
+    procedure AddDataSpecifier(const aName : string; const cnt : word; addr : integer = -1);
     function  FindDataSpecifierByName(const aName : string) : TDSObject;
     function  FindProcessByName(const aName : string) : TProcessObject;
     procedure AddProcessReferenceIfPresent(const aName : string);
@@ -309,8 +313,6 @@ uses
   uLocalizedStrings, uSProObjUtils, uCommonUtils;
 
 type
-  TOpcodeType = (ot0, ot1, ot2, ot3, ot4, ot5, ot6, ot7, ot8, ot9, ot10);
-
   TIntegerObject = class
   protected
     fValue : Integer;
@@ -527,17 +529,25 @@ var
 begin
   tmp := UpperCase(Value);
   i := Length(tmp);
-  if Pos('H', tmp) = i then
+  if Pos('B', tmp) = i then
   begin
     System.Delete(tmp, i, 1);
-    tmp := '$'+tmp;
+    Result := BinToIntDef(tmp, MaxInt) <> MaxInt;
   end
-  else if Pos('0X', tmp) = 1 then
+  else
   begin
-    System.Delete(tmp, 1, 2);
-    tmp := '$'+tmp;
+    if Pos('H', tmp) = i then
+    begin
+      System.Delete(tmp, i, 1);
+      tmp := '$'+tmp;
+    end
+    else if Pos('0X', tmp) = 1 then
+    begin
+      System.Delete(tmp, 1, 2);
+      tmp := '$'+tmp;
+    end;
+    Result := StrToIntDef(tmp, MaxInt) <> MaxInt;
   end;
-  Result := StrToIntDef(tmp, MaxInt) <> MaxInt;
 end;
 
 function IsStack(const str : string) : boolean;
@@ -709,7 +719,7 @@ begin
   end;
 end;
 
-function OpcodeToStr(const op: TSProOpCode): string;
+function OpcodeToStr(const op: TSProOpCode; const ot : TOpcodeType = ot0): string;
 var
   i : integer;
   pi : PSProInstruction;
@@ -723,8 +733,11 @@ begin
     pi := @(SProInstructions[i]);
     if pi^.Encoding = op then
     begin
-      Result := pi^.Name;
-      break;
+      if (ot = ot0) or (pi^.OpType = ot) then
+      begin
+        Result := pi^.Name;
+        break;
+      end;
     end;
   end;
 end;
@@ -871,17 +884,25 @@ var
 begin
   tmp := UpperCase(Value);
   i := Length(tmp);
-  if Pos('H', tmp) = i then
+  if Pos('B', tmp) = i then
   begin
-    System.Delete(tmp, i, 1);
-    tmp := '$'+tmp;
+    System.Delete(tmp, i, 1); // get rid of the B
+    Result := BinToIntDef(tmp, MaxInt);
   end
-  else if Pos('0X', tmp) = 1 then
+  else
   begin
-    System.Delete(tmp, 1, 2);
-    tmp := '$'+tmp;
+    if Pos('H', tmp) = i then
+    begin
+      System.Delete(tmp, i, 1);
+      tmp := '$'+tmp;
+    end
+    else if Pos('0X', tmp) = 1 then
+    begin
+      System.Delete(tmp, 1, 2);
+      tmp := '$'+tmp;
+    end;
+    Result := StrToIntDef(tmp, MaxInt);
   end;
-  Result := StrToIntDef(tmp, MaxInt);
 end;
 
 function TSPMArg.GetValue: string;
@@ -997,6 +1018,7 @@ constructor TSPMLine.Create(ACollection: TCollection);
 begin
   inherited;
   fOpCode := OPS_INVALID;
+  fOpType := ot0;
   fInstrSize := -1;
   fSpecial := False;
   fArgs := TSPMArguments.Create(Self);
@@ -1069,7 +1091,12 @@ begin
     if Command <> OPS_INVALID then
     begin
       Result := Result + #9;
-      Result := Result + OpcodeToStr(Command) + ' ' + Args.AsString;
+      if (Command = OP_JZ) or (Command = OP_JN) or
+         (Command = OP_JP) or (Command = OP_JC) then
+        Result := Result + OpcodeToStr(Command, OpType)
+      else
+        Result := Result + OpcodeToStr(Command);
+      Result := Result + ' ' + Args.AsString;
     end;
   end;
 end;
@@ -1260,6 +1287,7 @@ begin
       if i <> -1 then
       begin
         Command := SProInstructions[i].Encoding;
+        OpType  := SProInstructions[i].OpType;
       end
       else
         raise Exception.Create('Unexpected opcode: ' + opcode);
@@ -1330,7 +1358,8 @@ end;
 
 procedure TSPMLine.FinalizeCode;
 begin
-  case OpcodeType(CommandString) of
+  case OpType of
+//  case OpcodeType(CommandString) of
     ot1: EncodeType1;
     ot2: EncodeType2;
     ot3: EncodeType3;
@@ -1447,6 +1476,7 @@ begin
   begin
     fOpCode := Value;
     fOpStr := '';
+    fOpType := ot0;
   end;
 end;
 
@@ -1483,58 +1513,18 @@ begin
 end;
 
 procedure TSPMLine.EncodeType4;
+var
+  d : Word;
+  n : ShortInt;
 begin
-{
-// TYPE4 cccccccc-cccccccn-nnnniddd-dddddddd
-  OP_LSL     = $8E06; // type 4
-  OP_LSR     = $8E08; // type 4
-  OP_ASR     = $8E0A; // type 4
-}
-(*
-				;  TYPE4        cccccccc-cccccccc-nnnniddd-dddddddd
-				;
-  3610				PROCTYPE4:
-  3610	C6 06 2AEE R 01		        MOV     INCPEND,1
-  3615	83 C7 03		        ADD     DI,3
-  3618	8B 05			        MOV     AX,DS:WORD PTR [DI]     ;GET OPCODE
-  361A	A3 2B1A	R		        MOV     WORD1,AX
-  361D	33 C0			        XOR     AX,AX
-  361F	A3 2B1C	R		        MOV     WORD2,AX
-				;
-  3622	E8 3DB8	R		        CALL    OPERAND
-  3625	73 03 E9 3271 R		        JC      SYNERR
-  362A	3C 2C			        CMP     AL,','
-  362C	74 03 E9 3271 R		        JNZ     SYNERR
-  3631	8B 45 01		        MOV     AX,DS:WORD PTR 1[DI]
-  3634	A3 2B1C	R		        MOV     WORD2,AX
-  3637	25 F800			        AND     AX,0F800H
-  363A	74 03 E9 3271 R		        JNZ     SYNERR
-  363F	80 3D 00		        CMP     DS:BYTE PTR 0[DI],0
-  3642	74 06  (364A)		        JZ      PT41
-  3644	81 0E 2B1C R 0800	        OR      WORD2,800H
-  364A				PT41:
-  364A	E8 3DB8	R		        CALL    OPERAND
-  364D	73 03 E9 3271 R		        JC      SYNERR
-  3652	3C 2C			        CMP     AL,','
-  3654	75 03 E9 3271 R		        JZ      SYNERR
-  3659	8B 5D 01		        MOV     BX,DS:WORD PTR 1[DI]
-  365C	8B C3			        MOV     AX,BX
-  365E	25 FFE0			        AND     AX,0FFE0H
-  3661	74 03 E9 3271 R		        JNZ     SYNERR
-  3666	8B C3			        MOV     AX,BX
-  3668	C1 E0 0C		        SHL     AX,12
-  366B	09 06 2B1C R		        OR      WORD2,AX
-  366F	8B C3			        MOV     AX,BX
-  3671	C1 E8 04		        SHR     AX,4
-  3674	25 0001			        AND     AX,1
-  3677	09 06 2B1A R		        OR      WORD1,AX
-				;
-  367B	A1 2B1A	R		        MOV     AX,WORD1
-  367E	E8 3C9A	R		        CALL    WRITECODE
-  3681	A1 2B1C	R		        MOV     AX,WORD2
-  3684	E8 3C9A	R		        CALL    WRITECODE
-  3687	C3			        RET
-*)
+  // TYPE4 cccccccc-cccccccn-nnnniddd-dddddddd
+  SetLength(fCode, 2);
+  d := Args[0].Encoding;
+  n := Args[1].NumericValue;
+  if (n > 31) or (n < 0) then
+    raise Exception.Create('Invalid shift constant: ' + IntToStr(n));
+  fCode[0] := Command or ((n shr 4) and $01); // 1 bit only
+  fCode[1] := (n shl 12) or (d and $FFF);
 end;
 
 procedure TSPMLine.EncodeType5;
@@ -1573,12 +1563,12 @@ begin
     if (Length(val) > 1) and (Pos('#', val) = 1) then
     begin
       System.Delete(val, 1, 1); // remove the #
-      ch := Char(StrToIntDef(val, 32));
+      ch := Char(StrToIntDef(val, $20));
     end
     else
       ch := val[1];
   end;
-  fCode[0] := Command or Ord(ch);
+  fCode[0] := (Command-$20) or Ord(ch);
 end;
 
 procedure TSPMLine.EncodeType8;
@@ -1606,7 +1596,7 @@ begin
   len := Length(s);
   SetLength(fCode, len);
   for i := 0 to len-1 do
-    fCode[i] := OP_TRCH or Ord(s[i+1]);
+    fCode[i] := (OP_TRCH-$20) or Ord(s[i+1]);
 end;
 
 procedure TSPMLine.EncodeType10;
@@ -1625,7 +1615,7 @@ function TSPMLine.GetComStr: string;
 begin
   if fOpStr = '' then
   begin
-    fOpStr := OpcodeToStr(fOpCode);
+    fOpStr := OpcodeToStr(fOpCode, fOpType);
   end;
   Result := fOpStr;
 end;
@@ -1637,6 +1627,15 @@ begin
     fOpStr := Value;
     fOpCode := StrToOpcode(Value);
   end;
+end;
+
+function TSPMLine.GetOpType: TOpcodeType;
+begin
+  if fOpType = ot0 then
+  begin
+    fOpType := OpcodeType(CommandString);
+  end;
+  Result := fOpType;
 end;
 
 { TSProProgram }
@@ -1774,9 +1773,9 @@ begin
       fProcesses.Move(i, 0);
       MoveProcess(X, O);
     end;
-  end
-  else
-    raise Exception.Create('No task main provided');
+  end;
+//  else
+//    raise Exception.Create('No task main provided');
 end;
 
 function TSProProgram.GetAddress(aIndex: Integer): Word;
@@ -2126,26 +2125,38 @@ begin
 end;
 
 procedure TSProProgram.AddDataSpecifier(const aName: string; const cnt: word;
-  addr : word);
+  addr : integer);
 var
   obj : TDSObject;
+  tmp : Word;
 begin
-  if addr = 0 then
-    addr := fDataSpecifiers.Count
+//  if addr = 0 then
+//    addr := fDataSpecifiers.Count
+//  else
+//    inc(fDataOrigin, cnt);
+//  obj := TDSObject.Create(aName, addr, cnt);
+  if addr = -1 then
+    tmp := fDataSpecifiers.Count
   else
-    inc(fDataOrigin, cnt);
-  obj := TDSObject.Create(aName, addr, cnt);
+    tmp := addr;
+  inc(fDataOrigin, cnt);
+  obj := TDSObject.Create(aName, tmp, cnt);
   fDataSpecifiers.AddObject(aName, obj);
   fSortedDS.AddObject(aName, obj);
+  if (addr <> -1) and (addr < fBaseDO) then
+    obj.AddRef;
 end;
 
 procedure TSProProgram.SetDataOrigin(const Value: Word);
 var
   name : string;
+  obj : TDSObject;
 begin
   fDataOrigin := Value;
   name := #9'DORG';
-  fDataSpecifiers.AddObject(name, TDSObject.Create(name, DataOrigin, 0));
+  obj := TDSObject.Create(name, DataOrigin, 0);
+  fDataSpecifiers.AddObject(name, obj);
+  fSortedDS.AddObject(name, obj);
 end;
 
 function TSProProgram.FindDataSpecifierByName(const aName: string): TDSObject;
@@ -2316,9 +2327,14 @@ end;
 function TSProProgram.LoadFromStrings(aStrings: TStrings): boolean;
 var
   i : integer;
+  proc : TProcessObject;
 begin
   Result := True;
   ClearAllContainers;
+  fDataOrigin := $0;
+  proc := TProcessObject.Create(Self);
+  fProcesses.Add(proc);
+  proc.ProcessName := 'AllCode';
   // parse ASM source code to load SProProgram
   for i := 0 to aStrings.Count - 1 do
   begin
@@ -2328,6 +2344,9 @@ begin
     if fSkipCount > 0 then
       Dec(fSkipCount);
   end;
+  proc.AddRef;
+  proc.FirstLine := Items[0];
+  proc.LastLine := Items[Count-1];
 end;
 
 procedure TSProProgram.DeleteProcess(PO: TProcessObject);
@@ -2393,7 +2412,7 @@ begin
   j := Pos('DORG,', tmp);
   if i > 0 then
   begin
-    aName := Copy(tmp, 1, i-1);
+    aName := Replace(Copy(tmp, 1, i-1), ',', '');
     System.Delete(tmp, 1, i+3);
     tmp := Replace(tmp, ',', '');
     i := Pos('H', UpperCase(tmp));
@@ -2879,32 +2898,13 @@ begin
             end;
           end;
 
-//	MOV|MVI reg/stack/helper, rest
-//	MOV|ADD|SUB|MUL|DIV|AND|OR|XOR any, reg/stack/helper
-// ->
-//  MOV|MVI reg/stack/helper, rest (may not be able to nop/remove this)
-//	MOV|ADD|SUB|MUL|DIV|AND|OR|XOR any, rest
-
-//  RET
-//  RET
-// -->
-//  nop
-//  RET
-
-//	MOV|MVI __D0main, __main_7qG2_x_7qG2_000
-//	LOG __D0main
-
-//	MOV|MVI __D0main, __main_7qG2_x_7qG2_000
-//	TRNH __D0main
-
-//	MOV|MVI __D0main, __D0Foo
-//	TRND __D0main
-
         end;
       end;
 
       // this next set of optimizations are organized by opcode
       // 1. jmp, jz, jp, jn, jc, jnz, jnp, jnn, jnc
+      // 2. ret
+      // 3. mov
 
       case AL.Command of
         OP_JMP, OP_JZ..OP_JC : begin // this also includes JNZ..JNC (since they share encoding with JZ..JC)
@@ -2934,6 +2934,80 @@ begin
             end;
           end;
         end;
+        OP_RET: begin
+          // find the next line (which may not be i+1) that is not (NOP or labeled)
+          offset := 1;
+          while (i < SProProgram.Count - offset) do begin
+            tmpAL := SProProgram.Items[i+offset];
+            if (tmpAL.Command <> OPS_INVALID) or (tmpAL.LineLabel <> '') then
+              Break;
+            inc(offset);
+          end;
+          // every line between Items[i] and Items[i+offset] are NOP lines without labels.
+          if i < (SProProgram.Count - offset) then
+          begin
+            ALNext := SProProgram.Items[i+offset];
+            if (ALNext.LineLabel = '') and (ALNext.Command = OP_RET) then
+            begin
+              // two RETs in a row - delete the first one
+              AL.Command := OPS_INVALID;
+              bDone := False;
+              Break;
+            end;
+          end;
+        end;
+(*
+        OP_MOV: begin
+          // MOV reg/stack/helper, rest
+          arg1 := AL.Args[0].Value; // output variable
+          if IsVolatile(arg1) then
+          begin
+            // find the next line (which may not be i+1) that is not (NOP or labeled)
+            offset := 1;
+            while (i < SProProgram.Count - offset) do begin
+              tmpAL := SProProgram.Items[i+offset];
+              if (tmpAL.Command <> OPS_INVALID) or (tmpAL.LineLabel <> '') then
+                Break;
+              inc(offset);
+            end;
+            // every line between Items[i] and Items[i+offset] are NOP lines without labels.
+            if i < (SProProgram.Count - offset) then
+            begin
+              ALNext := SProProgram.Items[i+offset];
+              if (ALNext.LineLabel = '') and
+                 ((ALNext.Command = OP_MOV) or (ALNext.Command = OP_ADD) or
+                  (ALNext.Command = OP_SUB) or (ALNext.Command = OP_MUL) or
+                  (ALNext.Command = OP_DIV) or (ALNext.Command = OP_AND) or
+                  (ALNext.Command = OP_OR)  or (ALNext.Command = OP_XOR)) and
+                 (ALNext.Args[1].Value = arg1) and
+                 (ALNext.Args[1].Indirect = AL.Args[0].Indirect) then
+              begin
+//	MOV reg/stack/helper, rest
+//	MOV|ADD|SUB|MUL|DIV|AND|OR|XOR any, reg/stack/helper
+// ->
+//  MOV reg/stack/helper, rest (may not be able to nop/remove this)
+//	MOV|ADD|SUB|MUL|DIV|AND|OR|XOR any, rest
+              end
+              else if (ALNext.LineLabel = '') and
+                 (ALNext.Args[0].Value = arg1) and
+                 (ALNext.Args[0].Indirect = AL.Args[0].Indirect) and
+                 ((ALNext.Command = OP_LOG) or (ALNext.Command = OP_TRNH) or
+                  (ALNext.Command = OP_TRND) or (ALNext.Command = OP_TST)) then
+              begin
+                tmp := AL.Args[1].Value;
+                ALNext.RemoveVariableReference(arg1, 0);
+                ALNext.Args[0].Value := tmp; // switch output arg (no ref count changes)
+                ALNext.Args[0].Indirect := AL.Args[1].Indirect;
+                AL.RemoveVariableReference(arg1, 0);
+                AL.Command := OPS_INVALID; // no-op line
+                AL.Args.Clear;
+                bDone := False;
+                Break;
+              end;
+            end;
+          end;
+        end;
+*)
       else
         // nothing
       end;

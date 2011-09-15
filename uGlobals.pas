@@ -55,7 +55,7 @@ const
   K_SPY   = 'Spybot';
   K_SWAN  = 'Swan';
   K_NXT   = 'NXT';
-  K_SPRO  = 'SPC';
+  K_SPRO  = 'SuperPro';
 
 const
   rtRCX         = 0;

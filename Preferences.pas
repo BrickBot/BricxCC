@@ -41,7 +41,7 @@ uses
   SynHighlighterLASM, SynHighlighterPas, uParseCommon, uNewHotKey,
   uMiscDefines, SynHighlighterNBC, uOfficeComp, BricxccSpin,
   SynHighlighterRuby, SynHighlighterNPG, SynHighlighterRS,
-  SynHighlighterROPS;
+  SynHighlighterROPS, SynHighlighterSPASM;
 
 type
   TActiveHighlighterReason = (ahColors, ahTemplates);
@@ -364,6 +364,9 @@ type
     Label2: TLabel;
     Label6: TLabel;
     edtSymLibPath2: TEdit;
+    btnShowSPCDefs: TButton;
+    btnShowSPMEM: TButton;
+    radPrefSPC: TRadioButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -424,6 +427,8 @@ type
     procedure lbEditorExpertsClick(Sender: TObject);
     procedure btnEditorExpertsConfigClick(Sender: TObject);
     procedure btnEditorExpertsShortcutClick(Sender: TObject);
+    procedure btnShowSPCDefsClick(Sender: TObject);
+    procedure btnShowSPMEMClick(Sender: TObject);
   private
     { Private declarations }
     fColorsChanged : boolean;
@@ -450,6 +455,7 @@ type
     SynNBCSyn: TSynNBCSyn;
     SynCSSyn: TSynCSSyn;
     SynSPCSyn: TSynSPCSyn;
+    SynSPASMSyn: TSynSPASMSyn;
     procedure SetHelpContext;
     procedure UpdateEditorExperts;
     procedure UpdateCheckState;
@@ -1425,7 +1431,7 @@ begin
     // initialize the "this instance" startup action
     LocalStartupAction := StartupAction;
 
-    BrickType := Reg_ReadInteger(reg, 'BrickType', SU_RCX);
+    BrickType := Reg_ReadInteger(reg, 'BrickType', SU_NXT);
     // initialize the "this instance" BrickType to be the default BrickType
     LocalBrickType := BrickType;
 
@@ -2119,6 +2125,11 @@ begin
   ClaimExtension('.spc', 'SPC Document', 'SPC_Document', bClaim);
 end;
 
+procedure ClaimSPASMExtension(bClaim : Boolean);
+begin
+  ClaimExtension('.spasm', 'SPASM Document', 'SPASM_Document', bClaim);
+end;
+
 procedure RegisterApp;
 var
   R : TRegistry;
@@ -2158,6 +2169,12 @@ begin
     // claim ROPS extension if it isn't registered already
     if not R.OpenKeyReadOnly('\Software\Classes\.rops') then
       ClaimROPSExtension(True);
+    // claim SPC extension if it isn't registered already
+    if not R.OpenKeyReadOnly('\Software\Classes\.spc') then
+      ClaimSPCExtension(True);
+    // claim SPASM extension if it isn't registered already
+    if not R.OpenKeyReadOnly('\Software\Classes\.spasm') then
+      ClaimSPASMExtension(True);
     R.CloseKey;
     // register product version under HKCU\Software\BricxCC
     R.RootKey := HKEY_CURRENT_USER;
@@ -2945,7 +2962,7 @@ begin
                   IsExtensionClaimed('.nqh', 'NQCHeader');
     ClaimRCX2  := IsExtensionClaimed('.rcx2', 'MindScriptDocument1');
     ClaimLSC   := IsExtensionClaimed('.lsc', 'MindScriptDocument2');
-    ClaimASM   := IsExtensionClaimed('.lasm', 'LASMDocument');
+    ClaimLASM  := IsExtensionClaimed('.lasm', 'LASMDocument');
     ClaimC     := IsExtensionClaimed('.c', 'BrickOS_CDocument');
     ClaimCpp   := IsExtensionClaimed('.cpp', 'BrickOS_CppDocument');
     ClaimPas   := IsExtensionClaimed('.pas', 'BrickOS_PasDocument');
@@ -2962,13 +2979,14 @@ begin
                   IsExtensionClaimed('.lpr', 'Forth_LprDocument');
     ClaimROPS  := IsExtensionClaimed('.rops', 'ROPS_Document');
     ClaimSPC   := IsExtensionClaimed('.spc', 'SPC_Document');
+    ClaimSPASM := IsExtensionClaimed('.spasm', 'SPASM_Document');
     if ShowModal = mrOK then
     begin
       ClaimNQCExtension(ClaimNQC);
       ClaimNQHExtension(ClaimNQC);
       ClaimExtension('.rcx2', 'MindScript Document', 'MindScriptDocument1', ClaimRCX2);
       ClaimExtension('.lsc', 'MindScript Document', 'MindScriptDocument2', ClaimLSC);
-      ClaimExtension('.lasm', 'LASM Document', 'LASMDocument', ClaimASM);
+      ClaimExtension('.lasm', 'LASM Document', 'LASMDocument', ClaimLASM);
       ClaimExtension('.c', 'BrickOS C Document', 'BrickOS_CDocument', ClaimC);
       ClaimExtension('.cpp', 'BrickOS C++ Document', 'BrickOS_CppDocument', ClaimCpp);
       ClaimExtension('.pas', 'BrickOS Pascal Document', 'BrickOS_PasDocument', ClaimPas);
@@ -2983,6 +3001,7 @@ begin
       ClaimRSExtension(ClaimRS);
       ClaimROPSExtension(ClaimROPS);
       ClaimSPCExtension(ClaimSPC);
+      ClaimSPASMExtension(ClaimSPASM);
       ClaimExtension('.lua', 'Lua Document', 'Forth_LuaDocument', ClaimLua);
       ClaimExtension('.lpr', 'Lua Document', 'Forth_LprDocument', ClaimLua);
     end;
@@ -3308,13 +3327,14 @@ procedure TPrefForm.ConfigureOtherFirmwareOptions;
 const
   LockedProgsHeights : array[Boolean] of Integer = (114, 168);
 var
-  bBrickOS : Boolean;
+  bBrickOS, bSuperPro : Boolean;
 begin
+  bSuperPro := IsSuperPro;
   bBrickOS := LocalFirmwareType = ftBrickOS;
-  cbProg6.Visible := bBrickOS;
-  cbProg7.Visible := bBrickOS;
+  cbProg6.Visible := bBrickOS or bSuperPro;
+  cbProg7.Visible := bBrickOS or bSuperPro;
   cbProg8.Visible := bBrickOS;
-  grpLockedProgs.Height := Trunc(LockedProgsHeights[bBrickOS] * (Screen.PixelsPerInch / 96));
+  grpLockedProgs.Height := Trunc(LockedProgsHeights[bBrickOS or bSuperPro] * (Screen.PixelsPerInch / 96));
 end;
 
 procedure TPrefForm.btnGetNQCVersionClick(Sender: TObject);
@@ -3403,8 +3423,10 @@ begin
     Result := 3
   else if radPrefNXC.Checked then
     Result := 4
+  else if radPrefSPC.Checked then
+    Result := 5
   else
-    Result := 0;
+    Result := 0; // NQC
 end;
 
 procedure TPrefForm.SetPrefLang(const Value: Integer);
@@ -3414,6 +3436,7 @@ begin
   radPrefLASM.Checked       := Value = 2;
   radPrefNBC.Checked        := Value = 3;
   radPrefNXC.Checked        := Value = 4;
+  radPrefSPC.Checked        := Value = 5;
 end;
 
 procedure TPrefForm.chkFirmfastClick(Sender: TObject);
@@ -3513,6 +3536,7 @@ begin
   SynNBCSyn        := TSynNBCSyn.Create(Self);
   SynCSSyn         := TSynCSSyn.Create(Self);
   SynSPCSyn        := TSynSPCSyn.Create(Self);
+  SynSPASMSyn      := TSynSPASMSyn.Create(Self);
   with SynCppSyn do
   begin
     Name := 'SynCppSyn';
@@ -3574,7 +3598,7 @@ begin
   with SynLASMSyn do
   begin
     Name := 'SynLASMSyn';
-    DefaultFilter := 'LASM Assembler Files (*.asm)|*.asm';
+    DefaultFilter := 'LASM Assembler Files (*.lasm)|*.lasm';
   end;
   with SynLuaSyn do
   begin
@@ -3622,6 +3646,11 @@ begin
                            'LEDControl, SystemClock';
     if FileExists(ProgramDir + 'Default\spc_samplesource.txt') then
       SampleSourceStrings.LoadFromFile(ProgramDir + 'Default\spc_samplesource.txt');
+  end;
+  with SynSPASMSyn do
+  begin
+    Name := 'SynSPASMSyn';
+    DefaultFilter := 'SuperPro Assembler Files (*.spasm)|*.spasm';
   end;
 end;
 
@@ -3745,6 +3774,42 @@ begin
     C.Width := 640;
     C.CodeEdit.Highlighter := MainForm.SynCppSyn;
     C.CodeEdit.Lines.Text := APIAsText(3);
+    C.Show;
+  end
+  else
+  begin
+    ShowMessage('Not yet implemented');
+  end;
+end;
+
+procedure TPrefForm.btnShowSPCDefsClick(Sender: TObject);
+var
+  C : TCodeForm;
+begin
+  if UseInternalNBC then
+  begin
+    C := TCodeForm.Create(Application);
+    C.Width := 640;
+    C.CodeEdit.Highlighter := MainForm.SynCppSyn;
+    C.CodeEdit.Lines.Text := APIAsText(4);
+    C.Show;
+  end
+  else
+  begin
+    ShowMessage('Not yet implemented');
+  end;
+end;
+
+procedure TPrefForm.btnShowSPMEMClick(Sender: TObject);
+var
+  C : TCodeForm;
+begin
+  if UseInternalNBC then
+  begin
+    C := TCodeForm.Create(Application);
+    C.Width := 640;
+    C.CodeEdit.Highlighter := MainForm.SynCppSyn;
+    C.CodeEdit.Lines.Text := APIAsText(5);
     C.Show;
   end
   else
