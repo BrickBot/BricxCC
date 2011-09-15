@@ -476,9 +476,9 @@ begin
     Result := nftSound
   else if ext = '.rdt' then
     Result := nftData
-  else if (ext = '.ric') or (ext = '.rbm') then
+  else if (ext = '.ric') then
     Result := nftGraphics
-  else if (ext = '.rxe') or (ext = '.sys') or (ext = '.rtm') or (ext = '.rpg') then
+  else if (ext = '.rxe') or (ext = '.sys') or (ext = '.rtm') then
     Result := nftProgram
 end;
 
