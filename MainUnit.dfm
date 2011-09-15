@@ -693,6 +693,11 @@ object MainForm: TMainForm
       Caption = 'NXT Watch List'
       OnExecute = actToolsNXTWatchListExecute
     end
+    object actHelpSPCGuidePDF: TAction
+      Category = 'Help'
+      Caption = 'SPC'
+      OnExecute = actHelpSPCGuidePDFExecute
+    end
   end
   object dlgInsertFile: TOpenDialog
     DefaultExt = 'nqc'
