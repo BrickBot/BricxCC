@@ -1,2 +1,50 @@
-byte btnset1, btnset2, xleft, yleft, xright, yright;
-bool result = ReadSensorMSPlayStation(S1, MS_ADDR_PSPNX, btnset1, btnset2, xleft, yleft, xright, yright);
+task main()
+{
+  SetSensorLowspeed(S1);
+  PSPNxAnalog(S1, MS_ADDR_PSPNX);
+  byte btnset1, btnset2, xleft, yleft, xright, yright;
+  while (true)
+  {
+    ClearScreen();
+    bool result = ReadSensorMSPlayStation(S1, MS_ADDR_PSPNX,
+      btnset1, btnset2, xleft, yleft, xright, yright);
+    if (result)
+    {
+      NumOut( 0, LCD_LINE1, xleft);
+      NumOut(40, LCD_LINE1, yleft);
+      NumOut( 0, LCD_LINE2, xright);
+      NumOut(40, LCD_LINE2, yright);
+      // button set 1
+      if (!(btnset1 & PSP_BTNSET1_DOWN))
+        TextOut( 0, LCD_LINE3, "D");
+      if (!(btnset1 & PSP_BTNSET1_UP))
+        TextOut( 8, LCD_LINE3, "U");
+      if (!(btnset1 & PSP_BTNSET1_LEFT))
+        TextOut(16, LCD_LINE3, "L");
+      if (!(btnset1 & PSP_BTNSET1_RIGHT))
+        TextOut(24, LCD_LINE3, "R");
+      if (!(btnset1 & PSP_BTNSET1_L3))
+        TextOut(32, LCD_LINE3, "l");
+      if (!(btnset1 & PSP_BTNSET1_R3))
+        TextOut(40, LCD_LINE3, "r");
+      // button set 2
+      if (!(btnset2 & PSP_BTNSET2_SQUARE))
+        TextOut( 0, LCD_LINE4, "S");
+      if (!(btnset2 & PSP_BTNSET2_CROSS))
+        TextOut( 8, LCD_LINE4, "X");
+      if (!(btnset2 & PSP_BTNSET2_CIRCLE))
+        TextOut(16, LCD_LINE4, "C");
+      if (!(btnset2 & PSP_BTNSET2_TRIANGLE))
+        TextOut(24, LCD_LINE4, "T");
+      if (!(btnset2 & PSP_BTNSET2_R1))
+        TextOut(32, LCD_LINE4, "r");
+      if (!(btnset2 & PSP_BTNSET2_L1))
+        TextOut(40, LCD_LINE4, "l");
+      if (!(btnset2 & PSP_BTNSET2_R2))
+        TextOut(48, LCD_LINE4, "R");
+      if (!(btnset2 & PSP_BTNSET2_L2))
+        TextOut(56, LCD_LINE4, "L");
+      Wait(MS_500);
+    }
+  }
+}

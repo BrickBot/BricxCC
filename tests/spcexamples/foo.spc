@@ -1,4 +1,3 @@
-#include "spmem.h"
 
 #pragma autostart
 
@@ -6,9 +5,9 @@ task main()
 {
   while(true)
   {
-    printf("%d\n", SystemClock);
+    printf("%x\n", SystemClock);
 //    asm {TRND SystemClock}
-    Wait(1000);
+    Wait(5000);
     
   }
 }

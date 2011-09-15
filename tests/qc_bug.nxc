@@ -1,0 +1,11 @@
+task main()
+{
+   unsigned int ui = 441;
+   long l = 64;
+   // unsigned int len = min(l, ui);
+   unsigned int len = l < ui ? l : ui;
+
+   NumOut(0, 0, len, 1);
+   len++;
+   Wait(SEC_1);
+}

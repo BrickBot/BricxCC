@@ -1,0 +1,9 @@
+string msgs[] = {"one", "two", "three", "four", "five"};
+
+task main()
+{
+  TextOut(0, LCD_LINE1, msgs[0]);
+  TextOut(0, LCD_LINE2, msgs[1]);
+  TextOut(0, LCD_LINE3, msgs[2]);
+  Wait(SEC_5);
+}

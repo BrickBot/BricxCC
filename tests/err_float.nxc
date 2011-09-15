@@ -26,7 +26,7 @@ task main ()
     i = Ceil(f);  // i is -1564
     NumOut(0, LCD_LINE6, a);
     NumOut(0, LCD_LINE7, i);
-    PlayTone(1000,10);
+//    PlayTone(1000,10);
 
     while(1);
 }

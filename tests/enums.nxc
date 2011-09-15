@@ -25,9 +25,10 @@ task main()
   TheSeasons test = FALL;
   today = monday;
   NumOut(0, LCD_LINE1, THREE);
-  NumOut(0, LCD_LINE1, MEDIUM);
-  NumOut(0, LCD_LINE1, FRED);
-  NumOut(0, LCD_LINE1, SPRING);
-  NumOut(0, LCD_LINE1, friday);
+  NumOut(0, LCD_LINE2, MEDIUM);
+  NumOut(0, LCD_LINE3, FRED);
+  NumOut(0, LCD_LINE4, SPRING);
+  NumOut(0, LCD_LINE5, friday);
+  Wait(SEC_5);
 }
 

@@ -8,4 +8,5 @@ task main()
   int j;
   targOut = tOutCribSheet [j] ;  // space (blank) between array name and index causes error
   NumOut(0, LCD_LINE1, targOut);
+  Wait(SEC_1);
 }

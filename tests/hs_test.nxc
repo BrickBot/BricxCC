@@ -1,0 +1,35 @@
+byte __HSBuffer[];
+
+void nxtReadRawHS(byte & data[], byte count) {
+  // read up to count bytes from HiSpeed port
+  byte p1[0], p2[0];
+  // are there bytes already in our intermediate buffer?
+  int len = ArrayLen(__HSBuffer);
+  if (len <= count) {
+    // empty out the intermediate buffer into a temp buffer
+    p1 = __HSBuffer; // part one is everything from intermediate buffer
+    count -= len; // reduce count by bytes already copied
+    ArrayInit(__HSBuffer, 0, 0); // make sure it is empty
+    // get more data from port
+    RS485Read(__HSBuffer);
+  }
+  // are there more bytes to get?
+  if (count > 0) {
+    // copy from intermediate buffer (which may still be empty)
+    ArraySubset(p2, __HSBuffer, 0, count);
+    // resize the intermediate buffer
+    byte tmp[];
+    ArraySubset(tmp, __HSBuffer, count, NA); // returns empty if count > array length
+    __HSBuffer = tmp;
+    ArrayInit(tmp, 0, 0);
+  }
+  // now build data from p1 and p2 (one or both of which could be empty
+  ArrayBuild(data, p1, p2);
+}
+
+task main()
+{
+  //
+  byte buf[];
+  nxtReadRawHS(buf, 10);
+}

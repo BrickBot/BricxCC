@@ -1,0 +1,32 @@
+task main()
+{
+  int x=40;
+  switch(x)
+  {
+    default:
+    case 10:
+      x++;
+      printf("def or 10: %d\n", x);
+      break;
+    case 0:
+      x--;
+      printf("0: %d\n", x);
+      break;
+  }
+/*
+  int x;
+  switch(x)
+  {
+    case 0:
+      TextOut(0, LCD_LINE1, "test");
+      break;
+    case 1:
+      TextOut(0, LCD_LINE1, "test");
+      break;
+    default:
+      TextOut(0, LCD_LINE1, "test");
+      break;
+  }
+*/
+  Wait(SEC_5);
+}

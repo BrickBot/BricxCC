@@ -3,8 +3,12 @@ task main()
   char x, y, rank, color=0, xp, yp, rankp,colorp=0;
   xp++;
   NumOut(0, LCD_LINE1, xp);
-  for (int i=0, j=23; i < j, j > 2; i++, j--)
+  for (int i=0, j=23; i < j, j > 2; i++, j--) // good code
   {
   }
-  x = rank, xp;
+  x = rank, xp; // good code (= has nigher precedence than ,)
+  NumOut(0, LCD_LINE2, x);
+  x = (rank, xp); // good code
+  NumOut(0, LCD_LINE3, x);
+  Wait(SEC_5);
 }

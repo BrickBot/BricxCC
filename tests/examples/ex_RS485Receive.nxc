@@ -39,7 +39,8 @@ task main()
     until(RS485DataAvailable() >= cnt);
 
     // now read the actual message
-    RS485Read(buffer);
+    RS485ReadEx(buffer, cnt);
+//    RS485Read(buffer);
 
     // send out ACK
     RS485Write(ACK);

@@ -9,5 +9,5 @@ task main()
   {F=y;t--;}
   NumOut(0, LCD_LINE1, F);
   NumOut(0, LCD_LINE2, t);
-
+  Wait(SEC_5);
 }
