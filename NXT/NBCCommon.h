@@ -1668,9 +1668,9 @@
  * @{
  */
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define I2C_OPTION_STANDARD  0x00
-#define I2C_OPTION_NORESTART 0x04
-#define I2C_OPTION_FAST      0x08
+#define I2C_OPTION_STANDARD  0x00 /*!< Standard I2C speed */
+#define I2C_OPTION_NORESTART 0x04 /*!< Use no restart on I2C read */
+#define I2C_OPTION_FAST      0x08 /*!< Fast I2C speed */
 #endif
 /** @} */  // end of I2COptionConstants group
 
@@ -2705,6 +2705,8 @@
 #define HT_ADDR_IRLINK     0x02 /*!< HiTechnic IRLink I2C address */
 #define HT_ADDR_ANGLE      0x02 /*!< HiTechnic Angle I2C address */
 #define HT_ADDR_BAROMETRIC 0x02 /*!< HiTechnic Barometric I2C address */
+#define HT_ADDR_PROTOBOARD 0x02 /*!< HiTechnic Prototype board I2C address */
+#define HT_ADDR_SUPERPRO   0x10 /*!< HiTechnic SuperPro board I2C address */
 
 /** @defgroup HTIRSeeker2Constants HiTechnic IRSeeker2 constants
  * Constants that are for use with the HiTechnic IRSeeker2 device.
@@ -2789,6 +2791,82 @@
 #define HTBAR_REG_CALIBRATION 0x46 /*!< Barometric sensor calibration register (2 bytes msb/lsb) */
 /** @} */  // end of HTBarometricConstants group
 
+/** @defgroup HTProtoConstants HiTechnic Prototype board constants
+ * Constants that are for use with the HiTechnic Prototype board.
+ * @{
+ */
+#define HTPROTO_REG_A0    0x42 /*!< Prototype board analog 0 register (2 bytes msb/lsb) */
+#define HTPROTO_REG_A1    0x44 /*!< Prototype board analog 1 register (2 bytes msb/lsb) */
+#define HTPROTO_REG_A2    0x46 /*!< Prototype board analog 2 register (2 bytes msb/lsb) */
+#define HTPROTO_REG_A3    0x48 /*!< Prototype board analog 3 register (2 bytes msb/lsb) */
+#define HTPROTO_REG_A4    0x4A /*!< Prototype board analog 4 register (2 bytes msb/lsb) */
+#define HTPROTO_REG_DIN   0x4C /*!< Prototype board digital pin input register (6 bits) */
+#define HTPROTO_REG_DOUT  0x4D /*!< Prototype board digital pin output register (6 bits) */
+#define HTPROTO_REG_DCTRL 0x4E /*!< Prototype board digital pin control register (6 bits) */
+#define HTPROTO_REG_SRATE 0x4F /*!< Prototype board sample rate register */
+/** @} */  // end of HTProtoConstants group
+
+/** @defgroup HTSuperProConstants HiTechnic SuperPro constants
+ * Constants that are for use with the HiTechnic SuperPro board.
+ * @{
+ */
+ 
+#define HTSPRO_REG_CTRL         0x40 /*!< SuperPro program control register */
+#define HTSPRO_REG_SLOT         0x41 /*!< SuperPro program slot register */
+#define HTSPRO_REG_A0           0x42 /*!< SuperPro analog 0 register (10 bits) */
+#define HTSPRO_REG_A1           0x44 /*!< SuperPro analog 1 register (10 bits) */
+#define HTSPRO_REG_A2           0x46 /*!< SuperPro analog 2 register (10 bits) */
+#define HTSPRO_REG_A3           0x48 /*!< SuperPro analog 3 register (10 bits) */
+#define HTSPRO_REG_DIN          0x4C /*!< SuperPro digital pin input register (8 bits) */
+#define HTSPRO_REG_DOUT         0x4D /*!< SuperPro digital pin output register (8 bits) */
+#define HTSPRO_REG_DCTRL        0x4E /*!< SuperPro digital pin control register (8 bits) */
+#define HTSPRO_REG_STROBE       0x50 /*!< SuperPro strobe control register */
+#define HTSPRO_REG_LED          0x51 /*!< SuperPro LED control register */
+#define HTSPRO_REG_DAC0_MODE    0x52 /*!< SuperPro analog output 0 mode register */
+#define HTSPRO_REG_DAC0_FREQ    0x53 /*!< SuperPro analog output 0 frequency register (2 bytes msb/lsb) */
+#define HTSPRO_REG_DAC0_VOLTAGE 0x55 /*!< SuperPro analog output 0 voltage register (10 bits) */
+#define HTSPRO_REG_DAC1_MODE    0x57 /*!< SuperPro analog output 0 mode register */
+#define HTSPRO_REG_DAC1_FREQ    0x58 /*!< SuperPro analog output 0 frequency register (2 bytes msb/lsb) */
+#define HTSPRO_REG_DAC1_VOLTAGE 0x5A /*!< SuperPro analog output 0 voltage register (10 bits) */
+#define HTSPRO_REG_DLADDRESS    0x60 /*!< SuperPro download address register (2 bytes msb/lsb) */
+#define HTSPRO_REG_DLDATA       0x62 /*!< SuperPro download data register (8 bytes) */
+#define HTSPRO_REG_DLCHKSUM     0x6A /*!< SuperPro download checksum register */
+#define HTSPRO_REG_DLCONTROL    0x6B /*!< SuperPro download control register */
+#define HTSPRO_REG_MEMORY_20    0x80 /*!< SuperPro memory address 0x20 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_21    0x84 /*!< SuperPro memory address 0x21 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_22    0x88 /*!< SuperPro memory address 0x22 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_23    0x8C /*!< SuperPro memory address 0x23 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_24    0x90 /*!< SuperPro memory address 0x24 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_25    0x94 /*!< SuperPro memory address 0x25 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_26    0x98 /*!< SuperPro memory address 0x26 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_27    0x9C /*!< SuperPro memory address 0x27 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_28    0xA0 /*!< SuperPro memory address 0x28 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_29    0xA4 /*!< SuperPro memory address 0x29 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_2A    0xA8 /*!< SuperPro memory address 0x2A register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_2B    0xAC /*!< SuperPro memory address 0x2B register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_2C    0xB0 /*!< SuperPro memory address 0x2C register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_2D    0xB4 /*!< SuperPro memory address 0x2D register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_2E    0xB8 /*!< SuperPro memory address 0x2E register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_2F    0xBC /*!< SuperPro memory address 0x2F register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_30    0xC0 /*!< SuperPro memory address 0x30 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_31    0xC4 /*!< SuperPro memory address 0x31 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_32    0xC8 /*!< SuperPro memory address 0x32 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_33    0xCC /*!< SuperPro memory address 0x33 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_34    0xD0 /*!< SuperPro memory address 0x34 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_35    0xD4 /*!< SuperPro memory address 0x35 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_36    0xD8 /*!< SuperPro memory address 0x36 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_37    0xDC /*!< SuperPro memory address 0x37 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_38    0xE0 /*!< SuperPro memory address 0x38 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_39    0xE4 /*!< SuperPro memory address 0x39 register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_3A    0xE8 /*!< SuperPro memory address 0x3A register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_3B    0xEC /*!< SuperPro memory address 0x3B register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_3C    0xF0 /*!< SuperPro memory address 0x3C register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_3D    0xF4 /*!< SuperPro memory address 0x3D register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_3E    0xF8 /*!< SuperPro memory address 0x3E register (4 bytes msb/lsb) */
+#define HTSPRO_REG_MEMORY_3F    0xFC /*!< SuperPro memory address 0x3F register (4 bytes msb/lsb) */
+
+/** @} */  // end of HTSuperProConstants group
+
 /** @} */  // end of HiTechnicConstants group
 /** @} */  // end of HiTechnicAPI group
 
@@ -2865,26 +2943,28 @@
  * Constants that are for interpretting MindSensors PSP-Nx button set 1 values.
  * @{
  */
-#define PSP_BTNSET1_LEFT     0x01 /*!< The PSP-Nx button set 1 left arrow */
-#define PSP_BTNSET1_DOWN     0x02 /*!< The PSP-Nx button set 1 down arrow */
-#define PSP_BTNSET1_RIGHT    0x04 /*!< The PSP-Nx button set 1 right arrow */
-#define PSP_BTNSET1_UP       0x08 /*!< The PSP-Nx button set 1 up arrow */
-#define PSP_BTNSET1_R3       0x20 /*!< The PSP-Nx button set 1 R3 */
-#define PSP_BTNSET1_L3       0x40 /*!< The PSP-Nx button set 1 L3 */
+#define PSP_BTNSET1_LEFT     0x80 /*!< The PSP-Nx button set 1 left arrow */
+#define PSP_BTNSET1_DOWN     0x40 /*!< The PSP-Nx button set 1 down arrow */
+#define PSP_BTNSET1_RIGHT    0x20 /*!< The PSP-Nx button set 1 right arrow */
+#define PSP_BTNSET1_UP       0x10 /*!< The PSP-Nx button set 1 up arrow */
+#define PSP_BTNSET1_START    0x08 /*!< The PSP-Nx button set 1 start */
+#define PSP_BTNSET1_R3       0x04 /*!< The PSP-Nx button set 1 R3 */
+#define PSP_BTNSET1_L3       0x02 /*!< The PSP-Nx button set 1 L3 */
+#define PSP_BTNSET1_SELECT   0x01 /*!< The PSP-Nx button set 1 select */
 /** @} */  // end of MSPSPNXBtnSet1 group
 
 /** @defgroup MSPSPNXBtnSet2 MindSensors PSP-Nx button set 2 constants
  * Constants that are for interpretting MindSensors PSP-Nx button set 2 values.
  * @{
  */
-#define PSP_BTNSET2_SQUARE   0x01 /*!< The PSP-Nx button set 2 square */
-#define PSP_BTNSET2_CROSS    0x02 /*!< The PSP-Nx button set 2 cross */
-#define PSP_BTNSET2_CIRCLE   0x04 /*!< The PSP-Nx button set 2 circle */
-#define PSP_BTNSET2_TRIANGLE 0x08 /*!< The PSP-Nx button set 2 triangle */
-#define PSP_BTNSET2_R1       0x10 /*!< The PSP-Nx button set 2 R1 */
-#define PSP_BTNSET2_L1       0x20 /*!< The PSP-Nx button set 2 L1 */
-#define PSP_BTNSET2_R2       0x40 /*!< The PSP-Nx button set 2 R2 */
-#define PSP_BTNSET2_L2       0x80 /*!< The PSP-Nx button set 2 L2 */
+#define PSP_BTNSET2_SQUARE   0x80 /*!< The PSP-Nx button set 2 square */
+#define PSP_BTNSET2_CROSS    0x40 /*!< The PSP-Nx button set 2 cross */
+#define PSP_BTNSET2_CIRCLE   0x20 /*!< The PSP-Nx button set 2 circle */
+#define PSP_BTNSET2_TRIANGLE 0x10 /*!< The PSP-Nx button set 2 triangle */
+#define PSP_BTNSET2_R1       0x08 /*!< The PSP-Nx button set 2 R1 */
+#define PSP_BTNSET2_L1       0x04 /*!< The PSP-Nx button set 2 L1 */
+#define PSP_BTNSET2_R2       0x02 /*!< The PSP-Nx button set 2 R2 */
+#define PSP_BTNSET2_L2       0x01 /*!< The PSP-Nx button set 2 L2 */
 /** @} */  // end of MSPSPNXBtnSet2 group
 /** @} */  // end of MSPSPNX group
 

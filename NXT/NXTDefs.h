@@ -5021,6 +5021,14 @@ dseg ends
   mov _status, __CHSRArgs.Status \
   release __CHSRMutex
 
+#define __RS485ReadEx(_buffer, _buflen, _status) \
+  acquire __CHSRMutex \
+  mov __CHSRArgs.BufferLen, _buflen \
+  syscall CommHSRead, __CHSRArgs \
+  mov _buffer, __CHSRArgs.Buffer \
+  mov _status, __CHSRArgs.Status \
+  release __CHSRMutex
+
 #define __RS485Control(_cmd, _baud, _mode, _result) \
   acquire __CHSCMutex \
   mov __CHSCArgs.Command, _cmd \
@@ -15227,6 +15235,18 @@ __remoteGetInputValues(_conn, _params, _result)
 #if __FIRMWARE_VERSION > 107
 
 /**
+ * Read limited RS485 data.
+ * Read a limited number of bytes of data from the RS485 hi-speed port.
+ *
+ * \param _buffer A byte array that will contain the data read from the RS485 port.
+ * \param _buflen The number of bytes you want to read.
+ * \param _status A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+.
+ */
+#define RS485ReadEx(_buffer, _buflen, _status) __RS485ReadEx(_buffer, _buflen, _status)
+
+/**
  * Control the RS485 port.
  * Control the RS485 hi-speed port using the specified parameters.
  *
@@ -15237,7 +15257,7 @@ __remoteGetInputValues(_conn, _params, _result)
  * CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  *
- * \warning This function requires the enhanced NBC/NXC firmware.
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 #define RS485Control(_cmd, _baud, _mode, _result) __RS485Control(_cmd, _baud, _mode, _result)
 
@@ -15252,7 +15272,7 @@ __remoteGetInputValues(_conn, _params, _result)
  * CommHiSpeedParityConstants, and \ref CommHiSpeedCombinedConstants.
  * \param _result A char value indicating whether the function call succeeded or not.
  *
- * \warning This function requires the enhanced NBC/NXC firmware.
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 #define RS485Uart(_baud, _mode, _result) __RS485Control(HS_CTRL_UART, _baud, _mode, _result)
 
@@ -15265,7 +15285,7 @@ __remoteGetInputValues(_conn, _params, _result)
  *
  * \param _result A char value indicating whether the function call succeeded or not.
  *
- * \warning This function requires the enhanced NBC/NXC firmware.
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 #define RS485Initialize(_result) __RS485Control(HS_CTRL_UART, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, _result)
 
@@ -15275,7 +15295,7 @@ __remoteGetInputValues(_conn, _params, _result)
  *
  * \param _result A char value indicating whether the function call succeeded or not.
  *
- * \warning This function requires the enhanced NBC/NXC firmware.
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 #define RS485Enable(_result) __RS485Control(HS_CTRL_INIT, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, _result)
 
@@ -15285,7 +15305,7 @@ __remoteGetInputValues(_conn, _params, _result)
  *
  * \param _result A char value indicating whether the function call succeeded or not.
  *
- * \warning This function requires the enhanced NBC/NXC firmware.
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 #define RS485Disable(_result) __RS485Control(HS_CTRL_EXIT, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, _result)
 

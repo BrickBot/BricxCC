@@ -5807,8 +5807,10 @@ struct CommHSReadWriteType {
  byte Buffer[];  /*!< The buffer of data to write or to contain the data read
                       from the hi-speed port. */
 #if __FIRMWARE_VERSION > 107
- byte BufferLen; /*!< The size of the output buffer on input.  This field is
-                      not updated during the function call. */
+ byte BufferLen; /*!< The size of the output buffer on input.  Determines the
+                      maximum number of bytes read from the hi-speed port.
+                      This field is not updated during the function call and
+                      it is only used for the Read operation. */
 #endif
 };
 #endif
@@ -6964,6 +6966,18 @@ inline char RS485Enable(void);
 inline char RS485Read(byte & buffer[]);
 
 /**
+ * Read limited RS485 data.
+ * Read a limited number of bytes of data from the RS485 hi-speed port.
+ *
+ * \param buffer A byte array that will contain the data read from the RS485 port.
+ * \param buflen The number of bytes you want to read.
+ * \return A char value indicating whether the function call succeeded or not.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+.
+ */
+inline char RS485ReadEx(byte & buffer[], byte buflen);
+
+/**
  * Is RS485 sending data.
  * Check whether the RS485 is actively sending data.
  *
@@ -7987,6 +8001,7 @@ asm { \
 
 #if __FIRMWARE_VERSION > 107
 
+#define RS485ReadEx(_buffer, _buflen) asm { __RS485ReadEx(_buffer, _buflen, __RETVAL__) }
 #define RS485Control(_cmd, _baud, _mode) asm { __RS485Control(_cmd, _baud, _mode, __RETVAL__) }
 #define RS485Uart(_baud, _mode) asm { __RS485Control(HS_CTRL_UART, _baud, _mode, __RETVAL__) }
 #define RS485Initialize() asm { __RS485Control(HS_CTRL_UART, HS_BAUD_DEFAULT, HS_MODE_DEFAULT, __RETVAL__) }
@@ -13762,11 +13777,11 @@ inline bool SetSensorDIGPSWaypoint(byte port, long latitude, long longitude);
  * structure fields.  The values are all scaled by 100.
  */
 struct XGPacketType {
-  int AccAngle;
-  int TurnRate;
-  int XAxis;
-  int YAxis;
-  int ZAxis;
+  int AccAngle; /*!< The accumulated angle. */
+  int TurnRate; /*!< The turn rate. */
+  int XAxis;    /*!< The X axis acceleration. */
+  int YAxis;    /*!< The Y axis acceleration. */
+  int ZAxis;    /*!< The Z axis acceleration. */
 };
 
 /** @} */ // end of MicroinfinityTypes group
