@@ -51,7 +51,7 @@ function FileCanBeCompiled: Boolean;
 function FileCanBeProcessed: Boolean;
 function FileIsCPPOrPascalOrJava(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsMindScriptOrLASM(AEH : TSynCustomHighlighter = nil): Boolean;
-function FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(AEH : TSynCustomHighlighter = nil): Boolean;
+function UsesNBCCompiler(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsNBCOrNXC(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsPascal(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsCPP(AEH : TSynCustomHighlighter = nil): Boolean;
@@ -66,6 +66,8 @@ function FileIsJava(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsForth(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsROPS(AEH : TSynCustomHighlighter = nil): Boolean;
 function FileIsSPC(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsSPASM(AEH : TSynCustomHighlighter = nil): Boolean;
+function FileIsSPCOrSPASM(AEH : TSynCustomHighlighter = nil): Boolean;
 
 function CheckAlive : boolean;
 
@@ -76,7 +78,7 @@ uses
 {$IFNDEF NXT_ONLY}
   Windows, MainUnit, Editor,
 {$ENDIF}
-  SynHighlighterPas, SynHighlighterCpp, SynHighlighterLASM,
+  SynHighlighterPas, SynHighlighterCpp, SynHighlighterLASM, SynHighlighterSPASM,
   SynHighlighterForth, SynHighlighterJava, SynHighlighterMindScript,
   SynHighlighterNBC, SynHighlighterNQC, SynHighlighterNPG, SynHighlighterRS,
   SynHighlighterROPS, brick_common, uGlobals, uLocalizedStrings;
@@ -192,6 +194,7 @@ begin
             FileIsPascal(AEH) or
             FileIsROPS(AEH) or
             FileIsSPC(AEH) or
+            FileIsSPASM(AEH) or
             FileIsJava(AEH);
 end;
 
@@ -231,11 +234,12 @@ begin
   Result := FileIsMindScript(AEH) or FileIsLASM(AEH);
 end;
 
-function FileIsNBCOrNXCOrNPGOrRICScriptOrSPC(AEH : TSynCustomHighlighter): Boolean;
+function UsesNBCCompiler(AEH : TSynCustomHighlighter): Boolean;
 begin
   if not Assigned(AEH) then
     AEH := GetActiveEditorHighlighter;
-  Result := FileIsNBC(AEH) or FileIsNXC(AEH) or FileIsNPG(AEH) or FileIsRICScript(AEH) or FileIsSPC(AEH);
+  Result := FileIsNBC(AEH) or FileIsNXC(AEH) or FileIsNPG(AEH) or
+            FileIsRICScript(AEH) or FileIsSPC(AEH) or FileIsSPASM(AEH);
 end;
 
 function FileIsNBCOrNXC(AEH : TSynCustomHighlighter): Boolean;
@@ -365,6 +369,21 @@ begin
     Result := AEH is TSynSPCSyn
   else
     Result := LowerCase(ExtractFileExt(GetActiveEditorFilename)) = '.spc';
+end;
+
+function FileIsSPASM(AEH : TSynCustomHighlighter = nil): Boolean;
+begin
+  if not Assigned(AEH) then
+    AEH := GetActiveEditorHighlighter;
+  if AEH <> nil then
+    Result := AEH is TSynSPASMSyn
+  else
+    Result := LowerCase(ExtractFileExt(GetActiveEditorFilename)) = '.spasm';
+end;
+
+function FileIsSPCOrSPASM(AEH : TSynCustomHighlighter = nil): Boolean;
+begin
+  Result := FileIsSPC(AEH) or FileIsSPASM(AEH);
 end;
 
 {Checks whether the brick is (still) alive}

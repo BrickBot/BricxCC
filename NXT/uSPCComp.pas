@@ -507,7 +507,10 @@ type
     procedure Parse(const aFilename : string); overload;
     procedure Parse(aStream : TStream); overload;
     procedure Parse(aStrings : TStrings); overload;
-    function SaveToStream(aStream: TStream): boolean;
+    function  SaveToStream(aStream: TStream): boolean;
+    procedure ParseASM(const aFilename : string); overload;
+    procedure ParseASM(aStream : TStream); overload;
+    procedure ParseASM(aStrings : TStrings); overload;
     property  Defines : TStrings read fDefines write SetDefines;
     property  ASMSource : TStrings read GetASMSrc;
     property  CompilerMessages : TStrings read fMessages;
@@ -533,7 +536,7 @@ implementation
 
 uses
   SysUtils, Math, uSPCLexer, uNBCLexer, mwGenericLex, uLocalizedStrings,
-  {SPCCommonData, SPCDefsData, }uNXTConstants, uCommonUtils, Parser10;
+  SPMemData, SPCDefsData, uNXTConstants, uCommonUtils, Parser10;
 
 {--------------------------------------------------------------}
 { Constant Declarations }
@@ -2033,7 +2036,9 @@ end;
 function TSPCComp.OptimizeExpression(str : string; const idx: integer; bFlag : boolean) : string;
 begin
   fLastExpressionOptimizedToConst := False;
-  System.Delete(str, Length(str), 1);
+  // if the last character is a ) or a ; then delete it.
+  if str[Length(str)] in [')', ';'] then
+    System.Delete(str, Length(str), 1);
   Result := str;
   if (OptimizeLevel >= 1) and (SourceCount > (idx+1)) and not bFlag then
   begin
@@ -2124,7 +2129,7 @@ begin
       PopCmpEqual
     else
       PopCmpNEqual;
-    StoreZeroFlag;
+//    StoreZeroFlag;
   end;
 end;
 
@@ -2154,12 +2159,13 @@ begin
       PopCmpGreaterOrEqual
     else                                                   // >
       PopCmpGreater;
-    StoreZeroFlag;
+//    StoreZeroFlag;
   end;
 end;
 
 procedure TSPCComp.NumericShiftLeftRight;
 var
+  val : integer;
   savedToken, savedLook : Char;
 begin
   Expression;
@@ -2174,6 +2180,9 @@ begin
     Expression;
     if fLastExpressionOptimizedToConst then
     begin
+      val := StrToIntDef(fLastLoadedConst, MaxInt);
+      if (val < 1) or (val > 31) then
+        AbortMsg(sInvalidShift);
       if (savedToken = '<') and (savedLook = '<')  then
         PopLeftShift
       else
@@ -2207,12 +2216,15 @@ end;
 procedure TSPCComp.BoolTerm;
 var
   L : string;
+  bAnd : boolean;
 begin
+  bAnd := False;
   L := NewLabel;
   // 2010-05-27 JCH new code for BoolTerm
   BitOr;
   while (Token = '&') and (Look = '&') do
   begin
+    bAnd := True;
     // move to the second '&'
     Next;
     // move past the second '&'
@@ -2221,20 +2233,22 @@ begin
     if not fCCSet then
     begin
       SetZeroCC;
-      StoreZeroFlag;
+//      StoreZeroFlag;
     end;
     BranchFalse(L);
-    PushPrim;
+//    PushPrim;
     BitOr;
     // convert D0 to boolean value if necessary
     if not fCCSet then
     begin
       SetZeroCC;
-      StoreZeroFlag;
+//      StoreZeroFlag;
     end;
-    PopAnd;
+//    PopAnd;
   end;
   PostLabel(L);
+  if bAnd then
+    StoreZeroFlag;
 end;
 
 procedure TSPCComp.BitOr;
@@ -2310,6 +2324,7 @@ end;
 procedure TSPCComp.BoolSubExpression;
 var
   L : string;
+  bOr : boolean;
   prev, lenVal : integer;
   oldBS, optExp : string;
 begin
@@ -2325,9 +2340,11 @@ begin
     fBoolSubExpStr := Value;
     prev := SourceCount;
 
+    bOr := False;
     L := NewLabel;
     BoolTerm;
     while (Token = '|') and (Look = '|') do begin
+      bOr := True;
       // advance to second '|'
       Next;
       // advance past the second '|'
@@ -2336,20 +2353,22 @@ begin
       if not fCCSet then
       begin
         SetZeroCC;
-        StoreZeroFlag;
+//        StoreZeroFlag;
       end;
       BranchTrue(L);
-      PushPrim;
+//      PushPrim;
       BoolTerm;
       // convert D0 to boolean value if necessary
       if not fCCSet then
       begin
         SetZeroCC;
-        StoreZeroFlag;
+//        StoreZeroFlag;
       end;
-      PopOr;
+//      PopOr;
     end;
     PostLabel(L);
+    if bOr then
+      StoreZeroFlag;
 
     optExp := OptimizeExpression(fBoolSubExpStr, prev, fBoolSubExpStrHasVars);
   finally
@@ -3035,6 +3054,7 @@ end;
 procedure TSPCComp.MathAssignment(const name : string);
 var
   savedtoken : char;
+  val : integer;
 //  oldType : char;
 begin
   fProcessingMathAssignment := True;
@@ -3084,6 +3104,9 @@ begin
         Expression;
         if fLastExpressionOptimizedToConst then
         begin
+          val := StrToIntDef(fLastLoadedConst, MaxInt);
+          if (val < 1) or (val > 31) then
+            AbortMsg(sInvalidShift);
           StoreShift(savedtoken='>', name);
         end
         else
@@ -3241,10 +3264,10 @@ var
   L1, L2: string;
 begin
   Next;
-  OpenParen;
   L1 := NewLabel;
   L2 := NewLabel;
   PostLabel(L1);
+  OpenParen;
   CommaExpression;
   CloseParen;
   BranchFalse(L2);
@@ -3277,9 +3300,9 @@ var
   svar : string;
 begin
   Next;
-  OpenParen;
   L1 := NewLabel;
   L2 := NewLabel;
+  OpenParen;
   CommaExpression;
   CloseParen;
   push;
@@ -3374,7 +3397,7 @@ end;
 
 procedure TSPCComp.DoSwitchDefault;
 var
-  L1 : string;
+  L1, tmp : string;
 begin
   if fSwitchDepth > 0 then
   begin
@@ -3382,7 +3405,14 @@ begin
     MatchString(':');
     L1 := NewLabel;
     PostLabel(L1);
-    SwitchFixups.Add(Format('%d=%s', [fSwitchDepth, BranchAsString(L1)]));
+    tmp := Format('%d_Default=default', [fSwitchDepth]);
+    if SwitchFixups.IndexOf(tmp) <> -1 then
+      AbortMsg(sCaseDuplicateNotAllowed)
+    else
+    begin
+      SwitchFixups.Add(tmp);
+      SwitchFixups.Add(Format('%d_Default=%s', [fSwitchDepth, BranchAsString(L1)]));
+    end;
     fSemiColonRequired := False;
   end
   else
@@ -3392,16 +3422,17 @@ end;
 procedure TSPCComp.ClearSwitchFixups;
 var
   i : integer;
-  tmpType, tmpCases, tmpDepth, name : string;
+  tmpType, tmpCases, tmpDepth, tmpDefault, name : string;
 begin
 // remove all fixups with depth == fSwitchDepth
   tmpDepth := IntTostr(fSwitchDepth);
   tmpType  := Format('%d_Type', [fSwitchDepth]);
   tmpCases := Format('%d_Cases', [fSwitchDepth]);
+  tmpDefault := Format('%d_Default', [fSwitchDepth]);
   for i := SwitchFixups.Count - 1 downto 0 do
   begin
     name := SwitchFixups.Names[i];
-    if (name = tmpDepth) or (name = tmpType) or (name = tmpCases) then
+    if (name = tmpDepth) or (name = tmpType) or (name = tmpCases) or (name = tmpDefault) then
       SwitchFixups.Delete(i);
   end;
   for i := SwitchRegisterNames.Count - 1 downto 0 do
@@ -3430,19 +3461,35 @@ procedure TSPCComp.FixupSwitch(idx : integer; lbl : string);
 var
   i : integer;
   cnt : integer;
-  tmpDepth : string;
+  tmpDepth, tmpDefault, tmpVal : string;
 begin
-  // always add a jump to the end of the switch in case
-  // there aren't any default labels in the switch
   tmpDepth := IntToStr(fSwitchDepth);
-  SwitchFixups.Add(Format('%d=%s', [fSwitchDepth, BranchAsString(lbl)]));
+  tmpDefault := Format('%d_Default', [fSwitchDepth]);
+  // add a jump to the end of the switch if
+  // there isn't a default label in the switch
+  if SwitchFixups.IndexOf(tmpDefault+'=default') = -1 then
+    SwitchFixups.Add(Format('%d=%s', [fSwitchDepth, BranchAsString(lbl)]));
   cnt := 0;
+  // add the case branches first
   for i := 0 to SwitchFixups.Count - 1 do
   begin
     if SwitchFixups.Names[i] = tmpDepth then
     begin
       SourceInsert(idx+cnt, #9+SwitchFixups.ValueFromIndex[i]);
       inc(cnt);
+    end;
+  end;
+  // now add the default branch last
+  for i := 0 to SwitchFixups.Count - 1 do
+  begin
+    if SwitchFixups.Names[i] = tmpDefault then
+    begin
+      tmpVal := SwitchFixups.ValueFromIndex[i];
+      if (tmpVal <> 'default') then
+      begin
+        SourceInsert(idx+cnt, #9+tmpVal);
+        break;
+      end;
     end;
   end;
 end;
@@ -3803,11 +3850,15 @@ begin
   if bIsArray and bStatic then
     AbortMsg(sStatLocArrNotSupported);
   varName := ApplyDecoration(sub, savedval, fNestingLevel);
+  // if the variable is an array with an empty size then it is
+  // to be treated as a pointer
+  if (aval <> '') and (aval = lenexpr) then
+    bPointer := True;
   idx := AddLocal(varName, dt, tname, bConst, lenexpr, bPointer);
   if (Token = TOK_COMMA) or (Token = TOK_SEMICOLON) then
   begin
-    if (aval <> '') and (aval = lenexpr) then
-      AbortMsg(sArrayLenRequired);
+//    if (aval <> '') and (aval = lenexpr) then
+//      AbortMsg(sArrayLenRequired);
     if bConst then
       Expected(sConstInitialization);
     // no need to allocate if we've already emitted this name&type
@@ -4011,9 +4062,15 @@ begin
       dimensions := Length(aval) div 2; // number of array dimensions
       dt := ArrayOfType(dt, dimensions);
     end;
+    // if the variable is an array with an empty size then it is
+    // to be treated as a pointer
+    if (aval <> '') and (aval = lenexpr) then
+      bPointer := True;
     AddEntry(savedval, dt, tname, lenexpr, bConst, bPointer);
     if (Token = TOK_COMMA) or (Token = TOK_SEMICOLON) then
     begin
+//      if (aval <> '') and (aval = lenexpr) then
+//        AbortMsg(sArrayLenRequired);
       if bConst then
         Expected(sConstInitialization);
       cnt := CountElements(lenexpr);
@@ -4859,6 +4916,38 @@ begin
   InternalParseStream;
 end;
 
+procedure TSPCComp.ParseASM(aStrings: TStrings);
+begin
+  Clear;
+  fSProProgram.LoadFromStrings(aStrings);
+end;
+
+procedure TSPCComp.ParseASM(aStream: TStream);
+var
+  SL : TStringList;
+begin
+  SL := TStringList.Create;
+  try
+    SL.LoadFromStream(aStream);
+    ParseASM(SL);
+  finally
+    SL.Free;
+  end;
+end;
+
+procedure TSPCComp.ParseASM(const aFilename: string);
+var
+  SL : TStringList;
+begin
+  SL := TStringList.Create;
+  try
+    SL.LoadFromFile(aFilename);
+    ParseASM(SL);
+  finally
+    SL.Free;
+  end;
+end;
+
 procedure TSPCComp.Clear;
 begin
   fDS.Clear;
@@ -5257,7 +5346,7 @@ begin
     P.AddIncludeDirs(IncludeDirs);
     if not IgnoreSystemFile then
     begin
-      P.SkipIncludeFile('SPCCommon.h');
+      P.SkipIncludeFile('spmem.h');
       P.SkipIncludeFile('SPCDefs.h');
     end;
     P.Preprocess(CurrentFile, fMS);
@@ -6091,24 +6180,18 @@ begin
 end;
 
 procedure TSPCComp.LoadSystemFile(S : TStream);
-begin
-end;
-
-(*
-procedure TSPCComp.LoadSystemFile(S : TStream);
 var
   tmp : string;
 begin
-  // load fMS with the contents of SPCCommon.h followed by SPCDefs.h
-  tmp := '#line 0 "SPCDefs.h"'#13#10;
+  // load fMS with the contents of spmem.h followed by SPCDefs.h
+  tmp := '#line 0 "SOCDefs.h"'#13#10;
   S.Write(PChar(tmp)^, Length(tmp));
 
-  S.Write(spc_common_data, High(spc_common_data)+1);
+  S.Write(spmem_data, High(spmem_data)+1);
   S.Write(spc_defs_data, High(spc_defs_data)+1);
   tmp := '#reset'#13#10;
   S.Write(PChar(tmp)^, Length(tmp));
 end;
-*)
 
 procedure TSPCComp.CheckSemicolon;
 begin
@@ -6250,28 +6333,36 @@ var
   AHV : TArrayHelperVar;
   tmp, udType, aval, tmpUDTName, oldExpStr, oldBS : string;
   tmpDT : char;
+  dim : integer;
 begin
   Result := False;
-  // grab the index as an expression and put it on the stack
-  Next;
-  tmpDT := fLHSDataType;
-  oldExpStr := fExpStr;
-  oldBS := fBoolSubExpStr;
-  try
-    fLHSDataType := TOK_LONGDEF;
-    CommaExpression;
-  finally
-    fLHSDataType := tmpDT;
-    fExpStr := oldExpStr;
-    fBoolSubExpStr := oldBS;
+  dim := 0;
+  while (dim < 4) and (Token = '[') and IsArrayType(theArrayDT) do
+  begin
+    // grab the index as an expression and put it on the stack
+    Next;
+    tmpDT := fLHSDataType;
+    oldExpStr := fExpStr;
+    oldBS := fBoolSubExpStr;
+    try
+      fLHSDataType := TOK_LONGDEF;
+      CommaExpression;
+    finally
+      fLHSDataType := tmpDT;
+      fExpStr := oldExpStr;
+      fBoolSubExpStr := oldBS;
+    end;
+    if Value <> ']' then
+      Expected(''']''');
+    push;
+    tmp := tos;
+    CopyVar(tmp, RegisterName);
+    fArrayIndexStack.Add(tmp);
+    theArrayDT := RemoveArrayDimension(theArrayDT);
+    inc(dim);
+    if Look = '[' then
+      Next;
   end;
-  if Value <> ']' then
-    Expected(''']''');
-  push;
-  tmp := tos;
-  CopyVar(tmp, RegisterName);
-  fArrayIndexStack.Add(tmp);
-  theArrayDT := RemoveArrayDimension(theArrayDT);
 
   // check for additional levels of indexing
   if (Look = '[') and IsArrayType(theArrayDT) then
@@ -6510,19 +6601,18 @@ var
 begin
   Result := 0;
   dim := 0;
-  dlen[0] := 0;
-  dlen[1] := 0;
-  dlen[2] := 0;
-  dlen[3] := 0;
-  while (lenexpr <> '') do
+  while (dim < 4) and (lenexpr <> '') do
   begin
     // grab the first array expression from lenexpr
     idx := Pos('[', lenexpr);
     n := Pos(']', lenexpr);
     expr := Copy(lenexpr, idx+1, n-idx-1);
-    dlen[dim] := StrToIntDef(expr, -1);
-    if dlen[dim] < 0 then
-      AbortMsg(sArrayLenInvalid);
+    if expr <> '' then
+    begin
+      dlen[dim] := StrToIntDef(expr, -1);
+      if dlen[dim] < 0 then
+        AbortMsg(sArrayLenInvalid);
+    end;
     System.Delete(lenexpr, idx, n-idx+1);
     inc(dim);
   end;
@@ -6718,16 +6808,19 @@ var
   tmp : string;
 begin
   n := CountElements(lenexpr);
-  push;
-  tmp := tos;
-  StoreAddress(tmp, Name);
-  for i := 0 to n - 1 do
+  if n > 0 then
   begin
-    ClearIndirect(tmp);
-    if i < (n - 1) then
-      DoIncrement(tmp);
+    push;
+    tmp := tos;
+    StoreAddress(tmp, Name);
+    for i := 0 to n - 1 do
+    begin
+      ClearIndirect(tmp);
+      if i < (n - 1) then
+        DoIncrement(tmp);
+    end;
+    pop;
   end;
-  pop;
 end;
 
 procedure TSPCComp.DoLocalArrayInit(const aName, ival: string; dt: char);
@@ -6740,27 +6833,30 @@ begin
   try
     SL.CommaText := StripBraces(ival);
     n := SL.Count;
-    push;
-    tmp := tos;
-    StoreAddress(tmp, aName);
-    for i := 0 to n - 1 do
+    if n > 0 then
     begin
-      val := SL[i];
-      fCalc.SilentExpression := val;
-      if fCalc.ParserError then
+      push;
+      tmp := tos;
+      StoreAddress(tmp, aName);
+      for i := 0 to n - 1 do
       begin
-        // a variable?
-        CopyVar('('+tmp+')', val);
-      end
-      else
-      begin
-        // a constant
-        LoadConstToDest('('+tmp+')', val);
+        val := SL[i];
+        fCalc.SilentExpression := val;
+        if fCalc.ParserError then
+        begin
+          // a variable?
+          CopyVar('('+tmp+')', val);
+        end
+        else
+        begin
+          // a constant
+          LoadConstToDest('('+tmp+')', val);
+        end;
+        if i < (n - 1) then
+          DoIncrement(tmp);
       end;
-      if i < (n - 1) then
-        DoIncrement(tmp);
+      pop;
     end;
-    pop;
   finally
     SL.Free;
   end;
@@ -7683,13 +7779,12 @@ procedure TSPCComp.CmpHelper(const cc : TCompareCode; const lhs, rhs: string);
 var
   tmp, L : string;
 begin
-  fCCSet := True;
   push;
   tmp := tos;
   L := NewLabel;
   EmitLn(MoveAsString(tmp, lhs));
   EmitLn(SubAsString(tmp, rhs));
-  SetToTrue(tmp);
+  SetToTrue(RegisterName);
   if cc in [ccLT, ccLTEQ] then begin
     if cc = ccLTEQ then
       EmitLn(BranchFalseAsString(L)); // Z will be set if lhs == rhs
@@ -7705,9 +7800,9 @@ begin
       EmitLn('INVZ');  // Z will not be set if lhs != rhs
     EmitLn(BranchFalseAsString(L));  // Z will be set if lhs == rhs
   end;
-  SetToFalse(tmp);
+  SetToFalse(RegisterName);
   PostLabel(L);
-  EmitLn(TestAsString(tmp));
+  SetZeroCC;
   pop;
 end;
 

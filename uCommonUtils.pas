@@ -94,11 +94,13 @@ function CommasToSpaces(const line : string) : string;
 procedure TrimComments(var line : string; p : integer; const sub : string);
 function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
   Strings: TStrings): Integer;
+function BinToInt(const aValue: String): Integer;
+function BinToIntDef(const aValue: String; const aDefault : Integer): Integer;
 
 implementation
 
-uses
 {$IFNDEF FPC}
+uses
   {$IFDEF FAST_MM}FastStrings, {$ENDIF}
   Windows;
 {$ENDIF}
@@ -508,5 +510,30 @@ begin
   Result := ExtractStrings(Separators, WhiteSpace, Content, Strings);
 end;
 {$ENDIF}
+
+function BinToInt(const aValue: String): LongInt;
+begin
+  Result := BinToIntDef(aValue, 0);
+end;
+
+function BinToIntDef(const aValue: String; const aDefault : Integer): Integer;
+var
+  i, len : Integer;
+  Ch : Char;
+begin
+  Result := 0;
+  len := Length(aValue);
+  for i := len downto 1 do begin
+    Ch := aValue[i];
+    if Ch = '1' then
+      Result := Result + (1 shl (len-i))
+    else if Ch = '0' then
+      continue
+    else begin
+      Result := aDefault;
+      break;
+    end;
+  end;
+end;
 
 end.

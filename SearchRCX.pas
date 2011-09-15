@@ -49,6 +49,7 @@ type
     procedure BrictypeClick(Sender: TObject);
     procedure btnHelpClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
+    procedure cboBrickTypeChange(Sender: TObject);
   private
     { Private declarations }
     procedure UpdateControls;
@@ -483,6 +484,11 @@ begin
       end;
     end;
   end;
+end;
+
+procedure TSearchRCXForm.cboBrickTypeChange(Sender: TObject);
+begin
+
 end;
 
 {$IFDEF FPC}

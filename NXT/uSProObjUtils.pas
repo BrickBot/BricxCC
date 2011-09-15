@@ -21,6 +21,7 @@ var
   BP : Word;
   I : integer;
 begin
+  aStream.Position := 0; // always start from beginning of input stream
   Result := #13#10;
   // process the input stream and generate a .obj text string
   BP := 0;
@@ -79,6 +80,7 @@ var
   SL : TStringList;
   tmp, b1, b2 : string;
 begin
+  inStream.Position := 0; // always start from beginning of stream
   SL := TStringList.Create;
   try
     SL.LoadFromStream(inStream);

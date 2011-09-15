@@ -9,7 +9,7 @@ clean::
 	rm -f *.o *.ppu *.rst *.compiled *.dcu ../*.dcu ../bricktools/*.dcu nbc_preproc.inc
 
 realclean:: clean
-	rm -f $(PROGRAMS) mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
+	rm -f $(PROGRAMS) mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas SPCDefsData.pas SPMemData.pas
 
 # Delphi
 #TOOLPREFIX=C:/win32apps/Borland/Delphi7/Bin/
@@ -20,7 +20,7 @@ DELPHI=$(TOOLPREFIX)dcc32.exe
 	$(DELPHI) $< -U.. -U../bricktools -U../png -DCAN_DOWNLOAD -dNXT_ONLY -DFAST_MM
 
 # how to compile pas source
-%.dcu: %.pas mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
+%.dcu: %.pas mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas SPCDefsData.pas SPMemData.pas
 	$(DELPHI) $< -U.. -U../bricktools -U../png -DCAN_DOWNLOAD -DFAST_MM
 
 # how to create the include file
@@ -45,4 +45,12 @@ NXTDefsData.pas: NXTDefs.h
 # how to create NXCDefsData.pas
 NXCDefsData.pas: NXCDefs.h
 	./mkdata.exe $< $@ nxc_defs_data
+
+# how to create NXCDefsData.pas
+SPCDefsData.pas: SPCDefs.h
+	./mkdata.exe $< $@ spc_defs_data
+
+# how to create SPMemData.pas
+SPMemData.pas: spmem.h
+	./mkdata.exe $< $@ spmem_data
 

@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2829;
+  uNXCHTMLTopicsSize = 2871;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -165,6 +165,10 @@ const
      Value: 'struct_get_start_tick_type.html'
     ),
     (
+     Name: 'InputPinFunctionType';
+     Value: 'struct_input_pin_function_type.html'
+    ),
+    (
      Name: 'InputValuesType';
      Value: 'struct_input_values_type.html'
     ),
@@ -283,6 +287,10 @@ const
     (
      Name: 'WriteSemDataType';
      Value: 'struct_write_sem_data_type.html'
+    ),
+    (
+     Name: 'XGPacketType';
+     Value: 'struct_x_g_packet_type.html'
     ),
     (
      Name: 'TRUE';
@@ -543,6 +551,10 @@ const
     (
      Name: 'ListFiles';
      Value: 'group___sys_call_constants_gaa8eab7de886a0bc56511917ea862d92f.html'
+    ),
+    (
+     Name: 'InputPinFunction';
+     Value: 'group___sys_call_constants_ga960d97607c206a7d99e5ab08cadc4cee.html'
     ),
     (
      Name: 'IOMapReadByID';
@@ -2445,6 +2457,38 @@ const
      Value: 'group___input_i_o_m_a_p_gabd3c28426fcb8b6cf1c2d417b792ad1c.html'
     ),
     (
+     Name: 'INPUT_PINCMD_DIR';
+     Value: 'group___input_pin_func_constants_ga3c2ab1cf7853859c7fec787f6448ae77.html'
+    ),
+    (
+     Name: 'INPUT_PINCMD_SET';
+     Value: 'group___input_pin_func_constants_gaf844428b1764a1dad19a8065e298d93d.html'
+    ),
+    (
+     Name: 'INPUT_PINCMD_CLEAR';
+     Value: 'group___input_pin_func_constants_ga5201792d7d5415c281a44e863842d7d1.html'
+    ),
+    (
+     Name: 'INPUT_PINCMD_READ';
+     Value: 'group___input_pin_func_constants_gabe33f65f9f0125d9383f375d46562ae6.html'
+    ),
+    (
+     Name: 'INPUT_PINCMD_MASK';
+     Value: 'group___input_pin_func_constants_gafe6ad87b8bb380f6d726cb9b64f6e407.html'
+    ),
+    (
+     Name: 'INPUT_PINCMD_WAIT';
+     Value: 'group___input_pin_func_constants_gae708b6378f6de1036e06af0a02f1949f.html'
+    ),
+    (
+     Name: 'INPUT_PINDIR_OUTPUT';
+     Value: 'group___input_pin_func_constants_gaf6d4b2f193314586a9beab3b53f6b9db.html'
+    ),
+    (
+     Name: 'INPUT_PINDIR_INPUT';
+     Value: 'group___input_pin_func_constants_ga155b08f46275e42a19bd5ff9f7820201.html'
+    ),
+    (
      Name: 'OUT_A';
      Value: 'group___output_port_constants_ga26800436eab9c6012bfb27f225b7d7a5.html'
     ),
@@ -3127,6 +3171,18 @@ const
     (
      Name: 'EMETER_REG_WOUT';
      Value: 'group___e_meter_i2_c_constants_ga352fa58ce7f96b4fec6db8b86ee09562.html'
+    ),
+    (
+     Name: 'I2C_OPTION_STANDARD';
+     Value: 'group___i2_c_option_constants_ga8538589a9c4885145ac8c9bd28491296.html'
+    ),
+    (
+     Name: 'I2C_OPTION_NORESTART';
+     Value: 'group___i2_c_option_constants_ga439e5a78565f6e56339e521a25adf366.html'
+    ),
+    (
+     Name: 'I2C_OPTION_FAST';
+     Value: 'group___i2_c_option_constants_ga5198e399c930fc8c90a1e236f49db442.html'
     ),
     (
      Name: 'DISPLAY_ERASE_ALL';
@@ -5389,6 +5445,10 @@ const
      Value: 'group___hi_technic_constants_gaab38d9edcb1bd4e47b34a11626bf140d.html'
     ),
     (
+     Name: 'HT_ADDR_BAROMETRIC';
+     Value: 'group___hi_technic_constants_ga8f93e09e350fe3461edf8f2c1e65ccb8.html'
+    ),
+    (
      Name: 'HTIR2_MODE_1200';
      Value: 'group___h_t_i_r_seeker2_constants_ga3ec2348617d3fae0aadb1eef110f7e2f.html'
     ),
@@ -5577,6 +5637,22 @@ const
      Value: 'group___h_t_angle_constants_gab98acbb8edd369f305062915025c13a1.html'
     ),
     (
+     Name: 'HTBAR_REG_COMMAND';
+     Value: 'group___h_t_barometric_constants_gaafd9ab81c0c2d52db83b63a30d603720.html'
+    ),
+    (
+     Name: 'HTBAR_REG_TEMPERATURE';
+     Value: 'group___h_t_barometric_constants_gab4b7401410e4e576af47610a9bf330f5.html'
+    ),
+    (
+     Name: 'HTBAR_REG_PRESSURE';
+     Value: 'group___h_t_barometric_constants_ga65c197ce568ef63ec4b25c5b360275ec.html'
+    ),
+    (
+     Name: 'HTBAR_REG_CALIBRATION';
+     Value: 'group___h_t_barometric_constants_ga5b9e8f6570dca842a58656de21daf62a.html'
+    ),
+    (
      Name: 'MS_CMD_ENERGIZED';
      Value: 'group___mind_sensors_constants_gadf1788cf326ea1e2f73f4157ba67cf29.html'
     ),
@@ -5757,12 +5833,20 @@ const
      Value: 'group___m_s_p_s_p_n_x_btn_set1_ga62313f5ef82e1e466363f7dacee0c20e.html'
     ),
     (
+     Name: 'PSP_BTNSET1_START';
+     Value: 'group___m_s_p_s_p_n_x_btn_set1_ga9610f3453f14daeefa797a69bc1efddf.html'
+    ),
+    (
      Name: 'PSP_BTNSET1_R3';
      Value: 'group___m_s_p_s_p_n_x_btn_set1_gab9959a1e606a395a582ae58f53d3bc3f.html'
     ),
     (
      Name: 'PSP_BTNSET1_L3';
      Value: 'group___m_s_p_s_p_n_x_btn_set1_ga4d1a3a46309a749eee192a6f239430ec.html'
+    ),
+    (
+     Name: 'PSP_BTNSET1_SELECT';
+     Value: 'group___m_s_p_s_p_n_x_btn_set1_ga638a5816060c86cf088cded1115480f2.html'
     ),
     (
      Name: 'PSP_BTNSET2_SQUARE';
@@ -6535,6 +6619,58 @@ const
     (
      Name: 'DGPS_REG_SETLONGITUDE';
      Value: 'group___d_i_g_p_s_constants_ga337e05bb0e6f5aad4cc5debf22603810.html'
+    ),
+    (
+     Name: 'MI_ADDR_XG1300L';
+     Value: 'group___x_g1300_l_constants_gad1648bbc83ae022632215cf2eaf9925d.html'
+    ),
+    (
+     Name: 'XG1300L_REG_ANGLE';
+     Value: 'group___x_g1300_l_constants_gaf160c8b66259eb6804df2a2de95b9822.html'
+    ),
+    (
+     Name: 'XG1300L_REG_TURNRATE';
+     Value: 'group___x_g1300_l_constants_ga717afa320cfc89fc86babc733e651900.html'
+    ),
+    (
+     Name: 'XG1300L_REG_XAXIS';
+     Value: 'group___x_g1300_l_constants_gada62f6cbba561ed5d1357455dedf393c.html'
+    ),
+    (
+     Name: 'XG1300L_REG_YAXIS';
+     Value: 'group___x_g1300_l_constants_ga139ccbec6f4192ae55b46e9573facd64.html'
+    ),
+    (
+     Name: 'XG1300L_REG_ZAXIS';
+     Value: 'group___x_g1300_l_constants_gae20ea3077dd2516514a72ab369ceb056.html'
+    ),
+    (
+     Name: 'XG1300L_REG_RESET';
+     Value: 'group___x_g1300_l_constants_gaecd06031e881eab914f5cd5548628f61.html'
+    ),
+    (
+     Name: 'XG1300L_REG_2G';
+     Value: 'group___x_g1300_l_constants_ga951295752869de30851df698a0fa29c9.html'
+    ),
+    (
+     Name: 'XG1300L_REG_4G';
+     Value: 'group___x_g1300_l_constants_ga72ad516e83bb5f8e3f3f3bb7cd3d8628.html'
+    ),
+    (
+     Name: 'XG1300L_REG_8G';
+     Value: 'group___x_g1300_l_constants_ga617b150a192c523095d39152ae9c35cc.html'
+    ),
+    (
+     Name: 'XG1300L_SCALE_2G';
+     Value: 'group___x_g1300_l_scale_constants_ga0b341a97d37f407d9becd075a946c222.html'
+    ),
+    (
+     Name: 'XG1300L_SCALE_4G';
+     Value: 'group___x_g1300_l_scale_constants_ga73dc61e4217c73a650aef1a335d2ed72.html'
+    ),
+    (
+     Name: 'XG1300L_SCALE_8G';
+     Value: 'group___x_g1300_l_scale_constants_gaa2d2d5521ebf81281b833e02022616dc.html'
     ),
     (
      Name: 'RICImgPoint';
@@ -7365,6 +7501,10 @@ const
      Value: 'group___input_module_functions_ga4808680141fee797afd46be59f0c19ab.html'
     ),
     (
+     Name: 'SysInputPinFunction';
+     Value: 'group___input_module_functions_ga001730fda3dfd1b63e568ae7320db6bb.html'
+    ),
+    (
      Name: 'SetMotorPwnFreq';
      Value: 'group___output_module_functions_ga2f740b6a6b9811aab0fb10062ca3b818.html'
     ),
@@ -8031,6 +8171,10 @@ const
     (
      Name: 'LSNoRestartOnRead';
      Value: 'group___low_level_low_speed_module_functions_ga17beb1068a9cbe8cc270c50d7c0e8851.html'
+    ),
+    (
+     Name: 'SetI2COptions';
+     Value: 'group___low_level_low_speed_module_functions_gae9b765c80489e5104bcfa9c116c5523b.html'
     ),
     (
      Name: 'SysCommLSWrite';
@@ -9545,8 +9689,16 @@ const
      Value: 'group___hi_technic_a_p_i_gafd97b81a5dc7ab5ac7a9a986b9aafdea.html'
     ),
     (
-     Name: 'ReadSensorHTBarometer';
-     Value: 'group___hi_technic_a_p_i_ga589b5b585de43b740a8e36b73c4b01f8.html'
+     Name: 'ResetHTBarometricCalibration';
+     Value: 'group___hi_technic_a_p_i_ga11cf20eaefc1a117771d1b62a41f89d1.html'
+    ),
+    (
+     Name: 'SetHTBarometricCalibration';
+     Value: 'group___hi_technic_a_p_i_gad9dc084db8068cf72ba38c4a64223bde.html'
+    ),
+    (
+     Name: 'ReadSensorHTBarometric';
+     Value: 'group___hi_technic_a_p_i_ga0b1ec3775f73ffa701014ae5c2e3641b.html'
     ),
     (
      Name: 'ReadSensorHTTouchMultiplexer';
@@ -10767,6 +10919,22 @@ const
     (
      Name: 'SetSensorDIGPSWaypoint';
      Value: 'group___dexter_industries_a_p_i_ga9d23c5f3dffc1d9be12cd4c97c34c474.html'
+    ),
+    (
+     Name: 'ResetMIXG1300L';
+     Value: 'group___microinfinity_functions_ga0accd98c6ac906249c54480be1f87ea1.html'
+    ),
+    (
+     Name: 'SensorMIXG1300LScale';
+     Value: 'group___microinfinity_functions_ga85c5f881294fb5c5e1f0b598ed4f92b1.html'
+    ),
+    (
+     Name: 'SetSensorMIXG1300LScale';
+     Value: 'group___microinfinity_functions_gad064a782ce6f3a2ed5947c69528ca057.html'
+    ),
+    (
+     Name: 'ReadSensorMIXG1300L';
+     Value: 'group___microinfinity_functions_ga3b601937924d3c6c82e5a4a2ba2a118a.html'
     ),
     (
      Name: 'sqrt';

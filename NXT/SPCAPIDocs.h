@@ -22,7 +22,7 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-08-11
+ * \date 2011-09-01
  * \version 1
  */
 #ifndef SPCAPIDOCS_H
@@ -47,8 +47,8 @@
  * \brief
  *
  * SPC stands for SuperPro C. It is a simple language for programming the
- * HiTechnic SuperPro 2 product. The SuperPro has a bytecode interpreter
- * which can be used to execute programs. The SPC compiler translates
+ * HiTechnic SuperPro prototyping sensor board. The SuperPro has a bytecode
+ * interpreter which can be used to execute programs. The SPC compiler translates
  * a source program into SuperPro bytecodes, which can then be executed on the
  * target itself. Although the preprocessor and control structures of SPC are
  * very similar to C, SPC is not a general-purpose programming language - there
@@ -105,6 +105,7 @@
  * - @subpage consts
  * - @subpage strconst
  * - @subpage charconst
+ * - @subpage sysconst
  * - @subpage idkey
  *
  */
@@ -127,7 +128,7 @@
 
 /** @page statements Statements
  * \brief
- * 
+ *
  * The body of a code block (task or function) is composed of statements.
  * Statements are terminated with a semi-colon (';'), as you have seen in the
  * example code above.
@@ -142,7 +143,7 @@
 
 /** @page expressions Expressions
  * \brief
- * 
+ *
  * Values are the most primitive type of expressions. More complicated
  * expressions are formed from values using various operators.
  *
@@ -184,7 +185,7 @@
  * <tr><td>?:</td><td>Ternary conditional value</td><td>right</td><td>&nbsp;</td><td>x==1 ? y : z</td></tr>
  * </table>
  * </center>
- * <center>Table 5. Expression Operators</center>
+ * <center>Expression Operators</center>
  * Where needed, parentheses are used to change the order of evaluation:
  * \code
  * x = 2 + 3 * 4;	// set x to 14
@@ -310,9 +311,42 @@
  * 
  */
 
+/** @page sysconst System Constants
+ * \brief
+ *
+ * In SPC you can define special system memory address constants that are treated
+ * like a variable with an absolute memory address.  A system address is simply
+ * a numeric constant preceded by the '@' symbol.
+ * \code
+ * int volt = @0x00; // read the voltage from analog input A0.
+ * @0x0C = 1000; // set countdown timer 0 to 1000.
+ * \endcode
+ * 
+ * The spmem.h header file uses system constants to define names for the
+ * I/O mapped memory addresses of the SuperPro board you are targetting.
+ * A complete list of these system constants appears below:
+ *
+ * - @subpage adchannels
+ * - @subpage din
+ * - @subpage dout
+ * - @subpage dctrl
+ * - @subpage sctrl
+ * - @subpage timers
+ * - @subpage sincnt
+ * - @subpage sinbyte
+ * - @subpage soutcnt
+ * - @subpage soutbyte
+ * - @subpage dacmode
+ * - @subpage dacfreq
+ * - @subpage dacvolt
+ * - @subpage ledctrl
+ * - @subpage sysclk
+ *
+ */
+
 /** @page idkey Identifiers and Keywords
  * \brief
- * 
+ *
  * Identifiers are used for variable, task, function, and subroutine names.
  * The first character of an identifier must be an upper or lower case letter
  * or the underscore ('_'). Remaining characters may be letters, numbers, and
@@ -578,7 +612,7 @@
  * with arguments and return values. Functions are defined using the syntax
  * below.
  * \code
- * [safecall] [inline] return_type name(argument_list)
+ * [inline] return_type name(argument_list)
  * {
  * 	// body of the function
  * }
@@ -1019,7 +1053,7 @@
  * <tr><td>&lt;&lt;=</td><td>Left shift variable by expression</td></tr>
  * </table>
  * </center>
- * <center>Table 3. Operators</center>
+ * <center>Operators</center>
  * The code sample below shows a few of the different types of operators that
  * you can use in SPC expressions.
  * \code
@@ -1517,7 +1551,7 @@
  * only if at least one of the conditions are true)</td></tr>
  * </table>
  * </center>
- * <center>Table 6. Conditions</center>
+ * <center>Conditions</center>
  * There are also two special constant conditions which can be used anywhere
  * that the above conditions are allowed.  They are listed below.
  *
@@ -1614,10 +1648,311 @@
  * <tr><td>\#elif</td><td>Same as \#else but used with \#if</td></tr>
  * </table>
  * </center>
- * <center>Table 7. Conditional compilation directives</center>
+ * <center>Conditional compilation directives</center>
  *
  * See the SPCDefs.h header files for many examples of how to
  * use conditional compilation.
+ *
+ */
+
+/** @page adchannels ADChannel0/1/2/3
+ * \brief
+ *
+ * These variables return the voltage on pins A0/1/2/3 as a value in the range
+ * 0 - 1023. This range of values represents a voltage range of 0 - 3.3 volts,
+ * or ~3.222 mV per step.
+ *
+ * \code
+ * //convert channel 0 reading to millivolts
+ * int voltage = ( ADChannel0 * 3222 ) / 1000 ;
+ * \endcode
+ *
+ */
+
+/** @page din DigitalIn
+ * \brief
+ *
+ * This variable returns the current state of the 8 digital lines, B0 - B7.
+ * This includes the state of any of the lines which are configured as outputs.
+ *
+ * \code
+ * if ( DigitalIn & DIGI_PIN7 == DIGI_PIN7 )  //check if bit 7 set
+ * {
+ *   // do something here
+ * }
+ * \endcode
+ *
+ */
+
+/** @page dout DigitalOut
+ * \brief
+ *
+ * This variable sets the current state of any of the 8 digital lines, B0 - B7
+ * which are set as outputs. See \ref DigitalPinConstants.
+ *
+ * \code
+ * DigitalOut = DIGI_PIN0 ;   //set B0
+ * \endcode
+ *
+ */
+
+/** @page dctrl DigitalControl
+ * \brief
+ *
+ * This variable defines which of the 8 digital lines, B0 - B7, are set as
+ * outputs. If the corresponding bit in 1, the line is configured as an
+ * output, else it will be an input.  See \ref DigitalPinConstants.
+ *
+ * \code
+ * DigitalControl = 0x0F ;   //set DIGI_PIN0 - DIGI_PIN3 as outputs
+ * \endcode
+ *
+ */
+
+/** @page sctrl StrobeControl
+ * \brief
+ *
+ * This variable allows control over the 6 strobe lines. See \ref
+ * StrobeCtrlConstants.
+ *
+ * <center>
+ * <table>
+ * <tr><th>D31-D6</th><th>D5</th><th>D4</th><th>D3</th><th>D2</th><th>D1</th><th>D0</th></tr>
+ * <tr><td>-</td><td>WR</td><td>RD</td><td>S3</td><td>S2</td><td>S1</td><td>S0</td></tr>
+ * </table>
+ * </center>
+ * <center>Strobe Lines</center>
+ *
+ * There are 4 general purpose outputs, S0 - S3. These 4 lines may be used as
+ * digital outputs. There are 2 special purpose outputs, RD and WR. These lines
+ * are automatically activated when DigitalIn is read or DigitalOut is written.
+ * When DigitalIn is read, the RD output will pulse for about 10 S. If the
+ * StrobeControl RD bit is 0, the RD output will pulse high, if the bit is 1,
+ * the output will pulse low.
+ *
+ * \image html strobe1.png
+ * \image rtf strobe1.png
+ * \image latex strobe1.png
+ *
+ * The timing for a read.
+ * An external device which is relying on the RD strobe output for
+ * synchronizing with the SuperPro hardware may use the leading edge of the
+ * RD strobe to present data on B0 - B7. The device must have the data ready
+ * within 9 microseconds of the start (leading edge) of the RD strobe.
+ * The timing for a write.
+ *
+ * \image html strobe2.png
+ * \image rtf strobe2.png
+ * \image latex strobe2.png
+ *
+ * An external device which is relying on the WR strobe output for
+ * synchronizing with the SuperPro hardware may use the leading edge of the WR
+ * strobe as either an edge type clock or a latch type due to the data being
+ * presented on B0 - B7 at least 1 microsecond before the strobe is active
+ * until 1 microsecond after.
+ *
+ * \code
+ * DigitalControl = 0xFF ;   //set B0 - B7 as outputs
+ * DigitalOut = outputbyte ;
+ * DigitalControl = 0x00 ;   //reset B0 - B7 to inputs
+ * \endcode
+ *
+ * \image html strobe3.png
+ * \image rtf strobe3.png
+ * \image latex strobe3.png
+ *
+ * In a typical example of using the strobes to use the B0-7 bus
+ * bi-directionally:
+ *
+ * \code
+ * StrobeControl = 0x10 ; //set RD active low and WR active high
+ * DigitalControl = 0x00 ;   //ensure outputs are inactive
+ * // ...
+ * datain = DigitalIn ; //read DATAIN byte
+ * // ...
+ * DigitalControl = 0xFF ;   //set B0 - B7 as outputs
+ * DigitalOut = dataout ;    //write DATAOUT byte
+ * DigitalControl = 0x00 ;   //reset B0 - B7 to inputs
+ * \endcode
+ *
+ */
+
+/** @page timers Timer0/1/2/3
+ * \brief
+ *
+ * The timers are count-down and halt at zero types. They count down at the
+ * rate of 1000 counts per second, i.e., one count per millisecond.
+ *
+ * \code
+ * Timer1 = 1000 ;  //set timer1 to run for 1 second
+ * while ( Timer1 != 0 ) ;   /wait for timer1 to expire
+ * \endcode
+ *
+ */
+
+/** @page sincnt SerialInCount
+ * \brief
+ *
+ * The SerialInCount returns the number of characters waiting in an input
+ * FIFO (First In, First Out) buffer of up to 255 entries. Characters can be
+ * transferred from the host PC to the SuperPro via a terminal emulation
+ * program running at 115200bps, 8 bits, no parity. A program can wait for a
+ * character to become available using this value.
+ *
+ * \code
+ * while ( SerialInCount == 0 ) ; //wait for a character
+ * \endcode
+ *
+ */
+
+/** @page sinbyte SerialInByte
+ * \brief
+ *
+ * The SerialInByte returns the character waiting in the input FIFO receive
+ * queue. A program should wait for a character to become available before
+ * performing a read from SerialInByte. The result of reading from an empty
+ * FIFO receive queue is unpredictable.
+ *
+ * \code
+ * while ( SerialInCount == 0 ) ; //wait for a character
+ * kbchar = SerialInByte ;  //get it
+ * \endcode
+ *
+ */
+
+/** @page soutcnt SerialOutCount
+ * \brief
+ *
+ * The SerialOutCount returns the number of characters waiting in an output
+ * FIFO send queue of 255 entries. Characters from the output FIFO are
+ * transferred to the host PC at approximately 10,000 per second. If the
+ * program is generating characters at a rate greater than this, the output
+ * FIFO will start to fill up. This state can be checked by the program by
+ * comparing the count with SERIAL_BUFFER_SIZE. In the event that this check
+ * is not performed, no data will be lost since the program will stall
+ * waiting for space to become available in the FIFO.
+ *
+ * \code
+ * while ( SerialOutCount > 254 ) ; //wait for space for a character
+ * \endcode
+ *
+ */
+
+/** @page soutbyte SerialOutByte
+ * \brief
+ *
+ * The SerialOutByte sends a character to the output FIFO send queue. The result
+ * of writing to a full FIFO send queue is to cause the program to stall. The
+ * send queue can hold up to 255 bytes.
+ *
+ * \code
+ * while ( SerialOutCount > 254 ) ; //wait for space for a character
+ * SerialOutByte = 'C' ;  //send a byte
+ * \endcode
+ *
+ */
+
+/** @page dacmode DAC0Mode/DAC1Mode
+ * \brief
+ *
+ * The DACnMode controls the operation of the analog output pins O0/O1.
+ * The following modes are available for use:
+ * <center>
+ * <table>
+ * <tr><th>Mode</th><th>Value</th><th>Function</th></tr>
+ * <tr><td>DAC_MODE_DCOUT</td><td>0</td><td>Steady (DC) voltage output</td></tr>
+ * <tr><td>DAC_MODE_SINEWAVE</td><td>1</td><td>Sine wave output</td></tr>
+ * <tr><td>DAC_MODE_SQUAREWAVE</td><td>2</td><td>Square wave output</td></tr>
+ * <tr><td>DAC_MODE_SAWPOSWAVE</td><td>3</td><td>Positive going sawtooth output</td></tr>
+ * <tr><td>DAC_MODE_SAWNEGWAVE</td><td>4</td><td>Negative going sawtooth output</td></tr>
+ * <tr><td>DAC_MODE_TRIANGLEWAVE</td><td>5</td><td>Triangle wave output</td></tr>
+ * <tr><td>DAC_MODE_PWMVOLTAGE</td><td>6</td><td>PWM square wave output</td></tr>
+ * </table>
+ * </center>
+ * <center>Analog Output Modes</center>
+ *
+ * Mode DAC_MODE_DCOUT uses the DACnVoltage to control the output voltage
+ * between 0 and 3.3 volts in steps of 3.222 mV.
+ *
+ * The waveforms associated with modes DAC_MODE_SINEWAVE, DAC_MODE_SQUAREWAVE,
+ * DAC_MODE_SAWPOSWAVE, DAC_MODE_SAWNEGWAVE, and DAC_MODE_TRIANGLEWAVE are
+ * centered around a DC offset of 1.65 volts. The DACnVoltage controls the
+ * amplitude from +/- 0 to +/- 1.65 volts.
+ *
+ * The waveform associated with mode DAC_MODE_PWMVOLTAGE is a rectangular
+ * waveform switching between 0 and 3.3 volts. The DACnVoltage controls the
+ * mark to space ratio between 0% and 100%. The average DC value of this
+ * waveform thus varies from 0 to 3.3 volts.
+ *
+ * \code
+ * DAC0Mode = DAC_MODE_PWMVOLTAGE; // use PWM output
+ * DAC0Frequency = 4000; // 4khz frequency.
+ * DAC0Voltage = 512; // mark/space ratio = 50%
+ * \endcode
+ *
+ */
+
+/** @page dacfreq DAC0Frequency/DAC1Frequency
+ * \brief
+ *
+ * The DACnFrequency controls the generator frequency for the analog output
+ * pins O0/O1 for DACnModes DAC_MODE_SINEWAVE, DAC_MODE_SQUAREWAVE,
+ * DAC_MODE_SAWPOSWAVE, DAC_MODE_SAWNEGWAVE, DAC_MODE_TRIANGLEWAVE, and
+ * DAC_MODE_PWMVOLTAGE. The available frequency range is 1 - 8000 Hz.
+ *
+ * \code
+ * DAC0Mode = DAC_MODE_SINEWAVE; // use sine wave output
+ * DAC0Frequency = 4000; // 4khz frequency.
+ * DAC0Voltage = 1024; // full range amplitude
+ * \endcode
+ *
+ */
+
+/** @page dacvolt DAC0Voltage/DAC1Voltage
+ * \brief
+ *
+ * The DACnVoltage controls the output voltage levels for the analog output
+ * pins O0/O1.
+ *
+ * DACnMode DAC_MODE_DCOUT uses the DACnVoltage to control the output voltage
+ * between 0 and 3.3 volts in steps of 3.222 mV.
+ *
+ * For DACnModes DAC_MODE_SINEWAVE, DAC_MODE_SQUAREWAVE, DAC_MODE_SAWPOSWAVE,
+ * DAC_MODE_SAWNEGWAVE, and DAC_MODE_TRIANGLEWAVE, the DACnVoltage controls the
+ * amplitude from +/- 0 to +/- 1.65 volts.
+ *
+ * For DACnMode DAC_MODE_PWMVOLTAGE, DACnVoltage controls the mark to space
+ * ratio between 0% and 100%. The average DC value of this waveform thus varies
+ * from 0 to 3.3 volts.
+ *
+ * \code
+ * DAC0Mode = DAC_MODE_DCOUT; // DC ouput voltage
+ * DAC0Voltage = 500; // set voltage level of O0 to 500*3.222 mV
+ * \endcode
+ *
+ */
+
+/** @page ledctrl LEDControl
+ * \brief
+ *
+ * The LEDControl location can be used to turn two on-board LEDs on and off.
+ * Bit 0 controls the state of a red LED, while bit 1 controls a blue LED.
+ *
+ * \code
+ * LEDControl = LED_BLUE | LED_RED; // turn on both the blue and red LEDs
+ * \endcode
+ *
+ */
+
+/** @page sysclk SystemClock
+ * \brief
+ *
+ * The SystemClock returns the number of milliseconds since power was
+ * applied to the SuperPro board.
+ *
+ * \code
+ * long x = SystemClock;
+ * \endcode
  *
  */
 

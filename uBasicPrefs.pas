@@ -148,7 +148,7 @@ var
 
 {Templates}
 const
-  NUM_LANGS = 16;
+  NUM_LANGS = 17;
   LANG_CS = 0;
   LANG_CPP = 1;
   LANG_PAS = 2;
@@ -378,6 +378,7 @@ begin
     2 : Result := LCCPath;
     3 : Result := NBCPath;
     4 : Result := NBCPath;
+    5 : Result := NBCPath;
   else
     Result := NQCPath;
   end;
@@ -601,8 +602,12 @@ begin
           2 : Result := 'LEGO Assembler';
           3 : Result := 'Next Byte Codes';
           4 : Result := 'NXC';
+          5 : Result := 'SPC';
         else
-          Result := 'NQC';
+          if LocalBrickType = SU_NXT then
+            Result := 'NXC'
+          else
+            Result := 'NQC';
         end;
       end;
     ftBrickOS : Result := 'C++';

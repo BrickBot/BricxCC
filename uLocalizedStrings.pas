@@ -732,10 +732,11 @@ resourcestring
 
 // uSPCComp.pas
 resourcestring
-  sConstantShifts   = 'shifts must be constant';
+  sConstantShifts   = 'Shifts must be constant';
   sArrayLenRequired = 'Arrays without initializer must have a constant length specified.';
   sArrayLenInvalid  = 'Invalid array length specification';
-
+  sInvalidShift     = 'Shift constant must range from 0 to 31';
+  
 implementation
 
 end.

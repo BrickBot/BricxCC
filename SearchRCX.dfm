@@ -170,6 +170,7 @@ object SearchRCXForm: TSearchRCXForm
       Style = csDropDownList
       ItemHeight = 13
       TabOrder = 0
+      OnChange = cboBrickTypeChange
       Items.Strings = (
         'RCX'
         'CyberMaster'
@@ -178,7 +179,7 @@ object SearchRCXForm: TSearchRCXForm
         'Spybot'
         'Swan'
         'NXT'
-        'SPC')
+        'SuperPro')
     end
   end
 end

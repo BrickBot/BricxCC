@@ -2270,7 +2270,7 @@ var
   SaveCursor : TCursor;
 begin
   if ShowCompilerStatus and UseInternalNBC and
-     FileIsNBCOrNXCOrNPGOrRICScriptOrSPC then
+     UsesNBCCompiler then
     frmCompStatus.Show;
   Application.ProcessMessages;
 
@@ -2642,9 +2642,16 @@ begin
   if IsNew then
   begin
     if PreferredLanguage = 0 then
-      Self.Highlighter := SynNXCSyn
+    begin
+      if LocalBrickType = SU_NXT then
+        Self.Highlighter := SynNXCSyn
+      else
+        Self.Highlighter := SynNQCSyn;
+    end
     else if PreferredLanguage = 1 then
-      Self.Highlighter := SynNBCSyn;
+      Self.Highlighter := SynNBCSyn
+    else if PreferredLanguage = 5 then
+      Self.Highlighter := SynSPCSyn;
   end
   else
     Self.Highlighter := GetHighlighterForFile(Filename);
@@ -2905,7 +2912,7 @@ begin
        break;
      end;
     end;
-    if FileIsNBCOrNXCOrNPGOrRICScriptOrSPC then
+    if UsesNBCCompiler then
       break;
   end;
   bThisFile := True;
@@ -3549,11 +3556,8 @@ procedure TfrmCodeEdit.SetFilterIndexFromLanguage;
 begin
   if LocalFirmwareType = ftStandard then
   begin
-    if PreferredLanguage = 0 then
-      dlgOpen.FilterIndex := Highlighters.IndexOf('NXC')+1
-    else if PreferredLanguage = 1 then
-      dlgOpen.FilterIndex := Highlighters.IndexOf('Next Byte Codes')+1;
-    dlgSave.FilterIndex   := dlgOpen.FilterIndex;
+    dlgOpen.FilterIndex := Highlighters.IndexOf(PreferredLanguageName)+1;
+    dlgSave.FilterIndex := dlgOpen.FilterIndex;
   end;
 end;
 
@@ -3917,4 +3921,4 @@ initialization
   {$i ucodeedit.lrs}
 {$ENDIF}
 
-end.
+end.

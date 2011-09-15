@@ -44,8 +44,8 @@ uses
   SynHighlighterCpp, SynHighlighterNBC, SynHighlighterCS,
   SynHighlighterMindScript, SynHighlighterLASM, SynHighlighterPas,
   SynHighlighterROPS, SynHighlighterLua, SynHighlighterRuby,
-  SynHighlighterNPG, SynHighlighterRS, uPSComponent,
-  uGrepExpert, uGrepSearch, uNXTWatchCommon;
+  SynHighlighterNPG, SynHighlighterRS, SynHighlighterSPASM,
+  uPSComponent, uGrepExpert, uGrepSearch, uNXTWatchCommon;
 
 {$IFNDEF FPC}
 const
@@ -159,6 +159,7 @@ type
     actSearchGrepSearch: TAction;
     actSearchGrepResults: TAction;
     actToolsNXTWatchList: TAction;
+    actHelpSPCGuidePDF: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -257,6 +258,7 @@ type
       Y: Integer; State: TDragState; var Accept: Boolean);
     procedure pnlPageControlDragDrop(Sender, Source: TObject; X,
       Y: Integer);
+    procedure actHelpSPCGuidePDFExecute(Sender: TObject);
     procedure actHelpNXCGuidePDFExecute(Sender: TObject);
     procedure actHelpNQCGuidePDFExecute(Sender: TObject);
     procedure actHelpNBCGuidePDFExecute(Sender: TObject);
@@ -441,6 +443,7 @@ type
     mniHowTo: TOfficeMenuItem;
     N5: TOfficeMenuItem;
     mniWebpage: TOfficeMenuItem;
+    mniSPCGuidePDF : TOfficeMenuItem;
     mniNXCGuidePDF : TOfficeMenuItem;
     mniNQCGuidePDF : TOfficeMenuItem;
     mniNBCGuidePDF : TOfficeMenuItem;
@@ -482,6 +485,7 @@ type
     SynForthSyn: TSynForthSyn;
     SynROPSSyn: TSynROPSSyn;
     SynSPCSyn: TSynSPCSyn;
+    SynSPASMSyn: TSynSPASMSyn;
     // toolbar components
     cbrTop: TOfficeControlBar;
     ogpHelp: TOfficeGradientPanel;
@@ -2132,15 +2136,15 @@ begin
   actToolsNXTExplorer.Checked   := frmNXTExplorer.Visible;
   actToolsSyncMotors.Checked    := frmNXTController.Visible;
 
-  actToolsDirect.Enabled         := bBALSF;
-  actToolsDiag.Enabled           := bBALSF;
-  actToolsWatch.Enabled          := bBALSF;
-  actToolsPiano.Enabled          := bBALSF;
-  actToolsJoystick.Enabled       := bBALSF;
+  actToolsDirect.Enabled         := bBALSF and not IsSuperPro;
+  actToolsDiag.Enabled           := bBALSF and not IsSuperPro;
+  actToolsWatch.Enabled          := bBALSF and not IsSuperPro;
+  actToolsPiano.Enabled          := bBALSF and not IsSuperPro;
+  actToolsJoystick.Enabled       := bBALSF and not IsSuperPro;
   actToolsRemote.Enabled         := bBALSF and (IsRCX or IsScout or IsNXT);
   actToolsSendMsg.Enabled        := bBALSF and (IsRCX or IsScout or IsNXT);
   actToolsDatalog.Enabled        := bBALSF and IsRCX;
-  actToolsMemory.Enabled         := bBALSF;
+  actToolsMemory.Enabled         := bBALSF and not IsSuperPro;
   actToolsClearMem.Enabled       := bBALSF and not IsSpybotic;
   actToolsNewWatch.Enabled       := bBALSF and (IsRCX2 or IsSpybotic or IsNXT);
   actToolsSetValues.Enabled      := bBALSF and (IsRCX2 or IsSpybotic);
@@ -2155,8 +2159,8 @@ begin
   actToolsFirmware.Enabled       := {bBrickAlive and }(IsRCX or IsNXT);
   actToolsUnlockFirm.Enabled     := bBALSF and IsRCX;
 
-  mniProgramNumber.Enabled       := bBrickAlive and IsRCX;
-  ProgramBox.Enabled             := bBrickAlive and IsRCX;
+  mniProgramNumber.Enabled       := (bBrickAlive and IsRCX) or (bBrickAlive and IsSuperPro);
+  ProgramBox.Enabled             := (bBrickAlive and IsRCX) or (bBrickAlive and IsSuperPro);
   mniBrickOS.Visible             := LocalFirmwareType = ftBrickOS;
   mniSetLNPAddress.Enabled       := mniBrickOS.Visible and bBrickAlive;
 //  mniDownloadAddress.Enabled     := mniBrickOS.Visible and bBrickAlive;
@@ -2407,15 +2411,27 @@ end;
 procedure TMainForm.ConfigureOtherFirmwareOptions;
 var
   i : Integer;
-  bBrickOS : Boolean;
+  bBrickOS, bSuperPro : Boolean;
 begin
+  bSuperPro := IsSuperPro;
   bBrickOS := LocalFirmwareType = ftBrickOS;
   if LocalStandardFirmware then begin
     with ProgramBox.Items do begin
-      i := IndexOf(sProgram + ' 6');
-      if i <> -1 then Delete(i);
-      i := IndexOf(sProgram + ' 7');
-      if i <> -1 then Delete(i);
+      if bSuperPro then
+      begin
+        // SuperPro has 7 slots
+        with ProgramBox.Items do begin
+          if IndexOf(sProgram + ' 6') = -1 then Add(sProgram + ' 6');
+          if IndexOf(sProgram + ' 7') = -1 then Add(sProgram + ' 7');
+        end;
+      end
+      else
+      begin
+        i := IndexOf(sProgram + ' 6');
+        if i <> -1 then Delete(i);
+        i := IndexOf(sProgram + ' 7');
+        if i <> -1 then Delete(i);
+      end;
       i := IndexOf(sProgram + ' 8');
       if i <> -1 then Delete(i);
     end;
@@ -2428,8 +2444,8 @@ begin
       if IndexOf(sProgram + ' 8') = -1 then Add(sProgram + ' 8');
     end;
   end;
-  mniProgram6.Visible := bBrickOS;
-  mniProgram7.Visible := bBrickOS;
+  mniProgram6.Visible := bBrickOS or bSuperPro;
+  mniProgram7.Visible := bBrickOS or bSuperPro;
   mniProgram8.Visible := bBrickOS;
   mniPBForthConsole.Visible := False;
   mniPBForthConsole.Enabled := False;
@@ -2480,7 +2496,7 @@ begin
   if Assigned(E) then begin
     if bDown then begin
       if not CheckAlive then Exit;
-      if IsRCX then
+      if IsRCX or IsSuperPro then
       begin
         if LockedProgArray[ProgramBox.ItemIndex] then
         begin
@@ -2491,7 +2507,7 @@ begin
       end;
     end;
     if ShowCompilerStatus and UseInternalNBC and
-       FileIsNBCOrNXCOrNPGOrRICScriptOrSPC then
+       UsesNBCCompiler then
       frmCompStatus.Show;
     Application.ProcessMessages;
 
@@ -2582,7 +2598,7 @@ end;
 
 procedure TMainForm.actCompileRunExecute(Sender: TObject);
 begin
-  if IsRCX then
+  if IsRCX or IsSuperPro then
   begin
     SelectProgram(ProgramBox.ItemIndex);
   end;
@@ -3313,22 +3329,8 @@ procedure TMainForm.SetFilterIndexFromLanguage;
 begin
   if LocalFirmwareType = ftStandard then
   begin
-    if PreferredLanguage = 0 then
-    begin
-      if LocalBrickType = SU_NXT then
-        dlgOpen.FilterIndex := Highlighters.IndexOf('NXC')+1
-      else
-        dlgOpen.FilterIndex := Highlighters.IndexOf('NQC')+1;
-    end
-    else if PreferredLanguage = 1 then
-      dlgOpen.FilterIndex   := Highlighters.IndexOf('MindScript')+1
-    else if PreferredLanguage = 2 then
-      dlgOpen.FilterIndex   := Highlighters.IndexOf('LEGO Assembler')+1
-    else if PreferredLanguage = 3 then
-      dlgOpen.FilterIndex   := Highlighters.IndexOf('Next Byte Codes')+1
-    else
-      dlgOpen.FilterIndex   := Highlighters.IndexOf('NXC')+1;
-    dlgSave.FilterIndex     := dlgOpen.FilterIndex;
+    dlgOpen.FilterIndex := Highlighters.IndexOf(PreferredLanguageName)+1;
+    dlgSave.FilterIndex := dlgOpen.FilterIndex;
   end;
 end;
 
@@ -3887,6 +3889,7 @@ begin
   SynNBCSyn        := TSynNBCSyn.Create(Self);
   SynCSSyn         := TSynCSSyn.Create(Self);
   SynSPCSyn        := TSynSPCSyn.Create(Self);
+  SynSPASMSyn      := TSynSPASMSyn.Create(Self);
   with SynNXCSyn do
   begin
     Name := 'SynNXCSyn';
@@ -3921,7 +3924,7 @@ begin
   with SynLASMSyn do
   begin
     Name := 'SynLASMSyn';
-    DefaultFilter := 'LASM Assembler Files (*.asm)|*.asm';
+    DefaultFilter := 'LASM Assembler Files (*.lasm)|*.lasm';
   end;
   with SynNQCSyn do
   begin
@@ -3994,6 +3997,11 @@ begin
                            'DAC1Mode, DAC1Frequency, DAC1Voltage, ' +
                            'LEDControl, SystemClock';
     SampleSourceStrings.Clear;
+  end;
+  with SynSPASMSyn do
+  begin
+    Name := 'SynSPASMSyn';
+    DefaultFilter := 'SuperPro Assembler Files (*.spasm)|*.spasm';
   end;
 end;
 
@@ -4272,6 +4280,7 @@ begin
   mniNXCGuidePDF := TOfficeMenuItem.Create(mniGuidePDFs);
   mniNQCGuidePDF := TOfficeMenuItem.Create(mniGuidePDFs);
   mniNBCGuidePDF := TOfficeMenuItem.Create(mniGuidePDFs);
+  mniSPCGuidePDF := TOfficeMenuItem.Create(mniGuidePDFs);
   mniTutorialPDFs := TOfficeMenuItem.Create(mniHelp);
   mniNXCTutorialPDF := TOfficeMenuItem.Create(mniTutorialPDFs);
   mniNQCTutorialPDF := TOfficeMenuItem.Create(mniTutorialPDFs);
@@ -4281,7 +4290,7 @@ begin
   // add menu items to help menu
   mniHelp.Add([mniContents, mniIndex, mniNqcGuide, mniHowTo,
                N5, mniWebpage, mniGuidePDFs, mniTutorialPDFs, N14, mniAbout]);
-  mniGuidePDFs.Add([mniNQCGuidePDF, mniNXCGuidePDF, mniNBCGuidePDF]);
+  mniGuidePDFs.Add([mniNQCGuidePDF, mniNXCGuidePDF, mniNBCGuidePDF, mniSPCGuidePDF]);
   mniTutorialPDFs.Add([mniNQCTutorialPDF, mniNXCTutorialPDF, mniNBCTutorialPDF]);
 
   with mniFile do
@@ -5415,6 +5424,11 @@ begin
     Name := 'mniNBCGuidePDF';
     Action := actHelpNBCGuidePDF;
   end;
+  with mniSPCGuidePDF do
+  begin
+    Name := 'mniSPCGuidePDF';
+    Action := actHelpSPCGuidePDF;
+  end;
   with mniTutorialPDFs do
   begin
     Name := 'mniTutorialPDFs';
@@ -5991,6 +6005,8 @@ begin
     Items.Add('Program 3');
     Items.Add('Program 4');
     Items.Add('Program 5');
+    Items.Add('Program 6');
+    Items.Add('Program 7');
   end;
   with bvlSep2 do
   begin
@@ -7062,6 +7078,11 @@ begin
     end;
     ShowMessage(msg);
   end;
+end;
+
+procedure TMainForm.actHelpSPCGuidePDFExecute(Sender: TObject);
+begin
+  HandleResponse(StartDoc(ProgramDir + 'Documentation\SPC_Guide.pdf'));
 end;
 
 procedure TMainForm.actHelpNXCGuidePDFExecute(Sender: TObject);

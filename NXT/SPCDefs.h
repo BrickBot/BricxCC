@@ -30,8 +30,6 @@
 
 #include "spmem.h"
 
-#define until(_c) while(!(_c))
-
 /** @addtogroup MiscConstants
  * @{
  */
@@ -39,7 +37,7 @@
 #define TRUE  1 /*!< A true value */
 #define FALSE 0 /*!< A false value */
 
-#define SERIAL_BUFFER_SIZE 255 /*!< Serial port input and output buffer size */
+#define SERIAL_BUFFER_SIZE 255 /*!< Serial port receive and send buffer size */
 
 /** @defgroup SPROLimits Data type limits
  * Constants that define various data type limits.
@@ -61,13 +59,13 @@
 /** @addtogroup DacModeConstants
  * @{
  */
-#define DAC_MODE_DCOUT       0 /*!< Steady (DC) voltage output. */
-#define DAC_MODE_SINEWAVE    1 /*!< Sine wave output. */
-#define DAC_MODE_SQUAREWAVE  2 /*!< Square wave output. */
-#define DAC_MODE_SAWPOSWAVE  3 /*!< Positive going sawtooth output. */
-#define DAC_MODE_SAWNEGWAVE  4 /*!< Negative going sawtooth output. */
-#define DAC_MODE_TRIANGLWAVE 5 /*!< Triangle wave output. */
-#define DAC_MODE_PWMVOLTAGE  6 /*!< PWM square wave output. */
+#define DAC_MODE_DCOUT        0 /*!< Steady (DC) voltage output. */
+#define DAC_MODE_SINEWAVE     1 /*!< Sine wave output. */
+#define DAC_MODE_SQUAREWAVE   2 /*!< Square wave output. */
+#define DAC_MODE_SAWPOSWAVE   3 /*!< Positive going sawtooth output. */
+#define DAC_MODE_SAWNEGWAVE   4 /*!< Negative going sawtooth output. */
+#define DAC_MODE_TRIANGLEWAVE 5 /*!< Triangle wave output. */
+#define DAC_MODE_PWMVOLTAGE   6 /*!< PWM square wave output. */
 /** @} */  // end of DacModeConstants group
 
 
@@ -126,7 +124,6 @@
 #define LOG_STATUS_CLOSED  0 /*!< Log file is closed. */
 /** @} */  // end of LogStatusConstants group
 
-
 /** @defgroup TimeConstants Time constants
  * Constants for use with the Wait() function.
  * \sa Wait()
@@ -178,7 +175,6 @@
 #define SEC_30  30000 /*!< 30 seconds */
 #define MIN_1   60000 /*!< 1 minute */
 /** @} */  // end of TimeConstants group
-
 
 /** @defgroup ToneConstants Tone constants
  * Constants for use with the analog output frequency fields.
@@ -238,7 +234,13 @@
 #define TONE_B7     3951 /*!< Seventh octave B */
 /** @} */  // end of ToneConstants group
 
-#ifdef DOXYGEN_DOCS
+#ifdef __DOXYGEN_DOCS
+
+/** @defgroup spcapi SPC API
+ * SPC API functions.
+ * @{
+ */
+
 /**
  * Wait some milliseconds.
  * Make a task sleep for specified amount of time (in 1000ths of a second).
@@ -251,14 +253,14 @@ inline void Wait(long ms);
  * Yield to another task.
  * Make a task yield to another concurrently running task.
  */
-inline void Yield();
+inline void Yield(void);
 
 /**
  * Stop all tasks.
  * Stop all currently running tasks. This will halt the program completely,
  * so any code following this command will be ignored.
  */
-inline void StopAllTasks();
+inline void StopAllTasks(void);
 
 /**
  * Stop the running program.
@@ -281,6 +283,7 @@ inline void ExitTo(task newTask);
  * \param t The task to start.
  */
 inline void StartTask(task t);
+
 /**
  * Calculate the size of a variable.
  * Calculate the number of bytes required to store the contents of the
@@ -300,7 +303,7 @@ inline unsigned int SizeOf(variant & value);
  *
  * \return The function call result.
  */
-inline int read();
+inline int read(void);
 
 /**
  * Write value to file.
@@ -350,7 +353,7 @@ inline char sign(int num);
  *
  * \return The result code.
  */
-inline int close();
+inline int close(void);
 
 /**
  * Open file.
@@ -372,7 +375,7 @@ inline byte open(const char * mode);
  * \param ch The character to be written.
  * \return The character written to the file.
  */
-inline char putchar(char ch);
+inline char putchar(const char ch);
 
 /**
  * Write string to debug device.
@@ -392,7 +395,6 @@ inline int puts(const char * str);
  * expects a variable number of parameters.
  *
  * \param format A constant string literal specifying the desired format.
- * \param value1 A value to be formatted for writing to the debug device.
  *
  */
 inline void printf(const char * format, ...);
@@ -402,7 +404,7 @@ inline void printf(const char * format, ...);
  * Aborts the process with an abnormal program termination.
  * The function never returns to its caller.
  */
-inline void abort();
+inline void abort(void);
 
 /**
  * Read the current system tick.
@@ -410,50 +412,69 @@ inline void abort();
  *
  * \return The current system tick count.
  */
-inline long CurrentTick();
+inline long CurrentTick(void);
 
 /**
- * Copy memory.
- * Copies memory contents from the source to the destination.
+ * Pop a value off the stack.
+ * Pop a 32-bit integer value off the top of the stack.
  *
- * \param dest The destination variable.
- * \param src The source variable.
- * \param num The number of bytes to copy.
+ * \return The value popped off the top of the stack.
  */
-inline void memcpy(variant dest, variant src, byte num);
+inline int pop(void);
 
 /**
- * Move memory.
- * Moves memory contents from the source to the destination.
+ * Push a value onto the stack.
+ * Push a 32-bit integer value onto the top of the stack.
  *
- * \param dest The destination variable.
- * \param src The source variable.
- * \param num The number of bytes to copy.
+ * \param value The value you want to push onto the stack.
+ * \return The value pushed onto the stack.
  */
-inline void memmove(variant dest, variant src, byte num);
+inline int push(int value);
 
 /**
- * Compare two blocks of memory.
- * Compares the variant ptr1 to the variant ptr2. Returns an integral value
- * indicating the relationship between the variables.
+ * Rotate left.
+ * Rotate the specified variable one bit left through carry.
  *
- * \param ptr1 A variable to be compared.
- * \param ptr2 A variable to be compared.
- * \param num The number of bytes to compare.
+ * \param value The value to rotate left one bit.
  */
-inline char memcmp(variant ptr1, variant ptr2, byte num);
+inline void RotateLeft(int & value);
 
-/*
-pop(void)
-push(int value)
-RotateLeft(int & x)
-RotateRight(int & x)
-Run(const int slot)
-stat(void)
-StopProcesses(void)
-*/
+/**
+ * Rotate right.
+ * Rotate the specified variable one bit right through carry.
+ *
+ * \param value The value to rotate right one bit.
+ */
+inline void RotateRight(int & value);
+
+/**
+ * Run another program.
+ * Run the program in the specified slot. The current program will terminate.
+ *
+ * \param slot The constant slot number for the program you want to execute.
+ * See \ref SlotConstants.
+ */
+inline void Run(const int slot);
+
+/**
+ * Check log file status.
+ * Check the status of the system log file.
+ *
+ * \return The log file status. See \ref LogStatusConstants.
+ */
+inline int stat(void);
+
+/**
+ * Stop all processes.
+ * Stop all running tasks except for the main task.
+ */
+inline void StopProcesses(void);
+
+/** @} */  // end of spcapi group
 
 #else
+
+#define until(_c) while(!(_c))
 
 #define Yield() Wait(1)
 #define StopAllTasks() Stop(true)

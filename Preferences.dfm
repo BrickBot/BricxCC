@@ -1005,6 +1005,15 @@ object PrefForm: TPrefForm
                 Caption = 'NXC'
                 TabOrder = 4
               end
+              object radPrefSPC: TRadioButton
+                Left = 192
+                Top = 34
+                Width = 79
+                Height = 17
+                HelpContext = 11086
+                Caption = 'SPC'
+                TabOrder = 5
+              end
             end
             object btnPrecompile: TButton
               Left = 76
@@ -1990,6 +1999,24 @@ object PrefForm: TPrefForm
               TabOrder = 3
               OnClick = btnShowNXCDefsClick
             end
+            object btnShowSPCDefs: TButton
+              Left = 7
+              Top = 152
+              Width = 91
+              Height = 25
+              Caption = 'SPCDefs.h'
+              TabOrder = 4
+              OnClick = btnShowSPCDefsClick
+            end
+            object btnShowSPMEM: TButton
+              Left = 7
+              Top = 184
+              Width = 91
+              Height = 25
+              Caption = 'spmem.h'
+              TabOrder = 5
+              OnClick = btnShowSPMEMClick
+            end
           end
         end
       end
@@ -2059,7 +2086,8 @@ object PrefForm: TPrefForm
                 'RCX2'
                 'Spybot'
                 'Swan'
-                'NXT')
+                'NXT'
+                'SPC')
             end
           end
           object grpPorts: TGroupBox
