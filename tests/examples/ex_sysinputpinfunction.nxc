@@ -1,0 +1,52 @@
+
+#ifdef OLD_COMPILER
+
+struct InputPinFunctionType {
+  unsigned int Result; // The function call result. Possible return values are ERR_INVALID_PORT or NO_ERR.
+  byte Cmd;            // The command to execute. See \ref InputPinFuncConstants.  You can add a microsecond wait after the command by ORing INPUT_PINCMD_WAIT(usec) with the command Value. Wait times can range from 1 to 63 microseconds.
+  byte Port;           // The input port. See \ref InPorts.
+  byte Pin;            // The digital pin(s). See \ref InputDigiPinConstants. When setting pin direction you must OR the desired direction constant into this field.  See                    INPUT_PINDIR_INPUT and INPUT_PINDIR_OUTPUT from the \ref InputPinFuncConstants group. You can OR together the digital pin constants to operate on both in a single call.
+  byte Data;           // The pin value(s). This field is only used by the INPUT_PINCMD_READ command.
+};
+
+#define INPUT_PINCMD_DIR    0x00 // Set digital pin(s) direction
+#define INPUT_PINCMD_SET    0x01 // Set digital pin(s)
+#define INPUT_PINCMD_CLEAR  0x02 // Clear digital pin(s)
+#define INPUT_PINCMD_READ   0x03 // Read digital pin(s)
+#define INPUT_PINCMD_MASK   0x03 // Mask for the two bits used by pin function commands
+#define INPUT_PINCMD_WAIT(_usec) ((_usec)<<2) // A wait value in microseconds that can be added after one of the above commands by ORing with the command
+#define INPUT_PINDIR_OUTPUT 0x00 // Use with the direction command to set direction to input.  OR this with the pin value.
+#define INPUT_PINDIR_INPUT  0x04 // Use with the direction command to set direction to output.  OR this with the pin value.
+
+#define InputPinFunction 77
+
+#endif
+
+task main()
+{
+  InputPinFunctionType pftSet, pftClear, pftDir;
+
+  // use these parameters to set the pin direction
+  pftDir.Port = S1;
+  pftDir.Pin = INPUT_DIGI0|INPUT_PINDIR_OUTPUT;
+  pftDir.Cmd = INPUT_PINCMD_DIR;
+
+  // use these parameters to SET the pin
+  pftSet.Port = S1;
+  pftSet.Pin = INPUT_DIGI0;
+  pftSet.Cmd = INPUT_PINCMD_SET|INPUT_PINCMD_WAIT(2);
+
+  // use these parameters to CLEAR the pin
+  pftClear.Port = S1;
+  pftClear.Pin = INPUT_DIGI0;
+  pftClear.Cmd = INPUT_PINCMD_CLEAR|INPUT_PINCMD_WAIT(30);
+
+  SysInputPinFunction(pftDir); // set the direction to output
+
+  while(true)
+  {
+    SysInputPinFunction(pftSet);
+    SysInputPinFunction(pftClear);
+  }
+
+}

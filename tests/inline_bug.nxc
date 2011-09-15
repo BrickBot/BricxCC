@@ -8,7 +8,7 @@ task main()
 {
   int x=23;
   NumOut(0, LCD_LINE1, multiply(x, 2));
-  NumOut(0, LCD_LINE1, double(x));
-  NumOut(0, LCD_LINE1, double(x+12));
+  NumOut(0, LCD_LINE2, double(x));
+  NumOut(0, LCD_LINE3, double(x+12));
   while(true);
 }

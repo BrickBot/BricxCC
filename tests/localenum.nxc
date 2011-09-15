@@ -20,4 +20,5 @@ task main()
     case fred: 
       break;
   }
+  Wait(SEC_5);
 }

@@ -9,8 +9,8 @@ task main()
 //	mov __main_7qG2_b_7qG2_001, __constVal1
 //	mul __main_7qG2_c_7qG2_001, __main_7qG2_a_7qG2_001, __constVal1
     NumOut(0, LCD_LINE1, a);
-    NumOut(0, LCD_LINE1, b);
-    NumOut(0, LCD_LINE1, c);
+    NumOut(0, LCD_LINE2, b);
+    NumOut(0, LCD_LINE3, c);
     Wait(SEC_5);
   }
 
@@ -23,8 +23,8 @@ task main()
 //	mov __main_7qG2_b_7qG2_001, __constVal1
 //	mul __main_7qG2_c_7qG2_001, __main_7qG2_a_7qG2_001, __constVal1
     NumOut(0, LCD_LINE1, a);
-    NumOut(0, LCD_LINE1, b);
-    NumOut(0, LCD_LINE1, c);
+    NumOut(0, LCD_LINE2, b);
+    NumOut(0, LCD_LINE3, c);
     Wait(SEC_5);
   }
 
@@ -37,8 +37,8 @@ task main()
 //	mov __main_7qG2_b_7qG2_001, __constValNeg1
 //	mul __main_7qG2_c_7qG2_001, __main_7qG2_a_7qG2_001, __constValNeg1
     NumOut(0, LCD_LINE1, a);
-    NumOut(0, LCD_LINE1, b);
-    NumOut(0, LCD_LINE1, c);
+    NumOut(0, LCD_LINE2, b);
+    NumOut(0, LCD_LINE3, c);
     Wait(SEC_5);
   }
 
@@ -58,8 +58,8 @@ task main()
 //	mov __main_7qG2_b_7qG2_001, __constValNeg1
 //	mul __main_7qG2_c_7qG2_001, __main_7qG2_ai_7qG2_001, __constValNeg1
     NumOut(0, LCD_LINE1, ai);
-    NumOut(0, LCD_LINE1, b);
-    NumOut(0, LCD_LINE1, c);
+    NumOut(0, LCD_LINE2, b);
+    NumOut(0, LCD_LINE3, c);
     Wait(SEC_5);
   }
 
@@ -72,8 +72,8 @@ task main()
 //	mov __main_7qG2_bf_7qG2_001, __constValNeg1
 //	mul __main_7qG2_c_7qG2_001, __main_7qG2_a_7qG2_001, __constValNeg1
     NumOut(0, LCD_LINE1, a);
-    NumOut(0, LCD_LINE1, bf);
-    NumOut(0, LCD_LINE1, c);
+    NumOut(0, LCD_LINE2, bf);
+    NumOut(0, LCD_LINE3, c);
     Wait(SEC_5);
   }
 
@@ -86,8 +86,8 @@ task main()
 //	mov __main_7qG2_bf_7qG2_001, __constValNeg1
 //	mul __main_7qG2_c_7qG2_001, __main_7qG2_a_7qG2_001, __constValNeg1
     NumOut(0, LCD_LINE1, a);
-    NumOut(0, LCD_LINE1, bf);
-    NumOut(0, LCD_LINE1, c);
+    NumOut(0, LCD_LINE2, bf);
+    NumOut(0, LCD_LINE3, c);
     Wait(SEC_5);
   }
 }

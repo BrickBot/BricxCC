@@ -1,0 +1,9 @@
+task main()
+{
+  bool b1, b2, b3;
+  int x, y;
+  if (x=y=b1&&b2&&x+y)
+  {
+    Wait(1000);
+  }
+}

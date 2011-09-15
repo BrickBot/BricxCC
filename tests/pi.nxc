@@ -44,6 +44,6 @@ task main()
     TextOut(5,LCD_LINE2, StrCat("Loops: ",NumToStr( (i-3) /2) ));
     TextOut(5,LCD_LINE3, StrCat("Time: ",NumToStr(elapsed),"s"));
     TextOut(5,LCD_LINE4,StrCat("PI = ",NumToStr(pi)),DRAW_OPT_INVERT);
-    PlayTone(440, MS_500);
+//    PlayTone(440, MS_500);
     while(1);
 }

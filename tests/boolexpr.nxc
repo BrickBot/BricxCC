@@ -1,0 +1,15 @@
+task main()
+{
+  int x=11;
+  bool b1=true, b2=false, b3=true;
+  if (b1 && b2 && x > b2)
+  {
+    x++;
+  }
+  else
+  {
+    x--;
+  }
+  NumOut(0, LCD_LINE1, x);
+  Wait(SEC_1);
+}

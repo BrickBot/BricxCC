@@ -4,6 +4,7 @@ task main()
   float y;
   y = x[0];
   NumOut(0, LCD_LINE1, y);
+  Wait(SEC_5);
 }
 
 /*

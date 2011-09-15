@@ -1,0 +1,8 @@
+task main(){
+   bool b1, b2, b3;
+
+   if( b1 && b2 && b3 )
+      Wait( 1000 );
+}
+
+

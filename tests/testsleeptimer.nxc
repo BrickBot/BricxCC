@@ -19,8 +19,10 @@ task main()
   
   23;
   NumOut(0, LCD_LINE1, x);
-  NumOut(0, LCD_LINE1, BatteryLevel());
-  NumOut(0, LCD_LINE2, ResetSleepTimer());
+  NumOut(0, LCD_LINE2, y);
+  NumOut(0, LCD_LINE3, BatteryLevel());
+  NumOut(0, LCD_LINE4, ResetSleepTimer());
   MyFunc();
+  Wait(SEC_5);
 }
 

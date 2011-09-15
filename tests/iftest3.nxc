@@ -1,0 +1,14 @@
+task main()
+{
+  int x;
+  if (x = true && Random(2) && 10)
+  {
+    TextOut(0, LCD_LINE1, "true");
+  }
+  else
+  {
+    TextOut(0, LCD_LINE1, "false");
+  }
+  NumOut(0, LCD_LINE2, x);
+  Wait(SEC_2);
+}

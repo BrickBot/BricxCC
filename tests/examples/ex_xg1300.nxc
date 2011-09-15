@@ -46,7 +46,6 @@ task main()
         TextOut(0, LCD_LINE1,"Resetting Device ", false);
         Wait(MS_500);
       }
-      asm { mov i, i };
       //Change accelerometer range if user presses the right key
       rbArgs.Index = BTNRIGHT;
       SysReadButton(rbArgs);

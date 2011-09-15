@@ -19,141 +19,60 @@ __initialize_global_data:
 	INC __signed_stack_001Testing
 	MVI (__signed_stack_001Testing), 6
 	MVI bar, 34
+	MVI pFoo, 0
+	MVI ch, 10
+	MVI __ArrHelper__main_76_0, 0
 	RET
 */
 
-// complex structs are not completely working yet
-typedef struct {
-  int x;
-  int y;
-  int z;
-} PointType;
-
-struct Person {
-  int Age;
-  int Height;
-  int Weight;
-  PointType foo;
-};
-
-PointType p;
-Person me;
-
+// structs are not working yet
 // arrays of more than one dimension are not working yet
 // reference types are also not working as true references yet
 
 // pointer syntax in functions not working yet
 // char * Bogus(const char * ch);
 
-task two() // good code
-{
-  while(true)
-  {
-    putchar('x');
-  }
-}
-/*
-two:
-__ASM_Label_188:
-	MVI __D0two, 1
-	TST __D0two
-	JZ __ASM_Label_189
-	TRCH x
-	MVI __D0two, 120
-	JMP __ASM_Label_188
-__ASM_Label_189:
-	HALTME
-*/
-
-task three() // good code
-{
-  puts("3");
-}
-/*
-three:
-	TRCH 3
-	HALTME
-*/
-
-int Foo(int x) // good code
-{
-  return x*x;
-}
-/*
-Foo:
-	MOV __signed_stack_001Foo, __Foo_7qG2_x_7qG2_000
-	MOV __D0Foo, __Foo_7qG2_x_7qG2_000
-	MUL __D0Foo, __signed_stack_001Foo
-	RET
-	RET
-*/
-
-void Testing(int x, int y) // good code
-{
-  int z = x+y-Foo(x)+Timer0;
-  z--;
-}
-/*
-Testing:
-	MOV __signed_stack_001Testing, __Testing_7qG2_x_7qG2_000
-	MOV __D0Testing, __Testing_7qG2_y_7qG2_000
-	ADD __D0Testing, __signed_stack_001Testing
-	MOV __signed_stack_001Testing, __D0Testing
-	MOV __Foo_7qG2_x_7qG2_000, __Testing_7qG2_x_7qG2_000
-	CALL Foo
-	MOV __D0Testing, __D0Foo
-	SUB __signed_stack_001Testing, __D0Testing
-	MOV __D0Testing, 0CH
-	ADD __D0Testing, __signed_stack_001Testing
-	MOV __Testing_7qG2_z_7qG2_000, __D0Testing
-	DEC __Testing_7qG2_z_7qG2_000
-	RET
-*/
+int Foo(int x);
+void Testing(int x, int y);
+task two();
+task three();
 
 task main()
 {
-  me.Age = 40; // good code
-  PointType pt;
-  pt.x = me.Age;
-  pt.y = pt.x;
-  pt.z = sqrt(pt.x);
-  pt.z++;
-  pt.y--;
-  me.foo.x++;
-/*
-	MVI me.Age, 40
-	MOV __main_7qG2_pt_7qG2_000.x, me.Age
-	MOV __main_7qG2_pt_7qG2_000.y, __main_7qG2_pt_7qG2_000.x
-	MOV __D0main, __main_7qG2_pt_7qG2_000.x
-	SQRT __D0main
-	MOV __main_7qG2_pt_7qG2_000.z, __D0main
-	INC __main_7qG2_pt_7qG2_000.z
-	DEC __main_7qG2_pt_7qG2_000.y
-*/
   long * ptr;
   long x;
   @0x0C = 2; // good code
+/*
+	MVI __D0main, 2
+	MOV 0x0C, __D0main
+*/
   Timer0 = 2; // good code
 /*
-	MVI 0CH, 2
-	MVI 0CH, 2
+	MVI __D0main, 2
+	MOV 0x0C, __D0main
 */
   x = @0x1F; // good code
+/*
+	MOV __D0main, 0x1F
+	MOV __main_7qG2_x_7qG2_000, __D0main
+*/
   x = SystemClock; // good code
 /*
-	MOV __main_7qG2_x_7qG2_000, 1FH
-	MOV __main_7qG2_x_7qG2_000, 1FH
+	MOV __D0main, 0x1F
+	MOV __main_7qG2_x_7qG2_000, __D0main
 */
   x = SystemClock + Timer0 * Foo(SerialInByte); // good code
 /*
-	MOV __signed_stack_001main, 1FH
-	MOV __signed_stack_002main, 0CH
-	MOV __Foo_7qG2_x_7qG2_000, 11H
+	MOV __D0main, 0x1F
+	MOV __signed_stack_001main, __D0main
+	MOV __D0main, 0x0C
+	MOV __signed_stack_002main, __D0main
+	MOV __D0main, 0x11
+	MOV __Foo_7qG2_x_7qG2_000, __D0main
 	CALL Foo
 	MOV __D0main, __D0Foo
 	MUL __D0main, __signed_stack_002main
 	ADD __D0main, __signed_stack_001main
-	MOV __main_7qG2_x_7qG2_000, __D0main
 */
   int data[] = {0, 1, 2, 3, 4}; // good code
 /*
@@ -169,35 +88,49 @@ task main()
 	MVI (__signed_stack_001main), 4
 */
   ptr = &x; // good code
+/*
+	MVI __D0main, __main_7qG2_x_7qG2_000
+	MOV __main_7qG2_ptr_7qG2_000, __D0main
+*/
   *ptr = 23; // good code
+/*
+	MVI __D0main, 23
+	MOV (__main_7qG2_ptr_7qG2_000), __D0main
+*/
   *ptr += 23; // good code
+/*
+	MVI __D0main, 23
+	ADD (__main_7qG2_ptr_7qG2_000), __D0main
+*/
   x = *ptr; // good code
 /*
-	MVI __main_7qG2_ptr_7qG2_000, __main_7qG2_x_7qG2_000
-	MVI (__main_7qG2_ptr_7qG2_000), 23
-	ADI (__main_7qG2_ptr_7qG2_000), 23
-	MOV __main_7qG2_x_7qG2_000, (__main_7qG2_ptr_7qG2_000)
+	MOV __D0main, (__main_7qG2_ptr_7qG2_000)
+	MOV __main_7qG2_x_7qG2_000, __D0main
 */
   x = *ptr % *ptr++; // good code
 /*
-	MOV __signed_stack_001main, (__main_7qG2_ptr_7qG2_000)
+	MOV __D0main, (__main_7qG2_ptr_7qG2_000)
+	MOV __signed_stack_001main, __D0main
 	MOV __D0main, (__main_7qG2_ptr_7qG2_000)
 	INC __main_7qG2_ptr_7qG2_000
 	MOV __signed_stack_002main, __signed_stack_001main
 	DIV __signed_stack_002main, __D0main
 	MUL __signed_stack_002main, __D0main
 	SUB __signed_stack_001main, __signed_stack_002main
-	MOV __main_7qG2_x_7qG2_000, __signed_stack_001main
+	MOV __D0main, __signed_stack_001main
+	MOV __main_7qG2_x_7qG2_000, __D0main
 */
   x = ptr % 4; // good code
 /*
-	MOV __signed_stack_001main, __main_7qG2_ptr_7qG2_000
+	MOV __D0main, __main_7qG2_ptr_7qG2_000
+	MOV __signed_stack_001main, __D0main
 	MVI __D0main, 4
 	MOV __signed_stack_002main, __signed_stack_001main
 	DIV __signed_stack_002main, __D0main
 	MUL __signed_stack_002main, __D0main
 	SUB __signed_stack_001main, __signed_stack_002main
-	MOV __main_7qG2_x_7qG2_000, __signed_stack_001main
+	MOV __D0main, __signed_stack_001main
+	MOV __main_7qG2_x_7qG2_000, __D0main
 */
   x %= 4; // good code
 /*
@@ -221,24 +154,127 @@ task main()
 /*
 	MVI __D0main, 0
 	TST __D0main
-	JZ __ASM_Label_52
+	JZ __ASM_Label_24
 	INC __main_7qG2_x_7qG2_000
-	JMP __ASM_Label_53
-__ASM_Label_52:
+	JMP __ASM_Label_25
+__ASM_Label_24:
 	DEC __main_7qG2_x_7qG2_000
-__ASM_Label_53:
+__ASM_Label_25:
 */
   if (x<4) // good code
     x++;
   else
     x--;
 /*
-	MOV __signed_stack_001main, __main_7qG2_x_7qG2_000
+	MOV __D0main, __main_7qG2_x_7qG2_000
+	MOV __signed_stack_001main, __D0main
 	MVI __D0main, 4
 	MOV __signed_stack_002main, __signed_stack_001main
 	SUB __signed_stack_002main, __D0main
 	MVI __signed_stack_002main, 1
-	JN __ASM_Label_56
+	JN __ASM_Label_28
+	MVI __signed_stack_002main, 0
+__ASM_Label_28:
+	TST __signed_stack_002main
+	MVI __D0main, 0
+	JZ __ASM_Label_29
+	MVI __D0main, 1
+__ASM_Label_29:
+__ASM_Label_27:
+__ASM_Label_26:
+	JZ __ASM_Label_30
+	INC __main_7qG2_x_7qG2_000
+	JMP __ASM_Label_31
+__ASM_Label_30:
+	DEC __main_7qG2_x_7qG2_000
+__ASM_Label_31:
+*/
+
+
+  for (int i=0; i<100; i++)  // good code
+    data[i%5] = data[i%5] + i;
+/*
+	MVI __D0main, 0
+	MOV __main_7qG2_i_7qG2_001, __D0main
+__ASM_Label_32:
+	MOV __D0main, __main_7qG2_i_7qG2_001
+	MOV __signed_stack_001main, __D0main
+	MVI __D0main, 100
+	MOV __signed_stack_002main, __signed_stack_001main
+	SUB __signed_stack_002main, __D0main
+	MVI __signed_stack_002main, 1
+	JN __ASM_Label_40
+	MVI __signed_stack_002main, 0
+__ASM_Label_40:
+	TST __signed_stack_002main
+	MVI __D0main, 0
+	JZ __ASM_Label_41
+	MVI __D0main, 1
+__ASM_Label_41:
+__ASM_Label_39:
+__ASM_Label_38:
+	JZ __ASM_Label_33
+	JMP __ASM_Label_34
+__ASM_Label_35:
+	INC __main_7qG2_i_7qG2_001
+	JMP __ASM_Label_32
+__ASM_Label_34:
+	MOV __D0main, __main_7qG2_i_7qG2_001
+	MOV __signed_stack_001main, __D0main
+	MVI __D0main, 5
+	MOV __signed_stack_002main, __signed_stack_001main
+	DIV __signed_stack_002main, __D0main
+	MUL __signed_stack_002main, __D0main
+	SUB __signed_stack_001main, __signed_stack_002main
+	MOV __D0main, __signed_stack_001main
+__ASM_Label_43:
+__ASM_Label_42:
+	MOV __signed_stack_001main, __D0main
+	MOV __D0main, __main_7qG2_i_7qG2_001
+	MOV __signed_stack_002main, __D0main
+	MVI __D0main, 5
+	MOV __signed_stack_003main, __signed_stack_002main
+	DIV __signed_stack_003main, __D0main
+	MUL __signed_stack_003main, __D0main
+	SUB __signed_stack_002main, __signed_stack_003main
+	MOV __D0main, __signed_stack_002main
+__ASM_Label_47:
+__ASM_Label_46:
+	MOV __signed_stack_002main, __D0main
+	MVI __signed_stack_003main, __main_7qG2_data_7qG2_000
+	ADD __signed_stack_003main, __signed_stack_002main
+	MOV __ArrHelper__main_76_0, (__signed_stack_003main)
+	MOV __D0main, __ArrHelper__main_76_0
+	MOV __signed_stack_002main, __D0main
+	MOV __D0main, __main_7qG2_i_7qG2_001
+	ADD __D0main, __signed_stack_002main
+__ASM_Label_45:
+__ASM_Label_44:
+	MVI __signed_stack_002main, __main_7qG2_data_7qG2_000
+	ADD __signed_stack_002main, __signed_stack_001main
+	MOV (__signed_stack_002main), __D0main
+	JMP __ASM_Label_35
+__ASM_Label_33:
+*/
+  while (true) {  // good code
+    x += 5;
+    if (x > 1000)
+      break;
+  }
+/*
+__ASM_Label_48:
+	MVI __D0main, 1
+	TST __D0main
+	JZ __ASM_Label_49
+	MVI __D0main, 5
+	ADD __main_7qG2_x_7qG2_000, __D0main
+	MOV __D0main, __main_7qG2_x_7qG2_000
+	MOV __signed_stack_001main, __D0main
+	MVI __D0main, 1000
+	MOV __signed_stack_002main, __signed_stack_001main
+	SUB __signed_stack_002main, __D0main
+	MVI __signed_stack_002main, 1
+	JP __ASM_Label_56
 	MVI __signed_stack_002main, 0
 __ASM_Label_56:
 	TST __signed_stack_002main
@@ -246,137 +282,44 @@ __ASM_Label_56:
 	JZ __ASM_Label_57
 	MVI __D0main, 1
 __ASM_Label_57:
+__ASM_Label_55:
+__ASM_Label_54:
 	JZ __ASM_Label_58
-	INC __main_7qG2_x_7qG2_000
-	JMP __ASM_Label_59
+	JMP __ASM_Label_49
 __ASM_Label_58:
-	DEC __main_7qG2_x_7qG2_000
-__ASM_Label_59:
+	JMP __ASM_Label_48
+__ASM_Label_49:
 */
-
-  for (int i=0; i<100; i++)  // good code
-    data[i%5] = data[i%5] + i;
-/*
-	MVI __main_7qG2_i_7qG2_001, 0
-__ASM_Label_60:
-	MOV __signed_stack_001main, __main_7qG2_i_7qG2_001
-	MVI __D0main, 100
-	MOV __signed_stack_002main, __signed_stack_001main
-	SUB __signed_stack_002main, __D0main
-	MVI __signed_stack_002main, 1
-	JN __ASM_Label_68
-	MVI __signed_stack_002main, 0
-__ASM_Label_68:
-	TST __signed_stack_002main
-	MVI __D0main, 0
-	JZ __ASM_Label_69
-	MVI __D0main, 1
-__ASM_Label_69:
-	JZ __ASM_Label_61
-	JMP __ASM_Label_62
-__ASM_Label_63:
-	INC __main_7qG2_i_7qG2_001
-	JMP __ASM_Label_60
-__ASM_Label_62:
-	MOV __signed_stack_001main, __main_7qG2_i_7qG2_001
-	MVI __D0main, 5
-	MOV __signed_stack_002main, __signed_stack_001main
-	DIV __signed_stack_002main, __D0main
-	MUL __signed_stack_002main, __D0main
-	SUB __signed_stack_001main, __signed_stack_002main
-	MOV __signed_stack_002main, __main_7qG2_i_7qG2_001
-	MVI __D0main, 5
-	MOV __signed_stack_003main, __signed_stack_002main
-	DIV __signed_stack_003main, __D0main
-	MUL __signed_stack_003main, __D0main
-	SUB __signed_stack_002main, __signed_stack_003main
-	MVI __signed_stack_003main, __main_7qG2_data_7qG2_000
-	ADD __signed_stack_003main, __signed_stack_002main
-	MOV __signed_stack_002main, (__signed_stack_003main)
-	MOV __D0main, __main_7qG2_i_7qG2_001
-	ADD __D0main, __signed_stack_002main
-	MVI __signed_stack_002main, __main_7qG2_data_7qG2_000
-	ADD __signed_stack_002main, __signed_stack_001main
-	MOV (__signed_stack_002main), __D0main
-	JMP __ASM_Label_63
-__ASM_Label_61:
-*/
-
-  while (true) {  // good code
-    x += 5;
-    if (x > 1000)
-      break;
-  }
-/*
-__ASM_Label_76:
-	MVI __D0main, 1
-	TST __D0main
-	JZ __ASM_Label_77
-	ADI __main_7qG2_x_7qG2_000, 5
-	MOV __signed_stack_001main, __main_7qG2_x_7qG2_000
-	MVI __D0main, 1000
-	MOV __signed_stack_002main, __signed_stack_001main
-	SUB __signed_stack_002main, __D0main
-	MVI __signed_stack_002main, 1
-	JP __ASM_Label_84
-	MVI __signed_stack_002main, 0
-__ASM_Label_84:
-	TST __signed_stack_002main
-	MVI __D0main, 0
-	JZ __ASM_Label_85
-	MVI __D0main, 1
-__ASM_Label_85:
-	JZ __ASM_Label_86
-	JMP __ASM_Label_77
-__ASM_Label_86:
-	JMP __ASM_Label_76
-__ASM_Label_77:
-*/
-
   repeat(100) // good code
   {
     x++;
-    if (x > 50) break;
   }
 /*
-	MVI __signed_stack_001main, 100
-__ASM_Label_87:
+	MVI __D0main, 100
+	MOV __signed_stack_001main, __D0main
+__ASM_Label_67:
 	DEC __signed_stack_001main
 	INC __main_7qG2_x_7qG2_000
-	MOV __signed_stack_002main, __main_7qG2_x_7qG2_000
-	MVI __D0main, 50
-	MOV __signed_stack_003main, __signed_stack_002main
-	SUB __signed_stack_003main, __D0main
-	MVI __signed_stack_003main, 1
-	JP __ASM_Label_93
-	MVI __signed_stack_003main, 0
-__ASM_Label_93:
-	TST __signed_stack_003main
-	MVI __D0main, 0
-	JZ __ASM_Label_94
-	MVI __D0main, 1
-__ASM_Label_94:
-	JZ __ASM_Label_95
-	JMP __ASM_Label_88
-__ASM_Label_95:
 	TST __signed_stack_001main
-	JP __ASM_Label_87
-__ASM_Label_88:
+	JP __ASM_Label_67
+__ASM_Label_68:
 */
-
   int y=34*2+50-13/40%33; // good code
 /*
-	MVI __main_7qG2_y_7qG2_000, 118
+ 	MVI __D0main, 118
+	MOV __main_7qG2_y_7qG2_000, __D0main
 */
   y = x+1-y; // good code
 /*
-	MOV __signed_stack_001main, __main_7qG2_x_7qG2_000
+	MOV __D0main, __main_7qG2_x_7qG2_000
+	MOV __signed_stack_001main, __D0main
 	MVI __D0main, 1
 	ADD __D0main, __signed_stack_001main
 	MOV __signed_stack_001main, __D0main
 	MOV __D0main, __main_7qG2_y_7qG2_000
 	SUB __signed_stack_001main, __D0main
-	MOV __main_7qG2_y_7qG2_000, __signed_stack_001main
+	MOV __D0main, __signed_stack_001main
+	MOV __main_7qG2_y_7qG2_000, __D0main
 */
   y--; // good code
 /*
@@ -385,23 +328,30 @@ __ASM_Label_88:
   x *= y; // good code
 /*
 	MOV __D0main, __main_7qG2_y_7qG2_000
+__ASM_Label_68:
+__ASM_Label_67:
 	MUL __main_7qG2_x_7qG2_000, __D0main
 */
   data[0] = x; // good code
 /*
-	MVI __signed_stack_001main, 0
+	MVI __D0main, 0
+	MOV __signed_stack_001main, __D0main
 	MOV __D0main, __main_7qG2_x_7qG2_000
+__ASM_Label_72:
+__ASM_Label_71:
 	MVI __signed_stack_002main, __main_7qG2_data_7qG2_000
 	ADD __signed_stack_002main, __signed_stack_001main
 	MOV (__signed_stack_002main), __D0main
 */
   int i=0; // good code
 /*
-	MVI __main_7qG2_i_7qG2_000, 0
+	MVI __D0main, 0
+	MOV __main_7qG2_i_7qG2_000, __D0main
 */
   data[i] = y; // good code
 /*
-	MOV __signed_stack_001main, __main_7qG2_i_7qG2_000
+	MOV __D0main, __main_7qG2_i_7qG2_000
+	MOV __signed_stack_001main, __D0main
 	MOV __D0main, __main_7qG2_y_7qG2_000
 	MVI __signed_stack_002main, __main_7qG2_data_7qG2_000
 	ADD __signed_stack_002main, __signed_stack_001main
@@ -409,7 +359,8 @@ __ASM_Label_88:
 */
   data[i+1] = 2; // good code
 /*
-	MOV __signed_stack_001main, __main_7qG2_i_7qG2_000
+	MOV __D0main, __main_7qG2_i_7qG2_000
+	MOV __signed_stack_001main, __D0main
 	MVI __D0main, 1
 	ADD __D0main, __signed_stack_001main
 	MOV __signed_stack_001main, __D0main
@@ -420,11 +371,13 @@ __ASM_Label_88:
 */
   data[i+2] = x*4; // good code
 /*
-	MOV __signed_stack_001main, __main_7qG2_i_7qG2_000
+	MOV __D0main, __main_7qG2_i_7qG2_000
+	MOV __signed_stack_001main, __D0main
 	MVI __D0main, 2
 	ADD __D0main, __signed_stack_001main
 	MOV __signed_stack_001main, __D0main
-	MOV __signed_stack_002main, __main_7qG2_x_7qG2_000
+	MOV __D0main, __main_7qG2_x_7qG2_000
+	MOV __signed_stack_002main, __D0main
 	MVI __D0main, 4
 	MUL __D0main, __signed_stack_002main
 	MVI __signed_stack_002main, __main_7qG2_data_7qG2_000
@@ -433,14 +386,18 @@ __ASM_Label_88:
 */
   data[i+3] = foo[0]+bar; // good code
 /*
-	MOV __signed_stack_001main, __main_7qG2_i_7qG2_000
+	MOV __D0main, __main_7qG2_i_7qG2_000
+	MOV __signed_stack_001main, __D0main
 	MVI __D0main, 3
 	ADD __D0main, __signed_stack_001main
 	MOV __signed_stack_001main, __D0main
-	MVI __signed_stack_002main, 0
+	MVI __D0main, 0
+	MOV __signed_stack_002main, __D0main
 	MVI __signed_stack_003main, foo
 	ADD __signed_stack_003main, __signed_stack_002main
-	MOV __signed_stack_002main, (__signed_stack_003main)
+	MOV __ArrHelper__main_76_0, (__signed_stack_003main)
+	MOV __D0main, __ArrHelper__main_76_0
+	MOV __signed_stack_002main, __D0main
 	MOV __D0main, bar
 	ADD __D0main, __signed_stack_002main
 	MVI __signed_stack_002main, __main_7qG2_data_7qG2_000
@@ -454,33 +411,40 @@ __ASM_Label_88:
     y--;
   }
 /*
-	MOV __signed_stack_001main, __main_7qG2_x_7qG2_000
+	MOV __D0main, __main_7qG2_x_7qG2_000
+	MOV __signed_stack_001main, __D0main
 	MVI __D0main, 50
 	MOV __signed_stack_002main, __signed_stack_001main
 	SUB __signed_stack_002main, __D0main
 	MVI __signed_stack_002main, 1
-	JP __ASM_Label_128
+	JP __ASM_Label_95
 	MVI __signed_stack_002main, 0
-__ASM_Label_128:
+__ASM_Label_95:
 	TST __signed_stack_002main
 	MVI __D0main, 0
-	JZ __ASM_Label_129
+	JZ __ASM_Label_96
 	MVI __D0main, 1
-__ASM_Label_129:
-	JZ __ASM_Label_130
+__ASM_Label_96:
+__ASM_Label_94:
+__ASM_Label_93:
+	JZ __ASM_Label_97
 	INC __main_7qG2_y_7qG2_000
-	JMP __ASM_Label_131
-__ASM_Label_130:
+	JMP __ASM_Label_98
+__ASM_Label_97:
 	DEC __main_7qG2_y_7qG2_000
-__ASM_Label_131:
+__ASM_Label_98:
 */
   Testing(x, data[0]); // good code
 /*
-	MOV __Testing_7qG2_x_7qG2_000, __main_7qG2_x_7qG2_000
-	MVI __signed_stack_001main, 0
+	MOV __D0main, __main_7qG2_x_7qG2_000
+	MOV __Testing_7qG2_x_7qG2_000, __D0main
+	MVI __D0main, 0
+	MOV __signed_stack_001main, __D0main
 	MVI __signed_stack_002main, __main_7qG2_data_7qG2_000
 	ADD __signed_stack_002main, __signed_stack_001main
-	MOV __Testing_7qG2_y_7qG2_000, (__signed_stack_002main)
+	MOV __ArrHelper__main_76_0, (__signed_stack_002main)
+	MOV __D0main, __ArrHelper__main_76_0
+	MOV __Testing_7qG2_y_7qG2_000, __D0main
 	CALL Testing
 */
   switch(x) // good code
@@ -501,77 +465,89 @@ __ASM_Label_131:
       data[0] = data[1];
   }
 /*
-	MOV __signed_stack_001main, __main_7qG2_x_7qG2_000
-	SUI __signed_stack_001main, 0
-	JZ __ASM_Label_141
+	MOV __D0main, __main_7qG2_x_7qG2_000
+__ASM_Label_106:
+__ASM_Label_105:
 	MOV __signed_stack_001main, __D0main
-	SUI __signed_stack_001main, 1
-	JZ __ASM_Label_142
+	SBI __signed_stack_001main, 0
+	JZ __ASM_Label_108
 	MOV __signed_stack_001main, __D0main
-	SUI __signed_stack_001main, 2
-	JZ __ASM_Label_143
+	SBI __signed_stack_001main, 1
+	JZ __ASM_Label_109
 	MOV __signed_stack_001main, __D0main
-	SUI __signed_stack_001main, 3
-	JZ __ASM_Label_144
+	SBI __signed_stack_001main, 2
+	JZ __ASM_Label_110
 	MOV __signed_stack_001main, __D0main
-	SUI __signed_stack_001main, 4
-	JZ __ASM_Label_145
-	JMP __ASM_Label_150
-	JMP __ASM_Label_140
-__ASM_Label_141:
+	SBI __signed_stack_001main, 3
+	JZ __ASM_Label_111
+	MOV __signed_stack_001main, __D0main
+	SBI __signed_stack_001main, 4
+	JZ __ASM_Label_112
+	JMP __ASM_Label_117
+	JMP __ASM_Label_107
+__ASM_Label_108:
 	INC __main_7qG2_i_7qG2_000
-	JMP __ASM_Label_140
-__ASM_Label_142:
-__ASM_Label_143:
+	JMP __ASM_Label_107
+__ASM_Label_109:
+__ASM_Label_110:
 	DEC __main_7qG2_i_7qG2_000
-	JMP __ASM_Label_140
-__ASM_Label_144:
+	JMP __ASM_Label_107
+__ASM_Label_111:
 	INC __main_7qG2_y_7qG2_000
-__ASM_Label_145:
-	MOV __signed_stack_001main, __main_7qG2_i_7qG2_000
+__ASM_Label_112:
+	MOV __D0main, __main_7qG2_i_7qG2_000
+__ASM_Label_114:
+__ASM_Label_113:
+	MOV __signed_stack_001main, __D0main
 	MVI __D0main, 23
 	MVI __signed_stack_002main, __main_7qG2_data_7qG2_000
 	ADD __signed_stack_002main, __signed_stack_001main
 	MOV (__signed_stack_002main), __D0main
-	JMP __ASM_Label_140
-__ASM_Label_150:
-	MVI __signed_stack_001main, 0
-	MVI __signed_stack_002main, 1
+	JMP __ASM_Label_107
+__ASM_Label_117:
+	MVI __D0main, 0
+	MOV __signed_stack_001main, __D0main
+	MVI __D0main, 1
+	MOV __signed_stack_002main, __D0main
 	MVI __signed_stack_003main, __main_7qG2_data_7qG2_000
 	ADD __signed_stack_003main, __signed_stack_002main
-	MOV __D0main, (__signed_stack_003main)
+	MOV __ArrHelper__main_76_0, (__signed_stack_003main)
+	MOV __D0main, __ArrHelper__main_76_0
+__ASM_Label_121:
+__ASM_Label_120:
 	MVI __signed_stack_002main, __main_7qG2_data_7qG2_000
 	ADD __signed_stack_002main, __signed_stack_001main
 	MOV (__signed_stack_002main), __D0main
-__ASM_Label_140:
+__ASM_Label_107:
 */
   open("r"); // good code
 /*
 	LOPEN
 	MVI __D0main, 0
-	JC __ASM_Label_157
+	JC __ASM_Label_132
 	MVI __D0main, 1
-__ASM_Label_157:
+__ASM_Label_132:
 */
   x = read(); // good code
 /*
-	READ __main_7qG2_x_7qG2_000
+	READ __D0main
+	MOV __main_7qG2_x_7qG2_000, __D0main
 */
   close(); // good code
 /*
 	LCLOSE
 	MVI __D0main, 0
-	JC __ASM_Label_160
+	JC __ASM_Label_135
 	MVI __D0main, 1
-__ASM_Label_160:
+__ASM_Label_135:
 */
   open("w"); // good code
 /*
 	LINIT
 	MVI __D0main, 0
-	JC __ASM_Label_161
+	JC __ASM_Label_136
 	MVI __D0main, 1
-__ASM_Label_161:
+__ASM_Label_136:
 */
   write(x); // good code
 /*
@@ -582,11 +558,11 @@ __ASM_Label_161:
 /*
 	LSTAT
 	MVI __D0main, 2
-	JZ __ASM_Label_166
+	JNZ __ASM_Label_141
 	DEC __D0main
-	JC __ASM_Label_166
+	JC __ASM_Label_141
 	DEC __D0main
-__ASM_Label_166:
+__ASM_Label_141:
 	MOV __main_7qG2_x_7qG2_000, __D0main
 */
   x = push(y); // good code
@@ -597,7 +573,8 @@ __ASM_Label_166:
 */
   y = pop(); // good code
 /*
-	POP __main_7qG2_y_7qG2_000
+	POP __D0main
+	MOV __main_7qG2_y_7qG2_000, __D0main
 */
   y = sqrt(x); // good code
 /*
@@ -608,125 +585,214 @@ __ASM_Label_166:
   y = putchar('\n'); // good code
 /*
 	TRNL
-	MVI __main_7qG2_y_7qG2_000, 10
+	MVI __D0main, 10
+	MOV __main_7qG2_y_7qG2_000, __D0main
 */
   // unsupported escapes are output as ' '
   y = putchar('\t'); // good code
 /*
 	TRSP
-	MVI __main_7qG2_y_7qG2_000, 32
+	MVI __D0main, 32
+	MOV __main_7qG2_y_7qG2_000, __D0main
 */
   y = putchar('\r'); // good code
 /*
 	TRCR
-	MVI __main_7qG2_y_7qG2_000, 13
+	MVI __D0main, 13
+	MOV __main_7qG2_y_7qG2_000, __D0main
 */
   y = putchar('X'); // good code
 /*
 	TRCH X
-	MVI __main_7qG2_y_7qG2_000, 88
+	MVI __D0main, 88
+	MOV __main_7qG2_y_7qG2_000, __D0main
 */
   y = puts("string\\\n \"constant\""); // good code
 /*
-	TRST 'string'
+	TRCH s
+	TRCH t
+	TRCH r
+	TRCH i
+	TRCH n
+	TRCH g
 	TRCH \
 	TRNL
-	TRST ' '
-	TRST '"'
-	TRST 'constant'
-	TRST '"'
-	MVI __main_7qG2_y_7qG2_000, 1
+	TRSP
+	TRCH "
+	TRCH c
+	TRCH o
+	TRCH n
+	TRCH s
+	TRCH t
+	TRCH a
+	TRCH n
+	TRCH t
+	TRCH "
+	MVI __D0main, 1
+	MOV __main_7qG2_y_7qG2_000, __D0main
 */
   // good code
   y = printf("Foo(x) = %d, x = %x, %s", Foo(x), x, "wow\n");
 /*
-	TRST 'Foo(x) = '
-	MOV __Foo_7qG2_x_7qG2_000, __main_7qG2_x_7qG2_000
+	TRCH F
+	TRCH o
+	TRCH o
+	TRCH (
+	TRCH x
+	TRCH )
+	TRSP
+	TRCH =
+	TRSP
+	MOV __D0main, __main_7qG2_x_7qG2_000
+	MOV __Foo_7qG2_x_7qG2_000, __D0main
 	CALL Foo
 	MOV __D0main, __D0Foo
 	TRND __D0main
-	TRST ', x = '
+	TRCH ,
+	TRSP
+	TRCH x
+	TRSP
+	TRCH =
+	TRSP
 	MOV __D0main, __main_7qG2_x_7qG2_000
 	TRNH __D0main
-	TRST ', '
-	TRST 'wow'
+	TRCH ,
+	TRSP
+	TRCH w
+	TRCH o
+	TRCH w
 	TRNL
-	MVI __main_7qG2_y_7qG2_000, 1
+	MVI __D0main, 1
+	MOV __main_7qG2_y_7qG2_000, __D0main
 */
   // stop the program if boolean expression is true
   Stop(x>5); // good code
 /*
-	MOV __signed_stack_001main, __main_7qG2_x_7qG2_000
+	MOV __D0main, __main_7qG2_x_7qG2_000
+	MOV __signed_stack_001main, __D0main
 	MVI __D0main, 5
 	MOV __signed_stack_002main, __signed_stack_001main
 	SUB __signed_stack_002main, __D0main
 	MVI __signed_stack_002main, 1
-	JP __ASM_Label_197
+	JP __ASM_Label_172
 	MVI __signed_stack_002main, 0
-__ASM_Label_197:
+__ASM_Label_172:
 	TST __signed_stack_002main
 	MVI __D0main, 0
-	JZ __ASM_Label_198
+	JZ __ASM_Label_173
 	MVI __D0main, 1
-__ASM_Label_198:
+__ASM_Label_173:
 	TST __D0main
-	JZ __ASM_Label_199
+	JZ __ASM_Label_174
 	HALTALL
-__ASM_Label_199:
+__ASM_Label_174:
 */
-
   start two; // good code
-  ExitTo(three); // maybe good code?
 /*
 	FORK two
+*/
+  ExitTo(three); // maybe good code?
+/*
 	FORK three
 	HALTME
 */
-
   RotateLeft(x); // good code
   RotateRight(x); // good code
-  StopProcesses(); // good code
-  Run(4); // good code
 /*
 	RLC __main_7qG2_x_7qG2_000
 	RRC __main_7qG2_x_7qG2_000
+*/
+  StopProcesses(); // good code
+/*
 	HALTEX
+*/
+  Run(4); // good code
+/*
 	SWITCH 4
 */
-
-  Wait(10); // good code
+  Wait(10); // maybe good code?
 /*
 	MVI __D0main, 10
-	MOV __signed_stack_001main, 01FH
-	ADD __signed_stack_001main, __D0main
-__ASM_Label_202:
-	MOV __signed_stack_002main, __signed_stack_001main
-	SUB __signed_stack_002main, 01FH
-	JP __ASM_Label_202
+	MOV __signed_stack_001main, __D0main
+__ASM_Label_177:
+	STALL
+	DEC __signed_stack_001main
+	JP __ASM_Label_177
 */
 
-  x = sign(y); // good code
-/*
-	MOV __D0main, __main_7qG2_y_7qG2_000
-	TST __D0main
-	MVI __D0main, 1
-	JP __ASM_Label_207
-	MVI __D0main, -1
-	JN __ASM_Label_207
-	MVI __D0main, 0
-__ASM_Label_207:
-	MOV __main_7qG2_x_7qG2_000, __D0main
-*/
-
-  x = abs(pt.z);
-/*
-	MOV __D0main, __main_7qG2_pt_7qG2_000.z
-	TST __D0main
-	JP __ASM_Label_212
-	NEG __D0main
-__ASM_Label_212:
-	MOV __main_7qG2_x_7qG2_000, __D0main
-*/
 
 }
+
+task two() // good code
+{
+  while(true)
+  {
+    putchar('x');
+  }
+}
+/*
+two:
+__ASM_Label_175:
+	MVI __D0two, 1
+	TST __D0two
+	JZ __ASM_Label_176
+	TRCH x
+	MVI __D0two, 120
+	JMP __ASM_Label_175
+__ASM_Label_176:
+	HALTME
+*/
+
+task three() // good code
+{
+  puts("3");
+}
+/*
+three:
+	TRCH 3
+	MVI __D0three, 1
+	HALTME
+*/
+
+int Foo(int x) // good code
+{
+  return x*x;
+}
+/*
+Foo:
+	MOV __D0Foo, __Foo_7qG2_x_7qG2_000
+	MOV __signed_stack_001Foo, __D0Foo
+	MOV __D0Foo, __Foo_7qG2_x_7qG2_000
+	MUL __D0Foo, __signed_stack_001Foo
+	RET
+	RET
+*/
+
+void Testing(int x, int y) // good code
+{
+  int z = x+y-Foo(x);
+  z--;
+}
+/*
+Testing:
+__Testing_7qG2_z_7qG2_000 DS 1
+	MOV __D0Testing, __Testing_7qG2_x_7qG2_000
+	MOV __signed_stack_001Testing, __D0Testing
+	MOV __D0Testing, __Testing_7qG2_y_7qG2_000
+	ADD __D0Testing, __signed_stack_001Testing
+	MOV __signed_stack_001Testing, __D0Testing
+	MOV __D0Testing, __Testing_7qG2_x_7qG2_000
+__ASM_Label_129:
+__ASM_Label_128:
+	MOV __Foo_7qG2_x_7qG2_000, __D0Testing
+	CALL Foo
+	MOV __D0Testing, __D0Foo
+	SUB __signed_stack_001Testing, __D0Testing
+	MOV __D0Testing, __signed_stack_001Testing
+__ASM_Label_127:
+__ASM_Label_126:
+	MOV __Testing_7qG2_z_7qG2_000, __D0Testing
+	DEC __Testing_7qG2_z_7qG2_000
+	RET
+*/
 

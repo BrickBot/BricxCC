@@ -1,3 +1,4 @@
+// 2011-08-18 JCH - working fine (user error - had .id rather than .idx)
 struct foo {
    unsigned int type;
    unsigned int len;
@@ -7,7 +8,7 @@ struct foo {
 inline int Testing(unsigned long op, foo opands[], int out) {
    foo tmp_opands[];
 
-   if(opands[0].id != tmp_opands[0].id) {
+   if(opands[0].idx != tmp_opands[0].idx) {
       foo tmp = tmp_opands[0];
    }
 

@@ -14,9 +14,12 @@ bool StrCmp(string a, string b)
 
 task main()
 {
-  if (StrCmp("test", "testing")) {
+  if (StrCmp("testinq", "testing")) {
     TextOut(0, LCD_LINE1, "equal");
   }
+  else
+    TextOut(0, LCD_LINE1, "not equal");
+  Wait(SEC_5);
 }
 
 
