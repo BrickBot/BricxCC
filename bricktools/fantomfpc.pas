@@ -19,7 +19,7 @@ unit FANTOMFPC;
 interface
 
 uses
-  {$IFDEF WIN32}Windows,{$ENDIF}libusb, BaseUnix, termio, unix, FantomDefs;
+  {$IFDEF WIN32}Windows,{$ENDIF}FantomDefs;
 
 {$I FANTOM_CONST.INC}
 
@@ -91,10 +91,7 @@ procedure UnloadFantomAPI;
 implementation
 
 uses
-  Classes, SysUtils, Math, rcx_cmd, rcx_constants, uCommonUtils;
-
-const
-  MAX_SERIAL_IDX = 24;
+  Classes, SysUtils, Math, libusb, rcx_cmd, rcx_constants, uCommonUtils, uSerial;
 
 const USB_ID_VENDOR_LEGO = $0694;
 const USB_ID_PRODUCT_NXT = $0002;
@@ -108,218 +105,43 @@ const USB_TIMEOUT = 1000;
 const DIRECT_COMMAND = 0;
 const NO_RESP0NSE = $80;
 
-function LSB(w : Word) : Byte;
-begin
-  Result := Byte(w and $ff);
-end;
-
-function MSB(w : Word) : Byte;
-begin
- Result := Byte((w shr 8) and $ff);
-end;
-
-function GetSerialDeviceName(idx : integer) : string;
-begin
-{$IFDEF WIN32}
-  Result := Format('COM%d', [idx]);
-{$ELSE}
-  Result := Format('/dev/rfcomm%d', [idx]);
-{$ENDIF}
-end;
-
-function TimerGTEQ(a, b : PTimeval) : boolean;
-begin
-  Result := False;
-  if a^.tv_sec < b^.tv_sec then
-    Exit
-  else if a^.tv_sec = b^.tv_sec then
-  begin
-    if a^.tv_usec < b^.tv_usec then
-      Exit;
-  end;
-  Result := True;
-end;
-
-procedure TimerSub(a, b, result : PTimeval);
-begin
-  result^.tv_sec  := a^.tv_sec - b^.tv_sec;
-  result^.tv_usec := a^.tv_usec - b^.tv_usec;
-  if result^.tv_usec < 0 then
-  begin
-    dec(result^.tv_sec);
-    result^.tv_usec := result^.tv_usec + 1000000;
-  end;
-end;
-
-const FIONREAD = $541B;
-
-function ReadTO(Handle: LongInt; Buffer : Pointer; Count: LongInt; ms : LongInt) : LongInt;
-var
-  cur : PChar;
-  expire, delay : TTimeval;
-  tz : TTimezone;
-  rfds : TFDSet;
-  nread, total : integer;
-begin
-  // time limited read
-  cur := PChar(Buffer);
-  if fpGetTimeOfDay(@expire, @tz) < 0 then
-  begin
-    Result := -1;
-    Exit;
-  end;
-  
-  expire.tv_sec  := expire.tv_sec + (ms div 1000);
-  expire.tv_usec := expire.tv_usec + ((ms mod 1000) * 1000);
-  
-  rfds[0] := 0;
-  total := 0;
-  while Count > 0 do
-  begin
-    fpFD_Zero(rfds);
-    fpFD_Set(Handle, rfds);
-    if fpGetTimeOfDay(@delay, @tz) < 0 then
-    begin
-      Result := -1;
-      Exit;
-    end;
-    
-    if TimerGTEQ(@delay, @expire) then
-      break;
-      
-    TimerSub(@expire, @delay, @delay);
-
-    if fpSelect(Handle + 1, @rfds, nil, nil, @delay) <> 0 then
-    begin
-      if fpIOCtl(Handle, FIONREAD, @nread) < 0 then
-      begin
-        Result := -1;
-        Exit;
-      end;
-      
-      if Count < nread then
-        nread := Count;
-        
-      nread := fpRead(Handle, cur, nread);
-      if nread < 0 then
-      begin
-        Result := -1;
-        Exit;
-      end;
-      dec(Count, nread);
-      cur := cur + nread;
-      inc(total, nread);
-    end
-    else
-      break;
-  end;
-  Result := total;
-end;
-
-function BluetoothRead(Handle: LongInt; Buffer : Pointer; Count: LongInt; ms : LongInt): LongInt;
-var
-  header : array[0..1] of Byte;
-  packetSize : integer;
-  actual : integer;
-begin
-  Result := -1;
-  if ReadTO(Handle, @header[0], 2, ms) <> 2 then
-    Exit;
-
-  packetSize := Integer(header[0]) + Integer(header[1]*256);
-  if packetSize > Count then
-    Exit;
-
-  actual := ReadTO(Handle, Buffer, packetSize, ms);
-  if actual <> packetSize then
-    Exit;
-
-  Result := actual;
-end;
-
-procedure BluetoothFlush(Handle: LongInt);
-begin
-  fpfsync(Handle);
-end;
-
-function BluetoothWrite(Handle: LongInt; Buffer : Pointer; Count: LongInt): LongInt;
+function NXTSerialWrite(Handle: LongInt; Buffer : Pointer; Count: LongInt): LongInt;
 var
   header : array[0..1] of Byte;
 begin
   Result := 0;
   header[0] := Byte(Count and $FF);
   header[1] := Byte(Count shr 8);
-  fpWrite(Handle, header, 2);
-  Result := fpWrite(Handle, Buffer^, Count);
+  SerialWrite(Handle, header, 2);
+  Result := SerialWrite(Handle, Buffer^, Count);
 end;
 
-procedure BluetoothSetParams(Handle: LongInt; BitsPerSec: LongInt;
-  ByteSize: byte; Parity: byte; StopBits: byte);
-var
-  tios: termios;
+function NXTSerialOpen(const DeviceName: String): LongInt;
 begin
-  tios.c_oflag := 0;
-  FillChar(tios, SizeOf(tios), #0);
-
-  case BitsPerSec of
-    50: tios.c_cflag := B50;
-    75: tios.c_cflag := B75;
-    110: tios.c_cflag := B110;
-    134: tios.c_cflag := B134;
-    150: tios.c_cflag := B150;
-    200: tios.c_cflag := B200;
-    300: tios.c_cflag := B300;
-    600: tios.c_cflag := B600;
-    1200: tios.c_cflag := B1200;
-    1800: tios.c_cflag := B1800;
-    2400: tios.c_cflag := B2400;
-    4800: tios.c_cflag := B4800;
-    19200: tios.c_cflag := B19200;
-    38400: tios.c_cflag := B38400;
-    57600: tios.c_cflag := B57600;
-    115200: tios.c_cflag := B115200;
-    230400: tios.c_cflag := B230400;
-{$ifndef BSD}
-    460800: tios.c_cflag := B460800;
-{$endif}
-    else tios.c_cflag := B9600;
-  end;
-  tios.c_ispeed := tios.c_cflag;
-  tios.c_ospeed := tios.c_ispeed;
-
-  tios.c_cflag := tios.c_cflag or CREAD or CLOCAL;
-
-  case ByteSize of
-    5: tios.c_cflag := tios.c_cflag or CS5;
-    6: tios.c_cflag := tios.c_cflag or CS6;
-    7: tios.c_cflag := tios.c_cflag or CS7;
-  else
-    tios.c_cflag := tios.c_cflag or CS8;
-  end;
-
-  case Parity of
-    1: tios.c_cflag := tios.c_cflag or PARENB or PARODD;
-    2: tios.c_cflag := tios.c_cflag or PARENB;
-  end;
-
-  if StopBits = 2 then
-    tios.c_cflag := tios.c_cflag or CSTOPB;
-
-  tios.c_cc[VMIN] := 1;
-  tios.c_cc[VTIME] := 0;
-  tcsetattr(Handle, TCSAFLUSH, tios)
-end;
-
-function BluetoothOpen(const DeviceName: String): LongInt;
-begin
-  Result := fpopen(DeviceName, O_RDWR);
+  Result := SerialOpen(DeviceName);
   if Result > 0 then
-    BluetoothSetParams(Result, 460800, 8, 0, 1);
+    SerialSetParams(Result, 460800, 8, 0, 1);
 end;
 
-procedure BluetoothClose(Handle: LongInt);
+function NXTSerialRead(Handle: LongInt; Buffer : Pointer; Count: LongInt; ms : LongInt): LongInt;
+var
+  header : array[0..1] of Byte;
+  packetSize : integer;
+  actual : integer;
 begin
-  fpClose(Handle);
+  Result := -1;
+  if SerialRead(Handle, @header[0], 2, ms) <> 2 then
+    Exit;
+
+  packetSize := Integer(header[0]) + Integer(header[1]*256);
+  if packetSize > Count then
+    Exit;
+
+  actual := SerialRead(Handle, Buffer, packetSize, ms);
+  if actual <> packetSize then
+    Exit;
+
+  Result := actual;
 end;
 
 function is_nxt_fw_device(dev : PUSBDevice) : boolean;
@@ -349,9 +171,9 @@ begin
     try
       cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetBatteryLevel);
       len := cmd.GetLength;
-      if BluetoothWrite(tmpHandle, cmd.GetBody, len) = len then
+      if NXTSerialWrite(tmpHandle, cmd.GetBody, len) = len then
       begin
-        if BluetoothRead(tmpHandle, @b[0], 5, ms) = 5 then
+        if NXTSerialRead(tmpHandle, @b[0], 5, ms) = 5 then
           Result := True;
       end;
     finally
@@ -635,10 +457,10 @@ begin
   try
     cmd.SetVal(kNXT_SystemCmd, kNXT_SCGetDeviceInfo);
     len := cmd.GetLength;
-    if BluetoothWrite(handle, cmd.GetBody, len) = len then
+    if NXTSerialWrite(handle, cmd.GetBody, len) = len then
     begin
       size := 33;
-      len := BluetoothRead(handle, @buf[0], size, ms);
+      len := NXTSerialRead(handle, @buf[0], size, ms);
       if (len = size) and (buf[2] = 0) then
       begin
         name := '';
@@ -1629,7 +1451,7 @@ begin
     fDevHandle := nil;
   end;
   if fSerialHandle <> 0 then begin
-    BluetoothClose(fSerialHandle);
+    SerialClose(fSerialHandle);
     fSerialHandle := 0;
   end;
   inherited;
@@ -1867,7 +1689,7 @@ begin
   end
   else
   begin
-    ret := BluetoothRead(fSerialHandle, bufferPtr, numberOfBytes, fTimeout);
+    ret := NXTSerialRead(fSerialHandle, bufferPtr, numberOfBytes, fTimeout);
   end;
   if ret < 0 then
     status := ret
@@ -2024,26 +1846,26 @@ begin
       // start with current serial port index
       // close any open port
       if fSerialHandle <> 0 then begin
-        BluetoothClose(fSerialHandle);
+        SerialClose(fSerialHandle);
         fDevHandle := nil;
       end;
       i := 0;
       while (i < MAX_SERIAL_IDX) and not bDone do
       begin
-        fSerialHandle := BluetoothOpen(GetSerialDeviceName(i));
-        BluetoothFlush(fSerialHandle);
+        fSerialHandle := NXTSerialOpen(GetSerialDeviceName(i));
+        SerialFlush(fSerialHandle);
         if is_nxt_serial_device(fSerialHandle, fTimeout) then
         begin
           bDone := CorrectDeviceFound;
           if not bDone then
           begin
-            BluetoothClose(fSerialHandle);
+            SerialClose(fSerialHandle);
             fSerialHandle := 0;
           end;
         end
         else
         begin
-          BluetoothClose(fSerialHandle);
+          SerialClose(fSerialHandle);
           fSerialHandle := 0;
         end;
         if bDone then Break;
@@ -2115,7 +1937,7 @@ begin
   end
   else
   begin
-    ret := BluetoothWrite(fSerialHandle, bufferPtr, numberOfBytes);
+    ret := NXTSerialWrite(fSerialHandle, bufferPtr, numberOfBytes);
   end;
   if ret < 0 then
     status := ret
@@ -2911,16 +2733,16 @@ begin
     // start with current serial port index
     // close any open port
     if fSerialHandle <> 0 then begin
-      BluetoothClose(fSerialHandle);
+      SerialClose(fSerialHandle);
       fDevHandle := nil;
     end;
     while (fCurSerialIdx < MAX_SERIAL_IDX) and not bDone do
     begin
-      fSerialHandle := BluetoothOpen(GetSerialDeviceName(fCurSerialIdx));
-      BluetoothFlush(fSerialHandle);
+      fSerialHandle := NXTSerialOpen(GetSerialDeviceName(fCurSerialIdx));
+      SerialFlush(fSerialHandle);
       bDone := is_nxt_serial_device(fSerialHandle, fBTTimeout);
       if bDone then Break;
-      BluetoothClose(fSerialHandle);
+      SerialClose(fSerialHandle);
       fSerialHandle := 0;
       Sleep(100);
       inc(fCurSerialIdx);
@@ -2931,7 +2753,7 @@ begin
     end
     else begin
       status := kStatusNoMoreItemsFound;
-      BluetoothClose(fSerialHandle);
+      SerialClose(fSerialHandle);
       fSerialHandle := 0;
     end;
   end;
@@ -2958,7 +2780,7 @@ begin
     fDevHandle := nil;
   end;
   if fSerialHandle <> 0 then begin
-    BluetoothClose(fSerialHandle);
+    SerialClose(fSerialHandle);
     fSerialHandle := 0;
   end;
 
