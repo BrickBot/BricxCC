@@ -79,7 +79,7 @@ begin
 end;
 
 initialization
-  LocalBrickType := SU_RCX;
+  LocalBrickType := SU_NXT;
   BC := nil;
 
 finalization
