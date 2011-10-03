@@ -361,11 +361,11 @@ begin
     Result := EscapeCommFunction(Handle, CLRDTR);
 end;
 {$ELSE}
-function SerialSetRTS(bRTS: Boolean): Boolean;
+function SerialSetRTS(Handle: LongInt; bRTS: Boolean): Boolean;
 begin
 end;
 
-function SerialSetDTR(bDTR: Boolean): Boolean;
+function SerialSetDTR(Handle: LongInt; bDTR: Boolean): Boolean;
 begin
 end;
 {$ENDIF}
