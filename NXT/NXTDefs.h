@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-08-02
- * version 81
+ * date 2011-09-18
+ * version 82
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -4396,6 +4396,10 @@ dseg ends
 #define __setUSBState(_n) \
   compchk EQ, sizeof(_n), 1 \
   SetCommModuleValue(CommOffsetUsbState, _n)
+
+#define __setHSAddress(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  SetCommModuleValue(CommOffsetHsAddress, _n)
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 
@@ -15784,6 +15788,15 @@ __remoteGetInputValues(_conn, _params, _result)
   compchk EQ, sizeof(_n), 1 \
   GetCommModuleValue(CommOffsetUsbState, _n)
 
+/**
+ * Get hi-speed port address.
+ * This method returns the value of the hi-speed port address.
+ * \param _n The hi-speed port address. See \ref CommHiSpeedAddressConstants.
+ */
+#define GetHSAddress(_n) \
+  compchk EQ, sizeof(_n), 1 \
+  GetCommModuleValue(CommOffsetHsAddress, _n)
+
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 
 /**
@@ -16011,6 +16024,13 @@ __remoteGetInputValues(_conn, _params, _result)
  * \param _n The USB state.
  */
 #define SetUSBState(_n) __setUSBState(_n)
+
+/**
+ * Set hi-speed port address.
+ * This method sets the value of the hi-speed port address.
+ * \param _n The hi-speed port address. See \ref CommHiSpeedAddressConstants.
+ */
+#define SetHSAddress(_n) __setHSAddress(_n)
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 

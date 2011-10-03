@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-08-02
- * \version 101
+ * \date 2011-09-18
+ * \version 102
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -7434,6 +7434,13 @@ inline byte HSSpeed(void);
  */
 inline byte HSState(void);
 
+/**
+ * Get hi-speed port address.
+ * This method returns the value of the hi-speed port address.
+ * \return The hi-speed port address. See \ref CommHiSpeedAddressConstants.
+ */
+inline byte HSAddress(void);
+
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 
 /**
@@ -7655,6 +7662,13 @@ inline void SetHSSpeed(byte hsSpeed);
  * \param hsState The hi-speed port state. See \ref CommHiSpeedStateConstants.
  */
 inline void SetHSState(byte hsState);
+
+/**
+ * Set hi-speed port address.
+ * This method sets the value of the hi-speed port address.
+ * \param hsAddress The hi-speed port address. See \ref CommHiSpeedAddressConstants.
+ */
+inline void SetHSAddress(byte hsAddress);
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 
@@ -8071,6 +8085,7 @@ asm { \
 #define HSSpeed() asm { GetHSSpeed(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define HSState() asm { GetHSState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #define USBState() asm { GetUSBState(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#define HSAddress() asm { GetHSAddress(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 #define HSMode() asm { GetHSMode(__TMPWORD__) __RETURN__ __TMPWORD__ }
@@ -8139,6 +8154,7 @@ asm { \
 #define SetHSSpeed(_n) asm { __setHSSpeed(_n) }
 #define SetHSState(_n) asm { __setHSState(_n) }
 #define SetUSBState(_n) asm { __setUSBState(_n) }
+#define SetHSAddress(_n) asm { __setHSAddress(_n) }
 
 #if (__FIRMWARE_VERSION > 107) && defined(__ENHANCED_FIRMWARE)
 #define SetBTDataMode(_n) asm { __setBTDataMode(_n) }
