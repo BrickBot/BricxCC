@@ -53,9 +53,9 @@ NXCDefsData.pas: NXCDefs.h
 
 # how to create SPCDefsData.pas
 SPCDefsData.pas: SPCDefs.h
-	./mkdata.exe $< $@ spc_defs_data
+	./mkdata $< $@ spc_defs_data
 
 # how to create SPMemData.pas
 SPMemData.pas: spmem.h
-	./mkdata.exe $< $@ spmem_data
+	./mkdata $< $@ spmem_data
 
