@@ -112,8 +112,8 @@ begin
   Result := 0;
   header[0] := Byte(Count and $FF);
   header[1] := Byte(Count shr 8);
-  SerialWrite(Handle, header, 2);
-  Result := SerialWrite(Handle, Buffer^, Count);
+  SerialWrite(Handle, @header[0], 2);
+  Result := SerialWrite(Handle, Buffer, Count);
 end;
 
 function NXTSerialOpen(const DeviceName: String): LongInt;

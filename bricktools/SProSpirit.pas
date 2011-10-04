@@ -297,6 +297,13 @@ const
   TWOSTOPBITS = 2;
 {$ENDIF}
 
+procedure DoBeep(aFreq, aDur : cardinal);
+begin
+{$IFDEF Windows}
+  Beep(aFreq, aDur);
+{$ENDIF}
+end;
+
 function SProSerialOpen(const DeviceName: String): LongInt;
 begin
   Result := SerialOpen(DeviceName);
@@ -373,7 +380,7 @@ function TSProSpirit.PlayTone(aFreq, aTime: word): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
-  Beep(aFreq, aTime);
+  DoBeep(aFreq, aTime);
 end;
 
 function TSProSpirit.SetSensorType(aNum, aType: integer): boolean;
