@@ -9,7 +9,7 @@ clean::
 	rm -f *.o *.ppu *.rst *.compiled *.dcu nbc_preproc.inc
 
 realclean:: clean
-	rm -f $(PROGRAMS) mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
+	rm -f $(PROGRAMS) mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas SPCDefsData.pas SPMemData.pas
 
 install:: all
 
@@ -25,7 +25,7 @@ nbc: nbc.dpr nbc_preproc.inc
 	$(PPC) $(PFLAGS) $< -o$@
 
 # how to compile pas source
-%.o: %.pas mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas
+%.o: %.pas mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas SPCDefsData.pas SPMemData.pas
 	$(PPC) $(PFLAGS) $< -o$@
 
 # how to create the include file
@@ -50,3 +50,12 @@ NXTDefsData.pas: NXTDefs.h
 # how to create NXCDefsData.pas
 NXCDefsData.pas: NXCDefs.h
 	./mkdata $< $@ nxc_defs_data
+
+# how to create SPCDefsData.pas
+SPCDefsData.pas: SPCDefs.h
+	./mkdata.exe $< $@ spc_defs_data
+
+# how to create SPMemData.pas
+SPMemData.pas: spmem.h
+	./mkdata.exe $< $@ spmem_data
+

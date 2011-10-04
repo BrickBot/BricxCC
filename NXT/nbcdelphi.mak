@@ -46,7 +46,7 @@ NXTDefsData.pas: NXTDefs.h
 NXCDefsData.pas: NXCDefs.h
 	./mkdata.exe $< $@ nxc_defs_data
 
-# how to create NXCDefsData.pas
+# how to create SPCDefsData.pas
 SPCDefsData.pas: SPCDefs.h
 	./mkdata.exe $< $@ spc_defs_data
 
