@@ -542,10 +542,6 @@ uses
 { Constant Declarations }
 
 const
-  PAD_RIGHT = 1;
-  PAD_ZERO  = 2;
-  
-const
   TAB = ^I;
   CR  = ^M;
   LF  = ^J;

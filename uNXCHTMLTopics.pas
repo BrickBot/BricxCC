@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 2871;
+  uNXCHTMLTopicsSize = 3139;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -4325,6 +4325,10 @@ const
      Value: 'group___comm_i_o_m_a_p_ga1dfb5b73cc16ff9651b83badae02757e.html'
     ),
     (
+     Name: 'CommOffsetHsAddress';
+     Value: 'group___comm_i_o_m_a_p_gaa2d96352c1f4cabb137db3ab18535e94.html'
+    ),
+    (
      Name: 'CommOffsetHsMode';
      Value: 'group___comm_i_o_m_a_p_ga4b28fbc0d6b8de8fa092b05a3160ba4c.html'
     ),
@@ -5449,6 +5453,14 @@ const
      Value: 'group___hi_technic_constants_ga8f93e09e350fe3461edf8f2c1e65ccb8.html'
     ),
     (
+     Name: 'HT_ADDR_PROTOBOARD';
+     Value: 'group___hi_technic_constants_ga24fe296e84f90fd4cc47f6cfe841b2a1.html'
+    ),
+    (
+     Name: 'HT_ADDR_SUPERPRO';
+     Value: 'group___hi_technic_constants_ga25ada2f08ed58ce7b015891d7fdbdb38.html'
+    ),
+    (
      Name: 'HTIR2_MODE_1200';
      Value: 'group___h_t_i_r_seeker2_constants_ga3ec2348617d3fae0aadb1eef110f7e2f.html'
     ),
@@ -5651,6 +5663,390 @@ const
     (
      Name: 'HTBAR_REG_CALIBRATION';
      Value: 'group___h_t_barometric_constants_ga5b9e8f6570dca842a58656de21daf62a.html'
+    ),
+    (
+     Name: 'HTPROTO_REG_A0';
+     Value: 'group___h_t_proto_constants_ga1c281e7d522267da9893383ac4c3bc6e.html'
+    ),
+    (
+     Name: 'HTPROTO_REG_A1';
+     Value: 'group___h_t_proto_constants_gab1b5a30f4135ee819f3323e6cef8bc92.html'
+    ),
+    (
+     Name: 'HTPROTO_REG_A2';
+     Value: 'group___h_t_proto_constants_ga9609bff2336f28692b02491c130b5861.html'
+    ),
+    (
+     Name: 'HTPROTO_REG_A3';
+     Value: 'group___h_t_proto_constants_ga25f971d8c9114669cc66c1eb5bc0debd.html'
+    ),
+    (
+     Name: 'HTPROTO_REG_A4';
+     Value: 'group___h_t_proto_constants_ga0da6e90949e8ee5e4892054b0ddc2a0e.html'
+    ),
+    (
+     Name: 'HTPROTO_REG_DIN';
+     Value: 'group___h_t_proto_constants_ga16c14ee43e12d6b4135833a2ca90e3ea.html'
+    ),
+    (
+     Name: 'HTPROTO_REG_DOUT';
+     Value: 'group___h_t_proto_constants_gab50baba82e3c88ca3c92006b8bb92245.html'
+    ),
+    (
+     Name: 'HTPROTO_REG_DCTRL';
+     Value: 'group___h_t_proto_constants_ga337489ad3f024eb8bb4213bf6e506aa4.html'
+    ),
+    (
+     Name: 'HTPROTO_REG_SRATE';
+     Value: 'group___h_t_proto_constants_ga2b62fcdb733b69a4133cea57f7d028ff.html'
+    ),
+    (
+     Name: 'HTPROTO_A0';
+     Value: 'group___h_t_proto_analog_input_constants_gafc37a221e268f64ac0137ecca00a3cfe.html'
+    ),
+    (
+     Name: 'HTPROTO_A1';
+     Value: 'group___h_t_proto_analog_input_constants_gac04b08c9486a54fd4685c5cb6d0af4cf.html'
+    ),
+    (
+     Name: 'HTPROTO_A2';
+     Value: 'group___h_t_proto_analog_input_constants_ga6f8084d6c1ab73f051ad022ab9f54bc9.html'
+    ),
+    (
+     Name: 'HTPROTO_A3';
+     Value: 'group___h_t_proto_analog_input_constants_gad6f14ab9f20b3c7b6626d5654e84a178.html'
+    ),
+    (
+     Name: 'HTPROTO_A4';
+     Value: 'group___h_t_proto_analog_input_constants_ga8b9a9d286aedd3220b749edec52ae315.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_CTRL';
+     Value: 'group___h_t_super_pro_constants_gadacd02fdb5af3204566ca00f38d27618.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_A0';
+     Value: 'group___h_t_super_pro_constants_gaeebe32cfca741b4aef0b8eb2a1ca8474.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_A1';
+     Value: 'group___h_t_super_pro_constants_gad182b345b9640a5e6077a97dcbcc3e1b.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_A2';
+     Value: 'group___h_t_super_pro_constants_ga56ab9f1100077623641560a8612d7a1f.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_A3';
+     Value: 'group___h_t_super_pro_constants_gae6f1e3ad6a21781550c3ff921eafc1ec.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DIN';
+     Value: 'group___h_t_super_pro_constants_ga33c87e0f739a5696f7369bfb8cc08fb9.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DOUT';
+     Value: 'group___h_t_super_pro_constants_gac31484d01e4e588f60f9d381082bd571.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DCTRL';
+     Value: 'group___h_t_super_pro_constants_gaa30dbfd5fc49c36507fd6ba861af4c10.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_STROBE';
+     Value: 'group___h_t_super_pro_constants_ga074205c45e87dbcf65194fb4cd735131.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_LED';
+     Value: 'group___h_t_super_pro_constants_gaf994088abd684896fad2e3a3a1923997.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DAC0_MODE';
+     Value: 'group___h_t_super_pro_constants_gaaf4ae067d7bb49d76acfced83b3d8bd3.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DAC0_FREQ';
+     Value: 'group___h_t_super_pro_constants_ga99881c7210e3d94fbcb4d9114f492300.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DAC0_VOLTAGE';
+     Value: 'group___h_t_super_pro_constants_ga6299897b06ac46506f7f8cf5219ebc77.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DAC1_MODE';
+     Value: 'group___h_t_super_pro_constants_ga1269f7001e9c1dcdda935e1a977fece7.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DAC1_FREQ';
+     Value: 'group___h_t_super_pro_constants_gaff06b64ff21bfeb0565dff6ac4fa6729.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DAC1_VOLTAGE';
+     Value: 'group___h_t_super_pro_constants_ga8dfa523374e31b6af38dad62ec193e7f.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DLADDRESS';
+     Value: 'group___h_t_super_pro_constants_ga3c69300b3dddece331db5c352b8d29d2.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DLDATA';
+     Value: 'group___h_t_super_pro_constants_gafa703592b2d71cf4935dbfc39dfcbeda.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DLCHKSUM';
+     Value: 'group___h_t_super_pro_constants_ga5593f56840ad8781c994ae7b0c44de4b.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_DLCONTROL';
+     Value: 'group___h_t_super_pro_constants_gafe58abf1cedb1cefe9a03277df1f099b.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_20';
+     Value: 'group___h_t_super_pro_constants_gabee446964af6b35c364c5b2bef50abf1.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_21';
+     Value: 'group___h_t_super_pro_constants_gab4a4b71c1c1bce8a88e2306e992d7536.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_22';
+     Value: 'group___h_t_super_pro_constants_gafc045ed925ab546ceec10c798cab0d8e.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_23';
+     Value: 'group___h_t_super_pro_constants_ga9a216d45be6f39dec2c322b2d7a49ce3.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_24';
+     Value: 'group___h_t_super_pro_constants_ga0bd2c0af529bb2a54ea99592dcffe702.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_25';
+     Value: 'group___h_t_super_pro_constants_gaae8d1bb604cb8426398bd158ec5db4c8.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_26';
+     Value: 'group___h_t_super_pro_constants_gaa5acf466c9a879f14a4fa2903a614737.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_27';
+     Value: 'group___h_t_super_pro_constants_ga9831d379764a02452ee844da8cd8079e.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_28';
+     Value: 'group___h_t_super_pro_constants_gab03e4f285b1fcba35bade484a0b8e29d.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_29';
+     Value: 'group___h_t_super_pro_constants_ga47b0058c7429b9de6bdcf3f3a792ea69.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_2A';
+     Value: 'group___h_t_super_pro_constants_gade059a0d4bbf6421bc57530c7a640200.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_2B';
+     Value: 'group___h_t_super_pro_constants_gaaf4d27132e1b04c58d1521edde75eae1.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_2C';
+     Value: 'group___h_t_super_pro_constants_gac5a9dadd6ae70dfb8defd76e02b052ee.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_2D';
+     Value: 'group___h_t_super_pro_constants_gaea265eaa53542ea715dfafa6a7fdb72e.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_2E';
+     Value: 'group___h_t_super_pro_constants_ga5167bca47fa6f92e119af029629be7fb.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_2F';
+     Value: 'group___h_t_super_pro_constants_ga7d7e140c9ff476f48f13fe1a0f6ae646.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_30';
+     Value: 'group___h_t_super_pro_constants_ga70cf52e36339f7b3d06ad8983ee8de50.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_31';
+     Value: 'group___h_t_super_pro_constants_ga2415ec55b20d4bfba606bbc710980fbd.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_32';
+     Value: 'group___h_t_super_pro_constants_gae9f270ec74136af35f6b19a8e41e99e1.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_33';
+     Value: 'group___h_t_super_pro_constants_ga5730d63d0c7172c50dadeb6d141ab2c8.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_34';
+     Value: 'group___h_t_super_pro_constants_ga924072d6a5f987470639ad216af45333.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_35';
+     Value: 'group___h_t_super_pro_constants_ga661c800396095856d8fbcb848ca01d8c.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_36';
+     Value: 'group___h_t_super_pro_constants_ga9e93e8714014cab30d5235117260d10d.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_37';
+     Value: 'group___h_t_super_pro_constants_ga0e5878a8895b949b6eb82d3d48f97583.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_38';
+     Value: 'group___h_t_super_pro_constants_ga69384b072fa0f84d5dbc4c435471b0c4.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_39';
+     Value: 'group___h_t_super_pro_constants_gabb6d081b4644bc6ceefd11323016519b.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_3A';
+     Value: 'group___h_t_super_pro_constants_ga4bbeda09cd9ea72a9fb9064529e2c8a7.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_3B';
+     Value: 'group___h_t_super_pro_constants_gacdf616f92b7ad6a1aac79361c8d85745.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_3C';
+     Value: 'group___h_t_super_pro_constants_ga6eef3d0404b314456e5422ec593d58d8.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_3D';
+     Value: 'group___h_t_super_pro_constants_ga59918f78ff38b1d89cdb6db63cf659a7.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_3E';
+     Value: 'group___h_t_super_pro_constants_gac72515a9b1895bd608d71cc374c942aa.html'
+    ),
+    (
+     Name: 'HTSPRO_REG_MEMORY_3F';
+     Value: 'group___h_t_super_pro_constants_ga7899558c93ea8fe7149995e0a05c9638.html'
+    ),
+    (
+     Name: 'HTSPRO_A0';
+     Value: 'group___h_t_s_pro_analog_input_constants_gac296568621b629f046f1561d685a5a19.html'
+    ),
+    (
+     Name: 'HTSPRO_A1';
+     Value: 'group___h_t_s_pro_analog_input_constants_ga2c7f8804b93beb23f8420ecb2a3f1bd2.html'
+    ),
+    (
+     Name: 'HTSPRO_A2';
+     Value: 'group___h_t_s_pro_analog_input_constants_ga2544cda8c2cca2993ecbb011f2da04f7.html'
+    ),
+    (
+     Name: 'HTSPRO_A3';
+     Value: 'group___h_t_s_pro_analog_input_constants_ga2c808b25c7f412df798e494396227908.html'
+    ),
+    (
+     Name: 'HTSPRO_DAC0';
+     Value: 'group___h_t_s_pro_d_a_c_index_constants_gaafd9fac9b9a120572c3653ae649d5f2b.html'
+    ),
+    (
+     Name: 'HTSPRO_DAC1';
+     Value: 'group___h_t_s_pro_d_a_c_index_constants_ga475ae0473d4981026afa98dd6d65efd0.html'
+    ),
+    (
+     Name: 'LED_BLUE';
+     Value: 'group___l_e_d_ctrl_constants_gae2e40566d27689f8581d7b0f12271d45.html'
+    ),
+    (
+     Name: 'LED_RED';
+     Value: 'group___l_e_d_ctrl_constants_ga31e20330f8ce94e0dd10b005a15c5898.html'
+    ),
+    (
+     Name: 'LED_NONE';
+     Value: 'group___l_e_d_ctrl_constants_gadfaff4f4505aff4860f661387122d7bd.html'
+    ),
+    (
+     Name: 'DAC_MODE_DCOUT';
+     Value: 'group___dac_mode_constants_gadaf6d447e4b95dba462e252a6f3df2d0.html'
+    ),
+    (
+     Name: 'DAC_MODE_SINEWAVE';
+     Value: 'group___dac_mode_constants_ga1060ca2abdfc3ea868fff22570f2b2be.html'
+    ),
+    (
+     Name: 'DAC_MODE_SQUAREWAVE';
+     Value: 'group___dac_mode_constants_ga6def662d26258217e7e1440ad9cc5dda.html'
+    ),
+    (
+     Name: 'DAC_MODE_SAWPOSWAVE';
+     Value: 'group___dac_mode_constants_gaf7f4d6e43e30496099b7b09eea9a2b62.html'
+    ),
+    (
+     Name: 'DAC_MODE_SAWNEGWAVE';
+     Value: 'group___dac_mode_constants_gaf8fbb1caddf5bd5bc09f45b4b072146f.html'
+    ),
+    (
+     Name: 'DAC_MODE_TRIANGLEWAVE';
+     Value: 'group___dac_mode_constants_ga810ac12137076ea46c13d319e53c6f6f.html'
+    ),
+    (
+     Name: 'DAC_MODE_PWMVOLTAGE';
+     Value: 'group___dac_mode_constants_gacbeee81c0ec345769f54766a91048b58.html'
+    ),
+    (
+     Name: 'DIGI_PIN0';
+     Value: 'group___digital_pin_constants_ga9060e318451b503ccd4833fbba74d98a.html'
+    ),
+    (
+     Name: 'DIGI_PIN1';
+     Value: 'group___digital_pin_constants_ga49d5fb9b290523c1364b0033a623cbc3.html'
+    ),
+    (
+     Name: 'DIGI_PIN2';
+     Value: 'group___digital_pin_constants_gae0f6fb5d22b8d89f800e1672d966a9d5.html'
+    ),
+    (
+     Name: 'DIGI_PIN3';
+     Value: 'group___digital_pin_constants_gadd0231b9203248c14174b781a21e203f.html'
+    ),
+    (
+     Name: 'DIGI_PIN4';
+     Value: 'group___digital_pin_constants_gadcb9392cf25a8ffacc8bf7587b47febe.html'
+    ),
+    (
+     Name: 'DIGI_PIN5';
+     Value: 'group___digital_pin_constants_gac1eb5328757f8b7259340108f54aadcd.html'
+    ),
+    (
+     Name: 'DIGI_PIN6';
+     Value: 'group___digital_pin_constants_ga5e8c8f2424478415337448e0cce1bdb3.html'
+    ),
+    (
+     Name: 'DIGI_PIN7';
+     Value: 'group___digital_pin_constants_gad72aa338c49ff927997299802a341e4f.html'
+    ),
+    (
+     Name: 'STROBE_S0';
+     Value: 'group___strobe_ctrl_constants_gaae896e16f79e60c31509b9379a5f8af6.html'
+    ),
+    (
+     Name: 'STROBE_S1';
+     Value: 'group___strobe_ctrl_constants_ga680dd82c4fa7b4b7448a6be1187a01b6.html'
+    ),
+    (
+     Name: 'STROBE_S2';
+     Value: 'group___strobe_ctrl_constants_ga873145802a38afbf2684656c2fb81c4b.html'
+    ),
+    (
+     Name: 'STROBE_S3';
+     Value: 'group___strobe_ctrl_constants_ga91eea3420d4e893e594ea2a3dc3c62f5.html'
+    ),
+    (
+     Name: 'STROBE_READ';
+     Value: 'group___strobe_ctrl_constants_ga797ffee1f320b591d31b5d4e9370864f.html'
+    ),
+    (
+     Name: 'STROBE_WRITE';
+     Value: 'group___strobe_ctrl_constants_ga5f18be7419d2992898e1d596a9d75356.html'
     ),
     (
      Name: 'MS_CMD_ENERGIZED';
@@ -6619,6 +7015,590 @@ const
     (
      Name: 'DGPS_REG_SETLONGITUDE';
      Value: 'group___d_i_g_p_s_constants_ga337e05bb0e6f5aad4cc5debf22603810.html'
+    ),
+    (
+     Name: 'DI_ADDR_GYRO';
+     Value: 'group___d_i_i_m_u_constants_ga414d62aef3877fe19c3bc60f7d1c7fdc.html'
+    ),
+    (
+     Name: 'DI_ADDR_ACCL';
+     Value: 'group___d_i_i_m_u_constants_ga927b44213b7025ba8b2544d5ff6148a2.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_WHOAMI';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga44a2d9bbcc3e5822e446856ad8532373.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_CTRL1';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gab8418eb6017858a1b5c7614b15876db1.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_CTRL2';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga22d8cc5bb42645e783d4009299f7d52f.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_CTRL3';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga855df474a3a5f13067072a34cfc9fece.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_CTRL4';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga459458491dafe69b317e8137348aa159.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_CTRL5';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gab6da33ebe49b700b57abd552d71dbf88.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_REFERENCE';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gaf83c578765b40708f3e4a1caa36cfce2.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_OUTTEMP';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga219b03aa91b685a7c91bd5692617d15a.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_STATUS';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga3bb2a94c6887b0d115ef9e1b063ffeb2.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_XLOW';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga45f3b67d3217c79dbe65219461c28de8.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_XHIGH';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga65c92c6d4516c1457b943c797c618395.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_YLOW';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gafc0478054b96a7a6fffad0d6a3a1fe66.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_YHIGH';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gac93c5e3ec44e8cff35e0b97991c65197.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_ZLOW';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga14ccc7fcef6f032b2c4e73dd78448d3f.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_ZHIGH';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gaf52ec2a6ffd5096abd2ed94fa5a8e096.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_FIFOCTRL';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga60563767f01e81b5a5964ea5d62142d7.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_FIFOSRC';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga22ca03d446deaae3845e1834ced610f6.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_INT1_CFG';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gae5411b0db91c4cdbee15db2b5c00c3ce.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_INT1_SRC';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gaac815c2be60afc569124f7c89592d142.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_INT1_XHI';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gac10371ab0ac2b02a52911f3673a4a4a3.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_INT1_XLO';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga0f876b8e283ea42558dcc18c2a78b7a3.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_INT1_YHI';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga35e559ec80b4ba704a86e75a3c7072a5.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_INT1_YLO';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga41792133a71292fbd82705d6eb8d04e5.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_INT1_ZHI';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga0ed8dbf50e1b21535f80202dca582a19.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_INT1_ZLO';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga4e6b33eb9412cf0699aa851ae7dc6ce9.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_INT1_DUR';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga079aff34205d2ec669301e0c1efa97bf.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_XLOWBURST';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga58a8d296e5f7cd0c71f5f3197b2151d2.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_XENABLE';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_gaff7e0e7ed7b7c7a076fa4f023452ad4b.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_YENABLE';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_ga58863692e33d99cd15bf96f40e59e2eb.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_ZENABLE';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_gad0cb181b03f79a1e46e63f90d3f4b686.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_POWERDOWN';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_ga8a8d23e893c3c6a8686dc1e793895d51.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_NORMAL';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_ga417f9e2636f16a2051e6839b734a203d.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_BANDWIDTH_1';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_ga363caf802e254e1391873df3d4807003.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_BANDWIDTH_2';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_ga48db79ac4b56ba54abe7bd4a41bae62f.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_BANDWIDTH_3';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_gae54011d1e6f8949cfb2cadfd67e7836e.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_BANDWIDTH_4';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_ga9165b7513c48eb4d9255b21255842fd9.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_DATARATE_100';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_gad5dbcd315d8dd18294a952a284620bfc.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_DATARATE_200';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_ga18a41c74d723c42caa58c4964cabea04.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_DATARATE_400';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_ga31c937c8697f920dad7ac5808b74e795.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL1_DATARATE_800';
+     Value: 'group___d_i_i_m_u_gyro_ctrl1_constants_gaa6f14c8f5c33f68e67b1fcb696d8f9a9.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_8';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_ga9fdce75fe6e1062a06974ea2347c13c9.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_4';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_ga222d4d9b9804bd701214a544c6cdc81c.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_2';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_gaac74729e52296fa7404a35826eaf711a.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_1';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_ga84654510ec6e4a4c988e0bbe1b9f01ab.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_05';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_gaa84f0ac67e2415a415477b5c0c07ddc6.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_02';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_ga3412ac16812c0341176b7ab22eeedf31.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_01';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_gae024839e9fc61e7a18b9229b2b247e5c.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_005';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_ga33f09c0de8ffe3c18815b71059870c86.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_002';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_ga0e81f8cb775225557df1dbe91c4c6ffe.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_CUTOFF_FREQ_001';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_ga2980035c903a6d642379f8c264f9d0aa.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_HPMODE_RESET';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_ga71ff18e44694068ca116570505e0d1b8.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_HPMODE_REFSIG';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_ga970de423d5214e66e979fb244dda254f.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_HPMODE_NORMAL';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_gad535041c0d3a3f2c4d7e8e98ca969d4b.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL2_HPMODE_AUTOINT';
+     Value: 'group___d_i_i_m_u_gyro_ctrl2_constants_gaa785d456709c1260aa4a9f56f0eb9abd.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL3_INT1_ENABLE';
+     Value: 'group___d_i_i_m_u_gyro_ctrl3_constants_gab902400a479dcdd2a1e3026ffb926d42.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL3_INT1_BOOT';
+     Value: 'group___d_i_i_m_u_gyro_ctrl3_constants_ga2d68fc4c126110cd2fc3008561ce1428.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL3_INT1_LOWACTIVE';
+     Value: 'group___d_i_i_m_u_gyro_ctrl3_constants_ga28796d1402f42e9f1021ba527b02e6c6.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL3_OPENDRAIN';
+     Value: 'group___d_i_i_m_u_gyro_ctrl3_constants_gaa5585ed4f453a8bdc74ba268e25a6b5c.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL3_INT2_DATAREADY';
+     Value: 'group___d_i_i_m_u_gyro_ctrl3_constants_gabafc751e3f2c106ab53a9bd271a6b94d.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL3_INT2_WATERMARK';
+     Value: 'group___d_i_i_m_u_gyro_ctrl3_constants_ga6251c437c8a9aaa4577a0be4a43c68a2.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL3_INT2_OVERRUN';
+     Value: 'group___d_i_i_m_u_gyro_ctrl3_constants_gaeb59aaa7d94004e558560848ae2e1b59.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL3_INT2_EMPTY';
+     Value: 'group___d_i_i_m_u_gyro_ctrl3_constants_ga4a6bded1768270e32f2247978190acb2.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL4_BLOCKDATA';
+     Value: 'group___d_i_i_m_u_gyro_ctrl4_constants_ga72b7aff2e418ed62b026d904e082dfe1.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL4_BIGENDIAN';
+     Value: 'group___d_i_i_m_u_gyro_ctrl4_constants_ga4a1da648f3dbb4d3ae672093356c6ccf.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL4_SCALE_250';
+     Value: 'group___d_i_i_m_u_gyro_ctrl4_constants_gaecea03d1f515548840379478e210bb72.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL4_SCALE_500';
+     Value: 'group___d_i_i_m_u_gyro_ctrl4_constants_gaddbce5988b64d8519c57e5bf0c26e779.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL4_SCALE_2000';
+     Value: 'group___d_i_i_m_u_gyro_ctrl4_constants_gabb0d020a3c98d09e436781a2dee6d05a.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL5_REBOOTMEM';
+     Value: 'group___d_i_i_m_u_gyro_ctrl5_constants_ga1befedab218122f03108e3891116e01f.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL5_FIFOENABLE';
+     Value: 'group___d_i_i_m_u_gyro_ctrl5_constants_ga6cb1112762cd8e38610ab58739d72144.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL5_HPENABLE';
+     Value: 'group___d_i_i_m_u_gyro_ctrl5_constants_ga3167f3b6c9258bd315c8da79727f06e3.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL5_OUT_SEL_1';
+     Value: 'group___d_i_i_m_u_gyro_ctrl5_constants_ga1e6807bddde8f49b2239241d1613b56c.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL5_OUT_SEL_2';
+     Value: 'group___d_i_i_m_u_gyro_ctrl5_constants_ga5165c49f810414e22af64f2c85a489d2.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL5_OUT_SEL_3';
+     Value: 'group___d_i_i_m_u_gyro_ctrl5_constants_ga0a681d6265a2c005cac7f6e3e923ae44.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL5_INT1_SEL_1';
+     Value: 'group___d_i_i_m_u_gyro_ctrl5_constants_gaeb7914a4eb02f7df604561c2fbf723bc.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL5_INT1_SEL_2';
+     Value: 'group___d_i_i_m_u_gyro_ctrl5_constants_ga238ac4879dc1267c00dabd065caba58a.html'
+    ),
+    (
+     Name: 'DIGYRO_CTRL5_INT1_SEL_3';
+     Value: 'group___d_i_i_m_u_gyro_ctrl5_constants_ga3282a78ba694b3892aa3cef714d0531f.html'
+    ),
+    (
+     Name: 'DIGYRO_FIFOCTRL_BYPASS';
+     Value: 'group___d_i_i_m_u_gyro_fifo_ctrl_constants_ga683de332a816548be53b5f544d2957f1.html'
+    ),
+    (
+     Name: 'DIGYRO_FIFOCTRL_FIFO';
+     Value: 'group___d_i_i_m_u_gyro_fifo_ctrl_constants_ga188d41cd9c58385276bc2b9e999d6d39.html'
+    ),
+    (
+     Name: 'DIGYRO_FIFOCTRL_STREAM';
+     Value: 'group___d_i_i_m_u_gyro_fifo_ctrl_constants_ga3c87fcd1d8be0cdf4e5d3702659722ed.html'
+    ),
+    (
+     Name: 'DIGYRO_FIFOCTRL_STREAM2FIFO';
+     Value: 'group___d_i_i_m_u_gyro_fifo_ctrl_constants_ga235e9d0db07c888949fe3c77ddfc0848.html'
+    ),
+    (
+     Name: 'DIGYRO_FIFOCTRL_BYPASS2STREAM';
+     Value: 'group___d_i_i_m_u_gyro_fifo_ctrl_constants_gaaf0eb95cdd83bf5771f789fb1985be56.html'
+    ),
+    (
+     Name: 'DIGYRO_FIFOCTRL_WATERMARK_MASK';
+     Value: 'group___d_i_i_m_u_gyro_fifo_ctrl_constants_ga63f8bec309566161b22ac56ac333d941.html'
+    ),
+    (
+     Name: 'DIGYRO_STATUS_XDATA';
+     Value: 'group___d_i_i_m_u_gyro_status_constants_ga8e6d28031f09549d3f5a0e52f9f8fe9d.html'
+    ),
+    (
+     Name: 'DIGYRO_STATUS_YDATA';
+     Value: 'group___d_i_i_m_u_gyro_status_constants_ga14a59e091ef7198171669b0db6a6ec60.html'
+    ),
+    (
+     Name: 'DIGYRO_STATUS_ZDATA';
+     Value: 'group___d_i_i_m_u_gyro_status_constants_ga59d3ef3724d32e5b5c467b8c31554c93.html'
+    ),
+    (
+     Name: 'DIGYRO_STATUS_XYZDATA';
+     Value: 'group___d_i_i_m_u_gyro_status_constants_ga42b30034983059ca71e74c0b0ac11c5a.html'
+    ),
+    (
+     Name: 'DIGYRO_STATUS_XOVER';
+     Value: 'group___d_i_i_m_u_gyro_status_constants_ga7670cde298e166adcf528da12acd0078.html'
+    ),
+    (
+     Name: 'DIGYRO_STATUS_YOVER';
+     Value: 'group___d_i_i_m_u_gyro_status_constants_ga8c8230826228759361ea8a109d137374.html'
+    ),
+    (
+     Name: 'DIGYRO_STATUS_ZOVER';
+     Value: 'group___d_i_i_m_u_gyro_status_constants_ga1602ffdb41ecb637fbc1128edb913615.html'
+    ),
+    (
+     Name: 'DIGYRO_STATUS_XYZOVER';
+     Value: 'group___d_i_i_m_u_gyro_status_constants_gade65b3f0aff0445bd3de13c70154aca9.html'
+    ),
+    (
+     Name: 'DIACCL_REG_XLOW';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga6a695f1108ffcdcc24d062be0f063299.html'
+    ),
+    (
+     Name: 'DIACCL_REG_XHIGH';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga02af8af6a69fe87835afb1cb686a1e6f.html'
+    ),
+    (
+     Name: 'DIACCL_REG_YLOW';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga6dfed9befe8012b1d0daf369d17aa719.html'
+    ),
+    (
+     Name: 'DIACCL_REG_YHIGH';
+     Value: 'group___d_i_i_m_u_accl_register_constants_gacc719c37d86f4afb84d722635cde17c1.html'
+    ),
+    (
+     Name: 'DIACCL_REG_ZLOW';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga84abcba61c6474e63bdd37b161b93a05.html'
+    ),
+    (
+     Name: 'DIACCL_REG_ZHIGH';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga1e5863d2e30cce86629d393469c3f2cc.html'
+    ),
+    (
+     Name: 'DIACCL_REG_X8';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga11434a668c633ac94ed3efdd4a4ab56f.html'
+    ),
+    (
+     Name: 'DIACCL_REG_Y8';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga8c00ab9d45394a850dd7268aaf8f082e.html'
+    ),
+    (
+     Name: 'DIACCL_REG_Z8';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga3e665cb6b5d303afbb0241d90565999c.html'
+    ),
+    (
+     Name: 'DIACCL_REG_STATUS';
+     Value: 'group___d_i_i_m_u_accl_register_constants_gacfca56594283121ead0e3ae11f7b7126.html'
+    ),
+    (
+     Name: 'DIACCL_REG_DETECTSRC';
+     Value: 'group___d_i_i_m_u_accl_register_constants_gabc7d52e317d4a1f6a1370fd08b5459c3.html'
+    ),
+    (
+     Name: 'DIACCL_REG_OUTTEMP';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga975bde3622113eebbeae09142833db3d.html'
+    ),
+    (
+     Name: 'DIACCL_REG_I2CADDR';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga2be38c1cb7ce3d8ada025da230b3fd74.html'
+    ),
+    (
+     Name: 'DIACCL_REG_USERINFO';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga0b9041e5244609b5d2068ff5a53e09ae.html'
+    ),
+    (
+     Name: 'DIACCL_REG_WHOAMI';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga8b3a5945282fcb5aec6585e210e05500.html'
+    ),
+    (
+     Name: 'DIACCL_REG_XLOWDRIFT';
+     Value: 'group___d_i_i_m_u_accl_register_constants_gacb92a141529488828f3eba1e27b6459e.html'
+    ),
+    (
+     Name: 'DIACCL_REG_XHIGHDRIFT';
+     Value: 'group___d_i_i_m_u_accl_register_constants_gadf71dac026783385e5fdff67943b0aa1.html'
+    ),
+    (
+     Name: 'DIACCL_REG_YLOWDRIFT';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga8e6aed97dae016548ee44e6aade6f977.html'
+    ),
+    (
+     Name: 'DIACCL_REG_YHIGHDRIFT';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga361ee47912042385ab5255d9f98d8a17.html'
+    ),
+    (
+     Name: 'DIACCL_REG_ZLOWDRIFT';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga387dc5a9725bd059d9a80aba43c6c70a.html'
+    ),
+    (
+     Name: 'DIACCL_REG_ZHIGHDRIFT';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga51dabcb3de24aa88d7b50f0809ef7578.html'
+    ),
+    (
+     Name: 'DIACCL_REG_MODECTRL';
+     Value: 'group___d_i_i_m_u_accl_register_constants_gaf0496195ff70bf3c46538dc5cc2eb284.html'
+    ),
+    (
+     Name: 'DIACCL_REG_INTLATCH';
+     Value: 'group___d_i_i_m_u_accl_register_constants_gad410ec1a8c97257693b57476b90eeb8c.html'
+    ),
+    (
+     Name: 'DIACCL_REG_CTRL1';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga2d6d4ef284948d1c7b5d851f72658669.html'
+    ),
+    (
+     Name: 'DIACCL_REG_CTRL2';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga73121dced43b7def0a56412a5569c3b7.html'
+    ),
+    (
+     Name: 'DIACCL_REG_LVLDETTHR';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga808af8c6a33dacb0f88fedf1ac120cf6.html'
+    ),
+    (
+     Name: 'DIACCL_REG_PLSDETTHR';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga5945e7eaee436e9e7b1593ba912fcbed.html'
+    ),
+    (
+     Name: 'DIACCL_REG_PLSDURVAL';
+     Value: 'group___d_i_i_m_u_accl_register_constants_gaf1172ea069e8460c22901ab5ae886365.html'
+    ),
+    (
+     Name: 'DIACCL_REG_LATENCYTM';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga332424076298f1f44eb3fe2ea6ac069c.html'
+    ),
+    (
+     Name: 'DIACCL_REG_TIMEWINDOW';
+     Value: 'group___d_i_i_m_u_accl_register_constants_ga1ec416b5cf16f5b28314eb83ba7ff360.html'
+    ),
+    (
+     Name: 'DIACCL_STATUS_DATAREADY';
+     Value: 'group___d_i_i_m_u_accel_status_constants_ga90ee028db74f616432e85db0d3910e8d.html'
+    ),
+    (
+     Name: 'DIACCL_STATUS_DATAOVER';
+     Value: 'group___d_i_i_m_u_accel_status_constants_ga2665c2ae2d5795d0b019a4ae87357bcf.html'
+    ),
+    (
+     Name: 'DIACCL_STATUS_PARITYERR';
+     Value: 'group___d_i_i_m_u_accel_status_constants_gaa4651ab49916f3dcc17c0b0280f6ba03.html'
+    ),
+    (
+     Name: 'DIACCL_MODE_STANDBY';
+     Value: 'group___d_i_i_m_u_accel_mode_constants_gacabbaf57645ab0fbf88304978260ac3d.html'
+    ),
+    (
+     Name: 'DIACCL_MODE_MEASURE';
+     Value: 'group___d_i_i_m_u_accel_mode_constants_ga8b1951cc3203f6c94bff8b4a7c0cc97c.html'
+    ),
+    (
+     Name: 'DIACCL_MODE_LVLDETECT';
+     Value: 'group___d_i_i_m_u_accel_mode_constants_gab72e7ce3edaa4d419d4fae2c2ca40fc4.html'
+    ),
+    (
+     Name: 'DIACCL_MODE_PLSDETECT';
+     Value: 'group___d_i_i_m_u_accel_mode_constants_gaa5e03baefb5886e026c010b07da7e6da.html'
+    ),
+    (
+     Name: 'DIACCL_MODE_GLVL8';
+     Value: 'group___d_i_i_m_u_accel_mode_constants_gae3e14abfb26b8301234f19fd119de689.html'
+    ),
+    (
+     Name: 'DIACCL_MODE_GLVL2';
+     Value: 'group___d_i_i_m_u_accel_mode_constants_ga30f05dfb102cc84534166ecd42730e86.html'
+    ),
+    (
+     Name: 'DIACCL_MODE_GLVL4';
+     Value: 'group___d_i_i_m_u_accel_mode_constants_ga87f421e2ca90e6fe541eacbc24123d00.html'
+    ),
+    (
+     Name: 'DIACCL_INTERRUPT_LATCH_CLEAR1';
+     Value: 'group___d_i_i_m_u_accel_interrupt_latch_constants_gaf89c1c1c6540c3b4f45a906c9c5d6028.html'
+    ),
+    (
+     Name: 'DIACCL_INTERRUPT_LATCH_CLEAR2';
+     Value: 'group___d_i_i_m_u_accel_interrupt_latch_constants_gabc5826bb5e5611e93dac42b8e8cf864e.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL1_INT2TOINT1';
+     Value: 'group___d_i_i_m_u_accel_ctrl1_constants_gab47ad6e3cdc1792f7bc5111f05aa6000.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL1_LEVELPULSE';
+     Value: 'group___d_i_i_m_u_accel_ctrl1_constants_gaef0bc647ac933c1b96d043298cac605d.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL1_PULSELEVEL';
+     Value: 'group___d_i_i_m_u_accel_ctrl1_constants_ga03aaa77c8c90d584518d970d63264612.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL1_PULSEPULSE';
+     Value: 'group___d_i_i_m_u_accel_ctrl1_constants_ga9a587008961f75933515c70f1e348231.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL1_NO_XDETECT';
+     Value: 'group___d_i_i_m_u_accel_ctrl1_constants_ga268ee357ed14642c9d077975aded0489.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL1_NO_YDETECT';
+     Value: 'group___d_i_i_m_u_accel_ctrl1_constants_ga94d01a5befb323ee018a433a6966ac36.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL1_NO_ZDETECT';
+     Value: 'group___d_i_i_m_u_accel_ctrl1_constants_ga793ec245d666497eaf418440d41a6769.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL1_THRESH_INT';
+     Value: 'group___d_i_i_m_u_accel_ctrl1_constants_gaac62c87baefde8da90c62533aebd3c2a.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL1_FILT_BW125';
+     Value: 'group___d_i_i_m_u_accel_ctrl1_constants_ga752686d97d619be595a1975b56259811.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL2_LVLPOL_NEGAND';
+     Value: 'group___d_i_i_m_u_accel_ctrl2_constants_ga83177d82bd77f61dac03bc427d76d034.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL2_DETPOL_NEGAND';
+     Value: 'group___d_i_i_m_u_accel_ctrl2_constants_ga88f8d3fdb262515658ecbc3d7beda246.html'
+    ),
+    (
+     Name: 'DIACCL_CTRL2_DRIVE_STRONG';
+     Value: 'group___d_i_i_m_u_accel_ctrl2_constants_gaa2a6fba9d1b8505e9fc78f3d8521e6dd.html'
     ),
     (
      Name: 'MI_ADDR_XG1300L';
@@ -8841,6 +9821,10 @@ const
      Value: 'group___comm_module_functions_ga9cd4f3e460395836bb72ebb60741a7b3.html'
     ),
     (
+     Name: 'RS485ReadEx';
+     Value: 'group___comm_module_functions_ga263394cc24582665fe10d69c90c32a71.html'
+    ),
+    (
      Name: 'RS485SendingData';
      Value: 'group___comm_module_functions_ga546e38880720cf6296a69af77e607de0.html'
     ),
@@ -9041,6 +10025,10 @@ const
      Value: 'group___comm_module_functions_ga9d03b106378bf478570240daf77d1679.html'
     ),
     (
+     Name: 'HSAddress';
+     Value: 'group___comm_module_functions_ga641ac463478008371d91eb5d000ed6b0.html'
+    ),
+    (
      Name: 'HSMode';
      Value: 'group___comm_module_functions_ga1225d66a464ad788be40f93d8d526b66.html'
     ),
@@ -9151,6 +10139,10 @@ const
     (
      Name: 'SetHSState';
      Value: 'group___comm_module_functions_ga5e4d33cc0688fd92451ec2d89442b75a.html'
+    ),
+    (
+     Name: 'SetHSAddress';
+     Value: 'group___comm_module_functions_ga3f77fdcae336a213fb464b456c6516b0.html'
     ),
     (
      Name: 'SetHSMode';
@@ -9699,6 +10691,86 @@ const
     (
      Name: 'ReadSensorHTBarometric';
      Value: 'group___hi_technic_a_p_i_ga0b1ec3775f73ffa701014ae5c2e3641b.html'
+    ),
+    (
+     Name: 'SensorHTProtoAnalog';
+     Value: 'group___hi_technic_a_p_i_gae845bbc11df1bd6f3f816001a00e41c0.html'
+    ),
+    (
+     Name: 'ReadSensorHTProtoAllAnalog';
+     Value: 'group___hi_technic_a_p_i_ga9201ef16dbfbb2f6d3c11f2d4c26631d.html'
+    ),
+    (
+     Name: 'SetSensorHTProtoDigitalControl';
+     Value: 'group___hi_technic_a_p_i_gaa02c2c0e562b4d6edf417b6d5b208263.html'
+    ),
+    (
+     Name: 'SensorHTProtoDigitalControl';
+     Value: 'group___hi_technic_a_p_i_gac879282bb367dc0c01975b43c0b13913.html'
+    ),
+    (
+     Name: 'SetSensorHTProtoDigital';
+     Value: 'group___hi_technic_a_p_i_ga2eb828b76ee0cf2f9f9ba76229caea89.html'
+    ),
+    (
+     Name: 'SensorHTProtoDigital';
+     Value: 'group___hi_technic_a_p_i_ga38fd6a5d3e801c903bc5442dfd1a00c8.html'
+    ),
+    (
+     Name: 'SensorHTSuperProAnalog';
+     Value: 'group___hi_technic_a_p_i_ga327989bd4612a1513602ab2181ec39f0.html'
+    ),
+    (
+     Name: 'ReadSensorHTSuperProAllAnalog';
+     Value: 'group___hi_technic_a_p_i_ga52c7160dc4e7f8c37d4ab359e3a4981e.html'
+    ),
+    (
+     Name: 'SetSensorHTSuperProDigitalControl';
+     Value: 'group___hi_technic_a_p_i_gac7716dee07a11f5f9adbe14718c836f6.html'
+    ),
+    (
+     Name: 'SensorHTSuperProDigitalControl';
+     Value: 'group___hi_technic_a_p_i_ga87f76ff1617a89838f0c67f967959d66.html'
+    ),
+    (
+     Name: 'SetSensorHTSuperProDigital';
+     Value: 'group___hi_technic_a_p_i_gafe518d2ad62793f383f7bdf655a366b3.html'
+    ),
+    (
+     Name: 'SensorHTSuperProDigital';
+     Value: 'group___hi_technic_a_p_i_ga4b1448977407a550b3677d9f95042a44.html'
+    ),
+    (
+     Name: 'SetSensorHTSuperProLED';
+     Value: 'group___hi_technic_a_p_i_gadbdf80d56a1bccfe247582cdfdbc46ff.html'
+    ),
+    (
+     Name: 'SensorHTSuperProLED';
+     Value: 'group___hi_technic_a_p_i_gab19bfa8c74d8644320e65dc4ebeb73c5.html'
+    ),
+    (
+     Name: 'SetSensorHTSuperProStrobe';
+     Value: 'group___hi_technic_a_p_i_ga2872307f123c66c399f72fb5b8a736fa.html'
+    ),
+    (
+     Name: 'SensorHTSuperProStrobe';
+     Value: 'group___hi_technic_a_p_i_gaa065afc40dd93c443da38c2cfff05795.html'
+    ),
+    (
+     Name: 'SetSensorHTSuperProProgramControl';
+     Value: 'group___hi_technic_a_p_i_ga8297884609b8d85ea3cdc9116c25854b.html'
+    ),
+    (
+     Name: 'SensorHTSuperProProgramControl';
+     Value: 'group___hi_technic_a_p_i_ga57b520c32847d2f52783293604bfdf53.html'
+    ),
+    (
+     Name: 'SetSensorHTSuperProAnalogOut';
+     Value: 'group___hi_technic_a_p_i_ga677d411926b1d85bf7649966c41de706.html'
+    ),
+    (
+     Name: 'ReadSensorHTSuperProAnalogOut';
+     Value: 'group___hi_technic_a_p_i_ga7d383c512b146799b31c722b0b5526fc.html'
     ),
     (
      Name: 'ReadSensorHTTouchMultiplexer';

@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-09-18
- * \version 68
+ * \date 2011-10-10
+ * \version 69
  */
 
 #ifndef NBCCOMMON_H
@@ -2805,15 +2805,25 @@
 #define HTPROTO_REG_DOUT  0x4D /*!< Prototype board digital pin output register (6 bits) */
 #define HTPROTO_REG_DCTRL 0x4E /*!< Prototype board digital pin control register (6 bits) */
 #define HTPROTO_REG_SRATE 0x4F /*!< Prototype board sample rate register */
+
+/** @defgroup HTProtoAnalogInputConstants HiTechnic Prototype board analog input constants
+ * Constants that are for use with reading the HiTechnic Prototype board analog input values.
+ * @{
+ */
+#define HTPROTO_A0 0x42 /*!< Read Prototype board analog input 0 */
+#define HTPROTO_A1 0x44 /*!< Read Prototype board analog input 1 */
+#define HTPROTO_A2 0x46 /*!< Read Prototype board analog input 2 */
+#define HTPROTO_A3 0x48 /*!< Read Prototype board analog input 3 */
+#define HTPROTO_A4 0x4A /*!< Read Prototype board analog input 4 */
+/** @} */  // end of HTProtoAnalogInputConstants group
 /** @} */  // end of HTProtoConstants group
 
 /** @defgroup HTSuperProConstants HiTechnic SuperPro constants
  * Constants that are for use with the HiTechnic SuperPro board.
  * @{
  */
- 
+
 #define HTSPRO_REG_CTRL         0x40 /*!< SuperPro program control register */
-#define HTSPRO_REG_SLOT         0x41 /*!< SuperPro program slot register */
 #define HTSPRO_REG_A0           0x42 /*!< SuperPro analog 0 register (10 bits) */
 #define HTSPRO_REG_A1           0x44 /*!< SuperPro analog 1 register (10 bits) */
 #define HTSPRO_REG_A2           0x46 /*!< SuperPro analog 2 register (10 bits) */
@@ -2826,9 +2836,9 @@
 #define HTSPRO_REG_DAC0_MODE    0x52 /*!< SuperPro analog output 0 mode register */
 #define HTSPRO_REG_DAC0_FREQ    0x53 /*!< SuperPro analog output 0 frequency register (2 bytes msb/lsb) */
 #define HTSPRO_REG_DAC0_VOLTAGE 0x55 /*!< SuperPro analog output 0 voltage register (10 bits) */
-#define HTSPRO_REG_DAC1_MODE    0x57 /*!< SuperPro analog output 0 mode register */
-#define HTSPRO_REG_DAC1_FREQ    0x58 /*!< SuperPro analog output 0 frequency register (2 bytes msb/lsb) */
-#define HTSPRO_REG_DAC1_VOLTAGE 0x5A /*!< SuperPro analog output 0 voltage register (10 bits) */
+#define HTSPRO_REG_DAC1_MODE    0x57 /*!< SuperPro analog output 1 mode register */
+#define HTSPRO_REG_DAC1_FREQ    0x58 /*!< SuperPro analog output 1 frequency register (2 bytes msb/lsb) */
+#define HTSPRO_REG_DAC1_VOLTAGE 0x5A /*!< SuperPro analog output 1 voltage register (10 bits) */
 #define HTSPRO_REG_DLADDRESS    0x60 /*!< SuperPro download address register (2 bytes msb/lsb) */
 #define HTSPRO_REG_DLDATA       0x62 /*!< SuperPro download data register (8 bytes) */
 #define HTSPRO_REG_DLCHKSUM     0x6A /*!< SuperPro download checksum register */
@@ -2865,6 +2875,69 @@
 #define HTSPRO_REG_MEMORY_3D    0xF4 /*!< SuperPro memory address 0x3D register (4 bytes msb/lsb) */
 #define HTSPRO_REG_MEMORY_3E    0xF8 /*!< SuperPro memory address 0x3E register (4 bytes msb/lsb) */
 #define HTSPRO_REG_MEMORY_3F    0xFC /*!< SuperPro memory address 0x3F register (4 bytes msb/lsb) */
+
+/** @defgroup HTSProAnalogInputConstants HiTechnic SuperPro analog input index constants
+ * Constants that are for use with reading the HiTechnic SuperPro analog input values.
+ * @{
+ */
+#define HTSPRO_A0 0x42 /*!< Read SuperPro analog input 0 */
+#define HTSPRO_A1 0x44 /*!< Read SuperPro analog input 1 */
+#define HTSPRO_A2 0x46 /*!< Read SuperPro analog input 2 */
+#define HTSPRO_A3 0x48 /*!< Read SuperPro analog input 3 */
+/** @} */  // end of HTSProAnalogInputConstants group
+
+/** @defgroup HTSProDACIndexConstants HiTechnic SuperPro analog output index constants
+ * Constants that are for use with configuraing the HiTechnic SuperPro analog outputs.
+ * @{
+ */
+#define HTSPRO_DAC0 0x52 /*!< Set SuperPro analog output 0 configuration */
+#define HTSPRO_DAC1 0x57 /*!< Set SuperPro analog output 1 configuration */
+/** @} */  // end of HTSProDACIndexConstants group
+
+
+/** @addtogroup LEDCtrlConstants
+ * @{
+ */
+#define LED_BLUE 0x02 /*!< Turn on the blue onboard LED. */
+#define LED_RED  0x01 /*!< Turn on the red onboard LED. */
+#define LED_NONE 0x00 /*!< Turn off the onboard LEDs. */
+/** @} */  // end of LEDCtrlConstants group
+
+/** @addtogroup DacModeConstants
+ * @{
+ */
+#define DAC_MODE_DCOUT        0 /*!< Steady (DC) voltage output. */
+#define DAC_MODE_SINEWAVE     1 /*!< Sine wave output. */
+#define DAC_MODE_SQUAREWAVE   2 /*!< Square wave output. */
+#define DAC_MODE_SAWPOSWAVE   3 /*!< Positive going sawtooth output. */
+#define DAC_MODE_SAWNEGWAVE   4 /*!< Negative going sawtooth output. */
+#define DAC_MODE_TRIANGLEWAVE 5 /*!< Triangle wave output. */
+#define DAC_MODE_PWMVOLTAGE   6 /*!< PWM square wave output. */
+/** @} */  // end of DacModeConstants group
+
+/** @addtogroup DigitalPinConstants
+ * @{
+ */
+#define DIGI_PIN0 0x01 /*!< Access digital pin 0 (B0) */
+#define DIGI_PIN1 0x02 /*!< Access digital pin 1 (B1) */
+#define DIGI_PIN2 0x04 /*!< Access digital pin 2 (B2) */
+#define DIGI_PIN3 0x08 /*!< Access digital pin 3 (B3) */
+#define DIGI_PIN4 0x10 /*!< Access digital pin 4 (B4) */
+#define DIGI_PIN5 0x20 /*!< Access digital pin 5 (B5) */
+#define DIGI_PIN6 0x40 /*!< Access digital pin 6 (B6) */
+#define DIGI_PIN7 0x80 /*!< Access digital pin 7 (B7) */
+/** @} */  // end of DigitalPinConstants group
+
+/** @addtogroup StrobeCtrlConstants
+ * @{
+ */
+#define STROBE_S0    0x01 /*!< Access strobe 0 pin (S0) */
+#define STROBE_S1    0x02 /*!< Access strobe 1 pin (S1) */
+#define STROBE_S2    0x04 /*!< Access strobe 2 pin (S2) */
+#define STROBE_S3    0x08 /*!< Access strobe 3 pin (S3) */
+#define STROBE_READ  0x10 /*!< Access read pin (RD) */
+#define STROBE_WRITE 0x20 /*!< Access write pin (WR) */
+/** @} */  // end of StrobeCtrlConstants group
 
 /** @} */  // end of HTSuperProConstants group
 
@@ -3388,7 +3461,13 @@
 #define DIGYRO_REG_INT1_ZHI  0x36  /*!< Gyro interrupt 1 z-axis high threshold register */
 #define DIGYRO_REG_INT1_ZLO  0x37  /*!< Gyro interrupt 1 z-axis low threshold register */
 #define DIGYRO_REG_INT1_DUR  0x38  /*!< Gyro interrupt 1 duration register */
+
+#define DIGYRO_REG_CTRL1AUTO 0xA0  /*!< Gyro control register 1 - auto increment write */
+#define DIGYRO_REG_TEMPAUTO  0xA6  /*!< Gyro temperature register - read burst mode (read only) */
 #define DIGYRO_REG_XLOWBURST 0xA8  /*!< Gyro x-axis low byte register - read burst mode (read only) */
+#define DIGYRO_REG_YLOWBURST 0xAA  /*!< Gyro y-axis low byte register - read burst mode (read only) */
+#define DIGYRO_REG_ZLOWBURST 0xAC  /*!< Gyro y-axis low byte register - read burst mode (read only) */
+
 
 /** @} */  // end of DIIMUGyroRegisterConstants group
 
@@ -3402,10 +3481,10 @@
 #define DIGYRO_CTRL1_ZENABLE      0x04 /*!< Gyro enable Z axis */
 #define DIGYRO_CTRL1_POWERDOWN    0x00 /*!< Gyro enable power down mode */
 #define DIGYRO_CTRL1_NORMAL       0x08 /*!< Gyro disable power down mode */
-#define DIGYRO_CTRL1_BANDWIDTH_1  0x00 /*!< Gyro bandwidth 1 */
-#define DIGYRO_CTRL1_BANDWIDTH_2  0x10 /*!< Gyro bandwidth 2 */
-#define DIGYRO_CTRL1_BANDWIDTH_3  0x20 /*!< Gyro bandwidth 3 */
-#define DIGYRO_CTRL1_BANDWIDTH_4  0x30 /*!< Gyro bandwidth 4 */
+#define DIGYRO_CTRL1_BANDWIDTH_1  0x00 /*!< Gyro LPF2 cut-off frequency bandwidth level 1 (12.5hz, 12.5hz, 20hz, 30hz) */
+#define DIGYRO_CTRL1_BANDWIDTH_2  0x10 /*!< Gyro LPF2 cut-off frequency bandwidth level 2 (12.5hz, 25hz, 50hz, 70hz) */
+#define DIGYRO_CTRL1_BANDWIDTH_3  0x20 /*!< Gyro LPF2 cut-off frequency bandwidth level 3 (20hz, 25hz, 50hz, 110hz) */
+#define DIGYRO_CTRL1_BANDWIDTH_4  0x30 /*!< Gyro LPF2 cut-off frequency bandwidth level 4 (30hz, 35hz, 50hz, 110hz) */
 #define DIGYRO_CTRL1_DATARATE_100 0x00 /*!< Gyro output data rate 100 hz */
 #define DIGYRO_CTRL1_DATARATE_200 0x40 /*!< Gyro output data rate 200 hz */
 #define DIGYRO_CTRL1_DATARATE_400 0x80 /*!< Gyro output data rate 400 hz */

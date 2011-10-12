@@ -36,7 +36,7 @@ uses
   uSPCComp;
 
 type
-  TDeviceTarget = (dtNXT, dtSPC);
+  TDeviceTarget = (dtNXT, dtSPRO);
   TWriteMessages = procedure(aStrings : TStrings);
 
   TNBCCompiler = class
@@ -392,7 +392,7 @@ begin
       BrickComm.StopProgram;
       if Download then
       begin
-        if Target = dtSPC then
+        if Target = dtSPRO then
         begin
           sObj := TMemoryStream.Create;
           try
@@ -758,6 +758,10 @@ procedure TNBCCompiler.SetCommandLine(const Value: string);
 begin
   fCommandLine := Value;
   // set properties given command line switches
+  if ParamValue('-T', False, Value) = 'SPRO' then
+    Target := dtSPRO
+  else
+    Target := dtNXT;
   IgnoreSystemFile         := ParamSwitch('-n', False, Value);
   Quiet                    := ParamSwitch('-q', False, Value);
   MaxErrors                := ParamIntValue('-ER', 0, False, Value);

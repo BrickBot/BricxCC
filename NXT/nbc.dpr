@@ -57,7 +57,7 @@ begin
   PrintVersion(COMPILATION_TIMESTAMP);
   WriteLn(Format(UsageSyntax, [progName]));
   WriteLn('');
-  WriteLn('   -T=<target>: target can be NXT or SPC');
+  WriteLn('   -T=<target>: target can be NXT or SPRO');
 {$IFDEF CAN_DOWNLOAD}
   WriteLn(UsagePort);
   Writeln(UsageDownload);
@@ -104,7 +104,6 @@ var
   TheErrorCode : integer;
   SCH : TStatusChangeHandler;
   gNoStatusMessages : Boolean;
-  target : string;
 
 procedure HandleWriteMessages(aStrings : TStrings);
 var
@@ -190,9 +189,8 @@ try
       C.UseSpecialName           := ParamSwitch('-N', False);
       C.SpecialName              := ParamValue('-N', False);
       C.OptimizationLevel        := 1;
-      target                     := ParamValue('-T', False);
-      if target = 'SPC' then
-        C.Target := dtSPC
+      if ParamValue('-T', False) = 'SPRO' then
+        C.Target := dtSPRO
       else
         C.Target := dtNXT;
       if ParamSwitch('-Z', False) then

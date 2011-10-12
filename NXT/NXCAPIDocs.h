@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-09-18
- * \version 20
+ * \date 2011-10-10
+ * \version 21
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -34,8 +34,8 @@
 
 /** @mainpage NXC Programmer's Guide
  * \brief
- * 
- * <h2><center>September 18, 2011</center></h2>
+ *
+ * <h2><center>October 10, 2011</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -2356,6 +2356,55 @@
 
 /** @defgroup HiTechnicAPI HiTechnic API Functions
  * Functions for accessing and modifying HiTechnic devices.
+ */
+
+/** @defgroup DacModeConstants SuperPro analog output mode constants
+ * Constants for controlling the 2 analog output modes.
+ * 
+ * Two analog outputs, which can span 0 to 3.3 volts, can be programmed to
+ * output a steady voltage or can be programmed to output a selection of
+ * waveforms over a range of frequencies.
+ *
+ * In the DC output mode, the DAC0/DAC1 voltage fields control the voltage on
+ * the two analog outputs in increments of ~3.2mV from 0 - 1023 giving
+ * 0 - 3.3v.
+ *
+ * In waveform modes, the channel outputs will center on 1.65 volts
+ * when generating waveforms. The DAC0/DAC1 voltage fields control the signal
+ * levels of the waveforms by adjusting the peak to peak signal levels from
+ * 0 - 3.3v.
+ *
+ * In PWFM voltage mode, the channel outputs will create a
+ * variable mark:space ratio square wave at 3.3v signal level. The average
+ * output voltage is set by the O0/O1 voltage fields.
+ */
+
+/** @defgroup LEDCtrlConstants SuperPro LED control constants
+ * Constants for controlling the 2 onboard LEDs.
+ */
+
+/** @defgroup DigitalPinConstants SuperPro digital pin constants
+ * Constants for controlling the 8 digital pins.
+ *
+ * The eight digital inputs are returned as a byte representing the state
+ * of the eight inputs. The eight digital outputs are controlled by two bytes,
+ * the first of which sets the state of any of the signals which have been
+ * defined as outputs and the second of which controls the input/output
+ * state of each signal.
+ */
+
+/** @defgroup StrobeCtrlConstants SuperPro Strobe control constants
+ * Constants for manipulating the six digital strobe outputs.
+ *
+ * Six digital strobe outputs are available. One is pre-configured as a
+ * read strobe, another is pre-configured as a write strobe while the
+ * other four can be set to a high or low logic level. These strobe lines
+ * enable external devices to synchronize with the digital data port and
+ * multiplex the eight digital input/output bits to wider bit widths.
+ *
+ * The RD and WR bits set the inactive state of the read and write strobe
+ * outputs. Thus, if these bits are set to 0, the strobe outputs will pulse
+ * high.
  */
 
 /** @defgroup MindSensorsAPI MindSensors API Functions
@@ -5338,6 +5387,35 @@
  * This is an example of how to use the \ref ResetMIXG1300L,
  * \ref SetSensorMIXG1300LScale, \ref SensorMIXG1300LScale, and
  * \ref ReadSensorMIXG1300L functions.
+ *
+ * \example ex_proto.nxc
+ * This is an example of how to use the \ref SensorHTProtoAnalog,
+ * \ref ReadSensorHTProtoAllAnalog, \ref SetSensorHTProtoDigitalControl,
+ * \ref SetSensorHTProtoDigital, \ref SensorHTProtoDigital, and
+ * \ref SensorHTProtoDigitalControl functions.
+ *
+ * \example ex_superpro.nxc
+ * This is an example of how to use the \ref SensorHTSuperProAnalog,
+ * \ref ReadSensorHTSuperProAllAnalog, \ref SetSensorHTSuperProDigitalControl,
+ * \ref SetSensorHTSuperProDigital, \ref SensorHTSuperProDigital,
+ * \ref SetSensorHTSuperProAnalogOut, \ref SensorHTSuperProLED,
+ * \ref SensorHTSuperProStrobe, \ref SensorHTSuperProProgramControl,
+ * \ref SetSensorHTSuperProLED, \ref SetSensorHTSuperProStrobe,
+ * \ref SetSensorHTSuperProProgramControl, \ref ReadSensorHTSuperProAnalogOut,
+ * and  \ref SensorHTSuperProDigitalControl functions.
+ *
+ * \example ex_digyro.nxc
+ * This is an example of how to use the \ref SetSensorDIGyro,
+ * \ref SetSensorDIGyroEx, \ref SensorDIGyroTemperature,
+ * \ref SensorDIGyroStatus, \ref ReadSensorDIGyroRaw, and
+ * \ref ReadSensorDIGyro functions.
+ *
+ * \example ex_diaccl.nxc
+ * This is an example of how to use the \ref SetSensorDIAccl,
+ * \ref SetSensorDIAcclEx, \ref SetSensorDIAcclDrift, \ref ReadSensorDIAcclDrift,
+ * \ref SensorDIAcclStatus, \ref ReadSensorDIAccl8Raw, \ref ReadSensorDIAccl8,
+ * \ref ReadSensorDIAcclRaw, and \ref ReadSensorDIAccl functions.
+ *
  *
 */
 
