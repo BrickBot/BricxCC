@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-09-18
- * \version 102
+ * \date 2011-10-10
+ * \version 103
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -10165,6 +10165,264 @@ inline bool SetHTBarometricCalibration(byte port, unsigned int cal);
 inline bool ReadSensorHTBarometric(const byte port, int & temp, unsigned int & press);
 
 /**
+ * Read HiTechnic Prototype board analog input value.
+ * Read an analog input value from the HiTechnic prototype board.
+ * The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param input The analog input. See \ref HTProtoAnalogInputConstants.
+ * \return The analog input value.
+ */
+inline int SensorHTProtoAnalog(const byte port, const byte input);
+
+/**
+ * Read all HiTechnic Prototype board analog input values.
+ * Read all 5 analog input values from the HiTechnic prototype board.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param a0 The A0 analog input value.
+ * \param a1 The A1 analog input value.
+ * \param a2 The A2 analog input value.
+ * \param a3 The A3 analog input value.
+ * \param a4 The A4 analog input value.
+ * \return The function call result.
+ */
+inline bool ReadSensorHTProtoAllAnalog(const byte port, int & a0, int & a1, int & a2, int & a3, int & a4);
+
+/**
+ * Control HiTechnic Prototype board digital pin direction.
+ * Control the direction of the six digital pins on the HiTechnic prototype board.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param value The digital pin control value. See \ref DigitalPinConstants.
+ * OR into this value the pins that you want to be output pins.  The pins not
+ * included in the value will be input pins.
+ * \return The function call result.
+ */
+inline bool SetSensorHTProtoDigitalControl(const byte port, byte value);
+
+/**
+ * Read HiTechnic Prototype board digital control values.
+ * Read digital control values from the HiTechnic prototype board.
+ * The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The digital control values. See \ref DigitalPinConstants.
+ */
+inline byte SensorHTProtoDigitalControl(const byte port);
+
+/**
+ * Set HiTechnic Prototype board digital output values.
+ * Set the digital pin output values on the HiTechnic prototype board.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param value The digital pin output values. See \ref DigitalPinConstants.
+ * \return The function call result.
+ */
+inline bool SetSensorHTProtoDigital(const byte port, byte value);
+
+/**
+ * Read HiTechnic Prototype board digital input values.
+ * Read digital input values from the HiTechnic prototype board.
+ * The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The digital input values. See \ref DigitalPinConstants.
+ */
+inline byte SensorHTProtoDigital(const byte port);
+
+/**
+ * Read HiTechnic SuperPro board analog input value.
+ * Read an analog input value from the HiTechnic SuperPro board.
+ * The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param input The analog input. See \ref HTSProAnalogInputConstants.
+ * \return The analog input value.
+ */
+inline int SensorHTSuperProAnalog(const byte port, const byte input);
+
+/**
+ * Read all HiTechnic SuperPro board analog input values.
+ * Read all 4 analog input values from the HiTechnic SuperPro board.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param a0 The A0 analog input value.
+ * \param a1 The A1 analog input value.
+ * \param a2 The A2 analog input value.
+ * \param a3 The A3 analog input value.
+ * \return The function call result.
+ */
+inline bool ReadSensorHTSuperProAllAnalog(const byte port, int & a0, int & a1, int & a2, int & a3);
+
+/**
+ * Control HiTechnic SuperPro board digital pin direction.
+ * Control the direction of the eight digital pins on the HiTechnic SuperPro board.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param value The digital pin control value. See \ref DigitalPinConstants.
+ * OR into this value the pins that you want to be output pins.  The pins not
+ * included in the value will be input pins.
+ * \return The function call result.
+ */
+inline bool SetSensorHTSuperProDigitalControl(const byte port, byte value);
+
+/**
+ * Read HiTechnic SuperPro board digital control values.
+ * Read digital control values from the HiTechnic SuperPro board.
+ * The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The digital input values. See \ref DigitalPinConstants.
+ */
+inline byte SensorHTSuperProDigitalControl(const byte port);
+
+/**
+ * Set HiTechnic SuperPro board digital output values.
+ * Set the digital pin output values on the HiTechnic SuperPro board.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param value The digital pin output values. See \ref DigitalPinConstants.
+ * \return The function call result.
+ */
+inline bool SetSensorHTSuperProDigital(const byte port, byte value);
+
+/**
+ * Read HiTechnic SuperPro board digital input values.
+ * Read digital input values from the HiTechnic SuperPro board.
+ * The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The digital input values. See \ref DigitalPinConstants.
+ */
+inline byte SensorHTSuperProDigital(const byte port);
+
+/**
+ * Set HiTechnic SuperPro LED value.
+ * Set the HiTechnic SuperPro LED value.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param value The LED value. See \ref LEDCtrlConstants.
+ * \return The function call result.
+ */
+inline bool SetSensorHTSuperProLED(const byte port, byte value);
+
+/**
+ * Read HiTechnic SuperPro LED value.
+ * Read the HiTechnic SuperPro LED value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The LED value. See \ref LEDCtrlConstants.
+ */
+inline byte SensorHTSuperProLED(const byte port);
+
+/**
+ * Set HiTechnic SuperPro strobe value.
+ * Set the HiTechnic SuperPro strobe value.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param value The strobe value. See \ref StrobeCtrlConstants.
+ * \return The function call result.
+ */
+inline bool SetSensorHTSuperProStrobe(const byte port, byte value);
+
+/**
+ * Read HiTechnic SuperPro strobe value.
+ * Read the HiTechnic SuperPro strobe value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The strobe value. See \ref StrobeCtrlConstants.
+ */
+inline byte SensorHTSuperProStrobe(const byte port);
+
+/**
+ * Set HiTechnic SuperPro program control value.
+ * Set the HiTechnic SuperPro program control value.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param value The program control value.
+ * \return The function call result.
+ */
+inline bool SetSensorHTSuperProProgramControl(const byte port, byte value);
+
+/**
+ * Read HiTechnic SuperPro program control value.
+ * Read the HiTechnic SuperPro program control value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \return The program control value.
+ */
+inline byte SensorHTSuperProProgramControl(const byte port);
+
+/**
+ * Set HiTechnic SuperPro board analog output parameters.
+ * Set the analog output parameters on the HiTechnic SuperPro board.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref InPorts.
+ * \param dac The analog output index. See \ref HTSProDACIndexConstants.
+ * \param mode The analog output mode. See \ref DacModeConstants.
+ * \param freq The analog output frequency. Between 1 and 8191.
+ * \param volt The analog output voltage level. A 10 bit value (0..1023).
+ * \return The function call result.
+ */
+inline bool SetSensorHTSuperProAnalogOut(const byte port, const byte dac, byte mode, int freq, int volt);
+
+/**
+ * Read HiTechnic SuperPro board analog output parameters.
+ * Read the analog output parameters on the HiTechnic SuperPro board.
+ * Returns a boolean value indicating whether or not the operation completed
+ * successfully. The port must be configured as a Lowspeed port before using
+ * this function.
+ *
+ * \param port The sensor port. See \ref NBCInputPortConstants.
+ * \param dac The analog output index. See \ref HTSProDACIndexConstants.
+ * \param mode The analog output mode. See \ref DacModeConstants.
+ * \param freq The analog output frequency. Between 1 and 8191.
+ * \param volt The analog output voltage level. A 10 bit value (0..1023).
+ * \return The function call result.
+ */
+inline bool ReadSensorHTSuperProAnalogOut(const byte port, const byte dac, byte & mode, int & freq, int & volt);
+
+/**
  * Read HiTechnic touch multiplexer.
  * Read touch sensor values from the HiTechnic touch multiplexer device.
  *
@@ -10917,18 +11175,18 @@ inline void HTScoutUnmuteSound(void);
 
 #else
 
-#define SensorHTCompass(_port) asm { ReadSensorHTCompass(_port, __RETVAL__) }
+#define SensorHTCompass(_port) asm { __ReadSensorHTCompass(_port, __RETVAL__) }
 #define ReadSensorHTAccel(_port, _x, _y, _z) asm { __ReadSensorHTAccel(_port, _x, _y, _z, __RETVAL__) }
 #define ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue) asm { __ReadSensorHTColor(_port, _ColorNum, _Red, _Green, _Blue, __RETVAL__) }
 #define ReadSensorHTRawColor(_port, _Red, _Green, _Blue) asm { __ReadSensorHTRawColor(_port, _Red, _Green, _Blue, __RETVAL__) }
 #define ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue) asm { __ReadSensorHTNormalizedColor(_port, _ColorIdx, _Red, _Green, _Blue, __RETVAL__) }
 #define ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9) asm { __ReadSensorHTIRSeeker(_port, _dir, _s1, _s3, _s5, _s7, _s9, __RETVAL__) }
-#define SensorHTIRSeekerDir(_port) asm { ReadSensorHTIRSeekerDir(_port, __RETVAL__) }
-#define SensorHTColorNum(_port) asm { ReadSensorHTColorNum(_port, __RETVAL__) }
+#define SensorHTIRSeekerDir(_port) asm { __ReadSensorHTIRSeekerDir(_port, __RETVAL__) }
+#define SensorHTColorNum(_port) asm { __ReadSensorHTColorNum(_port, __RETVAL__) }
 #define ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) asm { __ReadSensorHTTouchMultiplexer(_p, _t1, _t2, _t3, _t4) }
-#define SensorHTIRSeeker2Addr(_port, _reg) asm { ReadSensorHTIRSeeker2Addr(_port, _reg, __RETVAL__) }
-#define SensorHTIRSeeker2DCDir(_port) asm { ReadSensorHTIRSeeker2Addr(_port, HTIR2_REG_DCDIR, __RETVAL__) }
-#define SensorHTIRSeeker2ACDir(_port) asm { ReadSensorHTIRSeeker2Addr(_port, HTIR2_REG_ACDIR, __RETVAL__) }
+#define SensorHTIRSeeker2Addr(_port, _reg) asm { __ReadSensorHTIRSeeker2Addr(_port, _reg, __RETVAL__) }
+#define SensorHTIRSeeker2DCDir(_port) asm { __ReadSensorHTIRSeeker2Addr(_port, HTIR2_REG_DCDIR, __RETVAL__) }
+#define SensorHTIRSeeker2ACDir(_port) asm { __ReadSensorHTIRSeeker2Addr(_port, HTIR2_REG_ACDIR, __RETVAL__) }
 #define ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg) asm { __ReadSensorHTIRSeeker2DC(_port, _dir, _s1, _s3, _s5, _s7, _s9, _avg, __RETVAL__) }
 #define ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9) asm { __ReadSensorHTIRSeeker2AC(_port, _dir, _s1, _s3, _s5, _s7, _s9, __RETVAL__) }
 #define SetHTIRSeeker2Mode(_port, _mode) asm { __SetHTIRSeeker2Mode(_port, _mode, __RETVAL__) }
@@ -10945,7 +11203,27 @@ inline void HTScoutUnmuteSound(void);
 #define ResetHTBarometricCalibration(_port) asm { __ResetHTBarometricCalibration(_port, __RETVAL__) }
 #define SetHTBarometricCalibration(_port, _cal) asm { __SetHTBarometricCalibration(_port, _cal, __RETVAL__) }
 
+#define SensorHTProtoAnalog(_port, _input) asm { __ReadSensorHTProtoAnalog(_port, HT_ADDR_PROTOBOARD, _input, __RETVAL__, __TMPBYTE__) }
+#define ReadSensorHTProtoAllAnalog(_port, _a0, _a1, _a2, _a3, _a4) asm { __ReadSensorHTProtoAllAnalog(_port, _a0, _a1, _a2, _a3, _a4, __RETVAL__) }
+#define SetSensorHTProtoDigitalControl(_port, _value) asm { __SetSensorHTProtoDigitalControl(_port, HT_ADDR_PROTOBOARD, _value, __RETVAL__) }
+#define SensorHTProtoDigitalControl(_port) asm { __MSReadValue(_port, HT_ADDR_PROTOBOARD, HTPROTO_REG_DCTRL, 1, __RETVAL__, __TMPBYTE__) }
+#define SetSensorHTProtoDigital(_port, _value) asm { __SetSensorHTProtoDigital(_port, HT_ADDR_PROTOBOARD, _value, __RETVAL__) }
+#define SensorHTProtoDigital(_port) asm { __ReadSensorHTProtoDigital(_port, HT_ADDR_PROTOBOARD, __RETVAL__, __TMPBYTE__) }
 
+#define SensorHTSuperProAnalog(_port, _input) asm { __ReadSensorHTProtoAnalog(_port, HT_ADDR_SUPERPRO, _input, __RETVAL__, __TMPBYTE__) }
+#define ReadSensorHTSuperProAllAnalog(_port, _a0, _a1, _a2, _a3) asm { __ReadSensorHTSuperProAllAnalog(_port, _a0, _a1, _a2, _a3, __RETVAL__) }
+#define SetSensorHTSuperProDigitalControl(_port, _value) asm { __SetSensorHTProtoDigitalControl(_port, HT_ADDR_SUPERPRO, _value, __RETVAL__) }
+#define SensorHTSuperProDigitalControl(_port) asm { __MSReadValue(_port, HT_ADDR_SUPERPRO, HTSPRO_REG_DCTRL, 1, __RETVAL__, __TMPBYTE__) }
+#define SetSensorHTSuperProDigital(_port, _value) asm { __SetSensorHTProtoDigital(_port, HT_ADDR_SUPERPRO, _value, __RETVAL__) }
+#define SensorHTSuperProDigital(_port) asm { __MSReadValue(_port, HT_ADDR_SUPERPRO, HTSPRO_REG_DIN, 1, __RETVAL__, __TMPBYTE__) }
+#define SetSensorHTSuperProLED(_port, _value) asm { __SetSensorHTSuperProLED(_port, _value, __RETVAL__) }
+#define SensorHTSuperProLED(_port) asm { __MSReadValue(_port, HT_ADDR_SUPERPRO, HTSPRO_REG_LED, 1, __RETVAL__, __TMPBYTE__) }
+#define SetSensorHTSuperProStrobe(_port, _value) asm { __SetSensorHTSuperProStrobe(_port, _value, __RETVAL__) }
+#define SensorHTSuperProStrobe(_port) asm { __MSReadValue(_port, HT_ADDR_SUPERPRO, HTSPRO_REG_STROBE, 1, __RETVAL__, __TMPBYTE__) }
+#define SetSensorHTSuperProProgramControl(_port, _value) asm { __SetSensorHTSuperProProgramControl(_port, _value, __RETVAL__) }
+#define SensorHTSuperProProgramControl(_port) asm { __MSReadValue(_port, HT_ADDR_SUPERPRO, HTSPRO_REG_CTRL, 1, __RETVAL__, __TMPBYTE__) }
+#define SetSensorHTSuperProAnalogOut(_port, _dac, _mode, _freq, _volt) asm { __SetSensorHTSuperProAnalogOut(_port, _dac, _mode, _freq, _volt, __RETVAL__) }
+#define ReadSensorHTSuperProAnalogOut(_port, _dac, _mode, _freq, _volt) asm { __ReadSensorHTSuperProAnalogOut(_port, _dac, _mode, _freq, _volt, __RETVAL__) }
 
 #define HTPowerFunctionCommand(_port, _channel, _outa, _outb) asm { __HTPFComboDirect(_port, _channel, _outa, _outb, __RETVAL__) }
 #define HTPFComboDirect(_port, _channel, _outa, _outb) asm { __HTPFComboDirect(_port, _channel, _outa, _outb, __RETVAL__) }
@@ -13754,6 +14032,181 @@ inline int SensorDIGPSRelativeHeading(byte port);
  */
 inline bool SetSensorDIGPSWaypoint(byte port, long latitude, long longitude);
 
+/**
+ * SetSensorDIGyroEx function.
+ * Configure DIGyro device on the specified port with the specified scale,
+ * output data rate, and bandwidth.
+ *
+ * \param port The port to which the Dexter Industries IMU Gyro sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param scale The full scale of the device (250dps, 500dps, or 2000dps).
+ * See the \ref DIIMUGyroCtrl4Constants group. You may use a constant or a variable.
+ * \param odr The output data rate of the device (100hz, 200hz, 400hz, or 800hz).
+ * See the \ref DIIMUGyroCtrl1Constants group. You may use a constant or a variable.
+ * \param bw The bandwidth of the device.
+ * See the \ref DIIMUGyroCtrl1Constants group. You may use a constant or a variable.
+ * \return The boolean function call result.
+ */
+inline bool SetSensorDIGyroEx(const byte port, byte scale, byte odr, byte bw);
+
+/**
+ * SetSensorDIGyro function.
+ * Configure DIGyro device on the specified port with default scale of 500dps,
+ * output data rate of 100hz, and bandwidth level 1.
+ *
+ * \param port The port to which the Dexter Industries IMU Gyro sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \return The boolean function call result.
+ */
+inline bool SetSensorDIGyro(const byte port);
+
+/**
+ * ReadSensorDIGyroRaw function.
+ * Read the raw Dexter Industries IMU Gyro X, Y, and Z axis values.
+ *
+ * \param port The port to which the Dexter Industries IMU Gyro sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param vector A variable of type VectorType which will contain the raw X, Y, anx Z values.
+ * \return The boolean function call result.
+ */
+inline bool ReadSensorDIGyroRaw(const byte port, VectorType & vector);
+
+/**
+ * ReadSensorDIGyro function.
+ * Read the scaled Dexter Industries IMU Gyro X, Y, and Z axis values.
+ *
+ * \param port The port to which the Dexter Industries IMU Gyro sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param vector A variable of type VectorType which will contain the scaled X, Y, anx Z values.
+ * \return The boolean function call result.
+ */
+inline bool ReadSensorDIGyro(const byte port, VectorType & vector);
+
+/**
+ * SensorDIGyroTemperature function.
+ * Read the Dexter Industries IMU Gyro temperature value.
+ *
+ * \param port The port to which the Dexter Industries IMU Gyro sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \return The temperature value.
+ */
+inline int SensorDIGyroTemperature(const byte port);
+
+/**
+ * SensorDIGyroStatus function.
+ * Read the Dexter Industries IMU Gyro status value.
+ *
+ * \param port The port to which the Dexter Industries IMU Gyro sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \return The status value.
+ */
+inline int SensorDIGyroStatus(const byte port);
+
+
+
+/**
+ * SetSensorDIAcclEx function.
+ * Configure DIAccl device on the specified port with the specified mode.
+ *
+ * \param port The port to which the Dexter Industries IMU Accl sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param mode The mode of the device (2G, 4G, or 8G).
+ * See the \ref DIIMUAccelModeConstants group. You may use a constant or a variable.
+ * \return The boolean function call result.
+ */
+inline bool SetSensorDIAcclEx(const byte port, byte mode);
+
+/**
+ * SetSensorDIAccl function.
+ * Configure DIAccl device on the specified port with default mode of 2G.
+ *
+ * \param port The port to which the Dexter Industries IMU Accl sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \return The boolean function call result.
+ */
+inline bool SetSensorDIAccl(const byte port);
+
+/**
+ * ReadSensorDIAcclRaw function.
+ * Read the raw Dexter Industries IMU Accl X, Y, and Z axis 10-bit values.
+ *
+ * \param port The port to which the Dexter Industries IMU Accl sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param vector A variable of type VectorType which will contain the raw X, Y, anx Z 10-bit values.
+ * \return The boolean function call result.
+ */
+inline bool ReadSensorDIAcclRaw(const byte port, VectorType & vector);
+
+/**
+ * ReadSensorDIAccl function.
+ * Read the scaled Dexter Industries IMU Accl X, Y, and Z axis 10-bit values.
+ *
+ * \param port The port to which the Dexter Industries IMU Accl sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param vector A variable of type VectorType which will contain the scaled X, Y, anx Z 10-bit values.
+ * \return The boolean function call result.
+ */
+inline bool ReadSensorDIAccl(const byte port, VectorType & vector);
+
+/**
+ * ReadSensorDIAccl8Raw function.
+ * Read the raw Dexter Industries IMU Accl X, Y, and Z axis 8-bit values.
+ *
+ * \param port The port to which the Dexter Industries IMU Accl sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param vector A variable of type VectorType which will contain the raw X, Y, anx Z 8-bit values.
+ * \return The boolean function call result.
+ */
+inline bool ReadSensorDIAccl8Raw(const byte port, VectorType & vector);
+
+/**
+ * ReadSensorDIAccl8 function.
+ * Read the scaled Dexter Industries IMU Accl X, Y, and Z axis 8-bit values.
+ *
+ * \param port The port to which the Dexter Industries IMU Accl sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param vector A variable of type VectorType which will contain the scaled X, Y, anx Z 8-bit values.
+ * \return The boolean function call result.
+ */
+inline bool ReadSensorDIAccl8(const byte port, VectorType & vector);
+
+/**
+ * SensorDIAcclStatus function.
+ * Read the Dexter Industries IMU Accl status value.
+ *
+ * \param port The port to which the Dexter Industries IMU Accl sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \return The status value.
+ */
+inline int SensorDIAcclStatus(const byte port);
+
+/**
+ * ReadSensorDIAcclDrift function.
+ * Read the Dexter Industries IMU Accl X, Y, and Z axis 10-bit drift values.
+ *
+ * \param port The port to which the Dexter Industries IMU Accl sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param x The X axis 10-bit drift value.
+ * \param y The Y axis 10-bit drift value.
+ * \param z The Z axis 10-bit drift value.
+ * \return The boolean function call result.
+ */
+inline bool ReadSensorDIAcclDrift(const byte port, int & x, int & y, int & z);
+
+/**
+ * SetSensorDIAcclDrift function.
+ * Set the Dexter Industries IMU Accl X, Y, and Z axis 10-bit drift values.
+ *
+ * \param port The port to which the Dexter Industries IMU Accl sensor is attached.
+ * See the \ref InPorts group. You may use a constant or a variable.
+ * \param x The X axis 10-bit drift value.
+ * \param y The Y axis 10-bit drift value.
+ * \param z The Z axis 10-bit drift value.
+ * \return The boolean function call result.
+ */
+inline bool SetSensorDIAcclDrift(const byte port, int x, int y, int z);
+
+
 #else
 
 #define SensorDIGPSStatus(_port) asm { __ReadSensorDIGPSStatus(_port, __RETVAL__) }
@@ -13766,6 +14219,26 @@ inline bool SetSensorDIGPSWaypoint(byte port, long latitude, long longitude);
 #define SensorDIGPSHeadingToWaypoint(_port) asm { __ReadSensorDIGPSHeadingToWaypoint(_port, __RETVAL__) }
 #define SensorDIGPSRelativeHeading(_port) asm { __ReadSensorDIGPSRelativeHeading(_port, __RETVAL__) }
 #define SetSensorDIGPSWaypoint(_port, _lat, _long) asm { __SetSensorDIGPSWaypoint(_port, _lat, _long, __RETVAL__) }
+
+#define SetSensorDIGyroEx(_port, _scale, _odr, _bw) asm { __SetSensorDIGyro(_port, _scale, _odr, _bw, __RETVAL__) }
+#define SetSensorDIGyro(_port) asm { __SetSensorDIGyro(_port, DIGYRO_CTRL4_SCALE_500, DIGYRO_CTRL1_DATARATE_100, DIGYRO_CTRL1_BANDWIDTH_1, __RETVAL__) }
+#define ReadSensorDIGyroRaw(_port, _vector) asm { __ReadSensorDIGyroRaw(_port, _vector, __RETVAL__) }
+#define ReadSensorDIGyro(_port, _vector) asm { __ReadSensorDIGyro(_port, _vector, __RETVAL__) }
+#define SensorDIGyroStatus(_port) asm { __ReadSensorDIGyroStatus(_port, __RETVAL__, __TMPBYTE__) }
+#define SensorDIGyroTemperature(_port) asm { __ReadSensorDIGyroTemperature(_port, __RETVAL__, __TMPBYTE__) }
+
+
+#define SetSensorDIAcclEx(_port, _mode) asm { __SetSensorDIAccl(_port, _mode, __RETVAL__) }
+#define SetSensorDIAccl(_port) asm { __SetSensorDIAccl(_port, DIACCL_MODE_GLVL2, __RETVAL__) }
+#define ReadSensorDIAcclRaw(_port, _vector) asm { __ReadSensorDIAcclRaw(_port, DIACCL_REG_XLOW, _vector, __RETVAL__) }
+#define ReadSensorDIAccl(_port, _vector) asm { __ReadSensorDIAccl(_port, _vector, __RETVAL__) }
+#define ReadSensorDIAccl8Raw(_port, _vector) asm { __ReadSensorDIAccl8Raw(_port, _vector, __RETVAL__) }
+#define ReadSensorDIAccl8(_port, _vector) asm { __ReadSensorDIAccl8(_port, _vector, __RETVAL__) }
+#define SensorDIAcclStatus(_port) asm { __ReadSensorDIAcclStatus(_port, __RETVAL__, __TMPBYTE__) }
+#define ReadSensorDIAcclDrift(_port, _x, _y, _z) asm { __ReadSensorDIAcclDrift(_port, _x, _y, _z, __RETVAL__) }
+#define SetSensorDIAcclDrift(_port, _x, _y, _z) asm { __SetSensorDIAcclDrift(_port, _x, _y, _z, __RETVAL__) }
+
+
 
 #endif
 
@@ -13908,6 +14381,17 @@ inline bool ReadSensorMIXG1300L(byte port, XGPacketType & packet);
  * Standard C cmath API functions.
  * @{
  */
+
+/**
+ * This structure is used for storing three axis values in a single object.
+ */
+struct VectorType {
+  float X;    /*!< The X axis value. */
+  float Y;    /*!< The Y axis value. */
+  float Z;    /*!< The Z axis value. */
+};
+
+
 #if __FIRMWARE_VERSION > 107
 
 /**
@@ -14672,11 +15156,43 @@ inline bool isNAN(float value);
  */
 inline char sign(variant num);
 
+/**
+ * VectorCross function.
+ * Calculate the cross-product of two vectors.
+ *
+ * \param a A variable of type VectorType
+ * \param b A variable of type VectorType
+ * \param out The cross-product vector.
+ */
+inline void VectorCross(VectorType a, VectorType b, VectorType & out);
+
+/**
+ * VectorDot function.
+ * Calculate the dot-product of two vectors.
+ *
+ * \param a A variable of type VectorType
+ * \param b A variable of type VectorType
+ */
+inline float VectorDot(VectorType a, VectorType b);
+
+/**
+ * VectorNormalize function.
+ * Normalize the vector.
+ *
+ * \param a A variable of type VectorType
+ */
+inline void VectorNormalize(VectorType & a);
+
 #else
 
 #define isNAN(_x) ((_x) != (_x))
 
+#define VectorCross(_a, _b, _out) asm { __VectorCross(_a, _b, _out) }
+#define VectorDot(_a, _b) asm { __VectorDot(_a, _b, __FLTRETVAL__) }
+#define VectorNormalize(_a) asm { __VectorNormalize(_a) }
+
 #endif
+
 /** @} */ // end of cmathAPI group
 
 

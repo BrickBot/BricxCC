@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-09-01
- * \version 1
+ * \date 2011-10-10
+ * \version 2
  */
 #ifndef SPCAPIDOCS_H
 #define SPCAPIDOCS_H
@@ -35,7 +35,7 @@
 /** @mainpage SPC Programmer's Guide
  * \brief
  *
- * <h2><center>August 11, 2011</center></h2>
+ * <h2><center>October 10, 2011</center></h2>
  * <h2><center>by John Hansen</center></h2>
  *
  * - @subpage intro
@@ -308,7 +308,7 @@
  * \code
  * char ch = 'a'; // ch == 97
  * \endcode
- * 
+ *
  */
 
 /** @page sysconst System Constants
@@ -321,26 +321,8 @@
  * int volt = @0x00; // read the voltage from analog input A0.
  * @0x0C = 1000; // set countdown timer 0 to 1000.
  * \endcode
- * 
- * The spmem.h header file uses system constants to define names for the
- * I/O mapped memory addresses of the SuperPro board you are targetting.
- * A complete list of these system constants appears below:
  *
- * - @subpage adchannels
- * - @subpage din
- * - @subpage dout
- * - @subpage dctrl
- * - @subpage sctrl
- * - @subpage timers
- * - @subpage sincnt
- * - @subpage sinbyte
- * - @subpage soutcnt
- * - @subpage soutbyte
- * - @subpage dacmode
- * - @subpage dacfreq
- * - @subpage dacvolt
- * - @subpage ledctrl
- * - @subpage sysclk
+ * - @subpage presysconst
  *
  */
 
@@ -1960,9 +1942,34 @@
  * Miscellaneous constants for use in SPC.
  */
 
+/** @page presysconst SuperPro pre-defined system constants
+ * Pre-defined system constants for directly interacting with the SuperPro hardware.
+ *
+ * The spmem.h header file uses system constants to define names for the
+ * I/O mapped memory addresses of the SuperPro board you are targetting.
+ * A complete list of these system constants appears below:
+ *
+ * - @subpage adchannels
+ * - @subpage din
+ * - @subpage dout
+ * - @subpage dctrl
+ * - @subpage sctrl
+ * - @subpage timers
+ * - @subpage sincnt
+ * - @subpage sinbyte
+ * - @subpage soutcnt
+ * - @subpage soutbyte
+ * - @subpage dacmode
+ * - @subpage dacfreq
+ * - @subpage dacvolt
+ * - @subpage ledctrl
+ * - @subpage sysclk
+ *
+ */
+
 /** @defgroup DacModeConstants SuperPro analog output mode constants
  * Constants for controlling the 2 analog output modes.
- * 
+ *
  * Two analog outputs, which can span 0 to 3.3 volts, can be programmed to
  * output a steady voltage or can be programmed to output a selection of
  * waveforms over a range of frequencies.
