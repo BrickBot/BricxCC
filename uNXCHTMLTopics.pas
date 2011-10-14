@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 3139;
+  uNXCHTMLTopicsSize = 3155;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -283,6 +283,10 @@ const
     (
      Name: 'UpdateCalibCacheInfoType';
      Value: 'struct_update_calib_cache_info_type.html'
+    ),
+    (
+     Name: 'VectorType';
+     Value: 'struct_vector_type.html'
     ),
     (
      Name: 'WriteSemDataType';
@@ -7129,8 +7133,24 @@ const
      Value: 'group___d_i_i_m_u_gyro_register_constants_ga079aff34205d2ec669301e0c1efa97bf.html'
     ),
     (
+     Name: 'DIGYRO_REG_CTRL1AUTO';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gac71dfb710a770b6078ef3e82c7e2536a.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_TEMPAUTO';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga386345647b8eafcd313f41f8d821d607.html'
+    ),
+    (
      Name: 'DIGYRO_REG_XLOWBURST';
      Value: 'group___d_i_i_m_u_gyro_register_constants_ga58a8d296e5f7cd0c71f5f3197b2151d2.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_YLOWBURST';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_gafd8175670174fe32a488fd30e6762466.html'
+    ),
+    (
+     Name: 'DIGYRO_REG_ZLOWBURST';
+     Value: 'group___d_i_i_m_u_gyro_register_constants_ga4448762bf3fa328da90d2678c06c195e.html'
     ),
     (
      Name: 'DIGYRO_CTRL1_XENABLE';
@@ -11993,6 +12013,38 @@ const
      Value: 'group___dexter_industries_a_p_i_ga9d23c5f3dffc1d9be12cd4c97c34c474.html'
     ),
     (
+     Name: 'SetSensorDIGyroEx';
+     Value: 'group___dexter_industries_a_p_i_ga4bafb3475fddf2b227bb4ac55d1966e6.html'
+    ),
+    (
+     Name: 'SetSensorDIGyro';
+     Value: 'group___dexter_industries_a_p_i_gaddcd2f57c5baf462b0b983b3b182c7ac.html'
+    ),
+    (
+     Name: 'ReadSensorDIGyroRaw';
+     Value: 'group___dexter_industries_a_p_i_ga2cf76edf44f713d7b33cc77b0f1c5e27.html'
+    ),
+    (
+     Name: 'ReadSensorDIGyro';
+     Value: 'group___dexter_industries_a_p_i_ga4439e589bd1c64cb6759dc5ac606c663.html'
+    ),
+    (
+     Name: 'ReadSensorDIGyroRawEx';
+     Value: 'group___dexter_industries_a_p_i_gaf21ee130b78d25418a0a587793888d13.html'
+    ),
+    (
+     Name: 'ReadSensorDIGyroEx';
+     Value: 'group___dexter_industries_a_p_i_gabbe7bd1af2f25af3ffa0652d99ffc81c.html'
+    ),
+    (
+     Name: 'SensorDIGyroTemperature';
+     Value: 'group___dexter_industries_a_p_i_ga1fb8e550434af0eae68d8393e50dd153.html'
+    ),
+    (
+     Name: 'SensorDIGyroStatus';
+     Value: 'group___dexter_industries_a_p_i_ga6c64b7dbee9edf3f2de65b96715c8849.html'
+    ),
+    (
      Name: 'ResetMIXG1300L';
      Value: 'group___microinfinity_functions_ga0accd98c6ac906249c54480be1f87ea1.html'
     ),
@@ -12139,6 +12191,18 @@ const
     (
      Name: 'sign';
      Value: 'group__cmath_a_p_i_ga90f77c8b3df60383861c2bf620063c74.html'
+    ),
+    (
+     Name: 'VectorCross';
+     Value: 'group__cmath_a_p_i_ga853b29946507f78b14948808e40ed7ee.html'
+    ),
+    (
+     Name: 'VectorDot';
+     Value: 'group__cmath_a_p_i_ga29a30e6f2a24e0b27457b26245e464de.html'
+    ),
+    (
+     Name: 'VectorNormalize';
+     Value: 'group__cmath_a_p_i_ga02faf234ce9cca757f98a5156221d243.html'
     ),
     (
      Name: 'fclose';
