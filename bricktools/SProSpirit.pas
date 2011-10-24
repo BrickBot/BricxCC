@@ -236,6 +236,8 @@ type
     function NXTFindNextFile(var IterHandle : FantomHandle; var filename : string; var filesize, availsize : cardinal) : boolean; override;
     function NXTFindClose(var IterHandle : FantomHandle) : boolean; override;
     function NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byte) : boolean; override;
+    function NXTFirmwareVersion : word; override;
+    function NXTInstalledFirmware : TInstalledFirmware; override;
     function NXTOpenWriteLinear(const filename : string; const size : cardinal;
       var handle : FantomHandle) : boolean; override;
     function NXTOpenReadLinear(const filename : string; var handle : FantomHandle;
@@ -699,6 +701,20 @@ function TSProSpirit.NXTGetVersions(var protmin, protmaj, firmmin, firmmaj : byt
 begin
   Result := IsOpen;
   if not Result then Exit;
+  protmin := 0;
+  protmaj := 0;
+  firmmin := 0;
+  firmmaj := 0;
+end;
+
+function TSProSpirit.NXTFirmwareVersion : word;
+begin
+  Result := 128;
+end;
+
+function TSProSpirit.NXTInstalledFirmware : TInstalledFirmware;
+begin
+  result := ifEnhanced;
 end;
 
 function TSProSpirit.NXTCloseModuleHandle(var handle: FantomHandle; const chkResponse: boolean): boolean;
