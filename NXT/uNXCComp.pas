@@ -163,7 +163,7 @@ type
     procedure Expression;
     procedure DoPreIncOrDec(bPutOnStack : boolean);
     function  IncrementOrDecrement : boolean;
-    function OptimizeExpression(str : string; const idx: integer; bFlag : boolean) : string;
+    function OptimizeExpression(str : string; const idx: integer; bFlag : boolean; const aValue : string) : string;
     procedure Subtract;
     procedure CommaExpression;
     procedure BoolExpression;
@@ -2917,7 +2917,7 @@ begin
           '-': Subtract;
         end;
       end;
-      optExp := OptimizeExpression(fExpStr, prev, fExpStrHasVars);
+      optExp := OptimizeExpression(fExpStr, prev, fExpStrHasVars, Value);
     end;
   finally
     fExpStr := oldExpStr + optExp + Value;
@@ -2925,14 +2925,23 @@ begin
   end;
 end;
 
-function TNXCComp.OptimizeExpression(str : string; const idx: integer; bFlag : boolean) : string;
+function TNXCComp.OptimizeExpression(str : string; const idx: integer; bFlag : boolean; const aValue : string) : string;
+var
+  p, len1, len2 : integer;
 begin
   fLastExpressionOptimizedToConst := False;
 //  System.Delete(str, Length(str), 1);
+{
   // if the last character is a ) or a ; then delete it.
   if str[Length(str)] in [')', ';'] then
     System.Delete(str, Length(str), 1);
+}
   Result := str;
+  p := Pos(aValue, Result);
+  len1 := Length(Result);
+  len2 := Length(aValue);
+  if (p > 0) and (p = (len1 - len2 + 1)) then
+    System.Delete(Result, p, MaxInt);
   if (OptimizeLevel >= 1) and (NBCSource.Count > (idx+1)) and 
      not bFlag then
   begin
@@ -2947,7 +2956,7 @@ begin
 
     if (str <> '') {and not (str[1] in ['+', '-'])} then
     begin
-      fCalc.SilentExpression := str;
+      fCalc.SilentExpression := Result;
       if not fCalc.ParserError then
       begin
         if StatementType = stFloat then
@@ -3667,7 +3676,7 @@ begin
     end;
     PostLabel(L);
 
-    optExp := OptimizeExpression(fBoolSubExpStr, prev, fBoolSubExpStrHasVars);
+    optExp := OptimizeExpression(fBoolSubExpStr, prev, fBoolSubExpStrHasVars, Value);
   finally
     fBoolSubExpStr := oldBS + optExp + Value;
   end;
