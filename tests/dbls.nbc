@@ -1,0 +1,7 @@
+dseg segment
+  third byte[][]
+dseg ends
+
+thread main
+  arrbuild third, 'a', 'b';, 'http://testing.fi/'
+endt

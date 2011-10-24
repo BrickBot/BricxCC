@@ -5,6 +5,6 @@ string first="http://www.fi";
 //this works (only one slash)
 string second[]={"a","b","http:/www.fi",};
 
-//this doesn't work (in array)
+//this doesn't work (in array)  (FIXED as of 2011-10-20 JCH)
 string third[]={"a","b","http://www.fi",};
 }

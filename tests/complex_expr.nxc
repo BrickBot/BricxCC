@@ -1,8 +1,8 @@
 task main()
 {
-  int p, k, y, u, j, G, M, x, r, F, t;
+  int p, k, y=0xFF, u, j=7, G, M, x, r, F, t=10;
   int board[10];
-  if(p<3&6*k+(y&0x70)==0x80
+  if(true||p<3&6*k+(y&0x70)==0x80
      ||(u&~24)==36&j==7&&
      G&M&&board[G=(x|7)-(r>>1&7)]&32
      &&!(board[G^1]|board[G^2]))

@@ -12,7 +12,9 @@ task main()
 //  int pleaseWork, test, fred;
   NumOut(0, LCD_LINE1, test);
   NumOut(0, LCD_LINE2, fred);
+  NumOut(0, LCD_LINE3, pleaseWork);
   int x = fred;
+  NumOut(0, LCD_LINE4, x);
   switch(pleaseWork)
   {
     case test: 

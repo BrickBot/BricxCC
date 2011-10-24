@@ -6,7 +6,7 @@ struct foo {
 };
 
 inline int Testing(unsigned long op, foo opands[], int out) {
-   foo tmp_opands[];
+   foo tmp_opands[1];
 
    if(opands[0].idx != tmp_opands[0].idx) {
       foo tmp = tmp_opands[0];

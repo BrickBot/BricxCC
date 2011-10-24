@@ -39,7 +39,7 @@ task main()
   //
   // LEVEL 7 binary operator precedence
   //
-  // this code shows propert (as of 2011-07-18) associativity for << and >>
+  // this code shows proper (as of 2011-07-18) associativity for << and >>
   // and right associativity for assignment operator
   x = y << z >> d;
 }

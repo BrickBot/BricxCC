@@ -1,0 +1,80 @@
+#define DEFAULT
+//#define RAW8
+#define RAW10
+
+#ifdef RAW10
+#undef RAW8
+#endif
+
+void CalibrateDIAccl(const byte port, int iter)
+{
+  TextOut(0, LCD_LINE1, "Calibrating...");
+  Wait(SEC_1);
+  SetSensorDIAcclDrift(port, 0, 0, 0);
+  int x = 0, y = 0, z = 0;
+  VectorType raw;
+  repeat(iter)
+  {
+    ReadSensorDIAcclRaw(S1, raw);
+    x += raw.X;
+    y += raw.Y;
+    z += raw.Z;
+    Wait(MS_10);
+  }
+  x = (0-(x/iter))*2;
+  y = (0-(y/iter))*2;
+  z = (60-(z/iter))*2;
+  NumOut(0, LCD_LINE2, x);
+  NumOut(0, LCD_LINE3, y);
+  NumOut(0, LCD_LINE4, z);
+  Wait(SEC_1);
+  SetSensorDIAcclDrift(port, x, y, z);
+  TextOut(0, LCD_LINE5, "Completed!");
+  Wait(SEC_1);
+  ClearScreen();
+}
+
+task main()
+{
+#ifdef DEFAULT
+  SetSensorDIAccl(S1);
+#else
+  SetSensorDIAcclEx(S1, DIACCL_MODE_GLVL8);
+#endif
+  VectorType val, raw;
+  int dx, dy, dz;
+
+  int i = 0;
+  int temp;
+  byte status;
+  bool done = false;
+  CalibrateDIAccl(S1, 100);
+  while (!done){
+    ClearScreen();
+    NumOut(0, LCD_LINE8, SensorDIAcclStatus(S1));
+    // Read the GYROSCOPE
+#ifdef RAW8
+    ReadSensorDIAccl8Raw(S1, raw);
+#else
+    ReadSensorDIAccl8(S1, val);
+#endif
+#ifdef RAW10
+    ReadSensorDIAcclRaw(S1, raw);
+#else
+    ReadSensorDIAccl(S1, val);
+#endif
+    ReadSensorDIAcclDrift(S1, dx, dy, dz);
+    NumOut(0, LCD_LINE1, val.X);
+    NumOut(0, LCD_LINE2, val.Y);
+    NumOut(0, LCD_LINE3, val.Z);
+    NumOut(0, LCD_LINE4, raw.X);
+    NumOut(0, LCD_LINE5, raw.Y);
+    NumOut(0, LCD_LINE6, raw.Z);
+    NumOut(50, LCD_LINE4, dx);
+    NumOut(50, LCD_LINE5, dy);
+    NumOut(50, LCD_LINE6, dz);
+
+    Wait(MS_50);
+  }
+}
+

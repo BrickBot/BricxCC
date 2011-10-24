@@ -1,0 +1,17 @@
+task main()
+{
+  SetSensorLowspeed(S1);
+  SetHTProtoDigitalControl(S1, 0xFF); // all outputs
+  SetHTProtoDigital(S1, DIGI_PIN0|DIGI_PIN1|DIGI_PIN2);
+  NumOut(0, LCD_LINE1, SensorHTProtoDigitalControl(S1));
+  NumOut(0, LCD_LINE2, SensorHTProtoDigital(S1));
+  NumOut(0, LCD_LINE3, SensorHTProtoAnalog(S1, HTPROTO_A0));
+  int a0, a1, a2, a3, a4;
+  ReadSensorHTProtoAllAnalog(S1, a0, a1, a2, a3, a4);
+  NumOut(0, LCD_LINE4, a0);
+  NumOut(0, LCD_LINE5, a1);
+  NumOut(0, LCD_LINE6, a2);
+  NumOut(0, LCD_LINE7, a3);
+  NumOut(0, LCD_LINE8, a4);
+  Wait(SEC_5);
+}
