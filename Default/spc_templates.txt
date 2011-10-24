@@ -9,8 +9,6 @@ bool "name";\=
 struct "name" {\>"members"\<};\=\=
 #define "macro"\=
 #include "file"\=
-#import "file"\=
-#download "file"\=
 - If statements
 if ("condition")\={\>"statements"\<}\=
 if ("condition")\>"statement"\<else\>"statement"\=
@@ -28,3 +26,44 @@ continue;\=
 return;\=
 return "value";\=
 goto "label";\=
+| API Functions
+abort();\=
+abs("num");\=
+close();\=
+CurrentTick();\=
+ExitTo("newTask");\=
+isalnum("c");\=
+isalpha("c");\=
+iscntrl("c");\=
+isdigit("c");\=
+isgraph("c");\=
+islower("c");\=
+isprint("c");\=
+ispunct("c");\=
+isspace("c");\=
+isupper("c");\=
+isxdigit("c");\=
+open("mode");\=
+pop();\=
+printf("format", "...");\=
+push("value");\=
+putchar("ch");\=
+puts("str");\=
+read();\=
+RotateLeft("value");\=
+RotateRight("value");\=
+Run("slot");\=
+sign("num");\=
+SizeOf("value");\=
+sqrt("x");\=
+StartTask("t");\=
+stat();\=
+Stop("bvalue");\=
+StopAllTasks();\=
+StopProcesses();\=
+tolower("c");\=
+toupper("c");\=
+Wait("ms");\=
+write("value");\=
+Yield();\=
+
