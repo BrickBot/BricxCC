@@ -609,6 +609,10 @@ begin
           else
             Result := 'NQC';
         end;
+        if LocalBrickType = SU_SPRO then
+          Result := 'SPC'
+        else if (LocalBrickType = SU_NXT) and (PreferredLanguage <> 3) then
+          Result := 'NXC';
       end;
     ftBrickOS : Result := 'C++';
     ftPBForth : Result := 'Forth';
