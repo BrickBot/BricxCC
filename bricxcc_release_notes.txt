@@ -18,6 +18,9 @@ version 3.3.8.10
 - ARROP enhanced firmware opcode fixes for floating point arrays
 - Changed ARROP to base float/signed/unsigned calculations on output type rather than input type
 - RS485 firmware changes to report more information from CommHSCheckStatus system call
+- Possible fix for access violation when opening/closing programs.
+- Changed default brick type to NXT instead of RCX.
+- Add support for HiTechnic SuperPro board
 
 
 version 3.3.8.9
