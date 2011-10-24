@@ -322,8 +322,6 @@
  * @0x0C = 1000; // set countdown timer 0 to 1000.
  * \endcode
  *
- * - @subpage presysconst
- *
  */
 
 /** @page idkey Identifiers and Keywords
@@ -1637,6 +1635,31 @@
  *
  */
 
+/** @page presysconst SuperPro pre-defined system constants
+ * Pre-defined system constants for directly interacting with the SuperPro hardware.
+ *
+ * The spmem.h header file uses system constants to define names for the
+ * I/O mapped memory addresses of the SuperPro board you are targetting.
+ * A complete list of these system constants appears below:
+ *
+ * - @subpage adchannels
+ * - @subpage din
+ * - @subpage dout
+ * - @subpage dctrl
+ * - @subpage sctrl
+ * - @subpage timers
+ * - @subpage sincnt
+ * - @subpage sinbyte
+ * - @subpage soutcnt
+ * - @subpage soutbyte
+ * - @subpage dacmode
+ * - @subpage dacfreq
+ * - @subpage dacvolt
+ * - @subpage ledctrl
+ * - @subpage sysclk
+ *
+ */
+
 /** @page adchannels ADChannel0/1/2/3
  * \brief
  *
@@ -1940,30 +1963,6 @@
 
 /** @defgroup MiscConstants Miscellaneous SPC constants
  * Miscellaneous constants for use in SPC.
- */
-
-/** @page presysconst SuperPro pre-defined system constants
- * Pre-defined system constants for directly interacting with the SuperPro hardware.
- *
- * The spmem.h header file uses system constants to define names for the
- * I/O mapped memory addresses of the SuperPro board you are targetting.
- * A complete list of these system constants appears below:
- *
- * - @subpage adchannels
- * - @subpage din
- * - @subpage dout
- * - @subpage dctrl
- * - @subpage sctrl
- * - @subpage timers
- * - @subpage sincnt
- * - @subpage sinbyte
- * - @subpage soutcnt
- * - @subpage soutbyte
- * - @subpage dacmode
- * - @subpage dacfreq
- * - @subpage dacvolt
- * - @subpage ledctrl
- * - @subpage sysclk
  *
  */
 
@@ -2131,11 +2130,22 @@
  * \example ex_SizeOf.spc
  * This is an example of how to use the \ref SizeOf function.
  *
+ * \example ex_pushpop.spc
+ * This is an example of how to use the \ref push and \ref pop functions.
  *
+ * \example ex_rotate.spc
+ * This is an example of how to use the \ref RotateLeft and \ref RotateRight
+ * functions.
  *
-*/
-
-/*
+ * \example ex_run.spc
+ * This is an example of how to use the \ref Run function.
+ *
+ * \example ex_stat.spc
+ * This is an example of how to use the \ref stat function.
+ *
+ * \example ex_StopProcesses.spc
+ * This is an example of how to use the \ref StopProcesses function.
+ *
 */
 
 #include "SPCDefs.h"
