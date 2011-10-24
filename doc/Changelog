@@ -8,12 +8,18 @@ file that demonstrates the bug if possible.
 For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
-Version 1.2.1.r5 (2011-07-19)
+Version 1.2.1.r5 (2011-10-24)
 -----------------------------
-- Cross platform updates for Linux (FPC/Lazarus)
-- Added support for Dexter Industries DiGPS sensor
 - Added support for HiTechnic Barometric sensor
+- Added support for HiTechnic Prototype Board
+- Added support for HiTechnic SuperPro Board
+- Added support for Dexter Industries DiGPS sensor
+- Added support for Dexter Industries IMU sensor (DIAccl and DIGyro)
+- Added support for MicroInfinity XG1300L sensor
+- Added support for SuperPro C (SPC)
+- Cross platform updates for Linux (FPC/Lazarus)
 - Fixed typo defect in glPyramid API function
+- Fixed defect where double slashes in strings were treated as a line-ending comment
 - Fixed defect with the inline keyword being used with a function prototype.
 - Fixed defect with uninitialized strings not being valid strings (i.e., they are 
   not null terminated) which crashes string opcodes in the firmware.
@@ -23,6 +29,12 @@ Version 1.2.1.r5 (2011-07-19)
 - Fixed definition for several Remote* API functions which sent direct/system commands 
   to other NXT devices via Bluetooth or RS-485
 - Fixes for rand() and RAND_MAX and _Random in NXTDefs.h
+- Fixed PSP button set constants in NBCCommon.h
+- Fixed defect in constant numeric and boolean expression optimization
+- Enabled use of NBC keywords as dataspace entries (so they can be used as global 
+  variables in NXC code)
+- Fixed optimizer defect where floats assigned to integers were being optimized out such 
+  that the floating point value was used instead of a truncated integer Value
 - Test program additions and updates
 - Changes to PF Combo and Raw API functions.
 - Added JoystickMessageType structure and JoystickMessageRead API function.
@@ -44,6 +56,11 @@ Version 1.2.1.r5 (2011-07-19)
 - Added support for nested compif/compelse/compend compiler directives.
 - Changes to speed up code optimizations.
 - Additional code optimizations for array helper temporaries and other opcodes.
+- Fixed bug in I2CVendorId, I2CVersion, and I2CDeviceId where it was limiting the 
+  returned data to 7 bytes.
+- Added support for Fast I2C with latest enhanced NBC/NXC firmware.
+- Added InputPinFunction system call support (requires latest enhanced NBC/NXC firmware version).
+
 
 
 Version 1.2.1.r4 (2011-03-13)
