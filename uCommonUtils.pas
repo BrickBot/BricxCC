@@ -417,38 +417,32 @@ end;
 
 procedure TrimComments(var line : string; p : integer; const sub : string);
 var
-  k, j, x : integer;
   tmp : string;
+  i, j : integer;
 begin
-  // before we decide to trim these comment we need to know whether they are
-  // embedded in a string or not.
   tmp := line;
-  while (p > 0) do
+  i := Pos('''', tmp);
+  while i > 0 do
   begin
-    k := Pos('''', tmp);
-    j := 0;
-    if k < p then
+    System.Delete(tmp, 1, i); // trim up to and including open quote
+    // find the close quote, if it exists
+    j := Pos('''', tmp);
+    if j = 0 then
     begin
-      // hmmm, is there another single quote?
-      tmp := Copy(tmp, k+1, MaxInt);
-      j := Pos('''', tmp);
-      tmp := Copy(tmp, j+1, MaxInt);
-      j := j + k;
+      // if no close quote exists then we assume the string
+      // continues to the end
+      tmp := '';
+      break;
     end;
-    if not ((p > k) and (p < j)) then
-    begin
-      Delete(line, p, MaxInt); // trim off any trailing comment
-      line := TrimRight(line); // trim off any trailing whitespace
-      tmp := line;
-      p := 0;
-    end
-    else
-      p := j;
-    x := Pos(sub, tmp);
-    if x > 0 then
-      inc(p, x-1)
-    else
-      p := 0;
+    System.Delete(tmp, 1, j); // trim up to and including close quote
+    i := Pos('''', tmp);
+  end;
+  // if the copy of our line is not empty then we may need to trim our line
+  i := Pos(sub, tmp);
+  if i > 0 then
+  begin
+    System.Delete(tmp, 1, i-1); // trim up to but not including the comment token
+    System.Delete(line, Length(line)-Length(tmp)+1, MaxInt); // now trim our line
   end;
 end;
 
