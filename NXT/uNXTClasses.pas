@@ -130,6 +130,7 @@ type
     function GetInitializationString: string;
     function GetArrayBaseType: TDSType;
     function GetIsArray: boolean;
+    function GetSizeOf: integer;
   protected
     procedure AssignTo(Dest: TPersistent); override;
     procedure SaveToDynamicDefaults(aDS : TDSData; const cnt, doffset : integer);
@@ -166,6 +167,7 @@ type
     property IsArray : boolean read GetIsArray;
     property InUse : boolean read GetInUse;
     property RefCount : integer read GetRefCount;
+    property SizeOf : integer read GetSizeOf;
   end;
 
   TDSData = class
@@ -373,6 +375,7 @@ type
     destructor Destroy; override;
     procedure AddArgs(sargs : string);
     function InstructionSize : integer;
+    function ArgsAreSameType : boolean;
     procedure SaveToCode(var Store : CodeArray);
     property LineLabel : string read fLabel write fLabel;
     property Command : TOpcode read fOpCode write fOpCode;
@@ -4270,6 +4273,27 @@ begin
   Result := fThreadNames.Count;
 end;
 
+function TDataspaceEntry.GetSizeOf: integer;
+var
+  i : integer;
+  sub : TDataspaceEntry;
+begin
+  if DataType = dsCluster then
+  begin
+    Result := 0;
+    for i := 0 to SubEntries.Count - 1 do
+    begin
+      sub := SubEntries[i];
+      Result := Result + sub.SizeOf;
+    end;
+  end
+  else if DataType = dsArray then
+  begin
+  end
+  else
+    Result := 1; // base size is 1
+end;
+
 { TRXEProgram }
 
 constructor TRXEProgram.Create;
@@ -4784,6 +4808,16 @@ begin
         begin
           // no label - just opcode and args
           lbl := '';
+          if not (state in [masClump, masClumpSub, masCodeSegment]) then
+          begin
+            tmp := values[1];
+            tmp := Replace(tmp, '[]', '');
+            if StrToOpcode(tmp, bUseCase) in [OPS_DB..OPS_FLOAT] then
+            begin
+              lbl := values[0]; // this is a variable declaration
+              values.Delete(0);
+            end;
+          end;
           opcode := values[0];
           values.Delete(0);
           args := Trim(values.CommaText);
@@ -4796,7 +4830,7 @@ begin
       // i >= 3
       // if the first item is a known opcode then assume no label
       // exists in this line
-      if StrToOpcode(values[0]) = OPS_INVALID then
+      if StrToOpcode(values[0], bUseCase) = OPS_INVALID then
       begin
         lbl := values[0];
         opcode := values[1];
@@ -4806,6 +4840,16 @@ begin
       else
       begin
         lbl := '';
+        if not (state in [masClump, masClumpSub, masCodeSegment]) then
+        begin
+          tmp := values[1];
+          tmp := Replace(tmp, '[]', '');
+          if StrToOpcode(tmp, bUseCase) in [OPS_DB..OPS_FLOAT] then
+          begin
+            lbl := values[0]; // this is a variable declaration
+            values.Delete(0);
+          end;
+        end;
         opcode := values[0];
         values.Delete(0);
       end;
@@ -7843,6 +7887,38 @@ begin
   end;
 end;
 
+function TAsmLine.ArgsAreSameType: boolean;
+var
+  i : integer;
+  arg : TAsmArgument;
+  de : TDataspaceEntry;
+  dt : TDSType;
+begin
+  Result := True;
+  if Args.Count > 1 then
+  begin
+    arg := Args[0];
+    de := CodeSpace.Dataspace.FindEntryByFullName(arg.Value);
+    Result := Assigned(de);
+    if Result then
+    begin
+      dt := de.DataType;
+      // now check all the other arguments
+      for i := 1 to Args.Count - 1 do
+      begin
+        arg := Args[i];
+        de := CodeSpace.Dataspace.FindEntryByFullName(arg.Value);
+        Result := Result and Assigned(de);
+        if not Result then
+          break; // exit loop early if Result is false
+        Result := Result and (dt = de.DataType);
+        if not Result then
+          break; // exit loop early if Result is false
+      end;
+    end;
+  end;
+end;
+
 { TAsmArguments }
 
 function TAsmArguments.Add: TAsmArgument;
@@ -9111,75 +9187,108 @@ begin
             bDone := False;
             Break;
           end;
-          arg1 := AL.Args[0].Value;
-          // find the next line (which may not be i+1) that is not (NOP or labeled)
-          offset := 1;
-          while (i < ClumpCode.Count - offset) do begin
-            tmpAL := ClumpCode.Items[i+offset];
-            if tmpAL.LineLabel <> '' then
-              Break
-            else if tmpAL.Command <> OPS_INVALID then
-            begin
-              // is it safe to ignore this line?  If it is a set or a mov for
-              // different variables then yes (at higher optimization levels) ...
-              // (this is not always safe AKA buggy)
-              if not ((tmpAL.Command in [OP_SET, OP_MOV]) and
-                      (arg1 <> tmpAL.Args[0].Value) and
-                      (arg1 <> tmpAL.Args[1].Value) and
-                      (level >= 5)) then
-                Break;
-            end;
-            inc(offset);
-          end;
-          // every line between Items[i] and Items[i+offset] are NOP lines without labels.
-          // OR unlabeled set|mov opcodes that have nothing whatsoever to do with the
-          // output variable in Items[i]
-          if i < (ClumpCode.Count - offset) then
+          if AL.ArgsAreSameType then
           begin
-            ALNext := ClumpCode.Items[i+offset];
-            // now check other cases
-            // bricxcc-Bugs-1669679 - make sure the next line
-            // cannot be jumped to from elsewhere.  If it does then the
-            // "previous" line may actually be skipped so we cannot
-            // do any optimization
-            if ALNext.LineLabel = '' then
+            arg1 := AL.Args[0].Value;
+            // find the next line (which may not be i+1) that is not (NOP or labeled)
+            offset := 1;
+            while (i < ClumpCode.Count - offset) do begin
+              tmpAL := ClumpCode.Items[i+offset];
+              if tmpAL.LineLabel <> '' then
+                Break
+              else if tmpAL.Command <> OPS_INVALID then
+              begin
+                // is it safe to ignore this line?  If it is a set or a mov for
+                // different variables then yes (at higher optimization levels) ...
+                // (this is not always safe AKA buggy)
+                if not ((tmpAL.Command in [OP_SET, OP_MOV]) and
+                        (arg1 <> tmpAL.Args[0].Value) and
+                        (arg1 <> tmpAL.Args[1].Value) and
+                        (level >= 5)) then
+                  Break;
+              end;
+              inc(offset);
+            end;
+            // every line between Items[i] and Items[i+offset] are NOP lines without labels.
+            // OR unlabeled set|mov opcodes that have nothing whatsoever to do with the
+            // output variable in Items[i]
+            if i < (ClumpCode.Count - offset) then
             begin
+              ALNext := ClumpCode.Items[i+offset];
+              // now check other cases
+              // bricxcc-Bugs-1669679 - make sure the next line
+              // cannot be jumped to from elsewhere.  If it does then the
+              // "previous" line may actually be skipped so we cannot
+              // do any optimization
+              if ALNext.LineLabel = '' then
+              begin
 
 
-              case ALNext.Command of
-                OP_SET, OP_MOV : begin
-                  if ALNext.Args[0].Value = AL.Args[0].Value then begin
-                    // set|mov X, whatever
-                    // set|mov X, whatever <-- replace these two lines with
-                    // nop  (or delete line)
-                    // set|mov X, whatever
-                    AL.RemoveVariableReferences;
-                    RemoveOrNOPLine(AL, ALNext, i);
-                    bDone := False;
-                    Break;
-                  end
-                  else begin
-                    arg1 := AL.Args[0].Value;
-                    arg2 := ALNext.Args[1].Value;
-                    if (arg1 = arg2) then begin
-                      // set|mov __D0,whatever   (__D0 or __stack_nnn)
-                      // mov X,__D0 <-- replace these two lines with
-                      // nop  (if arg1 and arg2 are stack or register variables)
-                      // mov X,whatever
-                      if AL.Command = OP_SET then
-                        tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
-                      else
-                      begin
-                        tmp := AL.Args[1].Value;
-                        CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
-                      end;
-                      ALNext.Command := OP_MOV;
-                      ALNext.Args[1].Value := tmp;
+                case ALNext.Command of
+                  OP_SET, OP_MOV : begin
+                    if ALNext.Args[0].Value = AL.Args[0].Value then begin
+                      // set|mov X, whatever
+                      // set|mov X, whatever <-- replace these two lines with
+                      // nop  (or delete line)
+                      // set|mov X, whatever
+                      AL.RemoveVariableReferences;
+                      RemoveOrNOPLine(AL, ALNext, i);
+                      bDone := False;
+                      Break;
+                    end
+                    else begin
+                      arg1 := AL.Args[0].Value;
+                      arg2 := ALNext.Args[1].Value;
+                      if (arg1 = arg2) then begin
+                        // set|mov __D0,whatever   (__D0 or __stack_nnn)
+                        // mov X,__D0 <-- replace these two lines with
+                        // nop  (if arg1 and arg2 are stack or register variables)
+                        // mov X,whatever
+                        if AL.Command = OP_SET then
+                          tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
+                        else
+                        begin
+                          tmp := AL.Args[1].Value;
+                          CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
+                        end;
+                        ALNext.Command := OP_MOV;
+                        ALNext.Args[1].Value := tmp;
 {
-                      ALNext.Command := AL.Command;
-                      ALNext.Args[1].Value := AL.Args[1].Value;
+                        ALNext.Command := AL.Command;
+                        ALNext.Args[1].Value := AL.Args[1].Value;
 }
-                      ALNext.RemoveVariableReference(arg2, 1);
+                        ALNext.RemoveVariableReference(arg2, 1);
+                        if IsVolatile(arg1) then
+                        begin
+                          // remove second reference to _D0
+                          AL.RemoveVariableReferences;
+//                          AL.RemoveVariableReference(arg1, 0);
+                          RemoveOrNOPLine(AL, ALNext, i);
+                        end;
+                        bDone := False;
+                        Break;
+                      end;
+                    end;
+                  end;
+                  OPS_WAITV, OPS_WAITV_2 : begin
+                    // these two opcodes are only present if EnhancedFirmware is true
+                    arg1 := AL.Args[0].Value;
+                    arg2 := ALNext.Args[0].Value;
+                    if (arg1 = arg2) then begin
+                      // set|mov __D0,whatever  (__D0 or __stack_nnn)
+                      // waitv __D0 <-- replace these two lines with
+                      // nop (if arg1 and arg2 are stack or register variables)
+                      // waitv|wait whatever
+                      ALNext.Args[0].Value := AL.Args[1].Value;
+                      ALNext.RemoveVariableReference(arg2, 0);
+                      if AL.Command = OP_SET then
+                      begin
+                        if CodeSpace.FirmwareVersion > MAX_FW_VER1X then
+                          ALNext.Command := OPS_WAITI_2
+                        else
+                          ALNext.Command := OP_WAIT;
+                      end;
+                      CodeSpace.Dataspace.FindEntryAndAddReference(ALNext.Args[0].Value);
                       if IsVolatile(arg1) then
                       begin
                         // remove second reference to _D0
@@ -9191,103 +9300,73 @@ begin
                       Break;
                     end;
                   end;
-                end;
-                OPS_WAITV, OPS_WAITV_2 : begin
-                  // these two opcodes are only present if EnhancedFirmware is true
-                  arg1 := AL.Args[0].Value;
-                  arg2 := ALNext.Args[0].Value;
-                  if (arg1 = arg2) then begin
-                    // set|mov __D0,whatever  (__D0 or __stack_nnn)
-                    // waitv __D0 <-- replace these two lines with
-                    // nop (if arg1 and arg2 are stack or register variables)
-                    // waitv|wait whatever
-                    ALNext.Args[0].Value := AL.Args[1].Value;
-                    ALNext.RemoveVariableReference(arg2, 0);
-                    if AL.Command = OP_SET then
-                    begin
-                      if CodeSpace.FirmwareVersion > MAX_FW_VER1X then
-                        ALNext.Command := OPS_WAITI_2
+                  OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD, OP_AND, OP_OR, OP_XOR,
+                  OP_LSL, OP_LSR, OP_ASL, OP_ASR : begin
+                    arg1 := AL.Args[0].Value;
+                    arg2 := ALNext.Args[2].Value;
+                    arg3 := ALNext.Args[1].Value;
+                    if (arg1 = arg2) or (arg1 = arg3) then begin
+                      // set|mov __D0,X
+                      // arithop A, B, __D0 <-- replace these two lines with
+                      // nop
+                      // arithop A, B, X
+                      if AL.Command = OP_SET then
+                        tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
                       else
-                        ALNext.Command := OP_WAIT;
+                      begin
+                        // increment the reference count of this variable
+                        tmp := AL.Args[1].Value;
+                        CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
+                      end;
+                      if (arg1 = arg2) then begin
+                        ALNext.Args[2].Value := tmp;
+                        ALNext.RemoveVariableReference(arg2, 2);
+                      end
+                      else begin  // arg1=arg3 (aka ALNext.Args[1].Value)
+                        ALNext.Args[1].Value := tmp;
+                        ALNext.RemoveVariableReference(arg3, 1);
+                      end;
+                      if IsVolatile(arg1) then
+                      begin
+                        // remove second reference to _D0
+                        AL.RemoveVariableReferences;
+//                        AL.RemoveVariableReference(arg1, 0);
+                        RemoveOrNOPLine(AL, ALNext, i);
+                      end;
+                      bDone := False;
+                      Break;
                     end;
-                    CodeSpace.Dataspace.FindEntryAndAddReference(ALNext.Args[0].Value);
-                    if IsVolatile(arg1) then
-                    begin
-                      // remove second reference to _D0
-                      AL.RemoveVariableReferences;
-//                      AL.RemoveVariableReference(arg1, 0);
-                      RemoveOrNOPLine(AL, ALNext, i);
-                    end;
-                    bDone := False;
-                    Break;
                   end;
-                end;
-                OP_ADD, OP_SUB, OP_MUL, OP_DIV, OP_MOD, OP_AND, OP_OR, OP_XOR,
-                OP_LSL, OP_LSR, OP_ASL, OP_ASR : begin
-                  arg1 := AL.Args[0].Value;
-                  arg2 := ALNext.Args[2].Value;
-                  arg3 := ALNext.Args[1].Value;
-                  if (arg1 = arg2) or (arg1 = arg3) then begin
-                    // set|mov __D0,X
-                    // arithop A, B, __D0 <-- replace these two lines with
-                    // nop
-                    // arithop A, B, X
-                    if AL.Command = OP_SET then
-                      tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
-                    else
-                    begin
-                      // increment the reference count of this variable
-                      tmp := AL.Args[1].Value;
-                      CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
-                    end;
-                    if (arg1 = arg2) then begin
-                      ALNext.Args[2].Value := tmp;
-                      ALNext.RemoveVariableReference(arg2, 2);
-                    end
-                    else begin  // arg1=arg3 (aka ALNext.Args[1].Value)
+                  OP_NEG, OP_NOT : begin
+                    arg1 := AL.Args[0].Value;
+                    arg2 := ALNext.Args[1].Value;
+                    if arg1 = arg2 then begin
+                      // set|mov __D0,X
+                      // neg|not A, __D0 <-- replace these two lines with
+                      // nop
+                      // neg|not A, X
+                      if AL.Command = OP_SET then
+                        tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
+                      else
+                      begin
+                        tmp := AL.Args[1].Value;
+                        CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
+                      end;
                       ALNext.Args[1].Value := tmp;
-                      ALNext.RemoveVariableReference(arg3, 1);
+                      ALNext.RemoveVariableReference(arg2, 1);
+                      if IsVolatile(arg1) then
+                      begin
+                        // remove second reference to _D0
+                        AL.RemoveVariableReference(arg1, 0);
+                        RemoveOrNOPLine(AL, ALNext, i);
+                      end;
+                      bDone := False;
+                      Break;
                     end;
-                    if IsVolatile(arg1) then
-                    begin
-                      // remove second reference to _D0
-                      AL.RemoveVariableReferences;
-//                      AL.RemoveVariableReference(arg1, 0);
-                      RemoveOrNOPLine(AL, ALNext, i);
-                    end;
-                    bDone := False;
-                    Break;
                   end;
+                else
+                  // nothing
                 end;
-                OP_NEG, OP_NOT : begin
-                  arg1 := AL.Args[0].Value;
-                  arg2 := ALNext.Args[1].Value;
-                  if arg1 = arg2 then begin
-                    // set|mov __D0,X
-                    // neg|not A, __D0 <-- replace these two lines with
-                    // nop
-                    // neg|not A, X
-                    if AL.Command = OP_SET then
-                      tmp := CreateConstantVar(CodeSpace.Dataspace, StrToIntDef(AL.Args[1].Value, 0), True)
-                    else
-                    begin
-                      tmp := AL.Args[1].Value;
-                      CodeSpace.Dataspace.FindEntryAndAddReference(tmp);
-                    end;
-                    ALNext.Args[1].Value := tmp;
-                    ALNext.RemoveVariableReference(arg2, 1);
-                    if IsVolatile(arg1) then
-                    begin
-                      // remove second reference to _D0
-                      AL.RemoveVariableReference(arg1, 0);
-                      RemoveOrNOPLine(AL, ALNext, i);
-                    end;
-                    bDone := False;
-                    Break;
-                  end;
-                end;
-              else
-                // nothing
               end;
             end;
           end;
