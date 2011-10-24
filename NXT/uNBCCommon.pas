@@ -115,8 +115,11 @@ type
     fHasDef: boolean;
     fDefValue: string;
     fIsPointer: boolean;
+    fElemSize : Byte;
+    fIsReference: boolean;
     procedure SetLenExpr(const Value: string);
     procedure FillDimensions(lenexpr: string);
+    function GetIsReference: boolean;
   protected
     fDims : array of integer;
     procedure AssignTo(Dest: TPersistent); override;
@@ -124,10 +127,13 @@ type
     constructor Create(ACollection: TCollection); override;
     procedure AddDim(aSize : integer);
     function DimensionSize(aDim : integer) : integer;
+    function IsArray : boolean;
+    property ElementSize : byte read fElemSize write fElemSize;
     property Name : string read fName write fName;
     property DataType : char read fDataType write fDataType;
     property IsConstant : boolean read fIsConst write fIsConst;
     property IsPointer : boolean read fIsPointer write fIsPointer;
+    property IsReference : boolean read GetIsReference write fIsReference;
     property UseSafeCall : boolean read fUseSafeCall write fUseSafeCall;
     property Value : string read fValue write fValue;
     property TypeName : string read fTypeName write fTypeName;
@@ -2059,15 +2065,17 @@ end;
 constructor TVariable.Create(ACollection: TCollection);
 begin
   inherited;
-  fName      := '';
-  fValue     := '';
-  fTypeName  := '';
-  fDataType  := TOK_BYTEDEF;
-  fIsConst   := False;
-  fIsPointer := False;
-  fLevel     := 0;
-  fHasDef    := False;
-  fDefValue  := '';
+  fName        := '';
+  fValue       := '';
+  fTypeName    := '';
+  fDataType    := TOK_BYTEDEF;
+  fIsConst     := False;
+  fIsPointer   := False;
+  fIsReference := False;
+  fLevel       := 0;
+  fHasDef      := False;
+  fDefValue    := '';
+  fElemSize    := 1;
   SetLength(fDims, 0);
 end;
 
@@ -2108,6 +2116,17 @@ begin
   fLenExpr := Value;
   if fLenExpr <> '' then
     FillDimensions(Value);
+end;
+
+function TVariable.IsArray: boolean;
+begin
+  Result := Length(fDims) > 0;
+end;
+
+function TVariable.GetIsReference: boolean;
+begin
+  // constant reference types are treated as normal variables
+  Result := fIsReference and not fIsConst;
 end;
 
 { TVariableList }
