@@ -1988,14 +1988,14 @@ begin
   DoCompilerStatusChange(sFinalizeDepends);
   // make sure our dependencies are finalized
   FinalizeDependencies;
+  DoCompilerStatusChange(sBuildRefs);
+  // build references if we are optimizing
+  BuildReferences;
   // possibly optimize if Optimize level > 0
   if OptimizeLevel >= 1 then
   begin
     // now proceed with optimizations
     DoCompilerStatusChange(Format(sOptimizeLevel, [OptimizeLevel]));
-    DoCompilerStatusChange(sBuildRefs);
-    // build references if we are optimizing
-    BuildReferences;
     DoCompilerStatusChange(sCompactCode);
     // compact the codespace before codespace optimizations
     Compact;
