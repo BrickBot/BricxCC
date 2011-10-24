@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-10-10
- * version 83
+ * date 2011-10-16
+ * version 84
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -7809,7 +7809,7 @@ dseg ends
   acquire __RLSBmutex2 \
   acquire __RLSBmutex3 \
   mov __RLSReadPort, _port \
-  arrbuild __RLSReadBufVar, _i2caddr, 0x4D \
+  arrbuild __RLSReadBufVar, _i2caddr, 0x4D, _value \
   set __RLSBytesCountVar, 0 \
   call __ReadLSBytesVar \
   tst EQ, _result, __RLSBResultVar \
@@ -7821,7 +7821,7 @@ dseg ends
   compchk LT, _port, 0x04 \
   compchk GTEQ, _port, 0x00 \
   acquire __RLSBmutex##_port \
-  arrbuild __RLSReadBuf##_port, _i2caddr, 0x4D \
+  arrbuild __RLSReadBuf##_port, _i2caddr, 0x4D, _value \
   set __RLSBytesCount##_port, 0 \
   call __ReadLSBytes##_port \
   tst EQ, _result, __RLSBResult##_port \
