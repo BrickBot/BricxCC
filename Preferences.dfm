@@ -1006,9 +1006,9 @@ object PrefForm: TPrefForm
                 TabOrder = 4
               end
               object radPrefSPC: TRadioButton
-                Left = 192
+                Left = 232
                 Top = 34
-                Width = 79
+                Width = 89
                 Height = 17
                 HelpContext = 11086
                 Caption = 'SPC'
