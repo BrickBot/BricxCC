@@ -1117,14 +1117,23 @@ begin
 end ;
 
 procedure TOfficeSpeedButton.Click ;
+var
+  mi : TOfficeMenuItem;
 begin
   if Processing then Exit;
   Processing := True;
   try
-  	inherited ;
+  	inherited;
 
-  	if not(Assigned(OnClick)) and (MenuItem <> nil) and Assigned(MenuItem.OnClick) then
-    	MenuItem.OnClick(MenuItem) ;
+    mi := MenuItem;
+  	if not Assigned(OnClick) then
+    begin
+      if Assigned(mi) then
+      begin
+        if Assigned(mi.OnClick) then
+          mi.OnClick(mi);
+      end;
+    end;
   finally
     Processing := False;
   end;
@@ -1241,11 +1250,22 @@ begin
 end;
 
 procedure TOfficeMenuItem.Click ;
+var
+  sb : TOfficeSpeedButton;
 begin
-	inherited ;
+  inherited;
 
-	if not(Assigned(OnClick)) and (SpeedButton <> nil) and Assigned(SpeedButton.OnClick) then
- 		SpeedButton.OnClick(SpeedButton) ;
+  sb := SpeedButton;
+  if not Assigned(OnClick) then
+  begin
+    if Assigned(sb) then
+    begin
+      if Assigned(sb.OnClick) then
+      begin
+        sb.OnClick(sb);
+      end;
+    end;
+  end;
 end ;
 
 procedure TOfficeMenuItem.SetResourceName(const Value: string);
