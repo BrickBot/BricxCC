@@ -292,7 +292,7 @@ inline void StartTask(task t);
  * \param value The variable.
  * \return The number of bytes occupied by the variable.
  */
-inline unsigned int SizeOf(variant & value);
+inline int SizeOf(variant & value);
 
 /**
  * Read a value from a file.
