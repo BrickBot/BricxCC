@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 3155;
+  uNXCHTMLTopicsSize = 3162;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -12029,20 +12029,48 @@ const
      Value: 'group___dexter_industries_a_p_i_ga4439e589bd1c64cb6759dc5ac606c663.html'
     ),
     (
-     Name: 'ReadSensorDIGyroRawEx';
-     Value: 'group___dexter_industries_a_p_i_gaf21ee130b78d25418a0a587793888d13.html'
-    ),
-    (
-     Name: 'ReadSensorDIGyroEx';
-     Value: 'group___dexter_industries_a_p_i_gabbe7bd1af2f25af3ffa0652d99ffc81c.html'
-    ),
-    (
      Name: 'SensorDIGyroTemperature';
      Value: 'group___dexter_industries_a_p_i_ga1fb8e550434af0eae68d8393e50dd153.html'
     ),
     (
      Name: 'SensorDIGyroStatus';
-     Value: 'group___dexter_industries_a_p_i_ga6c64b7dbee9edf3f2de65b96715c8849.html'
+     Value: 'group___dexter_industries_a_p_i_ga5d665cf1b5fb42cdb9e40bf85cc8544d.html'
+    ),
+    (
+     Name: 'SetSensorDIAcclEx';
+     Value: 'group___dexter_industries_a_p_i_gaef913fee0af867ae0fb39b900a8e97db.html'
+    ),
+    (
+     Name: 'SetSensorDIAccl';
+     Value: 'group___dexter_industries_a_p_i_gab59344abf16c3465c1f44ce863933652.html'
+    ),
+    (
+     Name: 'ReadSensorDIAcclRaw';
+     Value: 'group___dexter_industries_a_p_i_gafac914b3701e64186e9f986a795142c0.html'
+    ),
+    (
+     Name: 'ReadSensorDIAccl';
+     Value: 'group___dexter_industries_a_p_i_ga37471c46069394a62e881f4b007a1176.html'
+    ),
+    (
+     Name: 'ReadSensorDIAccl8Raw';
+     Value: 'group___dexter_industries_a_p_i_ga4049939b6df07ce5719540fd6cf31f9f.html'
+    ),
+    (
+     Name: 'ReadSensorDIAccl8';
+     Value: 'group___dexter_industries_a_p_i_gad48819f8a0f9e967475d24174362f48d.html'
+    ),
+    (
+     Name: 'SensorDIAcclStatus';
+     Value: 'group___dexter_industries_a_p_i_gad14fd7b86c38cbbe4c76d1c6433d21af.html'
+    ),
+    (
+     Name: 'ReadSensorDIAcclDrift';
+     Value: 'group___dexter_industries_a_p_i_ga0a4b53ec7ef5eea29f51d28d75e8ff99.html'
+    ),
+    (
+     Name: 'SetSensorDIAcclDrift';
+     Value: 'group___dexter_industries_a_p_i_ga3833b0ca3c9d9c342212f5a3dc0ab918.html'
     ),
     (
      Name: 'ResetMIXG1300L';
