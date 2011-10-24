@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-10-10
- * \version 103
+ * \date 2011-10-16
+ * \version 104
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -14100,7 +14100,7 @@ inline int SensorDIGyroTemperature(const byte port);
  * See the \ref InPorts group. You may use a constant or a variable.
  * \return The status value.
  */
-inline int SensorDIGyroStatus(const byte port);
+inline byte SensorDIGyroStatus(const byte port);
 
 
 
@@ -14178,7 +14178,7 @@ inline bool ReadSensorDIAccl8(const byte port, VectorType & vector);
  * See the \ref InPorts group. You may use a constant or a variable.
  * \return The status value.
  */
-inline int SensorDIAcclStatus(const byte port);
+inline byte SensorDIAcclStatus(const byte port);
 
 /**
  * ReadSensorDIAcclDrift function.
