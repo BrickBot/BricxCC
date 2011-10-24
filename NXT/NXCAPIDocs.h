@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-10-10
- * \version 21
+ * \date 2011-10-16
+ * \version 22
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
