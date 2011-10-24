@@ -1,8 +1,12 @@
-int mov[];   // still broken 2011-08-18 JCH
+int mov[];   // FIXED 2011-10-20 JCH
 
 task main()
 {
 //  int mov[];
   ArrayBuild(mov, 1, 2, 3, 4, 5);
   NumOut(0, LCD_LINE1, mov[0]);
+  NumOut(0, LCD_LINE2, mov[1]);
+  NumOut(0, LCD_LINE3, mov[2]);
+  NumOut(0, LCD_LINE4, mov[3]);
+  Wait(SEC_5);
 }

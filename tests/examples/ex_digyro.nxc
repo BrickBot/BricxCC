@@ -1,0 +1,35 @@
+//#define RAW
+#define DEFAULT
+
+
+task main(){
+#ifdef DEFAULT
+  SetSensorDIGyro(S1);
+#else
+  SetSensorDIGyroEx(S1, DIGYRO_CTRL4_SCALE_2000, DIGYRO_CTRL1_DATARATE_800, DIGYRO_CTRL1_BANDWIDTH_4);
+#endif
+  VectorType val;
+
+  int i = 0;
+  int temp;
+  byte status;
+  bool done = false;
+  while (!done){
+    ClearScreen();
+    NumOut(0, LCD_LINE7, SensorDIGyroTemperature(S1));
+    NumOut(0, LCD_LINE8, SensorDIGyroStatus(S1));
+    // Read the GYROSCOPE
+#ifdef RAW
+    if (!ReadSensorDIGyroRaw(S1, val))
+#else
+    if (!ReadSensorDIGyro(S1, val))
+#endif
+      TextOut(0, LCD_LINE8, "fail");
+    NumOut(0, LCD_LINE1, val.X);
+    NumOut(0, LCD_LINE2, val.Y);
+    NumOut(0, LCD_LINE3, val.Z);
+
+    Wait(MS_50);
+  }
+}
+

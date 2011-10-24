@@ -20,12 +20,15 @@ task main ()
     float f;
     long a;
     int i;
+    char c;
 
     f = -1564.344;
-    a = Ceil(f); // a is -1564 (fixed firmware bug JCH 2009-03-20)
-    i = Ceil(f);  // i is -1564
-    NumOut(0, LCD_LINE6, a);
-    NumOut(0, LCD_LINE7, i);
+    i = ceil(f);  // i is -1564
+    NumOut(0, LCD_LINE6, i);
+    a = ceil(f); // a is -1564 (fixed firmware bug JCH 2011-10-19)
+    NumOut(0, LCD_LINE7, a);
+    c = ceil(f/20); // c is -78
+    NumOut(0, LCD_LINE8, c);
 //    PlayTone(1000,10);
 
     while(1);

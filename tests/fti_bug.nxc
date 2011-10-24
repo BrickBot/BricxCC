@@ -1,6 +1,9 @@
+// The bugs that used to be demonstrated by this code were caused by
+// a firmware defect.  This defect has been fixed.
 task main()
 {
   {
+    ClearScreen();
     float a = 2.5;
     int b = 1;
 
@@ -15,6 +18,7 @@ task main()
   }
 
   {
+    ClearScreen();
     float a = -2.5;
     int b = 1;
 
@@ -29,6 +33,7 @@ task main()
   }
 
   {
+    ClearScreen();
     float a = 2.5;
     int b = -1;
 
@@ -43,6 +48,7 @@ task main()
   }
 
   {
+    ClearScreen();
     long c = -2.5; // c is equal to -2
 //	mov __main_7qG2_c_7qG2_001, __constValNegf2P5
     NumOut(0, LCD_LINE1, c);
@@ -50,6 +56,7 @@ task main()
   }
 
   {
+    ClearScreen();
     int ai = 2.5;
     int b = -1;
 
@@ -64,6 +71,7 @@ task main()
   }
 
   {
+    ClearScreen();
     float a = 2.5;
     float bf = -1;
 
@@ -78,6 +86,7 @@ task main()
   }
 
   {
+    ClearScreen();
     float a = -2.5;
     float bf = -1;
 

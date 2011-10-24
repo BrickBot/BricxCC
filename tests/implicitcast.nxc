@@ -3,7 +3,10 @@ task main()
   float b = 12.45;
   long a = sqrt(b);
   long x = sqrt(121.9);
+  NumOut(0, LCD_LINE5, x); // FIXED optimizer bug!!!
   const float y = x+PI;
+  NumOut(0, LCD_LINE6, y);
+  NumOut(0, LCD_LINE7, PI);
   x = sqrt(x);
   NumOut(0, LCD_LINE1, x);
   NumOut(0, LCD_LINE2, sqrt(y));
