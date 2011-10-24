@@ -27,6 +27,19 @@ uses
   uNXTClasses, uSPCClasses;
 
 type
+  TSizeMap = class
+  private
+    fMap : TStrings;
+    function GetSize(aName: string): integer;
+  public
+    constructor Create;
+    destructor Destroy; override;
+    procedure AddEntry(const aName : string; const aSize : integer);
+    procedure Clear;
+    function Count : integer;
+    property Size[aName : string] : integer read GetSize;
+  end;
+
   TCompareCode = (ccLT, ccGT, ccLTEQ, ccGTEQ, ccEQ, ccNEQ);
   TSPCComp = class
   private
@@ -42,6 +55,7 @@ type
     fStackVarNames : TStringList;
     fOnCompilerStatusChange: TCompilerStatusChangeEvent;
     fMaxPreProcDepth: word;
+    fSizeMap : TSizeMap;
     function FunctionParameterTypeName(const name: string; idx: integer): string;
     function LocalDataType(const n: string): char;
     function LocalTypeName(const n: string): string;
@@ -54,8 +68,6 @@ type
     procedure CheckSemicolon;
     procedure OpenParen;
     procedure CloseParen;
-    procedure LocalEmitLn(SL: TStrings; const line: string);
-    procedure LocalEmitLnNoTab(SL: TStrings; const line: string);
     procedure pop;
     procedure push;
     procedure DoCompilerStatusChange(const Status: string; const bDone : boolean = False);
@@ -65,6 +77,7 @@ type
     procedure HandlePreprocStatusChange(Sender : TObject; const StatusMsg : string);
     procedure SetCurFile(const Value: string);
     function IsCharLiteral(const aName: string): boolean;
+    function ArraySize(DE : TDataspaceEntry): integer;
     function UDTSize(const tname: string): integer;
     function CountElements(lenexpr: string): integer;
     function CountValues(ival: string): integer;
@@ -79,6 +92,7 @@ type
     procedure EndOfProcess;
     procedure StartOfCode(const aName: string);
     procedure StoreAddress(const dest, src: string);
+    procedure StoreValue(const dest, src: string);
     procedure ClearIndirect(const element: string);
     procedure DoIncrement(const aName: string);
     procedure DoDecrement(const aName: string);
@@ -116,6 +130,8 @@ type
     procedure SquareRoot(const aName: string);
     procedure AbsoluteValue;
     procedure SignValue;
+    procedure SizeOfValue(const aName: string);
+    function CalculatedSize(const aName : string) : integer;
     procedure WaitForClock;
     procedure StopAllProcesses(const aName: string);
     procedure HaltEx;
@@ -129,7 +145,6 @@ type
     procedure TraceStringWithEscapes(tmp: string);
     procedure TraceCharAsString(const aValue: string);
     procedure CheckPointer(const aName: string);
-    function IsParamPointer(n: string): boolean;
     procedure StorePreDec(const name: string);
     procedure StorePreInc(const name: string);
     procedure CopyArrayVar(const dest, src: string);
@@ -138,6 +153,12 @@ type
     procedure OutputDirective(const directive: string);
     function GetCompilerOutput: TStrings;
     function GetSymbolTable: TStrings;
+    function IsReferenceType(n: string): boolean;
+    procedure InitializeArrayReference(const dest, src: string);
+    procedure InitializeUDTReference(const dest, src: string);
+    procedure InitializeVarReference(const dest, src: string);
+    procedure SetOnCompilerStatusChange(
+      const Value: TCompilerStatusChangeEvent);
   protected
     fDD: TDataDefs;
     fCurrentStruct : TDataspaceEntry;
@@ -157,6 +178,7 @@ type
     fCCSet : boolean;
     fIncludeDirs: TStrings;
     fCurFile: string;
+    fOldCurFile: string;
     fOnCompMSg: TOnCompilerMessage;
     fDirLine : string;
     fCurrentLine : string;
@@ -184,7 +206,6 @@ type
     fSemiColonRequired : boolean;
     fExpressionIsSigned : boolean;
     fArrayIndexStack : TStringList;
-    fStructDecls : TStringList;
     fUDTOnStack : string;
     fLastExpressionOptimizedToConst : boolean;
     fLastLoadedConst : string;
@@ -228,7 +249,7 @@ type
     procedure Expression;
     procedure DoPreIncOrDec(bPutOnStack : boolean);
     function  IncrementOrDecrement : boolean;
-    function OptimizeExpression(str : string; const idx : integer; bFlag : boolean) : string;
+    function OptimizeExpression(str : string; const idx : integer; bFlag : boolean; const aValue : string) : string;
     procedure Subtract;
     procedure CommaExpression;
     procedure BoolExpression;
@@ -253,6 +274,8 @@ type
     procedure DoLocalArrayInit(const aName, ival : string; dt : char);
     procedure DoArrayAssignValue(const aName, idx : string; dt : char);
     function DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;
+    procedure OffsetUDTPointer(const UDTType : string; const aPointer : string);
+    procedure OffsetArrayPointer(const ArrayType : string; const aPointer : string);
     procedure Assignment;
     procedure CheckNotConstant(const aName : string);
     function CheckConstant(const aName : string) : string;
@@ -281,6 +304,7 @@ type
     procedure ProcessDirectives(bScan : boolean = True);
     procedure HandlePoundLine;
     procedure HandlePoundPragma;
+    procedure HandlePoundReset;
     function  ArrayOfType(dt : char; dimensions : integer) : char;
     function  GetVariableType(vt: char): char;
     procedure CheckForValidDataType(dt : char);
@@ -317,11 +341,12 @@ type
     procedure CheckTable(const N: string);
     procedure CheckGlobal(const N: string);
     procedure AddParam(N: string; dt: char; const tname : string;
-      bConst : boolean; bHasDefault : boolean; const defValue : string);
+      bConst, bHasDefault, bIsReference : boolean; const defValue : string);
     function  DataType(const n: string): char;
     function  DataTypeName(const n: string): string;
     procedure CheckAndLoadVar(const Name: string);
     procedure LoadVar(const Name: string);
+    procedure LoadVarToDest(const Dest: string; const Name: string);
     procedure CheckNotProc(const Name : string);
     procedure CheckAndStore(const Name: string);
     procedure Store(const name: string);
@@ -369,6 +394,8 @@ type
     procedure UDTAssignment(const name : string);
     procedure GetAndStoreUDT(const name : string);
     procedure MathAssignment(const name : string);
+    procedure DoAdd(const dest, src : string);
+    procedure DoAddImmediate(const dest : string; const offset : integer);
     procedure StoreAdd(const name: string);
     procedure StoreDiv(const name: string);
     procedure StoreMod(const name: string);
@@ -403,6 +430,7 @@ type
     procedure DoReturn;
     procedure DoAbs;
     procedure DoSign;
+    procedure DoSizeOf;
     procedure ReportProblem(const lineNo: integer; const fName, msg: string; const err: boolean);
     procedure Scan;
     function  IsWhite(c: char): boolean;
@@ -431,7 +459,7 @@ type
     function  IsFuncParam(n: string; bStripInline : boolean = false): boolean;
     function  IsParam(n: string): boolean;
     function  ParamIdx(n: string): integer;
-    procedure AllocateHelper(aName, tname : string; dt: char; cnt : integer = 1);
+    function AllocateHelper(aName, tname : string; dt: char; cnt : integer = 1) : integer;
     function  AlreadyDecorated(n : string) : boolean;
     function  GetDecoratedValue: string;
     function  GetDecoratedIdent(const val: string): string;
@@ -461,13 +489,19 @@ type
     function  AdvanceToNextParam : string;
     function  FunctionParameterIsConstant(const name: string;
       idx: integer): boolean;
+    function FunctionParameterIsReference(const name: string;
+      idx: integer): boolean;
     function FunctionParameterDefaultValue(const name: string;
       idx: integer): string;
     function FunctionParameterHasDefault(const name: string;
       idx: integer): boolean;
+    function  IsPointer(const aName: string): boolean;
     function  IsParamConst(n: string): boolean;
+    function  IsParamPointer(n: string): boolean;
     function  IsLocalConst(n: string): boolean;
+    function  IsLocalPointer(n: string): boolean;
     function  IsGlobalConst(n: string): boolean;
+    function  IsGlobalPointer(n: string): boolean;
     function  GetUDTType(n : string) : string;
     procedure AddTypeNameAlias(const lbl, args : string);
     function  TranslateTypeName(const name : string) : string;
@@ -525,7 +559,7 @@ type
     property  MaxPreprocessorDepth : word read fMaxPreProcDepth write fMaxPreProcDepth;
     property  OnCompilerMessage : TOnCompilerMessage read fOnCompMSg write fOnCompMsg;
     property  ErrorCount : integer read fProgErrorCount;
-    property  OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write fOnCompilerStatusChange;
+    property  OnCompilerStatusChange : TCompilerStatusChangeEvent read fOnCompilerStatusChange write SetOnCompilerStatusChange;
     property  SymbolTable : TStrings read GetSymbolTable;
     property  CompilerOutput : TStrings read GetCompilerOutput;
     class function BinToText(aStream : TStream; const aFilename : string = '') : string; overload;
@@ -638,8 +672,8 @@ const
 function GetArrayDimension(dt : char) : integer;
 begin
   case dt of
-    TOK_ARRAYUDT..TOK_ARRAYUDT4             : Result := Ord(dt) - Ord(TOK_ARRAYUDT) + 1;
-    TOK_ARRAYLONGDEF..TOK_ARRAYLONGDEF4     : Result := Ord(dt) - Ord(TOK_ARRAYLONGDEF) + 1;
+    TOK_ARRAYUDT..TOK_ARRAYUDT4         : Result := Ord(dt) - Ord(TOK_ARRAYUDT) + 1;
+    TOK_ARRAYLONGDEF..TOK_ARRAYLONGDEF4 : Result := Ord(dt) - Ord(TOK_ARRAYLONGDEF) + 1;
   else
     Result := 0;
   end;
@@ -685,6 +719,8 @@ begin
     tmptype := LowerCase(tmptype);
   if (tmptype = 'bool') then
     Result := dsSLong
+  else if (tmptype = 'char') then
+    Result := dsSLong
   else if (tmptype = 'int') then
     Result := dsSLong
   else if tmptype = 'long' then
@@ -694,6 +730,78 @@ begin
   else
     Result := dsCluster;
 end;
+
+type
+  TSizeObj = class
+  private
+    fSize : integer;
+  public
+    constructor Create(const aSize : integer);
+    property Size : integer read fSize;
+  end;
+
+{ TSizeObj }
+
+constructor TSizeObj.Create(const aSize: integer);
+begin
+  inherited Create;
+  fSize := aSize;
+end;
+
+{ TSizeMap }
+
+procedure TSizeMap.AddEntry(const aName: string; const aSize: integer);
+var
+  obj : TSizeObj;
+begin
+  obj := TSizeObj.Create(aSize);
+  try
+    fMap.AddObject(aName, obj);
+  except
+    obj.Free;
+    raise;
+  end;
+end;
+
+procedure TSizeMap.Clear;
+var
+  i : integer;
+begin
+  for i := 0 to fMap.Count - 1 do
+    fMap.Objects[i].Free;
+end;
+
+function TSizeMap.Count: integer;
+begin
+  Result := fMap.Count;
+end;
+
+constructor TSizeMap.Create;
+begin
+  inherited Create;
+  fMap := TStringList.Create;
+  TStringList(fMap).Sorted := True;
+  TStringList(fMap).Duplicates := dupError;
+end;
+
+destructor TSizeMap.Destroy;
+begin
+  Clear;
+  FreeAndNil(fMap);
+  inherited;
+end;
+
+function TSizeMap.GetSize(aName: string): integer;
+var
+  i : integer;
+begin
+  Result := 0;
+  i := fMap.IndexOf(aName);
+  if i <> -1 then
+    Result := TSizeObj(fMap.Objects[i]).Size;
+end;
+
+{ TSPCComp }
 
 procedure TSPCComp.pop;
 begin
@@ -902,7 +1010,7 @@ end;
 
 function TSPCComp.IsAlNum(c: char): boolean;
 begin
-  Result := IsAlpha(c) or IsDigit(c) or (c = '.');
+  Result := IsAlpha(c) or IsDigit(c){ or (c = '.')};
 end;
 
 function TSPCComp.IsAddop(c: char) : boolean;
@@ -1018,6 +1126,16 @@ begin
   i := fGlobals.IndexOfName(RootOf(n));
   if i <> -1 then
     Result := fGlobals[i].IsConstant;
+end;
+
+function TSPCComp.IsGlobalPointer(n: string): boolean;
+var
+  i : integer;
+begin
+  Result := False;
+  i := fGlobals.IndexOfName(RootOf(n));
+  if i <> -1 then
+    Result := fGlobals[i].IsPointer;
 end;
 
 function TSPCComp.GlobalDataType(const n: string): char;
@@ -1218,6 +1336,16 @@ begin
   i := LocalIdx(RootOf(n));
   if i <> -1 then
     Result := fLocals[i].IsConstant;
+end;
+
+function TSPCComp.IsLocalPointer(n: string): boolean;
+var
+  i : integer;
+begin
+  Result := False;
+  i := LocalIdx(RootOf(n));
+  if i <> -1 then
+    Result := fLocals[i].IsPointer;
 end;
 
 function TSPCComp.LocalConstantValue(const n: string): string;
@@ -1558,16 +1686,17 @@ begin
 end;
 
 procedure TSPCComp.AddParam(N: string; dt: char; const tname : string;
-  bConst : boolean; bHasDefault : boolean; const defValue : string);
+  bConst, bHasDefault, bIsReference : boolean; const defValue : string);
 begin
   CheckForValidDataType(dt);
   if IsOldParam(N) then Duplicate(N);
   with fParams.Add do
   begin
-    Name       := N;
-    DataType   := dt;
-    IsConstant := bConst;
-    TypeName   := tname;
+    Name        := N;
+    DataType    := dt;
+    IsConstant  := bConst;
+    TypeName    := tname;
+    IsReference := bIsReference;
   end;
 end;
 
@@ -1767,10 +1896,11 @@ end;
 
 procedure TSPCComp.NumericFactor;
 var
-  savedtoken, rdt : char;
-  savedvalue : string;
-  oldNoCommas, oldDA : boolean;
+  savedtoken, rdt, dt : char;
+  savedvalue, pLHS : string;
+  oldNoCommas, oldDA, bNeedToPop : boolean;
 begin
+  bNeedToPop := False;
   if Token = TOK_OPENPAREN then begin
     OpenParen;
     oldNoCommas := fNoCommaOperator;
@@ -1814,6 +1944,62 @@ begin
       Next;
       case savedtoken of
         TOK_IDENTIFIER : begin
+          dt := DataType(savedvalue);
+// JCH - handle UDT member selection - 2011-10-21
+          if Token = '.' then
+          begin
+            if dt <> TOK_USERDEFINEDTYPE then
+              AbortMsg('member selection invalid');
+            // UDT member selection
+            savedvalue := GetDecoratedIdent(savedvalue);
+            Next;
+            fDerefValue := True;
+            // take the address of savedvalue and store it in pLHS
+            bNeedToPop := True;
+            push;
+            pLHS := tos;
+            StoreAddress(pLHS, savedvalue);
+            // now offset the pointer by the specified member
+            OffsetUDTPointer(GetUDTType(savedvalue), pLHS);
+            savedvalue := pLHS;
+          end
+          else if (Token = '-') and (Look = '>') then
+          begin
+            if dt <> TOK_USERDEFINEDTYPE then
+              AbortMsg('member selection invalid');
+            savedvalue := GetDecoratedIdent(savedvalue);
+            if not IsPointer(savedvalue) then
+              AbortMsg('pointer to member selection invalid');
+            Next;
+            Next;
+            fDerefValue := True;
+            // take the address of savedvalue and store it in pLHS
+            bNeedToPop := True;
+            push;
+            pLHS := tos;
+            StoreValue(pLHS, savedvalue); // savedvalue is already a pointer so don't store its address
+            // now offset the pointer by the specified member
+            OffsetUDTPointer(GetUDTType(savedvalue), pLHS);
+            savedvalue := pLHS;
+          end
+// JCH - end handle UDT member selection - 2011-10-21
+          else if Token = '[' then
+          begin
+            if not IsArrayType(dt) then
+              AbortMsg('invalid array indexing');
+            savedvalue := GetDecoratedIdent(savedvalue);
+            Next; // skip past the '[' token
+            fDerefValue := True;
+            // take the address of savedvalue and store it in pLHS
+            bNeedToPop := True;
+            push;
+            pLHS := tos;
+            StoreAddress(pLHS, savedvalue);
+            // now offset the pointer by the specified member
+            OffsetArrayPointer(savedvalue, pLHS);
+            savedvalue := pLHS;
+          end;
+{
           if Token = '[' then
           begin
             if fDerefValue or fAddressOfValue then
@@ -1821,15 +2007,23 @@ begin
             fArrayIndexStack.Clear;
             DoNewArrayIndex(DataType(savedvalue), savedvalue, fLHSName);
           end
-          else if ((Token = '+') and (Look = '+')) or
+          else
+}
+          if ((Token = '+') and (Look = '+')) or
                   ((Token = '-') and (Look = '-')) then
           begin
             // postfix increment/decrement operators have higher precedence than dereference
             CheckAndLoadVar(savedvalue); // put the current value in the register
-            if Token = '+' then
-              StoreInc(savedvalue)
-            else
-              StoreDec(savedvalue);
+            oldDA := fDerefAssignment;
+            fDerefAssignment := fDerefValue;
+            try
+              if Token = '+' then
+                StoreInc(savedvalue)
+              else
+                StoreDec(savedvalue);
+            finally
+              fDerefAssignment := oldDA;
+            end;
             Next;
             Next;
           end
@@ -1928,6 +2122,8 @@ begin
       fAddressOfValue := False;
     end;
   end;
+  if bNeedToPop then
+    pop;
 end;
 
 procedure TSPCComp.Multiply;
@@ -2021,7 +2217,7 @@ begin
           '-': Subtract;
         end;
       end;
-      optExp := OptimizeExpression(fExpStr, prev, fExpStrHasVars);
+      optExp := OptimizeExpression(fExpStr, prev, fExpStrHasVars, Value);
     end;
   finally
     fExpStr := oldExpStr + optExp + Value;
@@ -2029,13 +2225,22 @@ begin
   end;
 end;
 
-function TSPCComp.OptimizeExpression(str : string; const idx: integer; bFlag : boolean) : string;
+function TSPCComp.OptimizeExpression(str : string; const idx: integer; bFlag : boolean; const aValue : string) : string;
+var
+  p, len1, len2 : integer;
 begin
   fLastExpressionOptimizedToConst := False;
+{
   // if the last character is a ) or a ; then delete it.
   if str[Length(str)] in [')', ';'] then
     System.Delete(str, Length(str), 1);
+}
   Result := str;
+  p := Pos(aValue, Result);
+  len1 := Length(Result);
+  len2 := Length(aValue);
+  if (p > 0) and (p = (len1 - len2 + 1)) then
+    System.Delete(Result, p, MaxInt);
   if (OptimizeLevel >= 1) and (SourceCount > (idx+1)) and not bFlag then
   begin
     // 2009-03-18 JCH: I do not recall why I added the check for
@@ -2049,7 +2254,7 @@ begin
 
     if (str <> '') {and not (str[1] in ['+', '-'])} then
     begin
-      fCalc.SilentExpression := str;
+      fCalc.SilentExpression := Result;
       if not fCalc.ParserError then
       begin
         str := IntToStr(Trunc(fCalc.Value));
@@ -2198,7 +2403,7 @@ begin
   // relation type???
   if (Token = TOK_IDENTIFIER) and (ValueIsArrayType or ValueIsUserDefinedType) then
   begin
-    if Look = '[' then
+    if (Look = '[') or (Look = '.') or (Look = '-') then
     begin
       NumericRelation;
     end;
@@ -2332,7 +2537,6 @@ begin
     lenVal := Length(Value);
     Delete(oldBS, Length(oldBS)-lenVal+1, lenVal);
     // now start our new bool sub expression with the current token
-    fExpStr := Value;
     fBoolSubExpStr := Value;
     prev := SourceCount;
 
@@ -2366,7 +2570,7 @@ begin
     if bOr then
       StoreZeroFlag;
 
-    optExp := OptimizeExpression(fBoolSubExpStr, prev, fBoolSubExpStrHasVars);
+    optExp := OptimizeExpression(fBoolSubExpStr, prev, fBoolSubExpStrHasVars, Value);
   finally
     fBoolSubExpStr := oldBS + optExp + Value;
   end;
@@ -2465,6 +2669,17 @@ begin
   i := fFuncParams.IndexOf(name, idx);
   if i <> -1 then
     Result := fFuncParams[i].IsConstant;
+end;
+
+function TSPCComp.FunctionParameterIsReference(const name: string;
+  idx: integer): boolean;
+var
+  i : integer;
+begin
+  Result := False;
+  i := fFuncParams.IndexOf(name, idx);
+  if i <> -1 then
+    Result := fFuncParams[i].IsReference;
 end;
 
 function TSPCComp.FunctionParameterHasDefault(const name: string;
@@ -2600,11 +2815,11 @@ begin
                   end;
                   fInputs.AddObject(parvalue, fp);
                   if fp.IsArray then
-                    CopyArrayVar(parname, parvalue)
+                    InitializeArrayReference(parname, parvalue)
                   else if fp.ParamType = fptUDT then
-                    CopyUDTVar(parname, parvalue)
+                    InitializeUDTReference(parname, parvalue)
                   else
-                    CopyVar(parname, parvalue);
+                    InitializeVarReference(parname, parvalue);
                   junk := AdvanceToNextParam;
                   if junk <> '' then
                     AbortMsg(sExpNotSupported)
@@ -2720,7 +2935,7 @@ begin
           begin
             CloseParen;
 
-            // look up the decorated function name given the procname
+            // TODO: look up the decorated function name given the procname
             // and the types of all the parameters passed into the function
             // if we find a function with the right name and parameters
             // then keep going.  Otherwise report an error
@@ -2729,6 +2944,7 @@ begin
 
             if protoreqcount > acount then
               AbortMsg(sTooFewParams);
+
             while acount < protocount do
             begin
               // use default values for all the arguments not provided
@@ -2748,7 +2964,8 @@ begin
               EmitAsmLines(inlineFunc.AsString('RET', 'JMP'))
             else
               CallRoutine(procname);
-              
+(*
+            // copy out non-const reference values
             for i := 0 to fInputs.Count - 1 do begin
               fp := TFunctionParameter(fInputs.Objects[i]);
               if fp.IsVarReference then begin
@@ -2759,6 +2976,7 @@ begin
                 CopyVar(fInputs[i], parname);
               end;
             end;
+*)
             rdt := FunctionReturnType(procname);
             if IsUDT(rdt) or IsArrayType(rdt) then
             begin
@@ -3146,11 +3364,99 @@ begin
   StartProcess(taskname);
 end;
 
+procedure TSPCComp.OffsetUDTPointer(const UDTType : string; const aPointer: string);
+var
+  member : string;
+  DE, sub : TDataspaceEntry;
+  i : integer;
+  offset : integer;
+begin
+  // recursively offset this pointer by member names, etc...
+  member := Value;
+  offset := 0;
+  DE := DataDefinitions.FindEntryByFullName(UDTType);
+  if Assigned(DE) then
+  begin
+    for i := 0 to DE.SubEntries.Count - 1 do
+    begin
+      sub := DE.SubEntries[i];
+      // is this the member we are looking for?
+      if sub.Identifier = member then
+      begin
+        break;
+      end
+      else
+      begin
+        offset := offset + sub.SizeOf;
+      end;
+    end;
+    if offset > 0 then
+      DoAddImmediate(aPointer, offset);
+    Next; // move past member name
+    if (Token = '.') or (Token = '-') and (Look = '>') then
+    begin
+      // now offset the pointer by the specified member
+      Next;
+      if Token = '>' then
+      begin
+//        CheckPointer(UDTType+'.'+member);
+        Next;
+      end;
+      OffsetUDTPointer(sub.TypeName, aPointer);
+    end
+    else if Token = '[' then
+    begin
+      Next;
+      OffsetArrayPointer(UDTType+'.'+member, aPointer);
+    end;
+  end
+  else
+    AbortMsg('unknown user-defined type: ' + UDTType);
+end;
+
+procedure TSPCComp.OffsetArrayPointer(const ArrayType : string; const aPointer: string);
+var
+  DE, sub : TDataspaceEntry;
+  i : integer;
+  offset : integer;
+begin
+  // recursively offset this pointer by array index, etc...
+  offset := 0;
+  DE := DataDefinitions.FindEntryByFullName(ArrayType);
+  if Assigned(DE) then
+  begin
+    // the array's data type is stored in its first and only sub entry
+    sub := DE.SubEntries[0];
+
+//    DoAddImmediate(aPointer, offset);
+    Next; // move past ']'
+    if (Token = '.') or (Token = '-') and (Look = '>') then
+    begin
+(*
+      // now offset the pointer by the specified member
+      Next;
+      if Token = '>' then
+        Next;
+      OffsetUDTPointer(GetUDTType(UDTType+'.'+member), aPointer);
+*)
+    end
+    else if Token = '[' then
+    begin
+//      Next;
+//      OffsetArrayPointer(ArrayType+'.'+member, aPointer);
+    end;
+  end
+  else
+    AbortMsg('unknown array type: ' + ArrayType);
+end;
+
 procedure TSPCComp.Assignment;
 var
-  Name: string;
+  Name, pLHS: string;
   dt : char;
+  bNeedToPop : boolean;
 begin
+  bNeedToPop := False;
   fDerefAssignment := Token = '*';
   if fDerefAssignment then
     Next;
@@ -3182,7 +3488,45 @@ begin
     else begin
       if fDerefAssignment then
         CheckPointer(Name);
-      Next;
+      Next; // move past the variable name
+      if Token = '.' then
+      begin
+        if dt <> TOK_USERDEFINEDTYPE then
+          AbortMsg('member selection invalid');
+        // UDT member selection
+        Name := GetDecoratedIdent(Name);
+        Next;
+        fDerefAssignment := True;
+        // take the address of Name and store it in pLHS
+        bNeedToPop := True;
+        push;
+        pLHS := tos;
+        StoreAddress(pLHS, Name);
+        // now offset the pointer by the specified member
+        OffsetUDTPointer(GetUDTType(Name), pLHS);
+        Name := pLHS;
+        dt := DataType(Name);
+      end
+      else if (Token = '-') and (Look = '>') then
+      begin
+        if dt <> TOK_USERDEFINEDTYPE then
+          AbortMsg('member selection invalid');
+        Name := GetDecoratedIdent(Name);
+        if not IsPointer(Name) then
+          AbortMsg('pointer to member selection invalid');
+        Next;
+        Next;
+        fDerefAssignment := True;
+        // take the address of Name and store it in pLHS
+        bNeedToPop := True;
+        push;
+        pLHS := tos;
+        StoreValue(pLHS, Name); // Name is already a pointer so don't store its address
+        // now offset the pointer by the specified member
+        OffsetUDTPointer(GetUDTType(Name), pLHS);
+        Name := pLHS;
+        dt := DataType(Name);
+      end;
       fLHSDataType := dt;
       fLHSName     := Name;
       try
@@ -3217,6 +3561,8 @@ begin
     end;
   end;
   fDerefAssignment := False;
+  if bNeedToPop then
+    pop;
 end;
 
 procedure TSPCComp.DoAssignValue(const aName: string; dt: char; bNoChecks : boolean);
@@ -4319,6 +4665,7 @@ var
         FunctionParameterTypeName(procname, pcount),
         FunctionParameterIsConstant(procname, pcount),
         FunctionParameterHasDefault(procname, pcount),
+        FunctionParameterIsReference(procname, pcount),
         FunctionParameterDefaultValue(procname, pcount));
       inc(pcount);
       if pcount > protocount then
@@ -4359,7 +4706,7 @@ var
     end;
     if not bError then
     begin
-      AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst, bHasDefault, defValue);
+      AddParam(ApplyDecoration(procname, varnam, 0), ptype, tname, bIsConst, bHasDefault, bIsRef, defValue);
       if not protoexists then
       begin
         Allocate(ApplyDecoration(procname, varnam, 0), aval, '', tname, ptype, 1);
@@ -4789,7 +5136,6 @@ begin
   fFunctionNameCallStack := TStringList.Create;
   fFunctionNameCallStack.CaseSensitive := True;
   fArrayIndexStack := TStringList.Create;
-  fStructDecls := TStringList.Create;
   fInlineStack := TObjectList.Create(false);
   fCalc := TNBCExpParser.Create(nil);
   fCalc.PascalNumberformat := False;
@@ -4798,6 +5144,7 @@ begin
   fCalc.ExtraDefines := True;
   fDS := TDataspace.Create;
   fSProProgram := TSProProgram.Create(fDS);
+  fSizeMap := TSizeMap.Create;
   LoadAPIFunctions;
   fOptimizeLevel := 0;
   Clear;
@@ -4824,7 +5171,6 @@ begin
   FreeAndNil(fAPIFunctions);
   FreeAndNil(fFunctionNameCallStack);
   FreeAndNil(fArrayIndexStack);
-  FreeAndNil(fStructDecls);
   FreeAndNil(fThreadNames);
   FreeAndNil(fSwitchFixups);
   FreeAndNil(fSwitchRegNames);
@@ -4832,7 +5178,14 @@ begin
   FreeAndNil(fCalc);
   FreeAndNil(fDS);
   FreeAndNil(fSProProgram);
+  FreeAndNil(fSizeMap);
   inherited;
+end;
+
+procedure TSPCComp.SetOnCompilerStatusChange(const Value: TCompilerStatusChangeEvent);
+begin
+  fOnCompilerStatusChange := Value;
+  fSProProgram.OnCompilerStatusChange := Value;
 end;
 
 procedure TSPCComp.InternalParseStream;
@@ -4952,7 +5305,6 @@ begin
   SourceClear;
   fInlineFunctions.Clear;
   fArrayHelpers.Clear;
-  fStructDecls.Clear;
   fMessages.Clear;
   fTempChar    := ' ';
   fLHSDataType := #0;
@@ -5233,6 +5585,39 @@ begin
   SignValue;
 end;
 
+procedure TSPCComp.DoSizeOf;
+var
+  tmp : string;
+begin
+  // x = SizeOf(variant & value);
+  OpenParen;
+  CheckIdent;
+  tmp := GetDecoratedIdent(Value);
+  Next;
+  CloseParen;
+  SizeOfValue(tmp);
+end;
+
+function TSPCComp.CalculatedSize(const aName: string): integer;
+//var
+//  dt : Char;
+begin
+  Result := fSizeMap.Size[aName];
+(*
+  Result := 1; // most things have sizeof == 1
+  dt := DataType(aName);
+  if IsUDT(dt) then
+  begin
+    Result := UDTSize(GetUDTType(aName));
+  end
+  else if IsArrayType(dt) then
+  begin
+  end
+  else
+    Result := 1;
+*)
+end;
+
 procedure TSPCComp.DoRotate(const idx: integer);
 var
   tmp : string;
@@ -5372,6 +5757,10 @@ begin
     else if Pos('#pragma', fDirLine) = 1 then
     begin
       HandlePoundPragma;
+    end
+    else if Pos('#reset', fDirLine) = 1 then
+    begin
+      HandlePoundReset;
     end;
     Next(False);
     OutputDirective(fDirLine);
@@ -5395,8 +5784,9 @@ begin
     linenumber{[slevel]} := StrToIntDef(Copy(tmpLine, 1, i - 1), linenumber{[slevel]});
     IncLineNumber;
     Delete(tmpLine, 1, i);
-    tmpFile      := Replace(tmpLine, '"', '');
-    CurrentFile  := tmpFile;
+    tmpFile     := Replace(tmpLine, '"', '');
+    fOldCurFile := CurrentFile;
+    CurrentFile := tmpFile;
   end;
 end;
 
@@ -5414,6 +5804,17 @@ begin
     // could be 'macro nnn', 'safecalling', 'autostart'
     if tmpLine = 'autostart' then
       fAutoStart := True;
+  end;
+end;
+
+procedure TSPCComp.HandlePoundReset;
+var
+  i : integer;
+begin
+  i := Pos('#reset', fDirLine);
+  if i = 1 then
+  begin
+    CurrentFile := fOldCurFile;
   end;
 end;
 
@@ -5483,6 +5884,7 @@ const
   APIF_PRINTF   = 11;
   APIF_ABS      = 12;
   APIF_SIGN     = 13;
+  APIF_SIZEOF   = 14;
 
 procedure TSPCComp.DoCallAPIFunc(procname: string);
 var
@@ -5509,6 +5911,7 @@ begin
     APIF_PRINTF  : DoPrintf;
     APIF_ABS     : DoAbs;
     APIF_SIGN    : DoSign;
+    APIF_SIZEOF  : DoSizeOf;
   else
     AbortMsg(Format(sNotAnAPIFunc, [procname]));
   end;
@@ -5530,6 +5933,7 @@ begin
   AddAPIFunction('printf', APIF_PRINTF);
   AddAPIFunction('abs', APIF_ABS);
   AddAPIFunction('sign', APIF_SIGN);
+  AddAPIFunction('SizeOf', APIF_SIZEOF);
 end;
 
 function TSPCComp.GetASMSrc: TStrings;
@@ -5647,41 +6051,28 @@ begin
     AbortMsg(sConstRequired);
 end;
 
-procedure TSPCComp.CheckPointer(const aName: string);
-var
-  bIsPointer : boolean;
-  idx : integer;
-  V : TVariable;
+function TSPCComp.IsPointer(const aName : string) : boolean;
 begin
-  bIsPointer := False;
   // is this thing a pointer?
   if IsParam(aName) then
   begin
-    bIsPointer := IsParamPointer(aName);
+    Result := IsParamPointer(aName);
   end
   else if IsLocal(aName) then
   begin
-    idx := LocalIdx(aName);
-    if idx <> -1 then
-    begin
-      V := fLocals[idx];
-      bIsPointer := V.IsPointer;
-    end
-    else
-      bIsPointer := False;
+    Result := IsLocalPointer(aName);
   end
   else if IsGlobal(aName) then
   begin
-    idx := fGlobals.IndexOfName(aName);
-    if idx <> -1 then
-    begin
-      V := fGlobals[idx];
-      bIsPointer := V.IsPointer;
-    end
-    else
-      bIsPointer := False;
-  end;
-  if not bIsPointer then
+    Result := IsGlobalPointer(aName);
+  end
+  else
+    Result := False;
+end;
+
+procedure TSPCComp.CheckPointer(const aName: string);
+begin
+  if not IsPointer(aName) then
     AbortMsg(sPointerRequired);
 end;
 
@@ -5877,33 +6268,25 @@ begin
   end;
 end;
 
-procedure TSPCComp.LocalEmitLnNoTab(SL : TStrings; const line : string);
-begin
-  SL.Add(line);
-end;
-
-procedure TSPCComp.LocalEmitLn(SL : TStrings; const line : string);
-begin
-  SL.Add(#9+line);
-end;
-
 procedure TSPCComp.ProcessStruct(bTypeDef : boolean);
 var
   sname, mtype, aval, mname, mtypename, tmp : string;
   DE : TDataspaceEntry;
   dt : TDSType;
-  SL : TStringList;
-  i : integer;
   procedure AddMemberToCurrentStructure;
+  var
+    i, cnt : integer;
   begin
     // add a member to the current structure definition
     dt := SPCStrToType(mtype, True);
-    if dt = dsCluster then
-      LocalEmitLn(SL, Format('%s %s%s', [mname, mtype, aval]))
-    else
-      LocalEmitLn(SL, Format('%s %s%s', [mname, TypeToStr(dt), aval]));
     DE := fCurrentStruct.SubEntries.Add;
     HandleVarDecl(DataDefinitions, fNamedTypes, True, DE, mname, mtype+aval, @SPCStrToType);
+    if tmp <> '' then
+    begin
+      cnt := CountElements(tmp);
+      for i := 0 to cnt - 1 do
+        DE.AddValue(0);
+    end;
     aval := '';
   end;
 begin
@@ -5911,83 +6294,70 @@ begin
   // or
   // struct {...} name; (and bTypeDef is true)
   Next;
-  SL := TStringList.Create;
-  try
-    // create a new structure definition
-    fCurrentStruct := DataDefinitions.Add;
-    fCurrentStruct.DataType := dsCluster;
-    if not bTypeDef then
-    begin
-      sname := Value;
-      AddTypeNameAlias(sname, sname);
-      fCurrentStruct.Identifier := sname;
-      fCurrentStruct.TypeName   := sname;
-      Next; // skip past the type name
-    end;
-    if Token = TOK_IDENTIFIER then begin
-      // invalid at this location
-      Expected(TOK_BEGIN);
-      Next;
-    end;
-    MatchString(TOK_BEGIN);
-    while (Token <> TOK_END) and not endofallsource do
-    begin
-      // process a member declaration
-      // format is multi-part typename membername [];
-      // e.g., unsigned int membername
-      // or    int membername
-      Scan;
-      mtypename := Value;
-      // make sure we translate typedefs
-      mtype := TranslateTypeName(mtypename);
-      Next;
-      mname := Value;
-      Next;
-      aval := '';
-      while Token <> TOK_SEMICOLON do begin
-        if Token = '[' then begin
-          aval := ProcessArrayDimensions(tmp);
-        end;
-        if Token = ',' then begin
-          AddMemberToCurrentStructure;
-          Next;
-          mname := Value;
-          Next;
-        end;
-        if not (Token in [TOK_SEMICOLON, '[', ',']) then
-        begin
-          AbortMsg(sUnexpectedChar);
-          mname := '';
-          mtype := '';
-          break;
-          Next;
-        end;
+  // create a new structure definition
+  fCurrentStruct := DataDefinitions.Add;
+  fCurrentStruct.DataType := dsCluster;
+  if not bTypeDef then
+  begin
+    sname := Value;
+    AddTypeNameAlias(sname, sname);
+    fCurrentStruct.Identifier := sname;
+    fCurrentStruct.TypeName   := sname;
+    Next; // skip past the type name
+  end;
+  if Token = TOK_IDENTIFIER then begin
+    // invalid at this location
+    Expected(TOK_BEGIN);
+    Next;
+  end;
+  MatchString(TOK_BEGIN);
+  while (Token <> TOK_END) and not endofallsource do
+  begin
+    // process a member declaration
+    // format is multi-part typename membername [];
+    // e.g., unsigned int membername
+    // or    int membername
+    Scan;
+    mtypename := Value;
+    // make sure we translate typedefs
+    mtype := TranslateTypeName(mtypename);
+    Next;
+    mname := Value;
+    Next;
+    aval := '';
+    while Token <> TOK_SEMICOLON do begin
+      if Token = '[' then begin
+        aval := ProcessArrayDimensions(tmp);
       end;
-      if mname <> '' then
-      begin
-        Semi;
+      if Token = ',' then begin
         AddMemberToCurrentStructure;
+        Next;
+        mname := Value;
+        Next;
+      end;
+      if not (Token in [TOK_SEMICOLON, '[', ',']) then
+      begin
+        AbortMsg(sUnexpectedChar);
+        mname := '';
+        mtype := '';
+        break;
+        Next;
       end;
     end;
-    Next; // skip past the '}' (aka TOK_END)
-    if bTypeDef then
+    if mname <> '' then
     begin
-      sname := Value;
-      AddTypeNameAlias(sname, sname);
-      fCurrentStruct.Identifier := sname;
-      fCurrentStruct.TypeName   := sname;
-      Next; // skip past the type name
+      Semi;
+      AddMemberToCurrentStructure;
     end;
-    // all struct declarations will be emitted to a special stringlist
-    // and then output at the start of the NBC code
-    LocalEmitLnNoTab(fStructDecls, 'dseg segment');
-    LocalEmitLn(fStructDecls, sname+' struct');
-    for i := 0 to SL.Count - 1 do
-      LocalEmitLnNoTab(fStructDecls, SL[i]);
-    LocalEmitLn(fStructDecls, sname+' ends');
-    LocalEmitLnNoTab(fStructDecls, 'dseg ends');
-  finally
-    SL.Free;
+  end;
+  Next; // skip past the '}' (aka TOK_END)
+  if bTypeDef then
+  begin
+    sname := Value;
+    AddTypeNameAlias(sname, sname);
+    fCurrentStruct.Identifier := sname;
+    fCurrentStruct.TypeName   := sname;
+    Next; // skip past the type name
   end;
   Semi; // skip past the ';'
   Scan;
@@ -6080,6 +6450,65 @@ begin
   begin
     CheckAndStore(name);
     fUDTOnStack := '';
+  end;
+end;
+
+function TSPCComp.IsReferenceType(n : string) : boolean;
+var
+  i : integer;
+  root_name : string;
+  fp : TFunctionParameter;
+begin
+  Result := False;
+  n := StripInline(n);
+  case WhatIs(n) of
+    stParam : begin
+      i := ParamIdx(n);
+      if i <> -1 then
+      begin
+        Result := fParams[i].IsReference;
+      end
+      else
+      begin
+        // i = -1
+        for i := 0 to fFuncParams.Count - 1 do
+        begin
+          fp := fFuncParams[i];
+          if n = ApplyDecoration(fp.ProcName, fp.Name, 0) then
+          begin
+            Result := fp.IsReference;
+            Break;
+          end;
+        end;
+      end;
+    end;
+    stLocal : begin
+      i := LocalIdx(n);
+      if i <> -1 then
+      begin
+        Result := fLocals[i].IsReference;
+      end;
+    end;
+    stGlobal : begin
+      i := fGlobals.IndexOfName(n);
+      if i <> -1 then
+      begin
+        Result := fGlobals[i].IsReference;
+      end
+      else
+      begin
+        // maybe this is a member of a struct which might itself be a user defined type
+        root_name := RootOf(n);
+        if root_name <> n then
+        begin
+          i := fGlobals.IndexOfName(root_name);
+          if (i <> -1) and (ArrayBaseType(fGlobals[i].DataType) = TOK_USERDEFINEDTYPE) then
+          begin
+            Result := fGlobals[i].IsReference;
+          end;
+        end;
+      end;
+    end;
   end;
 end;
 
@@ -6180,7 +6609,7 @@ var
   tmp : string;
 begin
   // load fMS with the contents of spmem.h followed by SPCDefs.h
-  tmp := '#line 0 "SOCDefs.h"'#13#10;
+  tmp := '#line 0 "SPCDefs.h"'#13#10;
   S.Write(PChar(tmp)^, Length(tmp));
 
   S.Write(spmem_data, High(spmem_data)+1);
@@ -6596,6 +7025,8 @@ var
   dlen : array[0..3] of integer;
 begin
   Result := 0;
+  for i := Low(dlen) to High(dlen) do
+    dlen[i] := 0;
   dim := 0;
   while (dim < 4) and (lenexpr <> '') do
   begin
@@ -6634,6 +7065,23 @@ begin
   end;
 end;
 
+function TSPCComp.ArraySize(DE : TDataspaceEntry) : integer;
+var
+  esize : integer;
+  tmpDE : TDataspaceEntry;
+begin
+  tmpDE := DE.SubEntries[0];
+  while tmpDE.DataType = dsArray do
+    tmpDE := tmpDE.SubEntries[0];
+  if tmpDE.DataType = dsCluster then
+  begin
+    esize := UDTSize(tmpDE.FullPathIdentifier);
+  end
+  else
+    esize := 1; // base element size is 1
+  Result := DE.ValueCount * esize;
+end;
+
 function TSPCComp.UDTSize(const tname : string) : integer;
 var
   DE : TDataspaceEntry;
@@ -6646,15 +7094,14 @@ begin
     for i := 0 to DE.SubEntries.Count - 1 do
     begin
       case DE.SubEntries[i].DataType of
-        dsSLong : begin
-          inc(Result);
-        end;
         dsArray : begin
-          inc(Result, DE.SubEntries[i].ValueCount);
+          inc(Result, ArraySize(DE.SubEntries[i]));
         end;
         dsCluster : begin
           inc(Result, UDTSize(DE.SubEntries[i].FullPathIdentifier));
         end;
+      else
+        inc(Result);
       end
     end;
   end;
@@ -6924,23 +7371,43 @@ begin
 end;
 
 procedure TSPCComp.StoreInc(const name : string);
+var
+  tmp : string;
 begin
-  DoIncrement(GetDecoratedIdent(name));
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment or IsReferenceType(tmp) then
+    tmp := '(' + tmp + ')';
+  DoIncrement(tmp);
 end;
 
 procedure TSPCComp.StoreDec(const name : string);
+var
+  tmp : string;
 begin
-  DoDecrement(GetDecoratedIdent(name));
+  tmp := GetDecoratedIdent(name);
+  if fDerefAssignment or IsReferenceType(tmp) then
+    tmp := '(' + tmp + ')';
+  DoDecrement(tmp);
 end;
 
 procedure TSPCComp.StorePreInc(const name : string);
+var
+  tmp : string;
 begin
-  DoIncrement(GetDecoratedIdent(name));
+  tmp := GetDecoratedIdent(name);
+  if IsReferenceType(tmp) then
+    tmp := '(' + tmp + ')';
+  DoIncrement(tmp);
 end;
 
 procedure TSPCComp.StorePreDec(const name : string);
+var
+  tmp : string;
 begin
-  DoDecrement(GetDecoratedIdent(name));
+  tmp := GetDecoratedIdent(name);
+  if IsReferenceType(tmp) then
+    tmp := '(' + tmp + ')';
+  DoDecrement(tmp);
 end;
 
 function TSPCComp.GetCompilerOutput: TStrings;
@@ -7108,18 +7575,42 @@ end;
 procedure TSPCComp.CopyArrayVar(const dest, src: string);
 begin
   AbortMsg('array copy not yet implemented');
-  EmitLn(MoveAsString(dest, src));
+  StoreValue(dest, src);
 end;
 
 procedure TSPCComp.CopyUDTVar(const dest, src: string);
 begin
   AbortMsg('struct copy not yet implemented');
-  EmitLn(MoveAsString(dest, src));
+  StoreValue(dest, src);
 end;
 
 procedure TSPCComp.CopyVar(const dest, src: string);
 begin
-  EmitLn(MoveAsString(dest, src));
+  StoreValue(dest, src);
+end;
+
+procedure TSPCComp.InitializeArrayReference(const dest, src: string);
+begin
+  if IsReferenceType(src) then
+    StoreValue(dest, src)
+  else
+    StoreAddress(dest, src);
+end;
+
+procedure TSPCComp.InitializeUDTReference(const dest, src: string);
+begin
+  if IsReferenceType(src) then
+    StoreValue(dest, src)
+  else
+    StoreAddress(dest, src);
+end;
+
+procedure TSPCComp.InitializeVarReference(const dest, src: string);
+begin
+  if IsReferenceType(src) then
+    StoreValue(dest, src)
+  else
+    StoreAddress(dest, src);
 end;
 
 procedure TSPCComp.Store(const name: string);
@@ -7127,9 +7618,9 @@ var
   tmp : string;
 begin
   tmp := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(tmp) then
     tmp := '(' + tmp + ')';
-  EmitLn(MoveAsString(tmp, RegisterName));
+  StoreValue(tmp, RegisterName);
 end;
 
 procedure TSPCComp.StoreAdd(const name : string);
@@ -7137,9 +7628,19 @@ var
   tmp : string;
 begin
   tmp := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(tmp) then
     tmp := '(' + tmp + ')';
-  EmitLn(Format('ADD %s, %s', [tmp, RegisterName]));
+  DoAdd(tmp, RegisterName);
+end;
+
+procedure TSPCComp.DoAdd(const dest, src : string);
+begin
+  EmitLn(Format('ADD %s, %s', [dest, src]));
+end;
+
+procedure TSPCComp.DoAddImmediate(const dest : string; const offset : integer);
+begin
+  EmitLn(Format('ADI %s, %d', [dest, offset]));
 end;
 
 procedure TSPCComp.StoreSub(const name : string);
@@ -7147,7 +7648,7 @@ var
   tmp : string;
 begin
   tmp := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(tmp) then
     tmp := '(' + tmp + ')';
   EmitLn(SubAsString(tmp, RegisterName));
 end;
@@ -7157,7 +7658,7 @@ var
   tmp : string;
 begin
   tmp := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(tmp) then
     tmp := '(' + tmp + ')';
   EmitLn(Format('MUL %s, %s', [tmp, RegisterName]));
 end;
@@ -7167,7 +7668,7 @@ var
   tmp : string;
 begin
   tmp := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(tmp) then
     tmp := '(' + tmp + ')';
   EmitLn(Format('DIV %s, %s', [tmp, RegisterName]));
 end;
@@ -7177,12 +7678,12 @@ var
   tmp, dest, src : string;
 begin
   dest := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(dest) then
     dest := '(' + dest + ')';
   src  := RegisterName;
   push;
   tmp := tos;
-  EmitLn(MoveAsString(tmp, dest));
+  StoreValue(tmp, dest);
   EmitLn(Format('DIV %s, %s', [tmp, src]));
   EmitLn(Format('MUL %s, %s', [tmp, src]));
   EmitLn(SubAsString(dest, tmp));
@@ -7194,7 +7695,7 @@ var
   tmp : string;
 begin
   tmp := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(tmp) then
     tmp := '(' + tmp + ')';
   EmitLn(Format('AND %s, %s', [tmp, RegisterName]));
 end;
@@ -7204,7 +7705,7 @@ var
   tmp : string;
 begin
   tmp := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(tmp) then
     tmp := '(' + tmp + ')';
   EmitLn(Format('OR %s, %s', [tmp, RegisterName]));
 end;
@@ -7214,7 +7715,7 @@ var
   tmp : string;
 begin
   tmp := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(tmp) then
     tmp := '(' + tmp + ')';
   EmitLn(Format('XOR %s, %s', [tmp, RegisterName]));
 end;
@@ -7224,7 +7725,7 @@ var
   tmp : string;
 begin
   tmp := GetDecoratedIdent(name);
-  if fDerefAssignment then
+  if fDerefAssignment or IsReferenceType(tmp) then
     tmp := '(' + tmp + ')';
   if bRight then
     EmitLn(Format('ASR %s, %s', [tmp, fLastLoadedConst]))
@@ -7251,6 +7752,11 @@ begin
 end;
 
 procedure TSPCComp.LoadVar(const Name: string);
+begin
+  LoadVarToDest(RegisterName, Name);
+end;
+
+procedure TSPCComp.LoadVarToDest(const Dest: string; const Name: string);
 var
   tmp : string;
 begin
@@ -7258,26 +7764,26 @@ begin
   tmp := GetDecoratedIdent(Name);
   if fAddressOfValue then
   begin
-    StoreAddress(RegisterName, tmp);
+    StoreAddress(Dest, tmp);
   end
   else
   begin
-    if fDerefValue then
+    if fDerefValue or IsReferenceType(tmp) then
       tmp := '(' + tmp + ')';
-    EmitLn(MoveAsString(RegisterName, tmp));
+    StoreValue(Dest, tmp);
   end;
 end;
 
 procedure TSPCComp.PushPrim;
 begin
   push;
-  EmitLn(MoveAsString(tos, RegisterName));
+  StoreValue(tos, RegisterName);
 end;
 
 procedure TSPCComp.PopAdd;
 begin
   fCCSet := False;
-  EmitLn(Format('ADD %s, %s', [RegisterName, tos]));
+  DoAdd(RegisterName, tos);
   pop;
 end;
 
@@ -7313,7 +7819,7 @@ begin
   lhs  := tos;
   push;
   tmp := tos;
-  EmitLn(MoveAsString(tmp, lhs));
+  StoreValue(tmp, lhs);
   EmitLn(Format('DIV %s, %s', [tmp, rhs]));
   EmitLn(Format('MUL %s, %s', [tmp, rhs]));
   EmitLn(SubAsString(lhs, tmp));
@@ -7433,7 +7939,7 @@ begin
     push;
     tmp := tos;
     StoreAddress(tmp, src);
-    EmitLn(Format('ADD %s, %s', [tmp, idx])); // add idx to pointer
+    DoAdd(tmp, idx); // add idx to pointer
     EmitLn(Format('MOV (%s), %s', [tmp, val])); // mov val into array
     pop;
   end;
@@ -7447,7 +7953,7 @@ begin
   push;
   tmp := tos;
   StoreAddress(tmp, src);
-  EmitLn(Format('ADD %s, %s', [tmp, aIndex])); // add aIndex to pointer
+  DoAdd(tmp, aIndex); // add aIndex to pointer
   EmitLn(Format('MOV %s, (%s)', [aValue, tmp])); // extract val from array
   pop;
 end;
@@ -7467,7 +7973,7 @@ end;
 
 procedure TSPCComp.Header;
 begin
-  EmitLn(Format('SUBTTL %s.ASM', [UpperCase(ChangeFileExt(ExtractFileName(CurrentFile), ''))]));
+//  EmitLn(Format('SUBTTL %s.ASM', [UpperCase(ChangeFileExt(ExtractFileName(CurrentFile), ''))]));
   // changed to WAIT instead of START to support download/download and run
   EmitLn('WAIT');
 end;
@@ -7495,6 +8001,11 @@ end;
 procedure TSPCComp.StoreAddress(const dest, src : string);
 begin
   EmitLn(Format('MVI %s, %s', [dest, src])); // grab address of src
+end;
+
+procedure TSPCComp.StoreValue(const dest, src : string);
+begin
+  EmitLn(MoveAsString(dest, src));
 end;
 
 procedure TSPCComp.ClearIndirect(const element : string);
@@ -7624,7 +8135,7 @@ end;
 
 procedure TSPCComp.SquareRoot(const aName : string);
 begin
-  EmitLn('SQRT ' + RegisterName);
+  EmitLn('SQRT ' + aName);
 end;
 
 procedure TSPCComp.AbsoluteValue;
@@ -7653,6 +8164,11 @@ begin
   PostLabel(L);
 end;
 
+procedure TSPCComp.SizeOfValue(const aName : string);
+begin
+  LoadConst(IntToStr(CalculatedSize(aName)));
+end;
+
 procedure TSPCComp.WaitMS(const aName : string);
 var
   L, svar : string;
@@ -7661,7 +8177,7 @@ begin
   push;
   svar := tos;
   CopyVar(svar, '01FH');
-  EmitLn(Format('ADD %s, %s', [svar, aName]));
+  DoAdd(svar, aName);
   PostLabel(L);
   push;
   CopyVar(tos, svar);
@@ -7778,7 +8294,7 @@ begin
   push;
   tmp := tos;
   L := NewLabel;
-  EmitLn(MoveAsString(tmp, lhs));
+  StoreValue(tmp, lhs);
   EmitLn(SubAsString(tmp, rhs));
   SetToTrue(RegisterName);
   if cc in [ccLT, ccLTEQ] then begin
@@ -7856,14 +8372,18 @@ end;
 //==========================================================================
 //==========================================================================
 
-procedure TSPCComp.AllocateHelper(aName, tname : string; dt : char; cnt : integer);
+function TSPCComp.AllocateHelper(aName, tname : string; dt : char; cnt : integer) : integer;
 var
-  DE, Sub : TDataspaceEntry;
-  i{, len, org} : integer;
+  DE : TDataspaceEntry;
+//  i : integer;
+//  Sub : TDataspaceEntry;
+//  len, org : integer;
 begin
+  Result := 0;
   case dt of
     TOK_LONGDEF : begin
-      fSProProgram.AddDataSpecifier(aName, 1);
+      Result := 1;
+      fSProProgram.AddDataSpecifier(aName, Result);
     end;
     TOK_USERDEFINEDTYPE :
     begin
@@ -7871,26 +8391,31 @@ begin
       DE := DataDefinitions.FindEntryByFullName(tname);
       if Assigned(DE) then
       begin
+        Result := UDTSize(tname);
+        fSProProgram.AddDataSpecifier(aName, Result);
 {
         len := UDTSize(tname);
         org := fSProProgram.DataOrigin;
         fSProProgram.AddDataSpecifier(aName, len);
 }
+(*
+        Result := 0;
         for i := 0 to DE.SubEntries.Count - 1 do
         begin
           Sub := DE.SubEntries[i];
           case Sub.DataType of
             dsSLong : begin
-              AllocateHelper(Replace(Sub.FullPathIdentifier, tname, aName), '', TOK_LONGDEF, 1);
+              Result := Result + AllocateHelper(Replace(Sub.FullPathIdentifier, tname, aName), '', TOK_LONGDEF, 1);
             end;
             dsArray : begin
-              AllocateHelper(Replace(Sub.FullPathIdentifier, tname, aName), '', TOK_ARRAYLONGDEF, Sub.ValueCount);
+              Result := Result + AllocateHelper(Replace(Sub.FullPathIdentifier, tname, aName), '', TOK_ARRAYLONGDEF, Sub.ValueCount);
             end;
             dsCluster : begin
-              AllocateHelper(Replace(Sub.FullPathIdentifier, tname, aName), sub.TypeName, TOK_USERDEFINEDTYPE, 1);
+              Result := Result + AllocateHelper(Replace(Sub.FullPathIdentifier, tname, aName), sub.TypeName, TOK_USERDEFINEDTYPE, 1);
             end;
           end
         end;
+*)
       end
       else
         AbortMsg('Unknown struct type');
@@ -7898,16 +8423,19 @@ begin
     TOK_ARRAYLONGDEF..TOK_ARRAYLONGDEF4   :
     begin
       // we need to know how many elements to allocate
-      fSProProgram.AddDataSpecifier(aName, cnt);
+      Result := cnt;
+      fSProProgram.AddDataSpecifier(aName, Result);
     end;
     TOK_ARRAYUDT..TOK_ARRAYUDT4 :
     begin
       // we need to know how many elements to allocate
-      fSProProgram.AddDataSpecifier(aName, UDTSize(tname)*cnt);
+      Result := UDTSize(tname)*cnt;
+      fSProProgram.AddDataSpecifier(aName, Result);
     end;
   else
     AbortMsg(sUnknownDatatype);
   end;
+  fSizeMap.AddEntry(aName, Result);
 end;
 
 end.
