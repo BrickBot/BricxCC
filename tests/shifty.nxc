@@ -1,0 +1,8 @@
+task main()
+{
+  int x;
+  byte b[2] = {0x7f, 0x01}; // 0x017f == 383
+  x = b[0] + (b[1] << 8);
+  NumOut(0, LCD_LINE1, x);
+  while(true);
+}

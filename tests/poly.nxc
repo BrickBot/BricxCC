@@ -1,0 +1,22 @@
+task main(){
+  LocationType points[] = { {51, 11}, {59, 32}, {45, 32}, {68, 17}, {68, 5}, {80, 30} };
+
+  for(;;){
+     ClearScreen();
+     for (int i=0; i < ArrayLen(points); i++)
+     {
+       LocationType p;
+       p = points[i];
+       PointOut(p.X, p.Y);
+     }
+     Wait( 500);
+     while( !ButtonPressed( BTNCENTER, false ) );
+     PolyOut( points );
+     Wait( 500);
+     while( !ButtonPressed( BTNCENTER, false ) );
+     ClearScreen();
+     PolyOut( points, DRAW_OPT_FILL_SHAPE );
+     Wait( 500);
+     while( !ButtonPressed( BTNCENTER, false ) );
+  }
+}

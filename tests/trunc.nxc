@@ -1,0 +1,20 @@
+task main() {
+   float a1 = 2.5;
+   float b1 = -2.5;
+   int a2 = trunc(a1);
+   int b2 = trunc(b1);
+   int a3 = 5 + trunc(a1);
+   int b3 = 5 + trunc(b1);
+
+   NumOut(0, LCD_LINE1, a1);
+   NumOut(40, LCD_LINE1, a2);
+   NumOut(70, LCD_LINE1, a3);
+   NumOut(0, LCD_LINE2, b1);
+   NumOut(40, LCD_LINE2, b2);
+   NumOut(70, LCD_LINE2, b3);
+
+   while (TRUE) {
+     Wait(1000);
+   }
+}
+

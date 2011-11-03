@@ -1,0 +1,63 @@
+
+struct s1 {
+       int a1[];
+};
+
+int v0[] = {1,2,3};
+
+s1 v1;
+
+safecall void print(const byte line, s1 vx)
+{
+  ClearLine(line);
+  NumOut(80, line, ArrayLen(vx.a1));
+  NumOut(0, line, vx.a1[0]);
+  NumOut(30, line, vx.a1[1]);
+  NumOut(60, line, vx.a1[2]);
+}
+
+int bar(s1& vx) {
+    print(LCD_LINE8, vx);
+    return 0;
+}
+
+task foobar() {
+     while(1>0) {
+          bar(v1);
+          Wait(MS_10);
+     }
+}
+
+int foo1(s1& vx) {
+    print(LCD_LINE4, vx);
+    Wait(SEC_2);
+    return 0;
+}
+
+int foo(s1& vx) {
+    ArrayInit(vx.a1, 0, 3);
+    for (int i=0; i<3; i++) {
+        vx.a1[i] = v0[i];
+    }
+    print(LCD_LINE3, vx);
+    foo1(vx);
+    return 0;
+}
+
+task two() {
+  Wait(MS_5);
+  while(true)
+  {
+     print(LCD_LINE1, v1);
+     foo(v1);
+     print(LCD_LINE2, v1);
+     Wait(SEC_2);
+  }
+}
+
+task main() {
+     Precedes(foobar, two);
+     foo(v1);
+//     ArrayInit(v1.a1, 1, 3);
+//     v1.a1 *= 2;
+}
