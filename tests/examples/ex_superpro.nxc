@@ -1,18 +1,18 @@
 task main()
 {
   SetSensorLowspeed(S1);
-  SetHTSuperProDigitalControl(S1, 0xFF); // all outputs
-  SetHTSuperProDigital(S1, DIGI_PIN0|DIGI_PIN1|DIGI_PIN2);
-  SetHTSuperProLED(S1, LED_BLUE);
-  SetHTSuperProStrobe(S1, STROBE_S0);
-  SetHTSuperProProgramControl(S1, 0x01);
+  SetSensorHTSuperProDigitalControl(S1, 0xFF); // all outputs
+  SetSensorHTSuperProDigital(S1, DIGI_PIN0|DIGI_PIN1|DIGI_PIN2);
+  SetSensorHTSuperProLED(S1, LED_BLUE);
+  SetSensorHTSuperProStrobe(S1, STROBE_S0);
+  SetSensorHTSuperProProgramControl(S1, 0x01);
   NumOut(0, LCD_LINE1, SensorHTSuperProDigitalControl(S1));
   NumOut(40, LCD_LINE1, SensorHTSuperProDigital(S1));
   NumOut(0, LCD_LINE2, SensorHTSuperProLED(S1));
   NumOut(0, LCD_LINE3, SensorHTSuperProStrobe(S1));
   NumOut(0, LCD_LINE4, SensorHTSuperProProgramControl(S1));
   NumOut(0, LCD_LINE5, SensorHTSuperProAnalog(S1, HTSPRO_A0));
-  SetHTSuperProAnalogOut(S1, HTSPRO_DAC1, DAC_MODE_SINEWAVE, 1000, 512);
+  SetSensorHTSuperProAnalogOut(S1, HTSPRO_DAC1, DAC_MODE_SINEWAVE, 1000, 512);
   byte m;
   int f, v;
   ReadSensorHTSuperProAnalogOut(S1, HTSPRO_DAC0, m, f, v);

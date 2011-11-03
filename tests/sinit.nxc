@@ -1,0 +1,36 @@
+struct LocType {
+  int x;
+  long y;
+  int z;
+};
+
+//LocType p2 = {1, 2, 3};
+
+
+task main()
+{
+  LocType foo[][];
+  LocType tmp[];
+  LocType p1 = {1, 2, 3};
+/*
+  LocType foo[][] = {
+  { {12, 15, 19}, {21, 27, 24}, {33, 39, 31} },
+  { {2, 5, 9}, {1, 7, 4}, {3, 9, 1} },
+  { {1, 1, 1}, {2, 2, 2}, {3, 3, 3} }
+};
+*/
+
+  NumOut( 0, LCD_LINE1, foo[0][0].x);
+  NumOut(30, LCD_LINE1, foo[0][0].y);
+  NumOut(60, LCD_LINE1, foo[0][0].z);
+
+  NumOut( 0, LCD_LINE2, foo[0][1].x);
+  NumOut(30, LCD_LINE2, foo[0][1].y);
+  NumOut(60, LCD_LINE2, foo[0][1].z);
+
+  NumOut( 0, LCD_LINE3, foo[0][2].x);
+  NumOut(30, LCD_LINE3, foo[0][2].y);
+  NumOut(60, LCD_LINE3, foo[0][2].z);
+
+  while(true);
+}

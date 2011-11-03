@@ -1,0 +1,16 @@
+string msgs[][] = {
+  {"hi there", "testing", "please work"},
+  {"foo", "bar", "jch"}
+};
+
+task main()
+{
+  TextOut(0, LCD_LINE1, msgs[0][0]);
+  TextOut(0, LCD_LINE2, msgs[0][1]);
+  TextOut(0, LCD_LINE3, msgs[0][2]);
+  
+  TextOut(0, LCD_LINE4, msgs[1][0]);
+  TextOut(0, LCD_LINE5, msgs[1][1]);
+  TextOut(0, LCD_LINE6, msgs[1][2]);
+  while (true);
+}

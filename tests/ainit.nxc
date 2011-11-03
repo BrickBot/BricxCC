@@ -1,0 +1,34 @@
+int MyArray[][][][] = {
+  {
+    {{0, -1},{1, -1}},
+    {{2, -1},{3, -1}}
+  },
+  {
+    {{10, 11},{12, 13}},
+    {{20, 21},{23, 31}}
+  }
+};
+
+task main() {
+  NumOut( 0, LCD_LINE1, MyArray[0][0][0][0]);
+  NumOut(20, LCD_LINE1, MyArray[0][0][0][1]);
+  NumOut(40, LCD_LINE1, MyArray[0][0][1][0]);
+  NumOut(60, LCD_LINE1, MyArray[0][0][1][1]);
+
+  NumOut( 0, LCD_LINE2, MyArray[0][1][0][0]);
+  NumOut(20, LCD_LINE2, MyArray[0][1][0][1]);
+  NumOut(40, LCD_LINE2, MyArray[0][1][1][0]);
+  NumOut(60, LCD_LINE2, MyArray[0][1][1][1]);
+
+  NumOut( 0, LCD_LINE3, MyArray[1][0][0][0]);
+  NumOut(20, LCD_LINE3, MyArray[1][0][0][1]);
+  NumOut(40, LCD_LINE3, MyArray[1][0][1][0]);
+  NumOut(60, LCD_LINE3, MyArray[1][0][1][1]);
+
+  NumOut( 0, LCD_LINE4, MyArray[1][1][0][0]);
+  NumOut(20, LCD_LINE4, MyArray[1][1][0][1]);
+  NumOut(40, LCD_LINE4, MyArray[1][1][1][0]);
+  NumOut(60, LCD_LINE4, MyArray[1][1][1][1]);
+
+  while(true);
+}
