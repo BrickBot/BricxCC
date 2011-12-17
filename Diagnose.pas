@@ -192,9 +192,9 @@ begin
       end
       else if IsNXT then
       begin
-        if BrickComm.GetCurrentProgramName(name) then
+        if BrickComm.NXTGetCurrentProgramName(name) then
           ProgramNumb.Caption := name;
-        if BrickComm.KeepAlive(time, True) then
+        if BrickComm.NXTKeepAlive(time, True) then
         begin
           time := time div 60 div 1000; // convert to minutes
           PowerDown.SilentValue := time;

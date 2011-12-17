@@ -359,7 +359,7 @@ implementation
 uses
   SysUtils, Forms, ComCtrls, uRegUtils, uHighlighterProcs, uMiscDefines,
   uNXTExplorerSettings, uEditorExperts, uJoyGlobals, uRemoteGlobals,
-  uWatchGlobals, uNXTImageGlobals, uGlobals;
+  uWatchGlobals, uNXTImageGlobals, uGlobals, uSimpleTerminalGlobals;
 
 const
   K_DEF_MACRO_LIB = 'bricxcc.mlb';
@@ -1423,6 +1423,7 @@ begin
   LoadBasicCompilerValues(reg);
   LoadJoystickValues(reg);
   LoadRemoteValues(reg);
+  LoadSimpleTerminalValues(reg);
   LoadRecentValues(reg);
   for i := 0 to NUM_LANGS - 1 do
     LoadTemplateValues(i, reg);
@@ -1671,6 +1672,7 @@ begin
   SaveBasicCompilerValues(reg);
   SaveJoystickValues(reg);
   SaveRemoteValues(reg);
+  SaveSimpleTerminalValues(reg);
   SaveRecentValues(reg);
   SaveNXCAPIValues(reg);
   SaveSPCAPIValues(reg);

@@ -207,7 +207,7 @@ begin
   begin                                            
     msg := Format('%1.1d%1.1d%1.1d%1.1d%1.1d%1.1d%d', [dir, l, r, lr, ldir+1, rdir+1, speed]);
   end;
-  BrickComm.MessageWrite(CAInBox, msg);
+  BrickComm.NXTMessageWrite(CAInBox, msg);
 end;
 
 {$IFNDEF NXT_ONLY}

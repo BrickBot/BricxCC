@@ -174,11 +174,11 @@ begin
       3 : BrickComm.SendMessage(3);
       4..8 :
         begin
-          BrickComm.StopProgram;
-          BrickComm.StartProgram(RemotePrograms[val-4]);
+          BrickComm.NXTStopProgram;
+          BrickComm.NXTStartProgram(RemotePrograms[val-4]);
         end;
       9 : begin
-            BrickComm.StopProgram;
+            BrickComm.NXTStopProgram;
             BrickComm.MotorsOff(7); // stop all motors
             BrickComm.MuteSound;
           end;
@@ -186,7 +186,7 @@ begin
             if (Lowercase(RemotePrograms[5]) = 'default') or (RemotePrograms[5] = '') then
               BrickComm.PlayTone(1760,10)
             else
-              BrickComm.PlaySoundFile(RemotePrograms[5], False);
+              BrickComm.NXTPlaySoundFile(RemotePrograms[5], False);
           end;
     end;
   end

@@ -27,6 +27,7 @@ uses
   SysUtils,                            
   Dialogs,
   Math,
+  uGlobals in 'uGlobals.pas',
   ParamUtils in 'ParamUtils.pas',
   rcx_link in 'bricktools\rcx_link.pas',
   brick_common in 'bricktools\brick_common.pas',
@@ -325,7 +326,7 @@ begin
     if ParamSwitch('-run') then begin
       // run with filename for NXT
       if IsNXT then
-        BrickComm.StartProgram(ParamValue('-run'))
+        BrickComm.NXTStartProgram(ParamValue('-run'))
       else
         BrickComm.StartTask(ParamIntValue('-run', 0));
     end;
@@ -334,7 +335,7 @@ begin
     if ParamSwitch('-msg') then
     begin
       if IsNXT then
-        BrickComm.MessageWrite(ParamIntValue('/Inbox', 0), ParamValue('-msg'))
+        BrickComm.NXTMessageWrite(ParamIntValue('/Inbox', 0), ParamValue('-msg'))
       else
         BrickComm.SendMessage(ParamIntValue('-msg', 0));
     end;
@@ -418,24 +419,24 @@ begin
       BrickComm.PlayTone(ParamIntValue('-playtone', 440), ParamIntValue('/Duration', 500));
     // NXT actions
     if ParamSwitch('-stop') and IsNXT then
-      BrickComm.StopProgram;
+      BrickComm.NXTStopProgram;
     if ParamSwitch('-playfile') and IsNXT then
-      BrickComm.PlaySoundFile(ParamValue('-playfile'), ParamSwitch('/L'));
+      BrickComm.NXTPlaySoundFile(ParamValue('-playfile'), ParamSwitch('/L'));
     if ParamSwitch('-keepalive') and IsNXT then
     begin
-      if BrickComm.KeepAlive(cvalue) then
+      if BrickComm.NXTKeepAlive(cvalue) then
         OutputValue(cvalue);
     end;
     if ParamSwitch('-resetoutputposition') and IsNXT then
-      BrickComm.ResetOutputPosition(ParamIntValue('-resetoutputposition', 0), ParamSwitch('/Relative'));
+      BrickComm.NXTResetOutputPosition(ParamIntValue('-resetoutputposition', 0), ParamSwitch('/Relative'));
     if ParamSwitch('-resetinputsv') and IsNXT then
-      BrickComm.ResetInputScaledValue(ParamIntValue('-resetinputsv', 0));
+      BrickComm.NXTResetInputScaledValue(ParamIntValue('-resetinputsv', 0));
     if ParamSwitch('-upload') and IsNXT then
       BrickComm.NXTUploadFile(ParamValue('-upload'));
     if ParamSwitch('-download') and IsNXT then
     begin
       pattern := ParamValue('-download');
-      BrickComm.DownloadFile(pattern, NameToNXTFileType(pattern));
+      BrickComm.NXTDownloadFile(pattern, NameToNXTFileType(pattern));
     end;
     if ParamSwitch('-delete') and IsNXT then
     begin
@@ -469,7 +470,7 @@ begin
     end;
     if ParamSwitch('-runningprogram') and IsNXT then
     begin
-      if BrickComm.GetCurrentProgramName(pattern) then
+      if BrickComm.NXTGetCurrentProgramName(pattern) then
         Writeln(pattern);
     end;
     if ParamSwitch('-setname') and IsNXT then
@@ -509,24 +510,24 @@ begin
     if ParamSwitch('-lsstatus') and IsNXT then
     begin
       port := ParamIntValue('-lsstatus', 0);
-      if BrickComm.LSGetStatus(port, bytesReady) then
+      if BrickComm.NXTLSGetStatus(port, bytesReady) then
         OutputValue(bytesReady);
     end;
     if ParamSwitch('-btnstate') and IsNXT then
     begin
       port := ParamIntValue('-btnstate', 0);
-      if BrickComm.GetButtonState(port, False, pressed, btncount) then
+      if BrickComm.NXTGetButtonState(port, False, pressed, btncount) then
         Writeln(Format('Button %d: pressed = %s, count = %d', [port, BoolToStr(pressed, True), btncount]));
     end;
     if ParamSwitch('-resetbtnstate') and IsNXT then
     begin
       port := ParamIntValue('-resetbtnstate', 0);
-      BrickComm.GetButtonState(port, True, pressed, btncount);
+      BrickComm.NXTGetButtonState(port, True, pressed, btncount);
     end;
     if ParamSwitch('-readmsg') and IsNXT then
     begin
       port := ParamIntValue('-readmsg', 0);
-      if BrickComm.MessageRead(port, ParamIntValue('/Inbox', 0), ParamSwitch('/Empty'), Msg) then
+      if BrickComm.NXTMessageRead(port, ParamIntValue('/Inbox', 0), ParamSwitch('/Empty'), Msg) then
       begin
         for i := 0 to Msg.Size - 1 do
           OutputValue(Msg.Data[i]);

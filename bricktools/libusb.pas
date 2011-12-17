@@ -86,26 +86,76 @@ const
   USB_DT_ENDPOINT_AUDIO_SIZE = 9;
   USB_DT_HUB_NONVAR_SIZE     = 7;
 
+{  Standard requests  }
+  USB_REQ_GET_STATUS        = $00;
+  USB_REQ_CLEAR_FEATURE     = $01;
+{ 0x02 is reserved  }
+  USB_REQ_SET_FEATURE       = $03;
+{ 0x04 is reserved  }
+  USB_REQ_SET_ADDRESS       = $05;
+  USB_REQ_GET_DESCRIPTOR    = $06;
+  USB_REQ_SET_DESCRIPTOR    = $07;
+  USB_REQ_GET_CONFIGURATION = $08;
+  USB_REQ_SET_CONFIGURATION = $09;
+  USB_REQ_GET_INTERFACE     = $0A;
+  USB_REQ_SET_INTERFACE     = $0B;
+  USB_REQ_SYNCH_FRAME       = $0C;
+
+  USB_TYPE_STANDARD         = $00 shl 5;
+  USB_TYPE_CLASS            = $01 shl 5;
+  USB_TYPE_VENDOR           = $02 shl 5;
+  USB_TYPE_RESERVED         = $03 shl 5;
+
+  USB_RECIP_DEVICE          = $00;
+  USB_RECIP_INTERFACE       = $01;
+  USB_RECIP_ENDPOINT        = $02;
+  USB_RECIP_OTHER           = $03;
+
+{ Various libusb API related stuff  }
+  USB_ENDPOINT_IN           = $80;
+  USB_ENDPOINT_OUT          = $00;
+
+{ Error codes  }
+  USB_ERROR_BEGIN           = 500000;
+
+  USB_MAXINTERFACES         = 32;
+  USB_MAXENDPOINTS          = 32;
+
+{ in bEndpointAddress  }
+  USB_ENDPOINT_ADDRESS_MASK     = $0f;
+  USB_ENDPOINT_DIR_MASK         = $80;
+
+{ in bmAttributes  }
+  USB_ENDPOINT_TYPE_MASK        = $03;
+  USB_ENDPOINT_TYPE_CONTROL     = 0;
+  USB_ENDPOINT_TYPE_ISOCHRONOUS = 1;
+  USB_ENDPOINT_TYPE_BULK        = 2;
+  USB_ENDPOINT_TYPE_INTERRUPT   = 3;
+
+  USB_MAXALTSETTING = 128; // hard limit
+
+  USB_MAXCONFIG = 8;
+
 { All standard descriptors have these 2 fields in common  }
 
 type
   PUSBDescriptorHeader = ^USBDescriptorHeader;
-  USBDescriptorHeader = record
+  USBDescriptorHeader = {$IFDEF WIN32}packed{$ENDIF} record
     bLength : Byte;
     bDescriptorType : Byte;
   end;
 
 { String descriptor  }
   PUSBStringDescriptor = ^USBStringDescriptor;
-  USBStringDescriptor = record
+  USBStringDescriptor = {$IFDEF WIN32}packed{$ENDIF} record
     bLength : Byte;
     bDescriptorType : Byte;
-    wData : array[0..0] of Word;
+    wData : {$IFDEF WIN32}packed{$ENDIF} array[0..0] of Word;
   end;
 
 { HID descriptor  }
   PUSBHIDDescriptor = ^USBHIDDescriptor;
-  USBHIDDescriptor = record
+  USBHIDDescriptor = {$IFDEF WIN32}packed{$ENDIF} record
     bLength : Byte;
     bDescriptorType : Byte;
     bcdHID : Word;
@@ -114,15 +164,8 @@ type
   end;
 
 { Endpoint descriptor  }
-
-const
-  USB_MAXENDPOINTS = 32;
-
-{ Extra descriptors  }
-
-type
   PUSBEndpointDescriptor = ^USBEndpointDescriptor;
-  USBEndpointDescriptor = record
+  USBEndpointDescriptor = {$IFDEF WIN32}packed{$ENDIF} record
     bLength : Byte;
     bDescriptorType : Byte;
     bEndpointAddress : Byte;
@@ -135,24 +178,9 @@ type
     extralen : Longint;
   end;
 
-{ in bEndpointAddress  }
-
-const
-  USB_ENDPOINT_ADDRESS_MASK     = $0f;
-  USB_ENDPOINT_DIR_MASK         = $80;
-{ in bmAttributes  }
-  USB_ENDPOINT_TYPE_MASK        = $03;
-  USB_ENDPOINT_TYPE_CONTROL     = 0;
-  USB_ENDPOINT_TYPE_ISOCHRONOUS = 1;
-  USB_ENDPOINT_TYPE_BULK        = 2;
-  USB_ENDPOINT_TYPE_INTERRUPT   = 3;
-
 { Interface descriptor  }
-const
-  USB_MAXINTERFACES             = 32;
-type
   PUSBInterfaceDescriptor = ^USBInterfaceDescriptor;
-  USBInterfaceDescriptor = record
+  USBInterfaceDescriptor = {$IFDEF WIN32}packed{$ENDIF} record
     bLength : Byte;
     bDescriptorType : Byte;
     bInterfaceNumber : Byte;
@@ -167,22 +195,15 @@ type
     extralen : Longint;
   end;
 
-const
-  USB_MAXALTSETTING = 128; // hard limit
-
-type
-  PUSB_Interface = ^USB_Interface;
-  USB_Interface = record
+  PUSBInterface = ^USBInterface;
+  USBInterface = {$IFDEF WIN32}packed{$ENDIF} record
     altsetting : PUSBInterfaceDescriptor;
     num_altsetting : Longint;
   end;
 
 { Configuration descriptor information..  }
-const
-  USB_MAXCONFIG = 8;
-type
   PUSBConfigDescriptor = ^USBConfigDescriptor;
-  USBConfigDescriptor = record
+  USBConfigDescriptor = {$IFDEF WIN32}packed{$ENDIF} record
     bLength : Byte;
     bDescriptorType : Byte;
     wTotalLength : Word;
@@ -191,14 +212,14 @@ type
     iConfiguration : Byte;
     bmAttributes : Byte;
     MaxPower : Byte;
-    TheInterface : PUSB_Interface;
+    iInterface : PUSBInterface;
     extra : Pbyte; { Extra descriptors  }
     extralen : Longint;
   end;
 
 { Device descriptor  }
   PUSBDeviceDescriptor = ^USBDeviceDescriptor;
-  USBDeviceDescriptor = record
+  USBDeviceDescriptor = {$IFDEF WIN32}packed{$ENDIF} record
     bLength : Byte;
     bDescriptorType : Byte;
     bcdUSB : Word;
@@ -215,7 +236,7 @@ type
     bNumConfigurations : Byte;
   end;
 
-  USBCtrlSetup = record
+  USBCtrlSetup = {$IFDEF WIN32}packed{$ENDIF} record
     bRequestType : Byte;
     bRequest : Byte;
     wValue : Word;
@@ -223,64 +244,45 @@ type
     wLength : Word;
   end;
 
-{  Standard requests  }
-const
-  USB_REQ_GET_STATUS        = $00;
-  USB_REQ_CLEAR_FEATURE     = $01;
-{ 0x02 is reserved  }
-  USB_REQ_SET_FEATURE       = $03;
-{ 0x04 is reserved  }
-  USB_REQ_SET_ADDRESS       = $05;
-  USB_REQ_GET_DESCRIPTOR    = $06;
-  USB_REQ_SET_DESCRIPTOR    = $07;
-  USB_REQ_GET_CONFIGURATION = $08;
-  USB_REQ_SET_CONFIGURATION = $09;
-  USB_REQ_GET_INTERFACE     = $0A;
-  USB_REQ_SET_INTERFACE     = $0B;
-  USB_REQ_SYNCH_FRAME       = $0C;
-  USB_TYPE_STANDARD         = $00 shl 5;
-  USB_TYPE_CLASS            = $01 shl 5;
-  USB_TYPE_VENDOR           = $02 shl 5;
-  USB_TYPE_RESERVED         = $03 shl 5;
-  USB_RECIP_DEVICE          = $00;
-  USB_RECIP_INTERFACE       = $01;
-  USB_RECIP_ENDPOINT        = $02;
-  USB_RECIP_OTHER           = $03;
-{ Various libusb API related stuff  }
-  USB_ENDPOINT_IN           = $80;
-  USB_ENDPOINT_OUT          = $00;
-{ Error codes  }
-  USB_ERROR_BEGIN           = 500000;
-
-type
   PUSBBus = ^USBBus;
 
   PPUSBDevice = ^PUSBDevice;
   PUSBDevice = ^USBDevice;
-  USBDevice = record
+  USBDevice = {$IFDEF WIN32}packed{$ENDIF} record
     next : PUSBDevice;
     prev : PUSBDevice;
-    filename : array[0..LIBUSB_PATH_MAX] of Char;
+    filename : {$IFDEF WIN32}packed{$ENDIF} array[0..LIBUSB_PATH_MAX-1] of Char;
     bus : PUSBBus;
     descriptor : USBDeviceDescriptor;
     config : PUSBConfigDescriptor;
     dev : Pointer;
+{$IFNDEF WIN32}
     devnum : Byte;
     num_children : Byte;
     children : PPUSBDevice;
+{$ENDIF}
   end;
 
-  USBBus = record
+  USBBus = {$IFDEF WIN32}packed{$ENDIF} record
     next : PUSBBus;
     prev : PUSBBus;
-    dirname : array[0..LIBUSB_PATH_MAX] of Char;
+    dirname : {$IFDEF WIN32}packed{$ENDIF} array[0..LIBUSB_PATH_MAX-1] of Char;
     devices : PUSBDevice;
     location : Cardinal;
+{$IFNDEF WIN32}
     root_dev : PUSBDevice;
+{$ENDIF}
   end;
 
-  PUSBDevHandle = ^TUSBDevHandle;
-  TUSBDevHandle = record
+  PUSBDevHandle = ^USBDevHandle;
+  USBDevHandle = {$IFDEF WIN32}packed{$ENDIF} record
+    fd: Integer;
+    bus: PUSBBus;
+    dev: PUSBDevice;
+    cfg: Integer;
+    intfac: Integer;
+    altset: Integer;
+    impl_info: Pointer;
   end;
 
 {$IFNDEF WIN32}
@@ -322,7 +324,10 @@ function usb_find_devices:Longint; cdecl; external;
 function usb_device(dev:PUSBDevHandle):PUSBDevice; cdecl; external;
 function usb_get_busses : PUSBBus; cdecl; external;
 
+
 (*
+int usb_detach_kernel_driver_np(usb_dev_handle *dev, int interface);
+
 function usb_install_service_np(); LongInt; cdecl; external;
 function usb_uninstall_service_np(); LongInt; cdecl; external;
 function usb_install_driver_np(inf_file : PChar) : LongInt; cdecl; external;

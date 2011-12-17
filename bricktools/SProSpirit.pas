@@ -24,7 +24,7 @@ uses
 type
   TSProSpirit = class(TBrickComm)
   private
-    fSerialHandle : LongInt;
+    fSerialHandle : THandle;
     dcResponse : array [0..63] of byte;
   protected
     function  GetPortName: string; override;
@@ -51,13 +51,17 @@ type
     function  GetReplyByte(index: integer): Byte;
     function  GetReplyCardinal(index: integer): Cardinal;
     function  GetReplyWord(index: integer): Word;
-    function MonitorMode : boolean;
+    function  MonitorMode(bCheckFirst : boolean = True) : boolean;
+    function  AlreadyInMonitorMode : boolean;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); override;
     destructor Destroy; override;
 
     function  Open : boolean; override;
     function  Close : boolean; override;
+
+    procedure FlushReceiveBuffer; override;
+    procedure SendRawData(const Data : array of byte); override;
 
     // PBrick sound commands
     function PlayTone(aFreq, aTime : word) : boolean; override;
@@ -193,9 +197,9 @@ type
 
     // NXT only methods
     // NXT direct commands
-    function StartProgram(const filename : string) : boolean; override;
-    function StopProgram : boolean; override;
-    function PlaySoundFile(const filename : string; bLoop : boolean) : boolean; override;
+    function NXTStartProgram(const filename : string) : boolean; override;
+    function NXTStopProgram : boolean; override;
+    function NXTPlaySoundFile(const filename : string; bLoop : boolean) : boolean; override;
     function GetNXTOutputState(const aPort : byte; var power : integer;
       var mode, regmode : byte; var turnratio : integer;
       var runstate : byte; var tacholimit : cardinal; var tachocount,
@@ -207,20 +211,20 @@ type
       var stype, smode : byte; var raw, normalized : word;
       var scaled, calvalue : smallint) : boolean; override;
     function SetNXTInputMode(const aPort, stype, smode : byte) : boolean; override;
-    function ResetInputScaledValue(const aPort : byte) : boolean; override;
-    function ResetOutputPosition(const aPort : byte; const Relative : boolean) : boolean; override;
-    function MessageWrite(const inbox : byte; const msg : string) : boolean; override;
-    function KeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; override;
-    function LSGetStatus(aPort : byte; var bytesReady : byte) : boolean; override;
-    function GetCurrentProgramName(var name : string) : boolean; override;
-    function GetButtonState(const idx : byte; const reset : boolean;
+    function NXTResetInputScaledValue(const aPort : byte) : boolean; override;
+    function NXTResetOutputPosition(const aPort : byte; const Relative : boolean) : boolean; override;
+    function NXTMessageWrite(const inbox : byte; const msg : string) : boolean; override;
+    function NXTKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; override;
+    function NXTLSGetStatus(aPort : byte; var bytesReady : byte) : boolean; override;
+    function NXTGetCurrentProgramName(var name : string) : boolean; override;
+    function NXTGetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; override;
-    function MessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; override;
-    function SetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
-    function GetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
-    function SetVMState(const state : byte) : boolean; override;
-    function SetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
-    function GetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
+    function NXTMessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; override;
+    function NXTSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
+    function NXTGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
+    function NXTSetVMState(const state : byte) : boolean; override;
+    function NXTSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
+    function NXTGetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
     // NXT system commands
     function NXTOpenRead(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; override;
@@ -267,8 +271,8 @@ type
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
     function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
     // wrapper functions
-    function DownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
-    function DownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
+    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
+    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
     function NXTUploadFile(const filename : string; const dir : string = '') : boolean; override;
     function NXTUploadFileToStream(const filename : string; aStream : TStream) : boolean; override;
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
@@ -306,10 +310,10 @@ begin
 {$ENDIF}
 end;
 
-function SProSerialOpen(const DeviceName: String): LongInt;
+function SProSerialOpen(const DeviceName: String): THandle;
 begin
   Result := SerialOpen(DeviceName);
-  if Result > 0 then
+  if SerialIsHandleValid(Result) then
   begin
     SerialSetParams(Result, 115200, 8, NOPARITY, ONESTOPBIT);
     SerialSetDTR(Result, True);
@@ -322,6 +326,7 @@ end;
 constructor TSProSpirit.Create(aType: byte; const aPort: string);
 begin
   inherited Create(aType, aPort);
+  fSerialHandle := INVALID_HANDLE_VALUE;
 end;
 
 destructor TSProSpirit.Destroy;
@@ -405,6 +410,7 @@ begin
   Result := inherited Close;
   SerialClose(fSerialHandle);
   fActive := False;
+  fSerialHandle := INVALID_HANDLE_VALUE;
 end;
 
 function TSProSpirit.Open: boolean;
@@ -412,7 +418,7 @@ begin
   Result := IsOpen;
   if not Result then begin
     fSerialHandle := SProSerialOpen(PortName);
-    fActive := fSerialHandle <> 0;
+    fActive := SerialIsHandleValid(fSerialHandle);
     Result := fActive;
   end;
 end;
@@ -470,29 +476,82 @@ begin
   Result := inherited GetIsOpen;
 end;
 
-function TSProSpirit.MonitorMode: boolean;
+function TSProSpirit.MonitorMode(bCheckFirst : boolean) : boolean;
 var
-  Buf : PChar;
+  Data : TBytes;
+  i, len : integer;
 begin
-  // send ^D^D^D^D
-  Buf := PChar(#04#04#04#04);
-  Result := SerialWrite(fSerialHandle, Buf, 4) = 4;
-  SerialFlushRead(fSerialHandle, 10);
+  Result := False;
+  if IsOpen then
+  begin
+    // are we in monitor mode already?
+    if bCheckFirst then
+    begin
+      Result := AlreadyInMonitorMode;
+      if Result then Exit;
+    end;
+
+    // send ^D^D^D^D
+    if bCheckFirst then
+      len := 3
+    else
+      len := 4;
+    SetLength(Data, len);
+    for i := 0 to len - 1 do
+      Data[i] := 4;
+    if SerialWrite(fSerialHandle, Data, len) = len then
+      DoDataSend(Data);
+    SetLength(Data, 0);
+    Result := SerialFlushRead(fSerialHandle, 50, Data);
+    DoDataReceive(Data);
+  end;
 end;
 
-function TSProSpirit.StartProgram(const filename: string): boolean;
+function TSProSpirit.AlreadyInMonitorMode: boolean;
+var
+  Data : TBytes;
+  i : integer;
+begin
+  Result := False;
+  if IsOpen then
+  begin
+    // send any non-command character
+    SetLength(Data, 1);
+    Data[0] := 4;
+    if SerialWrite(fSerialHandle, Data, 1) = 1 then
+      DoDataSend(Data);
+    SetLength(Data, 0);
+    Result := SerialFlushRead(fSerialHandle, 50, Data);
+    // check response for 04 byte
+    if Result then
+    begin
+      Result := False;
+      for i := 0 to Length(Data) - 1 do
+      begin
+        if Data[i] = 4 then
+        begin
+          Result := True;
+          break;
+        end;
+      end;
+    end;
+    DoDataReceive(Data);
+  end;
+end;
+
+function TSProSpirit.NXTStartProgram(const filename: string): boolean;
 begin
   Result := StartTask(0);
 end;
 
-function TSProSpirit.StopProgram: boolean;
+function TSProSpirit.NXTStopProgram: boolean;
 begin
   Result := Open;
   if not Result then Exit;
-  Result := MonitorMode; // this stops any running program
+  Result := MonitorMode(True); // this stops any running program
 end;
 
-function TSProSpirit.PlaySoundFile(const filename: string; bLoop: boolean): boolean;
+function TSProSpirit.NXTPlaySoundFile(const filename: string; bLoop: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -544,32 +603,32 @@ begin
   if not Result then Exit;
 end;
 
-function TSProSpirit.ResetInputScaledValue(const aPort: byte): boolean;
+function TSProSpirit.NXTResetInputScaledValue(const aPort: byte): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.ResetOutputPosition(const aPort: byte;
+function TSProSpirit.NXTResetOutputPosition(const aPort: byte;
   const Relative: boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.MessageWrite(const inbox: byte; const msg: string): boolean;
+function TSProSpirit.NXTMessageWrite(const inbox: byte; const msg: string): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.KeepAlive(var time: cardinal; const chkResponse : boolean): boolean;
+function TSProSpirit.NXTKeepAlive(var time: cardinal; const chkResponse : boolean): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
 end;
 
-function TSProSpirit.LSGetStatus(aPort : byte; var bytesReady: byte): boolean;
+function TSProSpirit.NXTLSGetStatus(aPort : byte; var bytesReady: byte): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -585,13 +644,13 @@ begin
   if aPort = 0 then Exit;
 end;
 
-function TSProSpirit.GetCurrentProgramName(var name: string): boolean;
+function TSProSpirit.NXTGetCurrentProgramName(var name: string): boolean;
 begin
   Result := IsOpen;
   name := '';
 end;
 
-function TSProSpirit.GetButtonState(const idx: byte; const reset: boolean;
+function TSProSpirit.NXTGetButtonState(const idx: byte; const reset: boolean;
   var pressed: boolean; var count: byte): boolean;
 begin
   Result := IsOpen;
@@ -599,7 +658,7 @@ begin
   count := 0;
 end;
 
-function TSProSpirit.MessageRead(const remote, local: byte;
+function TSProSpirit.NXTMessageRead(const remote, local: byte;
   const remove: boolean; var Msg: NXTMessage): boolean;
 begin
   Msg.Inbox := 0;
@@ -791,7 +850,7 @@ begin
   Bricks.Clear;
 end;
 
-function TSProSpirit.DownloadFile(const filename: string; const filetype: TNXTFileType): boolean;
+function TSProSpirit.NXTDownloadFile(const filename: string; const filetype: TNXTFileType): boolean;
 var
   MS : TMemoryStream;
 begin
@@ -803,20 +862,21 @@ begin
     MS := TMemoryStream.Create;
     try
       MS.LoadFromFile(filename);
-      Result := DownloadStream(MS, filename, filetype);
+      Result := NXTDownloadStream(MS, filename, filetype);
     finally
       MS.Free;
     end;
   end;
 end;
 
-function TSProSpirit.DownloadStream(aStream: TStream; const dest : string;
+function TSProSpirit.NXTDownloadStream(aStream: TStream; const dest : string;
   const filetype: TNXTFileType): boolean;
 var
   b1, b2, b3 : byte;
   SL : TStringList;
   i, len : integer;
   tmp : string;
+  Data : TBytes;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -837,7 +897,9 @@ begin
   Result := (b1 = $0D) and (b2 = $0A) and (b3 = $1A);
   if not Result then Exit;
 
-  SerialFlushRead(fSerialHandle, 10);
+  SetLength(Data, 0);
+  SerialFlushRead(fSerialHandle, 50, Data);
+  DoDataReceive(Data);
 
   aStream.Position := 0;
   SL := TStringList.Create;
@@ -849,13 +911,26 @@ begin
       tmp := SL[i] + #13#10;  // need to send CRLF after each line (doh!)
       len := Length(tmp);
       Result := SerialWrite(fSerialHandle, PChar(tmp), len) = len;
+      if Result then
+        DoDataSend(tmp);
       if not Result then Exit;
       // read echo until we (eventually) get the LF echo
+      SetLength(Data, 0);
       b1 := 0;
       while b1 <> $0A do
-        SerialRead(fSerialHandle, @b1, 1, 10);
+      begin
+        if SerialRead(fSerialHandle, @b1, 1, 50) = 1 then
+        begin
+          SetLength(Data, Length(Data)+1); // extend the array
+          Data[Length(Data)-1] := b1;
+        end;
+      end;
+      if Length(Data) > 0 then
+        DoDataReceive(Data);
       // once we get the LF then drain anything else
-      SerialFlushRead(fSerialHandle, 10);
+      SetLength(Data, 0);
+      SerialFlushRead(fSerialHandle, 50, Data);
+      DoDataReceive(Data);
     end;
   finally
     SL.Free;
@@ -1252,6 +1327,7 @@ end;
 function TSProSpirit.SelectProgram(aProg: integer): boolean;
 var
   Buf : Char;
+  Data : TBytes;
 begin
   Result := Open;
   if Result then
@@ -1262,14 +1338,18 @@ begin
     begin
       Buf := Chr(47+aProg);
       Result := SerialWrite(fSerialHandle, @Buf, 1) = 1;
-      SerialFlushRead(fSerialHandle, 10);
+      if Result then
+        DoDataSend(Byte(Buf));
+      SetLength(Data, 0);
+      SerialFlushRead(fSerialHandle, 50, Data);
+      DoDataReceive(Data);
     end;
   end;
 end;
 
 function TSProSpirit.SendMessage(aMsg: integer): boolean;
 begin
-  Result := MessageWrite(0, IntToStr(aMsg));
+  Result := NXTMessageWrite(0, IntToStr(aMsg));
 end;
 
 function TSProSpirit.SendRawCommand(aCmd: string; bRetry: boolean): string;
@@ -1417,6 +1497,7 @@ end;
 function TSProSpirit.StartTask(aTask: integer): boolean;
 var
   Buf : Char;
+  Data : TBytes;
 begin
   Result := Open;
   if Result then
@@ -1427,14 +1508,18 @@ begin
     begin
       Buf := 'T'; // trigger to start program in current slot
       Result := SerialWrite(fSerialHandle, @Buf, 1) = 1;
-      SerialFlushRead(fSerialHandle, 10);
+      if Result then
+        DoDataSend(Byte(Buf));
+      SetLength(Data, 0);
+      SerialFlushRead(fSerialHandle, 50, Data);
+      DoDataReceive(Data);
     end;
   end;
 end;
 
 function TSProSpirit.StopAllTasks: boolean;
 begin
-  Result := StopProgram;
+  Result := NXTStopProgram;
 end;
 
 function TSProSpirit.StopTask(aTask: integer): boolean;
@@ -1455,8 +1540,13 @@ begin
 end;
 
 function TSProSpirit.TowerExists: boolean;
+//var
+//  Buf : PChar;
+//  b1 : Byte;
 begin
   Result := Open;
+//  if Result then
+//    Result := MonitorMode;
 end;
 
 function TSProSpirit.TransmitPower(aLevel: TTransmitLevel): boolean;
@@ -1516,28 +1606,28 @@ begin
   Result := False;
 end;
 
-function TSProSpirit.GetVMState(var state: byte; var clump : byte; var pc : word): boolean;
+function TSProSpirit.NXTGetVMState(var state: byte; var clump : byte; var pc : word): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.SetVMStateEx(var state, clump: byte; var pc: word): boolean;
+function TSProSpirit.NXTSetVMStateEx(var state, clump: byte; var pc: word): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.SetVMState(const state: byte): boolean;
+function TSProSpirit.NXTSetVMState(const state: byte): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.GetPropDebugging(var debugging : boolean; var pauseClump: byte;
+function TSProSpirit.NXTGetPropDebugging(var debugging : boolean; var pauseClump: byte;
   var pausePC: Word): boolean;
 begin
   Result := False;
 end;
 
-function TSProSpirit.SetPropDebugging(const debugging : boolean; const pauseClump: byte;
+function TSProSpirit.NXTSetPropDebugging(const debugging : boolean; const pauseClump: byte;
   const pausePC: Word): boolean;
 begin
   Result := False;
@@ -1550,6 +1640,30 @@ end;
 function TSProSpirit.GetPortName: string;
 begin
   Result := '\\.\'+fPort;
+end;
+
+procedure TSProSpirit.FlushReceiveBuffer;
+var
+  Data : TBytes;
+begin
+  if IsOpen then
+  begin
+    SetLength(Data, 0);
+    SerialFlushRead(fSerialHandle, 50, Data);
+    DoDataReceive(Data);
+  end;
+end;
+
+procedure TSProSpirit.SendRawData(const Data: array of byte);
+var
+  len : integer;
+begin
+  if IsOpen then
+  begin
+    len := Length(Data);
+    if SerialWrite(fSerialHandle, @(Data[0]), len) = len then
+      DoDataSend(Data);
+  end;
 end;
 
 end.

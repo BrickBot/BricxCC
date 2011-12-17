@@ -73,6 +73,9 @@ type
     function  Open : boolean; override;
     function  Close : boolean; override;
 
+    procedure FlushReceiveBuffer; override;
+    procedure SendRawData(const Data : array of byte); override;
+
     // PBrick sound commands
     function PlayTone(aFreq, aTime : word) : boolean; override;
     function PlaySystemSound(aSnd : byte) : boolean; override;
@@ -207,9 +210,9 @@ type
 
     // NXT only methods
     // NXT direct commands
-    function StartProgram(const filename : string) : boolean; override;
-    function StopProgram : boolean; override;
-    function PlaySoundFile(const filename : string; bLoop : boolean) : boolean; override;
+    function NXTStartProgram(const filename : string) : boolean; override;
+    function NXTStopProgram : boolean; override;
+    function NXTPlaySoundFile(const filename : string; bLoop : boolean) : boolean; override;
     function GetNXTOutputState(const aPort : byte; var power : integer;
       var mode, regmode : byte; var turnratio : integer;
       var runstate : byte; var tacholimit : cardinal; var tachocount,
@@ -221,20 +224,20 @@ type
       var stype, smode : byte; var raw, normalized : word;
       var scaled, calvalue : smallint) : boolean; override;
     function SetNXTInputMode(const aPort, stype, smode : byte) : boolean; override;
-    function ResetInputScaledValue(const aPort : byte) : boolean; override;
-    function ResetOutputPosition(const aPort : byte; const Relative : boolean) : boolean; override;
-    function MessageWrite(const inbox : byte; const msg : string) : boolean; override;
-    function KeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; override;
-    function LSGetStatus(aPort : byte; var bytesReady : byte) : boolean; override;
-    function GetCurrentProgramName(var name : string) : boolean; override;
-    function GetButtonState(const idx : byte; const reset : boolean;
+    function NXTResetInputScaledValue(const aPort : byte) : boolean; override;
+    function NXTResetOutputPosition(const aPort : byte; const Relative : boolean) : boolean; override;
+    function NXTMessageWrite(const inbox : byte; const msg : string) : boolean; override;
+    function NXTKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; override;
+    function NXTLSGetStatus(aPort : byte; var bytesReady : byte) : boolean; override;
+    function NXTGetCurrentProgramName(var name : string) : boolean; override;
+    function NXTGetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; override;
-    function MessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; override;
-    function SetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
-    function GetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
-    function SetVMState(const state : byte) : boolean; override;
-    function SetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
-    function GetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
+    function NXTMessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; override;
+    function NXTSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
+    function NXTGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
+    function NXTSetVMState(const state : byte) : boolean; override;
+    function NXTSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
+    function NXTGetVMState(var state : byte; var clump : byte; var pc : word) : boolean; override;
     // NXT system commands
     function NXTOpenRead(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; override;
@@ -282,8 +285,8 @@ type
   kNXT_SCGetBTAddress          = $9A;
 }
     // wrapper functions
-    function DownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
-    function DownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
+    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
+    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
     function NXTUploadFile(const filename : string; const dir : string = '') : boolean; override;
     function NXTUploadFileToStream(const filename : string; aStream : TStream) : boolean; override;
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
@@ -853,7 +856,7 @@ end;
 
 function TFantomSpirit.ClearSensorValue(aNum: integer): boolean;
 begin
-  Result := ResetInputScaledValue(Byte(aNum));
+  Result := NXTResetInputScaledValue(Byte(aNum));
 end;
 
 function TFantomSpirit.Close: boolean;
@@ -1043,7 +1046,7 @@ begin
     try
       MS.LoadFromFile(aFile);
       DoDownloadStart;
-      Result := DownloadStream(MS, aFile, nftFirmware);
+      Result := NXTDownloadStream(MS, aFile, nftFirmware);
       DoDownloadDone;
     finally
       MS.Free;
@@ -1058,7 +1061,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   time := 0;
-  Result := KeepAlive(time);
+  Result := NXTKeepAlive(time);
 end;
 
 function TFantomSpirit.MuteSound: boolean;
@@ -1120,7 +1123,7 @@ begin
   Result := Result and FantomAPILoaded;
 end;
 
-function TFantomSpirit.StartProgram(const filename: string): boolean;
+function TFantomSpirit.NXTStartProgram(const filename: string): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
@@ -1143,7 +1146,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.StopProgram: boolean;
+function TFantomSpirit.NXTStopProgram: boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
@@ -1164,7 +1167,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.PlaySoundFile(const filename: string; bLoop: boolean): boolean;
+function TFantomSpirit.NXTPlaySoundFile(const filename: string; bLoop: boolean): boolean;
 var
   i : integer;
   cmd : TNINxtCmd;
@@ -1309,7 +1312,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.ResetInputScaledValue(const aPort: byte): boolean;
+function TFantomSpirit.NXTResetInputScaledValue(const aPort: byte): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
@@ -1327,7 +1330,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.ResetOutputPosition(const aPort: byte;
+function TFantomSpirit.NXTResetOutputPosition(const aPort: byte;
   const Relative: boolean): boolean;
 var
   cmd : TNINxtCmd;
@@ -1346,7 +1349,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.MessageWrite(const inbox: byte; const msg: string): boolean;
+function TFantomSpirit.NXTMessageWrite(const inbox: byte; const msg: string): boolean;
 var
   i, len : integer;
   cmd : TNINxtCmd;
@@ -1385,7 +1388,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.KeepAlive(var time: cardinal; const chkResponse : boolean): boolean;
+function TFantomSpirit.NXTKeepAlive(var time: cardinal; const chkResponse : boolean): boolean;
 var
   cmd : TNINxtCmd;
   b : byte;
@@ -1418,7 +1421,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.LSGetStatus(aPort : byte; var bytesReady: byte): boolean;
+function TFantomSpirit.NXTLSGetStatus(aPort : byte; var bytesReady: byte): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
@@ -1507,7 +1510,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.GetCurrentProgramName(var name: string): boolean;
+function TFantomSpirit.NXTGetCurrentProgramName(var name: string): boolean;
 var
   cmd : TNINxtCmd;
   i : integer;
@@ -1538,7 +1541,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.GetButtonState(const idx: byte; const reset: boolean;
+function TFantomSpirit.NXTGetButtonState(const idx: byte; const reset: boolean;
   var pressed: boolean; var count: byte): boolean;
 var
   cmd : TNINxtCmd;
@@ -1561,7 +1564,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.MessageRead(const remote, local: byte;
+function TFantomSpirit.NXTMessageRead(const remote, local: byte;
   const remove: boolean; var Msg: NXTMessage): boolean;
 var
   cmd : TNINxtCmd;
@@ -2193,7 +2196,7 @@ begin
   iNXT_destroyModuleIterator(fNXTHandle, NXTModuleIteratorHandle, status);
 end;
 
-function TFantomSpirit.DownloadFile(const filename: string;
+function TFantomSpirit.NXTDownloadFile(const filename: string;
   const filetype: TNXTFileType): boolean;
 var
   MS : TMemoryStream;
@@ -2207,7 +2210,7 @@ begin
     MS := TMemoryStream.Create;
     try
       MS.LoadFromFile(filename);
-      Result := DownloadStream(MS, filename, filetype);
+      Result := NXTDownloadStream(MS, filename, filetype);
     finally
       MS.Free;
     end;
@@ -2331,7 +2334,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.DownloadStream(aStream: TStream; const dest : string;
+function TFantomSpirit.NXTDownloadStream(aStream: TStream; const dest : string;
   const filetype: TNXTFileType): boolean;
 var
   size : Cardinal;
@@ -2752,7 +2755,7 @@ begin
     begin
       if (MotorBits[i] and aMotorList) = MotorBits[i] then
       begin
-        Result := Result and ResetOutputPosition(i, False);
+        Result := Result and NXTResetOutputPosition(i, False);
         if not Result then Break;
       end;
     end;
@@ -3261,7 +3264,7 @@ end;
 
 function TFantomSpirit.SendMessage(aMsg: integer): boolean;
 begin
-  Result := MessageWrite(0, IntToStr(aMsg));
+  Result := NXTMessageWrite(0, IntToStr(aMsg));
 end;
 
 function TFantomSpirit.SendRawCommand(aCmd: string; bRetry: boolean): string;
@@ -3688,7 +3691,7 @@ begin
     fResPort := fResourceNames.Values[fPort];
 end;
 
-function TFantomSpirit.GetVMState(var state: byte; var clump : byte; var pc : word): boolean;
+function TFantomSpirit.NXTGetVMState(var state: byte; var clump : byte; var pc : word): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
@@ -3709,7 +3712,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.SetVMStateEx(var state, clump: byte; var pc: word): boolean;
+function TFantomSpirit.NXTSetVMStateEx(var state, clump: byte; var pc: word): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
@@ -3730,7 +3733,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.SetVMState(const state: byte): boolean;
+function TFantomSpirit.NXTSetVMState(const state: byte): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
@@ -3748,7 +3751,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.GetPropDebugging(var debugging : boolean; var pauseClump: byte;
+function TFantomSpirit.NXTGetPropDebugging(var debugging : boolean; var pauseClump: byte;
   var pausePC: Word): boolean;
 var
   cmd : TNINxtCmd;
@@ -3770,7 +3773,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.SetPropDebugging(const debugging : boolean; const pauseClump: byte;
+function TFantomSpirit.NXTSetPropDebugging(const debugging : boolean; const pauseClump: byte;
   const pausePC: Word): boolean;
 var
   cmd : TNINxtCmd;
@@ -4011,6 +4014,16 @@ begin
   else
     Result := 0;
   end;
+end;
+
+procedure TFantomSpirit.FlushReceiveBuffer;
+begin
+  //
+end;
+
+procedure TFantomSpirit.SendRawData(const Data: array of byte);
+begin
+  //
 end;
 
 end.

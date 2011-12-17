@@ -94,7 +94,7 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=bricktools;nxt
+SearchPath=bricktools;nxt;png;grep;samplerate
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;dbexpress;dbxcds;inetdb;bdertl;vcldbx;webdsnap;websnap;adortl;ibxpress;visualclx;visualdbclx;vclactnband;dclOfficeXP;teeui;teedb;tee;dss;vclshlctrls;SynEdit_D7;BricxCCSyn_D7;ComDrv32;vcl7cr10;VclSmp;dxGDIPlusD7;cxLibraryVCLD7;dxCoreD7;cxEditorsVCLD7;dxThemeD7;cxDataD7;cxExtEditorsVCLD7;cxPageControlVCLD7;cxGridVCLD7;dxmdsD7;dxNavBarD7
 Conditionals=NXT_ONLY
 DebugSourceDirs=
@@ -134,8 +134,6 @@ OriginalFilename=
 ProductName=
 ProductVersion=1.0.0.0
 Comments=
-[Excluded Packages]
-c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
 [HistoryLists\hlConditionals]
 Count=1
 Item0=NXT_ONLY
@@ -143,5 +141,9 @@ Item0=NXT_ONLY
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=1
-Item0=bricktools;nxt
+Count=5
+Item0=bricktools;nxt;png;grep;samplerate
+Item1=bricktools;nxt;png;grep;src
+Item2=bricktools;nxt;png;grep
+Item3=bricktools;nxt;png
+Item4=bricktools;nxt

@@ -263,6 +263,7 @@ type
     procedure AddReference(DE : TDataspaceEntry);
     procedure RemoveReference(DE : TDataspaceEntry);
     function  DataspaceIndex(const ident : string) : Integer;
+    procedure IndexEntry(DE : TDataspaceEntry);
     property  Vectors[index : Integer] : DopeVector read GetVector;
     property  MMHead : Word read fMMHead write fMMHead;
     property  MMTail : Word read fMMTail write fMMTail;
@@ -376,6 +377,7 @@ type
     procedure AddArgs(sargs : string);
     function InstructionSize : integer;
     function ArgsAreSameType : boolean;
+    function ArgsAreCompatibleType : boolean;
     procedure SaveToCode(var Store : CodeArray);
     property LineLabel : string read fLabel write fLabel;
     property Command : TOpcode read fOpCode write fOpCode;
@@ -3589,6 +3591,17 @@ begin
     DE.DSBase.Root.DecRefCount
   else
     DE.DecRefCount;
+end;
+
+procedure TDataspace.IndexEntry(DE: TDataspaceEntry);
+begin
+  // don't do anything if the index is empty
+  if fDSIndexMap.Count > 0 then
+  begin
+    // otherwise add it if it doesn't already exist
+    if fDSIndexMap.IndexOf(DE.FullPathIdentifier) = -1 then
+      fDSIndexMap.AddObject(DE.FullPathIdentifier, DE);
+  end;
 end;
 
 { TDataspaceEntry }
@@ -7919,6 +7932,46 @@ begin
   end;
 end;
 
+function CompatibleDataType(dt1, dt2 : TDSType) : boolean;
+begin
+  if dt1 in [dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong] then
+    Result := dt2 in [dsUByte, dsSByte, dsUWord, dsSWord, dsULong, dsSLong]
+  else
+    Result := dt1 = dt2;
+end;
+
+function TAsmLine.ArgsAreCompatibleType: boolean;
+var
+  i : integer;
+  arg : TAsmArgument;
+  de : TDataspaceEntry;
+  dt : TDSType;
+begin
+  Result := True;
+  if Args.Count > 1 then
+  begin
+    arg := Args[0];
+    de := CodeSpace.Dataspace.FindEntryByFullName(arg.Value);
+    Result := Assigned(de);
+    if Result then
+    begin
+      dt := de.DataType;
+      // now check all the other arguments
+      for i := 1 to Args.Count - 1 do
+      begin
+        arg := Args[i];
+        de := CodeSpace.Dataspace.FindEntryByFullName(arg.Value);
+        Result := Result and Assigned(de);
+        if not Result then
+          break; // exit loop early if Result is false
+        Result := Result and CompatibleDataType(dt, de.DataType);
+        if not Result then
+          break; // exit loop early if Result is false
+      end;
+    end;
+  end;
+end;
+
 { TAsmArguments }
 
 function TAsmArguments.Add: TAsmArgument;
@@ -8744,6 +8797,7 @@ begin
     DE := DSpace.Add;
     DE.Identifier := Result;
     DE.DataType := datatype;
+    DSpace.IndexEntry(DE);
 //    DE.DefaultValue := ValueAsCardinal(val, datatype);
     if datatype = dsFloat then
     begin
@@ -9187,7 +9241,7 @@ begin
             bDone := False;
             Break;
           end;
-          if AL.ArgsAreSameType then
+          if AL.ArgsAreCompatibleType then
           begin
             arg1 := AL.Args[0].Value;
             // find the next line (which may not be i+1) that is not (NOP or labeled)

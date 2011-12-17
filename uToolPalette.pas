@@ -38,23 +38,11 @@ type
   { TfrmNXTTools }
 
   TfrmNXTTools = class(TForm)
-    mniEditPorts: TMenuItem;
     StatusBar1: TStatusBar;
     ToolBar1: TToolBar;
-    ToolBar2: TToolBar;
-    ToolBar3: TToolBar;
     ToolButton1: TToolButton;
-    ToolButton14: TToolButton;
-    ToolButton15: TToolButton;
     ToolButton2: TToolButton;
-    ToolButton24: TToolButton;
-    ToolButton25: TToolButton;
-    ToolButton26: TToolButton;
-    ToolButton27: TToolButton;
-    ToolButton28: TToolButton;
-    ToolButton29: TToolButton;
     ToolButton3: TToolButton;
-    ToolButton32: TToolButton;
     ToolButton4: TToolButton;
     ToolButton5: TToolButton;
     ToolButton6: TToolButton;
@@ -294,7 +282,8 @@ end;
 
 procedure TfrmNXTTools.actCodeExecute(Sender: TObject);
 begin
-  frmCodeEdit.Show;
+  if Assigned(frmCodeEdit) then
+    frmCodeEdit.Show;
 end;
 
 procedure TfrmNXTTools.actClearExecute(Sender: TObject);

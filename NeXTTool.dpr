@@ -289,7 +289,7 @@ begin
         BrickComm.Sleep(ParamIntValue('-sleep', 10));
       if ParamSwitch('-msg') then
       begin
-        BrickComm.MessageWrite(Byte(ParamIntValue('/Inbox', 0)), ParamValue('-msg'));
+        BrickComm.NXTMessageWrite(Byte(ParamIntValue('/Inbox', 0)), ParamValue('-msg'));
       end;
       if ParamSwitch('-battery') then
         OutputValue(BrickComm.BatteryLevel);
@@ -342,18 +342,18 @@ begin
       if ParamSwitch('-playtone') then
         BrickComm.PlayTone(Word(ParamIntValue('-playtone', 440)), Word(ParamIntValue('/Duration', 500)));
       if ParamSwitch('-stop') then
-        BrickComm.StopProgram;
+        BrickComm.NXTStopProgram;
       if ParamSwitch('-playfile') then
-        BrickComm.PlaySoundFile(ParamValue('-playfile'), ParamSwitch('/L'));
+        BrickComm.NXTPlaySoundFile(ParamValue('-playfile'), ParamSwitch('/L'));
       if ParamSwitch('-keepalive') then
       begin
-        if BrickComm.KeepAlive(cvalue) then
+        if BrickComm.NXTKeepAlive(cvalue) then
           OutputValue(cvalue div 60000);
       end;
       if ParamSwitch('-resetoutputposition') then
-        BrickComm.ResetOutputPosition(Byte(ParamIntValue('-resetoutputposition', 0)), ParamSwitch('/Relative'));
+        BrickComm.NXTResetOutputPosition(Byte(ParamIntValue('-resetoutputposition', 0)), ParamSwitch('/Relative'));
       if ParamSwitch('-resetinputsv') then
-        BrickComm.ResetInputScaledValue(Byte(ParamIntValue('-resetinputsv', 0)));
+        BrickComm.NXTResetInputScaledValue(Byte(ParamIntValue('-resetinputsv', 0)));
       if ParamSwitch('-upload') then
       begin
         pattern := ParamValue('-upload');
@@ -365,10 +365,10 @@ begin
       begin
         pattern := ParamValue('-download');
         if pattern <> '' then
-          BrickComm.DownloadFile(pattern, NameToNXTFileType(pattern));
+          BrickComm.NXTDownloadFile(pattern, NameToNXTFileType(pattern));
       end;
       if ParamSwitch('-run') then begin
-        BrickComm.StartProgram(ParamValue('-run'));
+        BrickComm.NXTStartProgram(ParamValue('-run'));
       end;
       if ParamSwitch('-delete') then
       begin
@@ -403,7 +403,7 @@ begin
       end;
       if ParamSwitch('-runningprogram') then
       begin
-        if BrickComm.GetCurrentProgramName(pattern) then
+        if BrickComm.NXTGetCurrentProgramName(pattern) then
           Writeln(pattern);
       end;
       if ParamSwitch('-setname') then
@@ -444,24 +444,24 @@ begin
       if ParamSwitch('-lsstatus') then
       begin
         port := ParamIntValue('-lsstatus', 0);
-        if BrickComm.LSGetStatus(Byte(port), bytesReady) then
+        if BrickComm.NXTLSGetStatus(Byte(port), bytesReady) then
           OutputValue(bytesReady);
       end;
       if ParamSwitch('-btnstate') then
       begin
         port := ParamIntValue('-btnstate', 0);
-        if BrickComm.GetButtonState(Byte(port), False, pressed, btncount) then
+        if BrickComm.NXTGetButtonState(Byte(port), False, pressed, btncount) then
           Writeln(Format('Button %d: pressed = %s, count = %d', [port, BoolToStr(pressed), btncount]));
       end;
       if ParamSwitch('-resetbtnstate') then
       begin
         port := ParamIntValue('-resetbtnstate', 0);
-        BrickComm.GetButtonState(Byte(port), True, pressed, btncount);
+        BrickComm.NXTGetButtonState(Byte(port), True, pressed, btncount);
       end;
       if ParamSwitch('-readmsg') then
       begin
         port := ParamIntValue('-readmsg', 0);
-        if BrickComm.MessageRead(Byte(port), Byte(ParamIntValue('/Inbox', 0)), ParamSwitch('/Empty'), Msg) then
+        if BrickComm.NXTMessageRead(Byte(port), Byte(ParamIntValue('/Inbox', 0)), ParamSwitch('/Empty'), Msg) then
         begin
           for i := 0 to Msg.Size - 1 do
             OutputValue(Msg.Data[i]);

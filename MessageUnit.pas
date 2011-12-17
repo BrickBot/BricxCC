@@ -86,7 +86,7 @@ begin
   if LocalBrickType <> SU_NXT then
     BrickComm.SendMessage(TButton(Sender).Tag)
   else
-    BrickComm.MessageWrite(GetInBox, GetMessage(Sender));
+    BrickComm.NXTMessageWrite(GetInBox, GetMessage(Sender));
 end;
 
 procedure TMessageForm.SendButtonClick(Sender: TObject);
@@ -94,7 +94,7 @@ begin
   if LocalBrickType <> SU_NXT then
     BrickComm.SendMessage(edtMessageNum.Value)
   else
-    BrickComm.MessageWrite(GetInBox, GetMessage(Sender));
+    BrickComm.NXTMessageWrite(GetInBox, GetMessage(Sender));
 end;
 
 procedure TMessageForm.btnHelpClick(Sender: TObject);
@@ -156,7 +156,7 @@ end;
 
 procedure TMessageForm.btnSendNXTClick(Sender: TObject);
 begin
-  BrickComm.MessageWrite(GetInBox, GetMessage(Sender));
+  BrickComm.NXTMessageWrite(GetInBox, GetMessage(Sender));
 end;
 
 {$IFDEF FPC}

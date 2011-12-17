@@ -248,7 +248,7 @@ begin
       end
       else if FileIsNBCOrNXC then
       begin
-        if BrickComm.GetCurrentProgramName(name) then
+        if BrickComm.NXTGetCurrentProgramName(name) then
         begin
           Accessible := CurrentProgram.Loaded(name);
         end;

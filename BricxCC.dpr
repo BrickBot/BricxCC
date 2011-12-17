@@ -123,6 +123,7 @@ uses
   uHexViewer in 'uHexViewer.pas' {frmHexView},
   uTextViewer in 'uTextViewer.pas' {frmTextView},
   uNXTWatchList in 'uNXTWatchList.pas' {frmNXTWatchList},
+  uSimpleTerm in 'uSimpleTerm.pas' {frmSimpleTerm},
   uNXTImage in 'uNXTImage.pas' {frmNXTImage};
 
 {$IFNDEF FPC}
@@ -186,6 +187,7 @@ begin
   Application.CreateForm(TfrmNXTController, frmNXTController);
   Application.CreateForm(TfrmNXTImage, frmNXTImage);
   Application.CreateForm(TfrmNXTWatchList, frmNXTWatchList);
+  Application.CreateForm(TfrmSimpleTerm, frmSimpleTerm);
   if not ParamSwitch('/RESET') then
     UpgradeRegistry(nil, nil, nil, nil, nil, nil); // must be done before creating preferences form
   if ParamSwitch('-EMBEDDING') or ParamSwitch('-AUTOMATION') then

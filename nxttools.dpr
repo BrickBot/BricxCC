@@ -52,7 +52,12 @@ uses
   Watch in 'Watch.pas' {WatchForm},
   uMIDIConversion in 'uMIDIConversion.pas' {frmMIDIConversion},
   uWav2RSO in 'uWav2RSO.pas' {frmWave2RSO},
-  MemoryUnit in 'MemoryUnit.pas';
+  MemoryUnit in 'MemoryUnit.pas',
+  CodeUnit in 'CodeUnit.pas',
+  uMacroForm in 'uMacroForm.pas',
+  ConstructUnit in 'ConstructUnit.pas',
+  uCodeExplorer in 'uCodeExplorer.pas',
+  ucodeedit in 'ucodeedit.pas' {frmCodeEdit};
 
 {$IFNDEF FPC}
 {$R *.res}
@@ -82,6 +87,11 @@ begin
     Application.CreateForm(TWatchForm, WatchForm);
     Application.CreateForm(TfrmWave2RSO, frmWave2RSO);
     Application.CreateForm(TMemoryForm, MemoryForm);
+    Application.CreateForm(TConstructForm, ConstructForm);
+    Application.CreateForm(TCodeForm, CodeForm);
+    Application.CreateForm(TfrmMacroManager, frmMacroManager);
+    Application.CreateForm(TfrmCodeExplorer, frmCodeExplorer);
+    Application.CreateForm(TfrmCodeEdit, frmCodeEdit);
 {$IFNDEF FPC}
     Application.CreateForm(TfrmHexView, frmHexView);
 {$ENDIF}
@@ -100,9 +110,9 @@ begin
       Free;
     end;
     Application.Run;
+  finally
     SaveRemoteValues(reg);
     SaveJoystickValues(reg);
-  finally
     reg.Free;
   end;
 end.
