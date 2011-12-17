@@ -526,7 +526,7 @@ uses
   uGlobals, uHighlighterProcs, brick_common, FantomSpirit,
   dlgSearchText, dlgReplaceText, dlgConfirmReplace,// DTestPrintPreview,
   uEditorUtils, uMiscDefines, rcx_constants, uLocalizedStrings,
-  uParseCommon, uNXTExplorer
+  uParseCommon, uNXTExplorer, uCompTokens
   ;
 
 
@@ -2326,7 +2326,7 @@ begin
         if (binext = '.rxe') and not CurrentProgram.Loaded(Fname) then
           DoCompileAction(False, False);
 
-        BrickComm.StartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
+        BrickComm.NXTStartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
         fNXTVMState := kNXT_VMState_RunFree;
         actCompilePause.Caption := sBreakAll;
         // make sure the variable watch event handlers are hooked up
@@ -2641,6 +2641,12 @@ procedure TfrmCodeEdit.SetSyntaxHighlighter;
 begin
   if IsNew then
   begin
+{$IFDEF NXT_ONLY}
+    if PreferredLanguage = 0 then
+      Self.Highlighter := SynNXCSyn
+    else
+      Self.Highlighter := SynNBCSyn;
+{$ELSE}
     if PreferredLanguage = 0 then
     begin
       if LocalBrickType = SU_NXT then
@@ -2652,6 +2658,7 @@ begin
       Self.Highlighter := SynNBCSyn
     else if PreferredLanguage = 5 then
       Self.Highlighter := SynSPCSyn;
+{$ENDIF}
   end
   else
     Self.Highlighter := GetHighlighterForFile(Filename);
@@ -3364,7 +3371,9 @@ begin
   TheEditor.Gutter.ShowLineNumbers := ShowLineNumbers;
   TheEditor.Gutter.ZeroStart       := ZeroStart;
   TheEditor.Gutter.UseFontStyle    := UseFontStyle;
+{$IFNDEF NXT_ONLY}
   TheEditor.Keystrokes.Assign(PrefForm.Keystrokes);
+{$ENDIF}
 {$ELSE} // FPC
   TheEditor.Gutter.LineNumberPart.Visible := ShowLineNumbers;
   TheEditor.Gutter.LineNumberPart(0).ShowOnlyLineNumbersMultiplesOf := GutterLNMultiple;
@@ -3907,7 +3916,7 @@ begin
     else if FileIsNBCOrNXC then
     begin
       Accessible := False;
-      if BrickComm.GetCurrentProgramName(name) then
+      if BrickComm.NXTGetCurrentProgramName(name) then
       begin
         Accessible := CurrentProgram.Loaded(name);
       end;

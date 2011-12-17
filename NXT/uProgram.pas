@@ -662,21 +662,21 @@ begin
   // use kNXT_VMState_Single instead of kNXT_VMState_Pause because for
   // some unexplained reason I get back NOT_A_CLUMP (0xFF) for the current
   // clump when I use kNXT_VMState_Pause
-  Result := BrickComm.SetVMState(kNXT_VMState_Single);
+  Result := BrickComm.NXTSetVMState(kNXT_VMState_Single);
   if Result then
-    Result := BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+    Result := BrickComm.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
 end;
 
 function TProgram.Run: boolean;
 begin
   // is the program already running?
   if fNXTVMState = kNXT_VMState_Idle then
-    Result := BrickComm.StartProgram(ChangeFileExt(fName, '.rxe'))
+    Result := BrickComm.NXTStartProgram(ChangeFileExt(fName, '.rxe'))
   else
   begin
-    Result := BrickComm.SetVMState(kNXT_VMState_RunFree);
+    Result := BrickComm.NXTSetVMState(kNXT_VMState_RunFree);
     if Result then
-      Result := BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := BrickComm.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
   end;
 end;
 
@@ -703,12 +703,12 @@ begin
   Result := True;
   while (newLine = curLine) and Result do
   begin
-    if bc.SetVMState(kNXT_VMState_Single) then
+    if bc.NXTSetVMState(kNXT_VMState_Single) then
     begin
       fNXTVMState := kNXT_VMState_Idle;
       fNXTClump   := $FF;
       fNXTProgramCounter := 0;
-      Result := bc.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := bc.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
       if Result and (fNXTClump < CurrentProgram.Count) then
       begin
         CD := CurrentProgram[fNXTClump];
@@ -790,12 +790,12 @@ begin
   while ((newLine = curLine) or
          ((oldClump <> $FF) and (oldClump <> fNXTClump))) and Result do
   begin
-    if bc.SetVMState(kNXT_VMState_Single) then
+    if bc.NXTSetVMState(kNXT_VMState_Single) then
     begin
       fNXTVMState := kNXT_VMState_Idle;
       fNXTClump   := $FF;
       fNXTProgramCounter := 0;
-      Result := bc.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := bc.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
       if Result and (fNXTClump < CurrentProgram.Count) then
       begin
         CD := CurrentProgram[fNXTClump];
@@ -926,7 +926,7 @@ begin
   fNXTVMState := kNXT_VMState_Idle;
   fNXTClump   := $FF;
   fNXTProgramCounter := 0;
-  BrickComm.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+  BrickComm.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
   Result := fNXTVMState;
 end;
 
@@ -935,9 +935,9 @@ begin
   // before stopping the program make sure the VM State is RunFree
   if bEnhanced and (fNXTVMState = kNXT_VMState_Pause) then
   begin
-    BrickComm.SetVMState(kNXT_VMState_RunFree);
+    BrickComm.NXTSetVMState(kNXT_VMState_RunFree);
   end;
-  Result := BrickComm.StopProgram;
+  Result := BrickComm.NXTStopProgram;
   fNXTVMState := kNXT_VMState_Idle;
 end;
 
@@ -964,12 +964,12 @@ begin
   Result := True;
   while (aLine > curLine) and Result do
   begin
-    if bc.SetVMState(kNXT_VMState_Single) then
+    if bc.NXTSetVMState(kNXT_VMState_Single) then
     begin
       fNXTVMState := kNXT_VMState_Idle;
       fNXTClump   := $FF;
       fNXTProgramCounter := 0;
-      Result := bc.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := bc.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
       if Result and (fNXTClump < CurrentProgram.Count) then
       begin
         CD := CurrentProgram[fNXTClump];
@@ -1009,12 +1009,12 @@ begin
   oldClump := fNXTClump;
   while (oldClump = fNXTClump) and Result do
   begin
-    if bc.SetVMState(kNXT_VMState_Single) then
+    if bc.NXTSetVMState(kNXT_VMState_Single) then
     begin
       fNXTVMState := kNXT_VMState_Idle;
       fNXTClump   := $FF;
       fNXTProgramCounter := 0;
-      Result := bc.GetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
+      Result := bc.NXTGetVMState(fNXTVMState, fNXTClump, fNXTProgramCounter);
     end
     else
       Result := False;

@@ -94,7 +94,7 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=bricktools;NXT;samplerate;png
+SearchPath=bricktools;NXT;samplerate;png;grep
 Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;VclSmp;dbexpress;dbxcds;inetdb;bdertl;vcldbx;webdsnap;websnap;adortl;ibxpress;teeui;teedb;tee;dss;visualclx;visualdbclx;vclactnband;vclshlctrls;dclOfficeXP;SynEdit_D7;BricxCCSyn_D7;ComDrv32;dxGDIPlusD7;cxLibraryVCLD7;cxEditorsVCLD7;dxThemeD7;cxDataD7;cxExtEditorsVCLD7;cxPageControlVCLD7;cxGridVCLD7;dxmdsD7;dxNavBarD7
 Conditionals=NXT_ONLY
 DebugSourceDirs=
@@ -134,8 +134,6 @@ OriginalFilename=nxttools.exe
 ProductName=NeXT Tools
 ProductVersion=1.0.0.0
 Comments=
-[Excluded Packages]
-c:\winapps\borland\delphi7\Projects\Bpl\TCSComp_65.bpl=TCS Components 6.5
 [HistoryLists\hlDebugSourcePath]
 Count=1
 Item0=G:\nxt\BricxCC\source\NXT\
@@ -147,10 +145,11 @@ Item1=FAST_MM, CAN_DOWNLOAD
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=6
-Item0=bricktools;NXT;samplerate;png
-Item1=bricktools;NXT;png
-Item2=bricktools;NXT
-Item3=bricktools;NXT;samplerate
-Item4=bricktools
-Item5=bricktools;NXT;samplerate;png;syn
+Count=7
+Item0=bricktools;NXT;samplerate;png;grep
+Item1=bricktools;NXT;samplerate;png
+Item2=bricktools;NXT;png
+Item3=bricktools;NXT
+Item4=bricktools;NXT;samplerate
+Item5=bricktools
+Item6=bricktools;NXT;samplerate;png;syn

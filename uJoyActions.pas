@@ -53,9 +53,6 @@ type
     property Inbox : integer read GetInbox write SetInbox;
   end;
 
-var
-  frmJoyActions: TfrmJoyActions;
-
 implementation
 
 {$IFNDEF FPC}

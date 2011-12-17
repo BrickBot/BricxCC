@@ -3,19 +3,26 @@ unit uSerial;
 interface
 
 const
+  INVALID_HANDLE_VALUE = Cardinal(-1);
+  
+const
   MAX_SERIAL_IDX = 128;
 
+type
+  TBytes = array of byte;
+
 function GetSerialDeviceName(idx : integer) : string;
-function SerialRead(Handle: LongInt; Buffer : Pointer; Count: LongInt; ms : LongInt): LongInt;
-procedure SerialFlush(Handle: LongInt);
-function SerialWrite(Handle: LongInt; Buffer : Pointer; Count: LongInt): LongInt;
-function SerialSetParams(Handle: LongInt; BitsPerSec: LongInt;
+function SerialRead(Handle: THandle; Buffer : Pointer; Count: LongInt; ms : LongInt): LongInt;
+procedure SerialFlush(Handle: THandle);
+function SerialWrite(Handle: THandle; Buffer : Pointer; Count: LongInt): LongInt;
+function SerialSetParams(Handle: THandle; BitsPerSec: LongInt;
   ByteSize: byte; Parity: byte; StopBits: byte) : boolean;
-function SerialOpen(const DeviceName: String): LongInt;
-procedure SerialClose(Handle: LongInt);
-procedure SerialFlushRead(Handle: LongInt; delay : Integer);
-function SerialSetDTR(Handle: LongInt; bDTR: Boolean): Boolean;
-function SerialSetRTS(Handle: LongInt; bRTS: Boolean): Boolean;
+function SerialOpen(const DeviceName: String): THandle;
+procedure SerialClose(Handle: THandle);
+function SerialFlushRead(Handle: THandle; delay : Integer; var Data : TBytes) : boolean;
+function SerialSetDTR(Handle: THandle; bDTR: Boolean): Boolean;
+function SerialSetRTS(Handle: THandle; bRTS: Boolean): Boolean;
+function SerialIsHandleValid(Handle: THandle) : boolean;
 
 implementation
 
@@ -51,7 +58,7 @@ begin
 end;
 
 {$IFNDEF FPC}
-function SetTimeout(Handle: LongInt; ms: Integer): Boolean;
+function SetTimeout(Handle: THandle; ms: Integer): Boolean;
 var
   timeouts : TCommTimeouts;
 begin
@@ -72,7 +79,7 @@ begin
   Result := SetCommTimeouts(Handle, timeouts);
 end;
 
-function InternalRead(Handle: LongInt; Buffer: Pointer; count: Integer): LongInt;
+function InternalRead(Handle: THandle; Buffer: Pointer; count: Integer): LongInt;
 var
   actual, Errors : DWORD;
   cstat : TComStat;
@@ -119,14 +126,14 @@ const FIONREAD = $541B;
 {$ENDIF}
 
 {$IFDEF WIN32}
-function ReadWithTimeOut(Handle: LongInt; Buffer : Pointer; Count: LongInt; ms : LongInt) : LongInt;
+function ReadWithTimeOut(Handle: THandle; Buffer : Pointer; Count: LongInt; ms : LongInt) : LongInt;
 begin
   if count > 1 then
     SetTimeout(Handle, ms);
   Result := InternalRead(Handle, Buffer, Count);
 end;
 {$ELSE}
-function ReadWithTimeOut(Handle: LongInt; Buffer : Pointer; Count: LongInt; ms : LongInt) : LongInt;
+function ReadWithTimeOut(Handle: THandle; Buffer : Pointer; Count: LongInt; ms : LongInt) : LongInt;
 var
   cur : PChar;
   expire, delay : TTimeval;
@@ -190,12 +197,12 @@ begin
 end;
 {$ENDIF}
 
-function SerialRead(Handle: LongInt; Buffer : Pointer; Count: LongInt; ms : LongInt): LongInt;
+function SerialRead(Handle: THandle; Buffer : Pointer; Count: LongInt; ms : LongInt): LongInt;
 begin
   Result := ReadWithTimeOut(Handle, Buffer, Count, ms);
 end;
 
-procedure SerialFlush(Handle: LongInt);
+procedure SerialFlush(Handle: THandle);
 begin
 {$IFNDEF FPC}
   FlushFileBuffers(Handle);
@@ -205,7 +212,7 @@ begin
 end;
 
 {$IFNDEF FPC}
-function SerialWrite(Handle: LongInt; Buffer : Pointer; Count: LongInt): LongInt;
+function SerialWrite(Handle: THandle; Buffer : Pointer; Count: LongInt): LongInt;
 var
   actual : DWORD;
 begin
@@ -216,14 +223,14 @@ begin
   SerialFlush(Handle);
 end;
 {$ELSE}
-function SerialWrite(Handle: LongInt; Buffer : Pointer; Count: LongInt): LongInt;
+function SerialWrite(Handle: THandle; Buffer : Pointer; Count: LongInt): LongInt;
 begin
   Result := fpWrite(Handle, Buffer^, Count);
 end;
 {$ENDIF}
 
 {$IFNDEF FPC}
-function SerialSetParams(Handle: LongInt; BitsPerSec: LongInt;
+function SerialSetParams(Handle: THandle; BitsPerSec: LongInt;
   ByteSize: byte; Parity: byte; StopBits: byte) : boolean;
 var
   dcb : TDCB;
@@ -247,7 +254,7 @@ begin
   Result := SetCommState(Handle, dcb);
 end;
 {$ELSE}
-function SerialSetParams(Handle: LongInt; BitsPerSec: LongInt;
+function SerialSetParams(Handle: THandle; BitsPerSec: LongInt;
   ByteSize: byte; Parity: byte; StopBits: byte) : boolean;
 var
   tios: termios;
@@ -306,7 +313,7 @@ begin
 end;
 {$ENDIF}
 
-function SerialOpen(const DeviceName: String): LongInt;
+function SerialOpen(const DeviceName: String): THandle;
 begin
 {$IFNDEF FPC}
   Result := CreateFile(PChar(DeviceName), GENERIC_READ or GENERIC_WRITE, 0,
@@ -316,7 +323,7 @@ begin
 {$ENDIF}
 end;
 
-procedure SerialClose(Handle: LongInt);
+procedure SerialClose(Handle: THandle);
 begin
   try
 {$IFNDEF FPC}
@@ -328,16 +335,26 @@ begin
   end;
 end;
 
-procedure SerialFlushRead(Handle: LongInt; delay : Integer);
+function SerialFlushRead(Handle: THandle; delay : Integer; var Data : TBytes) : boolean;
 var
   buff : PByte;
+  count, oldLen, i : integer;
 const
   BUFFSIZE = 512;
 begin
+  Result := False;
   GetMem(buff, BUFFSIZE);
   try
-    while SerialRead(Handle, buff, BUFFSIZE, delay) > 0 do
+    count := SerialRead(Handle, buff, BUFFSIZE, delay);
+    while count > 0 do
     begin
+      Result := True;
+      oldLen := Length(Data);
+      SetLength(Data, oldLen+count);
+      for i := 0 to count - 1 do
+        Data[oldLen+i] := Byte(PChar(buff)[i]);
+//      Move(buff, @(Data[oldLen]), count);
+      count := SerialRead(Handle, buff, BUFFSIZE, delay);
     end;
   finally
     FreeMem(buff, BUFFSIZE);
@@ -345,7 +362,7 @@ begin
 end;
 
 {$IFNDEF FPC}
-function SerialSetRTS(Handle: LongInt; bRTS: Boolean): Boolean;
+function SerialSetRTS(Handle: THandle; bRTS: Boolean): Boolean;
 begin
   if bRTS then
     Result := EscapeCommFunction(Handle, Windows.SETRTS)
@@ -353,7 +370,7 @@ begin
     Result := EscapeCommFunction(Handle, CLRRTS);
 end;
 
-function SerialSetDTR(Handle: LongInt; bDTR: Boolean): Boolean;
+function SerialSetDTR(Handle: THandle; bDTR: Boolean): Boolean;
 begin
   if bDTR then
     Result := EscapeCommFunction(Handle, Windows.SETDTR)
@@ -361,14 +378,18 @@ begin
     Result := EscapeCommFunction(Handle, CLRDTR);
 end;
 {$ELSE}
-function SerialSetRTS(Handle: LongInt; bRTS: Boolean): Boolean;
+function SerialSetRTS(Handle: THandle; bRTS: Boolean): Boolean;
 begin
 end;
 
-function SerialSetDTR(Handle: LongInt; bDTR: Boolean): Boolean;
+function SerialSetDTR(Handle: THandle; bDTR: Boolean): Boolean;
 begin
 end;
 {$ENDIF}
 
+function SerialIsHandleValid(Handle: THandle) : boolean;
+begin
+  Result := Handle <> INVALID_HANDLE_VALUE;
+end;
 
 end.

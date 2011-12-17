@@ -31,6 +31,7 @@ type
   TGetVarInfoByIDEvent = procedure(Sender : TObject; const ID : integer; var offset, size, vartype : integer) of object;
   TGetVarInfoByNameEvent = procedure(Sender : TObject; const name : string; var offset, size, vartype : integer) of object;
 //  TPortNum = 1..MAX_USBPORT;
+  TDataSendReceiveEvent = procedure(Sender : TObject; const Sending : boolean; const Data : array of byte) of object;
 
   NXTLSBlock = record
     TXCount : byte;
@@ -73,7 +74,6 @@ type
   end;
 
   TBrickComm = class
-  private
   protected
     fLocalIFW : TInstalledFirmware;
     fLocalFV : Word;
@@ -94,6 +94,8 @@ type
     fOnOpenStateChanged: TNotifyEvent;
     fOnGetVarInfoByID: TGetVarInfoByIDEvent;
     fOnGetVarInfoByName: TGetVarInfoByNameEvent;
+    fOnDataReceiving: TDataSendReceiveEvent;
+    fOnDataSending: TDataSendReceiveEvent;
     fProgram: TProgram;
     fPort: string;
     fTowerExistsSleep: Word;
@@ -139,12 +141,21 @@ type
     procedure DoOpenStateChanged;
     procedure DoGetVarInfoByID(const id : integer; var offset, size, vartype : integer);
     procedure DoGetVarInfoByName(const name : string; var offset, size, vartype : integer);
+    procedure DoDataSend(Data : array of byte); overload;
+    procedure DoDataSend(Data : string); overload;
+    procedure DoDataSend(Data : byte); overload;
+    procedure DoDataReceive(Data : array of byte); overload;
+    procedure DoDataReceive(Data : string); overload;
+    procedure DoDataReceive(Data : byte); overload;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); virtual;
     destructor Destroy; override;
 
     function  Open : boolean; virtual; abstract;
     function  Close : boolean; virtual;
+
+    procedure FlushReceiveBuffer; virtual; abstract;
+    procedure SendRawData(const Data : array of byte); virtual; abstract;
 
     // PBrick sound commands
     function PlayTone(aFreq, aTime : word) : boolean; virtual; abstract;
@@ -280,9 +291,9 @@ type
 
     // NXT only methods
     // NXT direct commands
-    function StartProgram(const filename : string) : boolean; virtual; abstract;
-    function StopProgram : boolean; virtual; abstract;
-    function PlaySoundFile(const filename : string; bLoop : boolean) : boolean; virtual; abstract;
+    function NXTStartProgram(const filename : string) : boolean; virtual; abstract;
+    function NXTStopProgram : boolean; virtual; abstract;
+    function NXTPlaySoundFile(const filename : string; bLoop : boolean) : boolean; virtual; abstract;
     function GetNXTOutputState(const port : byte; var power : integer;
       var mode, regmode : byte; var turnratio : integer;
       var runstate : byte; var tacholimit : cardinal; var tachocount,
@@ -294,20 +305,20 @@ type
       var stype, smode : byte; var raw, normalized : word;
       var scaled, calvalue : smallint) : boolean; virtual; abstract;
     function SetNXTInputMode(const port, stype, smode : byte) : boolean; virtual; abstract;
-    function ResetInputScaledValue(const port : byte) : boolean; virtual; abstract;
-    function ResetOutputPosition(const port : byte; const Relative : boolean) : boolean; virtual; abstract;
-    function MessageWrite(const inbox : byte; const msg : string) : boolean; virtual; abstract;
-    function KeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; virtual; abstract;
-    function LSGetStatus(port : byte; var bytesReady : byte) : boolean; virtual; abstract;
-    function GetCurrentProgramName(var name : string) : boolean; virtual; abstract;
-    function GetButtonState(const idx : byte; const reset : boolean;
+    function NXTResetInputScaledValue(const port : byte) : boolean; virtual; abstract;
+    function NXTResetOutputPosition(const port : byte; const Relative : boolean) : boolean; virtual; abstract;
+    function NXTMessageWrite(const inbox : byte; const msg : string) : boolean; virtual; abstract;
+    function NXTKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; virtual; abstract;
+    function NXTLSGetStatus(port : byte; var bytesReady : byte) : boolean; virtual; abstract;
+    function NXTGetCurrentProgramName(var name : string) : boolean; virtual; abstract;
+    function NXTGetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; virtual; abstract;
-    function MessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; virtual; abstract;
-    function SetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; virtual; abstract;
-    function GetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; virtual; abstract;
-    function SetVMState(const state : byte) : boolean; virtual; abstract;
-    function SetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
-    function GetVMState(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
+    function NXTMessageRead(const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean; virtual; abstract;
+    function NXTSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; virtual; abstract;
+    function NXTGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; virtual; abstract;
+    function NXTSetVMState(const state : byte) : boolean; virtual; abstract;
+    function NXTSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
+    function NXTGetVMState(var state : byte; var clump : byte; var pc : word) : boolean; virtual; abstract;
     // NXT system commands
     function NXTOpenRead(const filename : string; var handle : FantomHandle;
       var size : cardinal) : boolean; virtual; abstract;
@@ -358,8 +369,8 @@ type
   kNXT_SCGetBTAddress          = $9A;
 }
     // wrapper functions
-    function DownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
-    function DownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
+    function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
+    function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
     function NXTUploadFile(const filename : string; const dir : string = '') : boolean; virtual; abstract;
     function NXTUploadFileToStream(const filename : string; aStream : TStream) : boolean; virtual; abstract;
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; virtual; abstract;
@@ -403,6 +414,8 @@ type
     property  OnOpenStateChanged : TNotifyEvent read fOnOpenStateChanged write fOnOpenStateChanged;
     property  OnGetVarInfoByID : TGetVarInfoByIDEvent read fOnGetVarInfoByID write fOnGetVarInfoByID;
     property  OnGetVarInfoByName : TGetVarInfoByNameEvent read fOnGetVarInfoByName write fOnGetVarInfoByName;
+    property  OnDataSending : TDataSendReceiveEvent read fOnDataSending write fOnDataSending;
+    property  OnDataReceiving : TDataSendReceiveEvent read fOnDataReceiving write fOnDataReceiving;
   end;
 
 function NameToNXTFileType(name : string) : TNXTFileType;
@@ -557,6 +570,58 @@ procedure TBrickComm.DoOpenStateChanged;
 begin
   if Assigned(fOnOpenStateChanged) then
     fOnOpenStateChanged(self);
+end;
+
+procedure TBrickComm.DoDataReceive(Data: array of byte);
+begin
+  if Assigned(fOnDataReceiving) then
+    fOnDataReceiving(Self, False, Data);
+end;
+
+procedure TBrickComm.DoDataReceive(Data : string);
+var
+  tmpData : array of byte;
+  i : integer;
+begin
+  SetLength(tmpData, Length(Data));
+  for i := 0 to Length(Data)-1 do
+    tmpData[i] := Byte(Data[i+1]);
+  DoDataReceive(tmpData);
+end;
+
+procedure TBrickComm.DoDataReceive(Data : byte);
+var
+  tmpData : array of byte;
+begin
+  SetLength(tmpData, 1);
+  tmpData[0] := Data;
+  DoDataReceive(tmpData);
+end;
+
+procedure TBrickComm.DoDataSend(Data: array of byte);
+begin
+  if Assigned(fOnDataSending) then
+    fOnDataSending(Self, True, Data);
+end;
+
+procedure TBrickComm.DoDataSend(Data : string);
+var
+  tmpData : array of byte;
+  i : integer;
+begin
+  SetLength(tmpData, Length(Data));
+  for i := 0 to Length(Data)-1 do
+    tmpData[i] := Byte(Data[i+1]);
+  DoDataSend(tmpData);
+end;
+
+procedure TBrickComm.DoDataSend(Data : byte);
+var
+  tmpData : array of byte;
+begin
+  SetLength(tmpData, 1);
+  tmpData[0] := Data;
+  DoDataSend(tmpData);
 end;
 
 procedure TBrickComm.DoGetVarInfoByID(const id: integer; var offset, size, vartype: integer);
@@ -753,7 +818,7 @@ begin
           // now download these files in order
           for i := 0 to origFileList.Count - 1 do begin
             filename := origFileList.Names[i];
-            Result := DownloadFile(UserDataLocalPath + filename, NameToNXTFileType(filename));
+            Result := NXTDownloadFile(UserDataLocalPath + filename, NameToNXTFileType(filename));
             if not Result then begin
               // do something clever here
               Exit;
@@ -818,7 +883,7 @@ begin
   begin
     // if we can call a direct command that only exists in the enhanced firmware
     // then we know that it is enhanced.
-    if GetVMState(state, clump, pc) then
+    if NXTGetVMState(state, clump, pc) then
       Result := ifEnhanced
     else
       Result := ifStandard;

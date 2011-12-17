@@ -217,6 +217,8 @@ type
     fAddressOfValue : boolean;
     fAutoStart : boolean;
     fIGDProcess : TProcessObject;
+    procedure AddArrayDataDefinition(const aName : string; dt : char;
+      lenexpr, tname : string);
     function AmInlining : boolean;
     procedure IncrementInlineDepth;
     procedure DecrementInlineDepth;
@@ -1996,6 +1998,9 @@ begin
             pLHS := tos;
             StoreAddress(pLHS, savedvalue);
             // now offset the pointer by the specified member
+            // for array offsets we use the dataspace entry rather than the
+            // name of the dataspace entry
+
             OffsetArrayPointer(savedvalue, pLHS);
             savedvalue := pLHS;
           end;
@@ -2241,7 +2246,7 @@ begin
   len2 := Length(aValue);
   if (p > 0) and (p = (len1 - len2 + 1)) then
     System.Delete(Result, p, MaxInt);
-  if (OptimizeLevel >= 1) and (SourceCount > (idx+1)) and not bFlag then
+  if (OptimizeLevel >= 0) and (SourceCount > (idx+1)) and not bFlag then
   begin
     // 2009-03-18 JCH: I do not recall why I added the check for
     // + and - as the first character of an expression
@@ -3668,24 +3673,29 @@ procedure TSPCComp.DoSwitch(const lstart : string);
 var
   L2 : string;
   idx : integer;
+  tmpRN : string;
 begin
   Next;
   OpenParen;
   CommaExpression;
   CloseParen;
+  push;
+  tmpRN := tos;
+  CopyVar(tmpRN, RegisterName);
   L2 := NewLabel;
   idx := SwitchFixupIndex;
   inc(fSwitchDepth);
   try
     ClearSwitchFixups;
     SwitchFixups.Add(Format('%d_Type=0', [fSwitchDepth]));
-    SwitchRegisterNames.Add(Format('%d=%s', [fSwitchDepth, RegisterName]));
+    SwitchRegisterNames.Add(Format('%d=%s', [fSwitchDepth, tmpRN]));
     Block(L2, lstart);
     PostLabel(L2);
     FixupSwitch(idx, L2);
   finally
     dec(fSwitchDepth);
   end;
+  pop;
 end;
 
 function TSPCComp.GetCaseConstant: string;
@@ -4526,6 +4536,36 @@ begin
     IncrementInlineDepth;
 end;
 
+procedure TSPCComp.AddArrayDataDefinition(const aName: string; dt: char;
+  lenexpr, tname: string);
+var
+  DE, Sub : TDataspaceEntry;
+  p, dimlen : integer;
+  tmp : string;
+begin
+  if lenexpr = '' then Exit;
+  // if this is an array then we need to add a datatype for it
+  DE := DataDefinitions.Add;
+  DE.DataType := dsArray;
+  DE.Identifier := aName;
+  DE.TypeName   := aName;
+  Sub := DE.SubEntries.Add;
+  while lenexpr <> '' do
+  begin
+    System.Delete(lenexpr, 1, 1); // delete the '['
+    p := Pos(']', lenexpr);
+    if p > 0 then
+    begin
+      tmp := Copy(lenexpr, 1, p-1);
+      // get integer version of dimension length
+      dimlen := StrToIntDef(tmp, 0);
+
+      // remove first dimension and keep going
+      System.Delete(lenexpr, 1, p);
+    end;
+  end;
+end;
+
 function TSPCComp.AddLocal(name : string; dt : char; const tname : string;
   bConst : boolean; const lenexp : string; bPointer : boolean) : integer;
 var
@@ -4553,6 +4593,10 @@ begin
       IL.Assign(l);
     end;
     Result := l.Index;
+    if lenexp <> '' then
+    begin
+      AddArrayDataDefinition(name, dt, lenexp, tname);
+    end;
   end;
 end;
 
@@ -6281,6 +6325,8 @@ var
     dt := SPCStrToType(mtype, True);
     DE := fCurrentStruct.SubEntries.Add;
     HandleVarDecl(DataDefinitions, fNamedTypes, True, DE, mname, mtype+aval, @SPCStrToType);
+    // add default value (0) for each array element if this member
+    // is an array
     if tmp <> '' then
     begin
       cnt := CountElements(tmp);

@@ -186,6 +186,7 @@ type
     function  IsAPIFunc(procname : string) : boolean;
     procedure DoAssignValue(const aName : string; dt : char; bNoChecks : boolean = False);
     procedure DoLocalArrayInit(const aName, ival : string; dt : char);
+    procedure DoLocalUDTInit(const aName, ival : string; dt : char);
     procedure DoArrayAssignValue(const aName, idx : string; dt : char);
     function DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;
     procedure Assignment;
@@ -2510,6 +2511,9 @@ begin
   // handle stack variables
   tmp := TStringList.Create;
   try
+    // output the array initialization subroutine last
+    EmitGlobalDataInitSubroutine;
+    
     tmp.AddStrings(NBCSource);
     NBCSource.Clear;
     // emit struct decls
@@ -2530,8 +2534,6 @@ begin
 
     EmitLnNoTab('dseg ends');
     NBCSource.AddStrings(tmp);
-    // output the array initialization subroutine last
-    EmitGlobalDataInitSubroutine;
   finally
     tmp.Free;
   end;
@@ -5504,7 +5506,13 @@ begin
       end
       else if dt = TOK_USERDEFINEDTYPE then
       begin
-        GetAndStoreUDT(savedval);
+        if Token = TOK_BEGIN then
+        begin
+          ival := GetInitialValue(dt);
+          DoLocalUDTInit(varName, ival, dt);
+        end
+        else
+          GetAndStoreUDT(savedval);
       end
       else if not bStatic then
       begin
@@ -9805,14 +9813,77 @@ end;
 
 procedure TNXCComp.DoLocalArrayInit(const aName, ival: string; dt: char);
 var
-  asmstr, {src, }tmp : string;
-//  i : integer;
+  asmstr, tmp : string;
+  i : integer;
+  dims : integer;
+  tag, udType, aval : string;
+  theArrayDT, baseDT : char;
+  AHV : TArrayHelperVar;
+  Helpers : TObjectList;
 begin
+  tmp := Replace(ival, ',}', '}');
+  if LastDelimiter(',', tmp) = Length(tmp) then
+    System.Delete(tmp, Length(tmp), MaxInt);
   // generate an arrbuild asm statement for this array given the initial values
-  asmstr := Format('arrbuild %s', [aName]);
-  tmp := StripBraces(ival);
-  asmstr := asmstr + ', ' + tmp;
-  EmitLn(asmstr);
+  // how many dimensions does this array have?
+  dims := GetArrayDimension(dt);
+  baseDT := ArrayBaseType(dt);
+  if ((dims < 3) and (baseDT in NonAggregateTypes)) or
+     ((dims = 1) and (baseDT in [TOK_USERDEFINEDTYPE, TOK_STRINGDEF])) then
+  begin
+    asmstr := Format('arrbuild %s', [aName]);
+    tmp := StripBraces(tmp);
+    asmstr := asmstr + ', ' + tmp;
+    EmitLn(asmstr);
+  end
+  else
+  begin
+    // handle initialization for 3D and 4D arrays
+    theArrayDT := RemoveArrayDimension(dt);
+    if baseDT <> TOK_USERDEFINEDTYPE then
+      dec(dims);
+    tmp := StripBraces(tmp);
+    tmp := tmp + ',';
+    tag := '';
+    for i := 0 to dims - 1 do
+      tag := tag + '}';
+    tag := tag + ',';
+    Helpers := TObjectList.Create(False);
+    try
+      i := Pos(tag, tmp);
+      while i > 0 do
+      begin
+        // get a temporary thread-safe variable of the right type
+        udType := '';
+        if IsUDT(ArrayBaseType(theArrayDT)) then
+          udType := GetUDTType(aName);
+
+        AHV := fArrayHelpers.GetHelper(fCurrentThreadName, udType, theArrayDT);
+        Helpers.Add(AHV);
+        aval := AHV.Name;
+        if fGlobals.IndexOfName(aval) = -1 then
+          AddEntry(aval, theArrayDT, udType, '');
+
+        // recurse here
+        DoLocalArrayInit(aval, Copy(tmp, 1, i+Length(tag)-1), theArrayDT);
+
+        System.Delete(tmp, 1, i+Length(tag)-1);
+        i := Pos(tag, tmp);
+      end;
+      asmstr := Format('arrbuild %s', [aName]);
+      for i := 0 to Helpers.Count - 1 do
+        asmstr := asmstr + ', ' + TArrayHelperVar(Helpers[i]).Name;
+      EmitLn(asmstr);
+    finally
+      for i := 0 to Helpers.Count - 1 do
+        fArrayHelpers.ReleaseHelper(TArrayHelperVar(Helpers[i]));
+      Helpers.Free;
+    end;
+  end;
+end;
+
+procedure TNXCComp.DoLocalUDTInit(const aName, ival: string; dt: char);
+begin
 end;
 
 function TNXCComp.DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;

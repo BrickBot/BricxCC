@@ -113,9 +113,8 @@ uses
   uForthProcLexer, uLASMProcLexer,
   SynHighlighterForth, SynHighlighterJava, SynHighlighterCpp,
   SynHighlighterMindScript, SynHighlighterLASM, SynHighlighterPas,
-  SynHighlighterROPS,
 {$ENDIF}
-  SynHighlighterNQC, SynHighlighterNBC;
+  SynHighlighterROPS, SynHighlighterNQC, SynHighlighterNBC;
 
 procedure TfrmCodeExplorer.ClearTree;
 var

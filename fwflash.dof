@@ -94,13 +94,13 @@ OutputDir=
 UnitOutputDir=
 PackageDLLOutputDir=
 PackageDCPOutputDir=
-SearchPath=bricktools;nxt;png;grep;samplerate
-Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;dsnapcon;vcldb;soaprtl;VclSmp;dbexpress;dbxcds;inetdb;bdertl;vcldbx;webdsnap;websnap;adortl;ibxpress;teeui;teedb;tee;dss;visualclx;visualdbclx;vclactnband;vclshlctrls;dclOfficeXP;SynEdit_D7;BricxCCSyn_D7;ComDrv32;dxGDIPlusD7;cxLibraryVCLD7;cxEditorsVCLD7;dxThemeD7;cxDataD7;cxExtEditorsVCLD7;cxPageControlVCLD7;cxGridVCLD7;dxmdsD7;dxNavBarD7
-Conditionals=NXT_ONLY
+SearchPath=bricktools
+Packages=vcl;rtl;vclx;indy;inet;xmlrtl;vclie;inetdbbde;inetdbxpress;dbrtl;dsnap;vcldb;soaprtl;VclSmp;inetdb;bdertl;vcldbx;adortl;teeui;teedb;tee;dss;vclactnband;vclshlctrls;O217_R70;O217BR70;SynEdit_D7;ComDrv32;cxLibraryVCLD7;dxThemeD7;cxEditorsVCLD7;cxDataD7;cxExtEditorsVCLD7;cxPageControlVCLD7;cxGridVCLD7;M103_r70;S201DR70;BricxCCSyn_D7;vcl7cr10;TCSComp_64;cxExportVCLD7;TCSComp_65
+Conditionals=
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=
+RunParams=nbcnxc.rfw
 HostApplication=
 Launcher=
 UseLauncher=0
@@ -110,10 +110,10 @@ ActiveLang=
 ProjectLang=
 RootDir=C:\winapps\Borland\Delphi7\Bin\
 [Version Info]
-IncludeVerInfo=0
+IncludeVerInfo=1
 AutoIncBuild=0
-MajorVer=1
-MinorVer=0
+MajorVer=0
+MinorVer=1
 Release=0
 Build=0
 Debug=0
@@ -124,26 +124,23 @@ DLL=0
 Locale=1033
 CodePage=1252
 [Version Info Keys]
-CompanyName=
+CompanyName=JoCar Consulting
 FileDescription=
-FileVersion=1.0.0.0
-InternalName=
-LegalCopyright=
+FileVersion=0.1.0.0
+InternalName=fwflash
+LegalCopyright=Copyright (c) 2011, John Hansen
 LegalTrademarks=
-OriginalFilename=
-ProductName=
-ProductVersion=1.0.0.0
+OriginalFilename=fwflash
+ProductName=NXT Firmware Flash
+ProductVersion=0.1
 Comments=
-[HistoryLists\hlConditionals]
-Count=1
-Item0=NXT_ONLY
 [HistoryLists\hlUnitAliases]
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
 Count=3
-Item0=bricktools;nxt;png;grep;samplerate
-Item1=bricktools;nxt
+Item0=bricktools
+Item1=samplerate
 Item2=..
 [HistoryLists\hlBPLOutput]
 Count=1

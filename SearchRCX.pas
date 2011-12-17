@@ -60,7 +60,7 @@ type
   public
     { Public declarations }
     function GetPort : string;
-    function GetRCXType : integer;
+    function GetBrickType : integer;
     function GetStandardFirmware : boolean;
     function GetFirmwareType : TFirmwareType;
     procedure SetPort(const aName : string);
@@ -160,9 +160,9 @@ begin
   if SearchRCXForm.ShowModal = mrOk then
   begin
     LocalPort := SearchRCXForm.GetPort;
-    if LocalBrickType <> SearchRCXForm.GetRCXType then
+    if LocalBrickType <> SearchRCXForm.GetBrickType then
     begin
-      LocalBrickType := SearchRCXForm.GetRCXType;
+      LocalBrickType := SearchRCXForm.GetBrickType;
       // release the old brick comm object
       ReleaseBrickComm;
     end;
@@ -210,7 +210,7 @@ begin
     Result := cboPort.Text;
 end;
 
-function TSearchRCXForm.GetRCXType: integer;
+function TSearchRCXForm.GetBrickType: integer;
 begin
   if cboBrickType.ItemIndex = -1 then
     Result := SU_RCX
@@ -233,6 +233,7 @@ end;
 procedure TSearchRCXForm.SetRCXType(aType: integer);
 begin
   cboBrickType.ItemIndex := aType;
+  PopulatePortsList;
 end;
 
 procedure TSearchRCXForm.SetStandardFirmware(aVal: Boolean);
@@ -318,14 +319,31 @@ end;
 procedure TSearchRCXForm.PopulatePortsList;
 var
   i : integer;
+  bt : integer;
 begin
+(*
+  SU_RCX         = rtRCX;
+  SU_CYBERMASTER = rtCybermaster;
+  SU_SCOUT       = rtScout;
+  SU_RCX2        = rtRCX2;
+  SU_SPYBOTIC    = rtSpy;
+  SU_SWAN        = rtSwan;
+  SU_NXT         = rtNXT;
+  SU_SPRO        = rtSPro;
+*)
+  bt := GetBrickType;
   cboPort.Items.Clear;
   cboPort.Items.Add('Automatic');
   cboPort.Items.Add('Search');
-  cboPort.Items.Add('usb');
-  LoadNXTPorts(cboPort.Items);
-  for i := 1 to 8 do
-    cboPort.Items.Add('COM'+IntToStr(i));
+  if bt in [SU_RCX, SU_SCOUT, SU_RCX2, SU_NXT] then
+    cboPort.Items.Add('usb');
+  if bt = SU_NXT then
+    LoadNXTPorts(cboPort.Items);
+  if bt <> SU_NXT then
+  begin
+    for i := 1 to 8 do
+      cboPort.Items.Add('COM'+IntToStr(i));
+  end;
 end;
 
 procedure TSearchRCXForm.DoCreateInitFile;
@@ -488,7 +506,7 @@ end;
 
 procedure TSearchRCXForm.cboBrickTypeChange(Sender: TObject);
 begin
-
+  PopulatePortsList;
 end;
 
 {$IFDEF FPC}

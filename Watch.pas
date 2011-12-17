@@ -361,7 +361,7 @@ begin
     bytesReady := 0;
     while bytesReady = 0 do
     begin
-      BrickComm.LSGetStatus(port, bytesReady);
+      BrickComm.NXTLSGetStatus(port, bytesReady);
       if (GetTick - tick) > 50 then break;
     end;
     if bytesReady > 0 then
@@ -1129,7 +1129,7 @@ var
 begin
   fname := GetActiveEditorFilename;
   // is there a program running on the NXT?
-  if BrickComm.GetCurrentProgramName(name) and (name <> '') then
+  if BrickComm.NXTGetCurrentProgramName(name) and (name <> '') then
   begin
     tmp := ExtractFileName(fname);
     if Pos(ChangeFileExt(name, ''), tmp) > 0 then

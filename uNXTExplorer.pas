@@ -572,7 +572,7 @@ end;
 procedure TfrmNXTExplorer.actFileExecuteExecute(Sender: TObject);
 begin
   if (NXTFiles.SelCount = 1) and SelectedFileIsExecutable then
-    BrickComm.StartProgram(NXTFiles.Selected.Caption);
+    BrickComm.NXTStartProgram(NXTFiles.Selected.Caption);
 end;
 
 function TfrmNXTExplorer.SelectedFileIsExecutable: boolean;
@@ -583,7 +583,7 @@ end;
 
 procedure TfrmNXTExplorer.actFileStopExecute(Sender: TObject);
 begin
-  BrickComm.StopProgram;
+  BrickComm.NXTStopProgram;
 end;
 
 {$IFNDEF FPC}
@@ -625,7 +625,7 @@ end;
 procedure TfrmNXTExplorer.actFilePlayExecute(Sender: TObject);
 begin
   if (NXTFiles.SelCount = 1) and SelectedFileIsSound then
-    BrickComm.PlaySoundFile(NXTFiles.Selected.Caption, False);
+    BrickComm.NXTPlaySoundFile(NXTFiles.Selected.Caption, False);
 end;
 
 procedure TfrmNXTExplorer.actFileMuteExecute(Sender: TObject);
@@ -714,7 +714,7 @@ begin
       if bl > K_BATTERY_DEFRAG_MIN then
       begin
         // make sure the brick stays awake
-        if BrickComm.KeepAlive(c) then
+        if BrickComm.NXTKeepAlive(c) then
         begin
           if not BrickComm.NXTDefragmentFlash then
             MessageDlg(sDefragError, mtError, [mbOK], 0)
@@ -847,7 +847,7 @@ begin
   fsize := SizeOfFile(aFile);
   if fsize < K_NXT_MAX_MEM then
   begin
-    if not BrickComm.DownloadFile(aFile, NameToNXTFileType(aFile)) then
+    if not BrickComm.NXTDownloadFile(aFile, NameToNXTFileType(aFile)) then
     begin
       MessageDlg(sDownloadFailed, mtError, [mbOK], 0);
       Result := False;

@@ -160,6 +160,7 @@ type
     actSearchGrepResults: TAction;
     actToolsNXTWatchList: TAction;
     actHelpSPCGuidePDF: TAction;
+    actToolsSimpleTerm: TAction;
     procedure FormShow(Sender: TObject);
     procedure FormCreate(Sender: TObject);
     procedure FormDestroy(Sender: TObject);
@@ -269,6 +270,7 @@ type
     procedure actSearchGrepSearchExecute(Sender: TObject);
     procedure actSearchGrepResultsExecute(Sender: TObject);
     procedure actToolsNXTWatchListExecute(Sender: TObject);
+    procedure actToolsSimpleTermExecute(Sender: TObject);
   public
     // menu components
     mnuMain: TOfficeMainMenu;
@@ -382,6 +384,7 @@ type
     mniClearMemory: TOfficeMenuItem;
     mniMIDIConversion: TOfficeMenuItem;
     mniSoundConvert: TOfficeMenuItem;
+    mniSimpleTerm: TOfficeMenuItem;
     N9: TOfficeMenuItem;
     mniFindRCX: TOfficeMenuItem;
     mniTurnRCXOff: TOfficeMenuItem;
@@ -759,7 +762,7 @@ uses
   SynEditPrintTypes, rcx_constants, uLocalizedStrings,
   uNQCCodeComp, uNXTCodeComp, uNXCCodeComp, uRICCodeComp, uDebugLogging,
   uProgram, uCompStatus, uGlobals, uEditorUtils, uHTMLHelp, uSPCCodeComp, 
-  uNXTWatchList, uSpirit;
+  uNXTWatchList, uSpirit, uSimpleTerm;
 
 const
   K_NQC_GUIDE = 24;
@@ -1169,7 +1172,7 @@ begin
         if (binext = '.rxe') and not CurrentProgram.Loaded(Fname) then
           DoCompileAction(False, False);
 
-        BrickComm.StartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
+        BrickComm.NXTStartProgram(ChangeFileExt(ExtractFileName(Fname), binext));
         fNXTVMState := kNXT_VMState_RunFree;
         actCompilePause.Caption := sBreakAll;
         // make sure the variable watch event handlers are hooked up
@@ -2153,6 +2156,7 @@ begin
   actToolsNXTScreen.Enabled      := bBALSF and IsNXT;
   actToolsNXTWatchList.Enabled   := bBALSF and IsNXT;
   actToolsSyncMotors.Enabled     := bBALSF and IsNXT;
+  actToolsSimpleTerm.Enabled     := bBALSF;
   actToolsFindBrick.Enabled      := not bBrickAlive;
   actToolsTurnBrickOff.Enabled   := bBALSF;
   actToolsCloseComm.Enabled      := bBrickAlive;
@@ -2410,39 +2414,43 @@ end;
 
 procedure TMainForm.ConfigureOtherFirmwareOptions;
 var
-  i : Integer;
+  i, oldIdx : Integer;
   bBrickOS, bSuperPro : Boolean;
 begin
   bSuperPro := IsSuperPro;
   bBrickOS := LocalFirmwareType = ftBrickOS;
   if LocalStandardFirmware then begin
-    with ProgramBox.Items do begin
-      if bSuperPro then
-      begin
-        // SuperPro has 7 slots
-        with ProgramBox.Items do begin
-          if IndexOf(sProgram + ' 6') = -1 then Add(sProgram + ' 6');
-          if IndexOf(sProgram + ' 7') = -1 then Add(sProgram + ' 7');
-        end;
-      end
-      else
-      begin
-        i := IndexOf(sProgram + ' 6');
-        if i <> -1 then Delete(i);
-        i := IndexOf(sProgram + ' 7');
-        if i <> -1 then Delete(i);
+    oldIdx := ProgramBox.ItemIndex;
+    ProgramBox.Items.Clear;
+    if bSuperPro then
+    begin
+      // SuperPro has 7 program slots (0..6)
+      for i := 0 to 6 do begin
+        ProgramBox.Items.Add(sProgram + ' ' + IntToStr(i));
+        mniProgramNumber.Items[i].Caption := sProgram + ' &' + IntToStr(i);
       end;
-      i := IndexOf(sProgram + ' 8');
-      if i <> -1 then Delete(i);
+    end
+    else
+    begin
+      // RCX has 5 program slots (1..5)
+      for i := 0 to 4 do begin
+        ProgramBox.Items.Add(sProgram + ' ' + IntToStr(i+1));
+        mniProgramNumber.Items[i].Caption := sProgram + ' &' + IntToStr(i+1);
+      end;
     end;
+    if oldIdx < ProgramBox.Items.Count then
+      ProgramBox.ItemIndex := oldIdx;
   end
   else if bBrickOS then begin
-    // brickOS has 8 program slots
-    with ProgramBox.Items do begin
-      if IndexOf(sProgram + ' 6') = -1 then Add(sProgram + ' 6');
-      if IndexOf(sProgram + ' 7') = -1 then Add(sProgram + ' 7');
-      if IndexOf(sProgram + ' 8') = -1 then Add(sProgram + ' 8');
+    // brickOS has 8 program slots (1..8)
+    oldIdx := ProgramBox.ItemIndex;
+    ProgramBox.Items.Clear;
+    for i := 0 to 7 do begin
+      ProgramBox.Items.Add(sProgram + ' ' + IntToStr(i+1));
+      mniProgramNumber.Items[i].Caption := sProgram + ' &' + IntToStr(i+1);
     end;
+    if oldIdx < ProgramBox.Items.Count then
+      ProgramBox.ItemIndex := oldIdx;
   end;
   mniProgram6.Visible := bBrickOS or bSuperPro;
   mniProgram7.Visible := bBrickOS or bSuperPro;
@@ -4177,6 +4185,7 @@ begin
   mniClearMemory := TOfficeMenuItem.Create(mniTools);
   mniMIDIConversion := TOfficeMenuItem.Create(mniTools);
   mniSoundConvert := TOfficeMenuItem.Create(mniTools);
+  mniSimpleTerm := TOfficeMenuItem.Create(mniTools);
   N9 := TOfficeMenuItem.Create(mniTools);
   mniFindRCX := TOfficeMenuItem.Create(mniTools);
   mniTurnRCXOff := TOfficeMenuItem.Create(mniTools);
@@ -4191,7 +4200,7 @@ begin
                 mniRCXJoystick, mniRemote, mniNewWatch, mniSetvalues,
                 mniSpybotEEPROM, mniNXTExplorer, mniNXTScreen, mniNXTWatchList, mniSyncMotors,
                 N7, mniSendMessage, mniDatalog, mniMemoryMap, mniClearMemory,
-                mniMIDIConversion, mniSoundConvert, N9, mniFindRCX,
+                mniMIDIConversion, mniSoundConvert, mniSimpleTerm, N9, mniFindRCX,
                 mniTurnRCXOff, mniCloseComm, N3, mniFirmware,
                 mniUnlockFirmware, mniConfigureTools, N4]);
 
@@ -4973,6 +4982,11 @@ begin
     Action := actToolsWav2Rso;
     ResourceName := 'IMG_SOUNDCONVERT';
     NumGlyphs := 4;
+  end;
+  with mniSimpleTerm do
+  begin
+    Name := 'mniSimpleTerm';
+    Action := actToolsSimpleTerm;
   end;
   with N9 do
   begin
@@ -7202,6 +7216,11 @@ end;
 procedure TMainForm.actToolsNXTWatchListExecute(Sender: TObject);
 begin
   frmNXTWatchList.Visible := not frmNXTWatchList.Visible;
+end;
+
+procedure TMainForm.actToolsSimpleTermExecute(Sender: TObject);
+begin
+  frmSimpleTerm.Visible := not frmSimpleTerm.Visible;
 end;
 
 initialization
