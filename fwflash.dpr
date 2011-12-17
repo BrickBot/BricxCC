@@ -23,6 +23,7 @@ uses
   FastMM4 in 'FastMM4.pas',
   FastMM4Messages in 'FastMM4Messages.pas',
   FastMove in 'FastMove.pas',
+  Windows,
 {$ENDIF}
   SysUtils,
   Classes,
@@ -39,7 +40,7 @@ uses
 
 var
   filename : string;
-  res : integer;
+  res, RetryCount : integer;
   nxt : PNxt;
 
 
@@ -120,6 +121,7 @@ begin
 
     if not nxt_in_samba_mode(nxt) then
     begin
+      WriteLn('NXT found, but not running in reset mode.  Rebooting it into SAMBA mode.');
       res := nxt_open(nxt);
       if res <> NXT_OK then
         handle_error(nil, 'Error while connecting to NXT', res);
@@ -127,7 +129,15 @@ begin
       if res = NXT_OK then
       begin
         nxt_close(nxt);
-        res := nxt_find(nxt);
+        RetryCount := 0;
+        repeat
+          Write('.');
+          Sleep(500);
+          res := nxt_find(nxt);
+          Inc(RetryCount);
+        until nxt_in_samba_mode(nxt) or (RetryCount > 60);
+        WriteLn('');
+        WriteLn('Hopefully that was long enough...');
         if res <> NXT_OK then
         begin
           if res = NXT_NOT_PRESENT then

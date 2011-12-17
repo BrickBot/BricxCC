@@ -26,7 +26,7 @@ interface
 {$PACKRECORDS C}
 
 const
-  LIBUSB_PATH_MAX = 4096;
+  LIBUSB_PATH_MAX = 4097;
 
 {$ELSE}
 
@@ -323,11 +323,9 @@ function usb_find_busses:Longint; cdecl; external;
 function usb_find_devices:Longint; cdecl; external;
 function usb_device(dev:PUSBDevHandle):PUSBDevice; cdecl; external;
 function usb_get_busses : PUSBBus; cdecl; external;
-
+function usb_detach_kernel_driver_np(dev:PUSBDevHandle; TheInterface:integer):Longint; cdecl; external;
 
 (*
-int usb_detach_kernel_driver_np(usb_dev_handle *dev, int interface);
-
 function usb_install_service_np(); LongInt; cdecl; external;
 function usb_uninstall_service_np(); LongInt; cdecl; external;
 function usb_install_driver_np(inf_file : PChar) : LongInt; cdecl; external;
