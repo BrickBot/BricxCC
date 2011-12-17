@@ -259,14 +259,7 @@ end;
 
 procedure OSSleep(const ms : Cardinal);
 begin
-{$IFDEF FPC}
-// not sure what to do here yet
-{$IFDEF LINUX}
-  usleep(ms * 1000);  // usleep is in microseconds
-{$ENDIF}
-{$ELSE}
-  Windows.Sleep(ms);
-{$ENDIF}
+  Sleep(ms);
 end;
 
 procedure PostWindowMessage(aHwnd : HWND; aMsg : Cardinal; wParam, lParam : Integer);

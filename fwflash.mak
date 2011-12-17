@@ -1,12 +1,12 @@
 PROGRAMS = fwflash
 VER = 0.1.0.0
-DOBJECTS=uCmdLineUtils.o ParamUtils.o uCommonUtils.o uWav2RsoCvt.o uVersionInfo.o fwflash.dpr
+DOBJECTS=uCmdLineUtils.o ParamUtils.o uCommonUtils.o uVersionInfo.o fwflash.dpr
 DEFAULT_INCLUDE_DIR=.
 
 all:: $(DOBJECTS) $(PROGRAMS)
 
 clean::
-	rm -f *.o *.ppu *.rst *.compiled fwflash_preproc.inc
+	rm -f *.o *.ppu *.rst *.compiled fwflash_preproc.inc bricktools/*.o bricktools/*.ppu
 
 realclean:: clean
 	rm -f $(PROGRAMS) 
@@ -29,7 +29,8 @@ fwflash: fwflash.dpr fwflash_preproc.inc
 %.o: %.pas
 	$(PPC) $(PFLAGS) $< -o$@
 
-# how to create the include file
+
+# how to create the include file
 fwflash_preproc.inc:
 	echo '// '$@ > $@
 	echo 'const' >> $@

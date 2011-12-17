@@ -77,14 +77,14 @@ function nxt_firmware_validate(fw_path : string) : integer;
 implementation
 
 uses
-  Classes, SysUtils;
+  Classes, SysUtils{$IFDEF WIN32}, Windows{$ENDIF};
 
 const
   VENDOR_LEGO   = $0694;
   VENDOR_AMTEL  = $03EB;
   PRODUCT_NXT   = $0002;
   PRODUCT_SAMBA = $6124;
-  USB_INTERFACE = 0;
+  USB_INTERFACE = 0; // was 1
   USB_OUT_ENDPOINT = $01;
   USB_IN_ENDPOINT  = $82;
 
@@ -149,6 +149,7 @@ var
   bus, busses : PUSBBus;
   dev : PUSBDevice;
 begin
+  nxt^.is_in_samba_mode := False;
   usb_find_busses();
   usb_find_devices();
   busses := usb_get_busses();
@@ -191,6 +192,11 @@ var
 begin
   nxt^.hdl := usb_open(nxt^.dev);
 
+{$IFDEF Linux}
+  //detach possible kernel driver bound to interface
+  usb_detach_kernel_driver_np(nxt^.hdl, USB_INTERFACE);
+{$ENDIF}
+{
   ret := usb_set_configuration(nxt^.hdl, 1);
   if ret < 0 then
   begin
@@ -198,8 +204,8 @@ begin
     Result := NXT_CONFIGURATION_ERROR;
     Exit;
   end;
-
-  ret := usb_claim_interface(nxt^.hdl, 0); // was 1
+}
+  ret := usb_claim_interface(nxt^.hdl, USB_INTERFACE);
   if ret < 0 then
   begin
     usb_close(nxt^.hdl);
@@ -218,7 +224,7 @@ begin
       tmp2 := string(buf);
       if tmp1 <> tmp2 then
       begin
-        usb_release_interface(nxt^.hdl, 0); // was 1
+        usb_release_interface(nxt^.hdl, USB_INTERFACE);
         usb_close(nxt^.hdl);
         Result := NXT_HANDSHAKE_FAILED;
         Exit;
@@ -232,10 +238,9 @@ end;
 
 function nxt_close(nxt : PNxt) : integer;
 begin
-  usb_release_interface(nxt^.hdl, 0); // was 1
+  usb_release_interface(nxt^.hdl, USB_INTERFACE);
   usb_close(nxt^.hdl);
   nxt^.hdl := nil;
-//  FreeMem(nxt);
   Result := NXT_OK;
 end;
 
@@ -251,31 +256,11 @@ const
     $20, $64, $61, $6e, $63, $65, $3a,
     $20, $53, $41, $4d, $42, $41, $00
   );
-var
-  buf : PChar;
-//  tmp1, tmp2 : string;
 begin
   Result := NXT_OK;
   if nxt = nil then Exit;
   if nxt^.is_in_samba_mode then Exit;
-  buf := AllocMem(4);
-  try
-    nxt_send_buf(nxt, PChar(@boot[0]), 21);
-{
-    Sleep(5000);
-    nxt_recv_buf(nxt, buf, 4);
-    tmp1 := 'Yes';
-    tmp2 := string(buf);
-    if tmp1 <> tmp2 then
-    begin
-      nxt_close(nxt);
-      Result := NXT_HANDSHAKE_FAILED;
-      Exit;
-    end;
-}
-  finally
-    FreeMem(buf, 4);
-  end;
+  Result := nxt_send_buf(nxt, PChar(@boot[0]), 21);
 end;
 
 function nxt_send_buf(nxt : PNxt; buf : PChar; len : integer) : integer;
