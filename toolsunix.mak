@@ -1,4 +1,4 @@
-#LAZRESPREFIX=/usr/local/bin/
+LAZRESPREFIX=/usr/lib/lazarus/tools/
 #PTOOLPREFIX=/usr/local/bin/
 DEFAULT_INCLUDE_DIR=.
 ARCH=386
@@ -26,19 +26,19 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS)
 
-midibatch:: midibatch.dpr midibatch_preproc.inc uMidiBatch.lrs
+midibatch:: MidiBatch.dpr midibatch_preproc.inc uMidiBatch.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir -p $(ARCH)
 	mv $@ ./$(ARCH)
 
-nextexplorer:: nextexplorer.dpr nextexplorer_preproc.inc uNXTExplorer.lrs
+nextexplorer:: NeXTExplorer.dpr nextexplorer_preproc.inc uNXTExplorer.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir -p $(ARCH)
 	mv $@ ./$(ARCH)
 
-nextscreen:: nextscreen.dpr nextscreen_preproc.inc uNXTImage.lrs uNXTName.lrs uPortPrompt.lrs
+nextscreen:: NeXTScreen.dpr nextscreen_preproc.inc uNXTImage.lrs uNXTName.lrs uPortPrompt.lrs
 	$(PPC) $(LFLAGS) $< -o$@
 	strip $@
 	mkdir -p $(ARCH)

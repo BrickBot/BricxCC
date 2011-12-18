@@ -63,6 +63,16 @@ const
   kStatusFWNoMoreHandles              = (kStatusOffset + -207);  // 0x481
   kStatusFWUnknownErrorCode           = (kStatusOffset + -208);  // 0x480
 
+  kStatusFWNXTNotPresent          = (kStatusOffset + -301);
+  kStatusFWConfigurationError     = (kStatusOffset + -302);
+  kStatusFWNXTInUse               = (kStatusOffset + -303);
+  kStatusFWUSBWriteError          = (kStatusOffset + -304);
+  kStatusFWUSBReadError           = (kStatusOffset + -305);
+  kStatusFWSAMBAProtocolError     = (kStatusOffset + -306);
+  kStatusFWHandshakeFailed        = (kStatusOffset + -307);
+  kStatusFWFileError              = (kStatusOffset + -308);
+  kStatusFWInvalidFirmware        = (kStatusOffset + -309);
+
   kStatusLast                         = (kStatusOffset + -999);
 
 

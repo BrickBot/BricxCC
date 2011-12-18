@@ -93,6 +93,23 @@ implementation
 uses
   Classes, SysUtils, Math, libusb, rcx_cmd, rcx_constants, uCommonUtils, uSerial;
 
+const
+  flash_len = 136;
+  flash_bin : array[0..flash_len-1] of Byte = (
+    $21, $D8, $A0, $E3, $00, $40, $2D, $E9, $00, $00, $00, $EB,
+    $00, $80, $BD, $E8, $00, $20, $E0, $E3, $97, $30, $12, $E5,
+    $01, $00, $13, $E3, $FC, $FF, $FF, $0A, $02, $C6, $A0, $E3,
+    $0C, $00, $A0, $E1, $21, $0C, $80, $E2, $02, $CA, $8C, $E2,
+    $00, $10, $A0, $E3, $00, $33, $9C, $E5, $03, $33, $81, $E0,
+    $01, $21, $90, $E7, $03, $31, $A0, $E1, $01, $10, $81, $E2,
+    $01, $36, $83, $E2, $40, $00, $51, $E3, $00, $20, $83, $E5,
+    $F6, $FF, $FF, $1A, $00, $33, $9C, $E5, $03, $3B, $A0, $E1,
+    $23, $3B, $A0, $E1, $03, $34, $A0, $E1, $5A, $34, $83, $E2,
+    $01, $30, $83, $E2, $00, $20, $E0, $E3, $9B, $30, $02, $E5,
+    $97, $30, $12, $E5, $01, $00, $13, $E3, $FC, $FF, $FF, $0A,
+    $1E, $FF, $2F, $E1
+  );
+
 const USB_ID_VENDOR_LEGO = $0694;
 const USB_ID_PRODUCT_NXT = $0002;
 const USB_ID_VENDOR_ATMEL = $03EB;
@@ -329,6 +346,33 @@ type
   end;
 
   TNxt = class
+  private
+    function FlashAlterLock(region_num: integer; cmd: byte): integer;
+    function FlashBlock(block_num: Cardinal; buf: PChar): integer;
+    function FlashFinish: integer;
+    function FlashHandshake: integer;
+    function FlashJump(addr: Cardinal): integer;
+    function FlashLockAllRegions: integer;
+    function FlashLockRegion(region_num: integer): integer;
+    function FlashPrepare: integer;
+    function FlashReadByte(addr: Cardinal; var b: byte): integer;
+    function FlashReadCommon(cmd: Char; len: integer; addr: Cardinal; var nword: Cardinal): integer;
+    function FlashReadHword(addr: Cardinal; var hw: word): integer;
+    function FlashReadWord(addr: Cardinal; var w: Cardinal): integer;
+    function FlashReceiveBlock(addr: Cardinal; data: PChar; len: word): integer;
+    function FlashReceiveBuffer(buf: PChar; len: integer): integer;
+    function FlashSendBlock(addr: Cardinal; data: PChar; len: word): integer;
+    function FlashSendBuffer(buf: PChar; len: integer): integer;
+    function FlashSendString(str: PChar): integer;
+    function FlashUnlockAllRegions: integer;
+    function FlashUnlockRegion(region_num: integer): integer;
+    function FlashWaitReady: integer;
+    function FlashWriteByte(addr: Cardinal; b: Byte): integer;
+    function FlashWriteCommon(ntype: Char; addr, w: Cardinal): integer;
+    function FlashWriteHword(addr: Cardinal; hw: Word): integer;
+    function FlashWriteWord(addr, w: Cardinal): integer;
+    function FormatFlashCommand(buf: PChar; cmd: Char; addr: Cardinal): integer;
+    function FormatFlashCommand2(buf: PChar; cmd: Char; addr, nword: Cardinal): integer;
   protected
     fDev : PUSBDevice;
     fDevHandle : PUSBDevHandle;
@@ -494,6 +538,7 @@ function createNXT(resString : PChar; var status : integer;
   checkFWversion : byte) : FantomHandle;
 var
   tmp : TNxt;
+
 begin
   Result := 0;
   if status < kStatusNoError then Exit;
@@ -1489,12 +1534,66 @@ end;
 
 procedure TNxt.downloadFirmware(const firmwareBufferPtr: PByte;
   firmwareBufferSizeInBytes: Cardinal; var status: integer);
+var
+  ms : TMemoryStream;
+  buf : PChar;
+  i : integer;
+  ret : integer;
 begin
-  // TODO: Firmware download is not currently supported.
   if not Assigned(firmwareBufferPtr) then Exit;
   if firmwareBufferSizeInBytes = 0 then Exit;
   if status < kStatusNoError then Exit;
-  status := kStatusFirmwareDownloadFailed;
+  if not fNXTViaUSB then Exit;
+
+  status := FlashHandshake;
+  if status < kStatusNoError then Exit;
+
+  ms := TMemoryStream.Create;
+  try
+    ms.Write(firmwareBufferPtr^, firmwareBufferSizeInBytes);
+    ms.Position := 0;
+    if ms.Size > 256*1024 then
+    begin
+      status := kStatusFirmwareDownloadFailed;
+      Exit;
+    end;
+
+    status := FlashPrepare;
+    if status < kStatusNoError then Exit;
+
+    GetMem(buf, 256);
+    try
+      for i := 0 to 1023 do
+      begin
+        FillChar(buf^, 256, 0);
+        ret := ms.Read(buf^, 256);
+        if ret > 0 then
+        begin
+          status := FlashBlock(i, buf);
+          if status < kStatusNoError then Exit;
+        end;
+
+        if ret < 256 then
+        begin
+          status := FlashFinish;
+          if status < kStatusNoError then Exit;
+          if ret = -1 then
+            status := kStatusFWUndefinedError
+          else
+            status := kStatusNoError;
+          Exit;
+        end;
+      end;
+    finally
+      FreeMem(buf, 256);
+    end;
+    status := FlashFinish;
+    if status < kStatusNoError then Exit;
+  finally
+    ms.Free;
+  end;
+
+  status := FlashJump($00100000);
 end;
 
 procedure TNxt.eraseUserFlash(var status: integer);
@@ -1835,7 +1934,11 @@ begin
       if bDone then
       begin
         Result := kStatusNoError;
-  //      usb_set_configuration(fDevHandle, 1);
+{$IFDEF Linux}
+        //detach possible kernel driver bound to interface
+        usb_detach_kernel_driver_np(fDevHandle, USB_INTERFACE);
+{$ENDIF}
+//        usb_set_configuration(fDevHandle, 1);
         usb_claim_interface(fDevHandle, USB_INTERFACE);
       end
       else
@@ -1945,6 +2048,323 @@ begin
   begin
     status := kStatusNoError;
     Result := ret;
+  end;
+end;
+
+function TNxt.FlashLockRegion(region_num : integer) : integer;
+const
+  FLASH_CMD_LOCK = $2;
+begin
+  Result := FlashAlterLock(region_num, FLASH_CMD_LOCK);
+end;
+
+function TNxt.FlashLockAllRegions : integer;
+var
+  i : integer;
+begin
+  for i := 0 to 15 do
+  begin
+    Result := FlashLockRegion(i);
+    if Result <> kStatusNoError then Exit;
+  end;
+end;
+
+function TNxt.FlashSendBuffer(buf : PChar; len : integer) : integer;
+var
+  ret : integer;
+begin
+  ret := usb_bulk_write(fDevHandle, USB_OUT_ENDPOINT, buf, len, 0);
+  if ret < 0 then
+  begin
+    Result := kStatusFWUSBWriteError;
+    Exit;
+  end;
+  Result := kStatusNoError;
+end;
+
+function TNxt.FlashSendString(str : PChar) : integer;
+begin
+  Result := FlashSendBuffer(str, StrLen(str));
+end;
+
+function TNxt.FlashReceiveBuffer(buf : PChar; len : integer) : integer;
+var
+  ret : integer;
+begin
+  ret := usb_bulk_read(fDevHandle, USB_IN_ENDPOINT, buf, len, 0);
+  if ret < 0 then
+  begin
+    Result := kStatusFWUSBReadError;
+    Exit;
+  end;
+  Result := kStatusNoError;
+end;
+
+function TNxt.FormatFlashCommand2(buf : PChar; cmd : Char; addr, nword : Cardinal) : integer;
+var
+  tmp : string;
+begin
+  tmp := cmd + UpperCase(Format('%8.8x,%8.8x#', [addr, nword]));
+  StrCopy(buf, PChar(tmp));
+  Result := kStatusNoError;
+end;
+
+function TNxt.FormatFlashCommand(buf : PChar; cmd : Char; addr : Cardinal) : integer;
+var
+  tmp : string;
+begin
+  tmp := cmd + UpperCase(Format('%8.8x#', [addr]));
+  StrCopy(buf, PChar(tmp));
+  Result := kStatusNoError;
+end;
+
+function TNxt.FlashWriteCommon(ntype : Char; addr, w : Cardinal) : integer;
+var
+  buf : PChar;
+begin
+  buf := AllocMem(21);
+  try
+    Result := FormatFlashCommand2(buf, ntype, addr, w);
+    if Result <> kStatusNoError then Exit;
+    Result := FlashSendString(buf);
+  finally
+    FreeMem(buf, 21);
+  end;
+end;
+
+function TNxt.FlashWriteByte(addr : Cardinal; b : Byte) : integer;
+begin
+  Result := FlashWriteCommon('O', addr, b);
+end;
+
+function TNxt.FlashWriteHword(addr : Cardinal; hw : Word) : integer;
+begin
+  Result := FlashWriteCommon('H', addr, hw);
+end;
+
+function TNxt.FlashWriteWord(addr, w : Cardinal) : integer;
+begin
+  Result := FlashWriteCommon('W', addr, w);
+end;
+
+function TNxt.FlashReadCommon(cmd : Char; len : integer; addr : Cardinal; var nword : Cardinal) : integer;
+var
+  buf : PChar;
+  w : Cardinal;
+begin
+  buf := AllocMem(20);
+  try
+    Result := FormatFlashCommand2(buf, cmd, addr, len);
+    if Result <> kStatusNoError then Exit;
+
+    Result := FlashSendString(buf);
+    if Result <> kStatusNoError then Exit;
+
+    Result := FlashReceiveBuffer(buf, len);
+    if Result <> kStatusNoError then Exit;
+
+    w := (PCardinal(buf))^;
+
+{$ifdef _NXT_BIG_ENDIAN}
+  (* The value returned is in little-endian byte ordering, so swap
+     bytes on a big-endian architecture. *)
+    w := (((w and $000000FF) shl 24) +
+          ((w and $0000FF00) shl 8)  +
+          ((w and $00FF0000) shr 8)  +
+          ((w and $FF000000) shr 24));
+{$endif}
+    nword := w;
+  finally
+    FreeMem(buf, 20);
+  end;
+end;
+
+function TNxt.FlashReadByte(addr : Cardinal; var b : byte) : integer;
+var
+  w : Cardinal;
+begin
+  w := 0;
+  Result := FlashReadCommon('o', 1, addr, w);
+  if Result <> kStatusNoError then Exit;
+  b := Byte(w);
+end;
+
+function TNxt.FlashReadHword(addr : Cardinal; var hw : word) : integer;
+var
+  w : Cardinal;
+begin
+  w := 0;
+  Result := FlashReadCommon('h', 2, addr, w);
+  if Result <> kStatusNoError then Exit;
+  hw := Word(w);
+end;
+
+function TNxt.FlashReadWord(addr : Cardinal; var w : Cardinal) : integer;
+begin
+  Result := FlashReadCommon('w', 4, addr, w);
+end;
+
+function TNxt.FlashSendBlock(addr : Cardinal; data : PChar; len : word) : integer;
+var
+  buf : PChar;
+begin
+  GetMem(buf, 20);
+  try
+    Result := FormatFlashCommand2(buf, 'S', addr, len);
+    if Result <> kStatusNoError then Exit;
+
+    Result := FlashSendString(buf);
+    if Result <> kStatusNoError then Exit;
+
+    Result := FlashSendBuffer(data, len);
+  finally
+    FreeMem(buf, 20);
+  end;
+end;
+
+function TNxt.FlashReceiveBlock(addr : Cardinal; data : PChar; len : word) : integer;
+var
+  buf : PChar;
+begin
+  GetMem(buf, 20);
+  try
+    Result := FormatFlashCommand2(buf, 'R', addr, len);
+    if Result <> kStatusNoError then Exit;
+
+    Result := FlashSendString(buf);
+    if Result <> kStatusNoError then Exit;
+
+    Result := FlashReceiveBuffer(data, len+1);
+  finally
+    FreeMem(buf, 20);
+  end;
+end;
+
+function TNxt.FlashJump(addr : Cardinal) : integer;
+var
+  buf : PChar;
+begin
+  GetMem(buf, 20);
+  try
+    Result := FormatFlashCommand(buf, 'G', addr);
+    if Result <> kStatusNoError then Exit;
+
+    Result := FlashSendString(buf);
+  finally
+    FreeMem(buf, 20);
+  end;
+end;
+
+function TNxt.FlashWaitReady : integer;
+var
+  flash_status : Cardinal;
+begin
+  flash_status := 0;
+  repeat
+    Result := FlashReadWord($FFFFFF68, flash_status);
+    if Result <> kStatusNoError then Exit;
+    (* Bit 0 is the FRDY field. Set to 1 if the flash controller is
+     * ready to run a new command.
+     *)
+  until (flash_status and $1 = $1);
+end;
+
+function TNxt.FlashAlterLock(region_num : integer; cmd : byte) : integer;
+var
+  w : Cardinal;
+begin
+  w := $5A000000 or ((64 * region_num) shl 8);
+  w := w + cmd;
+  Result := FlashWaitReady;
+  if Result <> kStatusNoError then Exit;
+
+  (* Flash mode register: FCMN 0x5, FWS 0x1
+   * Flash command register: KEY 0x5A, FCMD = clear-lock-bit (0x4)
+   * Flash mode register: FCMN 0x34, FWS 0x1
+   *)
+  Result := FlashWriteWord($FFFFFF60, $00050100);
+  if Result <> kStatusNoError then Exit;
+
+  Result := FlashWriteWord($FFFFFF64, w);
+  if Result <> kStatusNoError then Exit;
+
+  Result := FlashWriteWord($FFFFFF60, $00340100);
+end;
+
+function TNxt.FlashUnlockRegion(region_num : integer) : integer;
+const
+  FLASH_CMD_UNLOCK = $4;
+begin
+  Result := FlashAlterLock(region_num, FLASH_CMD_UNLOCK);
+end;
+
+function TNxt.FlashUnlockAllRegions : integer;
+var
+  i : integer;
+begin
+  for i := 0 to 15 do
+  begin
+    Result := FlashUnlockRegion(i);
+    if Result <> kStatusNoError then Exit;
+  end;
+end;
+
+function TNxt.FlashPrepare : integer;
+begin
+  // Put the clock in PLL/2 mode
+  Result := FlashWriteWord($FFFFFC30, $7);
+  if Result <> kStatusNoError then Exit;
+
+  // Unlock the flash chip
+  Result := FlashUnlockAllRegions;
+  if Result <> kStatusNoError then Exit;
+
+  // Send the flash writing routine
+  Result := FlashSendBlock($202000, PChar(@flash_bin[0]), flash_len);
+end;
+
+function TNxt.FlashBlock(block_num : Cardinal; buf : PChar) : integer;
+begin
+  // Set the target block number
+  Result := FlashWriteWord($202300, block_num);
+  if Result <> kStatusNoError then Exit;
+
+  // Send the block to flash
+  Result := FlashSendBlock($202100, buf, 256);
+  if Result <> kStatusNoError then Exit;
+
+  // Jump into the flash writing routine
+  Result := FlashJump($202000);
+end;
+
+function TNxt.FlashFinish : integer;
+begin
+  Result := FlashWaitReady;
+end;
+
+function TNxt.FlashHandshake : integer;
+var
+  buf : PChar;
+  tmp1, tmp2 : string;
+begin
+  Result := kStatusNoError;
+  // NXT handshake (only works in SAMBA mode)
+  buf := AllocMem(3);
+  try
+    Result := FlashSendString('N#');
+    if Result <> kStatusNoError then Exit;
+    Result := FlashReceiveBuffer(buf, 2);
+    if Result <> kStatusNoError then Exit;
+    tmp1 := ''#$A#$D'';
+    tmp2 := string(buf);
+    if tmp1 <> tmp2 then
+    begin
+      usb_release_interface(fDevHandle, USB_INTERFACE);
+      usb_close(fDevHandle);
+      Result := kStatusFWHandshakeFailed;
+    end;
+  finally
+    FreeMem(buf, 3);
   end;
 end;
 
@@ -2811,7 +3231,11 @@ begin
     Result.fCheckver := False;
     Result.fDev := fDev;
     Result.fDevHandle := fDevHandle;
-  //  usb_set_configuration(fDevHandle, 1);
+{$IFDEF Linux}
+    //detach possible kernel driver bound to interface
+    usb_detach_kernel_driver_np(fDevHandle, USB_INTERFACE);
+{$ENDIF}
+//    usb_set_configuration(fDevHandle, 1);
     usb_claim_interface(fDevHandle, USB_INTERFACE);
     fDevHandle := nil;
   end

@@ -142,6 +142,7 @@ begin
     nxt_close(nxt);
   FreeMem(nxt);
   nxt := nil;
+  Result := NXT_OK;
 end;
 
 function nxt_find(nxt : PNxt) : integer;
@@ -190,6 +191,7 @@ var
   buf : PChar;
   tmp1, tmp2 : string;
 begin
+  Result := NXT_OK;
   nxt^.hdl := usb_open(nxt^.dev);
 
 {$IFDEF Linux}
@@ -233,7 +235,6 @@ begin
       FreeMem(buf, 3);
     end;
   end;
-  Result := NXT_OK;
 end;
 
 function nxt_close(nxt : PNxt) : integer;
@@ -508,11 +509,6 @@ begin
   Result := nxt_flash_alter_lock(nxt, region_num, FLASH_CMD_LOCK);
 end;
 
-function nxt_flash_unlock_region(nxt : PNxt; region_num : integer) : integer;
-begin
-  Result := nxt_flash_alter_lock(nxt, region_num, FLASH_CMD_UNLOCK);
-end;
-
 function nxt_flash_lock_all_regions(nxt : PNxt) : integer;
 var
   i : integer;
@@ -522,6 +518,11 @@ begin
     Result := nxt_flash_lock_region(nxt, i);
     if Result <> NXT_OK then Exit;
   end;
+end;
+
+function nxt_flash_unlock_region(nxt : PNxt; region_num : integer) : integer;
+begin
+  Result := nxt_flash_alter_lock(nxt, region_num, FLASH_CMD_UNLOCK);
 end;
 
 function nxt_flash_unlock_all_regions(nxt : PNxt) : integer;
@@ -641,8 +642,6 @@ begin
               Result := NXT_OK;
             Exit;
           end;
-//          Result := nxt_flash_block(nxt, i, buf);
-//          if Result <> NXT_OK then Exit;
         end;
       finally
         FreeMem(buf, 256);
