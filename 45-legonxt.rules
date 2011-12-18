@@ -1,0 +1,12 @@
+# NXT brick 
+SUBSYSTEM=="usb", ATTRS{idVendor}=="0694", ATTRS{idProduct}=="0002", SYMLINK+="legonxt-%k", GROUP="legonxt", MODE="0666"
+
+# NXT brick in firmware update mode (Atmel SAM-BA mode)
+SUBSYSTEM=="usb", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", SYMLINK+="legonxt-%k", GROUP="legonxt", MODE="0666"
+
+# rules to unbind cdc_acm
+ACTION=="add", SUBSYSTEM=="usb", DRIVER=="cdc_acm", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", RUN+="/bin/sh -c 'echo $kernel >/sys/bus/usb/drivers/cdc_acm/unbind"
+
+# rules to unbind sam-ba
+ACTION=="add", SUBSYSTEM=="usb", DRIVER=="sam-ba", ATTRS{idVendor}=="03eb", ATTRS{idProduct}=="6124", RUN+="/bin/sh -c 'echo $kernel >/sys/bus/usb/drivers/sam-ba/unbind"
+

@@ -1,25 +1,21 @@
 program NeXTTool;
 
+{$MODE Delphi}
+
 {$APPTYPE CONSOLE}
 
 uses
-{$IFDEF FPC}
-  FastMM4,
-  FastMove,
-{$ENDIF}
   Classes,
   SysUtils,
   Dialogs,
   Math,
   ParamUtils in 'ParamUtils.pas',
   uVersionInfo in 'uVersionInfo.pas',
-  uNXTConstants in 'NXT\uNXTConstants.pas',
-  uSpirit in 'bricktools\uSpirit.pas',
-  FantomSpirit in 'bricktools\FantomSpirit.pas',
+  uNXTConstants in 'NXT/uNXTConstants.pas',
+  uSpirit in 'bricktools/uSpirit.pas',
+  FantomSpirit in 'bricktools/FantomSpirit.pas',
   uCommonUtils in 'uCommonUtils.pas',
   uCmdLineUtils in 'uCmdLineUtils.pas';
-
-{$R *.RES}
 
 var
   SL : TStrings;
@@ -40,7 +36,7 @@ var
 // misc variables
   pattern : string;
   pmin, pmaj, fmin, fmaj, bytesReady : byte;
-  btaddr : array[0..5] of Byte;
+  btaddr : string;
   btsig : cardinal;
   memFree : Cardinal;
   pressed : boolean;
@@ -223,11 +219,11 @@ begin
     if ParamSwitch('-sleep') then
       BrickComm.Sleep(ParamIntValue('-sleep', 10));
     if ParamSwitch('-run') then begin
-      BrickComm.StartProgram(ParamValue('-run'));
+      BrickComm.NXTStartProgram(ParamValue('-run'));
     end;
     if ParamSwitch('-msg') then
     begin
-      BrickComm.MessageWrite(ParamIntValue('/Inbox', 0), ParamValue('-msg'));
+      BrickComm.NXTMessageWrite(ParamIntValue('/Inbox', 0), ParamValue('-msg'));
     end;
     if ParamSwitch('-battery') then
       OutputValue(BrickComm.BatteryLevel);
@@ -280,18 +276,18 @@ begin
     if ParamSwitch('-playtone') then
       BrickComm.PlayTone(ParamIntValue('-playtone', 440), ParamIntValue('/Duration', 500));
     if ParamSwitch('-stop') then
-      BrickComm.StopProgram;
+      BrickComm.NXTStopProgram;
     if ParamSwitch('-playfile') then
-      BrickComm.PlaySoundFile(ParamValue('-playfile'), ParamSwitch('/L'));
+      BrickComm.NXTPlaySoundFile(ParamValue('-playfile'), ParamSwitch('/L'));
     if ParamSwitch('-keepalive') then
     begin
-      if BrickComm.KeepAlive(cvalue) then
+      if BrickComm.NXTKeepAlive(cvalue) then
         OutputValue(cvalue);
     end;
     if ParamSwitch('-resetoutputposition') then
-      BrickComm.ResetOutputPosition(ParamIntValue('-resetoutputposition', 0), ParamSwitch('/Relative'));
+      BrickComm.NXTResetOutputPosition(ParamIntValue('-resetoutputposition', 0), ParamSwitch('/Relative'));
     if ParamSwitch('-resetinputsv') then
-      BrickComm.ResetInputScaledValue(ParamIntValue('-resetinputsv', 0));
+      BrickComm.NXTResetInputScaledValue(ParamIntValue('-resetinputsv', 0));
     if ParamSwitch('-upload') then
     begin
       pattern := ParamValue('-upload');
@@ -338,7 +334,7 @@ begin
     end;
     if ParamSwitch('-runningprogram') then
     begin
-      if BrickComm.GetCurrentProgramName(pattern) then
+      if BrickComm.NXTGetCurrentProgramName(pattern) then
         Writeln(pattern);
     end;
     if ParamSwitch('-setname') then
@@ -357,11 +353,10 @@ begin
     end;
     if ParamSwitch('-deviceinfo') then
     begin
-      if BrickComm.NXTGetDeviceInfo(pattern, @btaddr[0], btsig, memFree) then
+      if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
       begin
         Writeln(Format('Brick name = %s', [pattern]));
-        Writeln(Format('Bluetooth Address = %2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
-          [btaddr[0], btaddr[1], btaddr[2], btaddr[3], btaddr[4], btaddr[5]]));
+        Writeln(Format('Bluetooth Address = %s', [btaddr]));
         Writeln(Format('Bluetooth signal strength = %d,%d,%d,%d',
           [GetByte(btsig, 0), GetByte(btsig, 1), GetByte(btsig, 2), GetByte(btsig, 3)]));
         Writeln(Format('Free memory = %d', [memFree]));
@@ -369,35 +364,35 @@ begin
     end;
     if ParamSwitch('-getname') then
     begin
-      if BrickComm.NXTGetDeviceInfo(pattern, @btaddr[0], btsig, memFree) then
+      if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
         Writeln(pattern);
     end;
     if ParamSwitch('-freemem') then
     begin
-      if BrickComm.NXTGetDeviceInfo(pattern, @btaddr[0], btsig, memFree) then
+      if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
         OutputValue(memFree);
     end;
     if ParamSwitch('-lsstatus') then
     begin
       port := ParamIntValue('-lsstatus', 0);
-      if BrickComm.LSGetStatus(port, bytesReady) then
+      if BrickComm.NXTLSGetStatus(port, bytesReady) then
         OutputValue(bytesReady);
     end;
     if ParamSwitch('-btnstate') then
     begin
       port := ParamIntValue('-btnstate', 0);
-      if BrickComm.GetButtonState(port, False, pressed, btncount) then
+      if BrickComm.NXTGetButtonState(port, False, pressed, btncount) then
         Writeln(Format('Button %d: pressed = %s, count = %d', [port, BoolToStr(pressed, True), btncount]));
     end;
     if ParamSwitch('-resetbtnstate') then
     begin
       port := ParamIntValue('-resetbtnstate', 0);
-      BrickComm.GetButtonState(port, True, pressed, btncount);
+      BrickComm.NXTGetButtonState(port, True, pressed, btncount);
     end;
     if ParamSwitch('-readmsg') then
     begin
       port := ParamIntValue('-readmsg', 0);
-      if BrickComm.MessageRead(port, ParamIntValue('/Inbox', 0), ParamSwitch('/Empty'), Msg) then
+      if BrickComm.NXTMessageRead(port, ParamIntValue('/Inbox', 0), ParamSwitch('/Empty'), Msg) then
       begin
         for i := 0 to Msg.Size - 1 do
           OutputValue(Msg.Data[i]);
