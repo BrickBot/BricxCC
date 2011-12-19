@@ -227,6 +227,11 @@ begin
   Result := nil;
 end;
 
+function FirmwareResourceString(const resStr : string) : boolean;
+begin
+  Result := Pos('0X03EB::0X6124', resStr) <> 0;
+end;
+
 function UseUSB(const resStr : string) : boolean;
 begin
   // resource string for USB has certain format
@@ -466,13 +471,13 @@ var
   buf : PChar;
 begin
   buf := nil;
-  GetMem(buf, 256);
+  buf := AllocMem(256);
   try
     with dev^.descriptor, dev^.config^ do
     begin
-      if handle <> nil then
+      if (handle <> nil) and (idVendor = $0694) then
         usb_get_string_simple(handle, iSerialNumber, buf, 255)
-      else
+      else if (idVendor = $03EB) and (idProduct = $6124) then
         StrPCopy(buf, 'NI-VISA-1::1'); // firmware mode
       Result := Format('USB%d::0X%4.4X::0X%4.4X::%s::RAW', [iConfiguration, idVendor, idProduct, buf]);
     end;
@@ -1913,7 +1918,7 @@ begin
         fDev := Bus^.devices;
         while (fDev <> nil) and not bDone do
         begin
-          if is_nxt_device(fDev) then
+          if is_nxt_device(fDev) or (FirmwareResourceString(resStr) and is_nxt_fw_device(fDev)) then
           begin
             // open if it is an NXT
             fDevHandle := usb_open(fDev);
@@ -2051,35 +2056,11 @@ begin
   end;
 end;
 
-function TNxt.FlashLockRegion(region_num : integer) : integer;
-const
-  FLASH_CMD_LOCK = $2;
-begin
-  Result := FlashAlterLock(region_num, FLASH_CMD_LOCK);
-end;
-
-function TNxt.FlashLockAllRegions : integer;
-var
-  i : integer;
-begin
-  for i := 0 to 15 do
-  begin
-    Result := FlashLockRegion(i);
-    if Result <> kStatusNoError then Exit;
-  end;
-end;
-
 function TNxt.FlashSendBuffer(buf : PChar; len : integer) : integer;
-var
-  ret : integer;
 begin
-  ret := usb_bulk_write(fDevHandle, USB_OUT_ENDPOINT, buf, len, 0);
-  if ret < 0 then
-  begin
-    Result := kStatusFWUSBWriteError;
-    Exit;
-  end;
   Result := kStatusNoError;
+  if usb_bulk_write(fDevHandle, USB_OUT_ENDPOINT, buf, len, 0) < 0 then
+    Result := kStatusFWUSBWriteError;
 end;
 
 function TNxt.FlashSendString(str : PChar) : integer;
@@ -2088,16 +2069,10 @@ begin
 end;
 
 function TNxt.FlashReceiveBuffer(buf : PChar; len : integer) : integer;
-var
-  ret : integer;
 begin
-  ret := usb_bulk_read(fDevHandle, USB_IN_ENDPOINT, buf, len, 0);
-  if ret < 0 then
-  begin
-    Result := kStatusFWUSBReadError;
-    Exit;
-  end;
   Result := kStatusNoError;
+  if usb_bulk_read(fDevHandle, USB_IN_ENDPOINT, buf, len, 0) < 0 then
+    Result := kStatusFWUSBReadError;
 end;
 
 function TNxt.FormatFlashCommand2(buf : PChar; cmd : Char; addr, nword : Cardinal) : integer;
@@ -2291,6 +2266,24 @@ begin
   Result := FlashWriteWord($FFFFFF60, $00340100);
 end;
 
+function TNxt.FlashLockRegion(region_num : integer) : integer;
+const
+  FLASH_CMD_LOCK = $2;
+begin
+  Result := FlashAlterLock(region_num, FLASH_CMD_LOCK);
+end;
+
+function TNxt.FlashLockAllRegions : integer;
+var
+  i : integer;
+begin
+  for i := 0 to 15 do
+  begin
+    Result := FlashLockRegion(i);
+    if Result <> kStatusNoError then break;
+  end;
+end;
+
 function TNxt.FlashUnlockRegion(region_num : integer) : integer;
 const
   FLASH_CMD_UNLOCK = $4;
@@ -2305,7 +2298,7 @@ begin
   for i := 0 to 15 do
   begin
     Result := FlashUnlockRegion(i);
-    if Result <> kStatusNoError then Exit;
+    if Result <> kStatusNoError then break;
   end;
 end;
 

@@ -1,0 +1,44 @@
+-init (exit afterwards)
+-listbricks (exit afterwards)
+
+-firmware (-iterations)
+-clear
+-sleep
+-msg (/Inbox)
+-battery
+-input
+-setinput (/SensorType, /SensorMode)
+-output
+-setoutput (/Power, /Mode, /RegMode, /RunState, /TurnRatio, /TachoLimit)
+-mute
+-playtone (/Duration)
+-stop
+-playfile (/Loop)
+-keepalive
+-resetoutputposition (/Relative)
+-resetinputsv
+-upload
+-download
+-run
+-delete
+-defrag
+-listfiles
+-listmodules
+-runningprogram
+-setname
+-boot
+-btreset
+-versions
+-deviceinfo
+-getname
+-freemem
+-lsstatus
+-btnstate
+-resetbtnstate
+-readmsg (/Inbox, /Empty)
+-memory
+-memory_full
+-map
+-datalog
+-datalog_full
+

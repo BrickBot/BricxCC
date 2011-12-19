@@ -1890,6 +1890,9 @@ var
 begin
   Result := IsOpen;
   if not Result then Exit;
+  // only allow this command when connected via USB
+  Result := not fUseBT;
+  if not Result then Exit;
   status := kStatusNoError;
   iNXT_getResourceString(fNXTHandle, resBuf, status);
   if chkResponse then
@@ -1908,6 +1911,9 @@ var
   status : integer;
 begin
   Result := IsOpen;
+  if not Result then Exit;
+  // only allow this command when connected via USB
+  Result := not fUseBT;
   if not Result then Exit;
   status := kStatusNoError;
   iNXT_setName(fNXTHandle, PChar(name), status);
@@ -1953,6 +1959,9 @@ var
   status : integer;
 begin
   Result := IsOpen;
+  if not Result then Exit;
+  // only allow this command when connected via USB
+  Result := not fUseBT;
   if not Result then Exit;
   status := kStatusNoError;
   iNXT_bluetoothFactoryReset(fNXTHandle, status);
@@ -4026,4 +4035,4 @@ begin
   //
 end;
 
-end.
+end.
