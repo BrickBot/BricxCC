@@ -51,12 +51,14 @@ var
   port, power: integer;
   maddr, msize: integer;
   mode, regmode, runstate: byte;
+  modestr, regmodestr, runstatestr : string;
   turnratio: integer;
   tacholimit: cardinal;
   tachocount, blocktachocount, rotationcount: Integer;
 // getintputvalues variables
   valid, calibrated: boolean;
   stype, smode: byte;
+  stypestr, smodestr : string;
   raw, normalized: word;
   scaled, calvalue: smallint;
 // misc variables
@@ -329,8 +331,12 @@ begin
       if ParamSwitch('-setinput') then
       begin
         port := ParamIntValue('-setinput', 0);
-        stype := ParamIntValue('/SensorType', stype);
-        smode := ParamIntValue('/SensorMode', smode);
+        stypestr := ParamValue('/SensorType');
+        if stypestr <> '' then
+          stype := StrToNXTInputType(stypestr);
+        smodestr := ParamValue('/SensorMode');
+        if smodestr <> '' then
+          smode := StrToNXTInputMode(smodestr);
         BrickComm.SetNXTInputMode(Byte(port), stype, smode);
       end;
       if ParamSwitch('-output') then
@@ -359,9 +365,15 @@ begin
       begin
         port := ParamIntValue('-setoutput', 0);
         power := ParamIntValue('/Power', power);
-        mode := ParamIntValue('/Mode', mode);
-        regmode := ParamIntValue('/RegMode', regmode);
-        runstate := ParamIntValue('/RunState', runstate);
+        modestr := ParamValue('/Mode');
+        if modestr <> '' then
+          mode := StrToNXTOutputMode(modestr);
+        regmodestr := ParamValue('/RegMode');
+        if regmodestr <> '' then
+          regmode := StrToNXTOutputRegMode(regmodestr);
+        runstatestr := ParamValue('/RunState');
+        if runstatestr <> '' then
+          runstate := StrToNXTOutputRunState(runstatestr);
         turnratio := ParamIntValue('/TurnRatio', turnratio);
         tacholimit := ParamIntValue('/TachoLimit', tacholimit);
         BrickComm.SetNXTOutputState(Byte(port), power, mode, regmode, turnratio, runstate, tacholimit);

@@ -2974,6 +2974,8 @@
 #define MS_ADDR_NXTMMX      0x06 /*!< MindSensors NXTMMX I2C address */
 #define MS_ADDR_IVSENS      0x12 /*!< MindSensors IVSens (NXTPowerMeter) I2C address */
 #define MS_ADDR_RXMUX       0x7E /*!< MindSensors RXMux I2C address */
+#define MS_ADDR_NUMERICPAD  0xB4 /*!< MindSensors NumericPad I2C address */
+#define MS_ADDR_TOUCHPANEL  0x04 /*!< MindSensors TouchPanel I2C address */
 
 /** @defgroup MSDistNX MindSensors DIST-Nx constants
  * Constants that are for use with the MindSensors DIST-Nx device.
@@ -3359,6 +3361,38 @@
 #define NXTLL_CMD_WHITE     0x57 /*!< White balance calibration. */
 /** @} */  // end of NXTLineLeaderCommands group
 /** @} */  // end of NXTLineLeaderConstants group
+
+/** @defgroup NXTNumericPadConstants MindSensors NXTNumericPad constants
+ * Constants that are for use with the MindSensors NXTNumericPad device.
+ * @{
+ */
+/** @defgroup NXTNumericPadRegisters MindSensors NXTNumericPad registers
+ * NXTNumericPad device register constants.
+ * @{
+ */
+#define NXTNP_REG_BUTTONS  0x00 /*!< NXTNumericPad buttons register. */
+/** @} */  // end of NXTNumericPadRegisters group
+/** @} */  // end of NXTNumericPadConstants group
+
+/** @defgroup NXTTouchPanelConstants MindSensors NXTTouchPanel constants
+ * Constants that are for use with the MindSensors NXTTouchPanel device.
+ * @{
+ */
+/** @defgroup NXTTouchPanelRegisters MindSensors NXTTouchPanel registers
+ * NXTTouchPanel device register constants.
+ * @{
+ */
+#define NXTTP_REG_CMD         0x41 /*!< NXTTouchPanel command register.  See the \ref TouchPanelCommands group. */
+/** @} */  // end of NXTTouchPanelRegisters group
+
+/** @defgroup NXTTouchPanelCommands MindSensors NXTTouchPanel commands
+ * NXTTouchPanel device command constants. These are written to the command register
+ * to control the device.
+ * @{
+ */
+#define NXTTP_CMD_USA       0x41 /*!< USA power frequency. (60hz) */
+/** @} */  // end of NXTTouchPanelCommands group
+/** @} */  // end of NXTTouchPanelConstants group
 
 /** @} */  // end of MindSensorsConstants group
 /** @} */  // end of MindSensorsAPI group

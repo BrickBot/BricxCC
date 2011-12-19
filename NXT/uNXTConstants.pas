@@ -406,11 +406,13 @@ const
   OUT_RUNSTATE_RAMPUP   = $10;
   OUT_RUNSTATE_RUNNING  = $20;
   OUT_RUNSTATE_RAMPDOWN = $40;
+  OUT_RUNSTATE_HOLD     = $60;
 
 const
   OUT_REGMODE_IDLE  = 0;
   OUT_REGMODE_SPEED = 1;
   OUT_REGMODE_SYNC  = 2;
+  OUT_REGMODE_POS   = 4;
 
 // values passed into the Type field of the RCXInput
 const
@@ -1243,9 +1245,14 @@ function CommOffsetBtConnectTableSpare(const p : byte) : word;
 function CCToStr(const cc : integer) : string;
 function NXTInputTypeToStr(const stype : integer) : string;
 function NXTInputModeToStr(const smode : integer) : string;
+function StrToNXTInputType(const stype : string) : integer;
+function StrToNXTInputMode(const smode : string) : integer;
 function NXTOutputModeToStr(const mode : integer) : string;
 function NXTOutputRunStateToStr(const runstate : integer) : string;
 function NXTOutputRegModeToStr(const regmode : integer) : string;
+function StrToNXTOutputMode(const mode : string) : integer;
+function StrToNXTOutputRunState(const runstate : string) : integer;
+function StrToNXTOutputRegMode(const regmode : string) : integer;
 
 const
   TONES : array[3..9,0..11] of Word = (
@@ -1794,6 +1801,11 @@ begin
     IN_TYPE_LOWSPEED       : Result := 'Lowspeed';
     IN_TYPE_LOWSPEED_9V    : Result := 'Lowspeed 9v';
     IN_TYPE_HISPEED        : Result := 'Hispeed';
+    IN_TYPE_COLORFULL      : Result := 'ColorFull';
+    IN_TYPE_COLORRED       : Result := 'ColorRed';
+    IN_TYPE_COLORGREEN     : Result := 'ColorGreen';
+    IN_TYPE_COLORBLUE      : Result := 'ColorBlue';
+    IN_TYPE_COLORNONE      : Result := 'ColorNone';
   else
     Result := Format(HEX_FMT, [stype]);
   end;
@@ -1815,6 +1827,76 @@ begin
   end;
   if (smode and IN_MODE_SLOPEMASK) <> 0 then
     Result := Result + Format(' (slope = %d)', [smode and IN_MODE_SLOPEMASK]);
+end;
+
+function StrToNXTInputType(const stype : string) : integer;
+var
+  tmp : string;
+begin
+  tmp := StringReplace(UpperCase(stype), '0X', '$', [rfReplaceAll]);
+  if tmp = 'NO_SENSOR' then
+    Result := IN_TYPE_NO_SENSOR
+  else if tmp = 'SWITCH' then
+    Result := IN_TYPE_SWITCH
+  else if tmp = 'TEMPERATURE' then
+    Result := IN_TYPE_TEMPERATURE
+  else if tmp = 'REEFLECTION' then
+    Result := IN_TYPE_REFLECTION
+  else if tmp = 'ANGLE' then
+    Result := IN_TYPE_ANGLE
+  else if tmp = 'LIGHT_ACTIVE' then
+    Result := IN_TYPE_LIGHT_ACTIVE
+  else if tmp = 'LIGHT_INACTIVE' then
+    Result := IN_TYPE_LIGHT_INACTIVE
+  else if tmp = 'SOUND_DB' then
+    Result := IN_TYPE_SOUND_DB
+  else if tmp = 'SOUND_DBA' then
+    Result := IN_TYPE_SOUND_DBA
+  else if tmp = 'CUSTOM' then
+    Result := IN_TYPE_CUSTOM
+  else if tmp = 'LOWSPEED' then
+    Result := IN_TYPE_LOWSPEED
+  else if tmp = 'LOWSPEED_9V' then
+    Result := IN_TYPE_LOWSPEED_9V
+  else if tmp = 'HISPEED' then
+    Result := IN_TYPE_HISPEED
+  else if tmp = 'COLORFULL' then
+    Result := IN_TYPE_COLORFULL
+  else if tmp = 'COLORRED' then
+    Result := IN_TYPE_COLORRED
+  else if tmp = 'OLORGREEN' then
+    Result := IN_TYPE_COLORGREEN
+  else if tmp = 'COLORBLUE' then
+    Result := IN_TYPE_COLORBLUE
+  else if tmp = 'COLORNONE' then
+    Result := IN_TYPE_COLORNONE
+  else
+    Result := StrToIntDef(tmp, 0);
+end;
+
+function StrToNXTInputMode(const smode : string) : integer;
+var
+  tmp : string;
+begin
+  tmp := StringReplace(UpperCase(smode), '0X', '$', [rfReplaceAll]);
+  if tmp = 'RAW' then
+    Result := IN_MODE_RAW
+  else if tmp = 'BOOLEAN' then
+    Result := IN_MODE_BOOLEAN
+  else if tmp = 'TRANSITIONCNT' then
+    Result := IN_MODE_TRANSITIONCNT
+  else if tmp = 'PERIODCOUNTER' then
+    Result := IN_MODE_PERIODCOUNTER
+  else if tmp = 'PCTFULLSCALE' then
+    Result := IN_MODE_PCTFULLSCALE
+  else if tmp = 'CELSIUS' then
+    Result := IN_MODE_CELSIUS
+  else if tmp = 'FAHRENHEIT' then
+    Result := IN_MODE_FAHRENHEIT
+  else if tmp = 'ANGLESTEP' then
+    Result := IN_MODE_ANGLESTEP
+  else
+    Result := StrToIntDef(tmp, 0);
 end;
 
 function NXTOutputModeToStr(const mode : integer) : string;
@@ -1844,16 +1926,8 @@ begin
     OUT_RUNSTATE_IDLE     : Result := 'IDLE';
     OUT_RUNSTATE_RAMPUP   : Result := 'RAMPUP';
     OUT_RUNSTATE_RUNNING  : Result := 'RUNNING';
-    OUT_RUNSTATE_RAMPUP +
-    OUT_RUNSTATE_RUNNING  : Result := 'RAMPUP|RUNNING';
     OUT_RUNSTATE_RAMPDOWN : Result := 'RAMPDOWN';
-    OUT_RUNSTATE_RAMPUP +
-    OUT_RUNSTATE_RAMPDOWN : Result := 'RAMPUP|RAMPDOWN';
-    OUT_RUNSTATE_RUNNING +
-    OUT_RUNSTATE_RAMPDOWN : Result := 'RUNNING|RAMPDOWN';
-    OUT_RUNSTATE_RAMPUP +
-    OUT_RUNSTATE_RUNNING +
-    OUT_RUNSTATE_RAMPDOWN : Result := 'RAMPUP|RUNNING|RAMPDOWN';
+    OUT_RUNSTATE_HOLD     : Result := 'HOLD';
   else
     Result := Format(HEX_FMT, [runstate and $F0]);
   end;
@@ -1868,6 +1942,67 @@ begin
   else
     Result := Format(HEX_FMT, [regmode]);
   end;
+end;
+
+function StrToNXTOutputMode(const mode : string) : integer;
+var
+  tmp : string;
+begin
+  tmp := StringReplace(UpperCase(mode), '0X', '$', [rfReplaceAll]);
+  if tmp = 'COAST' then
+    Result := OUT_MODE_COAST
+  else if tmp = 'MOTORON' then
+    Result := OUT_MODE_MOTORON
+  else if tmp = 'BRAKE' then
+    Result := OUT_MODE_BRAKE
+  else if tmp = 'MOTORON|BRAKE' then
+    Result := OUT_MODE_MOTORON+OUT_MODE_BRAKE
+  else if tmp = 'REGULATED' then
+    Result := OUT_MODE_REGULATED
+  else if tmp = 'MOTORON|REGULATED' then
+    Result := OUT_MODE_MOTORON+OUT_MODE_REGULATED
+  else if tmp = 'BRAKE|REGULATED' then
+    Result := OUT_MODE_BRAKE+OUT_MODE_REGULATED
+  else if tmp = 'MOTORON|BRAKE|REGULATED' then
+    Result := OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
+  else
+    Result := StrToIntDef(tmp, 0);
+end;
+
+function StrToNXTOutputRunState(const runstate : string) : integer;
+var
+  tmp : string;
+begin
+  tmp := StringReplace(UpperCase(runstate), '0X', '$', [rfReplaceAll]);
+  if tmp = 'IDLE' then
+    Result := OUT_RUNSTATE_IDLE
+  else if tmp = 'RAMPUP' then
+    Result := OUT_RUNSTATE_RAMPUP
+  else if tmp = 'RUNNING' then
+    Result := OUT_RUNSTATE_RUNNING
+  else if tmp = 'RAMPDOWN' then
+    Result := OUT_RUNSTATE_RAMPDOWN
+  else if tmp = 'HOLD' then
+    Result := OUT_RUNSTATE_HOLD
+  else
+    Result := StrToIntDef(tmp, 0);
+end;
+
+function StrToNXTOutputRegMode(const regmode : string) : integer;
+var
+  tmp : string;
+begin
+  tmp := StringReplace(UpperCase(regmode), '0X', '$', [rfReplaceAll]);
+  if tmp = 'IDLE' then
+    Result := OUT_REGMODE_IDLE
+  else if tmp = 'SPEED' then
+    Result := OUT_REGMODE_SPEED
+  else if tmp = 'SYNC' then
+    Result := OUT_REGMODE_SYNC
+  else if tmp = 'POS' then
+    Result := OUT_REGMODE_POS
+  else
+    Result := StrToIntDef(tmp, 0);
 end;
 
 end.
