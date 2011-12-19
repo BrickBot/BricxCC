@@ -26,6 +26,8 @@ implementation
 uses
 {$IFNDEF FPC}
   Windows,
+{$ELSE}
+//  dbugintf,
 {$ENDIF}
   SysUtils;
 
@@ -33,6 +35,9 @@ procedure WriteToLog(const aMsg : string);
 begin
 {$IFNDEF FPC}
   OutputDebugString(PChar(aMsg));
+{$ELSE}
+//  WriteLn(aMsg);
+//  SendDebug(aMsg);
 {$ENDIF}
 end;
 

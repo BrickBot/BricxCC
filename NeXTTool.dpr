@@ -102,15 +102,23 @@ begin
   PrintVersion(COMPILATION_TIMESTAMP);
   Writeln('Usage: ' + progName + ' [options] [actions]');
   Writeln('Options:');
-  Writeln('   /COM=port: specify port name (COMn, usb, resource string, or alias)');
-  Writeln('   /BT[=name]: use bluetooth (selects the first brick found or the named brick)');
-  Writeln('   /HEX: use hexidecimal for numeric output');
+  Writeln('   /COM=port: specify port name (usb, resource string, or alias)');
+//  Writeln('   /BT[=name]: use bluetooth (selects the first brick found or the named brick)');
+  Writeln('   /HEX: use hexadecimal for numeric output');
   Writeln('   /Duration=<n>: specify the tone duration for the playtone action');
   Writeln('   /Inbox=<n>: use inbox number n when sending or reading a message');
   Writeln('   /Loop: loop when playing sound files');
   Writeln('   /Relative: reset output position relative');
   Writeln('   /Empty: empty mailbox when reading');
   Writeln('   /Bin[=filename]: dump data output as binary to a file (nxt.bin)');
+  Writeln('   /Power=<n>: output power level (-100..100)');
+  Writeln('   /Mode=<n>: output mode (COAST=0, MOTORON=1, BRAKE=2, REGULATED=4)');
+  Writeln('   /RegMode=<n>: output regulation mode (IDLE=0, SPEED=1, SYNC=2)');
+  Writeln('   /RunState=<n>: output run state (IDLE=0, RAMPUP=16, RUNNING=32, RAMPDOWN=64)');
+  Writeln('   /TurnRatio=<n>: output turn ratio (-100..100)');
+  Writeln('   /TachoLimit=<n>: output tachometer limit (0..MaxInt)');
+  Writeln('   /SensorType=<n>: sensor type (0..17)');
+  Writeln('   /SensorMode=<n>: sensor mode (0, 32, 64, 96, 128, 160, 192, 224)');
   Writeln('Actions:');
   Writeln('   -init : initialize nxt.dat file');
   Writeln('   -listbricks : list resource names of all found NXT bricks');
@@ -118,6 +126,8 @@ begin
   Writeln('   -battery : return the battery level');
   Writeln('   -input=<N> : read input N (0-3)');
   Writeln('   -output=<N> : read the status of output N (0-2)');
+  Writeln('   -setinput=<N> : configure input N (0-3)');
+  Writeln('   -setoutput=<N> : configure output N (0-2)');
   Writeln('   -mute : stop playing sounds');
   Writeln('   -playtone=<frequency> : play a tone for the specified duration');
   Writeln('   -run=<filename> : run the specified program');
@@ -131,7 +141,7 @@ begin
   Writeln('   -listmodules[=<pattern>] : list the modules matching the pattern (or *.*)');
   Writeln('   -delete=<filename> : delete the specified file from the NXT');
   Writeln('   -datalog | -datalog_full: upload datalog (_full == verbose)');
-  Writeln('   -eeprom=<n> | -eeprom_full: upload eeprom block (_full == all blocks)');
+//  Writeln('   -eeprom=<n> | -eeprom_full: upload eeprom block (_full == all blocks)');
   Writeln('   -memory=<n> | -memory_full: upload 128 bytes of memory (_full == all memory)');
   Writeln('   -map: upload memory map');
   Writeln('   -keepalive : return the current sleep time limit');
@@ -140,20 +150,18 @@ begin
   Writeln('   -readmsg=<box> : read the message from the specified box');
   Writeln('   -resetoutputposition=<port> : reset the position for the specified port');
   Writeln('   -resetinputsv=<port> : reset the input scaled value for the specified port');
-  Writeln('   -setname=<new_name> : set the name of the NXT');
+  Writeln('   -setname=<new_name> : set the name of the NXT (usb only)');
   Writeln('   -getname : return the name of the NXT');
   Writeln('   -versions : return the NXT firmware and protocol versions');
   Writeln('   -deviceinfo : return all NXT device information');
   Writeln('   -freemem : return the amount of free memory');
   Writeln('   -lsstatus=<port> : return the low speed status for the specified port');
-//  Writeln('   -btnstate=<btn> : return the button state for the specified button');
-//  Writeln('   -resetbtnstate=<btn> : reset the button state for the specified button');
+  Writeln('   -btnstate=<btn> : return the button state for the specified button');
+  Writeln('   -resetbtnstate=<btn> : reset the button state for the specified button');
   Writeln('   -boot : reset the NXT into SAMBA mode (usb only)');
   Writeln('   -btreset : reset the NXT bluetooth to factory settings (usb only)');
   Writeln('   -defrag : defragment the NXT filesystem');
 {
-SetNXTOutputState
-SetNXTInputMode
 NXTPollCommandLen
 NXTPollCommand
 NXTWriteIOMap
@@ -201,9 +209,9 @@ begin
 {$IFDEF FPC}
   VerCompanyName      := 'JoCar Consulting';
   VerFileDescription  := '';
-  VerFileVersion      := '1.2.1.r3';
+  VerFileVersion      := '1.2.1.r5';
   VerInternalName     := 'nexttool';
-  VerLegalCopyright   := 'Copyright (c) 2006-2010, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2011, John Hansen';
   VerOriginalFileName := 'nexttool';
   VerProductName      := 'nexttool';
   VerProductVersion   := '1.2';
@@ -238,6 +246,7 @@ begin
   btncount := 0;
   pressed := False;
   Msg.Inbox:= 0;
+  btaddr := '';
 
   if ParamCount = 0 then
   begin
@@ -268,9 +277,11 @@ begin
       Exit;
     end;
     if ParamSwitch('/COM') then
-      BrickComm.Port := ParamValue('/COM');
-    BrickComm.UseBluetooth := ParamSwitch('/BT');
-    BrickComm.BluetoothName := ParamValue('/BT');
+      BrickComm.Port := ParamValue('/COM')
+    else
+      BrickComm.Port := 'usb';
+//    BrickComm.UseBluetooth := ParamSwitch('/BT');
+//    BrickComm.BluetoothName := ParamValue('/BT');
     if ParamSwitch('-firmware') then
     begin
       j := ParamIntValue('-iterations', 1, False);
@@ -278,7 +289,7 @@ begin
       begin
         BrickComm.DownloadFirmware(ParamValue('-firmware'), False, False, False);
         if j > 1 then
-          WriteLn(Format('%d of %d', [i, j]));
+          WriteLn(Format('%d of %d', [i+1, j]));
       end;
     end;
     if BrickComm.Open then
@@ -315,6 +326,13 @@ begin
                           raw, normalized, scaled, calvalue]));
         end;
       end;
+      if ParamSwitch('-setinput') then
+      begin
+        port := ParamIntValue('-setinput', 0);
+        stype := ParamIntValue('/SensorType', stype);
+        smode := ParamIntValue('/SensorMode', smode);
+        BrickComm.SetNXTInputMode(Byte(port), stype, smode);
+      end;
       if ParamSwitch('-output') then
       begin
         port := ParamIntValue('-output', 0);
@@ -337,6 +355,17 @@ begin
                           tacholimit, tachocount, blocktachocount, rotationcount]));
         end;
       end;
+      if ParamSwitch('-setoutput') then
+      begin
+        port := ParamIntValue('-setoutput', 0);
+        power := ParamIntValue('/Power', power);
+        mode := ParamIntValue('/Mode', mode);
+        regmode := ParamIntValue('/RegMode', regmode);
+        runstate := ParamIntValue('/RunState', runstate);
+        turnratio := ParamIntValue('/TurnRatio', turnratio);
+        tacholimit := ParamIntValue('/TachoLimit', tacholimit);
+        BrickComm.SetNXTOutputState(Byte(port), power, mode, regmode, turnratio, runstate, tacholimit);
+      end;
       if ParamSwitch('-mute') then
         BrickComm.MuteSound;
       if ParamSwitch('-playtone') then
@@ -344,7 +373,7 @@ begin
       if ParamSwitch('-stop') then
         BrickComm.NXTStopProgram;
       if ParamSwitch('-playfile') then
-        BrickComm.NXTPlaySoundFile(ParamValue('-playfile'), ParamSwitch('/L'));
+        BrickComm.NXTPlaySoundFile(ParamValue('-playfile'), ParamSwitch('/Loop'));
       if ParamSwitch('-keepalive') then
       begin
         if BrickComm.NXTKeepAlive(cvalue) then

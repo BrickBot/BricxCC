@@ -1,17 +1,19 @@
 <?xml version="1.0"?>
 <CONFIG>
   <ProjectOptions>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
-    <Version Value="7"/>
     <General>
       <Flags>
         <LRSInOutputDirectory Value="False"/>
       </Flags>
       <MainUnit Value="0"/>
-      <TargetFileExt Value=""/>
       <Title Value="NeXTTool"/>
-      <ActiveEditorIndexAtStart Value="0"/>
+      <ActiveWindowIndexAtStart Value="0"/>
     </General>
+    <BuildModes Count="1">
+      <Item1 Name="default" Default="True"/>
+    </BuildModes>
     <PublishOptions>
       <Version Value="2"/>
       <IgnoreBinaries Value="False"/>
@@ -21,7 +23,7 @@
     <RunParams>
       <local>
         <FormatVersion Value="1"/>
-        <CommandLineParams Value="\COM=usb -playtone=440"/>
+        <CommandLineParams Value="\COM=usb -firmware=nbcnxc.rfw"/>
         <LaunchingApplication PathPlusParams="\usr\X11R6\bin\xterm -T 'Lazarus Run Output' -e $(LazarusDir)\tools\runwait.sh $(TargetCmdLine)"/>
       </local>
     </RunParams>
@@ -30,186 +32,359 @@
         <PackageName Value="LCL"/>
       </Item1>
     </RequiredPackages>
-    <Units Count="21">
+    <Units Count="24">
       <Unit0>
         <Filename Value="NeXTTool.dpr"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="NeXTTool"/>
-        <CursorPos X="59" Y="12"/>
-        <TopLine Value="9"/>
+        <IsVisibleTab Value="True"/>
         <EditorIndex Value="0"/>
-        <UsageCount Value="78"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="91"/>
         <Loaded Value="True"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <LoadedDesigner Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit0>
       <Unit1>
         <Filename Value=""/>
-        <UsageCount Value="10"/>
+        <UsageCount Value="8"/>
+        <DefaultSyntaxHighlighter Value="None"/>
       </Unit1>
       <Unit2>
         <Filename Value="bricktools\uSpirit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uSpirit"/>
-        <CursorPos X="30" Y="79"/>
-        <TopLine Value="61"/>
-        <UsageCount Value="24"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <EditorIndex Value="1"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="525"/>
+        <CursorPos X="22" Y="544"/>
+        <UsageCount Value="37"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit2>
       <Unit3>
         <Filename Value="bricktools\FantomSpirit.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="FantomSpirit"/>
-        <CursorPos X="24" Y="1575"/>
-        <TopLine Value="1552"/>
-        <UsageCount Value="37"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <EditorIndex Value="3"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="3532"/>
+        <CursorPos X="21" Y="3548"/>
+        <UsageCount Value="50"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit3>
       <Unit4>
         <Filename Value="bricktools\libusb.pas"/>
         <UnitName Value="libusb"/>
-        <CursorPos X="65" Y="11"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <CursorPos X="65" Y="11"/>
+        <UsageCount Value="18"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit4>
       <Unit5>
         <Filename Value="uCommonUtils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uCommonUtils"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="33"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit5>
       <Unit6>
         <Filename Value="uCmdLineUtils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uCmdLineUtils"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="33"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit6>
       <Unit7>
         <Filename Value="ParamUtils.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="ParamUtils"/>
-        <CursorPos X="1" Y="156"/>
-        <TopLine Value="141"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="164"/>
+        <CursorPos X="1" Y="176"/>
+        <UsageCount Value="33"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit7>
       <Unit8>
         <Filename Value="uVersionInfo.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uVersionInfo"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="33"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit8>
       <Unit9>
         <Filename Value="NXT\uNXTConstants.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="uNXTConstants"/>
-        <CursorPos X="63" Y="1410"/>
-        <TopLine Value="1387"/>
-        <UsageCount Value="20"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <EditorIndex Value="4"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="434"/>
+        <CursorPos X="1" Y="446"/>
+        <UsageCount Value="33"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit9>
       <Unit10>
         <Filename Value="bricktools\rcx_cmd.pas"/>
         <UnitName Value="rcx_cmd"/>
-        <CursorPos X="3" Y="801"/>
         <TopLine Value="796"/>
-        <UsageCount Value="24"/>
+        <CursorPos X="3" Y="801"/>
+        <UsageCount Value="22"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit10>
       <Unit11>
         <Filename Value="nexttool_preproc.inc"/>
-        <CursorPos X="1" Y="3"/>
         <TopLine Value="1"/>
-        <UsageCount Value="7"/>
+        <CursorPos X="1" Y="3"/>
+        <UsageCount Value="5"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit11>
       <Unit12>
         <Filename Value="bricktools\FakeSpirit.pas"/>
         <UnitName Value="FakeSpirit"/>
-        <CursorPos X="1" Y="3466"/>
         <TopLine Value="3436"/>
-        <UsageCount Value="11"/>
+        <CursorPos X="1" Y="3466"/>
+        <UsageCount Value="9"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit12>
       <Unit13>
         <Filename Value="bricktools\rcx_link.pas"/>
         <UnitName Value="rcx_link"/>
-        <CursorPos X="3" Y="751"/>
         <TopLine Value="741"/>
-        <UsageCount Value="5"/>
+        <CursorPos X="3" Y="751"/>
+        <UsageCount Value="3"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit13>
       <Unit14>
         <Filename Value="bricktools\FANTOM.pas"/>
         <UnitName Value="FANTOM"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="5"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="3"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit14>
       <Unit15>
         <Filename Value="bricktools\NQCSerial.pas"/>
         <UnitName Value="NQCSerial"/>
-        <CursorPos X="17" Y="402"/>
         <TopLine Value="389"/>
-        <UsageCount Value="30"/>
+        <CursorPos X="17" Y="402"/>
+        <UsageCount Value="28"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit15>
       <Unit16>
         <Filename Value="bricktools\posixserial.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="posixserial"/>
-        <CursorPos X="1" Y="5"/>
         <TopLine Value="1"/>
-        <UsageCount Value="72"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <CursorPos X="1" Y="5"/>
+        <UsageCount Value="85"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit16>
       <Unit17>
         <Filename Value="bricktools\link.pas"/>
         <IsPartOfProject Value="True"/>
         <UnitName Value="link"/>
-        <CursorPos X="3" Y="182"/>
         <TopLine Value="159"/>
-        <UsageCount Value="65"/>
-        <SyntaxHighlighter Value="Delphi"/>
+        <CursorPos X="3" Y="182"/>
+        <UsageCount Value="78"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit17>
       <Unit18>
         <Filename Value="C:\apps\lazarus\fpc\2.1.3\source\rtl\win\wininc\struct.inc"/>
-        <CursorPos X="1" Y="1"/>
         <TopLine Value="1"/>
-        <UsageCount Value="8"/>
+        <CursorPos X="1" Y="1"/>
+        <UsageCount Value="6"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit18>
       <Unit19>
         <Filename Value="bricktools\rcx_constants.pas"/>
         <UnitName Value="rcx_constants"/>
-        <CursorPos X="3" Y="225"/>
         <TopLine Value="210"/>
-        <UsageCount Value="17"/>
+        <CursorPos X="3" Y="225"/>
+        <UsageCount Value="15"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit19>
       <Unit20>
         <Filename Value="NXT\uNXTClasses.pas"/>
         <UnitName Value="uNXTClasses"/>
-        <CursorPos X="1" Y="1374"/>
         <TopLine Value="1342"/>
-        <UsageCount Value="10"/>
+        <CursorPos X="1" Y="1374"/>
+        <UsageCount Value="8"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
       </Unit20>
+      <Unit21>
+        <Filename Value="bricktools\fantomfpc.pas"/>
+        <UnitName Value="FANTOMFPC"/>
+        <EditorIndex Value="2"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="1636"/>
+        <CursorPos X="3" Y="1641"/>
+        <UsageCount Value="17"/>
+        <Loaded Value="True"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit21>
+      <Unit22>
+        <Filename Value="uDebugLogging.pas"/>
+        <UnitName Value="uDebugLogging"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="24"/>
+        <CursorPos X="42" Y="31"/>
+        <UsageCount Value="15"/>
+        <DefaultSyntaxHighlighter Value="Delphi"/>
+      </Unit22>
+      <Unit23>
+        <Filename Value="..\..\..\usr\share\fpcsrc\packages\fcl-process\src\dbugintf.pp"/>
+        <UnitName Value="dbugintf"/>
+        <WindowIndex Value="0"/>
+        <TopLine Value="20"/>
+        <CursorPos X="1" Y="20"/>
+        <UsageCount Value="9"/>
+      </Unit23>
     </Units>
-    <JumpHistory Count="0" HistoryIndex="-1"/>
+    <JumpHistory Count="30" HistoryIndex="29">
+      <Position1>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="209" Column="14" TopLine="203"/>
+      </Position1>
+      <Position2>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="1878" Column="50" TopLine="1875"/>
+      </Position2>
+      <Position3>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position3>
+      <Position4>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3541" Column="1" TopLine="3538"/>
+      </Position4>
+      <Position5>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position5>
+      <Position6>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3541" Column="21" TopLine="3522"/>
+      </Position6>
+      <Position7>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3548" Column="21" TopLine="3529"/>
+      </Position7>
+      <Position8>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position8>
+      <Position9>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3541" Column="21" TopLine="3522"/>
+      </Position9>
+      <Position10>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3548" Column="21" TopLine="3529"/>
+      </Position10>
+      <Position11>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position11>
+      <Position12>
+        <Filename Value="bricktools\uSpirit.pas"/>
+        <Caret Line="308" Column="1" TopLine="299"/>
+      </Position12>
+      <Position13>
+        <Filename Value="bricktools\uSpirit.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position13>
+      <Position14>
+        <Filename Value="bricktools\uSpirit.pas"/>
+        <Caret Line="87" Column="13" TopLine="68"/>
+      </Position14>
+      <Position15>
+        <Filename Value="bricktools\uSpirit.pas"/>
+        <Caret Line="402" Column="47" TopLine="383"/>
+      </Position15>
+      <Position16>
+        <Filename Value="bricktools\uSpirit.pas"/>
+        <Caret Line="536" Column="11" TopLine="517"/>
+      </Position16>
+      <Position17>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3541" Column="21" TopLine="3522"/>
+      </Position17>
+      <Position18>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="1" Column="1" TopLine="1"/>
+      </Position18>
+      <Position19>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="154" Column="24" TopLine="135"/>
+      </Position19>
+      <Position20>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="155" Column="21" TopLine="136"/>
+      </Position20>
+      <Position21>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="156" Column="34" TopLine="137"/>
+      </Position21>
+      <Position22>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="157" Column="27" TopLine="138"/>
+      </Position22>
+      <Position23>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="2780" Column="31" TopLine="2773"/>
+      </Position23>
+      <Position24>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3386" Column="34" TopLine="3380"/>
+      </Position24>
+      <Position25>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3536" Column="37" TopLine="3532"/>
+      </Position25>
+      <Position26>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3538" Column="37" TopLine="3532"/>
+      </Position26>
+      <Position27>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3541" Column="21" TopLine="3532"/>
+      </Position27>
+      <Position28>
+        <Filename Value="bricktools\FantomSpirit.pas"/>
+        <Caret Line="3545" Column="44" TopLine="3532"/>
+      </Position28>
+      <Position29>
+        <Filename Value="NeXTTool.dpr"/>
+        <Caret Line="139" Column="55" TopLine="123"/>
+      </Position29>
+      <Position30>
+        <Filename Value="NeXTTool.dpr"/>
+        <Caret Line="516" Column="1" TopLine="507"/>
+      </Position30>
+    </JumpHistory>
   </ProjectOptions>
   <CompilerOptions>
-    <Version Value="8"/>
+    <Version Value="9"/>
     <PathDelim Value="\"/>
     <SearchPaths>
-      <IncludeFiles Value="bricktools\;NXT\"/>
-      <Libraries Value="bricktools\"/>
-      <OtherUnitFiles Value="bricktools\;NXT\"/>
-      <ObjectPath Value="bricktools\"/>
+      <IncludeFiles Value="bricktools;NXT"/>
+      <Libraries Value="bricktools"/>
+      <OtherUnitFiles Value="bricktools;NXT"/>
+      <ObjectPath Value="bricktools"/>
     </SearchPaths>
     <Parsing>
       <SyntaxOptions>
         <SyntaxMode Value="Delphi"/>
-        <UseAnsiStrings Value="True"/>
       </SyntaxOptions>
     </Parsing>
     <CodeGeneration>
@@ -226,43 +401,19 @@
       </Options>
     </Linking>
     <Other>
+      <CompilerMessages>
+        <UseMsgFile Value="True"/>
+      </CompilerMessages>
+      <CustomOptions Value="-dNXT_ONLY"/>
       <CompilerPath Value="$(CompPath)"/>
     </Other>
   </CompilerOptions>
   <Debugging>
-    <BreakPoints Count="8">
+    <BreakPoints Count="1">
       <Item1>
-        <Source Value="NXT\nbc.dpr"/>
-        <Line Value="114"/>
+        <Source Value="bricktools\fantomfpc.pas"/>
+        <Line Value="1597"/>
       </Item1>
-      <Item2>
-        <Source Value="NXT\nbc.dpr"/>
-        <Line Value="297"/>
-      </Item2>
-      <Item3>
-        <Source Value="NeXTTool.dpr"/>
-        <Line Value="335"/>
-      </Item3>
-      <Item4>
-        <Source Value="NeXTTool.dpr"/>
-        <Line Value="482"/>
-      </Item4>
-      <Item5>
-        <Source Value="NeXTTool.dpr"/>
-        <Line Value="278"/>
-      </Item5>
-      <Item6>
-        <Source Value="bricktools\FantomSpirit.pas"/>
-        <Line Value="688"/>
-      </Item6>
-      <Item7>
-        <Source Value="bricktools\FantomSpirit.pas"/>
-        <Line Value="630"/>
-      </Item7>
-      <Item8>
-        <Source Value="bricktools\FANTOMFPC.pas"/>
-        <Line Value="2876"/>
-      </Item8>
     </BreakPoints>
     <Watches Count="2">
       <Item1>
