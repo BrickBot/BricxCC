@@ -75,6 +75,7 @@ type
 
   TBrickComm = class
   protected
+    fSearchBT: boolean;
     fLocalIFW : TInstalledFirmware;
     fLocalFV : Word;
     fOffsetDS : integer;
@@ -389,6 +390,7 @@ type
     property  UseBluetooth : boolean read GetUseBT write SetUseBT;
     property  BluetoothName : string read fBTName write SetBTName;
     property  BluetoothSearchTimeout : Cardinal read fBST write fBST;
+    property  SearchBluetooth : boolean read fSearchBT write fSearchBT;
     property  Quiet : Boolean read GetQuiet write SetQuiet;
     property  BrickType : byte read FBrickType write SetBrickType;
     property  Port : string read fPort write SetPort;
@@ -425,6 +427,7 @@ function FantomAPIAvailable : boolean;
 procedure LoadNXTPorts(aStrings : TStrings);
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
 function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string;
+procedure LoadLSBlock(var aBlock : NXTLSBlock; str : string; len : integer);
 
 implementation
 
@@ -501,6 +504,24 @@ begin
   Result := Copy(ChangeFileExt(Result, ''), 1, 15) + ExtractFileExt(Result);
 end;
 
+procedure LoadLSBlock(var aBlock : NXTLSBlock; str : string; len : integer);
+var
+  i : integer;
+  tmpStr : string;
+begin
+  // str is hex 2-digit values separated by space or comma
+  i := 0;
+  while Length(str) > 0 do
+  begin
+    tmpStr := '$' + Copy(str, 1, 2);
+    aBlock.Data[i] := StrToIntDef(tmpStr, 0);
+    System.Delete(str, 1, 3);
+    inc(i);
+  end;
+  aBlock.TXCount := i;
+  aBlock.RXCount := len;
+end;
+
 { TBrickComm }
 
 constructor TBrickComm.Create(aType: byte; const aPort: string);
@@ -519,6 +540,7 @@ begin
   fBTName    := '';
   fLocalIFW  := ifUnknown;
   fLocalFV   := 0;
+  fSearchBT  := True;
 
   for i := 0 to 2 do
   begin

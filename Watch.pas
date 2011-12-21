@@ -324,24 +324,6 @@ end;
 
 var busy:boolean = false;
 
-procedure LoadLSBlock(var LSBlock : NXTLSBlock; str : string; len : integer);
-var
-  i : integer;
-  tmpStr : string;
-begin
-  // str is hex 2-digit values separated by whitespace
-  i := 0;
-  while Length(str) > 0 do
-  begin
-    tmpStr := '$' + Copy(str, 1, 2);
-    LSBlock.Data[i] := StrToIntDef(tmpStr, 0);
-    System.Delete(str, 1, 3);
-    inc(i);
-  end;
-  LSBlock.TXCount := i;
-  LSBlock.RXCount := len;
-end;
-
 procedure TWatchForm.ProcessI2C(port : byte; edtLen : TBricxCCSpinEdit;
   edtBuf : TEdit; edtVal : TEdit);
 var
