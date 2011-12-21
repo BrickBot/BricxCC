@@ -69,6 +69,8 @@ var
   memFree : Cardinal;
   pressed : boolean;
   btncount : byte;
+  i2csend, rawcmd : string;
+  LSBlock : NXTLSBlock;
   Msg : NXTMessage;
   BC : TBrickComm;
 
@@ -82,19 +84,29 @@ begin
   Result := BC;
 end;
 
-procedure OutputValue(val : integer); overload;
+procedure OutputValue(val : integer; bNewLine : boolean = True); overload;
 const
   HEX_FMT : array[Boolean] of string = ('%4.2x', '%4.4x');
 begin
   if ParamSwitch('/HEX') then
-    Writeln(Format(HEX_FMT[val > $FF], [val]))
+  begin
+    if bNewLine then
+      Writeln(Format(HEX_FMT[val > $FF], [val]))
+    else
+      Write(Format(HEX_FMT[val > $FF], [val]));
+  end
   else
-    Writeln(val);
+  begin
+    if bNewLine then
+      Writeln(val)
+    else
+      Write(val);
+  end;
 end;
 
-procedure OutputValue(str : string); overload;
+procedure OutputValue(str : string; bNewLine : boolean = True); overload;
 begin
-  OutputValue(StrToIntDef(str, 0));
+  OutputValue(StrToIntDef(str, 0), bNewLine);
 end;
 
 {$I nexttool_preproc.inc}
@@ -152,12 +164,14 @@ begin
   Writeln('   -readmsg=<box> : read the message from the specified box');
   Writeln('   -resetoutputposition=<port> : reset the position for the specified port');
   Writeln('   -resetinputsv=<port> : reset the input scaled value for the specified port');
-  Writeln('   -setname=<new_name> : set the name of the NXT (usb only)');
+  Writeln('   -setname=<new_name> : set the name of the NXT');
   Writeln('   -getname : return the name of the NXT');
   Writeln('   -versions : return the NXT firmware and protocol versions');
   Writeln('   -deviceinfo : return all NXT device information');
   Writeln('   -freemem : return the amount of free memory');
+  Writeln('   -i2cbytes=<data> : send/receive I2C data');
   Writeln('   -lsstatus=<port> : return the low speed status for the specified port');
+  Writeln('   -sendraw=<cmd> : send a direct or system command (comma-separated hex bytes)');
   Writeln('   -btnstate=<btn> : return the button state for the specified button');
   Writeln('   -resetbtnstate=<btn> : reset the button state for the specified button');
   Writeln('   -boot : reset the NXT into SAMBA mode (usb only)');
@@ -267,12 +281,20 @@ begin
 
     if ParamSwitch('-init') then
     begin
+      BrickComm.SearchBluetooth := Boolean(ParamIntValue('-init', 1));
       BrickComm.NXTInitializeResourceNames;
+      Exit;
+    end;
+    if ParamSwitch('-update') then
+    begin
+      BrickComm.SearchBluetooth := Boolean(ParamIntValue('-update', 1));
+      BrickComm.NXTUpdateResourceNames;
       Exit;
     end;
     if ParamSwitch('-listbricks') then
     begin
       SL.Clear;
+      BrickComm.SearchBluetooth := Boolean(ParamIntValue('-listbricks', 1));
       BrickComm.NXTListBricks(SL);
       for i := 0 to SL.Count - 1 do
         WriteLn(SL[i]);
@@ -482,11 +504,45 @@ begin
         if BrickComm.NXTGetDeviceInfo(pattern, btaddr, btsig, memFree) then
           OutputValue(memFree);
       end;
+      if ParamSwitch('-i2cbytes') then
+      begin
+        i2csend := ParamValue('-i2cbytes'); // port,cnt,bytes
+        // get port
+        i := Pos(',', i2csend);
+        if i > 0 then
+        begin
+          port := StrToIntDef(Copy(i2csend, 1, i-1), 0);
+          System.Delete(i2csend, 1, i); // delete up to and including comma
+          // get count of bytes to read
+          i := Pos(',', i2csend);
+          if i > 0 then
+          begin
+            j := StrToIntDef(Copy(i2csend, 1, i-1), 0);
+            System.Delete(i2csend, 1, i);
+            // everything left should be comma-separated list of bytes to send
+            LoadLSBlock(LSBlock, i2csend, j);
+            BrickComm.NXTLowSpeed[port] := LSBlock;
+            LSBlock := BrickComm.NXTLowSpeed[port];
+            for i := 0 to j - 1 do
+            begin
+              OutputValue(LSBlock.Data[i], False);
+              Write(' ');
+            end;
+            WriteLn('');
+          end;
+        end;
+      end;
       if ParamSwitch('-lsstatus') then
       begin
         port := ParamIntValue('-lsstatus', 0);
         if BrickComm.NXTLSGetStatus(Byte(port), bytesReady) then
           OutputValue(bytesReady);
+      end;
+      if ParamSwitch('-sendraw') then
+      begin
+        rawcmd := ParamValue('-sendraw');
+        if rawcmd <> '' then
+          WriteLn(BrickComm.SendRawCommand(rawcmd, False));
       end;
       if ParamSwitch('-btnstate') then
       begin

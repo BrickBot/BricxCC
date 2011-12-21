@@ -100,7 +100,7 @@ Conditionals=FAST_MM
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=/COM=usb -download=test.rxe
+RunParams=/COM=BTH::JCH2::00:16:53:FF:01:56::5 -i2cbytes=0,1,02,42
 HostApplication=
 Launcher=
 UseLauncher=0

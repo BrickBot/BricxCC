@@ -30,7 +30,9 @@ type
 //    fNXTFileIteratorHandle : FantomHandle;
     dcResponse : array [0..63] of byte;
     function TransferFirmware(aStream: TStream): boolean;
+    function GetLSBlockHelper(aPort: byte): NXTLSBlock;
   protected
+    fLastI2CRead : NXTLSBlock;
     fNXTHandle : FantomHandle;
     function  GetDownloadWaitTime: Integer; override;
     function  GetEEPROM(addr: Byte): Byte; override;
@@ -305,12 +307,12 @@ implementation
 uses
   rcx_constants, Contnrs, Math, uCommonUtils, uDebugLogging,
   {$IFNDEF FPC}
-  FANTOM
+  Windows, FANTOM
   {$ELSE}
-  {$IFDEF Darwin}fantomosx{$ENDIF}
+  {$IFDEF Darwin}Unix, fantomosx{$ENDIF}
   {$IFNDEF Darwin}
-  {$IFDEF Unix}fantomfpc{$ENDIF}
-  {$IFDEF Windows}FANTOM{$ENDIF}
+  {$IFDEF Unix}Unix, fantomfpc{$ENDIF}
+  {$IFDEF Windows}Windows, FANTOM{$ENDIF}
   {$ENDIF}
   {$ENDIF};
 
@@ -1443,6 +1445,11 @@ begin
 end;
 
 function TFantomSpirit.GetLSBlock(aPort: byte): NXTLSBlock;
+begin
+  Result := fLastI2CRead;
+end;
+
+function TFantomSpirit.GetLSBlockHelper(aPort: byte): NXTLSBlock;
 var
   cmd : TNINxtCmd;
   i : integer;
@@ -1471,18 +1478,36 @@ begin
   end;
 end;
 
+{$IFDEF FPC}
+function jchGetTickCount : Cardinal;
+var
+  t : timeval;
+begin
+  fpgettimeofday(@t, nil);
+  Result := t.tv_usec div 1000; // convert microseconds to milliseconds
+end;
+{$ELSE}
+function jchGetTickCount : Cardinal;
+begin
+  Result := GetTickCount;
+end;
+{$ENDIF}
+
 procedure TFantomSpirit.SetLSBlock(aPort: byte; const Value: NXTLSBlock);
 var
-  i, len : integer;
+  i, len, tmpRx : integer;
   cmd : TNINxtCmd;
   orig : PByte;
   status : integer;
+  bytesReady : byte;
+  tick : Cardinal;
 begin
   // LSWrite
   if not IsOpen then Exit;
   cmd := TNINxtCmd.Create;
   try
     status := kStatusNoError;
+    tmpRx := Min(Value.RXCount, 16);
     len := Min(Value.TXCount, 16);
     cmd.SetLength(len+5); // up to a max of 21 bytes
     orig := cmd.GetBody;
@@ -1494,7 +1519,7 @@ begin
     inc(orig);
     orig^ := Byte(len);
     inc(orig);
-    orig^ := Byte(Min(Value.RXCount, 16));
+    orig^ := Byte(tmpRx);
     inc(orig);
     i := 0;
     while i < len do
@@ -1507,6 +1532,26 @@ begin
     iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
   finally
     cmd.Free;
+  end;
+  fLastI2CRead.TXCount := 0;
+  fLastI2CRead.RXCount := 0;
+  for i := 0 to 15 do
+    fLastI2CRead.Data[i] := 0;
+  if (status = kStatusNoError) and (tmpRx > 0) then
+  begin
+    // LSGetStatus
+    tick := jchGetTickCount;
+    bytesReady := 0;
+    while bytesReady = 0 do
+    begin
+      NXTLSGetStatus(aPort, bytesReady);
+      if (jchGetTickCount - tick) > 60 then break;
+      Sleep(1);
+    end;
+    if bytesReady > 0 then
+    begin
+      fLastI2CRead := GetLSBlockHelper(aPort);
+    end;
   end;
 end;
 
@@ -1912,9 +1957,9 @@ var
 begin
   Result := IsOpen;
   if not Result then Exit;
-  // only allow this command when connected via USB
-  Result := not fUseBT;
-  if not Result then Exit;
+//  // only allow this command when connected via USB
+//  Result := not fUseBT;
+//  if not Result then Exit;
   status := kStatusNoError;
   iNXT_setName(fNXTHandle, PChar(name), status);
   if chkResponse then
@@ -2582,7 +2627,7 @@ begin
     resName := '';
     status := kStatusNoError;
     // use Fantom API to obtain a handle to an NXT on either USB or bluetooth
-    nih := createNXTIterator(1, BluetoothSearchTimeout, status);
+    nih := createNXTIterator(Ord(SearchBluetooth), BluetoothSearchTimeout, status);
     while status >= kStatusNoError do
     begin
       status2 := kStatusNoError;
