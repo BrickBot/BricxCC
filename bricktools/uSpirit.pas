@@ -310,7 +310,7 @@ type
     function NXTResetOutputPosition(const port : byte; const Relative : boolean) : boolean; virtual; abstract;
     function NXTMessageWrite(const inbox : byte; const msg : string) : boolean; virtual; abstract;
     function NXTKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; virtual; abstract;
-    function NXTLSGetStatus(port : byte; var bytesReady : byte) : boolean; virtual; abstract;
+    function NXTLSGetStatus(port : byte; var bytesReady : byte; var lsstate: byte) : boolean; virtual; abstract;
     function NXTGetCurrentProgramName(var name : string) : boolean; virtual; abstract;
     function NXTGetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; virtual; abstract;
@@ -366,9 +366,6 @@ type
     function NXTFindNextModule(var Handle : FantomHandle; var ModName : string;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; virtual; abstract;
     function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; virtual; abstract;
-{
-  kNXT_SCGetBTAddress          = $9A;
-}
     // wrapper functions
     function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
     function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; virtual; abstract;
@@ -427,7 +424,7 @@ function FantomAPIAvailable : boolean;
 procedure LoadNXTPorts(aStrings : TStrings);
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
 function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string;
-procedure LoadLSBlock(var aBlock : NXTLSBlock; str : string; len : integer);
+procedure LoadLSBlock(var aBlock : NXTLSBlock; str : string; rxCount : integer);
 
 implementation
 
@@ -504,7 +501,7 @@ begin
   Result := Copy(ChangeFileExt(Result, ''), 1, 15) + ExtractFileExt(Result);
 end;
 
-procedure LoadLSBlock(var aBlock : NXTLSBlock; str : string; len : integer);
+procedure LoadLSBlock(var aBlock : NXTLSBlock; str : string; rxCount : integer);
 var
   i : integer;
   tmpStr : string;
@@ -519,7 +516,7 @@ begin
     inc(i);
   end;
   aBlock.TXCount := i;
-  aBlock.RXCount := len;
+  aBlock.RXCount := rxCount;
 end;
 
 { TBrickComm }

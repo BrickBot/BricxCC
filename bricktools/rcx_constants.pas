@@ -537,16 +537,16 @@ const
   kRCX_DatalogValueDirectType   = 40;
   kRCX_DatalogRawIndirectType   = 41;
   kRCX_DatalogRawDirectType     = 42;
-  kRCX_SpybotGameNotesType   = 43; // spybot only
-  kRCX_SpybotRobotDistType   = 45; // spybot only
-  kRCX_SpybotRobotDirType    = 46; // spybot only
-  kRCX_SpybotRobotOrientType = 47; // spybot only
-  kRCX_SpybotRobotIDType     = 49; // spybot only
-  kRCX_SpybotRobotTargetType = 50; // spybot only
-  kRCX_SpybotPingCtrlType    = 51; // spybot only
-  kRCX_SpybotBeaconCtrlType  = 52; // spybot only
-  kRCX_SpybotSoundCtrlType   = 53; // spybot only
-  kRCX_SpybotIndEepromType   = 54; // spybot only
+  kRCX_SpybotGameNotesType    = 43; // spybot only
+  kRCX_SpybotRobotDistType    = 45; // spybot only
+  kRCX_SpybotRobotDirType     = 46; // spybot only
+  kRCX_SpybotRobotOrientType  = 47; // spybot only
+  kRCX_SpybotRobotIDType      = 49; // spybot only
+  kRCX_SpybotRobotTargetType  = 50; // spybot only
+  kRCX_SpybotPingCtrlType     = 51; // spybot only
+  kRCX_SpybotBeaconCtrlType   = 52; // spybot only
+  kRCX_SpybotSoundCtrlType    = 53; // spybot only
+  kRCX_SpybotIndEepromType    = 54; // spybot only
   kRCX_GlobalVarType          = 43; // swan only
   kRCX_IndirectGlobalIntType  = 44; // swan only
   kRCX_IndexedGlobalConstType	= 47; // swan only
@@ -560,6 +560,23 @@ const
   kRCX_TaskVarType            = 60; // swan only
   kRCX_TaskStackAddressType   = 61; // swan only
   kRCX_TaskStackSizeType      = 62; // swan only
+
+  kNXT_I2CBaseValueType       = 64; // NXT only
+  kNXT_LEGOSonar              = kNXT_I2CBaseValueType + 0;
+  kNXT_LEGOTemp               = kNXT_I2CBaseValueType + 1;
+  kNXT_LEGOEMeterVIn          = kNXT_I2CBaseValueType + 2;
+  kNXT_LEGOEMeterAIn          = kNXT_I2CBaseValueType + 3;
+  kNXT_LEGOEMeterVOut         = kNXT_I2CBaseValueType + 4;
+  kNXT_LEGOEMeterAOut         = kNXT_I2CBaseValueType + 5;
+  kNXT_LEGOEMeterJoules       = kNXT_I2CBaseValueType + 6;
+  kNXT_LEGOEMeterWIn          = kNXT_I2CBaseValueType + 7;
+  kNXT_LEGOEMeterWOut         = kNXT_I2CBaseValueType + 8;
+  kNXT_02Version              = kNXT_I2CBaseValueType + 9;
+  kNXT_02Vendor               = kNXT_I2CBaseValueType + 10;
+  kNXT_02Device               = kNXT_I2CBaseValueType + 11;
+
+  kNXT_I2CMaxValueType        = 255;
+
 
 const
 //  kRCX_ValueUsesTemp = $1000000;

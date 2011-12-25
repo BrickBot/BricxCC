@@ -19,9 +19,19 @@ unit FantomSpirit;
 interface
 
 uses
-  Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs;
+  Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs, Parser10;
 
 type
+  TValueType = (vtChar, vtByte, vtSmallInt, vtWord, vtInteger, vtCardinal,
+                vtInt64, vtDouble, vtString);
+                
+  TI2CValueConfig = record
+    RxCount : Byte;
+    ValueType : TValueType;
+    SendData : string;
+    Script : string;
+  end;
+
   TFantomSpirit = class(TBrickComm)
   private
     fResPort : string;
@@ -29,11 +39,14 @@ type
 //    fNXTFileHandle : FantomHandle;
 //    fNXTFileIteratorHandle : FantomHandle;
     dcResponse : array [0..63] of byte;
+    fI2CValues : array of TI2CValueConfig;
     function TransferFirmware(aStream: TStream): boolean;
     function GetLSBlockHelper(aPort: byte): NXTLSBlock;
+    procedure InitializeI2CValues;
   protected
     fLastI2CRead : NXTLSBlock;
     fNXTHandle : FantomHandle;
+    fCalc : TExpParser;
     function  GetDownloadWaitTime: Integer; override;
     function  GetEEPROM(addr: Byte): Byte; override;
     function  GetEEPROMBlock(idx: Integer): EEPROMBlock; override;
@@ -58,6 +71,7 @@ type
     procedure SetRxTimeout(const Value: Word); override;
   protected
     function  dcBuffer: PByte;
+    function  GetReplyStatusByte: Byte;
     function  GetReplyByte(index: integer): Byte;
     function  GetReplyCardinal(index: integer): Cardinal;
     function  GetReplyWord(index: integer): Word;
@@ -68,6 +82,7 @@ type
     procedure LookupOffsetsIfNeeded;
     function GetNXTVariableHelper(aNum, aIdx, aCount, aDigits : integer) : variant;
     function GetVariantFromByteArray(dst : TDSType; buf : array of byte; idx : integer) : variant;
+    function ReadI2CData(const i2cValueIdx : byte; const aPort : byte) : variant;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); override;
     destructor Destroy; override;
@@ -230,7 +245,7 @@ type
     function NXTResetOutputPosition(const aPort : byte; const Relative : boolean) : boolean; override;
     function NXTMessageWrite(const inbox : byte; const msg : string) : boolean; override;
     function NXTKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; override;
-    function NXTLSGetStatus(aPort : byte; var bytesReady : byte) : boolean; override;
+    function NXTLSGetStatus(aPort : byte; var bytesReady : byte; var lsstate: byte) : boolean; override;
     function NXTGetCurrentProgramName(var name : string) : boolean; override;
     function NXTGetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; override;
@@ -283,9 +298,6 @@ type
     function NXTFindNextModule(var Handle : FantomHandle; var ModName : string;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
     function NXTRenameFile(const old, new : string; const chkResponse: boolean = false) : boolean; override;
-{
-  kNXT_SCGetBTAddress          = $9A;
-}
     // wrapper functions
     function NXTDownloadFile(const filename : string; const filetype : TNXTFileType) : boolean; override;
     function NXTDownloadStream(aStream : TStream; const dest : string; const filetype : TNXTFileType) : boolean; override;
@@ -490,10 +502,15 @@ begin
   inherited Create(aType, aPort);
   fResPort := '';
   fResourceNames := TStringList.Create;
+  InitializeI2CValues;
+  fCalc := TExpParser.Create(nil);
+  fCalc.PascalNumberformat := False;
+  fCalc.CaseSensitive := True;
 end;
 
 destructor TFantomSpirit.Destroy;
 begin
+  FreeAndNil(fCalc);
   FreeAndNil(fResourceNames);
   inherited Destroy;
 end;
@@ -775,7 +792,7 @@ var
 begin
   Result := IsOpen;
   if not Result then Exit;
-  if aSrc <> 2 then
+  if aSrc <> kRCX_ConstantType then
   begin
     Result := False;
     Exit;
@@ -852,7 +869,10 @@ function TFantomSpirit.SetSensorMode(aNum, aMode, aSlope: integer): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;
-  fSensorMode[aNum] := Byte(((aMode and $7) shl 5) or (aSlope and $F));
+  if aMode > 7 then
+    fSensorMode[aNum] := Byte(aMode or (aSlope and $F))
+  else
+    fSensorMode[aNum] := Byte(((aMode and $7) shl 5) or (aSlope and $F));
   Result := SetNXTInputMode(Byte(aNum), fSensorType[aNum], fSensorMode[aNum]);
 end;
 
@@ -1040,6 +1060,11 @@ var
 begin
   if not IsOpen then
     Open;
+
+  // only allow this command when connected via USB
+  Result := not fUseBT;
+  if not Result then Exit;
+
   Result := FileExists(aFile);
   if Result and (bFast or bComp or bUnlock or True) then
   begin
@@ -1249,7 +1274,6 @@ function TFantomSpirit.SetNXTOutputState(const aPort: byte;
   const tacholimit: cardinal): boolean;
 var
   cmd : TNINxtCmd;
-//  orig : PByte;
   status : integer;
 begin
   Result := IsOpen;
@@ -1257,6 +1281,10 @@ begin
   cmd := TNINxtCmd.Create;
   try
     status := kStatusNoError;
+    fMotorPower[aPort]   := Min(Byte(Abs(power) div 14), 7);
+    fMotorForward[aPort] := (power >= 0);
+    fMotorOn[aPort]      := ((mode and OUT_MODE_MOTORON) = OUT_MODE_MOTORON) and
+                            (runstate <> OUT_RUNSTATE_IDLE);
     cmd.MakeSetOutputState(aPort, mode, regmode, runstate, ShortInt(power), ShortInt(turnratio), tacholimit, False);
     iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
@@ -1306,6 +1334,8 @@ begin
   cmd := TNINxtCmd.Create;
   try
     status := kStatusNoError;
+    fSensorType[aPort] := stype;
+    fSensorMode[aPort] := smode;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCSetInputMode, aPort, stype, smode);
     iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
@@ -1423,7 +1453,7 @@ begin
   end;
 end;
 
-function TFantomSpirit.NXTLSGetStatus(aPort : byte; var bytesReady: byte): boolean;
+function TFantomSpirit.NXTLSGetStatus(aPort : byte; var bytesReady: byte; var lsstate: byte): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
@@ -1439,6 +1469,7 @@ begin
     if not Result then
       Exit;
     bytesReady := GetReplyByte(0);
+    lsstate := GetReplyStatusByte;
   finally
     cmd.Free;
   end;
@@ -1499,7 +1530,7 @@ var
   cmd : TNINxtCmd;
   orig : PByte;
   status : integer;
-  bytesReady : byte;
+  bytesReady, lsstate : byte;
   tick : Cardinal;
 begin
   // LSWrite
@@ -1537,14 +1568,27 @@ begin
   fLastI2CRead.RXCount := 0;
   for i := 0 to 15 do
     fLastI2CRead.Data[i] := 0;
-  if (status = kStatusNoError) and (tmpRx > 0) then
+  bytesReady := 0;
+  // even if we don't have any bytes to read
+  if (status = kStatusNoError) and (tmpRx = 0) then
+  begin
+    tick := jchGetTickCount;
+    lsstate := 1; // anything other than zero
+    while lsstate <> 0 do
+    begin
+      NXTLSGetStatus(aPort, bytesReady, lsstate);
+      if (jchGetTickCount - tick) > 60 then break;
+      Sleep(1);
+    end;
+  end;
+  if (status = kStatusNoError) and (tmpRx > 0) and (bytesReady < tmpRx) then
   begin
     // LSGetStatus
     tick := jchGetTickCount;
     bytesReady := 0;
     while bytesReady = 0 do
     begin
-      NXTLSGetStatus(aPort, bytesReady);
+      NXTLSGetStatus(aPort, bytesReady, lsstate);
       if (jchGetTickCount - tick) > 60 then break;
       Sleep(1);
     end;
@@ -1935,9 +1979,6 @@ var
 begin
   Result := IsOpen;
   if not Result then Exit;
-  // only allow this command when connected via USB
-  Result := not fUseBT;
-  if not Result then Exit;
   status := kStatusNoError;
   iNXT_getResourceString(fNXTHandle, resBuf, status);
   if chkResponse then
@@ -1957,9 +1998,6 @@ var
 begin
   Result := IsOpen;
   if not Result then Exit;
-//  // only allow this command when connected via USB
-//  Result := not fUseBT;
-//  if not Result then Exit;
   status := kStatusNoError;
   iNXT_setName(fNXTHandle, PChar(name), status);
   if chkResponse then
@@ -2381,6 +2419,7 @@ begin
         Exit;
       end;
     end;
+    DoDownloadStatus(K_STEPS, K_STEPS, bStop);
     Close;
     SysUtils.Sleep(K_SEC); // one more second before reopening
     Open;
@@ -2592,12 +2631,16 @@ begin
   Result := @dcResponse[0];
 end;
 
+function TFantomSpirit.GetReplyStatusByte: Byte;
+begin
+  Result := dcResponse[1];
+end;
+
 function TFantomSpirit.GetReplyByte(index: integer): Byte;
 const
   DCReplyOffset = 2;
 begin
   Result := dcResponse[index + DCReplyOffset];
-
 end;
 
 function TFantomSpirit.GetReplyCardinal(index: integer): Cardinal;
@@ -3054,19 +3097,30 @@ var
 begin
   Result := 0;
   case aSrc of
-    kRCX_VariableType : begin
+    kRCX_VariableType : begin     // 0
       Result := GetNXTVariableHelper(aNum, 0, 0, 18);
     end;
-    kRCX_ConstantType : begin
+    kRCX_TimerType : begin        // 1
+      // IOMapRead CommandOffsetTick
+      modID := kNXT_ModuleCmd;
+      count := 4;
+      buffer.Data[0] := 0;
+      res := NXTReadIOMap(modID, CommandOffsetTick, count, buffer);
+      if res then
+      begin
+        Result := BytesToCardinal(buffer.Data[0], buffer.Data[1], buffer.Data[2], buffer.Data[3]);
+      end;
+    end;
+    kRCX_ConstantType : begin     // 2
       Result := aNum;
     end;
-    kRCX_OutputStatusType : begin
+    kRCX_OutputStatusType : begin // 3
       Result := GetOutputStatus(aNum);
     end;
-    kRCX_RandomType : begin
+    kRCX_RandomType : begin       // 4
       Result := Random(aNum);
     end;
-    kRCX_TachCounterType : begin
+    kRCX_TachCounterType : begin  // 5
       rotationcount := 0;
       blocktachocount := 0;
       tachocount := 0;
@@ -3081,34 +3135,9 @@ begin
       if res then
         Result := rotationcount;
     end;
-    kRCX_TimerType : begin
-      // IOMapRead CommandOffsetTick
-      modID := kNXT_ModuleCmd;
-      count := 4;
-      buffer.Data[0] := 0;
-      res := NXTReadIOMap(modID, CommandOffsetTick, count, buffer);
-      if res then
-      begin
-        Result := BytesToCardinal(buffer.Data[0], buffer.Data[1], buffer.Data[2], buffer.Data[3]);
-      end;
-    end;
-    kRCX_BatteryLevelType : begin
-      Result := BatteryLevel;
-    end;
-    kRCX_FirmwareVersionType : begin
-      firmmaj := 0;
-      firmmin := 0;
-      protmin := 0;
-      protmaj := 0;
-      if NXTGetVersions(protmin, protmaj, firmmin, firmmaj) then
-      begin
-        // 1.03 => 1030
-        Result := (firmmaj * 100) + firmmin;
-      end;
-    end;
     kRCX_InputTypeType, kRCX_InputModeType,
     kRCX_InputValueType, kRCX_InputRawType,
-    kRCX_InputBooleanType : begin
+    kRCX_InputBooleanType : begin  // 9, 10, 11, 12, 13
       // get input type or input mode
       calibrated := False;
       stype := 0;
@@ -3145,6 +3174,23 @@ begin
           Result := scaled;
         end;
       end;
+    end;
+    kRCX_BatteryLevelType : begin     // 34
+      Result := BatteryLevel;
+    end;
+    kRCX_FirmwareVersionType : begin  // 35
+      firmmaj := 0;
+      firmmin := 0;
+      protmin := 0;
+      protmaj := 0;
+      if NXTGetVersions(protmin, protmaj, firmmin, firmmaj) then
+      begin
+        // 1.03 => 1030
+        Result := (firmmaj * 100) + firmmin;
+      end;
+    end;
+    kNXT_I2CBaseValueType..kNXT_I2CMaxValueType : begin
+      Result := ReadI2CData(aSrc-kNXT_I2CBaseValueType, aNum);
     end;
   end;
 end;
@@ -3537,7 +3583,7 @@ end;
 
 function TFantomSpirit.StopAllTasks: boolean;
 begin
-  Result := Open;
+  Result := NXTStopProgram;
 end;
 
 function TFantomSpirit.StopTask(aTask: integer): boolean;
@@ -3676,7 +3722,6 @@ begin
     else
       b := kNXT_SystemCmdNoReply;
     cmd.MakeCmdRenameFile(b, new, old);
-//    cmd.MakeCmdRenameFile(b, old, new);
     buf := cmd.GetBody;
     bufLen := cmd.GetLength;
     status := kStatusNoError;
@@ -4078,6 +4123,237 @@ end;
 procedure TFantomSpirit.SendRawData(const Data: array of byte);
 begin
   //
+end;
+
+function TFantomSpirit.ReadI2CData(const i2cValueIdx, aPort: byte): variant;
+var
+  v : TI2CValueConfig;
+  lsb : NXTLSBlock;
+  i, p, rxlen : integer;
+  tmpChar : Char;
+  tmpByte : Byte;
+  tmpSmallInt : SmallInt;
+  tmpWord : Word;
+  tmpInt : Integer;
+  tmpDWord : Cardinal;
+  tmpDouble : Double;
+  tmpVariant : variant;
+  tmpstr, vname : string;
+  SL : TStringList;
+begin
+  Result := 0;
+  if i2cValueIdx < Length(fI2CValues) then
+  begin
+    v := fI2CValues[i2cValueIdx];
+    SL := TStringList.Create;
+    try
+      SL.Delimiter := ';';
+      SL.DelimitedText := v.SendData;
+      for i := 0 to SL.Count - 1 do
+      begin
+        tmpstr := SL[i];
+        if i < SL.Count - 1 then
+          rxlen := 0
+        else
+          rxlen := v.RxCount;
+        LoadLSBlock(lsb, tmpstr, rxlen);
+        NXTLowSpeed[aPort] := lsb;
+        lsb := NXTLowSpeed[aPort];
+      end;
+    finally
+      SL.Free;
+    end;
+    tmpstr := '';
+    if v.Script <> '' then
+    begin
+      // use the expression evaluator
+      for i := 0 to lsb.RXCount - 1 do
+        fCalc.SetVariable(Format('Data%d',[i]), lsb.Data[i]);
+      SL := TStringList.Create;
+      try
+        SL.Delimiter := ';';
+        SL.DelimitedText := v.Script;
+        i := 0;
+        while i < SL.Count do
+        begin
+          tmpstr := SL[i];
+          // is this a variable assignment line?
+          p := Pos(':=', tmpstr);
+          if p > 0 then
+          begin
+            vname := Copy(tmpstr, 1, p-1);
+            System.Delete(tmpstr, 1, p+1);
+            // rest should be value of variable
+            fCalc.SilentExpression := tmpstr;
+            if fCalc.ParserError then
+              break;
+            fCalc.SetVariable(vname, fCalc.Value);
+          end
+          else
+          begin
+            // not a variable creation line.  Could be an if statement
+            p := Pos('if(', tmpstr);
+            if p = 1 then
+            begin
+              System.Delete(tmpstr, 1, 3);
+              System.Delete(tmpstr, Length(tmpstr), 1);
+              fCalc.SilentExpression := tmpstr;
+              if fCalc.ParserError then
+                break;
+              if fCalc.Value = 0 then
+                inc(i); // skip a line if expression evals to zero
+            end
+            else
+            begin
+              // a regular line
+              fCalc.SilentExpression := tmpstr;
+            end;
+          end;
+          inc(i);
+        end;
+        if not fCalc.ParserError then
+        begin
+          if SL.Count = 1 then
+            tmpVariant := fCalc.Value
+          else
+            tmpVariant := fCalc.GetVariable('result');
+        end
+        else
+          tmpVariant := 0;
+      finally
+        SL.Free;
+      end;
+    end
+    else if v.ValueType = vtString then
+    begin
+      tmpstr := '';
+      for i := 0 to lsb.RXCount - 1 do
+        tmpstr := tmpstr + Char(lsb.Data[i]);
+    end
+    else
+      tmpVariant := lsb.Data[0];
+    // convert to result with proper type
+    case v.ValueType of
+      vtChar : begin
+        tmpChar := Char(Byte(tmpVariant));
+        Result := tmpChar;
+      end;
+      vtByte : begin
+        tmpByte := tmpVariant;
+        Result := tmpByte;
+      end;
+      vtSmallInt : begin
+        tmpSmallInt := tmpVariant;
+        Result := tmpSmallInt;
+      end;
+      vtWord : begin
+        tmpWord := tmpVariant;
+        Result := tmpWord;
+      end;
+      vtInteger : begin
+        tmpInt := tmpVariant;
+        Result := tmpInt;
+      end;
+      vtCardinal : begin
+        tmpDWord := tmpVariant;
+        Result := tmpDWord;
+      end;
+      vtDouble : begin
+        tmpDouble := tmpVariant;
+        Result := tmpDouble;
+      end;
+    else // vtString
+      Result := tmpstr;
+    end;
+  end;
+end;
+
+procedure TFantomSpirit.InitializeI2CValues;begin
+  SetLength(fI2CValues, 12);
+  with fI2CValues[0] do // kNXT_LEGOSonar
+  begin
+    RxCount   := 1;
+    ValueType := vtByte;
+    SendData  := '02,42';
+    Script    := '';
+  end;
+  with fI2CValues[1] do // kNXT_LEGOTemp
+  begin
+    RxCount   := 2;
+    ValueType := vtInteger;
+    SendData  := '98,01,60;98,00';
+    Script    := 'rt:=(Data0*256+Data1)*10/16;result:=(rt/16);if(rt>20470);result:=result-2560;';
+  end;
+  with fI2CValues[2] do // kNXT_LEGOEMeterVIn
+  begin
+    RxCount   := 2;
+    ValueType := vtDouble;
+    SendData  := '04,0A';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with fI2CValues[3] do // kNXT_LEGOEMeterAIn
+  begin
+    RxCount   := 2;
+    ValueType := vtDouble;
+    SendData  := '04,0C';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with fI2CValues[4] do // kNXT_LEGOEMeterVOut
+  begin
+    RxCount   := 2;
+    ValueType := vtDouble;
+    SendData  := '04,0E';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with fI2CValues[5] do // kNXT_LEGOEMeterAOut
+  begin
+    RxCount   := 2;
+    ValueType := vtDouble;
+    SendData  := '04,10';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with fI2CValues[6] do // kNXT_LEGOEMeterJoules
+  begin
+    RxCount   := 2;
+    ValueType := vtWord;
+    SendData  := '04,12';
+    Script    := '(Data1*256+Data0)';
+  end;
+  with fI2CValues[7] do // kNXT_LEGOEMeterWIn
+  begin
+    RxCount   := 2;
+    ValueType := vtDouble;
+    SendData  := '04,14';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with fI2CValues[8] do // kNXT_LEGOEMeterWOut
+  begin
+    RxCount   := 2;
+    ValueType := vtDouble;
+    SendData  := '04,16';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with fI2CValues[9] do // kNXT_02Version
+  begin
+    RxCount   := 8;
+    ValueType := vtString;
+    SendData  := '02,00';
+    Script    := '';
+  end;
+  with fI2CValues[10] do // kNXT_02Vendor
+  begin
+    RxCount   := 8;
+    ValueType := vtString;
+    SendData  := '02,08';
+    Script    := '';
+  end;
+  with fI2CValues[11] do // kNXT_02Device
+  begin
+    RxCount   := 8;
+    ValueType := vtString;
+    SendData  := '02,10';
+    Script    := '';
+  end;
 end;
 
 end.

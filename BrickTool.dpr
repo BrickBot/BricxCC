@@ -66,7 +66,7 @@ var
   scaled, calvalue: smallint;
 // misc variables
   pattern : string;
-  pmin, pmaj, fmin, fmaj, bytesReady : byte;
+  pmin, pmaj, fmin, fmaj, bytesReady, lsstate : byte;
   btaddr : string;
   btsig : Cardinal;
   memFree : Cardinal;
@@ -510,7 +510,7 @@ begin
     if ParamSwitch('-lsstatus') and IsNXT then
     begin
       port := ParamIntValue('-lsstatus', 0);
-      if BrickComm.NXTLSGetStatus(port, bytesReady) then
+      if BrickComm.NXTLSGetStatus(port, bytesReady, lsstate) then
         OutputValue(bytesReady);
     end;
     if ParamSwitch('-btnstate') and IsNXT then

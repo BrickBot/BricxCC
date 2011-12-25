@@ -78,15 +78,11 @@ type
     but that would give us all the VCL overhead.
     Consequentially we just redeclare an appropriate event }
   TParserExceptionEvent = procedure (Sender: TObject; E: Exception) of object;
-  TCustomExpressionEvent = procedure (Sender: TObject; const expr : string; var value : extended; var bDone : boolean) of object;
-
-
 
   TCustomParser = class(TComponent)
   private
     fCaseSensitive: boolean;
     fSilent: boolean;
-    fOnCustomExpression: TCustomExpressionEvent;
     procedure SetCaseSensitive(const Value: boolean);
     procedure SetSilentExpression(const Value: string);
     function GetSilentExpression: string;
@@ -150,7 +146,6 @@ type
     property SilentExpression: string read GetSilentExpression write SetSilentExpression;
     property PascalNumberformat: boolean read FPascalNumberformat write FPascalNumberformat default true;
     property OnParserError: TParserExceptionEvent read FOnParserError write FOnParserError;
-    property OnCustomExpression : TCustomExpressionEvent read fOnCustomExpression write fOnCustomExpression;
   end;
 
 

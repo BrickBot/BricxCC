@@ -2047,7 +2047,6 @@ dseg ends
 dseg segment
   __RLSBbufLSWrite1 byte[] 0x02, 0x42
   __RSEMeterLSBuf byte[] 0x04, 0x0A
-  __RSTempConfigLSBuf byte[] 0x98, 0x01, 0x60
   __RSTempLSBuf byte[] 0x98, 0x00
   __RSTempRaw slong
 dseg ends

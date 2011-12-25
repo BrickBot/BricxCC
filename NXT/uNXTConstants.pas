@@ -1254,6 +1254,8 @@ function StrToNXTOutputMode(const mode : string) : integer;
 function StrToNXTOutputRunState(const runstate : string) : integer;
 function StrToNXTOutputRegMode(const regmode : string) : integer;
 
+function StrToPollSourceIndex(const pollsrc : string) : integer;
+
 const
   TONES : array[3..9,0..11] of Word = (
  //   C     C#    D     D#    E     F     F#    G     G#    A     A#    B
@@ -1569,7 +1571,7 @@ const
 implementation
 
 uses
-  SysUtils;
+  SysUtils, rcx_constants;
 
 function INC_ID(X : Word) : Word;
 begin
@@ -2001,6 +2003,65 @@ begin
     Result := OUT_REGMODE_SYNC
   else if tmp = 'POS' then
     Result := OUT_REGMODE_POS
+  else
+    Result := StrToIntDef(tmp, 0);
+end;
+
+function StrToPollSourceIndex(const pollsrc : string) : integer;
+var
+  tmp : string;
+begin
+  tmp := StringReplace(pollsrc, '0X', '$', [rfReplaceAll]);
+  if tmp = 'Variable' then
+    Result := kRCX_VariableType
+  else if tmp = 'Timer' then
+    Result := kRCX_TimerType
+  else if tmp = 'Constant' then
+    Result := kRCX_ConstantType
+  else if tmp = 'OutputStatus' then
+    Result := kRCX_OutputStatusType
+  else if tmp = 'Random' then
+    Result := kRCX_RandomType
+  else if tmp = 'TachoCounter' then
+    Result := kRCX_TachCounterType
+  else if tmp = 'InputValue' then
+    Result := kRCX_InputValueType
+  else if tmp = 'InputType' then
+    Result := kRCX_InputTypeType
+  else if tmp = 'InputMode' then
+    Result := kRCX_InputModeType
+  else if tmp = 'InputRaw' then
+    Result := kRCX_InputRawType
+  else if tmp = 'InputBoolean' then
+    Result := kRCX_InputBooleanType
+  else if tmp = 'BatteryLevel' then
+    Result := kRCX_BatteryLevelType
+  else if tmp = 'FirmwareVersion' then
+    Result := kRCX_FirmwareVersionType
+  else if tmp = 'LEGOSonar' then
+    Result := kNXT_LEGOSonar
+  else if tmp = 'LEGOTemp' then
+    Result := kNXT_LEGOTemp
+  else if tmp = 'LEGOEMeterVIn' then
+    Result := kNXT_LEGOEMeterVIn
+  else if tmp = 'LEGOEMeterAIn' then
+    Result := kNXT_LEGOEMeterAIn
+  else if tmp = 'LEGOEMeterVOut' then
+    Result := kNXT_LEGOEMeterVOut
+  else if tmp = 'LEGOEMeterAOut' then
+    Result := kNXT_LEGOEMeterAOut
+  else if tmp = 'LEGOEMeterJoules' then
+    Result := kNXT_LEGOEMeterJoules
+  else if tmp = 'LEGOEMeterWIn' then
+    Result := kNXT_LEGOEMeterWIn
+  else if tmp = 'LEGOEMeterWOut' then
+    Result := kNXT_LEGOEMeterWOut
+  else if tmp = '02Version' then
+    Result := kNXT_02Version
+  else if tmp = '02Vendor' then
+    Result := kNXT_02Vendor
+  else if tmp = '02Device' then
+    Result := kNXT_02Device
   else
     Result := StrToIntDef(tmp, 0);
 end;

@@ -223,7 +223,7 @@ type
     function NXTResetOutputPosition(const port : byte; const Relative : boolean) : boolean; override;
     function NXTMessageWrite(const inbox : byte; const msg : string) : boolean; override;
     function NXTKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; override;
-    function NXTLSGetStatus(port : byte; var bytesReady : byte) : boolean; override;
+    function NXTLSGetStatus(port : byte; var bytesReady : byte; var lsstate: byte) : boolean; override;
     function NXTGetCurrentProgramName(var name : string) : boolean; override;
     function NXTGetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; override;
@@ -2510,7 +2510,7 @@ begin
   end;
 end;
 
-function TFakeSpirit.NXTLSGetStatus(port : byte; var bytesReady: byte): boolean;
+function TFakeSpirit.NXTLSGetStatus(port : byte; var bytesReady: byte; var lsstate: byte): boolean;
 var
   cmd : TBaseCmd;
   len : integer;
@@ -2527,6 +2527,7 @@ begin
     end;
     Result := True;
     bytesReady := fLink.GetReplyByte(0);
+    lsstate := fLink.GetReplyByte(-1);
   finally
     cmd.Free;
     if fAutoClose then Close;

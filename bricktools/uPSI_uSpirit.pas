@@ -190,7 +190,7 @@ begin
     RegisterMethod('Function NXTResetOutputPosition( const port : byte; const Relative : boolean) : boolean');
     RegisterMethod('Function NXTMessageWrite( const inbox : byte; const msg : string) : boolean');
     RegisterMethod('Function NXTKeepAlive( var time : cardinal; const chkResponse : boolean) : boolean');
-    RegisterMethod('Function NXTLSGetStatus( port : byte; var bytesReady : byte) : boolean');
+    RegisterMethod('Function NXTLSGetStatus( port : byte; var bytesReady : byte; var lsstate : byte) : boolean');
     RegisterMethod('Function NXTGetCurrentProgramName( var name : string) : boolean');
     RegisterMethod('Function NXTGetButtonState( const idx : byte; const reset : boolean; var pressed : boolean; var count : byte) : boolean');
     RegisterMethod('Function NXTMessageRead( const remote, local : byte; const remove : boolean; var Msg : NXTMessage) : boolean');
