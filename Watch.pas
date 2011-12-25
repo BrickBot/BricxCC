@@ -329,7 +329,7 @@ procedure TWatchForm.ProcessI2C(port : byte; edtLen : TBricxCCSpinEdit;
 var
   tmpStr, tmpI2CStr : string;
   LSBlock : NXTLSBlock;
-  bytesReady : byte;
+  bytesReady, lsstate : byte;
   tick : Cardinal;
   i : integer;
 begin
@@ -343,7 +343,7 @@ begin
     bytesReady := 0;
     while bytesReady = 0 do
     begin
-      BrickComm.NXTLSGetStatus(port, bytesReady);
+      BrickComm.NXTLSGetStatus(port, bytesReady, lsstate);
       if (GetTick - tick) > 50 then break;
     end;
     if bytesReady > 0 then

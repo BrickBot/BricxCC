@@ -43,9 +43,17 @@ uses
 {$R *.RES}
 {$ENDIF}
 
+type
+  TEventHandlerObject = class
+  public
+    procedure HandleDownloadStart(Sender : TObject);
+    procedure HandleDownloadDone(Sender : TObject);
+    procedure HandleDownloadStatus(Sender : TObject; cur, total : Integer; var Abort : boolean);
+  end;
+
 var
   SL : TStrings;
-  i, j : Integer;
+  i, j, src, num : Integer;
   cvalue : cardinal;
 // getoutputstate variables
   port, power: integer;
@@ -59,20 +67,21 @@ var
   valid, calibrated: boolean;
   stype, smode: byte;
   stypestr, smodestr : string;
-  raw, normalized: word;
+  raw, normalized, pc: word;
   scaled, calvalue: smallint;
 // misc variables
   pattern : string;
-  pmin, pmaj, fmin, fmaj, bytesReady : byte;
+  pmin, pmaj, fmin, fmaj, bytesReady, lsstate : byte;
   btaddr : string;
   btsig : cardinal;
   memFree : Cardinal;
   pressed : boolean;
-  btncount : byte;
-  i2csend, rawcmd : string;
+  btncount, state, clump : byte;
+  i2csend, rawcmd, tmpstr : string;
   LSBlock : NXTLSBlock;
   Msg : NXTMessage;
   BC : TBrickComm;
+  EHO : TEventHandlerObject;
 
 
 function BrickComm : TBrickComm;
@@ -154,8 +163,7 @@ begin
   Writeln('   -listfiles[=<pattern>] : list the files matching the pattern (or *.*)');
   Writeln('   -listmodules[=<pattern>] : list the modules matching the pattern (or *.*)');
   Writeln('   -delete=<filename> : delete the specified file from the NXT');
-  Writeln('   -datalog | -datalog_full: upload datalog (_full == verbose)');
-//  Writeln('   -eeprom=<n> | -eeprom_full: upload eeprom block (_full == all blocks)');
+//  Writeln('   -datalog | -datalog_full: upload datalog (_full == verbose)');
   Writeln('   -memory=<n> | -memory_full: upload 128 bytes of memory (_full == all memory)');
   Writeln('   -map: upload memory map');
   Writeln('   -keepalive : return the current sleep time limit');
@@ -172,17 +180,35 @@ begin
   Writeln('   -i2cbytes=<data> : send/receive I2C data');
   Writeln('   -lsstatus=<port> : return the low speed status for the specified port');
   Writeln('   -sendraw=<cmd> : send a direct or system command (comma-separated hex bytes)');
-  Writeln('   -btnstate=<btn> : return the button state for the specified button');
+//  Writeln('   -btnstate=<btn> : return the button state for the specified button');
   Writeln('   -resetbtnstate=<btn> : reset the button state for the specified button');
-  Writeln('   -boot : reset the NXT into SAMBA mode (usb only)');
+  Writeln('   -boot : reset the NXT into SAMBA mode');
   Writeln('   -btreset : reset the NXT bluetooth to factory settings (usb only)');
   Writeln('   -defrag : defragment the NXT filesystem');
+  Writeln('   -shutdown : turn off the NXT');
+  Writeln('   -motorson=<motorlist> : Turn on the specified motors');
+  Writeln('   -motorsoff=<motorlist> : Turn off the specified motors');
+  Writeln('   -motorsfloat=<motorlist> : Float the specified motors');
+  Writeln('   -setfwd=<motorlist> : Set the motor direction to forward');
+  Writeln('   -setrwd=<motorlist> : Set the motor direction to reverse');
+  Writeln('   -switchdir=<motorlist> : Switch the motor direction');
+  Writeln('   -setmotorpower=<motorlist,pwr> : Set the motor power');
+  Writeln('   -poll=<src,num> : Poll the specified src and number');
+  Writeln('   -getoutputstatus=<out> : Get the output status');
+  Writeln('   -getvariablevalue=<var> : Get the variable value');
+  Writeln('   -getinputvalue=<input> : Get the input value');
+  Writeln('   -gettimervalue=<num> : Get the timer value');
+  Writeln('   -polleeprom=<block> : Poll eeprom block');
+  Writeln('   -setvmstate=<state> : Set the VM state (enhanced firmware only)');
+  Writeln('   -getvmstate : Get the VM state (enhanced firmware only)');
 {
 NXTPollCommandLen
 NXTPollCommand
 NXTWriteIOMap
 NXTReadIOMap
-NXTLowSpeed[port : byte]
+    function NXTSetPropDebugging(const debugging : boolean; const pauseClump : byte; const pausePC : Word) : boolean; override;
+    function NXTGetPropDebugging(var debugging : boolean; var pauseClump : byte; var pausePC : Word) : boolean; override;
+    function NXTSetVMStateEx(var state : byte; var clump : byte; var pc : word) : boolean; override;
 }
   Writeln('General:');
   Writeln('   -help : display command line options');
@@ -220,6 +246,25 @@ begin
   end;
 end;
 
+{ TEventHandlerObject }
+
+procedure TEventHandlerObject.HandleDownloadDone(Sender: TObject);
+begin
+  WriteLn('Download finished');
+end;
+
+procedure TEventHandlerObject.HandleDownloadStart(Sender: TObject);
+begin
+  WriteLn('Download starting');
+end;
+
+procedure TEventHandlerObject.HandleDownloadStatus(Sender: TObject; cur,
+  total: Integer; var Abort: boolean);
+begin
+  Write('.');
+  if cur >= total then
+    WriteLn('');
+end;
 
 begin
 {$IFDEF FPC}
@@ -276,7 +321,11 @@ begin
     Exit;
   end;
 
+  EHO := TEventHandlerObject.Create;
   try
+    BrickComm.OnDownloadStart  := EHO.HandleDownloadStart;
+    BrickComm.OnDownloadDone   := EHO.HandleDownloadDone;
+    BrickComm.OnDownloadStatus := EHO.HandleDownloadStatus;
     SL := BrickComm.MemoryData;
 
     if ParamSwitch('-init') then
@@ -535,8 +584,11 @@ begin
       if ParamSwitch('-lsstatus') then
       begin
         port := ParamIntValue('-lsstatus', 0);
-        if BrickComm.NXTLSGetStatus(Byte(port), bytesReady) then
-          OutputValue(bytesReady);
+        if BrickComm.NXTLSGetStatus(Byte(port), bytesReady, lsstate) then
+        begin
+          OutputValue(bytesReady, False); Write(' ');
+          OutputValue(lsstate);
+        end;
       end;
       if ParamSwitch('-sendraw') then
       begin
@@ -544,12 +596,14 @@ begin
         if rawcmd <> '' then
           WriteLn(BrickComm.SendRawCommand(rawcmd, False));
       end;
+{ // button state direct command is not implemented
       if ParamSwitch('-btnstate') then
       begin
         port := ParamIntValue('-btnstate', 0);
         if BrickComm.NXTGetButtonState(Byte(port), False, pressed, btncount) then
           Writeln(Format('Button %d: pressed = %s, count = %d', [port, BoolToStr(pressed), btncount]));
       end;
+}
       if ParamSwitch('-resetbtnstate') then
       begin
         port := ParamIntValue('-resetbtnstate', 0);
@@ -564,7 +618,7 @@ begin
             OutputValue(Msg.Data[i]);
         end;
       end;
-      if (ParamSwitch('-memory') or ParamSwitch('-memory_full')) then
+      if ParamSwitch('-memory') or ParamSwitch('-memory_full') then
       begin
         if ParamSwitch('-memory_full') then
         begin
@@ -585,17 +639,88 @@ begin
         if BrickComm.VerboseMode then
           Writeln('');
       end;
+{
       if (ParamSwitch('-datalog') or ParamSwitch('-datalog_full')) then
       begin
         SL := BrickComm.UploadDatalog(ParamSwitch('-datalog_full'));
         DumpData(SL);
       end;
+}
+      if ParamSwitch('-motorson') then
+        BrickComm.MotorsOn(ParamIntValue('-motorson', 0));
+      if ParamSwitch('-motorsoff') then
+        BrickComm.MotorsOff(ParamIntValue('-motorsoff', 0));
+      if ParamSwitch('-motorsfloat') then
+        BrickComm.MotorsFloat(ParamIntValue('-motorsfloat', 0));
+      if ParamSwitch('-setfwd') then
+        BrickComm.SetFwd(ParamIntValue('-setfwd', 0));
+      if ParamSwitch('-setrwd') then
+        BrickComm.SetRwd(ParamIntValue('-setrwd', 0));
+      if ParamSwitch('-switchdir') then
+        BrickComm.SwitchDirection(ParamIntValue('-switchdir', 0));
+      if ParamSwitch('-setmotorpower') then
+      begin
+        tmpstr := ParamValue('-setmotorpower');
+        power := 0;
+        i := Pos(',', tmpstr);
+        if i > 0 then
+        begin
+          src := StrToIntDef(Copy(tmpstr, 1, i-1), 0);
+          System.Delete(tmpstr, 1, i);
+          power := StrToIntDef(tmpstr, 0);
+        end
+        else
+          src := StrToIntDef(tmpstr, 0);
+        BrickComm.SetMotorPower(src, 2, power); // kRCX_ConstantType
+      end;
+      if ParamSwitch('-poll') then
+      begin
+        tmpstr := ParamValue('-poll');
+        num := 0;
+        i := Pos(',', tmpstr);
+        if i > 0 then
+        begin
+          src := StrToPollSourceIndex(Copy(tmpstr, 1, i-1));
+          System.Delete(tmpstr, 1, i);
+          num := StrToIntDef(tmpstr, 0);
+        end
+        else
+          src := StrToIntDef(tmpstr, 0);
+        WriteLn(BrickComm.Poll(src, num));
+      end;
+      if ParamSwitch('-getoutputstatus') then
+        OutputValue(BrickComm.GetOutputStatus(ParamIntValue('-getoutputstatus', 0)));
+      if ParamSwitch('-getvariablevalue') then
+        OutputValue(BrickComm.GetVariableValue(ParamIntValue('-getvariablevalue', 0)));
+      if ParamSwitch('-getinputvalue') then
+        OutputValue(BrickComm.GetInputValue(ParamIntValue('-getinputvalue', 0)));
+      if ParamSwitch('-gettimervalue') then
+        OutputValue(BrickComm.GetTimerValue(ParamIntValue('-gettimervalue', 0)));
+      if ParamSwitch('-polleeprom') then
+      begin
+        SL := BrickComm.PollEEPROM(ParamIntValue('-polleeprom', 0));
+        DumpData(SL);
+      end;
+      if ParamSwitch('-setvmstate') then
+      begin
+        BrickComm.NXTSetVMState(ParamIntValue('-setvmstate', 0));
+      end;
+      if ParamSwitch('-getvmstate') then
+      begin
+        BrickComm.NXTGetVMState(state, clump, pc);
+        OutputValue(state, False); Write(' ');
+        OutputValue(clump, False); Write(' ');
+        OutputValue(pc);
+      end;
+      if ParamSwitch('-shutdown') then
+        BrickComm.Shutdown;
       if not ParamSwitch('/noclose') then
         BrickComm.Close;
     end;
     if not ParamSwitch('/nofree') then
       BrickComm.Free;
   finally
+    FreeAndNil(EHO);
     if ParamSwitch('/debug') then
       WriteLn('Exiting NeXTTool');
   end;

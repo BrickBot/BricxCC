@@ -215,7 +215,7 @@ type
     function NXTResetOutputPosition(const aPort : byte; const Relative : boolean) : boolean; override;
     function NXTMessageWrite(const inbox : byte; const msg : string) : boolean; override;
     function NXTKeepAlive(var time : cardinal; const chkResponse : boolean = true) : boolean; override;
-    function NXTLSGetStatus(aPort : byte; var bytesReady : byte) : boolean; override;
+    function NXTLSGetStatus(aPort : byte; var bytesReady : byte; var lsstate : byte) : boolean; override;
     function NXTGetCurrentProgramName(var name : string) : boolean; override;
     function NXTGetButtonState(const idx : byte; const reset : boolean;
       var pressed : boolean; var count : byte) : boolean; override;
@@ -628,7 +628,7 @@ begin
   if not Result then Exit;
 end;
 
-function TSProSpirit.NXTLSGetStatus(aPort : byte; var bytesReady: byte): boolean;
+function TSProSpirit.NXTLSGetStatus(aPort : byte; var bytesReady: byte; var lsstate : byte): boolean;
 begin
   Result := IsOpen;
   if not Result then Exit;

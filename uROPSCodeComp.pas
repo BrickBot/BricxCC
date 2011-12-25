@@ -397,7 +397,7 @@ const
     (Kind: ckAPIFunc; Name: 'NXTResetOutputPosition'; Location: 2; Params: '(const port : byte; const Relative : boolean)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTMessageWrite'; Location: 2; Params: '(const inbox : byte; const msg : string)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTKeepAlive'; Location: 2; Params: '(var time : cardinal; const chkResponse : boolean)'; Count: 1; Alpha: atNumeric),
-    (Kind: ckAPIFunc; Name: 'NXTLSGetStatus'; Location: 2; Params: '(port : byte; var bytesReady : byte)'; Count: 1; Alpha: atNumeric),
+    (Kind: ckAPIFunc; Name: 'NXTLSGetStatus'; Location: 2; Params: '(port : byte; var bytesReady : byte; var lsstate : byte)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTGetCurrentProgramName'; Location: 2; Params: '(var name : string)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTGetButtonState'; Location: 2; Params: '(const idx : byte; const reset : boolean; var pressed : boolean; var count : byte)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'NXTMessageRead'; Location: 2; Params: '(const remote: byte; const local: byte; const remove : boolean; var Msg : NXTMessage)'; Count: 1; Alpha: atNumeric),
