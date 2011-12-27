@@ -41,15 +41,15 @@ function BrickComm : TBrickComm;
 begin
   if not Assigned(BC) then
   begin
+{$IFNDEF NXT_ONLY}
     if LocalBrickType = SU_NXT then
       BC := TFantomSpirit.Create()
     else if LocalBrickType = SU_SPRO then
       BC := TSProSpirit.Create()
     else
-{$IFNDEF NXT_ONLY}
       BC := TFakeSpirit.Create();
 {$ELSE}
-      BC := TFantomSpirit.Create();
+    BC := TFantomSpirit.Create();
 {$ENDIF}
   end;
   Result := BC;
