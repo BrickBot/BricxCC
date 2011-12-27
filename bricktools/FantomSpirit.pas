@@ -2419,7 +2419,8 @@ begin
         Exit;
       end;
     end;
-    DoDownloadStatus(K_STEPS, K_STEPS, bStop);
+    if cur < K_STEPS then
+      DoDownloadStatus(K_STEPS, K_STEPS, bStop);
     Close;
     SysUtils.Sleep(K_SEC); // one more second before reopening
     Open;
@@ -2967,12 +2968,12 @@ end;
 
 function TFantomSpirit.GetCounterValue(aNum: integer): integer;
 begin
-  Result := Poll(kRCX_CounterType, aNum);
+  Result := 0;
 end;
 
 function TFantomSpirit.GetMessageValue(aNum: integer): integer;
 begin
-  Result := Poll(kRCX_MessageType, aNum);
+  Result := 0;
 end;
 
 function TFantomSpirit.GetOutputStatus(aOut: integer): integer;
@@ -4228,7 +4229,11 @@ begin
     begin
       tmpstr := '';
       for i := 0 to lsb.RXCount - 1 do
+      begin
+        // if we see a null break
+        if lsb.Data[i] = 0 then break;
         tmpstr := tmpstr + Char(lsb.Data[i]);
+      end;
     end
     else
       tmpVariant := lsb.Data[0];
@@ -4268,7 +4273,8 @@ begin
   end;
 end;
 
-procedure TFantomSpirit.InitializeI2CValues;begin
+procedure TFantomSpirit.InitializeI2CValues;
+begin
   SetLength(fI2CValues, 12);
   with fI2CValues[0] do // kNXT_LEGOSonar
   begin
@@ -4356,4 +4362,4 @@ procedure TFantomSpirit.InitializeI2CValues;begin
   end;
 end;
 
-end.
+end.
