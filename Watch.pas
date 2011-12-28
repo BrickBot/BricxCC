@@ -329,8 +329,6 @@ procedure TWatchForm.ProcessI2C(port : byte; edtLen : TBricxCCSpinEdit;
 var
   tmpStr, tmpI2CStr : string;
   LSBlock : NXTLSBlock;
-  bytesReady, lsstate : byte;
-  tick : Cardinal;
   i : integer;
 begin
   if edtLen.Value > 0 then
@@ -339,25 +337,15 @@ begin
   BrickComm.NXTLowSpeed[port] := LSBlock;
   if edtLen.Value > 0 then
   begin
-    tick := GetTick;
-    bytesReady := 0;
-    while bytesReady = 0 do
+    LSBlock := BrickComm.NXTLowSpeed[port];
+    tmpI2CStr := '';
+    for i := 0 to LSBlock.RXCount - 1 do
     begin
-      BrickComm.NXTLSGetStatus(port, bytesReady, lsstate);
-      if (GetTick - tick) > 50 then break;
+      tmpStr := Format('I2C Result %d[%d]: %d', [port+1, i, LSBlock.Data[i]]);
+      fNewData.Add(tmpStr);
+      tmpI2CStr := tmpI2CStr + Format('%d ', [LSBlock.Data[i]]);
     end;
-    if bytesReady > 0 then
-    begin
-      LSBlock := BrickComm.NXTLowSpeed[port];
-      tmpI2CStr := '';
-      for i := 0 to LSBlock.RXCount - 1 do
-      begin
-        tmpStr := Format('I2C Result %d[%d]: %d', [port+1, i, LSBlock.Data[i]]);
-        fNewData.Add(tmpStr);
-        tmpI2CStr := tmpI2CStr + Format('%d ', [LSBlock.Data[i]]);
-      end;
-      edtVal.Text := tmpI2CStr;
-    end;
+    edtVal.Text := tmpI2CStr;
   end;
 end;
 
