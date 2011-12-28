@@ -2,7 +2,7 @@ task main()
 {
    float A[3][3];
    float C[][];
-   int R, S;
+   int R = 3, S = 3;
    float tmp[], arr_temp[], val_temp;
    int s, r;
    ArrayInit(tmp, 0, R);

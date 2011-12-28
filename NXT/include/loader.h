@@ -350,11 +350,11 @@ inline unsigned int CloseFile(byte handle);
  *
  * \param filename The name of the file for which to resolve a handle.
  * \param handle The file handle output from the function call.
- * \param writeable A boolean flag indicating whether the handle is
+ * \param writable A boolean flag indicating whether the handle is
  * to a file open for writing (true) or reading (false).
  * \return The function call result. See \ref LoaderErrors.
  */
-inline unsigned int ResolveHandle(string filename, byte & handle, bool & writeable);
+inline unsigned int ResolveHandle(string filename, byte & handle, bool & writable);
 
 /**
  * Rename a file.
@@ -843,7 +843,7 @@ inline void SysListFiles(ListFilesType & args);
 #define OpenFileAppend(_fname, _fsize, _handle) asm { __openFileAppend(_fname, _fsize, _handle, __RETVAL__) }
 #define OpenFileRead(_fname, _fsize, _handle) asm { __openFileRead(_fname, _fsize, _handle, __RETVAL__) }
 #define CloseFile(_handle) asm { __closeFile(_handle, __RETVAL__) }
-#define ResolveHandle(_fname, _handle, _writeable) asm { __resolveHandle(_fname, _handle, _writeable, __RETVAL__) }
+#define ResolveHandle(_fname, _handle, _writable) asm { __resolveHandle(_fname, _handle, _writable, __RETVAL__) }
 #define RenameFile(_oldname, _newname) asm { __renameFile(_oldname, _newname, __RETVAL__) }
 #define DeleteFile(_fname) asm { __deleteFile(_fname, __RETVAL__) }
 #define ResizeFile(_fname, _newsize) asm { __fileResize(_fname, _newsize, __RETVAL__) }

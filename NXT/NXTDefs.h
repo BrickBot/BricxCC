@@ -4584,12 +4584,12 @@ ends
   mov _result, __FCArgs.Result \
   release __FCMutex
 
-#define __resolveHandle(_fname, _handle, _writeable, _result) \
+#define __resolveHandle(_fname, _handle, _writable, _result) \
   acquire __FRHMutex \
   mov __FRHArgs.Filename, _fname \
   syscall FileResolveHandle, __FRHArgs \
   mov _handle, __FRHArgs.FileHandle \
-  mov _writeable, __FRHArgs.WriteHandle \
+  mov _writable, __FRHArgs.WriteHandle \
   mov _result, __FRHArgs.Result \
   release __FRHMutex
 
@@ -16991,11 +16991,11 @@ __remoteGetInputValues(_conn, _params, _result)
  *
  * \param _fname The name of the file for which to resolve a handle.
  * \param _handle The file handle output from the function call.
- * \param _writeable A boolean flag indicating whether the handle is
+ * \param _writable A boolean flag indicating whether the handle is
  * to a file open for writing (true) or reading (false).
  * \param _result The function call result. See \ref LoaderErrors.
  */
-#define ResolveHandle(_fname, _handle, _writeable, _result) __resolveHandle(_fname, _handle, _writeable, _result)
+#define ResolveHandle(_fname, _handle, _writable, _result) __resolveHandle(_fname, _handle, _writable, _result)
 
 /**
  * Rename a file.

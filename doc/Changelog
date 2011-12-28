@@ -1108,7 +1108,7 @@ Version 1.0.1.b16
     OpenFileAppend(fname, fsize, handle)
     OpenFileRead(fname, fsize, handle)
     CloseFile(handle)
-    ResolveHandle(fname, handle, writeable)
+    ResolveHandle(fname, handle, writable)
     RenameFile(oldname, newname)
     DeleteFile(fname)
     SendMessage(queue, msg)
@@ -1403,7 +1403,7 @@ Version 1.0.1.b15
     OpenFileAppend(fname, fsize, handle, result)
     OpenFileRead(fname, fsize, handle, result)
     CloseFile(handle, result)
-    ResolveHandle(fname, handle, writeable, result)
+    ResolveHandle(fname, handle, writable, result)
     RenameFile(oldname, newname, result)
     DeleteFile(fname, result)
     SendMessage(queue, msg, result)
@@ -1648,4 +1648,3 @@ Syntax: nbc [options] filename [options]
    -I=<path>: search <path> for include files
    -L=<filename> : generate code listing to <filename>
    -help : display command line options
-
