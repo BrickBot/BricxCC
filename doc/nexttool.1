@@ -29,7 +29,7 @@ command.
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics,
 .\" respectively.
-\fBbricxcc\fP is a program that allow comunicate with NXT brick and do
+\fBnexttool\fP is a program that allow comunicate with NXT brick and do
 some others things with it.
 .SH OPTIONS
 These programs don't follow the usual GNU command line syntax and long
@@ -43,11 +43,8 @@ A summary of options and actions is included below.
 .B /COM=port
 specify port name (COMn, usb, resource string, or alias)
 .TP
-.B /BT[=name]
-use bluetooth (selects the first brick found or the named brick)
-.TP
 .B /HEX
-use hexidecimal for numeric output
+use hexadecimal for numeric output
 .TP
 .B /Duration=<n>
 specify the tone duration for the playtone action
@@ -66,16 +63,40 @@ empty mailbox when reading
 .TP
 .B /Bin[=filename]
 dump data output as binary to a file (nxt.bin)
+.TP
+.B /Power=<n>
+output power level (-100..100)
+.TP
+.B /Mode=<n>
+output mode (COAST=0, MOTORON=1, BRAKE=2, REGULATED=4)
+.TP
+.B /RegMode=<n> 
+output regulation mode (IDLE=0, SPEED=1, SYNC=2)
+.TP
+.B /RunState=<n> 
+output run state (IDLE=0, RAMPUP=16, RUNNING=32, RAMPDOWN=64)
+.TP
+.B /TurnRatio=<n> 
+output turn ratio (-100..100)
+.TP
+.B /TachoLimit=<n>
+output tachometer limit (0..MaxInt)
+.TP
+.B /SensorType=<n>
+sensor type (0..17)
+.TP
+.B /SensorMode=<n>
+sensor mode (0, 32, 64, 96, 128, 160, 192, 224)
 .br
 .TP
 .B
 Actions:
 .TP
-.B -init
-initialize nxt.dat file
+.B -init[=0]
+initialize nxt.dat file (0 == do not search bluetooth)
 .TP
-.B -listbricks
-list resource names of all found NXT bricks
+.B -listbricks[=0]
+list resource names of all found NXT bricks (0 == do not search bluetooth)
 .TP
 .B -clear
 erase all items on the brick
@@ -88,6 +109,12 @@ read input N (0-3)
 .TP
 .B -output=<N>
 read the status of output N (0-2)
+.TP
+.B -setinput=<N>
+configure input N (0-3)
+.TP
+.B -setoutput=<N>
+configure output N (0-2)
 .TP
 .B -mute
 stop playing sounds
@@ -124,12 +151,6 @@ list the modules matching the pattern (or *.*)
 .TP
 .B -delete=<filename>
 delete the specified file from the NXT
-.TP
-.B -datalog | -datalog_full
-upload datalog (_full == verbose)
-.TP
-.B -eeprom=<n> | -eeprom_full
-upload eeprom block (_full == all blocks)
 .TP
 .B -memory=<n> | -memory_full
 upload 128 bytes of memory (_full == all memory)
@@ -170,8 +191,14 @@ return all NXT device information
 .B -freemem
 return the amount of free memory
 .TP
+.B -i2cbytes=<data>
+send/receive I2C data
+.TP
 .B -lsstatus=<port>
 return the low speed status for the specified port
+.TP
+.B -sendraw=<cmd>
+send a direct or system command (comma-separated hex bytes)
 .TP
 .B -boot
 reset the NXT into SAMBA mode (usb only)
@@ -181,6 +208,54 @@ reset the NXT bluetooth to factory settings (usb only)
 .TP
 .B -defrag
 defragment the NXT filesystem
+.TP
+.B -shutdown
+turn off the NXT
+.TP
+.B -motorson=<motorlist>
+Turn on the specified motors
+.TP
+.B -motorsoff=<motorlist>
+Turn off the specified motors
+.TP
+.B -motorsfloat=<motorlist>
+Float the specified motors
+.TP
+.B -setfwd=<motorlist>
+Set the motor direction to forward
+.TP
+.B -setrwd=<motorlist>
+Set the motor direction to reverse
+.TP
+.B -switchdir=<motorlist>
+Switch the motor direction
+.TP
+.B -setmotorpower=<motorlist,pwr>
+Set the motor power
+.TP
+.B -poll=<src,num>
+Poll the specified src and number
+.TP
+.B -getoutputstatus=<out>
+Get the output status
+.TP
+.B -getvariablevalue=<var>
+Get the variable value
+.TP
+.B -getinputvalue=<input>
+Get the input value
+.TP
+.B -gettimervalue=<num>
+Get the timer value
+.TP
+.B -polleeprom=<block>
+Poll eeprom block
+.TP
+.B -setvmstate=<state>
+Set the VM state (enhanced firmware only)
+.TP
+.B -getvmstate
+Get the VM state (enhanced firmware only)
 General:
 .TP
 .B -help
@@ -190,7 +265,7 @@ display command line options
 .BR t2n (1),
 .BR fwflash (1).
 .SH AUTHOR
-bricxcc was written by <upstream author>.
+nexttool was written by John Hansen.
 .PP
 This manual page was written by Slavko <linux@slavino.sk>,
 for the Debian project (and may be used by others).
