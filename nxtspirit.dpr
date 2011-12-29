@@ -13,7 +13,7 @@
  * All Rights Reserved.
  *
  *)
-library nxtspiritlib;
+library nxtspirit;
 
 uses
   FantomSpirit in 'bricktools\FantomSpirit.pas',
@@ -133,7 +133,12 @@ exports
   FantomSpiritGetFullPortName,
   FantomSpiritGetBrickTypeName,
   FantomSpiritNXTDefragmentFlash,
-  FantomSpiritDownloadMemoryMap;
+  FantomSpiritDownloadMemoryMap,
+  FantomSpiritNXTFirmwareVersion,
+  FantomSpiritNXTInstalledFirmware,
+  FantomSpiritNXTGetBrickName,
+  NameToNXTFileType,
+  LoadLSBlock;
 
 end.
 

@@ -142,6 +142,12 @@ procedure FantomSpiritGetBrickTypeName(fsh : FantomHandle; name : PChar); cdecl;
 function FantomSpiritNXTDefragmentFlash(fsh : FantomHandle) : integer; cdecl; export;
 procedure FantomSpiritDownloadMemoryMap(fsh : FantomHandle; value : PChar); cdecl; export;
 
+function FantomSpiritNXTFirmwareVersion(fsh : FantomHandle) : integer; cdecl; export;
+function FantomSpiritNXTInstalledFirmware(fsh : FantomHandle) : byte; cdecl; export;
+procedure FantomSpiritNXTGetBrickName(fsh : FantomHandle; name : PChar); cdecl; export;
+function NameToNXTFileType(name : PChar) : integer; cdecl; export;
+procedure LoadLSBlock(var aBlock : NXTLSBlock; buf : PChar; rxCount : integer); cdecl; export;
+
 implementation
 
 uses
@@ -1129,6 +1135,45 @@ var
 begin
   tmp := TFantomSpirit(fsh);
   StrCopy(value, PChar(tmp.DownloadMemoryMap.Text));
+end;
+
+function FantomSpiritNXTFirmwareVersion(fsh : FantomHandle) : integer; cdecl; export;
+var
+  tmp : TFantomSpirit;
+begin
+  tmp := TFantomSpirit(fsh);
+  Result := tmp.NXTFirmwareVersion;
+end;
+
+function FantomSpiritNXTInstalledFirmware(fsh : FantomHandle) : byte; cdecl; export;
+var
+  tmp : TFantomSpirit;
+begin
+  tmp := TFantomSpirit(fsh);
+  Result := Ord(tmp.NXTInstalledFirmware);
+end;
+
+procedure FantomSpiritNXTGetBrickName(fsh : FantomHandle; name : PChar); cdecl; export;
+var
+  tmp : TFantomSpirit;
+  str : string;
+begin
+  tmp := TFantomSpirit(fsh);
+  str := tmp.NXTGetBrickName;
+  StrCopy(name, PChar(str));
+end;
+
+function NameToNXTFileType(name : PChar) : integer; cdecl; export;
+begin
+  Result := Ord(uSpirit.NameToNXTFileType(String(name)));
+end;
+
+procedure LoadLSBlock(var aBlock : NXTLSBlock; buf : PChar; rxCount : integer); cdecl; export;
+var
+  str : string;
+begin
+  str := String(buf);
+  uSpirit.LoadLSBlock(aBlock, str, rxCount);
 end;
 
 end.
