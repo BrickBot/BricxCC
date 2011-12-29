@@ -1,9 +1,7 @@
 PROGRAMS = libfantom.so libnxtspirit.so spirittest
 VER = 1.2.1.r5
 DOBJECTS=fantom.dpr nxtspirit.dpr spirittest.dpr
-FANTOM_SRC = bricktools/FANTOM.pas bricktools/FANTOM_CONST.INC bricktools/fantomfpc.pas \
- bricktools/libusb.pas bricktools/FantomDefs.pas bricktools/libspirit.pas \
- bricktools/fantomspiritlib.pas bricktools/brick_common bricktools/FantomSpirit.pas
+FANTOM_SRC = bricktools/FANTOM.pas bricktools/FANTOM_CONST.INC bricktools/fantomfpc.pas bricktools/libusb.pas bricktools/FantomDefs.pas bricktools/libspirit.pas bricktools/fantomspiritlib.pas bricktools/brick_common.pas bricktools/FantomSpirit.pas
 EXCLUDES = --exclude=*.exe --exclude=*.zip --exclude=*.o --exclude=*.~* --exclude=*.dll
 
 all:: $(DOBJECTS) $(PROGRAMS)

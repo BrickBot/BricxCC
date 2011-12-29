@@ -1,11 +1,13 @@
 PROGRAMS = nexttool
 VER = 1.2.1.r5
 DOBJECTS=uCmdLineUtils.o ParamUtils.o uCommonUtils.o uVersionInfo.o NeXTTool.dpr
-BINDIST = nxt/nexttool
+BINDIST = nexttool
 FANTOM_SRC = bricktools/FANTOM.pas bricktools/FANTOM_CONST.INC bricktools/FANTOMFPC.PAS bricktools/fantomosx.pas bricktools/libusb.pas
 BT_SRC = bricktools/FantomSpirit.pas bricktools/rcx_cmd.pas bricktools/rcx_constants.pas bricktools/uSpirit.pas
 CMN_SRC = uCmdLineUtils.pas uCommonUtils.pas uVersionInfo.pas ParamUtils.pas NXT/uProgram.pas
-DISTFILES = uCmdLineUtils.pas
+TOOLS_SRC = NeXTTool.dpr nexttool.mak
+MANPAGES = doc/nexttool.1
+DISTFILES = $(CMN_SRC) $(BT_SRC) $(FANTOM_SRC) $(TOOLS_SRC) $(MANPAGES)
 EXCLUDES = --exclude=*.exe --exclude=*.zip --exclude=*.o --exclude=*.~* --exclude=*.dll
 
 all:: $(DOBJECTS) $(PROGRAMS)
