@@ -1,0 +1,196 @@
+.\"                                      Hey, EMACS: -*- nroff -*-
+.\" First parameter, NAME, should be all caps
+.\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
+.\" other parameters are allowed: see man(7), man(1)
+.TH NEXTTOOL 1 "May  2, 2010"
+.\" Please adjust this date whenever revising the manpage.
+.\"
+.\" Some roff macros, for reference:
+.\" .nh        disable hyphenation
+.\" .hy        enable hyphenation
+.\" .ad l      left justify
+.\" .ad b      justify to both left and right margins
+.\" .nf        disable filling
+.\" .fi        enable filling
+.\" .br        insert line break
+.\" .sp <n>    insert n+1 empty lines
+.\" for manpage-specific macros, see man(7)
+.SH NAME
+nexttool \- program to comunicate with Lego NXT brick
+.SH SYNOPSIS
+.B nexttool
+.RI [options]
+.RI [actions]
+.SH DESCRIPTION
+This manual page documents briefly the
+.B nexttool
+command.
+.PP
+.\" TeX users may be more comfortable with the \fB<whatever>\fP and
+.\" \fI<whatever>\fP escape sequences to invode bold face and italics,
+.\" respectively.
+\fBbricxcc\fP is a program that allow comunicate with NXT brick and do
+some others things with it.
+.SH OPTIONS
+These programs don't follow the usual GNU command line syntax and long
+options starting with slash ('/') and actions with one dash (`-'). There
+are not short options and actions.
+A summary of options and actions is included below.
+.br
+.TP
+.B Options:
+.TP
+.B /COM=port
+specify port name (COMn, usb, resource string, or alias)
+.TP
+.B /BT[=name]
+use bluetooth (selects the first brick found or the named brick)
+.TP
+.B /HEX
+use hexidecimal for numeric output
+.TP
+.B /Duration=<n>
+specify the tone duration for the playtone action
+.TP
+.B /Inbox=<n>
+use inbox number n when sending or reading a message
+.TP
+.B /Loop
+loop when playing sound files
+.TP
+.B /Relative
+reset output position relative
+.TP
+.B /Empty
+empty mailbox when reading
+.TP
+.B /Bin[=filename]
+dump data output as binary to a file (nxt.bin)
+.br
+.TP
+.B
+Actions:
+.TP
+.B -init
+initialize nxt.dat file
+.TP
+.B -listbricks
+list resource names of all found NXT bricks
+.TP
+.B -clear
+erase all items on the brick
+.TP
+.B -battery
+return the battery level
+.TP
+.B -input=<N>
+read input N (0-3)
+.TP
+.B -output=<N>
+read the status of output N (0-2)
+.TP
+.B -mute
+stop playing sounds
+.TP
+.B -playtone=<frequency>
+play a tone for the specified duration
+.TP
+.B -run=<filename>
+run the specified program
+.TP
+.B -runningprogram
+return the name of the currently running program
+.TP
+.B -stop
+stop the currently running program
+.TP
+.B -playfile=<filename>
+play the specified sound file
+.TP
+.B -firmware=<filename>
+download firmware
+.TP
+.B -download=<filename>
+download the specified file to the NXT
+.TP
+.B -upload[=<pattern>]
+upload the specified file(s) from the NXT (or *.*)
+.TP
+.B -listfiles[=<pattern>]
+list the files matching the pattern (or *.*)
+.TP
+.B -listmodules[=<pattern>]
+list the modules matching the pattern (or *.*)
+.TP
+.B -delete=<filename>
+delete the specified file from the NXT
+.TP
+.B -datalog | -datalog_full
+upload datalog (_full == verbose)
+.TP
+.B -eeprom=<n> | -eeprom_full
+upload eeprom block (_full == all blocks)
+.TP
+.B -memory=<n> | -memory_full
+upload 128 bytes of memory (_full == all memory)
+.TP
+.B -map
+upload memory map
+.TP
+.B -keepalive
+return the current sleep time limit
+.TP
+.B -sleep=<timeout>
+set NXT sleep timeout (in minutes)
+.TP
+.B -msg=<string>
+send the specified message to the NXT
+.TP
+.B -readmsg=<box>
+read the message from the specified box
+.TP
+.B -resetoutputposition=<port>
+reset the position for the specified port
+.TP
+.B -resetinputsv=<port>
+reset the input scaled value for the specified port
+.TP
+.B -setname=<new_name>
+set the name of the NXT
+.TP
+.B -getname
+return the name of the NXT
+.TP
+.B -versions
+return the NXT firmware and protocol versions
+.TP
+.B -deviceinfo
+return all NXT device information
+.TP
+.B -freemem
+return the amount of free memory
+.TP
+.B -lsstatus=<port>
+return the low speed status for the specified port
+.TP
+.B -boot
+reset the NXT into SAMBA mode (usb only)
+.TP
+.B -btreset
+reset the NXT bluetooth to factory settings (usb only)
+.TP
+.B -defrag
+defragment the NXT filesystem
+General:
+.TP
+.B -help
+display command line options
+.SH SEE ALSO
+.BR nbc (1),
+.BR t2n (1),
+.BR fwflash (1).
+.SH AUTHOR
+bricxcc was written by <upstream author>.
+.PP
+This manual page was written by Slavko <linux@slavino.sk>,
+for the Debian project (and may be used by others).

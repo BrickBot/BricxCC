@@ -131,7 +131,9 @@ exports
   FantomSpiritGetPortName,
   FantomSpiritGetNicePortName,
   FantomSpiritGetFullPortName,
-  FantomSpiritGetBrickTypeName;
+  FantomSpiritGetBrickTypeName,
+  FantomSpiritNXTDefragmentFlash,
+  FantomSpiritDownloadMemoryMap;
 
 end.
 
