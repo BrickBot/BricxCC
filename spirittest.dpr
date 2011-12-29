@@ -101,7 +101,6 @@ begin
   Writeln('Usage: ' + progName + ' [options] [actions]');
   Writeln('Options:');
   Writeln('   /COM=port: specify port name (usb, resource string, or alias)');
-//  Writeln('   /BT[=name]: use bluetooth (selects the first brick found or the named brick)');
   Writeln('   /HEX: use hexadecimal for numeric output');
   Writeln('   /Duration=<n>: specify the tone duration for the playtone action');
   Writeln('   /Inbox=<n>: use inbox number n when sending or reading a message');
@@ -155,7 +154,6 @@ begin
   Writeln('   -i2cbytes=<data> : send/receive I2C data');
   Writeln('   -lsstatus=<port> : return the low speed status for the specified port');
   Writeln('   -sendraw=<cmd> : send a direct or system command (comma-separated hex bytes)');
-//  Writeln('   -btnstate=<btn> : return the button state for the specified button');
   Writeln('   -resetbtnstate=<btn> : reset the button state for the specified button');
   Writeln('   -boot : reset the NXT into SAMBA mode');
   Writeln('   -btreset : reset the NXT bluetooth to factory settings (usb only)');
@@ -225,10 +223,10 @@ begin
   VerCompanyName      := 'JoCar Consulting';
   VerFileDescription  := '';
   VerFileVersion      := '1.2.1.r5';
-  VerInternalName     := 'nexttool';
+  VerInternalName     := 'spirittest';
   VerLegalCopyright   := 'Copyright (c) 2006-2011, John Hansen';
-  VerOriginalFileName := 'nexttool';
-  VerProductName      := 'nexttool';
+  VerOriginalFileName := 'spirittest';
+  VerProductName      := 'spirittest';
   VerProductVersion   := '1.2';
   VerComments         := '';
 {$ENDIF}
@@ -536,16 +534,9 @@ begin
       begin
         buf := AllocMem(256);
         try
-          tmpbuf1 := AllocMem(256);
-          try
-            if FantomSpiritNXTGetDeviceInfo(BCHandle, buf, tmpbuf1, btsig, memFree) <> 0 then
-            begin
-              pattern := String(buf);
-              Writeln(pattern);
-            end;
-          finally
-            FreeMem(tmpbuf1, 256);
-          end;
+          FantomSpiritNXTGetBrickName(BCHandle, buf);
+          pattern := String(buf);
+          Writeln(pattern);
         finally
           FreeMem(buf, 256);
         end;
