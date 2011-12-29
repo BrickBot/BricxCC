@@ -18,6 +18,13 @@ unit uSpirit;
 
 interface
 
+{$IFDEF FPC}
+
+{$PACKRECORDS C}
+
+{$ENDIF}
+
+
 uses
   rcx_constants, Classes, FantomDefs, uProgram;
 

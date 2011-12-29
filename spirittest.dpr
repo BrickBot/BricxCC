@@ -27,8 +27,7 @@ uses
   ParamUtils in 'ParamUtils.pas',
   uVersionInfo in 'uVersionInfo.pas',
   uNXTConstants in 'NXT\uNXTConstants.pas',
-  spirit in 'bricktools\spirit.pas',
-  uSpirit in 'bricktools\uSpirit.pas',
+  libspirit in 'bricktools\libspirit.pas',
   FantomDefs in 'bricktools\FantomDefs.pas',
   uCommonUtils in 'uCommonUtils.pas',
   uCmdLineUtils in 'uCmdLineUtils.pas';
@@ -435,7 +434,7 @@ begin
       begin
         pattern := ParamValue('-download');
         if pattern <> '' then
-          FantomSpiritNXTDownloadFile(BCHandle, PChar(pattern), Ord(NameToNXTFileType(pattern)));
+          FantomSpiritNXTDownloadFile(BCHandle, PChar(pattern), NameToNXTFileType(PChar(pattern)));
       end;
       if ParamSwitch('-run') then begin
         FantomSpiritNXTStartProgram(BCHandle, PChar(ParamValue('-run')));
@@ -584,7 +583,7 @@ begin
             j := StrToIntDef(Copy(i2csend, 1, i-1), 0);
             System.Delete(i2csend, 1, i);
             // everything left should be comma-separated list of bytes to send
-            LoadLSBlock(LSBlock, i2csend, j);
+            LoadLSBlock(LSBlock, PChar(i2csend), j);
             FantomSpiritSetNXTLowSpeed(BCHandle, port, LSBlock);
             FantomSpiritGetNXTLowSpeed(BCHandle, port, LSBlock);
             for i := 0 to j - 1 do
