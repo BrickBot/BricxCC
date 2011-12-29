@@ -139,6 +139,9 @@ procedure FantomSpiritGetNicePortName(fsh : FantomHandle; name : PChar); cdecl; 
 procedure FantomSpiritGetFullPortName(fsh : FantomHandle; name : PChar); cdecl; export;
 procedure FantomSpiritGetBrickTypeName(fsh : FantomHandle; name : PChar); cdecl; export;
 
+function FantomSpiritNXTDefragmentFlash(fsh : FantomHandle) : integer; cdecl; export;
+procedure FantomSpiritDownloadMemoryMap(fsh : FantomHandle; value : PChar); cdecl; export;
+
 implementation
 
 uses
@@ -946,11 +949,19 @@ end;
 function FantomSpiritPollMemory(fsh : FantomHandle; address : Integer; size : Integer; value : PChar) : integer; cdecl; export;
 var
   tmp : TFantomSpirit;
-  val : string;
+  SL : TStrings;
+  MS : TMemoryStream;
 begin
   tmp := TFantomSpirit(fsh);
-  val := tmp.PollMemory(address, size).Text;
-  StrCopy(value, PChar(val));
+  MS := TMemoryStream.Create;
+  try
+    SL := tmp.PollMemory(address, size);
+    SL.SaveToStream(MS);
+    MS.Position := 0;
+    MS.Read(value^, MS.Size);
+  finally
+    MS.Free;
+  end;
   Result := 1;
 end;
 
@@ -1102,6 +1113,22 @@ var
 begin
   tmp := TFantomSpirit(fsh);
   StrCopy(name, PChar(tmp.BrickTypeName));
+end;
+
+function FantomSpiritNXTDefragmentFlash(fsh : FantomHandle) : integer; cdecl; export;
+var
+  tmp : TFantomSpirit;
+begin
+  tmp := TFantomSpirit(fsh);
+  Result := Ord(tmp.NXTDefragmentFlash);
+end;
+
+procedure FantomSpiritDownloadMemoryMap(fsh : FantomHandle; value : PChar); cdecl; export;
+var
+  tmp : TFantomSpirit;
+begin
+  tmp := TFantomSpirit(fsh);
+  StrCopy(value, PChar(tmp.DownloadMemoryMap.Text));
 end;
 
 end.
