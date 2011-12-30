@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Copyright (C) 2011 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -19,8 +19,10 @@ program spirittest;
 {$APPTYPE CONSOLE}
 
 uses
+{$IFNDEF FPC}
   FastMM4,
   FastMove,
+{$ENDIF}
   Classes,
   SysUtils,
   Math,
@@ -32,7 +34,9 @@ uses
   uCommonUtils in 'uCommonUtils.pas',
   uCmdLineUtils in 'uCmdLineUtils.pas';
 
+{$IFNDEF FPC}
 {$R *.RES}
+{$ENDIF}
 
 var
   SL : TStrings;
@@ -93,7 +97,7 @@ begin
   OutputValue(StrToIntDef(str, 0), bNewLine);
 end;
 
-{$I nexttool_preproc.inc}
+{$I spirittest_preproc.inc}
 
 procedure PrintUsage;
 begin

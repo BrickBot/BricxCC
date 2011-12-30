@@ -12,7 +12,7 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS) 
 
-PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools -dNXT_ONLY
+PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu. -Fubricktools -FuNXT -dNXT_ONLY
 
 # Linux
 PTOOLPREFIX=/usr/bin/
@@ -25,10 +25,16 @@ libfantom.so: fantom.dpr
 libnxtspirit.so: nxtspirit.dpr
 	$(PPC) $(PFLAGS) $< -o$@
 
-spirittest: spirittest.dpr
+spirittest: spirittest.dpr spirittest_preproc.inc
 	$(PPC) $(PFLAGS) $< -o$@
 
 # how to compile pas source
 %.o: %.pas
 	$(PPC) $(PFLAGS) $< -o$@
+
+# how to create the include file
+spirittest_preproc.inc:
+	echo '// '$@ > $@
+	echo 'const' >> $@
+	echo '  COMPILATION_TIMESTAMP = '\'`date`\'';' >> $@
 
