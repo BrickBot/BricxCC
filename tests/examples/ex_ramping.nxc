@@ -1,0 +1,104 @@
+void RotateMotorRURD(byte output, char pwr, long angle)
+{
+  long l1, l2, l3;
+  char power = sign(angle);
+  angle = abs(angle);
+  power *= pwr;
+
+  l1 = angle*0.20;
+  l2 = angle*0.60;
+  l3 = angle-(l1+l2);
+  // we want to rotate a total of <angle> degrees
+  // we'll rampup from 0 power to specified power through 20% of the angle
+  // then run at the specified power for 70% of the angle
+  SetOutput(output, OutputModeField, OUT_MODE_MOTORON|OUT_MODE_BRAKE,
+                    TachoLimitField, l1,
+                    PowerField, power,
+                    RegModeField, OUT_REGMODE_IDLE,
+                    RunStateField, OUT_RUNSTATE_RAMPUP,
+                    UpdateFlagsField, UF_UPDATE_MODE|UF_UPDATE_SPEED|UF_UPDATE_TACHO_LIMIT);
+  Yield(); // give firmware a chance to process this request to update motor state
+  // monitor runstate
+  while(MotorRunState(output) <> OUT_RUNSTATE_IDLE)
+    Yield();
+  // as soon as it goes idle put the motor into the running state
+  SetOutput(output, OutputModeField, OUT_MODE_MOTORON|OUT_MODE_BRAKE,
+                    TachoLimitField, l2,
+                    PowerField, power,
+                    RegModeField, OUT_REGMODE_IDLE,
+                    RunStateField, OUT_RUNSTATE_RUNNING,
+                    UpdateFlagsField, UF_UPDATE_MODE|UF_UPDATE_SPEED|UF_UPDATE_TACHO_LIMIT);
+  Yield(); // give firmware a chance to process this request to update motor state
+  // monitor runstate
+  while(MotorRunState(output) <> OUT_RUNSTATE_IDLE)
+    Yield();
+  // as soon as the runstate goes idle we rampdown to zero power
+  SetOutput(output, OutputModeField, OUT_MODE_MOTORON|OUT_MODE_BRAKE,
+                    TachoLimitField, l3,
+                    PowerField, 0,
+                    RegModeField, OUT_REGMODE_IDLE,
+                    RunStateField, OUT_RUNSTATE_RAMPDOWN,
+                    UpdateFlagsField, UF_UPDATE_MODE|UF_UPDATE_SPEED|UF_UPDATE_TACHO_LIMIT);
+  Yield(); // give firmware a chance to process this request to update motor state
+  // monitor runstate
+  while(MotorRunState(output) <> OUT_RUNSTATE_IDLE)
+    Yield();
+  SetOutput(output, OutputModeField, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED,
+                    TachoLimitField, 0,
+                    PowerField, 0,
+                    RegModeField, OUT_REGMODE_SPEED,
+                    RunStateField, OUT_RUNSTATE_RUNNING,
+                    UpdateFlagsField, UF_UPDATE_MODE|UF_UPDATE_SPEED|UF_UPDATE_TACHO_LIMIT);
+  Yield(); // give firmware a chance to process this request to update motor state
+  long rc = MotorRotationCount(output);
+  long oldrc = rc+1;
+  while (oldrc <> rc) {
+    oldrc = rc;
+    Wait(10);
+    rc = MotorRotationCount(output);
+  }
+  SetOutput(output, OutputModeField, OUT_MODE_COAST+OUT_MODE_REGULATED,
+                    TachoLimitField, 0,
+                    PowerField, 0,
+                    RegModeField, OUT_REGMODE_SPEED,
+                    RunStateField, OUT_RUNSTATE_IDLE,
+                    UpdateFlagsField, UF_UPDATE_MODE);
+  Yield(); // give firmware a chance to process this request to update motor state
+}
+
+bool bDone = false;
+
+task MoveMotors()
+{
+  RotateMotorRURD(OUT_A, 75, 720);
+  Wait(500);
+  RotateMotorRURD(OUT_A, 75, -720);
+  Wait(500);
+  RotateMotorRURD(OUT_A, 75, 720);
+  Wait(500);
+  RotateMotorRURD(OUT_A, 75, -720);
+  Wait(500);
+  RotateMotorRURD(OUT_A, 75, 720);
+  Wait(500);
+  RotateMotorRURD(OUT_A, 75, -720);
+  Wait(500);
+  bDone = true;
+}
+
+task MonitorMotors()
+{
+  while (!bDone) {
+    ClearScreen();
+    NumOut(0, LCD_LINE1, MotorRunState(OUT_A));
+    NumOut(0, LCD_LINE2, MotorMode(OUT_A));
+    NumOut(0, LCD_LINE3, MotorRotationCount(OUT_A));
+    Wait(1);
+  }
+}
+
+task main()
+{
+  Precedes(MoveMotors, MonitorMotors);
+  ResetRotationCount(OUT_A);
+  Wait(5);
+}

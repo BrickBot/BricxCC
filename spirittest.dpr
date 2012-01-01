@@ -105,6 +105,7 @@ begin
   Writeln('Usage: ' + progName + ' [options] [actions]');
   Writeln('Options:');
   Writeln('   /COM=port: specify port name (usb, resource string, or alias)');
+  Writeln('   /BluetoothSearchTimeout: Set Bluetooth search timeout');
   Writeln('   /HEX: use hexadecimal for numeric output');
   Writeln('   /Duration=<n>: specify the tone duration for the playtone action');
   Writeln('   /Inbox=<n>: use inbox number n when sending or reading a message');
@@ -121,8 +122,8 @@ begin
   Writeln('   /SensorType=<n>: sensor type (0..17)');
   Writeln('   /SensorMode=<n>: sensor mode (0, 32, 64, 96, 128, 160, 192, 224)');
   Writeln('Actions:');
-  Writeln('   -init : initialize nxt.dat file');
-  Writeln('   -listbricks : list resource names of all found NXT bricks');
+  Writeln('   -init[=0] : initialize nxt.dat file (Optionally disable Bluetooth search)');
+  Writeln('   -listbricks[=0] : list resource names of all found NXT bricks (ditto)');
   Writeln('   -clear : erase all items on the brick');
   Writeln('   -battery : return the battery level');
   Writeln('   -input=<N> : read input N (0-3)');
@@ -141,7 +142,6 @@ begin
   Writeln('   -listfiles[=<pattern>] : list the files matching the pattern (or *.*)');
   Writeln('   -listmodules[=<pattern>] : list the modules matching the pattern (or *.*)');
   Writeln('   -delete=<filename> : delete the specified file from the NXT');
-//  Writeln('   -datalog | -datalog_full: upload datalog (_full == verbose)');
   Writeln('   -memory=<n> | -memory_full: upload 128 bytes of memory (_full == all memory)');
   Writeln('   -map: upload memory map');
   Writeln('   -keepalive : return the current sleep time limit');
@@ -280,6 +280,7 @@ begin
   SL := TStringList.Create;
   try
     BCHandle := FantomSpiritCreate();
+    FantomSpiritSetBluetoothSearchTimeout(BCHandle, ParamIntValue('/BluetoothSearchTimeout', 30));
 
     if ParamSwitch('-init') then
     begin
