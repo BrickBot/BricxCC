@@ -1866,7 +1866,7 @@ begin
     Result := IN_TYPE_COLORFULL
   else if tmp = 'COLORRED' then
     Result := IN_TYPE_COLORRED
-  else if tmp = 'OLORGREEN' then
+  else if tmp = 'COLORGREEN' then
     Result := IN_TYPE_COLORGREEN
   else if tmp = 'COLORBLUE' then
     Result := IN_TYPE_COLORBLUE

@@ -2,9 +2,14 @@ unit uSerial;
 
 interface
 
+{$IFDEF FPC}
+const
+  INVALID_HANDLE_VALUE = -1;
+{$ELSE}
 const
   INVALID_HANDLE_VALUE = Cardinal(-1);
-  
+{$ENDIF}
+
 const
   MAX_SERIAL_IDX = 128;
 
@@ -319,7 +324,9 @@ begin
   Result := CreateFile(PChar(DeviceName), GENERIC_READ or GENERIC_WRITE, 0,
                        nil, OPEN_EXISTING, 0, 0);
 {$ELSE}
-  Result := fpopen(DeviceName, O_RDWR);
+  Result := -1;
+  if FileExists(DeviceName) then
+    Result := fpopen(DeviceName, O_RDWR);
 {$ENDIF}
 end;
 
@@ -392,4 +399,4 @@ begin
   Result := Handle <> INVALID_HANDLE_VALUE;
 end;
 
-end.
+end.

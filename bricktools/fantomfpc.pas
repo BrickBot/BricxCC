@@ -134,10 +134,17 @@ begin
 end;
 
 function NXTSerialOpen(const DeviceName: String): LongInt;
+var
+  handle : Cardinal;
 begin
-  Result := SerialOpen(DeviceName);
-  if Result > 0 then
-    SerialSetParams(Result, 460800, 8, 0, 1);
+  handle := SerialOpen(DeviceName);
+  if SerialIsHandleValid(handle) then
+  begin
+    SerialSetParams(handle, 460800, 8, 0, 1);
+    Result := handle;
+  end
+  else
+    Result := -1;
 end;
 
 function NXTSerialRead(Handle: LongInt; Buffer : Pointer; Count: LongInt; ms : LongInt): LongInt;
@@ -183,7 +190,8 @@ var
 begin
   Result := False;
   // device is an NXT if it responds to a simple system or direct command
-  if tmpHandle <> 0 then begin
+  if SerialIsHandleValid(tmpHandle) then
+  begin
     cmd := TBaseCmd.Create;
     try
       cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetBatteryLevel);
@@ -386,9 +394,11 @@ type
     fPort : string;
     fCheckver : boolean;
     fTimeout : integer;
+    fSerialIdx : integer;
     function SetResourceString(resStr : string) : integer;
     function CorrectDeviceFound : boolean;
     procedure IgnoreResponse(n : integer; var status : integer);
+    procedure DrainResponse;
   public
     constructor Create; virtual;
     destructor Destroy; override;
@@ -488,7 +498,7 @@ begin
 // USB0::0X0694::0X0002::001653FF0156::RAW
 end;
 
-function GetSerialResString(handle : LongInt; ms : integer) : string;
+function GetSerialResString(handle : LongInt; ms : integer; idx : integer) : string;
 var
   name : string;
   b : array[0..5] of byte;
@@ -498,6 +508,7 @@ var
   len, size, i : integer;
 begin
   result := '';
+  if handle = -1 then Exit;
   b[0] := 0;
   // send a GetDeviceInfo system command to the device on this port
   // and see if you get back a valid response.
@@ -526,7 +537,7 @@ begin
     cmd.Free;
   end;
   Result := Format('BTH::%s::%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x::%d',
-                   [name, b[0], b[1], b[2], b[3], b[4], b[5], 5]);
+                   [name, b[0], b[1], b[2], b[3], b[4], b[5], idx]);
 //BTH::NXT::00:16:53:01:E2:CB::5
 end;
 
@@ -1397,7 +1408,7 @@ begin
   try
     cmd.MakeBoot(True);
     write(cmd.GetBody, cmd.GetLength, status);
-    IgnoreResponse(7, status);
+    DrainResponse;
   finally
     cmd.Free;
   end;
@@ -1405,13 +1416,18 @@ end;
 
 function TNxt.CorrectDeviceFound: boolean;
 var
-  tmpStr : string;
+  tmpStr, tmpPort : string;
+  i : integer;
 begin
   if fNXTViaUSB then
     tmpStr := GetUSBResString(fDev, fDevHandle)
   else
-    tmpStr := GetSerialResString(fSerialHandle, fTimeout);
-  Result := AnsiCompareText(fPort, tmpStr) = 0;
+    tmpStr := GetSerialResString(fSerialHandle, fTimeout, fSerialIdx);
+  i := LastDelimiter(':', fPort);
+  tmpPort := UpperCase(Copy(fPort, 1, i));
+  tmpStr  := UpperCase(tmpStr);
+  Result  := Pos(tmpPort, tmpStr) = 1;
+//  Result := AnsiCompareText(fPort, tmpStr) = 0;
 end;
 
 constructor TNxt.Create;
@@ -1419,11 +1435,12 @@ begin
   inherited Create;
   fDev          := nil;
   fDevHandle    := nil;
-  fSerialHandle := 0;
+  fSerialHandle := -1;
   fNXTViaUSB 	:= True;
   fPort      	:= '';
   fCheckver  	:= False;
   fTimeout   	:= USB_TIMEOUT;
+  fSerialIdx    := -1;
 end;
 
 function TNxt.createFile(const fileName: string; var status: integer): TNxtFile;
@@ -1500,9 +1517,9 @@ begin
     usb_close(fDevHandle);
     fDevHandle := nil;
   end;
-  if fSerialHandle <> 0 then begin
+  if fSerialHandle <> -1 then begin
     SerialClose(fSerialHandle);
-    fSerialHandle := 0;
+    fSerialHandle := -1;
   end;
   inherited;
 end;
@@ -1734,6 +1751,23 @@ begin
   end;
 end;
 
+procedure TNxt.DrainResponse;
+var
+  BufIn : PByte;
+  dstatus : integer;
+begin
+  // drain our channel of any leftover data
+  BufIn := nil;
+  GetMem(BufIn, 1);
+  try
+    dstatus := kStatusNoError;
+    while dstatus = kStatusNoError do
+      read(BufIn, 1, dstatus);
+  finally
+    FreeMem(BufIn);
+  end;
+end;
+
 class function TNxt.isPaired(const resourceName: string;
   var status: integer): boolean;
 begin
@@ -1879,7 +1913,7 @@ begin
   try
     cmd.MakeSetName(newName, False);
     write(cmd.GetBody, cmd.GetLength, status);
-//    IgnoreResponse(3, status);
+    DrainResponse;
   finally
     cmd.Free;
   end;
@@ -1953,32 +1987,37 @@ begin
       Result := kStatusNoError;
       // start with current serial port index
       // close any open port
-      if fSerialHandle <> 0 then begin
+      if fSerialHandle <> -1 then begin
         SerialClose(fSerialHandle);
         fDevHandle := nil;
+      end;
+      i := LastDelimiter(':', fPort);
+      i := StrToIntDef(Copy(fPort, i+1, MaxInt), 0);
+      if i <> 0 then
+      begin
+        fSerialHandle := NXTSerialOpen(GetSerialDeviceName(i));
+        if fSerialHandle <> -1 then
+        begin
+          SerialFlush(fSerialHandle);
+          if is_nxt_serial_device(fSerialHandle, fTimeout) then
+            bDone := CorrectDeviceFound;
+        end;
       end;
       i := 0;
       while (i < MAX_SERIAL_IDX) and not bDone do
       begin
         fSerialHandle := NXTSerialOpen(GetSerialDeviceName(i));
-        SerialFlush(fSerialHandle);
-        if is_nxt_serial_device(fSerialHandle, fTimeout) then
+        if fSerialHandle <> -1 then
         begin
-          bDone := CorrectDeviceFound;
-          if not bDone then
-          begin
-            SerialClose(fSerialHandle);
-            fSerialHandle := 0;
-          end;
-        end
-        else
-        begin
+          SerialFlush(fSerialHandle);
+          if is_nxt_serial_device(fSerialHandle, fTimeout) then
+            bDone := CorrectDeviceFound;
+          if bDone then Break;
           SerialClose(fSerialHandle);
-          fSerialHandle := 0;
+          fSerialHandle := -1;
+          Sleep(50);
         end;
-        if bDone then Break;
         inc(i);
-        Sleep(100);
       end;
       if bDone then
       begin
@@ -3098,6 +3137,7 @@ end;
 procedure TNxtIterator.advance(var status: integer);
 var
   bDone : boolean;
+  i : integer;
 begin
   if status < kStatusNoError then Exit;
   bDone := False;
@@ -3145,20 +3185,28 @@ begin
     status := kStatusNoError;
     // start with current serial port index
     // close any open port
-    if fSerialHandle <> 0 then begin
+    if fSerialHandle <> -1 then begin
       SerialClose(fSerialHandle);
       fDevHandle := nil;
     end;
-    while (fCurSerialIdx < MAX_SERIAL_IDX) and not bDone do
+    i := fCurSerialIdx+1;
+    while (i < MAX_SERIAL_IDX) and not bDone do
     begin
-      fSerialHandle := NXTSerialOpen(GetSerialDeviceName(fCurSerialIdx));
-      SerialFlush(fSerialHandle);
-      bDone := is_nxt_serial_device(fSerialHandle, fBTTimeout);
-      if bDone then Break;
-      SerialClose(fSerialHandle);
-      fSerialHandle := 0;
-      Sleep(100);
-      inc(fCurSerialIdx);
+      fSerialHandle := NXTSerialOpen(GetSerialDeviceName(i));
+      if fSerialHandle <> -1 then
+      begin
+        SerialFlush(fSerialHandle);
+        bDone := is_nxt_serial_device(fSerialHandle, fBTTimeout);
+        if not bDone then
+        begin
+          SerialClose(fSerialHandle);
+          fSerialHandle := -1;
+          Sleep(50);
+        end
+        else
+          fCurSerialIdx := i;
+      end;
+      inc(i);
     end;
     if bDone then
     begin
@@ -3167,7 +3215,7 @@ begin
     else begin
       status := kStatusNoMoreItemsFound;
       SerialClose(fSerialHandle);
-      fSerialHandle := 0;
+      fSerialHandle := -1;
     end;
   end;
 end;
@@ -3182,8 +3230,8 @@ begin
   fNXTViaUSB := True;
   fSearchBT  := False;
   fBTTimeout := 1000;
-  fCurSerialIdx := 0;
-  fSerialHandle := 0;
+  fCurSerialIdx := -1;
+  fSerialHandle := -1;
 end;
 
 destructor TNxtIterator.Destroy;
@@ -3192,9 +3240,9 @@ begin
     usb_close(fDevHandle);
     fDevHandle := nil;
   end;
-  if fSerialHandle <> 0 then begin
+  if fSerialHandle <> -1 then begin
     SerialClose(fSerialHandle);
-    fSerialHandle := 0;
+    fSerialHandle := -1;
   end;
 
   inherited;
@@ -3206,7 +3254,7 @@ begin
   if fNXTViaUSB then
     resourceName := GetUSBResString(fDev, fDevHandle)
   else
-    resourceName := GetSerialResString(fSerialHandle, fBTTimeout);
+    resourceName := GetSerialResString(fSerialHandle, fBTTimeout, fCurSerialIdx);
   if resourceName <> '' then
     status := kStatusNoError
   else
@@ -3234,10 +3282,11 @@ begin
   end
   else
   begin
-    Result.fPort := GetSerialResString(fSerialHandle, fBTTimeout);
+    Result.fPort := GetSerialResString(fSerialHandle, fBTTimeout, fCurSerialIdx);
     Result.fCheckver := False;
     Result.fSerialHandle := fSerialHandle;
-    fSerialHandle := 0;
+    Result.fSerialIdx := fCurSerialIdx;
+    fSerialHandle := -1;
   end;
   status := kStatusNoError;
 end;
