@@ -143,7 +143,8 @@ begin
   Writeln('   /SensorType=<n>: sensor type (0..17)');
   Writeln('   /SensorMode=<n>: sensor mode (0, 32, 64, 96, 128, 160, 192, 224)');
   Writeln('Actions:');
-  Writeln('   -init[=0] : initialize nxt.dat file (optionally turn off Bluetooth search)');
+  Writeln('   -init[=0] : initialize the nxt.dat file (optionally turn off Bluetooth search)');
+  Writeln('   -update[=0] : update the nxt.dat file (ditto)');
   Writeln('   -listbricks[=0] : list resource names of all found NXT bricks (ditto)');
   Writeln('   -clear : erase all items on the brick');
   Writeln('   -battery : return the battery level');
