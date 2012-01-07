@@ -2043,7 +2043,7 @@
 #define HS_MODE_UART_RS485 0x0    /*!< HsMode UART in default or RS485 mode */
 #define HS_MODE_UART_RS232 0x1    /*!< HsMode UART in normal or RS232 mode */
 
-#define HS_MODE_MASK 0xFFF0        /*!< HsMode mode mask */
+#define HS_MODE_MASK 0x3EC0        /*!< HsMode mode mask */
 #define HS_UART_MASK 0x000F        /*!< HsMode UART mask */
 
 #define HS_MODE_DEFAULT HS_MODE_8N1 /*!< HsMode default mode (8 data bits, no parity, 1 stop bit) */

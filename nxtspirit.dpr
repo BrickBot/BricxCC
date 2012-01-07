@@ -21,6 +21,10 @@ uses
   fantomspiritlib in 'bricktools\fantomspiritlib.pas',
   uCommonUtils in 'uCommonUtils.pas';
 
+{$IFNDEF FPC}
+{$R *.RES}
+{$ENDIF}
+
 exports
   FantomSpiritCreate,
   FantomSpiritDestroy,
