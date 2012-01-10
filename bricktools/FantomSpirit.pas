@@ -310,7 +310,7 @@ type
     procedure NXTUpdateResourceNames; override;
   end;
 
-procedure iNXT_sendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
+procedure nFANTOM100_iNXT_sendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
   inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
   outputBufferSize : Cardinal; var status : integer);
 
@@ -329,7 +329,7 @@ uses
   {$ENDIF};
 
 
-procedure iNXT_sendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
+procedure nFANTOM100_iNXT_sendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
   inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
   outputBufferSize : Cardinal; var status : integer);
 var
@@ -346,13 +346,13 @@ begin
     inc(BufOut);
     Move(inputBufferPtr^, BufOut^, inputBufferSize);
     dec(BufOut);
-    iNXT_write(nxtHandle, BufOut, inputBufferSize+1, status);
+    nFANTOM100_iNXT_write(nxtHandle, BufOut, inputBufferSize+1, status);
     if Boolean(requireResponse) and (status >= kStatusNoError) then
     begin
       BufIn := nil;
       GetMem(BufIn, outputBufferSize+1);
       try
-        iNXT_read(nxtHandle, BufIn, outputBufferSize+1, status);
+        nFANTOM100_iNXT_read(nxtHandle, BufIn, outputBufferSize+1, status);
         if Boolean(requireResponse) and (status >= kStatusNoError) then
         begin
           inc(BufIn);
@@ -372,7 +372,7 @@ begin
       try
         dstatus := kStatusNoError;
         while dstatus = kStatusNoError do
-          iNXT_read(nxtHandle, BufIn, 1, dstatus);
+          nFANTOM100_iNXT_read(nxtHandle, BufIn, 1, dstatus);
       finally
         FreeMem(BufIn);
       end;
@@ -385,7 +385,7 @@ end;
 var
   scResponse : array [0..63] of byte;
 
-procedure iNXT_getDeviceInfoEx(nxtHandle : FantomHandle; name : PChar;
+procedure nFANTOM100_iNXT_getDeviceInfoEx(nxtHandle : FantomHandle; name : PChar;
   address : PByte; signalStrength : PByte; var availableFlash : Cardinal;
   var status : integer);
 var
@@ -398,7 +398,7 @@ begin
   cmd := TNINxtCmd.Create;
   try
     cmd.SetVal(kNXT_SystemCmd, kNXT_SCGetDeviceInfo);
-    iNXT_sendSystemCommand(nxtHandle, 1, cmd.BytePtr, cmd.Len, scBuffer, 32, status);
+    nFANTOM100_iNXT_sendSystemCommand(nxtHandle, 1, cmd.BytePtr, cmd.Len, scBuffer, 32, status);
     if status = kStatusNoError then
     begin
       inc(scBuffer, 2); // offset to start of name in the response
@@ -420,7 +420,7 @@ begin
 end;
 
 
-procedure iNXT_sendDirectCommandEnhanced(nxtHandle : FantomHandle; requireResponse : byte;
+procedure nFANTOM100_iNXT_sendDirectCommandEnhanced(nxtHandle : FantomHandle; requireResponse : byte;
   inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
   outputBufferSize : Cardinal; var status : integer; bEnhanced : boolean = false);
 var
@@ -440,13 +440,13 @@ begin
       inc(BufOut);
       Move(inputBufferPtr^, BufOut^, inputBufferSize);
       dec(BufOut);
-      iNXT_write(nxtHandle, BufOut, inputBufferSize+1, status);
+      nFANTOM100_iNXT_write(nxtHandle, BufOut, inputBufferSize+1, status);
       if Boolean(requireResponse) and (status >= kStatusNoError) then
       begin
         BufIn := nil;
         GetMem(BufIn, outputBufferSize+1);
         try
-          iNXT_read(nxtHandle, BufIn, outputBufferSize+1, status);
+          nFANTOM100_iNXT_read(nxtHandle, BufIn, outputBufferSize+1, status);
           if Boolean(requireResponse) and (status >= kStatusNoError) then
           begin
             inc(BufIn);
@@ -466,7 +466,7 @@ begin
         try
           dstatus := kStatusNoError;
           while dstatus = kStatusNoError do
-            iNXT_read(nxtHandle, BufIn, 1, dstatus);
+            nFANTOM100_iNXT_read(nxtHandle, BufIn, 1, dstatus);
         finally
           FreeMem(BufIn);
         end;
@@ -476,7 +476,7 @@ begin
     end;
   end
   else
-    iNXT_sendDirectCommand(nxtHandle, requireResponse, inputBufferPtr,
+    nFANTOM100_iNXT_sendDirectCommand(nxtHandle, requireResponse, inputBufferPtr,
       inputBufferSize, outputBufferPtr, outputBufferSize, status);
 end;
 
@@ -529,7 +529,7 @@ begin
     try
       status := kStatusNoError;
       cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetBatteryLevel);
-      iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 4, status);
+      nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 4, status);
       if status < kStatusNoError then
       begin
         result := kRCX_ReplyError;
@@ -850,7 +850,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCPlayTone, Lo(aFreq), Hi(aFreq), Lo(aTime), Hi(aTime));
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -892,7 +892,7 @@ begin
     fResPort   := ''; // clear this so that it gets looked up again when opening
     fUseBT     := False;
     status     := kStatusNoError;
-    destroyNXT(fNXTHandle, status);
+    nFANTOM100_destroyNXT(fNXTHandle, status);
     fActive    := False;
     fNXTHandle := 0;
     Result := Result and (status >= kStatusNoError);
@@ -931,34 +931,34 @@ begin
       // with the PC so try without pairing.  If that fails then try again after
       // pairing.
       DebugLog('TFantomSpirit.Open: Already have a full brick resource string so try to connect using it');
-      fNXTHandle := createNXT(PChar(pName), status, 0);
+      fNXTHandle := nFANTOM100_createNXT(PChar(pName), status, 0);
       if status >= kStatusNoError then
       begin
-        DebugLog('TFantomSpirit.Open: First attempt to createNXT worked.  All done.');
+        DebugLog('TFantomSpirit.Open: First attempt to nFANTOM100_createNXT worked.  All done.');
         fActive := True;
         Result := True;
       end
       else
       begin
-        DebugFmt('TFantomSpirit.Open: First attempt to createNXT failed.  Status = %d.', [status]);
+        DebugFmt('TFantomSpirit.Open: First attempt to nFANTOM100_createNXT failed.  Status = %d.', [status]);
         // if bluetooth then try again after pairing
         if UseBluetooth then
         begin
           DebugLog('TFantomSpirit.Open: UseBluetooth is TRUE');
           status := kStatusNoError;
           DebugLog('TFantomSpirit.Open: Try pairing with pin = 1234');
-          pairBluetooth(PChar(pName), '1234', pairedResNamePC, status);
+          nFANTOM100_pairBluetooth(PChar(pName), '1234', pairedResNamePC, status);
           pName := pairedResNamePC;
           DebugFmt('TFantomSpirit.Open: pName now = "%s"', [pName]);
           if status >= kStatusNoError then
           begin
             DebugFmt('TFantomSpirit.Open: status = %d', [status]);
             status := kStatusNoError;
-            DebugLog('TFantomSpirit.Open: Try calling createNXT again');
-            fNXTHandle := createNXT(PChar(pName), status, 0);
+            DebugLog('TFantomSpirit.Open: Try calling nFANTOM100_createNXT again');
+            fNXTHandle := nFANTOM100_createNXT(PChar(pName), status, 0);
             if status >= kStatusNoError then
             begin
-              DebugLog('TFantomSpirit.Open: Second attempt to createNXT worked.  All done.');
+              DebugLog('TFantomSpirit.Open: Second attempt to nFANTOM100_createNXT worked.  All done.');
               fActive := True;
               Result := True;
             end;
@@ -971,13 +971,13 @@ begin
       DebugLog('TFantomSpirit.Open: We do not already have a full brick resource string');
       // use Fantom API to obtain a handle to an NXT on either USB or bluetooth
       status := kStatusNoError;
-      DebugLog('TFantomSpirit.Open: calling createNXTIterator to search for devices');
-      nih := createNXTIterator(Ord(UseBluetooth), BluetoothSearchTimeout, status);
+      DebugLog('TFantomSpirit.Open: calling nFANTOM100_createNXTIterator to search for devices');
+      nih := nFANTOM100_createNXTIterator(Ord(UseBluetooth), BluetoothSearchTimeout, status);
       while status >= kStatusNoError do
       begin
         status2 := kStatusNoError;
-        DebugLog('TFantomSpirit.Open: calling iNXTIterator_getName');
-        iNXTIterator_getName(nih, resNamePC, status2);
+        DebugLog('TFantomSpirit.Open: calling nFANTOM100_iNXTIterator_getName');
+        nFANTOM100_iNXTIterator_getName(nih, resNamePC, status2);
         resName := AnsiUpperCase(resNamePC);
         DebugFmt('TFantomSpirit.Open: current resource name = "%s"', [resNamePC]);
         if UseBluetooth then
@@ -989,7 +989,7 @@ begin
         end
         else if Pos(pName, resName) > 0 then
           Break;
-        iNXTIterator_advance(nih, status);
+        nFANTOM100_iNXTIterator_advance(nih, status);
       end;
       // if we are using bluetooth then we need to make sure we are paired
       // with the brick
@@ -997,14 +997,14 @@ begin
       begin
         status := kStatusNoError;
         DebugLog('TFantomSpirit.Open: Try pairing with pin = 1234');
-        pairBluetooth(resNamePC, '1234', pairedResNamePC, status);
+        nFANTOM100_pairBluetooth(resNamePC, '1234', pairedResNamePC, status);
         resName := AnsiUpperCase(pairedResNamePC);
         DebugFmt('TFantomSpirit.Open: resource name now = "%s"', [resName]);
       end;
       if status >= kStatusNoError then
       begin
-        DebugLog('TFantomSpirit.Open: calling iNXTIterator_getNXT');
-        fNXTHandle := iNXTIterator_getNXT(nih, status);
+        DebugLog('TFantomSpirit.Open: calling nFANTOM100_iNXTIterator_getNXT');
+        fNXTHandle := nFANTOM100_iNXTIterator_getNXT(nih, status);
         if status >= kStatusNoError then
         begin
           DebugFmt('TFantomSpirit.Open: Got NXT with resName = "%s".  All done.', [resName]);
@@ -1014,8 +1014,8 @@ begin
         end;
       end;
       status := kStatusNoError;
-      DebugLog('TFantomSpirit.Open: calling destroyNXTIterator');
-      destroyNXTIterator(nih, status);
+      DebugLog('TFantomSpirit.Open: calling nFANTOM100_destroyNXTIterator');
+      nFANTOM100_destroyNXTIterator(nih, status);
     end;
   end;
 end;
@@ -1102,7 +1102,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCStopSoundPlayback);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1166,7 +1166,7 @@ begin
     status := kStatusNoError;
     tmp := MakeValidNXTFilename(filename);
     cmd.MakeCmdWithFilename(kNXT_DirectCmd, kNXT_DCStartProgram, tmp);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1187,7 +1187,7 @@ begin
     fOffsetDVA := $FFFF;
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCStopProgram);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1229,7 +1229,7 @@ begin
       inc(i);
     end;
     orig^ := 0; // set last byte to null
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1249,7 +1249,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetOutputState, aPort);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 24, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 24, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -1286,7 +1286,7 @@ begin
     fMotorOn[aPort]      := ((mode and OUT_MODE_MOTORON) = OUT_MODE_MOTORON) and
                             (runstate <> OUT_RUNSTATE_IDLE);
     cmd.MakeSetOutputState(aPort, mode, regmode, runstate, ShortInt(power), ShortInt(turnratio), tacholimit, False);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1306,7 +1306,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetInputValues, aPort);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 15, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 15, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -1337,7 +1337,7 @@ begin
     fSensorType[aPort] := stype;
     fSensorMode[aPort] := smode;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCSetInputMode, aPort, stype, smode);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1355,7 +1355,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCResetInputScaledValue, aPort);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1374,7 +1374,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCResetMotorPosition, aPort, Ord(Relative));
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1413,7 +1413,7 @@ begin
       inc(i);
     end;
     orig^ := 0; // set last byte to null
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1438,9 +1438,9 @@ begin
       b := kNXT_DirectCmdNoReply;
     cmd.SetVal(b, kNXT_DCKeepAlive);
     if chkResponse then
-      iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status)
+      nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status)
     else
-      iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+      nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
     if chkResponse then
     begin
@@ -1464,7 +1464,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCLSGetStatus, aPort);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 3, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 3, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -1493,7 +1493,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCLSRead, aPort);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 19, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 19, status);
     if status < kStatusNoError then
     begin
       Result.RXCount := 0;
@@ -1560,7 +1560,7 @@ begin
       inc(i);
     end;
     orig^ := 0; // set last byte to null
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
   finally
     cmd.Free;
   end;
@@ -1612,7 +1612,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetCurrentProgramName);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 22, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 22, status);
     Result := status >= kStatusNoError;
     if not Result then
     begin
@@ -1642,7 +1642,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetButtonState, idx, Ord(reset));
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 3, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 3, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -1668,7 +1668,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCMessageRead, remote, local, Ord(remove));
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 63, status);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 63, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -1691,21 +1691,21 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  handle := iNXT_createFile(fNXTHandle, PChar(filename), status);
+  handle := nFANTOM100_iNXT_createFile(fNXTHandle, PChar(filename), status);
   Result := status >= kStatusNoError;
   if Result then
   begin
-    iFile_openForRead(handle, status);
+    nFANTOM100_iFile_openForRead(handle, status);
     Result := status >= kStatusNoError;
     if Result then
     begin
-      size := iFile_getSize(handle, status);
+      size := nFANTOM100_iFile_getSize(handle, status);
       Result := status >= kStatusNoError;
     end;
     if not Result then
     begin
       status := kStatusNoError;
-      iNXT_destroyFile(fNXTHandle, handle, status);
+      nFANTOM100_iNXT_destroyFile(fNXTHandle, handle, status);
     end;
   end;
 end;
@@ -1724,21 +1724,21 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  handle := iNXT_createFile(fNXTHandle, PChar(filename), status);
+  handle := nFANTOM100_iNXT_createFile(fNXTHandle, PChar(filename), status);
   Result := status >= kStatusNoError;
   if Result then
   begin
-    iFile_openForDataAppend(handle, status);
+    nFANTOM100_iFile_openForDataAppend(handle, status);
     Result := status >= kStatusNoError;
     if Result then
     begin
-      size := iFile_getSize(handle, status);
+      size := nFANTOM100_iFile_getSize(handle, status);
       Result := status >= kStatusNoError;
     end;
     if not Result then
     begin
       status := kStatusNoError;
-      iNXT_destroyFile(fNXTHandle, handle, status);
+      nFANTOM100_iNXT_destroyFile(fNXTHandle, handle, status);
     end;
   end;
 end;
@@ -1751,16 +1751,16 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  handle := iNXT_createFile(fNXTHandle, PChar(filename), status);
+  handle := nFANTOM100_iNXT_createFile(fNXTHandle, PChar(filename), status);
   Result := status >= kStatusNoError;
   if Result then
   begin
-    iFile_openForWrite(handle, size, status);
+    nFANTOM100_iFile_openForWrite(handle, size, status);
     Result := status >= kStatusNoError;
     if not Result then
     begin
       status := kStatusNoError;
-      iNXT_destroyFile(fNXTHandle, handle, status);
+      nFANTOM100_iNXT_destroyFile(fNXTHandle, handle, status);
     end;
   end;
 end;
@@ -1773,16 +1773,16 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  handle := iNXT_createFile(fNXTHandle, PChar(filename), status);
+  handle := nFANTOM100_iNXT_createFile(fNXTHandle, PChar(filename), status);
   Result := status >= kStatusNoError;
   if Result then
   begin
-    iFile_openForDataWrite(handle, size, status);
+    nFANTOM100_iFile_openForDataWrite(handle, size, status);
     Result := status >= kStatusNoError;
     if not Result then
     begin
       status := kStatusNoError;
-      iNXT_destroyFile(fNXTHandle, handle, status);
+      nFANTOM100_iNXT_destroyFile(fNXTHandle, handle, status);
     end;
   end;
 end;
@@ -1795,16 +1795,16 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  handle := iNXT_createFile(fNXTHandle, PChar(filename), status);
+  handle := nFANTOM100_iNXT_createFile(fNXTHandle, PChar(filename), status);
   Result := status >= kStatusNoError;
   if Result then
   begin
-    iFile_openForLinearWrite(handle, size, status);
+    nFANTOM100_iFile_openForLinearWrite(handle, size, status);
     Result := status >= kStatusNoError;
     if not Result then
     begin
       status := kStatusNoError;
-      iNXT_destroyFile(fNXTHandle, handle, status);
+      nFANTOM100_iNXT_destroyFile(fNXTHandle, handle, status);
     end;
   end;
 end;
@@ -1817,7 +1817,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iFile_read(handle, @buffer.Data[0], count, status);
+  nFANTOM100_iFile_read(handle, @buffer.Data[0], count, status);
   Result := status >= kStatusNoError;
 end;
 
@@ -1829,7 +1829,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iFile_write(handle, @buffer.Data[0], count, status);
+  nFANTOM100_iFile_write(handle, @buffer.Data[0], count, status);
   if chkResponse then
     Result := status >= kStatusNoError
   else
@@ -1843,14 +1843,14 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iFile_close(handle, status);
+  nFANTOM100_iFile_close(handle, status);
   if chkResponse then
     Result := status >= kStatusNoError
   else
     Result := status >= kStatusNoError;
   if Result then
   begin
-    iNXT_destroyFile(FNXTHandle, handle, status);
+    nFANTOM100_iNXT_destroyFile(FNXTHandle, handle, status);
     Result := status >= kStatusNoError;
   end;
 end;
@@ -1863,17 +1863,17 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  handle := iNXT_createFile(FNXTHandle, PChar(filename), status);
+  handle := nFANTOM100_iNXT_createFile(FNXTHandle, PChar(filename), status);
   if chkResponse then
     Result := status >= kStatusNoError
   else
     Result := status >= kStatusNoError;
   if Result then
   begin
-    iFile_remove(handle, status);
+    nFANTOM100_iFile_remove(handle, status);
     Result := status >= kStatusNoError;
     status := kStatusNoError;
-    iNXT_destroyFile(FNXTHandle, handle, status);
+    nFANTOM100_iNXT_destroyFile(FNXTHandle, handle, status);
   end;
 end;
 
@@ -1887,19 +1887,19 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  IterHandle := iNXT_createFileIterator(FNXTHandle, PChar(filename), status);
+  IterHandle := nFANTOM100_iNXT_createFileIterator(FNXTHandle, PChar(filename), status);
   Result := status >= kStatusNoError;
   if Result then
   begin
-    iFileIterator_getName(IterHandle, buf, status);
+    nFANTOM100_iFileIterator_getName(IterHandle, buf, status);
     filename := buf;
     status := kStatusNoError;
-    filesize := iFileIterator_getSize(IterHandle, status);
-    NXTFileHandle := iFileIterator_getFile(IterHandle, status);
+    filesize := nFANTOM100_iFileIterator_getSize(IterHandle, status);
+    NXTFileHandle := nFANTOM100_iFileIterator_getFile(IterHandle, status);
     status := kStatusNoError;
-    availsize := iFile_getAvailableSize(NXTFileHandle, status);
+    availsize := nFANTOM100_iFile_getAvailableSize(NXTFileHandle, status);
     status := kStatusNoError;
-    iFile_close(NXTFileHandle, status);
+    nFANTOM100_iFile_close(NXTFileHandle, status);
   end;
 end;
 
@@ -1913,19 +1913,19 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iFileIterator_advance(IterHandle, status);
+  nFANTOM100_iFileIterator_advance(IterHandle, status);
   Result := status >= kStatusNoError;
   if Result then
   begin
-    iFileIterator_getName(IterHandle, buf, status);
+    nFANTOM100_iFileIterator_getName(IterHandle, buf, status);
     filename := buf;
     status := kStatusNoError;
-    filesize := iFileIterator_getSize(IterHandle, status);
-    NXTFileHandle := iFileIterator_getFile(IterHandle, status);
+    filesize := nFANTOM100_iFileIterator_getSize(IterHandle, status);
+    NXTFileHandle := nFANTOM100_iFileIterator_getFile(IterHandle, status);
     status := kStatusNoError;
-    availsize := iFile_getAvailableSize(NXTFileHandle, status);
+    availsize := nFANTOM100_iFile_getAvailableSize(NXTFileHandle, status);
     status := kStatusNoError;
-    iFile_close(NXTFileHandle, status);
+    nFANTOM100_iFile_close(NXTFileHandle, status);
   end
   else
   begin
@@ -1942,7 +1942,7 @@ begin
   if not Result then Exit;
   // destroy the iterator
   status := kStatusNoError;
-  iNXT_destroyFileIterator(fNXTHandle, IterHandle, status);
+  nFANTOM100_iNXT_destroyFileIterator(fNXTHandle, IterHandle, status);
   IterHandle := 0;
   Result := status >= kStatusNoError;
 end;
@@ -1954,7 +1954,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iNXT_getFirmwareVersion(fNXTHandle, protmaj, protmin, firmmaj, firmmin, status);
+  nFANTOM100_iNXT_getFirmwareVersion(fNXTHandle, protmaj, protmin, firmmaj, firmmin, status);
   Result := status >= kStatusNoError;
 end;
 
@@ -1965,7 +1965,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iNXT_destroyModule(fNXTHandle, handle, status);
+  nFANTOM100_iNXT_destroyModule(fNXTHandle, handle, status);
   if chkResponse then
     Result := status >= kStatusNoError
   else
@@ -1980,14 +1980,14 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iNXT_getResourceString(fNXTHandle, resBuf, status);
+  nFANTOM100_iNXT_getResourceString(fNXTHandle, resBuf, status);
   if chkResponse then
     Result := status >= kStatusNoError
   else
     Result := status >= kStatusNoError;
   if Result then
   begin
-    iNXT_bootIntoFirmwareDownloadMode(resBuf, status);
+    nFANTOM100_iNXT_bootIntoFirmwareDownloadMode(resBuf, status);
     Result := status >= kStatusNoError;
   end;
 end;
@@ -1999,7 +1999,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iNXT_setName(fNXTHandle, PChar(name), status);
+  nFANTOM100_iNXT_setName(fNXTHandle, PChar(name), status);
   if chkResponse then
     Result := status >= kStatusNoError
   else
@@ -2016,7 +2016,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iNXT_getDeviceInfoEx(fNXTHandle, buf, @addr[0], @BTSignal, memFree, status);
+  nFANTOM100_iNXT_getDeviceInfoEx(fNXTHandle, buf, @addr[0], @BTSignal, memFree, status);
   name := buf;
   BTAddress := Format('%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
     [addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]]);
@@ -2030,7 +2030,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iNXT_eraseUserFlash(fNXTHandle, status);
+  nFANTOM100_iNXT_eraseUserFlash(fNXTHandle, status);
   if chkResponse then
     Result := status >= kStatusNoError
   else
@@ -2047,7 +2047,7 @@ begin
   Result := not fUseBT;
   if not Result then Exit;
   status := kStatusNoError;
-  iNXT_bluetoothFactoryReset(fNXTHandle, status);
+  nFANTOM100_iNXT_bluetoothFactoryReset(fNXTHandle, status);
   if chkResponse then
     Result := status >= kStatusNoError
   else
@@ -2081,20 +2081,20 @@ begin
   OL := TObjectList.Create;
   try
     status := kStatusNoError;
-    NXTFileIteratorHandle := iNXT_createFileIterator(fNXTHandle, PChar(filename), status);
+    NXTFileIteratorHandle := nFANTOM100_iNXT_createFileIterator(fNXTHandle, PChar(filename), status);
     Result := status >= kStatusNoError;
     if Result then
     begin
       while status >= kStatusNoError do
       begin
-        iFileIterator_getName(NXTFileIteratorHandle, buf, status);
+        nFANTOM100_iFileIterator_getName(NXTFileIteratorHandle, buf, status);
         tmpFilename := buf;
         status := kStatusNoError;
-        totalSize := iFileIterator_getSize(NXTFileIteratorHandle, status);
+        totalSize := nFANTOM100_iFileIterator_getSize(NXTFileIteratorHandle, status);
         status := kStatusNoError;
-        handle := iFileIterator_getFile(NXTFileIteratorHandle, status);
+        handle := nFANTOM100_iFileIterator_getFile(NXTFileIteratorHandle, status);
         status := kStatusNoError;
-        availableSize := iFile_getAvailableSize(handle, status);
+        availableSize := nFANTOM100_iFile_getAvailableSize(handle, status);
         // save the info for this file into our object list
         FIR := TFileInfoRec.Create;
         OL.Add(FIR);
@@ -2104,10 +2104,10 @@ begin
         FIR.AvailableSize := availableSize;
         // advance to the next file
         status := kStatusNoError;
-        iFileIterator_advance(NXTFileIteratorHandle, status);
+        nFANTOM100_iFileIterator_advance(NXTFileIteratorHandle, status);
       end;
       status := kStatusNoError;
-      iNXT_destroyFileIterator(fNXTHandle, NXTFileIteratorHandle, status);
+      nFANTOM100_iNXT_destroyFileIterator(fNXTHandle, NXTFileIteratorHandle, status);
       Result := OL.Count > 0;
       for i := 0 to OL.Count - 1 do
       begin
@@ -2146,19 +2146,19 @@ begin
   if not Result then Exit;
   // upload means from NXT to PC
   status := kStatusNoError;
-  NXTFileIteratorHandle := iNXT_createFileIterator(fNXTHandle, PChar(filename), status);
+  NXTFileIteratorHandle := nFANTOM100_iNXT_createFileIterator(fNXTHandle, PChar(filename), status);
   if status >= kStatusNoError then
   begin
-    iFileIterator_getName(NXTFileIteratorHandle, buf, status);
+    nFANTOM100_iFileIterator_getName(NXTFileIteratorHandle, buf, status);
     tmpFilename := buf;
     status := kStatusNoError;
-    totalSize := iFileIterator_getSize(NXTFileIteratorHandle, status);
+    totalSize := nFANTOM100_iFileIterator_getSize(NXTFileIteratorHandle, status);
     status := kStatusNoError;
-    handle := iFileIterator_getFile(NXTFileIteratorHandle, status);
+    handle := nFANTOM100_iFileIterator_getFile(NXTFileIteratorHandle, status);
     status := kStatusNoError;
-    availableSize := iFile_getAvailableSize(handle, status);
+    availableSize := nFANTOM100_iFile_getAvailableSize(handle, status);
     status := kStatusNoError;
-    iNXT_destroyFileIterator(fNXTHandle, NXTFileIteratorHandle, status);
+    nFANTOM100_iNXT_destroyFileIterator(fNXTHandle, NXTFileIteratorHandle, status);
     // upload file
     InternalNXTUploadFileToStream(handle, tmpFilename, totalSize, availableSize, aStream);
     NXTCloseFile(handle);
@@ -2178,7 +2178,7 @@ begin
   tmpFilename := name;
   size        := Cardinal(Max(totalSize - availSize, 0));
   status      := kStatusNoError;
-  iFile_openForRead(handle, status);
+  nFANTOM100_iFile_openForRead(handle, status);
   aStream.Size := 0;
   aStream.Position := 0;
 //  aStream.Clear; // empty the stream
@@ -2187,7 +2187,7 @@ begin
   try
     FillChar(fileBuf^, size, 0);
     status := kStatusNoError;
-    iFile_read(handle, fileBuf, size, status);
+    nFANTOM100_iFile_read(handle, fileBuf, size, status);
     bEOFOnRead := status = kStatusFWEndOfFile;
     Result := (status >= kStatusNoError) or bEOFOnRead;
     if Result then
@@ -2204,9 +2204,9 @@ begin
   if bEOFOnRead then
   begin
     status := kStatusNoError;
-    iFile_close(handle, status); // close the file and reopen it
+    nFANTOM100_iFile_close(handle, status); // close the file and reopen it
     status := kStatusNoError;
-    iFile_openForRead(handle, status);
+    nFANTOM100_iFile_openForRead(handle, status);
     Result := status >= kStatusNoError;
     aStream.Size := 0;
     aStream.Position := 0;
@@ -2216,7 +2216,7 @@ begin
       FillChar(fileBuf^, 1, 0);
       while status >= kStatusNoError do
       begin
-        iFile_read(handle, fileBuf, 1, status);
+        nFANTOM100_iFile_read(handle, fileBuf, 1, status);
         if status >= kStatusNoError then
           aStream.Write(fileBuf^, 1);
       end;
@@ -2237,19 +2237,19 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  NXTFileIteratorHandle := iNXT_createFileIterator(fNXTHandle, PChar(searchPattern), status);
+  NXTFileIteratorHandle := nFANTOM100_iNXT_createFileIterator(fNXTHandle, PChar(searchPattern), status);
   Result := status >= kStatusNoError;
   while status >= kStatusNoError do
   begin
-    iFileIterator_getName(NXTFileIteratorHandle, buf, status);
+    nFANTOM100_iFileIterator_getName(NXTFileIteratorHandle, buf, status);
     tmpFilename := buf;
-    size := iFileIterator_getSize(NXTFileIteratorHandle, status);
+    size := nFANTOM100_iFileIterator_getSize(NXTFileIteratorHandle, status);
     Files.Add(tmpfilename + '=' + IntToStr(size));
     Result := status >= kStatusNoError;
-    iFileIterator_advance(NXTFileIteratorHandle, status);
+    nFANTOM100_iFileIterator_advance(NXTFileIteratorHandle, status);
   end;
   status := kStatusNoError;
-  iNXT_destroyFileIterator(fNXTHandle, NXTFileIteratorHandle, status);
+  nFANTOM100_iNXT_destroyFileIterator(fNXTHandle, NXTFileIteratorHandle, status);
 end;
 
 function TFantomSpirit.NXTListModules(const searchPattern: string;
@@ -2265,27 +2265,27 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  NXTModuleIteratorHandle := iNXT_createModuleIterator(fNXTHandle, PChar(searchPattern), status);
+  NXTModuleIteratorHandle := nFANTOM100_iNXT_createModuleIterator(fNXTHandle, PChar(searchPattern), status);
   Result := status >= kStatusNoError;
   while status >= kStatusNoError do
   begin
-    handle := iModuleIterator_getModule(NXTModuleIteratorHandle, status);
-    iModule_getName(handle, buf, status);
+    handle :=  nFANTOM100_iModuleIterator_getModule(NXTModuleIteratorHandle, status);
+     nFANTOM100_iModule_getName(handle, buf, status);
     tmpname := buf;
     status := kStatusNoError;
-    iosize := Word(iModule_getIOMapSize(handle, status));
+    iosize := Word( nFANTOM100_iModule_getIOMapSize(handle, status));
     status := kStatusNoError;
-    mID    := iModule_getModuleID(handle, status);
+    mID    :=  nFANTOM100_iModule_getModuleID(handle, status);
     status := kStatusNoError;
-    size   := iModule_getModuleSize(handle, status);
+    size   :=  nFANTOM100_iModule_getModuleSize(handle, status);
     Modules.Add(Format('%s=%d, %d, %d', [tmpname, mID, size, iosize]));
     status := kStatusNoError;
-    iNXT_destroyModule(fNXTHandle, handle, status);
+    nFANTOM100_iNXT_destroyModule(fNXTHandle, handle, status);
     status := kStatusNoError;
-    iModuleIterator_advance(NXTModuleIteratorHandle, status);
+     nFANTOM100_iModuleIterator_advance(NXTModuleIteratorHandle, status);
   end;
   status := kStatusNoError;
-  iNXT_destroyModuleIterator(fNXTHandle, NXTModuleIteratorHandle, status);
+  nFANTOM100_iNXT_destroyModuleIterator(fNXTHandle, NXTModuleIteratorHandle, status);
 end;
 
 function TFantomSpirit.NXTDownloadFile(const filename: string;
@@ -2337,19 +2337,19 @@ begin
   if Result then
   begin
     // if we could open the NXT then it isn't in firmware download mode
-    iNXT_getResourceString(fNXTHandle, resBuf, status);
+    nFANTOM100_iNXT_getResourceString(fNXTHandle, resBuf, status);
     Result := status >= kStatusNoError;
-    DebugLog('TFantomSpirit.TransferFirmware: iNXT_getResourceString status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
+    DebugLog('TFantomSpirit.TransferFirmware: nFANTOM100_iNXT_getResourceString status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
     if Result then
     begin
       status := kStatusNoError;
-      iNXT_bootIntoFirmwareDownloadMode(resBuf, status);
-      DebugLog('TFantomSpirit.TransferFirmware: iNXT_bootIntoFirmwareDownloadMode status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
+      nFANTOM100_iNXT_bootIntoFirmwareDownloadMode(resBuf, status);
+      DebugLog('TFantomSpirit.TransferFirmware: nFANTOM100_iNXT_bootIntoFirmwareDownloadMode status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
       Result := status >= kStatusNoError;
       if Result then
       begin
-        destroyNXT(fNXTHandle, status);
-        DebugLog('TFantomSpirit.TransferFirmware: destroyNXT status = ' + IntToStr(status));
+        nFANTOM100_destroyNXT(fNXTHandle, status);
+        DebugLog('TFantomSpirit.TransferFirmware: nFANTOM100_destroyNXT status = ' + IntToStr(status));
       end;
     end;
     inc(cur);
@@ -2365,8 +2365,8 @@ begin
     SysUtils.Sleep(K_SEC);
     inc(elapsedTime, K_SEC);
     status := kStatusNoError;
-    iNXT_findDeviceInFirmwareDownloadMode(resBuf, status);
-    DebugLog('TFantomSpirit.TransferFirmware: iNXT_findDeviceInFirmwareDownloadMode status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
+    nFANTOM100_iNXT_findDeviceInFirmwareDownloadMode(resBuf, status);
+    DebugLog('TFantomSpirit.TransferFirmware: nFANTOM100_iNXT_findDeviceInFirmwareDownloadMode status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
     inc(cur);
     DoDownloadStatus(cur, K_STEPS, bStop);
     if bStop then begin
@@ -2384,8 +2384,8 @@ begin
   if status >= kStatusNoError then
   begin
     status := kStatusNoError;
-    fNXTHandle := createNXT(resBuf, status, 0);
-    DebugLog('TFantomSpirit.TransferFirmware: createNXT status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
+    fNXTHandle := nFANTOM100_createNXT(resBuf, status, 0);
+    DebugLog('TFantomSpirit.TransferFirmware: nFANTOM100_createNXT status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
     inc(cur);
     DoDownloadStatus(cur, K_STEPS, bStop);
     if bStop then begin
@@ -2398,8 +2398,8 @@ begin
       aStream.Position := 0; // start at the beginning
       aStream.Read(buf^, size);
       status := kStatusNoError;
-      iNXT_downloadFirmware(fNXTHandle, buf, size, status);
-      DebugLog('TFantomSpirit.TransferFirmware: iNXT_downloadFirmware status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
+      nFANTOM100_iNXT_downloadFirmware(fNXTHandle, buf, size, status);
+      DebugLog('TFantomSpirit.TransferFirmware: nFANTOM100_iNXT_downloadFirmware status = ' + IntToStr(status) + ', resBuf = ' + String(resBuf));
       inc(cur);
       DoDownloadStatus(cur, K_STEPS, bStop);
       if bStop then begin
@@ -2468,7 +2468,7 @@ begin
         aStream.Position := 0; // start at the beginning
         aStream.Read(buf^, size);
         status := kStatusNoError;
-        iFile_write(handle, buf, size, status);
+        nFANTOM100_iFile_write(handle, buf, size, status);
         Result := status >= kStatusNoError;
       finally
         FreeMem(buf);
@@ -2485,7 +2485,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := 0;
-  count := Byte(iNXT_pollAvailableLength(fNXTHandle, bufNum, status));
+  count := Byte(nFANTOM100_iNXT_pollAvailableLength(fNXTHandle, bufNum, status));
   Result := status < kStatusNoError;
   if not Result then
     count := 0;
@@ -2503,7 +2503,7 @@ begin
     count := 64;
   dataBuffer := @buffer.Data[0];
   status := 0;
-  count := Byte(iNXT_readBufferData(fNXTHandle, dataBuffer, bufNum, count, status));
+  count := Byte(nFANTOM100_iNXT_readBufferData(fNXTHandle, dataBuffer, bufNum, count, status));
   Result := status >= kStatusNoError;
   if not Result then
     count := 0;
@@ -2521,15 +2521,15 @@ begin
   if not Result then Exit;
   status := kStatusNoError;
   modName := NXTModuleIDToName(ModID);
-  mh := iNXT_createModule(fNXTHandle, PChar(modName), ModID, 0, 0, status);
+  mh := nFANTOM100_iNXT_createModule(fNXTHandle, PChar(modName), ModID, 0, 0, status);
   if status >= kStatusNoError then
   begin
     // found the correct module
     status := kStatusNoError;
-    iModule_writeIOMap(mh, Offset, count, @(buffer.Data), status);
+     nFANTOM100_iModule_writeIOMap(mh, Offset, count, @(buffer.Data), status);
     // now destroy it
     status := kStatusNoError;
-    iNXT_destroyModule(fNXTHandle, mh, status);
+    nFANTOM100_iNXT_destroyModule(fNXTHandle, mh, status);
     if not chkResponse then
       status := kStatusNoError;
   end;
@@ -2546,17 +2546,17 @@ begin
   if not Result then Exit;
   status := kStatusNoError;
   modName := NXTModuleIDToName(ModID);
-  mh := iNXT_createModule(fNXTHandle, PChar(modName), ModID, 0, 0, status);
+  mh := nFANTOM100_iNXT_createModule(fNXTHandle, PChar(modName), ModID, 0, 0, status);
   if status >= kStatusNoError then
   begin
     // found the correct module
     status := kStatusNoError;
     FillChar(buffer.Data[0], kNXT_MaxBytes, 0);
-    iModule_readIOMap(mh, Offset, Count, @(buffer.Data), status);
+     nFANTOM100_iModule_readIOMap(mh, Offset, Count, @(buffer.Data), status);
     Result := status = kStatusNoError;
     // now destroy it
     status := kStatusNoError;
-    iNXT_destroyModule(fNXTHandle, mh, status);
+    nFANTOM100_iNXT_destroyModule(fNXTHandle, mh, status);
   end;
 end;
 
@@ -2571,28 +2571,28 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  iModuleIterator_advance(Handle, status);
+   nFANTOM100_iModuleIterator_advance(Handle, status);
   Result := status >= kStatusNoError;
   if Result then
   begin
-    mh := iModuleIterator_getModule(Handle, status);
+    mh :=  nFANTOM100_iModuleIterator_getModule(Handle, status);
     status := kStatusNoError;
-    iModule_getName(mh, buf, status);
+     nFANTOM100_iModule_getName(mh, buf, status);
     ModName   := buf;
     status := kStatusNoError;
-    ModSize   := iModule_getModuleSize(mh, status);
+    ModSize   :=  nFANTOM100_iModule_getModuleSize(mh, status);
     status := kStatusNoError;
-    ModID     := iModule_getModuleID(mh, status);
+    ModID     :=  nFANTOM100_iModule_getModuleID(mh, status);
     status := kStatusNoError;
-    IOMapSize := Word(iModule_getIOMapSize(mh, status));
+    IOMapSize := Word( nFANTOM100_iModule_getIOMapSize(mh, status));
     status := kStatusNoError;
-    iNXT_destroyModule(FNXTHandle, mh, status);
+    nFANTOM100_iNXT_destroyModule(FNXTHandle, mh, status);
   end
   else
   begin
     // destroy the iterator
     status := kStatusNoError;
-    iNXT_destroyModuleIterator(fNXTHandle, Handle, status);
+    nFANTOM100_iNXT_destroyModuleIterator(fNXTHandle, Handle, status);
     handle := 0;
     ModName := '';
   end;
@@ -2608,22 +2608,22 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  Handle := iNXT_createModuleIterator(FNXTHandle, PChar(ModName), status);
+  Handle := nFANTOM100_iNXT_createModuleIterator(FNXTHandle, PChar(ModName), status);
   Result := status >= kStatusNoError;
   if Result then
   begin
-    mh := iModuleIterator_getModule(Handle, status);
+    mh :=  nFANTOM100_iModuleIterator_getModule(Handle, status);
     status := kStatusNoError;
-    iModule_getName(mh, buf, status);
+     nFANTOM100_iModule_getName(mh, buf, status);
     ModName   := buf;
     status := kStatusNoError;
-    ModSize   := iModule_getModuleSize(mh, status);
+    ModSize   :=  nFANTOM100_iModule_getModuleSize(mh, status);
     status := kStatusNoError;
-    ModID     := iModule_getModuleID(mh, status);
+    ModID     :=  nFANTOM100_iModule_getModuleID(mh, status);
     status := kStatusNoError;
-    IOMapSize := Word(iModule_getIOMapSize(mh, status));
+    IOMapSize := Word( nFANTOM100_iModule_getIOMapSize(mh, status));
     status := kStatusNoError;
-    iNXT_destroyModule(FNXTHandle, mh, status);
+    nFANTOM100_iNXT_destroyModule(FNXTHandle, mh, status);
   end;
 end;
 
@@ -2671,11 +2671,11 @@ begin
     resName := '';
     status := kStatusNoError;
     // use Fantom API to obtain a handle to an NXT on either USB or bluetooth
-    nih := createNXTIterator(Ord(SearchBluetooth), BluetoothSearchTimeout, status);
+    nih := nFANTOM100_createNXTIterator(Ord(SearchBluetooth), BluetoothSearchTimeout, status);
     while status >= kStatusNoError do
     begin
       status2 := kStatusNoError;
-      iNXTIterator_getName(nih, resNamePC, status2);
+      nFANTOM100_iNXTIterator_getName(nih, resNamePC, status2);
       resName := AnsiUpperCase(resNamePC);
       // if the resource name starts with BTH then grab the beginning of
       // the resource name and use it as the alias
@@ -2693,13 +2693,13 @@ begin
       end;
 //      alias := AnsiLowerCase(Copy(resName, 1, Pos('::', resName)-1));
       Bricks.Add(alias + '=' + resName);
-      iNXTIterator_advance(nih, status);
+      nFANTOM100_iNXTIterator_advance(nih, status);
     end;
     status := kStatusNoError;
-    destroyNXTIterator(nih, status);
+    nFANTOM100_destroyNXTIterator(nih, status);
     // also look for bricks in firmware download mode
     status := kStatusNoError;
-    iNXT_findDeviceInFirmwareDownloadMode(resNamePC, status);
+    nFANTOM100_iNXT_findDeviceInFirmwareDownloadMode(resNamePC, status);
     if status >= kStatusNoError then
     begin
       resName := AnsiUpperCase(resNamePC);
@@ -3222,7 +3222,7 @@ begin
     finish := MAX_BLOCK;
   end;
   status := 0;
-  mh := iNXT_createModule(fNXTHandle, PChar(kNXT_ModuleCmdName), kNXT_ModuleCmd, 0, 0, status);
+  mh := nFANTOM100_iNXT_createModule(fNXTHandle, PChar(kNXT_ModuleCmdName), kNXT_ModuleCmd, 0, 0, status);
   // are we in a position to poll memory?
   if status >= kStatusNoError then
   begin
@@ -3233,7 +3233,7 @@ begin
       begin
         status := kStatusNoError;
         Offset := j*BLOCK_SIZE;
-        cnt := iModule_readIOMap(mh, Offset, BLOCK_SIZE, buf, status);
+        cnt :=  nFANTOM100_iModule_readIOMap(mh, Offset, BLOCK_SIZE, buf, status);
         if status >= kStatusNoError then
         begin
           for i := 0 to Integer(cnt) - 1 do
@@ -3249,7 +3249,7 @@ begin
     end;
     // now destroy the module handle
     status := kStatusNoError;
-    iNXT_destroyModule(fNXTHandle, mh, status);
+    nFANTOM100_iNXT_destroyModule(fNXTHandle, mh, status);
   end;
 end;
 
@@ -3268,7 +3268,7 @@ begin
   fMemData.Clear;
   Result := fMemData;
   status := 0;
-  mh := iNXT_createModule(fNXTHandle, PChar(kNXT_ModuleCmdName), kNXT_ModuleCmd, 0, 0, status);
+  mh := nFANTOM100_iNXT_createModule(fNXTHandle, PChar(kNXT_ModuleCmdName), kNXT_ModuleCmd, 0, 0, status);
   // are we in a position to poll memory?
   if status >= kStatusNoError then
   begin
@@ -3282,7 +3282,7 @@ begin
       begin
         status := kStatusNoError;
         cnt := Min(CHUNK, size-amt);
-        cnt := iModule_readIOMap(mh, Offset, cnt, buf, status);
+        cnt :=  nFANTOM100_iModule_readIOMap(mh, Offset, cnt, buf, status);
         if status >= kStatusNoError then
         begin
           for i := 0 to cnt - 1 do
@@ -3298,7 +3298,7 @@ begin
     end;
     // now destroy the module handle
     status := kStatusNoError;
-    iNXT_destroyModule(fNXTHandle, mh, status);
+    nFANTOM100_iNXT_destroyModule(fNXTHandle, mh, status);
   end;
 end;
 
@@ -3423,9 +3423,9 @@ begin
     scBuffer := nil;
   end;
   if cmdType = $01 then
-    iNXT_sendSystemCommand(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
+    nFANTOM100_iNXT_sendSystemCommand(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
   else if cmdType = $00 then
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
   else
     Exit;
   if status >= kStatusNoError then
@@ -3726,14 +3726,14 @@ begin
     buf := cmd.GetBody;
     bufLen := cmd.GetLength;
     status := kStatusNoError;
-    iNXT_write(fNXTHandle, buf, bufLen, status);
+    nFANTOM100_iNXT_write(fNXTHandle, buf, bufLen, status);
     // now read the response
     if (status >= kStatusNoError) and chkResponse then
     begin
       readBuf := nil;
       GetMem(readBuf, 44);
       try
-        iNXT_read(fNXTHandle, readBuf, 44, status);
+        nFANTOM100_iNXT_read(fNXTHandle, readBuf, 44, status);
       finally
         FreeMem(readBuf);
       end;
@@ -3802,7 +3802,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetVMState);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
     Result := status >= kStatusNoError;
     state := GetReplyByte(0);
     clump := GetReplyByte(1);
@@ -3823,7 +3823,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCSetVMState, state);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
     Result := status >= kStatusNoError;
     state := GetReplyByte(0);
     clump := GetReplyByte(1);
@@ -3844,7 +3844,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCSetVMState, state);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -3863,7 +3863,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetProperty, kNXT_Property_Debugging);
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
     Result := status >= kStatusNoError;
     debugging  := Boolean(GetReplyByte(0));
     pauseClump := GetReplyByte(1);
@@ -3886,7 +3886,7 @@ begin
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCSetProperty, kNXT_Property_Debugging,
       Ord(debugging), pauseClump, Lo(pausePC), Hi(pausePC));
-    iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
+    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
