@@ -82,6 +82,8 @@ var
   Msg : NXTMessage;
   BC : TBrickComm;
   EHO : TEventHandlerObject;
+  nxtdev : NXTDevice;
+  nxtconn : NXTConnection;
 
 
 function BrickComm : TBrickComm;
@@ -200,6 +202,10 @@ begin
   Writeln('   -polleeprom=<block> : Poll eeprom block');
   Writeln('   -setvmstate=<state> : Set the VM state (enhanced firmware only)');
   Writeln('   -getvmstate : Get the VM state (enhanced firmware only)');
+  Writeln('   -btdevcnt : Get the bluetooth device count');
+  Writeln('   -btnamecnt : Get the bluetooth device name count');
+  Writeln('   -btdevice=<idx> : Get the specified bluetooth device');
+  Writeln('   -btconnection=<idx> : Get the specified bluetooth connection');
 {
 NXTPollCommandLen
 NXTPollCommand
@@ -711,6 +717,53 @@ begin
         OutputValue(state, False); Write(' ');
         OutputValue(clump, False); Write(' ');
         OutputValue(pc);
+      end;
+      if ParamSwitch('-btdevice') then
+      begin
+        i := ParamIntValue('-btdevice', 0);
+        if i > 29 then i := 0;
+        nxtdev := BrickComm.NXTBTDevice(i);
+        Writeln(string(PChar(@(nxtdev.Name[0]))));
+        for i := 0 to 3 do begin
+          OutputValue(nxtdev.ClassOfDevice[i], False); Write(' ');
+        end;
+        WriteLn('');
+        with nxtdev do
+        begin
+          Writeln(Format('%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
+            [BTAddress[0], BTAddress[1], BTAddress[2],
+             BTAddress[3], BTAddress[4], BTAddress[5]]));
+        end;
+        OutputValue(nxtdev.DeviceStatus);
+      end;
+      if ParamSwitch('-btconnection') then
+      begin
+        i := ParamIntValue('-btconnection', 0);
+        if i > 3 then i := 0;
+        nxtconn := BrickComm.NXTBTConnection(i);
+        Writeln(string(PChar(@(nxtconn.Name[0]))));
+        for i := 0 to 3 do begin
+          OutputValue(nxtconn.ClassOfDevice[i], False); Write(' ');
+        end;
+        WriteLn('');
+        Writeln(string(PChar(@(nxtconn.PinCode[0]))));
+        with nxtconn do
+        begin
+          Writeln(Format('%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
+            [BTAddress[0], BTAddress[1], BTAddress[2],
+             BTAddress[3], BTAddress[4], BTAddress[5]]));
+        end;
+        OutputValue(nxtconn.HandleNum, False); Write(' ');
+        OutputValue(nxtconn.StreamStatus, False); Write(' ');
+        OutputValue(nxtconn.LinkQuality);
+      end;
+      if ParamSwitch('-btdevcnt') then
+      begin
+        OutputValue(BrickComm.NXTBTDeviceCount);
+      end;
+      if ParamSwitch('-btnamecnt') then
+      begin
+        OutputValue(BrickComm.NXTBTDeviceNameCount);
       end;
       if ParamSwitch('-shutdown') then
         BrickComm.Shutdown;

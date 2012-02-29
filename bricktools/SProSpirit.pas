@@ -19,7 +19,7 @@ unit SProSpirit;
 interface
 
 uses
-  Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs;
+  Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs, uSerial;
 
 type
   TSProSpirit = class(TBrickComm)
@@ -53,6 +53,10 @@ type
     function  GetReplyWord(index: integer): Word;
     function  MonitorMode(bCheckFirst : boolean = True) : boolean;
     function  AlreadyInMonitorMode : boolean;
+    function  DoSerialWrite(Handle: THandle; Data : array of byte; Count: LongInt) : LongInt; overload;
+    function  DoSerialWrite(Handle: THandle; Data : string; Count: LongInt) : LongInt; overload;
+    function  DoSerialFlushRead(Handle: THandle; delay : Integer; var Data : TBytes) : boolean;
+    function  DoSerialFlushToChar(Handle: THandle; delay : Integer; ch : Char; var Data : TBytes) : LongInt;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); override;
     destructor Destroy; override;
@@ -61,7 +65,7 @@ type
     function  Close : boolean; override;
 
     procedure FlushReceiveBuffer; override;
-    procedure SendRawData(const Data : array of byte); override;
+    procedure SendRawData(Data : array of byte); override;
 
     // PBrick sound commands
     function PlayTone(aFreq, aTime : word) : boolean; override;
@@ -288,7 +292,7 @@ uses
 {$IFNDEF FPC}
   Windows,
 {$ENDIF}
-  rcx_constants, Contnrs, Math, uCommonUtils, uDebugLogging, uSerial;
+  rcx_constants, Contnrs, Math, uCommonUtils, uDebugLogging;
 
 {$IFDEF FPC}
 const
@@ -499,11 +503,8 @@ begin
     SetLength(Data, len);
     for i := 0 to len - 1 do
       Data[i] := 4;
-    if SerialWrite(fSerialHandle, Data, len) = len then
-      DoDataSend(Data);
-    SetLength(Data, 0);
-    Result := SerialFlushRead(fSerialHandle, 50, Data);
-    DoDataReceive(Data);
+    DoSerialWrite(fSerialHandle, Data, len);
+    Result := DoSerialFlushRead(fSerialHandle, 50, Data);
   end;
 end;
 
@@ -518,10 +519,8 @@ begin
     // send any non-command character
     SetLength(Data, 1);
     Data[0] := 4;
-    if SerialWrite(fSerialHandle, Data, 1) = 1 then
-      DoDataSend(Data);
-    SetLength(Data, 0);
-    Result := SerialFlushRead(fSerialHandle, 50, Data);
+    DoSerialWrite(fSerialHandle, Data, 1);
+    Result := DoSerialFlushRead(fSerialHandle, 50, Data);
     // check response for 04 byte
     if Result then
     begin
@@ -535,7 +534,6 @@ begin
         end;
       end;
     end;
-    DoDataReceive(Data);
   end;
 end;
 
@@ -897,9 +895,7 @@ begin
   Result := (b1 = $0D) and (b2 = $0A) and (b3 = $1A);
   if not Result then Exit;
 
-  SetLength(Data, 0);
-  SerialFlushRead(fSerialHandle, 50, Data);
-  DoDataReceive(Data);
+  DoSerialFlushRead(fSerialHandle, 50, Data);
 
   aStream.Position := 0;
   SL := TStringList.Create;
@@ -910,27 +906,12 @@ begin
     begin
       tmp := SL[i] + #13#10;  // need to send CRLF after each line (doh!)
       len := Length(tmp);
-      Result := SerialWrite(fSerialHandle, PChar(tmp), len) = len;
-      if Result then
-        DoDataSend(tmp);
+      Result := DoSerialWrite(fSerialHandle, tmp, len) = len;
       if not Result then Exit;
       // read echo until we (eventually) get the LF echo
-      SetLength(Data, 0);
-      b1 := 0;
-      while b1 <> $0A do
-      begin
-        if SerialRead(fSerialHandle, @b1, 1, 50) = 1 then
-        begin
-          SetLength(Data, Length(Data)+1); // extend the array
-          Data[Length(Data)-1] := b1;
-        end;
-      end;
-      if Length(Data) > 0 then
-        DoDataReceive(Data);
+      DoSerialFlushToChar(fSerialHandle, 50, Chr($0A), Data);
       // once we get the LF then drain anything else
-      SetLength(Data, 0);
-      SerialFlushRead(fSerialHandle, 50, Data);
-      DoDataReceive(Data);
+      DoSerialFlushRead(fSerialHandle, 50, Data);
     end;
   finally
     SL.Free;
@@ -1326,7 +1307,6 @@ end;
 
 function TSProSpirit.SelectProgram(aProg: integer): boolean;
 var
-  Buf : Char;
   Data : TBytes;
 begin
   Result := Open;
@@ -1336,13 +1316,10 @@ begin
     Result := MonitorMode;
     if Result then
     begin
-      Buf := Chr(47+aProg);
-      Result := SerialWrite(fSerialHandle, @Buf, 1) = 1;
-      if Result then
-        DoDataSend(Byte(Buf));
-      SetLength(Data, 0);
-      SerialFlushRead(fSerialHandle, 50, Data);
-      DoDataReceive(Data);
+      SetLength(Data, 1);
+      Data[0] := 47+aProg;
+      Result := DoSerialWrite(fSerialHandle, Data, 1) = 1;
+      DoSerialFlushRead(fSerialHandle, 50, Data);
     end;
   end;
 end;
@@ -1496,7 +1473,6 @@ end;
 
 function TSProSpirit.StartTask(aTask: integer): boolean;
 var
-  Buf : Char;
   Data : TBytes;
 begin
   Result := Open;
@@ -1506,13 +1482,10 @@ begin
     Result := MonitorMode;
     if Result then
     begin
-      Buf := 'T'; // trigger to start program in current slot
-      Result := SerialWrite(fSerialHandle, @Buf, 1) = 1;
-      if Result then
-        DoDataSend(Byte(Buf));
-      SetLength(Data, 0);
-      SerialFlushRead(fSerialHandle, 50, Data);
-      DoDataReceive(Data);
+      SetLength(Data, 1);
+      Data[0] := Ord('T');
+      Result := DoSerialWrite(fSerialHandle, Data, 1) = 1;
+      DoSerialFlushRead(fSerialHandle, 50, Data);
     end;
   end;
 end;
@@ -1648,22 +1621,49 @@ var
 begin
   if IsOpen then
   begin
-    SetLength(Data, 0);
-    SerialFlushRead(fSerialHandle, 50, Data);
-    DoDataReceive(Data);
+    DoSerialFlushRead(fSerialHandle, 50, Data);
   end;
 end;
 
-procedure TSProSpirit.SendRawData(const Data: array of byte);
+procedure TSProSpirit.SendRawData(Data: array of byte);
 var
   len : integer;
 begin
   if IsOpen then
   begin
     len := Length(Data);
-    if SerialWrite(fSerialHandle, @(Data[0]), len) = len then
-      DoDataSend(Data);
+    DoSerialWrite(fSerialHandle, Data, len);
   end;
+end;
+
+function TSProSpirit.DoSerialWrite(Handle: THandle; Data : array of byte; Count: LongInt) : LongInt;
+begin
+  Result := SerialWrite(Handle, @(Data[0]), Count);
+  if Result = Count then
+    DoDataSend(Data);
+end;
+
+function TSProSpirit.DoSerialWrite(Handle: THandle; Data: string; Count: LongInt): LongInt;
+begin
+  Result := SerialWrite(Handle, PChar(Data), Count);
+  if Result = Count then
+    DoDataSend(Data);
+end;
+
+function TSProSpirit.DoSerialFlushRead(Handle: THandle; delay: Integer; var Data: TBytes): boolean;
+begin
+  SetLength(Data, 0);
+  Result := SerialFlushRead(Handle, delay, Data);
+  DoDataReceive(Data);
+end;
+
+function TSProSpirit.DoSerialFlushToChar(Handle: THandle; delay: Integer;
+  ch: Char; var Data: TBytes): LongInt;
+begin
+  SetLength(Data, 0);
+  Result := SerialFlushToChar(Handle, delay, ch, Data);
+  if Result > 0 then
+    DoDataReceive(Data);
 end;
 
 end.

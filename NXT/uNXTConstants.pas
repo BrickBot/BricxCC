@@ -183,50 +183,61 @@ const
 
   // misc other enhanced opcodes
   OPS_ADDROF       = $89;
+  OPS_FINCLUMPVAR  = $90;
+  OPS_SUBCALLVAR   = $91;
+  OPS_STOPCLUMPVAR = $92;
+  OPS_STARTVAR     = $93;
+  OPS_JMPABSVAR    = $94;
+  OPS_BRCMPABSVAR  = $95;
+  OPS_BRTSTABSVAR  = $96;
+
 
   // pseudo opcodes
-  OPS_THREAD       = $90;
-  OPS_ENDT         = $91;
-  OPS_SUBROUTINE   = $92;
-  OPS_REQUIRES     = $93;
-  OPS_USES         = $94;
-  OPS_SEGMENT      = $95;
-  OPS_ENDS         = $96;
-  OPS_TYPEDEF      = $97;
-  OPS_STRUCT       = $98;
+  OPS_THREAD       = $c0;
+  OPS_ENDT         = $c1;
+  OPS_SUBROUTINE   = $c2;
+  OPS_REQUIRES     = $c3;
+  OPS_USES         = $c4;
+  OPS_SEGMENT      = $c5;
+  OPS_ENDS         = $c6;
+  OPS_TYPEDEF      = $c7;
+  OPS_STRUCT       = $c8;
   // var declarations
-  OPS_DB           = $99;
-  OPS_BYTE         = $9a;
-  OPS_SBYTE        = $9b;
-  OPS_UBYTE        = $9c;
-  OPS_DW           = $9d;
-  OPS_WORD         = $9e;
-  OPS_SWORD        = $9f;
-  OPS_UWORD        = $a0;
-  OPS_DD           = $a1;
-  OPS_DWORD        = $a2;
-  OPS_SDWORD       = $a3;
-  OPS_UDWORD       = $a4;
-  OPS_LONG         = $a5;
-  OPS_SLONG        = $a6;
-  OPS_ULONG        = $a7;
-  OPS_VOID         = $a8;
-  OPS_MUTEX        = $a9;
-  OPS_FLOAT        = $aa;
+  OPS_DB           = $c9;
+  OPS_BYTE         = $ca;
+  OPS_SBYTE        = $cb;
+  OPS_UBYTE        = $cc;
+  OPS_DW           = $cd;
+  OPS_WORD         = $ce;
+  OPS_SWORD        = $cf;
+  OPS_UWORD        = $d0;
+  OPS_DD           = $d1;
+  OPS_DWORD        = $d2;
+  OPS_SDWORD       = $d3;
+  OPS_UDWORD       = $d4;
+  OPS_LONG         = $d5;
+  OPS_SLONG        = $d6;
+  OPS_ULONG        = $d7;
+  OPS_VOID         = $d8;
+  OPS_MUTEX        = $d9;
+  OPS_FLOAT        = $da;
   // pseudo opcodes
-  OPS_CALL         = $ab;
-  OPS_RETURN       = $ac;
-  OPS_STRINDEX     = $ad;
-  OPS_STRREPLACE   = $ae;
-  OPS_SHL          = $af;
-  OPS_SHR          = $b0;
-  OPS_STRLEN       = $b1;
-  OPS_COMPCHK      = $b2;
-  OPS_COMPIF       = $b3;
-  OPS_COMPELSE     = $b4;
-  OPS_COMPEND      = $b5;
-  OPS_COMPCHKTYPE  = $b6;
-  OPS_COMMENT      = $b7;
+  OPS_CALL         = $db;
+  OPS_RETURN       = $dc;
+  OPS_STRINDEX     = $dd;
+  OPS_STRREPLACE   = $de;
+  OPS_SHL          = $df;
+  OPS_SHR          = $e0;
+  OPS_STRLEN       = $e1;
+  OPS_COMPCHK      = $e2;
+  OPS_COMPIF       = $e3;
+  OPS_COMPELSE     = $e4;
+  OPS_COMPEND      = $e5;
+  OPS_COMPCHKTYPE  = $e6;
+  OPS_CALLVAR      = $e7;
+  OPS_SETCLUMP     = $e8;
+  OPS_SETLABEL     = $e9;
+  OPS_COMMENT      = $ea;
   // invalid opcode
   OPS_INVALID      = $f0;
 

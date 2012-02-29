@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2011-10-16
- * version 84
+ * date 2012-02-06
+ * version 85
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -5462,36 +5462,36 @@ ends
 
 #define __remoteRead(_conn, _handle, _numbytes, _data, _result) \
   mov _result, 1 \
-  brcmp GT, __RRRead_End##__I__, _numbytes, 58 \
+  brcmp GT, __RRRead_End##__J__, _numbytes, 58 \
   __remoteDoRead(_conn, _handle, _numbytes, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   add __WFRRTmpByte, _numbytes, 4 \
-  brtst NEQ, __RRRead_End##__I__, _result \
-  brcmp NEQ, __RRRead_End##__I__, __WFRRAvail, __WFRRTmpByte \
+  brtst NEQ, __RRRead_End##__J__, _result \
+  brcmp NEQ, __RRRead_End##__J__, __WFRRAvail, __WFRRTmpByte \
   index _handle, __WFRRBuffer, NA \
   arrsubset __WFRRTmpBuffer, __WFRRBuffer, 1, 2 \
   arrtostr __WFRRUnflattenBuf, __WFRRTmpBuffer \
   unflatten __WFRRTmpSWord, __WFRRUnflattenErr, __WFRRUnflattenBuf, __WFRRTmpSWord \
   mov _numbytes, __WFRRTmpSWord \
   arrsubset _data, __WFRRBuffer, 2, _numbytes \
-  __RRRead_End##__I__: \
-  __IncI__
+  __RRRead_End##__J__: \
+  __IncJ__
 
 #define __remoteWrite(_conn, _handle, _numbytes, _data, _result) \
   mov _result, 1 \
-  brcmp GT, __RRWrite_End##__I__, _numbytes, 58 \
+  brcmp GT, __RRWrite_End##__J__, _numbytes, 58 \
   __remoteDoWrite(_conn, _handle, _data, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
-  brtst NEQ, __RRWrite_End##__I__, _result \
-  brcmp NEQ, __RRWrite_End##__I__, __WFRRAvail, 4 \
+  brtst NEQ, __RRWrite_End##__J__, _result \
+  brcmp NEQ, __RRWrite_End##__J__, __WFRRAvail, 4 \
   index _handle, __WFRRBuffer, NA \
   arrsubset __WFRRTmpBuffer, __WFRRBuffer, 1, 3 \
   unflatten __WFRRTmpSWord, __WFRRUnflattenErr, __WFRRTmpBuffer, __WFRRTmpSWord \
   mov _numbytes, __WFRRTmpSWord \
-  __RRWrite_End##__I__: \
-  __IncI__
+  __RRWrite_End##__J__: \
+  __IncJ__
 
 #define __remoteCloseFile(_conn, _handle, _result) \
   __remoteGenericByteCommand(_conn, __SCClosePacket, _handle, _result) \
@@ -5609,34 +5609,34 @@ ends
 
 #define __remotePollCommand(_conn, _bufnum, _len, _data, _result) \
   mov _result, 1 \
-  brcmp GT, __RRPollCommand_End##__I__, _len, 58 \
+  brcmp GT, __RRPollCommand_End##__J__, _len, 58 \
   __remoteDoPollCommand(_conn, _bufnum, _len, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   add __WFRRTmpByte, _len, 3 \
-  brtst NEQ, __RRPollCommand_End##__I__, _result \
-  brcmp NEQ, __RRPollCommand_End##__I__, __WFRRAvail, __WFRRTmpByte \
+  brtst NEQ, __RRPollCommand_End##__J__, _result \
+  brcmp NEQ, __RRPollCommand_End##__J__, __WFRRAvail, __WFRRTmpByte \
   index _len, __WFRRBuffer, 1 \
   arrsubset _data, __WFRRBuffer, 2, _len \
-  __RRPollCommand_End##__I__: \
-  __IncI__
+  __RRPollCommand_End##__J__: \
+  __IncJ__
 
 #define __remoteIOMapRead(_conn, _id, _offset, _numbytes, _data, _result) \
   mov _result, 1 \
-  brcmp GT, __RRIOMapRead_End##__I__, _numbytes, 58 \
+  brcmp GT, __RRIOMapRead_End##__J__, _numbytes, 58 \
   __remoteDoIOMapRead(_conn, _id, _offset, _numbytes, _result) \
   call __DoWaitForRemoteResponse \
   mov _result, __WFRRStatus \
   add __WFRRTmpByte, _numbytes, 7 \
-  brtst NEQ, __RRIOMapRead_End##__I__, _result \
-  brcmp NEQ, __RRIOMapRead_End##__I__, __WFRRAvail, __WFRRTmpByte \
+  brtst NEQ, __RRIOMapRead_End##__J__, _result \
+  brcmp NEQ, __RRIOMapRead_End##__J__, __WFRRAvail, __WFRRTmpByte \
   arrsubset __WFRRTmpBuffer, __WFRRBuffer, 4, 2 \
   arrtostr __WFRRUnflattenBuf, __WFRRTmpBuffer \
   unflatten __WFRRTmpSWord, __WFRRUnflattenErr, __WFRRUnflattenBuf, __WFRRTmpSWord \
   mov _numbytes, __WFRRTmpSWord \
   arrsubset _data, __WFRRBuffer, 6, _numbytes \
-  __RRIOMapRead_End##__I__: \
-  __IncI__
+  __RRIOMapRead_End##__J__: \
+  __IncJ__
 
 #define __remoteGetBluetoothAddress(_conn, _btaddr, _result) \
   __connectionSCDCWrite(_conn, __SCBTGetAddressPacket, _result) \

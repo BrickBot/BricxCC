@@ -1,0 +1,62 @@
+byte isPixelSet(byte X, byte Y)
+{
+  byte Data[]; // no need to initialize (test 3)
+  byte Line = (63-Y & 0xF8) / 8;
+  byte offset = Y % 8; // how many bits up from 0?
+  GetDisplayNormal(X, Line, 1, Data);
+  return Data[0] & (0x01 << offset);
+}
+
+/*
+byte __ips_masks[] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
+
+byte isPixelSet(byte X, byte Y)
+{
+  byte Data[]; // no need to initialize (test 3)
+  byte Line = (63-Y & 0xF8) / 8;
+  byte offset = Y % 8; // how many bits up from 0?
+  GetDisplayNormal(X, Line, 1, Data);
+  return Data[0] & __ips_masks[offset];
+}
+*/
+
+/*
+bool isPixelSet(byte X, byte Y)
+{
+  byte masks[] = {0x80, 0x40, 0x20, 0x10, 0x08, 0x04, 0x02, 0x01};
+  byte Data[1];
+  byte Line = (63-Y & 0xF8) / 8;
+  byte offset = Y % 8; // how many bits up from 0?
+  GetDisplayNormal(X, Line, 1, Data);
+  return ((Data[0] & masks[offset]) != 0);
+}
+*/
+
+task main()
+{
+/*
+  while (true)
+  {
+    byte x = Random(100);
+    byte y = Random(56) + 8; // skip the bottom line
+    PointOut(x, y);
+    if (isPixelSet(x, y))
+      TextOut(0, LCD_LINE8, "set");
+    else
+      TextOut(0, LCD_LINE8, "not set");
+    Wait(SEC_1);
+    ClearScreen();
+  }
+*/
+
+  byte x = 50;
+  byte y = 32;
+  unsigned long tick = CurrentTick();
+  repeat (1000)
+  {
+    isPixelSet(x, y);
+  }
+  NumOut(0, LCD_LINE1, CurrentTick()-tick);
+  while(true);
+
+}

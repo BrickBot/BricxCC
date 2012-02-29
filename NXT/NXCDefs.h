@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-10-16
- * \version 104
+ * \date 2012-02-06
+ * \version 105
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -858,27 +858,6 @@ enum InputFieldNames {
   InvalidData
 };
 
-enum OutputFieldNames {
-  UpdateFlags,
-  OutputMode,
-  Power,
-  ActualSpeed,
-  TachoCount,
-  TachoLimit,
-  RunState,
-  TurnRatio,
-  RegMode,
-  Overload,
-  RegPValue,
-  RegIValue,
-  RegDValue,
-  BlockTachoCount,
-  RotationCount,
-  OutputOptions,
-  MaxSpeed,
-  MaxAcceleration
-};
-
 // input fields
 #define Sensor(_p) asm { ReadSensor(_p, __RETVAL__) }
 #define SensorValue(_p) Sensor(_p)
@@ -1426,6 +1405,20 @@ inline void OnRevSyncEx(byte outputs, char pwr, char turnpct, const byte reset);
 /**
  * Rotate motor.
  * Run the specified outputs forward for the specified number of degrees.
+ * 
+ * The motor API functions are thread-safe and blocking on the motor resource(s) 
+ * requested. If you call RotateMotor(OUT_AB, 75, 3600) then no other thread will be able 
+ * to control motors A and B until the already executing RotateMotor function finishes. 
+ * But now you can safely call RotateMotor(OUT_A, 75, 3600) on one thread and 
+ * RotateMotor(OUT_B, 75, 720) on another simultaneously executing thread without having 
+ * program errors or erratic motor behavior. 
+ * 
+ * Since the functions do not know at compile time which port is being utilized when you 
+ * use a variable as the port parameter, the RotateMotor functions acquire all three 
+ * motor port resources for the duration of their operation in that case. So you can 
+ * safely call RotateMotor using a variable for the port parameter on two 
+ * simultaneously executing threads but one of the two calls will be blocked until
+ * the first one has completed executing.
  *
  * \param outputs Desired output ports. Can be a constant or a variable, see
  * \ref OutputPortConstants. If you use a variable and want to control multiple
@@ -1440,6 +1433,20 @@ inline void RotateMotor(byte outputs, char pwr, long angle);
  * Rotate motor with PID factors.
  * Run the specified outputs forward for the specified number of degrees.
  * Specify proportional, integral, and derivative factors.
+ * 
+ * The motor API functions are thread-safe and blocking on the motor resource(s) 
+ * requested. If you call RotateMotor(OUT_AB, 75, 3600) then no other thread will be able 
+ * to control motors A and B until the already executing RotateMotor function finishes. 
+ * But now you can safely call RotateMotor(OUT_A, 75, 3600) on one thread and 
+ * RotateMotor(OUT_B, 75, 720) on another simultaneously executing thread without having 
+ * program errors or erratic motor behavior. 
+ * 
+ * Since the functions do not know at compile time which port is being utilized when you 
+ * use a variable as the port parameter, the RotateMotor functions acquire all three 
+ * motor port resources for the duration of their operation in that case. So you can 
+ * safely call RotateMotor using a variable for the port parameter on two 
+ * simultaneously executing threads but one of the two calls will be blocked until
+ * the first one has completed executing.
  *
  * \param outputs Desired output ports. Can be a constant or a variable, see
  * \ref OutputPortConstants. If you use a variable and want to control multiple
@@ -1457,8 +1464,24 @@ inline void RotateMotor(byte outputs, char pwr, long angle);
 inline void RotateMotorPID(byte outputs, char pwr, long angle, byte p, byte i, byte d);
 
 /**
- * Rotate motor.
- * Run the specified outputs forward for the specified number of degrees.
+ * Rotate motor Ex.
+ * Run the specified outputs forward for the specified number of degrees. Also specify
+ * synchronization, turn percentage, and braking options.  Use this function primarily
+ * with more than one motor specified via the outputs parameter.
+ * 
+ * The motor API functions are thread-safe and blocking on the motor resource(s) 
+ * requested. If you call RotateMotor(OUT_AB, 75, 3600) then no other thread will be able 
+ * to control motors A and B until the already executing RotateMotor function finishes. 
+ * But now you can safely call RotateMotor(OUT_A, 75, 3600) on one thread and 
+ * RotateMotor(OUT_B, 75, 720) on another simultaneously executing thread without having 
+ * program errors or erratic motor behavior. 
+ * 
+ * Since the functions do not know at compile time which port is being utilized when you 
+ * use a variable as the port parameter, the RotateMotor functions acquire all three 
+ * motor port resources for the duration of their operation in that case. So you can 
+ * safely call RotateMotor using a variable for the port parameter on two 
+ * simultaneously executing threads but one of the two calls will be blocked until
+ * the first one has completed executing.
  *
  * \param outputs Desired output ports. Can be a constant or a variable, see
  * \ref OutputPortConstants. If you use a variable and want to control multiple
@@ -1476,10 +1499,26 @@ inline void RotateMotorPID(byte outputs, char pwr, long angle, byte p, byte i, b
 inline void RotateMotorEx(byte outputs, char pwr, long angle, char turnpct, bool sync, bool stop);
 
 /**
- * Rotate motor.
+ * Rotate motor Ex with PID factors.
  * Run the specified outputs forward for the specified number of degrees.
- * Specify proportional, integral, and derivative factors.
- *
+ * Specify proportional, integral, and derivative factors. Also specify
+ * synchronization, turn percentage, and braking options.  Use this function primarily
+ * with more than one motor specified via the outputs parameter.
+ * 
+ * The motor API functions are thread-safe and blocking on the motor resource(s) 
+ * requested. If you call RotateMotor(OUT_AB, 75, 3600) then no other thread will be able 
+ * to control motors A and B until the already executing RotateMotor function finishes. 
+ * But now you can safely call RotateMotor(OUT_A, 75, 3600) on one thread and 
+ * RotateMotor(OUT_B, 75, 720) on another simultaneously executing thread without having 
+ * program errors or erratic motor behavior. 
+ * 
+ * Since the functions do not know at compile time which port is being utilized when you 
+ * use a variable as the port parameter, the RotateMotor functions acquire all three 
+ * motor port resources for the duration of their operation in that case. So you can 
+ * safely call RotateMotor using a variable for the port parameter on two 
+ * simultaneously executing threads but one of the two calls will be blocked until
+ * the first one has completed executing.
+ * 
  * \param outputs Desired output ports. Can be a constant or a variable, see
  * \ref OutputPortConstants. If you use a variable and want to control multiple
  * outputs in a single call you need to use a byte array rather than a byte and
@@ -1801,6 +1840,27 @@ inline byte MotorRegulationTime();
 inline byte MotorRegulationOptions();
 
 #else
+
+enum OutputFieldNames {
+  UpdateFlags,
+  OutputMode,
+  Power,
+  ActualSpeed,
+  TachoCount,
+  TachoLimit,
+  RunState,
+  TurnRatio,
+  RegMode,
+  Overload,
+  RegPValue,
+  RegIValue,
+  RegDValue,
+  BlockTachoCount,
+  RotationCount,
+  OutputOptions,
+  MaxSpeed,
+  MaxAcceleration
+};
 
 // output fields
 #define MotorMode(_p) GetOutput(_p, OutputMode)
@@ -4927,6 +4987,70 @@ inline variant ArrayMax(const variant & src[], unsigned int idx, unsigned int le
 inline void ArraySort(variant & dest[], const variant & src[], unsigned int idx, unsigned int len);
 
 /**
+ * Uppercase the characters in a string.
+ * This function uppercases all of the characters in the src string.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ *
+ * \param src The source string.
+ * \return The uppercased string.
+ *
+ * \warning You cannot use NXC expressions with this function
+ */
+inline string UpperCase(string src);
+
+/**
+ * Lowercase the characters in a string.
+ * This function lowercases all of the characters in the src string.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ *
+ * \param src The source string.
+ * \return The lowercased string.
+ *
+ * \warning You cannot use NXC expressions with this function
+ */
+inline string LowerCase(string src);
+
+/**
+ * Uppercase some of the characters in a string.
+ * This function uppercases all or a subset of the characters in the
+ * src string.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ *
+ * \param src The source string.
+ * \param idx The index of the start of the string subset to process. Pass
+ * \ref NA to start with the first character.
+ * \param len The number of characters to uppercase. Pass
+ * \ref NA to include the rest of the characters in the src string (from idx to
+ * the end of the string).
+ * \return The uppercased string.
+ *
+ * \warning You cannot use NXC expressions with this function
+ */
+inline string UpperCaseEx(string src, unsigned int idx, unsigned int len);
+
+/**
+ * Lowercase some of the characters in a string.
+ * This function lowercases all or a subset of the characters in the
+ * src string.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ *
+ * \param src The source string.
+ * \param idx The index of the start of the string subset to process. Pass
+ * \ref NA to start with the first character.
+ * \param len The number of characters to lowercase. Pass
+ * \ref NA to include the rest of the characters in the src string (from idx to
+ * the end of the string).
+ * \return The lowercased string.
+ *
+ * \warning You cannot use NXC expressions with this function
+ */
+inline string LowerCaseEx(string src, unsigned int idx, unsigned int len);
+
+/**
  * Operate on numeric arrays.
  * This function lets you perform various operations on numeric arrays.
  *
@@ -4978,6 +5102,10 @@ inline void ArrayOp(const byte op, variant & dest, const variant & src[], unsign
 #define ArrayMin(_src, _idx, _len) asm { arrop OPARR_MIN, __GENRETVAL__, _src, _idx, _len }
 #define ArrayMax(_src, _idx, _len) asm { arrop OPARR_MAX, __GENRETVAL__, _src, _idx, _len }
 #define ArraySort(_dest, _src, _idx, _len) asm { arrop OPARR_SORT, _dest, _src, _idx, _len }
+#define UpperCase(_src) asm { arrop OPARR_TOUPPER, __STRRETVAL__, _src, NA, NA }
+#define LowerCase(_src) asm { arrop OPARR_TOLOWER, __STRRETVAL__, _src, NA, NA }
+#define UpperCaseEx(_src, _idx, _len) asm { arrop OPARR_TOUPPER, __STRRETVAL__, _src, _idx, _len }
+#define LowerCaseEx(_src, _idx, _len) asm { arrop OPARR_TOLOWER, __STRRETVAL__, _src, _idx, _len }
 #define ArrayOp(_op, _dest, _src, _idx, _len) asm { arrop _op, _dest, _src, _idx, _len }
 #endif
 
@@ -8261,7 +8389,7 @@ struct ReadButtonType {
  * \param resetCount Whether or not to reset the press counter.
  * \return A boolean value indicating whether the button is pressed or not.
  */
-inline bool ButtonPressed(const byte btn, bool resetCount);
+inline bool ButtonPressed(const byte btn, bool resetCount = false);
 
 /**
  * Get button press count.
@@ -8273,7 +8401,7 @@ inline bool ButtonPressed(const byte btn, bool resetCount);
  * \param resetCount Whether or not to reset the press counter.
  * \return The button press count.
  */
-inline byte ButtonCount(const byte btn, bool resetCount);
+inline byte ButtonCount(const byte btn, bool resetCount = false);
 
 /**
  * Read button information.

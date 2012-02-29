@@ -1,0 +1,65 @@
+#download "tahoma8.ric"
+#import "Tiny_6.ric"
+
+task main()
+{
+  unsigned int i, s, f, diff;
+  s = CurrentTick();
+  for(int i=0; i<1000; i++) {
+    TextOut(0,LCD_LINE1,"Cicero scripsit:");
+    TextOut(0,LCD_LINE2,"Neque porro quisquam");
+    TextOut(0,LCD_LINE3,"est, qui dolorem");
+    TextOut(0,LCD_LINE4,"ipsum,quia dolor sit");
+    TextOut(0,LCD_LINE5,"amet, consectetur,");
+    TextOut(0,LCD_LINE6,"adipisci con velit-");
+    TextOut(0,LCD_LINE7,"Sed Cicero");
+    TextOut(0,LCD_LINE8,"erat iniuriam:");
+
+    TextOut(0,LCD_LINE1,"Neque porro quisquam");
+    TextOut(0,LCD_LINE2,"est, qui dolorem");
+    TextOut(0,LCD_LINE3,"ipsum,quia dolor sit");
+    TextOut(0,LCD_LINE4,"amet, consectetur,");
+    TextOut(0,LCD_LINE5,"adipisci con velit-");
+    TextOut(0,LCD_LINE6,"Sed Cicero");
+    TextOut(0,LCD_LINE7,"erat iniuriam:");
+    TextOut(0,LCD_LINE8,"Redundant est!");
+  }
+  f = CurrentTick();
+  diff = f - s;
+  ClearScreen();
+  NumOut(0,LCD_LINE1,diff);
+
+  FontTextOut(0,LCD_LINE3,"tahoma8.ric", "Cicero scripsit:");
+  FontTextOut(0,LCD_LINE5,"", "Cicero scripsit:");
+  TextOut(0,LCD_LINE6,"Cicero scripsit:");
+  FontTextOut(0,LCD_LINE8,Tiny_6, "Cicero scripsit:");
+
+/*
+  Wait(SEC_5);
+  s = CurrentTick();
+  for(int i=0; i<1000; i++) {
+    FontTextOut(0,LCD_LINE1,"tahoma8.ric", "Cicero scripsit:");
+    FontTextOut(0,LCD_LINE2,"tahoma8.ric", "Neque porro quisquam");
+    FontTextOut(0,LCD_LINE3,"tahoma8.ric", "est, qui dolorem");
+    FontTextOut(0,LCD_LINE4,"tahoma8.ric", "ipsum,quia dolor sit");
+    FontTextOut(0,LCD_LINE5,"tahoma8.ric", "amet, consectetur,");
+    FontTextOut(0,LCD_LINE6,"tahoma8.ric", "adipisci con velit-");
+    FontTextOut(0,LCD_LINE7,"tahoma8.ric", "Sed Cicero");
+    FontTextOut(0,LCD_LINE8,"tahoma8.ric", "erat iniuriam:");
+
+    FontTextOut(0,LCD_LINE1,"tahoma8.ric", "Neque porro quisquam");
+    FontTextOut(0,LCD_LINE2,"tahoma8.ric", "est, qui dolorem");
+    FontTextOut(0,LCD_LINE3,"tahoma8.ric", "ipsum,quia dolor sit");
+    FontTextOut(0,LCD_LINE4,"tahoma8.ric", "amet, consectetur,");
+    FontTextOut(0,LCD_LINE5,"tahoma8.ric", "adipisci con velit-");
+    FontTextOut(0,LCD_LINE6,"tahoma8.ric", "Sed Cicero");
+    FontTextOut(0,LCD_LINE7,"tahoma8.ric", "erat iniuriam:");
+    FontTextOut(0,LCD_LINE8,"tahoma8.ric", "Redundant est!");
+  }
+  f = CurrentTick();
+  diff = f - s;
+  ClearScreen();
+  NumOut(0,LCD_LINE1,diff);
+*/
+  while(true);
+}

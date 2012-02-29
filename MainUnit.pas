@@ -694,6 +694,7 @@ type
     function DoNewHelp(const Filename : string; Command: Word; Data: Integer;
       var CallHelp: Boolean): Boolean;
     procedure HelpQuit;
+    procedure UpdateCEPanel;
   public
     { Public declarations }
     procedure HandleOnCompilerStatusChange(Sender: TObject; const StatusMsg: string; const bDone : boolean);
@@ -1102,6 +1103,7 @@ begin
      FileExists(DefaultMacroLibrary) then
     frmMacroManager.CurrentLibraryPath := DefaultMacroLibrary;
   ConfigureOtherFirmwareOptions;
+  UpdateCEPanel;
 end;
 
 {Reacting on dropping a file on the form}
@@ -1701,8 +1703,7 @@ end;
 procedure TMainForm.ShowCodeExplorer;
 begin
   frmCodeExplorer.Show;
-  pnlCodeExplorer.Visible := True;
-  splCodeExplorer.Visible := True;
+  UpdateCEPanel;
   frmCodeExplorer.FormShow(Self);
 end;
 
@@ -3477,16 +3478,12 @@ begin
 end;
 
 procedure TMainForm.ShowTemplates(bSave : boolean);
-var
-  bVisible : boolean;
 begin
   ConstructForm.ActiveLanguageIndex := ActiveLanguageIndex;
   ConstructForm.Rebuild(bSave);
   ConstructForm.Show;
   ConstructForm.FormShow(Self);
-  bVisible := pnlCodeExplorer.VisibleDockClientCount > 0;
-  pnlCodeExplorer.Visible := bVisible;
-  splCodeExplorer.Visible := bVisible;
+  UpdateCEPanel;
 end;
 
 procedure TMainForm.cbrTopDockOver(Sender: TObject;
@@ -7221,6 +7218,16 @@ end;
 procedure TMainForm.actToolsSimpleTermExecute(Sender: TObject);
 begin
   frmSimpleTerm.Visible := not frmSimpleTerm.Visible;
+end;
+
+procedure TMainForm.UpdateCEPanel;
+var
+  bVisible : boolean;
+begin
+  bVisible := pnlCodeExplorer.VisibleDockClientCount > 0;
+  pnlCodeExplorer.Visible := bVisible;
+  splCodeExplorer.Visible := bVisible;
+  splCodeExplorer.Left := pnlCodeExplorer.Width + 10;
 end;
 
 initialization

@@ -100,7 +100,7 @@ Conditionals=FAST_MM
 DebugSourceDirs=
 UsePackages=0
 [Parameters]
-RunParams=-poll=65,0
+RunParams=-btdevice=1
 HostApplication=
 Launcher=
 UseLauncher=0

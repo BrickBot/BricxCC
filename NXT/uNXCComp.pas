@@ -8770,11 +8770,11 @@ begin
   push;
   btn := tos;
   EmitLn(Format('mov %s, %s', [btn, RegisterName]));
-  MatchString(TOK_COMMA);
-  // arg2 = reset?
-  BoolExpression;
   if idx = APIF_READBUTTONEX then
   begin
+    MatchString(TOK_COMMA);
+    // arg2 = reset?
+    BoolExpression;
     // two output args
     MatchString(TOK_COMMA);
     // pressed
@@ -8788,6 +8788,19 @@ begin
     CheckIdent;
     CheckTable(Value);
     Next;
+  end
+  else
+  begin
+    if Value = TOK_COMMA then
+    begin
+      MatchString(TOK_COMMA);
+      // arg2 = reset?
+      BoolExpression;
+    end
+    else
+    begin
+      EmitLn(Format('mov %s, %d', [RegisterName, 0]));
+    end;
   end;
   CloseParen;
   EmitLn('acquire __RBtnMutex');
@@ -9597,7 +9610,7 @@ begin
   S.Write(nbc_common_data, High(nbc_common_data)+1);
   S.Write(nxc_defs_data, High(nxc_defs_data)+1);
 //  tmp := Format('#line 0 "%s"'#13#10, [CurrentFile]);
-  tmp := '#reset'#13#10;
+  tmp := #13#10'#reset'#13#10;
   S.Write(PChar(tmp)^, Length(tmp));
 end;
 

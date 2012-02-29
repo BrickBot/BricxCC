@@ -34,6 +34,7 @@ object frmSimpleTerm: TfrmSimpleTerm
     OnKeyPress = mmoTermKeyPress
   end
   object tmrPoll: TTimer
+    Enabled = False
     Interval = 50
     OnTimer = tmrPollTimer
     Left = 40

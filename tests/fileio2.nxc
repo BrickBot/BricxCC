@@ -1,0 +1,69 @@
+struct Rectangle {
+  byte x, y;
+  byte width, height;
+};
+
+Rectangle data[];
+
+void InitRectangles()
+{
+  byte count = Random(50)+10;
+  Rectangle r;
+  ArrayInit(data, r, count);
+  for (int i=0; i < count; i++)
+  {
+    r.x = Random(80);
+    r.y = Random(44);
+    r.width = Random(10)+10;
+    r.height = Random(10)+10;
+    data[i] = r;
+  }
+}
+
+void DrawRectangles()
+{
+  for (int i=0; i < ArrayLen(data); i++)
+  {
+     Rectangle r = data[i];
+     RectOut(r.x, r.y, r.width, r.height);
+  }
+  Wait(SEC_5);
+  ClearScreen();
+}
+
+task main()
+{
+  Rectangle r;
+  InitRectangles();
+  string fname = "rects.bin";
+  remove(fname);
+  DrawRectangles();
+  int size = SizeOf(data);
+  byte handle;
+  if (CreateFile(fname, size, handle) == LDR_SUCCESS)
+  {
+    Write(handle, data);
+    fclose(handle);
+  }
+  Wait(SEC_5);
+  if (OpenFileRead(fname, size, handle) == LDR_SUCCESS)
+  {
+    byte count = size/SizeOf(r);
+    // create a template for reading from the file
+    ArrayInit(data, r, count);
+    Read(handle, data);
+    fclose(handle);
+  }
+  DrawRectangles();
+  // translate all the rectangles to the right 10 pixels
+/*
+  r.x = 10;
+  r.y = 0;
+  r.width = 0;
+  r.height = 0;
+  for (int i=0; i < ArrayLen(data); i++)
+    data[i] += r;
+*/
+  data += 10;
+  DrawRectangles();
+}

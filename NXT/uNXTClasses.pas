@@ -957,8 +957,8 @@ const
   );
 
   StandardOpcodeCount2x = 56;
-  EnhancedOpcodeCount2x = 38;
-  PseudoOpcodeCount2x   = 39;
+  EnhancedOpcodeCount2x = 45;
+  PseudoOpcodeCount2x   = 42;
   NXTInstructionsCount2x = StandardOpcodeCount2x+EnhancedOpcodeCount2x+PseudoOpcodeCount2x;
   NXTInstructions2x : array[0..NXTInstructionsCount2x-1] of NXTInstruction =
   (
@@ -1057,6 +1057,13 @@ const
     ( Encoding: OPS_SINHD_2      ; CCType: 0; Arity: 2; Name: 'sinhd'; ),
     ( Encoding: OPS_ATAN2D_2     ; CCType: 0; Arity: 3; Name: 'atan2d'; ),
     ( Encoding: OPS_ADDROF       ; CCType: 0; Arity: 3; Name: 'addrof'; ),
+    ( Encoding: OPS_FINCLUMPVAR  ; CCType: 0; Arity: 1; Name: 'exittovar'; ),
+    ( Encoding: OPS_SUBCALLVAR   ; CCType: 0; Arity: 2; Name: 'subcallvar'; ),
+    ( Encoding: OPS_STOPCLUMPVAR ; CCType: 0; Arity: 1; Name: 'stopthreadvar'; ),
+    ( Encoding: OPS_STARTVAR     ; CCType: 0; Arity: 1; Name: 'startvar'; ),
+    ( Encoding: OPS_JMPABSVAR    ; CCType: 0; Arity: 1; Name: 'jmpabsvar'; ),
+    ( Encoding: OPS_BRCMPABSVAR  ; CCType: 0; Arity: 3; Name: 'brcmpabsvar'; ),
+    ( Encoding: OPS_BRTSTABSVAR  ; CCType: 0; Arity: 2; Name: 'brtstabsvar'; ),
 // pseudo-opcodes
     ( Encoding: OPS_THREAD       ; CCType: 0; Arity: 0; Name: 'thread'; ),
     ( Encoding: OPS_ENDT         ; CCType: 0; Arity: 0; Name: 'endt'; ),
@@ -1096,7 +1103,10 @@ const
     ( Encoding: OPS_COMPIF       ; CCType: 0; Arity: 3; Name: 'compif'; ),
     ( Encoding: OPS_COMPELSE     ; CCType: 0; Arity: 0; Name: 'compelse'; ),
     ( Encoding: OPS_COMPEND      ; CCType: 0; Arity: 0; Name: 'compend'; ),
-    ( Encoding: OPS_COMPCHKTYPE  ; CCType: 0; Arity: 2; Name: 'compchktype'; )
+    ( Encoding: OPS_COMPCHKTYPE  ; CCType: 0; Arity: 2; Name: 'compchktype'; ),
+    ( Encoding: OPS_CALLVAR      ; CCType: 0; Arity: 1; Name: 'callvar'; ),
+    ( Encoding: OPS_SETCLUMP     ; CCType: 0; Arity: 2; Name: 'setclump'; ),
+    ( Encoding: OPS_SETLABEL     ; CCType: 0; Arity: 2; Name: 'setlabel'; )
   );
 
 type
@@ -1771,7 +1781,9 @@ begin
     OP_ARRSIZE, OP_ARRBUILD,
     OP_FLATTEN, OP_UNFLATTEN, OP_NUMTOSTRING,
     OP_STRCAT, OP_STRTOBYTEARR, OP_BYTEARRTOSTR,
-    OP_ACQUIRE, OP_RELEASE, OP_SUBRET, OP_GETTICK :
+    OP_ACQUIRE, OP_RELEASE, OP_SUBRET, OP_GETTICK,
+    OPS_FINCLUMPVAR, OPS_SUBCALLVAR, OPS_STOPCLUMPVAR,
+    OPS_STARTVAR, OPS_JMPABSVAR, OPS_BRCMPABSVAR, OPS_BRTSTABSVAR :
     begin
       Result := TOCNameFromArg(DS, argValue);
     end;
@@ -4550,7 +4562,7 @@ begin
   S.Write(PChar(tmp)^, Length(tmp));
   S.Write(nbc_common_data, High(nbc_common_data)+1);
   S.Write(nxt_defs_data, High(nxt_defs_data)+1);
-  tmp := '#reset'#13#10;
+  tmp := #13#10'#reset'#13#10;
   S.Write(PChar(tmp)^, Length(tmp));
 end;
 
@@ -4684,7 +4696,7 @@ begin
     OP_ADD..OP_GETTICK : Result := altCode;
     OPS_WAITV..OPS_POW : Result := altCode; // pseudo opcodes
 //    OPS_SQRT_2..OPS_ABS_2 : Result := altCode; // standard 1.26+ opcodes (included in OPS_WAITV..OPS_POW due to overlap)
-    OPS_WAITI_2..OPS_ADDROF : Result := altCode; // enhanced 1.26+ opcodes
+    OPS_WAITI_2..OPS_BRTSTABSVAR : Result := altCode; // enhanced 1.26+ opcodes
     OPS_SEGMENT : Result := altBeginDS;
     OPS_ENDS :
       if state in [masStruct, masStructDSClump, masStructDSClumpSub] then
@@ -4700,7 +4712,7 @@ begin
     OPS_STRUCT : Result := altBeginStruct;
     OPS_REQUIRES, OPS_USES : Result := altCodeDepends;
     OPS_DB..OPS_FLOAT : Result := altVarDecl;
-    OPS_CALL..OPS_COMPCHKTYPE : Result := altCode; // pseudo opcodes
+    OPS_CALL..OPS_SETLABEL : Result := altCode; // pseudo opcodes
   else
     // if the opcode isn't known perhaps it is a typedef
     if state in [masDataSegment, masStruct, masDSClump, masStructDSClump,
@@ -5670,6 +5682,30 @@ begin
       else
         Result := aatVarNoConst;
     end;
+    OPS_FINCLUMPVAR, OPS_SUBCALLVAR,
+    OPS_STOPCLUMPVAR, OPS_STARTVAR, OPS_JMPABSVAR, OPS_CALLVAR : begin
+      Result := aatScalarNoConst;
+    end;
+    OPS_BRCMPABSVAR, OPS_BRTSTABSVAR : begin
+      if argIdx = 0 then
+        Result := aatConstant
+      else if argIdx = 1 then
+        Result := aatScalarNoConst
+      else
+        Result := aatVariable;
+    end;
+    OPS_SETCLUMP : begin
+      if argIdx > 0 then
+        Result := aatClumpID
+      else
+        Result := aatScalarNoConst;
+    end;
+    OPS_SETLABEL : begin
+      if argIdx > 0 then
+        Result := aatLabelID
+      else
+        Result := aatScalarNoConst;
+    end;
   else
     Result := aatConstant;
   end;
@@ -5697,7 +5733,7 @@ begin
     OP_ARRSUBSET, OP_STRSUBSET, OP_GETIN, OP_GETOUT,
     OPS_ABS, OPS_SIGN, OPS_SIGN_2, OPS_SHL, OPS_SHR,
     OPS_STRINDEX, OPS_STRREPLACE, OPS_STRLEN, OP_ARRINIT,
-    OPS_FMTNUM, OPS_FMTNUM_2, OPS_ADDROF : begin
+    OPS_FMTNUM, OPS_FMTNUM_2, OPS_ADDROF, OPS_SETCLUMP, OPS_SETLABEL : begin
       if argIdx > 0 then
         Result := aadInput
       else // 0
@@ -5727,10 +5763,12 @@ begin
     OP_SETIN, OP_SETOUT, OP_WAIT, OPS_WAITV_2, OPS_CALL,
     OPS_COMPCHK, OPS_COMPIF, OPS_COMPCHKTYPE,
     OPS_START, OPS_START_2, OPS_STOPCLUMP, OPS_STOPCLUMP_2,
-    OPS_PRIORITY, OPS_PRIORITY_2 : begin
+    OPS_PRIORITY, OPS_PRIORITY_2, OPS_FINCLUMPVAR,
+    OPS_STOPCLUMPVAR, OPS_STARTVAR, OPS_JMPABSVAR,
+    OPS_BRCMPABSVAR, OPS_BRTSTABSVAR, OPS_CALLVAR : begin
       Result := aadInput;
     end;
-    OP_SUBCALL, OP_SYSCALL : begin
+    OP_SUBCALL, OP_SYSCALL, OPS_SUBCALLVAR : begin
       if argIdx = 0 then
         Result := aadInput
       else
@@ -6575,6 +6613,12 @@ begin
       // just replace opcode
       AL.Command := OP_REPLACE;
     end;
+{
+    OPS_SETCLUMP, OPS_SETLABEL : begin
+      // just replace opcode
+      AL.Command := OP_SET;
+    end;
+}
     OPS_COMPCHK : begin
       AL.Command := OPS_INVALID; // make this line a no-op
       DoCompilerCheck(AL);
@@ -6648,7 +6692,9 @@ begin
       end;
     end;
     OPS_STOPCLUMP, OPS_PRIORITY, OPS_FMTNUM,
-    OPS_STOPCLUMP_2, OPS_PRIORITY_2, OPS_FMTNUM_2 : begin
+    OPS_STOPCLUMP_2, OPS_PRIORITY_2, OPS_FMTNUM_2,
+    OPS_FINCLUMPVAR, OPS_SUBCALLVAR, OPS_STOPCLUMPVAR, OPS_STARTVAR,
+    OPS_JMPABSVAR, OPS_BRCMPABSVAR, OPS_BRTSTABSVAR : begin
       if not EnhancedFirmware then
       begin
         // replace with no-op if not running enhanced firmware and report error
@@ -6657,9 +6703,22 @@ begin
         AL.Command := OPS_INVALID;
       end;
     end;
-    OPS_CALL : begin
+    OPS_CALL, OPS_CALLVAR : begin
       // subcall with automatic return address variable.
-      AL.Command := OP_SUBCALL;
+      if op = OPS_CALLVAR then
+      begin
+        if not EnhancedFirmware then
+        begin
+          // replace with no-op if not running enhanced firmware and report error
+          ReportProblem(AL.LineNum, GetCurrentFile(true), AL.AsString,
+            Format(sInvalidOpcode, [OpcodeToStr(Al.Command)]), true);
+          AL.Command := OPS_INVALID;
+        end
+        else
+          AL.Command := OPS_SUBCALLVAR;
+      end
+      else
+        AL.Command := OP_SUBCALL;
       Arg := AL.Args.Add;
       Arg.Value := Format('__%s_return', [AL.Args[0].Value]);
       if not fIgnoreLines then
@@ -7743,7 +7802,8 @@ begin
           // some opcodes have clump IDs as their arguments.  Those need
           // special handling.
           if ((Command in [OP_SUBCALL, OPS_CALL, OPS_PRIORITY, OPS_PRIORITY_2]) and (i = 0)) or
-             (Command in [OP_FINCLUMPIMMED, OPS_START, OPS_STOPCLUMP, OPS_START_2, OPS_STOPCLUMP_2]) then
+             (Command in [OP_FINCLUMPIMMED, OPS_START, OPS_STOPCLUMP, OPS_START_2, OPS_STOPCLUMP_2]) or
+             ((Command = OPS_SETCLUMP) and (i = 1)) then
           begin
             // try to lookup the clump # from the clump name
             dsid := CodeSpace.IndexOf(Arg.Value);
@@ -7759,7 +7819,8 @@ begin
               begin
                 // id is start address of line containing label
                 // we need to calculate positive or negative offset
-                dsid := dsid - StartAddress;
+                if Command <> OPS_SETLABEL then
+                  dsid := dsid - StartAddress;
               end
               else
                 HandleNameToDSID(Arg.Value, dsid);
@@ -7774,6 +7835,8 @@ begin
           dsid := Integer(Trunc(Arg.Evaluate(CodeSpace.Calc)));
         Arg.fDSID := dsid;
       end;
+      if Command in [OPS_SETCLUMP, OPS_SETLABEL] then
+        Command := OP_SET;
     end;
   end;
 end;
@@ -8040,6 +8103,7 @@ var
   i, j : integer;
   C : TClump;
   AL : TAsmLine;
+  arg : string;
 begin
   // build references
   for i := 0 to Count - 1 do
@@ -8057,6 +8121,14 @@ begin
         // a clump name argument
         if AL.Args.Count > 0 then
           AddReferenceIfPresent(C, AL.Args[0].Value);
+      end
+      else if (AL.Command = OPS_SETCLUMP) and (AL.Args.Count > 1) then
+      begin
+        arg := AL.Args[1].Value;
+        if IsValidIdent(arg) then
+        begin
+          AddReferenceIfPresent(C, arg); // if 2nd arg is a Clump name
+        end;
       end;
     end;
     // downstream clumps
@@ -9627,6 +9699,10 @@ begin
         SL.Add(AL.Args[0].Value); // first argument is label
       end
       else if AL.Command in [OP_BRCMP, OP_BRTST] then
+      begin
+        SL.Add(AL.Args[1].Value); // second argument is label
+      end
+      else if AL.Command = OPS_SETLABEL then
       begin
         SL.Add(AL.Args[1].Value); // second argument is label
       end;

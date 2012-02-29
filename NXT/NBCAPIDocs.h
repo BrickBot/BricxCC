@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-10-10
- * \version 9
+ * \date 2012-02-06
+ * \version 10
  */
 #ifndef NBCAPIDOCS_H
 #define NBCAPIDOCS_H
@@ -248,7 +248,10 @@
  * <tr><td>frac</td><td>atan2</td><td>pow</td><td>muldiv</td></tr>
  * <tr><td>acosd</td><td>asind</td><td>atand</td><td>tand</td></tr>
  * <tr><td>tanhd</td><td>cosd</td><td>coshd</td><td>sind</td></tr>
- * <tr><td>sinhd</td><td>atan2d</td><td>addrof</td><td>&nbsp;</td></tr>
+ * <tr><td>sinhd</td><td>atan2d</td><td>addrof</td><td>exittovar</td></tr>
+ * <tr><td>subcallvar</td><td>stopthreadvar</td><td>startvar</td><td>jmpabsvar</td></tr>
+ * <tr><td>brcmpabsvar</td><td>brtstabsvar</td><td>callvar</td><td>setclump</td></tr>
+ * <tr><td>setlabel</td><td>&nbsp;</td><td>&nbsp;</td><td>&nbsp;</td></tr>
  * </table>
  * </center>
  * 
@@ -1232,11 +1235,13 @@
  * \brief Assignment Statements
  *
  * Assignment statements enable you to copy values from one variable to another
- * or to simply set the value of a variable.  In NBC there are two ways to assign
+ * or to simply set the value of a variable.  In NBC there are five ways to assign
  * a new value to a variable.
  *
  * - @subpage mov
  * - @subpage set
+ * - @subpage setclump
+ * - @subpage setlabel
  * - @subpage addrof
  *
  */
@@ -1277,6 +1282,32 @@
  * Because all arguments must fit into a 2-byte value in the NXT executable, the
  * second argument of the set statement is limited to a 16 bit signed or unsigned
  * value (-32768..65535).
+ *
+ */
+
+/** @page setclump setclump
+ * \brief The setclump statement
+ *
+ * The setclump statement assigns its first argument to have the value of
+ * its second argument.  The first argument must be the name of a variable.
+ * It must be a scalar type.  The second argument must be a thread (aka clump) name.
+ * The syntax of the setclump statement is shown below.
+ * \code
+ * setclump x, MyFunction  // set x equal to the numeric value of MyFunction
+ * \endcode
+ *
+ */
+
+/** @page setlabel setlabel
+ * \brief The setlabel statement
+ *
+ * The setlabel statement assigns its first argument to have the value of
+ * its second argument.  The first argument must be the name of a variable.
+ * It must be a scalar type.  The second argument must be a label name.
+ * The syntax of the setlabel statement is shown below.
+ * \code
+ * setlabel x, MyLabel  // set x equal to the address of MyLabel
+ * \endcode
  *
  */
 
@@ -2129,6 +2160,9 @@
  * - @subpage jmp
  * - @subpage brcmp
  * - @subpage brtst
+ * - @subpage jmpabsvar
+ * - @subpage brcmpabsvar
+ * - @subpage brtstabsvar
  * - @subpage stop
  *
  */
@@ -2168,6 +2202,45 @@
  * execution should resume. The syntax of the brtst statement is shown below.
  * \code
  * brtst GT, lblXGTZero, x // jump to lblXGTZero if x > 0
+ * \endcode
+ *
+ */
+
+/** @page jmpabsvar jmpabsvar
+ * \brief The jmpabsvar Statement
+ *
+ * The jmpabsvar statement lets you unconditionally jump from the current execution
+ * point to a new location.  Its only argument is a variable that specifies where
+ * program execution should resume. The syntax of the jmpabsvar statement is
+ * shown below.
+ * \code
+ * jmpabsvar var // jump to the label address specified by var
+ * \endcode
+ *
+ */
+
+/** @page brcmpabsvar brcmpabsvar
+ * \brief The brcmpabsvar Statement
+ *
+ * The brcmpabsvar statement lets you conditionally jump from the current execution
+ * point to a new location.  It is like the cmp statement except that instead
+ * of an output argument it has a variable argument that specifies where program
+ * execution should resume. The syntax of the brcmpabsvar statement is shown below.
+ * \code
+ * brcmpabsvar EQ, var, x, y // jump to the loop addres specified by var if x == y
+ * \endcode
+ *
+ */
+
+/** @page brtstabsvar brtstabsvar
+ * \brief The brtstabsvar Statement
+ *
+ * The brtstabsvar statement lets you conditionally jump from the current execution
+ * point to a new location.  It is like the tst statement except that instead
+ * of an output argument it has a variable argument that specifies where program
+ * execution should resume. The syntax of the brtstabsvar statement is shown below.
+ * \code
+ * brtstabsvar GT, var, x // jump to the loop address specified by var if x > 0
  * \endcode
  *
  */
@@ -3455,10 +3528,13 @@
  * The arrop statement lets you perform several different operations on
  * an array containing numeric values.  The operations are \ref OPARR_SUM,
  * \ref OPARR_MEAN, \ref OPARR_SUMSQR, \ref OPARR_STD, \ref OPARR_MIN,
- * \ref OPARR_MAX, and \ref OPARR_SORT.
+ * \ref OPARR_MAX, \ref OPARR_SORT, \ref OPARR_TOUPPER, and \ref OPARR_TOLOWER.
  *
  * In the case of \ref OPARR_SORT the output parameter should be an array of the
- * same type as the input array. In all the other cases it can be any
+ * same type as the input array. With \ref OPARR_TOUPPER and \ref OPARR_TOLOWER
+ * the input and output parameters should both be strings.
+ *
+ * In all the other cases the output parameter can be any
  * scalar type large enough to hold the resulting value. If the data in the
  * array is of the float type then the output should also be of the float
  * type.
@@ -3472,6 +3548,7 @@
  * // arrop op, dest, src, start, len
  * arrop OPARR_SUM, sum, data, NA, NA
  * arrop OPARR_SORT, data2, data, NA, NA
+ * arrop OPARR_TOLOWER, str_out, str_in, NA, NA
  * \endcode
  *
  */
@@ -3671,16 +3748,21 @@
  *
  * - @subpage exit
  * - @subpage exitto
+ * - @subpage exittovar
  * - @subpage start
+ * - @subpage startvar
  * - @subpage stopthread
+ * - @subpage stopthreadvar
  * - @subpage priority
  * - @subpage precedes
  * - @subpage follows
  * - @subpage acquire
  * - @subpage release
  * - @subpage subcall
+ * - @subpage subcallvar
  * - @subpage subret
  * - @subpage call
+ * - @subpage callvar
  * - @subpage return
  *
  */
@@ -3713,6 +3795,18 @@
  *
  */
 
+/** @page exittovar exittovar
+ * \brief The exittovar Statement
+ *
+ * The exittovar statement exits the current thread and schedules the
+ * specified thread to begin executing. The syntax of the exittovar
+ * statement is shown below.
+ * \code
+ * exittovar var // exit now and schedule another thread specified by var
+ * \endcode
+ *
+ */
+
 /** @page start start
  * \brief The start Statement
  *
@@ -3728,6 +3822,21 @@
  *
  */
 
+/** @page startvar startvar
+ * \brief The startvar Statement
+ *
+ * The startvar statement causes the thread specified in the statement to
+ * start running immediately. Using the standard NXT firmware this
+ * statement is implemented by the compiler using a set of
+ * compiler-generated subroutines. The enhanced NBC/NXC firmware
+ * implements this statement natively. The syntax of the startvar
+ * statement is shown below.
+ * \code
+ * startvar var  // start another thread specified by var
+ * \endcode
+ *
+ */
+
 /** @page stopthread stopthread
  * \brief The stopthread Statement
  *
@@ -3737,6 +3846,19 @@
  * NBC/NXC firmware. The syntax of the stopthread statement is shown below.
  * \code
  * stopthread worker  // stop the worker thread
+ * \endcode
+ *
+ */
+
+/** @page stopthreadvar stopthreadvar
+ * \brief The stopthreadvar Statement
+ *
+ * The stopthreadvar statement causes the thread specified in the
+ * statement to stop running immediately. This statement cannot be used
+ * with the standard NXT firmware. It is supported by the enhanced
+ * NBC/NXC firmware. The syntax of the stopthreadvar statement is shown below.
+ * \code
+ * stopthreadvar var  // stop the thread specified by var
  * \endcode
  *
  */
@@ -3818,6 +3940,19 @@
  *
  */
 
+/** @page subcallvar subcallvar
+ * \brief The subcallvar Statement
+ *
+ * The subcallvar statement calls into the named thread/subroutine and waits
+ * for a return (which might not come from the same thread). The second
+ * argument is a variable used to store the return address. The syntax
+ * of the subcallvar statement is shown below.
+ * \code
+ * subcallvar var, retDrawText  // call the subroutine specified by var
+ * \endcode
+ *
+ */
+
 /** @page subret subret
  * \brief The subret Statement
  *
@@ -3839,6 +3974,19 @@
  * is shown below.
  * \code
  * call MyFavoriteSubroutine  // call routine
+ * \endcode
+ *
+ */
+
+/** @page callvar callvar
+ * \brief The callvar Statement
+ *
+ * The callvar statement executes the named subroutine and waits for a
+ * return.  The argument should specify a thread that was declared
+ * using the subroutine keyword. The syntax of the callvar statement
+ * is shown below.
+ * \code
+ * callvar var  // call the routine specified by var
  * \endcode
  *
  */

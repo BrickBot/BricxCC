@@ -56,6 +56,23 @@ type
     Data : array[0..kNXT_MaxBytes-1] of Byte;
   end;
 
+  NXTConnection = packed record
+    Name : array[0..15] of Char;
+    ClassOfDevice : array[0..3] of Byte;
+    PinCode : array[0..15] of Char;
+    BTAddress : array[0..6] of Byte;
+    HandleNum : byte;
+    StreamStatus : byte;
+    LinkQuality : byte;
+  end;
+
+  NXTDevice = packed record
+    Name : array[0..15] of Char;
+    ClassOfDevice : array[0..3] of Byte;
+    BTAddress : array[0..6] of Byte;
+    DeviceStatus : byte;
+  end;
+
   TNXTFileType = (nftProgram, nftGraphics, nftSound, nftData, nftOther, nftFirmware);
 
   TTransmitLevel = (tlNear, tlFar);
@@ -163,7 +180,7 @@ type
     function  Close : boolean; virtual;
 
     procedure FlushReceiveBuffer; virtual; abstract;
-    procedure SendRawData(const Data : array of byte); virtual; abstract;
+    procedure SendRawData(Data : array of byte); virtual; abstract;
 
     // PBrick sound commands
     function PlayTone(aFreq, aTime : word) : boolean; virtual; abstract;
@@ -365,9 +382,13 @@ type
     function NXTPollCommand(const bufNum : byte; var count : byte;
       var buffer : NXTDataBuffer) : boolean; virtual; abstract;
     function NXTWriteIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; virtual; abstract;
+      var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; overload; virtual; abstract;
+    function NXTWriteIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; buffer : PChar; chkResponse : Boolean = False) : boolean; overload; virtual; abstract;
     function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; var buffer : NXTDataBuffer) : boolean; virtual; abstract;
+      var count : Word; var buffer : NXTDataBuffer) : boolean; overload; virtual; abstract;
+    function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; buffer : PChar) : boolean; overload; virtual; abstract;
     function NXTFindFirstModule(var ModName : string; var Handle : FantomHandle;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; virtual; abstract;
     function NXTFindNextModule(var Handle : FantomHandle; var ModName : string;
@@ -384,6 +405,10 @@ type
     procedure NXTInitializeResourceNames; virtual; abstract;
     procedure NXTUpdateResourceNames; virtual; abstract;
     function NXTDefragmentFlash : Boolean; virtual;
+    function NXTBTDeviceCount : integer;
+    function NXTBTDeviceNameCount : integer;
+    function NXTBTDevice(idx : byte) : NXTDevice;
+    function NXTBTConnection(conn : byte) : NXTConnection;
 
     // properties
     property  EEPROM[addr : Byte] : Byte read GetEEPROM write SetEEPROM;
@@ -436,7 +461,7 @@ procedure LoadLSBlock(var aBlock : NXTLSBlock; str : string; rxCount : integer);
 implementation
 
 uses
-  SysUtils, uGlobals,
+  SysUtils, uGlobals, uNXTConstants,
   {$IFNDEF FPC}
   FANTOM
   {$ELSE}
@@ -922,6 +947,66 @@ begin
   Result := True;
   fLocalFV := 0;
   fLocalIFW := ifUnknown;
+end;
+
+function TBrickComm.NXTBTDeviceCount: integer;
+var
+  buffer : NXTDataBuffer;
+  modID : Cardinal;
+  count : Word;
+begin
+  Result := 0;
+  // IOMapRead CommOffsetBtDeviceCnt
+  modID := kNXT_ModuleComm;
+  count := 1;
+  buffer.Data[0] := 0;
+  if NXTReadIOMap(modID, CommOffsetBtDeviceCnt, count, buffer) then
+    Result := buffer.Data[0];
+end;
+
+function TBrickComm.NXTBTDeviceNameCount: integer;
+var
+  buffer : NXTDataBuffer;
+  modID : Cardinal;
+  count : Word;
+begin
+  Result := 0;
+  // IOMapRead CommOffsetBtDeviceNameCnt
+  modID := kNXT_ModuleComm;
+  count := 1;
+  buffer.Data[0] := 0;
+  if NXTReadIOMap(modID, CommOffsetBtDeviceNameCnt, count, buffer) then
+    Result := buffer.Data[0];
+end;
+
+function TBrickComm.NXTBTConnection(conn: byte): NXTConnection;
+var
+  buffer : NXTDataBuffer;
+  modID : Cardinal;
+  count : Word;
+begin
+  FillChar(Result, SizeOf(Result), 0);
+  // IOMapRead CommOffsetBtDeviceNameCnt
+  modID := kNXT_ModuleComm;
+  count := SizeOf(Result);
+  buffer.Data[0] := 0;
+  if NXTReadIOMap(modID, CommOffsetBtConnectTableName(conn), count, buffer) then
+    Move(PByte(@(buffer.Data[0]))^, Result, count);
+end;
+
+function TBrickComm.NXTBTDevice(idx: byte): NXTDevice;
+var
+  buffer : NXTDataBuffer;
+  modID : Cardinal;
+  count : Word;
+begin
+  FillChar(Result, SizeOf(Result), 0);
+  // IOMapRead CommOffsetBtDeviceNameCnt
+  modID := kNXT_ModuleComm;
+  count := SizeOf(Result);
+  buffer.Data[0] := 0;
+  if NXTReadIOMap(modID, CommOffsetBtDeviceTableName(idx), count, buffer) then
+    Move(PByte(@(buffer.Data[0]))^, Result, count);
 end;
 
 end.

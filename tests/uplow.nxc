@@ -1,0 +1,30 @@
+string test = "Lorem Ipsum Dolor Sit";
+
+task main()
+{
+
+  string upper, lower;
+  upper = UpperCase(test);
+  lower = LowerCase(test);
+  TextOut(0, LCD_LINE6, test);
+  TextOut(0, LCD_LINE7, upper);
+  TextOut(0, LCD_LINE8, lower);
+  for (int j=0; j<16; j++)
+    TextOut(6*j, LCD_LINE6-j, "X");
+//  TextOut(0, LCD_LINE7, "WWWWWWW");
+//  TextOut(0, LCD_LINE8, "OOOOOOO");
+
+/*
+// 9 lines!
+TextOut(0,56,"Cicero scripsit:");
+TextOut(0,49,"Neque porro quisquam");
+TextOut(0,42,"est, qui dolorem");
+TextOut(0,35,"ipsum,quia dolor sit");
+TextOut(0,28,"amet, consectetur,");
+TextOut(0,21,"adipisci con velit-");
+TextOut(0,14,"Sed Cicero");
+TextOut(0, 7,"erat iniuriam:");
+TextOut(0, 0,"Donkey est!");
+*/
+  while(true);
+}

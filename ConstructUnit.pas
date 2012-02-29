@@ -74,6 +74,7 @@ type
     procedure mniDblClickInsertClick(Sender: TObject);
     procedure popOptionsPopup(Sender: TObject);
     function GetActiveLanguageIndex: integer;
+    procedure UpdateCEPanel(bDocking : boolean);
   private
     { Private declarations }
     fDockMe: boolean;
@@ -115,12 +116,15 @@ const IMARGIN = 2;
       IHEIGHT = 16;
 
 function MakeMenuString(constr:string):string;
-var str:string;
-    i:integer;
+var
+  str : string;
+  i : integer;
+  len : integer;
 begin
-  str:='';
-  i:=1;
-  while i<= Length(constr) do
+  str := '';
+  i := 1;
+  len := Length(constr);
+  while i <= len do
   begin
     if constr[i] = '\' then
     begin
@@ -128,7 +132,7 @@ begin
     end else if constr[i] = '"' then
     begin
       str:=str+'..';
-      repeat i:=i+1 until constr[i] = '"';
+      repeat i:=i+1 until (i = len) or (constr[i] = '"');
       i:=i+1;
     end else if Copy(constr, i, 12) = 'SENSOR_MODE_' then
     begin
@@ -263,23 +267,9 @@ end;
 
 procedure TConstructForm.FormClose(Sender: TObject;
   var Action: TCloseAction);
-var
-  CountOK, IAmDocked : boolean;
-  cnt : integer;
 begin
-  // am I one of the panel's dock clients?
-  IAmDocked := HostDockSite <> nil;
-  if IAmDocked then
-    cnt := 1
-  else
-    cnt := 0;
-  if Assigned(dockPanel) then
-  begin
-    CountOK := dockPanel.VisibleDockClientCount > cnt;
-    if Assigned(panelSplitter) then
-      panelSplitter.Visible := CountOK;
-    dockPanel.Visible := CountOK;
-  end;
+  ShowTemplateForm := False;
+  UpdateCEPanel(False); // undocking
 end;
 
 procedure TConstructForm.FormShow(Sender: TObject);
@@ -295,6 +285,7 @@ begin
     ManualDock(dockPanel, nil, alBottom);
   // if we dock we need to restore the tree again
   RestoreTemplateTree;
+  UpdateCEPanel(True); // docking
 end;
 
 procedure TConstructForm.mniExpandAllClick(Sender: TObject);
@@ -508,6 +499,33 @@ begin
     end;
   finally
     R.Free;
+  end;
+end;
+
+procedure TConstructForm.UpdateCEPanel(bDocking : boolean);
+var
+  CountOK : boolean;
+  cnt : integer;
+begin
+  // am I one of the panel's dock clients?
+  if bDocking then
+    cnt := 0
+  else
+  begin
+    if HostDockSite <> nil then
+      cnt := 1
+    else
+      cnt := 0;
+  end;
+  if Assigned(dockPanel) then
+  begin
+    CountOK := dockPanel.VisibleDockClientCount > cnt;
+    if Assigned(panelSplitter) then
+    begin
+      panelSplitter.Visible := CountOK;
+      panelSplitter.Left := dockPanel.Width + 10;
+    end;
+    dockPanel.Visible := CountOK;
   end;
 end;
 

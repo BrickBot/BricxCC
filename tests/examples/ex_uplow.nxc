@@ -1,0 +1,12 @@
+task main()
+{
+  string test = "Lorem Ipsum Dolor Sit";
+  string upper = UpperCase(test);
+  string lower = LowerCase(test);
+  TextOut(0, LCD_LINE1, test);
+  TextOut(0, LCD_LINE2, upper);
+  TextOut(0, LCD_LINE3, lower);
+  upper = UpperCaseEx(test, 1, 10);
+  lower = LowerCaseEx(test, 1, 10);
+  while(true);
+}

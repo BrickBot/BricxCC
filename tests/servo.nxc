@@ -1,0 +1,54 @@
+/*
+task main()
+{
+  char result;
+  SetSensorLowspeed(S2);
+  while (true)
+  {
+    for (int i=150; i <= 200; i += 10) {
+      result = SetNXTServoQuickPosition(S2, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1, i);
+      // Wait a bit for the servo to reach its new position
+      Wait(SEC_1);
+    }
+    for (int i=150; i >= 100; i -= 10) {
+      result = SetNXTServoQuickPosition(S2, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1, i);
+      // Wait a bit for the servo to reach its new position
+      Wait(SEC_1);
+    }
+  }
+}
+
+#include "PSP-Nx-lib.nxc"
+#include "NXTServo-lib.nxc"
+*/
+
+#define ServoPort S1
+#define PSPPort S2
+
+task main ()
+{
+     byte btnset1, btnset2;
+     char xleft, yleft, xright, yright;
+     int Pos_Servo1;
+     int Servo1Speed;
+
+     SetSensorLowspeed(PSPPort);
+     SetSensorLowspeed(ServoPort);
+
+     Pos_Servo1 = 100;
+     Servo1 = 1;
+     while (true) {
+           ReadSensorMSPlayStation(PSPPort, MS_ADDR_PSPNX, btnset1, btnset2, xleft, yleft, xright, yright);
+           Servo1Speed = abs(yright);
+           SetNXTServoSpeed(ServoPort, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1, Servo1Speed);
+           SetNXTServoQuickPosition(ServoPort, MS_ADDR_NXTSERVO, NXTSERVO_SERVO_1, Pos_Servo1);
+           if (yright > 0) {
+             Pos_Servo1 += 2;
+           }
+           else if (yright < 0) {
+             Pos_Servo1 -= 2;
+           }
+           Wait (100);
+     }
+}
+
