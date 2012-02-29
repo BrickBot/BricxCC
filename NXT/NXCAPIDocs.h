@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-10-16
- * \version 22
+ * \date 2012-02-06
+ * \version 23
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -5416,6 +5416,9 @@
  * \ref SensorDIAcclStatus, \ref ReadSensorDIAccl8Raw, \ref ReadSensorDIAccl8,
  * \ref ReadSensorDIAcclRaw, and \ref ReadSensorDIAccl functions.
  *
+ * \example ex_uplow.nxc
+ * This is an example of how to use the \ref UpperCase, \ref LowerCase,
+ * \ref UpperCaseEx, and \ref LowerCaseEx functions.
  *
 */
 

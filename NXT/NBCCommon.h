@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-10-10
- * \version 69
+ * \date 2012-02-06
+ * \version 70
  */
 
 #ifndef NBCCOMMON_H
@@ -59,13 +59,15 @@
  * @{
  */
 // array operation definitions
-#define OPARR_SUM    0x00 /*!< Calculate the sum of the elements in the numeric input array */
-#define OPARR_MEAN   0x01 /*!< Calculate the mean value for the elements in the numeric input array */
-#define OPARR_SUMSQR 0x02 /*!< Calculate the sum of the squares of the elements in the numeric input array */
-#define OPARR_STD    0x03 /*!< Calculate the standard deviation of the elements in the numeric input array */
-#define OPARR_MIN    0x04 /*!< Calculate the minimum value of the elements in the numeric input array */
-#define OPARR_MAX    0x05 /*!< Calculate the maximum value of the elements in the numeric input array */
-#define OPARR_SORT   0x06 /*!< Sort the elements in the numeric input array */
+#define OPARR_SUM     0x00 /*!< Calculate the sum of the elements in the numeric input array */
+#define OPARR_MEAN    0x01 /*!< Calculate the mean value for the elements in the numeric input array */
+#define OPARR_SUMSQR  0x02 /*!< Calculate the sum of the squares of the elements in the numeric input array */
+#define OPARR_STD     0x03 /*!< Calculate the standard deviation of the elements in the numeric input array */
+#define OPARR_MIN     0x04 /*!< Calculate the minimum value of the elements in the numeric input array */
+#define OPARR_MAX     0x05 /*!< Calculate the maximum value of the elements in the numeric input array */
+#define OPARR_SORT    0x06 /*!< Sort the elements in the numeric input array */
+#define OPARR_TOUPPER 0x07 /*!< Uppercase the input string */
+#define OPARR_TOLOWER 0x08 /*!< Lowercase the input string */
 /** @} */  // end of ArrayOpConstants group
 /** @} */  // end of CommandModuleConstants group
 #endif
@@ -3382,7 +3384,7 @@
  * NXTTouchPanel device register constants.
  * @{
  */
-#define NXTTP_REG_CMD         0x41 /*!< NXTTouchPanel command register.  See the \ref TouchPanelCommands group. */
+#define NXTTP_REG_CMD         0x41 /*!< NXTTouchPanel command register.  See the \ref NXTTouchPanelCommands group. */
 /** @} */  // end of NXTTouchPanelRegisters group
 
 /** @defgroup NXTTouchPanelCommands MindSensors NXTTouchPanel commands

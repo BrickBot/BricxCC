@@ -97,7 +97,6 @@ uses
   Windows;
 
 var
-//  SaveExit: pointer;
   DLLHandle: THandle;
   ErrorMode: Integer;
 
@@ -111,24 +110,14 @@ begin
   end;
 end;
 
-{
-procedure NewExit; far;
-begin
-  ExitProc := SaveExit;
-  UnloadFantomAPI;
-end;
-}
-
 procedure LoadDLL;
 begin
   if FantomAPILoaded then Exit;
-  ErrorMode := SetErrorMode($8000{SEM_NoOpenFileErrorBox});
+  ErrorMode := SetErrorMode($8000);
   DLLHandle := LoadLibrary('FANTOM.DLL');
   if DLLHandle >= 32 then
   begin
     FantomAPILoaded := True;
-//    SaveExit := ExitProc;
-//    ExitProc := @NewExit;
     @nFANTOM100_createNXT := GetProcAddress(DLLHandle, 'nFANTOM100_createNXT');
     Assert(@nFANTOM100_createNXT <> nil);
     @nFANTOM100_createNXTIterator := GetProcAddress(DLLHandle, 'nFANTOM100_createNXTIterator');

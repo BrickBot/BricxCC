@@ -24,6 +24,7 @@ function SerialSetParams(Handle: THandle; BitsPerSec: LongInt;
   ByteSize: byte; Parity: byte; StopBits: byte) : boolean;
 function SerialOpen(const DeviceName: String): THandle;
 procedure SerialClose(Handle: THandle);
+function SerialFlushToChar(Handle: THandle; delay : Integer; ch : Char; var Data : TBytes) : LongInt;
 function SerialFlushRead(Handle: THandle; delay : Integer; var Data : TBytes) : boolean;
 function SerialSetDTR(Handle: THandle; bDTR: Boolean): Boolean;
 function SerialSetRTS(Handle: THandle; bRTS: Boolean): Boolean;
@@ -360,12 +361,29 @@ begin
       SetLength(Data, oldLen+count);
       for i := 0 to count - 1 do
         Data[oldLen+i] := Byte(PChar(buff)[i]);
-//      Move(buff, @(Data[oldLen]), count);
       count := SerialRead(Handle, buff, BUFFSIZE, delay);
     end;
   finally
     FreeMem(buff, BUFFSIZE);
   end;
+end;
+
+function SerialFlushToChar(Handle: THandle; delay : Integer; ch : Char; var Data : TBytes) : LongInt;
+var
+  b1 : Byte;
+  oldLen : integer;
+begin
+  b1 := 0;
+  while b1 <> Ord(ch) do
+  begin
+    if SerialRead(Handle, @b1, 1, 50) = 1 then
+    begin
+      oldLen := Length(Data);
+      SetLength(Data, oldLen+1); // extend the array
+      Data[oldLen] := b1;
+    end;
+  end;
+  Result := Length(Data);
 end;
 
 {$IFNDEF FPC}

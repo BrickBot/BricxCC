@@ -48,6 +48,10 @@ void ViewBinFile(string filename){
 
 
 task main(){
-   SetDisplayContrast(DISPLAY_CONTRAST_MAX);
-   ViewBinFile( "glRotateDemo.rxe" );
+//   SetDisplayContrast(DISPLAY_CONTRAST_MAX);
+   ListFilesType args;
+   args.Pattern = "fileio.rxe";
+   SysListFiles(args);
+   if (ArrayLen(args.FileList) > 0)
+      ViewBinFile( args.FileList[0] );
 }

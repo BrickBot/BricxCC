@@ -1,1 +1,21 @@
-byte handle = fopen("test.txt", "r");
+task main()
+{
+  byte handle;
+  remove("test.txt");
+  handle = fopen("test.txt", "w");
+  NumOut(0, LCD_LINE1, handle);
+  if (handle != NULL)
+  {
+    fputs("testing", handle);
+    fclose(handle);
+    handle = fopen("test.txt", "r");
+    NumOut(0, LCD_LINE2, handle);
+    if (handle != NULL)
+    {
+      string msg;
+      fgets(msg, 7, handle);
+      TextOut(0, LCD_LINE3, msg);
+    }
+  }
+  Wait(SEC_5);
+}

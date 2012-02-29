@@ -1,0 +1,7 @@
+task main(){
+  RectOut(0, 0, 100, 64, DRAW_OPT_FILL_SHAPE);
+  TextOut(0, LCD_LINE2, "Hi.");
+  TextOut(0, LCD_LINE5+1, "Hi.");
+  TextOut(50, LCD_LINE5-1, "Hi.");
+  while(true);
+}

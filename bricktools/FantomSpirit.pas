@@ -43,6 +43,23 @@ type
     function TransferFirmware(aStream: TStream): boolean;
     function GetLSBlockHelper(aPort: byte): NXTLSBlock;
     procedure InitializeI2CValues;
+    procedure getDeviceInfoEx(nxtHandle: FantomHandle; name: PChar;
+      address, signalStrength: PByte; var availableFlash: Cardinal;
+      var status: integer);
+    procedure DoSendDirectCommand(nxtHandle: FantomHandle; requireResponse: byte;
+      inputBufferPtr: Pbyte; inputBufferSize: Cardinal; outputBufferPtr: PByte;
+      outputBufferSize: Cardinal; var status: integer);
+    procedure DoSendDirectCommandEnhanced(nxtHandle: FantomHandle;
+      requireResponse: byte; inputBufferPtr: Pbyte; inputBufferSize: Cardinal;
+      outputBufferPtr: PByte; outputBufferSize: Cardinal; var status: integer;
+      bEnhanced: boolean = false);
+    procedure DoSendSystemCommand(nxtHandle: FantomHandle;
+      requireResponse: byte; inputBufferPtr: Pbyte; inputBufferSize: Cardinal;
+      outputBufferPtr: PByte; outputBufferSize: Cardinal; var status: integer);
+    procedure DoNXTRead(nxtHandle: FantomHandle; readBuffer: PByte;
+      readBufferSize: Cardinal; var status: integer);
+    function DoNXTWrite(nxtHandle: FantomHandle; writeBuffer: PByte;
+      writeBufferSize: Cardinal; var status: integer): Cardinal;
   protected
     fLastI2CRead : NXTLSBlock;
     fNXTHandle : FantomHandle;
@@ -70,6 +87,7 @@ type
     procedure SetRCXFirmwareChunkSize(const Value: Integer); override;
     procedure SetRxTimeout(const Value: Word); override;
   protected
+    scResponse : array [0..63] of byte;
     function  dcBuffer: PByte;
     function  GetReplyStatusByte: Byte;
     function  GetReplyByte(index: integer): Byte;
@@ -91,7 +109,7 @@ type
     function  Close : boolean; override;
 
     procedure FlushReceiveBuffer; override;
-    procedure SendRawData(const Data : array of byte); override;
+    procedure SendRawData(Data : array of byte); override;
 
     // PBrick sound commands
     function PlayTone(aFreq, aTime : word) : boolean; override;
@@ -290,9 +308,13 @@ type
     function NXTPollCommand(const bufNum : byte; var count : byte;
       var buffer : NXTDataBuffer) : boolean; override;
     function NXTWriteIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; override;
+      var count : Word; const buffer : NXTDataBuffer; chkResponse : Boolean = False) : boolean; overload; override;
+    function NXTWriteIOMap(var ModID : Cardinal; const Offset : Word;
+      var count : Word; buffer : PChar; chkResponse : Boolean = False) : boolean; overload; override;
     function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
-      var count : Word; var buffer : NXTDataBuffer) : boolean; override;
+      var Count : Word; var buffer : NXTDataBuffer) : boolean; overload; override;
+    function NXTReadIOMap(var ModID : Cardinal; const Offset : Word;
+      var Count : Word; buffer : PChar) : boolean; overload; override;
     function NXTFindFirstModule(var ModName : string; var Handle : FantomHandle;
       var ModID, ModSize : Cardinal; var IOMapSize : Word) : boolean; override;
     function NXTFindNextModule(var Handle : FantomHandle; var ModName : string;
@@ -310,16 +332,12 @@ type
     procedure NXTUpdateResourceNames; override;
   end;
 
-procedure nFANTOM100_iNXT_sendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
-  inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
-  outputBufferSize : Cardinal; var status : integer);
-
 implementation
 
 uses
   rcx_constants, Contnrs, Math, uCommonUtils, uDebugLogging,
   {$IFNDEF FPC}
-  Windows, FANTOM
+  Windows, FANTOM{, visa}
   {$ELSE}
   {$IFDEF Darwin}Unix, fantomosx{$ENDIF}
   {$IFNDEF Darwin}
@@ -328,157 +346,6 @@ uses
   {$ENDIF}
   {$ENDIF};
 
-
-procedure nFANTOM100_iNXT_sendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
-  inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
-  outputBufferSize : Cardinal; var status : integer);
-var
-  BufOut, BufIn : PByte;
-  dstatus : integer;
-begin
-  if status < kStatusNoError then Exit;
-  BufOut := nil;
-  GetMem(BufOut, inputBufferSize+1);
-  try
-    BufOut^ := kNXT_SystemCmd;
-    if not Boolean(requireResponse) then
-      BufOut^ := BufOut^ or kNXT_NoResponseMask;
-    inc(BufOut);
-    Move(inputBufferPtr^, BufOut^, inputBufferSize);
-    dec(BufOut);
-    nFANTOM100_iNXT_write(nxtHandle, BufOut, inputBufferSize+1, status);
-    if Boolean(requireResponse) and (status >= kStatusNoError) then
-    begin
-      BufIn := nil;
-      GetMem(BufIn, outputBufferSize+1);
-      try
-        nFANTOM100_iNXT_read(nxtHandle, BufIn, outputBufferSize+1, status);
-        if Boolean(requireResponse) and (status >= kStatusNoError) then
-        begin
-          inc(BufIn);
-          Move(BufIn^, outputBufferPtr^, outputBufferSize);
-          dec(BufIn);
-        end;
-      finally
-        FreeMem(BufIn);
-      end;
-    end
-    else
-    begin
-      // no response required or error occurred on write
-      // drain our channel of any leftover data
-      BufIn := nil;
-      GetMem(BufIn, 1);
-      try
-        dstatus := kStatusNoError;
-        while dstatus = kStatusNoError do
-          nFANTOM100_iNXT_read(nxtHandle, BufIn, 1, dstatus);
-      finally
-        FreeMem(BufIn);
-      end;
-    end;
-  finally
-    FreeMem(BufOut);
-  end;
-end;
-
-var
-  scResponse : array [0..63] of byte;
-
-procedure nFANTOM100_iNXT_getDeviceInfoEx(nxtHandle : FantomHandle; name : PChar;
-  address : PByte; signalStrength : PByte; var availableFlash : Cardinal;
-  var status : integer);
-var
-  cmd : TNINxtCmd;
-  scBuffer : PByte;
-  b1, b2, b3, b4 : Byte;
-begin
-  FillChar(scResponse, 64, 0);
-  scBuffer := @scResponse[0];
-  cmd := TNINxtCmd.Create;
-  try
-    cmd.SetVal(kNXT_SystemCmd, kNXT_SCGetDeviceInfo);
-    nFANTOM100_iNXT_sendSystemCommand(nxtHandle, 1, cmd.BytePtr, cmd.Len, scBuffer, 32, status);
-    if status = kStatusNoError then
-    begin
-      inc(scBuffer, 2); // offset to start of name in the response
-      Move(scBuffer^, name^, 15);
-      inc(scBuffer, 15); // move to address
-      Move(scBuffer^, address^, 6);
-      inc(scBuffer, 7); // move to signal strength
-      Move(scBuffer^, signalStrength^, 4);
-      inc(scBuffer, 4);
-      b1 := scBuffer^; inc(scBuffer);
-      b2 := scBuffer^; inc(scBuffer);
-      b3 := scBuffer^; inc(scBuffer);
-      b4 := scBuffer^; inc(scBuffer);
-      availableFlash := BytesToCardinal(b1, b2, b3, b4);
-    end;
-  finally
-    cmd.Free;
-  end;
-end;
-
-
-procedure nFANTOM100_iNXT_sendDirectCommandEnhanced(nxtHandle : FantomHandle; requireResponse : byte;
-  inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
-  outputBufferSize : Cardinal; var status : integer; bEnhanced : boolean = false);
-var
-  BufOut, BufIn : PByte;
-  dstatus : integer;
-begin
-  // is this an enhanced direct command?
-  if requireResponse = 127 then
-  begin
-    if status < kStatusNoError then Exit;
-    BufOut := nil;
-    GetMem(BufOut, inputBufferSize+1);
-    try
-      BufOut^ := kNXT_DirectCmd;
-      if not Boolean(requireResponse) then
-        BufOut^ := BufOut^ or kNXT_NoResponseMask;
-      inc(BufOut);
-      Move(inputBufferPtr^, BufOut^, inputBufferSize);
-      dec(BufOut);
-      nFANTOM100_iNXT_write(nxtHandle, BufOut, inputBufferSize+1, status);
-      if Boolean(requireResponse) and (status >= kStatusNoError) then
-      begin
-        BufIn := nil;
-        GetMem(BufIn, outputBufferSize+1);
-        try
-          nFANTOM100_iNXT_read(nxtHandle, BufIn, outputBufferSize+1, status);
-          if Boolean(requireResponse) and (status >= kStatusNoError) then
-          begin
-            inc(BufIn);
-            Move(BufIn^, outputBufferPtr^, outputBufferSize);
-            dec(BufIn);
-          end;
-        finally
-          FreeMem(BufIn);
-        end;
-      end
-      else
-      begin
-        // no response required or error occurred on write
-        // drain our channel of any leftover data
-        BufIn := nil;
-        GetMem(BufIn, 1);
-        try
-          dstatus := kStatusNoError;
-          while dstatus = kStatusNoError do
-            nFANTOM100_iNXT_read(nxtHandle, BufIn, 1, dstatus);
-        finally
-          FreeMem(BufIn);
-        end;
-      end;
-    finally
-      FreeMem(BufOut);
-    end;
-  end
-  else
-    nFANTOM100_iNXT_sendDirectCommand(nxtHandle, requireResponse, inputBufferPtr,
-      inputBufferSize, outputBufferPtr, outputBufferSize, status);
-end;
 
 function NXTModuleIDToName(const modID : cardinal) : string;
 var
@@ -515,6 +382,204 @@ begin
   inherited Destroy;
 end;
 
+function TFantomSpirit.DoNXTWrite(nxtHandle : FantomHandle; writeBuffer : PByte; writeBufferSize : Cardinal; var status : integer) : Cardinal;
+var
+  Data : array of byte;
+begin
+  Result := nFANTOM100_iNXT_write(nxtHandle, writeBuffer, writeBufferSize, status);
+  if status = kStatusNoError then
+  begin
+    SetLength(Data, writeBufferSize);
+    Move(writeBuffer^, PByte(@Data[0])^, writeBufferSize);
+    DoDataSend(Data);
+  end;
+end;
+
+procedure TFantomSpirit.DoNXTRead(nxtHandle : FantomHandle; readBuffer : PByte; readBufferSize : Cardinal; var status : integer);
+var
+  Data : array of byte;
+begin
+  nFANTOM100_iNXT_read(nxtHandle, readBuffer, readBufferSize, status);
+  if status = kStatusNoError then
+  begin
+    SetLength(Data, readBufferSize);
+    Move(readBuffer^, PByte(@Data[0])^, readBufferSize);
+    DoDataReceive(Data);
+  end;
+end;
+
+procedure TFantomSpirit.DoSendSystemCommand(nxtHandle : FantomHandle; requireResponse : byte;
+  inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
+  outputBufferSize : Cardinal; var status : integer);
+var
+  BufOut, BufIn : PByte;
+  dstatus : integer;
+begin
+  if status < kStatusNoError then Exit;
+  BufOut := nil;
+  GetMem(BufOut, inputBufferSize+1);
+  try
+    BufOut^ := kNXT_SystemCmd;
+    if not Boolean(requireResponse) then
+      BufOut^ := BufOut^ or kNXT_NoResponseMask;
+    inc(BufOut);
+    Move(inputBufferPtr^, BufOut^, inputBufferSize);
+    dec(BufOut);
+    DoNXTWrite(nxtHandle, BufOut, inputBufferSize+1, status);
+    if Boolean(requireResponse) and (status >= kStatusNoError) then
+    begin
+      BufIn := nil;
+      GetMem(BufIn, outputBufferSize+1);
+      try
+        DoNXTRead(nxtHandle, BufIn, outputBufferSize+1, status);
+        if Boolean(requireResponse) and (status >= kStatusNoError) then
+        begin
+          inc(BufIn);
+          Move(BufIn^, outputBufferPtr^, outputBufferSize);
+          dec(BufIn);
+        end;
+      finally
+        FreeMem(BufIn);
+      end;
+    end
+    else
+    begin
+      // no response required or error occurred on write
+      // drain our channel of any leftover data
+      BufIn := nil;
+      GetMem(BufIn, 1);
+      try
+        dstatus := kStatusNoError;
+        while dstatus = kStatusNoError do
+          DoNXTRead(nxtHandle, BufIn, 1, dstatus);
+      finally
+        FreeMem(BufIn);
+      end;
+    end;
+  finally
+    FreeMem(BufOut);
+  end;
+end;
+
+procedure TFantomSpirit.getDeviceInfoEx(nxtHandle : FantomHandle; name : PChar;
+  address : PByte; signalStrength : PByte; var availableFlash : Cardinal;
+  var status : integer);
+var
+  cmd : TNINxtCmd;
+  scBuffer : PByte;
+  b1, b2, b3, b4 : Byte;
+begin
+  FillChar(scResponse, 64, 0);
+  scBuffer := @scResponse[0];
+  cmd := TNINxtCmd.Create;
+  try
+    cmd.SetVal(kNXT_SystemCmd, kNXT_SCGetDeviceInfo);
+    DoSendSystemCommand(nxtHandle, 1, cmd.BytePtr, cmd.Len, scBuffer, 32, status);
+    if status = kStatusNoError then
+    begin
+      inc(scBuffer, 2); // offset to start of name in the response
+      Move(scBuffer^, name^, 15);
+      inc(scBuffer, 15); // move to address
+      Move(scBuffer^, address^, 6);
+      inc(scBuffer, 7); // move to signal strength
+      Move(scBuffer^, signalStrength^, 4);
+      inc(scBuffer, 4);
+      b1 := scBuffer^; inc(scBuffer);
+      b2 := scBuffer^; inc(scBuffer);
+      b3 := scBuffer^; inc(scBuffer);
+      b4 := scBuffer^; inc(scBuffer);
+      availableFlash := BytesToCardinal(b1, b2, b3, b4);
+    end;
+  finally
+    cmd.Free;
+  end;
+end;
+
+procedure TFantomSpirit.DoSendDirectCommandEnhanced(nxtHandle : FantomHandle; requireResponse : byte;
+  inputBufferPtr : Pbyte; inputBufferSize : Cardinal; outputBufferPtr : PByte;
+  outputBufferSize : Cardinal; var status : integer; bEnhanced : boolean);
+var
+  BufOut, BufIn : PByte;
+  dstatus : integer;
+begin
+  // is this an enhanced direct command?
+  if requireResponse = 127 then
+  begin
+    if status < kStatusNoError then Exit;
+    BufOut := nil;
+    GetMem(BufOut, inputBufferSize+1);
+    try
+      BufOut^ := kNXT_DirectCmd;
+      if not Boolean(requireResponse) then
+        BufOut^ := BufOut^ or kNXT_NoResponseMask;
+      inc(BufOut);
+      Move(inputBufferPtr^, BufOut^, inputBufferSize);
+      dec(BufOut);
+      DoNXTWrite(nxtHandle, BufOut, inputBufferSize+1, status);
+      if Boolean(requireResponse) and (status >= kStatusNoError) then
+      begin
+        BufIn := nil;
+        GetMem(BufIn, outputBufferSize+1);
+        try
+          DoNXTRead(nxtHandle, BufIn, outputBufferSize+1, status);
+          if Boolean(requireResponse) and (status >= kStatusNoError) then
+          begin
+            inc(BufIn);
+            Move(BufIn^, outputBufferPtr^, outputBufferSize);
+            dec(BufIn);
+          end;
+        finally
+          FreeMem(BufIn);
+        end;
+      end
+      else
+      begin
+        // no response required or error occurred on write
+        // drain our channel of any leftover data
+        BufIn := nil;
+        GetMem(BufIn, 1);
+        try
+          dstatus := kStatusNoError;
+          while dstatus = kStatusNoError do
+            DoNXTRead(nxtHandle, BufIn, 1, dstatus);
+        finally
+          FreeMem(BufIn);
+        end;
+      end;
+    finally
+      FreeMem(BufOut);
+    end;
+  end
+  else
+    DoSendDirectCommand(nxtHandle, requireResponse, inputBufferPtr,
+      inputBufferSize, outputBufferPtr, outputBufferSize, status);
+end;
+
+procedure TFantomSpirit.DoSendDirectCommand(nxtHandle: FantomHandle;
+  requireResponse: byte; inputBufferPtr: Pbyte; inputBufferSize: Cardinal;
+  outputBufferPtr: PByte; outputBufferSize: Cardinal; var status: integer);
+var
+  Data : array of byte;
+//  rData : array of byte;
+//  pb : PByte;
+//  i : integer;
+  x : byte;
+begin
+  x := outputBufferSize;
+//  pb := outputBufferPtr;
+  SetLength(Data, inputBufferSize);
+  Move(inputBufferPtr^, PByte(@Data[0])^, inputBufferSize);
+  DoDataSend(Data);
+  nFANTOM100_iNXT_sendDirectCommand(nxtHandle, requireResponse, inputBufferPtr,
+    inputBufferSize, outputBufferPtr, outputBufferSize, status);
+  if Assigned(outputBufferPtr) and (status = kStatusNoError) and (requireResponse <> 0) then
+  begin
+    SetLength(Data, x);
+//    Move(outputBufferPtr^, PByte(@Data[0])^, x);
+    DoDataReceive(Data);
+  end;
+end;
+
 function TFantomSpirit.BatteryLevel: integer;
 var
   bopen : boolean;
@@ -529,7 +594,7 @@ begin
     try
       status := kStatusNoError;
       cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetBatteryLevel);
-      nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 4, status);
+      DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 4, status);
       if status < kStatusNoError then
       begin
         result := kRCX_ReplyError;
@@ -843,6 +908,8 @@ function TFantomSpirit.PlayTone(aFreq, aTime: word): boolean;
 var
   cmd : TNINxtCmd;
   status : integer;
+  len : cardinal;
+  data : PByte;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -850,7 +917,9 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCPlayTone, Lo(aFreq), Hi(aFreq), Lo(aTime), Hi(aTime));
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    data := cmd.BytePtr;
+    len  := cmd.Len;
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, data, len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1102,7 +1171,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCStopSoundPlayback);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1166,7 +1235,7 @@ begin
     status := kStatusNoError;
     tmp := MakeValidNXTFilename(filename);
     cmd.MakeCmdWithFilename(kNXT_DirectCmd, kNXT_DCStartProgram, tmp);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1187,7 +1256,7 @@ begin
     fOffsetDVA := $FFFF;
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCStopProgram);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 2, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1229,7 +1298,7 @@ begin
       inc(i);
     end;
     orig^ := 0; // set last byte to null
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1249,7 +1318,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetOutputState, aPort);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 24, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 24, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -1286,7 +1355,7 @@ begin
     fMotorOn[aPort]      := ((mode and OUT_MODE_MOTORON) = OUT_MODE_MOTORON) and
                             (runstate <> OUT_RUNSTATE_IDLE);
     cmd.MakeSetOutputState(aPort, mode, regmode, runstate, ShortInt(power), ShortInt(turnratio), tacholimit, False);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1306,7 +1375,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetInputValues, aPort);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 15, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 15, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -1337,7 +1406,7 @@ begin
     fSensorType[aPort] := stype;
     fSensorMode[aPort] := smode;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCSetInputMode, aPort, stype, smode);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1355,7 +1424,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCResetInputScaledValue, aPort);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1374,7 +1443,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCResetMotorPosition, aPort, Ord(Relative));
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1413,7 +1482,7 @@ begin
       inc(i);
     end;
     orig^ := 0; // set last byte to null
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -1438,9 +1507,9 @@ begin
       b := kNXT_DirectCmdNoReply;
     cmd.SetVal(b, kNXT_DCKeepAlive);
     if chkResponse then
-      nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status)
+      DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status)
     else
-      nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+      DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
     Result := status >= kStatusNoError;
     if chkResponse then
     begin
@@ -1464,7 +1533,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCLSGetStatus, aPort);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 3, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 3, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -1493,7 +1562,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCLSRead, aPort);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 19, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 19, status);
     if status < kStatusNoError then
     begin
       Result.RXCount := 0;
@@ -1560,7 +1629,7 @@ begin
       inc(i);
     end;
     orig^ := 0; // set last byte to null
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status);
   finally
     cmd.Free;
   end;
@@ -1612,7 +1681,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetCurrentProgramName);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 22, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 22, status);
     Result := status >= kStatusNoError;
     if not Result then
     begin
@@ -1642,7 +1711,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetButtonState, idx, Ord(reset));
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 3, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 3, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -1668,7 +1737,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCMessageRead, remote, local, Ord(remove));
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 63, status);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 63, status);
     Result := status >= kStatusNoError;
     if not Result then
       Exit;
@@ -2016,7 +2085,7 @@ begin
   Result := IsOpen;
   if not Result then Exit;
   status := kStatusNoError;
-  nFANTOM100_iNXT_getDeviceInfoEx(fNXTHandle, buf, @addr[0], @BTSignal, memFree, status);
+  getDeviceInfoEx(fNXTHandle, buf, @addr[0], @BTSignal, memFree, status);
   name := buf;
   BTAddress := Format('%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
     [addr[0], addr[1], addr[2], addr[3], addr[4], addr[5]]);
@@ -2526,7 +2595,33 @@ begin
   begin
     // found the correct module
     status := kStatusNoError;
-     nFANTOM100_iModule_writeIOMap(mh, Offset, count, @(buffer.Data), status);
+    nFANTOM100_iModule_writeIOMap(mh, Offset, count, @(buffer.Data), status);
+    // now destroy it
+    status := kStatusNoError;
+    nFANTOM100_iNXT_destroyModule(fNXTHandle, mh, status);
+    if not chkResponse then
+      status := kStatusNoError;
+  end;
+end;
+
+function TFantomSpirit.NXTWriteIOMap(var ModID: Cardinal;
+  const Offset: Word; var count: Word; buffer: PChar;
+  chkResponse: Boolean): boolean;
+var
+  status : integer;
+  mh : FantomHandle;
+  modName : string;
+begin
+  Result := IsOpen;
+  if not Result then Exit;
+  status := kStatusNoError;
+  modName := NXTModuleIDToName(ModID);
+  mh := nFANTOM100_iNXT_createModule(fNXTHandle, PChar(modName), ModID, 0, 0, status);
+  if status >= kStatusNoError then
+  begin
+    // found the correct module
+    status := kStatusNoError;
+    nFANTOM100_iModule_writeIOMap(mh, Offset, count, PByte(buffer), status);
     // now destroy it
     status := kStatusNoError;
     nFANTOM100_iNXT_destroyModule(fNXTHandle, mh, status);
@@ -2552,7 +2647,32 @@ begin
     // found the correct module
     status := kStatusNoError;
     FillChar(buffer.Data[0], kNXT_MaxBytes, 0);
-     nFANTOM100_iModule_readIOMap(mh, Offset, Count, @(buffer.Data), status);
+    nFANTOM100_iModule_readIOMap(mh, Offset, Count, @(buffer.Data), status);
+    Result := status = kStatusNoError;
+    // now destroy it
+    status := kStatusNoError;
+    nFANTOM100_iNXT_destroyModule(fNXTHandle, mh, status);
+  end;
+end;
+
+function TFantomSpirit.NXTReadIOMap(var ModID: Cardinal;
+  const Offset: Word; var Count: Word; buffer: PChar): boolean;
+var
+  status : integer;
+  mh : FantomHandle;
+  modName : string;
+begin
+  Result := IsOpen;
+  if not Result then Exit;
+  status := kStatusNoError;
+  modName := NXTModuleIDToName(ModID);
+  mh := nFANTOM100_iNXT_createModule(fNXTHandle, PChar(modName), ModID, 0, 0, status);
+  if status >= kStatusNoError then
+  begin
+    // found the correct module
+    status := kStatusNoError;
+    FillChar(buffer, Count, 0);
+    nFANTOM100_iModule_readIOMap(mh, Offset, Count, PByte(buffer), status);
     Result := status = kStatusNoError;
     // now destroy it
     status := kStatusNoError;
@@ -3423,9 +3543,9 @@ begin
     scBuffer := nil;
   end;
   if cmdType = $01 then
-    nFANTOM100_iNXT_sendSystemCommand(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
+    DoSendSystemCommand(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
   else if cmdType = $00 then
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
+    DoSendDirectCommandEnhanced(fNXTHandle, reqResp, @data[0], Length(data), scBuffer, len, status)
   else
     Exit;
   if status >= kStatusNoError then
@@ -3726,14 +3846,14 @@ begin
     buf := cmd.GetBody;
     bufLen := cmd.GetLength;
     status := kStatusNoError;
-    nFANTOM100_iNXT_write(fNXTHandle, buf, bufLen, status);
+    DoNXTWrite(fNXTHandle, buf, bufLen, status);
     // now read the response
     if (status >= kStatusNoError) and chkResponse then
     begin
       readBuf := nil;
       GetMem(readBuf, 44);
       try
-        nFANTOM100_iNXT_read(fNXTHandle, readBuf, 44, status);
+        DoNXTRead(fNXTHandle, readBuf, 44, status);
       finally
         FreeMem(readBuf);
       end;
@@ -3802,7 +3922,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetVMState);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
     Result := status >= kStatusNoError;
     state := GetReplyByte(0);
     clump := GetReplyByte(1);
@@ -3823,7 +3943,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCSetVMState, state);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
     Result := status >= kStatusNoError;
     state := GetReplyByte(0);
     clump := GetReplyByte(1);
@@ -3844,7 +3964,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCSetVMState, state);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -3863,7 +3983,7 @@ begin
   try
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmd, kNXT_DCGetProperty, kNXT_Property_Debugging);
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
+    DoSendDirectCommandEnhanced(fNXTHandle, 1, cmd.BytePtr, cmd.Len, dcBuffer, 6, status, True);
     Result := status >= kStatusNoError;
     debugging  := Boolean(GetReplyByte(0));
     pauseClump := GetReplyByte(1);
@@ -3886,7 +4006,7 @@ begin
     status := kStatusNoError;
     cmd.SetVal(kNXT_DirectCmdNoReply, kNXT_DCSetProperty, kNXT_Property_Debugging,
       Ord(debugging), pauseClump, Lo(pausePC), Hi(pausePC));
-    nFANTOM100_iNXT_sendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
+    DoSendDirectCommandEnhanced(fNXTHandle, 0, cmd.BytePtr, cmd.Len, nil, 0, status, True);
     Result := status >= kStatusNoError;
   finally
     cmd.Free;
@@ -4114,16 +4234,6 @@ begin
   else
     Result := 0;
   end;
-end;
-
-procedure TFantomSpirit.FlushReceiveBuffer;
-begin
-  //
-end;
-
-procedure TFantomSpirit.SendRawData(const Data: array of byte);
-begin
-  //
 end;
 
 function TFantomSpirit.ReadI2CData(const i2cValueIdx, aPort: byte): variant;
@@ -4359,6 +4469,42 @@ begin
     ValueType := vtString;
     SendData  := '02,10';
     Script    := '';
+  end;
+end;
+
+procedure TFantomSpirit.FlushReceiveBuffer;
+//var
+//  status : integer;
+//  BufIn : PByte;
+begin
+  if IsOpen then
+  begin
+(*
+    BufIn := nil;
+    GetMem(BufIn, 1);
+    try
+//      status := NIVISA_viSetAttribute(fNXTHandle, VI_ATTR_TMO_VALUE, 10); // 10 ms rather than 10000
+      status := status + kStatusNoError;
+      while status = kStatusNoError do
+        DoNXTRead(fNXTHandle, BufIn, 1, status);
+//      status := NIVISA_viSetAttribute(fNXTHandle, VI_ATTR_TMO_VALUE, 10000);
+    finally
+      FreeMem(BufIn);
+    end;
+*)
+  end;
+end;
+
+procedure TFantomSpirit.SendRawData(Data: array of byte);
+var
+  len : integer;
+  status : integer;
+begin
+  if IsOpen then
+  begin
+    len := Length(Data);
+    status := kStatusNoError;
+    DoNXTWrite(fNXTHandle, PByte(@Data[0]), len, status);
   end;
 end;
 

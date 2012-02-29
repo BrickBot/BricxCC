@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 3162;
+  uNXCHTMLTopicsSize = 3173;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -351,6 +351,14 @@ const
     (
      Name: 'OPARR_SORT';
      Value: 'group___array_op_constants_gaff414f199c86a914989315eedfdacf33.html'
+    ),
+    (
+     Name: 'OPARR_TOUPPER';
+     Value: 'group___array_op_constants_gad3f53961efc38989517542c02ae21e4b.html'
+    ),
+    (
+     Name: 'OPARR_TOLOWER';
+     Value: 'group___array_op_constants_ga0f9fe6b6e8594dd18e776eed4476fec5.html'
     ),
     (
      Name: 'PI';
@@ -6133,6 +6141,14 @@ const
      Value: 'group___mind_sensors_constants_gafebbbb3b894f637973b0969bb904251e.html'
     ),
     (
+     Name: 'MS_ADDR_NUMERICPAD';
+     Value: 'group___mind_sensors_constants_gacc9b46bed5a8abdfe0cfc61a84b7bed7.html'
+    ),
+    (
+     Name: 'MS_ADDR_TOUCHPANEL';
+     Value: 'group___mind_sensors_constants_ga4110967dfc6590e6a9717b02de8d2dd6.html'
+    ),
+    (
      Name: 'DIST_CMD_GP2D12';
      Value: 'group___m_s_dist_n_x_ga8a96057baba23e26eccaee9d1b2e65f0.html'
     ),
@@ -6943,6 +6959,18 @@ const
     (
      Name: 'NXTLL_CMD_WHITE';
      Value: 'group___n_x_t_line_leader_commands_ga831a8f649ba0bd3187e76656944780b6.html'
+    ),
+    (
+     Name: 'NXTNP_REG_BUTTONS';
+     Value: 'group___n_x_t_numeric_pad_registers_gac12a449f8d32c0a04fe7ef97bd78874a.html'
+    ),
+    (
+     Name: 'NXTTP_REG_CMD';
+     Value: 'group___n_x_t_touch_panel_registers_gacc1c85c341ae4a774383ea647f09e7c0.html'
+    ),
+    (
+     Name: 'NXTTP_CMD_USA';
+     Value: 'group___n_x_t_touch_panel_commands_gac8d1d2e3a40a2b250855fca70c123c0c.html'
     ),
     (
      Name: 'RFID_MODE_STOP';
@@ -9377,6 +9405,22 @@ const
      Value: 'group___array_functions_gaac7aaacb79484c7af81ba0bf35a181d2.html'
     ),
     (
+     Name: 'UpperCase';
+     Value: 'group___array_functions_ga4a8d4f791f8dba04a6cc9a222937cdeb.html'
+    ),
+    (
+     Name: 'LowerCase';
+     Value: 'group___array_functions_gaab84ca4f64004a41a0523b9524a46b22.html'
+    ),
+    (
+     Name: 'UpperCaseEx';
+     Value: 'group___array_functions_ga8ddc5c9e6e8f10499ffc5243cf846c53.html'
+    ),
+    (
+     Name: 'LowerCaseEx';
+     Value: 'group___array_functions_ga38b118b438bd19a10fc417719f81db92.html'
+    ),
+    (
      Name: 'ArrayOp';
      Value: 'group___array_functions_ga000a314fd93cd84a5c46b1e5e22c3a71.html'
     ),
@@ -10434,7 +10478,7 @@ const
     ),
     (
      Name: 'ResolveHandle';
-     Value: 'group___loader_module_functions_gad62674140724d9a7224633e369192aa9.html'
+     Value: 'group___loader_module_functions_ga116eab089d2a616d3e1a2f39fa484f0f.html'
     ),
     (
      Name: 'RenameFile';

@@ -224,6 +224,7 @@ end;
 
 procedure TfrmSimpleTerm.FormCreate(Sender: TObject);
 begin
+  tmrPoll.Enabled := False;
   CreateMenus;
 end;
 

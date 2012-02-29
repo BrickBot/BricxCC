@@ -5,9 +5,12 @@ void RotateMotorRURD(byte output, char pwr, long angle, bool UseSpeedControl = t
   angle = abs(angle);
   power *= pwr;
 
-  l1 = angle*0.20;
-  l2 = angle*0.60;
-  l3 = angle-(l1+l2);
+  if (angle > 720)
+    l1 = angle*0.10;
+  else
+    l1 = angle*0.20;
+  l3 = l1;
+  l2 = angle-(l1+l3);
   byte om = OUT_MODE_MOTORON|OUT_MODE_BRAKE;
   byte rm = OUT_REGMODE_IDLE;
   if (UseSpeedControl) {
@@ -16,7 +19,7 @@ void RotateMotorRURD(byte output, char pwr, long angle, bool UseSpeedControl = t
   }
   // we want to rotate a total of <angle> degrees
   // we'll rampup from 0 power to specified power through 20% of the angle
-  // then run at the specified power for 70% of the angle
+  // then run at the specified power for 60% of the angle
   SetOutput(output, OutputModeField, om,
                     TachoLimitField, l1,
                     PowerField, power,
@@ -61,7 +64,7 @@ void RotateMotorRURD(byte output, char pwr, long angle, bool UseSpeedControl = t
   long oldrc = rc+1;
   while (oldrc <> rc) {
     oldrc = rc;
-    Wait(10);
+    Wait(100);  // adjust this wait time to see what impact it has on accuracy.
     rc = MotorRotationCount(output);
   }
   // finally, go idle
@@ -78,22 +81,26 @@ bool bDone = false;
 
 task MoveMotors()
 {
-  RotateMotorRURD(OUT_A, 75, 720);
-  Wait(500);
-  RotateMotorRURD(OUT_A, 75, -720);
-  Wait(500);
+  RotateMotorRURD(OUT_A, 75, 2520);
+  Wait(2000);
+  RotateMotorRURD(OUT_A, 75, -2520);
+  Wait(2000);
+/*
   RotateMotorRURD(OUT_A, 75, 720, false);
   Wait(500);
   RotateMotorRURD(OUT_A, 75, -720, false);
   Wait(500);
-  RotateMotorRURD(OUT_A, 75, 720);
-  Wait(500);
-  RotateMotorRURD(OUT_A, 75, -720);
-  Wait(500);
+*/
+  RotateMotorRURD(OUT_A, 75, 2520);
+  Wait(2000);
+  RotateMotorRURD(OUT_A, 75, -2520);
+  Wait(2000);
+/*
   RotateMotorRURD(OUT_A, 75, 720, false);
   Wait(500);
   RotateMotorRURD(OUT_A, 75, -720, false);
   Wait(500);
+*/
   bDone = true;
 }
 
@@ -104,7 +111,9 @@ task MonitorMotors()
     NumOut(0, LCD_LINE1, MotorRunState(OUT_A));
     NumOut(0, LCD_LINE2, MotorMode(OUT_A));
     NumOut(0, LCD_LINE3, MotorRotationCount(OUT_A));
-    Wait(1);
+    NumOut(0, LCD_LINE4, MotorTachoCount(OUT_A));
+    NumOut(0, LCD_LINE5, MotorBlockTachoCount(OUT_A));
+    Wait(10);
   }
 }
 

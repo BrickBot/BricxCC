@@ -190,7 +190,10 @@ begin
   begin
     CountOK := dockPanel.VisibleDockClientCount > cnt;
     if Assigned(panelSplitter) then
+    begin
       panelSplitter.Visible := CountOK;
+      panelSplitter.Left := dockPanel.Width + 10;
+    end;
     dockPanel.Visible := CountOK;
   end;
   tmrCodeExplorer.Enabled := False;

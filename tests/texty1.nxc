@@ -1,0 +1,9 @@
+task main(){
+  RectOut(0, 0, 100, 64, DRAW_OPT_FILL_SHAPE);
+  for (int j=0; j<16; j++)
+    TextOut(6*j, LCD_LINE1-j, "X");
+  TextOut(0, LCD_LINE2, "Hi.", DRAW_OPT_INVERT);
+  TextOut(0, LCD_LINE5+1, "Hi.", DRAW_OPT_LOGICAL_XOR|DRAW_OPT_INVERT);
+  TextOut(50, LCD_LINE5-1, "Hi.", DRAW_OPT_INVERT);
+  while(true);
+}

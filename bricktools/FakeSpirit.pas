@@ -69,7 +69,7 @@ type
     function  Close : boolean; override;
 
     procedure FlushReceiveBuffer; override;
-    procedure SendRawData(const Data : array of byte); override;
+    procedure SendRawData(Data : array of byte); override;
 
     // PBrick sound commands
     function PlayTone(aFreq, aTime : word) : boolean; override;
@@ -3746,7 +3746,7 @@ begin
   //
 end;
 
-procedure TFakeSpirit.SendRawData(const Data: array of byte);
+procedure TFakeSpirit.SendRawData(Data: array of byte);
 begin
   // 
 end;

@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNBCHTMLTopicsSize = 2749;
+  uNBCHTMLTopicsSize = 2756;
   uNBCHTMLTopicsData: array[0..uNBCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -63,6 +63,14 @@ const
     (
      Name: 'OPARR_SORT';
      Value: 'group___array_op_constants_gaff414f199c86a914989315eedfdacf33.html'
+    ),
+    (
+     Name: 'OPARR_TOUPPER';
+     Value: 'group___array_op_constants_gad3f53961efc38989517542c02ae21e4b.html'
+    ),
+    (
+     Name: 'OPARR_TOLOWER';
+     Value: 'group___array_op_constants_ga0f9fe6b6e8594dd18e776eed4476fec5.html'
     ),
     (
      Name: 'PI';
@@ -5845,6 +5853,14 @@ const
      Value: 'group___mind_sensors_constants_gafebbbb3b894f637973b0969bb904251e.html'
     ),
     (
+     Name: 'MS_ADDR_NUMERICPAD';
+     Value: 'group___mind_sensors_constants_gacc9b46bed5a8abdfe0cfc61a84b7bed7.html'
+    ),
+    (
+     Name: 'MS_ADDR_TOUCHPANEL';
+     Value: 'group___mind_sensors_constants_ga4110967dfc6590e6a9717b02de8d2dd6.html'
+    ),
+    (
      Name: 'DIST_CMD_GP2D12';
      Value: 'group___m_s_dist_n_x_ga8a96057baba23e26eccaee9d1b2e65f0.html'
     ),
@@ -6655,6 +6671,18 @@ const
     (
      Name: 'NXTLL_CMD_WHITE';
      Value: 'group___n_x_t_line_leader_commands_ga831a8f649ba0bd3187e76656944780b6.html'
+    ),
+    (
+     Name: 'NXTNP_REG_BUTTONS';
+     Value: 'group___n_x_t_numeric_pad_registers_gac12a449f8d32c0a04fe7ef97bd78874a.html'
+    ),
+    (
+     Name: 'NXTTP_REG_CMD';
+     Value: 'group___n_x_t_touch_panel_registers_gacc1c85c341ae4a774383ea647f09e7c0.html'
+    ),
+    (
+     Name: 'NXTTP_CMD_USA';
+     Value: 'group___n_x_t_touch_panel_commands_gac8d1d2e3a40a2b250855fca70c123c0c.html'
     ),
     (
      Name: 'RFID_MODE_STOP';
@@ -9318,7 +9346,7 @@ const
     ),
     (
      Name: 'ResolveHandle';
-     Value: 'group___loader_module_functions_ga838beef575a120d7589f8ab7b0bf8f6e.html'
+     Value: 'group___loader_module_functions_gaf197e8ad5c9c36ed842519c6e9f88c39.html'
     ),
     (
      Name: 'RenameFile';

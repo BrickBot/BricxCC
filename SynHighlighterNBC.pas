@@ -163,13 +163,15 @@ const
 // enhanced firmware opcodes
     'waitv,abs,sign,stopthread,start,priority,fmtnum,'+
     'arrop,acos,asin,atan,ceil,exp,floor,sqrt,tan,tanh,'+
-    'cos,cosh,log,log10,sin,sinh,trunc,frac,atan2,pow,muldiv,'+
+    'cos,cosh,log,log10,sin,sinh,trunc,frac,atan2,pow,muldiv,acosd,asind,'+
+    'atand,tand,tanhd,cosd,coshd,sind,sinhd,atan2d,addrof,exittovar,'+
+    'subcallvar,stopthreadvar,startvar,jmpabsvar,brcmpabsvar,brtstabsvar,'+
 // pseudo-opcodes
     'thread,endt,subroutine,'+
     'follows,precedes,segment,ends,typedef,struct,db,byte,sbyte,ubyte,dw,'+
     'word,sword,uword,dd,dword,sdword,udword,long,slong,ulong,void,mutex,float,'+
     'call,return,strindex,strreplace,strlen,shl,shr,sizeof,valueof,isconst,'+
-    'compchk,compif,compelse,compend,compchktype';
+    'compchk,compif,compelse,compend,compchktype,callvar,setclump,setlabel';
   NBCCommands: string =
     'OnFwd, OnRev, Coast, Float, Off, OnFwdReg, OnRevReg, OnFwdSync, OnRevSync,'+
     'OnFwdEx, OnRevEx, CoastEx, OffEx, OnFwdRegEx, OnRevRegEx, OnFwdSyncEx, OnRevSyncEx,'+
