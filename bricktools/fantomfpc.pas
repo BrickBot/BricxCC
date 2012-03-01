@@ -2945,7 +2945,7 @@ function TNxtIModule.readIOMap(offsetInBytes, numberOfBytes: Cardinal;
   dataBufferPtr: PByte; var status: integer): Cardinal;
 var
   cmd : TNxtCmd;
-  buf : PByte;
+  buf, pb : PByte;
   ret : cardinal;
 begin
   Result := 0;
@@ -2959,11 +2959,17 @@ begin
     fNXT.write(cmd.GetBody, cmd.GetLength, status);
     if status = kStatusNoError then
     begin
-      GetMem(buf, 64);
+      GetMem(buf, 9+numberOfBytes);
       try
-        ret := fNXT.read(buf, 64, status);
+        ret := fNXT.read(buf, 9+numberOfBytes, status);
         if status = kStatusNoError then
-          Result := ret;
+        begin
+          Result := ret-9;
+          pb := buf;
+          inc(pb, 9);
+          // copy data from buf to output buffer
+          Move(pb^, dataBufferPtr^, numberOfBytes);
+        end;
       finally
         FreeMem(buf);
       end;
