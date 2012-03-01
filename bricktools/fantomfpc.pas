@@ -2949,7 +2949,7 @@ var
   ret : cardinal;
 begin
   Result := 0;
-  if numberOfBytes > 64 then Exit;
+  if numberOfBytes > 55 then Exit;
   if not Assigned(dataBufferPtr) then Exit;
   if status < kStatusNoError then Exit;
   cmd := TNxtCmd.Create;
