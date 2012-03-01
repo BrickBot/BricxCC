@@ -724,10 +724,11 @@ begin
         if i > 29 then i := 0;
         nxtdev := BrickComm.NXTBTDevice(i);
         Writeln(string(PChar(@(nxtdev.Name[0]))));
-        for i := 0 to 3 do begin
-          OutputValue(nxtdev.ClassOfDevice[i], False); Write(' ');
+        with nxtdev do
+        begin
+          WriteLn(Format('0x%2.2x%2.2x%2.2x',
+            [ClassOfDevice[1], ClassOfDevice[2], ClassOfDevice[3]]));
         end;
-        WriteLn('');
         with nxtdev do
         begin
           Writeln(Format('%2.2x:%2.2x:%2.2x:%2.2x:%2.2x:%2.2x',
@@ -742,10 +743,11 @@ begin
         if i > 3 then i := 0;
         nxtconn := BrickComm.NXTBTConnection(i);
         Writeln(string(PChar(@(nxtconn.Name[0]))));
-        for i := 0 to 3 do begin
-          OutputValue(nxtconn.ClassOfDevice[i], False); Write(' ');
+        with nxtconn do
+        begin
+          WriteLn(Format('0x%2.2x%2.2x%2.2x',
+            [ClassOfDevice[1], ClassOfDevice[2], ClassOfDevice[3]]));
         end;
-        WriteLn('');
         Writeln(string(PChar(@(nxtconn.PinCode[0]))));
         with nxtconn do
         begin
