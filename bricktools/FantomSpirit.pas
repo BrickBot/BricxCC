@@ -383,16 +383,16 @@ begin
 end;
 
 function TFantomSpirit.DoNXTWrite(nxtHandle : FantomHandle; writeBuffer : PByte; writeBufferSize : Cardinal; var status : integer) : Cardinal;
-var
-  Data : array of byte;
+//var
+//  Data : array of byte;
 begin
   Result := nFANTOM100_iNXT_write(nxtHandle, writeBuffer, writeBufferSize, status);
-  if status = kStatusNoError then
-  begin
-    SetLength(Data, writeBufferSize);
-    Move(writeBuffer^, PByte(@Data[0])^, writeBufferSize);
-    DoDataSend(Data);
-  end;
+//  if status = kStatusNoError then
+//  begin
+//    SetLength(Data, writeBufferSize);
+//    Move(writeBuffer^, PByte(@Data[0])^, writeBufferSize);
+//    DoDataSend(Data);
+//  end;
 end;
 
 procedure TFantomSpirit.DoNXTRead(nxtHandle : FantomHandle; readBuffer : PByte; readBufferSize : Cardinal; var status : integer);
@@ -404,7 +404,7 @@ begin
   begin
     SetLength(Data, readBufferSize);
     Move(readBuffer^, PByte(@Data[0])^, readBufferSize);
-    DoDataReceive(Data);
+//    DoDataReceive(Data);
   end;
 end;
 
@@ -558,26 +558,26 @@ end;
 procedure TFantomSpirit.DoSendDirectCommand(nxtHandle: FantomHandle;
   requireResponse: byte; inputBufferPtr: Pbyte; inputBufferSize: Cardinal;
   outputBufferPtr: PByte; outputBufferSize: Cardinal; var status: integer);
-var
-  Data : array of byte;
+//var
+//  Data : array of byte;
 //  rData : array of byte;
 //  pb : PByte;
 //  i : integer;
-  x : byte;
+//  x : byte;
 begin
-  x := outputBufferSize;
+//  x := outputBufferSize;
 //  pb := outputBufferPtr;
-  SetLength(Data, inputBufferSize);
-  Move(inputBufferPtr^, PByte(@Data[0])^, inputBufferSize);
-  DoDataSend(Data);
+//  SetLength(Data, inputBufferSize);
+//  Move(inputBufferPtr^, PByte(@Data[0])^, inputBufferSize);
+//  DoDataSend(Data);
   nFANTOM100_iNXT_sendDirectCommand(nxtHandle, requireResponse, inputBufferPtr,
     inputBufferSize, outputBufferPtr, outputBufferSize, status);
-  if Assigned(outputBufferPtr) and (status = kStatusNoError) and (requireResponse <> 0) then
-  begin
-    SetLength(Data, x);
+//  if Assigned(outputBufferPtr) and (status = kStatusNoError) and (requireResponse <> 0) then
+//  begin
+//    SetLength(Data, x);
 //    Move(outputBufferPtr^, PByte(@Data[0])^, x);
-    DoDataReceive(Data);
-  end;
+//    DoDataReceive(Data);
+//  end;
 end;
 
 function TFantomSpirit.BatteryLevel: integer;
@@ -2555,7 +2555,7 @@ begin
   if not Result then Exit;
   status := 0;
   count := Byte(nFANTOM100_iNXT_pollAvailableLength(fNXTHandle, bufNum, status));
-  Result := status < kStatusNoError;
+  Result := status >= kStatusNoError;
   if not Result then
     count := 0;
 end;
@@ -4473,25 +4473,41 @@ begin
 end;
 
 procedure TFantomSpirit.FlushReceiveBuffer;
-//var
-//  status : integer;
-//  BufIn : PByte;
+var
+  Data : array of byte;
+  msg : NXTMessage;
+  buf : NXTDataBuffer;
+  len : byte;
+  pSrc : PByte;
 begin
+  len := 0;
+  pSrc := nil;
   if IsOpen then
   begin
-(*
-    BufIn := nil;
-    GetMem(BufIn, 1);
-    try
-//      status := NIVISA_viSetAttribute(fNXTHandle, VI_ATTR_TMO_VALUE, 10); // 10 ms rather than 10000
-      status := status + kStatusNoError;
-      while status = kStatusNoError do
-        DoNXTRead(fNXTHandle, BufIn, 1, status);
-//      status := NIVISA_viSetAttribute(fNXTHandle, VI_ATTR_TMO_VALUE, 10000);
-    finally
-      FreeMem(BufIn);
+    if NXTUseMailbox then
+    begin
+      // use MessageRead direct command
+      if NXTMessageRead(NXTMailboxNum+10, 0, True, msg) and (msg.Size > 0) then
+      begin
+        len := msg.Size-1;
+        pSrc := @(msg.Data[0]);
+      end;
+    end
+    else
+    begin
+      // read from USBPoll buffer using system command
+      if NXTPollCommandLen(0, len) then
+      begin
+        if NXTPollCommand(0, len, buf) then
+          pSrc := @(buf.Data[0]);
+      end;
     end;
-*)
+    if (len > 0) and Assigned(pSrc) then
+    begin
+      SetLength(Data, len);
+      Move(pSrc^, PByte(@Data[0])^, len);
+      DoDataReceive(Data);
+    end;
   end;
 end;
 
@@ -4505,6 +4521,7 @@ begin
     len := Length(Data);
     status := kStatusNoError;
     DoNXTWrite(fNXTHandle, PByte(@Data[0]), len, status);
+    DoDataSend(Data);
   end;
 end;
 

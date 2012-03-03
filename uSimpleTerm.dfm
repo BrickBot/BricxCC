@@ -44,35 +44,35 @@ object frmSimpleTerm: TfrmSimpleTerm
     OnUpdate = alSimpleTermUpdate
     Left = 136
     Top = 88
-    object actEditCut1: TEditCut
+    object actEditCut: TEditCut
       Category = 'Edit'
       Caption = 'Cu&t'
       Hint = 'Cut|Cuts the selection and puts it on the Clipboard'
       ImageIndex = 0
       ShortCut = 16472
     end
-    object actEditCopy1: TEditCopy
+    object actEditCopy: TEditCopy
       Category = 'Edit'
       Caption = '&Copy'
       Hint = 'Copy|Copies the selection and puts it on the Clipboard'
       ImageIndex = 1
       ShortCut = 16451
     end
-    object actEditPaste1: TEditPaste
+    object actEditPaste: TEditPaste
       Category = 'Edit'
       Caption = '&Paste'
       Hint = 'Paste|Inserts Clipboard contents'
       ImageIndex = 2
       ShortCut = 16470
     end
-    object actEditDelete1: TEditDelete
+    object actEditDelete: TEditDelete
       Category = 'Edit'
       Caption = '&Delete'
       Hint = 'Delete|Erases the selection'
       ImageIndex = 5
       ShortCut = 46
     end
-    object actEditSelectAll1: TEditSelectAll
+    object actEditSelectAll: TEditSelectAll
       Category = 'Edit'
       Caption = 'Select &All'
       Hint = 'Select All|Selects the entire document'
@@ -92,6 +92,91 @@ object frmSimpleTerm: TfrmSimpleTerm
       Category = 'Preferences'
       Caption = '&Echo Sends'
       OnExecute = actEchoSendsExecute
+    end
+    object actNXTUseMailbox: TAction
+      Category = 'Preferences'
+      Caption = 'Use NXT Mailbox'
+      OnExecute = actNXTUseMailboxExecute
+    end
+    object actMB1: TAction
+      Category = 'MBNum'
+      Caption = 'Mailbox1'
+      GroupIndex = 2
+      ShortCut = 16433
+      OnExecute = actMBExecute
+    end
+    object actMB2: TAction
+      Tag = 1
+      Category = 'MBNum'
+      Caption = 'Mailbox2'
+      GroupIndex = 2
+      ShortCut = 16434
+      OnExecute = actMBExecute
+    end
+    object actMB3: TAction
+      Tag = 2
+      Category = 'MBNum'
+      Caption = 'Mailbox3'
+      GroupIndex = 2
+      ShortCut = 16435
+      OnExecute = actMBExecute
+    end
+    object actMB4: TAction
+      Tag = 3
+      Category = 'MBNum'
+      Caption = 'Mailbox4'
+      GroupIndex = 2
+      ShortCut = 16436
+      OnExecute = actMBExecute
+    end
+    object actMB5: TAction
+      Tag = 4
+      Category = 'MBNum'
+      Caption = 'Mailbox5'
+      GroupIndex = 2
+      ShortCut = 16437
+      OnExecute = actMBExecute
+    end
+    object actMB6: TAction
+      Tag = 5
+      Category = 'MBNum'
+      Caption = 'Mailbox6'
+      GroupIndex = 2
+      ShortCut = 16438
+      OnExecute = actMBExecute
+    end
+    object actMB7: TAction
+      Tag = 6
+      Category = 'MBNum'
+      Caption = 'Mailbox7'
+      GroupIndex = 2
+      ShortCut = 16439
+      OnExecute = actMBExecute
+    end
+    object actMB8: TAction
+      Tag = 7
+      Category = 'MBNum'
+      Caption = 'Mailbox8'
+      GroupIndex = 2
+      ShortCut = 16440
+      OnExecute = actMBExecute
+    end
+    object actMB9: TAction
+      Tag = 8
+      Category = 'MBNum'
+      Caption = 'Mailbox9'
+      GroupIndex = 2
+      ShortCut = 16441
+      OnExecute = actMBExecute
+    end
+    object actMB10: TAction
+      Tag = 9
+      Category = 'MBNum'
+      Caption = 'Mailbox10'
+      Checked = True
+      GroupIndex = 2
+      ShortCut = 16432
+      OnExecute = actMBExecute
     end
   end
 end

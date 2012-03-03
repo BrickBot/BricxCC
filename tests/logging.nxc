@@ -1,0 +1,30 @@
+task main()
+{
+  string msg;
+  int i = 0;
+  int val;
+  while (true)
+  {
+    i++;
+    val = Random();
+    msg = "Testing=" + NumToStr(val);
+
+    byte len = StrLen(msg);
+    SetUSBPollBuffer(0, len, msg);
+    SetUSBPollBufferOutPtr(0);
+    SetUSBPollBufferInPtr(len);
+
+/*
+    SendResponseString(MAILBOX10, msg);
+    Wait(MS_100);
+
+//    SendResponseNumber(MAILBOX1, val);
+    SendResponseNumber(MAILBOX10, i);
+    Wait(MS_100);
+
+    bool bval = Random(2);
+    SendResponseBool(MAILBOX10, bval);
+*/
+    Wait(MS_100);
+  }
+}

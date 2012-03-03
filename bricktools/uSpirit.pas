@@ -98,6 +98,9 @@ type
   end;
 
   TBrickComm = class
+  private
+    fNXTUseMailbox: boolean;
+    fNXTMailboxNum: integer;
   protected
     fSearchBT: boolean;
     fLocalIFW : TInstalledFirmware;
@@ -439,6 +442,8 @@ type
     property  DownloadWaitTime : Integer read GetDownloadWaitTime write SetDownloadWaitTime;
     property  OmitHeader : Boolean read GetOmitHeader write SetOmitHeader;
     property  TheProgram : TProgram read fProgram write fProgram;
+    property  NXTUseMailbox : boolean read fNXTUseMailbox write fNXTUseMailbox;
+    property  NXTMailboxNum : integer read fNXTMailboxNum write fNXTMailboxNum;
     property  OnDownloadStart : TNotifyEvent read fOnDownloadStart write fOnDownloadStart;
     property  OnDownloadDone : TNotifyEvent read fOnDownloadDone write fOnDownloadDone;
     property  OnDownloadStatus : TDownloadStatusEvent read fOnDownloadStatus write fOnDownloadStatus;
@@ -570,6 +575,8 @@ begin
   fLocalIFW  := ifUnknown;
   fLocalFV   := 0;
   fSearchBT  := True;
+  fNXTUseMailbox := False;
+  fNXTMailboxNum := 9;
 
   for i := 0 to 2 do
   begin

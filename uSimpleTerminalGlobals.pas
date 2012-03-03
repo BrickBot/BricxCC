@@ -32,6 +32,8 @@ var
   SimpleTermPolling : boolean;
   SimpleTermLabelLines : boolean;
   SimpleTermEchoSends : boolean;
+  SimpleTermNXTUseMailbox : boolean;
+  SimpleTermNXTMailboxNum : byte;
 
 procedure LoadSimpleTerminalValues(reg : TRegistry);
 procedure SaveSimpleTerminalValues(reg : TRegistry);
@@ -47,9 +49,11 @@ begin
   {Loads the simple terminal values from the registry}
   Reg_OpenKey(reg, 'SimpleTerminal');
   try
-    SimpleTermPolling    := Reg_ReadBool(reg, 'SimpleTermPolling', true);
-    SimpleTermLabelLines := Reg_ReadBool(reg, 'SimpleTermLabelLines', false);
-    SimpleTermEchoSends  := Reg_ReadBool(reg, 'SimpleTermEchoSends', false);
+    SimpleTermPolling       := Reg_ReadBool(reg, 'SimpleTermPolling', true);
+    SimpleTermLabelLines    := Reg_ReadBool(reg, 'SimpleTermLabelLines', false);
+    SimpleTermEchoSends     := Reg_ReadBool(reg, 'SimpleTermEchoSends', false);
+    SimpleTermNXTUseMailbox := Reg_ReadBool(reg, 'SimpleTermNXTUseMailbox', false);
+    SimpleTermNXTMailboxNum := Reg_ReadInteger(reg, 'SimpleTermNXTMailboxNum', 9);
   finally
     reg.CloseKey;
   end;
@@ -64,6 +68,8 @@ begin
     reg.WriteBool('SimpleTermPolling',SimpleTermPolling);
     reg.WriteBool('SimpleTermLabelLines',SimpleTermLabelLines);
     reg.WriteBool('SimpleTermEchoSends',SimpleTermEchoSends);
+    reg.WriteBool('SimpleTermNXTUseMailbox',SimpleTermNXTUseMailbox);
+    reg.WriteInteger('SimpleTermNXTMailboxNum', SimpleTermNXTMailboxNum);
   finally
     reg.CloseKey;
   end;
@@ -81,5 +87,7 @@ initialization
   SimpleTermPolling := True;
   SimpleTermLabelLines := False;
   SimpleTermEchoSends := False;
+  SimpleTermNXTUseMailbox := False;
+  SimpleTermNXTMailboxNum := 9;
 
 end.

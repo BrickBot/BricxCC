@@ -238,6 +238,29 @@ type
     menuPopup: TPopupMenu;
     dlgOpen: TOpenDialog;
     mniOpenSym: TMenuItem;
+    shtNXTMailboxes: TTabSheet;
+    grpNXTMailboxes: TGroupBox;
+    chkResponse: TCheckBox;
+    chkNXTMB1: TCheckBox;
+    chkNXTMB2: TCheckBox;
+    chkNXTMB3: TCheckBox;
+    chkNXTMB4: TCheckBox;
+    chkNXTMB5: TCheckBox;
+    chkNXTMB6: TCheckBox;
+    chkNXTMB7: TCheckBox;
+    chkNXTMB8: TCheckBox;
+    chkNXTMB9: TCheckBox;
+    chkNXTMB10: TCheckBox;
+    edtNXTMB1: TEdit;
+    edtNXTMB2: TEdit;
+    edtNXTMB3: TEdit;
+    edtNXTMB4: TEdit;
+    edtNXTMB5: TEdit;
+    edtNXTMB6: TEdit;
+    edtNXTMB7: TEdit;
+    edtNXTMB8: TEdit;
+    edtNXTMB9: TEdit;
+    edtNXTMB10: TEdit;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnPollNowClick(Sender: TObject);
     procedure btnCheckAllClick(Sender: TObject);
@@ -276,6 +299,7 @@ type
     procedure LoadWatchedProgram;
     function IndexToID(const idx : integer) : integer;
     procedure SetVariableHints;
+    procedure PollMessage(num: byte; edtValue: TEdit);
   public
     { Public declarations }
     procedure GraphDestroyed;
@@ -291,9 +315,9 @@ implementation
 {$ENDIF}
 
 uses
-  SysUtils, brick_common, rcx_constants,
+  SysUtils, Variants, brick_common, rcx_constants,
   uLocalizedStrings, uGuiUtils, uBasicPrefs, uEditorUtils,
-  uGlobals, uMiscDefines, uCommonUtils, Variants;
+  uGlobals, uMiscDefines, uCommonUtils;
 
 function GetMotorData(numb : integer) : string;
 var
@@ -323,6 +347,53 @@ begin
 end;
 
 var busy:boolean = false;
+
+procedure TWatchForm.PollMessage(num : byte; edtValue : TEdit);
+var
+  msg : NXTMessage;
+  logStr, valStr : string;
+  bIsNumeric : boolean;
+  j, val : integer;
+begin
+  if chkResponse.Checked then
+    num := num + 10;
+  if BrickComm.NXTMessageRead(num, 0, true, msg) then
+  begin
+    if msg.Size = 0 then Exit;
+    logStr := '';
+    valStr := '';
+    if (msg.Size = 2) and (msg.Data[0] in [0,1]) then
+    begin
+      logStr := Format('Mailbox %d: %d', [num+1, msg.Data[0]]);
+      valStr := Format('%d', [msg.Data[0]]);
+    end
+    else if (msg.Size = 5) and (msg.Data[4] = 0) then
+    begin
+      bIsNumeric := False;
+      for j := 0 to msg.Size - 2 do
+      begin
+        if not (Char(msg.Data[j]) in [' '..'~']) then
+        begin
+          bIsNumeric := True;
+          break;
+        end;
+      end;
+      if bIsNumeric then
+      begin
+        Move(PByte(@msg.Data[0])^, val, 4);
+        logStr := Format('Mailbox %d: %d', [num+1, val]);
+        valStr := Format('%d', [val]);
+      end;
+    end;
+    if (logStr = '') and (valStr = '') then
+    begin
+      logStr := Format('Mailbox %d: %s', [num+1, PChar(@msg.Data[0])]);
+      valStr := PChar(@msg.Data[0]);
+    end;
+    fNewData.Add(logStr);
+    edtValue.Text := valStr;
+  end;
+end;
 
 procedure TWatchForm.ProcessI2C(port : byte; edtLen : TBricxCCSpinEdit;
   edtBuf : TEdit; edtVal : TEdit);
@@ -689,6 +760,27 @@ begin
     begin
       ProcessI2C(3, edtI2CLen4, edtI2CBuf4, edtI2CVal4);
     end;
+    // handle mailbox polling for NXT
+    if chkNXTMB1.Checked then
+      PollMessage(chkNXTMB1.Tag, edtNXTMB1);
+    if chkNXTMB2.Checked then
+      PollMessage(chkNXTMB2.Tag, edtNXTMB2);
+    if chkNXTMB3.Checked then
+      PollMessage(chkNXTMB3.Tag, edtNXTMB3);
+    if chkNXTMB4.Checked then
+      PollMessage(chkNXTMB4.Tag, edtNXTMB4);
+    if chkNXTMB5.Checked then
+      PollMessage(chkNXTMB5.Tag, edtNXTMB5);
+    if chkNXTMB6.Checked then
+      PollMessage(chkNXTMB6.Tag, edtNXTMB6);
+    if chkNXTMB7.Checked then
+      PollMessage(chkNXTMB7.Tag, edtNXTMB7);
+    if chkNXTMB8.Checked then
+      PollMessage(chkNXTMB8.Tag, edtNXTMB8);
+    if chkNXTMB9.Checked then
+      PollMessage(chkNXTMB9.Tag, edtNXTMB9);
+    if chkNXTMB10.Checked then
+      PollMessage(chkNXTMB10.Tag, edtNXTMB10);
 
     // these only apply to Cybermaster
     if CheckTCounterL.Checked then
@@ -860,18 +952,19 @@ begin
   busy := false;
   if IsRCX or IsScout or IsSpybotic or IsNXT then
   begin
-    grpMessage.Visible        := not IsSpybotic;
-    shtCybermaster.TabVisible := False;
-    grpTacho.Visible          := False;
-    grpNXTMotors.Visible      := IsNXT;
-    shtNXT.TabVisible         := IsNXT;
-    grpI2C.Visible            := grpNXTMotors.Visible;
-    CheckTCounterL.Checked    := False;
-    CheckTSpeedL.Checked      := False;
-    CheckTCounterR.Checked    := False;
-    CheckTSpeedR.Checked      := False;
-    CheckMCurrent.Checked     := False;
-    grpCounter.Visible        := IsRCX2 or IsScout or IsSpybotic;
+    grpMessage.Visible         := not IsSpybotic and not IsNXT;
+    shtCybermaster.TabVisible  := False;
+    grpTacho.Visible           := False;
+    grpNXTMotors.Visible       := IsNXT;
+    shtNXT.TabVisible          := IsNXT;
+    shtNXTMailboxes.TabVisible := IsNXT;
+    grpI2C.Visible             := grpNXTMotors.Visible;
+    CheckTCounterL.Checked     := False;
+    CheckTSpeedL.Checked       := False;
+    CheckTCounterR.Checked     := False;
+    CheckTSpeedR.Checked       := False;
+    CheckMCurrent.Checked      := False;
+    grpCounter.Visible         := not IsNXT;
     if IsRCX or IsScout or IsSpybotic then
     begin
 //      // move counter box on top of tacho box
@@ -884,29 +977,59 @@ begin
         grpMotor.Top  := grpCounter.Top;
         Self.Height   := NEW_FORM_HEIGHT;
       end;
+      chkPortA.Checked   := False;
+      chkPortB.Checked   := False;
+      chkPortC.Checked   := False;
+      chkI2C1.Checked    := False;
+      chkI2C2.Checked    := False;
+      chkI2C3.Checked    := False;
+      chkI2C4.Checked    := False;
+      chkNXTMB1.Checked  := False;
+      chkNXTMB2.Checked  := False;
+      chkNXTMB3.Checked  := False;
+      chkNXTMB4.Checked  := False;
+      chkNXTMB5.Checked  := False;
+      chkNXTMB6.Checked  := False;
+      chkNXTMB7.Checked  := False;
+      chkNXTMB8.Checked  := False;
+      chkNXTMB9.Checked  := False;
+      chkNXTMB10.Checked := False;
     end;
+    if IsNXT then
+      CheckMessage.Checked := False;
   end
   else
   begin
     // cybermaster
-    shtNXT.TabVisible         := False;
-    shtCybermaster.TabVisible := True;
-    grpTacho.Visible          := True;
-    grpNXTMotors.Visible      := False;
-    grpI2C.Visible            := False;
-    grpMessage.Visible        := False;
-    CheckMessage.Checked      := False;
-    grpCounter.Visible        := False;
-    CheckCounter0.Checked     := False;
-    CheckCounter1.Checked     := False;
-    CheckCounter2.Checked     := False;
-    chkPortA.Checked          := False;
-    chkPortB.Checked          := False;
-    chkPortC.Checked          := False;
-    chkI2C1.Checked           := False;
-    chkI2C2.Checked           := False;
-    chkI2C3.Checked           := False;
-    chkI2C4.Checked           := False;
+    shtNXT.TabVisible          := False;
+    shtNXTMailboxes.TabVisible := False;
+    shtCybermaster.TabVisible  := True;
+    grpTacho.Visible           := True;
+    grpNXTMotors.Visible       := False;
+    grpI2C.Visible             := False;
+    grpMessage.Visible         := False;
+    CheckMessage.Checked       := False;
+    grpCounter.Visible         := False;
+    CheckCounter0.Checked      := False;
+    CheckCounter1.Checked      := False;
+    CheckCounter2.Checked      := False;
+    chkPortA.Checked           := False;
+    chkPortB.Checked           := False;
+    chkPortC.Checked           := False;
+    chkI2C1.Checked            := False;
+    chkI2C2.Checked            := False;
+    chkI2C3.Checked            := False;
+    chkI2C4.Checked            := False;
+    chkNXTMB1.Checked          := False;
+    chkNXTMB2.Checked          := False;
+    chkNXTMB3.Checked          := False;
+    chkNXTMB4.Checked          := False;
+    chkNXTMB5.Checked          := False;
+    chkNXTMB6.Checked          := False;
+    chkNXTMB7.Checked          := False;
+    chkNXTMB8.Checked          := False;
+    chkNXTMB9.Checked          := False;
+    chkNXTMB10.Checked         := False;
 //    // move the grpTacho on top of the message box
 //    grpTacho.Top := grpMessage.Top;
   end;

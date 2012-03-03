@@ -38,14 +38,25 @@ type
     mmoTerm: TMemo;
     tmrPoll: TTimer;
     alSimpleTerm: TActionList;
-    actEditCut1: TEditCut;
-    actEditCopy1: TEditCopy;
-    actEditPaste1: TEditPaste;
-    actEditDelete1: TEditDelete;
-    actEditSelectAll1: TEditSelectAll;
+    actEditCut: TEditCut;
+    actEditCopy: TEditCopy;
+    actEditPaste: TEditPaste;
+    actEditDelete: TEditDelete;
+    actEditSelectAll: TEditSelectAll;
     actPolling: TAction;
     actLabelLines: TAction;
     actEchoSends: TAction;
+    actNXTUseMailbox: TAction;
+    actMB1: TAction;
+    actMB2: TAction;
+    actMB3: TAction;
+    actMB4: TAction;
+    actMB5: TAction;
+    actMB6: TAction;
+    actMB7: TAction;
+    actMB8: TAction;
+    actMB9: TAction;
+    actMB10: TAction;
     procedure mmoTermKeyPress(Sender: TObject; var Key: Char);
 //    procedure mmoTermKeyDown(Sender: TObject; var Key: Word;
 //      Shift: TShiftState);
@@ -58,23 +69,39 @@ type
     procedure alSimpleTermUpdate(Action: TBasicAction;
       var Handled: Boolean);
     procedure actEchoSendsExecute(Sender: TObject);
+    procedure actNXTUseMailboxExecute(Sender: TObject);
+    procedure actMBExecute(Sender: TObject);
   private
     { Private declarations }
+    fBusy : boolean;
     mnuMain: TOfficeMainMenu;
     mniEdit: TOfficeMenuItem;
     mniPreferences: TOfficeMenuItem;
-    Cut1: TOfficeMenuItem;
-    Copy1: TOfficeMenuItem;
-    Paste1: TOfficeMenuItem;
-    Delete1: TOfficeMenuItem;
-    SelectAll1: TOfficeMenuItem;
-    Polling1: TOfficeMenuItem;
-    LabelLines1: TOfficeMenuItem;
-    EchoSends1: TOfficeMenuItem;
+    mniCut: TOfficeMenuItem;
+    mniCopy: TOfficeMenuItem;
+    mniPaste: TOfficeMenuItem;
+    mniDelete: TOfficeMenuItem;
+    mniSelectAll: TOfficeMenuItem;
+    mniPolling: TOfficeMenuItem;
+    mniLabelLines: TOfficeMenuItem;
+    mniEchoSends: TOfficeMenuItem;
+    mniNXTUseMailbox: TOfficeMenuItem;
+    mniMailboxNum: TOfficeMenuItem;
+    mniMB1: TOfficeMenuItem;
+    mniMB2: TOfficeMenuItem;
+    mniMB3: TOfficeMenuItem;
+    mniMB4: TOfficeMenuItem;
+    mniMB5: TOfficeMenuItem;
+    mniMB6: TOfficeMenuItem;
+    mniMB7: TOfficeMenuItem;
+    mniMB8: TOfficeMenuItem;
+    mniMB9: TOfficeMenuItem;
+    mniMB10: TOfficeMenuItem;
     fOldDataSending : TDataSendReceiveEvent;
     fOldDataReceiving : TDataSendReceiveEvent;
     procedure HandleDataSendingAndReceiving(Sender : TObject; const Sending : boolean; const Data : array of byte);
     procedure CreateMenus;
+    procedure UpdateBrickComm;
   public
     { Public declarations }
   end;
@@ -87,7 +114,7 @@ implementation
 {$R *.dfm}
 
 uses
-  brick_common, uSimpleTerminalGlobals;
+  brick_common, uSimpleTerminalGlobals, uGlobals;
 
 procedure TfrmSimpleTerm.mmoTermKeyPress(Sender: TObject; var Key: Char);
 var
@@ -145,34 +172,77 @@ begin
   fOldDataReceiving := BrickComm.OnDataReceiving;
   BrickComm.OnDataSending := HandleDataSendingAndReceiving;
   BrickComm.OnDataReceiving := HandleDataSendingAndReceiving;
+  UpdateBrickComm;
 end;
 
 procedure TfrmSimpleTerm.HandleDataSendingAndReceiving(Sender: TObject;
   const Sending: boolean; const Data: array of byte);
 var
   tmp : string;
+  len, j : integer;
+  bIsNumeric : boolean;
 //  line : string;
-  i : integer;
-begin
-  if Sending and not SimpleTermEchoSends then Exit;
-  if Length(Data) = 0 then Exit;
-  if Sending then
-    tmp := 'S: '
-  else
-    tmp := 'R: ';
 
-  if not SimpleTermLabelLines then
-    tmp := '';
-
-  for i := 0 to Length(Data) - 1 do
+  procedure BuildDefaultOutput;
+  var
+    i : integer;
   begin
-    if Char(Data[i]) in [#13, #10, ' '..'~'] then
-      tmp := tmp + Chr(Data[i])
-    else
-      tmp := tmp + ' 0x' + IntToHex(Data[i], 2) + ' ';
+    for i := 0 to len - 1 do
+    begin
+      if Char(Data[i]) in [#13, #10, ' '..'~'] then
+        tmp := tmp + Chr(Data[i])
+      else
+        tmp := tmp + ' 0x' + IntToHex(Data[i], 2) + ' ';
+    end;
   end;
-  tmp := TrimRight(tmp); // remove trailing whitespace
-  mmoTerm.Lines.Add(tmp);
+begin
+  fBusy := True;
+  try
+    if Sending and not SimpleTermEchoSends then Exit;
+    len := Length(Data);
+    if len = 0 then Exit;
+    if Sending then
+      tmp := 'S: '
+    else
+      tmp := 'R: ';
+
+    if not SimpleTermLabelLines then
+      tmp := '';
+
+    if IsNXT and SimpleTermNXTUseMailbox then
+    begin
+      if ((len = 1) and ((Data[0] = 0) or (Data[0] = 1))) then
+      begin
+        // boolean value
+        tmp := tmp + IntToStr(Data[0]);
+      end
+      else if (len = 4) then
+      begin
+        // maybe a numeric value
+        bIsNumeric := False;
+        for j := 0 to len - 1 do
+        begin
+          if not (Char(Data[j]) in [' '..'~']) then
+          begin
+            bIsNumeric := True;
+            break;
+          end;
+        end;
+        if bIsNumeric then
+        begin
+          Move(PByte(@Data[0])^, j, 4);
+          tmp := tmp + IntToStr(j);
+        end
+        else
+          BuildDefaultOutput;
+      end
+      else
+        BuildDefaultOutput;
+    end
+    else
+      BuildDefaultOutput;
+    tmp := TrimRight(tmp); // remove trailing whitespace
+    mmoTerm.Lines.Add(tmp);
 (*
   // special handling for single byte receiving
   if not Sending and (Length(Data) = 1) then
@@ -199,12 +269,18 @@ begin
   else
     mmoTerm.Lines.Add(tmp);
 *)
+  finally
+    fBusy := False;
+  end;
 end;
 
 procedure TfrmSimpleTerm.tmrPollTimer(Sender: TObject);
 begin
-  if SimpleTermPolling and BrickComm.IsOpen then
-    BrickComm.FlushReceiveBuffer;
+  if not fBusy and Visible and (WindowState <> wsMinimized) then
+  begin
+    if SimpleTermPolling and BrickComm.IsOpen then
+      BrickComm.FlushReceiveBuffer;
+  end;
 end;
 
 procedure TfrmSimpleTerm.actLabelLinesExecute(Sender: TObject);
@@ -220,6 +296,22 @@ end;
 procedure TfrmSimpleTerm.actEchoSendsExecute(Sender: TObject);
 begin
   SimpleTermEchoSends := not actEchoSends.Checked;
+end;
+
+procedure TfrmSimpleTerm.actNXTUseMailboxExecute(Sender: TObject);
+begin
+  SimpleTermNXTUseMailbox := not actNXTUseMailbox.Checked;
+  UpdateBrickComm;
+end;
+
+procedure TfrmSimpleTerm.actMBExecute(Sender: TObject);
+begin
+  if Sender is TAction then
+    TAction(Sender).Checked := True
+  else if Sender is TOfficeMenuItem then
+    TOfficeMenuItem(Sender).Checked := True;
+  SimpleTermNXTMailboxNum := TAction(Sender).Tag;
+  UpdateBrickComm;
 end;
 
 procedure TfrmSimpleTerm.FormCreate(Sender: TObject);
@@ -239,14 +331,14 @@ begin
   // add it to main menu
   mnuMain.Items.Add(mniEdit);
 
-  Cut1 := TOfficeMenuItem.Create(Self);
-  Copy1 := TOfficeMenuItem.Create(Self);
-  Paste1 := TOfficeMenuItem.Create(Self);
-  Delete1 := TOfficeMenuItem.Create(Self);
-  SelectAll1 := TOfficeMenuItem.Create(Self);
+  mniCut := TOfficeMenuItem.Create(Self);
+  mniCopy := TOfficeMenuItem.Create(Self);
+  mniPaste := TOfficeMenuItem.Create(Self);
+  mniDelete := TOfficeMenuItem.Create(Self);
+  mniSelectAll := TOfficeMenuItem.Create(Self);
 
   // add menu items to edit menu
-  mniEdit.Add([Cut1, Copy1, Paste1, Delete1, SelectAll1]);
+  mniEdit.Add([mniCut, mniCopy, mniPaste, mniDelete, mniSelectAll]);
 
   // create preferences menu
   mniPreferences := TOfficeMenuItem.Create(mnuMain);
@@ -254,42 +346,57 @@ begin
   // add it to main menu
   mnuMain.Items.Add(mniPreferences);
 
-  Polling1 := TOfficeMenuItem.Create(mniPreferences);
-  LabelLines1 := TOfficeMenuItem.Create(mniPreferences);
-  EchoSends1 := TOfficeMenuItem.Create(mniPreferences);
+  mniPolling       := TOfficeMenuItem.Create(mniPreferences);
+  mniLabelLines    := TOfficeMenuItem.Create(mniPreferences);
+  mniEchoSends     := TOfficeMenuItem.Create(mniPreferences);
+  mniNXTUseMailbox := TOfficeMenuItem.Create(mniPreferences);
+  mniMailboxNum    := TOfficeMenuItem.Create(mniPreferences);
 
   // add menu items to edit menu
-  mniPreferences.Add([Polling1, LabelLines1, EchoSends1]);
+  mniPreferences.Add([mniPolling, mniLabelLines, mniEchoSends, mniNXTUseMailbox, mniMailboxNum]);
+
+  mniMB1  := TOfficeMenuItem.Create(mniMailboxNum);
+  mniMB2  := TOfficeMenuItem.Create(mniMailboxNum);
+  mniMB3  := TOfficeMenuItem.Create(mniMailboxNum);
+  mniMB4  := TOfficeMenuItem.Create(mniMailboxNum);
+  mniMB5  := TOfficeMenuItem.Create(mniMailboxNum);
+  mniMB6  := TOfficeMenuItem.Create(mniMailboxNum);
+  mniMB7  := TOfficeMenuItem.Create(mniMailboxNum);
+  mniMB8  := TOfficeMenuItem.Create(mniMailboxNum);
+  mniMB9  := TOfficeMenuItem.Create(mniMailboxNum);
+  mniMB10 := TOfficeMenuItem.Create(mniMailboxNum);
+
+  mniMailboxNum.Add([mniMB1, mniMB2, mniMB3, mniMB4, mniMB5, mniMB6, mniMB7, mniMB8, mniMB9, mniMB10]);
 
   with mniEdit do
   begin
     Name := 'mniEdit';
     Caption := '&Edit';
   end;
-  with Cut1 do
+  with mniCut do
   begin
-    Name := 'Cut1';
-    Action := actEditCut1;
+    Name := 'mniCut';
+    Action := actEditCut;
   end;
-  with Copy1 do
+  with mniCopy do
   begin
-    Name := 'Copy1';
-    Action := actEditCopy1;
+    Name := 'mniCopy';
+    Action := actEditCopy;
   end;
-  with Paste1 do
+  with mniPaste do
   begin
-    Name := 'Paste1';
-    Action := actEditPaste1;
+    Name := 'mniPaste';
+    Action := actEditPaste;
   end;
-  with Delete1 do
+  with mniDelete do
   begin
-    Name := 'Delete1';
-    Action := actEditDelete1;
+    Name := 'mniDelete';
+    Action := actEditDelete;
   end;
-  with SelectAll1 do
+  with mniSelectAll do
   begin
-    Name := 'SelectAll1';
-    Action := actEditSelectAll1;
+    Name := 'mniSelectAll';
+    Action := actEditSelectAll;
   end;
 
   with mniPreferences do
@@ -297,29 +404,129 @@ begin
     Name := 'mniPreferences';
     Caption := '&Preferences';
   end;
-  with Polling1 do
+  with mniPolling do
   begin
-    Name := 'Polling1';
+    Name := 'mniPolling';
     Action := actPolling;
   end;
-  with LabelLines1 do
+  with mniLabelLines do
   begin
-    Name := 'LabelLines1';
+    Name := 'mniLabelLines';
     Action := actLabelLines;
   end;
-  with EchoSends1 do
+  with mniEchoSends do
   begin
-    Name := 'EchoSends1';
+    Name := 'mniEchoSends';
     Action := actEchoSends;
+  end;
+  with mniNXTUseMailbox do
+  begin
+    Name := 'mniNXTUseMailbox';
+    Action := actNXTUseMailbox;
+  end;
+  with mniMailboxNum do
+  begin
+    Name := 'mniMailboxNum';
+    Caption := 'NXT Mailbox';
+  end;
+
+  with mniMB1 do
+  begin
+    Name := 'mniMB1';
+    Action := actMB1;
+    GroupIndex := 2;
+    RadioItem := True;
+  end;
+  with mniMB2 do
+  begin
+    Name := 'mniMB2';
+    Action := actMB2;
+    GroupIndex := 2;
+    RadioItem := True;
+  end;
+  with mniMB3 do
+  begin
+    Name := 'mniMB3';
+    Action := actMB3;
+    GroupIndex := 2;
+    RadioItem := True;
+  end;
+  with mniMB4 do
+  begin
+    Name := 'mniMB4';
+    Action := actMB4;
+    GroupIndex := 2;
+    RadioItem := True;
+  end;
+  with mniMB5 do
+  begin
+    Name := 'mniMB5';
+    Action := actMB5;
+    GroupIndex := 2;
+    RadioItem := True;
+  end;
+  with mniMB6 do
+  begin
+    Name := 'mniMB6';
+    Action := actMB6;
+    GroupIndex := 2;
+    RadioItem := True;
+  end;
+  with mniMB7 do
+  begin
+    Name := 'mniMB7';
+    Action := actMB7;
+    GroupIndex := 2;
+    RadioItem := True;
+  end;
+  with mniMB8 do
+  begin
+    Name := 'mniMB8';
+    Action := actMB8;
+    GroupIndex := 2;
+    RadioItem := True;
+  end;
+  with mniMB9 do
+  begin
+    Name := 'mniMB9';
+    Action := actMB9;
+    GroupIndex := 2;
+    RadioItem := True;
+  end;
+  with mniMB10 do
+  begin
+    Name := 'mniMB10';
+    Action := actMB10;
+    GroupIndex := 2;
+    RadioItem := True;
   end;
 end;
 
 procedure TfrmSimpleTerm.alSimpleTermUpdate(Action: TBasicAction;
   var Handled: Boolean);
 begin
-  actLabelLines.Checked := SimpleTermLabelLines;
-  actPolling.Checked    := SimpleTermPolling;
-  actEchoSends.Checked  := SimpleTermEchoSends;
+  actLabelLines.Checked    := SimpleTermLabelLines;
+  actPolling.Checked       := SimpleTermPolling;
+  actEchoSends.Checked     := SimpleTermEchoSends;
+  actNXTUseMailbox.Checked := SimpleTermNXTUseMailbox;
+  case SimpleTermNXTMailboxNum of
+    0 : actMB1.Checked := True;
+    1 : actMB2.Checked := True;
+    2 : actMB3.Checked := True;
+    3 : actMB4.Checked := True;
+    4 : actMB5.Checked := True;
+    5 : actMB6.Checked := True;
+    6 : actMB7.Checked := True;
+    7 : actMB8.Checked := True;
+    8 : actMB9.Checked := True;
+    9 : actMB10.Checked := True;
+  end;
+end;
+
+procedure TfrmSimpleTerm.UpdateBrickComm;
+begin
+  BrickComm.NXTUseMailbox := SimpleTermNXTUseMailbox;
+  BrickComm.NXTMailboxNum := SimpleTermNXTMailboxNum;
 end;
 
 initialization

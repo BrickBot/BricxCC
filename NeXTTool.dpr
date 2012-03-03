@@ -84,6 +84,10 @@ var
   EHO : TEventHandlerObject;
   nxtdev : NXTDevice;
   nxtconn : NXTConnection;
+  MS : TMemoryStream;
+  binfile : string;
+  bindump, bErase : boolean;
+  msgms : Cardinal; // milliseconds between refreshes
 
 
 function BrickComm : TBrickComm;
@@ -131,10 +135,10 @@ begin
   Writeln('   /BluetoothSearchTimeout=<n>: Set Bluetooth search timeout');
   Writeln('   /HEX: use hexadecimal for numeric output');
   Writeln('   /Duration=<n>: specify the tone duration for the playtone action');
-  Writeln('   /Inbox=<n>: use inbox number n when sending or reading a message');
+  Writeln('   /Inbox=<n>: use inbox number n when sending a message');
   Writeln('   /Loop: loop when playing sound files');
   Writeln('   /Relative: reset output position relative');
-  Writeln('   /Empty: empty mailbox when reading');
+  Writeln('   /KeepMsg: do not empty mailbox when reading');
   Writeln('   /Bin[=filename]: dump data output as binary to a file (nxt.bin)');
   Writeln('   /Power=<n>: output power level (-100..100)');
   Writeln('   /Mode=<n>: output mode (COAST=0, MOTORON=1, BRAKE=2, REGULATED=4)');
@@ -144,8 +148,10 @@ begin
   Writeln('   /TachoLimit=<n>: output tachometer limit (0..MaxInt)');
   Writeln('   /SensorType=<n>: sensor type (0..17)');
   Writeln('   /SensorMode=<n>: sensor mode (0, 32, 64, 96, 128, 160, 192, 224)');
+  Writeln('   /Iterations=<n>: repeat a command <n> times (1)');
+  Writeln('   /RefreshRate=<ms>: delay <ms> milliseconds between iterations (1000)');
   Writeln('Actions:');
-  Writeln('   -init[=0] : initialize the nxt.dat file (optionally turn off Bluetooth search)');
+  Writeln('   -init[=0] : initialize nxt.dat (optionally turn off Bluetooth search)');
   Writeln('   -update[=0] : update the nxt.dat file (ditto)');
   Writeln('   -listbricks[=0] : list resource names of all found NXT bricks (ditto)');
   Writeln('   -clear : erase all items on the brick');
@@ -225,11 +231,8 @@ var
   i : integer;
   b : Byte;
 begin
-  if ParamSwitch('/Bin') then
+  if bindump then
   begin
-    pattern := ParamValue('/Bin');
-    if pattern = '' then
-      pattern := 'nxt.bin';
     MS := TMemoryStream.Create;
     try
       for i := 0 to SL.Count - 1 do
@@ -237,7 +240,7 @@ begin
         b := Byte(StrToIntDef(SL[i], 0));
         MS.Write(b, 1);
       end;
-      MS.SaveToFile(pattern);
+      MS.SaveToFile(binfile);
     finally
       MS.Free;
     end;
@@ -277,7 +280,7 @@ begin
   VerFileDescription  := '';
   VerFileVersion      := '1.2.1.r5';
   VerInternalName     := 'nexttool';
-  VerLegalCopyright   := 'Copyright (c) 2006-2011, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2012, John Hansen';
   VerOriginalFileName := 'nexttool';
   VerProductName      := 'nexttool';
   VerProductVersion   := '1.2';
@@ -326,6 +329,11 @@ begin
     Exit;
   end;
 
+  bindump := ParamSwitch('/Bin');
+  binfile := ParamValue('/Bin');
+  if binfile = '' then
+    binfile := 'nxt.bin';
+
   EHO := TEventHandlerObject.Create;
   try
     BrickComm.OnDownloadStart  := EHO.HandleDownloadStart;
@@ -363,7 +371,7 @@ begin
 //    BrickComm.BluetoothName := ParamValue('/BT');
     if ParamSwitch('-firmware') then
     begin
-      j := ParamIntValue('-iterations', 1, False);
+      j := ParamIntValue('/Iterations', 1, False);
       for i := 0 to j - 1 do
       begin
         BrickComm.DownloadFirmware(ParamValue('-firmware'), False, False, False);
@@ -617,11 +625,49 @@ begin
       end;
       if ParamSwitch('-readmsg') then
       begin
-        port := ParamIntValue('-readmsg', 0);
-        if BrickComm.NXTMessageRead(Byte(port), Byte(ParamIntValue('/Inbox', 0)), ParamSwitch('/Empty'), Msg) then
-        begin
-          for i := 0 to Msg.Size - 1 do
-            OutputValue(Msg.Data[i]);
+        MS := TMemoryStream.Create;
+        try
+          port := ParamIntValue('-readmsg', 0, False);
+          msgms := ParamIntValue('/RefreshRate', 1000, False);
+          j := ParamIntValue('/Iterations', 1, False);
+          bErase := not ParamSwitch('/KeepMsg');
+          while j > 0 do
+          begin
+            if BrickComm.NXTMessageRead(Byte(port), 0, bErase, Msg) then
+            begin
+              case Msg.Size of
+                0 : ; // do nothing
+                2 : begin
+                  if bindump then
+                    MS.Write(Msg.Data[0], 1)
+                  else
+                    WriteLn(Msg.Data[0]);
+                end;
+                5 : begin
+                  if bindump then
+                    MS.Write(PByte(@Msg.Data[0])^, 4)
+                  else
+                  begin
+                    Move(PByte(@Msg.Data[0])^, i, 4);
+                    WriteLn(i);
+                  end;
+                end;
+              else
+                // treat as a string
+                if bindump then
+                  MS.Write(PChar(@Msg.Data[0])^, Msg.Size-1)
+                else
+                  WriteLn(PChar(@Msg.Data[0]));
+              end;
+            end;
+            dec(j);
+            if j > 0 then
+              OSSleep(msgms);
+          end;
+          if bindump then
+            MS.SaveToFile(binfile);
+        finally
+          MS.Free;
         end;
       end;
       if ParamSwitch('-memory') or ParamSwitch('-memory_full') then
