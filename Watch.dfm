@@ -28,7 +28,7 @@ object WatchForm: TWatchForm
     Top = 0
     Width = 444
     Height = 410
-    ActivePage = shtCommon
+    ActivePage = shtNXTMailboxes
     Align = alClient
     TabOrder = 0
     object shtCommon: TTabSheet
@@ -1400,7 +1400,7 @@ object WatchForm: TWatchForm
       object grpNXTMotors: TGroupBox
         Left = 4
         Top = 2
-        Width = 341
+        Width = 428
         Height = 215
         HelpContext = 14081
         TabOrder = 0
@@ -1416,7 +1416,7 @@ object WatchForm: TWatchForm
         object edtPAPower: TEdit
           Left = 135
           Top = 28
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14083
           AutoSize = False
@@ -1430,7 +1430,7 @@ object WatchForm: TWatchForm
           TabOrder = 1
         end
         object chkPortB: TCheckBox
-          Left = 203
+          Left = 229
           Top = 10
           Width = 36
           Height = 17
@@ -1439,9 +1439,9 @@ object WatchForm: TWatchForm
           TabOrder = 10
         end
         object edtPBPower: TEdit
-          Left = 203
+          Left = 229
           Top = 28
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14085
           AutoSize = False
@@ -1455,7 +1455,7 @@ object WatchForm: TWatchForm
           TabOrder = 11
         end
         object chkPortC: TCheckBox
-          Left = 271
+          Left = 323
           Top = 10
           Width = 34
           Height = 17
@@ -1464,9 +1464,9 @@ object WatchForm: TWatchForm
           TabOrder = 20
         end
         object edtPCPower: TEdit
-          Left = 271
+          Left = 323
           Top = 28
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14087
           AutoSize = False
@@ -1482,7 +1482,7 @@ object WatchForm: TWatchForm
         object edtPAMode: TEdit
           Left = 135
           Top = 48
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14083
           AutoSize = False
@@ -1496,9 +1496,9 @@ object WatchForm: TWatchForm
           TabOrder = 2
         end
         object edtPBMode: TEdit
-          Left = 203
+          Left = 229
           Top = 48
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14085
           AutoSize = False
@@ -1512,9 +1512,9 @@ object WatchForm: TWatchForm
           TabOrder = 12
         end
         object edtPCMode: TEdit
-          Left = 271
+          Left = 323
           Top = 48
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14087
           AutoSize = False
@@ -1530,7 +1530,7 @@ object WatchForm: TWatchForm
         object edtPARegMode: TEdit
           Left = 135
           Top = 68
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14083
           AutoSize = False
@@ -1544,9 +1544,9 @@ object WatchForm: TWatchForm
           TabOrder = 3
         end
         object edtPBRegMode: TEdit
-          Left = 203
+          Left = 229
           Top = 68
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14085
           AutoSize = False
@@ -1560,9 +1560,9 @@ object WatchForm: TWatchForm
           TabOrder = 13
         end
         object edtPCRegMode: TEdit
-          Left = 271
+          Left = 323
           Top = 68
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14087
           AutoSize = False
@@ -1578,7 +1578,7 @@ object WatchForm: TWatchForm
         object edtPATurnRatio: TEdit
           Left = 135
           Top = 108
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14083
           AutoSize = False
@@ -1592,9 +1592,9 @@ object WatchForm: TWatchForm
           TabOrder = 5
         end
         object edtPBTurnRatio: TEdit
-          Left = 203
+          Left = 229
           Top = 108
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14085
           AutoSize = False
@@ -1608,9 +1608,9 @@ object WatchForm: TWatchForm
           TabOrder = 15
         end
         object edtPCTurnRatio: TEdit
-          Left = 271
+          Left = 323
           Top = 108
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14087
           AutoSize = False
@@ -1626,7 +1626,7 @@ object WatchForm: TWatchForm
         object edtPARunState: TEdit
           Left = 135
           Top = 88
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14083
           AutoSize = False
@@ -1640,9 +1640,9 @@ object WatchForm: TWatchForm
           TabOrder = 4
         end
         object edtPBRunState: TEdit
-          Left = 203
+          Left = 229
           Top = 88
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14085
           AutoSize = False
@@ -1656,9 +1656,9 @@ object WatchForm: TWatchForm
           TabOrder = 14
         end
         object edtPCRunState: TEdit
-          Left = 271
+          Left = 323
           Top = 88
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14087
           AutoSize = False
@@ -1674,7 +1674,7 @@ object WatchForm: TWatchForm
         object edtPATachoLimit: TEdit
           Left = 135
           Top = 128
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14083
           AutoSize = False
@@ -1688,9 +1688,9 @@ object WatchForm: TWatchForm
           TabOrder = 6
         end
         object edtPBTachoLimit: TEdit
-          Left = 203
+          Left = 229
           Top = 128
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14085
           AutoSize = False
@@ -1704,9 +1704,9 @@ object WatchForm: TWatchForm
           TabOrder = 16
         end
         object edtPCTachoLimit: TEdit
-          Left = 271
+          Left = 323
           Top = 128
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14087
           AutoSize = False
@@ -1722,7 +1722,7 @@ object WatchForm: TWatchForm
         object edtPATachoCount: TEdit
           Left = 135
           Top = 148
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14083
           AutoSize = False
@@ -1736,9 +1736,9 @@ object WatchForm: TWatchForm
           TabOrder = 7
         end
         object edtPBTachoCount: TEdit
-          Left = 203
+          Left = 229
           Top = 148
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14085
           AutoSize = False
@@ -1752,9 +1752,9 @@ object WatchForm: TWatchForm
           TabOrder = 17
         end
         object edtPCTachoCount: TEdit
-          Left = 271
+          Left = 323
           Top = 148
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14087
           AutoSize = False
@@ -1770,7 +1770,7 @@ object WatchForm: TWatchForm
         object edtPABlockTachoCount: TEdit
           Left = 135
           Top = 168
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14083
           AutoSize = False
@@ -1784,9 +1784,9 @@ object WatchForm: TWatchForm
           TabOrder = 8
         end
         object edtPBBlockTachoCount: TEdit
-          Left = 203
+          Left = 229
           Top = 168
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14085
           AutoSize = False
@@ -1800,9 +1800,9 @@ object WatchForm: TWatchForm
           TabOrder = 18
         end
         object edtPCBlockTachoCount: TEdit
-          Left = 271
+          Left = 323
           Top = 168
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14087
           AutoSize = False
@@ -1818,7 +1818,7 @@ object WatchForm: TWatchForm
         object edtPARotationCount: TEdit
           Left = 135
           Top = 188
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14083
           AutoSize = False
@@ -1832,9 +1832,9 @@ object WatchForm: TWatchForm
           TabOrder = 9
         end
         object edtPBRotationCount: TEdit
-          Left = 203
+          Left = 229
           Top = 188
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14085
           AutoSize = False
@@ -1848,9 +1848,9 @@ object WatchForm: TWatchForm
           TabOrder = 19
         end
         object edtPCRotationCount: TEdit
-          Left = 271
+          Left = 323
           Top = 188
-          Width = 61
+          Width = 92
           Height = 17
           HelpContext = 14087
           AutoSize = False
@@ -1939,7 +1939,7 @@ object WatchForm: TWatchForm
       object grpI2C: TGroupBox
         Left = 4
         Top = 229
-        Width = 341
+        Width = 428
         Height = 140
         HelpContext = 14088
         TabOrder = 1
@@ -1951,7 +1951,7 @@ object WatchForm: TWatchForm
           Caption = 'I2C Port'
         end
         object lblI2CResponse: TLabel
-          Left = 222
+          Left = 242
           Top = 12
           Width = 48
           Height = 13
@@ -1972,7 +1972,7 @@ object WatchForm: TWatchForm
           Caption = 'Buffer'
         end
         object lblI2CLen: TLabel
-          Left = 175
+          Left = 195
           Top = 12
           Width = 33
           Height = 13
@@ -1988,9 +1988,9 @@ object WatchForm: TWatchForm
           TabOrder = 0
         end
         object edtI2CVal1: TEdit
-          Left = 222
+          Left = 242
           Top = 26
-          Width = 110
+          Width = 179
           Height = 22
           HelpContext = 14090
           AutoSize = False
@@ -2013,9 +2013,9 @@ object WatchForm: TWatchForm
           TabOrder = 5
         end
         object edtI2CVal2: TEdit
-          Left = 222
+          Left = 242
           Top = 51
-          Width = 110
+          Width = 179
           Height = 22
           HelpContext = 14092
           AutoSize = False
@@ -2038,9 +2038,9 @@ object WatchForm: TWatchForm
           TabOrder = 10
         end
         object edtI2CVal3: TEdit
-          Left = 222
+          Left = 242
           Top = 76
-          Width = 110
+          Width = 179
           Height = 22
           HelpContext = 14094
           AutoSize = False
@@ -2054,9 +2054,9 @@ object WatchForm: TWatchForm
           TabOrder = 14
         end
         object edtI2CVal4: TEdit
-          Left = 222
+          Left = 242
           Top = 101
-          Width = 110
+          Width = 179
           Height = 22
           HelpContext = 14094
           AutoSize = False
@@ -2117,7 +2117,7 @@ object WatchForm: TWatchForm
         object edtI2CBuf1: TEdit
           Left = 104
           Top = 26
-          Width = 62
+          Width = 84
           Height = 23
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -2130,7 +2130,7 @@ object WatchForm: TWatchForm
         object edtI2CBuf2: TEdit
           Left = 104
           Top = 51
-          Width = 62
+          Width = 84
           Height = 23
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -2143,7 +2143,7 @@ object WatchForm: TWatchForm
         object edtI2CBuf3: TEdit
           Left = 104
           Top = 76
-          Width = 62
+          Width = 84
           Height = 23
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -2156,7 +2156,7 @@ object WatchForm: TWatchForm
         object edtI2CBuf4: TEdit
           Left = 104
           Top = 101
-          Width = 62
+          Width = 84
           Height = 23
           Font.Charset = DEFAULT_CHARSET
           Font.Color = clWindowText
@@ -2167,7 +2167,7 @@ object WatchForm: TWatchForm
           TabOrder = 17
         end
         object edtI2CLen1: TBricxccSpinEdit
-          Left = 175
+          Left = 195
           Top = 26
           Width = 42
           Height = 22
@@ -2178,7 +2178,7 @@ object WatchForm: TWatchForm
           Value = 0
         end
         object edtI2CLen2: TBricxccSpinEdit
-          Left = 175
+          Left = 195
           Top = 51
           Width = 42
           Height = 22
@@ -2189,7 +2189,7 @@ object WatchForm: TWatchForm
           Value = 0
         end
         object edtI2CLen4: TBricxccSpinEdit
-          Left = 175
+          Left = 195
           Top = 101
           Width = 42
           Height = 22
@@ -2200,7 +2200,7 @@ object WatchForm: TWatchForm
           Value = 0
         end
         object edtI2CLen3: TBricxccSpinEdit
-          Left = 175
+          Left = 195
           Top = 76
           Width = 42
           Height = 22
@@ -2209,6 +2209,196 @@ object WatchForm: TWatchForm
           MinValue = 0
           TabOrder = 13
           Value = 0
+        end
+      end
+    end
+    object shtNXTMailboxes: TTabSheet
+      Caption = 'NXT Mailboxes'
+      ImageIndex = 3
+      object grpNXTMailboxes: TGroupBox
+        Left = 4
+        Top = 2
+        Width = 428
+        Height = 300
+        TabOrder = 0
+        object chkResponse: TCheckBox
+          Left = 8
+          Top = 16
+          Width = 161
+          Height = 17
+          Caption = 'Response Mailbox'
+          Checked = True
+          State = cbChecked
+          TabOrder = 0
+        end
+        object chkNXTMB1: TCheckBox
+          Left = 8
+          Top = 40
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 1'
+          TabOrder = 1
+        end
+        object chkNXTMB2: TCheckBox
+          Tag = 1
+          Left = 8
+          Top = 64
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 2'
+          TabOrder = 3
+        end
+        object chkNXTMB3: TCheckBox
+          Tag = 2
+          Left = 8
+          Top = 88
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 3'
+          TabOrder = 5
+        end
+        object chkNXTMB4: TCheckBox
+          Tag = 3
+          Left = 8
+          Top = 112
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 4'
+          TabOrder = 7
+        end
+        object chkNXTMB5: TCheckBox
+          Tag = 4
+          Left = 8
+          Top = 136
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 5'
+          TabOrder = 9
+        end
+        object chkNXTMB6: TCheckBox
+          Tag = 5
+          Left = 8
+          Top = 160
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 6'
+          TabOrder = 11
+        end
+        object chkNXTMB7: TCheckBox
+          Tag = 6
+          Left = 8
+          Top = 184
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 7'
+          TabOrder = 13
+        end
+        object chkNXTMB8: TCheckBox
+          Tag = 7
+          Left = 8
+          Top = 208
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 8'
+          TabOrder = 15
+        end
+        object chkNXTMB9: TCheckBox
+          Tag = 8
+          Left = 8
+          Top = 232
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 9'
+          TabOrder = 17
+        end
+        object chkNXTMB10: TCheckBox
+          Tag = 9
+          Left = 8
+          Top = 256
+          Width = 97
+          Height = 17
+          Caption = 'Mailbox 10'
+          TabOrder = 19
+        end
+        object edtNXTMB1: TEdit
+          Left = 152
+          Top = 38
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 2
+        end
+        object edtNXTMB2: TEdit
+          Left = 152
+          Top = 62
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 4
+        end
+        object edtNXTMB3: TEdit
+          Left = 152
+          Top = 86
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 6
+        end
+        object edtNXTMB4: TEdit
+          Left = 152
+          Top = 110
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 8
+        end
+        object edtNXTMB5: TEdit
+          Left = 152
+          Top = 134
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 10
+        end
+        object edtNXTMB6: TEdit
+          Left = 152
+          Top = 158
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 12
+        end
+        object edtNXTMB7: TEdit
+          Left = 152
+          Top = 182
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 14
+        end
+        object edtNXTMB8: TEdit
+          Left = 152
+          Top = 206
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 16
+        end
+        object edtNXTMB9: TEdit
+          Left = 152
+          Top = 230
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 18
+        end
+        object edtNXTMB10: TEdit
+          Left = 152
+          Top = 254
+          Width = 239
+          Height = 21
+          ReadOnly = True
+          TabOrder = 20
         end
       end
     end
@@ -2334,7 +2524,7 @@ object WatchForm: TWatchForm
   object Timer1: TTimer
     Enabled = False
     OnTimer = Timer1Timer
-    Left = 360
+    Left = 248
     Top = 8
   end
   object menuPopup: TPopupMenu

@@ -45,7 +45,7 @@ void RotateMotorRURD(byte output, char pwr, long angle, bool UseSpeedControl = t
   SetOutput(output, OutputModeField, om,
                     TachoLimitField, l3,
                     PowerField, 0,
-                    RegModeField, rm,
+                    RegModeField, OUT_REGMODE_IDLE,
                     RunStateField, OUT_RUNSTATE_RAMPDOWN,
                     UpdateFlagsField, UF_UPDATE_MODE|UF_UPDATE_SPEED|UF_UPDATE_TACHO_LIMIT);
   Yield(); // give firmware a chance to process this request to update motor state

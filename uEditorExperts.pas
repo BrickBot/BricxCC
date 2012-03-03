@@ -75,10 +75,10 @@ uses
   uLocalizedStrings, uBasicPrefs;
 
 const
-  EditorExpertCommands : array[TEditorExpert] of integer = (
+  EditorExpertCommands : array[TEditorExpert] of Word = (
     K_USER_COMMENTBLOCK, K_USER_UNCOMMENTBLOCK, K_USER_ALIGN,
     K_USER_PREVIDENT, K_USER_NEXTIDENT, K_USER_REVERSE,
-    -1, -1 // grep search and grep replace do not have editor commands
+    ecNone, ecNone // grep search and grep replace do not have editor commands
   );
   EditorExpertConfigurable : array[TEditorExpert] of boolean = (
     True, False, True, False, False, False, True, False
@@ -106,7 +106,7 @@ procedure AddEditorExpertCommands(aEditor : TSynEdit);
 var
   KS : TSynEditKeystroke;
   ee : TEditorExpert;
-  i, cmd : integer;
+  i : integer;
 begin
   // remove the previous editor expert commands
   for ee := Low(TEditorExpert) to High(TEditorExpert) do
@@ -118,11 +118,10 @@ begin
   // add in the keystrokes for Editor Experts
   for ee := Low(TEditorExpert) to High(TEditorExpert) do
   begin
-    cmd := EditorExpertCommands[ee];
-    if cmd <> 0 then
+    if EditorExpertCommands[ee] <> ecNone then
     begin
       KS := aEditor.Keystrokes.Add;
-      KS.Command := cmd;
+      KS.Command := EditorExpertCommands[ee];
       KS.ShortCut := EditorExpertShortcuts[ee];
     end;
   end;
