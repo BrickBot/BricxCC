@@ -4939,6 +4939,9 @@
  * \example ex_FormatNum.nxc
  * This is an example of how to use the \ref FormatNum function.
  *
+ * \example ex_FormatVal.nxc
+ * This is an example of how to use the \ref FormatVal function.
+ *
  * \example ex_FlattenVar.nxc
  * This is an example of how to use the \ref FlattenVar function.
  *
@@ -5360,6 +5363,9 @@
  *
  * \example ex_SizeOf.nxc
  * This is an example of how to use the \ref SizeOf and \ref NumOut functions.
+ *
+ * \example ex_TypeOf.nxc
+ * This is an example of how to use the \ref TypeOf and \ref NumOut functions.
  *
  * \example ex_Pos.nxc
  * This is an example of how to use the \ref Pos and \ref NumOut functions.

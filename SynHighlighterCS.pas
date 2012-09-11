@@ -1445,7 +1445,11 @@ end;
 
 function TSynCSSyn.GetRange: Pointer;
 begin
+{$IFDEF FPC}
+  Result := Pointer(PtrInt(fRange));
+{$ELSE}
   Result := Pointer(fRange);
+{$ENDIF}
 end;
 
 function TSynCSSyn.GetToken: String;
@@ -1513,7 +1517,11 @@ end;
 
 procedure TSynCSSyn.SetRange(Value: Pointer);
 begin
+{$IFDEF FPC}
+  fRange := TRangeState(PtrUInt(Value));
+{$ELSE}
   fRange := TRangeState(Value);
+{$ENDIF}
 end;
 
 procedure TSynCSSyn.EnumUserSettings(settings: TStrings);

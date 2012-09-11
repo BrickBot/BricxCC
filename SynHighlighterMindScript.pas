@@ -1195,12 +1195,20 @@ end;
 
 procedure TSynMindScriptSyn.SetRange(Value: Pointer);
 begin
+{$IFDEF FPC}
+  fRange := TRangeState(PtrUInt(Value));
+{$ELSE}
   fRange := TRangeState(Value);
+{$ENDIF}
 end;
 
 function TSynMindScriptSyn.GetRange: Pointer;
 begin
+{$IFDEF FPC}
+  Result := Pointer(PtrInt(fRange));
+{$ELSE}
   Result := Pointer(fRange);
+{$ENDIF}
 end;
 
 procedure TSynMindScriptSyn.NumberProc;

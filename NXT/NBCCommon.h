@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2012-02-06
- * \version 70
+ * \date 2012-08-09
+ * \version 71
  */
 
 #ifndef NBCCOMMON_H
@@ -45,8 +45,44 @@
 #define RC_PROP_BTONOFF       0x0  /*!< Set/get whether bluetooth is on or off */
 #define RC_PROP_SOUND_LEVEL   0x1  /*!< Set/get the NXT sound level */
 #define RC_PROP_SLEEP_TIMEOUT 0x2  /*!< Set/get the NXT sleep timeout value (times 60000) */
-#define RC_PROP_DEBUGGING     0xF  /*!< Set/get enhanced firmware debugging information */
+#define RC_PROP_DEBUGGING     0xF  /*!< Set/get enhanced firmware debugging information (NBC/NXC) */
 /** @} */  // end of RCPropertyConstants group
+
+/** @defgroup VariableTypeConstants Variable type constants
+ * Use these constants for testing a variable type.
+ * @{
+ */
+#define VT_UBYTE     0x01  /*!< Variable type unsigned byte */
+#define VT_SBYTE     0x02  /*!< Variable type signed byte */
+#define VT_UWORD     0x03  /*!< Variable type unsigned word */
+#define VT_SWORD     0x04  /*!< Variable type signed word */
+#define VT_ULONG     0x05  /*!< Variable type unsigned long */
+#define VT_SLONG     0x06  /*!< Variable type signed long */
+#define VT_STRUCT    0x08  /*!< Variable type structure */
+#define VT_MUTEX     0x09  /*!< Variable type mutex */
+#define VT_FLOAT     0x0A  /*!< Variable type float */
+
+#define VT_A1_UBYTE  0x11  /*!< Variable type 1d array of unsigned byte */
+#define VT_A1_SBYTE  0x12  /*!< Variable type 1d array of signed byte */
+#define VT_A1_UWORD  0x13  /*!< Variable type 1d array of unsigned word */
+#define VT_A1_SWORD  0x14  /*!< Variable type 1d array of signed word */
+#define VT_A1_ULONG  0x15  /*!< Variable type 1d array of unsigned long */
+#define VT_A1_SLONG  0x16  /*!< Variable type 1d array of signed long */
+#define VT_A1_STRUCT 0x17  /*!< Variable type 1d array of structure */
+#define VT_A1_FLOAT  0x1A  /*!< Variable type 1d array of float */
+
+#define VT_A2_UBYTE  0x21  /*!< Variable type 2d array of unsigned byte */
+#define VT_A2_SBYTE  0x22  /*!< Variable type 2d array of signed byte */
+#define VT_A2_UWORD  0x23  /*!< Variable type 2d array of unsigned word */
+#define VT_A2_SWORD  0x24  /*!< Variable type 2d array of signed word */
+#define VT_A2_ULONG  0x25  /*!< Variable type 2d array of unsigned long */
+#define VT_A2_SLONG  0x26  /*!< Variable type 2d array of signed long */
+#define VT_A2_STRUCT 0x27  /*!< Variable type 2d array of structure */
+#define VT_A2_FLOAT  0x2A  /*!< Variable type 2d array of float */
+
+#define VT_ARRAY_MASK   0xF0  /*!< Variable type array mask */
+/** @} */  // end of VariableTypeConstants group
+
 
 /** @} */  // end of MiscConstants group
 
@@ -1266,6 +1302,7 @@
  * Use these constants to configure the desired options for the
  * specified motor(s): hold at limit and ramp down to limit. Option constants
  * can be combined with bitwise OR.
+ * \warning These options require the enhanced NBC/NXC firmware version 1.31+
  * \sa SetOutput()
  * @{
  */
@@ -1276,6 +1313,7 @@
 /** @defgroup OutRegOptionConstants Output regulation option constants
  * Use these constants to configure the desired options for
  * position regulation.
+ * \warning These options require the enhanced NBC/NXC firmware version 1.31+
  * @{
  */
 #define OUT_REGOPTION_NO_SATURATION 0x01 /*!< Do not limit intermediary regulation results */
@@ -1432,14 +1470,17 @@
  *  constants can be combined with bitwise OR.  Use OUT_OPTION_HOLDATLIMIT to have the output
  *  module hold the motor when it reaches the tachometer limit.  Use OUT_OPTION_RAMPDOWNTOLIMIT
  *  to have the output module ramp down the motor power as it approaches the tachometer limit.
+ *  \warning This option requires the enhanced NBC/NXC firmware version 1.31+
  */
 #define OutputOptionsField   15
 /** MaxSpeed field. Contains the current max speed value. Read/write.
  *  Set the maximum speed to be used during position regulation.
+ *  \warning This option requires the enhanced NBC/NXC firmware version 1.31+
  */
 #define MaxSpeedField   16
 /** MaxAcceleration field. Contains the current max acceleration value. Read/write.
  *  Set the maximum acceleration to be used during position regulation.
+ *  \warning This option requires the enhanced NBC/NXC firmware version 1.31+
  */
 #define MaxAccelerationField   17
 #endif
@@ -1466,13 +1507,13 @@
 #define OutputOffsetOverloaded(p)        (((p)*32)+27) /*!< R  - True if the motor has been overloaded within speed control regulation (1 byte) ubyte */
 #define OutputOffsetSyncTurnParameter(p) (((p)*32)+28) /*!< RW - Holds the turning parameter need within MoveBlock (1 byte) sbyte */
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define OutputOffsetOptions(p)           (((p)*32)+29) /*!< RW - holds extra motor options related to the tachometer limit (1 byte) ubyte  (NBC/NXC) */
-#define OutputOffsetMaxSpeed(p)          (((p)*32)+30) /*!< RW - holds the maximum speed for position regulation (1 byte) sbyte  (NBC/NXC) */
-#define OutputOffsetMaxAccel(p)          (((p)*32)+31) /*!< RW - holds the maximum acceleration for position regulation (1 byte) sbyte  (NBC/NXC) */
+#define OutputOffsetOptions(p)           (((p)*32)+29) /*!< RW - holds extra motor options related to the tachometer limit (1 byte) ubyte  (enhanced NBC/NXC firmware only) */
+#define OutputOffsetMaxSpeed(p)          (((p)*32)+30) /*!< RW - holds the maximum speed for position regulation (1 byte) sbyte  (enhanced NBC/NXC firmware only) */
+#define OutputOffsetMaxAccel(p)          (((p)*32)+31) /*!< RW - holds the maximum acceleration for position regulation (1 byte) sbyte  (enhanced NBC/NXC firmware only) */
 #endif
-#define OutputOffsetRegulationTime       96 /*!< use for frequency of checking regulation mode (1 byte) ubyte (NBC/NXC) */
+#define OutputOffsetRegulationTime       96 /*!< use for frequency of checking regulation mode (1 byte) ubyte (enhanced NBC/NXC firmware only) */
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define OutputOffsetRegulationOptions    97 /*!< use for position regulation options (1 byte) ubyte (NBC/NXC) */
+#define OutputOffsetRegulationOptions    97 /*!< use for position regulation options (1 byte) ubyte (enhanced NBC/NXC firmware only) */
 #endif
 /** @} */  // end of OutputIOMAP group
 /** @} */  // end of OutputModuleConstants group
@@ -1564,6 +1605,7 @@
  * SetLSNoRestartOnRead functions. These values are combined with a bitwise
  * OR operation.
  * \sa LSNoRestartOnRead(), SetLSNoRestartOnRead()
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #ifdef __ENHANCED_FIRMWARE
@@ -1667,6 +1709,7 @@
  * Constants for the SetI2COptions function. These values are combined with a bitwise
  * OR operation.
  * \sa SetI2COptions()
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
@@ -1690,6 +1733,7 @@
  */
 /** @defgroup DisplayExecuteFunctionConstants DisplayExecuteFunction constants
  * Constants that are for use with the DisplayExecuteFunction system call.
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define DISPLAY_ERASE_ALL       0x00     /*!< W - erase entire screen     (CMD,x,x,x,x,x) */
@@ -1719,6 +1763,7 @@
  * \sa TextOut(), NumOut(), PointOut(), LineOut(), CircleOut(), RectOut(),
  * PolyOut(), EllipseOut(), FontTextOut(), FontNumOut(), GraphicOut(),
  * GraphicArrayOut()
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define DRAW_OPT_NORMAL                     (0x0000) /*!< Normal drawing */
@@ -1741,10 +1786,14 @@
 
 #define DRAW_OPT_POLYGON_POLYLINE           (0x0400) /*!< When drawing polygons, do not close (i.e., draw a polyline instead) */
 
+#define DRAW_OPT_CLEAR_LINE                 (0x0800) /*!< When drawing text, clear the entire line before drawing the text */
+#define DRAW_OPT_CLEAR_EOL                  (0x1000) /*!< When drawing text, clear to the end of the line after drawing the text */
+
 /** @defgroup DisplayFontDrawOptionConstants Font drawing option constants
  * These addition drawing option constants are only for use when drawing
  * text and numbers on the LCD using an RIC-based font.
  * \sa FontTextOut(), FontNumOut()
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define DRAW_OPT_FONT_DIRECTIONS            (0x01C0) /*!< Bit mask for the font direction bits */
@@ -1778,6 +1827,7 @@
 /** @defgroup DisplayContrastConstants Display contrast constants
  * Constants that are for use with the display contrast API functions.
  * \sa SetDisplayContrast(), DisplayContrast()
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define DISPLAY_CONTRAST_DEFAULT 0x5A /*!< Default display contrast value */
@@ -1791,9 +1841,9 @@
 #define DISPLAY_HEIGHT 64  /*!< The height of the LCD screen in pixels */
 #define DISPLAY_WIDTH  100 /*!< The width of the LCD screen in pixels */
 
-#define DISPLAY_MENUICONS_Y       40 /*!< */
-#define DISPLAY_MENUICONS_X_OFFS  7  /*!< */
-#define DISPLAY_MENUICONS_X_DIFF  31 /*!< */
+#define DISPLAY_MENUICONS_Y       40 /*!< Display menu icons y value */
+#define DISPLAY_MENUICONS_X_OFFS  7  /*!< Display menu icons x offset */
+#define DISPLAY_MENUICONS_X_DIFF  31 /*!< Display menu icons x delta */
 
 /** @defgroup DisplayTextLineConstants Text line constants
  * Constants that are for use with getting/setting display data.
@@ -1847,11 +1897,11 @@
 
 // Used in macro "STEPICON_BIT"
 #define STEPICON_1 0 /*!< Left most step icon */
-#define STEPICON_2 1 /*!< */
-#define STEPICON_3 2 /*!< */
-#define STEPICON_4 3 /*!< */
+#define STEPICON_2 1 /*!< Step icon #2 */
+#define STEPICON_3 2 /*!< Step icon #3 */
+#define STEPICON_4 3 /*!< Step icon #4 */
 #define STEPICON_5 4 /*!< Right most step icon */
-#define STEPICONS  5 /*!< */
+#define STEPICONS  5 /*!< The number of step icons */
 
 /** @defgroup DisplayIOMAP Display module IOMAP offsets
  * Constant offsets into the display module IOMAP structure.
@@ -1878,7 +1928,7 @@
 #define DisplayOffsetPopup(l,w)     (((l)*100)+(w)+919) /*!< Raw display memory for popup screen */
 
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define DisplayOffsetContrast       1719 /*!< Adjust the display contrast with this field */
+#define DisplayOffsetContrast       1719 /*!< Adjust the display contrast with this field (NBC/NXC) */
 #endif
 /** @} */  // end of DisplayIOMAP group
 /** @} */  // end of DisplayModuleConstants group
@@ -1927,6 +1977,7 @@
 
 /** @defgroup CommDataModeConstants Data mode constants
  * Constants related to the bluetooth and hi-speed data modes.
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define DATA_MODE_NXT    0x00 /*!< Use NXT data mode */
@@ -2005,6 +2056,7 @@
 /** @defgroup CommHiSpeedCtrlConstants Hi-speed port SysCommHSControl constants
  * Constants for use with the SysCommHSControl API function.
  * \sa SysCommHSControl()
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define HS_CTRL_INIT 0 /*!< Enable the high speed port */
@@ -2016,6 +2068,7 @@
 
 /** @defgroup CommHiSpeedBaudConstants Hi-speed port baud rate constants
  * Constants for configuring the hi-speed port baud rate (HsSpeed).
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define HS_BAUD_1200     0 /*!< HsSpeed 1200 Baud */
@@ -2040,6 +2093,7 @@
 
 /** @defgroup CommHiSpeedModeConstants Hi-speed port UART mode constants
  * Constants referring to HsMode UART configuration settings
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define HS_MODE_UART_RS485 0x0    /*!< HsMode UART in default or RS485 mode */
@@ -2052,6 +2106,7 @@
 
 /** @defgroup CommHiSpeedDataBitsConstants Hi-speed port data bits constants
  * Constants referring to HsMode (number of data bits)
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define HS_MODE_5_DATA 0x0000 /*!< HsMode 5 data bits */
@@ -2062,6 +2117,7 @@
 
 /** @defgroup CommHiSpeedStopBitsConstants Hi-speed port stop bits constants
  * Constants referring to HsMode (number of stop bits)
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define HS_MODE_10_STOP 0x0000 /*!< HsMode 1 stop bit */
@@ -2071,6 +2127,7 @@
 
 /** @defgroup CommHiSpeedParityConstants Hi-speed port parity constants
  * Constants referring to HsMode (parity)
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define HS_MODE_E_PARITY 0x0000 /*!< HsMode Even parity */
@@ -2082,6 +2139,7 @@
 
 /** @defgroup CommHiSpeedCombinedConstants Hi-speed port combined UART constants
  * Constants that combine data bits, parity, and stop bits into a single value.
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define HS_MODE_8N1 (HS_MODE_8_DATA|HS_MODE_N_PARITY|HS_MODE_10_STOP) /*!< HsMode 8 data bits, no parity, 1 stop bit */
@@ -2092,6 +2150,7 @@
 
 /** @defgroup CommHiSpeedAddressConstants Hi-speed port address constants
  * Constants that are used to specify the Hi-speed (RS-485) port device address.
+ * \warning These options require the enhanced NBC/NXC firmware
  * @{
  */
 #define HS_ADDRESS_ALL 0 /*!< HsAddress all devices */

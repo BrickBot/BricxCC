@@ -1578,6 +1578,25 @@ const
   RCX_MessageOp        = $f7;
 
 
+type
+  TValueType = (valChar, valByte, valSmallInt, valWord, valInteger, valCardinal,
+                valInt64, valDouble, valString);
+
+  TI2CValueConfig = record
+    Name : string;
+    Address : Byte;
+    RxCount : Byte;
+    ValueType : TValueType;
+    SendData : string;
+    Script : string;
+  end;
+
+var
+  GlobalI2CValues : array of TI2CValueConfig;
+
+procedure LoadI2CValues;
+procedure SaveI2CValues;
+function GetI2CValueTypes : string;
 
 implementation
 
@@ -2021,8 +2040,10 @@ end;
 function StrToPollSourceIndex(const pollsrc : string) : integer;
 var
   tmp : string;
+  i : integer;
 begin
   tmp := StringReplace(pollsrc, '0X', '$', [rfReplaceAll]);
+  Result := StrToIntDef(tmp, 0);
   if tmp = 'Variable' then
     Result := kRCX_VariableType
   else if tmp = 'Timer' then
@@ -2049,32 +2070,160 @@ begin
     Result := kRCX_BatteryLevelType
   else if tmp = 'FirmwareVersion' then
     Result := kRCX_FirmwareVersionType
-  else if tmp = 'LEGOSonar' then
-    Result := kNXT_LEGOSonar
-  else if tmp = 'LEGOTemp' then
-    Result := kNXT_LEGOTemp
-  else if tmp = 'LEGOEMeterVIn' then
-    Result := kNXT_LEGOEMeterVIn
-  else if tmp = 'LEGOEMeterAIn' then
-    Result := kNXT_LEGOEMeterAIn
-  else if tmp = 'LEGOEMeterVOut' then
-    Result := kNXT_LEGOEMeterVOut
-  else if tmp = 'LEGOEMeterAOut' then
-    Result := kNXT_LEGOEMeterAOut
-  else if tmp = 'LEGOEMeterJoules' then
-    Result := kNXT_LEGOEMeterJoules
-  else if tmp = 'LEGOEMeterWIn' then
-    Result := kNXT_LEGOEMeterWIn
-  else if tmp = 'LEGOEMeterWOut' then
-    Result := kNXT_LEGOEMeterWOut
-  else if tmp = '02Version' then
-    Result := kNXT_02Version
-  else if tmp = '02Vendor' then
-    Result := kNXT_02Vendor
-  else if tmp = '02Device' then
-    Result := kNXT_02Device
   else
-    Result := StrToIntDef(tmp, 0);
+  begin
+    // is this the name of a known I2C Value Type?
+    for i := 0 to Length(GlobalI2CValues) - 1 do
+    begin
+      if tmp = GlobalI2CValues[i].Name then
+      begin
+        Result := kNXT_I2CBaseValueType + i;
+        break;
+      end;
+    end;
+  end;
 end;
+
+procedure InitializeI2CDefaultValues;
+begin
+  SetLength(GlobalI2CValues, 12);
+  with GlobalI2CValues[0] do // kNXT_LEGOSonar
+  begin
+    Name      := 'LEGOSonar';
+    Address   := $02;
+    RxCount   := 1;
+    ValueType := valByte;
+    SendData  := '42';
+    Script    := '';
+  end;
+  with GlobalI2CValues[1] do // kNXT_LEGOTemp
+  begin
+    Name      := 'LEGOTemp';
+    Address   := $98;
+    RxCount   := 2;
+    ValueType := valInteger;
+    SendData  := '01,60;00';
+    Script    := 'rt:=(Data0*256+Data1)*10/16;result:=(rt/16);if(rt>20470);result:=result-2560;';
+  end;
+  with GlobalI2CValues[2] do // kNXT_LEGOEMeterVIn
+  begin
+    Name      := 'LEGOEMeterVIn';
+    Address   := $04;
+    RxCount   := 2;
+    ValueType := valDouble;
+    SendData  := '0A';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with GlobalI2CValues[3] do // kNXT_LEGOEMeterAIn
+  begin
+    Name      := 'LEGOEMeterAIn';
+    Address   := $04;
+    RxCount   := 2;
+    ValueType := valDouble;
+    SendData  := '0C';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with GlobalI2CValues[4] do // kNXT_LEGOEMeterVOut
+  begin
+    Name      := 'LEGOEMeterVOut';
+    Address   := $04;
+    RxCount   := 2;
+    ValueType := valDouble;
+    SendData  := '0E';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with GlobalI2CValues[5] do // kNXT_LEGOEMeterAOut
+  begin
+    Name      := 'LEGOEMeterAOut';
+    Address   := $04;
+    RxCount   := 2;
+    ValueType := valDouble;
+    SendData  := '10';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with GlobalI2CValues[6] do // kNXT_LEGOEMeterJoules
+  begin
+    Name      := 'LEGOEMeterJoules';
+    Address   := $04;
+    RxCount   := 2;
+    ValueType := valWord;
+    SendData  := '12';
+    Script    := '(Data1*256+Data0)';
+  end;
+  with GlobalI2CValues[7] do // kNXT_LEGOEMeterWIn
+  begin
+    Name      := 'LEGOEMeterWIn';
+    Address   := $04;
+    RxCount   := 2;
+    ValueType := valDouble;
+    SendData  := '14';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with GlobalI2CValues[8] do // kNXT_LEGOEMeterWOut
+  begin
+    Name      := 'LEGOEMeterWOut';
+    Address   := $04;
+    RxCount   := 2;
+    ValueType := valDouble;
+    SendData  := '16';
+    Script    := '(Data1*256+Data0)/1000';
+  end;
+  with GlobalI2CValues[9] do // kNXT_02Version
+  begin
+    Name      := '02Version';
+    Address   := $02;
+    RxCount   := 8;
+    ValueType := valString;
+    SendData  := '00';
+    Script    := '';
+  end;
+  with GlobalI2CValues[10] do // kNXT_02Vendor
+  begin
+    Name      := '02Vendor';
+    Address   := $02;
+    RxCount   := 8;
+    ValueType := valString;
+    SendData  := '08';
+    Script    := '';
+  end;
+  with GlobalI2CValues[11] do // kNXT_02Device
+  begin
+    Name      := '02Device';
+    Address   := $02;
+    RxCount   := 8;
+    ValueType := valString;
+    SendData  := '10';
+    Script    := '';
+  end;
+end;
+
+procedure LoadI2CValues;
+begin
+  InitializeI2CDefaultValues;
+end;
+
+procedure SaveI2CValues;
+begin
+end;
+
+function GetI2CValueTypes : string;
+var
+  i : integer;
+begin
+  Result := '';
+  for i := 0 to Length(GlobalI2CValues) - 1 do
+  begin
+    Result := Result + GlobalI2CValues[i].Name + #13#10;
+  end;
+  Result := Trim(Result);
+end;
+
+
+
+initialization
+  LoadI2CValues;
+
+finalization
+  SaveI2CValues;
 
 end.

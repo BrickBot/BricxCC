@@ -209,6 +209,33 @@ type
     chkNXTTachoCount: TCheckBox;
     chkNXTBlockTachoCount: TCheckBox;
     chkNXTRotationCount: TCheckBox;
+    menuPopup: TPopupMenu;
+    dlgOpen: TOpenDialog;
+    mniOpenSym: TMenuItem;
+    shtNXTMailboxes: TTabSheet;
+    grpNXTMailboxes: TGroupBox;
+    chkResponseMB: TCheckBox;
+    chkNXTMB1: TCheckBox;
+    chkNXTMB2: TCheckBox;
+    chkNXTMB3: TCheckBox;
+    chkNXTMB4: TCheckBox;
+    chkNXTMB5: TCheckBox;
+    chkNXTMB6: TCheckBox;
+    chkNXTMB7: TCheckBox;
+    chkNXTMB8: TCheckBox;
+    chkNXTMB9: TCheckBox;
+    chkNXTMB10: TCheckBox;
+    edtNXTMB1: TEdit;
+    edtNXTMB2: TEdit;
+    edtNXTMB3: TEdit;
+    edtNXTMB4: TEdit;
+    edtNXTMB5: TEdit;
+    edtNXTMB6: TEdit;
+    edtNXTMB7: TEdit;
+    edtNXTMB8: TEdit;
+    edtNXTMB9: TEdit;
+    edtNXTMB10: TEdit;
+    shtNXTI2C: TTabSheet;
     grpI2C: TGroupBox;
     lblI2CPort: TLabel;
     lblI2CResponse: TLabel;
@@ -235,32 +262,23 @@ type
     edtI2CLen2: TBricxccSpinEdit;
     edtI2CLen4: TBricxccSpinEdit;
     edtI2CLen3: TBricxccSpinEdit;
-    menuPopup: TPopupMenu;
-    dlgOpen: TOpenDialog;
-    mniOpenSym: TMenuItem;
-    shtNXTMailboxes: TTabSheet;
-    grpNXTMailboxes: TGroupBox;
-    chkResponse: TCheckBox;
-    chkNXTMB1: TCheckBox;
-    chkNXTMB2: TCheckBox;
-    chkNXTMB3: TCheckBox;
-    chkNXTMB4: TCheckBox;
-    chkNXTMB5: TCheckBox;
-    chkNXTMB6: TCheckBox;
-    chkNXTMB7: TCheckBox;
-    chkNXTMB8: TCheckBox;
-    chkNXTMB9: TCheckBox;
-    chkNXTMB10: TCheckBox;
-    edtNXTMB1: TEdit;
-    edtNXTMB2: TEdit;
-    edtNXTMB3: TEdit;
-    edtNXTMB4: TEdit;
-    edtNXTMB5: TEdit;
-    edtNXTMB6: TEdit;
-    edtNXTMB7: TEdit;
-    edtNXTMB8: TEdit;
-    edtNXTMB9: TEdit;
-    edtNXTMB10: TEdit;
+    grpPI2C: TGroupBox;
+    lblPPort: TLabel;
+    chkPI2C1: TCheckBox;
+    chkPI2C2: TCheckBox;
+    chkPI2C3: TCheckBox;
+    chkPI2C4: TCheckBox;
+    cboPI2CType1: TComboBox;
+    lblPType: TLabel;
+    lblPResponse: TLabel;
+    edtPI2CVal1: TEdit;
+    cboPI2CType2: TComboBox;
+    edtPI2CVal2: TEdit;
+    cboPI2CType3: TComboBox;
+    edtPI2CVal3: TEdit;
+    cboPI2CType4: TComboBox;
+    edtPI2CVal4: TEdit;
+    btnConfigI2CTypes: TButton;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure btnPollNowClick(Sender: TObject);
     procedure btnCheckAllClick(Sender: TObject);
@@ -281,6 +299,7 @@ type
     procedure chkUltra3Click(Sender: TObject);
     procedure chkUltra4Click(Sender: TObject);
     procedure mniOpenSymClick(Sender: TObject);
+    procedure btnConfigI2CTypesClick(Sender: TObject);
   private
     { Private declarations }
 {$IFNDEF FPC}
@@ -292,14 +311,18 @@ type
     fVarArray : array[0..31] of TVarControls;
     fWatchedProgram : TProgram;
     fOldProgram : TProgram;
+    procedure RestoreSettings;
+    procedure SaveSettings;
     procedure UpdateGraph;
     procedure PopulateVarArray;
-    procedure ProcessI2C(port: byte; edtLen: TBricxCCSpinEdit; edtBuf,
-      edtVal: TEdit);
+    procedure LoadI2CTypes;
+    procedure ProcessI2C(port: byte; edtLen: TBricxCCSpinEdit; edtBuf, edtVal: TEdit);
+    procedure PollProcessedI2C(port : byte; pitype : integer; edtVal: TEdit);
     procedure LoadWatchedProgram;
     function IndexToID(const idx : integer) : integer;
     procedure SetVariableHints;
     procedure PollMessage(num: byte; edtValue: TEdit);
+    procedure ConfigureRawI2C(chk: TCheckBox; edtBuf : TEdit; edtLen : TBricxCCSpinEdit);
   public
     { Public declarations }
     procedure GraphDestroyed;
@@ -317,7 +340,8 @@ implementation
 uses
   SysUtils, Variants, brick_common, rcx_constants,
   uLocalizedStrings, uGuiUtils, uBasicPrefs, uEditorUtils,
-  uGlobals, uMiscDefines, uCommonUtils;
+  uGlobals, uMiscDefines, uCommonUtils, uNXTConstants, uWatchGlobals,
+  uVTConfig;
 
 function GetMotorData(numb : integer) : string;
 var
@@ -355,7 +379,7 @@ var
   bIsNumeric : boolean;
   j, val : integer;
 begin
-  if chkResponse.Checked then
+  if chkResponseMB.Checked then
     num := num + 10;
   if BrickComm.NXTMessageRead(num, 0, true, msg) then
   begin
@@ -401,10 +425,15 @@ var
   tmpStr, tmpI2CStr : string;
   LSBlock : NXTLSBlock;
   i : integer;
+  addr : byte;
 begin
   if edtLen.Value > 0 then
     LSBlock := BrickComm.NXTLowSpeed[port];
-  LoadLSBlock(LSBlock, edtBuf.Text, edtLen.Value);
+  tmpStr := '$' + Copy(Trim(edtBuf.Text), 1, 2);
+  // first byte is address
+  addr := StrToIntDef(tmpStr, 0);
+  tmpStr := Trim(Copy(Trim(edtBuf.Text), 3, MaxInt));
+  LoadLSBlock(LSBlock, addr, tmpStr, edtLen.Value);
   BrickComm.NXTLowSpeed[port] := LSBlock;
   if edtLen.Value > 0 then
   begin
@@ -743,23 +772,27 @@ begin
         edtPCRotationCount.Text := Format('%d', [rotcount]);
       end;
     end;
+
+    // raw I2C
     if chkI2C1.Checked then
-    begin
-      // drain???
       ProcessI2C(0, edtI2CLen1, edtI2CBuf1, edtI2CVal1);
-    end;
     if chkI2C2.Checked then
-    begin
       ProcessI2C(1, edtI2CLen2, edtI2CBuf2, edtI2CVal2);
-    end;
     if chkI2C3.Checked then
-    begin
       ProcessI2C(2, edtI2CLen3, edtI2CBuf3, edtI2CVal3);
-    end;
     if chkI2C4.Checked then
-    begin
       ProcessI2C(3, edtI2CLen4, edtI2CBuf4, edtI2CVal4);
-    end;
+
+    // processed I2C
+    if chkPI2C1.Checked then
+      PollProcessedI2C(0, cboPI2CType1.ItemIndex, edtPI2CVal1);
+    if chkPI2C2.Checked then
+      PollProcessedI2C(0, cboPI2CType2.ItemIndex, edtPI2CVal2);
+    if chkPI2C3.Checked then
+      PollProcessedI2C(0, cboPI2CType3.ItemIndex, edtPI2CVal3);
+    if chkPI2C4.Checked then
+      PollProcessedI2C(0, cboPI2CType4.ItemIndex, edtPI2CVal4);
+
     // handle mailbox polling for NXT
     if chkNXTMB1.Checked then
       PollMessage(chkNXTMB1.Tag, edtNXTMB1);
@@ -841,6 +874,7 @@ begin
     if (temp is TCheckBox) and TCheckBox(temp).Visible and
        not ((temp = chkIfActive) or
             (temp = chkSyncSeries) or
+            (temp = chkResponseMB) or
             (Pos('chkUltra', temp.Name) = 1)) then
       TCheckBox(temp).Checked := true;
   end;
@@ -884,7 +918,11 @@ begin
   for i := ComponentCount - 1 downto 0 do
   begin
     temp := Components[i];
-    if (temp is TCheckBox) and (Pos('chkUltra', temp.Name) = 0) then
+    if (temp is TCheckBox) and not
+       ((Pos('chkUltra', temp.Name) = 1) or
+        (temp = chkResponseMB) or
+        (temp = chkIfActive) or
+        (temp = chkSyncSeries)) then
       TCheckBox(temp).Checked := false;
   end;
 end;
@@ -908,6 +946,7 @@ var
   bVis : boolean;
   cb : TCheckBox;
 begin
+  RestoreSettings;
   LoadWatchedProgram;
   grpVar.Visible   := True;
   grpMotor.Visible := not IsNXT;
@@ -955,10 +994,12 @@ begin
     grpMessage.Visible         := not IsSpybotic and not IsNXT;
     shtCybermaster.TabVisible  := False;
     grpTacho.Visible           := False;
-    grpNXTMotors.Visible       := IsNXT;
     shtNXT.TabVisible          := IsNXT;
     shtNXTMailboxes.TabVisible := IsNXT;
+    shtNXTI2C.TabVisible       := IsNXT;
+    grpNXTMotors.Visible       := IsNXT;
     grpI2C.Visible             := grpNXTMotors.Visible;
+    grpPI2C.Visible            := grpNXTMotors.Visible;
     CheckTCounterL.Checked     := False;
     CheckTSpeedL.Checked       := False;
     CheckTCounterR.Checked     := False;
@@ -1051,6 +1092,7 @@ begin
 {$ENDIF}
   cboTimes.ItemIndex := 3;
   PopulateVarArray;
+  LoadI2CTypes;
 end;
 
 procedure TWatchForm.cboTimesChange(Sender: TObject);
@@ -1069,6 +1111,7 @@ end;
 procedure TWatchForm.FormClose(Sender: TObject; var Action: TCloseAction);
 begin
   Timer1.Enabled := false;
+  SaveSettings;
 end;
 
 procedure TWatchForm.btnGraphClick(Sender: TObject);
@@ -1184,36 +1227,32 @@ begin
   Application.HelpContext(HelpContext);
 end;
 
+procedure TWatchForm.ConfigureRawI2C(chk : TCheckBox; edtBuf : TEdit; edtLen : TBricxCCSpinEdit);
+begin
+  edtBuf.Enabled := not chk.Checked;
+  edtBuf.Text := '02 42';
+  edtLen.Enabled := not chk.Checked;
+  edtLen.Value := 1;
+end;
+
 procedure TWatchForm.chkUltra1Click(Sender: TObject);
 begin
-  edtI2CBuf1.Enabled := not chkUltra1.Checked;
-  edtI2CBuf1.Text := '02 42';
-  edtI2CLen1.Enabled := not chkUltra1.Checked;
-  edtI2CLen1.Value := 1;
+  ConfigureRawI2C(chkUltra1, edtI2CBuf1, edtI2CLen1);
 end;
 
 procedure TWatchForm.chkUltra2Click(Sender: TObject);
 begin
-  edtI2CBuf2.Enabled := not chkUltra2.Checked;
-  edtI2CBuf2.Text := '02 42';
-  edtI2CLen2.Enabled := not chkUltra2.Checked;
-  edtI2CLen2.Value := 1;
+  ConfigureRawI2C(chkUltra2, edtI2CBuf2, edtI2CLen2);
 end;
 
 procedure TWatchForm.chkUltra3Click(Sender: TObject);
 begin
-  edtI2CBuf3.Enabled := not chkUltra3.Checked;
-  edtI2CBuf3.Text := '02 42';
-  edtI2CLen3.Enabled := not chkUltra3.Checked;
-  edtI2CLen3.Value := 1;
+  ConfigureRawI2C(chkUltra3, edtI2CBuf3, edtI2CLen3);
 end;
 
 procedure TWatchForm.chkUltra4Click(Sender: TObject);
 begin
-  edtI2CBuf4.Enabled := not chkUltra4.Checked;
-  edtI2CBuf4.Text := '02 42';
-  edtI2CLen4.Enabled := not chkUltra4.Checked;
-  edtI2CLen4.Value := 1;
+  ConfigureRawI2C(chkUltra4, edtI2CBuf4, edtI2CLen4);
 end;
 
 procedure TWatchForm.LoadWatchedProgram;
@@ -1230,15 +1269,6 @@ begin
     fname := ExtractFilePath(fname) + name;
   end;
   ReadSymbolFile(fWatchedProgram, fname);
-end;
-
-function TWatchForm.IndexToID(const idx: integer): integer;
-begin
-  Result := idx;
-  if IsNXT then
-  begin
-    // allow the user to map variables to different variable numbers
-  end;
 end;
 
 procedure TWatchForm.mniOpenSymClick(Sender: TObject);
@@ -1266,8 +1296,76 @@ begin
   end;
 end;
 
-{$IFDEF FPC}
+procedure TWatchForm.RestoreSettings;
+begin
+  chkIfActive.Checked    := WatchOnlyIfActive;
+  chkSyncSeries.Checked  := WatchSyncSeries;
+  chkResponseMB.Checked  := WatchNXTResponseMB;
+  if WatchPI2CType1 < cboPI2CType1.Items.Count then
+    cboPI2CType1.ItemIndex := WatchPI2CType1;
+  if WatchPI2CType2 < cboPI2CType2.Items.Count then
+    cboPI2CType2.ItemIndex := WatchPI2CType2;
+  if WatchPI2CType3 < cboPI2CType3.Items.Count then
+    cboPI2CType3.ItemIndex := WatchPI2CType3;
+  if WatchPI2CType4 < cboPI2CType4.Items.Count then
+    cboPI2CType4.ItemIndex := WatchPI2CType4;
+end;
+
+procedure TWatchForm.SaveSettings;
+begin
+  WatchOnlyIfActive  := chkIfActive.Checked;
+  WatchSyncSeries    := chkSyncSeries.Checked;
+  WatchNXTResponseMB := chkResponseMB.Checked;
+  WatchPI2CType1     := cboPI2CType1.ItemIndex;
+  WatchPI2CType2     := cboPI2CType2.ItemIndex;
+  WatchPI2CType3     := cboPI2CType3.ItemIndex;
+  WatchPI2CType4     := cboPI2CType4.ItemIndex;
+end;
+
+procedure TWatchForm.PollProcessedI2C(port: byte; pitype: integer;
+  edtVal: TEdit);
+begin
+  if pitype > -1 then
+    edtVal.Text := BrickComm.Poll(kNXT_I2CBaseValueType+pitype, port);
+end;
+
+procedure TWatchForm.LoadI2CTypes;
+var
+  tmp : string;
+begin
+  tmp := GetI2CValueTypes;
+  cboPI2CType1.Items.Text := tmp;
+  cboPI2CType2.Items.Text := tmp;
+  cboPI2CType3.Items.Text := tmp;
+  cboPI2CType4.Items.Text := tmp;
+end;
+
+procedure TWatchForm.btnConfigI2CTypesClick(Sender: TObject);
+var
+  f : TfrmVTConfig;
+begin
+// TODO: implement I2C configuration dialog
+  f := TfrmVTConfig.Create(nil);
+  try
+    if f.ShowModal = mrOK then
+    begin
+    end;
+  finally
+    f.Free;
+  end;
+end;
+
+function TWatchForm.IndexToID(const idx: integer): integer;
+begin
+  Result := idx;
+  if IsNXT then
+  begin
+    // TODO: allow the user to map variables to different variable numbers
+  end;
+end;
+
 initialization
+{$IFDEF FPC}
   {$i Watch.lrs}
 {$ENDIF}
 

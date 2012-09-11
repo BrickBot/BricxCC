@@ -73,6 +73,7 @@ type
     procedure CRProc;
     procedure IdentProc;
     procedure IntegerProc;
+    procedure BinaryProc;
     procedure LFProc;
     procedure NullProc;
     procedure NumberProc;
@@ -205,7 +206,7 @@ const
   SYNS_AttrField    = 'Field';
   SYNS_FilterNQC    = 'NQC Files (*.nqc,*.nqh)|*.nqc;*.nqh';
   SYNS_LangNQC      = 'NQC';
-  SYNS_FilterNXC    = 'NXC Files (*.nxc)|*.nxc';
+  SYNS_FilterNXC    = 'NXC Files (*.nxc,*.h)|*.nxc;*.h';
   SYNS_LangNXC      = 'NXC';
   SYNS_FilterSPC    = 'SPC Files (*.spc)|*.spc';
   SYNS_LangSPC      = 'SPC';
@@ -722,9 +723,32 @@ end;
 
 procedure TSynBaseNCSyn.IntegerProc;
 begin
-  inc(Run);
-  fTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
+  // must start with 0 and no other digit
+  if FLine[Run-1] <> '0' then
+  begin
+    fTokenID := tkUnknown;
+  end
+  else
+  begin
+    inc(Run);
+    fTokenID := tkNumber;
+    while FLine[Run] in ['0'..'9', 'A'..'F', 'a'..'f'] do inc(Run);
+  end;
+end;
+
+procedure TSynBaseNCSyn.BinaryProc;
+begin
+  // must start with 0 and no other digit
+  if FLine[Run-1] <> '0' then
+  begin
+    fTokenID := tkUnknown;
+  end
+  else
+  begin
+    inc(Run);
+    fTokenID := tkNumber;
+    while FLine[Run] in ['0','1'] do inc(Run);
+  end;
 end;
 
 procedure TSynBaseNCSyn.LFProc;
@@ -739,18 +763,33 @@ begin
 end;
 
 procedure TSynBaseNCSyn.NumberProc;
+var
+  bExponent : boolean;
 begin
+  bExponent := False;
   inc(Run);
   fTokenID := tkNumber;
-  while FLine[Run] in ['0'..'9', '.', 'e', 'E', 'x'] do
+  while FLine[Run] in ['0'..'9', '.', 'e', 'E', 'x', 'X', 'b', 'B'] do
   begin
     case FLine[Run] of
-      'x': begin // handle C style hex numbers
+      'b', 'B': begin // handle binary numbers
+             BinaryProc;
+             break;
+           end;
+      'x', 'X': begin // handle C style hex numbers
              IntegerProc;
              break;
            end;
       '.':
         if FLine[Run + 1] = '.' then break;
+      'e', 'E': begin
+          if not bExponent then
+            bExponent := True
+          else
+            break;
+          if FLine[Run + 1] in ['+', '-'] then
+            inc(Run);
+        end;
     end;
     inc(Run);
   end;
@@ -936,7 +975,11 @@ end;
 
 function TSynBaseNCSyn.GetRange: Pointer;
 begin
+{$IFDEF FPC}
+  Result := Pointer(PtrInt(fRange));
+{$ELSE}
   Result := Pointer(fRange);
+{$ENDIF}
 end;
 
 function TSynBaseNCSyn.GetToken: String;
@@ -997,7 +1040,11 @@ end;
 
 procedure TSynBaseNCSyn.SetRange(Value: Pointer);
 begin
+{$IFDEF FPC}
+  fRange := TRangeState(PtrUInt(Value));
+{$ELSE}
   fRange := TRangeState(Value);
+{$ENDIF}
 end;
 
 procedure TSynBaseNCSyn.SetKeyWords(const Value: TStrings);

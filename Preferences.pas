@@ -3520,27 +3520,40 @@ end;
 
 procedure TPrefForm.CreatePrefFormHighlighters;
 begin
-  SynCppSyn        := TSynCppSyn.Create(Self);
-  SynMindScriptSyn := TSynMindScriptSyn.Create(Self);
-  SynNPGSyn        := TSynNPGSyn.Create(Self);
-  SynForthSyn      := TSynForthSyn.Create(Self);
-  SynJavaSyn       := TSynJavaSyn.Create(Self);
-  SynNQCSyn        := TSynNQCSyn.Create(Self);
   SynNXCSyn        := TSynNXCSyn.Create(Self);
+  SynNBCSyn        := TSynNBCSyn.Create(Self);
+  SynNPGSyn        := TSynNPGSyn.Create(Self);
   SynRSSyn         := TSynRSSyn.Create(Self);
   SynROPSSyn       := TSynROPSSyn.Create(Self);
+  SynSPCSyn        := TSynSPCSyn.Create(Self);
+  SynSPASMSyn      := TSynSPASMSyn.Create(Self);
+  SynNQCSyn        := TSynNQCSyn.Create(Self);
+  SynMindScriptSyn := TSynMindScriptSyn.Create(Self);
   SynLASMSyn       := TSynLASMSyn.Create(Self);
+  SynForthSyn      := TSynForthSyn.Create(Self);
+  SynJavaSyn       := TSynJavaSyn.Create(Self);
   SynLuaSyn        := TSynLuaSyn.Create(Self);
   SynRubySyn       := TSynRubySyn.Create(Self);
   SynPasSyn        := TSynPasSyn.Create(Self);
-  SynNBCSyn        := TSynNBCSyn.Create(Self);
   SynCSSyn         := TSynCSSyn.Create(Self);
-  SynSPCSyn        := TSynSPCSyn.Create(Self);
-  SynSPASMSyn      := TSynSPASMSyn.Create(Self);
+  SynCppSyn        := TSynCppSyn.Create(Self);
+  with SynNXCSyn do
+  begin
+    Name := 'SynNXCSyn';
+    DefaultFilter := 'NXC Files (*.nxc,*.h)|*.nxc;*.h';
+    Comments := [csCStyle];
+    DetectPreprocessor := True;
+    IdentifierChars := '#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
+    KeyWords.Clear;
+    Commands.Clear;
+    Constants.Clear;
+    if FileExists(ProgramDir + 'Default\nxc_samplesource.txt') then
+      SampleSourceStrings.LoadFromFile(ProgramDir + 'Default\nxc_samplesource.txt');
+  end;
   with SynCppSyn do
   begin
     Name := 'SynCppSyn';
-    DefaultFilter := 'C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp';
+    DefaultFilter := 'C++ Files (*.c,*.cpp,*.hpp)|*.c;*.cpp;*.hpp';
   end;
   with SynMindScriptSyn do
   begin
@@ -3572,19 +3585,6 @@ begin
     Constants.Clear;
     if FileExists(ProgramDir + 'Default\nqc_samplesource.txt') then
       SampleSourceStrings.LoadFromFile(ProgramDir + 'Default\nqc_samplesource.txt');
-  end;
-  with SynNXCSyn do
-  begin
-    Name := 'SynNXCSyn';
-    DefaultFilter := 'NXC Files (*.nxc)|*.nxc';
-    Comments := [csCStyle];
-    DetectPreprocessor := True;
-    IdentifierChars := '#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
-    KeyWords.Clear;
-    Commands.Clear;
-    Constants.Clear;
-    if FileExists(ProgramDir + 'Default\nxc_samplesource.txt') then
-      SampleSourceStrings.LoadFromFile(ProgramDir + 'Default\nxc_samplesource.txt');
   end;
   with SynRSSyn do
   begin

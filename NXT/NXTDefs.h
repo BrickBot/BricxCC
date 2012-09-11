@@ -1104,7 +1104,9 @@ __rotate_Start0:
   set __rotate_theRS0, OUT_RUNSTATE_RUNNING
   setout __rotate_ports0, OutputModeField, __rotate_theOM0, RegModeField, __rotate_theRM0, TachoLimitField, __rotate_theAngle0, RunStateField, __rotate_theRS0, RegPValueField, __rotate_theRVP0, RegIValueField, __rotate_theRVI0, RegDValueField, __rotate_theRVD0, PowerField, __rotate_thePower0, TurnRatioField, __rotate_turnpct0, UpdateFlagsField, __rotate_theUF0
 
-// Waits till angle reached
+  wait 0 // let the motor(s) start turning
+
+  // Waits till the angle is reached
   index __rotate_firstPort0, __rotate_ports0, NA
 __rotate_Running0:
   getout __rotate_power0, __rotate_firstPort0, PowerField
@@ -1113,20 +1115,28 @@ __rotate_Running0:
   brcmp EQ, __rotate_Running0, __rotate_rs0, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning0:
   brtst EQ, __rotate_Reset0, __rotate_stop0 // skip the speed regulation phase if __rotate_stop is false
-// Regulates for speed = 0
+
+  // Regulates for speed = 0
   set __rotate_theOM0, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF0, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports0, OutputModeField, __rotate_theOM0, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS0, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF0
-// Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount0, __rotate_firstPort0, RotationCountField
+  setout __rotate_ports0, OutputModeField, __rotate_theOM0, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS0, PowerField, 0, TurnRatioField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF0
+
+  wait 0 // let the firmware stop the motor(s)
+
+  // Verifies that motor doesn't rotate for 50ms, else loops
+  getout __rotate_RotCount0, __rotate_firstPort0, TachoCountField
 __rotate_Stabilize0:
   mov __rotate_OldRotCount0, __rotate_RotCount0
   wait 50
   // check rotation
-  getout __rotate_RotCount0, __rotate_firstPort0, RotationCountField
+  getout __rotate_RotCount0, __rotate_firstPort0, TachoCountField
   brcmp NEQ, __rotate_Stabilize0, __rotate_OldRotCount0, __rotate_RotCount0
+
+  // now remove the brake
   set __rotate_theOM0, OUT_MODE_COAST+OUT_MODE_REGULATED
   setout __rotate_ports0, RegModeField, __rotate_theRM0, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM0, UpdateFlagsField, UF_UPDATE_MODE
+  wait 0 // let the firmware release the motor(s)
+
 __rotate_Reset0:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done0, __rotate_theTurnPct0
@@ -1157,7 +1167,9 @@ __rotate_Start1:
   set __rotate_theRS1, OUT_RUNSTATE_RUNNING
   setout __rotate_ports1, OutputModeField, __rotate_theOM1, RegModeField, __rotate_theRM1, TachoLimitField, __rotate_theAngle1, RunStateField, __rotate_theRS1, RegPValueField, __rotate_theRVP1, RegIValueField, __rotate_theRVI1, RegDValueField, __rotate_theRVD1, PowerField, __rotate_thePower1, TurnRatioField, __rotate_turnpct1, UpdateFlagsField, __rotate_theUF1
 
-// Waits till angle reached
+  wait 0 // let the motor(s) start turning
+
+  // Waits till the angle is reached
   index __rotate_firstPort1, __rotate_ports1, NA
 __rotate_Running1:
   getout __rotate_power1, __rotate_firstPort1, PowerField
@@ -1166,20 +1178,28 @@ __rotate_Running1:
   brcmp EQ, __rotate_Running1, __rotate_rs1, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning1:
   brtst EQ, __rotate_Reset1, __rotate_stop1 // skip the speed regulation phase if __rotate_stop is false
-// Regulates for speed = 0
+
+  // Regulates for speed = 0
   set __rotate_theOM1, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF1, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports1, OutputModeField, __rotate_theOM1, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS1, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF1
-// Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount1, __rotate_firstPort1, RotationCountField
+  setout __rotate_ports1, OutputModeField, __rotate_theOM1, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS1, PowerField, 0, TurnRatioField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF1
+
+  wait 0 // let the firmware stop the motor(s)
+
+  // Verifies that motor doesn't rotate for 50ms, else loops
+  getout __rotate_RotCount1, __rotate_firstPort1, TachoCountField
 __rotate_Stabilize1:
   mov __rotate_OldRotCount1, __rotate_RotCount1
   wait 50
   // check rotation
-  getout __rotate_RotCount1, __rotate_firstPort1, RotationCountField
+  getout __rotate_RotCount1, __rotate_firstPort1, TachoCountField
   brcmp NEQ, __rotate_Stabilize1, __rotate_OldRotCount1, __rotate_RotCount1
+
+  // now remove the brake
   set __rotate_theOM1, OUT_MODE_COAST+OUT_MODE_REGULATED
   setout __rotate_ports1, RegModeField, __rotate_theRM1, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM1, UpdateFlagsField, UF_UPDATE_MODE
+  wait 0 // let the firmware release the motor(s)
+
 __rotate_Reset1:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done1, __rotate_theTurnPct1
@@ -1210,7 +1230,9 @@ __rotate_Start2:
   set __rotate_theRS2, OUT_RUNSTATE_RUNNING
   setout __rotate_ports2, OutputModeField, __rotate_theOM2, RegModeField, __rotate_theRM2, TachoLimitField, __rotate_theAngle2, RunStateField, __rotate_theRS2, RegPValueField, __rotate_theRVP2, RegIValueField, __rotate_theRVI2, RegDValueField, __rotate_theRVD2, PowerField, __rotate_thePower2, TurnRatioField, __rotate_turnpct2, UpdateFlagsField, __rotate_theUF2
 
-// Waits till angle reached
+  wait 0 // let the motor(s) start turning
+
+  // Waits till the angle is reached
   index __rotate_firstPort2, __rotate_ports2, NA
 __rotate_Running2:
   getout __rotate_power2, __rotate_firstPort2, PowerField
@@ -1219,20 +1241,28 @@ __rotate_Running2:
   brcmp EQ, __rotate_Running2, __rotate_rs2, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning2:
   brtst EQ, __rotate_Reset2, __rotate_stop2 // skip the speed regulation phase if __rotate_stop is false
-// Regulates for speed = 0
+
+  // Regulates for speed = 0
   set __rotate_theOM2, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF2, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports2, OutputModeField, __rotate_theOM2, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS2, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF2
-// Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount2, __rotate_firstPort2, RotationCountField
+  setout __rotate_ports2, OutputModeField, __rotate_theOM2, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS2, PowerField, 0, TurnRatioField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF2
+
+  wait 0 // let the firmware stop the motor(s)
+
+  // Verifies that motor doesn't rotate for 50ms, else loops
+  getout __rotate_RotCount2, __rotate_firstPort2, TachoCountField
 __rotate_Stabilize2:
   mov __rotate_OldRotCount2, __rotate_RotCount2
   wait 50
   // check rotation
-  getout __rotate_RotCount2, __rotate_firstPort2, RotationCountField
+  getout __rotate_RotCount2, __rotate_firstPort2, TachoCountField
   brcmp NEQ, __rotate_Stabilize2, __rotate_OldRotCount2, __rotate_RotCount2
+
+  // now remove the brake
   set __rotate_theOM2, OUT_MODE_COAST+OUT_MODE_REGULATED
   setout __rotate_ports2, RegModeField, __rotate_theRM2, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM2, UpdateFlagsField, UF_UPDATE_MODE
+  wait 0 // let the firmware release the motor(s)
+
 __rotate_Reset2:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done2, __rotate_theTurnPct2
@@ -1263,7 +1293,9 @@ __rotate_Start3:
   set __rotate_theRS3, OUT_RUNSTATE_RUNNING
   setout __rotate_ports3, OutputModeField, __rotate_theOM3, RegModeField, __rotate_theRM3, TachoLimitField, __rotate_theAngle3, RunStateField, __rotate_theRS3, RegPValueField, __rotate_theRVP3, RegIValueField, __rotate_theRVI3, RegDValueField, __rotate_theRVD3, PowerField, __rotate_thePower3, TurnRatioField, __rotate_turnpct3, UpdateFlagsField, __rotate_theUF3
 
-// Waits till angle reached
+  wait 0 // let the motor(s) start turning
+
+  // Waits till the angle is reached
   index __rotate_firstPort3, __rotate_ports3, NA
 __rotate_Running3:
   getout __rotate_power3, __rotate_firstPort3, PowerField
@@ -1272,20 +1304,28 @@ __rotate_Running3:
   brcmp EQ, __rotate_Running3, __rotate_rs3, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning3:
   brtst EQ, __rotate_Reset3, __rotate_stop3 // skip the speed regulation phase if __rotate_stop is false
-// Regulates for speed = 0
+
+  // Regulates for speed = 0
   set __rotate_theOM3, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF3, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports3, OutputModeField, __rotate_theOM3, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS3, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF3
-// Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount3, __rotate_firstPort3, RotationCountField
+  setout __rotate_ports3, OutputModeField, __rotate_theOM3, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS3, PowerField, 0, TurnRatioField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF3
+
+  wait 0 // let the firmware stop the motor(s)
+
+  // Verifies that motor doesn't rotate for 50ms, else loops
+  getout __rotate_RotCount3, __rotate_firstPort3, TachoCountField
 __rotate_Stabilize3:
   mov __rotate_OldRotCount3, __rotate_RotCount3
   wait 50
   // check rotation
-  getout __rotate_RotCount3, __rotate_firstPort3, RotationCountField
+  getout __rotate_RotCount3, __rotate_firstPort3, TachoCountField
   brcmp NEQ, __rotate_Stabilize3, __rotate_OldRotCount3, __rotate_RotCount3
+
+  // now remove the brake
   set __rotate_theOM3, OUT_MODE_COAST+OUT_MODE_REGULATED
   setout __rotate_ports3, RegModeField, __rotate_theRM3, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM3, UpdateFlagsField, UF_UPDATE_MODE
+  wait 0 // let the firmware release the motor(s)
+
 __rotate_Reset3:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done3, __rotate_theTurnPct3
@@ -1316,7 +1356,9 @@ __rotate_Start4:
   set __rotate_theRS4, OUT_RUNSTATE_RUNNING
   setout __rotate_ports4, OutputModeField, __rotate_theOM4, RegModeField, __rotate_theRM4, TachoLimitField, __rotate_theAngle4, RunStateField, __rotate_theRS4, RegPValueField, __rotate_theRVP4, RegIValueField, __rotate_theRVI4, RegDValueField, __rotate_theRVD4, PowerField, __rotate_thePower4, TurnRatioField, __rotate_turnpct4, UpdateFlagsField, __rotate_theUF4
 
-// Waits till angle reached
+  wait 0 // let the motor(s) start turning
+
+  // Waits till the angle is reached
   index __rotate_firstPort4, __rotate_ports4, NA
 __rotate_Running4:
   getout __rotate_power4, __rotate_firstPort4, PowerField
@@ -1325,20 +1367,28 @@ __rotate_Running4:
   brcmp EQ, __rotate_Running4, __rotate_rs4, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning4:
   brtst EQ, __rotate_Reset4, __rotate_stop4 // skip the speed regulation phase if __rotate_stop is false
-// Regulates for speed = 0
+
+  // Regulates for speed = 0
   set __rotate_theOM4, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF4, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports4, OutputModeField, __rotate_theOM4, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS4, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF4
-// Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount4, __rotate_firstPort4, RotationCountField
+  setout __rotate_ports4, OutputModeField, __rotate_theOM4, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS4, PowerField, 0, TurnRatioField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF4
+
+  wait 0 // let the firmware stop the motor(s)
+
+  // Verifies that motor doesn't rotate for 50ms, else loops
+  getout __rotate_RotCount4, __rotate_firstPort4, TachoCountField
 __rotate_Stabilize4:
   mov __rotate_OldRotCount4, __rotate_RotCount4
   wait 50
   // check rotation
-  getout __rotate_RotCount4, __rotate_firstPort4, RotationCountField
+  getout __rotate_RotCount4, __rotate_firstPort4, TachoCountField
   brcmp NEQ, __rotate_Stabilize4, __rotate_OldRotCount4, __rotate_RotCount4
+
+  // now remove the brake
   set __rotate_theOM4, OUT_MODE_COAST+OUT_MODE_REGULATED
   setout __rotate_ports4, RegModeField, __rotate_theRM4, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM4, UpdateFlagsField, UF_UPDATE_MODE
+  wait 0 // let the firmware release the motor(s)
+
 __rotate_Reset4:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done4, __rotate_theTurnPct4
@@ -1369,7 +1419,9 @@ __rotate_Start5:
   set __rotate_theRS5, OUT_RUNSTATE_RUNNING
   setout __rotate_ports5, OutputModeField, __rotate_theOM5, RegModeField, __rotate_theRM5, TachoLimitField, __rotate_theAngle5, RunStateField, __rotate_theRS5, RegPValueField, __rotate_theRVP5, RegIValueField, __rotate_theRVI5, RegDValueField, __rotate_theRVD5, PowerField, __rotate_thePower5, TurnRatioField, __rotate_turnpct5, UpdateFlagsField, __rotate_theUF5
 
-// Waits till angle reached
+  wait 0 // let the motor(s) start turning
+
+  // Waits till the angle is reached
   index __rotate_firstPort5, __rotate_ports5, NA
 __rotate_Running5:
   getout __rotate_power5, __rotate_firstPort5, PowerField
@@ -1378,20 +1430,28 @@ __rotate_Running5:
   brcmp EQ, __rotate_Running5, __rotate_rs5, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning5:
   brtst EQ, __rotate_Reset5, __rotate_stop5 // skip the speed regulation phase if __rotate_stop is false
-// Regulates for speed = 0
+
+  // Regulates for speed = 0
   set __rotate_theOM5, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF5, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports5, OutputModeField, __rotate_theOM5, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS5, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF5
-// Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount5, __rotate_firstPort5, RotationCountField
+  setout __rotate_ports5, OutputModeField, __rotate_theOM5, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS5, PowerField, 0, TurnRatioField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF5
+
+  wait 0 // let the firmware stop the motor(s)
+
+  // Verifies that motor doesn't rotate for 50ms, else loops
+  getout __rotate_RotCount5, __rotate_firstPort5, TachoCountField
 __rotate_Stabilize5:
   mov __rotate_OldRotCount5, __rotate_RotCount5
   wait 50
   // check rotation
-  getout __rotate_RotCount5, __rotate_firstPort5, RotationCountField
+  getout __rotate_RotCount5, __rotate_firstPort5, TachoCountField
   brcmp NEQ, __rotate_Stabilize5, __rotate_OldRotCount5, __rotate_RotCount5
+
+  // now remove the brake
   set __rotate_theOM5, OUT_MODE_COAST+OUT_MODE_REGULATED
   setout __rotate_ports5, RegModeField, __rotate_theRM5, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM5, UpdateFlagsField, UF_UPDATE_MODE
+  wait 0 // let the firmware release the motor(s)
+
 __rotate_Reset5:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done5, __rotate_theTurnPct5
@@ -1422,7 +1482,9 @@ __rotate_Start6:
   set __rotate_theRS6, OUT_RUNSTATE_RUNNING
   setout __rotate_ports6, OutputModeField, __rotate_theOM6, RegModeField, __rotate_theRM6, TachoLimitField, __rotate_theAngle6, RunStateField, __rotate_theRS6, RegPValueField, __rotate_theRVP6, RegIValueField, __rotate_theRVI6, RegDValueField, __rotate_theRVD6, PowerField, __rotate_thePower6, TurnRatioField, __rotate_turnpct6, UpdateFlagsField, __rotate_theUF6
 
-// Waits till angle reached
+  wait 0 // let the motor(s) start turning
+
+  // Waits till the angle is reached
   index __rotate_firstPort6, __rotate_ports6, NA
 __rotate_Running6:
   getout __rotate_power6, __rotate_firstPort6, PowerField
@@ -1431,20 +1493,28 @@ __rotate_Running6:
   brcmp EQ, __rotate_Running6, __rotate_rs6, OUT_RUNSTATE_RUNNING
 __rotate_doneRunning6:
   brtst EQ, __rotate_Reset6, __rotate_stop6 // skip the speed regulation phase if __rotate_stop is false
-// Regulates for speed = 0
+
+  // Regulates for speed = 0
   set __rotate_theOM6, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED
   set __rotate_theUF6, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE
-  setout __rotate_ports6, OutputModeField, __rotate_theOM6, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS6, PowerField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF6
-// Verifies that motor doesn't rotate for 50ms, else loops
-  getout __rotate_RotCount6, __rotate_firstPort6, RotationCountField
+  setout __rotate_ports6, OutputModeField, __rotate_theOM6, RegModeField, OUT_REGMODE_SPEED, RunStateField, __rotate_theRS6, PowerField, 0, TurnRatioField, 0, TachoLimitField, 0, UpdateFlagsField, __rotate_theUF6
+
+  wait 0 // let the firmware stop the motor(s)
+
+  // Verifies that motor doesn't rotate for 50ms, else loops
+  getout __rotate_RotCount6, __rotate_firstPort6, TachoCountField
 __rotate_Stabilize6:
   mov __rotate_OldRotCount6, __rotate_RotCount6
   wait 50
   // check rotation
-  getout __rotate_RotCount6, __rotate_firstPort6, RotationCountField
+  getout __rotate_RotCount6, __rotate_firstPort6, TachoCountField
   brcmp NEQ, __rotate_Stabilize6, __rotate_OldRotCount6, __rotate_RotCount6
+
+  // now remove the brake
   set __rotate_theOM6, OUT_MODE_COAST+OUT_MODE_REGULATED
   setout __rotate_ports6, RegModeField, __rotate_theRM6, RunStateField, OUT_RUNSTATE_IDLE, OutputModeField, __rotate_theOM6, UpdateFlagsField, UF_UPDATE_MODE
+  wait 0 // let the firmware release the motor(s)
+
 __rotate_Reset6:
   // maybe reset the block rotation count
   brtst EQ, __rotate_Done6, __rotate_theTurnPct6
@@ -11882,7 +11952,7 @@ ends
  * rotation.
  */
 #define RotateMotorEx(_ports, _pwr, _angle, _turnpct, _bSync, _bStop) \
-   __RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, PID_1, PID_0, PID_3)
+   __RotateMotorExPID(_ports, _pwr, _angle, _turnpct, _bSync, _bStop, PID_3, PID_1, PID_1)
 
 /**
  * Rotate motor.
@@ -11896,7 +11966,7 @@ ends
  * \param _angle Angle limit, in degree. Can be negative to reverse direction.
  */
 #define RotateMotor(_ports, _pwr, _angle) \
-   __RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, PID_1, PID_0, PID_3)
+   __RotateMotorExPID(_ports, _pwr, _angle, 0, FALSE, TRUE, PID_3, PID_1, PID_1)
 
 /**
  * Set motor regulation frequency.

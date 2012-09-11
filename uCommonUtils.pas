@@ -94,8 +94,8 @@ function CommasToSpaces(const line : string) : string;
 procedure TrimComments(var line : string; p : integer; const sub : string);
 function JCHExtractStrings(Separators, WhiteSpace: TSysCharSet; Content: PChar;
   Strings: TStrings): Integer;
-function BinToInt(const aValue: String): Integer;
-function BinToIntDef(const aValue: String; const aDefault : Integer): Integer;
+function BinToInt(const aValue: String): Cardinal;
+function BinToIntDef(const aValue: String; const aDefault : Cardinal): Cardinal;
 
 implementation
 
@@ -265,7 +265,9 @@ end;
 procedure PostWindowMessage(aHwnd : HWND; aMsg : Cardinal; wParam, lParam : Integer);
 begin
 {$IFDEF FPC}
-//  ;
+  //  do nothing
+  if (aHwnd = 0) and (aMsg = 0) and (wParam = 0) and (lParam = 0) then
+    ;
 {$ELSE}
   PostMessage(aHwnd, aMsg, wParam, lParam);
 {$ENDIF}
@@ -416,6 +418,7 @@ var
   tmp : string;
   i, j : integer;
 begin
+  if p = 0 then exit;
   tmp := line;
   i := Pos('''', tmp);
   while i > 0 do
@@ -501,12 +504,12 @@ begin
 end;
 {$ENDIF}
 
-function BinToInt(const aValue: String): LongInt;
+function BinToInt(const aValue: String): Cardinal;
 begin
   Result := BinToIntDef(aValue, 0);
 end;
 
-function BinToIntDef(const aValue: String; const aDefault : Integer): Integer;
+function BinToIntDef(const aValue: String; const aDefault : Cardinal): Cardinal;
 var
   i, len : Integer;
   Ch : Char;

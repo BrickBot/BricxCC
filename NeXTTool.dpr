@@ -51,6 +51,10 @@ type
     procedure HandleDownloadStatus(Sender : TObject; cur, total : Integer; var Abort : boolean);
   end;
 
+const
+  NoBricksFound    = $0001;
+  FWDownloadFailed = $0002;
+
 var
   SL : TStrings;
   i, j, src, num : Integer;
@@ -58,7 +62,7 @@ var
 // getoutputstate variables
   port, power: integer;
   maddr, msize: integer;
-  mode, regmode, runstate: byte;
+  mode, regmode, runstate, i2caddr: byte;
   modestr, regmodestr, runstatestr : string;
   turnratio: integer;
   tacholimit: cardinal;
@@ -88,6 +92,7 @@ var
   binfile : string;
   bindump, bErase : boolean;
   msgms : Cardinal; // milliseconds between refreshes
+  TheErrorCode : Integer;
 
 
 function BrickComm : TBrickComm;
@@ -345,23 +350,31 @@ begin
     if ParamSwitch('-init') then
     begin
       BrickComm.SearchBluetooth := Boolean(ParamIntValue('-init', 1));
-      BrickComm.NXTInitializeResourceNames;
-      Exit;
+      if BrickComm.NXTInitializeResourceNames then
+        Exit
+      else
+        Halt(NoBricksFound);
     end;
     if ParamSwitch('-update') then
     begin
       BrickComm.SearchBluetooth := Boolean(ParamIntValue('-update', 1));
-      BrickComm.NXTUpdateResourceNames;
-      Exit;
+      if BrickComm.NXTUpdateResourceNames then
+        Exit
+      else
+        Halt(NoBricksFound);
     end;
     if ParamSwitch('-listbricks') then
     begin
       SL.Clear;
       BrickComm.SearchBluetooth := Boolean(ParamIntValue('-listbricks', 1));
-      BrickComm.NXTListBricks(SL);
-      for i := 0 to SL.Count - 1 do
-        WriteLn(SL[i]);
-      Exit;
+      if BrickComm.NXTListBricks(SL) then
+      begin
+        for i := 0 to SL.Count - 1 do
+          WriteLn(SL[i]);
+        Exit;
+      end
+      else
+        Halt(NoBricksFound);
     end;
     if ParamSwitch('/COM') then
       BrickComm.Port := ParamValue('/COM')
@@ -374,9 +387,15 @@ begin
       j := ParamIntValue('/Iterations', 1, False);
       for i := 0 to j - 1 do
       begin
-        BrickComm.DownloadFirmware(ParamValue('-firmware'), False, False, False);
-        if j > 1 then
-          WriteLn(Format('%d of %d', [i+1, j]));
+        if BrickComm.DownloadFirmware(ParamValue('-firmware'), False, False, False) then
+        begin
+          if j > 1 then
+            WriteLn(Format('%d of %d', [i+1, j]));
+        end
+        else
+        begin
+          Halt(FWDownloadFailed);
+        end;
       end;
     end;
     if BrickComm.Open then
@@ -582,16 +601,23 @@ begin
           begin
             j := StrToIntDef(Copy(i2csend, 1, i-1), 0);
             System.Delete(i2csend, 1, i);
-            // everything left should be comma-separated list of bytes to send
-            LoadLSBlock(LSBlock, i2csend, j);
-            BrickComm.NXTLowSpeed[port] := LSBlock;
-            LSBlock := BrickComm.NXTLowSpeed[port];
-            for i := 0 to j - 1 do
+            // get the address (first byte after count)
+            i := Pos(',', i2csend);
+            if i = 3 then
             begin
-              OutputValue(LSBlock.Data[i], False);
-              Write(' ');
+              i2caddr := StrToIntDef('$'+Copy(i2csend, 1, i-1), 0);
+              System.Delete(i2csend, 1, i);
+              // everything left should be comma-separated list of bytes to send
+              LoadLSBlock(LSBlock, i2caddr, i2csend, j);
+              BrickComm.NXTLowSpeed[port] := LSBlock;
+              LSBlock := BrickComm.NXTLowSpeed[port];
+              for i := 0 to j - 1 do
+              begin
+                OutputValue(LSBlock.Data[i], False);
+                Write(' ');
+              end;
+              WriteLn('');
             end;
-            WriteLn('');
           end;
         end;
       end;
@@ -818,6 +844,9 @@ begin
       if not ParamSwitch('/noclose') then
         BrickComm.Close;
     end;
+
+    TheErrorCode := BrickComm.ErrorStatus;
+
     if not ParamSwitch('/nofree') then
       BrickComm.Free;
   finally
@@ -825,4 +854,6 @@ begin
     if ParamSwitch('/debug') then
       WriteLn('Exiting NeXTTool');
   end;
+  if TheErrorCode <> 0 then
+    Halt(TheErrorCode);
 end.

@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 3173;
+  uNXCHTMLTopicsSize = 3207;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -323,6 +323,110 @@ const
     (
      Name: 'RC_PROP_DEBUGGING';
      Value: 'group___r_c_property_constants_gaf1bc14447737f83e98c387eae9095457.html'
+    ),
+    (
+     Name: 'VT_UBYTE';
+     Value: 'group___variable_type_constants_ga07fbd6c358ad2ec6088bb59d66f081d1.html'
+    ),
+    (
+     Name: 'VT_SBYTE';
+     Value: 'group___variable_type_constants_ga9724b49f41c6233fc8185001e1792ca2.html'
+    ),
+    (
+     Name: 'VT_UWORD';
+     Value: 'group___variable_type_constants_gaf7743ed8bf0673590c888fa104c32460.html'
+    ),
+    (
+     Name: 'VT_SWORD';
+     Value: 'group___variable_type_constants_gabb6c3b7c8f0275757bfee3675da07a1c.html'
+    ),
+    (
+     Name: 'VT_ULONG';
+     Value: 'group___variable_type_constants_gabcdb3857532ded2c27f7cca26e29ecc7.html'
+    ),
+    (
+     Name: 'VT_SLONG';
+     Value: 'group___variable_type_constants_ga98b86e73f8f3c56cb37f960968c57c0a.html'
+    ),
+    (
+     Name: 'VT_STRUCT';
+     Value: 'group___variable_type_constants_gaa572458a84e672f2975690c9eb22dde4.html'
+    ),
+    (
+     Name: 'VT_MUTEX';
+     Value: 'group___variable_type_constants_ga0a11ae737fe81a9e794dd3a89954cf63.html'
+    ),
+    (
+     Name: 'VT_FLOAT';
+     Value: 'group___variable_type_constants_ga8ea40dbaf6ddc79132c4c71ebac5d977.html'
+    ),
+    (
+     Name: 'VT_A1_UBYTE';
+     Value: 'group___variable_type_constants_ga98815c67cea4d273daad62b08e07d3b4.html'
+    ),
+    (
+     Name: 'VT_A1_SBYTE';
+     Value: 'group___variable_type_constants_ga71e1f11dab6280734da86fb8799bdce8.html'
+    ),
+    (
+     Name: 'VT_A1_UWORD';
+     Value: 'group___variable_type_constants_gaa75f70689872778f04a65ac2ec983872.html'
+    ),
+    (
+     Name: 'VT_A1_SWORD';
+     Value: 'group___variable_type_constants_ga3eec78763b36b9f1a06dd79e749d3948.html'
+    ),
+    (
+     Name: 'VT_A1_ULONG';
+     Value: 'group___variable_type_constants_ga81de341ab9a93dc1c6d3c173b7ce263a.html'
+    ),
+    (
+     Name: 'VT_A1_SLONG';
+     Value: 'group___variable_type_constants_ga5923f3d3b43df5df495f6c3f4e71bf6e.html'
+    ),
+    (
+     Name: 'VT_A1_STRUCT';
+     Value: 'group___variable_type_constants_gaf91d2298551d7d3968de54f1806b7275.html'
+    ),
+    (
+     Name: 'VT_A1_FLOAT';
+     Value: 'group___variable_type_constants_gac5fdea10a0ce175270cac8f44295cc99.html'
+    ),
+    (
+     Name: 'VT_A2_UBYTE';
+     Value: 'group___variable_type_constants_ga762c5626b5547f5183e80e2a70d736ed.html'
+    ),
+    (
+     Name: 'VT_A2_SBYTE';
+     Value: 'group___variable_type_constants_gaba3371f4d59ca70d3ace366df074a651.html'
+    ),
+    (
+     Name: 'VT_A2_UWORD';
+     Value: 'group___variable_type_constants_gaee8870d76f68df2e681f5105fd55ff0b.html'
+    ),
+    (
+     Name: 'VT_A2_SWORD';
+     Value: 'group___variable_type_constants_gafb8cfb37aa929ccdf298773d43b43e81.html'
+    ),
+    (
+     Name: 'VT_A2_ULONG';
+     Value: 'group___variable_type_constants_gadb01f6e314e06eef6f48b5d88b1d9a54.html'
+    ),
+    (
+     Name: 'VT_A2_SLONG';
+     Value: 'group___variable_type_constants_gabc97ff7632dfa095cc53c26d92f1c64c.html'
+    ),
+    (
+     Name: 'VT_A2_STRUCT';
+     Value: 'group___variable_type_constants_gada0eec89083f961ae59c892a39da48c2.html'
+    ),
+    (
+     Name: 'VT_A2_FLOAT';
+     Value: 'group___variable_type_constants_ga4c77c7aae94192fac17d243c925912c0.html'
+    ),
+    (
+     Name: 'VT_ARRAY_MASK';
+     Value: 'group___variable_type_constants_gaf4bedaa528582cc7a00c105c875a8281.html'
     ),
     (
      Name: 'OPARR_SUM';
@@ -3283,6 +3387,14 @@ const
     (
      Name: 'DRAW_OPT_POLYGON_POLYLINE';
      Value: 'group___display_draw_option_constants_ga83c7d7e89e00d814ef7ad101d63ee1a7.html'
+    ),
+    (
+     Name: 'DRAW_OPT_CLEAR_LINE';
+     Value: 'group___display_draw_option_constants_gadeca1c98bb9afb2a129517f1a89a2b82.html'
+    ),
+    (
+     Name: 'DRAW_OPT_CLEAR_EOL';
+     Value: 'group___display_draw_option_constants_ga20f6c5ac6a0e79f7f419ff136cb86c5e.html'
     ),
     (
      Name: 'DRAW_OPT_FONT_DIRECTIONS';
@@ -7945,6 +8057,22 @@ const
      Value: 'group___type_aliases_gaf0938d8dd13b4f7a595e78aacafd3323.html'
     ),
     (
+     Name: 'NEG_FLT_MIN';
+     Value: 'group___float_min_max_gabe8f9c6fa731f72c995e4e467f7a4531.html'
+    ),
+    (
+     Name: 'FLT_MIN';
+     Value: 'group___float_min_max_ga890322b63a2fab56b8ff916c08368df6.html'
+    ),
+    (
+     Name: 'NEG_FLT_MAX';
+     Value: 'group___float_min_max_gab45b05a473149cdc47265127329f304a.html'
+    ),
+    (
+     Name: 'FLT_MAX';
+     Value: 'group___float_min_max_ga7fbf1534f9e0f0bfdb86fb928902474c.html'
+    ),
+    (
      Name: 'S1';
      Value: 'group___in_ports_ga690d30e9ad3647835c243368b36d4c41.html'
     ),
@@ -10270,11 +10398,11 @@ const
     ),
     (
      Name: 'ButtonPressed';
-     Value: 'group___button_module_functions_ga70357246663b8eb2e93ff90dfdb42ef1.html'
+     Value: 'group___button_module_functions_ga422820a7aa44d2899f2cdde2375e15e5.html'
     ),
     (
      Name: 'ButtonCount';
-     Value: 'group___button_module_functions_ga7204d5f855d30e7f85bbdbc750cdccb4.html'
+     Value: 'group___button_module_functions_ga2ecb6d9c50071e4f2f385087162cc07f.html'
     ),
     (
      Name: 'ReadButtonEx';
@@ -10515,6 +10643,10 @@ const
     (
      Name: 'SizeOf';
      Value: 'group___loader_module_functions_gadbf1c0fed1e8e1a406e212895f253a43.html'
+    ),
+    (
+     Name: 'TypeOf';
+     Value: 'group___loader_module_functions_gac1fbf8ea683150a0848a415d81969495.html'
     ),
     (
      Name: 'Read';
@@ -12447,6 +12579,10 @@ const
     (
      Name: 'FormatNum';
      Value: 'group__cstring_a_p_i_gae1e152293a956a9911b3940664b7b9f4.html'
+    ),
+    (
+     Name: 'FormatVal';
+     Value: 'group__cstring_a_p_i_ga59485b28d67d546f5efb739f6dd9539b.html'
     ),
     (
      Name: 'FlattenVar';

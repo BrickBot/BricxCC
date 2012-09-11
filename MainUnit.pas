@@ -3878,27 +3878,27 @@ end;
 
 procedure TMainForm.CreateMainFormHighlighters;
 begin
-  SynCppSyn        := TSynCppSyn.Create(Self);
-  SynMindScriptSyn := TSynMindScriptSyn.Create(Self);
-  SynNPGSyn        := TSynNPGSyn.Create(Self);
-  SynForthSyn      := TSynForthSyn.Create(Self);
-  SynJavaSyn       := TSynJavaSyn.Create(Self);
-  SynNQCSyn        := TSynNQCSyn.Create(Self);
   SynNXCSyn        := TSynNXCSyn.Create(Self);
+  SynNBCSyn        := TSynNBCSyn.Create(Self);
+  SynNPGSyn        := TSynNPGSyn.Create(Self);
   SynRSSyn         := TSynRSSyn.Create(Self);
   SynROPSSyn       := TSynROPSSyn.Create(Self);
+  SynSPCSyn        := TSynSPCSyn.Create(Self);
+  SynSPASMSyn      := TSynSPASMSyn.Create(Self);
+  SynNQCSyn        := TSynNQCSyn.Create(Self);
+  SynMindScriptSyn := TSynMindScriptSyn.Create(Self);
   SynLASMSyn       := TSynLASMSyn.Create(Self);
+  SynForthSyn      := TSynForthSyn.Create(Self);
+  SynJavaSyn       := TSynJavaSyn.Create(Self);
   SynLuaSyn        := TSynLuaSyn.Create(Self);
   SynRubySyn       := TSynRubySyn.Create(Self);
   SynPasSyn        := TSynPasSyn.Create(Self);
-  SynNBCSyn        := TSynNBCSyn.Create(Self);
   SynCSSyn         := TSynCSSyn.Create(Self);
-  SynSPCSyn        := TSynSPCSyn.Create(Self);
-  SynSPASMSyn      := TSynSPASMSyn.Create(Self);
+  SynCppSyn        := TSynCppSyn.Create(Self);
   with SynNXCSyn do
   begin
     Name := 'SynNXCSyn';
-    DefaultFilter := 'NXC Files (*.nxc)|*.nxc';
+    DefaultFilter := 'NXC Files (*.nxc,*.h)|*.nxc;*.h';
     Comments := [csCStyle];
     DetectPreprocessor := True;
     IdentifierChars := '#0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ_abcdefghijklmnopqrstuvwxyz';
@@ -3912,19 +3912,10 @@ begin
     Name := 'SynNPGSyn';
     DefaultFilter := 'NPG Files (*.npg)|*.npg';
   end;
-  with SynRubySyn do
-  begin
-    Name := 'SynRubySyn';
-  end;
   with SynNBCSyn do
   begin
     Name := 'SynNBCSyn';
     DefaultFilter := 'Next Byte Code Files (*.nbc)|*.nbc';
-  end;
-  with SynJavaSyn do
-  begin
-    Name := 'SynJavaSyn';
-    DefaultFilter := 'Java Files (*.java)|*.java';
   end;
   with SynLASMSyn do
   begin
@@ -3947,6 +3938,15 @@ begin
   begin
     Name := 'SynPasSyn';
   end;
+  with SynRubySyn do
+  begin
+    Name := 'SynRubySyn';
+  end;
+  with SynJavaSyn do
+  begin
+    Name := 'SynJavaSyn';
+    DefaultFilter := 'Java Files (*.java)|*.java';
+  end;
   with SynMindScriptSyn do
   begin
     Name := 'SynMindScriptSyn';
@@ -3968,7 +3968,7 @@ begin
   with SynCppSyn do
   begin
     Name := 'SynCppSyn';
-    DefaultFilter := 'C++ Files (*.c,*.cpp,*.h,*.hpp)|*.c;*.cpp;*.h;*.hpp';
+    DefaultFilter := 'C++ Files (*.c,*.cpp,*.hpp)|*.c;*.cpp;*.hpp';
   end;
   with SynForthSyn do
   begin

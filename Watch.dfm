@@ -28,7 +28,7 @@ object WatchForm: TWatchForm
     Top = 0
     Width = 444
     Height = 410
-    ActivePage = shtNXTMailboxes
+    ActivePage = shtNXTI2C
     Align = alClient
     TabOrder = 0
     object shtCommon: TTabSheet
@@ -1396,7 +1396,7 @@ object WatchForm: TWatchForm
       end
     end
     object shtNXT: TTabSheet
-      Caption = 'NXT'
+      Caption = 'NXT Motors'
       object grpNXTMotors: TGroupBox
         Left = 4
         Top = 2
@@ -1936,281 +1936,6 @@ object WatchForm: TWatchForm
           TabOrder = 38
         end
       end
-      object grpI2C: TGroupBox
-        Left = 4
-        Top = 229
-        Width = 428
-        Height = 140
-        HelpContext = 14088
-        TabOrder = 1
-        object lblI2CPort: TLabel
-          Left = 6
-          Top = 12
-          Width = 38
-          Height = 13
-          Caption = 'I2C Port'
-        end
-        object lblI2CResponse: TLabel
-          Left = 242
-          Top = 12
-          Width = 48
-          Height = 13
-          Caption = 'Response'
-        end
-        object lblI2CUltra: TLabel
-          Left = 80
-          Top = 12
-          Width = 15
-          Height = 13
-          Caption = 'US'
-        end
-        object lblI2CBuffer: TLabel
-          Left = 104
-          Top = 12
-          Width = 28
-          Height = 13
-          Caption = 'Buffer'
-        end
-        object lblI2CLen: TLabel
-          Left = 195
-          Top = 12
-          Width = 33
-          Height = 13
-          Caption = 'Length'
-        end
-        object chkI2C1: TCheckBox
-          Left = 6
-          Top = 29
-          Width = 72
-          Height = 17
-          HelpContext = 14089
-          Caption = 'Port 1'
-          TabOrder = 0
-        end
-        object edtI2CVal1: TEdit
-          Left = 242
-          Top = 26
-          Width = 179
-          Height = 22
-          HelpContext = 14090
-          AutoSize = False
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Courier New'
-          Font.Style = []
-          ParentFont = False
-          ReadOnly = True
-          TabOrder = 4
-        end
-        object chkI2C2: TCheckBox
-          Left = 6
-          Top = 54
-          Width = 72
-          Height = 17
-          HelpContext = 14091
-          Caption = 'Port 2'
-          TabOrder = 5
-        end
-        object edtI2CVal2: TEdit
-          Left = 242
-          Top = 51
-          Width = 179
-          Height = 22
-          HelpContext = 14092
-          AutoSize = False
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Courier New'
-          Font.Style = []
-          ParentFont = False
-          ReadOnly = True
-          TabOrder = 9
-        end
-        object chkI2C3: TCheckBox
-          Left = 6
-          Top = 79
-          Width = 72
-          Height = 17
-          HelpContext = 14093
-          Caption = 'Port 3'
-          TabOrder = 10
-        end
-        object edtI2CVal3: TEdit
-          Left = 242
-          Top = 76
-          Width = 179
-          Height = 22
-          HelpContext = 14094
-          AutoSize = False
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Courier New'
-          Font.Style = []
-          ParentFont = False
-          ReadOnly = True
-          TabOrder = 14
-        end
-        object edtI2CVal4: TEdit
-          Left = 242
-          Top = 101
-          Width = 179
-          Height = 22
-          HelpContext = 14094
-          AutoSize = False
-          Font.Charset = ANSI_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Courier New'
-          Font.Style = []
-          ParentFont = False
-          ReadOnly = True
-          TabOrder = 19
-        end
-        object chkI2C4: TCheckBox
-          Left = 6
-          Top = 104
-          Width = 72
-          Height = 17
-          HelpContext = 14093
-          Caption = 'Port 4'
-          TabOrder = 15
-        end
-        object chkUltra1: TCheckBox
-          Left = 82
-          Top = 29
-          Width = 17
-          Height = 17
-          HelpContext = 14089
-          TabOrder = 1
-          OnClick = chkUltra1Click
-        end
-        object chkUltra2: TCheckBox
-          Left = 82
-          Top = 54
-          Width = 17
-          Height = 17
-          HelpContext = 14091
-          TabOrder = 6
-          OnClick = chkUltra2Click
-        end
-        object chkUltra3: TCheckBox
-          Left = 82
-          Top = 79
-          Width = 17
-          Height = 17
-          HelpContext = 14093
-          TabOrder = 11
-          OnClick = chkUltra3Click
-        end
-        object chkUltra4: TCheckBox
-          Left = 82
-          Top = 104
-          Width = 17
-          Height = 17
-          HelpContext = 14093
-          TabOrder = 16
-          OnClick = chkUltra4Click
-        end
-        object edtI2CBuf1: TEdit
-          Left = 104
-          Top = 26
-          Width = 84
-          Height = 23
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Courier New'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 2
-        end
-        object edtI2CBuf2: TEdit
-          Left = 104
-          Top = 51
-          Width = 84
-          Height = 23
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Courier New'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 7
-        end
-        object edtI2CBuf3: TEdit
-          Left = 104
-          Top = 76
-          Width = 84
-          Height = 23
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Courier New'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 12
-        end
-        object edtI2CBuf4: TEdit
-          Left = 104
-          Top = 101
-          Width = 84
-          Height = 23
-          Font.Charset = DEFAULT_CHARSET
-          Font.Color = clWindowText
-          Font.Height = -12
-          Font.Name = 'Courier New'
-          Font.Style = []
-          ParentFont = False
-          TabOrder = 17
-        end
-        object edtI2CLen1: TBricxccSpinEdit
-          Left = 195
-          Top = 26
-          Width = 42
-          Height = 22
-          MaxLength = 2
-          MaxValue = 16
-          MinValue = 0
-          TabOrder = 3
-          Value = 0
-        end
-        object edtI2CLen2: TBricxccSpinEdit
-          Left = 195
-          Top = 51
-          Width = 42
-          Height = 22
-          MaxLength = 2
-          MaxValue = 16
-          MinValue = 0
-          TabOrder = 8
-          Value = 0
-        end
-        object edtI2CLen4: TBricxccSpinEdit
-          Left = 195
-          Top = 101
-          Width = 42
-          Height = 22
-          MaxLength = 2
-          MaxValue = 16
-          MinValue = 0
-          TabOrder = 18
-          Value = 0
-        end
-        object edtI2CLen3: TBricxccSpinEdit
-          Left = 195
-          Top = 76
-          Width = 42
-          Height = 22
-          MaxLength = 2
-          MaxValue = 16
-          MinValue = 0
-          TabOrder = 13
-          Value = 0
-        end
-      end
     end
     object shtNXTMailboxes: TTabSheet
       Caption = 'NXT Mailboxes'
@@ -2221,7 +1946,7 @@ object WatchForm: TWatchForm
         Width = 428
         Height = 300
         TabOrder = 0
-        object chkResponse: TCheckBox
+        object chkResponseMB: TCheckBox
           Left = 8
           Top = 16
           Width = 161
@@ -2399,6 +2124,460 @@ object WatchForm: TWatchForm
           Height = 21
           ReadOnly = True
           TabOrder = 20
+        end
+      end
+    end
+    object shtNXTI2C: TTabSheet
+      Caption = 'NXT I2C'
+      ImageIndex = 4
+      object grpI2C: TGroupBox
+        Left = 4
+        Top = 171
+        Width = 428
+        Height = 140
+        HelpContext = 14088
+        Caption = 'Raw I2C'
+        TabOrder = 0
+        object lblI2CPort: TLabel
+          Left = 6
+          Top = 14
+          Width = 38
+          Height = 13
+          Caption = 'I2C Port'
+        end
+        object lblI2CResponse: TLabel
+          Left = 242
+          Top = 14
+          Width = 48
+          Height = 13
+          Caption = 'Response'
+        end
+        object lblI2CUltra: TLabel
+          Left = 80
+          Top = 14
+          Width = 15
+          Height = 13
+          Caption = 'US'
+        end
+        object lblI2CBuffer: TLabel
+          Left = 104
+          Top = 14
+          Width = 28
+          Height = 13
+          Caption = 'Buffer'
+        end
+        object lblI2CLen: TLabel
+          Left = 195
+          Top = 14
+          Width = 33
+          Height = 13
+          Caption = 'Length'
+        end
+        object chkI2C1: TCheckBox
+          Left = 6
+          Top = 31
+          Width = 72
+          Height = 17
+          HelpContext = 14089
+          Caption = 'Port 1'
+          TabOrder = 0
+        end
+        object edtI2CVal1: TEdit
+          Left = 242
+          Top = 28
+          Width = 179
+          Height = 22
+          HelpContext = 14090
+          AutoSize = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 4
+        end
+        object chkI2C2: TCheckBox
+          Left = 6
+          Top = 56
+          Width = 72
+          Height = 17
+          HelpContext = 14091
+          Caption = 'Port 2'
+          TabOrder = 5
+        end
+        object edtI2CVal2: TEdit
+          Left = 242
+          Top = 53
+          Width = 179
+          Height = 22
+          HelpContext = 14092
+          AutoSize = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 9
+        end
+        object chkI2C3: TCheckBox
+          Left = 6
+          Top = 81
+          Width = 72
+          Height = 17
+          HelpContext = 14093
+          Caption = 'Port 3'
+          TabOrder = 10
+        end
+        object edtI2CVal3: TEdit
+          Left = 242
+          Top = 78
+          Width = 179
+          Height = 22
+          HelpContext = 14094
+          AutoSize = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 14
+        end
+        object edtI2CVal4: TEdit
+          Left = 242
+          Top = 103
+          Width = 179
+          Height = 22
+          HelpContext = 14094
+          AutoSize = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 19
+        end
+        object chkI2C4: TCheckBox
+          Left = 6
+          Top = 106
+          Width = 72
+          Height = 17
+          HelpContext = 14093
+          Caption = 'Port 4'
+          TabOrder = 15
+        end
+        object chkUltra1: TCheckBox
+          Left = 82
+          Top = 31
+          Width = 17
+          Height = 17
+          HelpContext = 14089
+          TabOrder = 1
+          OnClick = chkUltra1Click
+        end
+        object chkUltra2: TCheckBox
+          Left = 82
+          Top = 56
+          Width = 17
+          Height = 17
+          HelpContext = 14091
+          TabOrder = 6
+          OnClick = chkUltra2Click
+        end
+        object chkUltra3: TCheckBox
+          Left = 82
+          Top = 81
+          Width = 17
+          Height = 17
+          HelpContext = 14093
+          TabOrder = 11
+          OnClick = chkUltra3Click
+        end
+        object chkUltra4: TCheckBox
+          Left = 82
+          Top = 106
+          Width = 17
+          Height = 17
+          HelpContext = 14093
+          TabOrder = 16
+          OnClick = chkUltra4Click
+        end
+        object edtI2CBuf1: TEdit
+          Left = 104
+          Top = 28
+          Width = 84
+          Height = 23
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 2
+        end
+        object edtI2CBuf2: TEdit
+          Left = 104
+          Top = 53
+          Width = 84
+          Height = 23
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 7
+        end
+        object edtI2CBuf3: TEdit
+          Left = 104
+          Top = 78
+          Width = 84
+          Height = 23
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 12
+        end
+        object edtI2CBuf4: TEdit
+          Left = 104
+          Top = 103
+          Width = 84
+          Height = 23
+          Font.Charset = DEFAULT_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          TabOrder = 17
+        end
+        object edtI2CLen1: TBricxccSpinEdit
+          Left = 195
+          Top = 28
+          Width = 42
+          Height = 22
+          MaxLength = 2
+          MaxValue = 16
+          MinValue = 0
+          TabOrder = 3
+          Value = 0
+        end
+        object edtI2CLen2: TBricxccSpinEdit
+          Left = 195
+          Top = 53
+          Width = 42
+          Height = 22
+          MaxLength = 2
+          MaxValue = 16
+          MinValue = 0
+          TabOrder = 8
+          Value = 0
+        end
+        object edtI2CLen4: TBricxccSpinEdit
+          Left = 195
+          Top = 103
+          Width = 42
+          Height = 22
+          MaxLength = 2
+          MaxValue = 16
+          MinValue = 0
+          TabOrder = 18
+          Value = 0
+        end
+        object edtI2CLen3: TBricxccSpinEdit
+          Left = 195
+          Top = 78
+          Width = 42
+          Height = 22
+          MaxLength = 2
+          MaxValue = 16
+          MinValue = 0
+          TabOrder = 13
+          Value = 0
+        end
+      end
+      object grpPI2C: TGroupBox
+        Left = 4
+        Top = 2
+        Width = 428
+        Height = 167
+        Caption = 'Processed I2C'
+        TabOrder = 1
+        object lblPPort: TLabel
+          Left = 6
+          Top = 14
+          Width = 38
+          Height = 13
+          Caption = 'I2C Port'
+        end
+        object lblPType: TLabel
+          Left = 80
+          Top = 14
+          Width = 24
+          Height = 13
+          Caption = 'Type'
+        end
+        object lblPResponse: TLabel
+          Left = 242
+          Top = 14
+          Width = 48
+          Height = 13
+          Caption = 'Response'
+        end
+        object chkPI2C1: TCheckBox
+          Left = 6
+          Top = 31
+          Width = 72
+          Height = 17
+          HelpContext = 14089
+          Caption = 'Port 1'
+          TabOrder = 0
+        end
+        object chkPI2C2: TCheckBox
+          Left = 6
+          Top = 56
+          Width = 72
+          Height = 17
+          HelpContext = 14091
+          Caption = 'Port 2'
+          TabOrder = 3
+        end
+        object chkPI2C3: TCheckBox
+          Left = 6
+          Top = 81
+          Width = 72
+          Height = 17
+          HelpContext = 14093
+          Caption = 'Port 3'
+          TabOrder = 6
+        end
+        object chkPI2C4: TCheckBox
+          Left = 6
+          Top = 106
+          Width = 72
+          Height = 17
+          HelpContext = 14093
+          Caption = 'Port 4'
+          TabOrder = 9
+        end
+        object cboPI2CType1: TComboBox
+          Left = 80
+          Top = 29
+          Width = 153
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 13
+          TabOrder = 1
+        end
+        object edtPI2CVal1: TEdit
+          Left = 242
+          Top = 28
+          Width = 179
+          Height = 22
+          HelpContext = 14090
+          AutoSize = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 2
+        end
+        object cboPI2CType2: TComboBox
+          Left = 80
+          Top = 53
+          Width = 153
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 13
+          TabOrder = 4
+        end
+        object edtPI2CVal2: TEdit
+          Left = 241
+          Top = 52
+          Width = 179
+          Height = 22
+          HelpContext = 14090
+          AutoSize = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 5
+        end
+        object cboPI2CType3: TComboBox
+          Left = 80
+          Top = 77
+          Width = 153
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 13
+          TabOrder = 7
+        end
+        object edtPI2CVal3: TEdit
+          Left = 241
+          Top = 76
+          Width = 179
+          Height = 22
+          HelpContext = 14090
+          AutoSize = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 8
+        end
+        object cboPI2CType4: TComboBox
+          Left = 80
+          Top = 101
+          Width = 153
+          Height = 21
+          Style = csDropDownList
+          ItemHeight = 13
+          TabOrder = 10
+        end
+        object edtPI2CVal4: TEdit
+          Left = 241
+          Top = 100
+          Width = 179
+          Height = 22
+          HelpContext = 14090
+          AutoSize = False
+          Font.Charset = ANSI_CHARSET
+          Font.Color = clWindowText
+          Font.Height = -12
+          Font.Name = 'Courier New'
+          Font.Style = []
+          ParentFont = False
+          ReadOnly = True
+          TabOrder = 11
+        end
+        object btnConfigI2CTypes: TButton
+          Left = 80
+          Top = 128
+          Width = 153
+          Height = 25
+          Caption = 'Configure I2C Types'
+          TabOrder = 12
+          OnClick = btnConfigI2CTypesClick
         end
       end
     end

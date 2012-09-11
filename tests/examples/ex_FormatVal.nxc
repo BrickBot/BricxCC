@@ -1,0 +1,7 @@
+task main()
+{
+  string x = "testing";
+  TextOut(0, LCD_LINE1, FormatVal("%-10s = value", x));
+  Wait(SEC_5);
+}
+

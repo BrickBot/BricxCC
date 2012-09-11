@@ -62,6 +62,7 @@ const
   TOK_PRIORITY      = 'p';
   TOK_NUM			      = 'N';
   TOK_HEX			      = 'H';
+  TOK_BINARY        = 'y';
   TOK_UNSIGNED		  = 'U';
   TOK_CHARDEF		    = 'C';
   TOK_SHORTDEF 	    = 'I';

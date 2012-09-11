@@ -2,12 +2,19 @@ unit uSerial;
 
 interface
 
-{$IFDEF FPC}
-const
-  INVALID_HANDLE_VALUE = -1;
-{$ELSE}
+{$IFDEF WIN32}
+{$DEFINE WINDOWS}
+{$ENDIF}
+{$IFDEF WIN64}
+{$DEFINE WINDOWS}
+{$ENDIF}
+
+{$IFDEF WINDOWS}
 const
   INVALID_HANDLE_VALUE = Cardinal(-1);
+{$ELSE}
+const
+  INVALID_HANDLE_VALUE = -1;
 {$ENDIF}
 
 const
@@ -37,9 +44,9 @@ uses
   {$IFNDEF FPC}
   Windows
   {$ELSE}
-  {$IFDEF Darwin}BaseUnix, termio, unix{$ENDIF}
+  {$IFDEF Darwin}BaseUnix, termio, Unix{$ENDIF}
   {$IFNDEF Darwin}
-  {$IFDEF Unix}BaseUnix, termio, unix{$ENDIF}
+  {$IFDEF Unix}BaseUnix, termio, Unix{$ENDIF}
   {$IFDEF Windows}Windows{$ENDIF}
   {$ENDIF}
   {$ENDIF};
@@ -63,7 +70,7 @@ begin
 {$ENDIF}
 end;
 
-{$IFNDEF FPC}
+{$IFDEF WINDOWS}
 function SetTimeout(Handle: THandle; ms: Integer): Boolean;
 var
   timeouts : TCommTimeouts;
@@ -94,6 +101,7 @@ begin
   if not ReadFile(Handle, Buffer^, Cardinal(count), actual, nil) then
   begin
     GetLastError();
+    Errors := 0;
     ClearCommError(Handle, Errors, @cstat);
     Result := 0;
   end
@@ -131,7 +139,7 @@ end;
 const FIONREAD = $541B;
 {$ENDIF}
 
-{$IFDEF WIN32}
+{$IFDEF WINDOWS}
 function ReadWithTimeOut(Handle: THandle; Buffer : Pointer; Count: LongInt; ms : LongInt) : LongInt;
 begin
   if count > 1 then
@@ -210,18 +218,19 @@ end;
 
 procedure SerialFlush(Handle: THandle);
 begin
-{$IFNDEF FPC}
+{$IFDEF WINDOWS}
   FlushFileBuffers(Handle);
 {$ELSE}
   fpfsync(Handle);
 {$ENDIF}  
 end;
 
-{$IFNDEF FPC}
+{$IFDEF WINDOWS}
 function SerialWrite(Handle: THandle; Buffer : Pointer; Count: LongInt): LongInt;
 var
   actual : DWORD;
 begin
+  actual := 0;
   if not WriteFile(Handle, Buffer^, Cardinal(Count), actual, nil) then
     Result := -1
   else
@@ -235,13 +244,14 @@ begin
 end;
 {$ENDIF}
 
-{$IFNDEF FPC}
+{$IFDEF WINDOWS}
 function SerialSetParams(Handle: THandle; BitsPerSec: LongInt;
   ByteSize: byte; Parity: byte; StopBits: byte) : boolean;
 var
   dcb : TDCB;
 begin
   Result := False;
+  dcb.DCBlength := 0;
   FillChar(dcb, sizeof(TDCB), 0);
   dcb.DCBlength := sizeof(TDCB);  // 28
   if not GetCommState(Handle, dcb) then Exit;
@@ -321,7 +331,7 @@ end;
 
 function SerialOpen(const DeviceName: String): THandle;
 begin
-{$IFNDEF FPC}
+{$IFDEF WINDOWS}
   Result := CreateFile(PChar(DeviceName), GENERIC_READ or GENERIC_WRITE, 0,
                        nil, OPEN_EXISTING, 0, 0);
 {$ELSE}
@@ -334,7 +344,7 @@ end;
 procedure SerialClose(Handle: THandle);
 begin
   try
-{$IFNDEF FPC}
+{$IFDEF WINDOWS}
   CloseHandle(Handle);
 {$ELSE}
   fpClose(Handle);
@@ -374,9 +384,11 @@ var
   oldLen : integer;
 begin
   b1 := 0;
+  if delay < 50 then
+    delay := 50;
   while b1 <> Ord(ch) do
   begin
-    if SerialRead(Handle, @b1, 1, 50) = 1 then
+    if SerialRead(Handle, @b1, 1, delay) = 1 then
     begin
       oldLen := Length(Data);
       SetLength(Data, oldLen+1); // extend the array
@@ -386,7 +398,7 @@ begin
   Result := Length(Data);
 end;
 
-{$IFNDEF FPC}
+{$IFDEF WINDOWS}
 function SerialSetRTS(Handle: THandle; bRTS: Boolean): Boolean;
 begin
   if bRTS then
@@ -405,10 +417,12 @@ end;
 {$ELSE}
 function SerialSetRTS(Handle: THandle; bRTS: Boolean): Boolean;
 begin
+  Result := True;
 end;
 
 function SerialSetDTR(Handle: THandle; bDTR: Boolean): Boolean;
 begin
+  Result := True;
 end;
 {$ENDIF}
 

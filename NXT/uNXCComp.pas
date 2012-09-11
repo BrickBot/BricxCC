@@ -69,6 +69,7 @@ type
     procedure SetCurFile(const Value: string);
     function IsCharLiteral(const aName: string): boolean;
     function IsStringLiteral(const aName: string): boolean;
+    function LookupLocalConstantValue(aValue: string): double;
   protected
     fDD: TDataDefs;
     fCurrentStruct : TDataspaceEntry;
@@ -144,6 +145,7 @@ type
     procedure GetName;
     procedure GetNum;
     procedure GetHexNum;
+    procedure GetBinaryNum;
     procedure GetCharLit;
     procedure GetOp;
     procedure Next(bProcessDirectives : boolean = True);
@@ -185,7 +187,7 @@ type
     function  APIFuncNameToID(procname : string) : integer;
     function  IsAPIFunc(procname : string) : boolean;
     procedure DoAssignValue(const aName : string; dt : char; bNoChecks : boolean = False);
-    procedure DoLocalArrayInit(const aName, ival : string; dt : char);
+    procedure DoLocalArrayInit(const aName, ival, lenexpr : string; dt : char);
     procedure DoLocalUDTInit(const aName, ival : string; dt : char);
     procedure DoArrayAssignValue(const aName, idx : string; dt : char);
     function DoNewArrayIndex(theArrayDT : Char; theArray, aLHSName : string) : boolean;
@@ -229,6 +231,10 @@ type
       bConst : boolean; const lenexp : string) : integer;
     procedure AllocGlobal(const tname : string; dt: char; bInline, bSafeCall, bConst, bStatic : boolean);
     procedure AllocLocal(const sub, tname: string; dt: char; bConst, bStatic : boolean);
+    procedure ValidateInitializer(dt : char; lenexpr, ival : string;
+      var lenCnt : integer; var valCnt : integer; bReportErrors : boolean = true);
+    function  GetInitialStringValue : string;
+    function  GetInitialArrayOrUDTValue(dt : char) : string;
     function  GetInitialValue(dt : char) : string;
     procedure DoLocals(const sub: string);
     procedure AddFunctionParameter(pname, varname, tname : string; idx : integer;
@@ -363,6 +369,7 @@ type
     function  IsOrop(c: char): boolean;
     function  IsDigit(c: char): boolean;
     function  IsHex(c: char): boolean;
+    function  IsBinary(c: char): boolean;
     function  IsAlNum(c: char): boolean;
     function  IsAddop(c: char): boolean;
     function  IsMulop(c: char): boolean;
@@ -943,7 +950,7 @@ var
   V : TVariable;
 begin
   Result := True;
-  if not (Token in [TOK_NUM, TOK_HEX]) then
+  if not (Token in [TOK_NUM, TOK_HEX, TOK_BINARY]) then
   begin
     // what about a constant numeric variable?
     if Token = TOK_IDENTIFIER then
@@ -1011,6 +1018,14 @@ end;
 function TNXCComp.IsHex(c: char): boolean;
 begin
   Result := IsDigit(c) or (c in ['a'..'f', 'A'..'F']);
+end;
+
+{--------------------------------------------------------------}
+{ Recognize a Binary Digit }
+
+function TNXCComp.IsBinary(c: char): boolean;
+begin
+  Result := c in ['0','1'];
 end;
 
 {--------------------------------------------------------------}
@@ -1514,24 +1529,38 @@ end;
 procedure TNXCComp.GetNum;
 var
   savedLook : char;
+  bDecimal : boolean;
+  bExponent : boolean;
 begin
+  bDecimal := False;
+  bExponent := False;
   SkipWhite;
   if not IsDigit(Look) then Expected(sNumber);
   savedLook := Look;
   GetChar;
-  if Look in ['x', 'X'] then
+  if (savedLook = '0') and (Look in ['x', 'X']) then
   begin
     GetHexNum;
+  end
+  else if (savedLook = '0') and (Look in ['b', 'B']) then
+  begin
+    GetBinaryNum;
   end
   else
   begin
     Token := TOK_NUM;
     Value := savedLook;
-    if not (IsDigit(Look) or (Look = '.')) then Exit;
+    if not (IsDigit(Look) or (Look = '.') or (Look in ['e', 'E'])) then Exit;
     repeat
+      bDecimal := bDecimal or (Look = '.');
+      bExponent := bExponent or (Look in ['e', 'E']);
       Value := Value + Look;
+      savedLook := Look;
       GetChar;
-    until not (IsDigit(Look) or (Look = '.'));
+    until not (IsDigit(Look) or
+               (not bDecimal and (Look = '.')) or
+               (not bExponent and (Look in ['e', 'E'])) or
+               (bExponent and (savedLook in ['e', 'E']) and ((Look in ['+', '-']) or (IsDigit(Look)))));
   end;
 end;
 
@@ -1550,6 +1579,23 @@ begin
     Value := Value + Look;
     GetChar;
   until not IsHex(Look);
+end;
+
+
+{--------------------------------------------------------------}
+{ Get a Binary Number }
+
+procedure TNXCComp.GetBinaryNum;
+begin
+  SkipWhite;
+  GetChar(); // skip the b (or 'B')
+  if not IsBinary(Look) then Expected(sBinaryNumber);
+  Token := TOK_BINARY;
+  Value := '0b';
+  repeat
+    Value := Value + Look;
+    GetChar;
+  until not IsBinary(Look);
 end;
 
 
@@ -1665,8 +1711,9 @@ begin
     fExpStr := fExpStr + Value;
     fBoolSubExpStr := fBoolSubExpStr + Value;
   end;
+  // 2012-08-24 JCH included semicolon in tokens to NOT skip whitespace after
   if not fProcessingAsmBlock and
-     not (Token in ['<', '>', '|', '^', '&', '%', '/', '*', '-', '+', '=']) then
+     not (Token in ['<', '>', '|', '^', '&', '%', '/', '*', '-', '+', '=', ';']) then
     SkipWhite; // also skip any whitespace after this token
 end;
 
@@ -2145,7 +2192,8 @@ begin
   end
   else
   begin
-    cval := StrToInt64Def(n, 0);
+    cval := NBCStrToInt64Def(n, 0);
+    n := IntToStr(cval);
     // 2011-07-18 Changed to use mov if the constant is negative in order to
     // avoid using set with unsigned long types. Commented out redundant code below.
     if cval < 0 then
@@ -2788,7 +2836,7 @@ begin
         TOK_ASM : begin
           DoAsm(fLHSDataType);
         end;
-        TOK_NUM, TOK_HEX : begin
+        TOK_NUM, TOK_HEX, TOK_BINARY : begin
           LoadConst(savedvalue);
         end;
         '-' : begin
@@ -5336,7 +5384,7 @@ begin
         else
           Assignment;
       end;
-      TOK_HEX, TOK_NUM, '+', '-': begin
+      TOK_HEX, TOK_BINARY, TOK_NUM, '+', '-': begin
         CommaExpression;
       end;
       TOK_CLOSEPAREN : CloseParen;
@@ -5407,7 +5455,7 @@ var
   savedval : string;
   ival, aval, lenexpr, varName : string;
   bIsArray, bDone, bOpen : boolean;
-  idx, dimensions, i : integer;
+  idx, dimensions, i, lc, vc : integer;
   V : TVariable;
 begin
   Next;
@@ -5498,9 +5546,11 @@ begin
         ival := '';
       if fEmittedLocals.IndexOf(varName+tname) = -1 then
         Allocate(varName, aval, ival, tname, dt);
-      if bIsArray then begin
+      if bIsArray and not bStatic then
+      begin
         ival := GetInitialValue(dt);
-        DoLocalArrayInit(varName, ival, dt);
+        ValidateInitializer(dt, lenexpr, ival, lc, vc, True);
+        DoLocalArrayInit(varName, ival, lenexpr, dt);
   //    if not bIsArray then
   //      DoArrayAssignValue(savedval, '', dt)
       end
@@ -5534,9 +5584,97 @@ begin
   fEmittedLocals.Add(varName+tname);
 end;
 
-function TNXCComp.GetInitialValue(dt : char): string;
+function TNXCComp.LookupLocalConstantValue(aValue : string) : double;
 var
-  nestLevel, i : integer;
+  i : integer;
+  V : TVariable;
+begin
+  Result := 0.0;
+  i := LocalIdx(aValue);
+  if i <> -1 then
+  begin
+    V := fLocals[i];
+    if V.IsConstant and (V.Value <> '') then
+      Result := NBCStrToFloat(V.Value);
+  end;
+end;
+
+function EmptyLengthExpression(const le : string) : boolean;
+begin
+  Result := (le = '') or (le = '[]') or (le = '[][]') or (le = '[][][]');
+end;
+
+function StripBraces(str : string) : string;
+begin
+  Result := Copy(str, 2, Length(str)-2);
+end;
+
+procedure TNXCComp.ValidateInitializer(dt : char; lenexpr, ival : string;
+  var lenCnt : integer; var valCnt : integer; bReportErrors : boolean);
+var
+  dims : integer;
+  exprVal : double;
+  baseDT : char;
+  SL : TStringList;
+begin
+  lenCnt := 0;
+  valCnt := 0;
+  dims := GetArrayDimension(dt);
+  baseDT := ArrayBaseType(dt);
+  if (dims = 1) and
+     (baseDT in NonAggregateTypes) and not EmptyLengthExpression(lenexpr) then
+  begin
+    lenexpr := StripBraces(lenexpr);
+    fCalc.SilentExpression := lenexpr;
+    if fCalc.ParserError then
+    begin
+      // what about a constant local?
+      exprVal := LookupLocalConstantValue(lenexpr)
+    end
+    else
+      exprVal := fCalc.Value;
+    lenCnt := Trunc(exprVal);
+    if bReportErrors and (exprVal <> lenCnt) then
+      AbortMsg(sArrayLenInvalid);
+    // now count initial values
+    ival := Replace(ival, ',}', '}');
+    if LastDelimiter(',', ival) = Length(ival) then
+      System.Delete(ival, Length(ival), MaxInt);
+    SL := TStringList.Create;
+    try
+      SL.CommaText := ival;
+      valCnt := SL.Count;
+    finally
+      SL.Free;
+    end;
+    if bReportErrors and (lenCnt < valCnt) then
+      AbortMsg(sTooManyInitializers);
+  end;
+end;
+
+function TNXCComp.GetInitialStringValue : string;
+var
+  i : integer;
+begin
+  if Token = TOK_IDENTIFIER then
+  begin
+    // try to resolve this as a constant string into a string literal
+    i := fConstStringMap.IndexOfName(Value);
+    if i <> -1 then
+    begin
+      Token := TOK_STRINGLIT;
+      Value := fConstStringMap.ValueFromIndex[i];
+    end;
+  end;
+  Result := Value;
+  if Token <> TOK_STRINGLIT then
+    AbortMsg(sInvalidStringInit);
+  Next;
+end;
+
+function TNXCComp.GetInitialArrayOrUDTValue(dt : char): string;
+var
+  nestLevel : integer;
   tmpExpr : string;
   procedure UpdateResultWithValueForArrayTypes;
   begin
@@ -5570,64 +5708,56 @@ var
   end;
 begin
   Result := '';
-  // handle string variables differently
-  if dt = TOK_STRINGDEF then
+  // array and struct initialization could involve nested {} pairs
+  if Token <> TOK_BEGIN then
+    AbortMsg(sInvalidArrayInit);
+  nestLevel := 1;
+  while ((Token <> TOK_END) or (nestLevel > 0)) and not endofallsource do
   begin
-    if Token = TOK_IDENTIFIER then
+    if Token = TOK_BEGIN then
     begin
-      // try to resolve this as a constant string into a string literal
-      i := fConstStringMap.IndexOfName(Value);
-      if i <> -1 then
-      begin
-        Token := TOK_STRINGLIT;
-        Value := fConstStringMap.ValueFromIndex[i];
-      end;
+      tmpExpr := '';
+      UpdateResultWithValueForArrayTypes;
+    end
+    else if Token in [TOK_END, TOK_COMMA] then
+    begin
+      UpdateResultWithValueForArrayTypes;
+    end
+    else
+    begin
+      tmpExpr := tmpExpr + Value;
     end;
-    Result := Value;
-    if Token <> TOK_STRINGLIT then
-      AbortMsg(sInvalidStringInit);
     Next;
+    if Token = TOK_BEGIN then
+      inc(nestLevel)
+    else if Token = TOK_END then
+      dec(nestLevel);
+  end;
+  if Token = TOK_END then
+    UpdateResultWithValueForArrayTypes
+  else
+    AbortMsg(sInvalidArrayInit);
+  Next;
+end;
+
+function TNXCComp.GetInitialValue(dt : char): string;
+begin
+  if dt = TOK_MUTEXDEF then
+    AbortMsg(sInitNotAllowed)
+  else if dt = TOK_STRINGDEF then
+  begin
+    // handle string variables differently
+    Result := GetInitialStringValue;
   end
   else if IsArrayType(dt) or IsUDT(dt) then
   begin
-    // array and struct initialization could involve nested {} pairs
-    if Token <> TOK_BEGIN then
-      AbortMsg(sInvalidArrayInit);
-    nestLevel := 1;
-    while ((Token <> TOK_END) or (nestLevel > 0)) and not endofallsource do
-    begin
-      if Token = TOK_BEGIN then
-      begin
-        tmpExpr := '';
-        UpdateResultWithValueForArrayTypes;
-      end
-      else if Token in [TOK_END, TOK_COMMA] then
-      begin
-        UpdateResultWithValueForArrayTypes;
-      end
-      else
-      begin
-        tmpExpr := tmpExpr + Value;
-      end;
-      Next;
-      if Token = TOK_BEGIN then
-        inc(nestLevel)
-      else if Token = TOK_END then
-        dec(nestLevel);
-    end;
-    if Token = TOK_END then
-    begin
-      UpdateResultWithValueForArrayTypes;
-      Next;
-    end
-    else
-      AbortMsg(sInvalidArrayInit);
+    Result := GetInitialArrayOrUDTValue(dt);
   end
   else
   begin
-    if dt = TOK_MUTEXDEF then
-      AbortMsg(sInitNotAllowed);
-    // not a string, not an array, not a mutex.  Must be a scalar type or user-defined type
+    Result := '';
+    // not a string, not an array, not a mutex, not a user-defined type.
+    // Must be a scalar type
     while not (Token in [TOK_COMMA, TOK_SEMICOLON]) and not endofallsource do
     begin
       Result := Result + Value;
@@ -5661,7 +5791,7 @@ end;
 procedure TNXCComp.AllocGlobal(const tname : string; dt : char; bInline, bSafeCall, bConst, bStatic : boolean);
 var
   savedval, ival, aval, lenexpr : string;
-  dimensions, idx : integer;
+  dimensions, idx, lc, vc : integer;
   bArray : boolean;
 begin
   Next;
@@ -5719,13 +5849,14 @@ begin
       // move past the '=' sign
       Next;
       ival := GetInitialValue(dt);
+      ValidateInitializer(dt, lenexpr, ival, lc, vc);
       // lookup global and set its value
       idx := fGlobals.IndexOfName(savedval);
       if idx <> -1 then
       begin
         // do not set the value for 1 dimensional arrays since the initial
         // values can be set statically
-        if dimensions <> 1 then
+//        if dimensions <> 1 then
           fGlobals[idx].Value := ival;
       end;
       // the value must be a numeric constant expression if the type
@@ -7817,6 +7948,7 @@ const
   APISF_FLATTEN    = 3;
   APISF_STRREPLACE = 4;
   APISF_FORMATNUM  = 5;
+  APISF_FORMATVAL  = 6;
 
 procedure TNXCComp.StringFunction(const Name : string);
 var
@@ -7838,7 +7970,8 @@ begin
     APISF_STRCAT : DoStrCat;
     APISF_SUBSTR : DoSubString;
     APISF_STRREPLACE : DoStrReplace;
-    APISF_FORMATNUM : DoFormatNum;
+    APISF_FORMATNUM,
+    APISF_FORMATVAL : DoFormatNum;
   else
     AbortMsg(Format(sNotAnAPIStrFunc, [Name]));
   end;
@@ -7846,31 +7979,49 @@ end;
 
 procedure TNXCComp.DoStrReplace;
 var
+  AHV1 : TArrayHelperVar;
+  AHV2 : TArrayHelperVar;
   str, strnew, idx : string;
 begin
   // StrReplace(string, idx, strnew)
   OpenParen;
   // string
   StringExpression('');
-  EmitLn(Format('mov %s, %s', [StrTmpBufName, StrBufName]));
-  str := StrTmpBufName;
-  MatchString(TOK_COMMA);
-  // idx
-  BoolExpression;
-  push;
-  idx := tos;
-  EmitLn(Format('mov %s, %s', [idx, RegisterName]));
-  MatchString(TOK_COMMA);
-  // strnew
-  StringExpression('');
-  EmitLn(Format('mov %s, %s', [StrRetValName, StrBufName]));
-  strnew := StrRetValName;
-  CloseParen;
-  // strip the null from the replacement string so that it doesn't embed a null
-  // in the middle of the output string
-  EmitLn(Format('strtoarr %s, %s', [StrBufName, strnew]));
-  EmitLn(Format('strreplace %s, %s, %s, %s', [StrRetValName, str, idx, StrBufName]));
-  pop;
+  AHV1 := fArrayHelpers.GetHelper(fCurrentThreadName, '', TOK_ARRAYBYTEDEF);
+  try
+    str := AHV1.Name;
+    if fGlobals.IndexOfName(str) = -1 then
+      AddEntry(str, TOK_ARRAYBYTEDEF, '', '');
+    // move result of string expression to newly allocated temporary variable
+    EmitLn(Format('mov %s, %s', [str, StrBufName]));
+    MatchString(TOK_COMMA);
+    // idx
+    BoolExpression;
+    push;
+    idx := tos;
+    EmitLn(Format('mov %s, %s', [idx, RegisterName]));
+    MatchString(TOK_COMMA);
+    // strnew
+    StringExpression('');
+    AHV2 := fArrayHelpers.GetHelper(fCurrentThreadName, '', TOK_ARRAYBYTEDEF);
+    try
+      strnew := AHV2.Name;
+      if fGlobals.IndexOfName(strnew) = -1 then
+        AddEntry(strnew, TOK_ARRAYBYTEDEF, '', '');
+      // move result of string expression to newly allocated temporary variable
+      EmitLn(Format('mov %s, %s', [strnew, StrBufName]));
+      CloseParen;
+      // strip the null from the replacement string so that it doesn't embed a null
+      // in the middle of the output string
+      EmitLn(Format('strtoarr %s, %s', [StrBufName, strnew]));
+      EmitLn(Format('strreplace %s, %s, %s, %s', [StrRetValName, str, idx, StrBufName]));
+      pop;
+    finally
+      fArrayHelpers.ReleaseHelper(AHV2);
+    end;
+  finally
+    fArrayHelpers.ReleaseHelper(AHV1);
+  end;
 end;
 
 procedure TNXCComp.DoStrCat;
@@ -7911,25 +8062,35 @@ end;
 
 procedure TNXCComp.DoSubString;
 var
+  AHV : TArrayHelperVar;
   str, idx : string;
 begin
   // SubStr(string, idx, len)
   OpenParen;
   // string
   StringExpression('');
-  str := StrBufName;
-  MatchString(TOK_COMMA);
-  // idx
-  BoolExpression;
-  push;
-  idx := tos;
-  EmitLn(Format('mov %s, %s', [idx, RegisterName]));
-  MatchString(TOK_COMMA);
-  // len
-  BoolExpression;
-  CloseParen;
-  EmitLn(Format('strsubset %s, %s, %s, %s', [StrRetValName, str, idx, RegisterName]));
-  pop;
+  AHV := fArrayHelpers.GetHelper(fCurrentThreadName, '', TOK_ARRAYBYTEDEF);
+  try
+    str := AHV.Name;
+    if fGlobals.IndexOfName(str) = -1 then
+      AddEntry(str, TOK_ARRAYBYTEDEF, '', '');
+    // move result of string expression to newly allocated temporary variable
+    EmitLn(Format('mov %s, %s', [str, StrBufName]));
+    MatchString(TOK_COMMA);
+    // idx
+    BoolExpression;
+    push;
+    idx := tos;
+    EmitLn(Format('mov %s, %s', [idx, RegisterName]));
+    MatchString(TOK_COMMA);
+    // len
+    BoolExpression;
+    CloseParen;
+    EmitLn(Format('strsubset %s, %s, %s, %s', [StrRetValName, str, idx, RegisterName]));
+    pop;
+  finally
+    fArrayHelpers.ReleaseHelper(AHV);
+  end;
 end;
 
 const
@@ -8091,18 +8252,28 @@ end;
 
 procedure TNXCComp.DoStrIndex;
 var
-  arg : string;
+  str : string;
+  AHV : TArrayHelperVar;
 begin
   // StrIndex(string, idx)
   OpenParen;
   // string
   StringExpression('');
-  arg := StrBufName;
-  MatchString(TOK_COMMA);
-  // idx
-  BoolExpression;
-  CloseParen;
-  EmitLn(Format('strindex %0:s, %s, %0:s',[RegisterName, arg]));
+  AHV := fArrayHelpers.GetHelper(fCurrentThreadName, '', TOK_ARRAYBYTEDEF);
+  try
+    str := AHV.Name;
+    if fGlobals.IndexOfName(str) = -1 then
+      AddEntry(str, TOK_ARRAYBYTEDEF, '', '');
+    // move result of string expression to newly allocated temporary variable
+    EmitLn(Format('mov %s, %s', [str, StrBufName]));
+    MatchString(TOK_COMMA);
+    // idx
+    BoolExpression;
+    CloseParen;
+    EmitLn(Format('strindex %0:s, %s, %0:s',[RegisterName, str]));
+  finally
+    fArrayHelpers.ReleaseHelper(AHV);
+  end;
 end;
 
 procedure TNXCComp.DoStrLen;
@@ -8853,6 +9024,7 @@ begin
   AddAPIStringFunction('Flatten', APISF_FLATTEN);
   AddAPIStringFunction('StrReplace', APISF_STRREPLACE);
   AddAPIStringFunction('FormatNum', APISF_FORMATNUM);
+  AddAPIStringFunction('FormatVal', APISF_FORMATVAL);
   AddAPIFunction('GraphicArrayOut', APIF_DRAWGRAPHICAR);
   AddAPIFunction('GraphicArrayOutEx', APIF_DRAWGRAPHICAREX);
   AddAPIFunction('PolyOut', APIF_DRAWPOLY);
@@ -9549,11 +9721,7 @@ var
   tmpVal, expr, tmpType, codeStr : string;
   idx, n, dim : integer;
 begin
-  if (lenexpr = '') or
-     (lenexpr = '[]') or
-     (lenexpr = '[][]') or
-     (lenexpr = '[][][]') then
-    Exit;
+  if EmptyLengthExpression(lenexpr) then Exit;
   tmpType := tname;
   if tmpType = 'string' then
     tmpType := 'byte[]';
@@ -9749,18 +9917,36 @@ end;
 
 procedure TNXCComp.DoFormatNum;
 var
-  str : string;
+  str, valStr : string;
+  AHV : TArrayHelperVar;
+  dt : Char;
+  bIsString : boolean;
 begin
   // FormatNum(string, value)
+  // FormatVal(string, value)
   OpenParen;
   // string
   StringExpression('');
-  str := StrBufName;
-  MatchString(TOK_COMMA);
-  // value
-  BoolExpression;
-  CloseParen;
-  EmitLn(Format('fmtnum %s, %s, %s', [StrRetValName, str, RegisterName]));
+  AHV := fArrayHelpers.GetHelper(fCurrentThreadName, '', TOK_ARRAYBYTEDEF);
+  try
+    str := AHV.Name;
+    if fGlobals.IndexOfName(str) = -1 then
+      AddEntry(str, TOK_ARRAYBYTEDEF, '', '');
+    // move result of string expression to newly allocated temporary variable
+    EmitLn(Format('mov %s, %s', [str, StrBufName]));
+    MatchString(TOK_COMMA);
+    // value
+    bIsString := ValueIsStringType(dt);
+    BoolExpression;
+    CloseParen;
+    if bIsString then
+      valStr := StrBufName
+    else
+      valStr := RegisterName;
+    EmitLn(Format('fmtnum %s, %s, %s', [StrRetValName, str, valStr]));
+  finally
+    fArrayHelpers.ReleaseHelper(AHV);
+  end;
 end;
 
 procedure TNXCComp.DecrementNestingLevel;
@@ -9810,30 +9996,28 @@ begin
       end
       else if V.Value <> '' then
       begin
-        DoLocalArrayInit(V.Name, V.Value, V.DataType);
+        DoLocalArrayInit(V.Name, V.Value, V.LenExpr, V.DataType);
       end;
     end
-    // possibly also initialize struct types containing arrays...
+    else if V.DataType = TOK_USERDEFINEDTYPE then
+    begin
+      // possibly also initialize struct types containing arrays...
+    end;
   end;
   EmitLn('return');
   EmitLnNoTab('ends');
 end;
 
-function StripBraces(str : string) : string;
-begin
-  Result := Copy(str, 2, Length(str)-2);
-end;
-
-procedure TNXCComp.DoLocalArrayInit(const aName, ival: string; dt: char);
+procedure TNXCComp.DoLocalArrayInit(const aName, ival, lenexpr : string; dt: char);
 var
-  asmstr, tmp : string;
-  i : integer;
-  dims : integer;
-  tag, udType, aval : string;
+  asmstr, tmp, extra : string;
+  tag, udType, aval, tmplenexpr : string;
+  i, j, lenCnt, valCnt, dims : integer;
   theArrayDT, baseDT : char;
   AHV : TArrayHelperVar;
   Helpers : TObjectList;
 begin
+  tmplenexpr := lenexpr;
   tmp := Replace(ival, ',}', '}');
   if LastDelimiter(',', tmp) = Length(tmp) then
     System.Delete(tmp, Length(tmp), MaxInt);
@@ -9844,9 +10028,18 @@ begin
   if ((dims < 3) and (baseDT in NonAggregateTypes)) or
      ((dims = 1) and (baseDT in [TOK_USERDEFINEDTYPE, TOK_STRINGDEF])) then
   begin
-    asmstr := Format('arrbuild %s', [aName]);
     tmp := StripBraces(tmp);
+    asmstr := Format('arrbuild %s', [aName]);
     asmstr := asmstr + ', ' + tmp;
+    ValidateInitializer(dt, lenexpr, ival, lenCnt, valCnt, False);
+    if lenCnt > valCnt then
+    begin
+      extra := ',';
+      for i := valCnt to lenCnt - 1 do
+        extra := extra + '0,';
+      System.Delete(extra, Length(extra), 1); // trim last comma
+      asmstr := asmstr + extra;
+    end;
     EmitLn(asmstr);
   end
   else
@@ -9861,6 +10054,9 @@ begin
     for i := 0 to dims - 1 do
       tag := tag + '}';
     tag := tag + ',';
+    j := Pos('][', tmplenexpr);
+    if j > 0 then
+      System.Delete(tmplenexpr, 1, j);
     Helpers := TObjectList.Create(False);
     try
       i := Pos(tag, tmp);
@@ -9878,7 +10074,7 @@ begin
           AddEntry(aval, theArrayDT, udType, '');
 
         // recurse here
-        DoLocalArrayInit(aval, Copy(tmp, 1, i+Length(tag)-1), theArrayDT);
+        DoLocalArrayInit(aval, Copy(tmp, 1, i+Length(tag)-1), tmplenexpr, theArrayDT);
 
         System.Delete(tmp, 1, i+Length(tag)-1);
         i := Pos(tag, tmp);

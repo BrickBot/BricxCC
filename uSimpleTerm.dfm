@@ -44,6 +44,97 @@ object frmSimpleTerm: TfrmSimpleTerm
     OnUpdate = alSimpleTermUpdate
     Left = 136
     Top = 88
+    object act50ms: TAction
+      Tag = 50
+      Category = 'Refresh'
+      Caption = '50 ms'
+      GroupIndex = 2
+      Hint = '50 ms'
+      ShortCut = 16433
+      OnExecute = actRefreshExecute
+    end
+    object act100ms: TAction
+      Tag = 100
+      Category = 'Refresh'
+      Caption = '100 ms'
+      GroupIndex = 2
+      Hint = '100 ms'
+      ShortCut = 16434
+      OnExecute = actRefreshExecute
+    end
+    object act200ms: TAction
+      Tag = 200
+      Category = 'Refresh'
+      Caption = '200 ms'
+      GroupIndex = 2
+      Hint = '200 ms'
+      ShortCut = 16435
+      OnExecute = actRefreshExecute
+    end
+    object act500ms: TAction
+      Tag = 500
+      Category = 'Refresh'
+      Caption = '500 ms'
+      GroupIndex = 2
+      Hint = '500 ms'
+      ShortCut = 16436
+      OnExecute = actRefreshExecute
+    end
+    object act1sec: TAction
+      Tag = 1000
+      Category = 'Refresh'
+      Caption = '1 sec'
+      Checked = True
+      GroupIndex = 2
+      Hint = '1 sec'
+      ShortCut = 16437
+      OnExecute = actRefreshExecute
+    end
+    object act2sec: TAction
+      Tag = 2000
+      Category = 'Refresh'
+      Caption = '2 sec'
+      GroupIndex = 2
+      Hint = '2 sec'
+      ShortCut = 16438
+      OnExecute = actRefreshExecute
+    end
+    object act5sec: TAction
+      Tag = 5000
+      Category = 'Refresh'
+      Caption = '5 sec'
+      GroupIndex = 2
+      Hint = '5 sec'
+      ShortCut = 16439
+      OnExecute = actRefreshExecute
+    end
+    object act10sec: TAction
+      Tag = 10000
+      Category = 'Refresh'
+      Caption = '10 sec'
+      GroupIndex = 2
+      Hint = '10 sec'
+      ShortCut = 16440
+      OnExecute = actRefreshExecute
+    end
+    object act20sec: TAction
+      Tag = 20000
+      Category = 'Refresh'
+      Caption = '20 sec'
+      GroupIndex = 2
+      Hint = '20 sec'
+      ShortCut = 16441
+      OnExecute = actRefreshExecute
+    end
+    object act1min: TAction
+      Tag = 60000
+      Category = 'Refresh'
+      Caption = '1 min'
+      GroupIndex = 2
+      Hint = '1 min'
+      ShortCut = 16432
+      OnExecute = actRefreshExecute
+    end
     object actEditCut: TEditCut
       Category = 'Edit'
       Caption = 'Cu&t'
@@ -95,7 +186,7 @@ object frmSimpleTerm: TfrmSimpleTerm
     end
     object actNXTUseMailbox: TAction
       Category = 'Preferences'
-      Caption = 'Use NXT Mailbox'
+      Caption = 'Use NXT Response Mailbox'
       OnExecute = actNXTUseMailboxExecute
     end
     object actMB1: TAction
@@ -177,6 +268,34 @@ object frmSimpleTerm: TfrmSimpleTerm
       GroupIndex = 2
       ShortCut = 16432
       OnExecute = actMBExecute
+    end
+    object actNXTNum4: TAction
+      Category = 'Preferences'
+      Caption = 'NXT 4 Byte Mailbox Msgs are Numeric'
+      Checked = True
+      OnExecute = actNXTNum4Execute
+    end
+    object actEditClear: TAction
+      Category = 'Edit'
+      Caption = 'Clear'
+      OnExecute = actEditClearExecute
+    end
+    object actAppendLF: TAction
+      Category = 'Preferences'
+      Caption = 'Append LF to Each Message'
+      OnExecute = actAppendLFExecute
+    end
+    object actFileSaveAs: TFileSaveAs
+      Category = 'File'
+      Caption = 'Save &As...'
+      Dialog.DefaultExt = 'log'
+      Dialog.Filter = 
+        'Log Files (*.log)|*.log|Text Files (*.txt)|*.txt|All Files (*.*)' +
+        '|*.*'
+      Dialog.Options = [ofOverwritePrompt, ofHideReadOnly, ofEnableSizing]
+      Hint = 'Save As|Saves the active file with a new name'
+      ImageIndex = 30
+      OnAccept = actFileSaveAsAccept
     end
   end
 end

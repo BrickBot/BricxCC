@@ -249,7 +249,11 @@ begin
     p2 := BlockEnd;
     c  := CaretXY;
     try
+{$IFDEF FPC}
+      SelectWord;
+{$ELSE}
       SetSelWord;
+{$ENDIF}
       Result := SelText;
     finally
       BlockBegin := p1;

@@ -27,6 +27,15 @@ interface
 uses
   Registry;
 
+var
+  WatchOnlyIfActive : boolean;
+  WatchSyncSeries : boolean;
+  WatchNXTResponseMB : boolean;
+  WatchPI2CType1 : integer;
+  WatchPI2CType2 : integer;
+  WatchPI2CType3 : integer;
+  WatchPI2CType4 : integer;
+
 procedure LoadWatchValues(reg : TRegistry);
 procedure SaveWatchValues(reg : TRegistry);
 procedure ResetWatchValues(reg : TRegistry);
@@ -34,15 +43,19 @@ procedure ResetWatchValues(reg : TRegistry);
 implementation
 
 uses
-  Watch, uRegUtils;
+  uRegUtils;
 
 procedure LoadWatchValues(reg : TRegistry);
 begin
-  if not Assigned(WatchForm) then Exit;
   Reg_OpenKey(reg, 'WatchValues');
   try
-    WatchForm.chkIfActive.Checked := Reg_ReadBool(reg, 'OnlyIfActive', False);
-    WatchForm.chkSyncSeries.Checked := Reg_ReadBool(reg, 'SyncSeries', True);
+    WatchOnlyIfActive  := Reg_ReadBool(reg, 'OnlyIfActive', False);
+    WatchSyncSeries    := Reg_ReadBool(reg, 'SyncSeries', True);
+    WatchNXTResponseMB := Reg_ReadBool(reg, 'NXTResponseMB', True);
+    WatchPI2CType1     := Reg_ReadInteger(reg, 'PI2CType1', 0);
+    WatchPI2CType2     := Reg_ReadInteger(reg, 'PI2CType2', 0);
+    WatchPI2CType3     := Reg_ReadInteger(reg, 'PI2CType3', 0);
+    WatchPI2CType4     := Reg_ReadInteger(reg, 'PI2CType4', 0);
   finally
     reg.CloseKey;
   end;
@@ -50,12 +63,16 @@ end;
 
 procedure SaveWatchValues(reg : TRegistry);
 begin
-  if not Assigned(WatchForm) then Exit;
   Reg_DeleteKey(reg, 'WatchValues');
   Reg_OpenKey(reg, 'WatchValues');
   try
-    reg.WriteBool('OnlyIfActive', WatchForm.chkIfActive.Checked);
-    reg.WriteBool('SyncSeries', WatchForm.chkSyncSeries.Checked);
+    reg.WriteBool('OnlyIfActive', WatchOnlyIfActive);
+    reg.WriteBool('SyncSeries', WatchSyncSeries);
+    reg.WriteBool('NXTResponseMB', WatchNXTResponseMB);
+    reg.WriteInteger('PI2CType1', WatchPI2CType1);
+    reg.WriteInteger('PI2CType2', WatchPI2CType2);
+    reg.WriteInteger('PI2CType3', WatchPI2CType3);
+    reg.WriteInteger('PI2CType4', WatchPI2CType4);
   finally
     reg.CloseKey;
   end;

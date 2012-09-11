@@ -19,19 +19,10 @@ unit FantomSpirit;
 interface
 
 uses
-  Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs, Parser10;
+  Classes, SysUtils, Variants,
+  rcx_cmd, uSpirit, uNXTConstants, FantomDefs, Parser10;
 
 type
-  TValueType = (vtChar, vtByte, vtSmallInt, vtWord, vtInteger, vtCardinal,
-                vtInt64, vtDouble, vtString);
-                
-  TI2CValueConfig = record
-    RxCount : Byte;
-    ValueType : TValueType;
-    SendData : string;
-    Script : string;
-  end;
-
   TFantomSpirit = class(TBrickComm)
   private
     fResPort : string;
@@ -39,10 +30,8 @@ type
 //    fNXTFileHandle : FantomHandle;
 //    fNXTFileIteratorHandle : FantomHandle;
     dcResponse : array [0..63] of byte;
-    fI2CValues : array of TI2CValueConfig;
     function TransferFirmware(aStream: TStream): boolean;
     function GetLSBlockHelper(aPort: byte): NXTLSBlock;
-    procedure InitializeI2CValues;
     procedure getDeviceInfoEx(nxtHandle: FantomHandle; name: PChar;
       address, signalStrength: PByte; var availableFlash: Cardinal;
       var status: integer);
@@ -86,6 +75,7 @@ type
     procedure SetQuiet(const Value: Boolean); override;
     procedure SetRCXFirmwareChunkSize(const Value: Integer); override;
     procedure SetRxTimeout(const Value: Word); override;
+    function GetErrorStatus: integer; override;
   protected
     scResponse : array [0..63] of byte;
     function  dcBuffer: PByte;
@@ -328,16 +318,16 @@ type
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
     function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; override;
     function NXTListBricks(Bricks : TStrings) : boolean; override;
-    procedure NXTInitializeResourceNames; override;
-    procedure NXTUpdateResourceNames; override;
+    function NXTInitializeResourceNames : boolean; override;
+    function NXTUpdateResourceNames : boolean; override;
   end;
 
 implementation
 
 uses
-  rcx_constants, Contnrs, Math, uCommonUtils, uDebugLogging,
+  rcx_constants, Contnrs, uCommonUtils, uDebugLogging,
   {$IFNDEF FPC}
-  Windows, FANTOM{, visa}
+  Windows, FANTOM, Math{, visa}
   {$ELSE}
   {$IFDEF Darwin}Unix, fantomosx{$ENDIF}
   {$IFNDEF Darwin}
@@ -369,7 +359,6 @@ begin
   inherited Create(aType, aPort);
   fResPort := '';
   fResourceNames := TStringList.Create;
-  InitializeI2CValues;
   fCalc := TExpParser.Create(nil);
   fCalc.PascalNumberformat := False;
   fCalc.CaseSensitive := True;
@@ -503,7 +492,7 @@ var
   dstatus : integer;
 begin
   // is this an enhanced direct command?
-  if requireResponse = 127 then
+  if (requireResponse = 127) and bEnhanced then
   begin
     if status < kStatusNoError then Exit;
     BufOut := nil;
@@ -971,7 +960,7 @@ end;
 function TFantomSpirit.Open: boolean;
 var
   nih : FantomHandle;
-  status, status2 : integer;
+  status2 : integer;
   resNamePC : array[0..54] of Char;
   pairedResNamePC : array[0..54] of Char;
   resName, pName, bName : string;
@@ -995,13 +984,13 @@ begin
       // we think this is a resource string
       // if we are using bluetooth then we need to make sure we are paired
       // with the brick
-      status := kStatusNoError;
+      fStatus := kStatusNoError;
       // if we are using a brick resource string we think we have already paired
       // with the PC so try without pairing.  If that fails then try again after
       // pairing.
       DebugLog('TFantomSpirit.Open: Already have a full brick resource string so try to connect using it');
-      fNXTHandle := nFANTOM100_createNXT(PChar(pName), status, 0);
-      if status >= kStatusNoError then
+      fNXTHandle := nFANTOM100_createNXT(PChar(pName), fStatus, 0);
+      if fStatus >= kStatusNoError then
       begin
         DebugLog('TFantomSpirit.Open: First attempt to nFANTOM100_createNXT worked.  All done.');
         fActive := True;
@@ -1009,23 +998,23 @@ begin
       end
       else
       begin
-        DebugFmt('TFantomSpirit.Open: First attempt to nFANTOM100_createNXT failed.  Status = %d.', [status]);
+        DebugFmt('TFantomSpirit.Open: First attempt to nFANTOM100_createNXT failed.  Status = %d.', [fStatus]);
         // if bluetooth then try again after pairing
         if UseBluetooth then
         begin
           DebugLog('TFantomSpirit.Open: UseBluetooth is TRUE');
-          status := kStatusNoError;
+          fStatus := kStatusNoError;
           DebugLog('TFantomSpirit.Open: Try pairing with pin = 1234');
-          nFANTOM100_pairBluetooth(PChar(pName), '1234', pairedResNamePC, status);
+          nFANTOM100_pairBluetooth(PChar(pName), '1234', pairedResNamePC, fStatus);
           pName := pairedResNamePC;
           DebugFmt('TFantomSpirit.Open: pName now = "%s"', [pName]);
-          if status >= kStatusNoError then
+          if fStatus >= kStatusNoError then
           begin
-            DebugFmt('TFantomSpirit.Open: status = %d', [status]);
-            status := kStatusNoError;
+            DebugFmt('TFantomSpirit.Open: status = %d', [fStatus]);
+            fStatus := kStatusNoError;
             DebugLog('TFantomSpirit.Open: Try calling nFANTOM100_createNXT again');
-            fNXTHandle := nFANTOM100_createNXT(PChar(pName), status, 0);
-            if status >= kStatusNoError then
+            fNXTHandle := nFANTOM100_createNXT(PChar(pName), fStatus, 0);
+            if fStatus >= kStatusNoError then
             begin
               DebugLog('TFantomSpirit.Open: Second attempt to nFANTOM100_createNXT worked.  All done.');
               fActive := True;
@@ -1039,10 +1028,10 @@ begin
     begin
       DebugLog('TFantomSpirit.Open: We do not already have a full brick resource string');
       // use Fantom API to obtain a handle to an NXT on either USB or bluetooth
-      status := kStatusNoError;
+      fStatus := kStatusNoError;
       DebugLog('TFantomSpirit.Open: calling nFANTOM100_createNXTIterator to search for devices');
-      nih := nFANTOM100_createNXTIterator(Ord(UseBluetooth), BluetoothSearchTimeout, status);
-      while status >= kStatusNoError do
+      nih := nFANTOM100_createNXTIterator(Ord(UseBluetooth), BluetoothSearchTimeout, fStatus);
+      while fStatus >= kStatusNoError do
       begin
         status2 := kStatusNoError;
         DebugLog('TFantomSpirit.Open: calling nFANTOM100_iNXTIterator_getName');
@@ -1058,23 +1047,23 @@ begin
         end
         else if Pos(pName, resName) > 0 then
           Break;
-        nFANTOM100_iNXTIterator_advance(nih, status);
+        nFANTOM100_iNXTIterator_advance(nih, fStatus);
       end;
       // if we are using bluetooth then we need to make sure we are paired
       // with the brick
       if UseBluetooth then
       begin
-        status := kStatusNoError;
+        fStatus := kStatusNoError;
         DebugLog('TFantomSpirit.Open: Try pairing with pin = 1234');
-        nFANTOM100_pairBluetooth(resNamePC, '1234', pairedResNamePC, status);
+        nFANTOM100_pairBluetooth(resNamePC, '1234', pairedResNamePC, fStatus);
         resName := AnsiUpperCase(pairedResNamePC);
         DebugFmt('TFantomSpirit.Open: resource name now = "%s"', [resName]);
       end;
-      if status >= kStatusNoError then
+      if fStatus >= kStatusNoError then
       begin
         DebugLog('TFantomSpirit.Open: calling nFANTOM100_iNXTIterator_getNXT');
-        fNXTHandle := nFANTOM100_iNXTIterator_getNXT(nih, status);
-        if status >= kStatusNoError then
+        fNXTHandle := nFANTOM100_iNXTIterator_getNXT(nih, fStatus);
+        if fStatus >= kStatusNoError then
         begin
           DebugFmt('TFantomSpirit.Open: Got NXT with resName = "%s".  All done.', [resName]);
           SetResourcePort(resName);
@@ -1082,9 +1071,9 @@ begin
           Result := True;
         end;
       end;
-      status := kStatusNoError;
+      status2 := kStatusNoError;
       DebugLog('TFantomSpirit.Open: calling nFANTOM100_destroyNXTIterator');
-      nFANTOM100_destroyNXTIterator(nih, status);
+      nFANTOM100_destroyNXTIterator(nih, status2);
     end;
   end;
 end;
@@ -1546,6 +1535,7 @@ end;
 
 function TFantomSpirit.GetLSBlock(aPort: byte): NXTLSBlock;
 begin
+  if aPort > 10 then exit; 
   Result := fLastI2CRead;
 end;
 
@@ -1578,18 +1568,25 @@ begin
   end;
 end;
 
-{$IFDEF FPC}
+{$IFDEF WIN32}
+{$DEFINE WINDOWS}
+{$ENDIF}
+{$IFDEF WIN64}
+{$DEFINE WINDOWS}
+{$ENDIF}
+
+{$IFDEF WINDOWS}
+function jchGetTickCount : Cardinal;
+begin
+  Result := GetTickCount;
+end;
+{$ELSE}
 function jchGetTickCount : Cardinal;
 var
   t : timeval;
 begin
-  fpgettimeofday(@t, nil);
+  GetTimeOfDay(@t, nil);
   Result := t.tv_usec div 1000; // convert microseconds to milliseconds
-end;
-{$ELSE}
-function jchGetTickCount : Cardinal;
-begin
-  Result := GetTickCount;
 end;
 {$ENDIF}
 
@@ -2239,12 +2236,14 @@ function TFantomSpirit.InternalNXTUploadFileToStream(handle: FantomHandle;
   aStream: TStream): boolean;
 var
   size : cardinal;
-  tmpFilename : string;
+//  tmpFilename : string;
   status : integer;
   fileBuf : PByte;
   bEOFOnRead : boolean;
 begin
-  tmpFilename := name;
+  Result := False;
+  if Length(name) > 30 then Exit;
+//  tmpFilename := name;
   size        := Cardinal(Max(totalSize - availSize, 0));
   status      := kStatusNoError;
   nFANTOM100_iFile_openForRead(handle, status);
@@ -3088,12 +3087,12 @@ end;
 
 function TFantomSpirit.GetCounterValue(aNum: integer): integer;
 begin
-  Result := 0;
+  Result := aNum;
 end;
 
 function TFantomSpirit.GetMessageValue(aNum: integer): integer;
 begin
-  Result := 0;
+  Result := aNum;
 end;
 
 function TFantomSpirit.GetOutputStatus(aOut: integer): integer;
@@ -3555,7 +3554,9 @@ begin
       Result := Result + Format('%2.2x ', [scResponse[i]]);
     end;
     Result := Trim(Result);
-  end;
+  end
+  else if bRetry then
+    Result := SendRawCommand(aCmd, False);
 end;
 
 function TFantomSpirit.SendRemoteStr(aEvent: string; aRepeat: integer): boolean;
@@ -3792,14 +3793,14 @@ begin
   DebugFmt('TFantomSpirit.GetUseBT: fUseBT now = %s', [BoolToStr(fUseBT)]);
 end;
 
-procedure TFantomSpirit.NXTInitializeResourceNames;
+function TFantomSpirit.NXTInitializeResourceNames : boolean;
 var
   SL : TStringList;
   name : string;
 begin
   SL := TStringList.Create;
   try
-    NXTListBricks(SL);
+    Result := NXTListBricks(SL);
     name := GetInitFilename;
     ForceDirectories(ExtractFilePath(name));
     SL.Sort;
@@ -4013,7 +4014,7 @@ begin
   end;
 end;
 
-procedure TFantomSpirit.NXTUpdateResourceNames;
+function TFantomSpirit.NXTUpdateResourceNames : boolean;
 var
   SL, tmpSL : TStringList;
   fname : string;
@@ -4024,7 +4025,7 @@ begin
     SL.Duplicates := dupIgnore;
     tmpSL := TStringList.Create;
     try
-      NXTListBricks(tmpSL);
+      Result := NXTListBricks(tmpSL);
       fname := GetInitFilename;
       if FileExists(fname) then
         SL.LoadFromFile(fname);
@@ -4095,10 +4096,12 @@ var
   fval : Single;
 begin
   Result := 0;
+  if aDigits = MAXINT then Exit;
   LookupOffsetsIfNeeded;
   if (fOffsetDS <> $FFFF) and (fOffsetDVA <> $FFFF) then
   begin
     modID := kNXT_ModuleCmd;
+    offset := -1; size := -1; vartype := -1;
     DoGetVarInfoByID(aNum, offset, size, vartype);
     if (offset <> -1) and (size <> -1) and (vartype <> -1) then
     begin
@@ -4125,6 +4128,7 @@ begin
         idx := 1;
         while dst = dsArray do
         begin
+          tmpoffset := -1; tmpsize := -1; tmpvartype := -1;
           DoGetVarInfoByID(aNum+idx, tmpoffset, tmpsize, tmpvartype);
           if (tmpoffset <> -1) and (tmpsize <> -1) and (tmpvartype <> -1) then
             dst := TDSType(Byte(tmpvartype))
@@ -4253,9 +4257,9 @@ var
   SL : TStringList;
 begin
   Result := 0;
-  if i2cValueIdx < Length(fI2CValues) then
+  if i2cValueIdx < Length(GlobalI2CValues) then
   begin
-    v := fI2CValues[i2cValueIdx];
+    v := GlobalI2CValues[i2cValueIdx];
     SL := TStringList.Create;
     try
       SL.Delimiter := ';';
@@ -4267,7 +4271,8 @@ begin
           rxlen := 0
         else
           rxlen := v.RxCount;
-        LoadLSBlock(lsb, tmpstr, rxlen);
+        lsb.TXCount := 0;
+        LoadLSBlock(lsb, v.Address, tmpstr, rxlen);
         NXTLowSpeed[aPort] := lsb;
         lsb := NXTLowSpeed[aPort];
       end;
@@ -4335,7 +4340,7 @@ begin
         SL.Free;
       end;
     end
-    else if v.ValueType = vtString then
+    else if v.ValueType = valString then
     begin
       tmpstr := '';
       for i := 0 to lsb.RXCount - 1 do
@@ -4349,126 +4354,37 @@ begin
       tmpVariant := lsb.Data[0];
     // convert to result with proper type
     case v.ValueType of
-      vtChar : begin
+      valChar : begin
         tmpChar := Char(Byte(tmpVariant));
         Result := tmpChar;
       end;
-      vtByte : begin
+      valByte : begin
         tmpByte := tmpVariant;
         Result := tmpByte;
       end;
-      vtSmallInt : begin
+      valSmallInt : begin
         tmpSmallInt := tmpVariant;
         Result := tmpSmallInt;
       end;
-      vtWord : begin
+      valWord : begin
         tmpWord := tmpVariant;
         Result := tmpWord;
       end;
-      vtInteger : begin
+      valInteger : begin
         tmpInt := tmpVariant;
         Result := tmpInt;
       end;
-      vtCardinal : begin
+      valCardinal : begin
         tmpDWord := tmpVariant;
         Result := tmpDWord;
       end;
-      vtDouble : begin
+      valDouble : begin
         tmpDouble := tmpVariant;
         Result := tmpDouble;
       end;
-    else // vtString
+    else // valString
       Result := tmpstr;
     end;
-  end;
-end;
-
-procedure TFantomSpirit.InitializeI2CValues;
-begin
-  SetLength(fI2CValues, 12);
-  with fI2CValues[0] do // kNXT_LEGOSonar
-  begin
-    RxCount   := 1;
-    ValueType := vtByte;
-    SendData  := '02,42';
-    Script    := '';
-  end;
-  with fI2CValues[1] do // kNXT_LEGOTemp
-  begin
-    RxCount   := 2;
-    ValueType := vtInteger;
-    SendData  := '98,01,60;98,00';
-    Script    := 'rt:=(Data0*256+Data1)*10/16;result:=(rt/16);if(rt>20470);result:=result-2560;';
-  end;
-  with fI2CValues[2] do // kNXT_LEGOEMeterVIn
-  begin
-    RxCount   := 2;
-    ValueType := vtDouble;
-    SendData  := '04,0A';
-    Script    := '(Data1*256+Data0)/1000';
-  end;
-  with fI2CValues[3] do // kNXT_LEGOEMeterAIn
-  begin
-    RxCount   := 2;
-    ValueType := vtDouble;
-    SendData  := '04,0C';
-    Script    := '(Data1*256+Data0)/1000';
-  end;
-  with fI2CValues[4] do // kNXT_LEGOEMeterVOut
-  begin
-    RxCount   := 2;
-    ValueType := vtDouble;
-    SendData  := '04,0E';
-    Script    := '(Data1*256+Data0)/1000';
-  end;
-  with fI2CValues[5] do // kNXT_LEGOEMeterAOut
-  begin
-    RxCount   := 2;
-    ValueType := vtDouble;
-    SendData  := '04,10';
-    Script    := '(Data1*256+Data0)/1000';
-  end;
-  with fI2CValues[6] do // kNXT_LEGOEMeterJoules
-  begin
-    RxCount   := 2;
-    ValueType := vtWord;
-    SendData  := '04,12';
-    Script    := '(Data1*256+Data0)';
-  end;
-  with fI2CValues[7] do // kNXT_LEGOEMeterWIn
-  begin
-    RxCount   := 2;
-    ValueType := vtDouble;
-    SendData  := '04,14';
-    Script    := '(Data1*256+Data0)/1000';
-  end;
-  with fI2CValues[8] do // kNXT_LEGOEMeterWOut
-  begin
-    RxCount   := 2;
-    ValueType := vtDouble;
-    SendData  := '04,16';
-    Script    := '(Data1*256+Data0)/1000';
-  end;
-  with fI2CValues[9] do // kNXT_02Version
-  begin
-    RxCount   := 8;
-    ValueType := vtString;
-    SendData  := '02,00';
-    Script    := '';
-  end;
-  with fI2CValues[10] do // kNXT_02Vendor
-  begin
-    RxCount   := 8;
-    ValueType := vtString;
-    SendData  := '02,08';
-    Script    := '';
-  end;
-  with fI2CValues[11] do // kNXT_02Device
-  begin
-    RxCount   := 8;
-    ValueType := vtString;
-    SendData  := '02,10';
-    Script    := '';
   end;
 end;
 
@@ -4487,6 +4403,7 @@ begin
     if NXTUseMailbox then
     begin
       // use MessageRead direct command
+      msg.Size := 0;
       if NXTMessageRead(NXTMailboxNum+10, 0, True, msg) and (msg.Size > 0) then
       begin
         len := msg.Size-1;
@@ -4498,6 +4415,7 @@ begin
       // read from USBPoll buffer using system command
       if NXTPollCommandLen(0, len) then
       begin
+        buf.Data[0] := 0;
         if NXTPollCommand(0, len, buf) then
           pSrc := @(buf.Data[0]);
       end;
@@ -4523,6 +4441,11 @@ begin
     DoNXTWrite(fNXTHandle, PByte(@Data[0]), len, status);
     DoDataSend(Data);
   end;
+end;
+
+function TFantomSpirit.GetErrorStatus: integer;
+begin
+  Result := inherited GetErrorStatus + kStatusOffset;
 end;
 
 end.

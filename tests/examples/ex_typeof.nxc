@@ -1,0 +1,67 @@
+struct foo {
+  int x, y;
+};
+
+task main()
+{
+  char ch = 'A';
+  byte b = 1;
+
+  int x = -1000;
+  unsigned int y = 1000;
+
+  long xl = -100000;
+  unsigned long yl = 100000;
+
+  foo tmp;
+
+  float f = 3.14;
+  
+  // arrays
+  char d1[] = {-1, -2, -3};
+  byte d2[] = {1, 2, 3};
+
+  int d3[] = {-1000, -2000, -3000};
+  unsigned int d4[] = {1000, 2000, 3000};
+
+  long d5[] = {-100000, -200000, -300000};
+  unsigned long d6[] = {100000, 200000, 300000};
+
+  float d7[] = {-1.5, -2.5, -3.5};
+
+  byte d8[][] = {{1, 2, 3}, {4, 5, 6}};
+  byte d9[][][] = {{{1, 2, 3}, {4, 5, 6}},{{1, 2, 3}, {4, 5, 6}}};
+  
+  string msg = "testing";
+
+  NumOut( 0, LCD_LINE1, VT_UBYTE);
+  NumOut(25, LCD_LINE1, TypeOf(b));
+  NumOut(50, LCD_LINE1, VT_SBYTE);
+  NumOut(75, LCD_LINE1, TypeOf(ch));
+
+  NumOut( 0, LCD_LINE2, VT_UWORD);
+  NumOut(25, LCD_LINE2, TypeOf(y));
+  NumOut(50, LCD_LINE2, VT_SWORD);
+  NumOut(75, LCD_LINE2, TypeOf(x));
+
+  NumOut( 0, LCD_LINE3, VT_ULONG);
+  NumOut(25, LCD_LINE3, TypeOf(yl));
+  NumOut(50, LCD_LINE3, VT_SLONG);
+  NumOut(75, LCD_LINE3, TypeOf(xl));
+
+  NumOut( 0, LCD_LINE4, TypeOf(tmp));
+  NumOut(25, LCD_LINE4, TypeOf(f));
+  NumOut(50, LCD_LINE4, TypeOf(d1));
+  NumOut(75, LCD_LINE4, TypeOf(d2));
+
+  NumOut( 0, LCD_LINE5, TypeOf(d3));
+  NumOut(25, LCD_LINE5, TypeOf(d4));
+  NumOut(50, LCD_LINE5, TypeOf(d5));
+  NumOut(75, LCD_LINE5, TypeOf(d6));
+
+  NumOut( 0, LCD_LINE6, TypeOf(d7));
+  NumOut(25, LCD_LINE6, TypeOf(d8));
+  NumOut(50, LCD_LINE6, TypeOf(d9));
+
+  while(true);
+}

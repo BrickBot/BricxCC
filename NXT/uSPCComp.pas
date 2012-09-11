@@ -1458,7 +1458,9 @@ end;
 procedure TSPCComp.GetNum;
 var
   savedLook : char;
+  bExponent : boolean;
 begin
+  bExponent := False;
   SkipWhite;
   if not IsDigit(Look) then Expected(sNumber);
   savedLook := Look;
@@ -1471,11 +1473,15 @@ begin
   begin
     Token := TOK_NUM;
     Value := savedLook;
-    if not IsDigit(Look) then Exit;
+    if not (IsDigit(Look) or (Look in ['e', 'E'])) then Exit;
     repeat
+      bExponent := bExponent or (Look in ['e', 'E']);
       Value := Value + Look;
+      savedLook := Look;
       GetChar;
-    until not IsDigit(Look);
+    until not (IsDigit(Look) or
+               (not bExponent and (Look in ['e', 'E'])) or
+               (bExponent and (savedLook in ['e', 'E']) and ((Look in ['+', '-']) or (IsDigit(Look)))));
   end;
 end;
 
@@ -3425,6 +3431,7 @@ var
   i : integer;
   offset : integer;
 begin
+  // TODO: finish implementing this code.
   // recursively offset this pointer by array index, etc...
   offset := 0;
   DE := DataDefinitions.FindEntryByFullName(ArrayType);
@@ -7985,6 +7992,7 @@ begin
     push;
     tmp := tos;
     StoreAddress(tmp, src);
+    // TODO: Add index * size of array elements, which may be > 1
     DoAdd(tmp, idx); // add idx to pointer
     EmitLn(Format('MOV (%s), %s', [tmp, val])); // mov val into array
     pop;

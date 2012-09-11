@@ -8,13 +8,13 @@ task main()
     i++;
     val = Random();
     msg = "Testing=" + NumToStr(val);
-
+/*
     byte len = StrLen(msg);
     SetUSBPollBuffer(0, len, msg);
     SetUSBPollBufferOutPtr(0);
     SetUSBPollBufferInPtr(len);
+*/
 
-/*
     SendResponseString(MAILBOX10, msg);
     Wait(MS_100);
 
@@ -24,7 +24,11 @@ task main()
 
     bool bval = Random(2);
     SendResponseBool(MAILBOX10, bval);
-*/
+
     Wait(MS_100);
+
+    SendResponseString(MAILBOX10, "\n");
+    Wait(MS_100);
+
   }
 }

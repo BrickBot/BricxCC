@@ -32,8 +32,11 @@ var
   SimpleTermPolling : boolean;
   SimpleTermLabelLines : boolean;
   SimpleTermEchoSends : boolean;
+  SimpleTermAppendLF : boolean;
   SimpleTermNXTUseMailbox : boolean;
   SimpleTermNXTMailboxNum : byte;
+  SimpleTermNXTNum4 : boolean;
+  SimpleTermRefreshRate : Word;
 
 procedure LoadSimpleTerminalValues(reg : TRegistry);
 procedure SaveSimpleTerminalValues(reg : TRegistry);
@@ -52,8 +55,11 @@ begin
     SimpleTermPolling       := Reg_ReadBool(reg, 'SimpleTermPolling', true);
     SimpleTermLabelLines    := Reg_ReadBool(reg, 'SimpleTermLabelLines', false);
     SimpleTermEchoSends     := Reg_ReadBool(reg, 'SimpleTermEchoSends', false);
+    SimpleTermAppendLF      := Reg_ReadBool(reg, 'SimpleTermAppendLF', true);
     SimpleTermNXTUseMailbox := Reg_ReadBool(reg, 'SimpleTermNXTUseMailbox', false);
     SimpleTermNXTMailboxNum := Reg_ReadInteger(reg, 'SimpleTermNXTMailboxNum', 9);
+    SimpleTermNXTNum4       := Reg_ReadBool(reg, 'SimpleTermNXTNum4', true);
+    SimpleTermRefreshRate   := Reg_ReadInteger(reg, 'SimpleTermRefreshRate', SimpleTermRefreshRate);
   finally
     reg.CloseKey;
   end;
@@ -65,11 +71,14 @@ begin
   Reg_DeleteKey(reg, 'SimpleTerminal');
   Reg_OpenKey(reg, 'SimpleTerminal');
   try
-    reg.WriteBool('SimpleTermPolling',SimpleTermPolling);
-    reg.WriteBool('SimpleTermLabelLines',SimpleTermLabelLines);
-    reg.WriteBool('SimpleTermEchoSends',SimpleTermEchoSends);
-    reg.WriteBool('SimpleTermNXTUseMailbox',SimpleTermNXTUseMailbox);
+    reg.WriteBool('SimpleTermPolling', SimpleTermPolling);
+    reg.WriteBool('SimpleTermLabelLines', SimpleTermLabelLines);
+    reg.WriteBool('SimpleTermEchoSends', SimpleTermEchoSends);
+    reg.WriteBool('SimpleTermAppendLF', SimpleTermAppendLF);
+    reg.WriteBool('SimpleTermNXTUseMailbox', SimpleTermNXTUseMailbox);
     reg.WriteInteger('SimpleTermNXTMailboxNum', SimpleTermNXTMailboxNum);
+    reg.WriteBool('SimpleTermNXTNum4', SimpleTermNXTNum4);
+    reg.WriteInteger('SimpleTermRefreshRate', SimpleTermRefreshRate);
   finally
     reg.CloseKey;
   end;
@@ -87,7 +96,10 @@ initialization
   SimpleTermPolling := True;
   SimpleTermLabelLines := False;
   SimpleTermEchoSends := False;
+  SimpleTermAppendLF := True;
   SimpleTermNXTUseMailbox := False;
   SimpleTermNXTMailboxNum := 9;
+  SimpleTermNXTNum4 := True;
+  SimpleTermRefreshRate := 1000;
 
 end.

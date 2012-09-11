@@ -3634,18 +3634,31 @@ begin
   Result := Trim(Result);
 end;
 
+function ValueOutside64BitRange(aValue : Extended) : boolean;
+begin
+  Result := (aValue > High(Int64)) or (aValue < Low(Int64));
+end;
+
 function ValueAsCardinal(aValue : Extended; aDST : TDSType = dsVoid) : Cardinal;
 var
   iVal : Int64;
   sVal : Single;
 begin
-  iVal := Trunc(aValue);
-  if (iVal = aValue) and (aDST <> dsFloat) then
-    Result := Cardinal(iVal)
-  else
+  if (aDST = dsFloat) or ValueOutside64BitRange(aValue) then
   begin
     sVal := aValue;
     Result := SingleToCardinal(sVal);
+  end
+  else
+  begin
+    iVal := Trunc(aValue);
+    if (iVal = aValue) and (aDST <> dsFloat) then
+      Result := Cardinal(iVal)
+    else
+    begin
+      sVal := aValue;
+      Result := SingleToCardinal(sVal);
+    end;
   end;
 end;
 
@@ -5668,7 +5681,7 @@ begin
     end;
     OPS_FMTNUM, OPS_FMTNUM_2 : begin
       if argIdx > 1 then
-        Result := aatScalar
+        Result := {aatScalar}aatVariable
       else if argIdx = 1 then
         Result := aatString
       else // 0
@@ -5926,11 +5939,16 @@ begin
           begin
             // now we can assume the arg is supposed to be a constant expression
             val := arg.Evaluate(Calc);
-            iVal := Trunc(val);
-            // one more check with respect to IOMap Addresses.
-            j := IndexOfIOMapID(Integer(iVal));
-            if ((expected in [aatVarOrNull, aatScalarOrNull]) and
-                (iVal = NOT_AN_ELEMENT)) or (j <> -1) then
+            j := -1;
+            iVal := 0;
+            if not ValueOutside64BitRange(val) then
+            begin
+              iVal := Trunc(val);
+              // one more check with respect to IOMap Addresses.
+              j := IndexOfIOMapID(Integer(iVal));
+            end;
+            if ((expected in [aatVarOrNull, aatScalarOrNull]) and (iVal = NOT_AN_ELEMENT)) or
+               (j <> -1) then
             begin
               // we have an IO Map address as a constant expression
               arg.Value := IntToStr(iVal);
@@ -5961,7 +5979,6 @@ begin
       end
       else
         arg.Value := NBCFloatToStr(Calc.Value);
-//        arg.Value := IntToStr(Trunc(Calc.Value));
     end;
   end;
 end;
@@ -5970,29 +5987,32 @@ function GetArgDataType(val : Extended): TDSType;
 var
   iVal : Int64;
 begin
-  iVal := Trunc(val);
-  if iVal = val then
+  if ValueOutside64BitRange(val) then
   begin
-    val := iVal;
-    // see if this works.  if not then figure out the
-    // type based on the size of the value
-    if (val >= Low(ShortInt)) and (val <= High(ShortInt)) then
-      Result := dsSByte
-    else if (val >= Low(SmallInt)) and (val <= High(SmallInt)) then
-      Result := dsSWord
-    else if (val >= Low(Integer)) and (val <= High(Integer)) then
-      Result := dsSLong
-    else if (val > High(Cardinal)) or (val < Low(Integer)) then
-      Result := dsFloat
-    else
-      Result := dsULong;
+     Result := dsFloat;
   end
   else
-    Result := dsFloat;
-//  else if ((val >= 0) and (val <= High(Byte)) then
-//    Result := dsUByte
-//  else if ((val >= 0) and (val <= High(Word)) then
-//    Result := dsUWord
+  begin
+    iVal := Trunc(val);
+    if iVal = val then
+    begin
+      val := iVal;
+      // see if this works.  if not then figure out the
+      // type based on the size of the value
+      if (val >= Low(ShortInt)) and (val <= High(ShortInt)) then
+        Result := dsSByte
+      else if (val >= Low(SmallInt)) and (val <= High(SmallInt)) then
+        Result := dsSWord
+      else if (val >= Low(Integer)) and (val <= High(Integer)) then
+        Result := dsSLong
+      else if (val > High(Cardinal)) or (val < Low(Integer)) then
+        Result := dsFloat
+      else
+        Result := dsULong;
+    end
+    else
+      Result := dsFloat;
+  end;
 end;
 
 procedure TRXEProgram.UpdateHeader;
@@ -7309,8 +7329,9 @@ end;
 procedure TRXEProgram.HandleSpecialFunctionTypeOf(Arg: TAsmArgument;
   const left, right, name: string);
 var
-  de1 : TDataspaceEntry;
+  de1, sub1 : TDataspaceEntry;
   dt : TDSType;
+  iDT : integer;
 begin
   // is name a constant value?
   Calc.SilentExpression := name;
@@ -7318,7 +7339,24 @@ begin
   begin
     de1 := Dataspace.FindEntryByFullName(name);
     if Assigned(de1) then
-      Arg.Value := left + IntToStr(Ord(de1.DataType)) + right
+    begin
+      iDT := 0;
+      if (de1.DataType = dsArray) and (de1.SubEntries.Count > 0) then
+      begin
+        sub1 := de1.SubEntries[0];
+        while Assigned(sub1) do
+        begin
+          iDT := iDT + 16;
+          de1 := sub1;
+          if (de1.DataType = dsArray) and (de1.SubEntries.Count > 0) then
+            sub1 := de1.SubEntries[0]
+          else
+            sub1 := nil;
+        end;
+      end;
+      iDT := iDT + Ord(de1.DataType);
+      Arg.Value := left + IntToStr(iDT) + right;
+    end
     else
     begin
       Arg.Value := left + '0' + right;
