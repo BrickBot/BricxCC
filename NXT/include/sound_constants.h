@@ -151,6 +151,18 @@
 #define TONE_B7               3951 /*!< Seventh octave B */
 /** @} */  // end of ToneConstants group
 
+/** @defgroup RCXSoundConstants RCX and Scout sound constants
+ * Constants for use when playing standard RCX and Scout sounds.
+ * @{
+ */
+#define SOUND_CLICK       0 /*!< Play the standard key click sound */
+#define SOUND_DOUBLE_BEEP 1 /*!< Play the standard double beep sound */
+#define SOUND_DOWN        2 /*!< Play the standard sweep down sound */
+#define SOUND_UP          3 /*!< Play the standard sweep up sound */
+#define SOUND_LOW_BEEP    4 /*!< Play the standard low beep sound */
+#define SOUND_FAST_UP     5 /*!< Play the standard fast up sound */
+/** @} */  // end of RCXSoundConstants group
+
 /** @} */  // end of SoundModuleConstants group
 /** @} */  // end of SoundModule group
 

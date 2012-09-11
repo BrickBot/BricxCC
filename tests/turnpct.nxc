@@ -1,0 +1,44 @@
+task main()
+{
+  string msg;
+  long motorApos, motorBpos;
+
+  msg = "Encoder: A:";
+  motorApos = MotorTachoCount(OUT_A);
+  msg += NumToStr(motorApos);
+  TextOut(0, LCD_LINE2, msg, false);
+  byte motors[] = {OUT_A, OUT_B};
+
+  RotateMotorExPID(OUT_AB, 100, 360, 100, true, true, PID_2, PID_1, PID_1);
+
+/*
+  SetOutput(motors, PowerField, 100,
+                    OutputModeField, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED,
+                    RunStateField, OUT_RUNSTATE_RUNNING,
+                    RegModeField, OUT_REGMODE_SYNC,
+                    TurnRatioField, 100,
+                    TachoLimitField, 360,
+                    UpdateFlagsField, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE);
+  Yield();
+  while (MotorRunState(OUT_A) == OUT_RUNSTATE_RUNNING)
+    Yield();
+  SetOutput(motors, PowerField, 0,
+                    OutputModeField, OUT_MODE_MOTORON+OUT_MODE_BRAKE+OUT_MODE_REGULATED,
+                    RunStateField, OUT_RUNSTATE_RUNNING,
+                    RegModeField, OUT_REGMODE_SPEED,
+                    TurnRatioField, 0,
+                    TachoLimitField, 0,
+                    UpdateFlagsField, UF_UPDATE_TACHO_LIMIT+UF_UPDATE_SPEED+UF_UPDATE_MODE);
+*/
+
+  msg = "  A";
+  motorApos = MotorTachoCount(OUT_A);
+  msg += NumToStr(motorApos);
+  motorBpos = MotorTachoCount(OUT_B);
+  msg += " B:";
+  msg += NumToStr(motorBpos);
+  TextOut(0, LCD_LINE3, msg, false);
+
+  until(ButtonPressed(BTNCENTER, true));
+
+}

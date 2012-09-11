@@ -56,7 +56,7 @@ type
     function GetUseBT: boolean;
     procedure SetUseBT(const Value: boolean);
     procedure DoCreateInitFile;
-    procedure SearchAllPorts;
+    function SearchAllPorts : boolean;
   public
     { Public declarations }
     function GetPort : string;
@@ -177,7 +177,7 @@ begin
 end;
 
 type
-  TUpdaterProc = procedure of object;
+  TUpdaterProc = function : boolean of object;
   TUpdaterThread = class(TThread)
   protected
     fProc : TUpdaterProc;
@@ -450,11 +450,12 @@ begin
   end;
 end;
 
-procedure TSearchRCXForm.SearchAllPorts;
+function TSearchRCXForm.SearchAllPorts : boolean;
 var
   SL : TStringList;
   i : integer;
 begin
+  Result := False;
   if IsNXT then // don't try nxt.dat entries for a non-NXT brick type
   begin
     // first try brick resource strings from the nxt.dat file
@@ -468,6 +469,7 @@ begin
         begin
           IRexists  := True;
           LocalPort := BrickComm.Port;
+          Result := True;
           break;
         end;
       end;
@@ -484,6 +486,7 @@ begin
     begin
       IRexists  := True;
       LocalPort := BrickComm.Port;
+      Result := True;
     end;
   end;
   if not IsNXT then // don't try COMn ports for an NXT brick type
@@ -497,6 +500,7 @@ begin
         begin
           IRexists  := True;
           LocalPort := BrickComm.Port;
+          Result := True;
           break;
         end;
       end;

@@ -57,7 +57,7 @@ procedure ParseFunction( FunctionString: string; { the unparsed string }
 implementation
 
 uses
-  uNBCCommon;
+  uNBCCommon, uCommonUtils;
 
 
 resourcestring
@@ -221,6 +221,7 @@ procedure ParseFunction( FunctionString: string;
           function CheckNumber(const s: string; var FloatNumber: ParserFloat):boolean;
           {checks whether s is a number}
           var
+            binstr : string;
             code: integer;
             tmpInt : Cardinal; // handle large hexadecimal strings (always a positive value)
           {$IFDEF Debug} { prevent debugger from showing conversion errors }
@@ -270,6 +271,14 @@ procedure ParseFunction( FunctionString: string;
                       begin
                         val(s, tmpInt, code);
                         Result := code = 0;
+                        if Result then
+                          FloatNumber := tmpInt;
+                      end
+                      else if Pos('0b', s) = 1 then
+                      begin
+                        binstr := Copy(s, 3, MaxInt);
+                        tmpInt := BinToIntDef(binstr, 0);
+                        Result := (tmpInt <> 0) or (Pos('1', binstr) = 0);
                         if Result then
                           FloatNumber := tmpInt;
                       end

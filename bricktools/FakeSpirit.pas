@@ -284,8 +284,8 @@ type
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
     function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; override;
     function NXTListBricks(Bricks : TStrings) : boolean; override;
-    procedure NXTInitializeResourceNames; override;
-    procedure NXTUpdateResourceNames; override;
+    function NXTInitializeResourceNames : boolean; override;
+    function NXTUpdateResourceNames : boolean; override;
   end;
 
 implementation
@@ -3690,9 +3690,9 @@ begin
   Result := fLink.Log;
 end;
 
-procedure TFakeSpirit.NXTInitializeResourceNames;
+function TFakeSpirit.NXTInitializeResourceNames : boolean;
 begin
-  // do nothing
+  Result := False;
 end;
 
 function TFakeSpirit.NXTFreeMemory: integer;
@@ -3736,9 +3736,9 @@ begin
   Result := True;
 end;
 
-procedure TFakeSpirit.NXTUpdateResourceNames;
+function TFakeSpirit.NXTUpdateResourceNames : boolean;
 begin
-  // do nothing
+  Result := False;
 end;
 
 procedure TFakeSpirit.FlushReceiveBuffer;

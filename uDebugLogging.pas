@@ -36,6 +36,8 @@ begin
 {$IFNDEF FPC}
   OutputDebugString(PChar(aMsg));
 {$ELSE}
+  if aMsg <> '' then
+    ;
 //  WriteLn(aMsg);
 //  SendDebug(aMsg);
 {$ENDIF}

@@ -1207,9 +1207,10 @@ function ApplyDecoration(const pre, val: string; const level : integer): string;
 function Replace(const str : string; const src, rep : string) : string;
 function NBCStrToFloat(const AValue: string): Double;
 function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
-function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boolean;
+//function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boolean;
 function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
 function NBCFloatToStr(const AValue: Double): string;
+function NBCStrToInt64Def(const AValue: string; const aDef : Int64): Int64;
 function ValueToDataType(const value : integer) : char;
 function DataTypeToTypeName(const dt : char) : string;
 function BoolToString(aValue : boolean) : string;
@@ -1259,7 +1260,8 @@ uses
 {$IFDEF FAST_MM}
   FastStrings,
 {$ENDIF}
-  strutils,
+  StrUtils,
+  Math,
   uCommonUtils,
   uCompTokens;
 
@@ -1443,6 +1445,7 @@ begin
   Result := StrToFloatDef(AValue, aDef, FS);
 end;
 
+(*
 function NBCTextToFloat(Buffer: PChar; var Value; ValueType: TFloatValue): Boolean;
 var
   FS : TFormatSettings;
@@ -1450,8 +1453,10 @@ var
 begin
   FS.DecimalSeparator := DecimalSeparator;
   NBCFormatSettings(FS, '.');
-  Result := TextToFloat(Buffer, val, fvExtended, FS);
+  Result := TextToFloat(Buffer, val, ValueType, FS);
+  Extended(Value) := 0;
 end;
+*)
 
 function NBCFormat(const FmtStr: string; const theArgs: array of const) : string;
 var
@@ -1460,6 +1465,16 @@ begin
   FS.DecimalSeparator := DecimalSeparator;
   NBCFormatSettings(FS, '.');
   Result := Format(FmtStr, theArgs, FS);
+end;
+
+function NBCStrToInt64Def(const AValue: string; const aDef : Int64): Int64;
+begin
+  if Pos('0b', AValue) = 1 then
+  begin
+    Result := BinToIntDef(Copy(AValue, 3, MaxInt), Integer(aDef));
+  end
+  else
+    Result := StrToInt64Def(AValue, aDef);
 end;
 
 function ValueToDataType(const value : integer) : char;
@@ -2082,7 +2097,7 @@ end;
 procedure TVariable.FillDimensions(lenexpr : string);
 var
   expr : string;
-  idx, n, dim, i, len : integer;
+  idx, n, dim, len : integer;
 begin
   if lenexpr = '' then
     Exit;

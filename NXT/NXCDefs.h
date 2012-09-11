@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2012-02-06
- * \version 105
+ * \date 2012-08-09
+ * \version 106
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H
@@ -33,6 +33,7 @@
 /** @addtogroup MiscConstants
  * @{
  */
+
 /** @defgroup TypeAliases Type aliases
  *  Short type aliases indicating signed/unsigned and bit count for each type.
  *  @{
@@ -44,6 +45,18 @@
 #define u32 unsigned long /*!< Unsigned 32 bit type */
 #define s32 long          /*!< Signed 32 bit type */
 /** @} */  // end of TypeAliases group
+
+
+/** @defgroup FloatMinMax Floating point min/max constants
+ *  Floating point minimum and maximum positive and negative values.
+ *  @{
+ */
+#define NEG_FLT_MIN  -1E-37 /*!< minimum normalized negative floating-point number */
+#define FLT_MIN       1E-37 /*!< minimum normalized positive floating-point number */
+#define NEG_FLT_MAX  -1E+37 /*!< maximum representable finite negative floating-point number */
+#define FLT_MAX       1E+37 /*!< maximum representable finite positive floating-point number */
+/** @} */  // end of FloatMinMax group
+
 /** @} */  // end of MiscConstants group
 
 
@@ -971,6 +984,7 @@ struct OutputStateType {
  * Set motor regulation frequency.
  * Set the motor regulation frequency in milliseconds. By default this is set
  * to 100ms.
+ * \deprecated Use SetMotorRegulationTime() instead.
  * \param n The motor regulation frequency.
  */
 inline void SetMotorPwnFreq(byte n);
@@ -1815,6 +1829,7 @@ inline byte MotorMaxAcceleration(byte output);
 /**
  * Get motor regulation frequency.
  * Get the current motor regulation frequency in milliseconds.
+ * \deprecated Use MotorRegulationTime() instead.
  * \return The motor regulation frequency.
  */
 inline byte MotorPwnFreq();
@@ -9362,6 +9377,16 @@ inline unsigned int FindNextFile(string & fname, byte & handle);
 inline unsigned int SizeOf(variant & value);
 
 /**
+ * Return the type of a variable.
+ * Return the type of the variable passed into the function.
+ * See \ref VariableTypeConstants for a list of possible return values.
+ *
+ * \param value The variable.
+ * \return The variable type.
+ */
+inline unsigned int TypeOf(variant & value);
+
+/**
  * Read a value from a file.
  * Read a value from the file associated with the specified handle.
  * The handle parameter must be a variable. The value parameter must be a
@@ -9737,6 +9762,7 @@ inline void SysListFiles(ListFilesType & args);
 #endif
 
 #define SizeOf(_n) asm { __sizeOF(_n, __RETVAL__) }
+#define TypeOf(_n) asm { set __RETVAL__, typeof(_n) }
 #define Read(_handle, _n) asm { __readValue(_handle, _n, __RETVAL__) }
 #define ReadLn(_handle, _n) asm { __readLnValue(_handle, _n, __RETVAL__) }
 #define ReadBytes(_handle, _len, _buf) asm { __readBytes(_handle, _len, _buf, __RETVAL__) }
@@ -15596,14 +15622,14 @@ inline void sprintf(string & str, string format, variant value);
 #else
 
 #define printf(_format, _value) { \
-  string msg = FormatNum(_format, _value); \
+  string msg = FormatVal(_format, _value); \
   TextOut(0, LCD_LINE1, msg); \
 }
 #define fprintf(_handle, _format, _value) { \
-  int cnt = fputs(FormatNum(_format, _value), _handle); \
+  int cnt = fputs(FormatVal(_format, _value), _handle); \
 }
 #define sprintf(_str, _format, _value) { \
-  _str = FormatNum(_format, _value); \
+  _str = FormatVal(_format, _value); \
 }
 
 #endif
@@ -16238,6 +16264,20 @@ inline string StrReplace(string str, unsigned int idx, string strnew);
  * \warning This function requires the enhanced NBC/NXC firmware.
  */
 inline string FormatNum(string fmt, variant num);
+
+/**
+ * Format a value.
+ * Return the formatted string using the format and value. Use a standard
+ * numeric sprintf format specifier within the format string. The input string
+ * parameter may be a variable, constant, or expression.
+ *
+ * \param fmt The string format containing a sprintf format specifier.
+ * \param val Any numeric or string value.
+ * \return A string containing the formatted value.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware.
+ */
+inline string FormatVal(string fmt, variant val);
 
 /**
  * Flatten any data to a string.

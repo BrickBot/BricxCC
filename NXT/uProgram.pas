@@ -283,6 +283,7 @@ end;
 
 function TDSTocEntry.GetValue: Variant;
 begin
+  Result := 0;
   // grab offsets if we don't have them already.
   if (DSTOCEntries.TheProgram.fOffsetDS = MaxInt) or
      (DSTOCEntries.TheProgram.fOffsetDVA = MaxInt) then

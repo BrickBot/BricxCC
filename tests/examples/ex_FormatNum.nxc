@@ -1,1 +1,8 @@
-msg = FormatNum("value = %d", x);
+task main()
+{
+  int x = -10;
+  string msg = FormatNum("value = %d", x);
+  TextOut(0, LCD_LINE1, msg);
+  Wait(SEC_5);
+}
+

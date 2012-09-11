@@ -1,0 +1,11 @@
+task main()
+{
+  string l_sHeader, l_sFlattenedPayload, l_sComplete;
+  int l_iLength;
+  l_sFlattenedPayload = SubStr(l_sComplete, StrLen(l_sHeader), l_iLength); // fixed 2012-07-24
+  // should be equal to
+  l_sFlattenedPayload = MidStr(l_sComplete, StrLen(l_sHeader), l_iLength);
+  string tmp = FormatNum("testing %d", StrLen(l_sHeader)); // fixed 2012-07-24
+  string tmp2 = StrCat("testing ", SubStr(l_sComplete, 0, 100)); // works
+  string tmp3 = StrReplace("testing", 0, StrReplace("foo", 0, "goo")); // fixed 2012-07-24
+}

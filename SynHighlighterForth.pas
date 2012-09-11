@@ -334,7 +334,7 @@ type
   protected
     procedure SetCaseSensitive(const Value: boolean);
   public
-    function Find(const S: string; var Index: Integer): Boolean; override;
+    function Find(const S: string; {$IFDEF FPC}out{$ELSE}var{$ENDIF} Index: Integer): Boolean; override;
     procedure Sort; override;
     property CaseSensitive : boolean read fCaseSensitive write SetCaseSensitive;
   end;
@@ -427,7 +427,7 @@ begin
   until I >= R;
 end;
 
-function TCSStringList.Find(const S: string; var Index: Integer): Boolean;
+function TCSStringList.Find(const S: string; {$IFDEF FPC}out{$ELSE}var{$ENDIF} Index: Integer): Boolean;
 var
   L, H, I, C: Integer;
 begin
@@ -1858,12 +1858,20 @@ end;
 
 procedure TSynForthSyn.SetRange(Value: Pointer);
 begin
+{$IFDEF FPC}
+  fRange := TRangeState(PtrUInt(Value));
+{$ELSE}
   fRange := TRangeState(Value);
+{$ENDIF}
 end;
 
 function TSynForthSyn.GetRange: Pointer;
 begin
+{$IFDEF FPC}
+  Result := Pointer(PtrInt(fRange));
+{$ELSE}
   Result := Pointer(fRange);
+{$ENDIF}
 end;
 
 procedure TSynForthSyn.IntegerProc;

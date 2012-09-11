@@ -18,6 +18,10 @@ unit SProSpirit;
 
 interface
 
+{$IFDEF FPC}
+{$HINTS OFF}
+{$ENDIF}
+
 uses
   Classes, SysUtils, rcx_cmd, uSpirit, uNXTConstants, FantomDefs, uSerial;
 
@@ -282,8 +286,8 @@ type
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; override;
     function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; override;
     function NXTListBricks(Bricks : TStrings) : boolean; override;
-    procedure NXTInitializeResourceNames; override;
-    procedure NXTUpdateResourceNames; override;
+    function NXTInitializeResourceNames : boolean; override;
+    function NXTUpdateResourceNames : boolean; override;
   end;
 
 implementation
@@ -309,8 +313,11 @@ const
 
 procedure DoBeep(aFreq, aDur : cardinal);
 begin
-{$IFDEF Windows}
+{$IFNDEF FPC}
   Beep(aFreq, aDur);
+{$ELSE}
+  if (aFreq > 0) and (aDur > 0) then
+    Beep;
 {$ENDIF}
 end;
 
@@ -1565,8 +1572,9 @@ begin
   if (prec = 0) or (src = 0) or (value = 0) then Exit;
 end;
 
-procedure TSProSpirit.NXTInitializeResourceNames;
+function TSProSpirit.NXTInitializeResourceNames : boolean;
 begin
+  Result := False;
 end;
 
 function TSProSpirit.NXTFreeMemory: integer;
@@ -1606,8 +1614,9 @@ begin
   Result := False;
 end;
 
-procedure TSProSpirit.NXTUpdateResourceNames;
+function TSProSpirit.NXTUpdateResourceNames : boolean;
 begin
+  Result := False;
 end;
 
 function TSProSpirit.GetPortName: string;
@@ -1665,5 +1674,9 @@ begin
   if Result > 0 then
     DoDataReceive(Data);
 end;
+
+{$IFDEF FPC}
+{$HINTS ON}
+{$ENDIF}
 
 end.

@@ -541,12 +541,20 @@ end;
 
 procedure TSynNPGSyn.SetRange(Value: Pointer);
 begin
+{$IFDEF FPC}
+  fRange := TRangeState(PtrUInt(Value));
+{$ELSE}
   fRange := TRangeState(Value);
+{$ENDIF}
 end;
 
 function TSynNPGSyn.GetRange: Pointer;
 begin
+{$IFDEF FPC}
+  Result := Pointer(PtrInt(fRange));
+{$ELSE}
   Result := Pointer(fRange);
+{$ENDIF}
 end;
 
 initialization

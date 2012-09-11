@@ -1,0 +1,60 @@
+bool bDone = false;
+
+task MoveMotors()
+{
+  repeat (10)
+  {
+  // rotate forward
+  SetOutput(OUT_A, OutputModeField, OUT_MODE_MOTORON|OUT_MODE_BRAKE,
+                   TachoLimitField, 3600,
+                   PowerField, 75,
+                   RegModeField, OUT_REGMODE_IDLE,
+                   RunStateField, OUT_RUNSTATE_RUNNING,
+                   OutputOptionsField, OUT_OPTION_RAMPDOWNTOLIMIT,
+                   UpdateFlagsField, UF_UPDATE_MODE|UF_UPDATE_SPEED|UF_UPDATE_TACHO_LIMIT);
+  Yield(); // give firmware a chance to process this request to update motor state
+  // monitor runstate
+  while(MotorRunState(OUT_A) <> OUT_RUNSTATE_IDLE)
+    Yield();
+
+  Wait(SEC_1);
+
+  // rotate backward
+  SetOutput(OUT_A, OutputModeField, OUT_MODE_MOTORON|OUT_MODE_BRAKE,
+                   TachoLimitField, 3600,
+                   PowerField, -75,
+                   RegModeField, OUT_REGMODE_IDLE,
+                   RunStateField, OUT_RUNSTATE_RUNNING,
+                   OutputOptionsField, OUT_OPTION_RAMPDOWNTOLIMIT,
+                   UpdateFlagsField, UF_UPDATE_MODE|UF_UPDATE_SPEED|UF_UPDATE_TACHO_LIMIT);
+  Yield(); // give firmware a chance to process this request to update motor state
+  // monitor runstate
+  while(MotorRunState(OUT_A) <> OUT_RUNSTATE_IDLE)
+    Yield();
+
+  Wait(SEC_1);
+  }
+  
+  bDone = true;
+}
+
+task MonitorMotors()
+{
+  while (!bDone) {
+    ClearScreen();
+    NumOut(0, LCD_LINE1, MotorRunState(OUT_A));
+    NumOut(0, LCD_LINE2, MotorMode(OUT_A));
+    NumOut(0, LCD_LINE3, MotorRotationCount(OUT_A));
+    NumOut(0, LCD_LINE4, MotorTachoCount(OUT_A));
+    NumOut(0, LCD_LINE5, MotorBlockTachoCount(OUT_A));
+    Wait(10);
+  }
+}
+
+task main()
+{
+  Precedes(MoveMotors, MonitorMotors);
+  ResetRotationCount(OUT_A);
+  Wait(5);
+}
+

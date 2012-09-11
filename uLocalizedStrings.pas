@@ -551,6 +551,7 @@ resourcestring
   sConstOrConstExpr        = 'constant or constant expression';
   sNotAnAPIFunc            = '%s is not an API function';
   sNotAnAPIStrFunc         = '%s is not an API string function';
+  sTooManyInitializers     = 'Too many initializers';
 
 // shared between uNXCComp and uSPCComp
 resourcestring
@@ -595,6 +596,7 @@ resourcestring
   sDirective               = 'Preprocessor directive';
   sNumber                  = 'Number';
   sHexNumber               = 'Hex number';
+  sBinaryNumber            = 'Binary number';
   sCharLiteral             = 'Character literal';
   sStringLiteral           = 'String literal';
   sStringType              = 'string constant or variable of type string';
@@ -736,6 +738,13 @@ resourcestring
   sArrayLenRequired = 'Arrays without initializer must have a constant length specified.';
   sArrayLenInvalid  = 'Invalid array length specification';
   sInvalidShift     = 'Shift constant must range from 0 to 31';
+
+// uSimpleTerm.pas
+resourcestring
+  sNXTResponseMailbox = 'NXT Response Mailbox';
+  sPreferences = '&Preferences';
+  sEdit = '&Edit';
+  sFile = '&File';
   
 implementation
 

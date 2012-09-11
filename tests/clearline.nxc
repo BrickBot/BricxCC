@@ -1,0 +1,12 @@
+task main()
+{
+  string msg = "testing";
+  TextOut(0, 52, msg);
+  Wait(SEC_2);
+  NumOut(24, 52, 10, DRAW_OPT_CLEAR_LINE);
+  Wait(SEC_2);
+  TextOut(0, 26, msg);
+  Wait(SEC_2);
+  NumOut(24, 26, 10, DRAW_OPT_CLEAR_EOL);
+  Wait(SEC_5);
+}

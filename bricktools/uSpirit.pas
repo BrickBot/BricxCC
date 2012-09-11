@@ -99,9 +99,9 @@ type
 
   TBrickComm = class
   private
+  protected
     fNXTUseMailbox: boolean;
     fNXTMailboxNum: integer;
-  protected
     fSearchBT: boolean;
     fLocalIFW : TInstalledFirmware;
     fLocalFV : Word;
@@ -134,6 +134,7 @@ type
     fMotorOn : array[0..2] of boolean;
     fSensorType : array[0..3] of Byte;
     fSensorMode : array[0..3] of Byte;
+    fStatus : integer;
     function GetBrickTypeName: string; virtual;
     function GetDownloadWaitTime: Integer; virtual; abstract;
     function GetEEPROM(addr: Byte): Byte; virtual; abstract;
@@ -175,6 +176,7 @@ type
     procedure DoDataReceive(Data : array of byte); overload;
     procedure DoDataReceive(Data : string); overload;
     procedure DoDataReceive(Data : byte); overload;
+    function GetErrorStatus: integer; virtual;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); virtual;
     destructor Destroy; override;
@@ -405,8 +407,8 @@ type
     function NXTListFiles(const searchPattern : string; Files : TStrings) : boolean; virtual; abstract;
     function NXTListModules(const searchPattern : string; Modules : TStrings) : boolean; virtual; abstract;
     function NXTListBricks(Bricks : TStrings) : boolean; virtual; abstract;
-    procedure NXTInitializeResourceNames; virtual; abstract;
-    procedure NXTUpdateResourceNames; virtual; abstract;
+    function NXTInitializeResourceNames : boolean; virtual; abstract;
+    function NXTUpdateResourceNames : boolean; virtual; abstract;
     function NXTDefragmentFlash : Boolean; virtual;
     function NXTBTDeviceCount : integer;
     function NXTBTDeviceNameCount : integer;
@@ -444,6 +446,7 @@ type
     property  TheProgram : TProgram read fProgram write fProgram;
     property  NXTUseMailbox : boolean read fNXTUseMailbox write fNXTUseMailbox;
     property  NXTMailboxNum : integer read fNXTMailboxNum write fNXTMailboxNum;
+    property  ErrorStatus : integer read GetErrorStatus;
     property  OnDownloadStart : TNotifyEvent read fOnDownloadStart write fOnDownloadStart;
     property  OnDownloadDone : TNotifyEvent read fOnDownloadDone write fOnDownloadDone;
     property  OnDownloadStatus : TDownloadStatusEvent read fOnDownloadStatus write fOnDownloadStatus;
@@ -461,7 +464,7 @@ function FantomAPIAvailable : boolean;
 procedure LoadNXTPorts(aStrings : TStrings);
 function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
 function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string;
-procedure LoadLSBlock(var aBlock : NXTLSBlock; str : string; rxCount : integer);
+procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; str : string; rxCount : integer);
 
 implementation
 
@@ -538,13 +541,14 @@ begin
   Result := Copy(ChangeFileExt(Result, ''), 1, 15) + ExtractFileExt(Result);
 end;
 
-procedure LoadLSBlock(var aBlock : NXTLSBlock; str : string; rxCount : integer);
+procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; str : string; rxCount : integer);
 var
   i : integer;
   tmpStr : string;
 begin
+  aBlock.Data[0] := addr;
   // str is hex 2-digit values separated by space or comma
-  i := 0;
+  i := 1;
   while Length(str) > 0 do
   begin
     tmpStr := '$' + Copy(str, 1, 2);
@@ -925,6 +929,7 @@ begin
   Result := fLocalFV;
   if Result = 0 then
   begin
+    pmin := 0; pmaj := 0; fmin := 0; fmaj := 0;
     if NXTGetVersions(pmin, pmaj, fmin, fmaj) then
       Result := fmaj*100 + fmin;
     fLocalFV := Result;
@@ -941,6 +946,7 @@ begin
   begin
     // if we can call a direct command that only exists in the enhanced firmware
     // then we know that it is enhanced.
+    state := 0; clump := 0; pc := 0; 
     if NXTGetVMState(state, clump, pc) then
       Result := ifEnhanced
     else
@@ -1014,6 +1020,11 @@ begin
   buffer.Data[0] := 0;
   if NXTReadIOMap(modID, CommOffsetBtDeviceTableName(idx), count, buffer) then
     Move(PByte(@(buffer.Data[0]))^, Result, count);
+end;
+
+function TBrickComm.GetErrorStatus: integer;
+begin
+  Result := Abs(fStatus);
 end;
 
 end.
