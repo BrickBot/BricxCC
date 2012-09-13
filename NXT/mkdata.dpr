@@ -21,7 +21,10 @@ program mkdata;
 uses
   Classes,
   SysUtils,
-  uCmdLineUtils in '..\uCmdLineUtils.pas';
+  uCmdLineUtils in '..\uCmdLineUtils.pas',
+  ParamUtils in '..\ParamUtils.pas',
+  uVersionInfo in '..\uVersionInfo.pas',
+  uLocalizedStrings in '..\uLocalizedStrings.pas';
 
 procedure PrintUsage;
 begin

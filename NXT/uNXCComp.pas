@@ -227,6 +227,7 @@ type
     function  RemoveArrayDimension(dt : char) : char;
     function  AddArrayDimension(dt : char) : char;
     procedure IncLineNumber;
+    procedure IncLinePosition;
     function AddLocal(name: string; dt: char; const tname : string;
       bConst : boolean; const lenexp : string) : integer;
     procedure AllocGlobal(const tname : string; dt: char; bInline, bSafeCall, bConst, bStatic : boolean);
@@ -362,7 +363,7 @@ type
     procedure DoStrReplace;
     procedure DoStrToNum;
     procedure MoveToCorrectRegister(dt : char);
-    procedure ReportProblem(const lineNo: integer; const fName, msg: string; const err: boolean);
+    procedure ReportProblem(const lineNo, linePos: integer; const fName, msg: string; const err: boolean);
     procedure Scan;
     function  IsWhite(c: char): boolean;
     function  IsRelop(c: char): boolean;
@@ -556,6 +557,7 @@ var
 var
   slevel : integer = 1;
   linenumber : integer;	// current source line number
+  lineposition : integer; // current source line position
   totallines : integer = 0;
 
 var
@@ -787,6 +789,7 @@ begin
   bytesread := fMS.Read(Look, 1);
   inc(fBytesRead, bytesread);
   fCurrentLine := fCurrentLine + Look;
+  IncLinePosition;
   if Look = LF then
   begin
     IncLineNumber;
@@ -797,6 +800,7 @@ begin
   if endofallsource and (slevel > 1) then begin
     // close file pointer
     linenumber := 0;
+    lineposition := 0;
     dec(slevel);
     Look := LF;
     endofallsource := False;
@@ -838,8 +842,8 @@ end;
 {--------------------------------------------------------------}
 { Report Error and Halt }
 
-procedure TNXCComp.ReportProblem(const lineNo: integer; const fName,
-  msg: string; const err : boolean);
+procedure TNXCComp.ReportProblem(const lineNo, linePos: integer;
+  const fName, msg: string; const err : boolean);
 var
   tmp, tmp1, tmp2, tmp3, tmp4 : string;
   stop : boolean;
@@ -864,6 +868,8 @@ begin
         tmp1 := Format('# Warning: %s', [msg]);
       fMessages.Add(tmp1);
       tmp2 := Format('File "%s" ; line %d', [fName, lineNo]);
+      if linePos > 0 then
+        tmp2 := tmp2 + Format(', position %d', [linePos]);
       fMessages.Add(tmp2);
       tmp3 := Format('#   %s', [fCurrentLine]);
       fMessages.Add(tmp3);
@@ -884,7 +890,7 @@ end;
 
 procedure TNXCComp.AbortMsg(s: string);
 begin
-  ReportProblem(linenumber, CurrentFile, s, True);
+  ReportProblem(linenumber, lineposition, CurrentFile, s, True);
 end;
 
 (*
@@ -3772,7 +3778,7 @@ begin
   // add a check here for a parameter that is const but not reference
   // when we are not inlining
   if bIsConst and not bIsRef and not AmInlining and (ptype in NonAggregateTypes) then
-    ReportProblem(linenumber, CurrentFile, sConstNotInline, false);
+    ReportProblem(linenumber, lineposition, CurrentFile, sConstNotInline, false);
 //    AbortMsg(sConstNotInline);
 *)
   with fFuncParams.Add do
@@ -6624,6 +6630,7 @@ begin
   fCurrentLine := '';
   totallines := 1;
   linenumber := 1;
+  lineposition := 1;
   ClearParams;
   fStackDepth   := 0;
   MaxStackDepth := 0;
@@ -6777,12 +6784,12 @@ begin
     on E : EPreprocessorException do
     begin
       fBadProgram := True;
-      ReportProblem(E.LineNo, CurrentFile, E.Message, true);
+      ReportProblem(E.LineNo, E.LinePos, CurrentFile, E.Message, true);
     end;
     on E : Exception do
     begin
       fBadProgram := True;
-      ReportProblem(linenumber, CurrentFile, E.Message, true);
+      ReportProblem(linenumber, lineposition, CurrentFile, E.Message, true);
     end;
   end;
 end;
@@ -7623,7 +7630,7 @@ begin
       idx := Pos('|', tmpMsg);
       tmpFile := Copy(tmpMsg, 1, idx-1);
       Delete(tmpMsg, 1, idx);
-      ReportProblem(StrToIntDef(P.Warnings.Names[i], 0), tmpFile, tmpMsg, false);
+      ReportProblem(StrToIntDef(P.Warnings.Names[i], 0), 0, tmpFile, tmpMsg, false);
     end;
   finally
     P.Free;
@@ -7677,7 +7684,13 @@ end;
 procedure TNXCComp.IncLineNumber;
 begin
   linenumber := linenumber + 1;
+  lineposition := 1;
   inc(totallines);
+end;
+
+procedure TNXCComp.IncLinePosition;
+begin
+  lineposition := lineposition + 1;
 end;
 
 function TNXCComp.APIFuncNameToID(procname: string): integer;

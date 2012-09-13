@@ -451,7 +451,7 @@ object PrefForm: TPrefForm
               Height = 25
               HelpContext = 11053
               Caption = 'Editor Fo&nt ...'
-              TabOrder = 4
+              TabOrder = 5
               OnClick = btnFontClick
             end
             object cbxScrollBars: TComboBox
@@ -462,7 +462,7 @@ object PrefForm: TPrefForm
               HelpContext = 11060
               Style = csDropDownList
               ItemHeight = 13
-              TabOrder = 5
+              TabOrder = 6
               Items.Strings = (
                 'Both'
                 'Horizontal'
@@ -476,7 +476,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11072
               Caption = '&With grouped undo'
-              TabOrder = 20
+              TabOrder = 21
             end
             object chkEnhHomeKey: TCheckBox
               Left = 256
@@ -485,7 +485,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11071
               Caption = 'Enhanced home ke&y'
-              TabOrder = 19
+              TabOrder = 20
             end
             object chkKeepBlanks: TCheckBox
               Left = 256
@@ -494,7 +494,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11069
               Caption = '&Keep trailing blanks'
-              TabOrder = 18
+              TabOrder = 19
             end
             object chkSmartTab: TCheckBox
               Left = 256
@@ -503,7 +503,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11070
               Caption = '&Quick tab'
-              TabOrder = 17
+              TabOrder = 18
             end
             object chkDragDrop: TCheckBox
               Left = 256
@@ -512,7 +512,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11066
               Caption = 'Dra&g and drop editing'
-              TabOrder = 16
+              TabOrder = 17
             end
             object cbHalfPageScroll: TCheckBox
               Left = 256
@@ -521,7 +521,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11056
               Caption = '&HalfPage Scroll'
-              TabOrder = 15
+              TabOrder = 16
             end
             object cbScrollPastEOL: TCheckBox
               Left = 256
@@ -530,7 +530,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11055
               Caption = 'Scroll Past &EOL'
-              TabOrder = 14
+              TabOrder = 15
             end
             object cbHideSelection: TCheckBox
               Left = 8
@@ -548,7 +548,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11068
               Caption = 'Mo&ve cursor on right click'
-              TabOrder = 13
+              TabOrder = 14
             end
             object chkAltSelMode: TCheckBox
               Left = 256
@@ -557,7 +557,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11067
               Caption = 'Alt sets col&umn selection'
-              TabOrder = 12
+              TabOrder = 13
             end
             object CheckMacrosOn: TCheckBox
               Left = 8
@@ -579,7 +579,7 @@ object PrefForm: TPrefForm
               Caption = '&Automatically indent lines'
               Checked = True
               State = cbChecked
-              TabOrder = 11
+              TabOrder = 12
             end
             object CheckShowTemplates: TCheckBox
               Left = 8
@@ -610,7 +610,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11072
               Caption = 'Use Tab to indent'
-              TabOrder = 21
+              TabOrder = 22
             end
             object chkShowSpecialChars: TCheckBox
               Left = 256
@@ -619,7 +619,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11072
               Caption = 'Show special characters'
-              TabOrder = 22
+              TabOrder = 23
             end
             object chkConvertTabs: TCheckBox
               Left = 256
@@ -628,7 +628,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11072
               Caption = 'Convert tabs to spaces'
-              TabOrder = 23
+              TabOrder = 24
             end
             object chkHighlightCurLine: TCheckBox
               Left = 256
@@ -637,7 +637,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11072
               Caption = 'Highlight current line'
-              TabOrder = 24
+              TabOrder = 25
             end
             object chkKeepCaretX: TCheckBox
               Left = 256
@@ -646,7 +646,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11072
               Caption = 'Keep caret x position'
-              TabOrder = 25
+              TabOrder = 26
             end
             object chkAutoMaxLeft: TCheckBox
               Left = 256
@@ -655,7 +655,7 @@ object PrefForm: TPrefForm
               Height = 17
               HelpContext = 11072
               Caption = 'Autosize max left character'
-              TabOrder = 26
+              TabOrder = 27
             end
             object edtMaxLeftChar: TBricxccSpinEdit
               Left = 114
@@ -666,7 +666,7 @@ object PrefForm: TPrefForm
               MaxLength = 4
               MaxValue = 9999
               MinValue = 0
-              TabOrder = 6
+              TabOrder = 7
               Value = 1024
             end
             object inpTabWidth: TBricxccSpinEdit
@@ -677,7 +677,7 @@ object PrefForm: TPrefForm
               HelpContext = 11065
               MaxValue = 16
               MinValue = 1
-              TabOrder = 7
+              TabOrder = 8
               Value = 2
             end
             object inpMaxUndo: TBricxccSpinEdit
@@ -688,7 +688,7 @@ object PrefForm: TPrefForm
               HelpContext = 11064
               MaxValue = 9999
               MinValue = 0
-              TabOrder = 8
+              TabOrder = 9
               Value = 10
             end
             object inpExtraLineSpacing: TBricxccSpinEdit
@@ -700,7 +700,7 @@ object PrefForm: TPrefForm
               MaxLength = 3
               MaxValue = 99
               MinValue = -99
-              TabOrder = 9
+              TabOrder = 10
               Value = 0
             end
             object inpRightEdge: TBricxccSpinEdit
@@ -712,8 +712,19 @@ object PrefForm: TPrefForm
               MaxLength = 3
               MaxValue = 999
               MinValue = 0
-              TabOrder = 10
+              TabOrder = 11
               Value = 80
+            end
+            object chkBracketHighlight: TCheckBox
+              Left = 8
+              Top = 64
+              Width = 227
+              Height = 17
+              HelpContext = 11054
+              Caption = 'Highlight matching delimiters'
+              Checked = True
+              State = cbChecked
+              TabOrder = 4
             end
           end
           object shtEditorColors: TTabSheet
@@ -754,12 +765,26 @@ object PrefForm: TPrefForm
               Height = 13
               Caption = '&Structure line color:'
             end
-            object Label4: TLabel
+            object lblActiveLineColor: TLabel
               Left = 8
               Top = 131
               Width = 78
               Height = 13
               Caption = '&Active line color:'
+            end
+            object lblBracketFG: TLabel
+              Left = 8
+              Top = 155
+              Width = 97
+              Height = 13
+              Caption = 'D&elimiter foreground:'
+            end
+            object lblBracketBG: TLabel
+              Left = 8
+              Top = 179
+              Width = 103
+              Height = 13
+              Caption = 'De&limiter background:'
             end
             object cbxREColor: TColorBox
               Left = 150
@@ -809,6 +834,24 @@ object PrefForm: TPrefForm
               Height = 22
               ItemHeight = 16
               TabOrder = 5
+            end
+            object cbxBracketFG: TColorBox
+              Left = 150
+              Top = 150
+              Width = 128
+              Height = 22
+              Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeNone]
+              ItemHeight = 16
+              TabOrder = 6
+            end
+            object cbxBracketBG: TColorBox
+              Left = 150
+              Top = 174
+              Width = 128
+              Height = 22
+              Style = [cbStandardColors, cbExtendedColors, cbSystemColors, cbIncludeNone]
+              ItemHeight = 16
+              TabOrder = 7
             end
           end
           object shtExperts: TTabSheet
@@ -1087,7 +1130,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11092
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNQCIncludePathExit
             end
@@ -1160,7 +1203,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11101
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtLCCIncludePathExit
             end
@@ -1249,7 +1292,7 @@ object PrefForm: TPrefForm
               Height = 21
               HelpContext = 11107
               DropDownCount = 4
-              ItemHeight = 0
+              ItemHeight = 13
               TabOrder = 0
               OnExit = edtNBCIncludePathExit
             end
@@ -2269,7 +2312,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnChange = cboLangTempChange
         end
@@ -2499,7 +2542,7 @@ object PrefForm: TPrefForm
           Height = 21
           HelpContext = 11224
           Style = csDropDownList
-          ItemHeight = 0
+          ItemHeight = 13
           TabOrder = 0
           OnChange = cboLanguagesChange
         end

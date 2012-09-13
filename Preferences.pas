@@ -271,7 +271,7 @@ type
     chkHighlightCurLine: TCheckBox;
     chkKeepCaretX: TCheckBox;
     chkAutoMaxLeft: TCheckBox;
-    Label4: TLabel;
+    lblActiveLineColor: TLabel;
     chkNewMenu: TCheckBox;
     cbxREColor: TColorBox;
     cbxForeground: TColorBox;
@@ -367,6 +367,11 @@ type
     btnShowSPCDefs: TButton;
     btnShowSPMEM: TButton;
     radPrefSPC: TRadioButton;
+    chkBracketHighlight: TCheckBox;
+    lblBracketFG: TLabel;
+    cbxBracketFG: TColorBox;
+    lblBracketBG: TLabel;
+    cbxBracketBG: TColorBox;
     procedure FormClose(Sender: TObject; var Action: TCloseAction);
     procedure FormShow(Sender: TObject);
     procedure CheckConnectClick(Sender: TObject);
@@ -3951,6 +3956,9 @@ begin
   chkHighlightCurLine.Checked := HighlightCurLine;
   chkKeepCaretX.Checked       := KeepCaretX;
   chkAutoMaxLeft.Checked      := AutoMaxLeft;
+  chkBracketHighlight.Checked := HighlightBrackets;
+  cbxBracketFG.Selected       := BracketHighlightForeground;
+  cbxBracketBG.Selected       := BracketHighlightBackground;
 
   edtUserDataPath.Text        := UserDataLocalPath;
   edtSymLibPath.Text          := SymFileLibraryPath;
@@ -4149,6 +4157,9 @@ begin
   HighlightCurLine    := chkHighlightCurLine.Checked;
   KeepCaretX          := chkKeepCaretX.Checked;
   AutoMaxLeft         := chkAutoMaxLeft.Checked;
+  HighlightBrackets   := chkBracketHighlight.Checked;
+  BracketHighlightForeground := cbxBracketFG.Selected;
+  BracketHighlightBackground := cbxBracketBG.Selected;
 
   UserDataLocalPath   := edtUserDataPath.Text;
   SymFileLibraryPath  := edtSymLibPath.Text;

@@ -663,7 +663,7 @@ type
     procedure HandleTransferClick(Sender: TObject);
     procedure DoSaveAll;
     function  IsStandardFirmware(aFile : string) : Boolean;
-    function  SwitchToFile(fname: string; lineNo : integer = -1): Boolean;
+    function  SwitchToFile(fname: string; lineNo : integer = -1; linePos : integer = -1): Boolean;
     procedure ConfigureOtherFirmwareOptions;
     function DoCompileAction(bDown, bRun : Boolean) : boolean;
     procedure DoToolbarExecute(act: TCustomAction; bar: TOfficeGradientPanel);
@@ -722,7 +722,7 @@ type
     function ActiveLanguageName : string;
     procedure ActivateEditorForm(index : Integer); overload;
     procedure ActivateEditorForm(E : TEditorForm); overload;
-    procedure OpenFile(aPath : string; lineNo : integer = -1);
+    procedure OpenFile(aPath : string; lineNo : integer = -1; linePos : integer = -1);
     procedure SaveDesktop(aFile : string);
     procedure LoadDesktop(aFile : string);
     property EditorFormCount : integer read GetEditorFormCount;
@@ -1617,17 +1617,17 @@ begin
   end;
 end;
 
-procedure TMainForm.OpenFile(aPath: string; lineNo : integer);
+procedure TMainForm.OpenFile(aPath: string; lineNo : integer; linePos : integer);
 var
   F : TEditorForm;
 begin
   if not FileExists(aPath) then Exit;
-  if not SwitchToFile(aPath, lineNo) then
+  if not SwitchToFile(aPath, lineNo, linePos) then
   begin
     F := DoCreateEditorForm;
     if Assigned(F) then
     begin
-      F.OpenFile(aPath, lineNo);
+      F.OpenFile(aPath, lineNo, linePos);
       AddRecentFile(aPath);
     end;
   end;
@@ -2202,7 +2202,7 @@ begin
 {$ENDIF}
 end;
 
-function TMainForm.SwitchToFile(fname: string; lineNo : integer): Boolean;
+function TMainForm.SwitchToFile(fname: string; lineNo : integer; linePos : integer): Boolean;
 var
   i : Integer;
   EdFrm : TEditorForm;
@@ -2216,7 +2216,7 @@ begin
     begin
       Result := True;
       ActivateEditorForm(i);
-      EdFrm.SelectLine(lineNo);
+      EdFrm.SelectLine(lineNo, linePos);
       Break;
     end;
   end;

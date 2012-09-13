@@ -98,6 +98,9 @@ var
   HighlightCurLine : Boolean;
   KeepCaretX : Boolean;
   AutoMaxLeft : Boolean;
+  BracketHighlightForeground : TColor;
+  BracketHighlightBackground : TColor;
+  HighlightBrackets : Boolean;
 
 { Gutter }
 var
@@ -284,6 +287,8 @@ const
   K_REDGE_COLOR_DEFAULT     = clSilver;
   K_STRUCT_COLOR_DEFAULT    = clNone;
   K_GUTTER_COLOR_DEFAULT    = clSilver;
+  K_BH_FG_COLOR_DEFAULT     = clNone;
+  K_BH_BG_COLOR_DEFAULT     = clSilver;
 {$ELSE}
   K_EDITOR_FONTNAME_DEFAULT = 'Courier New';
   K_EDITOR_COLOR_DEFAULT    = clWindow;
@@ -293,6 +298,8 @@ const
   K_REDGE_COLOR_DEFAULT     = clSilver;
   K_STRUCT_COLOR_DEFAULT    = clNone;
   K_GUTTER_COLOR_DEFAULT    = clBtnFace;
+  K_BH_FG_COLOR_DEFAULT     = clNone;
+  K_BH_BG_COLOR_DEFAULT     = clMenu;
 {$ENDIF}
 
 procedure ResetProcListValues(reg : TRegistry);
@@ -1238,6 +1245,9 @@ begin
     AlignMode           := TGXAlignMode(Reg_ReadInteger(reg, 'AlignMode', Ord(gamFirstToken)));
     AlignToken          := Reg_ReadString(reg, 'AlignToken', '=');
     AlignTokenList      := Reg_ReadString(reg, 'AlignTokenList', '==,=,//,{,/*,"""",:,+');
+    BracketHighlightForeground := Reg_ReadColor(reg, 'BracketHighlightFG', K_BH_FG_COLOR_DEFAULT);
+    BracketHighlightBackground := Reg_ReadColor(reg, 'BracketHighlightBG', K_BH_BG_COLOR_DEFAULT);
+    HighlightBrackets   := Reg_ReadBool(reg, 'HighlightBrackets', true);
   finally
     reg.CloseKey;
   end;
@@ -1541,6 +1551,9 @@ begin
     reg.WriteInteger('AlignMode', Ord(AlignMode));
     reg.WriteString('AlignToken', AlignToken);
     reg.WriteString('AlignTokenList', AlignTokenList);
+    Reg_WriteColor(reg, 'BracketHighlightFG', BracketHighlightForeground);
+    Reg_WriteColor(reg, 'BracketHighlightBG', BracketHighlightBackground);
+    reg.WriteBool('HighlightBrackets', HighlightBrackets);
   finally
     reg.CloseKey;
   end;
@@ -1799,6 +1812,9 @@ initialization
   HighlightCurLine    := false;
   KeepCaretX          := false;
   AutoMaxLeft         := false;
+  BracketHighlightForeground := K_BH_FG_COLOR_DEFAULT;
+  BracketHighlightBackground := K_BH_BG_COLOR_DEFAULT;
+  HighlightBrackets   := true;
 
   // compiler defaults
   CompilerSwitches        := '';

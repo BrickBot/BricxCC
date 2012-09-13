@@ -51,8 +51,6 @@ type
     procedure FormDestroy(Sender: TObject);
     procedure TheErrorsMouseMove(Sender: TObject; Shift: TShiftState; X,
       Y: Integer);
-    procedure TheEditorProcessUserCommand(Sender: TObject;
-      var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
   private
     { Private declarations }
     fFileName : string;
@@ -171,11 +169,15 @@ type
       Shift: TShiftState; X, Y: Integer);
     procedure TheEditorSpecialLineColors(Sender: TObject; Line: Integer;
       var Special: Boolean; var FG, BG: TColor);
+    procedure TheEditorProcessUserCommand(Sender: TObject;
+      var Command: TSynEditorCommand; var AChar: Char; Data: Pointer);
+    procedure TheEditorPaintTransient(Sender: TObject; Canvas: TCanvas;
+      TransientType: TTransientType);
   public
     {File handling}
     IsNew:boolean;                     // Whether it is a new file
     procedure NewFile(fname:string);   // Create a new file in the editor
-    procedure OpenFile(fname:string; lineNo : integer = -1);  // Open an existing file
+    procedure OpenFile(fname:string; lineNo : integer = -1; linePos : integer = -1);  // Open an existing file
     procedure SaveFile;                // Saves the file
     procedure SaveFileAs(fname:string);// Saves the file as fname
     procedure InsertFile(fname:string);// Insert file at cursor
@@ -210,7 +212,7 @@ type
     procedure ExecReplace;
     procedure AddErrorMessage(const errMsg : string);
     procedure ShowTheErrors;
-    procedure SelectLine(lineNo : integer);
+    procedure SelectLine(lineNo : integer; linePos : integer = -1);
     function  IsMaximized : Boolean;
     procedure UpdatePositionOnStatusBar;
     property  Filename : string read fFilename write SetFilename;
@@ -295,7 +297,7 @@ begin
   frmCodeExplorer.RefreshEntireTree;
 end;
 
-procedure TEditorForm.OpenFile(fname:string; lineNo : integer);
+procedure TEditorForm.OpenFile(fname:string; lineNo : integer; linePos : integer);
 var
   ext : string;
   D : TRXEDumper;
@@ -367,7 +369,7 @@ begin
     frmCodeExplorer.RefreshEntireTree;
     if FileIsROPS(Highlighter) then
       ce.Script.Assign(TheEditor.Lines);
-    SelectLine(lineNo);
+    SelectLine(lineNo, linePos);
   end;
 end;
 
@@ -582,22 +584,40 @@ end;
 
 procedure TEditorForm.TheErrorsClick(Sender: TObject);
 var
-  i, epos, lnumb, c : integer;
+  i, p, q, lnumb, lpos, c : integer;
   str, tmp : string;
   bThisFile : boolean;
 begin
   if TheErrors.ItemIndex <> -1 then
     TheErrors.Hint := TheErrors.Items[TheErrors.ItemIndex];
   lnumb := -1;
+  lpos  := -1;
   for i := TheErrors.ItemIndex downto 0 do
   begin
     str := TheErrors.Items[i];
-    epos := Pos('line ',str);
-    if epos > 0 then
+    p := Pos('line ',str);
+    if p > 0 then
     begin
-     tmp := Copy(str,epos+4,6); // up to 6 digit line numbers
-     Val(tmp,lnumb,c);
-     break;
+      p := p + 4;
+      q := Pos(', position ', str);
+      if q > 0 then
+        tmp := Copy(str, p, q-p)
+      else
+        tmp := Copy(str, p, 6); // up to 6 digit line numbers
+      Val(tmp, lnumb, c);
+      if q > 0 then
+      begin
+        tmp := str;
+        System.Delete(tmp, 1, q+10);
+        p := Pos(':', tmp);
+        if p > 0 then
+          System.Delete(tmp, p, MaxInt);
+        p := Pos(',', tmp);
+        if p > 0 then
+          System.Delete(tmp, p, MaxInt);
+        Val(tmp, lpos, c);
+      end;
+      break;
     end;
     if UsesNBCCompiler(Highlighter) then
       break;
@@ -620,7 +640,7 @@ begin
     end;
     if bThisFile then
     begin
-      SelectLine(lnumb);
+      SelectLine(lnumb, lpos);
     end
     else
     begin
@@ -1822,13 +1842,19 @@ begin
   TheEditor.Refresh;
 end;
 
-procedure TEditorForm.SelectLine(lineNo: integer);
+procedure TEditorForm.SelectLine(lineNo: integer; linePos : integer);
 begin
   if lineNo > -1 then
   begin
     TheEditor.BlockBegin := Point(1, lineNo);
     TheEditor.BlockEnd   := Point(Length(TheEditor.Lines[lineNo-1])+1, lineNo);
-    TheEditor.CaretXY    := TheEditor.BlockBegin;
+    if linePos > -1 then
+    begin
+      TheEditor.CaretY   := TheEditor.BlockBegin.Y;
+      TheEditor.CaretX   := linePos;
+    end
+    else
+      TheEditor.CaretXY  := TheEditor.BlockBegin;
   end;
 end;
 
@@ -2240,6 +2266,7 @@ begin
     OnReplaceText := TheEditorReplaceText;
     OnSpecialLineColors := TheEditorSpecialLineColors;
     OnStatusChange := TheEditorStatusChange;
+    OnPaintTransient := TheEditorPaintTransient;
     StructureLineColor := clNone;
     OnMouseOverToken := TheEditorMouseOverToken;
   end;
@@ -2314,6 +2341,86 @@ begin
     fPaths.Free;
   end;
 end;
+
+procedure TEditorForm.TheEditorPaintTransient(Sender: TObject; Canvas: TCanvas;
+  TransientType: TTransientType);
+
+const
+  BracketSet = ['{','[','(','}',']',')'];
+  OpenChars:array[0..2] of Char=('{','[','(');
+  CloseChars:array[0..2] of Char=('}',']',')');
+
+  function CharToPixels(P: TPoint): TPoint;
+  begin
+    Result:=P;
+    Result:=TheEditor.RowColumnToPixels(Result);
+    Result.Y:=Result.Y-1;
+  end;
+
+var
+  P, Pix: TPoint;
+  D     : TPoint;
+  S: String;
+  I: Integer;
+  Attri: TSynHighlighterAttributes;
+begin
+  if not HighlightBrackets then Exit;
+  
+  P := TheEditor.CaretXY;
+  D := TheEditor.DisplayXY;
+
+  TheEditor.GetHighlighterAttriAtRowCol(P, S, Attri);
+
+  if (TheEditor.CaretX<=length(TheEditor.LineText) + 1) and
+     (TheEditor.Highlighter.SymbolAttribute = Attri) then
+  begin
+    for i := low(OpenChars) to High(OpenChars) do
+    begin
+      if (S = OpenChars[i]) or (S = CloseChars[i]) then
+      begin
+        Pix := CharToPixels(D);
+        TheEditor.Canvas.Brush.Style := bsClear;
+        TheEditor.Canvas.Font.Assign(TheEditor.Font);
+        TheEditor.Canvas.Font.Style := Attri.Style;
+
+        if (TransientType = ttAfter) then
+        begin
+          if BracketHighlightForeground = clNone then
+            TheEditor.Canvas.Font.Color := Attri.Foreground
+          else
+            TheEditor.Canvas.Font.Color  := BracketHighlightForeground;
+          if BracketHighlightBackground = clNone then
+            TheEditor.Canvas.Brush.Color := Attri.Background
+          else
+            TheEditor.Canvas.Brush.Color := BracketHighlightBackground;
+        end
+        else
+        begin
+          TheEditor.Canvas.Font.Color := Attri.Foreground;
+          TheEditor.Canvas.Brush.Color := Attri.Background;
+        end;
+
+        if TheEditor.Canvas.Font.Color = clNone then
+          TheEditor.Canvas.Font.Color := TheEditor.Font.Color;
+        if TheEditor.Canvas.Brush.Color = clNone then
+          TheEditor.Canvas.Brush.Color := TheEditor.Color;
+
+        TheEditor.Canvas.TextOut(Pix.X, Pix.Y, S);
+        P := TheEditor.GetMatchingBracketEx(P, True);
+
+        if (P.X > 0) and (P.Y > 0) then
+        begin
+          Pix := CharToPixels(P);
+          if S = OpenChars[i] then
+            TheEditor.Canvas.TextOut(Pix.X, Pix.Y, CloseChars[i])
+          else TheEditor.Canvas.TextOut(Pix.X, Pix.Y, OpenChars[i]);
+        end;
+      end; //if
+    end;//for i :=
+    TheEditor.Canvas.Brush.Style := bsSolid;
+  end;
+end;
+
 
 {$IFDEF FPC}
 initialization
