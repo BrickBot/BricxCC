@@ -575,6 +575,7 @@ begin
                 begin
 //                  DoWriteSymbolTable(SC);
 {$IFDEF CAN_DOWNLOAD}
+                  tmpName := ChangeFileExt(MakeValidNXTFilename(NXTName), '.sxe');
                   if Download then
                   begin
                     // download the compiled code to the brick
@@ -836,6 +837,7 @@ var
   X : TStringStream;
   tmp : string;
 begin
+  tmp := '';
   X := TStringStream.Create(tmp);
   try
     case idx of
