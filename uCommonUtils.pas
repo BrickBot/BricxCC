@@ -519,7 +519,7 @@ begin
   for i := len downto 1 do begin
     Ch := aValue[i];
     if Ch = '1' then
-      Result := Result + (1 shl (len-i))
+      Result := Result + Cardinal(1 shl (len-i))
     else if Ch = '0' then
       continue
     else begin
