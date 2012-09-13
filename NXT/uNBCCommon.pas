@@ -1415,11 +1415,11 @@ end;
 procedure NBCFormatSettings(var aFS : TFormatSettings; const aDS : Char);
 begin
   aFS.DecimalSeparator  := aDS;
-  aFS.ThousandSeparator := ThousandSeparator;
-  aFS.CurrencyFormat    := CurrencyFormat;
-  aFS.NegCurrFormat     := NegCurrFormat;
-  aFS.CurrencyDecimals  := CurrencyDecimals;
-  aFS.CurrencyString    := CurrencyString;
+  aFS.ThousandSeparator := #0;
+  aFS.CurrencyFormat    := 0;
+  aFS.NegCurrFormat     := 0;
+  aFS.CurrencyDecimals  := 2;
+  aFS.CurrencyString    := '$';
 end;
 
 function NBCFloatToStr(const AValue: Double): string;
@@ -1431,7 +1431,7 @@ function NBCStrToFloat(const AValue: string): Double;
 var
   FS : TFormatSettings;
 begin
-  FS.DecimalSeparator := DecimalSeparator;
+  FS.DecimalSeparator := '.';
   NBCFormatSettings(FS, '.');
   Result := StrToFloat(AValue, FS);
 end;
@@ -1440,7 +1440,7 @@ function NBCStrToFloatDef(const AValue: string; const aDef : Double): Double;
 var
   FS : TFormatSettings;
 begin
-  FS.DecimalSeparator := DecimalSeparator;
+  FS.DecimalSeparator := '.';
   NBCFormatSettings(FS, '.');
   Result := StrToFloatDef(AValue, aDef, FS);
 end;
@@ -1451,7 +1451,7 @@ var
   FS : TFormatSettings;
   val : Extended;
 begin
-  FS.DecimalSeparator := DecimalSeparator;
+  FS.DecimalSeparator := '.';
   NBCFormatSettings(FS, '.');
   Result := TextToFloat(Buffer, val, ValueType, FS);
   Extended(Value) := 0;
@@ -1462,7 +1462,7 @@ function NBCFormat(const FmtStr: string; const theArgs: array of const) : string
 var
   FS : TFormatSettings;
 begin
-  FS.DecimalSeparator := DecimalSeparator;
+  FS.DecimalSeparator := '.';
   NBCFormatSettings(FS, '.');
   Result := Format(FmtStr, theArgs, FS);
 end;

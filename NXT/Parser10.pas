@@ -19,7 +19,13 @@ unit Parser10;
 
 {.$DEFINE DEBUG} { by default make it lean and efficient }
 {$IFNDEF DEBUG}
-  {$D-} {$L-} {$Q-} {$R-} {$S-}
+  {$D-}
+{$IFNDEF FPC}
+  {$L-}
+{$ENDIF}
+  {$Q-}
+  {$R-}
+  {$S-}
 {$ENDIF}
 
 {$I+} { I/O checking ON }
