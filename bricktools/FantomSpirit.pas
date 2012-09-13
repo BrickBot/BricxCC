@@ -325,13 +325,14 @@ type
 implementation
 
 uses
-  rcx_constants, Contnrs, uCommonUtils, uDebugLogging,
+  Contnrs, Math, rcx_constants, uCommonUtils, uDebugLogging,
   {$IFNDEF FPC}
-  Windows, FANTOM, Math{, visa}
+  Windows, FANTOM{, visa}
   {$ELSE}
   {$IFDEF Darwin}Unix, fantomosx{$ENDIF}
   {$IFNDEF Darwin}
   {$IFDEF Unix}Unix, fantomfpc{$ENDIF}
+  {$IFDEF Linix}Unix, fantomfpc{$ENDIF}
   {$IFDEF Windows}Windows, FANTOM{$ENDIF}
   {$ENDIF}
   {$ENDIF};
@@ -1585,7 +1586,7 @@ function jchGetTickCount : Cardinal;
 var
   t : timeval;
 begin
-  GetTimeOfDay(@t, nil);
+  fpGetTimeOfDay(@t, nil);
   Result := t.tv_usec div 1000; // convert microseconds to milliseconds
 end;
 {$ENDIF}
