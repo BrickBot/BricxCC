@@ -27,7 +27,7 @@ Modification history:
 
 Known Issues:
 -----------------------------------------------------------------------------}
-{$A+,B-,C-,D-,E-,I+,J-,O+,Q-,R-,S-,V-}
+{$A+,B-,C-,D-,I+,J-,O+,Q-,R-,S-,V-}
 unit mwGenericLex;
 
 {$IFDEF FPC}

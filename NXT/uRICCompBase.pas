@@ -541,7 +541,7 @@ var
 begin
   if aLangName in [lnNBC, lnNXC] then
   begin
-    Result := Format('0x%2.2x, 0x%2.2x', [Lo(val), Hi(val)]);
+    Result := Format('0x%2.2x, 0x%2.2x', [Lo(Word(val)), Hi(Word(val))]);
   end
   else
   begin
