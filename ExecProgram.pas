@@ -111,7 +111,7 @@ begin
       // handle the process creation failure
       LastError := GetLastError;
       if LastError = ERROR_FILE_NOT_FOUND then begin
-        tmpStr := Copy(tmpStr, 1, Pos(' ', tmpStr));
+        tmpStr := ExtractFileName(Copy(tmpStr, 1, Pos('.exe', tmpStr)+3));
         Error := EOSError.CreateFmt(sUnableToExecute, [Path, tmpStr, ExtractFilePath(Application.ExeName)]);
         Error.ErrorCode := LastError;
         raise Error;

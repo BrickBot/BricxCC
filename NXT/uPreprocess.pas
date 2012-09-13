@@ -26,9 +26,11 @@ type
   EPreprocessorException = class(Exception)
   private
     fLineNo : integer;
+    fLinePos : integer;
   public
     constructor Create(const msg : string; const lineno : integer);
     property LineNo : integer read fLineNo;
+    property LinePos : integer read fLinePos;
   end;
 
   { TMapList }
@@ -1370,6 +1372,7 @@ constructor EPreprocessorException.Create(const msg: string;
 begin
   inherited Create(msg);
   fLineNo := lineno;
+  fLinePos := 0;
 end;
 
 { TMapList }

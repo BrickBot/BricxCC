@@ -568,7 +568,7 @@ function ReadAndShowErrorFile(DisplayErrorsProc : TDisplayErrorsProc;
   lstErrors : TListBox; const fName, aCaption, tempDir, ext : string) : boolean;
 var
   tmpSL : TStrings;
-  i, j, p, lineNo : integer;
+  i, j, p, q, lineNo, linePos : integer;
   tmpstr, errMsg, tmpName, testStr : string;
   bErrorsOrWarnings : boolean;
 begin
@@ -698,6 +698,7 @@ begin
                 // modified approach to error/warning output (2009-03-14 JCH)
                 tmpName := '';
                 // pattern is File "filaname" ; line NNNN
+                // (optionally followed by , position NNNN)
                 p := Pos('File "', testStr);
                 if p > 0 then
                 begin
@@ -731,16 +732,28 @@ begin
                   // get the line number
                   p := p + 7;
 //                  p := p + Length(tmpName) + 4 + 5;
-                  errMsg := Copy(testStr, p, MaxInt);
+                  q := Pos(', position ', testStr);
+                  if q > 0 then
+                    errMsg := Copy(testStr, p, q-p)
+                  else
+                    errMsg := Copy(testStr, p, MaxInt);
                   lineNo := StrToIntDef(errMsg, -1);
+                  linePos := -1;
+                  if q > 0 then
+                  begin
+                    System.Delete(testStr, 1, q+10);
+                    linePos := StrToIntDef(testStr, -1);
+                  end;
                   if lineNo <> -1 then
                   begin
                     lineNo := GetLineNumber(lineNo);
+                    errMsg := 'line ' + IntToStr(lineNo);
+//                    if linePos <> -1 then
+//                      errMsg := errMsg + ', position ' + IntToStr(linePos);
                     if AnsiUppercase(tmpName) = AnsiUppercase(fName) then
-                      errMsg := 'line ' + IntToStr(lineNo) + ':' + tmpstr
+                      errMsg := errMsg + ':' + tmpstr
                     else
-                      errMsg := 'line ' + IntToStr(lineNo) + ', file "' + tmpName + '":' + tmpstr;
-//                    errMsg := 'line ' + IntToStr(lineNo) + ':' + tmpstr;
+                      errMsg := errMsg + ', file "' + tmpName + '":' + tmpstr;
                   end;
                 end;
               end;
@@ -834,11 +847,16 @@ begin
   end;
 end;
 
-function InternalNBCCompile(const cmdLine : string;
+function InternalNBCCompile(cmdLine : string;
   sceHandler : TCompilerStatusChangeEvent) : integer;
 var
   C : TNBCCompiler;
+  i : integer;
 begin
+  // first trim off the executable at the start of the command line
+  i := Pos('nbc.exe', cmdLine);
+  if i > 0 then
+    System.Delete(cmdLine, 1, i-1);
   Result := 0;
   C := TNBCCompiler.Create;
   try
