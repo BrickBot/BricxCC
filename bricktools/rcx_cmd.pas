@@ -149,7 +149,7 @@ function RCX_VALUE(t : TRcxValueType; d : smallint) : integer;
 implementation
 
 uses
-  SysUtils, uCommonUtils;
+  SysUtils, uUtilities;
 
 function RCX_VALUE(t : TRcxValueType; d : smallint) : integer;
 begin

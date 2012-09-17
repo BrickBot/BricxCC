@@ -291,7 +291,7 @@ type
 implementation
 
 uses
-  RcxLog, srecord, rcx_cmd, NQCSerialWin, Math, uCommonUtils, uGlobals;
+  RcxLog, srecord, rcx_cmd, NQCSerialWin, Math, uUtilities, uGlobals, uCommonUtils;
 
 { TFakeSpirit }
 

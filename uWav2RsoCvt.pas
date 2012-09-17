@@ -31,7 +31,7 @@ procedure ConvertRSO2Wave(filename, outdir : string; msgs : TStrings);
 implementation
 
 uses
-  SysUtils, uCommonUtils, uSrc, uSrcCommon, uLocalizedStrings;
+  SysUtils, uUtilities, uStreamRW, uSrc, uSrcCommon, uLocalizedStrings;
 
 type
   RIFFHeader = record
@@ -433,11 +433,11 @@ begin
       msIn.LoadFromFile(filename);
       msIn.Position := 0;
       // read RSO header
-      ReadWordFromStream(msIn, W, False); // format $0100
+      ReadWord(msIn, W, False); // format $0100
       bUseComp := (W = $0101);
-      ReadWordFromStream(msIn, size, False);
-      ReadWordFromStream(msIn, srate, False);
-      ReadWordFromStream(msIn, W, False); // play mode
+      ReadWord(msIn, size, False);
+      ReadWord(msIn, srate, False);
+      ReadWord(msIn, W, False); // play mode
       // begin writing the wave file
       hdrRiff.ChunkID := 'RIFF';
       hdrRiff.ChunkFormat := 'WAVE';
@@ -446,11 +446,11 @@ begin
       hdrRiff.ChunkSize := 4 + (8 + SubChunk1Size) + (8 + SubChunk2Size);
       // write values to stream
       msOut.Write(hdrRiff.ChunkID, 4);
-      WriteCardinalToStream(msOut, hdrRiff.ChunkSize);
+      WriteCardinal(msOut, hdrRiff.ChunkSize);
       msOut.Write(hdrRiff.ChunkFormat, 4);
       // write values to stream
       msOut.Write('fmt ', 4);
-      WriteCardinalToStream(msOut, SubChunk1Size);
+      WriteCardinal(msOut, SubChunk1Size);
       msData := TMemoryStream.Create;
       try
         msData.CopyFrom(msIn, msIn.Size - 8);
@@ -458,19 +458,19 @@ begin
           // decompress msData
           ImaAdpcmDecompress(msData);
         end;
-        WriteWordToStream(msOut, WAVE_FORMAT_PCM);
-        WriteWordToStream(msOut, 1); // num channels
-        WriteCardinalToStream(msOut, srate); // sample rate
-        WriteCardinalToStream(msOut, srate); // byte rate
-        WriteWordToStream(msOut, 1); // block align
-        WriteWordToStream(msOut, 8); // bits per sample
+        WriteWord(msOut, WAVE_FORMAT_PCM);
+        WriteWord(msOut, 1); // num channels
+        WriteCardinal(msOut, srate); // sample rate
+        WriteCardinal(msOut, srate); // byte rate
+        WriteWord(msOut, 1); // block align
+        WriteWord(msOut, 8); // bits per sample
         with hdrWaveData do
         begin
           SubChunkID := 'data';
           SubChunkSize := msData.Size;
           // write values to stream
           msOut.Write(SubChunkID, 4);
-          WriteCardinalToStream(msOut, SubChunkSize);
+          WriteCardinal(msOut, SubChunkSize);
         end;
         msOut.CopyFrom(msData, 0);
       finally
@@ -520,20 +520,20 @@ begin
       msIn.Position := 0;
       // begin processing the wave file
       msIn.Read(hdrRiff.ChunkID, 4);
-      ReadCardinalFromStream(msIn, hdrRiff.ChunkSize);
+      ReadCardinal(msIn, hdrRiff.ChunkSize);
       msIn.Read(hdrRiff.ChunkFormat, 4);
       if (hdrRiff.ChunkID = 'RIFF') and (hdrRiff.ChunkFormat = 'WAVE') then
       begin
         with hdrWaveFmt do
         begin
           msIn.Read(SubChunkID, 4);
-          ReadCardinalFromStream(msIn, SubChunkSize);
-          ReadWordFromStream(msIn, AudioFormat);
-          ReadWordFromStream(msIn, NumChannels);
-          ReadCardinalFromStream(msIn, SampleRate);
-          ReadCardinalFromStream(msIn, ByteRate);
-          ReadWordFromStream(msIn, BlockAlign);
-          ReadWordFromStream(msIn, BitsPerSample);
+          ReadCardinal(msIn, SubChunkSize);
+          ReadWord(msIn, AudioFormat);
+          ReadWord(msIn, NumChannels);
+          ReadCardinal(msIn, SampleRate);
+          ReadCardinal(msIn, ByteRate);
+          ReadWord(msIn, BlockAlign);
+          ReadWord(msIn, BitsPerSample);
         end;
         if (UpperCase(hdrWaveFmt.SubChunkID) = 'FMT ') and
            (hdrWaveFmt.AudioFormat in [WAVE_FORMAT_PCM,
@@ -547,7 +547,7 @@ begin
               msgs.Add('wave header missing FmtExt chunk');
               Exit;
             end;
-            ReadWordFromStream(msIn, wExtSize);
+            ReadWord(msIn, wExtSize);
             dec(hdrLen, 2);
           end;
           if wExtSize > hdrLen then begin
@@ -564,7 +564,7 @@ begin
                 msgs.Add('Can only handle 4-bit IMA ADPCM in wav files');
                 Exit;
               end;
-              ReadWordFromStream(msIn, wSamplesPerBlock);
+              ReadWord(msIn, wSamplesPerBlock);
               bytesPerBlock := ImaBytesPerBlock(hdrWaveFmt.NumChannels, wSamplesPerBlock);
               if (bytesPerBlock > hdrWaveFmt.BlockAlign) or
                  ((wSamplesPerBlock mod 8) <> 1) then begin
@@ -587,13 +587,13 @@ begin
                 msgs.Add('Can only handle 4-bit MS ADPCM in wav files');
                 Exit;
               end;
-              ReadWordFromStream(msIn, wSamplesPerBlock);
+              ReadWord(msIn, wSamplesPerBlock);
               bytesPerBlock := AdpcmBytesPerBlock(hdrWaveFmt.NumChannels, wSamplesPerBlock);
               if bytesPerBlock > hdrWaveFmt.BlockAlign then begin
                 msgs.Add(Format('MS ADPCM: samplesPerBlock (%d) incompatible with blockAlign (%d)', [wSamplesPerBlock, hdrWaveFmt.BlockAlign]));
                 Exit;
               end;
-              ReadWordFromStream(msIn, nCoefs);
+              ReadWord(msIn, nCoefs);
               if (nCoefs < 7) or (nCoefs > $100) then begin
                 msgs.Add(Format('ADPCM file nCoefs (%d) makes no sense', [nCoefs]));
                 Exit;
@@ -610,7 +610,7 @@ begin
               SetLength(iCoefs, nCoefs*2);
               i := 0;
               while (hdrLen >= 2) and (i < 2*nCoefs) do begin
-                ReadWordFromStream(msIn, W);
+                ReadWord(msIn, W);
                 iCoefs[i] := SmallInt(W);
                 dec(hdrLen, 2);
                 inc(i);
@@ -625,7 +625,7 @@ begin
           with hdrWaveData do
           begin
             msIn.Read(SubChunkID, 4);
-            ReadCardinalFromStream(msIn, SubChunkSize);
+            ReadCardinal(msIn, SubChunkSize);
           end;
           // it is possible that instead of a DATA chunk we have some other chunk type
           // in such a situation just keep reading chunks until we find a DATA chunk
@@ -639,7 +639,7 @@ begin
               with hdrWaveData do
               begin
                 msIn.Read(SubChunkID, 4);
-                ReadCardinalFromStream(msIn, SubChunkSize);
+                ReadCardinal(msIn, SubChunkSize);
               end;
           end;
           if UpperCase(hdrWaveData.SubChunkID) = 'DATA' then
@@ -754,16 +754,16 @@ begin
                   W := $0101
                 else
                   W := $0100;
-                WriteWordToStream(msOut, W, False);
+                WriteWord(msOut, W, False);
                 // write chunk size (bytes of data) (big endian)
                 W := Word(msData.Size);
-                WriteWordToStream(msOut, W, False);
+                WriteWord(msOut, W, False);
                 // write the sample rate (big endian)
                 W := Word(hdrWaveFmt.SampleRate);
-                WriteWordToStream(msOut, W, False);
+                WriteWord(msOut, W, False);
                 // write a play mode word (big endian)
                 W := 0; // playmode: 0 == do not loop
-                WriteWordToStream(msOut, W, False);
+                WriteWord(msOut, W, False);
                 // copy over the wave data
                 msOut.CopyFrom(msData, 0);
                 // save the output
