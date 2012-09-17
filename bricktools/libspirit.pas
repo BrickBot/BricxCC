@@ -182,7 +182,7 @@ function FantomSpiritNXTFirmwareVersion(fsh : FantomHandle) : integer; cdecl; ex
 function FantomSpiritNXTInstalledFirmware(fsh : FantomHandle) : byte; cdecl; external;
 procedure FantomSpiritNXTGetBrickName(fsh : FantomHandle; name : PChar); cdecl; external;
 function NameToNXTFileType(name : PChar) : integer; cdecl; external;
-procedure LoadLSBlock(var aBlock : NXTLSBlock; buf : PChar; rxCount : integer); cdecl; external;
+procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; buf : PChar; rxCount : integer); cdecl; external;
 
 
 {$ELSE}
@@ -304,7 +304,7 @@ var
   FantomSpiritNXTInstalledFirmware : function(fsh : FantomHandle) : byte; cdecl;
   FantomSpiritNXTGetBrickName : procedure(fsh : FantomHandle; name : PChar); cdecl;
   NameToNXTFileType : function(name : PChar) : integer; cdecl;
-  LoadLSBlock : procedure(var aBlock : NXTLSBlock; buf : PChar; rxCount : integer); cdecl;
+  LoadLSBlock : procedure(var aBlock : NXTLSBlock; addr : byte; buf : PChar; rxCount : integer); cdecl;
 
 var
   SpiritAPILoaded: Boolean = False;
