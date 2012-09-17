@@ -146,7 +146,7 @@ function FantomSpiritNXTFirmwareVersion(fsh : FantomHandle) : integer; cdecl; ex
 function FantomSpiritNXTInstalledFirmware(fsh : FantomHandle) : byte; cdecl; export;
 procedure FantomSpiritNXTGetBrickName(fsh : FantomHandle; name : PChar); cdecl; export;
 function NameToNXTFileType(name : PChar) : integer; cdecl; export;
-procedure LoadLSBlock(var aBlock : NXTLSBlock; buf : PChar; rxCount : integer); cdecl; export;
+procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; buf : PChar; rxCount : integer); cdecl; export;
 
 implementation
 
@@ -1168,12 +1168,12 @@ begin
   Result := Ord(uSpirit.NameToNXTFileType(String(name)));
 end;
 
-procedure LoadLSBlock(var aBlock : NXTLSBlock; buf : PChar; rxCount : integer); cdecl; export;
+procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; buf : PChar; rxCount : integer); cdecl; export;
 var
   str : string;
 begin
   str := String(buf);
-  uSpirit.LoadLSBlock(aBlock, str, rxCount);
+  uSpirit.LoadLSBlock(aBlock, addr, str, rxCount);
 end;
 
 end.

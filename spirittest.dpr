@@ -64,7 +64,7 @@ var
   btsig : cardinal;
   memFree : Cardinal;
   pressed : byte;
-  btncount, state, clump : byte;
+  btncount, state, clump, i2caddr : byte;
   i2csend, rawcmd, tmpstr : string;
   LSBlock : NXTLSBlock;
   Msg : NXTMessage;
@@ -228,7 +228,7 @@ begin
   VerFileDescription  := '';
   VerFileVersion      := '1.2.1.r5';
   VerInternalName     := 'spirittest';
-  VerLegalCopyright   := 'Copyright (c) 2006-2011, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2012, John Hansen';
   VerOriginalFileName := 'spirittest';
   VerProductName      := 'spirittest';
   VerProductVersion   := '1.2';
@@ -578,16 +578,23 @@ begin
           begin
             j := StrToIntDef(Copy(i2csend, 1, i-1), 0);
             System.Delete(i2csend, 1, i);
-            // everything left should be comma-separated list of bytes to send
-            LoadLSBlock(LSBlock, PChar(i2csend), j);
-            FantomSpiritSetNXTLowSpeed(BCHandle, port, LSBlock);
-            FantomSpiritGetNXTLowSpeed(BCHandle, port, LSBlock);
-            for i := 0 to j - 1 do
+            // get the address (first byte after count)
+            i := Pos(',', i2csend);
+            if i = 3 then
             begin
-              OutputValue(LSBlock.Data[i], False);
-              Write(' ');
+              i2caddr := StrToIntDef('$'+Copy(i2csend, 1, i-1), 0);
+              System.Delete(i2csend, 1, i);
+              // everything left should be comma-separated list of bytes to send
+              LoadLSBlock(LSBlock, i2caddr, PChar(i2csend), j);
+              FantomSpiritSetNXTLowSpeed(BCHandle, port, LSBlock);
+              FantomSpiritGetNXTLowSpeed(BCHandle, port, LSBlock);
+              for i := 0 to j - 1 do
+              begin
+                OutputValue(LSBlock.Data[i], False);
+                Write(' ');
+              end;
+              WriteLn('');
             end;
-            WriteLn('');
           end;
         end;
       end;
