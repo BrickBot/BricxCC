@@ -310,7 +310,7 @@ type
 implementation
 
 uses
-  uLocalizedStrings, uSProObjUtils, uCommonUtils;
+  uLocalizedStrings, uSProObjUtils, uUtilities, uStreamRW, uCommonUtils;
 
 type
   TIntegerObject = class
@@ -3034,7 +3034,7 @@ begin
   // output code array
   for i := 0 to Length(Code) - 1 do
   begin
-    WriteWordToStream(aStream, Code[i]); // little endian
+    WriteWord(aStream, Code[i]); // little endian
   end;
 end;
 

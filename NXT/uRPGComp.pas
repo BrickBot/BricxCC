@@ -60,7 +60,7 @@ type
 implementation
 
 uses
-  SysUtils, uCommonUtils, uLocalizedStrings;
+  SysUtils, uStreamRW, uLocalizedStrings;
 
 { TRPGComp }
 
@@ -241,9 +241,9 @@ begin
     // and write everything to the stream
     aStream.Position := 0;
     w := FILEFORMAT_PROGRAM;
-    WriteWordToStream(aStream, w, False);
+    WriteWord(aStream, w, False);
     w := Word(fCommands.Count);
-    WriteWordToStream(aStream, w, False);
+    WriteWord(aStream, w, False);
     b := Byte(w);
     aStream.Write(b, 1);
     // three bytes of zero

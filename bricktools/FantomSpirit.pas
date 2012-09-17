@@ -325,7 +325,7 @@ type
 implementation
 
 uses
-  Contnrs, Math, rcx_constants, uCommonUtils, uDebugLogging,
+  Contnrs, Math, rcx_constants, uCommonUtils, uDebugLogging, uUtilities,
   {$IFNDEF FPC}
   Windows, FANTOM{, visa}
   {$ELSE}

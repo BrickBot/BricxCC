@@ -397,7 +397,7 @@ type
 implementation
 
 uses
-  SysUtils, Math, uCommonUtils, uLocalizedStrings;
+  SysUtils, Math, uStreamRW, uLocalizedStrings;
 
 const
   TAB = ^I;
@@ -459,30 +459,30 @@ begin
     Inc(Result);
 end;
 
-procedure WriteImgPointToStream(aStream : TStream; pt : TImgPoint; bLittleEndian : Boolean = True);
+procedure WriteImgPoint(aStream : TStream; pt : TImgPoint; bLittleEndian : Boolean = True);
 begin
-  WriteSmallIntToStream(aStream, pt.X, bLittleEndian);
-  WriteSmallIntToStream(aStream, pt.Y, bLittleEndian);
+  WriteSmallInt(aStream, pt.X, bLittleEndian);
+  WriteSmallInt(aStream, pt.Y, bLittleEndian);
 end;
 
-procedure WriteImgRectToStream(aStream : TStream; R : TImgRect; bLittleEndian : Boolean = True);
+procedure WriteImgRect(aStream : TStream; R : TImgRect; bLittleEndian : Boolean = True);
 begin
-  WriteImgPointToStream(aStream, R.Pt, bLittleEndian);
-  WriteSmallIntToStream(aStream, R.Width, bLittleEndian);
-  WriteSmallIntToStream(aStream, R.Height, bLittleEndian);
+  WriteImgPoint(aStream, R.Pt, bLittleEndian);
+  WriteSmallInt(aStream, R.Width, bLittleEndian);
+  WriteSmallInt(aStream, R.Height, bLittleEndian);
 end;
 
-procedure ReadImgPointFromStream(aStream : TStream; var pt : TImgPoint; bLittleEndian : Boolean = True);
+procedure ReadImgPoint(aStream : TStream; var pt : TImgPoint; bLittleEndian : Boolean = True);
 begin
-  ReadSmallIntFromStream(aStream, pt.X, bLittleEndian);
-  ReadSmallIntFromStream(aStream, pt.Y, bLittleEndian);
+  ReadSmallInt(aStream, pt.X, bLittleEndian);
+  ReadSmallInt(aStream, pt.Y, bLittleEndian);
 end;
 
-procedure ReadImgRectFromStream(aStream : TStream; var R : TImgRect; bLittleEndian : Boolean = True);
+procedure ReadImgRect(aStream : TStream; var R : TImgRect; bLittleEndian : Boolean = True);
 begin
-  ReadImgPointFromStream(aStream, R.Pt, bLittleEndian);
-  ReadSmallIntFromStream(aStream, R.Width, bLittleEndian);
-  ReadSmallIntFromStream(aStream, R.Height, bLittleEndian);
+  ReadImgPoint(aStream, R.Pt, bLittleEndian);
+  ReadSmallInt(aStream, R.Width, bLittleEndian);
+  ReadSmallInt(aStream, R.Height, bLittleEndian);
 end;
 
 function RICOpCodeToStr(const Op : Word; const Options : Word = 0) : string;
@@ -2095,9 +2095,9 @@ begin
   inherited;
   w := 0;
   // read options, width, height from stream
-  ReadWordFromStream(aStream, w); Options := w;
-  ReadWordFromStream(aStream, w); Width   := w;
-  ReadWordFromStream(aStream, w); Height  := w;
+  ReadWord(aStream, w); Options := w;
+  ReadWord(aStream, w); Width   := w;
+  ReadWord(aStream, w); Height  := w;
 end;
 
 function TRICDescription.SaveAsDataArray(const aLangName: TLangName): string;
@@ -2120,9 +2120,9 @@ procedure TRICDescription.SaveToStream(aStream: TStream);
 begin
   inherited;
   // write options, width, height to stream
-  WriteWordToStream(aStream, Options);
-  WriteWordToStream(aStream, Width);
-  WriteWordToStream(aStream, Height);
+  WriteWord(aStream, Options);
+  WriteWord(aStream, Width);
+  WriteWord(aStream, Height);
 end;
 
 { TRICSprite }
@@ -2288,9 +2288,9 @@ begin
   r  := 0;
   rb := 0;
   B  := 0;
-  ReadWordFromStream(aStream, da);
-  ReadWordFromStream(aStream, r);
-  ReadWordFromStream(aStream, rb);
+  ReadWord(aStream, da);
+  ReadWord(aStream, r);
+  ReadWord(aStream, rb);
   DataAddr := da;
   Rows     := r;
   RowBytes := rb;
@@ -2356,9 +2356,9 @@ var
   i : integer;
 begin
   inherited;
-  WriteWordToStream(aStream, DataAddr);
-  WriteWordToStream(aStream, Rows);
-  WriteWordToStream(aStream, RowBytes);
+  WriteWord(aStream, DataAddr);
+  WriteWord(aStream, Rows);
+  WriteWord(aStream, RowBytes);
   // now write out all the bytes in the Bytes array
   for i := 0 to BytesToWrite - 1 do
   begin
@@ -2399,8 +2399,8 @@ var
 begin
   // read size and opcode from stream
   w := 0;
-  ReadWordFromStream(aStream, w); OpSize := w;
-  ReadWordFromStream(aStream, w); OpCode := w;
+  ReadWord(aStream, w); OpSize := w;
+  ReadWord(aStream, w); OpCode := w;
 end;
 
 function TRICOpBase.SaveAsDataArray(const aLangName: TLangName): string;
@@ -2415,8 +2415,8 @@ end;
 procedure TRICOpBase.SaveToStream(aStream: TStream);
 begin
   // write size and opcode to stream
-  WriteWordToStream(aStream, OpSize);
-  WriteWordToStream(aStream, OpCode);
+  WriteWord(aStream, OpSize);
+  WriteWord(aStream, OpCode);
 end;
 
 { TRICVarMap }
@@ -2482,14 +2482,14 @@ begin
   mc := 0;
   d  := 0;
   r  := 0;
-  ReadWordFromStream(aStream, da);
-  ReadWordFromStream(aStream, mc);
+  ReadWord(aStream, da);
+  ReadWord(aStream, mc);
   DataAddr := da;
   for i := 0 to mc - 1 do
   begin
     // read map elements from stream
-    ReadWordFromStream(aStream, d);
-    ReadWordFromStream(aStream, r);
+    ReadWord(aStream, d);
+    ReadWord(aStream, r);
     ME := Add;
     ME.Domain := d;
     ME.Range  := r;
@@ -2548,14 +2548,14 @@ var
   ME : TMapElement;
 begin
   inherited;
-  WriteWordToStream(aStream, DataAddr);
-  WriteWordToStream(aStream, MapCount);
+  WriteWord(aStream, DataAddr);
+  WriteWord(aStream, MapCount);
   // now write out all the elements in the MapElement array
   for i := 0 to MapCount - 1 do
   begin
     ME := Self.MapElements[i];
-    WriteWordToStream(aStream, ME.Domain);
-    WriteWordToStream(aStream, ME.Range);
+    WriteWord(aStream, ME.Domain);
+    WriteWord(aStream, ME.Range);
   end;
 end;
 
@@ -2599,10 +2599,10 @@ begin
   r.Height := 0;
   p.X := 0;
   p.Y := 0;
-  ReadWordFromStream(aStream, co);
-  ReadWordFromStream(aStream, da);
-  ReadImgRectFromStream(aStream, r);
-  ReadImgPointFromStream(aStream, p);
+  ReadWord(aStream, co);
+  ReadWord(aStream, da);
+  ReadImgRect(aStream, r);
+  ReadImgPoint(aStream, p);
   CopyOptions := co;
   DataAddr    := da;
   SrcRect     := r;
@@ -2634,10 +2634,10 @@ procedure TRICCopyBits.SaveToStream(aStream: TStream);
 begin
   inherited;
   // write CopyOptions, DataAddr, SrcRect, DestPoint to stream
-  WriteWordToStream(aStream, CopyOptions);
-  WriteWordToStream(aStream, DataAddr);
-  WriteImgRectToStream(aStream, SrcRect);
-  WriteImgPointToStream(aStream, DestPoint);
+  WriteWord(aStream, CopyOptions);
+  WriteWord(aStream, DataAddr);
+  WriteImgRect(aStream, SrcRect);
+  WriteImgPoint(aStream, DestPoint);
 end;
 
 { TRICPixel }
@@ -2671,9 +2671,9 @@ begin
   v  := 0;
   p.X := 0;
   p.Y := 0;
-  ReadWordFromStream(aStream, co);
-  ReadImgPointFromStream(aStream, p);
-  ReadWordFromStream(aStream, v);
+  ReadWord(aStream, co);
+  ReadImgPoint(aStream, p);
+  ReadWord(aStream, v);
   CopyOptions := co;
   Point       := p;
   Value       := v;
@@ -2701,9 +2701,9 @@ end;
 procedure TRICPixel.SaveToStream(aStream: TStream);
 begin
   inherited;
-  WriteWordToStream(aStream, CopyOptions);
-  WriteImgPointToStream(aStream, Point);
-  WriteWordToStream(aStream, Value);
+  WriteWord(aStream, CopyOptions);
+  WriteImgPoint(aStream, Point);
+  WriteWord(aStream, Value);
 end;
 
 { TRICLine }
@@ -2734,9 +2734,9 @@ begin
   p1.Y := 0;
   p2.X := 0;
   p2.Y := 0;
-  ReadWordFromStream(aStream, co);
-  ReadImgPointFromStream(aStream, p1);
-  ReadImgPointFromStream(aStream, p2);
+  ReadWord(aStream, co);
+  ReadImgPoint(aStream, p1);
+  ReadImgPoint(aStream, p2);
   CopyOptions := co;
   Point1      := p1;
   Point2      := p2;
@@ -2764,9 +2764,9 @@ end;
 procedure TRICLine.SaveToStream(aStream: TStream);
 begin
   inherited;
-  WriteWordToStream(aStream, CopyOptions);
-  WriteImgPointToStream(aStream, Point1);
-  WriteImgPointToStream(aStream, Point2);
+  WriteWord(aStream, CopyOptions);
+  WriteImgPoint(aStream, Point1);
+  WriteImgPoint(aStream, Point2);
 end;
 
 { TRICRect }
@@ -2798,10 +2798,10 @@ begin
   h  := 0;
   p.X := 0;
   p.Y := 0;
-  ReadWordFromStream(aStream, co);
-  ReadImgPointFromStream(aStream, p);
-  ReadSmallIntFromStream(aStream, w);
-  ReadSmallIntFromStream(aStream, h);
+  ReadWord(aStream, co);
+  ReadImgPoint(aStream, p);
+  ReadSmallInt(aStream, w);
+  ReadSmallInt(aStream, h);
   CopyOptions := co;
   Point       := p;
   Width       := w;
@@ -2832,10 +2832,10 @@ end;
 procedure TRICRect.SaveToStream(aStream: TStream);
 begin
   inherited;
-  WriteWordToStream(aStream, CopyOptions);
-  WriteImgPointToStream(aStream, Point);
-  WriteSmallIntToStream(aStream, Width);
-  WriteSmallIntToStream(aStream, Height);
+  WriteWord(aStream, CopyOptions);
+  WriteImgPoint(aStream, Point);
+  WriteSmallInt(aStream, Width);
+  WriteSmallInt(aStream, Height);
 end;
 
 { TRICCircle }
@@ -2865,9 +2865,9 @@ begin
   r  := 0;
   p.X := 0;
   p.Y := 0;
-  ReadWordFromStream(aStream, co);
-  ReadImgPointFromStream(aStream, p);
-  ReadWordFromStream(aStream, r);
+  ReadWord(aStream, co);
+  ReadImgPoint(aStream, p);
+  ReadWord(aStream, r);
   CopyOptions := co;
   Point       := p;
   Radius      := r;
@@ -2895,9 +2895,9 @@ end;
 procedure TRICCircle.SaveToStream(aStream: TStream);
 begin
   inherited;
-  WriteWordToStream(aStream, CopyOptions);
-  WriteImgPointToStream(aStream, Point);
-  WriteWordToStream(aStream, Radius);
+  WriteWord(aStream, CopyOptions);
+  WriteImgPoint(aStream, Point);
+  WriteWord(aStream, Radius);
 end;
 
 { TRICNumBox }
@@ -2927,9 +2927,9 @@ begin
   v  := 0;
   p.X := 0;
   p.Y := 0;
-  ReadWordFromStream(aStream, co);
-  ReadImgPointFromStream(aStream, p);
-  ReadWordFromStream(aStream, v);
+  ReadWord(aStream, co);
+  ReadImgPoint(aStream, p);
+  ReadWord(aStream, v);
   CopyOptions := co;
   Point       := p;
   Value       := v;
@@ -2957,9 +2957,9 @@ end;
 procedure TRICNumBox.SaveToStream(aStream: TStream);
 begin
   inherited;
-  WriteWordToStream(aStream, CopyOptions);
-  WriteImgPointToStream(aStream, Point);
-  WriteWordToStream(aStream, Value);
+  WriteWord(aStream, CopyOptions);
+  WriteImgPoint(aStream, Point);
+  WriteWord(aStream, Value);
 end;
 
 { TRICEllipse }
@@ -2990,10 +2990,10 @@ begin
   r2 := 0;
   p.X := 0;
   p.Y := 0;
-  ReadWordFromStream(aStream, co);
-  ReadImgPointFromStream(aStream, p);
-  ReadWordFromStream(aStream, r1);
-  ReadWordFromStream(aStream, r2);
+  ReadWord(aStream, co);
+  ReadImgPoint(aStream, p);
+  ReadWord(aStream, r1);
+  ReadWord(aStream, r2);
   CopyOptions := co;
   Point       := p;
   Radius1     := r1;
@@ -3024,10 +3024,10 @@ end;
 procedure TRICEllipse.SaveToStream(aStream: TStream);
 begin
   inherited;
-  WriteWordToStream(aStream, CopyOptions);
-  WriteImgPointToStream(aStream, Point);
-  WriteWordToStream(aStream, Radius1);
-  WriteWordToStream(aStream, Radius2);
+  WriteWord(aStream, CopyOptions);
+  WriteImgPoint(aStream, Point);
+  WriteWord(aStream, Radius1);
+  WriteWord(aStream, Radius2);
 end;
 
 { TRICPolygon }
@@ -3085,14 +3085,14 @@ begin
   mc := 0;
   x  := 0;
   y  := 0;
-  ReadWordFromStream(aStream, co);
-  ReadWordFromStream(aStream, mc);
+  ReadWord(aStream, co);
+  ReadWord(aStream, mc);
   CopyOptions := co;
   for i := 0 to mc - 1 do
   begin
     // read polygon points from stream
-    ReadWordFromStream(aStream, x);
-    ReadWordFromStream(aStream, y);
+    ReadWord(aStream, x);
+    ReadWord(aStream, y);
     PP := Add;
     PP.X := x;
     PP.Y := y;
@@ -3151,14 +3151,14 @@ var
   PP : TPolyPoint;
 begin
   inherited;
-  WriteWordToStream(aStream, CopyOptions);
-  WriteWordToStream(aStream, Count);
+  WriteWord(aStream, CopyOptions);
+  WriteWord(aStream, Count);
   // now write out all the points in the PolyPoints array
   for i := 0 to Count - 1 do
   begin
     PP := PolyPoints[i];
-    WriteWordToStream(aStream, PP.X);
-    WriteWordToStream(aStream, PP.Y);
+    WriteWord(aStream, PP.X);
+    WriteWord(aStream, PP.Y);
   end;
 end;
 

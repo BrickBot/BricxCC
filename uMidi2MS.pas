@@ -452,7 +452,7 @@ begin
   InitializeTone;
 
   mhead.id := 'MThd'; // initialize struct to quiet compiler hints
-  if not ReadMIDIMTHDFromStream(in_str, mhead) then
+  if not ReadMIDIMTHD(in_str, mhead) then
     raise EInvalidSMFFormat.Create('Too short');
   if CompareStr(mhead.id, 'MThd') <> 0 then
     raise EInvalidSMFFormat.Create('No SMF header');
@@ -476,7 +476,7 @@ begin
   curTrack := 0;
   while curTrack <= Track do
   begin
-    if not ReadMIDIMTRKFromStream(in_str, tkhead) then
+    if not ReadMIDIMTRK(in_str, tkhead) then
       raise EReadError.Create('No track data');
     if CompareStr(tkhead.id, 'MTrk') <> 0 then
       raise EReadError.Create('No SMF track chunk');
@@ -884,7 +884,7 @@ begin
     in_str := TFileStream.Create(filename, fmOpenRead);
     try
       mhead.id := 'MThd'; // initialize struct to quiet compiler hints
-      if not ReadMIDIMTHDFromStream(in_str, mhead) then
+      if not ReadMIDIMTHD(in_str, mhead) then
       if CompareStr(mhead.id, 'MThd') <> 0 then
         Exit;
       // file has an apparently valid SMF header

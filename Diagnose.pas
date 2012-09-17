@@ -115,7 +115,7 @@ implementation
 
 uses
   rcx_constants, uSources, uGlobals, uSpirit, brick_common, uGuiUtils,
-  uCommonUtils, uNXTName, uLocalizedStrings, uportsedit;
+  uUtilities, uNXTName, uLocalizedStrings, uportsedit;
 
 var
   V_FUDGE, V_HEIGHT, V_DISPLAY_HEIGHT, V_DISPLAY_DELTA, V_HELP : Integer;

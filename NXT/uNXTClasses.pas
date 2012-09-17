@@ -1180,7 +1180,7 @@ implementation
 
 uses
   StrUtils, Math, uNBCLexer, uCommonUtils, uVersionInfo, uLocalizedStrings,
-  uCompTokens, NBCCommonData, NXTDefsData;
+  uCompTokens, uStreamRW, uUtilities, NBCCommonData, NXTDefsData;
 
 const
   CLUMP_FMT = 't%3.3d';
@@ -1684,7 +1684,7 @@ begin
     begin
       aStream.Read(CD.CRecs[i].FireCount, 1);
       aStream.Read(CD.CRecs[i].DependentCount, 1);
-      ReadWordFromStream(aStream, CD.CRecs[i].CodeStart);
+      ReadWord(aStream, CD.CRecs[i].CodeStart);
     end;
     // now read the packed clump dependency list which is an array of byte
     // the number of bytes to read is stop-start-(4*ClumpCount).
@@ -2006,7 +2006,7 @@ begin
     SetLength(CS.Code, H.Head.CodespaceCount);
     while i < H.Head.CodespaceCount do
     begin
-      ReadWordFromStream(aStream, CS.Code[i]);
+      ReadWord(aStream, CS.Code[i]);
       inc(i);
     end;
   end;
@@ -2091,11 +2091,11 @@ begin
   begin
     with DS.DopeVecs[i] do
     begin
-      ReadWordFromStream(aStream, offset);
-      ReadWordFromStream(aStream, elemsize);
-      ReadWordFromStream(aStream, count);
-      ReadWordFromStream(aStream, backptr);
-      ReadWordFromStream(aStream, link);
+      ReadWord(aStream, offset);
+      ReadWord(aStream, elemsize);
+      ReadWord(aStream, count);
+      ReadWord(aStream, backptr);
+      ReadWord(aStream, link);
     end;
     inc(i);
   end;
@@ -2134,7 +2134,7 @@ begin
       aStream.Read(B, 1);
       DS.TOC[i].TypeDesc := B;
       aStream.Read(DS.TOC[i].Flags, 1);
-      ReadWordFromStream(aStream, DS.TOC[i].DataDesc);
+      ReadWord(aStream, DS.TOC[i].DataDesc);
       DS.TOCNames[i] := GenerateTOCName(DS.TOC[i].TypeDesc, i);
       if B = TC_ARRAY then
         inc(dvCount);
@@ -2267,17 +2267,17 @@ begin
     aStream.Read(FormatString, 14);
     aStream.Read(Skip, 1);
     aStream.Read(Version, 1);
-    ReadWordFromStream(aStream, DSCount);
-    ReadWordFromStream(aStream, DSSize);
-    ReadWordFromStream(aStream, DSStaticSize);
-    ReadWordFromStream(aStream, DSDefaultsSize);
-    ReadWordFromStream(aStream, DynDSDefaultsOffset);
-    ReadWordFromStream(aStream, DynDSDefaultsSize);
-    ReadWordFromStream(aStream, MemMgrHead);
-    ReadWordFromStream(aStream, MemMgrTail);
-    ReadWordFromStream(aStream, DVArrayOffset);
-    ReadWordFromStream(aStream, ClumpCount);
-    ReadWordFromStream(aStream, CodespaceCount);
+    ReadWord(aStream, DSCount);
+    ReadWord(aStream, DSSize);
+    ReadWord(aStream, DSStaticSize);
+    ReadWord(aStream, DSDefaultsSize);
+    ReadWord(aStream, DynDSDefaultsOffset);
+    ReadWord(aStream, DynDSDefaultsSize);
+    ReadWord(aStream, MemMgrHead);
+    ReadWord(aStream, MemMgrTail);
+    ReadWord(aStream, DVArrayOffset);
+    ReadWord(aStream, ClumpCount);
+    ReadWord(aStream, CodespaceCount);
   end;
 end;
 
@@ -2451,24 +2451,24 @@ begin
   end;
 end;
 
-procedure WriteHeaderToStream(aStream: TStream; Head : RXEHeader);
+procedure WriteHeader(aStream: TStream; Head : RXEHeader);
 begin
   with Head do
   begin
     aStream.Write(FormatString, 14);
     aStream.Write(Skip, 1);
     aStream.Write(Version, 1);
-    WriteWordToStream(aStream, DSCount);
-    WriteWordToStream(aStream, DSSize);
-    WriteWordToStream(aStream, DSStaticSize);
-    WriteWordToStream(aStream, DSDefaultsSize);
-    WriteWordToStream(aStream, DynDSDefaultsOffset);
-    WriteWordToStream(aStream, DynDSDefaultsSize);
-    WriteWordToStream(aStream, MemMgrHead);
-    WriteWordToStream(aStream, MemMgrTail);
-    WriteWordToStream(aStream, DVArrayOffset);
-    WriteWordToStream(aStream, ClumpCount);
-    WriteWordToStream(aStream, CodespaceCount);
+    WriteWord(aStream, DSCount);
+    WriteWord(aStream, DSSize);
+    WriteWord(aStream, DSStaticSize);
+    WriteWord(aStream, DSDefaultsSize);
+    WriteWord(aStream, DynDSDefaultsOffset);
+    WriteWord(aStream, DynDSDefaultsSize);
+    WriteWord(aStream, MemMgrHead);
+    WriteWord(aStream, MemMgrTail);
+    WriteWord(aStream, DVArrayOffset);
+    WriteWord(aStream, ClumpCount);
+    WriteWord(aStream, CodespaceCount);
   end;
 end;
 
@@ -2476,7 +2476,7 @@ procedure TRXEDumper.SaveToStream(aStream: TStream);
 begin
   FinalizeRXE;
   // write the header
-  WriteHeaderToStream(aStream, fHeader.Head);
+  WriteHeader(aStream, fHeader.Head);
   fDSData.SaveToStream(aStream);
   // write the clump records
   fClumpData.SaveToStream(aStream);
@@ -4045,7 +4045,7 @@ begin
   X.DataDesc := 0;
   aStream.Read(X.TypeDesc, 1);
   aStream.Read(X.Flags, 1);
-  ReadWordFromStream(aStream, X.DataDesc);
+  ReadWord(aStream, X.DataDesc);
   // copy DSTOCEntry values to collection item
   X.TypeDesc := Byte(Ord(Self.DataType));
 end;
@@ -4067,7 +4067,7 @@ begin
   end;
   aStream.Write(X.TypeDesc, 1);
   aStream.Write(X.Flags, 1);
-  WriteWordToStream(aStream, X.DataDesc);
+  WriteWord(aStream, X.DataDesc);
 end;
 
 function Replicate(const str : string; const times : integer) : string;
@@ -4461,7 +4461,7 @@ begin
     // and write everything to the stream
     aStream.Position := 0;
     DoCompilerStatusChange(sWriteHeader);
-    WriteHeaderToStream(aStream, fHeader);
+    WriteHeader(aStream, fHeader);
     DoCompilerStatusChange(sWriteDataspace);
     fDSData.SaveToStream(aStream);
     DoCompilerStatusChange(sWriteClumpData);
@@ -10045,7 +10045,7 @@ begin
     begin
       aStream.Write(TypeDesc, 1);
       aStream.Write(Flags, 1);
-      WriteWordToStream(aStream, DataDesc);
+      WriteWord(aStream, DataDesc);
     end;
   end;
 
@@ -10072,11 +10072,11 @@ begin
   begin
     with DopeVecs[i] do
     begin
-      WriteWordToStream(aStream, offset);
-      WriteWordToStream(aStream, elemsize);
-      WriteWordToStream(aStream, count);
-      WriteWordToStream(aStream, backptr);
-      WriteWordToStream(aStream, link);
+      WriteWord(aStream, offset);
+      WriteWord(aStream, elemsize);
+      WriteWord(aStream, count);
+      WriteWord(aStream, backptr);
+      WriteWord(aStream, link);
     end;
   end;
 
@@ -10117,7 +10117,7 @@ begin
   // output code array
   for i := 0 to Length(Code) - 1 do
   begin
-    WriteWordToStream(aStream, Code[i]);
+    WriteWord(aStream, Code[i]);
   end;
 end;
 
@@ -10133,7 +10133,7 @@ begin
   begin
     aStream.Write(CRecs[i].FireCount, 1);
     aStream.Write(CRecs[i].DependentCount, 1);
-    WriteWordToStream(aStream, CRecs[i].CodeStart);
+    WriteWord(aStream, CRecs[i].CodeStart);
   end;
   // clump dependencies
   for i := 0 to Length(ClumpDeps) - 1 do
