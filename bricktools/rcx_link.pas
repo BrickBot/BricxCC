@@ -197,7 +197,8 @@ uses
 {$IFNDEF FPC}
   Windows,
 {$ENDIF}
-  SysUtils, rcx_constants, scout_def, TOWERAPI, Math, uCommonUtils, uGlobals;
+  SysUtils, Math, rcx_constants, scout_def, TOWERAPI, uCommonUtils,
+  uUtilities, uGlobals;
 
 const
   cmSync : array[1..2] of Byte = (1, $FF);
@@ -1102,11 +1103,6 @@ end;
 function TRcxLink.GetReplyByte(const index: integer): Byte;
 begin
   Result := fReply[index + TargetCommandOffset];
-end;
-
-function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
-begin
-  Result := Cardinal(b1) + (Cardinal(b2) shl 8) + (Cardinal(b3) shl 16) + (Cardinal(b4) shl 24);
 end;
 
 function TRcxLink.GetReplyWord(const index: integer): Word;

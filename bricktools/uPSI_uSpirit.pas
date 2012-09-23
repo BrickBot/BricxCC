@@ -311,7 +311,6 @@ begin
   CL.AddDelphiFunction('Function GetInitFilename : string');
   CL.AddDelphiFunction('Function FantomAPIAvailable : boolean');
   CL.AddDelphiFunction('Procedure LoadNXTPorts( aStrings : TStrings)');
-  CL.AddDelphiFunction('Function BytesToCardinal( b1 : byte; b2 : byte; b3 : byte; b4 : Byte) : Cardinal');
   CL.AddDelphiFunction('Function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string');
 end;
 
@@ -540,7 +539,6 @@ begin
  S.RegisterDelphiFunction(@GetInitFilename, 'GetInitFilename', cdRegister);
  S.RegisterDelphiFunction(@FantomAPIAvailable, 'FantomAPIAvailable', cdRegister);
  S.RegisterDelphiFunction(@LoadNXTPorts, 'LoadNXTPorts', cdRegister);
- S.RegisterDelphiFunction(@BytesToCardinal, 'BytesToCardinal', cdRegister);
  S.RegisterDelphiFunction(@InstalledFirmwareAsString, 'InstalledFirmwareAsString', cdRegister);
 end;
 

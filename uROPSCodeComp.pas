@@ -32,7 +32,7 @@ const
   );
 
 const
-  ROPSCodeCompDataSize = 399;
+  ROPSCodeCompDataSize = 398;
   ROPSCodeCompData: array[0..ROPSCodeCompDataSize-1] of TCppCodeComp = (
     (Kind: ckKeyword; Name: 'and'; Location: 0; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckKeyword; Name: 'array'; Location: 0; Params: ''; Count: 1; Alpha: atNumeric),
@@ -281,7 +281,6 @@ const
     (Kind: ckAPIFunc; Name: 'GetInitFilename'; Location: 2; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'FantomAPIAvailable'; Location: 2; Params: ''; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'LoadNXTPorts'; Location: 2; Params: '(aStrings : TStrings)'; Count: 1; Alpha: atNumeric),
-    (Kind: ckAPIFunc; Name: 'BytesToCardinal'; Location: 2; Params: '(b1 : byte; b2 : byte; b3 : byte; b4 : Byte)'; Count: 1; Alpha: atNumeric),
     (Kind: ckAPIFunc; Name: 'InstalledFirmwareAsString'; Location: 2; Params: '(const ifw : TInstalledFirmware)'; Count: 1; Alpha: atNumeric),
 
     (Kind: ckAPIFunc; Name: 'Open'; Location: 2; Params: ''; Count: 1; Alpha: atNumeric),
