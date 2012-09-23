@@ -23,8 +23,7 @@ unit uVTConfig;
 interface
 
 uses
-  Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, BricxccSpin;
+  Classes, Controls, Forms, StdCtrls, BricxccSpin;
 
 type
   TfrmVTConfig = class(TForm)
