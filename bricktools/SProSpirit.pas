@@ -296,7 +296,7 @@ uses
 {$IFNDEF FPC}
   Windows,
 {$ENDIF}
-  rcx_constants, Contnrs, Math, uCommonUtils, uDebugLogging;
+  rcx_constants, Contnrs, Math, uCommonUtils, uUtilities, uDebugLogging;
 
 {$IFDEF FPC}
 const

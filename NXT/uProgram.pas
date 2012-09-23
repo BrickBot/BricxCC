@@ -178,7 +178,7 @@ var
 implementation
 
 uses
-  SysUtils, rcx_constants, uSpirit, brick_common, uNBCCommon;
+  SysUtils, rcx_constants, uSpirit, brick_common, uUtilities, uNBCCommon;
 
 var
   CP : TProgram;

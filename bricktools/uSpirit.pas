@@ -462,7 +462,6 @@ function MakeValidNXTFilename(const filename : string) : string;
 function GetInitFilename: string;
 function FantomAPIAvailable : boolean;
 procedure LoadNXTPorts(aStrings : TStrings);
-function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
 function InstalledFirmwareAsString(const ifw : TInstalledFirmware) : string;
 procedure LoadLSBlock(var aBlock : NXTLSBlock; addr : byte; str : string; rxCount : integer);
 
@@ -485,11 +484,6 @@ const
   FWSTR : array[TInstalledFirmware] of string = ('unknown', 'standard', 'enhanced');
 begin
   Result := FWSTR[ifw];
-end;
-
-function BytesToCardinal(b1 : byte; b2 : byte = 0; b3 : byte = 0; b4 : Byte = 0) : Cardinal;
-begin
-  Result := Cardinal(b1) + (Cardinal(b2) shl 8) + (Cardinal(b3) shl 16) + (Cardinal(b4) shl 24);
 end;
 
 function FantomAPIAvailable : boolean;

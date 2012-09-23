@@ -92,7 +92,8 @@ procedure UnloadFantomAPI;
 implementation
 
 uses
-  Classes, SysUtils, Math, libusb, rcx_cmd, rcx_constants, uCommonUtils, uSerial;
+  Classes, SysUtils, Math, libusb, rcx_cmd, rcx_constants, uCommonUtils,
+  uUtilities, uSerial;
 
 const
   flash_len = 136;
