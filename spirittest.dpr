@@ -16,7 +16,9 @@
  *)
 program spirittest;
 
+{$IFNDEF FPC}
 {$APPTYPE CONSOLE}
+{$ENDIF}
 
 uses
 {$IFNDEF FPC}
@@ -32,6 +34,7 @@ uses
   libspirit in 'bricktools\libspirit.pas',
   FantomDefs in 'bricktools\FantomDefs.pas',
   uCommonUtils in 'uCommonUtils.pas',
+  uUtilities in 'uUtilities.pas',
   uCmdLineUtils in 'uCmdLineUtils.pas';
 
 {$IFNDEF FPC}

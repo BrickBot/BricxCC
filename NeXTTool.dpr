@@ -16,7 +16,9 @@
  *)
 program NeXTTool;
 
+{$IFNDEF FPC}
 {$APPTYPE CONSOLE}
+{$ENDIF}
 
 uses
 {$IFNDEF FPC}
@@ -37,6 +39,7 @@ uses
   uSpirit in 'bricktools\uSpirit.pas',
   FantomSpirit in 'bricktools\FantomSpirit.pas',
   uCommonUtils in 'uCommonUtils.pas',
+  uUtilities in 'uUtilities.pas',
   uCmdLineUtils in 'uCmdLineUtils.pas';
 
 {$IFDEF WIN32}
