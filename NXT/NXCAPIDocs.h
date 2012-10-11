@@ -3287,6 +3287,10 @@
  * This is an example of how to use the \ref JoystickMessageRead function
  * along with the \ref JoystickMessageType structure.
  *
+ * \example ex_joystickexmsg.nxc
+ * This is an example of how to use the \ref JoystickExMessageRead function
+ * along with the \ref JoystickExMessageType structure.
+ *
  * \example ex_SendMessage.nxc
  * This is an example of how to use the \ref SendMessage function.
  *

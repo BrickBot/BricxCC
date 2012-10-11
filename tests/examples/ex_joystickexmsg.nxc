@@ -1,0 +1,38 @@
+/*
+struct JoystickExMessageType {
+  unsigned long Xpos;         // The x position
+  unsigned long Ypos;         // The y position
+  unsigned long Zpos;         // The z position
+  unsigned long Rpos;         // The rudder/4th axis position
+  unsigned long Upos;         // The 5th axis position
+  unsigned long Vpos;         // The 6th axis position
+  unsigned long Buttons;      // The button states
+  unsigned long ButtonNumber; // The current button number pressed
+  unsigned long POV;          // The point of view state
+};
+*/
+
+task main()
+{
+  JoystickExMessageType jemt;
+  while (true)
+  {
+    ClearScreen();
+    char result = JoystickExMessageRead(MAILBOX1, jemt);
+    if (result == NO_ERR)
+    {
+      NumOut( 0, LCD_LINE1, jemt.Xpos);
+      NumOut(35, LCD_LINE1, jemt.Ypos);
+      NumOut(70, LCD_LINE1, jemt.Zpos);
+      NumOut( 0, LCD_LINE2, jemt.Rpos);
+      NumOut(35, LCD_LINE2, jemt.Upos);
+      NumOut(70, LCD_LINE2, jemt.Vpos);
+      NumOut( 0, LCD_LINE3, jemt.Buttons);
+      NumOut( 0, LCD_LINE4, jemt.ButtonNumber);
+      NumOut( 0, LCD_LINE5, jemt.POV);
+    }
+    else
+      NumOut(0, LCD_LINE8, result);
+    Wait(MS_100);
+  }
+}

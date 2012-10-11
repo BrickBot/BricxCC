@@ -83,6 +83,7 @@ begin
     SU_SWAN        : Result := 'Swan';
     SU_NXT         : Result := 'NXT';
     SU_SPRO        : Result := 'SPC';
+    SU_FOO         : Result := 'FOO';
   else
                      Result := 'RCX';
   end;
@@ -328,9 +329,12 @@ begin
       3 : Result := '.nbc';
       4 : Result := '.nxc';
       5 : Result := '.spc';
+      6 : Result := '.foo';
     else
       if LocalBrickType = SU_NXT then
         Result := '.nxc'
+      else if LocalBrickType = SU_FOO then
+        Result := '.foo'
       else
         Result := '.nqc';
     end;

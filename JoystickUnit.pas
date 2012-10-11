@@ -188,6 +188,12 @@ begin
   ExecuteScript(GetCAScript(dir, l, r, lr, ldir, rdir, speed, btns));
 end;
 
+function FlattenCardinal(aValue : Cardinal) : string;
+begin
+  Result := Chr(Lo(Word(aValue))) + Chr(Hi(Word(aValue))) +
+            Chr(Lo(HiWord(aValue))) + Chr(Hi(HiWord(aValue)));
+end;
+
 procedure SendCAMessage(dir : integer; l, r, lr : byte; ldir, rdir, speed : ShortInt; btns : Cardinal);
 var
   msg : string;
@@ -200,12 +206,31 @@ begin
     rdir := speed * rdir;
     SetLength(msg, 10); // 10 bytes when flattened
     msg := Chr(dir) + Chr(l) + Chr(r) + Chr(lr) + Chr(ldir) + Chr(rdir) +
-           Chr(Lo(Word(btns))) + Chr(Hi(Word(btns))) + Chr(Lo(HiWord(btns))) +
-           Chr(Hi(HiWord(btns)));
+           FlattenCardinal(btns);
   end
   else
-  begin                                            
+  begin
     msg := Format('%1.1d%1.1d%1.1d%1.1d%1.1d%1.1d%d', [dir, l, r, lr, ldir+1, rdir+1, speed]);
+  end;
+  BrickComm.NXTMessageWrite(CAInBox, msg);
+end;
+
+procedure SendCAMessageEx(XPos, YPos, ZPos, RPos, UPos, VPos, btns, BtnNum, POV : Cardinal);
+var
+  msg : string;
+begin
+  if IsNXT then
+  begin
+    // the NXT message format will be a flattened structure of 7 fields
+    // get left and right motor speed values
+    SetLength(msg, 36); // 36 bytes when flattened
+    msg := FlattenCardinal(XPos) + FlattenCardinal(YPos) + FlattenCardinal(ZPos) +
+           FlattenCardinal(RPos) + FlattenCardinal(UPos) + FlattenCardinal(VPos) +
+           FlattenCardinal(btns) + FlattenCardinal(BtnNum) + FlattenCardinal(POV);
+  end
+  else
+  begin
+    msg := Format('%d|%d|%d|%d|%d|%d|%d|%d|%d', [XPos, YPos, ZPos, RPos, UPos, VPos, btns, BtnNum, POV]);
   end;
   BrickComm.NXTMessageWrite(CAInBox, msg);
 end;
@@ -234,7 +259,8 @@ begin
   end;
 end;
 
-procedure MotorChanged(dir : integer; l, r, lr : byte; ldir, rdir, speed : ShortInt; btns : Cardinal);
+procedure MotorChanged(dir : integer; l, r, lr : byte;
+  ldir, rdir, speed : ShortInt; btns : Cardinal);
 var
   buttons : array [1..32] of boolean;
   i : integer;
@@ -374,6 +400,24 @@ end;
 var
   oldjoydir : integer = 5;
   oldrudder : Cardinal;
+{$IFNDEF FPC}
+  oldjoyinfo : TJoyInfoEx;
+{$ENDIF}
+
+{$IFNDEF FPC}
+function JoyInfoDiffers(j1, j2 : PJoyInfoEx) : boolean;
+begin
+  Result := (j1^.wXpos <> j2^.wXpos) or
+            (j1^.wYpos <> j2^.wYpos) or
+            (j1^.wZpos <> j2^.wZpos) or
+            (j1^.dwRpos <> j2^.dwRpos) or
+            (j1^.dwUpos <> j2^.dwUpos) or
+            (j1^.dwVpos <> j2^.dwVpos) or
+            (j1^.wButtons <> j2^.wButtons) or
+            (j1^.dwButtonNumber <> j2^.dwButtonNumber) or
+            (j1^.dwPOV <> j2^.dwPOV);
+end;
+{$ENDIF}
 
 procedure TJoystickForm.JoyTimerTimer(Sender: TObject);
 { The timer callback that does the actual work}
@@ -404,11 +448,18 @@ begin
     SetSpeed(oldrudder);
   end;
 
-  if (dir <> oldjoydir) or (joyinfo.wButtons <> oldWBtns) then
+  if (ChangeAction = mcaMessageEx) and JoyInfoDiffers(@oldjoyinfo,@joyinfo) then
+  begin
+    SendCAMessageEx(joyinfo.wXpos, joyinfo.wYpos, joyinfo.wZpos,
+                    joyinfo.dwRpos, joyinfo.dwUpos, joyinfo.dwVpos,
+                    joyinfo.wButtons, joyinfo.dwButtonNumber, joyinfo.dwPOV);
+  end
+  else if (dir <> oldjoydir) or (joyinfo.wButtons <> oldWBtns) or (joyinfo.wZpos <> oldrudder) then
     MoveBrick(dir, joyinfo.wButtons);
 
   oldjoydir := dir;
   oldWBtns := joyinfo.wButtons;
+  oldjoyinfo := joyinfo;
 {$ENDIF}
 end;
 

@@ -8913,32 +8913,63 @@ end;
 
 procedure TNXCComp.DoPlayFileEx;
 var
-  fname, vol : string;
+  fname, vol, loop : string;
+  bSampleRate : boolean;
+  AHV : TArrayHelperVar;
 begin
-  //PlayFileEx(file, vol, loop?)
+  //PlayFileEx(file, vol, loop?, sr=0)
   OpenParen;
   // arg1 == Filename
   StringExpression('');
-  fname := StrBufName;
-  MatchString(TOK_COMMA);
-  // arg2 == Volume
-  BoolExpression;
-  push;
-  vol := tos;
-  EmitLn(Format('mov %s, %s', [vol, RegisterName]));
-  MatchString(TOK_COMMA);
-  // arg3 == loop?
-  BoolExpression;
-  CloseParen;
-  EmitLn('acquire __SPFArgsMutex');
-  EmitLn('mov __SPFArgs.Filename, ' + fname);
-  EmitLn('mov __SPFArgs.Volume, ' + vol);
-  EmitLn(Format('mov __SPFArgs.Loop, %s', [RegisterName]));
-  EmitLn('syscall SoundPlayFile, __SPFArgs');
-  ResetStatementType;
-  EmitLn(Format('mov %s, __SPFArgs.Result', [RegisterName]));
-  EmitLn('release __SPFArgsMutex');
-  pop;
+  AHV := fArrayHelpers.GetHelper(fCurrentThreadName, '', TOK_ARRAYBYTEDEF);
+  try
+    fname := AHV.Name;
+    if fGlobals.IndexOfName(fname) = -1 then
+      AddEntry(fname, TOK_ARRAYBYTEDEF, '', '');
+    // move result of string expression to newly allocated temporary variable
+    EmitLn(Format('mov %s, %s', [fname, StrBufName]));
+    MatchString(TOK_COMMA);
+    // arg2 == Volume
+    BoolExpression;
+    push;
+    vol := tos;
+    EmitLn(Format('mov %s, %s', [vol, RegisterName]));
+    MatchString(TOK_COMMA);
+    // arg3 == loop?
+    BoolExpression;
+    bSampleRate := Token = TOK_COMMA;
+    if bSampleRate then
+    begin
+      push;
+      loop := tos;
+      EmitLn(Format('mov %s, %s', [loop, RegisterName]));
+      MatchString(TOK_COMMA);
+      // arg4 == sample rate (optional)
+      BoolExpression;
+      CloseParen;
+      EmitLn('acquire __SPFArgsMutex');
+      EmitLn(Format('__PlayFileEx(%s,%s,%s,%s)', [fname, vol, loop, RegisterName]));
+      ResetStatementType;
+      EmitLn(Format('mov %s, 0', [RegisterName]));
+      EmitLn('release __SPFArgsMutex');
+      pop;
+    end
+    else
+    begin
+      CloseParen;
+      EmitLn('acquire __SPFArgsMutex');
+      EmitLn('mov __SPFArgs.Filename, ' + fname);
+      EmitLn('mov __SPFArgs.Volume, ' + vol);
+      EmitLn(Format('mov __SPFArgs.Loop, %s', [RegisterName]));
+      EmitLn('syscall SoundPlayFile, __SPFArgs');
+      ResetStatementType;
+      EmitLn(Format('mov %s, __SPFArgs.Result', [RegisterName]));
+      EmitLn('release __SPFArgsMutex');
+    end;
+    pop;
+  finally
+    fArrayHelpers.ReleaseHelper(AHV);
+  end;
 end;
 
 procedure TNXCComp.DoReadButton(idx: integer);

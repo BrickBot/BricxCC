@@ -39,6 +39,7 @@ type
     radCAMessage: TRadioButton;
     lblMailbox: TLabel;
     cboMailbox: TComboBox;
+    chkEnhancedMsg: TCheckBox;
     procedure ActionsClick(Sender: TObject);
     procedure FormCreate(Sender: TObject);
   private
@@ -68,7 +69,12 @@ begin
   else if radCAScript.Checked then
     Result := mcaScript
   else
-    Result := mcaMessage;
+  begin
+    if chkEnhancedMsg.Checked then
+      Result := mcaMessageEx
+    else
+      Result := mcaMessage;
+  end;
 end;
 
 function TfrmJoyActions.GetInbox: integer;
@@ -83,6 +89,8 @@ begin
     mcaScript  : radCAScript.Checked  := True;
   else
     radCAMessage.Checked := True;
+    if Value = mcaMessageEx then
+      chkEnhancedMsg.Checked := True;
   end;
 end;
 
@@ -93,7 +101,8 @@ end;
 
 procedure TfrmJoyActions.ActionsClick(Sender: TObject);
 begin
-  cboMailbox.Enabled := radCAMessage.Checked;
+  cboMailbox.Enabled     := radCAMessage.Checked;
+  chkEnhancedMsg.Enabled := radCAMessage.Checked;
 end;
 
 procedure TfrmJoyActions.FormCreate(Sender: TObject);

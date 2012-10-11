@@ -3,7 +3,7 @@ unit uStreamRW;
 interface
 
 uses
-  Classes;
+  Classes, uUtilities;
 
 procedure ReadByte(aStream : TStream; var value : Byte); overload;
 function ReadByte(aStream : TStream) : byte; overload;
@@ -30,12 +30,11 @@ procedure WriteWord(aStream : TStream; value : Word; bLittleEndian : Boolean = T
 procedure WriteSmallInt(aStream : TStream; value : SmallInt; bLittleEndian : Boolean = True);
 procedure WriteCardinal(aStream : TStream; value : Cardinal; bLittleEndian : Boolean = True);
 procedure WriteInteger(aStream : TStream; value : Integer; bLittleEndian : Boolean = True);
-
+procedure WriteString(aStream : TStream; aString : string; bWriteLength : Boolean = False);
+procedure WriteSingle(aStream : TStream; value : single; bLittleEndian : Boolean = True);
+procedure WriteBytes(aStream : TStream; value : TBytes);
 
 implementation
-
-uses
-  uUtilities;
 
 procedure ReadByte(aStream : TStream; var value : Byte);
 begin
@@ -199,9 +198,28 @@ begin
   aStream.Write(b4, 1);
 end;
 
-procedure WriteInteger(aStream : TStream; value : Integer; bLittleEndian : Boolean = True);
+procedure WriteInteger(aStream : TStream; value : Integer; bLittleEndian : Boolean);
 begin
   WriteCardinal(aStream, Cardinal(value), bLittleEndian);
+end;
+
+procedure WriteString(aStream : TStream; aString : string; bWriteLength : Boolean);
+begin
+  if bWriteLength then
+  begin
+    WriteWord(aStream, Length(aString));
+  end;
+  aStream.Write(Pointer(aString)^, Length(aString));
+end;
+
+procedure WriteSingle(aStream : TStream; value : single; bLittleEndian : Boolean);
+begin
+  aStream.Write(value, SizeOf(value));
+end;
+
+procedure WriteBytes(aStream : TStream; value : TBytes);
+begin
+  aStream.Write(value, Length(value));
 end;
 
 end.

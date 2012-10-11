@@ -1966,6 +1966,50 @@
 #define BT_DEFAULT_INQUIRY_TIMEOUT_LO 15  /*!< Bluetooth inquiry timeout (15*1.28 sec = 19.2 sec) */
 /** @} */  // end of CommMiscConstants group
 
+/** @defgroup CommJoystickConstants Joystick message constants
+ * Constants for reading joystick information
+ * @{
+ */
+#define JOY_BTN_01 0x00000001 /*!< Joystick button 1 */
+#define JOY_BTN_02 0x00000002 /*!< Joystick button 2 */
+#define JOY_BTN_03 0x00000004 /*!< Joystick button 3 */
+#define JOY_BTN_04 0x00000008 /*!< Joystick button 4 */
+#define JOY_BTN_05 0x00000010 /*!< Joystick button 5 */
+#define JOY_BTN_06 0x00000020 /*!< Joystick button 6 */
+#define JOY_BTN_07 0x00000040 /*!< Joystick button 7 */
+#define JOY_BTN_08 0x00000080 /*!< Joystick button 8 */
+#define JOY_BTN_09 0x00000100 /*!< Joystick button 9 */
+#define JOY_BTN_10 0x00000200 /*!< Joystick button 10 */
+#define JOY_BTN_11 0x00000400 /*!< Joystick button 11 */
+#define JOY_BTN_12 0x00000800 /*!< Joystick button 12 */
+#define JOY_BTN_13 0x00001000 /*!< Joystick button 13 */
+#define JOY_BTN_14 0x00002000 /*!< Joystick button 14 */
+#define JOY_BTN_15 0x00004000 /*!< Joystick button 15 */
+#define JOY_BTN_16 0x00008000 /*!< Joystick button 16 */
+#define JOY_BTN_17 0x00010000 /*!< Joystick button 17 */
+#define JOY_BTN_18 0x00020000 /*!< Joystick button 18 */
+#define JOY_BTN_19 0x00040000 /*!< Joystick button 19 */
+#define JOY_BTN_20 0x00080000 /*!< Joystick button 20 */
+#define JOY_BTN_21 0x00100000 /*!< Joystick button 21 */
+#define JOY_BTN_22 0x00200000 /*!< Joystick button 22 */
+#define JOY_BTN_23 0x00400000 /*!< Joystick button 23 */
+#define JOY_BTN_24 0x00800000 /*!< Joystick button 24 */
+#define JOY_BTN_25 0x01000000 /*!< Joystick button 25 */
+#define JOY_BTN_26 0x02000000 /*!< Joystick button 26 */
+#define JOY_BTN_27 0x04000000 /*!< Joystick button 27 */
+#define JOY_BTN_28 0x08000000 /*!< Joystick button 28 */
+#define JOY_BTN_29 0x10000000 /*!< Joystick button 29 */
+#define JOY_BTN_30 0x20000000 /*!< Joystick button 30 */
+#define JOY_BTN_31 0x40000000 /*!< Joystick button 31 */
+#define JOY_BTN_32 0x80000000 /*!< Joystick button 32 */
+
+#define JOY_POV_CENTERED  -1      /*!< Joystick POV centered */
+#define JOY_POV_FORWARD   0      /*!< Joystick POV forward */
+#define JOY_POV_RIGHT     9000   /*!< Joystick POV right */
+#define JOY_POV_BACKWARD  18000  /*!< Joystick POV backward */
+#define JOY_POV_LEFT      27000  /*!< Joystick POV left */
+/** @} */ // end of CommJoystickConstants group
+
 /** @defgroup CommBtStateConstants Bluetooth State constants
  * Constants related to the bluetooth state.
  * @{

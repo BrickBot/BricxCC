@@ -1,0 +1,59 @@
+// Global declaration and assignment : OK
+ float float_1 = 0; // GOOB -> assigned from Static Default Segment (rxe file)
+ float float_2 = 1; // GOOB -> assigned from Static Default Segment (rxe file)
+ float float_3= 0x7FFF; // GOOB -> assigned from Static Default Segment (rxe file)
+ float float_4 = 0x8000; // GOOB -> assigned from Static Default Segment (rxe file)
+
+// Global declaration
+ float float_5;
+ float float_6;
+ float float_7;
+ float float_8;
+
+float result;
+
+task main ()
+ {
+ // Local declaration and assignment
+ float float_13 = 0; // BAD : constant is a positive signed word -> invalid OP_SET is used with immediate SWORD to FLOAT
+ float float_14 = 1; // BAD : constant is a positive signed word -> invalid OP_SET is used with immediate SWORD to FLOAT
+ float float_15 = 0x7FFF; // BAD : constant is a positive signed word -> invalid OP_SET is used with immediate SWORD to FLOAT
+ float float_16 = 0x8000; // ERROR ! The data named "float_16" is not considered by the compiler and doesn't appear in the final rxe file.
+
+ // Global declaration and local assignment
+ float_5 = 0; // BAD : constant is a positive signed word -> invalid OP_SET is used with immediate SWORD to FLOAT
+ float_6 = 1; // BAD : constant is a positive signed word -> invalid OP_SET is used with immediate SWORD to FLOAT
+ float_7 = 0x7FFF; // BAD : constant is a positive signed word -> invalid OP_SET is used with immediate SWORD to FLOAT
+ float_8 = 0x8000; // GOOB : constant is a negative signed word -> OP_MOV is used
+
+ // Now, when a floating data is assigned with an explicite floating value
+ // all following local assignments of floating data are good
+ float float_9 = 2; // BAD : constant is a positive signed word -> invalid OP_SET is used with immediate SWORD to FLOAT
+ float float_10 = 3.0; // GOOD -> OP_MOV is used and OP_MOV is used for all following assignments of floating data
+ float float_11 = 4; // GOOB -> constant is a positive signed word but OP_MOV is correctly used
+ float float_12 = 0x7FFF; // GOOB -> constant is a positive signed word but OP_MOV is correctly used
+
+// Only for compiler optimization doesn't ignore the floating code assignments
+ // ERROR ! The data named "float_16" is not considered by the compiler and doesn't appear in the final rxe file.
+ result = float_1 + float_2 + float_3 + float_4 + float_5 + float_6 + float_7 + float_8 + float_9 + float_10 + float_11 + float_12 + float_13 + float_14 + float_15 + float_16;
+  NumOut(0, LCD_LINE1, float_1);
+  NumOut(0, LCD_LINE2, float_2);
+  NumOut(0, LCD_LINE3, float_3);
+  NumOut(0, LCD_LINE4, float_4);
+  NumOut(0, LCD_LINE5, float_5);
+  NumOut(0, LCD_LINE6, float_6);
+  NumOut(0, LCD_LINE7, float_7);
+  NumOut(0, LCD_LINE8, float_8);
+  NumOut(50, LCD_LINE1, float_9);
+  NumOut(50, LCD_LINE2, float_10);
+  NumOut(50, LCD_LINE3, float_11);
+  NumOut(50, LCD_LINE4, float_12);
+  NumOut(50, LCD_LINE5, float_13);
+  NumOut(50, LCD_LINE6, float_14);
+  NumOut(50, LCD_LINE7, float_15);
+  NumOut(50, LCD_LINE8, float_16);
+  Wait(SEC_5);
+  ClearScreen();
+  NumOut(50, LCD_LINE8, result);
+  Wait(SEC_5);
+ }

@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 3207;
+  uNXCHTMLTopicsSize = 3247;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -187,6 +187,10 @@ const
     (
      Name: 'IOMapWriteType';
      Value: 'struct_i_o_map_write_type.html'
+    ),
+    (
+     Name: 'JoystickExMessageType';
+     Value: 'struct_joystick_ex_message_type.html'
     ),
     (
      Name: 'JoystickMessageType';
@@ -3791,6 +3795,154 @@ const
     (
      Name: 'BT_DEFAULT_INQUIRY_TIMEOUT_LO';
      Value: 'group___comm_misc_constants_ga90ab712c66ab0903f5f66f7b867ab92d.html'
+    ),
+    (
+     Name: 'JOY_BTN_01';
+     Value: 'group___comm_joystick_constants_gae9b4c0e056134e79fbfd571e2fec31f3.html'
+    ),
+    (
+     Name: 'JOY_BTN_02';
+     Value: 'group___comm_joystick_constants_ga8e92b49c506ea3e3f142ed5e10dbb9f4.html'
+    ),
+    (
+     Name: 'JOY_BTN_03';
+     Value: 'group___comm_joystick_constants_ga5968ebb8712a5b988b86f97c916de679.html'
+    ),
+    (
+     Name: 'JOY_BTN_04';
+     Value: 'group___comm_joystick_constants_ga96017c36ed3072f76d2c394a7787c8e1.html'
+    ),
+    (
+     Name: 'JOY_BTN_05';
+     Value: 'group___comm_joystick_constants_ga1f4ea105d6cd03b78edf53cec7063ccd.html'
+    ),
+    (
+     Name: 'JOY_BTN_06';
+     Value: 'group___comm_joystick_constants_ga4cea2dadaa409b23dc3cea82bfc7091b.html'
+    ),
+    (
+     Name: 'JOY_BTN_07';
+     Value: 'group___comm_joystick_constants_ga95f7fb17f3bd65c8644acbd950deb257.html'
+    ),
+    (
+     Name: 'JOY_BTN_08';
+     Value: 'group___comm_joystick_constants_ga24c8cf560d80a06e91aa9e08c28d5f81.html'
+    ),
+    (
+     Name: 'JOY_BTN_09';
+     Value: 'group___comm_joystick_constants_ga5d778dc8567b133a09b2f394754ce7de.html'
+    ),
+    (
+     Name: 'JOY_BTN_10';
+     Value: 'group___comm_joystick_constants_gad160ceffc52dd33a6a14c6dce75edae6.html'
+    ),
+    (
+     Name: 'JOY_BTN_11';
+     Value: 'group___comm_joystick_constants_ga06104808cc5bc2c50ad907c01d835b15.html'
+    ),
+    (
+     Name: 'JOY_BTN_12';
+     Value: 'group___comm_joystick_constants_ga04c8ef3f7da7baf33bcced950d023989.html'
+    ),
+    (
+     Name: 'JOY_BTN_13';
+     Value: 'group___comm_joystick_constants_ga49183fbaefe7425c3f22e6de595d2bb2.html'
+    ),
+    (
+     Name: 'JOY_BTN_14';
+     Value: 'group___comm_joystick_constants_ga455f4dd11a376f23996b66ea0938b4d0.html'
+    ),
+    (
+     Name: 'JOY_BTN_15';
+     Value: 'group___comm_joystick_constants_ga0228ece4bf398378eb8976a66e90a0ee.html'
+    ),
+    (
+     Name: 'JOY_BTN_16';
+     Value: 'group___comm_joystick_constants_ga2b46ce34b4a2b31060fbef9f6fd4ebe8.html'
+    ),
+    (
+     Name: 'JOY_BTN_17';
+     Value: 'group___comm_joystick_constants_ga5a4f2c829af2ed8bc91412a160960b9e.html'
+    ),
+    (
+     Name: 'JOY_BTN_18';
+     Value: 'group___comm_joystick_constants_ga859eb4e1904207cdfdbc7230610ccf3c.html'
+    ),
+    (
+     Name: 'JOY_BTN_19';
+     Value: 'group___comm_joystick_constants_ga5301b222285f1d16d6a3bf5d9143aeaf.html'
+    ),
+    (
+     Name: 'JOY_BTN_20';
+     Value: 'group___comm_joystick_constants_gae7d94a26a09fa32d82c4be074b0c96e7.html'
+    ),
+    (
+     Name: 'JOY_BTN_21';
+     Value: 'group___comm_joystick_constants_ga18437bef8788616a7b096adc41b69b04.html'
+    ),
+    (
+     Name: 'JOY_BTN_22';
+     Value: 'group___comm_joystick_constants_gaab6982ae435c17e24d986a729f844086.html'
+    ),
+    (
+     Name: 'JOY_BTN_23';
+     Value: 'group___comm_joystick_constants_ga720d47fca9d1b7035a265b827121a280.html'
+    ),
+    (
+     Name: 'JOY_BTN_24';
+     Value: 'group___comm_joystick_constants_gaa18e594a04a88b383ce5d0c2ba97e84f.html'
+    ),
+    (
+     Name: 'JOY_BTN_25';
+     Value: 'group___comm_joystick_constants_ga49d501870741c381106eda031c189dcc.html'
+    ),
+    (
+     Name: 'JOY_BTN_26';
+     Value: 'group___comm_joystick_constants_gaaec83e375606711fda476c8e1ecd8caa.html'
+    ),
+    (
+     Name: 'JOY_BTN_27';
+     Value: 'group___comm_joystick_constants_gaffda36e9af1f5fd07750de78ebc98050.html'
+    ),
+    (
+     Name: 'JOY_BTN_28';
+     Value: 'group___comm_joystick_constants_ga1af4c133460f4db11fe9a2ae3fe179ad.html'
+    ),
+    (
+     Name: 'JOY_BTN_29';
+     Value: 'group___comm_joystick_constants_ga991830317508e8fe94e512ee861dab8a.html'
+    ),
+    (
+     Name: 'JOY_BTN_30';
+     Value: 'group___comm_joystick_constants_gad08538ecd66521d6066dfc0786f6689b.html'
+    ),
+    (
+     Name: 'JOY_BTN_31';
+     Value: 'group___comm_joystick_constants_ga2cd1d3a9fe02074001011c11da3d1619.html'
+    ),
+    (
+     Name: 'JOY_BTN_32';
+     Value: 'group___comm_joystick_constants_ga22c114ed8b7dd3bc0856b4fec8fe4bc6.html'
+    ),
+    (
+     Name: 'JOY_POV_CENTERED';
+     Value: 'group___comm_joystick_constants_ga0aab67c91d82d0337b6ae9ce8472ad23.html'
+    ),
+    (
+     Name: 'JOY_POV_FORWARD';
+     Value: 'group___comm_joystick_constants_ga1c4111caf880cd22ff47a8dcf1e27d18.html'
+    ),
+    (
+     Name: 'JOY_POV_RIGHT';
+     Value: 'group___comm_joystick_constants_gacdc1bff64e6d5c126f6db804719fdd90.html'
+    ),
+    (
+     Name: 'JOY_POV_BACKWARD';
+     Value: 'group___comm_joystick_constants_ga1fa968feadbc529f96f477f501177668.html'
+    ),
+    (
+     Name: 'JOY_POV_LEFT';
+     Value: 'group___comm_joystick_constants_gac279db39a6a74564654f9abe79f06f62.html'
     ),
     (
      Name: 'BT_ARM_OFF';
@@ -9086,7 +9238,7 @@ const
     ),
     (
      Name: 'PlayFileEx';
-     Value: 'group___sound_module_functions_gae2526a76df5bb846796374ca0af330e3.html'
+     Value: 'group___sound_module_functions_gac31e414daa8578068a8111632c554f23.html'
     ),
     (
      Name: 'PlayTone';
@@ -9601,6 +9753,10 @@ const
      Value: 'group___command_module_functions_gafbd862595d0fb114160defd510e03216.html'
     ),
     (
+     Name: 'SetSoundModuleBytes';
+     Value: 'group___command_module_functions_ga60b01c541bd3a932bcedb732f7c93d47.html'
+    ),
+    (
      Name: 'SetIOMapBytesByID';
      Value: 'group___command_module_functions_ga149960623e37f7386f6d85938b42127d.html'
     ),
@@ -9715,6 +9871,10 @@ const
     (
      Name: 'JoystickMessageRead';
      Value: 'group___comm_module_functions_ga7db28ed8b4ea16fd20208837bd711ed1.html'
+    ),
+    (
+     Name: 'JoystickExMessageRead';
+     Value: 'group___comm_module_functions_ga0a9463fe4061061aee60c8f6acd98db7.html'
     ),
     (
      Name: 'SendMessage';

@@ -18,6 +18,9 @@ unit hidapi;
 
 interface
 
+uses
+  HidApiDefs;
+
 {$IFNDEF WIN32}
 {$ELSE}
 {$A1}
@@ -25,12 +28,13 @@ interface
 
 type
   PHidDeviceInfo = ^THidDeviceInfo;
-	THidDeviceInfo = record
+	THidDeviceInfo = {packed} record
     path : PChar;
     vendor_id : word;
     product_id : word;
     serial_number : PWideChar;
     release_number : word;
+    dummy1 : word;
     manufacturer_string : PWideChar;
     product_string : PWideChar;
     usage_page : word;
@@ -39,39 +43,25 @@ type
     next : PHidDeviceInfo;
   end;
 
-{$IFDEF FPC}
-// for FPC we need a different type for 64 bit vs 32 bit.
-  {$ifdef CPU32}
-  HidDevice = Cardinal;
-  {$endif}
-  {$ifdef CPU64}
-  HidDevice = QWord;
-  {$endif}
-{$ELSE}
-// delphi
-  HidDevice = Cardinal;
-{$ENDIF}
-  PHidDevice = ^HidDevice;
-
 var
 	hid_init : function() : integer; cdecl;
   hid_exit : function() : integer; cdecl;
   hid_enumerate : function(vendor_id, product_id : word) : PHidDeviceInfo; cdecl;
   hid_free_enumeration : procedure(devs : PHidDeviceInfo); cdecl;
-  hid_open : function(vendor_id, produc_id : word; serial_number : PWideChar) : PHidDevice; cdecl;
-  hid_open_path : function(const path : PChar) : PHidDevice; cdecl;
-  hid_write : function(device : PHidDevice; const data : PByte; length : cardinal) : integer; cdecl;
-  hid_read_timeout : function(dev : PHidDevice; data : PByte; length : cardinal; milliseconds : integer) : integer; cdecl;
-  hid_read : function(dev : PHidDevice; data : PByte; length : cardinal) : integer; cdecl;
-  hid_set_nonblocking : function(device : PHidDevice; nonblock : integer) : integer; cdecl;
-  hid_send_feature_report : function(device : PHidDevice; const data : PByte; length : integer) : integer; cdecl;
-  hid_get_feature_report : function(device : PHidDevice; data : PByte; length : integer) : integer; cdecl;
-  hid_close : procedure(device : PHidDevice); cdecl;
-  hid_get_manufacturer_string : function(device : PHidDevice; str : PWideChar; maxlen : cardinal) : integer; cdecl;
-  hid_get_product_string : function(device : PHidDevice; str : PWideChar; maxlen : cardinal) : integer; cdecl;
-  hid_get_serial_number_string : function(device : PHidDevice; str : PWideChar; maxlen : cardinal) : integer; cdecl;
-  hid_get_indexed_string : function(device : PHidDevice; str_index : integer; str : PWideChar; maxlen : cardinal) : integer; cdecl;
-  hid_error : function(device : PHidDevice) : PWideChar; cdecl;
+  hid_open : function(vendor_id, produc_id : word; serial_number : PWideChar) : PHidDeviceHandle; cdecl;
+  hid_open_path : function(const path : PChar) : PHidDeviceHandle; cdecl;
+  hid_write : function(device : PHidDeviceHandle; const data : PByte; length : cardinal) : integer; cdecl;
+  hid_read_timeout : function(dev : PHidDeviceHandle; data : PByte; length : cardinal; milliseconds : integer) : integer; cdecl;
+  hid_read : function(dev : PHidDeviceHandle; data : PByte; length : cardinal) : integer; cdecl;
+  hid_set_nonblocking : function(device : PHidDeviceHandle; nonblock : integer) : integer; cdecl;
+  hid_send_feature_report : function(device : PHidDeviceHandle; const data : PByte; length : integer) : integer; cdecl;
+  hid_get_feature_report : function(device : PHidDeviceHandle; data : PByte; length : integer) : integer; cdecl;
+  hid_close : procedure(device : PHidDeviceHandle); cdecl;
+  hid_get_manufacturer_string : function(device : PHidDeviceHandle; str : PWideChar; maxlen : cardinal) : integer; cdecl;
+  hid_get_product_string : function(device : PHidDeviceHandle; str : PWideChar; maxlen : cardinal) : integer; cdecl;
+  hid_get_serial_number_string : function(device : PHidDeviceHandle; str : PWideChar; maxlen : cardinal) : integer; cdecl;
+  hid_get_indexed_string : function(device : PHidDeviceHandle; str_index : integer; str : PWideChar; maxlen : cardinal) : integer; cdecl;
+  hid_error : function(device : PHidDeviceHandle) : PWideChar; cdecl;
 
 var
   HidAPILoaded: Boolean = False;

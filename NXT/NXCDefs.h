@@ -2954,8 +2954,10 @@ inline char PlayFile(string filename);
  * \param filename The name of the sound or melody file to play.
  * \param volume The desired tone volume.
  * \param loop A boolean flag indicating whether to play the file repeatedly.
+ * \param sr An optional sample rate at which to play the sound file. A value
+ * of zero means to use the sample rate specified in the sound file header.
  */
-inline char PlayFileEx(string filename, byte volume, bool loop);
+inline char PlayFileEx(string filename, byte volume, bool loop, unsigned int sr = 0);
 
 /**
  * Play a tone.
@@ -5305,6 +5307,20 @@ inline void SetDisplayModuleBytes(unsigned int offset, unsigned int count, byte 
  */
 inline void SetCommModuleBytes(unsigned int offset, unsigned int count, byte data[]);
 
+/**
+ * Set Sound module IOMap bytes.
+ * Modify one or more bytes of data in an IOMap structure. You provide the
+ * offset into the Sound module IOMap structure where you want to start writing,
+ * the number of bytes to write at that location, and a byte array containing
+ * the new data.
+ * \param offset The number of bytes offset from the start of the Sound module
+ * IOMap structure where the data should be written. See \ref SoundIOMAP.
+ * \param count The number of bytes to write at the specified Sound module IOMap
+ * offset.
+ * \param data The byte array containing the data to write to the Sound module
+ * IOMap.
+ */
+inline void SetSoundModuleBytes(unsigned int offset, unsigned int count, byte data[]);
 
 #ifdef __ENHANCED_FIRMWARE
 /**
@@ -5658,6 +5674,7 @@ inline void GetCommModuleValue(unsigned int offset, variant & value);
 #define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrIn)
 #define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrIn)
 #define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommModuleID, _offset, _cnt, _arrIn)
+#define SetSoundModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(SoundModuleID, _offset, _cnt, _arrIn)
 
 #define GetCommandModuleValue(_offset, _n) GetIOMapValueByID(CommandModuleID, _offset, _n)
 #define GetLoaderModuleValue(_offset, _n) GetIOMapValueByID(LoaderModuleID, _offset, _n)
@@ -5688,6 +5705,7 @@ inline void GetCommModuleValue(unsigned int offset, variant & value);
 #define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(LowSpeedModuleName, _offset, _cnt, _arrIn)
 #define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(DisplayModuleName, _offset, _cnt, _arrIn)
 #define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(CommModuleName, _offset, _cnt, _arrIn)
+#define SetSoundModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(SoundModuleName, _offset, _cnt, _arrIn)
 
 #define GetCommandModuleValue(_offset, _n) GetIOMapValue(CommandModuleName, _offset, _n)
 #define GetLoaderModuleValue(_offset, _n) GetIOMapValue(LoaderModuleName, _offset, _n)
@@ -5843,6 +5861,23 @@ struct JoystickMessageType {
   char LeftSpeed;        /*!< The left motor speed (-100 to 100). */
   char RightSpeed;       /*!< The right motor speed (-100 to 100). */
   unsigned long Buttons; /*!< The joystick buttons pressed state. */
+};
+
+/**
+ * The JoystickExMessageType structure.
+ * This structure is used to contain Joystick values read via the
+ * \ref JoystickExMessageRead API function.
+ */
+struct JoystickExMessageType {
+  unsigned long Xpos;          /*!< The x position */
+  unsigned long Ypos;          /*!< The y position */
+  unsigned long Zpos;          /*!< The z position */
+  unsigned long Rpos;         /*!< The rudder/4th axis position */
+  unsigned long Upos;         /*!< The 5th axis position */
+  unsigned long Vpos;         /*!< The 6th axis position */
+  unsigned long Buttons;       /*!< The button states */
+  unsigned long ButtonNumber; /*!< The current button number pressed */
+  unsigned long POV;          /*!< The point of view state */
 };
 
 #ifdef __ENHANCED_FIRMWARE
@@ -6010,6 +6045,17 @@ struct CommBTConnectionType {
  * \return A char value indicating whether the function call succeeded or not.
  */
 inline char JoystickMessageRead(byte queue, JoystickMessageType & msg);
+
+/**
+ * Read an extended joystick message from a queue/mailbox.
+ * Read an extended joystick message from a queue/mailbox.
+ *
+ * \param queue The mailbox number. See \ref MailboxConstants.
+ * \param msg The extended joystick message that is read from the mailbox. See
+ * \ref JoystickExMessageType for details.
+ * \return A char value indicating whether the function call succeeded or not.
+ */
+inline char JoystickExMessageRead(byte queue, JoystickExMessageType & msg);
 
 /**
  * Send a message to a queue/mailbox.
@@ -8005,18 +8051,26 @@ inline void SetBTDeviceNameCount(byte count);
 
 #else
 
-#define JoystickMessageRead(_queue, _jmt) \
-asm { \
+#define __DoReadJoystick(_queue, _arg) \
   acquire __MRMutex \
   mov __MRArgs.QueueID, _queue \
   set __MRArgs.Remove, TRUE \
   syscall MessageRead, __MRArgs \
   brtst NEQ, __RRM_Err##__I__, __MRArgs.Result \
-  unflatten _jmt, __RRNErr, __MRArgs.Message, _jmt \
+  unflatten _arg, __RRNErr, __MRArgs.Message, _arg \
   __RRM_Err##__I__: \
   __IncI__ \
   mov __RETVAL__, __MRArgs.Result \
-  release __MRMutex \
+  release __MRMutex
+
+#define JoystickMessageRead(_queue, _jmt) asm { \
+  compchktype _jmt, JoystickMessageType \
+  __DoReadJoystick(_queue, _jmt) \
+}
+
+#define JoystickExMessageRead(_queue, _jemt) asm \
+  compchktype _jemt, JoystickExMessageType \
+  __DoReadJoystick(_queue, _jemt) \
 }
 
 #define SendMessage(_queue, _msg) asm { __sendMessage(_queue, _msg, __RETVAL__) }

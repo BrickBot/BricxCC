@@ -4,7 +4,7 @@ object frmJoyActions: TfrmJoyActions
   BorderIcons = [biSystemMenu]
   BorderStyle = bsDialog
   Caption = 'Joystick Options'
-  ClientHeight = 198
+  ClientHeight = 217
   ClientWidth = 263
   Color = clBtnFace
   Font.Charset = DEFAULT_CHARSET
@@ -21,7 +21,7 @@ object frmJoyActions: TfrmJoyActions
     Left = 8
     Top = 8
     Width = 249
-    Height = 153
+    Height = 175
     Caption = 'Joystick change action'
     TabOrder = 0
     object lblMailbox: TLabel
@@ -84,10 +84,18 @@ object frmJoyActions: TfrmJoyActions
         'Mailbox 9'
         'Mailbox 10')
     end
+    object chkEnhancedMsg: TCheckBox
+      Left = 48
+      Top = 144
+      Width = 185
+      Height = 17
+      Caption = 'Raw joystick information'
+      TabOrder = 4
+    end
   end
   object btnOK: TButton
     Left = 96
-    Top = 168
+    Top = 188
     Width = 75
     Height = 25
     Caption = 'OK'
@@ -97,7 +105,7 @@ object frmJoyActions: TfrmJoyActions
   end
   object btnCancel: TButton
     Left = 182
-    Top = 168
+    Top = 188
     Width = 75
     Height = 25
     Cancel = True

@@ -2,6 +2,9 @@ unit uSerial;
 
 interface
 
+uses
+  uUtilities;
+
 {$IFDEF WIN32}
 {$DEFINE WINDOWS}
 {$ENDIF}
@@ -19,9 +22,6 @@ const
 
 const
   MAX_SERIAL_IDX = 128;
-
-type
-  TBytes = array of byte;
 
 function GetSerialDeviceName(idx : integer) : string;
 function SerialRead(Handle: THandle; Buffer : Pointer; Count: LongInt; ms : LongInt): LongInt;

@@ -5,6 +5,11 @@ interface
 uses
   Classes;
 
+type
+  TBytes = array of byte;
+  TBytesArray = array of TBytes;
+  TIntegers = array of integer;
+
 function HiWord(L: Cardinal): Word;
 function HiByte(W: Word): Byte;
 function GetByte(val : Cardinal; idx : integer) : Byte;
