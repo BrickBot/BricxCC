@@ -15628,6 +15628,35 @@ inline int fputs(string str, byte handle) {
     return EOF;
 }
 
+/**
+ * Get character from stdin.
+ * Returns the next character from the standard input (stdin).
+ * It is equivalent to getc with stdin as its argument. On the NXT this means
+ * wait for a button press and return the value of the button pressed.
+ *
+ * \return The pressed button. See \ref ButtonNameConstants.
+ *
+ */
+inline int getchar() {
+  int result = -1;
+  while (true) {
+    if (ButtonPressed(BTN1, false))
+      result = BTN1;
+    else if (ButtonPressed(BTN2, false))
+      result = BTN2;
+    else if (ButtonPressed(BTN3, false))
+      result = BTN3;
+    else if (ButtonPressed(BTN4, false))
+      result = BTN4;
+    if (result != -1)
+      break;
+    else
+      Yield();
+  }
+  while(ButtonPressed(result, false));
+  return result;
+}
+
 #ifdef __ENHANCED_FIRMWARE
 
 #ifdef __DOXYGEN_DOCS
@@ -15732,36 +15761,6 @@ inline int fseek(byte handle, long offset, int origin) {
  * \warning This function requires the enhanced NBC/NXC firmware version 1.28+.
  */
 inline void rewind(byte handle) { fseek(handle, 0, SEEK_SET); }
-
-/**
- * Get character from stdin.
- * Returns the next character from the standard input (stdin).
- * It is equivalent to getc with stdin as its argument. On the NXT this means
- * wait for a button press and return the value of the button pressed.
- *
- * \return The pressed button. See \ref ButtonNameConstants.
- *
- */
-inline int getchar() {
-  int result = -1;
-  while (true) {
-    if (ButtonPressed(BTN1, false))
-      result = BTN1;
-    else if (ButtonPressed(BTN2, false))
-      result = BTN2;
-    else if (ButtonPressed(BTN3, false))
-      result = BTN3;
-    else if (ButtonPressed(BTN4, false))
-      result = BTN4;
-    if (result != -1)
-      break;
-    else
-      Yield();
-  }
-  while(ButtonPressed(result, false));
-  return result;
-}
-
 
 #endif
 #endif
