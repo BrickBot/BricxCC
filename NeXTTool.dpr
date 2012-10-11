@@ -220,6 +220,7 @@ begin
   Writeln('   -btnamecnt : Get the bluetooth device name count');
   Writeln('   -btdevice=<idx> : Get the specified bluetooth device');
   Writeln('   -btconnection=<idx> : Get the specified bluetooth connection');
+  Writeln('   -shutdown : Turn off the NXT');
 {
 NXTPollCommandLen
 NXTPollCommand

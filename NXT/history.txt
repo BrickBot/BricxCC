@@ -9,7 +9,7 @@ For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
 
-Version 1.2.1.r5 (2011-10-24)
+Version 1.2.1.r5 (2012-10-12)
 -----------------------------
 - Added support for HiTechnic Barometric sensor
 - Added support for HiTechnic Prototype Board
@@ -61,6 +61,7 @@ Version 1.2.1.r5 (2011-10-24)
   returned data to 7 bytes.
 - Added support for Fast I2C with latest enhanced NBC/NXC firmware.
 - Added InputPinFunction system call support (requires latest enhanced NBC/NXC firmware version).
+- Added JoystickExMessageRead API function and JoystickExMessageType structure to NXC API.
 
 
 Version 1.2.1.r4 (2011-03-13)

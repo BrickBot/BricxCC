@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH NBC 1 "March  3, 2009"
+.TH NBC 1 "October  11, 2012"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -28,9 +28,21 @@ command.
 .\" TeX users may be more comfortable with the \fB<whatever>\fP and
 .\" \fI<whatever>\fP escape sequences to invode bold face and italics,
 .\" respectively.
-\fBnbc\fP is a program that compiles NXC files to NBC files, which can
-then be uploaded on an LEGO Mindstorms NXT for execution.
+\fBnbc\fP is a program that compiles Not eXactly C (NXC) files 
+or NeXT Byte Code (NBC) files into programs that can run on the standard
+LEGO MINDSTORMS NXT firmware or the enhanced NBC/NXC firmware. The nbc 
+compiler can either save the compiler output to a file or upload
+it to a LEGO Mindstorms NXT for execution.  The compiler can also
+compile NXT Picture files (.ric) using the text-based RICScript 
+language.  Since nbc can compile different programming languages it
+uses the file extension to determine the type of code it is compiling.
+NXC programs should use the .nxc file extension, NBC programs should 
+use the .nbc file extension, and RICScript programs should use the .rs 
+file extension.
 .SH OPTIONS
+.TP
+.B \-T=<target>
+target can be NXT or SPRO (HiTechnic SuperPro board)
 .TP
 .B \-S=<portname>
 specify port name (COMn or usb), resource name, or alias
@@ -39,7 +51,7 @@ specify port name (COMn or usb), resource name, or alias
 download program
 .TP
 .B \-r
-run program
+download and run program
 .TP
 .B \-b
 treat input file as a binary file (don't compile it)
@@ -48,7 +60,7 @@ treat input file as a binary file (don't compile it)
 quiet mode
 .TP
 .B \-n
-prevent the system file from being included
+prevent the system files from being included
 .TP
 .B \-D=<sym>[=<value>]
 define macro <sym>
@@ -56,7 +68,7 @@ define macro <sym>
 .B \-x
 decompile program
 .TP
-.B \-Z[1|2]
+.B \-Z[1|2|3|4|5|6]
 turn on compiler optimizations
 .TP
 .B \-ER=n
@@ -74,8 +86,8 @@ specify output file
 .B \-I=<path>
 search <path> for include files
 .TP
-.B \-nbc=<filename>
-save NXC intermediate NBC code to <filename>
+.B \-asm=<filename>
+save intermediate (assembler) code to <filename>
 .TP
 .B \-L=<filename>
 generate code listing to <filename>
@@ -84,16 +96,19 @@ generate code listing to <filename>
 generate symbol table to <filename>
 .TP
 .B \-w[-|+]
-warnings off or on [default is off]
+warnings off or on [default is on]
+.TP
+.B \-sm[-|+]
+compiler status messages off or on [default is on]
 .TP
 .B \-EF
-enhanced firmware
+target the enhanced firmware
 .TP
 .B \-safecall
 NXC will wrap all function calls in Acquire/Release
 .TP
-.B \-api
-dump the API to stdout
+.B \-api[=0|1|2|3]
+dump the NBC/NXC API to stdout
 .TP
 .B \-v=n
 set the targeted firmware version (default == 128, NXT 1.1 == 105)
