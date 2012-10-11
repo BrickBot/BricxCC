@@ -2,7 +2,7 @@
 .\" First parameter, NAME, should be all caps
 .\" Second parameter, SECTION, should be 1-8, maybe w/ subsection
 .\" other parameters are allowed: see man(7), man(1)
-.TH NEXTTOOL 1 "May  2, 2010"
+.TH NEXTTOOL 1 "Oct  11, 2012"
 .\" Please adjust this date whenever revising the manpage.
 .\"
 .\" Some roff macros, for reference:
@@ -41,7 +41,10 @@ A summary of options and actions is included below.
 .B Options:
 .TP
 .B /COM=port
-specify port name (COMn, usb, resource string, or alias)
+specify port name (usb, resource string, or alias)
+.TP
+.B /BluetoothSearchTimeout=<n>
+Set Bluetooth search timeout
 .TP
 .B /HEX
 use hexadecimal for numeric output
@@ -58,8 +61,8 @@ loop when playing sound files
 .B /Relative
 reset output position relative
 .TP
-.B /Empty
-empty mailbox when reading
+.B /KeepMsg
+do not empty mailbox when reading
 .TP
 .B /Bin[=filename]
 dump data output as binary to a file (nxt.bin)
@@ -87,6 +90,12 @@ sensor type (0..17)
 .TP
 .B /SensorMode=<n>
 sensor mode (0, 32, 64, 96, 128, 160, 192, 224)
+.TP
+.B /Iterations=<n>
+repeat a command <n> times (1)
+.TP
+.B /RefreshRate=<ms>
+delay <ms> milliseconds between iterations (1000)
 .br
 .TP
 .B
@@ -256,6 +265,21 @@ Set the VM state (enhanced firmware only)
 .TP
 .B -getvmstate
 Get the VM state (enhanced firmware only)
+.TP
+.B -btdevcnt
+Get the bluetooth device count
+.TP
+.B -btnamecnt
+Get the bluetooth device name count
+.TP
+.B -btdevice=<idx>
+Get the specified bluetooth device
+.TP
+.B -btconnection=<idx>
+Get the specified bluetooth connection
+.TP
+.B -shutdown
+Turn off the NXT
 General:
 .TP
 .B -help
