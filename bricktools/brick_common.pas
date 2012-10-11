@@ -30,9 +30,9 @@ implementation
 uses
   SysUtils,
 {$IFNDEF NXT_ONLY}
-  FakeSpirit, SProSpirit, FooSpirit, 
+  FakeSpirit, FooSpirit,
 {$ENDIF}
-  FantomSpirit, uGlobals;
+  FantomSpirit, SProSpirit, uGlobals;
 
 var
   BC : TBrickComm;
