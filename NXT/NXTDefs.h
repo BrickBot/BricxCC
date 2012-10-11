@@ -664,6 +664,16 @@ TVector struct
   Z float
 TVector ends
 
+// PlayFileEx
+TPlayFileEx struct
+ SampleRate word
+ Filename	byte[]
+ Flags		byte
+ State		byte
+ Mode		byte
+ Volume		byte
+TPlayFileEx ends
+
 dseg	ends
 
 // motor arrays (compiler will optimize these out if they are not used)
@@ -2544,7 +2554,7 @@ ends
 
 dseg segment
   __PlayToneTmp TSoundPlayTone
-  __PlayFileTmp TSoundPlayFile
+  __PlayFileTmp TPlayFileEx
   __PlayFileMutex mutex
   __PlayToneMutex mutex
   __SGSMutex mutex
@@ -2580,12 +2590,18 @@ dseg ends
   syscall SoundPlayTone, __PlayToneTmp \
   release __PlayToneMutex
 
-#define __PlayFileEx(_file,_vol,_loop) \
+#define __PlayFileEx(_file,_vol,_loop,_sr) \
   acquire __PlayFileMutex \
-  mov __PlayFileTmp.Filename, _file \
+  mov __PlayFileTmp.SampleRate, _sr \
+  arrinit __PlayFileTmp.Filename, 0, 20 \
+  replace __PlayFileTmp.Filename, __PlayFileTmp.Filename, NA, _file \
   mov __PlayFileTmp.Volume, _vol \
-  mov __PlayFileTmp.Loop, _loop \
-  syscall SoundPlayFile, __PlayFileTmp \
+  set __PlayFileTmp.Flags, SOUND_FLAGS_UPDATE \
+  brtst EQ, __PFE_EndIf##__I__, _loop \
+  set __PlayFileTmp.Mode, SOUND_MODE_LOOP \
+  __PFE_EndIf##__I__: \
+  __IncI__ \
+  SetSoundModuleValue(SoundOffsetSampleRate, __PlayFileTmp) \
   release __PlayFileMutex
 
 #define __setSoundState(_state, _flags, _result) \
@@ -8476,9 +8492,13 @@ dseg ends
 #define __ReadSensorDIGPSHeadingToWaypoint(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_WAYANGLE, 2, _result, __RDSD_LSStatus)
 #define __ReadSensorDIGPSRelativeHeading(_port, _result) __ReadI2CBEValue(_port, DI_ADDR_DGPS, DGPS_REG_LASTANGLE, 4, _result, __RDSD_LSStatus)
 
+#define __DIGYRO_0250DPS 114.2857
+#define __DIGYRO_0500DPS  57.1429
+#define __DIGYRO_2000DPS  14.2857
+
 dseg segment
-  __digyro_divisor sword[] {128, 128, 128, 128}
-  __tmp_digyro_divisor sword
+  __digyro_divisor float[] {__DIGYRO_0250DPS, __DIGYRO_0250DPS, __DIGYRO_0250DPS, __DIGYRO_0250DPS}
+  __tmp_digyro_divisor float
   __tmp_digyro0 sword
   __tmp_digyro1 sword
   __tmp_digyro2 sword
@@ -8504,11 +8524,11 @@ dseg ends
   mov __RLSReadPort, _port \
   call __ReadLSBytesVar \
   tst EQ, _result, __RLSBResultVar \
-  set __tmp_digyro_divisor, 16 \
+  mov __tmp_digyro_divisor, __DIGYRO_2000DPS \
   brcmp EQ, __SSDIG_EndIf##__I__, DIGYRO_CTRL4_SCALE_2000, _range \
-  set __tmp_digyro_divisor, 64 \
+  mov __tmp_digyro_divisor, __DIGYRO_0500DPS \
   brcmp EQ, __SSDIG_EndIf##__I__, DIGYRO_CTRL4_SCALE_500, _range \
-  set __tmp_digyro_divisor, 128 \
+  mov __tmp_digyro_divisor, __DIGYRO_0250DPS \
   __SSDIG_EndIf##__I__: \
   __IncI__ \
   replace __digyro_divisor, __digyro_divisor, _port, __tmp_digyro_divisor \
@@ -8528,11 +8548,11 @@ dseg ends
   set __RLSBytesCount##_port, 0 \
   call __ReadLSBytes##_port \
   tst EQ, _result, __RLSBResult##_port \
-  set __tmp_digyro_divisor, 16 \
+  mov __tmp_digyro_divisor, __DIGYRO_2000DPS \
   brcmp EQ, __SSDIG_EndIf##__I__, DIGYRO_CTRL4_SCALE_2000, _range \
-  set __tmp_digyro_divisor, 64 \
+  mov __tmp_digyro_divisor, __DIGYRO_0500DPS \
   brcmp EQ, __SSDIG_EndIf##__I__, DIGYRO_CTRL4_SCALE_500, _range \
-  set __tmp_digyro_divisor, 128 \
+  mov __tmp_digyro_divisor, __DIGYRO_0250DPS \
   __SSDIG_EndIf##__I__: \
   __IncI__ \
   replace __digyro_divisor, __digyro_divisor, _port, __tmp_digyro_divisor \
@@ -13526,7 +13546,7 @@ ends
  *
  * \param _file The name of the sound or melody file to play.
  */
-#define PlayFile(_file) __PlayFileEx(_file,4,0)
+#define PlayFile(_file) __PlayFileEx(_file,4,0,0)
 
 /**
  * Play a file with extra options.
@@ -13540,8 +13560,9 @@ ends
  * \param _file The name of the sound or melody file to play.
  * \param _vol The desired tone volume.
  * \param _loop A boolean flag indicating whether to play the file repeatedly.
+ * \param _sr A sample rate at which to play the file.
  */
-#define PlayFileEx(_file,_vol,_loop) __PlayFileEx(_file,_vol,_loop)
+#define PlayFileEx(_file,_vol,_loop,_sr) __PlayFileEx(_file,_vol,_loop,_sr)
 
 /**
  * Get sound module state and flags.
@@ -13764,7 +13785,7 @@ ends
  * \param _n A variable containing the new value to write to the Command
  * module IOMap.
  */
-#define SetCommandModuleValue(_offset, _n) SetIOMapValueByID(CommandModuleID, _offset, _n)
+#define SetCommandModuleValue(_offset, _n) __SetIOMapValueByID(CommandModuleID, _offset, _n)
 
 /**
  * Set IOCtrl module IOMap value.
@@ -13776,7 +13797,7 @@ ends
  * \param _n A variable containing the new value to write to the IOCtrl
  * module IOMap.
  */
-#define SetIOCtrlModuleValue(_offset, _n) SetIOMapValueByID(IOCtrlModuleID, _offset, _n)
+#define SetIOCtrlModuleValue(_offset, _n) __SetIOMapValueByID(IOCtrlModuleID, _offset, _n)
 
 /**
  * Set Loader module IOMap value.
@@ -13788,7 +13809,7 @@ ends
  * \param _n A variable containing the new value to write to the Loader
  * module IOMap.
  */
-#define SetLoaderModuleValue(_offset, _n) SetIOMapValueByID(LoaderModuleID, _offset, _n)
+#define SetLoaderModuleValue(_offset, _n) __SetIOMapValueByID(LoaderModuleID, _offset, _n)
 
 /**
  * Set Ui module IOMap value.
@@ -13800,7 +13821,7 @@ ends
  * \param _n A variable containing the new value to write to the Ui
  * module IOMap.
  */
-#define SetUIModuleValue(_offset, _n) SetIOMapValueByID(UIModuleID, _offset, _n)
+#define SetUIModuleValue(_offset, _n) __SetIOMapValueByID(UIModuleID, _offset, _n)
 
 /**
  * Set Sound module IOMap value.
@@ -13812,7 +13833,7 @@ ends
  * \param _n A variable containing the new value to write to the Sound
  * module IOMap.
  */
-#define SetSoundModuleValue(_offset, _n) SetIOMapValueByID(SoundModuleID, _offset, _n)
+#define SetSoundModuleValue(_offset, _n) __SetIOMapValueByID(SoundModuleID, _offset, _n)
 
 /**
  * Set Button module IOMap value.
@@ -13824,7 +13845,7 @@ ends
  * \param _n A variable containing the new value to write to the Button
  * module IOMap.
  */
-#define SetButtonModuleValue(_offset, _n) SetIOMapValueByID(ButtonModuleID, _offset, _n)
+#define SetButtonModuleValue(_offset, _n) __SetIOMapValueByID(ButtonModuleID, _offset, _n)
 
 /**
  * Set Input module IOMap value.
@@ -13836,7 +13857,7 @@ ends
  * \param _n A variable containing the new value to write to the Input
  * module IOMap.
  */
-#define SetInputModuleValue(_offset, _n) SetIOMapValueByID(InputModuleID, _offset, _n)
+#define SetInputModuleValue(_offset, _n) __SetIOMapValueByID(InputModuleID, _offset, _n)
 
 /**
  * Set Output module IOMap value.
@@ -13848,7 +13869,7 @@ ends
  * \param _n A variable containing the new value to write to the Output
  * module IOMap.
  */
-#define SetOutputModuleValue(_offset, _n) SetIOMapValueByID(OutputModuleID, _offset, _n)
+#define SetOutputModuleValue(_offset, _n) __SetIOMapValueByID(OutputModuleID, _offset, _n)
 
 /**
  * Set Lowspeed module IOMap value.
@@ -13860,7 +13881,7 @@ ends
  * \param _n A variable containing the new value to write to the Lowspeed
  * module IOMap.
  */
-#define SetLowSpeedModuleValue(_offset, _n) SetIOMapValueByID(LowSpeedModuleID, _offset, _n)
+#define SetLowSpeedModuleValue(_offset, _n) __SetIOMapValueByID(LowSpeedModuleID, _offset, _n)
 
 /**
  * Set Display module IOMap value.
@@ -13872,7 +13893,7 @@ ends
  * \param _n A variable containing the new value to write to the Display
  * module IOMap.
  */
-#define SetDisplayModuleValue(_offset, _n) SetIOMapValueByID(DisplayModuleID, _offset, _n)
+#define SetDisplayModuleValue(_offset, _n) __SetIOMapValueByID(DisplayModuleID, _offset, _n)
 
 /**
  * Set Comm module IOMap value.
@@ -13884,7 +13905,7 @@ ends
  * \param _n A variable containing the new value to write to the Comm
  * module IOMap.
  */
-#define SetCommModuleValue(_offset, _n) SetIOMapValueByID(CommModuleID, _offset, _n)
+#define SetCommModuleValue(_offset, _n) __SetIOMapValueByID(CommModuleID, _offset, _n)
 
 /**
  * Set Command module IOMap bytes.
@@ -13899,7 +13920,7 @@ ends
  * \param _arrIn The byte array containing the data to write to the Command
  * module IOMap.
  */
-#define SetCommandModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommandModuleID, _offset, _cnt, _arrIn)
+#define SetCommandModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytesByID(CommandModuleID, _offset, _cnt, _arrIn)
 
 /**
  * Set Lowspeed module IOMap bytes.
@@ -13914,7 +13935,7 @@ ends
  * \param _arrIn The byte array containing the data to write to the Lowspeed
  * module IOMap.
  */
-#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrIn)
+#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytesByID(LowSpeedModuleID, _offset, _cnt, _arrIn)
 
 /**
  * Set Display module IOMap bytes.
@@ -13929,7 +13950,7 @@ ends
  * \param _arrIn The byte array containing the data to write to the Display
  * module IOMap.
  */
-#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrIn)
+#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytesByID(DisplayModuleID, _offset, _cnt, _arrIn)
 
 /**
  * Set Comm module IOMap bytes.
@@ -13944,26 +13965,43 @@ ends
  * \param _arrIn The byte array containing the data to write to the Comm module
  * IOMap.
  */
-#define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytesByID(CommModuleID, _offset, _cnt, _arrIn)
+#define SetCommModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytesByID(CommModuleID, _offset, _cnt, _arrIn)
+
+/**
+ * Set Sound module IOMap bytes.
+ * Set one one or more bytes of data in an IOMap structure. You provide the
+ * offset into the Sound module IOMap structure where you want to start writing,
+ * the number of bytes to write at that location, and a byte array containing
+ * the new data.
+ * \param _offset The number of bytes offset from the start of the Sound module
+ * IOMap structure where the data should be written. See \ref SoundIOMAP.
+ * \param _cnt The number of bytes to write at the specified Sound module IOMap
+ * offset.
+ * \param _arrIn The byte array containing the data to write to the Sound module
+ * IOMap.
+ */
+#define SetSoundModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytesByID(SoundModuleID, _offset, _cnt, _arrIn)
+
 
 #else
 
-#define SetCommandModuleValue(_offset, _n) SetIOMapValue(CommandModuleName, _offset, _n)
-#define SetIOCtrlModuleValue(_offset, _n) SetIOMapValue(IOCtrlModuleName, _offset, _n)
-#define SetLoaderModuleValue(_offset, _n) SetIOMapValue(LoaderModuleName, _offset, _n)
-#define SetUIModuleValue(_offset, _n) SetIOMapValue(UIModuleName, _offset, _n)
-#define SetSoundModuleValue(_offset, _n) SetIOMapValue(SoundModuleName, _offset, _n)
-#define SetButtonModuleValue(_offset, _n) SetIOMapValue(ButtonModuleName, _offset, _n)
-#define SetInputModuleValue(_offset, _n) SetIOMapValue(InputModuleName, _offset, _n)
-#define SetOutputModuleValue(_offset, _n) SetIOMapValue(OutputModuleName, _offset, _n)
-#define SetLowSpeedModuleValue(_offset, _n) SetIOMapValue(LowSpeedModuleName, _offset, _n)
-#define SetDisplayModuleValue(_offset, _n) SetIOMapValue(DisplayModuleName, _offset, _n)
-#define SetCommModuleValue(_offset, _n) SetIOMapValue(CommModuleName, _offset, _n)
+#define SetCommandModuleValue(_offset, _n) __SetIOMapValue(CommandModuleName, _offset, _n)
+#define SetIOCtrlModuleValue(_offset, _n) __SetIOMapValue(IOCtrlModuleName, _offset, _n)
+#define SetLoaderModuleValue(_offset, _n) __SetIOMapValue(LoaderModuleName, _offset, _n)
+#define SetUIModuleValue(_offset, _n) __SetIOMapValue(UIModuleName, _offset, _n)
+#define SetSoundModuleValue(_offset, _n) __SetIOMapValue(SoundModuleName, _offset, _n)
+#define SetButtonModuleValue(_offset, _n) __SetIOMapValue(ButtonModuleName, _offset, _n)
+#define SetInputModuleValue(_offset, _n) __SetIOMapValue(InputModuleName, _offset, _n)
+#define SetOutputModuleValue(_offset, _n) __SetIOMapValue(OutputModuleName, _offset, _n)
+#define SetLowSpeedModuleValue(_offset, _n) __SetIOMapValue(LowSpeedModuleName, _offset, _n)
+#define SetDisplayModuleValue(_offset, _n) __SetIOMapValue(DisplayModuleName, _offset, _n)
+#define SetCommModuleValue(_offset, _n) __SetIOMapValue(CommModuleName, _offset, _n)
 
-#define SetCommandModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(CommandModuleName, _offset, _cnt, _arrIn)
-#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(LowSpeedModuleName, _offset, _cnt, _arrIn)
-#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(DisplayModuleName, _offset, _cnt, _arrIn)
-#define SetCommModuleBytes(_offset, _cnt, _arrIn) SetIOMapBytes(CommModuleName, _offset, _cnt, _arrIn)
+#define SetCommandModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytes(CommandModuleName, _offset, _cnt, _arrIn)
+#define SetLowSpeedModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytes(LowSpeedModuleName, _offset, _cnt, _arrIn)
+#define SetDisplayModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytes(DisplayModuleName, _offset, _cnt, _arrIn)
+#define SetCommModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytes(CommModuleName, _offset, _cnt, _arrIn)
+#define SetSoundModuleBytes(_offset, _cnt, _arrIn) __SetIOMapBytes(SoundModuleName, _offset, _cnt, _arrIn)
 
 #endif
 

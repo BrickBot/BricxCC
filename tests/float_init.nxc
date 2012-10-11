@@ -1,0 +1,14 @@
+float myArray[][] = {  {0.5, 1.0, 0.0}, {0.0, 0.5, 1.0} };
+
+task main(void){
+  ClearScreen();
+  NumOut(0, LCD_LINE1, myArray[0][0]);
+  NumOut(40, LCD_LINE1, myArray[0][1]);
+  NumOut(80, LCD_LINE1, myArray[0][2]);
+
+  NumOut(0, LCD_LINE2, myArray[1][0]);
+  NumOut(40, LCD_LINE2, myArray[1][1]);
+  NumOut(80, LCD_LINE2, myArray[1][2]);
+
+  while(true);
+}

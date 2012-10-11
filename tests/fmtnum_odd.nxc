@@ -1,0 +1,58 @@
+#define printfxy( _x, _y, _fmt, _val) {  \
+  string sval = FormatNum(_fmt, _val); \
+  TextOut(_x, _y, sval); \
+}
+
+
+//********************************************************************
+
+task main()
+{
+  printf ("%s", "line 1 printf");
+/*
+	strcat __strbufmain, __constStr0009
+	strcat __strbufmain, __constStr0010
+	fmtnum __strretvalmain, __strbufmain, __constVal1
+	strcat __strbufmain, __strretvalmain
+	mov __main_7qG2_msg_7qG2_001, __strbufmain
+	strcat __strbufmain, __main_7qG2_msg_7qG2_001
+	mov __TextOutArgs.Location.X, __constVal0
+	mov __TextOutArgs.Location.Y, __constVal56
+	set __TextOutArgs.Options, 0
+	mov __TextOutArgs.Text, __strbufmain
+	syscall 13, __TextOutArgs
+*/
+/*
+	strcat __strbufmain, __constStr0009
+	mov __ArrHelper__main_244_0, __strbufmain
+	strcat __strbufmain, __constStr0010
+	fmtnum __strretvalmain, __ArrHelper__main_244_0, __constVal1
+	strcat __strbufmain, __strretvalmain
+	mov __main_7qG2_msg_7qG2_001, __strbufmain
+	strcat __strbufmain, __main_7qG2_msg_7qG2_001
+	mov __TextOutArgs.Location.X, __constVal0
+	mov __TextOutArgs.Location.Y, __constVal56
+	set __TextOutArgs.Options, 0
+	mov __TextOutArgs.Text, __strbufmain
+	syscall 13, __TextOutArgs
+*/
+  printfxy(0,48, "%s", "line 2 printfxy");
+/*
+	strcat __strbufmain, __constStr0009
+	strcat __strbufmain, __constStr0011
+	fmtnum __strretvalmain, __strbufmain, __constVal1
+	strcat __strbufmain, __strretvalmain
+	mov __main_7qG2_sval_7qG2_001, __strbufmain
+	strcat __strbufmain, __main_7qG2_sval_7qG2_001
+	mov __TextOutArgs.Location.X, __constVal0
+	mov __TextOutArgs.Location.Y, __constVal48
+	set __TextOutArgs.Options, 0
+	mov __TextOutArgs.Text, __strbufmain
+	syscall 13, __TextOutArgs
+*/
+  printfxy(0,40, "line 3 num :%3d", 33);
+
+
+  while (1);
+}
+

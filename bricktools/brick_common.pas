@@ -30,9 +30,9 @@ implementation
 uses
   SysUtils,
 {$IFNDEF NXT_ONLY}
-  FakeSpirit,
+  FakeSpirit, SProSpirit, FooSpirit, 
 {$ENDIF}
-  FantomSpirit, SProSpirit, uGlobals;
+  FantomSpirit, uGlobals;
 
 var
   BC : TBrickComm;
@@ -46,6 +46,8 @@ begin
       BC := TFantomSpirit.Create()
     else if LocalBrickType = SU_SPRO then
       BC := TSProSpirit.Create()
+    else if LocalBrickType = SU_FOO then
+      BC := TFooSpirit.Create()
     else
       BC := TFakeSpirit.Create();
 {$ELSE}

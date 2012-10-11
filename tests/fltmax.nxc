@@ -1,0 +1,17 @@
+//#define FLT_MAX 1E37
+const float NEG_FLT_MAX=-1E+37;
+const float FLT_MAX=1E+37;
+
+//float max(float f1, float f2, float f3 = -FLT_MAX, float f4 = -FLT_MAX, float f5 = -FLT_MAX) {
+float max(float f1, float f2, float f3 = NEG_FLT_MAX, float f4 = NEG_FLT_MAX, float f5 = NEG_FLT_MAX) {
+  float flarr[5], f;
+  flarr[0]=f1; flarr[1]=f2; flarr[2]=f3; flarr[3]=f4; flarr[4]=f5;
+  f=ArrayMax( flarr, 0, 5 );
+  return f;
+}
+
+task main() {
+  NumOut(0,8, max(7.1, 12.4, 5.9, 18.6));   // NumOut does not display floats!
+  NumOut(0,0, max(7.1, 12.4, 5.9, 1e+19));   // compiler error
+  for(;;);
+}

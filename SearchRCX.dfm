@@ -179,7 +179,8 @@ object SearchRCXForm: TSearchRCXForm
         'Spybot'
         'Swan'
         'NXT'
-        'SuperPro')
+        'SuperPro'
+        'Foo')
     end
   end
 end

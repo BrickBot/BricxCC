@@ -321,25 +321,15 @@ var
   i : integer;
   bt : integer;
 begin
-(*
-  SU_RCX         = rtRCX;
-  SU_CYBERMASTER = rtCybermaster;
-  SU_SCOUT       = rtScout;
-  SU_RCX2        = rtRCX2;
-  SU_SPYBOTIC    = rtSpy;
-  SU_SWAN        = rtSwan;
-  SU_NXT         = rtNXT;
-  SU_SPRO        = rtSPro;
-*)
   bt := GetBrickType;
   cboPort.Items.Clear;
   cboPort.Items.Add('Automatic');
   cboPort.Items.Add('Search');
-  if bt in [SU_RCX, SU_SCOUT, SU_RCX2, SU_NXT] then
+  if bt in [SU_RCX, SU_SCOUT, SU_RCX2, SU_NXT, SU_FOO] then
     cboPort.Items.Add('usb');
   if bt = SU_NXT then
     LoadNXTPorts(cboPort.Items);
-  if bt <> SU_NXT then
+  if not (bt in [SU_NXT, SU_FOO]) then
   begin
     for i := 1 to 8 do
       cboPort.Items.Add('COM'+IntToStr(i));

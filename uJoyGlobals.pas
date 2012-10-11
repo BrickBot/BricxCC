@@ -28,7 +28,7 @@ uses
   Registry;
 
 type
-  TMotorChangedAction = (mcaDefault, mcaScript, mcaMessage);
+  TMotorChangedAction = (mcaDefault, mcaScript, mcaMessage, mcaMessageEx);
 
 {Joystick settings}
 var

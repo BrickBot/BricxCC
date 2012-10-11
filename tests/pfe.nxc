@@ -1,0 +1,5 @@
+task main()
+{
+  PlayFileEx("test.rso", 4, 0, 2000);
+  PlayFile("test.rso");
+}

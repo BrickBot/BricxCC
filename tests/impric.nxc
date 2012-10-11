@@ -1,0 +1,8 @@
+#import "Swearing.ric" ric
+
+task main ()    
+{       
+    GraphicArrayOut(0, 0, ric);
+    while (!ButtonCount (BTNCENTER, true))
+        ;
+}
