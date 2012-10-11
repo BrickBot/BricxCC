@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2012-08-09
- * \version 106
+ * \date 2012-10-11
+ * \version 107
  */
 #ifndef NXCDEFS_H
 #define NXCDEFS_H

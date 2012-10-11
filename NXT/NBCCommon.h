@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2012-08-09
- * \version 71
+ * \date 2012-10-11
+ * \version 72
  */
 
 #ifndef NBCCOMMON_H
@@ -2003,7 +2003,7 @@
 #define JOY_BTN_31 0x40000000 /*!< Joystick button 31 */
 #define JOY_BTN_32 0x80000000 /*!< Joystick button 32 */
 
-#define JOY_POV_CENTERED  -1      /*!< Joystick POV centered */
+#define JOY_POV_CENTERED  -1     /*!< Joystick POV centered */
 #define JOY_POV_FORWARD   0      /*!< Joystick POV forward */
 #define JOY_POV_RIGHT     9000   /*!< Joystick POV right */
 #define JOY_POV_BACKWARD  18000  /*!< Joystick POV backward */
