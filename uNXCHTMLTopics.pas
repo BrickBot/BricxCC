@@ -12617,6 +12617,10 @@ const
      Value: 'group__cstdio_a_p_i_gaf85c7002f5d8d9ff2c9663d726f28e6d.html'
     ),
     (
+     Name: 'getchar';
+     Value: 'group__cstdio_a_p_i_gac45fdeab51c3197c1e7c4ec7beabaca9.html'
+    ),
+    (
      Name: 'printf';
      Value: 'group__cstdio_a_p_i_ga8e7f8b03b05f9affe2dbbbdc3fd0985a.html'
     ),
@@ -12635,10 +12639,6 @@ const
     (
      Name: 'rewind';
      Value: 'group__cstdio_a_p_i_ga1628898dfcdc94ac664c7a7cafb773b5.html'
-    ),
-    (
-     Name: 'getchar';
-     Value: 'group__cstdio_a_p_i_gac45fdeab51c3197c1e7c4ec7beabaca9.html'
     ),
     (
      Name: 'abort';
