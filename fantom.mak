@@ -12,10 +12,10 @@ clean::
 realclean:: clean
 	rm -f $(PROGRAMS) 
 
-PFLAGS=-S2cdghi -dRELEASE -fPIC -vewnhi -l -Fu. -Fubricktools -FuNXT -dNXT_ONLY
+PFLAGS=-S2cdghi -dRELEASE -g -fPIC -vewnhi -l -Fu. -Fubricktools -FuNXT -dNXT_ONLY
 
 # Linux
-PTOOLPREFIX=/usr/bin/
+#PTOOLPREFIX=/usr/bin/
 PPC=$(PTOOLPREFIX)fpc
 
 # how to link executable

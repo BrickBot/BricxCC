@@ -1,5 +1,8 @@
+#download "d:\nxt\nxt\Woops.rso"
 task main()
 {
-  PlayFileEx("test.rso", 4, 0, 2000);
-  PlayFile("test.rso");
+  PlayFileEx("Woops.rso", 4, true, 6000);
+  Wait(SEC_3);
+  PlayFile("Woops.rso");
+  Wait(SEC_1);
 }
