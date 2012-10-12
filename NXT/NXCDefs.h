@@ -8068,7 +8068,7 @@ inline void SetBTDeviceNameCount(byte count);
   __DoReadJoystick(_queue, _jmt) \
 }
 
-#define JoystickExMessageRead(_queue, _jemt) asm \
+#define JoystickExMessageRead(_queue, _jemt) asm { \
   compchktype _jemt, JoystickExMessageType \
   __DoReadJoystick(_queue, _jemt) \
 }

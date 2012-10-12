@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 3247;
+  uNXCHTMLTopicsSize = 3251;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -3925,24 +3925,40 @@ const
      Value: 'group___comm_joystick_constants_ga22c114ed8b7dd3bc0856b4fec8fe4bc6.html'
     ),
     (
-     Name: 'JOY_POV_CENTERED';
-     Value: 'group___comm_joystick_constants_ga0aab67c91d82d0337b6ae9ce8472ad23.html'
-    ),
-    (
      Name: 'JOY_POV_FORWARD';
      Value: 'group___comm_joystick_constants_ga1c4111caf880cd22ff47a8dcf1e27d18.html'
+    ),
+    (
+     Name: 'JOY_POV_TOPRIGHT';
+     Value: 'group___comm_joystick_constants_gade0cbc064eba84b69ac82fa61603d9b7.html'
     ),
     (
      Name: 'JOY_POV_RIGHT';
      Value: 'group___comm_joystick_constants_gacdc1bff64e6d5c126f6db804719fdd90.html'
     ),
     (
+     Name: 'JOY_POV_BOTRIGHT';
+     Value: 'group___comm_joystick_constants_gaeb607aa74a2e23a30892104087eb025e.html'
+    ),
+    (
      Name: 'JOY_POV_BACKWARD';
      Value: 'group___comm_joystick_constants_ga1fa968feadbc529f96f477f501177668.html'
     ),
     (
+     Name: 'JOY_POV_BOTLEFT';
+     Value: 'group___comm_joystick_constants_ga3f8bbc65d2b9d03c83508c68d8f93423.html'
+    ),
+    (
      Name: 'JOY_POV_LEFT';
      Value: 'group___comm_joystick_constants_gac279db39a6a74564654f9abe79f06f62.html'
+    ),
+    (
+     Name: 'JOY_POV_TOPLEFT';
+     Value: 'group___comm_joystick_constants_gae4a6c2be5972004a70a3ef89b47a8c58.html'
+    ),
+    (
+     Name: 'JOY_POV_CENTERED';
+     Value: 'group___comm_joystick_constants_ga0aab67c91d82d0337b6ae9ce8472ad23.html'
     ),
     (
      Name: 'BT_ARM_OFF';
