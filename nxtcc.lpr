@@ -75,7 +75,7 @@ begin
     BrickComm.BrickType := rtNXT;
 
     Application.Title:='NXT Command Center';
-    RequireDerivedFormResource := True;
+//    RequireDerivedFormResource := True;
     Application.Initialize;
 
     LoadNXCCodeCompFromFile(ProgramDir+DefaultDir+'nxc_api.txt', True);
