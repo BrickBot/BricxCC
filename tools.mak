@@ -18,7 +18,8 @@ FORMS=uToolPalette.lrs uPortPrompt.lrs Controller.lrs Diagnose.lrs JoystickUnit.
  uportsedit.lrs uNXTImagePrefs.lrs uEEAlignConfig.lrs uEEAlignOpt.lrs ucodeedit.lrs \
  CodeTemplates.lrs CodeUnit.lrs dlgConfirmReplace.lrs dlgReplaceText.lrs dlgSearchText.lrs \
  EditCodeTemplate.lrs GotoLine.lrs GX_ProcedureList.lrs Transdlg.lrs uCompStatus.lrs \
- uExplorerOptions.lrs uMacroEditor.lrs uCodeExplorer.lrs ConstructUnit.lrs uMacroForm.lrs
+ uExplorerOptions.lrs uMacroEditor.lrs uCodeExplorer.lrs ConstructUnit.lrs uMacroForm.lrs \
+ uVTConfig.lrs
 
 clean::
 	rm -f *.o *.ppu *.rst *.compiled *_preproc.inc bricktools/*.o bricktools/*.ppu nxt/*.o nxt/*.ppu samplerate/*.o samplerate/*.ppu syn/*.o syn/*.ppu

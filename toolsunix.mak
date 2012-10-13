@@ -1,4 +1,5 @@
-LAZRESPREFIX=/usr/lib/lazarus/tools/
+LAZROOT=/usr/lib/lazarus/0.9.30.2
+LAZRESPREFIX=$(LAZROOT)/tools/
 #PTOOLPREFIX=/usr/local/bin/
 DEFAULT_INCLUDE_DIR=.
 ARCH=386
@@ -7,8 +8,7 @@ WIDGETSET=gtk2
 PPC=$(PTOOLPREFIX)ppc$(ARCH)
 EXTRAFLAGS=
 ROOT=/usr/local/share
-LAZROOT=~/program/lazarus-svn
-PSROOT=~/program/pascalscript-svn
+PSROOT=$(LAZROOT)/components/pascalscript
 PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools $(EXTRAFLAGS)
 LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fugrep -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/components/synedit/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(LAZROOT)/packager/units/$(FPC_TARGET)/ -Fu$(PSROOT)/Source/lib/$(FPC_TARGET)/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY -dCAN_DOWNLOAD $(EXTRAFLAGS)
 
@@ -18,7 +18,8 @@ FORMS=uToolPalette.lrs uPortPrompt.lrs Controller.lrs Diagnose.lrs JoystickUnit.
  uportsedit.lrs uNXTImagePrefs.lrs uEEAlignConfig.lrs uEEAlignOpt.lrs ucodeedit.lrs \
  CodeTemplates.lrs CodeUnit.lrs dlgConfirmReplace.lrs dlgReplaceText.lrs dlgSearchText.lrs \
  EditCodeTemplate.lrs GotoLine.lrs GX_ProcedureList.lrs Transdlg.lrs uCompStatus.lrs \
- uExplorerOptions.lrs uMacroEditor.lrs uCodeExplorer.lrs ConstructUnit.lrs uMacroForm.lrs
+ uExplorerOptions.lrs uMacroEditor.lrs uCodeExplorer.lrs ConstructUnit.lrs uMacroForm.lrs \
+ uVTConfig.lrs
  
 clean::
 	rm -f *.o *.ppu *.rst *.compiled *_preproc.inc bricktools/*.o bricktools/*.ppu nxt/*.o nxt/*.ppu samplerate/*.o samplerate/*.ppu syn/*.o syn/*.ppu grep/*.o grep/*.ppu
