@@ -1663,11 +1663,8 @@ dseg segment
   __CLSWMutex3 mutex
   __CLSRArgs3 TCommLSRead
   __CLSRMutex3 mutex
+  __LSWriteOptions byte[] 0x00, 0x00, 0x00, 0x00
   __LSWriteOptionsVar byte
-  __LSWriteOptions0 byte
-  __LSWriteOptions1 byte
-  __LSWriteOptions2 byte
-  __LSWriteOptions3 byte
 dseg ends
 
 #define __lowspeedStatus(_port, _bready, _result) \
@@ -1747,6 +1744,7 @@ dseg ends
   acquire __CLSWMutex1 \
   acquire __CLSWMutex2 \
   acquire __CLSWMutex3 \
+  index __LSWriteOptionsVar, __LSWriteOptions, _port \
   or __CLSWArgs0.Port, _port, __LSWriteOptionsVar \
   mov __CLSWArgs0.ReturnLen, _retlen \
   mov __CLSWArgs0.Buffer, _buffer \
@@ -1760,7 +1758,8 @@ dseg ends
   compchk LT, _port, 0x04 \
   compchk GTEQ, _port, 0x00 \
   acquire __CLSWMutex##_port \
-  or __CLSWArgs##_port.Port, _port, __LSWriteOptions##_port \
+  index __LSWriteOptionsVar, __LSWriteOptions, _port \
+  or __CLSWArgs##_port.Port, _port, __LSWriteOptionsVar \
   mov __CLSWArgs##_port.ReturnLen, _retlen \
   mov __CLSWArgs##_port.Buffer, _buffer \
   syscall CommLSWrite, __CLSWArgs##_port \
@@ -1796,14 +1795,7 @@ dseg ends
   compend
 
 #define __setI2COptions(_port, _options) \
-  compif EQ, isconst(_port), FALSE \
-  mov __LSWriteOptionsVar, _options \
-  compelse \
-  compchk LT, _port, 0x04 \
-  compchk GTEQ, _port, 0x00 \
-  mov __LSWriteOptions##_port, _options \
-  mov __LSWriteOptionsVar, __LSWriteOptions##_port \
-  compend
+  replace __LSWriteOptions, __LSWriteOptions, _port, _options
 
 
 dseg segment
@@ -6445,6 +6437,7 @@ ends
   acquire __CLSWMutex3 \
   mov __CLSWArgs0.Buffer, __HTPFI2CBuf \
   release __PFMutex \
+  index __LSWriteOptionsVar, __LSWriteOptions, _port \
   or __CLSWArgs0.Port, _port, __LSWriteOptionsVar \
   mov __CLSWArgs0.ReturnLen, 0 \
   __HTPFRepeatLoop##__I__: \
@@ -6464,7 +6457,8 @@ ends
   acquire __CLSWMutex##_port \
   mov __CLSWArgs##_port.Buffer, __HTPFI2CBuf \
   release __PFMutex \
-  or __CLSWArgs##_port.Port, _port, __LSWriteOptions##_port \
+  index __LSWriteOptionsVar, __LSWriteOptions, _port \
+  or __CLSWArgs##_port.Port, _port, __LSWriteOptionsVar \
   mov __CLSWArgs##_port.ReturnLen, 0 \
   __HTPFRepeatLoop##__I__: \
   syscall CommLSWrite, __CLSWArgs##_port \
@@ -9199,6 +9193,7 @@ __RFIDCont_Endif:
 ends
 
 subroutine __MSWriteBytesSub
+  index __LSWriteOptionsVar, __LSWriteOptions, __WDSC_Port
   or __WDSC_lswArgs.Port, __WDSC_Port, __LSWriteOptionsVar
   arrbuild __WDSC_lswArgs.Buffer, __WDSC_SensorAddress, __WDSC_SensorRegister, __WDSC_WriteBytes
   set __WDSC_lswArgs.ReturnLen, 0
@@ -9210,6 +9205,7 @@ __WDSC_StatusLoop:
 ends
 
 subroutine __MSReadLEValueSub
+  index __LSWriteOptionsVar, __LSWriteOptions, __RDSD_Port
   or __RDSD_lswArgs.Port, __RDSD_Port, __LSWriteOptionsVar
   arrbuild __RDSD_lswArgs.Buffer, __RDSD_SensorAddress, __RDSD_SensorRegister
   mov __RDSD_lswArgs.ReturnLen, __RDSD_NumBytesToRead
@@ -9257,6 +9253,7 @@ __RDSD_ReturnResults:
 ends
 
 subroutine __MSReadBEValueSub
+  index __LSWriteOptionsVar, __LSWriteOptions, __RDSD_Port
   or __RDSD_lswArgs.Port, __RDSD_Port, __LSWriteOptionsVar
   arrbuild __RDSD_lswArgs.Buffer, __RDSD_SensorAddress, __RDSD_SensorRegister
   mov __RDSD_lswArgs.ReturnLen, __RDSD_NumBytesToRead
