@@ -23,6 +23,10 @@ unit uVTConfig;
 interface
 
 uses
+{$IFDEF FPC}
+  LResources,
+  LCLIntf,
+{$ELSE}
   Classes, Controls, Forms, StdCtrls, BricxccSpin;
 
 type

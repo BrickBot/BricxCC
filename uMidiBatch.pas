@@ -324,7 +324,7 @@ end;
 
 {$IFDEF FPC}
 initialization
-  {$i uMIDIBatch.lrs}
+  {$i uMidiBatch.lrs}
 {$ENDIF}
 
 end.

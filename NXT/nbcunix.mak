@@ -13,7 +13,7 @@ realclean:: clean
 
 install:: all
 
-PFLAGS=-S2cdghi -dRELEASE -fPIC -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD -dNXT_ONLY
+PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD -dNXT_ONLY
 
 
 # PTOOLPREFIX may differ on different platforms (e.g. /usr/local/bin/)
