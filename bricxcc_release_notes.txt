@@ -21,7 +21,22 @@ version 3.3.8.10
 - Possible fix for access violation when opening/closing programs.
 - Changed default brick type to NXT instead of RCX.
 - Add support for HiTechnic SuperPro board
-
+- Add JoystickExMessageType and JoystickExMessageRead API function with support in 
+  BricxCC Joystick tool window for sending raw joystick messages.
+- Add NXC syntax highlighting for .h files.
+- Add Simple Terminal for NXT and SuperPro board
+- Add support in the Watch tool for polling mailboxes
+- Add TypeOf function
+- Add FormatVal function
+- Add support for exponential notation in constants
+- Add support for binary constants
+- Added FLT_MAX constants
+- Added support for enhance firmware drawing options DRAW_OPT_CLEAR_EOL and DRAW_OPT_CLEAR_LINE
+- Improved array initialization for 1d arrays
+- Fix defects in string API functions
+- Add support for compiler error line position
+- Add support for bracket highlighting
+- Fix bug with spaces in exe path for external compiler
 
 version 3.3.8.9
 ---------------

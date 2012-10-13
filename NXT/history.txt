@@ -61,7 +61,22 @@ Version 1.2.1.r5 (2012-10-12)
   returned data to 7 bytes.
 - Added support for Fast I2C with latest enhanced NBC/NXC firmware.
 - Added InputPinFunction system call support (requires latest enhanced NBC/NXC firmware version).
-- Added JoystickExMessageRead API function and JoystickExMessageType structure to NXC API.
+- Support for array initialization up to 4 dimensions
+- Added LowerCase, LowerCaseEx, UpperCase, and UpperCaseEx API functions which
+  use new enhanced firmware ARROP options (OPARR_TOLOWER and OPARR_TOUPPER).
+- Added TypeOf function.
+- Added FormatNum function.
+- Added support for exponential notation in constants.
+- Added support for binary constants.
+- Added FLT_MAX constants.
+- Added support for enhance firmware drawing options DRAW_OPT_CLEAR_EOL and 
+   DRAW_OPT_CLEAR_LINE.
+- Improved array initialization for 1d arrays.
+- Fixed defects in string API functions.
+- Added JoystickExMessageType struct and JoystickExMessageRead API function.
+- Added optional sample rate parameter to PlayFileEx API function.
+- Fixed defect in SetI2COptions.
+- Fixed defect in DIGyro scaling code.
 
 
 Version 1.2.1.r4 (2011-03-13)
