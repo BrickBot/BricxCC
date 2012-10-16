@@ -26,7 +26,7 @@ uses
 {$IFDEF FPC}
   LResources,
   LCLIntf,
-{$ELSE}
+{$ENDIF}
   Classes, Controls, Forms, StdCtrls, BricxccSpin;
 
 type
