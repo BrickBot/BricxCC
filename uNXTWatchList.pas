@@ -140,7 +140,7 @@ type
     procedure CopyWatchName(const idx : integer);
     function  GetWatchEnabledState(const idx : integer) : boolean;
     procedure UpdateGUIList;
-    function CurrentGroupList : TListView;
+//    function CurrentGroupList : TListView;
     function CurrentGroupName : string;
     function CurrentGroupIndex : integer;
     procedure UpdateWatchToList(Info : TWatchInfo; const oldGroup, oldExpr : string);
@@ -592,10 +592,12 @@ begin
   end;
 end;
 
+{
 function TfrmNXTWatchList.CurrentGroupList: TListView;
 begin
   Result := FindListByGroupName(CurrentGroupName);
 end;
+}
 
 procedure TfrmNXTWatchList.DeleteWatchFromList(Info: TWatchInfo; name : string);
 var

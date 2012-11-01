@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -572,7 +572,7 @@ function ReadAndShowErrorFile(DisplayErrorsProc : TDisplayErrorsProc;
   lstErrors : TListBox; const fName, aCaption, tempDir, ext : string) : boolean;
 var
   tmpSL : TStrings;
-  i, j, p, q, lineNo, linePos : integer;
+  i, j, p, q, lineNo{, linePos} : integer;
   tmpstr, errMsg, tmpName, testStr : string;
   bErrorsOrWarnings : boolean;
 begin
@@ -742,11 +742,11 @@ begin
                   else
                     errMsg := Copy(testStr, p, MaxInt);
                   lineNo := StrToIntDef(errMsg, -1);
-                  linePos := -1;
+//                  linePos := -1;
                   if q > 0 then
                   begin
                     System.Delete(testStr, 1, q+10);
-                    linePos := StrToIntDef(testStr, -1);
+//                    linePos := StrToIntDef(testStr, -1);
                   end;
                   if lineNo <> -1 then
                   begin

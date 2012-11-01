@@ -787,12 +787,12 @@ end;
 
 function TFooSpirit.NXTDownloadStream(aStream: TStream; const dest : string;
   const filetype: TNXTFileType): boolean;
-var
-  b1, b2, b3 : byte;
-  SL : TStringList;
-  i, len : integer;
-  tmp : string;
-  Data : TBytes;
+//var
+//  b1, b2, b3 : byte;
+//  SL : TStringList;
+//  i, len : integer;
+//  tmp : string;
+//  Data : TBytes;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -1186,8 +1186,8 @@ begin
 end;
 
 function TFooSpirit.SelectProgram(aProg: integer): boolean;
-var
-  Data : TBytes;
+//var
+//  Data : TBytes;
 begin
   Result := Open;
   if Result then
@@ -1343,8 +1343,8 @@ begin
 end;
 
 function TFooSpirit.StartTask(aTask: integer): boolean;
-var
-  Data : TBytes;
+//var
+//  Data : TBytes;
 begin
   Result := Open;
   if Result then
@@ -1480,8 +1480,8 @@ begin
 end;
 
 procedure TFooSpirit.FlushReceiveBuffer;
-var
-  Data : TBytes;
+//var
+//  Data : TBytes;
 begin
   if IsOpen then
   begin
@@ -1489,12 +1489,12 @@ begin
 end;
 
 procedure TFooSpirit.SendRawData(Data: array of byte);
-var
-  len : integer;
+//var
+//  len : integer;
 begin
   if IsOpen then
   begin
-    len := Length(Data);
+//    len := Length(Data);
   end;
 end;
 

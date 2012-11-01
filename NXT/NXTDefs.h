@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2012-10-11
- * version 86
+ * date 2012-10-18
+ * version 87
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -2153,7 +2153,7 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
-#define __ReadSensorUS(_port, _value) \
+#define __ReadSensorUS(_port, _value, _wait) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -2162,7 +2162,7 @@ dseg ends
   mov __RLSReadPort, _port \
   mov __RLSReadBufVar, __RLSBbufLSWrite1 \
   set __RLSBytesCountVar, 1 \
-  wait 15 \
+  waitv _wait \
   call __ReadLSBytesVar \
   index _value, __RLSReadBufVar, NA \
   release __RLSBmutex0 \
@@ -2175,13 +2175,13 @@ dseg ends
   acquire __RLSBmutex##_port \
   mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
   set __RLSBytesCount##_port, 1 \
-  wait 15 \
+  waitv _wait \
   call __ReadLSBytes##_port \
   index _value, __RLSReadBuf##_port, NA \
   release __RLSBmutex##_port \
   compend
 
-#define __ReadSensorUSEx(_port, _values, _result) \
+#define __ReadSensorUSEx(_port, _values, _result, _wait) \
   compif EQ, isconst(_port), FALSE \
   acquire __RLSBmutex0 \
   acquire __RLSBmutex1 \
@@ -2190,7 +2190,7 @@ dseg ends
   mov __RLSReadPort, _port \
   mov __RLSReadBufVar, __RLSBbufLSWrite1 \
   set __RLSBytesCountVar, 8 \
-  wait 15 \
+  waitv _wait \
   call __ReadLSBytesVar \
   tst EQ, _result, __RLSBResultVar \
   mov _values, __RLSReadBufVar \
@@ -2204,7 +2204,7 @@ dseg ends
   acquire __RLSBmutex##_port \
   mov __RLSReadBuf##_port, __RLSBbufLSWrite1 \
   set __RLSBytesCount##_port, 8 \
-  wait 15 \
+  waitv _wait \
   call __ReadLSBytes##_port \
   tst EQ, _result, __RLSBResult##_port \
   mov _values, __RLSReadBuf##_port \
@@ -12491,7 +12491,7 @@ ends
  * \ref NBCInputPortConstants group. You may use a constant or a variable.
  * \param _value The ultrasonic sensor distance value (0..255)
  */
-#define ReadSensorUS(_port, _value) __ReadSensorUS(_port, _value)
+#define ReadSensorUS(_port, _value) __ReadSensorUS(_port, _value, 15)
 
 /**
  * Read multiple ultrasonic sensor values.
@@ -12503,7 +12503,7 @@ ends
  * \param _result A status code indicating whether the read completed successfully or not.
  * See \ref TCommLSRead for possible Result values.
  */
-#define ReadSensorUSEx(_port, _values, _result) __ReadSensorUSEx(_port, _values, _result)
+#define ReadSensorUSEx(_port, _values, _result) __ReadSensorUSEx(_port, _values, _result, 15)
 
 /**
  * Read the LEGO EMeter values.

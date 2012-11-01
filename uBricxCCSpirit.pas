@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -811,5 +811,3 @@ initialization
   TAutoObjectFactory.Create(ComServer, TBricxCCSpirit, Class_BricxCCSpirit,
     ciSingleInstance, tmApartment);
 end.
-
-

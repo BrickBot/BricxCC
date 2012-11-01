@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -58,7 +58,7 @@ type
     fTheProgram : TProgram;
     function GetItem(Index: Integer): TDSTocEntry;
     procedure SetItem(Index: Integer; const Value: TDSTocEntry);
-    procedure RefreshFromOffset(const offset : integer);
+//    procedure RefreshFromOffset(const offset : integer);
   public
     constructor Create; virtual;
     function Add: TDSTocEntry;
@@ -248,10 +248,12 @@ begin
 
 end;
 
+{
 procedure TDSTocEntries.RefreshFromOffset(const offset: integer);
 begin
 
 end;
+}
 
 procedure TDSTocEntries.SetItem(Index: Integer; const Value: TDSTocEntry);
 begin
@@ -778,7 +780,7 @@ begin
   // you step until the line number changes in Step Into
   // but you step until the line number changes AND the clump is the same
   bc := BrickComm;
-  Result := False;
+//  Result := False;
   curLine := -1;
   Assert(bc <> nil, 'bc == nil');
   oldClump := fNXTClump;

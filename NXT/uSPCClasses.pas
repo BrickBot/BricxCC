@@ -532,7 +532,7 @@ begin
   if Pos('B', tmp) = i then
   begin
     System.Delete(tmp, i, 1);
-    Result := BinToIntDef(tmp, MaxInt) <> MaxInt;
+    Result := Integer(BinToIntDef(tmp, MaxInt)) <> MaxInt;
   end
   else
   begin
@@ -2219,8 +2219,8 @@ end;
 
 function TSProProgram.LoadFromBinaryStream(aStream: TStream): boolean;
 var
-  AL : TSPMLine;
-  w1, w2 : word;
+//  AL : TSPMLine;
+  w1{, w2} : word;
 begin
   Result := True;
   ClearAllContainers;
@@ -2230,7 +2230,7 @@ begin
   begin
     if aStream.Read(w1, 2) <> 2 then
       break;
-
+    // TODO: finish implementing TSproProgram.LoadFromBinaryStream
   end;
 end;
 

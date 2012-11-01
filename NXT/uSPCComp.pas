@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -132,7 +132,7 @@ type
     procedure SignValue;
     procedure SizeOfValue(const aName: string);
     function CalculatedSize(const aName : string) : integer;
-    procedure WaitForClock;
+//    procedure WaitForClock;
     procedure StopAllProcesses(const aName: string);
     procedure HaltEx;
     procedure TraceCarriageReturn;
@@ -3388,6 +3388,7 @@ begin
   DE := DataDefinitions.FindEntryByFullName(UDTType);
   if Assigned(DE) then
   begin
+    sub := nil;
     for i := 0 to DE.SubEntries.Count - 1 do
     begin
       sub := DE.SubEntries[i];
@@ -3413,7 +3414,8 @@ begin
 //        CheckPointer(UDTType+'.'+member);
         Next;
       end;
-      OffsetUDTPointer(sub.TypeName, aPointer);
+      if Assigned(sub) then
+        OffsetUDTPointer(sub.TypeName, aPointer);
     end
     else if Token = '[' then
     begin
@@ -3428,17 +3430,21 @@ end;
 procedure TSPCComp.OffsetArrayPointer(const ArrayType : string; const aPointer: string);
 var
   DE, sub : TDataspaceEntry;
-  i : integer;
-  offset : integer;
+//  i : integer;
+//  offset : integer;
 begin
   // TODO: finish implementing this code.
   // recursively offset this pointer by array index, etc...
-  offset := 0;
+//  offset := 0;
   DE := DataDefinitions.FindEntryByFullName(ArrayType);
   if Assigned(DE) then
   begin
     // the array's data type is stored in its first and only sub entry
     sub := DE.SubEntries[0];
+    // this code is just to quiet compiler hints
+    if sub.DataType = dsArray then
+      ;
+    // end of code to quiet compiler hints
 
 //    DoAddImmediate(aPointer, offset);
     Next; // move past ']'
@@ -4546,8 +4552,8 @@ end;
 procedure TSPCComp.AddArrayDataDefinition(const aName: string; dt: char;
   lenexpr, tname: string);
 var
-  DE, Sub : TDataspaceEntry;
-  p, dimlen : integer;
+  DE{, Sub} : TDataspaceEntry;
+  p{, dimlen} : integer;
   tmp : string;
 begin
   if lenexpr = '' then Exit;
@@ -4556,7 +4562,7 @@ begin
   DE.DataType := dsArray;
   DE.Identifier := aName;
   DE.TypeName   := aName;
-  Sub := DE.SubEntries.Add;
+//  Sub := DE.SubEntries.Add;
   while lenexpr <> '' do
   begin
     System.Delete(lenexpr, 1, 1); // delete the '['
@@ -4565,8 +4571,8 @@ begin
     begin
       tmp := Copy(lenexpr, 1, p-1);
       // get integer version of dimension length
-      dimlen := StrToIntDef(tmp, 0);
-
+//      dimlen := StrToIntDef(tmp, 0);
+// TODO: finish implementing TSPCComp.AddArrayDataDefinition
       // remove first dimension and keep going
       System.Delete(lenexpr, 1, p);
     end;
@@ -8247,10 +8253,12 @@ begin
   EndOfProcess;
 end;
 
+{
 procedure TSPCComp.WaitForClock;
 begin
   EmitLn('STALL');
 end;
+}
 
 procedure TSPCComp.StopAllProcesses(const aName : string);
 var
@@ -8493,4 +8501,3 @@ begin
 end;
 
 end.
-

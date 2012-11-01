@@ -118,7 +118,7 @@ ProjectLang=$00000409
 RootDir=
 [Version Info]
 IncludeVerInfo=1
-AutoIncBuild=1
+AutoIncBuild=0
 MajorVer=3
 MinorVer=3
 Release=8
@@ -135,15 +135,16 @@ CompanyName=JoCar Consulting
 FileDescription=Programmable Brick IDE
 FileVersion=3.3.8.10
 InternalName=Bricx Command Center
-LegalCopyright=Copyright (c) 2010 John Hansen
+LegalCopyright=Copyright (c) 1998-2012 John Hansen
 LegalTrademarks=
 OriginalFilename=bricxcc.exe
 ProductName=Bricx Command Center
 ProductVersion=3.3
-Comments=NQC (c) 1998-2010 David Baum, John Hansen
+Comments=NQC (c) 1998-2012 David Baum, John Hansen
 [HistoryLists\hlDebugSourcePath]
-Count=1
-Item0=G:\nxt\BricxCC\source\NXT\
+Count=2
+Item0=D:\BricxCC\NXT\;D:\bricxcc\bricktools\
+Item1=G:\nxt\BricxCC\source\NXT\
 [HistoryLists\hlConditionals]
 Count=1
 Item0=FAST_MM, CAN_DOWNLOAD
@@ -151,6 +152,7 @@ Item0=FAST_MM, CAN_DOWNLOAD
 Count=1
 Item0=WinTypes=Windows;WinProcs=Windows;DbiTypes=BDE;DbiProcs=BDE;DbiErrs=BDE;
 [HistoryLists\hlSearchPath]
-Count=2
-Item0=bricktools;NXT;samplerate;png
-Item1=bricktools;NXT;samplerate;png;syn
+Count=3
+Item0=bricktools;NXT;samplerate;png;grep
+Item1=bricktools;NXT;samplerate;png
+Item2=bricktools;NXT;samplerate;png;syn

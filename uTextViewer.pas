@@ -9,7 +9,7 @@
  * License for the specific language governing rights and limitations
  * under the License.
  *
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -40,7 +40,7 @@ type
     procedure MenuSelectAllClick(Sender: TObject);
     procedure MenuCopyClick(Sender: TObject);
   private
-    procedure Progress(Address:LongInt);
+//    procedure Progress(Address:LongInt);
   protected
   public
     procedure OpenFile(const aFilename : string);
@@ -57,11 +57,13 @@ implementation
 uses
   SysUtils;
 
+{
 procedure TfrmTextView.Progress(Address:LongInt);
 begin
   StatusBar.SimpleText := 'Reading...  $'+IntToHex(Address,5);
   StatusBar.Update;
 end;
+}
 
 procedure TfrmTextView.FormCreate(Sender: TObject);
 begin

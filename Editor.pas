@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is Mark Overmars.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -2359,15 +2359,13 @@ const
 
 var
   P, Pix: TPoint;
-  D     : TPoint;
   S: String;
   I: Integer;
   Attri: TSynHighlighterAttributes;
 begin
   if not HighlightBrackets then Exit;
-  
+
   P := TheEditor.CaretXY;
-  D := TheEditor.DisplayXY;
 
   TheEditor.GetHighlighterAttriAtRowCol(P, S, Attri);
 
@@ -2378,7 +2376,7 @@ begin
     begin
       if (S = OpenChars[i]) or (S = CloseChars[i]) then
       begin
-        Pix := CharToPixels(D);
+        Pix := CharToPixels(P);
         TheEditor.Canvas.Brush.Style := bsClear;
         TheEditor.Canvas.Font.Assign(TheEditor.Font);
         TheEditor.Canvas.Font.Style := Attri.Style;
@@ -2415,8 +2413,8 @@ begin
             TheEditor.Canvas.TextOut(Pix.X, Pix.Y, CloseChars[i])
           else TheEditor.Canvas.TextOut(Pix.X, Pix.Y, OpenChars[i]);
         end;
-      end; //if
-    end;//for i :=
+      end;
+    end;
     TheEditor.Canvas.Brush.Style := bsSolid;
   end;
 end;
