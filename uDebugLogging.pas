@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -18,18 +18,22 @@ unit uDebugLogging;
 
 interface
 
-procedure DebugLog(const aMsg : string);
+uses
+  SysUtils;
+
+procedure DebugLog(const aMsg : string); overload;
+procedure DebugLog(E : EAccessViolation); overload;
 procedure DebugFmt(const aFormat: string; const Args: array of const);
 
 implementation
 
-uses
 {$IFNDEF FPC}
-  Windows,
+uses
+  Windows;
 {$ELSE}
-//  dbugintf,
+//uses
+//  dbugintf;
 {$ENDIF}
-  SysUtils;
 
 procedure WriteToLog(const aMsg : string);
 begin
@@ -46,6 +50,20 @@ end;
 procedure DebugLog(const aMsg : string);
 begin
   WriteToLog(aMsg);
+end;
+
+procedure DebugLog(E: EAccessViolation);
+begin
+  WriteToLog(E.Message);
+{$IFNDEF FPC}
+//  if Assigned(E.ExceptionRecord) then
+//  begin
+//    E.ExceptionRecord^.ExceptionCode
+//    E.ExceptionRecord^.ExceptionFlags
+//    E.ExceptionRecord^.ExceptionAddress
+//    E.ExceptionRecord^.NumberParameters
+//  end;
+{$ENDIF}
 end;
 
 procedure DebugFmt(const aFormat: string; const Args: array of const);

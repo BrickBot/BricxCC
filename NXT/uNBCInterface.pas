@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -621,11 +621,11 @@ begin
             SC.Free;
           end;
         end
-        else if (ext = '.nxc') or (ext = '.nbc') then
+        else if (ext = '.nxc') or (ext = '.nxh') or (ext = '.h') or (ext = '.nbc') then
         begin
           // .nbc or .nxc files
           bNXCErrors := False;
-          if ext = '.nxc' then
+          if (ext = '.nxc') or (ext = '.nxh') or (ext = '.h') then
           begin
             NC := TNXCComp.Create;
             try

@@ -17,7 +17,7 @@ DELPHI=$(TOOLPREFIX)dcc32.exe
 
 # how to link executable
 %.exe: %.dpr nbc_preproc.inc
-	$(DELPHI) $< -U.. -U../bricktools -U../png -DCAN_DOWNLOAD -dNXT_ONLY -DFAST_MM
+	$(DELPHI) $< -U.. -U../bricktools -U../png -DCAN_DOWNLOAD -DFAST_MM
 
 # how to compile pas source
 %.dcu: %.pas mkdata.exe NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas SPCDefsData.pas SPMemData.pas

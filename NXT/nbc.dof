@@ -126,9 +126,9 @@ CodePage=1252
 [Version Info Keys]
 CompanyName=JoCar Consulting
 FileDescription=Next Byte Codes Compiler
-FileVersion=1.2.1.r5
+FileVersion=1.2.1.5
 InternalName=NBC
-LegalCopyright=Copyright (c) 2006-2011, John Hansen
+LegalCopyright=Copyright (c) 2006-2012, John Hansen
 LegalTrademarks=
 OriginalFilename=
 ProductName=Next Byte Codes Compiler

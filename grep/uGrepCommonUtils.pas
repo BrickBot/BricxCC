@@ -12,7 +12,7 @@
  * Portions of this code are covered under the GExperts license
  * http://www.gexperts.org/license.html
  *
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -481,4 +481,4 @@ begin
   WriteInteger(Section, CountIdent, List.Count);
 end;
 
-end.
+end.

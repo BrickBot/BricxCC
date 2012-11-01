@@ -10,7 +10,7 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2012 John Hansen.
  * All Rights Reserved.
  *
  *)
@@ -107,7 +107,7 @@ implementation
 uses
   SysUtils, uExplorerOptions, uNXCProcLexer, uNBCProcLexer,
   uSPCProcLexer, uPasProcLexer, 
-  uLocalizedStrings, uGuiUtils, uBasicPrefs, uMiscDefines,
+  uLocalizedStrings, uGuiUtils, uBasicPrefs, uMiscDefines, uDebugLogging,
 {$IFNDEF NXT_ONLY}
   uNQCProcLexer, uMindScriptProcLexer, uCppProcLexer,
   uForthProcLexer, uLASMProcLexer,
@@ -347,40 +347,52 @@ var
   PT : TProcType;
   EL : TExploredLanguage;
 begin
-  EL := ExploredLanguageType;
-  ItemOrder := CodeExplorerSettings.CategorySort;
-  if ItemOrder = '' then
-  begin
-    for PT := Low(TProcType) to High(TProcType) do
+  try
+    EL := ExploredLanguageType;
+    ItemOrder := CodeExplorerSettings.CategorySort;
+    if ItemOrder = '' then
     begin
-      ItemOrder := ItemOrder + PROC_TYPES[PT] + ';';
+      for PT := Low(TProcType) to High(TProcType) do
+      begin
+        ItemOrder := ItemOrder + PROC_TYPES[PT] + ';';
+      end;
+      Delete(ItemOrder, Length(ItemOrder), 1);
     end;
-    Delete(ItemOrder, Length(ItemOrder), 1);
-  end;
-  for PT := Low(TProcType) to High(TProcType) do
-    NodeArray[PT] := nil;
-  with treCodeExplorer.Items do
-  begin
-    BeginUpdate;
-    try
-      Clear;
-      while Length(ItemOrder) > 0 do begin
-        p := Pos(';', ItemOrder);
-        if p = 0 then p := Length(ItemOrder) + 1;
-        s := Copy(ItemOrder, 1, p-1);
-        System.Delete(ItemOrder, 1, p);
-        for PT := Low(TProcType) to High(TProcType) do
-        begin
-          if s = PROC_TYPES[PT] then
+    for PT := Low(TProcType) to High(TProcType) do
+      NodeArray[PT] := nil;
+    with treCodeExplorer.Items do
+    begin
+      BeginUpdate;
+      try
+        Clear;
+        while Length(ItemOrder) > 0 do begin
+          p := Pos(';', ItemOrder);
+          if p = 0 then p := Length(ItemOrder) + 1;
+          s := Copy(ItemOrder, 1, p-1);
+          System.Delete(ItemOrder, 1, p);
+          for PT := Low(TProcType) to High(TProcType) do
           begin
-            if CodeExplorerSettings.Visible[PT] and VISIBLE_PROC_TYPES[EL, PT] then
-              NodeArray[PT] := Add(nil, s);
-            Break;
+            if s = PROC_TYPES[PT] then
+            begin
+              if CodeExplorerSettings.Visible[PT] and VISIBLE_PROC_TYPES[EL, PT] then
+                NodeArray[PT] := Add(nil, s);
+              Break;
+            end;
           end;
         end;
+      finally
+        EndUpdate;
       end;
-    finally
-      EndUpdate;
+    end;
+  except
+    // eat exceptions which occur when rebuilding treeview
+    on E : EAccessViolation do
+    begin
+      DebugLog(E);
+    end;
+    on E : Exception do
+    begin
+      DebugLog(E.Message);
     end;
   end;
   ReprocessFile;
