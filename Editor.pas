@@ -2369,7 +2369,8 @@ begin
 
   TheEditor.GetHighlighterAttriAtRowCol(P, S, Attri);
 
-  if (TheEditor.CaretX<=length(TheEditor.LineText) + 1) and
+  if Assigned(Attri) and Assigned(TheEditor.Highlighter) and
+     (TheEditor.CaretX<=length(TheEditor.LineText) + 1) and
      (TheEditor.Highlighter.SymbolAttribute = Attri) then
   begin
     for i := low(OpenChars) to High(OpenChars) do

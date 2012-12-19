@@ -29,7 +29,7 @@ uses
 
 type
   TtkTokenKind = (tkComment, tkIdentifier, tkKey, tkCommand, tkConstant, tkNull,
-    tkNumber, tkPreprocessor, tkSpace, tkField, tkSymbol, tkUnknown);
+    tkNumber, tkPreprocessor, tkSpace, tkField, tkSymbol, tkChar, tkUnknown);
 
   TCommentStyle = (csAnsiStyle, csPasStyle, csCStyle, csAsmStyle, csBasStyle);
   CommentStyles = set of TCommentStyle;
@@ -70,6 +70,7 @@ type
     procedure AsciiCharProc;
     procedure BraceOpenProc;
     procedure PointCommaProc;
+    procedure CharConstProc;
     procedure CRProc;
     procedure IdentProc;
     procedure IntegerProc;
@@ -545,6 +546,7 @@ begin
       '(': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}RoundOpenProc;
       '/': fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SlashProc;
       #1..#9, #11, #12, #14..#32: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}SpaceProc;
+      #39: fProcTable[I] := {$IFDEF FPC}@{$ENDIF}CharConstProc;
       else fProcTable[I] := {$IFDEF FPC}@{$ENDIF}UnknownProc;
     end;
   fProcTable[fFieldDelimCh] := {$IFDEF FPC}@{$ENDIF}FieldProc;
@@ -850,6 +852,27 @@ begin
   while FLine[Run] in [#1..#9, #11, #12, #14..#32] do inc(Run);
 end;
 
+procedure TSynBaseNCSyn.CharConstProc;
+begin
+  if fFieldDelimCh = #39 then
+  begin
+    FieldProc;
+  end
+  else
+  begin
+    fTokenID := tkChar;
+    repeat
+      if fLine[Run] = '\' then begin
+        if fLine[Run + 1] in [#39, '\'] then
+          inc(Run);
+      end;
+      inc(Run);
+    until fLine[Run] in [#0, #10, #13, #39];
+    if fLine[Run] = #39 then
+      inc(Run);
+  end;
+end;
+
 procedure TSynBaseNCSyn.FieldProc;
 var
   ch : Char;
@@ -1017,6 +1040,7 @@ begin
     tkSpace       : Result := fSpaceAttri;
     tkField       : Result := fFieldAttri;
     tkSymbol      : Result := fSymbolAttri;
+    tkChar        : Result := fNumberAttri;
     tkUnknown     : Result := fSymbolAttri;
   else
     Result := nil;
