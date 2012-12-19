@@ -1,8 +1,8 @@
 task main()
 {
   SetSensorLowspeed(S1);
-  SetHTProtoDigitalControl(S1, 0xFF); // all outputs
-  SetHTProtoDigital(S1, DIGI_PIN0|DIGI_PIN1|DIGI_PIN2);
+  SetSensorHTProtoDigitalControl(S1, 0xFF); // all outputs
+  SetSensorHTProtoDigital(S1, DIGI_PIN0|DIGI_PIN1|DIGI_PIN2);
   NumOut(0, LCD_LINE1, SensorHTProtoDigitalControl(S1));
   NumOut(0, LCD_LINE2, SensorHTProtoDigital(S1));
   NumOut(0, LCD_LINE3, SensorHTProtoAnalog(S1, HTPROTO_A0));
