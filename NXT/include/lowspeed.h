@@ -16,23 +16,28 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-03-03
+ * \version 3
  */
 
 #ifndef LOWSPEED_H
 #define LOWSPEED_H
 
+#include "lowspeed_constants.h"
+
+#ifndef __DOXYGEN_DOCS
+asm { asminclude "nbc_lowspeed.h" }
+#endif
+
 ///////////////////////////////////////////////////////////////////////////////
 /////////////////////////////// LOWSPEED MODULE ///////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
-
 
 /** @addtogroup NXTFirmwareModules
  * @{
@@ -124,6 +129,9 @@ struct CommLSWriteExType {
  * ultrasonic sensor is an I2C digital sensor its value cannot be read using
  * the standard Sensor(n) value.
  * The port must be configured as a Lowspeed port before using this function.
+ * This function includes a 15 millisecond wait before reading the sensor value
+ * due to the ultrasonic sensor getting into a bad state if you try to read
+ * its value more frequently than once every 15 milliseconds.
  * \param port The port to which the ultrasonic sensor is attached. See the
  * \ref InPorts group. You may use a constant or a variable.
  * \return The ultrasonic sensor distance value (0..255)
@@ -131,8 +139,41 @@ struct CommLSWriteExType {
 inline byte SensorUS(const byte port);
 
 /**
+ * Read ultrasonic sensor value without wait.
+ * Return the ultrasonic sensor distance value. Since an
+ * ultrasonic sensor is an I2C digital sensor its value cannot be read using
+ * the standard Sensor(n) value.
+ * The port must be configured as a Lowspeed port before using this function.
+ * Since this function does not include a built-in 15 millisecond wait it
+ * will be necessary to write your code so that repeated calls do not occur
+ * more frequently than once every 15 milliseconds.
+ * \param port The port to which the ultrasonic sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \return The ultrasonic sensor distance value (0..255)
+ */
+inline byte SensorUS0(const byte port);
+
+/**
+ * Read ultrasonic sensor value with specified wait.
+ * Return the ultrasonic sensor distance value. Since an
+ * ultrasonic sensor is an I2C digital sensor its value cannot be read using
+ * the standard Sensor(n) value.
+ * The port must be configured as a Lowspeed port before using this function.
+ * \param port The port to which the ultrasonic sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param wait The number of milliseconds to wait before querying the sensor.
+ * You may use a constant or a variable.
+ * \return The ultrasonic sensor distance value (0..255)
+ */
+inline byte SensorUSWait(const byte port, const byte wait);
+
+/**
  * Read multiple ultrasonic sensor values.
  * Return eight ultrasonic sensor distance values.
+ * The port must be configured as a Lowspeed port before using this function.
+ * This function includes a 15 millisecond wait before reading the sensor value
+ * due to the ultrasonic sensor getting into a bad state if you try to read
+ * its value more frequently than once every 15 milliseconds.
  * \param port The port to which the ultrasonic sensor is attached. See the
  * \ref InPorts group. You may use a constant or a variable.
  * \param values An array of bytes that will contain the 8 distance values
@@ -141,6 +182,37 @@ inline byte SensorUS(const byte port);
  * See \ref CommLSReadType for possible result values.
  */
 inline char ReadSensorUSEx(const byte port, byte & values[]);
+
+/**
+ * Read multiple ultrasonic sensor values without wait.
+ * Return eight ultrasonic sensor distance values.
+ * The port must be configured as a Lowspeed port before using this function.
+ * Since this function does not include a built-in 15 millisecond wait it
+ * will be necessary to write your code so that repeated calls do not occur
+ * more frequently than once every 15 milliseconds.
+ * \param port The port to which the ultrasonic sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param values An array of bytes that will contain the 8 distance values
+ * read from the ultrasonic sensor.
+ * \return A status code indicating whether the read completed successfully or not.
+ * See \ref CommLSReadType for possible result values.
+ */
+inline char ReadSensorUSEx0(const byte port, byte & values[]);
+
+/**
+ * Read multiple ultrasonic sensor values with specified wait.
+ * Return eight ultrasonic sensor distance values.
+ * The port must be configured as a Lowspeed port before using this function.
+ * \param port The port to which the ultrasonic sensor is attached. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param values An array of bytes that will contain the 8 distance values
+ * read from the ultrasonic sensor.
+ * \param wait The number of milliseconds to wait before querying the sensor.
+ * You may use a constant or a variable.
+ * \return A status code indicating whether the read completed successfully or not.
+ * See \ref CommLSReadType for possible result values.
+ */
+inline char ReadSensorUSExWait(const byte port, byte & values[], const byte wait);
 
 /**
  * Read the LEGO EMeter values.
@@ -653,6 +725,23 @@ inline byte LSNoRestartOnRead();
 
 #endif
 
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+/**
+ * Set I2C options.
+ * This method lets you modify I2C options. Use this function to turn on
+ * or off the fast I2C mode and also control whether the standard I2C mode
+ * performs a restart prior to the read operation.
+ *
+ * \warning This function requires the enhanced NBC/NXC firmware version 1.31+
+ *
+ * \param port The port whose I2C options you wish to change. See the
+ * \ref InPorts group. You may use a constant or a variable.
+ * \param options The new option value.  See \ref I2COptionConstants.
+ */
+inline void SetI2COptions(byte port, byte options);
+#endif
+
+
 /*
 // these low speed module IOMap fields are essentially read-only
 inline void SetLSInputBuffer(const byte port, const byte offset, byte cnt, byte data[]);
@@ -729,8 +818,14 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 #else
 
 // ultrasonic sensor
-#define SensorUS(_p) asm { ReadSensorUS(_p, __RETVAL__) }
-#define ReadSensorUSEx(_port, _values) asm { __ReadSensorUSEx(_port, _values, __RETVAL__) }
+#define SensorUS(_p) asm { __ReadSensorUS(_p, __RETVAL__, 15) }
+#define ReadSensorUSEx(_port, _values) asm { __ReadSensorUSEx(_port, _values, __RETVAL__, 15) }
+
+#define SensorUS0(_p) asm { __ReadSensorUS(_p, __RETVAL__, 0) }
+#define ReadSensorUSEx0(_port, _values) asm { __ReadSensorUSEx(_port, _values, __RETVAL__, 0) }
+
+#define SensorUSWait(_p, _w) asm { __ReadSensorUS(_p, __RETVAL__, _w) }
+#define ReadSensorUSExWait(_port, _values, _w) asm { __ReadSensorUSEx(_port, _values, __RETVAL__, _w) }
 
 #define ReadSensorEMeter(_port, _vIn, _aIn, _vOut, _aOut, _joules, _wIn, _wOut) asm { __ReadSensorEMeter(_port, _vIn, _aIn, _vOut, _aOut, _joules, _wIn, _wOut, __RETVAL__) }
 
@@ -741,7 +836,7 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 #define SensorTemperature(_port) asm { __ReadSensorTemperature(_port, __RETVAL__) }
 #endif
 
-#define ReadI2CRegister(_port, _i2caddr, _reg, _out) asm { __MSReadValue(_port, _i2caddr, _reg, 1, _out, __RETVAL__) }
+#define ReadI2CRegister(_port, _i2caddr, _reg, _out) asm { __I2CReadValue(_port, _i2caddr, _reg, 1, _out, __RETVAL__) }
 #define WriteI2CRegister(_port, _i2caddr, _reg, _val) asm { __MSWriteToRegister(_port, _i2caddr, _reg, _val, __RETVAL__) }
 
 #define LowspeedStatus(_port, _bready) asm { __lowspeedStatus(_port, _bready, __RETVAL__) }
@@ -781,6 +876,10 @@ inline void SysCommLSWriteEx(CommLSWriteExType & args);
 #define LSSpeed() asm { GetLSSpeed(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
 #ifdef __ENHANCED_FIRMWARE
 #define LSNoRestartOnRead(_n) asm { GetLSNoRestartOnRead(__TMPBYTE__) __RETURN__ __TMPBYTE__ }
+#endif
+
+#if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
+#define SetI2COptions(_port, _options) asm { __setI2COptions(_port, _options) }
 #endif
 
 #define SetLSInputBuffer(_p, _offset, _cnt, _data) asm { __setLSInputBuffer(_p, _offset, _cnt, _data) }

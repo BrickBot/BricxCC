@@ -107,7 +107,7 @@ procedure TRemoteForm.tmrMainTimer(Sender: TObject);
 var
   msg : Word;
 begin
-  if BrickComm.BrickType in [SU_NXT, SU_FOO] then
+  if BrickComm.BrickType in [SU_NXT, SU_EV3] then
     Exit;
   msg := kRemoteKeysReleased;
 
@@ -132,7 +132,7 @@ end;
 
 procedure TRemoteForm.FormShow(Sender: TObject);
 begin
-  barASpeed.Visible := BrickComm.BrickType in [SU_NXT, SU_FOO];
+  barASpeed.Visible := BrickComm.BrickType in [SU_NXT, SU_EV3];
   barBSpeed.Visible := barASpeed.Visible;
   barCSpeed.Visible := barASpeed.Visible;
   tmrMain.Enabled   := not barASpeed.Visible;

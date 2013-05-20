@@ -1,0 +1,12 @@
+#include "command.h"
+#include "output.h"
+
+task main ()
+{
+  OnFwd(OUT_AC, 20);
+  Wait(SEC_4);
+  OnRev(OUT_AC, 20);
+  Wait(SEC_4);
+  Off(OUT_AC);
+}
+

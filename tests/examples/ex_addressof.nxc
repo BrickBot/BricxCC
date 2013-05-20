@@ -1,3 +1,7 @@
+#include "cstring.h"
+#include "display.h"
+#include "command.h"
+
 const byte NewFont[] =
 {
   0x04,0x00, // Graphics Format

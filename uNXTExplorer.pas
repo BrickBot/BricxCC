@@ -283,6 +283,11 @@ const
     'NXT Melody files (*.rmd)|*.rmd|' +
     'NXT Datalog files (*.rdt)|*.rdt|' +
     'NXT System files (*.sys)|*.sys|' +
+    'All EV3 files (*.rbf; *.rsf; *.rgf)|' +
+      '*.rbf;*.rsf;*.rgf|' +
+    'EV3 Executable files (*.rbf)|*.rbf|' +
+    'EV3 Sound files (*.rsf)|*.rsf|' +
+    'EV3 Graphic files (*.rgf)|*.rgf|' +
     'NXT Menu files (*.rms)|*.rms';
   K_NXT_MAX_MEM = 128000;
 
@@ -303,6 +308,7 @@ var
   i, p : integer;
   LI : TListItem;
   curMask : string;
+  ft : TNXTFileType;
 begin
   NXTFiles.Items.BeginUpdate;
   try
@@ -319,7 +325,11 @@ begin
           LI := NXTFiles.Items.Add;
           LI.Caption := SL.Names[i];
           LI.SubItems.Add(SL.Values[LI.Caption]);
-          LI.ImageIndex := Ord(NameToNXTFileType(LI.Caption));
+          ft := NameToNXTFileType(LI.Caption);
+          if ft = nftOther then
+            LI.ImageIndex := Ord(NameToEV3FileType(LI.Caption))
+          else
+            LI.ImageIndex := Ord(ft);
         end;
       end;
     finally
@@ -635,7 +645,8 @@ end;
 
 function TfrmNXTExplorer.SelectedFileIsSound: boolean;
 begin
-  Result := (NameToNXTFileType(NXTFiles.Selected.Caption) = nftSound);
+  Result := (NameToNXTFileType(NXTFiles.Selected.Caption) = nftSound) or
+            (NameToEV3FileType(NXTFiles.Selected.Caption) = eftSound);
 end;
 
 procedure TfrmNXTExplorer.Exit1Click(Sender: TObject);
@@ -653,7 +664,7 @@ end;
 
 procedure TfrmNXTExplorer.About1Click(Sender: TObject);
 begin
-  ShowMessage('NeXT Explorer'#13#10'Copyright 2006-2009, John C. Hansen');
+  ShowMessage('PBrick Explorer'#13#10'Copyright 2006-2013, John C. Hansen');
 end;
 
 procedure TfrmNXTExplorer.actFileEraseAllExecute(Sender: TObject);

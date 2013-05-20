@@ -1,3 +1,10 @@
-// copy 5 elements starting with the 3rd element, i.e., srcArray[2]
-ArraySubset(myArray, srcArray, 2, 5);
+#include "command.h"
 
+task main()
+{
+  byte srcArray[] = {1, 2, 3, 4, 5, 6, 7, 8, 9, 0};
+  byte myArray[];
+  // copy 5 elements starting with the 3rd element, i.e., srcArray[2]
+  ArraySubset(myArray, srcArray, 2, 5);
+  myArray += 10;
+}

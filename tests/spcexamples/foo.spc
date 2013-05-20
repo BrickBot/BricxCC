@@ -1,8 +1,11 @@
 
 #pragma autostart
 
+int x = 10;
+
 task main()
 {
+  x++;
   while(true)
   {
     printf("%x\n", SystemClock);

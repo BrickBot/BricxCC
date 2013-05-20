@@ -1,1 +1,6 @@
-byte x = BTDeviceNameCount();
+#include "comm.h"
+
+task main()
+{
+  byte x = BTDeviceNameCount();
+}

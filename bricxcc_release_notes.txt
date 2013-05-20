@@ -37,6 +37,8 @@ version 3.3.8.10
 - Add support for compiler error line position
 - Add support for bracket highlighting
 - Fix bug with spaces in exe path for external compiler
+- Fixed defect with character constants containing $
+- Fixed defect in sample HT Prototype board API functions.
 
 version 3.3.8.9
 ---------------

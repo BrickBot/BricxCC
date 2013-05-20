@@ -2,7 +2,7 @@ object frmWave2RSO: TfrmWave2RSO
   Left = 190
   Top = 185
   BorderStyle = bsDialog
-  Caption = 'Wav 2 RSO 2 Wav'
+  Caption = 'Wav 2 RSO/RSF 2 Wav'
   ClientHeight = 446
   ClientWidth = 450
   Color = clBtnFace
@@ -228,9 +228,6 @@ object frmWave2RSO: TfrmWave2RSO
     OnChange = OnPathChange
   end
   object dlgOpen: TOpenDialog
-    Filter = 
-      'WAV files (*.wav)|*.wav|RSO files (*.rso)|*.rso|All files (*.*)|' +
-      '*.*'
     Options = [ofHideReadOnly, ofAllowMultiSelect, ofEnableSizing, ofDontAddToRecent]
     Left = 216
     Top = 8

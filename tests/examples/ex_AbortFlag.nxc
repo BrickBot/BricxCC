@@ -1,1 +1,6 @@
-byte af = AbortFlag();
+#include "ui.h"
+
+task main()
+{
+  byte af = AbortFlag();
+}

@@ -1,7 +1,7 @@
 /** \file output_constants.h
- * \brief NXC output module constants
+ * \brief NXC Output module constants
  *
- * output_constants.h contains NXC output module constants
+ * output_constants.h contains NXC Output module constants
  *
  * License:
  *
@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-02-21
+ * \version 2
  */
 
 #ifndef OUTPUT_CONSTANTS_H
@@ -115,6 +115,7 @@
  * Use these constants to configure the desired options for the
  * specified motor(s): hold at limit and ramp down to limit. Option constants
  * can be combined with bitwise OR.
+ * \warning These options require the enhanced NBC/NXC firmware version 1.31+
  * \sa SetOutput()
  * @{
  */
@@ -125,6 +126,7 @@
 /** @defgroup OutRegOptionConstants Output regulation option constants
  * Use these constants to configure the desired options for
  * position regulation.
+ * \warning These options require the enhanced NBC/NXC firmware version 1.31+
  * @{
  */
 #define OUT_REGOPTION_NO_SATURATION 0x01 /*!< Do not limit intermediary regulation results */
@@ -281,14 +283,17 @@
  *  constants can be combined with bitwise OR.  Use OUT_OPTION_HOLDATLIMIT to have the output
  *  module hold the motor when it reaches the tachometer limit.  Use OUT_OPTION_RAMPDOWNTOLIMIT
  *  to have the output module ramp down the motor power as it approaches the tachometer limit.
+ *  \warning This option requires the enhanced NBC/NXC firmware version 1.31+
  */
 #define OutputOptionsField   15
 /** MaxSpeed field. Contains the current max speed value. Read/write.
  *  Set the maximum speed to be used during position regulation.
+ *  \warning This option requires the enhanced NBC/NXC firmware version 1.31+
  */
 #define MaxSpeedField   16
 /** MaxAcceleration field. Contains the current max acceleration value. Read/write.
  *  Set the maximum acceleration to be used during position regulation.
+ *  \warning This option requires the enhanced NBC/NXC firmware version 1.31+
  */
 #define MaxAccelerationField   17
 #endif
@@ -315,13 +320,13 @@
 #define OutputOffsetOverloaded(p)        (((p)*32)+27) /*!< R  - True if the motor has been overloaded within speed control regulation (1 byte) ubyte */
 #define OutputOffsetSyncTurnParameter(p) (((p)*32)+28) /*!< RW - Holds the turning parameter need within MoveBlock (1 byte) sbyte */
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define OutputOffsetOptions(p)           (((p)*32)+29) /*!< RW - holds extra motor options related to the tachometer limit (1 byte) ubyte  (NBC/NXC) */
-#define OutputOffsetMaxSpeed(p)          (((p)*32)+30) /*!< RW - holds the maximum speed for position regulation (1 byte) sbyte  (NBC/NXC) */
-#define OutputOffsetMaxAccel(p)          (((p)*32)+31) /*!< RW - holds the maximum acceleration for position regulation (1 byte) sbyte  (NBC/NXC) */
+#define OutputOffsetOptions(p)           (((p)*32)+29) /*!< RW - holds extra motor options related to the tachometer limit (1 byte) ubyte  (enhanced NBC/NXC firmware only) */
+#define OutputOffsetMaxSpeed(p)          (((p)*32)+30) /*!< RW - holds the maximum speed for position regulation (1 byte) sbyte  (enhanced NBC/NXC firmware only) */
+#define OutputOffsetMaxAccel(p)          (((p)*32)+31) /*!< RW - holds the maximum acceleration for position regulation (1 byte) sbyte  (enhanced NBC/NXC firmware only) */
 #endif
-#define OutputOffsetRegulationTime       96 /*!< use for frequency of checking regulation mode (1 byte) ubyte (NBC/NXC) */
+#define OutputOffsetRegulationTime       96 /*!< use for frequency of checking regulation mode (1 byte) ubyte (enhanced NBC/NXC firmware only) */
 #if defined(__ENHANCED_FIRMWARE) && (__FIRMWARE_VERSION > 107)
-#define OutputOffsetRegulationOptions    97 /*!< use for position regulation options (1 byte) ubyte (NBC/NXC) */
+#define OutputOffsetRegulationOptions    97 /*!< use for position regulation options (1 byte) ubyte (enhanced NBC/NXC firmware only) */
 #endif
 /** @} */  // end of OutputIOMAP group
 /** @} */  // end of OutputModuleConstants group

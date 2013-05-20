@@ -1,6 +1,6 @@
 task main()
 {
-  int x = Timer0;
+  int x = Timer3;
   int y;
   y = push(x);
   x = x*x;

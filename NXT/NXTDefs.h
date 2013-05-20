@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * author John Hansen (bricxcc_at_comcast.net)
- * date 2012-10-18
- * version 87
+ * date 2012-12-31
+ * version 88
  */
 #ifndef NXTDEFS__H
 #define NXTDEFS__H
@@ -6130,6 +6130,9 @@ dseg ends
 #define __ReadSensorHTMagnet(_port, _offset, _val) __ReadSensorHTGyro(_port, _offset, _val)
 #define __SetSensorHTMagnet(_port) __SetSensorHTGyro(_port)
 
+#define __ReadSensorHTForce(_port, _val) getin _val, _port, RawValueField
+#define __SetSensorHTForce(_port) __SetSensorHTGyro(_port)
+
 dseg segment
   __HTMplexRaw word
   __HTMplexScaled dword
@@ -8106,6 +8109,9 @@ dseg ends
   release __RLSBmutex##_port \
   compend
 
+#define __SetSensorHTPIRDeadband(_port, _value, _result) \
+  __MSWriteToRegister(_port, HT_ADDR_PIR, HTPIR_REG_DEADBAND, _value, _result) \
+  tst EQ, _result, _result
 
 #define __ReadI2CDeviceInfo(_port, _i2caddr, _info, _strVal) \
   compif EQ, isconst(_port), FALSE \
@@ -17494,6 +17500,23 @@ __remoteGetInputValues(_conn, _params, _result)
 #define ReadSensorHTEOPD(_port, _val) __ReadSensorHTEOPD(_port, _val)
 
 /**
+ * Set sensor as HiTechnic Force.
+ * Configure the sensor on the specified port as a HiTechnic Force sensor.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ */
+#define SetSensorHTForce(_port) __SetSensorHTForce(_port)
+
+/**
+ * Read HiTechnic Force sensor.
+ * Read the HiTechnic Force sensor on the specified port.
+ *
+ * \param _p The sensor port. See \ref NBCInputPortConstants.
+ * \param _val The Force sensor reading.
+ */
+#define ReadSensorHTForce(_p, _val) __ReadSensorHTForce(_p, _val)
+
+/**
  * Read HiTechnic touch multiplexer.
  * Read touch sensor values from the HiTechnic touch multiplexer device.
  *
@@ -18860,6 +18883,28 @@ __remoteGetInputValues(_conn, _params, _result)
  * \param _result The function call result.
  */
 #define ReadSensorHTSuperProProgramControl(_port, _out, _result) __MSReadValue(_port, HT_ADDR_SUPERPRO, HTSPRO_REG_CTRL, 1, _out, _result)
+
+/**
+ * Set HiTechnic PIR deadband value.
+ * Set the HiTechnic PIR deadband value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _value The deadband value. Valid values are 0..47.
+ * \param _result The function call result.
+ */
+#define SetSensorHTPIRDeadband(_port, _value, _result) __SetSensorHTPIRDeadband(_port, _value, _result)
+
+/**
+ * Read HiTechnic SuperPro strobe value.
+ * Read the HiTechnic SuperPro strobe value.
+ * The port must be configured as a Lowspeed port before using this function.
+ *
+ * \param _port The sensor port. See \ref NBCInputPortConstants.
+ * \param _out The strobe value. See \ref StrobeCtrlConstants.
+ * \param _result The function call result.
+ */
+#define ReadSensorHTPIR(_port, _out, _result) __MSReadValue(_port, HT_ADDR_PIR, HTPIR_REG_READING, 1, _out, _result)
 
 
 /** @} */ // end of HiTechnicAPI group

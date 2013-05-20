@@ -1,3 +1,6 @@
-OutputStateType params;
-
-char result = RemoteGetOutputState(CONN_BT1, params);
+task main()
+{
+  OutputStateType params;
+  params.Port = OUT_A;
+  char result = RemoteGetOutputState(CONN_BT1, params);
+}

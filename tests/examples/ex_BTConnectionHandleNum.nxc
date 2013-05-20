@@ -1,1 +1,9 @@
-byte handlenum = BTConnectionHandleNum(idx);
+#include "comm.h"
+
+task main()
+{
+  byte handlenum = BTConnectionHandleNum(CONN_BT0);
+  handlenum += 3;
+}
+
+

@@ -9,8 +9,10 @@ For updates and additional documentation, visit the NBC Web Site:
 http://bricxcc.sourceforge.net/nbc/.  Send emails to bricxcc@comcast.net.
 
 
-Version 1.2.1.r5 (2012-10-12)
+Version 1.2.1.r5 (2013-02-16)
 -----------------------------
+- Added support for HiTechnic PIR sensor
+- Added support for HiTechnic Force sensor
 - Added support for HiTechnic Barometric sensor
 - Added support for HiTechnic Prototype Board
 - Added support for HiTechnic SuperPro Board

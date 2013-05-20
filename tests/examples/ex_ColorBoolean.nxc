@@ -1,1 +1,6 @@
-bool bRed = ColorBoolean(S1, INPUT_RED);
+#include "input.h"
+
+task main()
+{
+  bool bRed = ColorBoolean(S1, INPUT_RED);
+}

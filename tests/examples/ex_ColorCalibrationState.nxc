@@ -1,1 +1,6 @@
-byte value = ColorCalibrationState(S1);
+#include "input.h"
+
+task main()
+{
+  byte value = ColorCalibrationState(S1);
+}

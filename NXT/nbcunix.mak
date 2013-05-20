@@ -7,6 +7,7 @@ all:: $(DOBJECTS) $(PROGRAMS)
 
 clean::
 	rm -f *.o *.ppu *.rst *.compiled *.dcu nbc_preproc.inc
+	rm -f ../*.o ../*.ppu ../*.rst ../bricktools/*.o ../bricktools/*.ppu
 
 realclean:: clean
 	rm -f $(PROGRAMS) mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas SPCDefsData.pas SPMemData.pas
@@ -17,7 +18,7 @@ PFLAGS=-S2cdghi -dRELEASE -vewnhi -l -Fu../ -Fu. -Fu../bricktools -dCAN_DOWNLOAD
 
 
 # PTOOLPREFIX may differ on different platforms (e.g. /usr/local/bin/)
-PTOOLPREFIX=/usr/bin/
+#PTOOLPREFIX=/usr/bin/
 PPC=$(PTOOLPREFIX)fpc
 
 # how to link executable

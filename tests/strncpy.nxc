@@ -1,0 +1,11 @@
+string foo(string & dest, const string src, int num)
+{
+  return src;
+}
+
+task main()
+{
+  string messages[] = {"hello", "world"};
+  string dest;
+  NumOut(0, LCD_LINE1, strncpy(dest, messages[0], 3), false);
+}

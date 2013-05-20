@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-10-10
- * \version 2
+ * \date 2013-02-20
+ * \version 4
  */
 #ifndef SPCAPIDOCS_H
 #define SPCAPIDOCS_H
@@ -35,7 +35,7 @@
 /** @mainpage SPC Programmer's Guide
  * \brief
  *
- * <h2><center>October 10, 2011</center></h2>
+ * <h2><center>February 20, 2013</center></h2>
  * <h2><center>by John Hansen</center></h2>
  *
  * - @subpage intro
@@ -216,6 +216,7 @@
  * - @subpage define
  * - @subpage concat
  * - @subpage condcomp
+ * - @subpage pragma
  *
  */
 
@@ -317,10 +318,18 @@
  * In SPC you can define special system memory address constants that are treated
  * like a variable with an absolute memory address.  A system address is simply
  * a numeric constant preceded by the '@' symbol.
+ *
  * \code
  * int volt = @0x00; // read the voltage from analog input A0.
  * @0x0C = 1000; // set countdown timer 0 to 1000.
  * \endcode
+ *
+ * System constants can also be used to read and write to an area of shared
+ * memory that can be accessed via I2C from a device such as the NXT.
+ * The shared memory area from 0x20 - 0x3F is mapped to the byte addressed
+ * I2C 0x80 - 0xFF memory address range. This permits data to be exchanged
+ * between an attached NXT and the user program. See the \ref sharedmem page
+ * for predefined constants to use this area of memory.
  *
  */
 
@@ -1635,7 +1644,27 @@
  *
  */
 
-/** @page presysconst SuperPro pre-defined system constants
+/** @page pragma Pragmas
+ * \brief
+ *
+ * The '#pragma' directive is the method specified by the C standard for
+ * providing additional information to the compiler, beyond what is conveyed
+ * in the language itself. A C compiler is free to attach any meaning it
+ * likes to pragmas.
+ *
+ * In SuperPro C the only pragma that has any significant meaning is 'autostart'.
+ *
+ * \code
+ * #pragma autostart
+ * \endcode
+ *
+ * The autostart instruction tells the compiler to modify the generated 
+ * executable so that it automatically starts running whenever the SuperPro is
+ * powered on.
+ *
+ */
+
+/** @page presysconst Pre-defined system constants
  * Pre-defined system constants for directly interacting with the SuperPro hardware.
  *
  * The spmem.h header file uses system constants to define names for the
@@ -1657,6 +1686,7 @@
  * - @subpage dacvolt
  * - @subpage ledctrl
  * - @subpage sysclk
+ * - @subpage sharedmem
  *
  */
 
@@ -1872,6 +1902,7 @@
  * <tr><td>DAC_MODE_SAWNEGWAVE</td><td>4</td><td>Negative going sawtooth output</td></tr>
  * <tr><td>DAC_MODE_TRIANGLEWAVE</td><td>5</td><td>Triangle wave output</td></tr>
  * <tr><td>DAC_MODE_PWMVOLTAGE</td><td>6</td><td>PWM square wave output</td></tr>
+ * <tr><td>DAC_MODE_RESTART_MASK</td><td>0x80</td><td>Restart waveform mask</td></tr>
  * </table>
  * </center>
  * <center>Analog Output Modes</center>
@@ -1894,6 +1925,26 @@
  * DAC0Frequency = 4000; // 4khz frequency.
  * DAC0Voltage = 512; // mark/space ratio = 50%
  * \endcode
+ *
+ * As of firmware version 2.3 the waveform generator has been improved to
+ * provide:
+ *
+ * - Seamless change in output frequency if the generator is already running.
+ * - Start of waveform generation will start from the beginning of the wave
+ * table. When the DAC0/DAC1 Mode bytes are changed from 0x00 to a non zero
+ * number, the waveform generation will start from the start of the wave
+ * table.
+ * - A frequency value of zero is interpreted as a DC output of 1.65v, the
+ * center offset value used for waveform output.
+ * - Addition of bit 7 of the DAC0/DAC1 Mode bytes to signify force waveform
+ * generation from the beginning of the wave table. If the Mode byte is
+ * written with bit 7 set, i.e., 0x81 for a sine wave, then the wave table
+ * pointer will reset to the start of the table. Once this reset has been
+ * performed, the 7 bit will be cleared.
+ * - Immediate cessation of waveform generation when the DAC0/DAC1 Mode bytes
+ * are set to 0x00. The previous firmware version would inadvertently insert
+ * a 0 - 4mS dead time when the DAC0/DAC1 Mode bytes were changed to 0x00.
+ * The reaction is now a few microseconds instead.
  *
  */
 
@@ -1961,12 +2012,43 @@
  *
  */
 
-/** @defgroup MiscConstants Miscellaneous SPC constants
+/** @page sharedmem Shared Memory
+ * \brief
+ *
+ * There are 32 shared memory locations on the SuperPro board which can be
+ * accessed remotely via I2C using a device like the NXT. They are named
+ * \ref SharedMem01 through \ref SharedMem32. If you write 4 bytes to I2C
+ * address 0x80 these bytes can be read as a signed long value in SuperPro C
+ * at address 0x20 (SharedMem01).  
+ *
+ * \code
+ * long x = SharedMem01;
+ * SharedMem32 = ADChannel0;
+ * \endcode
+ *
+ */
+
+/** @defgroup MiscConstants Miscellaneous constants
  * Miscellaneous constants for use in SPC.
  *
  */
 
-/** @defgroup DacModeConstants SuperPro analog output mode constants
+/** @defgroup presysconstgrp Pre-defined System constants
+ * Pre-defined system constants for use in SuperPro C to read or
+ * read/write all of the SuperPro hardware capabilities.
+ *
+ */
+
+/** @defgroup sharedmemgrp Pre-defined shared memory constants
+ * Pre-defined shared memory constants for use in SuperPro C to
+ * read/write addresses in SuperPro memory that are shared with the
+ * I2C address space. This allows for an external device to send data to or
+ * receive data from a SuperPro program while it is executing using the
+ * I2C communication layer.
+ *
+ */
+
+/** @defgroup DacModeConstants Analog output mode constants
  * Constants for controlling the 2 analog output modes.
  *
  * Two analog outputs, which can span 0 to 3.3 volts, can be programmed to
@@ -1985,13 +2067,17 @@
  * In PWFM voltage mode, the channel outputs will create a
  * variable mark:space ratio square wave at 3.3v signal level. The average
  * output voltage is set by the O0/O1 voltage fields.
+ *
+ * \sa DAC0Mode, DAC1Mode
  */
 
-/** @defgroup LEDCtrlConstants SuperPro LED control constants
+/** @defgroup LEDCtrlConstants LED control constants
  * Constants for controlling the 2 onboard LEDs.
+ *
+ * \sa LEDControl
  */
 
-/** @defgroup DigitalPinConstants SuperPro digital pin constants
+/** @defgroup DigitalPinConstants Digital pin constants
  * Constants for controlling the 8 digital pins.
  *
  * The eight digital inputs are returned as a byte representing the state
@@ -1999,9 +2085,11 @@
  * the first of which sets the state of any of the signals which have been
  * defined as outputs and the second of which controls the input/output
  * state of each signal.
+ *
+ * \sa DigitalControl
  */
 
-/** @defgroup StrobeCtrlConstants SuperPro Strobe control constants
+/** @defgroup StrobeCtrlConstants Strobe control constants
  * Constants for manipulating the six digital strobe outputs.
  *
  * Six digital strobe outputs are available. One is pre-configured as a
@@ -2012,14 +2100,16 @@
  *
  * The RD and WR bits set the inactive state of the read and write strobe
  * outputs. Thus, if these bits are set to 0, the strobe outputs will pulse
- * high. 
+ * high.
+ *
+ * \sa StrobeControl
  */
 
 /////////////////////////////////////////////////////////////////////////////
 ////////////////////////////  EXAMPLES  /////////////////////////////////////
 /////////////////////////////////////////////////////////////////////////////
 
-/*
+/**
  * \example ex_CurrentTick.spc
  * This is an example of how to use the \ref CurrentTick function.
  *
@@ -2073,15 +2163,6 @@
  *
  * \example ex_abs.spc
  * This is an example of how to use the \ref abs function.
- *
- * \example ex_memcpy.spc
- * This is an example of how to use the \ref memcpy function.
- *
- * \example ex_memmove.spc
- * This is an example of how to use the \ref memmove function.
- *
- * \example ex_memcmp.spc
- * This is an example of how to use the \ref memcmp function.
  *
  * \example ex_isupper.spc
  * This is an example of how to use the \ref isupper function.
@@ -2146,6 +2227,67 @@
  * \example ex_StopProcesses.spc
  * This is an example of how to use the \ref StopProcesses function.
  *
+ * \example ex_systemclock.spc
+ * This is an example of how to use the \ref SystemClock system constant
+ * as well as the \ref Wait and \ref printf functions.
+ *
+ * \example ex_ledcontrol.spc
+ * This is an example of how to use the \ref LEDControl system constant
+ * as well as the \ref Wait function.
+ *
+ * \example ex_serialout.spc
+ * This is an example of how to use the \ref SerialOutCount and
+ * \ref SerialOutByte system constants as well as the \ref Wait and
+ * \ref printf functions.
+ *
+ * \example ex_DAC0ToA3.spc
+ * This is an example of how to use the \ref DAC0Mode, \ref DAC0Frequency,
+ * \ref DAC0Voltage, and \ref ADChannel3 system constants as well as the
+ * \ref Wait and \ref printf functions.
+ *
+ * \example ex_timer.spc
+ * This is an example of how to use the \ref Timer0, \ref Timer1, \ref Timer2,
+ * and \ref Timer3 system constants. It also is an example of how to use the
+ * \ref Wait and \ref printf functions.
+ *
+ * \example ex_arrays.spc
+ * This is an example of how to use the \ref Wait and \ref printf functions.
+ *
+ * \example t1.spc
+ * This is an example of how to use the \ref puts and \ref Wait functions.
+ *
+ * \example ex_TwinkleL.spc
+ * This is an example of how to use the \ref DAC1Mode, \ref DAC1Frequency,
+ * \ref DAC1Voltage, and \ref SharedMem01 system constants. It is also an
+ * example of how to use the \ref Wait function.
+ *
+ * \example ex_Twinkle.spc
+ * This is an example of how to use the \ref DAC1Mode, \ref DAC1Frequency,
+ * and \ref DAC1Voltage system constants. It is also an
+ * example of how to use the \ref Wait function.
+ *
+ * \example ex_digiserial.spc
+ * This is an example of how to use the \ref DigitalControl, \ref DigitalOut,
+ * \ref Timer0, \ref ADChannel0, \ref ADChannel1, \ref SerialInCount,
+ * and \ref SerialInByte system constants. It is also an example of how to use
+ * the \ref printf, \ref puts, and \ref Wait functions.
+ *
+ * \example ex_ledtest.spc
+ * This is an example of how to use the \ref DigitalControl, \ref DigitalOut,
+ * \ref Timer0, \ref ADChannel0, and \ref ADChannel1 system constants.
+ *
+ * \example ref_params.spc
+ * This is an example of using reference parameter types.
+ *
+ * \example if_test.spc
+ * This is a test of boolean and logic.
+ *
+ * \example arrays.spc
+ * This is a test of structures and arrays.
+ *
+ */
+
+/*
 */
 
 #include "SPCDefs.h"

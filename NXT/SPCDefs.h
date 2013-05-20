@@ -16,19 +16,17 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2011 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-08-11
- * \version 1
+ * \date 2013-02-21
+ * \version 3
  */
 #ifndef SPCDEFS_H
 #define SPCDEFS_H
-
-#include "spmem.h"
 
 /** @addtogroup MiscConstants
  * @{
@@ -66,8 +64,8 @@
 #define DAC_MODE_SAWNEGWAVE   4 /*!< Negative going sawtooth output. */
 #define DAC_MODE_TRIANGLEWAVE 5 /*!< Triangle wave output. */
 #define DAC_MODE_PWMVOLTAGE   6 /*!< PWM square wave output. */
+#define DAC_MODE_RESTART_MASK 0x80 /*!< Add mask to DAC mode constants to force waveform generation from the start of the wave table. */
 /** @} */  // end of DacModeConstants group
-
 
 /** @addtogroup LEDCtrlConstants
  * @{
@@ -116,7 +114,7 @@
 
 /** @defgroup LogStatusConstants Log status constants
  * Constants for use with the stat() function.
- * \sa Run()
+ * \sa stat()
  * @{
  */
 #define LOG_STATUS_OPEN    2 /*!< Log file is open. */
@@ -174,6 +172,12 @@
 #define SEC_20  20000 /*!< 20 seconds */
 #define SEC_30  30000 /*!< 30 seconds */
 #define MIN_1   60000 /*!< 1 minute */
+
+#define NOTE_WHOLE   1000            /*!< The duration of a whole note (ms) */
+#define NOTE_HALF    (NOTE_WHOLE/2)  /*!< The duration of a half note (ms) */
+#define NOTE_QUARTER (NOTE_WHOLE/4)  /*!< The duration of a quarter note (ms) */
+#define NOTE_EIGHT   (NOTE_WHOLE/8)  /*!< The duration of an eighth note (ms) */
+#define NOTE_SIXTEEN (NOTE_WHOLE/16) /*!< The duration of an sixteenth note (ms) */
 /** @} */  // end of TimeConstants group
 
 /** @defgroup ToneConstants Tone constants
@@ -181,33 +185,42 @@
  * \sa DAC0Frequency, DAC1Frequency
  * @{
  */
-#define TONE_A3     220 /*!< Third octave A */
-#define TONE_AS3    233 /*!< Third octave A sharp */
-#define TONE_B3     247 /*!< Third octave B */
-#define TONE_C4     262 /*!< Fourth octave C */
-#define TONE_CS4    277 /*!< Fourth octave C sharp */
-#define TONE_D4     294 /*!< Fourth octave D */
-#define TONE_DS4    311 /*!< Fourth octave D sharp */
-#define TONE_E4     330 /*!< Fourth octave E */
-#define TONE_F4     349 /*!< Fourth octave F */
-#define TONE_FS4    370 /*!< Fourth octave F sharp */
-#define TONE_G4     392 /*!< Fourth octave G */
-#define TONE_GS4    415 /*!< Fourth octave G sharp */
-#define TONE_A4     440 /*!< Fourth octave A */
-#define TONE_AS4    466 /*!< Fourth octave A sharp */
-#define TONE_B4     494 /*!< Fourth octave B */
-#define TONE_C5     523 /*!< Fifth octave C */
-#define TONE_CS5    554 /*!< Fifth octave C sharp */
-#define TONE_D5     587 /*!< Fifth octave D */
-#define TONE_DS5    622 /*!< Fifth octave D sharp */
-#define TONE_E5     659 /*!< Fifth octave E */
-#define TONE_F5     698 /*!< Fifth octave F */
-#define TONE_FS5    740 /*!< Fifth octave F sharp */
-#define TONE_G5     784 /*!< Fifth octave G */
-#define TONE_GS5    831 /*!< Fifth octave G sharp */
-#define TONE_A5     880 /*!< Fifth octave A */
-#define TONE_AS5    932 /*!< Fifth octave A sharp */
-#define TONE_B5     988 /*!< Fifth octave B */
+#define TONE_C3      131 /*!< Third octave C */
+#define TONE_CS3     139 /*!< Third octave C sharp */
+#define TONE_D3      147 /*!< Third octave D */
+#define TONE_DS3     156 /*!< Third octave D sharp */
+#define TONE_E3      165 /*!< Third octave E */
+#define TONE_F3      175 /*!< Third octave F */
+#define TONE_FS3     185 /*!< Third octave F sharp */
+#define TONE_G3      196 /*!< Third octave G */
+#define TONE_GS3     208 /*!< Third octave G sharp */
+#define TONE_A3      220 /*!< Third octave A */
+#define TONE_AS3     233 /*!< Third octave A sharp */
+#define TONE_B3      247 /*!< Third octave B */
+#define TONE_C4      262 /*!< Fourth octave C */
+#define TONE_CS4     277 /*!< Fourth octave C sharp */
+#define TONE_D4      294 /*!< Fourth octave D */
+#define TONE_DS4     311 /*!< Fourth octave D sharp */
+#define TONE_E4      330 /*!< Fourth octave E */
+#define TONE_F4      349 /*!< Fourth octave F */
+#define TONE_FS4     370 /*!< Fourth octave F sharp */
+#define TONE_G4      392 /*!< Fourth octave G */
+#define TONE_GS4     415 /*!< Fourth octave G sharp */
+#define TONE_A4      440 /*!< Fourth octave A */
+#define TONE_AS4     466 /*!< Fourth octave A sharp */
+#define TONE_B4      494 /*!< Fourth octave B */
+#define TONE_C5      523 /*!< Fifth octave C */
+#define TONE_CS5     554 /*!< Fifth octave C sharp */
+#define TONE_D5      587 /*!< Fifth octave D */
+#define TONE_DS5     622 /*!< Fifth octave D sharp */
+#define TONE_E5      659 /*!< Fifth octave E */
+#define TONE_F5      698 /*!< Fifth octave F */
+#define TONE_FS5     740 /*!< Fifth octave F sharp */
+#define TONE_G5      784 /*!< Fifth octave G */
+#define TONE_GS5     831 /*!< Fifth octave G sharp */
+#define TONE_A5      880 /*!< Fifth octave A */
+#define TONE_AS5     932 /*!< Fifth octave A sharp */
+#define TONE_B5      988 /*!< Fifth octave B */
 #define TONE_C6     1047 /*!< Sixth octave C */
 #define TONE_CS6    1109 /*!< Sixth octave C sharp */
 #define TONE_D6     1175 /*!< Sixth octave D */
@@ -236,8 +249,8 @@
 
 #ifdef __DOXYGEN_DOCS
 
-/** @defgroup spcapi SPC API
- * SPC API functions.
+/** @defgroup spcapi SuperPro C API
+ * Functions which comprise the SuperPro C application programming interface.
  * @{
  */
 
@@ -481,11 +494,6 @@ inline void StopProcesses(void);
 #define StartTask(_t) start _t
 #define abort() Stop(true)
 #define CurrentTick() SystemClock
-
-//#define memcpy(_dest, _src, _num) asm { mov _dest, _src }
-//#define memmove(_dest, _src, _num) asm { mov _dest, _src }
-//#define memcmp(_ptr1, _ptr2, _num) ( (_ptr1 == _ptr2) ? 0 : ( (_ptr1 > _ptr2) ? 1 : -1 ) )
-//void * memset ( void * ptr, byte value, size_t num ); // Fill block of memory (something like replace)
 
 
 #endif

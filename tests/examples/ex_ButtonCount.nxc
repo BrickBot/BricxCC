@@ -1,1 +1,6 @@
-value = ButtonCount(BTN1, true);
+#include "button.h"
+
+task main()
+{
+  int value = ButtonCount(BTN1, true);
+}

@@ -325,11 +325,11 @@ begin
   cboPort.Items.Clear;
   cboPort.Items.Add('Automatic');
   cboPort.Items.Add('Search');
-  if bt in [SU_RCX, SU_SCOUT, SU_RCX2, SU_NXT, SU_FOO] then
+  if bt in [SU_RCX, SU_SCOUT, SU_RCX2, SU_NXT, SU_EV3] then
     cboPort.Items.Add('usb');
   if bt = SU_NXT then
     LoadNXTPorts(cboPort.Items);
-  if not (bt in [SU_NXT, SU_FOO]) then
+  if not (bt in [SU_NXT, SU_EV3]) then
   begin
     for i := 1 to 8 do
       cboPort.Items.Add('COM'+IntToStr(i));

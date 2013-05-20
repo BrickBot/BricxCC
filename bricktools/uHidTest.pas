@@ -4,7 +4,7 @@ interface
 
 uses
   Windows, Messages, SysUtils, Variants, Classes, Graphics, Controls, Forms,
-  Dialogs, StdCtrls, hidapi;
+  Dialogs, StdCtrls, hidapi, HidApiDefs, uSpirit, EV3Spirit, brick_common;
 
 type
   TfrmHIDDevices = class(TForm)
@@ -23,7 +23,7 @@ type
   public
     { Public declarations }
     devices : PHidDeviceInfo;
-    connected_device : PHidDevice;
+    connected_device : PHidDeviceHandle;
     bConnected : boolean;
     procedure DoRescan;
     procedure UpdateControls;
@@ -36,13 +36,19 @@ implementation
 
 {$R *.dfm}
 
+uses
+  uCasperDevice, uPBRMiscTypes, uHidDeviceTransport;
+
 procedure TfrmHIDDevices.btnDisconnectClick(Sender: TObject);
 begin
 // disconnect
 	hid_close(connected_device);
 	connected_device := nil;
+
   bConnected := False;
+
   edtMessages.Lines.Add('Disconnected');
+
   UpdateControls;
 end;
 
@@ -58,16 +64,25 @@ begin
 	connected_device := hid_open_path(device_info^.path);
 
 	if not Assigned(connected_device) then
+
   begin
+
 		ShowMessage('Unable To Connect to Device');
+
 		Exit;
+
 	end;
+
 
 	hid_set_nonblocking(connected_device, 1);
 
+
 	tmpstr := Format('Connected to: %4.4x:%4.4x -', [device_info^.vendor_id, device_info^.product_id]);
+
 	tmpstr := tmpstr + ' ' + device_info^.manufacturer_string;
+
 	tmpstr := tmpstr + ' ' + device_info^.product_string;
+
   edtMessages.Lines.Add(tmpstr);
   bConnected := True;
   UpdateControls;
@@ -92,6 +107,7 @@ begin
 	if Assigned(connected_device) then
 		hid_close(connected_device);
 	hid_exit();
+
 end;
 
 procedure TfrmHIDDevices.DoRescan;

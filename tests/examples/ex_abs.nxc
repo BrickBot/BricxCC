@@ -1,1 +1,13 @@
-float val = abs(x); // return the absolute value of x
+#include "cmath.h"
+#include "cstdlib.h"
+#include "display.h"
+#include "command.h"
+
+task main()
+{
+  int x = Random();
+  float val = abs(x); // return the absolute value of x
+  NumOut(0, LCD_LINE1, x);
+  NumOut(0, LCD_LINE2, val);
+  Wait(SEC_5);
+}

@@ -1,1 +1,10 @@
-SetSensorHTMagnet(S1);
+task main()
+{
+  SetSensorHTMagnet(S1);
+  while (true)
+  {
+    ClearLine(LCD_LINE1);
+    NumOut(0, LCD_LINE1, SensorHTMagnet(S1));
+    Wait(MS_250);
+  }
+}

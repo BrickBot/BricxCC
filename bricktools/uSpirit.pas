@@ -74,6 +74,7 @@ type
   end;
 
   TNXTFileType = (nftProgram, nftGraphics, nftSound, nftData, nftOther, nftFirmware);
+  TEV3FileType = (eftProgram, eftGraphics, eftSound, eftData, eftOther, eftFirmware);
 
   TTransmitLevel = (tlNear, tlFar);
   TLSSource = (lsVariable, lsError, lsConstant);
@@ -458,6 +459,7 @@ type
   end;
 
 function NameToNXTFileType(name : string) : TNXTFileType;
+function NameToEV3FileType(name : string) : TEV3FileType;
 function MakeValidNXTFilename(const filename : string) : string;
 function GetInitFilename: string;
 function FantomAPIAvailable : boolean;
@@ -527,6 +529,20 @@ begin
     Result := nftGraphics
   else if (ext = '.rxe') or (ext = '.sys') or (ext = '.rtm') then
     Result := nftProgram
+end;
+
+function NameToEV3FileType(name : string) : TEV3FileType;
+var
+  ext : string;
+begin
+  Result := eftOther;
+  ext := AnsiLowercase(ExtractFileExt(name));
+  if (ext = '.rsf') then
+    Result := eftSound
+  else if (ext = '.rgf') then
+    Result := eftGraphics
+  else if (ext = '.rbf') then
+    Result := eftProgram
 end;
 
 function MakeValidNXTFilename(const filename : string) : string;

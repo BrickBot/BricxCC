@@ -1,1 +1,6 @@
-string name = BTDeviceName(0);
+#include "comm.h"
+
+task main()
+{
+  string name = BTDeviceName(0);
+}

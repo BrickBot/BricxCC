@@ -46,6 +46,7 @@ var
   SL : TStringList;
   filename : string;
   outputdir : string;
+  ext : string;
   i : integer;
 
 {$I wavrsocvt_preproc.inc}
@@ -53,6 +54,11 @@ var
 function UseCompression : boolean;
 begin
   Result := ParamSwitch('-c', false);
+end;
+
+function TargetRSF : boolean;
+begin
+  Result := UpperCase(ParamValue('-T', false)) = 'RSF';
 end;
 
 function SampleRate : Cardinal;
@@ -83,10 +89,11 @@ begin
   PrintVersion(COMPILATION_TIMESTAMP);
   WriteLn('Syntax: ' + progName + ' [options] filename [options]');
   WriteLn('');
-  Writeln('   -r=<rate> : output sample rate (wav->rso only)');
+  Writeln('   -r=<rate> : output sample rate (wav->rso/rsf only)');
   WriteLn('   -m=<method> : resample method (0|1|2=sinc 96%|90%|80%, 3=zoh, 4=linear)');
-  Writeln('   -c : use compression (wav->rso only)');
+  Writeln('   -c : use compression (wav->rso/rsf only)');
   Writeln('   -O=<path> : specify output directory');
+  Writeln('   -T=<rso|rsf> : specify output format (default = rso)');
   Writeln('   -help : display command line options');
 end;
 
@@ -95,11 +102,11 @@ begin
 {$IFDEF FPC}
   VerCompanyName      := 'JoCar Consulting';
   VerFileDescription  := '';
-  VerFileVersion      := '1.1.3.2';
+  VerFileVersion      := '1.1.3.3';
   VerInternalName     := 'wavrsocvt';
-  VerLegalCopyright   := 'Copyright (c) 2006-2009, John Hansen';
+  VerLegalCopyright   := 'Copyright (c) 2006-2013, John Hansen';
   VerOriginalFileName := 'wavrsocvt';
-  VerProductName      := 'WAV/RSO Converter';
+  VerProductName      := 'WAV/RSO/RSF Converter';
   VerProductVersion   := '1.1';
   VerComments         := '';
 {$ENDIF}
@@ -126,10 +133,16 @@ begin
   outputdir := GetOutputDir;
   SL := TStringList.Create;
   try
-    if LowerCase(ExtractFileExt(filename)) = '.rso' then
+    ext := LowerCase(ExtractFileExt(filename));
+    if (ext = '.rso') or (ext = '.rsf') then
       ConvertRSO2Wave(filename, outputdir, SL)
     else
-      ConvertWave2RSO(filename, outputdir, SampleRate, ResampleMethod, UseCompression, SL);
+    begin
+      ext := '.rso';
+      if TargetRSF then
+        ext := '.rsf';
+      ConvertWave2RSO(filename, outputdir, SampleRate, ResampleMethod, UseCompression, ext, SL);
+    end;
     for i := 0 to SL.Count - 1 do
       WriteLn(SL[i]);
   finally

@@ -1,1 +1,11 @@
-SetSensorHTGyro(S1);
+task main()
+{
+  int offset = 0;
+  SetSensorHTGyro(S1);
+  while (true)
+  {
+    ClearLine(LCD_LINE1);
+    NumOut(0, LCD_LINE1, SensorHTGyro(S1, offset));
+    Wait(MS_250);
+  }
+}

@@ -7,6 +7,7 @@ all:: realclean $(DOBJECTS) $(PROGRAMS)
 
 clean::
 	rm -f *.o *.ppu *.rst *.compiled *.dcu nbc_preproc.inc
+	rm -f ../*.o ../*.ppu ../*.rst ../bricktools/*.o ../bricktools/*.ppu
 
 realclean:: clean
 	rm -rf $(PROGRAMS) mkdata NBCCommonData.pas NXTDefsData.pas NXCDefsData.pas SPCDefsData.pas SPMemData.pas ./intel

@@ -3095,7 +3095,9 @@ begin
   CreateMainFormHighlighters;
   CreatePascalScriptComponents;
   CreateMiscSynEditComponents;
+{$IFNDEF FPC}
   Application.OnHelp := HandleOnHelp;
+{$ENDIF}
   CreateSpiritPlugins;
   pnlCodeExplorer.DockOrientation := doVertical;
   AppIsClosing := False;

@@ -1,6 +1,40 @@
+#include "command.h"
+#include "output.h"
+
 mutex motorMutex;
-// ...
-Acquire(motorMutex); // make sure we have exclusive access
-// use the motors
-Release(motorMutex);
+
+task task1()
+{
+  while(true)
+  {
+    // make sure we have exclusive access
+    Acquire(motorMutex);
+    // use the motors
+    OnRev(OUT_A, 20);
+    Wait(SEC_2);
+    Off(OUT_A);
+    // remove exclusive access
+    Release(motorMutex);
+    Wait(MS_700);
+  }
+}
+
+task main()
+{
+  start task1;
+  
+  while (true)
+  {
+    // ...
+    // make sure we have exclusive access
+    Acquire(motorMutex);
+    // use the motors
+    OnFwd(OUT_A, 50);
+    Wait(SEC_1);
+    Off(OUT_A);
+    // remove exclusive access
+    Release(motorMutex);
+    Wait(MS_500);
+  }
+}
 

@@ -1,1 +1,6 @@
-unsigned int rawRed = ColorSensorRaw(S1, INPUT_RED);
+#include "input.h"
+
+task main()
+{
+  unsigned int rawRed = ColorSensorRaw(S1, INPUT_RED);
+}

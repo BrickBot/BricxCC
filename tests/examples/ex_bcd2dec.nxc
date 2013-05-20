@@ -1,3 +1,9 @@
-// convert binary-coded decimal byte to decimal.
-byte dec = bcd2dec(0x3a);
+#include "cmath.h"
+
+task main()
+{
+  // convert binary-coded decimal byte to decimal.
+  byte dec = bcd2dec(0x3a);
+  dec--;
+}
 

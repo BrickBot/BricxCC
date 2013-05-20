@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2012-02-06
- * \version 10
+ * \date 2013-02-17
+ * \version 11
  */
 #ifndef NBCAPIDOCS_H
 #define NBCAPIDOCS_H
@@ -31,7 +31,7 @@
 /** @mainpage NBC Programmer's Guide
  * \brief
  * 
- * <h2><center>October 10, 2011</center></h2>
+ * <h2><center>February 17, 2013</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro

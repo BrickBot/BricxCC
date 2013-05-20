@@ -1,3 +1,6 @@
+#include "cmath.h"
+#include "display.h"
+
 // ex_acosd.nxc
 // Display values of the acosd API call.
 // This program runs indefinitely -- press gray button to exit.

@@ -1,1 +1,6 @@
-CoastEx(OUT_A, RESET_NONE); // coast output A
+#include "output.h"
+
+task main()
+{
+  CoastEx(OUT_A, RESET_NONE); // coast output A
+}

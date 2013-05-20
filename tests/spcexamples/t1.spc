@@ -1,5 +1,3 @@
-#include "spmem.h"
-
 #pragma autostart
 
 task t1()
@@ -7,7 +5,7 @@ task t1()
   while(true)
   {
     puts("1 ");
-    Wait(500);
+    Wait(MS_500);
   }
 }
 
@@ -16,7 +14,7 @@ task t2()
   while(true)
   {
     puts("2 ");
-    Wait(500);
+    Wait(MS_500);
   }
 }
 

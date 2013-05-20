@@ -1,1 +1,6 @@
-byte status = BTDeviceStatus(1);
+#include "comm.h"
+
+task main()
+{
+  byte status = BTDeviceStatus(1);
+}

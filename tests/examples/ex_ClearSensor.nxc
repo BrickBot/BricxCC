@@ -1,1 +1,6 @@
-ClearSensor(S1);
+#include "input.h"
+
+task main()
+{
+  ClearSensor(S1);
+}

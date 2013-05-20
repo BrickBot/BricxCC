@@ -1,1 +1,6 @@
-value = ButtonLongPressCount(BTN1);
+#include "button.h"
+
+task main()
+{
+  int value = ButtonLongPressCount(BTN1);
+}

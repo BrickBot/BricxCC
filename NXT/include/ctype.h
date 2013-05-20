@@ -16,14 +16,14 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-02-21
+ * \version 2
  */
 
 #ifndef CTYPE_H
@@ -33,11 +33,15 @@
 ///////////////////////////////// ctype API ///////////////////////////////////
 ///////////////////////////////////////////////////////////////////////////////
 
+/** @addtogroup StandardCAPIFunctions
+ * @{
+ */
 
 /** @defgroup ctypeAPI ctype API
  * Standard C ctype API functions.
  * @{
  */
+
 /**
  * Check if character is uppercase letter.
  * Checks if parameter c is an uppercase alphabetic letter.
@@ -177,5 +181,7 @@ inline int tolower(int c) { if (isupper(c)) c += 32; return c; }
 
 
 /** @} */ // end of ctypeAPI group
+
+/** @} */ // end of StandardCAPIFunctions group
 
 #endif // CTYPE_H

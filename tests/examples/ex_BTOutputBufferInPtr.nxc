@@ -1,1 +1,6 @@
-byte x = BTOutputBufferInPtr();
+#include "comm.h"
+
+task main()
+{
+  byte x = BTOutputBufferInPtr();
+}

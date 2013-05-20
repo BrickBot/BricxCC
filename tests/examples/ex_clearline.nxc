@@ -1,3 +1,6 @@
+#include "display.h"
+#include "command.h"
+
 task main()
 {
   TextOut(0, LCD_LINE1, "testing 1234567890");

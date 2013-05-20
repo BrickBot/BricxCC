@@ -16,18 +16,24 @@
  * under the License.
  *
  * The Initial Developer of this code is John Hansen.
- * Portions created by John Hansen are Copyright (C) 2009-2010 John Hansen.
+ * Portions created by John Hansen are Copyright (C) 2009-2013 John Hansen.
  * All Rights Reserved.
  *
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2011-03-17
- * \version 1
+ * \date 2013-03-03
+ * \version 3
  */
 
 #ifndef LOADER_H
 #define LOADER_H
+
+#include "loader_constants.h"
+
+#ifndef __DOXYGEN_DOCS
+asm { asminclude "nbc_loader.h" }
+#endif
 
 ///////////////////////////////////////////////////////////////////////////////
 //////////////////////////////// LOADER MODULE ////////////////////////////////
@@ -37,7 +43,6 @@
 /** @addtogroup NXTFirmwareModules
  * @{
  */
-
 /** @addtogroup LoaderModule
  * @{
  */
@@ -482,6 +487,16 @@ inline unsigned int FindNextFile(string & fname, byte & handle);
 inline unsigned int SizeOf(variant & value);
 
 /**
+ * Return the type of a variable.
+ * Return the type of the variable passed into the function.
+ * See \ref VariableTypeConstants for a list of possible return values.
+ *
+ * \param value The variable.
+ * \return The variable type.
+ */
+inline unsigned int TypeOf(variant & value);
+
+/**
  * Read a value from a file.
  * Read a value from the file associated with the specified handle.
  * The handle parameter must be a variable. The value parameter must be a
@@ -857,6 +872,7 @@ inline void SysListFiles(ListFilesType & args);
 #endif
 
 #define SizeOf(_n) asm { __sizeOF(_n, __RETVAL__) }
+#define TypeOf(_n) asm { set __RETVAL__, typeof(_n) }
 #define Read(_handle, _n) asm { __readValue(_handle, _n, __RETVAL__) }
 #define ReadLn(_handle, _n) asm { __readLnValue(_handle, _n, __RETVAL__) }
 #define ReadBytes(_handle, _len, _buf) asm { __readBytes(_handle, _len, _buf, __RETVAL__) }
@@ -957,6 +973,7 @@ inline void SysListFiles(ListFilesType & args);
 
 /** @} */ // end of LoaderModuleFunctions group
 /** @} */ // end of LoaderModule group
+
 /** @} */ // end of NXTFirmwareModules group
 
 #endif // LOADER_H

@@ -462,7 +462,6 @@ type
     function  IsParam(n: string): boolean;
     function  ParamIdx(n: string): integer;
     function AllocateHelper(aName, tname : string; dt: char; cnt : integer = 1) : integer;
-    function  AlreadyDecorated(n : string) : boolean;
     function  GetDecoratedValue: string;
     function  GetDecoratedIdent(const val: string): string;
     procedure PopCmpHelper(const cc : TCompareCode);
@@ -513,7 +512,7 @@ type
     procedure CheckForTypedef(var bConst, bStatic, bInline : boolean);
     function  IsUserDefinedType(const name : string) : boolean;
     function  DataTypeOfDataspaceEntry(DE : TDataspaceEntry) : char;
-    procedure LoadSystemFile(S : TStream);
+    procedure LoadSourceStream(Src, Dest : TStream);
     procedure CheckForMain;
     function ProcessArrayDimensions(var lenexpr : string) : string;
     procedure CheckForCast;
@@ -1160,32 +1159,6 @@ begin
     Result := fGlobals[i].TypeName;
 end;
 
-function TSPCComp.AlreadyDecorated(n: string): boolean;
-var
-  i : integer;
-  tmp : string;
-begin
-  // a variable is considered to be already decorated if it
-  // starts with "__" followed by a task name followed by DECOR_SEP
-  // OR it starts with "__signed_stack_"
-  // OR it starts with %%CALLER%%_
-  Result := False;
-  i := Pos('__', n);
-  if i = 1 then
-  begin
-    System.Delete(n, 1, 2); // remove the '__' at the beginning
-    Result := Pos('%%CALLER%%_', n) = 1;
-    if Result then Exit;
-    i := Pos(DECOR_SEP, n);
-    if i > 1 then
-    begin
-      tmp := Copy(n, 1, i-1);
-      i := fThreadNames.IndexOf(tmp);
-      Result := (i <> -1) or (tmp = 'signed_stack');
-    end;
-  end;
-end;
-
 function TSPCComp.IsOldParam(n: string): boolean;
 begin
   Result := ParamIdx(RootOf(n)) <> -1{0};
@@ -1252,7 +1225,7 @@ end;
 function TSPCComp.ParamIdx(n: string): integer;
 begin
   n := RootOf(n);
-  if AlreadyDecorated(n) then
+  if AlreadyDecorated(n, fThreadNames) then
     Result := fParams.IndexOfName(n)
   else
     Result := fParams.IndexOfName(ApplyDecoration(fCurrentThreadName, n, 0));
@@ -1316,7 +1289,7 @@ var
   i : integer;
 begin
   n := RootOf(n);
-  if AlreadyDecorated(n) then
+  if AlreadyDecorated(n, fThreadNames) then
     Result := fLocals.IndexOfName(n)
   else
   begin
@@ -2287,7 +2260,7 @@ var
   i : integer;
 begin
   Result := val;
-  if not AlreadyDecorated(val) then
+  if not AlreadyDecorated(val, fThreadNames) then
   begin
     case WhatIs(val) of
       stParam :
@@ -3429,9 +3402,10 @@ end;
 
 procedure TSPCComp.OffsetArrayPointer(const ArrayType : string; const aPointer: string);
 var
-  DE, sub : TDataspaceEntry;
+  DE : TDataspaceEntry;
 //  i : integer;
 //  offset : integer;
+  dsType : TDSType;
 begin
   // TODO: finish implementing this code.
   // recursively offset this pointer by array index, etc...
@@ -3440,11 +3414,15 @@ begin
   if Assigned(DE) then
   begin
     // the array's data type is stored in its first and only sub entry
-    sub := DE.SubEntries[0];
-    // this code is just to quiet compiler hints
-    if sub.DataType = dsArray then
+    if DE.SubEntries.Count > 0 then
+    begin
+      dsType := DE.SubEntries[0].DataType;
+    end
+    else
+      dsType := dsSLong;
+
+    if dsType = dsArray then
       ;
-    // end of code to quiet compiler hints
 
 //    DoAddImmediate(aPointer, offset);
     Next; // move past ']'
@@ -5289,20 +5267,22 @@ begin
 end;
 
 procedure TSPCComp.Parse(aStrings: TStrings);
+var
+  Stream : TMemoryStream;
 begin
-  Clear;
-  if not IgnoreSystemFile then
-    LoadSystemFile(fMS);
-  aStrings.SaveToStream(fMS);
-  InternalParseStream;
+  Stream := TMemoryStream.Create;
+  try
+    aStrings.SaveToStream(Stream);
+    Parse(Stream);
+  finally
+    Stream.Free;
+  end;
 end;
 
 procedure TSPCComp.Parse(aStream: TStream);
 begin
   Clear;
-  if not IgnoreSystemFile then
-    LoadSystemFile(fMS);
-  fMS.CopyFrom(aStream, 0);
+  LoadSourceStream(aStream, fMS);
   InternalParseStream;
 end;
 
@@ -5310,16 +5290,12 @@ procedure TSPCComp.Parse(const aFilename: string);
 var
   Stream : TFileStream;
 begin
-  Clear;
-  if not IgnoreSystemFile then
-    LoadSystemFile(fMS);
   Stream := TFileStream.Create(aFilename, fmOpenRead or fmShareDenyWrite);
   try
-    fMS.CopyFrom(Stream, 0);
+    Parse(Stream);
   finally
     Stream.Free;
   end;
-  InternalParseStream;
 end;
 
 procedure TSPCComp.ParseASM(aStrings: TStrings);
@@ -5858,7 +5834,7 @@ begin
     // this is a special preprocessor line
     tmpLine := fDirLine;
     Delete(tmpLine, 1, 8);
-    // could be 'macro nnn', 'safecalling', 'autostart'
+    // 'autostart'
     if tmpLine = 'autostart' then
       fAutoStart := True;
   end;
@@ -6229,7 +6205,8 @@ begin
       iEnumVal := StrToIntDef(Value, 0);
       Next; // skip past the value to comma or }
     end;
-    dt := ValueToDataType(iEnumVal);
+//    SPC only has one integer type (signed long)
+//    dt := ValueToDataType(iEnumVal);
     V := nil;
     if bGlobal then
     begin
@@ -6663,18 +6640,45 @@ begin
   end;
 end;
 
-procedure TSPCComp.LoadSystemFile(S : TStream);
+procedure TSPCComp.LoadSourceStream(Src, Dest : TStream);
 var
   tmp : string;
+  tmpStream : TMemoryStream;
+  bSPMemReplaced, bSPCDefsReplaced : boolean;
 begin
-  // load fMS with the contents of spmem.h followed by SPCDefs.h
-  tmp := '#line 0 "SPCDefs.h"'#13#10;
-  S.Write(PChar(tmp)^, Length(tmp));
+  bSPMemReplaced := False;
+  bSPCDefsReplaced := False;
+  // Src is the input source code stream
+  // Dest is the output source code stream
+  if not IgnoreSystemFile then
+  begin
+    // look for #include "spmem.h" and #include "SPCDefs.h"
+    tmpStream := TMemoryStream.Create;
+    try
 
-  S.Write(spmem_data, High(spmem_data)+1);
-  S.Write(spc_defs_data, High(spc_defs_data)+1);
-  tmp := '#reset'#13#10;
-  S.Write(PChar(tmp)^, Length(tmp));
+      if not bSPMemReplaced then
+      begin
+        // load destination stream with the contents of spmem.h followed by SPCDefs.h
+        tmp := '#line 0 "spmem.h"'#13#10;
+        tmpStream.Write(PChar(tmp)^, Length(tmp));
+        tmpStream.Write(spmem_data, High(spmem_data)+1);
+        tmp := '#reset'#13#10;
+        tmpStream.Write(PChar(tmp)^, Length(tmp));
+      end;
+      if not bSPCDefsReplaced then
+      begin
+        tmp := '#line 0 "SPCDefs.h"'#13#10;
+        tmpStream.Write(PChar(tmp)^, Length(tmp));
+        tmpStream.Write(spc_defs_data, High(spc_defs_data)+1);
+        tmp := '#reset'#13#10;
+        tmpStream.Write(PChar(tmp)^, Length(tmp));
+      end;
+      Dest.CopyFrom(tmpStream, 0);
+    finally
+      tmpStream.Free;
+    end;
+  end;
+  Dest.CopyFrom(Src, 0);
 end;
 
 procedure TSPCComp.CheckSemicolon;
@@ -6980,6 +6984,16 @@ begin
     Value := TempSignedLongName
   else if Value = '__RETVAL__' then
     Value := RegisterName
+  else if Value = '__LINE__' then
+    Value := IntToStr(linenumber)
+  else if Value = '__FILE__' then
+    Value := Format('"%s"', [CurrentFile])
+  else if Value = '__FUNCTION__' then
+    Value := Format('"%s"', [fCurrentThreadName])
+  else if Value = '__DATE__' then
+    Value := FormatDateTime('"mmm dd yyyy"', Date)
+  else if Value = '__TIME__' then
+    Value := FormatDateTime('"hh:nn:ss"', Now)
   else if Value = 'false' then
   begin
     Value := '0';

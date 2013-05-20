@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNBCHTMLTopicsSize = 2756;
+  uNBCHTMLTopicsSize = 2848;
   uNBCHTMLTopicsData: array[0..uNBCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -35,6 +35,110 @@ const
     (
      Name: 'RC_PROP_DEBUGGING';
      Value: 'group___r_c_property_constants_gaf1bc14447737f83e98c387eae9095457.html'
+    ),
+    (
+     Name: 'VT_UBYTE';
+     Value: 'group___variable_type_constants_ga07fbd6c358ad2ec6088bb59d66f081d1.html'
+    ),
+    (
+     Name: 'VT_SBYTE';
+     Value: 'group___variable_type_constants_ga9724b49f41c6233fc8185001e1792ca2.html'
+    ),
+    (
+     Name: 'VT_UWORD';
+     Value: 'group___variable_type_constants_gaf7743ed8bf0673590c888fa104c32460.html'
+    ),
+    (
+     Name: 'VT_SWORD';
+     Value: 'group___variable_type_constants_gabb6c3b7c8f0275757bfee3675da07a1c.html'
+    ),
+    (
+     Name: 'VT_ULONG';
+     Value: 'group___variable_type_constants_gabcdb3857532ded2c27f7cca26e29ecc7.html'
+    ),
+    (
+     Name: 'VT_SLONG';
+     Value: 'group___variable_type_constants_ga98b86e73f8f3c56cb37f960968c57c0a.html'
+    ),
+    (
+     Name: 'VT_STRUCT';
+     Value: 'group___variable_type_constants_gaa572458a84e672f2975690c9eb22dde4.html'
+    ),
+    (
+     Name: 'VT_MUTEX';
+     Value: 'group___variable_type_constants_ga0a11ae737fe81a9e794dd3a89954cf63.html'
+    ),
+    (
+     Name: 'VT_FLOAT';
+     Value: 'group___variable_type_constants_ga8ea40dbaf6ddc79132c4c71ebac5d977.html'
+    ),
+    (
+     Name: 'VT_A1_UBYTE';
+     Value: 'group___variable_type_constants_ga98815c67cea4d273daad62b08e07d3b4.html'
+    ),
+    (
+     Name: 'VT_A1_SBYTE';
+     Value: 'group___variable_type_constants_ga71e1f11dab6280734da86fb8799bdce8.html'
+    ),
+    (
+     Name: 'VT_A1_UWORD';
+     Value: 'group___variable_type_constants_gaa75f70689872778f04a65ac2ec983872.html'
+    ),
+    (
+     Name: 'VT_A1_SWORD';
+     Value: 'group___variable_type_constants_ga3eec78763b36b9f1a06dd79e749d3948.html'
+    ),
+    (
+     Name: 'VT_A1_ULONG';
+     Value: 'group___variable_type_constants_ga81de341ab9a93dc1c6d3c173b7ce263a.html'
+    ),
+    (
+     Name: 'VT_A1_SLONG';
+     Value: 'group___variable_type_constants_ga5923f3d3b43df5df495f6c3f4e71bf6e.html'
+    ),
+    (
+     Name: 'VT_A1_STRUCT';
+     Value: 'group___variable_type_constants_gaf91d2298551d7d3968de54f1806b7275.html'
+    ),
+    (
+     Name: 'VT_A1_FLOAT';
+     Value: 'group___variable_type_constants_gac5fdea10a0ce175270cac8f44295cc99.html'
+    ),
+    (
+     Name: 'VT_A2_UBYTE';
+     Value: 'group___variable_type_constants_ga762c5626b5547f5183e80e2a70d736ed.html'
+    ),
+    (
+     Name: 'VT_A2_SBYTE';
+     Value: 'group___variable_type_constants_gaba3371f4d59ca70d3ace366df074a651.html'
+    ),
+    (
+     Name: 'VT_A2_UWORD';
+     Value: 'group___variable_type_constants_gaee8870d76f68df2e681f5105fd55ff0b.html'
+    ),
+    (
+     Name: 'VT_A2_SWORD';
+     Value: 'group___variable_type_constants_gafb8cfb37aa929ccdf298773d43b43e81.html'
+    ),
+    (
+     Name: 'VT_A2_ULONG';
+     Value: 'group___variable_type_constants_gadb01f6e314e06eef6f48b5d88b1d9a54.html'
+    ),
+    (
+     Name: 'VT_A2_SLONG';
+     Value: 'group___variable_type_constants_gabc97ff7632dfa095cc53c26d92f1c64c.html'
+    ),
+    (
+     Name: 'VT_A2_STRUCT';
+     Value: 'group___variable_type_constants_gada0eec89083f961ae59c892a39da48c2.html'
+    ),
+    (
+     Name: 'VT_A2_FLOAT';
+     Value: 'group___variable_type_constants_ga4c77c7aae94192fac17d243c925912c0.html'
+    ),
+    (
+     Name: 'VT_ARRAY_MASK';
+     Value: 'group___variable_type_constants_gaf4bedaa528582cc7a00c105c875a8281.html'
     ),
     (
      Name: 'OPARR_SUM';
@@ -579,6 +683,26 @@ const
     (
      Name: 'MIN_1';
      Value: 'group___time_constants_ga4dc6c3c69ab80e7958c48cb67da66192.html'
+    ),
+    (
+     Name: 'NOTE_WHOLE';
+     Value: 'group___time_constants_ga026ca06d3aa464fd03d1e79c31fc27a0.html'
+    ),
+    (
+     Name: 'NOTE_HALF';
+     Value: 'group___time_constants_ga478fd9f6972e9c741659448c09c6d4e4.html'
+    ),
+    (
+     Name: 'NOTE_QUARTER';
+     Value: 'group___time_constants_ga2420071a12d80f8612212138554d930a.html'
+    ),
+    (
+     Name: 'NOTE_EIGHT';
+     Value: 'group___time_constants_gacb6abcc1741d02dbd9e0cd2854325587.html'
+    ),
+    (
+     Name: 'NOTE_SIXTEEN';
+     Value: 'group___time_constants_ga6316935b2127734cb2c9e4181944ebe8.html'
     ),
     (
      Name: 'MAILBOX1';
@@ -1311,6 +1435,42 @@ const
     (
      Name: 'SAMPLERATE_MAX';
      Value: 'group___sound_misc_gaed8e727e6d441332ca24f89687a76575.html'
+    ),
+    (
+     Name: 'TONE_C3';
+     Value: 'group___tone_constants_gaa3a1a60fb55dc3bbe88335489456edfb.html'
+    ),
+    (
+     Name: 'TONE_CS3';
+     Value: 'group___tone_constants_gaf36cc9d24bfe7b1dfee93223ddc9474a.html'
+    ),
+    (
+     Name: 'TONE_D3';
+     Value: 'group___tone_constants_gae40af7668ef1124afdc99617f438b3dc.html'
+    ),
+    (
+     Name: 'TONE_DS3';
+     Value: 'group___tone_constants_gac6d2faf99195f6cf963edf0e856d7c2c.html'
+    ),
+    (
+     Name: 'TONE_E3';
+     Value: 'group___tone_constants_ga1d60af8af4e20a60da613749342e8e11.html'
+    ),
+    (
+     Name: 'TONE_F3';
+     Value: 'group___tone_constants_ga9e56d90fc06dcafd2fe72ef32db74dde.html'
+    ),
+    (
+     Name: 'TONE_FS3';
+     Value: 'group___tone_constants_ga637441ee62c39cd62b0d3707aeebec39.html'
+    ),
+    (
+     Name: 'TONE_G3';
+     Value: 'group___tone_constants_ga0bb8299f0666948823b1a79ba2036d9f.html'
+    ),
+    (
+     Name: 'TONE_GS3';
+     Value: 'group___tone_constants_gac23a27c39caef5e2506f7e301ec05284.html'
     ),
     (
      Name: 'TONE_A3';
@@ -2997,6 +3157,14 @@ const
      Value: 'group___display_draw_option_constants_ga83c7d7e89e00d814ef7ad101d63ee1a7.html'
     ),
     (
+     Name: 'DRAW_OPT_CLEAR_LINE';
+     Value: 'group___display_draw_option_constants_gadeca1c98bb9afb2a129517f1a89a2b82.html'
+    ),
+    (
+     Name: 'DRAW_OPT_CLEAR_EOL';
+     Value: 'group___display_draw_option_constants_ga20f6c5ac6a0e79f7f419ff136cb86c5e.html'
+    ),
+    (
      Name: 'DRAW_OPT_FONT_DIRECTIONS';
      Value: 'group___display_font_draw_option_constants_gac50e4fb8be486c5ac2caa2523f2faa2f.html'
     ),
@@ -3391,6 +3559,170 @@ const
     (
      Name: 'BT_DEFAULT_INQUIRY_TIMEOUT_LO';
      Value: 'group___comm_misc_constants_ga90ab712c66ab0903f5f66f7b867ab92d.html'
+    ),
+    (
+     Name: 'JOY_BTN_01';
+     Value: 'group___comm_joystick_constants_gae9b4c0e056134e79fbfd571e2fec31f3.html'
+    ),
+    (
+     Name: 'JOY_BTN_02';
+     Value: 'group___comm_joystick_constants_ga8e92b49c506ea3e3f142ed5e10dbb9f4.html'
+    ),
+    (
+     Name: 'JOY_BTN_03';
+     Value: 'group___comm_joystick_constants_ga5968ebb8712a5b988b86f97c916de679.html'
+    ),
+    (
+     Name: 'JOY_BTN_04';
+     Value: 'group___comm_joystick_constants_ga96017c36ed3072f76d2c394a7787c8e1.html'
+    ),
+    (
+     Name: 'JOY_BTN_05';
+     Value: 'group___comm_joystick_constants_ga1f4ea105d6cd03b78edf53cec7063ccd.html'
+    ),
+    (
+     Name: 'JOY_BTN_06';
+     Value: 'group___comm_joystick_constants_ga4cea2dadaa409b23dc3cea82bfc7091b.html'
+    ),
+    (
+     Name: 'JOY_BTN_07';
+     Value: 'group___comm_joystick_constants_ga95f7fb17f3bd65c8644acbd950deb257.html'
+    ),
+    (
+     Name: 'JOY_BTN_08';
+     Value: 'group___comm_joystick_constants_ga24c8cf560d80a06e91aa9e08c28d5f81.html'
+    ),
+    (
+     Name: 'JOY_BTN_09';
+     Value: 'group___comm_joystick_constants_ga5d778dc8567b133a09b2f394754ce7de.html'
+    ),
+    (
+     Name: 'JOY_BTN_10';
+     Value: 'group___comm_joystick_constants_gad160ceffc52dd33a6a14c6dce75edae6.html'
+    ),
+    (
+     Name: 'JOY_BTN_11';
+     Value: 'group___comm_joystick_constants_ga06104808cc5bc2c50ad907c01d835b15.html'
+    ),
+    (
+     Name: 'JOY_BTN_12';
+     Value: 'group___comm_joystick_constants_ga04c8ef3f7da7baf33bcced950d023989.html'
+    ),
+    (
+     Name: 'JOY_BTN_13';
+     Value: 'group___comm_joystick_constants_ga49183fbaefe7425c3f22e6de595d2bb2.html'
+    ),
+    (
+     Name: 'JOY_BTN_14';
+     Value: 'group___comm_joystick_constants_ga455f4dd11a376f23996b66ea0938b4d0.html'
+    ),
+    (
+     Name: 'JOY_BTN_15';
+     Value: 'group___comm_joystick_constants_ga0228ece4bf398378eb8976a66e90a0ee.html'
+    ),
+    (
+     Name: 'JOY_BTN_16';
+     Value: 'group___comm_joystick_constants_ga2b46ce34b4a2b31060fbef9f6fd4ebe8.html'
+    ),
+    (
+     Name: 'JOY_BTN_17';
+     Value: 'group___comm_joystick_constants_ga5a4f2c829af2ed8bc91412a160960b9e.html'
+    ),
+    (
+     Name: 'JOY_BTN_18';
+     Value: 'group___comm_joystick_constants_ga859eb4e1904207cdfdbc7230610ccf3c.html'
+    ),
+    (
+     Name: 'JOY_BTN_19';
+     Value: 'group___comm_joystick_constants_ga5301b222285f1d16d6a3bf5d9143aeaf.html'
+    ),
+    (
+     Name: 'JOY_BTN_20';
+     Value: 'group___comm_joystick_constants_gae7d94a26a09fa32d82c4be074b0c96e7.html'
+    ),
+    (
+     Name: 'JOY_BTN_21';
+     Value: 'group___comm_joystick_constants_ga18437bef8788616a7b096adc41b69b04.html'
+    ),
+    (
+     Name: 'JOY_BTN_22';
+     Value: 'group___comm_joystick_constants_gaab6982ae435c17e24d986a729f844086.html'
+    ),
+    (
+     Name: 'JOY_BTN_23';
+     Value: 'group___comm_joystick_constants_ga720d47fca9d1b7035a265b827121a280.html'
+    ),
+    (
+     Name: 'JOY_BTN_24';
+     Value: 'group___comm_joystick_constants_gaa18e594a04a88b383ce5d0c2ba97e84f.html'
+    ),
+    (
+     Name: 'JOY_BTN_25';
+     Value: 'group___comm_joystick_constants_ga49d501870741c381106eda031c189dcc.html'
+    ),
+    (
+     Name: 'JOY_BTN_26';
+     Value: 'group___comm_joystick_constants_gaaec83e375606711fda476c8e1ecd8caa.html'
+    ),
+    (
+     Name: 'JOY_BTN_27';
+     Value: 'group___comm_joystick_constants_gaffda36e9af1f5fd07750de78ebc98050.html'
+    ),
+    (
+     Name: 'JOY_BTN_28';
+     Value: 'group___comm_joystick_constants_ga1af4c133460f4db11fe9a2ae3fe179ad.html'
+    ),
+    (
+     Name: 'JOY_BTN_29';
+     Value: 'group___comm_joystick_constants_ga991830317508e8fe94e512ee861dab8a.html'
+    ),
+    (
+     Name: 'JOY_BTN_30';
+     Value: 'group___comm_joystick_constants_gad08538ecd66521d6066dfc0786f6689b.html'
+    ),
+    (
+     Name: 'JOY_BTN_31';
+     Value: 'group___comm_joystick_constants_ga2cd1d3a9fe02074001011c11da3d1619.html'
+    ),
+    (
+     Name: 'JOY_BTN_32';
+     Value: 'group___comm_joystick_constants_ga22c114ed8b7dd3bc0856b4fec8fe4bc6.html'
+    ),
+    (
+     Name: 'JOY_POV_FORWARD';
+     Value: 'group___comm_joystick_constants_ga1c4111caf880cd22ff47a8dcf1e27d18.html'
+    ),
+    (
+     Name: 'JOY_POV_TOPRIGHT';
+     Value: 'group___comm_joystick_constants_gade0cbc064eba84b69ac82fa61603d9b7.html'
+    ),
+    (
+     Name: 'JOY_POV_RIGHT';
+     Value: 'group___comm_joystick_constants_gacdc1bff64e6d5c126f6db804719fdd90.html'
+    ),
+    (
+     Name: 'JOY_POV_BOTRIGHT';
+     Value: 'group___comm_joystick_constants_gaeb607aa74a2e23a30892104087eb025e.html'
+    ),
+    (
+     Name: 'JOY_POV_BACKWARD';
+     Value: 'group___comm_joystick_constants_ga1fa968feadbc529f96f477f501177668.html'
+    ),
+    (
+     Name: 'JOY_POV_BOTLEFT';
+     Value: 'group___comm_joystick_constants_ga3f8bbc65d2b9d03c83508c68d8f93423.html'
+    ),
+    (
+     Name: 'JOY_POV_LEFT';
+     Value: 'group___comm_joystick_constants_gac279db39a6a74564654f9abe79f06f62.html'
+    ),
+    (
+     Name: 'JOY_POV_TOPLEFT';
+     Value: 'group___comm_joystick_constants_gae4a6c2be5972004a70a3ef89b47a8c58.html'
+    ),
+    (
+     Name: 'JOY_POV_CENTERED';
+     Value: 'group___comm_joystick_constants_ga0aab67c91d82d0337b6ae9ce8472ad23.html'
     ),
     (
      Name: 'BT_ARM_OFF';
@@ -5185,6 +5517,10 @@ const
      Value: 'group___hi_technic_constants_ga25ada2f08ed58ce7b015891d7fdbdb38.html'
     ),
     (
+     Name: 'HT_ADDR_PIR';
+     Value: 'group___hi_technic_constants_gae992e969bcf26432a558123d893236f5.html'
+    ),
+    (
      Name: 'HTIR2_MODE_1200';
      Value: 'group___h_t_i_r_seeker2_constants_ga3ec2348617d3fae0aadb1eef110f7e2f.html'
     ),
@@ -5717,6 +6053,10 @@ const
      Value: 'group___dac_mode_constants_gacbeee81c0ec345769f54766a91048b58.html'
     ),
     (
+     Name: 'DAC_MODE_RESTART_MASK';
+     Value: 'group___dac_mode_constants_ga8d54dd31198da04144951a9af44684b4.html'
+    ),
+    (
      Name: 'DIGI_PIN0';
      Value: 'group___digital_pin_constants_ga9060e318451b503ccd4833fbba74d98a.html'
     ),
@@ -5771,6 +6111,14 @@ const
     (
      Name: 'STROBE_WRITE';
      Value: 'group___strobe_ctrl_constants_ga5f18be7419d2992898e1d596a9d75356.html'
+    ),
+    (
+     Name: 'HTPIR_REG_DEADBAND';
+     Value: 'group___h_t_p_i_r_constants_ga4b17d8b4ebf7854c903d2c8b3fa90982.html'
+    ),
+    (
+     Name: 'HTPIR_REG_READING';
+     Value: 'group___h_t_p_i_r_constants_ga07d02519258db807e0ffcf550877da0c.html'
     ),
     (
      Name: 'MS_CMD_ENERGIZED';
@@ -8302,7 +8650,7 @@ const
     ),
     (
      Name: 'PlayFileEx';
-     Value: 'group___sound_module_functions_gaa6955e11e950dbdea51cc7a79c6a4bb1.html'
+     Value: 'group___sound_module_functions_ga222654d19d8b6627a9738fc98b67d9a4.html'
     ),
     (
      Name: 'GetSoundState';
@@ -8435,6 +8783,10 @@ const
     (
      Name: 'SetCommModuleBytes';
      Value: 'group___command_module_functions_gaf32e281e72bd986d8a74da4e00a74bda.html'
+    ),
+    (
+     Name: 'SetSoundModuleBytes';
+     Value: 'group___command_module_functions_ga24ecd228be4d352f0262190cbed7ecf1.html'
     ),
     (
      Name: 'GetIOMapBytes';
@@ -9461,6 +9813,14 @@ const
      Value: 'group___hi_technic_a_p_i_ga2774835ed1a4bf860e2e404621f54526.html'
     ),
     (
+     Name: 'SetSensorHTForce';
+     Value: 'group___hi_technic_a_p_i_ga2f26f6ca3f7cf663e44c1dca55d33ed7.html'
+    ),
+    (
+     Name: 'ReadSensorHTForce';
+     Value: 'group___hi_technic_a_p_i_gaf3c82f398e84a6a9662c391b494ec9aa.html'
+    ),
+    (
      Name: 'ReadSensorHTTouchMultiplexer';
      Value: 'group___hi_technic_a_p_i_ga1048d30de64a8ec04b7279877d9fd916.html'
     ),
@@ -9963,6 +10323,14 @@ const
     (
      Name: 'ReadSensorHTSuperProProgramControl';
      Value: 'group___hi_technic_a_p_i_ga0073ba52a1f424dc931298dff067ecc2.html'
+    ),
+    (
+     Name: 'SetSensorHTPIRDeadband';
+     Value: 'group___hi_technic_a_p_i_ga4b3cdef6c1843184b54e494c7e3a2c66.html'
+    ),
+    (
+     Name: 'ReadSensorHTPIR';
+     Value: 'group___hi_technic_a_p_i_ga074d8c0c0244a4f48f45864a22d5cdde.html'
     ),
     (
      Name: 'ReadSensorMSCompass';

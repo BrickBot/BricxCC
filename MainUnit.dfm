@@ -423,16 +423,16 @@ object MainForm: TMainForm
     end
     object actToolsPiano: TAction
       Category = 'Tools'
-      Caption = 'Brick &Piano'
+      Caption = '&Piano'
       HelpContext = 15
-      Hint = 'Brick piano'
+      Hint = 'Piano'
       OnExecute = actToolsPianoExecute
     end
     object actToolsJoystick: TAction
       Category = 'Tools'
-      Caption = 'Brick &Joystick'
+      Caption = '&Joystick'
       HelpContext = 16
-      Hint = 'Brick joystick'
+      Hint = 'Joystick'
       OnExecute = actToolsJoystickExecute
     end
     object actToolsRemote: TAction
@@ -565,8 +565,8 @@ object MainForm: TMainForm
     end
     object actToolsNXTExplorer: TAction
       Category = 'Tools'
-      Caption = 'N&XT Explorer'
-      Hint = 'NXT Explorer'
+      Caption = 'E&xplorer'
+      Hint = 'Explorer'
       OnExecute = actToolsNXTExplorerExecute
     end
     object actToolsWav2Rso: TAction
@@ -690,7 +690,8 @@ object MainForm: TMainForm
     end
     object actToolsNXTWatchList: TAction
       Category = 'Tools'
-      Caption = 'NXT Watch List'
+      Caption = 'Watch List'
+      Hint = 'Watch list'
       OnExecute = actToolsNXTWatchListExecute
     end
     object actHelpSPCGuidePDF: TAction
@@ -701,6 +702,7 @@ object MainForm: TMainForm
     object actToolsSimpleTerm: TAction
       Category = 'Tools'
       Caption = 'Simple Terminal'
+      Hint = 'Simple terminal'
       OnExecute = actToolsSimpleTermExecute
     end
   end

@@ -1,1 +1,14 @@
-abort(); // stop the program
+#include "cstdlib.h"
+#include "command.h"
+#include "display.h"
+
+task main()
+{
+  while (true)
+  {
+    int x = CurrentTick();
+    if (x > 10000)
+      abort(); // stop the program
+    NumOut(0, LCD_LINE1, x);
+  }
+}

@@ -1,0 +1,37 @@
+#define MAX127_CH0 0x80
+#define MAX127_CH1 0x90
+#define MAX127_CH2 0xA0
+#define MAX127_CH3 0xB0
+#define MAX127_CH4 0xC0
+#define MAX127_CH5 0xD0
+#define MAX127_CH6 0xE0
+#define MAX127_CH7 0xF0
+
+// Maxim Integrated Products MAX127 default I2C device address
+#define MIP_ADDR_MAX127 0x50
+
+int MAX127Value(byte port, byte adChannel)
+{
+   byte count = 2, msg[], reply[];
+   ArrayBuild(msg, MIP_ADDR_MAX127, adChannel);
+
+   if (I2CBytes(port, msg, count, reply))
+     return (reply[0] << 4) + (reply[1] >> 4);
+   return -1;
+}
+
+task main()
+{
+  byte MAX127_CH[] = {
+    MAX127_CH0, MAX127_CH1, MAX127_CH2, MAX127_CH3,
+    MAX127_CH4, MAX127_CH5, MAX127_CH6, MAX127_CH7};
+  SetSensorLowspeed(S1);
+  while (true)
+  {
+    ClearScreen();
+    for (int i = 0; i < 8; i++)
+      NumOut(0, LCD_LINE1-8*i, MAX127Value(S1, MAX127_CH[i]));
+    Wait(MS_50);
+  }
+}
+

@@ -60,8 +60,8 @@ type
     function  AlreadyInMonitorMode : boolean;
     function  DoSerialWrite(Handle: THandle; Data : array of byte; Count: LongInt) : LongInt; overload;
     function  DoSerialWrite(Handle: THandle; Data : string; Count: LongInt) : LongInt; overload;
-    function  DoSerialFlushRead(Handle: THandle; delay : Integer; var Data : TBytes) : boolean;
-    function  DoSerialFlushToChar(Handle: THandle; delay : Integer; ch : Char; var Data : TBytes) : LongInt;
+    function  DoSerialFlushRead(Handle: THandle; delay : Integer; var Data : TJCHBytes) : boolean;
+    function  DoSerialFlushToChar(Handle: THandle; delay : Integer; ch : Char; var Data : TJCHBytes) : LongInt;
   public
     constructor Create(aType : byte = 0; const aPort : string = ''); override;
     destructor Destroy; override;
@@ -490,7 +490,7 @@ end;
 
 function TSProSpirit.MonitorMode(bCheckFirst : boolean) : boolean;
 var
-  Data : TBytes;
+  Data : TJCHBytes;
   i, len : integer;
 begin
   Result := False;
@@ -518,7 +518,7 @@ end;
 
 function TSProSpirit.AlreadyInMonitorMode: boolean;
 var
-  Data : TBytes;
+  Data : TJCHBytes;
   i : integer;
 begin
   Result := False;
@@ -882,7 +882,7 @@ var
   SL : TStringList;
   i, len : integer;
   tmp : string;
-  Data : TBytes;
+  Data : TJCHBytes;
 begin
   Result := IsOpen;
   if not Result then Exit;
@@ -1315,7 +1315,7 @@ end;
 
 function TSProSpirit.SelectProgram(aProg: integer): boolean;
 var
-  Data : TBytes;
+  Data : TJCHBytes;
 begin
   Result := Open;
   if Result then
@@ -1481,7 +1481,7 @@ end;
 
 function TSProSpirit.StartTask(aTask: integer): boolean;
 var
-  Data : TBytes;
+  Data : TJCHBytes;
 begin
   Result := Open;
   if Result then
@@ -1627,7 +1627,7 @@ end;
 
 procedure TSProSpirit.FlushReceiveBuffer;
 var
-  Data : TBytes;
+  Data : TJCHBytes;
 begin
   if IsOpen then
   begin
@@ -1660,7 +1660,7 @@ begin
     DoDataSend(Data);
 end;
 
-function TSProSpirit.DoSerialFlushRead(Handle: THandle; delay: Integer; var Data: TBytes): boolean;
+function TSProSpirit.DoSerialFlushRead(Handle: THandle; delay: Integer; var Data: TJCHBytes): boolean;
 begin
   SetLength(Data, 0);
   Result := SerialFlushRead(Handle, delay, Data);
@@ -1668,7 +1668,7 @@ begin
 end;
 
 function TSProSpirit.DoSerialFlushToChar(Handle: THandle; delay: Integer;
-  ch: Char; var Data: TBytes): LongInt;
+  ch: Char; var Data: TJCHBytes): LongInt;
 begin
   SetLength(Data, 0);
   Result := SerialFlushToChar(Handle, delay, ch, Data);

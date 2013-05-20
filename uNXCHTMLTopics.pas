@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uNXCHTMLTopicsSize = 3251;
+  uNXCHTMLTopicsSize = 3277;
   uNXCHTMLTopicsData: array[0..uNXCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'ColorSensorReadType';
@@ -977,6 +977,26 @@ const
      Value: 'group___time_constants_ga4dc6c3c69ab80e7958c48cb67da66192.html'
     ),
     (
+     Name: 'NOTE_WHOLE';
+     Value: 'group___time_constants_ga026ca06d3aa464fd03d1e79c31fc27a0.html'
+    ),
+    (
+     Name: 'NOTE_HALF';
+     Value: 'group___time_constants_ga478fd9f6972e9c741659448c09c6d4e4.html'
+    ),
+    (
+     Name: 'NOTE_QUARTER';
+     Value: 'group___time_constants_ga2420071a12d80f8612212138554d930a.html'
+    ),
+    (
+     Name: 'NOTE_EIGHT';
+     Value: 'group___time_constants_gacb6abcc1741d02dbd9e0cd2854325587.html'
+    ),
+    (
+     Name: 'NOTE_SIXTEEN';
+     Value: 'group___time_constants_ga6316935b2127734cb2c9e4181944ebe8.html'
+    ),
+    (
      Name: 'MAILBOX1';
      Value: 'group___mailbox_constants_ga73e4efa9bd0c9113f8c3a196b84b9297.html'
     ),
@@ -1707,6 +1727,42 @@ const
     (
      Name: 'SAMPLERATE_MAX';
      Value: 'group___sound_misc_gaed8e727e6d441332ca24f89687a76575.html'
+    ),
+    (
+     Name: 'TONE_C3';
+     Value: 'group___tone_constants_gaa3a1a60fb55dc3bbe88335489456edfb.html'
+    ),
+    (
+     Name: 'TONE_CS3';
+     Value: 'group___tone_constants_gaf36cc9d24bfe7b1dfee93223ddc9474a.html'
+    ),
+    (
+     Name: 'TONE_D3';
+     Value: 'group___tone_constants_gae40af7668ef1124afdc99617f438b3dc.html'
+    ),
+    (
+     Name: 'TONE_DS3';
+     Value: 'group___tone_constants_gac6d2faf99195f6cf963edf0e856d7c2c.html'
+    ),
+    (
+     Name: 'TONE_E3';
+     Value: 'group___tone_constants_ga1d60af8af4e20a60da613749342e8e11.html'
+    ),
+    (
+     Name: 'TONE_F3';
+     Value: 'group___tone_constants_ga9e56d90fc06dcafd2fe72ef32db74dde.html'
+    ),
+    (
+     Name: 'TONE_FS3';
+     Value: 'group___tone_constants_ga637441ee62c39cd62b0d3707aeebec39.html'
+    ),
+    (
+     Name: 'TONE_G3';
+     Value: 'group___tone_constants_ga0bb8299f0666948823b1a79ba2036d9f.html'
+    ),
+    (
+     Name: 'TONE_GS3';
+     Value: 'group___tone_constants_gac23a27c39caef5e2506f7e301ec05284.html'
     ),
     (
      Name: 'TONE_A3';
@@ -5753,6 +5809,10 @@ const
      Value: 'group___hi_technic_constants_ga25ada2f08ed58ce7b015891d7fdbdb38.html'
     ),
     (
+     Name: 'HT_ADDR_PIR';
+     Value: 'group___hi_technic_constants_gae992e969bcf26432a558123d893236f5.html'
+    ),
+    (
      Name: 'HTIR2_MODE_1200';
      Value: 'group___h_t_i_r_seeker2_constants_ga3ec2348617d3fae0aadb1eef110f7e2f.html'
     ),
@@ -6285,6 +6345,10 @@ const
      Value: 'group___dac_mode_constants_gacbeee81c0ec345769f54766a91048b58.html'
     ),
     (
+     Name: 'DAC_MODE_RESTART_MASK';
+     Value: 'group___dac_mode_constants_ga8d54dd31198da04144951a9af44684b4.html'
+    ),
+    (
      Name: 'DIGI_PIN0';
      Value: 'group___digital_pin_constants_ga9060e318451b503ccd4833fbba74d98a.html'
     ),
@@ -6339,6 +6403,14 @@ const
     (
      Name: 'STROBE_WRITE';
      Value: 'group___strobe_ctrl_constants_ga5f18be7419d2992898e1d596a9d75356.html'
+    ),
+    (
+     Name: 'HTPIR_REG_DEADBAND';
+     Value: 'group___h_t_p_i_r_constants_ga4b17d8b4ebf7854c903d2c8b3fa90982.html'
+    ),
+    (
+     Name: 'HTPIR_REG_READING';
+     Value: 'group___h_t_p_i_r_constants_ga07d02519258db807e0ffcf550877da0c.html'
     ),
     (
      Name: 'MS_CMD_ENERGIZED';
@@ -9353,8 +9425,24 @@ const
      Value: 'group___low_speed_module_functions_ga7543e9f7d63dda6389db68271134f62e.html'
     ),
     (
+     Name: 'SensorUS0';
+     Value: 'group___low_speed_module_functions_ga4279812e5aa03473763bc7bac5f94f0d.html'
+    ),
+    (
+     Name: 'SensorUSWait';
+     Value: 'group___low_speed_module_functions_ga5bfee063f3afc9f82dea0007efb59512.html'
+    ),
+    (
      Name: 'ReadSensorUSEx';
      Value: 'group___low_speed_module_functions_ga95d443e1902408c417b392e6b829572c.html'
+    ),
+    (
+     Name: 'ReadSensorUSEx0';
+     Value: 'group___low_speed_module_functions_gacb3ce51eec44c5d2b20ca25d3abe7c26.html'
+    ),
+    (
+     Name: 'ReadSensorUSExWait';
+     Value: 'group___low_speed_module_functions_ga14b25208a6c6423d281dd36a73f9262b.html'
     ),
     (
      Name: 'ReadSensorEMeter';
@@ -10941,6 +11029,22 @@ const
      Value: 'group___loader_module_functions_ga5dddeb542d9427bb16d997f61427f3f7.html'
     ),
     (
+     Name: 'SetSensorHTGyro';
+     Value: 'group___hi_technic_a_p_i_gaea028b5e636bef58d384fe0f7f064027.html'
+    ),
+    (
+     Name: 'SetSensorHTMagnet';
+     Value: 'group___hi_technic_a_p_i_gac80c0b01120f05c7ee8c5282710e6ca2.html'
+    ),
+    (
+     Name: 'SetSensorHTEOPD';
+     Value: 'group___hi_technic_a_p_i_ga2304b03b500ada516a2e5980835dec69.html'
+    ),
+    (
+     Name: 'SetSensorHTForce';
+     Value: 'group___hi_technic_a_p_i_ga65cf659b9e7ff9f8c37cf64cb47a86db.html'
+    ),
+    (
      Name: 'SensorHTGyro';
      Value: 'group___hi_technic_a_p_i_gabdb455bf56fa8e2d0c834eccf0e5b532.html'
     ),
@@ -10953,16 +11057,8 @@ const
      Value: 'group___hi_technic_a_p_i_ga666fbc3dea3a90268ddd4be401bd32d3.html'
     ),
     (
-     Name: 'SetSensorHTEOPD';
-     Value: 'group___hi_technic_a_p_i_ga76e3af1e9477cc443085109f65ce17b3.html'
-    ),
-    (
-     Name: 'SetSensorHTGyro';
-     Value: 'group___hi_technic_a_p_i_gaea028b5e636bef58d384fe0f7f064027.html'
-    ),
-    (
-     Name: 'SetSensorHTMagnet';
-     Value: 'group___hi_technic_a_p_i_gac80c0b01120f05c7ee8c5282710e6ca2.html'
+     Name: 'SensorHTForce';
+     Value: 'group___hi_technic_a_p_i_ga48edd558272a2467f373dc411a888c78.html'
     ),
     (
      Name: 'SensorHTColorNum';
@@ -11143,6 +11239,14 @@ const
     (
      Name: 'ReadSensorHTSuperProAnalogOut';
      Value: 'group___hi_technic_a_p_i_ga7d383c512b146799b31c722b0b5526fc.html'
+    ),
+    (
+     Name: 'SetSensorHTPIRDeadband';
+     Value: 'group___hi_technic_a_p_i_ga2f5a68a0168e531288ffef86e2e14c34.html'
+    ),
+    (
+     Name: 'SensorHTPIR';
+     Value: 'group___hi_technic_a_p_i_ga7f3332068f43c9f36768ae26d3efce67.html'
     ),
     (
      Name: 'ReadSensorHTTouchMultiplexer';

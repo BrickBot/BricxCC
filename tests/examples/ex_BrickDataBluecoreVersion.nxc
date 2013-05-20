@@ -1,1 +1,8 @@
-int bv = BrickDataBluecoreVersion();
+#include "comm.h"
+
+task main()
+{
+  int bv = BrickDataBluecoreVersion();
+  bv++;
+}
+

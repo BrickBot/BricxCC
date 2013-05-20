@@ -544,7 +544,7 @@ end;
 
 procedure TfrmNXTImage.mniAboutClick(Sender: TObject);
 begin
-  ShowMessage('NeXT Screen'#13#10'Copyright 2007-2009, John C. Hansen');
+  ShowMessage('NeXT Screen'#13#10'Copyright 2007-2013, John C. Hansen');
 end;
 
 procedure TfrmNXTImage.actSaveExecute(Sender: TObject);

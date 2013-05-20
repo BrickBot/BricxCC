@@ -14,8 +14,8 @@ LAZROOT=C:/lazarus
 
 EXTRAFLAGS=
 PFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -dNXT_ONLY -dCAN_DOWNLOAD $(EXTRAFLAGS)
-LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate \
- -Fugrep -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/components/lazutils/lib/$(FPC_TARGET)/ \
+LFLAGS=-S2cdghi -dRELEASE -vewnhi -Fu. -Fubricktools -FuNXT -Fupng -Fusyn -Fusamplerate -Fugrep \
+ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ -Fu$(LAZROOT)/components/lazutils/lib/$(FPC_TARGET)/ \
  -Fu$(LAZROOT)/components/synedit/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/ \
  -Fu$(LAZROOT)/lcl/units/$(FPC_TARGET)/$(WIDGETSET)/ -Fu$(LAZROOT)/packager/units/$(FPC_TARGET)/ \
  -Fu$(PSROOT)/Source/ -dLCL -dLCL$(WIDGETSET) -dNXT_ONLY -dCAN_DOWNLOAD $(EXTRAFLAGS)

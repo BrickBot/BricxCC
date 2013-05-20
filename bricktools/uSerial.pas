@@ -31,8 +31,8 @@ function SerialSetParams(Handle: THandle; BitsPerSec: LongInt;
   ByteSize: byte; Parity: byte; StopBits: byte) : boolean;
 function SerialOpen(const DeviceName: String): THandle;
 procedure SerialClose(Handle: THandle);
-function SerialFlushToChar(Handle: THandle; delay : Integer; ch : Char; var Data : TBytes) : LongInt;
-function SerialFlushRead(Handle: THandle; delay : Integer; var Data : TBytes) : boolean;
+function SerialFlushToChar(Handle: THandle; delay : Integer; ch : Char; var Data : TJCHBytes) : LongInt;
+function SerialFlushRead(Handle: THandle; delay : Integer; var Data : TJCHBytes) : boolean;
 function SerialSetDTR(Handle: THandle; bDTR: Boolean): Boolean;
 function SerialSetRTS(Handle: THandle; bRTS: Boolean): Boolean;
 function SerialIsHandleValid(Handle: THandle) : boolean;
@@ -353,7 +353,7 @@ begin
   end;
 end;
 
-function SerialFlushRead(Handle: THandle; delay : Integer; var Data : TBytes) : boolean;
+function SerialFlushRead(Handle: THandle; delay : Integer; var Data : TJCHBytes) : boolean;
 var
   buff : PByte;
   count, oldLen, i : integer;
@@ -378,7 +378,7 @@ begin
   end;
 end;
 
-function SerialFlushToChar(Handle: THandle; delay : Integer; ch : Char; var Data : TBytes) : LongInt;
+function SerialFlushToChar(Handle: THandle; delay : Integer; ch : Char; var Data : TJCHBytes) : LongInt;
 var
   b1 : Byte;
   oldLen : integer;
@@ -431,4 +431,4 @@ begin
   Result := Handle <> INVALID_HANDLE_VALUE;
 end;
 
-end.
+end.

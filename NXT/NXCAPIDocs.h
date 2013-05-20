@@ -22,8 +22,8 @@
  * ----------------------------------------------------------------------------
  *
  * \author John Hansen (bricxcc_at_comcast.net)
- * \date 2012-10-11
- * \version 24
+ * \date 2013-02-17
+ * \version 25
  */
 #ifndef NXCAPIDOCS_H
 #define NXCAPIDOCS_H
@@ -35,7 +35,7 @@
 /** @mainpage NXC Programmer's Guide
  * \brief
  *
- * <h2><center>October 11, 2012</center></h2>
+ * <h2><center>February 18, 2013</center></h2>
  * <h2><center>by John Hansen</center></h2>
  * 
  * - @subpage intro
@@ -208,7 +208,8 @@
  *
  * The NXC preprocessor implements the following standard preprocessor directives:
  * \#include, \#define, \#ifdef, \#ifndef, \#endif, \#if, \#elif, \#undef, \#\#,
- * \#line, \#error, and \#pragma. It also supports two non-standard directives:
+ * \#line, \#error, and \#pragma
+ . It also supports two non-standard directives:
  * \#download and \#import. Its implementation is close to a standard C
  * preprocessor's, so most preprocessor directives should work as C programmers
  * expect in NXC. Any significant deviations are explained below.

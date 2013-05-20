@@ -1,3 +1,10 @@
+#ifdef __ENHANCED_FIRMWARE
+  #include "ui.h"
+#endif
+
+#include "button.h"
+#include "display.h"
+
 task main()
 {
 #ifdef __ENHANCED_FIRMWARE

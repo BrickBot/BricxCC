@@ -6,7 +6,7 @@ uses
   uHTMLHelp;
 
 const
-  uSPCHTMLTopicsSize = 205;
+  uSPCHTMLTopicsSize = 252;
   uSPCHTMLTopicsData: array[0..uSPCHTMLTopicsSize-1] of TNameValue = (
     (
      Name: 'TRUE';
@@ -83,6 +83,10 @@ const
     (
      Name: 'DAC_MODE_PWMVOLTAGE';
      Value: 'group___dac_mode_constants_gacbeee81c0ec345769f54766a91048b58.html'
+    ),
+    (
+     Name: 'DAC_MODE_RESTART_MASK';
+     Value: 'group___dac_mode_constants_ga8d54dd31198da04144951a9af44684b4.html'
     ),
     (
      Name: 'LED_BLUE';
@@ -369,6 +373,62 @@ const
      Value: 'group___time_constants_ga4dc6c3c69ab80e7958c48cb67da66192.html'
     ),
     (
+     Name: 'NOTE_WHOLE';
+     Value: 'group___time_constants_ga026ca06d3aa464fd03d1e79c31fc27a0.html'
+    ),
+    (
+     Name: 'NOTE_HALF';
+     Value: 'group___time_constants_ga478fd9f6972e9c741659448c09c6d4e4.html'
+    ),
+    (
+     Name: 'NOTE_QUARTER';
+     Value: 'group___time_constants_ga2420071a12d80f8612212138554d930a.html'
+    ),
+    (
+     Name: 'NOTE_EIGHT';
+     Value: 'group___time_constants_gacb6abcc1741d02dbd9e0cd2854325587.html'
+    ),
+    (
+     Name: 'NOTE_SIXTEEN';
+     Value: 'group___time_constants_ga6316935b2127734cb2c9e4181944ebe8.html'
+    ),
+    (
+     Name: 'TONE_C3';
+     Value: 'group___tone_constants_gaa3a1a60fb55dc3bbe88335489456edfb.html'
+    ),
+    (
+     Name: 'TONE_CS3';
+     Value: 'group___tone_constants_gaf36cc9d24bfe7b1dfee93223ddc9474a.html'
+    ),
+    (
+     Name: 'TONE_D3';
+     Value: 'group___tone_constants_gae40af7668ef1124afdc99617f438b3dc.html'
+    ),
+    (
+     Name: 'TONE_DS3';
+     Value: 'group___tone_constants_gac6d2faf99195f6cf963edf0e856d7c2c.html'
+    ),
+    (
+     Name: 'TONE_E3';
+     Value: 'group___tone_constants_ga1d60af8af4e20a60da613749342e8e11.html'
+    ),
+    (
+     Name: 'TONE_F3';
+     Value: 'group___tone_constants_ga9e56d90fc06dcafd2fe72ef32db74dde.html'
+    ),
+    (
+     Name: 'TONE_FS3';
+     Value: 'group___tone_constants_ga637441ee62c39cd62b0d3707aeebec39.html'
+    ),
+    (
+     Name: 'TONE_G3';
+     Value: 'group___tone_constants_ga0bb8299f0666948823b1a79ba2036d9f.html'
+    ),
+    (
+     Name: 'TONE_GS3';
+     Value: 'group___tone_constants_gac23a27c39caef5e2506f7e301ec05284.html'
+    ),
+    (
      Name: 'TONE_A3';
      Value: 'group___tone_constants_ga8fbb28081d3657ce43c6420da76a18c0.html'
     ),
@@ -598,7 +658,7 @@ const
     ),
     (
      Name: 'SizeOf';
-     Value: 'group__spcapi_gadbf1c0fed1e8e1a406e212895f253a43.html'
+     Value: 'group__spcapi_gae75ee72b86c0b7503f8a0b72f157e052.html'
     ),
     (
      Name: 'read';
@@ -730,99 +790,227 @@ const
     ),
     (
      Name: 'ADChannel0';
-     Value: 'spmem_8h_a214b3c18ec6fe36661b377d7adcf76e5.html'
+     Value: 'group__presysconstgrp_ga214b3c18ec6fe36661b377d7adcf76e5.html'
     ),
     (
      Name: 'ADChannel1';
-     Value: 'spmem_8h_acc747f58c3ca2ceaa641f9d8005a0695.html'
+     Value: 'group__presysconstgrp_gacc747f58c3ca2ceaa641f9d8005a0695.html'
     ),
     (
      Name: 'ADChannel2';
-     Value: 'spmem_8h_addb4c6284f2b408e04e07a07aa252232.html'
+     Value: 'group__presysconstgrp_gaddb4c6284f2b408e04e07a07aa252232.html'
     ),
     (
      Name: 'ADChannel3';
-     Value: 'spmem_8h_a6e8f52992ebc854798cc417d0b1c790d.html'
+     Value: 'group__presysconstgrp_ga6e8f52992ebc854798cc417d0b1c790d.html'
     ),
     (
      Name: 'DigitalIn';
-     Value: 'spmem_8h_a21205084fc28b1608d218f659dd7c9cc.html'
+     Value: 'group__presysconstgrp_ga21205084fc28b1608d218f659dd7c9cc.html'
     ),
     (
      Name: 'DigitalOut';
-     Value: 'spmem_8h_a469ac3cde59fe38f5acf9ca9361b2978.html'
+     Value: 'group__presysconstgrp_ga469ac3cde59fe38f5acf9ca9361b2978.html'
     ),
     (
      Name: 'DigitalControl';
-     Value: 'spmem_8h_a49de0441ddb2bec679bd7ecd9ea2a1d7.html'
+     Value: 'group__presysconstgrp_ga49de0441ddb2bec679bd7ecd9ea2a1d7.html'
     ),
     (
      Name: 'StrobeControl';
-     Value: 'spmem_8h_a4ba6cd3d2039e828071e537f1e2efa0b.html'
+     Value: 'group__presysconstgrp_ga4ba6cd3d2039e828071e537f1e2efa0b.html'
     ),
     (
      Name: 'Timer0';
-     Value: 'spmem_8h_a0e7f5ff5f73d44234bd5bae36a1ab7a9.html'
+     Value: 'group__presysconstgrp_ga0e7f5ff5f73d44234bd5bae36a1ab7a9.html'
     ),
     (
      Name: 'Timer1';
-     Value: 'spmem_8h_a45f00acf0c329275ee4c40a0be422517.html'
+     Value: 'group__presysconstgrp_ga45f00acf0c329275ee4c40a0be422517.html'
     ),
     (
      Name: 'Timer2';
-     Value: 'spmem_8h_a2c1a0f4e3d28ec23a5d9154302ea2236.html'
+     Value: 'group__presysconstgrp_ga2c1a0f4e3d28ec23a5d9154302ea2236.html'
     ),
     (
      Name: 'Timer3';
-     Value: 'spmem_8h_aaaca3174709decd802bbdefc589b693d.html'
+     Value: 'group__presysconstgrp_gaaaca3174709decd802bbdefc589b693d.html'
     ),
     (
      Name: 'SerialInCount';
-     Value: 'spmem_8h_afdd18b0dfcca6b3268cf81af5b249422.html'
+     Value: 'group__presysconstgrp_gafdd18b0dfcca6b3268cf81af5b249422.html'
     ),
     (
      Name: 'SerialInByte';
-     Value: 'spmem_8h_a761b8a931648c7e54e9f4a68bc95a464.html'
+     Value: 'group__presysconstgrp_ga761b8a931648c7e54e9f4a68bc95a464.html'
     ),
     (
      Name: 'SerialOutCount';
-     Value: 'spmem_8h_ae8283b46784b6b7713b52371d3f1ce8b.html'
+     Value: 'group__presysconstgrp_gae8283b46784b6b7713b52371d3f1ce8b.html'
     ),
     (
      Name: 'SerialOutByte';
-     Value: 'spmem_8h_a85df71c9d52f34cddefb059f22576a3e.html'
+     Value: 'group__presysconstgrp_ga85df71c9d52f34cddefb059f22576a3e.html'
     ),
     (
      Name: 'DAC0Mode';
-     Value: 'spmem_8h_a3f46ee0bd86abef46362c197712e2d2d.html'
+     Value: 'group__presysconstgrp_ga3f46ee0bd86abef46362c197712e2d2d.html'
     ),
     (
      Name: 'DAC0Frequency';
-     Value: 'spmem_8h_af4d8bafe56191f0f340feab9df90ab6d.html'
+     Value: 'group__presysconstgrp_gaf4d8bafe56191f0f340feab9df90ab6d.html'
     ),
     (
      Name: 'DAC0Voltage';
-     Value: 'spmem_8h_a0a1a1ecdf15aaa72953d9cc16331d146.html'
+     Value: 'group__presysconstgrp_ga0a1a1ecdf15aaa72953d9cc16331d146.html'
     ),
     (
      Name: 'DAC1Mode';
-     Value: 'spmem_8h_aebd20f335cdbcb70f4e6f6796954f286.html'
+     Value: 'group__presysconstgrp_gaebd20f335cdbcb70f4e6f6796954f286.html'
     ),
     (
      Name: 'DAC1Frequency';
-     Value: 'spmem_8h_a043b8ef2496eabccab946612b707f6cb.html'
+     Value: 'group__presysconstgrp_ga043b8ef2496eabccab946612b707f6cb.html'
     ),
     (
      Name: 'DAC1Voltage';
-     Value: 'spmem_8h_ad50ab2f4922950d8e9e31af16c258586.html'
+     Value: 'group__presysconstgrp_gad50ab2f4922950d8e9e31af16c258586.html'
     ),
     (
      Name: 'LEDControl';
-     Value: 'spmem_8h_a494f8000b32ecb2a02a1fa175a49f183.html'
+     Value: 'group__presysconstgrp_ga494f8000b32ecb2a02a1fa175a49f183.html'
     ),
     (
      Name: 'SystemClock';
-     Value: 'spmem_8h_a0c040c6f94ebe66e594e43c480cff634.html'
+     Value: 'group__presysconstgrp_ga0c040c6f94ebe66e594e43c480cff634.html'
+    ),
+    (
+     Name: 'SharedMem01';
+     Value: 'group__sharedmemgrp_ga81d67601b76e9d8bcd7b406a9841f285.html'
+    ),
+    (
+     Name: 'SharedMem02';
+     Value: 'group__sharedmemgrp_ga18ea5a1a4ba34289b821673bbbfab251.html'
+    ),
+    (
+     Name: 'SharedMem03';
+     Value: 'group__sharedmemgrp_ga732fb965e656fe3bfa225f2de5fe4cbe.html'
+    ),
+    (
+     Name: 'SharedMem04';
+     Value: 'group__sharedmemgrp_ga3579ed4556fba6ac10dbc681b876e475.html'
+    ),
+    (
+     Name: 'SharedMem05';
+     Value: 'group__sharedmemgrp_ga8e832beff710600ed42282a019907554.html'
+    ),
+    (
+     Name: 'SharedMem06';
+     Value: 'group__sharedmemgrp_ga72d96afa51e765078408d80ffcbea4db.html'
+    ),
+    (
+     Name: 'SharedMem07';
+     Value: 'group__sharedmemgrp_ga4de1b3e1fa8ac81c080e779a1c83d314.html'
+    ),
+    (
+     Name: 'SharedMem08';
+     Value: 'group__sharedmemgrp_gaefdee51815fce6de503f518846c934e0.html'
+    ),
+    (
+     Name: 'SharedMem09';
+     Value: 'group__sharedmemgrp_gab7f3e2ed9679fcb1c2f129ade43b5258.html'
+    ),
+    (
+     Name: 'SharedMem10';
+     Value: 'group__sharedmemgrp_ga7c547057f578e1d8e04f157ad96fe6fe.html'
+    ),
+    (
+     Name: 'SharedMem11';
+     Value: 'group__sharedmemgrp_ga961f18b4f4b9713e666d0564cb97678d.html'
+    ),
+    (
+     Name: 'SharedMem12';
+     Value: 'group__sharedmemgrp_gae2094714fae2460ffa97ca55aa3f0ed6.html'
+    ),
+    (
+     Name: 'SharedMem13';
+     Value: 'group__sharedmemgrp_gab61fa43b55653623a4c36aebc5a68a2f.html'
+    ),
+    (
+     Name: 'SharedMem14';
+     Value: 'group__sharedmemgrp_gab1ffd1f004884578266164942333fa64.html'
+    ),
+    (
+     Name: 'SharedMem15';
+     Value: 'group__sharedmemgrp_ga0df6eb36d7d2f7ae040e2b66462284fc.html'
+    ),
+    (
+     Name: 'SharedMem16';
+     Value: 'group__sharedmemgrp_gaad29183ec0348d7380d616b213e39bd6.html'
+    ),
+    (
+     Name: 'SharedMem17';
+     Value: 'group__sharedmemgrp_ga7fc5d3f6f2826ab1a02e783a5bd41486.html'
+    ),
+    (
+     Name: 'SharedMem18';
+     Value: 'group__sharedmemgrp_ga71c0f8a0489c7b460c799b4257318046.html'
+    ),
+    (
+     Name: 'SharedMem19';
+     Value: 'group__sharedmemgrp_gab41d2285daf8f18239148cede9502f49.html'
+    ),
+    (
+     Name: 'SharedMem20';
+     Value: 'group__sharedmemgrp_gadd68b38dd6d62e644fc8f7246beaa6ae.html'
+    ),
+    (
+     Name: 'SharedMem21';
+     Value: 'group__sharedmemgrp_ga9a06ab7e7d2ad72b4a686f023c044da8.html'
+    ),
+    (
+     Name: 'SharedMem22';
+     Value: 'group__sharedmemgrp_gaffba3aa6f5d0fee892d3b1988874b1ed.html'
+    ),
+    (
+     Name: 'SharedMem23';
+     Value: 'group__sharedmemgrp_ga8e6288fe21e6012a491c71bf9bbcce2e.html'
+    ),
+    (
+     Name: 'SharedMem24';
+     Value: 'group__sharedmemgrp_ga0b92eeac6143f12c8adc08fa0f70c493.html'
+    ),
+    (
+     Name: 'SharedMem25';
+     Value: 'group__sharedmemgrp_ga82900f5a8bbbfa41e902253323192a3b.html'
+    ),
+    (
+     Name: 'SharedMem26';
+     Value: 'group__sharedmemgrp_ga2973bf93f1ea2ff21c2d9ce75abbfe02.html'
+    ),
+    (
+     Name: 'SharedMem27';
+     Value: 'group__sharedmemgrp_ga808723b9f3c739cf8e52e40eccfbfa01.html'
+    ),
+    (
+     Name: 'SharedMem28';
+     Value: 'group__sharedmemgrp_gaf24724be6980a5567ec5925caeecc8e7.html'
+    ),
+    (
+     Name: 'SharedMem29';
+     Value: 'group__sharedmemgrp_gaaa06ef2f8ff4bea5cd341b4bb7f5419c.html'
+    ),
+    (
+     Name: 'SharedMem30';
+     Value: 'group__sharedmemgrp_ga3b2f4dc2ebfa2f37c22f551e486c3ed7.html'
+    ),
+    (
+     Name: 'SharedMem31';
+     Value: 'group__sharedmemgrp_ga0bbdcb19b610f26c1c69c41a7f9459f3.html'
+    ),
+    (
+     Name: 'SharedMem32';
+     Value: 'group__sharedmemgrp_ga4a898ac800b02ab20be92980a890f866.html'
     ),
     (
      Name: '$##@$@#$@#$@$';

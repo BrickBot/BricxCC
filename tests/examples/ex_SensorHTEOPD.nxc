@@ -1,1 +1,12 @@
-int val = SensorHTEOPD(S1);
+task main()
+{
+  SetSensorHTEOPD(S1);
+  while (true)
+  {
+    ClearLine(LCD_LINE1);
+    int val = SensorHTEOPD(S1);
+    NumOut(0, LCD_LINE1, val);
+    Wait(MS_250);
+  }
+}
+

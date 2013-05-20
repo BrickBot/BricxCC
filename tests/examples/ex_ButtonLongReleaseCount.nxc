@@ -1,1 +1,6 @@
-value = ButtonLongReleaseCount(BTN1);
+#include "button.h"
+
+task main()
+{
+  int value = ButtonLongReleaseCount(BTN1);
+}
